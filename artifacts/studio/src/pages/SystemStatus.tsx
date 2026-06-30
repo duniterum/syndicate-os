@@ -1,7 +1,8 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { DataStatusNote } from "@/components/layout/Shell";
-import { PostureBadge, type Posture } from "@/components/PostureBadge";
+import { PostureBadge } from "@/components/PostureBadge";
+import type { PublicDisplayPosture } from "@workspace/os-contracts";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Activity, AlertTriangle } from "lucide-react";
@@ -20,7 +21,7 @@ interface SourceStatusItem {
   key: string;
   label: string;
   category: string;
-  posture: Posture;
+  posture: PublicDisplayPosture;
   publicClass: string;
   statusBadge: string;
   sourceRef: string;

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { SourcePosture } from "@workspace/os-contracts";
 
 /**
  * Phase 1 Slice 1 — /api/source-status posture-only static canon registry.
@@ -6,18 +7,18 @@ import { z } from "zod";
  * This module is a STATIC, POSTURE-ONLY truth spine. It carries NO live values:
  * no balances, amounts, prices, member data, full wallet addresses, or RPC reads.
  * Every category's `value` is `null`. The Zod schema below restricts `posture` to
- * the six allowed first-slice values (the forbidden LIVE_READ / PROTOTYPE /
- * SIMULATED are not part of the enum, so they can never be emitted) and pins
- * `value` to `null`, so any drift throws at startup.
+ * the canonical public-display subset of `@workspace/os-contracts` `SourcePosture`
+ * (READ_ONLY_PROOF, NOT_WIRED, VERIFIED_SOURCE_PENDING_ADAPTER, FUTURE). The
+ * forbidden LIVE_READ / PROTOTYPE / SIMULATED and the retired prior-art dialect
+ * (ADAPTER_REQUIRED / NOT_LIVE / EXTERNAL) are not part of the enum, so they can
+ * never be emitted; `value` is pinned to `null`, so any drift throws at startup.
  */
 
 export const Posture = z.enum([
   "READ_ONLY_PROOF",
-  "ADAPTER_REQUIRED",
   "NOT_WIRED",
-  "NOT_LIVE",
+  "VERIFIED_SOURCE_PENDING_ADAPTER",
   "FUTURE",
-  "EXTERNAL",
 ]);
 
 export const PublicClass = z.enum([
@@ -60,13 +61,20 @@ export type SourceStatusResponse = z.infer<typeof SourceStatusResponse>;
 
 type Posture = z.infer<typeof Posture>;
 
+/**
+ * Compile-time conformance: every runtime `Posture` is a canonical `SourcePosture`.
+ * This registry emits a fail-closed public-display subset of the canon — it never
+ * defines a competing posture vocabulary. If the enum ever drifts off-canon this
+ * assignment stops type-checking.
+ */
+const _postureConformsToSourcePosture: Posture extends SourcePosture ? true : never = true;
+void _postureConformsToSourcePosture;
+
 const STATUS_BADGE: Record<Posture, string> = {
   READ_ONLY_PROOF: "Read-only proof",
-  ADAPTER_REQUIRED: "Adapter required",
   NOT_WIRED: "Not wired",
-  NOT_LIVE: "Not live",
+  VERIFIED_SOURCE_PENDING_ADAPTER: "Verified source pending adapter",
   FUTURE: "Future",
-  EXTERNAL: "External",
 };
 
 /**
@@ -170,11 +178,11 @@ const CANON: CanonEntry[] = [
   {
     key: "sale",
     label: "Sale",
-    posture: "NOT_LIVE",
+    posture: "VERIFIED_SOURCE_PENDING_ADAPTER",
     publicClass: "INSTITUTIONAL_PUBLIC_SALE_SAFE",
     sourceRef: "vendored:the-syndicate/contracts/abi/sale-abi.ts@cf4ca34",
     confidence: "medium",
-    note: "Institutional sale surface is not live. Sale ABI verified in local vendored canon; live sale adapter/indexer not wired. No amounts and no calls-to-action are exposed here.",
+    note: "Institutional sale surface has a verified, vendored sale ABI in local canon, but no live sale adapter/indexer is wired yet. No amounts and no calls-to-action are exposed here.",
     surface: "/join",
   },
   {

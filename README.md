@@ -62,7 +62,7 @@ These are operational or local-only and must not be reintroduced into this repos
 - **Server-side canon** lives under the api-server canon paths and holds the protocol's reference data.
 - **`PROVENANCE.md`** (under the canon directory) records the source/provenance of that canon.
 - **Public surfaces must use truth/status labels.** Every value not wired to a verified source renders a truth label; there is no fake-live data anywhere.
-- **Posture vocabulary must be preserved:** `NOT_WIRED`, `READ_ONLY` / `READ_ONLY_PROOF`, `NOT_LIVE`, `FUTURE`, and `LIVE`. Do not downgrade honesty or claim "live" without a verified source. A canon-integrity guard enforces these postures and the public-payload contract.
+- **Posture vocabulary (canonical — `@workspace/os-contracts` `SourcePosture`):** `NOT_WIRED`, `READ_ONLY_PROOF`, `VERIFIED_SOURCE_PENDING_ADAPTER`, `AUTH_REQUIRED`, `ADMIN_ONLY`, `FUTURE`, and `LIVE_ACTION`. `READ_ONLY_PROOF` is the verified read/display posture; `LIVE_ACTION` is reserved for future gated writes only and has **no** current runtime path. Never claim a bare `LIVE` posture, and do not downgrade honesty or claim "live" without a verified source. A canon-integrity guard enforces these postures and the public-payload contract.
 - **Reference repositories are pattern sources, not live Syndicate truth.** Patterns may inform architecture; they are never imported or presented as protocol truth.
 - **No fake money, fake contracts, fake dashboard data, fake activation, or unauthorized transactions** — ever.
 - **Chain identifiers / addresses:** Some server-side canon files contain private-repo-approved chain identifiers/addresses; do not expose them in public UI or public docs without founder approval.

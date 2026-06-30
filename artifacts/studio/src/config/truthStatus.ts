@@ -1,3 +1,5 @@
+import type { SourcePosture } from "@workspace/os-contracts";
+
 export type TruthStatus =
   | "NOT_LIVE"
   | "DESIGN_PREVIEW"
@@ -72,3 +74,24 @@ export const homepageStatus = {
   heroBadge: "NOT_LIVE",
   heroCore: "AWAITING_CHAIN_INDEX",
 } satisfies Record<string, TruthStatus>;
+
+// Slice 2.20B — bind the studio's granular `TruthStatus` reason codes to the
+// canonical @workspace/os-contracts `SourcePosture`. Pure lookup, no fetching,
+// no data. None map to LIVE_ACTION (no reason code implies a write):
+//   - surfaces whose ABI/registry canon is vendored but whose live
+//     adapter/indexer is the remaining gap -> VERIFIED_SOURCE_PENDING_ADAPTER;
+//   - genuine future product surfaces -> FUTURE;
+//   - everything else (not wired / awaiting / design-preview / missing source)
+//     -> NOT_WIRED.
+export const truthStatusToPosture: Record<TruthStatus, SourcePosture> = {
+  NOT_LIVE: "NOT_WIRED",
+  DESIGN_PREVIEW: "NOT_WIRED",
+  FUTURE_MODULE: "FUTURE",
+  EVENT_ADAPTER_NOT_WIRED: "VERIFIED_SOURCE_PENDING_ADAPTER",
+  SOURCE_INDEXER_NOT_WIRED: "VERIFIED_SOURCE_PENDING_ADAPTER",
+  ARCHIVE_READS_NOT_WIRED: "VERIFIED_SOURCE_PENDING_ADAPTER",
+  AWAITING_CHAIN_INDEX: "NOT_WIRED",
+  SYNDICATE_INDEXER_NOT_WIRED: "VERIFIED_SOURCE_PENDING_ADAPTER",
+  AWAITING_FOUNDER_APPROVAL: "NOT_WIRED",
+  LIVE_SOURCE_MISSING: "NOT_WIRED",
+};

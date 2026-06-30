@@ -183,15 +183,26 @@ function sectionB(canonFiles: string[]): void {
 // ─────────────────────────────────────────────────────────────────────────────
 // C) Public payload contract (bans apply ONLY here, to the serialized payload)
 // ─────────────────────────────────────────────────────────────────────────────
+// Canonical public-display subset of @workspace/os-contracts SourcePosture
+// (Slice 2.20B convergence). LIVE_ACTION / AUTH_REQUIRED / ADMIN_ONLY are
+// intentionally NOT allowed in this public, read-only payload.
 const ALLOWED_POSTURES = new Set([
   "READ_ONLY_PROOF",
-  "ADAPTER_REQUIRED",
   "NOT_WIRED",
-  "NOT_LIVE",
+  "VERIFIED_SOURCE_PENDING_ADAPTER",
   "FUTURE",
-  "EXTERNAL",
 ]);
-const FORBIDDEN_POSTURES = ["LIVE_READ", "PROTOTYPE", "SIMULATED"];
+// Forbidden in the serialized payload: the rejected prior-art postures AND the
+// retired 6-state dialect now converged onto canonical SourcePosture. Matched as
+// lowercased substrings; the underscore forms never collide with payload prose
+// ("not_live" vs "not live", "adapter_required" vs "pending adapter").
+const FORBIDDEN_POSTURES = [
+  "LIVE_READ",
+  "PROTOTYPE",
+  "SIMULATED",
+  "ADAPTER_REQUIRED",
+  "NOT_LIVE",
+];
 
 const FORBIDDEN_FRAMING_SUBSTRINGS = [
   "guaranteed profit",
@@ -227,7 +238,7 @@ function sectionC(): void {
   check("C", "every posture is supported", categories.every((c) => ALLOWED_POSTURES.has(c.posture)));
 
   const forbiddenPostureHit = FORBIDDEN_POSTURES.filter((p) => lower.includes(p.toLowerCase()));
-  check("C", "no forbidden posture (LIVE_READ/PROTOTYPE/SIMULATED)", forbiddenPostureHit.length === 0, forbiddenPostureHit.join(", ") || undefined);
+  check("C", "no forbidden/retired posture literal in payload", forbiddenPostureHit.length === 0, forbiddenPostureHit.join(", ") || undefined);
 
   check("C", "no full 0x[40] address in payload", !FULL_ADDRESS.test(serialized));
 
@@ -248,9 +259,12 @@ function sectionD(): void {
   for (const c of categories) counts[c.posture] = (counts[c.posture] ?? 0) + 1;
   info.push(`D) posture counts: ${JSON.stringify(counts)}`);
 
+  // Posture vocabulary converged onto @workspace/os-contracts SourcePosture
+  // (Slice 2.20B). The single former NOT_LIVE category (sale) carries a verified,
+  // vendored ABI with no live adapter wired, so it is VERIFIED_SOURCE_PENDING_ADAPTER.
   check("D", "READ_ONLY_PROOF count === 5", counts.READ_ONLY_PROOF === 5, String(counts.READ_ONLY_PROOF ?? 0));
   check("D", "NOT_WIRED count === 7", counts.NOT_WIRED === 7, String(counts.NOT_WIRED ?? 0));
-  check("D", "NOT_LIVE count === 1", counts.NOT_LIVE === 1, String(counts.NOT_LIVE ?? 0));
+  check("D", "VERIFIED_SOURCE_PENDING_ADAPTER count === 1", counts.VERIFIED_SOURCE_PENDING_ADAPTER === 1, String(counts.VERIFIED_SOURCE_PENDING_ADAPTER ?? 0));
   check("D", "FUTURE count === 7", counts.FUTURE === 7, String(counts.FUTURE ?? 0));
 
   const expectedReadOnly = ["archive", "chain", "contracts", "guardrails", "token"];
@@ -265,7 +279,12 @@ function sectionD(): void {
     actualReadOnly.join(", "),
   );
 
-  check("D", "sale remains NOT_LIVE", payload.categories.sale?.posture === "NOT_LIVE", payload.categories.sale?.posture);
+  check(
+    "D",
+    "sale is VERIFIED_SOURCE_PENDING_ADAPTER",
+    payload.categories.sale?.posture === "VERIFIED_SOURCE_PENDING_ADAPTER",
+    payload.categories.sale?.posture,
+  );
 
   // Founder confirmation: these stay NOT_WIRED (no adapter added in this slice).
   for (const key of ["proof", "source", "treasury", "routing"]) {
