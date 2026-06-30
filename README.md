@@ -122,3 +122,4 @@ The next expected slice after this README is **not** live wiring. It should be a
 ## Architecture specs
 
 - [Source Boundary Manifest](docs/architecture/SOURCE_BOUNDARY_MANIFEST.md) — source-of-truth hierarchy, posture lifecycle, surface model, data/proof domains, adapter seams, member/admin system direction, and the posture/action upgrade gate required before a domain may graduate to authenticated or `LIVE_ACTION` states.
+- [Prior-art reconciliation](docs/architecture/PRIOR_ART_RECONCILIATION_2_19D.md) — reconciles prior TheSyndicate truth-layer, adapter, surface, and proof vocabulary against the Source Boundary Manifest, ahead of the 2.19E TypeScript type contracts.
