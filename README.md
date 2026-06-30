@@ -118,3 +118,7 @@ Secret/PII safety: there is no committed secret-scanning script in this reposito
 ## Current Next Step
 
 The next expected slice after this README is **not** live wiring. It should be a founder-approved foundation implementation slice — likely adapter-seam / manifest planning or another small, source-boundary-safe improvement. Live data wiring stays deferred until a real read-model source is verified and explicitly approved.
+
+## Architecture specs
+
+- [Source Boundary Manifest](docs/architecture/SOURCE_BOUNDARY_MANIFEST.md) — source-of-truth hierarchy, data/proof domains, adapter seams, boundary rules, and the posture-upgrade gate required before any domain may be shown as `LIVE`.
