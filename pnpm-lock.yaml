@@ -640,6 +640,8 @@ importers:
         specifier: ^0.31.10
         version: 0.31.10
 
+  lib/os-contracts: {}
+
   scripts:
     devDependencies:
       '@types/node':
