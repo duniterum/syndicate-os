@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: source-status
+    description: Source posture registry (read-only, posture-only)
 paths:
   /healthz:
     get:
@@ -24,6 +26,22 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /source-status:
+    get:
+      operationId: getSourceStatus
+      tags: [source-status]
+      summary: Source posture registry
+      description: >-
+        Posture-only, read-only source-status registry. Every category value is
+        null by design; no live values, balances, addresses, or member data are
+        ever returned.
+      responses:
+        "200":
+          description: Posture-only source registry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SourceStatusResponse"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +51,86 @@ components:
           type: string
       required:
         - status
-
+    SourceStatusItem:
+      type: object
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        category:
+          type: string
+        posture:
+          type: string
+          enum:
+            - READ_ONLY_PROOF
+            - NOT_WIRED
+            - VERIFIED_SOURCE_PENDING_ADAPTER
+            - FUTURE
+        publicClass:
+          type: string
+          enum:
+            - SAFE_PUBLIC
+            - INSTITUTIONAL_PUBLIC_SALE_SAFE
+            - PUBLIC_MEMORY_SAFE
+            - ECONOMIC_DASHBOARD_SAFE
+            - MEMBER_ONLY
+            - FOUNDER_OPERATOR_ONLY
+            - INTERNAL_ONLY
+            - FOUNDER_DECISION
+            - BLOCKED_PUBLIC
+        statusBadge:
+          type: string
+        sourceRef:
+          type: string
+        confidence:
+          type: string
+          enum:
+            - high
+            - medium
+            - low
+        note:
+          type: string
+        surface:
+          type: string
+        value:
+          type: "null"
+      required:
+        - key
+        - label
+        - category
+        - posture
+        - publicClass
+        - statusBadge
+        - sourceRef
+        - confidence
+        - note
+        - surface
+        - value
+    SourceStatusResponse:
+      type: object
+      properties:
+        asOf:
+          type: string
+        generatedBy:
+          type: string
+          enum:
+            - static-canon
+        mode:
+          type: string
+          enum:
+            - POSTURE_ONLY
+        expectedChainId:
+          type: integer
+          enum:
+            - 43114
+        categories:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/SourceStatusItem"
+      required:
+        - asOf
+        - generatedBy
+        - mode
+        - expectedChainId
+        - categories

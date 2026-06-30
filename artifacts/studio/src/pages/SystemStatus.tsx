@@ -1,8 +1,7 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useGetSourceStatus, type SourceStatusItem } from "@workspace/api-client-react";
 import { DataStatusNote } from "@/components/layout/Shell";
 import { PostureBadge } from "@/components/PostureBadge";
-import type { PublicDisplayPosture } from "@workspace/os-contracts";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Activity, AlertTriangle } from "lucide-react";
@@ -15,45 +14,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-type Confidence = "high" | "medium" | "low";
-
-interface SourceStatusItem {
-  key: string;
-  label: string;
-  category: string;
-  posture: PublicDisplayPosture;
-  publicClass: string;
-  statusBadge: string;
-  sourceRef: string;
-  confidence: Confidence;
-  note: string;
-  surface: string;
-  value: null;
-}
-
-interface SourceStatusResponse {
-  asOf: string;
-  generatedBy: string;
-  mode: string;
-  expectedChainId: number;
-  categories: Record<string, SourceStatusItem>;
-}
-
-async function fetchSourceStatus(): Promise<SourceStatusResponse> {
-  const res = await fetch("/api/source-status", {
-    headers: { Accept: "application/json" },
-  });
-  if (!res.ok) {
-    throw new Error(`source-status request failed (${res.status})`);
-  }
-  return res.json();
-}
-
 export default function SystemStatus() {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["source-status"],
-    queryFn: fetchSourceStatus,
-  });
+  const { data, isLoading, isError } = useGetSourceStatus();
 
   const items: SourceStatusItem[] = data ? Object.values(data.categories) : [];
 
