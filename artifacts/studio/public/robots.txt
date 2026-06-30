@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Internal / operator surfaces — defense-in-depth only.
+# robots is NOT a security control: these routes still require page-level
+# noindex / auth in a later slice (2.18C/2.18D). Do not rely on Disallow alone.
+Disallow: /studio
+Disallow: /proof-studio
+Disallow: /founder
+Disallow: /source
+
+# Public render assets (favicon, og image, fonts, JS/CSS) stay crawlable.
+Sitemap: https://thesyndicate.money/sitemap.xml
