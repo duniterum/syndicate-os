@@ -1,7 +1,9 @@
 import React from "react";
+import { Link } from "wouter";
 import { useGetSourceStatus, type SourceStatusItem } from "@workspace/api-client-react";
 import { DataStatusNote } from "@/components/layout/Shell";
 import { PostureBadge } from "@/components/PostureBadge";
+import { TruthLabel } from "@/components/TruthLabel";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Activity, AlertTriangle } from "lucide-react";
@@ -13,6 +15,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  surfaceClassification,
+  surfaceAudienceText,
+  type SurfaceAudience,
+} from "@/config/surfaceClassification";
+import { getModuleById } from "@/config/modules";
 
 export default function SystemStatus() {
   const { data, isLoading, isError } = useGetSourceStatus();
@@ -126,6 +134,54 @@ export default function SystemStatus() {
           </Table>
         </Card>
       )}
+
+      <div className="mt-12">
+        <h2 className="text-xl font-light tracking-tight text-foreground mb-2">Surface map</h2>
+        <p className="text-muted-foreground text-sm mb-6 max-w-2xl">
+          Every surface in the foundation, its audience, and its honest lifecycle — projected
+          from the surface-classification registry, not a hand-maintained list.
+        </p>
+        <div className="space-y-8">
+          {(["PUBLIC", "MEMBER_PREVIEW", "OPERATOR_PREVIEW"] as SurfaceAudience[]).map((aud) => {
+            const rows = surfaceClassification.filter((s) => s.audience === aud);
+            if (rows.length === 0) return null;
+            return (
+              <div key={aud}>
+                <h3 className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-3">
+                  {surfaceAudienceText[aud]}
+                </h3>
+                <Card className="bg-card/30 border-border/50 divide-y divide-border/40">
+                  {rows.map((s) => {
+                    const module = s.moduleId ? getModuleById(s.moduleId) : undefined;
+                    return (
+                      <div
+                        key={s.routePath}
+                        className="flex items-center justify-between gap-4 px-5 py-3"
+                      >
+                        <div className="min-w-0">
+                          <div className="text-sm font-medium text-foreground">
+                            {module?.label ?? s.routePath}
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-0.5">{s.summary}</div>
+                        </div>
+                        <div className="flex items-center gap-3 shrink-0">
+                          {module?.truthStatus && <TruthLabel variant={module.truthStatus} />}
+                          <Link
+                            href={s.routePath}
+                            className="font-mono text-[10px] text-muted-foreground hover:text-primary transition-colors"
+                          >
+                            {s.routePath}
+                          </Link>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </Card>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }

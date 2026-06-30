@@ -1,52 +1,120 @@
-import React from "react";
-import { DataStatusNote } from "@/components/layout/Shell";
-import { TruthLabel } from "@/components/TruthLabel";
+import { Link } from "wouter";
+import {
+  ScrollText,
+  Network,
+  Flame,
+  Library,
+  type LucideIcon,
+} from "lucide-react";
+import { PublicPage } from "@/components/PublicPage";
+import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
-import { ShieldCheck, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { type DisplayLifecycle } from "@/config/truthStatus";
+import { ctas, safetyCopy } from "@/config/sharedCopy";
+
+interface ProofFacet {
+  icon: LucideIcon;
+  title: string;
+  body: string;
+  lifecycle: DisplayLifecycle;
+}
+
+const facets: ProofFacet[] = [
+  {
+    icon: ScrollText,
+    title: "Membership receipts",
+    body: "Proof that a seat was taken, read from the membership source — never invented.",
+    lifecycle: "PENDING_ADAPTER",
+  },
+  {
+    icon: Network,
+    title: "Source attribution",
+    body: "Proof of the verified introduction behind a join. The registry is paused by precaution.",
+    lifecycle: "NOT_ACTIVE",
+  },
+  {
+    icon: Flame,
+    title: "Proof of Fire",
+    body: "Burn and contribution events mapped to members, once the event read-model is wired.",
+    lifecycle: "PENDING_ADAPTER",
+  },
+  {
+    icon: Library,
+    title: "Archive memory",
+    body: "Historical protocol artifacts held in the archive. Archive reads are not wired yet.",
+    lifecycle: "PENDING_ADAPTER",
+  },
+];
+
+const steps = [
+  {
+    n: "01",
+    title: "Read from source",
+    body: "Every proof is read from a verified contract or registry — never typed in by hand.",
+  },
+  {
+    n: "02",
+    title: "Verify against chain",
+    body: "Anyone can independently check the same fact against on-chain reality.",
+  },
+  {
+    n: "03",
+    title: "Show with provenance",
+    body: "Values appear with their source and lifecycle, so you always know how real they are.",
+  },
+];
 
 export default function ProofDashboard() {
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-light text-foreground tracking-tight flex items-center gap-3">
-          <ShieldCheck className="h-8 w-8 text-primary" />
-          Public Proof Dashboard
-        </h1>
-        <p className="text-muted-foreground mt-2">Verifiable truth surface for membership and protocol actions.</p>
+    <PublicPage
+      eyebrow="Public proof"
+      title="Proof, when there is something real to prove."
+      lead="Public, auditable proof is the point of The Syndicate. This page is an honest account of what proof will cover — and why none of it is wired in this foundation yet."
+      badge={<LifecycleBadge lifecycle="PENDING_ADAPTER" />}
+    >
+      <div className="rounded-lg border border-border/50 bg-muted/20 p-4 text-sm text-muted-foreground leading-relaxed mb-10">
+        {safetyCopy.readOnly} {safetyCopy.noFakeData}
       </div>
 
-      <DataStatusNote description="This dashboard is a design preview. Proofs, memberships, and burns shown are placeholders. No real proof events are currently being indexed." />
-
-      <div className="flex gap-4 mb-8">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input 
-            placeholder="Search proof events or addresses..." 
-            className="pl-9 bg-card/30 border-border/50 text-sm h-10"
-            disabled
-          />
-        </div>
-        <TruthLabel variant="AWAITING_CHAIN_INDEX" className="self-center" />
-      </div>
-
-      <div className="space-y-4">
-        {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="bg-card/30 border-border/40 p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between opacity-80">
-            <div>
-              <div className="flex items-center gap-3 mb-1">
-                <h4 className="text-sm font-medium text-foreground">Proof of Membership — 0x...{i}4A</h4>
-                <TruthLabel variant="DESIGN_PREVIEW" />
+      <h2 className="text-xl font-light tracking-tight text-foreground mb-5">What proof will cover</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-14">
+        {facets.map((f) => {
+          const Icon = f.icon;
+          return (
+            <Card key={f.title} className="bg-card/40 border-border/50 p-5">
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="p-2 rounded-md bg-primary/10 text-primary">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <LifecycleBadge lifecycle={f.lifecycle} />
               </div>
-              <p className="text-xs text-muted-foreground font-mono">Tx: Awaiting indexer source</p>
-            </div>
-            <div className="flex items-center gap-4 text-xs font-mono text-muted-foreground">
-              <span>Block: --</span>
-              <TruthLabel variant="NOT_LIVE" />
-            </div>
+              <h3 className="text-base font-medium text-foreground mb-1">{f.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{f.body}</p>
+            </Card>
+          );
+        })}
+      </div>
+
+      <h2 className="text-xl font-light tracking-tight text-foreground mb-5">How verification will work</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
+        {steps.map((s) => (
+          <Card key={s.n} className="bg-card/40 border-border/50 p-5">
+            <span className="font-mono text-xs text-primary">{s.n}</span>
+            <h3 className="text-base font-medium text-foreground mt-2 mb-1">{s.title}</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">{s.body}</p>
           </Card>
         ))}
       </div>
-    </div>
+
+      <div className="flex flex-wrap gap-3">
+        <Link href={ctas.viewStatus.href}>
+          <Button>{ctas.viewStatus.label}</Button>
+        </Link>
+        <Link href={ctas.viewContracts.href}>
+          <Button variant="outline">{ctas.viewContracts.label}</Button>
+        </Link>
+      </div>
+    </PublicPage>
   );
 }

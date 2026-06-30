@@ -95,3 +95,57 @@ export const truthStatusToPosture: Record<TruthStatus, SourcePosture> = {
   AWAITING_FOUNDER_APPROVAL: "NOT_WIRED",
   LIVE_SOURCE_MISSING: "NOT_WIRED",
 };
+
+// ---------------------------------------------------------------------------
+// Slice 2.21A — Display lifecycle vocabulary.
+//
+// The new visible OS surfaces (contract/economy memory, member preview,
+// operator preview, source-attribution vision, archive/chronicle, recognition)
+// need a richer HUMAN vocabulary than the wiring-only `TruthStatus` reason
+// codes — words like "Paused by precaution" or "Historical proof". This is NOT
+// a competing canon: every `DisplayLifecycle` PROJECTS onto the canonical
+// `SourcePosture` via `displayLifecycleToPosture` below, exactly like
+// `truthStatusToPosture`. None map to LIVE_ACTION — nothing here is a live
+// write, and nothing here may render as "Live".
+// ---------------------------------------------------------------------------
+
+export type DisplayLifecycle =
+  | "READ_ONLY_PROOF"
+  | "HISTORICAL_PROOF"
+  | "PAUSED_BY_PRECAUTION"
+  | "PENDING_ADAPTER"
+  | "NOT_ACTIVE"
+  | "FOUNDER_GATED"
+  | "AUTH_REQUIRED"
+  | "PREVIEW"
+  | "DESIGN_CONCEPT"
+  | "FUTURE";
+
+export const displayLifecycleText: Record<DisplayLifecycle, string> = {
+  READ_ONLY_PROOF: "Read-only proof",
+  HISTORICAL_PROOF: "Historical proof",
+  PAUSED_BY_PRECAUTION: "Paused by precaution",
+  PENDING_ADAPTER: "Pending adapter",
+  NOT_ACTIVE: "Not active",
+  FOUNDER_GATED: "Founder-gated",
+  AUTH_REQUIRED: "Auth required",
+  PREVIEW: "Preview",
+  DESIGN_CONCEPT: "Design concept",
+  FUTURE: "Future",
+};
+
+// Projection onto the canonical posture. A paused/historical real system keeps
+// a verified source (VERIFIED_SOURCE_PENDING_ADAPTER / READ_ONLY_PROOF); a
+// gated surface maps to its privilege posture; concepts/previews are FUTURE.
+export const displayLifecycleToPosture: Record<DisplayLifecycle, SourcePosture> = {
+  READ_ONLY_PROOF: "READ_ONLY_PROOF",
+  HISTORICAL_PROOF: "READ_ONLY_PROOF",
+  PAUSED_BY_PRECAUTION: "VERIFIED_SOURCE_PENDING_ADAPTER",
+  PENDING_ADAPTER: "VERIFIED_SOURCE_PENDING_ADAPTER",
+  NOT_ACTIVE: "NOT_WIRED",
+  FOUNDER_GATED: "ADMIN_ONLY",
+  AUTH_REQUIRED: "AUTH_REQUIRED",
+  PREVIEW: "FUTURE",
+  DESIGN_CONCEPT: "FUTURE",
+  FUTURE: "FUTURE",
+};

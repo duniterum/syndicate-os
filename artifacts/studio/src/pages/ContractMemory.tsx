@@ -1,0 +1,71 @@
+import { Link } from "wouter";
+import { ShieldAlert } from "lucide-react";
+import { PublicPage } from "@/components/PublicPage";
+import { LifecycleBadge } from "@/components/LifecycleBadge";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  contractMemoryIntro,
+  contractMemoryCategories,
+  contractMemoryCategoryText,
+  getContractsByCategory,
+} from "@/config/contractMemory";
+import { ctas, safetyCopy } from "@/config/sharedCopy";
+
+export default function ContractMemory() {
+  return (
+    <PublicPage
+      eyebrow="Contract & economy memory"
+      title="Contracts & economy, from memory — not a live read."
+      lead={contractMemoryIntro}
+      badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
+    >
+      <div className="rounded-lg border border-amber-200 dark:border-amber-900/50 bg-amber-50/60 dark:bg-amber-950/20 p-4 mb-12 flex items-start gap-3">
+        <div className="p-1.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5">
+          <ShieldAlert className="h-4 w-4" />
+        </div>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          Roles and structure only. No contract addresses, transaction hashes, balances, prices, or
+          member records appear here. {safetyCopy.noFakeData}
+        </p>
+      </div>
+
+      <div className="space-y-12">
+        {contractMemoryCategories.map((cat) => {
+          const entries = getContractsByCategory(cat);
+          if (entries.length === 0) return null;
+          return (
+            <section key={cat}>
+              <h2 className="text-xl font-light tracking-tight text-foreground mb-5">
+                {contractMemoryCategoryText[cat]}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {entries.map((e) => (
+                  <Card key={e.id} className="bg-card/40 border-border/50 p-5">
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div>
+                        <h3 className="text-base font-medium text-foreground">{e.label}</h3>
+                        <p className="text-xs font-mono text-muted-foreground mt-0.5">{e.role}</p>
+                      </div>
+                      <LifecycleBadge lifecycle={e.lifecycle} />
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{e.note}</p>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+
+      <div className="flex flex-wrap gap-3 mt-14">
+        <Link href={ctas.viewStatus.href}>
+          <Button>{ctas.viewStatus.label}</Button>
+        </Link>
+        <Link href={ctas.verifyProof.href}>
+          <Button variant="outline">{ctas.verifyProof.label}</Button>
+        </Link>
+      </div>
+    </PublicPage>
+  );
+}

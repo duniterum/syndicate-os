@@ -9,7 +9,15 @@
     "serve": "vite preview --config vite.config.ts --host 0.0.0.0",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "seo:generate": "node scripts/generate-sitemap.ts",
-    "seo:check": "node scripts/check-seo-registry.ts"
+    "seo:check": "node scripts/check-seo-registry.ts",
+    "guard:lifecycle": "node scripts/guard-lifecycle-labels.ts",
+    "guard:copy": "node scripts/guard-forbidden-copy.ts",
+    "guard:source": "node scripts/guard-safe-source.ts",
+    "guard:coverage": "node scripts/guard-surface-coverage.ts",
+    "guard:drift": "node scripts/guard-route-nav-drift.ts",
+    "guard:posture": "node scripts/guard-posture-map.ts",
+    "guard:live": "node scripts/guard-no-fake-live.ts",
+    "guards": "node scripts/guard-lifecycle-labels.ts && node scripts/guard-forbidden-copy.ts && node scripts/guard-safe-source.ts && node scripts/guard-surface-coverage.ts && node scripts/guard-route-nav-drift.ts && node scripts/guard-posture-map.ts && node scripts/guard-no-fake-live.ts"
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.10.0",

@@ -4,7 +4,7 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { headerNav, footerNav, navLabel } from "@/config/navigation";
+import { headerNav, footerGroups, navLabel } from "@/config/navigation";
 import { brand } from "@/config/brand";
 import { seatCta } from "@/config/syndicateFacts";
 
@@ -80,32 +80,25 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <footer className="border-t border-border/50 bg-muted/20 py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-            <div>
-              <h3 className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-4">Protocol</h3>
-              <ul className="space-y-3">
-                {footerNav.map((item) => (
-                  <li key={item.id}>
-                    <Link href={item.path} className="text-sm text-foreground hover:text-primary transition-colors">
-                      {navLabel(item, "footer")}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-4">Resources</h3>
-              <ul className="space-y-3">
-                <li><span className="text-sm text-muted-foreground cursor-not-allowed flex items-center gap-2">Source Policy <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-muted">Pending</span></span></li>
-                <li><span className="text-sm text-muted-foreground cursor-not-allowed flex items-center gap-2">Archive <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-muted">Pending</span></span></li>
-                <li><span className="text-sm text-muted-foreground cursor-not-allowed flex items-center gap-2">Docs <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-muted">Pending</span></span></li>
-              </ul>
-            </div>
-            <div className="col-span-2 md:col-span-2">
-              <h3 className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-4">Community</h3>
-              <ul className="space-y-3">
-                <li><span className="text-sm text-muted-foreground cursor-not-allowed flex items-center gap-2">Contact <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-muted">Pending</span></span></li>
-              </ul>
-            </div>
+            {footerGroups.map((group) => (
+              <div key={group.heading}>
+                <h3 className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-4">
+                  {group.heading}
+                </h3>
+                <ul className="space-y-3">
+                  {group.items.map((item) => (
+                    <li key={item.id}>
+                      <Link
+                        href={item.path}
+                        className="text-sm text-foreground hover:text-primary transition-colors"
+                      >
+                        {navLabel(item, "footer")}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
           <div className="pt-8 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} {brand.name}. {brand.rightsNote}</p>

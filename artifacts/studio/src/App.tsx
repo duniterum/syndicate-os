@@ -10,43 +10,79 @@ import PublicHome from "@/pages/PublicHome";
 import ProofDashboard from "@/pages/ProofDashboard";
 import ProofStudio from "@/pages/ProofStudio";
 import MemberAccess from "@/pages/MemberAccess";
-import PlaceholderPage from "@/pages/PlaceholderPage";
 import SystemStatus from "@/pages/SystemStatus";
+import Learning from "@/pages/Learning";
+import Recognition from "@/pages/Recognition";
+import ContractMemory from "@/pages/ContractMemory";
+import SourceAttribution from "@/pages/SourceAttribution";
+import Support from "@/pages/Support";
+import Archive from "@/pages/Archive";
+import OperatorPreview from "@/pages/OperatorPreview";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { RouteScrollManager } from "@/components/RouteScrollManager";
 import { SeoHeadManager } from "@/components/SeoHeadManager";
-import { getModuleById } from "@/config/modules";
 
 const queryClient = new QueryClient();
-
-function PlaceholderRoute({ id }: { id: string }) {
-  const module = getModuleById(id);
-  if (!module) return <NotFound />;
-  return (
-    <PlaceholderPage
-      title={module.label}
-      description={module.description}
-      label={module.truthStatus ?? "NOT_LIVE"}
-    />
-  );
-}
 
 function Router() {
   return (
     <Switch>
+      {/* Public marketing surfaces — PublicLayout chrome */}
       <Route path="/">
         <PublicLayout>
           <PublicHome />
         </PublicLayout>
       </Route>
+      <Route path="/proof">
+        <PublicLayout>
+          <ProofDashboard />
+        </PublicLayout>
+      </Route>
+      <Route path="/status">
+        <PublicLayout>
+          <SystemStatus />
+        </PublicLayout>
+      </Route>
+      <Route path="/learning">
+        <PublicLayout>
+          <Learning />
+        </PublicLayout>
+      </Route>
+      <Route path="/contracts">
+        <PublicLayout>
+          <ContractMemory />
+        </PublicLayout>
+      </Route>
+      <Route path="/source-attribution">
+        <PublicLayout>
+          <SourceAttribution />
+        </PublicLayout>
+      </Route>
+      <Route path="/support">
+        <PublicLayout>
+          <Support />
+        </PublicLayout>
+      </Route>
+      <Route path="/archive">
+        <PublicLayout>
+          <Archive />
+        </PublicLayout>
+      </Route>
+      <Route path="/recognition">
+        <PublicLayout>
+          <Recognition />
+        </PublicLayout>
+      </Route>
+      <Route path="/member">
+        <PublicLayout>
+          <MemberAccess />
+        </PublicLayout>
+      </Route>
+
+      {/* Operator console surfaces — Shell chrome */}
       <Route path="/studio">
         <Shell>
           <Home />
-        </Shell>
-      </Route>
-      <Route path="/proof">
-        <Shell>
-          <ProofDashboard />
         </Shell>
       </Route>
       <Route path="/proof-studio">
@@ -54,40 +90,22 @@ function Router() {
           <ProofStudio />
         </Shell>
       </Route>
-      <Route path="/member">
-        <Shell>
-          <MemberAccess />
-        </Shell>
-      </Route>
       <Route path="/founder">
         <Shell>
-          <PlaceholderRoute id="founder" />
+          <OperatorPreview moduleId="founder" />
         </Shell>
       </Route>
       <Route path="/source">
         <Shell>
-          <PlaceholderRoute id="source" />
+          <OperatorPreview moduleId="source" />
         </Shell>
       </Route>
-      <Route path="/recognition">
-        <Shell>
-          <PlaceholderRoute id="recognition" />
-        </Shell>
-      </Route>
-      <Route path="/learning">
-        <Shell>
-          <PlaceholderRoute id="learning" />
-        </Shell>
-      </Route>
-      <Route path="/status">
-        <Shell>
-          <SystemStatus />
-        </Shell>
-      </Route>
+
+      {/* Catch-all (bare Route → not-found) */}
       <Route>
-        <Shell>
+        <PublicLayout>
           <NotFound />
-        </Shell>
+        </PublicLayout>
       </Route>
     </Switch>
   );
