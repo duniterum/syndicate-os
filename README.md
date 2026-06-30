@@ -121,4 +121,4 @@ The next expected slice after this README is **not** live wiring. It should be a
 
 ## Architecture specs
 
-- [Source Boundary Manifest](docs/architecture/SOURCE_BOUNDARY_MANIFEST.md) — source-of-truth hierarchy, data/proof domains, adapter seams, boundary rules, and the posture-upgrade gate required before any domain may be shown as `LIVE`.
+- [Source Boundary Manifest](docs/architecture/SOURCE_BOUNDARY_MANIFEST.md) — source-of-truth hierarchy, posture lifecycle, surface model, data/proof domains, adapter seams, member/admin system direction, and the posture/action upgrade gate required before a domain may graduate to authenticated or `LIVE_ACTION` states.
