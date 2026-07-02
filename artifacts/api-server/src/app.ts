@@ -7,6 +7,14 @@ import { logger } from "./lib/logger";
 
 const app: Express = express();
 
+// Express "trust proxy" stays deliberately UNSET (IA-2.5, founder-approved):
+// the platform's proxy hop count is undocumented and may change, so a fixed
+// trust depth would make peer-derived addresses either collapsed or spoofable.
+// The only per-client keying in this server (auth throttle) uses the explicit
+// hop-count-agnostic extractor in src/auth/clientIdentity.ts instead. Cookie
+// Secure flags do not depend on this setting (res.cookie only writes the
+// attribute; nothing here reads req.secure/req.protocol).
+
 app.use(
   pinoHttp({
     logger,

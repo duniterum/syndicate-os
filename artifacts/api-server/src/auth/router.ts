@@ -50,6 +50,7 @@ import {
   touchSession,
 } from "./sessionStore";
 import { allowRequest } from "./throttle";
+import { throttleKey } from "./clientIdentity";
 
 const router: Router = Router();
 
@@ -101,9 +102,10 @@ function rejectCrossOrigin(
 }
 router.use(rejectCrossOrigin);
 
-function throttleKey(req: Request): string {
-  return req.ip ?? "unknown";
-}
+// Throttle keying (IA-2.5): derived via src/auth/clientIdentity.ts — the
+// explicit rightmost-non-private x-forwarded-for extractor with a hashed,
+// per-boot-salted key. Peer-address APIs are never used for keying here
+// (behind the shared proxy the socket peer is always the proxy itself).
 
 // ── POST /api/auth/challenge ────────────────────────────────────────────────
 router.post("/challenge", (req: Request, res: Response) => {

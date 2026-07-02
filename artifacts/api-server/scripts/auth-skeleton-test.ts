@@ -12,8 +12,10 @@
 
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { createSiweMessage } from "viem/siwe";
-import { NONCE_TTL_MS } from "../src/auth/authConfig";
+import type { Request } from "express";
+import { NONCE_TTL_MS, THROTTLE_MAX_PER_WINDOW } from "../src/auth/authConfig";
 import { consumeNonce, issueNonce } from "../src/auth/nonceStore";
+import { throttleKey } from "../src/auth/clientIdentity";
 
 const BASE = process.env["AUTH_TEST_BASE"] ?? "http://localhost:80/api/auth";
 
@@ -44,6 +46,9 @@ async function post(
   }
   if (HEX40.test(text)) {
     record("response leak scan", false, `${pathname} body contains a 0x40-hex value`);
+  }
+  if (/\b198\.51\.100\.\d+|\b203\.0\.113\.\d+/.test(text)) {
+    record("response raw-IP leak scan", false, `${pathname} body echoes a test client IP`);
   }
   return { status: res.status, json, setCookie: res.headers.get("set-cookie") };
 }
@@ -278,6 +283,148 @@ async function main(): Promise<void> {
     "Sec-Fetch-Site: cross-site POST rejected",
     crossFetch.status === 403 && reasonOf(crossFetch.json) === "cross_origin",
     `status ${crossFetch.status}, reason ${reasonOf(crossFetch.json)}`,
+  );
+
+  // ── IA-2.5: client-identity extractor unit checks ─────────────────────────
+  // A fresh module instance loads here with its own per-boot salt (unrelated
+  // to the server's). Only key EQUALITY/INEQUALITY is asserted — raw IPs
+  // below are RFC 5737/3849 documentation addresses, never real clients.
+  const fakeReq = (headers: Record<string, string | string[]>): Request =>
+    ({ headers }) as unknown as Request;
+  const keyOf = (headers: Record<string, string | string[]>): string =>
+    throttleKey(fakeReq(headers));
+  const fallbackKey = keyOf({});
+
+  record(
+    "empty XFF → shared fallback bucket",
+    keyOf({ "x-forwarded-for": "" }) === fallbackKey &&
+      keyOf({ "x-forwarded-for": "   " }) === fallbackKey,
+    "no-header, empty and whitespace-only XFF all collapse to one bucket",
+  );
+  record(
+    "loopback-only XFF → fallback bucket",
+    keyOf({ "x-forwarded-for": "127.0.0.1" }) === fallbackKey &&
+      keyOf({ "x-forwarded-for": "::1" }) === fallbackKey,
+    "loopback entries are never client identity",
+  );
+  record(
+    "all-private XFF → fallback bucket",
+    keyOf({
+      "x-forwarded-for":
+        "10.1.2.3, 192.168.0.9, 172.20.5.5, 169.254.1.1, 100.64.9.9, fc00::7, fe80::2",
+    }) === fallbackKey,
+    "RFC1918 + link-local + CGNAT + ULA all skipped",
+  );
+  record(
+    "::ffff: mapped IPv4 normalizes",
+    keyOf({ "x-forwarded-for": "::ffff:203.0.113.7" }) ===
+      keyOf({ "x-forwarded-for": "203.0.113.7" }),
+    "mapped and plain forms share one bucket",
+  );
+  record(
+    "port-suffixed entries normalize",
+    keyOf({ "x-forwarded-for": "203.0.113.7:4321" }) ===
+      keyOf({ "x-forwarded-for": "203.0.113.7" }) &&
+      keyOf({ "x-forwarded-for": "[2001:db8::7]:443" }) ===
+        keyOf({ "x-forwarded-for": "2001:db8::7" }),
+    "IPv4:port and [IPv6]:port forms share the plain bucket",
+  );
+  record(
+    "malformed entries skipped",
+    keyOf({ "x-forwarded-for": "banana, 203.0.113.7, not.an.ip.entry" }) ===
+      keyOf({ "x-forwarded-for": "203.0.113.7" }) &&
+      keyOf({ "x-forwarded-for": "banana, ,, garbage" }) === fallbackKey,
+    "invalid literals never derail derivation; all-invalid collapses to fallback",
+  );
+  record(
+    "mixed chain → rightmost public wins",
+    keyOf({ "x-forwarded-for": "6.6.6.6, 203.0.113.7, 10.0.0.1, 127.0.0.1" }) ===
+      keyOf({ "x-forwarded-for": "203.0.113.7" }) &&
+      keyOf({ "x-forwarded-for": "6.6.6.6, 203.0.113.7, 10.0.0.1" }) !==
+        keyOf({ "x-forwarded-for": "6.6.6.6" }),
+    "attacker-prepended entries are ignored; the infra-appended side is trusted",
+  );
+  record(
+    "spoofed x-real-ip never changes bucket",
+    keyOf({ "x-forwarded-for": "203.0.113.7", "x-real-ip": "6.6.6.6" }) ===
+      keyOf({ "x-forwarded-for": "203.0.113.7" }) &&
+      keyOf({ "x-real-ip": "6.6.6.6" }) === fallbackKey,
+    "x-real-ip is measured pass-through and never read",
+  );
+  record(
+    "spoofed/malformed Forwarded never changes bucket",
+    keyOf({ "x-forwarded-for": "203.0.113.7", forwarded: "for=6.6.6.6" }) ===
+      keyOf({ "x-forwarded-for": "203.0.113.7" }) &&
+      keyOf({ forwarded: "for=6.6.6.6" }) === fallbackKey &&
+      keyOf({ forwarded: ";;;garbage==" }) === fallbackKey,
+    "Forwarded is measured pass-through and never read",
+  );
+  record(
+    "distinct clients → distinct buckets",
+    keyOf({ "x-forwarded-for": "198.51.100.1" }) !==
+      keyOf({ "x-forwarded-for": "198.51.100.2" }) &&
+      keyOf({ "x-forwarded-for": "198.51.100.1" }) ===
+        keyOf({ "x-forwarded-for": "198.51.100.1" }),
+    "separation between clients, stability within one boot",
+  );
+  const sampleKey = keyOf({ "x-forwarded-for": "198.51.100.1" });
+  record(
+    "keys are opaque (no raw IP material)",
+    sampleKey.startsWith("ip:") &&
+      !sampleKey.includes("198.51.100.1") &&
+      !sampleKey.slice(3).includes(".") &&
+      fallbackKey === "ip:fallback",
+    "hashed base64url key; raw IP absent; stable named fallback bucket",
+  );
+
+  // ── IA-2.5: live throttle behavior through the shared proxy ───────────────
+  // The proxy APPENDS its peer to XFF, so a spoofed public entry stays left
+  // of the appended loopback and the extractor derives it — a dev-only
+  // property used here to simulate distinct clients.
+  const CLIENT_A = { "x-forwarded-for": "198.51.100.77" };
+  const CLIENT_B = { "x-forwarded-for": "198.51.100.78" };
+  let tripStatus = 0;
+  let tripsAt = 0;
+  let tripBody: unknown = null;
+  for (let i = 1; i <= THROTTLE_MAX_PER_WINDOW + 1; i += 1) {
+    const r = await post("/challenge", undefined, CLIENT_A);
+    if (r.status === 429) {
+      tripStatus = r.status;
+      tripsAt = i;
+      tripBody = r.json;
+      break;
+    }
+  }
+  record(
+    "throttle trips at limit for one derived bucket",
+    tripStatus === 429 && tripsAt <= THROTTLE_MAX_PER_WINDOW + 1,
+    `429 at request ${tripsAt} of window (limit ${THROTTLE_MAX_PER_WINDOW}/min)`,
+  );
+  record(
+    "429 keeps uniform safe deny shape",
+    JSON.stringify(tripBody) ===
+      JSON.stringify({ error: "auth_denied", reason: "throttled" }),
+    JSON.stringify(tripBody),
+  );
+  const bAfter = await post("/challenge", undefined, CLIENT_B);
+  record(
+    "second client unaffected by first client's throttle",
+    bAfter.status === 200,
+    `client B /challenge status ${bAfter.status} while client A is throttled`,
+  );
+  // Budget note: every no-XFF request in this suite (all the main-flow tests
+  // above, ~18 today) shares ONE fallback throttle bucket (30/min). If the
+  // suite grows more fallback-bucket requests, this final check can trip a
+  // spurious 429 — keep the cumulative no-XFF request count under the limit,
+  // or key new live tests with a spoofed public XFF like CLIENT_A/CLIENT_B.
+  const fallbackLive = await post("/challenge", undefined, {
+    "x-real-ip": "6.6.6.6",
+    forwarded: "for=6.6.6.6",
+  });
+  record(
+    "no-public-XFF live requests stay on the shared fallback bucket",
+    fallbackLive.status === 200,
+    `fallback-bucket /challenge status ${fallbackLive.status} despite spoofed x-real-ip/Forwarded`,
   );
 
   // ── summary ───────────────────────────────────────────────────────────────

@@ -27,7 +27,13 @@
 //      contains no SIWE statement copy, no /api/auth references, no viem or
 //      fixture strings — the frontend is visibly unchanged in IA-2 (this
 //      section requires a production-default dist to exist and fails closed
-//      when it is missing).
+//      when it is missing);
+//   7. client identity / edge posture (IA-2.5): peer-address APIs are never
+//      used in served source; Express trust proxy stays unset; the spoofable
+//      x-real-ip / Forwarded headers are never read; clientIdentity.ts
+//      exports only throttleKey, performs no logging, salts from randomBytes
+//      (never env), hashes HMAC-SHA256 → base64url; user-agent is never
+//      keying material.
 //
 // Scans are comment-stripped so documentation may name what it forbids.
 // Run: pnpm --filter @workspace/api-server run auth-zone:guard
@@ -252,9 +258,11 @@ for (const abs of authFiles) {
   const logCalls = extractCallExpressions(code, /log\.(info|warn|error|debug)\(/);
   for (const call of logCalls) {
     check(
-      !/\b(nonce|signature|address|sessionId|wallet|member)\b/i.test(call.text),
+      !/\b(nonce|signature|address|sessionId|wallet|member|ip|ips|remoteAddress|forwarded|xff)\b/i.test(
+        call.text,
+      ),
       `${rel}:${call.line}: log expression carries no secret/identity identifiers`,
-      `${rel}:${call.line}: a log call references nonce/signature/address/sessionId/wallet/member — values must never be logged`,
+      `${rel}:${call.line}: a log call references nonce/signature/address/sessionId/wallet/member/ip/remoteAddress/forwarded — values must never be logged`,
     );
   }
 }
@@ -313,6 +321,83 @@ if (!existsSync(studioDistDir)) {
         .join(", ")} — the frontend must stay visibly unchanged and auth-free in IA-2`,
     );
   }
+}
+
+// ── 7. Client identity / edge posture (IA-2.5) ──────────────────────────────
+const clientIdentityAbs = path.resolve(authDir, "clientIdentity.ts");
+check(
+  existsSync(clientIdentityAbs),
+  "src/auth/clientIdentity.ts present (explicit throttle-key extractor)",
+  "src/auth/clientIdentity.ts is missing — throttle keying must go through the explicit extractor",
+);
+
+for (const abs of allSrcTs) {
+  const rel = path.relative(srcDir, abs);
+  const code = stripStringLiterals(stripComments(read(abs)));
+  check(
+    !/\breq\.ips?\b/.test(code),
+    `${rel}: no req.ip / req.ips`,
+    `${rel} reads req.ip/req.ips — behind the shared proxy peer addresses are collapsed/spoofable; keying must use clientIdentity.throttleKey`,
+  );
+}
+
+for (const abs of allSrcTs) {
+  const rel = path.relative(srcDir, abs);
+  const code = stripComments(read(abs));
+  check(
+    !/["'`]trust proxy["'`]/.test(code),
+    `${rel}: trust proxy never set`,
+    `${rel} references the trust-proxy setting — founder gate: it stays unset (platform hop count undocumented)`,
+  );
+  check(
+    !/["'`]x-real-ip["'`]/i.test(code) && !/["'`]forwarded["'`]/i.test(code),
+    `${rel}: no x-real-ip / Forwarded header reads`,
+    `${rel} reads x-real-ip or Forwarded — both pass through the shared proxy untouched and are client-spoofable`,
+  );
+}
+
+if (existsSync(clientIdentityAbs)) {
+  const ciCode = stripComments(read(clientIdentityAbs));
+  const exportedNames = [
+    ...ciCode.matchAll(
+      /export\s+(?:async\s+)?(?:function|const|let|var|class|interface|type|enum)\s+([A-Za-z0-9_]+)/g,
+    ),
+  ].map((m) => m[1]);
+  check(
+    exportedNames.length === 1 &&
+      exportedNames[0] === "throttleKey" &&
+      !/export\s*\{/.test(ciCode) &&
+      !/export\s+default/.test(ciCode),
+    "clientIdentity exports only throttleKey",
+    `clientIdentity export surface drifted (found: ${exportedNames.join(", ") || "none"}) — throttleKey must be the sole export`,
+  );
+  check(
+    !/\blogger\b|\breq\.log\b|console\./.test(stripStringLiterals(ciCode)),
+    "clientIdentity imports no logger and performs no logging",
+    "clientIdentity references a logging surface — the raw-IP path must be log-free",
+  );
+  check(
+    /randomBytes\(/.test(ciCode) && !/process\.env/.test(ciCode),
+    "clientIdentity salt comes from randomBytes (never process.env)",
+    "clientIdentity salt discipline drifted — per-boot randomBytes only, never env, never persisted",
+  );
+  check(
+    /createHmac\("sha256"/.test(ciCode) &&
+      /base64url/.test(ciCode) &&
+      !/["']hex["']/.test(ciCode),
+    "clientIdentity hashes with HMAC-SHA256 → base64url (never hex)",
+    "clientIdentity key hashing drifted — HMAC-SHA256 with truncated base64url digest required",
+  );
+}
+
+for (const abs of authFiles) {
+  const rel = path.relative(srcDir, abs);
+  const code = stripComments(read(abs));
+  check(
+    !/user-agent|userAgent/i.test(code),
+    `${rel}: no user-agent keying`,
+    `${rel} references user-agent — attacker-mintable key material, rejected by founder gate`,
+  );
 }
 
 // ── Report ───────────────────────────────────────────────────────────────────
