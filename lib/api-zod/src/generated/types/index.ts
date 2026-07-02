@@ -7,6 +7,16 @@
  */
 
 export * from './healthStatus';
+export * from './protocolRealityItem';
+export * from './protocolRealityItemConfidence';
+export * from './protocolRealityItemContractRole';
+export * from './protocolRealityItemLifecycle';
+export * from './protocolRealityItemSourceType';
+export * from './protocolRealityItemValueType';
+export * from './protocolRealityResponse';
+export * from './protocolRealityResponseExpectedChainId';
+export * from './protocolRealityResponseGroups';
+export * from './protocolRealityResponseMode';
 export * from './sourceStatusItem';
 export * from './sourceStatusItemConfidence';
 export * from './sourceStatusItemPosture';

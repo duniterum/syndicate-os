@@ -83,6 +83,23 @@ export const modules: SyndicateModule[] = [
     flag: "studioShell",
   },
   {
+    id: "os-map",
+    label: "Protocol OS Map",
+    sidebarLabel: "OS Map",
+    path: "/os-map",
+    zone: "studio",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "draft",
+    truthStatus: "DESIGN_PREVIEW",
+    description:
+      "Internal founder preview mapping the full protocol organism — every subsystem with its honest status. Not a live product surface.",
+    dependencies: [],
+    nav: { header: false, sidebar: true, footer: false },
+    icon: Network,
+  },
+  {
     id: "proof",
     label: "Proof",
     path: "/proof",

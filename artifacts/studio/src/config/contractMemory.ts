@@ -94,11 +94,11 @@ export const contractMemory: ContractMemoryEntry[] = [
   {
     id: "membership-sale-v3",
     label: "Membership Sale V3",
-    role: "Most recent membership sale",
+    role: "Active membership sale",
     category: "membership",
     domain: "MEMBERSHIP_SEAT_RECEIPT",
-    lifecycle: "PENDING_ADAPTER",
-    note: "The most recent sale contract in canon. No purchase, receipt read, or transaction is wired in this foundation.",
+    lifecycle: "READ_ONLY_PROOF",
+    note: "The active membership-sale engine in canon. Its lifecycle flags and public figures — available SYN, gross USDC received, and receipt count — are surfaced read-only on /status; no purchase, wallet, or transaction surface exists here.",
   },
   // --- Source attribution --------------------------------------------------
   {

@@ -1,6 +1,6 @@
 # The Syndicate Studio OS
 
-A premium, proof-first web foundation for The Syndicate — a membership/recognition protocol. The app is deliberately a **read-only foundation**: a real public homepage plus an operator console ("Studio OS / Proof OS"), where every value that is not wired to a real source is visibly truth-labelled. No protocol data, contracts, chain, or backend are wired yet.
+A premium, proof-first web foundation for The Syndicate — a membership/recognition protocol. The app is deliberately a **read-only foundation**: a real public homepage plus an operator console ("Studio OS / Proof OS"), where every value that is not wired to a real source is visibly truth-labelled. The only wired reality is a server-side, **read-only Protocol Reality Spine** that reconciles live Avalanche C-Chain reads (chain identity, contract-code presence, ERC-20 metadata, archive posture, and read-only membership-sale state — lifecycle flags plus the active V3 engine's public figures, surfaced as EXACT raw base-unit strings) against vendored canon and surfaces them as truth-labelled envelopes. No writes, wallet, purchase, referral, receipts, or activity are wired; the only economic values present are these read-only public sale figures (available SYN, gross USDC received, receipt count), and no purchase/referral surface exists in the app.
 
 ## Run & Operate
 
@@ -13,8 +13,8 @@ A premium, proof-first web foundation for The Syndicate — a membership/recogni
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
 - Web: React + Vite, wouter (routing), Tailwind v4, shadcn/ui, framer-motion, lucide-react
-- API: Express 5 (only a health check is real)
-- DB: PostgreSQL + Drizzle ORM (schema empty — not used yet)
+- API: Express 5 — health check plus a read-only Protocol Reality Spine (`GET /api/protocol/reality`, `GET /api/source-status`); no write endpoints
+- DB: PostgreSQL + Drizzle ORM — sale-event raw index (Part A), server-only Part B tables `historical_member_freeze` / `historical_member` (verified historical-member freeze; wallet PII, never exposed via any UI/API), and `block_timestamp` (Protocol Time: chain-verified timestamp cache for indexed blocks; written only by the founder-gated `protocol-time:enrich` script, never read by served code)
 
 ## Where things live
 
@@ -32,13 +32,14 @@ A premium, proof-first web foundation for The Syndicate — a membership/recogni
 
 ## Routes
 
-`/` public homepage · `/studio` console overview · `/proof` · `/proof-studio` · `/member` · `/founder` · `/source` · `/recognition` · `/learning` · `/status` (honesty hub). API: `GET /api/healthz`.
+`/` public homepage · `/studio` console overview · `/proof` · `/proof-studio` · `/member` · `/founder` · `/source` · `/os-map` (internal founder preview: full-protocol OS map; the 4 Chain Reality Spine nodes are live-bound read-only to `GET /api/protocol/reality` via `src/operator/protocolRealityEvidence.ts` + `LiveEvidencePanel.tsx` — fail-closed "LIVE PROOF UNAVAILABLE" on fetch failure, every node carries a data-exposure classification chip, payload `archive` group deliberately unbound) · `/recognition` · `/learning` · `/status` (honesty hub). API: `GET /api/healthz` · `GET /api/protocol/reality` (live read-only chain + sale-engine reality) · `GET /api/source-status` (static posture ledger).
 
 ## Architecture decisions
 
 - Two layouts, one app: a public marketing experience at `/` (normal scroll, header/footer) and a denser operator console (sidebar `Shell`) under `/studio` and its sub-routes.
 - Radical honesty is the product: every non-real value renders a `TruthLabel`; there is no fake protocol data anywhere.
-- Strictly front-end so far — no backend writes, no DB schema, no chain/RPC, no contracts.
+- Served backend is read-only: no write endpoints, no runtime DB writes. DB rows exist only via founder-gated one-time scripts (Part A raw sale-event index, Part B historical-member freeze import); served code never writes. Part B member data (wallets, first transactions, leaves, proofs) is server-only PII with no public UI/API/projection; `freezeGate.ts` is a static served module (no runtime DB read) reconciled by `freeze-gate:status`, which fails closed. The core backend reality is an Avalanche read-only reconciliation spine (live `eth_chainId` / `eth_getCode` / `eth_call`) that never issues state-changing calls, never connects a wallet, keeps contract addresses server-side, and fails closed (canon mismatch → `null`, never a normalized/invented value). Contracts, ABIs, and addresses live as vendored canon in `artifacts/api-server/src/canon/` (tsconfig-excluded).
+- Read-only sale group: the spine surfaces membership-sale state as a `sale` group — paused/concluded lifecycle flags for V1/V2/V3 and, for the **active** V3 engine only, three public figures (available SYN @18dec, gross USDC received @6dec, receipt count) as EXACT raw base-unit **strings** (never humanized; no `bigint`→`number` precision loss). Each signal fails closed independently (wrong-chain/no-code/decode-fail → `null` + reason). V3 must never be labelled pending/inactive — the contract is live and readable; the app boundary (no wallet/purchase/referral UI) and the source/referral wiring (a later sprint) are separate concerns.
 
 ## Homepage Governance
 

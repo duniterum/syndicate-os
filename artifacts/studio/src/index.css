@@ -39,6 +39,9 @@
   --color-destructive-foreground: hsl(var(--destructive-foreground));
   --color-destructive-border: var(--destructive-border);
 
+  --color-gold: hsl(var(--gold));
+  --color-gold-foreground: hsl(var(--gold-foreground));
+
   --font-sans: var(--app-font-sans);
   --font-serif: var(--app-font-serif);
   --font-mono: var(--app-font-mono);
@@ -71,6 +74,8 @@
   --accent-foreground: 222 47% 11%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 210 40% 98%;
+  --gold: 38 74% 44%;
+  --gold-foreground: 0 0% 100%;
   --app-font-sans: 'Inter', sans-serif;
   --app-font-serif: Georgia, serif;
   --app-font-mono: Menlo, monospace;
@@ -99,6 +104,8 @@
   --accent-foreground: 210 40% 98%;
   --destructive: 0 63% 31%;
   --destructive-foreground: 210 40% 98%;
+  --gold: 42 92% 60%;
+  --gold-foreground: 240 30% 8%;
 }
 
 @layer base {
@@ -107,5 +114,113 @@
   }
   body {
     @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Hero Motion System — ambient, low-frequency loops (premium, not casino).
+   All loops respect prefers-reduced-motion.
+   --------------------------------------------------------------------------- */
+@keyframes syn-glow {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+@keyframes syn-dash {
+  to { stroke-dashoffset: -1000; }
+}
+@keyframes syn-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes syn-shimmer {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.95; }
+}
+/* Directional flow: inbound dashes travel toward the seat, outbound away from it. */
+@keyframes syn-dash-in { to { stroke-dashoffset: -1000; } }
+@keyframes syn-dash-out { to { stroke-dashoffset: 1000; } }
+
+.syn-glow { animation: syn-glow 4s ease-in-out infinite; }
+.syn-float { animation: syn-float 6s ease-in-out infinite; }
+.syn-shimmer { animation: syn-shimmer 2.4s ease-in-out infinite; }
+.syn-flow { stroke-dasharray: 5 9; animation: syn-dash 6s linear infinite; }
+.syn-flow-in { stroke-dasharray: 3 7; animation: syn-dash-in 6.5s linear infinite; }
+.syn-flow-out { stroke-dasharray: 3 7; animation: syn-dash-out 6.5s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .syn-glow, .syn-float, .syn-shimmer, .syn-flow, .syn-flow-in, .syn-flow-out,
+  [class*="animate-"] { animation: none !important; }
+}
+
+/* ---------------------------------------------------------------------------
+   OS micro-type scale — one small, intentional set of label sizes so the
+   cockpit chrome stops drifting into many one-off font sizes. Color and
+   spacing stay as Tailwind utilities; these only own family/size/weight/case.
+   --------------------------------------------------------------------------- */
+.syn-eyebrow { font-family: var(--app-font-mono); font-size: 11px; line-height: 1.1; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2em; }
+.syn-label   { font-family: var(--app-font-mono); font-size: 10px; line-height: 1.15; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; }
+.syn-caption { font-family: var(--app-font-mono); font-size: 9px; line-height: 1.2; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; }
+
+/* Reference-fidelity public hero cockpit utilities. */
+.syn-command-grid {
+  background-image:
+    linear-gradient(rgba(245, 183, 71, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 183, 71, 0.035) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at 50% 28%, black 0%, transparent 76%);
+}
+
+/* V3 reference-fidelity polish: real raster seat, cockpit density, and viewport fit. */
+.syn-cockpit-card {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    0 24px 80px -62px hsl(var(--gold) / 0.9);
+}
+
+@media (max-width: 1279px) {
+  .syn-command-grid {
+    background-size: 48px 48px;
+    mask-image: radial-gradient(circle at 50% 22%, black 0%, transparent 72%);
+  }
+}
+
+/* V6 two-mode public hero: same cockpit anatomy, readable in both .light and .dark. */
+.syn-command-island {
+  --syn-cockpit-border: hsl(var(--gold) / 0.32);
+  --syn-cockpit-glow: hsl(var(--gold) / 0.24);
+}
+.dark .syn-command-island {
+  --syn-cockpit-border: hsl(var(--gold) / 0.24);
+  --syn-cockpit-glow: hsl(var(--gold) / 0.36);
+}
+
+.syn-cockpit-card {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    0 24px 80px -62px var(--syn-cockpit-glow);
+}
+.dark .syn-cockpit-card {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 24px 80px -62px var(--syn-cockpit-glow);
+}
+
+.syn-command-grid {
+  background-image:
+    linear-gradient(hsl(var(--gold) / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--gold) / 0.045) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at 50% 28%, black 0%, transparent 76%);
+}
+.dark .syn-command-grid {
+  background-image:
+    linear-gradient(rgba(245, 183, 71, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 183, 71, 0.035) 1px, transparent 1px);
+}
+
+@media (max-width: 1279px) {
+  .syn-command-grid {
+    background-size: 48px 48px;
+    mask-image: radial-gradient(circle at 50% 22%, black 0%, transparent 72%);
   }
 }

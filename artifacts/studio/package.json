@@ -17,7 +17,8 @@
     "guard:drift": "node scripts/guard-route-nav-drift.ts",
     "guard:posture": "node scripts/guard-posture-map.ts",
     "guard:live": "node scripts/guard-no-fake-live.ts",
-    "guards": "node scripts/guard-lifecycle-labels.ts && node scripts/guard-forbidden-copy.ts && node scripts/guard-safe-source.ts && node scripts/guard-surface-coverage.ts && node scripts/guard-route-nav-drift.ts && node scripts/guard-posture-map.ts && node scripts/guard-no-fake-live.ts"
+    "guards": "node scripts/guard-lifecycle-labels.ts && node scripts/guard-forbidden-copy.ts && node scripts/guard-safe-source.ts && node scripts/guard-surface-coverage.ts && node scripts/guard-route-nav-drift.ts && node scripts/guard-posture-map.ts && node scripts/guard-no-fake-live.ts && node scripts/guard-operator-gate.ts",
+    "guard:opgate": "node scripts/guard-operator-gate.ts"
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.10.0",

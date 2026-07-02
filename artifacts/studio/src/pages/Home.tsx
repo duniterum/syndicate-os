@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { TerminalSquare, ArrowUpRight } from "lucide-react";
-import { DataStatusNote } from "@/components/layout/Shell";
+import { DataStatusNote } from "@/components/DataStatusNote";
+import { ProtocolRealitySummary } from "@/components/ProtocolReality";
 import { TruthLabel } from "@/components/TruthLabel";
 import { Card } from "@/components/ui/card";
 import { getModuleById } from "@/config/modules";
@@ -26,7 +27,11 @@ export default function Home() {
         </p>
       </div>
 
-      <DataStatusNote description="This console is a read-only foundation. No live sources, databases, or chains are connected — every operator surface below is a preview, and nothing here acts." />
+      <DataStatusNote description="This console is a read-only foundation. The only live read is a strictly read-only protocol reality feed (public Avalanche C-Chain facts — no balances, amounts, wallets, transactions, or writes). Every operator surface below is a preview, and nothing here acts." />
+
+      <div className="mb-12">
+        <ProtocolRealitySummary />
+      </div>
 
       <h2 className="text-sm font-medium text-foreground mb-4">Operator surfaces</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">

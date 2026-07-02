@@ -12,6 +12,8 @@ tags:
     description: Health operations
   - name: source-status
     description: Source posture registry (read-only, posture-only)
+  - name: protocol-reality
+    description: Read-only protocol reality envelope (canon + Avalanche C-Chain RPC)
 paths:
   /healthz:
     get:
@@ -42,6 +44,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SourceStatusResponse"
+  /protocol/reality:
+    get:
+      operationId: getProtocolReality
+      tags: [protocol-reality]
+      summary: Read-only protocol reality envelope
+      description: >-
+        Read-only protocol observability envelope. Reads verified public facts
+        from vendored canon and Avalanche C-Chain RPC — chain reachability,
+        contract code presence, ERC-20 token metadata, archive posture, and
+        read-only sale-engine state (lifecycle flags plus public V3 sale figures:
+        available SYN, total gross USDC, and receipt count, surfaced as exact raw
+        base units), normalized into one envelope. No addresses, private keys,
+        secrets, per-account balances, or financial-upside framing are ever
+        returned, and no wallet/write surface exists. On any read failure the
+        affected value is null with an explicit lifecycle and failureReason; the
+        endpoint still responds 200.
+      responses:
+        "200":
+          description: Read-only protocol reality envelope
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProtocolRealityResponse"
 components:
   schemas:
     HealthStatus:
@@ -134,3 +159,134 @@ components:
         - mode
         - expectedChainId
         - categories
+    ProtocolRealityItem:
+      type: object
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        value:
+          anyOf:
+            - type: boolean
+            - type: number
+            - type: string
+            - type: "null"
+        valueType:
+          type: string
+          enum: ["null", "boolean", "string", "number"]
+        sourceType:
+          type: string
+          enum:
+            - SERVER_SIDE_CANON
+            - LIVE_CHAIN_RPC
+            - CANON_RECONCILED_RPC
+        sourceRef:
+          type: string
+        chainId:
+          anyOf:
+            - type: integer
+            - type: "null"
+        contractRole:
+          anyOf:
+            - type: string
+              enum:
+                - token
+                - stablecoin
+                - sale
+                - source-registry
+                - archive1155
+                - lp-pair
+            - type: "null"
+        asOf:
+          type: string
+        confidence:
+          type: string
+          enum:
+            - HIGH
+            - MEDIUM
+            - LOW
+            - UNKNOWN
+        lifecycle:
+          type: string
+          enum:
+            - READ_ONLY_PROOF
+            - PENDING_ADAPTER
+            - NOT_ACTIVE
+            - AUTH_REQUIRED
+            - FOUNDER_GATED
+            - FUTURE
+            - PAUSED_BY_PRECAUTION
+        publicSafe:
+          type: boolean
+        note:
+          type: string
+        failureReason:
+          anyOf:
+            - type: string
+            - type: "null"
+      required:
+        - id
+        - label
+        - value
+        - valueType
+        - sourceType
+        - sourceRef
+        - chainId
+        - contractRole
+        - asOf
+        - confidence
+        - lifecycle
+        - publicSafe
+        - note
+        - failureReason
+    ProtocolRealityResponse:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum:
+            - READ_ONLY_PROTOCOL_REALITY
+        expectedChainId:
+          type: integer
+          enum:
+            - 43114
+        asOf:
+          type: string
+        cached:
+          type: boolean
+        groups:
+          type: object
+          properties:
+            chain:
+              type: array
+              items:
+                $ref: "#/components/schemas/ProtocolRealityItem"
+            contracts:
+              type: array
+              items:
+                $ref: "#/components/schemas/ProtocolRealityItem"
+            tokens:
+              type: array
+              items:
+                $ref: "#/components/schemas/ProtocolRealityItem"
+            archive:
+              type: array
+              items:
+                $ref: "#/components/schemas/ProtocolRealityItem"
+            sale:
+              type: array
+              items:
+                $ref: "#/components/schemas/ProtocolRealityItem"
+          required:
+            - chain
+            - contracts
+            - tokens
+            - archive
+            - sale
+      required:
+        - mode
+        - expectedChainId
+        - asOf
+        - cached
+        - groups

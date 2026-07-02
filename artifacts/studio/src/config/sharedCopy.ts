@@ -10,7 +10,7 @@ export interface Cta {
 }
 
 export const ctas: Record<string, Cta> = {
-  requestSeat: { label: "Request a seat", href: "/member" },
+  requestSeat: { label: "Take your seat", href: "/member" },
   verifyProof: { label: "Verify proof", href: "/proof" },
   viewStatus: { label: "View status", href: "/status" },
   learn: { label: "Learn how it works", href: "/learning" },

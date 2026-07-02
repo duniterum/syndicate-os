@@ -89,3 +89,104 @@ export interface SourceStatusResponse {
   categories: SourceStatusResponseCategories;
 }
 
+export type ProtocolRealityItemValueType = typeof ProtocolRealityItemValueType[keyof typeof ProtocolRealityItemValueType];
+
+
+export const ProtocolRealityItemValueType = {
+  null: 'null',
+  boolean: 'boolean',
+  string: 'string',
+  number: 'number',
+} as const;
+
+export type ProtocolRealityItemSourceType = typeof ProtocolRealityItemSourceType[keyof typeof ProtocolRealityItemSourceType];
+
+
+export const ProtocolRealityItemSourceType = {
+  SERVER_SIDE_CANON: 'SERVER_SIDE_CANON',
+  LIVE_CHAIN_RPC: 'LIVE_CHAIN_RPC',
+  CANON_RECONCILED_RPC: 'CANON_RECONCILED_RPC',
+} as const;
+
+export type ProtocolRealityItemContractRole = typeof ProtocolRealityItemContractRole[keyof typeof ProtocolRealityItemContractRole] | null;
+
+
+export const ProtocolRealityItemContractRole = {
+  token: 'token',
+  stablecoin: 'stablecoin',
+  sale: 'sale',
+  'source-registry': 'source-registry',
+  archive1155: 'archive1155',
+  'lp-pair': 'lp-pair',
+} as const;
+
+export type ProtocolRealityItemConfidence = typeof ProtocolRealityItemConfidence[keyof typeof ProtocolRealityItemConfidence];
+
+
+export const ProtocolRealityItemConfidence = {
+  HIGH: 'HIGH',
+  MEDIUM: 'MEDIUM',
+  LOW: 'LOW',
+  UNKNOWN: 'UNKNOWN',
+} as const;
+
+export type ProtocolRealityItemLifecycle = typeof ProtocolRealityItemLifecycle[keyof typeof ProtocolRealityItemLifecycle];
+
+
+export const ProtocolRealityItemLifecycle = {
+  READ_ONLY_PROOF: 'READ_ONLY_PROOF',
+  PENDING_ADAPTER: 'PENDING_ADAPTER',
+  NOT_ACTIVE: 'NOT_ACTIVE',
+  AUTH_REQUIRED: 'AUTH_REQUIRED',
+  FOUNDER_GATED: 'FOUNDER_GATED',
+  FUTURE: 'FUTURE',
+  PAUSED_BY_PRECAUTION: 'PAUSED_BY_PRECAUTION',
+} as const;
+
+export interface ProtocolRealityItem {
+  id: string;
+  label: string;
+  value: boolean | number | string | null;
+  valueType: ProtocolRealityItemValueType;
+  sourceType: ProtocolRealityItemSourceType;
+  sourceRef: string;
+  chainId: number | null;
+  contractRole: ProtocolRealityItemContractRole;
+  asOf: string;
+  confidence: ProtocolRealityItemConfidence;
+  lifecycle: ProtocolRealityItemLifecycle;
+  publicSafe: boolean;
+  note: string;
+  failureReason: string | null;
+}
+
+export type ProtocolRealityResponseMode = typeof ProtocolRealityResponseMode[keyof typeof ProtocolRealityResponseMode];
+
+
+export const ProtocolRealityResponseMode = {
+  READ_ONLY_PROTOCOL_REALITY: 'READ_ONLY_PROTOCOL_REALITY',
+} as const;
+
+export type ProtocolRealityResponseExpectedChainId = typeof ProtocolRealityResponseExpectedChainId[keyof typeof ProtocolRealityResponseExpectedChainId];
+
+
+export const ProtocolRealityResponseExpectedChainId = {
+  NUMBER_43114: 43114,
+} as const;
+
+export type ProtocolRealityResponseGroups = {
+  chain: ProtocolRealityItem[];
+  contracts: ProtocolRealityItem[];
+  tokens: ProtocolRealityItem[];
+  archive: ProtocolRealityItem[];
+  sale: ProtocolRealityItem[];
+};
+
+export interface ProtocolRealityResponse {
+  mode: ProtocolRealityResponseMode;
+  expectedChainId: ProtocolRealityResponseExpectedChainId;
+  asOf: string;
+  cached: boolean;
+  groups: ProtocolRealityResponseGroups;
+}
+

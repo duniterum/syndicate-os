@@ -145,6 +145,14 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     layout: "console",
     summary: "Operator source surface. Paused by precaution.",
   },
+  {
+    routePath: "/os-map",
+    moduleId: "os-map",
+    audience: "OPERATOR_PREVIEW",
+    surface: "PRIVATE_OPERATOR_ADMIN",
+    layout: "console",
+    summary: "Internal founder preview: the full protocol organism, honestly labelled.",
+  },
 ];
 
 export const getSurfaceByRoute = (

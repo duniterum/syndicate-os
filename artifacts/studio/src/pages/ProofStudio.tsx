@@ -1,5 +1,5 @@
 import React from "react";
-import { DataStatusNote } from "@/components/layout/Shell";
+import { DataStatusNote } from "@/components/DataStatusNote";
 import { TruthLabel } from "@/components/TruthLabel";
 import { Card } from "@/components/ui/card";
 import { BoxSelect } from "lucide-react";

@@ -1,71 +1,172 @@
 import React from "react";
 import { Link } from "wouter";
-import { ShieldCheck, TerminalSquare } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, Check, TerminalSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { TruthLabel } from "@/components/TruthLabel";
+import { SampleTag } from "@/components/SampleTag";
+import { SeatFlowDiagram } from "@/components/hero/SeatFlowDiagram";
+import { ProtocolOverviewPanel } from "@/components/hero/ProtocolOverviewPanel";
+import { HeroLedger } from "@/components/hero/HeroLedger";
 import { surfaceStatus } from "@/config/truthStatus";
 import {
-  heroContent,
+  heroSystem,
   protocolSurfaces,
   howItWorks,
   operationalReality,
   awaitingWiring,
   studioPreview,
-  expectations,
 } from "@/config/syndicateFacts";
+
+function TrustChips({ className = "" }: { className?: string }) {
+  return (
+    <div className={className}>
+      {heroSystem.trustChips.map((c) => (
+        <div key={c.label} className="flex items-start gap-2">
+          <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-500">
+            <Check className="h-2.5 w-2.5" />
+          </span>
+          <div className="min-w-0">
+            <div className="text-xs font-semibold text-foreground">{c.label}</div>
+            <div className="truncate text-[10px] text-muted-foreground">{c.note}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ProofRail({ className = "" }: { className?: string }) {
+  const items = [
+    { mark: "A", label: "Avalanche", note: "Target C-Chain", tone: "avax" },
+    { mark: "70", label: "Canonical", note: "70 / 20 / 10", tone: "gold" },
+    { mark: "✓", label: "Public proof", note: "Read-only", tone: "cyan" },
+    { mark: "◇", label: "Memory", note: "Recorded", tone: "gold" },
+  ];
+
+  return (
+    <div className={`grid gap-2 ${className}`}>
+      {items.map((item) => (
+        <div
+          key={item.label}
+          className="flex min-h-11 items-center gap-3 rounded-xl border border-gold/18 bg-background/54 px-3 py-2 shadow-sm dark:border-white/10 dark:bg-white/[0.025]"
+        >
+          <span
+            className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border font-mono text-[10px] font-black ${
+              item.tone === "avax"
+                ? "border-[#e84142]/30 bg-[#e84142] text-white shadow-[0_0_18px_-10px_rgba(232,65,66,0.9)]"
+                : item.tone === "cyan"
+                  ? "border-cyan-400/35 bg-cyan-400/10 text-cyan-600 dark:text-cyan-200"
+                  : "border-gold/35 bg-gold/10 text-gold"
+            }`}
+          >
+            {item.tone === "avax" ? <img src="/brand/avalanche-avax-token.png" alt="Avalanche" className="h-full w-full rounded-full object-cover" /> : item.mark}
+          </span>
+          <span className="min-w-0">
+            <span className="block truncate text-[12px] font-semibold text-foreground dark:text-white">{item.label}</span>
+            <span className="block truncate text-[11px] text-muted-foreground">{item.note}</span>
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function PublicHome() {
   return (
-    <div className="w-full">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden border-b border-border/50 bg-background pt-24 pb-32 md:pt-32 md:pb-40">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background pointer-events-none" />
-        <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center">
-          <TruthLabel variant={heroContent.badge} className="mb-6" />
-          <h1 className="text-4xl md:text-6xl font-light tracking-tight text-foreground max-w-4xl mb-6 leading-tight">
-            {heroContent.headlineLead} <br className="hidden md:block" />
-            <span className="font-medium">{heroContent.headlineEmphasis}</span>
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-10 leading-relaxed">
-            {heroContent.subheadline}
-          </p>
-          <div className="flex flex-col sm:flex-row items-center gap-4">
-            <Link href={heroContent.primaryCta.href}>
-              <Button size="lg" className="h-12 px-8 text-base font-medium">{heroContent.primaryCta.label}</Button>
-            </Link>
-            <Link href={heroContent.secondaryCta.href}>
-              <Button variant="outline" size="lg" className="h-12 px-8 text-base bg-background/50 backdrop-blur-sm">{heroContent.secondaryCta.label}</Button>
-            </Link>
-          </div>
+    <div className="w-full bg-background text-foreground">
+      {/*
+        V6: the public vitrine follows the app's real .light/.dark theme.
+        Dark mode keeps the black/gold command-center reference.
+        Light mode renders the same cockpit anatomy in a readable institutional light treatment.
+      */}
+      <section className="syn-command-island relative isolate overflow-hidden border-b border-border bg-[radial-gradient(70%_48%_at_50%_0%,hsl(var(--gold)/0.18),transparent_68%),linear-gradient(180deg,hsl(var(--background)),hsl(var(--muted)))] text-foreground dark:border-gold/18 dark:bg-[#030609] dark:text-white">
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-0 bg-[radial-gradient(42%_46%_at_48%_44%,rgba(16,185,129,0.08),transparent_63%)] dark:bg-[radial-gradient(42%_46%_at_48%_44%,rgba(16,185,129,0.06),transparent_63%)]" />
+          <div className="absolute inset-0 syn-command-grid opacity-35" />
+        </div>
 
-          {/* Premium Visual Object - CSS/SVG Vault/Ring */}
-          <div className="mt-20 relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center">
-            <div className="absolute inset-0 border-2 border-primary/20 rounded-full animate-[spin_60s_linear_infinite]" />
-            <div className="absolute inset-4 border border-primary/40 rounded-full border-dashed animate-[spin_40s_linear_infinite_reverse]" />
-            <div className="absolute inset-8 border border-border rounded-full" />
-            <div className="absolute inset-12 bg-card border border-border shadow-2xl rounded-full flex flex-col items-center justify-center">
-              <ShieldCheck className="w-12 h-12 text-primary mb-2 opacity-80" />
-              <span className="font-mono text-[10px] text-muted-foreground tracking-widest uppercase">{heroContent.coreLabel}</span>
+        <div className="relative z-10 mx-auto w-full max-w-[1840px] px-3 pb-3 pt-2 md:px-5 md:pb-4 md:pt-2.5">
+          <div className="syn-cockpit-card overflow-hidden rounded-[1.25rem] border border-gold/30 bg-card/82 shadow-xl backdrop-blur-xl dark:bg-black/54">
+            <div className="grid grid-cols-1 gap-2.5 p-3 md:p-3.5 xl:grid-cols-[0.74fr_1.28fr_0.84fr] xl:grid-rows-[minmax(440px,auto)_auto] xl:gap-2.5 2xl:grid-cols-[0.72fr_1.34fr_0.82fr]">
+              <motion.div
+                initial={{ opacity: 0, y: 14, filter: "blur(8px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ duration: 0.62, ease: [0.22, 1, 0.36, 1] }}
+                className="order-1 flex min-h-[420px] flex-col justify-start rounded-[1.05rem] border border-gold/18 bg-card/66 p-4 pt-6 shadow-sm dark:bg-black/28 xl:min-h-[440px] xl:p-5 xl:pt-7"
+              >
+                <div className="mb-3 inline-flex items-center gap-2">
+                  <span className="h-1 w-8 rounded-full bg-gold shadow-[0_0_18px_hsl(var(--gold)/0.65)]" />
+                  <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-gold">
+                    {heroSystem.eyebrow}
+                  </span>
+                </div>
+
+                <h1 className="max-w-[420px] font-serif text-[clamp(1.62rem,1.85vw,2.2rem)] font-semibold leading-[1.02] tracking-[-0.035em] text-foreground dark:text-white">
+                  {heroSystem.headlineLead}{" "}
+                  <span className="text-gold">{heroSystem.headlineEmphasis}</span>
+                </h1>
+
+                <p className="mt-3 max-w-[390px] text-[0.8rem] leading-5 text-muted-foreground xl:text-[0.88rem]">
+                  {heroSystem.subheadline}
+                </p>
+
+                <ProofRail className="mt-4 max-w-[330px]" />
+
+                <div className="mt-4 flex flex-col gap-2.5 sm:flex-row xl:flex-col 2xl:flex-row">
+                  <Link href={heroSystem.primaryCta.href}>
+                    <Button
+                      size="lg"
+                      className="h-12 w-full rounded-xl border border-gold/75 bg-gold px-6 font-semibold text-gold-foreground shadow-[0_0_34px_-8px_hsl(var(--gold)/0.75)] hover:bg-gold/90 sm:w-auto"
+                    >
+                      {heroSystem.primaryCta.label}
+                    </Button>
+                  </Link>
+                  <Link href={heroSystem.secondaryCta.href}>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="group h-12 w-full rounded-xl border-border bg-background/50 px-6 text-foreground hover:border-cyan-400/40 hover:bg-cyan-400/5 dark:border-white/15 dark:bg-white/[0.025] dark:text-white sm:w-auto"
+                    >
+                      {heroSystem.secondaryCta.label}
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                    </Button>
+                  </Link>
+                </div>
+              </motion.div>
+
+              <div className="order-2 flex min-h-[430px] items-center justify-center overflow-hidden rounded-[1.05rem] border border-gold/18 bg-[radial-gradient(circle_at_50%_40%,hsl(var(--gold)/0.1),transparent_48%)] xl:min-h-[440px]">
+                <SeatFlowDiagram />
+              </div>
+
+              <div className="order-4 xl:order-3 xl:min-h-[440px]">
+                <ProtocolOverviewPanel />
+              </div>
+
+              <div className="order-5 xl:col-span-3 xl:row-span-1">
+                <HeroLedger />
+              </div>
             </div>
-            <div className="absolute bottom-0 translate-y-1/2 bg-background px-3 py-1 border border-border rounded-full shadow-sm">
-              <TruthLabel variant={heroContent.coreStatus} />
+
+            <div className="mx-4 mb-3 flex flex-wrap items-center justify-center gap-2 border-t border-border/70 pt-3 text-center md:mx-5 dark:border-white/10">
+              <SampleTag kind="illustrative" />
+              <span className="font-mono text-[11px] leading-tight text-muted-foreground">{heroSystem.disclaimer}</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Proof Strip */}
-      <section className="py-20 bg-muted/10 border-b border-border/50">
+      <section className="bg-background py-14 text-foreground">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {protocolSurfaces.map((surface) => {
               const Icon = surface.icon;
               return (
-                <Card key={surface.id} className="bg-card/60 backdrop-blur-sm border-border/50 p-6 flex flex-col h-full hover:border-primary/30 transition-colors">
-                  <Icon className={`w-6 h-6 mb-4 ${surface.iconClass}`} />
-                  <h3 className="text-base font-medium text-foreground mb-2">{surface.homeLabel}</h3>
-                  <p className="text-sm text-muted-foreground flex-1 mb-4">{surface.homeBlurb}</p>
+                <Card key={surface.id} className="flex h-full flex-col border-card-border bg-card p-6 shadow-sm transition-colors hover:border-gold/30">
+                  <Icon className={`mb-4 h-6 w-6 ${surface.iconClass}`} />
+                  <h3 className="mb-2 text-base font-medium text-card-foreground">{surface.homeLabel}</h3>
+                  <p className="mb-4 flex-1 text-sm text-muted-foreground">{surface.homeBlurb}</p>
                   <TruthLabel variant={surface.truthStatus} />
                 </Card>
               );
@@ -74,46 +175,40 @@ export default function PublicHome() {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="py-24 bg-background border-b border-border/50">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-light tracking-tight text-foreground mb-4">{howItWorks.title}</h2>
+      <section className="border-t border-border/50 bg-muted/20 py-16 text-foreground">
+        <div className="container mx-auto max-w-5xl px-4">
+          <div className="mb-16 text-center">
+            <h2 className="mb-4 text-3xl font-light tracking-tight text-foreground">{howItWorks.title}</h2>
             <p className="text-muted-foreground">{howItWorks.subtitle}</p>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 relative">
-            {/* Connecting line for desktop */}
-            <div className="hidden md:block absolute top-6 left-[16%] right-[16%] h-[1px] bg-border border-dashed z-0" />
-            
+          <div className="relative grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12">
+            <div className="absolute left-[16%] right-[16%] top-6 z-0 hidden h-px bg-border md:block" />
             {howItWorks.steps.map((step) => (
               <div key={step.step} className="relative z-10 flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-full bg-card border border-border shadow-sm flex items-center justify-center text-primary font-mono font-medium mb-6">{step.step}</div>
-                <h3 className="text-lg font-medium text-foreground mb-3">{step.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full border border-border bg-card font-mono font-medium text-primary shadow-sm">{step.step}</div>
+                <h3 className="mb-3 text-lg font-medium text-foreground">{step.title}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* What's Real / What's Pending */}
-      <section className="py-24 bg-muted/10 border-b border-border/50">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <section className="border-t border-border/50 bg-background py-16 text-foreground">
+        <div className="container mx-auto max-w-6xl px-4">
+          <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
-              <h2 className="text-3xl font-light tracking-tight text-foreground mb-4">{operationalReality.title}</h2>
+              <h2 className="mb-4 text-3xl font-light tracking-tight text-foreground">{operationalReality.title}</h2>
               <p className="text-muted-foreground">{operationalReality.subtitle}</p>
             </div>
             <Link href={operationalReality.statusCta.href}>
               <Button variant="outline">{operationalReality.statusCta.label}</Button>
             </Link>
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Card className="border-border/50 p-8 bg-card shadow-sm">
-              <h3 className="font-mono text-xs tracking-widest uppercase text-foreground mb-6 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-green-500" />
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <Card className="border-card-border bg-card p-8 shadow-sm">
+              <h3 className="mb-6 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-foreground">
+                <span className="h-2 w-2 rounded-full bg-green-500" />
                 {operationalReality.liveHeading}
               </h3>
               <ul className="space-y-6">
@@ -121,9 +216,9 @@ export default function PublicHome() {
                   const Icon = item.icon;
                   return (
                     <li key={item.title} className="flex items-start gap-4">
-                      <div className="p-2 rounded-md bg-muted text-foreground"><Icon className="w-4 h-4" /></div>
+                      <div className="rounded-md bg-muted p-2 text-foreground"><Icon className="h-4 w-4" /></div>
                       <div>
-                        <h4 className="text-sm font-medium text-foreground mb-1">{item.title}</h4>
+                        <h4 className="mb-1 text-sm font-medium text-foreground">{item.title}</h4>
                         <p className="text-xs text-muted-foreground">{item.description}</p>
                       </div>
                     </li>
@@ -131,10 +226,9 @@ export default function PublicHome() {
                 })}
               </ul>
             </Card>
-
-            <Card className="border-border/50 p-8 bg-card/50 shadow-sm border-dashed">
-              <h3 className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-6 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-orange-500/80" />
+            <Card className="border-card-border bg-card/70 p-8 shadow-sm">
+              <h3 className="mb-6 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                <span className="h-2 w-2 rounded-full bg-orange-500/80" />
                 {operationalReality.pendingHeading}
               </h3>
               <ul className="space-y-6">
@@ -142,7 +236,7 @@ export default function PublicHome() {
                   <li key={item.surfaceId} className="flex items-start gap-4">
                     <div className="mt-0.5"><TruthLabel variant={surfaceStatus[item.surfaceId]} /></div>
                     <div>
-                      <h4 className="text-sm font-medium text-foreground mb-1">{item.title}</h4>
+                      <h4 className="mb-1 text-sm font-medium text-foreground">{item.title}</h4>
                       <p className="text-xs text-muted-foreground">{item.note}</p>
                     </div>
                   </li>
@@ -153,59 +247,43 @@ export default function PublicHome() {
         </div>
       </section>
 
-      {/* Studio OS Preview */}
-      <section className="py-24 bg-background border-b border-border/50">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <Card className="border-border/50 overflow-hidden bg-card shadow-lg">
+      <section className="border-t border-border/50 bg-muted/20 py-16 text-foreground">
+        <div className="container mx-auto max-w-5xl px-4">
+          <Card className="overflow-hidden border-card-border bg-card shadow-lg">
             <div className="flex flex-col md:flex-row">
-              <div className="p-8 md:p-12 md:w-1/2 flex flex-col justify-center">
-                <TerminalSquare className="w-8 h-8 text-primary mb-6" />
-                <h2 className="text-2xl font-light tracking-tight text-foreground mb-4">{studioPreview.title}</h2>
-                <p className="text-muted-foreground mb-8 leading-relaxed text-sm">
-                  {studioPreview.description}
-                </p>
+              <div className="flex flex-col justify-center p-8 md:w-1/2 md:p-12">
+                <TerminalSquare className="mb-6 h-8 w-8 text-primary" />
+                <h2 className="mb-4 text-2xl font-light tracking-tight text-foreground">{studioPreview.title}</h2>
+                <p className="mb-8 text-sm leading-relaxed text-muted-foreground">{studioPreview.description}</p>
                 <div>
                   <Link href={studioPreview.cta.href}>
                     <Button>{studioPreview.cta.label}</Button>
                   </Link>
                 </div>
               </div>
-              <div className="bg-muted/30 md:w-1/2 p-6 md:p-8 flex items-center justify-center border-t md:border-t-0 md:border-l border-border/50">
-                <div className="w-full max-w-sm rounded-lg border border-border/50 bg-background shadow-sm overflow-hidden flex flex-col">
-                  <div className="h-8 border-b border-border/50 bg-muted/50 flex items-center px-3 gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
+              <div className="flex items-center justify-center border-t border-border bg-muted/30 p-6 md:w-1/2 md:border-l md:border-t-0 md:p-8">
+                <div className="flex w-full max-w-sm flex-col overflow-hidden rounded-lg border border-border bg-background shadow-sm">
+                  <div className="flex h-8 items-center gap-2 border-b border-border bg-muted/50 px-3">
+                    <div className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/80" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-green-500/80" />
                   </div>
-                  <div className="p-4 flex-1">
-                    <div className="h-4 w-1/3 bg-muted rounded-md mb-4" />
-                    <div className="space-y-2 mb-6">
-                      <div className="h-3 w-full bg-muted/50 rounded-md" />
-                      <div className="h-3 w-5/6 bg-muted/50 rounded-md" />
-                      <div className="h-3 w-4/6 bg-muted/50 rounded-md" />
+                  <div className="flex-1 p-4">
+                    <div className="mb-4 h-4 w-1/3 rounded-md bg-muted" />
+                    <div className="mb-6 space-y-2">
+                      <div className="h-3 w-full rounded-md bg-muted/50" />
+                      <div className="h-3 w-5/6 rounded-md bg-muted/50" />
+                      <div className="h-3 w-4/6 rounded-md bg-muted/50" />
                     </div>
-                    <TruthLabel variant={studioPreview.mockStatus} />
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="h-20 rounded-md bg-muted/40" />
+                      <div className="h-20 rounded-md bg-muted/40" />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </Card>
-        </div>
-      </section>
-
-      {/* Read Before Participating */}
-      <section className="py-24 bg-muted/10">
-        <div className="container mx-auto px-4 max-w-3xl">
-          <div className="text-center mb-10">
-            <ShieldCheck className="w-8 h-8 text-muted-foreground mx-auto mb-4 opacity-50" />
-            <h2 className="text-2xl font-light tracking-tight text-foreground mb-4">{expectations.title}</h2>
-          </div>
-          
-          <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
-            <p className="text-center">
-              {expectations.body}
-            </p>
-          </div>
         </div>
       </section>
     </div>

@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { ShieldAlert } from "lucide-react";
 import { PublicPage } from "@/components/PublicPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
+import { ProtocolRealityPanel } from "@/components/ProtocolReality";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -57,6 +58,20 @@ export default function ContractMemory() {
           );
         })}
       </div>
+
+      <section className="mt-16">
+        <h2 className="text-xl font-light tracking-tight text-foreground mb-1">
+          Live read-only reality
+        </h2>
+        <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-6">
+          Beyond memory: strictly read-only public reads of contract code presence, membership-sale
+          lifecycle, and archive configuration on Avalanche C-Chain. The active V3 sale engine's
+          public figures are surfaced as exact raw base units. No addresses, no wallet, and no
+          purchase, transaction, or referral surface — this app only reads. Any unverifiable value
+          renders as null with a reason.
+        </p>
+        <ProtocolRealityPanel groups={["contracts", "sale", "archive"]} />
+      </section>
 
       <div className="flex flex-wrap gap-3 mt-14">
         <Link href={ctas.viewStatus.href}>

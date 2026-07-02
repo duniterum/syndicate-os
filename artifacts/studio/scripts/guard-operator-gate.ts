@@ -1,0 +1,405 @@
+// Guard: operator preview hard gate.
+// The build-time gate (config/operatorPreviewGate.ts + vite define) must keep
+// every registry-INTERNAL route reachable ONLY through the gated dynamic
+// import of the OperatorConsole module, so a default production build
+// excludes the console code entirely:
+//   1. every INTERNAL registry path is routed through <OperatorRoute> in App.tsx;
+//   2. App.tsx has NO static (runtime) import of the console module, Shell, or
+//      any console page — only the type-only import and the gated dynamic import;
+//   3. the gate constant folds statically: it references import.meta.env.DEV and
+//      __OPERATOR_PREVIEW__ only, and uses no runtime signals (location/hostname/
+//      fetch/clock);
+//   4. vite.config.ts defines __OPERATOR_PREVIEW__ from VITE_OPERATOR_PREVIEW;
+//   5. OperatorConsole.tsx is the ONLY static importer of Shell and the console
+//      pages anywhere in src/;
+//   6. no public-chrome file renders a literal link to an INTERNAL path (the
+//      /studio teaser lives in syndicateFacts.ts config and is the intended,
+//      documented exception — it renders the safe unavailable page when gated);
+//   7. dist-grep probe strings stay meaningful: the OS-map banner copy exists
+//      only in gated modules, and the unavailable-page copy exists in the
+//      always-bundled fallback;
+//   8. the /os-map live proof binding stays operator-gated and fail-closed:
+//      the adapter/panel modules are importable only from the gated graph,
+//      the adapter is pure (no fetch/state/clock) and consumes only the
+//      existing generated client types, its classification map reconciles
+//      exactly with the protocolOsMap node ids, the payload's archive group
+//      stays deliberately unbound (founder-deferred), and the unavailable
+//      probe string is verbatim-unique to the panel for dist-grep proof.
+//
+// Scans are comment-stripped so documentation may name the primitives it
+// forbids without self-matching. Node-loadable (Node >= 22.6 / 24).
+
+import { readFileSync, readdirSync, statSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+import { seoRouteRegistry } from "../src/lib/seo-route-registry.ts";
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const srcDir = path.resolve(here, "..", "src");
+
+function read(rel: string): string {
+  return readFileSync(path.resolve(srcDir, rel), "utf8");
+}
+
+/** Strip /* *\/ and // comments (and JSX {/* *\/} bodies) before scanning. */
+function stripComments(code: string): string {
+  return code
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/^[ \t]*\/\/.*$/gm, "")
+    .replace(/([^:"'])\/\/[^\n"']*$/gm, "$1");
+}
+
+function walk(dir: string): string[] {
+  const out: string[] = [];
+  for (const name of readdirSync(dir)) {
+    const p = path.join(dir, name);
+    if (statSync(p).isDirectory()) out.push(...walk(p));
+    else if (/\.(ts|tsx)$/.test(name) && !name.endsWith(".d.ts")) out.push(p);
+  }
+  return out;
+}
+
+const errors: string[] = [];
+const ok: string[] = [];
+function check(cond: boolean, pass: string, fail: string): void {
+  if (cond) ok.push(pass);
+  else errors.push(fail);
+}
+
+const appRaw = read("App.tsx");
+const app = stripComments(appRaw);
+const gate = stripComments(read("config/operatorPreviewGate.ts"));
+const consoleModRaw = read("operator/OperatorConsole.tsx");
+const consoleMod = stripComments(consoleModRaw);
+const viteCfg = stripComments(
+  readFileSync(path.resolve(here, "..", "vite.config.ts"), "utf8"),
+);
+
+// ── 1. Every INTERNAL registry path is gated in App.tsx ─────────────────────
+const internalPaths = seoRouteRegistry
+  .filter((r) => r.routeType === "INTERNAL" && r.path !== "*")
+  .map((r) => r.path);
+
+check(
+  internalPaths.length === 5,
+  `registry declares 5 INTERNAL routes (${internalPaths.join(", ")})`,
+  `expected exactly 5 INTERNAL registry routes, found ${internalPaths.length} — update this guard deliberately if that changed`,
+);
+
+for (const p of internalPaths) {
+  const pattern = new RegExp(
+    `<Route path="${p}">\\s*<OperatorRoute page="[a-z0-9-]+" />\\s*</Route>`,
+  );
+  check(
+    pattern.test(app),
+    `App.tsx routes ${p} through <OperatorRoute>`,
+    `App.tsx must route INTERNAL path ${p} through <OperatorRoute> (gated), not directly`,
+  );
+}
+
+// ── 2. App.tsx: no static runtime import of console modules ─────────────────
+const staticConsoleImport =
+  /import\s+(?!type\b)[^;]*from\s+"@\/(components\/layout\/Shell|pages\/(Home|ProofStudio|OperatorPreview|OsMap)|operator\/OperatorConsole)"/;
+check(
+  !staticConsoleImport.test(app),
+  "App.tsx has no static runtime import of Shell/console pages/OperatorConsole",
+  "App.tsx statically imports a console module — that defeats the build-time exclusion",
+);
+check(
+  /import type \{ OperatorConsolePage \} from "@\/operator\/OperatorConsole"/.test(
+    app,
+  ),
+  "App.tsx uses a type-only import for OperatorConsolePage",
+  "App.tsx should import OperatorConsolePage as `import type` only",
+);
+check(
+  /OPERATOR_PREVIEW_ENABLED\s*\?\s*lazy\(\(\) => import\("@\/operator\/OperatorConsole"\)\)\s*:\s*null/.test(
+    app,
+  ),
+  "App.tsx loads OperatorConsole only via the gated conditional dynamic import",
+  "App.tsx must load OperatorConsole via `OPERATOR_PREVIEW_ENABLED ? lazy(() => import(...)) : null`",
+);
+
+// ── 3. Gate constant folds statically ────────────────────────────────────────
+check(
+  /import\.meta\.env\.DEV\s*\|\|\s*__OPERATOR_PREVIEW__/.test(gate),
+  "gate = import.meta.env.DEV || __OPERATOR_PREVIEW__ (both statically replaced)",
+  "operatorPreviewGate.ts must be exactly `import.meta.env.DEV || __OPERATOR_PREVIEW__`",
+);
+for (const banned of [
+  "window",
+  "location",
+  "hostname",
+  "fetch(",
+  "Date.now",
+  "localStorage",
+]) {
+  check(
+    !gate.includes(banned),
+    `gate has no runtime signal: ${banned}`,
+    `operatorPreviewGate.ts must not use runtime signal \`${banned}\` — the gate must fold at build time`,
+  );
+}
+
+// ── 4. vite define wires the flag ────────────────────────────────────────────
+check(
+  /__OPERATOR_PREVIEW__/.test(viteCfg) &&
+    /VITE_OPERATOR_PREVIEW\s*===?\s*"true"/.test(viteCfg),
+  'vite.config.ts defines __OPERATOR_PREVIEW__ from VITE_OPERATOR_PREVIEW === "true"',
+  "vite.config.ts must define __OPERATOR_PREVIEW__ from process.env.VITE_OPERATOR_PREVIEW",
+);
+
+// ── 5. OperatorConsole is the only static importer of console modules ────────
+const consoleModulePatterns = [
+  '"@/components/layout/Shell"',
+  '"@/pages/Home"',
+  '"@/pages/ProofStudio"',
+  '"@/pages/OperatorPreview"',
+  '"@/pages/OsMap"',
+];
+for (const spec of consoleModulePatterns) {
+  check(
+    consoleMod.includes(`from ${spec}`),
+    `OperatorConsole imports ${spec}`,
+    `OperatorConsole.tsx must import ${spec} (single console entry point)`,
+  );
+}
+const allFiles = walk(srcDir);
+for (const file of allFiles) {
+  const rel = path.relative(srcDir, file);
+  if (rel === path.join("operator", "OperatorConsole.tsx")) continue;
+  const code = stripComments(readFileSync(file, "utf8"));
+  for (const spec of consoleModulePatterns) {
+    const runtimeImport = new RegExp(
+      `import\\s+(?!type\\b)[^;]*from\\s+${spec.replace(/[/\\]/g, "\\$&")}`,
+    );
+    check(
+      !runtimeImport.test(code),
+      `${rel}: no runtime import of ${spec}`,
+      `${rel} statically imports ${spec} — console modules may only be imported by operator/OperatorConsole.tsx`,
+    );
+  }
+}
+
+// ── 6. Public chrome renders no literal INTERNAL links ──────────────────────
+const publicChrome = [
+  "components/layout/PublicLayout.tsx",
+  "pages/PublicHome.tsx",
+  "pages/OperatorPreviewUnavailable.tsx",
+];
+for (const rel of publicChrome) {
+  const code = stripComments(read(rel));
+  for (const p of internalPaths) {
+    check(
+      !code.includes(`"${p}"`),
+      `${rel}: no literal link to ${p}`,
+      `${rel} contains a literal INTERNAL link "${p}" — INTERNAL links must come from config (syndicateFacts teaser) or not exist`,
+    );
+  }
+}
+
+// ── 7. Dist-grep probe strings stay meaningful ───────────────────────────────
+const OSMAP_PROBE = "INTERNAL FOUNDER PREVIEW";
+const FALLBACK_PROBE = "Internal preview is not enabled on this deployment";
+const gatedFiles = new Set(
+  [
+    "operator/OperatorConsole.tsx",
+    "operator/protocolRealityEvidence.ts",
+    "operator/LiveEvidencePanel.tsx",
+    "components/layout/Shell.tsx",
+    "pages/Home.tsx",
+    "pages/ProofStudio.tsx",
+    "pages/OperatorPreview.tsx",
+    "pages/OsMap.tsx",
+    "config/protocolOsMap.ts",
+  ].map((r) => path.resolve(srcDir, r)),
+);
+let probeInGated = false;
+for (const file of allFiles) {
+  const code = stripComments(readFileSync(file, "utf8"));
+  if (code.includes(OSMAP_PROBE)) {
+    if (gatedFiles.has(file)) probeInGated = true;
+    else
+      errors.push(
+        `probe string "${OSMAP_PROBE}" leaked into non-gated file ${path.relative(srcDir, file)} — dist-grep proof would be ambiguous`,
+      );
+  }
+}
+check(
+  probeInGated,
+  `probe string "${OSMAP_PROBE}" present in gated modules only`,
+  `probe string "${OSMAP_PROBE}" not found in gated modules — dist-grep proof has no target`,
+);
+check(
+  read("pages/OperatorPreviewUnavailable.tsx").includes(FALLBACK_PROBE),
+  "fallback probe string present in OperatorPreviewUnavailable",
+  "OperatorPreviewUnavailable.tsx must contain the fallback probe string",
+);
+
+// ── 8. /os-map live proof binding stays operator-gated + fail-closed ────────
+const adapterRaw = read("operator/protocolRealityEvidence.ts");
+const adapter = stripComments(adapterRaw);
+const panelRaw = read("operator/LiveEvidencePanel.tsx");
+const panel = stripComments(panelRaw);
+const osMapPage = stripComments(read("pages/OsMap.tsx"));
+const osMapConfig = stripComments(read("config/protocolOsMap.ts"));
+
+// 8a. Live-binding modules are importable only from the gated graph.
+const liveBindingSpecs = [
+  '"@/operator/protocolRealityEvidence"',
+  '"@/operator/LiveEvidencePanel"',
+];
+for (const file of allFiles) {
+  const rel = path.relative(srcDir, file);
+  if (gatedFiles.has(file)) continue;
+  const code = stripComments(readFileSync(file, "utf8"));
+  for (const spec of liveBindingSpecs) {
+    check(
+      !code.includes(`from ${spec}`),
+      `${rel}: no import of ${spec}`,
+      `${rel} imports ${spec} — live-binding modules may only be imported inside the gated operator graph`,
+    );
+  }
+}
+check(
+  osMapPage.includes('from "@/operator/LiveEvidencePanel"') &&
+    osMapPage.includes("<LiveEvidencePanel nodeId=") &&
+    osMapPage.includes("<SpineDomainMeta />"),
+  "OsMap.tsx renders LiveEvidencePanel + SpineDomainMeta (live binding wired)",
+  "OsMap.tsx must render LiveEvidencePanel and SpineDomainMeta for the spine domain",
+);
+
+// 8b. Adapter purity: pure mapping, no runtime signals, no bespoke transport,
+// type-only consumption of the generated client, no status-vocabulary import.
+for (const banned of [
+  "fetch(",
+  "useQuery",
+  "useGetProtocolReality",
+  "useState",
+  "useEffect",
+  "window",
+  "localStorage",
+  "Date.now",
+  "new Date",
+]) {
+  check(
+    !adapter.includes(banned),
+    `adapter is pure: no ${banned}`,
+    `protocolRealityEvidence.ts must stay a pure mapping — found \`${banned}\``,
+  );
+}
+check(
+  !/import\s+(?!type\b)[^;]*from\s+"@workspace\/api-client-react"/.test(adapter),
+  "adapter imports the generated client types only (import type)",
+  "protocolRealityEvidence.ts must import from @workspace/api-client-react as `import type` only",
+);
+check(
+  !adapter.includes('from "@/config/truthStatus"'),
+  "adapter does not import status vocabulary (classification is a separate axis)",
+  "protocolRealityEvidence.ts must not import truthStatus — classification must not blur into status vocabulary",
+);
+
+// 8c. Classification map reconciles exactly with protocolOsMap node ids.
+// NOTE: the textual id regex is [a-z0-9-]+ — node ids with underscores or
+// uppercase would be silently skipped by BOTH scans; keep ids kebab-case.
+const DOMAIN_IDS = ["reality-spine", "historical-index", "pending-wiring", "product-surfaces"];
+const allConfigIds = [...osMapConfig.matchAll(/\bid:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
+check(
+  DOMAIN_IDS.every((d) => allConfigIds.includes(d)),
+  "protocolOsMap declares the 4 known domain ids",
+  `protocolOsMap domain ids changed (expected ${DOMAIN_IDS.join(", ")}) — update this guard deliberately`,
+);
+const nodeIds = allConfigIds.filter((id) => !DOMAIN_IDS.includes(id));
+const classBlock = adapter.match(/osMapNodeClass[^=]*=\s*\{([\s\S]*?)\n\};/);
+const classKeys = classBlock
+  ? [...classBlock[1].matchAll(/(?:"([a-z0-9-]+)"|^\s*([a-z0-9-]+)):/gm)].map((m) => m[1] ?? m[2])
+  : [];
+check(
+  nodeIds.length === 17,
+  `protocolOsMap declares 17 nodes`,
+  `expected 17 protocolOsMap nodes, found ${nodeIds.length} — update this guard and the adapter classification deliberately`,
+);
+for (const id of nodeIds) {
+  check(
+    classKeys.includes(id),
+    `classification covers node ${id}`,
+    `osMapNodeClass is missing node id "${id}" — every /os-map node must be classified`,
+  );
+}
+for (const key of classKeys) {
+  check(
+    nodeIds.includes(key),
+    `classification key ${key} exists in protocolOsMap`,
+    `osMapNodeClass key "${key}" matches no protocolOsMap node — stale classification`,
+  );
+}
+
+// 8d. Spine bindings: exactly the 4 approved spine nodes; archive group
+// stays deliberately unbound this slice (founder-deferred open item).
+const spineBlock = adapter.match(/spineNodeGroup[^=]*=\s*\{([\s\S]*?)\n\};/);
+const spinePairs = spineBlock
+  ? [...spineBlock[1].matchAll(/"([a-z0-9-]+)":\s*"([a-z]+)"/g)].map((m) => [m[1], m[2]])
+  : [];
+const expectedSpine: Record<string, string> = {
+  "chain-identity": "chain",
+  "contract-code": "contracts",
+  "erc20-metadata": "tokens",
+  "sale-engines": "sale",
+};
+check(
+  spinePairs.length === 4 &&
+    spinePairs.every(([n, g]) => expectedSpine[n] === g),
+  "spineNodeGroup binds exactly the 4 approved spine nodes (chain/contracts/tokens/sale)",
+  "spineNodeGroup must bind exactly chain-identity→chain, contract-code→contracts, erc20-metadata→tokens, sale-engines→sale",
+);
+check(
+  !spinePairs.some(([, g]) => g === "archive"),
+  "payload archive group stays unbound (founder-deferred)",
+  "the archive group may not be bound to a spine node without founder approval",
+);
+
+// 8e. Fail-closed UI: the panel has an error branch and the unavailable probe
+// string, verbatim-unique to the panel for dist-grep proof.
+const LIVE_PROBE = "LIVE PROOF UNAVAILABLE";
+check(
+  panel.includes("isError") && panel.includes(LIVE_PROBE),
+  "panel fails closed (isError branch + unavailable copy)",
+  `LiveEvidencePanel.tsx must render the fail-closed "${LIVE_PROBE}" state on fetch failure`,
+);
+check(
+  panel.includes("selectNodeEvidence"),
+  "panel selects evidence through the pure adapter",
+  "LiveEvidencePanel.tsx must select signals via selectNodeEvidence (single adapter path)",
+);
+for (const file of allFiles) {
+  const rel = path.relative(srcDir, file);
+  if (rel === path.join("operator", "LiveEvidencePanel.tsx")) continue;
+  const code = stripComments(readFileSync(file, "utf8"));
+  check(
+    !code.includes(LIVE_PROBE),
+    `${rel}: no "${LIVE_PROBE}" probe leak`,
+    `probe string "${LIVE_PROBE}" leaked into ${rel} — dist-grep proof would be ambiguous`,
+  );
+}
+
+// 8f. Provenance honesty: the fetched-at line is page-load client time and
+// must say so; no other wall-clock "verified" claim in the panel.
+check(
+  panelRaw.includes("fetched at page load"),
+  "panel provenance line is labelled as page-load time",
+  "the panel's fetched-at line must be labelled as page-load time (never protocol/event truth)",
+);
+check(
+  !/last verified/i.test(panel),
+  'panel makes no "last verified" claim',
+  'LiveEvidencePanel.tsx must not claim "last verified" — wall-clock is page-load provenance only',
+);
+
+// ── Report ───────────────────────────────────────────────────────────────────
+for (const line of ok) console.log(`PASS  ${line}`);
+if (errors.length > 0) {
+  for (const line of errors) console.error(`FAIL  ${line}`);
+  console.error(`\nguard-operator-gate: ${errors.length} check(s) failed.`);
+  process.exit(1);
+}
+console.log(`\nguard-operator-gate: all ${ok.length} checks passed.`);

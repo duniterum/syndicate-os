@@ -5,6 +5,9 @@
 // Allowlisted (render no protocol/surface VALUES, so need no label):
 //   - Learning.tsx  : real, fully-live educational prose.
 //   - not-found.tsx : utility 404 fallback.
+//   - OperatorPreviewUnavailable.tsx : utility fallback shown at INTERNAL
+//     routes when the build-time operator preview gate is off; renders only
+//     honest posture prose, no protocol/surface values.
 //
 // Node-loadable (Node >= 22.6 / 24), dependency-free.
 
@@ -14,7 +17,11 @@ import path from "node:path";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const pagesDir = path.resolve(here, "..", "src", "pages");
-const EXEMPT = new Set(["Learning.tsx", "not-found.tsx"]);
+const EXEMPT = new Set([
+  "Learning.tsx",
+  "not-found.tsx",
+  "OperatorPreviewUnavailable.tsx",
+]);
 const LABEL_RE = /\b(LifecycleBadge|TruthLabel)\b/;
 
 const errors: string[] = [];

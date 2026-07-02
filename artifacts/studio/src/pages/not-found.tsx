@@ -7,7 +7,7 @@ const recoveryLinks = [
   { href: "/", label: "Back to home", icon: Home, primary: true },
   { href: "/status", label: "View status", icon: Activity, primary: false },
   { href: "/proof", label: "Verify proof", icon: ShieldCheck, primary: false },
-  { href: "/member", label: "Request a seat", icon: ArrowRight, primary: false },
+  { href: "/member", label: "Take your seat", icon: ArrowRight, primary: false },
 ];
 
 export default function NotFound() {

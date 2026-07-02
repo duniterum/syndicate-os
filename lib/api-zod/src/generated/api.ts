@@ -42,3 +42,97 @@ export const GetSourceStatusResponse = zod.object({
 })
 
 
+/**
+ * Read-only protocol observability envelope. Reads verified public facts from vendored canon and Avalanche C-Chain RPC — chain reachability, contract code presence, ERC-20 token metadata, archive posture, and read-only sale-engine state (lifecycle flags plus public V3 sale figures: available SYN, total gross USDC, and receipt count, surfaced as exact raw base units), normalized into one envelope. No addresses, private keys, secrets, per-account balances, or financial-upside framing are ever returned, and no wallet/write surface exists. On any read failure the affected value is null with an explicit lifecycle and failureReason; the endpoint still responds 200.
+ * @summary Read-only protocol reality envelope
+ */
+export const GetProtocolRealityResponse = zod.object({
+  "mode": zod.enum(['READ_ONLY_PROTOCOL_REALITY']),
+  "expectedChainId": zod.literal(43114),
+  "asOf": zod.string(),
+  "cached": zod.boolean(),
+  "groups": zod.object({
+  "chain": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "value": zod.union([zod.boolean(),zod.number(),zod.string(),zod.null()]),
+  "valueType": zod.enum(['null', 'boolean', 'string', 'number']),
+  "sourceType": zod.enum(['SERVER_SIDE_CANON', 'LIVE_CHAIN_RPC', 'CANON_RECONCILED_RPC']),
+  "sourceRef": zod.string(),
+  "chainId": zod.union([zod.number(),zod.null()]),
+  "contractRole": zod.union([zod.enum(['token', 'stablecoin', 'sale', 'source-registry', 'archive1155', 'lp-pair']),zod.null()]),
+  "asOf": zod.string(),
+  "confidence": zod.enum(['HIGH', 'MEDIUM', 'LOW', 'UNKNOWN']),
+  "lifecycle": zod.enum(['READ_ONLY_PROOF', 'PENDING_ADAPTER', 'NOT_ACTIVE', 'AUTH_REQUIRED', 'FOUNDER_GATED', 'FUTURE', 'PAUSED_BY_PRECAUTION']),
+  "publicSafe": zod.boolean(),
+  "note": zod.string(),
+  "failureReason": zod.union([zod.string(),zod.null()])
+})),
+  "contracts": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "value": zod.union([zod.boolean(),zod.number(),zod.string(),zod.null()]),
+  "valueType": zod.enum(['null', 'boolean', 'string', 'number']),
+  "sourceType": zod.enum(['SERVER_SIDE_CANON', 'LIVE_CHAIN_RPC', 'CANON_RECONCILED_RPC']),
+  "sourceRef": zod.string(),
+  "chainId": zod.union([zod.number(),zod.null()]),
+  "contractRole": zod.union([zod.enum(['token', 'stablecoin', 'sale', 'source-registry', 'archive1155', 'lp-pair']),zod.null()]),
+  "asOf": zod.string(),
+  "confidence": zod.enum(['HIGH', 'MEDIUM', 'LOW', 'UNKNOWN']),
+  "lifecycle": zod.enum(['READ_ONLY_PROOF', 'PENDING_ADAPTER', 'NOT_ACTIVE', 'AUTH_REQUIRED', 'FOUNDER_GATED', 'FUTURE', 'PAUSED_BY_PRECAUTION']),
+  "publicSafe": zod.boolean(),
+  "note": zod.string(),
+  "failureReason": zod.union([zod.string(),zod.null()])
+})),
+  "tokens": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "value": zod.union([zod.boolean(),zod.number(),zod.string(),zod.null()]),
+  "valueType": zod.enum(['null', 'boolean', 'string', 'number']),
+  "sourceType": zod.enum(['SERVER_SIDE_CANON', 'LIVE_CHAIN_RPC', 'CANON_RECONCILED_RPC']),
+  "sourceRef": zod.string(),
+  "chainId": zod.union([zod.number(),zod.null()]),
+  "contractRole": zod.union([zod.enum(['token', 'stablecoin', 'sale', 'source-registry', 'archive1155', 'lp-pair']),zod.null()]),
+  "asOf": zod.string(),
+  "confidence": zod.enum(['HIGH', 'MEDIUM', 'LOW', 'UNKNOWN']),
+  "lifecycle": zod.enum(['READ_ONLY_PROOF', 'PENDING_ADAPTER', 'NOT_ACTIVE', 'AUTH_REQUIRED', 'FOUNDER_GATED', 'FUTURE', 'PAUSED_BY_PRECAUTION']),
+  "publicSafe": zod.boolean(),
+  "note": zod.string(),
+  "failureReason": zod.union([zod.string(),zod.null()])
+})),
+  "archive": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "value": zod.union([zod.boolean(),zod.number(),zod.string(),zod.null()]),
+  "valueType": zod.enum(['null', 'boolean', 'string', 'number']),
+  "sourceType": zod.enum(['SERVER_SIDE_CANON', 'LIVE_CHAIN_RPC', 'CANON_RECONCILED_RPC']),
+  "sourceRef": zod.string(),
+  "chainId": zod.union([zod.number(),zod.null()]),
+  "contractRole": zod.union([zod.enum(['token', 'stablecoin', 'sale', 'source-registry', 'archive1155', 'lp-pair']),zod.null()]),
+  "asOf": zod.string(),
+  "confidence": zod.enum(['HIGH', 'MEDIUM', 'LOW', 'UNKNOWN']),
+  "lifecycle": zod.enum(['READ_ONLY_PROOF', 'PENDING_ADAPTER', 'NOT_ACTIVE', 'AUTH_REQUIRED', 'FOUNDER_GATED', 'FUTURE', 'PAUSED_BY_PRECAUTION']),
+  "publicSafe": zod.boolean(),
+  "note": zod.string(),
+  "failureReason": zod.union([zod.string(),zod.null()])
+})),
+  "sale": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "value": zod.union([zod.boolean(),zod.number(),zod.string(),zod.null()]),
+  "valueType": zod.enum(['null', 'boolean', 'string', 'number']),
+  "sourceType": zod.enum(['SERVER_SIDE_CANON', 'LIVE_CHAIN_RPC', 'CANON_RECONCILED_RPC']),
+  "sourceRef": zod.string(),
+  "chainId": zod.union([zod.number(),zod.null()]),
+  "contractRole": zod.union([zod.enum(['token', 'stablecoin', 'sale', 'source-registry', 'archive1155', 'lp-pair']),zod.null()]),
+  "asOf": zod.string(),
+  "confidence": zod.enum(['HIGH', 'MEDIUM', 'LOW', 'UNKNOWN']),
+  "lifecycle": zod.enum(['READ_ONLY_PROOF', 'PENDING_ADAPTER', 'NOT_ACTIVE', 'AUTH_REQUIRED', 'FOUNDER_GATED', 'FUTURE', 'PAUSED_BY_PRECAUTION']),
+  "publicSafe": zod.boolean(),
+  "note": zod.string(),
+  "failureReason": zod.union([zod.string(),zod.null()])
+}))
+})
+})
+
+

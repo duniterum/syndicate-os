@@ -98,7 +98,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     ogImage: DEFAULT_OG_IMAGE,
     ownerSurface: "brand",
     primaryIntent: "brand",
-    primaryCTA: "Request a seat",
+    primaryCTA: "Take your seat",
     proofRoute: "/status",
     notes: "Public front door (PublicLayout).",
   },
@@ -261,7 +261,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     ownerSurface: "operator",
     primaryIntent: "operator",
     notes:
-      "INTERNAL: robots disallow is defense-in-depth only — still needs page-level noindex/auth in a later slice.",
+      "INTERNAL: hard-gated by the build-time operator preview gate (operatorPreviewGate.ts) — default production builds exclude the console code and render a safe unavailable page. Robots/noindex remain defense-in-depth. Auth is a later slice.",
   },
   {
     path: "/proof-studio",
@@ -274,7 +274,8 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes: "INTERNAL: operator-only later.",
+    notes:
+      "INTERNAL: operator-only. Hard-gated by the build-time operator preview gate; excluded from default production builds.",
   },
   {
     path: "/founder",
@@ -286,7 +287,22 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes: "INTERNAL: auth later.",
+    notes:
+      "INTERNAL: hard-gated by the build-time operator preview gate; excluded from default production builds. Auth later.",
+  },
+  {
+    path: "/os-map",
+    routeType: "INTERNAL",
+    indexStatus: "INTERNAL",
+    sitemap: false,
+    title: "Protocol OS Map — Internal Founder Preview",
+    description:
+      "Internal founder preview mapping the full protocol organism. Not a public destination.",
+    canonicalPath: null,
+    ownerSurface: "operator",
+    primaryIntent: "operator",
+    notes:
+      "INTERNAL founder preview: full-protocol visibility map. Hard-gated by the build-time operator preview gate; excluded from default production builds. Robots disallow remains defense-in-depth.",
   },
   {
     path: "/source",
@@ -300,7 +316,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     ownerSurface: "operator",
     primaryIntent: "operator",
     notes:
-      "Verified-Introduction PAUSED. INTERNAL: hide from public nav. A future public education page is a separate route, not this one.",
+      "Verified-Introduction PAUSED. INTERNAL: hide from public nav; hard-gated by the build-time operator preview gate. A future public education page is a separate route, not this one.",
   },
   {
     path: "*",

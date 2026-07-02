@@ -28,6 +28,14 @@ if (!basePath) {
 
 export default defineConfig({
   base: basePath,
+  // Operator preview hard gate (see src/config/operatorPreviewGate.ts).
+  // A per-module static replacement so a default production build folds the
+  // gate to `false` and dead-code-eliminates the operator console chunk.
+  define: {
+    __OPERATOR_PREVIEW__: JSON.stringify(
+      process.env.VITE_OPERATOR_PREVIEW === "true",
+    ),
+  },
   plugins: [
     react(),
     tailwindcss(),

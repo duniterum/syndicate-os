@@ -17,6 +17,7 @@ import type {
 
 import type {
   HealthStatus,
+  ProtocolRealityResponse,
   SourceStatusResponse
 } from './api.schemas';
 
@@ -191,6 +192,84 @@ export function useGetSourceStatus<TData = Awaited<ReturnType<typeof getSourceSt
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getGetSourceStatusQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetProtocolRealityUrl = () => {
+
+
+
+
+  return `/api/protocol/reality`
+}
+
+/**
+ * Read-only protocol observability envelope. Reads verified public facts from vendored canon and Avalanche C-Chain RPC — chain reachability, contract code presence, ERC-20 token metadata, archive posture, and read-only sale-engine state (lifecycle flags plus public V3 sale figures: available SYN, total gross USDC, and receipt count, surfaced as exact raw base units), normalized into one envelope. No addresses, private keys, secrets, per-account balances, or financial-upside framing are ever returned, and no wallet/write surface exists. On any read failure the affected value is null with an explicit lifecycle and failureReason; the endpoint still responds 200.
+ * @summary Read-only protocol reality envelope
+ */
+export const getProtocolReality = async ( options?: RequestInit): Promise<ProtocolRealityResponse> => {
+
+  return customFetch<ProtocolRealityResponse>(getGetProtocolRealityUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetProtocolRealityQueryKey = () => {
+    return [
+    `/api/protocol/reality`
+    ] as const;
+    }
+
+
+export const getGetProtocolRealityQueryOptions = <TData = Awaited<ReturnType<typeof getProtocolReality>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProtocolReality>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetProtocolRealityQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProtocolReality>>> = ({ signal }) => getProtocolReality({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getProtocolReality>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProtocolRealityQueryResult = NonNullable<Awaited<ReturnType<typeof getProtocolReality>>>
+export type GetProtocolRealityQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Read-only protocol reality envelope
+ */
+
+export function useGetProtocolReality<TData = Awaited<ReturnType<typeof getProtocolReality>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProtocolReality>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetProtocolRealityQueryOptions(options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

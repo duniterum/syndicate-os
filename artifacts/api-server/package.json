@@ -14,7 +14,28 @@
     "token-metadata:check": "tsx ./scripts/avalanche-token-metadata-check.ts",
     "token-metadata:guard": "tsx ./scripts/avalanche-token-metadata-check.guard.ts",
     "archive-posture:check": "tsx ./scripts/avalanche-archive-posture-check.ts",
-    "archive-posture:guard": "tsx ./scripts/avalanche-archive-posture-check.guard.ts"
+    "archive-posture:guard": "tsx ./scripts/avalanche-archive-posture-check.guard.ts",
+    "protocol-reality:guard": "tsx ./scripts/protocol-reality-check.guard.ts",
+    "protocol-targets:guard": "tsx ./scripts/protocol-targets-reconcile.guard.ts",
+    "sale-scan:guard": "tsx ./scripts/sale-event-scan-reconcile.guard.ts",
+    "sale-index:guard": "tsx ./scripts/sale-event-indexer.guard.ts",
+    "sale-semantics:guard": "tsx ./scripts/sale-event-semantics-reconcile.guard.ts",
+    "sale-index:dry-run": "tsx ./scripts/sale-event-index.ts --dry-run",
+    "sale-index:backfill": "tsx ./scripts/sale-event-index.ts --backfill",
+    "sale-index:status": "tsx ./scripts/sale-event-index.ts status",
+    "freeze-gate:status": "tsx ./scripts/historical-freeze-gate.ts",
+    "member-continuity:derive": "tsx ./scripts/member-continuity-derive.ts",
+    "member-continuity:guard": "tsx ./scripts/member-continuity.guard.ts",
+    "protocol-time:enrich": "tsx ./scripts/protocol-time-enrich.ts",
+    "protocol-time:status": "tsx ./scripts/protocol-time-enrich.ts --status",
+    "protocol-time:guard": "tsx ./scripts/protocol-time.guard.ts",
+    "partB-canon:guard": "tsx ./scripts/partB-canon-reconcile.guard.ts",
+    "partB-import:guard": "tsx ./scripts/partB-import.guard.ts",
+    "partB:preflight": "tsx ./scripts/partB-import.ts --preflight",
+    "partB:import": "tsx ./scripts/partB-import.ts --import",
+    "partB:status": "tsx ./scripts/partB-import.ts status",
+    "activity:derive": "tsx ./scripts/activity-heartbeat-derive.ts",
+    "activity:guard": "tsx ./scripts/activity-heartbeat.guard.ts"
   },
   "dependencies": {
     "@workspace/api-zod": "workspace:*",
@@ -28,6 +49,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@noble/hashes": "^1.8.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",

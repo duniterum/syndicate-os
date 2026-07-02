@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "wouter";
 import { useGetSourceStatus, type SourceStatusItem } from "@workspace/api-client-react";
-import { DataStatusNote } from "@/components/layout/Shell";
+import { DataStatusNote } from "@/components/DataStatusNote";
 import { PostureBadge } from "@/components/PostureBadge";
+import { ProtocolRealityPanel } from "@/components/ProtocolReality";
 import { TruthLabel } from "@/components/TruthLabel";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
@@ -28,7 +29,7 @@ export default function SystemStatus() {
   const items: SourceStatusItem[] = data ? Object.values(data.categories) : [];
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
+    <div className="w-full min-w-0 p-8 max-w-6xl mx-auto">
       <div className="mb-8 flex items-center gap-3">
         <Activity className="h-8 w-8 text-primary" />
         <div>
@@ -39,7 +40,24 @@ export default function SystemStatus() {
         </div>
       </div>
 
-      <DataStatusNote description="Posture-only source registry. No live chain reads, no balances, no member data, no RPC — every value is null by design. Verified static canon reference, not a live RPC read." />
+      <section className="mb-12">
+        <div className="mb-4">
+          <h2 className="text-xl font-light tracking-tight text-foreground">Protocol reality</h2>
+          <p className="text-muted-foreground text-sm mt-1 max-w-3xl">
+            Strictly read-only reads of public Avalanche C-Chain facts — chain identity, contract
+            code presence, ERC-20 symbol/decimals, archive configuration, and read-only
+            membership-sale state. The active V3 sale engine's public figures (available SYN, gross
+            USDC received, receipt count) are surfaced as exact raw base units. No balances, holders,
+            wallet, or any purchase, transaction, referral, or write surface exists. Addresses are
+            resolved server-side and never appear in this payload; every read is truth-labelled, and
+            any value that cannot be verified renders as null with a reason.
+          </p>
+        </div>
+        <ProtocolRealityPanel showMeta />
+      </section>
+
+      <h2 className="text-xl font-light tracking-tight text-foreground mb-2">Source-status registry</h2>
+      <DataStatusNote description="Source-status registry — separate from the live protocol reality read above. Posture-only: this registry performs no chain reads and holds no balances, member data, or RPC; every value here is null by design. Verified static canon reference, not a live RPC read." />
 
       {data && (
         <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs text-muted-foreground">
