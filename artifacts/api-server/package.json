@@ -35,7 +35,9 @@
     "partB:import": "tsx ./scripts/partB-import.ts --import",
     "partB:status": "tsx ./scripts/partB-import.ts status",
     "activity:derive": "tsx ./scripts/activity-heartbeat-derive.ts",
-    "activity:guard": "tsx ./scripts/activity-heartbeat.guard.ts"
+    "activity:guard": "tsx ./scripts/activity-heartbeat.guard.ts",
+    "auth-zone:guard": "tsx ./scripts/guard-auth-zone.ts",
+    "auth-skeleton:test": "tsx ./scripts/auth-skeleton-test.ts"
   },
   "dependencies": {
     "@workspace/api-zod": "workspace:*",
@@ -46,6 +48,7 @@
     "express": "^5.2.1",
     "pino": "^9.14.0",
     "pino-http": "^10.5.0",
+    "viem": "^2.54.1",
     "zod": "catalog:"
   },
   "devDependencies": {

@@ -21,11 +21,25 @@
 //      accepts a "SIMULATED" value;
 //   9. no access-shell file carries wallet-address or 64-hex material — this
 //      layer is vocabulary only and must never pair wallets with members.
+//  10. (IA-2a) gate-mount coverage: every classified surface's route in
+//      App.tsx actually renders through the gate seam — public/member
+//      surfaces through PublicRoute (which mounts AccessGate), INTERNAL
+//      surfaces through OperatorRoute (the hard build-time gate). The only
+//      deliberate exception is the unclassified catch-all NotFound route
+//      (AccessGate fails closed on unclassified paths, so wrapping it would
+//      block the 404 page — documented architectural exception).
+//  11. (IA-2a) import restriction: matrixAllows / evaluateAccess are the
+//      access decision primitives; only the defining module, AccessGate, and
+//      the operator simulator may reference them. Random components/routes
+//      importing them directly would create parallel gating logic.
+//  12. (IA-2a) no browser-storage auth anywhere in studio src: localStorage /
+//      sessionStorage are allowed only for the theme preference
+//      (ThemeProvider) — no file may ever persist auth/session material.
 //
 // Scans are comment-stripped so documentation may name the primitives it
 // forbids without self-matching. Node-loadable (Node >= 22.6 / 24).
 
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import {
@@ -235,6 +249,124 @@ for (const rel of shellFiles) {
     `${rel} contains wallet-address or 64-hex material — the access shell is vocabulary only`,
   );
 }
+
+// ── 10. Gate-mount coverage (IA-2a) ──────────────────────────────────────────
+const appSrc = read(path.resolve(srcDir, "App.tsx"));
+const appCode = stripComments(appSrc);
+
+check(
+  /function PublicRoute[\s\S]*?<AccessGate routePath=\{path\}>/.test(appCode),
+  "PublicRoute helper mounts AccessGate with the route path",
+  "PublicRoute in App.tsx no longer mounts <AccessGate routePath={path}> — the gate seam is broken",
+);
+
+const publicRoutePaths = new Set(
+  [...appCode.matchAll(/<PublicRoute path="([^"]+)"/g)].map((m) => m[1]),
+);
+const operatorRoutePaths = new Set(
+  [...appCode.matchAll(/<Route path="([^"]+)">\s*<OperatorRoute\b/g)].map(
+    (m) => m[1],
+  ),
+);
+const bareRoutePaths = new Set(
+  [...appCode.matchAll(/<Route path="([^"]+)">/g)].map((m) => m[1]),
+);
+
+for (const s of surfaceClassification) {
+  if (s.layout === "public") {
+    check(
+      publicRoutePaths.has(s.routePath),
+      `${s.routePath}: gate-mounted via PublicRoute (AccessGate)`,
+      `${s.routePath} is a classified public/member surface but is not mounted via <PublicRoute> in App.tsx — it bypasses AccessGate`,
+    );
+  } else {
+    check(
+      operatorRoutePaths.has(s.routePath),
+      `${s.routePath}: mounted via OperatorRoute (hard build-time gate)`,
+      `${s.routePath} is a classified INTERNAL surface but is not mounted via <Route><OperatorRoute> in App.tsx — it bypasses the operator hard gate`,
+    );
+  }
+}
+
+const classifiedPaths = new Set(surfaceClassification.map((s) => s.routePath));
+for (const p of publicRoutePaths) {
+  check(
+    classifiedPaths.has(p),
+    `PublicRoute ${p} is classified in the surface registry`,
+    `PublicRoute ${p} has no entry in surfaceClassification — AccessGate would fail closed on it; classify the surface (deliberately) or remove the route`,
+  );
+}
+for (const p of operatorRoutePaths) {
+  check(
+    classifiedPaths.has(p),
+    `OperatorRoute ${p} is classified in the surface registry`,
+    `OperatorRoute ${p} has no entry in surfaceClassification — classify the INTERNAL surface (deliberately) or remove the route`,
+  );
+}
+const ungatedClassified = [...bareRoutePaths].filter(
+  (p) => classifiedPaths.has(p) && !operatorRoutePaths.has(p),
+);
+check(
+  ungatedClassified.length === 0,
+  "no classified route is mounted as a bare <Route> (all pass a gate seam)",
+  `classified route(s) mounted as bare <Route> without a gate: ${ungatedClassified.join(", ")}`,
+);
+check(
+  /<Route>\s*<PublicLayout>\s*<NotFound \/>/.test(appCode),
+  "catch-all NotFound stays the single ungated exception (unclassified 404)",
+  "the catch-all NotFound route changed shape — it must remain the bare, unclassified catch-all (or this guard must be deliberately updated)",
+);
+
+// ── 11 + 12. Studio-wide walks: import restriction + no browser-storage auth ─
+function walkSrc(dir: string, out: string[] = []): string[] {
+  for (const entry of readdirSync(dir)) {
+    const abs = path.join(dir, entry);
+    if (statSync(abs).isDirectory()) {
+      if (entry === "node_modules") continue;
+      walkSrc(abs, out);
+    } else if (/\.(ts|tsx)$/.test(entry)) {
+      out.push(abs);
+    }
+  }
+  return out;
+}
+const allSrcFiles = walkSrc(srcDir);
+
+const MATRIX_ALLOWED = new Set([
+  "config/accessState.ts",
+  "components/access/AccessGate.tsx",
+  "operator/AccessStateSimulator.tsx",
+]);
+const matrixViolations: string[] = [];
+for (const abs of allSrcFiles) {
+  const rel = path.relative(srcDir, abs);
+  if (MATRIX_ALLOWED.has(rel)) continue;
+  const code = stripComments(read(abs));
+  if (/\bmatrixAllows\b/.test(code) || /\bevaluateAccess\b/.test(code)) {
+    matrixViolations.push(rel);
+  }
+}
+check(
+  matrixViolations.length === 0,
+  `matrixAllows/evaluateAccess referenced only by the access shell allowlist (${MATRIX_ALLOWED.size} files)`,
+  `matrixAllows/evaluateAccess referenced outside the access shell allowlist: ${matrixViolations.join(", ")} — parallel gating logic is forbidden`,
+);
+
+const STORAGE_ALLOWED = new Set(["components/ThemeProvider.tsx"]);
+const storageViolations: string[] = [];
+for (const abs of allSrcFiles) {
+  const rel = path.relative(srcDir, abs);
+  if (STORAGE_ALLOWED.has(rel)) continue;
+  const code = stripComments(read(abs));
+  if (/\b(localStorage|sessionStorage)\b/.test(code)) {
+    storageViolations.push(rel);
+  }
+}
+check(
+  storageViolations.length === 0,
+  "no browser storage outside ThemeProvider (no client-side auth persistence)",
+  `browser storage used outside the ThemeProvider allowlist: ${storageViolations.join(", ")} — auth/session material must never live in localStorage/sessionStorage`,
+);
 
 // ── Report ───────────────────────────────────────────────────────────────────
 for (const line of ok) console.log(`PASS  ${line}`);

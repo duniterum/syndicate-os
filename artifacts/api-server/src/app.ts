@@ -2,6 +2,7 @@ import express, { type Express } from "express";
 import cors, { type CorsOptions } from "cors";
 import pinoHttp from "pino-http";
 import router from "./routes";
+import authRouter from "./auth/router";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
@@ -84,6 +85,14 @@ const corsOptions: CorsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+// ── Auth zone (IA-2) ────────────────────────────────────────────────────────
+// Dev-only SIWE challenge/session skeleton, architecturally separate from the
+// read-only protocol spine. The auth router carries its own scoped JSON
+// parser, cookie reader, origin check and throttle; nothing here changes the
+// global middleware posture (no app-wide body parser, CORS stays
+// credential-free). See src/auth/router.ts for the full contract.
+app.use("/api/auth", authRouter);
 
 app.use("/api", router);
 
