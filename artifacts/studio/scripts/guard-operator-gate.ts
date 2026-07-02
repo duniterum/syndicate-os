@@ -212,6 +212,7 @@ const gatedFiles = new Set(
     "pages/OperatorPreview.tsx",
     "pages/OsMap.tsx",
     "config/protocolOsMap.ts",
+    "operator/AccessStateSimulator.tsx",
   ].map((r) => path.resolve(srcDir, r)),
 );
 let probeInGated = false;
@@ -393,6 +394,42 @@ check(
   !/last verified/i.test(panel),
   'panel makes no "last verified" claim',
   'LiveEvidencePanel.tsx must not claim "last verified" — wall-clock is page-load provenance only',
+);
+
+// ── 9. Access-state simulator stays inside the gated operator graph ─────────
+// (Slice IA-1, founder-approved trimmed form.) The simulator may only be
+// imported by gated console modules, and its probe string must be verbatim-
+// unique to it so the production dist-grep proof is unambiguous.
+const SIMULATOR_PROBE = "ACCESS-STATE SIMULATOR — SIMULATED STATE — NOT WIRED";
+const simulatorSpec = '"@/operator/AccessStateSimulator"';
+const simulatorSrc = stripComments(read("operator/AccessStateSimulator.tsx"));
+check(
+  simulatorSrc.includes("SIMULATED STATE — NOT WIRED"),
+  "simulator carries the SIMULATED STATE — NOT WIRED warning copy",
+  "AccessStateSimulator.tsx must carry the SIMULATED STATE — NOT WIRED warning copy",
+);
+let simProbeInGated = false;
+for (const file of allFiles) {
+  const rel = path.relative(srcDir, file);
+  const code = stripComments(readFileSync(file, "utf8"));
+  if (code.includes(SIMULATOR_PROBE)) {
+    if (gatedFiles.has(file)) simProbeInGated = true;
+    else
+      errors.push(
+        `simulator probe string leaked into non-gated file ${rel} — dist-grep proof would be ambiguous`,
+      );
+  }
+  if (gatedFiles.has(file)) continue;
+  check(
+    !code.includes(`from ${simulatorSpec}`),
+    `${rel}: no import of ${simulatorSpec}`,
+    `${rel} imports ${simulatorSpec} — the access-state simulator may only be imported inside the gated operator graph`,
+  );
+}
+check(
+  simProbeInGated,
+  `simulator probe string present in gated modules only`,
+  `simulator probe string not found in gated modules — dist-grep proof has no target`,
 );
 
 // ── Report ───────────────────────────────────────────────────────────────────

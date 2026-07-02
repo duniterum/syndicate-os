@@ -7,8 +7,21 @@
 //
 // `surface` reuses the canonical `SyndicateSurface` vocabulary from
 // @workspace/os-contracts (type-only import → this file stays Node-loadable).
+//
+// IA-1 access-state fields (two-field design, founder-approved):
+//   - `requiredState` records the FUTURE §3-matrix requirement from the
+//     checkpointed identity/access design doc. It is matrix truth on file,
+//     NOT current enforcement — no auth system exists.
+//   - `enforcement` is the current mode: every surface is PREVIEW_LABELLED
+//     (renders exactly as today). GATED is reserved for a future slice with a
+//     real, wired state machine; guard-access-state forbids it until then.
+// Frontend gating is visibility/UX only — never permission control.
 
-import type { SyndicateSurface } from "@workspace/os-contracts";
+import type {
+  AccessEnforcement,
+  AccessStateId,
+  SyndicateSurface,
+} from "@workspace/os-contracts";
 
 /** Who a surface is built for. Drives which layout/chrome it renders in. */
 export type SurfaceAudience = "PUBLIC" | "MEMBER_PREVIEW" | "OPERATOR_PREVIEW";
@@ -30,6 +43,10 @@ export interface SurfaceClassificationEntry {
   surface: SyndicateSurface;
   layout: SurfaceLayout;
   summary: string;
+  /** FUTURE §3-matrix access requirement (recorded truth, not enforcement). */
+  requiredState: AccessStateId;
+  /** Current enforcement mode. PREVIEW_LABELLED = renders as today. */
+  enforcement: AccessEnforcement;
 }
 
 export const surfaceClassification: SurfaceClassificationEntry[] = [
@@ -40,6 +57,8 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PUBLIC_VISITOR",
     layout: "public",
     summary: "Curated public front door.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
   },
   {
     routePath: "/proof",
@@ -48,6 +67,8 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PUBLIC_VISITOR",
     layout: "public",
     summary: "What public proof will look like, and why none is wired yet.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
   },
   {
     routePath: "/status",
@@ -56,6 +77,8 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PUBLIC_VISITOR",
     layout: "public",
     summary: "Authoritative ledger of what is real vs awaiting source.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
   },
   {
     routePath: "/learning",
@@ -64,6 +87,8 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PUBLIC_VISITOR",
     layout: "public",
     summary: "Plain-language education about the protocol.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
   },
   {
     routePath: "/source-attribution",
@@ -72,6 +97,8 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PUBLIC_VISITOR",
     layout: "public",
     summary: "The verified-introduction model, framed attribution-only.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
   },
   {
     routePath: "/contracts",
@@ -80,6 +107,8 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PUBLIC_VISITOR",
     layout: "public",
     summary: "Read-only contract & economy memory (roles + lifecycle).",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
   },
   {
     routePath: "/support",
@@ -88,6 +117,8 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PUBLIC_VISITOR",
     layout: "public",
     summary: "Public help entry. Intake states only — nothing is stored.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
   },
   {
     routePath: "/archive",
@@ -96,6 +127,8 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PUBLIC_VISITOR",
     layout: "public",
     summary: "Archive & chronicle concept memory. Reads not wired.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
   },
   {
     routePath: "/recognition",
@@ -104,6 +137,8 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PUBLIC_VISITOR",
     layout: "public",
     summary: "The recognition model, explained as a future concept.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
   },
   {
     routePath: "/member",
@@ -112,6 +147,8 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "AUTHENTICATED_MEMBER",
     layout: "public",
     summary: "A labelled preview of the future member cockpit. Founder-gated.",
+    requiredState: "S7",
+    enforcement: "PREVIEW_LABELLED",
   },
   {
     routePath: "/studio",
@@ -120,6 +157,8 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
     summary: "Operator console overview.",
+    requiredState: "S11",
+    enforcement: "PREVIEW_LABELLED",
   },
   {
     routePath: "/proof-studio",
@@ -128,6 +167,8 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
     summary: "Draft proof tooling (disabled).",
+    requiredState: "S11",
+    enforcement: "PREVIEW_LABELLED",
   },
   {
     routePath: "/founder",
@@ -136,6 +177,8 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
     summary: "Founder/operator controls preview. Gated.",
+    requiredState: "S11",
+    enforcement: "PREVIEW_LABELLED",
   },
   {
     routePath: "/source",
@@ -144,6 +187,8 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
     summary: "Operator source surface. Paused by precaution.",
+    requiredState: "S11",
+    enforcement: "PREVIEW_LABELLED",
   },
   {
     routePath: "/os-map",
@@ -151,7 +196,10 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     audience: "OPERATOR_PREVIEW",
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
-    summary: "Internal founder preview: the full protocol organism, honestly labelled.",
+    summary:
+      "Internal founder preview: the full protocol organism, honestly labelled.",
+    requiredState: "S11",
+    enforcement: "PREVIEW_LABELLED",
   },
 ];
 

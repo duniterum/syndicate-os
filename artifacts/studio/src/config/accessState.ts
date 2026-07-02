@@ -1,0 +1,204 @@
+// config/accessState.ts — Access-State shell config (Slice IA-1).
+// ---------------------------------------------------------------------------
+// Runtime metadata for the S1–S14 access-state vocabulary defined (types only)
+// in @workspace/os-contracts. Authority: the checkpointed design doc
+// WALLET_FIRST_IDENTITY_ACCESS_AND_USER_REGISTRY_DESIGN.md (§1–§3).
+//
+// HONESTY / SECURITY POSTURE — read before extending:
+//   - NO authentication, session, wallet, or registry system exists. The only
+//     real access state in the entire product is S1 (anonymous visitor), and
+//     CURRENT_ACCESS_STATE_ID below is hardwired to it. Nothing here is, or
+//     may pretend to be, evidence of auth wiring.
+//   - Everything in this file is visibility/UX vocabulary. Frontend gating is
+//     NEVER permission control; real enforcement is a future server-side,
+//     founder-gated slice.
+//   - Unknown/undefined state always resolves to S1 (fail closed).
+//   - This file must stay Node-loadable for guard scripts: type-only imports,
+//     no runtime dependencies, pure data + pure functions only.
+
+import type {
+  AccessEnforcement,
+  AccessStateId,
+  AccessTrack,
+} from "@workspace/os-contracts";
+
+/**
+ * The one real access state today. Hardwired — not read from anywhere,
+ * because there is nowhere to read it from: no session system exists.
+ * Changing this constant is a founder-gated act (guard-access-state pins it).
+ */
+export const CURRENT_ACCESS_STATE_ID: AccessStateId = "S1";
+
+export interface AccessStateMeta {
+  /** Human name from the design doc §2 heading. */
+  name: string;
+  /** Which of the three tracks (§1) the state belongs to. */
+  track: AccessTrack;
+  /** Short chip label (monospace badge copy). */
+  chipLabel: string;
+  /** One-line honest truth about what this state does and does not prove. */
+  honestNote: string;
+}
+
+export const accessStates: Record<AccessStateId, AccessStateMeta> = {
+  S1: {
+    name: "Anonymous visitor",
+    track: "USER",
+    chipLabel: "S1 · VISITOR",
+    honestNote:
+      "Public pages with truth labels. No wallet prompt, no wallet tracking, no session.",
+  },
+  S2: {
+    name: "Logged-out visitor",
+    track: "USER",
+    chipLabel: "S2 · SESSION ENDED",
+    honestNote:
+      "Identical to S1. An expired or revoked session is no session (fail closed).",
+  },
+  S3: {
+    name: "Wallet connected, unsigned",
+    track: "USER",
+    chipLabel: "S3 · CONNECTED — UNSIGNED",
+    honestNote:
+      "A connection is a frontend fact and proves nothing. The backend has no session.",
+  },
+  S4: {
+    name: "Signed in, membership not verified",
+    track: "USER",
+    chipLabel: "S4 · SIGNED — UNVERIFIED",
+    honestNote:
+      "A signature proves wallet control right now — not membership, not history, not authority.",
+  },
+  S5: {
+    name: "Web2 account (reserved)",
+    track: "USER",
+    chipLabel: "S5 · WEB2 (RESERVED)",
+    honestNote:
+      "Reserved future convenience login. A provider account is never authority.",
+  },
+  S6: {
+    name: "Embedded wallet (reserved)",
+    track: "USER",
+    chipLabel: "S6 · EMBEDDED (RESERVED)",
+    honestNote:
+      "Reserved future convenience wallet. Never eligible for operator authority.",
+  },
+  S7: {
+    name: "Verified member",
+    track: "USER",
+    chipLabel: "S7 · VERIFIED MEMBER",
+    honestNote:
+      "Membership verified server-side against membership truth. Own-record reads only.",
+  },
+  S8: {
+    name: "Member, recovery pending",
+    track: "USER",
+    chipLabel: "S8 · RECOVERY PENDING",
+    honestNote:
+      "Restricted read-only while a recovery case is open; identity-mutating actions frozen.",
+  },
+  S9: {
+    name: "Restricted user",
+    track: "USER",
+    chipLabel: "S9 · RESTRICTED",
+    honestNote:
+      "Honest restriction notice with a contact path. Public surfaces still render.",
+  },
+  S10: {
+    name: "Member with introducer privileges",
+    track: "USER",
+    chipLabel: "S10 · INTRODUCER",
+    honestNote:
+      "S7 plus own attribution status. Own records only; separately founder-gated.",
+  },
+  S11: {
+    name: "Operator / admin",
+    track: "PRIVILEGED",
+    chipLabel: "S11 · OPERATOR",
+    honestNote:
+      "Requires an ACTIVE server-side registry row. The operator shell is never the member skin.",
+  },
+  S12: {
+    name: "Founder / root",
+    track: "PRIVILEGED",
+    chipLabel: "S12 · FOUNDER/ROOT",
+    honestNote:
+      "Apex scope with extra friction. No online root-replacement workflow exists.",
+  },
+  S13: {
+    name: "Auditor (read-only)",
+    track: "PRIVILEGED",
+    chipLabel: "S13 · AUDITOR",
+    honestNote: "Read-only shell skin. Zero mutations, evidence redacted.",
+  },
+  S14: {
+    name: "Worker / agent identity",
+    track: "MACHINE",
+    chipLabel: "S14 · WORKER/AGENT",
+    honestNote:
+      "No surface of its own. Proposal-only; cannot approve recovery or identity changes.",
+  },
+};
+
+export const ACCESS_STATE_IDS = Object.keys(accessStates) as AccessStateId[];
+
+/** Fail-closed resolver: anything unknown is an anonymous visitor (§3). */
+export function resolveAccessState(value: unknown): AccessStateId {
+  return typeof value === "string" &&
+    (ACCESS_STATE_IDS as string[]).includes(value)
+    ? (value as AccessStateId)
+    : "S1";
+}
+
+/**
+ * Pure §3-matrix projection: would `stateId` be allowed on a surface whose
+ * FUTURE requirement is `requiredState`? Encodes the three requirement tiers
+ * present in the surface registry today; anything unmodelled fails closed.
+ *
+ *  - "S1"  (public pages row): every human state may view; S14 worker has no
+ *    frontend surface of its own ("—" in the matrix).
+ *  - "S7"  (member cockpit row): own-scope member states (S7 · S8 read-only ·
+ *    S10) plus least-data support views (S11 · S12 read-only). S13 is "—".
+ *  - "S11" (operator shell row): S11 · S12, plus S13 in the read-only skin.
+ *
+ * This is vocabulary/preview logic ONLY — it authorizes nothing, because no
+ * state other than S1 can occur (no auth system exists).
+ */
+export function matrixAllows(
+  stateId: AccessStateId,
+  requiredState: AccessStateId,
+): boolean {
+  switch (requiredState) {
+    case "S1":
+      return stateId !== "S14";
+    case "S7":
+      return ["S7", "S8", "S10", "S11", "S12"].includes(stateId);
+    case "S11":
+      return ["S11", "S12", "S13"].includes(stateId);
+    default:
+      return false;
+  }
+}
+
+export interface AccessEvaluation {
+  allowed: boolean;
+  /** Honest one-word mode for chips/simulator output. */
+  outcome: "PREVIEW" | "ALLOW" | "BLOCK";
+}
+
+/**
+ * Evaluate a surface for a given state under the two-field registry design:
+ * PREVIEW_LABELLED surfaces render exactly as today (the matrix column is
+ * recorded truth, not enforcement); GATED surfaces consult the matrix and
+ * fail closed. No surface is GATED in IA-1 (guard-enforced).
+ */
+export function evaluateAccess(
+  stateId: AccessStateId,
+  requiredState: AccessStateId,
+  enforcement: AccessEnforcement,
+): AccessEvaluation {
+  if (enforcement !== "GATED") return { allowed: true, outcome: "PREVIEW" };
+  return matrixAllows(resolveAccessState(stateId), requiredState)
+    ? { allowed: true, outcome: "ALLOW" }
+    : { allowed: false, outcome: "BLOCK" };
+}

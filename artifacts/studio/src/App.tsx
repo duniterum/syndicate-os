@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, type ReactNode } from "react";
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -18,6 +18,8 @@ import Archive from "@/pages/Archive";
 import OperatorPreviewUnavailable from "@/pages/OperatorPreviewUnavailable";
 import { OPERATOR_PREVIEW_ENABLED } from "@/config/operatorPreviewGate";
 import type { OperatorConsolePage } from "@/operator/OperatorConsole";
+import { AccessStateProvider } from "@/components/access/AccessStateProvider";
+import { AccessGate } from "@/components/access/AccessGate";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { RouteScrollManager } from "@/components/RouteScrollManager";
 import { SeoHeadManager } from "@/components/SeoHeadManager";
@@ -48,60 +50,59 @@ function OperatorRoute({ page }: { page: OperatorConsolePage }) {
   );
 }
 
+// Public/member surfaces render through the fail-closed AccessGate shell.
+// Every surface is PREVIEW_LABELLED in IA-1, so nothing visible changes; the
+// gate is a visibility/UX seam only, never security (see AccessGate.tsx).
+function PublicRoute({
+  path,
+  children,
+}: {
+  path: string;
+  children: ReactNode;
+}) {
+  return (
+    <Route path={path}>
+      <PublicLayout>
+        <AccessGate routePath={path}>{children}</AccessGate>
+      </PublicLayout>
+    </Route>
+  );
+}
+
 function Router() {
   return (
     <Switch>
       {/* Public marketing surfaces — PublicLayout chrome */}
-      <Route path="/">
-        <PublicLayout>
-          <PublicHome />
-        </PublicLayout>
-      </Route>
-      <Route path="/proof">
-        <PublicLayout>
-          <ProofDashboard />
-        </PublicLayout>
-      </Route>
-      <Route path="/status">
-        <PublicLayout>
-          <SystemStatus />
-        </PublicLayout>
-      </Route>
-      <Route path="/learning">
-        <PublicLayout>
-          <Learning />
-        </PublicLayout>
-      </Route>
-      <Route path="/contracts">
-        <PublicLayout>
-          <ContractMemory />
-        </PublicLayout>
-      </Route>
-      <Route path="/source-attribution">
-        <PublicLayout>
-          <SourceAttribution />
-        </PublicLayout>
-      </Route>
-      <Route path="/support">
-        <PublicLayout>
-          <Support />
-        </PublicLayout>
-      </Route>
-      <Route path="/archive">
-        <PublicLayout>
-          <Archive />
-        </PublicLayout>
-      </Route>
-      <Route path="/recognition">
-        <PublicLayout>
-          <Recognition />
-        </PublicLayout>
-      </Route>
-      <Route path="/member">
-        <PublicLayout>
-          <MemberAccess />
-        </PublicLayout>
-      </Route>
+      <PublicRoute path="/">
+        <PublicHome />
+      </PublicRoute>
+      <PublicRoute path="/proof">
+        <ProofDashboard />
+      </PublicRoute>
+      <PublicRoute path="/status">
+        <SystemStatus />
+      </PublicRoute>
+      <PublicRoute path="/learning">
+        <Learning />
+      </PublicRoute>
+      <PublicRoute path="/contracts">
+        <ContractMemory />
+      </PublicRoute>
+      <PublicRoute path="/source-attribution">
+        <SourceAttribution />
+      </PublicRoute>
+      <PublicRoute path="/support">
+        <Support />
+      </PublicRoute>
+      <PublicRoute path="/archive">
+        <Archive />
+      </PublicRoute>
+      <PublicRoute path="/recognition">
+        <Recognition />
+      </PublicRoute>
+      <PublicRoute path="/member">
+        <MemberAccess />
+      </PublicRoute>
 
       {/* Operator console surfaces — hard-gated (config/operatorPreviewGate.ts) */}
       <Route path="/studio">
@@ -136,9 +137,11 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-            <RouteScrollManager />
-            <SeoHeadManager />
-            <Router />
+            <AccessStateProvider>
+              <RouteScrollManager />
+              <SeoHeadManager />
+              <Router />
+            </AccessStateProvider>
           </WouterRouter>
           <Toaster />
         </TooltipProvider>

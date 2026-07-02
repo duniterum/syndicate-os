@@ -6,3 +6,4 @@
  * source, adapter, or live wiring exists.
  */
 export type * from "./source-boundary";
+export type * from "./access-state";

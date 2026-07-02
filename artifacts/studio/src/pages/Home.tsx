@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { TerminalSquare, ArrowUpRight } from "lucide-react";
 import { DataStatusNote } from "@/components/DataStatusNote";
+import { AccessStateSimulator } from "@/operator/AccessStateSimulator";
 import { ProtocolRealitySummary } from "@/components/ProtocolReality";
 import { TruthLabel } from "@/components/TruthLabel";
 import { Card } from "@/components/ui/card";
@@ -31,6 +32,13 @@ export default function Home() {
 
       <div className="mb-12">
         <ProtocolRealitySummary />
+      </div>
+
+      <h2 className="text-sm font-medium text-foreground mb-4">
+        Access-state shell (IA-1)
+      </h2>
+      <div className="mb-12">
+        <AccessStateSimulator />
       </div>
 
       <h2 className="text-sm font-medium text-foreground mb-4">Operator surfaces</h2>
