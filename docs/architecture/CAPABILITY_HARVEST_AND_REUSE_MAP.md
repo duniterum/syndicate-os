@@ -4,40 +4,40 @@
 **Correction pass:** Capability Doctrine Correction (2026-07-02) — business mechanics are preserved; only unsafe framing/patterns are rejected. See "Business Mechanics vs Unsafe Financial Framing".
 **Date:** 2026-07-02
 **Baseline:** private GitHub checkpoint `protocol-organism-spine-founder-visibility-v1` = `duniterum/syndicate-os@e3404ab851502de2e0962642117ff707976fe51d` (tag object `a45ce5fc45…`); workspace HEAD `40580c30`.
-**Checkpoint status of this doc:** `docs/` is deliberately EXCLUDED from the curated private-GitHub publish set. This document is **workspace-only** until the founder approves a future checkpoint that includes it.
+**Checkpoint status of this doc:** checkpointed to private GitHub `duniterum/syndicate-os@main` in docs-only commit `73384abfbd7f588742406ab75047e2b9c2ca7b54` (2026-07-02, founder-approved; benign scan findings accepted as-is). Workspace remains the working copy; future doc edits ride the next founder-approved docs checkpoint.
 **Hard boundaries honored:** no publish, no deploy, no new feature, no new route/API/UI, no code integration, no push. This slice created/updated documentation only.
 
 ---
 
 ## 1. Source Availability Manifest (proof of what was and was not inspectable)
 
-Classification legend: (1) PRESENT+SEARCHED, nothing relevant · (2) PRESENT+SEARCHED, assets found · (3) MISSING/NOT MOUNTED — cannot conclude · (4) SOURCE NAME UNKNOWN — founder input needed · (5) EXISTS ELSEWHERE — founder must provide.
+Classification legend (founder-canonical, renumbered 2026-07-02 in slice 2.20G — earlier checkpointed copies used an older ordering): (1) PRESENT+SEARCHED+FOUND · (2) PRESENT+SEARCHED, NOTHING RELEVANT · (3) MISSING/NOT MOUNTED/NOT ACCESSIBLE · (4) EXISTS ELSEWHERE — FOUNDER MUST PROVIDE · (5) SOURCE NAME UNKNOWN.
 
 | Source / path / repo | Exists? | Searched how | Relevant assets found | Class |
 |---|---|---|---|---|
-| Workspace root `/home/runner/workspace` | yes | `ls -a` full listing | monorepo + docs + attachments + exports | 2 |
-| `artifacts/studio` | yes | dir listing, component/route knowledge from prior audits | full public+operator app, TruthLabel system, seo-route-registry, operator gate, os-map, hero system | 2 |
-| `artifacts/api-server` | yes | dir listing + route grep (3 GET, 0 write) | reality spine, guards, canon (vendored `src/canon/the-syndicate`), read-only chain scripts | 2 |
-| `artifacts/mockup-sandbox` | yes | dir listing (`src/components/mockups`) | `syndicate-hero` prototype only | 2 |
-| `lib/` (5 pkgs incl `os-contracts`) | yes | dir listing | api-client-react, api-spec, api-zod, db, os-contracts (type-only OS vocab) | 2 |
-| `scripts/src` | yes | dir listing | `hello.ts` only — no legacy tooling | 1 |
-| `docs/` (architecture, audits, strategy, handoff, phase1 ledgers) | yes | full tree listing + content distillation of 7 harvest/prior-art docs | 2.20E Duniterum atlas, 2.20F TheSyndicate principal audit, 2.21A organism strategy, 2.19D prior-art reconciliation, 2.18I/B/C GitHub harvest series | 2 |
-| `the-syndicate-master-operating-map.md` (root) | yes | file present, 253 lines | master operating map | 2 |
-| `attached_assets/` (206 files) | yes | name scan + type classification | founder directives (Pasted-*), 10 hero/header code zips (already integrated into hero work), images; 1 paste naming the freeze trio (instructions, NOT data) | 2 |
-| `exports/` | yes | dir listing | self-generated hero bundles/specs (outbound, not prior art) | 1 |
-| `screenshots/` | yes | dir listing | audit captures only | 1 |
-| Old/legacy/backup/archive/admin/widget folders in workspace | **no** | keyword dir scan over root/artifacts/lib/scripts/docs (25 keywords: admin, dashboard, widgets, auth, roles, referral, gamification, legacy, prototype, backup, old, import, …) | only match = `mockup-sandbox` | 1 — **Not found in current workspace; cannot rule out existence elsewhere** |
-| Workspace git remotes | yes | `git remote -v` | only Replit-internal `gitsafe` backup; GitHub is reached via connector, not a mounted remote | 2 |
-| GitHub `duniterum/syndicate-os` (private) | yes | REST (auth as `duniterum`), branch/tag/content probes | the just-pushed checkpoint | 2 |
-| GitHub `duniterum/TheSyndicate` (public) | yes | REST list; deep-audited in 2.20F | direct product ancestor — richest safe pattern source | 2 |
-| GitHub `duniterum/Supa-Exchange` | yes | REST list; deep-audited in 2.20E | operator/member machinery + canon-guard ancestor | 2 |
-| GitHub `duniterum/entity-chain` | yes | REST list; audited in 2.20E | architecture concepts under unsafe framing | 2 |
-| GitHub `duniterum/navi-portfolio-agent` | yes | REST list; audited in 2.20E | read-model provider abstraction only | 2 |
-| GitHub `duniterum/auditclaw-site` | yes | REST list; audited in 2.20E | proof-honesty language patterns | 2 |
-| GitHub `duniterum/cesium` | yes (visible) | REST list | EXCLUDED — upstream Duniter/Cesium fork (2016), not Duniterum prior art | 1 |
-| Freeze trio (`v3-historical-members.freeze-88496414.json`, root output, generator) + `v3-historical-members` module | **no** (as files) | filename search across artifacts/lib/scripts/docs/attachments/exports | ABSENT by design (PII). **Data itself already founder-gated-imported** into server-only DB (`historical_member` ×8, `historical_member_freeze` ×1); `freezeGate.ts` VERIFIED | 5 (files) / already-imported (data) |
-| 4 identity doctrine docs (IDENTITY_ATTRIBUTION_CONSTITUTION, HOLDER_INDEX_ARCHITECTURE, NFT_ARCHIVE_METADATA_PHILOSOPHY, DOCUMENTATION_AUTHORITY_MAP) | **no** | filename search, all mounts | ABSENT — Not found in current workspace; cannot rule out existence elsewhere | 5 |
-| Other old repos beyond the 7 visible to `duniterum` | unknown | REST `/user/repos` returns exactly 7 | none visible | 4 — founder must name any repos under other accounts/orgs |
+| Workspace root `/home/runner/workspace` | yes | `ls -a` full listing | monorepo + docs + attachments + exports | 1 |
+| `artifacts/studio` | yes | dir listing, component/route knowledge from prior audits | full public+operator app, TruthLabel system, seo-route-registry, operator gate, os-map, hero system | 1 |
+| `artifacts/api-server` | yes | dir listing + route grep (3 GET, 0 write) | reality spine, guards, canon (vendored `src/canon/the-syndicate`), read-only chain scripts | 1 |
+| `artifacts/mockup-sandbox` | yes | dir listing (`src/components/mockups`) | `syndicate-hero` prototype only | 1 |
+| `lib/` (5 pkgs incl `os-contracts`) | yes | dir listing | api-client-react, api-spec, api-zod, db, os-contracts (type-only OS vocab) | 1 |
+| `scripts/src` | yes | dir listing | `hello.ts` only — no legacy tooling | 2 |
+| `docs/` (architecture, audits, strategy, handoff, phase1 ledgers) | yes | full tree listing + content distillation of 7 harvest/prior-art docs | 2.20E Duniterum atlas, 2.20F TheSyndicate principal audit, 2.21A organism strategy, 2.19D prior-art reconciliation, 2.18I/B/C GitHub harvest series | 1 |
+| `the-syndicate-master-operating-map.md` (root) | yes | file present, 253 lines | master operating map | 1 |
+| `attached_assets/` (206 files) | yes | name scan + type classification | founder directives (Pasted-*), 10 hero/header code zips (already integrated into hero work), images; 1 paste naming the freeze trio (instructions, NOT data) | 1 |
+| `exports/` | yes | dir listing | self-generated hero bundles/specs (outbound, not prior art) | 2 |
+| `screenshots/` | yes | dir listing | audit captures only | 2 |
+| Old/legacy/backup/archive/admin/widget folders in workspace | **no** | keyword dir scan over root/artifacts/lib/scripts/docs (25 keywords: admin, dashboard, widgets, auth, roles, referral, gamification, legacy, prototype, backup, old, import, …) | only match = `mockup-sandbox` | 2 — **Not found in current workspace; cannot rule out existence elsewhere** |
+| Workspace git remotes | yes | `git remote -v` | only Replit-internal `gitsafe` backup; GitHub is reached via connector, not a mounted remote | 1 |
+| GitHub `duniterum/syndicate-os` (private) | yes | REST (auth as `duniterum`), branch/tag/content probes | the just-pushed checkpoint | 1 |
+| GitHub `duniterum/TheSyndicate` (public) | yes | REST list; deep-audited in 2.20F | direct product ancestor — richest safe pattern source | 1 |
+| GitHub `duniterum/Supa-Exchange` | yes | REST list; deep-audited in 2.20E | operator/member machinery + canon-guard ancestor | 1 |
+| GitHub `duniterum/entity-chain` | yes | REST list; audited in 2.20E | architecture concepts under unsafe framing | 1 |
+| GitHub `duniterum/navi-portfolio-agent` | yes | REST list; audited in 2.20E | read-model provider abstraction only | 1 |
+| GitHub `duniterum/auditclaw-site` | yes | REST list; audited in 2.20E | proof-honesty language patterns | 1 |
+| GitHub `duniterum/cesium` | yes (visible) | REST list | EXCLUDED — upstream Duniter/Cesium fork (2016), not Duniterum prior art | 2 |
+| Freeze trio (`v3-historical-members.freeze-88496414.json`, root output, generator) + `v3-historical-members` module | **no** (as files) | filename search across artifacts/lib/scripts/docs/attachments/exports | ABSENT by design (PII). **Data itself already founder-gated-imported** into server-only DB (`historical_member` ×8, `historical_member_freeze` ×1); `freezeGate.ts` VERIFIED | 4 (files) / already-imported (data) |
+| 4 identity doctrine docs (IDENTITY_ATTRIBUTION_CONSTITUTION, HOLDER_INDEX_ARCHITECTURE, NFT_ARCHIVE_METADATA_PHILOSOPHY, DOCUMENTATION_AUTHORITY_MAP) | **yes — FOUND (2.20G re-harvest)** | GitHub tree search of `duniterum/TheSyndicate@main` | All four exist at `TheSyndicate@docs/` (public repo); not yet read in depth — inspection slice needs founder approval | 1 |
+| Other old repos beyond the 7 visible to `duniterum` | unknown | REST `/user/repos` returns exactly 7 | none visible | 5 — founder must name any repos under other accounts/orgs |
 
 **No source was silently treated as empty.** Every "nothing found" row above names the search method and scope.
 
@@ -87,6 +87,8 @@ Status legend: WORKING / PARTIAL / CONCEPT / OLD-CANON / UNSAFE / INTEGRATED. De
 | Multi-provider read-model abstraction | navi-portfolio-agent | PARTIAL | REBUILD-IDEA-ONLY | none | trading framing REJECT | guard/utilities lane |
 | Evidence/verdict/provenance language | auditclaw-site | WORKING (language) | REUSE AS-IS (copy doctrine only) | none | none | copy/doctrine work anytime |
 
+> **2.20G re-harvest addendum (2026-07-02):** a corrected-doctrine second-pass harvest at GitHub file-tree + content level produced a full reclassification table (referral/source corpus, seat-purchase→receipt→proof journey, treasury-routing transparency, cockpit/standing surfaces, operator admin machinery, growth/link-amplification lane). See `docs/strategy/CORRECTED_DOCTRINE_REHARVEST_2_20G.md` — that table supersedes older REJECT rows where they conflict.
+
 ### Business Mechanics vs Unsafe Financial Framing (founder-corrected doctrine)
 
 > The Syndicate preserves serious business, membership, commerce, recognition, and operational
@@ -120,9 +122,10 @@ Status legend: WORKING / PARTIAL / CONCEPT / OLD-CANON / UNSAFE / INTEGRATED. De
 - Existing app copy already anchors "growth contribution — NOT compensation" (`sourceAttributionTerminology.ts`); a future copy-review slice should sweep remaining ambiguous "contribution" phrasings in UI copy toward the member/standing vocabulary (not done in this documentation-only pass).
 
 ### NEED SOURCE
-- 4 identity doctrine docs (class 5) — blocked for holder-index/identity-attribution design work.
-- Freeze trio raw files (class 5) — NOT needed for current DB layer (already imported & verified); only needed if founder wants the raw artifacts vendored (privacy decision).
-- Any repos outside the 7 visible to `duniterum` (class 4).
+- ~~4 identity doctrine docs (previously NEED SOURCE)~~ **RESOLVED 2026-07-02 (2.20G):** all four found in `duniterum/TheSyndicate@docs/` (class 1 — PRESENT+SEARCHED+FOUND) — identity/holder-index design work is unblocked pending a founder-approved read-only inspection slice.
+- "External Link Boost" (founder-named clue) — **NOT FOUND in current workspace or searched GitHub sources (all 7 repo trees + content search: no `link boost`/`backlink`/`utm_source`; every prior-art "boost" = commission/reputation multipliers, mostly ABANDONED under its own "never wealth" rule); cannot rule out external/non-duniterum source unless founder names it.** Nearest semantic equivalents inventoried in `docs/strategy/CORRECTED_DOCTRINE_REHARVEST_2_20G.md` §2 (`?ref=` first-touch capture, member share-card export, pre-ads/search-submission readiness corpus).
+- Freeze trio raw files (class 4 — exist elsewhere, founder must provide) — NOT needed for current DB layer (already imported & verified); only needed if founder wants the raw artifacts vendored (privacy decision).
+- Any repos outside the 7 visible to `duniterum` (class 4/5 — elsewhere and/or unnamed; founder must name them).
 
 ## 3. Integration lanes (future, all founder-gated)
 
