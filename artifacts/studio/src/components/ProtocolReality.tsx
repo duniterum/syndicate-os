@@ -154,6 +154,10 @@ export function MetaStrip({ data }: { data: ProtocolRealityResponse }) {
       </span>
       <span className="text-border">·</span>
       <span>
+        Read age <span className="text-foreground/80">≤{Math.round(data.cacheTtlMs / 1000)}s</span>
+      </span>
+      <span className="text-border">·</span>
+      <span>
         As of <span className="text-foreground/80">{new Date(data.asOf).toISOString().slice(0, 16).replace("T", " ")}</span>
       </span>
     </div>

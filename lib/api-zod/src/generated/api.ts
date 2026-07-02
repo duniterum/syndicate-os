@@ -51,6 +51,7 @@ export const GetProtocolRealityResponse = zod.object({
   "expectedChainId": zod.literal(43114),
   "asOf": zod.string(),
   "cached": zod.boolean(),
+  "cacheTtlMs": zod.literal(30000),
   "groups": zod.object({
   "chain": zod.array(zod.object({
   "id": zod.string(),

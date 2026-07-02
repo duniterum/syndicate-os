@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { ProtocolRealityResponseCacheTtlMs } from './protocolRealityResponseCacheTtlMs';
 import type { ProtocolRealityResponseExpectedChainId } from './protocolRealityResponseExpectedChainId';
 import type { ProtocolRealityResponseGroups } from './protocolRealityResponseGroups';
 import type { ProtocolRealityResponseMode } from './protocolRealityResponseMode';
@@ -14,5 +15,6 @@ export interface ProtocolRealityResponse {
   expectedChainId: ProtocolRealityResponseExpectedChainId;
   asOf: string;
   cached: boolean;
+  cacheTtlMs: ProtocolRealityResponseCacheTtlMs;
   groups: ProtocolRealityResponseGroups;
 }

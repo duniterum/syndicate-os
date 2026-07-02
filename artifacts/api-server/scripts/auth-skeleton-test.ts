@@ -427,6 +427,77 @@ async function main(): Promise<void> {
     `fallback-bucket /challenge status ${fallbackLive.status} despite spoofed x-real-ip/Forwarded`,
   );
 
+  // ── Pre-publish hardening: production auth-exposure gate ──────────────────
+  // These checks run against an IN-PROCESS app instance on an ephemeral port
+  // (never the shared dev server), because they must flip NODE_ENV /
+  // SYNDICATE_AUTH_ENABLED for the app under test. The gate reads the
+  // environment per-request, so mutating process.env between requests is the
+  // deterministic way to exercise both postures. Env is restored in finally.
+  {
+    const { default: app } = await import("../src/app");
+    const server = app.listen(0);
+    await new Promise<void>((resolve) => server.once("listening", resolve));
+    const addr = server.address();
+    if (addr === null || typeof addr === "string") {
+      throw new Error("in-process server did not expose a port");
+    }
+    const gateBase = `http://127.0.0.1:${addr.port}/api/auth`;
+    const savedNodeEnv = process.env["NODE_ENV"];
+    const savedFlag = process.env["SYNDICATE_AUTH_ENABLED"];
+    try {
+      process.env["NODE_ENV"] = "production";
+      delete process.env["SYNDICATE_AUTH_ENABLED"];
+      const NOT_FOUND = JSON.stringify({ error: "not_found" });
+      for (const p of ["/challenge", "/verify", "/logout"]) {
+        const res = await fetch(`${gateBase}${p}`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: p === "/challenge" ? undefined : JSON.stringify({}),
+        });
+        const text = await res.text();
+        record(
+          `prod-dark: POST ${p} answers as an unknown route`,
+          res.status === 404 && text === NOT_FOUND && res.headers.get("set-cookie") === null,
+          `status ${res.status}, body ${text.slice(0, 60)}, set-cookie ${String(res.headers.get("set-cookie"))}`,
+        );
+      }
+      const sess = await fetch(`${gateBase}/session`, {
+        headers: { cookie: "syn_session=doesnotexist" },
+      });
+      const sessText = await sess.text();
+      record(
+        "prod-dark: GET /session answers as an unknown route (cookie never read)",
+        sess.status === 404 && sessText === NOT_FOUND && sess.headers.get("set-cookie") === null,
+        `status ${sess.status}, body ${sessText.slice(0, 60)}`,
+      );
+      process.env["SYNDICATE_AUTH_ENABLED"] = "true";
+      const enabled = await fetch(`${gateBase}/challenge`, { method: "POST" });
+      await enabled.text();
+      record(
+        'prod-explicit-enable: flag "true" re-exposes the zone (challenge 200)',
+        enabled.status === 200,
+        `status ${enabled.status} with SYNDICATE_AUTH_ENABLED=true in production mode`,
+      );
+      process.env["SYNDICATE_AUTH_ENABLED"] = "TRUE";
+      const sloppy = await fetch(`${gateBase}/challenge`, { method: "POST" });
+      const sloppyText = await sloppy.text();
+      record(
+        'prod-exact-match: flag "TRUE" (non-exact) stays dark',
+        sloppy.status === 404 && sloppyText === NOT_FOUND,
+        `status ${sloppy.status} — only the exact string "true" exposes the zone`,
+      );
+    } finally {
+      if (savedNodeEnv === undefined) delete process.env["NODE_ENV"];
+      else process.env["NODE_ENV"] = savedNodeEnv;
+      if (savedFlag === undefined) delete process.env["SYNDICATE_AUTH_ENABLED"];
+      else process.env["SYNDICATE_AUTH_ENABLED"] = savedFlag;
+      server.closeAllConnections();
+      await new Promise<void>((resolve, reject) =>
+        server.close((err) => (err ? reject(err) : resolve())),
+      );
+    }
+  }
+
   // ── summary ───────────────────────────────────────────────────────────────
   const failed = results.filter((r) => !r.pass);
   console.log(

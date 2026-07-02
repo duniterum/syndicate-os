@@ -3,6 +3,7 @@ import cors, { type CorsOptions } from "cors";
 import pinoHttp from "pino-http";
 import router from "./routes";
 import authRouter from "./auth/router";
+import { authExposureGate } from "./auth/authExposure";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
@@ -100,7 +101,10 @@ app.use(cors(corsOptions));
 // parser, cookie reader, origin check and throttle; nothing here changes the
 // global middleware posture (no app-wide body parser, CORS stays
 // credential-free). See src/auth/router.ts for the full contract.
-app.use("/api/auth", authRouter);
+// Pre-publish hardening: authExposureGate runs FIRST — in production the
+// whole zone is dark by default (unknown-route 404) unless the founder sets
+// SYNDICATE_AUTH_ENABLED="true"; see src/auth/authExposure.ts.
+app.use("/api/auth", authExposureGate, authRouter);
 
 app.use("/api", router);
 

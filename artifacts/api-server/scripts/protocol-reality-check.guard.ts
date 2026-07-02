@@ -22,6 +22,8 @@ import type { RpcTransport } from "../src/lib/protocol/rpcTransport";
 import { FULL_ADDRESS_RE } from "../src/lib/protocol/rpcTransport";
 import {
   buildProtocolReality,
+  getProtocolReality,
+  __resetProtocolRealityCache,
   type BuildOpts,
 } from "../src/lib/protocol/realityService";
 import type {
@@ -281,6 +283,72 @@ async function main(): Promise<void> {
     const v3 = e.groups.sale.filter((i) => i.id.startsWith("sale.MEMBERSHIP_SALE_V3."));
     check("sale-no-code: all 5 V3 items null + PAUSED_BY_PRECAUTION + failureReason", v3.length === 5 && v3.every((i) => i.value === null && i.lifecycle === "PAUSED_BY_PRECAUTION" && i.failureReason !== null));
     check("sale-no-code: V1 paused still reads (false)", byId(e, "sale.MEMBERSHIP_SALE.paused")?.value === false);
+  }
+
+  // 7d) SERVED CACHE DISCIPLINE (pre-publish hardening): getProtocolReality is
+  //     the served path — bounded TTL, success-only caching, coalescing, and
+  //     honest freshness metadata (asOf / cached / cacheTtlMs).
+  {
+    __resetProtocolRealityCache();
+    const first = makeMock({});
+    const e1 = await getProtocolReality(baseOpts(first.transport));
+    check(
+      "cache: first read is fresh (cached false, cacheTtlMs 30000, asOf parseable)",
+      e1.cached === false && e1.cacheTtlMs === 30_000 && !Number.isNaN(Date.parse(e1.asOf)),
+    );
+    const callsAfterFirst = first.methods.length;
+    const e2 = await getProtocolReality(baseOpts(first.transport));
+    check(
+      "cache: second read within TTL is served from cache (cached true, same asOf, NO new RPC)",
+      e2.cached === true && e2.asOf === e1.asOf && first.methods.length === callsAfterFirst,
+    );
+    check(
+      "cache: cached envelope keeps discipline + no address leak",
+      noAddressLeak(e2) && disciplinePasses(e2),
+    );
+
+    // Coalescing: two concurrent callers share ONE build.
+    __resetProtocolRealityCache();
+    const co = makeMock({});
+    const [c1, c2] = await Promise.all([
+      getProtocolReality(baseOpts(co.transport)),
+      getProtocolReality(baseOpts(co.transport)),
+    ]);
+    check(
+      "cache: concurrent reads coalesce onto ONE build (single eth_chainId)",
+      co.methods.filter((m) => m === "eth_chainId").length === 1 &&
+        c1.cached === false &&
+        c2.cached === false,
+    );
+
+    // Expiry: ttlMs 0 forces a fresh build every time (bounded age, no forever-cache).
+    __resetProtocolRealityCache();
+    const exp = makeMock({});
+    await getProtocolReality({ ...baseOpts(exp.transport), ttlMs: 0 });
+    const chainCallsBefore = exp.methods.filter((m) => m === "eth_chainId").length;
+    const e4 = await getProtocolReality({ ...baseOpts(exp.transport), ttlMs: 0 });
+    check(
+      "cache: expired TTL refetches (fresh, cached false, one more RPC round)",
+      e4.cached === false &&
+        exp.methods.filter((m) => m === "eth_chainId").length === chainCallsBefore + 1,
+    );
+
+    // Success-only: an UNVERIFIED build (unreachable RPC) is served live but
+    // NEVER pinned — the very next read is a fresh verified build.
+    __resetProtocolRealityCache();
+    const bad = makeMock({ chainId: "__unreachable__" });
+    const eBad = await getProtocolReality(baseOpts(bad.transport));
+    check(
+      "cache: degraded read served live (cached false, fail-closed nulls)",
+      eBad.cached === false && eBad.groups.contracts.every((i) => i.value === null),
+    );
+    const recover = makeMock({});
+    const eRec = await getProtocolReality(baseOpts(recover.transport));
+    check(
+      "cache: degraded read NOT cached — next read is a FRESH verified build",
+      eRec.cached === false && byId(eRec, "chain.identityVerified")?.value === true,
+    );
+    __resetProtocolRealityCache();
   }
 
   // 8) DISCIPLINE positive controls: doctored leak + framing must THROW.

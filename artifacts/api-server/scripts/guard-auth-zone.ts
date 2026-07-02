@@ -5,7 +5,7 @@
 //      verbs (.post/.put/.patch/.delete) exist ONLY under src/auth/; the
 //      app-wide middleware stack gains no body parser (express.json stays
 //      scoped inside the auth router) and the auth router is mounted at
-//      /api/auth in app.ts;
+//      /api/auth in app.ts behind authExposureGate;
 //   2. hygiene: session cookies carry HttpOnly + Secure + SameSite=Strict +
 //      Path=/api; global CORS stays credential-free (no `credentials: true`
 //      anywhere, methods stay GET/HEAD/OPTIONS); no browser-storage anywhere
@@ -119,9 +119,9 @@ check(
   "app.ts mounts a body parser app-wide — JSON parsing must stay scoped inside the auth router",
 );
 check(
-  /app\.use\("\/api\/auth",\s*authRouter\)/.test(appCode),
-  "auth router mounted at /api/auth in app.ts",
-  'app.ts must mount the auth zone via app.use("/api/auth", authRouter)',
+  /app\.use\("\/api\/auth",\s*authExposureGate,\s*authRouter\)/.test(appCode),
+  "auth router mounted at /api/auth behind the exposure gate in app.ts",
+  'app.ts must mount the auth zone via app.use("/api/auth", authExposureGate, authRouter) — gate first, router second',
 );
 const routerCode = stripComments(read(path.resolve(authDir, "router.ts")));
 check(
@@ -310,6 +310,7 @@ if (!existsSync(studioDistDir)) {
     "/api/auth",
     "privateKeyToAccount",
     "syn_session",
+    "SYNDICATE_AUTH_ENABLED",
   ];
   for (const probe of AUTH_PROBES) {
     const hits = distFiles.filter((f) => read(f).includes(probe));
@@ -399,6 +400,70 @@ for (const abs of authFiles) {
     `${rel} references user-agent — attacker-mintable key material, rejected by founder gate`,
   );
 }
+
+// ── 8. Production exposure gate (pre-publish hardening) ─────────────────────
+// The auth zone is dark by default in production: app.ts mounts
+// authExposureGate BEFORE the router; the gate reads SYNDICATE_AUTH_ENABLED
+// per-request, requires the exact opt-in string, and answers with the
+// unknown-route 404 shape when dark — before any parser/cookie/throttle/
+// nonce code can run.
+const authExposureAbs = path.resolve(authDir, "authExposure.ts");
+check(
+  existsSync(authExposureAbs),
+  "src/auth/authExposure.ts present (production exposure gate)",
+  "src/auth/authExposure.ts is missing — the production dark-by-default gate is a founder-approved requirement",
+);
+if (existsSync(authExposureAbs)) {
+  const gateCode = stripComments(read(authExposureAbs));
+  check(
+    /"SYNDICATE_AUTH_ENABLED"/.test(gateCode),
+    "gate reads the SYNDICATE_AUTH_ENABLED flag",
+    "authExposure.ts no longer references SYNDICATE_AUTH_ENABLED — the exposure flag name is contract",
+  );
+  check(
+    !/VITE_/.test(gateCode),
+    "exposure flag is server-side only (never VITE_-prefixed)",
+    "authExposure.ts references a VITE_-prefixed name — the flag must never reach a frontend bundle",
+  );
+  check(
+    /process\.env\["NODE_ENV"\]\s*!==\s*"production"/.test(gateCode),
+    "gate exposes non-production unconditionally / production dark by default",
+    "authExposure.ts NODE_ENV posture drifted — non-production stays exposed, production stays dark unless opted in",
+  );
+  check(
+    /===\s*"true"/.test(gateCode) && !/!==\s*"false"/.test(gateCode),
+    'gate requires the exact opt-in string "true" (never default-enabled)',
+    'authExposure.ts opt-in comparison drifted — only SYNDICATE_AUTH_ENABLED === "true" may expose the zone',
+  );
+  check(
+    /status\(404\)\.json\(\{\s*error:\s*"not_found"\s*\}\)/.test(gateCode),
+    "dark responses reuse the unknown-route 404 shape",
+    'authExposure.ts dark response drifted — it must be exactly res.status(404).json({ error: "not_found" })',
+  );
+  check(
+    !/nonceStore|sessionStore|sessionThrottle|throttleKey|clientIdentity|cookie/i.test(
+      gateCode,
+    ),
+    "gate touches no auth state (no nonce/session/throttle/cookie surface)",
+    "authExposure.ts reaches into auth state — the dark gate must be side-effect-free",
+  );
+  check(
+    !/\blogger\b|req\.log|console\./.test(gateCode),
+    "gate performs no logging (dark zone indistinguishable from unknown route)",
+    "authExposure.ts logs — a dark zone must not announce itself",
+  );
+}
+const studioSrcDir = path.resolve(here, "..", "..", "studio", "src");
+const studioFlagHits = walk(studioSrcDir)
+  .filter((f) => /\.(tsx?|css|html)$/.test(f))
+  .filter((f) => read(f).includes("SYNDICATE_AUTH_ENABLED"));
+check(
+  studioFlagHits.length === 0,
+  "studio source never references the exposure flag",
+  `studio src references SYNDICATE_AUTH_ENABLED in: ${studioFlagHits
+    .map((f) => path.relative(studioSrcDir, f))
+    .join(", ")} — the flag is server-side posture, never frontend material`,
+);
 
 // ── Report ───────────────────────────────────────────────────────────────────
 for (const line of ok) console.log(`PASS  ${line}`);

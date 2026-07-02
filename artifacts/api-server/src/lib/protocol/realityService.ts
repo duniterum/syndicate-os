@@ -58,6 +58,10 @@ import {
   type ProtocolRealityItem,
 } from "./realityEnvelope";
 
+// LOCKSTEP: this value is enum-pinned in lib/api-spec/openapi.yaml
+// (cacheTtlMs enum [30000]) and re-validated by the route's zod parse.
+// Changing it requires spec + codegen + guard 7d in ONE atomic change,
+// or every served response fails closed at 500.
 const CACHE_TTL_MS = 30_000;
 
 export type BuildOpts = {
@@ -785,6 +789,7 @@ export async function buildProtocolReality(opts: BuildOpts): Promise<ProtocolRea
     expectedChainId: EXPECTED_CHAIN_ID,
     asOf,
     cached: false,
+    cacheTtlMs: CACHE_TTL_MS,
     groups: {
       chain: buildChainGroup(probe, asOf),
       contracts,
@@ -798,6 +803,13 @@ export async function buildProtocolReality(opts: BuildOpts): Promise<ProtocolRea
 // ── Short in-memory cache + request coalescing (served default path) ──────────
 let cacheEntry: { at: number; result: ProtocolRealityEnvelope } | null = null;
 let inFlight: Promise<ProtocolRealityEnvelope> | null = null;
+
+/** A build whose chain identity verified against canon (a real successful read). */
+function isChainVerified(e: ProtocolRealityEnvelope): boolean {
+  return e.groups.chain.some(
+    (i) => i.id === "chain.identityVerified" && i.value === true,
+  );
+}
 
 /** Test/maintenance hook: clear the in-memory cache + in-flight coalescing. */
 export function __resetProtocolRealityCache(): void {
@@ -831,7 +843,13 @@ export async function getProtocolReality(
     try {
       const merged: BuildOpts = { ...defaultBuildOpts(), ...overrides };
       const result = await buildProtocolReality(merged);
-      cacheEntry = { at: Date.now(), result };
+      // Success-only caching: a build whose chain identity did NOT verify
+      // (unreachable RPC / wrong chain → fail-closed nulls) is served live
+      // but never pinned as bounded-age truth — the next request re-reads
+      // immediately instead of replaying a degraded snapshot for the TTL.
+      if (isChainVerified(result)) {
+        cacheEntry = { at: Date.now(), result };
+      }
       return result;
     } finally {
       inFlight = null;

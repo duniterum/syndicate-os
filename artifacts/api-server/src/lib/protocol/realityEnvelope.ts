@@ -89,6 +89,8 @@ export type ProtocolRealityEnvelope = {
   expectedChainId: 43114;
   asOf: string;
   cached: boolean;
+  /** Served cache TTL in milliseconds — freshness metadata (bounded-age, not a live-tick feed). */
+  cacheTtlMs: number;
   groups: ProtocolRealityGroups;
 };
 

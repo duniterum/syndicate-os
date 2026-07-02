@@ -255,6 +255,10 @@ components:
           type: string
         cached:
           type: boolean
+        cacheTtlMs:
+          type: integer
+          enum:
+            - 30000
         groups:
           type: object
           properties:
@@ -289,4 +293,5 @@ components:
         - expectedChainId
         - asOf
         - cached
+        - cacheTtlMs
         - groups

@@ -174,6 +174,13 @@ export const ProtocolRealityResponseExpectedChainId = {
   NUMBER_43114: 43114,
 } as const;
 
+export type ProtocolRealityResponseCacheTtlMs = typeof ProtocolRealityResponseCacheTtlMs[keyof typeof ProtocolRealityResponseCacheTtlMs];
+
+
+export const ProtocolRealityResponseCacheTtlMs = {
+  NUMBER_30000: 30000,
+} as const;
+
 export type ProtocolRealityResponseGroups = {
   chain: ProtocolRealityItem[];
   contracts: ProtocolRealityItem[];
@@ -187,6 +194,7 @@ export interface ProtocolRealityResponse {
   expectedChainId: ProtocolRealityResponseExpectedChainId;
   asOf: string;
   cached: boolean;
+  cacheTtlMs: ProtocolRealityResponseCacheTtlMs;
   groups: ProtocolRealityResponseGroups;
 }
 

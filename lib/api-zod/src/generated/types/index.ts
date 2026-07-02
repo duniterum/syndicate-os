@@ -14,6 +14,7 @@ export * from './protocolRealityItemLifecycle';
 export * from './protocolRealityItemSourceType';
 export * from './protocolRealityItemValueType';
 export * from './protocolRealityResponse';
+export * from './protocolRealityResponseCacheTtlMs';
 export * from './protocolRealityResponseExpectedChainId';
 export * from './protocolRealityResponseGroups';
 export * from './protocolRealityResponseMode';
