@@ -70,6 +70,7 @@ Public front door explains membership + public proof + "take your seat", with ho
 ## Gotchas
 
 - **Forbidden product copy** (must never appear in UI): profit, yield, return (financial), payout, passive income, guaranteed benefit, earn/claim rewards, reward pool, farming, liquidity mining, airdrop farming, jackpot, win big, betting, wager. Never frame SYN as investment upside.
+- **Recognition vocabulary (founder-locked):** prefer "Top Recognized Member / Member Standing / Protocol Recognition / Syndicate Rank / Recognition Index"; avoid "contributor(s)" and ambiguous "contribution" phrasing that implies unpaid labor/charity/open-source. Recognition = member-status logic. Business mechanics (membership acquisition, treasury routing, referral-as-verified-introduction, analytics) are preserved — only unsafe financial framing/patterns are rejected (doctrine: `docs/architecture/CAPABILITY_HARVEST_AND_REUSE_MAP.md`).
 - Verify the web app with `pnpm --filter @workspace/studio run typecheck`, not `build` (build needs workflow-injected `PORT`/`BASE_PATH`).
 - Theme: `main.tsx` no longer force-adds `.dark`; `ThemeProvider` owns the class (default dark). Keep `TruthLabel` variants dual-mode (light + `dark:`).
 
