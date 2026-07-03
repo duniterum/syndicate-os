@@ -182,10 +182,14 @@ check(
   /DERIVED/.test(rawSource) && /DROPPABLE/i.test(rawSource),
 );
 check(
-  "schema-only boundary marker present (SCHEMA_DEFINED_NOT_PUSHED)",
-  /MEMBER_CONTINUITY_SCHEMA_STATUS\s*=\s*\n?\s*"SCHEMA_DEFINED_NOT_PUSHED"/.test(
+  "pushed-empty boundary marker present (SCHEMA_PUSHED_TABLES_EMPTY)",
+  /MEMBER_CONTINUITY_SCHEMA_STATUS\s*=\s*\n?\s*"SCHEMA_PUSHED_TABLES_EMPTY"/.test(
     rawSource,
   ),
+);
+check(
+  "stale pre-push marker fully retired (no SCHEMA_DEFINED_NOT_PUSHED anywhere)",
+  !/SCHEMA_DEFINED_NOT_PUSHED/.test(rawSource),
 );
 
 // ---------------------------------------------------------------------------

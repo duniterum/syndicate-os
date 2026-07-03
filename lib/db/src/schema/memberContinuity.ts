@@ -68,6 +68,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  unique,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
@@ -122,8 +123,11 @@ export const memberContinuityVerificationRun = pgTable(
      * Redundant with the PK on `id` alone, but required as a composite FK
      * target so record rows are chain-scoped to their build (a record can
      * never reference a verification run from a different chain).
+     * Must be a UNIQUE CONSTRAINT (inline in CREATE TABLE), not a unique
+     * index: the FK ALTER is emitted before CREATE INDEX statements, so an
+     * index-flavored target does not exist yet when the FK is validated.
      */
-    uniqueIndex("member_continuity_run_chain_id_uq").on(t.chainId, t.id),
+    unique("member_continuity_run_chain_id_uq").on(t.chainId, t.id),
     check(
       "member_continuity_run_status_verified",
       sql`${t.status} = 'VERIFIED'`,
@@ -272,10 +276,11 @@ export type MemberContinuityRecordInsert =
   typeof memberContinuityRecord.$inferInsert;
 
 /**
- * Phase 2 boundary marker: schema is DEFINED IN CODE ONLY. No DDL has been
- * executed; the tables do not exist in any database. Table creation (push),
- * the builder (Phase 3), and the verification harness (Phase 4) are each
- * separate founder-gated slices.
+ * Phase 2 boundary marker: DDL has been PUSHED (founder-approved S1 gate,
+ * dev database) — both tables exist and are EMPTY. No builder has run, no
+ * rows exist, and no served/runtime code reads or imports this schema. The
+ * builder (Phase 3) and the verification harness (Phase 4) are each separate
+ * founder-gated slices.
  */
 export const MEMBER_CONTINUITY_SCHEMA_STATUS =
-  "SCHEMA_DEFINED_NOT_PUSHED" as const;
+  "SCHEMA_PUSHED_TABLES_EMPTY" as const;
