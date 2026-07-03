@@ -1,5 +1,7 @@
 # The Syndicate Studio OS
 
+First read for agents/operators: THE_SYNDICATE_OS_COMPASS.md — meta-canon router; source docs win on conflict.
+
 A premium, proof-first web foundation for The Syndicate — a membership/recognition protocol. The app is deliberately a **read-only foundation**: a real public homepage plus an operator console ("Studio OS / Proof OS"), where every value that is not wired to a real source is visibly truth-labelled. The only wired reality is a server-side, **read-only Protocol Reality Spine** that reconciles live Avalanche C-Chain reads (chain identity, contract-code presence, ERC-20 metadata, archive posture, and read-only membership-sale state — lifecycle flags plus the active V3 engine's public figures, surfaced as EXACT raw base-unit strings) against vendored canon and surfaces them as truth-labelled envelopes. No writes, wallet, purchase, referral, receipts, or activity are wired; the only economic values present are these read-only public sale figures (available SYN, gross USDC received, receipt count), and no purchase/referral surface exists in the app.
 
 ## Run & Operate
