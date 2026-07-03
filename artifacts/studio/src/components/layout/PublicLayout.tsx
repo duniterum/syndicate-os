@@ -8,6 +8,28 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { headerNav, footerGroups, navLabel } from "@/config/navigation";
 import { brand } from "@/config/brand";
 import { heroSystem } from "@/config/syndicateFacts";
+import { accessStates } from "@/config/accessState";
+import { useAccessState } from "@/components/access/AccessStateProvider";
+import { AccessStateChip } from "@/components/access/AccessStateChip";
+
+// Session chip (S2): renders ONLY when the app-wide access state is S4 —
+// i.e. a dev-preview SIWE session wired through the gated wallet module. In
+// production builds that module is code-excluded, the provider stays S1, and
+// this renders nothing. Vocabulary comes from accessState.ts (already in the
+// bundle) — no session copy or auth reference is added to public chrome.
+function SessionChip() {
+  const state = useAccessState();
+  if (state !== "S4") return null;
+  return (
+    <span
+      title={accessStates.S4.honestNote}
+      className="hidden md:inline-flex"
+      data-testid="chip-header-session"
+    >
+      <AccessStateChip stateId="S4" />
+    </span>
+  );
+}
 
 function ChainPill() {
   return (
@@ -105,6 +127,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <ChainPill />
             <ReadOnlyChip />
+            <SessionChip />
             <ThemeToggle />
             <span className="hidden h-9 w-9 items-center justify-center rounded-xl border border-gold/30 bg-gold/8 text-gold lg:inline-flex">
               <ShieldCheck className="h-4 w-4" aria-hidden="true" />

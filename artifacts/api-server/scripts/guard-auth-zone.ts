@@ -311,6 +311,11 @@ if (!existsSync(studioDistDir)) {
     "privateKeyToAccount",
     "syn_session",
     "SYNDICATE_AUTH_ENABLED",
+    // S2 wallet-chunk-only honesty copy: present ONLY in the build-time-gated
+    // src/wallet/ module — its absence from a production-default dist proves
+    // the wallet session shell was dead-code-eliminated.
+    "member continuity not wired",
+    "Holder Index not served",
   ];
   for (const probe of AUTH_PROBES) {
     const hits = distFiles.filter((f) => read(f).includes(probe));

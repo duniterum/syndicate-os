@@ -17,6 +17,7 @@ import Support from "@/pages/Support";
 import Archive from "@/pages/Archive";
 import OperatorPreviewUnavailable from "@/pages/OperatorPreviewUnavailable";
 import { OPERATOR_PREVIEW_ENABLED } from "@/config/operatorPreviewGate";
+import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
 import type { OperatorConsolePage } from "@/operator/OperatorConsole";
 import { AccessStateProvider } from "@/components/access/AccessStateProvider";
 import { AccessGate } from "@/components/access/AccessGate";
@@ -33,6 +34,14 @@ const queryClient = new QueryClient();
 // INTERNAL routes render the safe unavailable page instead.
 const OperatorConsole = OPERATOR_PREVIEW_ENABLED
   ? lazy(() => import("@/operator/OperatorConsole"))
+  : null;
+
+// Wallet session hard gate (S2): app-root session resolution is reachable
+// ONLY through this conditional dynamic import. Default production builds
+// fold the gate to `false` — the wallet module (and every "/api/auth"
+// string) is dead-code-eliminated; the provider stays fail-closed at S1.
+const WalletSessionBoot = WALLET_SESSION_PREVIEW_ENABLED
+  ? lazy(() => import("@/wallet/WalletSessionBoot"))
   : null;
 
 function OperatorRoute({ page }: { page: OperatorConsolePage }) {
@@ -138,6 +147,11 @@ function App() {
         <TooltipProvider>
           <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
             <AccessStateProvider>
+              {WalletSessionBoot ? (
+                <Suspense fallback={null}>
+                  <WalletSessionBoot />
+                </Suspense>
+              ) : null}
               <RouteScrollManager />
               <SeoHeadManager />
               <Router />

@@ -3,8 +3,9 @@
 // shell must stay honest:
 //   1. the studio metadata covers exactly the 14 states, each with a valid
 //      track and non-empty labels/copy;
-//   2. CURRENT_ACCESS_STATE_ID stays pinned to S1 — no auth system exists, so
-//      any other value is fake auth (changing it is a founder-gated act);
+//   2. CURRENT_ACCESS_STATE_ID stays pinned to S1 — since slice S2 it is the
+//      FAIL-CLOSED DEFAULT (boot/fallback) rather than the only possible
+//      value, but the constant itself must remain S1 (founder-gated);
 //   3. every classified surface carries both new fields with valid values;
 //   4. NO surface is GATED: frontend gating without a real, wired state
 //      machine would be theater — flipping any surface to GATED must be a
@@ -16,7 +17,10 @@
 //      block; PREVIEW_LABELLED never blocks);
 //   7. the provider and simulator hold no persistence: no localStorage /
 //      sessionStorage / cookies / indexedDB — simulated state is in-memory
-//      only and the app-wide state is hardwired;
+//      only. (S2 DELIBERATE REOPEN, founder-approved:) the provider may now
+//      hold in-memory React state for the session-wired S1⇄S4 seam, but it
+//      still performs no I/O itself — no fetch, no effects — and must force
+//      every wired value through the fail-closed resolveWiredState;
 //   8. the shared vocabulary in lib/os-contracts stays type-only and never
 //      accepts a "SIMULATED" value;
 //   9. no access-shell file carries wallet-address or 64-hex material — this
@@ -35,6 +39,21 @@
 //  12. (IA-2a) no browser-storage auth anywhere in studio src: localStorage /
 //      sessionStorage are allowed only for the theme preference
 //      (ThemeProvider) — no file may ever persist auth/session material.
+//  13. (S2) wire ceiling: WIRABLE_ACCESS_STATES is exactly ["S1","S4"] and
+//      resolveWiredState collapses every other input to S1 — the anonymous
+//      SIWE session can never wire a member/privileged state;
+//  14. (S2) wire-seam allowlist: useWireAccessState is referenced only by the
+//      provider itself and the build-time-gated src/wallet/ module;
+//  15. (S2) wallet module hard gate: no static import of "@/wallet/..."
+//      anywhere; App.tsx / MemberAccess.tsx reach it only through the
+//      WALLET_SESSION_PREVIEW_ENABLED-conditional dynamic import; the gate
+//      constant folds statically and vite.config.ts wires the define — so a
+//      default production build excludes the wallet code entirely;
+//  16. (S2) the wallet panel carries the founder-required verbatim honesty
+//      copy (SESSION line, session ≠ membership, member continuity not
+//      wired, Holder Index not served);
+//  17. (S2) wallet module boundary: it talks ONLY to literal "/api/auth/..."
+//      URLs, contains no member-lookup material, and holds no persistence.
 //
 // Scans are comment-stripped so documentation may name the primitives it
 // forbids without self-matching. Node-loadable (Node >= 22.6 / 24).
@@ -45,10 +64,12 @@ import path from "node:path";
 import {
   ACCESS_STATE_IDS,
   CURRENT_ACCESS_STATE_ID,
+  WIRABLE_ACCESS_STATES,
   accessStates,
   evaluateAccess,
   matrixAllows,
   resolveAccessState,
+  resolveWiredState,
 } from "../src/config/accessState.ts";
 import { surfaceClassification } from "../src/config/surfaceClassification.ts";
 
@@ -107,11 +128,14 @@ check(
   "track assignments drifted from the design doc (§1): S11–S13 must be PRIVILEGED, S14 MACHINE",
 );
 
-// ── 2. The one real state stays S1 ───────────────────────────────────────────
+// ── 2. The fail-closed default stays S1 ─────────────────────────────────────
+// Since S2 the app-wide state may be session-wired to S4 at runtime (dev
+// preview only), but the boot/default/fallback constant must remain S1 — in
+// production builds (wallet module code-excluded) it is the only value.
 check(
   CURRENT_ACCESS_STATE_ID === "S1",
-  "CURRENT_ACCESS_STATE_ID is pinned to S1 (no auth system exists)",
-  "CURRENT_ACCESS_STATE_ID must stay S1 until a real, founder-approved session system exists — anything else is fake auth",
+  "CURRENT_ACCESS_STATE_ID is pinned to S1 (fail-closed default)",
+  "CURRENT_ACCESS_STATE_ID must stay S1 — it is the fail-closed boot default; changing it is a founder-gated act",
 );
 
 // ── 3 + 4 + 5. Two-field registry: valid, ungated, audience-consistent ──────
@@ -202,13 +226,27 @@ for (const rel of shellFiles) {
 const providerCode = stripComments(
   read(path.resolve(srcDir, "components/access/AccessStateProvider.tsx")),
 );
-for (const banned of ["useState", "useEffect", "fetch("]) {
+// S2 deliberate reopen: the provider may hold in-memory React state for the
+// session wire seam (useState), but it performs NO I/O itself — session
+// resolution lives in the gated wallet module.
+for (const banned of ["useEffect", "fetch(", "XMLHttpRequest", "WebSocket"]) {
   check(
     !providerCode.includes(banned),
-    `provider is hardwired: no ${banned}`,
-    `AccessStateProvider must stay hardwired to S1 — found \`${banned}\``,
+    `provider performs no I/O: no ${banned}`,
+    `AccessStateProvider must perform no I/O itself — found \`${banned}\` (session resolution belongs to the gated wallet module)`,
   );
 }
+check(
+  providerCode.includes("useState") &&
+    providerCode.includes("CURRENT_ACCESS_STATE_ID"),
+  "provider boots from the fail-closed default (useState(CURRENT_ACCESS_STATE_ID))",
+  "AccessStateProvider must initialize its in-memory state from CURRENT_ACCESS_STATE_ID (fail-closed default)",
+);
+check(
+  providerCode.includes("resolveWiredState"),
+  "provider forces every wired value through resolveWiredState (fail closed)",
+  "AccessStateProvider must pass every wired value through resolveWiredState — the wire seam may never set a raw value",
+);
 const simulatorCode = stripComments(
   read(path.resolve(srcDir, "operator/AccessStateSimulator.tsx")),
 );
@@ -367,6 +405,175 @@ check(
   "no browser storage outside ThemeProvider (no client-side auth persistence)",
   `browser storage used outside the ThemeProvider allowlist: ${storageViolations.join(", ")} — auth/session material must never live in localStorage/sessionStorage`,
 );
+
+// ── 13. (S2) Wire ceiling: only S1/S4 can ever be wired app-wide ─────────────
+check(
+  WIRABLE_ACCESS_STATES.length === 2 &&
+    WIRABLE_ACCESS_STATES[0] === "S1" &&
+    WIRABLE_ACCESS_STATES[1] === "S4",
+  'WIRABLE_ACCESS_STATES is exactly ["S1", "S4"] (session wire ceiling)',
+  'WIRABLE_ACCESS_STATES must stay exactly ["S1", "S4"] — S7+/S11+ have no wired source; widening it is a founder-gated act paired with a real source',
+);
+check(
+  resolveWiredState("S4") === "S4" &&
+    resolveWiredState("S1") === "S1" &&
+    resolveWiredState("S7") === "S1" &&
+    resolveWiredState("S11") === "S1" &&
+    resolveWiredState("S14") === "S1" &&
+    resolveWiredState(undefined) === "S1" &&
+    resolveWiredState(null) === "S1" &&
+    resolveWiredState("SIMULATED") === "S1",
+  'resolveWiredState fails closed (everything except exactly "S4" → S1)',
+  'resolveWiredState must collapse every non-"S4" input to S1 (fail closed)',
+);
+
+// ── 14. (S2) Wire-seam import allowlist ──────────────────────────────────────
+const PROVIDER_REL = path.join("components", "access", "AccessStateProvider.tsx");
+const WALLET_PREFIX = "wallet" + path.sep;
+const wireViolations: string[] = [];
+for (const abs of allSrcFiles) {
+  const rel = path.relative(srcDir, abs);
+  if (rel === PROVIDER_REL || rel.startsWith(WALLET_PREFIX)) continue;
+  const code = stripComments(read(abs));
+  if (/\buseWireAccessState\b/.test(code)) wireViolations.push(rel);
+}
+check(
+  wireViolations.length === 0,
+  "useWireAccessState referenced only by the provider and src/wallet/",
+  `useWireAccessState referenced outside the wallet module: ${wireViolations.join(", ")} — the wire seam has exactly one caller zone`,
+);
+
+// ── 15. (S2) Wallet module hard gate (build-time exclusion) ──────────────────
+// Any STATIC reference pulls wallet code into the main bundle and defeats the
+// exclusion, so match every static syntax: value imports (incl. multi-line),
+// `export … from` re-exports, and bare side-effect imports — via the alias
+// ("@/wallet/") or any relative path ("./wallet/", "../wallet/"). Dynamic
+// `import("...")` is untouched (no `from`, no bare-import shape).
+const WALLET_SPECIFIER = String.raw`"(?:@\/wallet\/|\.[^"]*\/wallet\/)`;
+const staticWalletImports = [
+  new RegExp(String.raw`import\s+(?!type\b)[^;]*from\s+${WALLET_SPECIFIER}`),
+  new RegExp(String.raw`export\s+(?!type\b)[^;]*from\s+${WALLET_SPECIFIER}`),
+  new RegExp(String.raw`import\s+${WALLET_SPECIFIER}`),
+];
+for (const abs of allSrcFiles) {
+  const rel = path.relative(srcDir, abs);
+  if (rel.startsWith(WALLET_PREFIX)) continue;
+  const code = stripComments(read(abs));
+  check(
+    !staticWalletImports.some((re) => re.test(code)),
+    `${rel}: no static import/re-export of the wallet module`,
+    `${rel} statically imports or re-exports the wallet module — that defeats the build-time exclusion; only the flag-gated dynamic import is allowed`,
+  );
+}
+check(
+  /WALLET_SESSION_PREVIEW_ENABLED\s*\?\s*lazy\(\(\) => import\("@\/wallet\/WalletSessionBoot"\)\)\s*:\s*null/.test(
+    appCode,
+  ),
+  "App.tsx loads WalletSessionBoot only via the gated conditional dynamic import",
+  'App.tsx must load WalletSessionBoot via `WALLET_SESSION_PREVIEW_ENABLED ? lazy(() => import("@/wallet/WalletSessionBoot")) : null`',
+);
+const memberAccessCode = stripComments(
+  read(path.resolve(srcDir, "pages/MemberAccess.tsx")),
+);
+check(
+  /WALLET_SESSION_PREVIEW_ENABLED\s*\?\s*lazy\(\(\) => import\("@\/wallet\/WalletSessionPanel"\)\)\s*:\s*null/.test(
+    memberAccessCode,
+  ),
+  "MemberAccess.tsx loads WalletSessionPanel only via the gated conditional dynamic import",
+  'MemberAccess.tsx must load WalletSessionPanel via `WALLET_SESSION_PREVIEW_ENABLED ? lazy(() => import("@/wallet/WalletSessionPanel")) : null`',
+);
+const walletGate = stripComments(
+  read(path.resolve(srcDir, "config/walletSessionGate.ts")),
+);
+check(
+  /import\.meta\.env\.DEV\s*\|\|\s*__WALLET_SESSION_PREVIEW__/.test(walletGate),
+  "wallet gate = import.meta.env.DEV || __WALLET_SESSION_PREVIEW__ (statically folds)",
+  "walletSessionGate.ts must be exactly `import.meta.env.DEV || __WALLET_SESSION_PREVIEW__`",
+);
+for (const banned of [
+  "window",
+  "location",
+  "hostname",
+  "fetch(",
+  "Date.now",
+  "localStorage",
+]) {
+  check(
+    !walletGate.includes(banned),
+    `wallet gate has no runtime signal: ${banned}`,
+    `walletSessionGate.ts must not use runtime signal \`${banned}\` — the gate must fold at build time`,
+  );
+}
+const viteCfgCode = stripComments(
+  read(path.resolve(here, "..", "vite.config.ts")),
+);
+check(
+  /__WALLET_SESSION_PREVIEW__/.test(viteCfgCode) &&
+    /VITE_WALLET_SESSION_PREVIEW\s*===?\s*"true"/.test(viteCfgCode),
+  'vite.config.ts defines __WALLET_SESSION_PREVIEW__ from VITE_WALLET_SESSION_PREVIEW === "true"',
+  "vite.config.ts must define __WALLET_SESSION_PREVIEW__ from process.env.VITE_WALLET_SESSION_PREVIEW",
+);
+
+// ── 16. (S2) Verbatim honesty copy in the wallet panel ───────────────────────
+const walletPanelRaw = read(path.resolve(srcDir, "wallet/WalletSessionPanel.tsx"));
+for (const phrase of [
+  "SESSION:",
+  "(signed)",
+  "session ≠ membership",
+  "member continuity not wired",
+  "Holder Index not served",
+]) {
+  check(
+    walletPanelRaw.includes(phrase),
+    `wallet panel carries verbatim honesty copy: "${phrase}"`,
+    `WalletSessionPanel.tsx must carry the verbatim honesty copy "${phrase}" (founder-required)`,
+  );
+}
+
+// ── 17. (S2) Wallet module boundary: /api/auth only, no member lookup ────────
+const walletDirAbs = path.resolve(srcDir, "wallet");
+const walletFiles = allSrcFiles.filter((abs) =>
+  abs.startsWith(walletDirAbs + path.sep),
+);
+check(
+  walletFiles.length > 0,
+  `wallet module present (${walletFiles.length} file(s))`,
+  "src/wallet/ is missing — the S2 wallet session shell should exist behind the gate",
+);
+const MEMBER_LOOKUP_TOKENS = [
+  "member_continuity",
+  "memberNumber",
+  "holderIndex",
+  "/api/protocol",
+  "/api/source-status",
+  "/api/member",
+  "/api/holder",
+];
+for (const abs of walletFiles) {
+  const rel = path.relative(srcDir, abs);
+  const code = stripComments(read(abs));
+  for (const banned of MEMBER_LOOKUP_TOKENS) {
+    check(
+      !code.includes(banned),
+      `${rel}: no member-lookup material (${banned})`,
+      `${rel} contains "${banned}" — the wallet module must never pair a session with member data`,
+    );
+  }
+  for (const banned of PERSISTENCE) {
+    check(
+      !code.includes(banned),
+      `${rel}: no ${banned}`,
+      `${rel} uses ${banned} — session material lives in memory + the HttpOnly cookie only`,
+    );
+  }
+  const fetchCount = (code.match(/\bfetch\(/g) ?? []).length;
+  const authFetchCount = (code.match(/\bfetch\("\/api\/auth\//g) ?? []).length;
+  check(
+    fetchCount === authFetchCount,
+    `${rel}: every fetch targets a literal /api/auth/ URL (${fetchCount})`,
+    `${rel} contains a fetch that does not target a literal "/api/auth/..." URL — the wallet module talks to the auth zone only`,
+  );
+}
 
 // ── Report ───────────────────────────────────────────────────────────────────
 for (const line of ok) console.log(`PASS  ${line}`);

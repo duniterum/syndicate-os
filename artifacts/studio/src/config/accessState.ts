@@ -23,11 +23,29 @@ import type {
 } from "@workspace/os-contracts";
 
 /**
- * The one real access state today. Hardwired — not read from anywhere,
- * because there is nowhere to read it from: no session system exists.
- * Changing this constant is a founder-gated act (guard-access-state pins it).
+ * The FAIL-CLOSED DEFAULT access state (S2: no longer the only possible
+ * state). Since the S2 wallet-session slice, the app-wide state may be wired
+ * to the dev-only SIWE session (S1 ⇄ S4) through the AccessStateProvider's
+ * restricted wire seam — but this constant remains the boot/default/fallback
+ * value everywhere, and in production builds (wallet module code-excluded)
+ * it is effectively the only value. Changing this constant is a founder-gated
+ * act (guard-access-state pins it).
  */
 export const CURRENT_ACCESS_STATE_ID: AccessStateId = "S1";
+
+/**
+ * S2 wire ceiling: the ONLY states a live session may drive app-wide.
+ * The dev SIWE session is anonymous control-proof (server returns S1|S4 and
+ * nothing else) — member (S7+) and privileged (S11+) states have no wired
+ * source and may never be produced by the session seam (guard-enforced).
+ */
+export const WIRABLE_ACCESS_STATES = ["S1", "S4"] as const;
+export type WiredAccessStateId = (typeof WIRABLE_ACCESS_STATES)[number];
+
+/** Fail-closed wire resolver: anything that is not exactly "S4" is S1. */
+export function resolveWiredState(value: unknown): WiredAccessStateId {
+  return value === "S4" ? "S4" : "S1";
+}
 
 export interface AccessStateMeta {
   /** Human name from the design doc §2 heading. */

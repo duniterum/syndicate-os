@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Link } from "wouter";
 import {
   Wallet,
@@ -8,6 +9,7 @@ import {
   ScrollText,
   type LucideIcon,
 } from "lucide-react";
+import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
 import { PublicPage } from "@/components/PublicPage";
 import { TruthLabel, type TruthLabelVariant } from "@/components/TruthLabel";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
@@ -17,6 +19,13 @@ import { type DisplayLifecycle } from "@/config/truthStatus";
 import { getModuleById } from "@/config/modules";
 import { memberAccess, membershipIdentity, expectations } from "@/config/syndicateFacts";
 import { ctas } from "@/config/sharedCopy";
+
+// Wallet session hard gate (S2): the dev-only SIWE session panel is
+// reachable ONLY through this conditional dynamic import — default
+// production builds dead-code-eliminate the wallet module entirely.
+const WalletSessionPanel = WALLET_SESSION_PREVIEW_ENABLED
+  ? lazy(() => import("@/wallet/WalletSessionPanel"))
+  : null;
 
 interface CockpitItem {
   icon: LucideIcon;
@@ -105,6 +114,13 @@ export default function MemberAccess() {
           </div>
         </div>
       </Card>
+
+      {/* Dev-only wallet session shell (S2) — absent from production builds */}
+      {WalletSessionPanel ? (
+        <Suspense fallback={null}>
+          <WalletSessionPanel />
+        </Suspense>
+      ) : null}
 
       {/* The identity pipeline: wallet → receipt → index → derived facts → OS → proof */}
       <h2 className="text-xl font-light tracking-tight text-foreground mb-2">
