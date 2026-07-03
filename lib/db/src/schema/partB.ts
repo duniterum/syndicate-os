@@ -151,11 +151,25 @@ export const historicalMember = pgTable(
       ],
     }).onDelete("restrict"),
     check("historical_member_number_min", sql`${t.memberNumber} >= 1`),
-    /** Case-normalized wallet uniqueness per freeze (no case-variant dupes). */
-    uniqueIndex("historical_member_wallet_lower_uq").on(
+    /**
+     * Wallet uniqueness per freeze — plain columns, exact stored (checksum)
+     * form. Case-normalized uniqueness (no case-variant dupes) is enforced by
+     * the fail-closed import gate: inside the insert transaction it reconciles
+     * count(distinct lower(wallet)) == memberCount and rolls back otherwise
+     * (partB-import.ts post-insert invariants).
+     *
+     * DELIBERATELY NOT an expression index. Replit's publish-time dev→prod
+     * schema introspection reconstructs expression indexes with invalid
+     * operator classes (observed 2026-07-03: `chain_id text_ops, freeze_block
+     * int4_ops, lower(wallet) int4_ops` — rejected by Postgres), which blocked
+     * production migration validation. The Drizzle source and the dev DB were
+     * both correct; only the platform's reconstruction of expression indexes
+     * is buggy, so the schema must stay expression-free in indexes.
+     */
+    uniqueIndex("historical_member_wallet_uq").on(
       t.chainId,
       t.freezeBlock,
-      sql`lower(${t.wallet})`,
+      t.wallet,
     ),
   ],
 );
