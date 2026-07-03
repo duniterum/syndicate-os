@@ -229,7 +229,9 @@ function sectionC(): void {
   const serialized = JSON.stringify(payload);
   const lower = serialized.toLowerCase();
 
-  check("C", "exactly 20 categories", categories.length === 20, `got ${categories.length}`);
+  // Public Online Integration MVP (founder-approved, July 2026) added four
+  // posture categories: walletSession, linkGeneration, continuity, buyReadiness.
+  check("C", "exactly 24 categories", categories.length === 24, `got ${categories.length}`);
   check("C", "mode === POSTURE_ONLY", payload.mode === "POSTURE_ONLY", payload.mode);
   check("C", "expectedChainId === 43114", payload.expectedChainId === 43114, String(payload.expectedChainId));
   check("C", "generatedBy === static-canon", payload.generatedBy === "static-canon", payload.generatedBy);
@@ -260,34 +262,60 @@ function sectionD(): void {
   info.push(`D) posture counts: ${JSON.stringify(counts)}`);
 
   // Posture vocabulary converged onto @workspace/os-contracts SourcePosture
-  // (Slice 2.20B). The single former NOT_LIVE category (sale) carries a verified,
-  // vendored ABI with no live adapter wired, so it is VERIFIED_SOURCE_PENDING_ADAPTER.
-  check("D", "READ_ONLY_PROOF count === 5", counts.READ_ONLY_PROOF === 5, String(counts.READ_ONLY_PROOF ?? 0));
+  // (Slice 2.20B). Public Online Integration MVP (founder-approved, July 2026):
+  // the read-only sale group of the reality spine went live (sale, source),
+  // the wallet session shell went public (walletSession), and the read-only
+  // link builder shipped (linkGeneration) — all READ_ONLY_PROOF. continuity is
+  // VERIFIED_SOURCE_PENDING_ADAPTER (Part B verified server-side, no public
+  // adapter) and buyReadiness stays NOT_WIRED (no transaction surface exists).
+  check("D", "READ_ONLY_PROOF count === 9", counts.READ_ONLY_PROOF === 9, String(counts.READ_ONLY_PROOF ?? 0));
   check("D", "NOT_WIRED count === 7", counts.NOT_WIRED === 7, String(counts.NOT_WIRED ?? 0));
   check("D", "VERIFIED_SOURCE_PENDING_ADAPTER count === 1", counts.VERIFIED_SOURCE_PENDING_ADAPTER === 1, String(counts.VERIFIED_SOURCE_PENDING_ADAPTER ?? 0));
   check("D", "FUTURE count === 7", counts.FUTURE === 7, String(counts.FUTURE ?? 0));
 
-  const expectedReadOnly = ["archive", "chain", "contracts", "guardrails", "token"];
+  const expectedReadOnly = [
+    "archive",
+    "chain",
+    "contracts",
+    "guardrails",
+    "linkGeneration",
+    "sale",
+    "source",
+    "token",
+    "walletSession",
+  ];
   const actualReadOnly = categories
     .filter((c) => c.posture === "READ_ONLY_PROOF")
     .map((c) => c.key)
     .sort();
   check(
     "D",
-    "READ_ONLY_PROOF set === {chain, contracts, token, archive, guardrails}",
+    "READ_ONLY_PROOF set === {archive, chain, contracts, guardrails, linkGeneration, sale, source, token, walletSession}",
     JSON.stringify(actualReadOnly) === JSON.stringify(expectedReadOnly),
     actualReadOnly.join(", "),
   );
 
   check(
     "D",
-    "sale is VERIFIED_SOURCE_PENDING_ADAPTER",
-    payload.categories.sale?.posture === "VERIFIED_SOURCE_PENDING_ADAPTER",
+    "sale is READ_ONLY_PROOF (live read-only spine group)",
+    payload.categories.sale?.posture === "READ_ONLY_PROOF",
     payload.categories.sale?.posture,
+  );
+  check(
+    "D",
+    "continuity is VERIFIED_SOURCE_PENDING_ADAPTER",
+    payload.categories.continuity?.posture === "VERIFIED_SOURCE_PENDING_ADAPTER",
+    payload.categories.continuity?.posture,
+  );
+  check(
+    "D",
+    "buyReadiness remains NOT_WIRED (no transaction surface)",
+    payload.categories.buyReadiness?.posture === "NOT_WIRED",
+    payload.categories.buyReadiness?.posture,
   );
 
   // Founder confirmation: these stay NOT_WIRED (no adapter added in this slice).
-  for (const key of ["proof", "source", "treasury", "routing"]) {
+  for (const key of ["proof", "treasury", "routing"]) {
     check("D", `${key} remains NOT_WIRED`, payload.categories[key]?.posture === "NOT_WIRED", payload.categories[key]?.posture);
   }
 }

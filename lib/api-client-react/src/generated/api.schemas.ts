@@ -5,6 +5,78 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export interface ThrottledError {
+  error: string;
+}
+
+export type SourceValidateResponseMode = typeof SourceValidateResponseMode[keyof typeof SourceValidateResponseMode];
+
+
+export const SourceValidateResponseMode = {
+  READ_ONLY_SOURCE_VALIDATE: 'READ_ONLY_SOURCE_VALIDATE',
+} as const;
+
+export interface SourceValidateResponse {
+  mode: SourceValidateResponseMode;
+  asOf: string;
+  formatValid: boolean;
+  chainVerified: boolean;
+  registryCodePresent: boolean | null;
+  exists: boolean | null;
+  active: boolean | null;
+  failureReason: string | null;
+}
+
+/**
+ * EXACT raw base-unit strings from the V3 quote view (never humanized).
+ */
+export interface JoinQuoteFigures {
+  synOutRaw: string;
+  era: number;
+  synPerUsdcRaw: string;
+  seatIfFirstRaw: string;
+  acquisitionCostRaw: string;
+  protocolContributionRaw: string;
+}
+
+export type JoinQuoteResponseMode = typeof JoinQuoteResponseMode[keyof typeof JoinQuoteResponseMode];
+
+
+export const JoinQuoteResponseMode = {
+  READ_ONLY_JOIN_QUOTE: 'READ_ONLY_JOIN_QUOTE',
+} as const;
+
+export type JoinQuoteResponseDecimalsUsdc = typeof JoinQuoteResponseDecimalsUsdc[keyof typeof JoinQuoteResponseDecimalsUsdc];
+
+
+export const JoinQuoteResponseDecimalsUsdc = {
+  NUMBER_6: 6,
+} as const;
+
+export type JoinQuoteResponseDecimalsSyn = typeof JoinQuoteResponseDecimalsSyn[keyof typeof JoinQuoteResponseDecimalsSyn];
+
+
+export const JoinQuoteResponseDecimalsSyn = {
+  NUMBER_18: 18,
+} as const;
+
+export type JoinQuoteResponseDecimals = {
+  usdc: JoinQuoteResponseDecimalsUsdc;
+  syn: JoinQuoteResponseDecimalsSyn;
+};
+
+export interface JoinQuoteResponse {
+  mode: JoinQuoteResponseMode;
+  asOf: string;
+  inputValid: boolean;
+  chainVerified: boolean;
+  sourceProvided: boolean;
+  sourceValid: boolean | null;
+  quote: JoinQuoteFigures | null;
+  decimals: JoinQuoteResponseDecimals;
+  failureReason: string | null;
+}
+
 export interface HealthStatus {
   status: string;
 }
@@ -187,6 +259,7 @@ export type ProtocolRealityResponseGroups = {
   tokens: ProtocolRealityItem[];
   archive: ProtocolRealityItem[];
   sale: ProtocolRealityItem[];
+  source: ProtocolRealityItem[];
 };
 
 export interface ProtocolRealityResponse {
@@ -197,4 +270,90 @@ export interface ProtocolRealityResponse {
   cacheTtlMs: ProtocolRealityResponseCacheTtlMs;
   groups: ProtocolRealityResponseGroups;
 }
+
+export type HolderIndexEraEra = typeof HolderIndexEraEra[keyof typeof HolderIndexEraEra];
+
+
+export const HolderIndexEraEra = {
+  PART_B_FREEZE_ROOT: 'PART_B_FREEZE_ROOT',
+  V3_EMITTED: 'V3_EMITTED',
+} as const;
+
+/**
+ * One numbering era's AGGREGATE view. Era provenance is always labelled; the two numbering authorities are never collapsed.
+ */
+export interface HolderIndexEra {
+  era: HolderIndexEraEra;
+  label: string;
+  doctrine: string;
+  count: number;
+  seatNumberLow: number;
+  seatNumberHigh: number;
+}
+
+export type HolderIndexResponseMode = typeof HolderIndexResponseMode[keyof typeof HolderIndexResponseMode];
+
+
+export const HolderIndexResponseMode = {
+  READ_ONLY_HOLDER_INDEX_AGGREGATES: 'READ_ONLY_HOLDER_INDEX_AGGREGATES',
+} as const;
+
+export type HolderIndexResponseStatus = typeof HolderIndexResponseStatus[keyof typeof HolderIndexResponseStatus];
+
+
+export const HolderIndexResponseStatus = {
+  VERIFIED: 'VERIFIED',
+} as const;
+
+export type HolderIndexResponseTimestampCoverage = {
+  withVerifiedTimestamp: number;
+  total: number;
+};
+
+export type HolderIndexResponseProvenance = {
+  runId: number;
+  builtAt: string;
+  builderVersion: string;
+  sourceDeterminismHash: string;
+  inputSaleEventCount: number;
+  inputMaxSaleEventRawId: number | null;
+};
+
+/**
+ * Static, hash-pinned, aggregate-only Holder Index snapshot. Counts and era boundaries only; no per-seat rows, no directory, no member-identifying data.
+ */
+export interface HolderIndexResponse {
+  mode: HolderIndexResponseMode;
+  status: HolderIndexResponseStatus;
+  chainId: number;
+  freezeBlock: number;
+  memberTotal: number;
+  /** @maxItems 2 */
+  eras: HolderIndexEra[];
+  timestampCoverage: HolderIndexResponseTimestampCoverage;
+  provenance: HolderIndexResponseProvenance;
+  boundaries: string[];
+  snapshotHash: string;
+}
+
+export type GetSourceValidateParams = {
+/**
+ * bytes32 hex source id (0x + 64 hex). Never echoed back.
+ * @maxLength 66
+ */
+sourceId: string;
+};
+
+export type GetJoinQuoteParams = {
+/**
+ * Exact raw 6-decimal USDC base-unit amount as a base-10 string.
+ * @maxLength 30
+ */
+grossUsdc: string;
+/**
+ * Optional bytes32 hex source id (0x + 64 hex). Never echoed back.
+ * @maxLength 66
+ */
+sourceId?: string;
+};
 

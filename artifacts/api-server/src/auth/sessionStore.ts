@@ -1,13 +1,16 @@
-// Bounded in-memory session store — IA-2 dev skeleton only.
+// Bounded in-memory session store — Public MVP wallet session.
 //
 // Properties (founder-approved):
 //   • opaque random session ids, server-side records only;
 //   • absolute expiry ≤60 min plus a shorter idle timeout;
 //   • bounded max entries — when full after pruning, creation fails safely;
-//   • sessions store NO identity material at all: no wallet address, no
-//     member data, nothing to leak. S4 means only "a control-proof session
-//     exists". (Reserved for a future founder-gated slice: a registry-row
-//     version binding would live here — deliberately absent in IA-2.)
+//   • Public MVP amendment (founder-approved, supersedes the IA-2 "no
+//     identity material" rule): each session binds the SIWE-verified account
+//     SERVER-SIDE ONLY, exclusively to serve the read-only member-self
+//     readback (memberNumberOf eth_call). The bound value is never echoed in
+//     any response, never logged, and never leaves the process. No member
+//     data, registry rows, or operator authority are stored — S4 still means
+//     only "a control-proof session exists".
 //   • process restart loses all sessions → unknown cookie fails closed to S1.
 
 import {
@@ -21,6 +24,8 @@ interface SessionRecord {
   createdAt: number;
   absoluteExpiresAt: number;
   idleExpiresAt: number;
+  /** SIWE-verified account, lowercased. SERVER-ONLY: never echoed or logged. */
+  verifiedAccount: string;
 }
 
 const sessions = new Map<string, SessionRecord>();
@@ -38,8 +43,9 @@ function pruneExpired(now: number): void {
 }
 
 // Returns a fresh opaque session id, or null when the store is full after
-// pruning (caller fails safely).
-export function createSession(): string | null {
+// pruning (caller fails safely). The SIWE-verified account is bound
+// server-side only (see header doctrine).
+export function createSession(verifiedAccount: string): string | null {
   const now = Date.now();
   if (sessions.size >= SESSION_MAX_ENTRIES) {
     pruneExpired(now);
@@ -52,6 +58,7 @@ export function createSession(): string | null {
     createdAt: now,
     absoluteExpiresAt: now + SESSION_ABSOLUTE_TTL_MS,
     idleExpiresAt: now + SESSION_IDLE_TTL_MS,
+    verifiedAccount: verifiedAccount.toLowerCase(),
   });
   return id;
 }
@@ -73,6 +80,16 @@ export function touchSession(id: string): boolean {
     record.absoluteExpiresAt,
   );
   return true;
+}
+
+// Validates + idle-refreshes a session and returns its bound SIWE-verified
+// account (lowercased) — or null (fail closed). SERVER-SIDE USE ONLY: the
+// returned value must never be echoed in a response or logged.
+export function getSessionAccount(id: string): string | null {
+  if (!touchSession(id)) {
+    return null;
+  }
+  return sessions.get(id)?.verifiedAccount ?? null;
 }
 
 export function destroySession(id: string): void {

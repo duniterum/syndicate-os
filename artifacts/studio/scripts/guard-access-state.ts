@@ -485,10 +485,14 @@ check(
 const walletGate = stripComments(
   read(path.resolve(srcDir, "config/walletSessionGate.ts")),
 );
+// Public Online Integration MVP (founder-approved, July 2026): the wallet
+// session shell is PUBLIC. The gate constant must fold to a literal `true`
+// (statically, no env/runtime signal) so the module ships in every build and
+// the auth-zone dist-grep can REQUIRE its strings in production dists.
 check(
-  /import\.meta\.env\.DEV\s*\|\|\s*__WALLET_SESSION_PREVIEW__/.test(walletGate),
-  "wallet gate = import.meta.env.DEV || __WALLET_SESSION_PREVIEW__ (statically folds)",
-  "walletSessionGate.ts must be exactly `import.meta.env.DEV || __WALLET_SESSION_PREVIEW__`",
+  /WALLET_SESSION_PREVIEW_ENABLED\s*:\s*boolean\s*=\s*true/.test(walletGate),
+  "wallet gate = literal `true` (public module, statically folds)",
+  "walletSessionGate.ts must set `WALLET_SESSION_PREVIEW_ENABLED: boolean = true` (public wallet session)",
 );
 for (const banned of [
   "window",
@@ -508,10 +512,9 @@ const viteCfgCode = stripComments(
   read(path.resolve(here, "..", "vite.config.ts")),
 );
 check(
-  /__WALLET_SESSION_PREVIEW__/.test(viteCfgCode) &&
-    /VITE_WALLET_SESSION_PREVIEW\s*===?\s*"true"/.test(viteCfgCode),
-  'vite.config.ts defines __WALLET_SESSION_PREVIEW__ from VITE_WALLET_SESSION_PREVIEW === "true"',
-  "vite.config.ts must define __WALLET_SESSION_PREVIEW__ from process.env.VITE_WALLET_SESSION_PREVIEW",
+  !/__WALLET_SESSION_PREVIEW__/.test(viteCfgCode),
+  "vite.config.ts no longer defines the retired __WALLET_SESSION_PREVIEW__ flag",
+  "vite.config.ts must NOT define __WALLET_SESSION_PREVIEW__ — the build flag was retired when the wallet session went public",
 );
 
 // ── 16. (S2) Verbatim honesty copy in the wallet panel ───────────────────────
@@ -520,8 +523,8 @@ for (const phrase of [
   "SESSION:",
   "(signed)",
   "session ≠ membership",
-  "member continuity not wired",
-  "Holder Index not served",
+  "proves control of a wallet",
+  "self-readback",
 ]) {
   check(
     walletPanelRaw.includes(phrase),
@@ -540,9 +543,13 @@ check(
   `wallet module present (${walletFiles.length} file(s))`,
   "src/wallet/ is missing — the S2 wallet session shell should exist behind the gate",
 );
+// Founder-approved exception (Public Online Integration MVP): the panel may
+// describe the SELF-readback — the active engine's own memberNumberOf figure
+// for the signed wallet, fetched only via /api/auth (the fetch check below
+// enforces the transport boundary). Directory/lookup material of OTHER
+// wallets stays banned.
 const MEMBER_LOOKUP_TOKENS = [
   "member_continuity",
-  "memberNumber",
   "holderIndex",
   "/api/protocol",
   "/api/source-status",

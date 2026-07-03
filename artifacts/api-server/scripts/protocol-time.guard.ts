@@ -275,9 +275,18 @@ check(
 {
   const routesDir = join(here, "..", "src", "routes");
   const routeFiles = readdirSync(routesDir).sort();
-  const allowed = ["health.ts", "index.ts", "protocolReality.ts", "sourceStatus.ts"];
+  const allowed = [
+    "health.ts",
+    "holderIndex.ts",
+    "index.ts",
+    "joinQuote.ts",
+    "protocolReality.ts",
+    "publicReadThrottle.ts",
+    "sourceStatus.ts",
+    "sourceValidate.ts",
+  ];
   check(
-    "public route surface unchanged (health, index, protocolReality, sourceStatus only)",
+    "public route surface unchanged (health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate only)",
     JSON.stringify(routeFiles) === JSON.stringify(allowed),
     `routes=${JSON.stringify(routeFiles)}`,
   );

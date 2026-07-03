@@ -12,7 +12,10 @@ import SystemStatus from "@/pages/SystemStatus";
 import Learning from "@/pages/Learning";
 import Recognition from "@/pages/Recognition";
 import ContractMemory from "@/pages/ContractMemory";
+import ProtocolMap from "@/pages/ProtocolMap";
 import SourceAttribution from "@/pages/SourceAttribution";
+import JoinProtocol from "@/pages/JoinProtocol";
+import SourceLinkBuilder from "@/pages/SourceLinkBuilder";
 import Support from "@/pages/Support";
 import Archive from "@/pages/Archive";
 import OperatorPreviewUnavailable from "@/pages/OperatorPreviewUnavailable";
@@ -97,6 +100,9 @@ function Router() {
       <PublicRoute path="/contracts">
         <ContractMemory />
       </PublicRoute>
+      <PublicRoute path="/map">
+        <ProtocolMap />
+      </PublicRoute>
       <PublicRoute path="/source-attribution">
         <SourceAttribution />
       </PublicRoute>
@@ -112,6 +118,12 @@ function Router() {
       <PublicRoute path="/member">
         <MemberAccess />
       </PublicRoute>
+      <PublicRoute path="/join">
+        <JoinProtocol />
+      </PublicRoute>
+      <PublicRoute path="/source">
+        <SourceLinkBuilder />
+      </PublicRoute>
 
       {/* Operator console surfaces — hard-gated (config/operatorPreviewGate.ts) */}
       <Route path="/studio">
@@ -123,11 +135,14 @@ function Router() {
       <Route path="/founder">
         <OperatorRoute page="founder" />
       </Route>
-      <Route path="/source">
+      <Route path="/os-source">
         <OperatorRoute page="source" />
       </Route>
       <Route path="/os-map">
         <OperatorRoute page="os-map" />
+      </Route>
+      <Route path="/admin">
+        <OperatorRoute page="admin" />
       </Route>
 
       {/* Catch-all (bare Route → not-found) */}

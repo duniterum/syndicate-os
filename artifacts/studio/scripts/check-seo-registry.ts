@@ -251,15 +251,28 @@ for (const entry of seoRouteRegistry) {
   );
 }
 
-// --- 14. /source must never become INDEX or enter the sitemap. ----------------
+// --- 14. Source split: /source is public, /os-source stays INTERNAL. ----------
+// Public Online Integration MVP (founder-approved): /source is now the public
+// Verified-Introduction link builder (read-only), while the operator source
+// console moved to /os-source and must never be indexed.
 {
   const source = seoRouteRegistry.find((r) => r.path === "/source");
   check(
     source !== undefined &&
-      source.indexStatus !== "INDEX" &&
-      source.sitemap === false,
-    `/source stays non-INDEX and out of the sitemap`,
-    `/source must be non-INDEX with sitemap=false (Verified Introduction stays paused)`,
+      source.routeType === "PUBLIC" &&
+      source.indexStatus === "INDEX" &&
+      source.sitemap === true,
+    `/source is the public Verified-Introduction link builder (INDEX, sitemapped)`,
+    `/source must be PUBLIC/INDEX/sitemapped (public link builder)`,
+  );
+  const osSource = seoRouteRegistry.find((r) => r.path === "/os-source");
+  check(
+    osSource !== undefined &&
+      osSource.routeType === "INTERNAL" &&
+      osSource.indexStatus === "INTERNAL" &&
+      osSource.sitemap === false,
+    `/os-source stays INTERNAL and out of the sitemap`,
+    `/os-source must be INTERNAL with sitemap=false (operator console)`,
   );
 }
 

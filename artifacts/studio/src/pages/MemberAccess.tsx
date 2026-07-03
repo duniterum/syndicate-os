@@ -7,102 +7,138 @@ import {
   Award,
   Library,
   ScrollText,
+  Activity,
   type LucideIcon,
 } from "lucide-react";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
 import { PublicPage } from "@/components/PublicPage";
-import { TruthLabel, type TruthLabelVariant } from "@/components/TruthLabel";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
+import { AccessStateChip } from "@/components/access/AccessStateChip";
+import { useAccessState } from "@/components/access/AccessStateProvider";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { type DisplayLifecycle } from "@/config/truthStatus";
-import { getModuleById } from "@/config/modules";
 import { memberAccess, membershipIdentity, expectations } from "@/config/syndicateFacts";
 import { ctas } from "@/config/sharedCopy";
 
-// Wallet session hard gate (S2): the dev-only SIWE session panel is
-// reachable ONLY through this conditional dynamic import — default
-// production builds dead-code-eliminate the wallet module entirely.
+// Wallet session gate: the public SIWE session panel (session + standing
+// self-readback) is reachable ONLY through this conditional dynamic import.
+// The gate now ships enabled in production-default builds (Public Online
+// Integration MVP) — it remains a build-time seam, never security.
 const WalletSessionPanel = WALLET_SESSION_PREVIEW_ENABLED
   ? lazy(() => import("@/wallet/WalletSessionPanel"))
   : null;
 
-interface CockpitItem {
+interface CockpitFacet {
   icon: LucideIcon;
   title: string;
   body: string;
   lifecycle: DisplayLifecycle;
+  links?: { label: string; href: string }[];
 }
 
-// What the Member OS resolves once the indexer is wired. Lifecycles are honest:
-// the seat is DERIVED from a verified receipt (pending the indexer), not granted
-// by hand; source attribution is paused upstream; recognition is a future
-// concept; archive holdings are protocol memory, never a seat or financial right.
-const cockpit: CockpitItem[] = [
-  {
+// What the Member OS resolves, facet by facet. Lifecycles are honest: the
+// seat is the active engine's own figure read back for YOUR signed wallet
+// (live, read-only); attribution readback awaits its adapter; recognition is
+// a future concept; archive holdings are protocol memory, never a seat or a
+// financial right. Nothing below is simulated — absent adapters say so.
+const facets = {
+  seat: {
     icon: Users,
     title: "Your seat",
-    body: "Derived from a verified Membership Sale receipt resolved through the Holder Index — never granted by hand. The membership indexer is not wired here yet.",
-    lifecycle: "PENDING_ADAPTER",
-  },
-  {
-    icon: Network,
-    title: "Attribution origin",
-    body: "The verified introduction behind your join — recognition of who opened the door, never a payment. The source registry is paused by precaution.",
-    lifecycle: "PAUSED_BY_PRECAUTION",
-  },
-  {
-    icon: Award,
-    title: "Recognition standing",
-    body: "Structural recognition of your verified participation — a future concept, never a financial benefit or reward.",
-    lifecycle: "FUTURE",
-  },
-  {
-    icon: Library,
-    title: "Archive holdings",
-    body: "Any archive artifacts tied to your wallet. Artifacts are protocol memory — never a membership seat or a financial right. Archive reads are not wired.",
-    lifecycle: "PENDING_ADAPTER",
-  },
-  {
+    body: "Read live from the active engine for your signed wallet — sign a session in the panel above and your seat is the engine's own recognition figure, read-only and exact. No directory of other wallets is served.",
+    lifecycle: "READ_ONLY_PROOF",
+  } as CockpitFacet,
+  receipt: {
     icon: ScrollText,
     title: "Proof receipts",
-    body: "Your membership and contribution proofs, read from on-chain source once the adapter exists.",
+    body: "Your membership and contribution proofs, read from on-chain source once the receipt adapter exists. Until then no receipt is displayed here — a receipt shown without its adapter would be an invented value.",
     lifecycle: "PENDING_ADAPTER",
-  },
-];
+  } as CockpitFacet,
+  source: {
+    icon: Network,
+    title: "Attribution origin",
+    body: "The verified introduction behind your join — recognition of who opened the door, never a payment. Introduction links can be validated read-only on the source builder; your own attribution readback is not yet served.",
+    lifecycle: "PENDING_ADAPTER",
+    links: [ctas.buildLink, ctas.exploreSource],
+  } as CockpitFacet,
+  activity: {
+    icon: Activity,
+    title: "Your activity",
+    body: "Verified protocol events tied to your wallet become your public, shareable proof of participation. The event adapter is not wired — no feed is served, and none is simulated.",
+    lifecycle: "PENDING_ADAPTER",
+    links: [ctas.verifyProof],
+  } as CockpitFacet,
+  recognition: {
+    icon: Award,
+    title: "Recognition standing",
+    body: "Structural recognition of your verified participation — a future concept, never a financial benefit. The recognition model is documented today; no standing figure is computed anywhere yet.",
+    lifecycle: "FUTURE",
+    links: [ctas.viewRecognition],
+  } as CockpitFacet,
+  archive: {
+    icon: Library,
+    title: "Archive holdings",
+    body: "Any archive artifacts tied to your wallet. Artifacts are protocol memory — never a membership seat or a financial right. Archive reads are not wired; the public archive doctrine is.",
+    lifecycle: "PENDING_ADAPTER",
+    links: [ctas.viewArchive],
+  } as CockpitFacet,
+};
 
-// Cross-links to proof surfaces that actually exist in this foundation. We never
-// link to /my-syndicate, /wallet/:address, /member/:number or /join here —
-// those routes are not built in this read-only app, so linking them would imply
-// a live system that does not exist.
-const proofLinks = [
-  ctas.viewStatus,
-  ctas.viewContracts,
-  ctas.viewRecognition,
-  ctas.exploreSource,
-];
+/** One honest facet panel — never renders data it does not have. */
+function FacetPanel({ facet }: { facet: CockpitFacet }) {
+  const Icon = facet.icon;
+  return (
+    <Card className="bg-card/40 border-border/50 p-6">
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="p-2 rounded-md bg-primary/10 text-primary">
+          <Icon className="h-5 w-5" />
+        </div>
+        <LifecycleBadge lifecycle={facet.lifecycle} />
+      </div>
+      <h3 className="text-base font-medium text-foreground mb-1.5">{facet.title}</h3>
+      <p className="text-sm text-muted-foreground leading-relaxed">{facet.body}</p>
+      {facet.links && facet.links.length > 0 ? (
+        <div className="flex flex-wrap gap-3 mt-4">
+          {facet.links.map((cta) => (
+            <Link key={cta.href} href={cta.href}>
+              <Button variant="outline" size="sm">
+                {cta.label}
+              </Button>
+            </Link>
+          ))}
+        </div>
+      ) : null}
+    </Card>
+  );
+}
 
 export default function MemberAccess() {
-  const module = getModuleById("member");
-  const label: TruthLabelVariant = module?.truthStatus ?? "AWAITING_FOUNDER_APPROVAL";
+  const accessState = useAccessState();
 
   return (
     <PublicPage
-      eyebrow="Membership"
+      eyebrow="Member OS"
       title={memberAccess.heading}
       lead={memberAccess.intro}
-      badge={<TruthLabel variant={label} />}
+      badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
-      {/* Wallet-as-identity doctrine — the recovered core of the organism */}
-      <Card className="bg-primary/5 border-primary/20 p-6 mb-12">
+      {/* Identity ribbon — wallet-as-identity doctrine + the live session state.
+          The chip reflects the app-wide access state (S1 fail-closed default,
+          S4 after a signed session); it is vocabulary, never evidence. */}
+      <Card className="bg-primary/5 border-primary/20 p-6 mb-8">
         <div className="flex items-start gap-4">
           <div className="p-2.5 rounded-md bg-primary/10 text-primary shrink-0">
             <Wallet className="h-5 w-5" />
           </div>
-          <div>
-            <h2 className="text-base font-medium text-foreground mb-3">
-              Your wallet is your identity key
-            </h2>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+              <h2 className="text-base font-medium text-foreground">
+                Your wallet is your identity key
+              </h2>
+              <AccessStateChip stateId={accessState} />
+            </div>
             <ul className="space-y-3">
               {memberAccess.points.map((point) => (
                 <li key={point} className="flex items-start gap-3 text-sm text-foreground/90 leading-relaxed">
@@ -115,75 +151,104 @@ export default function MemberAccess() {
         </div>
       </Card>
 
-      {/* Dev-only wallet session shell (S2) — absent from production builds */}
+      {/* Status centerpiece — the ONE live surface of the cockpit: public
+          wallet session + standing self-readback (ships in production builds) */}
       {WalletSessionPanel ? (
         <Suspense fallback={null}>
           <WalletSessionPanel />
         </Suspense>
       ) : null}
 
-      {/* The identity pipeline: wallet → receipt → index → derived facts → OS → proof */}
-      <h2 className="text-xl font-light tracking-tight text-foreground mb-2">
-        {membershipIdentity.heading}
-      </h2>
-      <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-6">
-        {membershipIdentity.lead}
-      </p>
-      <ol className="space-y-3 mb-12">
-        {membershipIdentity.stages.map((stage) => (
-          <li key={stage.step}>
-            <Card className="bg-card/40 border-border/50 p-5">
-              <div className="flex items-start gap-4">
-                <span className="font-mono text-xs text-primary/70 pt-0.5 shrink-0 w-6">
-                  {stage.step}
-                </span>
-                <div className="flex-1">
-                  <div className="flex items-start justify-between gap-3 mb-1.5">
-                    <h3 className="text-base font-medium text-foreground">{stage.title}</h3>
-                    <LifecycleBadge lifecycle={stage.lifecycle} />
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{stage.body}</p>
-                </div>
-              </div>
-            </Card>
-          </li>
-        ))}
-      </ol>
-
-      <h2 className="text-xl font-light tracking-tight text-foreground mb-5">What your Member OS will resolve</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
-        {cockpit.map((c) => {
-          const Icon = c.icon;
-          return (
-            <Card key={c.title} className="bg-card/40 border-border/50 p-5">
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <div className="p-2 rounded-md bg-primary/10 text-primary">
-                  <Icon className="h-5 w-5" />
-                </div>
-                <LifecycleBadge lifecycle={c.lifecycle} />
-              </div>
-              <h3 className="text-base font-medium text-foreground mb-1">{c.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{c.body}</p>
-            </Card>
-          );
-        })}
+      {/* Quick actions — real surfaces only; the receipt readback is honestly
+          absent (no adapter), so it renders as a labelled non-link. */}
+      <div className="flex flex-wrap items-center gap-3 mb-12">
+        <Link href={ctas.requestSeat.href}>
+          <Button>{ctas.requestSeat.label}</Button>
+        </Link>
+        <Link href={ctas.buildLink.href}>
+          <Button variant="outline">{ctas.buildLink.label}</Button>
+        </Link>
+        <Link href={ctas.viewStatus.href}>
+          <Button variant="outline">{ctas.viewStatus.label}</Button>
+        </Link>
+        <span className="inline-flex items-center gap-2 rounded-md border border-dashed border-border px-3 py-2 text-sm text-muted-foreground">
+          View your receipt
+          <LifecycleBadge lifecycle="PENDING_ADAPTER" />
+        </span>
       </div>
 
+      {/* Cockpit tabs — state-only (no URL sync); every tab is an honest
+          facet: live where wired, explicitly absent where not. */}
+      <Tabs defaultValue="overview" className="mb-12">
+        <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="seat">Seat &amp; Receipt</TabsTrigger>
+          <TabsTrigger value="source">Source</TabsTrigger>
+          <TabsTrigger value="activity">Activity</TabsTrigger>
+          <TabsTrigger value="recognition">Recognition</TabsTrigger>
+          <TabsTrigger value="archive">Archive</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="mt-6">
+          <h2 className="text-xl font-light tracking-tight text-foreground mb-2">
+            {membershipIdentity.heading}
+          </h2>
+          <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-6">
+            {membershipIdentity.lead}
+          </p>
+          <ol className="space-y-3">
+            {membershipIdentity.stages.map((stage) => (
+              <li key={stage.step}>
+                <Card className="bg-card/40 border-border/50 p-5">
+                  <div className="flex items-start gap-4">
+                    <span className="font-mono text-xs text-primary/70 pt-0.5 shrink-0 w-6">
+                      {stage.step}
+                    </span>
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between gap-3 mb-1.5">
+                        <h3 className="text-base font-medium text-foreground">{stage.title}</h3>
+                        <LifecycleBadge lifecycle={stage.lifecycle} />
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{stage.body}</p>
+                    </div>
+                  </div>
+                </Card>
+              </li>
+            ))}
+          </ol>
+        </TabsContent>
+
+        <TabsContent value="seat" className="mt-6">
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            <FacetPanel facet={facets.seat} />
+            <FacetPanel facet={facets.receipt} />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="source" className="mt-6">
+          <FacetPanel facet={facets.source} />
+        </TabsContent>
+
+        <TabsContent value="activity" className="mt-6">
+          <FacetPanel facet={facets.activity} />
+        </TabsContent>
+
+        <TabsContent value="recognition" className="mt-6">
+          <FacetPanel facet={facets.recognition} />
+        </TabsContent>
+
+        <TabsContent value="archive" className="mt-6">
+          <FacetPanel facet={facets.archive} />
+        </TabsContent>
+      </Tabs>
+
       <h2 className="text-base font-medium text-foreground mb-4">Verify the foundation</h2>
-      <div className="flex flex-wrap gap-3 mb-4">
-        {proofLinks.map((cta) => (
+      <div className="flex flex-wrap gap-3 mb-12">
+        {[ctas.viewStatus, ctas.viewContracts, ctas.getSupport, ctas.learn].map((cta) => (
           <Link key={cta.href} href={cta.href}>
             <Button variant="outline">{cta.label}</Button>
           </Link>
         ))}
-      </div>
-      <div className="flex flex-wrap gap-3 mb-12">
-        <Link href={ctas.getSupport.href}>
-          <Button>{ctas.getSupport.label}</Button>
-        </Link>
-        <Link href={ctas.learn.href}>
-          <Button variant="outline">{ctas.learn.label}</Button>
-        </Link>
       </div>
 
       <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl pt-6 border-t border-border/50">

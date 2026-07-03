@@ -1,17 +1,20 @@
-// WalletSessionPanel — dev-only SIWE session UI on /member (S2, gated).
+// WalletSessionPanel — public SIWE session UI on /member.
 // ---------------------------------------------------------------------------
-// Reachable ONLY through the flag-gated dynamic import in MemberAccess.tsx;
-// dead-code-eliminated from production builds. Everything here is honest:
+// Public product surface (Public Online Integration MVP, founder-approved);
+// still reachable only through the wallet session gate's dynamic import,
+// which now ships in production-default builds. Everything here is honest:
 //   - the address shown is a CLIENT-SIDE fact from the wallet, held in memory
 //     only — the server never receives, stores, or echoes it (outside the
 //     signed SIWE message it verifies and drops);
 //   - after a reload (or wallet account switch) the session may still be
 //     valid but the address claim is gone — we say so instead of pretending;
-//   - a session is control-proof only: session ≠ membership, and this app
-//     performs no wallet→member lookup of any kind.
+//   - a session proves control of a wallet right now — session ≠ membership;
+//   - standing is a live read-only SELF-readback: the active engine's own
+//     memberNumberOf figure for the signed wallet, and nothing else. No
+//     directory, list, or lookup of other wallets exists anywhere.
 
-import { useEffect, useState } from "react";
-import { KeyRound, LogOut, Wallet } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { KeyRound, LogOut, RefreshCw, Wallet } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AccessStateChip } from "@/components/access/AccessStateChip";
@@ -20,21 +23,155 @@ import {
   useWireAccessState,
 } from "@/components/access/AccessStateProvider";
 import {
+  fetchMemberStanding,
   getInjectedProvider,
   logoutSession,
   requestAccount,
   shortAddress,
+  shortHashPin,
   signInWithWallet,
   type Eip1193Provider,
+  type MemberStandingReadback,
 } from "./walletSession";
 
 type Busy = "connect" | "sign" | "logout" | null;
 
+type StandingState =
+  | { kind: "idle" }
+  | { kind: "loading" }
+  | { kind: "unavailable" }
+  | { kind: "read"; readback: MemberStandingReadback };
+
 const honestyLines = [
   "session ≠ membership — a signed session proves control of a wallet right now, nothing more.",
-  "member continuity not wired — this app performs no wallet→member lookup of any kind.",
-  "Holder Index not served — no member number, standing, or receipt is looked up or shown.",
+  "standing is a self-readback — only YOUR signed wallet's seat is read, live and read-only, from the active engine; no directory or lookup of other wallets exists.",
+  "read-only boundary — this app never initiates, signs, or submits a transaction.",
 ] as const;
+
+function StandingSection({
+  standing,
+  onRetry,
+}: {
+  standing: StandingState;
+  onRetry: () => void;
+}) {
+  if (standing.kind === "idle") return null;
+
+  let body: React.ReactNode;
+  if (standing.kind === "loading") {
+    body = (
+      <p className="font-mono text-sm text-muted-foreground" data-testid="text-standing-loading">
+        STANDING: reading from the active engine…
+      </p>
+    );
+  } else if (standing.kind === "unavailable") {
+    body = (
+      <div className="flex flex-wrap items-center gap-3">
+        <p className="font-mono text-sm text-muted-foreground" data-testid="text-standing-unavailable">
+          STANDING: read unavailable (possibly rate-limited) — nothing is
+          assumed.
+        </p>
+        <Button variant="outline" size="sm" onClick={onRetry} data-testid="button-standing-retry">
+          <RefreshCw className="h-3.5 w-3.5 mr-2" />
+          Retry read
+        </Button>
+      </div>
+    );
+  } else {
+    const r = standing.readback;
+    if (r.state !== "S4") {
+      body = (
+        <p className="font-mono text-sm text-muted-foreground" data-testid="text-standing-lapsed">
+          STANDING: session lapsed — sign in again to read your standing.
+        </p>
+      );
+    } else if (!r.chainVerified) {
+      body = (
+        <div className="flex flex-wrap items-center gap-3">
+          <p className="font-mono text-sm text-muted-foreground" data-testid="text-standing-chainfail">
+            STANDING: engine unreadable —{" "}
+            {r.failureReason ?? "live chain read failed"}. No standing is
+            invented.
+          </p>
+          <Button variant="outline" size="sm" onClick={onRetry} data-testid="button-standing-retry">
+            <RefreshCw className="h-3.5 w-3.5 mr-2" />
+            Retry read
+          </Button>
+        </div>
+      );
+    } else if (r.recognized === true && r.memberNumber !== null) {
+      body = (
+        <div data-testid="text-standing-recognized">
+          <p className="font-mono text-sm text-foreground">
+            STANDING: recognized member — seat #{r.memberNumber}
+          </p>
+          {r.era !== null && r.authorityLabel !== null ? (
+            <div className="flex flex-wrap items-center gap-2 mt-2">
+              <span
+                className="inline-flex items-center rounded-sm border border-cyan-400/30 bg-cyan-400/10 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-cyan-700 dark:text-cyan-300"
+                data-testid="chip-standing-era"
+              >
+                {r.era}
+              </span>
+              <span className="font-mono text-[10px] text-muted-foreground">
+                numbering authority: {r.authorityLabel}
+              </span>
+            </div>
+          ) : null}
+          {r.continuityStatus !== null ? (
+            <p className="font-mono text-[10px] text-muted-foreground mt-1" data-testid="text-standing-continuity">
+              continuity: {r.continuityStatus}
+              {r.proofPosture !== null
+                ? ` · snapshot ${r.proofPosture.snapshotStatus} · pin ${shortHashPin(r.proofPosture.snapshotHash)}`
+                : ""}
+            </p>
+          ) : null}
+          <p className="font-mono text-[10px] text-muted-foreground mt-1">
+            The active engine's own memberNumberOf figure for your signed
+            wallet, resolved against the verified Holder Index snapshot —
+            exact, live, read-only. Self-readback only: this surface can read
+            YOUR standing and nothing else.
+          </p>
+        </div>
+      );
+    } else if (r.recognized === false) {
+      body = (
+        <div data-testid="text-standing-none">
+          <p className="font-mono text-sm text-muted-foreground">
+            STANDING: no seat recognized for this wallet on the active engine.
+          </p>
+          <p className="font-mono text-[10px] text-muted-foreground mt-1">
+            The engine returned 0 for your signed wallet — an honest on-chain
+            fact, not a judgement. Earlier-era standing is a separate,
+            founder-gated record.
+          </p>
+        </div>
+      );
+    } else {
+      body = (
+        <div className="flex flex-wrap items-center gap-3">
+          <p className="font-mono text-sm text-muted-foreground" data-testid="text-standing-null">
+            STANDING: could not be resolved —{" "}
+            {r.failureReason ?? "no figure returned"}. Nothing is assumed.
+          </p>
+          <Button variant="outline" size="sm" onClick={onRetry} data-testid="button-standing-retry">
+            <RefreshCw className="h-3.5 w-3.5 mr-2" />
+            Retry read
+          </Button>
+        </div>
+      );
+    }
+  }
+
+  return (
+    <div className="border-t border-border/50 pt-4 mb-5" data-testid="panel-member-standing">
+      <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+        Your member standing
+      </p>
+      {body}
+    </div>
+  );
+}
 
 export default function WalletSessionPanel() {
   const appState = useAccessState();
@@ -45,6 +182,7 @@ export default function WalletSessionPanel() {
   const [address, setAddress] = useState<string | null>(null);
   const [busy, setBusy] = useState<Busy>(null);
   const [error, setError] = useState<string | null>(null);
+  const [standing, setStanding] = useState<StandingState>({ kind: "idle" });
 
   // Wallet account switch: the displayed address is a client-side claim that
   // is now stale — clear it (the anonymous server session is unaffected).
@@ -57,6 +195,26 @@ export default function WalletSessionPanel() {
 
   const signed = appState === "S4";
   const localChip = signed ? "S4" : address ? "S3" : "S1";
+
+  const readStanding = useCallback(() => {
+    setStanding({ kind: "loading" });
+    void fetchMemberStanding().then((readback) => {
+      setStanding(
+        readback === null ? { kind: "unavailable" } : { kind: "read", readback },
+      );
+    });
+  }, []);
+
+  // Signed session → read the wallet's own standing once (retry is manual;
+  // the read shares the auth zone's throttle and fails closed to
+  // "unavailable", never to an invented standing).
+  useEffect(() => {
+    if (!signed) {
+      setStanding({ kind: "idle" });
+      return;
+    }
+    readStanding();
+  }, [signed, readStanding]);
 
   const sessionLine = signed
     ? address
@@ -116,10 +274,10 @@ export default function WalletSessionPanel() {
           </div>
           <div>
             <h2 className="text-base font-medium text-foreground">
-              Wallet session — dev preview
+              Wallet session &amp; standing
             </h2>
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mt-0.5">
-              Excluded from production builds · auth zone production-dark
+              A signed session proves control of a wallet · never membership
             </p>
           </div>
         </div>
@@ -175,6 +333,8 @@ export default function WalletSessionPanel() {
           {error}
         </p>
       ) : null}
+
+      <StandingSection standing={standing} onRetry={readStanding} />
 
       <ul className="space-y-2 border-t border-border/50 pt-4">
         {honestyLines.map((line) => (

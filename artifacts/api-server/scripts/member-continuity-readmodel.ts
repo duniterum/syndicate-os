@@ -950,7 +950,7 @@ export function buildMemberContinuityReadModel(input: BuildInput): BuildResult {
     };
 
     const blockedReasons: string[] = [
-      "S3B_NOT_APPROVED: persistence execution is a separate founder gate; no write adapter exists in S3a",
+      "S3B_WRITE_GATE: the pure builder never persists; rows may be written ONLY by the founder-armed --write runner (one transaction, VERIFIED-only)",
     ];
     if (!allChecksPass) {
       blockedReasons.push(

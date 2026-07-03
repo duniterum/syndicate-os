@@ -43,6 +43,68 @@ export const GetSourceStatusResponse = zod.object({
 
 
 /**
+ * Read-only validation of a client-supplied bytes32 source id against SourceRegistryV1 (sourceExists + isActive). The source id is NEVER echoed back, and no wallets, addresses, terms, or economic fields from the on-chain source configuration are ever returned — only existence and active-state booleans. Fails closed: on wrong chain, missing code, or decode failure the affected value is null with a failureReason.
+ * @summary Validate a Verified Introduction source id (read-only)
+ */
+export const getSourceValidateQuerySourceIdMax = 66;
+
+
+
+export const GetSourceValidateQueryParams = zod.object({
+  "sourceId": zod.coerce.string().max(getSourceValidateQuerySourceIdMax).describe('bytes32 hex source id (0x + 64 hex). Never echoed back.')
+})
+
+export const GetSourceValidateResponse = zod.object({
+  "mode": zod.enum(['READ_ONLY_SOURCE_VALIDATE']),
+  "asOf": zod.string(),
+  "formatValid": zod.boolean(),
+  "chainVerified": zod.boolean(),
+  "registryCodePresent": zod.union([zod.boolean(),zod.null()]),
+  "exists": zod.union([zod.boolean(),zod.null()]),
+  "active": zod.union([zod.boolean(),zod.null()]),
+  "failureReason": zod.union([zod.string(),zod.null()])
+})
+
+
+/**
+ * Read-only quote from the active MembershipSaleV3 engine via eth_call. Amounts are EXACT raw base-unit strings (never humanized; decimals are metadata). The quote is computed for an anonymous recipient (zero address); no wallet is connected, no approval or transaction is prepared, and no write surface exists. If a sourceId is supplied it is applied ONLY when it exists and is active on SourceRegistryV1 — otherwise the quote fails closed with a failureReason (never a silent fallback). The source id is never echoed back.
+ * @summary Read-only MembershipSaleV3 quote
+ */
+export const getJoinQuoteQueryGrossUsdcMax = 30;
+
+export const getJoinQuoteQuerySourceIdMax = 66;
+
+
+
+export const GetJoinQuoteQueryParams = zod.object({
+  "grossUsdc": zod.coerce.string().max(getJoinQuoteQueryGrossUsdcMax).describe('Exact raw 6-decimal USDC base-unit amount as a base-10 string.'),
+  "sourceId": zod.coerce.string().max(getJoinQuoteQuerySourceIdMax).optional().describe('Optional bytes32 hex source id (0x + 64 hex). Never echoed back.')
+})
+
+export const GetJoinQuoteResponse = zod.object({
+  "mode": zod.enum(['READ_ONLY_JOIN_QUOTE']),
+  "asOf": zod.string(),
+  "inputValid": zod.boolean(),
+  "chainVerified": zod.boolean(),
+  "sourceProvided": zod.boolean(),
+  "sourceValid": zod.union([zod.boolean(),zod.null()]),
+  "quote": zod.union([zod.object({
+  "synOutRaw": zod.string(),
+  "era": zod.number(),
+  "synPerUsdcRaw": zod.string(),
+  "seatIfFirstRaw": zod.string(),
+  "acquisitionCostRaw": zod.string(),
+  "protocolContributionRaw": zod.string()
+}).describe('EXACT raw base-unit strings from the V3 quote view (never humanized).'),zod.null()]),
+  "decimals": zod.object({
+  "usdc": zod.literal(6),
+  "syn": zod.literal(18)
+}),
+  "failureReason": zod.union([zod.string(),zod.null()])
+})
+
+
+/**
  * Read-only protocol observability envelope. Reads verified public facts from vendored canon and Avalanche C-Chain RPC — chain reachability, contract code presence, ERC-20 token metadata, archive posture, and read-only sale-engine state (lifecycle flags plus public V3 sale figures: available SYN, total gross USDC, and receipt count, surfaced as exact raw base units), normalized into one envelope. No addresses, private keys, secrets, per-account balances, or financial-upside framing are ever returned, and no wallet/write surface exists. On any read failure the affected value is null with an explicit lifecycle and failureReason; the endpoint still responds 200.
  * @summary Read-only protocol reality envelope
  */
@@ -132,8 +194,63 @@ export const GetProtocolRealityResponse = zod.object({
   "publicSafe": zod.boolean(),
   "note": zod.string(),
   "failureReason": zod.union([zod.string(),zod.null()])
+})),
+  "source": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "value": zod.union([zod.boolean(),zod.number(),zod.string(),zod.null()]),
+  "valueType": zod.enum(['null', 'boolean', 'string', 'number']),
+  "sourceType": zod.enum(['SERVER_SIDE_CANON', 'LIVE_CHAIN_RPC', 'CANON_RECONCILED_RPC']),
+  "sourceRef": zod.string(),
+  "chainId": zod.union([zod.number(),zod.null()]),
+  "contractRole": zod.union([zod.enum(['token', 'stablecoin', 'sale', 'source-registry', 'archive1155', 'lp-pair']),zod.null()]),
+  "asOf": zod.string(),
+  "confidence": zod.enum(['HIGH', 'MEDIUM', 'LOW', 'UNKNOWN']),
+  "lifecycle": zod.enum(['READ_ONLY_PROOF', 'PENDING_ADAPTER', 'NOT_ACTIVE', 'AUTH_REQUIRED', 'FOUNDER_GATED', 'FUTURE', 'PAUSED_BY_PRECAUTION']),
+  "publicSafe": zod.boolean(),
+  "note": zod.string(),
+  "failureReason": zod.union([zod.string(),zod.null()])
 }))
 })
 })
+
+
+/**
+ * Aggregate-only membership continuity index, served from a static, hash-pinned snapshot generated by a founder-gated offline build from the VERIFIED member-continuity build (no runtime database read). Every aggregate carries its numbering-era provenance: seats numbered by the verified historical freeze / on-chain root versus seats numbered by V3 engine events. Counts, era boundaries, timestamp coverage, and build provenance only — no per-seat rows, no directory, and no member-identifying data of any kind are ever returned. An offline reconciler re-derives this snapshot from the database and fails closed on any divergence.
+ * @summary Aggregate-only Holder Index snapshot
+ */
+export const getHolderIndexResponseErasMax = 2;
+
+
+
+export const GetHolderIndexResponse = zod.object({
+  "mode": zod.enum(['READ_ONLY_HOLDER_INDEX_AGGREGATES']),
+  "status": zod.enum(['VERIFIED']),
+  "chainId": zod.number(),
+  "freezeBlock": zod.number(),
+  "memberTotal": zod.number(),
+  "eras": zod.array(zod.object({
+  "era": zod.enum(['PART_B_FREEZE_ROOT', 'V3_EMITTED']),
+  "label": zod.string(),
+  "doctrine": zod.string(),
+  "count": zod.number(),
+  "seatNumberLow": zod.number(),
+  "seatNumberHigh": zod.number()
+}).describe('One numbering era\'s AGGREGATE view. Era provenance is always labelled; the two numbering authorities are never collapsed.')).max(getHolderIndexResponseErasMax),
+  "timestampCoverage": zod.object({
+  "withVerifiedTimestamp": zod.number(),
+  "total": zod.number()
+}),
+  "provenance": zod.object({
+  "runId": zod.number(),
+  "builtAt": zod.string(),
+  "builderVersion": zod.string(),
+  "sourceDeterminismHash": zod.string(),
+  "inputSaleEventCount": zod.number(),
+  "inputMaxSaleEventRawId": zod.union([zod.number(),zod.null()])
+}),
+  "boundaries": zod.array(zod.string()),
+  "snapshotHash": zod.string()
+}).describe('Static, hash-pinned, aggregate-only Holder Index snapshot. Counts and era boundaries only; no per-seat rows, no directory, no member-identifying data.')
 
 

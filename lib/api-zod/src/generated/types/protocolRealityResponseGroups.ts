@@ -13,4 +13,5 @@ export type ProtocolRealityResponseGroups = {
   tokens: ProtocolRealityItem[];
   archive: ProtocolRealityItem[];
   sale: ProtocolRealityItem[];
+  source: ProtocolRealityItem[];
 };

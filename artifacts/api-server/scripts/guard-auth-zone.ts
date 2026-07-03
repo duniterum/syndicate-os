@@ -13,27 +13,42 @@
 //   3. S4 cap: the auth zone knows exactly two state literals — "S1" and
 //      "S4". No registry/DB import (drizzle, @workspace/db) exists in the
 //      zone; no ACTIVE-row logic; the approved statement text and the canon
-//      chain id are reconciled verbatim;
-//   4. payload/log leak: res.json lines never carry address/wallet/member
-//      identifiers (nonce is allowed ONLY in the challenge response, which
-//      the SIWE contract requires); log lines never carry nonce/signature/
-//      address/sessionId identifiers (string literals are stripped first so
+//      chain id are reconciled verbatim. Public MVP amendment (founder-
+//      approved): sessions bind the SIWE-verified account SERVER-SIDE ONLY
+//      to serve the read-only member-self readback — S4 remains the ceiling;
+//   4. payload/log leak: res.json lines never carry address/wallet/member/
+//      account identifiers (nonce is allowed ONLY in the challenge response,
+//      which the SIWE contract requires; the member-self response carries
+//      recognition posture and the engine's own decimal figure, NEVER the
+//      bound account); log lines never carry nonce/signature/address/account/
+//      sessionId identifiers (string literals are stripped first so
 //      reason codes like "invalid_signature" may exist);
 //   5. fixture discipline: key-material helpers (privateKeyToAccount,
 //      generatePrivateKey, mnemonicToAccount) appear only under scripts/,
 //      never in served src/; no wallet-address or 64-hex literals in the
 //      auth zone;
-//   6. studio dist stays auth-free: the production-default studio build
-//      contains no SIWE statement copy, no /api/auth references, no viem or
-//      fixture strings — the frontend is visibly unchanged in IA-2 (this
-//      section requires a production-default dist to exist and fails closed
-//      when it is missing);
+//   6. studio dist posture (FLIPPED for the founder-approved Public Online
+//      Integration MVP): the wallet session shell is now public product
+//      surface, so a production-default dist must CONTAIN the wallet
+//      chunk's strings (/api/auth transport, S2 honesty copy) — while
+//      server-side/fixture strings (SIWE statement copy, key-material
+//      helpers, the session cookie name, the server exposure flag) must
+//      still NEVER appear in any dist (this section requires a
+//      production-default dist to exist and fails closed when missing);
 //   7. client identity / edge posture (IA-2.5): peer-address APIs are never
 //      used in served source; Express trust proxy stays unset; the spoofable
 //      x-real-ip / Forwarded headers are never read; clientIdentity.ts
 //      exports only throttleKey, performs no logging, salts from randomBytes
 //      (never env), hashes HMAC-SHA256 → base64url; user-agent is never
-//      keying material.
+//      keying material;
+//   8. self-readback boundary (founder Decision 5a): the auth zone exposes
+//      NO lookup surface — req.query and req.params are never read anywhere
+//      under src/auth/ (the ONLY input to member-self/member-standing is the
+//      session cookie); the member-standing route exists and resolves eras
+//      exclusively through lib/protocol/holderIndexStanding (the auth zone
+//      never imports the raw snapshot module directly, keeping ONE mapping
+//      path); the live engine read goes through the shared engineReadback
+//      helper in BOTH readback routes (no second inline read path to drift).
 //
 // Scans are comment-stripped so documentation may name what it forbids.
 // Run: pnpm --filter @workspace/api-server run auth-zone:guard
@@ -102,7 +117,9 @@ check(
 );
 
 // ── 1. Route exposure: spine GET-only, scoped body parser, mount ────────────
-const WRITE_VERB = /\.(post|put|patch|delete)\s*\(/;
+// Express route write verbs only (router.post / app.delete …) — anchored so
+// container methods like Map.prototype.delete never false-trip the scan.
+const WRITE_VERB = /\b(?:router|app)\s*\.\s*(post|put|patch|delete)\s*\(/;
 for (const abs of spineFiles) {
   const rel = path.relative(srcDir, abs);
   const code = stripComments(read(abs));
@@ -241,9 +258,11 @@ for (const abs of authFiles) {
   );
   for (const call of responseCalls) {
     check(
-      !/\b(address|wallet|member|signature)\b/i.test(call.text),
+      !/\b(address|wallet|member|signature|account|boundAccount|verifiedAccount)\b/i.test(
+        call.text,
+      ),
       `${rel}:${call.line}: response expression carries no identity material`,
-      `${rel}:${call.line}: a response expression references address/wallet/member/signature — auth responses must never carry identity material`,
+      `${rel}:${call.line}: a response expression references address/wallet/member/signature/account — auth responses must never carry identity material`,
     );
     const isChallenge = /issued\.nonce/.test(call.text);
     if (!isChallenge) {
@@ -258,11 +277,11 @@ for (const abs of authFiles) {
   const logCalls = extractCallExpressions(code, /log\.(info|warn|error|debug)\(/);
   for (const call of logCalls) {
     check(
-      !/\b(nonce|signature|address|sessionId|wallet|member|ip|ips|remoteAddress|forwarded|xff)\b/i.test(
+      !/\b(nonce|signature|address|sessionId|wallet|member|account|boundAccount|verifiedAccount|ip|ips|remoteAddress|forwarded|xff)\b/i.test(
         call.text,
       ),
       `${rel}:${call.line}: log expression carries no secret/identity identifiers`,
-      `${rel}:${call.line}: a log call references nonce/signature/address/sessionId/wallet/member/ip/remoteAddress/forwarded — values must never be logged`,
+      `${rel}:${call.line}: a log call references nonce/signature/address/sessionId/wallet/member/account/ip/remoteAddress/forwarded — values must never be logged`,
     );
   }
 }
@@ -296,7 +315,15 @@ check(
   "scripts/auth-skeleton-test.ts is missing — fixture testing must live under scripts/, never src/",
 );
 
-// ── 6. Studio dist stays auth-free (production-default build required) ──────
+// ── 6. Studio dist posture (production-default build required) ──────────────
+// FLIPPED (founder-approved Public Online Integration MVP): the wallet
+// session shell is public product surface. A production-default dist must
+// now CONTAIN the wallet chunk (its /api/auth transport and S2 honesty
+// copy) — the regression net inverted. Server-side and fixture strings
+// remain forbidden in every dist: the SIWE statement is issued by the
+// server only, key-material helpers live under scripts/ only, the session
+// cookie is HttpOnly (frontend never names it), and the server exposure
+// flag is server posture (deliberately never named in frontend code).
 if (!existsSync(studioDistDir)) {
   errors.push(
     "studio dist/ not found — run a production-default studio build first; this guard fails closed without dist proof",
@@ -305,26 +332,38 @@ if (!existsSync(studioDistDir)) {
   const distFiles = walk(studioDistDir).filter((f) =>
     /\.(js|css|html)$/.test(f),
   );
-  const AUTH_PROBES = [
-    "Sign to prove control of this wallet",
+  const REQUIRED_WALLET_PROBES = [
+    // Wallet-chunk transport + honesty copy: their presence proves the
+    // public wallet session shell shipped in the production-default build.
+    // (Copy updated with the member-self readback slice: continuity is now a
+    // live SELF-readback for the signed wallet only, so the honesty lines
+    // changed — these are the new stable wallet-chunk strings.)
     "/api/auth",
+    "proves control of a wallet",
+    "self-readback",
+  ];
+  for (const probe of REQUIRED_WALLET_PROBES) {
+    const hits = distFiles.filter((f) => read(f).includes(probe));
+    check(
+      hits.length > 0,
+      `studio dist carries the public wallet shell string "${probe}"`,
+      `studio dist is missing "${probe}" — the wallet session shell is public product surface and must ship in a production-default build (rebuild dist)`,
+    );
+  }
+  const FORBIDDEN_DIST_PROBES = [
+    "Sign to prove control of this wallet",
     "privateKeyToAccount",
     "syn_session",
     "SYNDICATE_AUTH_ENABLED",
-    // S2 wallet-chunk-only honesty copy: present ONLY in the build-time-gated
-    // src/wallet/ module — its absence from a production-default dist proves
-    // the wallet session shell was dead-code-eliminated.
-    "member continuity not wired",
-    "Holder Index not served",
   ];
-  for (const probe of AUTH_PROBES) {
+  for (const probe of FORBIDDEN_DIST_PROBES) {
     const hits = distFiles.filter((f) => read(f).includes(probe));
     check(
       hits.length === 0,
       `studio dist carries no "${probe}"`,
       `studio dist contains "${probe}" in: ${hits
         .map((f) => path.relative(studioDistDir, f))
-        .join(", ")} — the frontend must stay visibly unchanged and auth-free in IA-2`,
+        .join(", ")} — server-side/fixture strings must never ship in the frontend bundle`,
     );
   }
 }
@@ -359,6 +398,48 @@ for (const abs of allSrcTs) {
     !/["'`]x-real-ip["'`]/i.test(code) && !/["'`]forwarded["'`]/i.test(code),
     `${rel}: no x-real-ip / Forwarded header reads`,
     `${rel} reads x-real-ip or Forwarded — both pass through the shared proxy untouched and are client-spoofable`,
+  );
+}
+
+// ── 8. Self-readback boundary (founder Decision 5a) ─────────────────────────
+// Own-row only: the auth zone must never grow a lookup surface. The ONLY
+// input to the readback routes is the session cookie — query strings and
+// route params are banned wholesale under src/auth/.
+for (const abs of authFiles) {
+  const rel = path.relative(srcDir, abs);
+  const code = stripStringLiterals(stripComments(read(abs)));
+  check(
+    !/\breq\.(query|params)\b/.test(code),
+    `${rel}: no req.query / req.params (no lookup surface)`,
+    `${rel} reads req.query or req.params — the self-readback contract forbids ANY lookup input beyond the session cookie`,
+  );
+}
+
+const routerAbs = path.resolve(authDir, "router.ts");
+if (existsSync(routerAbs)) {
+  const routerCode = stripComments(read(routerAbs));
+  check(
+    /router\.get\(\s*["']\/member-standing["']/.test(routerCode),
+    "router exposes GET /member-standing (Holder Index self-readback)",
+    "GET /member-standing route missing from src/auth/router.ts — the Decision 5a self-readback surface drifted",
+  );
+  check(
+    routerCode.includes("../lib/protocol/holderIndexStanding"),
+    "router resolves standing through lib/protocol/holderIndexStanding",
+    "router.ts does not import holderIndexStanding — era mapping must go through the single pure mapping module",
+  );
+  check(
+    !routerCode.includes("../lib/protocol/holderIndexSnapshot"),
+    "router never imports the raw snapshot module directly",
+    "router.ts imports holderIndexSnapshot directly — the auth zone must map eras ONLY via holderIndexStanding (one mapping path)",
+  );
+  const memberRouteCount = (
+    routerCode.match(/readEngineMemberNumber\(/g) ?? []
+  ).length;
+  check(
+    routerCode.includes('from "./engineReadback"') && memberRouteCount >= 2,
+    "both readback routes share the engineReadback helper",
+    "member-self/member-standing no longer share readEngineMemberNumber — a second inline engine-read path is drift waiting to happen",
   );
 }
 

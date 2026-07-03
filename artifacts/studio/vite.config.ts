@@ -35,12 +35,9 @@ export default defineConfig({
     __OPERATOR_PREVIEW__: JSON.stringify(
       process.env.VITE_OPERATOR_PREVIEW === "true",
     ),
-    // Wallet session preview hard gate (see src/config/walletSessionGate.ts).
-    // Same mechanism: a default production build folds the gate to `false`
-    // and dead-code-eliminates the wallet session module (S2).
-    __WALLET_SESSION_PREVIEW__: JSON.stringify(
-      process.env.VITE_WALLET_SESSION_PREVIEW === "true",
-    ),
+    // The wallet session shell is PUBLIC (see src/config/walletSessionGate.ts)
+    // — its former __WALLET_SESSION_PREVIEW__ build flag was retired when the
+    // founder-approved Public Online Integration MVP made it product surface.
   },
   plugins: [
     react(),

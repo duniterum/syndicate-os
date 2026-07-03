@@ -83,7 +83,7 @@ export const awaitingWiring: AwaitingWiringItem[] = [
   },
 ];
 
-export const seatCta = { label: "Take your seat", href: "/member" };
+export const seatCta = { label: "Take your seat", href: "/join" };
 
 export const heroContent = {
   badge: homepageStatus.heroBadge,
@@ -105,22 +105,37 @@ export interface HowItWorksStep {
 
 export const howItWorks = {
   title: "The Mechanics of Truth",
-  subtitle: "A deterministic path from action to recognition.",
+  subtitle: "The membership loop — a deterministic path from action to recognition.",
   steps: [
     {
       step: "01",
-      title: "Take Your Seat",
-      description: "Your wallet is your identity; a verified Membership Sale receipt establishes your seat — recognized, not granted by hand.",
+      title: "Join",
+      description:
+        "Take your seat. A verified Membership Sale receipt on the Avalanche C-Chain establishes your seat — recognized on-chain, never granted by hand.",
     },
     {
       step: "02",
-      title: "Record Attribution",
-      description: "All attribution paths and proofs are permanently anchored to your identity.",
+      title: "Prove",
+      description:
+        "Every seat, receipt, and routed contribution is public, verifiable record — proof is read from the chain, never asserted.",
     },
     {
       step: "03",
-      title: "Verify & Operate",
-      description: "Enter the Studio OS or Member OS to view transparent, read-only data.",
+      title: "Remember",
+      description:
+        "The protocol keeps memory: receipts, chronicle entries, and recognition are preserved as permanent, inspectable history.",
+    },
+    {
+      step: "04",
+      title: "Return",
+      description:
+        "Come back to your Member OS to read your standing, your receipt trail, and your next step — always read-only, always yours.",
+    },
+    {
+      step: "05",
+      title: "Evolve",
+      description:
+        "Standing, chapters, and recognition evolve as verified history accumulates — structural standing, never a financial benefit.",
     },
   ] as HowItWorksStep[],
 };
@@ -164,6 +179,57 @@ export const studioPreview = {
   mockStatus: "DESIGN_PREVIEW" as TruthStatus,
 };
 
+// ---------------------------------------------------------------------------
+// Homepage recomposition copy (registry-driven sections).
+// The Promoted Strip and Module Strip render from Module Registry v0
+// (config/moduleRegistry.ts): labels/routes derive from the registry, live
+// posture derives at render time (fail-closed), and only the marketing blurbs
+// below live here — keyed by registryId so drift is impossible to hide.
+// ---------------------------------------------------------------------------
+
+/** Slim live trust strip under the hero — bound to GET /api/protocol/reality. */
+export const trustStrip = {
+  eyebrow: "Protocol reality",
+  groups: [
+    { key: "chain", label: "Chain identity" },
+    { key: "sale", label: "Membership sale" },
+    { key: "source", label: "Source registry" },
+  ] as { key: "chain" | "sale" | "source"; label: string }[],
+  reconciledNote: "read-only signals reconciled",
+  failText: "Live posture unavailable — nothing is assumed.",
+  links: [
+    { label: "Status hub", href: "/status" },
+    { label: "Public proof", href: "/proof" },
+  ],
+};
+
+/** Marketing blurbs for PROMOTED_STRIP registry entries, keyed by registryId. */
+export const homepagePromotedStrip = {
+  eyebrow: "Act on the protocol",
+  title: "Real surfaces, read-only by design",
+  subtitle:
+    "Every door below opens onto live protocol reality. Nothing on this site sends a transaction — you read, verify, and act on-chain yourself.",
+  blurbs: {
+    "membership-join":
+      "Read the live membership engine and compute an exact join quote — figures straight from the active engine, never estimated.",
+    "verified-introduction":
+      "Validate an introduction id against the on-chain registry and build an attribution link — recognition, never a paid role.",
+    "member-cockpit":
+      "Sign a wallet session and read your own standing straight from the active engine — a self-readback; no directory of other wallets exists.",
+    "protocol-reality":
+      "Every public figure reconciles live chain reads against vendored canon — a mismatch fails closed, never an invented value.",
+  } as Record<string, string>,
+};
+
+/** Slim strip of further public modules (MODULE_STRIP registry zone). */
+export const homepageModuleStrip = {
+  lead: "Also in the protocol",
+  statusLink: {
+    label: "Every module's honest status → Status hub",
+    href: "/status",
+  },
+};
+
 export const expectations = {
   title: "Expectations & Reality",
   body: "The Syndicate is an attribution and recognition protocol. Membership does not constitute an investment, security, or financial instrument, and carries no promise of financial gain. The systems provided serve as tools for verifiable truth and historical memory. Participants must rely on their own verification of on-chain reality before interacting.",
@@ -172,12 +238,12 @@ export const expectations = {
 export const memberAccess = {
   heading: "Membership is your wallet",
   intro:
-    "In The Syndicate, your wallet address is your identity — there is no account to create. Membership is not granted by a form; it is recognized from a verified on-chain Membership Sale receipt and resolved through the Holder Index into a member record. The historical member record (seats #1–#8) has been verified server-side against the on-chain freeze root, but none of that resolution is surfaced in this read-only foundation yet, so every value below stays truth-labelled rather than simulated.",
+    "In The Syndicate, your wallet address is your identity — there is no account to create. Membership is not granted by a form; it is recognized from a verified on-chain Membership Sale receipt and resolved through the Holder Index into a member record. One thing is live here today, read-only: sign a wallet session below and this page reads YOUR signed wallet's own standing straight from the active engine (a self-readback — no directory of other wallets exists). The historical member record (seats #1–#8) stays verified server-side against the on-chain freeze root and is not published; every other value below stays truth-labelled rather than simulated.",
   points: [
     "Your self-custodied wallet address is the identity key — no usernames, no passwords, no accounts.",
     "Membership is recognized, not requested: a verified Membership Sale receipt is what establishes a seat.",
     "Member number, chapter, and recognition standing are derived facts read from on-chain history — never assigned by hand.",
-    "Seat issuance is operationally founder-gated and not active in this app today; until the membership indexer is wired and approved, no live seat, balance, or member record is shown.",
+    "Seat issuance from this app remains founder-gated: no transaction is ever initiated, signed, or submitted here. The only live figure is the self-readback of your own signed wallet's standing — no balances, no member directory, no other wallet's record.",
   ],
 };
 
@@ -247,9 +313,11 @@ export const membershipIdentity = {
 // no wallet write — membership is recognised, never sold as an investment.
 // ---------------------------------------------------------------------------
 
-export interface HeroTrustChip {
+export interface HeroProofRailItem {
+  mark: string;
   label: string;
   note: string;
+  tone: "avax" | "gold" | "cyan";
 }
 
 export interface HeroStat {
@@ -313,12 +381,12 @@ export const heroSystem = {
   primaryCta: seatCta,
   secondaryCta: { label: "View public proof", href: "/proof" },
 
-  trustChips: [
-    { label: "Verifiable", note: "On-chain records" },
-    { label: "Transparent", note: "Every route" },
-    { label: "Permanent", note: "Recorded to last" },
-    { label: "Read-only", note: "No writes, no wallet" },
-  ] as HeroTrustChip[],
+  proofRail: [
+    { mark: "A", label: "Avalanche", note: "Target C-Chain", tone: "avax" },
+    { mark: "70", label: "Canonical", note: "70 / 20 / 10", tone: "gold" },
+    { mark: "✓", label: "Public proof", note: "Read-only", tone: "cyan" },
+    { mark: "◇", label: "Memory", note: "Recorded", tone: "gold" },
+  ] as HeroProofRailItem[],
 
   // The centrepiece figure — simulated cumulative gross inflow (count-up).
   seat: {

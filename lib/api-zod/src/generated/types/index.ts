@@ -6,7 +6,22 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './getJoinQuoteParams';
+export * from './getSourceValidateParams';
 export * from './healthStatus';
+export * from './holderIndexEra';
+export * from './holderIndexEraEra';
+export * from './holderIndexResponse';
+export * from './holderIndexResponseMode';
+export * from './holderIndexResponseProvenance';
+export * from './holderIndexResponseStatus';
+export * from './holderIndexResponseTimestampCoverage';
+export * from './joinQuoteFigures';
+export * from './joinQuoteResponse';
+export * from './joinQuoteResponseDecimals';
+export * from './joinQuoteResponseDecimalsSyn';
+export * from './joinQuoteResponseDecimalsUsdc';
+export * from './joinQuoteResponseMode';
 export * from './protocolRealityItem';
 export * from './protocolRealityItemConfidence';
 export * from './protocolRealityItemContractRole';
@@ -27,3 +42,6 @@ export * from './sourceStatusResponseCategories';
 export * from './sourceStatusResponseExpectedChainId';
 export * from './sourceStatusResponseGeneratedBy';
 export * from './sourceStatusResponseMode';
+export * from './sourceValidateResponse';
+export * from './sourceValidateResponseMode';
+export * from './throttledError';

@@ -111,6 +111,16 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     enforcement: "PREVIEW_LABELLED",
   },
   {
+    routePath: "/map",
+    moduleId: "map",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "Public proof organism — read-only protocol reality map, fail-closed.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
     routePath: "/support",
     moduleId: "support",
     audience: "PUBLIC",
@@ -146,8 +156,20 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     audience: "MEMBER_PREVIEW",
     surface: "AUTHENTICATED_MEMBER",
     layout: "public",
-    summary: "A labelled preview of the future member cockpit. Founder-gated.",
+    summary:
+      "Public wallet session + live read-only self-readback of the signed wallet's standing. Session ≠ membership.",
     requiredState: "S7",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
+    routePath: "/join",
+    moduleId: "join",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary:
+      "Public joining surface: live engine read + exact read-only quote. No transaction path.",
+    requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },
   {
@@ -182,11 +204,22 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
   },
   {
     routePath: "/source",
+    moduleId: "source-link",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary:
+      "Public Verified-Introduction link builder: read-only registry validation.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
+    routePath: "/os-source",
     moduleId: "source",
     audience: "OPERATOR_PREVIEW",
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
-    summary: "Operator source surface. Paused by precaution.",
+    summary: "Operator source console (moved from /source).",
     requiredState: "S11",
     enforcement: "PREVIEW_LABELLED",
   },
@@ -198,6 +231,17 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     layout: "console",
     summary:
       "Internal founder preview: the full protocol organism, honestly labelled.",
+    requiredState: "S11",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
+    routePath: "/admin",
+    moduleId: "admin",
+    audience: "OPERATOR_PREVIEW",
+    surface: "PRIVATE_OPERATOR_ADMIN",
+    layout: "console",
+    summary:
+      "Internal operator control tower: read-only panels over the module registry and live postures.",
     requiredState: "S11",
     enforcement: "PREVIEW_LABELLED",
   },

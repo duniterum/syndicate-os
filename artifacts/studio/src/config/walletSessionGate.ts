@@ -1,26 +1,21 @@
-// Wallet Session Preview Hard Gate — build-time flag for the S2 wallet
-// session shell (dev-only SIWE session UI).
+// Wallet Session Gate — PUBLIC (founder-approved Public Online Integration
+// MVP, July 2026).
 // ---------------------------------------------------------------------------
-// Production is a static SPA build (no server), and the auth zone is
-// production-dark by default (server-side exposure gate on the api-server;
-// that flag is server posture and is deliberately never named in frontend
-// code). Shipping wallet-session UI in the public bundle would therefore be
-// dishonest: it would render controls that can never work. The only honest
-// gate is a BUILD-TIME one: when this constant folds to `false`, the wallet
-// session module is dead-code-eliminated by Rollup — no wallet UI, no auth
-// URL strings, no SIWE code in the production bundle at all. The auth-zone
-// guard's studio dist-grep is the regression net.
+// The S2 wallet session shell (SIWE sign-in) is now part of the public
+// product surface: it ships in every build, including production-default
+// builds. The auth-zone guard's studio dist-grep now REQUIRES the wallet
+// chunk's strings in a production dist (the flip of the old expectation).
 //
-// Posture:
-//   - Workspace/dev server (`vite dev`): `import.meta.env.DEV` is true →
-//     wallet session preview ENABLED (SIWE end-to-end against the dev api).
-//   - Production build (default): DISABLED and code-excluded. Safe by default.
-//   - Explicit founder-enabled build: set `VITE_WALLET_SESSION_PREVIEW=true`
-//     in the BUILD environment (a founder-gated act, paired with the server's
-//     own exposure gate — flipping either side alone is not enough).
+// What this gate is NOT:
+//   - Not authentication. A session proves wallet control right now — never
+//     membership, never authority (S4 is the ceiling; S1 is the fail-closed
+//     boot default).
+//   - Not a server exposure switch. The api-server auth zone has its own
+//     server-side production gate (a founder-gated act, deliberately never
+//     named in frontend code). If the server zone is dark, the UI fails
+//     closed to S1 with honest copy — it never invents a session.
 //
-// This is a visibility gate, not authentication. A session proves wallet
-// control right now — never membership, never authority (S4 is the ceiling).
+// The constant remains so call sites keep a single import point; it now
+// folds to `true` everywhere and the module is always included.
 
-export const WALLET_SESSION_PREVIEW_ENABLED: boolean =
-  import.meta.env.DEV || __WALLET_SESSION_PREVIEW__;
+export const WALLET_SESSION_PREVIEW_ENABLED: boolean = true;

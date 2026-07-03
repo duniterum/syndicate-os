@@ -1,8 +1,9 @@
 // walletSession.ts — dev-only SIWE session flow (S2 wallet session shell).
 // ---------------------------------------------------------------------------
-// This module lives behind the build-time wallet session gate
-// (config/walletSessionGate.ts): it is dead-code-eliminated from production
-// builds, where the /api/auth zone is dark anyway.
+// This module sits behind the wallet session gate
+// (config/walletSessionGate.ts), which is enabled in ALL builds; in
+// production the server-side /api/auth zone stays dark unless explicitly
+// exposed, so every call here fails closed to S1 against a dark zone.
 //
 // Boundaries (founder-locked):
 //   - Talks ONLY to /api/auth/* — never to member/protocol/source surfaces.
@@ -159,4 +160,82 @@ export async function logoutSession(): Promise<WiredAccessStateId> {
 /** Truncated display form of a client-known address, e.g. 0x1234…abcd. */
 export function shortAddress(address: string): string {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
+}
+
+// ── Holder Index self-readback (founder Decision 5a) ────────────────────────
+// GET /api/auth/member-standing maps the session's SERVER-SIDE bound account
+// to its own Holder Index era standing via the static hash-pinned snapshot.
+// Own-row only: no directory, roster, or arbitrary lookup exists anywhere;
+// the bound account is never echoed and no tx hash is returned.
+
+export interface MemberStandingReadback {
+  state: "S1" | "S4";
+  chainVerified: boolean;
+  recognized: boolean | null;
+  memberNumber: string | null;
+  era: string | null;
+  authority: string | null;
+  authorityLabel: string | null;
+  continuityStatus: string | null;
+  proofPosture: { snapshotStatus: string; snapshotHash: string } | null;
+  failureReason: string | null;
+}
+
+/**
+ * Read the signed wallet's own Holder Index standing. Returns null on ANY
+ * transport/shape failure — the caller renders an honest "read unavailable",
+ * never an invented standing.
+ */
+export async function fetchMemberStanding(): Promise<MemberStandingReadback | null> {
+  try {
+    const res = await fetch("/api/auth/member-standing", { method: "GET" });
+    if (!res.ok) return null;
+    const body: unknown = await res.json();
+    if (typeof body !== "object" || body === null) return null;
+    const o = body as Record<string, unknown>;
+    if (o.state !== "S1" && o.state !== "S4") return null;
+
+    let proofPosture: MemberStandingReadback["proofPosture"] = null;
+    if (typeof o.proofPosture === "object" && o.proofPosture !== null) {
+      const p = o.proofPosture as Record<string, unknown>;
+      if (
+        typeof p.snapshotStatus === "string" &&
+        typeof p.snapshotHash === "string"
+      ) {
+        proofPosture = {
+          snapshotStatus: p.snapshotStatus,
+          snapshotHash: p.snapshotHash,
+        };
+      }
+    }
+
+    return {
+      state: o.state,
+      chainVerified: o.chainVerified === true,
+      recognized: typeof o.recognized === "boolean" ? o.recognized : null,
+      memberNumber:
+        typeof o.memberNumber === "string" ? o.memberNumber : null,
+      era: typeof o.era === "string" ? o.era : null,
+      authority: typeof o.authority === "string" ? o.authority : null,
+      authorityLabel:
+        typeof o.authorityLabel === "string" ? o.authorityLabel : null,
+      continuityStatus:
+        typeof o.continuityStatus === "string" ? o.continuityStatus : null,
+      proofPosture,
+      failureReason:
+        typeof o.failureReason === "string" ? o.failureReason : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Truncated display form of a long hash pin, e.g. sha256:9cf82d90…211a. */
+export function shortHashPin(pin: string): string {
+  const [algo, hex] = pin.includes(":")
+    ? [pin.slice(0, pin.indexOf(":")), pin.slice(pin.indexOf(":") + 1)]
+    : ["", pin];
+  if (hex.length <= 16) return pin;
+  const head = `${hex.slice(0, 8)}…${hex.slice(-4)}`;
+  return algo ? `${algo}:${head}` : head;
 }

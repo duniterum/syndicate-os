@@ -42,12 +42,14 @@ import {
   SELECTOR_TOTAL_GROSS_USDC,
   SELECTOR_RECEIPT_COUNT,
 } from "../src/lib/protocol/saleDecoders";
+import { SELECTOR_SOURCE_REGISTRY } from "../src/lib/protocol/sourceDecoders";
 import {
   CONTRACT_TARGETS,
   TOKEN_TARGETS,
   ARCHIVE_TARGET,
   ARCHIVE_ARTIFACTS,
   SALE_TARGETS,
+  SOURCE_LINKAGE_TARGET,
 } from "../src/data/protocolTargets";
 
 // ── tiny check harness ───────────────────────────────────────────────────────
@@ -124,6 +126,8 @@ function goodCall(to: string, selector: string): string {
   if (selector === SELECTOR_TOTAL_GROSS_USDC) return encUint256(V3_TOTAL_GROSS_USDC);
   if (selector === SELECTOR_RECEIPT_COUNT) return encUint256(V3_RECEIPT_COUNT);
   if (selector === SELECTOR_GET_ARTIFACT_CORE) return encArtifactCore(true);
+  if (selector === SELECTOR_SOURCE_REGISTRY)
+    return "0x" + word(SOURCE_LINKAGE_TARGET.registryAddress.slice(2).toLowerCase());
   return "0x";
 }
 
@@ -134,6 +138,7 @@ const baseOpts = (transport: RpcTransport): BuildOpts => ({
   archiveTarget: ARCHIVE_TARGET,
   archiveArtifacts: ARCHIVE_ARTIFACTS,
   saleTargets: SALE_TARGETS,
+  sourceLinkageTarget: SOURCE_LINKAGE_TARGET,
   now: () => new Date("2026-06-30T00:00:00.000Z"),
 });
 
@@ -143,6 +148,7 @@ const allItems = (e: ProtocolRealityEnvelope): ProtocolRealityItem[] => [
   ...e.groups.sale,
   ...e.groups.tokens,
   ...e.groups.archive,
+  ...e.groups.source,
 ];
 const byId = (e: ProtocolRealityEnvelope, id: string): ProtocolRealityItem | undefined =>
   allItems(e).find((i) => i.id === id);
@@ -189,6 +195,12 @@ async function main(): Promise<void> {
     check("happy: V3 availableSyn EXACT decimal string (no precision loss), string/MEDIUM/READ_ONLY_PROOF", v3Avail?.value === V3_AVAILABLE_SYN.toString() && v3Avail?.valueType === "string" && v3Avail?.confidence === "MEDIUM" && v3Avail?.lifecycle === "READ_ONLY_PROOF");
     check("happy: V3 totalGrossUsdc EXACT decimal string", byId(e, "sale.MEMBERSHIP_SALE_V3.totalGrossUsdc")?.value === V3_TOTAL_GROSS_USDC.toString());
     check("happy: V3 receiptCount EXACT decimal string", byId(e, "sale.MEMBERSHIP_SALE_V3.receiptCount")?.value === V3_RECEIPT_COUNT.toString());
+    // Source group (Public MVP): linkage + 2 static canon facts, 3 items total.
+    check("happy: source group has 3 items", e.groups.source.length === 3, String(e.groups.source.length));
+    const linkage = byId(e, "source.registryLinkage");
+    check("happy: source registryLinkage true (CANON_RECONCILED_RPC, HIGH, READ_ONLY_PROOF)", linkage?.value === true && linkage?.sourceType === "CANON_RECONCILED_RPC" && linkage?.confidence === "HIGH" && linkage?.lifecycle === "READ_ONLY_PROOF");
+    check("happy: source creationPolicy OWNER_ONLY (SERVER_SIDE_CANON, FOUNDER_GATED)", byId(e, "source.creationPolicy")?.value === "OWNER_ONLY" && byId(e, "source.creationPolicy")?.sourceType === "SERVER_SIDE_CANON" && byId(e, "source.creationPolicy")?.lifecycle === "FOUNDER_GATED");
+    check("happy: source zeroSourceJoin true (SERVER_SIDE_CANON, READ_ONLY_PROOF)", byId(e, "source.zeroSourceJoin")?.value === true && byId(e, "source.zeroSourceJoin")?.sourceType === "SERVER_SIDE_CANON" && byId(e, "source.zeroSourceJoin")?.lifecycle === "READ_ONLY_PROOF");
     check("happy: every present value has null failureReason", allItems(e).every((i) => (i.value === null) === (i.failureReason !== null) || i.id === "chain.network"));
     check("happy: NO address leak", noAddressLeak(e));
     check("happy: discipline passes", disciplinePasses(e));
@@ -206,6 +218,7 @@ async function main(): Promise<void> {
     check("unreachable: every token value null", e.groups.tokens.every((i) => i.value === null));
     check("unreachable: every archive value null", e.groups.archive.every((i) => i.value === null));
     check("unreachable: every sale value null", e.groups.sale.every((i) => i.value === null));
+    check("unreachable: source registryLinkage null + failureReason, static canon facts survive", byId(e, "source.registryLinkage")?.value === null && byId(e, "source.registryLinkage")?.failureReason !== null && byId(e, "source.creationPolicy")?.value === "OWNER_ONLY" && byId(e, "source.zeroSourceJoin")?.value === true);
     check("unreachable: chain.network still string", byId(e, "chain.network")?.value === "Avalanche C-Chain");
     check("unreachable: NO address leak + discipline passes", noAddressLeak(e) && disciplinePasses(e));
   }
@@ -283,6 +296,33 @@ async function main(): Promise<void> {
     const v3 = e.groups.sale.filter((i) => i.id.startsWith("sale.MEMBERSHIP_SALE_V3."));
     check("sale-no-code: all 5 V3 items null + PAUSED_BY_PRECAUTION + failureReason", v3.length === 5 && v3.every((i) => i.value === null && i.lifecycle === "PAUSED_BY_PRECAUTION" && i.failureReason !== null));
     check("sale-no-code: V1 paused still reads (false)", byId(e, "sale.MEMBERSHIP_SALE.paused")?.value === false);
+  }
+
+  // 7e) SOURCE LINKAGE MISMATCH: SOURCE_REGISTRY() resolves to a DIFFERENT
+  //     address → value null (NEVER normalized), failureReason set, no leak.
+  {
+    const wrongAddr = "00000000000000000000000000000000000000ff";
+    const { transport } = makeMock({
+      call: (to, s) =>
+        to.toLowerCase() === V3_ADDR && s === SELECTOR_SOURCE_REGISTRY
+          ? "0x" + word(wrongAddr)
+          : goodCall(to, s),
+    });
+    const e = await buildProtocolReality(baseOpts(transport));
+    const linkage = byId(e, "source.registryLinkage");
+    check("source-mismatch: registryLinkage null (NOT normalized) + LOW + PAUSED_BY_PRECAUTION + failureReason", linkage?.value === null && linkage?.confidence === "LOW" && linkage?.lifecycle === "PAUSED_BY_PRECAUTION" && linkage?.failureReason !== null);
+    check("source-mismatch: NO address leak + discipline passes", noAddressLeak(e) && disciplinePasses(e));
+  }
+
+  // 7f) SOURCE LINKAGE DECODE FAILURE: SOURCE_REGISTRY() returns "0x" → null.
+  {
+    const { transport } = makeMock({
+      call: (to, s) =>
+        to.toLowerCase() === V3_ADDR && s === SELECTOR_SOURCE_REGISTRY ? "0x" : goodCall(to, s),
+    });
+    const e = await buildProtocolReality(baseOpts(transport));
+    const linkage = byId(e, "source.registryLinkage");
+    check("source-decode-fail: registryLinkage null + PENDING_ADAPTER + LOW + failureReason", linkage?.value === null && linkage?.lifecycle === "PENDING_ADAPTER" && linkage?.confidence === "LOW" && linkage?.failureReason !== null);
   }
 
   // 7d) SERVED CACHE DISCIPLINE (pre-publish hardening): getProtocolReality is

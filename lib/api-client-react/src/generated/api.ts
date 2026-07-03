@@ -16,9 +16,15 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  GetJoinQuoteParams,
+  GetSourceValidateParams,
   HealthStatus,
+  HolderIndexResponse,
+  JoinQuoteResponse,
   ProtocolRealityResponse,
-  SourceStatusResponse
+  SourceStatusResponse,
+  SourceValidateResponse,
+  ThrottledError
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -204,6 +210,176 @@ export function useGetSourceStatus<TData = Awaited<ReturnType<typeof getSourceSt
 
 
 
+export const getGetSourceValidateUrl = (params: GetSourceValidateParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/source/validate?${stringifiedParams}` : `/api/source/validate`
+}
+
+/**
+ * Read-only validation of a client-supplied bytes32 source id against SourceRegistryV1 (sourceExists + isActive). The source id is NEVER echoed back, and no wallets, addresses, terms, or economic fields from the on-chain source configuration are ever returned — only existence and active-state booleans. Fails closed: on wrong chain, missing code, or decode failure the affected value is null with a failureReason.
+ * @summary Validate a Verified Introduction source id (read-only)
+ */
+export const getSourceValidate = async (params: GetSourceValidateParams, options?: RequestInit): Promise<SourceValidateResponse> => {
+
+  return customFetch<SourceValidateResponse>(getGetSourceValidateUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetSourceValidateQueryKey = (params?: GetSourceValidateParams,) => {
+    return [
+    `/api/source/validate`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetSourceValidateQueryOptions = <TData = Awaited<ReturnType<typeof getSourceValidate>>, TError = ErrorType<ThrottledError>>(params: GetSourceValidateParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSourceValidate>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSourceValidateQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSourceValidate>>> = ({ signal }) => getSourceValidate(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSourceValidate>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetSourceValidateQueryResult = NonNullable<Awaited<ReturnType<typeof getSourceValidate>>>
+export type GetSourceValidateQueryError = ErrorType<ThrottledError>
+
+
+/**
+ * @summary Validate a Verified Introduction source id (read-only)
+ */
+
+export function useGetSourceValidate<TData = Awaited<ReturnType<typeof getSourceValidate>>, TError = ErrorType<ThrottledError>>(
+ params: GetSourceValidateParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSourceValidate>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetSourceValidateQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetJoinQuoteUrl = (params: GetJoinQuoteParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/join/quote?${stringifiedParams}` : `/api/join/quote`
+}
+
+/**
+ * Read-only quote from the active MembershipSaleV3 engine via eth_call. Amounts are EXACT raw base-unit strings (never humanized; decimals are metadata). The quote is computed for an anonymous recipient (zero address); no wallet is connected, no approval or transaction is prepared, and no write surface exists. If a sourceId is supplied it is applied ONLY when it exists and is active on SourceRegistryV1 — otherwise the quote fails closed with a failureReason (never a silent fallback). The source id is never echoed back.
+ * @summary Read-only MembershipSaleV3 quote
+ */
+export const getJoinQuote = async (params: GetJoinQuoteParams, options?: RequestInit): Promise<JoinQuoteResponse> => {
+
+  return customFetch<JoinQuoteResponse>(getGetJoinQuoteUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetJoinQuoteQueryKey = (params?: GetJoinQuoteParams,) => {
+    return [
+    `/api/join/quote`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetJoinQuoteQueryOptions = <TData = Awaited<ReturnType<typeof getJoinQuote>>, TError = ErrorType<ThrottledError>>(params: GetJoinQuoteParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getJoinQuote>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetJoinQuoteQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getJoinQuote>>> = ({ signal }) => getJoinQuote(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getJoinQuote>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetJoinQuoteQueryResult = NonNullable<Awaited<ReturnType<typeof getJoinQuote>>>
+export type GetJoinQuoteQueryError = ErrorType<ThrottledError>
+
+
+/**
+ * @summary Read-only MembershipSaleV3 quote
+ */
+
+export function useGetJoinQuote<TData = Awaited<ReturnType<typeof getJoinQuote>>, TError = ErrorType<ThrottledError>>(
+ params: GetJoinQuoteParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getJoinQuote>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetJoinQuoteQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
 export const getGetProtocolRealityUrl = () => {
 
 
@@ -270,6 +446,84 @@ export function useGetProtocolReality<TData = Awaited<ReturnType<typeof getProto
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getGetProtocolRealityQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetHolderIndexUrl = () => {
+
+
+
+
+  return `/api/holder-index`
+}
+
+/**
+ * Aggregate-only membership continuity index, served from a static, hash-pinned snapshot generated by a founder-gated offline build from the VERIFIED member-continuity build (no runtime database read). Every aggregate carries its numbering-era provenance: seats numbered by the verified historical freeze / on-chain root versus seats numbered by V3 engine events. Counts, era boundaries, timestamp coverage, and build provenance only — no per-seat rows, no directory, and no member-identifying data of any kind are ever returned. An offline reconciler re-derives this snapshot from the database and fails closed on any divergence.
+ * @summary Aggregate-only Holder Index snapshot
+ */
+export const getHolderIndex = async ( options?: RequestInit): Promise<HolderIndexResponse> => {
+
+  return customFetch<HolderIndexResponse>(getGetHolderIndexUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetHolderIndexQueryKey = () => {
+    return [
+    `/api/holder-index`
+    ] as const;
+    }
+
+
+export const getGetHolderIndexQueryOptions = <TData = Awaited<ReturnType<typeof getHolderIndex>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getHolderIndex>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetHolderIndexQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getHolderIndex>>> = ({ signal }) => getHolderIndex({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getHolderIndex>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetHolderIndexQueryResult = NonNullable<Awaited<ReturnType<typeof getHolderIndex>>>
+export type GetHolderIndexQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Aggregate-only Holder Index snapshot
+ */
+
+export function useGetHolderIndex<TData = Awaited<ReturnType<typeof getHolderIndex>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getHolderIndex>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetHolderIndexQueryOptions(options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

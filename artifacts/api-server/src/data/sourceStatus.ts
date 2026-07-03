@@ -81,7 +81,7 @@ const STATUS_BADGE: Record<Posture, string> = {
  * Canon-lock timestamp for this static registry. Fixed (not request-time) so the
  * posture-only payload is deterministic and never implies a live read.
  */
-const CANON_AS_OF = "2026-06-29T00:00:00.000Z";
+const CANON_AS_OF = "2026-07-03T00:00:00.000Z";
 
 type CanonEntry = {
   key: string;
@@ -148,11 +148,11 @@ const CANON: CanonEntry[] = [
   {
     key: "source",
     label: "Source Attribution",
-    posture: "NOT_WIRED",
+    posture: "READ_ONLY_PROOF",
     publicClass: "SAFE_PUBLIC",
     sourceRef: "canon:referral-attribution",
-    confidence: "medium",
-    note: "Introduction/source attribution is not wired; surfaced anonymized only once wired.",
+    confidence: "high",
+    note: "Introduction/source registry is readable: the live spine surfaces the engine↔registry linkage and a read-only validate endpoint checks a single id on demand. Per-member attribution readback and anonymized analytics remain unwired; registration and activation are owner-side on-chain acts.",
     surface: "/source",
   },
   {
@@ -172,17 +172,17 @@ const CANON: CanonEntry[] = [
     publicClass: "FOUNDER_DECISION",
     sourceRef: "canon:institutional-register-registry",
     confidence: "medium",
-    note: "Membership posture only. No public PII, no full wallets, no personal member data; aggregate/history-safe only.",
+    note: "No public member directory, index, or PII is served — the only wired membership read is each signed wallet's own live self-readback (see walletSession). Aggregate/history-safe surfaces remain unwired.",
     surface: "/member",
   },
   {
     key: "sale",
     label: "Sale",
-    posture: "VERIFIED_SOURCE_PENDING_ADAPTER",
+    posture: "READ_ONLY_PROOF",
     publicClass: "INSTITUTIONAL_PUBLIC_SALE_SAFE",
     sourceRef: "vendored:the-syndicate/contracts/abi/sale-abi.ts@cf4ca34",
-    confidence: "medium",
-    note: "Institutional sale surface has a verified, vendored sale ABI in local canon, but no live sale adapter/indexer is wired yet. No amounts and no calls-to-action are exposed here.",
+    confidence: "high",
+    note: "Membership-sale state is a live read-only spine group: lifecycle flags for every engine generation plus the active engine's public figures and per-amount quote view, surfaced as exact raw base-unit strings. No transaction path is exposed anywhere.",
     surface: "/join",
   },
   {
@@ -295,6 +295,46 @@ const CANON: CanonEntry[] = [
     note: "Doctrine and copy guardrails are static canon, present in this repo and enforced at runtime by the endpoint guard.",
     surface: "/guardrails",
   },
+  {
+    key: "walletSession",
+    label: "Wallet Session",
+    posture: "READ_ONLY_PROOF",
+    publicClass: "SAFE_PUBLIC",
+    sourceRef: "internal:auth-zone-siwe",
+    confidence: "high",
+    note: "Public SIWE wallet session: a signed session proves control of a wallet right now — never membership. The server stores no identity and never echoes an address; the membership self-readback returns only the active engine's own figure for the signed wallet.",
+    surface: "/member",
+  },
+  {
+    key: "linkGeneration",
+    label: "Introduction Links",
+    posture: "READ_ONLY_PROOF",
+    publicClass: "SAFE_PUBLIC",
+    sourceRef: "internal:source-validate-endpoint",
+    confidence: "high",
+    note: "Verified-introduction link builder: an introduction id is validated read-only against the on-chain registry before a join link is built client-side. Nothing is created or activated — registration and activation are owner-side on-chain acts, and the id is never echoed or logged.",
+    surface: "/source",
+  },
+  {
+    key: "continuity",
+    label: "Member Continuity",
+    posture: "VERIFIED_SOURCE_PENDING_ADAPTER",
+    publicClass: "FOUNDER_DECISION",
+    sourceRef: "internal:historical-member-freeze",
+    confidence: "high",
+    note: "Historical member continuity (the frozen early-era record) is imported and reconciled server-side against the on-chain root, fail-closed. No public projection is served; the active engine's standing is readable only as each signed wallet's own self-readback.",
+    surface: "/member",
+  },
+  {
+    key: "buyReadiness",
+    label: "Join Transaction Readiness",
+    posture: "NOT_WIRED",
+    publicClass: "INSTITUTIONAL_PUBLIC_SALE_SAFE",
+    sourceRef: "internal:read-only-boundary",
+    confidence: "high",
+    note: "Transaction sending is deliberately not enabled: no wallet write path, no purchase call, no funds movement from this app. The joining surface reads the live engine and computes exact quotes only; the transaction path becomes available only when the founder publishes it.",
+    surface: "/join",
+  },
 ];
 
 /** The exact, approved category set for Phase 1. The registry must match this — no more, no less. */
@@ -319,6 +359,10 @@ const EXPECTED_KEYS = [
   "indexer",
   "operator",
   "guardrails",
+  "walletSession",
+  "linkGeneration",
+  "continuity",
+  "buyReadiness",
 ] as const;
 
 /**

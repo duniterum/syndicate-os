@@ -16,10 +16,14 @@
 //                              returns { state: "S1" }
 //
 // Hard caps: S4 is the ceiling (registry-less — no ACTIVE-row logic, no
-// member verification, no operator authority). No endpoint ever returns
-// member data, operator authority, or wallet/member pairings; no response
-// echoes a wallet address. All failures fail closed with a uniform safe
-// error shape. Nonces, signatures and addresses are never logged.
+// operator authority). Self-readback amendments (founder-approved): GET
+// /member-self (live engine recognition figure) and GET /member-standing
+// (Decision 5a — own-row Holder Index era standing via the static snapshot)
+// read ONLY the session's own bound account; no directory, roster, or
+// arbitrary wallet/memberNumber lookup exists, and no response ever echoes
+// a wallet address or wallet/member pairing. All failures fail closed with
+// a uniform safe error shape. Nonces, signatures and addresses are never
+// logged.
 
 import {
   Router,
@@ -47,10 +51,14 @@ import { consumeNonce, issueNonce } from "./nonceStore";
 import {
   createSession,
   destroySession,
+  getSessionAccount,
   touchSession,
 } from "./sessionStore";
 import { allowRequest } from "./throttle";
 import { throttleKey } from "./clientIdentity";
+import { readEngineMemberNumber } from "./engineReadback";
+import { resolveOwnStanding } from "../lib/protocol/holderIndexStanding";
+import { assertProtocolRealityDiscipline } from "../lib/protocol/payloadDiscipline";
 
 const router: Router = Router();
 
@@ -223,12 +231,13 @@ router.post("/verify", async (req: Request, res: Response) => {
   }
 
   // 4. Rotate: any prior session on this client is destroyed before a fresh
-  //    id is issued (fixation defense).
+  //    id is issued (fixation defense). The SIWE-verified account is bound
+  //    SERVER-SIDE ONLY (member-self readback) — never echoed, never logged.
   const priorId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
   if (typeof priorId === "string" && priorId.length > 0) {
     destroySession(priorId);
   }
-  const sessionId = createSession();
+  const sessionId = createSession(fields.address);
   if (sessionId === null) {
     req.log.warn({ event: "auth.verify.store_full" });
     deny(res, 503, "unavailable");
@@ -256,6 +265,170 @@ router.get("/session", (req: Request, res: Response) => {
     code: active ? "active" : "none",
   });
   res.json({ state: active ? "S4" : "S1" });
+});
+
+// ── GET /api/auth/member-self ───────────────────────────────────────────────
+// Read-only membership self-readback (Public MVP, founder-approved): resolves
+// the session's SERVER-SIDE bound account to the active engine's public
+// memberNumberOf(account) figure via eth_call. The bound account itself is
+// NEVER echoed — the response carries only the coarse session state, honest
+// chain posture, and the engine's own recognition figure as an EXACT decimal
+// string ("0" on chain = not recognized by the active engine → null).
+// No session → S1 with nulls (fail closed, not an error). No write surface.
+router.get("/member-self", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "auth.member_self.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const boundAccount =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+
+  let chainVerified = false;
+  let isRecognized: boolean | null = null;
+  let engineFigure: string | null = null;
+  let failureReason: string | null = null;
+
+  if (boundAccount === null) {
+    failureReason = "no active wallet session; sign in to read your standing";
+  } else {
+    const read = await readEngineMemberNumber(boundAccount);
+    chainVerified = read.chainVerified;
+    isRecognized = read.isRecognized;
+    engineFigure = read.engineFigure;
+    failureReason = read.failureReason;
+  }
+
+  const sessionActive = boundAccount !== null;
+  const outcome = !sessionActive ? "none" : chainVerified ? "read" : "chain_skip";
+  const payload = {
+    state: sessionActive ? ("S4" as const) : ("S1" as const),
+    chainVerified,
+    isRecognized,
+    seatNumber: engineFigure,
+    failureReason,
+  };
+  try {
+    assertProtocolRealityDiscipline(payload);
+  } catch {
+    req.log.warn({ event: "auth.member_self.discipline_rejected" });
+    deny(res, 500, "unavailable");
+    return;
+  }
+  req.log.info({ event: "auth.member_self.checked", code: outcome });
+  res.json(payload);
+});
+
+// ── GET /api/auth/member-standing ───────────────────────────────────────────
+// Holder Index SELF-READBACK (founder Decision 5a — narrow). Resolves the
+// session's SERVER-SIDE bound account to the live engine's memberNumberOf
+// figure, then maps that figure into EXACTLY ONE era of the static hash-
+// pinned Holder Index snapshot. Own-row only:
+//   - no query/params lookup surface of any kind (the ONLY input is the
+//     session cookie; arbitrary wallet/memberNumber lookup does not exist)
+//   - the bound account is never echoed; no tx hash is returned
+//   - engine "0" = sentinel → clean not-recognized state
+//   - figure outside every snapshot era → fail closed (snapshot stale —
+//     never guessed into an era, never reported as recognized standing)
+//   - snapshot not VERIFIED / ambiguous mapping → fail closed (unavailable)
+// No session → S1 with nulls (fail closed, not an error). No write surface.
+router.get("/member-standing", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "auth.member_standing.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const boundAccount =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+
+  let chainVerified = false;
+  let recognized: boolean | null = null;
+  let ownNumber: string | null = null;
+  let era: string | null = null;
+  let authority: string | null = null;
+  let authorityLabel: string | null = null;
+  let continuityStatus: string | null = null;
+  let proofPosture: { snapshotStatus: string; snapshotHash: string } | null =
+    null;
+  let failureReason: string | null = null;
+
+  if (boundAccount === null) {
+    failureReason = "no active wallet session; sign in to read your standing";
+  } else {
+    const read = await readEngineMemberNumber(boundAccount);
+    chainVerified = read.chainVerified;
+    failureReason = read.failureReason;
+    if (read.isRecognized === false) {
+      recognized = false; // engine sentinel "0" — clean not-recognized state
+    } else if (read.isRecognized === true && read.engineFigure !== null) {
+      const standing = resolveOwnStanding(read.engineFigure);
+      if (standing.kind === "MAPPED") {
+        recognized = true;
+        ownNumber = read.engineFigure;
+        era = standing.era;
+        authority = standing.authority;
+        authorityLabel = standing.authorityLabel;
+        continuityStatus = standing.continuityStatus;
+        proofPosture = {
+          snapshotStatus: standing.snapshotStatus,
+          snapshotHash: standing.snapshotHash,
+        };
+      } else if (standing.kind === "STALE") {
+        failureReason =
+          "live engine figure is outside the verified snapshot range; standing unavailable until the snapshot is rebuilt (fail closed)";
+      } else if (standing.kind === "UNRECONCILED") {
+        failureReason =
+          "holder index snapshot is not in a verified state; standing unavailable (fail closed)";
+      } else {
+        failureReason =
+          "standing could not be resolved to exactly one era; unavailable (fail closed)";
+      }
+    }
+  }
+
+  const sessionActive = boundAccount !== null;
+  const outcome = !sessionActive
+    ? "none"
+    : recognized === true
+      ? "mapped"
+      : recognized === false
+        ? "sentinel"
+        : "unavailable";
+  const payload = {
+    state: sessionActive ? ("S4" as const) : ("S1" as const),
+    chainVerified,
+    recognized,
+    memberNumber: ownNumber,
+    era,
+    authority,
+    authorityLabel,
+    continuityStatus,
+    proofPosture,
+    failureReason,
+  };
+  // Leak gates: payload discipline + boundary-aware address scan (40-hex
+  // fail-closes; 64-hex snapshot hash pins pass). The bound account never
+  // enters the payload object, this is defense in depth.
+  try {
+    assertProtocolRealityDiscipline(payload);
+    if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(JSON.stringify(payload))) {
+      throw new Error("address-shaped token in payload");
+    }
+  } catch {
+    req.log.warn({ event: "auth.member_standing.discipline_rejected" });
+    deny(res, 500, "unavailable");
+    return;
+  }
+  req.log.info({ event: "auth.member_standing.checked", code: outcome });
+  res.json(payload);
 });
 
 // ── POST /api/auth/logout ───────────────────────────────────────────────────

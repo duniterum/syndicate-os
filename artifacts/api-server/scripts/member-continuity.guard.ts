@@ -454,33 +454,61 @@ function walk(dir: string): string[] {
   return out;
 }
 const servedFiles = walk("src");
+// Import-syntax matching per guard doctrine: the snapshot's builderVersion
+// provenance value legitimately contains the text "member-continuity", so the
+// scan targets import/require SPECIFIERS, not arbitrary text.
+const READMODEL_IMPORT_RE =
+  /(?:from\s*|import\s*\(?\s*|require\s*\(\s*)["'][^"']*member-continuity[^"']*["']/;
 check(
-  "served src/ NEVER imports the member-continuity read-model",
-  servedFiles.every((f) => !readFileSync(f, "utf8").includes("member-continuity")),
+  "served src/ NEVER imports the member-continuity read-model (import-syntax scan)",
+  servedFiles.every((f) => !READMODEL_IMPORT_RE.test(readFileSync(f, "utf8"))),
   `servedFiles=${servedFiles.length}`,
 );
 
 const routeFiles = readdirSync("src/routes").sort();
 check(
-  "public route surface unchanged (health, index, protocolReality, sourceStatus only)",
+  "public route surface unchanged (health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate only)",
   JSON.stringify(routeFiles) ===
     JSON.stringify([
       "health.ts",
+      "holderIndex.ts",
       "index.ts",
+      "joinQuote.ts",
       "protocolReality.ts",
+      "publicReadThrottle.ts",
       "sourceStatus.ts",
+      "sourceValidate.ts",
     ]),
   `routes=${JSON.stringify(routeFiles)}`,
 );
-check(
-  "no member/holder/wallet/proof/continuity route exists",
-  routeFiles.every(
-    (f) =>
-      !/member|holder|wallet|proof|continuity/i.test(
-        readFileSync(join("src/routes", f), "utf8"),
-      ),
-  ),
-);
+// holderIndex.ts is the SINGLE founder-approved aggregate-only surface (its
+// discipline — import-free static snapshot, allow-listed props, no per-seat
+// rows — is enforced by holder-index:guard). index.ts may only mount it.
+// All routes are scanned comment-stripped per guard doctrine; wallet/proof/
+// continuity stay banned EVERYWHERE, member/holder banned outside the pair.
+{
+  const stripRoute = (src: string): string =>
+    src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+  const holderAllowed = new Set(["holderIndex.ts", "index.ts"]);
+  check(
+    "no wallet/proof/continuity route code exists (comment-stripped)",
+    routeFiles.every(
+      (f) =>
+        !/wallet|proof|continuity/i.test(
+          stripRoute(readFileSync(join("src/routes", f), "utf8")),
+        ),
+    ),
+  );
+  check(
+    "no member route code; holder code only in the approved aggregate surface",
+    routeFiles.every((f) => {
+      const code = stripRoute(readFileSync(join("src/routes", f), "utf8"));
+      if (/member/i.test(code)) return false;
+      if (/holder/i.test(code) && !holderAllowed.has(f)) return false;
+      return true;
+    }),
+  );
+}
 
 const pkg = readFileSync("package.json", "utf8");
 check(
@@ -630,8 +658,8 @@ if (ddl) {
       /^[0-9a-f]{64}$/.test(ddl.run.determinismHash),
   );
   check(
-    "ddl happy: blockedReasons ALWAYS carries the S3b gate",
-    ddl.blockedReasons.some((r) => r.includes("S3B_NOT_APPROVED")),
+    "ddl happy: blockedReasons ALWAYS carries the S3b write gate (pure builder never persists)",
+    ddl.blockedReasons.some((r) => r.includes("S3B_WRITE_GATE")),
   );
   let runScanThrew = false;
   try {
@@ -836,17 +864,52 @@ check(
     builderCode + buildCode,
   ),
 );
+// --- S3b write-mode invariants (approved founder gate; comment-stripped) ---
+const txInsertCount = (buildCode.match(/tx\s*\.insert\(/g) ?? []).length;
+const txDeleteCount = (buildCode.match(/tx\s*\.delete\(/g) ?? []).length;
+const nonTxWriteResidue = buildCode
+  .replace(/tx\s*\.insert\(/g, "")
+  .replace(/tx\s*\.delete\(/g, "");
 check(
-  "dry-run performs no writes (no insert/update/delete/DDL, comment-stripped)",
-  !/\.insert\(|\.update\(|\.delete\(|drizzle-kit|CREATE TABLE|INSERT INTO|UPDATE |DELETE FROM|ON CONFLICT|ALTER TABLE|TRUNCATE/i.test(
-    buildCode,
-  ),
+  "write primitives are transaction-scoped ONLY (exactly 2 tx.insert + 1 tx.delete; zero non-tx insert/update/delete)",
+  txInsertCount === 2 &&
+    txDeleteCount === 1 &&
+    !/\.insert\(|\.update\(|\.delete\(/.test(nonTxWriteResidue),
+  `txInsert=${txInsertCount} txDelete=${txDeleteCount}`,
 );
 check(
-  "dry-run is the ONLY mode: --dry-run required, persistence slot inert null, S3b gate named",
+  "no upsert / raw-SQL writes / DDL anywhere (no ON CONFLICT, comment-stripped)",
+  !/onConflict|ON CONFLICT|INSERT INTO|DELETE FROM|CREATE TABLE|ALTER TABLE|TRUNCATE|drizzle-kit/i.test(
+    buildCode,
+  ) && !/\bUPDATE\s+[a-z_]+\s+SET\b/i.test(buildCode),
+);
+check(
+  "write mode is founder-armed: --write flag + exact env arming value; dry-run stays the no-write default posture",
   buildCode.includes('process.argv.includes("--dry-run")') &&
-    buildCode.includes("S3B_NOT_APPROVED") &&
-    /const persistence: ContinuityPersistence \| null = null/.test(buildCode),
+    buildCode.includes('process.argv.includes("--write")') &&
+    buildCode.includes("MEMBER_CONTINUITY_WRITE_APPROVED") &&
+    buildCode.includes("S3B_WRITE_NOT_ARMED") &&
+    /process\.env\[WRITE_ARMING_ENV\]\s*!==\s*WRITE_ARMING_VALUE/.test(
+      buildCode,
+    ) &&
+    /if\s*\(mode\s*!==\s*"WRITE"\)\s*return null/.test(buildCode),
+);
+check(
+  "replay semantics explicit: exact-replay no-op, same-provenance hash drift hard-fails, shrunk/diverged provenance hard-fails, orphan rows refused",
+  buildCode.includes("REPLAY_NOOP") &&
+    buildCode.includes("HASH_DRIFT_SAME_PROVENANCE") &&
+    buildCode.includes("PROVENANCE_SHRUNK_OR_DIVERGED") &&
+    buildCode.includes("GROWN_PROVENANCE_REBUILD") &&
+    buildCode.includes("ORPHAN_ROWS_ANOMALY"),
+);
+check(
+  "write is ONE transaction with in-tx post-insert verification (rollback on mismatch); failed builds never memorialized",
+  buildCode.includes(".transaction(") &&
+    buildCode.includes(
+      "S3B write rollback: post-insert verification failed",
+    ) &&
+    buildCode.includes("S3B write refused") &&
+    buildCode.includes("never memorialized"),
 );
 check(
   "dry-run type-binds shaped rows to the real Drizzle insert types (compile-time net)",
@@ -927,9 +990,11 @@ check(
     schemaSrc.includes("= 'VERIFIED'"),
 );
 check(
-  "package script registered: member-continuity:dry-run (tsx, --dry-run pinned)",
+  "package scripts registered: member-continuity:dry-run (--dry-run pinned) + member-continuity:write (--write pinned)",
   pkg.includes('"member-continuity:dry-run"') &&
-    pkg.includes("member-continuity-build.ts --dry-run"),
+    pkg.includes("member-continuity-build.ts --dry-run") &&
+    pkg.includes('"member-continuity:write"') &&
+    pkg.includes("member-continuity-build.ts --write"),
 );
 
 // ---------------------------------------------------------------------------

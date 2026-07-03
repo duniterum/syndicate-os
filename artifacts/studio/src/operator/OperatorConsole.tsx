@@ -12,6 +12,7 @@ import Home from "@/pages/Home";
 import ProofStudio from "@/pages/ProofStudio";
 import OperatorPreview from "@/pages/OperatorPreview";
 import OsMap from "@/pages/OsMap";
+import AdminControlTower from "@/pages/AdminControlTower";
 import { AccessGate } from "@/components/access/AccessGate";
 
 export type OperatorConsolePage =
@@ -19,7 +20,8 @@ export type OperatorConsolePage =
   | "proof-studio"
   | "founder"
   | "source"
-  | "os-map";
+  | "os-map"
+  | "admin";
 
 const pageRoutePath: Record<OperatorConsolePage, string> = {
   studio: "/studio",
@@ -27,6 +29,7 @@ const pageRoutePath: Record<OperatorConsolePage, string> = {
   founder: "/founder",
   source: "/source",
   "os-map": "/os-map",
+  admin: "/admin",
 };
 
 // The AccessGate here is the IA-1 access-state shell for console surfaces
@@ -68,6 +71,12 @@ function renderPage(page: OperatorConsolePage) {
       return (
         <Shell>
           <OsMap />
+        </Shell>
+      );
+    case "admin":
+      return (
+        <Shell>
+          <AdminControlTower />
         </Shell>
       );
   }

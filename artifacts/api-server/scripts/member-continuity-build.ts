@@ -1,20 +1,24 @@
 /**
- * Member Continuity Builder — S3a DDL-SHAPED DRY-RUN RUNNER (SERVER-ONLY).
+ * Member Continuity Builder — S3a DRY-RUN + S3b FOUNDER-ARMED WRITE (SERVER-ONLY).
  * -------------------------------------------------------------------------
- * Founder-approved S3a slice: derives the member-continuity read-model with
- * READ-ONLY selects, shapes the EXACT would-be `member_continuity_record` /
- * `member_continuity_verification_run` rows in memory, reconciles them
- * against the live read-only `memberCount()` view, verifies determinism
- * (rebuild + input-order + full-pipeline hash stability), and prints ONLY an
- * aggregate, address-safe report. NOTHING IS PERSISTED.
+ * Derives the member-continuity read-model with READ-ONLY selects, shapes
+ * the EXACT `member_continuity_record` / `member_continuity_verification_run`
+ * rows in memory, reconciles them against the live read-only `memberCount()`
+ * view, verifies determinism (rebuild + input-order + full-pipeline hash
+ * stability), and prints ONLY an aggregate, address-safe report.
  *
- * HARD RULES (S3a boundary):
- *   - `--dry-run` is the ONLY accepted mode. There is no write mode, no
- *     write flag, and no write adapter — persistence is a SEPARATE founder
- *     gate (S3b). The persistence slot below is an inert `null` constant.
- *   - No writes of any kind (no insert/update/delete, no table, no
- *     migration, no schema change). Read-only selects + one read-only
- *     eth_call (chainId probe first) only.
+ * HARD RULES:
+ *   - Default posture is dry-run / no-write. The S3b write path exists ONLY
+ *     behind BOTH the --write script mode AND the exact founder arming env
+ *     value — and even then persists ONLY a fully green VERIFIED build,
+ *     freshly rebuilt at write time (never a stored/stale hash).
+ *   - The write is ONE transaction (run row + full record set) with
+ *     in-transaction post-insert verification; any anomaly throws →
+ *     rollback. Failed builds are never memorialized. No partial state.
+ *     No upsert / ON CONFLICT — replay semantics are explicit instead:
+ *     exact replay (same provenance + same hash) no-ops; same provenance
+ *     with a different hash hard-fails; grown provenance performs a full
+ *     derived rebuild under the same verified rules; anything else fails.
  *   - Never print wallets, transaction hashes, proofs, decodedJson or
  *     rawJson. The report is self-scanned fail-closed before printing.
  *   - The Routed fold whitelist maps EXACTLY three amounts; the gated
@@ -25,6 +29,8 @@
  *
  * Usage:
  *   pnpm --filter @workspace/api-server run member-continuity:dry-run
+ *   MEMBER_CONTINUITY_WRITE_APPROVED=I_APPROVE_S3B_WRITE \
+ *     pnpm --filter @workspace/api-server run member-continuity:write
  */
 
 import {
@@ -55,8 +61,11 @@ import type {
   MemberContinuityVerificationRunInsert,
 } from "@workspace/db";
 
-/** Version label recorded in the would-be run row (provenance only). */
-const BUILDER_VERSION = "member-continuity-builder/1.0.0-s3a-dry-run";
+/**
+ * Version label recorded in the run row (code provenance only — deliberately
+ * EXCLUDED from the determinism hash, so a version bump never drifts it).
+ */
+const BUILDER_VERSION = "member-continuity-builder/1.1.0-s3b";
 
 /**
  * keccak256("memberCount()")[0..4] — read-only view selector on the active
@@ -66,20 +75,254 @@ const BUILDER_VERSION = "member-continuity-builder/1.0.0-s3a-dry-run";
 const MEMBER_COUNT_SELECTOR = "0x11aee380";
 
 // ---------------------------------------------------------------------------
-// S3b persistence gate — INERT BY DESIGN. No write adapter exists in S3a.
+// S3b persistence gate — FOUNDER-ARMED WRITE MODE (approved S3b slice).
+// Default posture stays dry-run/no-write. The write path is reachable ONLY
+// behind BOTH the --write script mode AND the exact arming value below.
 // ---------------------------------------------------------------------------
 
-/**
- * The ONLY shape a future S3b write adapter may take. S3a defines the
- * interface for reviewability and pins the slot to `null` — there is no
- * implementation, no write code, and no flag that can enable one.
- */
-interface ContinuityPersistence {
-  readonly persistVerifiedBuild: (ddl: DdlProjection) => Promise<void>;
+type RunMode = "DRY_RUN" | "WRITE";
+
+/** The founder arming variable — must equal the exact approval value. */
+const WRITE_ARMING_ENV = "MEMBER_CONTINUITY_WRITE_APPROVED";
+const WRITE_ARMING_VALUE = "I_APPROVE_S3B_WRITE";
+
+function resolveMode(): RunMode {
+  const dry = process.argv.includes("--dry-run");
+  const write = process.argv.includes("--write");
+  if (dry === write) {
+    console.error(
+      "[FAIL] exactly one mode flag is required: --dry-run (default no-write posture) or --write (founder-armed S3b persistence)",
+    );
+    process.exit(1);
+  }
+  if (write && process.env[WRITE_ARMING_ENV] !== WRITE_ARMING_VALUE) {
+    console.error(
+      `[FAIL] S3B_WRITE_NOT_ARMED: --write refused — ${WRITE_ARMING_ENV} is not set to the exact founder approval value.`,
+    );
+    process.exit(1);
+  }
+  return write ? "WRITE" : "DRY_RUN";
 }
 
-/** S3B_NOT_APPROVED: permanently null in S3a. Never assign anything here. */
-const persistence: ContinuityPersistence | null = null;
+/** Aggregate-only outcome of an armed write attempt (NO row material). */
+interface PersistOutcome {
+  readonly action: "INITIAL_WRITE" | "GROWN_PROVENANCE_REBUILD" | "REPLAY_NOOP";
+  readonly runId: number | null;
+  readonly recordsWritten: number;
+  readonly recordsDeleted: number;
+  readonly priorRunCount: number;
+  readonly priorRecordCount: number;
+  readonly dbRunCount: number;
+  readonly dbRecordCount: number;
+}
+
+/** The ONLY write adapter shape. Armed exclusively by `armPersistence`. */
+interface ContinuityPersistence {
+  readonly persistVerifiedBuild: (
+    ddl: DdlProjection,
+  ) => Promise<PersistOutcome>;
+}
+
+/**
+ * VERIFIED-only persistence: one transaction, explicit replay semantics,
+ * in-transaction post-insert verification, rollback on any anomaly.
+ * No upsert / ON CONFLICT anywhere — divergence is a hard failure, never a
+ * silent merge.
+ */
+async function persistVerifiedBuild(
+  ddl: DdlProjection,
+): Promise<PersistOutcome> {
+  const dbm = await import("@workspace/db");
+  const { desc, eq, sql } = await import("drizzle-orm");
+  const run = ddl.run;
+
+  // Fail-closed re-assertions (defense in depth — never trust the caller).
+  if (!ddl.persistenceEligible) {
+    throw new Error("S3B write refused: build is not persistence-eligible");
+  }
+  if (
+    run.onchainMemberCount === null ||
+    run.onchainMemberCount !== run.memberTotal
+  ) {
+    throw new Error(
+      "S3B write refused: live memberCount() reconciliation is not green at write time",
+    );
+  }
+  if (run.status !== "VERIFIED" || ddl.records.length !== run.memberTotal) {
+    throw new Error(
+      "S3B write refused: run shape is not VERIFIED or record cardinality drifted",
+    );
+  }
+  if (ddl.records.length === 0) {
+    throw new Error("S3B write refused: empty record set is unwritable");
+  }
+
+  const chainId = run.chainId;
+  const runTable = dbm.memberContinuityVerificationRun;
+  const recTable = dbm.memberContinuityRecord;
+
+  const priorRunRows = await dbm.db
+    .select({ c: sql<number>`count(*)::int` })
+    .from(runTable)
+    .where(eq(runTable.chainId, chainId));
+  const priorRunCount = priorRunRows[0]?.c ?? 0;
+  const priorRecRows = await dbm.db
+    .select({ c: sql<number>`count(*)::int` })
+    .from(recTable)
+    .where(eq(recTable.chainId, chainId));
+  const priorRecordCount = priorRecRows[0]?.c ?? 0;
+  const latestRows = await dbm.db
+    .select()
+    .from(runTable)
+    .where(eq(runTable.chainId, chainId))
+    .orderBy(desc(runTable.id))
+    .limit(1);
+  const latest = latestRows[0] ?? null;
+
+  // --- Replay semantics (explicit, fail-closed) ---
+  if (latest === null) {
+    if (priorRecordCount !== 0) {
+      throw new Error(
+        `S3B write refused (ORPHAN_ROWS_ANOMALY): ${priorRecordCount} record rows exist with no verification run — founder review required`,
+      );
+    }
+  } else {
+    const sameProvenance =
+      latest.inputSaleEventCount === run.inputSaleEventCount &&
+      (latest.inputMaxSaleEventRawId ?? null) ===
+        (run.inputMaxSaleEventRawId ?? null);
+    if (sameProvenance) {
+      if (latest.determinismHash === run.determinismHash) {
+        if (priorRecordCount !== latest.memberTotal) {
+          throw new Error(
+            "S3B replay refused (COUNT_ANOMALY): stored record count does not match the memorialized run total",
+          );
+        }
+        return {
+          action: "REPLAY_NOOP",
+          runId: null,
+          recordsWritten: 0,
+          recordsDeleted: 0,
+          priorRunCount,
+          priorRecordCount,
+          dbRunCount: priorRunCount,
+          dbRecordCount: priorRecordCount,
+        };
+      }
+      throw new Error(
+        "S3B write refused (HASH_DRIFT_SAME_PROVENANCE): identical input provenance produced a different determinism hash — hard fail, founder review required",
+      );
+    }
+    const grown =
+      run.inputSaleEventCount > latest.inputSaleEventCount &&
+      (run.inputMaxSaleEventRawId ?? 0) > (latest.inputMaxSaleEventRawId ?? 0);
+    if (!grown) {
+      throw new Error(
+        "S3B write refused (PROVENANCE_SHRUNK_OR_DIVERGED): input provenance is not a strict growth of the memorialized provenance — hard fail",
+      );
+    }
+  }
+  const action: PersistOutcome["action"] =
+    latest === null ? "INITIAL_WRITE" : "GROWN_PROVENANCE_REBUILD";
+
+  const runInsert: MemberContinuityVerificationRunInsert = {
+    chainId: run.chainId,
+    status: run.status,
+    freezeBlock: run.freezeBlock,
+    freezeRoot: run.freezeRoot,
+    memberTotal: run.memberTotal,
+    historicalCount: run.historicalCount,
+    v3Count: run.v3Count,
+    onchainMemberCount: run.onchainMemberCount,
+    determinismHash: run.determinismHash,
+    inputSaleEventCount: run.inputSaleEventCount,
+    inputMaxSaleEventRawId: run.inputMaxSaleEventRawId,
+    builderVersion: run.builderVersion,
+    verification: run.verification,
+  };
+
+  // --- ONE transaction: run row + full record set + in-tx verification ---
+  return await dbm.db.transaction(async (tx) => {
+    const insertedRun = await tx
+      .insert(runTable)
+      .values(runInsert)
+      .returning({ id: runTable.id });
+    const runId = insertedRun[0]?.id;
+    if (typeof runId !== "number") {
+      throw new Error("S3B write rollback: run row insert returned no id");
+    }
+    let recordsDeleted = 0;
+    if (action === "GROWN_PROVENANCE_REBUILD") {
+      const deleted = await tx
+        .delete(recTable)
+        .where(eq(recTable.chainId, chainId))
+        .returning({ memberNumber: recTable.memberNumber });
+      recordsDeleted = deleted.length;
+    }
+    const recordInserts: MemberContinuityRecordInsert[] = ddl.records.map(
+      (r) => ({
+        chainId: r.chainId,
+        memberNumber: r.memberNumber,
+        generation: r.generation,
+        numberingAuthority: r.numberingAuthority,
+        freezeBlock: r.freezeBlock,
+        entryWallet: r.entryWallet,
+        entryBlock: r.entryBlock,
+        entryLogIndex: r.entryLogIndex,
+        entryTransaction: r.entryTransaction,
+        entryFirstSeat: r.entryFirstSeat,
+        entryBlockTimestampSec: r.entryBlockTimestampSec,
+        entryRoutedFold: r.entryRoutedFold,
+        saleEventRawId: r.saleEventRawId,
+        buildId: runId,
+      }),
+    );
+    await tx.insert(recTable).values(recordInserts);
+
+    // Post-insert verification — any mismatch throws → full rollback.
+    const recAfterRows = await tx
+      .select({ c: sql<number>`count(*)::int` })
+      .from(recTable)
+      .where(eq(recTable.chainId, chainId));
+    const dbRecordCount = recAfterRows[0]?.c ?? -1;
+    const recForBuildRows = await tx
+      .select({ c: sql<number>`count(*)::int` })
+      .from(recTable)
+      .where(eq(recTable.buildId, runId));
+    const recForBuild = recForBuildRows[0]?.c ?? -1;
+    const runAfterRows = await tx
+      .select({ c: sql<number>`count(*)::int` })
+      .from(runTable)
+      .where(eq(runTable.chainId, chainId));
+    const dbRunCount = runAfterRows[0]?.c ?? -1;
+    if (
+      dbRecordCount !== run.memberTotal ||
+      recForBuild !== run.memberTotal ||
+      dbRunCount !== priorRunCount + 1
+    ) {
+      throw new Error(
+        "S3B write rollback: post-insert verification failed (row counts did not reconcile)",
+      );
+    }
+    return {
+      action,
+      runId,
+      recordsWritten: recordInserts.length,
+      recordsDeleted,
+      priorRunCount,
+      priorRecordCount,
+      dbRunCount,
+      dbRecordCount,
+    };
+  });
+}
+
+/** Persistence is armed ONLY in write mode with the exact arming value. */
+function armPersistence(mode: RunMode): ContinuityPersistence | null {
+  if (mode !== "WRITE") return null;
+  if (process.env[WRITE_ARMING_ENV] !== WRITE_ARMING_VALUE) return null;
+  return { persistVerifiedBuild };
+}
 
 // ---------------------------------------------------------------------------
 // Type-level DDL conformance (compile-time only — NEVER EXECUTED).
@@ -220,19 +463,15 @@ async function readOnchainMemberCount(): Promise<{
 }
 
 // ---------------------------------------------------------------------------
-// Main (dry-run only).
+// Main (dry-run default; write only when founder-armed).
 // ---------------------------------------------------------------------------
 
 async function main(): Promise<void> {
-  if (!process.argv.includes("--dry-run")) {
-    console.error(
-      "[FAIL] S3B_NOT_APPROVED: this builder has exactly one mode (--dry-run). No write mode exists.",
-    );
-    process.exit(1);
-  }
-  if (persistence !== null) {
+  const mode = resolveMode();
+  const persistence = armPersistence(mode);
+  if (mode !== "WRITE" && persistence !== null) {
     throw new Error(
-      "S3B_NOT_APPROVED: a persistence adapter can never be active in S3a",
+      "invariant violated: dry-run mode can never hold a persistence adapter",
     );
   }
 
@@ -488,11 +727,34 @@ async function main(): Promise<void> {
     hashes[0] !== "" && hashes.every((h) => h === hashes[0]);
 
   const ddl = first.ddl;
+  const ok =
+    first.gatePassed &&
+    first.consistent &&
+    rebuildIdentical &&
+    orderIndependent &&
+    hashStable &&
+    ddl !== undefined &&
+    ddl.persistenceEligible;
+
+  let outcome: PersistOutcome | null = null;
+  if (mode === "WRITE") {
+    if (!ok || ddl === undefined || persistence === null) {
+      console.error(
+        "[FAIL] S3B write refused: preflight not fully green — failed builds are never memorialized (nothing written, no partial state).",
+      );
+      await (await import("@workspace/db")).pool.end();
+      process.exit(1);
+    }
+    outcome = await persistence.persistVerifiedBuild(ddl);
+  }
+
   const report = {
-    slice: "S3A_DDL_SHAPED_DRY_RUN",
-    mode: "DRY_RUN_ONLY",
+    slice: mode === "WRITE" ? "S3B_VERIFIED_WRITE" : "S3A_DDL_SHAPED_DRY_RUN",
+    mode: mode === "WRITE" ? "FOUNDER_ARMED_WRITE" : "DRY_RUN_ONLY",
     persistenceGate:
-      "INERT_NULL — S3B_NOT_APPROVED (no write adapter exists; write approval is a separate founder gate)",
+      mode === "WRITE"
+        ? "ARMED — founder-approved S3b (--write + exact env arming); VERIFIED-only, one transaction, rollback on any anomaly"
+        : "INERT in dry-run — S3b writes happen ONLY via the founder-armed member-continuity:write script mode",
     ...toAddressSafeReport(first),
     ddlDryRun: ddl
       ? {
@@ -533,35 +795,47 @@ async function main(): Promise<void> {
       inputOrderIndependent: orderIndependent,
       determinismHashStable: hashStable,
     },
+    writeOutcome: outcome
+      ? {
+          action: outcome.action,
+          runId: outcome.runId,
+          recordsWritten: outcome.recordsWritten,
+          recordsDeleted: outcome.recordsDeleted,
+          priorRunCount: outcome.priorRunCount,
+          priorRecordCount: outcome.priorRecordCount,
+          dbRunCount: outcome.dbRunCount,
+          dbRecordCount: outcome.dbRecordCount,
+        }
+      : null,
   };
 
   const json = JSON.stringify(report, null, 2);
   assertAddressSafeJson(json);
   console.log(json);
 
-  const ok =
-    first.gatePassed &&
-    first.consistent &&
-    rebuildIdentical &&
-    orderIndependent &&
-    hashStable &&
-    ddl !== undefined &&
-    ddl.persistenceEligible;
   if (!ok) {
     console.error(
-      "[FAIL] member-continuity dry-run: gate/reconciliation/determinism/DDL-preflight not fully green (nothing was going to be persisted either way)",
+      "[FAIL] member-continuity build: gate/reconciliation/determinism/DDL-preflight not fully green (nothing persisted)",
     );
     await (await import("@workspace/db")).pool.end();
     process.exit(1);
   }
-  console.error(
-    `member-continuity dry-run: OK — ${first.totals.total} DDL-shaped records (${first.totals.historical} historical + ${first.totals.postFreezeV3} post-freeze V3), consistent, deterministic, NOTHING PERSISTED (S3B_NOT_APPROVED).`,
-  );
+  if (mode === "WRITE" && outcome) {
+    const summary =
+      outcome.action === "REPLAY_NOOP"
+        ? "exact replay (same provenance + same determinism hash) — NO-OP, zero rows written"
+        : `${outcome.action} committed in one transaction — run #${outcome.runId}, ${outcome.recordsWritten} records written, ${outcome.recordsDeleted} replaced; DB now ${outcome.dbRunCount} runs / ${outcome.dbRecordCount} records`;
+    console.error(`member-continuity write: OK — ${summary}.`);
+  } else {
+    console.error(
+      `member-continuity dry-run: OK — ${first.totals.total} DDL-shaped records (${first.totals.historical} historical + ${first.totals.postFreezeV3} post-freeze V3), consistent, deterministic, NOTHING PERSISTED (writes require the founder-armed member-continuity:write mode).`,
+    );
+  }
   await (await import("@workspace/db")).pool.end();
 }
 
 main().catch((err) => {
   // Never echo row/payload material — message only.
-  console.error(`[FAIL] member-continuity dry-run: ${(err as Error).message}`);
+  console.error(`[FAIL] member-continuity build: ${(err as Error).message}`);
   process.exit(1);
 });

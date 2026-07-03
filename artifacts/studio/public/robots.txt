@@ -7,8 +7,9 @@ Allow: /
 Disallow: /studio
 Disallow: /proof-studio
 Disallow: /founder
-Disallow: /source
+Disallow: /os-source
 Disallow: /os-map
+Disallow: /admin
 
 # Public render assets (favicon, og image, fonts, JS/CSS) stay crawlable.
 Sitemap: https://thesyndicate.money/sitemap.xml

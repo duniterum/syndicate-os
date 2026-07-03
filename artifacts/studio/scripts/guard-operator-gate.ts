@@ -81,9 +81,9 @@ const internalPaths = seoRouteRegistry
   .map((r) => r.path);
 
 check(
-  internalPaths.length === 5,
-  `registry declares 5 INTERNAL routes (${internalPaths.join(", ")})`,
-  `expected exactly 5 INTERNAL registry routes, found ${internalPaths.length} — update this guard deliberately if that changed`,
+  internalPaths.length === 6,
+  `registry declares 6 INTERNAL routes (${internalPaths.join(", ")})`,
+  `expected exactly 6 INTERNAL registry routes, found ${internalPaths.length} — update this guard deliberately if that changed`,
 );
 
 for (const p of internalPaths) {
@@ -156,6 +156,7 @@ const consoleModulePatterns = [
   '"@/pages/ProofStudio"',
   '"@/pages/OperatorPreview"',
   '"@/pages/OsMap"',
+  '"@/pages/AdminControlTower"',
 ];
 for (const spec of consoleModulePatterns) {
   check(

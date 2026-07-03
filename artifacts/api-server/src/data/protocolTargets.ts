@@ -157,6 +157,31 @@ export const TOKEN_TARGETS: readonly TokenTarget[] = [
   },
 ];
 
+// ── Source linkage target (registry + the active engine that must point at it).
+// Read-only Verified Introduction surface: the spine verifies the ACTIVE V3
+// engine's SOURCE_REGISTRY() view resolves to the canon registry address
+// (compared SERVER-SIDE only; never emitted). Source creation/activation is an
+// owner-only on-chain action — no self-service creation surface exists here.
+export type SourceLinkageTarget = {
+  /** Safe internal key — never an address. */
+  key: "SOURCE_REGISTRY_V1";
+  label: string;
+  /** SERVER-ONLY registry address; never emitted. */
+  registryAddress: string;
+  /** The active sale engine whose SOURCE_REGISTRY() must match the registry. */
+  saleKey: "MEMBERSHIP_SALE_V3";
+  /** SERVER-ONLY sale engine address; never emitted. */
+  saleAddress: string;
+};
+
+export const SOURCE_LINKAGE_TARGET: SourceLinkageTarget = {
+  key: "SOURCE_REGISTRY_V1",
+  label: "Source Registry V1",
+  registryAddress: "0x780013bB358be6be95b401901264FC7c22a595a6",
+  saleKey: "MEMBERSHIP_SALE_V3",
+  saleAddress: "0x2A6cFc76906e758B934209AFf5A163c9bC20132E",
+};
+
 // ── Archive1155 read target + the configured-on-chain artifact ids surfaced. ──
 export const ARCHIVE_TARGET: ArchiveTarget = {
   key: "ARCHIVE_1155",

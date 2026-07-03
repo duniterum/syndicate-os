@@ -151,6 +151,122 @@ async function main(): Promise<void> {
     `state ${stateOf(s1.json)}`,
   );
 
+  // ── member-self readback (Public MVP) ─────────────────────────────────────
+  // A fresh fixture account is never a member: expect S4 + honest chain
+  // posture + isRecognized false + seatNumber null, and NO account echo.
+  const msRes = await fetch(`${BASE}/member-self`, {
+    headers: { cookie: cookiePair },
+  });
+  const msBody = await msRes.text();
+  let msJson: {
+    state?: string;
+    chainVerified?: boolean;
+    isRecognized?: boolean | null;
+    seatNumber?: string | null;
+  } = {};
+  try {
+    msJson = JSON.parse(msBody) as typeof msJson;
+  } catch {
+    msJson = {};
+  }
+  record(
+    "member-self with session → S4, chain-verified, fixture not recognized",
+    msRes.status === 200 &&
+      msJson.state === "S4" &&
+      msJson.chainVerified === true &&
+      msJson.isRecognized === false &&
+      msJson.seatNumber === null,
+    `status ${msRes.status}, state ${msJson.state}, chainVerified ${String(msJson.chainVerified)}, isRecognized ${String(msJson.isRecognized)}`,
+  );
+  record(
+    "member-self response leak scan (no 0x40-hex, no account echo)",
+    !/0x[0-9a-fA-F]{40}/.test(msBody) &&
+      !msBody.toLowerCase().includes(account.address.slice(2).toLowerCase()),
+    "body carries no wallet-address material",
+  );
+  const msAnon = await fetch(`${BASE}/member-self`);
+  const msAnonJson = (await msAnon.json()) as { state?: string; isRecognized?: unknown };
+  record(
+    "member-self without session → S1 + nulls (fail closed, not an error)",
+    msAnon.status === 200 && msAnonJson.state === "S1" && msAnonJson.isRecognized === null,
+    `status ${msAnon.status}, state ${msAnonJson.state}`,
+  );
+
+  // ── member-standing self-readback (founder Decision 5a) ───────────────────
+  // A fresh fixture account is never a member: expect S4 + honest chain
+  // posture + recognized false with EVERY standing field null (sentinel is a
+  // clean not-recognized state, never an invented era), and NO account echo.
+  const mstRes = await fetch(`${BASE}/member-standing`, {
+    headers: { cookie: cookiePair },
+  });
+  const mstBody = await mstRes.text();
+  let mstJson: {
+    state?: string;
+    chainVerified?: boolean;
+    recognized?: boolean | null;
+    memberNumber?: string | null;
+    era?: string | null;
+    authority?: string | null;
+    continuityStatus?: string | null;
+    proofPosture?: unknown;
+  } = {};
+  try {
+    mstJson = JSON.parse(mstBody) as typeof mstJson;
+  } catch {
+    mstJson = {};
+  }
+  record(
+    "member-standing with session → S4, chain-verified, fixture not recognized, all standing fields null",
+    mstRes.status === 200 &&
+      mstJson.state === "S4" &&
+      mstJson.chainVerified === true &&
+      mstJson.recognized === false &&
+      mstJson.memberNumber === null &&
+      mstJson.era === null &&
+      mstJson.authority === null &&
+      mstJson.continuityStatus === null &&
+      mstJson.proofPosture === null,
+    `status ${mstRes.status}, state ${mstJson.state}, chainVerified ${String(mstJson.chainVerified)}, recognized ${String(mstJson.recognized)}`,
+  );
+  record(
+    "member-standing response leak scan (no 0x40-hex, no account echo)",
+    !/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(mstBody) &&
+      !mstBody.toLowerCase().includes(account.address.slice(2).toLowerCase()),
+    "body carries no wallet-address material",
+  );
+  // Own-row only: a lookup-style query param must have ZERO effect — the
+  // response is byte-identical to the no-param read (no lookup surface).
+  const mstProbe = await fetch(
+    `${BASE}/member-standing?account=${strangerAccount.address}`,
+    { headers: { cookie: cookiePair } },
+  );
+  const mstProbeBody = await mstProbe.text();
+  record(
+    "member-standing ignores lookup query params (own-row only)",
+    mstProbe.status === 200 &&
+      mstProbeBody === mstBody &&
+      !mstProbeBody
+        .toLowerCase()
+        .includes(strangerAccount.address.slice(2).toLowerCase()),
+    "query-param probe returned the identical own-row response, no echo",
+  );
+  const mstAnon = await fetch(`${BASE}/member-standing`);
+  const mstAnonJson = (await mstAnon.json()) as {
+    state?: string;
+    recognized?: unknown;
+    era?: unknown;
+    proofPosture?: unknown;
+  };
+  record(
+    "member-standing without session → S1 + nulls (fail closed, not an error)",
+    mstAnon.status === 200 &&
+      mstAnonJson.state === "S1" &&
+      mstAnonJson.recognized === null &&
+      mstAnonJson.era === null &&
+      mstAnonJson.proofPosture === null,
+    `status ${mstAnon.status}, state ${mstAnonJson.state}`,
+  );
+
   const lo = await post("/logout", undefined, { cookie: cookiePair });
   record(
     "logout → S1",

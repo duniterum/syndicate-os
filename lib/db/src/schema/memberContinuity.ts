@@ -276,11 +276,12 @@ export type MemberContinuityRecordInsert =
   typeof memberContinuityRecord.$inferInsert;
 
 /**
- * Phase 2 boundary marker: DDL has been PUSHED (founder-approved S1 gate,
- * dev database) — both tables exist and are EMPTY. No builder has run, no
- * rows exist, and no served/runtime code reads or imports this schema. The
- * builder (Phase 3) and the verification harness (Phase 4) are each separate
- * founder-gated slices.
+ * Boundary marker: DDL has been PUSHED (founder-approved S1 gate, dev
+ * database) and the founder-approved S3b write has PERSISTED the VERIFIED
+ * build (one verification run + the full record set), written ONLY by the
+ * founder-armed `member-continuity:write` script in a single transaction.
+ * No served/runtime code reads or imports this schema; rows remain
+ * derived/droppable and rebuildable from their sources.
  */
 export const MEMBER_CONTINUITY_SCHEMA_STATUS =
-  "SCHEMA_PUSHED_TABLES_EMPTY" as const;
+  "SCHEMA_PUSHED_S3B_ROWS_PERSISTED" as const;

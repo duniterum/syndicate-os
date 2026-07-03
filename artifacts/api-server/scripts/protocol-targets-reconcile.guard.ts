@@ -50,9 +50,18 @@ import {
   SELECTOR_RECEIPT_COUNT,
 } from "../src/lib/protocol/saleDecoders";
 import {
+  SELECTOR_SOURCE_EXISTS,
+  SELECTOR_SOURCE_IS_ACTIVE,
+  SELECTOR_SOURCE_REGISTRY,
+  SELECTOR_QUOTE,
+  SELECTOR_MEMBER_NUMBER_OF,
+} from "../src/lib/protocol/sourceDecoders";
+import { SOURCE_LINKAGE_TARGET } from "../src/data/protocolTargets";
+import {
   SALE_ABI,
   SALE_V2_ABI,
   SALE_V3_ABI,
+  SOURCE_REGISTRY_V1_ABI,
 } from "../src/canon/the-syndicate/contracts/abi/sale-abi";
 
 // ── tiny check harness ───────────────────────────────────────────────────────
@@ -80,6 +89,11 @@ function main(): void {
     SELECTOR_GET_ARTIFACT_CORE === functionSelector("getArtifactCore(uint256)"),
     SELECTOR_GET_ARTIFACT_CORE,
   );
+  check("selector: sourceExists(bytes32) derived", SELECTOR_SOURCE_EXISTS === functionSelector("sourceExists(bytes32)"), SELECTOR_SOURCE_EXISTS);
+  check("selector: isActive(bytes32) derived", SELECTOR_SOURCE_IS_ACTIVE === functionSelector("isActive(bytes32)"), SELECTOR_SOURCE_IS_ACTIVE);
+  check("selector: SOURCE_REGISTRY() derived", SELECTOR_SOURCE_REGISTRY === functionSelector("SOURCE_REGISTRY()"), SELECTOR_SOURCE_REGISTRY);
+  check("selector: quote(uint256,address,bytes32) derived", SELECTOR_QUOTE === functionSelector("quote(uint256,address,bytes32)"), SELECTOR_QUOTE);
+  check("selector: memberNumberOf(address) derived", SELECTOR_MEMBER_NUMBER_OF === functionSelector("memberNumberOf(address)"), SELECTOR_MEMBER_NUMBER_OF);
   check("selector: isConcluded() derived", SELECTOR_IS_CONCLUDED === functionSelector("isConcluded()"), SELECTOR_IS_CONCLUDED);
   check("selector: availableSyn() derived", SELECTOR_AVAILABLE_SYN === functionSelector("availableSyn()"), SELECTOR_AVAILABLE_SYN);
   check("selector: totalGrossUsdc() derived", SELECTOR_TOTAL_GROSS_USDC === functionSelector("totalGrossUsdc()"), SELECTOR_TOTAL_GROSS_USDC);
@@ -202,6 +216,54 @@ function main(): void {
   {
     const v3Views = (byKey("MEMBERSHIP_SALE_V3")?.numericReads ?? []).map((n) => n.view).sort().join(",");
     check("sale scope: V3 numeric views are the approved set", v3Views === "availableSyn,receiptCount,totalGrossUsdc", v3Views);
+  }
+
+  // 7) Source linkage target reconciles to canon: registry + active engine
+  //    addresses/roles/status, and every read the public MVP performs exists in
+  //    the canon ABI with the exact expected shape.
+  {
+    const t = SOURCE_LINKAGE_TARGET;
+    check("source: registry address is a full address", FULL_ADDRESS_RE.test(t.registryAddress), t.registryAddress.slice(0, 6));
+    check("source: sale address is a full address", FULL_ADDRESS_RE.test(t.saleAddress), t.saleAddress.slice(0, 6));
+    const regCanon = contractByKey("SOURCE_REGISTRY_V1");
+    check("source canon: SOURCE_REGISTRY_V1 present in registry", Boolean(regCanon));
+    if (regCanon) {
+      check("source canon: registry address matches", eqAddr(t.registryAddress, regCanon.address), `${t.registryAddress} vs ${regCanon.address ?? "null"}`);
+      check("source canon: registry role is source-registry", regCanon.role === "source-registry", regCanon.role);
+      check("source canon: registry status is LIVE/DEPLOYED", regCanon.status === "LIVE" || regCanon.status === "DEPLOYED", regCanon.status);
+    }
+    const v3Canon = contractByKey("MEMBERSHIP_SALE_V3");
+    check("source canon: sale address matches MEMBERSHIP_SALE_V3", eqAddr(t.saleAddress, v3Canon?.address ?? null), `${t.saleAddress} vs ${v3Canon?.address ?? "null"}`);
+    const servedV3 = SALE_TARGETS.find((s) => s.key === "MEMBERSHIP_SALE_V3");
+    check("source: linkage sale address equals the served V3 sale target", eqAddr(t.saleAddress, servedV3?.address ?? null));
+
+    const regAbi = SOURCE_REGISTRY_V1_ABI as unknown as readonly AbiEntry[];
+    const boolView = (abi: readonly AbiEntry[], name: string): boolean =>
+      abi.some(
+        (e) =>
+          e.type === "function" &&
+          e.name === name &&
+          e.stateMutability === "view" &&
+          Array.isArray(e.outputs) &&
+          e.outputs.length === 1 &&
+          e.outputs[0]?.type === "bool",
+      );
+    check("source abi: registry sourceExists(bytes32) is a bool view", boolView(regAbi, "sourceExists"));
+    check("source abi: registry isActive(bytes32) is a bool view", boolView(regAbi, "isActive"));
+
+    const v3Abi = SALE_V3_ABI as unknown as readonly AbiEntry[];
+    const sourceRegistryView = v3Abi.find(
+      (e) => e.type === "function" && e.name === "SOURCE_REGISTRY" && e.stateMutability === "view",
+    );
+    check("source abi: V3 SOURCE_REGISTRY() is an address view", Array.isArray(sourceRegistryView?.outputs) && sourceRegistryView.outputs.length === 1 && sourceRegistryView.outputs[0]?.type === "address");
+    const quoteView = v3Abi.find(
+      (e) => e.type === "function" && e.name === "quote" && e.stateMutability === "view",
+    );
+    check("source abi: V3 quote(...) is a view with 6 outputs", Array.isArray(quoteView?.outputs) && quoteView.outputs.length === 6);
+    const memberNumberView = v3Abi.find(
+      (e) => e.type === "function" && e.name === "memberNumberOf" && e.stateMutability === "view",
+    );
+    check("source abi: V3 memberNumberOf(address) is a uint256 view", Array.isArray(memberNumberView?.outputs) && memberNumberView.outputs.length === 1 && memberNumberView.outputs[0]?.type === "uint256");
   }
 
   // ── report ──────────────────────────────────────────────────────────────────

@@ -22,6 +22,7 @@ const headerSpec: { id: string; label: string }[] = [
   { id: "archive", label: "Chronicle" },
   { id: "recognition", label: "Recognition" },
   { id: "member", label: "Membership" },
+  { id: "join", label: "Join" },
   { id: "learning", label: "Docs" },
   { id: "status", label: "Status" },
 ];
@@ -46,9 +47,9 @@ export interface FooterGroup {
 }
 
 const footerGroupSpec: { heading: string; itemIds: string[] }[] = [
-  { heading: "Protocol", itemIds: ["proof", "status", "contracts", "source-attribution"] },
+  { heading: "Protocol", itemIds: ["proof", "map", "status", "contracts", "source-attribution"] },
   { heading: "Learn", itemIds: ["learning", "recognition", "archive"] },
-  { heading: "Membership", itemIds: ["member", "support"] },
+  { heading: "Membership", itemIds: ["member", "join", "source-link", "support"] },
   { heading: "Console", itemIds: ["studio"] },
 ];
 

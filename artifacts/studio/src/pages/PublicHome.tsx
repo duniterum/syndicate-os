@@ -1,53 +1,51 @@
 import React from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowRight, Check, TerminalSquare } from "lucide-react";
+import {
+  ArrowRight,
+  Boxes,
+  Link2,
+  ShieldCheck,
+  TerminalSquare,
+  UserPlus,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
+import {
+  useGetProtocolReality,
+  useGetSourceStatus,
+} from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 import { TruthLabel } from "@/components/TruthLabel";
 import { SampleTag } from "@/components/SampleTag";
+import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { SeatFlowDiagram } from "@/components/hero/SeatFlowDiagram";
 import { ProtocolOverviewPanel } from "@/components/hero/ProtocolOverviewPanel";
 import { HeroLedger } from "@/components/hero/HeroLedger";
+import {
+  RegistryPostureChip,
+  realityGroupSummary,
+  type RegistryPostureQueries,
+} from "@/components/registry/registryPosture";
 import { surfaceStatus } from "@/config/truthStatus";
+import { moduleRegistry } from "@/config/moduleRegistry";
 import {
   heroSystem,
-  protocolSurfaces,
   howItWorks,
   operationalReality,
   awaitingWiring,
   studioPreview,
+  trustStrip,
+  homepagePromotedStrip,
+  homepageModuleStrip,
 } from "@/config/syndicateFacts";
 
-function TrustChips({ className = "" }: { className?: string }) {
-  return (
-    <div className={className}>
-      {heroSystem.trustChips.map((c) => (
-        <div key={c.label} className="flex items-start gap-2">
-          <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-500">
-            <Check className="h-2.5 w-2.5" />
-          </span>
-          <div className="min-w-0">
-            <div className="text-xs font-semibold text-foreground">{c.label}</div>
-            <div className="truncate text-[10px] text-muted-foreground">{c.note}</div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function ProofRail({ className = "" }: { className?: string }) {
-  const items = [
-    { mark: "A", label: "Avalanche", note: "Target C-Chain", tone: "avax" },
-    { mark: "70", label: "Canonical", note: "70 / 20 / 10", tone: "gold" },
-    { mark: "✓", label: "Public proof", note: "Read-only", tone: "cyan" },
-    { mark: "◇", label: "Memory", note: "Recorded", tone: "gold" },
-  ];
-
   return (
     <div className={`grid gap-2 ${className}`}>
-      {items.map((item) => (
+      {heroSystem.proofRail.map((item) => (
         <div
           key={item.label}
           className="flex min-h-11 items-center gap-3 rounded-xl border border-gold/18 bg-background/54 px-3 py-2 shadow-sm dark:border-white/10 dark:bg-white/[0.025]"
@@ -70,6 +68,176 @@ function ProofRail({ className = "" }: { className?: string }) {
         </div>
       ))}
     </div>
+  );
+}
+
+/**
+ * Slim live trust strip — the only live-bound band on `/`. Reads the
+ * read-only Protocol Reality Spine and reports per-group reconciliation
+ * counts. Any fetch failure or missing group fails closed to an explicit
+ * "unavailable" line; nothing is assumed or invented.
+ */
+function TrustStatusStrip() {
+  const { data, isLoading, isError } = useGetProtocolReality();
+
+  return (
+    <section className="border-b border-border/60 bg-muted/30">
+      <div className="container mx-auto flex flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
+        <span className="inline-flex items-center gap-2.5">
+          <LifecycleBadge lifecycle="READ_ONLY_PROOF" />
+          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+            {trustStrip.eyebrow}
+          </span>
+        </span>
+        {isLoading ? (
+          <span className="inline-flex items-center gap-2 text-[11px] text-muted-foreground">
+            <Spinner className="h-3.5 w-3.5" />
+            Reading protocol reality…
+          </span>
+        ) : isError || !data ? (
+          <span className="font-mono text-[11px] text-red-600 dark:text-red-400">
+            {trustStrip.failText}
+          </span>
+        ) : (
+          trustStrip.groups.map((group) => {
+            const summary = realityGroupSummary(data, group.key);
+            return (
+              <span key={group.key} className="inline-flex items-baseline gap-1.5 text-[11px]">
+                <span className="text-muted-foreground">{group.label}</span>
+                {summary ? (
+                  <span className="font-mono font-semibold text-cyan-700 dark:text-cyan-400">
+                    {summary.readable}/{summary.total} {trustStrip.reconciledNote}
+                  </span>
+                ) : (
+                  <span className="font-mono text-red-600 dark:text-red-400">
+                    unavailable (fail-closed)
+                  </span>
+                )}
+              </span>
+            );
+          })
+        )}
+        <span className="ml-auto flex items-center gap-4">
+          {trustStrip.links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-[11px] font-medium text-cyan-700 underline-offset-4 hover:underline dark:text-cyan-400"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </span>
+      </div>
+    </section>
+  );
+}
+
+const promotedIcons: Record<string, LucideIcon> = {
+  "membership-join": UserPlus,
+  "verified-introduction": Link2,
+  "member-cockpit": Users,
+  "protocol-reality": ShieldCheck,
+};
+
+function useRegistryPostureQueries(): RegistryPostureQueries {
+  const {
+    data: sourceStatus,
+    isLoading: sourceLoading,
+    isError: sourceError,
+  } = useGetSourceStatus();
+  const {
+    data: reality,
+    isLoading: realityLoading,
+    isError: realityError,
+  } = useGetProtocolReality();
+  return { sourceStatus, sourceLoading, sourceError, reality, realityLoading, realityError };
+}
+
+/** Promoted Strip — 4 action cards driven entirely by Module Registry v0. */
+function PromotedStrip() {
+  const queries = useRegistryPostureQueries();
+  const promoted = moduleRegistry.filter(
+    (entry) => entry.publicVisible && entry.homepageZone === "PROMOTED_STRIP",
+  );
+
+  return (
+    <section className="bg-background py-14 text-foreground">
+      <div className="container mx-auto px-4">
+        <div className="mb-10 max-w-2xl">
+          <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-gold">
+            {homepagePromotedStrip.eyebrow}
+          </div>
+          <h2 className="mb-3 text-3xl font-light tracking-tight text-foreground">
+            {homepagePromotedStrip.title}
+          </h2>
+          <p className="text-muted-foreground">{homepagePromotedStrip.subtitle}</p>
+        </div>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {promoted.map((entry) => {
+            const Icon = promotedIcons[entry.registryId] ?? Boxes;
+            const href = entry.route ?? entry.cta?.href ?? null;
+            if (!href) return null;
+            return (
+              <Link key={entry.registryId} href={href} className="group block h-full">
+                <Card className="flex h-full flex-col border-card-border bg-card p-6 shadow-sm transition-colors group-hover:border-gold/40">
+                  <div className="mb-4 flex items-start justify-between gap-2">
+                    <Icon className="h-6 w-6 text-gold" />
+                    <RegistryPostureChip entry={entry} {...queries} />
+                  </div>
+                  <h3 className="mb-2 text-base font-medium text-card-foreground">{entry.title}</h3>
+                  <p className="mb-5 flex-1 text-sm text-muted-foreground">
+                    {homepagePromotedStrip.blurbs[entry.registryId] ?? entry.notes}
+                  </p>
+                  <span className="inline-flex items-center gap-1.5 text-sm font-medium text-cyan-700 dark:text-cyan-400">
+                    {entry.cta?.label ?? entry.title}
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </span>
+                </Card>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Slim module strip — further public modules, still registry-driven. */
+function ModuleStrip() {
+  const queries = useRegistryPostureQueries();
+  const entries = moduleRegistry.filter(
+    (entry) => entry.publicVisible && entry.homepageZone === "MODULE_STRIP",
+  );
+
+  return (
+    <section className="border-t border-border/50 bg-background py-6 text-foreground">
+      <div className="container mx-auto flex flex-wrap items-center gap-x-3 gap-y-2 px-4">
+        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+          {homepageModuleStrip.lead}
+        </span>
+        {entries.map((entry) => {
+          const href = entry.route ?? entry.cta?.href ?? null;
+          if (!href) return null;
+          return (
+            <Link
+              key={entry.registryId}
+              href={href}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-gold/40"
+            >
+              {entry.title}
+              <RegistryPostureChip entry={entry} {...queries} />
+            </Link>
+          );
+        })}
+        <Link
+          href={homepageModuleStrip.statusLink.href}
+          className="ml-auto text-[11px] font-medium text-cyan-700 underline-offset-4 hover:underline dark:text-cyan-400"
+        >
+          {homepageModuleStrip.statusLink.label}
+        </Link>
+      </div>
+    </section>
   );
 }
 
@@ -157,32 +325,18 @@ export default function PublicHome() {
         </div>
       </section>
 
-      <section className="bg-background py-14 text-foreground">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {protocolSurfaces.map((surface) => {
-              const Icon = surface.icon;
-              return (
-                <Card key={surface.id} className="flex h-full flex-col border-card-border bg-card p-6 shadow-sm transition-colors hover:border-gold/30">
-                  <Icon className={`mb-4 h-6 w-6 ${surface.iconClass}`} />
-                  <h3 className="mb-2 text-base font-medium text-card-foreground">{surface.homeLabel}</h3>
-                  <p className="mb-4 flex-1 text-sm text-muted-foreground">{surface.homeBlurb}</p>
-                  <TruthLabel variant={surface.truthStatus} />
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      <TrustStatusStrip />
+
+      <PromotedStrip />
 
       <section className="border-t border-border/50 bg-muted/20 py-16 text-foreground">
-        <div className="container mx-auto max-w-5xl px-4">
+        <div className="container mx-auto max-w-6xl px-4">
           <div className="mb-16 text-center">
             <h2 className="mb-4 text-3xl font-light tracking-tight text-foreground">{howItWorks.title}</h2>
             <p className="text-muted-foreground">{howItWorks.subtitle}</p>
           </div>
-          <div className="relative grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12">
-            <div className="absolute left-[16%] right-[16%] top-6 z-0 hidden h-px bg-border md:block" />
+          <div className="relative grid grid-cols-1 gap-8 md:grid-cols-5 md:gap-6">
+            <div className="absolute left-[10%] right-[10%] top-6 z-0 hidden h-px bg-border md:block" />
             {howItWorks.steps.map((step) => (
               <div key={step.step} className="relative z-10 flex flex-col items-center text-center">
                 <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full border border-border bg-card font-mono font-medium text-primary shadow-sm">{step.step}</div>
@@ -193,6 +347,8 @@ export default function PublicHome() {
           </div>
         </div>
       </section>
+
+      <ModuleStrip />
 
       <section className="border-t border-border/50 bg-background py-16 text-foreground">
         <div className="container mx-auto max-w-6xl px-4">

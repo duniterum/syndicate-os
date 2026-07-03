@@ -82,6 +82,7 @@ export type ProtocolRealityGroups = {
   tokens: ProtocolRealityItem[];
   archive: ProtocolRealityItem[];
   sale: ProtocolRealityItem[];
+  source: ProtocolRealityItem[];
 };
 
 export type ProtocolRealityEnvelope = {

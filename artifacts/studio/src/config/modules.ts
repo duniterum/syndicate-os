@@ -13,6 +13,10 @@ import {
   Share2,
   LifeBuoy,
   Archive,
+  UserPlus,
+  Link2,
+  LayoutDashboard,
+  Map as MapIcon,
   type LucideIcon,
 } from "lucide-react";
 import type { TruthStatus } from "./truthStatus";
@@ -40,7 +44,7 @@ export interface SyndicateModule {
   phase: ModulePhase;
   truthStatus?: TruthStatus;
   description: string;
-  dependencies: string[];
+  dependencies: readonly string[];
   nav: NavPlacement;
   icon: LucideIcon;
   flag?: FeatureFlag;
@@ -50,7 +54,7 @@ export interface SyndicateModule {
 //   - header  → public marketing header (kept concise: Home / Proof / Learn / Status)
 //   - sidebar → operator console (Studio OS, Proof Studio, Source, Founder)
 //   - footer  → public footer (grouped in navigation.ts)
-export const modules: SyndicateModule[] = [
+export const modules = [
   {
     id: "home",
     label: "Home",
@@ -100,6 +104,23 @@ export const modules: SyndicateModule[] = [
     icon: Network,
   },
   {
+    id: "admin",
+    label: "Admin Control Tower",
+    sidebarLabel: "Admin",
+    path: "/admin",
+    zone: "studio",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "draft",
+    truthStatus: "DESIGN_PREVIEW",
+    description:
+      "Operator control tower skeleton — read-only panels over the module registry and live postures. No write controls exist.",
+    dependencies: [],
+    nav: { header: false, sidebar: true, footer: false },
+    icon: LayoutDashboard,
+  },
+  {
     id: "proof",
     label: "Proof",
     path: "/proof",
@@ -137,29 +158,60 @@ export const modules: SyndicateModule[] = [
     path: "/member",
     zone: "member",
     visible: true,
-    enabled: false,
+    enabled: true,
     live: false,
-    phase: "future",
+    phase: "draft",
     truthStatus: "AWAITING_FOUNDER_APPROVAL",
     description:
-      "A labelled preview of the future member cockpit. Membership is founder-gated and not live yet.",
+      "Wallet session plus a read-only self-readback of your own signed wallet's standing. Seat issuance stays founder-gated; nothing is written from this app.",
     dependencies: ["founderApproval", "membershipIndexer"],
     nav: { header: false, sidebar: false, footer: true },
     icon: Users,
     flag: "membershipLive",
   },
   {
+    id: "join",
+    label: "Join",
+    path: "/join",
+    zone: "public",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description:
+      "Read the live membership engine and compute an exact join quote — read-only; no transaction is sent from this app.",
+    dependencies: [],
+    nav: { header: true, sidebar: false, footer: true },
+    icon: UserPlus,
+  },
+  {
+    id: "source-link",
+    label: "Verified Introduction",
+    path: "/source",
+    zone: "public",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description:
+      "Validate an introduction id against the on-chain registry and build an attribution link — read-only; nothing is created or activated here.",
+    dependencies: [],
+    nav: { header: false, sidebar: false, footer: true },
+    icon: Link2,
+  },
+  {
     id: "source",
     label: "Source Attribution",
     sidebarLabel: "Source (Operator)",
-    path: "/source",
+    path: "/os-source",
     zone: "studio",
     visible: true,
     enabled: false,
     live: false,
     phase: "future",
     truthStatus: surfaceStatus.sourceAttribution,
-    description: "Operator source surface. Paused by precaution; nothing is read or written.",
+    description:
+      "Operator source console. Read-only; source creation and activation remain owner-side on-chain acts.",
     dependencies: ["chainIndex"],
     nav: { header: false, sidebar: true, footer: false },
     icon: Network,
@@ -243,6 +295,21 @@ export const modules: SyndicateModule[] = [
     icon: FileText,
   },
   {
+    id: "map",
+    label: "Protocol Map",
+    path: "/map",
+    zone: "public",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description:
+      "The public proof organism — every reconciled chain, contract, token, sale, and source signal in one read-only map.",
+    dependencies: [],
+    nav: { header: false, sidebar: false, footer: true },
+    icon: MapIcon,
+  },
+  {
     id: "source-attribution",
     label: "Source Attribution",
     path: "/source-attribution",
@@ -287,7 +354,14 @@ export const modules: SyndicateModule[] = [
     nav: { header: false, sidebar: false, footer: true },
     icon: Archive,
   },
-];
+] as const satisfies readonly SyndicateModule[];
+
+/**
+ * Compile-time module-id union derived from the canonical list above.
+ * `moduleRegistry.ts` (and any future overlay) references modules by this
+ * union, so a typo or a removed module fails `tsc`, not runtime.
+ */
+export type ModuleId = (typeof modules)[number]["id"];
 
 export const getModuleById = (id: string): SyndicateModule | undefined =>
   modules.find((m) => m.id === id);

@@ -22,6 +22,7 @@ const groupTitle: Record<RealityGroupKey, string> = {
   chain: "Chain identity",
   contracts: "Contract code (on-chain)",
   sale: "Sale engine (read-only)",
+  source: "Source registry (read-only)",
   tokens: "Token metadata",
   archive: "Archive artifacts",
 };
@@ -30,6 +31,7 @@ const groupBlurb: Record<RealityGroupKey, string> = {
   chain: "Which chain answered and whether it is the expected Avalanche C-Chain.",
   contracts: "Whether each known contract has deployed code at its server-resolved address.",
   sale: "Live read-only state from the deployed membership-sale engines. V3 is the active engine — its public figures are shown as exact raw base units. This app reads only; no wallet, transaction, or referral surface is enabled.",
+  source: "Read-only source-registry posture: registry linkage on the active engine and the registry's creation policy. No source ids are shown; validation happens per-link on request.",
   tokens: "Public ERC-20 metadata only — symbol and decimals. No balances or supply.",
   archive: "Whether each artifact id is configured on-chain, and the contract pause flag.",
 };
@@ -189,8 +191,10 @@ export function ProtocolRealityPanel({
       {showMeta && <MetaStrip data={data} />}
       <div className="space-y-10">
         {groups.map((g) => {
-          const items = data.groups[g];
-          if (!items || items.length === 0) return null;
+          // Defense-in-depth: never render an item the server did not mark
+          // public-safe, even though this endpoint only emits public reads.
+          const items = (data.groups[g] ?? []).filter((i) => i.publicSafe);
+          if (items.length === 0) return null;
           return (
             <section key={g}>
               <h3 className="text-base font-medium text-foreground">{groupTitle[g]}</h3>

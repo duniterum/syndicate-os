@@ -20,12 +20,14 @@ import {
   ARCHIVE_TARGET,
   ARCHIVE_ARTIFACTS,
   SALE_TARGETS,
+  SOURCE_LINKAGE_TARGET,
   type ContractTarget,
   type TokenTarget,
   type ArchiveTarget,
   type ArchiveArtifactTarget,
   type SaleTarget,
   type SaleNumericRead,
+  type SourceLinkageTarget,
 } from "../../data/protocolTargets";
 import {
   DEFAULT_TIMEOUT_MS,
@@ -52,6 +54,7 @@ import {
   SELECTOR_RECEIPT_COUNT,
   decodeUint256Decimal,
 } from "./saleDecoders";
+import { SELECTOR_SOURCE_REGISTRY, decodeAddressWord } from "./sourceDecoders";
 import {
   buildItem,
   type ProtocolRealityEnvelope,
@@ -71,6 +74,7 @@ export type BuildOpts = {
   archiveTarget: ArchiveTarget;
   archiveArtifacts: readonly ArchiveArtifactTarget[];
   saleTargets: readonly SaleTarget[];
+  sourceLinkageTarget: SourceLinkageTarget;
   now?: () => Date;
 };
 
@@ -771,17 +775,150 @@ async function buildSaleGroup(
   return items;
 }
 
+// ── source group (Verified Introduction posture: linkage + canon policy) ─────
+/**
+ * Read-only Verified Introduction (source) posture:
+ *   - registryLinkage: the ACTIVE V3 engine's SOURCE_REGISTRY() view must
+ *     resolve to the canon registry address. Compared SERVER-SIDE only — the
+ *     item value is a boolean; no address is ever emitted. Mismatch → null +
+ *     failureReason (never normalized).
+ *   - creationPolicy / zeroSourceJoin: static canon facts (owner-only source
+ *     creation; the engine accepts the zero source id as the no-source path).
+ */
+async function buildSourceGroup(
+  transport: RpcTransport,
+  probe: ChainProbe,
+  target: SourceLinkageTarget,
+  asOf: string,
+): Promise<ProtocolRealityItem[]> {
+  const items: ProtocolRealityItem[] = [];
+  const chainId = probe.chainIdActual;
+
+  // source.registryLinkage — live canon-reconciled boolean.
+  {
+    let value: boolean | null = null;
+    let sourceType: ProtocolRealityItem["sourceType"] = "LIVE_CHAIN_RPC";
+    let confidence: ProtocolRealityItem["confidence"] = "UNKNOWN";
+    let lifecycle: ProtocolRealityItem["lifecycle"] = "PAUSED_BY_PRECAUTION";
+    let failureReason: string | null = chainSkipReason(probe);
+    let note = "Registry linkage was not read (chain not verified).";
+
+    if (probe.chainIdOk) {
+      let hasCode = false;
+      try {
+        hasCode = await readCodePresent(transport, target.saleAddress);
+      } catch {
+        hasCode = false;
+      }
+      if (!hasCode) {
+        failureReason = "no on-chain code; registry linkage read skipped";
+        note = "Registry linkage was not read (no on-chain code on the active engine).";
+      } else {
+        let linked: string | null = null;
+        let threw = false;
+        try {
+          linked = decodeAddressWord(
+            await ethCall(transport, target.saleAddress, SELECTOR_SOURCE_REGISTRY),
+          );
+        } catch {
+          threw = true;
+        }
+        sourceType = "CANON_RECONCILED_RPC";
+        if (threw || linked === null) {
+          value = null;
+          confidence = "LOW";
+          lifecycle = "PENDING_ADAPTER";
+          failureReason = "registry linkage decode failed";
+          note = "The engine's registry view could not be decoded; reported as unavailable.";
+        } else if (linked === target.registryAddress.toLowerCase()) {
+          value = true;
+          confidence = "HIGH";
+          lifecycle = "READ_ONLY_PROOF";
+          failureReason = null;
+          note =
+            "The active membership engine's on-chain registry linkage matches the vendored canon registry.";
+        } else {
+          value = null;
+          confidence = "LOW";
+          lifecycle = "PAUSED_BY_PRECAUTION";
+          failureReason =
+            "live registry linkage did not match canon (reported as unavailable, never normalized)";
+          note = "Live registry linkage did not match canon; failing closed rather than normalizing.";
+        }
+      }
+    }
+
+    items.push(
+      buildItem({
+        id: "source.registryLinkage",
+        label: "Active engine linked to canon Source Registry",
+        value,
+        sourceType,
+        sourceRef: `contract-registry.ts:${target.saleKey} (eth_call SOURCE_REGISTRY)`,
+        chainId,
+        contractRole: "source-registry",
+        confidence,
+        lifecycle,
+        note,
+        failureReason,
+        asOf,
+      }),
+    );
+  }
+
+  // source.creationPolicy — static canon fact (owner-only creation/activation).
+  items.push(
+    buildItem({
+      id: "source.creationPolicy",
+      label: "Source creation policy",
+      value: "OWNER_ONLY",
+      sourceType: "SERVER_SIDE_CANON",
+      sourceRef: `contract-registry.ts:${target.key}`,
+      chainId: EXPECTED_CHAIN_ID,
+      contractRole: "source-registry",
+      confidence: "HIGH",
+      lifecycle: "FOUNDER_GATED",
+      note:
+        "New Verified Introduction sources are created and activated only by the protocol owner on-chain. No self-service source creation surface exists in this app.",
+      failureReason: null,
+      asOf,
+    }),
+  );
+
+  // source.zeroSourceJoin — static canon fact (zero source id = no-source path).
+  items.push(
+    buildItem({
+      id: "source.zeroSourceJoin",
+      label: "Joining without a source link is valid",
+      value: true,
+      sourceType: "SERVER_SIDE_CANON",
+      sourceRef: `contract-registry.ts:${target.saleKey}`,
+      chainId: EXPECTED_CHAIN_ID,
+      contractRole: "source-registry",
+      confidence: "HIGH",
+      lifecycle: "READ_ONLY_PROOF",
+      note:
+        "The membership engine accepts the zero source id as the canonical no-source path; a Verified Introduction link is optional by design.",
+      failureReason: null,
+      asOf,
+    }),
+  );
+
+  return items;
+}
+
 /** Pure build: transport injected, no cache, no network of its own beyond it. */
 export async function buildProtocolReality(opts: BuildOpts): Promise<ProtocolRealityEnvelope> {
   const now = opts.now ?? (() => new Date());
   const asOf = now().toISOString();
   const probe = await probeChain(opts.transport);
 
-  const [contracts, tokens, archive, sale] = await Promise.all([
+  const [contracts, tokens, archive, sale, source] = await Promise.all([
     buildContractsGroup(opts.transport, probe, opts.contractTargets, asOf),
     buildTokensGroup(opts.transport, probe, opts.tokenTargets, asOf),
     buildArchiveGroup(opts.transport, probe, opts.archiveTarget, opts.archiveArtifacts, asOf),
     buildSaleGroup(opts.transport, probe, opts.saleTargets, asOf),
+    buildSourceGroup(opts.transport, probe, opts.sourceLinkageTarget, asOf),
   ]);
 
   return {
@@ -796,6 +933,7 @@ export async function buildProtocolReality(opts: BuildOpts): Promise<ProtocolRea
       tokens,
       archive,
       sale,
+      source,
     },
   };
 }
@@ -827,6 +965,7 @@ function defaultBuildOpts(): BuildOpts {
     archiveTarget: ARCHIVE_TARGET,
     archiveArtifacts: ARCHIVE_ARTIFACTS,
     saleTargets: SALE_TARGETS,
+    sourceLinkageTarget: SOURCE_LINKAGE_TARGET,
   };
 }
 
