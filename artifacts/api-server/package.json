@@ -25,6 +25,7 @@
     "sale-index:status": "tsx ./scripts/sale-event-index.ts status",
     "freeze-gate:status": "tsx ./scripts/historical-freeze-gate.ts",
     "member-continuity:derive": "tsx ./scripts/member-continuity-derive.ts",
+    "member-continuity:dry-run": "tsx ./scripts/member-continuity-build.ts --dry-run",
     "member-continuity:guard": "tsx ./scripts/member-continuity.guard.ts",
     "member-continuity-schema:guard": "tsx ./scripts/member-continuity-schema.guard.ts",
     "protocol-time:enrich": "tsx ./scripts/protocol-time-enrich.ts",

@@ -19,12 +19,18 @@ import {
   buildMemberContinuityReadModel,
   toAddressSafeReport,
   assertAddressSafeJson,
+  canonicalJson,
   MEMBER_CONTINUITY_DOCTRINE,
   MEMBER_CONTINUITY_READ_MODEL_META,
   type BuildInput,
+  type DdlExtensionInput,
   type HistoricalMemberInput,
+  type RoutedRowInput,
+  type V2PurchaseRowInput,
   type V3PurchaseEventInput,
 } from "./member-continuity-readmodel";
+import { selectorFor } from "../src/lib/protocol/merkleFreeze";
+import { SALE_V3_ABI } from "../src/canon/the-syndicate/contracts/abi/sale-abi";
 
 let passed = 0;
 let failed = 0;
@@ -481,6 +487,449 @@ check(
   "package scripts registered (derive + guard), tsx script-side only",
   pkg.includes('"member-continuity:derive"') &&
     pkg.includes('"member-continuity:guard"'),
+);
+
+// ---------------------------------------------------------------------------
+// 3. S3a DDL-shaped dry-run doctrine (fixtures + static scans).
+// ---------------------------------------------------------------------------
+
+const v2Purchase = (
+  txN: number,
+  generation: string,
+  token: number | null,
+  blockNumber: number,
+): V2PurchaseRowInput => ({
+  chainId: 43114,
+  generation,
+  eventName: "Purchased",
+  blockNumber,
+  logIndex: 0,
+  transactionHash: synTx(txN),
+  memberNumberToken: token,
+});
+const routedRow = (
+  txN: number,
+  generation: string,
+  token: number | null,
+  over: Partial<RoutedRowInput> = {},
+): RoutedRowInput => ({
+  chainId: 43114,
+  generation,
+  eventName: "Routed",
+  transactionHash: synTx(txN),
+  memberNumberToken: token,
+  vaultAmount: "1000",
+  liquidityAmount: "2000",
+  operationsAmount: "3000",
+  ...over,
+});
+
+// Pairing tokens (11, 12, 0) are DELIBERATELY unequal to the Part B member
+// numbers (2, 3) they end up folded next to: tokens are opaque pairing keys,
+// never a numbering source. Token 0 is the V2B sentinel — it pairs fine but
+// no member record ever references its transaction.
+const DDL_EXT: DdlExtensionInput = {
+  v2Purchases: [
+    v2Purchase(2, "V2A", 11, 102),
+    v2Purchase(3, "V2B", 12, 103),
+    v2Purchase(90, "V2B", 0, 300),
+  ],
+  routedRows: [
+    routedRow(2, "V2A", 11),
+    routedRow(3, "V2B", 12, { vaultAmount: "7000" }),
+    routedRow(90, "V2B", 0),
+  ],
+  blockTimestamps: [
+    { chainId: 43114, blockNumber: 101, blockTimestampSec: 1_700_000_001 },
+    { chainId: 43114, blockNumber: 102, blockTimestampSec: 1_700_000_002 },
+    { chainId: 43114, blockNumber: 103, blockTimestampSec: 1_700_000_003 },
+    { chainId: 43114, blockNumber: 2_000, blockTimestampSec: 1_700_000_004 },
+    // block 2_100 deliberately uncovered: timestamps are additive, never blocking
+  ],
+  onchainMemberCount: 5,
+  inputSaleEventCount: 9,
+  inputMaxSaleEventRawId: 106,
+  builderVersion: "guard-fixture/0",
+};
+const DDL_HAPPY: BuildInput = {
+  ...HAPPY,
+  v3Purchases: [
+    v3Row(4, 2_000, { saleEventRawId: 104 }),
+    v3Row(5, 2_100, { saleEventRawId: 105 }),
+    v3Row(4, 2_200, { firstSeat: false, saleEventRawId: 106 }),
+  ],
+  ddl: DDL_EXT,
+};
+
+const ddlHappy = buildMemberContinuityReadModel(DDL_HAPPY);
+const ddl = ddlHappy.ddl;
+check(
+  "ddl happy: consistent, 5 shaped records, persistence-eligible (data-wise)",
+  ddlHappy.consistent &&
+    ddl !== undefined &&
+    ddl.records.length === 5 &&
+    ddl.persistenceEligible,
+);
+if (ddl) {
+  const dr = ddl.records;
+  check(
+    "ddl happy: V1 record — Part B lineage, seat 'unknown', no fold, no raw lineage",
+    dr[0]!.numberingAuthority === "PART_B_FREEZE_ROOT" &&
+      dr[0]!.freezeBlock === 1_000 &&
+      dr[0]!.entryFirstSeat === "unknown" &&
+      dr[0]!.entryRoutedFold === null &&
+      dr[0]!.saleEventRawId === null,
+  );
+  check(
+    "ddl happy: V2 records fold exact raw base-unit strings by entry transaction",
+    dr[1]!.entryRoutedFold?.vaultAmount === "1000" &&
+      dr[1]!.entryRoutedFold?.liquidityAmount === "2000" &&
+      dr[1]!.entryRoutedFold?.operationsAmount === "3000" &&
+      dr[2]!.entryRoutedFold?.vaultAmount === "7000" &&
+      dr[1]!.entryFirstSeat === "true",
+  );
+  check(
+    "ddl happy: fold shape is structurally referral-free (exactly 3 keys)",
+    Object.keys(dr[1]!.entryRoutedFold!).length === 3 &&
+      !Object.keys(dr[1]!.entryRoutedFold!).some((k) =>
+        /referral|source|commission|attribution/i.test(k),
+      ),
+  );
+  check(
+    "ddl happy: V3 records — emitted authority, raw lineage, no freeze lineage, no fold",
+    dr[3]!.numberingAuthority === "V3_EMITTED" &&
+      dr[3]!.saleEventRawId === 104 &&
+      dr[4]!.saleEventRawId === 105 &&
+      dr[3]!.freezeBlock === null &&
+      dr[3]!.entryRoutedFold === null &&
+      dr[3]!.entryFirstSeat === "true",
+  );
+  check(
+    "ddl happy: Protocol Time copy is additive (covered blocks set, missing block → null)",
+    dr[0]!.entryBlockTimestampSec === 1_700_000_001 &&
+      dr[3]!.entryBlockTimestampSec === 1_700_000_004 &&
+      dr[4]!.entryBlockTimestampSec === null &&
+      ddl.timestampCoverage.recordsWithTimestamp === 4 &&
+      ddl.timestampCoverage.recordsTotal === 5,
+  );
+  check(
+    "ddl happy: sentinel pair folds but never attaches (paired=3, recordsWithFold=2)",
+    ddl.foldSummary.routedRowsPaired === 3 &&
+      ddl.foldSummary.recordsWithFold === 2 &&
+      ddl.foldSummary.pairingViolations === 0,
+  );
+  check(
+    "ddl happy: run row — VERIFIED-only, totals reconcile, provenance carried",
+    ddl.run.status === "VERIFIED" &&
+      ddl.run.memberTotal === 5 &&
+      ddl.run.historicalCount === 3 &&
+      ddl.run.v3Count === 2 &&
+      ddl.run.onchainMemberCount === 5 &&
+      ddl.run.inputSaleEventCount === 9 &&
+      ddl.run.inputMaxSaleEventRawId === 106 &&
+      /^[0-9a-f]{64}$/.test(ddl.run.determinismHash),
+  );
+  check(
+    "ddl happy: blockedReasons ALWAYS carries the S3b gate",
+    ddl.blockedReasons.some((r) => r.includes("S3B_NOT_APPROVED")),
+  );
+  let runScanThrew = false;
+  try {
+    assertAddressSafeJson(JSON.stringify(ddl.run));
+  } catch {
+    runScanThrew = true;
+  }
+  check(
+    "ddl run row is NOT address-safe (must never be printed; aggregates only)",
+    runScanThrew,
+  );
+  let recordsScanThrew = false;
+  try {
+    assertAddressSafeJson(JSON.stringify(ddl.records));
+  } catch {
+    recordsScanThrew = true;
+  }
+  check(
+    "ddl records are NOT address-safe (server-only; must never be printed)",
+    recordsScanThrew,
+  );
+}
+
+// DDL determinism: rebuild + shuffled extension arrays → identical output.
+const ddlAgain = buildMemberContinuityReadModel(DDL_HAPPY);
+const ddlShuffled = buildMemberContinuityReadModel({
+  ...DDL_HAPPY,
+  historicalMembers: [...DDL_HAPPY.historicalMembers].reverse(),
+  v3Purchases: [...DDL_HAPPY.v3Purchases].reverse(),
+  ddl: {
+    ...DDL_EXT,
+    v2Purchases: [...DDL_EXT.v2Purchases].reverse(),
+    routedRows: [...DDL_EXT.routedRows].reverse(),
+    blockTimestamps: [...DDL_EXT.blockTimestamps].reverse(),
+  },
+});
+check(
+  "ddl determinism: rebuild byte-identical, shuffled inputs hash-identical",
+  JSON.stringify(ddlHappy) === JSON.stringify(ddlAgain) &&
+    JSON.stringify(ddlHappy) === JSON.stringify(ddlShuffled) &&
+    ddlHappy.ddl!.run.determinismHash === ddlShuffled.ddl!.run.determinismHash,
+);
+const ddlOnchainDrift = buildMemberContinuityReadModel({
+  ...DDL_HAPPY,
+  ddl: { ...DDL_EXT, onchainMemberCount: 7 },
+});
+check(
+  "determinism hash EXCLUDES the live memberCount read (reconciliation ≠ identity)",
+  ddlOnchainDrift.ddl!.run.determinismHash ===
+    ddlHappy.ddl!.run.determinismHash &&
+    !ddlOnchainDrift.consistent &&
+    !ddlOnchainDrift.ddl!.persistenceEligible,
+);
+const ddlAmountDrift = buildMemberContinuityReadModel({
+  ...DDL_HAPPY,
+  ddl: {
+    ...DDL_EXT,
+    routedRows: [
+      routedRow(2, "V2A", 11, { vaultAmount: "1001" }),
+      routedRow(3, "V2B", 12, { vaultAmount: "7000" }),
+      routedRow(90, "V2B", 0),
+    ],
+  },
+});
+check(
+  "determinism hash is SENSITIVE to shaped record content",
+  ddlAmountDrift.ddl!.run.determinismHash !==
+    ddlHappy.ddl!.run.determinismHash && ddlAmountDrift.ddl!.persistenceEligible,
+);
+
+// Fail-closed DDL doctrine fixtures.
+const ddlOnchainNull = buildMemberContinuityReadModel({
+  ...DDL_HAPPY,
+  ddl: { ...DDL_EXT, onchainMemberCount: null },
+});
+check(
+  "live memberCount unavailable → fail closed (ineligible, reason recorded, NOT NULL unwritable)",
+  !ddlOnchainNull.consistent &&
+    !ddlOnchainNull.ddl!.persistenceEligible &&
+    ddlOnchainNull.ddl!.run.onchainMemberCount === null &&
+    ddlOnchainNull.ddl!.blockedReasons.some((r) => r.includes("unavailable")) &&
+    ddlOnchainNull.checks.some(
+      (c) => c.name.includes("on-chain memberCount") && !c.pass,
+    ),
+);
+const ddlMissingRouted = buildMemberContinuityReadModel({
+  ...DDL_HAPPY,
+  ddl: {
+    ...DDL_EXT,
+    routedRows: [routedRow(3, "V2B", 12), routedRow(90, "V2B", 0)],
+  },
+});
+check(
+  "missing Routed companion for a V2 entry → reconciliation fail, ineligible",
+  !ddlMissingRouted.consistent && !ddlMissingRouted.ddl!.persistenceEligible,
+);
+const ddlDoubleRouted = buildMemberContinuityReadModel({
+  ...DDL_HAPPY,
+  ddl: {
+    ...DDL_EXT,
+    routedRows: [...DDL_EXT.routedRows, routedRow(2, "V2A", 11)],
+  },
+});
+check(
+  "two Routed rows in one entry transaction → pairing violation, ineligible",
+  !ddlDoubleRouted.consistent &&
+    !ddlDoubleRouted.ddl!.persistenceEligible &&
+    ddlDoubleRouted.ddl!.foldSummary.pairingViolations > 0,
+);
+const ddlTokenMismatch = buildMemberContinuityReadModel({
+  ...DDL_HAPPY,
+  ddl: {
+    ...DDL_EXT,
+    routedRows: [
+      routedRow(2, "V2A", 99),
+      routedRow(3, "V2B", 12, { vaultAmount: "7000" }),
+      routedRow(90, "V2B", 0),
+    ],
+  },
+});
+check(
+  "purchase/Routed token mismatch in a tx → pairing violation, ineligible",
+  !ddlTokenMismatch.consistent && !ddlTokenMismatch.ddl!.persistenceEligible,
+);
+const ddlBadAmount = buildMemberContinuityReadModel({
+  ...DDL_HAPPY,
+  ddl: {
+    ...DDL_EXT,
+    routedRows: [
+      routedRow(2, "V2A", 11, { vaultAmount: "10.5" }),
+      routedRow(3, "V2B", 12, { vaultAmount: "7000" }),
+      routedRow(90, "V2B", 0),
+    ],
+  },
+});
+check(
+  "non-raw-base-unit amount string → reconciliation fail (EXACT strings only)",
+  !ddlBadAmount.consistent && !ddlBadAmount.ddl!.persistenceEligible,
+);
+const ddlNoRawId = buildMemberContinuityReadModel({
+  ...DDL_HAPPY,
+  v3Purchases: [
+    v3Row(4, 2_000),
+    v3Row(5, 2_100, { saleEventRawId: 105 }),
+    v3Row(4, 2_200, { firstSeat: false, saleEventRawId: 106 }),
+  ],
+});
+check(
+  "V3 record without sale_event_raw lineage → reconciliation fail, ineligible",
+  !ddlNoRawId.consistent &&
+    !ddlNoRawId.ddl!.persistenceEligible &&
+    ddlNoRawId.checks.some(
+      (c) => c.name.includes("sale_event_raw lineage") && !c.pass,
+    ),
+);
+const ddlWrongChainExt = buildMemberContinuityReadModel({
+  ...DDL_HAPPY,
+  ddl: {
+    ...DDL_EXT,
+    blockTimestamps: [
+      { chainId: 1, blockNumber: 101, blockTimestampSec: 1_700_000_001 },
+    ],
+  },
+});
+check(
+  "ddl extension rows on the wrong chain → reconciliation fail",
+  !ddlWrongChainExt.consistent,
+);
+const ddlGateFail = buildMemberContinuityReadModel({
+  ...DDL_HAPPY,
+  freeze: { ...FREEZE, validationStatus: "PENDING" },
+});
+check(
+  "gate failure never produces a ddl projection (fail closed, zero shapes)",
+  !ddlGateFail.gatePassed && ddlGateFail.ddl === undefined,
+);
+
+// Canonical serialization primitives.
+check(
+  "canonicalJson sorts object keys recursively",
+  canonicalJson({ b: 1, a: { d: 2, c: 3 } }) === '{"a":{"c":3,"d":2},"b":1}',
+);
+let canonThrew = false;
+try {
+  canonicalJson({ a: undefined });
+} catch {
+  canonThrew = true;
+}
+check("canonicalJson hard-fails on undefined (hash integrity)", canonThrew);
+
+// --- Static scans for the S3a slice (comment-stripped where the scan term
+// legitimately appears in doc headers — see guard doctrine). ---
+const buildSrc = readFileSync("scripts/member-continuity-build.ts", "utf8");
+const stripComments = (src: string): string =>
+  src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+const builderCode = stripComments(builderSrc);
+const buildCode = stripComments(buildSrc);
+
+check(
+  "gated referral/source namespace structurally absent (builder + dry-run, comment-stripped)",
+  !/referralAmount|sourceWallet|sourceId|commissionBps|attributionScope|attributionWindow/.test(
+    builderCode + buildCode,
+  ),
+);
+check(
+  "dry-run performs no writes (no insert/update/delete/DDL, comment-stripped)",
+  !/\.insert\(|\.update\(|\.delete\(|drizzle-kit|CREATE TABLE|INSERT INTO|UPDATE |DELETE FROM|ON CONFLICT|ALTER TABLE|TRUNCATE/i.test(
+    buildCode,
+  ),
+);
+check(
+  "dry-run is the ONLY mode: --dry-run required, persistence slot inert null, S3b gate named",
+  buildCode.includes('process.argv.includes("--dry-run")') &&
+    buildCode.includes("S3B_NOT_APPROVED") &&
+    /const persistence: ContinuityPersistence \| null = null/.test(buildCode),
+);
+check(
+  "dry-run type-binds shaped rows to the real Drizzle insert types (compile-time net)",
+  buildCode.includes("MemberContinuityRecordInsert") &&
+    buildCode.includes("MemberContinuityVerificationRunInsert") &&
+    buildCode.includes("_assertDdlShapesMatchSchema"),
+);
+check(
+  "selector recompute memberCount() == 0x11aee380 (canon-reconciled, viewOnly)",
+  selectorFor("memberCount()") === "0x11aee380" &&
+    buildCode.includes('"0x11aee380"') &&
+    SALE_V3_ABI.some(
+      (e) =>
+        e.type === "function" &&
+        e.name === "memberCount" &&
+        e.stateMutability === "view" &&
+        (e.inputs ?? []).length === 0,
+    ),
+);
+const buildPrintLines = buildSrc
+  .split("\n")
+  .filter((l) => l.includes("console.log") || l.includes("console.error"));
+check(
+  "dry-run print statements never reference wallet/proof/decoded/raw material",
+  buildPrintLines.length > 0 &&
+    buildPrintLines.every(
+      (l) =>
+        !/wallet|proof|decodedJson|rawJson|firstTransaction|transactionHash|leaf/i.test(
+          l,
+        ),
+    ),
+  `printLines=${buildPrintLines.length}`,
+);
+check(
+  "dry-run self-scans its report and splits the hash display (no bare 64-hex output)",
+  buildCode.includes("assertAddressSafeJson(json)") &&
+    buildCode.includes("splitHashDisplay"),
+);
+
+// DDL schema reconciliation (text-level; type-level lives in the dry-run).
+const schemaSrc = readFileSync(
+  "../../lib/db/src/schema/memberContinuity.ts",
+  "utf8",
+);
+const ddlColumns = [
+  "chain_id",
+  "member_number",
+  "numbering_authority",
+  "freeze_block",
+  "entry_wallet",
+  "entry_block",
+  "entry_log_index",
+  "entry_transaction",
+  "entry_first_seat",
+  "entry_block_timestamp_sec",
+  "entry_routed_fold",
+  "sale_event_raw_id",
+  "build_id",
+  "freeze_root",
+  "member_total",
+  "historical_count",
+  "v3_count",
+  "onchain_member_count",
+  "determinism_hash",
+  "input_sale_event_count",
+  "input_max_sale_event_raw_id",
+  "builder_version",
+  "verification",
+];
+check(
+  "DDL schema reconcile: every mirrored column exists in lib/db memberContinuity",
+  ddlColumns.every((c) => schemaSrc.includes(`"${c}"`)),
+);
+check(
+  "DDL schema reconcile: CHECK vocab matches builder output exactly",
+  schemaSrc.includes("'PART_B_FREEZE_ROOT', 'V3_EMITTED'") &&
+    schemaSrc.includes("'true', 'unknown'") &&
+    schemaSrc.includes("= 'VERIFIED'"),
+);
+check(
+  "package script registered: member-continuity:dry-run (tsx, --dry-run pinned)",
+  pkg.includes('"member-continuity:dry-run"') &&
+    pkg.includes("member-continuity-build.ts --dry-run"),
 );
 
 // ---------------------------------------------------------------------------

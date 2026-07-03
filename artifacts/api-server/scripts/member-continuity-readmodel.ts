@@ -31,6 +31,7 @@
  *     that fail-closes by scanning its own output for hex identity material.
  */
 
+import { createHash } from "node:crypto";
 import type {
   SyndicateAdapterKind,
   SyndicateProofDomain,
@@ -124,6 +125,72 @@ export interface V3PurchaseEventInput {
   readonly chapter: string | null;
   readonly receiptId: string | null;
   readonly receiptVersion: string | null;
+  /**
+   * `sale_event_raw.id` of this row (V3 lineage FK in the DDL). Optional for
+   * back-compat with pre-DDL callers; REQUIRED (checked) in DDL-shaped builds.
+   */
+  readonly saleEventRawId?: number | null;
+}
+
+/**
+ * A raw V2A/V2B `Purchased` row projection (ALL of them — entry and
+ * non-entry alike) used ONLY for fail-closed Routed pairing. The decoded
+ * memberNumber is an OPAQUE pairing token (era-local; the V2B sentinel 0 is
+ * a valid token, never a member) — it never numbers anyone here.
+ */
+export interface V2PurchaseRowInput {
+  readonly chainId: number;
+  readonly generation: string;
+  readonly eventName: string;
+  readonly blockNumber: number;
+  readonly logIndex: number;
+  /** SERVER-ONLY opaque pairing key. Never serialized out of this module. */
+  readonly transactionHash: string;
+  readonly memberNumberToken: number | null;
+}
+
+/**
+ * A raw V2A/V2B `Routed` row projection. STRUCTURALLY excludes the gated
+ * referral/source namespace: this shape has no referral field and can never
+ * carry one — the caller's whitelist mapping must never widen it. Amounts are
+ * EXACT raw base-unit strings (never numbers — no precision loss ever).
+ */
+export interface RoutedRowInput {
+  readonly chainId: number;
+  readonly generation: string;
+  readonly eventName: string;
+  /** SERVER-ONLY opaque pairing key. Never serialized out of this module. */
+  readonly transactionHash: string;
+  readonly memberNumberToken: number | null;
+  readonly vaultAmount: string;
+  readonly liquidityAmount: string;
+  readonly operationsAmount: string;
+}
+
+/** A Protocol Time cache row COPY (chain-verified; never fetched here). */
+export interface BlockTimestampCopyInput {
+  readonly chainId: number;
+  readonly blockNumber: number;
+  readonly blockTimestampSec: number;
+}
+
+/**
+ * Optional DDL-shaping extension (S3a). When present, the builder ALSO
+ * projects the would-be `member_continuity_record` / verification-run rows,
+ * runs the DDL CHECK preflight, computes the canonical determinism hash and
+ * reports persistence eligibility. Still a pure function — nothing here
+ * touches a database, network or clock.
+ */
+export interface DdlExtensionInput {
+  readonly v2Purchases: readonly V2PurchaseRowInput[];
+  readonly routedRows: readonly RoutedRowInput[];
+  readonly blockTimestamps: readonly BlockTimestampCopyInput[];
+  /** Live read-only memberCount() result; null = read failed (fail closed). */
+  readonly onchainMemberCount: number | null;
+  /** Raw-input provenance (how much of sale_event_raw this build consumed). */
+  readonly inputSaleEventCount: number;
+  readonly inputMaxSaleEventRawId: number | null;
+  readonly builderVersion: string;
 }
 
 /** Aggregate corroboration counts (CORROBORATING ONLY — never a numbering source). */
@@ -139,6 +206,8 @@ export interface BuildInput {
   readonly historicalMembers: readonly HistoricalMemberInput[];
   readonly v3Purchases: readonly V3PurchaseEventInput[];
   readonly corroboration?: CorroborationInput;
+  /** Optional S3a DDL-shaping extension (dry-run projection only). */
+  readonly ddl?: DdlExtensionInput;
 }
 
 // ---------------------------------------------------------------------------
@@ -215,6 +284,139 @@ export interface BuildResult {
     readonly memberCount: number;
     readonly validationStatus: string;
   };
+  /** Present only when `input.ddl` was provided AND the gate passed. */
+  readonly ddl?: DdlProjection;
+}
+
+// ---------------------------------------------------------------------------
+// DDL-shaped projection (S3a — dry-run only; mirrors lib/db memberContinuity).
+// ---------------------------------------------------------------------------
+
+export type DdlNumberingAuthority = "PART_B_FREEZE_ROOT" | "V3_EMITTED";
+export type DdlEntryFirstSeat = "true" | "unknown";
+
+/**
+ * Folded routing detail of the ENTRY transaction only. STRUCTURALLY excludes
+ * the gated referral/source namespace — this shape has exactly three keys and
+ * can never carry a fourth. Amounts are EXACT raw base-unit strings.
+ */
+export interface DdlRoutedFoldShape {
+  readonly vaultAmount: string;
+  readonly liquidityAmount: string;
+  readonly operationsAmount: string;
+}
+
+/**
+ * The would-be `member_continuity_record` row (SERVER-ONLY — entry columns
+ * are PII/de-anonymizing; never serialized publicly). Excludes only the
+ * DB-owned columns: `buildId` (exists only after an approved S3b write) and
+ * `createdAt`/`updatedAt` (DB defaults, wall-clock).
+ */
+export interface DdlRecordShape {
+  readonly chainId: number;
+  readonly memberNumber: number;
+  readonly generation: SaleGeneration;
+  readonly numberingAuthority: DdlNumberingAuthority;
+  /** Part B lineage: NOT NULL iff authority is PART_B_FREEZE_ROOT. */
+  readonly freezeBlock: number | null;
+  /** SERVER-ONLY entry wallet PII. */
+  readonly entryWallet: string;
+  readonly entryBlock: number;
+  readonly entryLogIndex: number;
+  /** SERVER-ONLY entry proof trail. */
+  readonly entryTransaction: string;
+  readonly entryFirstSeat: DdlEntryFirstSeat;
+  /** Protocol Time copy; null until enrichment covers the entry block. */
+  readonly entryBlockTimestampSec: number | null;
+  readonly entryRoutedFold: DdlRoutedFoldShape | null;
+  /** Raw-event lineage: NOT NULL iff authority is V3_EMITTED. */
+  readonly saleEventRawId: number | null;
+}
+
+/** Aggregate-only verification memo (would be the run row's jsonb). NO PII. */
+export interface DdlVerificationSummary {
+  readonly gatePassed: boolean;
+  readonly consistent: boolean;
+  readonly contiguous: boolean;
+  readonly duplicateCount: number;
+  readonly sentinelPromoted: 0;
+  readonly foldSummary: DdlFoldSummary;
+  readonly timestampCoverage: DdlTimestampCoverage;
+  readonly onchainMatch: boolean;
+  readonly ddlCheckPreflightPass: boolean;
+}
+
+/**
+ * The would-be `member_continuity_verification_run` row (NO PII except
+ * `freezeRoot`, which is the PUBLIC on-chain commitment; the report layer
+ * still shortens it). Excludes DB-owned `id` and `builtAt`. `status` is
+ * 'VERIFIED' by construction — a non-eligible build persists NOTHING, so no
+ * other status can ever exist (fail-closed doctrine).
+ */
+export interface DdlRunShape {
+  readonly chainId: number;
+  readonly status: "VERIFIED";
+  readonly freezeBlock: number;
+  readonly freezeRoot: string;
+  readonly memberTotal: number;
+  readonly historicalCount: number;
+  readonly v3Count: number;
+  /** null = live read failed → NOT NULL column unwritable → fail closed. */
+  readonly onchainMemberCount: number | null;
+  readonly determinismHash: string;
+  readonly inputSaleEventCount: number;
+  readonly inputMaxSaleEventRawId: number | null;
+  readonly builderVersion: string;
+  readonly verification: DdlVerificationSummary;
+}
+
+export interface DdlFoldSummary {
+  readonly v2PurchaseRowsConsidered: number;
+  readonly routedRowsConsidered: number;
+  readonly routedRowsPaired: number;
+  readonly recordsWithFold: number;
+  readonly pairingViolations: number;
+}
+
+export interface DdlTimestampCoverage {
+  readonly entryBlocksDistinct: number;
+  readonly entryBlocksWithVerifiedTimestamp: number;
+  readonly recordsWithTimestamp: number;
+  readonly recordsTotal: number;
+}
+
+export interface DdlProjection {
+  /** SERVER-ONLY (rows carry wallet/tx PII). Never serialize. */
+  readonly records: readonly DdlRecordShape[];
+  /** SERVER-ONLY (carries the full root; report layer shortens it). */
+  readonly run: DdlRunShape;
+  /** Data-wise eligibility (all gates + reconciliations + DDL preflight). */
+  readonly persistenceEligible: boolean;
+  /** ALWAYS contains the S3b gate reason — nothing can persist in S3a. */
+  readonly blockedReasons: readonly string[];
+  readonly foldSummary: DdlFoldSummary;
+  readonly timestampCoverage: DdlTimestampCoverage;
+}
+
+/**
+ * Canonical JSON: recursively key-sorted, no whitespace. `undefined` is a
+ * hard error (it would silently vanish and weaken the determinism hash).
+ */
+export function canonicalJson(value: unknown): string {
+  if (value === undefined) {
+    throw new Error("canonical serialization: undefined is not permitted");
+  }
+  if (value === null || typeof value !== "object") {
+    return JSON.stringify(value);
+  }
+  if (Array.isArray(value)) {
+    return `[${value.map((v) => canonicalJson(v)).join(",")}]`;
+  }
+  const obj = value as Record<string, unknown>;
+  const keys = Object.keys(obj).sort();
+  return `{${keys
+    .map((k) => `${JSON.stringify(k)}:${canonicalJson(obj[k])}`)
+    .join(",")}}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -471,6 +673,305 @@ export function buildMemberContinuityReadModel(input: BuildInput): BuildResult {
     { ...emptyGen },
   );
 
+  // ---- Optional DDL-shaped projection (S3a dry-run; pure, no I/O) ----
+  let ddlProjection: DdlProjection | undefined;
+  if (input.ddl) {
+    const d = input.ddl;
+    const DECIMAL_RE = /^[0-9]+$/;
+
+    // Chain uniformity of the extension inputs (fail closed).
+    const offChainRows =
+      d.v2Purchases.filter((p) => p.chainId !== freeze.chainId).length +
+      d.routedRows.filter((r) => r.chainId !== freeze.chainId).length +
+      d.blockTimestamps.filter((t) => t.chainId !== freeze.chainId).length;
+    rec(
+      "ddl inputs are chain-uniform with the freeze",
+      offChainRows === 0,
+      `offChainRows=${offChainRows}`,
+    );
+
+    // Protocol Time copies: one verified timestamp per block, no conflicts.
+    const tsByBlock = new Map<number, number>();
+    let tsConflicts = 0;
+    for (const t of d.blockTimestamps) {
+      const existing = tsByBlock.get(t.blockNumber);
+      if (existing !== undefined && existing !== t.blockTimestampSec) {
+        tsConflicts += 1;
+      }
+      tsByBlock.set(t.blockNumber, t.blockTimestampSec);
+    }
+    rec(
+      "Protocol Time copies carry no conflicting block timestamps",
+      tsConflicts === 0,
+      `conflicts=${tsConflicts} blocksCovered=${tsByBlock.size}`,
+    );
+
+    // Fold amounts must be EXACT raw base-unit decimal strings.
+    const invalidAmountRows = d.routedRows.filter(
+      (r) =>
+        !DECIMAL_RE.test(r.vaultAmount) ||
+        !DECIMAL_RE.test(r.liquidityAmount) ||
+        !DECIMAL_RE.test(r.operationsAmount),
+    ).length;
+    rec(
+      "Routed fold amounts are raw base-unit decimal strings",
+      invalidAmountRows === 0,
+      `invalidRows=${invalidAmountRows} of ${d.routedRows.length}`,
+    );
+
+    // Fail-closed Routed pairing (activity-heartbeat fold rules): group by
+    // tx, exactly one V2 purchase per Routed tx, at most one Routed per tx,
+    // opaque-token equality on both rows, same generation. The token is a
+    // pairing key ONLY — it never numbers anyone.
+    const purchasesByTx = new Map<string, V2PurchaseRowInput[]>();
+    for (const p of d.v2Purchases) {
+      const g = purchasesByTx.get(p.transactionHash) ?? [];
+      g.push(p);
+      purchasesByTx.set(p.transactionHash, g);
+    }
+    const routedByTx = new Map<string, RoutedRowInput[]>();
+    for (const r of d.routedRows) {
+      const g = routedByTx.get(r.transactionHash) ?? [];
+      g.push(r);
+      routedByTx.set(r.transactionHash, g);
+    }
+    let pairingViolations = 0;
+    let routedRowsPaired = 0;
+    const foldByTx = new Map<
+      string,
+      { readonly fold: DdlRoutedFoldShape; readonly generation: string }
+    >();
+    for (const [tx, routedGroup] of routedByTx) {
+      const purchases = purchasesByTx.get(tx) ?? [];
+      if (purchases.length !== 1 || routedGroup.length !== 1) {
+        pairingViolations += 1;
+        continue;
+      }
+      const purchase = purchases[0]!;
+      const routed = routedGroup[0]!;
+      if (
+        purchase.memberNumberToken === null ||
+        routed.memberNumberToken === null ||
+        purchase.memberNumberToken !== routed.memberNumberToken ||
+        purchase.generation !== routed.generation
+      ) {
+        pairingViolations += 1;
+        continue;
+      }
+      routedRowsPaired += 1;
+      foldByTx.set(tx, {
+        fold: {
+          vaultAmount: routed.vaultAmount,
+          liquidityAmount: routed.liquidityAmount,
+          operationsAmount: routed.operationsAmount,
+        },
+        generation: routed.generation,
+      });
+    }
+    rec(
+      "V2 Routed pairing is fail-closed (1 purchase + ≤1 Routed per tx, token+generation equality)",
+      pairingViolations === 0,
+      `violations=${pairingViolations} paired=${routedRowsPaired} of ${d.routedRows.length}`,
+    );
+
+    // Shape the would-be rows (records are already sorted by memberNumber).
+    let missingFoldEntries = 0;
+    let foldGenerationMismatches = 0;
+    let missingRawIds = 0;
+    const ddlRecords: DdlRecordShape[] = [
+      ...hist.map((m): DdlRecordShape => {
+        let fold: DdlRoutedFoldShape | null = null;
+        if (m.source === "V2A" || m.source === "V2B") {
+          const entry = foldByTx.get(m.firstTransaction);
+          if (!entry) {
+            missingFoldEntries += 1;
+          } else if (entry.generation !== m.source) {
+            foldGenerationMismatches += 1;
+          } else {
+            fold = entry.fold;
+          }
+        }
+        return {
+          chainId: m.chainId,
+          memberNumber: m.memberNumber,
+          generation: m.source,
+          numberingAuthority: "PART_B_FREEZE_ROOT",
+          freezeBlock: m.freezeBlock,
+          entryWallet: m.wallet,
+          entryBlock: m.firstBlock,
+          entryLogIndex: m.logIndex,
+          entryTransaction: m.firstTransaction,
+          entryFirstSeat: m.source === "V1" ? "unknown" : "true",
+          entryBlockTimestampSec: tsByBlock.get(m.firstBlock) ?? null,
+          entryRoutedFold: fold,
+          saleEventRawId: null,
+        };
+      }),
+      ...firstSeats.map((r): DdlRecordShape => {
+        const rawId = r.saleEventRawId ?? null;
+        if (rawId === null) missingRawIds += 1;
+        return {
+          chainId: r.chainId,
+          memberNumber: r.memberNumber,
+          generation: "V3",
+          numberingAuthority: "V3_EMITTED",
+          freezeBlock: null,
+          entryWallet: r.recipientWallet,
+          entryBlock: r.blockNumber,
+          entryLogIndex: r.logIndex,
+          entryTransaction: r.transactionHash,
+          entryFirstSeat: "true",
+          entryBlockTimestampSec: tsByBlock.get(r.blockNumber) ?? null,
+          entryRoutedFold: null,
+          saleEventRawId: rawId,
+        };
+      }),
+    ].sort((a, b) => a.memberNumber - b.memberNumber);
+
+    rec(
+      "every V2A/V2B historical entry transaction folds exactly one Routed companion",
+      missingFoldEntries === 0 && foldGenerationMismatches === 0,
+      `missing=${missingFoldEntries} generationMismatches=${foldGenerationMismatches}`,
+    );
+    rec(
+      "every V3 record carries sale_event_raw lineage",
+      missingRawIds === 0,
+      `missingRawIds=${missingRawIds} of ${firstSeats.length}`,
+    );
+
+    // DDL CHECK preflight — mirror every CHECK/unique constraint in
+    // lib/db/src/schema/memberContinuity.ts before any write could exist.
+    const entryEventKeys = new Set(
+      ddlRecords.map(
+        (r) => `${r.chainId}|${r.entryTransaction}|${r.entryLogIndex}`,
+      ),
+    );
+    const ddlCheckViolations = ddlRecords.filter(
+      (r) =>
+        !(
+          r.memberNumber >= 1 &&
+          (r.generation === "V3") === (r.numberingAuthority === "V3_EMITTED") &&
+          (r.numberingAuthority === "PART_B_FREEZE_ROOT") ===
+            (r.freezeBlock !== null) &&
+          (r.numberingAuthority === "V3_EMITTED") ===
+            (r.saleEventRawId !== null) &&
+          (r.entryFirstSeat === "true" || r.entryFirstSeat === "unknown") &&
+          (r.entryRoutedFold === null ||
+            r.generation === "V2A" ||
+            r.generation === "V2B")
+        ),
+    ).length;
+    const entryEventUnique = entryEventKeys.size === ddlRecords.length;
+    const totalsReconcile =
+      ddlRecords.length === hist.length + firstSeats.length;
+    const ddlCheckPreflightPass =
+      ddlCheckViolations === 0 && entryEventUnique && totalsReconcile;
+    rec(
+      "DDL CHECK preflight passes (constraints mirrored in-memory)",
+      ddlCheckPreflightPass,
+      `rowViolations=${ddlCheckViolations} entryEventUnique=${entryEventUnique} totalsReconcile=${totalsReconcile}`,
+    );
+
+    // Live on-chain reconciliation (fail closed: unavailable = would-fail).
+    const onchainMatch =
+      d.onchainMemberCount !== null &&
+      d.onchainMemberCount === ddlRecords.length;
+    rec(
+      "live on-chain memberCount matches derived member total [fail-closed]",
+      onchainMatch,
+      `derived=${ddlRecords.length} onchain=${d.onchainMemberCount ?? "UNAVAILABLE"}`,
+    );
+
+    // Determinism hash: canonical serialization of the identity output +
+    // input provenance. DELIBERATELY EXCLUDES onchainMemberCount (a live
+    // read is reconciliation, not identity), builderVersion and anything
+    // wall-clock — same inputs must always hash the same.
+    const determinismHash = createHash("sha256")
+      .update(
+        canonicalJson({
+          chainId: freeze.chainId,
+          freezeBlock: freeze.freezeBlock,
+          freezeRoot: freeze.root,
+          records: ddlRecords,
+          provenance: {
+            inputSaleEventCount: d.inputSaleEventCount,
+            inputMaxSaleEventRawId: d.inputMaxSaleEventRawId,
+          },
+        }),
+      )
+      .digest("hex");
+
+    const foldSummary: DdlFoldSummary = {
+      v2PurchaseRowsConsidered: d.v2Purchases.length,
+      routedRowsConsidered: d.routedRows.length,
+      routedRowsPaired,
+      recordsWithFold: ddlRecords.filter((r) => r.entryRoutedFold !== null)
+        .length,
+      pairingViolations,
+    };
+    const entryBlocks = new Set(ddlRecords.map((r) => r.entryBlock));
+    const timestampCoverage: DdlTimestampCoverage = {
+      entryBlocksDistinct: entryBlocks.size,
+      entryBlocksWithVerifiedTimestamp: [...entryBlocks].filter((b) =>
+        tsByBlock.has(b),
+      ).length,
+      recordsWithTimestamp: ddlRecords.filter(
+        (r) => r.entryBlockTimestampSec !== null,
+      ).length,
+      recordsTotal: ddlRecords.length,
+    };
+
+    const allChecksPass = checks.every((c) => c.pass);
+    const verification: DdlVerificationSummary = {
+      gatePassed: true,
+      consistent: allChecksPass,
+      contiguous,
+      duplicateCount: dupCount,
+      sentinelPromoted: 0,
+      foldSummary,
+      timestampCoverage,
+      onchainMatch,
+      ddlCheckPreflightPass,
+    };
+    const run: DdlRunShape = {
+      chainId: freeze.chainId,
+      status: "VERIFIED",
+      freezeBlock: freeze.freezeBlock,
+      freezeRoot: freeze.root,
+      memberTotal: ddlRecords.length,
+      historicalCount: hist.length,
+      v3Count: firstSeats.length,
+      onchainMemberCount: d.onchainMemberCount,
+      determinismHash,
+      inputSaleEventCount: d.inputSaleEventCount,
+      inputMaxSaleEventRawId: d.inputMaxSaleEventRawId,
+      builderVersion: d.builderVersion,
+      verification,
+    };
+
+    const blockedReasons: string[] = [
+      "S3B_NOT_APPROVED: persistence execution is a separate founder gate; no write adapter exists in S3a",
+    ];
+    if (!allChecksPass) {
+      blockedReasons.push(
+        "reconciliation checks failed (fail-closed: a non-green build persists nothing)",
+      );
+    }
+    if (d.onchainMemberCount === null) {
+      blockedReasons.push(
+        "live memberCount() unavailable (NOT NULL column unwritable — fail closed)",
+      );
+    }
+    ddlProjection = {
+      records: ddlRecords,
+      run,
+      persistenceEligible: allChecksPass,
+      blockedReasons,
+      foldSummary,
+      timestampCoverage,
+    };
+  }
+
   return {
     records,
     checks,
@@ -485,6 +986,7 @@ export function buildMemberContinuityReadModel(input: BuildInput): BuildResult {
     generationTotals,
     continuity: { min, max, contiguous, duplicateCount: dupCount },
     freeze: freezeSummary,
+    ...(ddlProjection ? { ddl: ddlProjection } : {}),
   };
 }
 
