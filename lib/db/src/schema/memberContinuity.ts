@@ -29,6 +29,17 @@
  *     identity-bearing entry receipt can never be a firstSeat=false row
  *     ('unknown' = V1, where the field was never emitted — never inferred).
  *
+ * ENTRY-RECEIPT-ONLY boundary (founder doctrine — never collapse concepts):
+ *   `member_continuity_record` stores the identity-bearing ENTRY receipt only.
+ *   It is NOT the general receipt/proof-trail table. One member has exactly
+ *   one identity-bearing entry proof (enforced by PK + firstSeat CHECK); the
+ *   OS may later have MANY receipts/proofs per member/wallet — later seats
+ *   (firstSeat=false purchases), Archive1155/artifact events, marketplace/
+ *   artifact receipts, and future protocol proofs. Those multi-receipt flows
+ *   belong to a future Activity/Register/Archive slice with its own table(s)
+ *   and their own founder gate — never to this table. Every receipt column
+ *   here carries the `entry_` prefix to make that boundary unmissable.
+ *
  * Gated fields (deliberately ABSENT — founder decision, Phase 2 approval):
  *   NO V3 source/referral columns exist here and none are reserved. They may
  *   only be added by a future explicitly approved source/attribution gate.
@@ -164,11 +175,11 @@ export const memberContinuityRecord = pgTable(
       mode: "number",
     }),
     /**
-     * SERVER-ONLY folded routing detail of the entry transaction (V2A/V2B
-     * Routed row folded into its purchase — txHash-paired, fail-closed
-     * cardinality). NULL for eras without a Routed companion.
+     * SERVER-ONLY folded routing detail of the ENTRY transaction only (V2A/
+     * V2B Routed row folded into its entry purchase — txHash-paired,
+     * fail-closed cardinality). NULL for eras without a Routed companion.
      */
-    routedFold: jsonb("routed_fold"),
+    entryRoutedFold: jsonb("entry_routed_fold"),
     /** Raw-event lineage: NOT NULL iff authority is V3_EMITTED. */
     saleEventRawId: bigint("sale_event_raw_id", { mode: "number" }),
     /** The VERIFIED build that produced this row (rebuild provenance). */
@@ -226,8 +237,8 @@ export const memberContinuityRecord = pgTable(
       sql`${t.entryFirstSeat} IN ('true', 'unknown')`,
     ),
     check(
-      "member_continuity_routed_fold_era",
-      sql`${t.routedFold} IS NULL OR ${t.generation} IN ('V2A', 'V2B')`,
+      "member_continuity_entry_routed_fold_era",
+      sql`${t.entryRoutedFold} IS NULL OR ${t.generation} IN ('V2A', 'V2B')`,
     ),
     /** One identity per event position (expression-free by discipline). */
     uniqueIndex("member_continuity_entry_event_uq").on(

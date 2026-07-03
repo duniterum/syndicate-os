@@ -144,7 +144,30 @@ check(
 );
 check(
   "routed fold restricted to V2A/V2B eras",
-  /member_continuity_routed_fold_era/.test(code),
+  /member_continuity_entry_routed_fold_era/.test(code),
+);
+// Entry-prefix discipline: every receipt column carries the entry_ prefix,
+// and no unprefixed receipt column name exists (quoted-exact match, so the
+// "routed_fold" substring inside "entry_routed_fold" cannot false-pass).
+const RECEIPT_COLUMNS = [
+  "entry_wallet",
+  "entry_block",
+  "entry_log_index",
+  "entry_transaction",
+  "entry_first_seat",
+  "entry_block_timestamp_sec",
+  "entry_routed_fold",
+];
+check(
+  "entry-prefix discipline: all receipt columns entry_-prefixed",
+  RECEIPT_COLUMNS.every((c) => code.includes(`"${c}"`)) &&
+    !/["'](routed_fold|receipt_wallet|wallet|transaction_hash)["']/.test(code),
+);
+check(
+  "ENTRY-receipt-only boundary statement present in header",
+  /ENTRY receipt only/.test(rawSource) &&
+    /NOT the general receipt/.test(rawSource) &&
+    /Activity\/Register\/Archive/.test(rawSource),
 );
 
 // ---------------------------------------------------------------------------
