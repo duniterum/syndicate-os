@@ -26,6 +26,7 @@
     "freeze-gate:status": "tsx ./scripts/historical-freeze-gate.ts",
     "member-continuity:derive": "tsx ./scripts/member-continuity-derive.ts",
     "member-continuity:guard": "tsx ./scripts/member-continuity.guard.ts",
+    "member-continuity-schema:guard": "tsx ./scripts/member-continuity-schema.guard.ts",
     "protocol-time:enrich": "tsx ./scripts/protocol-time-enrich.ts",
     "protocol-time:status": "tsx ./scripts/protocol-time-enrich.ts --status",
     "protocol-time:guard": "tsx ./scripts/protocol-time.guard.ts",
