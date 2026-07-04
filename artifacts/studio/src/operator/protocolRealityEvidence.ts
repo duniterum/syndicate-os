@@ -78,6 +78,14 @@ export const osMapNodeClass: Record<string, OsMapEvidenceClass> = {
   "member-cockpit": "STATIC_DOCTRINE",
   recognition: "STATIC_DOCTRINE",
   "founder-controls": "STATIC_DOCTRINE",
+  // Future & Governance Concepts (config/protocolOsMap.ts) — labelled concepts
+  // only; each card renders curated static copy, nothing live behind it.
+  "notice-os": "STATIC_DOCTRINE",
+  "knowledge-os": "STATIC_DOCTRINE",
+  acknowledgement: "STATIC_DOCTRINE",
+  "admin-audit": "STATIC_DOCTRINE",
+  "link-registry": "STATIC_DOCTRINE",
+  "admin-gates": "STATIC_DOCTRINE",
 };
 
 /**

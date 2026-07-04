@@ -61,23 +61,35 @@ import {
 
 type SourceStatusData = SourceStatusResponse | undefined;
 
+// Read-only visual grouping for the panel index only. Groups do not change
+// what any panel reads or renders — they just cluster the jump links so the
+// index scans as Overview → Protocol → Growth & Content → System.
+const PANEL_GROUPS = [
+  "Overview",
+  "Protocol",
+  "Growth & Content",
+  "System",
+] as const;
+type PanelGroup = (typeof PANEL_GROUPS)[number];
+
 interface PanelDef {
   id: string;
   title: string;
   icon: React.ComponentType<{ className?: string }>;
+  group: PanelGroup;
 }
 
 const panels: PanelDef[] = [
-  { id: "overview", title: "Overview", icon: LayoutDashboard },
-  { id: "modules", title: "Modules", icon: Boxes },
-  { id: "members", title: "Members & Continuity", icon: Users },
-  { id: "sources", title: "Sources & Introductions", icon: Link2 },
-  { id: "packages", title: "Packages & Advertising", icon: Megaphone },
-  { id: "address-labels", title: "Address Labels", icon: Tags },
-  { id: "content", title: "Content & Homepage", icon: PanelsTopLeft },
-  { id: "activity", title: "Activity & Chronicle", icon: ScrollText },
-  { id: "flags", title: "Feature Flags", icon: ToggleLeft },
-  { id: "health", title: "System Health", icon: HeartPulse },
+  { id: "overview", title: "Overview", icon: LayoutDashboard, group: "Overview" },
+  { id: "modules", title: "Modules", icon: Boxes, group: "Protocol" },
+  { id: "members", title: "Members & Continuity", icon: Users, group: "Protocol" },
+  { id: "sources", title: "Sources & Introductions", icon: Link2, group: "Protocol" },
+  { id: "packages", title: "Packages & Advertising", icon: Megaphone, group: "Growth & Content" },
+  { id: "address-labels", title: "Address Labels", icon: Tags, group: "Growth & Content" },
+  { id: "content", title: "Content & Homepage", icon: PanelsTopLeft, group: "Growth & Content" },
+  { id: "activity", title: "Activity & Chronicle", icon: ScrollText, group: "System" },
+  { id: "flags", title: "Feature Flags", icon: ToggleLeft, group: "System" },
+  { id: "health", title: "System Health", icon: HeartPulse, group: "System" },
 ];
 
 // ── Shared: fail-closed posture derivation (components/registry) ────────────
@@ -204,18 +216,29 @@ export default function AdminControlTower() {
         preview gate (a visibility gate, not authentication).
       </p>
 
-      {/* Panel index */}
-      <div className="flex flex-wrap gap-1.5 mb-8">
-        {panels.map((p) => (
-          <a
-            key={p.id}
-            href={`#${p.id}`}
-            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <p.icon className="h-3 w-3" />
-            {p.title}
-          </a>
-        ))}
+      {/* Panel index — grouped (visual only; grouping changes no data) */}
+      <div className="mb-8 space-y-2.5">
+        {PANEL_GROUPS.map((group) => {
+          const groupPanels = panels.filter((p) => p.group === group);
+          if (groupPanels.length === 0) return null;
+          return (
+            <div key={group} className="flex flex-wrap items-center gap-1.5">
+              <span className="mr-1 w-28 shrink-0 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
+                {group}
+              </span>
+              {groupPanels.map((p) => (
+                <a
+                  key={p.id}
+                  href={`#${p.id}`}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <p.icon className="h-3 w-3" />
+                  {p.title}
+                </a>
+              ))}
+            </div>
+          );
+        })}
       </div>
 
       <div className="space-y-6">

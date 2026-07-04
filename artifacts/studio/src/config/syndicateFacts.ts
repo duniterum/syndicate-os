@@ -179,6 +179,68 @@ export const studioPreview = {
   mockStatus: "DESIGN_PREVIEW" as TruthStatus,
 };
 
+/**
+ * Illustrative "OS Preview" for the homepage Studio teaser (right half).
+ * These are SAMPLE rows, not live data: the panel header carries an
+ * "Illustrative" SampleTag and every row carries its own honest lifecycle
+ * label. No figure here is read from any source — it conveys the shape of the
+ * operator console only. Rendered by PublicHome.tsx (Homepage governance
+ * rule 7: homepage copy lives here, not as inline strings).
+ */
+export const studioPreviewPanel = {
+  eyebrow: "OS Preview",
+  rows: [
+    {
+      id: "proof",
+      label: "Proof of Fire",
+      lifecycle: "PENDING_ADAPTER",
+      detail: "On-chain proof events, once the event adapter is wired.",
+    },
+    {
+      id: "source",
+      label: "Source attribution",
+      lifecycle: "PENDING_ADAPTER",
+      detail: "Verified-introduction links, once the source indexer is wired.",
+    },
+    {
+      id: "activity",
+      label: "Activity chronicle",
+      lifecycle: "FUTURE",
+      detail: "A public activity timeline is a separate founder-gated slice.",
+    },
+    {
+      id: "receipts",
+      label: "Membership receipts",
+      lifecycle: "PENDING_ADAPTER",
+      detail: "Member-facing receipt views await the membership indexer.",
+    },
+    {
+      id: "knowledge",
+      label: "Knowledge OS",
+      lifecycle: "FUTURE",
+      detail: "Guided learn, verify, and inspect surfaces — a future concept.",
+    },
+    {
+      id: "notices",
+      label: "Notice OS",
+      lifecycle: "FUTURE",
+      detail: "Read-only protocol notices; no broadcast is wired.",
+    },
+    {
+      id: "admin",
+      label: "Admin gates",
+      lifecycle: "FOUNDER_GATED",
+      detail: "Operator controls stay founder-gated and read-only.",
+    },
+  ] as {
+    id: string;
+    label: string;
+    lifecycle: DisplayLifecycle;
+    detail: string;
+  }[],
+  note: "Illustrative — a sample of the console's read-only surfaces. No live protocol data is shown here; each row carries its own honest status.",
+};
+
 // ---------------------------------------------------------------------------
 // Homepage recomposition copy (registry-driven sections).
 // The Promoted Strip and Module Strip render from Module Registry v0

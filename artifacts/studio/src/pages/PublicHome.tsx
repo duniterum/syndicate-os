@@ -37,6 +37,7 @@ import {
   operationalReality,
   awaitingWiring,
   studioPreview,
+  studioPreviewPanel,
   trustStrip,
   homepagePromotedStrip,
   homepageModuleStrip,
@@ -423,18 +424,38 @@ export default function PublicHome() {
                     <div className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
                     <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/80" />
                     <div className="h-2.5 w-2.5 rounded-full bg-green-500/80" />
+                    <span className="ml-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                      {studioPreviewPanel.eyebrow}
+                    </span>
+                    <span className="ml-auto">
+                      <SampleTag kind="illustrative" />
+                    </span>
                   </div>
-                  <div className="flex-1 p-4">
-                    <div className="mb-4 h-4 w-1/3 rounded-md bg-muted" />
-                    <div className="mb-6 space-y-2">
-                      <div className="h-3 w-full rounded-md bg-muted/50" />
-                      <div className="h-3 w-5/6 rounded-md bg-muted/50" />
-                      <div className="h-3 w-4/6 rounded-md bg-muted/50" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="h-20 rounded-md bg-muted/40" />
-                      <div className="h-20 rounded-md bg-muted/40" />
-                    </div>
+                  <div className="flex-1 divide-y divide-border/50 px-2 py-1">
+                    {studioPreviewPanel.rows.map((row) => (
+                      <div
+                        key={row.id}
+                        className="flex items-start justify-between gap-2 px-2 py-2"
+                      >
+                        <div className="min-w-0">
+                          <div className="text-xs font-medium text-foreground">
+                            {row.label}
+                          </div>
+                          <div className="text-[10px] leading-snug text-muted-foreground">
+                            {row.detail}
+                          </div>
+                        </div>
+                        <LifecycleBadge
+                          lifecycle={row.lifecycle}
+                          className="shrink-0"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="border-t border-border bg-muted/30 px-3 py-2">
+                    <p className="text-[10px] leading-snug text-muted-foreground">
+                      {studioPreviewPanel.note}
+                    </p>
                   </div>
                 </div>
               </div>

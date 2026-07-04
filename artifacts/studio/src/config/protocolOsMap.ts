@@ -230,4 +230,70 @@ export const protocolOsMap: OsMapDomain[] = [
       },
     ],
   },
+  {
+    id: "future-governance",
+    label: "Future & Governance Concepts",
+    description:
+      "Named, not built. Each entry below is a labelled concept only — no route, write, endpoint, or data exists for any of them, and none may be wired without founder approval.",
+    nodes: [
+      {
+        id: "notice-os",
+        label: "Notice OS",
+        binding: { kind: "lifecycle", lifecycle: "FUTURE" },
+        notPublic: false,
+        summary: "A read-only surface for protocol notices and announcements.",
+        reality:
+          "Concept only. No broadcast, notification, email, or persistence exists or is designed.",
+      },
+      {
+        id: "knowledge-os",
+        label: "Knowledge OS",
+        binding: { kind: "lifecycle", lifecycle: "FUTURE" },
+        notPublic: false,
+        summary:
+          "A guided learn, verify, and inspect map over the public read-only surfaces.",
+        reality:
+          "A first Knowledge OS map is present on the public /learning page today; deeper guided tooling is a future concept.",
+      },
+      {
+        id: "acknowledgement",
+        label: "Acknowledgement & recognition moments",
+        binding: { kind: "lifecycle", lifecycle: "FUTURE" },
+        notPublic: false,
+        summary: "Read-only acknowledgement of verified member milestones.",
+        reality:
+          "Concept only. Recognition is structural, never a financial benefit; nothing is wired.",
+      },
+      {
+        id: "admin-audit",
+        label: "Admin audit / activity spine",
+        binding: { kind: "lifecycle", lifecycle: "FUTURE" },
+        notPublic: true,
+        summary:
+          "A future append-only audit trail of operator reads (never a write to the protocol).",
+        reality:
+          "Concept only. The activity read-model is script-only today; no audit persistence exists or is designed.",
+      },
+      {
+        id: "link-registry",
+        label: "Link registry / CTA safety",
+        binding: { kind: "lifecycle", lifecycle: "FUTURE" },
+        notPublic: false,
+        summary:
+          "A governed registry of outbound links and calls-to-action, checked for safe framing.",
+        reality:
+          "Concept only. CTA copy is governed by the forbidden-copy guard today; a runtime link registry is not built.",
+      },
+      {
+        id: "admin-gates",
+        label: "Admin gates",
+        binding: { kind: "lifecycle", lifecycle: "FOUNDER_GATED" },
+        notPublic: false,
+        summary:
+          "The founder/operator visibility and approval gates governing internal surfaces.",
+        reality:
+          "Real today as build-time visibility gates (operator preview, wallet session, server-side auth exposure) — read-only, not authentication.",
+      },
+    ],
+  },
 ];

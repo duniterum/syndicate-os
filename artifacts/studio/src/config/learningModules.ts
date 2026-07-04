@@ -83,3 +83,69 @@ export const learningModules: LearningModule[] = [
 
 export const getLearningModuleById = (id: string): LearningModule | undefined =>
   learningModules.find((m) => m.id === id);
+
+// ---------------------------------------------------------------------------
+// Knowledge OS map — a wayfinding guide from reading to verifying. Every step
+// points at a REAL, read-only public surface that exists today. This is about
+// understanding and inspection — learn, verify, understand, inspect, follow
+// status — never a task you complete to unlock anything. (Not "learn and
+// earn": there is no reward, no unlock, no benefit for following it.)
+// ---------------------------------------------------------------------------
+
+export interface KnowledgeOsStep {
+  id: string;
+  /** The action verb: Learn / Verify / Understand / Inspect / Follow status. */
+  verb: string;
+  title: string;
+  detail: string;
+  /** A real, existing read-only route this step points at (omitted for the
+   * "learn" step, which refers to the lessons on this same page). */
+  href?: string;
+}
+
+export const knowledgeOsMap = {
+  heading: "The Knowledge OS map",
+  intro:
+    "How to move from reading to verifying. Each step points at a real, read-only surface that exists today — this is understanding and inspection, not a task you complete to unlock anything.",
+  steps: [
+    {
+      id: "learn",
+      verb: "Learn",
+      title: "Read the plain-language basics",
+      detail:
+        "Start with the lessons above: what the protocol is, and how to read this foundation honestly.",
+    },
+    {
+      id: "verify",
+      verb: "Verify",
+      title: "Check figures against live chain reads",
+      detail:
+        "The public Protocol Map reconciles every live figure against vendored canon, and fails closed on a mismatch.",
+      href: "/map",
+    },
+    {
+      id: "understand",
+      verb: "Understand",
+      title: "See what is real versus pending",
+      detail:
+        "The Status hub is the authoritative ledger of each surface's honest wiring state.",
+      href: "/status",
+    },
+    {
+      id: "inspect",
+      verb: "Inspect",
+      title: "Validate a source link, read-only",
+      detail:
+        "Validate an introduction id against the on-chain registry, or build an attribution link — read-only, no transaction.",
+      href: "/source",
+    },
+    {
+      id: "follow",
+      verb: "Follow status",
+      title: "Track the protocol's honest state",
+      detail:
+        "Public proof surfaces stay truth-labelled; nothing implies wiring that does not exist.",
+      href: "/proof",
+    },
+  ] as KnowledgeOsStep[],
+};

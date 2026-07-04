@@ -304,11 +304,17 @@ check(
 // 8c. Classification map reconciles exactly with protocolOsMap node ids.
 // NOTE: the textual id regex is [a-z0-9-]+ — node ids with underscores or
 // uppercase would be silently skipped by BOTH scans; keep ids kebab-case.
-const DOMAIN_IDS = ["reality-spine", "historical-index", "pending-wiring", "product-surfaces"];
+const DOMAIN_IDS = [
+  "reality-spine",
+  "historical-index",
+  "pending-wiring",
+  "product-surfaces",
+  "future-governance",
+];
 const allConfigIds = [...osMapConfig.matchAll(/\bid:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
 check(
   DOMAIN_IDS.every((d) => allConfigIds.includes(d)),
-  "protocolOsMap declares the 4 known domain ids",
+  "protocolOsMap declares the 5 known domain ids",
   `protocolOsMap domain ids changed (expected ${DOMAIN_IDS.join(", ")}) — update this guard deliberately`,
 );
 const nodeIds = allConfigIds.filter((id) => !DOMAIN_IDS.includes(id));
@@ -317,9 +323,9 @@ const classKeys = classBlock
   ? [...classBlock[1].matchAll(/(?:"([a-z0-9-]+)"|^\s*([a-z0-9-]+)):/gm)].map((m) => m[1] ?? m[2])
   : [];
 check(
-  nodeIds.length === 17,
-  `protocolOsMap declares 17 nodes`,
-  `expected 17 protocolOsMap nodes, found ${nodeIds.length} — update this guard and the adapter classification deliberately`,
+  nodeIds.length === 23,
+  `protocolOsMap declares 23 nodes`,
+  `expected 23 protocolOsMap nodes, found ${nodeIds.length} — update this guard and the adapter classification deliberately`,
 );
 for (const id of nodeIds) {
   check(
