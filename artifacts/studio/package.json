@@ -10,6 +10,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "seo:generate": "node scripts/generate-sitemap.ts",
     "seo:check": "node scripts/check-seo-registry.ts",
+    "surface:audit": "node scripts/check-public-surface-audit.ts",
     "guard:lifecycle": "node scripts/guard-lifecycle-labels.ts",
     "guard:copy": "node scripts/guard-forbidden-copy.ts",
     "guard:source": "node scripts/guard-safe-source.ts",
