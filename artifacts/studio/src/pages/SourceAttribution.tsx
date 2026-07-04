@@ -32,6 +32,16 @@ export default function SourceAttribution() {
         ))}
       </div>
 
+      <h2 className="text-xl font-light tracking-tight text-foreground mb-5">What's live today</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-14">
+        {sourceAttribution.currentState.map((item) => (
+          <Card key={item.title} className="bg-primary/5 border-primary/20 p-5">
+            <h3 className="text-base font-medium text-foreground mb-1.5">{item.title}</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">{item.body}</p>
+          </Card>
+        ))}
+      </div>
+
       <h2 className="text-xl font-light tracking-tight text-foreground mb-5">Boundaries</h2>
       <Card className="bg-card/20 border-border/50 p-6 mb-10">
         <ul className="space-y-3">
@@ -52,8 +62,11 @@ export default function SourceAttribution() {
       </div>
 
       <div className="flex flex-wrap gap-3">
+        <Link href={ctas.buildLink.href}>
+          <Button>{ctas.buildLink.label}</Button>
+        </Link>
         <Link href={ctas.viewRecognition.href}>
-          <Button>{ctas.viewRecognition.label}</Button>
+          <Button variant="outline">{ctas.viewRecognition.label}</Button>
         </Link>
         <Link href={ctas.viewStatus.href}>
           <Button variant="outline">{ctas.viewStatus.label}</Button>

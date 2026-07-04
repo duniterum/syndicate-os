@@ -46,7 +46,7 @@ export const sourceAttribution = {
   heading: "Source attribution",
   tagline: "Recognition of who opened the door — never a payment.",
   intro:
-    "When membership becomes live, The Syndicate can record a verified introduction: the origin of a join. This is recognition of a growth contribution, not compensation. No payment or financial benefit is implied or paid, and nothing is wired today.",
+    "A verified introduction is the origin of a join — recognition of a growth contribution, not compensation. No payment or financial benefit is implied or paid. Today the on-chain source registry can already be read: the public /source page validates an introduction id and, when it is active, builds a shareable join link. Creating or activating a source stays an owner-side, on-chain act — public pages only read and explain.",
   model: [
     {
       title: "A verified introduction",
@@ -61,9 +61,24 @@ export const sourceAttribution = {
       body: "Attribution is only ever read from verified source records. No public claim of who introduced whom outranks the recorded source.",
     },
   ] as SourceModelStep[],
+  currentState: [
+    {
+      title: "The registry is on-chain",
+      body: "Verified introductions live in the protocol's on-chain source registry. It is real and readable today — no placeholder stands in for it.",
+    },
+    {
+      title: "/source reads it, read-only",
+      body: "The public /source page validates an introduction id against the live registry and, when the id is active, builds a shareable join link. It never creates, activates, or writes anything.",
+    },
+    {
+      title: "Everything else stays owner-gated",
+      body: "Registering and activating a source are owner-side, on-chain acts. Recording attribution into a join is not active yet, and any incentive tied to introductions remains a future, gated concept.",
+    },
+  ] as SourceModelStep[],
   boundaries: [
-    "The source registry is deployed but intentionally inactive — paused by precaution.",
-    "No attribution is read or written in this foundation.",
+    "The on-chain source registry is live and readable; the public /source surface validates an introduction id and builds a shareable join link — strictly read-only.",
+    "Registering or activating a source is an owner-side, on-chain act. Nothing is created, activated, or written from any public page.",
+    "Attribution is only ever read from verified on-chain source records — no public page writes it, and recording it into a join is not active yet.",
     "Any incentive tied to introductions is a future concept, gated behind founder approval and real wiring.",
     "Membership is not an investment and attribution promises no financial benefit.",
   ],

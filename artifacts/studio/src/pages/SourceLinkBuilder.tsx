@@ -68,8 +68,8 @@ function ValidationResult({ sourceId }: { sourceId: string }) {
   if (data.exists === true && data.active === false) {
     return (
       <p className="text-sm text-muted-foreground" data-testid="text-validate-inactive">
-        Registered but not active. A join through this id today would proceed
-        without attribution. Activation is an owner-side on-chain act.
+        Registered but not active on-chain. Activation is an owner-side on-chain
+        act; until then this id carries no attribution.
       </p>
     );
   }
@@ -87,8 +87,9 @@ function ValidationResult({ sourceId }: { sourceId: string }) {
     return (
       <div data-testid="panel-validate-active">
         <p className="text-sm text-foreground mb-3">
-          Verified introduction recognized — registered and active on-chain.
-          Joins through this link are attributed to the introducer.
+          Verified introduction recognized — registered and active on-chain. The
+          link you build carries this introduction id; whether a join records
+          that attribution is an on-chain step that is not active yet.
         </p>
         <div className="flex flex-wrap items-center gap-3">
           <code className="font-mono text-xs bg-muted/60 border border-border/50 rounded px-3 py-2 break-all" data-testid="text-attribution-link">
@@ -150,6 +151,14 @@ export default function SourceLinkBuilder() {
               it — recognition of who opened the door, never a payment. This
               page can only read that registry: paste an id below to check it
               and, if it is active, build the attribution link.
+            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mt-2">
+              New here?{" "}
+              <Link href={ctas.exploreSource.href} className="text-primary hover:underline">
+                How attribution works
+              </Link>{" "}
+              explains verified introductions in full — this page is the
+              read-only tool.
             </p>
           </div>
         </div>
