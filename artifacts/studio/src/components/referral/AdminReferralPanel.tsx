@@ -10,6 +10,7 @@
 import { Megaphone } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { SampleTag } from "@/components/SampleTag";
+import { ProtocolRealityPanel } from "@/components/ProtocolReality";
 import { TruthLabel } from "@/components/TruthLabel";
 import {
   referralProgram,
@@ -53,8 +54,17 @@ export function AdminReferralPanel() {
         <SampleTag kind="simulated" />
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl mb-5 leading-relaxed">
-        {referralProgram.pausedCopy.status} Everything below is a sample of the operator view — no figure is live, and there are no write controls.
+        {referralProgram.pausedCopy.status} The source reads below are LIVE on-chain (read-only); the KPI figures are still sample until the referral read-model is wired. No write controls exist here.
       </p>
+
+      {/* Live on-chain source reads — same truth-labelling as /status */}
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-2">
+          <h3 className="text-sm font-medium text-foreground">Live source reads</h3>
+          <span className="text-[10px] font-mono uppercase tracking-wider text-primary">On-chain</span>
+        </div>
+        <ProtocolRealityPanel groups={["source"]} />
+      </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">

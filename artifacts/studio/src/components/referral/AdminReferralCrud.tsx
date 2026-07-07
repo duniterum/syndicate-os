@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { TruthLabel } from "@/components/TruthLabel";
-import { referralSettingsSample, referralEligibilityToggles } from "@/config/referralProgram";
+import { referralSettingsSample, referralEligibilityToggles, commissionTiers, commissionCapPct, rateChangeEvent } from "@/config/referralProgram";
 
 export function AdminReferralCrud() {
   const [active, setActive] = useState(false);
@@ -63,6 +63,28 @@ export function AdminReferralCrud() {
             />
           </div>
         ))}
+      </div>
+
+      {/* Commission tiers + hard cap */}
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="text-sm font-medium text-foreground">Commission tiers</div>
+          <span className="text-xs text-muted-foreground">hard cap {commissionCapPct}%</span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+          {commissionTiers.map((t) => (
+            <div key={t.name} className="rounded-md border border-border/50 p-3">
+              <div className="flex items-baseline justify-between mb-1">
+                <span className="text-sm font-medium text-foreground">{t.name}</span>
+                <span className="text-lg font-medium text-foreground">{t.pct}%</span>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">{t.note}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          No class may exceed {commissionCapPct}%. {rateChangeEvent.note}
+        </p>
       </div>
 
       {/* Eligibility rules */}

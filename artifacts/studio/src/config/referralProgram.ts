@@ -264,6 +264,29 @@ export const adminConversionSample: TrendPoint[] = [
   { label: "W7", value: 8 },
 ];
 
+// ── Commission tiers (source classes), hard cap, and transparency event ──────
+// Human-readable %. Storage/emission on-chain is basis points (bps): 5% = 500,
+// 8% = 800, 30% = 3000. A hard cap applies to EVERY class and every change.
+export const commissionCapPct = 30; // hard maximum — 30% = 3000 bps
+export interface CommissionTier {
+  name: string;
+  pct: number;
+  note: string;
+}
+export const commissionTiers: CommissionTier[] = [
+  { name: "Standard", pct: 5, note: "Default source class for verified referrals." },
+  { name: "Trusted", pct: 8, note: "Raised class for consistent, high-retention sources." },
+  { name: "Partner", pct: commissionCapPct, note: "Negotiated partnership class — at the hard cap." },
+];
+// Every change to a source's class / commission % / cap / window is recorded as
+// this governance event, so it surfaces in Activity + Chronicle (old → new,
+// actor, timelock). Reserved today; registered under the `governance` namespace.
+export const rateChangeEvent = {
+  kind: "source-terms-changed",
+  namespace: "governance",
+  note: "Rate, tier, cap, and window changes are recorded on-chain-adjacent as a governance event and shown in Activity + Chronicle — old value → new value, who changed it, and the timelock. Total transparency, no silent edits.",
+} as const;
+
 /** Editable referral-program settings (operator CRUD, preview today). */
 export interface ReferralSetting {
   key: string;

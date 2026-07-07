@@ -130,12 +130,12 @@ api-client-react (generated hooks).
 
 ## 5. What we CAN do next (canonical backlog)
 
-### Referral tiers + transparency events (no RPC needed — awaiting 3 founder decisions)
-- **Source-class tiers (proposed):** Standard 5% · Trusted 8% · Partner ≤ 30% (confirm names + %).
-- **Hard cap:** 30% (3000 bps) — confirm.
-- **Transparency event:** add reserved kind `source-terms-changed` under the `governance` namespace so every
-  rate/tier/cap change flows to **Activity + Chronicle** (old value → new value, actor, timelock). This closes
-  the one gap: today config changes emit no event.
+### Referral tiers + transparency events — IMPLEMENTED (defaults, adjustable)
+- **Source-class tiers (live in config + admin):** Standard 5% · Trusted 8% · Partner 30% — `commissionTiers`.
+- **Hard cap:** 30% (`commissionCapPct`) — no class may exceed it.
+- **Transparency event (designed):** `source-terms-changed` under the `governance` namespace — every rate/tier/
+  cap/window change surfaces in **Activity + Chronicle** (old → new, actor, timelock). Surfaced in the admin CRUD.
+  *Remaining one-liner:* register the reserved kind in `protocol-event-registry.ts` (api-server, with its test run).
 
 ### Write zone (Phase 3 — needs auth provider + DB choice)
 Turn every preview control (Modules on/off, Referral Save, Invite/Approve, Broadcast send, flag toggles) into
