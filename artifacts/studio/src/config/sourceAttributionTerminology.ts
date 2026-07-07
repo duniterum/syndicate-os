@@ -2,10 +2,13 @@
 //
 // The vocabulary + copy for the public source-attribution surface.
 //
-// DOCTRINE: source attribution is recognition of a verified introduction and a
-// growth contribution — NOT compensation. No payment or financial benefit is
-// implied or paid. The operator source surface stays paused; any incentive
-// concept is explicitly future and gated.
+// DOCTRINE (founder directive, 2026-07-07 — corrected): a source is a verified
+// introduction. Publicly it is presented as a bounded referral: an eligible,
+// completed introduction may carry a transparent acquisition commission, shown
+// by receipt — never passive income, never token yield, never a downline,
+// never a profit promise, and never an investment. PUBLIC ACTIVATION IS PAUSED: the registry
+// reads today, but no commission is offered or paid until active terms +
+// founder approval. Public "Referral" language lives in config/referralProgram.
 //
 // The list of UNSAFE framing terms lives in the safe-source-terminology guard
 // script (not here), so this file holds only safe, rendered copy and can be
@@ -35,7 +38,7 @@ export const sourceRewardConceptLifecycle: DisplayLifecycle = "FUTURE";
  * present on the source-attribution surface.
  */
 export const sourceDisclaimer =
-  "Source attribution is recognition of a verified introduction, never compensation. Membership is not an investment and attribution promises no financial benefit.";
+  "Referral commissions are transparent acquisition payments for eligible completed member introductions — not passive income, not token yield, not downline, and not a profit promise. Membership is not an investment.";
 
 export interface SourceModelStep {
   title: string;
@@ -44,17 +47,17 @@ export interface SourceModelStep {
 
 export const sourceAttribution = {
   heading: "Source attribution",
-  tagline: "Recognition of who opened the door — never a payment.",
+  tagline: "A source opens the door. A member decides. The receipt records the introduction.",
   intro:
-    "A verified introduction is the origin of a join — recognition of a growth contribution, not compensation. No payment or financial benefit is implied or paid. Today the on-chain source registry can already be read: the public /source page validates an introduction id and, when it is active, builds a shareable join link. Creating or activating a source stays an owner-side, on-chain act — public pages only read and explain.",
+    "The Syndicate records verified introductions. When a source-linked member joins under active terms, a transparent referral commission may be shown by receipt and routed transparently. Public referral activation is currently paused: the on-chain source registry can be read today, but no commission is offered or paid until active terms and founder approval. The public /source page only validates an introduction id and, when active, builds a shareable join link — it never creates, activates, or writes anything.",
   model: [
     {
       title: "A verified introduction",
       body: "An existing member introduces someone who joins. The link between them is recorded as the origin of that join.",
     },
     {
-      title: "Recognition, not compensation",
-      body: "Attribution is acknowledged as a growth contribution and reflected in recognition — it is never framed as commission, payment, or financial benefit.",
+      title: "Commission, then recognition",
+      body: "An eligible completed introduction may carry a bounded acquisition commission (paused today), and over time is reflected in non-financial recognition — never passive income, never a downline, and never a profit promise.",
     },
     {
       title: "Source wins over claims",
@@ -80,6 +83,6 @@ export const sourceAttribution = {
     "Registering or activating a source is an owner-side, on-chain act. Nothing is created, activated, or written from any public page.",
     "Attribution is only ever read from verified on-chain source records — no public page writes it, and recording it into a join is not active yet.",
     "Any incentive tied to introductions is a future concept, gated behind founder approval and real wiring.",
-    "Membership is not an investment and attribution promises no financial benefit.",
+    "Membership is not an investment. A referral commission is a bounded acquisition payment — not passive income, not token yield, not equity, and not a profit promise.",
   ],
 };

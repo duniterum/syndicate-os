@@ -8,6 +8,11 @@ import {
   type ProtocolRealityResponse,
 } from "@workspace/api-client-react";
 import { TruthLabel } from "@/components/TruthLabel";
+import { AdminReferralPanel } from "@/components/referral/AdminReferralPanel";
+import { AdminModulesConsole } from "@/components/referral/AdminModulesConsole";
+import { AdminReferralCrud } from "@/components/referral/AdminReferralCrud";
+import { AdminOperatorsCrud } from "@/components/referral/AdminOperatorsCrud";
+import { AdminOperatorSurfaces } from "@/components/referral/AdminOperatorSurfaces";
 import { PostureBadge } from "@/components/PostureBadge";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
@@ -242,6 +247,11 @@ export default function AdminControlTower() {
       </div>
 
       <div className="space-y-6">
+        <AdminModulesConsole />
+        <AdminReferralPanel />
+        <AdminReferralCrud />
+        <AdminOperatorsCrud />
+        <AdminOperatorSurfaces />
         {/* 1 · Overview */}
         <PanelCard def={panels[0]}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">

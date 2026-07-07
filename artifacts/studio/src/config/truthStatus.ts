@@ -12,17 +12,20 @@ export type TruthStatus =
   | "AWAITING_FOUNDER_APPROVAL"
   | "LIVE_SOURCE_MISSING";
 
+// User-facing badge text — plain language. The precise reason lives in the
+// enum KEY and the posture projection; these strings only need to tell a normal
+// person, honestly, that a value is not live yet (never faked).
 export const truthStatusText: Record<TruthStatus, string> = {
-  NOT_LIVE: "Not Live",
-  DESIGN_PREVIEW: "Design Preview",
-  FUTURE_MODULE: "Future Module",
-  EVENT_ADAPTER_NOT_WIRED: "Event Adapter Not Wired",
-  SOURCE_INDEXER_NOT_WIRED: "Source Indexer Not Wired",
-  ARCHIVE_READS_NOT_WIRED: "Archive Reads Not Wired",
-  AWAITING_CHAIN_INDEX: "Awaiting Chain Index",
-  SYNDICATE_INDEXER_NOT_WIRED: "Indexer Not Wired",
-  AWAITING_FOUNDER_APPROVAL: "Awaiting Founder Approval",
-  LIVE_SOURCE_MISSING: "Live Source Missing",
+  NOT_LIVE: "Not live yet",
+  DESIGN_PREVIEW: "Preview",
+  FUTURE_MODULE: "Coming later",
+  EVENT_ADAPTER_NOT_WIRED: "Not live yet",
+  SOURCE_INDEXER_NOT_WIRED: "Not live yet",
+  ARCHIVE_READS_NOT_WIRED: "Not live yet",
+  AWAITING_CHAIN_INDEX: "Not live yet",
+  SYNDICATE_INDEXER_NOT_WIRED: "Not live yet",
+  AWAITING_FOUNDER_APPROVAL: "Not switched on yet",
+  LIVE_SOURCE_MISSING: "Not live yet",
 };
 
 export type SurfaceId =
@@ -122,16 +125,16 @@ export type DisplayLifecycle =
   | "FUTURE";
 
 export const displayLifecycleText: Record<DisplayLifecycle, string> = {
-  READ_ONLY_PROOF: "Read-only proof",
-  HISTORICAL_PROOF: "Historical proof",
-  PAUSED_BY_PRECAUTION: "Paused by precaution",
-  PENDING_ADAPTER: "Pending adapter",
+  READ_ONLY_PROOF: "Verified — view only",
+  HISTORICAL_PROOF: "Verified history",
+  PAUSED_BY_PRECAUTION: "Paused for safety",
+  PENDING_ADAPTER: "Not live yet",
   NOT_ACTIVE: "Not active",
-  FOUNDER_GATED: "Founder-gated",
-  AUTH_REQUIRED: "Auth required",
+  FOUNDER_GATED: "Founder only",
+  AUTH_REQUIRED: "Sign in required",
   PREVIEW: "Preview",
-  DESIGN_CONCEPT: "Design concept",
-  FUTURE: "Future",
+  DESIGN_CONCEPT: "Concept",
+  FUTURE: "Coming later",
 };
 
 // Projection onto the canonical posture. A paused/historical real system keeps

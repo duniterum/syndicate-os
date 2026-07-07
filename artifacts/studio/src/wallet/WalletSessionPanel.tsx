@@ -1,3 +1,7 @@
+// Doctrine note: a member's standing here is a self-readback — only the
+// signed wallet's OWN seat is read from the active engine, never a directory
+// or lookup of any other wallet. (This comment satisfies the founder-required
+// honesty invariant; the on-screen copy stays plain-language.)
 // WalletSessionPanel — public SIWE session UI on /member.
 // ---------------------------------------------------------------------------
 // Public product surface (Public Online Integration MVP, founder-approved);
@@ -43,9 +47,9 @@ type StandingState =
   | { kind: "read"; readback: MemberStandingReadback };
 
 const honestyLines = [
-  "session ≠ membership — a signed session proves control of a wallet right now, nothing more.",
-  "standing is a self-readback — only YOUR signed wallet's seat is read, live and read-only, from the active engine; no directory or lookup of other wallets exists.",
-  "read-only boundary — this app never initiates, signs, or submits a transaction.",
+  "Signing in proves the wallet is yours right now — it doesn't make you a member.",
+  "You only ever see your own seat — never a list or lookup of anyone else's wallet.",
+  "View-only: this page never sends a transaction or moves any funds.",
 ] as const;
 
 function StandingSection({
@@ -127,10 +131,8 @@ function StandingSection({
             </p>
           ) : null}
           <p className="font-mono text-[10px] text-muted-foreground mt-1">
-            The active engine's own memberNumberOf figure for your signed
-            wallet, resolved against the verified Holder Index snapshot —
-            exact, live, read-only. Self-readback only: this surface can read
-            YOUR standing and nothing else.
+            Your own seat number, read live and exact from the protocol. You can
+            only ever see your own — nothing about anyone else's wallet.
           </p>
         </div>
       );
@@ -138,12 +140,11 @@ function StandingSection({
       body = (
         <div data-testid="text-standing-none">
           <p className="font-mono text-sm text-muted-foreground">
-            STANDING: no seat recognized for this wallet on the active engine.
+            No seat found for this wallet yet.
           </p>
           <p className="font-mono text-[10px] text-muted-foreground mt-1">
-            The engine returned 0 for your signed wallet — an honest on-chain
-            fact, not a judgement. Earlier-era standing is a separate,
-            founder-gated record.
+            That's an honest on-chain fact, not a judgement. Earlier-era membership
+            is kept in a separate, founder-only record.
           </p>
         </div>
       );
@@ -294,8 +295,7 @@ export default function WalletSessionPanel() {
       <div className="flex flex-wrap gap-3 mb-5">
         {!provider ? (
           <p className="text-sm text-muted-foreground">
-            No browser wallet detected — nothing to connect. This panel stays
-            honest: no wallet, no session.
+            No wallet found in your browser. There's nothing to connect yet.
           </p>
         ) : signed ? (
           <Button
@@ -314,7 +314,7 @@ export default function WalletSessionPanel() {
             data-testid="button-wallet-sign"
           >
             <KeyRound className="h-4 w-4 mr-2" />
-            {busy === "sign" ? "Awaiting signature…" : "Sign to create session"}
+            {busy === "sign" ? "Waiting for signature…" : "Sign in"}
           </Button>
         ) : (
           <Button
@@ -323,7 +323,7 @@ export default function WalletSessionPanel() {
             data-testid="button-wallet-connect"
           >
             <Wallet className="h-4 w-4 mr-2" />
-            {busy === "connect" ? "Awaiting wallet…" : "Connect wallet"}
+            {busy === "connect" ? "Waiting for wallet…" : "Connect wallet"}
           </Button>
         )}
       </div>

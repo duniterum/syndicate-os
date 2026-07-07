@@ -26,11 +26,11 @@ export const ctas: Record<string, Cta> = {
 /** Reusable, non-negotiable honesty statements. */
 export const safetyCopy = {
   notInvestment:
-    "The Syndicate is an attribution and recognition protocol. Membership is not an investment, security, or financial instrument, and carries no promise of financial gain.",
+    "The Syndicate is a recognition and attribution protocol — not an investment. Membership isn't a security or financial product, and it promises no money or financial gain.",
   sourceWins:
-    "No public claim outranks code, canon, or live proof. If copy and source disagree, source wins and the copy is corrected.",
+    "If anything we write disagrees with the real code or on-chain proof, the proof wins and we correct the words.",
   noFakeData:
-    "Nothing here invents numbers, members, balances, or activity. Every unwired value stays truth-labelled.",
+    "We never make up numbers, members, balances, or activity. Anything we can't yet show live is clearly marked as not live.",
   readOnly:
-    "This is a read-only foundation: no transactions, no live chain reads, and no backend writes.",
+    "Right now this is view-only: no payments, no live chain reads, and nothing is changed behind the scenes.",
 };

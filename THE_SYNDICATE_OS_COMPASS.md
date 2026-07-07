@@ -19,6 +19,7 @@ restates almost nothing. Read this first, then open only the source docs your ta
 | `docs/handoff/new-session-handoff-2026-07-03-first-clean-schema-publish.md` | **Current state** (latest handoff): live production truth, GitHub/tag state, DB state, auth posture, next slice |
 | `the-syndicate-master-operating-map.md` (repo root) | Master operating map of the whole protocol/business |
 | `docs/strategy/CORRECTED_DOCTRINE_REHARVEST_2_20G.md` | Corrected doctrine baseline (supersedes earlier harvest framings) |
+| `docs/strategy/GRAND_RECONCILIATION_AND_CARTE_BLANCHE_UNBLOCK_2026-07-06.md` | Founder carte-blanche authority: which *process* gates are lifted (implementation now standing-authorized, Phases 1–10) vs which *truth/safety* invariants are kept; the Boost-Protocol source resolution; route/phase reconciliation |
 | `docs/architecture/CAPABILITY_HARVEST_AND_REUSE_MAP.md` | What business mechanics are preserved vs which framings/patterns are rejected |
 | `docs/architecture/SOURCE_BOUNDARY_MANIFEST.md` | Public/private source boundary; what may never leak into served surfaces |
 | `docs/audits/SLICE_2_17_FULL_OS_LANGUAGE_CONSTITUTION_RECOVERY.md` | Language constitution for copy/vocabulary |
@@ -57,6 +58,7 @@ restates almost nothing. Read this first, then open only the source docs your ta
 | Public/private boundary, leak questions | `docs/architecture/SOURCE_BOUNDARY_MANIFEST.md` |
 | Business mechanics: what to keep vs reject | `docs/architecture/CAPABILITY_HARVEST_AND_REUSE_MAP.md` |
 | Corrected doctrine baseline | `docs/strategy/CORRECTED_DOCTRINE_REHARVEST_2_20G.md` |
+| What is authorized to build now vs still gated; Boost source | `docs/strategy/GRAND_RECONCILIATION_AND_CARTE_BLANCHE_UNBLOCK_2026-07-06.md` |
 | Copy, language, vocabulary | `docs/audits/SLICE_2_17_FULL_OS_LANGUAGE_CONSTITUTION_RECOVERY.md` + `replit.md` Gotchas |
 | Holder Index / member identity / numbering | `docs/architecture/WALLET_IDENTITY_AND_HOLDER_INDEX_DESIGN.md` (doctrine) + `docs/architecture/HOLDER_INDEX_READ_MODEL_DESIGN.md` (bridge design) + `lib/db/src/schema/partB.ts` + `protocol-event-registry.ts` |
 | Auth / access / roles (dark) | `OPERATOR_WALLET_AUTH_AND_ROLES_DESIGN.md` + `WALLET_FIRST_IDENTITY_ACCESS_AND_USER_REGISTRY_DESIGN.md` |
@@ -86,7 +88,7 @@ restates almost nothing. Read this first, then open only the source docs your ta
 
 ## 7. Freshness contract
 
-- **Last reconciled: 2026-07-03** (against the first-clean-schema-publish checkpoint).
+- **Last reconciled: 2026-07-06** — founder carte-blanche reconciliation (`GRAND_RECONCILIATION_AND_CARTE_BLANCHE_UNBLOCK_2026-07-06.md`) lifts the *process* gates (report-first, per-slice approval, "no implementation authorized", read-only-foundation) as a standing authorization for Phases 1–10, while keeping every *truth/safety* invariant in section 3 intact. Prior baseline: 2026-07-03 first-clean-schema-publish checkpoint (still the source-of-record for live production/DB/auth state).
 - When a canon doc is added, renamed, retired, or superseded, **update this compass in the same slice**.
 - When a new handoff is written, repoint section 2/4/6 to it in the same slice.
 - **A stale compass is a bug** — fix the pointer, never the canon.

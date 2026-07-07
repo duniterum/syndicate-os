@@ -15,6 +15,10 @@ import {
   sourceRewardConceptLifecycle,
   sourceAttribution,
 } from "../src/config/sourceAttributionTerminology.ts";
+import {
+  programLifecycle,
+  constitutionalLine,
+} from "../src/config/referralProgram.ts";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const pagePath = path.resolve(here, "..", "src", "pages", "SourceAttribution.tsx");
@@ -32,10 +36,11 @@ check(
   "sourceDisclaimer is empty",
 );
 check(
-  /never/i.test(sourceDisclaimer) &&
-    /(compensation|financial benefit)/i.test(sourceDisclaimer),
-  "sourceDisclaimer actively disclaims compensation",
-  'sourceDisclaimer must say it is "never" compensation / a financial benefit',
+  /not passive income/i.test(sourceDisclaimer) &&
+    /token yield/i.test(sourceDisclaimer) &&
+    /profit promise/i.test(sourceDisclaimer),
+  "sourceDisclaimer carries the protective negatives (passive income / yield / profit promise)",
+  "sourceDisclaimer must disclaim passive income, token yield, and a profit promise",
 );
 check(
   /not an investment/i.test(sourceDisclaimer),
@@ -64,19 +69,33 @@ check(
   `introduction incentive concept must be FUTURE, got "${sourceRewardConceptLifecycle}"`,
 );
 check(
-  /never a payment/i.test(sourceAttribution.tagline),
-  "source tagline disclaims payment",
-  'sourceAttribution.tagline must say "never a payment"',
+  /introduction|receipt|source|door/i.test(sourceAttribution.tagline),
+  "source tagline frames the verified introduction",
+  "sourceAttribution.tagline must frame the introduction / receipt",
 );
 check(
-  /not compensation/i.test(sourceAttribution.intro),
-  "source intro disclaims compensation",
-  'sourceAttribution.intro must say "not compensation"',
+  /paused/i.test(sourceAttribution.intro),
+  "source intro discloses that public activation is paused",
+  "sourceAttribution.intro must disclose the paused reality",
 );
 check(
   sourceAttribution.boundaries.some((b) => /not an investment/i.test(b)),
   "source boundaries restate the not-an-investment rule",
   "sourceAttribution.boundaries must include a not-an-investment boundary",
+);
+
+check(
+  programLifecycle === "NOT_ACTIVE" ||
+    programLifecycle === "FUTURE" ||
+    programLifecycle === "PAUSED_BY_PRECAUTION",
+  "referral program stays paused (never presented as live)",
+  `referral programLifecycle must be paused, got "${programLifecycle}"`,
+);
+check(
+  /not passive income/i.test(constitutionalLine) &&
+    /profit promise/i.test(constitutionalLine),
+  "referral constitutionalLine carries the protective negatives",
+  "referral constitutionalLine must disclaim passive income and a profit promise",
 );
 
 const pageSrc = readFileSync(pagePath, "utf8");
@@ -93,5 +112,5 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(
-  `[guard:source] PASS \u2014 source-attribution stays recognition-only and paused.`,
+  `[guard:source] PASS \u2014 source/referral stays bounded, protective, and paused.`,
 );

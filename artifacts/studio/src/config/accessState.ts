@@ -64,28 +64,28 @@ export const accessStates: Record<AccessStateId, AccessStateMeta> = {
     track: "USER",
     chipLabel: "S1 · VISITOR",
     honestNote:
-      "Public pages with truth labels. No wallet prompt, no wallet tracking, no session.",
+      "Public pages, open to everyone. No wallet, no sign-in, and nothing about you is tracked.",
   },
   S2: {
     name: "Logged-out visitor",
     track: "USER",
     chipLabel: "S2 · SESSION ENDED",
     honestNote:
-      "Identical to S1. An expired or revoked session is no session (fail closed).",
+      "Same as a normal visitor. Once you sign out, you're fully signed out.",
   },
   S3: {
     name: "Wallet connected, unsigned",
     track: "USER",
     chipLabel: "S3 · CONNECTED — UNSIGNED",
     honestNote:
-      "A connection is a frontend fact and proves nothing. The backend has no session.",
+      "Connecting a wallet just links it in your browser — it doesn't sign you in yet.",
   },
   S4: {
     name: "Signed in, membership not verified",
     track: "USER",
     chipLabel: "S4 · SIGNED — UNVERIFIED",
     honestNote:
-      "A signature proves wallet control right now — not membership, not history, not authority.",
+      "Signing proves the wallet is yours right now. It doesn't make you a member or grant any special access.",
   },
   S5: {
     name: "Web2 account (reserved)",

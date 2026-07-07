@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { type DisplayLifecycle } from "@/config/truthStatus";
 import { memberAccess, membershipIdentity, expectations } from "@/config/syndicateFacts";
+import { MemberReferralDashboard } from "@/components/referral/MemberReferralDashboard";
 import { ctas } from "@/config/sharedCopy";
 
 // Wallet session gate: the public SIWE session panel (session + standing
@@ -59,7 +60,7 @@ const facets = {
   source: {
     icon: Network,
     title: "Attribution origin",
-    body: "The verified introduction behind your join — recognition of who opened the door, never a payment. Introduction links can be validated read-only on the source builder; your own attribution readback is not yet served.",
+    body: "The verified introduction behind your join. As a source, an eligible completed introduction can carry a transparent referral commission (paused today) and, over time, non-financial recognition — never passive income, never a profit promise. Introduction links validate read-only on the source builder; your own attribution readback is not yet served.",
     lifecycle: "PENDING_ADAPTER",
     links: [ctas.buildLink, ctas.exploreSource],
   } as CockpitFacet,
@@ -227,6 +228,7 @@ export default function MemberAccess() {
 
         <TabsContent value="source" className="mt-6">
           <FacetPanel facet={facets.source} />
+          <MemberReferralDashboard />
         </TabsContent>
 
         <TabsContent value="activity" className="mt-6">

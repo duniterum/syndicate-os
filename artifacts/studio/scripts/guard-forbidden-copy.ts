@@ -38,10 +38,25 @@ const WORDS = ["jackpot", "wager", "betting", "payout", "profit", "yield", "aird
 function escapeRe(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
+// Global matchers so each hit's position is available (for negation-awareness).
 const matchers: { term: string; re: RegExp }[] = [
-  ...PHRASES.map((p) => ({ term: p, re: new RegExp(escapeRe(p), "i") })),
-  ...WORDS.map((w) => ({ term: w, re: new RegExp(`\\b${escapeRe(w)}\\b`, "i") })),
+  ...PHRASES.map((p) => ({ term: p, re: new RegExp(escapeRe(p), "gi") })),
+  ...WORDS.map((w) => ({ term: w, re: new RegExp(`\\b${escapeRe(w)}\\b`, "gi") })),
 ];
+
+// Negative-disclaimer awareness (founder directive, 2026-07-07).
+// Doctrine BLOCKS positive financial-upside claims but MUST ALLOW honest
+// negative disclaimers — e.g. "Referral commissions are not passive income,
+// not token yield, and not a profit promise." A banned term is EXEMPT only when
+// an explicit negation immediately governs it within the SAME clause (short
+// window, no sentence break). "earn passive income" stays blocked; "not passive
+// income" passes. Window chars exclude . ; : ! ? so a negation in an earlier
+// clause never licenses a later positive claim.
+const NEGATION_BEFORE =
+  /\b(no|not|never|without|nor|neither|non|isn'?t|aren'?t|won'?t|don'?t|doesn'?t|cannot|can'?t|free of|rather than)\b[\s\w,'"()-]{0,28}$/i;
+function isNegated(before: string): boolean {
+  return NEGATION_BEFORE.test(before);
+}
 
 function walk(dir: string): string[] {
   const out: string[] = [];
@@ -61,7 +76,10 @@ for (const fp of walk(srcDir)) {
   const lines = readFileSync(fp, "utf8").split("\n");
   lines.forEach((line, i) => {
     for (const { term, re } of matchers) {
-      if (re.test(line)) {
+      re.lastIndex = 0;
+      for (const m of line.matchAll(re)) {
+        const before = line.slice(0, m.index ?? 0);
+        if (isNegated(before)) continue; // honest negative disclaimer — allowed
         errors.push(
           `${path.relative(srcDir, fp)}:${i + 1} forbidden framing "${term}" \u2014 ${line.trim().slice(0, 100)}`,
         );
