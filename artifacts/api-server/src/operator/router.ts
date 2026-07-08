@@ -19,7 +19,7 @@ import { allowRequest } from "../auth/throttle";
 import { throttleKey } from "../auth/clientIdentity";
 import { lookupActiveOperator } from "../auth/operatorContext";
 import { saveReferralTerm } from "./referralTermsService";
-import { inviteOperator, suspendOperator } from "./operatorRegistryService";
+import { inviteOperator, suspendOperator, listOperators } from "./operatorRegistryService";
 
 const router: IRouter = Router();
 
@@ -180,6 +180,39 @@ router.post("/operators/suspend", async (req: Request, res: Response) => {
   }
   req.log.info({ event: "operator.suspended", code: "ok" });
   res.json({ ok: true });
+});
+
+// ── GET /api/operator/operators (list) ──────────────────────────────────────
+// Admin-tier registry READ: founder_root or protocol_admin. Read-only; the
+// service returns masked wallets only, so no full operator PII leaves the server.
+router.get("/operators", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "operator.list.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const account =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  if (account === null) {
+    deny(res, 401, "no_session");
+    return;
+  }
+  const ctx = await lookupActiveOperator(account);
+  if (!ctx.isOperator || ctx.role === null || !WRITE_ROLES.has(ctx.role)) {
+    req.log.warn({ event: "operator.list.denied", code: "insufficient_role" });
+    deny(res, 403, "insufficient_role");
+    return;
+  }
+  const result = await listOperators();
+  if (!result.ok) {
+    deny(res, result.reason === "unavailable" ? 503 : 400, result.reason);
+    return;
+  }
+  req.log.info({ event: "operator.listed", code: "ok" });
+  res.json({ ok: true, operators: result.operators });
 });
 
 export default router;

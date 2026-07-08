@@ -35,3 +35,46 @@ export async function saveReferralTerm(key: string, value: string): Promise<Writ
     return { ok: false, reason: "unreachable" };
   }
 }
+
+export interface OperatorListItem {
+  walletShort: string;
+  label: string;
+  role: string;
+  status: string;
+}
+export type ListOperatorsResult =
+  | { status: "ok"; operators: OperatorListItem[] }
+  | { status: "denied" }
+  | { status: "unavailable" };
+
+// GET the live operator registry (masked wallets). Fail-closed: dark zone (404),
+// no session (401), or insufficient role (403) → "denied"; transport/other →
+// "unavailable". Never throws. Talks only to "/api/operator/...".
+export async function listOperators(): Promise<ListOperatorsResult> {
+  try {
+    const res = await fetch("/api/operator/operators", { method: "GET" });
+    if (res.ok) {
+      const body: unknown = await res.json();
+      const raw =
+        typeof body === "object" && body !== null
+          ? (body as Record<string, unknown>).operators
+          : null;
+      const operators: OperatorListItem[] = Array.isArray(raw)
+        ? raw.filter(
+            (o): o is OperatorListItem =>
+              typeof o === "object" &&
+              o !== null &&
+              typeof (o as Record<string, unknown>).walletShort === "string" &&
+              typeof (o as Record<string, unknown>).label === "string" &&
+              typeof (o as Record<string, unknown>).role === "string" &&
+              typeof (o as Record<string, unknown>).status === "string",
+          )
+        : [];
+      return { status: "ok", operators };
+    }
+    if (res.status === 401 || res.status === 403 || res.status === 404) return { status: "denied" };
+    return { status: "unavailable" };
+  } catch {
+    return { status: "unavailable" };
+  }
+}

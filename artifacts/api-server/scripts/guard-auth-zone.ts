@@ -715,11 +715,19 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
     "operator router zod-validates every body",
     "src/operator/router.ts must validate bodies with zod safeParse before delegating",
   );
-  // Approved route-path pin: the write zone exposes EXACTLY these routes, in
-  // this order, and nothing else. Any new route must be founder-approved and
-  // added here explicitly.
-  const APPROVED_ROUTES = ["/referral-terms", "/operators", "/operators/suspend"];
-  const FOUNDER_ONLY_ROUTES = new Set(["/operators", "/operators/suspend"]);
+  // Approved route pin (verb-aware): the operator zone exposes EXACTLY these
+  // verb+path pairs, in this order, and nothing else. Any new route must be
+  // founder-approved and added here explicitly. GET /operators is the ONLY
+  // sanctioned READ (Phase 3 slice 1 — masked registry list); everything else
+  // stays a POST write.
+  const APPROVED_ROUTES: ReadonlyArray<readonly [string, string]> = [
+    ["post", "/referral-terms"],
+    ["post", "/operators"],
+    ["post", "/operators/suspend"],
+    ["get", "/operators"],
+  ];
+  const FOUNDER_ONLY_ROUTES = new Set(["post /operators", "post /operators/suspend"]);
+  const READ_ONLY_ROUTES = new Set(["get /operators"]);
   // Close alternate Express route-declaration syntaxes BEFORE enumerating:
   // .route(...).post(...), bracketed verbs (router["post"]), computed access,
   // and any router.use beyond the two sanctioned scoped middleware lines could
@@ -753,56 +761,77 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
     "src/operator/router.ts instantiates more than one Router() — a sub-router could carry routes the route-set pin never sees",
   );
   const routeMatches = [...opRouterCode.matchAll(/router\.(get|post|put|patch|delete|all|head|options)\s*\(\s*"([^"]*)"/g)];
+  const approvedJoined = APPROVED_ROUTES.map(([v, p]) => `${v} ${p}`).join("|");
   check(
-    routeMatches.every((m) => m[1] === "post") &&
-      routeMatches.map((m) => m[2]).join("|") === APPROVED_ROUTES.join("|"),
-    `operator router exposes exactly the approved route paths (${APPROVED_ROUTES.join(", ")})`,
-    `src/operator/router.ts route set drifted — approved routes are POST ${APPROVED_ROUTES.join(", ")} and nothing else (found: ${routeMatches.map((m) => `${m[1]} ${m[2]}`).join(", ") || "none"})`,
+    routeMatches.map((m) => `${m[1]} ${m[2]}`).join("|") === approvedJoined,
+    `operator router exposes exactly the approved verb+path set (${approvedJoined.replaceAll("|", ", ")})`,
+    `src/operator/router.ts route set drifted — approved routes are ${approvedJoined.replaceAll("|", ", ")} and nothing else (found: ${routeMatches.map((m) => `${m[1]} ${m[2]}`).join(", ") || "none"})`,
   );
   // Per-route shape pin: split the router into route blocks and require EVERY
-  // route to carry the full fail-closed chain, and the registry routes to be
-  // founder_root ONLY (stricter than the admin-tier allow-list).
+  // route to carry the full fail-closed chain, the registry WRITE routes to be
+  // founder_root ONLY (stricter than the admin-tier allow-list), and the ONE
+  // sanctioned READ route (GET /operators) to stay body-free, admin-tier
+  // gated, and delegated to the masked list read ONLY.
   {
     const blockStarts = routeMatches.map((m) => m.index ?? 0);
     for (let i = 0; i < blockStarts.length; i += 1) {
-      const routePath = routeMatches[i]?.[2] ?? "(unknown)";
+      const routeKey = `${routeMatches[i]?.[1] ?? "?"} ${routeMatches[i]?.[2] ?? "(unknown)"}`;
       const block = opRouterCode.slice(
         blockStarts[i],
         i + 1 < blockStarts.length ? blockStarts[i + 1] : opRouterCode.length,
       );
       check(
         /allowRequest\(\s*throttleKey\(/.test(block),
-        `route ${routePath}: throttled (allowRequest + throttleKey) before any work`,
-        `src/operator/router.ts route ${routePath} lost its throttle — every write route must call allowRequest(throttleKey(req)) first`,
+        `route ${routeKey}: throttled (allowRequest + throttleKey) before any work`,
+        `src/operator/router.ts route ${routeKey} lost its throttle — every route must call allowRequest(throttleKey(req)) first`,
       );
       check(
         /getSessionAccount\(/.test(block) && /account\s*===\s*null/.test(block),
-        `route ${routePath}: wallet session required (null account → deny)`,
-        `src/operator/router.ts route ${routePath} lost its session requirement — no sessionless writes`,
+        `route ${routeKey}: wallet session required (null account → deny)`,
+        `src/operator/router.ts route ${routeKey} lost its session requirement — no sessionless access`,
       );
       check(
         /lookupActiveOperator\(/.test(block),
-        `route ${routePath}: role resolved via the read-only operator bridge`,
-        `src/operator/router.ts route ${routePath} must resolve the role via lookupActiveOperator`,
+        `route ${routeKey}: role resolved via the read-only operator bridge`,
+        `src/operator/router.ts route ${routeKey} must resolve the role via lookupActiveOperator`,
       );
-      check(
-        /\.safeParse\(\s*req\.body\s*\)/.test(block),
-        `route ${routePath}: body zod-validated (safeParse(req.body))`,
-        `src/operator/router.ts route ${routePath} must zod-validate req.body before delegating`,
-      );
-      if (FOUNDER_ONLY_ROUTES.has(routePath)) {
+      if (READ_ONLY_ROUTES.has(routeKey)) {
         check(
-          /ctx\.role\s*!==\s*"founder_root"/.test(block) &&
-            !/WRITE_ROLES/.test(block),
-          `route ${routePath}: founder_root ONLY (registry changes are founder-gated)`,
-          `src/operator/router.ts route ${routePath} role gate drifted — registry routes must deny unless ctx.role === "founder_root" and must NOT use the broader WRITE_ROLES allow-list`,
+          !/req\.body\b/.test(block),
+          `route ${routeKey}: READ route never touches req.body`,
+          `src/operator/router.ts route ${routeKey} is a sanctioned READ — it must not read req.body at all`,
+        );
+        check(
+          /WRITE_ROLES\.has\(/.test(block),
+          `route ${routeKey}: admin-tier allow-list gate (WRITE_ROLES)`,
+          `src/operator/router.ts route ${routeKey} must gate on WRITE_ROLES.has(ctx.role)`,
+        );
+        check(
+          /listOperators\(\)/.test(block) &&
+            !/inviteOperator\(|suspendOperator\(|upsertReferralTerms\(/.test(block),
+          `route ${routeKey}: delegates to the masked list read ONLY (no write service reachable)`,
+          `src/operator/router.ts route ${routeKey} must call listOperators() and must never reach inviteOperator/suspendOperator/upsertReferralTerms`,
         );
       } else {
         check(
-          /WRITE_ROLES\.has\(/.test(block),
-          `route ${routePath}: admin-tier allow-list gate (WRITE_ROLES)`,
-          `src/operator/router.ts route ${routePath} must gate on WRITE_ROLES.has(ctx.role)`,
+          /\.safeParse\(\s*req\.body\s*\)/.test(block),
+          `route ${routeKey}: body zod-validated (safeParse(req.body))`,
+          `src/operator/router.ts route ${routeKey} must zod-validate req.body before delegating`,
         );
+        if (FOUNDER_ONLY_ROUTES.has(routeKey)) {
+          check(
+            /ctx\.role\s*!==\s*"founder_root"/.test(block) &&
+              !/WRITE_ROLES/.test(block),
+            `route ${routeKey}: founder_root ONLY (registry changes are founder-gated)`,
+            `src/operator/router.ts route ${routeKey} role gate drifted — registry write routes must deny unless ctx.role === "founder_root" and must NOT use the broader WRITE_ROLES allow-list`,
+          );
+        } else {
+          check(
+            /WRITE_ROLES\.has\(/.test(block),
+            `route ${routeKey}: admin-tier allow-list gate (WRITE_ROLES)`,
+            `src/operator/router.ts route ${routeKey} must gate on WRITE_ROLES.has(ctx.role)`,
+          );
+        }
       }
     }
   }
@@ -963,6 +992,35 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
       !/\b(console|res|req|logger)\s*\./.test(regCode),
       "registry service: pure service module — no response, request, or log surface",
       "operatorRegistryService.ts must stay a pure service (no res/req/console/logger)",
+    );
+    // Phase 3 slice 1 — sanctioned masked list read. Pins: every exported
+    // service function opens with the same fail-closed gate; the list row
+    // shape carries ONLY the masked walletShort (never a full-wallet field);
+    // and the server-side mask is the 0x……-style slice.
+    {
+      const exportedFns = (regCode.match(/export async function /g) ?? []).length;
+      const gatedReturns = (
+        regCode.match(/if \(!gateOpen\(\)\) return \{ ok: false, reason: "unavailable" \};/g) ?? []
+      ).length;
+      check(
+        exportedFns >= 3 && gatedReturns === exportedFns,
+        "registry service: EVERY exported function (incl. listOperators) opens with the fail-closed exposure gate",
+        "operatorRegistryService.ts gate coverage drifted — each exported async function must start with `if (!gateOpen()) return { ok: false, reason: \"unavailable\" };`",
+      );
+    }
+    check(
+      /interface OperatorRow \{\s*walletShort: string;\s*label: string;\s*role: string;\s*status: string;\s*\}/.test(
+        regCode,
+      ),
+      "registry service: list row shape is EXACTLY { walletShort, label, role, status } — no full-wallet field",
+      "operatorRegistryService.ts OperatorRow drifted — the list read may carry ONLY walletShort/label/role/status; a full wallet field must never enter the row shape",
+    );
+    check(
+      /listOperators/.test(regCode) &&
+        /slice\(0,\s*6\)/.test(regCode) &&
+        /slice\(-4\)/.test(regCode),
+      "registry service: listOperators masks wallets server-side (slice(0,6)…slice(-4))",
+      "operatorRegistryService.ts must mask wallets server-side in listOperators — the full wallet never leaves the server",
     );
   }
 

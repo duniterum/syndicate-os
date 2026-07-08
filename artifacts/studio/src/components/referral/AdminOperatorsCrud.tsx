@@ -13,14 +13,36 @@
 // and founder/root approval. So this shows the management surface exactly, while
 // persisting nothing.
 
+import { useEffect, useState } from "react";
 import { UsersRound, UserPlus, Pencil, Ban, Link2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TruthLabel } from "@/components/TruthLabel";
-import { operatorRoles, operatorsSample, sourceReviewSample } from "@/config/referralProgram";
+import { operatorRoles, sourceReviewSample } from "@/config/referralProgram";
+import { listOperators, type ListOperatorsResult } from "@/lib/operatorClient";
+
+// Live, read-only registry read (Phase 3 slice 1). Honest states only — no
+// fake fallback: loading, ok (rows or empty), denied (dark zone / no session /
+// insufficient role), unavailable. Wallets arrive pre-masked from the server.
+type RegistryState = { status: "loading" } | ListOperatorsResult;
+
+function useOperatorRegistry(): RegistryState {
+  const [state, setState] = useState<RegistryState>({ status: "loading" });
+  useEffect(() => {
+    let active = true;
+    void listOperators().then((result) => {
+      if (active) setState(result);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+  return state;
+}
 
 export function AdminOperatorsCrud() {
+  const registry = useOperatorRegistry();
   return (
     <Card id="operators" className="p-6 scroll-mt-24">
       <div className="flex items-center gap-3 flex-wrap mb-1">
@@ -60,24 +82,43 @@ export function AdminOperatorsCrud() {
           </Button>
         </div>
         <div className="rounded-md border border-border/50 divide-y divide-border/50">
-          {operatorsSample.map((op) => (
-            <div key={op.wallet} className="flex items-center gap-3 p-3">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-sm font-medium text-foreground">{op.label}</span>
-                  <Badge variant="outline" className="text-[10px] font-normal">{op.role}</Badge>
-                  <span className="text-[10px] text-muted-foreground">{op.status}</span>
-                </div>
-                <div className="font-mono text-xs text-muted-foreground truncate">{op.wallet}</div>
-              </div>
-              <Button variant="ghost" size="sm" disabled aria-label={`Edit ${op.label}`} title="Enabled with the operator write zone">
-                <Pencil className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm" disabled aria-label={`Suspend ${op.label}`} title="Enabled with the operator write zone">
-                <Ban className="h-4 w-4" />
-              </Button>
+          {registry.status === "loading" && (
+            <div className="p-3 text-sm text-muted-foreground">Loading registry…</div>
+          )}
+          {registry.status === "denied" && (
+            <div className="p-3 text-sm text-muted-foreground">
+              Sign in as an operator to view the live registry.
             </div>
-          ))}
+          )}
+          {registry.status === "unavailable" && (
+            <div className="p-3 text-sm text-muted-foreground">
+              The operator registry isn&apos;t available yet.
+            </div>
+          )}
+          {registry.status === "ok" && registry.operators.length === 0 && (
+            <div className="p-3 text-sm text-muted-foreground">
+              No operators in the registry yet.
+            </div>
+          )}
+          {registry.status === "ok" &&
+            registry.operators.map((op) => (
+              <div key={op.walletShort} className="flex items-center gap-3 p-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-medium text-foreground">{op.label}</span>
+                    <Badge variant="outline" className="text-[10px] font-normal">{op.role}</Badge>
+                    <span className="text-[10px] text-muted-foreground">{op.status}</span>
+                  </div>
+                  <div className="font-mono text-xs text-muted-foreground truncate">{op.walletShort}</div>
+                </div>
+                <Button variant="ghost" size="sm" disabled aria-label={`Edit ${op.label}`} title="Enabled with the operator write zone">
+                  <Pencil className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="sm" disabled aria-label={`Suspend ${op.label}`} title="Enabled with the operator write zone">
+                  <Ban className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
         </div>
       </div>
     </Card>

@@ -129,3 +129,44 @@ export async function suspendOperator(input: SuspendOperatorInput): Promise<Regi
     return { ok: false, reason: "unavailable" };
   }
 }
+
+// Wallet is masked server-side (0x88ec…dd73) — the full wallet never leaves the
+// server, so no operator PII is echoed and the response carries no 40/64-hex
+// material for the leak-scan to catch.
+export interface OperatorRow {
+  walletShort: string;
+  label: string;
+  role: string;
+  status: string;
+}
+export type ListResult =
+  | { ok: true; operators: OperatorRow[] }
+  | { ok: false; reason: string };
+
+// Read-only registry list for the admin surface. Gated + lazy-DB like the
+// writes; returns masked wallets only. Reads are not privileged mutations, so
+// nothing is audited here.
+export async function listOperators(): Promise<ListResult> {
+  if (!gateOpen()) return { ok: false, reason: "unavailable" };
+  try {
+    const { db, operator } = await import("@workspace/db");
+    const rows = await db
+      .select({
+        wallet: operator.wallet,
+        label: operator.label,
+        role: operator.role,
+        status: operator.status,
+      })
+      .from(operator);
+    const operators: OperatorRow[] = rows.map((r) => ({
+      walletShort:
+        r.wallet.length >= 10 ? `${r.wallet.slice(0, 6)}…${r.wallet.slice(-4)}` : r.wallet,
+      label: r.label,
+      role: r.role,
+      status: r.status,
+    }));
+    return { ok: true, operators };
+  } catch {
+    return { ok: false, reason: "unavailable" };
+  }
+}
