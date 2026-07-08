@@ -157,6 +157,32 @@ export async function logoutSession(): Promise<WiredAccessStateId> {
   return "S1";
 }
 
+// ── Operator authorization readback (Phase 3 bridge) ────────────────────────
+// GET /api/auth/operator-context maps the session's SERVER-SIDE bound account to
+// its operator role via the ACTIVE registry row. Returns { isOperator, role }.
+// Fail-closed: any transport/shape failure, a dark auth zone, no session, or a
+// non-ACTIVE / unknown wallet → not an operator. The account is never echoed.
+
+export interface OperatorContextReadback {
+  isOperator: boolean;
+  role: string | null;
+}
+
+export async function fetchOperatorContext(): Promise<OperatorContextReadback> {
+  try {
+    const res = await fetch("/api/auth/operator-context", { method: "GET" });
+    if (!res.ok) return { isOperator: false, role: null };
+    const body: unknown = await res.json();
+    if (typeof body !== "object" || body === null) return { isOperator: false, role: null };
+    const o = body as Record<string, unknown>;
+    const isOperator = o.isOperator === true;
+    const role = typeof o.role === "string" ? o.role : null;
+    return { isOperator, role: isOperator ? role : null };
+  } catch {
+    return { isOperator: false, role: null };
+  }
+}
+
 /** Truncated display form of a client-known address, e.g. 0x1234…abcd. */
 export function shortAddress(address: string): string {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;

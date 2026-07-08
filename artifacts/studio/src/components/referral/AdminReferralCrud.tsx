@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { TruthLabel } from "@/components/TruthLabel";
 import { referralSettingsSample, referralEligibilityToggles, commissionTiers, commissionCapPct, rateChangeEvent } from "@/config/referralProgram";
+import { saveReferralTerm } from "@/lib/operatorClient";
 
 export function AdminReferralCrud() {
   const [active, setActive] = useState(false);
@@ -26,6 +27,33 @@ export function AdminReferralCrud() {
   const [toggles, setToggles] = useState<Record<string, boolean>>(
     Object.fromEntries(referralEligibilityToggles.map((t) => [t.key, t.on])),
   );
+  const [saveState, setSaveState] = useState<
+    | { kind: "idle" }
+    | { kind: "saving" }
+    | { kind: "saved" }
+    | { kind: "denied" }
+    | { kind: "unavailable" }
+    | { kind: "partial"; reason: string }
+  >({ kind: "idle" });
+
+  async function handleSave() {
+    setSaveState({ kind: "saving" });
+    const results = await Promise.all(
+      Object.entries(values).map(([key, value]) => saveReferralTerm(key, value)),
+    );
+    if (results.every((r) => r.ok)) {
+      setSaveState({ kind: "saved" });
+      return;
+    }
+    const reasons = results.filter((r) => !r.ok).map((r) => r.reason ?? "");
+    if (reasons.some((r) => r === "no_session" || r === "insufficient_role" || r === "401" || r === "403")) {
+      setSaveState({ kind: "denied" });
+    } else if (reasons.some((r) => r === "unreachable" || r === "unavailable" || r === "404" || r === "503")) {
+      setSaveState({ kind: "unavailable" });
+    } else {
+      setSaveState({ kind: "partial", reason: reasons[0] ?? "rejected" });
+    }
+  }
 
   return (
     <Card id="referral-settings" className="p-6 scroll-mt-24">
@@ -35,8 +63,9 @@ export function AdminReferralCrud() {
         <TruthLabel variant="DESIGN_PREVIEW" />
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl mb-5 leading-relaxed">
-        Edit the terms and rules here. Preview: changes are not saved and the program stays paused until the
-        operator write zone is enabled — then Save activates the program under these terms.
+        Edit the terms and rules here. Save submits term values through the founder-gated operator write
+        zone once it is enabled; until then nothing is saved. Program activation is a separate, later step —
+        Save never activates the program.
       </p>
 
       {/* Activation */}
@@ -104,12 +133,31 @@ export function AdminReferralCrud() {
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
-        <Button disabled title="Enabled with the operator write zone">
-          <Save className="h-4 w-4 mr-1.5" />
-          Save changes
-        </Button>
-        <span className="text-xs text-muted-foreground">Saving is enabled with the operator write zone.</span>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-3 flex-wrap">
+          <Button onClick={() => void handleSave()} disabled={saveState.kind === "saving"}>
+            <Save className="h-4 w-4 mr-1.5" />
+            {saveState.kind === "saving" ? "Saving…" : "Save changes"}
+          </Button>
+          <span className="text-xs text-muted-foreground">
+            Saves terms through the founder-gated operator write zone (audit-logged). The program stays paused until you activate it.
+          </span>
+        </div>
+        {saveState.kind === "saved" ? (
+          <div className="text-xs text-foreground">Terms saved and audit-logged.</div>
+        ) : saveState.kind === "denied" ? (
+          <div className="text-xs text-muted-foreground">
+            Not authorized — sign in as an operator (founder or protocol admin) to save.
+          </div>
+        ) : saveState.kind === "unavailable" ? (
+          <div className="text-xs text-muted-foreground">
+            The operator write zone isn't enabled yet — nothing was saved.
+          </div>
+        ) : saveState.kind === "partial" ? (
+          <div className="text-xs text-muted-foreground">
+            Some terms weren't accepted (reason: {saveState.reason}).
+          </div>
+        ) : null}
       </div>
     </Card>
   );

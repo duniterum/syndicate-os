@@ -31,6 +31,12 @@ import {
 } from "@/config/moduleRegistry";
 import { OPERATOR_PREVIEW_ENABLED } from "@/config/operatorPreviewGate";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
+
+// Operator identity badge lives in the build-time-gated wallet module: loaded
+// ONLY via the flag-conditional dynamic import, excluded from default builds.
+const OperatorBadge = WALLET_SESSION_PREVIEW_ENABLED
+  ? React.lazy(() => import("@/wallet/OperatorBadge"))
+  : null;
 import {
   lookupCategory,
   realityGroupSummary,
@@ -213,6 +219,11 @@ export default function AdminControlTower() {
           Admin Control Tower
         </h1>
         <TruthLabel variant="DESIGN_PREVIEW" />
+        {OperatorBadge ? (
+          <React.Suspense fallback={null}>
+            <OperatorBadge />
+          </React.Suspense>
+        ) : null}
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl mb-4 leading-relaxed">
         Internal operator skeleton. Every panel is read-only over the module
