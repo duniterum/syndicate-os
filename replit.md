@@ -10,6 +10,7 @@ A premium, proof-first web foundation for The Syndicate — a membership/recogni
 - `pnpm --filter @workspace/studio run typecheck` — typecheck the web app (verify with this, not `build`, from a shell)
 - `pnpm --filter @workspace/api-server run dev` — run the API server (`/api`, `GET /api/healthz`)
 - `pnpm run typecheck` — full typecheck across all packages
+- `pnpm --filter @workspace/scripts run github-sync` — push the workspace to GitHub (`duniterum/syndicate-os@main`) via the GitHub Git Data API using the `GITHUB_TOKEN` secret. Flags: `--dry-run` (list + secret-guard only, no push), `--message "<msg>"` (custom commit message). Syncs all git-tracked files except `.env*`, `.local/`, and `.agents/memory/`; a content-level secret guard (token/key/private-key patterns) aborts the whole sync before any upload. Run this after each publication to keep GitHub in sync.
 
 ## Stack
 

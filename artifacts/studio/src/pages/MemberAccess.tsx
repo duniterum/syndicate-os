@@ -10,6 +10,7 @@ import {
   Activity,
   type LucideIcon,
 } from "lucide-react";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
 import { PublicPage } from "@/components/PublicPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
@@ -151,6 +152,12 @@ export default function MemberAccess() {
           </div>
         </div>
       </Card>
+
+      {/* One-button wallet connect (Phase 1): RainbowKit connects AND signs
+          in (SIWE) against /api/auth in a single flow. Session ≠ membership. */}
+      <div className="mb-6">
+        <ConnectButton showBalance={false} />
+      </div>
 
       {/* Status centerpiece — the ONE live surface of the cockpit: public
           wallet session + standing self-readback (ships in production builds) */}

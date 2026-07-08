@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "wouter";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { RouteContextBar } from "@/components/RouteContextBar";
 import { sidebarNav, navLabel } from "@/config/navigation";
 import { brand } from "@/config/brand";
@@ -34,12 +35,21 @@ export function Sidebar() {
         </nav>
       </div>
       
-      <div className="p-4 border-t border-border/50 flex items-center justify-between">
-        <div className="flex items-center gap-2 px-3 py-2 text-xs font-mono text-muted-foreground bg-muted/30 rounded-md">
-          <div className="h-2 w-2 rounded-full bg-red-500/80 animate-pulse" />
-          Offline
+      <div className="p-4 border-t border-border/50 space-y-3">
+        {/* One-button operator connect (Phase 1): connect + SIWE sign-in
+            against /api/auth in a single flow. */}
+        <ConnectButton
+          showBalance={false}
+          chainStatus="none"
+          accountStatus="address"
+        />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 px-3 py-2 text-xs font-mono text-muted-foreground bg-muted/30 rounded-md">
+            <div className="h-2 w-2 rounded-full bg-red-500/80 animate-pulse" />
+            Offline
+          </div>
+          <ThemeToggle />
         </div>
-        <ThemeToggle />
       </div>
     </div>
   );

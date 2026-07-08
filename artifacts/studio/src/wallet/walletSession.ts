@@ -17,6 +17,7 @@
 import { createSiweMessage } from "viem/siwe";
 import { getAddress } from "viem";
 import { resolveWiredState, type WiredAccessStateId } from "@/config/accessState";
+import { announceSessionChanged } from "./sessionEvents";
 
 // ── EIP-1193 injected provider (browser wallet) ─────────────────────────────
 
@@ -123,6 +124,7 @@ export async function signInWithWallet(
   });
   if (!verifyRes.ok) throw new WalletSessionError("verify_rejected");
   const verified: unknown = await verifyRes.json();
+  announceSessionChanged();
   return resolveWiredState(
     typeof verified === "object" && verified !== null
       ? (verified as Record<string, unknown>).state
@@ -154,6 +156,7 @@ export async function logoutSession(): Promise<WiredAccessStateId> {
     // Cookie may outlive a failed request; the caller still wires S1 locally
     // and the next fetchSessionState() re-resolves the truth.
   }
+  announceSessionChanged();
   return "S1";
 }
 

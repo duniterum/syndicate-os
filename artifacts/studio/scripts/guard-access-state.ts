@@ -443,26 +443,95 @@ check(
   `useWireAccessState referenced outside the wallet module: ${wireViolations.join(", ")} — the wire seam has exactly one caller zone`,
 );
 
-// ── 15. (S2) Wallet module hard gate (build-time exclusion) ──────────────────
-// Any STATIC reference pulls wallet code into the main bundle and defeats the
-// exclusion, so match every static syntax: value imports (incl. multi-line),
-// `export … from` re-exports, and bare side-effect imports — via the alias
-// ("@/wallet/") or any relative path ("./wallet/", "../wallet/"). Dynamic
-// `import("...")` is untouched (no `from`, no bare-import shape).
+// ── 15. (S2) Wallet layer boundary (root providers, Phase 1 revision) ────────
+// Phase 1 (RainbowKit adoption, founder-approved) REVISED this rule: the
+// wallet layer now ships in EVERY build because wagmi + RainbowKit are ROOT
+// providers wired in App.tsx. The old invariant ("wallet code is excludable
+// from prod via dynamic import") is retired; what replaces it is a STRICTER
+// boundary:
+//   • App.tsx is the ONLY file allowed to statically reach @/wallet/ — and
+//     only for the pinned provider pair from wallet/RainbowKitRoot.tsx.
+//   • Every other file keeps the full static-import ban; the boot/panel
+//     seams stay flag-gated dynamic imports (checked below, unchanged).
+//   • The provider chain order is pinned: WalletWagmiProvider (wagmi) OUTSIDE
+//     the query client, WalletAuthProvider (RainbowKit auth) INSIDE it.
+//   • RainbowKitRoot must bind adapter={rainbowAuthAdapter}, a derived
+//     status, and config={wagmiConfig} — session truth stays with /api/auth.
+//   • The WalletConnect projectId env var is referenced ONLY inside wallet/.
 const WALLET_SPECIFIER = String.raw`"(?:@\/wallet\/|\.[^"]*\/wallet\/)`;
 const staticWalletImports = [
   new RegExp(String.raw`import\s+(?!type\b)[^;]*from\s+${WALLET_SPECIFIER}`),
   new RegExp(String.raw`export\s+(?!type\b)[^;]*from\s+${WALLET_SPECIFIER}`),
   new RegExp(String.raw`import\s+${WALLET_SPECIFIER}`),
 ];
+const WALLET_STATIC_ALLOWLIST = new Set(["App.tsx"]);
+for (const abs of allSrcFiles) {
+  const rel = path.relative(srcDir, abs);
+  if (rel.startsWith(WALLET_PREFIX) || WALLET_STATIC_ALLOWLIST.has(rel)) continue;
+  const code = stripComments(read(abs));
+  check(
+    !staticWalletImports.some((re) => re.test(code)),
+    `${rel}: no static import/re-export of the wallet module`,
+    `${rel} statically imports or re-exports the wallet module — only App.tsx (root providers) may reach @/wallet/ statically`,
+  );
+}
+// App.tsx may statically import ONLY the RainbowKitRoot providers from wallet/.
+const appWalletImports = appCode.match(
+  new RegExp(String.raw`import\s+(?!type\b)[^;]*from\s+"@\/wallet\/[^"]*"`, "g"),
+) ?? [];
+check(
+  appWalletImports.length === 1 &&
+    /import\s*\{\s*WalletWagmiProvider\s*,\s*WalletAuthProvider\s*\}\s*from\s*"@\/wallet\/RainbowKitRoot"/.test(
+      appWalletImports[0],
+    ),
+  "App.tsx statically imports ONLY { WalletWagmiProvider, WalletAuthProvider } from RainbowKitRoot",
+  'App.tsx must have exactly one static wallet import: `import { WalletWagmiProvider, WalletAuthProvider } from "@/wallet/RainbowKitRoot"`',
+);
+// Provider chain order pinned: wagmi OUTSIDE the query client, RainbowKit
+// auth INSIDE it (wagmi v2 requires TanStack Query below it).
+const wagmiOpenIdx = appCode.indexOf("<WalletWagmiProvider>");
+const queryOpenIdx = appCode.indexOf("<QueryClientProvider");
+const authOpenIdx = appCode.indexOf("<WalletAuthProvider>");
+check(
+  wagmiOpenIdx !== -1 &&
+    queryOpenIdx !== -1 &&
+    authOpenIdx !== -1 &&
+    wagmiOpenIdx < queryOpenIdx &&
+    queryOpenIdx < authOpenIdx,
+  "App.tsx pins the provider chain: WagmiProvider → QueryClientProvider → RainbowKit auth",
+  "App.tsx must nest <WalletWagmiProvider> → <QueryClientProvider> → <WalletAuthProvider> in that order",
+);
+// RainbowKitRoot invariants: pinned adapter, derived status, pinned config,
+// and a fail-closed session read (fetchSessionState, S4 = authenticated).
+const rkRootCode = stripComments(
+  read(path.resolve(srcDir, "wallet/RainbowKitRoot.tsx")),
+);
+check(
+  /adapter=\{rainbowAuthAdapter\}/.test(rkRootCode) &&
+    /status=\{status\}/.test(rkRootCode),
+  "RainbowKitRoot binds adapter={rainbowAuthAdapter} + derived status",
+  "RainbowKitRoot.tsx must bind `adapter={rainbowAuthAdapter}` and `status={status}` on RainbowKitAuthenticationProvider",
+);
+check(
+  /config=\{wagmiConfig\}/.test(rkRootCode),
+  "RainbowKitRoot binds config={wagmiConfig} on WagmiProvider",
+  "RainbowKitRoot.tsx must bind `config={wagmiConfig}` on WagmiProvider",
+);
+check(
+  /queryFn:\s*fetchSessionState/.test(rkRootCode) &&
+    /data\s*===\s*"S4"\s*\?\s*"authenticated"/.test(rkRootCode),
+  "RainbowKitRoot derives status from fetchSessionState (S4 = authenticated, fail-closed)",
+  "RainbowKitRoot.tsx must derive auth status from fetchSessionState with S4 → authenticated (session truth stays with /api/auth/session)",
+);
+// WalletConnect projectId env reference stays inside the wallet module.
 for (const abs of allSrcFiles) {
   const rel = path.relative(srcDir, abs);
   if (rel.startsWith(WALLET_PREFIX)) continue;
   const code = stripComments(read(abs));
   check(
-    !staticWalletImports.some((re) => re.test(code)),
-    `${rel}: no static import/re-export of the wallet module`,
-    `${rel} statically imports or re-exports the wallet module — that defeats the build-time exclusion; only the flag-gated dynamic import is allowed`,
+    !code.includes("VITE_WALLETCONNECT_PROJECT_ID"),
+    `${rel}: no WalletConnect projectId reference`,
+    `${rel} references VITE_WALLETCONNECT_PROJECT_ID — the projectId is read only inside src/wallet/`,
   );
 }
 check(

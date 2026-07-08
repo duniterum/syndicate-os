@@ -24,6 +24,11 @@ import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
 import type { OperatorConsolePage } from "@/operator/OperatorConsole";
 import { AccessStateProvider } from "@/components/access/AccessStateProvider";
 import { AccessGate } from "@/components/access/AccessGate";
+// Phase 1 (founder-approved): the wallet layer ships in EVERY build via root
+// providers — wagmi + RainbowKit wired to the unchanged /api/auth backend.
+// guard-access-state rule 15 pins this exact wiring (App.tsx is the ONLY file
+// allowed to statically reach @/wallet/).
+import { WalletWagmiProvider, WalletAuthProvider } from "@/wallet/RainbowKitRoot";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { RouteScrollManager } from "@/components/RouteScrollManager";
 import { SeoHeadManager } from "@/components/SeoHeadManager";
@@ -39,10 +44,11 @@ const OperatorConsole = OPERATOR_PREVIEW_ENABLED
   ? lazy(() => import("@/operator/OperatorConsole"))
   : null;
 
-// Wallet session hard gate (S2): app-root session resolution is reachable
-// ONLY through this conditional dynamic import. Default production builds
-// fold the gate to `false` — the wallet module (and every "/api/auth"
-// string) is dead-code-eliminated; the provider stays fail-closed at S1.
+// Wallet session boot seam (S2): app-root session resolution stays reachable
+// ONLY through this conditional dynamic import. Since Phase 1 the gate is a
+// `true` literal (the wallet layer ships in ALL builds); the seam keeps its
+// gate shape so guard rule 15 can pin it, and S1 stays the fail-closed
+// default until the server session read resolves.
 const WalletSessionBoot = WALLET_SESSION_PREVIEW_ENABLED
   ? lazy(() => import("@/wallet/WalletSessionBoot"))
   : null;
@@ -158,23 +164,27 @@ function Router() {
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="syndicate-theme">
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-            <AccessStateProvider>
-              {WalletSessionBoot ? (
-                <Suspense fallback={null}>
-                  <WalletSessionBoot />
-                </Suspense>
-              ) : null}
-              <RouteScrollManager />
-              <SeoHeadManager />
-              <Router />
-            </AccessStateProvider>
-          </WouterRouter>
-          <Toaster />
-        </TooltipProvider>
-      </QueryClientProvider>
+      <WalletWagmiProvider>
+        <QueryClientProvider client={queryClient}>
+          <WalletAuthProvider>
+            <TooltipProvider>
+              <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+                <AccessStateProvider>
+                  {WalletSessionBoot ? (
+                    <Suspense fallback={null}>
+                      <WalletSessionBoot />
+                    </Suspense>
+                  ) : null}
+                  <RouteScrollManager />
+                  <SeoHeadManager />
+                  <Router />
+                </AccessStateProvider>
+              </WouterRouter>
+              <Toaster />
+            </TooltipProvider>
+          </WalletAuthProvider>
+        </QueryClientProvider>
+      </WalletWagmiProvider>
     </ThemeProvider>
   );
 }
