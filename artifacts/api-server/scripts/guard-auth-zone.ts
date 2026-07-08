@@ -195,14 +195,94 @@ for (const abs of authFiles) {
     `${rel} carries state literal(s) above the S4 cap: ${illegal.join(", ")} — registry-less IA-2 must never emit higher states`,
   );
 }
+// Founder-approved amendment (operator-authorization bridge, July 2026):
+// operatorContext.ts is the SINGLE file in the auth zone allowed to reach the
+// Phase 3 operator registry — read-only, lazily imported, fail-closed. Every
+// other auth file stays registry-less, and operatorContext.ts itself is pinned
+// below to the exact fail-closed shape that was approved.
+const OPERATOR_BRIDGE_FILE = "auth/operatorContext.ts";
+const REGISTRY_REACH = /@workspace\/db|drizzle|historical_member|memberRoot|ACTIVE/;
+// For helpers OUTSIDE src/auth (one-hop transitive scan) only true DB reach
+// counts — "ACTIVE" is a legitimate chain-decode status word in read-only
+// protocol helpers and must not false-positive there.
+const DB_REACH = /@workspace\/db|drizzle|historical_member|memberRoot/;
 for (const abs of authFiles) {
   const rel = path.relative(srcDir, abs);
+  if (rel === OPERATOR_BRIDGE_FILE) continue;
   const code = stripComments(read(abs));
   check(
-    !/@workspace\/db|drizzle|historical_member|memberRoot|ACTIVE/.test(code),
+    !REGISTRY_REACH.test(code),
     `${rel}: no registry/DB reach`,
-    `${rel} references registry/DB material — the IA-2 auth zone is registry-less by founder gate`,
+    `${rel} references registry/DB material — the IA-2 auth zone is registry-less by founder gate (sole exception: ${OPERATOR_BRIDGE_FILE})`,
   );
+  // Anti-laundering: an auth file must not route a registry reach through a
+  // helper module outside src/auth. Resolve each relative import that escapes
+  // the auth dir and scan the target one hop deep for registry/DB material.
+  const importSpecs = [
+    ...code.matchAll(/from\s+["'](\.\.?\/[^"']+)["']|import\(\s*["'](\.\.?\/[^"']+)["']\s*\)/g),
+  ]
+    .map((m) => m[1] ?? m[2])
+    .filter((s): s is string => typeof s === "string");
+  for (const spec of importSpecs) {
+    const base = path.resolve(path.dirname(abs), spec);
+    const target = [`${base}.ts`, `${base}.tsx`, path.join(base, "index.ts")].find(
+      (c) => existsSync(c),
+    );
+    if (target === undefined) continue;
+    if (path.relative(authDir, target).startsWith("..") === false) continue; // inside auth: already scanned above
+    check(
+      !DB_REACH.test(stripComments(read(target))),
+      `${rel} → ${path.relative(srcDir, target)}: imported helper has no registry/DB reach`,
+      `${rel} imports ${path.relative(srcDir, target)}, which references registry/DB material — the auth zone must not launder a registry reach through a helper module`,
+    );
+  }
+}
+{
+  const bridgeAbs = path.join(srcDir, OPERATOR_BRIDGE_FILE);
+  const bridgeExists = existsSync(bridgeAbs);
+  check(
+    bridgeExists,
+    `${OPERATOR_BRIDGE_FILE}: present`,
+    `${OPERATOR_BRIDGE_FILE} missing — remove its guard exception if the bridge is retired`,
+  );
+  if (bridgeExists) {
+    const code = stripComments(read(bridgeAbs));
+    check(
+      !/^\s*import[^;]*@workspace\/db/m.test(code) &&
+        /await import\(\s*["']@workspace\/db["']\s*\)/.test(code),
+      `${OPERATOR_BRIDGE_FILE}: @workspace/db is lazily imported only`,
+      `${OPERATOR_BRIDGE_FILE} must import @workspace/db ONLY via a lazy await import() — a top-level import couples the read-only server to a DB at boot`,
+    );
+    {
+      const flagGateIdx = code.search(/AUTH_EXPOSURE_FLAG\]\s*!==\s*["']true["']/);
+      const dbUrlIdx = code.indexOf("DATABASE_URL");
+      const lazyImportIdx = code.search(/await import\(\s*["']@workspace\/db["']\s*\)/);
+      check(
+        flagGateIdx !== -1 &&
+          dbUrlIdx !== -1 &&
+          lazyImportIdx !== -1 &&
+          flagGateIdx < lazyImportIdx &&
+          dbUrlIdx < lazyImportIdx,
+        `${OPERATOR_BRIDGE_FILE}: exposure-flag + DATABASE_URL gate executes BEFORE the lazy DB import`,
+        `${OPERATOR_BRIDGE_FILE} must check the auth exposure flag and DATABASE_URL presence BEFORE the lazy @workspace/db import — gate order drifted`,
+      );
+    }
+    check(
+      /catch\s*(\([^)]*\))?\s*\{[^}]*return NOT_OPERATOR/.test(code),
+      `${OPERATOR_BRIDGE_FILE}: any error fails closed to NOT_OPERATOR`,
+      `${OPERATOR_BRIDGE_FILE} must return NOT_OPERATOR from its catch — DB errors must never grant authority`,
+    );
+    check(
+      /status\s*!==\s*["']ACTIVE["']/.test(code),
+      `${OPERATOR_BRIDGE_FILE}: only ACTIVE operator rows resolve to a role`,
+      `${OPERATOR_BRIDGE_FILE} must reject every non-ACTIVE operator status`,
+    );
+    check(
+      !/\b(console|res|req|logger)\s*\./.test(code),
+      `${OPERATOR_BRIDGE_FILE}: pure lookup module — no response, request, or log surface`,
+      `${OPERATOR_BRIDGE_FILE} must stay a pure lookup module (no res/req/console/logger) so the verified account can never be echoed or logged from here`,
+    );
+  }
 }
 check(
   AUTH_CHAIN_ID === CHAIN_REGISTRY.id,

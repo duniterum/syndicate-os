@@ -57,6 +57,7 @@ import {
 import { allowRequest } from "./throttle";
 import { throttleKey } from "./clientIdentity";
 import { readEngineMemberNumber } from "./engineReadback";
+import { lookupActiveOperator } from "./operatorContext";
 import { resolveOwnStanding } from "../lib/protocol/holderIndexStanding";
 import { assertProtocolRealityDiscipline } from "../lib/protocol/payloadDiscipline";
 
@@ -265,6 +266,37 @@ router.get("/session", (req: Request, res: Response) => {
     code: active ? "active" : "none",
   });
   res.json({ state: active ? "S4" : "S1" });
+});
+
+// ── GET /api/auth/operator-context ──────────────────────────────────────────
+// Bridges a wallet-verified session to operator authority: looks the session's
+// SIWE-verified account up in the operator registry (Phase 3) and returns the
+// role ONLY when the operator row exists and is ACTIVE. Read-only. Fail-closed
+// on every axis (no session, DB absent, zone disabled, unknown/non-ACTIVE
+// wallet, or any error) → { isOperator: false, role: null }. The verified
+// account is never echoed; only the coarse operator role leaves the server.
+router.get("/operator-context", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "auth.operator_context.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const account =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  if (account === null) {
+    // No wallet session is not an error — simply not an operator.
+    res.json({ isOperator: false, role: null });
+    return;
+  }
+  const ctx = await lookupActiveOperator(account);
+  req.log.info({
+    event: "auth.operator_context.checked",
+    code: ctx.isOperator ? "operator" : "none",
+  });
+  res.json({ isOperator: ctx.isOperator, role: ctx.role });
 });
 
 // ── GET /api/auth/member-self ───────────────────────────────────────────────
