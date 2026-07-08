@@ -44,7 +44,8 @@
     "activity:derive": "tsx ./scripts/activity-heartbeat-derive.ts",
     "activity:guard": "tsx ./scripts/activity-heartbeat.guard.ts",
     "auth-zone:guard": "tsx ./scripts/guard-auth-zone.ts",
-    "auth-skeleton:test": "tsx ./scripts/auth-skeleton-test.ts"
+    "auth-skeleton:test": "tsx ./scripts/auth-skeleton-test.ts",
+    "operator-write:test": "tsx ./scripts/operator-write-test.ts"
   },
   "dependencies": {
     "@workspace/api-zod": "workspace:*",
