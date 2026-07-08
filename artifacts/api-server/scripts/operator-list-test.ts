@@ -37,6 +37,7 @@ interface ChallengeFields {
 }
 
 interface ListedOperator {
+  id: string;
   walletShort: string;
   label: string;
   role: string;
@@ -198,10 +199,12 @@ async function main(): Promise<void> {
       operators.map((o) => o.walletShort).join(", "),
     );
     record(
-      "row shape carries ONLY walletShort/label/role/status",
+      "row shape carries ONLY id/walletShort/label/role/status (id is the stable suspend key)",
       operators.every(
         (o) =>
-          Object.keys(o).sort().join(",") === "label,role,status,walletShort",
+          Object.keys(o).sort().join(",") === "id,label,role,status,walletShort" &&
+          typeof o.id === "string" &&
+          o.id.length > 0,
       ),
       `keys: ${operators[0] ? Object.keys(operators[0]).sort().join(",") : "n/a"}`,
     );

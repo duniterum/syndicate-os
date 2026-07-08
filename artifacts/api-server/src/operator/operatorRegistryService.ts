@@ -89,42 +89,49 @@ export async function inviteOperator(input: InviteOperatorInput): Promise<Regist
 }
 
 export interface SuspendOperatorInput {
-  wallet: string;
+  id: string;
   actorWallet: string;
   actorRole: string;
 }
 
 export async function suspendOperator(input: SuspendOperatorInput): Promise<RegistryResult> {
   if (!gateOpen()) return { ok: false, reason: "unavailable" };
-
-  const wallet = input.wallet.toLowerCase();
-  if (!/^0x[0-9a-f]{40}$/.test(wallet)) return { ok: false, reason: "bad_wallet" };
-  // Lockout guard: an operator can never suspend themselves.
-  if (wallet === input.actorWallet.toLowerCase()) return { ok: false, reason: "cannot_suspend_self" };
+  if (input.id.length === 0 || input.id.length > 64) return { ok: false, reason: "bad_id" };
 
   try {
     const { db, operator, auditLog } = await import("@workspace/db");
     const { eq } = await import("drizzle-orm");
-    let changed = false;
+    let result: RegistryResult = { ok: false, reason: "not_found" };
     await db.transaction(async (tx) => {
-      const rows = await tx
+      // Resolve the row by id to get its wallet (self-suspend guard + audit target).
+      const found = await tx
+        .select({ wallet: operator.wallet })
+        .from(operator)
+        .where(eq(operator.id, input.id))
+        .limit(1);
+      if (found.length === 0) return; // not_found
+      const targetWallet = found[0].wallet;
+      // Lockout guard: an operator can never suspend themselves.
+      if (targetWallet.toLowerCase() === input.actorWallet.toLowerCase()) {
+        result = { ok: false, reason: "cannot_suspend_self" };
+        return;
+      }
+      await tx
         .update(operator)
         .set({ status: "SUSPENDED", updatedAt: new Date() })
-        .where(eq(operator.wallet, wallet))
-        .returning({ id: operator.id });
-      if (rows.length === 0) return; // no such operator
-      changed = true;
+        .where(eq(operator.id, input.id));
       await tx.insert(auditLog).values({
         id: randomUUID(),
         actorWallet: input.actorWallet,
         actorRole: input.actorRole,
         action: "operator.suspend",
-        target: wallet,
-        detail: null,
+        target: targetWallet,
+        detail: { id: input.id },
         stepUpSigned: false,
       });
+      result = { ok: true };
     });
-    return changed ? { ok: true } : { ok: false, reason: "not_found" };
+    return result;
   } catch {
     return { ok: false, reason: "unavailable" };
   }
@@ -134,6 +141,7 @@ export async function suspendOperator(input: SuspendOperatorInput): Promise<Regi
 // server, so no operator PII is echoed and the response carries no 40/64-hex
 // material for the leak-scan to catch.
 export interface OperatorRow {
+  id: string;
   walletShort: string;
   label: string;
   role: string;
@@ -152,6 +160,7 @@ export async function listOperators(): Promise<ListResult> {
     const { db, operator } = await import("@workspace/db");
     const rows = await db
       .select({
+        id: operator.id,
         wallet: operator.wallet,
         label: operator.label,
         role: operator.role,
@@ -159,6 +168,7 @@ export async function listOperators(): Promise<ListResult> {
       })
       .from(operator);
     const operators: OperatorRow[] = rows.map((r) => ({
+      id: r.id,
       walletShort:
         r.wallet.length >= 10 ? `${r.wallet.slice(0, 6)}…${r.wallet.slice(-4)}` : r.wallet,
       label: r.label,

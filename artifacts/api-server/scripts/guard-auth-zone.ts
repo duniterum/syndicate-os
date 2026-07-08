@@ -715,6 +715,15 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
     "operator router zod-validates every body",
     "src/operator/router.ts must validate bodies with zod safeParse before delegating",
   );
+  // Phase 3 slice 3: the suspend body schema is EXACTLY { id } — a wallet must
+  // never be accepted as a suspend target from the network.
+  check(
+    /const SuspendOperatorBody = z\.object\(\{\s*id: z\.string\(\)\.min\(1\)\.max\(64\),\s*\}\);/.test(
+      opRouterCode,
+    ),
+    "operator router: suspend body schema is EXACTLY { id } (no wallet field)",
+    "src/operator/router.ts SuspendOperatorBody drifted — the suspend body must be exactly { id: z.string().min(1).max(64) }; a wallet field must never enter the suspend body",
+  );
   // Approved route pin (verb-aware): the operator zone exposes EXACTLY these
   // verb+path pairs, in this order, and nothing else. Any new route must be
   // founder-approved and added here explicitly. GET /operators is the ONLY
@@ -957,9 +966,40 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
       "operatorRegistryService.ts must import @workspace/db ONLY via a lazy await import()",
     );
     check(
-      (regCode.match(/\^0x\[0-9a-f\]\{40\}\$/g) ?? []).length >= 2,
-      "registry service: wallet form validated server-side in BOTH invite and suspend",
-      "operatorRegistryService.ts must validate /^0x[0-9a-f]{40}$/ on the lowercased wallet in both inviteOperator and suspendOperator",
+      (regCode.match(/\^0x\[0-9a-f\]\{40\}\$/g) ?? []).length >= 1,
+      "registry service: wallet form validated server-side in inviteOperator",
+      "operatorRegistryService.ts must validate /^0x[0-9a-f]{40}$/ on the lowercased wallet in inviteOperator",
+    );
+    // Phase 3 slice 3 — suspend is id-based ONLY: the client never submits a
+    // wallet to suspend. Pins: the suspend input carries id (no wallet field),
+    // the id is bounds-checked (bad_id), and the target wallet is RESOLVED
+    // server-side from the row by id (for the self-suspend guard + audit
+    // target) — never taken from the request.
+    check(
+      /interface SuspendOperatorInput \{\s*id: string;\s*actorWallet: string;\s*actorRole: string;\s*\}/.test(
+        regCode,
+      ),
+      "registry service: suspend input is EXACTLY { id, actorWallet, actorRole } — no target-wallet field",
+      "operatorRegistryService.ts SuspendOperatorInput drifted — suspend must be id-based; a target wallet field must never enter the suspend input",
+    );
+    check(
+      /input\.id\.length === 0 \|\| input\.id\.length > 64/.test(regCode) &&
+        /bad_id/.test(regCode),
+      "registry service: suspend id bounds-checked server-side (bad_id)",
+      "operatorRegistryService.ts must bounds-check input.id (empty / >64 → bad_id) before touching the DB",
+    );
+    check(
+      /select\(\{\s*wallet:\s*operator\.wallet\s*\}\)/.test(regCode) &&
+        /eq\(operator\.id,\s*input\.id\)/.test(regCode),
+      "registry service: suspend resolves the target wallet from the row by id (server-side authority)",
+      "operatorRegistryService.ts suspendOperator must resolve the target wallet by SELECTing the row via eq(operator.id, input.id) — the target wallet must never come from the request",
+    );
+    check(
+      /action:\s*"operator\.suspend"/.test(regCode) &&
+        /target:\s*targetWallet/.test(regCode) &&
+        /detail:\s*\{\s*id:\s*input\.id\s*\}/.test(regCode),
+      "registry service: suspend audit row pinned (action operator.suspend, target = resolved wallet, detail.id)",
+      "operatorRegistryService.ts suspend audit row drifted — it must record action \"operator.suspend\", target = the resolved row wallet, and detail { id: input.id }",
     );
     check(
       /OPERATOR_ROLES\s*=\s*new Set\(/.test(regCode) && /!OPERATOR_ROLES\.has\(/.test(regCode),
@@ -1008,12 +1048,15 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
         "operatorRegistryService.ts gate coverage drifted — each exported async function must start with `if (!gateOpen()) return { ok: false, reason: \"unavailable\" };`",
       );
     }
+    // (Phase 3 slice 3 amendment: the stable row id — a UUID, non-PII — is now
+    // part of the list row shape so the admin surface can suspend by id
+    // without ever handling a wallet. Still NO full-wallet field.)
     check(
-      /interface OperatorRow \{\s*walletShort: string;\s*label: string;\s*role: string;\s*status: string;\s*\}/.test(
+      /interface OperatorRow \{\s*id: string;\s*walletShort: string;\s*label: string;\s*role: string;\s*status: string;\s*\}/.test(
         regCode,
       ),
-      "registry service: list row shape is EXACTLY { walletShort, label, role, status } — no full-wallet field",
-      "operatorRegistryService.ts OperatorRow drifted — the list read may carry ONLY walletShort/label/role/status; a full wallet field must never enter the row shape",
+      "registry service: list row shape is EXACTLY { id, walletShort, label, role, status } — no full-wallet field",
+      "operatorRegistryService.ts OperatorRow drifted — the list read may carry ONLY id/walletShort/label/role/status; a full wallet field must never enter the row shape",
     );
     check(
       /listOperators/.test(regCode) &&

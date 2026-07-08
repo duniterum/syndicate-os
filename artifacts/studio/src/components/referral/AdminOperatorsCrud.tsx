@@ -7,13 +7,14 @@
 // referrals (moved, not rewritten). Mirrors the wallet-first operator
 // registry design (server-side allowlist, one role per row, fail-closed).
 //
-// Phase 3 slice 2: the registry READ is live (masked wallets from the server)
-// and INVITE is a live founder-gated write into the real operator registry +
-// audit log (POST /api/operator/operators, founder_root session required,
-// fail-closed at every layer). Edit / suspend / revoke remain PREVIEW ONLY —
-// disabled controls, persisting nothing — until their own founder-approved
-// slices. Admin-tier registry changes additionally require step-up signature
-// and founder/root approval.
+// Phase 3 slice 2/3: the registry READ is live (masked wallets from the
+// server), INVITE is a live founder-gated write into the real operator
+// registry + audit log (POST /api/operator/operators), and SUSPEND is a live
+// founder-gated write by stable row id (POST /api/operator/operators/suspend,
+// confirmation dialog, self-suspend lockout server-side) — founder_root
+// session required, fail-closed at every layer. Edit remains PREVIEW ONLY —
+// a disabled control, persisting nothing — until its own founder-approved
+// slice.
 
 import { useEffect, useState, type FormEvent } from "react";
 import { UsersRound, UserPlus, Pencil, Ban, Link2 } from "lucide-react";
@@ -29,13 +30,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { TruthLabel } from "@/components/TruthLabel";
 import { operatorRoles, sourceReviewSample } from "@/config/referralProgram";
 import {
   listOperators,
   inviteOperator,
+  suspendOperator,
   type ListOperatorsResult,
+  type OperatorListItem,
 } from "@/lib/operatorClient";
 
 // Live, read-only registry read (Phase 3 slice 1). Honest states only — no
@@ -92,6 +105,109 @@ function inviteFailureText(reason: string | null): string {
     default:
       return `Invite failed${reason !== null ? ` (reason: ${reason})` : ""}.`;
   }
+}
+
+// Honest, specific failure text for every reason the suspend path can return —
+// no generic "something went wrong", and NEVER a fake success.
+function suspendFailureText(reason: string | null): string {
+  switch (reason) {
+    case "cannot_suspend_self":
+      return "You can't suspend yourself.";
+    case "not_found":
+      return "Operator not found — the registry may have changed; reload and retry.";
+    case "no_session":
+      return "No active operator session — sign in as an operator first (account menu).";
+    case "insufficient_role":
+      return "Only a founder can suspend operators.";
+    case "bad_id":
+    case "bad_request":
+      return "The server rejected the suspend request as invalid.";
+    case "throttled":
+      return "Too many attempts — wait a moment and retry.";
+    case "unavailable":
+    case "unreachable":
+    case "404":
+      return "The operator write zone isn't available here (auth zone dark or no database).";
+    default:
+      return `Suspend failed${reason !== null ? ` (reason: ${reason})` : ""}.`;
+  }
+}
+
+// Founder-gated suspend confirmation (Phase 3 slice 3). Confirms, then submits
+// to the REAL POST /api/operator/operators/suspend by stable id through the
+// fail-closed client; on success the registry is re-read live so the row flips
+// to SUSPENDED — no fabricated local state change.
+function SuspendOperatorDialog({
+  target,
+  onSuspended,
+  onClose,
+}: {
+  target: OperatorListItem | null;
+  onSuspended: () => void;
+  onClose: () => void;
+}) {
+  const { toast } = useToast();
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleConfirm() {
+    if (target === null || submitting) return;
+    setSubmitting(true);
+    setError(null);
+    const result = await suspendOperator(target.id);
+    setSubmitting(false);
+    if (result.ok) {
+      toast({ title: "Operator suspended" });
+      onSuspended();
+      onClose();
+    } else {
+      setError(suspendFailureText(result.reason));
+    }
+  }
+
+  return (
+    <AlertDialog
+      open={target !== null}
+      onOpenChange={(open) => {
+        if (!open && !submitting) {
+          setError(null);
+          onClose();
+        }
+      }}
+    >
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Suspend this operator?</AlertDialogTitle>
+          <AlertDialogDescription>
+            {target !== null ? (
+              <>
+                <span className="font-medium text-foreground">{target.label}</span>{" "}
+                <span className="font-mono text-xs">({target.walletShort})</span> — role{" "}
+                <span className="font-mono text-xs">{target.role}</span>. This is a live
+                founder-gated write: the row flips to SUSPENDED in the real registry and an
+                audit entry is recorded.
+              </>
+            ) : null}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        {error !== null && (
+          <p className="text-xs text-destructive leading-relaxed">{error}</p>
+        )}
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={submitting}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            disabled={submitting}
+            onClick={(e) => {
+              e.preventDefault();
+              void handleConfirm();
+            }}
+          >
+            {submitting ? "Suspending…" : "Suspend"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
 }
 
 // Founder-gated invite form (Phase 3 slice 2). Submits to the REAL
@@ -204,6 +320,7 @@ function InviteOperatorForm({
 export function AdminOperatorsCrud() {
   const { registry, reload } = useOperatorRegistry();
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [suspendTarget, setSuspendTarget] = useState<OperatorListItem | null>(null);
   return (
     <Card id="operators" className="p-6 scroll-mt-24">
       <div className="flex items-center gap-3 flex-wrap mb-1">
@@ -212,9 +329,10 @@ export function AdminOperatorsCrud() {
         <TruthLabel variant="DESIGN_PREVIEW" />
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl mb-5 leading-relaxed">
-        Manage who can operate the protocol. Invite is LIVE — a founder-gated write into the real operator
-        registry (founder_root session required). Edit, suspend, and revoke remain previews until their own
-        founder-approved slices. Admin-tier changes also need a step-up signature and founder approval.
+        Manage who can operate the protocol. Invite and suspend are LIVE — founder-gated writes into the real
+        operator registry and audit log (founder_root session required; suspend asks for confirmation and takes
+        effect on the operator&apos;s very next request). Edit remains a preview until its own founder-approved
+        slice. Admin-tier changes also need a step-up signature and founder approval.
       </p>
 
       {/* Role hierarchy */}
@@ -274,7 +392,7 @@ export function AdminOperatorsCrud() {
           )}
           {registry.status === "ok" &&
             registry.operators.map((op) => (
-              <div key={op.walletShort} className="flex items-center gap-3 p-3">
+              <div key={op.id} className="flex items-center gap-3 p-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-medium text-foreground">{op.label}</span>
@@ -286,13 +404,29 @@ export function AdminOperatorsCrud() {
                 <Button variant="ghost" size="sm" disabled aria-label={`Edit ${op.label}`} title="Enabled with the operator write zone">
                   <Pencil className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="sm" disabled aria-label={`Suspend ${op.label}`} title="Enabled with the operator write zone">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={op.status === "SUSPENDED"}
+                  aria-label={`Suspend ${op.label}`}
+                  title={
+                    op.status === "SUSPENDED"
+                      ? "Already suspended"
+                      : "Founder-gated write: suspend this operator"
+                  }
+                  onClick={() => setSuspendTarget(op)}
+                >
                   <Ban className="h-4 w-4" />
                 </Button>
               </div>
             ))}
         </div>
       </div>
+      <SuspendOperatorDialog
+        target={suspendTarget}
+        onSuspended={reload}
+        onClose={() => setSuspendTarget(null)}
+      />
     </Card>
   );
 }

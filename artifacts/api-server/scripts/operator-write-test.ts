@@ -380,22 +380,50 @@ async function main(): Promise<void> {
       `status ${nDup.status}, body ${JSON.stringify(nDup.json)}`,
     );
 
-    // ── registry negative: malformed wallet ──────────────────────────────────
-    const nBadWallet = await postJson(
+    // ── registry read: list carries the stable row id (suspend key) ──────────
+    // The UI suspends by the id it read from GET /operators — walk that exact
+    // path here instead of peeking at the DB for the invitee's id.
+    const listRes = await fetch(`${base}/api/operator/operators`, {
+      headers: { cookie: opCookie },
+    });
+    const listJson = (await listRes.json()) as Record<string, unknown>;
+    const listOps = Array.isArray(listJson["operators"])
+      ? (listJson["operators"] as Record<string, unknown>[])
+      : [];
+    const inviteeMask = `${inviteeWallet.slice(0, 6)}…${inviteeWallet.slice(-4)}`;
+    const inviteeListRow = listOps.find((o) => o["walletShort"] === inviteeMask);
+    const inviteeId =
+      inviteeListRow !== undefined && typeof inviteeListRow["id"] === "string"
+        ? inviteeListRow["id"]
+        : null;
+    record(
+      "GET /operators row carries the stable id (and still only walletShort — no full wallet)",
+      listRes.status === 200 &&
+        inviteeId !== null &&
+        listOps.every(
+          (o) => typeof o["id"] === "string" && !JSON.stringify(o).includes(inviteeWallet),
+        ),
+      `status ${listRes.status}, invitee id ${inviteeId === null ? "(missing)" : "present"}, rows=${listOps.length}`,
+    );
+    if (inviteeId === null) throw new Error("invitee id missing from GET /operators");
+
+    // ── registry negative: wallet-shaped suspend body is REJECTED ────────────
+    // (id-based contract: a body without `id` never reaches the service.)
+    const nWalletBody = await postJson(
       "/api/operator/operators/suspend",
-      { wallet: "0x1234" },
+      { wallet: inviteeWallet },
       opCookie,
     );
     record(
-      "malformed wallet denied → bad_wallet",
-      nBadWallet.status === 400 && nBadWallet.json["reason"] === "bad_wallet",
-      `status ${nBadWallet.status}, body ${JSON.stringify(nBadWallet.json)}`,
+      "wallet-shaped suspend body denied → bad_request (id is the only accepted key)",
+      nWalletBody.status === 400 && nWalletBody.json["reason"] === "bad_request",
+      `status ${nWalletBody.status}, body ${JSON.stringify(nWalletBody.json)}`,
     );
 
-    // ── registry negative: self-suspend lockout guard ─────────────────────────
+    // ── registry negative: self-suspend lockout guard (by the founder's id) ──
     const nSelf = await postJson(
       "/api/operator/operators/suspend",
-      { wallet: opWallet },
+      { id: opRowId },
       opCookie,
     );
     const founderRowAfterSelf = (
@@ -410,22 +438,22 @@ async function main(): Promise<void> {
       `status ${nSelf.status}, body ${JSON.stringify(nSelf.json)}, founder row status=${founderRowAfterSelf?.status ?? "(missing)"}`,
     );
 
-    // ── registry negative: suspend an unknown wallet ─────────────────────────
+    // ── registry negative: suspend an unknown id ─────────────────────────────
     const nGhost = await postJson(
       "/api/operator/operators/suspend",
-      { wallet: ghostWallet },
+      { id: `test-${randomUUID()}` },
       opCookie,
     );
     record(
-      "suspend of unknown wallet denied → not_found",
+      "suspend of unknown id denied → not_found",
       nGhost.status === 400 && nGhost.json["reason"] === "not_found",
       `status ${nGhost.status}, body ${JSON.stringify(nGhost.json)}`,
     );
 
-    // ── registry happy path 2: founder suspends the invitee ──────────────────
+    // ── registry happy path 2: founder suspends the invitee BY ID ────────────
     const susp = await postJson(
       "/api/operator/operators/suspend",
-      { wallet: inviteeWallet },
+      { id: inviteeId },
       opCookie,
     );
     record(
@@ -442,15 +470,18 @@ async function main(): Promise<void> {
       .select()
       .from(auditLog)
       .where(and(eq(auditLog.actorWallet, opWallet), eq(auditLog.action, "operator.suspend")));
+    const suspDetail = (suspAudits[0]?.detail ?? {}) as Record<string, unknown>;
     record(
-      "suspend persisted (row SUSPENDED) + audit_log row (action=operator.suspend, target=invitee)",
+      "suspend persisted (row SUSPENDED) + audit_log row (action=operator.suspend, target=resolved wallet, detail.id=list id)",
       suspRow !== undefined &&
         suspRow.status === "SUSPENDED" &&
+        suspRow.id === inviteeId &&
         suspAudits.length === 1 &&
         suspAudits[0] !== undefined &&
         suspAudits[0].target === inviteeWallet &&
-        suspAudits[0].actorRole === "founder_root",
-      `row status=${suspRow?.status ?? "(missing)"}, audit rows=${suspAudits.length}, action=${suspAudits[0]?.action ?? "(none)"}`,
+        suspAudits[0].actorRole === "founder_root" &&
+        suspDetail["id"] === inviteeId,
+      `row status=${suspRow?.status ?? "(missing)"}, audit rows=${suspAudits.length}, action=${suspAudits[0]?.action ?? "(none)"}, detail.id ${suspDetail["id"] === inviteeId ? "matches list id" : "MISMATCH"}`,
     );
 
     // ── suspension bites on the VERY NEXT call (bridge re-reads status) ──────

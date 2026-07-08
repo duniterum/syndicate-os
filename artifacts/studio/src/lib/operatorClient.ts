@@ -37,6 +37,7 @@ export async function saveReferralTerm(key: string, value: string): Promise<Writ
 }
 
 export interface OperatorListItem {
+  id: string;
   walletShort: string;
   label: string;
   role: string;
@@ -64,6 +65,7 @@ export async function listOperators(): Promise<ListOperatorsResult> {
             (o): o is OperatorListItem =>
               typeof o === "object" &&
               o !== null &&
+              typeof (o as Record<string, unknown>).id === "string" &&
               typeof (o as Record<string, unknown>).walletShort === "string" &&
               typeof (o as Record<string, unknown>).label === "string" &&
               typeof (o as Record<string, unknown>).role === "string" &&
@@ -105,6 +107,33 @@ export async function inviteOperator(
       }
     } catch {
       // No JSON body (e.g. a dark-zone 404) — fall back to the status code.
+    }
+    return { ok: false, reason: reason ?? String(res.status) };
+  } catch {
+    return { ok: false, reason: "unreachable" };
+  }
+}
+
+// Founder-only registry write: suspend an operator by its stable id (from the
+// masked registry list — no full wallet needed client-side). Same fail-closed
+// shape as the others.
+export async function suspendOperator(id: string): Promise<WriteResult> {
+  try {
+    const res = await fetch("/api/operator/operators/suspend", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    if (res.ok) return { ok: true, reason: null };
+    let reason: string | null = null;
+    try {
+      const body: unknown = await res.json();
+      if (typeof body === "object" && body !== null) {
+        const r = (body as Record<string, unknown>).reason;
+        if (typeof r === "string") reason = r;
+      }
+    } catch {
+      // no JSON body
     }
     return { ok: false, reason: reason ?? String(res.status) };
   } catch {

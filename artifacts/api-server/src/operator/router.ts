@@ -48,7 +48,7 @@ const InviteOperatorBody = z.object({
 });
 
 const SuspendOperatorBody = z.object({
-  wallet: z.string().min(1).max(66),
+  id: z.string().min(1).max(64),
 });
 
 // ── POST /api/operator/referral-terms ───────────────────────────────────────
@@ -170,7 +170,7 @@ router.post("/operators/suspend", async (req: Request, res: Response) => {
     return;
   }
   const result = await suspendOperator({
-    wallet: parsed.data.wallet,
+    id: parsed.data.id,
     actorWallet: account,
     actorRole: ctx.role,
   });
