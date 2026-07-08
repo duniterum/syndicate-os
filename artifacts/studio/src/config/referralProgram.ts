@@ -287,7 +287,12 @@ export const rateChangeEvent = {
   note: "Rate, tier, cap, and window changes are recorded on-chain-adjacent as a governance event and shown in Activity + Chronicle — old value → new value, who changed it, and the timelock. Total transparency, no silent edits.",
 } as const;
 
-/** Editable referral-program settings (operator CRUD, preview today). */
+/**
+ * FIXED acquisition structure — DISPLAY ONLY. These describe the fixed $5
+ * per-join payment and its protocol routing; they are never editable and never
+ * sent to the write zone. (Doctrine: the fixed 70/20/10 routing is a separate
+ * system from the variable per-source commission rate below — never conflate them.)
+ */
 export interface ReferralSetting {
   key: string;
   label: string;
@@ -298,9 +303,26 @@ export const referralSettingsSample: ReferralSetting[] = [
   { key: "referrerInstant", label: "Paid to referrer instantly", value: "$0.25" },
   { key: "protocolRouted", label: "Routed through protocol", value: "$4.75" },
   { key: "split", label: "Protocol split (vault / liquidity / ops)", value: "70 / 20 / 10" },
-  { key: "capPerSource", label: "Cap per source", value: "No cap" },
-  { key: "attributionWindow", label: "Attribution window", value: "30 days" },
-  { key: "minPurchase", label: "Minimum qualifying purchase", value: "$50 (one seat)" },
+  { key: "capPerSource", label: "Gross cap per source", value: "No cap" },
+];
+
+/**
+ * EDITABLE terms — writable through the operator write zone. `key` is the
+ * SERVER's canonical key and `value` is already in the server's canonical unit
+ * (basis points, days, USDC), so Save posts them VERBATIM — no client-side
+ * conversion and no key drift. Bps values are hard-capped server-side at 3000.
+ */
+export interface ReferralEditableTerm {
+  key: "commissionBps" | "capBps" | "attributionWindowDays" | "minPurchaseUsdc";
+  label: string;
+  value: string;
+  hint: string;
+}
+export const referralEditableTerms: ReferralEditableTerm[] = [
+  { key: "commissionBps", label: "Standard commission rate", value: "500", hint: "basis points · 500 = 5% · hard cap 3000 (30%)" },
+  { key: "capBps", label: "Commission rate cap", value: "3000", hint: "basis points · 3000 = 30% (hard cap)" },
+  { key: "attributionWindowDays", label: "Attribution window", value: "30", hint: "days" },
+  { key: "minPurchaseUsdc", label: "Minimum qualifying purchase", value: "50", hint: "USDC" },
 ];
 export const referralEligibilityToggles: { key: string; label: string; on: boolean }[] = [
   { key: "blockSelf", label: "Block self-referral", on: true },

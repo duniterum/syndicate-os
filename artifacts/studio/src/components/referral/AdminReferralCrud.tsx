@@ -16,13 +16,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { TruthLabel } from "@/components/TruthLabel";
-import { referralSettingsSample, referralEligibilityToggles, commissionTiers, commissionCapPct, rateChangeEvent } from "@/config/referralProgram";
+import { referralSettingsSample, referralEditableTerms, referralEligibilityToggles, commissionTiers, commissionCapPct, rateChangeEvent } from "@/config/referralProgram";
 import { saveReferralTerm } from "@/lib/operatorClient";
 
 export function AdminReferralCrud() {
   const [active, setActive] = useState(false);
   const [values, setValues] = useState<Record<string, string>>(
-    Object.fromEntries(referralSettingsSample.map((s) => [s.key, s.value])),
+    Object.fromEntries(referralEditableTerms.map((t) => [t.key, t.value])),
   );
   const [toggles, setToggles] = useState<Record<string, boolean>>(
     Object.fromEntries(referralEligibilityToggles.map((t) => [t.key, t.on])),
@@ -80,18 +80,41 @@ export function AdminReferralCrud() {
         </div>
       </div>
 
-      {/* Terms / rates */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        {referralSettingsSample.map((s) => (
-          <div key={s.key}>
-            <label className="text-xs text-muted-foreground mb-1 block">{s.label}</label>
-            <Input
-              value={values[s.key] ?? ""}
-              onChange={(e) => setValues((v) => ({ ...v, [s.key]: e.target.value }))}
-              className="text-sm"
-            />
-          </div>
-        ))}
+      {/* Fixed acquisition structure — DISPLAY ONLY (never editable, never saved) */}
+      <div className="mb-6">
+        <div className="text-sm font-medium text-foreground mb-3">
+          Fixed structure{" "}
+          <span className="text-xs text-muted-foreground font-normal">(not editable)</span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {referralSettingsSample.map((s) => (
+            <div
+              key={s.key}
+              className="flex items-baseline justify-between rounded-md border border-border/40 px-3 py-2"
+            >
+              <span className="text-xs text-muted-foreground">{s.label}</span>
+              <span className="text-sm font-mono text-foreground">{s.value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Editable terms — writable via the operator write zone (server-canonical keys/units) */}
+      <div className="mb-6">
+        <div className="text-sm font-medium text-foreground mb-3">Editable terms</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {referralEditableTerms.map((t) => (
+            <div key={t.key}>
+              <label className="text-xs text-muted-foreground mb-1 block">{t.label}</label>
+              <Input
+                value={values[t.key] ?? ""}
+                onChange={(e) => setValues((v) => ({ ...v, [t.key]: e.target.value }))}
+                className="text-sm"
+              />
+              <div className="text-[10px] text-muted-foreground mt-1 font-mono">{t.hint}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Commission tiers + hard cap */}
