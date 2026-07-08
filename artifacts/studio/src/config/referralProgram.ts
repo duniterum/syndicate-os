@@ -332,15 +332,17 @@ export const referralEligibilityToggles: { key: string; label: string; on: boole
 ];
 
 /** Operator role hierarchy — mirrors OPERATOR_WALLET_AUTH_AND_ROLES_DESIGN §D. */
-export const operatorRoles: { role: string; scope: string }[] = [
-  { role: "Founder / root", scope: "Everything, plus admin-tier registry changes, recovery approvals, emergency suspension." },
-  { role: "Protocol admin", scope: "Flags, exports, broadcast approval, support overrides, non-admin registry proposals." },
-  { role: "Operator", scope: "Day-to-day console: reports, support queue, content ops, read dashboards." },
-  { role: "Source / referral reviewer", scope: "Reviews source attributions; approves within policy." },
-  { role: "Member support", scope: "Member queue with least-data context; respond and escalate." },
-  { role: "Content / docs operator", scope: "Public copy and docs surfaces; no member data." },
-  { role: "Auditor / read-only", scope: "Reads audit log, redacted registry, reports. Zero mutations." },
-  { role: "Worker / agent", scope: "Scoped non-human identity; proposal-only by default." },
+// `id` is the CANONICAL server-side role identifier (the operator registry's
+// role enum); `role` is the human display name. The invite form submits ids.
+export const operatorRoles: { id: string; role: string; scope: string }[] = [
+  { id: "founder_root", role: "Founder / root", scope: "Everything, plus admin-tier registry changes, recovery approvals, emergency suspension." },
+  { id: "protocol_admin", role: "Protocol admin", scope: "Flags, exports, broadcast approval, support overrides, non-admin registry proposals." },
+  { id: "operator", role: "Operator", scope: "Day-to-day console: reports, support queue, content ops, read dashboards." },
+  { id: "source_reviewer", role: "Source / referral reviewer", scope: "Reviews source attributions; approves within policy." },
+  { id: "member_support", role: "Member support", scope: "Member queue with least-data context; respond and escalate." },
+  { id: "content_docs", role: "Content / docs operator", scope: "Public copy and docs surfaces; no member data." },
+  { id: "auditor", role: "Auditor / read-only", scope: "Reads audit log, redacted registry, reports. Zero mutations." },
+  { id: "worker_agent", role: "Worker / agent", scope: "Scoped non-human identity; proposal-only by default." },
 ];
 
 export interface OperatorRow {

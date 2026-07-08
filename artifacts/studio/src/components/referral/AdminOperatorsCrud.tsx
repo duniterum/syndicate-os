@@ -7,42 +7,203 @@
 // referrals (moved, not rewritten). Mirrors the wallet-first operator
 // registry design (server-side allowlist, one role per row, fail-closed).
 //
-// PREVIEW ONLY. Every control here is a WRITE into the operator registry / audit
-// log — the OS's first write-capable zone, which is founder-gated and not yet
-// stood up. Admin-tier registry changes additionally require step-up signature
-// and founder/root approval. So this shows the management surface exactly, while
-// persisting nothing.
+// Phase 3 slice 2: the registry READ is live (masked wallets from the server)
+// and INVITE is a live founder-gated write into the real operator registry +
+// audit log (POST /api/operator/operators, founder_root session required,
+// fail-closed at every layer). Edit / suspend / revoke remain PREVIEW ONLY —
+// disabled controls, persisting nothing — until their own founder-approved
+// slices. Admin-tier registry changes additionally require step-up signature
+// and founder/root approval.
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { UsersRound, UserPlus, Pencil, Ban, Link2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 import { TruthLabel } from "@/components/TruthLabel";
 import { operatorRoles, sourceReviewSample } from "@/config/referralProgram";
-import { listOperators, type ListOperatorsResult } from "@/lib/operatorClient";
+import {
+  listOperators,
+  inviteOperator,
+  type ListOperatorsResult,
+} from "@/lib/operatorClient";
 
 // Live, read-only registry read (Phase 3 slice 1). Honest states only — no
 // fake fallback: loading, ok (rows or empty), denied (dark zone / no session /
 // insufficient role), unavailable. Wallets arrive pre-masked from the server.
 type RegistryState = { status: "loading" } | ListOperatorsResult;
 
-function useOperatorRegistry(): RegistryState {
-  const [state, setState] = useState<RegistryState>({ status: "loading" });
+function useOperatorRegistry(): {
+  registry: RegistryState;
+  reload: () => void;
+} {
+  const [registry, setRegistry] = useState<RegistryState>({ status: "loading" });
+  const [tick, setTick] = useState(0);
   useEffect(() => {
     let active = true;
     void listOperators().then((result) => {
-      if (active) setState(result);
+      if (active) setRegistry(result);
     });
     return () => {
       active = false;
     };
-  }, []);
-  return state;
+  }, [tick]);
+  const reload = () => {
+    setRegistry({ status: "loading" });
+    setTick((t) => t + 1);
+  };
+  return { registry, reload };
+}
+
+// Honest, specific failure text for every reason the invite path can return —
+// no generic "something went wrong", and NEVER a fake success.
+function inviteFailureText(reason: string | null): string {
+  switch (reason) {
+    case "no_session":
+      return "No active operator session — sign in as an operator first (account menu).";
+    case "insufficient_role":
+      return "Only a founder_root session can invite operators.";
+    case "bad_wallet":
+      return "Wallet must be a full 0x… address (40 hex characters).";
+    case "bad_label":
+      return "Label is required (max 128 characters).";
+    case "bad_role":
+      return "Unknown role — pick one of the canonical roles.";
+    case "already_exists":
+      return "This wallet is already in the operator registry — nothing was written.";
+    case "bad_request":
+      return "The server rejected the form fields as invalid.";
+    case "throttled":
+      return "Too many attempts — wait a moment and retry.";
+    case "unavailable":
+    case "unreachable":
+    case "404":
+      return "The operator write zone isn't available here (auth zone dark or no database).";
+    default:
+      return `Invite failed${reason !== null ? ` (reason: ${reason})` : ""}.`;
+  }
+}
+
+// Founder-gated invite form (Phase 3 slice 2). Submits to the REAL
+// POST /api/operator/operators through the fail-closed client; on success the
+// registry is re-read live — no fabricated row is ever appended locally.
+function InviteOperatorForm({
+  onInvited,
+  onClose,
+}: {
+  onInvited: () => void;
+  onClose: () => void;
+}) {
+  const { toast } = useToast();
+  const [wallet, setWallet] = useState("");
+  const [label, setLabel] = useState("");
+  const [role, setRole] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
+    setError(null);
+    const result = await inviteOperator(wallet.trim(), label.trim(), role);
+    setSubmitting(false);
+    if (result.ok) {
+      toast({ title: "Operator invited" });
+      onInvited();
+      onClose();
+    } else {
+      setError(inviteFailureText(result.reason));
+    }
+  }
+
+  return (
+    <form
+      onSubmit={(e) => void handleSubmit(e)}
+      className="rounded-md border border-border/50 p-4 mb-3 space-y-3"
+    >
+      <div className="text-sm font-medium text-foreground">
+        Invite operator
+        <span className="ml-2 text-xs font-normal text-muted-foreground">
+          founder-gated write into the live registry
+        </span>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="space-y-1.5">
+          <Label htmlFor="invite-wallet">Wallet</Label>
+          <Input
+            id="invite-wallet"
+            value={wallet}
+            onChange={(e) => setWallet(e.target.value)}
+            placeholder="0x…"
+            className="font-mono text-xs"
+            autoComplete="off"
+            spellCheck={false}
+            required
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="invite-label">Label</Label>
+          <Input
+            id="invite-label"
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            placeholder="e.g. Ops lead"
+            maxLength={128}
+            required
+          />
+        </div>
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="invite-role">Role</Label>
+        <Select value={role} onValueChange={setRole} required>
+          <SelectTrigger id="invite-role" className="w-full sm:w-72">
+            <SelectValue placeholder="Pick a canonical role" />
+          </SelectTrigger>
+          <SelectContent>
+            {operatorRoles.map((r) => (
+              <SelectItem key={r.id} value={r.id}>
+                <span className="font-mono text-xs">{r.id}</span>
+                <span className="ml-2 text-muted-foreground">{r.role}</span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      {error !== null && (
+        <p className="text-xs text-destructive leading-relaxed">{error}</p>
+      )}
+      <div className="flex items-center gap-2">
+        <Button type="submit" size="sm" disabled={submitting || role === ""}>
+          {submitting ? "Inviting…" : "Send invite"}
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={onClose}
+          disabled={submitting}
+        >
+          Cancel
+        </Button>
+      </div>
+    </form>
+  );
 }
 
 export function AdminOperatorsCrud() {
-  const registry = useOperatorRegistry();
+  const { registry, reload } = useOperatorRegistry();
+  const [inviteOpen, setInviteOpen] = useState(false);
   return (
     <Card id="operators" className="p-6 scroll-mt-24">
       <div className="flex items-center gap-3 flex-wrap mb-1">
@@ -51,9 +212,9 @@ export function AdminOperatorsCrud() {
         <TruthLabel variant="DESIGN_PREVIEW" />
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl mb-5 leading-relaxed">
-        Manage who can operate the protocol. Preview: invite, edit, suspend, and revoke are writes into the
-        operator registry — enabled with the founder-gated write zone. Admin-tier changes also need a step-up
-        signature and founder approval.
+        Manage who can operate the protocol. Invite is LIVE — a founder-gated write into the real operator
+        registry (founder_root session required). Edit, suspend, and revoke remain previews until their own
+        founder-approved slices. Admin-tier changes also need a step-up signature and founder approval.
       </p>
 
       {/* Role hierarchy */}
@@ -76,11 +237,22 @@ export function AdminOperatorsCrud() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <div className="text-sm font-medium text-foreground">Operator registry</div>
-          <Button variant="outline" size="sm" disabled title="Enabled with the operator write zone">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setInviteOpen((v) => !v)}
+            title="Founder-gated write into the live operator registry"
+          >
             <UserPlus className="h-4 w-4 mr-1.5" />
             Invite operator
           </Button>
         </div>
+        {inviteOpen && (
+          <InviteOperatorForm
+            onInvited={reload}
+            onClose={() => setInviteOpen(false)}
+          />
+        )}
         <div className="rounded-md border border-border/50 divide-y divide-border/50">
           {registry.status === "loading" && (
             <div className="p-3 text-sm text-muted-foreground">Loading registry…</div>

@@ -115,6 +115,13 @@ const OperatorBadge = WALLET_SESSION_PREVIEW_ENABLED
   ? React.lazy(() => import("@/wallet/OperatorBadge"))
   : null;
 
+// "Sign in as operator" menu action (Phase 3 slice 2): opens the RainbowKit
+// connect + SIWE sign flow directly from the admin shell — no /member detour.
+// Same rule-15 loading discipline: flag-conditional dynamic import only.
+const OperatorSignInAction = WALLET_SESSION_PREVIEW_ENABLED
+  ? React.lazy(() => import("@/wallet/OperatorSignInAction"))
+  : null;
+
 function AccountMenu() {
   const [, navigate] = useLocation();
 
@@ -162,6 +169,11 @@ function AccountMenu() {
           )}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        {OperatorSignInAction ? (
+          <React.Suspense fallback={null}>
+            <OperatorSignInAction />
+          </React.Suspense>
+        ) : null}
         <DropdownMenuItem asChild>
           <Link href="/member" className="cursor-pointer">
             <UserRound className="h-4 w-4 mr-2" />

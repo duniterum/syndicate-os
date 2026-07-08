@@ -551,6 +551,36 @@ check(
   "MemberAccess.tsx loads WalletSessionPanel only via the gated conditional dynamic import",
   'MemberAccess.tsx must load WalletSessionPanel via `WALLET_SESSION_PREVIEW_ENABLED ? lazy(() => import("@/wallet/WalletSessionPanel")) : null`',
 );
+// Phase 3 slice 2 — AdminShell's wallet reach is pinned to exactly the two
+// flag-conditional lazy loads (operator badge + sign-in action). Any other
+// wallet import shape in the admin shell must fail here, not just at rule 15.
+const adminShellCode = stripComments(
+  read(path.resolve(srcDir, "components/admin/AdminShell.tsx")),
+);
+check(
+  /WALLET_SESSION_PREVIEW_ENABLED\s*\?\s*React\.lazy\(\(\) => import\("@\/wallet\/OperatorBadge"\)\)\s*:\s*null/.test(
+    adminShellCode,
+  ),
+  "AdminShell.tsx loads OperatorBadge only via the gated conditional dynamic import",
+  'AdminShell.tsx must load OperatorBadge via `WALLET_SESSION_PREVIEW_ENABLED ? React.lazy(() => import("@/wallet/OperatorBadge")) : null`',
+);
+check(
+  /WALLET_SESSION_PREVIEW_ENABLED\s*\?\s*React\.lazy\(\(\) => import\("@\/wallet\/OperatorSignInAction"\)\)\s*:\s*null/.test(
+    adminShellCode,
+  ),
+  "AdminShell.tsx loads OperatorSignInAction only via the gated conditional dynamic import",
+  'AdminShell.tsx must load OperatorSignInAction via `WALLET_SESSION_PREVIEW_ENABLED ? React.lazy(() => import("@/wallet/OperatorSignInAction")) : null`',
+);
+check(
+  /await import\("@\/wallet\/walletSession"\)/.test(adminShellCode),
+  "AdminShell.tsx signs out via the dynamic walletSession import",
+  'AdminShell.tsx must reach logoutSession via `await import("@/wallet/walletSession")` (dynamic, never static)',
+);
+check(
+  (adminShellCode.match(/@\/wallet\//g) ?? []).length === 3,
+  "AdminShell.tsx reaches @/wallet/ exactly 3 times (badge + sign-in action + sign-out)",
+  "AdminShell.tsx must reference @/wallet/ exactly 3 times — the OperatorBadge/OperatorSignInAction gated lazy imports and the dynamic walletSession sign-out; remove any extra wallet reach",
+);
 const walletGate = stripComments(
   read(path.resolve(srcDir, "config/walletSessionGate.ts")),
 );

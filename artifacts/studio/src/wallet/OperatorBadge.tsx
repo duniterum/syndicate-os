@@ -8,6 +8,7 @@
 
 import { useEffect, useState } from "react";
 import { fetchOperatorContext } from "./walletSession";
+import { SESSION_CHANGED_EVENT } from "./sessionEvents";
 
 type Status =
   | { kind: "checking" }
@@ -19,16 +20,23 @@ export function OperatorBadge() {
 
   useEffect(() => {
     let active = true;
-    void fetchOperatorContext().then((ctx) => {
-      if (!active) return;
-      setStatus(
-        ctx.isOperator && ctx.role !== null
-          ? { kind: "operator", role: ctx.role }
-          : { kind: "none" },
-      );
-    });
+    const read = () => {
+      void fetchOperatorContext().then((ctx) => {
+        if (!active) return;
+        setStatus(
+          ctx.isOperator && ctx.role !== null
+            ? { kind: "operator", role: ctx.role }
+            : { kind: "none" },
+        );
+      });
+    };
+    read();
+    // Re-read after a SIWE sign-in / sign-out so the badge resolves in place
+    // (Phase 3 slice 2) — the truth still always comes from the server.
+    window.addEventListener(SESSION_CHANGED_EVENT, read);
     return () => {
       active = false;
+      window.removeEventListener(SESSION_CHANGED_EVENT, read);
     };
   }, []);
 

@@ -78,3 +78,36 @@ export async function listOperators(): Promise<ListOperatorsResult> {
     return { status: "unavailable" };
   }
 }
+
+// Founder-only registry write: invite (create) a new ACTIVE operator. Same
+// fail-closed shape as saveReferralTerm — any non-OK (dark 404 / 401 / 403 /
+// 400 validation / transport) resolves to { ok:false, reason }, never throws.
+// The new operator's full wallet is typed by the founder here; the registry
+// list keeps returning it masked.
+export async function inviteOperator(
+  wallet: string,
+  label: string,
+  role: string,
+): Promise<WriteResult> {
+  try {
+    const res = await fetch("/api/operator/operators", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ wallet, label, role }),
+    });
+    if (res.ok) return { ok: true, reason: null };
+    let reason: string | null = null;
+    try {
+      const body: unknown = await res.json();
+      if (typeof body === "object" && body !== null) {
+        const r = (body as Record<string, unknown>).reason;
+        if (typeof r === "string") reason = r;
+      }
+    } catch {
+      // No JSON body (e.g. a dark-zone 404) — fall back to the status code.
+    }
+    return { ok: false, reason: reason ?? String(res.status) };
+  } catch {
+    return { ok: false, reason: "unreachable" };
+  }
+}
