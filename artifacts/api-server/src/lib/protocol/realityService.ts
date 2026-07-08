@@ -21,6 +21,7 @@ import {
   ARCHIVE_ARTIFACTS,
   SALE_TARGETS,
   SOURCE_LINKAGE_TARGET,
+  FINANCIAL_TARGETS,
   type ContractTarget,
   type TokenTarget,
   type ArchiveTarget,
@@ -28,6 +29,7 @@ import {
   type SaleTarget,
   type SaleNumericRead,
   type SourceLinkageTarget,
+  type FinancialTargets,
 } from "../../data/protocolTargets";
 import {
   DEFAULT_TIMEOUT_MS,
@@ -56,6 +58,16 @@ import {
 } from "./saleDecoders";
 import { SELECTOR_SOURCE_REGISTRY, decodeAddressWord } from "./sourceDecoders";
 import {
+  SELECTOR_TOTAL_USDC_RAISED,
+  SELECTOR_BALANCE_OF,
+  SELECTOR_GET_RESERVES,
+  SELECTOR_TOKEN0,
+  SELECTOR_MEMBER_COUNT,
+  encodeAddressArg,
+  decodeReservesPair,
+  sumDecimalStrings,
+} from "./financialDecoders";
+import {
   buildItem,
   type ProtocolRealityEnvelope,
   type ProtocolRealityItem,
@@ -75,6 +87,7 @@ export type BuildOpts = {
   archiveArtifacts: readonly ArchiveArtifactTarget[];
   saleTargets: readonly SaleTarget[];
   sourceLinkageTarget: SourceLinkageTarget;
+  financialTargets: FinancialTargets;
   now?: () => Date;
 };
 
@@ -907,18 +920,435 @@ async function buildSourceGroup(
   return items;
 }
 
+// ── financial group (aggregate live on-chain figures — Slice N1, admin-side) ─
+/**
+ * Normalize one aggregate financial uint256 read into an item as an EXACT raw
+ * base-unit string (never a JS number, never humanized, NEVER a canon-constant
+ * fallback). Same fail-closed posture as the sale figures: MEDIUM live read,
+ * null + failureReason on wrong-chain, missing code, or decode failure.
+ */
+function buildFinancialNumeric(args: {
+  probe: ChainProbe;
+  hasCode: boolean;
+  rawValue: string | null;
+  decodeThrew: boolean;
+  id: string;
+  label: string;
+  contractRole: ProtocolRealityItem["contractRole"];
+  note: string;
+  sourceRef: string;
+  chainId: number | null;
+  asOf: string;
+}): ProtocolRealityItem {
+  const { probe, hasCode, rawValue, decodeThrew } = args;
+  let value: string | null = null;
+  let confidence: ProtocolRealityItem["confidence"] = "UNKNOWN";
+  let lifecycle: ProtocolRealityItem["lifecycle"] = "PAUSED_BY_PRECAUTION";
+  let failureReason: string | null = chainSkipReason(probe);
+  let note = "Financial figure was not read (chain not verified).";
+
+  if (probe.chainIdOk && !hasCode) {
+    failureReason = "no on-chain code; financial figure read skipped";
+    note = "Financial figure was not read (no on-chain code at the read target).";
+  } else if (probe.chainIdOk) {
+    if (decodeThrew || rawValue === null) {
+      value = null;
+      confidence = "LOW";
+      lifecycle = "PENDING_ADAPTER";
+      failureReason = "financial figure decode failed";
+      note = "The financial figure could not be decoded; reported as unavailable (never a fallback constant).";
+    } else {
+      value = rawValue;
+      confidence = "MEDIUM";
+      lifecycle = "READ_ONLY_PROOF";
+      failureReason = null;
+      note = args.note;
+    }
+  }
+
+  return buildItem({
+    id: args.id,
+    label: args.label,
+    value,
+    sourceType: "LIVE_CHAIN_RPC",
+    sourceRef: args.sourceRef,
+    chainId: args.chainId,
+    contractRole: args.contractRole,
+    confidence,
+    lifecycle,
+    note,
+    failureReason,
+    asOf: args.asOf,
+  });
+}
+
+/**
+ * Aggregate on-chain financial reads (admin-side first; public wiring is N2):
+ *   - per-engine cumulative gross USDC inflow (V2a + V2b totalUsdcRaised();
+ *     V3 totalGrossUsdc()) + a server-side bigint aggregate that fails closed
+ *     if ANY component is unavailable;
+ *   - vault reserve wallet USDC balance — live balanceOf() on the USDC contract;
+ *   - AMM pair reserves — live getReserves(), oriented against the canon token
+ *     addresses SERVER-SIDE via token0() (mismatch → null, never guessed);
+ *   - burned SYN — live balanceOf() of the canonical burn address on the SYN
+ *     contract (the chain figure, NEVER canon's recorded ceremony constant);
+ *   - live memberCount() on the active V3 engine (a count only — no wallets);
+ *   - referral registry liveness — code presence + engine linkage reconciled
+ *     against canon (the registry exposes no global program flag on-chain, so
+ *     none is invented).
+ * Every figure is LIVE_CHAIN_RPC (or CANON_RECONCILED_RPC for the linkage
+ * boolean) and fails closed independently. No canon constant is ever surfaced
+ * as a value; canon supplies only the server-side addresses to read.
+ */
+async function buildFinancialGroup(
+  transport: RpcTransport,
+  probe: ChainProbe,
+  targets: FinancialTargets,
+  sourceLinkage: SourceLinkageTarget,
+  asOf: string,
+): Promise<ProtocolRealityItem[]> {
+  const items: ProtocolRealityItem[] = [];
+  const chainId = probe.chainIdActual;
+
+  // Read each target's code presence at most once (server-side only).
+  const codeCache = new Map<string, boolean>();
+  async function hasCodeAt(address: string): Promise<boolean> {
+    if (!probe.chainIdOk) return false;
+    const key = address.toLowerCase();
+    const cached = codeCache.get(key);
+    if (cached !== undefined) return cached;
+    let present = false;
+    try {
+      present = await readCodePresent(transport, address);
+    } catch {
+      present = false;
+    }
+    codeCache.set(key, present);
+    return present;
+  }
+
+  /** One uint256 eth_call → exact decimal string (null + threw on failure). */
+  async function readUint(
+    to: string,
+    data: string,
+  ): Promise<{ raw: string | null; threw: boolean }> {
+    try {
+      return { raw: decodeUint256Decimal(await ethCall(transport, to, data)), threw: false };
+    } catch {
+      return { raw: null, threw: true };
+    }
+  }
+
+  // 1) Per-engine cumulative gross USDC inflow + fail-closed aggregate.
+  const inflowRaws: (string | null)[] = [];
+  const inflowFailedKeys: string[] = [];
+  for (const t of targets.inflows) {
+    const selector =
+      t.view === "totalUsdcRaised" ? SELECTOR_TOTAL_USDC_RAISED : SELECTOR_TOTAL_GROSS_USDC;
+    const hasCode = await hasCodeAt(t.address);
+    let raw: string | null = null;
+    let threw = false;
+    if (probe.chainIdOk && hasCode) {
+      ({ raw, threw } = await readUint(t.address, selector));
+    }
+    if (raw === null) inflowFailedKeys.push(t.key);
+    inflowRaws.push(raw);
+    items.push(
+      buildFinancialNumeric({
+        probe,
+        hasCode,
+        rawValue: raw,
+        decodeThrew: threw,
+        id: `financial.inflow.${t.key}`,
+        label: `${t.label} cumulative gross USDC inflow (raw base units)`,
+        contractRole: "sale",
+        note: `Exact on-chain uint256 in 6-decimal USDC base units, read live via ${t.view}(). Cumulative membership-fee inflow recorded by this engine; read-only, never a canon constant.`,
+        sourceRef: `contract-registry.ts:${t.key} (eth_call ${t.view})`,
+        chainId,
+        asOf,
+      }),
+    );
+  }
+  {
+    const aggregate = probe.chainIdOk ? sumDecimalStrings(inflowRaws) : null;
+    let value: string | null = null;
+    let confidence: ProtocolRealityItem["confidence"] = "UNKNOWN";
+    let lifecycle: ProtocolRealityItem["lifecycle"] = "PAUSED_BY_PRECAUTION";
+    let failureReason: string | null = chainSkipReason(probe);
+    let note = "Aggregate inflow was not computed (chain not verified).";
+    if (probe.chainIdOk) {
+      if (aggregate === null) {
+        confidence = "LOW";
+        failureReason = `aggregate fails closed: component read(s) unavailable (${inflowFailedKeys.join(", ") || "unknown"})`;
+        note = "One or more per-engine inflow reads failed, so the aggregate is reported unavailable rather than summing a partial truth.";
+      } else {
+        value = aggregate;
+        confidence = "MEDIUM";
+        lifecycle = "READ_ONLY_PROOF";
+        failureReason = null;
+        note = "Server-side bigint sum of the three live per-engine inflow reads (V2a + V2b + V3); exact 6-decimal USDC base units. Fails closed if any component is unavailable.";
+      }
+    }
+    items.push(
+      buildItem({
+        id: "financial.inflow.aggregate",
+        label: "All-engine cumulative gross USDC inflow (raw base units)",
+        value,
+        sourceType: "LIVE_CHAIN_RPC",
+        sourceRef: "eth_call totalUsdcRaised/totalGrossUsdc (V2a + V2b + V3, summed server-side)",
+        chainId,
+        contractRole: "sale",
+        confidence,
+        lifecycle,
+        note,
+        failureReason,
+        asOf,
+      }),
+    );
+  }
+
+  // 2) Vault reserve wallet USDC balance (balanceOf on the USDC contract).
+  {
+    const data = encodeAddressArg(SELECTOR_BALANCE_OF, targets.vaultWallet);
+    const hasCode = await hasCodeAt(targets.usdcTokenAddress);
+    let raw: string | null = null;
+    let threw = false;
+    if (probe.chainIdOk && hasCode && data !== null) {
+      ({ raw, threw } = await readUint(targets.usdcTokenAddress, data));
+    } else if (probe.chainIdOk && hasCode && data === null) {
+      threw = true;
+    }
+    items.push(
+      buildFinancialNumeric({
+        probe,
+        hasCode,
+        rawValue: raw,
+        decodeThrew: threw,
+        id: "financial.vault.usdcBalance",
+        label: "Vault reserve wallet USDC balance (raw base units)",
+        contractRole: "stablecoin",
+        note: "Live balanceOf() read on the canon USDC contract for the protocol vault reserve wallet; exact 6-decimal base units. Aggregate balance only — the wallet address stays server-side.",
+        sourceRef: "contract-registry.ts:USDC (eth_call balanceOf VAULT_WALLET)",
+        chainId,
+        asOf,
+      }),
+    );
+  }
+
+  // 3) AMM pair reserves, oriented server-side against the canon token addresses.
+  {
+    const hasCode = await hasCodeAt(targets.lpPair);
+    let reserveSyn: string | null = null;
+    let reserveUsdc: string | null = null;
+    let threw = false;
+    let orientationFailed = false;
+    if (probe.chainIdOk && hasCode) {
+      try {
+        const [token0Raw, reservesRaw] = await Promise.all([
+          ethCall(transport, targets.lpPair, SELECTOR_TOKEN0),
+          ethCall(transport, targets.lpPair, SELECTOR_GET_RESERVES),
+        ]);
+        const token0 = decodeAddressWord(token0Raw);
+        const reserves = decodeReservesPair(reservesRaw);
+        if (token0 === null || reserves === null) {
+          // decode failure path: values stay null → PENDING_ADAPTER via builder
+        } else if (token0 === targets.synTokenAddress.toLowerCase()) {
+          reserveSyn = reserves.reserve0;
+          reserveUsdc = reserves.reserve1;
+        } else if (token0 === targets.usdcTokenAddress.toLowerCase()) {
+          reserveSyn = reserves.reserve1;
+          reserveUsdc = reserves.reserve0;
+        } else {
+          orientationFailed = true;
+        }
+      } catch {
+        threw = true;
+      }
+    }
+    const orientationNote =
+      "Live getReserves() read on the canon SYN/USDC pair, oriented against the canon token addresses server-side via token0(). Raw pool reserve in exact base units; not a valuation.";
+    for (const side of [
+      {
+        id: "financial.lp.reserveSyn",
+        label: "SYN/USDC pair — SYN reserve (raw base units)",
+        value: reserveSyn,
+        decimalsNote: "18-decimal SYN base units. " + orientationNote,
+      },
+      {
+        id: "financial.lp.reserveUsdc",
+        label: "SYN/USDC pair — USDC reserve (raw base units)",
+        value: reserveUsdc,
+        decimalsNote: "6-decimal USDC base units. " + orientationNote,
+      },
+    ]) {
+      const item = buildFinancialNumeric({
+        probe,
+        hasCode,
+        rawValue: side.value,
+        decodeThrew: threw,
+        id: side.id,
+        label: side.label,
+        contractRole: "lp-pair",
+        note: side.decimalsNote,
+        sourceRef: "contract-registry.ts:LP_PAIR (eth_call getReserves + token0)",
+        chainId,
+        asOf,
+      });
+      items.push(
+        orientationFailed
+          ? {
+              ...item,
+              value: null,
+              valueType: "null",
+              confidence: "LOW",
+              lifecycle: "PAUSED_BY_PRECAUTION",
+              failureReason:
+                "pair token0 matched neither canon token (reported unavailable, never guessed)",
+              note: "The pair's token0 did not match either canon token address; reserves fail closed rather than guessing an orientation.",
+            }
+          : item,
+      );
+    }
+  }
+
+  // 4) Burned SYN — live balanceOf() of the canonical burn address.
+  {
+    const data = encodeAddressArg(SELECTOR_BALANCE_OF, targets.synBurnAddress);
+    const hasCode = await hasCodeAt(targets.synTokenAddress);
+    let raw: string | null = null;
+    let threw = false;
+    if (probe.chainIdOk && hasCode && data !== null) {
+      ({ raw, threw } = await readUint(targets.synTokenAddress, data));
+    } else if (probe.chainIdOk && hasCode && data === null) {
+      threw = true;
+    }
+    items.push(
+      buildFinancialNumeric({
+        probe,
+        hasCode,
+        rawValue: raw,
+        decodeThrew: threw,
+        id: "financial.burn.synBalance",
+        label: "Burned SYN — canonical burn address balance (raw base units)",
+        contractRole: "token",
+        note: "Live balanceOf() read on the canon SYN contract for the canonical burn address — the cumulative on-chain burned figure in exact 18-decimal base units. Always the chain's figure, never a recorded ceremony constant.",
+        sourceRef: "contract-registry.ts:SYN_TOKEN (eth_call balanceOf burn address)",
+        chainId,
+        asOf,
+      }),
+    );
+  }
+
+  // 5) Live member tally — memberCount() on the active engine (count only).
+  {
+    const engine = targets.memberCountEngine;
+    const hasCode = await hasCodeAt(engine.address);
+    let raw: string | null = null;
+    let threw = false;
+    if (probe.chainIdOk && hasCode) {
+      ({ raw, threw } = await readUint(engine.address, SELECTOR_MEMBER_COUNT));
+    }
+    items.push(
+      buildFinancialNumeric({
+        probe,
+        hasCode,
+        rawValue: raw,
+        decodeThrew: threw,
+        id: "financial.members.memberCount",
+        label: "Members — active engine memberCount()",
+        contractRole: "sale",
+        note: "Live aggregate member tally read from the active V3 engine. A count only — no wallet or wallet↔member-number mapping is read or exposed (PII boundary holds).",
+        sourceRef: `contract-registry.ts:${engine.key} (eth_call memberCount)`,
+        chainId,
+        asOf,
+      }),
+    );
+  }
+
+  // 6) Referral registry liveness — code presence + engine linkage vs canon.
+  {
+    let value: boolean | null = null;
+    let sourceType: ProtocolRealityItem["sourceType"] = "LIVE_CHAIN_RPC";
+    let confidence: ProtocolRealityItem["confidence"] = "UNKNOWN";
+    let lifecycle: ProtocolRealityItem["lifecycle"] = "PAUSED_BY_PRECAUTION";
+    let failureReason: string | null = chainSkipReason(probe);
+    let note = "Registry liveness was not read (chain not verified).";
+
+    if (probe.chainIdOk) {
+      const registryHasCode = await hasCodeAt(sourceLinkage.registryAddress);
+      const engineHasCode = await hasCodeAt(sourceLinkage.saleAddress);
+      if (!registryHasCode || !engineHasCode) {
+        failureReason = "expected on-chain code not found; registry liveness fails closed";
+        note = "Registry or engine code was not found on chain; liveness fails closed.";
+      } else {
+        let linked: string | null = null;
+        let threw = false;
+        try {
+          linked = decodeAddressWord(
+            await ethCall(transport, sourceLinkage.saleAddress, SELECTOR_SOURCE_REGISTRY),
+          );
+        } catch {
+          threw = true;
+        }
+        sourceType = "CANON_RECONCILED_RPC";
+        if (threw || linked === null) {
+          value = null;
+          confidence = "LOW";
+          lifecycle = "PENDING_ADAPTER";
+          failureReason = "registry linkage decode failed";
+          note = "The engine's registry view could not be decoded; liveness reported unavailable.";
+        } else if (linked === sourceLinkage.registryAddress.toLowerCase()) {
+          value = true;
+          confidence = "HIGH";
+          lifecycle = "READ_ONLY_PROOF";
+          failureReason = null;
+          note =
+            "The Verified Introduction registry has on-chain code and the active engine's live linkage matches canon. The registry exposes only per-source views (existence/active/config by source id) — there is no global on-chain program flag, so none is reported or invented; per-source status is validated per link on request.";
+        } else {
+          value = null;
+          confidence = "LOW";
+          lifecycle = "PAUSED_BY_PRECAUTION";
+          failureReason =
+            "live registry linkage did not match canon (reported as unavailable, never normalized)";
+          note = "Live registry linkage did not match canon; liveness fails closed rather than normalizing.";
+        }
+      }
+    }
+
+    items.push(
+      buildItem({
+        id: "financial.referral.registryLive",
+        label: "Verified Introduction registry live on-chain",
+        value,
+        sourceType,
+        sourceRef: `contract-registry.ts:${sourceLinkage.key} (eth_getCode + eth_call SOURCE_REGISTRY)`,
+        chainId,
+        contractRole: "source-registry",
+        confidence,
+        lifecycle,
+        note,
+        failureReason,
+        asOf,
+      }),
+    );
+  }
+
+  return items;
+}
+
 /** Pure build: transport injected, no cache, no network of its own beyond it. */
 export async function buildProtocolReality(opts: BuildOpts): Promise<ProtocolRealityEnvelope> {
   const now = opts.now ?? (() => new Date());
   const asOf = now().toISOString();
   const probe = await probeChain(opts.transport);
 
-  const [contracts, tokens, archive, sale, source] = await Promise.all([
+  const [contracts, tokens, archive, sale, source, financial] = await Promise.all([
     buildContractsGroup(opts.transport, probe, opts.contractTargets, asOf),
     buildTokensGroup(opts.transport, probe, opts.tokenTargets, asOf),
     buildArchiveGroup(opts.transport, probe, opts.archiveTarget, opts.archiveArtifacts, asOf),
     buildSaleGroup(opts.transport, probe, opts.saleTargets, asOf),
     buildSourceGroup(opts.transport, probe, opts.sourceLinkageTarget, asOf),
+    buildFinancialGroup(opts.transport, probe, opts.financialTargets, opts.sourceLinkageTarget, asOf),
   ]);
 
   return {
@@ -934,6 +1364,7 @@ export async function buildProtocolReality(opts: BuildOpts): Promise<ProtocolRea
       archive,
       sale,
       source,
+      financial,
     },
   };
 }
@@ -966,6 +1397,7 @@ function defaultBuildOpts(): BuildOpts {
     archiveArtifacts: ARCHIVE_ARTIFACTS,
     saleTargets: SALE_TARGETS,
     sourceLinkageTarget: SOURCE_LINKAGE_TARGET,
+    financialTargets: FINANCIAL_TARGETS,
   };
 }
 

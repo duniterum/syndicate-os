@@ -239,6 +239,80 @@ export type SaleScanTarget = {
   events: readonly string[];
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Aggregate FINANCIAL read targets (SERVER-ONLY) — Slice N1.
+// -----------------------------------------------------------------------------
+// Admin-side aggregate on-chain financial reads. Every figure is a LIVE chain
+// read (eth_call), NEVER a canon constant — canon supplies only the ADDRESSES
+// to read, and a reconcile guard proves each address still matches canon. No
+// per-wallet data is ever read; no address here is ever emitted in a payload.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type FinancialInflowTarget = {
+  /** Safe internal key — never an address (matches canon registry keys). */
+  key: "MEMBERSHIP_SALE_V2A" | "MEMBERSHIP_SALE_V2" | "MEMBERSHIP_SALE_V3";
+  /** Human label for the surface (never an address). */
+  label: string;
+  /** SERVER-ONLY address; never emitted. */
+  address: string;
+  /** Which cumulative-USDC view this engine exposes (canon ABI fact). */
+  view: "totalUsdcRaised" | "totalGrossUsdc";
+};
+
+export type FinancialTargets = {
+  /**
+   * Per-engine cumulative gross USDC inflow views, in deployment order
+   * (V2a superseded/sealed → V2b sealed → V3 active). V1 is EXCLUDED by
+   * founder-approved N1 scope ("V2 + V2A + V3"), even though its canon ABI
+   * also exposes totalUsdcRaised() — widening to V1 is a deliberate future
+   * scope change, never a silent addition.
+   */
+  inflows: readonly FinancialInflowTarget[];
+  /** SERVER-ONLY vault reserve wallet (EOA) — the balanceOf() argument. */
+  vaultWallet: string;
+  /** SERVER-ONLY canonical burn address — the balanceOf() argument. */
+  synBurnAddress: string;
+  /** SERVER-ONLY token contract addresses (the balanceOf() call targets). */
+  usdcTokenAddress: string;
+  synTokenAddress: string;
+  /** SERVER-ONLY AMM pair address (getReserves/token0 call target). */
+  lpPair: string;
+  /** The ACTIVE engine whose memberCount() is the live aggregate member tally. */
+  memberCountEngine: { key: "MEMBERSHIP_SALE_V3"; address: string };
+};
+
+export const FINANCIAL_TARGETS: FinancialTargets = {
+  inflows: [
+    {
+      key: "MEMBERSHIP_SALE_V2A",
+      label: "Membership Sale V2a (superseded/sealed)",
+      address: "0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48",
+      view: "totalUsdcRaised",
+    },
+    {
+      key: "MEMBERSHIP_SALE_V2",
+      label: "Membership Sale V2b (sealed)",
+      address: "0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b",
+      view: "totalUsdcRaised",
+    },
+    {
+      key: "MEMBERSHIP_SALE_V3",
+      label: "Membership Sale V3 (active)",
+      address: "0x2A6cFc76906e758B934209AFf5A163c9bC20132E",
+      view: "totalGrossUsdc",
+    },
+  ],
+  vaultWallet: "0x205DdC8921A4C60106930eE35e1F395c8D13f464",
+  synBurnAddress: "0x000000000000000000000000000000000000dEaD",
+  usdcTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+  synTokenAddress: "0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170",
+  lpPair: "0xe12491b79c9cfc6a07db8cd7fc8b3da0bb019389",
+  memberCountEngine: {
+    key: "MEMBERSHIP_SALE_V3",
+    address: "0x2A6cFc76906e758B934209AFf5A163c9bC20132E",
+  },
+};
+
 export const SALE_SCAN_TARGETS: readonly SaleScanTarget[] = [
   {
     key: "MEMBERSHIP_SALE",

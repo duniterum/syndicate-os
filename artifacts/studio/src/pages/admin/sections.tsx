@@ -98,7 +98,7 @@ export function AdminDashboardSection() {
       <AdminHome
         role={role}
         onNavigate={(section) => navigate(SECTION_ROUTE[section])}
-        realitySlot={<ProtocolRealityPanel groups={["chain", "contracts", "sale"]} />}
+        realitySlot={<ProtocolRealityPanel groups={["chain", "contracts", "sale", "financial"]} />}
       />
       <AdminOverviewPanel />
     </div>

@@ -25,6 +25,7 @@ const groupTitle: Record<RealityGroupKey, string> = {
   source: "Source registry (read-only)",
   tokens: "Token metadata",
   archive: "Archive artifacts",
+  financial: "Financial reality (read-only)",
 };
 
 const groupBlurb: Record<RealityGroupKey, string> = {
@@ -34,6 +35,8 @@ const groupBlurb: Record<RealityGroupKey, string> = {
   source: "Read-only source-registry posture: registry linkage on the active engine and the registry's creation policy. No source ids are shown; validation happens per-link on request.",
   tokens: "Public ERC-20 metadata only — symbol and decimals. No balances or supply.",
   archive: "Whether each artifact id is configured on-chain, and the contract pause flag.",
+  financial:
+    "Aggregate on-chain financial figures, read live at request time — per-engine cumulative USDC inflow with a fail-closed total, vault reserve balance, pool reserves, burned SYN, and the live member tally. Exact raw base units; every figure fails closed to unavailable, never to a stored constant.",
 };
 
 const sourceTypeText: Record<string, string> = {

@@ -210,6 +210,22 @@ export const GetProtocolRealityResponse = zod.object({
   "publicSafe": zod.boolean(),
   "note": zod.string(),
   "failureReason": zod.union([zod.string(),zod.null()])
+})),
+  "financial": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "value": zod.union([zod.boolean(),zod.number(),zod.string(),zod.null()]),
+  "valueType": zod.enum(['null', 'boolean', 'string', 'number']),
+  "sourceType": zod.enum(['SERVER_SIDE_CANON', 'LIVE_CHAIN_RPC', 'CANON_RECONCILED_RPC']),
+  "sourceRef": zod.string(),
+  "chainId": zod.union([zod.number(),zod.null()]),
+  "contractRole": zod.union([zod.enum(['token', 'stablecoin', 'sale', 'source-registry', 'archive1155', 'lp-pair']),zod.null()]),
+  "asOf": zod.string(),
+  "confidence": zod.enum(['HIGH', 'MEDIUM', 'LOW', 'UNKNOWN']),
+  "lifecycle": zod.enum(['READ_ONLY_PROOF', 'PENDING_ADAPTER', 'NOT_ACTIVE', 'AUTH_REQUIRED', 'FOUNDER_GATED', 'FUTURE', 'PAUSED_BY_PRECAUTION']),
+  "publicSafe": zod.boolean(),
+  "note": zod.string(),
+  "failureReason": zod.union([zod.string(),zod.null()])
 }))
 })
 })

@@ -509,6 +509,10 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/ProtocolRealityItem"
+            financial:
+              type: array
+              items:
+                $ref: "#/components/schemas/ProtocolRealityItem"
           required:
             - chain
             - contracts
@@ -516,6 +520,7 @@ components:
             - archive
             - sale
             - source
+            - financial
       required:
         - mode
         - expectedChainId
