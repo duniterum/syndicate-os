@@ -60,6 +60,7 @@ import {
   SOURCE_LINKAGE_TARGET,
   FINANCIAL_TARGETS,
 } from "../src/data/protocolTargets";
+import { REFERRAL_ATTRIBUTION_SNAPSHOT } from "../src/lib/protocol/referralAttributionSnapshot";
 
 // ── tiny check harness ───────────────────────────────────────────────────────
 type Check = { name: string; ok: boolean; detail?: string };
@@ -106,7 +107,7 @@ function makeMock(o: MockOpts): { transport: RpcTransport; methods: string[] } {
     if (method === "eth_call") {
       const p = params[0] as { to: string; data: string };
       const selector = p.data.slice(0, 10);
-      const r = o.call ? o.call(p.to, selector, p.data) : goodCall(p.to, selector);
+      const r = o.call ? o.call(p.to, selector, p.data) : goodCall(p.to, selector, p.data);
       if (r === "__throw__") throw new Error("revert");
       return r;
     }
@@ -125,16 +126,25 @@ const V3_AVAILABLE_SYN = 1234000000000000000000n; // 1234 SYN @ 18 decimals
 const V3_TOTAL_GROSS_USDC = 5000000000n; //          5000 USDC @ 6 decimals
 const V3_RECEIPT_COUNT = 42n;
 
-// ── financial group fixtures (Slice N1) ──────────────────────────────────────
+// ── financial group fixtures (Slice N1 + Reconciliation slice) ───────────────
+const V1_FIN_ADDR = FINANCIAL_TARGETS.inflows
+  .find((i) => i.key === "MEMBERSHIP_SALE")!
+  .address.toLowerCase();
 const V2A_FIN_ADDR = FINANCIAL_TARGETS.inflows
   .find((i) => i.key === "MEMBERSHIP_SALE_V2A")!
   .address.toLowerCase();
 const LP_ADDR = FINANCIAL_TARGETS.lpPair.toLowerCase();
+const V1_INFLOW = 44000000n; //     44 USDC @ 6 decimals (V1 founder-test era)
 const V2A_INFLOW = 111000000n; //  111 USDC @ 6 decimals
 const V2B_INFLOW = 222000000n; //  222 USDC @ 6 decimals
-// aggregate = V2A + V2B + V3_TOTAL_GROSS_USDC (server-side bigint sum)
-const INFLOW_AGGREGATE = V2A_INFLOW + V2B_INFLOW + V3_TOTAL_GROSS_USDC;
+// aggregate = V1 + V2A + V2B + V3_TOTAL_GROSS_USDC (server-side bigint sum)
+const INFLOW_AGGREGATE = V1_INFLOW + V2A_INFLOW + V2B_INFLOW + V3_TOTAL_GROSS_USDC;
 const VAULT_USDC_BAL = 70000000123n; // vault USDC balance fixture
+const OPS_USDC_BAL = 10000000456n; //  operations wallet USDC balance fixture
+// balanceOf(vault) vs balanceOf(operations) hit the SAME USDC contract — only
+// the encoded calldata argument distinguishes them, so goodCall needs `data`.
+const VAULT_BAL_DATA = encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.vaultWallet);
+const OPS_BAL_DATA = encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.operationsWallet);
 // Burned SYN fixture: 16,000 SYN @ 18 decimals — ABOVE Number.MAX_SAFE_INTEGER
 // and DIFFERENT from any recorded canon ceremony figure: the guard proves the
 // served value comes from the TRANSPORT, never a stored constant.
@@ -147,7 +157,7 @@ const MEMBER_COUNT_FIX = 27n;
 const encReserves = (r0: bigint, r1: bigint): string =>
   "0x" + word(r0.toString(16)) + word(r1.toString(16)) + word("64");
 
-function goodCall(to: string, selector: string): string {
+function goodCall(to: string, selector: string, data = ""): string {
   const addr = to.toLowerCase();
   if (selector === SELECTOR_SYMBOL) return encString(addr === USDC_ADDR ? "USDC" : "SYN");
   if (selector === SELECTOR_DECIMALS) return encUint(addr === USDC_ADDR ? 6 : 18);
@@ -159,11 +169,16 @@ function goodCall(to: string, selector: string): string {
   if (selector === SELECTOR_GET_ARTIFACT_CORE) return encArtifactCore(true);
   if (selector === SELECTOR_SOURCE_REGISTRY)
     return "0x" + word(SOURCE_LINKAGE_TARGET.registryAddress.slice(2).toLowerCase());
-  // financial group (Slice N1): disambiguated by call target, never a constant.
-  if (selector === SELECTOR_TOTAL_USDC_RAISED)
+  // financial group: disambiguated by call target + calldata, never a constant.
+  if (selector === SELECTOR_TOTAL_USDC_RAISED) {
+    if (addr === V1_FIN_ADDR) return encUint256(V1_INFLOW);
     return encUint256(addr === V2A_FIN_ADDR ? V2A_INFLOW : V2B_INFLOW);
-  if (selector === SELECTOR_BALANCE_OF)
-    return encUint256(addr === USDC_ADDR ? VAULT_USDC_BAL : BURNED_SYN);
+  }
+  if (selector === SELECTOR_BALANCE_OF) {
+    if (addr === USDC_ADDR)
+      return encUint256(data === OPS_BAL_DATA ? OPS_USDC_BAL : VAULT_USDC_BAL);
+    return encUint256(BURNED_SYN);
+  }
   if (selector === SELECTOR_TOKEN0) return "0x" + word(SYN_ADDR.slice(2));
   if (selector === SELECTOR_GET_RESERVES) return encReserves(LP_RESERVE0, LP_RESERVE1);
   if (selector === SELECTOR_MEMBER_COUNT) return encUint256(MEMBER_COUNT_FIX);
@@ -215,7 +230,7 @@ async function main(): Promise<void> {
     const { transport, methods } = makeMock({
       call: (to, s, d) => {
         if (s === SELECTOR_BALANCE_OF) balanceOfCalls.push({ to: to.toLowerCase(), data: d });
-        return goodCall(to, s);
+        return goodCall(to, s, d);
       },
     });
     const e = await buildProtocolReality(baseOpts(transport));
@@ -250,14 +265,16 @@ async function main(): Promise<void> {
     check("happy: source registryLinkage true (CANON_RECONCILED_RPC, HIGH, READ_ONLY_PROOF)", linkage?.value === true && linkage?.sourceType === "CANON_RECONCILED_RPC" && linkage?.confidence === "HIGH" && linkage?.lifecycle === "READ_ONLY_PROOF");
     check("happy: source creationPolicy OWNER_ONLY (SERVER_SIDE_CANON, FOUNDER_GATED)", byId(e, "source.creationPolicy")?.value === "OWNER_ONLY" && byId(e, "source.creationPolicy")?.sourceType === "SERVER_SIDE_CANON" && byId(e, "source.creationPolicy")?.lifecycle === "FOUNDER_GATED");
     check("happy: source zeroSourceJoin true (SERVER_SIDE_CANON, READ_ONLY_PROOF)", byId(e, "source.zeroSourceJoin")?.value === true && byId(e, "source.zeroSourceJoin")?.sourceType === "SERVER_SIDE_CANON" && byId(e, "source.zeroSourceJoin")?.lifecycle === "READ_ONLY_PROOF");
-    // Financial group (Slice N1): 10 items, every value LIVE from the transport.
-    check("fin: financial group has exactly 10 items", e.groups.financial.length === 10, String(e.groups.financial.length));
+    // Financial group (Slice N1 + Reconciliation): 13 items, values LIVE from
+    // the transport except the attribution count (static hash-pinned snapshot).
+    check("fin: financial group has exactly 13 items", e.groups.financial.length === 13, String(e.groups.financial.length));
     const finIds = e.groups.financial.map((i) => i.id).sort().join(",");
     check(
-      "fin: exact id set (3 inflows + aggregate + vault + 2 reserves + burn + members + referral)",
+      "fin: exact id set (4 inflows + aggregate + vault + ops + 2 reserves + burn + members + referral + attribution)",
       finIds ===
         [
           "financial.burn.synBalance",
+          "financial.inflow.MEMBERSHIP_SALE",
           "financial.inflow.MEMBERSHIP_SALE_V2",
           "financial.inflow.MEMBERSHIP_SALE_V2A",
           "financial.inflow.MEMBERSHIP_SALE_V3",
@@ -265,18 +282,25 @@ async function main(): Promise<void> {
           "financial.lp.reserveSyn",
           "financial.lp.reserveUsdc",
           "financial.members.memberCount",
+          "financial.ops.usdcBalance",
+          "financial.referral.attributionActivity",
           "financial.referral.registryLive",
           "financial.vault.usdcBalance",
         ].join(","),
       finIds,
     );
-    check("fin: NO financial item is ever SERVER_SIDE_CANON (live-only group)", e.groups.financial.every((i) => i.sourceType !== "SERVER_SIDE_CANON"));
+    check("fin: NO financial item is ever SERVER_SIDE_CANON (no stored-constant figures)", e.groups.financial.every((i) => i.sourceType !== "SERVER_SIDE_CANON"));
+    check("fin: V1 inflow EXACT decimal string (LIVE_CHAIN_RPC, MEDIUM, sale role) — reversed scope pin", byId(e, "financial.inflow.MEMBERSHIP_SALE")?.value === V1_INFLOW.toString() && byId(e, "financial.inflow.MEMBERSHIP_SALE")?.sourceType === "LIVE_CHAIN_RPC" && byId(e, "financial.inflow.MEMBERSHIP_SALE")?.confidence === "MEDIUM" && byId(e, "financial.inflow.MEMBERSHIP_SALE")?.contractRole === "sale");
     check("fin: V2a inflow EXACT decimal string (LIVE_CHAIN_RPC, MEDIUM, sale role)", byId(e, "financial.inflow.MEMBERSHIP_SALE_V2A")?.value === V2A_INFLOW.toString() && byId(e, "financial.inflow.MEMBERSHIP_SALE_V2A")?.sourceType === "LIVE_CHAIN_RPC" && byId(e, "financial.inflow.MEMBERSHIP_SALE_V2A")?.confidence === "MEDIUM" && byId(e, "financial.inflow.MEMBERSHIP_SALE_V2A")?.contractRole === "sale");
     check("fin: V2b inflow EXACT decimal string", byId(e, "financial.inflow.MEMBERSHIP_SALE_V2")?.value === V2B_INFLOW.toString());
     check("fin: V3 inflow equals the engine's totalGrossUsdc figure", byId(e, "financial.inflow.MEMBERSHIP_SALE_V3")?.value === V3_TOTAL_GROSS_USDC.toString());
     const agg = byId(e, "financial.inflow.aggregate");
-    check("fin: aggregate EXACT bigint sum of the 3 components (string, READ_ONLY_PROOF)", agg?.value === INFLOW_AGGREGATE.toString() && agg?.valueType === "string" && agg?.lifecycle === "READ_ONLY_PROOF" && agg?.sourceType === "LIVE_CHAIN_RPC");
+    check("fin: aggregate EXACT bigint sum of the FOUR components (string, READ_ONLY_PROOF)", agg?.value === INFLOW_AGGREGATE.toString() && agg?.valueType === "string" && agg?.lifecycle === "READ_ONLY_PROOF" && agg?.sourceType === "LIVE_CHAIN_RPC");
+    check("fin: aggregate note pins four-engine scope + founder-test provenance (never external customer revenue)", (agg?.note ?? "").includes("V1 + V2a + V2b + V3") && (agg?.note ?? "").includes("founder test transactions") && (agg?.note ?? "").includes("never external customer revenue"));
     check("fin: vault USDC balance EXACT decimal string (stablecoin role)", byId(e, "financial.vault.usdcBalance")?.value === VAULT_USDC_BAL.toString() && byId(e, "financial.vault.usdcBalance")?.contractRole === "stablecoin");
+    check("fin: vault note pins 70/20/10 routed split + current-balance ≠ cumulative-inflow honesty", (byId(e, "financial.vault.usdcBalance")?.note ?? "").includes("70/20/10") && (byId(e, "financial.vault.usdcBalance")?.note ?? "").includes("not cumulative inflow"));
+    check("fin: ops wallet USDC balance EXACT decimal string (stablecoin role, distinct from vault)", byId(e, "financial.ops.usdcBalance")?.value === OPS_USDC_BAL.toString() && byId(e, "financial.ops.usdcBalance")?.contractRole === "stablecoin" && OPS_USDC_BAL !== VAULT_USDC_BAL);
+    check("fin: ops note pins the 70/20/10 routed-split reconciliation purpose", (byId(e, "financial.ops.usdcBalance")?.note ?? "").includes("70/20/10"));
     const burned = byId(e, "financial.burn.synBalance");
     check("fin: burned SYN EXACT decimal string ABOVE MAX_SAFE_INTEGER (token role)", burned?.value === BURNED_SYN.toString() && burned?.valueType === "string" && burned?.contractRole === "token");
     check("fin: burned SYN is the TRANSPORT figure, never a stored ceremony constant", burned?.value !== STALE_CANON_BURN.toString() && !JSON.stringify(e).includes(STALE_CANON_BURN.toString()));
@@ -285,12 +309,23 @@ async function main(): Promise<void> {
     const regLive = byId(e, "financial.referral.registryLive");
     check("fin: referral registryLive true (CANON_RECONCILED_RPC, HIGH, source-registry)", regLive?.value === true && regLive?.sourceType === "CANON_RECONCILED_RPC" && regLive?.confidence === "HIGH" && regLive?.contractRole === "source-registry");
     check("fin: referral note reports per-source views only, no invented global flag", (regLive?.note ?? "").includes("per-source views") && (regLive?.note ?? "").includes("none is reported or invented"));
-    // balanceOf calldata discipline: exactly 2 reads, each addressed to the
+    // Attribution ACTIVITY COUNT — served from the static hash-pinned snapshot,
+    // NEVER from the transport (no RPC method exists for an unbounded scan).
+    const attr = byId(e, "financial.referral.attributionActivity");
+    check("fin: attribution count equals the pinned snapshot totalEvents (string, INDEXED_CHAIN_SCAN)", attr?.value === String(REFERRAL_ATTRIBUTION_SNAPSHOT.totalEvents) && attr?.valueType === "string" && attr?.sourceType === "INDEXED_CHAIN_SCAN" && attr?.contractRole === "source-registry");
+    check("fin: attribution confidence MEDIUM + READ_ONLY_PROOF (snapshot verified)", attr?.confidence === "MEDIUM" && attr?.lifecycle === "READ_ONLY_PROOF" && attr?.failureReason === null);
+    check("fin: attribution note pins ACTIVITY-COUNT-not-USDC + no-commission-ever + router-not-deployed", (attr?.note ?? "").includes("ACTIVITY COUNT only, never a USDC or commission figure") && (attr?.note ?? "").includes("No commission has ever been paid") && (attr?.note ?? "").includes("CommissionRouterV1 is not deployed"));
+    check("fin: attribution note pins the indexed asOfBlock (honest freshness)", (attr?.note ?? "").includes(`as of block ${REFERRAL_ATTRIBUTION_SNAPSHOT.asOfBlock}`));
+    check("fin: attribution sourceRef carries the snapshot hash pin (truncated)", (attr?.sourceRef ?? "").includes(REFERRAL_ATTRIBUTION_SNAPSHOT.snapshotHash.slice(0, 18)));
+    check("fin: snapshot internal consistency (byEvent + other == totalEvents, VERIFIED, chain 43114)", Object.values(REFERRAL_ATTRIBUTION_SNAPSHOT.byEvent).reduce((a, b) => a + b, 0) + REFERRAL_ATTRIBUTION_SNAPSHOT.otherEventCount === REFERRAL_ATTRIBUTION_SNAPSHOT.totalEvents && REFERRAL_ATTRIBUTION_SNAPSHOT.status === "VERIFIED" && REFERRAL_ATTRIBUTION_SNAPSHOT.chainId === 43114);
+    // balanceOf calldata discipline: exactly 3 reads, each addressed to the
     // right token AND encoding the right wallet argument.
-    const vaultCall = balanceOfCalls.find((c) => c.to === USDC_ADDR);
+    const vaultCall = balanceOfCalls.find((c) => c.to === USDC_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.vaultWallet));
+    const opsCall = balanceOfCalls.find((c) => c.to === USDC_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.operationsWallet));
     const burnCall = balanceOfCalls.find((c) => c.to === SYN_ADDR);
-    check("fin: exactly 2 balanceOf reads (vault on USDC, burn on SYN)", balanceOfCalls.length === 2 && Boolean(vaultCall) && Boolean(burnCall));
+    check("fin: exactly 3 balanceOf reads (vault + ops on USDC, burn on SYN)", balanceOfCalls.length === 3 && Boolean(vaultCall) && Boolean(opsCall) && Boolean(burnCall));
     check("fin: vault balanceOf calldata encodes the vault wallet", vaultCall?.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.vaultWallet));
+    check("fin: ops balanceOf calldata encodes the operations wallet", opsCall?.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.operationsWallet));
     check("fin: burn balanceOf calldata encodes the canonical burn address", burnCall?.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.synBurnAddress));
     check("happy: every present value has null failureReason", allItems(e).every((i) => (i.value === null) === (i.failureReason !== null) || i.id === "chain.network"));
     check("happy: NO address leak", noAddressLeak(e));
@@ -309,7 +344,8 @@ async function main(): Promise<void> {
     check("unreachable: every token value null", e.groups.tokens.every((i) => i.value === null));
     check("unreachable: every archive value null", e.groups.archive.every((i) => i.value === null));
     check("unreachable: every sale value null", e.groups.sale.every((i) => i.value === null));
-    check("unreachable: every financial value null + failureReason (no stored fallback)", e.groups.financial.every((i) => i.value === null && i.failureReason !== null));
+    check("unreachable: every CHAIN-READ financial value null + failureReason (no stored fallback)", e.groups.financial.every((i) => i.id === "financial.referral.attributionActivity" || (i.value === null && i.failureReason !== null)));
+    check("unreachable: attribution count SURVIVES (static snapshot, honestly labelled INDEXED_CHAIN_SCAN — not a live read)", byId(e, "financial.referral.attributionActivity")?.value === String(REFERRAL_ATTRIBUTION_SNAPSHOT.totalEvents) && byId(e, "financial.referral.attributionActivity")?.sourceType === "INDEXED_CHAIN_SCAN");
     check("unreachable: source registryLinkage null + failureReason, static canon facts survive", byId(e, "source.registryLinkage")?.value === null && byId(e, "source.registryLinkage")?.failureReason !== null && byId(e, "source.creationPolicy")?.value === "OWNER_ONLY" && byId(e, "source.zeroSourceJoin")?.value === true);
     check("unreachable: chain.network still string", byId(e, "chain.network")?.value === "Avalanche C-Chain");
     check("unreachable: NO address leak + discipline passes", noAddressLeak(e) && disciplinePasses(e));
@@ -322,13 +358,13 @@ async function main(): Promise<void> {
     check("wrong-chain: NO eth_getCode / NO eth_call", !methods.includes("eth_getCode") && !methods.includes("eth_call"));
     check("wrong-chain: rpcReachable true", byId(e, "chain.rpcReachable")?.value === true);
     check("wrong-chain: identityVerified null + LOW + failureReason mentions chain id", byId(e, "chain.identityVerified")?.value === null && byId(e, "chain.identityVerified")?.confidence === "LOW" && (byId(e, "chain.identityVerified")?.failureReason ?? "").includes("chain id"));
-    check("wrong-chain: contracts/sale/tokens/archive/financial all null", [...e.groups.contracts, ...e.groups.sale, ...e.groups.tokens, ...e.groups.archive, ...e.groups.financial].every((i) => i.value === null));
+    check("wrong-chain: contracts/sale/tokens/archive/financial all null (attribution snapshot exempt — its chain identity is pinned inside the snapshot)", [...e.groups.contracts, ...e.groups.sale, ...e.groups.tokens, ...e.groups.archive, ...e.groups.financial].every((i) => i.id === "financial.referral.attributionActivity" || i.value === null));
   }
 
   // 4) CANON MISMATCH: SYN symbol reads "XXX" → value null, NEVER normalized.
   {
     const { transport } = makeMock({
-      call: (to, s) => (to.toLowerCase() === SYN_ADDR && s === SELECTOR_SYMBOL ? encString("XXX") : goodCall(to, s)),
+      call: (to, s, d) => (to.toLowerCase() === SYN_ADDR && s === SELECTOR_SYMBOL ? encString("XXX") : goodCall(to, s, d)),
     });
     const e = await buildProtocolReality(baseOpts(transport));
     const synSym = byId(e, "tokens.SYN.symbol");
@@ -340,7 +376,7 @@ async function main(): Promise<void> {
   // 5) DECODE FAILURE: SYN symbol returns empty → PENDING_ADAPTER + null.
   {
     const { transport } = makeMock({
-      call: (to, s) => (to.toLowerCase() === SYN_ADDR && s === SELECTOR_SYMBOL ? "0x" : goodCall(to, s)),
+      call: (to, s, d) => (to.toLowerCase() === SYN_ADDR && s === SELECTOR_SYMBOL ? "0x" : goodCall(to, s, d)),
     });
     const e = await buildProtocolReality(baseOpts(transport));
     const synSym = byId(e, "tokens.SYN.symbol");
@@ -361,7 +397,7 @@ async function main(): Promise<void> {
   // 7) ARCHIVE SHAPE DRIFT: too-short getArtifactCore tuple → PENDING_ADAPTER.
   {
     const { transport } = makeMock({
-      call: (to, s) => (s === SELECTOR_GET_ARTIFACT_CORE ? "0x" + word("1") : goodCall(to, s)),
+      call: (to, s, d) => (s === SELECTOR_GET_ARTIFACT_CORE ? "0x" + word("1") : goodCall(to, s, d)),
     });
     const e = await buildProtocolReality(baseOpts(transport));
     check("shape-drift: archive id1 null + PENDING_ADAPTER + failureReason", byId(e, "archive.artifact.1")?.value === null && byId(e, "archive.artifact.1")?.lifecycle === "PENDING_ADAPTER" && byId(e, "archive.artifact.1")?.failureReason !== null);
@@ -371,7 +407,7 @@ async function main(): Promise<void> {
   //     the sibling receiptCount still reads (one bad view never poisons others).
   {
     const { transport } = makeMock({
-      call: (to, s) => (to.toLowerCase() === V3_ADDR && s === SELECTOR_AVAILABLE_SYN ? "0x" : goodCall(to, s)),
+      call: (to, s, d) => (to.toLowerCase() === V3_ADDR && s === SELECTOR_AVAILABLE_SYN ? "0x" : goodCall(to, s, d)),
     });
     const e = await buildProtocolReality(baseOpts(transport));
     const a = byId(e, "sale.MEMBERSHIP_SALE_V3.availableSyn");
@@ -397,10 +433,10 @@ async function main(): Promise<void> {
   //     every sibling financial read survives with its exact figure.
   {
     const { transport } = makeMock({
-      call: (to, s) =>
+      call: (to, s, d) =>
         to.toLowerCase() === V2A_FIN_ADDR && s === SELECTOR_TOTAL_USDC_RAISED
           ? "__throw__"
-          : goodCall(to, s),
+          : goodCall(to, s, d),
     });
     const e = await buildProtocolReality(baseOpts(transport));
     const comp = byId(e, "financial.inflow.MEMBERSHIP_SALE_V2A");
@@ -415,10 +451,10 @@ async function main(): Promise<void> {
   // 7h) LP ORIENTATION FLIP: token0 = USDC → reserves swap deterministically.
   {
     const { transport } = makeMock({
-      call: (to, s) =>
+      call: (to, s, d) =>
         to.toLowerCase() === LP_ADDR && s === SELECTOR_TOKEN0
           ? "0x" + word(USDC_ADDR.slice(2))
-          : goodCall(to, s),
+          : goodCall(to, s, d),
     });
     const e = await buildProtocolReality(baseOpts(transport));
     check("fin-orient-flip: token0=USDC → reserveUsdc=reserve0, reserveSyn=reserve1", byId(e, "financial.lp.reserveUsdc")?.value === LP_RESERVE0.toString() && byId(e, "financial.lp.reserveSyn")?.value === LP_RESERVE1.toString());
@@ -428,10 +464,10 @@ async function main(): Promise<void> {
   //     reserves fail closed (never guessed), no leak, siblings survive.
   {
     const { transport } = makeMock({
-      call: (to, s) =>
+      call: (to, s, d) =>
         to.toLowerCase() === LP_ADDR && s === SELECTOR_TOKEN0
           ? "0x" + word("00000000000000000000000000000000000000aa")
-          : goodCall(to, s),
+          : goodCall(to, s, d),
     });
     const e = await buildProtocolReality(baseOpts(transport));
     const syn = byId(e, "financial.lp.reserveSyn");
@@ -446,10 +482,10 @@ async function main(): Promise<void> {
   {
     const wrongAddr = "00000000000000000000000000000000000000ff";
     const { transport } = makeMock({
-      call: (to, s) =>
+      call: (to, s, d) =>
         to.toLowerCase() === V3_ADDR && s === SELECTOR_SOURCE_REGISTRY
           ? "0x" + word(wrongAddr)
-          : goodCall(to, s),
+          : goodCall(to, s, d),
     });
     const e = await buildProtocolReality(baseOpts(transport));
     const linkage = byId(e, "source.registryLinkage");
@@ -460,8 +496,8 @@ async function main(): Promise<void> {
   // 7f) SOURCE LINKAGE DECODE FAILURE: SOURCE_REGISTRY() returns "0x" → null.
   {
     const { transport } = makeMock({
-      call: (to, s) =>
-        to.toLowerCase() === V3_ADDR && s === SELECTOR_SOURCE_REGISTRY ? "0x" : goodCall(to, s),
+      call: (to, s, d) =>
+        to.toLowerCase() === V3_ADDR && s === SELECTOR_SOURCE_REGISTRY ? "0x" : goodCall(to, s, d),
     });
     const e = await buildProtocolReality(baseOpts(transport));
     const linkage = byId(e, "source.registryLinkage");

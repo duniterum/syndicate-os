@@ -27,6 +27,7 @@ import {
   SYN_BURN_ADDRESS,
   LP_POOL,
   MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS,
+  SALE_DEPLOYMENT_BLOCK,
 } from "../src/canon/the-syndicate/contracts/syndicate-config";
 import { ARCHIVE_ID_REGISTRY } from "../src/canon/the-syndicate/archive/archive-id-registry";
 
@@ -62,7 +63,11 @@ import {
   SELECTOR_QUOTE,
   SELECTOR_MEMBER_NUMBER_OF,
 } from "../src/lib/protocol/sourceDecoders";
-import { SOURCE_LINKAGE_TARGET, FINANCIAL_TARGETS } from "../src/data/protocolTargets";
+import {
+  SOURCE_LINKAGE_TARGET,
+  FINANCIAL_TARGETS,
+  REFERRAL_ATTRIBUTION_SCAN_TARGET,
+} from "../src/data/protocolTargets";
 import {
   SELECTOR_TOTAL_USDC_RAISED,
   SELECTOR_BALANCE_OF,
@@ -296,10 +301,14 @@ function main(): void {
 
     // 8b) Inflow cardinality + order + per-engine canon authority.
     const F = FINANCIAL_TARGETS;
-    check("fin inflows: exactly 3, deployment order V2a → V2b → V3", F.inflows.length === 3 && F.inflows[0]?.key === "MEMBERSHIP_SALE_V2A" && F.inflows[1]?.key === "MEMBERSHIP_SALE_V2" && F.inflows[2]?.key === "MEMBERSHIP_SALE_V3", F.inflows.map((i) => i.key).join(","));
+    check("fin inflows: exactly 4, deployment order V1 → V2a → V2b → V3", F.inflows.length === 4 && F.inflows[0]?.key === "MEMBERSHIP_SALE" && F.inflows[1]?.key === "MEMBERSHIP_SALE_V2A" && F.inflows[2]?.key === "MEMBERSHIP_SALE_V2" && F.inflows[3]?.key === "MEMBERSHIP_SALE_V3", F.inflows.map((i) => i.key).join(","));
     for (const i of F.inflows) {
       check(`fin addr-shape: inflow ${i.key} is a full address`, FULL_ADDRESS_RE.test(i.address), i.address.slice(0, 6));
     }
+    const v1f = F.inflows.find((i) => i.key === "MEMBERSHIP_SALE");
+    check("fin canon: V1 address matches syndicate-config MEMBERSHIP_SALE_CONTRACT_ADDRESS", eqAddr(v1f?.address ?? "", CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS), `${v1f?.address} vs ${CONTRACTS.MEMBERSHIP_SALE_CONTRACT_ADDRESS}`);
+    check("fin canon: V1 address matches contract registry MEMBERSHIP_SALE", eqAddr(v1f?.address ?? "", contractByKey("MEMBERSHIP_SALE")?.address ?? null));
+    check("fin canon: V1 view is totalUsdcRaised", v1f?.view === "totalUsdcRaised");
     const v2a = F.inflows.find((i) => i.key === "MEMBERSHIP_SALE_V2A");
     check("fin canon: V2a address matches syndicate-config (sealed continuity engine)", eqAddr(v2a?.address ?? "", MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS), `${v2a?.address} vs ${MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS ?? "null"}`);
     check("fin canon: V2a is deliberately ABSENT from the contract registry (config-only canon)", contractByKey("MEMBERSHIP_SALE_V2A") === undefined);
@@ -322,24 +331,34 @@ function main(): void {
     check("fin abi: totalUsdcRaised() is a uint256 view in SALE_V2_ABI (V2a same-source)", finHasView(v2Abi, "totalUsdcRaised", "uint256"));
     check("fin abi: totalGrossUsdc() is a uint256 view in SALE_V3_ABI", finHasView(v3Abi, "totalGrossUsdc", "uint256"));
     check("fin abi: memberCount() is a uint256 view in SALE_V3_ABI", finHasView(v3Abi, "memberCount", "uint256"));
-    // Founder-approved N1 scope: inflows are exactly V2a + V2b + V3. V1's canon
-    // ABI DOES expose totalUsdcRaised() — its exclusion is a deliberate scope
-    // decision, so the guard pins BOTH facts: the ABI fact stays true AND no
-    // V1 inflow target sneaks in without a deliberate guard change.
-    check("fin scope: V1 ABI exposes totalUsdcRaised (exclusion is scope, not capability)", finHasView(v1Abi, "totalUsdcRaised", "uint256"));
-    check("fin scope: NO V1 inflow target (founder-scoped to V2a+V2b+V3)", F.inflows.every((i) => (i.key as string) !== "MEMBERSHIP_SALE"));
+    // Founder-approved Reconciliation slice (July 2026): the former "NO V1
+    // inflow" scope pin is deliberately REVERSED — the aggregate must now
+    // include ALL four engines (V1 + V2a + V2b + V3) so cumulative inflow is
+    // complete on-chain truth (V1 carries founder buildout test transactions;
+    // the served note pins that provenance). The guard now REQUIRES V1.
+    check("fin scope: V1 ABI exposes totalUsdcRaised (the read the slice wires)", finHasView(v1Abi, "totalUsdcRaised", "uint256"));
+    check("fin scope: V1 inflow target REQUIRED and FIRST (founder-approved reconciliation slice)", F.inflows.some((i) => i.key === "MEMBERSHIP_SALE") && F.inflows[0]?.key === "MEMBERSHIP_SALE");
 
     // 8d) Wallet/token/pair addresses reconcile to their canon authorities.
     check("fin canon: vaultWallet == CONTRACTS.VAULT_WALLET", eqAddr(F.vaultWallet, CONTRACTS.VAULT_WALLET));
+    check("fin canon: operationsWallet == CONTRACTS.OPERATIONS_WALLET (70/20/10 routed split)", eqAddr(F.operationsWallet, CONTRACTS.OPERATIONS_WALLET));
     check("fin canon: synBurnAddress == SYN_BURN_ADDRESS (canonical 0x…dEaD)", eqAddr(F.synBurnAddress, SYN_BURN_ADDRESS) && F.synBurnAddress.toLowerCase().endsWith("dead"));
     check("fin canon: usdcTokenAddress matches contract registry USDC", eqAddr(F.usdcTokenAddress, contractByKey("USDC")?.address ?? null));
     check("fin canon: synTokenAddress matches contract registry SYN_TOKEN", eqAddr(F.synTokenAddress, contractByKey("SYN_TOKEN")?.address ?? null));
     check("fin canon: lpPair matches LP_POOL.pairAddress", eqAddr(F.lpPair, LP_POOL.pairAddress));
     check("fin canon: lpPair matches contract registry LP_PAIR", eqAddr(F.lpPair, contractByKey("LP_PAIR")?.address ?? null));
     check("fin canon: memberCountEngine is the active V3 engine", F.memberCountEngine.key === "MEMBERSHIP_SALE_V3" && eqAddr(F.memberCountEngine.address, contractByKey("MEMBERSHIP_SALE_V3")?.address ?? null));
-    for (const [label, addr] of [["vaultWallet", F.vaultWallet], ["synBurnAddress", F.synBurnAddress], ["usdcTokenAddress", F.usdcTokenAddress], ["synTokenAddress", F.synTokenAddress], ["lpPair", F.lpPair], ["memberCountEngine", F.memberCountEngine.address]] as const) {
+    for (const [label, addr] of [["vaultWallet", F.vaultWallet], ["operationsWallet", F.operationsWallet], ["synBurnAddress", F.synBurnAddress], ["usdcTokenAddress", F.usdcTokenAddress], ["synTokenAddress", F.synTokenAddress], ["lpPair", F.lpPair], ["memberCountEngine", F.memberCountEngine.address]] as const) {
       check(`fin addr-shape: ${label} is a full address`, FULL_ADDRESS_RE.test(addr), addr.slice(0, 6));
     }
+
+    // 8d-bis) Referral attribution SCAN target reconciles to canon (scripts-only).
+    const RA = REFERRAL_ATTRIBUTION_SCAN_TARGET;
+    check("fin canon: attribution scan address matches contract registry SOURCE_REGISTRY_V1", eqAddr(RA.address, contractByKey("SOURCE_REGISTRY_V1")?.address ?? null));
+    check("fin canon: attribution scan address matches served SOURCE_LINKAGE_TARGET.registryAddress", eqAddr(RA.address, SOURCE_LINKAGE_TARGET.registryAddress));
+    check("fin canon: attribution scan fromBlock == SALE_DEPLOYMENT_BLOCK (canon V1 deploy floor)", BigInt(RA.fromBlock) === SALE_DEPLOYMENT_BLOCK, String(RA.fromBlock));
+    check("fin canon: attribution scan is scanOnly (never an eth_call target)", RA.scanOnly === true && RA.key === "SOURCE_REGISTRY_V1");
+    check("fin addr-shape: attribution scan address is a full address", FULL_ADDRESS_RE.test(RA.address), RA.address.slice(0, 6));
 
     // 8e) PAIR_ABI shape: token0 address view; getReserves 3 outputs (uint112, uint112, uint32).
     const pairAbi = PAIR_ABI as unknown as readonly FinAbiEntry[];

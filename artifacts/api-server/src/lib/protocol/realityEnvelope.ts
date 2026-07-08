@@ -20,7 +20,14 @@ import type { NonLivePosture } from "@workspace/os-contracts";
 export type ProtocolSourceType =
   | "SERVER_SIDE_CANON"
   | "LIVE_CHAIN_RPC"
-  | "CANON_RECONCILED_RPC";
+  | "CANON_RECONCILED_RPC"
+  /**
+   * A chain-derived figure produced by a founder-gated, chunked read-only
+   * eth_getLogs scan and served from a static hash-pinned snapshot (the RPC
+   * provider caps eth_getLogs ranges, so a per-request live count is
+   * impossible). Honest as of the snapshot's asOfBlock — NOT a live read.
+   */
+  | "INDEXED_CHAIN_SCAN";
 
 export type ProtocolConfidence = "HIGH" | "MEDIUM" | "LOW" | "UNKNOWN";
 

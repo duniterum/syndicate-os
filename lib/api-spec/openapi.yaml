@@ -404,6 +404,7 @@ components:
             - SERVER_SIDE_CANON
             - LIVE_CHAIN_RPC
             - CANON_RECONCILED_RPC
+            - INDEXED_CHAIN_SCAN
         sourceRef:
           type: string
         chainId:

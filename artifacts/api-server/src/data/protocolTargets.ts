@@ -250,7 +250,11 @@ export type SaleScanTarget = {
 
 export type FinancialInflowTarget = {
   /** Safe internal key — never an address (matches canon registry keys). */
-  key: "MEMBERSHIP_SALE_V2A" | "MEMBERSHIP_SALE_V2" | "MEMBERSHIP_SALE_V3";
+  key:
+    | "MEMBERSHIP_SALE"
+    | "MEMBERSHIP_SALE_V2A"
+    | "MEMBERSHIP_SALE_V2"
+    | "MEMBERSHIP_SALE_V3";
   /** Human label for the surface (never an address). */
   label: string;
   /** SERVER-ONLY address; never emitted. */
@@ -262,14 +266,24 @@ export type FinancialInflowTarget = {
 export type FinancialTargets = {
   /**
    * Per-engine cumulative gross USDC inflow views, in deployment order
-   * (V2a superseded/sealed → V2b sealed → V3 active). V1 is EXCLUDED by
-   * founder-approved N1 scope ("V2 + V2A + V3"), even though its canon ABI
-   * also exposes totalUsdcRaised() — widening to V1 is a deliberate future
-   * scope change, never a silent addition.
+   * (V1 sealed → V2a superseded/sealed → V2b sealed → V3 active). V1 was
+   * EXCLUDED by the original N1 scope; the reconciliation slice (founder-
+   * approved scope change, July 2026) widened the aggregate to ALL FOUR
+   * engines so the figure reconciles against the full on-chain history.
+   * PROVENANCE DOCTRINE: the aggregate includes founder test transactions
+   * made during protocol buildout — it is cumulative on-chain inflow, and
+   * must NEVER be framed as external customer revenue.
    */
   inflows: readonly FinancialInflowTarget[];
   /** SERVER-ONLY vault reserve wallet (EOA) — the balanceOf() argument. */
   vaultWallet: string;
+  /**
+   * SERVER-ONLY operations wallet (EOA) — the balanceOf() argument for the
+   * routed-split reconciliation read (engines route USDC 70/20/10 to
+   * vault / liquidity / operations; the vault's CURRENT balance alone is
+   * therefore never the cumulative inflow).
+   */
+  operationsWallet: string;
   /** SERVER-ONLY canonical burn address — the balanceOf() argument. */
   synBurnAddress: string;
   /** SERVER-ONLY token contract addresses (the balanceOf() call targets). */
@@ -283,6 +297,12 @@ export type FinancialTargets = {
 
 export const FINANCIAL_TARGETS: FinancialTargets = {
   inflows: [
+    {
+      key: "MEMBERSHIP_SALE",
+      label: "Membership Sale V1 (sealed)",
+      address: "0x0020Df30C127306f0F5B44E6a6E4368D2855842d",
+      view: "totalUsdcRaised",
+    },
     {
       key: "MEMBERSHIP_SALE_V2A",
       label: "Membership Sale V2a (superseded/sealed)",
@@ -303,6 +323,7 @@ export const FINANCIAL_TARGETS: FinancialTargets = {
     },
   ],
   vaultWallet: "0x205DdC8921A4C60106930eE35e1F395c8D13f464",
+  operationsWallet: "0x5cb57937D1cEa51014e7ed8baaa05ccA3F72BE80",
   synBurnAddress: "0x000000000000000000000000000000000000dEaD",
   usdcTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
   synTokenAddress: "0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170",
@@ -311,6 +332,44 @@ export const FINANCIAL_TARGETS: FinancialTargets = {
     key: "MEMBERSHIP_SALE_V3",
     address: "0x2A6cFc76906e758B934209AFf5A163c9bC20132E",
   },
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Referral attribution activity SCAN target (SERVER-ONLY, scripts-side only).
+// -----------------------------------------------------------------------------
+// The SourceRegistryV1 contract exposes NO on-chain count view — attribution
+// activity is only observable as lifecycle events. The RPC provider caps
+// eth_getLogs at a 10,000-block range, so a per-request live count is
+// impossible; instead the founder-gated referral-attribution:build script
+// performs a chunked read-only scan and writes a static, hash-pinned snapshot
+// (freezeGate / holder-index pattern). Served code imports ONLY the snapshot.
+// The count is an ACTIVITY COUNT — never a USDC or commission figure. No
+// commission has ever been paid on-chain; CommissionRouterV1 is not deployed.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type ReferralAttributionScanTarget = {
+  /** Safe internal key — never an address (matches the canon registry key). */
+  key: "SOURCE_REGISTRY_V1";
+  /** Human label for the surface (never an address). */
+  label: string;
+  /** SERVER-ONLY address; never emitted. */
+  address: string;
+  /**
+   * Pinned canon lower scan bound: the V1 sale deployment block — the earliest
+   * protocol block on canon record, safely BEFORE the registry deployment (an
+   * empty range prefix returns zero logs; nothing can be missed).
+   */
+  fromBlock: number;
+  /** Always true: this target is only ever read via eth_getLogs in a script. */
+  scanOnly: true;
+};
+
+export const REFERRAL_ATTRIBUTION_SCAN_TARGET: ReferralAttributionScanTarget = {
+  key: "SOURCE_REGISTRY_V1",
+  label: "Source Registry V1 — attribution activity scan",
+  address: "0x780013bB358be6be95b401901264FC7c22a595a6",
+  fromBlock: 87_157_852,
+  scanOnly: true,
 };
 
 export const SALE_SCAN_TARGETS: readonly SaleScanTarget[] = [

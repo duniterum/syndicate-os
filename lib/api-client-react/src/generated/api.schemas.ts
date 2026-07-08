@@ -178,6 +178,7 @@ export const ProtocolRealityItemSourceType = {
   SERVER_SIDE_CANON: 'SERVER_SIDE_CANON',
   LIVE_CHAIN_RPC: 'LIVE_CHAIN_RPC',
   CANON_RECONCILED_RPC: 'CANON_RECONCILED_RPC',
+  INDEXED_CHAIN_SCAN: 'INDEXED_CHAIN_SCAN',
 } as const;
 
 export type ProtocolRealityItemContractRole = typeof ProtocolRealityItemContractRole[keyof typeof ProtocolRealityItemContractRole] | null;

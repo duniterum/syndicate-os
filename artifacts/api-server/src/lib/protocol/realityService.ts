@@ -57,6 +57,7 @@ import {
   decodeUint256Decimal,
 } from "./saleDecoders";
 import { SELECTOR_SOURCE_REGISTRY, decodeAddressWord } from "./sourceDecoders";
+import { REFERRAL_ATTRIBUTION_SNAPSHOT } from "./referralAttributionSnapshot";
 import {
   SELECTOR_TOTAL_USDC_RAISED,
   SELECTOR_BALANCE_OF,
@@ -920,7 +921,10 @@ async function buildSourceGroup(
   return items;
 }
 
-// ── financial group (aggregate live on-chain figures — Slice N1, admin-side) ─
+// ── financial group (aggregate live on-chain figures — Slice N1 + Reconciliation
+//    slice, July 2026: FOUR inflow engines V1+V2a+V2b+V3, vault + operations
+//    USDC balances (70/20/10 reconciliation), and the static hash-pinned
+//    attribution ACTIVITY COUNT snapshot — admin-side) ──────────────────────────
 /**
  * Normalize one aggregate financial uint256 read into an item as an EXACT raw
  * base-unit string (never a JS number, never humanized, NEVER a canon-constant
@@ -1086,7 +1090,7 @@ async function buildFinancialGroup(
         confidence = "MEDIUM";
         lifecycle = "READ_ONLY_PROOF";
         failureReason = null;
-        note = "Server-side bigint sum of the three live per-engine inflow reads (V2a + V2b + V3); exact 6-decimal USDC base units. Fails closed if any component is unavailable.";
+        note = "Server-side bigint sum of the four live per-engine inflow reads (V1 + V2a + V2b + V3); exact 6-decimal USDC base units. Fails closed if any component is unavailable. Provenance: this figure includes founder test transactions made during protocol buildout — it is cumulative on-chain inflow, never external customer revenue.";
       }
     }
     items.push(
@@ -1095,7 +1099,7 @@ async function buildFinancialGroup(
         label: "All-engine cumulative gross USDC inflow (raw base units)",
         value,
         sourceType: "LIVE_CHAIN_RPC",
-        sourceRef: "eth_call totalUsdcRaised/totalGrossUsdc (V2a + V2b + V3, summed server-side)",
+        sourceRef: "eth_call totalUsdcRaised/totalGrossUsdc (V1 + V2a + V2b + V3, summed server-side)",
         chainId,
         contractRole: "sale",
         confidence,
@@ -1127,8 +1131,36 @@ async function buildFinancialGroup(
         id: "financial.vault.usdcBalance",
         label: "Vault reserve wallet USDC balance (raw base units)",
         contractRole: "stablecoin",
-        note: "Live balanceOf() read on the canon USDC contract for the protocol vault reserve wallet; exact 6-decimal base units. Aggregate balance only — the wallet address stays server-side.",
+        note: "Live balanceOf() read on the canon USDC contract for the protocol vault reserve wallet; exact 6-decimal base units. Aggregate balance only — the wallet address stays server-side. This is the wallet's CURRENT balance, not cumulative inflow: engines route USDC 70/20/10 to vault / liquidity / operations, so vault + operations + pool USDC together approximate the cumulative inflow figure.",
         sourceRef: "contract-registry.ts:USDC (eth_call balanceOf VAULT_WALLET)",
+        chainId,
+        asOf,
+      }),
+    );
+  }
+
+  // 2b) Operations wallet USDC balance — the routed-split reconciliation read.
+  {
+    const data = encodeAddressArg(SELECTOR_BALANCE_OF, targets.operationsWallet);
+    const hasCode = await hasCodeAt(targets.usdcTokenAddress);
+    let raw: string | null = null;
+    let threw = false;
+    if (probe.chainIdOk && hasCode && data !== null) {
+      ({ raw, threw } = await readUint(targets.usdcTokenAddress, data));
+    } else if (probe.chainIdOk && hasCode && data === null) {
+      threw = true;
+    }
+    items.push(
+      buildFinancialNumeric({
+        probe,
+        hasCode,
+        rawValue: raw,
+        decodeThrew: threw,
+        id: "financial.ops.usdcBalance",
+        label: "Operations wallet USDC balance (raw base units)",
+        contractRole: "stablecoin",
+        note: "Live balanceOf() read on the canon USDC contract for the protocol operations wallet; exact 6-decimal base units. Aggregate balance only — the wallet address stays server-side. Read so the 70/20/10 routed split (vault / liquidity / operations) can be reconciled against the cumulative inflow aggregate.",
+        sourceRef: "contract-registry.ts:USDC (eth_call balanceOf OPERATIONS_WALLET)",
         chainId,
         asOf,
       }),
@@ -1328,6 +1360,43 @@ async function buildFinancialGroup(
         lifecycle,
         note,
         failureReason,
+        asOf,
+      }),
+    );
+  }
+
+  // 7) Referral attribution ACTIVITY COUNT — static hash-pinned snapshot of a
+  //    founder-gated chunked eth_getLogs scan (the provider caps ranges at
+  //    10,000 blocks, so a per-request live count is impossible). Fails closed
+  //    if the snapshot's gate/chain identity does not match expectations.
+  {
+    const snap = REFERRAL_ATTRIBUTION_SNAPSHOT;
+    const snapshotValid =
+      snap.gate === "REFERRAL_ATTRIBUTION_ACTIVITY_V1" &&
+      snap.status === "VERIFIED" &&
+      snap.chainId === EXPECTED_CHAIN_ID &&
+      snap.registryKey === "SOURCE_REGISTRY_V1" &&
+      Number.isInteger(snap.totalEvents) &&
+      snap.totalEvents >= 0 &&
+      Number.isInteger(snap.asOfBlock) &&
+      snap.asOfBlock > snap.fromBlock;
+    items.push(
+      buildItem({
+        id: "financial.referral.attributionActivity",
+        label: "Verified Introduction registry — attribution activity count (lifecycle events)",
+        value: snapshotValid ? String(snap.totalEvents) : null,
+        sourceType: "INDEXED_CHAIN_SCAN",
+        sourceRef: `referralAttributionSnapshot.ts (${snap.snapshotHash.slice(0, 18)}…, chunked eth_getLogs scan)`,
+        chainId: snapshotValid ? snap.chainId : null,
+        contractRole: "source-registry",
+        confidence: snapshotValid ? "MEDIUM" : "LOW",
+        lifecycle: snapshotValid ? "READ_ONLY_PROOF" : "PAUSED_BY_PRECAUTION",
+        note: snapshotValid
+          ? `Count of SourceRegistryV1 lifecycle events observed on-chain (indexed as of block ${snap.asOfBlock}, scan floor block ${snap.fromBlock}) — an ACTIVITY COUNT only, never a USDC or commission figure. No commission has ever been paid on-chain; CommissionRouterV1 is not deployed. Not a live per-request read: the RPC provider caps eth_getLogs ranges, so the count is served from a founder-gated, hash-pinned indexed snapshot.`
+          : "The attribution activity snapshot failed its gate/chain-identity checks; the count is reported unavailable rather than served from an unverified snapshot.",
+        failureReason: snapshotValid
+          ? null
+          : "attribution snapshot gate/chain mismatch (fail closed — regenerate via the founder-gated build)",
         asOf,
       }),
     );

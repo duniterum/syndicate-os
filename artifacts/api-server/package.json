@@ -37,6 +37,8 @@
     "partB:preflight": "tsx ./scripts/partB-import.ts --preflight",
     "partB:import": "tsx ./scripts/partB-import.ts --import",
     "partB:status": "tsx ./scripts/partB-import.ts status",
+    "referral-attribution:dry-run": "tsx ./scripts/referral-attribution-build.ts",
+    "referral-attribution:build": "tsx ./scripts/referral-attribution-build.ts --write",
     "holder-index:dry-run": "tsx ./scripts/holder-index-snapshot.ts --dry-run",
     "holder-index:build": "tsx ./scripts/holder-index-snapshot.ts --write",
     "holder-index:reconcile": "tsx ./scripts/holder-index-reconcile.ts",
