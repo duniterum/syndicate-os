@@ -4,6 +4,7 @@ import pinoHttp from "pino-http";
 import router from "./routes";
 import authRouter from "./auth/router";
 import { authExposureGate } from "./auth/authExposure";
+import operatorRouter from "./operator/router";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
@@ -105,6 +106,8 @@ app.use(cors(corsOptions));
 // whole zone is dark by default (unknown-route 404) unless the founder sets
 // SYNDICATE_AUTH_ENABLED="true"; see src/auth/authExposure.ts.
 app.use("/api/auth", authExposureGate, authRouter);
+// Operator WRITE zone — same exposure gate; unreachable in prod unless enabled.
+app.use("/api/operator", authExposureGate, operatorRouter);
 
 app.use("/api", router);
 

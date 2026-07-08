@@ -108,7 +108,19 @@ function check(cond: boolean, pass: string, fail: string): void {
 const allSrcTs = walk(srcDir).filter((f) => /\.tsx?$/.test(f));
 const authDir = path.resolve(srcDir, "auth");
 const authFiles = allSrcTs.filter((f) => f.startsWith(authDir + path.sep));
-const spineFiles = allSrcTs.filter((f) => !f.startsWith(authDir + path.sep));
+// Founder-approved amendment (operator WRITE zone, July 2026): src/operator is
+// the SECOND sanctioned non-spine zone — the only place authorized writes
+// happen. It is excluded from the read-only spine scan and pinned to its
+// approved fail-closed shape by section 9 below.
+const operatorDir = path.resolve(srcDir, "operator");
+const operatorFiles = allSrcTs.filter((f) =>
+  f.startsWith(operatorDir + path.sep),
+);
+const spineFiles = allSrcTs.filter(
+  (f) =>
+    !f.startsWith(authDir + path.sep) &&
+    !f.startsWith(operatorDir + path.sep),
+);
 
 check(
   authFiles.length > 0,
@@ -119,14 +131,15 @@ check(
 // ── 1. Route exposure: spine GET-only, scoped body parser, mount ────────────
 // Express route write verbs only (router.post / app.delete …) — anchored so
 // container methods like Map.prototype.delete never false-trip the scan.
-const WRITE_VERB = /\b(?:router|app)\s*\.\s*(post|put|patch|delete)\s*\(/;
+const WRITE_VERB =
+  /(\b(?:router|app)\s*\.\s*(post|put|patch|delete)\s*\()|(\b(?:router|app)\s*\[\s*["'](post|put|patch|delete)["']\s*\])|(\.route\s*\([^)]*\)\s*\.\s*(post|put|patch|delete)\s*\()/;
 for (const abs of spineFiles) {
   const rel = path.relative(srcDir, abs);
   const code = stripComments(read(abs));
   check(
     !WRITE_VERB.test(code),
     `${rel}: no write verbs (read-only spine)`,
-    `${rel} declares a write verb (.post/.put/.patch/.delete) outside src/auth — the read-only spine must stay GET-only`,
+    `${rel} declares a write verb (.post/.put/.patch/.delete) outside src/auth and src/operator — the read-only spine must stay GET-only`,
   );
 }
 const appCode = stripComments(read(path.resolve(srcDir, "app.ts")));
@@ -630,6 +643,189 @@ check(
     .map((f) => path.relative(studioSrcDir, f))
     .join(", ")} — the flag is server-side posture, never frontend material`,
 );
+
+// ── 9. Operator WRITE zone (founder-approved amendment, July 2026) ──────────
+// src/operator is the sanctioned write zone — the ONLY place authorized writes
+// happen. Exempting it from the read-only spine scan (section 1) is paid for
+// here by pinning its exact fail-closed shape: gated mount, session + ACTIVE
+// operator role + admin-tier requirement, server-side authority (allow-list +
+// hard cap), transactional write+audit, lazy DB import, and no identity leaks.
+const operatorRouterAbs = path.resolve(operatorDir, "router.ts");
+const operatorServiceAbs = path.resolve(operatorDir, "referralTermsService.ts");
+check(
+  operatorFiles.length > 0 &&
+    existsSync(operatorRouterAbs) &&
+    existsSync(operatorServiceAbs),
+  `operator write zone present (${operatorFiles.length} files under src/operator)`,
+  "src/operator (write zone) is missing or incomplete — remove its guard exemption if the zone is retired",
+);
+if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
+  // 9a. Mount posture: gate FIRST, router second — dark in production unless
+  // SYNDICATE_AUTH_ENABLED === "true", exactly like the auth zone.
+  check(
+    /app\.use\("\/api\/operator",\s*authExposureGate,\s*operatorRouter\)/.test(
+      appCode,
+    ),
+    "operator router mounted at /api/operator behind the exposure gate in app.ts",
+    'app.ts must mount the write zone via app.use("/api/operator", authExposureGate, operatorRouter) — gate first, router second',
+  );
+
+  // 9b. Write verbs live ONLY in the zone's router file.
+  for (const abs of operatorFiles) {
+    const rel = path.relative(srcDir, abs);
+    if (abs === operatorRouterAbs) continue;
+    check(
+      !WRITE_VERB.test(stripComments(read(abs))),
+      `${rel}: no write verbs outside operator/router.ts`,
+      `${rel} declares a write verb — inside the write zone, routes live only in operator/router.ts`,
+    );
+  }
+
+  const opRouterCode = stripComments(read(operatorRouterAbs));
+  // 9c. Router shape: scoped size-capped parser; throttle; session required;
+  // role resolved via the read-only bridge; admin-tier allow-list; zod-validated
+  // body; and NEVER query/params as input.
+  check(
+    /json\(\{\s*limit:/.test(opRouterCode),
+    "operator router mounts its own size-capped JSON parser",
+    "src/operator/router.ts must mount json({ limit: ... }) — scoped, size-capped body parsing",
+  );
+  check(
+    /allowRequest\(/.test(opRouterCode) && /throttleKey\(/.test(opRouterCode),
+    "operator router throttles every write route",
+    "src/operator/router.ts must throttle (allowRequest + throttleKey) before any write work",
+  );
+  check(
+    /getSessionAccount\(/.test(opRouterCode) &&
+      /account\s*===\s*null/.test(opRouterCode),
+    "operator router requires a wallet session (null account → deny)",
+    "src/operator/router.ts must resolve the session account and deny when absent — no sessionless writes",
+  );
+  check(
+    /lookupActiveOperator\(/.test(opRouterCode) &&
+      /WRITE_ROLES\s*=\s*new Set\(\["founder_root",\s*"protocol_admin"\]\)/.test(
+        opRouterCode,
+      ) &&
+      /WRITE_ROLES\.has\(/.test(opRouterCode),
+    "operator router gates writes on an ACTIVE operator role in the admin-tier allow-list",
+    "src/operator/router.ts role gate drifted — writes require lookupActiveOperator + WRITE_ROLES (founder_root, protocol_admin only)",
+  );
+  check(
+    /\.safeParse\(/.test(opRouterCode),
+    "operator router zod-validates every body",
+    "src/operator/router.ts must validate bodies with zod safeParse before delegating",
+  );
+  check(
+    /router\.post\(\s*"\/referral-terms"/.test(opRouterCode),
+    'operator router exposes exactly the approved route path ("/referral-terms")',
+    'src/operator/router.ts route path drifted — the approved write route is router.post("/referral-terms", …)',
+  );
+  check(
+    !/req\.(query|params)\b/.test(opRouterCode),
+    "operator router never reads req.query/req.params",
+    "src/operator/router.ts reads req.query/req.params — session cookie + validated body are the only inputs",
+  );
+
+  // 9d. Leak scan (same discipline as the auth zone): no identity material in
+  // any response or log expression anywhere in the zone.
+  for (const abs of operatorFiles) {
+    const rel = path.relative(srcDir, abs);
+    const scanCode = stripStringLiterals(stripComments(read(abs)));
+    for (const call of extractCallExpressions(scanCode, /\.json\(/)) {
+      check(
+        !/\b(address|wallet|member|signature|account|boundAccount|verifiedAccount|actorWallet)\b/i.test(
+          call.text,
+        ),
+        `${rel}:${call.line}: response expression carries no identity material`,
+        `${rel}:${call.line}: a write-zone response references address/wallet/account material — responses must never carry identity material`,
+      );
+    }
+    for (const call of extractCallExpressions(
+      scanCode,
+      /log\.(info|warn|error|debug)\(/,
+    )) {
+      check(
+        !/\b(nonce|signature|address|sessionId|wallet|member|account|boundAccount|verifiedAccount|actorWallet|ip|ips|remoteAddress|forwarded|xff)\b/i.test(
+          call.text,
+        ),
+        `${rel}:${call.line}: log expression carries no secret/identity identifiers`,
+        `${rel}:${call.line}: a write-zone log call references identity material — values must never be logged`,
+      );
+    }
+  }
+
+  const opServiceCode = stripComments(read(operatorServiceAbs));
+  // 9e. Service shape: fail-closed gate (flag + DATABASE_URL) BEFORE the lazy
+  // DB import; lazy import only; server-side authority (allow-list + pinned
+  // 30% hard cap); term write and audit row in ONE transaction; errors fail
+  // closed.
+  {
+    const flagGateIdx = opServiceCode.search(
+      /AUTH_EXPOSURE_FLAG\]\s*!==\s*["']true["']/,
+    );
+    const dbUrlIdx = opServiceCode.indexOf("DATABASE_URL");
+    const lazyImportIdx = opServiceCode.search(
+      /await import\(\s*["']@workspace\/db["']\s*\)/,
+    );
+    check(
+      flagGateIdx !== -1 &&
+        dbUrlIdx !== -1 &&
+        lazyImportIdx !== -1 &&
+        flagGateIdx < lazyImportIdx &&
+        dbUrlIdx < lazyImportIdx,
+      "write service: exposure-flag + DATABASE_URL gate executes BEFORE the lazy DB import",
+      "referralTermsService.ts must check the auth exposure flag and DATABASE_URL BEFORE the lazy @workspace/db import — gate order drifted",
+    );
+  }
+  check(
+    !/^\s*import[^;]*@workspace\/db/m.test(opServiceCode),
+    "write service: @workspace/db is lazily imported only",
+    "referralTermsService.ts must import @workspace/db ONLY via a lazy await import() — a top-level import couples the read-only server to a DB at boot",
+  );
+  check(
+    /HARD_CAP_BPS\s*=\s*3000\b/.test(opServiceCode) &&
+      />\s*HARD_CAP_BPS/.test(opServiceCode),
+    "write service: 30% hard cap (3000 bps) pinned and enforced server-side",
+    "referralTermsService.ts hard cap drifted — HARD_CAP_BPS must stay 3000 and be enforced against every bps value",
+  );
+  check(
+    /ALLOWED_KEYS\s*=\s*new Set\(/.test(opServiceCode) &&
+      /!ALLOWED_KEYS\.has\(/.test(opServiceCode),
+    "write service: term keys restricted to a server-side allow-list",
+    "referralTermsService.ts must reject any key outside its ALLOWED_KEYS allow-list — server-side validation is the authority",
+  );
+  {
+    const txIdx = opServiceCode.search(/db\.transaction\(/);
+    const auditIdx = opServiceCode.search(/insert\(auditLog\)/);
+    check(
+      txIdx !== -1 && auditIdx !== -1 && auditIdx > txIdx,
+      "write service: term write and audit row committed in one transaction",
+      "referralTermsService.ts must insert the audit_log row inside the same db.transaction as the term write — no write without an audit trail",
+    );
+  }
+  check(
+    /catch\s*(\([^)]*\))?\s*\{[\s\S]{0,200}?ok:\s*false/.test(opServiceCode),
+    "write service: any error fails closed (ok: false, rolled back)",
+    "referralTermsService.ts must return ok: false from its catch — a failed write never half-applies",
+  );
+  check(
+    !/\b(console|res|req|logger)\s*\./.test(opServiceCode),
+    "write service: pure service module — no response, request, or log surface",
+    "referralTermsService.ts must stay a pure service (no res/req/console/logger) so identity material can never leak from it",
+  );
+
+  // 9f. Fixture discipline parity: no wallet-address / 64-hex literals in the
+  // write zone either.
+  for (const abs of operatorFiles) {
+    const rel = path.relative(srcDir, abs);
+    const code = stripComments(read(abs));
+    check(
+      !HEX40.test(code) && !HEX64.test(code),
+      `${rel}: no wallet-address / 64-hex literals`,
+      `${rel} contains wallet-address or 64-hex material`,
+    );
+  }
+}
 
 // ── Report ───────────────────────────────────────────────────────────────────
 for (const line of ok) console.log(`PASS  ${line}`);

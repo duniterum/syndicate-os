@@ -200,12 +200,39 @@ function walkTsFiles(dir: string, out: string[]): void {
 }
 const servedFiles: string[] = [];
 walkTsFiles(resolve(ROOT, "src"), servedFiles);
-const dbImporters = servedFiles.filter((f) => DB_IMPORT_RE.test(stripComments(readFileSync(f, "utf8"))));
+// Founder-approved lazy-DB exceptions: the operator-role bridge (read-only
+// ACTIVE lookup) and the operator write-zone service may reach @workspace/db,
+// but ONLY via a lazy dynamic import() — never a static/top-level/require
+// form — so the served read-only server still boots with no DB. Their full
+// fail-closed shapes are pinned by guard-auth-zone.ts.
+const DB_LAZY_ALLOW = new Set([
+  "src/auth/operatorContext.ts",
+  "src/operator/referralTermsService.ts",
+]);
+const DB_STATIC_IMPORT_RE =
+  /(from\s*["']@workspace\/db["'])|(import\s*["']@workspace\/db["'])|(require\s*\(\s*["']@workspace\/db["']\s*\))/;
+const dbImporters = servedFiles.filter((f) => {
+  const code = stripComments(readFileSync(f, "utf8"));
+  if (!DB_IMPORT_RE.test(code)) return false;
+  const rel = relative(ROOT, f).split("\\").join("/");
+  return !(DB_LAZY_ALLOW.has(rel) && !DB_STATIC_IMPORT_RE.test(code));
+});
 check(
-  "NO served src file imports @workspace/db (any import syntax)",
+  "NO served src file imports @workspace/db (lazy-only allow-list: operatorContext.ts + referralTermsService.ts)",
   dbImporters.length === 0,
   dbImporters.map((f) => relative(ROOT, f)).join(", "),
 );
+for (const relPath of DB_LAZY_ALLOW) {
+  const abs = resolve(ROOT, relPath);
+  const code = existsSync(abs) ? stripComments(readFileSync(abs, "utf8")) : "";
+  check(
+    `lazy-DB exception ${relPath} exists and stays dynamic-only`,
+    code.length > 0 &&
+      /import\s*\(\s*["']@workspace\/db["']\s*\)/.test(code) &&
+      !DB_STATIC_IMPORT_RE.test(code),
+    code.length === 0 ? "file missing" : "static/require @workspace/db form detected",
+  );
+}
 
 // Snapshot importer allow-list (founder Decision 5a): the static snapshot may
 // be consumed ONLY by the public aggregates route and the pure own-standing

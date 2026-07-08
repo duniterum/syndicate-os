@@ -224,13 +224,33 @@ function findForbiddenImports(source: string): string[] {
   return specifiers;
 }
 
+/**
+ * Founder-approved lazy-DB exceptions: the operator-role bridge and the
+ * operator write-zone service may reach @workspace/db, but ONLY via a lazy
+ * dynamic import() — static/bare/require forms and any reach into the schema
+ * modules (lib/db, memberContinuity) stay forbidden even for them. Their full
+ * fail-closed shapes are pinned by guard-auth-zone.ts.
+ */
+const LAZY_DB_ALLOW = new Set([
+  join(SERVED_SRC, "auth", "operatorContext.ts"),
+  join(SERVED_SRC, "operator", "referralTermsService.ts"),
+]);
+const DYNAMIC_DB_IMPORT_RE = /import\s*\(\s*["']@workspace\/db["']\s*\)/;
 function walk(dir: string, hits: string[]): void {
   for (const entry of readdirSync(dir)) {
     const p = join(dir, entry);
     if (statSync(p).isDirectory()) {
       walk(p, hits);
     } else if (p.endsWith(".ts")) {
-      const served = stripComments(readFileSync(p, "utf8"));
+      let served = stripComments(readFileSync(p, "utf8"));
+      if (LAZY_DB_ALLOW.has(p)) {
+        // Neutralize ONLY the sanctioned lazy form; every other forbidden
+        // import (static @workspace/db, lib/db, memberContinuity) still hits.
+        served = served.replace(
+          new RegExp(DYNAMIC_DB_IMPORT_RE.source, "g"),
+          'import("__sanctioned_lazy_db__")',
+        );
+      }
       const bad = findForbiddenImports(served);
       if (bad.length > 0) {
         hits.push(`${p} -> ${bad.join(", ")}`);
@@ -241,10 +261,27 @@ function walk(dir: string, hits: string[]): void {
 const servedHits: string[] = [];
 walk(SERVED_SRC, servedHits);
 check(
-  "served src/ never imports the schema or @workspace/db (import-syntax scan)",
+  "served src/ never imports the schema or @workspace/db (import-syntax scan; lazy-only allow-list: operatorContext.ts + referralTermsService.ts)",
   servedHits.length === 0,
   servedHits.length ? `hits: ${servedHits.join("; ")}` : "0 import hits",
 );
+for (const p of LAZY_DB_ALLOW) {
+  let code = "";
+  try {
+    code = stripComments(readFileSync(p, "utf8"));
+  } catch {
+    // missing file → check fails below
+  }
+  check(
+    `lazy-DB exception stays dynamic-only: ${p.slice(SERVED_SRC.length + 1)}`,
+    code.length > 0 &&
+      DYNAMIC_DB_IMPORT_RE.test(code) &&
+      !/from\s*["']@workspace\/db["']/.test(code) &&
+      !/import\s*["']@workspace\/db["']/.test(code) &&
+      !/require\s*\(\s*["']@workspace\/db["']\s*\)/.test(code),
+    code.length === 0 ? "file missing" : "static/bare/require @workspace/db form detected",
+  );
+}
 
 // ---------------------------------------------------------------------------
 console.log(`\nmember-continuity-schema guard: ${passed}/${passed + failed} passed`);
