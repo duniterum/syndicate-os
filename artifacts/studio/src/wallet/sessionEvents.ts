@@ -1,12 +1,9 @@
 // wallet/sessionEvents.ts
 //
-// Session-change announcement seam. The session truth ALWAYS stays with
-// GET /api/auth/session — this event never carries state, it only tells
-// listeners (RainbowKit status query, WalletSessionBoot) to re-read the
-// server. In-memory only; nothing is persisted.
+// Re-export of the session-change announcement seam, which lives in
+// lib/sessionEvents.ts (hoisted in Phase 3 slice 4a so non-wallet listeners
+// never statically import the wallet module). Wallet-internal imports keep
+// their "./sessionEvents" path; the seam itself carries no wallet code and
+// no state — the session truth always stays with GET /api/auth/session.
 
-export const SESSION_CHANGED_EVENT = "syndicate:session-changed";
-
-export function announceSessionChanged(): void {
-  window.dispatchEvent(new Event(SESSION_CHANGED_EVENT));
-}
+export { SESSION_CHANGED_EVENT, announceSessionChanged } from "@/lib/sessionEvents";

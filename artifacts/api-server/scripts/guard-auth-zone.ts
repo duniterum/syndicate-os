@@ -989,11 +989,58 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
       "operatorRegistryService.ts must bounds-check input.id (empty / >64 → bad_id) before touching the DB",
     );
     check(
-      /select\(\{\s*wallet:\s*operator\.wallet\s*\}\)/.test(regCode) &&
-        /eq\(operator\.id,\s*input\.id\)/.test(regCode),
-      "registry service: suspend resolves the target wallet from the row by id (server-side authority)",
-      "operatorRegistryService.ts suspendOperator must resolve the target wallet by SELECTing the row via eq(operator.id, input.id) — the target wallet must never come from the request",
+      /select\(\{\s*wallet:\s*operator\.wallet,\s*role:\s*operator\.role,\s*status:\s*operator\.status\s*\}\)/.test(
+        regCode,
+      ) && /eq\(operator\.id,\s*input\.id\)/.test(regCode),
+      "registry service: suspend resolves the target wallet/role/status from the row by id (server-side authority)",
+      "operatorRegistryService.ts suspendOperator must resolve the target wallet, role, AND status by SELECTing the row via eq(operator.id, input.id) — the target identity/tier must never come from the request",
     );
+    // Phase 3 slice 4a — last-founder guard is REQUIRED: a suspend that could
+    // remove the last ACTIVE founder_root must be refused (last_founder). The
+    // guard must (a) trigger on an ACTIVE founder_root target, (b) count
+    // ACTIVE founder_root rows server-side inside the same transaction, and
+    // (c) refuse when that count is <= 1 — the founder tier can never be
+    // emptied.
+    check(
+      /found\[0\]\.role === "founder_root" && found\[0\]\.status === "ACTIVE"/.test(regCode),
+      "registry service: last-founder guard triggers on an ACTIVE founder_root target",
+      "operatorRegistryService.ts suspendOperator must check the resolved row's role === \"founder_root\" && status === \"ACTIVE\" before allowing a founder suspend — the last-founder guard trigger drifted",
+    );
+    check(
+      /and\(eq\(operator\.role,\s*"founder_root"\),\s*eq\(operator\.status,\s*"ACTIVE"\)\)/.test(
+        regCode,
+      ),
+      "registry service: last-founder guard counts ACTIVE founder_root rows server-side",
+      "operatorRegistryService.ts suspendOperator must count rows where role=founder_root AND status=ACTIVE via and(eq(...), eq(...)) inside the transaction — the count query drifted",
+    );
+    // The check-then-update must be ATOMIC under concurrency: both the target
+    // row resolution AND the ACTIVE-founder count must take row locks
+    // (SELECT ... FOR UPDATE), or two concurrent founder suspends could each
+    // observe count=2 and empty the tier together.
+    check(
+      (regCode.match(/\.for\("update"\)/g) ?? []).length >= 2 &&
+        /eq\(operator\.status,\s*"ACTIVE"\)\)\)\s*\.for\("update"\)/.test(regCode) &&
+        /\.limit\(1\)\s*\.for\("update"\)/.test(regCode),
+      "registry service: last-founder check-then-update is lock-serialized (FOR UPDATE on target row AND founder count)",
+      "operatorRegistryService.ts suspendOperator must append .for(\"update\") to BOTH the target-row select and the ACTIVE founder_root count select — without row locks, concurrent suspends can race past the last-founder guard and empty the tier",
+    );
+    check(
+      /activeFounders\.length <= 1/.test(regCode) &&
+        /reason:\s*"last_founder"/.test(regCode),
+      "registry service: last ACTIVE founder_root can never be suspended (last_founder, <= 1)",
+      "operatorRegistryService.ts suspendOperator must refuse with reason \"last_founder\" when the ACTIVE founder_root count is <= 1 — the founder tier must never be emptied",
+    );
+    {
+      // The last_founder refusal must return BEFORE any update/audit write —
+      // no mutation and no audit row may exist for a refused founder suspend.
+      const lastFounderIdx = regCode.indexOf('reason: "last_founder"');
+      const updateIdx = regCode.search(/\.update\(operator\)/);
+      check(
+        lastFounderIdx !== -1 && updateIdx !== -1 && lastFounderIdx < updateIdx,
+        "registry service: last_founder refusal executes BEFORE the status update (no mutation, no audit)",
+        "operatorRegistryService.ts must return the last_founder refusal before the update(operator)/audit insert — a refused founder suspend must leave zero traces",
+      );
+    }
     check(
       /action:\s*"operator\.suspend"/.test(regCode) &&
         /target:\s*targetWallet/.test(regCode) &&

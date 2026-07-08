@@ -17,6 +17,7 @@
 // slice.
 
 import { useEffect, useState, type FormEvent } from "react";
+import { SESSION_CHANGED_EVENT } from "@/lib/sessionEvents";
 import { UsersRound, UserPlus, Pencil, Ban, Link2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -67,8 +68,19 @@ function useOperatorRegistry(): {
     void listOperators().then((result) => {
       if (active) setRegistry(result);
     });
+    // Phase 3 slice 4a: re-read the live registry whenever the SIWE session
+    // changes (sign-in / sign-out announced via the wallet session seam), so a
+    // fresh sign-in populates the list without a manual page reload. The event
+    // carries no state — the truth still always comes from the server.
+    const onSessionChanged = () => {
+      void listOperators().then((result) => {
+        if (active) setRegistry(result);
+      });
+    };
+    window.addEventListener(SESSION_CHANGED_EVENT, onSessionChanged);
     return () => {
       active = false;
+      window.removeEventListener(SESSION_CHANGED_EVENT, onSessionChanged);
     };
   }, [tick]);
   const reload = () => {
@@ -113,6 +125,8 @@ function suspendFailureText(reason: string | null): string {
   switch (reason) {
     case "cannot_suspend_self":
       return "You can't suspend yourself.";
+    case "last_founder":
+      return "Can't suspend the last active founder.";
     case "not_found":
       return "Operator not found — the registry may have changed; reload and retry.";
     case "no_session":

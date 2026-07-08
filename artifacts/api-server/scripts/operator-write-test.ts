@@ -46,12 +46,18 @@ async function main(): Promise<void> {
   const suspendedAccount = privateKeyToAccount(generatePrivateKey()); // founder_root but SUSPENDED
   const inviteeAccount = privateKeyToAccount(generatePrivateKey()); // invited via the API (registry happy path)
   const ghostAccount = privateKeyToAccount(generatePrivateKey()); // never registered (not_found negative)
+  const founderBAccount = privateKeyToAccount(generatePrivateKey()); // second ACTIVE founder_root (last-founder guard cases)
+  const founderCAccount = privateKeyToAccount(generatePrivateKey()); // third founder_root fixture (concurrency race case)
   const opWallet = operatorAccount.address.toLowerCase();
   const suspendedWallet = suspendedAccount.address.toLowerCase();
   const inviteeWallet = inviteeAccount.address.toLowerCase();
   const ghostWallet = ghostAccount.address.toLowerCase();
+  const founderBWallet = founderBAccount.address.toLowerCase();
+  const founderCWallet = founderCAccount.address.toLowerCase();
   const opRowId = `test-${randomUUID()}`;
   const suspendedRowId = `test-${randomUUID()}`;
+  const founderBRowId = `test-${randomUUID()}`;
+  const founderCRowId = `test-${randomUUID()}`;
 
   const savedFlag = process.env["SYNDICATE_AUTH_ENABLED"];
 
@@ -495,6 +501,161 @@ async function main(): Promise<void> {
       probeAfter.status === 403 && probeAfter.json["reason"] === "insufficient_role",
       `status ${probeAfter.status}, body ${JSON.stringify(probeAfter.json)}`,
     );
+
+    // ════ last-founder guard (Phase 3 slice 4a) ══════════════════════════════
+
+    // ── seed a SECOND ACTIVE founder_root fixture as the suspend target ──────
+    await db.insert(operator).values({
+      id: founderBRowId,
+      wallet: founderBWallet,
+      label: "TEST FIXTURE operator-write-test founderB (torn down)",
+      role: "founder_root",
+      status: "ACTIVE",
+    });
+
+    // ── with >= 2 ACTIVE founder_root rows, suspending one still succeeds ────
+    const suspB = await postJson(
+      "/api/operator/operators/suspend",
+      { id: founderBRowId },
+      opCookie,
+    );
+    const founderBAfterApi = (
+      await db.select().from(operator).where(eq(operator.id, founderBRowId))
+    )[0];
+    record(
+      "founder suspend with >= 2 ACTIVE founder_root → { ok: true } (row SUSPENDED)",
+      suspB.status === 200 &&
+        suspB.json["ok"] === true &&
+        founderBAfterApi !== undefined &&
+        founderBAfterApi.status === "SUSPENDED",
+      `status ${suspB.status}, body ${JSON.stringify(suspB.json)}, row status=${founderBAfterApi?.status ?? "(missing)"}`,
+    );
+
+    // ── engineer the single-ACTIVE-founder state: re-arm the target fixture,
+    // snapshot every OTHER ACTIVE founder_root row id, and flip those rows to
+    // SUSPENDED (status column ONLY — restored exactly in the inner finally,
+    // crash-safe, so real dev founder rows are never left mutated) ────────────
+    await db
+      .update(operator)
+      .set({ status: "ACTIVE" })
+      .where(eq(operator.id, founderBRowId));
+    const otherActiveFounderIds = (
+      await db
+        .select({ id: operator.id })
+        .from(operator)
+        .where(and(eq(operator.role, "founder_root"), eq(operator.status, "ACTIVE")))
+    )
+      .map((r) => r.id)
+      .filter((id) => id !== founderBRowId);
+    try {
+      if (otherActiveFounderIds.length > 0) {
+        await db
+          .update(operator)
+          .set({ status: "SUSPENDED" })
+          .where(inArray(operator.id, otherActiveFounderIds));
+      }
+      const auditCountBeforeLf = (await db.select({ id: auditLog.id }).from(auditLog)).length;
+      // Direct service call (defense-in-depth layer under test): the route's
+      // founder-only gate requires an ACTIVE founder_root ACTOR, whose own row
+      // would raise the ACTIVE count to 2 — so the <= 1 refusal can only be
+      // exercised at the service seam the router delegates to.
+      const { suspendOperator: suspendService } = await import(
+        "../src/operator/operatorRegistryService"
+      );
+      const lf = await suspendService({
+        id: founderBRowId,
+        actorWallet: opWallet,
+        actorRole: "founder_root",
+      });
+      const founderBAfterLf = (
+        await db.select().from(operator).where(eq(operator.id, founderBRowId))
+      )[0];
+      const auditCountAfterLf = (await db.select({ id: auditLog.id }).from(auditLog)).length;
+      record(
+        "suspend of the single ACTIVE founder_root refused → last_founder (no mutation, no audit row)",
+        !lf.ok &&
+          lf.reason === "last_founder" &&
+          founderBAfterLf !== undefined &&
+          founderBAfterLf.status === "ACTIVE" &&
+          auditCountAfterLf === auditCountBeforeLf,
+        `service result ${JSON.stringify(lf)}, row status=${founderBAfterLf?.status ?? "(missing)"}, audit_log ${auditCountBeforeLf}→${auditCountAfterLf}`,
+      );
+    } finally {
+      // Restore the flipped founder rows to ACTIVE no matter what happened.
+      if (otherActiveFounderIds.length > 0) {
+        await db
+          .update(operator)
+          .set({ status: "ACTIVE" })
+          .where(inArray(operator.id, otherActiveFounderIds));
+      }
+    }
+    const restoredActive = await db
+      .select({ id: operator.id })
+      .from(operator)
+      .where(and(eq(operator.role, "founder_root"), eq(operator.status, "ACTIVE")));
+    record(
+      "flipped founder_root rows restored to ACTIVE exactly",
+      otherActiveFounderIds.every((id) => restoredActive.some((r) => r.id === id)),
+      `restored ${otherActiveFounderIds.length} row(s); ACTIVE founder_root rows now ${restoredActive.length}`,
+    );
+
+    // ── concurrency regression: two PARALLEL suspends against exactly 2 ACTIVE
+    // founders must never empty the tier. The FOR UPDATE row locks serialize
+    // the check-then-update: exactly one wins; the loser re-reads the committed
+    // state and refuses (last_founder) — or is deadlock-aborted to unavailable.
+    // Either way at least one ACTIVE founder_root MUST remain. ────────────────
+    await db.insert(operator).values({
+      id: founderCRowId,
+      wallet: founderCWallet,
+      label: "TEST FIXTURE operator-write-test founderC (torn down)",
+      role: "founder_root",
+      status: "ACTIVE",
+    });
+    const raceFlippedIds = (
+      await db
+        .select({ id: operator.id })
+        .from(operator)
+        .where(and(eq(operator.role, "founder_root"), eq(operator.status, "ACTIVE")))
+    )
+      .map((r) => r.id)
+      .filter((id) => id !== founderBRowId && id !== founderCRowId);
+    try {
+      if (raceFlippedIds.length > 0) {
+        await db
+          .update(operator)
+          .set({ status: "SUSPENDED" })
+          .where(inArray(operator.id, raceFlippedIds));
+      }
+      const { suspendOperator: suspendService2 } = await import(
+        "../src/operator/operatorRegistryService"
+      );
+      const [raceB, raceC] = await Promise.all([
+        suspendService2({ id: founderBRowId, actorWallet: opWallet, actorRole: "founder_root" }),
+        suspendService2({ id: founderCRowId, actorWallet: opWallet, actorRole: "founder_root" }),
+      ]);
+      const okCount = [raceB, raceC].filter((r) => r.ok).length;
+      const activeBC = await db
+        .select({ id: operator.id })
+        .from(operator)
+        .where(
+          and(
+            inArray(operator.id, [founderBRowId, founderCRowId]),
+            eq(operator.status, "ACTIVE"),
+          ),
+        );
+      record(
+        "PARALLEL founder suspends (2 ACTIVE) → at most one succeeds, tier never emptied",
+        okCount <= 1 && activeBC.length >= 1 && activeBC.length + okCount === 2,
+        `results ${JSON.stringify(raceB)} / ${JSON.stringify(raceC)}, ok=${okCount}, ACTIVE fixture founders left=${activeBC.length}`,
+      );
+    } finally {
+      if (raceFlippedIds.length > 0) {
+        await db
+          .update(operator)
+          .set({ status: "ACTIVE" })
+          .where(inArray(operator.id, raceFlippedIds));
+      }
+    }
   } finally {
     // ── teardown: remove EVERY row this test created ─────────────────────────
     try {
@@ -521,7 +682,7 @@ async function main(): Promise<void> {
         .returning({ id: auditLog.id });
       const delOps = await db
         .delete(operator)
-        .where(inArray(operator.id, [opRowId, suspendedRowId]))
+        .where(inArray(operator.id, [opRowId, suspendedRowId, founderBRowId, founderCRowId]))
         .returning({ id: operator.id });
       // The invitee row was created via the API (unknown id) — delete by wallet.
       // The ghost wallet must never have a row (negatives only), but sweep it
@@ -532,7 +693,7 @@ async function main(): Promise<void> {
         .returning({ id: operator.id });
       record(
         "teardown",
-        delOps.length === 2 && delInvitee.length <= 1 && (priorTerm === undefined || restored),
+        delOps.length === 4 && delInvitee.length <= 1 && (priorTerm === undefined || restored),
         `deleted operator rows: ${delOps.length} seeded + ${delInvitee.length} invited, referral_term rows: ${delTerms.length}, audit_log rows: ${delAudit.length}; preexisting commissionBps row: ${priorTerm === undefined ? "none" : restored ? "restored exactly" : "RESTORE FAILED"}`,
       );
     } finally {

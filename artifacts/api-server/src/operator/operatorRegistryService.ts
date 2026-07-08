@@ -100,21 +100,43 @@ export async function suspendOperator(input: SuspendOperatorInput): Promise<Regi
 
   try {
     const { db, operator, auditLog } = await import("@workspace/db");
-    const { eq } = await import("drizzle-orm");
+    const { eq, and } = await import("drizzle-orm");
     let result: RegistryResult = { ok: false, reason: "not_found" };
     await db.transaction(async (tx) => {
-      // Resolve the row by id to get its wallet (self-suspend guard + audit target).
+      // Resolve the row by id for its wallet/role/status (self-suspend guard,
+      // last-founder guard, and audit target).
+      // FOR UPDATE: lock the target row so concurrent suspends serialize on it
+      // — the check-then-update below must be atomic per row.
       const found = await tx
-        .select({ wallet: operator.wallet })
+        .select({ wallet: operator.wallet, role: operator.role, status: operator.status })
         .from(operator)
         .where(eq(operator.id, input.id))
-        .limit(1);
+        .limit(1)
+        .for("update");
       if (found.length === 0) return; // not_found
       const targetWallet = found[0].wallet;
       // Lockout guard: an operator can never suspend themselves.
       if (targetWallet.toLowerCase() === input.actorWallet.toLowerCase()) {
         result = { ok: false, reason: "cannot_suspend_self" };
         return;
+      }
+      // Last-founder guard: never suspend the last ACTIVE founder_root — the
+      // founder tier must never be emptied, or the protocol would freeze. (An
+      // already-SUSPENDED founder row doesn't count toward the live tier.)
+      if (found[0].role === "founder_root" && found[0].status === "ACTIVE") {
+        // FOR UPDATE: lock ALL ACTIVE founder rows while counting, so two
+        // concurrent founder suspends can never both observe count=2 and
+        // empty the tier — the second transaction blocks here, then re-reads
+        // the committed state and refuses.
+        const activeFounders = await tx
+          .select({ id: operator.id })
+          .from(operator)
+          .where(and(eq(operator.role, "founder_root"), eq(operator.status, "ACTIVE")))
+          .for("update");
+        if (activeFounders.length <= 1) {
+          result = { ok: false, reason: "last_founder" };
+          return;
+        }
       }
       await tx
         .update(operator)
