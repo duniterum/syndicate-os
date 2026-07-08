@@ -1,0 +1,131 @@
+// operator/operatorRegistryService.ts
+//
+// Write-zone services for the operator registry: invite (create) and suspend.
+// Same fail-closed shape as the referral-terms service:
+//   • gated on the exposure flag + DATABASE_URL BEFORE any DB module is touched;
+//   • @workspace/db imported ONLY via a lazy await import();
+//   • server-side validation is the authority (address form, role allow-list);
+//   • every change is a transaction that ALSO writes an audit_log row;
+//   • any error rolls back and returns "unavailable".
+//
+// Suspension takes effect immediately: the operator-authorization bridge
+// re-reads the row's status on EVERY request and only ACTIVE resolves to a role,
+// so a SUSPENDED operator loses authority on their very next call — no session
+// invalidation dance required.
+
+import { randomUUID } from "node:crypto";
+import { AUTH_EXPOSURE_FLAG } from "../auth/authExposure";
+
+const OPERATOR_ROLES = new Set([
+  "founder_root",
+  "protocol_admin",
+  "operator",
+  "source_reviewer",
+  "member_support",
+  "content_docs",
+  "auditor",
+  "worker_agent",
+]);
+
+export type RegistryResult = { ok: true } | { ok: false; reason: string };
+
+function gateOpen(): boolean {
+  return (
+    process.env[AUTH_EXPOSURE_FLAG] === "true" &&
+    process.env.DATABASE_URL != null &&
+    process.env.DATABASE_URL.length > 0
+  );
+}
+
+export interface InviteOperatorInput {
+  wallet: string;
+  label: string;
+  role: string;
+  actorWallet: string;
+  actorRole: string;
+}
+
+export async function inviteOperator(input: InviteOperatorInput): Promise<RegistryResult> {
+  if (!gateOpen()) return { ok: false, reason: "unavailable" };
+
+  const wallet = input.wallet.toLowerCase();
+  if (!/^0x[0-9a-f]{40}$/.test(wallet)) return { ok: false, reason: "bad_wallet" };
+  if (input.label.length === 0 || input.label.length > 128) return { ok: false, reason: "bad_label" };
+  if (!OPERATOR_ROLES.has(input.role)) return { ok: false, reason: "bad_role" };
+
+  try {
+    const { db, operator, auditLog } = await import("@workspace/db");
+    const { eq } = await import("drizzle-orm");
+    let created = false;
+    await db.transaction(async (tx) => {
+      const existing = await tx
+        .select({ id: operator.id })
+        .from(operator)
+        .where(eq(operator.wallet, wallet))
+        .limit(1);
+      if (existing[0] !== undefined) return; // already registered → no-op
+      await tx.insert(operator).values({
+        id: randomUUID(),
+        wallet,
+        label: input.label,
+        role: input.role,
+        status: "ACTIVE",
+      });
+      created = true;
+      await tx.insert(auditLog).values({
+        id: randomUUID(),
+        actorWallet: input.actorWallet,
+        actorRole: input.actorRole,
+        action: "operator.invite",
+        target: wallet,
+        detail: { role: input.role },
+        stepUpSigned: false,
+      });
+    });
+    return created ? { ok: true } : { ok: false, reason: "already_exists" };
+  } catch {
+    return { ok: false, reason: "unavailable" };
+  }
+}
+
+export interface SuspendOperatorInput {
+  wallet: string;
+  actorWallet: string;
+  actorRole: string;
+}
+
+export async function suspendOperator(input: SuspendOperatorInput): Promise<RegistryResult> {
+  if (!gateOpen()) return { ok: false, reason: "unavailable" };
+
+  const wallet = input.wallet.toLowerCase();
+  if (!/^0x[0-9a-f]{40}$/.test(wallet)) return { ok: false, reason: "bad_wallet" };
+  // Lockout guard: an operator can never suspend themselves.
+  if (wallet === input.actorWallet.toLowerCase()) return { ok: false, reason: "cannot_suspend_self" };
+
+  try {
+    const { db, operator, auditLog } = await import("@workspace/db");
+    const { eq } = await import("drizzle-orm");
+    let changed = false;
+    await db.transaction(async (tx) => {
+      const rows = await tx
+        .update(operator)
+        .set({ status: "SUSPENDED", updatedAt: new Date() })
+        .where(eq(operator.wallet, wallet))
+        .returning({ id: operator.id });
+      if (rows.length === 0) return; // no such operator
+      changed = true;
+      await tx.insert(auditLog).values({
+        id: randomUUID(),
+        actorWallet: input.actorWallet,
+        actorRole: input.actorRole,
+        action: "operator.suspend",
+        target: wallet,
+        detail: null,
+        stepUpSigned: false,
+      });
+    });
+    return changed ? { ok: true } : { ok: false, reason: "not_found" };
+  } catch {
+    return { ok: false, reason: "unavailable" };
+  }
+}

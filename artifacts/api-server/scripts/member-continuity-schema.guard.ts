@@ -234,6 +234,7 @@ function findForbiddenImports(source: string): string[] {
 const LAZY_DB_ALLOW = new Set([
   join(SERVED_SRC, "auth", "operatorContext.ts"),
   join(SERVED_SRC, "operator", "referralTermsService.ts"),
+  join(SERVED_SRC, "operator", "operatorRegistryService.ts"),
 ]);
 const DYNAMIC_DB_IMPORT_RE = /import\s*\(\s*["']@workspace\/db["']\s*\)/;
 function walk(dir: string, hits: string[]): void {
@@ -261,7 +262,7 @@ function walk(dir: string, hits: string[]): void {
 const servedHits: string[] = [];
 walk(SERVED_SRC, servedHits);
 check(
-  "served src/ never imports the schema or @workspace/db (import-syntax scan; lazy-only allow-list: operatorContext.ts + referralTermsService.ts)",
+  "served src/ never imports the schema or @workspace/db (import-syntax scan; lazy-only allow-list: operatorContext.ts + referralTermsService.ts + operatorRegistryService.ts)",
   servedHits.length === 0,
   servedHits.length ? `hits: ${servedHits.join("; ")}` : "0 import hits",
 );

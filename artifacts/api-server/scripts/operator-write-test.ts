@@ -44,8 +44,12 @@ async function main(): Promise<void> {
   const operatorAccount = privateKeyToAccount(generatePrivateKey());
   const strangerAccount = privateKeyToAccount(generatePrivateKey()); // NO operator row
   const suspendedAccount = privateKeyToAccount(generatePrivateKey()); // founder_root but SUSPENDED
+  const inviteeAccount = privateKeyToAccount(generatePrivateKey()); // invited via the API (registry happy path)
+  const ghostAccount = privateKeyToAccount(generatePrivateKey()); // never registered (not_found negative)
   const opWallet = operatorAccount.address.toLowerCase();
   const suspendedWallet = suspendedAccount.address.toLowerCase();
+  const inviteeWallet = inviteeAccount.address.toLowerCase();
+  const ghostWallet = ghostAccount.address.toLowerCase();
   const opRowId = `test-${randomUUID()}`;
   const suspendedRowId = `test-${randomUUID()}`;
 
@@ -288,6 +292,178 @@ async function main(): Promise<void> {
         termAfter.value === "800",
       `audit_log ${auditCountBefore}→${auditCountAfter}, referral_term ${termCountBefore}→${termCountAfter}, commissionBps=${termAfter?.value ?? "(missing)"}`,
     );
+
+    // ════ operator REGISTRY routes (invite / suspend — founder_root only) ════
+
+    // ── registry happy path 1: founder invites a protocol_admin ─────────────
+    const inv = await postJson(
+      "/api/operator/operators",
+      { wallet: inviteeWallet, label: "TEST FIXTURE invitee (torn down)", role: "protocol_admin" },
+      opCookie,
+    );
+    record(
+      "founder invite → { ok: true }",
+      inv.status === 200 && inv.json["ok"] === true,
+      `status ${inv.status}, body ${JSON.stringify(inv.json)}`,
+    );
+
+    // ── DB confirmation: ACTIVE operator row + operator.invite audit ─────────
+    const invRows = await db
+      .select()
+      .from(operator)
+      .where(eq(operator.wallet, inviteeWallet));
+    const invRow = invRows[0];
+    record(
+      "invited operator row written (role=protocol_admin, status=ACTIVE)",
+      invRows.length === 1 &&
+        invRow !== undefined &&
+        invRow.role === "protocol_admin" &&
+        invRow.status === "ACTIVE",
+      invRow === undefined
+        ? "row missing"
+        : `id=${invRow.id} role=${invRow.role} status=${invRow.status} label=${invRow.label}`,
+    );
+    const invAudits = await db
+      .select()
+      .from(auditLog)
+      .where(and(eq(auditLog.actorWallet, opWallet), eq(auditLog.action, "operator.invite")));
+    const invAudit = invAudits[0];
+    const invDetail = (invAudit?.detail ?? {}) as Record<string, unknown>;
+    record(
+      "audit_log row written (action=operator.invite, target=invitee, detail.role)",
+      invAudits.length === 1 &&
+        invAudit !== undefined &&
+        invAudit.actorRole === "founder_root" &&
+        invAudit.target === inviteeWallet &&
+        invDetail["role"] === "protocol_admin",
+      invAudit === undefined
+        ? "row missing"
+        : `action=${invAudit.action} actor_role=${invAudit.actorRole} target=<invitee> detail=${JSON.stringify(invAudit.detail)}`,
+    );
+
+    // ── invitee is live on the bridge: protocol_admin passes the terms gate ──
+    // (unknown key 'foo' → 400 unknown_key proves the role gate PASSED and the
+    // service denied — nothing is written by this probe.)
+    const inviteeCookie = await siweLogin(inviteeAccount);
+    const probeBefore = await postJson(
+      "/api/operator/referral-terms",
+      { key: "foo", value: "1" },
+      inviteeCookie,
+    );
+    record(
+      "invited protocol_admin is live on the bridge (terms probe → unknown_key, not insufficient_role)",
+      probeBefore.status === 400 && probeBefore.json["reason"] === "unknown_key",
+      `status ${probeBefore.status}, body ${JSON.stringify(probeBefore.json)}`,
+    );
+
+    // ── registry negative: protocol_admin may NOT invite (founder_root only) ─
+    const nAdminInvite = await postJson(
+      "/api/operator/operators",
+      { wallet: ghostWallet, label: "should never exist", role: "operator" },
+      inviteeCookie,
+    );
+    record(
+      "protocol_admin invite denied → insufficient_role (founder_root only)",
+      nAdminInvite.status === 403 && nAdminInvite.json["reason"] === "insufficient_role",
+      `status ${nAdminInvite.status}, body ${JSON.stringify(nAdminInvite.json)}`,
+    );
+
+    // ── registry negative: invite an already-registered wallet ──────────────
+    const nDup = await postJson(
+      "/api/operator/operators",
+      { wallet: inviteeWallet, label: "dup", role: "operator" },
+      opCookie,
+    );
+    record(
+      "invite of existing wallet denied → already_exists",
+      nDup.status === 400 && nDup.json["reason"] === "already_exists",
+      `status ${nDup.status}, body ${JSON.stringify(nDup.json)}`,
+    );
+
+    // ── registry negative: malformed wallet ──────────────────────────────────
+    const nBadWallet = await postJson(
+      "/api/operator/operators/suspend",
+      { wallet: "0x1234" },
+      opCookie,
+    );
+    record(
+      "malformed wallet denied → bad_wallet",
+      nBadWallet.status === 400 && nBadWallet.json["reason"] === "bad_wallet",
+      `status ${nBadWallet.status}, body ${JSON.stringify(nBadWallet.json)}`,
+    );
+
+    // ── registry negative: self-suspend lockout guard ─────────────────────────
+    const nSelf = await postJson(
+      "/api/operator/operators/suspend",
+      { wallet: opWallet },
+      opCookie,
+    );
+    const founderRowAfterSelf = (
+      await db.select().from(operator).where(eq(operator.id, opRowId))
+    )[0];
+    record(
+      "self-suspend denied → cannot_suspend_self (founder row still ACTIVE)",
+      nSelf.status === 400 &&
+        nSelf.json["reason"] === "cannot_suspend_self" &&
+        founderRowAfterSelf !== undefined &&
+        founderRowAfterSelf.status === "ACTIVE",
+      `status ${nSelf.status}, body ${JSON.stringify(nSelf.json)}, founder row status=${founderRowAfterSelf?.status ?? "(missing)"}`,
+    );
+
+    // ── registry negative: suspend an unknown wallet ─────────────────────────
+    const nGhost = await postJson(
+      "/api/operator/operators/suspend",
+      { wallet: ghostWallet },
+      opCookie,
+    );
+    record(
+      "suspend of unknown wallet denied → not_found",
+      nGhost.status === 400 && nGhost.json["reason"] === "not_found",
+      `status ${nGhost.status}, body ${JSON.stringify(nGhost.json)}`,
+    );
+
+    // ── registry happy path 2: founder suspends the invitee ──────────────────
+    const susp = await postJson(
+      "/api/operator/operators/suspend",
+      { wallet: inviteeWallet },
+      opCookie,
+    );
+    record(
+      "founder suspend → { ok: true }",
+      susp.status === 200 && susp.json["ok"] === true,
+      `status ${susp.status}, body ${JSON.stringify(susp.json)}`,
+    );
+
+    // ── DB confirmation: SUSPENDED row + operator.suspend audit ──────────────
+    const suspRow = (
+      await db.select().from(operator).where(eq(operator.wallet, inviteeWallet))
+    )[0];
+    const suspAudits = await db
+      .select()
+      .from(auditLog)
+      .where(and(eq(auditLog.actorWallet, opWallet), eq(auditLog.action, "operator.suspend")));
+    record(
+      "suspend persisted (row SUSPENDED) + audit_log row (action=operator.suspend, target=invitee)",
+      suspRow !== undefined &&
+        suspRow.status === "SUSPENDED" &&
+        suspAudits.length === 1 &&
+        suspAudits[0] !== undefined &&
+        suspAudits[0].target === inviteeWallet &&
+        suspAudits[0].actorRole === "founder_root",
+      `row status=${suspRow?.status ?? "(missing)"}, audit rows=${suspAudits.length}, action=${suspAudits[0]?.action ?? "(none)"}`,
+    );
+
+    // ── suspension bites on the VERY NEXT call (bridge re-reads status) ──────
+    const probeAfter = await postJson(
+      "/api/operator/referral-terms",
+      { key: "foo", value: "1" },
+      inviteeCookie,
+    );
+    record(
+      "suspended operator denied on next call → insufficient_role (same still-valid session)",
+      probeAfter.status === 403 && probeAfter.json["reason"] === "insufficient_role",
+      `status ${probeAfter.status}, body ${JSON.stringify(probeAfter.json)}`,
+    );
   } finally {
     // ── teardown: remove EVERY row this test created ─────────────────────────
     try {
@@ -316,10 +492,17 @@ async function main(): Promise<void> {
         .delete(operator)
         .where(inArray(operator.id, [opRowId, suspendedRowId]))
         .returning({ id: operator.id });
+      // The invitee row was created via the API (unknown id) — delete by wallet.
+      // The ghost wallet must never have a row (negatives only), but sweep it
+      // too so a failing run can never leave residue behind.
+      const delInvitee = await db
+        .delete(operator)
+        .where(inArray(operator.wallet, [inviteeWallet, ghostWallet]))
+        .returning({ id: operator.id });
       record(
         "teardown",
-        delOps.length === 2 && (priorTerm === undefined || restored),
-        `deleted operator rows: ${delOps.length}, referral_term rows: ${delTerms.length}, audit_log rows: ${delAudit.length}; preexisting commissionBps row: ${priorTerm === undefined ? "none" : restored ? "restored exactly" : "RESTORE FAILED"}`,
+        delOps.length === 2 && delInvitee.length <= 1 && (priorTerm === undefined || restored),
+        `deleted operator rows: ${delOps.length} seeded + ${delInvitee.length} invited, referral_term rows: ${delTerms.length}, audit_log rows: ${delAudit.length}; preexisting commissionBps row: ${priorTerm === undefined ? "none" : restored ? "restored exactly" : "RESTORE FAILED"}`,
       );
     } finally {
       // Restore posture: the flag never leaves this process; committed/prod

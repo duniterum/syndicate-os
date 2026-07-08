@@ -715,11 +715,97 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
     "operator router zod-validates every body",
     "src/operator/router.ts must validate bodies with zod safeParse before delegating",
   );
+  // Approved route-path pin: the write zone exposes EXACTLY these routes, in
+  // this order, and nothing else. Any new route must be founder-approved and
+  // added here explicitly.
+  const APPROVED_ROUTES = ["/referral-terms", "/operators", "/operators/suspend"];
+  const FOUNDER_ONLY_ROUTES = new Set(["/operators", "/operators/suspend"]);
+  // Close alternate Express route-declaration syntaxes BEFORE enumerating:
+  // .route(...).post(...), bracketed verbs (router["post"]), computed access,
+  // and any router.use beyond the two sanctioned scoped middleware lines could
+  // otherwise declare a handler the route-set pin below never sees.
   check(
-    /router\.post\(\s*"\/referral-terms"/.test(opRouterCode),
-    'operator router exposes exactly the approved route path ("/referral-terms")',
-    'src/operator/router.ts route path drifted — the approved write route is router.post("/referral-terms", …)',
+    !/\.route\s*\(/.test(opRouterCode),
+    "operator router declares no .route(...) chains (route-set pin cannot be bypassed)",
+    "src/operator/router.ts uses .route(...) — routes must be declared ONLY as router.post(\"<path>\", …) so the approved-route-set pin sees them",
   );
+  check(
+    !/router\s*\[/.test(opRouterCode) && !/\brouter\s*\.\s*\n/.test(opRouterCode),
+    "operator router uses no bracketed/computed/split verb access",
+    'src/operator/router.ts accesses router via brackets or a split member expression — only literal router.post("<path>", …) declarations are approved',
+  );
+  {
+    const useLines = opRouterCode
+      .split("\n")
+      .map((l) => l.trim())
+      .filter((l) => l.includes("router.use("));
+    check(
+      useLines.length === 2 &&
+        useLines[0] === "router.use(json({ limit: AUTH_JSON_LIMIT }));" &&
+        useLines[1] === "router.use(cookieParser());",
+      "operator router.use is exactly the two sanctioned scoped middleware lines (json parser + cookieParser)",
+      "src/operator/router.ts router.use drifted — only the exact lines router.use(json({ limit: AUTH_JSON_LIMIT })); and router.use(cookieParser()); are approved; anything else could smuggle a handler past the route-set pin",
+    );
+  }
+  check(
+    (opRouterCode.match(/Router\s*\(\s*\)/g) ?? []).length === 1,
+    "operator router instantiates exactly ONE Router (no hidden sub-routers)",
+    "src/operator/router.ts instantiates more than one Router() — a sub-router could carry routes the route-set pin never sees",
+  );
+  const routeMatches = [...opRouterCode.matchAll(/router\.(get|post|put|patch|delete|all|head|options)\s*\(\s*"([^"]*)"/g)];
+  check(
+    routeMatches.every((m) => m[1] === "post") &&
+      routeMatches.map((m) => m[2]).join("|") === APPROVED_ROUTES.join("|"),
+    `operator router exposes exactly the approved route paths (${APPROVED_ROUTES.join(", ")})`,
+    `src/operator/router.ts route set drifted — approved routes are POST ${APPROVED_ROUTES.join(", ")} and nothing else (found: ${routeMatches.map((m) => `${m[1]} ${m[2]}`).join(", ") || "none"})`,
+  );
+  // Per-route shape pin: split the router into route blocks and require EVERY
+  // route to carry the full fail-closed chain, and the registry routes to be
+  // founder_root ONLY (stricter than the admin-tier allow-list).
+  {
+    const blockStarts = routeMatches.map((m) => m.index ?? 0);
+    for (let i = 0; i < blockStarts.length; i += 1) {
+      const routePath = routeMatches[i]?.[2] ?? "(unknown)";
+      const block = opRouterCode.slice(
+        blockStarts[i],
+        i + 1 < blockStarts.length ? blockStarts[i + 1] : opRouterCode.length,
+      );
+      check(
+        /allowRequest\(\s*throttleKey\(/.test(block),
+        `route ${routePath}: throttled (allowRequest + throttleKey) before any work`,
+        `src/operator/router.ts route ${routePath} lost its throttle — every write route must call allowRequest(throttleKey(req)) first`,
+      );
+      check(
+        /getSessionAccount\(/.test(block) && /account\s*===\s*null/.test(block),
+        `route ${routePath}: wallet session required (null account → deny)`,
+        `src/operator/router.ts route ${routePath} lost its session requirement — no sessionless writes`,
+      );
+      check(
+        /lookupActiveOperator\(/.test(block),
+        `route ${routePath}: role resolved via the read-only operator bridge`,
+        `src/operator/router.ts route ${routePath} must resolve the role via lookupActiveOperator`,
+      );
+      check(
+        /\.safeParse\(\s*req\.body\s*\)/.test(block),
+        `route ${routePath}: body zod-validated (safeParse(req.body))`,
+        `src/operator/router.ts route ${routePath} must zod-validate req.body before delegating`,
+      );
+      if (FOUNDER_ONLY_ROUTES.has(routePath)) {
+        check(
+          /ctx\.role\s*!==\s*"founder_root"/.test(block) &&
+            !/WRITE_ROLES/.test(block),
+          `route ${routePath}: founder_root ONLY (registry changes are founder-gated)`,
+          `src/operator/router.ts route ${routePath} role gate drifted — registry routes must deny unless ctx.role === "founder_root" and must NOT use the broader WRITE_ROLES allow-list`,
+        );
+      } else {
+        check(
+          /WRITE_ROLES\.has\(/.test(block),
+          `route ${routePath}: admin-tier allow-list gate (WRITE_ROLES)`,
+          `src/operator/router.ts route ${routePath} must gate on WRITE_ROLES.has(ctx.role)`,
+        );
+      }
+    }
+  }
   check(
     !/req\.(query|params)\b/.test(opRouterCode),
     "operator router never reads req.query/req.params",
@@ -813,6 +899,72 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
     "write service: pure service module — no response, request, or log surface",
     "referralTermsService.ts must stay a pure service (no res/req/console/logger) so identity material can never leak from it",
   );
+
+  // 9g. Registry service shape (invite/suspend — founder-approved amendment):
+  // same fail-closed discipline as the terms service, plus registry-specific
+  // authority pins (wallet-form validation, role allow-list, self-suspend
+  // lockout guard, transactional change+audit for BOTH operations).
+  const registryServiceAbs = path.resolve(operatorDir, "operatorRegistryService.ts");
+  check(
+    existsSync(registryServiceAbs),
+    "registry service present (operatorRegistryService.ts)",
+    "src/operator/operatorRegistryService.ts is missing — remove its route pins if the registry zone is retired",
+  );
+  if (existsSync(registryServiceAbs)) {
+    const regCode = stripComments(read(registryServiceAbs));
+    {
+      const gateIdx = regCode.search(/AUTH_EXPOSURE_FLAG\]\s*===\s*["']true["']/);
+      const dbUrlIdx = regCode.indexOf("DATABASE_URL");
+      const lazyIdx = regCode.search(/await import\(\s*["']@workspace\/db["']\s*\)/);
+      check(
+        gateIdx !== -1 && dbUrlIdx !== -1 && lazyIdx !== -1 && gateIdx < lazyIdx && dbUrlIdx < lazyIdx,
+        "registry service: exposure-flag + DATABASE_URL gate executes BEFORE the lazy DB import",
+        "operatorRegistryService.ts must check the auth exposure flag and DATABASE_URL BEFORE the lazy @workspace/db import — gate order drifted",
+      );
+    }
+    check(
+      !/^\s*import[^;]*@workspace\/db/m.test(regCode),
+      "registry service: @workspace/db is lazily imported only",
+      "operatorRegistryService.ts must import @workspace/db ONLY via a lazy await import()",
+    );
+    check(
+      (regCode.match(/\^0x\[0-9a-f\]\{40\}\$/g) ?? []).length >= 2,
+      "registry service: wallet form validated server-side in BOTH invite and suspend",
+      "operatorRegistryService.ts must validate /^0x[0-9a-f]{40}$/ on the lowercased wallet in both inviteOperator and suspendOperator",
+    );
+    check(
+      /OPERATOR_ROLES\s*=\s*new Set\(/.test(regCode) && /!OPERATOR_ROLES\.has\(/.test(regCode),
+      "registry service: invited roles restricted to a server-side allow-list",
+      "operatorRegistryService.ts must reject any role outside its OPERATOR_ROLES allow-list",
+    );
+    check(
+      /cannot_suspend_self/.test(regCode) &&
+        /===\s*input\.actorWallet\.toLowerCase\(\)/.test(regCode),
+      "registry service: self-suspend lockout guard pinned (cannot_suspend_self)",
+      "operatorRegistryService.ts must deny wallet === actorWallet with reason cannot_suspend_self — the founder can never lock themselves out",
+    );
+    check(
+      (regCode.match(/db\.transaction\(/g) ?? []).length === 2 &&
+        (regCode.match(/insert\(auditLog\)/g) ?? []).length === 2,
+      "registry service: invite AND suspend each commit their audit row in one transaction",
+      "operatorRegistryService.ts must wrap each registry change + its audit_log insert in ONE db.transaction — no registry change without an audit trail",
+    );
+    check(
+      /status:\s*"SUSPENDED"/.test(regCode) && !/\.delete\(/.test(regCode),
+      "registry service: suspend flips status only (no row deletion surface)",
+      "operatorRegistryService.ts must set status SUSPENDED and never delete operator rows — the registry is append/status-only",
+    );
+    check(
+      /catch\s*(\([^)]*\))?\s*\{[\s\S]{0,200}?ok:\s*false/.test(regCode),
+      "registry service: any error fails closed (ok: false, rolled back)",
+      "operatorRegistryService.ts must return ok: false from its catch",
+    );
+    check(
+      !/\b(console|res|req|logger)\s*\./.test(regCode),
+      "registry service: pure service module — no response, request, or log surface",
+      "operatorRegistryService.ts must stay a pure service (no res/req/console/logger)",
+    );
+  }
 
   // 9f. Fixture discipline parity: no wallet-address / 64-hex literals in the
   // write zone either.
