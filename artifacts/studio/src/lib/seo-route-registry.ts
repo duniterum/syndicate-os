@@ -346,14 +346,140 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Admin Control Tower — Internal Operator Console",
+    title: "Admin Console — Dashboard (Internal)",
     description:
-      "Internal operator control tower skeleton. Not a public destination.",
+      "Internal sectioned operator console dashboard. Not a public destination.",
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
     notes:
-      "INTERNAL operator control tower: read-only panels over the module registry and live postures. Hard-gated by the build-time operator preview gate; excluded from default production builds. Robots disallow remains defense-in-depth.",
+      "INTERNAL admin console dashboard (sectioned shell, Phase 2 slice 1): read-only panels over the module registry and live postures. Hard-gated by the build-time operator preview gate; excluded from default production builds. Robots disallow remains defense-in-depth.",
+  },
+  {
+    path: "/admin/members",
+    routeType: "INTERNAL",
+    indexStatus: "INTERNAL",
+    sitemap: false,
+    title: "Admin Console — Members (Internal)",
+    description:
+      "Internal admin section: members & continuity postures. Not a public destination.",
+    canonicalPath: null,
+    ownerSurface: "operator",
+    primaryIntent: "operator",
+    notes:
+      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+  },
+  {
+    path: "/admin/sources",
+    routeType: "INTERNAL",
+    indexStatus: "INTERNAL",
+    sitemap: false,
+    title: "Admin Console — Sources & Referrals (Internal)",
+    description:
+      "Internal admin section: source registry, referral terms and review queue previews. Not a public destination.",
+    canonicalPath: null,
+    ownerSurface: "operator",
+    primaryIntent: "operator",
+    notes:
+      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+  },
+  {
+    path: "/admin/operators",
+    routeType: "INTERNAL",
+    indexStatus: "INTERNAL",
+    sitemap: false,
+    title: "Admin Console — Operators (Internal)",
+    description:
+      "Internal admin section: operator roles and registry previews. Not a public destination.",
+    canonicalPath: null,
+    ownerSurface: "operator",
+    primaryIntent: "operator",
+    notes:
+      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+  },
+  {
+    path: "/admin/content",
+    routeType: "INTERNAL",
+    indexStatus: "INTERNAL",
+    sitemap: false,
+    title: "Admin Console — Content (Internal)",
+    description:
+      "Internal admin section: homepage/content governance, packages and address-label reservations. Not a public destination.",
+    canonicalPath: null,
+    ownerSurface: "operator",
+    primaryIntent: "operator",
+    notes:
+      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+  },
+  {
+    path: "/admin/modules",
+    routeType: "INTERNAL",
+    indexStatus: "INTERNAL",
+    sitemap: false,
+    title: "Admin Console — Modules (Internal)",
+    description:
+      "Internal admin section: module registry governance overlay. Not a public destination.",
+    canonicalPath: null,
+    ownerSurface: "operator",
+    primaryIntent: "operator",
+    notes:
+      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+  },
+  {
+    path: "/admin/broadcast",
+    routeType: "INTERNAL",
+    indexStatus: "INTERNAL",
+    sitemap: false,
+    title: "Admin Console — Broadcast (Internal)",
+    description:
+      "Internal admin section: broadcast preview surface. Not a public destination.",
+    canonicalPath: null,
+    ownerSurface: "operator",
+    primaryIntent: "operator",
+    notes:
+      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+  },
+  {
+    path: "/admin/audit",
+    routeType: "INTERNAL",
+    indexStatus: "INTERNAL",
+    sitemap: false,
+    title: "Admin Console — Audit Log (Internal)",
+    description:
+      "Internal admin section: audit log preview and activity postures. Not a public destination.",
+    canonicalPath: null,
+    ownerSurface: "operator",
+    primaryIntent: "operator",
+    notes:
+      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+  },
+  {
+    path: "/admin/support",
+    routeType: "INTERNAL",
+    indexStatus: "INTERNAL",
+    sitemap: false,
+    title: "Admin Console — Support (Internal)",
+    description:
+      "Internal admin section: support queue preview surface. Not a public destination.",
+    canonicalPath: null,
+    ownerSurface: "operator",
+    primaryIntent: "operator",
+    notes:
+      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+  },
+  {
+    path: "/admin/settings",
+    routeType: "INTERNAL",
+    indexStatus: "INTERNAL",
+    sitemap: false,
+    title: "Admin Console — Settings (Internal)",
+    description:
+      "Internal admin section: build flags and system health, read-only. Not a public destination.",
+    canonicalPath: null,
+    ownerSurface: "operator",
+    primaryIntent: "operator",
+    notes:
+      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
   },
   {
     path: "/source",

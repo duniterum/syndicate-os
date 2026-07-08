@@ -81,10 +81,31 @@ const internalPaths = seoRouteRegistry
   .map((r) => r.path);
 
 check(
-  internalPaths.length === 6,
-  `registry declares 6 INTERNAL routes (${internalPaths.join(", ")})`,
-  `expected exactly 6 INTERNAL registry routes, found ${internalPaths.length} — update this guard deliberately if that changed`,
+  internalPaths.length === 15,
+  `registry declares 15 INTERNAL routes (${internalPaths.join(", ")})`,
+  `expected exactly 15 INTERNAL registry routes (6 console + 9 admin sections), found ${internalPaths.length} — update this guard deliberately if that changed`,
 );
+
+// The nine sectioned admin sub-routes (Phase 2 slice 1) must ALL be present
+// as INTERNAL registry routes — removing one silently would un-gate it.
+const ADMIN_SECTION_PATHS = [
+  "/admin/members",
+  "/admin/sources",
+  "/admin/operators",
+  "/admin/content",
+  "/admin/modules",
+  "/admin/broadcast",
+  "/admin/audit",
+  "/admin/support",
+  "/admin/settings",
+];
+for (const p of ADMIN_SECTION_PATHS) {
+  check(
+    internalPaths.includes(p),
+    `registry declares admin section ${p} as INTERNAL`,
+    `admin section ${p} is missing from the INTERNAL registry routes — every mounted /admin/* section must be registered INTERNAL`,
+  );
+}
 
 for (const p of internalPaths) {
   const pattern = new RegExp(
@@ -156,7 +177,7 @@ const consoleModulePatterns = [
   '"@/pages/ProofStudio"',
   '"@/pages/OperatorPreview"',
   '"@/pages/OsMap"',
-  '"@/pages/AdminControlTower"',
+  '"@/components/admin/AdminShell"',
 ];
 for (const spec of consoleModulePatterns) {
   check(
@@ -180,6 +201,40 @@ for (const file of allFiles) {
       `${rel} statically imports ${spec} — console modules may only be imported by operator/OperatorConsole.tsx`,
     );
   }
+}
+
+// ── 5b. Sectioned admin graph stays a strict chain ──────────────────────────
+// AdminShell → sections → panels/AdminHome. Each admin module may only be
+// statically imported by its single designated parent, so the whole admin
+// surface remains reachable exclusively through the gated OperatorConsole
+// dynamic import (AdminShell itself is pinned to OperatorConsole in 5.).
+const adminGraph: Record<string, string[]> = {
+  '"@/pages/admin/sections"': [path.join("components", "admin", "AdminShell.tsx")],
+  '"@/pages/admin/panels"': [path.join("pages", "admin", "sections.tsx")],
+  '"@/pages/admin/AdminHome"': [path.join("pages", "admin", "sections.tsx")],
+};
+for (const [spec, allowedImporters] of Object.entries(adminGraph)) {
+  let importedByAllowed = false;
+  for (const file of allFiles) {
+    const rel = path.relative(srcDir, file);
+    const code = stripComments(readFileSync(file, "utf8"));
+    const runtimeImport = new RegExp(
+      `import\\s+(?!type\\b)[^;]*from\\s+${spec.replace(/[/\\]/g, "\\$&")}`,
+    );
+    if (!runtimeImport.test(code)) continue;
+    if (allowedImporters.includes(rel)) {
+      importedByAllowed = true;
+    } else {
+      errors.push(
+        `${rel} statically imports ${spec} — admin module may only be imported by ${allowedImporters.join(", ")}`,
+      );
+    }
+  }
+  check(
+    importedByAllowed,
+    `admin graph: ${spec} imported only by ${allowedImporters.join(", ")}`,
+    `admin module ${spec} is not imported by its designated parent (${allowedImporters.join(", ")}) — the admin graph chain broke`,
+  );
 }
 
 // ── 6. Public chrome renders no literal INTERNAL links ──────────────────────

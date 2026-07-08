@@ -1,10 +1,32 @@
 import React from "react";
 import { Link, useLocation } from "wouter";
+import { useGetProtocolReality } from "@workspace/api-client-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { RouteContextBar } from "@/components/RouteContextBar";
 import { sidebarNav, navLabel } from "@/config/navigation";
 import { brand } from "@/config/brand";
+
+// Honest spine-reachability chip: bound to this bundle's own live fetch of
+// GET /api/protocol/reality — Live / Checking… / Unreachable, never a
+// hardcoded status. Fails closed to "Unreachable" on any fetch error.
+function SpineReachabilityChip() {
+  const { isLoading, isError } = useGetProtocolReality();
+  const state = isLoading
+    ? ({ dot: "bg-amber-400/80 animate-pulse", label: "Checking…" } as const)
+    : isError
+      ? ({ dot: "bg-red-500/80", label: "Spine unreachable" } as const)
+      : ({ dot: "bg-emerald-500/80", label: "Spine live" } as const);
+  return (
+    <div
+      className="flex items-center gap-2 px-3 py-2 text-xs font-mono text-muted-foreground bg-muted/30 rounded-md"
+      title="Reachability of GET /api/protocol/reality from this browser — no separate monitor exists"
+    >
+      <div className={`h-2 w-2 rounded-full ${state.dot}`} />
+      {state.label}
+    </div>
+  );
+}
 
 export function Sidebar() {
   const [location] = useLocation();
@@ -44,10 +66,7 @@ export function Sidebar() {
           accountStatus="address"
         />
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 px-3 py-2 text-xs font-mono text-muted-foreground bg-muted/30 rounded-md">
-            <div className="h-2 w-2 rounded-full bg-red-500/80 animate-pulse" />
-            Offline
-          </div>
+          <SpineReachabilityChip />
           <ThemeToggle />
         </div>
       </div>

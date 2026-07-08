@@ -91,8 +91,72 @@ for (const id of navIds) {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Sectioned admin shell lockstep (Phase 2 slice 1) — STRICTER, three-way:
+// the ADMIN_SECTIONS nav table in components/admin/AdminShell.tsx, the
+// mounted /admin* router paths in App.tsx, and the registry's /admin* entries
+// must be EXACTLY the same set (10 sections: /admin + 9 sub-routes). A nav
+// item without a mounted route, a mounted route without a nav item, or an
+// unregistered section all fail here.
+const adminShellSrc = readFileSync(
+  path.resolve(here, "..", "src", "components", "admin", "AdminShell.tsx"),
+  "utf8",
+);
+const sectionsBlock = adminShellSrc.match(
+  /ADMIN_SECTIONS\s*=\s*\[([\s\S]*?)\]\s*as const/,
+);
+check(
+  sectionsBlock !== null,
+  "AdminShell declares the ADMIN_SECTIONS table",
+  "AdminShell.tsx no longer declares `ADMIN_SECTIONS = [...] as const` — the admin nav lockstep audit has nothing to bind to",
+);
+const adminNavPaths = new Set(
+  sectionsBlock
+    ? Array.from(sectionsBlock[1].matchAll(/path:\s*"(\/admin[^"]*)"/g)).map(
+        (m) => m[1],
+      )
+    : [],
+);
+const adminRouterPaths = new Set(
+  [...routerPaths].filter((p) => p === "/admin" || p.startsWith("/admin/")),
+);
+const adminRegistryPaths = new Set(
+  [...registryPaths].filter((p) => p === "/admin" || p.startsWith("/admin/")),
+);
+check(
+  adminNavPaths.size === 10,
+  `AdminShell declares 10 admin sections`,
+  `expected exactly 10 ADMIN_SECTIONS entries (/admin + 9 sub-routes), found ${adminNavPaths.size} — update this guard deliberately if the section model changed`,
+);
+for (const p of adminNavPaths) {
+  check(
+    adminRouterPaths.has(p),
+    `admin nav ${p} is mounted in App.tsx`,
+    `AdminShell nav path ${p} is not mounted in App.tsx`,
+  );
+  check(
+    adminRegistryPaths.has(p),
+    `admin nav ${p} is registered`,
+    `AdminShell nav path ${p} has no seo-route-registry entry`,
+  );
+}
+for (const p of adminRouterPaths) {
+  check(
+    adminNavPaths.has(p),
+    `mounted admin route ${p} is in the AdminShell nav`,
+    `mounted admin route ${p} has no AdminShell nav entry — orphan admin route`,
+  );
+}
+for (const p of adminRegistryPaths) {
+  check(
+    adminNavPaths.has(p),
+    `registered admin route ${p} is in the AdminShell nav`,
+    `registered admin route ${p} has no AdminShell nav entry — stale registry row`,
+  );
+}
+
 console.log(
-  `[guard:drift] ${ok.length} checks passed (${routerPaths.size} routes, ${navIds.size} nav refs).`,
+  `[guard:drift] ${ok.length} checks passed (${routerPaths.size} routes, ${navIds.size} nav refs, ${adminNavPaths.size} admin sections).`,
 );
 if (errors.length) {
   console.error(`[guard:drift] ${errors.length} FAILURE(S):`);

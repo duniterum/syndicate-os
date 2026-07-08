@@ -1,18 +1,20 @@
 // OperatorConsole — the ONLY entry point to internal/operator preview code.
 // ---------------------------------------------------------------------------
-// This module statically imports the console chrome (Shell) and every
-// registry-INTERNAL page. App.tsx loads it EXCLUSIVELY through a conditional
-// dynamic import behind OPERATOR_PREVIEW_ENABLED (config/operatorPreviewGate.ts),
-// so a default production build excludes all of this code from the bundle.
-// Do not import this module — or Shell / the pages below — statically from
-// anywhere else; guard-operator-gate.ts enforces that.
+// This module statically imports the console chrome (Shell), the sectioned
+// admin shell (AdminShell) and every registry-INTERNAL page. App.tsx loads it
+// EXCLUSIVELY through a conditional dynamic import behind
+// OPERATOR_PREVIEW_ENABLED (config/operatorPreviewGate.ts), so a default
+// production build excludes all of this code from the bundle.
+// Do not import this module — or Shell / AdminShell / the pages below —
+// statically from anywhere else; guard-operator-gate.ts enforces that.
 
+import { useLocation } from "wouter";
 import { Shell } from "@/components/layout/Shell";
 import Home from "@/pages/Home";
 import ProofStudio from "@/pages/ProofStudio";
 import OperatorPreview from "@/pages/OperatorPreview";
 import OsMap from "@/pages/OsMap";
-import AdminControlTower from "@/pages/AdminControlTower";
+import AdminShell, { ADMIN_SECTIONS } from "@/components/admin/AdminShell";
 import { AccessGate } from "@/components/access/AccessGate";
 
 export type OperatorConsolePage =
@@ -35,10 +37,16 @@ const pageRoutePath: Record<OperatorConsolePage, string> = {
 // The AccessGate here is the IA-1 access-state shell for console surfaces
 // (all PREVIEW_LABELLED — renders unchanged). It is visibility/UX only; the
 // real console gate remains the build-time OPERATOR_PREVIEW_ENABLED exclusion.
+// For the sectioned admin surface the gate classifies the EXACT mounted
+// /admin/* section route (every section is individually classified); an
+// unknown /admin/* location fails closed to the root "/admin" classification.
 export default function OperatorConsole({ page }: { page: OperatorConsolePage }) {
-  return (
-    <AccessGate routePath={pageRoutePath[page]}>{renderPage(page)}</AccessGate>
-  );
+  const [location] = useLocation();
+  const routePath =
+    page === "admin"
+      ? (ADMIN_SECTIONS.find((s) => s.path === location)?.path ?? "/admin")
+      : pageRoutePath[page];
+  return <AccessGate routePath={routePath}>{renderPage(page)}</AccessGate>;
 }
 
 function renderPage(page: OperatorConsolePage) {
@@ -74,10 +82,8 @@ function renderPage(page: OperatorConsolePage) {
         </Shell>
       );
     case "admin":
-      return (
-        <Shell>
-          <AdminControlTower />
-        </Shell>
-      );
+      // The admin shell brings its own chrome (sidebar + top bar); it does
+      // not nest inside the Studio Shell.
+      return <AdminShell />;
   }
 }

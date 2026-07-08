@@ -56,6 +56,18 @@ function listTrackedFiles(): GitFile[] {
       const [meta, path] = line.split("\t");
       const [mode] = meta.split(" ");
       return { mode, path };
+    })
+    // Tracked-but-locally-deleted files must not abort the sync: the pushed
+    // tree is built fresh from disk, so skipping them here is exactly what
+    // propagates the deletion to the remote branch.
+    .filter((f) => {
+      try {
+        statSync(join(ROOT, f.path));
+        return true;
+      } catch {
+        console.log(`Excluding locally deleted tracked file (will be removed remotely): - ${f.path}`);
+        return false;
+      }
     });
   // Also include untracked-but-not-ignored files (respects .gitignore), so a
   // sync never silently drops brand-new source files that have not been

@@ -1,8 +1,10 @@
 // components/referral/AdminOperatorsCrud.tsx
 //
 // Operators & sources management for the Admin Control Tower: the role
-// hierarchy, the operator registry (invite / edit / suspend / revoke), and the
-// source-review queue (approve / flag). Mirrors the wallet-first operator
+// hierarchy and the operator registry (invite / edit / suspend / revoke) in
+// AdminOperatorsCrud, plus the source-review queue (approve / flag) exported
+// separately so the sectioned admin shell can rehome it under Sources &
+// referrals (moved, not rewritten). Mirrors the wallet-first operator
 // registry design (server-side allowlist, one role per row, fail-closed).
 //
 // PREVIEW ONLY. Every control here is a WRITE into the operator registry / audit
@@ -11,7 +13,7 @@
 // and founder/root approval. So this shows the management surface exactly, while
 // persisting nothing.
 
-import { UsersRound, UserPlus, Pencil, Ban } from "lucide-react";
+import { UsersRound, UserPlus, Pencil, Ban, Link2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,13 +25,13 @@ export function AdminOperatorsCrud() {
     <Card id="operators" className="p-6 scroll-mt-24">
       <div className="flex items-center gap-3 flex-wrap mb-1">
         <UsersRound className="h-5 w-5 text-muted-foreground" />
-        <h2 className="text-base font-semibold text-foreground">Sources &amp; operators</h2>
+        <h2 className="text-base font-semibold text-foreground">Operators &amp; roles</h2>
         <TruthLabel variant="DESIGN_PREVIEW" />
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl mb-5 leading-relaxed">
-        Manage who can operate the protocol and review sources. Preview: invite, edit, suspend, revoke, approve,
-        and flag are writes into the operator registry — enabled with the founder-gated write zone. Admin-tier
-        changes also need a step-up signature and founder approval.
+        Manage who can operate the protocol. Preview: invite, edit, suspend, and revoke are writes into the
+        operator registry — enabled with the founder-gated write zone. Admin-tier changes also need a step-up
+        signature and founder approval.
       </p>
 
       {/* Role hierarchy */}
@@ -49,7 +51,7 @@ export function AdminOperatorsCrud() {
       </div>
 
       {/* Operator registry */}
-      <div className="mb-6">
+      <div>
         <div className="flex items-center justify-between mb-3">
           <div className="text-sm font-medium text-foreground">Operator registry</div>
           <Button variant="outline" size="sm" disabled title="Enabled with the operator write zone">
@@ -78,34 +80,45 @@ export function AdminOperatorsCrud() {
           ))}
         </div>
       </div>
+    </Card>
+  );
+}
 
-      {/* Source review queue */}
-      <div>
-        <div className="text-sm font-medium text-foreground mb-3">Source review queue</div>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-left text-xs text-muted-foreground">
-              <th className="font-normal pb-2">Source</th>
-              <th className="font-normal pb-2">Requested</th>
-              <th className="font-normal pb-2">Status</th>
-              <th className="font-normal pb-2 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sourceReviewSample.map((s) => (
-              <tr key={s.source} className="border-t border-border/40">
-                <td className="py-2 font-mono text-xs text-foreground/80">{s.source}</td>
-                <td className="py-2 text-muted-foreground">{s.requested}</td>
-                <td className="py-2 text-muted-foreground">{s.status}</td>
-                <td className="py-2 text-right">
-                  <Button variant="ghost" size="sm" disabled title="Enabled with the operator write zone">Approve</Button>
-                  <Button variant="ghost" size="sm" disabled title="Enabled with the operator write zone">Flag</Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+export function SourceReviewQueue() {
+  return (
+    <Card id="source-review" className="p-6 scroll-mt-24">
+      <div className="flex items-center gap-3 flex-wrap mb-1">
+        <Link2 className="h-5 w-5 text-muted-foreground" />
+        <h2 className="text-base font-semibold text-foreground">Source review queue</h2>
+        <TruthLabel variant="DESIGN_PREVIEW" />
       </div>
+      <p className="text-sm text-muted-foreground max-w-3xl mb-4 leading-relaxed">
+        Review requested sources. Preview: approve and flag are writes into the operator registry / audit log —
+        enabled with the founder-gated write zone.
+      </p>
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="text-left text-xs text-muted-foreground">
+            <th className="font-normal pb-2">Source</th>
+            <th className="font-normal pb-2">Requested</th>
+            <th className="font-normal pb-2">Status</th>
+            <th className="font-normal pb-2 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sourceReviewSample.map((s) => (
+            <tr key={s.source} className="border-t border-border/40">
+              <td className="py-2 font-mono text-xs text-foreground/80">{s.source}</td>
+              <td className="py-2 text-muted-foreground">{s.requested}</td>
+              <td className="py-2 text-muted-foreground">{s.status}</td>
+              <td className="py-2 text-right">
+                <Button variant="ghost" size="sm" disabled title="Enabled with the operator write zone">Approve</Button>
+                <Button variant="ghost" size="sm" disabled title="Enabled with the operator write zone">Flag</Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </Card>
   );
 }

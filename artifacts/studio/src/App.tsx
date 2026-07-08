@@ -150,6 +150,33 @@ function Router() {
       <Route path="/admin">
         <OperatorRoute page="admin" />
       </Route>
+      <Route path="/admin/members">
+        <OperatorRoute page="admin" />
+      </Route>
+      <Route path="/admin/sources">
+        <OperatorRoute page="admin" />
+      </Route>
+      <Route path="/admin/operators">
+        <OperatorRoute page="admin" />
+      </Route>
+      <Route path="/admin/content">
+        <OperatorRoute page="admin" />
+      </Route>
+      <Route path="/admin/modules">
+        <OperatorRoute page="admin" />
+      </Route>
+      <Route path="/admin/broadcast">
+        <OperatorRoute page="admin" />
+      </Route>
+      <Route path="/admin/audit">
+        <OperatorRoute page="admin" />
+      </Route>
+      <Route path="/admin/support">
+        <OperatorRoute page="admin" />
+      </Route>
+      <Route path="/admin/settings">
+        <OperatorRoute page="admin" />
+      </Route>
 
       {/* Catch-all (bare Route → not-found) */}
       <Route>
