@@ -3,8 +3,8 @@
 **Canon.** Read `docs/00_CANON_INDEX.md`, then the TIER 0/1 docs it lists —
 especially `THE_SYNDICATE_OS_COMPASS.md` (constitution), `docs/adr/ADR-001-design-system-et-methodologie.md`,
 `docs/adr/ADR-002-protocole-anti-derive.md` (anti-drift protocol + the gate),
-`docs/FOUNDATION_SPEC.md`. Follow ADR-002: boot → 4-line handshake → gate before every
-proposal → slice by slice → ask before commit/push.
+`docs/FOUNDATION_SPEC.md`, `docs/DESIGN_ROADMAP.md`. Follow ADR-002: boot → 4-line
+handshake → gate before every proposal → slice by slice → ask before commit/push.
 
 **Roles.**
 - **Claude Code = the only code author.** Edit, run build + guards locally, show the diff
@@ -25,6 +25,13 @@ So at the end of each slice, Claude Code states, in ONE clear line, a verdict:
 
 When a deploy is done, the founder pastes Replit's report back here; Claude Code then acts
 on the real runtime truth (render, DB, errors) and fixes anything server-specific.
+
+**Design roadmap — the single source of truth for the design workstream.**
+`docs/DESIGN_ROADMAP.md` is canon: everyone (founder, Claude Code, Claude-advice, Replit)
+works from that one map — nobody goes off on their own. STANDING RULE: at the END of every
+design slice, Claude Code ticks the boxes for what landed and updates the color-sprawl count
+in `DESIGN_ROADMAP.md`, **in the same commit as the slice**. Never keep design status "in
+your head."
 
 **Founder-facing communication.** The founder can't follow deep technical detail. Keep it
 simple: state the gate (4 lines), the diff to approve, and the deploy verdict. Decide the

@@ -42,6 +42,7 @@ gagne en cas de conflit*. Vit dans le repo : `docs/00_CANON_INDEX.md`.
 | `docs/strategy/GRAND_RECONCILIATION_AND_CARTE_BLANCHE_UNBLOCK_2026-07-06.md` | **Le canonical « Dave » + carte-blanche** — la destination réconciliée. |
 | `docs/SYNDICATE_OS_BUILD_INVENTORY_AND_VOCABULARY.md` | Inventaire de build + **vocabulaire** (les noms qu'on utilise). |
 | `docs/FOUNDATION_SPEC.md` | Le **spec de la fondation design-system** (tokens 3 tiers, typo fluide, polices, échelles, a11y, perf) — world-class, ce que les slices implémentent. |
+| `docs/DESIGN_ROADMAP.md` | **Source unique du workstream design** — phases, cases à cocher « FINI » grade-AAA, suivi du sprawl couleur. Claude Code coche les cases à la fin de chaque slice, dans le même commit. |
 
 ## TIER 2 — Specs de domaine (charger SELON la slice)
 
