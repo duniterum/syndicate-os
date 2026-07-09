@@ -8,10 +8,11 @@ import { cn } from "@/lib/utils";
 //   proof / live → --proof / --live (cyan · verified / read-only-proof / live)
 //   identity     → --identity (gold · seat / recognition / privileged)
 //   caution      → --warning  (amber · pending / paused / simulated)
+//   danger       → --destructive (red · failed / unavailable / fail-closed)
 //   neutral      → --muted    (inert · not-wired / historical / illustrative)
 // The tint is one token value at low alpha for the fill/border and full strength
 // for the text, so both light and dark modes stay coherent from a single source.
-export type StatusTone = "proof" | "live" | "identity" | "caution" | "neutral";
+export type StatusTone = "proof" | "live" | "identity" | "caution" | "danger" | "neutral";
 type StatusSize = "sm" | "xs";
 
 const TONE: Record<StatusTone, string> = {
@@ -19,6 +20,7 @@ const TONE: Record<StatusTone, string> = {
   live: "bg-live/10 text-live border-live/25 dark:bg-live/15 dark:border-live/35",
   identity: "bg-identity/10 text-identity border-identity/30 dark:bg-identity/15 dark:border-identity/40",
   caution: "bg-warning/10 text-warning border-warning/30 dark:bg-warning/15 dark:border-warning/40",
+  danger: "bg-destructive/10 text-destructive border-destructive/25 dark:bg-destructive/15 dark:border-destructive/35",
   neutral: "bg-muted text-muted-foreground border-border",
 };
 

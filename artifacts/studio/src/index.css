@@ -44,6 +44,7 @@
 
   /* Semantic brand roles (gold = identity, cyan = live/proof) + data-viz palette. */
   --color-identity: hsl(var(--identity));
+  --color-identity-foreground: hsl(var(--gold-foreground));
   --color-live: hsl(var(--live));
   --color-proof: hsl(var(--proof));
   --color-warning: hsl(var(--warning));

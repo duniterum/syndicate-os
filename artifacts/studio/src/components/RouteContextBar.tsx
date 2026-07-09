@@ -7,7 +7,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Badge } from "@/components/ui/badge";
+import { StatusPill, type StatusTone } from "@/components/status-pill/StatusPill";
+import { Tag } from "@/components/tag/Tag";
 import {
   getRouteBreadcrumb,
   type RoutePosture,
@@ -24,15 +25,13 @@ import {
  * The public front door (`/`, PublicLayout) intentionally has no bar — a single
  * top-level page does not need a Home → Home breadcrumb.
  */
-const POSTURE_STYLES: Record<RoutePosture, string> = {
-  Public:
-    "bg-cyan-50 text-cyan-700 border-cyan-200 dark:bg-cyan-950/40 dark:text-cyan-400 dark:border-cyan-900/50",
-  Pending:
-    "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900/50",
-  Internal:
-    "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800",
-  Utility:
-    "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800",
+// Posture → tokenized status tone. Public reads on the proof (cyan) axis; a
+// pending route is caution (amber); internal/utility are inert → neutral.
+const POSTURE_TONE: Record<RoutePosture, StatusTone> = {
+  Public: "proof",
+  Pending: "caution",
+  Internal: "neutral",
+  Utility: "neutral",
 };
 
 export function RouteContextBar() {
@@ -67,23 +66,15 @@ export function RouteContextBar() {
         </Breadcrumb>
 
         <div className="flex items-center gap-2">
-          <Badge
-            variant="outline"
-            className={`font-mono text-[10px] font-medium px-2 py-0.5 ${POSTURE_STYLES[crumb.posture]}`}
-          >
+          <StatusPill tone={POSTURE_TONE[crumb.posture]}>
             {crumb.posture}
-          </Badge>
+          </StatusPill>
           {/* Index chip only when it adds signal beyond the posture (e.g. a
               public route that is "Indexed"). For Internal/Pending/Utility the
               index status mirrors the posture, so a second chip would just be
-              a duplicate label. */}
+              a duplicate label. It is metadata, not a state → Tag, not StatusPill. */}
           {crumb.indexLabel !== crumb.posture && (
-            <Badge
-              variant="outline"
-              className="hidden sm:inline-flex font-mono text-[10px] font-medium px-2 py-0.5 text-muted-foreground bg-muted/40 border-border/60"
-            >
-              {crumb.indexLabel}
-            </Badge>
+            <Tag className="hidden sm:inline-flex">{crumb.indexLabel}</Tag>
           )}
         </div>
       </div>

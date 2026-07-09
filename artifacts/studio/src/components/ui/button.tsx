@@ -26,6 +26,9 @@ const buttonVariants = cva(
         // @replit no hover, transparent border
         ghost: "border border-transparent",
         link: "text-primary underline-offset-4 hover:underline",
+        // Identity/recognition action (gold) — the on-brand CTA color. Semantic
+        // tokens only (--identity + its paired foreground); hover-elevate from base.
+        identity: "bg-identity text-identity-foreground border border-transparent",
       },
       size: {
         // @replit changed sizes
