@@ -46,6 +46,7 @@
   --color-identity: hsl(var(--identity));
   --color-live: hsl(var(--live));
   --color-proof: hsl(var(--proof));
+  --color-warning: hsl(var(--warning));
   --color-viz-1: hsl(var(--viz-1));
   --color-viz-2: hsl(var(--viz-2));
   --color-viz-3: hsl(var(--viz-3));
@@ -92,6 +93,9 @@
   --identity: var(--gold-500);
   --live: var(--cyan-500);
   --proof: var(--cyan-500);
+  /* Caution/attention — amber, deliberately hue-shifted off gold so a "caution"
+     status pill never reads as an "identity" (gold) one. */
+  --warning: 32 90% 42%;
   --app-font-sans: 'Work Sans', 'Inter', system-ui, sans-serif;
   --app-font-serif: 'Instrument Serif', Georgia, serif;
   --app-font-mono: 'IBM Plex Mono', Menlo, ui-monospace, monospace;
@@ -156,6 +160,7 @@
   --gold-500: 42 92% 60%;
   --gold: var(--gold-500);
   --gold-foreground: 240 30% 8%;
+  --warning: 36 95% 60%;
 }
 
 @layer base {

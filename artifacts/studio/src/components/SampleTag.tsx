@@ -1,5 +1,4 @@
-import React from "react";
-import { Badge } from "@/components/ui/badge";
+import { StatusPill, type StatusTone } from "@/components/status-pill/StatusPill";
 
 // Honesty label for the hero's illustrative figures. Deliberately SEPARATE from
 // TruthLabel (which reports live wiring status). SampleTag never renders "Live":
@@ -14,13 +13,12 @@ const KIND_TEXT: Record<SampleKind, string> = {
   illustrative: "Preview",
 };
 
-const KIND_STYLES: Record<SampleKind, string> = {
-  simulated:
-    "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-900/50",
-  canonical:
-    "bg-cyan-100 text-cyan-700 border-cyan-200 dark:bg-cyan-950/50 dark:text-cyan-300 dark:border-cyan-900/50",
-  illustrative:
-    "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800",
+// Kind → tokenized tone. Canonical facts read on the proof (cyan) axis; simulated
+// previews are caution (amber); illustrative mocks are inert → neutral.
+const KIND_TONE: Record<SampleKind, StatusTone> = {
+  simulated: "caution",
+  canonical: "proof",
+  illustrative: "neutral",
 };
 
 interface SampleTagProps {
@@ -30,11 +28,8 @@ interface SampleTagProps {
 
 export function SampleTag({ kind, className = "" }: SampleTagProps) {
   return (
-    <Badge
-      variant="outline"
-      className={`font-mono text-[9px] sm:text-[10px] font-medium uppercase tracking-wider px-1.5 py-0 leading-4 whitespace-nowrap ${KIND_STYLES[kind]} ${className}`}
-    >
+    <StatusPill tone={KIND_TONE[kind]} size="xs" className={className}>
       {KIND_TEXT[kind]}
-    </Badge>
+    </StatusPill>
   );
 }
