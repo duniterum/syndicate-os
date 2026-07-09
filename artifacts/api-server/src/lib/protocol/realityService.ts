@@ -505,11 +505,21 @@ async function buildArchiveGroup(
     let mintedFailureReason: string | null = chainSkipReason(probe);
     let mintedNote = "Minted count was not read (chain not verified).";
 
+    // Mint price posture (word 7 of the same tuple; raw 6-dec USDC base-unit
+    // string, same fail-closed doctrine — EXACT or withheld, never invented).
+    let priceValue: string | null = null;
+    let priceConfidence: ProtocolRealityItem["confidence"] = "UNKNOWN";
+    let priceLifecycle: ProtocolRealityItem["lifecycle"] = "PAUSED_BY_PRECAUTION";
+    let priceFailureReason: string | null = chainSkipReason(probe);
+    let priceNote = "Mint price was not read (chain not verified).";
+
     if (probe.chainIdOk && !hasCode) {
       failureReason = "no on-chain code; artifact read skipped";
       note = "Artifact configuration was not read (no on-chain code).";
       mintedFailureReason = "no on-chain code; minted count read skipped";
       mintedNote = "Minted count was not read (no on-chain code).";
+      priceFailureReason = "no on-chain code; mint price read skipped";
+      priceNote = "Mint price was not read (no on-chain code).";
     } else if (probe.chainIdOk) {
       const data = callData(SELECTOR_GET_ARTIFACT_CORE, [encodeUint256(BigInt(artifact.id))]);
       let decoded: ReturnType<typeof decodeArtifactCoreRead> | null = null;
@@ -529,6 +539,11 @@ async function buildArchiveGroup(
         mintedLifecycle = "PENDING_ADAPTER";
         mintedFailureReason = `artifact core decode failed: ${decoded.reason}`;
         mintedNote = "The minted count could not be decoded; reported as unavailable.";
+        priceValue = null;
+        priceConfidence = "LOW";
+        priceLifecycle = "PENDING_ADAPTER";
+        priceFailureReason = `artifact core decode failed: ${decoded.reason}`;
+        priceNote = "The mint price could not be decoded; reported as unavailable.";
       } else {
         // Minted count is a live mutable figure with NO canon expectation.
         mintedValue = decoded.minted.toString();
@@ -536,6 +551,12 @@ async function buildArchiveGroup(
         mintedLifecycle = "READ_ONLY_PROOF";
         mintedFailureReason = null;
         mintedNote = `Total minted count for ${artifact.label} (id ${artifact.id}) read live from Archive1155 getArtifactCore — an EXACT raw count string.`;
+        // Mint price is likewise a live mutable figure with NO canon expectation.
+        priceValue = decoded.priceUsdc.toString();
+        priceConfidence = "MEDIUM";
+        priceLifecycle = "READ_ONLY_PROOF";
+        priceFailureReason = null;
+        priceNote = `Mint price for ${artifact.label} (id ${artifact.id}) read live from Archive1155 getArtifactCore — an EXACT raw 6-decimal USDC base-unit string.`;
 
         if (artifact.configuredOnChain) {
           sourceType = "CANON_RECONCILED_RPC";
@@ -559,6 +580,11 @@ async function buildArchiveGroup(
             mintedLifecycle = "PAUSED_BY_PRECAUTION";
             mintedFailureReason = "canon/chain disagreement on artifact configuration";
             mintedNote = "Minted count withheld: canon/chain disagreement on artifact configuration; failing closed.";
+            priceValue = null;
+            priceConfidence = "LOW";
+            priceLifecycle = "PAUSED_BY_PRECAUTION";
+            priceFailureReason = "canon/chain disagreement on artifact configuration";
+            priceNote = "Mint price withheld: canon/chain disagreement on artifact configuration; failing closed.";
           }
         } else {
           value = decoded.configured;
@@ -600,6 +626,23 @@ async function buildArchiveGroup(
         lifecycle: mintedLifecycle,
         note: mintedNote,
         failureReason: mintedFailureReason,
+        asOf,
+      }),
+    );
+
+    items.push(
+      buildItem({
+        id: `archive.artifact.${artifact.id}.price`,
+        label: `${artifact.label} (id ${artifact.id}) — mint price (USDC raw @6dec)`,
+        value: priceValue,
+        sourceType: "LIVE_CHAIN_RPC",
+        sourceRef: `Avalanche C-Chain RPC (eth_call getArtifactCore id=${artifact.id}, word 7)`,
+        chainId,
+        contractRole: "archive1155",
+        confidence: priceConfidence,
+        lifecycle: priceLifecycle,
+        note: priceNote,
+        failureReason: priceFailureReason,
         asOf,
       }),
     );

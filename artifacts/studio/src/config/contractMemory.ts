@@ -50,7 +50,7 @@ export interface ContractMemoryEntry {
 
 /** Page-level honesty preamble for the contract memory surface. */
 export const contractMemoryIntro =
-  "This is read-only memory of the protocol's contracts and economy — roles and structure only. It is canon reference, not a live read: no chain is queried here, and no addresses, balances, prices, or member records are shown.";
+  "The protocol economy in two honest layers: a live, read-only view of what the protocol holds today, and canon memory of the contracts behind it — roles and structure only, with no addresses or member records ever shown.";
 
 export const contractMemory: ContractMemoryEntry[] = [
   // --- Tokens --------------------------------------------------------------

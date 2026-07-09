@@ -29,6 +29,8 @@ function resolveStat(reality: HeroReality, stat: HeroStat): string | null {
       return reality.membersTotal;
     case "aggregateInflowUsdc":
       return reality.aggregateInflowUsdc;
+    case "grossTotalUsdc":
+      return reality.grossTotalUsdc;
     case "vaultUsdc":
       return reality.vaultUsdc;
     case "opsUsdc":

@@ -79,26 +79,27 @@ export function SeatFlowDiagram() {
   const reduceMotion = useReducedMotion();
   const reality = useHeroReality();
 
-  // LIVE centrepiece: the real aggregate cumulative inflow (V1+V2A+V2+V3) in
-  // whole-USDC terms for the count-up. null = honest unavailable state. The
+  // LIVE centrepiece: the TRUE gross cumulative inflow — membership sales
+  // aggregate (V1+V2A+V2+V3) PLUS NFT artifact revenue (live price × minted) —
+  // in whole-USDC terms for the count-up. null = honest unavailable state. The
   // Number conversion is used ONLY for the animation and ONLY when it is
   // exactly safe; otherwise the exact BigInt-formatted string is shown as-is.
-  const aggregateUsdc = (() => {
-    if (reality.aggregateInflowRaw === null) return null;
-    const n = Number(reality.aggregateInflowRaw);
-    return Number.isSafeInteger(n) && String(n) === reality.aggregateInflowRaw
+  const grossUsdc = (() => {
+    if (reality.grossTotalRaw === null) return null;
+    const n = Number(reality.grossTotalRaw);
+    return Number.isSafeInteger(n) && String(n) === reality.grossTotalRaw
       ? n / 1_000_000
       : null;
   })();
-  const { ref, value } = useCountUp(aggregateUsdc ?? 0, 1350);
+  const { ref, value } = useCountUp(grossUsdc ?? 0, 1350);
   const displayValue =
-    reality.aggregateInflowUsdc === null
+    reality.grossTotalUsdc === null
       ? null
-      : reduceMotion || aggregateUsdc === null
-        ? `${reality.aggregateInflowUsdc} USDC`
+      : reduceMotion || grossUsdc === null
+        ? `${reality.grossTotalUsdc} USDC`
         : `${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC`;
   const tagState =
-    reality.aggregateInflowUsdc !== null ? "live" : reality.loading ? "checking" : "unavailable";
+    reality.grossTotalUsdc !== null ? "live" : reality.loading ? "checking" : "unavailable";
 
   return (
     <div className="relative mx-auto h-[430px] w-full max-w-[760px] overflow-hidden rounded-[1.1rem] bg-[radial-gradient(circle_at_50%_43%,hsl(var(--gold)/0.12),transparent_46%)] md:h-[450px] xl:h-full xl:min-h-[440px]">

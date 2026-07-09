@@ -48,14 +48,15 @@ export type ArtifactCoreExists =
   | { ok: false; reason: string };
 
 export type ArtifactCoreRead =
-  | { ok: true; configured: boolean; minted: bigint }
+  | { ok: true; configured: boolean; minted: bigint; priceUsdc: bigint }
   | { ok: false; reason: string };
 
 /**
- * Strict decode of getArtifactCore(uint256) surfacing word 0 (`configured`)
- * AND word 8 (`minted` — the total minted count). Same fail-closed posture as
+ * Strict decode of getArtifactCore(uint256) surfacing word 0 (`configured`),
+ * word 7 (`priceUsdc` — the mint price in raw 6-dec USDC base units), AND
+ * word 8 (`minted` — the total minted count). Same fail-closed posture as
  * decodeArtifactCoreExists: any malformation returns a structured failure so
- * the caller emits an explicit reason instead of fabricating a count.
+ * the caller emits an explicit reason instead of fabricating a figure.
  */
 export function decodeArtifactCoreRead(hex: unknown): ArtifactCoreRead {
   if (typeof hex !== "string" || !/^0x[0-9a-fA-F]*$/.test(hex)) {
@@ -75,6 +76,13 @@ export function decodeArtifactCoreRead(hex: unknown): ArtifactCoreRead {
   if (configuredWord !== 0n && configuredWord !== 1n) {
     return { ok: false, reason: "word 0 not a boolean" };
   }
+  let priceUsdc: bigint;
+  try {
+    priceUsdc = BigInt("0x" + data.slice(7 * 64, 8 * 64));
+  } catch {
+    return { ok: false, reason: "word 7 (priceUsdc) not parseable" };
+  }
+  if (priceUsdc < 0n) return { ok: false, reason: "word 7 (priceUsdc) negative" };
   let minted: bigint;
   try {
     minted = BigInt("0x" + data.slice(8 * 64, 9 * 64));
@@ -82,7 +90,7 @@ export function decodeArtifactCoreRead(hex: unknown): ArtifactCoreRead {
     return { ok: false, reason: "word 8 (minted) not parseable" };
   }
   if (minted < 0n) return { ok: false, reason: "word 8 (minted) negative" };
-  return { ok: true, configured: configuredWord === 1n, minted };
+  return { ok: true, configured: configuredWord === 1n, minted, priceUsdc };
 }
 
 /**

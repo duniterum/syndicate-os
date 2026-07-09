@@ -391,7 +391,14 @@ export interface HeroProofRailItem {
 export interface HeroStat {
   id: string;
   label: string;
-  bind: "membersTotal" | "aggregateInflowUsdc" | "vaultUsdc" | "opsUsdc" | "lpReserves" | "burnedSyn";
+  bind:
+    | "membersTotal"
+    | "aggregateInflowUsdc"
+    | "grossTotalUsdc"
+    | "vaultUsdc"
+    | "opsUsdc"
+    | "lpReserves"
+    | "burnedSyn";
   unit?: string;
   meta?: string;
 }
@@ -458,13 +465,14 @@ export const heroSystem = {
     { mark: "◇", label: "Memory", note: "Recorded", tone: "gold" },
   ] as HeroProofRailItem[],
 
-  // The centrepiece figure — LIVE cumulative on-chain inflow (count-up to the
-  // real aggregate V1+V2A+V2+V3 read from GET /api/protocol/reality). The
+  // The centrepiece figure — LIVE gross cumulative on-chain inflow: membership
+  // sales aggregate (V1+V2A+V2+V3) PLUS NFT artifact revenue (live mint price ×
+  // live minted count), all read from GET /api/protocol/reality. The
   // provenance note is deliberate: the figure includes founder test
   // transactions during buildout and is NEVER framed as revenue.
   seat: {
     coreLabel: "Cumulative on-chain inflow",
-    coreNote: "Live read · includes founder test transactions",
+    coreNote: "Live read · membership + NFT · incl. founder test transactions",
     coreUnavailable: "Live read unavailable",
     center: "The Seat",
     centerNote: "You are the institution",
@@ -496,7 +504,7 @@ export const heroSystem = {
     liveNote: "Live · read-only",
     stats: [
       { id: "members", label: "Members", bind: "membersTotal", meta: "Holder Index · recognised seats" },
-      { id: "gross", label: "Cumulative inflow", bind: "aggregateInflowUsdc", unit: "USDC", meta: "Incl. founder test transactions" },
+      { id: "gross", label: "Cumulative inflow", bind: "grossTotalUsdc", unit: "USDC", meta: "Membership + NFT · incl. founder test transactions" },
       { id: "vault", label: "Vault balance", bind: "vaultUsdc", unit: "USDC", meta: "70% routing target" },
       { id: "liquidity", label: "LP reserves", bind: "lpReserves", meta: "20% routing target" },
       { id: "operations", label: "Operations balance", bind: "opsUsdc", unit: "USDC", meta: "10% routing target" },
@@ -551,13 +559,30 @@ export const heroSystem = {
   routing: {
     title: "Current routed allocation",
     // Amounts are computed live: the canonical 70/20/10 shares of the real
-    // aggregate inflow, with the live balances shown as the on-chain proof.
+    // MEMBERSHIP aggregate inflow (NFT revenue is NOT in this split), with the
+    // live balances shown as the on-chain proof.
     routes: [
       { id: "vault", label: "Vault", ratio: "70%", tone: "vault" },
       { id: "liquidity", label: "Liquidity", ratio: "20%", tone: "liquidity" },
       { id: "operations", label: "Operations", ratio: "10%", tone: "operations" },
     ] as HeroRoute[],
     balanceNote: "Live balances confirm the routing",
+    totalRoutedLabel: "Membership routed",
+    // Honest per-stream allocation statement — each inflow stream declares
+    // plainly where it goes. Only membership sales pass through the enforced
+    // 70/20/10 contract split.
+    allocation: [
+      {
+        id: "membership",
+        label: "Membership sales",
+        text: "70 / 20 / 10 vault · liquidity · operations — enforced on-chain.",
+      },
+      {
+        id: "nft",
+        label: "NFT / patronage",
+        text: "Operations & protocol assets — declared, not the 70/20/10 split.",
+      },
+    ],
   },
 
   // Entry preview — illustrative contribution amounts routed by the CANONICAL

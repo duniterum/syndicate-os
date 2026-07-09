@@ -3,6 +3,7 @@ import { ShieldAlert } from "lucide-react";
 import { PublicPage } from "@/components/PublicPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { ProtocolRealityPanel } from "@/components/ProtocolReality";
+import { ProtocolAssetsCard } from "@/components/ProtocolAssetsCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,17 +18,22 @@ export default function ContractMemory() {
   return (
     <PublicPage
       eyebrow="Contract & economy memory"
-      title="Contracts & economy, from memory — not a live read."
+      title="The protocol economy — live holdings, plus contract memory."
       lead={contractMemoryIntro}
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
+      <div className="mb-12">
+        <ProtocolAssetsCard />
+      </div>
+
       <div className="rounded-lg border border-amber-200 dark:border-amber-900/50 bg-amber-50/60 dark:bg-amber-950/20 p-4 mb-12 flex items-start gap-3">
         <div className="p-1.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5">
           <ShieldAlert className="h-4 w-4" />
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Roles and structure only. No contract addresses, transaction hashes, balances, prices, or
-          member records appear here. {safetyCopy.noFakeData}
+          The contract memory below is roles and structure only — not a live read. No contract
+          addresses, transaction hashes, balances, prices, or member records appear in it.{" "}
+          {safetyCopy.noFakeData}
         </p>
       </div>
 

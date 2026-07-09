@@ -78,7 +78,7 @@ export function HeroLedger() {
               item.bind === "nftMintedTotal" &&
               reality.nftFirstSignalMinted !== null &&
               reality.nftPatronSealMinted !== null
-                ? `First Signal ${reality.nftFirstSignalMinted} · Patron Seal ${reality.nftPatronSealMinted}`
+                ? `First Signal ${reality.nftFirstSignalMinted} · Patron Seal ${reality.nftPatronSealMinted}${reality.nftRevenueUsdc !== null ? ` · $${reality.nftRevenueUsdc} contributed` : ""}`
                 : item.note;
             return (
               <motion.div
@@ -158,7 +158,7 @@ export function HeroLedger() {
           })}
         </div>
         <div className="mt-3 flex items-center justify-between rounded-xl border border-border bg-background/58 p-3 dark:border-white/10 dark:bg-white/[0.03]">
-          <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Total routed</span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">{heroSystem.routing.totalRoutedLabel}</span>
           <span className="font-mono text-xl font-black text-foreground">
             {reality.aggregateInflowUsdc !== null ? (
               <>
@@ -168,6 +168,15 @@ export function HeroLedger() {
               <span className="text-sm font-semibold text-muted-foreground">{liveFigure(null, reality.loading)}</span>
             )}
           </span>
+        </div>
+        <div className="mt-2 grid gap-1.5">
+          {heroSystem.routing.allocation.map((a) => (
+            <div key={a.id} className="rounded-lg border border-border bg-background/45 px-3 py-1.5 text-[10px] leading-snug text-muted-foreground dark:border-white/10 dark:bg-white/[0.02]">
+              <span className="font-semibold uppercase tracking-[0.08em] text-foreground/80">{a.label}</span>
+              <span className="mx-1.5 text-muted-foreground/60">→</span>
+              {a.text}
+            </div>
+          ))}
         </div>
         <p className="mt-2 text-center text-[10px] text-muted-foreground">{heroSystem.routing.balanceNote}</p>
       </motion.section>

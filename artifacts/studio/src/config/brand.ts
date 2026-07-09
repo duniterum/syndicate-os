@@ -1,9 +1,32 @@
+// Brand color meaning (canonical): Gold = identity / seat / membership;
+// Cyan = live / verification / activity.
 export const brand = {
   name: "The Syndicate",
   product: "Studio OS",
   tagline: "A Living Protocol",
+  descriptor: "On-chain membership protocol",
   foundationNote: "Read-only foundation shell.",
   rightsNote: "All rights reserved.",
+} as const;
+
+/**
+ * Canonical brand assets, served from `public/brand/`. The gold "SS" monogram
+ * is the real Syndicate mark (transparent PNG) — the single header logo.
+ */
+export const brandAssets = {
+  "syn-mark-gold": "/brand/syn-mark-gold.png",
+} as const;
+
+/**
+ * Header chip wording. "Live" is honest here — the header chips describe the
+ * live, read-only chain reads (Protocol Reality Spine) that power the public
+ * surfaces. Kept in config so no live-state label is ever hardcoded in JSX.
+ */
+export const headerChips = {
+  chainName: "Avalanche",
+  chainState: "Live",
+  liveBadge: "Live",
+  mobileChainNote: "Avalanche · Live",
 } as const;
 
 /**

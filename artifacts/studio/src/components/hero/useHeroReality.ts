@@ -71,6 +71,18 @@ export interface HeroReality {
   nftPatronSealMinted: string | null;
   /** Sum of both minted counts; null unless BOTH live reads are available. */
   nftMintedTotal: string | null;
+  /**
+   * NFT revenue = Σ (live mint price × live minted) per artifact, exact bigint
+   * math on raw 6-dec base units. Null unless EVERY input read is available.
+   */
+  nftRevenueUsdc: string | null;
+  nftRevenueRaw: string | null;
+  /**
+   * TRUE gross cumulative inflow = membership sales aggregate + NFT revenue.
+   * Null unless BOTH live figures are available (fail-closed, never partial).
+   */
+  grossTotalUsdc: string | null;
+  grossTotalRaw: string | null;
   /** Computed 70/20/10 routed shares of the aggregate (the routing proof). */
   routedVault: string | null;
   routedLiquidity: string | null;
@@ -126,6 +138,39 @@ export function useHeroReality(): HeroReality {
       ? null
       : firstSignalMinted + patronSealMinted;
 
+  // NFT revenue: exact bigint math on the live raw reads (price @6dec × count).
+  // Fail-closed — null unless BOTH artifacts' price AND minted reads are live.
+  const firstSignalPriceRaw = findFinancial(archive, "archive.artifact.1.price");
+  const patronSealPriceRaw = findFinancial(archive, "archive.artifact.3.price");
+  let nftRevenueRaw: string | null = null;
+  if (
+    firstSignalPriceRaw !== null &&
+    patronSealPriceRaw !== null &&
+    firstSignalMinted !== null &&
+    patronSealMinted !== null &&
+    /^[0-9]+$/.test(firstSignalPriceRaw) &&
+    /^[0-9]+$/.test(patronSealPriceRaw)
+  ) {
+    try {
+      nftRevenueRaw = (
+        BigInt(firstSignalPriceRaw) * BigInt(firstSignalMinted) +
+        BigInt(patronSealPriceRaw) * BigInt(patronSealMinted)
+      ).toString();
+    } catch {
+      nftRevenueRaw = null;
+    }
+  }
+
+  // TRUE gross total = membership sales aggregate + NFT revenue (raw @6dec).
+  let grossTotalRaw: string | null = null;
+  if (nftRevenueRaw !== null && aggregateRaw !== null && /^[0-9]+$/.test(aggregateRaw)) {
+    try {
+      grossTotalRaw = (BigInt(aggregateRaw) + BigInt(nftRevenueRaw)).toString();
+    } catch {
+      grossTotalRaw = null;
+    }
+  }
+
   return {
     loading: reality.isLoading || holderIndex.isLoading,
     membersTotal: membersTotalNumber === null ? null : membersTotalNumber.toLocaleString("en-US"),
@@ -141,6 +186,10 @@ export function useHeroReality(): HeroReality {
     nftFirstSignalMinted: firstSignalMinted === null ? null : firstSignalMinted.toLocaleString("en-US"),
     nftPatronSealMinted: patronSealMinted === null ? null : patronSealMinted.toLocaleString("en-US"),
     nftMintedTotal: nftMintedTotal === null ? null : nftMintedTotal.toLocaleString("en-US"),
+    nftRevenueUsdc: formatBaseUnits(nftRevenueRaw, 6, 2),
+    nftRevenueRaw,
+    grossTotalUsdc: formatBaseUnits(grossTotalRaw, 6, 2),
+    grossTotalRaw,
     routedVault: routedShare(aggregateRaw, 7_000n),
     routedLiquidity: routedShare(aggregateRaw, 2_000n),
     routedOperations: routedShare(aggregateRaw, 1_000n),

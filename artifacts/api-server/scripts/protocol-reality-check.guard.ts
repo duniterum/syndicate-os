@@ -82,11 +82,13 @@ function encString(s: string): string {
   const content = hex.padEnd(Math.ceil(hex.length / 64) * 64 || 64, "0");
   return "0x" + word("20") + len + content;
 }
-/** A 9-word getArtifactCore tuple: word 0 = `configured`, word 8 = `minted`. */
-const encArtifactCore = (configured: boolean, minted: bigint = 0n): string =>
-  "0x" + word(configured ? "1" : "0") + word("0").repeat(7) + word(minted.toString(16));
+/** A 9-word getArtifactCore tuple: word 0 = `configured`, word 7 = `priceUsdc`, word 8 = `minted`. */
+const encArtifactCore = (configured: boolean, minted: bigint = 0n, priceUsdc: bigint = 0n): string =>
+  "0x" + word(configured ? "1" : "0") + word("0").repeat(6) + word(priceUsdc.toString(16)) + word(minted.toString(16));
 const ID1_MINTED = 11n;
 const ID3_MINTED = 6n;
+const ID1_PRICE = 25_000_000n; // fixture: 25 USDC raw @6dec
+const ID3_PRICE = 100_000_000n; // fixture: 100 USDC raw @6dec
 
 // ── mock transport ────────────────────────────────────────────────────────────
 type CallFn = (to: string, selector: string, data: string) => string | "__throw__";
@@ -171,7 +173,11 @@ function goodCall(to: string, selector: string, data = ""): string {
   if (selector === SELECTOR_RECEIPT_COUNT) return encUint256(V3_RECEIPT_COUNT);
   if (selector === SELECTOR_GET_ARTIFACT_CORE) {
     const id = BigInt("0x" + (data.slice(10) || "0"));
-    return encArtifactCore(true, id === 1n ? ID1_MINTED : id === 3n ? ID3_MINTED : 0n);
+    return encArtifactCore(
+      true,
+      id === 1n ? ID1_MINTED : id === 3n ? ID3_MINTED : 0n,
+      id === 1n ? ID1_PRICE : id === 3n ? ID3_PRICE : 0n,
+    );
   }
   if (selector === SELECTOR_SOURCE_REGISTRY)
     return "0x" + word(SOURCE_LINKAGE_TARGET.registryAddress.slice(2).toLowerCase());
@@ -257,6 +263,10 @@ async function main(): Promise<void> {
     check("happy: archive id1 minted EXACT count string (LIVE_CHAIN_RPC, MEDIUM, READ_ONLY_PROOF)", id1Minted?.value === ID1_MINTED.toString() && id1Minted?.valueType === "string" && id1Minted?.sourceType === "LIVE_CHAIN_RPC" && id1Minted?.confidence === "MEDIUM" && id1Minted?.lifecycle === "READ_ONLY_PROOF");
     const id3Minted = byId(e, "archive.artifact.3.minted");
     check("happy: archive id3 minted EXACT count string (MEDIUM, READ_ONLY_PROOF)", id3Minted?.value === ID3_MINTED.toString() && id3Minted?.valueType === "string" && id3Minted?.confidence === "MEDIUM" && id3Minted?.lifecycle === "READ_ONLY_PROOF");
+    const id1Price = byId(e, "archive.artifact.1.price");
+    check("happy: archive id1 price EXACT raw 6dec string (LIVE_CHAIN_RPC, MEDIUM, READ_ONLY_PROOF)", id1Price?.value === ID1_PRICE.toString() && id1Price?.valueType === "string" && id1Price?.sourceType === "LIVE_CHAIN_RPC" && id1Price?.confidence === "MEDIUM" && id1Price?.lifecycle === "READ_ONLY_PROOF");
+    const id3Price = byId(e, "archive.artifact.3.price");
+    check("happy: archive id3 price EXACT raw 6dec string (MEDIUM, READ_ONLY_PROOF)", id3Price?.value === ID3_PRICE.toString() && id3Price?.valueType === "string" && id3Price?.confidence === "MEDIUM" && id3Price?.lifecycle === "READ_ONLY_PROOF");
     // Sale group (Sprint 2): 8 items — flags on V1/V2/V3 + V3's 3 numeric figures.
     check("happy: sale group has 8 items", e.groups.sale.length === 8, String(e.groups.sale.length));
     check("happy: every sale item contractRole 'sale' + LIVE_CHAIN_RPC", e.groups.sale.every((i) => i.contractRole === "sale" && i.sourceType === "LIVE_CHAIN_RPC"));
@@ -412,6 +422,7 @@ async function main(): Promise<void> {
     const e = await buildProtocolReality(baseOpts(transport));
     check("shape-drift: archive id1 null + PENDING_ADAPTER + failureReason", byId(e, "archive.artifact.1")?.value === null && byId(e, "archive.artifact.1")?.lifecycle === "PENDING_ADAPTER" && byId(e, "archive.artifact.1")?.failureReason !== null);
     check("shape-drift: archive id1 minted null + PENDING_ADAPTER + failureReason", byId(e, "archive.artifact.1.minted")?.value === null && byId(e, "archive.artifact.1.minted")?.lifecycle === "PENDING_ADAPTER" && byId(e, "archive.artifact.1.minted")?.failureReason !== null);
+    check("shape-drift: archive id1 price null + PENDING_ADAPTER + failureReason", byId(e, "archive.artifact.1.price")?.value === null && byId(e, "archive.artifact.1.price")?.lifecycle === "PENDING_ADAPTER" && byId(e, "archive.artifact.1.price")?.failureReason !== null);
   }
 
   // 7c) CANON/CHAIN CONFIG DISAGREEMENT: configured=false where canon expects
@@ -423,6 +434,7 @@ async function main(): Promise<void> {
     const e = await buildProtocolReality(baseOpts(transport));
     check("config-mismatch: archive id1 null + PAUSED_BY_PRECAUTION", byId(e, "archive.artifact.1")?.value === null && byId(e, "archive.artifact.1")?.lifecycle === "PAUSED_BY_PRECAUTION");
     check("config-mismatch: archive id1 minted WITHHELD (null + failureReason, never 99)", byId(e, "archive.artifact.1.minted")?.value === null && byId(e, "archive.artifact.1.minted")?.failureReason !== null);
+    check("config-mismatch: archive id1 price WITHHELD (null + failureReason)", byId(e, "archive.artifact.1.price")?.value === null && byId(e, "archive.artifact.1.price")?.failureReason !== null);
   }
 
   // 7b) SALE NUMERIC DECODE FAILURE: V3 availableSyn returns "0x" → null, and

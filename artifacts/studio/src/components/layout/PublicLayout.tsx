@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link, useLocation } from "wouter";
-import { Crown, Eye, Menu, ShieldCheck, X } from "lucide-react";
+import { Activity, Menu, ShieldCheck, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { headerNav, footerGroups, navLabel } from "@/config/navigation";
-import { brand, socialLinks, type SocialLink } from "@/config/brand";
+import { brand, brandAssets, headerChips, socialLinks, type SocialLink } from "@/config/brand";
 import { heroSystem } from "@/config/syndicateFacts";
 import { accessStates } from "@/config/accessState";
 import { useAccessState } from "@/components/access/AccessStateProvider";
@@ -34,29 +34,27 @@ function SessionChip() {
 function ChainPill() {
   return (
     <span
-      title="Avalanche C-Chain target network — read-only public surface"
+      title="Avalanche C-Chain — live read-only public surface"
       className="hidden items-center gap-2 whitespace-nowrap rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-2.5 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-cyan-700 shadow-sm dark:text-cyan-200 2xl:inline-flex"
     >
       <span className="grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-[#e84142] shadow-[0_0_18px_-8px_rgba(232,65,66,0.9)]">
         <img src="/brand/avalanche-avax-token.png" alt="Avalanche" className="h-full w-full object-cover" />
       </span>
-      <span>Avalanche</span>
+      <span>{headerChips.chainName}</span>
       <span className="text-muted-foreground">·</span>
-      <span>Target network</span>
-      <span className="text-muted-foreground">·</span>
-      <span className="text-cyan-600 dark:text-cyan-300">Read-only</span>
+      <span className="text-cyan-600 dark:text-cyan-300">{headerChips.chainState}</span>
     </span>
   );
 }
 
-function ReadOnlyChip() {
+function LiveChip() {
   return (
     <span
-      title="Read-only public foundation — no writes are initiated from this header"
-      className="hidden items-center gap-1.5 rounded-xl border border-gold/30 bg-gold/10 px-2.5 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-gold lg:inline-flex"
+      title="Live on-chain reads — the public surface is currently read-only"
+      className="hidden items-center gap-1.5 rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-2.5 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-cyan-600 dark:text-cyan-300 lg:inline-flex"
     >
-      <Eye className="h-3.5 w-3.5" />
-      Read-only
+      <Activity className="h-3.5 w-3.5" />
+      {headerChips.liveBadge}
     </span>
   );
 }
@@ -99,20 +97,22 @@ function SocialIconRow({ className, iconClass }: { className?: string; iconClass
 function Wordmark() {
   return (
     <Link href="/" className="group flex shrink-0 items-center gap-2.5">
-      <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-gold/45 bg-background/80 text-gold shadow-[0_0_20px_-14px_hsl(var(--gold)/0.8)] transition-colors group-hover:bg-gold/10 dark:bg-black/65">
-        <span aria-hidden className="absolute inset-1 rounded-lg border border-gold/20" />
-        <Crown className="h-4 w-4" />
+      <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-gold/45 bg-background/80 shadow-[0_0_20px_-14px_hsl(var(--gold)/0.8)] transition-colors group-hover:bg-gold/10 dark:bg-black/65">
+        <img src={brandAssets["syn-mark-gold"]} alt="The Syndicate" className="h-7 w-7 object-contain" />
       </span>
       <span className="flex shrink-0 flex-col leading-none">
         <span className="whitespace-nowrap text-[1.02rem] font-semibold uppercase tracking-[0.18em] text-foreground sm:text-[1.14rem] 2xl:text-[1.26rem]">
           {brand.name}
         </span>
         <span className="mt-1 whitespace-nowrap font-mono text-[8px] uppercase tracking-[0.3em] text-gold/90 sm:text-[9px]">
-          {brand.tagline}
+          {brand.descriptor}
         </span>
       </span>
-      <span className="ml-1 hidden rounded-full border border-gold/35 bg-gold/10 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider text-gold sm:inline-flex">
-        Preview
+      <span
+        title="Current chapter — Genesis Signal"
+        className="ml-1 hidden rounded-full border border-gold/35 bg-gold/10 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider text-gold sm:inline-flex"
+      >
+        CH #001
       </span>
     </Link>
   );
@@ -162,12 +162,17 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <SocialIconRow className="hidden items-center gap-1.5 lg:flex" iconClass="h-3.5 w-3.5" />
             <ChainPill />
-            <ReadOnlyChip />
+            <LiveChip />
             <SessionChip />
             <ThemeToggle />
-            <span className="hidden h-9 w-9 items-center justify-center rounded-xl border border-gold/30 bg-gold/8 text-gold lg:inline-flex">
+            <Link
+              href="/proof"
+              title="View public proof"
+              aria-label="View public proof"
+              className="hidden h-9 w-9 items-center justify-center rounded-xl border border-gold/30 bg-gold/8 text-gold transition-colors hover:border-gold/50 hover:bg-gold/15 lg:inline-flex"
+            >
               <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-            </span>
+            </Link>
             <Link href={heroSystem.primaryCta.href} className="hidden md:inline-flex">
               <Button
                 size="sm"
@@ -206,7 +211,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                     </Link>
                   ))}
                   <div className="mt-2 rounded-xl border border-cyan-400/20 bg-cyan-400/5 px-4 py-3 text-xs text-cyan-600 dark:text-cyan-200">
-                    Avalanche · Target network · Read-only
+                    {headerChips.mobileChainNote}
                   </div>
                   <div className="mt-2 flex flex-col gap-2">
                     {socialLinks.map((link) => (
