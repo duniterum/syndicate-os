@@ -24,7 +24,8 @@ import type {
   ProtocolRealityResponse,
   SourceStatusResponse,
   SourceValidateResponse,
-  ThrottledError
+  ThrottledError,
+  VerifyLinksResponse
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -446,6 +447,84 @@ export function useGetProtocolReality<TData = Awaited<ReturnType<typeof getProto
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getGetProtocolRealityQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetProtocolVerifyLinksUrl = () => {
+
+
+
+
+  return `/api/protocol/verify-links`
+}
+
+/**
+ * Read-only "Don't trust — verify" link set. Returns block-explorer URLs for PROTOCOL INFRASTRUCTURE ONLY — sale contracts (V1/V2A/V2/V3), the Archive1155 NFT contract, the vault and operations wallets, the Trader Joe LP pair, the SYN token, the canonical burn (dead) address, and SourceRegistryV1. Links are built server-side from vendored canon; entries whose address is not a live canonical address are omitted (fail-closed, never invented). No member or personal wallet is ever included, and no write surface exists.
+ * @summary Explorer verify links for protocol infrastructure
+ */
+export const getProtocolVerifyLinks = async ( options?: RequestInit): Promise<VerifyLinksResponse> => {
+
+  return customFetch<VerifyLinksResponse>(getGetProtocolVerifyLinksUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetProtocolVerifyLinksQueryKey = () => {
+    return [
+    `/api/protocol/verify-links`
+    ] as const;
+    }
+
+
+export const getGetProtocolVerifyLinksQueryOptions = <TData = Awaited<ReturnType<typeof getProtocolVerifyLinks>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProtocolVerifyLinks>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetProtocolVerifyLinksQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProtocolVerifyLinks>>> = ({ signal }) => getProtocolVerifyLinks({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getProtocolVerifyLinks>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProtocolVerifyLinksQueryResult = NonNullable<Awaited<ReturnType<typeof getProtocolVerifyLinks>>>
+export type GetProtocolVerifyLinksQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Explorer verify links for protocol infrastructure
+ */
+
+export function useGetProtocolVerifyLinks<TData = Awaited<ReturnType<typeof getProtocolVerifyLinks>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProtocolVerifyLinks>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetProtocolVerifyLinksQueryOptions(options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

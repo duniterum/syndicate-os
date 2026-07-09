@@ -45,3 +45,7 @@ export * from './sourceStatusResponseMode';
 export * from './sourceValidateResponse';
 export * from './sourceValidateResponseMode';
 export * from './throttledError';
+export * from './verifyLink';
+export * from './verifyLinkId';
+export * from './verifyLinksResponse';
+export * from './verifyLinksResponseMode';

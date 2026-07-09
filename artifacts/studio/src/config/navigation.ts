@@ -16,23 +16,34 @@ export interface HeaderNavItem {
   label: string;
 }
 
-const headerSpec: { id: string; label: string }[] = [
-  { id: "proof", label: "Protocol" },
-  { id: "contracts", label: "Economy" },
-  { id: "archive", label: "Chronicle" },
-  { id: "recognition", label: "Recognition" },
-  { id: "member", label: "Membership" },
-  { id: "join", label: "Join" },
-  { id: "learning", label: "Docs" },
-  { id: "status", label: "Status" },
+// Zones: "primary" renders as a top-level header link; "more" collapses into
+// the one-step "More" dropdown. ONE spec array keeps the curation (and the
+// surface-audit textual parse) in a single place — 3 primary + 5 more = 8.
+const headerSpec: { id: string; label: string; zone: "primary" | "more" }[] = [
+  { id: "proof", label: "Protocol", zone: "primary" },
+  { id: "contracts", label: "Economy", zone: "primary" },
+  { id: "member", label: "Membership", zone: "primary" },
+  { id: "archive", label: "Chronicle", zone: "more" },
+  { id: "recognition", label: "Recognition", zone: "more" },
+  { id: "join", label: "Join", zone: "more" },
+  { id: "learning", label: "Docs", zone: "more" },
+  { id: "status", label: "Status", zone: "more" },
 ];
 
-export const headerNav: HeaderNavItem[] = headerSpec
-  .map((s) => {
-    const m = byId[s.id];
-    return m && m.visible ? { id: m.id, path: m.path, label: s.label } : null;
-  })
-  .filter((x): x is HeaderNavItem => x !== null);
+const buildHeaderNav = (zone: "primary" | "more"): HeaderNavItem[] =>
+  headerSpec
+    .filter((s) => s.zone === zone)
+    .map((s) => {
+      const m = byId[s.id];
+      return m && m.visible ? { id: m.id, path: m.path, label: s.label } : null;
+    })
+    .filter((x): x is HeaderNavItem => x !== null);
+
+export const headerNavPrimary: HeaderNavItem[] = buildHeaderNav("primary");
+export const headerNavMore: HeaderNavItem[] = buildHeaderNav("more");
+
+/** Full curated header list (mobile sheet + audits) — primary first, then more. */
+export const headerNav: HeaderNavItem[] = [...headerNavPrimary, ...headerNavMore];
 
 // Operator console sidebar — operator surfaces only.
 export const sidebarNav: SyndicateModule[] = modules.filter(

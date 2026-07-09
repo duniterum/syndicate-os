@@ -5,6 +5,7 @@ import protocolRealityRouter from "./protocolReality";
 import sourceValidateRouter from "./sourceValidate";
 import joinQuoteRouter from "./joinQuote";
 import holderIndexRouter from "./holderIndex";
+import verifyLinksRouter from "./verifyLinks";
 
 const router: IRouter = Router();
 
@@ -14,5 +15,6 @@ router.use(protocolRealityRouter);
 router.use(sourceValidateRouter);
 router.use(joinQuoteRouter);
 router.use(holderIndexRouter);
+router.use(verifyLinksRouter);
 
 export default router;

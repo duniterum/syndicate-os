@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link, useLocation } from "wouter";
-import { Activity, Menu, ShieldCheck, X } from "lucide-react";
+import { Activity, ChevronDown, Menu, ShieldCheck, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { headerNav, footerGroups, navLabel } from "@/config/navigation";
+import { headerNav, headerNavPrimary, headerNavMore, footerGroups, navLabel } from "@/config/navigation";
 import { brand, brandAssets, headerChips, socialLinks, type SocialLink } from "@/config/brand";
 import { heroSystem } from "@/config/syndicateFacts";
 import { accessStates } from "@/config/accessState";
@@ -136,7 +142,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             <Wordmark />
 
             <nav className="hidden min-w-0 items-center gap-1 xl:flex 2xl:gap-1.5" aria-label="Public navigation">
-              {headerNav.map((item, index) => (
+              {headerNavPrimary.map((item, index) => (
                 <motion.div
                   key={item.id}
                   initial={reduceMotion ? false : { opacity: 0, y: -5 }}
@@ -145,17 +151,65 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 >
                   <Link
                     href={item.path}
-                    className={`group rounded-lg px-2 py-1 text-[10px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus:outline-none focus:ring-2 focus:ring-cyan-400/40 2xl:px-2.5 2xl:text-[11px] ${
+                    className={`group relative rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus:outline-none focus:ring-2 focus:ring-cyan-400/40 2xl:px-3 2xl:text-[12px] ${
                       location === item.path ? "text-foreground" : "text-muted-foreground"
                     }`}
                   >
                     <span className="block whitespace-nowrap leading-none">{item.label}</span>
-                    <span className="mt-0.5 hidden whitespace-nowrap font-mono text-[9px] leading-none text-muted-foreground/60 group-hover:text-gold/80 2xl:block">
-                      {item.path}
-                    </span>
+                    {location === item.path && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-x-2.5 -bottom-px h-px rounded-full bg-gold/70 2xl:inset-x-3"
+                      />
+                    )}
                   </Link>
                 </motion.div>
               ))}
+
+              <motion.div
+                initial={reduceMotion ? false : { opacity: 0, y: -5 }}
+                animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                transition={{ delay: 0.06 + headerNavPrimary.length * 0.035, duration: 0.3 }}
+              >
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    className={`group relative inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus:outline-none focus:ring-2 focus:ring-cyan-400/40 data-[state=open]:bg-gold/8 data-[state=open]:text-gold 2xl:px-3 2xl:text-[12px] ${
+                      headerNavMore.some((item) => item.path === location)
+                        ? "text-foreground"
+                        : "text-muted-foreground"
+                    }`}
+                    aria-label="More navigation"
+                  >
+                    <span className="whitespace-nowrap leading-none">More</span>
+                    <ChevronDown className="h-3 w-3 transition-transform group-data-[state=open]:rotate-180" aria-hidden="true" />
+                    {headerNavMore.some((item) => item.path === location) && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-x-2.5 -bottom-px h-px rounded-full bg-gold/70 2xl:inset-x-3"
+                      />
+                    )}
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="start"
+                    sideOffset={10}
+                    className="min-w-[190px] rounded-xl border-border/80 bg-popover/95 p-1.5 backdrop-blur-xl dark:border-gold/20"
+                  >
+                    {headerNavMore.map((item) => (
+                      <DropdownMenuItem key={item.id} asChild>
+                        <Link
+                          href={item.path}
+                          className={`flex w-full cursor-pointer items-center justify-between gap-4 rounded-lg px-2.5 py-2 text-[12px] font-medium transition-colors focus:bg-gold/8 focus:text-gold ${
+                            location === item.path ? "text-foreground" : "text-muted-foreground"
+                          }`}
+                        >
+                          <span>{item.label}</span>
+                          <span className="font-mono text-[10px] text-muted-foreground/60">{item.path}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </motion.div>
             </nav>
           </div>
 

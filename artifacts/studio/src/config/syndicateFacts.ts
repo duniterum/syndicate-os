@@ -411,7 +411,7 @@ export interface HeroStat {
 export interface HeroSource {
   id: string;
   label: string;
-  bind?: "aggregateInflowUsdc" | "attributionActivities" | "nftMintedTotal";
+  bind?: "aggregateInflowUsdc" | "attributionActivities" | "nftMintedTotal" | "nftRevenueUsdc";
   unit?: string;
   status?: string;
   note?: string;
@@ -538,10 +538,13 @@ export const heroSystem = {
         note: "Incl. founder test transactions",
       },
       {
+        // Money-forward: the card LEADS with the live contributed USDC figure
+        // (mint price × minted count, both live chain reads); the minted
+        // breakdown is the secondary line (computed live in HeroLedger).
         id: "nft",
         label: "NFT Artifacts",
-        bind: "nftMintedTotal",
-        unit: "minted",
+        bind: "nftRevenueUsdc",
+        unit: "contributed",
         note: "The First Signal + Patron Seal",
       },
       { id: "lpfees", label: "LP Fee Flow", status: "Not tracked yet" },

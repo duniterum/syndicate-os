@@ -4,7 +4,23 @@ import { Box, Droplet, LockKeyhole, Network, Settings, Shield, Sparkles, Users }
 import { SampleTag } from "@/components/SampleTag";
 import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
 import { useHeroReality } from "@/components/hero/useHeroReality";
+import { VerifyOnChain, VERIFY_SLOGAN } from "@/components/VerifyOnChain";
 import { heroSystem } from "@/config/syndicateFacts";
+import type { VerifyLinkId } from "@workspace/api-client-react";
+
+// "Don't trust — verify" explorer targets per card (protocol infrastructure
+// ONLY — links come from the read-only verify-links endpoint, fail-closed).
+const sourceVerifyIds: Record<string, readonly VerifyLinkId[]> = {
+  membership: ["membershipSaleV1", "membershipSaleV2A", "membershipSaleV2", "membershipSaleV3"],
+  nft: ["nftArchive"],
+  referrals: ["sourceRegistry"],
+};
+
+const routeVerifyIds: Record<string, readonly VerifyLinkId[]> = {
+  vault: ["vaultWallet"],
+  liquidity: ["lpPair"],
+  operations: ["operationsWallet"],
+};
 
 const sourceIcons = {
   membership: Users,
@@ -73,13 +89,20 @@ export function HeroLedger() {
                   ? reality.attributionActivities
                   : item.bind === "nftMintedTotal"
                     ? reality.nftMintedTotal
-                    : null;
+                    : item.bind === "nftRevenueUsdc"
+                      ? reality.nftRevenueUsdc !== null
+                        ? `$${reality.nftRevenueUsdc}`
+                        : null
+                      : null;
             const noteText =
-              item.bind === "nftMintedTotal" &&
-              reality.nftFirstSignalMinted !== null &&
-              reality.nftPatronSealMinted !== null
-                ? `First Signal ${reality.nftFirstSignalMinted} · Patron Seal ${reality.nftPatronSealMinted}${reality.nftRevenueUsdc !== null ? ` · $${reality.nftRevenueUsdc} contributed` : ""}`
+              item.bind === "nftRevenueUsdc" && reality.nftMintedTotal !== null
+                ? `${reality.nftMintedTotal} minted${
+                    reality.nftFirstSignalMinted !== null && reality.nftPatronSealMinted !== null
+                      ? ` (${reality.nftFirstSignalMinted} First Signal · ${reality.nftPatronSealMinted} Patron Seal)`
+                      : ""
+                  }`
                 : item.note;
+            const verifyIds = sourceVerifyIds[item.id];
             return (
               <motion.div
                 key={item.id}
@@ -105,12 +128,14 @@ export function HeroLedger() {
                 ) : (
                   <div className="mt-2 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{item.status}</div>
                 )}
+                {verifyIds ? <VerifyOnChain ids={verifyIds} className="mt-1.5 block" /> : null}
               </motion.div>
             );
           })}
         </div>
         <div className="mt-3 text-center text-xs text-muted-foreground">
           Gross inflows are cumulative and <span className="font-semibold text-emerald-500 dark:text-emerald-400">never decrease.</span>
+          <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70">{VERIFY_SLOGAN}</span>
         </div>
       </motion.section>
 
@@ -153,6 +178,9 @@ export function HeroLedger() {
                     liveFigure(null, reality.loading)
                   )}
                 </div>
+                {routeVerifyIds[route.id] ? (
+                  <VerifyOnChain ids={routeVerifyIds[route.id]} className="mt-1.5 block" />
+                ) : null}
               </motion.div>
             );
           })}

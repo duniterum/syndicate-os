@@ -4,9 +4,18 @@
 // AVAX is a declared "coming" placeholder — the treasury acquisition strategy
 // shows a real figure only once assets are actually acquired on-chain.
 import { Coins, Droplet, Shield, Sparkles } from "lucide-react";
-import { useGetProtocolReality } from "@workspace/api-client-react";
+import { useGetProtocolReality, type VerifyLinkId } from "@workspace/api-client-react";
 import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
 import { formatBaseUnits } from "@/components/hero/useHeroReality";
+import { VerifyOnChain, VERIFY_SLOGAN } from "@/components/VerifyOnChain";
+
+// "Don't trust — verify" explorer targets per asset row (protocol
+// infrastructure ONLY — links come from the read-only endpoint, fail-closed).
+const assetVerifyIds: Record<string, readonly VerifyLinkId[]> = {
+  vault: ["vaultWallet"],
+  lp: ["lpPair"],
+  "syn-reserve": ["membershipSaleV3"],
+};
 
 function findValue(
   items: ReadonlyArray<{ id: string; value: unknown }> | undefined,
@@ -85,7 +94,8 @@ export function ProtocolAssetsCard() {
         <LiveReadTag state={tagState} />
       </div>
       <p className="mb-5 text-sm text-muted-foreground">
-        What the protocol holds — on-chain verifiable.
+        What the protocol holds — on-chain verifiable.{" "}
+        <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground/70">{VERIFY_SLOGAN}</span>
       </p>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {rows.map((row) => {
@@ -113,6 +123,9 @@ export function ProtocolAssetsCard() {
                 </div>
               )}
               <div className="mt-2 text-[11px] leading-snug text-muted-foreground">{row.meta}</div>
+              {assetVerifyIds[row.id] ? (
+                <VerifyOnChain ids={assetVerifyIds[row.id]} className="mt-1.5 block" />
+              ) : null}
             </div>
           );
         })}

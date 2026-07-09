@@ -20,6 +20,8 @@ tags:
     description: Read-only MembershipSaleV3 quote (no wallet, no write, no transaction)
   - name: holder-index
     description: Aggregate-only Holder Index snapshot (static, hash-pinned, era-labelled)
+  - name: verify-links
+    description: Read-only explorer verify links for protocol infrastructure (never member wallets)
 paths:
   /healthz:
     get:
@@ -148,6 +150,27 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProtocolRealityResponse"
+  /protocol/verify-links:
+    get:
+      operationId: getProtocolVerifyLinks
+      tags: [verify-links]
+      summary: Explorer verify links for protocol infrastructure
+      description: >-
+        Read-only "Don't trust — verify" link set. Returns block-explorer URLs
+        for PROTOCOL INFRASTRUCTURE ONLY — sale contracts (V1/V2A/V2/V3), the
+        Archive1155 NFT contract, the vault and operations wallets, the Trader
+        Joe LP pair, the SYN token, the canonical burn (dead) address, and
+        SourceRegistryV1. Links are built server-side from vendored canon;
+        entries whose address is not a live canonical address are omitted
+        (fail-closed, never invented). No member or personal wallet is ever
+        included, and no write surface exists.
+      responses:
+        "200":
+          description: Explorer verify links (protocol infrastructure only)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerifyLinksResponse"
   /holder-index:
     get:
       operationId: getHolderIndex
@@ -241,6 +264,48 @@ components:
         - seatIfFirstRaw
         - acquisitionCostRaw
         - protocolContributionRaw
+    VerifyLink:
+      type: object
+      properties:
+        id:
+          type: string
+          enum:
+            - membershipSaleV1
+            - membershipSaleV2A
+            - membershipSaleV2
+            - membershipSaleV3
+            - nftArchive
+            - vaultWallet
+            - operationsWallet
+            - lpPair
+            - synToken
+            - burnAddress
+            - sourceRegistry
+        label:
+          type: string
+        url:
+          type: string
+      required:
+        - id
+        - label
+        - url
+    VerifyLinksResponse:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum:
+            - READ_ONLY_VERIFY_LINKS
+        note:
+          type: string
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/VerifyLink"
+      required:
+        - mode
+        - note
+        - links
     JoinQuoteResponse:
       type: object
       properties:

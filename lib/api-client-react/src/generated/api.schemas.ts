@@ -39,6 +39,42 @@ export interface JoinQuoteFigures {
   protocolContributionRaw: string;
 }
 
+export type VerifyLinkId = typeof VerifyLinkId[keyof typeof VerifyLinkId];
+
+
+export const VerifyLinkId = {
+  membershipSaleV1: 'membershipSaleV1',
+  membershipSaleV2A: 'membershipSaleV2A',
+  membershipSaleV2: 'membershipSaleV2',
+  membershipSaleV3: 'membershipSaleV3',
+  nftArchive: 'nftArchive',
+  vaultWallet: 'vaultWallet',
+  operationsWallet: 'operationsWallet',
+  lpPair: 'lpPair',
+  synToken: 'synToken',
+  burnAddress: 'burnAddress',
+  sourceRegistry: 'sourceRegistry',
+} as const;
+
+export interface VerifyLink {
+  id: VerifyLinkId;
+  label: string;
+  url: string;
+}
+
+export type VerifyLinksResponseMode = typeof VerifyLinksResponseMode[keyof typeof VerifyLinksResponseMode];
+
+
+export const VerifyLinksResponseMode = {
+  READ_ONLY_VERIFY_LINKS: 'READ_ONLY_VERIFY_LINKS',
+} as const;
+
+export interface VerifyLinksResponse {
+  mode: VerifyLinksResponseMode;
+  note: string;
+  links: VerifyLink[];
+}
+
 export type JoinQuoteResponseMode = typeof JoinQuoteResponseMode[keyof typeof JoinQuoteResponseMode];
 
 

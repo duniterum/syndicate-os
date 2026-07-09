@@ -2,7 +2,20 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Activity, Archive, Droplet, Flame, Gauge, Settings, Shield, Users, WalletCards } from "lucide-react";
 import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
 import { useHeroReality, type HeroReality } from "@/components/hero/useHeroReality";
+import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { heroSystem, type HeroStat } from "@/config/syndicateFacts";
+import type { VerifyLinkId } from "@workspace/api-client-react";
+
+// "Don't trust — verify" explorer targets per stat (protocol infrastructure
+// ONLY — links come from the read-only verify-links endpoint, fail-closed).
+const statVerifyIds: Record<string, readonly VerifyLinkId[]> = {
+  members: ["synToken"],
+  gross: ["membershipSaleV1", "membershipSaleV2A", "membershipSaleV2", "membershipSaleV3"],
+  vault: ["vaultWallet"],
+  liquidity: ["lpPair"],
+  operations: ["operationsWallet"],
+  burned: ["burnAddress"],
+};
 
 const statIcons = {
   members: Users,
@@ -97,6 +110,9 @@ export function ProtocolOverviewPanel() {
                 <div className="font-mono text-sm font-semibold text-muted-foreground">{display}</div>
               )}
               <div className="mt-2 text-[11px] text-muted-foreground">{stat.meta}</div>
+              {statVerifyIds[stat.id] ? (
+                <VerifyOnChain ids={statVerifyIds[stat.id]} className="mt-1.5 block" />
+              ) : null}
             </motion.div>
           );
         })}
