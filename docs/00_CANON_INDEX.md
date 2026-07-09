@@ -28,7 +28,7 @@ gagne en cas de conflit*. Vit dans le repo : `docs/00_CANON_INDEX.md`.
 | `WORKFLOW.md` | Comment on travaille (Astronaute ↔ Claude ↔ Replit). |
 | `ADR-001-design-system-et-methodologie.md` | Le design system system-wide (tokens→primitives→patterns→templates, brand board). |
 | `ADR-002-protocole-anti-derive.md` | Le protocole anti-dérive (boot, gate 4 lignes, règles dures, cost discipline). |
-| topo/handoff le plus récent (`…2026-07-09`) | Où on en est + la prochaine slice. |
+| `docs/handoff/new-session-handoff-2026-07-09-design-system-primitives.md` | Topo le plus récent : où on en est (fondation + primitives) + la prochaine slice. Le live/DB/auth reste régi par le checkpoint 2026-07-03. |
 | `replit.md` | Le contexte que Replit lit. |
 
 ## TIER 1 — Vue holistique, plan & canonical (CHARGER AU BOOT)
