@@ -6,6 +6,7 @@ import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
 import { useHeroReality } from "@/components/hero/useHeroReality";
 import { VerifyOnChain, VERIFY_SLOGAN } from "@/components/VerifyOnChain";
 import { heroSystem } from "@/config/syndicateFacts";
+import { Amount } from "@/components/amount/Amount";
 import type { VerifyLinkId } from "@workspace/api-client-react";
 
 // "Don't trust — verify" explorer targets per card (protocol infrastructure
@@ -82,18 +83,20 @@ export function HeroLedger() {
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {heroSystem.sources.items.map((item, index) => {
             const Icon = sourceIcons[item.id as keyof typeof sourceIcons] ?? Sparkles;
-            const liveValue =
+            const isMoneyBind =
+              item.bind === "aggregateInflowUsdc" || item.bind === "nftRevenueUsdc";
+            const moneyValue =
               item.bind === "aggregateInflowUsdc"
                 ? reality.aggregateInflowUsdc
-                : item.bind === "attributionActivities"
-                  ? reality.attributionActivities
-                  : item.bind === "nftMintedTotal"
-                    ? reality.nftMintedTotal
-                    : item.bind === "nftRevenueUsdc"
-                      ? reality.nftRevenueUsdc !== null
-                        ? `${reality.nftRevenueUsdc} USDC`
-                        : null
-                      : null;
+                : item.bind === "nftRevenueUsdc"
+                  ? reality.nftRevenueUsdc
+                  : null;
+            const countValue =
+              item.bind === "attributionActivities"
+                ? reality.attributionActivities
+                : item.bind === "nftMintedTotal"
+                  ? reality.nftMintedTotal
+                  : null;
             const noteText =
               item.bind === "nftRevenueUsdc" && reality.nftMintedTotal !== null
                 ? `${reality.nftMintedTotal} minted${
@@ -114,9 +117,19 @@ export function HeroLedger() {
                 <Icon className="mb-2 h-4 w-4 text-gold" />
                 <div className="min-h-[26px] font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground sm:text-[10px]">{item.label}</div>
                 {item.bind ? (
-                  liveValue !== null ? (
+                  isMoneyBind ? (
                     <div className="mt-2">
-                      <span className="font-mono text-sm font-black text-emerald-500 dark:text-emerald-400 sm:text-base">{liveValue}</span>
+                      <Amount
+                        segments={moneyValue !== null ? [{ value: moneyValue, unit: "USDC" }] : null}
+                        variant="lead"
+                        loading={reality.loading}
+                        className="text-emerald-500 dark:text-emerald-400"
+                      />
+                      {noteText ? <div className="mt-1 text-[9px] leading-tight text-muted-foreground">{noteText}</div> : null}
+                    </div>
+                  ) : countValue !== null ? (
+                    <div className="mt-2">
+                      <span className="font-mono text-sm font-black text-emerald-500 dark:text-emerald-400 sm:text-base">{countValue}</span>
                       {item.unit ? <span className="ml-1 font-mono text-[9px] font-semibold text-muted-foreground">{item.unit}</span> : null}
                       {noteText ? <div className="mt-1 text-[9px] leading-tight text-muted-foreground">{noteText}</div> : null}
                     </div>
