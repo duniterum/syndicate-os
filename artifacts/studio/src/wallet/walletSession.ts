@@ -148,6 +148,33 @@ export async function fetchSessionState(): Promise<WiredAccessStateId> {
   }
 }
 
+/**
+ * Reachability probe for the auth zone: distinguishes a DARK zone (the server
+ * returns 404 for every /api/auth/* route) from a LIVE-but-signed-out one
+ * ({ state: "S1" }). Fail-closed to "dark" on any non-OK response, unexpected
+ * shape, or transport error — so a sign-in entry is only ever offered when the
+ * zone is genuinely answering. Talks only to /api/auth, like the rest of this
+ * module; the address is never involved.
+ */
+export async function fetchAuthAvailability(): Promise<"live" | "dark"> {
+  try {
+    const res = await fetch("/api/auth/session", { method: "GET" });
+    if (!res.ok) return "dark";
+    const body: unknown = await res.json();
+    if (
+      typeof body === "object" &&
+      body !== null &&
+      ((body as Record<string, unknown>).state === "S1" ||
+        (body as Record<string, unknown>).state === "S4")
+    ) {
+      return "live";
+    }
+    return "dark";
+  } catch {
+    return "dark";
+  }
+}
+
 /** Destroy the server session; always resolves to S1 (fail closed). */
 export async function logoutSession(): Promise<WiredAccessStateId> {
   try {

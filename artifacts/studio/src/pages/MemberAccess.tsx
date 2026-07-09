@@ -22,6 +22,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { type DisplayLifecycle } from "@/config/truthStatus";
 import { memberAccess, membershipIdentity, expectations } from "@/config/syndicateFacts";
 import { MemberReferralDashboard } from "@/components/referral/MemberReferralDashboard";
+import { WalletAuthComingSoon } from "@/components/WalletAuthComingSoon";
+import { useAuthAvailability } from "@/lib/authAvailability";
 import { ctas } from "@/config/sharedCopy";
 
 // Wallet session gate: the public SIWE session panel (session + standing
@@ -118,6 +120,7 @@ function FacetPanel({ facet }: { facet: CockpitFacet }) {
 
 export default function MemberAccess() {
   const accessState = useAccessState();
+  const authLive = useAuthAvailability() === "live";
 
   return (
     <PublicPage
@@ -154,14 +157,17 @@ export default function MemberAccess() {
       </Card>
 
       {/* One-button wallet connect (Phase 1): RainbowKit connects AND signs
-          in (SIWE) against /api/auth in a single flow. Session ≠ membership. */}
+          in (SIWE) against /api/auth in a single flow. Session ≠ membership.
+          While the auth zone is dark, the entry shows a calm "coming soon"
+          state instead of a sign-in that would 404. */}
       <div className="mb-6">
-        <ConnectButton showBalance={false} />
+        {authLive ? <ConnectButton showBalance={false} /> : <WalletAuthComingSoon />}
       </div>
 
       {/* Status centerpiece — the ONE live surface of the cockpit: public
-          wallet session + standing self-readback (ships in production builds) */}
-      {WalletSessionPanel ? (
+          wallet session + standing self-readback. Mounted only when the auth
+          zone is live, so a dark zone never renders the sign-in panel. */}
+      {authLive && WalletSessionPanel ? (
         <Suspense fallback={null}>
           <WalletSessionPanel />
         </Suspense>

@@ -27,6 +27,7 @@ import { wagmiConfig } from "./wagmiConfig";
 import { rainbowAuthAdapter } from "./rainbowAuthAdapter";
 import { fetchSessionState } from "./walletSession";
 import { SESSION_CHANGED_EVENT } from "./sessionEvents";
+import { useAuthAvailability } from "@/lib/authAvailability";
 
 const SESSION_QUERY_KEY = ["auth", "session-state"] as const;
 
@@ -59,6 +60,16 @@ export function WalletAuthProvider({ children }: { children: ReactNode }) {
     : data === "S4"
       ? "authenticated"
       : "unauthenticated";
+
+  // While the auth zone is dark (challenge/session return 404), do NOT mount the
+  // SIWE authentication flow — otherwise RainbowKit renders its own "Verify your
+  // account → Error preparing message" modal against the 404 challenge. Wallet
+  // CONNECT still works; only the sign-in verify step is withheld until the zone
+  // is live, at which point the provider mounts automatically (no code change).
+  const availability = useAuthAvailability();
+  if (availability !== "live") {
+    return <RainbowKitProvider>{children}</RainbowKitProvider>;
+  }
 
   return (
     <RainbowKitAuthenticationProvider adapter={rainbowAuthAdapter} status={status}>

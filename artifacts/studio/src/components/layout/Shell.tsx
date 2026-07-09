@@ -4,6 +4,8 @@ import { useGetProtocolReality } from "@workspace/api-client-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { RouteContextBar } from "@/components/RouteContextBar";
+import { WalletAuthComingSoon } from "@/components/WalletAuthComingSoon";
+import { useAuthAvailability } from "@/lib/authAvailability";
 import { sidebarNav, navLabel } from "@/config/navigation";
 import { brand } from "@/config/brand";
 
@@ -30,6 +32,7 @@ function SpineReachabilityChip() {
 
 export function Sidebar() {
   const [location] = useLocation();
+  const authLive = useAuthAvailability() === "live";
 
   return (
     <div className="w-64 h-full border-r border-border bg-card/30 backdrop-blur-md flex flex-col hidden md:flex">
@@ -59,12 +62,17 @@ export function Sidebar() {
       
       <div className="p-4 border-t border-border/50 space-y-3">
         {/* One-button operator connect (Phase 1): connect + SIWE sign-in
-            against /api/auth in a single flow. */}
-        <ConnectButton
-          showBalance={false}
-          chainStatus="none"
-          accountStatus="address"
-        />
+            against /api/auth in a single flow. While the auth zone is dark it
+            shows a calm "coming soon" state instead of a sign-in that would 404. */}
+        {authLive ? (
+          <ConnectButton
+            showBalance={false}
+            chainStatus="none"
+            accountStatus="address"
+          />
+        ) : (
+          <WalletAuthComingSoon />
+        )}
         <div className="flex items-center justify-between">
           <SpineReachabilityChip />
           <ThemeToggle />
