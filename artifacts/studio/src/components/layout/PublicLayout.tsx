@@ -151,7 +151,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 >
                   <Link
                     href={item.path}
-                    className={`group relative rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus:outline-none focus:ring-2 focus:ring-cyan-400/40 2xl:px-3 2xl:text-[12px] ${
+                    className={`group relative rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus:outline-none focus:ring-2 focus:ring-gold/45 2xl:px-3 2xl:text-[12px] ${
                       location === item.path ? "text-foreground" : "text-muted-foreground"
                     }`}
                   >
@@ -173,7 +173,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               >
                 <DropdownMenu>
                   <DropdownMenuTrigger
-                    className={`group relative inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus:outline-none focus:ring-2 focus:ring-cyan-400/40 data-[state=open]:bg-gold/8 data-[state=open]:text-gold 2xl:px-3 2xl:text-[12px] ${
+                    className={`group relative inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus:outline-none focus:ring-2 focus:ring-gold/45 data-[state=open]:bg-gold/8 data-[state=open]:text-gold 2xl:px-3 2xl:text-[12px] ${
                       headerNavMore.some((item) => item.path === location)
                         ? "text-foreground"
                         : "text-muted-foreground"
@@ -233,7 +233,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 className="min-h-9 rounded-xl border border-gold/60 bg-gold px-4 font-semibold text-gold-foreground shadow-[0_0_28px_-14px_hsl(var(--gold)/0.9)] hover:bg-gold/90 xl:px-5"
               >
                 {heroSystem.primaryCta.label}
-                <span className="ml-2 font-mono text-[10px] opacity-75">/member</span>
               </Button>
             </Link>
 
@@ -285,7 +284,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                     <Link href={heroSystem.primaryCta.href} onClick={() => setMobileOpen(false)}>
                       <Button className="min-h-12 w-full justify-center rounded-xl bg-gold font-semibold text-gold-foreground hover:bg-gold/90">
                         {heroSystem.primaryCta.label}
-                        <span className="ml-1.5 text-xs opacity-70">/member</span>
                       </Button>
                     </Link>
                   </div>

@@ -340,7 +340,7 @@ export default function PublicHome() {
             <div className="absolute left-[10%] right-[10%] top-6 z-0 hidden h-px bg-border md:block" />
             {howItWorks.steps.map((step) => (
               <div key={step.step} className="relative z-10 flex flex-col items-center text-center">
-                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full border border-border bg-card font-mono font-medium text-primary shadow-sm">{step.step}</div>
+                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full border border-border bg-card font-mono font-medium text-gold shadow-sm">{step.step}</div>
                 <h3 className="mb-3 text-lg font-medium text-foreground">{step.title}</h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p>
               </div>
@@ -409,7 +409,7 @@ export default function PublicHome() {
           <Card className="overflow-hidden border-card-border bg-card shadow-lg">
             <div className="flex flex-col md:flex-row">
               <div className="flex flex-col justify-center p-8 md:w-1/2 md:p-12">
-                <TerminalSquare className="mb-6 h-8 w-8 text-primary" />
+                <TerminalSquare className="mb-6 h-8 w-8 text-gold" />
                 <h2 className="mb-4 text-2xl font-light tracking-tight text-foreground">{studioPreview.title}</h2>
                 <p className="mb-8 text-sm leading-relaxed text-muted-foreground">{studioPreview.description}</p>
                 <div>

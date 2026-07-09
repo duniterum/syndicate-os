@@ -91,7 +91,7 @@ export function HeroLedger() {
                     ? reality.nftMintedTotal
                     : item.bind === "nftRevenueUsdc"
                       ? reality.nftRevenueUsdc !== null
-                        ? `$${reality.nftRevenueUsdc}`
+                        ? `${reality.nftRevenueUsdc} USDC`
                         : null
                       : null;
             const noteText =
