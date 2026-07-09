@@ -1,0 +1,2 @@
+# CLAUDE.md — how we work (read first, every session)
+Canon: read docs/00_CANON_INDEX.md then TIER 0/1 (Compass, docs/adr/ADR-001, docs/adr/ADR-002, docs/FOUNDATION_SPEC). Follow ADR-002 (anti-drift): boot → 4-line handshake → gate before every proposal → slice by slice → ask before commit/push. Roles: Claude Code = the only code author (edit, build+guards, show diff, commit, push main). Replit = deploy+runtime only (env, DB, live API): pulls main, deploys, runs migrations, reports. GitHub main = single source of truth. Only Claude Code edits code; Replit only pulls+deploys.
