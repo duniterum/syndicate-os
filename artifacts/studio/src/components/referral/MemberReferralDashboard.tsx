@@ -13,6 +13,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SampleTag } from "@/components/SampleTag";
+import { StatCard } from "@/components/stat-card/StatCard";
 import { ShareCard } from "@/components/referral/ShareCard";
 import { ShareMenu } from "@/components/referral/ShareMenu";
 import { QrCodeBlock } from "@/components/referral/QrCodeBlock";
@@ -124,10 +125,9 @@ export function MemberReferralDashboard() {
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
         {memberStatsSample.map((s) => (
-          <div key={s.label} className="rounded-md bg-card/40 border border-border/50 p-3">
-            <p className="text-xs text-muted-foreground mb-1 leading-tight">{s.label}</p>
-            <p className="text-lg font-medium text-foreground">{s.sampleValue}</p>
-          </div>
+          <StatCard key={s.label} label={s.label}>
+            {s.sampleValue}
+          </StatCard>
         ))}
       </div>
 
