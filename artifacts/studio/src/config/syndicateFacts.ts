@@ -382,18 +382,32 @@ export interface HeroProofRailItem {
   tone: "avax" | "gold" | "cyan";
 }
 
+/**
+ * Live-bound hero stat descriptor. `bind` names the field of `useHeroReality()`
+ * that supplies the value; the components render an honest "Checking… /
+ * Unavailable" state when the live read is null. `unit` is appended after the
+ * live figure. There is NO static value here — no simulated figures exist.
+ */
 export interface HeroStat {
   id: string;
   label: string;
-  value: string;
+  bind: "membersTotal" | "aggregateInflowUsdc" | "vaultUsdc" | "opsUsdc" | "lpReserves" | "burnedSyn";
+  unit?: string;
   meta?: string;
-  kind: "simulated" | "canonical";
 }
 
+/**
+ * Cumulative-capital-source line. Either `bind` names a live read from
+ * `useHeroReality()` (with optional `unit`), or `status` is the honest
+ * non-live state text — never a fabricated figure.
+ */
 export interface HeroSource {
   id: string;
   label: string;
-  value: string;
+  bind?: "aggregateInflowUsdc" | "attributionActivities";
+  unit?: string;
+  status?: string;
+  note?: string;
 }
 
 export type RouteTone = "vault" | "liquidity" | "operations";
@@ -413,16 +427,10 @@ export interface HeroSplit {
   tone: RouteTone;
 }
 
-export interface HeroActivity {
-  id: string;
-  event: string;
-  meta: string;
-  time: string;
-}
-
 export interface HeroFlowSource {
   id: string;
   label: string;
+  sub: string;
   angle: number;
 }
 
@@ -450,29 +458,31 @@ export const heroSystem = {
     { mark: "◇", label: "Memory", note: "Recorded", tone: "gold" },
   ] as HeroProofRailItem[],
 
-  // The centrepiece figure — simulated cumulative gross inflow (count-up).
+  // The centrepiece figure — LIVE cumulative on-chain inflow (count-up to the
+  // real aggregate V1+V2A+V2+V3 read from GET /api/protocol/reality). The
+  // provenance note is deliberate: the figure includes founder test
+  // transactions during buildout and is NEVER framed as revenue.
   seat: {
-    coreLabel: "Gross all-time capital inflow",
-    coreValue: 16500000,
-    coreDisplay: "$16,500,000+",
-    coreNote: "Recorded · cumulative · never decreases",
+    coreLabel: "Cumulative on-chain inflow",
+    coreNote: "Live read · includes founder test transactions",
+    coreUnavailable: "Live read unavailable",
     center: "The Seat",
     centerNote: "You are the institution",
   },
 
-  // Radial flow diagram. Inbound capital sources (illustrative) feed the seat;
-  // the CANONICAL 70/20/10 split routes value out. Node labels use the canonical
-  // source taxonomy; the same names carry into `sources` (Cumulative Capital
-  // Sources) below. NFT and LP Fee Flow are DISTINCT nodes (never a combined "LP NFT").
+  // Radial flow diagram. Inbound source nodes feed the seat; the CANONICAL
+  // 70/20/10 split routes value out. Each node's `sub` line is its honest
+  // state — only Membership Sales is a live on-chain stream today. Package
+  // Sales is NOT a node: packages are membership-sale tiers, not a distinct
+  // on-chain stream. NFT and LP Fee Flow stay DISTINCT nodes (never "LP NFT").
   flow: {
     sources: [
-      { id: "membership", label: "Membership Sales", angle: 100 },
-      { id: "chronicle", label: "Chronicle / Memory", angle: 126 },
-      { id: "nft", label: "NFT", angle: 153 },
-      { id: "package", label: "Package Sales", angle: 180 },
-      { id: "lpfees", label: "LP Fee Flow", angle: 207 },
-      { id: "referrals", label: "Referral Commissions", angle: 234 },
-      { id: "future", label: "Future Streams", angle: 260 },
+      { id: "membership", label: "Membership Sales", sub: "Live · on-chain", angle: 100 },
+      { id: "chronicle", label: "Chronicle / Memory", sub: "Recorded", angle: 126 },
+      { id: "nft", label: "NFT", sub: "Not live yet", angle: 153 },
+      { id: "lpfees", label: "LP Fee Flow", sub: "Not tracked yet", angle: 207 },
+      { id: "referrals", label: "Verified Introductions", sub: "Attribution only", angle: 234 },
+      { id: "future", label: "Future Streams", sub: "Coming", angle: 260 },
     ] as HeroFlowSource[],
     routes: [
       { id: "vault", label: "Vault", ratio: "70%", tone: "vault", angle: 52 },
@@ -483,49 +493,65 @@ export const heroSystem = {
 
   overview: {
     title: "Protocol overview",
+    liveNote: "Live · read-only",
     stats: [
-      { id: "members", label: "Members", value: "9,245", meta: "Recognised seats", kind: "simulated" },
-      { id: "gross", label: "Gross all-time", value: "$16.50M", meta: "Since inception", kind: "simulated" },
-      { id: "vault", label: "Vault holdings", value: "$11.55M", meta: "70% of routed inflow", kind: "simulated" },
-      { id: "liquidity", label: "Liquidity TVL", value: "$3.30M", meta: "20% of routed inflow", kind: "simulated" },
-      { id: "lpFees", label: "LP Fee Flow", value: "$1.42M", meta: "All-time", kind: "simulated" },
-      { id: "burned", label: "Burned All-Time", value: "2,000 SYN", meta: "Proof of Fire", kind: "simulated" },
+      { id: "members", label: "Members", bind: "membersTotal", meta: "Holder Index · recognised seats" },
+      { id: "gross", label: "Cumulative inflow", bind: "aggregateInflowUsdc", unit: "USDC", meta: "Incl. founder test transactions" },
+      { id: "vault", label: "Vault balance", bind: "vaultUsdc", unit: "USDC", meta: "70% routing target" },
+      { id: "liquidity", label: "LP reserves", bind: "lpReserves", meta: "20% routing target" },
+      { id: "operations", label: "Operations balance", bind: "opsUsdc", unit: "USDC", meta: "10% routing target" },
+      { id: "burned", label: "Burned all-time", bind: "burnedSyn", unit: "SYN", meta: "Proof of Fire" },
     ] as HeroStat[],
     chapter: { label: "Current chapter", value: "Genesis Signal", meta: "Chapter #1" },
-    seats: { label: "Seats filled", filled: 214, total: 333, pct: 64 },
+    // Chapter I window (#1–#333) comes from the vendored archive canon; the
+    // filled count is the LIVE Holder Index memberTotal — never fabricated.
+    seats: {
+      label: "Seats recognised",
+      chapterWindow: 333,
+      chapterNote: "Chapter I window · seats #1–#333",
+    },
   },
 
   activity: {
     title: "Recent activity",
-    items: [
-      { id: "a1", event: "New member recognised — Seat #234", meta: "Membership Sale receipt", time: "12m" },
-      { id: "a2", event: "Proof of Fire recorded", meta: "Attribution anchored", time: "17m" },
-      { id: "a3", event: "Chronicle entry recorded", meta: "Genesis Signal", time: "30m" },
-      { id: "a4", event: "Introduction verified", meta: "Source attribution", time: "41m" },
-    ] as HeroActivity[],
+    // Honest empty state — NO fabricated activity items are ever shown.
+    comingNote: "Live activity feed coming with the event backbone.",
   },
 
   sources: {
     title: "Cumulative capital sources",
     note: "Gross inflows are cumulative and never decrease.",
     items: [
-      { id: "membership", label: "Membership Sales", value: "$11.25M" },
-      { id: "nft", label: "NFT Sales", value: "$2.65M" },
-      { id: "package", label: "Package Sales", value: "$1.35M" },
-      { id: "lpfees", label: "LP Fee Flow", value: "$1.42M" },
-      { id: "referrals", label: "Referral Commissions", value: "$820K" },
-      { id: "future", label: "Other / Future Streams", value: "$430K" },
+      {
+        id: "membership",
+        label: "Membership Sales",
+        bind: "aggregateInflowUsdc",
+        unit: "USDC",
+        note: "Incl. founder test transactions",
+      },
+      { id: "nft", label: "NFT", status: "Not live yet" },
+      { id: "lpfees", label: "LP Fee Flow", status: "Not tracked yet" },
+      {
+        id: "referrals",
+        label: "Verified Introductions",
+        bind: "attributionActivities",
+        unit: "attribution activities",
+        note: "Activity count — no commission",
+      },
+      { id: "future", label: "Other / Future Streams", status: "Coming" },
     ] as HeroSource[],
   },
 
   routing: {
     title: "Current routed allocation",
-    total: "$16.50M",
+    // Amounts are computed live: the canonical 70/20/10 shares of the real
+    // aggregate inflow, with the live balances shown as the on-chain proof.
     routes: [
-      { id: "vault", label: "Vault", ratio: "70%", amount: "$11.55M", tone: "vault" },
-      { id: "liquidity", label: "Liquidity", ratio: "20%", amount: "$3.30M", tone: "liquidity" },
-      { id: "operations", label: "Operations", ratio: "10%", amount: "$1.65M", tone: "operations" },
+      { id: "vault", label: "Vault", ratio: "70%", tone: "vault" },
+      { id: "liquidity", label: "Liquidity", ratio: "20%", tone: "liquidity" },
+      { id: "operations", label: "Operations", ratio: "10%", tone: "operations" },
     ] as HeroRoute[],
+    balanceNote: "Live balances confirm the routing",
   },
 
   // Entry preview — illustrative contribution amounts routed by the CANONICAL
@@ -545,6 +571,6 @@ export const heroSystem = {
   },
 
   disclaimer:
-    "Illustrative preview — figures are simulated, not live protocol data. Structural ratios are canonical.",
+    "Financial figures are live read-only on-chain reads (server-cached, fail-closed to an honest unavailable state). Structural ratios are canonical; illustrative elements are labelled.",
 };
 

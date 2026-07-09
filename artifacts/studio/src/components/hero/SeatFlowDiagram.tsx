@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { Archive, Box, Droplet, Network, Package, Settings, Shield, Sparkles, Users } from "lucide-react";
-import { SampleTag } from "@/components/SampleTag";
+import { Archive, Box, Droplet, Network, Settings, Shield, Sparkles, Users } from "lucide-react";
+import { LiveReadTag } from "@/components/hero/LiveReadTag";
+import { useHeroReality } from "@/components/hero/useHeroReality";
 import { heroSystem } from "@/config/syndicateFacts";
 import { SeatThroneMark } from "@/components/hero/SeatThroneMark";
 import { useCountUp } from "@/components/hero/useCountUp";
@@ -9,7 +10,6 @@ const sourceIcons = {
   membership: Users,
   chronicle: Archive,
   nft: Box,
-  package: Package,
   lpfees: Droplet,
   referrals: Network,
   future: Sparkles,
@@ -25,7 +25,6 @@ const sourcePositions: Record<string, string> = {
   membership: "left-[14%] top-[20%]",
   chronicle: "left-[8%] top-[34%]",
   nft: "left-[11%] top-[48%]",
-  package: "left-[9%] top-[61%]",
   lpfees: "left-[16%] top-[72%]",
   referrals: "left-[17%] top-[83%]",
   future: "left-[56%] top-[83%]",
@@ -41,7 +40,6 @@ const flowPaths = [
   { id: "membership", d: "M205 128 C282 166 332 214 420 286", color: "emerald" },
   { id: "chronicle", d: "M165 214 C270 244 337 268 420 296", color: "emerald" },
   { id: "nft", d: "M177 293 C275 296 338 300 420 304", color: "emerald" },
-  { id: "package", d: "M164 370 C270 346 340 328 420 312", color: "emerald" },
   { id: "lpfees", d: "M207 446 C305 398 365 344 420 318", color: "emerald" },
   { id: "referrals", d: "M150 452 C240 405 360 350 424 320", color: "emerald" },
   { id: "future", d: "M482 452 C458 405 436 355 426 320", color: "emerald" },
@@ -79,8 +77,28 @@ function Particle({ pathId, color, delay = "0s", reverse = false }: { pathId: st
 
 export function SeatFlowDiagram() {
   const reduceMotion = useReducedMotion();
-  const { ref, value } = useCountUp(heroSystem.seat.coreValue, 1350);
-  const displayValue = reduceMotion ? heroSystem.seat.coreDisplay : `$${Math.round(value).toLocaleString()}+`;
+  const reality = useHeroReality();
+
+  // LIVE centrepiece: the real aggregate cumulative inflow (V1+V2A+V2+V3) in
+  // whole-USDC terms for the count-up. null = honest unavailable state. The
+  // Number conversion is used ONLY for the animation and ONLY when it is
+  // exactly safe; otherwise the exact BigInt-formatted string is shown as-is.
+  const aggregateUsdc = (() => {
+    if (reality.aggregateInflowRaw === null) return null;
+    const n = Number(reality.aggregateInflowRaw);
+    return Number.isSafeInteger(n) && String(n) === reality.aggregateInflowRaw
+      ? n / 1_000_000
+      : null;
+  })();
+  const { ref, value } = useCountUp(aggregateUsdc ?? 0, 1350);
+  const displayValue =
+    reality.aggregateInflowUsdc === null
+      ? null
+      : reduceMotion || aggregateUsdc === null
+        ? `${reality.aggregateInflowUsdc} USDC`
+        : `${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC`;
+  const tagState =
+    reality.aggregateInflowUsdc !== null ? "live" : reality.loading ? "checking" : "unavailable";
 
   return (
     <div className="relative mx-auto h-[430px] w-full max-w-[760px] overflow-hidden rounded-[1.1rem] bg-[radial-gradient(circle_at_50%_43%,hsl(var(--gold)/0.12),transparent_46%)] md:h-[450px] xl:h-full xl:min-h-[440px]">
@@ -158,10 +176,15 @@ export function SeatFlowDiagram() {
           <div className="font-mono text-[9px] font-semibold uppercase tracking-[0.22em] text-gold/90 sm:text-[10px]">
             {heroSystem.seat.coreLabel}
           </div>
-          <div className="mt-2.5 whitespace-nowrap font-mono text-[clamp(1.4rem,2.3vw,2rem)] font-black leading-none tracking-[-0.06em] text-emerald-500 dark:text-emerald-400">
-            {displayValue}
-          </div>
-          <div className="mt-2.5 font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">Simulated / Illustrative</div>
+          {displayValue !== null ? (
+            <div className="mt-2.5 whitespace-nowrap font-mono text-[clamp(1.1rem,1.9vw,1.6rem)] font-black leading-none tracking-[-0.04em] text-emerald-500 dark:text-emerald-400">
+              {displayValue}
+            </div>
+          ) : (
+            <div className="mt-2.5 font-mono text-xs font-semibold text-muted-foreground">
+              {reality.loading ? "Checking…" : heroSystem.seat.coreUnavailable}
+            </div>
+          )}
           <svg className="mx-auto mt-3 h-7 w-[78%] text-emerald-500 dark:text-emerald-400" viewBox="0 0 260 42" aria-hidden="true">
             <motion.path
               d="M4 33 C36 31 54 27 78 25 C116 22 140 18 166 15 C196 10 222 9 256 5"
@@ -174,10 +197,10 @@ export function SeatFlowDiagram() {
               transition={{ duration: 1.4, delay: 0.35, ease: "easeOut" }}
             />
           </svg>
-          <div className="mt-2 font-mono text-[9px] uppercase tracking-[0.14em] text-foreground/75 dark:text-white/80">
+          <div className="mt-2 font-mono text-[8px] uppercase tracking-[0.12em] text-foreground/75 dark:text-white/80">
             {heroSystem.seat.coreNote}
           </div>
-          <div className="mt-3 flex justify-center"><SampleTag kind="simulated" /></div>
+          <div className="mt-3 flex justify-center"><LiveReadTag state={tagState} /></div>
         </div>
       </div>
 
@@ -197,7 +220,7 @@ export function SeatFlowDiagram() {
               </span>
               <span className="min-w-[84px] rounded-lg border border-emerald-500/25 bg-card/88 px-2 py-1.5 shadow-[0_0_22px_-18px_rgba(16,185,129,0.9)] backdrop-blur-sm dark:bg-black/64">
                 <span className="block whitespace-nowrap font-mono text-[9px] font-bold uppercase tracking-[0.06em] text-foreground dark:text-white">{source.label}</span>
-                <span className="block font-mono text-[8px] text-muted-foreground">{source.id === "future" ? "Coming soon" : "All-time"}</span>
+                <span className="block font-mono text-[8px] text-muted-foreground">{source.sub}</span>
               </span>
             </motion.div>
           );

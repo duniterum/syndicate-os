@@ -11,6 +11,10 @@ export function useCountUp(target: number, durationMs = 1600) {
     const el = ref.current;
     if (!el) return;
 
+    // A live target can arrive AFTER mount (e.g. a fetched on-chain figure):
+    // allow the animation to restart for the new target.
+    started.current = false;
+
     const prefersReduced =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;

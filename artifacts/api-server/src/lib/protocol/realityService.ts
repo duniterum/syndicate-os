@@ -1438,7 +1438,14 @@ export async function buildProtocolReality(opts: BuildOpts): Promise<ProtocolRea
   };
 }
 
-// ── Short in-memory cache + request coalescing (served default path) ──────────
+// ── Short in-memory cache + request coalescing + stale-while-revalidate ──────
+// Served default path. Fresh (< TTL) is served from cache; stale-but-bounded
+// (< TTL + SWR_MAX_STALE_MS) is served INSTANTLY while ONE coalesced refresh
+// runs in the background (success-only pinning — a degraded refresh never
+// overwrites a verified entry); beyond the hard-stale bound the caller awaits
+// a fresh build. Public traffic therefore never triggers an RPC per request,
+// and no entry is ever served past the bounded stale window.
+const SWR_MAX_STALE_MS = 300_000; // 5 min hard bound beyond the TTL
 let cacheEntry: { at: number; result: ProtocolRealityEnvelope } | null = null;
 let inFlight: Promise<ProtocolRealityEnvelope> | null = null;
 
@@ -1453,6 +1460,11 @@ function isChainVerified(e: ProtocolRealityEnvelope): boolean {
 export function __resetProtocolRealityCache(): void {
   cacheEntry = null;
   inFlight = null;
+}
+
+/** Test hook: the current coalesced (background) build, if any. */
+export function __getProtocolRealityInFlight(): Promise<ProtocolRealityEnvelope> | null {
+  return inFlight;
 }
 
 function defaultBuildOpts(): BuildOpts {
@@ -1470,23 +1482,17 @@ function defaultBuildOpts(): BuildOpts {
   };
 }
 
-export async function getProtocolReality(
-  opts?: Partial<BuildOpts> & { ttlMs?: number },
-): Promise<ProtocolRealityEnvelope> {
-  const ttl = opts?.ttlMs ?? CACHE_TTL_MS;
-  if (cacheEntry && Date.now() - cacheEntry.at < ttl) {
-    return { ...cacheEntry.result, cached: true };
-  }
+/** One coalesced build: success-only pinning, never throws away a verified entry. */
+function startBuild(overrides: Partial<BuildOpts>): Promise<ProtocolRealityEnvelope> {
   if (inFlight) return inFlight; // coalesce concurrent callers onto one request
-  const { ttlMs: _ttlMs, ...overrides } = opts ?? {};
   inFlight = (async () => {
     try {
       const merged: BuildOpts = { ...defaultBuildOpts(), ...overrides };
       const result = await buildProtocolReality(merged);
       // Success-only caching: a build whose chain identity did NOT verify
       // (unreachable RPC / wrong chain → fail-closed nulls) is served live
-      // but never pinned as bounded-age truth — the next request re-reads
-      // immediately instead of replaying a degraded snapshot for the TTL.
+      // but never pinned as bounded-age truth — a degraded refresh never
+      // overwrites a previously verified entry.
       if (isChainVerified(result)) {
         cacheEntry = { at: Date.now(), result };
       }
@@ -1496,4 +1502,29 @@ export async function getProtocolReality(
     }
   })();
   return inFlight;
+}
+
+export async function getProtocolReality(
+  opts?: Partial<BuildOpts> & { ttlMs?: number; maxStaleMs?: number },
+): Promise<ProtocolRealityEnvelope> {
+  const ttl = opts?.ttlMs ?? CACHE_TTL_MS;
+  const maxStale = opts?.maxStaleMs ?? SWR_MAX_STALE_MS;
+  const { ttlMs: _ttlMs, maxStaleMs: _maxStaleMs, ...overrides } = opts ?? {};
+  if (cacheEntry) {
+    const age = Date.now() - cacheEntry.at;
+    if (age < ttl) {
+      return { ...cacheEntry.result, cached: true };
+    }
+    if (age < ttl + maxStale) {
+      // Stale-while-revalidate: serve the bounded-age verified entry
+      // instantly and refresh in the background (coalesced). A background
+      // failure is swallowed here — the entry stays until the hard-stale
+      // bound, after which callers await a fresh build again.
+      void startBuild(overrides).catch(() => {});
+      return { ...cacheEntry.result, cached: true };
+    }
+  }
+  // No entry, or hard-stale beyond the SWR bound: await a fresh build
+  // (fail-closed live — a degraded build is served but never pinned).
+  return startBuild(overrides);
 }

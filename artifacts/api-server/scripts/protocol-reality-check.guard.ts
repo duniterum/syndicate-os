@@ -24,6 +24,7 @@ import {
   buildProtocolReality,
   getProtocolReality,
   __resetProtocolRealityCache,
+  __getProtocolRealityInFlight,
   type BuildOpts,
 } from "../src/lib/protocol/realityService";
 import type {
@@ -540,14 +541,51 @@ async function main(): Promise<void> {
         c2.cached === false,
     );
 
-    // Expiry: ttlMs 0 forces a fresh build every time (bounded age, no forever-cache).
+    // Stale-while-revalidate: an expired-TTL read with a verified entry is
+    // served INSTANTLY from cache while ONE coalesced refresh runs in the
+    // background; the refreshed entry is pinned for subsequent reads.
+    __resetProtocolRealityCache();
+    const swr = makeMock({});
+    const s1 = await getProtocolReality(baseOpts(swr.transport)); // pin verified entry
+    const swrCallsBefore = swr.methods.filter((m) => m === "eth_chainId").length;
+    const s2 = await getProtocolReality({ ...baseOpts(swr.transport), ttlMs: 0 });
+    check(
+      "cache: SWR serves stale instantly (cached true, same asOf as the pinned entry)",
+      s2.cached === true && s2.asOf === s1.asOf,
+    );
+    await __getProtocolRealityInFlight();
+    const s3 = await getProtocolReality(baseOpts(swr.transport));
+    check(
+      "cache: SWR background refresh ran ONE build + repinned a verified entry (served from cache)",
+      s3.cached === true &&
+        byId(s3, "chain.identityVerified")?.value === true &&
+        swr.methods.filter((m) => m === "eth_chainId").length === swrCallsBefore + 1,
+    );
+
+    // SWR fail-closed: a DEGRADED background refresh never overwrites the
+    // verified entry — the stale verified truth keeps serving (bounded age).
+    __resetProtocolRealityCache();
+    const swrBadBg = makeMock({});
+    const g1 = await getProtocolReality(baseOpts(swrBadBg.transport)); // verified entry
+    const badBg = makeMock({ chainId: "__unreachable__" });
+    const g2 = await getProtocolReality({ ...baseOpts(badBg.transport), ttlMs: 0 });
+    await __getProtocolRealityInFlight();
+    // (background degraded build finished — entry must still be g1's)
+    const g3 = await getProtocolReality({ ...baseOpts(badBg.transport), ttlMs: 0 });
+    check(
+      "cache: SWR degraded background refresh NOT pinned — verified stale entry keeps serving",
+      g2.cached === true && g3.cached === true && g2.asOf === g1.asOf && g3.asOf === g1.asOf,
+    );
+
+    // Hard-stale bound: beyond ttl + maxStale the caller AWAITS a fresh build
+    // (bounded age, no forever-stale serving).
     __resetProtocolRealityCache();
     const exp = makeMock({});
-    await getProtocolReality({ ...baseOpts(exp.transport), ttlMs: 0 });
+    await getProtocolReality({ ...baseOpts(exp.transport), ttlMs: 0, maxStaleMs: 0 });
     const chainCallsBefore = exp.methods.filter((m) => m === "eth_chainId").length;
-    const e4 = await getProtocolReality({ ...baseOpts(exp.transport), ttlMs: 0 });
+    const e4 = await getProtocolReality({ ...baseOpts(exp.transport), ttlMs: 0, maxStaleMs: 0 });
     check(
-      "cache: expired TTL refetches (fresh, cached false, one more RPC round)",
+      "cache: hard-stale (beyond ttl+maxStale) refetches (fresh, cached false, one more RPC round)",
       e4.cached === false &&
         exp.methods.filter((m) => m === "eth_chainId").length === chainCallsBefore + 1,
     );

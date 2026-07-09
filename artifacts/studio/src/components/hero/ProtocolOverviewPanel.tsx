@@ -1,14 +1,15 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { Activity, Archive, Droplet, Flame, Gauge, Shield, Users, WalletCards } from "lucide-react";
-import { SampleTag } from "@/components/SampleTag";
-import { heroSystem } from "@/config/syndicateFacts";
+import { Activity, Archive, Droplet, Flame, Gauge, Settings, Shield, Users, WalletCards } from "lucide-react";
+import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
+import { useHeroReality, type HeroReality } from "@/components/hero/useHeroReality";
+import { heroSystem, type HeroStat } from "@/config/syndicateFacts";
 
 const statIcons = {
   members: Users,
   gross: WalletCards,
   vault: Shield,
   liquidity: Droplet,
-  lpFees: Droplet,
+  operations: Settings,
   burned: Flame,
 };
 
@@ -17,12 +18,42 @@ const statTone: Record<string, string> = {
   gross: "text-emerald-500 dark:text-emerald-400",
   vault: "text-cyan-500 dark:text-cyan-300",
   liquidity: "text-blue-500 dark:text-blue-400",
-  lpFees: "text-gold",
+  operations: "text-violet-500 dark:text-violet-400",
   burned: "text-orange-500",
 };
 
+/** Resolve a stat's LIVE value from the hero reality reads — null = unavailable. */
+function resolveStat(reality: HeroReality, stat: HeroStat): string | null {
+  switch (stat.bind) {
+    case "membersTotal":
+      return reality.membersTotal;
+    case "aggregateInflowUsdc":
+      return reality.aggregateInflowUsdc;
+    case "vaultUsdc":
+      return reality.vaultUsdc;
+    case "opsUsdc":
+      return reality.opsUsdc;
+    case "lpReserves":
+      return reality.lpUsdc !== null && reality.lpSyn !== null
+        ? `${reality.lpUsdc} USDC + ${reality.lpSyn} SYN`
+        : null;
+    case "burnedSyn":
+      return reality.burnedSyn;
+  }
+}
+
 export function ProtocolOverviewPanel() {
   const reduceMotion = useReducedMotion();
+  const reality = useHeroReality();
+
+  const anyLive =
+    heroSystem.overview.stats.some((s) => resolveStat(reality, s) !== null) ||
+    reality.membersTotal !== null;
+  const tagState = anyLive ? "live" : reality.loading ? "checking" : "unavailable";
+
+  const filled = reality.membersTotalNumber;
+  const window = heroSystem.overview.seats.chapterWindow;
+  const pct = filled !== null && window > 0 ? Math.max(1, Math.round((filled / window) * 100)) : null;
 
   return (
     <motion.aside
@@ -33,13 +64,16 @@ export function ProtocolOverviewPanel() {
     >
       <div className="mb-3 flex items-center justify-between gap-3">
         <h2 className="text-base font-semibold tracking-[-0.02em] text-foreground">{heroSystem.overview.title}</h2>
-        <SampleTag kind="simulated" />
+        <LiveReadTag state={tagState} />
       </div>
 
       <div className="grid grid-cols-2 gap-2.5">
         {heroSystem.overview.stats.map((stat, index) => {
           const Icon = statIcons[stat.id as keyof typeof statIcons] ?? Gauge;
           const tone = statTone[stat.id] ?? "text-gold";
+          const value = resolveStat(reality, stat);
+          const display = liveFigure(value, reality.loading);
+          const isFigure = value !== null;
           return (
             <motion.div
               key={stat.id}
@@ -52,13 +86,15 @@ export function ProtocolOverviewPanel() {
                 <Icon className={`h-4 w-4 ${tone}`} />
                 <span className="syn-label text-muted-foreground">{stat.label}</span>
               </div>
-              <div className={`font-mono text-xl font-black ${tone}`}>{stat.value}</div>
+              {isFigure ? (
+                <div className={`font-mono font-black ${stat.bind === "lpReserves" ? "text-sm leading-5" : "text-xl"} ${tone}`}>
+                  {display}
+                  {stat.unit ? <span className="ml-1 text-[11px] font-semibold text-muted-foreground">{stat.unit}</span> : null}
+                </div>
+              ) : (
+                <div className="font-mono text-sm font-semibold text-muted-foreground">{display}</div>
+              )}
               <div className="mt-2 text-[11px] text-muted-foreground">{stat.meta}</div>
-              {stat.id === "gross" ? (
-                <svg className="mt-2 h-5 w-full text-emerald-500 dark:text-emerald-400" viewBox="0 0 150 28" aria-hidden="true">
-                  <path d="M2 22 C28 20 38 18 52 14 C74 12 88 10 108 7 C124 5 136 4 148 2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-              ) : null}
             </motion.div>
           );
         })}
@@ -76,13 +112,28 @@ export function ProtocolOverviewPanel() {
         <div className="rounded-xl border border-border/80 bg-background/62 p-3.5 dark:border-white/10 dark:bg-white/[0.035]">
           <div className="mb-2 flex items-center justify-between gap-2">
             <span className="syn-label text-muted-foreground">{heroSystem.overview.seats.label}</span>
-            <span className="rounded-full border border-gold/30 px-2 py-1 font-mono text-[10px] text-gold">{heroSystem.overview.seats.pct}%</span>
+            {pct !== null ? (
+              <span className="rounded-full border border-gold/30 px-2 py-1 font-mono text-[10px] text-gold">{pct}%</span>
+            ) : null}
           </div>
-          <div className="font-mono text-xl font-black text-foreground">{heroSystem.overview.seats.filled} / {heroSystem.overview.seats.total}</div>
-          <div className="mt-2 h-2 rounded-full bg-muted dark:bg-slate-900">
-            <div className="h-full rounded-full bg-gold shadow-[0_0_18px_hsl(var(--gold)/0.5)]" style={{ width: `${heroSystem.overview.seats.pct}%` }} />
-          </div>
-          <div className="mt-1 text-[11px] text-muted-foreground">Recognised seats</div>
+          {filled !== null ? (
+            <>
+              <div className="font-mono text-xl font-black text-foreground">
+                {filled} <span className="text-sm font-semibold text-muted-foreground">/ {window}</span>
+              </div>
+              <div className="mt-2 h-2 rounded-full bg-muted dark:bg-slate-900">
+                <div
+                  className="h-full rounded-full bg-gold shadow-[0_0_18px_hsl(var(--gold)/0.5)]"
+                  style={{ width: `${pct ?? 0}%` }}
+                />
+              </div>
+            </>
+          ) : (
+            <div className="font-mono text-sm font-semibold text-muted-foreground">
+              {liveFigure(null, reality.loading)}
+            </div>
+          )}
+          <div className="mt-1 text-[11px] text-muted-foreground">{heroSystem.overview.seats.chapterNote}</div>
         </div>
       </div>
 
@@ -92,24 +143,10 @@ export function ProtocolOverviewPanel() {
             <Activity className="h-4 w-4 text-cyan-500 dark:text-cyan-300" />
             {heroSystem.activity.title}
           </div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Illustrative</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Coming</span>
         </div>
-        <div className="grid gap-2 overflow-hidden">
-          {heroSystem.activity.items.map((item, index) => (
-            <motion.div
-              key={item.id}
-              initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-              animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.42 + index * 0.06 }}
-              className="rounded-lg border border-border/80 bg-card/72 px-3 py-2 dark:border-white/10 dark:bg-white/[0.035]"
-            >
-              <div className="flex items-center justify-between gap-2">
-                <div className="truncate text-sm font-semibold text-foreground">{item.event}</div>
-                <div className="font-mono text-[10px] text-muted-foreground">{item.time}</div>
-              </div>
-              <div className="mt-0.5 truncate text-xs text-muted-foreground">{item.meta}</div>
-            </motion.div>
-          ))}
+        <div className="grid flex-1 place-items-center rounded-lg border border-dashed border-border/80 bg-card/40 px-3 py-6 text-center dark:border-white/10">
+          <p className="max-w-[28ch] text-xs text-muted-foreground">{heroSystem.activity.comingNote}</p>
         </div>
       </div>
     </motion.aside>
