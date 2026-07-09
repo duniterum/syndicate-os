@@ -71,7 +71,15 @@ export function HeroLedger() {
                 ? reality.aggregateInflowUsdc
                 : item.bind === "attributionActivities"
                   ? reality.attributionActivities
-                  : null;
+                  : item.bind === "nftMintedTotal"
+                    ? reality.nftMintedTotal
+                    : null;
+            const noteText =
+              item.bind === "nftMintedTotal" &&
+              reality.nftFirstSignalMinted !== null &&
+              reality.nftPatronSealMinted !== null
+                ? `First Signal ${reality.nftFirstSignalMinted} · Patron Seal ${reality.nftPatronSealMinted}`
+                : item.note;
             return (
               <motion.div
                 key={item.id}
@@ -87,7 +95,7 @@ export function HeroLedger() {
                     <div className="mt-2">
                       <span className="font-mono text-sm font-black text-emerald-500 dark:text-emerald-400 sm:text-base">{liveValue}</span>
                       {item.unit ? <span className="ml-1 font-mono text-[9px] font-semibold text-muted-foreground">{item.unit}</span> : null}
-                      {item.note ? <div className="mt-1 text-[9px] leading-tight text-muted-foreground">{item.note}</div> : null}
+                      {noteText ? <div className="mt-1 text-[9px] leading-tight text-muted-foreground">{noteText}</div> : null}
                     </div>
                   ) : (
                     <div className="mt-2 font-mono text-[11px] font-semibold text-muted-foreground">
@@ -198,7 +206,7 @@ export function HeroLedger() {
             </div>
           ))}
         </div>
-        <p className="mt-3 text-[10px] text-muted-foreground">Illustrative routing preview only. No wallet, no write, no transaction.</p>
+        <p className="mt-3 text-[10px] text-muted-foreground">Preview of the routing split only. No wallet, no write, no transaction.</p>
       </motion.section>
     </div>
   );

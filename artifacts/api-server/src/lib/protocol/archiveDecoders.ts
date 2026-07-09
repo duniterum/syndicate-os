@@ -47,6 +47,44 @@ export type ArtifactCoreExists =
   | { ok: true; configured: boolean }
   | { ok: false; reason: string };
 
+export type ArtifactCoreRead =
+  | { ok: true; configured: boolean; minted: bigint }
+  | { ok: false; reason: string };
+
+/**
+ * Strict decode of getArtifactCore(uint256) surfacing word 0 (`configured`)
+ * AND word 8 (`minted` — the total minted count). Same fail-closed posture as
+ * decodeArtifactCoreExists: any malformation returns a structured failure so
+ * the caller emits an explicit reason instead of fabricating a count.
+ */
+export function decodeArtifactCoreRead(hex: unknown): ArtifactCoreRead {
+  if (typeof hex !== "string" || !/^0x[0-9a-fA-F]*$/.test(hex)) {
+    return { ok: false, reason: "non-hex return" };
+  }
+  const data = hex.slice(2);
+  if (data.length === 0) return { ok: false, reason: "empty return" };
+  if (data.length % 64 !== 0) return { ok: false, reason: "unaligned return" };
+  const words = data.length / 64;
+  if (words < 9) return { ok: false, reason: `tuple too short (${words} words, expected >= 9)` };
+  let configuredWord: bigint;
+  try {
+    configuredWord = BigInt("0x" + data.slice(0, 64));
+  } catch {
+    return { ok: false, reason: "word 0 not parseable" };
+  }
+  if (configuredWord !== 0n && configuredWord !== 1n) {
+    return { ok: false, reason: "word 0 not a boolean" };
+  }
+  let minted: bigint;
+  try {
+    minted = BigInt("0x" + data.slice(8 * 64, 9 * 64));
+  } catch {
+    return { ok: false, reason: "word 8 (minted) not parseable" };
+  }
+  if (minted < 0n) return { ok: false, reason: "word 8 (minted) negative" };
+  return { ok: true, configured: configuredWord === 1n, minted };
+}
+
 /**
  * Minimal strict decode of getArtifactCore(uint256). The real return is a
  * 9-field tuple; we surface ONLY word 0 (the `configured` boolean) and ignore

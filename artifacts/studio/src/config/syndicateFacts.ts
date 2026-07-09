@@ -238,7 +238,7 @@ export const studioPreviewPanel = {
     lifecycle: DisplayLifecycle;
     detail: string;
   }[],
-  note: "Illustrative — a sample of the console's read-only surfaces. No live protocol data is shown here; each row carries its own honest status.",
+  note: "Preview — a sample of the console's read-only surfaces. No live protocol data is shown here; each row carries its own honest status.",
 };
 
 // ---------------------------------------------------------------------------
@@ -404,7 +404,7 @@ export interface HeroStat {
 export interface HeroSource {
   id: string;
   label: string;
-  bind?: "aggregateInflowUsdc" | "attributionActivities";
+  bind?: "aggregateInflowUsdc" | "attributionActivities" | "nftMintedTotal";
   unit?: string;
   status?: string;
   note?: string;
@@ -479,7 +479,7 @@ export const heroSystem = {
     sources: [
       { id: "membership", label: "Membership Sales", sub: "Live · on-chain", angle: 100 },
       { id: "chronicle", label: "Chronicle / Memory", sub: "Recorded", angle: 126 },
-      { id: "nft", label: "NFT", sub: "Not live yet", angle: 153 },
+      { id: "nft", label: "NFT Artifacts", sub: "Live · minted on-chain", angle: 153 },
       { id: "lpfees", label: "LP Fee Flow", sub: "Not tracked yet", angle: 207 },
       { id: "referrals", label: "Verified Introductions", sub: "Attribution only", angle: 234 },
       { id: "future", label: "Future Streams", sub: "Coming", angle: 260 },
@@ -529,7 +529,13 @@ export const heroSystem = {
         unit: "USDC",
         note: "Incl. founder test transactions",
       },
-      { id: "nft", label: "NFT", status: "Not live yet" },
+      {
+        id: "nft",
+        label: "NFT Artifacts",
+        bind: "nftMintedTotal",
+        unit: "minted",
+        note: "The First Signal + Patron Seal",
+      },
       { id: "lpfees", label: "LP Fee Flow", status: "Not tracked yet" },
       {
         id: "referrals",
@@ -559,7 +565,7 @@ export const heroSystem = {
   // purchase framing — membership is recognised, not sold as an investment.
   entryPreview: {
     title: "Entry Preview",
-    note: "Illustrative — a simulated entry routes by the canonical 70 / 20 / 10 split.",
+    note: "Preview — a simulated entry routes by the canonical 70 / 20 / 10 split.",
     readonlyNote: "Read-only preview · No transaction",
     amounts: [5, 10, 25, 50, 75],
     defaultAmount: 5,
@@ -571,6 +577,6 @@ export const heroSystem = {
   },
 
   disclaimer:
-    "Financial figures are live read-only on-chain reads (server-cached, fail-closed to an honest unavailable state). Structural ratios are canonical; illustrative elements are labelled.",
+    "Every figure on this page is read live from the Avalanche blockchain — nothing is invented. When a live read is briefly unavailable, we say so instead of guessing. The 70 / 20 / 10 routing is canonical, and anything marked Preview is a demonstration, not live data.",
 };
 

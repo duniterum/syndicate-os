@@ -66,6 +66,11 @@ export interface HeroReality {
   burnedSyn: string | null;
   /** Referral attribution ACTIVITY COUNT (never a USDC/commission figure). */
   attributionActivities: string | null;
+  /** Archive1155 minted counts — live reads from the archive group. */
+  nftFirstSignalMinted: string | null;
+  nftPatronSealMinted: string | null;
+  /** Sum of both minted counts; null unless BOTH live reads are available. */
+  nftMintedTotal: string | null;
   /** Computed 70/20/10 routed shares of the aggregate (the routing proof). */
   routedVault: string | null;
   routedLiquidity: string | null;
@@ -113,6 +118,14 @@ export function useHeroReality(): HeroReality {
 
   const attribution = findFinancialCount(financial, "financial.referral.attributionActivity");
 
+  const archive = reality.data?.groups.archive;
+  const firstSignalMinted = findFinancialCount(archive, "archive.artifact.1.minted");
+  const patronSealMinted = findFinancialCount(archive, "archive.artifact.3.minted");
+  const nftMintedTotal =
+    firstSignalMinted === null || patronSealMinted === null
+      ? null
+      : firstSignalMinted + patronSealMinted;
+
   return {
     loading: reality.isLoading || holderIndex.isLoading,
     membersTotal: membersTotalNumber === null ? null : membersTotalNumber.toLocaleString("en-US"),
@@ -125,6 +138,9 @@ export function useHeroReality(): HeroReality {
     lpSyn: formatBaseUnits(findFinancial(financial, "financial.lp.reserveSyn"), 18, 2),
     burnedSyn: formatBaseUnits(findFinancial(financial, "financial.burn.synBalance"), 18, 0),
     attributionActivities: attribution === null ? null : attribution.toLocaleString("en-US"),
+    nftFirstSignalMinted: firstSignalMinted === null ? null : firstSignalMinted.toLocaleString("en-US"),
+    nftPatronSealMinted: patronSealMinted === null ? null : patronSealMinted.toLocaleString("en-US"),
+    nftMintedTotal: nftMintedTotal === null ? null : nftMintedTotal.toLocaleString("en-US"),
     routedVault: routedShare(aggregateRaw, 7_000n),
     routedLiquidity: routedShare(aggregateRaw, 2_000n),
     routedOperations: routedShare(aggregateRaw, 1_000n),

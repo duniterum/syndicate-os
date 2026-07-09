@@ -82,9 +82,11 @@ function encString(s: string): string {
   const content = hex.padEnd(Math.ceil(hex.length / 64) * 64 || 64, "0");
   return "0x" + word("20") + len + content;
 }
-/** A 9-word getArtifactCore tuple whose word 0 is the `configured` boolean. */
-const encArtifactCore = (configured: boolean): string =>
-  "0x" + word(configured ? "1" : "0") + word("0").repeat(8);
+/** A 9-word getArtifactCore tuple: word 0 = `configured`, word 8 = `minted`. */
+const encArtifactCore = (configured: boolean, minted: bigint = 0n): string =>
+  "0x" + word(configured ? "1" : "0") + word("0").repeat(7) + word(minted.toString(16));
+const ID1_MINTED = 11n;
+const ID3_MINTED = 6n;
 
 // ── mock transport ────────────────────────────────────────────────────────────
 type CallFn = (to: string, selector: string, data: string) => string | "__throw__";
@@ -167,7 +169,10 @@ function goodCall(to: string, selector: string, data = ""): string {
   if (selector === SELECTOR_AVAILABLE_SYN) return encUint256(V3_AVAILABLE_SYN);
   if (selector === SELECTOR_TOTAL_GROSS_USDC) return encUint256(V3_TOTAL_GROSS_USDC);
   if (selector === SELECTOR_RECEIPT_COUNT) return encUint256(V3_RECEIPT_COUNT);
-  if (selector === SELECTOR_GET_ARTIFACT_CORE) return encArtifactCore(true);
+  if (selector === SELECTOR_GET_ARTIFACT_CORE) {
+    const id = BigInt("0x" + (data.slice(10) || "0"));
+    return encArtifactCore(true, id === 1n ? ID1_MINTED : id === 3n ? ID3_MINTED : 0n);
+  }
   if (selector === SELECTOR_SOURCE_REGISTRY)
     return "0x" + word(SOURCE_LINKAGE_TARGET.registryAddress.slice(2).toLowerCase());
   // financial group: disambiguated by call target + calldata, never a constant.
@@ -248,6 +253,10 @@ async function main(): Promise<void> {
     check("happy: archive paused read (false, READ_ONLY_PROOF, MEDIUM)", byId(e, "archive.paused")?.value === false && byId(e, "archive.paused")?.lifecycle === "READ_ONLY_PROOF" && byId(e, "archive.paused")?.confidence === "MEDIUM");
     check("happy: archive id1 configured reconciled (true, CANON_RECONCILED_RPC, HIGH)", byId(e, "archive.artifact.1")?.value === true && byId(e, "archive.artifact.1")?.sourceType === "CANON_RECONCILED_RPC" && byId(e, "archive.artifact.1")?.confidence === "HIGH");
     check("happy: archive id3 configured reconciled (true, HIGH)", byId(e, "archive.artifact.3")?.value === true && byId(e, "archive.artifact.3")?.confidence === "HIGH");
+    const id1Minted = byId(e, "archive.artifact.1.minted");
+    check("happy: archive id1 minted EXACT count string (LIVE_CHAIN_RPC, MEDIUM, READ_ONLY_PROOF)", id1Minted?.value === ID1_MINTED.toString() && id1Minted?.valueType === "string" && id1Minted?.sourceType === "LIVE_CHAIN_RPC" && id1Minted?.confidence === "MEDIUM" && id1Minted?.lifecycle === "READ_ONLY_PROOF");
+    const id3Minted = byId(e, "archive.artifact.3.minted");
+    check("happy: archive id3 minted EXACT count string (MEDIUM, READ_ONLY_PROOF)", id3Minted?.value === ID3_MINTED.toString() && id3Minted?.valueType === "string" && id3Minted?.confidence === "MEDIUM" && id3Minted?.lifecycle === "READ_ONLY_PROOF");
     // Sale group (Sprint 2): 8 items — flags on V1/V2/V3 + V3's 3 numeric figures.
     check("happy: sale group has 8 items", e.groups.sale.length === 8, String(e.groups.sale.length));
     check("happy: every sale item contractRole 'sale' + LIVE_CHAIN_RPC", e.groups.sale.every((i) => i.contractRole === "sale" && i.sourceType === "LIVE_CHAIN_RPC"));
@@ -402,6 +411,18 @@ async function main(): Promise<void> {
     });
     const e = await buildProtocolReality(baseOpts(transport));
     check("shape-drift: archive id1 null + PENDING_ADAPTER + failureReason", byId(e, "archive.artifact.1")?.value === null && byId(e, "archive.artifact.1")?.lifecycle === "PENDING_ADAPTER" && byId(e, "archive.artifact.1")?.failureReason !== null);
+    check("shape-drift: archive id1 minted null + PENDING_ADAPTER + failureReason", byId(e, "archive.artifact.1.minted")?.value === null && byId(e, "archive.artifact.1.minted")?.lifecycle === "PENDING_ADAPTER" && byId(e, "archive.artifact.1.minted")?.failureReason !== null);
+  }
+
+  // 7c) CANON/CHAIN CONFIG DISAGREEMENT: configured=false where canon expects
+  //     true → minted count withheld too (whole-tuple trust fails closed).
+  {
+    const { transport } = makeMock({
+      call: (to, s, d) => (s === SELECTOR_GET_ARTIFACT_CORE ? encArtifactCore(false, 99n) : goodCall(to, s, d)),
+    });
+    const e = await buildProtocolReality(baseOpts(transport));
+    check("config-mismatch: archive id1 null + PAUSED_BY_PRECAUTION", byId(e, "archive.artifact.1")?.value === null && byId(e, "archive.artifact.1")?.lifecycle === "PAUSED_BY_PRECAUTION");
+    check("config-mismatch: archive id1 minted WITHHELD (null + failureReason, never 99)", byId(e, "archive.artifact.1.minted")?.value === null && byId(e, "archive.artifact.1.minted")?.failureReason !== null);
   }
 
   // 7b) SALE NUMERIC DECODE FAILURE: V3 availableSyn returns "0x" → null, and

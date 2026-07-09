@@ -9,9 +9,9 @@ import { Badge } from "@/components/ui/badge";
 export type SampleKind = "simulated" | "canonical" | "illustrative";
 
 const KIND_TEXT: Record<SampleKind, string> = {
-  simulated: "Simulated",
+  simulated: "Preview",
   canonical: "Canonical",
-  illustrative: "Illustrative",
+  illustrative: "Preview",
 };
 
 const KIND_STYLES: Record<SampleKind, string> = {

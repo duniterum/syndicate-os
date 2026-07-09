@@ -91,7 +91,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "The Syndicate — Proof-First Membership Protocol",
     description:
-      "A read-only foundation for The Syndicate: verifiable membership and public proof. No protocol data is live yet — every unwired value is truth-labelled.",
+      "The Syndicate — a proof-first membership protocol on Avalanche. Membership, treasury routing, and recognition figures are read live from the blockchain — read-only, fail-closed, never invented.",
     canonicalPath: "/",
     changefreq: "weekly",
     priority: 1.0,

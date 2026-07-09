@@ -45,7 +45,7 @@ import {
   SELECTOR_GET_ARTIFACT_CORE,
   SELECTOR_PAUSED,
   callData,
-  decodeArtifactCoreExists,
+  decodeArtifactCoreRead,
   decodeBool,
   encodeUint256,
 } from "./archiveDecoders";
@@ -487,7 +487,8 @@ async function buildArchiveGroup(
     );
   }
 
-  // archive.artifact.<id> configured-on-chain
+  // archive.artifact.<id> configured-on-chain + archive.artifact.<id>.minted
+  // (ONE eth_call per artifact — both items decode from the same tuple return)
   for (const artifact of artifacts) {
     let value: boolean | null = null;
     let sourceType: ProtocolRealityItem["sourceType"] = "LIVE_CHAIN_RPC";
@@ -496,14 +497,24 @@ async function buildArchiveGroup(
     let failureReason: string | null = chainSkipReason(probe);
     let note = "Artifact configuration was not read (chain not verified).";
 
+    // Minted count posture (independent signal, same fail-closed doctrine as
+    // every financial figure: EXACT raw base-unit string, never invented).
+    let mintedValue: string | null = null;
+    let mintedConfidence: ProtocolRealityItem["confidence"] = "UNKNOWN";
+    let mintedLifecycle: ProtocolRealityItem["lifecycle"] = "PAUSED_BY_PRECAUTION";
+    let mintedFailureReason: string | null = chainSkipReason(probe);
+    let mintedNote = "Minted count was not read (chain not verified).";
+
     if (probe.chainIdOk && !hasCode) {
       failureReason = "no on-chain code; artifact read skipped";
       note = "Artifact configuration was not read (no on-chain code).";
+      mintedFailureReason = "no on-chain code; minted count read skipped";
+      mintedNote = "Minted count was not read (no on-chain code).";
     } else if (probe.chainIdOk) {
       const data = callData(SELECTOR_GET_ARTIFACT_CORE, [encodeUint256(BigInt(artifact.id))]);
-      let decoded: ReturnType<typeof decodeArtifactCoreExists> | null = null;
+      let decoded: ReturnType<typeof decodeArtifactCoreRead> | null = null;
       try {
-        decoded = decodeArtifactCoreExists(await ethCall(transport, archive.address, data));
+        decoded = decodeArtifactCoreRead(await ethCall(transport, archive.address, data));
       } catch {
         decoded = { ok: false, reason: "artifact core read threw" };
       }
@@ -513,27 +524,49 @@ async function buildArchiveGroup(
         lifecycle = "PENDING_ADAPTER";
         failureReason = `artifact core decode failed: ${decoded.reason}`;
         note = "The artifact core view could not be decoded; reported as unavailable.";
-      } else if (artifact.configuredOnChain) {
-        sourceType = "CANON_RECONCILED_RPC";
-        if (decoded.configured) {
-          value = true;
-          confidence = "HIGH";
+        mintedValue = null;
+        mintedConfidence = "LOW";
+        mintedLifecycle = "PENDING_ADAPTER";
+        mintedFailureReason = `artifact core decode failed: ${decoded.reason}`;
+        mintedNote = "The minted count could not be decoded; reported as unavailable.";
+      } else {
+        // Minted count is a live mutable figure with NO canon expectation.
+        mintedValue = decoded.minted.toString();
+        mintedConfidence = "MEDIUM";
+        mintedLifecycle = "READ_ONLY_PROOF";
+        mintedFailureReason = null;
+        mintedNote = `Total minted count for ${artifact.label} (id ${artifact.id}) read live from Archive1155 getArtifactCore — an EXACT raw count string.`;
+
+        if (artifact.configuredOnChain) {
+          sourceType = "CANON_RECONCILED_RPC";
+          if (decoded.configured) {
+            value = true;
+            confidence = "HIGH";
+            lifecycle = "READ_ONLY_PROOF";
+            failureReason = null;
+            note = "On-chain artifact configuration matches the canon expectation.";
+          } else {
+            value = null;
+            confidence = "LOW";
+            lifecycle = "PAUSED_BY_PRECAUTION";
+            failureReason = "canon expects this artifact configured, but chain reports otherwise";
+            note = "Canon/chain disagreement on artifact configuration; failing closed.";
+            // A canon/chain disagreement poisons trust in the whole tuple:
+            // fail the minted count closed too rather than surface a figure
+            // from a contract state that contradicts canon.
+            mintedValue = null;
+            mintedConfidence = "LOW";
+            mintedLifecycle = "PAUSED_BY_PRECAUTION";
+            mintedFailureReason = "canon/chain disagreement on artifact configuration";
+            mintedNote = "Minted count withheld: canon/chain disagreement on artifact configuration; failing closed.";
+          }
+        } else {
+          value = decoded.configured;
+          confidence = "MEDIUM";
           lifecycle = "READ_ONLY_PROOF";
           failureReason = null;
-          note = "On-chain artifact configuration matches the canon expectation.";
-        } else {
-          value = null;
-          confidence = "LOW";
-          lifecycle = "PAUSED_BY_PRECAUTION";
-          failureReason = "canon expects this artifact configured, but chain reports otherwise";
-          note = "Canon/chain disagreement on artifact configuration; failing closed.";
+          note = "On-chain artifact configuration read with no canon expectation.";
         }
-      } else {
-        value = decoded.configured;
-        confidence = "MEDIUM";
-        lifecycle = "READ_ONLY_PROOF";
-        failureReason = null;
-        note = "On-chain artifact configuration read with no canon expectation.";
       }
     }
 
@@ -550,6 +583,23 @@ async function buildArchiveGroup(
         lifecycle,
         note,
         failureReason,
+        asOf,
+      }),
+    );
+
+    items.push(
+      buildItem({
+        id: `archive.artifact.${artifact.id}.minted`,
+        label: `${artifact.label} (id ${artifact.id}) — total minted`,
+        value: mintedValue,
+        sourceType: "LIVE_CHAIN_RPC",
+        sourceRef: `Avalanche C-Chain RPC (eth_call getArtifactCore id=${artifact.id}, word 8)`,
+        chainId,
+        contractRole: "archive1155",
+        confidence: mintedConfidence,
+        lifecycle: mintedLifecycle,
+        note: mintedNote,
+        failureReason: mintedFailureReason,
         asOf,
       }),
     );

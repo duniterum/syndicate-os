@@ -11,7 +11,8 @@
 
 import { useEffect } from "react";
 import { useLocation } from "wouter";
-import { resolveRouteHead } from "@/lib/seo-route-registry";
+import { resolveRouteHead, CANONICAL_ORIGIN } from "@/lib/seo-route-registry";
+import { brand, socialLinks } from "@/config/brand";
 
 /** Create-or-update a <meta name="..."> tag. Tags we create are marked managed. */
 function upsertMetaByName(name: string, content: string): void {
@@ -59,6 +60,38 @@ function setCanonical(href: string | null): void {
   el.setAttribute("href", href);
 }
 
+const JSONLD_ID = "seo-jsonld-org";
+
+/**
+ * Organization JSON-LD, emitted on the homepage only. Facts are limited to
+ * what is publicly true and stable: name, canonical URL, logo, and the
+ * official social profiles (sameAs). No financial or membership claims.
+ */
+function setOrganizationJsonLd(active: boolean): void {
+  const existing = document.getElementById(JSONLD_ID);
+  if (!active) {
+    if (existing) existing.remove();
+    return;
+  }
+  const payload = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: brand.name,
+    url: `${CANONICAL_ORIGIN}/`,
+    logo: `${CANONICAL_ORIGIN}/opengraph.jpg`,
+    sameAs: socialLinks.map((link) => link.href),
+  });
+  let el = existing as HTMLScriptElement | null;
+  if (!el) {
+    el = document.createElement("script");
+    el.type = "application/ld+json";
+    el.id = JSONLD_ID;
+    el.setAttribute("data-seo-managed", "true");
+    document.head.appendChild(el);
+  }
+  el.textContent = payload;
+}
+
 export function SeoHeadManager(): null {
   const [location] = useLocation();
 
@@ -79,6 +112,8 @@ export function SeoHeadManager(): null {
     upsertMetaByName("twitter:title", head.title);
     upsertMetaByName("twitter:description", head.description);
     upsertMetaByName("twitter:image", head.ogImage);
+
+    setOrganizationJsonLd(location === "/");
   }, [location]);
 
   return null;

@@ -10,6 +10,15 @@ Disallow: /founder
 Disallow: /os-source
 Disallow: /os-map
 Disallow: /admin
+Disallow: /admin/members
+Disallow: /admin/sources
+Disallow: /admin/operators
+Disallow: /admin/content
+Disallow: /admin/modules
+Disallow: /admin/broadcast
+Disallow: /admin/audit
+Disallow: /admin/support
+Disallow: /admin/settings
 
 # Public render assets (favicon, og image, fonts, JS/CSS) stay crawlable.
 Sitemap: https://thesyndicate.money/sitemap.xml
