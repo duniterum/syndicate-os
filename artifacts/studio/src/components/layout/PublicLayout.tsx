@@ -41,14 +41,14 @@ function ChainPill() {
   return (
     <span
       title="Avalanche C-Chain — live read-only public surface"
-      className="hidden items-center gap-2 whitespace-nowrap rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-2.5 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-cyan-700 shadow-sm dark:text-cyan-200 2xl:inline-flex"
+      className="hidden items-center gap-2 whitespace-nowrap rounded-xl border border-proof/30 bg-proof/10 px-2.5 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-proof shadow-sm 2xl:inline-flex"
     >
       <span className="grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-[#e84142] shadow-[0_0_18px_-8px_rgba(232,65,66,0.9)]">
         <img src="/brand/avalanche-avax-token.png" alt="Avalanche" className="h-full w-full object-cover" />
       </span>
       <span>{headerChips.chainName}</span>
       <span className="text-muted-foreground">·</span>
-      <span className="text-cyan-600 dark:text-cyan-300">{headerChips.chainState}</span>
+      <span className="text-proof">{headerChips.chainState}</span>
     </span>
   );
 }
@@ -57,7 +57,7 @@ function LiveChip() {
   return (
     <span
       title="Live on-chain reads — the public surface is currently read-only"
-      className="hidden items-center gap-1.5 rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-2.5 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-cyan-600 dark:text-cyan-300 lg:inline-flex"
+      className="hidden items-center gap-1.5 rounded-xl border border-proof/30 bg-proof/10 px-2.5 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-proof lg:inline-flex"
     >
       <Activity className="h-3.5 w-3.5" />
       {headerChips.liveBadge}
@@ -263,7 +263,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                       <span className="font-mono text-xs text-gold">{item.path}</span>
                     </Link>
                   ))}
-                  <div className="mt-2 rounded-xl border border-cyan-400/20 bg-cyan-400/5 px-4 py-3 text-xs text-cyan-600 dark:text-cyan-200">
+                  <div className="mt-2 rounded-xl border border-proof/20 bg-proof/5 px-4 py-3 text-xs text-proof">
                     {headerChips.mobileChainNote}
                   </div>
                   <div className="mt-2 flex flex-col gap-2">
