@@ -12,15 +12,26 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 - **Phase 1 — CLOSED.** 8 atoms (Amount · StatusPill · Button+Tag · StatCard · Table · Field · Icon).
   Color sprawl **137 → 0**, `no-raw-color` guard **BLOCKING** in the `guards` gate. Fluid `.type-*`
   scale adopted site-wide. Component states + a11y done. (1 documented raw-color exception: QrCodeBlock canvas.)
-- **Phase 2.0 — Rendering fix → ✅ CLOSED (shipped).** Build-time prerender/SSG of the shell:
+- **Phase 2.0 — Rendering fix → ✅ CODE-COMPLETE · verified green on Replit/Linux · awaiting live-domain
+  verification after Publish.** Build-time prerender/SSG of the shell:
   `artifacts/studio/scripts/prerender-routes.ts` writes per-route `dist/public/<route>/index.html`
   (real title/description/OG/canonical + Organization JSON-LD in the server HTML) + a real noindex
   `404.html`; the soft-404 SPA rewrite was removed from `.replit-artifact/artifact.toml`. One shared
   JSON-LD source (`src/lib/seo-jsonld.ts`) feeds BOTH `SeoHeadManager` and the prerender. PENDING
   routes (`/recognition`, `/archive`) emitted as **noindex** shells (avoids reload-404, stays out of
   the index). NOT SSR (`wagmi ssr:false` untouched); live chain figures stay client-hydrated.
-  *(Serving change handed to Replit: per-route HTML + HTTP 404 + www→apex 301 + clean-URL/canonical.)*
+  **Replit deploy report (2026-07-10):** pull + byte-verified `1dfbfe6`; build green (typecheck ·
+  guards 617 + no-raw-color · seo 267 · surface 177 · auth-zone 597); prerender emitted 13 shells
+  (11 index, 2 noindex) + `404.html`; blanket SPA rewrite removed via the platform channel. Home raw
+  HTML carries the Organization JSON-LD + apex canonical; `/status` serves its own title + canonical
+  `…/status`. **Still to confirm on the LIVE domain after the founder clicks Publish:** `/does-not-exist`
+  returns a real HTTP 404 (the old build still 200s until Publish), + re-confirm home/`/status`.
 - **NEXT SLICE = Phase 2.1 — Prose atom + Whitepaper** (per `docs/direction/WHITEPAPER_PLAN.md`).
+- **DEFERRED — www→apex 301 (NOT a 2.0 blocker; apex is canonical and serves today).** Do at
+  **domain transfer (~Sept 2026)**: the domain was bought via **Lovable** and is registrar-locked
+  ~60 days, and Lovable can only do a 302 (not a clean 301). After the lock, transfer to a proper
+  registrar and add a **single-hop 301 `www.thesyndicate.money` → `https://thesyndicate.money`**, TLS
+  covering both. `www` has no DNS entry until then. **HSTS/preload stays Phase 6.**
 - **2.0 approach was DECIDED (ADR-002): build-time prerender / SSG of the SHELL** (kept for the record).
   Per-route static HTML with real `title`/`description`/OG **+ JSON-LD baked into the server HTML** +
   a real **404 status**. **NOT runtime SSR** — it breaks with `wagmi ssr:false`. Inject head/JSON-LD,
