@@ -56,8 +56,9 @@ Design **100 % fini, verrouillé** = toutes les cases de "Définition de FINI" c
 → **on n'y revient plus jamais.**
 
 ## Suivi couleur
-Sprawl actuel : **90** sites en couleur brute (guard report-only). Objectif : **0** + guard bloquant.
-Dernière baisse : `TruthLabel` migré sur `StatusPill` (10 variantes brutes → 4 tons tokenisés), 100 → 90.
+Sprawl actuel : **82** sites en couleur brute (guard report-only). Objectif : **0** + guard bloquant.
+Dernière baisse : `PublicHome` (scope A) — accents cyan → `primary`, erreurs rouges → `destructive`, 90 → 82.
+Reste sur `PublicHome` (décisions marque/déco à trancher) : rouge Avalanche `#e84142`, fond hero `#030609` + glow, pastilles statut/feu tricolore.
 
 ## Gouvernance (comment on reste aligné)
 - Ce doc est la **source unique** du workstream design.

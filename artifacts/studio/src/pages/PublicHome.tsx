@@ -56,7 +56,7 @@ function ProofRail({ className = "" }: { className?: string }) {
               item.tone === "avax"
                 ? "border-[#e84142]/30 bg-[#e84142] text-white shadow-[0_0_18px_-10px_rgba(232,65,66,0.9)]"
                 : item.tone === "cyan"
-                  ? "border-cyan-400/35 bg-cyan-400/10 text-cyan-600 dark:text-cyan-200"
+                  ? "border-primary/35 bg-primary/10 text-primary"
                   : "border-gold/35 bg-gold/10 text-gold"
             }`}
           >
@@ -96,7 +96,7 @@ function TrustStatusStrip() {
             Reading protocol reality…
           </span>
         ) : isError || !data ? (
-          <span className="font-mono text-[11px] text-red-600 dark:text-red-400">
+          <span className="font-mono text-[11px] text-destructive">
             {trustStrip.failText}
           </span>
         ) : (
@@ -106,11 +106,11 @@ function TrustStatusStrip() {
               <span key={group.key} className="inline-flex items-baseline gap-1.5 text-[11px]">
                 <span className="text-muted-foreground">{group.label}</span>
                 {summary ? (
-                  <span className="font-mono font-semibold text-cyan-700 dark:text-cyan-400">
+                  <span className="font-mono font-semibold text-primary">
                     {summary.readable}/{summary.total} {trustStrip.reconciledNote}
                   </span>
                 ) : (
-                  <span className="font-mono text-red-600 dark:text-red-400">
+                  <span className="font-mono text-destructive">
                     unavailable (fail-closed)
                   </span>
                 )}
@@ -123,7 +123,7 @@ function TrustStatusStrip() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-[11px] font-medium text-cyan-700 underline-offset-4 hover:underline dark:text-cyan-400"
+              className="text-[11px] font-medium text-primary underline-offset-4 hover:underline"
             >
               {link.label}
             </Link>
@@ -190,7 +190,7 @@ function PromotedStrip() {
                   <p className="mb-5 flex-1 text-sm text-muted-foreground">
                     {homepagePromotedStrip.blurbs[entry.registryId] ?? entry.notes}
                   </p>
-                  <span className="inline-flex items-center gap-1.5 text-sm font-medium text-cyan-700 dark:text-cyan-400">
+                  <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary">
                     {entry.cta?.label ?? entry.title}
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   </span>
@@ -233,7 +233,7 @@ function ModuleStrip() {
         })}
         <Link
           href={homepageModuleStrip.statusLink.href}
-          className="ml-auto text-[11px] font-medium text-cyan-700 underline-offset-4 hover:underline dark:text-cyan-400"
+          className="ml-auto text-[11px] font-medium text-primary underline-offset-4 hover:underline"
         >
           {homepageModuleStrip.statusLink.label}
         </Link>
@@ -296,7 +296,7 @@ export default function PublicHome() {
                     <Button
                       variant="outline"
                       size="lg"
-                      className="group h-12 w-full rounded-xl border-border bg-background/50 px-6 text-foreground hover:border-cyan-400/40 hover:bg-cyan-400/5 dark:border-white/15 dark:bg-white/[0.025] dark:text-white sm:w-auto"
+                      className="group h-12 w-full rounded-xl border-border bg-background/50 px-6 text-foreground hover:border-primary/40 hover:bg-primary/5 dark:border-white/15 dark:bg-white/[0.025] dark:text-white sm:w-auto"
                     >
                       {heroSystem.secondaryCta.label}
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
