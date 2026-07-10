@@ -92,7 +92,12 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
    label — zero hardcoded numbers). Guard extended (safe set; `contribution`/`package`/`moon`/`raised`
    flagged as repo-wins exclusions). Supply, the 7 distribution shares, and both prices render PENDING —
    they need a live supply/price read (wire in 2.2). *(NEXT = 2.2.)*
-3. **2.2 Tokenomics (+ SYN token)** — 1B fixed, 7 buckets (35/25/12/10/8/5/5), burn, 70/20/10; figures live.
+3. ~~**2.2 Tokenomics (+ SYN token)**~~ ✅ **DONE** — `/tokenomics` on the Prose atom + the backend live
+   reads it needed. Spine extended (SYN `totalSupply` + 7 allocation-wallet `balanceOf`, fail-closed, no
+   address emitted; both protocol guards extended). `useTokenomics` reads them + market price (live LP
+   reserves) + entry rate (live join-quote). **Whitepaper's 10 PENDINGs flipped to LIVE** (supply, 7
+   allocation shares, both prices). Stale "16,500" burn retired — burn is a live read everywhere. Standing
+   rule added: no PENDING for a readable figure. *(NEXT = 2.3 FAQ.)*
 4. **2.3 FAQ** · 5. **2.4 Docs** · 6. **2.5 Knowledge base** · 7. **2.6 Risk** · 8. **2.7 Glossary**
 9. **2.8 Roadmap** (registry-driven) · 10. **2.9 Protocol-facts** · 11. **2.10 Brand-facts**
 12. **2.11 Join / entry-tiers UI** — featured tiers + custom-amount compose + live quote preview

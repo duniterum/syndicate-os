@@ -208,6 +208,24 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
       "Anchor content page (slice 2.1), built on the Prose atom. Static prose; every figure is a live chain read or a PENDING label — no hardcoded numbers.",
   },
   {
+    path: "/tokenomics",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "Tokenomics — SYN Supply, Distribution & Prices, Live On-Chain",
+    description:
+      "SYN's fixed supply, the live distribution across the seven allocation wallets, the two independent prices, and burn — every figure read live from Avalanche, never hardcoded. Not a security; no promise of gain.",
+    canonicalPath: "/tokenomics",
+    changefreq: "weekly",
+    priority: 0.9,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "economy",
+    primaryIntent: "transparency",
+    proofRoute: "/status",
+    notes:
+      "Tokenomics content page (slice 2.2), on the Prose atom. Supply / per-allocation balances / prices / burn are LIVE chain reads (protocol-reality + join-quote + LP reserves); mint-time design targets shown as labelled config.",
+  },
+  {
     path: "/recognition",
     routeType: "PENDING",
     indexStatus: "PENDING",

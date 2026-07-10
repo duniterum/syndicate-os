@@ -29,6 +29,13 @@
 > auto-sync is off — Replit physically **cannot** push; it pulls to deploy only. **Claude Code is the
 > sole writer to `main`.** (Two prior deploy auto-pushes — `57b9fc17`, empty `a4118d5` — are why.)
 
+> **STANDING RULE — no PENDING for a readable figure (we are LIVE in production).** Any figure that is
+> **on-chain-readable now** (or trivially derivable from what the spine already reads) must render **LIVE**,
+> fail-closed to "Checking/Unavailable" — **never a typed fallback number.** **PENDING / FUTURE is reserved
+> for the genuinely-not-readable** — a contract not deployed, or an adapter not wired — and every such case
+> must be **listed with its reason**, never left as a silent gap. A readable figure shown as PENDING is a bug.
+> When you build/extend a page, **sweep it (and the surface it touches)** and flip every newly-readable figure.
+
 > **HARD RULE — no exceptions.** Every durable spec, plan, and decision lives **IN this repo**,
 > never out-of-repo. Nothing on a desktop, in a chat, or "in your head." The DIRECTION specs are
 > committed at `docs/direction/` (`MASTER_BUILD_SPEC.md` · `CONTENT_SUITE_SPEC.md` · `WHITEPAPER_PLAN.md`).
@@ -74,7 +81,8 @@ It is a **business**, not a charity — it sells access, recognition, and servic
 - **Content:** Whitepaper, Tokenomics, Docs, FAQ, Knowledge, Risk *(missing — Phase 2)*.
 - **Admin console:** WordPress-style modules (plugins, activatable, CRUD + graphical) +
   **RBAC**: Super-Admin/Founder (root, step-up) · Admin · Operator · Auditor · Worker.
-- **Economy:** 1B SYN fixed (35/25/12/10/8/5/5), burn 16,500 on-chain, routing 70/20/10,
+- **Economy:** 1B SYN fixed (35/25/12/10/8/5/5), burn read **live** on-chain (grows with each burn —
+  never a fixed doc figure; the stale "16,500" is retired), routing 70/20/10,
   treasury (AVAX/USDC/BTC.b/WETH.e/SYN). Contracts: SYN, Sale V3 (active), Archive1155,
   LP, SourceRegistry (paused), CommissionRouter (not deployed).
 - **Proof spine + backbone:** live chain reads, verify-links, status ledger; event backbone

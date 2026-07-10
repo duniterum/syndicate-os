@@ -64,6 +64,7 @@ import {
   SELECTOR_GET_RESERVES,
   SELECTOR_TOKEN0,
   SELECTOR_MEMBER_COUNT,
+  SELECTOR_TOTAL_SUPPLY,
   encodeAddressArg,
   decodeReservesPair,
   sumDecimalStrings,
@@ -1493,6 +1494,65 @@ async function buildFinancialGroup(
         asOf,
       }),
     );
+  }
+
+  // 8) SYN total supply — live totalSupply() on the canon SYN token. The
+  //    fixed-supply figure read FROM CHAIN, never asserted from a canon constant.
+  {
+    const hasCode = await hasCodeAt(targets.synTokenAddress);
+    let raw: string | null = null;
+    let threw = false;
+    if (probe.chainIdOk && hasCode) {
+      ({ raw, threw } = await readUint(targets.synTokenAddress, SELECTOR_TOTAL_SUPPLY));
+    }
+    items.push(
+      buildFinancialNumeric({
+        probe,
+        hasCode,
+        rawValue: raw,
+        decodeThrew: threw,
+        id: "financial.token.synTotalSupply",
+        label: "SYN total supply (raw base units)",
+        contractRole: "token",
+        note: "Live totalSupply() read on the canon SYN contract — the fixed supply in exact 18-decimal base units, read from chain (never a canon constant).",
+        sourceRef: "contract-registry.ts:SYN_TOKEN (eth_call totalSupply)",
+        chainId,
+        asOf,
+      }),
+    );
+  }
+
+  // 9) SYN allocation-wallet balances — live balanceOf(SYN) per canon allocation
+  //    wallet: the tokenomics distribution AS IT STANDS ON-CHAIN NOW. Each is a
+  //    live figure that legitimately differs from the mint-time design allocation
+  //    as SYN sells / vests / moves. Aggregate balance only; no address emitted.
+  {
+    const hasCode = await hasCodeAt(targets.synTokenAddress);
+    for (const w of targets.allocationWallets) {
+      const data = encodeAddressArg(SELECTOR_BALANCE_OF, w.address);
+      let raw: string | null = null;
+      let threw = false;
+      if (probe.chainIdOk && hasCode && data !== null) {
+        ({ raw, threw } = await readUint(targets.synTokenAddress, data));
+      } else if (probe.chainIdOk && hasCode && data === null) {
+        threw = true;
+      }
+      items.push(
+        buildFinancialNumeric({
+          probe,
+          hasCode,
+          rawValue: raw,
+          decodeThrew: threw,
+          id: `financial.distribution.${w.key}.balance`,
+          label: `${w.label} allocation — current SYN balance (raw base units)`,
+          contractRole: "token",
+          note: `Live balanceOf() read on the canon SYN contract for the ${w.label} allocation wallet; exact 18-decimal base units. Aggregate balance only — the wallet address stays server-side. This is the wallet's CURRENT on-chain balance, which legitimately differs from the mint-time design allocation as SYN sells / vests / moves.`,
+          sourceRef: `syndicate-config.ts:ALLOCATION_WALLETS[${w.key}] (eth_call balanceOf)`,
+          chainId,
+          asOf,
+        }),
+      );
+    }
   }
 
   return items;

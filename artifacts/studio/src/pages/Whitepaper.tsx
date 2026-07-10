@@ -6,6 +6,7 @@ import { StatusPill, type StatusTone } from "@/components/status-pill/StatusPill
 import { Amount } from "@/components/amount/Amount";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { useHeroReality } from "@/components/hero/useHeroReality";
+import { useTokenomics } from "@/components/tokenomics/useTokenomics";
 
 // Whitepaper — the anchor content page (slice 2.1). Prose is written ONCE; every
 // figure is read LIVE from the chain via useHeroReality + Amount / VerifyOnChain.
@@ -41,6 +42,17 @@ function Pending({ label = "PENDING · live read" }: { label?: string }) {
   );
 }
 
+/** A live mono figure with a unit suffix, fail-closed to PENDING (never a number). */
+function LiveNum({ value, unit }: { value: string | null; unit: string }) {
+  if (value === null) return <Pending />;
+  return (
+    <span className="font-mono font-semibold text-foreground">
+      {value}
+      <span className="ml-1 text-xs font-medium text-muted-foreground">{unit}</span>
+    </span>
+  );
+}
+
 /** Section header eyebrow: monospace index + the section's lifecycle status. */
 function Eyebrow({ n, status }: { n: number; status: string }) {
   return (
@@ -56,6 +68,7 @@ const syn = (v: string | null) => (v ? [{ value: v, unit: "SYN" as const }] : nu
 
 export default function Whitepaper() {
   const r = useHeroReality();
+  const tk = useTokenomics();
 
   // Live inline amount, fail-closed to "Checking…/Unavailable" — never a fallback number.
   const live = (
@@ -97,8 +110,10 @@ export default function Whitepaper() {
         <ProseSection id="syn" title="SYN — the key to the seat" eyebrow={<Eyebrow n={3} status="VERIFIED" />}>
           <p>
             SYN is the key that opens a seat. There are <strong>two independent prices</strong>: the{" "}
-            <strong>entry price</strong> set by the protocol ({<Pending />}), and the{" "}
-            <strong>market price</strong> on Trader Joe if SYN trades ({<Pending />}). The entry price is
+            <strong>entry rate</strong> set by the protocol, read live from the active engine (
+            <LiveNum value={tk.entrySynPerUsdc} unit="SYN per 1 USDC" />), and the{" "}
+            <strong>market price</strong> from the live Trader Joe pool (
+            <LiveNum value={tk.marketPriceUsdcPerSyn} unit="USDC per SYN" />). The entry rate is
             neither a floor nor a market valuation. SYN has a <strong>fixed supply</strong> and trades on a
             market — like any token, its price <strong>can rise or fall</strong>.
           </p>
@@ -169,13 +184,24 @@ export default function Whitepaper() {
 
         <ProseSection id="tokenomics" title="Tokenomics — supply and who holds what" eyebrow={<Eyebrow n={9} status="VERIFIED" />}>
           <p>
-            SYN has a <strong>fixed supply</strong> ({<Pending />}), distributed across these allocations,
-            each verified against its allocation wallet: <strong>Membership Distribution</strong>{" "}
-            ({<Pending />}), <strong>Vault Reserve</strong> ({<Pending />}),{" "}
-            <strong>Founder (vested)</strong> ({<Pending />}), <strong>Liquidity</strong> ({<Pending />}),{" "}
-            <strong>Partnerships</strong> ({<Pending />}), <strong>Contributors</strong> ({<Pending />}),
-            and <strong>Future Ecosystem</strong> ({<Pending />}).
+            SYN has a <strong>fixed supply</strong>, read live from the token contract:{" "}
+            <strong><Amount segments={syn(tk.totalSupply)} variant="inline" loading={tk.loading} /></strong>.
+            It was minted across seven public allocation wallets; each wallet's <strong>current on-chain
+            balance</strong> is read live below (it differs from the mint-time design as SYN sells, vests,
+            or moves — the design targets and full breakdown are on the{" "}
+            <Link href="/tokenomics">Tokenomics</Link> page).
           </p>
+          <ul>
+            {tk.allocations.map((a) => (
+              <li key={a.key}>
+                <strong>{a.label}</strong> —{" "}
+                <Amount segments={syn(a.currentSyn)} variant="inline" loading={tk.loading} />{" "}
+                <span className="text-muted-foreground">
+                  (<LiveNum value={a.currentPct} unit="% of supply" />)
+                </span>
+              </li>
+            ))}
+          </ul>
           <p>
             Tokens sent to the burn address are removed permanently. Burned to date:{" "}
             <strong>{live(syn(r.burnedSyn))}</strong>.

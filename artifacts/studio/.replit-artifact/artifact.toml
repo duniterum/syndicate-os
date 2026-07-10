@@ -90,6 +90,14 @@ from = "/whitepaper/"
 to = "/whitepaper.html"
 
 [[services.production.rewrites]]
+from = "/tokenomics"
+to = "/tokenomics.html"
+
+[[services.production.rewrites]]
+from = "/tokenomics/"
+to = "/tokenomics.html"
+
+[[services.production.rewrites]]
 from = "/recognition"
 to = "/recognition.html"
 

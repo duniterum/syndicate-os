@@ -101,6 +101,16 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     enforcement: "PREVIEW_LABELLED",
   },
   {
+    routePath: "/tokenomics",
+    moduleId: "tokenomics",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "SYN supply, live distribution, the two prices, and burn — every figure a live chain read.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
     routePath: "/source-attribution",
     moduleId: "source-attribution",
     audience: "PUBLIC",

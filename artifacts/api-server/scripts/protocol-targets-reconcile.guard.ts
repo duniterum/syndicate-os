@@ -28,6 +28,7 @@ import {
   LP_POOL,
   MEMBERSHIP_SALE_V2A_CONTRACT_ADDRESS,
   SALE_DEPLOYMENT_BLOCK,
+  ALLOCATION_WALLETS,
 } from "../src/canon/the-syndicate/contracts/syndicate-config";
 import { ARCHIVE_ID_REGISTRY } from "../src/canon/the-syndicate/archive/archive-id-registry";
 
@@ -74,6 +75,7 @@ import {
   SELECTOR_GET_RESERVES,
   SELECTOR_TOKEN0,
   SELECTOR_MEMBER_COUNT,
+  SELECTOR_TOTAL_SUPPLY,
   encodeAddressArg,
   decodeReservesPair,
   sumDecimalStrings,
@@ -298,6 +300,7 @@ function main(): void {
     check("fin selector: getReserves() derived", SELECTOR_GET_RESERVES === functionSelector("getReserves()"), SELECTOR_GET_RESERVES);
     check("fin selector: token0() derived", SELECTOR_TOKEN0 === functionSelector("token0()"), SELECTOR_TOKEN0);
     check("fin selector: memberCount() derived", SELECTOR_MEMBER_COUNT === functionSelector("memberCount()"), SELECTOR_MEMBER_COUNT);
+    check("fin selector: totalSupply() derived", SELECTOR_TOTAL_SUPPLY === functionSelector("totalSupply()"), SELECTOR_TOTAL_SUPPLY);
 
     // 8b) Inflow cardinality + order + per-engine canon authority.
     const F = FINANCIAL_TARGETS;
@@ -381,6 +384,29 @@ function main(): void {
     check("fin pure: decodeReservesPair rejects a reserve above uint112 max", decodeReservesPair(overUint112) === null);
     check("fin pure: sumDecimalStrings exact bigint sum above MAX_SAFE_INTEGER", sumDecimalStrings(["9007199254740993", "1", "16000000000000000000000"]) === "16000009007199254740994");
     check("fin pure: sumDecimalStrings fails closed on ANY null/malformed component", sumDecimalStrings(["1", null, "2"]) === null && sumDecimalStrings(["1", "-2"]) === null && sumDecimalStrings(["1", "2.5"]) === null);
+
+    // 8g) Tokenomics allocation wallets (Slice 2.2) reconcile to canon
+    //     ALLOCATION_WALLETS — the SYN balanceOf targets for the distribution.
+    //     totalSupply reads the existing synTokenAddress (already reconciled above).
+    check("fin alloc: exactly 7 allocation wallets", F.allocationWallets.length === 7, String(F.allocationWallets.length));
+    check(
+      "fin alloc: labels cover exactly the 7 canon allocations",
+      F.allocationWallets.map((w) => w.label).sort().join("|") ===
+        Object.keys(ALLOCATION_WALLETS).sort().join("|"),
+      F.allocationWallets.map((w) => w.label).join(","),
+    );
+    for (const w of F.allocationWallets) {
+      check(`fin alloc addr-shape: ${w.key} is a full address`, FULL_ADDRESS_RE.test(w.address), w.address.slice(0, 6));
+      check(
+        `fin alloc canon: ${w.key} address matches ALLOCATION_WALLETS[${w.label}]`,
+        eqAddr(w.address, ALLOCATION_WALLETS[w.label]),
+        `${w.address} vs ${ALLOCATION_WALLETS[w.label] ?? "null"}`,
+      );
+    }
+    check(
+      "fin alloc: no duplicate allocation addresses",
+      new Set(F.allocationWallets.map((w) => w.address.toLowerCase())).size === F.allocationWallets.length,
+    );
   }
 
   // ── report ──────────────────────────────────────────────────────────────────

@@ -50,6 +50,7 @@ import {
   SELECTOR_GET_RESERVES,
   SELECTOR_TOKEN0,
   SELECTOR_MEMBER_COUNT,
+  SELECTOR_TOTAL_SUPPLY,
   encodeAddressArg,
 } from "../src/lib/protocol/financialDecoders";
 import {
@@ -162,6 +163,31 @@ const MEMBER_COUNT_FIX = 27n;
 const encReserves = (r0: bigint, r1: bigint): string =>
   "0x" + word(r0.toString(16)) + word(r1.toString(16)) + word("64");
 
+// ── tokenomics live reads (Slice 2.2) fixtures ───────────────────────────────
+// SYN totalSupply + per-allocation SYN balances. Values are distinct and ABOVE
+// Number.MAX_SAFE_INTEGER so the guard proves each exact decimal STRING survives.
+const SYN_TOTAL_SUPPLY_FIX = 1_000_000_000_000_000_000_000_000_000n; // 1B SYN @18dec
+// Non-round fixtures (distinct, above MAX_SAFE_INTEGER, no long zero runs) — they
+// prove exact-string survival AND avoid accidentally embedding a tripwire constant
+// like STALE_CANON_BURN ("2" + 21 zeros).
+const ALLOC_BALANCES: Record<string, bigint> = {
+  MEMBERSHIP_DISTRIBUTION: 300_000_000_123_456_789_012_345_678n,
+  VAULT_RESERVE: 250_000_000_234_567_890_123_456_789n,
+  FOUNDER: 120_000_000_345_678_901_234_567_890n,
+  LIQUIDITY: 100_000_000_456_789_012_345_678_901n,
+  PARTNERSHIPS: 80_000_000_567_890_123_456_789_012n,
+  CONTRIBUTORS: 50_000_000_678_901_234_567_890_123n,
+  FUTURE_ECOSYSTEM: 49_000_000_789_012_345_678_901_234n,
+};
+// balanceOf(SYN) calldata → fixture value per allocation wallet, so the mock can
+// disambiguate the 7 allocation reads from the burn read on the SAME SYN contract.
+const ALLOC_BAL_BY_DATA = new Map<string, bigint>(
+  FINANCIAL_TARGETS.allocationWallets.map((w) => [
+    encodeAddressArg(SELECTOR_BALANCE_OF, w.address) as string,
+    ALLOC_BALANCES[w.key],
+  ]),
+);
+
 function goodCall(to: string, selector: string, data = ""): string {
   const addr = to.toLowerCase();
   if (selector === SELECTOR_SYMBOL) return encString(addr === USDC_ADDR ? "USDC" : "SYN");
@@ -189,8 +215,12 @@ function goodCall(to: string, selector: string, data = ""): string {
   if (selector === SELECTOR_BALANCE_OF) {
     if (addr === USDC_ADDR)
       return encUint256(data === OPS_BAL_DATA ? OPS_USDC_BAL : VAULT_USDC_BAL);
+    // SYN balanceOf: an allocation wallet (by calldata) or the burn address.
+    const alloc = ALLOC_BAL_BY_DATA.get(data);
+    if (alloc !== undefined) return encUint256(alloc);
     return encUint256(BURNED_SYN);
   }
+  if (selector === SELECTOR_TOTAL_SUPPLY) return encUint256(SYN_TOTAL_SUPPLY_FIX);
   if (selector === SELECTOR_TOKEN0) return "0x" + word(SYN_ADDR.slice(2));
   if (selector === SELECTOR_GET_RESERVES) return encReserves(LP_RESERVE0, LP_RESERVE1);
   if (selector === SELECTOR_MEMBER_COUNT) return encUint256(MEMBER_COUNT_FIX);
@@ -287,13 +317,20 @@ async function main(): Promise<void> {
     check("happy: source zeroSourceJoin true (SERVER_SIDE_CANON, READ_ONLY_PROOF)", byId(e, "source.zeroSourceJoin")?.value === true && byId(e, "source.zeroSourceJoin")?.sourceType === "SERVER_SIDE_CANON" && byId(e, "source.zeroSourceJoin")?.lifecycle === "READ_ONLY_PROOF");
     // Financial group (Slice N1 + Reconciliation): 13 items, values LIVE from
     // the transport except the attribution count (static hash-pinned snapshot).
-    check("fin: financial group has exactly 13 items", e.groups.financial.length === 13, String(e.groups.financial.length));
+    check("fin: financial group has exactly 21 items", e.groups.financial.length === 21, String(e.groups.financial.length));
     const finIds = e.groups.financial.map((i) => i.id).sort().join(",");
     check(
-      "fin: exact id set (4 inflows + aggregate + vault + ops + 2 reserves + burn + members + referral + attribution)",
+      "fin: exact id set (13 base + SYN totalSupply + 7 allocation balances = 21)",
       finIds ===
         [
           "financial.burn.synBalance",
+          "financial.distribution.CONTRIBUTORS.balance",
+          "financial.distribution.FOUNDER.balance",
+          "financial.distribution.FUTURE_ECOSYSTEM.balance",
+          "financial.distribution.LIQUIDITY.balance",
+          "financial.distribution.MEMBERSHIP_DISTRIBUTION.balance",
+          "financial.distribution.PARTNERSHIPS.balance",
+          "financial.distribution.VAULT_RESERVE.balance",
           "financial.inflow.MEMBERSHIP_SALE",
           "financial.inflow.MEMBERSHIP_SALE_V2",
           "financial.inflow.MEMBERSHIP_SALE_V2A",
@@ -305,6 +342,7 @@ async function main(): Promise<void> {
           "financial.ops.usdcBalance",
           "financial.referral.attributionActivity",
           "financial.referral.registryLive",
+          "financial.token.synTotalSupply",
           "financial.vault.usdcBalance",
         ].join(","),
       finIds,
@@ -326,6 +364,16 @@ async function main(): Promise<void> {
     check("fin: burned SYN is the TRANSPORT figure, never a stored ceremony constant", burned?.value !== STALE_CANON_BURN.toString() && !JSON.stringify(e).includes(STALE_CANON_BURN.toString()));
     check("fin: LP reserves oriented via token0 (SYN=reserve0, USDC=reserve1, lp-pair role)", byId(e, "financial.lp.reserveSyn")?.value === LP_RESERVE0.toString() && byId(e, "financial.lp.reserveUsdc")?.value === LP_RESERVE1.toString() && byId(e, "financial.lp.reserveSyn")?.contractRole === "lp-pair");
     check("fin: memberCount EXACT count string (sale role, count only)", byId(e, "financial.members.memberCount")?.value === MEMBER_COUNT_FIX.toString() && byId(e, "financial.members.memberCount")?.contractRole === "sale");
+    // Tokenomics live reads (Slice 2.2): SYN totalSupply + 7 allocation balances.
+    const supply = byId(e, "financial.token.synTotalSupply");
+    check("fin: SYN totalSupply EXACT decimal string ABOVE MAX_SAFE_INTEGER (token role, LIVE_CHAIN_RPC, MEDIUM, READ_ONLY_PROOF)", supply?.value === SYN_TOTAL_SUPPLY_FIX.toString() && supply?.valueType === "string" && supply?.contractRole === "token" && supply?.sourceType === "LIVE_CHAIN_RPC" && supply?.confidence === "MEDIUM" && supply?.lifecycle === "READ_ONLY_PROOF");
+    check("fin: SYN totalSupply is the TRANSPORT figure, never a canon constant", supply?.value !== null && supply?.sourceType !== "SERVER_SIDE_CANON");
+    for (const w of FINANCIAL_TARGETS.allocationWallets) {
+      const it = byId(e, `financial.distribution.${w.key}.balance`);
+      check(`fin: allocation ${w.key} balance EXACT decimal string (token role, LIVE_CHAIN_RPC, MEDIUM, READ_ONLY_PROOF)`, it?.value === ALLOC_BALANCES[w.key].toString() && it?.valueType === "string" && it?.contractRole === "token" && it?.sourceType === "LIVE_CHAIN_RPC" && it?.confidence === "MEDIUM" && it?.lifecycle === "READ_ONLY_PROOF");
+    }
+    check("fin: every allocation balance is distinct (per-wallet calldata disambiguated, never one constant)", new Set(FINANCIAL_TARGETS.allocationWallets.map((w) => byId(e, `financial.distribution.${w.key}.balance`)?.value)).size === FINANCIAL_TARGETS.allocationWallets.length);
+    check("fin: no allocation item leaks a full address in note/sourceRef", FINANCIAL_TARGETS.allocationWallets.every((w) => { const it = byId(e, `financial.distribution.${w.key}.balance`); return it !== undefined && !FULL_ADDRESS_RE.test(it.note) && !FULL_ADDRESS_RE.test(it.sourceRef); }));
     const regLive = byId(e, "financial.referral.registryLive");
     check("fin: referral registryLive true (CANON_RECONCILED_RPC, HIGH, source-registry)", regLive?.value === true && regLive?.sourceType === "CANON_RECONCILED_RPC" && regLive?.confidence === "HIGH" && regLive?.contractRole === "source-registry");
     check("fin: referral note reports per-source views only, no invented global flag", (regLive?.note ?? "").includes("per-source views") && (regLive?.note ?? "").includes("none is reported or invented"));
@@ -342,11 +390,15 @@ async function main(): Promise<void> {
     // right token AND encoding the right wallet argument.
     const vaultCall = balanceOfCalls.find((c) => c.to === USDC_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.vaultWallet));
     const opsCall = balanceOfCalls.find((c) => c.to === USDC_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.operationsWallet));
-    const burnCall = balanceOfCalls.find((c) => c.to === SYN_ADDR);
-    check("fin: exactly 3 balanceOf reads (vault + ops on USDC, burn on SYN)", balanceOfCalls.length === 3 && Boolean(vaultCall) && Boolean(opsCall) && Boolean(burnCall));
+    const burnCall = balanceOfCalls.find((c) => c.to === SYN_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.synBurnAddress));
+    const allocCalls = FINANCIAL_TARGETS.allocationWallets.map((w) =>
+      balanceOfCalls.find((c) => c.to === SYN_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, w.address)),
+    );
+    check("fin: exactly 10 balanceOf reads (vault + ops on USDC; burn + 7 allocations on SYN)", balanceOfCalls.length === 10 && Boolean(vaultCall) && Boolean(opsCall) && Boolean(burnCall) && allocCalls.every(Boolean));
     check("fin: vault balanceOf calldata encodes the vault wallet", vaultCall?.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.vaultWallet));
     check("fin: ops balanceOf calldata encodes the operations wallet", opsCall?.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.operationsWallet));
     check("fin: burn balanceOf calldata encodes the canonical burn address", burnCall?.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.synBurnAddress));
+    check("fin: each of the 7 allocation balanceOf reads targets SYN with its wallet calldata", allocCalls.every((c) => c?.to === SYN_ADDR));
     check("happy: every present value has null failureReason", allItems(e).every((i) => (i.value === null) === (i.failureReason !== null) || i.id === "chain.network"));
     check("happy: NO address leak", noAddressLeak(e));
     check("happy: discipline passes", disciplinePasses(e));

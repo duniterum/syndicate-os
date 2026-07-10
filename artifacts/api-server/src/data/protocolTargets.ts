@@ -293,6 +293,14 @@ export type FinancialTargets = {
   lpPair: string;
   /** The ACTIVE engine whose memberCount() is the live aggregate member tally. */
   memberCountEngine: { key: "MEMBERSHIP_SALE_V3"; address: string };
+  /**
+   * Public SYN allocation wallets (the initial-mint tokenomics distribution) —
+   * SERVER-ONLY balanceOf(SYN) call targets. Keyed by a safe internal name; the
+   * address is never emitted. Reconciled against canon ALLOCATION_WALLETS by the
+   * targets guard. Each wallet's CURRENT balance is a LIVE figure and legitimately
+   * differs from the mint-time design allocation as SYN sells / vests / moves.
+   */
+  allocationWallets: readonly { key: string; label: string; address: string }[];
 };
 
 export const FINANCIAL_TARGETS: FinancialTargets = {
@@ -332,6 +340,15 @@ export const FINANCIAL_TARGETS: FinancialTargets = {
     key: "MEMBERSHIP_SALE_V3",
     address: "0x2A6cFc76906e758B934209AFf5A163c9bC20132E",
   },
+  allocationWallets: [
+    { key: "MEMBERSHIP_DISTRIBUTION", label: "Membership Distribution", address: "0x975a4360FA808aC5D2Edb3c3412B2AeB9F5ECec8" },
+    { key: "VAULT_RESERVE", label: "Vault Reserve", address: "0x205DdC8921A4C60106930eE35e1F395c8D13f464" },
+    { key: "FOUNDER", label: "Founder", address: "0x88EC79AF0d5A2F3b83022A1770c645506803Dd73" },
+    { key: "LIQUIDITY", label: "Liquidity", address: "0xa9b072db8DcDbb470235204B69D37275d74a2e25" },
+    { key: "PARTNERSHIPS", label: "Partnerships", address: "0xf5BEdEEfe48f746d96C1847a5595318579bBcaCf" },
+    { key: "CONTRIBUTORS", label: "Contributors", address: "0xa55132346C70e63d0c4E0Fb15F35075760dDEF7a" },
+    { key: "FUTURE_ECOSYSTEM", label: "Future Ecosystem", address: "0x2530393881820AFe789f1c5D83817B70e46d2963" },
+  ],
 };
 
 // ─────────────────────────────────────────────────────────────────────────────

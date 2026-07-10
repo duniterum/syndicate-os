@@ -11,6 +11,7 @@ import MemberAccess from "@/pages/MemberAccess";
 import SystemStatus from "@/pages/SystemStatus";
 import Learning from "@/pages/Learning";
 import Whitepaper from "@/pages/Whitepaper";
+import Tokenomics from "@/pages/Tokenomics";
 import Recognition from "@/pages/Recognition";
 import ContractMemory from "@/pages/ContractMemory";
 import ProtocolMap from "@/pages/ProtocolMap";
@@ -106,6 +107,9 @@ function Router() {
       </PublicRoute>
       <PublicRoute path="/whitepaper">
         <Whitepaper />
+      </PublicRoute>
+      <PublicRoute path="/tokenomics">
+        <Tokenomics />
       </PublicRoute>
       <PublicRoute path="/contracts">
         <ContractMemory />
