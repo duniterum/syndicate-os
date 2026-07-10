@@ -25,6 +25,9 @@
 > a repo file, **Replit states the need and Claude Code writes it** (generated from the registry):
 > Replit communicates, it does not write the repo. **Safety net either way:** whoever writes always
 > **fetch + reconcile before pushing**, never assumes sole ownership, never force-pushes a divergence.
+> **ENFORCED 2026-07-10:** Replit's GitHub token is now **read-only** (Contents: read) and its publish
+> auto-sync is off — Replit physically **cannot** push; it pulls to deploy only. **Claude Code is the
+> sole writer to `main`.** (Two prior deploy auto-pushes — `57b9fc17`, empty `a4118d5` — are why.)
 
 > **HARD RULE — no exceptions.** Every durable spec, plan, and decision lives **IN this repo**,
 > never out-of-repo. Nothing on a desktop, in a chat, or "in your head." The DIRECTION specs are
