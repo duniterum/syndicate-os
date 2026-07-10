@@ -36,6 +36,109 @@ serve = "static"
 # with a real HTTP 404 for unmatched paths. (www->apex 301 is DEFERRED to the
 # domain transfer ~Sept 2026 — registrar-level, not here; HSTS/preload = Phase 6.)
 
+# Deploy-layer serving rules (this layer's ownership, per the handoff above):
+# exact-path rewrites serve each no-slash route DIRECTLY from its flat
+# <route>.html (200, no redirect, served URL == <link rel="canonical">); the
+# trailing-slash variant rewrites to the same file (200, canonical stays
+# no-slash). Unmatched paths fall through to 404.html with a real HTTP 404.
+# KEEP IN SYNC with the PUBLIC+PENDING routes in src/lib/seo-route-registry.ts.
+
+[[services.production.rewrites]]
+from = "/status"
+to = "/status.html"
+
+[[services.production.rewrites]]
+from = "/status/"
+to = "/status.html"
+
+[[services.production.rewrites]]
+from = "/proof"
+to = "/proof.html"
+
+[[services.production.rewrites]]
+from = "/proof/"
+to = "/proof.html"
+
+[[services.production.rewrites]]
+from = "/member"
+to = "/member.html"
+
+[[services.production.rewrites]]
+from = "/member/"
+to = "/member.html"
+
+[[services.production.rewrites]]
+from = "/join"
+to = "/join.html"
+
+[[services.production.rewrites]]
+from = "/join/"
+to = "/join.html"
+
+[[services.production.rewrites]]
+from = "/learning"
+to = "/learning.html"
+
+[[services.production.rewrites]]
+from = "/learning/"
+to = "/learning.html"
+
+[[services.production.rewrites]]
+from = "/recognition"
+to = "/recognition.html"
+
+[[services.production.rewrites]]
+from = "/recognition/"
+to = "/recognition.html"
+
+[[services.production.rewrites]]
+from = "/contracts"
+to = "/contracts.html"
+
+[[services.production.rewrites]]
+from = "/contracts/"
+to = "/contracts.html"
+
+[[services.production.rewrites]]
+from = "/map"
+to = "/map.html"
+
+[[services.production.rewrites]]
+from = "/map/"
+to = "/map.html"
+
+[[services.production.rewrites]]
+from = "/source-attribution"
+to = "/source-attribution.html"
+
+[[services.production.rewrites]]
+from = "/source-attribution/"
+to = "/source-attribution.html"
+
+[[services.production.rewrites]]
+from = "/support"
+to = "/support.html"
+
+[[services.production.rewrites]]
+from = "/support/"
+to = "/support.html"
+
+[[services.production.rewrites]]
+from = "/archive"
+to = "/archive.html"
+
+[[services.production.rewrites]]
+from = "/archive/"
+to = "/archive.html"
+
+[[services.production.rewrites]]
+from = "/source"
+to = "/source.html"
+
+[[services.production.rewrites]]
+from = "/source/"
+to = "/source.html"
+
 [services.env]
 PORT = "18425"
 BASE_PATH = "/"
