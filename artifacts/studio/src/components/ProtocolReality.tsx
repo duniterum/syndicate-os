@@ -59,7 +59,7 @@ function RealityValue({ item }: { item: ProtocolRealityItem }) {
     return (
       <div>
         <div className="font-mono text-[11px] text-muted-foreground">—</div>
-        <div className="text-[10px] text-amber-600 dark:text-amber-400/80 mt-0.5 leading-snug">
+        <div className="text-[10px] text-warning mt-0.5 leading-snug">
           {item.failureReason ?? "not read"}
         </div>
       </div>
@@ -129,7 +129,7 @@ function ErrorCard() {
   return (
     <Card className="bg-card/40 border-border/50 p-8">
       <div className="flex items-start gap-3">
-        <div className="p-1.5 bg-amber-500/10 rounded-md text-amber-500 shrink-0 mt-0.5">
+        <div className="p-1.5 bg-warning/10 rounded-md text-warning shrink-0 mt-0.5">
           <AlertTriangle className="h-4 w-4" />
         </div>
         <div>

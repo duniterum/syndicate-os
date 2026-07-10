@@ -112,7 +112,7 @@ function StandingSection({
           {r.era !== null && r.authorityLabel !== null ? (
             <div className="flex flex-wrap items-center gap-2 mt-2">
               <span
-                className="inline-flex items-center rounded-sm border border-cyan-400/30 bg-cyan-400/10 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-cyan-700 dark:text-cyan-300"
+                className="inline-flex items-center rounded-sm border border-proof/30 bg-proof/10 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-proof"
                 data-testid="chip-standing-era"
               >
                 {r.era}
@@ -267,10 +267,10 @@ export default function WalletSessionPanel() {
   };
 
   return (
-    <Card className="border-cyan-400/25 bg-cyan-400/5 p-6 mb-12" data-testid="panel-wallet-session">
+    <Card className="border-proof/25 bg-proof/5 p-6 mb-12" data-testid="panel-wallet-session">
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-md bg-cyan-400/10 text-cyan-600 dark:text-cyan-300 shrink-0">
+          <div className="p-2.5 rounded-md bg-proof/10 text-proof shrink-0">
             <KeyRound className="h-5 w-5" />
           </div>
           <div>
@@ -342,7 +342,7 @@ export default function WalletSessionPanel() {
             key={line}
             className="flex items-start gap-2.5 font-mono text-xs text-muted-foreground leading-relaxed"
           >
-            <span className="mt-1.5 h-1 w-1 rounded-full bg-cyan-500/70 shrink-0" />
+            <span className="mt-1.5 h-1 w-1 rounded-full bg-proof/70 shrink-0" />
             <span>{line}</span>
           </li>
         ))}

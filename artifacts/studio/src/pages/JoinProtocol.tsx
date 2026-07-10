@@ -312,11 +312,11 @@ export default function JoinProtocol() {
 
       {/* HARD BOUNDARY — transaction sending deliberately not enabled */}
       <Card
-        className="border-amber-500/30 bg-amber-500/5 p-6 mb-12"
+        className="border-warning/30 bg-warning/5 p-6 mb-12"
         data-testid="panel-buy-readiness"
       >
         <div className="flex items-start gap-4">
-          <div className="p-2.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 shrink-0">
+          <div className="p-2.5 rounded-md bg-warning/10 text-warning shrink-0">
             <ShieldAlert className="h-5 w-5" />
           </div>
           <div>

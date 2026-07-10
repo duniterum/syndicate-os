@@ -56,7 +56,7 @@ export function ProtocolAssetsCard() {
       id: "vault",
       label: "Vault USDC",
       icon: Shield,
-      tone: "text-cyan-500 dark:text-cyan-300",
+      tone: "text-viz-1",
       value: vaultUsdc !== null ? `${vaultUsdc} USDC` : null,
       meta: "70% routing destination · live balance",
     },
@@ -64,7 +64,7 @@ export function ProtocolAssetsCard() {
       id: "lp",
       label: "LP position",
       icon: Droplet,
-      tone: "text-blue-500 dark:text-blue-400",
+      tone: "text-viz-6",
       value: lpSyn !== null && lpUsdc !== null ? `${lpSyn} SYN + ${lpUsdc} USDC` : null,
       meta: "Protocol-owned liquidity · live reserves",
     },
@@ -88,7 +88,7 @@ export function ProtocolAssetsCard() {
   ];
 
   return (
-    <section className="rounded-[1.05rem] border border-gold/25 bg-card/74 p-5 dark:bg-[#080b11]/76">
+    <section className="rounded-[1.05rem] border border-gold/25 bg-card/74 p-5 dark:bg-surface-command/76">
       <div className="mb-1 flex items-center justify-between gap-3">
         <h2 className="text-xl font-light tracking-tight text-foreground">Protocol assets</h2>
         <LiveReadTag state={tagState} />

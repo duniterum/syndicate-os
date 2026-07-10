@@ -39,7 +39,7 @@ export const protocolSurfaces: ProtocolSurface[] = [
     homeBlurb: "Verifiable burn records mapped directly to member attribution.",
     truthStatus: surfaceStatus.proofOfFire,
     icon: Activity,
-    iconClass: "text-orange-500",
+    iconClass: "text-viz-5",
   },
   {
     id: "sourceAttribution",
@@ -47,7 +47,7 @@ export const protocolSurfaces: ProtocolSurface[] = [
     homeBlurb: "Cryptographic proof of network origin and source attribution.",
     truthStatus: surfaceStatus.sourceAttribution,
     icon: Network,
-    iconClass: "text-cyan-500",
+    iconClass: "text-viz-1",
   },
   {
     id: "archive",
@@ -55,7 +55,7 @@ export const protocolSurfaces: ProtocolSurface[] = [
     homeBlurb: "Historical preservation of protocol actions and recognition.",
     truthStatus: surfaceStatus.archive,
     icon: Database,
-    iconClass: "text-purple-500",
+    iconClass: "text-viz-3",
   },
 ];
 

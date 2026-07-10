@@ -45,7 +45,7 @@ export default function OsMap() {
   return (
     <div className="p-8 max-w-5xl mx-auto">
       <div
-        className="mb-6 rounded-md border border-amber-500/40 bg-amber-500/10 px-4 py-3 font-mono text-[11px] sm:text-xs tracking-wide text-amber-700 dark:text-amber-400"
+        className="mb-6 rounded-md border border-warning/40 bg-warning/10 px-4 py-3 font-mono text-[11px] sm:text-xs tracking-wide text-warning"
         data-testid="banner-os-map-internal"
       >
         {OS_MAP_PAGE.banner}

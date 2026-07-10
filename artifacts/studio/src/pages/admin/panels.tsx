@@ -373,7 +373,7 @@ export function AdminModulesRegistryPanel() {
                   {entry.route ? (
                     <Link
                       href={entry.route}
-                      className="text-cyan-700 dark:text-cyan-400 hover:underline"
+                      className="text-proof hover:underline"
                     >
                       {entry.route}
                     </Link>
@@ -420,7 +420,7 @@ export function AdminMembersPanel() {
     <PanelCard
       def={membersDef}
       chip={
-        <span className="inline-flex items-center gap-1.5 rounded-md border border-rose-200 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/30 px-2 py-0.5 font-mono text-[10px] text-rose-700 dark:text-rose-400">
+        <span className="inline-flex items-center gap-1.5 rounded-md border border-destructive/30 bg-destructive/10 px-2 py-0.5 font-mono text-[10px] text-destructive">
           <ShieldAlert className="h-3 w-3" />
           SERVER-ONLY PII BOUNDARY
         </span>
@@ -452,7 +452,7 @@ export function AdminMembersPanel() {
         server-only. This console never displays wallet PII, a member
         directory, or any lookup of another wallet — a signed wallet may
         read only its own standing, on{" "}
-        <Link href="/member" className="text-cyan-700 dark:text-cyan-400 hover:underline">
+        <Link href="/member" className="text-proof hover:underline">
           /member
         </Link>
         . Member management tooling is a future founder-gated slice.
@@ -509,7 +509,7 @@ export function AdminSourcesPanel() {
             (() => {
               const s = realityGroupSummary(reality, "source");
               return s ? (
-                <span className="font-mono text-[11px] text-cyan-700 dark:text-cyan-400">
+                <span className="font-mono text-[11px] text-proof">
                   {s.readable}/{s.total} read-only signals reconciled
                 </span>
               ) : (
@@ -521,7 +521,7 @@ export function AdminSourcesPanel() {
       </div>
       <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
         Source ids validate read-only on{" "}
-        <Link href="/source" className="text-cyan-700 dark:text-cyan-400 hover:underline">
+        <Link href="/source" className="text-proof hover:underline">
           /source
         </Link>
         ; registry addresses stay server-side. Source creation and
@@ -734,7 +734,7 @@ export function AdminHealthPanel() {
             ) : sourceError ? (
               <Unavailable text="Unreachable (fail-closed)" />
             ) : (
-              <span className="font-mono text-[11px] text-cyan-700 dark:text-cyan-400">
+              <span className="font-mono text-[11px] text-proof">
                 responding
               </span>
             )}
@@ -757,7 +757,7 @@ export function AdminHealthPanel() {
             ) : realityError ? (
               <Unavailable text="Unreachable (fail-closed)" />
             ) : (
-              <span className="font-mono text-[11px] text-cyan-700 dark:text-cyan-400">
+              <span className="font-mono text-[11px] text-proof">
                 responding
               </span>
             )}

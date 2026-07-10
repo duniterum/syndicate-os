@@ -60,7 +60,7 @@ function HolderIndexSection() {
       {(isError || (data && !verified)) && (
         <Card className="bg-card/40 border-border/50 p-8">
           <div className="flex items-start gap-3">
-            <div className="p-1.5 bg-amber-500/10 rounded-md text-amber-500 shrink-0 mt-0.5">
+            <div className="p-1.5 bg-warning/10 rounded-md text-warning shrink-0 mt-0.5">
               <AlertTriangle className="h-4 w-4" />
             </div>
             <div>
@@ -85,7 +85,7 @@ function HolderIndexSection() {
               <div className="text-4xl font-light text-foreground mt-1">{data.memberTotal}</div>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-[10px] px-2 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+              <span className="font-mono text-[10px] px-2 py-0.5 rounded border border-success/30 bg-success/10 text-success">
                 {data.status}
               </span>
               <span className="font-mono text-[10px] px-2 py-0.5 rounded border border-border/60 bg-muted/30 text-muted-foreground">
@@ -220,7 +220,7 @@ export default function SystemStatus() {
       {isError && (
         <Card className="bg-card/40 border-border/50 p-8">
           <div className="flex items-start gap-3">
-            <div className="p-1.5 bg-amber-500/10 rounded-md text-amber-500 shrink-0 mt-0.5">
+            <div className="p-1.5 bg-warning/10 rounded-md text-warning shrink-0 mt-0.5">
               <AlertTriangle className="h-4 w-4" />
             </div>
             <div>

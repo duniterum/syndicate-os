@@ -26,8 +26,8 @@ export default function ContractMemory() {
         <ProtocolAssetsCard />
       </div>
 
-      <div className="rounded-lg border border-amber-200 dark:border-amber-900/50 bg-amber-50/60 dark:bg-amber-950/20 p-4 mb-12 flex items-start gap-3">
-        <div className="p-1.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5">
+      <div className="rounded-lg border border-warning/30 bg-warning/10 p-4 mb-12 flex items-start gap-3">
+        <div className="p-1.5 rounded-md bg-warning/10 text-warning shrink-0 mt-0.5">
           <ShieldAlert className="h-4 w-4" />
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">

@@ -56,8 +56,9 @@ Design **100 % fini, verrouillé** = toutes les cases de "Définition de FINI" c
 → **on n'y revient plus jamais.**
 
 ## Suivi couleur
-Sprawl actuel : **54** sites en couleur brute (guard report-only). Objectif : **0** + guard bloquant.
-Dernière baisse : `PublicLayout` (scope A) — chips chaîne/vérif cyan → `proof`, 58 → 54. Hero public = 0.
+Sprawl actuel : **16** sites en couleur brute (guard report-only). Objectif : **0** + guard bloquant.
+Dernière baisse : balayage sémantique sur 14 surfaces (ambre→`warning`, rouge/rose→`destructive`, cyan→`proof`, catégoriel→`viz`, vert→`success`), 54 → 16.
+Reste : marque/déco sur `PublicHome`/`PublicLayout`/`HeroLedger` (Avalanche→`avax`, fonds→`surface-command`, pastilles) + 2 blancs fonctionnels (`toast`, `QrCodeBlock`) → allowlist + guard bloquant.
 Décisions marque/déco à batcher (fin de Phase 1) : rouge Avalanche `#e84142` · vert « success » (pastille live sur `PublicHome`) · fonds hero `#030609`/`#080b11` + glow · pastilles feu tricolore (déco).
 
 ## Gouvernance (comment on reste aligné)

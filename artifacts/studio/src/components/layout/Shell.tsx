@@ -15,10 +15,10 @@ import { brand } from "@/config/brand";
 function SpineReachabilityChip() {
   const { isLoading, isError } = useGetProtocolReality();
   const state = isLoading
-    ? ({ dot: "bg-amber-400/80 animate-pulse", label: "Checking…" } as const)
+    ? ({ dot: "bg-warning/80 animate-pulse", label: "Checking…" } as const)
     : isError
-      ? ({ dot: "bg-red-500/80", label: "Spine unreachable" } as const)
-      : ({ dot: "bg-emerald-500/80", label: "Spine live" } as const);
+      ? ({ dot: "bg-destructive/80", label: "Spine unreachable" } as const)
+      : ({ dot: "bg-success/80", label: "Spine live" } as const);
   return (
     <div
       className="flex items-center gap-2 px-3 py-2 text-xs font-mono text-muted-foreground bg-muted/30 rounded-md"

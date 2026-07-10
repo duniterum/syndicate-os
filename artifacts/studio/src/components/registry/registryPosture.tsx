@@ -55,7 +55,7 @@ export function PostureUnavailable({
   text?: string;
 }) {
   return (
-    <span className="font-mono text-[11px] text-red-600 dark:text-red-400">
+    <span className="font-mono text-[11px] text-destructive">
       {text}
     </span>
   );
@@ -109,7 +109,7 @@ export function RegistryPostureChip({
   if (!summary)
     return fallback ?? <PostureUnavailable text="Proof unavailable (fail-closed)" />;
   return (
-    <span className="font-mono text-[11px] text-cyan-700 dark:text-cyan-400">
+    <span className="font-mono text-[11px] text-proof">
       {summary.readable}/{summary.total} read-only signals reconciled
     </span>
   );

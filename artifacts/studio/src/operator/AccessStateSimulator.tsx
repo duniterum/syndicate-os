@@ -33,7 +33,7 @@ export function AccessStateSimulator() {
 
   return (
     <Card className="p-6 border-dashed" data-testid="card-access-simulator">
-      <p className="font-mono text-[11px] tracking-widest text-amber-600 dark:text-amber-400 mb-1">
+      <p className="font-mono text-[11px] tracking-widest text-warning mb-1">
         {SIMULATOR_PROBE}
       </p>
       <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
@@ -85,7 +85,7 @@ export function AccessStateSimulator() {
                   <td className="py-1.5 pr-3">
                     <Badge
                       variant="outline"
-                      className={`font-mono text-[10px] px-1.5 py-0 ${wouldAllow ? "border-emerald-300 text-emerald-700 dark:border-emerald-500/40 dark:text-emerald-300" : "border-red-300 text-red-700 dark:border-red-500/40 dark:text-red-400"}`}
+                      className={`font-mono text-[10px] px-1.5 py-0 ${wouldAllow ? "border-success/40 text-success" : "border-destructive/40 text-destructive"}`}
                     >
                       {wouldAllow ? "ALLOW" : "BLOCK"}
                     </Badge>

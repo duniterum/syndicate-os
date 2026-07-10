@@ -31,7 +31,7 @@ export function VerifyOnChain({
   const links = resolved as NonNullable<(typeof resolved)[number]>[];
 
   const anchorClass =
-    "inline-flex items-center gap-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-cyan-600/80 transition-colors hover:text-cyan-500 dark:text-cyan-300/70 dark:hover:text-cyan-200";
+    "inline-flex items-center gap-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-proof/80 transition-colors hover:text-proof";
 
   if (links.length === 1) {
     const link = links[0];
