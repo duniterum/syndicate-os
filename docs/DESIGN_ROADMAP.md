@@ -56,9 +56,9 @@ Design **100 % fini, verrouillé** = toutes les cases de "Définition de FINI" c
 → **on n'y revient plus jamais.**
 
 ## Suivi couleur
-Sprawl actuel : **82** sites en couleur brute (guard report-only). Objectif : **0** + guard bloquant.
-Dernière baisse : `PublicHome` (scope A) — accents cyan → `primary`, erreurs rouges → `destructive`, 90 → 82.
-Reste sur `PublicHome` (décisions marque/déco à trancher) : rouge Avalanche `#e84142`, fond hero `#030609` + glow, pastilles statut/feu tricolore.
+Sprawl actuel : **74** sites en couleur brute (guard report-only). Objectif : **0** + guard bloquant.
+Dernière baisse : `HeroLedger` — accents catégoriels → tokens viz (alignés sur le flagship), cyan canonical → `proof`, icône verrou → atome `Icon`, 82 → 74.
+Décisions marque/déco à batcher (fin de Phase 1) : rouge Avalanche `#e84142` · vert « success » (pastille live sur `PublicHome`) · fonds hero `#030609`/`#080b11` + glow · pastilles feu tricolore (déco).
 
 ## Gouvernance (comment on reste aligné)
 - Ce doc est la **source unique** du workstream design.

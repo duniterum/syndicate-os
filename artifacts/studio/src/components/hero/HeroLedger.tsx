@@ -7,6 +7,7 @@ import { useHeroReality } from "@/components/hero/useHeroReality";
 import { VerifyOnChain, VERIFY_SLOGAN } from "@/components/VerifyOnChain";
 import { heroSystem } from "@/config/syndicateFacts";
 import { Amount } from "@/components/amount/Amount";
+import { Icon } from "@/components/icon/Icon";
 import type { VerifyLinkId } from "@workspace/api-client-react";
 
 // "Don't trust — verify" explorer targets per card (protocol infrastructure
@@ -37,10 +38,12 @@ const routeIcons = {
   operations: Settings,
 };
 
+// Categorical route accents → the tokenized data-viz palette, matching the
+// flagship ProtocolOverviewPanel so the two hero panels stay consistent.
 const routeTone = {
-  vault: "border-cyan-400/25 bg-cyan-400/8 text-cyan-500 dark:text-cyan-300",
-  liquidity: "border-blue-500/25 bg-blue-500/8 text-blue-500 dark:text-blue-400",
-  operations: "border-violet-500/25 bg-violet-500/8 text-violet-500 dark:text-violet-400",
+  vault: "border-viz-1/25 bg-viz-1/8 text-viz-1",
+  liquidity: "border-viz-6/25 bg-viz-6/8 text-viz-6",
+  operations: "border-viz-3/25 bg-viz-3/8 text-viz-3",
 };
 
 export function HeroLedger() {
@@ -123,13 +126,13 @@ export function HeroLedger() {
                         segments={moneyValue !== null ? [{ value: moneyValue, unit: "USDC" }] : null}
                         variant="lead"
                         loading={reality.loading}
-                        className="text-emerald-500 dark:text-emerald-400"
+                        className="text-viz-4"
                       />
                       {noteText ? <div className="mt-1 text-[9px] leading-tight text-muted-foreground">{noteText}</div> : null}
                     </div>
                   ) : countValue !== null ? (
                     <div className="mt-2">
-                      <span className="font-mono text-sm font-black text-emerald-500 dark:text-emerald-400 sm:text-base">{countValue}</span>
+                      <span className="font-mono text-sm font-black text-viz-4 sm:text-base">{countValue}</span>
                       {item.unit ? <span className="ml-1 font-mono text-[9px] font-semibold text-muted-foreground">{item.unit}</span> : null}
                       {noteText ? <div className="mt-1 text-[9px] leading-tight text-muted-foreground">{noteText}</div> : null}
                     </div>
@@ -147,7 +150,7 @@ export function HeroLedger() {
           })}
         </div>
         <div className="mt-3 text-center text-xs text-muted-foreground">
-          Gross inflows are cumulative and <span className="font-semibold text-emerald-500 dark:text-emerald-400">never decrease.</span>
+          Gross inflows are cumulative and <span className="font-semibold text-viz-4">never decrease.</span>
           <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70">{VERIFY_SLOGAN}</span>
         </div>
       </motion.section>
@@ -160,7 +163,7 @@ export function HeroLedger() {
       >
         <div className="mb-3 flex items-center justify-between gap-3">
           <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">{heroSystem.routing.title}</h3>
-          <span className="rounded-full border border-cyan-400/25 bg-cyan-400/8 px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-cyan-600 dark:text-cyan-200">Canonical 70 / 20 / 10</span>
+          <span className="rounded-full border border-proof/25 bg-proof/8 px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-proof">Canonical 70 / 20 / 10</span>
         </div>
         <div className="grid grid-cols-3 gap-2">
           {heroSystem.routing.routes.map((route, index) => {
@@ -233,7 +236,7 @@ export function HeroLedger() {
           <SampleTag kind="illustrative" />
         </div>
         <div className="mb-3 flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-          <LockKeyhole className="h-4 w-4 text-cyan-500 dark:text-cyan-300" />
+          <Icon icon={LockKeyhole} size="sm" tone="proof" />
           {heroSystem.entryPreview.readonlyNote}
         </div>
         <div className="flex flex-wrap gap-2">
