@@ -30,6 +30,12 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   needs **no** deploy-layer flatten step. Awaiting one more Publish to confirm `/status` = HTTP 200
   (no `location:` header).
 - **NEXT SLICE = Phase 2.1 — Prose atom + Whitepaper** (per `docs/direction/WHITEPAPER_PLAN.md`).
+- **DECIDED — keep the newer OG image (`opengraph.jpg`), do NOT revert.** Replit regenerated the
+  social-preview screenshot from the current live app (fresher UI + chain figures: inflow 235.50,
+  **burned 21,273 SYN**, verify-on-chain links). Founder confirmed: additional burns happened since, so
+  **21,273 is the true current figure** — the Compass's "16,500" is a **stale doc number, not canon**
+  (chain > docs). **Implication for slice 2.2 (Tokenomics):** the burn MUST render as a **live chain
+  read**, never a hardcoded 16,500; when 2.2 lands, reconcile/soften the Compass's "16,500" mention.
 - **DEFERRED — www→apex 301 (NOT a 2.0 blocker; apex is canonical and serves today).** Do at
   **domain transfer (~Sept 2026)**: the domain was bought via **Lovable** and is registrar-locked
   ~60 days, and Lovable can only do a 302 (not a clean 301). After the lock, transfer to a proper
