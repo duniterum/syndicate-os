@@ -2,6 +2,10 @@
 
 **First-read operating compass for AI agents (Replit, Codex, Hermes, others) and human operators.**
 
+> **Read `docs/00_START_HERE.md` before this compass** — it is the whole-protocol entry point
+> (what the OS is, locked doctrine, the layers, the ORDER to grade-AAA, roles). This compass is
+> the constitution/router underneath it.
+
 This file is a **meta-canon router**. It routes you to canonical documents; it does not
 replace them. It is not a constitution, not a doctrine rewrite, and it deliberately
 restates almost nothing. Read this first, then open only the source docs your task needs.

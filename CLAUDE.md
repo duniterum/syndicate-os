@@ -1,5 +1,8 @@
 # CLAUDE.md — how we work (read first, every session)
 
+**Read `docs/00_START_HERE.md` first** — the whole-protocol entry point (what the OS is,
+locked doctrine, the layers, the ORDER to grade-AAA, roles). Then this file for how we work.
+
 **Canon.** Read `docs/00_CANON_INDEX.md`, then the TIER 0/1 docs it lists —
 especially `THE_SYNDICATE_OS_COMPASS.md` (constitution), `docs/adr/ADR-001-design-system-et-methodologie.md`,
 `docs/adr/ADR-002-protocole-anti-derive.md` (anti-drift protocol + the gate),

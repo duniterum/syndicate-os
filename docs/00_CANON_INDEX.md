@@ -23,6 +23,7 @@ gagne en cas de conflit*. Vit dans le repo : `docs/00_CANON_INDEX.md`.
 
 | Fichier | Ce que c'est |
 |---|---|
+| `docs/00_START_HERE.md` | **À LIRE EN PREMIER — le point d'entrée du protocole entier** (ce qu'est l'OS, doctrine verrouillée, les couches, l'ORDRE vers grade-AAA, les rôles). Oriente sur TOUT ; le reste est référence. |
 | `CANON_INDEX.md` (ce doc) | La carte des cartes — point d'entrée. |
 | `THE_SYNDICATE_OS_COMPASS.md` | Constitution + règle de conflit + doctrine (proof-first, no-fake-live, recognition≠yield, source≠commission). |
 | `WORKFLOW.md` | Comment on travaille (Astronaute ↔ Claude ↔ Replit). |
