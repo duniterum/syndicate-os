@@ -169,7 +169,7 @@ function PromotedStrip() {
           <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-gold">
             {homepagePromotedStrip.eyebrow}
           </div>
-          <h2 className="mb-3 text-3xl font-light tracking-tight text-foreground">
+          <h2 className="type-h2 mb-3 text-foreground">
             {homepagePromotedStrip.title}
           </h2>
           <p className="text-muted-foreground">{homepagePromotedStrip.subtitle}</p>
@@ -272,7 +272,7 @@ export default function PublicHome() {
                   </span>
                 </div>
 
-                <h1 className="max-w-[420px] font-serif text-[clamp(1.62rem,1.85vw,2.2rem)] font-semibold leading-[1.02] tracking-[-0.035em] text-foreground dark:text-white">
+                <h1 className="type-h1 max-w-[420px] text-foreground dark:text-white">
                   {heroSystem.headlineLead}{" "}
                   <span className="text-gold">{heroSystem.headlineEmphasis}</span>
                 </h1>
@@ -333,7 +333,7 @@ export default function PublicHome() {
       <section className="border-t border-border/50 bg-muted/20 py-16 text-foreground">
         <div className="container mx-auto max-w-6xl px-4">
           <div className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-light tracking-tight text-foreground">{howItWorks.title}</h2>
+            <h2 className="type-h2 mb-4 text-foreground">{howItWorks.title}</h2>
             <p className="text-muted-foreground">{howItWorks.subtitle}</p>
           </div>
           <div className="relative grid grid-cols-1 gap-8 md:grid-cols-5 md:gap-6">
@@ -355,7 +355,7 @@ export default function PublicHome() {
         <div className="container mx-auto max-w-6xl px-4">
           <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
-              <h2 className="mb-4 text-3xl font-light tracking-tight text-foreground">{operationalReality.title}</h2>
+              <h2 className="type-h2 mb-4 text-foreground">{operationalReality.title}</h2>
               <p className="text-muted-foreground">{operationalReality.subtitle}</p>
             </div>
             <Link href={operationalReality.statusCta.href}>
@@ -410,7 +410,7 @@ export default function PublicHome() {
             <div className="flex flex-col md:flex-row">
               <div className="flex flex-col justify-center p-8 md:w-1/2 md:p-12">
                 <TerminalSquare className="mb-6 h-8 w-8 text-gold" />
-                <h2 className="mb-4 text-2xl font-light tracking-tight text-foreground">{studioPreview.title}</h2>
+                <h2 className="type-h2 mb-4 text-foreground">{studioPreview.title}</h2>
                 <p className="mb-8 text-sm leading-relaxed text-muted-foreground">{studioPreview.description}</p>
                 <div>
                   <Link href={studioPreview.cta.href}>
