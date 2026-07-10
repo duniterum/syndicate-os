@@ -3,6 +3,7 @@ import { PublicPage } from "@/components/PublicPage";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Icon } from "@/components/icon/Icon";
 import {
   learningIntro,
   learningModules,
@@ -60,9 +61,9 @@ export default function Learning() {
                   {step.detail}
                 </p>
                 {step.href ? (
-                  <span className="mt-3 inline-flex items-center gap-1 text-xs text-cyan-700 dark:text-cyan-400">
+                  <span className="mt-3 inline-flex items-center gap-1 text-xs text-primary">
                     Open
-                    <ArrowRight className="h-3 w-3" />
+                    <Icon icon={ArrowRight} size="xs" />
                   </span>
                 ) : null}
               </Card>
