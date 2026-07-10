@@ -112,21 +112,20 @@ export function DataTable<Row>({
                 aria-sort={
                   active ? (sort!.dir === "asc" ? "ascending" : "descending") : undefined
                 }
-                className={cn(
-                  alignRight && "text-right",
-                  col.sortable && "cursor-pointer select-none",
-                  col.headClassName,
-                )}
-                onClick={col.sortable ? () => toggleSort(col.key) : undefined}
+                className={cn(alignRight && "text-right", col.headClassName)}
               >
-                <span
-                  className={cn(
-                    "inline-flex items-center gap-1",
-                    alignRight && "flex-row-reverse",
-                  )}
-                >
-                  {col.header}
-                  {col.sortable ? (
+                {col.sortable ? (
+                  // Native button → keyboard-operable (Tab + Enter/Space) with a
+                  // visible focus ring; a click-only <th> would fail WCAG 2.1.1.
+                  <button
+                    type="button"
+                    onClick={() => toggleSort(col.key)}
+                    className={cn(
+                      "-mx-1 inline-flex select-none items-center gap-1 rounded-sm px-1 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+                      alignRight && "flex-row-reverse",
+                    )}
+                  >
+                    {col.header}
                     <span
                       aria-hidden
                       className={cn(
@@ -136,8 +135,17 @@ export function DataTable<Row>({
                     >
                       {active ? SORT_GLYPH[sort!.dir] : "↕"}
                     </span>
-                  ) : null}
-                </span>
+                  </button>
+                ) : (
+                  <span
+                    className={cn(
+                      "inline-flex items-center gap-1",
+                      alignRight && "flex-row-reverse",
+                    )}
+                  >
+                    {col.header}
+                  </span>
+                )}
               </TableHead>
             );
           })}

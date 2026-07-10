@@ -13,7 +13,7 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
 - [ ] **Adoption** — chaque surface rend via le système (aucun composant orphelin).
 - [x] **Couleur** — 0 couleur brute → guard `no-raw-color` **BLOQUANT** dans la gate.
 - [x] **Typo** — l'échelle fluide `.type-*` adoptée partout (titres display/h1/h2/h3 sur toutes les surfaces, en Instrument Serif ; corps via `.type-body`).
-- [ ] **États** — chaque composant a survol / focus / désactivé / vide / erreur + a11y.
+- [x] **États** — chaque composant a survol / focus / désactivé / vide / erreur + a11y (atomes : Field default/focus/error/disabled ; DataTable vide/loading/hover + tri clavier ; Button/Input focus/disabled ; l'audit a11y profond WCAG/APCA = Phase 6).
 - [ ] **Mouvement** — tokens de motion appliqués (jamais "plus tard").
 - [ ] **2 modes** — clair "editorial museum" + sombre "command-room" vérifiés sur chaque surface.
 - [ ] **Audits verts** — accessibilité (WCAG/APCA) · responsive · performance.
@@ -37,7 +37,7 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
 
 ### Phase 4 — Harmonisation totale (le "rien à moitié")
 - [x] Finir migration couleur (108 → 0) → guard **BLOQUANT** · [x] Adopter `.type-*` partout (titres, ~17 pages, serif)
-- [ ] Mouvement · [ ] États complets sur tous les composants · [ ] Vérifier les 2 modes
+- [ ] Mouvement · [x] États complets sur tous les composants · [ ] Vérifier les 2 modes
 
 ### Phase 5 — Surfaces (adoption)
 - [ ] Public · [ ] Dashboards (connecté / membre) · [ ] Console admin
