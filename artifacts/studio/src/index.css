@@ -172,6 +172,10 @@
   --gold-foreground: 240 30% 8%;
   --warning: 36 95% 60%;
   --success: 158 64% 46%;
+  /* Data-viz — brightened for the dark "command-room" surface (restores the
+     dark-mode boost the raw dark:*-400 shades had before tokenization). */
+  --viz-1: 190 85% 56%; --viz-2: 42 92% 62%; --viz-3: 265 78% 72%;
+  --viz-4: 158 62% 52%; --viz-5: 12 85% 66%; --viz-6: 220 82% 68%;
 }
 
 @layer base {
