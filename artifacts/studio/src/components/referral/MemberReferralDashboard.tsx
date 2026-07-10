@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SampleTag } from "@/components/SampleTag";
 import { StatCard } from "@/components/stat-card/StatCard";
+import { StatusPill, type StatusTone } from "@/components/status-pill/StatusPill";
+import { DataTable, type Column } from "@/components/data-table/DataTable";
 import { ShareCard } from "@/components/referral/ShareCard";
 import { ShareMenu } from "@/components/referral/ShareMenu";
 import { QrCodeBlock } from "@/components/referral/QrCodeBlock";
@@ -25,7 +27,44 @@ import {
   memberStatsSample,
   memberHistorySample,
   memberTrendSample,
+  type ReferralHistoryRow,
 } from "@/config/referralProgram";
+
+// Referral status → tokenized StatusPill tone. Paid is settled (proof/cyan),
+// Pending is caution (amber), anything else (Ineligible) is inert → neutral.
+function referralStatusTone(status: string): StatusTone {
+  if (status === "Paid") return "proof";
+  if (status === "Pending") return "caution";
+  return "neutral";
+}
+
+const historyColumns: Column<ReferralHistoryRow>[] = [
+  {
+    key: "referred",
+    header: "Referred",
+    cell: (r) => <span className="font-mono text-xs text-foreground/80">{r.referred}</span>,
+  },
+  {
+    key: "date",
+    header: "Date",
+    cell: (r) => <span className="text-muted-foreground">{r.date}</span>,
+  },
+  {
+    key: "status",
+    header: "Status",
+    cell: (r) => (
+      <StatusPill tone={referralStatusTone(r.status)} size="xs">
+        {r.status}
+      </StatusPill>
+    ),
+  },
+  {
+    key: "commission",
+    header: "Commission",
+    align: "right",
+    cell: (r) => <span className="font-mono text-foreground/80">{r.commission}</span>,
+  },
+];
 
 function TrendChart({ data }: { data: { label: string; value: number }[] }) {
   const w = 320;
@@ -146,26 +185,13 @@ export function MemberReferralDashboard() {
             <h4 className="text-sm font-medium text-foreground">Recent introductions</h4>
             <SampleTag kind="simulated" />
           </div>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-xs text-muted-foreground">
-                <th className="font-normal pb-2">Referred</th>
-                <th className="font-normal pb-2">Date</th>
-                <th className="font-normal pb-2">Status</th>
-                <th className="font-normal pb-2 text-right">Commission</th>
-              </tr>
-            </thead>
-            <tbody>
-              {memberHistorySample.map((row) => (
-                <tr key={row.referred} className="border-t border-border/40">
-                  <td className="py-2 font-mono text-xs text-foreground/80">{row.referred}</td>
-                  <td className="py-2 text-muted-foreground">{row.date}</td>
-                  <td className="py-2 text-muted-foreground">{row.status}</td>
-                  <td className="py-2 text-right text-foreground/80">{row.commission}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <DataTable
+            columns={historyColumns}
+            rows={memberHistorySample}
+            getRowKey={(r) => r.referred}
+            density="compact"
+            zebra
+          />
         </Card>
       </div>
 
