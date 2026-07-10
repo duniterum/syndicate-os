@@ -226,6 +226,24 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
       "Tokenomics content page (slice 2.2), on the Prose atom. Supply / per-allocation balances / prices / burn are LIVE chain reads (protocol-reality + join-quote + LP reserves); mint-time design targets shown as labelled config.",
   },
   {
+    path: "/faq",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "FAQ — The Syndicate, Answered & Verifiable",
+    description:
+      "Honest answers about The Syndicate — SYN the seat, membership and the sale, treasury routing, liquidity, ranks, the archive, and risk. Answers hold no figures; every live number is one click away on-chain. Not a security; no promise of gain.",
+    canonicalPath: "/faq",
+    changefreq: "monthly",
+    priority: 0.7,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "education",
+    primaryIntent: "education",
+    proofRoute: "/status",
+    notes:
+      "FAQ content page (slice 2.3), composed from the living chassis. Number-free doctrine-perfect corpus (content/faq-content.ts) reframed from the origin 39 Q&A; FAQPage JSON-LD baked into the server HTML from one shared builder (seo-faq-jsonld.ts). Live figures via the hero card hooks / links only — no hardcoded numbers.",
+  },
+  {
     path: "/recognition",
     routeType: "PENDING",
     indexStatus: "PENDING",

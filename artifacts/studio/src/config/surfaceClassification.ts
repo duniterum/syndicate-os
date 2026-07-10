@@ -111,6 +111,17 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     enforcement: "PREVIEW_LABELLED",
   },
   {
+    routePath: "/faq",
+    moduleId: "faq",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary:
+      "FAQ composed from the living chassis — number-free doctrine-perfect answers, every live figure one click away on-chain.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
     routePath: "/source-attribution",
     moduleId: "source-attribution",
     audience: "PUBLIC",

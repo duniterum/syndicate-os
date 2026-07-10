@@ -62,7 +62,8 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   needs **no** deploy-layer flatten step. Awaiting one more Publish to confirm `/status` = HTTP 200
   (no `location:` header).
 - ~~**NEXT SLICE = Phase 2.1 — Prose atom + Whitepaper**~~ — superseded: Prose atom, Whitepaper, and
-  Tokenomics are all DONE and relaunched on the living chassis (see the top living bullets). **NEXT = 2.3 FAQ.**
+  Tokenomics are all DONE and relaunched on the living chassis (see the top living bullets). **2.3 FAQ is
+  CODE-COMPLETE (green locally, awaiting deploy); NEXT = Support (floating robot).**
 - **DECIDED — keep the newer OG image (`opengraph.jpg`), do NOT revert.** Replit regenerated the
   social-preview screenshot from the current live app (fresher UI + chain figures: inflow 235.50,
   **burned 21,273 SYN**, verify-on-chain links). Founder confirmed: additional burns happened since, so
@@ -112,7 +113,17 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
     (inflow aggregate, vault/ops/LP/burn balances, memberCount) · **SYN `totalSupply`** · **7 allocation
     `balanceOf`**. Client hooks: `useHeroReality`, `useTokenomics` (+ market price from live LP reserves,
     entry rate from the live join-quote). Standing rule: **no PENDING for a readable figure.**
-  - **NEXT = 2.3 FAQ → Support (floating robot) → 2.4 Docs → 2.5 Knowledge** — each COMPOSES from the
+  - **FAQ (2.3) → 🔨 CODE-COMPLETE (awaiting deploy).** `/faq` composed from the living chassis
+    (`PublicPage` + `LivingSignature` + `TransparencyPosture` + `SectionIndex`) + one new interactive
+    primitive `FaqAccordion` (search + category filter + accordion, tokens-only). Content = the origin's
+    39 Q&A across 8 categories, **reframed doctrine-perfect: zero numerals, zero addresses, no banned
+    words** ("package" → "featured entry amount / entry tier") — every live figure is a hero-card chain
+    read (`useHeroReality`/`useTokenomics`, fail-closed) or a one-click link to `/tokenomics` `/status`
+    `/join`. **FAQPage JSON-LD** baked into the server HTML from one shared builder (`seo-faq-jsonld.ts`,
+    41 Q) feeding both prerender + a runtime injector — no drift, on-screen text == structured data.
+    Wired end-to-end (registry INDEX+sitemap · surfaceClassification · modules "faq" Learn-footer · nav ·
+    App route). Green locally: typecheck 0 · all 9 guards + no-raw-color · seo:check 303.
+  - **NEXT = Support (floating robot) → 2.4 Docs → 2.5 Knowledge** — each COMPOSES from the
     `living/` chassis + harvests per `CONTENT_SURFACE_HARVEST_MAP.md`.
 - **PHASES 3–6 → ⬜ pending** (auth single-instance/Reserved-VM blocker open; admin/RBAC unseeded; event
   backbone / activity / gamification unbuilt; perf/a11y/responsive/security audits not run; fonts still Google-CDN).
@@ -142,8 +153,10 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
    reserves) + entry rate (live join-quote). **Whitepaper's 10 PENDINGs flipped to LIVE** (supply, 7
    allocation shares, both prices). Stale "16,500" burn retired — burn is a live read everywhere. Standing
    rule added: no PENDING for a readable figure. *(NEXT = 2.3 FAQ.)*
-4. **2.3 FAQ** (harvest: Supa chrome + origin 39 Q&A — see harvest map) *(NEXT)* · 5. **Support + floating
-   robot** (harvest: Supa `FloatingAISupport`; tone exception; NOT the AI Layer; never fabricates a figure)
+4. ~~**2.3 FAQ**~~ 🔨 **CODE-COMPLETE (awaiting deploy)** — `/faq` on the living chassis + `FaqAccordion`;
+   origin 39 Q&A reframed number-free/address-free/banned-word-free; FAQPage JSON-LD in the server HTML.
+   *(NEXT = Support.)* · 5. **Support + floating robot** *(NEXT)* (harvest: Supa `FloatingAISupport`; tone
+   exception; NOT the AI Layer; never fabricates a figure)
 6. **2.4 Docs** · 7. **2.5 Knowledge base** · 8. **2.6 Risk** · 9. **2.7 Glossary**
 10. **2.8 Roadmap** (registry-driven) · 11. **2.9 Protocol-facts** · 12. **2.10 Brand-facts**
 12. **2.11 Join / entry-tiers UI** — featured tiers + custom-amount compose + live quote preview

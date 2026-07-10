@@ -12,10 +12,21 @@ export function SectionIndex({
   entries,
   className,
   heading = "Contents",
+  activeId,
+  onSelect,
 }: {
   entries: readonly IndexEntry[];
   className?: string;
   heading?: string;
+  /** Highlight the entry whose id matches (e.g. the active category filter). */
+  activeId?: string;
+  /**
+   * When provided, the TOC drives selection instead of a raw anchor jump: the
+   * default anchor navigation is suppressed and `onSelect(id)` is called, so a
+   * page can filter/isolate content reliably (no async hash-vs-render race).
+   * When omitted the entries behave exactly as before — plain `#id` anchors.
+   */
+  onSelect?: (id: string) => void;
 }) {
   return (
     <nav
@@ -27,19 +38,39 @@ export function SectionIndex({
           {heading}
         </p>
         <ol className="space-y-0.5">
-          {entries.map((e, i) => (
-            <li key={e.id}>
-              <a
-                href={`#${e.id}`}
-                className="group flex items-baseline gap-2 rounded-sm px-1 py-1 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <span className="font-mono text-[10px] text-muted-foreground/70 group-hover:text-primary">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span>{e.label}</span>
-              </a>
-            </li>
-          ))}
+          {entries.map((e, i) => {
+            const isActive = activeId === e.id;
+            return (
+              <li key={e.id}>
+                <a
+                  href={`#${e.id}`}
+                  aria-current={isActive ? "true" : undefined}
+                  onClick={
+                    onSelect
+                      ? (ev) => {
+                          ev.preventDefault();
+                          onSelect(e.id);
+                        }
+                      : undefined
+                  }
+                  className={cn(
+                    "group flex items-baseline gap-2 rounded-sm px-1 py-1 text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    isActive ? "text-foreground" : "text-muted-foreground",
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "font-mono text-[10px] group-hover:text-primary",
+                      isActive ? "text-primary" : "text-muted-foreground/70",
+                    )}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span>{e.label}</span>
+                </a>
+              </li>
+            );
+          })}
         </ol>
       </div>
     </nav>

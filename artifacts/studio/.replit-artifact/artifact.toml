@@ -98,6 +98,14 @@ from = "/tokenomics/"
 to = "/tokenomics.html"
 
 [[services.production.rewrites]]
+from = "/faq"
+to = "/faq.html"
+
+[[services.production.rewrites]]
+from = "/faq/"
+to = "/faq.html"
+
+[[services.production.rewrites]]
 from = "/recognition"
 to = "/recognition.html"
 

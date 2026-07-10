@@ -59,7 +59,7 @@ export interface FooterGroup {
 
 const footerGroupSpec: { heading: string; itemIds: string[] }[] = [
   { heading: "Protocol", itemIds: ["proof", "map", "status", "contracts", "source-attribution"] },
-  { heading: "Learn", itemIds: ["whitepaper", "tokenomics", "learning", "recognition", "archive"] },
+  { heading: "Learn", itemIds: ["whitepaper", "tokenomics", "faq", "learning", "recognition", "archive"] },
   { heading: "Membership", itemIds: ["member", "join", "source-link", "support"] },
   { heading: "Console", itemIds: ["studio"] },
 ];

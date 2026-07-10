@@ -39,6 +39,10 @@ import {
   serializeOrganizationJsonLd,
   ORG_JSONLD_ID,
 } from "../src/lib/seo-jsonld.ts";
+import {
+  serializeFaqJsonLd,
+  FAQ_JSONLD_ID,
+} from "../src/lib/seo-faq-jsonld.ts";
 
 // --- HTML head helpers. Escape for the two contexts we write into. -------------
 function attr(value: string): string {
@@ -71,14 +75,20 @@ function setCanonical(html: string, href: string | null): string {
   if (href === null) return html.replace(re, "");
   return replaceOrInsert(html, re, `<link rel="canonical" href="${attr(href)}" />`);
 }
-/** Homepage-only JSON-LD (matches the runtime manager); strip on other routes. */
-function setJsonLd(html: string, json: string | null): string {
-  const re = new RegExp(`\\s*<script[^>]*id="${ORG_JSONLD_ID}"[\\s\\S]*?</script>`);
+/** Upsert-or-strip a keyed JSON-LD <script> (matches the runtime injectors). */
+function setKeyedJsonLd(html: string, id: string, json: string | null): string {
+  const re = new RegExp(`\\s*<script[^>]*id="${id}"[\\s\\S]*?</script>`);
   const stripped = html.replace(re, "");
   if (json === null) return stripped;
   const safe = json.replace(/</g, "\\u003c");
-  const tag = `<script type="application/ld+json" id="${ORG_JSONLD_ID}" data-seo-managed="true">${safe}</script>`;
+  const tag = `<script type="application/ld+json" id="${id}" data-seo-managed="true">${safe}</script>`;
   return stripped.replace(/<\/head>/, `    ${tag}\n  </head>`);
+}
+/** Route-specific JSON-LD: Organization on the homepage, FAQPage on /faq. */
+function setRouteJsonLd(html: string, location: string): string {
+  let out = setKeyedJsonLd(html, ORG_JSONLD_ID, location === "/" ? serializeOrganizationJsonLd() : null);
+  out = setKeyedJsonLd(out, FAQ_JSONLD_ID, location === "/faq" ? serializeFaqJsonLd() : null);
+  return out;
 }
 
 /** Bake a route's full <head> into the built index.html template. */
@@ -97,7 +107,7 @@ function renderRoute(template: string, location: string): string {
   html = setMetaName(html, "twitter:title", head.title);
   html = setMetaName(html, "twitter:description", head.description);
   html = setMetaName(html, "twitter:image", head.ogImage);
-  html = setJsonLd(html, location === "/" ? serializeOrganizationJsonLd() : null);
+  html = setRouteJsonLd(html, location);
   return html;
 }
 

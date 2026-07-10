@@ -33,8 +33,9 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
 
 ### Phase 3 — Patterns
 - [ ] Grille KPI (migration du héros ProtocolOverviewPanel) · [ ] Table CRUD
-- [ ] Grille dashboard · [ ] Formulaire · [x] Page contenu (Prose atom → Whitepaper + Tokenomics, slices 2.1–2.2)
-- [x] **Chassis « living protocol »** (`src/components/living/`) : LivingSignature · TransparencyPosture · SectionIndex · AllocationDonut · ReconciliationTable — réutilisés par whitepaper/tokenomics/FAQ/docs/knowledge
+- [ ] Grille dashboard · [ ] Formulaire · [x] Page contenu (Prose atom → Whitepaper + Tokenomics + FAQ, slices 2.1–2.3)
+- [x] **Chassis « living protocol »** (`src/components/living/`) : LivingSignature · TransparencyPosture · SectionIndex (+ `onSelect`/`activeId`, slice 2.3) · AllocationDonut · ReconciliationTable — réutilisés par whitepaper/tokenomics/FAQ, à venir docs/knowledge
+- [x] **FaqAccordion** (`src/components/faq/`, slice 2.3) : recherche + filtre catégorie + accordéon accessible, tokens only (harvest structure Supa, contenu doctrine-parfait sans chiffre)
 
 ### Phase 4 — Harmonisation totale (le "rien à moitié")
 - [x] Finir migration couleur (108 → 0) → guard **BLOQUANT** · [x] Adopter `.type-*` partout (titres, ~17 pages, serif)
@@ -57,8 +58,9 @@ Design **100 % fini, verrouillé** = toutes les cases de "Définition de FINI" c
 → **on n'y revient plus jamais.**
 
 ## Suivi couleur — ✅ FERMÉ
-Sprawl : **0** couleur brute. Guard `no-raw-color` **BLOQUANT** dans la gate (`pnpm guards`), toute
-nouvelle couleur brute casse le build. Du pic de **137 sites** → **0** au fil des slices d'harmonisation.
+Sprawl : **0** couleur brute (slice 2.3 FAQ : **+0** — page + FaqAccordion 100 % tokens). Guard
+`no-raw-color` **BLOQUANT** dans la gate (`pnpm guards`), toute nouvelle couleur brute casse le
+build. Du pic de **137 sites** → **0** au fil des slices d'harmonisation.
 Une seule exception documentée : `QrCodeBlock` (fond blanc du canvas QR, requis pour la lisibilité),
 taguée `no-raw-color-allow`. Le token layer (`index.css`) reste la seule source de couleur brute légitime.
 
