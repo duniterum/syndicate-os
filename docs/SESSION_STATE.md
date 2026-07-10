@@ -63,7 +63,12 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   (no `location:` header).
 - ~~**NEXT SLICE = Phase 2.1 — Prose atom + Whitepaper**~~ — superseded: Prose atom, Whitepaper, and
   Tokenomics are all DONE and relaunched on the living chassis (see the top living bullets). **2.3 FAQ is
-  CODE-COMPLETE (green locally, awaiting deploy); NEXT = Support (floating robot).**
+  SEALED in prod (`1c6a07d`, Replit-verified live). NEXT = Support (floating robot).**
+- **⚠️ DEPLOY DEBT — `main` is ONE cosmetic commit ahead of production.** `8bc3f1e` (in-card links on `/faq`
+  now render cyan + underlined instead of plain text — founder-reported) is pushed to `main` but **NOT yet
+  deployed** — founder decided to **batch it with the next slice's deploy** (Support), so Replit does one
+  pull, not two. No data/SEO impact; purely visual. When the next deploy runs, it carries BOTH — no separate
+  action needed. (Clear this note once prod is at `8bc3f1e` or later.)
 - **DECIDED — keep the newer OG image (`opengraph.jpg`), do NOT revert.** Replit regenerated the
   social-preview screenshot from the current live app (fresher UI + chain figures: inflow 235.50,
   **burned 21,273 SYN**, verify-on-chain links). Founder confirmed: additional burns happened since, so
@@ -113,7 +118,7 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
     (inflow aggregate, vault/ops/LP/burn balances, memberCount) · **SYN `totalSupply`** · **7 allocation
     `balanceOf`**. Client hooks: `useHeroReality`, `useTokenomics` (+ market price from live LP reserves,
     entry rate from the live join-quote). Standing rule: **no PENDING for a readable figure.**
-  - **FAQ (2.3) → 🔨 CODE-COMPLETE (awaiting deploy).** `/faq` composed from the living chassis
+  - **FAQ (2.3) → ✅ SEALED in prod (`1c6a07d`, Replit-verified live).** `/faq` composed from the living chassis
     (`PublicPage` + `LivingSignature` + `TransparencyPosture` + `SectionIndex`) + one new interactive
     primitive `FaqAccordion` (search + category filter + accordion, tokens-only). Content = the origin's
     39 Q&A across 8 categories, **reframed doctrine-perfect: zero numerals, zero addresses, no banned
@@ -153,10 +158,12 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
    reserves) + entry rate (live join-quote). **Whitepaper's 10 PENDINGs flipped to LIVE** (supply, 7
    allocation shares, both prices). Stale "16,500" burn retired — burn is a live read everywhere. Standing
    rule added: no PENDING for a readable figure. *(NEXT = 2.3 FAQ.)*
-4. ~~**2.3 FAQ**~~ 🔨 **CODE-COMPLETE (awaiting deploy)** — `/faq` on the living chassis + `FaqAccordion`;
-   origin 39 Q&A reframed number-free/address-free/banned-word-free; FAQPage JSON-LD in the server HTML.
-   *(NEXT = Support.)* · 5. **Support + floating robot** *(NEXT)* (harvest: Supa `FloatingAISupport`; tone
-   exception; NOT the AI Layer; never fabricates a figure)
+4. ~~**2.3 FAQ**~~ ✅ **SEALED in prod** (`1c6a07d`) — `/faq` on the living chassis + `FaqAccordion`;
+   origin 39 Q&A reframed number-free/address-free/banned-word-free; FAQPage JSON-LD in the server HTML
+   (Replit-verified live: 200, JSON-LD present, live band 10 seats / 100 SYN·USDC, sitemap 14 INDEX).
+   *(One undeployed cosmetic corrective `8bc3f1e` batched with the next deploy — see DEPLOY DEBT above.)*
+   · 5. **Support + floating robot** *(NEXT)* (harvest: Supa `FloatingAISupport`; tone exception; NOT
+   the AI Layer; never fabricates a figure)
 6. **2.4 Docs** · 7. **2.5 Knowledge base** · 8. **2.6 Risk** · 9. **2.7 Glossary**
 10. **2.8 Roadmap** (registry-driven) · 11. **2.9 Protocol-facts** · 12. **2.10 Brand-facts**
 12. **2.11 Join / entry-tiers UI** — featured tiers + custom-amount compose + live quote preview
