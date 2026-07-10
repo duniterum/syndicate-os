@@ -82,6 +82,14 @@ from = "/learning/"
 to = "/learning.html"
 
 [[services.production.rewrites]]
+from = "/whitepaper"
+to = "/whitepaper.html"
+
+[[services.production.rewrites]]
+from = "/whitepaper/"
+to = "/whitepaper.html"
+
+[[services.production.rewrites]]
 from = "/recognition"
 to = "/recognition.html"
 

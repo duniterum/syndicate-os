@@ -29,7 +29,7 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
 
 ### Phase 2 — Atomes
 - [x] Amount · [x] StatusPill · [x] Button + Tag · [x] StatCard
-- [x] Table · [x] Field / Formulaire · [ ] Prose (Docs/Whitepaper) · [x] Icônes
+- [x] Table · [x] Field / Formulaire · [x] Prose (Docs/Whitepaper — livré slice 2.1) · [x] Icônes
 
 ### Phase 3 — Patterns
 - [ ] Grille KPI (migration du héros ProtocolOverviewPanel) · [ ] Table CRUD

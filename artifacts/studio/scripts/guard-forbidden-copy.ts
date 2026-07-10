@@ -31,9 +31,25 @@ const PHRASES = [
   "guaranteed benefit",
   "guaranteed return",
   "financial return",
+  // Slice 2.1 (first big public-copy page) — extend the financial-framing ban.
+  "governance weight",
 ];
 // Single words: matched on word boundaries (bare "return"/"reward" are allowed).
-const WORDS = ["jackpot", "wager", "betting", "payout", "profit", "yield", "airdrop", "farming"];
+// All terms below are negation-aware (isNegated exempts honest disclaimers like
+// "not an investment", "not equity", "not donations"). NOTE (repo wins, flagged):
+// "contribution" and "package" are DELIBERATELY NOT banned — both appear in live
+// approved/internal copy ("routed contribution", admin "package" copy + comments);
+// banning them here would fail the guard on unrelated files. Revisit "package"
+// when the admin/entry-tier surfaces are built.
+const WORDS = [
+  "jackpot", "wager", "betting", "payout", "profit", "yield", "airdrop", "farming",
+  // Slice 2.1 additions (safe set — absent from src, or only in negated disclaimers):
+  "invest", "invests", "investing", "investment", "investments", "investor", "investors",
+  "donation", "donations", "dividend", "dividends", "equity",
+  "apy", "apr", "roi", "pump", "100x",
+  // NOT added (repo wins, flagged): "moon" (the lucide <Moon/> theme icon) and
+  // "raised" ("Raised class" = a referral tier name) are legitimate existing copy.
+];
 
 function escapeRe(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

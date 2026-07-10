@@ -22,7 +22,11 @@ const EXEMPT = new Set([
   "not-found.tsx",
   "OperatorPreviewUnavailable.tsx",
 ]);
-const LABEL_RE = /\b(LifecycleBadge|TruthLabel)\b/;
+// StatusPill is the canonical status atom since the Phase-1 consolidation:
+// TruthLabel is a thin wrapper over it, and it replaced the older
+// LifecycleBadge/PostureBadge sprawl. A page rendering any of these carries an
+// honesty label. (The whitepaper labels every section with a <StatusPill>.)
+const LABEL_RE = /\b(LifecycleBadge|TruthLabel|StatusPill)\b/;
 
 const errors: string[] = [];
 let ok = 0;

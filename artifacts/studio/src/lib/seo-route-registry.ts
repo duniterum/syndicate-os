@@ -190,6 +190,24 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     notes: "Real educational content (Slice 2.21A).",
   },
   {
+    path: "/whitepaper",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "Whitepaper — The Syndicate, Written Once, Verified Live",
+    description:
+      "What The Syndicate is, how a seat and revenue routing work, and how to verify every figure on-chain. The prose is written once; every figure is read live from Avalanche — never hardcoded.",
+    canonicalPath: "/whitepaper",
+    changefreq: "monthly",
+    priority: 0.9,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "education",
+    primaryIntent: "education",
+    proofRoute: "/status",
+    notes:
+      "Anchor content page (slice 2.1), built on the Prose atom. Static prose; every figure is a live chain read or a PENDING label — no hardcoded numbers.",
+  },
+  {
     path: "/recognition",
     routeType: "PENDING",
     indexStatus: "PENDING",

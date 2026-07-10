@@ -10,6 +10,7 @@ import ProofDashboard from "@/pages/ProofDashboard";
 import MemberAccess from "@/pages/MemberAccess";
 import SystemStatus from "@/pages/SystemStatus";
 import Learning from "@/pages/Learning";
+import Whitepaper from "@/pages/Whitepaper";
 import Recognition from "@/pages/Recognition";
 import ContractMemory from "@/pages/ContractMemory";
 import ProtocolMap from "@/pages/ProtocolMap";
@@ -102,6 +103,9 @@ function Router() {
       </PublicRoute>
       <PublicRoute path="/learning">
         <Learning />
+      </PublicRoute>
+      <PublicRoute path="/whitepaper">
+        <Whitepaper />
       </PublicRoute>
       <PublicRoute path="/contracts">
         <ContractMemory />

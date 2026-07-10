@@ -87,7 +87,11 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 ## Remaining Phase-2 slices, IN ORDER (from `docs/direction/MASTER_BUILD_SPEC.md` — do not re-plan)
 
 1. ~~**2.0 Rendering fix** — prerender/SSG shell, server HTML meta + JSON-LD, real 404.~~ ✅ **DONE.**
-2. **2.1 Prose atom + Whitepaper** — per `docs/direction/WHITEPAPER_PLAN.md` (15 sections; figures live). *(NEXT.)*
+2. ~~**2.1 Prose atom + Whitepaper**~~ ✅ **DONE** — Prose atom (`components/prose/Prose.tsx`) + `/whitepaper`
+   (15 sections, every figure a live chain read via `useHeroReality`/`Amount`/`VerifyOnChain` or a PENDING
+   label — zero hardcoded numbers). Guard extended (safe set; `contribution`/`package`/`moon`/`raised`
+   flagged as repo-wins exclusions). Supply, the 7 distribution shares, and both prices render PENDING —
+   they need a live supply/price read (wire in 2.2). *(NEXT = 2.2.)*
 3. **2.2 Tokenomics (+ SYN token)** — 1B fixed, 7 buckets (35/25/12/10/8/5/5), burn, 70/20/10; figures live.
 4. **2.3 FAQ** · 5. **2.4 Docs** · 6. **2.5 Knowledge base** · 7. **2.6 Risk** · 8. **2.7 Glossary**
 9. **2.8 Roadmap** (registry-driven) · 10. **2.9 Protocol-facts** · 11. **2.10 Brand-facts**

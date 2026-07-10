@@ -91,6 +91,16 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     enforcement: "PREVIEW_LABELLED",
   },
   {
+    routePath: "/whitepaper",
+    moduleId: "whitepaper",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "The anchor whitepaper — 15 sections, every figure read live from the chain.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
     routePath: "/source-attribution",
     moduleId: "source-attribution",
     audience: "PUBLIC",
