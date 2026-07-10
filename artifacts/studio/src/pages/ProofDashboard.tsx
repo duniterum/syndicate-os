@@ -77,7 +77,7 @@ export default function ProofDashboard() {
         {safetyCopy.readOnly} {safetyCopy.noFakeData}
       </div>
 
-      <h2 className="text-xl font-light tracking-tight text-foreground mb-5">What proof will cover</h2>
+      <h2 className="type-h2 text-foreground mb-5">What proof will cover</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-14">
         {facets.map((f) => {
           const Icon = f.icon;
@@ -96,7 +96,7 @@ export default function ProofDashboard() {
         })}
       </div>
 
-      <h2 className="text-xl font-light tracking-tight text-foreground mb-5">How verification will work</h2>
+      <h2 className="type-h2 text-foreground mb-5">How verification will work</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
         {steps.map((s) => (
           <Card key={s.n} className="bg-card/40 border-border/50 p-5">

@@ -208,7 +208,7 @@ export default function SourceLinkBuilder() {
       </Card>
 
       {/* Live registry linkage — same truth-labelled read as /status */}
-      <h2 className="text-xl font-light tracking-tight text-foreground mb-2">
+      <h2 className="type-h2 text-foreground mb-2">
         The registry behind this page
       </h2>
       <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-6">

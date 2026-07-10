@@ -23,7 +23,7 @@ export default function NotFound() {
               <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
                 Page not found
               </p>
-              <h1 className="text-xl sm:text-2xl font-medium text-foreground mt-0.5">
+              <h1 className="type-h2 text-foreground mt-0.5">
                 This route isn't part of the foundation
               </h1>
             </div>

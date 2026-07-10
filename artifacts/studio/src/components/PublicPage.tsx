@@ -22,11 +22,11 @@ export function PublicPage({ eyebrow, title, lead, badge, children }: PublicPage
             </p>
           )}
           {badge && <div className="mb-5">{badge}</div>}
-          <h1 className="text-3xl md:text-5xl font-light tracking-tight text-foreground max-w-3xl leading-[1.1]">
+          <h1 className="type-h1 text-foreground max-w-3xl">
             {title}
           </h1>
           {lead && (
-            <p className="text-lg text-muted-foreground max-w-2xl mt-5 leading-relaxed">{lead}</p>
+            <p className="type-body text-muted-foreground max-w-2xl mt-5">{lead}</p>
           )}
         </div>
       </section>

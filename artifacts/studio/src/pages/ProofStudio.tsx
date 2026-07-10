@@ -13,7 +13,7 @@ export default function ProofStudio() {
     <div className="p-8 max-w-4xl mx-auto">
       <div className="flex items-start justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-light text-foreground tracking-tight flex items-center gap-3">
+          <h1 className="type-h1 text-foreground flex items-center gap-3">
             <BoxSelect className="h-8 w-8 text-primary" />
             Proof Studio
           </h1>

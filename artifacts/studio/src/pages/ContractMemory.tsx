@@ -43,7 +43,7 @@ export default function ContractMemory() {
           if (entries.length === 0) return null;
           return (
             <section key={cat}>
-              <h2 className="text-xl font-light tracking-tight text-foreground mb-5">
+              <h2 className="type-h2 text-foreground mb-5">
                 {contractMemoryCategoryText[cat]}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -66,7 +66,7 @@ export default function ContractMemory() {
       </div>
 
       <section className="mt-16">
-        <h2 className="text-xl font-light tracking-tight text-foreground mb-1">
+        <h2 className="type-h2 text-foreground mb-1">
           Live read-only reality
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-6">

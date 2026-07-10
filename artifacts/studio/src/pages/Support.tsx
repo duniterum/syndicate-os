@@ -19,7 +19,7 @@ export default function Support() {
         <p className="text-sm text-muted-foreground leading-relaxed">{supportIntake.note}</p>
       </div>
 
-      <h2 className="text-xl font-light tracking-tight text-foreground mb-5">What you'll be able to raise</h2>
+      <h2 className="type-h2 text-foreground mb-5">What you'll be able to raise</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-14">
         {supportIntake.channels.map((c) => (
           <Card key={c.id} className="bg-card/40 border-border/50 p-5">
@@ -32,7 +32,7 @@ export default function Support() {
         ))}
       </div>
 
-      <h2 className="text-xl font-light tracking-tight text-foreground mb-5">How requests would be triaged</h2>
+      <h2 className="type-h2 text-foreground mb-5">How requests would be triaged</h2>
       <Card className="bg-card/20 border-border/50 p-6">
         <ol className="space-y-4">
           {supportIntake.triage.map((t, i) => (

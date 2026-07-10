@@ -19,7 +19,7 @@ export default function Archive() {
       lead="The archive holds the protocol's artifacts; the chronicle is its narrative memory of milestones. Both are concept memory today — archive reads are not wired and nothing is minted here."
       badge={<TruthLabel variant={surfaceStatus.archive} />}
     >
-      <h2 className="text-xl font-light tracking-tight text-foreground mb-5">The archive</h2>
+      <h2 className="type-h2 text-foreground mb-5">The archive</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-14">
         {archiveEntries.map((e) => (
           <Card key={e.id} className="bg-card/40 border-border/50 p-5">

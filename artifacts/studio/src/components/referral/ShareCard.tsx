@@ -36,7 +36,7 @@ export function ShareCard() {
           </div>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-2xl font-light tracking-tight text-foreground">{shareCardSample.headline}</p>
+              <p className="type-h2 text-foreground">{shareCardSample.headline}</p>
               <p className="text-sm text-muted-foreground mt-1">{shareCardSample.subline}</p>
             </div>
             <div className="shrink-0 rounded-md bg-white p-1.5">

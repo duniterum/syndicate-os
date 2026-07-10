@@ -33,7 +33,7 @@ export default function OperatorPreview({ moduleId }: { moduleId: string }) {
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-3xl font-light text-foreground tracking-tight flex items-center gap-3">
+        <h1 className="type-h1 text-foreground flex items-center gap-3">
           <Icon className="h-8 w-8 text-primary" />
           {module.label}
         </h1>

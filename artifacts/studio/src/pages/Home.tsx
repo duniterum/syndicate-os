@@ -19,7 +19,7 @@ export default function Home() {
   return (
     <div className="p-8 max-w-6xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-light text-foreground tracking-tight flex items-center gap-3">
+        <h1 className="type-h1 text-foreground flex items-center gap-3">
           <TerminalSquare className="h-8 w-8 text-primary" />
           Studio OS
         </h1>

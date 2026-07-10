@@ -204,7 +204,7 @@ export default function MemberAccess() {
         </TabsList>
 
         <TabsContent value="overview" className="mt-6">
-          <h2 className="text-xl font-light tracking-tight text-foreground mb-2">
+          <h2 className="type-h2 text-foreground mb-2">
             {membershipIdentity.heading}
           </h2>
           <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-6">

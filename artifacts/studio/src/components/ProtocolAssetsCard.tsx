@@ -90,7 +90,7 @@ export function ProtocolAssetsCard() {
   return (
     <section className="rounded-[1.05rem] border border-gold/25 bg-card/74 p-5 dark:bg-surface-command/76">
       <div className="mb-1 flex items-center justify-between gap-3">
-        <h2 className="text-xl font-light tracking-tight text-foreground">Protocol assets</h2>
+        <h2 className="type-h2 text-foreground">Protocol assets</h2>
         <LiveReadTag state={tagState} />
       </div>
       <p className="mb-5 text-sm text-muted-foreground">

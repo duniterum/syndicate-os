@@ -36,7 +36,7 @@ function AccessBlockedPanel({
       <div className="flex justify-center mb-6">
         <AccessStateChip stateId={current} />
       </div>
-      <h1 className="text-xl font-light text-foreground mb-4">
+      <h1 className="type-h2 text-foreground mb-4">
         This surface is reserved for a future access state.
       </h1>
       <p className="text-sm text-muted-foreground leading-relaxed">

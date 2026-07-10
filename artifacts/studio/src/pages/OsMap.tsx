@@ -52,7 +52,7 @@ export default function OsMap() {
       </div>
 
       <div className="mb-6">
-        <h1 className="text-3xl font-light text-foreground tracking-tight flex items-center gap-3">
+        <h1 className="type-h1 text-foreground flex items-center gap-3">
           <Network className="h-8 w-8 text-primary" />
           Protocol OS Map
         </h1>

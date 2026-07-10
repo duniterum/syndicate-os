@@ -24,7 +24,7 @@ export default function SourceAttribution() {
 
       {/* ── Referral Program (public layer over Source; paused today) ──────── */}
       <div className="flex flex-wrap items-center gap-3 mb-1">
-        <h2 className="text-2xl font-light tracking-tight text-foreground">{referralProgram.heading}</h2>
+        <h2 className="type-h2 text-foreground">{referralProgram.heading}</h2>
         <LifecycleBadge lifecycle={referralProgram.lifecycle} />
       </div>
       <p className="font-mono text-xs text-primary mb-4">{referralProgram.poweredBy}</p>
@@ -42,7 +42,7 @@ export default function SourceAttribution() {
         </div>
       </Card>
 
-      <h3 className="text-lg font-light tracking-tight text-foreground mb-4">How it works</h3>
+      <h3 className="type-h3 text-foreground mb-4">How it works</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
         {referralProgram.howItWorks.map((step, i) => (
           <Card key={step} className="bg-card/40 border-border/50 p-4">
@@ -54,7 +54,7 @@ export default function SourceAttribution() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <div>
-          <h3 className="text-lg font-light tracking-tight text-foreground mb-4">What counts as eligible</h3>
+          <h3 className="type-h3 text-foreground mb-4">What counts as eligible</h3>
           <ul className="space-y-2">
             {referralProgram.eligibility.map((e) => (
               <li key={e} className="flex items-start gap-3 text-sm text-foreground/90 leading-relaxed">
@@ -65,7 +65,7 @@ export default function SourceAttribution() {
           </ul>
         </div>
         <div>
-          <h3 className="text-lg font-light tracking-tight text-foreground mb-4">Anti-abuse</h3>
+          <h3 className="type-h3 text-foreground mb-4">Anti-abuse</h3>
           <ul className="space-y-2">
             {referralProgram.antiAbuse.map((a) => (
               <li key={a} className="flex items-start gap-3 text-sm text-foreground/90 leading-relaxed">
@@ -77,7 +77,7 @@ export default function SourceAttribution() {
         </div>
       </div>
 
-      <h3 className="text-lg font-light tracking-tight text-foreground mb-4">Program states</h3>
+      <h3 className="type-h3 text-foreground mb-4">Program states</h3>
       <div className="flex flex-wrap gap-2 mb-12">
         {referralProgram.states.map((st) => (
           <span
@@ -98,7 +98,7 @@ export default function SourceAttribution() {
 
       <div className="h-px bg-border/50 mb-14" />
 
-      <h2 className="text-xl font-light tracking-tight text-foreground mb-5">The model</h2>
+      <h2 className="type-h2 text-foreground mb-5">The model</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-14">
         {sourceAttribution.model.map((step, i) => (
           <Card key={step.title} className="bg-card/40 border-border/50 p-5">
@@ -109,7 +109,7 @@ export default function SourceAttribution() {
         ))}
       </div>
 
-      <h2 className="text-xl font-light tracking-tight text-foreground mb-5">What's live today</h2>
+      <h2 className="type-h2 text-foreground mb-5">What's live today</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-14">
         {sourceAttribution.currentState.map((item) => (
           <Card key={item.title} className="bg-primary/5 border-primary/20 p-5">
@@ -119,7 +119,7 @@ export default function SourceAttribution() {
         ))}
       </div>
 
-      <h2 className="text-xl font-light tracking-tight text-foreground mb-5">Boundaries</h2>
+      <h2 className="type-h2 text-foreground mb-5">Boundaries</h2>
       <Card className="bg-card/20 border-border/50 p-6 mb-10">
         <ul className="space-y-3">
           {sourceAttribution.boundaries.map((b) => (

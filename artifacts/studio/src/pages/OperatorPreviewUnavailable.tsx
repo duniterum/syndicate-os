@@ -13,7 +13,7 @@ export default function OperatorPreviewUnavailable() {
           <ShieldOff className="h-5 w-5" aria-hidden="true" />
         </div>
         <p className="syn-eyebrow text-muted-foreground">Operator preview</p>
-        <h1 className="mt-2 text-2xl font-semibold text-foreground">
+        <h1 className="type-h2 mt-2 text-foreground">
           Internal preview is not enabled on this deployment
         </h1>
         <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
