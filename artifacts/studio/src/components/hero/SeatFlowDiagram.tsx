@@ -48,11 +48,14 @@ const flowPaths = [
   { id: "operations", d: "M438 318 C520 388 608 450 725 502", color: "violet" },
 ];
 
+// Categorical flow colors → the tokenized gold + data-viz palette (matching the
+// other hero panels). Applied via CSS (style / fill-*) so hsl(var(...)) resolves
+// reliably, not as a raw SVG presentation attribute.
 const flowColor = {
-  emerald: "rgba(16,185,129,0.5)",
-  gold: "rgba(245,183,71,0.58)",
-  cyan: "rgba(34,211,238,0.6)",
-  violet: "rgba(168,85,247,0.58)",
+  emerald: "hsl(var(--viz-4) / 0.5)",
+  gold: "hsl(var(--gold) / 0.58)",
+  cyan: "hsl(var(--viz-1) / 0.6)",
+  violet: "hsl(var(--viz-3) / 0.58)",
 };
 
 function SourceIcon({ id }: { id: keyof typeof sourceIcons }) {
@@ -67,7 +70,7 @@ function RouteIcon({ id }: { id: keyof typeof routeIcons }) {
 
 function Particle({ pathId, color, delay = "0s", reverse = false }: { pathId: string; color: string; delay?: string; reverse?: boolean }) {
   return (
-    <circle r="3" fill={color} opacity="0.5">
+    <circle r="3" style={{ fill: color }} opacity="0.5">
       <animateMotion dur="6.8s" begin={delay} repeatCount="indefinite" keyPoints={reverse ? "1;0" : "0;1"} keyTimes="0;1" calcMode="linear">
         <mpath href={`#flow-${pathId}`} />
       </animateMotion>
@@ -106,7 +109,7 @@ export function SeatFlowDiagram() {
       <div aria-hidden className="absolute inset-0">
         <div className="absolute left-1/2 top-[52%] h-[80%] w-[82%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-gold/28" />
         <div className="absolute left-1/2 top-[52%] h-[68%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-gold/22" />
-        <div className="absolute left-1/2 top-[52%] h-[56%] w-[58%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-500/18" />
+        <div className="absolute left-1/2 top-[52%] h-[56%] w-[58%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-viz-4/18" />
         <div className="absolute left-1/2 top-[52%] h-[44%] w-[46%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-gold/16" />
         <div className="absolute left-1/2 top-[52%] h-[34%] w-[36%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-gold/10" />
         <motion.div
@@ -124,8 +127,8 @@ export function SeatFlowDiagram() {
       <svg className="pointer-events-none absolute inset-0 z-10 h-full w-full" viewBox="0 0 850 560" preserveAspectRatio="none" aria-hidden="true">
         <defs>
           <radialGradient id="syn-center-glow-v7" cx="50%" cy="50%" r="58%">
-            <stop offset="0" stopColor="rgba(245,183,71,0.13)" />
-            <stop offset="1" stopColor="rgba(245,183,71,0)" />
+            <stop offset="0" style={{ stopColor: "hsl(var(--gold) / 0.13)" }} />
+            <stop offset="1" style={{ stopColor: "hsl(var(--gold) / 0)" }} />
           </radialGradient>
           <filter id="line-glow-v7">
             <feGaussianBlur stdDeviation="2" result="coloredBlur" />
@@ -142,7 +145,7 @@ export function SeatFlowDiagram() {
             id={`flow-${path.id}`}
             className={path.color === "emerald" ? "syn-flow-in" : "syn-flow-out"}
             d={path.d}
-            stroke={flowColor[path.color as keyof typeof flowColor]}
+            style={{ stroke: flowColor[path.color as keyof typeof flowColor] }}
             strokeWidth="2"
             fill="none"
             filter="url(#line-glow-v7)"
@@ -151,18 +154,18 @@ export function SeatFlowDiagram() {
         {!reduceMotion ? (
           <>
             {flowPaths.filter((p) => p.color === "emerald").map((path, index) => (
-              <Particle key={`particle-${path.id}`} pathId={path.id} color="rgba(16,185,129,0.8)" delay={`${index * 0.6}s`} />
+              <Particle key={`particle-${path.id}`} pathId={path.id} color="hsl(var(--viz-4) / 0.8)" delay={`${index * 0.6}s`} />
             ))}
-            <Particle pathId="vault" color="rgba(245,183,71,0.8)" delay="0.35s" />
-            <Particle pathId="liquidity" color="rgba(34,211,238,0.8)" delay="0.85s" />
-            <Particle pathId="operations" color="rgba(168,85,247,0.8)" delay="1.35s" />
+            <Particle pathId="vault" color="hsl(var(--gold) / 0.8)" delay="0.35s" />
+            <Particle pathId="liquidity" color="hsl(var(--viz-1) / 0.8)" delay="0.85s" />
+            <Particle pathId="operations" color="hsl(var(--viz-3) / 0.8)" delay="1.35s" />
           </>
         ) : null}
       </svg>
 
       <div className="absolute left-1/2 top-[5%] z-30 w-[130px] -translate-x-1/2 sm:w-[146px] xl:w-[160px]">
         <motion.div
-          animate={reduceMotion ? undefined : { y: [0, -3, 0], filter: ["drop-shadow(0 0 16px rgba(245,183,71,0.36))", "drop-shadow(0 0 28px rgba(245,183,71,0.62))", "drop-shadow(0 0 16px rgba(245,183,71,0.36))"] }}
+          animate={reduceMotion ? undefined : { y: [0, -3, 0], filter: ["drop-shadow(0 0 16px hsl(var(--gold) / 0.36))", "drop-shadow(0 0 28px hsl(var(--gold) / 0.62))", "drop-shadow(0 0 16px hsl(var(--gold) / 0.36))"] }}
           transition={{ duration: 5.2, repeat: Infinity, ease: "easeInOut" }}
         >
           <SeatThroneMark className="h-auto w-full" />
@@ -178,7 +181,7 @@ export function SeatFlowDiagram() {
             {heroSystem.seat.coreLabel}
           </div>
           {displayValue !== null ? (
-            <div className="mt-2.5 whitespace-nowrap font-mono text-[clamp(1.1rem,1.9vw,1.6rem)] font-black leading-none tracking-[-0.04em] text-emerald-500 dark:text-emerald-400">
+            <div className="mt-2.5 whitespace-nowrap font-mono text-[clamp(1.1rem,1.9vw,1.6rem)] font-black leading-none tracking-[-0.04em] text-viz-4">
               {displayValue}
             </div>
           ) : (
@@ -186,7 +189,7 @@ export function SeatFlowDiagram() {
               {reality.loading ? "Checking…" : heroSystem.seat.coreUnavailable}
             </div>
           )}
-          <svg className="mx-auto mt-3 h-7 w-[78%] text-emerald-500 dark:text-emerald-400" viewBox="0 0 260 42" aria-hidden="true">
+          <svg className="mx-auto mt-3 h-7 w-[78%] text-viz-4" viewBox="0 0 260 42" aria-hidden="true">
             <motion.path
               d="M4 33 C36 31 54 27 78 25 C116 22 140 18 166 15 C196 10 222 9 256 5"
               fill="none"
@@ -219,7 +222,7 @@ export function SeatFlowDiagram() {
               <span className="grid h-9 w-9 place-items-center rounded-full border border-gold/45 bg-card/82 text-gold shadow-[0_0_24px_-12px_hsl(var(--gold)/0.9)] dark:bg-black/62">
                 <SourceIcon id={IconKey} />
               </span>
-              <span className="min-w-[84px] rounded-lg border border-emerald-500/25 bg-card/88 px-2 py-1.5 shadow-[0_0_22px_-18px_rgba(16,185,129,0.9)] backdrop-blur-sm dark:bg-black/64">
+              <span className="min-w-[84px] rounded-lg border border-viz-4/25 bg-card/88 px-2 py-1.5 shadow-[0_0_22px_-18px_hsl(var(--viz-4)/0.9)] backdrop-blur-sm dark:bg-black/64">
                 <span className="block whitespace-nowrap font-mono text-[9px] font-bold uppercase tracking-[0.06em] text-foreground dark:text-white">{source.label}</span>
                 <span className="block font-mono text-[8px] text-muted-foreground">{source.sub}</span>
               </span>
@@ -229,7 +232,7 @@ export function SeatFlowDiagram() {
 
         {heroSystem.flow.routes.map((route, index) => {
           const id = route.id as keyof typeof routeIcons;
-          const tone = route.tone === "liquidity" ? "text-blue-500 border-blue-500/45" : route.tone === "operations" ? "text-violet-500 border-violet-500/45" : "text-gold border-gold/50";
+          const tone = route.tone === "liquidity" ? "text-viz-6 border-viz-6/45" : route.tone === "operations" ? "text-viz-3 border-viz-3/45" : "text-gold border-gold/50";
           return (
             <motion.div
               key={route.id}

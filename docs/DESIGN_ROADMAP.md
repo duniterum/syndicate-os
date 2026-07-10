@@ -56,8 +56,8 @@ Design **100 % fini, verrouillé** = toutes les cases de "Définition de FINI" c
 → **on n'y revient plus jamais.**
 
 ## Suivi couleur
-Sprawl actuel : **74** sites en couleur brute (guard report-only). Objectif : **0** + guard bloquant.
-Dernière baisse : `HeroLedger` — accents catégoriels → tokens viz (alignés sur le flagship), cyan canonical → `proof`, icône verrou → atome `Icon`, 82 → 74.
+Sprawl actuel : **58** sites en couleur brute (guard report-only). Objectif : **0** + guard bloquant.
+Dernière baisse : `SeatFlowDiagram` entièrement tokenisé (SVG particules/gradient/traits + classes → gold + tokens viz via `hsl(var())`), 74 → 58. **Tout le hero public = 0 couleur brute.**
 Décisions marque/déco à batcher (fin de Phase 1) : rouge Avalanche `#e84142` · vert « success » (pastille live sur `PublicHome`) · fonds hero `#030609`/`#080b11` + glow · pastilles feu tricolore (déco).
 
 ## Gouvernance (comment on reste aligné)
