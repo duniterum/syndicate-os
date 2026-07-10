@@ -77,7 +77,7 @@ export function HeroLedger() {
         initial={reduceMotion ? false : { opacity: 0, y: 12 }}
         animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
         transition={{ duration: 0.46, delay: 0.18 }}
-        className="rounded-[1.05rem] border border-gold/25 bg-card/74 p-3.5 shadow-sm dark:bg-[#080b11]/76"
+        className="rounded-[1.05rem] border border-gold/25 bg-card/74 p-3.5 shadow-sm dark:bg-surface-command/76"
       >
         <div className="mb-3 flex items-center justify-between gap-3">
           <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">{heroSystem.sources.title}</h3>
@@ -159,7 +159,7 @@ export function HeroLedger() {
         initial={reduceMotion ? false : { opacity: 0, y: 12 }}
         animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
         transition={{ duration: 0.46, delay: 0.24 }}
-        className="rounded-[1.05rem] border border-gold/25 bg-card/74 p-3.5 dark:bg-[#080b11]/76"
+        className="rounded-[1.05rem] border border-gold/25 bg-card/74 p-3.5 dark:bg-surface-command/76"
       >
         <div className="mb-3 flex items-center justify-between gap-3">
           <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">{heroSystem.routing.title}</h3>
@@ -229,7 +229,7 @@ export function HeroLedger() {
         initial={reduceMotion ? false : { opacity: 0, y: 12 }}
         animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
         transition={{ duration: 0.46, delay: 0.3 }}
-        className="rounded-[1.05rem] border border-gold/25 bg-card/74 p-3.5 dark:bg-[#080b11]/76"
+        className="rounded-[1.05rem] border border-gold/25 bg-card/74 p-3.5 dark:bg-surface-command/76"
       >
         <div className="mb-3 flex items-center justify-between gap-3">
           <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">{heroSystem.entryPreview.title}</h3>

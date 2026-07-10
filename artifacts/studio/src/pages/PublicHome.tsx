@@ -54,7 +54,7 @@ function ProofRail({ className = "" }: { className?: string }) {
           <span
             className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border font-mono text-[10px] font-black ${
               item.tone === "avax"
-                ? "border-[#e84142]/30 bg-[#e84142] text-white shadow-[0_0_18px_-10px_rgba(232,65,66,0.9)]"
+                ? "border-avax/30 bg-avax text-white shadow-[0_0_18px_-10px_hsl(var(--avax)/0.9)]"
                 : item.tone === "cyan"
                   ? "border-primary/35 bg-primary/10 text-primary"
                   : "border-gold/35 bg-gold/10 text-gold"
@@ -250,9 +250,9 @@ export default function PublicHome() {
         Dark mode keeps the black/gold command-center reference.
         Light mode renders the same cockpit anatomy in a readable institutional light treatment.
       */}
-      <section className="syn-command-island relative isolate overflow-hidden border-b border-border bg-[radial-gradient(70%_48%_at_50%_0%,hsl(var(--gold)/0.18),transparent_68%),linear-gradient(180deg,hsl(var(--background)),hsl(var(--muted)))] text-foreground dark:border-gold/18 dark:bg-[#030609] dark:text-white">
+      <section className="syn-command-island relative isolate overflow-hidden border-b border-border bg-[radial-gradient(70%_48%_at_50%_0%,hsl(var(--gold)/0.18),transparent_68%),linear-gradient(180deg,hsl(var(--background)),hsl(var(--muted)))] text-foreground dark:border-gold/18 dark:bg-surface-command dark:text-white">
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute inset-0 bg-[radial-gradient(42%_46%_at_48%_44%,rgba(16,185,129,0.08),transparent_63%)] dark:bg-[radial-gradient(42%_46%_at_48%_44%,rgba(16,185,129,0.06),transparent_63%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(42%_46%_at_48%_44%,hsl(var(--success)/0.08),transparent_63%)] dark:bg-[radial-gradient(42%_46%_at_48%_44%,hsl(var(--success)/0.06),transparent_63%)]" />
           <div className="absolute inset-0 syn-command-grid opacity-35" />
         </div>
 
@@ -365,7 +365,7 @@ export default function PublicHome() {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <Card className="border-card-border bg-card p-8 shadow-sm">
               <h3 className="mb-6 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-foreground">
-                <span className="h-2 w-2 rounded-full bg-green-500" />
+                <span className="h-2 w-2 rounded-full bg-success" />
                 {operationalReality.liveHeading}
               </h3>
               <ul className="space-y-6">
@@ -385,7 +385,7 @@ export default function PublicHome() {
             </Card>
             <Card className="border-card-border bg-card/70 p-8 shadow-sm">
               <h3 className="mb-6 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                <span className="h-2 w-2 rounded-full bg-orange-500/80" />
+                <span className="h-2 w-2 rounded-full bg-warning/80" />
                 {operationalReality.pendingHeading}
               </h3>
               <ul className="space-y-6">
@@ -421,9 +421,9 @@ export default function PublicHome() {
               <div className="flex items-center justify-center border-t border-border bg-muted/30 p-6 md:w-1/2 md:border-l md:border-t-0 md:p-8">
                 <div className="flex w-full max-w-sm flex-col overflow-hidden rounded-lg border border-border bg-background shadow-sm">
                   <div className="flex h-8 items-center gap-2 border-b border-border bg-muted/50 px-3">
-                    <div className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/80" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-green-500/80" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-destructive/80" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-warning/80" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-success/80" />
                     <span className="ml-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                       {studioPreviewPanel.eyebrow}
                     </span>

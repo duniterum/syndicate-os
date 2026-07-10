@@ -56,10 +56,10 @@ Design **100 % fini, verrouillé** = toutes les cases de "Définition de FINI" c
 → **on n'y revient plus jamais.**
 
 ## Suivi couleur
-Sprawl actuel : **16** sites en couleur brute (guard report-only). Objectif : **0** + guard bloquant.
-Dernière baisse : balayage sémantique sur 14 surfaces (ambre→`warning`, rouge/rose→`destructive`, cyan→`proof`, catégoriel→`viz`, vert→`success`), 54 → 16.
-Reste : marque/déco sur `PublicHome`/`PublicLayout`/`HeroLedger` (Avalanche→`avax`, fonds→`surface-command`, pastilles) + 2 blancs fonctionnels (`toast`, `QrCodeBlock`) → allowlist + guard bloquant.
-Décisions marque/déco à batcher (fin de Phase 1) : rouge Avalanche `#e84142` · vert « success » (pastille live sur `PublicHome`) · fonds hero `#030609`/`#080b11` + glow · pastilles feu tricolore (déco).
+Sprawl actuel : **2** sites en couleur brute (guard report-only). Objectif : **0** + guard bloquant.
+Dernière baisse : marque/surface sur `PublicHome`/`PublicLayout`/`HeroLedger` (Avalanche→`avax`, fonds→`surface-command`, glow/pastilles→`success`/`warning`/`destructive`), 16 → 2.
+Reste : 2 exceptions fonctionnelles (`QrCodeBlock` #ffffff canvas QR, `toast` variante destructive) → slice C : tokeniser `toast`, allowlister le canvas, passer le guard **bloquant**.
+Décisions marque/déco tranchées : Avalanche → token `--avax`, verts → `--success`, fonds command-room → `--surface-command`, pastilles feu tricolore → `destructive`/`warning`/`success`.
 
 ## Gouvernance (comment on reste aligné)
 - Ce doc est la **source unique** du workstream design.

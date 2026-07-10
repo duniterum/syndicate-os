@@ -43,7 +43,7 @@ function ChainPill() {
       title="Avalanche C-Chain — live read-only public surface"
       className="hidden items-center gap-2 whitespace-nowrap rounded-xl border border-proof/30 bg-proof/10 px-2.5 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-proof shadow-sm 2xl:inline-flex"
     >
-      <span className="grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-[#e84142] shadow-[0_0_18px_-8px_rgba(232,65,66,0.9)]">
+      <span className="grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-avax shadow-[0_0_18px_-8px_hsl(var(--avax)/0.9)]">
         <img src="/brand/avalanche-avax-token.png" alt="Avalanche" className="h-full w-full object-cover" />
       </span>
       <span>{headerChips.chainName}</span>
@@ -135,7 +135,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         initial={reduceMotion ? false : { y: -12, opacity: 0, filter: "blur(8px)" }}
         animate={reduceMotion ? undefined : { y: 0, opacity: 1, filter: "blur(0px)" }}
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/92 shadow-[0_1px_0_rgba(255,255,255,0.45)_inset,0_24px_60px_-52px_hsl(var(--gold)/0.65)] backdrop-blur-xl dark:border-gold/20 dark:bg-[#05070b]/94 dark:shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_28px_70px_-58px_hsl(var(--gold)/0.85)]"
+        className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/92 shadow-[0_1px_0_rgba(255,255,255,0.45)_inset,0_24px_60px_-52px_hsl(var(--gold)/0.65)] backdrop-blur-xl dark:border-gold/20 dark:bg-surface-command/94 dark:shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_28px_70px_-58px_hsl(var(--gold)/0.85)]"
       >
         <div className="mx-auto flex h-[58px] w-full max-w-[1840px] items-center justify-between gap-2 px-4 md:px-5 2xl:px-7">
           <div className="flex min-w-0 items-center gap-4 2xl:gap-6">
@@ -243,7 +243,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[320px] border-border bg-popover sm:w-[420px] dark:border-gold/25 dark:bg-[#05070b]/96">
+              <SheetContent side="right" className="w-[320px] border-border bg-popover sm:w-[420px] dark:border-gold/25 dark:bg-surface-command/96">
                 <SheetHeader>
                   <SheetTitle className="text-left font-serif text-lg uppercase tracking-widest text-foreground">
                     {brand.name}
