@@ -1,7 +1,18 @@
 # 00 — START HERE (whole-protocol entry point)
 
-> **▶ Resuming work? Read `docs/SESSION_STATE.md` FIRST** — current status (Phase 1 CLOSED,
-> Phase 2 next: the 2.0 prerender/SSG rendering fix), locked decisions, and the ordered slice list.
+> **HARD RULE — no exceptions.** Every durable spec, plan, and decision lives **IN this repo**,
+> never out-of-repo. Nothing on a desktop, in a chat, or "in your head." The DIRECTION specs are
+> committed at `docs/direction/` (`MASTER_BUILD_SPEC.md` · `CONTENT_SUITE_SPEC.md` · `WHITEPAPER_PLAN.md`).
+> **Every session boots by reading `docs/SESSION_STATE.md` FIRST** — it is the authoritative resume
+> point (Phase 1 CLOSED; next = Phase 2.0 prerender/SSG rendering fix; DECIDED / DO-NOT-RE-OPEN list;
+> ordered slice list). If a decision isn't captured there yet, capture it there before acting on it.
+
+> **▶ BOOT SEQUENCE — run this exact first prompt in every new session:**
+> 1. Read `docs/00_START_HERE.md` + `docs/SESSION_STATE.md` + `docs/direction/MASTER_BUILD_SPEC.md`
+>    (open `CONTENT_SUITE_SPEC.md` / `WHITEPAPER_PLAN.md` when the current slice needs them).
+> 2. Confirm the true repo state against SESSION_STATE (repo wins; flag any drift).
+> 3. Propose the current slice (per SESSION_STATE's ordered list) with the **4-line ADR-002 gate**.
+> 4. **Wait for founder GO** before touching code. Do not re-open anything in "DECIDED — DO NOT RE-OPEN."
 
 **The one doc. Read this first — it orients you across the ENTIRE Syndicate OS.**
 Everything else is reference you open only if needed. If this disagrees with an older
