@@ -34,6 +34,7 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
 ### Phase 3 — Patterns
 - [ ] Grille KPI (migration du héros ProtocolOverviewPanel) · [ ] Table CRUD
 - [ ] Grille dashboard · [ ] Formulaire · [x] Page contenu (Prose atom → Whitepaper + Tokenomics, slices 2.1–2.2)
+- [x] **Chassis « living protocol »** (`src/components/living/`) : LivingSignature · TransparencyPosture · SectionIndex · AllocationDonut · ReconciliationTable — réutilisés par whitepaper/tokenomics/FAQ/docs/knowledge
 
 ### Phase 4 — Harmonisation totale (le "rien à moitié")
 - [x] Finir migration couleur (108 → 0) → guard **BLOQUANT** · [x] Adopter `.type-*` partout (titres, ~17 pages, serif)

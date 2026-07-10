@@ -9,6 +9,15 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 
 ## ✅ DECIDED — DO NOT RE-OPEN (settled; do not re-litigate)
 
+- **DECIDED (`docs/direction/WHITEPAPER_LIVING_DOCTRINE.md`, committed):** the WHOLE protocol is
+  "living" (live reads everywhere; "as of {ts} · nothing hardcoded · don't trust, verify"); the
+  whitepaper is its flagship written expression. **Build order reordered (supersedes "next = FAQ"):**
+  `/whitepaper` living relaunch ✅ DONE → **`/tokenomics` relaunch = NEXT** (reuses the shared chassis:
+  add donut + design-vs-live table + LP/vesting cards) → then 2.3 FAQ · 2.4 Docs · 2.5 Knowledge, each
+  composing from the same chassis. **Shared living chassis** lives in `src/components/living/`:
+  `LivingSignature · TransparencyPosture · SectionIndex · AllocationDonut · ReconciliationTable` —
+  reuse them, never parallel them.
+
 - **Phase 1 — CLOSED.** 8 atoms (Amount · StatusPill · Button+Tag · StatCard · Table · Field · Icon).
   Color sprawl **137 → 0**, `no-raw-color` guard **BLOCKING** in the `guards` gate. Fluid `.type-*`
   scale adopted site-wide. Component states + a11y done. (1 documented raw-color exception: QrCodeBlock canvas.)

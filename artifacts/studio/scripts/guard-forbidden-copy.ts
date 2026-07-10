@@ -33,6 +33,10 @@ const PHRASES = [
   "financial return",
   // Slice 2.1 (first big public-copy page) — extend the financial-framing ban.
   "governance weight",
+  // Whitepaper living-doctrine slice — ban speculative valuation metrics.
+  "market cap",
+  "market capitalization",
+  "fully diluted",
 ];
 // Single words: matched on word boundaries (bare "return"/"reward" are allowed).
 // All terms below are negation-aware (isNegated exempts honest disclaimers like
@@ -46,7 +50,7 @@ const WORDS = [
   // Slice 2.1 additions (safe set — absent from src, or only in negated disclaimers):
   "invest", "invests", "investing", "investment", "investments", "investor", "investors",
   "donation", "donations", "dividend", "dividends", "equity",
-  "apy", "apr", "roi", "pump", "100x",
+  "apy", "apr", "roi", "pump", "100x", "fdv",
   // NOT added (repo wins, flagged): "moon" (the lucide <Moon/> theme icon) and
   // "raised" ("Raised class" = a referral tier name) are legitimate existing copy.
 ];
