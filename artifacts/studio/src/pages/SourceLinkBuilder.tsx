@@ -22,7 +22,7 @@ import { ProtocolRealityPanel } from "@/components/ProtocolReality";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Field } from "@/components/field/Field";
 import { isSourceIdFormat } from "@/lib/rawUnits";
 import { ctas } from "@/config/sharedCopy";
 
@@ -182,28 +182,23 @@ export default function SourceLinkBuilder() {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-start gap-3 mb-2">
-          <div className="w-full max-w-[420px]">
-            <Input
-              placeholder="0x… introduction id (bytes32)"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") validate();
-              }}
-              className="font-mono"
-              data-testid="input-source-id"
-            />
-          </div>
-          <Button onClick={validate} data-testid="button-validate-source">
-            Validate read-only
-          </Button>
-        </div>
-        {inputError ? (
-          <p className="text-sm text-destructive mb-2" data-testid="text-validate-input-error">
-            {inputError}
-          </p>
-        ) : null}
+        <Field
+          label="Introduction id"
+          help="A bytes32 hex value: 0x followed by exactly 64 hex characters."
+          error={inputError}
+          placeholder="0x… introduction id (bytes32)"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") validate();
+          }}
+          className="font-mono"
+          fieldClassName="max-w-[420px] mb-3"
+          data-testid="input-source-id"
+        />
+        <Button onClick={validate} data-testid="button-validate-source">
+          Validate read-only
+        </Button>
 
         {submitted !== null ? (
           <div className="border-t border-border/50 pt-4 mt-4">
