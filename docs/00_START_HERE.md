@@ -15,6 +15,17 @@
 > committed diff clean, and let Replit run the real build. Local verification is a convenience,
 > **never the source of truth.**
 
+> **STANDING RULE — one writer to the repo; serving rules are generated.** Only **Claude Code** writes
+> the repo (`main`). **Replit does not push** — its git is a normal client with no special power, and
+> anything Replit could commit, Claude Code can commit, so this strands nothing. The `artifact.toml`
+> clean-URL serving rewrites are **auto-generated from the SEO registry** by a build script
+> (`seo:rewrites`, drift-guarded in the gate) — **one source, never hand-edited, never drifts.**
+> **Replit keeps FULL authority over its own server** — deploy, TLS, runtime, publish — all server
+> actions that never touch the repo, so they never need a push. When an infra need must be reflected in
+> a repo file, **Replit states the need and Claude Code writes it** (generated from the registry):
+> Replit communicates, it does not write the repo. **Safety net either way:** whoever writes always
+> **fetch + reconcile before pushing**, never assumes sole ownership, never force-pushes a divergence.
+
 > **HARD RULE — no exceptions.** Every durable spec, plan, and decision lives **IN this repo**,
 > never out-of-repo. Nothing on a desktop, in a chat, or "in your head." The DIRECTION specs are
 > committed at `docs/direction/` (`MASTER_BUILD_SPEC.md` · `CONTENT_SUITE_SPEC.md` · `WHITEPAPER_PLAN.md`).

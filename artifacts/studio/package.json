@@ -10,6 +10,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "seo:generate": "node scripts/generate-sitemap.ts",
     "seo:prerender": "node scripts/prerender-routes.ts",
+    "seo:rewrites": "node scripts/generate-serving-rewrites.ts",
+    "seo:rewrites:check": "node scripts/generate-serving-rewrites.ts --check",
     "seo:check": "node scripts/check-seo-registry.ts",
     "surface:audit": "node scripts/check-public-surface-audit.ts",
     "guard:lifecycle": "node scripts/guard-lifecycle-labels.ts",

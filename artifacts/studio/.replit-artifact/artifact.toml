@@ -36,12 +36,10 @@ serve = "static"
 # with a real HTTP 404 for unmatched paths. (www->apex 301 is DEFERRED to the
 # domain transfer ~Sept 2026 — registrar-level, not here; HSTS/preload = Phase 6.)
 
-# Deploy-layer serving rules (this layer's ownership, per the handoff above):
-# exact-path rewrites serve each no-slash route DIRECTLY from its flat
-# <route>.html (200, no redirect, served URL == <link rel="canonical">); the
-# trailing-slash variant rewrites to the same file (200, canonical stays
-# no-slash). Unmatched paths fall through to 404.html with a real HTTP 404.
-# KEEP IN SYNC with the PUBLIC+PENDING routes in src/lib/seo-route-registry.ts.
+# >>> GENERATED clean-URL rewrites — source: src/lib/seo-route-registry.ts (PUBLIC+PENDING, non-home).
+# Do NOT hand-edit. Regenerate: pnpm --filter @workspace/studio run seo:rewrites
+# (drift is caught by seo:rewrites:check in the release gate). Home is served
+# by index.html; unmatched paths fall through to the real 404.html.
 
 [[services.production.rewrites]]
 from = "/status"
@@ -138,6 +136,8 @@ to = "/source.html"
 [[services.production.rewrites]]
 from = "/source/"
 to = "/source.html"
+
+# <<< END generated clean-URL rewrites
 
 [services.env]
 PORT = "18425"
