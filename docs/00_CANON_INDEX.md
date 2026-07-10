@@ -44,6 +44,7 @@ gagne en cas de conflit*. Vit dans le repo : `docs/00_CANON_INDEX.md`.
 | `docs/SYNDICATE_OS_BUILD_INVENTORY_AND_VOCABULARY.md` | Inventaire de build + **vocabulaire** (les noms qu'on utilise). |
 | `docs/FOUNDATION_SPEC.md` | Le **spec de la fondation design-system** (tokens 3 tiers, typo fluide, polices, échelles, a11y, perf) — world-class, ce que les slices implémentent. |
 | `docs/DESIGN_ROADMAP.md` | **Source unique du workstream design** — phases, cases à cocher « FINI » grade-AAA, suivi du sprawl couleur. Claude Code coche les cases à la fin de chaque slice, dans le même commit. |
+| `docs/direction/LIVING_ORGANISM_MASTER_PLAN.md` | **La vision top-level + l'ordre de build (Tracks A–E)** — le protocole comme un pays (économie macro/micro, cockpit, mémoire Activity/Chronicle, modèle de revenu identité/labeling, le Guide). Tissé dans **THE ONE ORDERED SEQUENCE** de `SESSION_STATE.md` (source unique de l'ordre). |
 
 ## TIER 2 — Specs de domaine (charger SELON la slice)
 
@@ -53,6 +54,7 @@ gagne en cas de conflit*. Vit dans le repo : `docs/00_CANON_INDEX.md`.
 | `docs/architecture/IDENTITY_ROLES_SPINE_CANON.md` | Identité + RBAC (Founder/Admin/Operator/Auditor/Worker). |
 | `docs/architecture/WALLET_FIRST_IDENTITY_ACCESS_AND_USER_REGISTRY_DESIGN.md` · `WALLET_IDENTITY_AND_HOLDER_INDEX_DESIGN.md` · `HOLDER_INDEX_READ_MODEL_DESIGN.md` | Identité wallet-first + Holder Index. |
 | `docs/architecture/ACTIVITY_HEARTBEAT_READ_MODEL.md` | Backbone d'événements / Activity. |
+| `docs/direction/GUIDE_SUPPORT_ASSISTANT_DOCTRINE.md` | **Le Guide** (assistant support) — hybride déterministe-d'abord, jamais l'AI Layer PENDING ; garde-fous vérité (jamais un chiffre fabriqué), pile sécurité (endpoint isolé, rate-limit/budget/circuit-breaker, filtre output), choix modèle (Groq/DeepSeek). Charger à la slice Support (#5) et Guide-LLM (Phase 3). |
 | `docs/architecture/SOURCE_BOUNDARY_MANIFEST.md` | Frontière des sources (spine vérité/sécurité). |
 | `docs/architecture/CAPABILITY_HARVEST_AND_REUSE_MAP.md` · `docs/strategy/DUNITERUM_CAPABILITY_HARVEST_2_20E.md` | Matrices de récolte (PRESERVE/ADAPT/REWRITE/REJECT). |
 | `docs/architecture/OPERATOR_WALLET_AUTH_AND_ROLES_DESIGN.md` | Auth opérateur + rôles. |

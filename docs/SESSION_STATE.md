@@ -128,8 +128,9 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
     41 Q) feeding both prerender + a runtime injector — no drift, on-screen text == structured data.
     Wired end-to-end (registry INDEX+sitemap · surfaceClassification · modules "faq" Learn-footer · nav ·
     App route). Green locally: typecheck 0 · all 9 guards + no-raw-color · seo:check 303.
-  - **NEXT = Support (floating robot) → 2.4 Docs → 2.5 Knowledge** — each COMPOSES from the
-    `living/` chassis + harvests per `CONTENT_SURFACE_HARVEST_MAP.md`.
+  - **NEXT = Support · the DETERMINISTIC floating Guide (no LLM yet) → 2.4 Docs → 2.5 Knowledge** — each
+    COMPOSES from the `living/` chassis + harvests per `CONTENT_SURFACE_HARVEST_MAP.md`. Full build order =
+    **THE ONE ORDERED SEQUENCE** below.
 - **PHASES 3–6 → ⬜ pending** (auth single-instance/Reserved-VM blocker open; admin/RBAC unseeded; event
   backbone / activity / gamification unbuilt; perf/a11y/responsive/security audits not run; fonts still Google-CDN).
 
@@ -144,32 +145,95 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 4. Client unchanged: `wagmi ssr:false`, `SeoHeadManager`, live-figure hydration untouched.
 5. End of slice: Replit handoff to serve prerendered HTML per path.
 
-## Remaining Phase-2 slices, IN ORDER (from `docs/direction/MASTER_BUILD_SPEC.md` — do not re-plan)
+## THE ONE ORDERED SEQUENCE — the single build order (all phases · Tracks A–E woven in)
 
-1. ~~**2.0 Rendering fix** — prerender/SSG shell, server HTML meta + JSON-LD, real 404.~~ ✅ **DONE.**
-2. ~~**2.1 Prose atom + Whitepaper**~~ ✅ **DONE** — Prose atom (`components/prose/Prose.tsx`) + `/whitepaper`
-   (15 sections, every figure a live chain read via `useHeroReality`/`Amount`/`VerifyOnChain` or a PENDING
-   label — zero hardcoded numbers). Guard extended (safe set; `contribution`/`package`/`moon`/`raised`
-   flagged as repo-wins exclusions). Supply, the 7 distribution shares, and both prices render PENDING —
-   they need a live supply/price read (wire in 2.2). *(NEXT = 2.2.)*
-3. ~~**2.2 Tokenomics (+ SYN token)**~~ ✅ **DONE** — `/tokenomics` on the Prose atom + the backend live
-   reads it needed. Spine extended (SYN `totalSupply` + 7 allocation-wallet `balanceOf`, fail-closed, no
-   address emitted; both protocol guards extended). `useTokenomics` reads them + market price (live LP
-   reserves) + entry rate (live join-quote). **Whitepaper's 10 PENDINGs flipped to LIVE** (supply, 7
-   allocation shares, both prices). Stale "16,500" burn retired — burn is a live read everywhere. Standing
-   rule added: no PENDING for a readable figure. *(NEXT = 2.3 FAQ.)*
-4. ~~**2.3 FAQ**~~ ✅ **SEALED in prod** (`1c6a07d`) — `/faq` on the living chassis + `FaqAccordion`;
-   origin 39 Q&A reframed number-free/address-free/banned-word-free; FAQPage JSON-LD in the server HTML
-   (Replit-verified live: 200, JSON-LD present, live band 10 seats / 100 SYN·USDC, sitemap 14 INDEX).
-   *(One undeployed cosmetic corrective `8bc3f1e` batched with the next deploy — see DEPLOY DEBT above.)*
-   · 5. **Support + floating robot** *(NEXT)* (harvest: Supa `FloatingAISupport`; tone exception; NOT
-   the AI Layer; never fabricates a figure)
-6. **2.4 Docs** · 7. **2.5 Knowledge base** · 8. **2.6 Risk** · 9. **2.7 Glossary**
-10. **2.8 Roadmap** (registry-driven) · 11. **2.9 Protocol-facts** · 12. **2.10 Brand-facts**
-12. **2.11 Join / entry-tiers UI** — featured tiers + custom-amount compose + live quote preview
-    (gross → source payment → net → 70/20/10) + 5-step flow; read-only; figures from chain.
-13. **Footer IA + sitemap + per-page SEO guards** — footer per `CONTENT_SUITE_SPEC`; add banned-word,
-    no-fake-live, sitemap-leak, index-only-real-content guards.
+*Supersedes the old Phase-2-only list. This is THE canonical order — do not reorder without founder sign-off.
+Sources: `MASTER_BUILD_SPEC.md` (6 phases) · `LIVING_ORGANISM_MASTER_PLAN.md` §11 (Tracks A–E) ·
+`GUIDE_SUPPORT_ASSISTANT_DOCTRINE.md` · `CONTENT_SUITE_SPEC.md` / `CONTENT_SURFACE_HARVEST_MAP.md`.
+Status legend: ✅ DONE · 🔵 NEXT · ⬜ PENDING · 🔒 DEFERRED (lawyer-gated).
+**Dependency rules honored:** backend read-models before their public surfaces · content suite before the
+Guide's LLM grounding · lawyer-gated identity/income items placed LAST and marked DEFERRED.*
+
+**RECONCILIATION (this session, flagged — not a silent reorder):** the old list had "Support + floating
+robot" as ONE item. The new plan splits the Guide into **deterministic** (needs only the FAQ corpus, which
+is DONE) vs **LLM / security / user-level** (need the fuller content suite + auth). So **Support stays NEXT
+but is now explicitly DETERMINISTIC-only** (#5); its LLM/security/user-level parts move to Phase 3
+(#19–#21, #24). This is a refinement consistent with the founder's own Support locks — **no existing
+canonical decision is overwritten.** No other conflicts found.
+
+### PHASE 2 — content suite + the deterministic Guide  (Track A + Track B1/B5-UI)
+1. ✅ **2.0 Rendering fix** — prerender/SSG shell, server HTML meta + JSON-LD, real 404. **DONE.**
+2. ✅ **2.1 Whitepaper (+ Prose atom)** — every figure a live chain read or PENDING. **DONE.**
+3. ✅ **2.2 Tokenomics (+ SYN reads)** — supply/allocations/prices/burn live; whitepaper PENDINGs flipped. **DONE.**
+4. ✅ **2.3 FAQ** (A1) — **SEALED prod** (`1c6a07d`); living chassis + `FaqAccordion`; 39 Q&A number-free;
+   FAQPage JSON-LD in server HTML. *(cosmetic `8bc3f1e` batched with next deploy — see DEPLOY DEBT above.)*
+5. 🔵 **Support · the DETERMINISTIC floating Guide** (B1 + robot UI) — **NEXT.** Deterministic router:
+   FAQ-corpus search + suggested questions + quick-routes to proof surfaces + honest triage; floating
+   mascot on our tokens; drop the fake "1" badge. **NO LLM · NO wallet/member awareness** (those → Phase 3).
+   src: `GUIDE_SUPPORT_ASSISTANT_DOCTRINE.md` + `LIVING_ORGANISM_MASTER_PLAN.md` §6/§11-B.
+6. ⬜ **2.4 Docs** (A2) · 7. ⬜ **2.5 Knowledge** (A3) · 8. ⬜ **2.6 Risk** (A4) · 9. ⬜ **2.7 Glossary** (A5)
+10. ⬜ **2.8 Roadmap**, registry-driven (A6) · 11. ⬜ **2.9 Protocol-facts** (A7) · 12. ⬜ **2.10 Brand-facts** (A8)
+13. ⬜ **2.11 Join / entry-tiers UI** — featured tiers + custom-amount + live read-only quote preview
+    (gross → source payment → net → routing) + 5-step flow; figures from chain.
+14. ⬜ **Footer IA + sitemap + per-page SEO guards** (A9) — banned-word / no-fake-live / sitemap-leak /
+    index-only-real-content guards.
+15. ⬜ **Transparency signature pages** — E4 Honesty register · E5 "Never will" charter (cheap content,
+    interleave in the content suite). src: `LIVING_ORGANISM_MASTER_PLAN.md` §11-E.
+
+### PHASE 3 — operational activation + the Guide's brain  (MASTER_BUILD_SPEC P3 + Track B2/B3/B4 + E2)
+16. ⬜ Prod single-instance / Reserved VM (or externalize sessions) — reliable auth.
+17. ⬜ Operator DB + one-time `founder_root` seed.
+18. ⬜ Auth enablement + **founder admin ON/OFF toggle** (env break-glass + DB flag, audit-logged, default OFF).
+19. ⬜ **Guide security spine** (B2) — isolated endpoint, token-based rate-limit, global budget cap +
+    circuit-breaker → deterministic, output forbidden-copy filter, monitoring. **Built BEFORE any LLM.**
+20. ⬜ **Guide LLM escalation** (B3) — Groq primary + DeepSeek fallback, RAG-grounded on the content suite,
+    degrades to deterministic. Needs #19 + a fuller corpus (#6–#12).
+21. ⬜ **Guide user-level awareness** (B4) — visitor/holder/member from verified on-chain state (own wallet
+    only). Needs auth (#18). src: `GUIDE_SUPPORT_ASSISTANT_DOCTRINE.md` + `LIVING_ORGANISM` §6.
+22. ⬜ Live checkout (wallet tx: take seat / acquire SYN).
+23. ⬜ Referral: **read** from the deployed source registry (payout stays PAUSED/future-labeled).
+24. ⬜ **E2 Living FAQ** — grows from real anonymized Guide questions (needs #20 logging).
+
+### PHASE 4 — admin console + RBAC  (MASTER_BUILD_SPEC P4, unchanged)
+25. ⬜ RBAC spine (Founder/Admin/Operator/Auditor/Worker) + step-up.
+26. ⬜ Module/plugin registry — activate/deactivate WordPress-style.
+27. ⬜ CRUD + graphical tools per module (incl. a **Guide monitoring** panel).
+28. ⬜ Admin broadcast + audit log + feature flags. · 29. ⬜ Content management from admin.
+
+### PHASE 5 — the living organism  (backend read-models FIRST, then surfaces · P5 + Track C + Track D non-financial)
+30. ⬜ **Event backbone** — indexer → canonical pipeline `EVENT→SIGNAL→MEMORY→CHRONICLE candidate` (the
+    read-models). src: `ACTIVITY_HEARTBEAT_READ_MODEL.md` + `LIVING_ORGANISM` §7.
+31. ⬜ **C1 · Economy macro** — Protocol Economy Observatory `/economy` (evidence-labeled, not-a-yield-dashboard).
+32. ⬜ **C2 · Activity** `/activity` — public aggregate, **recency-truthful, address-safe** pulse over the
+    proven heartbeat read-model.
+33. ⬜ **C3 · My Economy + cockpit** narrative arc (Identity→Place→Ownership→Momentum→Action→Memory→Proof).
+34. ⬜ **C4 · Chronicle** `/chronicle` — memory pipeline + public solemn record (promotion = human act; two
+    registers; oldest-first, no feed/casino).
+35. ⬜ **C5 · Register** — the census / seat roster.
+36. ⬜ **D1 · Internal explorer** (harvest `MiniExplorer`) + extend `known-addresses` labeling (read-only).
+37. ⬜ **D4 · Shareable cards / OG** (consent-gated identity; viral) — non-financial.
+38. ⬜ **D5 · Verifiable reputation** (multi-axis; never wealth-ranking) — recognition, non-financial.
+39. ⬜ **Gamification** (recognition-only) · **Seasons** (protocol-funded prizes, free-entry, anti-Sybil).
+    src: `GAMIFICATION_LEGAL_DOCTRINE.md`.
+
+### PHASE 6 — harden & seal (grade-AAA)  (MASTER_BUILD_SPEC P6 + Track E kit)
+40. ⬜ Performance (self-host fonts, AVIF/WebP, Brotli/cache, CWV). · 41. ⬜ Indexability (GSC+Bing submit —
+    founder action; llms.txt; AEO). · 42. ⬜ Monitoring (web-vitals RUM, Lighthouse CI, privacy analytics).
+43. ⬜ Accessibility (WCAG AA / APCA, keyboard, focus, ≥44px). · 44. ⬜ Responsive (320→2560, container
+    queries, folding). · 45. ⬜ Security (OWASP, secrets hygiene, rate limits).
+46. ⬜ **E3 · "Verify it yourself" kit** — published read scripts. src: `LIVING_ORGANISM` §11-E.
+
+### 🔒 DEFERRED — lawyer-gated identity & income economy (Track D paid tier) — do NOT build before crypto-lawyer sign-off
+- 🔒 **D2 · Address labeling service** (verified, pay-to-label, never impersonate) — the strongest income
+  stream. src: `LIVING_ORGANISM` §5.
+- 🔒 **D3 · Aliases** (ENS-style, sold; tied to seat; non-tradeable).
+- 🔒 **D6 · Guide premium tier** (bundle into a recognition tier; the **free Guide stays fully truthful**).
+- 🔒 **White-label** truth-first Guide / verification kit (post-MVP, separate business).
+
+**Cross-cutting (design principles, not slices):** Engagement psychology (`LIVING_ORGANISM` §4 — honest
+levers only, **recency-truth**) applies to every surface. **E1 "Prove it"** (a verify link on every Guide
+answer + every figure) is a standing rule folded into each slice. **Governance is banned** — reframe any
+DAO/member-memory track as **permanently non-promoting recognition**, never "awaiting DAO ratification."
 
 ## Slice protocol (every step)
 
