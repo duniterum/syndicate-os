@@ -3,6 +3,7 @@ import { Activity, Archive, Droplet, Flame, Gauge, Settings, Shield, Users, Wall
 import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
 import { useHeroReality, type HeroReality } from "@/components/hero/useHeroReality";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
+import { Icon } from "@/components/icon/Icon";
 import { heroSystem, type HeroStat } from "@/config/syndicateFacts";
 import type { VerifyLinkId } from "@workspace/api-client-react";
 
@@ -26,13 +27,16 @@ const statIcons = {
   burned: Flame,
 };
 
+// Stat accents are CATEGORICAL (different assets), not semantic states — so they
+// map to the tokenized data-viz palette (--viz-*), preserving the per-stat variety
+// while killing the raw palette. Members stays on the identity (gold) axis.
 const statTone: Record<string, string> = {
   members: "text-gold",
-  gross: "text-emerald-500 dark:text-emerald-400",
-  vault: "text-cyan-500 dark:text-cyan-300",
-  liquidity: "text-blue-500 dark:text-blue-400",
-  operations: "text-violet-500 dark:text-violet-400",
-  burned: "text-orange-500",
+  gross: "text-viz-4",
+  vault: "text-viz-1",
+  liquidity: "text-viz-6",
+  operations: "text-viz-3",
+  burned: "text-viz-5",
 };
 
 /** Resolve a stat's LIVE value from the hero reality reads — null = unavailable. */
@@ -84,7 +88,7 @@ export function ProtocolOverviewPanel() {
 
       <div className="grid grid-cols-2 gap-2.5">
         {heroSystem.overview.stats.map((stat, index) => {
-          const Icon = statIcons[stat.id as keyof typeof statIcons] ?? Gauge;
+          const StatGlyph = statIcons[stat.id as keyof typeof statIcons] ?? Gauge;
           const tone = statTone[stat.id] ?? "text-gold";
           const value = resolveStat(reality, stat);
           const display = liveFigure(value, reality.loading);
@@ -98,7 +102,7 @@ export function ProtocolOverviewPanel() {
               className="min-h-[104px] rounded-xl border border-border/80 bg-background/62 p-3.5 dark:border-white/10 dark:bg-white/[0.035]"
             >
               <div className="mb-2 flex items-center gap-2">
-                <Icon className={`h-4 w-4 ${tone}`} />
+                <Icon icon={StatGlyph} size="sm" className={tone} />
                 <span className="syn-label text-muted-foreground">{stat.label}</span>
               </div>
               {isFigure ? (
@@ -121,7 +125,7 @@ export function ProtocolOverviewPanel() {
       <div className="mt-2.5 grid grid-cols-2 gap-2.5">
         <div className="rounded-xl border border-gold/30 bg-gold/8 p-3.5">
           <div className="mb-2 flex items-center gap-2 text-gold">
-            <Archive className="h-4 w-4" />
+            <Icon icon={Archive} size="sm" />
             <span className="syn-label text-muted-foreground">{heroSystem.overview.chapter.label}</span>
           </div>
           <div className="text-base font-semibold text-foreground">{heroSystem.overview.chapter.value}</div>
@@ -139,7 +143,7 @@ export function ProtocolOverviewPanel() {
               <div className="font-mono text-xl font-black text-foreground">
                 {filled} <span className="text-sm font-semibold text-muted-foreground">/ {window}</span>
               </div>
-              <div className="mt-2 h-2 rounded-full bg-muted dark:bg-slate-900">
+              <div className="mt-2 h-2 rounded-full bg-muted">
                 <div
                   className="h-full rounded-full bg-gold shadow-[0_0_18px_hsl(var(--gold)/0.5)]"
                   style={{ width: `${pct ?? 0}%` }}
@@ -158,7 +162,7 @@ export function ProtocolOverviewPanel() {
       <div className="mt-3 flex min-h-0 flex-1 flex-col rounded-xl border border-border/80 bg-background/42 p-3.5 dark:border-white/10 dark:bg-black/32">
         <div className="mb-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-            <Activity className="h-4 w-4 text-cyan-500 dark:text-cyan-300" />
+            <Icon icon={Activity} size="sm" tone="live" />
             {heroSystem.activity.title}
           </div>
           <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Coming</span>

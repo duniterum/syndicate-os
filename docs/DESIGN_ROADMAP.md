@@ -56,7 +56,8 @@ Design **100 % fini, verrouillé** = toutes les cases de "Définition de FINI" c
 → **on n'y revient plus jamais.**
 
 ## Suivi couleur
-Sprawl actuel : **107** sites en couleur brute (guard report-only). Objectif : **0** + guard bloquant.
+Sprawl actuel : **100** sites en couleur brute (guard report-only). Objectif : **0** + guard bloquant.
+Dernière baisse : héros `ProtocolOverviewPanel` harmonisé (atome `Icon` + tokens viz catégoriels), 107 → 100.
 
 ## Gouvernance (comment on reste aligné)
 - Ce doc est la **source unique** du workstream design.
