@@ -48,6 +48,9 @@
   --color-live: hsl(var(--live));
   --color-proof: hsl(var(--proof));
   --color-warning: hsl(var(--warning));
+  --color-success: hsl(var(--success));
+  --color-avax: hsl(var(--avax));
+  --color-surface-command: hsl(var(--surface-command));
   --color-viz-1: hsl(var(--viz-1));
   --color-viz-2: hsl(var(--viz-2));
   --color-viz-3: hsl(var(--viz-3));
@@ -97,6 +100,12 @@
   /* Caution/attention — amber, deliberately hue-shifted off gold so a "caution"
      status pill never reads as an "identity" (gold) one. */
   --warning: 32 90% 42%;
+  /* Success/positive — green (live / ok / gross grows), a distinct status role. */
+  --success: 158 64% 40%;
+  /* Avalanche network brand color (was #e84142) — the AVAX chain indicator ONLY. */
+  --avax: 0 79% 58%;
+  /* Command-room near-black surface (was #080b11 / #05070b / #030609). */
+  --surface-command: 220 36% 5%;
   --app-font-sans: 'Work Sans', 'Inter', system-ui, sans-serif;
   --app-font-serif: 'Instrument Serif', Georgia, serif;
   --app-font-mono: 'IBM Plex Mono', Menlo, ui-monospace, monospace;
@@ -162,6 +171,7 @@
   --gold: var(--gold-500);
   --gold-foreground: 240 30% 8%;
   --warning: 36 95% 60%;
+  --success: 158 64% 46%;
 }
 
 @layer base {
