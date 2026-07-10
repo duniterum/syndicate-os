@@ -1,5 +1,8 @@
 # 00 — START HERE (whole-protocol entry point)
 
+> **▶ Resuming work? Read `docs/SESSION_STATE.md` FIRST** — current status (Phase 1 CLOSED,
+> Phase 2 next: the 2.0 prerender/SSG rendering fix), locked decisions, and the ordered slice list.
+
 **The one doc. Read this first — it orients you across the ENTIRE Syndicate OS.**
 Everything else is reference you open only if needed. If this disagrees with an older
 doc, this wins; if it disagrees with the chain, the chain wins.
