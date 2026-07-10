@@ -2,21 +2,44 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 Direction specs now live IN this repo: `docs/direction/MASTER_BUILD_SPEC.md` ·
-`docs/direction/CONTENT_SUITE_SPEC.md` · `docs/direction/WHITEPAPER_PLAN.md`.
+`docs/direction/CONTENT_SUITE_SPEC.md` · `docs/direction/WHITEPAPER_PLAN.md` ·
+`docs/direction/WHITEPAPER_LIVING_DOCTRINE.md` (living-protocol soul + chassis) ·
+`docs/direction/CONTENT_SURFACE_HARVEST_MAP.md` (content-page harvest map) ·
+`docs/direction/GAMIFICATION_LEGAL_DOCTRINE.md` (recognition-only, legal shield).
 Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md`.
 
 ---
 
 ## ✅ DECIDED — DO NOT RE-OPEN (settled; do not re-litigate)
 
-- **DECIDED (`docs/direction/WHITEPAPER_LIVING_DOCTRINE.md`, committed):** the WHOLE protocol is
-  "living" (live reads everywhere; "as of {ts} · nothing hardcoded · don't trust, verify"); the
-  whitepaper is its flagship written expression. **Build order reordered (supersedes "next = FAQ"):**
-  `/whitepaper` living relaunch ✅ DONE · **`/tokenomics` relaunch ✅ DONE** (same chassis: donut +
-  design-vs-live table + LP card + Founder vesting card + live routing bar). **NEXT = 2.3 FAQ** · then
-  2.4 Docs · 2.5 Knowledge, each composing from the same chassis. **Shared living chassis** lives in
-  `src/components/living/`: `LivingSignature · TransparencyPosture · SectionIndex · AllocationDonut ·
-  ReconciliationTable · RoutingBar` — reuse them, never parallel them.
+- **DECIDED — the whole PROTOCOL is LIVING (`docs/direction/WHITEPAPER_LIVING_DOCTRINE.md`).** Not a
+  whitepaper feature: EVERY surface reads live from the chain and updates itself ("read live · as of {ts} ·
+  nothing hardcoded · don't trust, verify · we ask nothing · observe → join"). The whitepaper is the flagship
+  written expression. **Live projections CAN'T diverge:** the same figure on many pages is FINE — they read
+  ONE canonical source (`GET /api/protocol/reality` + the live hooks), so `/whitepaper` and `/tokenomics`
+  show identical live numbers by construction, never a duplicated hardcode. (Proven in prod: the signature
+  advances between reloads; both pages read the same distribution figures.)
+- **DECIDED — the shared LIVING CHASSIS (`src/components/living/`) is REUSABLE; next pages COMPOSE from it,
+  never rebuild:** `LivingSignature` (as-of live signature, from the reality envelope meta) · `TransparencyPosture`
+  (ask-nothing / everything-here / don't-trust-verify / observe→join) · `SectionIndex` (sticky anchor TOC) ·
+  `AllocationDonut` (live SVG donut) · `ReconciliationTable` (design-vs-live table) · `RoutingBar` (live
+  70/20/10 split, sized by live amounts). Built on the atoms (`Prose · Amount · StatusPill · VerifyOnChain ·
+  StatCard · DataTable`) — reuse, never parallel.
+- **DECIDED — content-page harvest map = `docs/direction/CONTENT_SURFACE_HARVEST_MAP.md`.** All harvest
+  sources are ON DISK under `C:\Users\kemal\OneDrive\Documents\GitHub\<repo>` (origin `TheSyndicate`,
+  `Supa-Exchange`). Harvest = **adapt** structure/chrome, **never copy content raw**; repo + doctrine + legal win.
+- **DECIDED — FAQ (2.3) build:** CHROME/structure harvested from **Supa** (`Supa-Exchange` FloatingAISupport /
+  FAQ: search + category cards + accordion + FAQ JSON-LD + CTA) + an entity-chain hero-answer card; the
+  CONTENT comes from the **origin** `TheSyndicate/src/routes/faq.tsx` + `components/syndicate/FaqRebuilt.tsx`
+  (39 doctrine-perfect Q&A) — NEVER Supa/entity content (yield/APY/DAO/referral-bonus are BANNED). Composes
+  from the living chassis.
+- **DECIDED — Support + floating robot:** harvest Supa's floating bottom-right robot
+  (`Supa-Exchange/client/src/components/FloatingAISupport.tsx`). **Tone exception granted** (cute/warm OK — it
+  is a HELP assistant, NOT a truth surface). It is **NOT** the protocol's PENDING AI Layer; it **NEVER
+  fabricates a figure** (always points to on-chain proof); recognition-only if ever gamified (see
+  `docs/direction/GAMIFICATION_LEGAL_DOCTRINE.md`).
+- **DECIDED — build order:** whitepaper ✅ → tokenomics ✅ → **FAQ (2.3) → Support (floating robot) → docs
+  (2.4) → knowledge (2.5)** → then Risk · Glossary · Roadmap · Protocol-facts · Brand-facts · Join UI · footer.
 
 - **Phase 1 — CLOSED.** 8 atoms (Amount · StatusPill · Button+Tag · StatCard · Table · Field · Icon).
   Color sprawl **137 → 0**, `no-raw-color` guard **BLOCKING** in the `guards` gate. Fluid `.type-*`
@@ -38,7 +61,8 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   (no directory → no auto-redirect → the no-slash URL is served directly at 200 = canonical), so Replit
   needs **no** deploy-layer flatten step. Awaiting one more Publish to confirm `/status` = HTTP 200
   (no `location:` header).
-- **NEXT SLICE = Phase 2.1 — Prose atom + Whitepaper** (per `docs/direction/WHITEPAPER_PLAN.md`).
+- ~~**NEXT SLICE = Phase 2.1 — Prose atom + Whitepaper**~~ — superseded: Prose atom, Whitepaper, and
+  Tokenomics are all DONE and relaunched on the living chassis (see the top living bullets). **NEXT = 2.3 FAQ.**
 - **DECIDED — keep the newer OG image (`opengraph.jpg`), do NOT revert.** Replit regenerated the
   social-preview screenshot from the current live app (fresher UI + chain figures: inflow 235.50,
   **burned 21,273 SYN**, verify-on-chain links). Founder confirmed: additional burns happened since, so
@@ -70,17 +94,28 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 
 ## Where we are (factual)
 
-- **PHASE 1 → ✅ CLOSED** (see DECIDED above).
-- **PHASE 2 — Content + rendering → 🔨 IN PROGRESS. 2.0 CLOSED; next = 2.1 (Prose + Whitepaper).**
-  - No content pages exist yet (whitepaper/tokenomics/token/docs/faq/knowledge/risk/glossary/roadmap/protocol-facts/brand-facts).
-  - **Prose atom NOT built** (ships in slice 2.1 with the Whitepaper).
-  - **Rendering (2.0 shipped):** the shell is now prerendered per-route at build time — server HTML carries
-    real head + JSON-LD, and a real `404.html` exists. The client is still an unchanged SPA (Vite + `wouter`,
-    `wagmi ssr:false`); `SeoHeadManager` still harmonizes head at runtime and reuses the prerendered JSON-LD
-    node. The serving-layer change (per-route HTML, HTTP 404, www→apex 301) is a **Replit handoff** — verify
-    live after deploy. SEO registry (`src/lib/seo-route-registry.ts`) stays the single per-route meta source.
-- **PHASES 3–6 → ⬜ pending** (auth single-instance/Reserved-VM blocker open; admin/RBAC unseeded; living-protocol
-  + gamification unbuilt; perf/a11y/responsive/security audits not run; fonts still Google-CDN).
+- **PHASE 1 → ✅ CLOSED.**
+- **PHASE 2 — Content + rendering → 🔨 IN PROGRESS.**
+  - **2.0 Rendering fix → ✅ SEALED in prod** — per-route flat `<route>.html` prerender (real
+    title/description/OG/canonical + Organization JSON-LD in the server HTML) + a real **HTTP 404**; `/status`
+    (and all routes) serve 200 with **no redirect** = canonical. www→apex 301 deferred to the domain transfer.
+  - **Whitepaper → ✅ SEALED in prod as the flagship LIVING document** on the shared `living/` chassis —
+    a short scannable manifesto (hero + `LivingSignature` + `TransparencyPosture` + sticky `SectionIndex`);
+    **self-contained**: supply · burn · distribution (donut + design-vs-live `ReconciliationTable`) · 70/20/10
+    routing are ALL live in-page, zero typed numbers. Built on the Prose atom + `useHeroReality`/`useTokenomics`.
+  - **Tokenomics → ✅ SEALED in prod** on the same chassis (donut + `ReconciliationTable` + LP card +
+    Founder vesting card + live `RoutingBar`). `/whitepaper` and `/tokenomics` read ONE
+    `GET /api/protocol/reality` source — figures **identical & live** (verified in prod; the signature
+    advances between reloads).
+  - **Backend spine serves live** (fail-closed, no address emitted; guards pin invariants — targets 203/203,
+    reality 131/131): chain identity · contract code presence · token metadata · sale figures · financial
+    (inflow aggregate, vault/ops/LP/burn balances, memberCount) · **SYN `totalSupply`** · **7 allocation
+    `balanceOf`**. Client hooks: `useHeroReality`, `useTokenomics` (+ market price from live LP reserves,
+    entry rate from the live join-quote). Standing rule: **no PENDING for a readable figure.**
+  - **NEXT = 2.3 FAQ → Support (floating robot) → 2.4 Docs → 2.5 Knowledge** — each COMPOSES from the
+    `living/` chassis + harvests per `CONTENT_SURFACE_HARVEST_MAP.md`.
+- **PHASES 3–6 → ⬜ pending** (auth single-instance/Reserved-VM blocker open; admin/RBAC unseeded; event
+  backbone / activity / gamification unbuilt; perf/a11y/responsive/security audits not run; fonts still Google-CDN).
 
 ## The 2.0 slice — concrete plan (derived; files not dictated by any spec)
 
@@ -107,8 +142,10 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
    reserves) + entry rate (live join-quote). **Whitepaper's 10 PENDINGs flipped to LIVE** (supply, 7
    allocation shares, both prices). Stale "16,500" burn retired — burn is a live read everywhere. Standing
    rule added: no PENDING for a readable figure. *(NEXT = 2.3 FAQ.)*
-4. **2.3 FAQ** · 5. **2.4 Docs** · 6. **2.5 Knowledge base** · 7. **2.6 Risk** · 8. **2.7 Glossary**
-9. **2.8 Roadmap** (registry-driven) · 10. **2.9 Protocol-facts** · 11. **2.10 Brand-facts**
+4. **2.3 FAQ** (harvest: Supa chrome + origin 39 Q&A — see harvest map) *(NEXT)* · 5. **Support + floating
+   robot** (harvest: Supa `FloatingAISupport`; tone exception; NOT the AI Layer; never fabricates a figure)
+6. **2.4 Docs** · 7. **2.5 Knowledge base** · 8. **2.6 Risk** · 9. **2.7 Glossary**
+10. **2.8 Roadmap** (registry-driven) · 11. **2.9 Protocol-facts** · 12. **2.10 Brand-facts**
 12. **2.11 Join / entry-tiers UI** — featured tiers + custom-amount compose + live quote preview
     (gross → source payment → net → 70/20/10) + 5-step flow; read-only; figures from chain.
 13. **Footer IA + sitemap + per-page SEO guards** — footer per `CONTENT_SUITE_SPEC`; add banned-word,

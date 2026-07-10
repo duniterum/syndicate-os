@@ -38,7 +38,8 @@
 
 > **HARD RULE — no exceptions.** Every durable spec, plan, and decision lives **IN this repo**,
 > never out-of-repo. Nothing on a desktop, in a chat, or "in your head." The DIRECTION specs are
-> committed at `docs/direction/` (`MASTER_BUILD_SPEC.md` · `CONTENT_SUITE_SPEC.md` · `WHITEPAPER_PLAN.md`).
+> committed at `docs/direction/` (`MASTER_BUILD_SPEC.md` · `CONTENT_SUITE_SPEC.md` · `WHITEPAPER_PLAN.md` ·
+> `WHITEPAPER_LIVING_DOCTRINE.md` · `CONTENT_SURFACE_HARVEST_MAP.md` · `GAMIFICATION_LEGAL_DOCTRINE.md`).
 > **Every session boots by reading `docs/SESSION_STATE.md` FIRST** — it is the authoritative resume
 > point (Phase 1 CLOSED; next = Phase 2.0 prerender/SSG rendering fix; DECIDED / DO-NOT-RE-OPEN list;
 > ordered slice list). If a decision isn't captured there yet, capture it there before acting on it.
