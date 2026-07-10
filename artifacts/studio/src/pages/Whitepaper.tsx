@@ -137,8 +137,9 @@ export default function Whitepaper() {
               <p>
                 SYN was minted across seven public allocation wallets. Each wallet's{" "}
                 <strong>current on-chain balance</strong> is read live below — it differs from the
-                mint-time design as SYN sells, vests, or moves. The full breakdown is on{" "}
-                <Link href="/tokenomics">Tokenomics</Link>.
+                mint-time design as SYN sells, vests, or moves. This is the full live distribution;{" "}
+                <Link href="/tokenomics">Tokenomics</Link> is a deeper visual view of the same
+                on-chain figures (LP and vesting detail).
               </p>
               <AllocationDonut segments={donut} className="my-6" />
               <ReconciliationTable rows={tk.allocations} loading={tk.loading} />
