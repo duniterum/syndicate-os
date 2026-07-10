@@ -22,9 +22,18 @@ build = [ "pnpm", "--filter", "@workspace/studio", "run", "build" ]
 publicDir = "artifacts/studio/dist/public"
 serve = "static"
 
-[[services.production.rewrites]]
-from = "/*"
-to = "/index.html"
+# Slice 2.0 (rendering fix): the build now prerenders a per-route index.html for
+# every public route (scripts/prerender-routes.ts) plus a real 404.html. The old
+# blanket SPA rewrite (/* -> /index.html) is intentionally REMOVED — it shadowed
+# those per-route files and forced a soft-404 (HTTP 200 on every unknown path).
+# Each route is now served from its own static HTML (real <head> + JSON-LD).
+#
+# Live serving specifics are owned by the deploy layer (see the Replit handoff),
+# because custom-domain / TLS / redirect config lives in Replit deploy settings,
+# not this file: (1) clean URLs — serve /status from /status/index.html with NO
+# trailing-slash redirect so the served URL == <link rel="canonical">; (2) return
+# 404.html with a real HTTP 404 for unmatched paths; (3) 301 www.thesyndicate.money
+# -> https://thesyndicate.money (apex), single hop, TLS covering both.
 
 [services.env]
 PORT = "18425"

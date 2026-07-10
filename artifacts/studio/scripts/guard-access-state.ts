@@ -377,7 +377,9 @@ const MATRIX_ALLOWED = new Set([
 ]);
 const matrixViolations: string[] = [];
 for (const abs of allSrcFiles) {
-  const rel = path.relative(srcDir, abs);
+  // Normalize to POSIX separators so the allowlist matches on Windows too
+  // (path.relative yields "\" on win32; the allowlist uses "/").
+  const rel = path.relative(srcDir, abs).split(path.sep).join("/");
   if (MATRIX_ALLOWED.has(rel)) continue;
   const code = stripComments(read(abs));
   if (/\bmatrixAllows\b/.test(code) || /\bevaluateAccess\b/.test(code)) {
@@ -393,7 +395,8 @@ check(
 const STORAGE_ALLOWED = new Set(["components/ThemeProvider.tsx"]);
 const storageViolations: string[] = [];
 for (const abs of allSrcFiles) {
-  const rel = path.relative(srcDir, abs);
+  // Normalize to POSIX separators so the allowlist matches on Windows too.
+  const rel = path.relative(srcDir, abs).split(path.sep).join("/");
   if (STORAGE_ALLOWED.has(rel)) continue;
   const code = stripComments(read(abs));
   if (/\b(localStorage|sessionStorage)\b/.test(code)) {

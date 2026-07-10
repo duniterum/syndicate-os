@@ -11,8 +11,8 @@
 
 import { useEffect } from "react";
 import { useLocation } from "wouter";
-import { resolveRouteHead, CANONICAL_ORIGIN } from "@/lib/seo-route-registry";
-import { brand, socialLinks } from "@/config/brand";
+import { resolveRouteHead } from "@/lib/seo-route-registry";
+import { serializeOrganizationJsonLd, ORG_JSONLD_ID } from "@/lib/seo-jsonld";
 
 /** Create-or-update a <meta name="..."> tag. Tags we create are marked managed. */
 function upsertMetaByName(name: string, content: string): void {
@@ -60,36 +60,28 @@ function setCanonical(href: string | null): void {
   el.setAttribute("href", href);
 }
 
-const JSONLD_ID = "seo-jsonld-org";
-
 /**
- * Organization JSON-LD, emitted on the homepage only. Facts are limited to
- * what is publicly true and stable: name, canonical URL, logo, and the
- * official social profiles (sameAs). No financial or membership claims.
+ * Organization JSON-LD, emitted on the homepage only. The payload comes from the
+ * shared builder in `@/lib/seo-jsonld` — the SAME source the build-time prerender
+ * uses — so runtime and static HTML never drift. When the homepage is prerendered
+ * the tag already exists (matched by ORG_JSONLD_ID); this updates it in place
+ * rather than creating a duplicate.
  */
 function setOrganizationJsonLd(active: boolean): void {
-  const existing = document.getElementById(JSONLD_ID);
+  const existing = document.getElementById(ORG_JSONLD_ID);
   if (!active) {
     if (existing) existing.remove();
     return;
   }
-  const payload = JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: brand.name,
-    url: `${CANONICAL_ORIGIN}/`,
-    logo: `${CANONICAL_ORIGIN}/opengraph.jpg`,
-    sameAs: socialLinks.map((link) => link.href),
-  });
   let el = existing as HTMLScriptElement | null;
   if (!el) {
     el = document.createElement("script");
     el.type = "application/ld+json";
-    el.id = JSONLD_ID;
+    el.id = ORG_JSONLD_ID;
     el.setAttribute("data-seo-managed", "true");
     document.head.appendChild(el);
   }
-  el.textContent = payload;
+  el.textContent = serializeOrganizationJsonLd();
 }
 
 export function SeoHeadManager(): null {

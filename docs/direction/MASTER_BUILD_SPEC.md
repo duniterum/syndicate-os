@@ -40,10 +40,13 @@ Done: Foundation · Amount · StatusPill · Button+Tag · StatCard · Table · F
 (Prose atom ships in Phase 2 with the Whitepaper — it needs a real content home.)
 
 ## PHASE 2 — Content + rendering foundation  ·  ~13 slices
-- [ ] **2.0 Rendering fix (do FIRST):** make public pages **server-visible** (SSR / prerender
-      / SSG — Claude Code picks per the real repo). JSON-LD + per-page title/description/OG in
-      the **server HTML**, not JS-injected. Real **404 status**. *(Without this, content is
-      invisible to Google + social + AI — so it gates the whole phase.)*
+- [x] **2.0 Rendering fix (do FIRST):** ✅ build-time prerender/SSG of the shell — per-route
+      `dist/public/<route>/index.html` with real title/description/OG/canonical + Organization
+      JSON-LD baked into the **server HTML** (one shared builder, client + static never drift);
+      real `404.html` (noindex) + soft-404 SPA rewrite removed in `artifact.toml`. NOT SSR
+      (`wagmi ssr:false` untouched); live chain figures stay client-hydrated. PENDING routes
+      emitted as noindex shells (no reload-404). *(Serving handoff → Replit: per-route HTML +
+      HTTP 404 + www→apex 301 + clean-URL/canonical agreement.)*
 - [ ] 2.1 Prose atom + **Whitepaper** (per `WHITEPAPER_PLAN.md`)
 - [ ] 2.2 Tokenomics (+ SYN token) · 2.3 FAQ · 2.4 Docs · 2.5 Knowledge base · 2.6 Risk
 - [ ] 2.7 Glossary · 2.8 Roadmap · 2.9 Protocol-facts · 2.10 Brand-facts

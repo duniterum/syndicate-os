@@ -1,5 +1,20 @@
 # 00 — START HERE (whole-protocol entry point)
 
+> **STANDING DOCTRINE — not limited by what exists.** This protocol has **carte blanche to be
+> world-class, grade-AAA.** Existing work is a **starting point, never a ceiling.** For anything
+> you find in the repo, **judge it:** build on it and sharpen it where it's already strong; rebuild
+> it cleanly where it isn't. Prefer **reuse over parallel truth ONLY where the existing code is
+> already grade-AAA** — never shackle new work to weak code. **Own the reality calls:** Claude Code,
+> reading the real repo, owns **code-reality**; Replit, seeing the real server, owns **infra-reality**.
+> Own those decisions — don't wait to be handed the method.
+
+> **STANDING RULE — build/deploy truth is Replit (Linux).** Never sink time fixing the founder's
+> local **Windows** environment (native binaries, rollup optional-deps, path/separator quirks in
+> tooling). Fix genuine **cross-platform code bugs**, but treat local Windows builds as **best-effort
+> only**: if something fails **solely** on a Windows-only binary or env issue, **stop**, keep the
+> committed diff clean, and let Replit run the real build. Local verification is a convenience,
+> **never the source of truth.**
+
 > **HARD RULE — no exceptions.** Every durable spec, plan, and decision lives **IN this repo**,
 > never out-of-repo. Nothing on a desktop, in a chat, or "in your head." The DIRECTION specs are
 > committed at `docs/direction/` (`MASTER_BUILD_SPEC.md` · `CONTENT_SUITE_SPEC.md` · `WHITEPAPER_PLAN.md`).

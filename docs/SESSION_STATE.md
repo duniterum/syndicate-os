@@ -12,11 +12,19 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 - **Phase 1 — CLOSED.** 8 atoms (Amount · StatusPill · Button+Tag · StatCard · Table · Field · Icon).
   Color sprawl **137 → 0**, `no-raw-color` guard **BLOCKING** in the `guards` gate. Fluid `.type-*`
   scale adopted site-wide. Component states + a11y done. (1 documented raw-color exception: QrCodeBlock canvas.)
-- **NEXT SLICE = Phase 2.0 — Rendering fix.** It GATES all of Phase 2 (no content page ships before it).
-- **2.0 approach — DECIDED (ADR-002): build-time prerender / SSG of the SHELL.** Emit per-route static
-  HTML with real `title`/`description`/OG **+ JSON-LD baked into the server HTML** (not JS-injected) +
-  a real **404 status**. **NOT runtime SSR** — it breaks with `wagmi ssr:false`. We inject the head/JSON-LD,
-  we do **not** prerender the React DOM.
+- **Phase 2.0 — Rendering fix → ✅ CLOSED (shipped).** Build-time prerender/SSG of the shell:
+  `artifacts/studio/scripts/prerender-routes.ts` writes per-route `dist/public/<route>/index.html`
+  (real title/description/OG/canonical + Organization JSON-LD in the server HTML) + a real noindex
+  `404.html`; the soft-404 SPA rewrite was removed from `.replit-artifact/artifact.toml`. One shared
+  JSON-LD source (`src/lib/seo-jsonld.ts`) feeds BOTH `SeoHeadManager` and the prerender. PENDING
+  routes (`/recognition`, `/archive`) emitted as **noindex** shells (avoids reload-404, stays out of
+  the index). NOT SSR (`wagmi ssr:false` untouched); live chain figures stay client-hydrated.
+  *(Serving change handed to Replit: per-route HTML + HTTP 404 + www→apex 301 + clean-URL/canonical.)*
+- **NEXT SLICE = Phase 2.1 — Prose atom + Whitepaper** (per `docs/direction/WHITEPAPER_PLAN.md`).
+- **2.0 approach was DECIDED (ADR-002): build-time prerender / SSG of the SHELL** (kept for the record).
+  Per-route static HTML with real `title`/`description`/OG **+ JSON-LD baked into the server HTML** +
+  a real **404 status**. **NOT runtime SSR** — it breaks with `wagmi ssr:false`. Inject head/JSON-LD,
+  do **not** prerender the React DOM.
 - **2.0 scope — DECIDED: Head + JSON-LD + real 404 ONLY.** SEO guards (banned-word, sitemap-leak,
   index-only-real-content) and PENDING-page `noindex` are **end-of-Phase-2**, NOT part of 2.0.
 - **Live chain figures stay client-hydrated, never hardcoded.** Static copy is prerendered; every number
@@ -34,12 +42,14 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 ## Where we are (factual)
 
 - **PHASE 1 → ✅ CLOSED** (see DECIDED above).
-- **PHASE 2 — Content + rendering → ⬜ NOT STARTED. Phase 2.0 is next.**
+- **PHASE 2 — Content + rendering → 🔨 IN PROGRESS. 2.0 CLOSED; next = 2.1 (Prose + Whitepaper).**
   - No content pages exist yet (whitepaper/tokenomics/token/docs/faq/knowledge/risk/glossary/roadmap/protocol-facts/brand-facts).
   - **Prose atom NOT built** (ships in slice 2.1 with the Whitepaper).
-  - Rendering is a **pure client SPA** (Vite + `wouter`, `wagmi ssr:false`, single `index.html` → `dist/public`,
-    api-server SPA-fallback). `SeoHeadManager` is client-only. SEO route registry / sitemap / robots infra
-    already exist (`artifacts/studio/src/lib/seo-route-registry.ts`) — reuse it as the single source for per-route meta.
+  - **Rendering (2.0 shipped):** the shell is now prerendered per-route at build time — server HTML carries
+    real head + JSON-LD, and a real `404.html` exists. The client is still an unchanged SPA (Vite + `wouter`,
+    `wagmi ssr:false`); `SeoHeadManager` still harmonizes head at runtime and reuses the prerendered JSON-LD
+    node. The serving-layer change (per-route HTML, HTTP 404, www→apex 301) is a **Replit handoff** — verify
+    live after deploy. SEO registry (`src/lib/seo-route-registry.ts`) stays the single per-route meta source.
 - **PHASES 3–6 → ⬜ pending** (auth single-instance/Reserved-VM blocker open; admin/RBAC unseeded; living-protocol
   + gamification unbuilt; perf/a11y/responsive/security audits not run; fonts still Google-CDN).
 
@@ -56,8 +66,8 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 
 ## Remaining Phase-2 slices, IN ORDER (from `docs/direction/MASTER_BUILD_SPEC.md` — do not re-plan)
 
-1. **2.0 Rendering fix** — prerender/SSG shell, server HTML meta + JSON-LD, real 404. *(NEXT — the gate.)*
-2. **2.1 Prose atom + Whitepaper** — per `docs/direction/WHITEPAPER_PLAN.md` (15 sections; figures live).
+1. ~~**2.0 Rendering fix** — prerender/SSG shell, server HTML meta + JSON-LD, real 404.~~ ✅ **DONE.**
+2. **2.1 Prose atom + Whitepaper** — per `docs/direction/WHITEPAPER_PLAN.md` (15 sections; figures live). *(NEXT.)*
 3. **2.2 Tokenomics (+ SYN token)** — 1B fixed, 7 buckets (35/25/12/10/8/5/5), burn, 70/20/10; figures live.
 4. **2.3 FAQ** · 5. **2.4 Docs** · 6. **2.5 Knowledge base** · 7. **2.6 Risk** · 8. **2.7 Glossary**
 9. **2.8 Roadmap** (registry-driven) · 10. **2.9 Protocol-facts** · 11. **2.10 Brand-facts**

@@ -220,7 +220,9 @@ const REGISTRY_REACH = /@workspace\/db|drizzle|historical_member|memberRoot|ACTI
 // protocol helpers and must not false-positive there.
 const DB_REACH = /@workspace\/db|drizzle|historical_member|memberRoot/;
 for (const abs of authFiles) {
-  const rel = path.relative(srcDir, abs);
+  // Normalize to POSIX separators so the OPERATOR_BRIDGE_FILE exception matches
+  // on Windows too (path.relative yields "\" on win32; the constant uses "/").
+  const rel = path.relative(srcDir, abs).split(path.sep).join("/");
   if (rel === OPERATOR_BRIDGE_FILE) continue;
   const code = stripComments(read(abs));
   check(
