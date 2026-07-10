@@ -1,10 +1,16 @@
 // Prerender / SSG of the SHELL — Slice 2.0 (rendering fix).
 //
 // Runs AFTER `vite build` (wired into the studio `build` script). For each
-// public route in the SEO registry it writes `dist/public/<route>/index.html` =
-// the built index.html with a per-route <head> baked into the SERVER HTML
-// (title / description / robots / canonical / OG / Twitter) + Organization
-// JSON-LD on the homepage. It also writes a real `404.html` (noindex shell).
+// public route in the SEO registry it writes a FLAT `dist/public/<route>.html`
+// (home stays `index.html`) = the built index.html with a per-route <head> baked
+// into the SERVER HTML (title / description / robots / canonical / OG / Twitter)
+// + Organization JSON-LD on the homepage. It also writes a real `404.html`.
+//
+// FLAT files, not `<route>/index.html` directories: a directory makes static
+// hosts auto-redirect `/status` -> `/status/` (the directory redirect fires
+// BEFORE any rewrite), which breaks "served URL == <link rel=canonical>". A flat
+// file serves the no-slash path directly at 200 and needs no deploy-layer
+// flattening. (Confirmed live on Replit, 2026-07-10.)
 //
 // HONEST SCOPE — this is NOT SSR. We never render React to a string (the app is
 // `wagmi ssr:false`; SSR would break it). We inject the <head> + JSON-LD only;
@@ -126,9 +132,12 @@ for (const route of routes) {
   if (route.path === "/") {
     outPath = path.join(distDir, "index.html");
   } else {
-    const dir = path.join(distDir, route.path.replace(/^\/+/, ""));
-    mkdirSync(dir, { recursive: true });
-    outPath = path.join(dir, "index.html");
+    // Flat file (e.g. /status -> status.html) — never a directory, so the static
+    // host cannot auto-redirect /status -> /status/. Public routes are
+    // single-segment today; dirname() keeps this correct if a nested route is
+    // ever added, and fails closed nowhere (mkdir of an existing dir is a no-op).
+    outPath = path.join(distDir, `${route.path.replace(/^\/+/, "")}.html`);
+    mkdirSync(path.dirname(outPath), { recursive: true });
   }
   writeFileSync(outPath, html, "utf8");
   written++;

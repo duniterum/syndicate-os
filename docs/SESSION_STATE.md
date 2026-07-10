@@ -20,12 +20,15 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   JSON-LD source (`src/lib/seo-jsonld.ts`) feeds BOTH `SeoHeadManager` and the prerender. PENDING
   routes (`/recognition`, `/archive`) emitted as **noindex** shells (avoids reload-404, stays out of
   the index). NOT SSR (`wagmi ssr:false` untouched); live chain figures stay client-hydrated.
-  **Replit deploy report (2026-07-10):** pull + byte-verified `1dfbfe6`; build green (typecheck ·
-  guards 617 + no-raw-color · seo 267 · surface 177 · auth-zone 597); prerender emitted 13 shells
-  (11 index, 2 noindex) + `404.html`; blanket SPA rewrite removed via the platform channel. Home raw
-  HTML carries the Organization JSON-LD + apex canonical; `/status` serves its own title + canonical
-  `…/status`. **Still to confirm on the LIVE domain after the founder clicks Publish:** `/does-not-exist`
-  returns a real HTTP 404 (the old build still 200s until Publish), + re-confirm home/`/status`.
+  **Live-domain checks (2026-07-10, post-Publish):** home ✅ (200 + Organization JSON-LD + apex
+  canonical in raw HTML), unknown path ✅ (real **HTTP 404** + noindex `404.html` shell — soft-404 gone).
+  `/status` returned **301 → `/status/`** — ROOT CAUSE (confirmed via Replit + Replit docs): emitting
+  `<route>/index.html` **directories** makes the static host auto-redirect to the trailing slash, and
+  that directory redirect fires BEFORE any rewrite, so "served URL == canonical" can't win.
+  **FIX (in `main`, commit after `5502a57`):** the prerender now emits **flat `<route>.html`** files
+  (no directory → no auto-redirect → the no-slash URL is served directly at 200 = canonical), so Replit
+  needs **no** deploy-layer flatten step. Awaiting one more Publish to confirm `/status` = HTTP 200
+  (no `location:` header).
 - **NEXT SLICE = Phase 2.1 — Prose atom + Whitepaper** (per `docs/direction/WHITEPAPER_PLAN.md`).
 - **DEFERRED — www→apex 301 (NOT a 2.0 blocker; apex is canonical and serves today).** Do at
   **domain transfer (~Sept 2026)**: the domain was bought via **Lovable** and is registrar-locked
