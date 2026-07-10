@@ -104,9 +104,13 @@ export function useTokenomics(): TokenomicsData {
     };
   });
 
-  const synPerUsdcRaw =
+  // Entry rate = the SYN out for exactly 1 USDC (our reference quote). synOutRaw
+  // is 18-decimal SYN base units, so it formats correctly to whole SYN. Do NOT
+  // use synPerUsdcRaw — that field is an already-human whole-SYN rate (uint64,
+  // e.g. "100"), NOT base units; dividing it by 1e18 rounds every rate to 0.
+  const entrySynOutRaw =
     quote.data?.chainVerified && quote.data.quote
-      ? quote.data.quote.synPerUsdcRaw
+      ? quote.data.quote.synOutRaw
       : null;
 
   return {
@@ -117,7 +121,7 @@ export function useTokenomics(): TokenomicsData {
       findRaw(financial, "financial.lp.reserveUsdc"),
       findRaw(financial, "financial.lp.reserveSyn"),
     ),
-    entrySynPerUsdc: formatBaseUnits(synPerUsdcRaw, SYN_DECIMALS, 0),
+    entrySynPerUsdc: formatBaseUnits(entrySynOutRaw, SYN_DECIMALS, 0),
     burnedSyn: formatBaseUnits(findRaw(financial, "financial.burn.synBalance"), SYN_DECIMALS, 0),
   };
 }
