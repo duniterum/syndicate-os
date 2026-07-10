@@ -18,7 +18,7 @@
     "guard:drift": "node scripts/guard-route-nav-drift.ts",
     "guard:posture": "node scripts/guard-posture-map.ts",
     "guard:live": "node scripts/guard-no-fake-live.ts",
-    "guards": "node scripts/guard-lifecycle-labels.ts && node scripts/guard-forbidden-copy.ts && node scripts/guard-safe-source.ts && node scripts/guard-surface-coverage.ts && node scripts/guard-route-nav-drift.ts && node scripts/guard-posture-map.ts && node scripts/guard-no-fake-live.ts && node scripts/guard-operator-gate.ts && node scripts/guard-access-state.ts",
+    "guards": "node scripts/guard-lifecycle-labels.ts && node scripts/guard-forbidden-copy.ts && node scripts/guard-safe-source.ts && node scripts/guard-surface-coverage.ts && node scripts/guard-route-nav-drift.ts && node scripts/guard-posture-map.ts && node scripts/guard-no-fake-live.ts && node scripts/guard-operator-gate.ts && node scripts/guard-access-state.ts && node guards/no-raw-color.mjs",
     "guard:opgate": "node scripts/guard-operator-gate.ts",
     "guard:access": "node scripts/guard-access-state.ts",
     "guard:color": "node guards/no-raw-color.mjs"

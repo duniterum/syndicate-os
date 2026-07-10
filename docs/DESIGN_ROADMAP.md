@@ -11,7 +11,7 @@ Claude-conseil, Replit. Personne ne part de son côté.
 Le design n'est "fini" que quand TOUT ceci est vrai :
 
 - [ ] **Adoption** — chaque surface rend via le système (aucun composant orphelin).
-- [ ] **Couleur** — 0 couleur brute → guard `no-raw-color` **BLOQUANT** dans la gate.
+- [x] **Couleur** — 0 couleur brute → guard `no-raw-color` **BLOQUANT** dans la gate.
 - [ ] **Typo** — l'échelle fluide `.type-*` adoptée partout.
 - [ ] **États** — chaque composant a survol / focus / désactivé / vide / erreur + a11y.
 - [ ] **Mouvement** — tokens de motion appliqués (jamais "plus tard").
@@ -36,7 +36,7 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
 - [ ] Grille dashboard · [ ] Formulaire · [ ] Page contenu (Docs/Whitepaper/FAQ)
 
 ### Phase 4 — Harmonisation totale (le "rien à moitié")
-- [ ] Finir migration couleur (108 → 0) → guard **BLOQUANT** · [ ] Adopter `.type-*` partout
+- [x] Finir migration couleur (108 → 0) → guard **BLOQUANT** · [ ] Adopter `.type-*` partout
 - [ ] Mouvement · [ ] États complets sur tous les composants · [ ] Vérifier les 2 modes
 
 ### Phase 5 — Surfaces (adoption)
@@ -55,11 +55,11 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
 Design **100 % fini, verrouillé** = toutes les cases de "Définition de FINI" cochées
 → **on n'y revient plus jamais.**
 
-## Suivi couleur
-Sprawl actuel : **2** sites en couleur brute (guard report-only). Objectif : **0** + guard bloquant.
-Dernière baisse : marque/surface sur `PublicHome`/`PublicLayout`/`HeroLedger` (Avalanche→`avax`, fonds→`surface-command`, glow/pastilles→`success`/`warning`/`destructive`), 16 → 2.
-Reste : 2 exceptions fonctionnelles (`QrCodeBlock` #ffffff canvas QR, `toast` variante destructive) → slice C : tokeniser `toast`, allowlister le canvas, passer le guard **bloquant**.
-Décisions marque/déco tranchées : Avalanche → token `--avax`, verts → `--success`, fonds command-room → `--surface-command`, pastilles feu tricolore → `destructive`/`warning`/`success`.
+## Suivi couleur — ✅ FERMÉ
+Sprawl : **0** couleur brute. Guard `no-raw-color` **BLOQUANT** dans la gate (`pnpm guards`), toute
+nouvelle couleur brute casse le build. Du pic de **137 sites** → **0** au fil des slices d'harmonisation.
+Une seule exception documentée : `QrCodeBlock` (fond blanc du canvas QR, requis pour la lisibilité),
+taguée `no-raw-color-allow`. Le token layer (`index.css`) reste la seule source de couleur brute légitime.
 
 ## Gouvernance (comment on reste aligné)
 - Ce doc est la **source unique** du workstream design.
