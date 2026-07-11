@@ -78,7 +78,7 @@ restates almost nothing. Read this first, then open only the source docs your ta
 - Do **not** regenerate, re-derive, or renumber historical members / the Part B freeze — ever.
 - Do **not** rescan the prior-art/GitHub source universe unless the slice specifically requires new evidence (harvest atlases already exist in `docs/strategy/`).
 - Do **not** write a doctrine rewrite when a pointer or a small update to an existing canon doc is enough.
-- Do **not** copy dev DB rows to production, run manual prod SQL, or enable auth — all founder-gated.
+- Do **not** copy dev DB rows to production, run manual prod SQL, or **enable/flip auth ON in production** — all founder-gated. **Distinguish BUILD from GO-LIVE (repointed to `GRAND_RECONCILIATION_AND_CARTE_BLANCHE_UNBLOCK_2026-07-06.md` §1a, 2026-07-06):** *building* the write-capable auth zone is now standing-**authorized** (Phase 3), kept architecturally separate from the read-only spine (which never gains write endpoints); only **ENABLING it live** — the auth ON toggle, real-money / state-changing acts — stays a founder go-live, and it defers on founder **inputs** (auth provider + DB choice, RPC secrets), not on permission.
 
 ## 6. Doc status ledger
 
@@ -100,6 +100,10 @@ restates almost nothing. Read this first, then open only the source docs your ta
 ## 8. Next consumer
 
 `docs/architecture/HOLDER_INDEX_READ_MODEL_DESIGN.md` exists (design-only, written 2026-07-03
-with this compass as its first-read router). The next consumer is the founder-gated
-implementation sequence in that document's §14 — starting with founder/Dave review, then a
-separately-approved internal schema slice. No implementation is authorized yet.
+with this compass as its first-read router). The next consumer is the
+implementation sequence in that document's §14 — founder/Dave review, then an internal schema slice.
+**Repointed (2026-07-06):** the old line "No implementation is authorized yet" is STALE —
+`GRAND_RECONCILIATION_AND_CARTE_BLANCHE_UNBLOCK_2026-07-06.md` §1a/§6 grants **standing implementation
+authorization for Phases 1–10** (a phase defers only if its input is missing). Building is authorized;
+**going live** (auth flip, real-money / state-changing acts) still needs founder inputs + an explicit
+go-live, and every §3 truth/safety invariant stays intact.

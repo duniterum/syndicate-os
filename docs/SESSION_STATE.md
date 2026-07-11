@@ -65,9 +65,18 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   Tokenomics are all DONE and relaunched on the living chassis (see the top living bullets). **2.3 FAQ +
   the deterministic Support Guide, and 2.4 Docs are SEALED in prod (Docs = `140d33e`, Replit-verified live).
   NEXT = 2.5 Knowledge base.**
-- **DEPLOY DEBT — ✅ CLEARED.** The batched FAQ link-fix (`8bc3f1e`) rode the Support deploy. No outstanding
-  undeployed *product* commits — **`main` == production** (latest deploy: 2.4 Docs, `140d33e`; docs-only
-  commits after it don't require a deploy).
+- **DEPLOY DEBT — ✅ CLEARED.** No outstanding undeployed *product* commits — **`main` == production**
+  (latest deploy: ⓪ member-liveness, `bc6102a`; docs-only commits after it don't require a deploy).
+- **DECIDED — carte-blanche is CANON; our per-slice cadence is a FOUNDER CHOICE (2026-07-06).**
+  `docs/strategy/GRAND_RECONCILIATION_AND_CARTE_BLANCHE_UNBLOCK_2026-07-06.md` (Compass §2/§7) grants
+  **standing implementation authorization for Phases 1–10** — it LIFTS report-first, per-slice approval,
+  "no implementation authorized", and the read-only-foundation gate; a phase defers only if its **input**
+  is missing. It KEEPS every truth/safety invariant (no fake-live, no PII, no yield framing, single canon,
+  read-only spine never gains write endpoints, **BUILD ≠ GO-LIVE**: real-money/auth-flip stays a founder
+  act needing founder inputs). **Implication:** the tight show-diff→approve→push cadence we run is the
+  founder's *choice*, tighter than canon requires — not a canon requirement; canon permits building
+  Phases 1–10 without per-slice approval. (Repoints applied: Compass §5/§8; `/join` note = stale
+  authorization gate, OPEN_QUEUE Q20.)
 - **DECIDED — keep the newer OG image (`opengraph.jpg`), do NOT revert.** Replit regenerated the
   social-preview screenshot from the current live app (fresher UI + chain figures: inflow 235.50,
   **burned 21,273 SYN**, verify-on-chain links). Founder confirmed: additional burns happened since, so
