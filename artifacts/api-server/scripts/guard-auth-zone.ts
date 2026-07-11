@@ -214,6 +214,13 @@ for (const abs of authFiles) {
 // other auth file stays registry-less, and operatorContext.ts itself is pinned
 // below to the exact fail-closed shape that was approved.
 const OPERATOR_BRIDGE_FILE = "auth/operatorContext.ts";
+// Founder-approved amendment (member self-recognition bridge, July 2026):
+// memberRoster.ts is the SECOND sanctioned DB-reaching auth file — it resolves a
+// signed wallet's OWN frozen genesis seat (#1–#8) from the member-continuity
+// roster, read-only, lazily imported, own-row, fail-closed. Pinned below to the
+// same registry-less-by-default shape as the operator bridge.
+const MEMBER_BRIDGE_FILE = "auth/memberRoster.ts";
+const DB_BRIDGE_FILES = new Set([OPERATOR_BRIDGE_FILE, MEMBER_BRIDGE_FILE]);
 const REGISTRY_REACH = /@workspace\/db|drizzle|historical_member|memberRoot|ACTIVE/;
 // For helpers OUTSIDE src/auth (one-hop transitive scan) only true DB reach
 // counts — "ACTIVE" is a legitimate chain-decode status word in read-only
@@ -223,12 +230,12 @@ for (const abs of authFiles) {
   // Normalize to POSIX separators so the OPERATOR_BRIDGE_FILE exception matches
   // on Windows too (path.relative yields "\" on win32; the constant uses "/").
   const rel = path.relative(srcDir, abs).split(path.sep).join("/");
-  if (rel === OPERATOR_BRIDGE_FILE) continue;
+  if (DB_BRIDGE_FILES.has(rel)) continue;
   const code = stripComments(read(abs));
   check(
     !REGISTRY_REACH.test(code),
     `${rel}: no registry/DB reach`,
-    `${rel} references registry/DB material — the IA-2 auth zone is registry-less by founder gate (sole exception: ${OPERATOR_BRIDGE_FILE})`,
+    `${rel} references registry/DB material — the IA-2 auth zone is registry-less by founder gate (sanctioned exceptions: ${[...DB_BRIDGE_FILES].join(", ")})`,
   );
   // Anti-laundering: an auth file must not route a registry reach through a
   // helper module outside src/auth. Resolve each relative import that escapes
@@ -296,6 +303,53 @@ for (const abs of authFiles) {
       !/\b(console|res|req|logger)\s*\./.test(code),
       `${OPERATOR_BRIDGE_FILE}: pure lookup module — no response, request, or log surface`,
       `${OPERATOR_BRIDGE_FILE} must stay a pure lookup module (no res/req/console/logger) so the verified account can never be echoed or logged from here`,
+    );
+  }
+}
+{
+  const memberAbs = path.join(srcDir, MEMBER_BRIDGE_FILE);
+  const memberExists = existsSync(memberAbs);
+  check(
+    memberExists,
+    `${MEMBER_BRIDGE_FILE}: present`,
+    `${MEMBER_BRIDGE_FILE} missing — remove its guard exception if the genesis bridge is retired`,
+  );
+  if (memberExists) {
+    const code = stripComments(read(memberAbs));
+    check(
+      !/^\s*import[^;]*@workspace\/db/m.test(code) &&
+        /await import\(\s*["']@workspace\/db["']\s*\)/.test(code),
+      `${MEMBER_BRIDGE_FILE}: @workspace/db is lazily imported only`,
+      `${MEMBER_BRIDGE_FILE} must import @workspace/db ONLY via a lazy await import() — a top-level import couples the read-only server to a DB at boot`,
+    );
+    {
+      const flagGateIdx = code.search(/AUTH_EXPOSURE_FLAG\]\s*!==\s*["']true["']/);
+      const dbUrlIdx = code.indexOf("DATABASE_URL");
+      const lazyImportIdx = code.search(/await import\(\s*["']@workspace\/db["']\s*\)/);
+      check(
+        flagGateIdx !== -1 &&
+          dbUrlIdx !== -1 &&
+          lazyImportIdx !== -1 &&
+          flagGateIdx < lazyImportIdx &&
+          dbUrlIdx < lazyImportIdx,
+        `${MEMBER_BRIDGE_FILE}: exposure-flag + DATABASE_URL gate executes BEFORE the lazy DB import`,
+        `${MEMBER_BRIDGE_FILE} must check the auth exposure flag and DATABASE_URL presence BEFORE the lazy @workspace/db import — gate order drifted`,
+      );
+    }
+    check(
+      /catch\s*(\([^)]*\))?\s*\{[^}]*return NOT_A_MEMBER/.test(code),
+      `${MEMBER_BRIDGE_FILE}: any error fails closed to NOT_A_MEMBER`,
+      `${MEMBER_BRIDGE_FILE} must return NOT_A_MEMBER from its catch — DB errors must never invent a seat`,
+    );
+    check(
+      /["']PART_B_FREEZE_ROOT["']/.test(code),
+      `${MEMBER_BRIDGE_FILE}: resolves only frozen genesis (PART_B_FREEZE_ROOT) rows`,
+      `${MEMBER_BRIDGE_FILE} must scope its roster read to PART_B_FREEZE_ROOT — V3 seats are recognized live, never from the rebuildable roster`,
+    );
+    check(
+      !/\b(console|res|req|logger)\s*\./.test(code),
+      `${MEMBER_BRIDGE_FILE}: pure lookup module — no response, request, or log surface`,
+      `${MEMBER_BRIDGE_FILE} must stay a pure lookup module (no res/req/console/logger) so the verified account can never be echoed or logged from here`,
     );
   }
 }

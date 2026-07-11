@@ -58,6 +58,7 @@ import { allowRequest } from "./throttle";
 import { throttleKey } from "./clientIdentity";
 import { readEngineMemberNumber } from "./engineReadback";
 import { lookupActiveOperator } from "./operatorContext";
+import { lookupGenesisMember } from "./memberRoster";
 import { resolveOwnStanding } from "../lib/protocol/holderIndexStanding";
 import { assertProtocolRealityDiscipline } from "../lib/protocol/payloadDiscipline";
 
@@ -398,9 +399,8 @@ router.get("/member-standing", async (req: Request, res: Response) => {
     const read = await readEngineMemberNumber(boundAccount);
     chainVerified = read.chainVerified;
     failureReason = read.failureReason;
-    if (read.isRecognized === false) {
-      recognized = false; // engine sentinel "0" — clean not-recognized state
-    } else if (read.isRecognized === true && read.engineFigure !== null) {
+    if (read.isRecognized === true && read.engineFigure !== null) {
+      // V3-era member (#9+): the LIVE engine is the authority.
       const standing = resolveOwnStanding(read.engineFigure);
       if (standing.kind === "MAPPED") {
         recognized = true;
@@ -414,8 +414,17 @@ router.get("/member-standing", async (req: Request, res: Response) => {
           snapshotHash: standing.snapshotHash,
         };
       } else if (standing.kind === "STALE") {
-        failureReason =
-          "live engine figure is outside the verified snapshot range; standing unavailable until the snapshot is rebuilt (fail closed)";
+        // The live V3 engine has emitted a seat the verified snapshot has not
+        // caught up to. A figure past the freeze range is DEFINITIONALLY a V3
+        // seat (numbering authority = the emitted memberNumber, per era
+        // doctrine), so it is recognized LIVE — the snapshot is a rebuildable
+        // cache, never the V3 authority. No snapshot proof is claimed for it.
+        recognized = true;
+        ownNumber = read.engineFigure;
+        era = "V3_EMITTED";
+        authority = "V3_EMITTED";
+        authorityLabel = "V3 engine event (live; snapshot rebuild pending)";
+        continuityStatus = "VERIFIED_LIVE_V3";
       } else if (standing.kind === "UNRECONCILED") {
         failureReason =
           "holder index snapshot is not in a verified state; standing unavailable (fail closed)";
@@ -423,7 +432,37 @@ router.get("/member-standing", async (req: Request, res: Response) => {
         failureReason =
           "standing could not be resolved to exactly one era; unavailable (fail closed)";
       }
+    } else if (read.isRecognized === false) {
+      // The live V3 engine does not know this wallet (sentinel "0"). It may
+      // still be a FROZEN GENESIS seat (#1–#8), which has no on-chain
+      // memberNumberOf — resolve its OWN seat from the frozen roster (own-row,
+      // never a directory). Genesis seats live inside the verified snapshot's
+      // freeze era, so the snapshot still supplies era + proof.
+      const genesis = await lookupGenesisMember(boundAccount);
+      if (genesis.recognized && genesis.memberNumber !== null) {
+        const standing = resolveOwnStanding(genesis.memberNumber);
+        if (standing.kind === "MAPPED") {
+          recognized = true;
+          ownNumber = genesis.memberNumber;
+          era = standing.era;
+          authority = standing.authority;
+          authorityLabel = standing.authorityLabel;
+          continuityStatus = standing.continuityStatus;
+          proofPosture = {
+            snapshotStatus: standing.snapshotStatus,
+            snapshotHash: standing.snapshotHash,
+          };
+        } else {
+          // Roster says genesis but the snapshot disagrees — fail closed rather
+          // than assert an unverified seat.
+          failureReason =
+            "genesis standing could not be reconciled to the verified snapshot (fail closed)";
+        }
+      } else {
+        recognized = false; // genuinely not a member on any era
+      }
     }
+    // read.isRecognized === null → live read unavailable; failureReason set above.
   }
 
   const sessionActive = boundAccount !== null;

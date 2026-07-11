@@ -233,6 +233,7 @@ function findForbiddenImports(source: string): string[] {
  */
 const LAZY_DB_ALLOW = new Set([
   join(SERVED_SRC, "auth", "operatorContext.ts"),
+  join(SERVED_SRC, "auth", "memberRoster.ts"),
   join(SERVED_SRC, "operator", "referralTermsService.ts"),
   join(SERVED_SRC, "operator", "operatorRegistryService.ts"),
 ]);
