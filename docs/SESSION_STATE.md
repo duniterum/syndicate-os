@@ -62,13 +62,10 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   needs **no** deploy-layer flatten step. Awaiting one more Publish to confirm `/status` = HTTP 200
   (no `location:` header).
 - ~~**NEXT SLICE = Phase 2.1 — Prose atom + Whitepaper**~~ — superseded: Prose atom, Whitepaper, and
-  Tokenomics are all DONE and relaunched on the living chassis (see the top living bullets). **2.3 FAQ is
-  SEALED in prod (`1c6a07d`, Replit-verified live). NEXT = Support (floating robot).**
-- **⚠️ DEPLOY DEBT — `main` is ONE cosmetic commit ahead of production.** `8bc3f1e` (in-card links on `/faq`
-  now render cyan + underlined instead of plain text — founder-reported) is pushed to `main` but **NOT yet
-  deployed** — founder decided to **batch it with the next slice's deploy** (Support), so Replit does one
-  pull, not two. No data/SEO impact; purely visual. When the next deploy runs, it carries BOTH — no separate
-  action needed. (Clear this note once prod is at `8bc3f1e` or later.)
+  Tokenomics are all DONE and relaunched on the living chassis (see the top living bullets). **2.3 FAQ +
+  the deterministic Support Guide are SEALED in prod (`56bc165`, Replit-verified live). NEXT = 2.4 Docs.**
+- **DEPLOY DEBT — ✅ CLEARED.** The batched FAQ link-fix (`8bc3f1e`) rode the Support deploy; prod is now at
+  `56bc165` (past `8bc3f1e`). No outstanding undeployed commits — `main` == production.
 - **DECIDED — keep the newer OG image (`opengraph.jpg`), do NOT revert.** Replit regenerated the
   social-preview screenshot from the current live app (fresher UI + chain figures: inflow 235.50,
   **burned 21,273 SYN**, verify-on-chain links). Founder confirmed: additional burns happened since, so
@@ -128,9 +125,15 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
     41 Q) feeding both prerender + a runtime injector — no drift, on-screen text == structured data.
     Wired end-to-end (registry INDEX+sitemap · surfaceClassification · modules "faq" Learn-footer · nav ·
     App route). Green locally: typecheck 0 · all 9 guards + no-raw-color · seo:check 303.
-  - **NEXT = Support · the DETERMINISTIC floating Guide (no LLM yet) → 2.4 Docs → 2.5 Knowledge** — each
-    COMPOSES from the `living/` chassis + harvests per `CONTENT_SURFACE_HARVEST_MAP.md`. Full build order =
-    **THE ONE ORDERED SEQUENCE** below.
+  - **Support · the DETERMINISTIC floating Guide → ✅ SEALED in prod (`56bc165`, Replit-verified live).**
+    `SyndicateGuide` mounted globally in `PublicLayout` (public surfaces only) — a router + FAQ-corpus
+    finder that "consults, never invents": surfaces the vetted number-free FAQ answers + routes to the
+    proof surfaces, states no figure itself. Line-art mascot on tokens (gold frame / cyan face). Prerender-
+    safe (localStorage/window in typeof-guarded effects); no fake "1" badge; no decorative live dot; header
+    says "Guide", not "AI". NO LLM / NO wallet-awareness / NO backend (those = Phase 3). `guard-access-state`
+    storage allowlist extended (greeting-seen boolean only). Green: typecheck 0 · 9 guards + no-raw-color.
+  - **NEXT = 2.4 Docs → 2.5 Knowledge** — each COMPOSES from the `living/` chassis + harvests per
+    `CONTENT_SURFACE_HARVEST_MAP.md`. Full build order = **THE ONE ORDERED SEQUENCE** below.
 - **PHASES 3–6 → ⬜ pending** (auth single-instance/Reserved-VM blocker open; admin/RBAC unseeded; event
   backbone / activity / gamification unbuilt; perf/a11y/responsive/security audits not run; fonts still Google-CDN).
 
@@ -166,12 +169,12 @@ canonical decision is overwritten.** No other conflicts found.
 2. ✅ **2.1 Whitepaper (+ Prose atom)** — every figure a live chain read or PENDING. **DONE.**
 3. ✅ **2.2 Tokenomics (+ SYN reads)** — supply/allocations/prices/burn live; whitepaper PENDINGs flipped. **DONE.**
 4. ✅ **2.3 FAQ** (A1) — **SEALED prod** (`1c6a07d`); living chassis + `FaqAccordion`; 39 Q&A number-free;
-   FAQPage JSON-LD in server HTML. *(cosmetic `8bc3f1e` batched with next deploy — see DEPLOY DEBT above.)*
-5. 🔵 **Support · the DETERMINISTIC floating Guide** (B1 + robot UI) — **NEXT.** Deterministic router:
-   FAQ-corpus search + suggested questions + quick-routes to proof surfaces + honest triage; floating
-   mascot on our tokens; drop the fake "1" badge. **NO LLM · NO wallet/member awareness** (those → Phase 3).
-   src: `GUIDE_SUPPORT_ASSISTANT_DOCTRINE.md` + `LIVING_ORGANISM_MASTER_PLAN.md` §6/§11-B.
-6. ⬜ **2.4 Docs** (A2) · 7. ⬜ **2.5 Knowledge** (A3) · 8. ⬜ **2.6 Risk** (A4) · 9. ⬜ **2.7 Glossary** (A5)
+   FAQPage JSON-LD in server HTML.
+5. ✅ **Support · the DETERMINISTIC floating Guide** (B1 + robot UI) — **SEALED prod** (`56bc165`,
+   Replit-verified live). `SyndicateGuide` global in `PublicLayout`; router + FAQ-corpus finder that
+   consults-never-invents; line-art mascot on tokens; no fake badge / no live dot; header "Guide" not "AI".
+   **NO LLM · NO wallet/member awareness** (those → Phase 3, #19–#21). src: `GUIDE_SUPPORT_ASSISTANT_DOCTRINE.md`.
+6. 🔵 **2.4 Docs** (A2) — **NEXT** · 7. ⬜ **2.5 Knowledge** (A3) · 8. ⬜ **2.6 Risk** (A4) · 9. ⬜ **2.7 Glossary** (A5)
 10. ⬜ **2.8 Roadmap**, registry-driven (A6) · 11. ⬜ **2.9 Protocol-facts** (A7) · 12. ⬜ **2.10 Brand-facts** (A8)
 13. ⬜ **2.11 Join / entry-tiers UI** — featured tiers + custom-amount + live read-only quote preview
     (gross → source payment → net → routing) + 5-step flow; figures from chain.
