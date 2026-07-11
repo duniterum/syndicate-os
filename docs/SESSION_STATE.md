@@ -23,6 +23,16 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 
 ## ✅ DECIDED — DO NOT RE-OPEN (settled; do not re-litigate)
 
+- **DECIDED (founder, 2026-07-11) — the runtime served-payload discipline NET is LIFTED
+  (reversible).** `assertProtocolRealityDiscipline` no longer throws on an address-leak /
+  financial-framing payload; gated behind `DISCIPLINE_ENFORCED` (flip to re-arm). Recorded as
+  an explicit founder amendment in `docs/adr/ADR-003-…-anti-doxx.md`. ADR-003's CORE stays in
+  force (no KYC, no directory, own-row/aggregate, `memberNumber→wallet` server-only — never
+  built into a served payload), and the build-time envelope leak scans still run — so nothing
+  is doxxed today; only the automated runtime catch was lifted. Financial-framing net expected
+  back at the Phase-5 crypto-lawyer pass. This ALSO resolved the member-standing **500** (the
+  net was false-positiving a member's own 64-hex receipt tx as a 40-hex address).
+
 - **DECIDED — the whole PROTOCOL is LIVING (`docs/direction/WHITEPAPER_LIVING_DOCTRINE.md`).** Not a
   whitepaper feature: EVERY surface reads live from the chain and updates itself ("read live · as of {ts} ·
   nothing hardcoded · don't trust, verify · we ask nothing · observe → join"). The whitepaper is the flagship

@@ -705,25 +705,29 @@ async function main(): Promise<void> {
     __resetProtocolRealityCache();
   }
 
-  // 8) DISCIPLINE positive controls: doctored leak + framing must THROW.
+  // 8) DISCIPLINE runtime net — enforcement LIFTED by founder decision 2026-07-11
+  //    (ADR-003 amendment; reversible via DISCIPLINE_ENFORCED in payloadDiscipline.ts).
+  //    The runtime net no longer throws on a doctored address / framing payload, so
+  //    the former "…THROWS" positive controls no longer describe intended behavior.
+  //    The REAL protection against a served address leak is unaffected: every built
+  //    envelope's no-address-leak invariant is still verified INDEPENDENTLY above
+  //    (happy / unreachable / fin-* "NO address leak" checks via FULL_ADDRESS_RE).
+  //    This control asserts the CURRENT no-op contract; if DISCIPLINE_ENFORCED is
+  //    flipped back on, this goes RED — restore the THROWS controls alongside it.
   {
-    const leak = { groups: { chain: [{ note: "see 0x1234567890abcdef1234567890abcdef12345678" }] } };
-    let threwLeak = false;
+    const doctoredLeak = { groups: { chain: [{ note: "see 0x1234567890abcdef1234567890abcdef12345678" }] } };
+    const doctoredFraming = { note: "guaranteed profit and yield for everyone" };
+    let liftedNoThrow = true;
     try {
-      assertProtocolRealityDiscipline(leak);
+      assertProtocolRealityDiscipline(doctoredLeak);
+      assertProtocolRealityDiscipline(doctoredFraming);
     } catch {
-      threwLeak = true;
+      liftedNoThrow = false;
     }
-    check("discipline: full address leak THROWS", threwLeak);
-
-    const framing = { note: "guaranteed profit and yield for everyone" };
-    let threwFraming = false;
-    try {
-      assertProtocolRealityDiscipline(framing);
-    } catch {
-      threwFraming = true;
-    }
-    check("discipline: forbidden financial framing THROWS", threwFraming);
+    check(
+      "discipline: runtime net lifted (founder 2026-07-11) — no throw; envelope leak still verified independently",
+      liftedNoThrow,
+    );
   }
 
   // ── report ──────────────────────────────────────────────────────────────────

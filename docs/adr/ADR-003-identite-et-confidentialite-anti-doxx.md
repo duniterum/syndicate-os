@@ -98,3 +98,33 @@ n'est pas protégée.
 *Companion : `THE_SYNDICATE_OS_COMPASS.md` (proof-first), `SETTLED_RULES_DO_NOT_RELITIGATE.md`
 (le mécanisme décide, pas le mot), `WALLET_IDENTITY_AND_HOLDER_INDEX_DESIGN.md` (l'archi
 own-row). En cas de conflit, la Boussole gagne ; corriger le pointeur.*
+
+---
+
+## Amendement 2026-07-11 — décision fondateur : lever le NET runtime de discipline (réversible)
+
+**Qui / quoi :** le **fondateur** a décidé, explicitement et enregistré ici (comme le §2
+l'exige — jamais un changement silencieux), de **lever l'enforcement runtime** du filet
+« discipline » sur le payload servi (`assertProtocolRealityDiscipline`) : le **net anti-fuite
+d'adresse** (0x-40hex) **et** le **net anti-cadrage financier** (ROI/yield/profit/casino…).
+Motif : jugé **non nécessaire pour l'instant**. À **revoir quand ce sera nécessaire** (le net
+de cadrage financier est attendu de retour au **passage avocat-crypto Phase 5**).
+
+**Réversible en 1 ligne :** l'implémentation garde la logique intacte derrière le drapeau
+`DISCIPLINE_ENFORCED` (`payloadDiscipline.ts`) — la repasser à `true` ré-arme les deux nets.
+Le motif anti-fuite d'adresse a même été **corrigé** au passage (il confondait un reçu 64-hex
+avec une adresse 40-hex et renvoyait 500 à chaque membre reconnu), donc un futur ré-armement
+est propre et gratuit.
+
+**Ce qui NE change PAS — le cœur d'ADR-003 tient (§1–§5 restent en vigueur) :** pas de KYC /
+aucune identité réelle stockée · **pas d'annuaire** · chaque surface own-row ou agrégat · le
+mapping `memberNumber → wallet` reste **server-only** (jamais construit dans un payload servi
+en premier lieu). Lever ce *net* ne doxxe donc **personne aujourd'hui** — il retire la
+**capture automatique** d'une régression future. Les guards de build qui scannent
+indépendamment les enveloppes servies pour une fuite d'adresse (`protocol-reality` §happy/
+unreachable/fin-*, `FULL_ADDRESS_RE`) **ne sont pas touchés** et tournent toujours ; le §4
+« enforcement déjà dans le code » reste vrai à l'exception explicite de ce seul net runtime.
+
+**Portée :** ce lever concerne **uniquement** le net runtime `assertProtocolRealityDiscipline`.
+Les guards de contenu build-time (`guard-forbidden-copy` côté studio, `verify-canon-integrity`
+côté canon) ne bloquent aucun membre et ne sont **pas** touchés par cet amendement.
