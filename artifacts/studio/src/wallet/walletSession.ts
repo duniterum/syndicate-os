@@ -149,6 +149,38 @@ export async function fetchSessionState(): Promise<WiredAccessStateId> {
 }
 
 /**
+ * The app-wide access state, resolved ENTIRELY from the server's own answers
+ * about the account IT bound (founder-authorized wire widening, 2026-07-11):
+ *   S1  — no signed session (fail-closed default);
+ *   S4  — signed wallet control only;
+ *   S7  — recognized member (member-standing: chainVerified + recognized + seat);
+ *   S11 — active operator (operator-context: isOperator).
+ * NEVER a client claim; ANY read failure leaves the lower state (fail-closed).
+ * Operator (S11) outranks member (S7) outranks bare signed (S4). Every value is
+ * still forced through resolveWiredState at the provider seam — this is defense
+ * in depth, the membership/operator gate the app can finally see.
+ */
+export async function resolveWiredAccessState(): Promise<WiredAccessStateId> {
+  const session = await fetchSessionState();
+  if (session !== "S4") return "S1"; // not signed in → nothing to elevate
+  const [op, standing] = await Promise.all([
+    fetchOperatorContext(),
+    fetchMemberStanding(),
+  ]);
+  if (op.isOperator === true) return "S11";
+  if (
+    standing !== null &&
+    standing.state === "S4" &&
+    standing.chainVerified &&
+    standing.recognized === true &&
+    standing.memberNumber !== null
+  ) {
+    return "S7";
+  }
+  return "S4";
+}
+
+/**
  * Reachability probe for the auth zone: distinguishes a DARK zone (the server
  * returns 404 for every /api/auth/* route) from a LIVE-but-signed-out one
  * ({ state: "S1" }). Fail-closed to "dark" on any non-OK response, unexpected

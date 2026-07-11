@@ -39,9 +39,11 @@
 //  12. (IA-2a) no browser-storage auth anywhere in studio src: localStorage /
 //      sessionStorage are allowed only for the theme preference
 //      (ThemeProvider) — no file may ever persist auth/session material.
-//  13. (S2) wire ceiling: WIRABLE_ACCESS_STATES is exactly ["S1","S4"] and
-//      resolveWiredState collapses every other input to S1 — the anonymous
-//      SIWE session can never wire a member/privileged state;
+//  13. wire set: WIRABLE_ACCESS_STATES is exactly ["S1","S4","S7","S11"]
+//      (founder-authorized 2026-07-11 — S7/S11 now have a real SERVER source:
+//      member-standing + operator-context) and resolveWiredState passes only
+//      that closed set, collapsing every other input to S1 (fail closed);
+//      still visibility/UX only — no surface is GATED (rule 4);
 //  14. (S2) wire-seam allowlist: useWireAccessState is referenced only by the
 //      provider itself and the build-time-gated src/wallet/ module;
 //  15. (S2) wallet module hard gate: no static import of "@/wallet/..."
@@ -420,25 +422,35 @@ check(
   `browser storage used outside the ThemeProvider allowlist: ${storageViolations.join(", ")} — auth/session material must never live in localStorage/sessionStorage`,
 );
 
-// ── 13. (S2) Wire ceiling: only S1/S4 can ever be wired app-wide ─────────────
+// ── 13. Wire set: exactly the founder-authorized server-sourced states ───────
+// Widened 2026-07-11 (founder-authorized) from ["S1","S4"] to add S7 (recognized
+// member) + S11 (operator) now that /api/auth/member-standing + operator-context
+// exist and run in production. The set stays a CLOSED, pinned list; anything
+// outside it fails closed to S1. The source stays server-only (walletSession
+// resolveWiredAccessState reads the server's account-bound answers, never a
+// client claim) and this stays visibility/UX — no surface is GATED (rule 4).
 check(
-  WIRABLE_ACCESS_STATES.length === 2 &&
+  WIRABLE_ACCESS_STATES.length === 4 &&
     WIRABLE_ACCESS_STATES[0] === "S1" &&
-    WIRABLE_ACCESS_STATES[1] === "S4",
-  'WIRABLE_ACCESS_STATES is exactly ["S1", "S4"] (session wire ceiling)',
-  'WIRABLE_ACCESS_STATES must stay exactly ["S1", "S4"] — S7+/S11+ have no wired source; widening it is a founder-gated act paired with a real source',
+    WIRABLE_ACCESS_STATES[1] === "S4" &&
+    WIRABLE_ACCESS_STATES[2] === "S7" &&
+    WIRABLE_ACCESS_STATES[3] === "S11",
+  'WIRABLE_ACCESS_STATES is exactly ["S1","S4","S7","S11"] (server-sourced set)',
+  'WIRABLE_ACCESS_STATES must stay exactly ["S1","S4","S7","S11"] — widening beyond the server-sourced states is a founder-gated act paired with a real source',
 );
 check(
-  resolveWiredState("S4") === "S4" &&
-    resolveWiredState("S1") === "S1" &&
-    resolveWiredState("S7") === "S1" &&
-    resolveWiredState("S11") === "S1" &&
+  resolveWiredState("S1") === "S1" &&
+    resolveWiredState("S4") === "S4" &&
+    resolveWiredState("S7") === "S7" &&
+    resolveWiredState("S11") === "S11" &&
+    resolveWiredState("S8") === "S1" &&
+    resolveWiredState("S12") === "S1" &&
     resolveWiredState("S14") === "S1" &&
     resolveWiredState(undefined) === "S1" &&
     resolveWiredState(null) === "S1" &&
     resolveWiredState("SIMULATED") === "S1",
-  'resolveWiredState fails closed (everything except exactly "S4" → S1)',
-  'resolveWiredState must collapse every non-"S4" input to S1 (fail closed)',
+  'resolveWiredState passes only wirable states (S1/S4/S7/S11), else fails closed to S1',
+  'resolveWiredState must pass exactly the wirable set and collapse every other input to S1 (fail closed)',
 );
 
 // ── 14. (S2) Wire-seam import allowlist ──────────────────────────────────────

@@ -1,14 +1,16 @@
 // WalletSessionBoot — app-root session resolution (S2, flag-gated seam).
 // ---------------------------------------------------------------------------
 // Mounted once (inside AccessStateProvider) via the flag-gated dynamic import
-// in App.tsx, so a live session cookie resolves to S4 on EVERY route. Renders
+// in App.tsx, so a live session resolves app-wide on EVERY route — elevated
+// from the server's OWN answers about the bound account: S4 (signed) → S7
+// (recognized member) → S11 (operator), fail-closed to S1. Renders
 // nothing. Since Phase 1 the wallet layer ships in ALL builds
 // (WALLET_SESSION_PREVIEW_ENABLED is a `true` literal); this module stays a
 // dynamic import so the seam remains gate-shaped and guard-pinned.
 
 import { useEffect } from "react";
 import { useWireAccessState } from "@/components/access/AccessStateProvider";
-import { fetchSessionState } from "./walletSession";
+import { resolveWiredAccessState } from "./walletSession";
 import { SESSION_CHANGED_EVENT } from "./sessionEvents";
 
 export default function WalletSessionBoot() {
@@ -16,7 +18,7 @@ export default function WalletSessionBoot() {
   useEffect(() => {
     let alive = true;
     const resolve = () => {
-      void fetchSessionState().then((state) => {
+      void resolveWiredAccessState().then((state) => {
         if (alive) wire(state);
       });
     };

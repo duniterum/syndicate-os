@@ -28,18 +28,16 @@ and verified** (12 = 8 + 4 VERIFIED); the prod-write barrier was restored (secre
 
 ## 2. THE EXACT NEXT STEP (strict order — do not jump)
 
-1. **[THIS COMMIT] Green main** — the 7 stale-guard fixes (below) + these memory docs. Push on GO.
-2. **`config/surfaceNaming.ts` + `guard-surface-naming` (BLOCKING)** — the vocabulary lock, SAME shape as
-   `config/sourceAttributionTerminology.ts` + its guard. Encodes the NAMING CANON (§3). Also fixes the
-   existing "cockpit" leaks: `accessState.ts:178` comment + `MemberHeaderAffordance` "Open member cockpit".
-3. **Widen the wire (S7/S11)** — founder-authorized (§3). `WIRABLE_ACCESS_STATES += "S7","S11"`; update
-   `guard-access-state`; **rewrite the now-false "no wired source" comment**. S7 = member-standing
-   `recognized===true && memberNumber!==null && chainVerified`; S11 = operator-context `isOperator===true`.
-   State comes ONLY from the server's answer about the account IT bound, NEVER a client claim; any failure
-   → S1 (fail-closed stays); frontend state stays visibility/UX, never permission.
-4. **Member Home** (§4 spec).
-5. The action registry → the member's other doors, one page at a time → `/join` real purchase path
-   (**APPROVE ≠ PAYMENT**, §3).
+**DONE (on `main`):** ✅ green main = 7 stale-guard fixes (`a83d812`, 16/16 Linux-verified) · ✅ Q28
+`surfaceNaming.ts` + BLOCKING `guard-surface-naming` + the 52-site sweep, all "cockpit"/"Member OS"/
+"control tower" leaks cleared (`c1d6700`) · ✅ the wire widened: `WIRABLE_ACCESS_STATES = ["S1","S4","S7","S11"]`,
+elevation resolved SERVER-side in `walletSession.resolveWiredAccessState` (S4→S7 member→S11 operator,
+fail-closed to S1, never a client claim), `guard-access-state` updated (688), the false "no wired source"
+comment rewritten in `accessState.ts` + `AccessStateProvider` (this commit). **The app now KNOWS you are a
+member — the prerequisite for Member Home is in place.**
+
+**NEXT →** **Member Home** (§4 spec). Then: the action registry → the member's other doors, one page at a
+time → `/join` real purchase path (**APPROVE ≠ PAYMENT**, §3). Two shells + no-twin-pages (§3) govern it.
 
 ## 3. FOUNDER DECISIONS — settled, NEVER re-litigate
 

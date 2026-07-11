@@ -34,17 +34,32 @@ import type {
 export const CURRENT_ACCESS_STATE_ID: AccessStateId = "S1";
 
 /**
- * S2 wire ceiling: the ONLY states a live session may drive app-wide.
- * The dev SIWE session is anonymous control-proof (server returns S1|S4 and
- * nothing else) — member (S7+) and privileged (S11+) states have no wired
- * source and may never be produced by the session seam (guard-enforced).
+ * Wirable states: the ONLY states a live SERVER answer may drive app-wide.
+ * WIDENED (founder-authorized, 2026-07-11) from ["S1","S4"] now that the server
+ * readbacks exist and run in production — the old "S7+/S11+ have no wired source"
+ * was TRUE when written and is FALSE now:
+ *   • S1  — no signed session (fail-closed default);
+ *   • S4  — signed wallet control only (GET /api/auth/session);
+ *   • S7  — recognized member (GET /api/auth/member-standing: chainVerified &&
+ *           recognized === true && memberNumber !== null);
+ *   • S11 — active operator (GET /api/auth/operator-context: isOperator === true).
+ * The wired value comes ONLY from the server's answer about the account IT bound,
+ * NEVER from a client claim; anything else fails closed to S1. This stays
+ * visibility/UX, NEVER permission — no surface is gated on it (the server
+ * enforces nothing from frontend state, and guard-access-state pins gatedCount 0).
+ * The elevation (S4 → S7/S11) is resolved server-side in wallet/walletSession.ts
+ * (resolveWiredAccessState); this resolver is the fail-closed membership gate.
  */
-export const WIRABLE_ACCESS_STATES = ["S1", "S4"] as const;
+export const WIRABLE_ACCESS_STATES = ["S1", "S4", "S7", "S11"] as const;
 export type WiredAccessStateId = (typeof WIRABLE_ACCESS_STATES)[number];
 
-/** Fail-closed wire resolver: anything that is not exactly "S4" is S1. */
+const WIRABLE_SET: ReadonlySet<string> = new Set(WIRABLE_ACCESS_STATES);
+
+/** Fail-closed wire resolver: only a wirable state passes; everything else → S1. */
 export function resolveWiredState(value: unknown): WiredAccessStateId {
-  return value === "S4" ? "S4" : "S1";
+  return typeof value === "string" && WIRABLE_SET.has(value)
+    ? (value as WiredAccessStateId)
+    : "S1";
 }
 
 export interface AccessStateMeta {

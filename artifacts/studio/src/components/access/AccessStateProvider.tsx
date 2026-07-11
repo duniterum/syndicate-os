@@ -1,13 +1,14 @@
 // AccessStateProvider — access-state shell (S2: session-wirable, fail-closed).
 // ---------------------------------------------------------------------------
-// HONESTY POSTURE: the only wired identity signal in the product is the
-// dev-only SIWE session (api /api/auth — production-dark), and it is
-// anonymous control-proof: the server returns S1 or S4 and nothing else.
-// This provider therefore:
+// HONESTY POSTURE: the wired identity signal is the SIWE session plus the
+// server's own account-bound readbacks under /api/auth. Since 2026-07-11 (founder-
+// authorized) the wirable set is ["S1","S4","S7","S11"]: S4 signed, S7 recognized
+// member, S11 operator — all resolved SERVER-side in walletSession
+// (resolveWiredAccessState), never from a client claim. This provider therefore:
 //   - boots hardwired to the fail-closed default (S1);
 //   - exposes ONE restricted wire seam (useWireAccessState) whose input is
-//     forced through resolveWiredState — anything that is not exactly "S4"
-//     collapses to S1. S7+/S11+ can never be wired here (no source exists);
+//     forced through resolveWiredState — anything outside the wirable set
+//     collapses to S1 (fail closed);
 //   - performs NO I/O itself: no fetch, no effects, no persistence, no
 //     storage. Session resolution lives in the build-time-gated wallet
 //     module (src/wallet/), which is dead-code-eliminated from production
@@ -44,7 +45,7 @@ const WireAccessStateContext = createContext<(next: WiredAccessStateId) => void>
 export function AccessStateProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AccessStateId>(CURRENT_ACCESS_STATE_ID);
   // The one wire seam: input is forced through the fail-closed resolver, so
-  // callers can only ever produce S1 or S4 app-wide.
+  // callers can only ever produce a wirable state (S1/S4/S7/S11) app-wide.
   const wire = useCallback((next: WiredAccessStateId) => {
     setState(resolveWiredState(next));
   }, []);

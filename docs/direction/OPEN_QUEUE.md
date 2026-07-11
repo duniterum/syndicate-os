@@ -53,10 +53,10 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 >
 > | # | New item | Status | Next |
 > |---|---|---|---|
-> | Q27 | **Green main — 7 stale-guard fixes** (protocol-reality ×3 · protocol-time ×1 · holder-index ×3). All STALE, not drift; two adversarially verified. | ⏳ built, awaiting push GO | push [this commit] |
-> | Q28 | **`config/surfaceNaming.ts` + `guard-surface-naming` (BLOCKING)** — vocabulary lock (naming canon); fix "cockpit" leaks (`accessState.ts:178`, `MemberHeaderAffordance` menu). | 🟡 next after Q27 | build → gate |
-> | Q29 | **Widen the wire (S7/S11)** — founder-AUTHORIZED. `WIRABLE += S7,S11`; update `guard-access-state`; rewrite the false "no wired source" comment. Server-answer-only; fail→S1; visibility not permission. | 🟡 after Q28 | build → gate |
-> | Q30 | **Member Home** (`/member`) — identity strip "Your Seat" · empty-state conversion → `/join` · role-filtered quick actions (locked-visible, operator cats removed) · live figures (MOVE receipt, render SYN balanceOf) · nav. Then action registry → doors → `/join` purchase (APPROVE≠PAYMENT). | 🟡 after Q29 | build slice by slice |
+> | Q27 | **Green main — 7 stale-guard fixes** (all STALE, two adversarially verified). | ✅ CLOSED `a83d812` (16/16 Linux) | — |
+> | Q28 | **`surfaceNaming.ts` + `guard-surface-naming` (BLOCKING) + 52-site sweep** — naming canon locked; all cockpit/Member-OS/control-tower leaks cleared. | ✅ CLOSED `c1d6700` | — |
+> | Q29 | **Widen the wire (S7/S11)** — `WIRABLE = [S1,S4,S7,S11]`; server-side elevation `resolveWiredAccessState` (S4→S7→S11, fail→S1, never a client claim); guard-access-state 688; false comment rewritten. | ✅ CLOSED [this commit] | — |
+> | Q30 | **Member Home** (`/member`) — identity strip "Your Seat" · empty-state conversion → `/join` · role-filtered quick actions (locked-visible, operator cats removed) · live figures (MOVE receipt, render SYN balanceOf) · nav. Then action registry → doors → `/join` purchase (APPROVE≠PAYMENT). | 🟡 NEXT | build slice by slice |
 
 | # | Item (one line) | Status | Next move | Evidence |
 |---|---|---|---|---|
