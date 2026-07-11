@@ -42,7 +42,7 @@ interface CockpitFacet {
   links?: { label: string; href: string }[];
 }
 
-// What the Member OS resolves, facet by facet. Lifecycles are honest: the
+// What Member Home resolves, facet by facet. Lifecycles are honest: the
 // seat is the active engine's own figure read back for YOUR signed wallet
 // (live, read-only); attribution readback awaits its adapter; recognition is
 // a future concept; archive holdings are protocol memory, never a seat or a
@@ -124,7 +124,7 @@ export default function MemberAccess() {
 
   return (
     <PublicPage
-      eyebrow="Member OS"
+      eyebrow="Member Home"
       title={memberAccess.heading}
       lead={memberAccess.intro}
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
@@ -164,7 +164,7 @@ export default function MemberAccess() {
         {authLive ? <ConnectButton showBalance={false} /> : <WalletAuthComingSoon />}
       </div>
 
-      {/* Status centerpiece — the ONE live surface of the cockpit: public
+      {/* Status centerpiece — the ONE live surface of Member Home: public
           wallet session + standing self-readback. Mounted only when the auth
           zone is live, so a dark zone never renders the sign-in panel. */}
       {authLive && WalletSessionPanel ? (
@@ -191,7 +191,7 @@ export default function MemberAccess() {
         </span>
       </div>
 
-      {/* Cockpit tabs — state-only (no URL sync); every tab is an honest
+      {/* Member Home tabs — state-only (no URL sync); every tab is an honest
           facet: live where wired, explicitly absent where not. */}
       <Tabs defaultValue="overview" className="mb-12">
         <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1">

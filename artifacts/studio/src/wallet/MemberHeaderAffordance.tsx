@@ -4,7 +4,7 @@
 // signed-in LINK into a real dropdown that closes the missing session control:
 // a signed-in member can now DISCONNECT from the header (reuses logoutSession,
 // which announces the session change so this menu re-resolves in place), copy
-// their own address, open the cockpit, and verify their seat on-chain — all
+// their own address, open Member Home, and verify their seat on-chain — all
 // resolved from the server self-readback, never fabricated.
 //
 // Same discipline as before: reached ONLY via the runtime dynamic import from
@@ -255,7 +255,7 @@ export default function MemberHeaderAffordance({
         <DropdownMenuItem asChild>
           <Link href="/member" className="cursor-pointer">
             <LayoutDashboard className="mr-2 h-4 w-4" aria-hidden="true" />
-            Open member cockpit
+            Open Member Home
           </Link>
         </DropdownMenuItem>
 

@@ -88,7 +88,7 @@ export interface ModuleRegistryEntry {
   readonly surface: SyndicateSurface;
   /** May this module ever be presented on public surfaces? */
   readonly publicVisible: boolean;
-  /** Will the Admin Control Tower manage this module in a later slice? */
+  /** Will the Admin Console manage this module in a later slice? */
   readonly adminManaged: boolean;
   /** Requires a wallet session (SIWE, self-readback only) to be useful. */
   readonly requiresAuth: boolean;
@@ -138,7 +138,7 @@ const specs: readonly RegistrySpec[] = [
     adminManaged: true,
     requiresAuth: true,
     requiresApproval: true,
-    cta: { label: "Open Member OS", href: "/member" },
+    cta: { label: "Open Member Home", href: "/member" },
     homepageZone: "NONE",
     proofSource: { kind: "sourceStatus", category: "walletSession" },
     riskClass: "SESSION_SELF_READBACK",

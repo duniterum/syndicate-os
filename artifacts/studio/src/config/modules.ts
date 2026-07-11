@@ -108,7 +108,7 @@ export const modules = [
   },
   {
     id: "admin",
-    label: "Admin Control Tower",
+    label: "Admin Console",
     sidebarLabel: "Admin",
     path: "/admin",
     zone: "studio",
@@ -118,7 +118,7 @@ export const modules = [
     phase: "draft",
     truthStatus: "DESIGN_PREVIEW",
     description:
-      "Operator control tower skeleton — read-only panels over the module registry and live postures. No write controls exist.",
+      "Operator console skeleton — read-only panels over the module registry and live postures. No write controls exist.",
     dependencies: [],
     nav: { header: false, sidebar: true, footer: false },
     icon: LayoutDashboard,
@@ -157,7 +157,7 @@ export const modules = [
   },
   {
     id: "member",
-    label: "Member OS",
+    label: "Membership",
     path: "/member",
     zone: "member",
     visible: true,

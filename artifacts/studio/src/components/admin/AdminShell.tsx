@@ -177,7 +177,7 @@ function AccountMenu() {
         <DropdownMenuItem asChild>
           <Link href="/member" className="cursor-pointer">
             <UserRound className="h-4 w-4 mr-2" />
-            Member cockpit
+            Membership
           </Link>
         </DropdownMenuItem>
         {WALLET_SESSION_PREVIEW_ENABLED ? (

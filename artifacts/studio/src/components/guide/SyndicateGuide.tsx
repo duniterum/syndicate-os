@@ -360,7 +360,7 @@ export function SyndicateGuide() {
 
                   <div>
                     <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                      Jump to a proof surface
+                      Jump to the proof page
                     </p>
                     <div className="grid grid-cols-1 gap-1.5">
                       {GUIDE_QUICK_ROUTES.map((route) => (

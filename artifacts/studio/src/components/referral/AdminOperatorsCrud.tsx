@@ -1,6 +1,6 @@
 // components/referral/AdminOperatorsCrud.tsx
 //
-// Operators & sources management for the Admin Control Tower: the role
+// Operators & sources management for the Admin Console: the role
 // hierarchy and the operator registry (invite / edit / suspend / revoke) in
 // AdminOperatorsCrud, plus the source-review queue (approve / flag) exported
 // separately so the sectioned admin shell can rehome it under Sources &

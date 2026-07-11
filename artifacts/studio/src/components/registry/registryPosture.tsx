@@ -1,7 +1,7 @@
 // components/registry/registryPosture.tsx — shared fail-closed posture derivation.
 // ---------------------------------------------------------------------------
 // ONE render-time derivation for Module Registry v0 postures, shared by every
-// consumer (public homepage cards, /member cockpit, the internal control
+// consumer (public homepage cards, Member Home, the internal control
 // tower). Nothing here is a hardcoded status: posture resolves from the
 // entry's declared proofSource — a GET /api/source-status category or a
 // GET /api/protocol/reality group — falling back to the module's honest

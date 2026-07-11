@@ -8,7 +8,7 @@
 // Dependency-free + lives under src/**, so BOTH the forbidden-copy guard AND the
 // no-raw-color guard scan it automatically (recursive walk). Every route below is
 // a real registry route; every figure a visitor might want lives on the linked
-// proof surface, never here.
+// the proof page, never here.
 
 export interface GuideQuickRoute {
   label: string;

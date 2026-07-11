@@ -141,7 +141,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     routeType: "PUBLIC",
     indexStatus: "INDEX",
     sitemap: true,
-    title: "Member OS — Wallet Session & Standing",
+    title: "Member Home — Wallet Session & Standing",
     description:
       "Sign with your wallet to prove control and read your own standing — a live, read-only self-readback from the active membership engine. Session ≠ membership; no directory of other wallets exists.",
     canonicalPath: "/member",

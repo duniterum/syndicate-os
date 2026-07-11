@@ -1,6 +1,6 @@
 // components/referral/AdminReferralPanel.tsx
 //
-// Operator view of the referral/source program for the Admin Control Tower.
+// Operator view of the referral/source program for the Admin Console.
 // Read-only and PAUSED: every KPI, ranking, flag, and chart below is SAMPLE
 // (illustrative shape, never a live read) and carries a SampleTag. At
 // activation these are replaced by verified read-model data; no write control

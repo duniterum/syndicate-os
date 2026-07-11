@@ -4,7 +4,7 @@
 // REHOMED read-only panels (pages/admin/panels.tsx) and the existing preview
 // components under components/referral that previously lived stacked on the
 // single flat /admin page. Moved, not rewritten — every panel of the former
-// Admin Control Tower renders on exactly one section below; nothing was lost
+// Admin Console renders on exactly one section below; nothing was lost
 // or hidden. The only new composition is the Dashboard, which hosts the
 // founder-approved AdminHome (presentational, no fabricated figures) with the
 // REAL ProtocolRealityPanel in its realitySlot.

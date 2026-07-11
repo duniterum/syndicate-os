@@ -129,7 +129,7 @@ export const howItWorks = {
       step: "04",
       title: "Return",
       description:
-        "Come back to your Member OS to read your standing, your receipt trail, and your next step — always read-only, always yours.",
+        "Come back to your Member Home to read your standing, your receipt trail, and your next step — always read-only, always yours.",
     },
     {
       step: "05",
@@ -319,7 +319,7 @@ export interface IdentityStage {
 // The wallet-as-identity organism, recovered as read-only doctrine. Each stage
 // carries an HONEST lifecycle: the wallet/chain identity is verifiable today
 // (see /status), receipt → index → derived facts are real architecture pending
-// the live indexer (PENDING_ADAPTER), and the member cockpit is FUTURE. Nothing
+// the live indexer (PENDING_ADAPTER), and Member Home is FUTURE. Nothing
 // here implies a active wallet connector, active buy flow, or a granted seat.
 export const membershipIdentity = {
   heading: "How membership identity works",
@@ -351,8 +351,8 @@ export const membershipIdentity = {
     },
     {
       step: "05",
-      title: "Member OS",
-      body: "Your member cockpit surfaces seat, receipts, archive holdings, and next actions once the indexer resolves them. It is a future surface, not live today.",
+      title: "Member Home",
+      body: "Your Member Home surfaces seat, receipts, archive holdings, and next actions once the indexer resolves them. It is a future surface, not live today.",
       lifecycle: "FUTURE",
     },
     {

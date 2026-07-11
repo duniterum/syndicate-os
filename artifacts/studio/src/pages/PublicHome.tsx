@@ -248,7 +248,7 @@ export default function PublicHome() {
       {/*
         V6: the public vitrine follows the app's real .light/.dark theme.
         Dark mode keeps the black/gold command-center reference.
-        Light mode renders the same cockpit anatomy in a readable institutional light treatment.
+        Light mode renders the same layout anatomy in a readable institutional light treatment.
       */}
       <section className="syn-command-island relative isolate overflow-hidden border-b border-border bg-[radial-gradient(70%_48%_at_50%_0%,hsl(var(--gold)/0.18),transparent_68%),linear-gradient(180deg,hsl(var(--background)),hsl(var(--muted)))] text-foreground dark:border-gold/18 dark:bg-surface-command dark:text-white">
         <div aria-hidden className="pointer-events-none absolute inset-0">

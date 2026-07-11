@@ -206,7 +206,7 @@ export const protocolOsMap: OsMapDomain[] = [
       },
       {
         id: "member-cockpit",
-        label: "Member cockpit",
+        label: "Member Home",
         binding: { kind: "lifecycle", lifecycle: "PREVIEW" },
         notPublic: false,
         summary: "The future member surface.",

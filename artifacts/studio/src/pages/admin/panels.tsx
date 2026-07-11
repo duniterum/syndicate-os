@@ -1,6 +1,6 @@
 // pages/admin/panels.tsx
 //
-// Phase 2 slice 1 — the read-only Admin Control Tower panels, REHOMED from the
+// Phase 2 slice 1 — the read-only Admin Console panels, REHOMED from the
 // former flat pages/AdminControlTower.tsx into per-section components (moved,
 // not rewritten; nothing lost or hidden). Every panel remains a READ surface
 // over existing truth sources: the module registry overlay

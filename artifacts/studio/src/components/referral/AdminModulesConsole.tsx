@@ -1,6 +1,6 @@
 // components/referral/AdminModulesConsole.tsx
 //
-// Plugin-style module manager for the Admin Control Tower: each module in the
+// Plugin-style module manager for the Admin Console: each module in the
 // real moduleRegistry gets an activate/deactivate switch, plus create / edit /
 // delete affordances — the "WordPress plugins" surface.
 //

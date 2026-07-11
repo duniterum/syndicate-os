@@ -175,7 +175,7 @@ export function resolveAccessState(value: unknown): AccessStateId {
  *
  *  - "S1"  (public pages row): every human state may view; S14 worker has no
  *    frontend surface of its own ("—" in the matrix).
- *  - "S7"  (member cockpit row): own-scope member states (S7 · S8 read-only ·
+ *  - "S7"  (member home row): own-scope member states (S7 · S8 read-only ·
  *    S10) plus least-data support views (S11 · S12 read-only). S13 is "—".
  *  - "S11" (operator shell row): S11 · S12, plus S13 in the read-only skin.
  *
