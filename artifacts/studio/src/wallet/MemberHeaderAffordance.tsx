@@ -29,6 +29,7 @@ import {
   ChevronDown,
   Hexagon,
   ShieldCheck,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -55,14 +56,29 @@ import { SESSION_CHANGED_EVENT } from "./sessionEvents";
 type Status =
   | { kind: "checking" }
   | { kind: "signedOut" }
-  | { kind: "member"; seat: string; era: string | null }
+  | {
+      kind: "member";
+      seat: string;
+      era: string | null;
+      // The member's OWN entry receipt (ADR-003 §3) — their seat-establishing tx.
+      // Present → "Verify on-chain" points at THEIR transaction (proves their seat),
+      // never the raw contract page. Null (fail-closed) → the contract-link fallback.
+      receipt: { transaction: string; explorerUrl: string } | null;
+    }
   | { kind: "noSeat" }
   | { kind: "signedIn" }; // S4 but standing unreadable/unresolved — never a fake seat
 
 function classify(r: MemberStandingReadback | null): Status {
   if (r === null || r.state !== "S4") return { kind: "signedOut" };
   if (r.chainVerified && r.recognized === true && r.memberNumber !== null) {
-    return { kind: "member", seat: r.memberNumber, era: r.era };
+    return {
+      kind: "member",
+      seat: r.memberNumber,
+      era: r.era,
+      receipt: r.receipt
+        ? { transaction: r.receipt.transaction, explorerUrl: r.receipt.explorerUrl }
+        : null,
+    };
   }
   if (r.chainVerified && r.recognized === false) return { kind: "noSeat" };
   return { kind: "signedIn" };
@@ -83,6 +99,7 @@ export default function MemberHeaderAffordance({
 }) {
   const [status, setStatus] = useState<Status>({ kind: "checking" });
   const [copied, setCopied] = useState(false);
+  const [sharedProof, setSharedProof] = useState(false);
   const [signing, setSigning] = useState(false);
   const [signError, setSignError] = useState(false);
   const { openConnectModal } = useConnectModal();
@@ -227,6 +244,19 @@ export default function MemberHeaderAffordance({
     }
   }
 
+  // Share the member's OWN entry-receipt link (ADR-003 §3 opt-in "flex"): copy
+  // the public explorer URL of their seat-establishing transaction. Own-row only,
+  // the member's explicit choice to share their own proof — never anyone else's.
+  async function handleShareProof(url: string) {
+    try {
+      await navigator.clipboard.writeText(url);
+      setSharedProof(true);
+      window.setTimeout(() => setSharedProof(false), 1400);
+    } catch {
+      // Clipboard denied — stay honest: no fake "copied" confirmation.
+    }
+  }
+
   async function handleDisconnect() {
     await logoutSession(); // announces SESSION_CHANGED_EVENT → menu re-resolves
   }
@@ -296,9 +326,27 @@ export default function MemberHeaderAffordance({
             </div>
           ) : null}
 
-          {seated ? (
+          {/* Verify on-chain — ADR-003 §3: a member's own verify link must prove
+              THEIR seat (their entry transaction), never dump them on the raw
+              contract page. Point at the member's own receipt tx when we have it;
+              fall back to the contract verify-link only if the receipt is
+              unavailable (fail-closed), never inventing a hash. */}
+          {status.kind === "member" ? (
             <div className="mt-2">
-              <VerifyOnChain ids={["membershipSaleV3"]} />
+              {status.receipt ? (
+                <a
+                  href={status.receipt.explorerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={`Your entry transaction ${status.receipt.transaction.slice(0, 10)}…${status.receipt.transaction.slice(-6)} — the on-chain purchase that established seat #${status.seat}`}
+                  className="inline-flex items-center gap-1 font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-proof/80 transition-colors hover:text-proof"
+                >
+                  Verify my seat on-chain
+                  <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
+                </a>
+              ) : (
+                <VerifyOnChain ids={["membershipSaleV3"]} />
+              )}
             </div>
           ) : null}
 
@@ -346,6 +394,23 @@ export default function MemberHeaderAffordance({
               <Copy className="mr-2 h-4 w-4" aria-hidden="true" />
             )}
             {copied ? "Copied" : "Copy address"}
+          </DropdownMenuItem>
+        ) : null}
+
+        {status.kind === "member" && status.receipt ? (
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onSelect={(e) => {
+              e.preventDefault(); // keep the menu open to show the "Copied" tick
+              void handleShareProof(status.receipt!.explorerUrl);
+            }}
+          >
+            {sharedProof ? (
+              <Check className="mr-2 h-4 w-4 text-proof" aria-hidden="true" />
+            ) : (
+              <ExternalLink className="mr-2 h-4 w-4" aria-hidden="true" />
+            )}
+            {sharedProof ? "Proof link copied" : "Share my proof"}
           </DropdownMenuItem>
         ) : null}
 
