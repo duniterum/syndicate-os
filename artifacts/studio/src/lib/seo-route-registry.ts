@@ -244,6 +244,24 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
       "FAQ content page (slice 2.3), composed from the living chassis. Number-free doctrine-perfect corpus (content/faq-content.ts) reframed from the origin 39 Q&A; FAQPage JSON-LD baked into the server HTML from one shared builder (seo-faq-jsonld.ts). Live figures via the hero card hooks / links only — no hardcoded numbers.",
   },
   {
+    path: "/docs",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "Docs — The Syndicate Operating Manual",
+    description:
+      "The knowledge hub for The Syndicate — read the protocol in the order a member lives it. Every entry carries a status and an audience tag and links to the real surface, where every figure is read live from Avalanche. Not a security; no promise of gain.",
+    canonicalPath: "/docs",
+    changefreq: "monthly",
+    priority: 0.7,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "education",
+    primaryIntent: "education",
+    proofRoute: "/status",
+    notes:
+      "Docs hub (slice 2.4), composed from the living chassis. A journey spine + grouped cards; each card links a REAL registry route and derives its status pill from the registry (Ready/Pending, never hardcoded). Number-free; audience tags are editorial wayfinding, never access-gating.",
+  },
+  {
     path: "/recognition",
     routeType: "PENDING",
     indexStatus: "PENDING",

@@ -298,6 +298,21 @@ export const modules = [
     icon: HelpCircle,
   },
   {
+    id: "docs",
+    label: "Docs",
+    path: "/docs",
+    zone: "public",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description:
+      "The protocol operating manual — a knowledge hub that indexes every surface with a status and an audience tag, read in the order a member lives it.",
+    dependencies: [],
+    nav: { header: true, sidebar: false, footer: true },
+    icon: FileText,
+  },
+  {
     id: "learning",
     label: "Learn",
     path: "/learning",

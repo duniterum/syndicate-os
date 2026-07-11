@@ -106,6 +106,14 @@ from = "/faq/"
 to = "/faq.html"
 
 [[services.production.rewrites]]
+from = "/docs"
+to = "/docs.html"
+
+[[services.production.rewrites]]
+from = "/docs/"
+to = "/docs.html"
+
+[[services.production.rewrites]]
 from = "/recognition"
 to = "/recognition.html"
 

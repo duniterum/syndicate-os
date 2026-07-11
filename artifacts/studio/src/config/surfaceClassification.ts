@@ -122,6 +122,17 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     enforcement: "PREVIEW_LABELLED",
   },
   {
+    routePath: "/docs",
+    moduleId: "docs",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary:
+      "The protocol operating manual — a knowledge hub indexing every surface with a registry-derived status and an editorial audience tag.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
     routePath: "/source-attribution",
     moduleId: "source-attribution",
     audience: "PUBLIC",
