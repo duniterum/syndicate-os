@@ -34,6 +34,12 @@ const WalletSessionPanel = WALLET_SESSION_PREVIEW_ENABLED
   ? lazy(() => import("@/wallet/WalletSessionPanel"))
   : null;
 
+// Member Home §4 block 1 — the "Your Seat" identity strip (headline). Same
+// lazy, flag-gated wallet-boundary pattern as the panel above.
+const MemberYourSeat = WALLET_SESSION_PREVIEW_ENABLED
+  ? lazy(() => import("@/wallet/MemberYourSeat"))
+  : null;
+
 interface CockpitFacet {
   icon: LucideIcon;
   title: string;
@@ -129,6 +135,15 @@ export default function MemberAccess() {
       lead={memberAccess.intro}
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
+      {/* Member Home headline — the "Your Seat" identity strip. Renders only for
+          a signed-in wallet (own-row); a visitor sees the content below as before. */}
+      {authLive && MemberYourSeat ? (
+        <Suspense fallback={null}>
+          <div className="mb-8">
+            <MemberYourSeat />
+          </div>
+        </Suspense>
+      ) : null}
       {/* Identity ribbon — wallet-as-identity doctrine + the live session state.
           The chip reflects the app-wide access state (S1 fail-closed default,
           S4 after a signed session); it is vocabulary, never evidence. */}

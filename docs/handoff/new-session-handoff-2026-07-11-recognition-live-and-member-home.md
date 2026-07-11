@@ -101,6 +101,20 @@ unlimited. (ORIGIN_RECLAMATION_LEDGER §13.)
 
 ## 4. MEMBER HOME — the spec, block by block (do NOT bury the conversion)
 
+> **▶ SLICE 1 SHIPPED** (this commit): the **"Your Seat" identity strip** (block 1) + the **empty-state
+> conversion** (block 2). `components/member/MemberSigil.tsx` (pure deterministic seal from the address,
+> zero data, currentColor/gold — no-raw-color safe) + `wallet/MemberYourSeat.tsx` (own-row standing → Sigil ·
+> Member #N · **seat-status headline** green "Seat Held" / amber "No Seat Yet" · address · era · noSeat →
+> "Take your seat" → /join). Lazy-imported onto `/member` (rule-15 pattern), renders only for a signed-in
+> wallet. Green: tsc 0 · guards (access-state 701, no-raw-color 0, surface-naming 4) · build 0.
+> **REMAINING (next slices, full context):** the member SHELL (two-shells §3 — the page chooses) · quick
+> actions from a role registry (locked-visible + reasons; operator cats removed for non-operators) · **MOVE
+> the receipt** from WalletSessionPanel into the strip (don't rebuild — commit `8150d72`) · render **SYN
+> balanceOf** live · the **Chapter** constant (heroSystem chapter "Genesis Signal · Chapter #1" — deferred:
+> needs a clean import path) · the member's nav doors. Then action registry → doors → /join purchase
+> (APPROVE≠PAYMENT). The current /member still shows the old "Identity ribbon" card + panel BELOW the new
+> strip (additive) — the shell slice will fold them in / retire the raw AccessStateChip on that card.
+
 1. **Identity strip = "Your Seat"** (one row): Sigil · wallet · **Member #N** · **SEAT STATUS as the headline**
    (green "Seat Held" / amber "No Seat Yet") · Chapter.
 2. **Empty state if no seat:** "Your wallet is connected, but no seat is anchored to it." → **Take your seat →
