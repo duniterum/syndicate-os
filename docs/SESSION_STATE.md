@@ -65,8 +65,9 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   Tokenomics are all DONE and relaunched on the living chassis (see the top living bullets). **2.3 FAQ +
   the deterministic Support Guide, and 2.4 Docs are SEALED in prod (Docs = `140d33e`, Replit-verified live).
   NEXT = 2.5 Knowledge base.**
-- **DEPLOY DEBT — ✅ CLEARED.** The batched FAQ link-fix (`8bc3f1e`) rode the Support deploy; prod is now at
-  `56bc165` (past `8bc3f1e`). No outstanding undeployed commits — `main` == production.
+- **DEPLOY DEBT — ✅ CLEARED.** The batched FAQ link-fix (`8bc3f1e`) rode the Support deploy. No outstanding
+  undeployed *product* commits — **`main` == production** (latest deploy: 2.4 Docs, `140d33e`; docs-only
+  commits after it don't require a deploy).
 - **DECIDED — keep the newer OG image (`opengraph.jpg`), do NOT revert.** Replit regenerated the
   social-preview screenshot from the current live app (fresher UI + chain figures: inflow 235.50,
   **burned 21,273 SYN**, verify-on-chain links). Founder confirmed: additional burns happened since, so
