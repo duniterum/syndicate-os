@@ -8,6 +8,13 @@ Direction specs now live IN this repo: `docs/direction/MASTER_BUILD_SPEC.md` ·
 `docs/direction/GAMIFICATION_LEGAL_DOCTRINE.md` (recognition-only, legal shield).
 Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md`.
 
+> **▶ LATEST HANDOFF (read after this file): `docs/handoff/new-session-handoff-2026-07-11-door-and-liveness.md`** —
+> the full recap of the 2026-07-11 session (⓪ liveness fix LIVE, the auth finding, the Q11 mistake + v2 fix,
+> the carte-blanche repoints, the 7 standing rules, the canon file map). Single source for "what's next" =
+> `docs/direction/OPEN_QUEUE.md`. **EXACT NEXT STEP:** push Q11-v2 (awaiting founder GO) → then 2.5 Knowledge
+> (needs founder inputs Q5 route-name + Q6 permanence). Replit pending: flip `SYNDICATE_AUTH_ENABLED="true"`
+> + confirm `REPLIT_DOMAINS` + e2e-verify `/member`.
+
 ---
 
 ## ✅ DECIDED — DO NOT RE-OPEN (settled; do not re-litigate)
