@@ -42,7 +42,9 @@ import {
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import {
   fetchMemberStanding,
+  getInjectedProvider,
   logoutSession,
+  requestAccount,
   shortAddress,
   signInWithWallet,
   type Eip1193Provider,
@@ -82,6 +84,7 @@ export default function MemberHeaderAffordance({
   const [status, setStatus] = useState<Status>({ kind: "checking" });
   const [copied, setCopied] = useState(false);
   const [signing, setSigning] = useState(false);
+  const [signError, setSignError] = useState(false);
   const { openConnectModal } = useConnectModal();
   const { address, connector } = useAccount();
 
@@ -103,18 +106,30 @@ export default function MemberHeaderAffordance({
   // Re-sign an ALREADY-CONNECTED wallet whose server session has lapsed. Server
   // sessions are in-memory and are wiped on every restart/deploy, while the
   // wallet connection persists — so RainbowKit stops offering the connect modal
-  // and a member would otherwise be stranded. This signs SIWE directly against
-  // the connected wallet (any connector, not just injected), re-creating the
-  // session; signInWithWallet announces SESSION_CHANGED_EVENT so the header
-  // resolves back to the full member menu in place.
+  // and a member would otherwise be stranded.
+  //
+  // Sign via the EXACT proven path the /member WalletSessionPanel uses (the only
+  // sign flow verified in prod): the injected provider directly (window.ethereum),
+  // and eth_requestAccounts FIRST to activate the account before signing — some
+  // wallets require that to unlock personal_sign for this page. Fall back to the
+  // wagmi connector's provider only for non-injected wallets. signInWithWallet
+  // announces SESSION_CHANGED_EVENT so the header resolves back to the full member
+  // menu in place. On ANY failure we surface an honest fallback to /member — never
+  // a silent dead click, never a fabricated session.
   async function reSign() {
-    if (!connector || !address || signing) return;
+    if (!address || signing) return;
     setSigning(true);
+    setSignError(false);
     try {
-      const provider = (await connector.getProvider()) as Eip1193Provider;
+      const provider =
+        getInjectedProvider() ??
+        ((await connector?.getProvider()) as Eip1193Provider | undefined) ??
+        null;
+      if (!provider) throw new Error("no_provider");
+      await requestAccount(provider); // activate the account, like the panel does
       await signInWithWallet(provider, address);
     } catch {
-      // Rejected or failed — stay honest, never fabricate a session.
+      setSignError(true);
     } finally {
       setSigning(false);
     }
@@ -147,8 +162,24 @@ export default function MemberHeaderAffordance({
     }
     // Wallet connected but the SERVER session lapsed (RainbowKit therefore hides
     // the connect modal). Offer a REAL re-sign — never a dead link that reads as
-    // a bug and makes a member leave.
+    // a bug and makes a member leave. If a re-sign attempt failed, fall back to
+    // the proven /member sign panel rather than pretending or dead-ending.
     if (address && connector) {
+      if (signError) {
+        return (
+          <Link href="/member" className={mobile ? "w-full" : "inline-flex"}>
+            <Button
+              variant="outline"
+              size={mobile ? "default" : "sm"}
+              title="Sign-in didn't complete — open Member to sign in (read-only, proves wallet control only)."
+              className={triggerBase}
+            >
+              <Wallet className={mobile ? "mr-2 h-4 w-4 text-gold" : "mr-1.5 h-4 w-4 text-gold"} aria-hidden="true" />
+              Sign in on Member
+            </Button>
+          </Link>
+        );
+      }
       return (
         <Button
           variant="outline"
