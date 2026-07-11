@@ -167,10 +167,14 @@ function sectionB(canonFiles: string[]): void {
     /server-side only/i.test(lower) && lower.includes("payload") && lower.includes("never"),
   );
 
-  // every vendored file (excluding our own barrel) is listed by its local path
-  const vendored = canonFiles.filter((f) => relative(CANON_DIR, f) !== "index.ts");
+  // every vendored file (excluding our own barrel) is listed by its local path.
+  // Normalize to forward slashes: relative() yields OS-native separators (backslash
+  // on Windows), but PROVENANCE.md documents forward-slash paths — without this the
+  // subdirectory entries false-fail on Windows while passing on Linux (Replit).
+  const toPosix = (p: string) => p.split("\\").join("/");
+  const vendored = canonFiles.filter((f) => toPosix(relative(CANON_DIR, f)) !== "index.ts");
   const missing = vendored
-    .map((f) => relative(CANON_DIR, f))
+    .map((f) => toPosix(relative(CANON_DIR, f)))
     .filter((rel) => !text.includes(rel));
   check(
     "B",
