@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { lazy, Suspense, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link, useLocation } from "wouter";
-import { Activity, ChevronDown, Menu, ShieldCheck, Wallet, X } from "lucide-react";
+import { Activity, ChevronDown, Menu, ShieldCheck, X } from "lucide-react";
+import { useAuthAvailability } from "@/lib/authAvailability";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
@@ -18,6 +19,23 @@ import { accessStates } from "@/config/accessState";
 import { useAccessState } from "@/components/access/AccessStateProvider";
 import { AccessStateChip } from "@/components/access/AccessStateChip";
 import { SyndicateGuide } from "@/components/guide/SyndicateGuide";
+
+// Member sign-in / standing affordance. Reached ONLY through a runtime dynamic
+// import so PublicLayout never STATICALLY reaches @/wallet (guard-access-state
+// rule 15 — App.tsx is the sole static wallet importer). Rendered only when the
+// auth zone is live (dark → nothing; auto-appears the instant SYNDICATE_AUTH_ENABLED
+// flips). One modal covers connect + SIWE sign; standing resolves in place.
+const MemberHeaderAffordance = lazy(() => import("@/wallet/MemberHeaderAffordance"));
+
+function MemberHeaderSlot({ variant }: { variant: "desktop" | "mobile" }) {
+  const authLive = useAuthAvailability() === "live";
+  if (!authLive) return null;
+  return (
+    <Suspense fallback={null}>
+      <MemberHeaderAffordance variant={variant} />
+    </Suspense>
+  );
+}
 
 // Session chip (S2): renders ONLY when the app-wide access state is S4 —
 // i.e. a dev-preview SIWE session wired through the gated wallet module. In
@@ -228,23 +246,12 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             >
               <ShieldCheck className="h-4 w-4" aria-hidden="true" />
             </Link>
-            {/* Existing-member affordance: connect + read your own standing
-                (read-only self-readback on /member). NOT "sign in" — the persistent
-                SIWE session stays dark until auth go-live; this never implies it. */}
-            <Link
-              href="/member"
-              title="Already a member? Connect your wallet and read your standing (read-only)."
-              className="hidden md:inline-flex"
-            >
-              <Button
-                variant="outline"
-                size="sm"
-                className="min-h-9 rounded-xl border-gold/35 bg-transparent px-3.5 font-semibold text-foreground hover:border-gold/55 hover:bg-gold/10"
-              >
-                <Wallet className="mr-1.5 h-4 w-4 text-gold" aria-hidden="true" />
-                Member
-              </Button>
-            </Link>
+            {/* Existing-member affordance — auth-gated one-modal sign-in + in-place
+                standing (mirrors the admin OperatorSignInAction/OperatorBadge).
+                Hidden while the auth zone is dark; appears the instant it goes live. */}
+            <span className="hidden md:inline-flex">
+              <MemberHeaderSlot variant="desktop" />
+            </span>
             <Link href={heroSystem.primaryCta.href} className="hidden md:inline-flex">
               <Button
                 size="sm"
@@ -299,15 +306,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                     ))}
                   </div>
                   <div className="mt-2 flex flex-col gap-2 border-t border-border/50 pt-4">
-                    <Link href="/member" onClick={() => setMobileOpen(false)}>
-                      <Button
-                        variant="outline"
-                        className="min-h-12 w-full justify-center rounded-xl border-gold/35 bg-transparent font-semibold text-foreground hover:bg-gold/10"
-                      >
-                        <Wallet className="mr-2 h-4 w-4 text-gold" aria-hidden="true" />
-                        Member · your standing
-                      </Button>
-                    </Link>
+                    <MemberHeaderSlot variant="mobile" />
                     <Link href={heroSystem.primaryCta.href} onClick={() => setMobileOpen(false)}>
                       <Button className="min-h-12 w-full justify-center rounded-xl bg-gold font-semibold text-gold-foreground hover:bg-gold/90">
                         {heroSystem.primaryCta.label}

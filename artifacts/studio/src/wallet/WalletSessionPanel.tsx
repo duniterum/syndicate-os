@@ -21,6 +21,7 @@ import { useCallback, useEffect, useState } from "react";
 import { KeyRound, LogOut, RefreshCw, Wallet } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { AccessStateChip } from "@/components/access/AccessStateChip";
 import {
   useAccessState,
@@ -134,6 +135,17 @@ function StandingSection({
             Your own seat number, read live and exact from the protocol. You can
             only ever see your own — nothing about anyone else's wallet.
           </p>
+          {/* Verify it yourself — the exact contract this seat is read from
+              (server-resolved explorer link; no address in the client bundle,
+              fail-closed). The reader can call memberNumberOf(their address). */}
+          <div className="mt-2.5">
+            <VerifyOnChain ids={["membershipSaleV3"]} />
+            <p className="font-mono text-[10px] text-muted-foreground mt-1">
+              Verify it yourself: open the engine and call{" "}
+              <code>memberNumberOf</code> with your address — the same read behind
+              this seat.
+            </p>
+          </div>
         </div>
       );
     } else if (r.recognized === false) {
