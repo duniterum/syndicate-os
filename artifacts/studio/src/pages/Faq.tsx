@@ -6,6 +6,7 @@ import { StatusPill } from "@/components/status-pill/StatusPill";
 import { LivingSignature } from "@/components/living/LivingSignature";
 import { TransparencyPosture } from "@/components/living/TransparencyPosture";
 import { SectionIndex, type IndexEntry } from "@/components/living/SectionIndex";
+import { MembersProvenance } from "@/components/living/MembersProvenance";
 import { FaqAccordion, FAQ_ALL } from "@/components/faq/FaqAccordion";
 import { FaqJsonLd } from "@/components/faq/FaqJsonLd";
 import { FAQ_CATEGORIES } from "@/content/faq-content";
@@ -90,6 +91,14 @@ export default function Faq() {
               loading={tk.loading}
             />
           </div>
+          <MembersProvenance
+            className="mt-4"
+            historicalFreeze={r.historicalFreeze}
+            v3Emitted={r.v3Emitted}
+            snapshotMemberTotal={r.snapshotMemberTotal}
+            snapshotAsOf={r.snapshotAsOf}
+            membersDiverged={r.membersDiverged}
+          />
           <p className="mt-4 type-body text-muted-foreground">
             The full live picture — supply, distribution, the two prices, burn, and treasury routing —
             is on <Link href="/tokenomics" className={linkCls}>Tokenomics</Link> and the{" "}

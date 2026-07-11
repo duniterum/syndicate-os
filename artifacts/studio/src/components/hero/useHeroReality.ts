@@ -51,9 +51,22 @@ function routedShare(rawAggregate: string | null, bps: bigint): string | null {
 
 export interface HeroReality {
   loading: boolean;
-  /** Holder Index recognition count — the canonical public member count. */
+  /**
+   * LIVE continuous member total — the active V3 engine's reconciled
+   * memberCount() (seats #1..memberCount). The canonical public headline; a live
+   * chain read, NOT the served snapshot. Fail-closed to null.
+   */
   membersTotal: string | null;
   membersTotalNumber: number | null;
+  /** Historical freeze/root base #1–#8 (live GENESIS_OFFSET), fail-closed. */
+  historicalFreeze: number | null;
+  /** Live V3-emitted seats = memberCount − GENESIS_OFFSET (dual authority). */
+  v3Emitted: number | null;
+  /** Verified snapshot total (the point-in-time attestation) + its as-of. */
+  snapshotMemberTotal: number | null;
+  snapshotAsOf: string | null;
+  /** True when the live engine has advanced past the verified snapshot (STALE). */
+  membersDiverged: boolean;
   /** Aggregate cumulative on-chain inflow (V1+V2A+V2+V3), USDC display. */
   aggregateInflowUsdc: string | null;
   /** Raw 6-dec base units of the aggregate (for count-up animation). */
@@ -122,11 +135,28 @@ export function useHeroReality(): HeroReality {
   const financial = reality.data?.groups.financial;
   const aggregateRaw = findFinancial(financial, "financial.inflow.aggregate");
 
-  const memberTotal = holderIndex.data?.memberTotal;
-  const membersTotalNumber =
-    typeof memberTotal === "number" && Number.isFinite(memberTotal) && memberTotal >= 0
-      ? memberTotal
+  // LIVE headline: the reconciled continuous memberCount() from the reality
+  // spine (fail-closed if the server's anchor/invariant reconciliation failed).
+  // NO SNAPSHOT FOR A LIVE-READABLE FIGURE — the served snapshot is used only for
+  // the dual-authority attestation + divergence, never as the headline.
+  const liveMemberCount = findFinancialCount(financial, "financial.members.memberCount");
+  const genesisOffset = findFinancialCount(financial, "financial.members.genesisOffset");
+  const membersTotalNumber = liveMemberCount;
+  const v3Emitted =
+    liveMemberCount !== null && genesisOffset !== null ? liveMemberCount - genesisOffset : null;
+
+  // Verified snapshot attestation (point-in-time) — the divergence, not the headline.
+  const snapMemberTotal = holderIndex.data?.memberTotal;
+  const snapshotMemberTotal =
+    typeof snapMemberTotal === "number" && Number.isFinite(snapMemberTotal) && snapMemberTotal >= 0
+      ? snapMemberTotal
       : null;
+  const builtAt = holderIndex.data?.provenance?.builtAt;
+  const snapshotAsOf = typeof builtAt === "string" && builtAt.length > 0 ? builtAt : null;
+  const membersDiverged =
+    liveMemberCount !== null &&
+    snapshotMemberTotal !== null &&
+    liveMemberCount !== snapshotMemberTotal;
 
   const attribution = findFinancialCount(financial, "financial.referral.attributionActivity");
 
@@ -175,6 +205,11 @@ export function useHeroReality(): HeroReality {
     loading: reality.isLoading || holderIndex.isLoading,
     membersTotal: membersTotalNumber === null ? null : membersTotalNumber.toLocaleString("en-US"),
     membersTotalNumber,
+    historicalFreeze: genesisOffset,
+    v3Emitted,
+    snapshotMemberTotal,
+    snapshotAsOf,
+    membersDiverged,
     aggregateInflowUsdc: formatBaseUnits(aggregateRaw, 6, 2),
     aggregateInflowRaw: aggregateRaw,
     vaultUsdc: formatBaseUnits(findFinancial(financial, "financial.vault.usdcBalance"), 6, 2),

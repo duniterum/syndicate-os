@@ -22,6 +22,8 @@ export const SELECTOR_BALANCE_OF = "0x70a08231" as const; // balanceOf(address)
 export const SELECTOR_GET_RESERVES = "0x0902f1ac" as const; // getReserves()
 export const SELECTOR_TOKEN0 = "0x0dfe1681" as const; // token0()
 export const SELECTOR_MEMBER_COUNT = "0x11aee380" as const; // memberCount()
+export const SELECTOR_GENESIS_OFFSET = "0xc2b8c053" as const; // GENESIS_OFFSET()
+export const SELECTOR_NEXT_SEAT_NUMBER = "0x24605a13" as const; // nextSeatNumber()
 export const SELECTOR_TOTAL_SUPPLY = "0x18160ddd" as const; // totalSupply()
 
 const ADDRESS_RE = /^0x[0-9a-fA-F]{40}$/;

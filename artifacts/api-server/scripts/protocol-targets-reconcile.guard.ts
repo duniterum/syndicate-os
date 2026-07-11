@@ -75,6 +75,8 @@ import {
   SELECTOR_GET_RESERVES,
   SELECTOR_TOKEN0,
   SELECTOR_MEMBER_COUNT,
+  SELECTOR_GENESIS_OFFSET,
+  SELECTOR_NEXT_SEAT_NUMBER,
   SELECTOR_TOTAL_SUPPLY,
   encodeAddressArg,
   decodeReservesPair,
@@ -122,6 +124,9 @@ function main(): void {
   check("selector: availableSyn() derived", SELECTOR_AVAILABLE_SYN === functionSelector("availableSyn()"), SELECTOR_AVAILABLE_SYN);
   check("selector: totalGrossUsdc() derived", SELECTOR_TOTAL_GROSS_USDC === functionSelector("totalGrossUsdc()"), SELECTOR_TOTAL_GROSS_USDC);
   check("selector: receiptCount() derived", SELECTOR_RECEIPT_COUNT === functionSelector("receiptCount()"), SELECTOR_RECEIPT_COUNT);
+  check("selector: memberCount() derived", SELECTOR_MEMBER_COUNT === functionSelector("memberCount()"), SELECTOR_MEMBER_COUNT);
+  check("selector: GENESIS_OFFSET() derived", SELECTOR_GENESIS_OFFSET === functionSelector("GENESIS_OFFSET()"), SELECTOR_GENESIS_OFFSET);
+  check("selector: nextSeatNumber() derived", SELECTOR_NEXT_SEAT_NUMBER === functionSelector("nextSeatNumber()"), SELECTOR_NEXT_SEAT_NUMBER);
 
   // 1) Cardinality (adding a target must be deliberate).
   check("counts: 8 contract targets", CONTRACT_TARGETS.length === 8, String(CONTRACT_TARGETS.length));

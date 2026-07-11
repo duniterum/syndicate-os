@@ -64,16 +64,26 @@ import {
   SELECTOR_GET_RESERVES,
   SELECTOR_TOKEN0,
   SELECTOR_MEMBER_COUNT,
+  SELECTOR_GENESIS_OFFSET,
+  SELECTOR_NEXT_SEAT_NUMBER,
   SELECTOR_TOTAL_SUPPLY,
   encodeAddressArg,
   decodeReservesPair,
   sumDecimalStrings,
 } from "./financialDecoders";
+import { HOLDER_INDEX_SNAPSHOT } from "./holderIndexSnapshot";
 import {
   buildItem,
   type ProtocolRealityEnvelope,
   type ProtocolRealityItem,
 } from "./realityEnvelope";
+
+// The verified freeze/root base (#1–#8) — the ONE source for the dual-authority
+// anchor (Part B freeze). Used to reconcile the live engine's GENESIS_OFFSET()
+// before either member figure is surfaced (reconcile-never-infer).
+const FREEZE_ROOT_COUNT = BigInt(
+  HOLDER_INDEX_SNAPSHOT.eras.find((e) => e.era === "PART_B_FREEZE_ROOT")?.count ?? 0,
+);
 
 // LOCKSTEP: this value is enum-pinned in lib/api-spec/openapi.yaml
 // (cacheTtlMs enum [30000]) and re-validated by the route's zod parse.
@@ -1365,26 +1375,75 @@ async function buildFinancialGroup(
     );
   }
 
-  // 5) Live member tally — memberCount() on the active engine (count only).
+  // 5) Live member tally + dual-authority base — memberCount()/GENESIS_OFFSET()
+  //    on the active V3 engine, RECONCILED against the verified snapshot before
+  //    either figure is surfaced (reconcile-never-infer; ledger §11).
+  //    Empirically proven CONTINUOUS: memberCount() is the total (seats
+  //    #1..memberCount, next = memberCount+1); GENESIS_OFFSET() is the historical
+  //    freeze/root base (#1..#8); V3-emitted = memberCount − GENESIS_OFFSET.
+  //    nextSeatNumber() is read ONLY to enforce the structural invariant and is
+  //    NEVER emitted. If the anchor (GENESIS_OFFSET == verified freeze) OR the
+  //    invariant (nextSeatNumber == memberCount + 1) fails, BOTH figures fail
+  //    closed — an unproven number is never surfaced.
   {
     const engine = targets.memberCountEngine;
     const hasCode = await hasCodeAt(engine.address);
-    let raw: string | null = null;
-    let threw = false;
+    let memberRaw: string | null = null;
+    let offsetRaw: string | null = null;
+    let nextRaw: string | null = null;
+    let memberThrew = false;
+    let offsetThrew = false;
     if (probe.chainIdOk && hasCode) {
-      ({ raw, threw } = await readUint(engine.address, SELECTOR_MEMBER_COUNT));
+      ({ raw: memberRaw, threw: memberThrew } = await readUint(engine.address, SELECTOR_MEMBER_COUNT));
+      ({ raw: offsetRaw, threw: offsetThrew } = await readUint(engine.address, SELECTOR_GENESIS_OFFSET));
+      ({ raw: nextRaw } = await readUint(engine.address, SELECTOR_NEXT_SEAT_NUMBER));
     }
+
+    let reconciled = false;
+    if (memberRaw !== null && offsetRaw !== null && nextRaw !== null) {
+      try {
+        const mc = BigInt(memberRaw);
+        const go = BigInt(offsetRaw);
+        const ns = BigInt(nextRaw);
+        reconciled = go === FREEZE_ROOT_COUNT && ns === mc + 1n; // anchor AND structural invariant
+      } catch {
+        reconciled = false;
+      }
+    }
+    const failNote = reconciled
+      ? ""
+      : " Live reads did not reconcile with the verified snapshot (anchor GENESIS_OFFSET==freeze AND nextSeatNumber==memberCount+1); fails closed rather than surface an unproven number.";
+
     items.push(
       buildFinancialNumeric({
         probe,
         hasCode,
-        rawValue: raw,
-        decodeThrew: threw,
+        rawValue: reconciled ? memberRaw : null,
+        decodeThrew: memberThrew || !reconciled,
         id: "financial.members.memberCount",
-        label: "Members — active engine memberCount()",
+        label: "Members — active engine memberCount() (continuous total)",
         contractRole: "sale",
-        note: "Live aggregate member tally read from the active V3 engine. A count only — no wallet or wallet↔member-number mapping is read or exposed (PII boundary holds).",
-        sourceRef: `contract-registry.ts:${engine.key} (eth_call memberCount)`,
+        note:
+          "Live CONTINUOUS member tally read from the active V3 engine (seats #1..memberCount; next = memberCount+1), reconciled against the verified snapshot. A count only — no wallet or wallet↔member-number mapping (PII boundary holds)." +
+          failNote,
+        sourceRef: `contract-registry.ts:${engine.key} (eth_call memberCount, reconciled vs verified snapshot)`,
+        chainId,
+        asOf,
+      }),
+    );
+    items.push(
+      buildFinancialNumeric({
+        probe,
+        hasCode,
+        rawValue: reconciled ? offsetRaw : null,
+        decodeThrew: offsetThrew || !reconciled,
+        id: "financial.members.genesisOffset",
+        label: "Members — GENESIS_OFFSET() (historical freeze base #1–#8)",
+        contractRole: "sale",
+        note:
+          "Live GENESIS_OFFSET() on the active V3 engine — the historical freeze/root base (#1–#8; authority = verified freeze + on-chain V1_MEMBER_ROOT). V3-emitted seats = memberCount − GENESIS_OFFSET. A count only; PII boundary holds." +
+          failNote,
+        sourceRef: `contract-registry.ts:${engine.key} (eth_call GENESIS_OFFSET, reconciled vs verified snapshot)`,
         chainId,
         asOf,
       }),

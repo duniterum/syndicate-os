@@ -45,13 +45,11 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 
 | # | Item (one line) | Status | Next move | Evidence |
 |---|---|---|---|---|
-| Q1 | **Ledger append** (§4 correction · §11 memberCount reconciliation · §12 agent-drift · §13 approve≠payment · §14 + the 3 additions) | ⏳ | founder: push GO | this diff |
-| Q2 | **⓪ liveness fix** — dual-provenance composite; empirical reconciliation gate | ⏳ 🔴 | founder GO (after Q1) | ledger §11 |
+| Q2 | **⓪ liveness fix (CONTINUOUS)** — live `memberCount` headline + dual-authority split + MANDATORY divergence one-liner + freshness guard + Q7 `/docs`; empirically reconciled (live 12/8/13) | ⏳ built, awaiting push GO | founder reviews this diff | ledger §11; this diff |
 | Q3 | **2.5a** — purity-leaf `knowledge-registry.ts` + BLOCKING `guard-knowledge-map.ts` (no page) | 🟡 | Claude Code gate (after Q2) | ledger §5/§8/§11 |
 | Q4 | **2.5b** — `/knowledge` page + `PagePurpose` atom | 🟡 | after Q3 | ledger; 2.5 gate |
 | Q5 | **`/knowledge` route name** (`/knowledge` vs `/knowledge-map`) **+ title** — asked, never answered | 🔴 | founder decides | 2.5 gate ("one confirm before code") |
 | Q6 | **Permanence: declared vs derived** — status-as-derived ratified; permanence-as-declared not confirmed | 🔴 | founder confirms at Q3 | 2.5 gate question; ledger §8 |
-| Q7 | **`/docs` decorative LivingSignature** — "read live" on a page with no live figure (overclaim, §4 family) | 🟡 🔴 | decide: drop signature on `/docs`, or accept | `pages/Docs.tsx:36` (badge) + no `useHeroReality`/`useTokenomics` in file |
 | Q8 | **Doc drift** — `MASTER_BUILD_SPEC` Phase-1 boxes unticked vs `SESSION_STATE` "PHASE 1 → CLOSED" | 🟡 🔵 | reconcile the stale checkboxes | `MASTER_BUILD_SPEC.md` §Phase-1 vs `SESSION_STATE.md` "Where we are" |
 | Q9 | **SERVER-ONLY HOMES wording** — exact copy (Option A, system level, ZERO counts/dates/addresses); belongs to 2.5b; founder may cut. **Provenance unsure** (no in-session origin). | 🟡 | Claude Code drafts at Q4; founder confirms provenance | founder msg; not found in this session |
 | Q10 | **`protocolOsMap` `knowledge-os` node** → repoint to `/knowledge` once it ships (operator/server-only file) | 🟡 🔵 | after Q4 | `config/protocolOsMap.ts:249` (`id:"knowledge-os"`) |
@@ -61,7 +59,8 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 | Q14 | **Reserved-VM / session durability** — does NOT block checkout (purchase is wallet→contract) | 🔴 | founder/Replit, Phase-3 | `SESSION_STATE` Phase-3 #16 |
 | Q15 | **DESIGN_ROADMAP boxes ticked per slice** — standing obligation, same commit as each slice | 🟡 STANDING | Claude Code every slice | `docs/DESIGN_ROADMAP.md` governance §|
 | Q16 | **Hero KPI grid migration** (`ProtocolOverviewPanel` → StatCard/StatusPill) — un-migrated; ⓪ touches this same component | 🟡 | fold awareness into ⓪; migrate later | DESIGN_ROADMAP Phase-3; `components/hero/ProtocolOverviewPanel.tsx:45` |
-| Q17 | **Dev-server selection** — which of studio/api-server/mockup-sandbox to start; asked, unanswered, held | 🔴 | founder says which | `.claude/launch.json`; launch turn |
+| Q18 | **Holder-index snapshot is 2 members stale** (builtAt 2026-07-03, memberTotal 10; live 12). Re-run the founder-gated snapshot rebuild so the VERIFIED attestation catches up — and at what cadence? Touches the founder-gated build script. **Record only — do not act.** | 🔴 record-only | founder decides | `holderIndexSnapshot.ts` (builtAt/memberTotal); founder ruling |
+| Q19 | **Read `GRAND_RECONCILIATION_AND_CARTE_BLANCHE_UNBLOCK_2026-07-06.md` in FULL — nobody has.** Compass §2/§7 describe it as founder carte-blanche: implementation STANDING-AUTHORIZED for Phases 1–10, lifting report-first / per-slice approval / "no implementation authorized" / the read-only-foundation gate, while keeping truth/safety invariants. If so: `/join`'s "transaction sending deliberately not enabled" may be a **STALE gate**, and the SESSION_STATE frozen list may be out of date vs newer canon (Compass conflict rule: the **source doc wins**). Reconcile against Compass **§5** which still says "do NOT enable auth — founder-gated." Report what it actually LIFTS vs KEEPS; assume nothing. **Record only — do not act.** | 🔴 record-only | Claude Code reads → reports; founder decides | `docs/strategy/GRAND_RECONCILIATION_AND_CARTE_BLANCHE_UNBLOCK_2026-07-06.md`; `THE_SYNDICATE_OS_COMPASS.md` §2/§5/§7 |
 
 ## Deferred (tracked, not in-flight)
 - ⏸ www→apex 301 → domain transfer ~Sept 2026 (`SESSION_STATE`). · ⏸ HSTS/preload → Phase 6.
@@ -70,4 +69,6 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
   `SESSION_STATE` "Phase 3–6 / later work".
 
 ## Closed
-*(none yet — items move here with the closing commit/decision when the founder closes them.)*
+- **Q1** Ledger append — ✅ closed `206c103` (founder, this session).
+- **Q7** `/docs` decorative LivingSignature — ✅ folded into Q2 (⓪): the signature is dropped from `/docs`; the freshness guard now forbids a decorative live signature.
+- **Q17** Dev-server selection — ✅ founder ruling: start api-server + studio locally to verify the ⓪ reconciliation (read-only chain reads); Replit stays the deploy gate.

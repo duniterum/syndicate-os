@@ -13,6 +13,7 @@ import { TransparencyPosture } from "@/components/living/TransparencyPosture";
 import { SectionIndex, type IndexEntry } from "@/components/living/SectionIndex";
 import { AllocationDonut } from "@/components/living/AllocationDonut";
 import { ReconciliationTable } from "@/components/living/ReconciliationTable";
+import { MembersProvenance } from "@/components/living/MembersProvenance";
 
 // Whitepaper — the flagship written expression of a LIVING PROTOCOL
 // (docs/direction/WHITEPAPER_LIVING_DOCTRINE.md). A short, scannable manifesto:
@@ -100,6 +101,13 @@ export default function Whitepaper() {
                 is a business, not a fundraise, and not an investment. Recognised seats today:{" "}
                 <strong>{r.membersTotal ?? <Pending />}</strong>.
               </p>
+              <MembersProvenance
+                historicalFreeze={r.historicalFreeze}
+                v3Emitted={r.v3Emitted}
+                snapshotMemberTotal={r.snapshotMemberTotal}
+                snapshotAsOf={r.snapshotAsOf}
+                membersDiverged={r.membersDiverged}
+              />
             </ProseSection>
 
             <ProseSection id="risk" title="Risk & legal" eyebrow={<Eyebrow n={2} status="VERIFIED" />}>

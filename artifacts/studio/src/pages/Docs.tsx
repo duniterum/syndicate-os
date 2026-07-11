@@ -4,7 +4,6 @@ import { PublicPage } from "@/components/PublicPage";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { StatusPill, type StatusTone } from "@/components/status-pill/StatusPill";
-import { LivingSignature } from "@/components/living/LivingSignature";
 import { TransparencyPosture } from "@/components/living/TransparencyPosture";
 import { SectionIndex, type IndexEntry } from "@/components/living/SectionIndex";
 import { getRouteSeoByPath, getRouteLabel } from "@/lib/seo-route-registry";
@@ -33,7 +32,6 @@ export default function Docs() {
       eyebrow="Docs · the protocol operating manual"
       title="Read the protocol in the order a member lives it."
       lead="Docs aren't a separate pile of pages — they're the map. Understand the system, take a seat, verify the receipt, and watch the memory form. Every card carries a status and who it's for, and links to the real surface — where every figure is read live from Avalanche."
-      badge={<LivingSignature />}
     >
       <div className="space-y-12">
         <TransparencyPosture />

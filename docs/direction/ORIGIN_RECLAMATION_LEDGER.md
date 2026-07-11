@@ -231,6 +231,20 @@ So ⓪ must **empirically reconcile** the live reads before shipping:
 - **reconcile → semantics PROVEN → ship** the dual-provenance composite;
 - **any disagreement → FAIL CLOSED, do NOT flip the surfaces, report to the founder.**
 
+**RESULT — the hypothesis was REFUTED; the rule worked the FIRST time it was used (2026-07-11).**
+Live reads on the V3 engine: **`memberCount()` = 12, `GENESIS_OFFSET()` = 8, `nextSeatNumber()` = 13.**
+The name-based V3-ONLY inference was WRONG: `memberCount()` is the **CONTINUOUS total** (seats #1..12), not
+the V3-emitted count. The proven relationships are **anchor `GENESIS_OFFSET == 8`** (✓) and **structural
+`nextSeatNumber == memberCount + 1`** (13 == 12 + 1 ✓) — NOT `offset + count + 1`. V3-emitted =
+`memberCount − GENESIS_OFFSET` = 4 (#9–12). **Worked example (record it): had we shipped the V3-ONLY
+hypothesis, the site would today render `8 + 12 = 20` seats — a doubled, false number, in production, under
+a live signature.** The name `GENESIS_OFFSET` lied; the chain did not. This is the canonical proof of
+"SEMANTICS ARE RECONCILED, NEVER INFERRED FROM ABI NAMES" — it will stop a future session from trusting a
+name. Founder ruling: **12 is 12** — members #11/#12 are real on-chain purchases (real USDC); there is no
+"test seat" category and none will ever be invented. Founder doctrine: **he transacts publicly on-chain by
+design** — work, tests, problems, all visible; proof-of-life that cannot be faked. Seat authority stays as
+canon: #1–8 Part B freeze/root, #9+ emitted V3 memberNumber. No filtering, no asterisk, no founder exclusion.
+
 **The honest figure is a DUAL-PROVENANCE COMPOSITE, never a bare number, never silently summed** —
 the snapshot's own boundary #3 forbids collapsing the two authorities; a bare live "10" would itself
 violate doctrine.

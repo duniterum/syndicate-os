@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Activity, Archive, Droplet, Flame, Gauge, Settings, Shield, Users, WalletCards } from "lucide-react";
 import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
 import { useHeroReality, type HeroReality } from "@/components/hero/useHeroReality";
+import { MembersProvenance } from "@/components/living/MembersProvenance";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { Icon } from "@/components/icon/Icon";
 import { heroSystem, type HeroStat } from "@/config/syndicateFacts";
@@ -121,6 +122,18 @@ export function ProtocolOverviewPanel() {
           );
         })}
       </div>
+
+      {/* Members figure is the LIVE continuous memberCount; carry its dual-authority
+          split + the verified snapshot's as-of (freshness provenance, guard-enforced). */}
+      <MembersProvenance
+        variant="compact"
+        className="mt-2"
+        historicalFreeze={reality.historicalFreeze}
+        v3Emitted={reality.v3Emitted}
+        snapshotMemberTotal={reality.snapshotMemberTotal}
+        snapshotAsOf={reality.snapshotAsOf}
+        membersDiverged={reality.membersDiverged}
+      />
 
       <div className="mt-2.5 grid grid-cols-2 gap-2.5">
         <div className="rounded-xl border border-gold/30 bg-gold/8 p-3.5">
