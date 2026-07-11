@@ -61,6 +61,21 @@ and verified** (12 = 8 + 4 VERIFIED); the prod-write barrier was restored (secre
   it has a config + a guard. Surface naming had no guard → it reached ELEVEN names for three things. A guard
   cannot catch a lie it has no word for.
 
+### NAMING GUARD SCOPE (Q28) — APPROVED keep-vs-rename decision (canon; do NOT silently widen)
+**Finding: not 11 names — `52 sites`** (30 "cockpit" · 7 "member os" · 8 "control tower" · 7 "proof surface").
+That scale IS the proof the guard is necessary. `config/surfaceNaming.ts` is COMMITTED (the canon the guard
+imports: `surfaceNames`, `bannedSurfaceNames`, `commonNounOnly`). The BLOCKING `guard-surface-naming` (built
+NEXT session, step one) scans studio source with these EXACT, founder-approved rules — word-boundary,
+case-insensitive; the config + guard files self-exempt (must name the terms to ban them):
+- **Rendered labels the user reads → RENAME** to `surfaceNames` canon.
+- **Agent prose / comments → REWORD.**
+- **Internal id-key values** (e.g. `registryId:"member-cockpit"`, `id:"public-cockpit"`) → **KEEP** — not
+  user-read; renaming breaks lookups for nothing.
+- **`config/routeMemory.ts` → KEEP + EXEMPT the whole file** — recording old names is literally its job; a
+  guard that flags the rename ledger is a stupid guard.
+- **File names + import paths → OUT OF SCOPE** (`MemberAccess.tsx` is fine; "member access" as prose is not).
+Step one next session: the guard + the 52-site sweep, every keep-vs-rename call deliberate, landing GREEN.
+
 ### TWO SHELLS — the PAGE chooses, not the person
 Not signed in → nothing changes. Public pages (whitepaper, tokenomics, docs, faq…) → ALWAYS the public
 shell, even for a signed-in member (he browses normally, not trapped in a bubble). Member Home and its
