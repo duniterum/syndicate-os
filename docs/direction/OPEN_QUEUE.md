@@ -43,6 +43,21 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 
 ## Open
 
+> **▶ 2026-07-11 (later) — SESSION UPDATE.** The member-recognition arc SHIPPED + is LIVE. **CLOSED this
+> session:** Q11 (member menu, `00676d4`) · Q21 (auth go-live, live-verified) · Q18 (snapshot staleness —
+> superseded: recognition now reads V3 live for #9+ and the frozen roster for #1–#8, `87f7a1d`; the roster is
+> populated on prod) · Q22 (Compass handoff repoint — supersede with the new handoff at next Compass edit) .
+> **New canon:** ADR-003 anti-doxx (`e4f07ba`). **New settled founder decisions live in the handoff
+> `…recognition-live-and-member-home.md`** (naming canon · two shells · no twin pages · S7/S11 wire widening
+> AUTHORIZED · Member Home spec · APPROVE≠PAYMENT). **New OPEN items below: Q27–Q30.** Full detail: the handoff.
+>
+> | # | New item | Status | Next |
+> |---|---|---|---|
+> | Q27 | **Green main — 7 stale-guard fixes** (protocol-reality ×3 · protocol-time ×1 · holder-index ×3). All STALE, not drift; two adversarially verified. | ⏳ built, awaiting push GO | push [this commit] |
+> | Q28 | **`config/surfaceNaming.ts` + `guard-surface-naming` (BLOCKING)** — vocabulary lock (naming canon); fix "cockpit" leaks (`accessState.ts:178`, `MemberHeaderAffordance` menu). | 🟡 next after Q27 | build → gate |
+> | Q29 | **Widen the wire (S7/S11)** — founder-AUTHORIZED. `WIRABLE += S7,S11`; update `guard-access-state`; rewrite the false "no wired source" comment. Server-answer-only; fail→S1; visibility not permission. | 🟡 after Q28 | build → gate |
+> | Q30 | **Member Home** (`/member`) — identity strip "Your Seat" · empty-state conversion → `/join` · role-filtered quick actions (locked-visible, operator cats removed) · live figures (MOVE receipt, render SYN balanceOf) · nav. Then action registry → doors → `/join` purchase (APPROVE≠PAYMENT). | 🟡 after Q29 | build slice by slice |
+
 | # | Item (one line) | Status | Next move | Evidence |
 |---|---|---|---|---|
 | Q3 | **2.5a** — purity-leaf `knowledge-registry.ts` + BLOCKING `guard-knowledge-map.ts` (no page) | 🟡 | Claude Code gate (after Q2) | ledger §5/§8/§11 |

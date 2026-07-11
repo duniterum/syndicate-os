@@ -284,9 +284,12 @@ check(
     "publicReadThrottle.ts",
     "sourceStatus.ts",
     "sourceValidate.ts",
+    // Founder-approved explorer-links route (infra addresses only, never member
+    // wallets — its own doctrine + member-continuity.guard pin that invariant).
+    "verifyLinks.ts",
   ];
   check(
-    "public route surface unchanged (health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate only)",
+    "public route surface unchanged (health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate, verifyLinks only)",
     JSON.stringify(routeFiles) === JSON.stringify(allowed),
     `routes=${JSON.stringify(routeFiles)}`,
   );

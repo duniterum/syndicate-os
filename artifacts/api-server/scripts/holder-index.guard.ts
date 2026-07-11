@@ -207,6 +207,10 @@ walkTsFiles(resolve(ROOT, "src"), servedFiles);
 // fail-closed shapes are pinned by guard-auth-zone.ts.
 const DB_LAZY_ALLOW = new Set([
   "src/auth/operatorContext.ts",
+  // Founder-approved genesis self-recognition bridge (Q26 / ADR-003 §3):
+  // own-row roster read (member seat + own receipt), lazy DB import only,
+  // fail-closed. Pinned to its exact shape by guard-auth-zone.ts.
+  "src/auth/memberRoster.ts",
   "src/operator/referralTermsService.ts",
   "src/operator/operatorRegistryService.ts",
 ]);
@@ -219,7 +223,7 @@ const dbImporters = servedFiles.filter((f) => {
   return !(DB_LAZY_ALLOW.has(rel) && !DB_STATIC_IMPORT_RE.test(code));
 });
 check(
-  "NO served src file imports @workspace/db (lazy-only allow-list: operatorContext.ts + referralTermsService.ts + operatorRegistryService.ts)",
+  "NO served src file imports @workspace/db (lazy-only allow-list: operatorContext.ts + memberRoster.ts + referralTermsService.ts + operatorRegistryService.ts)",
   dbImporters.length === 0,
   dbImporters.map((f) => relative(ROOT, f)).join(", "),
 );
@@ -243,16 +247,22 @@ const SNAPSHOT_IMPORT_RE =
 const SNAPSHOT_IMPORTER_ALLOW = new Set([
   "src/routes/holderIndex.ts",
   "src/lib/protocol/holderIndexStanding.ts",
+  // Reality spine (⓪ liveness): AGGREGATE-only use — the freeze-root count and
+  // the live memberCount()/GENESIS_OFFSET() reconciliation against the verified
+  // snapshot. No wallets, no per-seat rows (Decision 5a holds).
+  "src/lib/protocol/realityService.ts",
 ]);
 const snapshotImporters = servedFiles
   .filter((f) => f !== SNAPSHOT_PATH)
   .filter((f) => SNAPSHOT_IMPORT_RE.test(stripComments(readFileSync(f, "utf8"))))
-  .map((f) => relative(ROOT, f));
+  // Normalize separators so the allow-list matches on Windows too (the DB check
+  // above already does this; the snapshot check historically did not).
+  .map((f) => relative(ROOT, f).split("\\").join("/"));
 const illegalSnapshotImporters = snapshotImporters.filter(
   (f) => !SNAPSHOT_IMPORTER_ALLOW.has(f),
 );
 check(
-  "snapshot imported only by allow-listed served files (route + standing module)",
+  "snapshot imported only by allow-listed served files (route + standing module + reality spine, aggregate-only)",
   illegalSnapshotImporters.length === 0,
   illegalSnapshotImporters.join(", "),
 );

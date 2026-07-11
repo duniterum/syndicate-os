@@ -50,6 +50,8 @@ import {
   SELECTOR_GET_RESERVES,
   SELECTOR_TOKEN0,
   SELECTOR_MEMBER_COUNT,
+  SELECTOR_GENESIS_OFFSET,
+  SELECTOR_NEXT_SEAT_NUMBER,
   SELECTOR_TOTAL_SUPPLY,
   encodeAddressArg,
 } from "../src/lib/protocol/financialDecoders";
@@ -159,6 +161,11 @@ const STALE_CANON_BURN = 2000000000000000000000n; // 2,000 SYN — must NEVER ap
 const LP_RESERVE0 = 987654321000000000000n; // SYN side (token0 fixture = SYN)
 const LP_RESERVE1 = 4321000000n; //           USDC side
 const MEMBER_COUNT_FIX = 27n;
+// ⓪ dual-provenance reconciliation fixtures: GENESIS_OFFSET() must equal the
+// snapshot freeze-root count (FREEZE_ROOT_COUNT = 8) and nextSeatNumber() must
+// equal memberCount + 1 — the exact anchor realityService reconciles against
+// before it surfaces either figure (else both fail closed).
+const GENESIS_OFFSET_FIX = 8n;
 /** Uniswap-V2 getReserves(): exactly 3 words (uint112, uint112, uint32 ts). */
 const encReserves = (r0: bigint, r1: bigint): string =>
   "0x" + word(r0.toString(16)) + word(r1.toString(16)) + word("64");
@@ -224,6 +231,9 @@ function goodCall(to: string, selector: string, data = ""): string {
   if (selector === SELECTOR_TOKEN0) return "0x" + word(SYN_ADDR.slice(2));
   if (selector === SELECTOR_GET_RESERVES) return encReserves(LP_RESERVE0, LP_RESERVE1);
   if (selector === SELECTOR_MEMBER_COUNT) return encUint256(MEMBER_COUNT_FIX);
+  if (selector === SELECTOR_GENESIS_OFFSET) return encUint256(GENESIS_OFFSET_FIX);
+  if (selector === SELECTOR_NEXT_SEAT_NUMBER)
+    return encUint256(MEMBER_COUNT_FIX + 1n);
   return "0x";
 }
 
@@ -317,10 +327,10 @@ async function main(): Promise<void> {
     check("happy: source zeroSourceJoin true (SERVER_SIDE_CANON, READ_ONLY_PROOF)", byId(e, "source.zeroSourceJoin")?.value === true && byId(e, "source.zeroSourceJoin")?.sourceType === "SERVER_SIDE_CANON" && byId(e, "source.zeroSourceJoin")?.lifecycle === "READ_ONLY_PROOF");
     // Financial group (Slice N1 + Reconciliation): 13 items, values LIVE from
     // the transport except the attribution count (static hash-pinned snapshot).
-    check("fin: financial group has exactly 21 items", e.groups.financial.length === 21, String(e.groups.financial.length));
+    check("fin: financial group has exactly 22 items", e.groups.financial.length === 22, String(e.groups.financial.length));
     const finIds = e.groups.financial.map((i) => i.id).sort().join(",");
     check(
-      "fin: exact id set (13 base + SYN totalSupply + 7 allocation balances = 21)",
+      "fin: exact id set (14 base [incl. genesisOffset] + SYN totalSupply + 7 allocation balances = 22)",
       finIds ===
         [
           "financial.burn.synBalance",
@@ -338,6 +348,7 @@ async function main(): Promise<void> {
           "financial.inflow.aggregate",
           "financial.lp.reserveSyn",
           "financial.lp.reserveUsdc",
+          "financial.members.genesisOffset",
           "financial.members.memberCount",
           "financial.ops.usdcBalance",
           "financial.referral.attributionActivity",
@@ -364,6 +375,7 @@ async function main(): Promise<void> {
     check("fin: burned SYN is the TRANSPORT figure, never a stored ceremony constant", burned?.value !== STALE_CANON_BURN.toString() && !JSON.stringify(e).includes(STALE_CANON_BURN.toString()));
     check("fin: LP reserves oriented via token0 (SYN=reserve0, USDC=reserve1, lp-pair role)", byId(e, "financial.lp.reserveSyn")?.value === LP_RESERVE0.toString() && byId(e, "financial.lp.reserveUsdc")?.value === LP_RESERVE1.toString() && byId(e, "financial.lp.reserveSyn")?.contractRole === "lp-pair");
     check("fin: memberCount EXACT count string (sale role, count only)", byId(e, "financial.members.memberCount")?.value === MEMBER_COUNT_FIX.toString() && byId(e, "financial.members.memberCount")?.contractRole === "sale");
+    check("fin: genesisOffset EXACT count string (sale role, reconciled freeze base = FREEZE_ROOT_COUNT)", byId(e, "financial.members.genesisOffset")?.value === GENESIS_OFFSET_FIX.toString() && byId(e, "financial.members.genesisOffset")?.contractRole === "sale");
     // Tokenomics live reads (Slice 2.2): SYN totalSupply + 7 allocation balances.
     const supply = byId(e, "financial.token.synTotalSupply");
     check("fin: SYN totalSupply EXACT decimal string ABOVE MAX_SAFE_INTEGER (token role, LIVE_CHAIN_RPC, MEDIUM, READ_ONLY_PROOF)", supply?.value === SYN_TOTAL_SUPPLY_FIX.toString() && supply?.valueType === "string" && supply?.contractRole === "token" && supply?.sourceType === "LIVE_CHAIN_RPC" && supply?.confidence === "MEDIUM" && supply?.lifecycle === "READ_ONLY_PROOF");

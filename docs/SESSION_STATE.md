@@ -8,12 +8,16 @@ Direction specs now live IN this repo: `docs/direction/MASTER_BUILD_SPEC.md` ·
 `docs/direction/GAMIFICATION_LEGAL_DOCTRINE.md` (recognition-only, legal shield).
 Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md`.
 
-> **▶ LATEST HANDOFF (read after this file): `docs/handoff/new-session-handoff-2026-07-11-door-and-liveness.md`** —
-> the full recap of the 2026-07-11 session (⓪ liveness fix LIVE, the auth finding, the Q11 mistake + v2 fix,
-> the carte-blanche repoints, the 7 standing rules, the canon file map). Single source for "what's next" =
-> `docs/direction/OPEN_QUEUE.md`. **EXACT NEXT STEP:** push Q11-v2 (awaiting founder GO) → then 2.5 Knowledge
-> (needs founder inputs Q5 route-name + Q6 permanence). Replit pending: flip `SYNDICATE_AUTH_ENABLED="true"`
-> + confirm `REPLIT_DOMAINS` + e2e-verify `/member`.
+> **▶ LATEST HANDOFF (read after this file): `docs/handoff/new-session-handoff-2026-07-11-recognition-live-and-member-home.md`** —
+> the full recap: the member-recognition arc is **LIVE in prod** (auth on · SIWE signs canonical domain ·
+> member identity menu · EVERY member recognized: genesis #1–#8 frozen roster + V3 #9–#12 live · own-receipt
+> "Share my proof" · prod DB roster populated+verified 12=8+4, prod-write barrier restored). **ADR-003
+> (anti-doxx) is canon.** That doc carries ALL settled founder decisions (naming canon · two shells · no twin
+> pages · the authorized S7/S11 wire widening · Member Home spec · harvest source · APPROVE≠PAYMENT).
+> **EXACT NEXT STEP (strict order):** (1) green main = 7 stale-guard fixes [this commit] → (2)
+> `config/surfaceNaming.ts` + `guard-surface-naming` (BLOCKING) → (3) widen the wire S7/S11 → (4) Member Home →
+> action registry → member doors → `/join` real purchase. The prior 2026-07-11-door-and-liveness handoff and
+> the 2026-07-03 DB checkpoint remain valid history. Single source for "what's next" = this handoff + `OPEN_QUEUE.md`.
 
 ---
 
