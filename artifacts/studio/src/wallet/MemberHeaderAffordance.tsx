@@ -64,6 +64,14 @@ function classify(r: MemberStandingReadback | null): Status {
   return { kind: "signedIn" };
 }
 
+// Human label for the on-chain era enums — the raw authority strings
+// (V3_EMITTED / PART_B_FREEZE_ROOT) are never shown to members. Only Genesis
+// (#1–#8, the founding freeze) earns a badge; V3-era members are simply members,
+// so their pill stays clean (just the seat).
+function eraLabel(era: string | null): string | null {
+  return era === "PART_B_FREEZE_ROOT" ? "Genesis" : null;
+}
+
 export default function MemberHeaderAffordance({
   variant = "desktop",
 }: {
@@ -168,11 +176,11 @@ export default function MemberHeaderAffordance({
           <span className={seated ? "font-mono text-xs" : "text-xs font-normal"}>
             {triggerLabel}
           </span>
-          {seated && status.era ? (
+          {seated && eraLabel(status.era) ? (
             <>
               <span className="h-3 w-px bg-border" aria-hidden="true" />
-              <span className="hidden text-xs font-normal text-muted-foreground sm:inline">
-                {status.era}
+              <span className="hidden text-xs font-normal text-gold sm:inline">
+                {eraLabel(status.era)}
               </span>
             </>
           ) : null}
@@ -206,7 +214,7 @@ export default function MemberHeaderAffordance({
           {seated ? (
             <div className="mt-3 flex items-center justify-between gap-2">
               <span className="text-xs text-muted-foreground">
-                {status.era ? `${status.era} era` : "Seat held"}
+                {eraLabel(status.era) ? `${eraLabel(status.era)} member` : "Member"}
               </span>
               <span className="inline-flex items-center gap-1 rounded-full border border-proof/40 bg-proof/10 px-2 py-0.5 text-[11px] font-medium text-proof">
                 <ShieldCheck className="h-3 w-3" aria-hidden="true" />
