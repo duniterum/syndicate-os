@@ -234,6 +234,8 @@ export interface MemberStandingReadback {
   authorityLabel: string | null;
   continuityStatus: string | null;
   proofPosture: { snapshotStatus: string; snapshotHash: string } | null;
+  /** The member's OWN entry receipt (ADR-003 §3) — own-row only, never a directory. */
+  receipt: { transaction: string; block: number | null; explorerUrl: string } | null;
   failureReason: string | null;
 }
 
@@ -265,6 +267,18 @@ export async function fetchMemberStanding(): Promise<MemberStandingReadback | nu
       }
     }
 
+    let receipt: MemberStandingReadback["receipt"] = null;
+    if (typeof o.receipt === "object" && o.receipt !== null) {
+      const rc = o.receipt as Record<string, unknown>;
+      if (typeof rc.transaction === "string" && typeof rc.explorerUrl === "string") {
+        receipt = {
+          transaction: rc.transaction,
+          block: typeof rc.block === "number" ? rc.block : null,
+          explorerUrl: rc.explorerUrl,
+        };
+      }
+    }
+
     return {
       state: o.state,
       chainVerified: o.chainVerified === true,
@@ -278,6 +292,7 @@ export async function fetchMemberStanding(): Promise<MemberStandingReadback | nu
       continuityStatus:
         typeof o.continuityStatus === "string" ? o.continuityStatus : null,
       proofPosture,
+      receipt,
       failureReason:
         typeof o.failureReason === "string" ? o.failureReason : null,
     };

@@ -83,3 +83,64 @@ export async function lookupGenesisMember(
     return NOT_A_MEMBER;
   }
 }
+
+/** The signed member's OWN entry receipt (ADR-003 §3: own-row own-receipt). */
+export interface MemberReceipt {
+  /** The on-chain purchase transaction that established the seat (64-hex). */
+  transaction: string;
+  /** Block of the entry transaction, when known. */
+  block: number | null;
+}
+
+/**
+ * Read the signed wallet's OWN entry receipt (the purchase transaction that
+ * established its seat) from the member-continuity roster. ADR-003 §3: a member
+ * seeing their OWN receipt is theirs to see and share — the input is ONLY the
+ * session-bound account, it is never echoed, no other row is ever returned, and
+ * ANY miss (no DB, zone dark, unknown wallet, error) fails closed to null. This
+ * is NOT a directory: exactly one own-row is read, by the session's own wallet.
+ *
+ * @param account SIWE-verified account, lowercased (server-only).
+ */
+export async function lookupMemberReceipt(
+  account: string,
+): Promise<MemberReceipt | null> {
+  if (
+    process.env[AUTH_EXPOSURE_FLAG] !== "true" ||
+    process.env.DATABASE_URL == null ||
+    process.env.DATABASE_URL.length === 0
+  ) {
+    return null;
+  }
+
+  try {
+    const { db, memberContinuityRecord } = await import("@workspace/db");
+    const { sql } = await import("drizzle-orm");
+    const rows = await db
+      .select({
+        transaction: memberContinuityRecord.entryTransaction,
+        block: memberContinuityRecord.entryBlock,
+      })
+      .from(memberContinuityRecord)
+      .where(
+        sql`lower(${memberContinuityRecord.entryWallet}) = ${account.toLowerCase()}`,
+      )
+      .limit(1);
+
+    const row = rows[0];
+    if (
+      row === undefined ||
+      typeof row.transaction !== "string" ||
+      row.transaction.length === 0
+    ) {
+      return null;
+    }
+    return {
+      transaction: row.transaction,
+      block: typeof row.block === "number" ? row.block : null,
+    };
+  } catch {
+    // Fail closed — a receipt is a nicety, never a reason to error a readback.
+    return null;
+  }
+}

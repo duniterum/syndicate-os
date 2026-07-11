@@ -18,7 +18,7 @@
 //     directory, list, or lookup of other wallets exists anywhere.
 
 import { useCallback, useEffect, useState } from "react";
-import { KeyRound, LogOut, RefreshCw, Wallet } from "lucide-react";
+import { Check, Copy, ExternalLink, KeyRound, LogOut, RefreshCw, Wallet } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
@@ -60,6 +60,16 @@ function StandingSection({
   standing: StandingState;
   onRetry: () => void;
 }) {
+  const [copied, setCopied] = useState(false);
+  const copyProof = (link: string) => {
+    void navigator.clipboard?.writeText(link).then(
+      () => {
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 1400);
+      },
+      () => {}, // clipboard denied — stay honest, no fake confirmation
+    );
+  };
   if (standing.kind === "idle") return null;
 
   let body: React.ReactNode;
@@ -105,6 +115,7 @@ function StandingSection({
         </div>
       );
     } else if (r.recognized === true && r.memberNumber !== null) {
+      const receipt = r.receipt;
       body = (
         <div data-testid="text-standing-recognized">
           <p className="font-mono text-sm text-foreground">
@@ -146,6 +157,46 @@ function StandingSection({
               this seat.
             </p>
           </div>
+          {receipt !== null ? (
+            <div
+              className="mt-3 rounded-md border border-gold/25 bg-gold/5 p-2.5"
+              data-testid="text-standing-receipt"
+            >
+              <p className="font-mono text-[10px] uppercase tracking-wider text-gold">
+                Your receipt — proof this seat is real
+              </p>
+              <p className="font-mono text-[10px] text-muted-foreground mt-1">
+                Seat #{r.memberNumber} was established by this on-chain purchase.
+                It's yours to keep and to show — no one has to take your word.
+              </p>
+              <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                <a
+                  href={receipt.explorerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Open your membership receipt on the block explorer"
+                  className="inline-flex items-center gap-1 font-mono text-[11px] text-proof hover:underline"
+                  data-testid="link-standing-receipt"
+                >
+                  {receipt.transaction.slice(0, 10)}…{receipt.transaction.slice(-6)}
+                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => copyProof(receipt.explorerUrl)}
+                  className="inline-flex items-center gap-1 rounded-sm border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground transition-colors hover:border-gold/40 hover:text-foreground"
+                  data-testid="button-standing-receipt-share"
+                >
+                  {copied ? (
+                    <Check className="h-3 w-3 text-proof" aria-hidden="true" />
+                  ) : (
+                    <Copy className="h-3 w-3" aria-hidden="true" />
+                  )}
+                  {copied ? "Copied" : "Share my proof"}
+                </button>
+              </div>
+            </div>
+          ) : null}
         </div>
       );
     } else if (r.recognized === false) {

@@ -58,8 +58,9 @@ import { allowRequest } from "./throttle";
 import { throttleKey } from "./clientIdentity";
 import { readEngineMemberNumber } from "./engineReadback";
 import { lookupActiveOperator } from "./operatorContext";
-import { lookupGenesisMember } from "./memberRoster";
+import { lookupGenesisMember, lookupMemberReceipt } from "./memberRoster";
 import { resolveOwnStanding } from "../lib/protocol/holderIndexStanding";
+import { txUrl } from "../canon/the-syndicate/chain/chain-registry";
 import { assertProtocolRealityDiscipline } from "../lib/protocol/payloadDiscipline";
 
 const router: Router = Router();
@@ -391,6 +392,11 @@ router.get("/member-standing", async (req: Request, res: Response) => {
   let continuityStatus: string | null = null;
   let proofPosture: { snapshotStatus: string; snapshotHash: string } | null =
     null;
+  let receipt: {
+    transaction: string;
+    block: number | null;
+    explorerUrl: string;
+  } | null = null;
   let failureReason: string | null = null;
 
   if (boundAccount === null) {
@@ -465,6 +471,24 @@ router.get("/member-standing", async (req: Request, res: Response) => {
     // read.isRecognized === null → live read unavailable; failureReason set above.
   }
 
+  // ADR-003 §3 — own receipt: once recognized, surface the member's OWN entry
+  // transaction (the purchase that established the seat) so they can show and
+  // verify it. Own-row only, canonical explorer URL, fail-closed — a missing
+  // receipt never degrades the recognized standing.
+  if (recognized === true && boundAccount !== null) {
+    const ownReceipt = await lookupMemberReceipt(boundAccount);
+    if (ownReceipt !== null) {
+      const explorerUrl = txUrl(ownReceipt.transaction);
+      if (explorerUrl !== null) {
+        receipt = {
+          transaction: ownReceipt.transaction,
+          block: ownReceipt.block,
+          explorerUrl,
+        };
+      }
+    }
+  }
+
   const sessionActive = boundAccount !== null;
   const outcome = !sessionActive
     ? "none"
@@ -483,6 +507,7 @@ router.get("/member-standing", async (req: Request, res: Response) => {
     authorityLabel,
     continuityStatus,
     proofPosture,
+    receipt,
     failureReason,
   };
   // Leak gates: payload discipline + boundary-aware address scan (40-hex
