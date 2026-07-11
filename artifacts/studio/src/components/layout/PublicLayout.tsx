@@ -15,9 +15,6 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { headerNav, headerNavPrimary, headerNavMore, footerGroups, navLabel } from "@/config/navigation";
 import { brand, brandAssets, headerChips, socialLinks, type SocialLink } from "@/config/brand";
 import { heroSystem } from "@/config/syndicateFacts";
-import { accessStates } from "@/config/accessState";
-import { useAccessState } from "@/components/access/AccessStateProvider";
-import { AccessStateChip } from "@/components/access/AccessStateChip";
 import { SyndicateGuide } from "@/components/guide/SyndicateGuide";
 
 // Member sign-in / standing affordance. Reached ONLY through a runtime dynamic
@@ -37,24 +34,12 @@ function MemberHeaderSlot({ variant }: { variant: "desktop" | "mobile" }) {
   );
 }
 
-// Session chip (S2): renders ONLY when the app-wide access state is S4 —
-// i.e. a dev-preview SIWE session wired through the gated wallet module. In
-// production builds that module is code-excluded, the provider stays S1, and
-// this renders nothing. Vocabulary comes from accessState.ts (already in the
-// bundle) — no session copy or auth reference is added to public chrome.
-function SessionChip() {
-  const state = useAccessState();
-  if (state !== "S4") return null;
-  return (
-    <span
-      title={accessStates.S4.honestNote}
-      className="hidden md:inline-flex"
-      data-testid="chip-header-session"
-    >
-      <AccessStateChip stateId="S4" />
-    </span>
-  );
-}
+// NOTE: the raw access-state session chip ("S4 · SIGNED — UNVERIFIED") was
+// removed from the public header — it is internal S1–S14 vocabulary and, once
+// membership recognition shipped, it contradicted the member identity menu (a
+// verified member saw "UNVERIFIED"). The MemberHeaderAffordance menu is now the
+// SINGLE human-facing signed-in/standing surface; the S-vocabulary stays for the
+// operator console + AccessStateSimulator only.
 
 function ChainPill() {
   return (
@@ -236,7 +221,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             <SocialIconRow className="hidden items-center gap-1.5 lg:flex" iconClass="h-3.5 w-3.5" />
             <ChainPill />
             <LiveChip />
-            <SessionChip />
             <ThemeToggle />
             <Link
               href="/proof"
