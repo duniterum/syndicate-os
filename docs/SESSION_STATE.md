@@ -63,7 +63,8 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   (no `location:` header).
 - ~~**NEXT SLICE = Phase 2.1 — Prose atom + Whitepaper**~~ — superseded: Prose atom, Whitepaper, and
   Tokenomics are all DONE and relaunched on the living chassis (see the top living bullets). **2.3 FAQ +
-  the deterministic Support Guide are SEALED in prod (`56bc165`, Replit-verified live). NEXT = 2.4 Docs.**
+  the deterministic Support Guide, and 2.4 Docs are SEALED in prod (Docs = `140d33e`, Replit-verified live).
+  NEXT = 2.5 Knowledge base.**
 - **DEPLOY DEBT — ✅ CLEARED.** The batched FAQ link-fix (`8bc3f1e`) rode the Support deploy; prod is now at
   `56bc165` (past `8bc3f1e`). No outstanding undeployed commits — `main` == production.
 - **DECIDED — keep the newer OG image (`opengraph.jpg`), do NOT revert.** Replit regenerated the
@@ -132,7 +133,11 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
     safe (localStorage/window in typeof-guarded effects); no fake "1" badge; no decorative live dot; header
     says "Guide", not "AI". NO LLM / NO wallet-awareness / NO backend (those = Phase 3). `guard-access-state`
     storage allowlist extended (greeting-seen boolean only). Green: typecheck 0 · 9 guards + no-raw-color.
-  - **NEXT = 2.4 Docs → 2.5 Knowledge** — each COMPOSES from the `living/` chassis + harvests per
+  - **2.4 Docs → ✅ SEALED in prod (`140d33e`, Replit-verified live).** `/docs` composed from the living
+    chassis — journey spine + grouped cards, each card's status **derived from the SEO route registry**
+    (Ready/Pending, never hardcoded; `/recognition` `/archive` read honest Pending), real routes only,
+    number-free. Header "Docs" repointed to `/docs`; `/learning` stays "Learn" (footer + linked from `/docs`).
+  - **NEXT = 2.5 Knowledge base → 2.6 Risk** — each COMPOSES from the `living/` chassis + harvests per
     `CONTENT_SURFACE_HARVEST_MAP.md`. Canonical order = the **frozen "Remaining Phase-2 slices, IN ORDER"**
     list below; new session work is captured separately under **"Phase 3–6 / later work"**.
 - **PHASES 3–6 → ⬜ pending** (auth single-instance/Reserved-VM blocker open; admin/RBAC unseeded; event
@@ -168,7 +173,7 @@ markers update. New session work lives BELOW in "Phase 3–6 / later", never wov
    rule added: no PENDING for a readable figure. *(NEXT = 2.3 FAQ.)*
 4. ~~**2.3 FAQ**~~ ✅ **DONE** (harvest: Supa chrome + origin 39 Q&A — see harvest map) · 5. ~~**Support + floating
    robot**~~ ✅ **DONE** (harvest: Supa `FloatingAISupport`; tone exception; NOT the AI Layer; never fabricates a figure)
-6. 🔵 **2.4 Docs** *(NEXT)* · 7. **2.5 Knowledge base** · 8. **2.6 Risk** · 9. **2.7 Glossary**
+6. ~~**2.4 Docs**~~ ✅ **DONE** (`140d33e`, live) · 7. 🔵 **2.5 Knowledge base** *(NEXT)* · 8. **2.6 Risk** · 9. **2.7 Glossary**
 10. **2.8 Roadmap** (registry-driven) · 11. **2.9 Protocol-facts** · 12. **2.10 Brand-facts**
 12. **2.11 Join / entry-tiers UI** — featured tiers + custom-amount compose + live quote preview
     (gross → source payment → net → 70/20/10) + 5-step flow; read-only; figures from chain.
