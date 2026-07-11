@@ -402,12 +402,18 @@ export function runPartBGate(input: {
     raw.v2bSentinelZeroAllFirstSeatFalse,
     `sentinelRows=${raw.v2bSentinelZeroCount}`,
   );
+  // V3 first-seats corroborate the freeze BOUNDARY, not a fixed count: sorted,
+  // they must be a contiguous run starting at genesisCount+1 (#9), all distinct
+  // and all past the freeze — proving no genesis seat leaked into V3 numbering
+  // and that the sequence has no gaps. (Was hard-pinned to exactly {9,10}; the
+  // live chain now emits {9,10,11,12} and will emit more — the data is real, the
+  // fixed count was stale. {8,9} still fails: 8 is not post-freeze.)
+  const v3Nums = [...raw.v3FirstSeatMemberNumbers].sort((a, b) => a - b);
   add(
-    "raw V3: post-freeze only, numbers > 8 ({9,10} corroboration)",
-    raw.v3FirstSeatMemberNumbers.length === 2 &&
-      raw.v3FirstSeatMemberNumbers.every((n) => n > exp.memberCount) &&
-      new Set(raw.v3FirstSeatMemberNumbers).size === 2,
-    `set={${[...raw.v3FirstSeatMemberNumbers].sort((a, b) => a - b).join(",")}}`,
+    "raw V3: post-freeze first-seats are a contiguous run from #(genesisCount+1)",
+    new Set(v3Nums).size === v3Nums.length &&
+      v3Nums.every((n, i) => n === exp.memberCount + 1 + i),
+    `set={${v3Nums.join(",")}}`,
   );
   const txMissing = artifact.members.filter(
     (m) =>
