@@ -31,6 +31,7 @@ gagne en cas de conflit*. Vit dans le repo : `docs/00_CANON_INDEX.md`.
 | `ADR-002-protocole-anti-derive.md` | Le protocole anti-dérive (boot, gate 4 lignes, règles dures, cost discipline). |
 | `docs/handoff/new-session-handoff-2026-07-09-design-system-primitives.md` | Topo le plus récent : où on en est (fondation + primitives) + la prochaine slice. Le live/DB/auth reste régi par le checkpoint 2026-07-03. |
 | `replit.md` | Le contexte que Replit lit. |
+| `docs/direction/SETTLED_RULES_DO_NOT_RELITIGATE.md` | **Règles TRANCHÉES — ne pas re-litiger** (lire à chaque boot). Tue les « est-ce permis ? » récurrents : LE TEST (recognition **ou** service-payment = SAFE ; yield-sur-capital · SYN-en-récompense · gambling · recognition-convertible-en-cash = RED LINE) + cas réglés (earn/referral/commission = OUI, fee de service en USDC jamais SYN, single-level ; XP/seasons/cagnotte = recognition ; Learn & Earn = earn **XP**). Le **mécanisme** décide, pas le mot. Companion de `GAMIFICATION_LEGAL_DOCTRINE.md`. |
 
 ## TIER 1 — Vue holistique, plan & canonical (CHARGER AU BOOT)
 
@@ -44,7 +45,9 @@ gagne en cas de conflit*. Vit dans le repo : `docs/00_CANON_INDEX.md`.
 | `docs/SYNDICATE_OS_BUILD_INVENTORY_AND_VOCABULARY.md` | Inventaire de build + **vocabulaire** (les noms qu'on utilise). |
 | `docs/FOUNDATION_SPEC.md` | Le **spec de la fondation design-system** (tokens 3 tiers, typo fluide, polices, échelles, a11y, perf) — world-class, ce que les slices implémentent. |
 | `docs/DESIGN_ROADMAP.md` | **Source unique du workstream design** — phases, cases à cocher « FINI » grade-AAA, suivi du sprawl couleur. Claude Code coche les cases à la fin de chaque slice, dans le même commit. |
-| `docs/direction/LIVING_ORGANISM_MASTER_PLAN.md` | **La vision top-level + l'ordre de build (Tracks A–E)** — le protocole comme un pays (économie macro/micro, cockpit, mémoire Activity/Chronicle, modèle de revenu identité/labeling, le Guide). Tissé dans **THE ONE ORDERED SEQUENCE** de `SESSION_STATE.md` (source unique de l'ordre). |
+| `docs/direction/LIVING_ORGANISM_MASTER_PLAN.md` | **La vision top-level + l'ordre de build (Tracks A–E)** — le protocole comme un pays (économie macro/micro, cockpit, mémoire Activity/Chronicle, modèle de revenu identité/labeling, le Guide). Le travail nouveau est capturé dans le bloc **« Phase 3–6 / later »** de `SESSION_STATE.md` ; la liste **Phase-2 gelée** y reste la séquence canonique. |
+| `docs/direction/GUIDE_SUPPORT_ASSISTANT_DOCTRINE.md` | **Le Guide** (assistant support) — hybride déterministe-d'abord, jamais l'AI Layer PENDING ; garde-fous vérité (jamais un chiffre fabriqué), pile sécurité (endpoint isolé, rate-limit/budget/circuit-breaker, filtre output), choix modèle (Groq/DeepSeek). Slice Support (fait) + Guide-LLM (Phase 3). |
+| `docs/direction/SEASONS_ENGINE_ON_SYNDICATE_OS.md` | **Le moteur Saisons & Recognition (Phase 5).** Harvest du moteur Supa (XP · quêtes · badges · leaderboard · admin lifecycle), **reward reframé → recognition** (jamais XP→USDC). **Season = Era** (bornes on-chain déterministes) ; **3 horloges** (eras finies · chapters finis · **saisons infinies** = le heartbeat éternel) ; **Learn & Earn = earn XP** ; **funding = argent de la société, discrétionnaire, effort-based, USDC-jamais-SYN, ne touche jamais le 70/20/10** (lawyer-gated). Gouverné par `SETTLED_RULES` + `GAMIFICATION_LEGAL_DOCTRINE`. |
 
 ## TIER 2 — Specs de domaine (charger SELON la slice)
 
@@ -54,7 +57,6 @@ gagne en cas de conflit*. Vit dans le repo : `docs/00_CANON_INDEX.md`.
 | `docs/architecture/IDENTITY_ROLES_SPINE_CANON.md` | Identité + RBAC (Founder/Admin/Operator/Auditor/Worker). |
 | `docs/architecture/WALLET_FIRST_IDENTITY_ACCESS_AND_USER_REGISTRY_DESIGN.md` · `WALLET_IDENTITY_AND_HOLDER_INDEX_DESIGN.md` · `HOLDER_INDEX_READ_MODEL_DESIGN.md` | Identité wallet-first + Holder Index. |
 | `docs/architecture/ACTIVITY_HEARTBEAT_READ_MODEL.md` | Backbone d'événements / Activity. |
-| `docs/direction/GUIDE_SUPPORT_ASSISTANT_DOCTRINE.md` | **Le Guide** (assistant support) — hybride déterministe-d'abord, jamais l'AI Layer PENDING ; garde-fous vérité (jamais un chiffre fabriqué), pile sécurité (endpoint isolé, rate-limit/budget/circuit-breaker, filtre output), choix modèle (Groq/DeepSeek). Charger à la slice Support (#5) et Guide-LLM (Phase 3). |
 | `docs/architecture/SOURCE_BOUNDARY_MANIFEST.md` | Frontière des sources (spine vérité/sécurité). |
 | `docs/architecture/CAPABILITY_HARVEST_AND_REUSE_MAP.md` · `docs/strategy/DUNITERUM_CAPABILITY_HARVEST_2_20E.md` | Matrices de récolte (PRESERVE/ADAPT/REWRITE/REJECT). |
 | `docs/architecture/OPERATOR_WALLET_AUTH_AND_ROLES_DESIGN.md` | Auth opérateur + rôles. |

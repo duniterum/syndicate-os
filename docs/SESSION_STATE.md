@@ -133,7 +133,8 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
     says "Guide", not "AI". NO LLM / NO wallet-awareness / NO backend (those = Phase 3). `guard-access-state`
     storage allowlist extended (greeting-seen boolean only). Green: typecheck 0 · 9 guards + no-raw-color.
   - **NEXT = 2.4 Docs → 2.5 Knowledge** — each COMPOSES from the `living/` chassis + harvests per
-    `CONTENT_SURFACE_HARVEST_MAP.md`. Full build order = **THE ONE ORDERED SEQUENCE** below.
+    `CONTENT_SURFACE_HARVEST_MAP.md`. Canonical order = the **frozen "Remaining Phase-2 slices, IN ORDER"**
+    list below; new session work is captured separately under **"Phase 3–6 / later work"**.
 - **PHASES 3–6 → ⬜ pending** (auth single-instance/Reserved-VM blocker open; admin/RBAC unseeded; event
   backbone / activity / gamification unbuilt; perf/a11y/responsive/security audits not run; fonts still Google-CDN).
 
@@ -148,95 +149,108 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 4. Client unchanged: `wagmi ssr:false`, `SeoHeadManager`, live-figure hydration untouched.
 5. End of slice: Replit handoff to serve prerendered HTML per path.
 
-## THE ONE ORDERED SEQUENCE — the single build order (all phases · Tracks A–E woven in)
+## Remaining Phase-2 slices, IN ORDER (from `docs/direction/MASTER_BUILD_SPEC.md` — do not re-plan)
 
-*Supersedes the old Phase-2-only list. This is THE canonical order — do not reorder without founder sign-off.
-Sources: `MASTER_BUILD_SPEC.md` (6 phases) · `LIVING_ORGANISM_MASTER_PLAN.md` §11 (Tracks A–E) ·
-`GUIDE_SUPPORT_ASSISTANT_DOCTRINE.md` · `CONTENT_SUITE_SPEC.md` / `CONTENT_SURFACE_HARVEST_MAP.md`.
-Status legend: ✅ DONE · 🔵 NEXT · ⬜ PENDING · 🔒 DEFERRED (lawyer-gated).
-**Dependency rules honored:** backend read-models before their public surfaces · content suite before the
-Guide's LLM grounding · lawyer-gated identity/income items placed LAST and marked DEFERRED.*
+*FROZEN LIST — items and order are canonical; do not drop, reword, or reorder a single item. Only status
+markers update. New session work lives BELOW in "Phase 3–6 / later", never woven into this list.*
 
-**RECONCILIATION (this session, flagged — not a silent reorder):** the old list had "Support + floating
-robot" as ONE item. The new plan splits the Guide into **deterministic** (needs only the FAQ corpus, which
-is DONE) vs **LLM / security / user-level** (need the fuller content suite + auth). So **Support stays NEXT
-but is now explicitly DETERMINISTIC-only** (#5); its LLM/security/user-level parts move to Phase 3
-(#19–#21, #24). This is a refinement consistent with the founder's own Support locks — **no existing
-canonical decision is overwritten.** No other conflicts found.
+1. ~~**2.0 Rendering fix** — prerender/SSG shell, server HTML meta + JSON-LD, real 404.~~ ✅ **DONE.**
+2. ~~**2.1 Prose atom + Whitepaper**~~ ✅ **DONE** — Prose atom (`components/prose/Prose.tsx`) + `/whitepaper`
+   (15 sections, every figure a live chain read via `useHeroReality`/`Amount`/`VerifyOnChain` or a PENDING
+   label — zero hardcoded numbers). Guard extended (safe set; `contribution`/`package`/`moon`/`raised`
+   flagged as repo-wins exclusions). Supply, the 7 distribution shares, and both prices render PENDING —
+   they need a live supply/price read (wire in 2.2). *(NEXT = 2.2.)*
+3. ~~**2.2 Tokenomics (+ SYN token)**~~ ✅ **DONE** — `/tokenomics` on the Prose atom + the backend live
+   reads it needed. Spine extended (SYN `totalSupply` + 7 allocation-wallet `balanceOf`, fail-closed, no
+   address emitted; both protocol guards extended). `useTokenomics` reads them + market price (live LP
+   reserves) + entry rate (live join-quote). **Whitepaper's 10 PENDINGs flipped to LIVE** (supply, 7
+   allocation shares, both prices). Stale "16,500" burn retired — burn is a live read everywhere. Standing
+   rule added: no PENDING for a readable figure. *(NEXT = 2.3 FAQ.)*
+4. ~~**2.3 FAQ**~~ ✅ **DONE** (harvest: Supa chrome + origin 39 Q&A — see harvest map) · 5. ~~**Support + floating
+   robot**~~ ✅ **DONE** (harvest: Supa `FloatingAISupport`; tone exception; NOT the AI Layer; never fabricates a figure)
+6. 🔵 **2.4 Docs** *(NEXT)* · 7. **2.5 Knowledge base** · 8. **2.6 Risk** · 9. **2.7 Glossary**
+10. **2.8 Roadmap** (registry-driven) · 11. **2.9 Protocol-facts** · 12. **2.10 Brand-facts**
+12. **2.11 Join / entry-tiers UI** — featured tiers + custom-amount compose + live quote preview
+    (gross → source payment → net → 70/20/10) + 5-step flow; read-only; figures from chain.
+13. **Footer IA + sitemap + per-page SEO guards** — footer per `CONTENT_SUITE_SPEC`; add banned-word,
+    no-fake-live, sitemap-leak, index-only-real-content guards.
 
-### PHASE 2 — content suite + the deterministic Guide  (Track A + Track B1/B5-UI)
-1. ✅ **2.0 Rendering fix** — prerender/SSG shell, server HTML meta + JSON-LD, real 404. **DONE.**
-2. ✅ **2.1 Whitepaper (+ Prose atom)** — every figure a live chain read or PENDING. **DONE.**
-3. ✅ **2.2 Tokenomics (+ SYN reads)** — supply/allocations/prices/burn live; whitepaper PENDINGs flipped. **DONE.**
-4. ✅ **2.3 FAQ** (A1) — **SEALED prod** (`1c6a07d`); living chassis + `FaqAccordion`; 39 Q&A number-free;
-   FAQPage JSON-LD in server HTML.
-5. ✅ **Support · the DETERMINISTIC floating Guide** (B1 + robot UI) — **SEALED prod** (`56bc165`,
-   Replit-verified live). `SyndicateGuide` global in `PublicLayout`; router + FAQ-corpus finder that
-   consults-never-invents; line-art mascot on tokens; no fake badge / no live dot; header "Guide" not "AI".
-   **NO LLM · NO wallet/member awareness** (those → Phase 3, #19–#21). src: `GUIDE_SUPPORT_ASSISTANT_DOCTRINE.md`.
-6. 🔵 **2.4 Docs** (A2) — **NEXT** · 7. ⬜ **2.5 Knowledge** (A3) · 8. ⬜ **2.6 Risk** (A4) · 9. ⬜ **2.7 Glossary** (A5)
-10. ⬜ **2.8 Roadmap**, registry-driven (A6) · 11. ⬜ **2.9 Protocol-facts** (A7) · 12. ⬜ **2.10 Brand-facts** (A8)
-13. ⬜ **2.11 Join / entry-tiers UI** — featured tiers + custom-amount + live read-only quote preview
-    (gross → source payment → net → routing) + 5-step flow; figures from chain.
-14. ⬜ **Footer IA + sitemap + per-page SEO guards** (A9) — banned-word / no-fake-live / sitemap-leak /
-    index-only-real-content guards.
-15. ⬜ **Transparency signature pages** — E4 Honesty register · E5 "Never will" charter (cheap content,
-    interleave in the content suite). src: `LIVING_ORGANISM_MASTER_PLAN.md` §11-E.
+## Phase 3–6 / later work — captured this session (NOT scheduled into the frozen Phase-2 list above)
 
-### PHASE 3 — operational activation + the Guide's brain  (MASTER_BUILD_SPEC P3 + Track B2/B3/B4 + E2)
-16. ⬜ Prod single-instance / Reserved VM (or externalize sessions) — reliable auth.
-17. ⬜ Operator DB + one-time `founder_root` seed.
-18. ⬜ Auth enablement + **founder admin ON/OFF toggle** (env break-glass + DB flag, audit-logged, default OFF).
-19. ⬜ **Guide security spine** (B2) — isolated endpoint, token-based rate-limit, global budget cap +
-    circuit-breaker → deterministic, output forbidden-copy filter, monitoring. **Built BEFORE any LLM.**
-20. ⬜ **Guide LLM escalation** (B3) — Groq primary + DeepSeek fallback, RAG-grounded on the content suite,
-    degrades to deterministic. Needs #19 + a fuller corpus (#6–#12).
-21. ⬜ **Guide user-level awareness** (B4) — visitor/holder/member from verified on-chain state (own wallet
-    only). Needs auth (#18). src: `GUIDE_SUPPORT_ASSISTANT_DOCTRINE.md` + `LIVING_ORGANISM` §6.
-22. ⬜ Live checkout (wallet tx: take seat / acquire SYN).
-23. ⬜ Referral: **read** from the deployed source registry (payout stays PAUSED/future-labeled).
-24. ⬜ **E2 Living FAQ** — grows from real anonymized Guide questions (needs #20 logging).
+*A holding area for work decided/researched this session. It does NOT reorder the frozen Phase-2 list; each
+item slots into Phases 3–6 at build time, after its prerequisites. Format: name · status · source doc.
+Status: ⬜ PENDING · 🔒 DEFERRED (lawyer-gated). All money-touching items governed by
+`SETTLED_RULES_DO_NOT_RELITIGATE.md` + a crypto-lawyer pass at Phase 5.*
 
-### PHASE 4 — admin console + RBAC  (MASTER_BUILD_SPEC P4, unchanged)
-25. ⬜ RBAC spine (Founder/Admin/Operator/Auditor/Worker) + step-up.
-26. ⬜ Module/plugin registry — activate/deactivate WordPress-style.
-27. ⬜ CRUD + graphical tools per module (incl. a **Guide monitoring** panel).
-28. ⬜ Admin broadcast + audit log + feature flags. · 29. ⬜ Content management from admin.
+**Phase 3 — the Guide's brain (deterministic Guide already SEALED; these extend it)**
+- Guide **security spine** — isolated endpoint · token rate-limit · budget cap + circuit-breaker →
+  deterministic · output forbidden-copy filter · monitoring · ⬜ PENDING · built BEFORE any LLM ·
+  src `GUIDE_SUPPORT_ASSISTANT_DOCTRINE.md`.
+- Guide **LLM escalation** — Groq + DeepSeek fallback · RAG-grounded on the content suite · degrades to
+  deterministic · ⬜ PENDING · needs the security spine + a fuller corpus · src `GUIDE_SUPPORT_ASSISTANT_DOCTRINE.md`.
+- Guide **user-level awareness** — visitor/holder/member from verified on-chain state (own wallet only) ·
+  ⬜ PENDING · needs auth · src `GUIDE_SUPPORT_ASSISTANT_DOCTRINE.md` + `LIVING_ORGANISM_MASTER_PLAN.md` §6.
 
-### PHASE 5 — the living organism  (backend read-models FIRST, then surfaces · P5 + Track C + Track D non-financial)
-30. ⬜ **Event backbone** — indexer → canonical pipeline `EVENT→SIGNAL→MEMORY→CHRONICLE candidate` (the
-    read-models). src: `ACTIVITY_HEARTBEAT_READ_MODEL.md` + `LIVING_ORGANISM` §7.
-31. ⬜ **C1 · Economy macro** — Protocol Economy Observatory `/economy` (evidence-labeled, not-a-yield-dashboard).
-32. ⬜ **C2 · Activity** `/activity` — public aggregate, **recency-truthful, address-safe** pulse over the
-    proven heartbeat read-model.
-33. ⬜ **C3 · My Economy + cockpit** narrative arc (Identity→Place→Ownership→Momentum→Action→Memory→Proof).
-34. ⬜ **C4 · Chronicle** `/chronicle` — memory pipeline + public solemn record (promotion = human act; two
-    registers; oldest-first, no feed/casino).
-35. ⬜ **C5 · Register** — the census / seat roster.
-36. ⬜ **D1 · Internal explorer** (harvest `MiniExplorer`) + extend `known-addresses` labeling (read-only).
-37. ⬜ **D4 · Shareable cards / OG** (consent-gated identity; viral) — non-financial.
-38. ⬜ **D5 · Verifiable reputation** (multi-axis; never wealth-ranking) — recognition, non-financial.
-39. ⬜ **Gamification** (recognition-only) · **Seasons** (protocol-funded prizes, free-entry, anti-Sybil).
-    src: `GAMIFICATION_LEGAL_DOCTRINE.md`.
+**Phase 5 — living-organism public surfaces (backend read-models FIRST, then the surface)**
+- Event backbone — indexer → canonical `EVENT→SIGNAL→MEMORY→CHRONICLE candidate` pipeline (the read-models)
+  · ⬜ PENDING · src `ACTIVITY_HEARTBEAT_READ_MODEL.md` + `LIVING_ORGANISM_MASTER_PLAN.md` §7.
+- Economy macro `/economy` — Protocol Economy Observatory (evidence-labeled, not-a-yield-dashboard) ·
+  ⬜ PENDING · src `LIVING_ORGANISM_MASTER_PLAN.md` §3.
+- Activity `/activity` — public aggregate, recency-truthful, address-safe pulse over the heartbeat
+  read-model · ⬜ PENDING · src `LIVING_ORGANISM_MASTER_PLAN.md` §7.
+- My Economy + cockpit narrative arc (Identity→Place→Ownership→Momentum→Action→Memory→Proof) · ⬜ PENDING ·
+  src `LIVING_ORGANISM_MASTER_PLAN.md` §3.
+- Chronicle `/chronicle` — memory pipeline + public solemn record (promotion = human act; two registers;
+  oldest-first) · ⬜ PENDING · src `LIVING_ORGANISM_MASTER_PLAN.md` §7.
+- Register — the census / seat roster · ⬜ PENDING · src `LIVING_ORGANISM_MASTER_PLAN.md` §3.
 
-### PHASE 6 — harden & seal (grade-AAA)  (MASTER_BUILD_SPEC P6 + Track E kit)
-40. ⬜ Performance (self-host fonts, AVIF/WebP, Brotli/cache, CWV). · 41. ⬜ Indexability (GSC+Bing submit —
-    founder action; llms.txt; AEO). · 42. ⬜ Monitoring (web-vitals RUM, Lighthouse CI, privacy analytics).
-43. ⬜ Accessibility (WCAG AA / APCA, keyboard, focus, ≥44px). · 44. ⬜ Responsive (320→2560, container
-    queries, folding). · 45. ⬜ Security (OWASP, secrets hygiene, rate limits).
-46. ⬜ **E3 · "Verify it yourself" kit** — published read scripts. src: `LIVING_ORGANISM` §11-E.
+**Phase 5 — recognition engine = SEASONS · ERA · continuity (recognition-only; capture-now, build-at-phase)**
+- Recognition engine — XP + quests + badges + season leaderboard + rank snapshot (harvest Supa's mechanism,
+  reskin to our tokens/vocab; recognition only, off-chain/non-transferable) · ⬜ PENDING ·
+  src `SEASONS_ENGINE_ON_SYNDICATE_OS.md` (governed by `SETTLED_RULES` + `GAMIFICATION_LEGAL_DOCTRINE`).
+- **Season = Era** binding — season boundaries are deterministic on-chain member milestones (era `endSeat`),
+  built WITH the new sale/era contract · ⬜ PENDING · src `SEASONS_ENGINE_ON_SYNDICATE_OS.md` §3.
+- **Three clocks / continuity** — Eras (economic, finite) · Chapters (mythology, finite) · Seasons
+  (engagement, **infinite** recognition heartbeat) · ⬜ PENDING · src `SEASONS_ENGINE_ON_SYNDICATE_OS.md` §3.5.
+- **Learn & Earn = earn XP** — quiz + recognition loop on top of `/learning` (our content, never Supa's;
+  reward = recognition, never cash) · ⬜ PENDING · src `SEASONS_ENGINE_ON_SYNDICATE_OS.md` §7.5 (SETTLED).
+- Recognition catalog — badge · feature/access · cosmetic · collectible · physical (drop token/boost/
+  cash-discount) · ⬜ PENDING · src `SEASONS_ENGINE_ON_SYNDICATE_OS.md` §7.
+- Season/recognition **admin lifecycle** in the RBAC admin shell (state machine · next-step engine · audit ·
+  archive) · ⬜ PENDING · src `SEASONS_ENGINE_ON_SYNDICATE_OS.md` §6.
+- **Funding = company money, discretionary, effort-based, USDC-not-SYN, never touches 70/20/10** (the cash
+  rail; reuse the Merkle infra) · 🔒 DEFERRED (lawyer-gated) · src `SEASONS_ENGINE_ON_SYNDICATE_OS.md` §8 + `SETTLED_RULES`.
 
-### 🔒 DEFERRED — lawyer-gated identity & income economy (Track D paid tier) — do NOT build before crypto-lawyer sign-off
-- 🔒 **D2 · Address labeling service** (verified, pay-to-label, never impersonate) — the strongest income
-  stream. src: `LIVING_ORGANISM` §5.
-- 🔒 **D3 · Aliases** (ENS-style, sold; tied to seat; non-tradeable).
-- 🔒 **D6 · Guide premium tier** (bundle into a recognition tier; the **free Guide stays fully truthful**).
-- 🔒 **White-label** truth-first Guide / verification kit (post-MVP, separate business).
+**Phase 5–6 — identity & income economy**
+- Internal explorer (harvest `MiniExplorer`) + extend `known-addresses` labeling (read-only) · ⬜ PENDING ·
+  src `LIVING_ORGANISM_MASTER_PLAN.md` §9.
+- Shareable cards / OG (consent-gated identity; viral) · ⬜ PENDING (non-financial) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
+- Verifiable reputation (multi-axis; never wealth-ranking) · ⬜ PENDING (non-financial) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
+- Address labeling **service** (verified, pay-to-label, never impersonate) · 🔒 DEFERRED (lawyer-gated) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
+- Aliases (ENS-style, sold; tied to seat; non-tradeable) · 🔒 DEFERRED (lawyer-gated) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
+- Guide premium tier (bundle into a recognition tier; free Guide stays fully truthful) · 🔒 DEFERRED (lawyer-gated) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
+- White-label truth-first Guide / verification kit (post-MVP, separate business) · 🔒 DEFERRED · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
 
-**Cross-cutting (design principles, not slices):** Engagement psychology (`LIVING_ORGANISM` §4 — honest
-levers only, **recency-truth**) applies to every surface. **E1 "Prove it"** (a verify link on every Guide
-answer + every figure) is a standing rule folded into each slice. **Governance is banned** — reframe any
-DAO/member-memory track as **permanently non-promoting recognition**, never "awaiting DAO ratification."
+**Transparency signature moves (cheap, high-differentiation; interleave)**
+- E1 "Prove it" — a verify link on every Guide answer + every figure (standing rule, folded into each slice) · ⬜ ongoing · src `LIVING_ORGANISM_MASTER_PLAN.md` §11-E.
+- E2 Living FAQ — grows from real anonymized Guide questions · ⬜ PENDING · src `LIVING_ORGANISM_MASTER_PLAN.md` §11-E.
+- E3 "Verify it yourself" kit — published read scripts · ⬜ PENDING · src `LIVING_ORGANISM_MASTER_PLAN.md` §11-E.
+- E4 Honesty register — public log of corrections · ⬜ PENDING · src `LIVING_ORGANISM_MASTER_PLAN.md` §11-E.
+- E5 "Never will" charter · ⬜ PENDING · src `LIVING_ORGANISM_MASTER_PLAN.md` §11-E.
+
+**Cross-cutting (design principles, not slices):** engagement psychology (`LIVING_ORGANISM_MASTER_PLAN.md`
+§4 — honest levers only, **recency-truth**) applies to every surface. **Governance is banned** — reframe any
+DAO/member-memory track as **permanently non-promoting recognition**. The remaining Phase 3–6 infra from
+`MASTER_BUILD_SPEC.md` (single-instance/Reserved-VM, operator DB + founder seed, auth + admin ON/OFF toggle,
+live checkout, referral read, RBAC + admin shell, perf/a11y/responsive/security audits) stays as specified
+there — this block ADDS to it, never replaces it.
+
+**Conflicts with existing canon — NONE found this session.** `SEASONS_ENGINE` reconciles the old `/learning`
+"no reward" comment as "no **cash** reward" (consistent with earning **XP** = recognition), and the "new
+sale/era contract" is a future lawyer+audit-gated design, not an override of a locked decision. No
+genuine RED-LINE mechanism to flag: the seasons doc itself drops the banned mechanisms (XP→USDC,
+SYN-as-reward, boost/multiplier, cash-convertible discount) and lawyer-gates the cash rail. Per
+`SETTLED_RULES`, earn/referral/season/pot/Learn&Earn=XP are settled and NOT re-flagged.
 
 ## Slice protocol (every step)
 
