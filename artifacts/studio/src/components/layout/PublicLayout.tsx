@@ -23,8 +23,8 @@ import { SyndicateGuide } from "@/components/guide/SyndicateGuide";
 // Member sign-in / standing affordance. Reached ONLY through a runtime dynamic
 // import so PublicLayout never STATICALLY reaches @/wallet (guard-access-state
 // rule 15 — App.tsx is the sole static wallet importer). Rendered only when the
-// auth zone is live (dark → nothing; auto-appears the instant SYNDICATE_AUTH_ENABLED
-// flips). One modal covers connect + SIWE sign; standing resolves in place.
+// auth zone is live (dark → nothing; auto-appears the instant the auth exposure
+// flag flips). One modal covers connect + SIWE sign; standing resolves in place.
 const MemberHeaderAffordance = lazy(() => import("@/wallet/MemberHeaderAffordance"));
 
 function MemberHeaderSlot({ variant }: { variant: "desktop" | "mobile" }) {

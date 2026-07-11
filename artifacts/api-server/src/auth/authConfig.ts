@@ -55,17 +55,36 @@ function splitEnvList(value: string | undefined): string[] {
     .filter((entry) => entry.length > 0);
 }
 
+// Platform-internal hosts Replit injects into REPLIT_DOMAINS alongside the
+// custom domain. These are the URL the wallet must NOT be asked to sign for —
+// a member on thesyndicate.money seeing "sign for *.replit.app" reads as
+// phishing. Used only to DEMOTE these hosts, never to reject them.
+const INTERNAL_HOST_RE = /\.(replit\.app|repl\.co|replit\.dev)$/i;
+
+// The canonical public host this deployment serves under. Preference, most
+// authoritative first: (1) an explicitly DECLARED host (SYNDICATE_CANONICAL_HOST)
+// — declare-don't-infer; (2) the first non-platform host in REPLIT_DOMAINS (the
+// custom apex, e.g. thesyndicate.money — self-healing with zero env action);
+// (3) REPLIT_DOMAINS[0] as it was; (4) the dev domain; (5) localhost.
+function canonicalHost(): string | undefined {
+  const declared = process.env["SYNDICATE_CANONICAL_HOST"]?.trim();
+  if (declared) return declared;
+  const domains = splitEnvList(process.env["REPLIT_DOMAINS"]);
+  const custom = domains.find((h) => !INTERNAL_HOST_RE.test(h));
+  if (custom) return custom;
+  if (domains[0]) return domains[0];
+  const devHost = process.env["REPLIT_DEV_DOMAIN"];
+  if (devHost) return devHost;
+  return undefined;
+}
+
 // The SIWE challenge is domain- and URI-bound to the canonical origin this
 // server actually serves. Values are computed server-side and re-checked
 // server-side on verify — never trusted from the client.
 export function expectedSiweOrigin(): { domain: string; uri: string } {
-  const prodHost = splitEnvList(process.env["REPLIT_DOMAINS"])[0];
-  if (prodHost) {
-    return { domain: prodHost, uri: `https://${prodHost}/` };
-  }
-  const devHost = process.env["REPLIT_DEV_DOMAIN"];
-  if (devHost) {
-    return { domain: devHost, uri: `https://${devHost}/` };
+  const host = canonicalHost();
+  if (host) {
+    return { domain: host, uri: `https://${host}/` };
   }
   return { domain: "localhost", uri: "http://localhost/" };
 }
@@ -78,6 +97,13 @@ export function isAllowedBrowserOrigin(origin: string): boolean {
   const allowed = new Set<string>();
   for (const host of splitEnvList(process.env["REPLIT_DOMAINS"])) {
     allowed.add(`https://${host}`);
+  }
+  // The canonical host may be DECLARED out-of-band (SYNDICATE_CANONICAL_HOST);
+  // keep the CSRF allow-list in lockstep with the SIWE domain so they can
+  // never diverge.
+  const canonical = canonicalHost();
+  if (canonical) {
+    allowed.add(`https://${canonical}`);
   }
   const devDomain = process.env["REPLIT_DEV_DOMAIN"];
   if (devDomain) {
