@@ -467,7 +467,7 @@ check(
 
 const routeFiles = readdirSync("src/routes").sort();
 check(
-  "public route surface unchanged (health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate only)",
+  "public route surface unchanged (health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate, verifyLinks only)",
   JSON.stringify(routeFiles) ===
     JSON.stringify([
       "health.ts",
@@ -478,22 +478,31 @@ check(
       "publicReadThrottle.ts",
       "sourceStatus.ts",
       "sourceValidate.ts",
+      "verifyLinks.ts",
     ]),
   `routes=${JSON.stringify(routeFiles)}`,
 );
 // holderIndex.ts is the SINGLE founder-approved aggregate-only surface (its
 // discipline — import-free static snapshot, allow-listed props, no per-seat
 // rows — is enforced by holder-index:guard). index.ts may only mount it.
-// All routes are scanned comment-stripped per guard doctrine; wallet/proof/
-// continuity stay banned EVERYWHERE, member/holder banned outside the pair.
+// verifyLinks.ts is the founder-approved explorer-links surface (July 2026): it
+// emits ONLY protocol-INFRASTRUCTURE addresses (contracts, treasury, LP pair,
+// burn) sourced from the served target constants, NEVER member/per-person
+// wallets — and its own doctrine strings say so ("Never member wallets"). It is
+// therefore exempt from the blanket word-bans and pinned instead to its REAL
+// invariant below (infra-only, no hardcoded address, no member-data import).
+// All OTHER routes are scanned comment-stripped: wallet/proof/continuity stay
+// banned EVERYWHERE, member/holder banned outside the approved surfaces.
 {
   const stripRoute = (src: string): string =>
     src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
   const holderAllowed = new Set(["holderIndex.ts", "index.ts"]);
+  const addressEmitApproved = new Set(["verifyLinks.ts"]);
   check(
-    "no wallet/proof/continuity route code exists (comment-stripped)",
+    "no wallet/proof/continuity route code exists (comment-stripped; verifyLinks pinned separately)",
     routeFiles.every(
       (f) =>
+        addressEmitApproved.has(f) ||
         !/wallet|proof|continuity/i.test(
           stripRoute(readFileSync(join("src/routes", f), "utf8")),
         ),
@@ -502,12 +511,31 @@ check(
   check(
     "no member route code; holder code only in the approved aggregate surface",
     routeFiles.every((f) => {
+      if (addressEmitApproved.has(f)) return true;
       const code = stripRoute(readFileSync(join("src/routes", f), "utf8"));
       if (/member/i.test(code)) return false;
       if (/holder/i.test(code) && !holderAllowed.has(f)) return false;
       return true;
     }),
   );
+  // Positive pin for the approved address-emitting surface: verifyLinks must
+  // source addresses ONLY from the served infra target constants, carry NO
+  // hardcoded per-person (40-hex) address literal, and import NO member/holder/
+  // continuity data module. This keeps the member-wallet-leak protection real
+  // while allowing the legitimate infrastructure-explorer route.
+  {
+    const vl = stripRoute(
+      readFileSync(join("src/routes", "verifyLinks.ts"), "utf8"),
+    );
+    check(
+      "verifyLinks emits protocol-infrastructure addresses only (infra constants, no hardcoded 40-hex, no member-data import)",
+      /CONTRACT_TARGETS|SALE_SCAN_TARGETS/.test(vl) &&
+        !/0x[a-fA-F0-9]{40}/.test(vl) &&
+        !/memberContinuity|historical_member|holderIndex|member-continuity|holder-index/.test(
+          vl,
+        ),
+    );
+  }
 }
 
 const pkg = readFileSync("package.json", "utf8");
