@@ -171,6 +171,50 @@ Result on Replit/Linux: **16/16 green** (local shows partB-canon-reconcile red o
 - ADR-003 (anti-doxx): `docs/adr/ADR-003-identite-et-confidentialite-anti-doxx.md`.
 - Source-vocab pattern to mirror for the naming guard: `studio/src/config/sourceAttributionTerminology.ts`.
 
+## 9. ⚡ CHECKOUT / GO-LIVE BUILD PLAN (Q12/Q20 — founder wants it; the highest-stakes build)
+
+**FOUNDER DECISION (2026-07-11): build the real `/join` checkout — real USDC → seat — and go LIVE, "plus
+jamais revenir en arrière." NOT started here (was at ~9% context — a real-money path must never be rushed).
+This is step one of a FRESH FULL-CONTEXT session, built slice by slice, gated by the founder at EACH step.**
+
+### The laws (non-negotiable — the first one cost SIX versions)
+1. **APPROVE ≠ PAYMENT.** An allowance is NOT a payment. The seat is confirmed ONLY by a successful purchase
+   RECEIPT, with the number read from the **EMITTED EVENT** (`MembershipPurchasedV3.memberNumber`). **Approve
+   the EXACT amount, NEVER unlimited.** The UI must make the approve-vs-pay distinction unmissable.
+2. **No copied payment code without review** (GR §1b(4)). Write it fresh, understood line by line.
+3. **TESTNET / SIMULATION FIRST.** Static-call (`eth_call`) the buy to simulate BEFORE any real send;
+   prove the whole flow on a testnet or against a simulation before a single mainnet USDC moves.
+4. **BUILD ≠ GO-LIVE.** Building is authorized (GR §6 Phase 8). Sending real money on mainnet is a SEPARATE,
+   EXPLICIT founder go-live, per slice.
+5. **REPO WINS** — VERIFY every ABI/selector/address below against `sale-abi.ts:146-228` (`SALE_V3_ABI`)
+   before use; the lines below are from the queue (Q12) evidence, not re-verified at write time.
+
+### The on-chain facts (VERIFY against the repo first)
+- **V3 sale engine:** `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` · **USDC:** `0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E`.
+- **`quote(grossUsdc, recipient, sourceId)`** → `synOut / era / synPerUsdc / seatIfFirst / acquisitionCost /
+  protocolContribution`. Compute **`minSynOut`** from `synOut` minus a slippage tolerance.
+- **`buy(grossUsdc, recipient, sourceId, minSynOut, v1Proof)`** — HAS slippage protection (`minSynOut` floor).
+  **Two-tx: approve → buy.** NO EIP-2612 permit on the sale (standard USDC `approve`).
+- **Seat:** read from the `MembershipPurchasedV3` event `memberNumber` — NEVER assumed.
+- **Per-address-per-era cap** enforced on-chain (`usdcByAddressEra` / `maxUsdcPerAddressPerEra`) — read it and
+  surface it (a member can hit the cap; say so honestly).
+
+### The slices (strict order; each green + founder-gated; real-tx slices need explicit go-live)
+- **C1 — the quote (READ-ONLY, no go-live).** Read `quote(...)` live, render synOut/era/seatIfFirst/cost/
+  contribution + the per-era cap headroom. Compute + show `minSynOut`. Honest states, no write. Ships green alone.
+- **C2 — the 2-step flow UI (Q13).** The origin's "5-step" must become **2 steps** (review → confirm).
+  Whether checkout jumps ahead of content slices 2.6–2.10 is a FOUNDER call (Q13). Two-shells + no-twin-pages.
+- **C3 — approve (REAL TX, go-live gated).** USDC `approve(saleV3, EXACT grossUsdc)` — never unlimited.
+  UI states the allowance is NOT payment. Simulate first. Testnet before mainnet.
+- **C4 — buy (REAL TX, go-live gated).** Static-call to simulate, then `buy(...)`. Read the seat from the
+  emitted event. Confirm membership ONLY from the receipt. Handle reverts/rejections honestly (no fake seat).
+- **C5 — wire `/join`.** Remove the stale "transaction sending deliberately not enabled" gate (Q20). The page
+  rides this slice; do NOT touch it before C1–C4 exist.
+
+### After checkout: session durability (Q14) is the natural companion — DB-backed/persistent sessions so a
+member never re-signs across deploys (the header re-sign fix `8be936a` already makes lapses invisible; Q14
+removes them). Infra decision.
+
 ## 8. Standing rules (binding every agent)
 REPO WINS OVER PROSE · SEMANTICS RECONCILED NEVER INFERRED · NO SNAPSHOT FOR A LIVE FIGURE · **NO PUSH
 WITHOUT FOUNDER APPROVAL (diff → approval → publish, one step at a time)** · a guard must be able to go RED
