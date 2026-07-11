@@ -245,6 +245,17 @@ name. Founder ruling: **12 is 12** — members #11/#12 are real on-chain purchas
 design** — work, tests, problems, all visible; proof-of-life that cannot be faked. Seat authority stays as
 canon: #1–8 Part B freeze/root, #9+ emitted V3 memberNumber. No filtering, no asterisk, no founder exclusion.
 
+**SECOND worked example, same session (2026-07-11) — the advisor's checkout brief.** The advisor cited
+`sale-abi.ts:33` `buy(usdcAmount)` and built a whole "no slippage protection" argument on it. That line
+is the **V1** ABI. Reading the actual **V3** engine (`sale-abi.ts:146-157`) shows
+`buy(grossUsdc, recipient, sourceId, **minSynOut**, v1Proof)` — **native slippage protection** (a
+`minSynOut` floor) plus on-chain **per-address-per-era caps** (`usdcByAddressEra`/`maxUsdcPerAddressPerEra`)
+and the seat read from the `MembershipPurchasedV3` event. So the rule fired **twice in one session** —
+`GENESIS_OFFSET` (inferred V3-only from a name), then `sale-abi.ts:33` (inferred the buy signature from
+the wrong ABI line). **Both times, reading the file beat inferring from a line.** This is precisely why
+"SEMANTICS ARE RECONCILED, NEVER INFERRED FROM ABI NAMES" — and REPO-WINS-OVER-PROSE (§12b) — are
+standing rules: *no file cited (read in full), no claim.*
+
 **The honest figure is a DUAL-PROVENANCE COMPOSITE, never a bare number, never silently summed** —
 the snapshot's own boundary #3 forbids collapsing the two authorities; a bare live "10" would itself
 violate doctrine.
