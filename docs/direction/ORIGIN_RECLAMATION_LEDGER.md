@@ -74,9 +74,24 @@ signature? **Answer: yes.**
 - `guard-no-fake-live` cannot catch it: it bans the literal token `>Live<`, and has **no concept of
   freshness-provenance** (the vocabulary gap of §2, proven).
 
-**Consequence (pre-committed decision tree):** the **freshness fix lands FIRST** — smallest correct
-fix: give the snapshot figure its own as-of (`builtAt`/`freezeBlock` + a "served snapshot" word),
-never the live signature. **We do not publish a truth-map (`/knowledge`) while a surface misstates.**
+**Consequence (pre-committed decision tree):** the **liveness fix lands FIRST**. We do not publish a
+truth-map (`/knowledge`) while a surface misstates.
+
+**CORRECTION (founder, 2026-07-11) — the fix is to make the figure LIVE, not to label the snapshot.**
+`memberCount()` is already served LIVE in the reality envelope (`financial.members.memberCount`,
+`financialDecoders.ts:12,24` selector `0x11aee380`, `realityService.ts:1368-1385`, LIVE_CHAIN_RPC).
+Labelling a frozen number makes it honest; reading it live makes it TRUE — and it restores the
+snapshot to its real job (era attribution + verification, the dual authority). **We turned a
+verification instrument into a headline number; the fix reverses that.** See §11 for the composite.
+
+> **STANDING RULE — NO SNAPSHOT FOR A LIVE-READABLE FIGURE.** Direct extension of "no PENDING for a
+> readable figure." If a figure has a live source in the reality envelope, a served snapshot value may
+> NOT stand in for it on a public surface. The freshness guard enforces this (§11).
+
+**And note, because it proves §2 concretely:** `guard-no-fake-live` is a **literal string check** — it
+bans the token `>Live<` as a JSX text node (`FAKE_LIVE_RE = />\s*(LIVE|Live|Online|Active)\s*</`). It
+has no concept of freshness-provenance, so it could not see this overclaim. The guard was not weak; it
+had no word for the fake. Add the word, then the guard can see it.
 
 ## 5. The 9 mechanisms — reclamation ledger
 
@@ -176,3 +191,150 @@ does not grant this file power over runtime).
 - #8 "money never buys a tier": **aligns** with `SETTLED_RULES` + `GAMIFICATION_LEGAL_DOCTRINE`;
   implementation depends on the new sale/era contract (Phase 5) → defer, not conflict.
 - Governance/marketplace layers: in the REFUSE column → no conflict arises.
+
+---
+
+## 11. `memberCount()` verification + the dual-provenance composite (the liveness fix, ⓪)
+
+**Question (dangerous to get wrong):** does live V3 `memberCount()` return the CONTINUOUS total
+(10, incl. the 8 historical freeze/root) or ONLY V3-emitted seats (2)?
+
+**Evidence read on disk (not assumed):**
+- `holderIndexSnapshot.ts:57-74` — `memberTotal: 10` is explicitly partitioned into two
+  never-collapsed authorities: `PART_B_FREEZE_ROOT` (seats **#1–8**, count **8**, authority =
+  verified historical freeze + on-chain `V1_MEMBER_ROOT`, "imported once, never re-derived") and
+  `V3_EMITTED` (seats **#9–10**, count **2**, authority = memberNumber emitted by V3 events, "read
+  from raw indexed events, never inferred, never renumbered"). Built from raw events
+  (`inputSaleEventCount: 26`) — independent of any view function.
+- `sale-abi.ts:88-92` — the V3 sale exposes `memberCount()`, **`GENESIS_OFFSET()`**,
+  `nextSeatNumber()`, and `V1_MEMBER_ROOT()` as SEPARATE views. A `GENESIS_OFFSET` is only needed if
+  `memberCount()` counts V3-emitted seats from a base — so `memberCount()` is **V3-ONLY**, and the
+  continuous head = `GENESIS_OFFSET (8) + memberCount (2) = 10`.
+- **Caveat:** only the ABI is vendored (no contract source in-repo). The evidence is decisive but
+  circumstantial; the fix MUST reconcile the live read against the snapshot at build/runtime and
+  **fail closed on surprise** (the `holder-index:reconcile` pattern already does this).
+
+**Hypothesis (NOT a verdict): V3-ONLY.** The above is an INFERENCE — largely from the *name*
+`GENESIS_OFFSET`, and it does not weigh `nextSeatNumber()` (which may be the continuous head directly).
+**Names lie, and only the ABI is vendored (no source).** A name-based guess is not evidence. We do
+NOT flip the surfaces on inference.
+
+> **STANDING RULE — SEMANTICS ARE RECONCILED, NEVER INFERRED FROM ABI NAMES.** When contract source is
+> not in-repo, a view function's meaning is PROVEN by reconciling its live value against an independent
+> truth, then failing closed on any disagreement — never assumed from its identifier.
+
+**The independent truth is the snapshot** (built from raw indexed events, not a view): `8 + 2 = 10`.
+So ⓪ must **empirically reconcile** the live reads before shipping:
+- read `GENESIS_OFFSET()`, `memberCount()`, `nextSeatNumber()` **live**;
+- assert **`GENESIS_OFFSET == 8` AND `memberCount == 2` AND `nextSeatNumber == 11`** (they reconcile
+  with the snapshot's independent partition, freeze block state);
+- **reconcile → semantics PROVEN → ship** the dual-provenance composite;
+- **any disagreement → FAIL CLOSED, do NOT flip the surfaces, report to the founder.**
+
+**The honest figure is a DUAL-PROVENANCE COMPOSITE, never a bare number, never silently summed** —
+the snapshot's own boundary #3 forbids collapsing the two authorities; a bare live "10" would itself
+violate doctrine.
+
+**The composite, and why it's stronger than "one live number":** BOTH parts are live-readable —
+`GENESIS_OFFSET()` / `V1_MEMBER_ROOT()` anchor the 8 (freeze/root authority), `memberCount()` is the
+live V3-emitted count (V3 authority). So "no snapshot for a live-readable figure" applies to BOTH:
+`recognised seats = 8 verified historical (freeze/root · V1_MEMBER_ROOT) + N live V3-emitted`, each
+part under its own provenance. The static snapshot returns to its real job — era attribution +
+own-row verification — and is NEVER the headline.
+
+**Fix ⓪ scope (build after this ledger is approved):** extend the reality spine to also read
+`GENESIS_OFFSET` (and `V1_MEMBER_ROOT` for the anchor); the client composes the dual-provenance total;
+the three surfaces (`/faq`, `/whitepaper`, homepage KPI) render the composite under correct
+provenance; extend the freshness guard so a snapshot-sourced value may not stand in for a figure with
+a live reality-envelope source. api-server change → Claude Code authors, Replit deploys. Verify both
+modes. (No conflict with canon; reinforces truth-first + the dual-authority model `/knowledge` will
+publish.)
+
+**THE DIVERGENCE IS THE FLAGSHIP, NOT A PROBLEM.** Once live, the composite will eventually EXCEED the
+snapshot (member #11 joins → live `8 + 3 = 11` while the verified snapshot still reads `10` as of its
+`builtAt`). That is not a bug — it is the **STALE story**, and the single most differentiating thing we
+can publish. Design ⓪ (and `/knowledge`) so the divergence is SURFACED, never hidden or collapsed:
+**"11 seats live · 10 verified in the snapshot as of {builtAt} · the two authorities are never
+collapsed."** Live head (per-load) and verified snapshot (`builtAt`/`freezeBlock`/`snapshotHash`)
+shown side by side, each with its own provenance — the divergence is the proof that we read live and
+verify honestly, exactly the truth `holderIndexStanding.ts` already models as `STALE`.
+
+---
+
+## 12. AGENT DRIFT — the multi-agent contract (a system defect, not a human one)
+
+Three agents operate on this repo with partial views: **Replit** (build/deploy/runtime gate),
+**Claude Code** (the only code author), **Claude advisor** (review/translation, on request). The
+founder must NOT be the shared memory of three agents — that is the defect this section kills.
+Symptoms actually hit: mismatched file names across agents; an advisor reasoning from `SESSION_STATE`
+prose while the answer sat in code on disk; Replit pushing when it shouldn't; a TIER-0 doc pushed
+without review.
+
+### (a) The Agent Contract — who owns what
+- **Claude Code** = sole writer to `main`. Reads the real repo → 4-line gate → **founder GO** →
+  build + guards → **show the diff** → **founder approves** → commit + push → tick trackers →
+  deploy verdict.
+- **Replit** = deploy/runtime ONLY. Pulls `main`, builds, deploys, migrates, reports. Its GitHub
+  token is read-only; it physically cannot push.
+- **Claude advisor** = second opinion + plain-language, on request. Not a mandatory relay; writes no code.
+
+> **STANDING RULE — NO PUSH WITHOUT FOUNDER APPROVAL, INCLUDING DOCS-ONLY. No exceptions.** The slice
+> protocol is: show diff → founder approves → commit + push. "Docs-only and arguably authorized" is
+> NOT approval. Canon that boots every session especially requires review before it lands.
+> (Origin of this rule: `c69c0ef`, 178 lines of TIER-0 canon, was pushed without a diff shown — the
+> exact agent-drift failure mode we are killing.)
+
+### (b) REPO WINS OVER PROSE — the epistemic rule for every agent
+An agent must **read the file on disk before making a claim about it, and cite the file.** No file
+cited, no claim. Prose (`SESSION_STATE` + direction docs) is a pointer, never the authority; when
+prose and code disagree, **code wins** and the prose is corrected. This is the doc-side twin of the
+`/knowledge` precedence law.
+
+### (c) Canonical file map — the exact paths all three agents keep mis-naming
+| Concern | Exact path |
+|---|---|
+| Route/SEO registry (purity leaf) | `artifacts/studio/src/lib/seo-route-registry.ts` |
+| Surface ↔ audience ↔ layout | `artifacts/studio/src/config/surfaceClassification.ts` |
+| Operator OS map (server-only; NEVER import into a public page) | `artifacts/studio/src/config/protocolOsMap.ts` |
+| Holder Index snapshot (served, aggregate-only) | `artifacts/api-server/src/lib/protocol/holderIndexSnapshot.ts` |
+| Own-row era resolution (dual authority, STALE) | `artifacts/api-server/src/lib/protocol/holderIndexStanding.ts` |
+| Chain decoders + selectors (memberCount, reserves, supply) | `artifacts/api-server/src/lib/protocol/financialDecoders.ts` |
+| Reality envelope builder (the spine) | `artifacts/api-server/src/lib/protocol/realityService.ts` |
+| V3 sale ABI (memberCount / GENESIS_OFFSET / V1_MEMBER_ROOT) | `artifacts/api-server/src/canon/the-syndicate/contracts/abi/sale-abi.ts` |
+| Studio guards (blocking gate) | `artifacts/studio/scripts/guard-*.ts` + `guards/no-raw-color.mjs` |
+| api-server guards | `artifacts/api-server/scripts/*.guard.ts` |
+| Prerender / SSG | `artifacts/studio/scripts/prerender-routes.ts` |
+| Serving rewrites (generated, never hand-edited) | `artifacts/studio/.replit-artifact/artifact.toml` |
+
+---
+
+## 13. THE APPROVE ≠ PAYMENT LAW (engrave now, before the checkout slice exists)
+
+Across previous versions, every checkout build implemented ONLY the USDC `approve`, saw a successful
+receipt, and treated it as "payment confirmed" — the seat was NEVER purchased, yet the user believed
+they were a member. The founder fixed this by hand, repeatedly. Engrave it before Phase-3 checkout:
+
+- **`approve` is NOT payment.** It is a call on the **TOKEN** contract granting an allowance. The
+  purchase is a **SECOND** transaction, on the **SALE** contract.
+- **The UI must NEVER show success, a seat number, or any member state after the `approve` receipt.**
+  Membership is confirmed ONLY by a successful **PURCHASE** receipt.
+- **The seat number is READ FROM THE EMITTED EVENT** — never inferred, never predicted (mirrors the
+  holder-index doctrine: "read from raw indexed events, never inferred, never renumbered").
+- **Approve the EXACT quote amount, never unlimited.**
+
+This is a hard checkout invariant for Phase 3 (#22 live checkout) and pairs with §8's deferred
+structural invariants. It will be encoded as a guard when the checkout surface is built.
+
+---
+
+## 14. The OPEN QUEUE — anti-entropy, one level up
+
+This ledger is anti-entropy for the ORIGIN. The same disease hits our OWN in-flight decisions: every
+gate brings a new question and the old ones evaporate — the founder becomes the shared memory of three
+agents (a system defect, §12). Fix: **`docs/direction/OPEN_QUEUE.md`** is the living queue of open
+decisions. **HARD RULE: at every gate, Claude Code restates the FULL open queue, not just the new ask;
+nothing closes until the founder closes it explicitly.** The queue is **reconstructed from evidence**
+(session history + repo on disk, each item citing a file/where-raised), NEVER from memory — a
+from-memory list is the drift it exists to kill. It carries a merge report naming what a from-memory
+pass MISSED (e.g. the `/docs` decorative live-signature overclaim; the `MASTER_BUILD_SPEC` Phase-1
+doc-drift; two confirms asked-and-never-answered).
