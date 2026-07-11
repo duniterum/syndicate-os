@@ -138,6 +138,17 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
     chassis — journey spine + grouped cards, each card's status **derived from the SEO route registry**
     (Ready/Pending, never hardcoded; `/recognition` `/archive` read honest Pending), real routes only,
     number-free. Header "Docs" repointed to `/docs`; `/learning` stays "Learn" (footer + linked from `/docs`).
+  - **⓪ Liveness fix (member figure) → ✅ SEALED in prod (`bc6102a`, Replit-verified live).** The public
+    member figure is now the **LIVE continuous `memberCount()`** (12), NOT the stale served snapshot (which
+    said 10). Spine reads `GENESIS_OFFSET`+`nextSeatNumber`, reconciles server-side fail-closed (anchor
+    `GENESIS_OFFSET==8` AND `nextSeatNumber==memberCount+1`), emits `financial.members.memberCount` +
+    `financial.members.genesisOffset` (nextSeatNumber invariant-only, never emitted). `MembersProvenance`
+    renders the dual authority (**8 freeze/root + 4 live V3-emitted, never collapsed**) + the STALE
+    divergence one-liner ("snapshot 10 as of 2026-07-03 · live runs ahead"). New BLOCKING `guard-freshness`;
+    `LivingSignature` dropped from `/docs`. **Standing rules added:** "no snapshot for a live-readable
+    figure"; "semantics are reconciled, never inferred from ABI names" (worked example: V3-only would have
+    shipped 8+12=20 — see `ORIGIN_RECLAMATION_LEDGER.md` §11). **12 is 12** — real on-chain purchases, no
+    test-seat category. The holder-index snapshot is now verification-only (and 2 stale — OPEN_QUEUE Q18).
   - **NEXT = 2.5 Knowledge base → 2.6 Risk** — each COMPOSES from the `living/` chassis + harvests per
     `CONTENT_SURFACE_HARVEST_MAP.md`. Canonical order = the **frozen "Remaining Phase-2 slices, IN ORDER"**
     list below; new session work is captured separately under **"Phase 3–6 / later work"**.

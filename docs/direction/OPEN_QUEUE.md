@@ -45,7 +45,6 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 
 | # | Item (one line) | Status | Next move | Evidence |
 |---|---|---|---|---|
-| Q2 | **⓪ liveness fix (CONTINUOUS)** — live `memberCount` headline + dual-authority split + MANDATORY divergence one-liner + freshness guard + Q7 `/docs`; empirically reconciled (live 12/8/13) | ⏳ built, awaiting push GO | founder reviews this diff | ledger §11; this diff |
 | Q3 | **2.5a** — purity-leaf `knowledge-registry.ts` + BLOCKING `guard-knowledge-map.ts` (no page) | 🟡 | Claude Code gate (after Q2) | ledger §5/§8/§11 |
 | Q4 | **2.5b** — `/knowledge` page + `PagePurpose` atom | 🟡 | after Q3 | ledger; 2.5 gate |
 | Q5 | **`/knowledge` route name** (`/knowledge` vs `/knowledge-map`) **+ title** — asked, never answered | 🔴 | founder decides | 2.5 gate ("one confirm before code") |
@@ -53,7 +52,7 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 | Q8 | **Doc drift** — `MASTER_BUILD_SPEC` Phase-1 boxes unticked vs `SESSION_STATE` "PHASE 1 → CLOSED" | 🟡 🔵 | reconcile the stale checkboxes | `MASTER_BUILD_SPEC.md` §Phase-1 vs `SESSION_STATE.md` "Where we are" |
 | Q9 | **SERVER-ONLY HOMES wording** — exact copy (Option A, system level, ZERO counts/dates/addresses); belongs to 2.5b; founder may cut. **Provenance unsure** (no in-session origin). | 🟡 | Claude Code drafts at Q4; founder confirms provenance | founder msg; not found in this session |
 | Q10 | **`protocolOsMap` `knowledge-os` node** → repoint to `/knowledge` once it ships (operator/server-only file) | 🟡 🔵 | after Q4 | `config/protocolOsMap.ts:249` (`id:"knowledge-os"`) |
-| Q11 | **HEADER DEFECT** — `PublicLayout` has NO wallet connect / sign-in; ~10 existing members land with only "take a seat". Not investigated. | 🟡 🔵 | investigate → founder decides scope | `components/layout/PublicLayout.tsx` (no `ConnectButton`/`useAccount`; only a SIWE comment) |
+| Q11 | **HEADER DEFECT** — `PublicLayout` has NO wallet connect / sign-in; the **12** existing members land with only "take a seat". Not investigated. | 🟡 🔵 | investigate → founder decides scope | `components/layout/PublicLayout.tsx` (no `ConnectButton`/`useAccount`; only a SIWE comment) |
 | Q12 | **CHECKOUT — V3 ABI**: purchase fn confirmed `buy(usdcAmount)` (approve→buy, two txns); slippage/min-out + USDC EIP-2612 permit NOT examined; no `permit` on the sale | 🟡 🔵 | Phase-3 investigation | `sale-abi.ts:33` (`buy`); no `permit` in sale ABI; ledger §13 |
 | Q13 | **2.11 flow**: "5-step flow" must become **2 steps**; whether checkout **jumps ahead of 2.6–2.10** is a FOUNDER call | 🔴 | founder decides ordering | `SESSION_STATE` frozen-list 2.11 |
 | Q14 | **Reserved-VM / session durability** — does NOT block checkout (purchase is wallet→contract) | 🔴 | founder/Replit, Phase-3 | `SESSION_STATE` Phase-3 #16 |
@@ -69,6 +68,7 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
   `SESSION_STATE` "Phase 3–6 / later work".
 
 ## Closed
+- **Q2** ⓪ liveness fix — ✅ SEALED in prod (`bc6102a`, Replit-verified live): `memberCount`=12 + `genesisOffset`=8 in the payload, `nextSeatNumber` absent (invariant-only), provenance line + STALE divergence rendered, `guard:freshness` + `protocol-targets` 206/206 green vs the live chain, 0 addresses. The public member figure is now the LIVE continuous `memberCount`; the snapshot is verification-only.
 - **Q1** Ledger append — ✅ closed `206c103` (founder, this session).
 - **Q7** `/docs` decorative LivingSignature — ✅ folded into Q2 (⓪): the signature is dropped from `/docs`; the freshness guard now forbids a decorative live signature.
 - **Q17** Dev-server selection — ✅ founder ruling: start api-server + studio locally to verify the ⓪ reconciliation (read-only chain reads); Replit stays the deploy gate.
