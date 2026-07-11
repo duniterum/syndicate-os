@@ -392,7 +392,18 @@ check(
   `matrixAllows/evaluateAccess referenced outside the access shell allowlist: ${matrixViolations.join(", ")} — parallel gating logic is forbidden`,
 );
 
-const STORAGE_ALLOWED = new Set(["components/ThemeProvider.tsx"]);
+// Storage allowlist — files permitted to touch localStorage/sessionStorage.
+// The invariant is: NO auth/session material in browser storage. Both entries
+// store only a non-sensitive UI preference:
+//   - ThemeProvider: the theme choice.
+//   - SyndicateGuide (Support slice): a single boolean "greeting seen" flag so
+//     the one-time greeting bubble shows at most once per browser. No wallet, no
+//     session, no PII, no identity — the Guide is deterministic and has zero
+//     private data by design.
+const STORAGE_ALLOWED = new Set([
+  "components/ThemeProvider.tsx",
+  "components/guide/SyndicateGuide.tsx",
+]);
 const storageViolations: string[] = [];
 for (const abs of allSrcFiles) {
   // Normalize to POSIX separators so the allowlist matches on Windows too.

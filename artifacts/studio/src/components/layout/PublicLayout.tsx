@@ -17,6 +17,7 @@ import { heroSystem } from "@/config/syndicateFacts";
 import { accessStates } from "@/config/accessState";
 import { useAccessState } from "@/components/access/AccessStateProvider";
 import { AccessStateChip } from "@/components/access/AccessStateChip";
+import { SyndicateGuide } from "@/components/guide/SyndicateGuide";
 
 // Session chip (S2): renders ONLY when the app-wide access state is S4 —
 // i.e. a dev-preview SIWE session wired through the gated wallet module. In
@@ -336,6 +337,9 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </footer>
+
+      {/* Global floating Guide — deterministic help assistant on every public surface. */}
+      <SyndicateGuide />
     </div>
   );
 }
