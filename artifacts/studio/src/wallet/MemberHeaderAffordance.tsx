@@ -44,6 +44,8 @@ import {
   fetchMemberStanding,
   logoutSession,
   shortAddress,
+  signInWithWallet,
+  type Eip1193Provider,
   type MemberStandingReadback,
 } from "./walletSession";
 import { SESSION_CHANGED_EVENT } from "./sessionEvents";
@@ -79,8 +81,9 @@ export default function MemberHeaderAffordance({
 }) {
   const [status, setStatus] = useState<Status>({ kind: "checking" });
   const [copied, setCopied] = useState(false);
+  const [signing, setSigning] = useState(false);
   const { openConnectModal } = useConnectModal();
-  const { address } = useAccount();
+  const { address, connector } = useAccount();
 
   useEffect(() => {
     let active = true;
@@ -96,6 +99,26 @@ export default function MemberHeaderAffordance({
       window.removeEventListener(SESSION_CHANGED_EVENT, read);
     };
   }, []);
+
+  // Re-sign an ALREADY-CONNECTED wallet whose server session has lapsed. Server
+  // sessions are in-memory and are wiped on every restart/deploy, while the
+  // wallet connection persists — so RainbowKit stops offering the connect modal
+  // and a member would otherwise be stranded. This signs SIWE directly against
+  // the connected wallet (any connector, not just injected), re-creating the
+  // session; signInWithWallet announces SESSION_CHANGED_EVENT so the header
+  // resolves back to the full member menu in place.
+  async function reSign() {
+    if (!connector || !address || signing) return;
+    setSigning(true);
+    try {
+      const provider = (await connector.getProvider()) as Eip1193Provider;
+      await signInWithWallet(provider, address);
+    } catch {
+      // Rejected or failed — stay honest, never fabricate a session.
+    } finally {
+      setSigning(false);
+    }
+  }
 
   const mobile = variant === "mobile";
   const triggerBase = mobile
@@ -122,11 +145,30 @@ export default function MemberHeaderAffordance({
         </Button>
       );
     }
+    // Wallet connected but the SERVER session lapsed (RainbowKit therefore hides
+    // the connect modal). Offer a REAL re-sign — never a dead link that reads as
+    // a bug and makes a member leave.
+    if (address && connector) {
+      return (
+        <Button
+          variant="outline"
+          size={mobile ? "default" : "sm"}
+          onClick={() => void reSign()}
+          disabled={signing}
+          title="Your wallet is connected but your session expired — sign to restore it (read-only, proves wallet control only)."
+          className={triggerBase}
+        >
+          <Wallet className={mobile ? "mr-2 h-4 w-4 text-gold" : "mr-1.5 h-4 w-4 text-gold"} aria-hidden="true" />
+          {signing ? "Signing…" : "Sign in"}
+        </Button>
+      );
+    }
+    // Truly no wallet in hand (rare) — the /member panel can connect from there.
     return (
       <Link href="/member" className={mobile ? "w-full" : "inline-flex"}>
         <Button variant="outline" size={mobile ? "default" : "sm"} className={triggerBase}>
           <Wallet className={mobile ? "mr-2 h-4 w-4 text-gold" : "mr-1.5 h-4 w-4 text-gold"} aria-hidden="true" />
-          Member
+          Member sign-in
         </Button>
       </Link>
     );
