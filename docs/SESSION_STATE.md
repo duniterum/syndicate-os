@@ -32,7 +32,8 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > → ✅ WRITTEN: `docs/chronicle/candidates/2026-07-12-the-duplicate-seat.md`** (protocol-institutional
 > register, identity/amount-blind; PROMOTION IS A HUMAN ACT — it waits for the founder and for the
 > Phase-5 `/chronicle` surface; it confers nothing by existing). **The 4-item duplicate-seat build
-> order is COMPLETE.** **C1.4 economic proof → ✅ BUILT (this commit):** `/join` "Two prices, read
+> order is COMPLETE.** **C1.4 economic proof → ✅ SEALED in prod (`f8bdec2`, live-domain verified:
+> both prices live, the market-above-entry relation variant renders, all 5 doctrine lines verbatim):** `/join` "Two prices, read
 > live" card — entry rate vs DEX market price DERIVED live on every render (the truthful relation in
 > BOTH directions — the assumed "market below entry" has already flipped once; nothing hardcoded;
 > fail-closed → no comparison, doctrine lines stand) + the never-cross lines ("The market is free.
