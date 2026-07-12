@@ -8,7 +8,17 @@ Direction specs now live IN this repo: `docs/direction/MASTER_BUILD_SPEC.md` ·
 `docs/direction/GAMIFICATION_LEGAL_DOCTRINE.md` (recognition-only, legal shield).
 Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md`.
 
-> **▶ 🔴🚀 C5 GO-LIVE (founder GO, 2026-07-13) — THE FLIP IS IN THIS COMMIT.** `CHECKOUT_ENABLED = true`:
+> **▶ 🏆 THE FIRST REAL PURCHASE HAPPENED (2026-07-12 23:32 UTC, sealed 2026-07-13).** C5 published by
+> the founder; the $5 test THROUGH the referral link succeeded on the first attempt:
+> tx `0x353bf2c0…c42178` — 5 USDC in → **0.25 USDC paid to the referrer's payoutWallet IN the same tx**
+> (the referral rail works with real money) → net 4.75 split EXACTLY 3.325/0.95/0.475 (70/20/10) →
+> 500 SYN delivered → **SEAT #13** (chain-verified: `memberCount=13`, `memberNumberOf(buyer)=13`,
+> `memberByNumber(13)=buyer`). The living protocol did the rest BY ITSELF: the public headline reads 13
+> everywhere and the honest readback recomputed to **"13 seats / 12 distinct wallets (1 holds two)"** —
+> zero human edits, zero console errors, CSP clean. **The Syndicate OS sells seats in production.**
+> NEXT = the REFERRAL PUBLIC ACTIVATION slice (OPEN_QUEUE ③).
+>
+> **▶ Prior: 🔴🚀 C5 GO-LIVE (founder GO, 2026-07-13) — THE FLIP IS IN THIS COMMIT.** `CHECKOUT_ENABLED = true`:
 > the two-signature approve→buy is PUBLISHED on `/join` (checkout chunk verified PRESENT in the bundle;
 > the boundary card verified GONE). The COMPLETE MUST-CHANGE sweep executed in the same commit: /join
 > lead + badge (new lifecycle **LIVE_ACTION** — "Live — signed from your wallet", gold identity axis;

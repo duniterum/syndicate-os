@@ -105,7 +105,7 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   the default bundle — go-live = founder flips it + C5 in one commit) · C5 wire `/join` (lead/badge/
   boundary-card rewrite WITH the flip) · Q21 auth go-live (Replit).
 - **🔴 FOUNDER OVERRIDE (2026-07-13): ACTIVE REFERRAL IS MVP** — "not active in MVP" is DEAD, no agent
-  re-raises it. Post-C5 queue, in order: ① ~~C5 flip~~ ✅ **COMMITTED (awaiting Replit publish)** → ② the founder's $5 test THROUGH the referral link
+  re-raises it. Post-C5 queue, in order: ① ~~C5 flip~~ ✅ **SEALED IN PROD** → ② ~~the founder's $5 test THROUGH the referral link~~ ✅ **DONE 2026-07-12 23:32 UTC** (tx `0x353bf2c0…c42178`: seat #13 · $0.25 referral paid on-chain · 70/20/10 exact · readback recomputed 13/12 by itself)
   (`?source=0x8338e9ff…1cf620`, ACTIVE 5% LIFETIME — proves checkout + the on-chain introduction payment
   in one tx; buyer wallet must NOT be the payoutWallet/sourceWallet, must not be an unclaimed historical,
   needs $5 USDC + AVAX gas) → ③ **REFERRAL PUBLIC ACTIVATION slice (founder-gated):** `programLifecycle`
