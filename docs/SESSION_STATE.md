@@ -29,6 +29,23 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 
 ## ✅ DECIDED — DO NOT RE-OPEN (settled; do not re-litigate)
 
+- **CANON (founder, 2026-07-12) — two authoritative specs are now IN-REPO (were on the founder's
+  desktop): `docs/direction/CONSTITUTION_AUTORITE.md`** (the 4-level authority hierarchy — N0 immutable
+  bytecode / N1 founder-on-chain / N2 server / N3 presentation; a lower level never contradicts a higher;
+  the 3 admin control forms READ / PROPOSE(build-tx-founder-signs) / WRITE must look different) **and
+  `docs/direction/SPEC_REFERRAL_SYSTEM.md`** (the full referral/source system, all decided). Both TIER-0
+  in the canon index.
+- **REFERRAL STATE (verified on-chain 2026-07-12, matches SPEC §①) + BUILD ORDER.** Sale V3 `0x2A6c…`
+  live (era 1, 12 members); SourceRegistry `0x780013…` deployed (immutable in the Sale). **ZERO sources
+  created** (0 `SourceCreated` events) — nothing testable until the founder CREATES one. V3 pays
+  `payoutWallet` **directly** (`_payAcquisition`); it does NOT use a CommissionRouter. Order (SPEC §⑪):
+  **R1** referral-program conditions doc (hashed → `metadataHash`; BLOCKING — `createSource(LIFETIME)`
+  reverts `MissingMetadata` without it) → **R2** first source (founder signs `createSource(…PAUSED)`, test
+  fail-closed, then `setSourceStatus(ACTIVE)`) → **R3** `&via=` channel (off-chain, no deps) → **R4**
+  `/source` surface (`NOT_ACTIVE`, never "earn now") → **R5** event indexer → **R6** Connector staircase →
+  **R7** the emitter contract (self-service). C1.2b already implements the SPEC §⑧ two-bug-corrected source
+  line (rate=quote, address=`payoutWallet`, consistency fail-closed).
+
 - **TIER-0 LAW (founder, 2026-07-12) — `docs/direction/CANON_VISIBILITY_LAW.md`.** On a chain, "hiding"
   does not exist — only making legible vs tedious; everything is already public. We hide nothing; we refuse
   to FABRICATE what the chain lacks. FORBIDDEN: a directory / search / reverse index (seat→wallet) / forced
@@ -48,14 +65,19 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   the STATE line in the SAME commit; a STATE is NEVER a permission gate or a reason not to build).
   Also fixes the `enabled` (founder decision, literal OK) vs `posture` (chain-derived, literal
   NEVER) collapse. Loaded at every boot (TIER-0 in `00_CANON_INDEX.md`).
-- **POISONED CANON — flagged, neutralize in a later slice (do NOT reuse names).** In
-  `artifacts/api-server/src/canon/the-syndicate/contracts/syndicate-config.ts`: `RANKS_V2`
-  (12 named tiers Citizen $5 → Cornerstone $10,000, with badges + benefits) and `HOME_RANK_LADDER`
-  are **agent-era named-ladder canon that violates the settled naming law** (the seat is BINARY —
-  $5 and $10,000 buy the SAME seat; named tiers assert member categories that do not exist; and
-  "Operator"/"Builder" are a role + recognition axes, never a price card). Dormant (not imported
-  by the app). The checkout reuses ONLY the amount numbers (`PURCHASE_PRESETS_USDC`); the names,
-  badges, tiers, benefits are dead. A later slice neutralizes/relabels these in the canon file.
+- **CORRECTED (founder SPEC_REFERRAL_SYSTEM §⑨, 2026-07-12) — `HOME_RANK_LADDER` is the CAPITAL AXIS,
+  NOT poison.** My earlier "poisoned canon" flag OVER-CALLED it. Per the spec: paliers-by-spend are
+  universal + legal (Sephora/Ulta/Marriott/Uber/AA/Starbucks); `HOME_RANK_LADDER` unlocks NOTHING today
+  (`{Citizen, $5, 500 SYN}` = just 100 SYN/$ = the era-1 rate everyone gets — a label, no bonus). It is
+  the **CAPITAL recognition axis** (one of eleven axes; capital is one, never the throne). What ACTUALLY
+  needs fixing (§⑨): (1) rename the colliding names — `Operator`/`Builder`/`Steward`/`Custodian`/
+  `Cornerstone`/`Scout` (they are roles / axes / on-chain classes); (2) state clearly the capital is an
+  AXIS, **never a MEMBER rank** — the SEAT IS BINARY ($5 and $10,000 buy the SAME seat); (3) the RED LINE
+  a tier must NEVER cross — a better PRICE on SYN (more tokens/$) = a financial multiplier on a resellable
+  asset = FORBIDDEN. The `/join` checkout cards stay AMOUNTS-ONLY (C1.1 ✅). NOTE: the stale
+  `JOURNEY_STEPS {rank, status:"LIVE"}` the spec flags lives ONLY in the dormant vendored
+  `syndicate-config.ts:687` (tsconfig-excluded, NOT served) — no live-app fix needed; label it honestly
+  if that canon is ever reused. `RANKS_V2` named tiers are still not used on the checkout (numbers only).
 
 - **DECIDED (founder, 2026-07-12) — narrative "Chapter" label pulled FORWARD from Phase 5
   (recognition only).** A small pure-function display: `artifacts/studio/src/lib/chapters.ts`
