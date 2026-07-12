@@ -19,8 +19,9 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > `readKnownMember`/`readV1MemberRoot`, `wallet/JoinHistoricalGate.tsx` (own-row, fail-closed BLOCK,
 > lazy-mounted on `/join`; verified against the live chain: all 8 proofs fold to the live root, exactly
 > #7 knownMember=true → silent, 7 armed → BLOCK; recipient-not-buyer note in code for C4 gifting).
-> C2 MUST call `resolveHistoricalGate` again before any buy button enables. NEXT = neutralize
-> v1-proof.ts (origin repo, V2b-only), then the honest 12/11 readback, then a Chronicle candidate.
+> C2 MUST call `resolveHistoricalGate` again before any buy button enables. v1-proof.ts NEUTRALIZED
+> (origin repo `e4697ec`, header-only: V2b-ONLY, forbidden on any V3 path). NEXT = the honest 12/11
+> readback (derived from chain, never a literal), then a Chronicle candidate.
 > Founder decision: SHOW BOTH (12 seats / 11 wallets / one overlap), never fix silently.
 >
 > **▶ Prior (still valid): `docs/handoff/new-session-handoff-2026-07-12-checkout-proven-and-chain-truth.md`** —
