@@ -37,20 +37,42 @@ const PHRASES = [
   "market cap",
   "market capitalization",
   "fully diluted",
+  // Slice C1.0 (checkout money-path) — ban CLAIM-asserting framings of the split.
+  // The money is the COMPANY'S; no member has a claim on the treasury. These
+  // phrases imply a shared/pooled/distributed pot ("your vault", "our common pot").
+  // Buyer-facing copy writes "net" / "sent to the Syndicate" + the wallet + its
+  // proof link — never these. (See docs/direction checkout brief; money-path doctrine.)
+  "your share",
+  "your vault",
+  "the community's funds",
+  "community's funds",
+  "shared funds",
+  "common pot",
 ];
 // Single words: matched on word boundaries (bare "return"/"reward" are allowed).
 // All terms below are negation-aware (isNegated exempts honest disclaimers like
 // "not an investment", "not equity", "not donations"). NOTE (repo wins, flagged):
 // "contribution" and "package" are DELIBERATELY NOT banned — both appear in live
-// approved/internal copy ("routed contribution", admin "package" copy + comments);
-// banning them here would fail the guard on unrelated files. Revisit "package"
-// when the admin/entry-tier surfaces are built.
+// approved/internal copy ("routed contribution" ×3, "protocolContribution" the
+// contract field name, admin "package" copy; 19 legit hits); banning them here
+// would fail the guard on unrelated files. New checkout copy writes "net" (via the
+// edge decoder that renames protocolContribution → netProtocolRaw), never
+// "contribution", so the buyer never reads it. A future slice may ban
+// "contribution" WITH an exception for the `protocolContribution` field name once
+// the existing uses are migrated. "shared" is likewise NOT banned (22 legit
+// structural uses — "shared chassis", "shared source"); the claim-sense is covered
+// by the phrases above ("your share", "shared funds"). Revisit "package" when the
+// admin/entry-tier surfaces are built.
 const WORDS = [
   "jackpot", "wager", "betting", "payout", "profit", "yield", "airdrop", "farming",
   // Slice 2.1 additions (safe set — absent from src, or only in negated disclaimers):
   "invest", "invests", "investing", "investment", "investments", "investor", "investors",
   "donation", "donations", "dividend", "dividends", "equity",
   "apy", "apr", "roi", "pump", "100x", "fdv",
+  // Slice C1.0 (checkout money-path) — claim-asserting split framings. Safe: 0 src
+  // hits for "distributed"; "pooled" appears once as a negated disclaimer
+  // (Whitepaper "not a pooled fund"), which isNegated exempts.
+  "distributed", "pooled",
   // NOT added (repo wins, flagged): "moon" (the lucide <Moon/> theme icon) and
   // "raised" ("Raised class" = a referral tier name) are legitimate existing copy.
 ];

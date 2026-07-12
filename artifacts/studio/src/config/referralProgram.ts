@@ -301,7 +301,7 @@ export interface ReferralSetting {
 export const referralSettingsSample: ReferralSetting[] = [
   { key: "commissionPerJoin", label: "Commission per eligible join", value: "$5.00" },
   { key: "referrerInstant", label: "Paid to referrer instantly", value: "$0.25" },
-  { key: "protocolRouted", label: "Routed through protocol", value: "$4.75" },
+  { key: "protocolRouted", label: "Sent to the Syndicate", value: "$4.75" },
   { key: "split", label: "Protocol split (vault / liquidity / ops)", value: "70 / 20 / 10" },
   { key: "capPerSource", label: "Gross cap per source", value: "No cap" },
 ];
