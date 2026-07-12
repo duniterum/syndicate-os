@@ -56,7 +56,12 @@ import {
   SELECTOR_RECEIPT_COUNT,
   decodeUint256Decimal,
 } from "./saleDecoders";
-import { SELECTOR_SOURCE_REGISTRY, decodeAddressWord } from "./sourceDecoders";
+import {
+  SELECTOR_SOURCE_REGISTRY,
+  SELECTOR_MEMBER_NUMBER_OF,
+  decodeAddressWord,
+} from "./sourceDecoders";
+import { HISTORICAL_FREEZE_WALLETS } from "./historicalFreezeWallets";
 import { REFERRAL_ATTRIBUTION_SNAPSHOT } from "./referralAttributionSnapshot";
 import {
   SELECTOR_TOTAL_USDC_RAISED,
@@ -1448,6 +1453,91 @@ async function buildFinancialGroup(
         asOf,
       }),
     );
+
+    // 5b) The honest distinct-wallet readback — memberCount() counts SEATS,
+    //     not people. One wallet already holds two seats (historical #7 bought
+    //     on V3 before the claim gate existed → also seat #11, irreversible).
+    //     Founder decision: SHOW BOTH, derived live, never a typed literal.
+    //
+    //     Derivation (exactly 8 reads, constant forever): for each historical
+    //     freeze wallet, memberNumberOf(wallet) on the live engine. A value
+    //     ABOVE GENESIS_OFFSET = that wallet bought a V3 seat instead of
+    //     claiming → one overlap. distinctWallets = memberCount − overlap.
+    //     Range-checked (0 | 1..GENESIS_OFFSET | GENESIS_OFFSET+1..memberCount)
+    //     and gated on the §5 reconciliation; ANY failed or out-of-range read
+    //     fails BOTH figures closed. Only derived COUNTS are emitted — no
+    //     wallet ever enters the envelope (the freeze set is server-only).
+    {
+      let overlap = 0n;
+      let derivationOk = reconciled;
+      if (probe.chainIdOk && hasCode && reconciled) {
+        const mc = BigInt(memberRaw!);
+        const go = BigInt(offsetRaw!);
+        for (const w of HISTORICAL_FREEZE_WALLETS) {
+          const data = encodeAddressArg(SELECTOR_MEMBER_NUMBER_OF, w.wallet);
+          if (data === null) {
+            derivationOk = false;
+            break;
+          }
+          const { raw: numRaw } = await readUint(engine.address, data);
+          if (numRaw === null) {
+            derivationOk = false;
+            break;
+          }
+          const n = BigInt(numRaw);
+          const inRange = n === 0n || (n >= 1n && n <= go) || (n > go && n <= mc);
+          if (!inRange) {
+            derivationOk = false;
+            break;
+          }
+          if (n > go) overlap += 1n;
+        }
+      } else {
+        derivationOk = false;
+      }
+      const distinctRaw = derivationOk
+        ? (BigInt(memberRaw!) - overlap).toString()
+        : null;
+      const overlapRaw = derivationOk ? overlap.toString() : null;
+      const derivationFailNote = derivationOk
+        ? ""
+        : " A live memberNumberOf read failed or fell out of range (or the member tally itself did not reconcile); both readback figures fail closed rather than surface an unproven distinct-wallet count.";
+
+      items.push(
+        buildFinancialNumeric({
+          probe,
+          hasCode,
+          rawValue: distinctRaw,
+          decodeThrew: !derivationOk,
+          id: "financial.members.distinctWallets",
+          label: "Members — distinct wallets (memberCount − seat overlap)",
+          contractRole: "sale",
+          note:
+            "DERIVED live, never typed: memberCount() counts seats; this is the count of distinct wallets holding them. Overlap = historical freeze wallets whose live memberNumberOf() exceeds GENESIS_OFFSET (bought a V3 seat before claiming — a pre-gate duplicate). A count only; no wallet is emitted (PII boundary holds)." +
+            derivationFailNote,
+          sourceRef: `contract-registry.ts:${engine.key} (eth_call memberNumberOf × historical freeze set, derived count)`,
+          chainId,
+          asOf,
+        }),
+      );
+      items.push(
+        buildFinancialNumeric({
+          probe,
+          hasCode,
+          rawValue: overlapRaw,
+          decodeThrew: !derivationOk,
+          id: "financial.members.seatOverlap",
+          label: "Members — wallets holding two seats (pre-gate duplicates)",
+          contractRole: "sale",
+          note:
+            "DERIVED live: how many historical freeze wallets bought a V3 seat before claiming their historical number — each holds TWO seat numbers, irreversibly (the C1.3 gate now blocks new cases). Shown, never hidden: seats issued minus this overlap = distinct wallets. A count only; no wallet is emitted." +
+            derivationFailNote,
+          sourceRef: `contract-registry.ts:${engine.key} (eth_call memberNumberOf × historical freeze set, derived count)`,
+          chainId,
+          asOf,
+        }),
+      );
+    }
   }
 
   // 6) Referral registry liveness — code presence + engine linkage vs canon.

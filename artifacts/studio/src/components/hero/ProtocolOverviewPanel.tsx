@@ -133,6 +133,8 @@ export function ProtocolOverviewPanel() {
         snapshotMemberTotal={reality.snapshotMemberTotal}
         snapshotAsOf={reality.snapshotAsOf}
         membersDiverged={reality.membersDiverged}
+        distinctWallets={reality.distinctWallets}
+        seatOverlap={reality.seatOverlap}
       />
 
       <div className="mt-2.5 grid grid-cols-2 gap-2.5">

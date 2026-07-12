@@ -67,8 +67,11 @@ is not."
      on the RECIPIENT. Note it in the code now.
 2. **NEUTRALIZE `v1-proof.ts` as V2b-only** — wrong root, wrong leaf shape, wrong contract. Forbidden on
    any V3 path. Say so in the file; guard it if possible.
-3. **THE HONEST READBACK** — "12 seats / 11 distinct wallets / one overlap", DERIVED from the chain
-   (`memberCount` + a distinct-wallet count), with a verify link. NEVER a literal.
+3. ~~**THE HONEST READBACK** — "12 seats / 11 distinct wallets / one overlap", DERIVED from the chain
+   (`memberCount` + a distinct-wallet count), with a verify link. NEVER a literal.~~ ✅ **BUILT** —
+   spine §5b (`distinctWallets` + `seatOverlap`, 8 fixed `memberNumberOf` reads, counts only,
+   fail-closed) + `MembersProvenance` readback line (home hero / whitepaper / FAQ), live-chain
+   verified 12/11/1. See SESSION_STATE.
 4. **A CHRONICLE CANDIDATE** — "how we built in public, and what it cost." ⚠️ Promotion is a HUMAN ACT.
    Prepare the candidate; the founder promotes it.
 

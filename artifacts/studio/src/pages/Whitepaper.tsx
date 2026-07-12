@@ -107,6 +107,8 @@ export default function Whitepaper() {
                 snapshotMemberTotal={r.snapshotMemberTotal}
                 snapshotAsOf={r.snapshotAsOf}
                 membersDiverged={r.membersDiverged}
+                distinctWallets={r.distinctWallets}
+                seatOverlap={r.seatOverlap}
               />
             </ProseSection>
 

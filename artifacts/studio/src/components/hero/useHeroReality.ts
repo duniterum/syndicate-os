@@ -67,6 +67,15 @@ export interface HeroReality {
   snapshotAsOf: string | null;
   /** True when the live engine has advanced past the verified snapshot (STALE). */
   membersDiverged: boolean;
+  /**
+   * The honest readback (12/11 doctrine): memberCount() counts SEATS, not
+   * people. distinctWallets = memberCount − seatOverlap, DERIVED server-side
+   * from live memberNumberOf() reads over the historical freeze set (counts
+   * only — no wallet is ever served). Fail-closed to null.
+   */
+  distinctWallets: number | null;
+  /** Wallets holding TWO seats (bought on V3 before claiming — pre-gate duplicates). */
+  seatOverlap: number | null;
   /** Aggregate cumulative on-chain inflow (V1+V2A+V2+V3), USDC display. */
   aggregateInflowUsdc: string | null;
   /** Raw 6-dec base units of the aggregate (for count-up animation). */
@@ -141,6 +150,8 @@ export function useHeroReality(): HeroReality {
   // the dual-authority attestation + divergence, never as the headline.
   const liveMemberCount = findFinancialCount(financial, "financial.members.memberCount");
   const genesisOffset = findFinancialCount(financial, "financial.members.genesisOffset");
+  const distinctWallets = findFinancialCount(financial, "financial.members.distinctWallets");
+  const seatOverlap = findFinancialCount(financial, "financial.members.seatOverlap");
   const membersTotalNumber = liveMemberCount;
   const v3Emitted =
     liveMemberCount !== null && genesisOffset !== null ? liveMemberCount - genesisOffset : null;
@@ -210,6 +221,8 @@ export function useHeroReality(): HeroReality {
     snapshotMemberTotal,
     snapshotAsOf,
     membersDiverged,
+    distinctWallets,
+    seatOverlap,
     aggregateInflowUsdc: formatBaseUnits(aggregateRaw, 6, 2),
     aggregateInflowRaw: aggregateRaw,
     vaultUsdc: formatBaseUnits(findFinancial(financial, "financial.vault.usdcBalance"), 6, 2),

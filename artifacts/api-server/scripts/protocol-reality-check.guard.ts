@@ -43,7 +43,11 @@ import {
   SELECTOR_TOTAL_GROSS_USDC,
   SELECTOR_RECEIPT_COUNT,
 } from "../src/lib/protocol/saleDecoders";
-import { SELECTOR_SOURCE_REGISTRY } from "../src/lib/protocol/sourceDecoders";
+import {
+  SELECTOR_SOURCE_REGISTRY,
+  SELECTOR_MEMBER_NUMBER_OF,
+} from "../src/lib/protocol/sourceDecoders";
+import { HISTORICAL_FREEZE_WALLETS } from "../src/lib/protocol/historicalFreezeWallets";
 import {
   SELECTOR_TOTAL_USDC_RAISED,
   SELECTOR_BALANCE_OF,
@@ -166,6 +170,18 @@ const MEMBER_COUNT_FIX = 27n;
 // equal memberCount + 1 — the exact anchor realityService reconciles against
 // before it surfaces either figure (else both fail closed).
 const GENESIS_OFFSET_FIX = 8n;
+// 5b distinct-wallet readback fixtures: one historical wallet CLAIMED its own
+// number (#2 → 2, within 1..GENESIS_OFFSET, NOT an overlap), one bought a V3
+// seat pre-gate (#7 → 11, ABOVE GENESIS_OFFSET → the overlap), the other six
+// unclaimed (0). Expected: overlap = 1, distinct = MEMBER_COUNT_FIX − 1.
+const MEMBER_NUMBER_OF_FIX = new Map<string, bigint>(
+  HISTORICAL_FREEZE_WALLETS.map((w) => [
+    encodeAddressArg(SELECTOR_MEMBER_NUMBER_OF, w.wallet) as string,
+    w.memberNumber === 7 ? 11n : w.memberNumber === 2 ? 2n : 0n,
+  ]),
+);
+const SEAT_OVERLAP_FIX = 1n;
+const DISTINCT_WALLETS_FIX = MEMBER_COUNT_FIX - SEAT_OVERLAP_FIX;
 /** Uniswap-V2 getReserves(): exactly 3 words (uint112, uint112, uint32 ts). */
 const encReserves = (r0: bigint, r1: bigint): string =>
   "0x" + word(r0.toString(16)) + word(r1.toString(16)) + word("64");
@@ -234,6 +250,8 @@ function goodCall(to: string, selector: string, data = ""): string {
   if (selector === SELECTOR_GENESIS_OFFSET) return encUint256(GENESIS_OFFSET_FIX);
   if (selector === SELECTOR_NEXT_SEAT_NUMBER)
     return encUint256(MEMBER_COUNT_FIX + 1n);
+  if (selector === SELECTOR_MEMBER_NUMBER_OF)
+    return encUint256(MEMBER_NUMBER_OF_FIX.get(data) ?? 0n);
   return "0x";
 }
 
@@ -327,10 +345,10 @@ async function main(): Promise<void> {
     check("happy: source zeroSourceJoin true (SERVER_SIDE_CANON, READ_ONLY_PROOF)", byId(e, "source.zeroSourceJoin")?.value === true && byId(e, "source.zeroSourceJoin")?.sourceType === "SERVER_SIDE_CANON" && byId(e, "source.zeroSourceJoin")?.lifecycle === "READ_ONLY_PROOF");
     // Financial group (Slice N1 + Reconciliation): 13 items, values LIVE from
     // the transport except the attribution count (static hash-pinned snapshot).
-    check("fin: financial group has exactly 22 items", e.groups.financial.length === 22, String(e.groups.financial.length));
+    check("fin: financial group has exactly 24 items", e.groups.financial.length === 24, String(e.groups.financial.length));
     const finIds = e.groups.financial.map((i) => i.id).sort().join(",");
     check(
-      "fin: exact id set (14 base [incl. genesisOffset] + SYN totalSupply + 7 allocation balances = 22)",
+      "fin: exact id set (16 base [incl. genesisOffset + distinctWallets + seatOverlap] + SYN totalSupply + 7 allocation balances = 24)",
       finIds ===
         [
           "financial.burn.synBalance",
@@ -348,8 +366,10 @@ async function main(): Promise<void> {
           "financial.inflow.aggregate",
           "financial.lp.reserveSyn",
           "financial.lp.reserveUsdc",
+          "financial.members.distinctWallets",
           "financial.members.genesisOffset",
           "financial.members.memberCount",
+          "financial.members.seatOverlap",
           "financial.ops.usdcBalance",
           "financial.referral.attributionActivity",
           "financial.referral.registryLive",
@@ -376,6 +396,12 @@ async function main(): Promise<void> {
     check("fin: LP reserves oriented via token0 (SYN=reserve0, USDC=reserve1, lp-pair role)", byId(e, "financial.lp.reserveSyn")?.value === LP_RESERVE0.toString() && byId(e, "financial.lp.reserveUsdc")?.value === LP_RESERVE1.toString() && byId(e, "financial.lp.reserveSyn")?.contractRole === "lp-pair");
     check("fin: memberCount EXACT count string (sale role, count only)", byId(e, "financial.members.memberCount")?.value === MEMBER_COUNT_FIX.toString() && byId(e, "financial.members.memberCount")?.contractRole === "sale");
     check("fin: genesisOffset EXACT count string (sale role, reconciled freeze base = FREEZE_ROOT_COUNT)", byId(e, "financial.members.genesisOffset")?.value === GENESIS_OFFSET_FIX.toString() && byId(e, "financial.members.genesisOffset")?.contractRole === "sale");
+    // 5b — the honest distinct-wallet readback (12/11 doctrine): DERIVED from
+    // memberNumberOf() over the historical freeze set, never a typed literal.
+    // Fixture: #7 → 11 (overlap), #2 → 2 (claimed, NOT an overlap), rest 0.
+    check("fin: distinctWallets DERIVED = memberCount − overlap (sale role, count only)", byId(e, "financial.members.distinctWallets")?.value === DISTINCT_WALLETS_FIX.toString() && byId(e, "financial.members.distinctWallets")?.contractRole === "sale");
+    check("fin: seatOverlap DERIVED = 1 (a claimed number ≤ GENESIS_OFFSET is NOT an overlap)", byId(e, "financial.members.seatOverlap")?.value === SEAT_OVERLAP_FIX.toString() && byId(e, "financial.members.seatOverlap")?.contractRole === "sale");
+    check("fin: readback notes say DERIVED + no wallet emitted", ((byId(e, "financial.members.distinctWallets")?.note ?? "").includes("DERIVED") && (byId(e, "financial.members.seatOverlap")?.note ?? "").includes("DERIVED")) && !FULL_ADDRESS_RE.test(byId(e, "financial.members.distinctWallets")?.note ?? "") && !FULL_ADDRESS_RE.test(byId(e, "financial.members.seatOverlap")?.note ?? ""));
     // Tokenomics live reads (Slice 2.2): SYN totalSupply + 7 allocation balances.
     const supply = byId(e, "financial.token.synTotalSupply");
     check("fin: SYN totalSupply EXACT decimal string ABOVE MAX_SAFE_INTEGER (token role, LIVE_CHAIN_RPC, MEDIUM, READ_ONLY_PROOF)", supply?.value === SYN_TOTAL_SUPPLY_FIX.toString() && supply?.valueType === "string" && supply?.contractRole === "token" && supply?.sourceType === "LIVE_CHAIN_RPC" && supply?.confidence === "MEDIUM" && supply?.lifecycle === "READ_ONLY_PROOF");
@@ -523,6 +549,7 @@ async function main(): Promise<void> {
     check("sale-no-code: all 5 V3 items null + PAUSED_BY_PRECAUTION + failureReason", v3.length === 5 && v3.every((i) => i.value === null && i.lifecycle === "PAUSED_BY_PRECAUTION" && i.failureReason !== null));
     check("sale-no-code: V1 paused still reads (false)", byId(e, "sale.MEMBERSHIP_SALE.paused")?.value === false);
     check("sale-no-code: financial V3 inflow + memberCount fail closed; aggregate fails closed too", byId(e, "financial.inflow.MEMBERSHIP_SALE_V3")?.value === null && byId(e, "financial.members.memberCount")?.value === null && byId(e, "financial.inflow.aggregate")?.value === null);
+    check("sale-no-code: distinctWallets + seatOverlap fail closed with the tally", byId(e, "financial.members.distinctWallets")?.value === null && byId(e, "financial.members.seatOverlap")?.value === null);
     check("sale-no-code: financial siblings on OTHER contracts still read", byId(e, "financial.inflow.MEMBERSHIP_SALE_V2A")?.value === V2A_INFLOW.toString() && byId(e, "financial.burn.synBalance")?.value === BURNED_SYN.toString());
   }
 
@@ -544,6 +571,26 @@ async function main(): Promise<void> {
     check("fin-component-fail: sibling inflows still exact", byId(e, "financial.inflow.MEMBERSHIP_SALE_V2")?.value === V2B_INFLOW.toString() && byId(e, "financial.inflow.MEMBERSHIP_SALE_V3")?.value === V3_TOTAL_GROSS_USDC.toString());
     check("fin-component-fail: vault/burn/lp/members unaffected", byId(e, "financial.vault.usdcBalance")?.value === VAULT_USDC_BAL.toString() && byId(e, "financial.burn.synBalance")?.value === BURNED_SYN.toString() && byId(e, "financial.lp.reserveSyn")?.value === LP_RESERVE0.toString() && byId(e, "financial.members.memberCount")?.value === MEMBER_COUNT_FIX.toString());
     check("fin-component-fail: NO address leak + discipline passes", noAddressLeak(e) && disciplinePasses(e));
+  }
+
+  // 7i) 5b READBACK COMPONENT FAILURE: ONE memberNumberOf read reverts → BOTH
+  //     derived readback figures fail closed (never a partial distinct count),
+  //     while the reconciled memberCount itself survives.
+  {
+    const failData = encodeAddressArg(
+      SELECTOR_MEMBER_NUMBER_OF,
+      HISTORICAL_FREEZE_WALLETS[4]!.wallet,
+    );
+    const { transport } = makeMock({
+      call: (to, s, d) =>
+        s === SELECTOR_MEMBER_NUMBER_OF && d === failData ? "__throw__" : goodCall(to, s, d),
+    });
+    const e = await buildProtocolReality(baseOpts(transport));
+    const dw = byId(e, "financial.members.distinctWallets");
+    const so = byId(e, "financial.members.seatOverlap");
+    check("readback-component-fail: distinctWallets + seatOverlap BOTH null + failureReason (never a partial derivation)", dw?.value === null && so?.value === null && dw?.failureReason !== null && so?.failureReason !== null);
+    check("readback-component-fail: reconciled memberCount survives", byId(e, "financial.members.memberCount")?.value === MEMBER_COUNT_FIX.toString());
+    check("readback-component-fail: NO address leak + discipline passes", noAddressLeak(e) && disciplinePasses(e));
   }
 
   // 7h) LP ORIENTATION FLIP: token0 = USDC → reserves swap deterministically.

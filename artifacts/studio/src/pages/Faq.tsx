@@ -98,6 +98,8 @@ export default function Faq() {
             snapshotMemberTotal={r.snapshotMemberTotal}
             snapshotAsOf={r.snapshotAsOf}
             membersDiverged={r.membersDiverged}
+            distinctWallets={r.distinctWallets}
+            seatOverlap={r.seatOverlap}
           />
           <p className="mt-4 type-body text-muted-foreground">
             The full live picture — supply, distribution, the two prices, burn, and treasury routing —
