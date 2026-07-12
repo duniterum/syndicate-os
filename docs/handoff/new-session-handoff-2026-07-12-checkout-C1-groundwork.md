@@ -118,13 +118,38 @@ money is the COMPANY'S; **no member has a claim on the Vault.** "Sent to The Syn
   event) + honest revert states (Q11 list) + computed `minSynOut` (Q5). Single-column Apple/Coinbase
   form (detail unfolds), tokens-only, **light AND dark verified**, motion tokens. Amounts reviewed by
   the founder ON THE SCREEN once it renders.
-- **C1.2 — Money path + proof.** 70/20/10 client-computed from `protocolContribution` + Vault/Liquidity/
-  Operations addresses + proof links; source-payment line via a **client-side `sourceConfig(sourceId)`
-  chain read** (line absent with no source; 0% shown honestly). Do NOT show the buyer's own address
-  (note the gifting recipient exception in code). **NEEDS a decision first:** how contract addresses +
-  ABIs reach the client (a small client contract-registry + wagmi `useReadContract`, vs a server
-  proof-links extension). Gate that approach before building.
+- ~~**C1.2a — Money path + proof (default case).**~~ ✅ **DONE** (`a19182b`, live). Net "Sent to the
+  Syndicate" + 70/20/10 client-computed from `netProtocolRaw` (BigInt, ops=remainder) → Vault/Liquidity/
+  Operations rows, each with amount + truncated address + explorer proof link. Addresses SERVER-SOURCED
+  (verifyLinks infra emission; truncated address derived from the `/address/0x…` URL — client holds no
+  address). All-or-nothing on proofs. Buyer's own address never shown. `liquidityWallet` READ from the
+  deployed `LIQUIDITY()` immutable and reconciled == canon (all 3 MATCH via `sale-routing:reconcile` — a
+  re-runnable script; offline `protocol-targets` guard pins served==canon). openapi enum + orval regen.
+- **C1.2b — the source-payment line (NEXT; corrected design — the founder caught two bugs).** Introduce the
+  FIRST client chain-read layer: `lib/chainReads.ts` — a viem `publicClient` (Avalanche 43114, **public RPC**
+  `api.avax.network` + publicnode fallback; `VITE_AVALANCHE_RPC_URL`/`_FALLBACK` validated overrides) +
+  `readSourceConfig(sourceId)`. **Put the CLIENT/SERVER BOUNDARY LAW at the top of the file in plain words**
+  (server serves the protocol — cached aggregate reads for everyone; client reads WHAT IS YOURS — live,
+  personal, per connected wallet; public RPC is enough because client volume is tiny). The SourceRegistry
+  address + explorer base are DERIVED from the existing `verifyLinks` `sourceRegistry` entry (no hardcoded
+  client address). The source line renders ONLY when a valid `?source=` is applied. **THE TWO CORRECTIONS
+  (verified against MembershipSaleV3.sol):**
+    · **RATE + AMOUNT come from the QUOTE** (`acquisitionCost/gross` = `sourcePaymentRaw/gross`), the
+      contract's own EFFECTIVE computation. NEVER `sourceConfig.commissionBps` — `_previewCommissionBps`
+      (:569-595) returns 0 in 6 cases where the configured bps is nonzero (referrer no longer holds SYN,
+      repeat + !appliesToRepeatPurchases, gross/per-buyer cap exceeded, status≠ACTIVE, payoutWallet==recipient).
+      Showing the configured rate when the chain applies 0% is a lie before signature.
+    · **ADDRESS comes from `sourceConfig(sourceId).payoutWallet`** (client read) — NOT `sourceWallet`.
+      `_payAcquisition` pushes to `payoutWallet` (:279, :528-536); `sourceWallet` is the identity;
+      `updateSourceTerms` can't even change `payoutWallet` (deliberate separation).
+  **CONSISTENCY ASSERTION, fail-closed:** quote `sourcePaymentRaw` > 0 BUT `sourceConfig` says inactive/unknown
+  → CONTRADICTION → NO line. `sourcePaymentRaw` == 0 → NO source line, 100% to the split (say it plainly).
+  `sourceConfig` read fails → NO amount without proof. The QUOTE WINS on the money; show nothing rather than
+  something wrong. Line shape: "Paid to your referrer −$X · Y% · `payoutWallet ↗`", above "Sent to the
+  Syndicate". Server discipline UNCHANGED (2 booleans; source terms never leave the server). This layer is
+  reused by C1.3 (`knownMember`/`V1_MEMBER_ROOT`), Member Home SYN `balanceOf`, and C2 `allowance`.
 - **C1.3 — The historical gate (safety-critical).** The 🔴 above. In C1, before any buy button exists.
+  Reuses the C1.2b `chainReads` layer.
 - **C1.4 — Economic proof + polish.** The "you overpaid vs the DEX → mechanically not an investment"
   proof (era rate $0.01 vs market kept below it), the 3 never-cross lines ("The market is free. It may
   decide otherwise." · liquidity is a courtesy · tokens are sent not sold), copy. 2-mode VERIFIED.
