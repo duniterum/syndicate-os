@@ -73,8 +73,11 @@ is not."
    fail-closed) + `MembersProvenance` readback line (home hero / whitepaper / FAQ), live-chain
    verified 12/11/1. **SEALED in prod** (`8b486da`, Replit-verified + live-domain checked). See
    SESSION_STATE.
-4. **A CHRONICLE CANDIDATE** — "how we built in public, and what it cost." ⚠️ Promotion is a HUMAN ACT.
-   Prepare the candidate; the founder promotes it.
+4. ~~**A CHRONICLE CANDIDATE** — "how we built in public, and what it cost." ⚠️ Promotion is a HUMAN ACT.
+   Prepare the candidate; the founder promotes it.~~ ✅ **WRITTEN** —
+   `docs/chronicle/candidates/2026-07-12-the-duplicate-seat.md` (protocol-institutional,
+   identity/amount-blind, live-derived figures only). Awaiting founder promotion + the Phase-5
+   `/chronicle` surface. **ALL 4 ITEMS OF THIS BUILD ORDER ARE DONE.**
 
 ## Status when this handoff was written
 92% context. Verified all of the above on-chain (this session). Did NOT start C1.3 — a safety-critical

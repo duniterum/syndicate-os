@@ -28,8 +28,12 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > `lib/protocol/historicalFreezeWallets.ts`; counts only, no wallet emitted; fail-closed;
 > live-chain verified 12/11/1); `MembersProvenance` states "N seats issued · M distinct wallets —
 > one wallet holds two seats" + verify link on home hero, `/whitepaper`, `/faq` (renders only when
-> overlap > 0 and both figures live). Reality guard 138/138, targets 208/208. NEXT = a Chronicle
-> candidate ("how we built in public, and what it cost" — promotion is a HUMAN act).
+> overlap > 0 and both figures live). Reality guard 138/138, targets 208/208. **Chronicle candidate
+> → ✅ WRITTEN: `docs/chronicle/candidates/2026-07-12-the-duplicate-seat.md`** (protocol-institutional
+> register, identity/amount-blind; PROMOTION IS A HUMAN ACT — it waits for the founder and for the
+> Phase-5 `/chronicle` surface; it confers nothing by existing). **The 4-item duplicate-seat build
+> order is COMPLETE.** Next work = per OPEN_QUEUE group A (C2 approve→buy is go-live gated; C1.4
+> economic proof) — propose with the gate at next boot.
 > Founder decision: SHOW BOTH (12 seats / 11 wallets / one overlap), never fix silently.
 >
 > **▶ Prior (still valid): `docs/handoff/new-session-handoff-2026-07-12-checkout-proven-and-chain-truth.md`** —
