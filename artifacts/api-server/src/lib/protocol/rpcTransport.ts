@@ -64,6 +64,28 @@ export function resolveEndpoints(): string[] {
   return primary === fallback ? [primary] : [primary, fallback];
 }
 
+// ── wss endpoint (PENDING — the event indexer's transport; no consumer yet) ────
+// Validated wss-only reader for AVALANCHE_RPC_WSS_URL, kept beside resolveEndpoints
+// so the whole RPC env surface lives in one place. A QuickNode endpoint URL embeds
+// an auth token, so this is a SECRET supplied via the host's secrets UI — never a
+// commit, never a default. Returns null when unset/invalid; the future event-backbone
+// slice (indexer → activity feed) is its sole intended consumer.
+function readEnvWss(v: unknown): string | null {
+  if (typeof v !== "string") return null;
+  const s = v.trim();
+  if (!s) return null;
+  try {
+    return new URL(s).protocol === "wss:" ? s : null;
+  } catch {
+    return null;
+  }
+}
+
+/** The WSS RPC endpoint for the (PENDING) event indexer, or null if not provisioned. */
+export function resolveWssEndpoint(): string | null {
+  return readEnvWss(process.env["AVALANCHE_RPC_WSS_URL"]);
+}
+
 // ── Real fetch-based JSON-RPC transport (timeout + endpoint fallback) ─────────
 export function makeFetchTransport(urls: string[], timeoutMs = DEFAULT_TIMEOUT_MS): RpcTransport {
   let id = 0;
