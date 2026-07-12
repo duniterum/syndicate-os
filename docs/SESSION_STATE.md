@@ -9,7 +9,9 @@ Direction specs now live IN this repo: `docs/direction/MASTER_BUILD_SPEC.md` ·
 Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md`.
 
 > **▶ 🔴 AUDIT SESSION (2026-07-13) — full pre-flip audit DONE; verdict was "NOT BEFORE …"; the
-> founder triaged it:** **GROUP A fixed (this commit):** real wallet-chain check (`useAccount().chainId`)
+> founder triaged it:** **GROUP A → ✅ SEALED in prod (`ed9af22`, Replit all-gates + live-verified:
+> zero CSP violations on home//join//faq, quote intact under CSP, permanent disclaimer renders, new
+> FAQ in the served JSON-LD, all 5 API headers measured on the live domain):** real wallet-chain check (`useAccount().chainId`)
 > + ChainMismatch copy · sourceId passed to `buy()` ONLY when the fresh quote says `sourceValid===true`
 > (quote/purchase divergence closed) · 4 source reverts translated (SourceAlreadyLinked/SourceNotEligible/
 > SelfReferral/ReferrerNotSeated) · permanent "not an investment · total loss possible" line on the /join
