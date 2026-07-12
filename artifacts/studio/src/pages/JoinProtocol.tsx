@@ -61,6 +61,43 @@ const JoinCheckout = CHECKOUT_ENABLED
   ? lazy(() => import("@/wallet/JoinCheckout"))
   : null;
 
+// The member-aware seat line (post-C5 polish): a SEATED wallet sees "You hold
+// seat #N — a further buy adds SYN, never a second seat" instead of the
+// generic next-seat preview (Q1: the seat is binary). Wallet-aware → lives in
+// the wallet module, lazy (rule 15); the Suspense fallback is the generic
+// line, which is honest for everyone.
+const JoinSeatLine = lazy(() => import("@/wallet/JoinSeatLine"));
+
+// The generic, always-true seat preview — rendered while the member-aware
+// line loads, when no verify-link resolves, or by the wallet module itself
+// for a non-member wallet.
+function GenericSeatLine({ seatDisplay }: { seatDisplay: string }) {
+  return (
+    <QuoteLine
+      label="Your seat"
+      primary={`Seat #${seatDisplay}`}
+      sub="If yours is the next join. The real number is set by the transaction receipt — never predicted here."
+      testId="quote-seat"
+    />
+  );
+}
+
+// Resolves the sale address for the seat line (same server-sourced pattern as
+// the other slots) and mounts the member-aware line over the generic fallback.
+function SeatLineSlot({ seatDisplay }: { seatDisplay: string }) {
+  const { data, isLoading } = useGetProtocolVerifyLinks();
+  if (isLoading) return <GenericSeatLine seatDisplay={seatDisplay} />;
+  const saleUrl = data?.links.find((l) => l.id === "membershipSaleV3")?.url ?? null;
+  return (
+    <Suspense fallback={<GenericSeatLine seatDisplay={seatDisplay} />}>
+      <JoinSeatLine
+        saleAddress={saleUrl ? addressFromExplorerUrl(saleUrl) : null}
+        seatIfFirstDisplay={seatDisplay}
+      />
+    </Suspense>
+  );
+}
+
 // Resolves the sale's verified address + explorer base (server-sourced) and
 // mounts the checkout under the quote. Renders nothing while the gate is off.
 function CheckoutSlot({
@@ -458,12 +495,7 @@ function QuotePanel({
         sub={`Era ${q.era} · ${q.synPerUsdcRaw} SYN per $1 — read live from the engine, and it changes between eras.`}
         testId="quote-syn"
       />
-      <QuoteLine
-        label="Your seat"
-        primary={`Seat #${formatRawUnits(q.seatIfFirstRaw, 0)}`}
-        sub="If yours is the next join. The real number is set by the transaction receipt — never predicted here."
-        testId="quote-seat"
-      />
+      <SeatLineSlot seatDisplay={formatRawUnits(q.seatIfFirstRaw, 0) ?? q.seatIfFirstRaw} />
       {floorRaw !== null ? (
         <QuoteLine
           label="Slippage floor"

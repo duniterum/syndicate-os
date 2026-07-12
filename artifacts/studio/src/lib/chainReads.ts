@@ -132,7 +132,38 @@ const HISTORICAL_GATE_ABI = [
     inputs: [],
     outputs: [{ name: "", type: "bytes32" }],
   },
+  {
+    type: "function",
+    name: "memberNumberOf",
+    stateMutability: "view",
+    inputs: [{ name: "", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+  },
 ] as const;
+
+/**
+ * The connected wallet's OWN seat number on the live engine (0n = not a
+ * member). Own-row only — used so the /join seat line can tell a seated
+ * member the truth (a further buy adds SYN, never a second seat) instead of
+ * the generic next-seat preview. Null on any failure — the caller falls back
+ * to the generic, always-honest preview line.
+ */
+export async function readMemberNumberOf(
+  saleAddress: string,
+  wallet: string,
+): Promise<bigint | null> {
+  if (!isAddress(saleAddress) || !isAddress(wallet)) return null;
+  try {
+    return await publicClient.readContract({
+      address: getAddress(saleAddress),
+      abi: HISTORICAL_GATE_ABI,
+      functionName: "memberNumberOf",
+      args: [getAddress(wallet)],
+    });
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Does the live sale engine already know this wallet (claimed or bought)?
