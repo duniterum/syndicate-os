@@ -92,7 +92,8 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > prod (C1.0→C1.2b, the referrer line validated on a REAL active source). Carries: the CHAIN TRUTH
 > (9 contracts ever, CommissionRouter never deployed, ONE active BUILDER_SOURCE 5% LIFETIME), the two
 > STANDING RULES (a public-RPC log scan is NOT proof of absence; a creation event is a STATE — read
-> `sourceConfig()` live), the founder decisions (referral not-active-in-MVP, money is the company's,
+> `sourceConfig()` live), the founder decisions (~~referral not-active-in-MVP~~ **← OVERRIDDEN
+> 2026-07-13: active referral IS MVP — see the DECIDED block**, money is the company's,
 > buyer pays two recipients in one tx, tiers-by-spend legal, rank never demotes, V4=router model), and
 > the CONSOLIDATED SLICE LIST (A MVP / B after / C V4-contracts / D done). Prior C1-groundwork handoff
 > stays valid for the C1.1–C1.4 spec detail.
@@ -119,11 +120,17 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   updated after creation (a source's scope read WINDOWED from its `SourceCreated` event; the live
   `sourceConfig()` said LIFETIME). Never decode an old event and call it today's truth. And: a comment
   is NEVER the authority for a status on a money surface — read `isActive()`/`sourceConfig()` live.
-- **REFERRAL DECISIONS (founder, 2026-07-12; full detail in the 2026-07-12 handoff).** Referral is built
-  (C1.2b) + works but does NOT ship active in the MVP (final economics = V4). The buyer pays two
-  recipients in ONE tx; the Syndicate pays nobody (no KYC/1099/float; copy says "the buyer pays you",
-  never "we pay you"). Tiers-by-spend are legal; `HOME_RANK_LADDER` = the CAPITAL AXIS, not poison; the
-  red line = never a better SYN price. Rank never demotes. V4 target = CommissionRouterV1's model.
+- **🔴 FOUNDER OVERRIDE, PERMANENT (2026-07-13) — "Referral not active in the MVP" is DEAD.**
+  **Active referral IS part of the MVP** and lights up as soon as possible: C5 flip → the $5 test
+  THROUGH the referral link (two proofs in one tx: checkout + the on-chain introduction payment) →
+  then the PUBLIC referral-layer activation as its own founder-gated slice (programLifecycle switch +
+  copy + member cards + the guard-safe-source adaptation proposed IN that slice, per the anti-blocking
+  law). **No agent re-raises the old rule.** Everything else in the 2026-07-12 referral decisions
+  STANDS: the buyer pays two recipients in ONE tx; the Syndicate pays nobody (no KYC/1099/float; copy
+  says "the buyer pays you", never "we pay you"); tiers-by-spend legal; `HOME_RANK_LADDER` = the
+  CAPITAL AXIS; the red line = never a better SYN price; rank never demotes; V4 target =
+  CommissionRouterV1's model. *(Superseded that day: the "final economics = V4, ship dark" clause —
+  the 2026-07-12 handoff lines saying "does NOT ship active in the MVP" are HISTORY, not law.)*
 - **CANON (founder, 2026-07-12) — two authoritative specs are now IN-REPO (were on the founder's
   desktop): `docs/direction/CONSTITUTION_AUTORITE.md`** (the 4-level authority hierarchy — N0 immutable
   bytecode / N1 founder-on-chain / N2 server / N3 presentation; a lower level never contradicts a higher;

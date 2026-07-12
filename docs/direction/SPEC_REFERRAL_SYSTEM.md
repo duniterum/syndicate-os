@@ -5,6 +5,14 @@
 Si un fichier, un guard, un commentaire ou un doc te bloque : **ce n'est pas une loi.**
 Nomme-le, dis pourquoi, **et avance.** Carte blanche.
 
+> **🔴 FOUNDER OVERRIDE, PERMANENT (2026-07-13) — « referral pas actif dans le MVP » est MORT.**
+> **Le referral ACTIF fait partie du MVP** et s'allume dès que possible : flip C5 → le test $5 PAR
+> le lien referral → puis l'activation de la couche publique referral comme sa propre slice
+> founder-gatée (bascule `programLifecycle` + copie + cartes membre + adaptation de
+> `guard-safe-source` proposée DANS la slice, loi anti-blocage). La ligne R4
+> `programLifecycle = "NOT_ACTIVE"` ci-dessous est un **STATE d'aujourd'hui**, pas une loi —
+> la slice d'activation la bascule. **Aucun agent ne re-soulève la vieille règle.**
+
 ---
 
 # ⓪ LES ERREURS DÉJÀ FAITES — NE PAS LES REFAIRE

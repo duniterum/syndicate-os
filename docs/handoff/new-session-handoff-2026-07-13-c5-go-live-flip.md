@@ -91,12 +91,22 @@ the new buyer's seat needs the auth zone.
 
 ## After the commit — the two founder acts
 1. **Replit publish** ("pull main, deploy, report" — no migrations).
-2. **The founder's $5 real test** (era-1 minimum): two SEPARATE signatures (approve exact $5 →
-   sign the join), seat read from the receipt event on-screen. Expected: **seat #13**.
-   Then verify live: memberCount flips 12→13 EVERYWHERE by itself (it is a live read), and the
-   honest readback recomputes to **13 seats / 12 distinct wallets** automatically (derived §5b) —
-   the first real proof the whole truth-spine works under a real purchase.
+2. **The founder's $5 real test — THROUGH THE REFERRAL LINK (founder decision 2026-07-13; active
+   referral IS MVP):** buy via
+   `/join?source=0x8338e9ffa4f94cb15a195d6dbbb8051f064aeb69ae4cd7b7952dc8621b1cf620`
+   (the ACTIVE BUILDER_SOURCE, 5% LIFETIME). Two proofs in ONE tx: the checkout (two SEPARATE
+   signatures, seat from the receipt event — expected **seat #13**) AND the real on-chain
+   introduction payment ($0.25 pushed to the payoutWallet in the same tx, explorer-verifiable;
+   net $4.75 split 70/20/10). **Test-wallet conditions (contract rules):** NOT the
+   payoutWallet/sourceWallet (`0x2445…9C721` — self-referral would silently drop the source line);
+   NOT an unclaimed historical wallet (the C1.3 gate would BLOCK the buy — correct behavior, wrong
+   test); holds $5 USDC + AVAX for gas. Then verify live: memberCount 12→13 everywhere by itself,
+   the honest readback recomputes to **13 seats / 12 distinct wallets**, and the referrer line
+   matches the on-chain payment.
 3. Rollback if anything is wrong: flip the literal back — one commit, one deploy.
+4. **Then the post-C5 queue (OPEN_QUEUE): the REFERRAL PUBLIC ACTIVATION slice** (founder-gated) —
+   `programLifecycle` switch + copy + member cards + the `guard-safe-source` adaptation proposed IN
+   the slice (anti-blocking law).
 
 ## Verification limits (say them honestly)
 The approve→buy path CANNOT be exercised by any test harness — no test wallet exists and none
