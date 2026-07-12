@@ -12,9 +12,15 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > a PRODUCTION DUPLICATE SEAT exists on-chain (historical #7 `0x3FF01A0c` = also V3 seat #11, verified
 > live), 7 historical wallets still ARMED (incl. the founder), 11 distinct wallets vs `memberCount()`=12.
 > The V3 historical artifact is `TheSyndicate/src/lib/v3-historical-members.ts` (root MATCHES live V3);
-> `v1-proof.ts` is POISON (V2b, wrong root + address-only leaf). NEXT = C1.3 the historical gate (block a
-> buy by an unclaimed historical wallet), then neutralize v1-proof.ts, then the honest 12/11 readback, then
-> a Chronicle candidate. Founder decision: SHOW BOTH (12 seats / 11 wallets / one overlap), never fix silently.
+> `v1-proof.ts` is POISON (V2b, wrong root + address-only leaf). **C1.3 the historical gate → ✅ BUILT
+> (this commit):** `lib/historicalMembers.ts` (frozen 8-member set + proofs, leaf recomputed + proof
+> re-folded to the LIVE `V1_MEMBER_ROOT()` — the local artifact is never trusted), `chainReads.ts`
+> `readKnownMember`/`readV1MemberRoot`, `wallet/JoinHistoricalGate.tsx` (own-row, fail-closed BLOCK,
+> lazy-mounted on `/join`; verified against the live chain: all 8 proofs fold to the live root, exactly
+> #7 knownMember=true → silent, 7 armed → BLOCK; recipient-not-buyer note in code for C4 gifting).
+> C2 MUST call `resolveHistoricalGate` again before any buy button enables. NEXT = neutralize
+> v1-proof.ts (origin repo, V2b-only), then the honest 12/11 readback, then a Chronicle candidate.
+> Founder decision: SHOW BOTH (12 seats / 11 wallets / one overlap), never fix silently.
 >
 > **▶ Prior (still valid): `docs/handoff/new-session-handoff-2026-07-12-checkout-proven-and-chain-truth.md`** —
 > the biggest-decision session's resume point. The read-only `/join` checkout is COMPLETE + PROVEN in

@@ -12,7 +12,7 @@
 //   - HARD BOUNDARY: no transaction is ever initiated, signed, or submitted
 //     from this app. The buy-readiness card below says so explicitly.
 
-import { useEffect, useState, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
 import { Link, useSearch } from "wouter";
 import { ExternalLink, Link2, ShieldAlert } from "lucide-react";
 import {
@@ -42,6 +42,30 @@ import {
 import { readSourceConfig } from "@/lib/chainReads";
 import { JOIN_AMOUNTS_USDC } from "@/config/joinAmounts";
 import { ctas } from "@/config/sharedCopy";
+
+// C1.3 — the historical gate (wallet-aware, so it lives in the gated wallet
+// module and is reached ONLY via a runtime dynamic import — guard rule 15).
+// When the connected wallet is an unclaimed historical member, it declares the
+// buy path BLOCKED ("claim your seat first") before any buy button ever exists.
+const JoinHistoricalGate = lazy(() => import("@/wallet/JoinHistoricalGate"));
+
+// The gate needs the deployed sale address — server-sourced from the
+// membershipSaleV3 verify-link, never hardcoded client-side. Render the gate
+// only once the verify-links query settles so a slow response doesn't flash a
+// transient fail-closed card at a historical wallet.
+function HistoricalGateSlot() {
+  const { data, isLoading } = useGetProtocolVerifyLinks();
+  if (isLoading) return null;
+  const saleUrl = data?.links.find((l) => l.id === "membershipSaleV3")?.url ?? null;
+  return (
+    <Suspense fallback={null}>
+      <JoinHistoricalGate
+        saleAddress={saleUrl ? addressFromExplorerUrl(saleUrl) : null}
+        saleUrl={saleUrl}
+      />
+    </Suspense>
+  );
+}
 
 // ── Introduction (?source=) status ──────────────────────────────────────────
 
@@ -479,6 +503,10 @@ export default function JoinProtocol() {
       lead="Choose an amount, or enter your own. Every seat is equal — $5 and $10,000 buy the same seat. Read-only: nothing is signed or sent from this page."
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
+      {/* C1.3 historical gate — blocks the (future) buy path for an unclaimed
+          historical wallet; renders nothing for everyone else. */}
+      <HistoricalGateSlot />
+
       {/* Optional verified-introduction attribution (?source=) */}
       {sourceParam !== null ? <IntroductionStatus sourceId={sourceParam} /> : null}
 

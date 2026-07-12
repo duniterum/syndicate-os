@@ -113,6 +113,68 @@ export interface SourceRead {
   readonly active: boolean;
 }
 
+// MembershipSaleV3 reads for the historical gate (C1.3): knownMember tells us
+// whether the live engine already knows a wallet; V1_MEMBER_ROOT is the
+// immutable on-chain commitment the local historical set must re-verify
+// against before the gate asserts anything. Both fail closed to null.
+const HISTORICAL_GATE_ABI = [
+  {
+    type: "function",
+    name: "knownMember",
+    stateMutability: "view",
+    inputs: [{ name: "", type: "address" }],
+    outputs: [{ name: "", type: "bool" }],
+  },
+  {
+    type: "function",
+    name: "V1_MEMBER_ROOT",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "bytes32" }],
+  },
+] as const;
+
+/**
+ * Does the live sale engine already know this wallet (claimed or bought)?
+ * Returns null on ANY failure — the caller must treat null as unverified and
+ * fail closed (block), never guess.
+ */
+export async function readKnownMember(
+  saleAddress: string,
+  wallet: string,
+): Promise<boolean | null> {
+  if (!isAddress(saleAddress) || !isAddress(wallet)) return null;
+  try {
+    return await publicClient.readContract({
+      address: getAddress(saleAddress),
+      abi: HISTORICAL_GATE_ABI,
+      functionName: "knownMember",
+      args: [getAddress(wallet)],
+    });
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The live historical-member Merkle root (immutable constructor constant on the
+ * deployed sale). Null on any failure — fail closed.
+ */
+export async function readV1MemberRoot(
+  saleAddress: string,
+): Promise<`0x${string}` | null> {
+  if (!isAddress(saleAddress)) return null;
+  try {
+    return await publicClient.readContract({
+      address: getAddress(saleAddress),
+      abi: HISTORICAL_GATE_ABI,
+      functionName: "V1_MEMBER_ROOT",
+    });
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Read a source's payoutWallet LIVE from the registry. The registry ADDRESS comes
  * from the server (verifyLinks `sourceRegistry`) — no hardcoded client address.
