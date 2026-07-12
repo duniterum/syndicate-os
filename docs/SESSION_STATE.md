@@ -23,6 +23,17 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 
 ## ✅ DECIDED — DO NOT RE-OPEN (settled; do not re-litigate)
 
+- **DECIDED (founder, 2026-07-12) — narrative "Chapter" label pulled FORWARD from Phase 5
+  (recognition only).** A small pure-function display: `artifacts/studio/src/lib/chapters.ts`
+  (`chapterForSeat`, deterministic by seat number — I Genesis Signal #1–333 · II First Thousand
+  #334–1000 · III The Expansion #1001–3333 · IV First Ten Thousand #3334–10000 · V Open Era
+  #10001+) renders "Chapter I · Genesis Signal" in the header member menu. Own-row (member's own
+  seat only, no directory, no address, no network call); **recognition only** — never a rank,
+  tier, or financial advantage (SEASONS_ENGINE guardrail: earlier ≠ "better"). This is ONLY the
+  label; the full chapters/eras/seasons auto-advance engine remains Phase 5 (harvest from origin).
+  NOTE: header's existing "Genesis" pill badge = the ERA-provenance label (#1–8 freeze-root), a
+  DIFFERENT thing from chapter "I Genesis Signal" (#1–333) — do not conflate.
+
 - **DECIDED (founder, 2026-07-11) — the runtime served-payload discipline NET is LIFTED
   (reversible).** `assertProtocolRealityDiscipline` no longer throws on an address-leak /
   financial-framing payload; gated behind `DISCIPLINE_ENFORCED` (flip to re-arm). Recorded as

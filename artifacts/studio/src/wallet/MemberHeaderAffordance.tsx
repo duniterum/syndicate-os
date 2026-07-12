@@ -30,7 +30,9 @@ import {
   Hexagon,
   ShieldCheck,
   ExternalLink,
+  BookOpen,
 } from "lucide-react";
+import { chapterForSeat } from "@/lib/chapters";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -225,6 +227,9 @@ export default function MemberHeaderAffordance({
   // ── Signed in: a real identity menu. Trigger reflects the state at a glance;
   // the content resolves entirely from the server self-readback. ────────────
   const seated = status.kind === "member";
+  // Narrative chapter — a pure, own-row function of the member's own seat number
+  // (recognition only; never a rank or a financial advantage). Null → no chip.
+  const chapter = status.kind === "member" ? chapterForSeat(status.seat) : null;
   const triggerLabel =
     status.kind === "member"
       ? `Seat #${status.seat}`
@@ -322,6 +327,21 @@ export default function MemberHeaderAffordance({
               <span className="inline-flex items-center gap-1 rounded-full border border-proof/40 bg-proof/10 px-2 py-0.5 text-[11px] font-medium text-proof">
                 <ShieldCheck className="h-3 w-3" aria-hidden="true" />
                 Verified on chain
+              </span>
+            </div>
+          ) : null}
+
+          {/* Narrative chapter — the member's story-coordinate (gold = identity),
+              a pure function of their own seat number. Recognition only: never a
+              rank, tier, or financial advantage (SEASONS_ENGINE doctrine). */}
+          {chapter ? (
+            <div className="mt-2">
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full border border-gold/30 bg-gold/10 px-2 py-0.5 text-[11px] font-medium text-gold"
+                title="The chapter of the story you joined in — recognition, not a rank; earlier is never 'better'."
+              >
+                <BookOpen className="h-3 w-3" aria-hidden="true" />
+                Chapter {chapter.roman} · {chapter.name}
               </span>
             </div>
           ) : null}
