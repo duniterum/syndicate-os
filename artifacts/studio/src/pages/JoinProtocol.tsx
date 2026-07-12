@@ -12,7 +12,7 @@
 //   - HARD BOUNDARY: no transaction is ever initiated, signed, or submitted
 //     from this app. The buy-readiness card below says so explicitly.
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useSearch } from "wouter";
 import { ExternalLink, Link2, ShieldAlert } from "lucide-react";
 import {
@@ -39,6 +39,7 @@ import {
   computeRoutingSplit,
   toCheckoutQuote,
 } from "@/lib/checkoutVocabulary";
+import { readSourceConfig } from "@/lib/chainReads";
 import { JOIN_AMOUNTS_USDC } from "@/config/joinAmounts";
 import { ctas } from "@/config/sharedCopy";
 
@@ -133,12 +134,20 @@ function QuoteLine({
   );
 }
 
-// A truncated, clickable proof of an infrastructure wallet. The full address is
-// derived from the server verify-links URL (server-sourced, infra-only emission —
-// never a member wallet); the client never holds the address in its bundle.
+// The full address + explorer base are DERIVED from a server verify-links URL
+// (server-sourced, infra-only emission); the client holds no address in its bundle.
+function addressFromExplorerUrl(url: string): string | null {
+  return url.match(/\/address\/(0x[0-9a-fA-F]{40})\b/)?.[1] ?? null;
+}
+function explorerBaseFromUrl(url: string): string | null {
+  return url.match(/^(.*)\/address\/0x[0-9a-fA-F]{40}\b/)?.[1] ?? null;
+}
+
+// A truncated, clickable proof of a wallet. The full address is read from the URL;
+// for infra wallets the URL comes from verify-links, for the referrer's payoutWallet
+// it is built from the verify-links explorer base + the client chain read.
 function AddressProof({ url }: { url: string }) {
-  const m = url.match(/\/address\/(0x[0-9a-fA-F]{40})\b/);
-  const addr = m?.[1];
+  const addr = addressFromExplorerUrl(url);
   if (!addr) return null;
   const short = `${addr.slice(0, 6)}…${addr.slice(-4)}`;
   return (
@@ -155,18 +164,105 @@ function AddressProof({ url }: { url: string }) {
   );
 }
 
-// The money path (C1.2a): the NET sent to the company, split 70/20/10 to three
-// wallets — each with its amount AND a verifiable destination. The buyer sees WHO
-// is paid, HOW MUCH, and can verify it BEFORE signing. All-or-nothing on the proof
-// links: no amount is shown without its verifiable destination (fail-closed). The
-// buyer's OWN address is never shown (it answers "who am I", not "where does my
-// money go"); the gifting-recipient case — recipient ≠ buyer — is C1.2b/C4.
+// The source-payment line (C1.2b): the referrer, paid FROM the purchase tx before
+// the net is sent. TWO corrections the founder caught in the contract:
+//   · the RATE + AMOUNT come from the QUOTE (acquisitionCost = the contract's own
+//     EFFECTIVE _previewCommissionBps result — 0 in six cases the registry's
+//     configured bps ignores), never from sourceConfig.commissionBps;
+//   · the ADDRESS is sourceConfig(sourceId).payoutWallet (client read), never
+//     sourceWallet — _payAcquisition pays payoutWallet, and the two can differ.
+// Consistency, fail-closed: the quote says a payment applies; if the live registry
+// read cannot confirm an ACTIVE source with a real payoutWallet, we show NO
+// destination (contradiction or read failure). The quote wins on the money; we
+// show nothing rather than something wrong.
+function SourcePaymentLine({
+  sourceId,
+  grossUsdcRaw,
+  sourcePaymentRaw,
+  usdcDecimals,
+  registryUrl,
+}: {
+  sourceId: string;
+  grossUsdcRaw: string;
+  sourcePaymentRaw: string;
+  usdcDecimals: number;
+  registryUrl: string | null;
+}) {
+  const registryAddr = registryUrl ? addressFromExplorerUrl(registryUrl) : null;
+  const explorerBase = registryUrl ? explorerBaseFromUrl(registryUrl) : null;
+  const [state, setState] = useState<
+    { kind: "loading" } | { kind: "ok"; payoutUrl: string } | { kind: "unverified" }
+  >({ kind: "loading" });
+
+  useEffect(() => {
+    let active = true;
+    if (!registryAddr || !explorerBase) {
+      setState({ kind: "unverified" });
+      return;
+    }
+    setState({ kind: "loading" });
+    void readSourceConfig(registryAddr, sourceId).then((r) => {
+      if (!active) return;
+      setState(
+        r && r.active
+          ? { kind: "ok", payoutUrl: `${explorerBase}/address/${r.payoutWallet}` }
+          : { kind: "unverified" },
+      );
+    });
+    return () => {
+      active = false;
+    };
+  }, [sourceId, registryAddr, explorerBase]);
+
+  // The RATE comes from the QUOTE (bps = sourcePayment / gross), never the registry.
+  const pct = `${Number((BigInt(sourcePaymentRaw) * 10_000n) / BigInt(grossUsdcRaw)) / 100}%`;
+
+  if (state.kind === "ok") {
+    return (
+      <div className="flex items-baseline justify-between gap-3 text-sm pb-3 mb-3 border-b border-border/40">
+        <span className="text-muted-foreground">
+          Paid to your referrer <span className="text-[11px] text-muted-foreground/70">{pct}</span>
+        </span>
+        <span className="flex items-baseline gap-3">
+          <span className="tabular-nums text-foreground" data-testid="source-amount">
+            −{formatRawUnits(sourcePaymentRaw, usdcDecimals)}
+          </span>
+          <AddressProof url={state.payoutUrl} />
+        </span>
+      </div>
+    );
+  }
+  return (
+    <p
+      className="text-xs text-muted-foreground pb-3 mb-3 border-b border-border/40"
+      data-testid="text-source-proof-unavailable"
+    >
+      A source payment of {pct} applies to this quote. Its destination is{" "}
+      {state.kind === "loading" ? "loading" : "not confirmed on-chain right now"} — reload to verify.
+      No destination is shown unverified.
+    </p>
+  );
+}
+
+// The money path (C1.2a + C1.2b): the referrer payment (if any), then the NET sent
+// to the company, split 70/20/10 to three wallets — each with its amount AND a
+// verifiable destination. The buyer sees WHO is paid, HOW MUCH, and verifies it
+// BEFORE signing. All-or-nothing on the proof links: no amount is shown without its
+// verifiable destination (fail-closed). The buyer's OWN address is never shown (it
+// answers "who am I", not "where does my money go"); the gifting-recipient case —
+// recipient ≠ buyer — is C4.
 function MoneyPath({
   netProtocolRaw,
   usdcDecimals,
+  sourceId,
+  grossUsdcRaw,
+  sourcePaymentRaw,
 }: {
   netProtocolRaw: string;
   usdcDecimals: number;
+  sourceId: string | null;
+  grossUsdcRaw: string;
+  sourcePaymentRaw: string;
 }) {
   const { data } = useGetProtocolVerifyLinks();
   const split = computeRoutingSplit(netProtocolRaw);
@@ -175,9 +271,20 @@ function MoneyPath({
   const liqUrl = urlFor("liquidityWallet");
   const opsUrl = urlFor("operationsWallet");
   const allProof = Boolean(vaultUrl && liqUrl && opsUrl);
+  const hasSourcePayment =
+    sourceId !== null && /^[0-9]+$/.test(sourcePaymentRaw) && BigInt(sourcePaymentRaw) > 0n;
 
   return (
     <div className="mt-4 border-t border-border/40 pt-4" data-testid="panel-money-path">
+      {hasSourcePayment && sourceId ? (
+        <SourcePaymentLine
+          sourceId={sourceId}
+          grossUsdcRaw={grossUsdcRaw}
+          sourcePaymentRaw={sourcePaymentRaw}
+          usdcDecimals={usdcDecimals}
+          registryUrl={urlFor("sourceRegistry")}
+        />
+      ) : null}
       <div className="flex items-baseline justify-between gap-4">
         <div className="text-sm font-medium text-foreground">Sent to the Syndicate</div>
         <div className="text-base font-medium text-foreground tabular-nums" data-testid="money-net">
@@ -300,7 +407,13 @@ function QuotePanel({
         />
       ) : null}
 
-      <MoneyPath netProtocolRaw={q.netProtocolRaw} usdcDecimals={data.decimals.usdc} />
+      <MoneyPath
+        netProtocolRaw={q.netProtocolRaw}
+        usdcDecimals={data.decimals.usdc}
+        sourceId={sourceId}
+        grossUsdcRaw={grossUsdcRaw}
+        sourcePaymentRaw={q.sourcePaymentRaw}
+      />
 
       <p className="text-xs text-muted-foreground mt-4" data-testid="text-quote-source-line">
         {sourceLine}
