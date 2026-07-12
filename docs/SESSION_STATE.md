@@ -25,7 +25,9 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > `GitHub/_research/AUDIT_TRIAGE_ET_LOI_ANTIBLOCAGE.md` — ⚠️ OUT-OF-REPO on the founder's disk; the HARD
 > RULE wants it committed into docs/direction/ at the founder's GO).** **GROUP C (founder-only, PENDING —
 > untouched): DISCIPLINE_ENFORCED re-arm · homepage Studio-OS teaser · "Raised class" rename · whitepaper
-> §05 tier sentence.** Instance pinning = Replit DASHBOARD setting (no in-repo key) — founder sets max 1.
+> §05 tier sentence.** **Instance pinning → ✅ DONE (founder, 2026-07-13, Replit dashboard): autoscale
+> max machines = 1** (4 vCPU / 8 GiB) — in-memory SIWE sessions/nonces are now single-instance-safe.
+> Q21's Reserved-VM remains the durable option later; this closes the immediate risk.
 >
 > **▶ Prior: `docs/handoff/new-session-handoff-2026-07-13-c5-go-live-flip.md`** —
 > **C5 = the GO-LIVE flip; the founder's GO is GIVEN (2026-07-13).** C2 approve→buy is BUILT + pushed
