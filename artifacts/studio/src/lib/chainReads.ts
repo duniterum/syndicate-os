@@ -175,6 +175,92 @@ export async function readV1MemberRoot(
   }
 }
 
+// C2 checkout reads: the sale's own USDC token (the EXACT token buy() pulls —
+// read from the deployed immutable, never hardcoded), the buyer's allowance
+// toward the sale (resumability: skip approve when already sufficient, never
+// approve twice), and the buyer's balance (honest pre-check). All fail closed
+// to null — the checkout blocks rather than guesses.
+const SALE_USDC_ABI = [
+  {
+    type: "function",
+    name: "USDC",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "address" }],
+  },
+] as const;
+
+const ERC20_READ_ABI = [
+  {
+    type: "function",
+    name: "allowance",
+    stateMutability: "view",
+    inputs: [
+      { name: "owner", type: "address" },
+      { name: "spender", type: "address" },
+    ],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+  {
+    type: "function",
+    name: "balanceOf",
+    stateMutability: "view",
+    inputs: [{ name: "", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+] as const;
+
+/** The deployed sale's USDC token address (its immutable). Null on failure. */
+export async function readSaleUsdcToken(saleAddress: string): Promise<string | null> {
+  if (!isAddress(saleAddress)) return null;
+  try {
+    return await publicClient.readContract({
+      address: getAddress(saleAddress),
+      abi: SALE_USDC_ABI,
+      functionName: "USDC",
+    });
+  } catch {
+    return null;
+  }
+}
+
+/** Live ERC-20 allowance(owner → spender), raw base units. Null on failure. */
+export async function readAllowance(
+  tokenAddress: string,
+  owner: string,
+  spender: string,
+): Promise<bigint | null> {
+  if (!isAddress(tokenAddress) || !isAddress(owner) || !isAddress(spender)) return null;
+  try {
+    return await publicClient.readContract({
+      address: getAddress(tokenAddress),
+      abi: ERC20_READ_ABI,
+      functionName: "allowance",
+      args: [getAddress(owner), getAddress(spender)],
+    });
+  } catch {
+    return null;
+  }
+}
+
+/** Live ERC-20 balanceOf(owner), raw base units. Null on failure. */
+export async function readTokenBalance(
+  tokenAddress: string,
+  owner: string,
+): Promise<bigint | null> {
+  if (!isAddress(tokenAddress) || !isAddress(owner)) return null;
+  try {
+    return await publicClient.readContract({
+      address: getAddress(tokenAddress),
+      abi: ERC20_READ_ABI,
+      functionName: "balanceOf",
+      args: [getAddress(owner)],
+    });
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Read a source's payoutWallet LIVE from the registry. The registry ADDRESS comes
  * from the server (verifyLinks `sourceRegistry`) — no hardcoded client address.

@@ -38,9 +38,17 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > BOTH directions — the assumed "market below entry" has already flipped once; nothing hardcoded;
 > fail-closed → no comparison, doctrine lines stand) + the never-cross lines ("The market is free.
 > It may decide otherwise." · pool is a courtesy · SYN sent, not sold back · "Capital opens one
-> axis." · "Not equity. Not yield. Not passive income."). C1 is now COMPLETE (C1.0→C1.4). Next work
-> = per OPEN_QUEUE group A (C2 approve→buy, go-live gated · C5 wire `/join` · Q21 auth go-live) —
-> propose with the gate at next boot.
+> axis." · "Not equity. Not yield. Not passive income."). C1 is now COMPLETE (C1.0→C1.4).
+> **C2 approve→buy → ✅ BUILT, SHIPS OFF (this commit; BUILD ≠ GO-LIVE):** `wallet/JoinCheckout.tsx`
+> behind `config/checkoutGate.ts` `CHECKOUT_ENABLED: boolean = false` (literal; the ternary folds —
+> VERIFIED absent from the default bundle). The four C2 laws implemented: two SEPARATE signatures
+> (buy only enables on live-confirmed allowance) · resumable (live `allowance` read, never approve
+> twice) · fresh re-quote at the buy click → `computeMinSynOutRaw` · seat from the
+> `MembershipPurchasedV3` event ONLY. Plus: chain-43114 assert + switch · USDC token read from the
+> sale's own `USDC()` immutable (never hardcoded) · C1.3 gate RE-CONSULTED (blocks the flow) ·
+> balance pre-check · honest revert translation (Q11 names). **GO-LIVE = a founder act:** flip the
+> literal + the C5 lead/badge/boundary-card rewrite in the same commit (the page must never say
+> read-only above a live buy button) + Q21 auth. Next = C5 + Q21 at the founder's signal.
 > Founder decision: SHOW BOTH (12 seats / 11 wallets / one overlap), never fix silently.
 >
 > **▶ Prior (still valid): `docs/handoff/new-session-handoff-2026-07-12-checkout-proven-and-chain-truth.md`** —

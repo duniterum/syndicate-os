@@ -40,6 +40,7 @@ import {
   toCheckoutQuote,
 } from "@/lib/checkoutVocabulary";
 import { useTokenomics } from "@/components/tokenomics/useTokenomics";
+import { CHECKOUT_ENABLED } from "@/config/checkoutGate";
 import { readSourceConfig } from "@/lib/chainReads";
 import { JOIN_AMOUNTS_USDC } from "@/config/joinAmounts";
 import { ctas } from "@/config/sharedCopy";
@@ -49,6 +50,44 @@ import { ctas } from "@/config/sharedCopy";
 // When the connected wallet is an unclaimed historical member, it declares the
 // buy path BLOCKED ("claim your seat first") before any buy button ever exists.
 const JoinHistoricalGate = lazy(() => import("@/wallet/JoinHistoricalGate"));
+
+// C2 — the real approve→buy flow, behind the founder's go-live literal.
+// While CHECKOUT_ENABLED is false the chunk is never referenced (the ternary
+// folds at build time, mirroring the App.tsx wallet-gate pattern); flipping
+// the literal — a founder act, its own commit + deploy — is the go-live.
+const JoinCheckout = CHECKOUT_ENABLED
+  ? lazy(() => import("@/wallet/JoinCheckout"))
+  : null;
+
+// Resolves the sale's verified address + explorer base (server-sourced) and
+// mounts the checkout under the quote. Renders nothing while the gate is off.
+function CheckoutSlot({
+  grossUsdcRaw,
+  sourceId,
+  usdcDecimals,
+  synDecimals,
+}: {
+  grossUsdcRaw: string;
+  sourceId: string | null;
+  usdcDecimals: number;
+  synDecimals: number;
+}) {
+  const { data, isLoading } = useGetProtocolVerifyLinks();
+  if (!JoinCheckout || isLoading) return null;
+  const saleUrl = data?.links.find((l) => l.id === "membershipSaleV3")?.url ?? null;
+  return (
+    <Suspense fallback={null}>
+      <JoinCheckout
+        saleAddress={saleUrl ? addressFromExplorerUrl(saleUrl) : null}
+        explorerBase={saleUrl ? explorerBaseFromUrl(saleUrl) : null}
+        grossUsdcRaw={grossUsdcRaw}
+        sourceId={sourceId}
+        usdcDecimals={usdcDecimals}
+        synDecimals={synDecimals}
+      />
+    </Suspense>
+  );
+}
 
 // The gate needs the deployed sale address — server-sourced from the
 // membershipSaleV3 verify-link, never hardcoded client-side. Render the gate
@@ -444,6 +483,14 @@ function QuotePanel({
         {sourceLine}
       </p>
 
+      {/* C2 — the real purchase flow (founder-gated; nothing while OFF). */}
+      <CheckoutSlot
+        grossUsdcRaw={grossUsdcRaw}
+        sourceId={sourceId}
+        usdcDecimals={data.decimals.usdc}
+        synDecimals={data.decimals.syn}
+      />
+
       <details className="mt-3">
         <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground">
           Exact raw base units — verify
@@ -644,7 +691,11 @@ export default function JoinProtocol() {
       {/* The honest economics (C1.4) — two live prices + the never-cross lines */}
       <JoinEconomics />
 
-      {/* HARD BOUNDARY — transaction sending deliberately not enabled */}
+      {/* HARD BOUNDARY — shown while the founder's checkout gate is OFF.
+          The go-live slice (flip CHECKOUT_ENABLED + C5) removes this card AND
+          rewrites the page lead + lifecycle badge in the same commit — the
+          page must never claim "read-only" with a live buy button below. */}
+      {CHECKOUT_ENABLED ? null : (
       <Card
         className="border-warning/30 bg-warning/5 p-6 mb-12"
         data-testid="panel-buy-readiness"
@@ -667,6 +718,7 @@ export default function JoinProtocol() {
           </div>
         </div>
       </Card>
+      )}
 
       {/* The live engine itself — same truth-labelled read as /status */}
       <h2 className="type-h2 text-foreground mb-2">

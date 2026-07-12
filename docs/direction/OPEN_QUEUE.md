@@ -100,9 +100,10 @@ Full detail + the consolidated **A/B/C/D slice list** live in
 - **Q20 (`/join` stale gate) → rides C2** (record-only; removed when approve→buy ships).
 - **CommissionRouterV1 → CLOSED.** Never deployed (9 contracts ever; `V2.commissionRouter()==0x0`; V3
   has no such view — reverts). A V4 DESIGN, not an asset. Do not re-investigate.
-- **MVP remainder (group A):** ~~C1.3 historical-seat gate~~ ✅ BUILT (live-chain verified; C2 must
-  re-consult `resolveHistoricalGate` before any buy) · C2 approve→buy
-  (go-live gated) · C5 wire `/join` · Q21 auth go-live (Replit) · C1.4 economic proof.
+- **MVP remainder (group A):** ~~C1.3 historical-seat gate~~ ✅ SEALED · ~~C1.4 economic proof~~ ✅
+  SEALED · ~~C2 approve→buy~~ ✅ **BUILT, SHIPS OFF** (`CHECKOUT_ENABLED=false` literal; folded out of
+  the default bundle — go-live = founder flips it + C5 in one commit) · C5 wire `/join` (lead/badge/
+  boundary-card rewrite WITH the flip) · Q21 auth go-live (Replit).
 - **NEW slices proposed (no prior slice):** source-status LIVE-read surface (B) · guard rename `assertNoAddressLeak` (B) ·
   `/staff` public operator registry (B, can ship early) · V4 sale+CommissionRouter (C) · the emitter (C) ·
   Console "PROPOSE" form per Constitution §④ (B/C).
