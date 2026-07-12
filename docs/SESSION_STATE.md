@@ -8,7 +8,15 @@ Direction specs now live IN this repo: `docs/direction/MASTER_BUILD_SPEC.md` ·
 `docs/direction/GAMIFICATION_LEGAL_DOCTRINE.md` (recognition-only, legal shield).
 Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md`.
 
-> **▶ 🔴 NEWEST HANDOFF (read FIRST): `docs/handoff/new-session-handoff-2026-07-12-duplicate-seat-and-historical-gate.md`** —
+> **▶ 🔴 NEWEST HANDOFF (read FIRST): `docs/handoff/new-session-handoff-2026-07-13-c5-go-live-flip.md`** —
+> **C5 = the GO-LIVE flip; the founder's GO is GIVEN (2026-07-13).** C2 approve→buy is BUILT + pushed
+> OFF (`c7ad5c7`, proven folded out of the bundle). The flip was deliberately NOT rushed at
+> end-of-context (the C1.3 lesson). The handoff carries the COMPLETE checklist: flip the literal +
+> a new transactional DisplayLifecycle + the sitewide read-only-claims sweep (8 spots) + SEO title +
+> registry STATE rewrites — ONE atomic commit, then Replit publish, then the founder's $5 real test
+> (expected seat #13; the 12/11 readback recomputes to 13/12 by itself).
+>
+> **▶ Prior: `docs/handoff/new-session-handoff-2026-07-12-duplicate-seat-and-historical-gate.md`** —
 > a PRODUCTION DUPLICATE SEAT exists on-chain (historical #7 `0x3FF01A0c` = also V3 seat #11, verified
 > live), 7 historical wallets still ARMED (incl. the founder), 11 distinct wallets vs `memberCount()`=12.
 > The V3 historical artifact is `TheSyndicate/src/lib/v3-historical-members.ts` (root MATCHES live V3);
