@@ -32,8 +32,14 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > → ✅ WRITTEN: `docs/chronicle/candidates/2026-07-12-the-duplicate-seat.md`** (protocol-institutional
 > register, identity/amount-blind; PROMOTION IS A HUMAN ACT — it waits for the founder and for the
 > Phase-5 `/chronicle` surface; it confers nothing by existing). **The 4-item duplicate-seat build
-> order is COMPLETE.** Next work = per OPEN_QUEUE group A (C2 approve→buy is go-live gated; C1.4
-> economic proof) — propose with the gate at next boot.
+> order is COMPLETE.** **C1.4 economic proof → ✅ BUILT (this commit):** `/join` "Two prices, read
+> live" card — entry rate vs DEX market price DERIVED live on every render (the truthful relation in
+> BOTH directions — the assumed "market below entry" has already flipped once; nothing hardcoded;
+> fail-closed → no comparison, doctrine lines stand) + the never-cross lines ("The market is free.
+> It may decide otherwise." · pool is a courtesy · SYN sent, not sold back · "Capital opens one
+> axis." · "Not equity. Not yield. Not passive income."). C1 is now COMPLETE (C1.0→C1.4). Next work
+> = per OPEN_QUEUE group A (C2 approve→buy, go-live gated · C5 wire `/join` · Q21 auth go-live) —
+> propose with the gate at next boot.
 > Founder decision: SHOW BOTH (12 seats / 11 wallets / one overlap), never fix silently.
 >
 > **▶ Prior (still valid): `docs/handoff/new-session-handoff-2026-07-12-checkout-proven-and-chain-truth.md`** —

@@ -49,6 +49,10 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
 ### Phase 5 — Surfaces (adoption)
 - [ ] Public · [ ] Dashboards (connecté / membre) · [ ] Console admin
 - [ ] Contenu (Docs / Whitepaper / FAQ)
+- [x] **`/join` checkout (C1.1→C1.4)** — rend via le système (tokens only, 0 couleur brute),
+  motion tokens (`animate-in fade-in`), 2 modes vérifiés sur la surface ; quote · money path ·
+  gate historique · économie honnête. *(Les cases globales Mouvement/2 modes/Adoption restent
+  ouvertes — elles exigent TOUTES les surfaces.)*
 
 ### Phase 6 — Audits (le sceau grade-AAA)
 - [ ] Accessibilité (WCAG AA / APCA, focus, clavier, cibles ≥44px)

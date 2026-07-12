@@ -39,6 +39,7 @@ import {
   computeRoutingSplit,
   toCheckoutQuote,
 } from "@/lib/checkoutVocabulary";
+import { useTokenomics } from "@/components/tokenomics/useTokenomics";
 import { readSourceConfig } from "@/lib/chainReads";
 import { JOIN_AMOUNTS_USDC } from "@/config/joinAmounts";
 import { ctas } from "@/config/sharedCopy";
@@ -464,6 +465,75 @@ function QuotePanel({
   );
 }
 
+// ── The honest economics (C1.4) ─────────────────────────────────────────────
+// The two live prices side by side + the truthful relationship between them,
+// DERIVED on every render — never a typed claim (the relationship has already
+// flipped once in the protocol's life; a hardcoded sentence would lie).
+// Fail-closed: if either price cannot be read, NO comparison is shown — the
+// doctrine lines below are words, not figures, and always stand.
+function JoinEconomics() {
+  const tk = useTokenomics();
+
+  // Display strings → comparison only (no money math): entry price per SYN =
+  // 1 / (SYN per 1 USDC). Fail-closed on anything non-finite.
+  const entryRate = tk.entrySynPerUsdc ? Number(tk.entrySynPerUsdc.replace(/,/g, "")) : NaN;
+  const market = tk.marketPriceUsdcPerSyn ? Number(tk.marketPriceUsdcPerSyn) : NaN;
+  const entryPrice = Number.isFinite(entryRate) && entryRate > 0 ? 1 / entryRate : NaN;
+  const comparable = Number.isFinite(entryPrice) && Number.isFinite(market) && market > 0;
+
+  let relation: string | null = null;
+  if (comparable) {
+    relation =
+      entryPrice > market
+        ? "Joining costs more per SYN than the open market right now. The difference is the seat — membership and recognition — not a discount, and not a trade. Mechanically, this is not an investment."
+        : entryPrice < market
+          ? "The market currently trades above the entry rate. That is the market's doing, never a promise — the entry buys a seat, not a return."
+          : "The two prices happen to match right now. They are independent and will move apart.";
+  }
+
+  return (
+    <Card className="bg-card/40 border-border/50 p-6 mb-12" data-testid="panel-join-economics">
+      <h2 className="text-base font-medium text-foreground mb-3">
+        Two prices, read live — and what they mean
+      </h2>
+      {comparable ? (
+        <div className="animate-in fade-in duration-300">
+          <div className="flex flex-wrap gap-x-8 gap-y-2 mb-3">
+            <div>
+              <div className="text-xs text-muted-foreground">Entry rate (the protocol)</div>
+              <div className="text-base font-medium text-foreground tabular-nums" data-testid="econ-entry">
+                {tk.entrySynPerUsdc} SYN per 1 USDC
+              </div>
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground">Market price (the DEX pool)</div>
+              <div className="text-base font-medium text-foreground tabular-nums" data-testid="econ-market">
+                {tk.marketPriceUsdcPerSyn} USDC per SYN
+              </div>
+            </div>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl" data-testid="econ-relation">
+            {relation}
+          </p>
+        </div>
+      ) : (
+        <p className="text-sm text-muted-foreground" data-testid="econ-unavailable">
+          {tk.loading
+            ? "Reading both live prices…"
+            : "The two prices could not both be read right now — no comparison is shown. Nothing is assumed."}
+        </p>
+      )}
+      <div className="mt-4 border-t border-border/40 pt-4 space-y-1.5 text-sm text-muted-foreground max-w-2xl">
+        <p>The market is free. It may decide otherwise.</p>
+        <p>The pool is a courtesy, not a promise. Liquidity can be thin.</p>
+        <p>Your SYN is sent to your wallet at the rate shown — sent, not sold back.</p>
+        <p>Capital opens one axis. The other ten, you earn.</p>
+        <p className="text-foreground">Not equity. Not yield. Not passive income.</p>
+      </div>
+    </Card>
+  );
+}
+
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export default function JoinProtocol() {
@@ -570,6 +640,9 @@ export default function JoinProtocol() {
           </div>
         ) : null}
       </Card>
+
+      {/* The honest economics (C1.4) — two live prices + the never-cross lines */}
+      <JoinEconomics />
 
       {/* HARD BOUNDARY — transaction sending deliberately not enabled */}
       <Card
