@@ -91,10 +91,50 @@ function setRouteJsonLd(html: string, location: string): string {
   return out;
 }
 
+// ── Security meta (audit fix, founder-approved 2026-07-13) ───────────────────
+// The pages are served by the static artifact layer (no Express in front), so
+// the CSP ships as a <meta http-equiv> baked into every prerendered shell —
+// PRODUCTION ONLY by construction (this script never touches dev/index.html
+// source, so Vite dev-mode inline scripts keep working). Built against what
+// the app actually loads:
+//   script-src 'self'            — all JS is same-origin Vite chunks (JSON-LD
+//                                  <script type="application/ld+json"> blocks
+//                                  are data, exempt from script-src);
+//   style-src  self + inline +   — compiled Tailwind (self), runtime-injected
+//              fonts.googleapis    <style> tags from UI libs (inline), Google
+//                                  Fonts CSS (the one external stylesheet);
+//   font-src   fonts.gstatic     — the Google Fonts files (+ data: for any
+//                                  lib-embedded font);
+//   img-src    self data: https: — local brand assets + wallet-connector icons
+//                                  served from wallet-provider CDNs;
+//   connect-src self https: wss: — same-origin API, the public Avalanche RPCs,
+//                                  and WalletConnect/relay sockets. Deliberately
+//                                  scheme-wide: an over-narrow allowlist here
+//                                  could silently break wallet connect (the
+//                                  money path) — script-src stays the strict
+//                                  XSS boundary.
+// NOTE: frame-ancestors is IGNORED in a meta CSP by spec — anti-framing for
+// PAGES must be set at the Replit serving layer (handoff note); the API
+// already sends X-Frame-Options: DENY server-side.
+const SECURITY_META = [
+  `<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https: wss:; object-src 'none'; base-uri 'self'; form-action 'self'" />`,
+  `<meta name="referrer" content="strict-origin-when-cross-origin" />`,
+].join("\n    ");
+
+function setSecurityMeta(html: string): string {
+  // Idempotent (a re-run reads the already-injected home shell as template):
+  // strip BOTH prior injected tags, then insert the fresh block before </head>.
+  const stripped = html
+    .replace(/\s*<meta http-equiv="Content-Security-Policy"[^>]*>/, "")
+    .replace(/\s*<meta name="referrer"[^>]*>/, "");
+  return stripped.replace(/<\/head>/, `    ${SECURITY_META}\n  </head>`);
+}
+
 /** Bake a route's full <head> into the built index.html template. */
 function renderRoute(template: string, location: string): string {
   const head = resolveRouteHead(location);
   let html = template;
+  html = setSecurityMeta(html);
   html = setTitle(html, head.title);
   html = setMetaName(html, "description", head.description);
   html = setMetaName(html, "robots", head.robots);

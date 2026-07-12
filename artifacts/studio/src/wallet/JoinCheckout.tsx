@@ -24,7 +24,7 @@
 // historical gate must then run on the RECIPIENT).
 
 import { useCallback, useEffect, useState, type ReactNode } from "react";
-import { useAccount, useChainId, useSwitchChain, useWriteContract } from "wagmi";
+import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { parseEventLogs } from "viem";
 import { avalanche } from "viem/chains";
@@ -125,12 +125,23 @@ const KNOWN_REVERTS: readonly (readonly [string, string])[] = [
   ["ReserveFloorViolation", "This purchase would break the engine's reserve floor."],
   ["EnforcedPause", "The engine is paused right now."],
   ["InvalidProof", "The engine rejected the membership proof for this wallet."],
+  // Source reverts (AUDIT FIX 1.3) — an EXPLICIT sourceId can revert where the
+  // read-only quote merely previews 0% (MembershipSaleV3 _resolveSource :440-476).
+  ["SourceAlreadyLinked", "This wallet is already linked to a different introduction — the engine keeps the first link. Retry from Join without this introduction link."],
+  ["SourceNotEligible", "This introduction is not eligible for this purchase. Retry from Join without the introduction link — the join itself is unaffected."],
+  ["SelfReferral", "An introduction cannot pay its own buyer. Retry from Join without the introduction link."],
+  ["ReferrerNotSeated", "The introducer's wallet no longer holds SYN, so the introduction cannot apply. Retry from Join without the introduction link."],
 ] as const;
 
 function explainError(e: unknown): string {
   const raw = e instanceof Error ? e.message : String(e);
   if (/user rejected|denied|rejected the request/i.test(raw)) {
     return "You declined the signature. Nothing was sent.";
+  }
+  // AUDIT FIX (1.1): the write itself refuses a wrong-chain wallet (wagmi
+  // ChainMismatchError) — translate it instead of leaking the raw message.
+  if (/chain mismatch|ChainMismatch|does not match the target chain/i.test(raw)) {
+    return "Your wallet is on another network. Switch to Avalanche C-Chain (43114) and retry — nothing was sent.";
   }
   for (const [name, text] of KNOWN_REVERTS) {
     if (raw.includes(name)) return text;
@@ -176,8 +187,10 @@ export default function JoinCheckout({
   usdcDecimals: number;
   synDecimals: number;
 }) {
-  const { address } = useAccount();
-  const chainId = useChainId();
+  // AUDIT FIX (1.1): the WALLET's actual chain, not the config's. useChainId()
+  // returns the config chain (always 43114 on a single-chain config), so it can
+  // never detect a wallet sitting on another network — useAccount().chainId can.
+  const { address, chainId: walletChainId } = useAccount();
   const { switchChain, isPending: switching } = useSwitchChain();
   const { openConnectModal } = useConnectModal();
   const { writeContractAsync } = useWriteContract();
@@ -188,7 +201,7 @@ export default function JoinCheckout({
   const [receipt, setReceipt] = useState<Receipt | null>(null);
 
   const gross = /^[0-9]+$/.test(grossUsdcRaw) ? BigInt(grossUsdcRaw) : null;
-  const onAvalanche = chainId === avalanche.id;
+  const onAvalanche = walletChainId === avalanche.id;
 
   // Fresh-quote source for the buy click (law 3). Kept disabled; fetched
   // imperatively at the moment of signing so minSynOut is never stale.
@@ -370,6 +383,16 @@ export default function JoinCheckout({
         setError("The slippage floor could not be computed from the fresh quote — nothing was signed.");
         return;
       }
+      // AUDIT FIX (1.2) — quote/purchase divergence: the read-only quote merely
+      // previews 0% for a non-applying source, but buy() with an EXPLICIT
+      // sourceId REVERTS on it (_resolveSource :440-476). Pass the sourceId
+      // ONLY when the FRESH quote at this click confirms it applies; otherwise
+      // bytes32 zero (the contract still auto-applies a previously LINKED
+      // source gracefully on a zero id — nothing is lost).
+      const applySourceId =
+        sourceId !== null && q.sourceProvided === true && q.sourceValid === true
+          ? sourceId
+          : ZERO_BYTES32;
       const hash = await writeContractAsync({
         address: saleAddress as `0x${string}`,
         abi: SALE_BUY_ABI,
@@ -377,7 +400,7 @@ export default function JoinCheckout({
         args: [
           gross!,
           address, // recipient EXPLICITLY = the connected wallet (Q12; gifting = C4)
-          (sourceId ?? ZERO_BYTES32) as `0x${string}`,
+          applySourceId as `0x${string}`,
           BigInt(minSynOut),
           [], // v1Proof MUST be empty on a direct buy (Q10)
         ],

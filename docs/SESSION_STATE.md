@@ -8,7 +8,24 @@ Direction specs now live IN this repo: `docs/direction/MASTER_BUILD_SPEC.md` ·
 `docs/direction/GAMIFICATION_LEGAL_DOCTRINE.md` (recognition-only, legal shield).
 Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md`.
 
-> **▶ 🔴 NEWEST HANDOFF (read FIRST): `docs/handoff/new-session-handoff-2026-07-13-c5-go-live-flip.md`** —
+> **▶ 🔴 AUDIT SESSION (2026-07-13) — full pre-flip audit DONE; verdict was "NOT BEFORE …"; the
+> founder triaged it:** **GROUP A fixed (this commit):** real wallet-chain check (`useAccount().chainId`)
+> + ChainMismatch copy · sourceId passed to `buy()` ONLY when the fresh quote says `sourceValid===true`
+> (quote/purchase divergence closed) · 4 source reverts translated (SourceAlreadyLinked/SourceNotEligible/
+> SelfReferral/ReferrerNotSeated) · permanent "not an investment · total loss possible" line on the /join
+> economy card (survives fail-closed) · FAQ 98/106/114 reconciled to today's read-only reality (re-rewritten
+> at the C5 flip) · HTTP security headers: API (CSP none + XFO DENY + nosniff + Referrer-Policy +
+> x-powered-by off) and PAGES (CSP meta baked by the prerender — script-src 'self', connect-src
+> deliberately scheme-wide so wallet connect can't silently break; frame-ancestors for pages = Replit
+> serving layer, see the C5 handoff infra notes) · C5 handoff checklist REPLACED by the complete
+> ~20-item MUST-CHANGE table. **GROUP B (founder decision): ALL new guard machinery (audit 7.1–7.5, 3.1)
+> → Phase 6 HARDEN & SEAL — per the anti-blocking law (founder file
+> `GitHub/_research/AUDIT_TRIAGE_ET_LOI_ANTIBLOCAGE.md` — ⚠️ OUT-OF-REPO on the founder's disk; the HARD
+> RULE wants it committed into docs/direction/ at the founder's GO).** **GROUP C (founder-only, PENDING —
+> untouched): DISCIPLINE_ENFORCED re-arm · homepage Studio-OS teaser · "Raised class" rename · whitepaper
+> §05 tier sentence.** Instance pinning = Replit DASHBOARD setting (no in-repo key) — founder sets max 1.
+>
+> **▶ Prior: `docs/handoff/new-session-handoff-2026-07-13-c5-go-live-flip.md`** —
 > **C5 = the GO-LIVE flip; the founder's GO is GIVEN (2026-07-13).** C2 approve→buy is BUILT + pushed
 > OFF (`c7ad5c7`, proven folded out of the bundle). The flip was deliberately NOT rushed at
 > end-of-context (the C1.3 lesson). The handoff carries the COMPLETE checklist: flip the literal +

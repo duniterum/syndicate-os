@@ -95,7 +95,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
     entries: [
       {
         q: "How do I become a member?",
-        a: "Go to Join, connect a wallet on Avalanche C-Chain, approve USDC, and take a seat through the live membership sale. Join shows an exact, read-only quote before anything is signed, and the current entry rate is read live from the chain.",
+        a: "Go to Join and read your exact quote — what you would pay, the SYN you would receive at the live entry rate, and where every dollar routes, all read live from Avalanche C-Chain. The purchase transaction itself is not yet enabled from this app: it opens when the founder publishes the transaction path. Until then, Join is an exact, read-only preview of the join.",
       },
       {
         q: "Can larger members get cheaper SYN?",
@@ -103,7 +103,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       },
       {
         q: "Can I enter a custom amount?",
-        a: "Yes. Any amount above the published minimum works; Join previews the exact SYN you would receive at the live rate before anything is signed.",
+        a: "Yes. Any amount above the published minimum works; Join computes the exact SYN for your amount at the live rate. Today this is a read-only quote — the purchase transaction is not yet enabled from this app.",
       },
       {
         q: "Can I take multiple seats?",
@@ -111,7 +111,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       },
       {
         q: "What changes after I join?",
-        a: "You receive a permanent founder number, an on-chain SYN balance, a rank, an entry in the public archive, and visibility in future identity and verification modules as they ship. My Syndicate becomes the home for the seat and its proofs.",
+        a: "A member holds a permanent seat number, an on-chain SYN balance, a rank, an entry in the public archive, and visibility in future identity and verification modules as they ship. My Syndicate becomes the home for the seat and its proofs. (The purchase path from this app opens when the founder publishes it.)",
       },
       {
         q: "Is member count the same as economic scale?",

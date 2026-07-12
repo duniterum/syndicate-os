@@ -29,21 +29,59 @@ discovered checklist so the next session executes it fresh, in ONE atomic commit
 5. **Module registry + modules**: `moduleRegistry.ts` `membership-join.notes` is a STATE line that
    SAYS the checkout slice rewrites it in the same commit — rewrite it. `modules.ts:185` join
    description ("read-only; no transaction is sent from this app") — rewrite.
-6. **Sitewide read-only claims sweep** (each becomes FALSE at the flip):
-   - `config/brand.ts:8` `foundationNote: "Read-only foundation shell."` (footer, every page)
-   - `config/brand.ts` headerChips zone — PublicLayout chip says "the public surface is currently
-     read-only" (title attrs in `PublicLayout.tsx` too: ChainPill/LiveChip)
-   - `config/learningModules.ts:29` "This site is a read-only foundation…"
-   - `pages/Whitepaper.tsx` §05: "no transaction is sent from this app"
-   - FAQ corpus (`content/faq-content.ts`): grep `read-only` + "no transaction" + "never
-     initiates" — rewrite the join-related answers honestly (39 Q&A; only the join-claims change)
-   - `config/contractMemory.ts:101` "no purchase, wallet, or transaction surface exists here"
-   - `config/syndicateFacts.ts` (~:275) membership-join fact line
-   - The Guide corpus reuses the FAQ content — verify no stale claim remains (`SyndicateGuide`)
+6. **THE COMPLETE MUST-CHANGE TABLE (from the 2026-07-13 full audit — supersedes the old 8-item
+   list; every row becomes FALSE at the flip and must be rewritten in the SAME commit):**
+
+   STUDIO (user-visible):
+   - `pages/JoinProtocol.tsx:620` — page lead "Read-only: nothing is signed or sent from this page."
+   - `pages/JoinProtocol.tsx:621` — `<LifecycleBadge lifecycle="READ_ONLY_PROOF" />` on /join
+   - `config/syndicateFacts.ts:271` — "Real surfaces, read-only by design" (homepage section title)
+   - `config/syndicateFacts.ts:273` — "Nothing on this site sends a transaction — …" (promoted strip)
+   - `config/syndicateFacts.ts:308` — "no transaction is ever initiated, signed, or submitted here"
+   - `config/syndicateFacts.ts:337` — "No buy flow is wired in this app; receipts are read, never minted here."
+   - `config/modules.ts:185` — join module card "read-only; no transaction is sent from this app."
+   - `config/moduleRegistry.ts:134` — membership-join STATE note (self-declares it must be rewritten)
+   - `config/surfaceClassification.ts:213` — /join summary "…exact read-only quote. No transaction path."
+   - `lib/seo-route-registry.ts:162` — /join SEO title "…Exact Read-Only Quote"
+   - `lib/seo-route-registry.ts:164` — /join SEO description "Read-only: no transaction is initiated…"
+   - `content/guide-content.ts:25` — /join guide blurb "…Nothing is signed here."
+   - `content/docs-content.ts:76` — /join docs purpose "…read-only entry quote before anything is signed."
+   - `content/faq-content.ts:98,106,114` — the three join answers were RECONCILED to read-only on
+     2026-07-13 (Group A fix); at the flip they must be rewritten AGAIN to the live-buy truth.
+   - `pages/Whitepaper.tsx:166` — §05 "…no transaction is sent from this app."
+   - `config/routeMemory.ts:66` — "No buy flow or transaction is wired" (ledger, guard-exempt — accuracy only)
+
+   API-SERVER (served strings — rendered on /status, /map, /join via /api/protocol/reality):
+   - `src/data/sourceStatus.ts:185` — "No transaction path is exposed anywhere."
+   - `src/data/sourceStatus.ts:335` — buyReadiness note "Transaction sending is deliberately not enabled…"
+   - `src/data/protocolTargets.ts:121,129,137` — "Read-only; no wallet or write surface is enabled in this app."
+   - `scripts/verify-canon-integrity.ts:316-318` — guard pins `buyReadiness === "NOT_WIRED"`: update in
+     LOCKSTEP (else it lies, or blocks the flip build).
+
+   SELF-HEALING (verify only): `pages/JoinProtocol.tsx:709,712` — the "Not enabled here" card is
+   inside `CHECKOUT_ENABLED ? null : (…)` and vanishes at the flip.
+
+   STAYS TRUE (verified — do NOT change): /member "read-only self-readback" claims, /map, homepage
+   simulated previews (`syndicateFacts.ts:597,464,504`, `HeroLedger.tsx:262`), source link-builder,
+   `chainReads.ts` "never signs" (the read client genuinely never signs), api-server route comments.
 7. **surfaceClassification** for /join — check the class still holds (guard:coverage will fail
    loudly if not).
 8. **Docs same-commit**: SESSION_STATE (C5 SEALED line + "go-live done" state), OPEN_QUEUE group A,
    DESIGN_ROADMAP /join line, this handoff ticked.
+
+## Infra notes for the founder / Replit (from the 2026-07-13 audit fixes)
+- **Instance pinning (sessions/nonces are in-process memory):** `.replit [deployment]` has NO
+  in-repo key for autoscale instance count — it is a DASHBOARD setting. The founder must set
+  **max instances = 1** in the Replit deployment settings (Q21's Reserved-VM/single-instance
+  remains the durable fix).
+- **Anti-framing for PAGES:** `frame-ancestors` is ignored in a meta CSP by spec. The pages'
+  CSP ships as prerendered meta (done); X-Frame-Options/frame-ancestors for the static pages
+  must be added at the REPLIT SERVING LAYER (Replit states what its static host supports; the
+  API already sends X-Frame-Options: DENY server-side).
+- **CSP watch item at first publish:** the pages' CSP is strict on scripts (`script-src 'self'`)
+  and deliberately scheme-wide on connections (`connect-src 'self' https: wss:`) so wallet
+  connect cannot silently break. After publish, verify in the browser console: zero CSP
+  violations on home, /join quote flow, and a wallet CONNECT attempt.
 
 ## Q21 — verify before the flip
 The auth zone ALREADY looks live in prod (the header shows "Member sign-in"; SIWE worked 2026-07-11).

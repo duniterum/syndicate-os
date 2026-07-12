@@ -43,7 +43,7 @@ import { useTokenomics } from "@/components/tokenomics/useTokenomics";
 import { CHECKOUT_ENABLED } from "@/config/checkoutGate";
 import { readSourceConfig } from "@/lib/chainReads";
 import { JOIN_AMOUNTS_USDC } from "@/config/joinAmounts";
-import { ctas } from "@/config/sharedCopy";
+import { ctas, safetyCopy } from "@/config/sharedCopy";
 
 // C1.3 — the historical gate (wallet-aware, so it lives in the gated wallet
 // module and is reached ONLY via a runtime dynamic import — guard rule 15).
@@ -576,6 +576,12 @@ function JoinEconomics() {
         <p>Your SYN is sent to your wallet at the rate shown — sent, not sold back.</p>
         <p>Capital opens one axis. The other ten, you earn.</p>
         <p className="text-foreground">Not equity. Not yield. Not passive income.</p>
+        {/* AUDIT FIX (8.1) — the permanent money-surface disclaimer: rendered
+            UNCONDITIONALLY (it must survive the fail-closed no-prices path,
+            where the conditional relation sentence disappears). */}
+        <p className="text-foreground" data-testid="text-join-disclaimer">
+          {safetyCopy.notInvestment} Joining can result in total loss.
+        </p>
       </div>
     </Card>
   );

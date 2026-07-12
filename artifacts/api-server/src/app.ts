@@ -9,6 +9,19 @@ import { logger } from "./lib/logger";
 
 const app: Express = express();
 
+// ── HTTP security headers (audit fix, founder-approved 2026-07-13) ──────────
+// This server serves JSON only (the studio pages are a separate static
+// artifact — their headers live at the serving layer / prerendered meta). The
+// strict-correct policy for an API: nothing may be loaded, nothing may frame.
+app.disable("x-powered-by");
+app.use((_req, res, next) => {
+  res.setHeader("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Referrer-Policy", "no-referrer");
+  next();
+});
+
 // Express "trust proxy" stays deliberately UNSET (IA-2.5, founder-approved):
 // the platform's proxy hop count is undocumented and may change, so a fixed
 // trust depth would make peer-derived addresses either collapsed or spoofable.
