@@ -73,7 +73,7 @@ export const DOCS_GROUPS: DocGroup[] = [
       },
       {
         routePath: "/join",
-        purpose: "Preview an exact, read-only entry quote before anything is signed.",
+        purpose: "Read your exact entry quote and complete the join — two signatures from your own wallet.",
         audience: ["New here", "Member"],
       },
       {

@@ -159,9 +159,9 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     routeType: "PUBLIC",
     indexStatus: "INDEX",
     sitemap: true,
-    title: "Join The Syndicate — Exact Read-Only Quote",
+    title: "Join The Syndicate — Take Your Seat On-Chain",
     description:
-      "Read the live membership engine and compute your exact join quote in raw base units. Read-only: no transaction is initiated, signed, or submitted from this app.",
+      "Read your exact live quote — what you pay, the SYN you receive, where every dollar routes — then join with two signatures from your own wallet. Every figure is read live from Avalanche C-Chain.",
     canonicalPath: "/join",
     changefreq: "weekly",
     priority: 0.8,

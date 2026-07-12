@@ -8,7 +8,9 @@ interface LifecycleBadgeProps {
 
 // Lifecycle → tokenized tone. Read-only proof is cyan proof; paused / pending are
 // caution (amber); founder-gated rides the identity (gold) axis; everything else is
-// inert → neutral. None of these read as an affirmative "live" state.
+// inert → neutral. C5 go-live (founder, 2026-07-13): LIVE_ACTION — the one real
+// write, the /join checkout — rides the identity (gold) axis: the seat is the
+// membership act. Every OTHER lifecycle still never reads as "live".
 const lifecycleTone: Record<DisplayLifecycle, StatusTone> = {
   READ_ONLY_PROOF: "proof",
   HISTORICAL_PROOF: "neutral",
@@ -20,6 +22,7 @@ const lifecycleTone: Record<DisplayLifecycle, StatusTone> = {
   PREVIEW: "neutral",
   DESIGN_CONCEPT: "neutral",
   FUTURE: "neutral",
+  LIVE_ACTION: "identity",
 };
 
 export function LifecycleBadge({ lifecycle, className = "" }: LifecycleBadgeProps) {

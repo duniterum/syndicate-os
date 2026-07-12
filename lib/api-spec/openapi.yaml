@@ -381,6 +381,9 @@ components:
             - NOT_WIRED
             - VERIFIED_SOURCE_PENDING_ADAPTER
             - FUTURE
+            # C5 go-live (founder, 2026-07-13): the canonical os-contracts
+            # posture for a real, gated write — the /join checkout is the one.
+            - LIVE_ACTION
         publicClass:
           type: string
           enum:

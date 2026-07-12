@@ -188,13 +188,16 @@ function sectionB(canonFiles: string[]): void {
 // C) Public payload contract (bans apply ONLY here, to the serialized payload)
 // ─────────────────────────────────────────────────────────────────────────────
 // Canonical public-display subset of @workspace/os-contracts SourcePosture
-// (Slice 2.20B convergence). LIVE_ACTION / AUTH_REQUIRED / ADMIN_ONLY are
-// intentionally NOT allowed in this public, read-only payload.
+// (Slice 2.20B convergence). AUTH_REQUIRED / ADMIN_ONLY stay intentionally NOT
+// allowed in this public payload. C5 GO-LIVE (founder, 2026-07-13): LIVE_ACTION
+// is allowed — the published two-signature join on /join, signed from the
+// visitor's own wallet (checked below to be EXACTLY the buyReadiness entry).
 const ALLOWED_POSTURES = new Set([
   "READ_ONLY_PROOF",
   "NOT_WIRED",
   "VERIFIED_SOURCE_PENDING_ADAPTER",
   "FUTURE",
+  "LIVE_ACTION",
 ]);
 // Forbidden in the serialized payload: the rejected prior-art postures AND the
 // retired 6-state dialect now converged onto canonical SourcePosture. Matched as
@@ -271,11 +274,14 @@ function sectionD(): void {
   // the wallet session shell went public (walletSession), and the read-only
   // link builder shipped (linkGeneration) — all READ_ONLY_PROOF. continuity is
   // VERIFIED_SOURCE_PENDING_ADAPTER (Part B verified server-side, no public
-  // adapter) and buyReadiness stays NOT_WIRED (no transaction surface exists).
+  // adapter). C5 GO-LIVE (founder, 2026-07-13): buyReadiness moved
+  // NOT_WIRED → LIVE_ACTION (the published two-signature join) — it must be
+  // the ONE AND ONLY LIVE_ACTION in the payload.
   check("D", "READ_ONLY_PROOF count === 9", counts.READ_ONLY_PROOF === 9, String(counts.READ_ONLY_PROOF ?? 0));
-  check("D", "NOT_WIRED count === 7", counts.NOT_WIRED === 7, String(counts.NOT_WIRED ?? 0));
+  check("D", "NOT_WIRED count === 6", counts.NOT_WIRED === 6, String(counts.NOT_WIRED ?? 0));
   check("D", "VERIFIED_SOURCE_PENDING_ADAPTER count === 1", counts.VERIFIED_SOURCE_PENDING_ADAPTER === 1, String(counts.VERIFIED_SOURCE_PENDING_ADAPTER ?? 0));
   check("D", "FUTURE count === 7", counts.FUTURE === 7, String(counts.FUTURE ?? 0));
+  check("D", "LIVE_ACTION count === 1 AND it is exactly buyReadiness", counts.LIVE_ACTION === 1 && payload.categories.buyReadiness?.posture === "LIVE_ACTION", String(counts.LIVE_ACTION ?? 0));
 
   const expectedReadOnly = [
     "archive",
@@ -311,10 +317,14 @@ function sectionD(): void {
     payload.categories.continuity?.posture === "VERIFIED_SOURCE_PENDING_ADAPTER",
     payload.categories.continuity?.posture,
   );
+  // C5 GO-LIVE (founder, 2026-07-13): the join transaction path is PUBLISHED —
+  // buyReadiness is the protocol's one LIVE_ACTION (signed from the visitor's
+  // own wallet; the server still sends nothing). Updated in lockstep with the
+  // flip commit, exactly as the C5 handoff required.
   check(
     "D",
-    "buyReadiness remains NOT_WIRED (no transaction surface)",
-    payload.categories.buyReadiness?.posture === "NOT_WIRED",
+    "buyReadiness is LIVE_ACTION (the published two-signature join)",
+    payload.categories.buyReadiness?.posture === "LIVE_ACTION",
     payload.categories.buyReadiness?.posture,
   );
 

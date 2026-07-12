@@ -8,10 +8,13 @@ import type { SourcePosture } from "@workspace/os-contracts";
  * no balances, amounts, prices, member data, full wallet addresses, or RPC reads.
  * Every category's `value` is `null`. The Zod schema below restricts `posture` to
  * the canonical public-display subset of `@workspace/os-contracts` `SourcePosture`
- * (READ_ONLY_PROOF, NOT_WIRED, VERIFIED_SOURCE_PENDING_ADAPTER, FUTURE). The
- * forbidden LIVE_READ / PROTOTYPE / SIMULATED and the retired prior-art dialect
- * (ADAPTER_REQUIRED / NOT_LIVE / EXTERNAL) are not part of the enum, so they can
- * never be emitted; `value` is pinned to `null`, so any drift throws at startup.
+ * (READ_ONLY_PROOF, NOT_WIRED, VERIFIED_SOURCE_PENDING_ADAPTER, FUTURE — plus,
+ * since the C5 go-live [founder, 2026-07-13], LIVE_ACTION for exactly one entry:
+ * buyReadiness, the published two-signature join signed from the visitor's own
+ * wallet). The forbidden LIVE_READ / PROTOTYPE / SIMULATED and the retired
+ * prior-art dialect (ADAPTER_REQUIRED / NOT_LIVE / EXTERNAL) are not part of the
+ * enum, so they can never be emitted; `value` is pinned to `null`, so any drift
+ * throws at startup.
  */
 
 export const Posture = z.enum([
@@ -19,6 +22,7 @@ export const Posture = z.enum([
   "NOT_WIRED",
   "VERIFIED_SOURCE_PENDING_ADAPTER",
   "FUTURE",
+  "LIVE_ACTION",
 ]);
 
 export const PublicClass = z.enum([
@@ -75,6 +79,8 @@ const STATUS_BADGE: Record<Posture, string> = {
   NOT_WIRED: "Not wired",
   VERIFIED_SOURCE_PENDING_ADAPTER: "Verified source pending adapter",
   FUTURE: "Future",
+  // C5 go-live (founder, 2026-07-13) — the one live write, signed by the visitor.
+  LIVE_ACTION: "Live — signed from your wallet",
 };
 
 /**
@@ -182,7 +188,7 @@ const CANON: CanonEntry[] = [
     publicClass: "INSTITUTIONAL_PUBLIC_SALE_SAFE",
     sourceRef: "vendored:the-syndicate/contracts/abi/sale-abi.ts@cf4ca34",
     confidence: "high",
-    note: "Membership-sale state is a live read-only spine group: lifecycle flags for every engine generation plus the active engine's public figures and per-amount quote view, surfaced as exact raw base-unit strings. No transaction path is exposed anywhere.",
+    note: "Membership-sale state is a live read-only spine group: lifecycle flags for every engine generation plus the active engine's public figures and per-amount quote view, surfaced as exact raw base-unit strings. The join transaction itself is signed from the visitor's own wallet on /join — this spine reads only and sends nothing.",
     surface: "/join",
   },
   {
@@ -328,11 +334,14 @@ const CANON: CanonEntry[] = [
   {
     key: "buyReadiness",
     label: "Join Transaction Readiness",
-    posture: "NOT_WIRED",
+    // C5 GO-LIVE (founder, 2026-07-13): the one LIVE_ACTION in the protocol —
+    // the published two-signature approve→buy on /join. The write is signed
+    // from the VISITOR's own wallet; this server still sends and holds nothing.
+    posture: "LIVE_ACTION",
     publicClass: "INSTITUTIONAL_PUBLIC_SALE_SAFE",
-    sourceRef: "internal:read-only-boundary",
+    sourceRef: "internal:checkout-gate@C5",
     confidence: "high",
-    note: "Transaction sending is deliberately not enabled: no wallet write path, no purchase call, no funds movement from this app. The joining surface reads the live engine and computes exact quotes only; the transaction path becomes available only when the founder publishes it.",
+    note: "The join transaction path is LIVE (founder-published 2026-07-13): /join builds an exact approve→buy pair — an exact USDC approval, then the join — that the visitor signs from their own wallet, with the seat read from the on-chain receipt event. This server sends nothing and holds nothing; no server-side write path or funds movement exists.",
     surface: "/join",
   },
 ];

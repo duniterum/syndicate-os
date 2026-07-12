@@ -1,16 +1,18 @@
 import { StatusPill, type StatusTone } from "@/components/status-pill/StatusPill";
-import type { NonLivePosture } from "@workspace/os-contracts";
+import type { SourcePosture } from "@workspace/os-contracts";
 
 /**
  * Posture badge for the /status honesty hub, keyed by the canonical
  * @workspace/os-contracts SourcePosture vocabulary returned by
  * GET /api/source-status.
  *
- * This is posture-only: it communicates wiring posture, never a live value. The
- * prop is typed as NonLivePosture — the canon's read / display / gated postures
- * with LIVE_ACTION deliberately excluded, so a badge can never imply a live write.
+ * C5 GO-LIVE (founder, 2026-07-13): widened from NonLivePosture to the full
+ * SourcePosture — the /join checkout is a real, gated LIVE_ACTION (a write the
+ * VISITOR signs from their own wallet; the server still sends nothing), and the
+ * ledger must be able to say so honestly. Every other posture keeps its
+ * non-live reading.
  */
-export type BadgePosture = NonLivePosture;
+export type BadgePosture = SourcePosture;
 
 export const postureText: Record<BadgePosture, string> = {
   READ_ONLY_PROOF: "Read-only proof",
@@ -18,18 +20,21 @@ export const postureText: Record<BadgePosture, string> = {
   VERIFIED_SOURCE_PENDING_ADAPTER: "Verified source pending adapter",
   AUTH_REQUIRED: "Auth required",
   ADMIN_ONLY: "Admin only",
+  LIVE_ACTION: "Live — signed from your wallet",
   FUTURE: "Future",
 };
 
-// Posture → tokenized tone. Read-only proof is the strongest state (cyan proof);
-// a pending source is caution (amber); admin-only rides the identity (gold) axis;
-// everything else is inert → neutral. No state ever renders an affirmative "live".
+// Posture → tokenized tone. Read-only proof is the strongest read state (cyan
+// proof); a pending source is caution (amber); admin-only and the one live
+// write (the join — a membership act) ride the identity (gold) axis;
+// everything else is inert → neutral.
 const postureTone: Record<BadgePosture, StatusTone> = {
   READ_ONLY_PROOF: "proof",
   VERIFIED_SOURCE_PENDING_ADAPTER: "caution",
   NOT_WIRED: "neutral",
   AUTH_REQUIRED: "neutral",
   ADMIN_ONLY: "identity",
+  LIVE_ACTION: "identity",
   FUTURE: "neutral",
 };
 

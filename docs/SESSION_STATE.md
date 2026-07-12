@@ -8,7 +8,23 @@ Direction specs now live IN this repo: `docs/direction/MASTER_BUILD_SPEC.md` ·
 `docs/direction/GAMIFICATION_LEGAL_DOCTRINE.md` (recognition-only, legal shield).
 Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md`.
 
-> **▶ 🔴 AUDIT SESSION (2026-07-13) — full pre-flip audit DONE; verdict was "NOT BEFORE …"; the
+> **▶ 🔴🚀 C5 GO-LIVE (founder GO, 2026-07-13) — THE FLIP IS IN THIS COMMIT.** `CHECKOUT_ENABLED = true`:
+> the two-signature approve→buy is PUBLISHED on `/join` (checkout chunk verified PRESENT in the bundle;
+> the boundary card verified GONE). The COMPLETE MUST-CHANGE sweep executed in the same commit: /join
+> lead + badge (new lifecycle **LIVE_ACTION** — "Live — signed from your wallet", gold identity axis;
+> `guard-posture-map` adapted to allow EXACTLY that one key; `PostureBadge` widened to full
+> SourcePosture) · SEO title/description · surfaceClassification · modules + moduleRegistry STATE ·
+> syndicateFacts ×3 · guide/docs content · FAQ 98/106/114 re-written to the live-buy truth ·
+> whitepaper §05 · routeMemory · SERVER: sourceStatus sale note + buyReadiness **NOT_WIRED →
+> LIVE_ACTION** (openapi enum + orval regen; the ONE live action, asserted by `verify-canon-integrity`
+> in lockstep: LIVE_ACTION count === 1 === buyReadiness) · protocolTargets unitNotes ×3. All green:
+> studio typecheck 0 + 12 guards + seo:check + rewrites:check · api-server typecheck 0 + verify:canon
+> 35/35 + reality 138/138 + auth-zone 622. NEXT: Replit publish → **the founder's $5 test THROUGH the
+> referral link** (protocol + the 3 wallet conditions in the C5 handoff) → expected seat #13, readback
+> recomputes 13/12 → then the REFERRAL PUBLIC ACTIVATION slice (OPEN_QUEUE). Rollback = flip the
+> literal back, one commit, one deploy.
+>
+> **▶ Prior: 🔴 AUDIT SESSION (2026-07-13) — full pre-flip audit DONE; verdict was "NOT BEFORE …"; the
 > founder triaged it:** **GROUP A → ✅ SEALED in prod (`ed9af22`, Replit all-gates + live-verified:
 > zero CSP violations on home//join//faq, quote intact under CSP, permanent disclaimer renders, new
 > FAQ in the served JSON-LD, all 5 API headers measured on the live domain):** real wallet-chain check (`useAccount().chainId`)

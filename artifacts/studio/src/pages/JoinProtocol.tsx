@@ -1,16 +1,18 @@
-// JoinProtocol — public /join: the read-only joining surface.
+// JoinProtocol — public /join: the joining surface.
 // ---------------------------------------------------------------------------
-// Public Online Integration MVP (founder-approved). Everything here is a live
-// READ of the active membership engine or an exact read-only computation:
+// C5 GO-LIVE (founder, 2026-07-13): the two-signature approve→buy checkout is
+// PUBLISHED (CHECKOUT_ENABLED=true). The reads below stay exactly as built;
+// the one write is signed from the visitor's OWN wallet (JoinCheckout) — this
+// app never holds or moves funds.
+// Everything else here is a live READ of the active membership engine or an
+// exact read-only computation:
 //   - the live sale group renders through the shared ProtocolRealityPanel
 //     (same truth-labelling as /status — nothing bespoke, nothing invented);
 //   - the quote is the engine's own public quote view, surfaced as EXACT raw
 //     base-unit strings; formatted values are client-side projections and the
 //     raw string is always shown alongside;
 //   - an optional ?source= introduction id is validated read-only against the
-//     on-chain registry (the server never echoes the id back);
-//   - HARD BOUNDARY: no transaction is ever initiated, signed, or submitted
-//     from this app. The buy-readiness card below says so explicitly.
+//     on-chain registry (the server never echoes the id back).
 
 import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
 import { Link, useSearch } from "wouter";
@@ -623,8 +625,8 @@ export default function JoinProtocol() {
     <PublicPage
       eyebrow="Membership"
       title="Take your seat"
-      lead="Choose an amount, or enter your own. Every seat is equal — $5 and $10,000 buy the same seat. Read-only: nothing is signed or sent from this page."
-      badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
+      lead="Choose an amount, or enter your own. Every seat is equal — $5 and $10,000 buy the same seat. The join is two signatures from your own wallet: an exact USDC approval, then the join itself. This app never holds or moves your funds."
+      badge={<LifecycleBadge lifecycle="LIVE_ACTION" />}
     >
       {/* C1.3 historical gate — blocks the (future) buy path for an unclaimed
           historical wallet; renders nothing for everyone else. */}

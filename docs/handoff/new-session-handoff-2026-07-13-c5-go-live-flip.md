@@ -1,5 +1,11 @@
 # Handoff — C5: the GO-LIVE flip (founder GO already given 2026-07-13)
 
+> **✅ EXECUTED (2026-07-13, the flip commit).** Every checklist item below was done in ONE atomic
+> commit — the flip, the new LIVE_ACTION lifecycle/posture (studio + openapi/zod/orval + server +
+> verify-canon lockstep), and the COMPLETE MUST-CHANGE sweep. Remaining: Replit publish → the
+> founder's $5 test through the referral link (protocol below) → the referral public activation
+> slice (OPEN_QUEUE). This document stays as the record of what the flip touched.
+
 **Read after `docs/SESSION_STATE.md`.** The founder said GO to C5. The flip was NOT rushed at
 end-of-context (the C1.3 lesson: a money gate is never rushed) — this handoff carries the COMPLETE
 discovered checklist so the next session executes it fresh, in ONE atomic commit.

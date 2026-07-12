@@ -164,8 +164,9 @@ export default function Whitepaper() {
                 contributions build higher standing on the Capital axis — recognition that grows with
                 what you put in, like any serious membership house. Standing never changes your seat,
                 never changes the SYN price, and never creates a financial advantage. The live entry
-                rate is <LiveNum value={tk.entrySynPerUsdc} unit="SYN per 1 USDC" />. Preview an exact
-                read-only quote on <Link href="/join">Join</Link> — no transaction is sent from this app.
+                rate is <LiveNum value={tk.entrySynPerUsdc} unit="SYN per 1 USDC" />. Read your exact quote
+                and take your seat on <Link href="/join">Join</Link> — two signatures from your own
+                wallet; the app never holds your funds.
               </p>
             </ProseSection>
 

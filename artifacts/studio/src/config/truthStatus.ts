@@ -108,8 +108,13 @@ export const truthStatusToPosture: Record<TruthStatus, SourcePosture> = {
 // codes — words like "Paused by precaution" or "Historical proof". This is NOT
 // a competing canon: every `DisplayLifecycle` PROJECTS onto the canonical
 // `SourcePosture` via `displayLifecycleToPosture` below, exactly like
-// `truthStatusToPosture`. None map to LIVE_ACTION — nothing here is a live
-// write, and nothing here may render as "Live".
+// `truthStatusToPosture`.
+//
+// C5 GO-LIVE AMENDMENT (founder, 2026-07-13): the foundation is no longer
+// all-read-only. EXACTLY ONE lifecycle — LIVE_ACTION — maps to the canonical
+// LIVE_ACTION posture: the /join checkout, a real gated write signed from the
+// visitor's OWN wallet (this server/app still holds and moves nothing). Every
+// other lifecycle keeps the original rule: never a live write, never "Live".
 // ---------------------------------------------------------------------------
 
 export type DisplayLifecycle =
@@ -122,7 +127,8 @@ export type DisplayLifecycle =
   | "AUTH_REQUIRED"
   | "PREVIEW"
   | "DESIGN_CONCEPT"
-  | "FUTURE";
+  | "FUTURE"
+  | "LIVE_ACTION";
 
 export const displayLifecycleText: Record<DisplayLifecycle, string> = {
   READ_ONLY_PROOF: "Verified — view only",
@@ -135,6 +141,7 @@ export const displayLifecycleText: Record<DisplayLifecycle, string> = {
   PREVIEW: "Preview",
   DESIGN_CONCEPT: "Concept",
   FUTURE: "Coming later",
+  LIVE_ACTION: "Live — signed from your wallet",
 };
 
 // Projection onto the canonical posture. A paused/historical real system keeps
@@ -151,4 +158,6 @@ export const displayLifecycleToPosture: Record<DisplayLifecycle, SourcePosture> 
   PREVIEW: "FUTURE",
   DESIGN_CONCEPT: "FUTURE",
   FUTURE: "FUTURE",
+  // The ONE live write (C5 go-live, founder 2026-07-13): the /join checkout.
+  LIVE_ACTION: "LIVE_ACTION",
 };

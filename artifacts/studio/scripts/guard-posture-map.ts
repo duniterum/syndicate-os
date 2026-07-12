@@ -1,8 +1,13 @@
 // Guard: posture-map resolves to SourcePosture.
 // Both projection maps in truthStatus.ts (TruthStatus -> SourcePosture and
 // DisplayLifecycle -> SourcePosture) must be total and land on a valid
-// @workspace/os-contracts SourcePosture. Nothing in this read-only foundation may
-// project to LIVE_ACTION.
+// @workspace/os-contracts SourcePosture.
+//
+// C5 GO-LIVE ADAPTATION (founder, 2026-07-13 — per CANON_LOI_ANTIBLOCAGE:
+// adapted IN the go-live slice, founder decided): the foundation is no longer
+// all-read-only. EXACTLY ONE key may project to LIVE_ACTION — the
+// DisplayLifecycle "LIVE_ACTION" itself (the /join checkout, a gated write
+// signed from the visitor's own wallet). Every OTHER key keeps the ban.
 //
 // SourcePosture is a TYPE-ONLY contract (os-contracts ships no runtime value), so
 // the canonical posture set is mirrored here on purpose.
@@ -60,10 +65,13 @@ for (const { name, keys, map } of maps) {
         `${name} "${key}" -> valid posture ${posture}`,
         `${name} "${key}" maps to invalid posture "${posture}"`,
       );
+      const liveAllowed = name === "DisplayLifecycle" && key === "LIVE_ACTION";
       check(
-        posture !== "LIVE_ACTION",
-        `${name} "${key}" is not LIVE_ACTION`,
-        `${name} "${key}" maps to LIVE_ACTION \u2014 forbidden in a read-only foundation`,
+        posture !== "LIVE_ACTION" || liveAllowed,
+        liveAllowed
+          ? `${name} "${key}" is the ONE allowed LIVE_ACTION (C5 go-live)`
+          : `${name} "${key}" is not LIVE_ACTION`,
+        `${name} "${key}" maps to LIVE_ACTION \u2014 only DisplayLifecycle "LIVE_ACTION" may (C5 go-live, founder 2026-07-13)`,
       );
     }
   }
@@ -83,5 +91,5 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(
-  `[guard:posture] PASS \u2014 every posture projection is total, valid, and non-live.`,
+  `[guard:posture] PASS \u2014 every posture projection is total and valid; LIVE_ACTION is confined to the one go-live lifecycle.`,
 );

@@ -126,6 +126,7 @@ export const SourceStatusItemPosture = {
   NOT_WIRED: 'NOT_WIRED',
   VERIFIED_SOURCE_PENDING_ADAPTER: 'VERIFIED_SOURCE_PENDING_ADAPTER',
   FUTURE: 'FUTURE',
+  LIVE_ACTION: 'LIVE_ACTION',
 } as const;
 
 export type SourceStatusItemPublicClass = typeof SourceStatusItemPublicClass[keyof typeof SourceStatusItemPublicClass];

@@ -118,7 +118,7 @@ export const SALE_TARGETS: readonly SaleTarget[] = [
         view: "availableSyn",
         decimals: 18,
         unitNote:
-          "Exact on-chain uint256 in 18-decimal SYN base units, read live from the active V3 engine. Read-only; no wallet or write surface is enabled in this app.",
+          "Exact on-chain uint256 in 18-decimal SYN base units, read live from the active V3 engine. A read-only spine figure — the join transaction is signed from the visitor's own wallet, never by this server.",
       },
       {
         idSuffix: "totalGrossUsdc",
@@ -126,7 +126,7 @@ export const SALE_TARGETS: readonly SaleTarget[] = [
         view: "totalGrossUsdc",
         decimals: 6,
         unitNote:
-          "Exact on-chain uint256 in 6-decimal USDC base units, read live from the active V3 engine. Read-only cumulative figure; no wallet or write surface is enabled in this app.",
+          "Exact on-chain uint256 in 6-decimal USDC base units, read live from the active V3 engine. A read-only cumulative spine figure — the join transaction is signed from the visitor's own wallet, never by this server.",
       },
       {
         idSuffix: "receiptCount",
@@ -134,7 +134,7 @@ export const SALE_TARGETS: readonly SaleTarget[] = [
         view: "receiptCount",
         decimals: null,
         unitNote:
-          "Exact on-chain receipt tally read live from the active V3 engine. Read-only; no wallet or write surface is enabled in this app.",
+          "Exact on-chain receipt tally read live from the active V3 engine. A read-only spine figure — the join transaction is signed from the visitor's own wallet, never by this server.",
       },
     ],
   },

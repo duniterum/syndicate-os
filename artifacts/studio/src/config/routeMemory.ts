@@ -63,7 +63,7 @@ export const routeMemory: RouteMemoryEntry[] = [
     description: "The membership sale landing and buy flow.",
     classification: "MERGE_PUBLIC",
     disposition:
-      "Folded into an honest member preview and seat framing. No buy flow or transaction is wired.",
+      "Folded into an honest member preview and seat framing. The live buy flow now lives at /join (C5 go-live, founder 2026-07-13).",
     mappedRoute: "/member",
   },
   {

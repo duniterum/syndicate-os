@@ -127,11 +127,10 @@ const specs: readonly RegistrySpec[] = [
     riskClass: "OWNER_SIDE_ONCHAIN_ACTION",
     forbiddenClaims: ["FINANCIAL_UPSIDE", "INCOME_PROMISE", "GUARANTEED_OUTCOME"],
     // STATE (not an INVARIANT) — a description of TODAY, per
-    // docs/direction/CANON_INVARIANT_VS_STATE.md. It is NOT a rule that the app
-    // must never send a transaction; it records that today it does not. The
-    // checkout slice makes this false and rewrites this line in the same commit.
+    // docs/direction/CANON_INVARIANT_VS_STATE.md. Rewritten in the C5 go-live
+    // commit exactly as the previous state line said it would be.
     notes:
-      "STATE (today): read-only quote computed from the live V3 engine's public figures. Purchase execution is not yet wired here — as of this state the app does not send a transaction. (This is a description of today, not a rule; the checkout slice supersedes it.)",
+      "STATE (today, C5 go-live — founder 2026-07-13): live V3 quote plus the published two-signature approve→buy checkout. The app BUILDS the transactions; the visitor's own wallet SIGNS them; the seat is read from the receipt event. The server sends nothing and holds nothing.",
   },
   {
     registryId: "wallet-session",

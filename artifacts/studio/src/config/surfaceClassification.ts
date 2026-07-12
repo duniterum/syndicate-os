@@ -210,7 +210,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PUBLIC_VISITOR",
     layout: "public",
     summary:
-      "Public joining surface: live engine read + exact read-only quote. No transaction path.",
+      "Public joining surface: live engine read + exact quote + the two-signature join signed from the visitor's own wallet (C5 go-live, founder 2026-07-13).",
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },

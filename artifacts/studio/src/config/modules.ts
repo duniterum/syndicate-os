@@ -182,7 +182,7 @@ export const modules = [
     live: false,
     phase: "live",
     description:
-      "Read the live membership engine and compute an exact join quote — read-only; no transaction is sent from this app.",
+      "Read the live membership engine, compute an exact join quote, and complete the join — two signatures from your own wallet; the app never holds your funds.",
     dependencies: [],
     nav: { header: true, sidebar: false, footer: true },
     icon: UserPlus,

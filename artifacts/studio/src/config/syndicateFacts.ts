@@ -273,9 +273,9 @@ export const trustStrip = {
 /** Marketing blurbs for PROMOTED_STRIP registry entries, keyed by registryId. */
 export const homepagePromotedStrip = {
   eyebrow: "Act on the protocol",
-  title: "Real surfaces, read-only by design",
+  title: "Real surfaces, live and verifiable",
   subtitle:
-    "Every door below opens onto live protocol reality. Nothing on this site sends a transaction — you read, verify, and act on-chain yourself.",
+    "Every door below opens onto live protocol reality. Reads are free and open; the one write — the join — is signed from your own wallet, with every figure shown before you sign.",
   blurbs: {
     "membership-join":
       "Read the live membership engine and compute an exact join quote — figures straight from the active engine, never estimated.",
@@ -310,7 +310,7 @@ export const memberAccess = {
     "Your self-custodied wallet address is the identity key — no usernames, no passwords, no accounts.",
     "Membership is recognized, not requested: a verified Membership Sale receipt is what establishes a seat.",
     "Member number, chapter, and recognition standing are derived facts read from on-chain history — never assigned by hand.",
-    "Seat issuance from this app remains founder-gated: no transaction is ever initiated, signed, or submitted here. The only live figure is the self-readback of your own signed wallet's standing — no balances, no member directory, no other wallet's record.",
+    "Taking a seat is live on Join — two signatures from your own wallet. This page stays a read-only self-readback of your own signed wallet's standing — no balances, no member directory, no other wallet's record.",
   ],
 };
 
@@ -321,11 +321,12 @@ export interface IdentityStage {
   lifecycle: DisplayLifecycle;
 }
 
-// The wallet-as-identity organism, recovered as read-only doctrine. Each stage
-// carries an HONEST lifecycle: the wallet/chain identity is verifiable today
-// (see /status), receipt → index → derived facts are real architecture pending
-// the live indexer (PENDING_ADAPTER), and Member Home is FUTURE. Nothing
-// here implies a active wallet connector, active buy flow, or a granted seat.
+// The wallet-as-identity organism. Each stage carries an HONEST lifecycle:
+// the wallet/chain identity is verifiable today (see /status), receipt →
+// index → derived facts are real architecture pending the live indexer
+// (PENDING_ADAPTER), and Member Home is FUTURE. Since the C5 go-live
+// (founder, 2026-07-13) the buy flow IS live on /join — signed from the
+// visitor's own wallet; nothing here grants a seat by itself.
 export const membershipIdentity = {
   heading: "How membership identity works",
   lead: "A deterministic chain from wallet to recognition. Each stage is labelled for exactly how real it is in this foundation — no stage is simulated.",
@@ -339,7 +340,7 @@ export const membershipIdentity = {
     {
       step: "02",
       title: "Membership Sale receipt",
-      body: "A verified on-chain purchase receipt is the proof that establishes a seat — the spine the entire member read-model hangs off. No buy flow is wired in this app; receipts are read, never minted here.",
+      body: "A verified on-chain purchase receipt is the proof that establishes a seat — the spine the entire member read-model hangs off. The buy flow is live on Join (two signatures from your own wallet); the receipt event is what establishes the seat, and this page only reads it.",
       lifecycle: "PENDING_ADAPTER",
     },
     {

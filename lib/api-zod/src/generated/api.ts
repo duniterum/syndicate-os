@@ -30,7 +30,7 @@ export const GetSourceStatusResponse = zod.object({
   "key": zod.string(),
   "label": zod.string(),
   "category": zod.string(),
-  "posture": zod.enum(['READ_ONLY_PROOF', 'NOT_WIRED', 'VERIFIED_SOURCE_PENDING_ADAPTER', 'FUTURE']),
+  "posture": zod.enum(['READ_ONLY_PROOF', 'NOT_WIRED', 'VERIFIED_SOURCE_PENDING_ADAPTER', 'FUTURE', 'LIVE_ACTION']),
   "publicClass": zod.enum(['SAFE_PUBLIC', 'INSTITUTIONAL_PUBLIC_SALE_SAFE', 'PUBLIC_MEMORY_SAFE', 'ECONOMIC_DASHBOARD_SAFE', 'MEMBER_ONLY', 'FOUNDER_OPERATOR_ONLY', 'INTERNAL_ONLY', 'FOUNDER_DECISION', 'BLOCKED_PUBLIC']),
   "statusBadge": zod.string(),
   "sourceRef": zod.string(),

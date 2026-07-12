@@ -95,7 +95,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
     entries: [
       {
         q: "How do I become a member?",
-        a: "Go to Join and read your exact quote — what you would pay, the SYN you would receive at the live entry rate, and where every dollar routes, all read live from Avalanche C-Chain. The purchase transaction itself is not yet enabled from this app: it opens when the founder publishes the transaction path. Until then, Join is an exact, read-only preview of the join.",
+        a: "Go to Join, read your exact quote — what you pay, the SYN you receive at the live entry rate, and where every dollar routes, all read live from Avalanche C-Chain — then complete the join from your own wallet: an exact USDC approval, then the join signature. Your seat number is written by the on-chain receipt event, never by this app.",
       },
       {
         q: "Can larger members get cheaper SYN?",
@@ -103,7 +103,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       },
       {
         q: "Can I enter a custom amount?",
-        a: "Yes. Any amount above the published minimum works; Join computes the exact SYN for your amount at the live rate. Today this is a read-only quote — the purchase transaction is not yet enabled from this app.",
+        a: "Yes. Any amount above the published minimum works; Join computes the exact SYN for your amount at the live rate, and you complete the join with two signatures from your own wallet.",
       },
       {
         q: "Can I take multiple seats?",
@@ -111,7 +111,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       },
       {
         q: "What changes after I join?",
-        a: "A member holds a permanent seat number, an on-chain SYN balance, a rank, an entry in the public archive, and visibility in future identity and verification modules as they ship. My Syndicate becomes the home for the seat and its proofs. (The purchase path from this app opens when the founder publishes it.)",
+        a: "A member holds a permanent seat number, an on-chain SYN balance, a rank, an entry in the public archive, and visibility in future identity and verification modules as they ship. My Syndicate becomes the home for the seat and its proofs.",
       },
       {
         q: "Is member count the same as economic scale?",
