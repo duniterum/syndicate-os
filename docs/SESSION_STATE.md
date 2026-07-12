@@ -8,7 +8,13 @@ Direction specs now live IN this repo: `docs/direction/MASTER_BUILD_SPEC.md` ·
 `docs/direction/GAMIFICATION_LEGAL_DOCTRINE.md` (recognition-only, legal shield).
 Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md`.
 
-> **▶ LATEST HANDOFF (read after this file): `docs/handoff/new-session-handoff-2026-07-11-recognition-live-and-member-home.md`** —
+> **▶ NEWEST HANDOFF (read FIRST after this file): `docs/handoff/new-session-handoff-2026-07-12-checkout-C1-groundwork.md`** —
+> the `/join` real-money checkout resume point. Anti-drift law + C1.0 vocabulary guards DONE + pushed;
+> C1.1 (amounts + quote core) is NEXT and fully specced there (verified quote shape, Q1–Q12 contract
+> cites, the two 🔴 = historical-seat gate + SourceRegistry caps, the money-path doctrine). The prior
+> handoff below stays valid for the member-recognition arc.
+>
+> **▶ PRIOR HANDOFF: `docs/handoff/new-session-handoff-2026-07-11-recognition-live-and-member-home.md`** —
 > the full recap: the member-recognition arc is **LIVE in prod** (auth on · SIWE signs canonical domain ·
 > member identity menu · EVERY member recognized: genesis #1–#8 frozen roster + V3 #9–#12 live · own-receipt
 > "Share my proof" · prod DB roster populated+verified 12=8+4, prod-write barrier restored). **ADR-003
