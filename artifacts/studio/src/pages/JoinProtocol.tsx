@@ -12,9 +12,9 @@
 //   - HARD BOUNDARY: no transaction is ever initiated, signed, or submitted
 //     from this app. The buy-readiness card below says so explicitly.
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Link, useSearch } from "wouter";
-import { Calculator, Link2, ShieldAlert } from "lucide-react";
+import { Link2, ShieldAlert } from "lucide-react";
 import {
   getGetJoinQuoteQueryKey,
   getGetSourceValidateQueryKey,
@@ -32,6 +32,11 @@ import {
   isSourceIdFormat,
   usdcInputToRaw,
 } from "@/lib/rawUnits";
+import {
+  computeMinSynOutRaw,
+  toCheckoutQuote,
+} from "@/lib/checkoutVocabulary";
+import { JOIN_AMOUNTS_USDC } from "@/config/joinAmounts";
 import { ctas } from "@/config/sharedCopy";
 
 // ── Introduction (?source=) status ──────────────────────────────────────────
@@ -101,37 +106,35 @@ function IntroductionStatus({ sourceId }: { sourceId: string }) {
 
 // ── Quote result rendering ──────────────────────────────────────────────────
 
-function QuoteRow({
+function QuoteLine({
   label,
-  wireKey,
-  raw,
-  decimals,
+  primary,
+  sub,
+  testId,
 }: {
   label: string;
-  wireKey: string;
-  raw: string;
-  decimals: number | null;
+  primary: ReactNode;
+  sub?: ReactNode;
+  testId?: string;
 }) {
   return (
-    <div className="flex items-baseline justify-between gap-4 py-2.5 border-b border-border/40 last:border-b-0">
-      <div className="min-w-0">
-        <div className="text-sm text-foreground">{label}</div>
-        <div className="font-mono text-[10px] text-muted-foreground">{wireKey}</div>
-      </div>
-      <div className="text-right shrink-0">
-        {decimals !== null ? (
-          <div className="text-sm text-foreground tabular-nums">
-            {formatRawUnits(raw, decimals)}
-          </div>
-        ) : null}
-        <div className="font-mono text-[10px] text-muted-foreground break-all">
-          raw {raw}
+    <div className="flex items-baseline justify-between gap-4 py-3 border-b border-border/40 last:border-b-0">
+      <div className="text-sm text-muted-foreground">{label}</div>
+      <div className="text-right">
+        <div className="text-base font-medium text-foreground tabular-nums" data-testid={testId}>
+          {primary}
         </div>
+        {sub ? <div className="text-xs text-muted-foreground mt-0.5 max-w-[16rem]">{sub}</div> : null}
       </div>
     </div>
   );
 }
 
+// The buyer-facing quote core (C1.1): what you pay · what you receive (SYN + the
+// LIVE era rate, never a frozen card figure) · your seat (a preview — the real
+// number is the receipt event) · the slippage floor. The routing breakdown
+// (source payment + 70/20/10 with proof links) lands in C1.2. Figures are exact
+// engine reads; the raw base-unit strings stay one click away (verify).
 function QuotePanel({
   grossUsdcRaw,
   sourceId,
@@ -149,7 +152,7 @@ function QuotePanel({
   if (isLoading) {
     return (
       <p className="text-sm text-muted-foreground" data-testid="text-quote-loading">
-        Reading your exact quote from the active engine…
+        Reading your exact quote from the live engine…
       </p>
     );
   }
@@ -171,57 +174,64 @@ function QuotePanel({
     );
   }
 
-  const q = data.quote;
+  const q = toCheckoutQuote(data.quote);
+  const floorRaw = computeMinSynOutRaw(q.synOutRaw);
   const sourceLine =
     data.sourceProvided && data.sourceValid === true
-      ? "Computed with the provided verified introduction applied."
+      ? "A verified introduction is applied to this quote."
       : data.sourceProvided
-        ? "The provided introduction is not valid or not active — computed without attribution."
-        : "Computed without an introduction (a direct join is allowed).";
+        ? "The introduction link is not valid or not active — this quote is computed without it."
+        : "No introduction — a direct join.";
 
   return (
-    <div data-testid="panel-quote-result">
-      <div className="mb-1">
-        <QuoteRow
-          label={`SYN allocated for ${formatRawUnits(grossUsdcRaw, data.decimals.usdc)} USDC`}
-          wireKey="synOutRaw"
-          raw={q.synOutRaw}
-          decimals={data.decimals.syn}
+    <div className="animate-in fade-in duration-300" data-testid="panel-quote-result">
+      <QuoteLine
+        label="What you pay"
+        primary={`${formatRawUnits(grossUsdcRaw, data.decimals.usdc)} USDC`}
+        testId="quote-pay"
+      />
+      <QuoteLine
+        label="What you receive"
+        primary={`${formatRawUnits(q.synOutRaw, data.decimals.syn)} SYN`}
+        sub={`Era ${q.era} · ${q.synPerUsdcRaw} SYN per $1 — read live from the engine, and it changes between eras.`}
+        testId="quote-syn"
+      />
+      <QuoteLine
+        label="Your seat"
+        primary={`Seat #${formatRawUnits(q.seatIfFirstRaw, 0)}`}
+        sub="If yours is the next join. The real number is set by the transaction receipt — never predicted here."
+        testId="quote-seat"
+      />
+      {floorRaw !== null ? (
+        <QuoteLine
+          label="Slippage floor"
+          primary={`≥ ${formatRawUnits(floorRaw, data.decimals.syn)} SYN`}
+          sub="The least SYN a purchase would accept — it protects you if the era rate moves before you sign."
+          testId="quote-floor"
         />
-        <QuoteRow
-          label="Seat number if yours is the next join"
-          wireKey="seatIfFirstRaw"
-          raw={q.seatIfFirstRaw}
-          decimals={0}
-        />
-        <QuoteRow
-          label="Member acquisition routing (USDC)"
-          wireKey="acquisitionCostRaw"
-          raw={q.acquisitionCostRaw}
-          decimals={data.decimals.usdc}
-        />
-        <QuoteRow
-          label="Protocol treasury routing (USDC)"
-          wireKey="protocolContributionRaw"
-          raw={q.protocolContributionRaw}
-          decimals={data.decimals.usdc}
-        />
-        <QuoteRow
-          label="Engine rate figure (exact, uninterpreted)"
-          wireKey="synPerUsdcRaw"
-          raw={q.synPerUsdcRaw}
-          decimals={null}
-        />
-        <QuoteRow label="Engine era" wireKey="era" raw={String(q.era)} decimals={null} />
-      </div>
-      <p className="text-xs text-muted-foreground mt-3" data-testid="text-quote-source-line">
+      ) : null}
+
+      <p className="text-xs text-muted-foreground mt-4" data-testid="text-quote-source-line">
         {sourceLine}
       </p>
-      <p className="font-mono text-[10px] text-muted-foreground mt-2">
-        Exact raw base-unit strings from the engine's public quote view ·
-        formatted values are client-side projections of the raw string · as of{" "}
-        {new Date(data.asOf).toISOString().slice(0, 19).replace("T", " ")} UTC
-      </p>
+
+      <details className="mt-3">
+        <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground">
+          Exact raw base units — verify
+        </summary>
+        <div className="mt-2 space-y-1 font-mono text-[10px] text-muted-foreground break-all">
+          <div>synOutRaw {q.synOutRaw}</div>
+          <div>seatIfFirstRaw {q.seatIfFirstRaw}</div>
+          <div>synPerUsdcRaw {q.synPerUsdcRaw}</div>
+          <div>era {q.era}</div>
+          {floorRaw !== null ? <div>minSynOut · 0.5% tolerance {floorRaw}</div> : null}
+          <div className="pt-1 text-muted-foreground/70">
+            Exact strings from the engine's public quote view · formatted values
+            are client-side projections of the raw string · as of{" "}
+            {new Date(data.asOf).toISOString().slice(0, 19).replace("T", " ")} UTC
+          </div>
+        </div>
+      </details>
     </div>
   );
 }
@@ -238,8 +248,8 @@ export default function JoinProtocol() {
   const [submittedRaw, setSubmittedRaw] = useState<string | null>(null);
   const [inputError, setInputError] = useState<string | null>(null);
 
-  const requestQuote = () => {
-    const raw = usdcInputToRaw(amountInput);
+  const requestQuote = (value?: string) => {
+    const raw = usdcInputToRaw(value ?? amountInput);
     if (raw === null) {
       setSubmittedRaw(null);
       setInputError(
@@ -251,11 +261,18 @@ export default function JoinProtocol() {
     setSubmittedRaw(raw);
   };
 
+  // Selecting a featured amount fills the input and reads its quote in one act.
+  const selectAmount = (amt: number) => {
+    const s = String(amt);
+    setAmountInput(s);
+    requestQuote(s);
+  };
+
   return (
     <PublicPage
       eyebrow="Membership"
-      title="Join the protocol"
-      lead="This page reads the live membership engine and computes your exact join quote — read-only. No transaction is initiated, signed, or submitted from this app."
+      title="Take your seat"
+      lead="Choose an amount, or enter your own. Every seat is equal — $5 and $10,000 buy the same seat. Read-only: nothing is signed or sent from this page."
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
       {/* Optional verified-introduction attribution (?source=) */}
@@ -263,28 +280,40 @@ export default function JoinProtocol() {
 
       {/* Exact quote calculator — live engine computation, raw base units */}
       <Card className="bg-card/40 border-border/50 p-6 mb-12" data-testid="panel-join-quote">
-        <div className="flex items-start gap-4 mb-5">
-          <div className="p-2.5 rounded-md bg-primary/10 text-primary shrink-0">
-            <Calculator className="h-5 w-5" />
-          </div>
-          <div>
-            <h2 className="text-base font-medium text-foreground">
-              Your exact quote
-            </h2>
-            <p className="text-sm text-muted-foreground leading-relaxed mt-1 max-w-2xl">
-              Enter a USDC membership size and the active engine computes the
-              exact allocation and routing — the same public quote view any
-              on-chain reader sees. Figures are surfaced as exact raw
-              base-unit strings, never rounded.
-            </p>
+        {/* Featured amounts — AMOUNT ONLY: no names, badges, tiers, or bands.
+            The seat is binary; every amount buys the same seat. */}
+        <div className="mb-5">
+          <p className="text-sm text-muted-foreground mb-3">Choose an amount</p>
+          <div className="flex flex-wrap gap-2">
+            {JOIN_AMOUNTS_USDC.map((amt) => {
+              const active =
+                submittedRaw !== null && usdcInputToRaw(String(amt)) === submittedRaw;
+              return (
+                <button
+                  key={amt}
+                  type="button"
+                  onClick={() => selectAmount(amt)}
+                  aria-pressed={active}
+                  data-testid={`chip-amount-${amt}`}
+                  className={`min-h-11 rounded-xl border px-4 text-sm font-medium tabular-nums transition-colors ${
+                    active
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border bg-transparent text-foreground hover:border-primary/50 hover:bg-primary/5"
+                  }`}
+                >
+                  ${amt.toLocaleString("en-US")}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        <div className="flex flex-wrap items-start gap-3 mb-2">
+        {/* Or a custom amount */}
+        <div className="flex flex-wrap items-center gap-3">
           <div className="w-full max-w-[220px]">
             <Input
               inputMode="decimal"
-              placeholder="USDC amount (e.g. 100)"
+              placeholder="Or enter your own (USDC)"
               value={amountInput}
               onChange={(e) => setAmountInput(e.target.value)}
               onKeyDown={(e) => {
@@ -293,8 +322,8 @@ export default function JoinProtocol() {
               data-testid="input-join-amount"
             />
           </div>
-          <Button onClick={requestQuote} data-testid="button-join-quote">
-            Compute exact quote
+          <Button onClick={() => requestQuote()} data-testid="button-join-quote">
+            Read my quote
           </Button>
         </div>
         {inputError ? (
