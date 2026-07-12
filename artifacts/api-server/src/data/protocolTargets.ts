@@ -278,6 +278,12 @@ export type FinancialTargets = {
   /** SERVER-ONLY vault reserve wallet (EOA) — the balanceOf() argument. */
   vaultWallet: string;
   /**
+   * SERVER-ONLY liquidity wallet (EOA) — the 20% routing recipient. Provenance is
+   * the deployed MembershipSaleV3.LIQUIDITY() immutable (reconciled by
+   * sale-routing:reconcile). Emitted as an infra verify-link only, never a member.
+   */
+  liquidityWallet: string;
+  /**
    * SERVER-ONLY operations wallet (EOA) — the balanceOf() argument for the
    * routed-split reconciliation read (engines route USDC 70/20/10 to
    * vault / liquidity / operations; the vault's CURRENT balance alone is
@@ -331,6 +337,10 @@ export const FINANCIAL_TARGETS: FinancialTargets = {
     },
   ],
   vaultWallet: "0x205DdC8921A4C60106930eE35e1F395c8D13f464",
+  // The 20% routing recipient. Provenance = the DEPLOYED MembershipSaleV3.LIQUIDITY()
+  // immutable, reconciled equal to this value on 2026-07-12 (sale-routing:reconcile).
+  // The chain is the authority; this served constant is asserted against it.
+  liquidityWallet: "0xa9b072db8DcDbb470235204B69D37275d74a2e25",
   operationsWallet: "0x5cb57937D1cEa51014e7ed8baaa05ccA3F72BE80",
   synBurnAddress: "0x000000000000000000000000000000000000dEaD",
   usdcTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",

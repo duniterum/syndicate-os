@@ -239,7 +239,7 @@ export const GetProtocolVerifyLinksResponse = zod.object({
   "mode": zod.enum(['READ_ONLY_VERIFY_LINKS']),
   "note": zod.string(),
   "links": zod.array(zod.object({
-  "id": zod.enum(['membershipSaleV1', 'membershipSaleV2A', 'membershipSaleV2', 'membershipSaleV3', 'nftArchive', 'vaultWallet', 'operationsWallet', 'lpPair', 'synToken', 'burnAddress', 'sourceRegistry']),
+  "id": zod.enum(['membershipSaleV1', 'membershipSaleV2A', 'membershipSaleV2', 'membershipSaleV3', 'nftArchive', 'vaultWallet', 'liquidityWallet', 'operationsWallet', 'lpPair', 'synToken', 'burnAddress', 'sourceRegistry']),
   "label": zod.string(),
   "url": zod.string()
 }))

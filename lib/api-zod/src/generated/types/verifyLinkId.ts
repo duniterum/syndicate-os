@@ -16,6 +16,7 @@ export const VerifyLinkId = {
   membershipSaleV3: 'membershipSaleV3',
   nftArchive: 'nftArchive',
   vaultWallet: 'vaultWallet',
+  liquidityWallet: 'liquidityWallet',
   operationsWallet: 'operationsWallet',
   lpPair: 'lpPair',
   synToken: 'synToken',

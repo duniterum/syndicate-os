@@ -276,6 +276,7 @@ components:
             - membershipSaleV3
             - nftArchive
             - vaultWallet
+            - liquidityWallet
             - operationsWallet
             - lpPair
             - synToken

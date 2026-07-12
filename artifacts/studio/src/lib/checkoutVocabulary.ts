@@ -59,3 +59,29 @@ export function computeMinSynOutRaw(synOutRaw: string, toleranceBps = 50): strin
   const floor = (out * BigInt(10_000 - toleranceBps)) / 10_000n;
   return floor.toString(10);
 }
+
+export interface RoutingSplit {
+  readonly vaultRaw: string;
+  readonly liquidityRaw: string;
+  readonly operationsRaw: string;
+}
+
+/**
+ * The 70 / 20 / 10 split of the NET sent to the company (protocolContribution),
+ * computed EXACTLY as the contract's `_routeAmounts` does: vault = net*70/100,
+ * liquidity = net*20/100, operations = the REMAINDER (so integer truncation never
+ * loses or invents a base unit). Pure BigInt on the raw string. Returns null on a
+ * malformed input — never a fabricated split.
+ */
+export function computeRoutingSplit(netProtocolRaw: string): RoutingSplit | null {
+  if (!/^[0-9]+$/.test(netProtocolRaw)) return null;
+  const net = BigInt(netProtocolRaw);
+  const vault = (net * 70n) / 100n;
+  const liquidity = (net * 20n) / 100n;
+  const operations = net - vault - liquidity;
+  return {
+    vaultRaw: vault.toString(10),
+    liquidityRaw: liquidity.toString(10),
+    operationsRaw: operations.toString(10),
+  };
+}

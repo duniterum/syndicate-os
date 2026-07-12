@@ -14,12 +14,14 @@
 
 import { useState, type ReactNode } from "react";
 import { Link, useSearch } from "wouter";
-import { Link2, ShieldAlert } from "lucide-react";
+import { ExternalLink, Link2, ShieldAlert } from "lucide-react";
 import {
   getGetJoinQuoteQueryKey,
   getGetSourceValidateQueryKey,
   useGetJoinQuote,
+  useGetProtocolVerifyLinks,
   useGetSourceValidate,
+  type VerifyLinkId,
 } from "@workspace/api-client-react";
 import { PublicPage } from "@/components/PublicPage";
 import { ProtocolRealityPanel } from "@/components/ProtocolReality";
@@ -34,6 +36,7 @@ import {
 } from "@/lib/rawUnits";
 import {
   computeMinSynOutRaw,
+  computeRoutingSplit,
   toCheckoutQuote,
 } from "@/lib/checkoutVocabulary";
 import { JOIN_AMOUNTS_USDC } from "@/config/joinAmounts";
@@ -130,6 +133,92 @@ function QuoteLine({
   );
 }
 
+// A truncated, clickable proof of an infrastructure wallet. The full address is
+// derived from the server verify-links URL (server-sourced, infra-only emission —
+// never a member wallet); the client never holds the address in its bundle.
+function AddressProof({ url }: { url: string }) {
+  const m = url.match(/\/address\/(0x[0-9a-fA-F]{40})\b/);
+  const addr = m?.[1];
+  if (!addr) return null;
+  const short = `${addr.slice(0, 6)}…${addr.slice(-4)}`;
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={`${addr} — open in block explorer`}
+      className="inline-flex items-center gap-1 font-mono text-[10px] text-proof/80 transition-colors hover:text-proof"
+    >
+      {short}
+      <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
+    </a>
+  );
+}
+
+// The money path (C1.2a): the NET sent to the company, split 70/20/10 to three
+// wallets — each with its amount AND a verifiable destination. The buyer sees WHO
+// is paid, HOW MUCH, and can verify it BEFORE signing. All-or-nothing on the proof
+// links: no amount is shown without its verifiable destination (fail-closed). The
+// buyer's OWN address is never shown (it answers "who am I", not "where does my
+// money go"); the gifting-recipient case — recipient ≠ buyer — is C1.2b/C4.
+function MoneyPath({
+  netProtocolRaw,
+  usdcDecimals,
+}: {
+  netProtocolRaw: string;
+  usdcDecimals: number;
+}) {
+  const { data } = useGetProtocolVerifyLinks();
+  const split = computeRoutingSplit(netProtocolRaw);
+  const urlFor = (id: VerifyLinkId) => data?.links.find((l) => l.id === id)?.url ?? null;
+  const vaultUrl = urlFor("vaultWallet");
+  const liqUrl = urlFor("liquidityWallet");
+  const opsUrl = urlFor("operationsWallet");
+  const allProof = Boolean(vaultUrl && liqUrl && opsUrl);
+
+  return (
+    <div className="mt-4 border-t border-border/40 pt-4" data-testid="panel-money-path">
+      <div className="flex items-baseline justify-between gap-4">
+        <div className="text-sm font-medium text-foreground">Sent to the Syndicate</div>
+        <div className="text-base font-medium text-foreground tabular-nums" data-testid="money-net">
+          {formatRawUnits(netProtocolRaw, usdcDecimals)} USDC
+        </div>
+      </div>
+      <p className="text-[11px] text-muted-foreground mt-0.5 mb-2.5 max-w-md">
+        The membership money is the company's. It is split on-chain to three wallets, each
+        verifiable. No member has a claim on it.
+      </p>
+      {allProof && split ? (
+        <div className="space-y-1.5">
+          {[
+            { label: "Vault wallet", pct: "70%", raw: split.vaultRaw, url: vaultUrl! },
+            { label: "Liquidity wallet", pct: "20%", raw: split.liquidityRaw, url: liqUrl! },
+            { label: "Operations wallet", pct: "10%", raw: split.operationsRaw, url: opsUrl! },
+          ].map((r) => (
+            <div key={r.label} className="flex items-baseline justify-between gap-3 text-sm">
+              <span className="text-muted-foreground">
+                {r.label} <span className="text-[11px] text-muted-foreground/70">{r.pct}</span>
+              </span>
+              <span className="flex items-baseline gap-3">
+                <span className="tabular-nums text-foreground">
+                  {formatRawUnits(r.raw, usdcDecimals)}
+                </span>
+                <AddressProof url={r.url} />
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-xs text-muted-foreground" data-testid="text-routing-proof-unavailable">
+          On-chain split: 70% Vault · 20% Liquidity · 10% Operations. The live proof links are
+          unavailable right now — reload to retry. No amount is shown without its verifiable
+          destination.
+        </p>
+      )}
+    </div>
+  );
+}
+
 // The buyer-facing quote core (C1.1): what you pay · what you receive (SYN + the
 // LIVE era rate, never a frozen card figure) · your seat (a preview — the real
 // number is the receipt event) · the slippage floor. The routing breakdown
@@ -210,6 +299,8 @@ function QuotePanel({
           testId="quote-floor"
         />
       ) : null}
+
+      <MoneyPath netProtocolRaw={q.netProtocolRaw} usdcDecimals={data.decimals.usdc} />
 
       <p className="text-xs text-muted-foreground mt-4" data-testid="text-quote-source-line">
         {sourceLine}

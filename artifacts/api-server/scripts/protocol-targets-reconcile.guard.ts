@@ -349,6 +349,7 @@ function main(): void {
 
     // 8d) Wallet/token/pair addresses reconcile to their canon authorities.
     check("fin canon: vaultWallet == CONTRACTS.VAULT_WALLET", eqAddr(F.vaultWallet, CONTRACTS.VAULT_WALLET));
+    check("fin canon: liquidityWallet == CONTRACTS.LIQUIDITY_WALLET (20% routed split)", eqAddr(F.liquidityWallet, CONTRACTS.LIQUIDITY_WALLET));
     check("fin canon: operationsWallet == CONTRACTS.OPERATIONS_WALLET (70/20/10 routed split)", eqAddr(F.operationsWallet, CONTRACTS.OPERATIONS_WALLET));
     check("fin canon: synBurnAddress == SYN_BURN_ADDRESS (canonical 0x…dEaD)", eqAddr(F.synBurnAddress, SYN_BURN_ADDRESS) && F.synBurnAddress.toLowerCase().endsWith("dead"));
     check("fin canon: usdcTokenAddress matches contract registry USDC", eqAddr(F.usdcTokenAddress, contractByKey("USDC")?.address ?? null));
@@ -356,7 +357,7 @@ function main(): void {
     check("fin canon: lpPair matches LP_POOL.pairAddress", eqAddr(F.lpPair, LP_POOL.pairAddress));
     check("fin canon: lpPair matches contract registry LP_PAIR", eqAddr(F.lpPair, contractByKey("LP_PAIR")?.address ?? null));
     check("fin canon: memberCountEngine is the active V3 engine", F.memberCountEngine.key === "MEMBERSHIP_SALE_V3" && eqAddr(F.memberCountEngine.address, contractByKey("MEMBERSHIP_SALE_V3")?.address ?? null));
-    for (const [label, addr] of [["vaultWallet", F.vaultWallet], ["operationsWallet", F.operationsWallet], ["synBurnAddress", F.synBurnAddress], ["usdcTokenAddress", F.usdcTokenAddress], ["synTokenAddress", F.synTokenAddress], ["lpPair", F.lpPair], ["memberCountEngine", F.memberCountEngine.address]] as const) {
+    for (const [label, addr] of [["vaultWallet", F.vaultWallet], ["liquidityWallet", F.liquidityWallet], ["operationsWallet", F.operationsWallet], ["synBurnAddress", F.synBurnAddress], ["usdcTokenAddress", F.usdcTokenAddress], ["synTokenAddress", F.synTokenAddress], ["lpPair", F.lpPair], ["memberCountEngine", F.memberCountEngine.address]] as const) {
       check(`fin addr-shape: ${label} is a full address`, FULL_ADDRESS_RE.test(addr), addr.slice(0, 6));
     }
 

@@ -50,6 +50,7 @@ type LinkSpec = {
     | "membershipSaleV3"
     | "nftArchive"
     | "vaultWallet"
+    | "liquidityWallet"
     | "operationsWallet"
     | "lpPair"
     | "synToken"
@@ -73,6 +74,7 @@ const SPECS: readonly LinkSpec[] = [
   { id: "membershipSaleV3", label: "Membership Sale V3 (active)", address: scanAddress("MEMBERSHIP_SALE_V3"), kind: "address" },
   { id: "nftArchive", label: "Archive 1155 (NFT artifacts)", address: contractAddress("ARCHIVE_1155"), kind: "address" },
   { id: "vaultWallet", label: "Vault reserve wallet", address: FINANCIAL_TARGETS.vaultWallet, kind: "address" },
+  { id: "liquidityWallet", label: "Liquidity wallet", address: FINANCIAL_TARGETS.liquidityWallet, kind: "address" },
   { id: "operationsWallet", label: "Operations wallet", address: FINANCIAL_TARGETS.operationsWallet, kind: "address" },
   { id: "lpPair", label: "SYN/USDC LP pair (Trader Joe)", address: FINANCIAL_TARGETS.lpPair, kind: "address" },
   { id: "synToken", label: "SYN token", address: FINANCIAL_TARGETS.synTokenAddress, kind: "token" },

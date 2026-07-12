@@ -16,6 +16,7 @@
     "archive-posture:check": "tsx ./scripts/avalanche-archive-posture-check.ts",
     "archive-posture:guard": "tsx ./scripts/avalanche-archive-posture-check.guard.ts",
     "protocol-reality:guard": "tsx ./scripts/protocol-reality-check.guard.ts",
+    "sale-routing:reconcile": "tsx ./scripts/sale-routing-reconcile.ts",
     "protocol-targets:guard": "tsx ./scripts/protocol-targets-reconcile.guard.ts",
     "sale-scan:guard": "tsx ./scripts/sale-event-scan-reconcile.guard.ts",
     "sale-index:guard": "tsx ./scripts/sale-event-indexer.guard.ts",
