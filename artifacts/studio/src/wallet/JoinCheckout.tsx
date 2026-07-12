@@ -479,11 +479,23 @@ export default function JoinCheckout({
       </p>
 
       {!balanceOk ? (
-        <p className="text-sm text-destructive mb-3" data-testid="text-checkout-balance-short">
-          This wallet holds {formatRawUnits(balance.toString(), usdcDecimals)} USDC —
-          less than {grossDisplay}. Nothing can be signed until the balance covers
-          the amount.
-        </p>
+        <div className="mb-3" data-testid="text-checkout-balance-short">
+          <p className="text-sm text-destructive">
+            This wallet holds {formatRawUnits(balance.toString(), usdcDecimals)} USDC{" "}
+            <strong>on Avalanche C-Chain</strong> — less than {grossDisplay}. Nothing
+            can be signed until the balance covers the amount.
+          </p>
+          {/* The multichain-wallet trap (founder-reported, 2026-07-13): wallets
+              now show ONE aggregated total across all networks, so "5 USDC" in
+              the wallet UI may live on Ethereum/Base/etc. — invisible to the
+              engine, which takes native Avalanche USDC only. Say it plainly. */}
+          <p className="text-xs text-muted-foreground mt-1 max-w-2xl">
+            The join takes <strong>native USDC on Avalanche</strong> only. Your wallet
+            may display one total across all networks — USDC sitting on another chain,
+            or bridged USDC.e, does not count here. Bridge or swap it to native USDC
+            on Avalanche C-Chain, then reload this page.
+          </p>
+        </div>
       ) : null}
 
       <div className="space-y-3">
