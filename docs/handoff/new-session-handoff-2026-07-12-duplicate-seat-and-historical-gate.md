@@ -54,10 +54,10 @@ truth is inconvenient. "Anyone can claim transparency when everything is clean. 
 is not."
 
 ## BUILD ORDER (verify each yourself first — chain is authority)
-1. ~~**C1.3 — THE HISTORICAL GATE. Urgent. Blocking. C2 does NOT ship before it.**~~ ✅ **BUILT**
-   (syndicate-os: `lib/historicalMembers.ts` + `chainReads.ts` reads + `wallet/JoinHistoricalGate.tsx`
-   on `/join`; live-chain verified — see SESSION_STATE). C2 must re-consult `resolveHistoricalGate`
-   before enabling any buy.
+1. ~~**C1.3 — THE HISTORICAL GATE. Urgent. Blocking. C2 does NOT ship before it.**~~ ✅ **SEALED in
+   prod** (`a019152`, Replit-verified + live-domain checked; syndicate-os: `lib/historicalMembers.ts`
+   + `chainReads.ts` reads + `wallet/JoinHistoricalGate.tsx` on `/join`; live-chain verified — see
+   SESSION_STATE). C2 must re-consult `resolveHistoricalGate` before enabling any buy.
    - Root + set: `v3-historical-members.ts` (root VERIFIED against live V3).
    - Leaf: `abi.encode(who, memberNumber)` — address + number, NOT address-alone.
    - Read `knownMember[wallet]` LIVE (reuse `lib/chainReads.ts`). Historical + NOT known → **BLOCK the

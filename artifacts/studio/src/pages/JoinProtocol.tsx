@@ -249,7 +249,7 @@ function SourcePaymentLine({
         </span>
         <span className="flex items-baseline gap-3">
           <span className="tabular-nums text-foreground" data-testid="source-amount">
-            −{formatRawUnits(sourcePaymentRaw, usdcDecimals)}
+            −{formatRawUnits(sourcePaymentRaw, usdcDecimals)} USDC
           </span>
           <AddressProof url={state.payoutUrl} />
         </span>
@@ -332,7 +332,7 @@ function MoneyPath({
               </span>
               <span className="flex items-baseline gap-3">
                 <span className="tabular-nums text-foreground">
-                  {formatRawUnits(r.raw, usdcDecimals)}
+                  {formatRawUnits(r.raw, usdcDecimals)} USDC
                 </span>
                 <AddressProof url={r.url} />
               </span>

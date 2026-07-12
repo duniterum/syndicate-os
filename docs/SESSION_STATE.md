@@ -12,8 +12,9 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > a PRODUCTION DUPLICATE SEAT exists on-chain (historical #7 `0x3FF01A0c` = also V3 seat #11, verified
 > live), 7 historical wallets still ARMED (incl. the founder), 11 distinct wallets vs `memberCount()`=12.
 > The V3 historical artifact is `TheSyndicate/src/lib/v3-historical-members.ts` (root MATCHES live V3);
-> `v1-proof.ts` is POISON (V2b, wrong root + address-only leaf). **C1.3 the historical gate → ✅ BUILT
-> (this commit):** `lib/historicalMembers.ts` (frozen 8-member set + proofs, leaf recomputed + proof
+> `v1-proof.ts` is POISON (V2b, wrong root + address-only leaf). **C1.3 the historical gate → ✅ SEALED
+> in prod (`a019152`, Replit-verified 33/33 gates + live-domain checked: quote flow intact, zero console
+> errors, gate invisible to normal visitors):** `lib/historicalMembers.ts` (frozen 8-member set + proofs, leaf recomputed + proof
 > re-folded to the LIVE `V1_MEMBER_ROOT()` — the local artifact is never trusted), `chainReads.ts`
 > `readKnownMember`/`readV1MemberRoot`, `wallet/JoinHistoricalGate.tsx` (own-row, fail-closed BLOCK,
 > lazy-mounted on `/join`; verified against the live chain: all 8 proofs fold to the live root, exactly
