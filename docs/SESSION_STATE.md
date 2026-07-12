@@ -8,7 +8,15 @@ Direction specs now live IN this repo: `docs/direction/MASTER_BUILD_SPEC.md` ·
 `docs/direction/GAMIFICATION_LEGAL_DOCTRINE.md` (recognition-only, legal shield).
 Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md`.
 
-> **▶ NEWEST HANDOFF (read FIRST after this file): `docs/handoff/new-session-handoff-2026-07-12-checkout-proven-and-chain-truth.md`** —
+> **▶ 🔴 NEWEST HANDOFF (read FIRST): `docs/handoff/new-session-handoff-2026-07-12-duplicate-seat-and-historical-gate.md`** —
+> a PRODUCTION DUPLICATE SEAT exists on-chain (historical #7 `0x3FF01A0c` = also V3 seat #11, verified
+> live), 7 historical wallets still ARMED (incl. the founder), 11 distinct wallets vs `memberCount()`=12.
+> The V3 historical artifact is `TheSyndicate/src/lib/v3-historical-members.ts` (root MATCHES live V3);
+> `v1-proof.ts` is POISON (V2b, wrong root + address-only leaf). NEXT = C1.3 the historical gate (block a
+> buy by an unclaimed historical wallet), then neutralize v1-proof.ts, then the honest 12/11 readback, then
+> a Chronicle candidate. Founder decision: SHOW BOTH (12 seats / 11 wallets / one overlap), never fix silently.
+>
+> **▶ Prior (still valid): `docs/handoff/new-session-handoff-2026-07-12-checkout-proven-and-chain-truth.md`** —
 > the biggest-decision session's resume point. The read-only `/join` checkout is COMPLETE + PROVEN in
 > prod (C1.0→C1.2b, the referrer line validated on a REAL active source). Carries: the CHAIN TRUTH
 > (9 contracts ever, CommissionRouter never deployed, ONE active BUILDER_SOURCE 5% LIFETIME), the two
