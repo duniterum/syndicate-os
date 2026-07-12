@@ -95,14 +95,13 @@ verifiable destination BEFORE signing. That is the anti-MLM mechanic, live.
 - **Holder-index snapshot rebuild (Q18)** — 2 members stale (10 vs live 12); founder-gated. Record-only.
 - **Hero KPI grid migration (Q16)** · **Compass handoff repoint (Q22)** · **doc-drift reconcile (Q8)**.
 
-**C — V4 / CONTRACTS (needs a new deploy + audit)**
-- **V4 sale + CommissionRouterV1** — the better economics model (Vault untouched, cost capped at 10%
-  of gross, auto-promoting ladder, checks the SEAT). NEW slice (design only; no slice existed).
-- **The emitter contract (referral R7)** — transfers registry `owner` to a one-function contract so a
-  MEMBER self-creates his source (`requestMySource()`, forced params) without the owner key on a
-  server. After everything else.
-- **MEMBER_INTRODUCTION public source** — the public referral program's own source (class 0, needs the
-  R1 conditions doc hashed). A founder on-chain act, not a new contract — but gated behind R1.
+**C — FAR HORIZON (a SOMEDAY, NOT a track in this plan)** — after the MVP ships and real people have
+used it. Do NOT schedule, do NOT treat as a bucket. Recorded only so nobody rediscovers it:
+- New contracts require a fresh deploy + audit. The V4 economics model (CommissionRouterV1: Vault
+  untouched · referral cost capped at 10% of gross · auto-promoting `referredCount` ladder · checks
+  `knownMember` = the seat) and the self-service emitter (R7) are that someday. Not now.
+- The public `MEMBER_INTRODUCTION` referral program (its own source + the R1 conditions doc hashed) is
+  also deferred — the referral does NOT ship active in the MVP (founder decision today).
 
 **D — DONE TODAY (do not redo)**
 - Checkout C1.0 / C1.1 / C1.2a / C1.2b (pushed, C1.2b proven live on the real source).
