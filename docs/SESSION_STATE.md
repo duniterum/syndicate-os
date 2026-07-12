@@ -8,11 +8,15 @@ Direction specs now live IN this repo: `docs/direction/MASTER_BUILD_SPEC.md` ·
 `docs/direction/GAMIFICATION_LEGAL_DOCTRINE.md` (recognition-only, legal shield).
 Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md`.
 
-> **▶ NEWEST HANDOFF (read FIRST after this file): `docs/handoff/new-session-handoff-2026-07-12-checkout-C1-groundwork.md`** —
-> the `/join` real-money checkout resume point. Anti-drift law + C1.0 vocabulary guards DONE + pushed;
-> C1.1 (amounts + quote core) is NEXT and fully specced there (verified quote shape, Q1–Q12 contract
-> cites, the two 🔴 = historical-seat gate + SourceRegistry caps, the money-path doctrine). The prior
-> handoff below stays valid for the member-recognition arc.
+> **▶ NEWEST HANDOFF (read FIRST after this file): `docs/handoff/new-session-handoff-2026-07-12-checkout-proven-and-chain-truth.md`** —
+> the biggest-decision session's resume point. The read-only `/join` checkout is COMPLETE + PROVEN in
+> prod (C1.0→C1.2b, the referrer line validated on a REAL active source). Carries: the CHAIN TRUTH
+> (9 contracts ever, CommissionRouter never deployed, ONE active BUILDER_SOURCE 5% LIFETIME), the two
+> STANDING RULES (a public-RPC log scan is NOT proof of absence; a creation event is a STATE — read
+> `sourceConfig()` live), the founder decisions (referral not-active-in-MVP, money is the company's,
+> buyer pays two recipients in one tx, tiers-by-spend legal, rank never demotes, V4=router model), and
+> the CONSOLIDATED SLICE LIST (A MVP / B after / C V4-contracts / D done). Prior C1-groundwork handoff
+> stays valid for the C1.1–C1.4 spec detail.
 >
 > **▶ PRIOR HANDOFF: `docs/handoff/new-session-handoff-2026-07-11-recognition-live-and-member-home.md`** —
 > the full recap: the member-recognition arc is **LIVE in prod** (auth on · SIWE signs canonical domain ·
@@ -29,6 +33,18 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 
 ## ✅ DECIDED — DO NOT RE-OPEN (settled; do not re-litigate)
 
+- **STANDING RULE (2026-07-12) — a PUBLIC-RPC `eth_getLogs` scan is NOT a proof of absence.** It chunks
+  and drops. For any on-chain EXISTENCE question (does a source/contract/event exist?), use a COMPLETE
+  scan (Routescan / an indexer), never a chunked public-RPC `getLogs`. This cost the project twice today.
+- **STANDING RULE (2026-07-12) — a creation EVENT is a STATE; READ the current view live.** Terms get
+  updated after creation (a source's scope read WINDOWED from its `SourceCreated` event; the live
+  `sourceConfig()` said LIFETIME). Never decode an old event and call it today's truth. And: a comment
+  is NEVER the authority for a status on a money surface — read `isActive()`/`sourceConfig()` live.
+- **REFERRAL DECISIONS (founder, 2026-07-12; full detail in the 2026-07-12 handoff).** Referral is built
+  (C1.2b) + works but does NOT ship active in the MVP (final economics = V4). The buyer pays two
+  recipients in ONE tx; the Syndicate pays nobody (no KYC/1099/float; copy says "the buyer pays you",
+  never "we pay you"). Tiers-by-spend are legal; `HOME_RANK_LADDER` = the CAPITAL AXIS, not poison; the
+  red line = never a better SYN price. Rank never demotes. V4 target = CommissionRouterV1's model.
 - **CANON (founder, 2026-07-12) — two authoritative specs are now IN-REPO (were on the founder's
   desktop): `docs/direction/CONSTITUTION_AUTORITE.md`** (the 4-level authority hierarchy — N0 immutable
   bytecode / N1 founder-on-chain / N2 server / N3 presentation; a lower level never contradicts a higher;

@@ -90,3 +90,20 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 - **Q1** Ledger append — ✅ closed `206c103` (founder, this session).
 - **Q7** `/docs` decorative LivingSignature — ✅ folded into Q2 (⓪): the signature is dropped from `/docs`; the freshness guard now forbids a decorative live signature.
 - **Q17** Dev-server selection — ✅ founder ruling: start api-server + studio locally to verify the ⓪ reconciliation (read-only chain reads); Replit stays the deploy gate.
+
+## 2026-07-12 — Checkout PROVEN + chain truth (biggest-decision session)
+Full detail + the consolidated **A/B/C/D slice list** live in
+`docs/handoff/new-session-handoff-2026-07-12-checkout-proven-and-chain-truth.md`. Highlights:
+- **Q12 (checkout V3 ABI) → BUILT + LIVE.** C1.0 vocab guards · C1.1 amounts+quote · C1.2a net+70/20/10
+  proof · C1.2b referrer line + the first CLIENT chain-read layer (`lib/chainReads.ts`) — all pushed;
+  C1.2b **PROVEN in prod** on a real ACTIVE `BUILDER_SOURCE` (5% LIFETIME, `0x8338e9ff…1cf620`).
+- **Q20 (`/join` stale gate) → rides C2** (record-only; removed when approve→buy ships).
+- **CommissionRouterV1 → CLOSED.** Never deployed (9 contracts ever; `V2.commissionRouter()==0x0`; V3
+  has no such view — reverts). A V4 DESIGN, not an asset. Do not re-investigate.
+- **MVP remainder (group A):** C1.3 historical-seat gate (READY, before any buy) · C2 approve→buy
+  (go-live gated) · C5 wire `/join` · Q21 auth go-live (Replit) · C1.4 economic proof.
+- **NEW slices proposed (no prior slice):** source-status LIVE-read surface (B) · guard rename `assertNoAddressLeak` (B) ·
+  `/staff` public operator registry (B, can ship early) · V4 sale+CommissionRouter (C) · the emitter (C) ·
+  Console "PROPOSE" form per Constitution §④ (B/C).
+- **STANDING RULES added:** a public-RPC `eth_getLogs` scan ≠ proof of absence; a creation event is a
+  STATE — read `sourceConfig()` live (see SESSION_STATE).
