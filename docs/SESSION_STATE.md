@@ -23,6 +23,22 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 
 ## ✅ DECIDED — DO NOT RE-OPEN (settled; do not re-litigate)
 
+- **TIER-0 LAW (founder, 2026-07-12) — `docs/direction/CANON_INVARIANT_VS_STATE.md`.** The
+  anti-drift law that ends the 6-rebuild loop: every repo statement is an **INVARIANT** (a rule
+  about *how* — only the founder authors it; agents cite/obey, never invent) or a **STATE** (a
+  photograph of today — any slice may make it obsolete; the slice that changes reality updates
+  the STATE line in the SAME commit; a STATE is NEVER a permission gate or a reason not to build).
+  Also fixes the `enabled` (founder decision, literal OK) vs `posture` (chain-derived, literal
+  NEVER) collapse. Loaded at every boot (TIER-0 in `00_CANON_INDEX.md`).
+- **POISONED CANON — flagged, neutralize in a later slice (do NOT reuse names).** In
+  `artifacts/api-server/src/canon/the-syndicate/contracts/syndicate-config.ts`: `RANKS_V2`
+  (12 named tiers Citizen $5 → Cornerstone $10,000, with badges + benefits) and `HOME_RANK_LADDER`
+  are **agent-era named-ladder canon that violates the settled naming law** (the seat is BINARY —
+  $5 and $10,000 buy the SAME seat; named tiers assert member categories that do not exist; and
+  "Operator"/"Builder" are a role + recognition axes, never a price card). Dormant (not imported
+  by the app). The checkout reuses ONLY the amount numbers (`PURCHASE_PRESETS_USDC`); the names,
+  badges, tiers, benefits are dead. A later slice neutralizes/relabels these in the canon file.
+
 - **DECIDED (founder, 2026-07-12) — narrative "Chapter" label pulled FORWARD from Phase 5
   (recognition only).** A small pure-function display: `artifacts/studio/src/lib/chapters.ts`
   (`chapterForSeat`, deterministic by seat number — I Genesis Signal #1–333 · II First Thousand

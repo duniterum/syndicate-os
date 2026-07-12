@@ -126,8 +126,12 @@ const specs: readonly RegistrySpec[] = [
     proofSource: { kind: "reality", group: "sale" },
     riskClass: "OWNER_SIDE_ONCHAIN_ACTION",
     forbiddenClaims: ["FINANCIAL_UPSIDE", "INCOME_PROMISE", "GUARANTEED_OUTCOME"],
+    // STATE (not an INVARIANT) — a description of TODAY, per
+    // docs/direction/CANON_INVARIANT_VS_STATE.md. It is NOT a rule that the app
+    // must never send a transaction; it records that today it does not. The
+    // checkout slice makes this false and rewrites this line in the same commit.
     notes:
-      "Read-only quote computed from the live V3 engine's public figures. Purchase execution is an owner-side on-chain act; this app never sends a transaction.",
+      "STATE (today): read-only quote computed from the live V3 engine's public figures. Purchase execution is not yet wired here — as of this state the app does not send a transaction. (This is a description of today, not a rule; the checkout slice supersedes it.)",
   },
   {
     registryId: "wallet-session",
