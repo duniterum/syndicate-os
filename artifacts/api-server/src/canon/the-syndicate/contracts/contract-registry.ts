@@ -135,7 +135,7 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
     "source-registry",
     "DEPLOYED",
     SOURCE_REGISTRY_V1_CONTRACT_ADDRESS,
-    "V3 source policy registry. Deployed and owner-accepted with one validated internal source test now PAUSED; referral/source UI remains inactive.",
+    "V3 source policy registry. Deployed and owner-accepted. CHAIN TRUTH (read live 2026-07-12, sourceId 0x8338e9ff…1cf620): ONE source is ACTIVE right now — class BUILDER_SOURCE, 5% (500 bps), scope LIFETIME, no caps, appliesToRepeatPurchases, re-activated at block 89642946. This NOTE is a STATE that already went stale once (it said 'now PAUSED' after a re-activation nobody recorded) — a comment must NEVER be the authority for a source's status on a money surface: READ isActive()/sourceConfig() live. The PUBLIC referral program lifecycle (referralProgram.ts programLifecycle) is a SEPARATE product decision.",
     "contracts/src/SourceRegistryV1.sol",
   ),
   entry(

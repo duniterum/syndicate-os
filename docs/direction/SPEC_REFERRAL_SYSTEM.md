@@ -39,10 +39,10 @@ Nomme-le, dis pourquoi, **et avance.** Carte blanche.
 |---|---|
 | **Sale V3** `0x2A6c…` | ✅ vivante · pas pausée · **ère 1** · **12 membres** |
 | **SourceRegistry** `0x780013…` | ✅ déployé · **`immutable` dans la Sale — NE PEUT PAS être remplacé** |
-| **Sources créées** | 🔴 **ZÉRO.** Aucun event `SourceCreated`. |
-| **CommissionRouter** | ⚠️ **Le V3 ne l'utilise PAS.** Il paie `payoutWallet` **directement** dans `_payAcquisition`. |
+| **Sources créées** | ✅ **UNE, ACTIVE** — `sourceId 0x8338e9ff…1cf620` · `BUILDER_SOURCE` · **5%** · **LIFETIME** (pas de fenêtre) · aucun plafond · `appliesToRepeatPurchases` · `payoutWallet` = `0x244531C5…9C721` (un membre historique) · ré-activée au bloc 89642946. **⚠️ CORRECTION : ce doc disait « ZÉRO » — c'était FAUX**, hérité d'un scan `eth_getLogs` sur RPC public qui avait des **trous**. Vérité rétablie par un scan de logs COMPLET (Routescan). **LEÇON : un scan `eth_getLogs` sur RPC public n'est PAS une preuve d'absence.** |
+| **CommissionRouter** | ⚠️ **PAS déployé** (confirmé : aucune adresse nulle part · `Deploy.s.sol` force `address(0)` · `V2.commissionRouter()==0x0` · `commissionRouter()` REVERT sur V3). Et le V3 ne l'utiliserait pas — il paie `payoutWallet` **directement**. C'est un DESIGN (V4), pas un asset. |
 
-**Rien ne peut être testé tant qu'aucune source n'existe. Ce n'est pas un bug.**
+**Une source EST active — C1.2b est testable MAINTENANT** (`/join?source=0x8338e9ff…1cf620` → le devis renvoie `acquisitionCost=$50` pour $1000, la ligne « Paid to your referrer · 5% · payoutWallet » s'affiche). ⚠️ Le taux À AFFICHER vient du DEVIS (calcul effectif), jamais de `commissionBps` — voir §⑧.
 
 ---
 
@@ -362,10 +362,14 @@ La doctrine dit : **onze axes. Le capital en est UN. Jamais le trône.**
 **« la commission est un revenu imposable pour le parrain »** · anti-abus · révocation.
 
 ## SLICE R2 — LA PREMIÈRE SOURCE *(le founder signe)*
-`createSource` avec les paramètres de §②, **en `PAUSED`**.
-→ **Claude Code teste le FAIL-CLOSED** : source connue mais inactive → **aucune ligne**.
-Puis `setSourceStatus(ACTIVE)` → **le cas complet** : l'adresse, le taux effectif, la ligne.
-⚠️ **Pour tester un VRAI achat attribué, il faut DEUX wallets** — l'auto-parrainage REVERT.
+⚠️ **DÉJÀ FAIT (partiellement) — une source EXISTE et est ACTIVE** (`0x8338e9ff…1cf620`,
+`BUILDER_SOURCE` 5% LIFETIME, ré-activée bloc 89642946, `metadataHash` présent). Donc le founder
+**n'a rien à créer** pour tester C1.2b maintenant. Ce qui reste, si on veut la source
+**MEMBER_INTRODUCTION** du programme public (§②), c'est un `createSource` distinct (classe 0, le
+document R1 hashé). Séquence historique (pour tester le fail-closed) : `createSource` en `PAUSED` →
+source connue mais inactive → **aucune ligne** → `setSourceStatus(ACTIVE)` → le cas complet.
+⚠️ **Pour tester un VRAI achat attribué, il faut DEUX wallets** — l'auto-parrainage REVERT
+(`payoutWallet == recipient`).
 
 ## SLICE R3 — LE CANAL (`&via=`) *(off-chain — AUCUNE dépendance)*
 **Peut être construit DÈS MAINTENANT, en parallèle. Zéro transaction. Zéro attente.**

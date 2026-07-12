@@ -36,8 +36,12 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   `docs/direction/SPEC_REFERRAL_SYSTEM.md`** (the full referral/source system, all decided). Both TIER-0
   in the canon index.
 - **REFERRAL STATE (verified on-chain 2026-07-12, matches SPEC §①) + BUILD ORDER.** Sale V3 `0x2A6c…`
-  live (era 1, 12 members); SourceRegistry `0x780013…` deployed (immutable in the Sale). **ZERO sources
-  created** (0 `SourceCreated` events) — nothing testable until the founder CREATES one. V3 pays
+  live (era 1, 12 members); SourceRegistry `0x780013…` deployed (immutable in the Sale). **ONE source is
+  ACTIVE** (`0x8338e9ff…1cf620` · BUILDER_SOURCE · 5% · LIFETIME · no caps · payoutWallet `0x2445…9C721`,
+  re-activated block 89642946). ⚠️ **My earlier "ZERO sources" here was WRONG** — a lossy public-RPC
+  `eth_getLogs` scan (NOT a proof of absence); the complete Routescan log scan found it. C1.2b is testable
+  NOW: `/join?source=0x8338e9ff…1cf620` → live quote returns `acquisitionCost=$50`/$1000, the referrer line
+  shows. CommissionRouterV1 is NOT deployed (confirmed on-chain — a V4 design, not an asset). V3 pays
   `payoutWallet` **directly** (`_payAcquisition`); it does NOT use a CommissionRouter. Order (SPEC §⑪):
   **R1** referral-program conditions doc (hashed → `metadataHash`; BLOCKING — `createSource(LIFETIME)`
   reverts `MissingMetadata` without it) → **R2** first source (founder signs `createSource(…PAUSED)`, test
