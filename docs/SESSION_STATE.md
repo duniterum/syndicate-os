@@ -21,7 +21,9 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > #7 knownMember=true → silent, 7 armed → BLOCK; recipient-not-buyer note in code for C4 gifting).
 > C2 MUST call `resolveHistoricalGate` again before any buy button enables. v1-proof.ts NEUTRALIZED
 > (origin repo `e4697ec`, header-only: V2b-ONLY, forbidden on any V3 path). **The honest 12/11
-> readback → ✅ BUILT (this commit):** spine §5b derives `financial.members.distinctWallets` +
+> readback → ✅ SEALED in prod (`8b486da`, Replit 33/33 gates + envelope emits
+> memberCount=12/distinctWallets=11/seatOverlap=1 live; live-domain verified on /whitepaper, home
+> hero and /join?source= USDC labels):** spine §5b derives `financial.members.distinctWallets` +
 > `seatOverlap` LIVE (8 fixed `memberNumberOf` reads over the server-only freeze set
 > `lib/protocol/historicalFreezeWallets.ts`; counts only, no wallet emitted; fail-closed;
 > live-chain verified 12/11/1); `MembersProvenance` states "N seats issued · M distinct wallets —

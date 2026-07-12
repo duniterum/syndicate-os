@@ -71,7 +71,8 @@ is not."
    (`memberCount` + a distinct-wallet count), with a verify link. NEVER a literal.~~ ✅ **BUILT** —
    spine §5b (`distinctWallets` + `seatOverlap`, 8 fixed `memberNumberOf` reads, counts only,
    fail-closed) + `MembersProvenance` readback line (home hero / whitepaper / FAQ), live-chain
-   verified 12/11/1. See SESSION_STATE.
+   verified 12/11/1. **SEALED in prod** (`8b486da`, Replit-verified + live-domain checked). See
+   SESSION_STATE.
 4. **A CHRONICLE CANDIDATE** — "how we built in public, and what it cost." ⚠️ Promotion is a HUMAN ACT.
    Prepare the candidate; the founder promotes it.
 
