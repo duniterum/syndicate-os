@@ -275,7 +275,7 @@ export interface CommissionTier {
 }
 export const commissionTiers: CommissionTier[] = [
   { name: "Standard", pct: 5, note: "Default source class for verified referrals." },
-  { name: "Trusted", pct: 8, note: "Raised class for consistent, high-retention sources." },
+  { name: "Trusted", pct: 8, note: "Higher commission rate for consistent, high-retention sources." },
   { name: "Partner", pct: commissionCapPct, note: "Negotiated partnership class — at the hard cap." },
 ];
 // Every change to a source's class / commission % / cap / window is recorded as

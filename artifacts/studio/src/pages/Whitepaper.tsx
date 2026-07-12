@@ -160,10 +160,12 @@ export default function Whitepaper() {
                 Your first acquisition creates your membership; your number, chapter, and entry date are
                 written by the network, not by us. You acquire SYN through your <strong>wallet</strong> —
                 the app shows exactly where your money goes before you confirm, and the receipt is
-                on-chain. A featured <strong>entry tier</strong> is a highlighted amount tied to a
-                recognition rank; you can also enter a custom amount. The live entry rate is{" "}
-                <LiveNum value={tk.entrySynPerUsdc} unit="SYN per 1 USDC" />. Preview an exact read-only
-                quote on <Link href="/join">Join</Link> — no transaction is sent from this app.
+                on-chain. Every amount purchases the <strong>same single seat</strong>. Larger
+                contributions build higher standing on the Capital axis — recognition that grows with
+                what you put in, like any serious membership house. Standing never changes your seat,
+                never changes the SYN price, and never creates a financial advantage. The live entry
+                rate is <LiveNum value={tk.entrySynPerUsdc} unit="SYN per 1 USDC" />. Preview an exact
+                read-only quote on <Link href="/join">Join</Link> — no transaction is sent from this app.
               </p>
             </ProseSection>
 

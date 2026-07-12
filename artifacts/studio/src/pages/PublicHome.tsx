@@ -6,7 +6,6 @@ import {
   Boxes,
   Link2,
   ShieldCheck,
-  TerminalSquare,
   UserPlus,
   Users,
   type LucideIcon,
@@ -36,8 +35,6 @@ import {
   howItWorks,
   operationalReality,
   awaitingWiring,
-  studioPreview,
-  studioPreviewPanel,
   trustStrip,
   homepagePromotedStrip,
   homepageModuleStrip,
@@ -404,65 +401,12 @@ export default function PublicHome() {
         </div>
       </section>
 
-      <section className="border-t border-border/50 bg-muted/20 py-16 text-foreground">
-        <div className="container mx-auto max-w-5xl px-4">
-          <Card className="overflow-hidden border-card-border bg-card shadow-lg">
-            <div className="flex flex-col md:flex-row">
-              <div className="flex flex-col justify-center p-8 md:w-1/2 md:p-12">
-                <TerminalSquare className="mb-6 h-8 w-8 text-gold" />
-                <h2 className="type-h2 mb-4 text-foreground">{studioPreview.title}</h2>
-                <p className="mb-8 text-sm leading-relaxed text-muted-foreground">{studioPreview.description}</p>
-                <div>
-                  <Link href={studioPreview.cta.href}>
-                    <Button>{studioPreview.cta.label}</Button>
-                  </Link>
-                </div>
-              </div>
-              <div className="flex items-center justify-center border-t border-border bg-muted/30 p-6 md:w-1/2 md:border-l md:border-t-0 md:p-8">
-                <div className="flex w-full max-w-sm flex-col overflow-hidden rounded-lg border border-border bg-background shadow-sm">
-                  <div className="flex h-8 items-center gap-2 border-b border-border bg-muted/50 px-3">
-                    <div className="h-2.5 w-2.5 rounded-full bg-destructive/80" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-warning/80" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-success/80" />
-                    <span className="ml-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                      {studioPreviewPanel.eyebrow}
-                    </span>
-                    <span className="ml-auto">
-                      <SampleTag kind="illustrative" />
-                    </span>
-                  </div>
-                  <div className="flex-1 divide-y divide-border/50 px-2 py-1">
-                    {studioPreviewPanel.rows.map((row) => (
-                      <div
-                        key={row.id}
-                        className="flex items-start justify-between gap-2 px-2 py-2"
-                      >
-                        <div className="min-w-0">
-                          <div className="text-xs font-medium text-foreground">
-                            {row.label}
-                          </div>
-                          <div className="text-[10px] leading-snug text-muted-foreground">
-                            {row.detail}
-                          </div>
-                        </div>
-                        <LifecycleBadge
-                          lifecycle={row.lifecycle}
-                          className="shrink-0"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <div className="border-t border-border bg-muted/30 px-3 py-2">
-                    <p className="text-[10px] leading-snug text-muted-foreground">
-                      {studioPreviewPanel.note}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </section>
+      {/* The former "Studio OS Console" teaser was REMOVED from the public
+          home (founder decision, 2026-07-13 — locked-vs-hidden law: operator
+          categories are removed from public views, not promoted). Its intent
+          ("members see us advancing") moves to the future public Roadmap page
+          (Phase-2 slice 2.8), which renders from the registry — not to a
+          console door. */}
     </div>
   );
 }

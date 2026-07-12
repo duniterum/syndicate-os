@@ -23,9 +23,16 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > ~20-item MUST-CHANGE table. **GROUP B (founder decision): ALL new guard machinery (audit 7.1–7.5, 3.1)
 > → Phase 6 HARDEN & SEAL — per the anti-blocking law (founder file
 > `GitHub/_research/AUDIT_TRIAGE_ET_LOI_ANTIBLOCAGE.md` — ⚠️ OUT-OF-REPO on the founder's disk; the HARD
-> RULE wants it committed into docs/direction/ at the founder's GO).** **GROUP C (founder-only, PENDING —
-> untouched): DISCIPLINE_ENFORCED re-arm · homepage Studio-OS teaser · "Raised class" rename · whitepaper
-> §05 tier sentence.** **Instance pinning → ✅ DONE (founder, 2026-07-13, Replit dashboard): autoscale
+> RULE wants it committed into docs/direction/ at the founder's GO).** **GROUP C → ✅ DECIDED + EXECUTED
+> (founder, 2026-07-13, this commit): C1 DISCIPLINE_ENFORCED = LATER (founder decision — DO NOT RE-RAISE;
+> returns at its own time, Phase 6 at the latest) · C2 Studio-OS teaser REMOVED from the public home (its
+> intent → the future public Roadmap page, slice 2.8; config kept + annotated for that harvest — origin:
+> protocol-evolution episodes/modules + the founder's raod_map.jpg 9-node design) · C3 "Raised class" note
+> → "Higher commission rate for consistent, high-retention sources." (tier name "Trusted" kept) · C4
+> whitepaper §05 rewritten with the founder-approved verbatim (same single seat · standing on the Capital
+> axis · never a price/financial advantage).** **THE ANTI-BLOCKING LAW IS NOW IN-REPO CANON:
+> `docs/direction/CANON_LOI_ANTIBLOCAGE.md` (TIER-0, indexed) — audits are proposals, never law; guards
+> minimal until MVP; only legal/funds/truth-first are non-negotiable.** **Instance pinning → ✅ DONE (founder, 2026-07-13, Replit dashboard): autoscale
 > max machines = 1** (4 vCPU / 8 GiB) — in-memory SIWE sessions/nonces are now single-instance-safe.
 > Q21's Reserved-VM remains the durable option later; this closes the immediate risk.
 >

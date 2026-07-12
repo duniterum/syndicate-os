@@ -171,6 +171,11 @@ export const operationalReality = {
   ] as OperationalItem[],
 };
 
+// RETIRED FROM THE PUBLIC HOME (founder decision, 2026-07-13): the teaser
+// promoted an operator category on a public view (locked-vs-hidden law). Its
+// intent — "members see us advancing" — belongs to the future public Roadmap
+// page (Phase-2 slice 2.8, registry-driven). Config kept for that reuse; no
+// public surface renders it today.
 export const studioPreview = {
   title: "Studio OS Console",
   description:
