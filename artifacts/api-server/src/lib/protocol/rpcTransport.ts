@@ -116,11 +116,26 @@ export function makeFetchTransport(urls: string[], timeoutMs = DEFAULT_TIMEOUT_M
   };
 }
 
-// ── Runtime self-guard: refuse to emit output containing a full address ───────
+// ── Guard: this SPECIFIC aggregate/diagnostic output must carry no raw address ──
+// WHAT THIS ACTUALLY GUARDS (read CANON_VISIBILITY_LAW before "fixing" this):
+// The name is LEGACY and misleading — it is NOT a rule that "addresses are
+// forbidden." Per the Visibility Law:
+//   • The SERVER emits no MEMBER address — not out of secrecy, but because NO
+//     DIRECTORY EXISTS to emit. This guard is a belt-and-braces on aggregate/
+//     summary/diagnostic outputs (partB import, sale-index summaries, reality
+//     envelope) that must never carry per-wallet material.
+//   • INFRASTRUCTURE addresses ARE deliberately emitted — verifyLinks publishes
+//     Vault/Liquidity/Operations/Registry/Sale/Token (they are PIPES, nobody's
+//     wallet, and a pipe MUST be verifiable). Those paths do NOT run this guard.
+//   • The CLIENT is OUT OF SCOPE — it reads the public chain like an explorer.
+//     A client reading a payoutWallet before signing is the Visibility Law working,
+//     NOT a violation. Do not cite this guard to block a client-side chain read.
+// (Rename tracked: SESSION_STATE — a mechanical rename across its 24 call sites
+// belongs to its own careful slice; this comment carries the doctrine meanwhile.)
 export function assertNoAddressLeak(serialized: string): void {
   if (FULL_ADDRESS_RE.test(serialized)) {
     throw new Error(
-      "SAFETY VIOLATION: a full 0x address was detected in protocol-reality output; refusing to emit.",
+      "SAFETY VIOLATION: a raw 0x address appeared in an aggregate/diagnostic output that must be address-free; refusing to emit. (Infra addresses go through verifyLinks, not here — see CANON_VISIBILITY_LAW.)",
     );
   }
 }

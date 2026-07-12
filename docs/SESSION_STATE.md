@@ -29,6 +29,18 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 
 ## ✅ DECIDED — DO NOT RE-OPEN (settled; do not re-litigate)
 
+- **TIER-0 LAW (founder, 2026-07-12) — `docs/direction/CANON_VISIBILITY_LAW.md`.** On a chain, "hiding"
+  does not exist — only making legible vs tedious; everything is already public. We hide nothing; we refuse
+  to FABRICATE what the chain lacks. FORBIDDEN: a directory / search / reverse index (seat→wallet) / forced
+  wallet↔person link / exposing a non-consenting member. ALLOWED (the chain already publishes it): INFRA
+  addresses (Vault/Liquidity/Operations/Registry/Sale/Token — PIPES, nobody's wallet), any event-emitted
+  address, YOUR own tx, an address the buyer must see BEFORE signing, opt-in self-publish. TWO disciplines:
+  the SERVER emits no MEMBER address (no directory exists — member-standing own-row, source = 2 booleans,
+  UNCHANGED); the CLIENT reads the chain like an explorer. Corollary: what PROVES is public, what GRANTS
+  ACCESS is a secret (a contract address proves; an RPC token grants access). Loaded at every boot (TIER-0).
+  FOLLOW-UP (tracked): `assertNoAddressLeak` (rpcTransport.ts + a twin in avalanche-live-read-check.ts) is
+  MISNAMED — its comment now carries the correct doctrine (infra allowed, client out of scope), but a
+  mechanical rename across its 24 call sites / 10 files is its own careful slice (do not rush; tsc-verified).
 - **TIER-0 LAW (founder, 2026-07-12) — `docs/direction/CANON_INVARIANT_VS_STATE.md`.** The
   anti-drift law that ends the 6-rebuild loop: every repo statement is an **INVARIANT** (a rule
   about *how* — only the founder authors it; agents cite/obey, never invent) or a **STATE** (a
@@ -302,6 +314,21 @@ Status: ⬜ PENDING · 🔒 DEFERRED (lawyer-gated). All money-touching items go
   rail; reuse the Merkle infra) · 🔒 DEFERRED (lawyer-gated) · src `SEASONS_ENGINE_ON_SYNDICATE_OS.md` §8 + `SETTLED_RULES`.
 
 **Phase 5–6 — identity & income economy**
+- **`/staff` — PUBLIC OPERATOR REGISTRY (anti-impersonation)** · ⬜ PENDING (record, do not build; own slice, CAN
+  ship EARLY) · founder 2026-07-12. The #1 crypto fraud is "I'm Syndicate support" draining a wallet; the answer
+  is MECHANICAL — every operator signs in with their EVM address, and that address is PUBLIC on the site with its
+  STATUS (`Seat #3 · Member support · 0x9F4A…22B1 · ● ACTIVE` / `Content operator · 0x5D18…88A0 · ○ SUSPENDED`).
+  An impostor can COPY an address but CANNOT SIGN with it ("ask them to sign this message with that address —
+  if they can't, it isn't us"). HALF-BUILT already: `referralProgram.ts` has the 8 roles; `operator-context`
+  returns `{isOperator, role}` from the ACTIVE registry row — the registry EXISTS, publishing it is a READ.
+  A SUSPENDED operator MUST show SUSPENDED. Under the Visibility Law this is INFRASTRUCTURE identity — publishing
+  it is REQUIRED, not merely permitted.
+- **Public leaderboard — HONOUR ROLL, not a directory** · ⬜ PENDING (record; lands WITH the Standing slice, not
+  before) · founder 2026-07-12. Public by default (it IS the engagement engine — Zealy/GitHub/Strava). The exact
+  application of the Visibility Law: ❌ a directory (wallet→who, fabricated) — never; ✅ a RANKING (top-N
+  Connectors, the chain already publishes it). Shows a SEAT + a STANDING ("Seat #12 · Foundational Connector · 47
+  introductions"), an honour roll, NEVER a money ranking (retention/duration/quality). Alias stays opt-in: by
+  default you are a SEAT NUMBER — a member who wants no name stays a number, BUT HIS RANK EXISTS (like GitHub).
 - Internal explorer (harvest `MiniExplorer`) + extend `known-addresses` labeling (read-only) · ⬜ PENDING ·
   src `LIVING_ORGANISM_MASTER_PLAN.md` §9.
 - Shareable cards / OG (consent-gated identity; viral) · ⬜ PENDING (non-financial) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
