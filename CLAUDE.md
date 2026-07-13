@@ -39,3 +39,9 @@ your head."
 **Founder-facing communication.** The founder can't follow deep technical detail. Keep it
 simple: state the gate (4 lines), the diff to approve, and the deploy verdict. Decide the
 technical choices yourself (grade-AAA best practices) — don't ask him to judge them.
+
+**STANDING RULE — content decisions are read ON SCREEN (founder, permanent, 2026-07-14).**
+Whenever CONTENT awaits the founder's decision — chronicle candidates, public copy, terms
+wording, any words he must approve — the report pastes the FULL text INLINE in the chat
+message. The founder decides on screen; he never opens repo files to read. File paths
+alone are not a report.
