@@ -2,7 +2,30 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 💓 SLICE M5 ✅ SEALED IN PROD (2026-07-13, Replit-verified 20:38 UTC on
+> **▶ 📜 THE PROTOCOL LANGUAGE CONSTITUTION ✅ BUILT (2026-07-14, founder-briefed slice,
+> docs-only): `docs/direction/CANON_PROTOCOL_LANGUAGE.md` IS TIER-0 CANON** (registered in
+> 00_CANON_INDEX). INVARIANTS ONLY — eight blocks: §1 identity paragraph (from the live
+> site's own words) · §2 the six-beat page sequence (the review grid for every future page) ·
+> §3 the voice (calm operator; origin approved concepts carried) · §4 word roles
+> (referral/source · "Paid to referrer" · the money-flow formula · the doctrinal verbatim
+> sentence · acquisitionCost=bytecode-only · surface naming) · §5 the consolidated banned
+> vocabulary (guards = enforcement arm; 5 divergences FLAGGED not fixed: payout context ·
+> moon icon · raised class · downline unguarded · contribution/package deliberate) · §6 the
+> canonical verbatim lines harvested EXACT (incl. the FLAG: repo says "SYN is the seat, NFTs
+> are the memory" vs the brief's "Artifacts") · §7 the three registers (PROOF · CONVERSION
+> under "bold claim + verify link" + the four flagship referral showcase lines, escrow claim
+> sourced to the origin .sol pushSourcePayout/claimSourceEscrow with the vendored-ABI-absence
+> flag · MEMBER) · §8 the event lexicon (six LIVE sentences captured from M5 baseline + five
+> RESERVED authored: source activated/paused · ladder promotion "A source rose to {rung} —
+> recorded on-chain." · era advance · Chronicle promotion). Application of CONVERSION rides
+> M1/M2/M3 (stated in the doc). FOUR DECISIONS CLOSED in OPEN_QUEUE (founder order): avatar
+> = Replit App Storage · /wallet DEX deep-link = NO (flow-separation law) · snapshot cadence
+> = weekly + before any promotion signing (automation rides M0) · prod RPC = YES
+> founder-optional (`AVALANCHE_RPC_URL`, ops act). Horizon note added: white-label
+> referral-rail SaaS at the pro-firm ~6-month horizon. The former "pending founder
+> decisions" list is now EMPTY. NEXT: the founder picks — M6 / M0-M3 / Q-A/Q-B.
+>
+> **▶ Prior: 💓 SLICE M5 ✅ SEALED IN PROD (2026-07-13, Replit-verified 20:38 UTC on
 > thesyndicate.money/activity): THE HEARTBEAT SHOWS ITS WHOLE HISTORY.** Replit report: pull
 > 29/29 hash-verified · full gate green · published. PROD PROOF — the quiet day DEMONSTRATED
 > the slice: the ~24h window (blocks 90,190,028→90,233,228) contained ZERO events, and even the

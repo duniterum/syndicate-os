@@ -41,6 +41,26 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 
 ---
 
+> **▶ 2026-07-14 — THE PROTOCOL LANGUAGE CONSTITUTION SLICE (docs-only). NEW CANON:
+> `CANON_PROTOCOL_LANGUAGE.md` (TIER-0, registered). FOUR DECISIONS CLOSED by founder order
+> (this commit):**
+> - ✅ **CLOSED — Avatar storage = Replit App Storage.** Decision recorded; the build rides the
+>   avatar slice of the Member Home arc (sigil default stays LIVE; NFT source stays
+>   chain-verified ownerOf + badge + verify tooltip).
+> - ✅ **CLOSED — DEX deep-link on /wallet = NO.** Closed by the flow-separation law: the
+>   wallet's pool card keeps pointing internal → /liquidity; the DEX links never travel
+>   without their page context + Risk Notice. No agent re-proposes the deep-link.
+> - ✅ **CLOSED — Referral snapshot cadence = WEEKLY + always re-run before signing any
+>   promotion.** (Closes the cadence half of Q18; the stale-snapshot refresh itself remains a
+>   founder-gated run.) Full automation of the refresh lands with M0.
+> - ✅ **CLOSED — Dedicated prod RPC = YES, founder-optional.** The founder sets
+>   `AVALANCHE_RPC_URL` (QuickNode) in Replit when convenient — an ops act, nothing to build;
+>   the public RPC remains sufficient at cruise cadence.
+>
+> **Horizon note (recorded, no build):** the white-label referral-rail SaaS idea sits at the
+> existing "professional firm on traction (~6 months)" horizon (`CONNECTOR_LADDER_POLICY.md`
+> §5), alongside the zero-touch promotion contract · the self-service issuer · Router V4.
+
 ## Open
 
 > **▶ 2026-07-11 (later) — SESSION UPDATE.** The member-recognition arc SHIPPED + is LIVE. **CLOSED this
