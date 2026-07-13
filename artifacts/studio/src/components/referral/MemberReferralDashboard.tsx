@@ -8,7 +8,11 @@
 // data and the SampleTags come off — the layout does not change.
 
 import { useEffect, useState } from "react";
+import { useAccount } from "wagmi";
+import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { ladderProgress } from "@/config/connectorLadder";
+import { deriveSourceId } from "@/lib/sourceIdentity";
+import { readSourceConfig } from "@/lib/chainReads";
 import { Copy, Check, Link2, ShieldCheck, QrCode } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,8 +27,6 @@ import { QrCodeBlock } from "@/components/referral/QrCodeBlock";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import {
   referralProgram,
-  sampleReferralLink,
-  sampleReferralCode,
   memberStatsSample,
   memberHistorySample,
   memberTrendSample,
@@ -207,17 +209,94 @@ function IntroductionStanding({ readback }: { readback: StandingReadback | null 
   );
 }
 
-export function MemberReferralDashboard() {
+// The §11-2b card implementation: permanent derived link + live two-state
+// honesty + copy/QR/share, all wired to the REAL link (the sample is gone).
+function MyReferralLinkCard() {
+  const { address } = useAccount();
   const [copied, setCopied] = useState(false);
   const [showQr, setShowQr] = useState(false);
-  const readback = useOwnSourceStanding();
+  // Live registry state for the derived source: true=ACTIVE · false=known but
+  // not active OR not created yet · null=read unavailable (fail closed — the
+  // permanence statement stands; no activity claim is made).
+  const [active, setActive] = useState<boolean | null>(null);
+  const { data: verifyData } = useGetProtocolVerifyLinks();
+  const registryUrl =
+    verifyData?.links?.find((l) => l.id === "sourceRegistry")?.url ?? null;
+  const registryAddr = registryUrl
+    ? (registryUrl.match(/\/address\/(0x[0-9a-fA-F]{40})\b/)?.[1] ?? null)
+    : null;
+  const sourceId = address ? deriveSourceId(address) : null;
+  const link = sourceId ? `https://thesyndicate.money/join?source=${sourceId}` : null;
+
+  useEffect(() => {
+    let alive = true;
+    setActive(null);
+    if (!registryAddr || !sourceId) return;
+    void readSourceConfig(registryAddr, sourceId).then((r) => {
+      if (alive) setActive(r === null ? null : r.active);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [registryAddr, sourceId]);
 
   function copyLink() {
-    void navigator.clipboard?.writeText(sampleReferralLink).then(() => {
+    if (!link) return;
+    void navigator.clipboard?.writeText(link).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     });
   }
+
+  return (
+    <Card className="bg-card/40 border-border/50 p-5 mb-6">
+      <div className="flex items-center gap-2 mb-3">
+        <Link2 className="h-4 w-4 text-primary" />
+        <span className="text-sm font-medium text-foreground">Your referral link</span>
+        {active === true ? (
+          <StatusPill tone="proof" size="xs">Source active</StatusPill>
+        ) : null}
+      </div>
+      {link ? (
+        <>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Input readOnly value={link} className="font-mono text-xs" data-testid="input-my-referral-link" />
+            <Button variant="outline" size="sm" onClick={copyLink} className="shrink-0">
+              {copied ? <Check className="h-4 w-4 mr-1.5" /> : <Copy className="h-4 w-4 mr-1.5" />}
+              {copied ? "Copied" : "Copy"}
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2" data-testid="text-link-state">
+            {active === true
+              ? "Your source is ACTIVE — the commission is paid inside the buyer's own transaction, live."
+              : "Your link is permanent — derived from your wallet, it never changes. The commission activates when your source is founder-signed."}
+          </p>
+          <div className="flex flex-wrap items-center gap-2 mt-3">
+            <Button variant="outline" size="sm" onClick={() => setShowQr((v) => !v)}>
+              <QrCode className="h-4 w-4 mr-1.5" />
+              Get QR code
+            </Button>
+            <ShareMenu url={link} text="Join The Syndicate with my verified introduction." />
+          </div>
+          {showQr ? (
+            <div className="mt-4 pt-4 border-t border-border/50">
+              <QrCodeBlock value={link} />
+            </div>
+          ) : null}
+        </>
+      ) : (
+        <p className="text-xs text-muted-foreground">
+          Connect and sign in with your wallet to derive your permanent referral
+          link. It exists before anyone signs anything — one wallet, one link,
+          forever.
+        </p>
+      )}
+    </Card>
+  );
+}
+
+export function MemberReferralDashboard() {
+  const readback = useOwnSourceStanding();
 
   return (
     <div>
@@ -247,36 +326,14 @@ export function MemberReferralDashboard() {
       {/* Shareable verified-introducer card — the one-tap share asset */}
       <ShareCard />
 
-      {/* Link + code */}
-      <Card className="bg-card/40 border-border/50 p-5 mb-6">
-        <div className="flex items-center gap-2 mb-3">
-          <Link2 className="h-4 w-4 text-primary" />
-          <span className="text-sm font-medium text-foreground">Your referral link</span>
-          <SampleTag kind="simulated" />
-        </div>
-        <div className="flex flex-col sm:flex-row gap-2">
-          <Input readOnly value={sampleReferralLink} className="font-mono text-xs" />
-          <Button variant="outline" size="sm" onClick={copyLink} className="shrink-0">
-            {copied ? <Check className="h-4 w-4 mr-1.5" /> : <Copy className="h-4 w-4 mr-1.5" />}
-            {copied ? "Copied" : "Copy"}
-          </Button>
-        </div>
-        <p className="text-xs text-muted-foreground mt-2">
-          Referral code: <span className="font-mono text-foreground/80">{sampleReferralCode}</span>
-        </p>
-        <div className="flex flex-wrap items-center gap-2 mt-3">
-          <Button variant="outline" size="sm" onClick={() => setShowQr((v) => !v)}>
-            <QrCode className="h-4 w-4 mr-1.5" />
-            Get QR code
-          </Button>
-          <ShareMenu url={sampleReferralLink} text="Join The Syndicate with my verified introduction." />
-        </div>
-        {showQr ? (
-          <div className="mt-4 pt-4 border-t border-border/50">
-            <QrCodeBlock value={sampleReferralLink} />
-          </div>
-        ) : null}
-      </Card>
+      {/* THE REFERRAL LINK CARD (§11 slot 2b) — REAL, replacing the sample:
+          the member's PERMANENT link, derived from their wallet (SPEC §③ —
+          the sourceId never changes; the emitter will compute the same).
+          TWO honest states, read live from the registry:
+            ACTIVE      → the commission is paid inside the buyer's own tx;
+            not signed  → the link is permanent; commission activates when the
+                          source is founder-signed. Same link forever. */}
+      <MyReferralLinkCard />
 
       {/* Summary stats */}
       <div className="flex items-center gap-2 mb-3">

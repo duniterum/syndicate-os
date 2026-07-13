@@ -15,6 +15,7 @@ import { PublicPage } from "@/components/PublicPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { MemberShell } from "@/components/member/MemberShell";
 import { MEMBER_HOME_RESERVED_SLOTS } from "@/config/memberDoors";
+import { MemberQuickActions } from "@/components/member/MemberQuickActions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -168,20 +169,11 @@ export default function MemberAccess() {
         </Suspense>
       ) : null}
 
-      {/* Quick actions — real surfaces only. The old "View your receipt —
-          PENDING_ADAPTER" non-link is RETIRED: the receipt is REAL and lives
-          in the Your Seat strip (a pending label over a shipped thing is a
-          stale STATE). */}
-      <div className="flex flex-wrap items-center gap-3 mb-12">
-        <Link href={ctas.requestSeat.href}>
-          <Button>{ctas.requestSeat.label}</Button>
-        </Link>
-        <Link href={ctas.buildLink.href}>
-          <Button variant="outline">{ctas.buildLink.label}</Button>
-        </Link>
-        <Link href={ctas.viewStatus.href}>
-          <Button variant="outline">{ctas.viewStatus.label}</Button>
-        </Link>
+      {/* Quick actions — rendered FROM the registry (config/memberActions.ts,
+          §4.3): locked actions stay visible with their plain reason; operator
+          actions do not exist in the registry. Replaces the old static row. */}
+      <div className="mb-12">
+        <MemberQuickActions />
       </div>
 
       {/* The referral dashboard — MOVED out of the Source tab to a first-class

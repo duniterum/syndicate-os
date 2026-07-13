@@ -2,7 +2,27 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ MEMBER SHELL — Member Home slice 2, BUILT (founder GO; awaiting diff approval → deploy):**
+> **▶ MEMBER HOME ARC — SLICE A ✅ BUILT (2026-07-14, autonomous work order, founder GO):**
+> ① `config/memberActions.ts` — THE action registry (origin actions.ts harvested for shape,
+> adapted): copy-my-referral-link (lock: session) · share-my-proof (lock: seat) ·
+> expand-footprint→/join (open) · verify-my-seat-on-chain (lock: seat, real VerifyOnChain
+> engine link); locked = visible + plain reason; NO operator action exists in the registry.
+> Rendered by `components/member/MemberQuickActions.tsx` (own-row via the sanctioned dynamic
+> walletSession import; fail-closed handlers) — replaced the old static row on /member.
+> ② THE REFERRAL LINK CARD (§11 slot 2b) — the SAMPLE link/`SAMPLE-CODE` block in
+> MemberReferralDashboard is GONE, replaced by `MyReferralLinkCard`: the member's PERMANENT
+> link derived from their wallet (SPEC §③), TWO honest states read LIVE from the registry
+> (ACTIVE → "commission paid inside the buyer's own transaction — live" + "Source active"
+> pill · not-signed → "your link is permanent — commission activates when your source is
+> founder-signed"), copy/QR/ShareMenu wired to the REAL link; no wallet → honest derive-note,
+> no sample. Reused existing reads only (deriveSourceId · verify-links · readSourceConfig) —
+> zero new endpoints. ③ GUIDE ON THE MEMBER SHELL — ALREADY TRUE by construction:
+> `SyndicateGuide` mounts unconditionally in PublicLayout and /member is a PublicLayout page;
+> verified, no fork, no change (reported, not rebuilt). guard-no-fake-live caught the bare
+> "Active" pill → "Source active" (the guard working). Green: tsc 0 · 12 guards · seo 323 ·
+> build 18 shells.
+>
+> **▶ Prior: MEMBER SHELL — Member Home slice 2, BUILT (founder GO; awaiting diff approval → deploy):**
 > the two-shells rule realized — `components/member/MemberShell.tsx` (left sidebar of member
 > doors, chosen BY THE PAGE inside the public chrome; public pages + prerender untouched) +
 > `config/memberDoors.ts` — RECONCILED at staging time to SEASONS_ENGINE **§11 wireframe v2**
