@@ -40,3 +40,12 @@ Local gates before any push: typecheck · guards · seo:check · seo:rewrites:ch
 (the one once missed — Replit gate caught it) · build; chain claims verified against the DEPLOYED
 contract (read-only scripts); live-domain check after every publish. pnpm is absent on the founder
 Windows machine — use npm + PORT=5173 env for builds; Replit remains build/deploy truth.
+
+## FINAL LIVE STATE (measured on thesyndicate.money after the last publish, e1048ff)
+- **/referral**: robots `index, follow` + canonical `https://thesyndicate.money/referral` ✓
+- **/source-attribution**: robots `noindex, follow`, no canonical tag (the tooling emits canonicals
+  for INDEX routes only — Google drops the alias and follows to /referral; links never break) ✓
+- **BOTH URLS EXIST AT ONCE — BY DESIGN** (canonical + alias). Do not "fix" this.
+- ⚠️ Replit's cycle report said /referral "naît en posture PENDING/noindex" — a MISREAD of the
+  prerender line (the 3 noindex shells are /recognition, /archive, /source-attribution). /referral
+  is INDEX + in the sitemap, measured live above. Nothing to do.
