@@ -24,7 +24,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > `readSourceRecord` (chainReads). guard-access-state respected (raw I/O in lib, not wallet).
 > All green: typecheck 0 · 12 guards + no-raw-color 0 · seo:check 323 · rewrites OK ·
 > surface:audit 218 · build 18 shells; terms file byte-identical in dist
-> (keccak256 `0x06ff3134…bce37c` as written — recomputed live at signing). FOUNDER CORRECTION
+> (keccak256 `0xc8480867…1e6e48` as written — recomputed live at signing; the /referral display
+> and the PROPOSE screen both hash the SERVED file, so they follow the bytes automatically).
+> **HUMAN-READABLE PASS APPLIED (founder, 2026-07-13 — the §8 pattern everywhere: human words
+> first, contract term in parentheses for verifiers):** scope line "member referral sources (the
+> contract's MEMBER_INTRODUCTION class)"; header + §9 "the source's terms fingerprint (the
+> contract's metadataHash field)"; header keccak256 introduced as "its digital fingerprint"
+> (exact algorithm name kept for verifiers); the /referral sentence aligned. FOUNDER CORRECTION
 > APPLIED (2026-07-13, settled canon — a referrer does NOT have to be a member; classes differ):
 > the v1 document is SCOPED to the member program — title "MEMBER REFERRAL PROGRAM TERMS", id
 > `SYN.REFERRAL.MEMBER.TERMS.V1`, scope line "MEMBER_INTRODUCTION sources only; other classes

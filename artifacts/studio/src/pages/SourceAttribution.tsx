@@ -184,7 +184,8 @@ export default function SourceAttribution() {
         </a>
         . The hash below is computed from the served document as you read
         this; the same value is recorded on the Source Registry as each
-        member source&apos;s metadataHash.
+        member source&apos;s terms fingerprint (the contract&apos;s
+        metadataHash field).
         <TermsCommitmentHash />
       </p>
 

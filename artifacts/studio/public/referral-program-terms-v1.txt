@@ -4,16 +4,18 @@ Canonical URL: https://thesyndicate.money/referral-program-terms-v1.txt
 Program page:  https://thesyndicate.money/referral
 Encoding: UTF-8, LF line endings.
 
-These terms govern MEMBER_INTRODUCTION sources only. Other source
-classes (partner, builder, affiliate) are governed by their own
-versioned terms documents, each with its own recorded hash.
+These terms govern member referral sources (the contract's
+MEMBER_INTRODUCTION class) only. Other source classes (partner,
+builder, affiliate) are governed by their own versioned terms
+documents, each with its own recorded hash.
 
 This document states the terms of The Syndicate member referral
-program. Its keccak256 hash is recorded on-chain as the metadataHash
-of member referral sources created under this program in the Source
-Registry on Avalanche C-Chain (chain id 43114). Anyone can verify the
-commitment: download this exact file and compute keccak256 over its
-raw bytes.
+program. Its keccak256 hash - its digital fingerprint - is recorded
+on-chain as the source's terms fingerprint (the contract's
+metadataHash field) for every member referral source created under
+this program in the Source Registry on Avalanche C-Chain (chain id
+43114). Anyone can verify the commitment: download this exact file
+and compute keccak256 over its raw bytes.
 
 1. THE PROGRAM
 A member of The Syndicate may be granted a personal referral link.
@@ -108,8 +110,9 @@ that apply to commissions received under this program.
 9. CHANGES TO THESE TERMS
 These terms are versioned. A new version is published at a new URL
 with a new hash, and newly created sources reference the new hash.
-The version recorded in a source's metadataHash remains the version
-governing that source until the source's terms are updated by a
-founder-signed on-chain transaction.
+The version recorded on-chain as the source's terms fingerprint (the
+contract's metadataHash field) remains the version governing that
+source until the source's terms are updated by a founder-signed
+on-chain transaction.
 
 Published by The Syndicate - thesyndicate.money
