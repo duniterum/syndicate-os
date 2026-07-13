@@ -1,8 +1,9 @@
 # CHRONICLE CANDIDATE — The first referral source
 
 ```
-status:    🕯 CANDIDATE — awaiting the founder's promotion (promotion = a
-           founder-approved commit into chronicleRegister.ts; CHR-1 doctrine).
+status:    ✅ PROMOTED — founder GO 2026-07-14. Entry 3 of the public register
+           (artifacts/studio/src/config/chronicleRegister.ts, rendered at
+           /chronicle). This file remains as the candidate-of-record.
 register:  protocol-institutional (solemn-alive, CANON_PROTOCOL_LANGUAGE §8)
 date:      2026-07-13 (the day the convention gained its first on-chain instance)
 discipline: identity-blind (roles only, no wallet, no person) · amount-blind
