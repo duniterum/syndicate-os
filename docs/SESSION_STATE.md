@@ -16,6 +16,11 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > `memberByNumber(13)=buyer`). The living protocol did the rest BY ITSELF: the public headline reads 13
 > everywhere and the honest readback recomputed to **"13 seats / 12 distinct wallets (1 holds two)"** —
 > zero human edits, zero console errors, CSP clean. **The Syndicate OS sells seats in production.**
+> **Post-C5 polish → ✅ SEALED in prod (founder-screenshot-verified):** member-aware seat line
+> (`f950354` — a seated wallet reads "You hold seat #N … never a second seat", own-row live
+> `memberNumberOf`; generic always-true line for everyone else) + the multichain-USDC trap named in
+> the balance-short message (`a852da1` — founder-discovered on the first cross-device test: wallets
+> aggregate balances across networks; the message now says on-Avalanche-native-USDC-only + what to do).
 > NEXT = the REFERRAL PUBLIC ACTIVATION slice (OPEN_QUEUE ③).
 >
 > **▶ Prior: 🔴🚀 C5 GO-LIVE (founder GO, 2026-07-13) — THE FLIP IS IN THIS COMMIT.** `CHECKOUT_ENABLED = true`:
