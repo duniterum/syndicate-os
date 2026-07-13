@@ -2,7 +2,20 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🏛 SLICE M6 ✅ COMPLETE — ALL THREE PROMOTIONS DONE (2026-07-14, founder GO "promote all
+> **▶ 🏛 SLICE M6 ✅ SEALED IN PROD (2026-07-14, Replit-verified on
+> thesyndicate.money/chronicle): FOUR CHAPTERS LIVE.** Replit report: pull 9/9 hash-verified
+> (HEAD 11dcbf4) · full gate green (15 studio + 18 API guards) · published. PROD PROOF: the
+> four entries render oldest-first (The duplicate seat 07-12 · The first real-money seat
+> 07-12 · The first referral source 07-13 · The ladder decision 07-13); every entry ends with
+> its VERIFY card (rendering is UNCONDITIONAL in code); the "first entry awaits" teaser is
+> gone from the rendered page and served HTML (the string survives as DEAD CODE — renders
+> only on an empty register; Replit's cosmetic note recorded: purging it is optional, not
+> urgent); the end-of-page honesty note serves ("An entry enters this register by a
+> founder-approved commit — no database, no automation, no silent edits."). M6 THIN-V1 IS
+> ALIVE ON THE DOMAIN. NEXT: the founder picks — M7 Economy thin / M1-M3 momentum face / M0 /
+> REFERRAL-SHOWCASE / Q-A/Q-B.
+>
+> **▶ Prior: 🏛 SLICE M6 ✅ COMPLETE — ALL THREE PROMOTIONS DONE (2026-07-14, founder GO "promote all
 > three"; full texts were read ON SCREEN per the new standing rule): /chronicle carries FOUR
 > true chapters.** One commit per promotion, exactly the doctrine: Entry 2 "The first
 > real-money seat" (`94a40a9`) · Entry 3 "The first referral source" (`f3135a7`) · Entry 4
