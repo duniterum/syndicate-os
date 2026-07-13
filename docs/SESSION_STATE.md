@@ -2,7 +2,12 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ LADDER-PROMOTION-SCREEN — BUILT (2026-07-13, founder GO; awaiting diff approval → deploy):**
+> **▶ LADDER-PROMOTION-SCREEN → ✅ SEALED IN PROD (`28ccbaa`, Replit-verified 4/4, 2026-07-13:
+> source-standing fail-closed unchanged · intro guard 45/45 on their side · data-drift check OK
+> with the head 1,466 blocks ahead · member banner IN the served bundle, founder panel ABSENT
+> from it). R5 was sealed the same day (`93a69dd` + `56a7f4b` drift-fix, verified 4/4). The
+> WHOLE REFERRAL ARC IS LIVE END-TO-END: terms (hash-committed) → first member source (founder-
+> signed) → introduction indexer → ladder → promotion loop.** Original build state:
 > the ladder's promotion loop end-to-end, on the R5 spine. **FOUNDER RULE ENGRAVED (2026-07-13,
 > "simple + transparency"): NO compensation for the waiting gap between threshold crossing and
 > signature — the rate applies at on-chain recording (never retroactive); the waiting is VISIBLE

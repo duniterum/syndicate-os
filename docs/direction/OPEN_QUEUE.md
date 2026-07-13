@@ -156,8 +156,10 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   one constant). Full state: SESSION_STATE top bullet. LADDER-PROMOTION-SCREEN's R5 dependency
   is now SATISFIED once deployed.
 
-- **⏳ LADDER-PROMOTION-SCREEN — BUILT (2026-07-13, founder GO; awaiting diff approval →
-  deploy).** All four pinned UI rules + the founder's simple-transparency rule (no gap
+- **✅ LADDER-PROMOTION-SCREEN — SEALED IN PROD (`28ccbaa`, Replit-verified 4/4, 2026-07-13).
+  Founder confirms closure.** R5 likewise sealed (`93a69dd`/`56a7f4b`). Remaining referral-arc
+  items: the snapshot-refresh cadence (founder decision) · per-receipt row histories (future
+  slice) · the auto-derived member link card (still open, small). All four pinned UI rules + the founder's simple-transparency rule (no gap
   compensation; waiting visible + chain-dated) implemented; full state in SESSION_STATE.
   *(Original entry, for the record:)* LADDER-PROMOTION-SCREEN (registered 2026-07-13; DEPENDS
   ON R5; execute only on founder GO). The Connector-ladder promotion flow per
