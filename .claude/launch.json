@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "studio",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "@workspace/studio", "run", "dev"],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "artifacts/studio"],
       "port": 5173,
       "env": {
         "PORT": "5173",
@@ -13,8 +13,8 @@
     },
     {
       "name": "api-server",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "@workspace/api-server", "run", "dev"],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "artifacts/api-server"],
       "port": 5000,
       "env": {
         "PORT": "5000",
@@ -23,8 +23,8 @@
     },
     {
       "name": "mockup-sandbox",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "@workspace/mockup-sandbox", "run", "dev"],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "artifacts/mockup-sandbox"],
       "port": 5174,
       "env": {
         "PORT": "5174",

@@ -25,7 +25,7 @@
 //   Settings   → Feature-flags preview card + real build-flags panel
 //                + System Health panel
 
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import AdminHome, { type AdminSectionId } from "@/pages/admin/AdminHome";
 import {
@@ -113,9 +113,18 @@ export function AdminMembersSection() {
   );
 }
 
+// R2 — the PROPOSE screen (Constitution §④ Form 2): builds createSource /
+// setSourceStatus for the founder's wallet to sign. Wallet-zone code, so it is
+// reached ONLY via a runtime dynamic import (guard rule 15 — only App.tsx
+// imports @/wallet statically).
+const ProposeSourceCreate = lazy(() => import("@/wallet/ProposeSourceCreate"));
+
 export function AdminSourcesSection() {
   return (
     <div className="space-y-6">
+      <Suspense fallback={null}>
+        <ProposeSourceCreate />
+      </Suspense>
       <AdminReferralPanel />
       <AdminReferralCrud />
       <SourceReviewQueue />

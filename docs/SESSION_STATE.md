@@ -1,6 +1,41 @@
 # SESSION_STATE — read FIRST, every session
 
 Authoritative resume point. **The real repo always wins over any spec.**
+
+> **▶ R1+R2 — THE FIRST MEMBER SOURCE, BUILT (2026-07-13, founder GO; signing = a founder act,
+> pending):** ① **R1 the program terms document** exists and is PUBLIC:
+> `artifacts/studio/public/referral-program-terms-v1.txt` served at
+> `/referral-program-terms-v1.txt` (flat filename ON PURPOSE — a `referral/` directory would
+> re-trigger the 2.0 trailing-slash auto-redirect on /referral) + linked from /referral. Its
+> keccak256 IS the on-chain `metadataHash` (LIFETIME member sources revert `MissingMetadata`
+> without it); the hash is NEVER hardcoded — `lib/termsDocument.ts` fetches the served file and
+> hashes the raw bytes at need (edit the wording → the hash follows by construction). ② **R2 the
+> PROPOSE screen** (Constitution §④ FORM 2, the first instance of the pattern that unblocks all
+> admin): `wallet/ProposeSourceCreate.tsx`, mounted lazy in `/admin/sources` (operator console —
+> dead-code-eliminated from public builds, VERIFIED absent from the default bundle). It reads the
+> registry `owner()` LIVE and states which wallet must sign; derives
+> `sourceId = keccak256("SYN.SOURCE.V1", wallet)` (`lib/sourceIdentity.ts` — the convention's
+> first implementation); shows EVERY SourceTerms param in clear + the irreversibles (permanent
+> sourceId · payoutWallet unchangeable by term updates); builds `createSource` (born PAUSED,
+> contract-enforced) then `setSourceStatus(ACTIVE)` as TWO separate signed acts with the
+> fail-closed /join?source= check stated between them; blocks activation on a metadataHash
+> mismatch vs the served document. ABIs transcribed from `SourceRegistryV1.sol` read line-by-line;
+> writes via wagmi in the founder's wallet ONLY. New reads: `readRegistryOwner` +
+> `readSourceRecord` (chainReads). guard-access-state respected (raw I/O in lib, not wallet).
+> All green: typecheck 0 · 12 guards + no-raw-color 0 · seo:check 323 · rewrites OK ·
+> surface:audit 218 · build 18 shells; terms file byte-identical in dist
+> (keccak256 `0xabe7c1ac…a0d210` as written — recomputed live at signing). FOUNDER CORRECTION
+> APPLIED (2026-07-13, settled canon — a referrer does NOT have to be a member; classes differ):
+> the v1 document is SCOPED to the member program — title "MEMBER REFERRAL PROGRAM TERMS", id
+> `SYN.REFERRAL.MEMBER.TERMS.V1`, scope line "MEMBER_INTRODUCTION sources only; other classes
+> (partner, builder, affiliate) get their own versioned terms documents, one class · one doc ·
+> one hash". LOCAL-ENV NOTE
+> (Windows): the api-server dev script is bash-only → the local dev app renders blank on clean
+> main too (A/B verified with git stash); NOT a slice regression — Replit is runtime truth.
+> NEXT: founder approves the terms WORDING + the diff → push → deploy (the terms URL must be
+> public before signing) → the founder signs create (PAUSED) → fail-closed check → signs ACTIVE
+> → the first convention-following member source exists (unlocks the auto-derived member link
+> card, a follow-up slice).
 Direction specs now live IN this repo: `docs/direction/MASTER_BUILD_SPEC.md` ·
 `docs/direction/CONTENT_SUITE_SPEC.md` · `docs/direction/WHITEPAPER_PLAN.md` ·
 `docs/direction/WHITEPAPER_LIVING_DOCTRINE.md` (living-protocol soul + chassis) ·

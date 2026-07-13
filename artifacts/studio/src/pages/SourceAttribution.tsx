@@ -132,12 +132,29 @@ export default function SourceAttribution() {
         </ul>
       </Card>
 
-      <div className="rounded-lg border border-border/50 bg-muted/20 p-4 flex items-start gap-3 mb-12">
+      <div className="rounded-lg border border-border/50 bg-muted/20 p-4 flex items-start gap-3 mb-6">
         <div className="p-1.5 rounded-md bg-primary/10 text-primary shrink-0 mt-0.5">
           <ShieldCheck className="h-4 w-4" />
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">{sourceDisclaimer}</p>
       </div>
+
+      {/* R1 — the published program terms. This exact document's keccak256 is
+          recorded on-chain as the metadataHash of member referral sources, so
+          the link is the public half of an on-chain commitment. */}
+      <p className="text-sm text-muted-foreground leading-relaxed mb-12">
+        The program terms are published as a plain document whose fingerprint
+        (keccak256 hash) is recorded on-chain with each member referral source:{" "}
+        <a
+          href="/referral-program-terms-v1.txt"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-proof/80 hover:text-proof underline underline-offset-2"
+        >
+          Member Referral Program Terms (v1)
+        </a>
+        .
+      </p>
 
       <div className="flex flex-wrap gap-3">
         <Link href={ctas.buildLink.href}>

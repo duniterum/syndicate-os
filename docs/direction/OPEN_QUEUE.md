@@ -135,6 +135,16 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   canonical → /referral (links never break, Google consolidates). Registry + sitemap + artifact.toml
   regen + guards lockstep. Consider /source → /referral-link the same way.
 
+- **⏳ R1+R2 — the first MEMBER_INTRODUCTION source (founder GO 2026-07-13; BUILT, awaiting
+  diff approval → deploy → the founder's TWO signatures).** R1 terms doc public
+  (`/referral-program-terms-v1.txt`, hashed live → metadataHash) + R2 PROPOSE screen
+  (Constitution §④ Form 2) in /admin/sources: owner() read live, sourceId derived
+  (`SYN.SOURCE.V1`), createSource born PAUSED → fail-closed /join check → setSourceStatus(ACTIVE),
+  each a separate founder-signed act. Full state: SESSION_STATE top bullet. 2.5a stays PARKED at
+  its posted gate (Q3/Q4 held; Q5/Q6 unanswered). NOTE (doc-drift, non-decision): Q11/Q21 below
+  are CLOSED per the 2026-07-11 session-update block; their table rows are historical. Q20 looks
+  superseded by the live C5 checkout — closing it stays a FOUNDER confirm, not taken here.
+
 - **⏳ QUEUED SLICE (founder-approved for queuing 2026-07-13; EXECUTE ONLY ON FOUNDER GO):
   SEO-301 — /source-attribution permanent redirect.** Rationale (advisor-verified vs Google
   canonicalization docs + our ZERO-twin-pages law): the live noindex-alias works, but grade AAA for

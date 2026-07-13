@@ -292,6 +292,84 @@ export async function readTokenBalance(
   }
 }
 
+// R2 PROPOSE reads (Constitution §④ Form 2): the registry's live owner() —
+// the ONLY wallet that can sign createSource/setSourceStatus (Ownable2Step) —
+// and the FULL source record so the PROPOSE screen can show a derived
+// sourceId's real state (unknown / PAUSED / ACTIVE / REVOKED) before proposing
+// anything. Both fail closed to null; the screen shows no button it cannot prove.
+const REGISTRY_OWNER_ABI = [
+  {
+    type: "function",
+    name: "owner",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "address" }],
+  },
+] as const;
+
+/** The registry's live owner() — who must sign governance writes. Null on failure. */
+export async function readRegistryOwner(registryAddress: string): Promise<string | null> {
+  if (!isAddress(registryAddress)) return null;
+  try {
+    return await publicClient.readContract({
+      address: getAddress(registryAddress),
+      abi: REGISTRY_OWNER_ABI,
+      functionName: "owner",
+    });
+  } catch {
+    return null;
+  }
+}
+
+/** SourceStatus enum (SourceRegistryV1.sol): NONE=0, ACTIVE=1, PAUSED=2, REVOKED=3. */
+export type SourceStatusCode = 0 | 1 | 2 | 3;
+
+export interface SourceRecordRead {
+  readonly exists: boolean;
+  readonly sourceWallet: string;
+  readonly payoutWallet: string;
+  readonly sourceClass: number;
+  readonly commissionBps: number;
+  readonly status: SourceStatusCode;
+  readonly scope: number;
+  readonly appliesToRepeatPurchases: boolean;
+  readonly metadataHash: `0x${string}`;
+}
+
+/**
+ * The FULL source record, live (PROPOSE-screen state read). `exists` mirrors
+ * the contract's own existence test (sourceWallet != 0). Null on ANY failure —
+ * the caller must fail closed (no create/activate button on an unproven state).
+ */
+export async function readSourceRecord(
+  registryAddress: string,
+  sourceId: string,
+): Promise<SourceRecordRead | null> {
+  if (!isAddress(registryAddress) || !SOURCE_ID_RE.test(sourceId)) return null;
+  try {
+    const r = await publicClient.readContract({
+      address: getAddress(registryAddress),
+      abi: SOURCE_CONFIG_ABI,
+      functionName: "sourceConfig",
+      args: [sourceId as `0x${string}`],
+    });
+    const status = Number(r.status);
+    return {
+      exists: r.sourceWallet !== zeroAddress,
+      sourceWallet: r.sourceWallet,
+      payoutWallet: r.payoutWallet,
+      sourceClass: Number(r.sourceClass),
+      commissionBps: Number(r.commissionBps),
+      status: (status >= 0 && status <= 3 ? status : 0) as SourceStatusCode,
+      scope: Number(r.scope),
+      appliesToRepeatPurchases: r.appliesToRepeatPurchases,
+      metadataHash: r.metadataHash,
+    };
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Read a source's payoutWallet LIVE from the registry. The registry ADDRESS comes
  * from the server (verifyLinks `sourceRegistry`) — no hardcoded client address.
