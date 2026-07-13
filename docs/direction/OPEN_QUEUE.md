@@ -118,3 +118,19 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   Console "PROPOSE" form per Constitution §④ (B/C).
 - **STANDING RULES added:** a public-RPC `eth_getLogs` scan ≠ proof of absence; a creation event is a
   STATE — read `sourceConfig()` live (see SESSION_STATE).
+
+- **🔴 FOUNDER ORDER (2026-07-13) — REFERRAL-FIRST, FOR REAL (next session, first slice; "deep search
+  think do not assume"):** the naming pass was INCOMPLETE — it renamed titles/labels but left protocol
+  jargon in USER-VISIBLE BODY COPY (the founder caught "source-linked member", "introduction id",
+  "a new source" in the /source-attribution intro THAT THE PASS ITSELF wrote). TWO parts, one goal:
+  ① **THE DEEP JARGON SWEEP** — read EVERY user-visible string (pages, config copy, content, FAQ,
+  guide, SEO, quote lines, checkout, share links) with fresh eyes and replace protocol vocabulary in
+  user copy: "source-linked" → "referral-linked / who joins through a referral link", "introduction
+  id" → "referral code", "a new source" → "a new referral code", etc. RULE: "Referral" = the user
+  word EVERYWHERE a user reads; "Source" survives ONLY in the "Powered by Source Attribution" credit
+  + proof/registry/operator contexts. Verify by READING the rendered pages, not by grepping labels.
+  ② **HUMAN URLS** — /referral as the canonical route for the program page (people search "referral
+  program"; the URL is part of the search result). Constraint (real): no 301 at the static layer
+  until the domain transfer → new route = canonical, old /source-attribution keeps serving with
+  canonical → /referral (links never break, Google consolidates). Registry + sitemap + artifact.toml
+  regen + guards lockstep. Consider /source → /referral-link the same way.
