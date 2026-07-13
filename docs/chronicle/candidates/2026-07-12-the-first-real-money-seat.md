@@ -1,8 +1,9 @@
 # CHRONICLE CANDIDATE — The first real-money seat
 
 ```
-status:    🕯 CANDIDATE — awaiting the founder's promotion (promotion = a
-           founder-approved commit into chronicleRegister.ts; CHR-1 doctrine).
+status:    ✅ PROMOTED — founder GO 2026-07-14. Entry 2 of the public register
+           (artifacts/studio/src/config/chronicleRegister.ts, rendered at
+           /chronicle). This file remains as the candidate-of-record.
 register:  protocol-institutional (solemn-alive, CANON_PROTOCOL_LANGUAGE §8)
 date:      2026-07-12 (the night the first real purchase was written)
 discipline: identity-blind (roles and seat numbers only, no wallet, no person) ·
