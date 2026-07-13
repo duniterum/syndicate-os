@@ -2,7 +2,25 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 💓 SLICE M5 ✅ BUILT (2026-07-13, founder GO): /activity REPOINTED ONTO THE SERVED FEED —
+> **▶ 💓 SLICE M5 ✅ SEALED IN PROD (2026-07-13, Replit-verified 20:38 UTC on
+> thesyndicate.money/activity): THE HEARTBEAT SHOWS ITS WHOLE HISTORY.** Replit report: pull
+> 29/29 hash-verified · full gate green · published. PROD PROOF — the quiet day DEMONSTRATED
+> the slice: the ~24h window (blocks 90,190,028→90,233,228) contained ZERO events, and even the
+> newest seat (block 90,187,059) sits just below it — so ALL 26 seat lines on the page came
+> from the SERVED history, back to 2026-06-04 (block 87,158,947, V1 genesis era). The old
+> window-only page would have shown NOTHING. Banner rendered both coverage statements verbatim
+> ("all 26 lines, as of block 90,233,113" + the window honesty clause); summary row exact
+> ("26 seat(s) across the indexed history · in the ~24h window: 0 burn(s) · 0 referral
+> event(s)"); 26/26 verify links present with distinct valid anchors, 3 sampled DEEP (V3
+> recent · V3 mid · V1 oldest) → real Avascan "Transaction details" pages server-side (Replit
+> guarded against Avascan's 200-to-anything). Method note: a first stale screenshot was the
+> capture service's ~3.7h cache, NOT a deploy defect — cache-busted capture confirmed M5 on
+> screen. THE M4→M5 CHAIN IS CLOSED IN PROD: unattended indexer → two projections → the
+> public page. NEXT: the founder picks — M6 (Chronicle chapters) / M0-M3 / Q-A/Q-B triage /
+> pending decisions (avatar storage · DEX deep-link · refresh cadence · optional
+> AVALANCHE_RPC_URL).
+>
+> **▶ Prior: 💓 SLICE M5 ✅ BUILT (2026-07-13, founder GO): /activity REPOINTED ONTO THE SERVED FEED —
 > the heartbeat gains its complete seat history.** TWO honest sources now compose on the page,
 > each labeled with its OWN coverage in the HealthBanner: ① SEATS from `/api/backbone/feed`
 > (complete indexed record V1→V3, newest-first, server-capped; identity-blind aggregate voice
