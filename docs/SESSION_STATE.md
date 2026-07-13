@@ -2,7 +2,24 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ MEMBER HOME ARC — SLICE B ✅ BUILT (2026-07-14, UI-ONLY — zero new server writes, zero
+> **▶ MEMBER HOME ARC — SLICE C ✅ BUILT (2026-07-14): the §11 slot-2c DESIGNED TEASERS.**
+> New chassis `components/TeaserSurface.tsx` (living-chassis pattern): one-paragraph
+> what-this-will-be · existing posture badge · a "Design preview — the shape, not data" block
+> (abstract rows, ZERO figures) · what-unlocks-it · return hook (historical FOMO only) + an
+> optional LIVE slot for already-readable figures. THREE new PENDING/noindex routes in full
+> 2.0 lockstep (registry + App + surfaceClassification + artifact.toml regen 20 routes/40
+> rules + prerender 21 shells = 15 INDEX + 6 noindex): **/activity** (heartbeat teaser) ·
+> **/chronicle** (the solemn record; the four lived chapters named as preview shapes) ·
+> **/fire-ledger** — which CARRIES THE LIVE TOTAL BURN (useHeroReality burnedSyn + burnAddress
+> verify link; readable ⇒ displayed; fail-closed). /archive (already honest with real
+> contract-memory content) gained its missing teaser elements (unlocks + return hook) without
+> being gutted. Sidebar coming-soon doors now OPEN their teasers (Activity/Chronicle/Archive/
+> Fire Ledger), badges unchanged. guard-lifecycle-labels extended honestly: teaser pages exempt
+> BECAUSE the chassis renders the badge — paid for by a new chassis check that goes red if
+> TeaserSurface ever drops the LifecycleBadge. Green: tsc 0 · 12 guards · seo 37 routes ·
+> rewrites 20/40 · surface 21 public · build 21 shells.
+>
+> **▶ Prior: MEMBER HOME ARC — SLICE B ✅ BUILT (2026-07-14, UI-ONLY — zero new server writes, zero
 > new DB tables, as ordered):** ① the HEADER MEMBER PILL — the Q25 menu REHOUSED (never
 > rebuilt): the trigger + menu header now carry the member's deterministic MemberSigil
 > (18px pill / 36px header) instead of the generic hexagon; era badge unchanged; bell +

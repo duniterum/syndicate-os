@@ -48,7 +48,7 @@ export default function Archive() {
         </Card>
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-3 mb-12">
         <Link href={ctas.viewContracts.href}>
           <Button>{ctas.viewContracts.label}</Button>
         </Link>
@@ -56,6 +56,30 @@ export default function Archive() {
           <Button variant="outline">{ctas.viewStatus.label}</Button>
         </Link>
       </div>
+
+      {/* §11 slot 2c teaser elements — what unlocks it + the return hook
+          (the page already carries the honest paragraph, badges, and real
+          contract-memory content, so nothing was gutted to add them). */}
+      <h2 className="text-base font-medium text-foreground mb-1.5">What unlocks it</h2>
+      <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-8">
+        Archive reads against the deployed Archive 1155 contract — wiring them is
+        its own slice. Nothing renders here before it can be read and verified.
+      </p>
+      <Card className="bg-gold/5 border-gold/25 p-5">
+        <p className="text-sm text-foreground/90 leading-relaxed mb-3">
+          Artifacts are protocol memory: what a seat has witnessed stays witnessed.
+          When the reads are wired, this page becomes the shelf your seat&apos;s
+          history sits on.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/member">
+            <Button variant="outline" size="sm">Member Home</Button>
+          </Link>
+          <Link href="/join">
+            <Button size="sm">Take your seat</Button>
+          </Link>
+        </div>
+      </Card>
     </PublicPage>
   );
 }

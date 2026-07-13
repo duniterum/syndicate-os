@@ -44,9 +44,12 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
   {
     title: "Coming soon",
     doors: [
-      { label: "Activity", lifecycle: "PENDING_ADAPTER", note: "The public heartbeat — receipt-backed events (event backbone)." },
-      { label: "Chronicle", lifecycle: "FUTURE", note: "The institutional story — founder-promoted turning points." },
+      // §11 slot 2c — each coming-soon door now opens its DESIGNED TEASER
+      // (an honest what-this-will-be page), badge unchanged.
+      { label: "Activity", href: "/activity", lifecycle: "PENDING_ADAPTER", note: "The public heartbeat — receipt-backed events (event backbone)." },
+      { label: "Chronicle", href: "/chronicle", lifecycle: "FUTURE", note: "The institutional story — founder-promoted turning points." },
       { label: "Archive", href: "/archive", lifecycle: "PENDING_ADAPTER", note: "Artifacts as protocol memory — reads not wired yet." },
+      { label: "Fire Ledger", href: "/fire-ledger", lifecycle: "PENDING_ADAPTER", note: "Supply retired in public — the live total already reads on the teaser." },
       // FOUNDER DECISION (2026-07-14): the possessive-network door is DEAD
       // (bannedSurfaceNames carries the term + the why); its content lives in
       // the Referral dashboard door.

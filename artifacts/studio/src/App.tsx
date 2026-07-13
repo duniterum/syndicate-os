@@ -22,6 +22,9 @@ import JoinProtocol from "@/pages/JoinProtocol";
 import SourceLinkBuilder from "@/pages/SourceLinkBuilder";
 import Support from "@/pages/Support";
 import Archive from "@/pages/Archive";
+import ActivityTeaser from "@/pages/ActivityTeaser";
+import ChronicleTeaser from "@/pages/ChronicleTeaser";
+import FireLedgerTeaser from "@/pages/FireLedgerTeaser";
 import OperatorPreviewUnavailable from "@/pages/OperatorPreviewUnavailable";
 import { OPERATOR_PREVIEW_ENABLED } from "@/config/operatorPreviewGate";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
@@ -140,6 +143,16 @@ function Router() {
       </PublicRoute>
       <PublicRoute path="/archive">
         <Archive />
+      </PublicRoute>
+      {/* §11 slot 2c designed teasers — honest PENDING/noindex promises. */}
+      <PublicRoute path="/activity">
+        <ActivityTeaser />
+      </PublicRoute>
+      <PublicRoute path="/chronicle">
+        <ChronicleTeaser />
+      </PublicRoute>
+      <PublicRoute path="/fire-ledger">
+        <FireLedgerTeaser />
       </PublicRoute>
       <PublicRoute path="/recognition">
         <Recognition />

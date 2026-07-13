@@ -170,6 +170,30 @@ from = "/archive/"
 to = "/archive.html"
 
 [[services.production.rewrites]]
+from = "/activity"
+to = "/activity.html"
+
+[[services.production.rewrites]]
+from = "/activity/"
+to = "/activity.html"
+
+[[services.production.rewrites]]
+from = "/chronicle"
+to = "/chronicle.html"
+
+[[services.production.rewrites]]
+from = "/chronicle/"
+to = "/chronicle.html"
+
+[[services.production.rewrites]]
+from = "/fire-ledger"
+to = "/fire-ledger.html"
+
+[[services.production.rewrites]]
+from = "/fire-ledger/"
+to = "/fire-ledger.html"
+
+[[services.production.rewrites]]
 from = "/source"
 to = "/source.html"
 

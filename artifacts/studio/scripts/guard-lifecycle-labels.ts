@@ -21,7 +21,29 @@ const EXEMPT = new Set([
   "Learning.tsx",
   "not-found.tsx",
   "OperatorPreviewUnavailable.tsx",
+  // §11 slot-2c teaser pages: their honesty label IS rendered — by the shared
+  // TeaserSurface chassis from spec.lifecycle (chassis check below pays for
+  // the exemption, so it cannot rot into an unlabeled surface).
+  "ActivityTeaser.tsx",
+  "ChronicleTeaser.tsx",
+  "FireLedgerTeaser.tsx",
 ]);
+
+// The chassis check that pays for the teaser exemptions: TeaserSurface must
+// itself render the LifecycleBadge from its spec — if that ever disappears,
+// this guard goes red even though the pages are exempt.
+{
+  const chassis = readFileSync(
+    path.resolve(here, "..", "src", "components", "TeaserSurface.tsx"),
+    "utf8",
+  );
+  if (!/LifecycleBadge/.test(chassis) || !/spec\.lifecycle/.test(chassis)) {
+    console.error(
+      "[guard:lifecycle] FAIL — TeaserSurface no longer renders <LifecycleBadge lifecycle={spec.lifecycle}>; the teaser-page exemptions are void.",
+    );
+    process.exit(1);
+  }
+}
 // StatusPill is the canonical status atom since the Phase-1 consolidation:
 // TruthLabel is a thin wrapper over it, and it replaced the older
 // LifecycleBadge/PostureBadge sprawl. A page rendering any of these carries an

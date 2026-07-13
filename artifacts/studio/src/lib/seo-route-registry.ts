@@ -385,6 +385,54 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     proofRoute: "/status",
     notes: "ARCHIVE_READS_NOT_WIRED. NOINDEX until archive reads are wired.",
   },
+  // §11 slot 2c — designed teasers (Member Home arc, 2026-07-14): honest
+  // what-this-will-be pages, NOINDEX until each goes live. A teaser is a
+  // public promise with a posture badge — never a fake surface.
+  {
+    path: "/activity",
+    routeType: "PENDING",
+    indexStatus: "PENDING",
+    sitemap: false,
+    title: "Activity — the public heartbeat",
+    description:
+      "Every on-chain protocol event as a receipt-backed sentence — arrives with the event backbone. A designed teaser today; no feed is served and none is simulated.",
+    canonicalPath: null,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "activity",
+    primaryIntent: "proof",
+    proofRoute: "/status",
+    notes: "EVENT_BACKBONE_NOT_WIRED. NOINDEX until the feed serves.",
+  },
+  {
+    path: "/chronicle",
+    routeType: "PENDING",
+    indexStatus: "PENDING",
+    sitemap: false,
+    title: "Chronicle — the institutional story",
+    description:
+      "The protocol's solemn record — founder-promoted turning points, each anchored to its on-chain proof. A designed teaser today; the first true chapters are lived and not yet written.",
+    canonicalPath: null,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "chronicle",
+    primaryIntent: "archive",
+    proofRoute: "/status",
+    notes: "Promotion is a HUMAN act. NOINDEX until the first chapters publish.",
+  },
+  {
+    path: "/fire-ledger",
+    routeType: "PENDING",
+    indexStatus: "PENDING",
+    sitemap: false,
+    title: "Fire Ledger — supply retired in public",
+    description:
+      "Every burn as its own dated, verifiable event. The live total burn already reads from the chain on this page; the per-event ledger arrives with the event backbone.",
+    canonicalPath: null,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "fire-ledger",
+    primaryIntent: "proof",
+    proofRoute: "/status",
+    notes: "Total burn LIVE on the teaser (readable ⇒ displayed); events NOINDEX-pending.",
+  },
   {
     path: "/studio",
     routeType: "INTERNAL",
