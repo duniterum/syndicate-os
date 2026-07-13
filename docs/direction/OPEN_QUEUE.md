@@ -177,6 +177,40 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   promotion contract · the self-service issuer (SPEC §⑦) · Router V4. The registry is
   Ownable2Step → the eventual ownership handover is a clean two-step transfer.
 
+- **⏳ QUEUED SLICE — GIFT-A-SEAT (founder-approved 2026-07-13; opens POST-HAND-SELLING-PHASE
+  unless the founder signals earlier; EXECUTE ONLY ON FOUNDER GO).** The checkout learns the
+  contract's EXISTING recipient parameter (`buy(gross, recipient, …)` — deployed, unused).
+  SPEC: ① optional "Gift this seat to: 0x…" field; ② **ALL recipient-side guards move to the
+  RECIPIENT** (the C4 trap, flagged three times: `knownMember`, the historical gate, and era
+  caps are recipient-based; the QUOTE already computes on recipient — the screen must too);
+  ③ honest copy: "the seat will be written to THEIR wallet, permanently"; ④ referral applies
+  normally to gifted purchases; ⑤ the receipt records buyer ≠ recipient so the story can later
+  read "bought as gift". DEPENDS ON: the live C5 checkout (satisfied); pairs naturally with
+  IDENTITY-ALIAS for the label rendering. **FOUNDER CONTEXT (docs truth — no rediscovery):
+  the existing test seats have a DESTINY — they are GIFTS.** Seat #13 (`0x0Dd8…c4D20`) and
+  seat #14 (`0xEA88…35881`) were bought by the founder as gift seats for friends; the friends
+  will ADOPT the wallets and later attach their own alias via IDENTITY-ALIAS, with "bought as
+  gift" rendered from receipt truth (buyer ≠ eventual identity). Until adoption they stay
+  labeled founder tests wherever the honesty label applies. GIFT-A-SEAT is the clean path for
+  FUTURE gifts (recipient field); #13/#14 are the pre-slice generation, adopted-wallet path.
+
+- **⏳ QUEUED SLICE — IDENTITY-ALIAS (founder-approved 2026-07-13; opens POST-HAND-SELLING-PHASE
+  unless the founder signals earlier; EXECUTE ONLY ON FOUNDER GO).** The opt-in identity layer
+  ABOVE the seat (blueprint slice 7 + the pseudonymity doctrine; natural home: the Member Home
+  arc). SPEC: ① a member may attach an ALIAS to their seat — opt-in, default invisible,
+  own-row (SPEC_REFERRAL_SYSTEM §③: the alias layers OVER the sourceId, never replaces it;
+  ADR-003 binds); ② labels like "bought as gift" render from RECEIPT TRUTH (buyer ≠ recipient),
+  never hand-entered; ③ wallet lineage: an identity resolves to a wallet over time, every
+  change a dated public record (the founder-succession design from EVENT_BACKBONE_BLUEPRINT
+  applies to members too); ④ the chain stays pseudonymous — the site is NEVER the
+  de-pseudonymization tool; no forced wallet↔identity directory, ever. DEPENDS ON: Member Home
+  (Q30 arc) + the event backbone for lineage records. **FOUNDER CONTEXT (docs truth): the
+  wallet `0x244531C5…9C721` (historical member #1, the BUILDER source payout destination) is
+  the FOUNDER'S OWN PRIVATE WALLET — a 9-year-old personal wallet (ENS `duniter.eth` on
+  mainnet). In the identity layer it carries the founder's chosen label (e.g. "founder private
+  wallet"), opt-in like everything in that layer. No future session may mistake it for a
+  third party.**
+
 - **⏳ QUEUED SLICE (founder-approved for queuing 2026-07-13; EXECUTE ONLY ON FOUNDER GO):
   SEO-301 — /source-attribution permanent redirect.** Rationale (advisor-verified vs Google
   canonicalization docs + our ZERO-twin-pages law): the live noindex-alias works, but grade AAA for
