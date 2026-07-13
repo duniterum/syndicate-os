@@ -108,9 +108,11 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   re-raises it. Post-C5 queue, in order: ① ~~C5 flip~~ ✅ **SEALED IN PROD** → ② ~~the founder's $5 test THROUGH the referral link~~ ✅ **DONE 2026-07-12 23:32 UTC** (tx `0x353bf2c0…c42178`: seat #13 · $0.25 referral paid on-chain · 70/20/10 exact · readback recomputed 13/12 by itself)
   (`?source=0x8338e9ff…1cf620`, ACTIVE 5% LIFETIME — proves checkout + the on-chain introduction payment
   in one tx; buyer wallet must NOT be the payoutWallet/sourceWallet, must not be an unclaimed historical,
-  needs $5 USDC + AVAX gas) → ③ **REFERRAL PUBLIC ACTIVATION slice (founder-gated):** `programLifecycle`
-  switch + `/source` copy off "prepared/paused" + member cards + `guard-safe-source` adaptation proposed
-  IN the slice (it pins NOT_ACTIVE today — anti-blocking law: lift, build, re-lock).
+  needs $5 USDC + AVAX gas) → ③ ~~**REFERRAL PUBLIC ACTIVATION slice**~~ ✅ **BUILT (2026-07-13):** lifecycles → LIVE_ACTION,
+  activeCopy renders, memberCards honest (indexer = the gap), guard-safe-source adapted + re-locked.
+  → ④ next referral steps at the founder's signal: **R2** (founder signs the first member
+  `createSource` — unlocks the auto-derived member link card via the `SYN.SOURCE.V1` convention) ·
+  **R5** (the introduction read-model/indexer — unlocks introductions/receipts/commissions histories).
 - **NEW slices proposed (no prior slice):** source-status LIVE-read surface (B) · guard rename `assertNoAddressLeak` (B) ·
   `/staff` public operator registry (B, can ship early) · V4 sale+CommissionRouter (C) · the emitter (C) ·
   Console "PROPOSE" form per Constitution §④ (B/C).

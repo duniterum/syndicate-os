@@ -21,7 +21,20 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > `memberNumberOf`; generic always-true line for everyone else) + the multichain-USDC trap named in
 > the balance-short message (`a852da1` — founder-discovered on the first cross-device test: wallets
 > aggregate balances across networks; the message now says on-Avalanche-native-USDC-only + what to do).
-> NEXT = the REFERRAL PUBLIC ACTIVATION slice (OPEN_QUEUE ③).
+> **REFERRAL PUBLIC ACTIVATION → ✅ BUILT (this commit, founder GO):** `programLifecycle` +
+> `sourceAttributionLifecycle` → **LIVE_ACTION** (the badge text is exactly true: the commission is
+> paid inside the buyer's own signed tx — proven, seat #13); `activeCopy` (prepared since 2026-07-07)
+> now renders via the lifecycle-selected `currentProgramCopy` on /source-attribution, the member
+> referral dashboard and the admin panel; intro/model/boundaries rewritten to the active truth (new
+> sources = founder-signed on-chain acts, R2; never "earn now"); memberCards honestly relabelled
+> (link = usable via the /source builder · introductions/receipts/commissions = PENDING_ADAPTER, the
+> R5 indexer is the gap · standing = FUTURE); `guard-safe-source` ADAPTED IN the slice per
+> CANON_LOI_ANTIBLOCAGE and RE-LOCKED (pins now assert LIVE_ACTION; the protective disclaimers stay
+> pinned forever — the copy guard even caught "payout"/"your share" during the build and the wording
+> was corrected, working as designed). NOTE: the auto-derived member link card is NOT in this slice —
+> the existing BUILDER_SOURCE id predates the `SYN.SOURCE.V1` derivation (verified: no variant
+> matches); it lands with the first convention-following member source (R2). NEXT = R2 (the founder
+> creates the first member source) or the R5 indexer, at the founder's signal.
 >
 > **▶ Prior: 🔴🚀 C5 GO-LIVE (founder GO, 2026-07-13) — THE FLIP IS IN THIS COMMIT.** `CHECKOUT_ENABLED = true`:
 > the two-signature approve→buy is PUBLISHED on `/join` (checkout chunk verified PRESENT in the bundle;

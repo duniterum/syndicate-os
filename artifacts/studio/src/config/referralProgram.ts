@@ -13,18 +13,26 @@
 //   Commission = business word · Receipt = proof word · Recognition = long-term
 //   status word.
 //
-// CURRENT REALITY: SourceRegistryV1 + MembershipSaleV3 were deployed and
-// internally tested, then re-paused. So the vocabulary and surfaces are
-// prepared, but PUBLIC referral activation is PAUSED — copy must say "prepared
-// / paused", never "earn now". `programLifecycle` below is the single switch.
+// STATE — ACTIVE (founder override 2026-07-13, canon: SESSION_STATE + the
+// SPEC header: "referral not active in the MVP" is DEAD). The rail is proven
+// with real money: the first purchase (seat #13) paid the introducer's
+// payoutWallet inside the buyer's own transaction. `programLifecycle` below is
+// the single switch; copy still NEVER says "earn now" — the commission is a
+// bounded acquisition payment, and every protective disclaimer stays pinned by
+// guard-safe-source forever. New sources remain founder-signed on-chain acts
+// (SPEC R2); self-service creation arrives with the emitter (R7).
 //
 // Dependency-free except a type-only import → Node-loadable. Guarded by
 // guard-forbidden-copy (negation-aware) and guard-safe-source.
 
 import type { DisplayLifecycle } from "./truthStatus";
 
-/** The one lifecycle switch for the whole public referral layer (paused today). */
-export const programLifecycle: DisplayLifecycle = "NOT_ACTIVE";
+/**
+ * The one lifecycle switch for the whole public referral layer.
+ * LIVE_ACTION ("Live — signed from your wallet") is exactly true: the
+ * commission is paid inside the purchase transaction the BUYER signs.
+ */
+export const programLifecycle: DisplayLifecycle = "LIVE_ACTION";
 
 /** Public (user) word  →  protocol (proof) word. Both are used on purpose. */
 export const publicToProtocol: Record<string, string> = {
@@ -158,25 +166,32 @@ export const pausedCopy = {
     "Public and default purchases stay source-neutral unless active terms say otherwise. Public activation will require active terms, receipt readback, and founder approval.",
 };
 
-/** Copy for when the founder later activates the program (kept ready). */
+/** Copy for the ACTIVE program (founder-published 2026-07-13). */
 export const activeCopy = {
   status: "The referral program is active under the current terms.",
   detail:
-    "An eligible source-linked membership purchase can generate an acquisition commission according to the current terms.",
+    "An eligible source-linked membership purchase generates a bounded acquisition commission, paid directly to the introducer's wallet inside the buyer's own purchase transaction — on-chain, shown by receipt. New sources are created by a founder-signed on-chain act.",
 };
 
-/** Member-cockpit referral cards. Paused today — each says so honestly. */
+/** The copy the surfaces render — selected by the single lifecycle switch. */
+export const currentProgramCopy =
+  programLifecycle === "LIVE_ACTION" ? activeCopy : pausedCopy;
+
+/** Member-cockpit referral cards — each labelled for exactly how real it is
+ * TODAY (program ACTIVE since 2026-07-13; the introduction read-model /
+ * indexer is SPEC slice R5 and is not wired yet, so per-member histories
+ * honestly say "Not live yet" rather than pretending). */
 export interface MemberReferralCard {
   title: string;
   note: string;
   lifecycle: DisplayLifecycle;
 }
 export const memberCards: MemberReferralCard[] = [
-  { title: "My referral link", note: "Your personal source link. Available when the referral program is active.", lifecycle: "NOT_ACTIVE" },
-  { title: "My introductions", note: "Members you have introduced, read from verified source records once active.", lifecycle: "NOT_ACTIVE" },
-  { title: "Referral receipts", note: "Receipt-backed proof of each eligible introduction. Appears when the program is active.", lifecycle: "NOT_ACTIVE" },
-  { title: "Pending commissions", note: "Commissions awaiting confirmation. None while the program is paused.", lifecycle: "NOT_ACTIVE" },
-  { title: "Paid commissions", note: "Commissions recorded as paid. None while the program is paused.", lifecycle: "NOT_ACTIVE" },
+  { title: "My referral link", note: "The program is active: validate your source id on /source and build a shareable join link. A new source itself is a founder-signed on-chain act.", lifecycle: "READ_ONLY_PROOF" },
+  { title: "My introductions", note: "Members you have introduced, read from verified source records — arrives with the introduction read-model (indexer).", lifecycle: "PENDING_ADAPTER" },
+  { title: "Referral receipts", note: "Receipt-backed proof of each eligible introduction — arrives with the introduction read-model (indexer).", lifecycle: "PENDING_ADAPTER" },
+  { title: "Pending commissions", note: "Commissions awaiting confirmation — the payment itself is on-chain in the buyer's transaction; the readable history arrives with the indexer.", lifecycle: "PENDING_ADAPTER" },
+  { title: "Paid commissions", note: "Commissions recorded as paid — verifiable on-chain today on the introducer's wallet; the in-app history arrives with the indexer.", lifecycle: "PENDING_ADAPTER" },
   { title: "Source standing", note: "Your non-financial recognition as a source, retention-weighted — a future concept.", lifecycle: "FUTURE" },
 ];
 
@@ -420,6 +435,8 @@ export const referralProgram = {
   rankingDoctrine,
   pausedCopy,
   activeCopy,
+  /** The lifecycle-selected status copy the surfaces actually render. */
+  statusCopy: currentProgramCopy,
   states: programStates,
   vocabulary: publicToProtocol,
   wordRoles,

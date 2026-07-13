@@ -36,8 +36,8 @@ export default function SourceAttribution() {
             <ShieldCheck className="h-4 w-4" />
           </div>
           <div>
-            <p className="text-sm font-medium text-foreground mb-1">{referralProgram.pausedCopy.status}</p>
-            <p className="text-sm text-muted-foreground leading-relaxed">{referralProgram.pausedCopy.detail}</p>
+            <p className="text-sm font-medium text-foreground mb-1">{referralProgram.statusCopy.status}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">{referralProgram.statusCopy.detail}</p>
           </div>
         </div>
       </Card>

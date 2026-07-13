@@ -115,9 +115,10 @@ export function MemberReferralDashboard() {
             <ShieldCheck className="h-4 w-4" />
           </div>
           <div>
-            <p className="text-sm font-medium text-foreground mb-0.5">{referralProgram.pausedCopy.status}</p>
+            <p className="text-sm font-medium text-foreground mb-0.5">{referralProgram.statusCopy.status}</p>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              The dashboard below is a sample of what you will see once the program is active — no figure here is live.
+              The dashboard below is a sample of the coming per-member view — no figure here is
+              live yet; the introduction read-model (indexer) is what wires it.
             </p>
           </div>
         </div>

@@ -54,7 +54,7 @@ export function AdminReferralPanel() {
         <SampleTag kind="simulated" />
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl mb-5 leading-relaxed">
-        {referralProgram.pausedCopy.status} The source reads below are LIVE on-chain (read-only); the KPI figures are still sample until the referral read-model is wired. No write controls exist here.
+        {referralProgram.statusCopy.status} The source reads below are LIVE on-chain (read-only); the KPI figures are still sample until the referral read-model is wired. No write controls exist here.
       </p>
 
       {/* Live on-chain source reads — same truth-labelling as /status */}

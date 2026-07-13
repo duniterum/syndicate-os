@@ -1,7 +1,16 @@
 // Guard: safe source-attribution terminology.
-// Locks the source-attribution surface to recognition-only framing: the
-// non-negotiable disclaimer is present and rendered, the approved vocabulary is
-// declared, and the mechanism stays paused / any incentive stays a future concept.
+// Locks the source-attribution surface to bounded, protective framing: the
+// non-negotiable disclaimer is present and rendered and the approved
+// vocabulary is declared.
+//
+// REFERRAL ACTIVATION ADAPTATION (founder-ordered slice, 2026-07-13, per
+// CANON_LOI_ANTIBLOCAGE — the guard is adapted IN the slice, then re-locked):
+// the program lifecycle pins flipped from "must stay paused" to "must be
+// exactly LIVE_ACTION" (the founder-published state; the commission is paid
+// inside the buyer's own signed transaction). The PROTECTIVE pins are
+// permanent and unchanged: the disclaimers (not passive income / not an
+// investment / no profit promise), the constitutional line, and the
+// recognition concept staying FUTURE.
 //
 // Node-loadable (Node >= 22.6 / 24); imports only type-only-dependent config.
 
@@ -59,9 +68,9 @@ for (const term of [
   );
 }
 check(
-  sourceAttributionLifecycle === "NOT_ACTIVE",
-  "attribution mechanism lifecycle is NOT_ACTIVE (paused)",
-  `attribution mechanism must be NOT_ACTIVE, got "${sourceAttributionLifecycle}"`,
+  sourceAttributionLifecycle === "LIVE_ACTION",
+  "attribution mechanism lifecycle is LIVE_ACTION (founder-published 2026-07-13)",
+  `attribution mechanism must be LIVE_ACTION (the founder-published state), got "${sourceAttributionLifecycle}"`,
 );
 check(
   sourceRewardConceptLifecycle === "FUTURE",
@@ -74,9 +83,11 @@ check(
   "sourceAttribution.tagline must frame the introduction / receipt",
 );
 check(
-  /paused/i.test(sourceAttribution.intro),
-  "source intro discloses that public activation is paused",
-  "sourceAttribution.intro must disclose the paused reality",
+  /active terms/i.test(sourceAttribution.intro) &&
+    /never creates, activates, or writes/i.test(sourceAttribution.intro) &&
+    /founder-signed on-chain act/i.test(sourceAttribution.intro),
+  "source intro states the active terms + the read-only /source boundary + founder-gated creation",
+  "sourceAttribution.intro must state active terms, the never-creates/writes boundary, and that a new source is a founder-signed on-chain act",
 );
 check(
   sourceAttribution.boundaries.some((b) => /not an investment/i.test(b)),
@@ -85,11 +96,9 @@ check(
 );
 
 check(
-  programLifecycle === "NOT_ACTIVE" ||
-    programLifecycle === "FUTURE" ||
-    programLifecycle === "PAUSED_BY_PRECAUTION",
-  "referral program stays paused (never presented as live)",
-  `referral programLifecycle must be paused, got "${programLifecycle}"`,
+  programLifecycle === "LIVE_ACTION",
+  "referral programLifecycle is LIVE_ACTION (founder-published 2026-07-13)",
+  `referral programLifecycle must be LIVE_ACTION (the founder-published state), got "${programLifecycle}"`,
 );
 check(
   /not passive income/i.test(constitutionalLine) &&
@@ -112,5 +121,5 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(
-  `[guard:source] PASS \u2014 source/referral stays bounded, protective, and paused.`,
+  `[guard:source] PASS \u2014 source/referral is bounded, protective, and honestly ACTIVE.`,
 );
