@@ -7,6 +7,7 @@ import joinQuoteRouter from "./joinQuote";
 import holderIndexRouter from "./holderIndex";
 import verifyLinksRouter from "./verifyLinks";
 import backboneStatusRouter from "./backboneStatus";
+import backboneFeedRouter from "./backboneFeed";
 
 const router: IRouter = Router();
 
@@ -18,5 +19,6 @@ router.use(joinQuoteRouter);
 router.use(holderIndexRouter);
 router.use(verifyLinksRouter);
 router.use(backboneStatusRouter);
+router.use(backboneFeedRouter);
 
 export default router;

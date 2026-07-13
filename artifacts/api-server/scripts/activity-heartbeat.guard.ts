@@ -309,10 +309,10 @@ check(
 );
 check(
   report.meta === ACTIVITY_HEARTBEAT_READ_MODEL_META &&
-    report.meta.publicProjection === "ADDRESS_SAFE_AGGREGATE_ONLY" &&
+    report.meta.publicProjection === "AGGREGATE_PLUS_RECEIPT_LINES" &&
     report.meta.persistence === "NONE_IN_MEMORY_ONLY",
-  "report meta binds the M4-a posture (aggregate-only projection, no persistence)",
-  "report meta drifted from the declared M4-a posture",
+  "report meta binds the M4-b posture (aggregate + receipt-line feed, no persistence)",
+  "report meta drifted from the declared M4-b posture",
 );
 expectThrow("leak scan trips on planted hex address", () =>
   assertAddressSafeJson(

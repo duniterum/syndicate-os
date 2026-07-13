@@ -44,7 +44,9 @@ import {
   buildActivityHeartbeatReadModel,
   toAddressSafeActivityReport,
   type ActivityAddressSafeReport,
+  type ActivityBuildResult,
 } from "./activityHeartbeatReadmodel";
+import type { FeedSource } from "./feedProjection";
 import {
   BOOT_DELAY_MS,
   readBackboneConfig,
@@ -118,6 +120,23 @@ const status: MutableStatus = {
 };
 
 let started = false;
+
+/**
+ * Last-good read-model (SERVER-ONLY memory; items carry pairing tokens).
+ * The ONLY ways out are the two sanctioned projections: the aggregate report
+ * (status) and the receipt-line feed (feedProjection, its own output gate).
+ */
+let lastGoodModel: ActivityBuildResult | null = null;
+
+/** Source for the public receipt-line feed (projected + gated by the route). */
+export function getBackboneFeedSource(): FeedSource {
+  return {
+    model: lastGoodModel,
+    state: status.state,
+    headBlock: status.lastSuccess?.headBlock ?? null,
+    finishedIso: status.lastSuccess?.finishedIso ?? null,
+  };
+}
 
 /** Address-free snapshot for the status route (structure is already safe). */
 export function getBackboneStatus(): BackboneStatusSnapshot {
@@ -193,6 +212,7 @@ async function runCycle(): Promise<void> {
     throw new Error("activity read-model rebuild is not consistent — cycle failed closed");
   }
   const report = toAddressSafeActivityReport(model);
+  lastGoodModel = model;
 
   status.lastSuccess = {
     finishedIso: new Date().toISOString(), // ops metadata, never chain truth

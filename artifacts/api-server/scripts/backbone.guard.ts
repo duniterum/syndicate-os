@@ -22,6 +22,11 @@
  *      the script-side scanner (member-continuity-readmodel.ts).
  *   F. Wiring: index.ts starts the backbone after listen; package.json
  *      registers backbone:guard.
+ *   G. Feed (M4-b): the projection is identity-blind (no member numbers, no
+ *      log indexes), every verify anchor is EXACT-shape validated (an
+ *      address can never pass), the feed gate masks only validated anchors
+ *      and strict-scans the rest, newest-first + hard cap hold, and the
+ *      route scans before sending.
  *
  * Run: pnpm --filter @workspace/api-server run backbone:guard
  */
@@ -35,6 +40,13 @@ import {
   MIN_INTERVAL_SEC,
   MAX_INTERVAL_SEC,
 } from "../src/backbone/backboneConfig";
+import { buildActivityHeartbeatReadModel } from "../src/backbone/activityHeartbeatReadmodel";
+import {
+  buildPublicFeed,
+  assertFeedSafeJson,
+  FEED_MAX_ITEMS,
+  TX_HASH_SHAPE_RE,
+} from "../src/backbone/feedProjection";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const apiDir = path.resolve(here, "..");
@@ -105,7 +117,7 @@ function walk(dir: string): string[] {
 }
 const zoneFiles = walk(backboneDir);
 check(
-  zoneFiles.length >= 5,
+  zoneFiles.length >= 6,
   `backbone zone present (${zoneFiles.length} files)`,
   "backbone zone missing or too small",
 );
@@ -131,12 +143,14 @@ check(
 );
 
 const routeSrc = stripComments(read("src/routes/backboneStatus.ts"));
+const feedRouteSrc = stripComments(read("src/routes/backboneFeed.ts"));
 for (const [label, src] of [
   ...zoneFiles.map(
     (f) =>
       [path.relative(apiDir, f), stripComments(readFileSync(f, "utf8"))] as const,
   ),
   ["src/routes/backboneStatus.ts", routeSrc] as const,
+  ["src/routes/backboneFeed.ts", feedRouteSrc] as const,
 ]) {
   check(
     !src.includes("pool.end"),
@@ -293,6 +307,130 @@ check(
   existsSync(path.resolve(apiDir, "src/routes/backboneStatus.ts")),
   "status route file present",
   "status route file missing",
+);
+
+// ---------------------------------------------------------------------------
+// G. Feed (M4-b): identity-blind projection + exact-shape verify anchors.
+// ---------------------------------------------------------------------------
+
+// Runtime-built fixture hex (never literal long hex — leak-guard discipline).
+const txA = "0x" + "ab".repeat(32);
+const txB = "0x" + "cd".repeat(32);
+const CHAIN = 43114;
+const T0 = 1_700_000_000;
+const fixtureModel = buildActivityHeartbeatReadModel({
+  expectedChainId: CHAIN,
+  rawEvents: [
+    {
+      chainId: CHAIN,
+      generation: "V1",
+      eventName: "TokensPurchased",
+      blockNumber: 100,
+      logIndex: 0,
+      transactionHash: txA,
+      firstSeat: null,
+      memberNumber: null,
+    },
+    {
+      chainId: CHAIN,
+      generation: "V3",
+      eventName: "MembershipPurchasedV3",
+      blockNumber: 200,
+      logIndex: 1,
+      transactionHash: txB,
+      firstSeat: true,
+      memberNumber: 424242,
+    },
+  ],
+  blockTimestamps: [
+    { chainId: CHAIN, blockNumber: 100, blockTimestampSec: T0 },
+    { chainId: CHAIN, blockNumber: 200, blockTimestampSec: T0 + 86_400 },
+  ],
+});
+const feed = buildPublicFeed({
+  model: fixtureModel,
+  state: "idle",
+  headBlock: 300,
+  finishedIso: "2026-07-13T00:00:00.000Z",
+});
+const feedJson = JSON.stringify(feed);
+check(
+  feed.items.length === 2 &&
+    feed.items[0]!.blockNumber === 200 &&
+    feed.items[1]!.blockNumber === 100,
+  "feed serves newest first",
+  "feed ordering broke (must be newest first)",
+);
+check(
+  !feedJson.includes("memberNumber") &&
+    !feedJson.includes("424242") &&
+    !feedJson.includes("logIndex"),
+  "feed is identity-blind: no member numbers (field or value), no log indexes",
+  "feed leaked a pairing token or log index",
+);
+assertFeedSafeJson(feedJson);
+ok.push("feed gate passes a well-formed feed (anchors masked, rest clean)");
+check(
+  feedJson.includes(txA) && feedJson.includes(txB),
+  "feed carries the verify anchors (public chain data — the point of the line)",
+  "feed lost its verify anchors",
+);
+expectThrow("feed gate trips on a planted 20-byte address", () =>
+  assertFeedSafeJson(feedJson.replace(txA, "0x" + "ee".repeat(20))),
+);
+expectThrow("feed gate trips on planted bare 32-byte hex", () =>
+  assertFeedSafeJson(feedJson + JSON.stringify({ x: "ff".repeat(32) })),
+);
+expectThrow("projection fails closed on an address-shaped verify anchor", () =>
+  buildPublicFeed({
+    model: {
+      ...fixtureModel,
+      items: [
+        { ...fixtureModel.items[0]!, transactionHash: "0x" + "ee".repeat(20) },
+      ],
+    },
+    state: "idle",
+    headBlock: 300,
+    finishedIso: null,
+  }),
+);
+{
+  const empty = buildPublicFeed({
+    model: null,
+    state: "disabled",
+    headBlock: null,
+    finishedIso: null,
+  });
+  check(
+    empty.items.length === 0 && empty.coverage.itemsTotal === 0,
+    "null model serves an honest empty feed (never invented)",
+    "empty-feed posture broke",
+  );
+}
+check(
+  FEED_MAX_ITEMS === 100 &&
+    stripComments(read("src/backbone/feedProjection.ts")).includes(
+      ".slice(0, FEED_MAX_ITEMS)",
+    ),
+  "feed hard cap present (newest-first slice at FEED_MAX_ITEMS=100)",
+  "feed cap drifted or is not applied",
+);
+check(
+  TX_HASH_SHAPE_RE.source === "^0x[0-9a-fA-F]{64}$",
+  "verify-anchor shape is the exact 0x+64-hex transaction form",
+  "verify-anchor shape regex drifted",
+);
+check(
+  feedRouteSrc.includes("assertFeedSafeJson(serialized)") &&
+    feedRouteSrc.indexOf("assertFeedSafeJson(serialized)") <
+      feedRouteSrc.indexOf(".send(serialized)"),
+  "feed route scans the serialized payload BEFORE sending it",
+  "feed route sends without the fail-closed gate",
+);
+check(
+  !DB_TOUCH_RE.test(feedRouteSrc) && !feedRouteSrc.includes("fetch("),
+  "feed route reads memory only (no DB, no network)",
+  "feed route grew a DB/network dependency",
 );
 
 // ---------------------------------------------------------------------------

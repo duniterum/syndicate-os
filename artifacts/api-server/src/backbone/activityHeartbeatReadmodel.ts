@@ -4,9 +4,10 @@
  * Derives the internal "activity heartbeat" view of protocol activity from
  * Part A raw sale-event rows + the Protocol Time block-timestamp cache.
  * Moved from scripts/activity-heartbeat-readmodel.ts in slice M4-a (founder
- * GO): the served backbone zone rebuilds this model unattended, and the ONLY
- * public projection is the address-safe AGGREGATE report (counts/buckets —
- * never items). Per-item serving stays a separate founder-gated slice (M4-b).
+ * GO): the served backbone zone rebuilds this model unattended. TWO sanctioned
+ * projections exist and no more: the address-safe AGGREGATE report (this
+ * module) and the receipt-line FEED (feedProjection.ts, M4-b founder GO —
+ * public chain data per line, its own fail-closed output gate).
  *
  * Purity rules (guard-enforced):
  *   - No database, network, or RPC imports. Inputs arrive as narrow
@@ -42,17 +43,18 @@ export const ACTIVITY_HEARTBEAT_READ_MODEL_META: {
   readonly surface: SyndicateSurface;
   readonly adapterKind: SyndicateAdapterKind;
   /**
-   * M4-a posture: the ONLY public projection is the address-safe aggregate
-   * report (counts, buckets, coverage, day-granularity dates). Items are
-   * never served; a per-item feed is a separate founder-gated slice (M4-b).
+   * M4-b posture: exactly TWO sanctioned public projections — the address-
+   * safe aggregate report (this module) and the receipt-line feed
+   * (feedProjection.ts: public chain data per line, identity-blind,
+   * own output gate). Nothing else ever serializes the model.
    */
-  readonly publicProjection: "ADDRESS_SAFE_AGGREGATE_ONLY";
+  readonly publicProjection: "AGGREGATE_PLUS_RECEIPT_LINES";
   readonly persistence: "NONE_IN_MEMORY_ONLY";
 } = {
   domain: "ACTIVITY_HEARTBEAT",
   surface: "SERVER_SIDE_CANON",
   adapterKind: "ACTIVITY_INDEX_ADAPTER",
-  publicProjection: "ADDRESS_SAFE_AGGREGATE_ONLY",
+  publicProjection: "AGGREGATE_PLUS_RECEIPT_LINES",
   persistence: "NONE_IN_MEMORY_ONLY",
 };
 
@@ -65,8 +67,8 @@ export const ACTIVITY_DOCTRINE = [
   "firstSeat is reported only where the contract emitted it; V1 rows are 'unknown', never inferred.",
   "Gated economics stay gated: referral and source fields are never read into this model.",
   "The taxonomy (kind/category) mirrors the vendored canon protocol-event registry; this file never invents a parallel taxonomy.",
-  "No item-level public projection: the address-safe aggregate report is the ONLY serialization out (M4-a backbone status); per-item serving is a separate founder-gated slice.",
-  "Wallets, transaction hashes, member numbers, block numbers, decodedJson and rawJson never appear in any report.",
+  "Exactly TWO sanctioned projections: the address-safe aggregate report (status) and the receipt-line feed (feedProjection, M4-b) — nothing else ever serializes the model.",
+  "Wallets, member numbers, log indexes, decodedJson and rawJson never appear in ANY public output; the transaction hash appears ONLY as the feed's per-line verify anchor (public chain data), never in the aggregate report.",
 ] as const;
 
 // ---------------------------------------------------------------------------
@@ -144,6 +146,12 @@ export interface ActivityItem {
   readonly category: typeof ACTIVITY_EVENT_CATEGORY;
   readonly generation: SaleGeneration;
   readonly chainId: number;
+  /**
+   * The purchase transaction (public chain data). Never enters the aggregate
+   * report; leaves the server ONLY as the feed projection's shape-validated
+   * verify anchor (M4-b).
+   */
+  readonly transactionHash: string;
   /** SERVER-ONLY ordering/coverage detail — never enters the report. */
   readonly blockNumber: number;
   readonly logIndex: number;
@@ -298,6 +306,7 @@ export function buildActivityHeartbeatReadModel(
       category: ACTIVITY_EVENT_CATEGORY,
       generation: purchase.generationTyped,
       chainId: purchase.chainId,
+      transactionHash: purchase.transactionHash,
       blockNumber: purchase.blockNumber,
       logIndex: purchase.logIndex,
       blockTimestampSec: ts,

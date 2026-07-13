@@ -2,7 +2,27 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🏭 SLICE M4-a ✅ SEALED IN PROD (2026-07-13, Replit-verified on thesyndicate.money):
+> **▶ 📡 SLICE M4-b ✅ BUILT (2026-07-13, founder GO): THE PUBLIC RECEIPT-LINE FEED —
+> `/api/backbone/feed`.** The read-model's SECOND (and last) sanctioned projection:
+> newest-first receipt lines, hard cap 100 (pagination/filters deliberately wait, M5+), each
+> line = kind · generation · block N · chain-verified time (blockTimestampSec + isoDayUtc) ·
+> THE TRANSACTION VERIFY ANCHOR · firstSeat bucket · routed-fold flag — public chain data only,
+> identity-blind (wallets structurally absent; member numbers stay opaque tokens; log indexes
+> not served). THE FEED GATE (the slice's one hard design problem, solved fail-closed): every
+> anchor must match the EXACT 0x+64-hex transaction shape (a 20-byte address can never pass),
+> validated anchors are MASKED, and the remaining JSON must survive the strict address scanner
+> — a smuggled address, bare hash, or over-long hex still trips. `src/backbone/feedProjection.ts`
+> (pure projection + gate) + `src/routes/backboneFeed.ts` (memory-only, scans before send);
+> the runner now retains the last-good model server-side; ActivityItem gained transactionHash
+> (aggregate report untouched — items stay structurally excluded, forbidden-field scan intact);
+> meta posture honestly updated: publicProjection = AGGREGATE_PLUS_RECEIPT_LINES. Null model →
+> honest empty feed. Guards: backbone.guard grew section G (63 checks now: ordering,
+> identity-blindness, anchor shape, mask-then-scan trips, cap, route gate) · activity 133 ·
+> route allowlists += backboneFeed (protocol-time 38 · member-continuity 92). Green: tsc 0
+> (full workspace) · all suites · build 24 shells (21 INDEX, unchanged — API route, zero SEO
+> impact). NEXT: M5 (/activity page repoint onto the feed) when the founder opens it.
+>
+> **▶ Prior: 🏭 SLICE M4-a ✅ SEALED IN PROD (2026-07-13, Replit-verified on thesyndicate.money):
 > THE UNATTENDED LOOP LIVES.** Replit report: pull 24/24 hash-verified · NO real migration
 > (backbone reuses existing tables; the drizzle-push unique-constraint suggestion was the KNOWN
 > false positive and was correctly REFUSED — would have truncated a table) · full gate green

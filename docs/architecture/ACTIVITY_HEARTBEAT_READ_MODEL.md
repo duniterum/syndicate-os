@@ -1,11 +1,15 @@
 # Activity Heartbeat Read-Model (server-internal; backbone-rebuilt)
 
-Status (M4-a, founder GO 2026-07-13): **SERVER-INTERNAL READ-MODEL, rebuilt
-UNATTENDED by the event backbone.** The ONLY public projection is the
-address-safe AGGREGATE report (counts/buckets/coverage/day-dates) served at
-`/api/backbone/status`. Per-item public serving (the feed endpoint) stays a
-separate founder-gated slice (M4-b). Persistence of the model itself: still
-none — in-memory only, rebuilt each cycle.
+Status (M4-a + M4-b, founder GO 2026-07-13): **SERVER-INTERNAL READ-MODEL,
+rebuilt UNATTENDED by the event backbone, with exactly TWO sanctioned public
+projections:** ① the address-safe AGGREGATE report
+(counts/buckets/coverage/day-dates) at `/api/backbone/status`; ② the
+RECEIPT-LINE FEED at `/api/backbone/feed` — newest-first, hard-capped (100),
+public chain data per line (kind · generation · block · chain-verified time ·
+the transaction verify anchor), identity-blind (no wallets, no member
+numbers, no log indexes), gated by its own fail-closed output scan
+(exact-shape anchors masked, strict scanner on the rest). Persistence of the
+model itself: still none — in-memory only, rebuilt each cycle.
 
 ## What it is
 
@@ -27,6 +31,8 @@ It mirrors the member-continuity pattern exactly: a **pure builder**, a
 | `artifacts/api-server/src/backbone/backboneRunner.ts` | The unattended runner: boot + interval cycles (scan → enrich → rebuild), fail-closed per cycle, last-good kept, dark by default (`SYNDICATE_BACKBONE_ENABLED === "true"` exact literal). |
 | `artifacts/api-server/src/backbone/blockTimeEnrich.ts` | Incremental Protocol Time enrichment (never-verified blocks only; the full re-verification replay stays `protocol-time:enrich`). |
 | `artifacts/api-server/src/routes/backboneStatus.ts` | `/api/backbone/status` — address-safe aggregate snapshot; output-gated. |
+| `artifacts/api-server/src/backbone/feedProjection.ts` | The receipt-line feed projection (M4-b): field whitelist, exact-shape verify anchors, own output gate. |
+| `artifacts/api-server/src/routes/backboneFeed.ts` | `/api/backbone/feed` — newest-first receipt lines, hard cap 100; gate-scanned before send. |
 | `artifacts/api-server/scripts/activity-heartbeat-derive.ts` | Shared loader → builder → determinism verification → address-safe report. `activity:derive`. |
 | `artifacts/api-server/scripts/activity-heartbeat.guard.ts` | Fixture + static-scan guard. `activity:guard`. |
 | `artifacts/api-server/scripts/backbone.guard.ts` | The backbone zone's own guard (exposure literal, one-DB-file, write discipline, failure posture, output gate). `backbone:guard`. |
@@ -77,8 +83,8 @@ into the model at all: derive's `decodedJson` access is whitelisted to exactly
 - No new tables, no migrations: the unattended cycles write ONLY what the
   founder-gated scripts already write (raw rows, cursors, block timestamps —
   all idempotent inserts / the engine's cursor upsert).
-- No per-item public projection: `/api/backbone/status` serves the address-
-  safe AGGREGATE report only; the feed endpoint is the separate M4-b slice.
+- No third projection: aggregate report + receipt-line feed, nothing else;
+  filters, pagination depth, and personal feeds wait (M5+).
 - No new event kinds: purchases (+ folded Routed) only, exactly the proven
   scan units; registry lifecycle / burns / notifications wait.
 - No identity claims: activity is not identity authority; the Chronicle,

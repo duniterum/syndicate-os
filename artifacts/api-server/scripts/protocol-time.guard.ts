@@ -281,6 +281,10 @@ check(
   const routesDir = join(here, "..", "src", "routes");
   const routeFiles = readdirSync(routesDir).sort();
   const allowed = [
+    // Founder-approved backbone feed route (M4-b): receipt lines only —
+    // public chain data per line; its output gate (exact-shape verify
+    // anchors masked, strict scan on the rest) is pinned by backbone.guard.ts.
+    "backboneFeed.ts",
     // Founder-approved backbone status route (M4-a): address-safe aggregate
     // snapshot only; its output gate is pinned by backbone.guard.ts.
     "backboneStatus.ts",
@@ -297,7 +301,7 @@ check(
     "verifyLinks.ts",
   ];
   check(
-    "public route surface pinned (backboneStatus, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate, verifyLinks only)",
+    "public route surface pinned (backboneFeed, backboneStatus, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate, verifyLinks only)",
     JSON.stringify(routeFiles) === JSON.stringify(allowed),
     `routes=${JSON.stringify(routeFiles)}`,
   );
