@@ -194,12 +194,15 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   ③ honest copy: "the seat will be written to THEIR wallet, permanently"; ④ referral applies
   normally to gifted purchases; ⑤ the receipt records buyer ≠ recipient so the story can later
   read "bought as gift". DEPENDS ON: the live C5 checkout (satisfied); pairs naturally with
-  IDENTITY-ALIAS for the label rendering. **FOUNDER CONTEXT — CORRECTED (2026-07-14, MASTER
-  BRIEF §7 supersedes the earlier note): seat #13 (`0x0Dd8…c4D20`) is the FOUNDER'S OWN seat —
-  NOT a gift. Seat #14 (`0xEA88…35881`) and any FUTURE founder-bought test seats are the gifts
-  awaiting adoption** (founder-test label until adopted; then "bought as gift" renders from
-  receipt truth buyer ≠ eventual identity). GIFT-A-SEAT is the clean path for FUTURE gifts
-  (recipient field); #14 is the pre-slice generation, adopted-wallet path.
+  IDENTITY-ALIAS for the label rendering. **FOUNDER CONTEXT — FINAL (2026-07-14 ADDENDUM,
+  MASTER BRIEF §7 is the authority): the founder's own seat is HISTORICAL #1 (Genesis, his
+  9-year wallet `0x2445…9C721`). ALL V3 test seats are GIFTS awaiting adoption — #13
+  (`0x0Dd8…c4D20`) AND #14 (`0xEA88…35881`); historical #2–#8 are likewise destined gifts
+  (one holds the known double #7+#11 — the future Chronicle chapter "the first duplicate was
+  a gift").** Founder-test label until adoption; then "bought as gift" renders from receipt
+  truth (buyer ≠ eventual identity). Recipient identities stay OFF-repo/OFF-surface until each
+  opts in via IDENTITY-ALIAS. GIFT-A-SEAT is the clean path for FUTURE gifts (recipient
+  field); #13/#14 are the pre-slice generation, adopted-wallet path.
 
 - **⏳ QUEUED SLICE — IDENTITY-ALIAS (founder-approved 2026-07-13; opens POST-HAND-SELLING-PHASE
   unless the founder signals earlier; EXECUTE ONLY ON FOUNDER GO).** The opt-in identity layer

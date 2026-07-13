@@ -83,13 +83,20 @@ seat binary, recognition multi-axis, capital ONE axis never the throne · locked
 zero twin pages · one badge system · own-row · opt-in visibility · anti-blocking law ·
 APPROVE ≠ PAYMENT · seat number ONLY from the emitted event.
 
-## 7. FACTS CORRECTIONS ENGRAVED (supersede earlier queue notes)
+## 7. FACTS CORRECTIONS ENGRAVED (founder ADDENDUM 2026-07-14 — FINAL; supersedes every
+## earlier gift note, including this section's first version and a0db477)
 
-- **Seat #13 (`0x0Dd8…c4D20`) is the FOUNDER'S OWN seat — NOT a gift.**
-- **Seat #14 (`0xEA88…35881`) and any FUTURE founder-bought test seats are the gifts awaiting
-  adoption** (founder-test label until adopted; then "bought as gift" renders from receipt
-  truth buyer ≠ recipient).
-- `0x2445…9C721` = the founder's own 9-year private wallet (duniter.eth) — never a third party.
+- **The founder's OWN seat is HISTORICAL MEMBER #1 (Genesis)** — his 9-year private wallet
+  `0x2445…9C721` (duniter.eth; never a third party). *"The first is me."*
+- **ALL V3 test seats are GIFTS awaiting adoption: seat #13 (`0x0Dd8…c4D20`) AND seat #14
+  (`0xEA88…35881`)** — none of them is the founder's own seat. During the tests, "c'est moi"
+  meant "the TESTER is me, not a stranger" (relevant for the PROOF METRIC: those buys never
+  count) — not "the seat is mine". Label: founder-test everywhere the honesty label applies,
+  until adoption; then "bought as gift" renders from receipt truth (buyer ≠ eventual identity).
+- **Historical seats #2–#8 are likewise destined gifts** — one of them already holds the known
+  double seat #7+#11 (the future Chronicle chapter: *"the first duplicate was a gift"*).
+- **Recipient identities stay OFF-repo and OFF-surface** until each person opts in via
+  IDENTITY-ALIAS — only the facts above are recorded, no names, ever.
 - DISCIPLINE_ENFORCED re-arm stays LATER (founder) · deployment-secrets cleanup stays Phase 6.
 
 ---
