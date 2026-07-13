@@ -134,3 +134,17 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   until the domain transfer → new route = canonical, old /source-attribution keeps serving with
   canonical → /referral (links never break, Google consolidates). Registry + sitemap + artifact.toml
   regen + guards lockstep. Consider /source → /referral-link the same way.
+
+- **⏳ QUEUED SLICE (founder-approved for queuing 2026-07-13; EXECUTE ONLY ON FOUNDER GO):
+  SEO-301 — /source-attribution permanent redirect.** Rationale (advisor-verified vs Google
+  canonicalization docs + our ZERO-twin-pages law): the live noindex-alias works, but grade AAA for
+  a RENAMED page is a permanent redirect — an alias that SERVES is a twin; an alias that REDIRECTS
+  is a moved-sign. SPEC: ① /source-attribution returns a server-side **301 → /referral** at the
+  serving/rewrites layer; ② query strings preserved INTACT (a `?source=…` link must survive — shared
+  referral links must keep paying); ③ /referral keeps its self-canonical; sitemap lists only
+  /referral; all internal links point only to /referral (already true); ④ VERIFY after:
+  `curl -I /source-attribution` → 301 + `Location: /referral`; a ?source= link lands on /referral
+  with the parameter intact. EXECUTION NOTE (infra-reality): the Replit static artifact layer has
+  not previously exposed custom 301s (the 2.0 /status lesson; www→apex deferred to the domain
+  transfer ~Sept 2026) — Replit states what its host supports; if a true 301 is impossible before
+  the domain transfer, the slice waits for that transfer rather than shipping a fake redirect.
