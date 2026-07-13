@@ -60,6 +60,23 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > **Horizon note (recorded, no build):** the white-label referral-rail SaaS idea sits at the
 > existing "professional firm on traction (~6 months)" horizon (`CONNECTOR_LADDER_POLICY.md`
 > §5), alongside the zero-touch promotion contract · the self-service issuer · Router V4.
+>
+> **Horizon note — i18n (founder-decided 2026-07-14, DEFERRED):** internationalization is
+> deferred by founder decision. When opened: harvest Supa-Exchange's COMPLETE i18n mechanism
+> (12 locales already exist there); start EN+FR only; legal surfaces stay English ("the
+> English version prevails"); extend the copy guards PER LOCALE before adding any language
+> (a guard cannot catch a lie it has no word for — in any language).
+
+- **⏳ QUEUED SLICE — REFERRAL-SHOWCASE (founder-decided 2026-07-14; EXECUTE ONLY ON FOUNDER
+  GO).** Apply the CONVERSION register (`CANON_PROTOCOL_LANGUAGE.md` §7) to the REFERRAL
+  surfaces: /referral, the /join referral card, and the future Referrer Kit / OG card (MVP
+  brief piece 7). The material = the four flagship §7 lines ("You don't wait to get paid…" ·
+  "Nothing to claim…" · "A referral payment can never break a sale — and can never be lost." ·
+  "The referral program where the payout is part of the purchase."), each under the register's
+  one law: bold claim + verify link; legal verbatim lines never move. **RATIONALE (recorded):
+  the instant in-transaction referrer payment is the protocol's UNIQUE claim AND sits inside
+  the 30-day proof metric (≥5 seats via referral links) — it must never dissolve into
+  M1/M2/M3, which do not cover these surfaces.**
 
 ## Open
 
