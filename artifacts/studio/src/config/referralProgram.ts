@@ -72,8 +72,11 @@ export const notCharityLine =
 
 /**
  * The program states an introduction/commission can be in (buyer- and
- * operator-visible). Buyer must SEE the applied source before signing and be
- * able to clear it.
+ * operator-visible). The buyer must SEE the applied source and its amount
+ * before signing — visibility is what keeps it honest (FOUNDER OVERRIDE
+ * 2026-07-13: there is NO buyer clear/remove control; the referral does not
+ * change the buyer's price, and a removal button would only strip the
+ * referrer of earned work).
  */
 export interface ProgramState {
   id: string;
@@ -89,7 +92,6 @@ export const programStates: ProgramState[] = [
   { id: "Flagged", meaning: "Held for anti-abuse or manual review." },
   { id: "Paused", meaning: "The program is not publicly active right now." },
   { id: "Expired", meaning: "The code or attribution window has expired." },
-  { id: "Cleared", meaning: "The buyer removed the referral code before checkout." },
 ];
 
 /** "How it works" — six plain steps. */
@@ -133,8 +135,7 @@ export const antiAbuse: string[] = [
   "No bots or fake accounts.",
   "No wash purchases.",
   "No referral code on an already-existing member.",
-  "No hidden or invisible attribution — the referral is shown before signing.",
-  "The buyer can clear the referral code before checkout.",
+  "No hidden attribution — the referral and its amount are always shown before signing. The referral does not change the buyer's price.",
   "Commissions stay pending until confirmation.",
   "Abnormal patterns go to abuse review.",
   "Caps and windows may apply.",

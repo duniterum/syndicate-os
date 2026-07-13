@@ -1,0 +1,5 @@
+# The hashed terms document: its keccak256 is an ON-CHAIN COMMITMENT
+# (Source Registry metadataHash). The bytes must be identical everywhere —
+# repo blob, Windows working copy, Linux deploy — so line endings are pinned
+# to LF and never rewritten by autocrlf.
+artifacts/studio/public/referral-program-terms-v1.txt text eol=lf

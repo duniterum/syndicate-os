@@ -2,6 +2,7 @@ THE SYNDICATE - MEMBER REFERRAL PROGRAM TERMS
 Version: v1 (SYN.REFERRAL.MEMBER.TERMS.V1)
 Canonical URL: https://thesyndicate.money/referral-program-terms-v1.txt
 Program page:  https://thesyndicate.money/referral
+Encoding: UTF-8, LF line endings.
 
 These terms govern MEMBER_INTRODUCTION sources only. Other source
 classes (partner, builder, affiliate) are governed by their own
@@ -15,12 +16,13 @@ commitment: download this exact file and compute keccak256 over its
 raw bytes.
 
 1. THE PROGRAM
-A member of The Syndicate may hold a personal referral link. When a
-buyer joins The Syndicate through that link, the buyer's own purchase
-transaction pays the referrer's commission directly, on-chain, before
-the net protocol contribution is routed. The referrer is not paid from
-Syndicate revenue after the fact. The referrer is paid from the
-purchase transaction before the net protocol contribution is routed.
+A member of The Syndicate may be granted a personal referral link.
+When a buyer joins The Syndicate through that link, the buyer's own
+purchase transaction pays the referrer's commission directly,
+on-chain, before the net protocol contribution is routed. The
+referrer is not paid from Syndicate revenue after the fact. The
+referrer is paid from the purchase transaction before the net
+protocol contribution is routed.
 
 2. WHO IS ELIGIBLE TO REFER
 - The referrer holds a Syndicate seat (is a member).
@@ -44,13 +46,13 @@ purchase transaction before the net protocol contribution is routed.
   buyer, including repeat purchases, carry the commission.
 - Caps: sources under this program version are created with no gross
   cap and no per-buyer cap. Future source versions may carry caps; a
-  change of terms is never silent (see section 6).
+  change of terms is never silent (see section 7).
 - The rate may be raised over time under the Connector recognition
   ladder, up to the on-chain maximum for member introductions of 12%
   (1200 basis points). A rate change applies from the moment it is
   recorded on-chain; it is never retroactive.
 - An acquired rate is not lowered for inactivity. A source may still
-  be paused or revoked for cause (see section 6).
+  be paused or revoked for cause (see section 7).
 
 4. WHAT THE COMMISSION IS - AND IS NOT
 A referral commission is a transparent payment for an eligible,
@@ -65,7 +67,17 @@ A referral commission is taxable income for the referrer. The
 referrer is solely responsible for reporting and paying any taxes
 that apply to commissions received under this program.
 
-6. PROGRAM ADMINISTRATION, PAUSE AND REVOCATION
+6. THE REFERRER'S STANDING
+- A referrer is an independent participant - not an employee, agent,
+  or partner of The Syndicate - and may not make promises or
+  representations on its behalf.
+- A referral link and its source are personal. They may not be sold,
+  transferred, or assigned.
+- A referrer must be of legal age and is solely responsible for
+  ensuring their promotion complies with the laws of their
+  jurisdiction.
+
+7. PROGRAM ADMINISTRATION, PAUSE AND REVOCATION
 - Sources are created, paused, reactivated, and revoked by
   founder-signed on-chain transactions in the Source Registry. Every
   such change emits a public on-chain event; there are no silent
@@ -78,18 +90,22 @@ that apply to commissions received under this program.
   of membership as an investment or of commissions as passive income.
   Abnormal patterns are held for review.
 
-7. THE MECHANICS, STATED HONESTLY
+8. THE MECHANICS, STATED HONESTLY
 - The commission destination is the wallet recorded on-chain as the
   source's payment destination (the contract's payoutWallet field).
 - Payment is pushed inside the buyer's transaction. If the push
-  fails, the amount is held in escrow on-chain and can be released to
-  the recorded destination wallet by anyone at any time.
+  fails, the amount is held in escrow on-chain and can be released
+  to the recorded destination wallet by anyone, whenever the source
+  is ACTIVE. While a source is paused or revoked, escrowed amounts
+  remain locked on-chain until the source is active again.
 - A buyer's first attributed purchase links the source to that buyer
   on-chain; the link then applies automatically to that buyer's later
   purchases.
-- The buyer sees the referral and the commission before signing.
+- The buyer sees the referral and the commission before signing; the
+  purchase transaction records it. The referral does not change the
+  buyer's price.
 
-8. CHANGES TO THESE TERMS
+9. CHANGES TO THESE TERMS
 These terms are versioned. A new version is published at a new URL
 with a new hash, and newly created sources reference the new hash.
 The version recorded in a source's metadataHash remains the version

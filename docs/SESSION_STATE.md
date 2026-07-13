@@ -24,12 +24,28 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > `readSourceRecord` (chainReads). guard-access-state respected (raw I/O in lib, not wallet).
 > All green: typecheck 0 · 12 guards + no-raw-color 0 · seo:check 323 · rewrites OK ·
 > surface:audit 218 · build 18 shells; terms file byte-identical in dist
-> (keccak256 `0xabe7c1ac…a0d210` as written — recomputed live at signing). FOUNDER CORRECTION
+> (keccak256 `0x06ff3134…bce37c` as written — recomputed live at signing). FOUNDER CORRECTION
 > APPLIED (2026-07-13, settled canon — a referrer does NOT have to be a member; classes differ):
 > the v1 document is SCOPED to the member program — title "MEMBER REFERRAL PROGRAM TERMS", id
 > `SYN.REFERRAL.MEMBER.TERMS.V1`, scope line "MEMBER_INTRODUCTION sources only; other classes
 > (partner, builder, affiliate) get their own versioned terms documents, one class · one doc ·
-> one hash". LOCAL-ENV NOTE
+> one hash". **FINAL PRE-HASH REVIEW APPLIED (advisor-consolidated, founder-approved,
+> 2026-07-13):** ⓐ escrow truth-fix VERIFIED against MembershipSaleV3.sol:296 —
+> `claimSourceEscrow` reverts `SourceEscrowLocked` unless the source is ACTIVE; §8 now says
+> escrow is claimable "whenever the source is ACTIVE", locked while paused/revoked (the old
+> "at any time" was an overclaim). ⓑ **FOUNDER OVERRIDE — NO buyer clear/remove of a referral,
+> anywhere** (the referral never changes the buyer's price; visibility — always shown before
+> signing — is what makes it honest; a removal control only strips earned work): terms §8
+> rewritten; `referralProgram.ts` antiAbuse line replaced, the "Cleared" program state REMOVED,
+> the config comment fixed; checkout UI verified to contain no such control (none existed).
+> ⓒ three standard clauses added as §6 THE REFERRER'S STANDING (independent participant ·
+> link/source personal, not transferable · legal age + jurisdiction responsibility).
+> ⓓ §1 "may be granted" (founder-signed creation, not an automatic right). ⓔ hash practicality:
+> header declares UTF-8/LF; `.gitattributes` pins the file `text eol=lf` (the hash is an
+> on-chain commitment — bytes must never be rewritten by autocrlf); /referral now renders the
+> LIVE-computed keccak256 next to the terms link (fetched+hashed in-browser, fail-closed,
+> never hardcoded) with a VerifyOnChain link to the registry; deploy verification must ALSO
+> assert served-bytes == repo-bytes. LOCAL-ENV NOTE
 > (Windows): the api-server dev script is bash-only → the local dev app renders blank on clean
 > main too (A/B verified with git stash); NOT a slice regression — Replit is runtime truth.
 > NEXT: founder approves the terms WORDING + the diff → push → deploy (the terms URL must be
