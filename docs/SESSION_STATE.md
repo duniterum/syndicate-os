@@ -2,7 +2,22 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ MEMBER HOME ARC — SLICE A ✅ BUILT (2026-07-14, autonomous work order, founder GO):**
+> **▶ MEMBER HOME ARC — SLICE B ✅ BUILT (2026-07-14, UI-ONLY — zero new server writes, zero
+> new DB tables, as ordered):** ① the HEADER MEMBER PILL — the Q25 menu REHOUSED (never
+> rebuilt): the trigger + menu header now carry the member's deterministic MemberSigil
+> (18px pill / 36px header) instead of the generic hexagon; era badge unchanged; bell +
+> trophy render as RESERVED header icons (visible, inert, honest "Coming soon" tooltips —
+> notifications = event backbone; trophy = seasons, recognition-only); a "Settings" item
+> joined the menu → /member#settings. ② `wallet/MemberSettings.tsx` (rule-15 lazy, anchored
+> #settings on /member): Avatar = sigil default with uploaded(SOON)/nft(FUTURE) named
+> abstraction · Alias SOON (IDENTITY-ALIAS) · Language SOON (no i18n — a dead switch would
+> lie) · Theme REAL (existing ThemeToggle reused) · Notifications SOON · Session REAL
+> (wallet + VerifyOnChain + Disconnect via the EXISTING logoutSession) · Reset profile SOON
+> with "THE SEAT IS PERMANENT" stated · NO email field ever (ADR-003). Chrome learned from
+> Supa AvatarUploader/Settings, copied nothing. AVATAR-STORAGE INFRA QUESTION → flagged for
+> the founder report. Green: tsc 0 · 12 guards · build 18 shells.
+>
+> **▶ Prior: MEMBER HOME ARC — SLICE A ✅ BUILT (2026-07-14, autonomous work order, founder GO):**
 > ① `config/memberActions.ts` — THE action registry (origin actions.ts harvested for shape,
 > adapted): copy-my-referral-link (lock: session) · share-my-proof (lock: seat) ·
 > expand-footprint→/join (open) · verify-my-seat-on-chain (lock: seat, real VerifyOnChain

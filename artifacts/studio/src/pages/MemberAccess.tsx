@@ -40,6 +40,12 @@ const MemberYourSeat = WALLET_SESSION_PREVIEW_ENABLED
   ? lazy(() => import("@/wallet/MemberYourSeat"))
   : null;
 
+// SLICE B — the UI-only settings panel (zero new writes; honest rows). Same
+// rule-15 lazy wallet-boundary pattern; anchored so the header menu links it.
+const MemberSettings = WALLET_SESSION_PREVIEW_ENABLED
+  ? lazy(() => import("@/wallet/MemberSettings"))
+  : null;
+
 interface CockpitFacet {
   icon: LucideIcon;
   title: string;
@@ -278,6 +284,15 @@ export default function MemberAccess() {
           </Link>
         ))}
       </div>
+
+      {/* SLICE B — Settings (anchored: the header member menu links here). */}
+      {authLive && MemberSettings ? (
+        <section id="settings" className="mb-12 scroll-mt-24">
+          <Suspense fallback={null}>
+            <MemberSettings />
+          </Suspense>
+        </section>
+      ) : null}
 
       <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl pt-6 border-t border-border/50">
         {expectations.body}

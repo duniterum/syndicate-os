@@ -31,8 +31,12 @@ import {
   ShieldCheck,
   ExternalLink,
   BookOpen,
+  Bell,
+  Trophy,
+  Settings as SettingsIcon,
 } from "lucide-react";
 import { chapterForSeat } from "@/lib/chapters";
+import { MemberSigil } from "@/components/member/MemberSigil";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -267,6 +271,31 @@ export default function MemberHeaderAffordance({
   }
 
   return (
+    <div className={mobile ? "flex w-full items-center gap-2" : "flex items-center gap-1.5"}>
+      {/* Reserved header icons (§11 "Header"): notification bell + season
+          trophy — visible, inert, honestly "Coming soon" (locked ≠ hidden;
+          the return-visit hook). They light up with the event backbone /
+          seasons engine — never before. */}
+      {seated && !mobile ? (
+        <>
+          <span
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/50 text-muted-foreground/60"
+            title="Notifications — coming soon (arrives with the event backbone)."
+            aria-disabled="true"
+            data-testid="header-bell-reserved"
+          >
+            <Bell className="h-3.5 w-3.5" aria-hidden="true" />
+          </span>
+          <span
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/50 text-muted-foreground/60"
+            title="Seasons & recognition — coming soon (recognition only, never a cash figure)."
+            aria-disabled="true"
+            data-testid="header-trophy-reserved"
+          >
+            <Trophy className="h-3.5 w-3.5" aria-hidden="true" />
+          </span>
+        </>
+      ) : null}
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
@@ -274,7 +303,13 @@ export default function MemberHeaderAffordance({
           size={mobile ? "default" : "sm"}
           className={`${triggerBase} gap-2`}
         >
-          {seated ? (
+          {seated && address ? (
+            // The member PILL (§11 "Header"): the member's own deterministic
+            // sigil — identity at a glance, never a photo, never a directory.
+            <span aria-hidden="true" className="shrink-0">
+              <MemberSigil address={address} size={18} />
+            </span>
+          ) : seated ? (
             <span className="flex h-5 w-5 items-center justify-center rounded-md bg-gold/15 text-gold" aria-hidden="true">
               <Hexagon className="h-3 w-3" />
             </span>
@@ -299,14 +334,20 @@ export default function MemberHeaderAffordance({
       <DropdownMenuContent align="end" className="w-72">
         <DropdownMenuLabel className="font-normal">
           <div className="flex items-center gap-3">
-            <span
-              className={`flex h-9 w-9 items-center justify-center rounded-lg border ${
-                seated ? "border-gold/30 bg-gold/12 text-gold" : "border-border bg-muted text-muted-foreground"
-              }`}
-              aria-hidden="true"
-            >
-              <Hexagon className="h-5 w-5" />
-            </span>
+            {seated && address ? (
+              <span aria-hidden="true" className="shrink-0">
+                <MemberSigil address={address} size={36} />
+              </span>
+            ) : (
+              <span
+                className={`flex h-9 w-9 items-center justify-center rounded-lg border ${
+                  seated ? "border-gold/30 bg-gold/12 text-gold" : "border-border bg-muted text-muted-foreground"
+                }`}
+                aria-hidden="true"
+              >
+                <Hexagon className="h-5 w-5" />
+              </span>
+            )}
             <div className="min-w-0">
               <div className="text-sm font-semibold text-foreground">
                 {seated ? `Member #${status.seat}` : "Signed in"}
@@ -400,6 +441,13 @@ export default function MemberHeaderAffordance({
           </Link>
         </DropdownMenuItem>
 
+        <DropdownMenuItem asChild>
+          <Link href="/member#settings" className="cursor-pointer">
+            <SettingsIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+            Settings
+          </Link>
+        </DropdownMenuItem>
+
         {address ? (
           <DropdownMenuItem
             className="cursor-pointer"
@@ -445,5 +493,6 @@ export default function MemberHeaderAffordance({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+    </div>
   );
 }
