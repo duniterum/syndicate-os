@@ -36,6 +36,9 @@ import cookieParser from "cookie-parser";
 import { z } from "zod";
 import { parseSiweMessage, validateSiweMessage } from "viem/siwe";
 import { recoverMessageAddress } from "viem";
+// R5 own-row source standing: resolution lives in the read-only spine helper
+// (the engineReadback pattern); the auth zone stays registry-less.
+import { readOwnSourceStanding } from "../lib/protocol/sourceStandingRead";
 import {
   AUTH_CHAIN_ID,
   AUTH_JSON_LIMIT,
@@ -524,6 +527,67 @@ router.get("/member-standing", async (req: Request, res: Response) => {
     return;
   }
   req.log.info({ event: "auth.member_standing.checked", code: outcome });
+  res.json(payload);
+});
+
+// ── GET /api/auth/source-standing ───────────────────────────────────────────
+// R5 — introduction-standing SELF-READBACK (own-row, the member-standing
+// discipline verbatim): the ONLY input is the session cookie; the bound
+// account is used server-side to DERIVE its canonical sourceId
+// (keccak256("SYN.SOURCE.V1", account) — SPEC §③) and then the OPAQUE
+// sourceKey into the generated introduction snapshot (R5a). No lookup surface
+// for arbitrary wallets/sources exists; the account, the sourceId, and any
+// other member's material are never echoed. Registry existence/active are
+// LIVE reads (fail closed to null); the counters are an honest SERVED
+// SNAPSHOT, labeled asOfBlock — never passed off as live.
+router.get("/source-standing", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "auth.source_standing.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const boundAccount =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+
+  const resolved =
+    boundAccount === null
+      ? {
+          chainVerified: false,
+          sourceOnChain: null,
+          sourceActive: null,
+          standing: null,
+          failureReason:
+            "no active wallet session; sign in to read your referral standing",
+        }
+      : await readOwnSourceStanding(boundAccount);
+
+  const sessionActive = boundAccount !== null;
+  const payload = {
+    state: sessionActive ? ("S4" as const) : ("S1" as const),
+    chainVerified: resolved.chainVerified,
+    sourceOnChain: resolved.sourceOnChain,
+    sourceActive: resolved.sourceActive,
+    standing: resolved.standing,
+    failureReason: resolved.failureReason,
+  };
+  try {
+    assertProtocolRealityDiscipline(payload);
+    if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(JSON.stringify(payload))) {
+      throw new Error("address-shaped token in payload");
+    }
+  } catch {
+    req.log.warn({ event: "auth.source_standing.discipline_rejected" });
+    deny(res, 500, "unavailable");
+    return;
+  }
+  req.log.info({
+    event: "auth.source_standing.checked",
+    code: !sessionActive ? "none" : resolved.standing !== null ? "mapped" : "unavailable",
+  });
   res.json(payload);
 });
 

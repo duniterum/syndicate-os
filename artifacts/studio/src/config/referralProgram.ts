@@ -189,10 +189,10 @@ export interface MemberReferralCard {
 }
 export const memberCards: MemberReferralCard[] = [
   { title: "My referral link", note: "The program is active: validate your source id on /source and build a shareable join link. A new source itself is a founder-signed on-chain act.", lifecycle: "READ_ONLY_PROOF" },
-  { title: "My introductions", note: "Members you have introduced, read from verified source records — arrives with the introduction read-model (indexer).", lifecycle: "PENDING_ADAPTER" },
-  { title: "Referral receipts", note: "Receipt-backed proof of each eligible introduction — arrives with the introduction read-model (indexer).", lifecycle: "PENDING_ADAPTER" },
-  { title: "Pending commissions", note: "Commissions awaiting confirmation — the payment itself is on-chain in the buyer's transaction; the readable history arrives with the indexer.", lifecycle: "PENDING_ADAPTER" },
-  { title: "Paid commissions", note: "Commissions recorded as paid — verifiable on-chain today on the introducer's wallet; the in-app history arrives with the indexer.", lifecycle: "PENDING_ADAPTER" },
+  { title: "My introductions", note: "Your indexed introduction counts (total and durable), served from the R5 introduction read-model as of its indexed block.", lifecycle: "READ_ONLY_PROOF" },
+  { title: "Referral receipts", note: "Receipt-backed proof of each individual introduction — the per-receipt history arrives with row-level serving; the counts are already indexed.", lifecycle: "PENDING_ADAPTER" },
+  { title: "Pending commissions", note: "Escrow held on-chain for your source (paid out whenever the source is active), read by the indexer.", lifecycle: "READ_ONLY_PROOF" },
+  { title: "Paid commissions", note: "The indexed sum of commissions paid inside buyers' transactions — verifiable on-chain on your own wallet.", lifecycle: "READ_ONLY_PROOF" },
   { title: "Source standing", note: "Your non-financial recognition as a source, retention-weighted — a future concept.", lifecycle: "FUTURE" },
 ];
 
@@ -289,10 +289,23 @@ export interface CommissionTier {
   pct: number;
   note: string;
 }
+/**
+ * THE LADDER PREVIEW — mirrors docs/direction/CONNECTOR_LADDER_POLICY.md
+ * (founder-decided 2026-07-13, FINAL) exactly; reconciled from the old
+ * Standard/Trusted-8% sample. Member rungs are all-automatic by DURABLE
+ * introductions (the R5 counter); the rate never decreases, never retroactive.
+ * Partner is a negotiated separate CLASS (up to the 30% hard cap), never a
+ * member rung.
+ */
 export const commissionTiers: CommissionTier[] = [
-  { name: "Standard", pct: 5, note: "Default source class for verified referrals." },
-  { name: "Trusted", pct: 8, note: "Higher commission rate for consistent, high-retention sources." },
-  { name: "Partner", pct: commissionCapPct, note: "Negotiated partnership class — at the hard cap." },
+  { name: "Emerging", pct: 5, note: "The starting rung — every member source begins here (0 durable introductions)." },
+  { name: "Active", pct: 5, note: "3 durable introductions — title and season points; the rate does not change." },
+  { name: "Trusted", pct: 6, note: "10 durable introductions." },
+  { name: "Established", pct: 7, note: "25 durable introductions." },
+  { name: "Durable", pct: 8, note: "60 durable introductions." },
+  { name: "Foundational", pct: 10, note: "150 durable introductions." },
+  { name: "Summit", pct: 12, note: "300 durable introductions — the on-chain cap for member introductions." },
+  { name: "Partner", pct: commissionCapPct, note: "Negotiated partnership class (signed agreement) — never a member rung; at the hard cap." },
 ];
 // Every change to a source's class / commission % / cap / window is recorded as
 // this governance event, so it surfaces in Activity + Chronicle (old → new,

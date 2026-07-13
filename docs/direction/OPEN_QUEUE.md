@@ -150,6 +150,12 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   are CLOSED per the 2026-07-11 session-update block; their table rows are historical. Q20 looks
   superseded by the live C5 checkout — closing it stays a FOUNDER confirm, not taken here.
 
+- **⏳ R5 — BUILT (2026-07-13, founder GO; awaiting diff approval → deploy).** The introduction
+  read-model + own-row `/api/auth/source-standing` + the dashboard standing/ladder surfaces +
+  the commissionTiers rider. Durable test = SYN-still-held (founder GO on the recommendation;
+  one constant). Full state: SESSION_STATE top bullet. LADDER-PROMOTION-SCREEN's R5 dependency
+  is now SATISFIED once deployed.
+
 - **⏳ QUEUED SLICE — LADDER-PROMOTION-SCREEN (registered 2026-07-13; DEPENDS ON R5; execute
   only on founder GO).** The Connector-ladder promotion flow per
   `CONNECTOR_LADDER_POLICY.md`: R5's durable-introduction count crosses a threshold → the

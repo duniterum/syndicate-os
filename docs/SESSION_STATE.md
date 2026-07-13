@@ -2,7 +2,34 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🏆 R2 IS DONE — THE FIRST CONVENTION-DERIVED MEMBER SOURCE IS LIVE ON-CHAIN (2026-07-13,
+> **▶ R5 — THE INTRODUCTION INDEXER, BUILT (2026-07-13, founder GO; awaiting diff approval →
+> deploy):** the "one brick, five surfaces" read-model exists on the proven pattern (pure builder
+> · founder-gated build script · guard suite), REUSING the existing scan engine (adaptive chunked
+> zero-gap eth_getLogs over the V3 MembershipPurchasedV3 unit, in memory, no DB) — a snapshot is
+> NEVER emitted from a scan with holes (the 2026-07-12 standing rule, enforced in code).
+> **R5a:** `introductionReadmodel.ts` (pure, deterministic, fail-closed) + `introduction-index-build.ts`
+> (+ `--check` drift mode) + `introduction-index.guard.ts` (27 checks) + the GENERATED served
+> snapshot (committed): asOfBlock 90180944 · 2 attributed purchases · 1 source (BUILDER_SOURCE;
+> the founder's member source has no referred buys yet) · 2 durable. **THE DURABLE TEST (founder
+> GO, recommendation adopted — seats are bytecode-permanent so seat-held has no anti-fraud
+> teeth): durable = the introduced member's wallet still holds SYN at index time**
+> (`DURABLE_TEST = "SYN_BALANCE_HELD"`, one constant to change if re-ruled). The count may dip;
+> a signed promotion never reverts. PRIVACY: the snapshot carries NO wallet/memberNumber/txHash
+> and NO raw sourceId — per-source rows are keyed by the opaque `sourceKeyOf` hash.
+> **R5b:** GET `/api/auth/source-standing` (own-row: session wallet → derived sourceId → own
+> counters; registry existence/active read LIVE; auth zone stays registry-less via the spine
+> helper `sourceStandingRead.ts` — guard-auth-zone 649 green). **R5c:** the member referral
+> dashboard renders the REAL indexed standing (4 figures + as-of block) + the Connector LADDER
+> progress (`config/connectorLadder.ts` — the 7 canon rungs; bar never empty, next rung named,
+> summit stays rare); memberCards honestly flipped (introductions/pending/paid → READ_ONLY_PROOF;
+> per-receipt rows stay PENDING_ADAPTER). **RIDER:** `commissionTiers` = the canon ladder preview
+> (Emerging→Summit + Partner-as-class; Trusted 6%). REFRESH RULE: the snapshot is an honest
+> SERVED SNAPSHOT (as-of labeled); re-run `introductions:build` (founder-gated) to advance it;
+> `introductions:check` fails on drift. All green: studio tsc 0 + 12 guards + seo 323 + rewrites
+> + surface 218 + build 18 shells · api tsc 0 + canon + reality 138/138 + auth-zone 649 + intro
+> guard 27. LADDER-PROMOTION-SCREEN is now UNBLOCKED (consumes durableIntroductions directly).
+>
+> **▶ Prior: 🏆 R2 IS DONE — THE FIRST CONVENTION-DERIVED MEMBER SOURCE IS LIVE ON-CHAIN (2026-07-13,
 > both founder signatures):** sourceId `0x804e80f1…ae974` = keccak256("SYN.SOURCE.V1",
 > `0x88EC79AF…Dd73`) — the FIRST source following the SPEC §③ convention. Chain-verified:
 > class MEMBER_INTRODUCTION · 500 bps · LIFETIME · no caps · repeat=true · sourceWallet ==

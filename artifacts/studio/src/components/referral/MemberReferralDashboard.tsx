@@ -7,7 +7,8 @@
 // activation the sample arrays are swapped for verified read-model / receipt
 // data and the SampleTags come off — the layout does not change.
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ladderProgress } from "@/config/connectorLadder";
 import { Copy, Check, Link2, ShieldCheck, QrCode } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -91,9 +92,108 @@ function TrendChart({ data }: { data: { label: string; value: number }[] }) {
   );
 }
 
+// R5 — the signed wallet's OWN indexed introduction standing (counts from the
+// introduction snapshot + live registry existence), fetched through the
+// gated wallet module via a runtime dynamic import (guard rule 15). Null =
+// not loaded / no session / read failed → the section renders its honest
+// PENDING state; a figure only ever comes from the readback.
+type StandingReadback = import("@/wallet/walletSession").SourceStandingReadback;
+
+function useOwnSourceStanding(): StandingReadback | null {
+  const [standing, setStanding] = useState<StandingReadback | null>(null);
+  useEffect(() => {
+    let active = true;
+    void import("@/wallet/walletSession").then(({ fetchSourceStanding }) =>
+      fetchSourceStanding().then((r) => {
+        if (active) setStanding(r);
+      }),
+    );
+    return () => {
+      active = false;
+    };
+  }, []);
+  return standing;
+}
+
+function usd(raw: string): string {
+  const n = BigInt(raw);
+  const whole = n / 1_000_000n;
+  const cents = ((n % 1_000_000n) / 10_000n).toString().padStart(2, "0");
+  return `$${whole}.${cents}`;
+}
+
+// The indexed standing + the Connector ladder progress. The four figures are
+// REAL (the R5 snapshot + live escrow read, labeled as-of block); the bar is
+// never empty (the pinned UI law); the summit stays a road, not a promise.
+function IntroductionStanding({ readback }: { readback: StandingReadback | null }) {
+  const s = readback?.standing ?? null;
+  if (readback === null || s === null) {
+    return (
+      <Card className="bg-card/40 border-border/50 p-5 mb-6">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-sm font-medium text-foreground">Your introduction standing</span>
+          <LifecycleBadge lifecycle="PENDING_ADAPTER" />
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          {readback?.failureReason ??
+            "Sign in with your wallet to read your own indexed standing. No figure is shown without the read."}
+        </p>
+      </Card>
+    );
+  }
+  const p = ladderProgress(s.durableIntroductions);
+  return (
+    <Card className="bg-card/40 border-border/50 p-5 mb-6">
+      <div className="flex flex-wrap items-center gap-2 mb-3">
+        <span className="text-sm font-medium text-foreground">Your introduction standing</span>
+        <span className="font-mono text-[10px] text-muted-foreground">
+          indexed · as of block {s.asOfBlock}
+        </span>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+        <StatCard label="Introductions">{String(s.introducedMembers)}</StatCard>
+        <StatCard label="Durable introductions">{String(s.durableIntroductions)}</StatCard>
+        <StatCard label="Commission paid">{usd(s.commissionPaidRaw)}</StatCard>
+        <StatCard label="Held in escrow">{usd(s.escrowOwedRaw)}</StatCard>
+      </div>
+      <div className="space-y-1.5">
+        <div className="flex items-baseline justify-between gap-3 text-xs">
+          <span className="text-foreground/90">
+            {p.current.title} · {p.current.bps / 100}%
+          </span>
+          {p.next ? (
+            <span className="text-muted-foreground">
+              {p.next.title} at {p.next.durableThreshold} durable
+              {p.next.raisesRate ? ` · ${p.next.bps / 100}%` : " · title"}
+            </span>
+          ) : (
+            <span className="text-muted-foreground">the summit — the on-chain cap</span>
+          )}
+        </div>
+        <div
+          className="h-1.5 w-full rounded-full bg-border/50 overflow-hidden"
+          role="progressbar"
+          aria-label="Progress to the next Connector rung"
+          aria-valuemin={0}
+          aria-valuemax={1}
+          aria-valuenow={p.ratio}
+        >
+          <div className="h-full rounded-full bg-primary/70" style={{ width: `${p.ratio * 100}%` }} />
+        </div>
+        <p className="text-[11px] text-muted-foreground leading-relaxed">
+          A durable introduction is an introduced member whose wallet still holds SYN.
+          The threshold decides a promotion; the founder&apos;s signature executes it.
+          An acquired rate never decreases.
+        </p>
+      </div>
+    </Card>
+  );
+}
+
 export function MemberReferralDashboard() {
   const [copied, setCopied] = useState(false);
   const [showQr, setShowQr] = useState(false);
+  const readback = useOwnSourceStanding();
 
   function copyLink() {
     void navigator.clipboard?.writeText(sampleReferralLink).then(() => {
@@ -123,6 +223,9 @@ export function MemberReferralDashboard() {
           </div>
         </div>
       </Card>
+
+      {/* R5 — the OWN indexed standing + Connector ladder progress (real). */}
+      <IntroductionStanding readback={readback} />
 
       {/* Shareable verified-introducer card — the one-tap share asset */}
       <ShareCard />

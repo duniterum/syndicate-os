@@ -333,6 +333,78 @@ export async function fetchMemberStanding(): Promise<MemberStandingReadback | nu
   }
 }
 
+// ── R5: own-row referral-source standing (the introduction indexer) ─────────
+export interface SourceStandingReadback {
+  state: "S1" | "S4";
+  chainVerified: boolean;
+  sourceOnChain: boolean | null;
+  sourceActive: boolean | null;
+  standing: {
+    attributedPurchases: number;
+    introducedMembers: number;
+    durableIntroductions: number;
+    commissionPaidRaw: string;
+    escrowOwedRaw: string;
+    asOfBlock: number;
+    durableTest: string;
+    snapshotHash: string;
+  } | null;
+  failureReason: string | null;
+}
+
+/**
+ * Read the signed wallet's OWN referral-source standing (counts from the R5
+ * introduction snapshot + live registry existence). Null on ANY failure —
+ * the caller renders PENDING, never an invented figure.
+ */
+export async function fetchSourceStanding(): Promise<SourceStandingReadback | null> {
+  try {
+    const res = await fetch("/api/auth/source-standing", { method: "GET" });
+    if (!res.ok) return null;
+    const body: unknown = await res.json();
+    if (typeof body !== "object" || body === null) return null;
+    const o = body as Record<string, unknown>;
+    if (o.state !== "S1" && o.state !== "S4") return null;
+
+    let standing: SourceStandingReadback["standing"] = null;
+    if (typeof o.standing === "object" && o.standing !== null) {
+      const s = o.standing as Record<string, unknown>;
+      if (
+        typeof s.attributedPurchases === "number" &&
+        typeof s.introducedMembers === "number" &&
+        typeof s.durableIntroductions === "number" &&
+        typeof s.commissionPaidRaw === "string" &&
+        typeof s.escrowOwedRaw === "string" &&
+        typeof s.asOfBlock === "number" &&
+        typeof s.durableTest === "string" &&
+        typeof s.snapshotHash === "string"
+      ) {
+        standing = {
+          attributedPurchases: s.attributedPurchases,
+          introducedMembers: s.introducedMembers,
+          durableIntroductions: s.durableIntroductions,
+          commissionPaidRaw: s.commissionPaidRaw,
+          escrowOwedRaw: s.escrowOwedRaw,
+          asOfBlock: s.asOfBlock,
+          durableTest: s.durableTest,
+          snapshotHash: s.snapshotHash,
+        };
+      }
+    }
+
+    return {
+      state: o.state,
+      chainVerified: o.chainVerified === true,
+      sourceOnChain: typeof o.sourceOnChain === "boolean" ? o.sourceOnChain : null,
+      sourceActive: typeof o.sourceActive === "boolean" ? o.sourceActive : null,
+      standing,
+      failureReason: typeof o.failureReason === "string" ? o.failureReason : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
 /** Truncated display form of a long hash pin, e.g. sha256:9cf82d90…211a. */
 export function shortHashPin(pin: string): string {
   const [algo, hex] = pin.includes(":")
