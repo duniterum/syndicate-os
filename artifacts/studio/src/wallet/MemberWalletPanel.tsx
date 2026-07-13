@@ -12,6 +12,7 @@
 // Addresses are server-sourced (verify-links) — never hardcoded client-side.
 
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "wouter";
 import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { getAddress } from "viem";
@@ -220,26 +221,25 @@ export default function MemberWalletPanel() {
         ) : null}
       </Card>
 
-      {/* EXTERNAL posture — the canonical on-chain pool (the pair itself). */}
-      {poolUrl ? (
-        <Card className="p-4 border-border/50 bg-card/20">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-sm text-foreground">SYN/USDC pool (Trader Joe)</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                EXTERNAL — leaves this site. The pool is a courtesy, not a promise;
-                the market is free and may decide otherwise. No in-house liquidity
-                interface exists here.
-              </p>
-            </div>
-            <a href={poolUrl} target="_blank" rel="noopener noreferrer" className="inline-flex">
-              <Button size="sm" variant="outline">
-                View the pair on-chain <ExternalLink className="h-3.5 w-3.5 ml-1.5" aria-hidden="true" />
-              </Button>
-            </a>
+      {/* The pool pointer — INTERNAL to /liquidity (L-1 law: the LP links
+          never travel without their page context and Risk Notice). */}
+      <Card className="p-4 border-border/50 bg-card/20">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-sm text-foreground">SYN/USDC pool (Trader Joe)</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              Why the pool exists, its live reserves, and the LP-side actions —
+              with the Risk Notice they belong with. The pool is a courtesy, not
+              a promise; the market is free and may decide otherwise.
+            </p>
           </div>
-        </Card>
-      ) : null}
+          <Link href="/liquidity" className="inline-flex">
+            <Button size="sm" variant="outline">
+              Liquidity &amp; trading
+            </Button>
+          </Link>
+        </div>
+      </Card>
     </div>
   );
 }

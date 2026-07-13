@@ -54,6 +54,14 @@ export const MEMBER_ACTIONS: readonly MemberAction[] = [
     lock: "none",
   },
   {
+    id: "liquidity-trading",
+    label: "Liquidity & trading",
+    note: "The SYN/USDC pool — trade, add liquidity, verify the pair. LP-side flow, with its Risk Notice.",
+    kind: "route",
+    href: "/liquidity",
+    lock: "none",
+  },
+  {
     id: "verify-seat",
     label: "Verify my seat on chain",
     note: "Call the engine's own memberNumberOf with your address — the same read behind every figure here.",

@@ -82,6 +82,14 @@ from = "/toolkit/"
 to = "/toolkit.html"
 
 [[services.production.rewrites]]
+from = "/liquidity"
+to = "/liquidity.html"
+
+[[services.production.rewrites]]
+from = "/liquidity/"
+to = "/liquidity.html"
+
+[[services.production.rewrites]]
 from = "/join"
 to = "/join.html"
 

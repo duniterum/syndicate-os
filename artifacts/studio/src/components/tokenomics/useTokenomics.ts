@@ -78,6 +78,9 @@ export interface TokenomicsData {
   marketPriceUsdcPerSyn: string | null;
   /** Live entry rate, SYN per 1 USDC (0 decimals). */
   entrySynPerUsdc: string | null;
+  /** Live LP pool reserves (fail-closed null) — the /liquidity LpStatus reads. */
+  lpReserveSyn: string | null;
+  lpReserveUsdc: string | null;
   /** Live cumulative burned SYN (0 decimals). */
   burnedSyn: string | null;
 }
@@ -122,6 +125,8 @@ export function useTokenomics(): TokenomicsData {
       findRaw(financial, "financial.lp.reserveSyn"),
     ),
     entrySynPerUsdc: formatBaseUnits(entrySynOutRaw, SYN_DECIMALS, 0),
+    lpReserveSyn: formatBaseUnits(findRaw(financial, "financial.lp.reserveSyn"), SYN_DECIMALS, 0),
+    lpReserveUsdc: formatBaseUnits(findRaw(financial, "financial.lp.reserveUsdc"), USDC_DECIMALS, 2),
     burnedSyn: formatBaseUnits(findRaw(financial, "financial.burn.synBalance"), SYN_DECIMALS, 0),
   };
 }

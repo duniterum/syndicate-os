@@ -354,13 +354,18 @@ Sources on disk: `Supa-Exchange/client/src/components/AvatarUploader.tsx`, `User
 `Header.tsx`, `pages/Settings.tsx` (profile carries level/xp/points — confirms XP belongs on
 the profile surface).
 
-- **Avatar** — Supa's default is a wallet-seeded identicon (dicebear) with an upload dialog
-  (preview · type/size validation · remove→default). SAME mentality as our `MemberSigil`
-  (already built, deterministic from the wallet): the sigil IS the default avatar. "Change
-  image" = opt-in self-expression (Visibility Law: opt-in self-publish — allowed). **The slot
-  is DESIGNED to later accept an NFT avatar** (founder's held-back NFT concept; Archive1155
-  era): keep the avatar source abstraction `sigil | uploaded | nft(FUTURE)` from day one so the
-  NFT lands without a redesign. Never a paid financial advantage — identity/vanity only.
+- **Avatar — FOUNDER DECISION 2026-07-13 (supersedes the advisor's "skip upload" suggestion):
+  ALL THREE sources ship, in this order.** ① Sigil = deterministic default, zero infra, always
+  the fallback (LIVE). ② Uploaded image = YES — lands when the object-storage infra decision is
+  made (Replit App Storage candidate); Supa pattern (5MB cap · type validation · preview ·
+  remove→sigil); a publicly-visible uploaded image implies a moderation duty → an admin "hide
+  avatar" control in the console (another managed module). ③ NFT avatar = the member selects an
+  NFT their session wallet OWNS (chain-verified `ownerOf`, re-checkable — sold ⇒ badge drops),
+  image from `tokenURI` (ZERO storage), and the pfp carries a small **NFT badge** (the
+  Twitter/X-hexagon pattern) with tooltip "NFT avatar — owned by this wallet · Verify on
+  chain": the avatar becomes one more proof surface. The `sigil | uploaded | nft` abstraction
+  is already coded in the settings slice. Never a paid financial advantage — identity/vanity
+  only; Visibility Law opt-in self-publish.
 - **Alias** — opt-in display name, DEFAULT = the seat number (honour-roll canon: a member who
   wants no name stays a number). Free alias field lands with the Standing slice (Phase 5);
   SOLD aliases stay lawyer-gated (LIVING_ORGANISM §5). Never required.

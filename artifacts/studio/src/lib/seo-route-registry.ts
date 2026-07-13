@@ -190,6 +190,24 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     proofRoute: "/status",
     notes: "The action registry as the public conversion surface.",
   },
+  // ARC L-1 — the liquidity surface (origin harvest; real live content → INDEX).
+  {
+    path: "/liquidity",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "Liquidity — the SYN/USDC pool, read live",
+    description:
+      "Why the liquidity pool exists, the live pair reserves read from the chain, and the LP-side actions — trade, add liquidity, verify the pair. No rewards or entitlement are live or promised to liquidity providers.",
+    canonicalPath: "/liquidity",
+    changefreq: "weekly",
+    priority: 0.6,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "economy",
+    primaryIntent: "proof",
+    proofRoute: "/status",
+    notes: "LP-side flow ONLY (flow-separation law: no Join CTA on the rail). External links verified 2026-07-14.",
+  },
   {
     path: "/join",
     routeType: "PUBLIC",

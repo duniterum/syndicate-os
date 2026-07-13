@@ -194,6 +194,16 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },
+  // ARC L-1 — the liquidity surface (LP-side flow only, public shell).
+  {
+    routePath: "/liquidity",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "Why LP exists + live pair reserves + LP-side actions. No Join CTA (flow separation).",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
   // ARC SLICE D member doors — flat routes, member shell chosen by the page.
   {
     routePath: "/wallet",

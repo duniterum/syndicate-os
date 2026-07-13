@@ -2,7 +2,27 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ MEMBER HOME ARC — SLICE D ✅ BUILT (2026-07-14) — THE ARC IS COMPLETE (shell + A + B +
+> **▶ ORIGIN-HARVEST ARC — SLICE L-1 ✅ BUILT (2026-07-14, autonomous work order): /liquidity.**
+> Origin harvest ADAPTED (liquidity.tsx + rail/why/status): ① WhyLpMatters 3 cards, "small on
+> purpose · early LPs shape the pool" framing KEPT; ② the Action Rail — Trade · Add Liquidity ·
+> Become an LP (anchor) · View Pool · Verify Pair (verify-links lpPair, fail-closed).
+> **LINK VERIFICATION (in-slice, dated):** DexScreener pair page FOUNDER-VERIFIED in browser;
+> honest note: DexScreener's public API returns pairs:null for this micro-pair (both pair +
+> token-pairs endpoints probed — API doesn't index it; the web page is the verified artifact).
+> Trade + Add (origin traderjoexyz.com URLs) both HTTP 200 (403 on HEAD = bot filter; GET+UA
+> clean; lfj.gg also 200). ③ LpStatus on the EXISTING spine reads — useTokenomics extended
+> +lpReserveSyn/+lpReserveUsdc (financial.lp.* already served; no new read path). ④ LP Risk
+> Notice (4 real risks) + the no-entitlement verbatim line ×2 (guard-forbidden-copy caught
+> "pooled" in the impermanent-loss row → reworded, the guard working). ⑤ FLOW-SEPARATION LAW:
+> zero Join CTA on the page; memberActions += exactly ONE "Liquidity & trading" → /liquidity;
+> memberDoors += GROWTH group (Liquidity door); /wallet's pool card REPOINTED internal →
+> /liquidity (the DEX links never travel without their page context + Risk Notice). SEO INDEX
+> (real live content): registry 40 routes · sitemap 18 INDEX · rewrites 23/46 · build 24 shells.
+> STEP 0 rides this commit: SEASONS_ENGINE re-staged fresh (the avatar bullet is now a FOUNDER
+> DECISION — sigil default LIVE · uploaded = future object-storage decision · NFT = chain-
+> verified ownerOf with badge + verify tooltip).
+>
+> **▶ Prior: MEMBER HOME ARC — SLICE D ✅ BUILT (2026-07-14) — THE ARC IS COMPLETE (shell + A + B +
 > C + D, one commit each, all pushed):** the WALLET DOOR + the TOOLKIT (§11 point 7).
 > **⚠️ ROUTE DEVIATION (infra truth wins, honest note):** the ordered /member/wallet would
 > emit a `member/` DIRECTORY in dist and resurrect the 2.0 trailing-slash redirect on /member

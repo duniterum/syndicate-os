@@ -44,6 +44,14 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
     ],
   },
   {
+    title: "Growth",
+    doors: [
+      // L-1: the LP-side door. The individual DEX links never travel without
+      // their page context and Risk Notice — the door opens the PAGE.
+      { label: "Liquidity", href: "/liquidity", note: "The SYN/USDC pool — why it exists, read live, LP-side actions." },
+    ],
+  },
+  {
     title: "Coming soon",
     doors: [
       // §11 slot 2c — each coming-soon door now opens its DESIGNED TEASER
