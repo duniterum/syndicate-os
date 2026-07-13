@@ -177,6 +177,20 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   promotion contract · the self-service issuer (SPEC §⑦) · Router V4. The registry is
   Ownable2Step → the eventual ownership handover is a clean two-step transfer.
 
+- **🟡 Q-A — header pill vs "Take your seat" CTA (founder observation, screenshot-sourced
+  2026-07-14; INVESTIGATE IN ITS OWN SLICE, not fixed now).** A seated session shows the
+  "Seat #14" pill AND the generic "Take your seat" conversion CTA simultaneously — for a
+  seated wallet the conversion CTA is probably wrong (one wallet = one seat; a further buy
+  adds SYN, never a second seat). Decide: contextual CTA (seated → "Expand your footprint")
+  vs keeping the generic. Founder decides the copy model; the slice implements.
+
+- **🟡 Q-B — MetaMask "Not connected" vs the seated site pill (founder observation,
+  screenshot-sourced 2026-07-14; INVESTIGATE, may be BY-DESIGN).** The wallet extension
+  showed "Not connected" while the site pill showed a seated session. Likely: the pill
+  reflects the SERVER SIWE session (durable) while the extension shows the live wallet
+  connection — two different truths. Clarify what the pill claims, whether the divergence
+  needs an indicator, and document the answer; only then decide if anything changes.
+
 - **🔴 THE MVP-FINAL MASTER BRIEF + THE 30-DAY MAP ARE CANON (founder-decided 2026-07-14):
   `docs/direction/MVP_FINAL_MASTER_BRIEF.md`** — the complete final MVP scope (the challenge ·
   the 30-day proof metric with FLOOR/TARGET · the seven pieces · the voice · standing laws ·

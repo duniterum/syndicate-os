@@ -2,7 +2,28 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🏛️ THE FIRST CHRONICLE PROMOTION (founder GO, 2026-07-14): "The duplicate seat" is
+> **▶ 🏁 SESSION SEAL (2026-07-14) — THREE ARCS SEALED IN PROD, Replit-verified 10/10 on
+> thesyndicate.money (HEAD `92cf877`):** ① MEMBER HOME ARC — shell `cd1a14c` · A actions/link
+> card `d068e54` · B pill/settings `2e8bc73` · C teasers `d509eb5` · D wallet/toolkit `06bdee8`;
+> ② ORIGIN-HARVEST ARC — L-1 /liquidity `2086403` · ACT-1 activity/fire-ledger `65390f8` ·
+> CHR-1 chronicle `5e8ef14`; ③ THE FIRST CHRONICLE PROMOTION `92cf877` ("The duplicate seat" =
+> Entry 1, publicly readable + verifiable). Live-verified highlights: the activity feed
+> rendered the REAL "Seat #14 was written on-chain — a first seat" ON PROD with its verify
+> link; burn total 21,273 SYN live; sitemap exactly 21 INDEX; the three killed/console strings
+> at 0 occurrences in 19 served chunks; introductions:check OK.
+> **LOCKED DECISIONS (this session, do not re-litigate):** the "My Syndicate" door/name is
+> DEAD (banned, guard-enforced) · avatar = THREE sources (founder §11: sigil default LIVE ·
+> uploaded = future object-storage decision · NFT = chain-verified ownerOf + badge + verify
+> tooltip) · the FLOW-SEPARATION LAW (LP links never leave /liquidity's context/Risk Notice) ·
+> client-RPC feeds = HONEST RECENT WINDOW (never proof of absence; the indexer upgrades to
+> complete history later) · Chronicle promotion = a FOUNDER ACT via commit, no DB, no
+> automation · REUSE-BEFORE-CREATE is standing (every report ends REUSED vs CREATED).
+> **NEXT, IN ORDER:** ① the founder picks M-map slice 1 ON SCREEN — M0 (refresh automation)
+> vs M4 (event backbone) — nothing opens before the pick; ② Q-A/Q-B triage (OPEN_QUEUE — the
+> two screenshot-sourced header observations); ③ pending founder decisions: avatar
+> object-storage · the DEX deep-link URL if wanted · the snapshot-refresh cadence.
+>
+> **▶ Prior: 🏛️ THE FIRST CHRONICLE PROMOTION (founder GO, 2026-07-14): "The duplicate seat" is
 > ENTRY 1 of the public register.** The candidate's text carried faithfully into
 > `chronicleRegister.ts` (the counts stated as N/M with the as-lived 12/11 narrative — the
 > entry records the day, the live pages record the present); the candidate file marked
