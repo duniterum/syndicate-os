@@ -67,6 +67,30 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > English version prevails"); extend the copy guards PER LOCALE before adding any language
 > (a guard cannot catch a lie it has no word for — in any language).
 
+- **⏳ QUEUED SLICE — PIPELINE-CHRONICLE (founder direction 2026-07-14, recorded verbatim;
+  EXECUTE ONLY ON FOUNDER GO at its M-map moment).**
+  ① The organism detects Chronicle-grade events itself, WRITES the candidate itself in the
+  §8 solemn-alive voice, and proposes it with a persistent reminder (the ladder-promotion
+  pattern applied to memory: the threshold decides, the signature executes).
+  ② FOUNDER SWITCH at the top: protocol-pure event classes (burns, era advances — the
+  machine observes, nothing human to judge) MAY be AUTO-PROMOTED into the Chronicle; every
+  person-touching event ALWAYS waits for the founder's promotion. The exact class list = a
+  founder decision at that slice's gate.
+  ③ Off-chain events are first-class Chronicle entries (proof = repo history / bytecode
+  constant / dated decision — Entry 4 is the precedent).
+  ④ Auto NEVER means invented: the organism observes and writes, never fabricates (M4-a's
+  fail-closed cycle 1 is the model).
+  **Harvest sources (all on disk, origin `TheSyndicate/src/lib/`):**
+  `protocol-event-intelligence.ts` (per-event meaning · consequence · attribution ·
+  Chronicle disposition CANDIDATE vs "Activity only" WITH reason) · `chronicle-admission.ts`
+  + `chronicle-admission-registry.ts` (pure deterministic admission verdicts; copy checked
+  against protocol-language; member-living entries NEVER candidates — P0) · the full
+  `chronicle-*` family + `institutional-register-*` · `use-unread-protocol-events.ts` +
+  `visitor-memory.ts` + `last-visit.functions.ts` ("Since you were away" — already coded,
+  feeds the Member Home reserved slot).
+  **Sequencing:** rides the backbone — M4-c gives it the generic protocol-event lane;
+  opens at its M-map moment, founder's pick.
+
 - **⏳ QUEUED SLICE — REFERRAL-SHOWCASE (founder-decided 2026-07-14; EXECUTE ONLY ON FOUNDER
   GO).** Apply the CONVERSION register (`CANON_PROTOCOL_LANGUAGE.md` §7) to the REFERRAL
   surfaces: /referral, the /join referral card, and the future Referrer Kit / OG card (MVP
