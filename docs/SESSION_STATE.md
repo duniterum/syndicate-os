@@ -2,7 +2,26 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 📜 THE PROTOCOL LANGUAGE CONSTITUTION ✅ BUILT (2026-07-14, founder-briefed slice,
+> **▶ 🕯 SLICE M6 ✅ CANDIDATES WRITTEN (2026-07-14, founder GO "promotion stays my act"):
+> THREE CHRONICLE CHAPTER CANDIDATES in `docs/chronicle/candidates/`, in the register
+> discipline + CANON_PROTOCOL_LANGUAGE §8 solemn-alive voice — NOT promoted (CHR-1: promotion
+> = a founder-approved commit into chronicleRegister.ts, one GO per entry):**
+> ① `2026-07-12-the-first-real-money-seat.md` — five dollars through the referral link, one
+> tx, two recipients, 70/20/10 to the cent, seat #13; the founder's own money ("the protocol
+> does not ask a stranger to trust a rail its own founder has not walked"); amounts INCLUDED
+> as-lived (the split IS the record); the seat honestly noted metric-excluded + set aside as
+> a gift. ② `2026-07-13-the-first-referral-source.md` — the convention's first on-chain
+> instance: derived sourceId, fingerprinted terms (served bytes ↔ metadataHash), born-PAUSED →
+> ACTIVATED as two founder-signed public acts; "the words and the chain now hold each other."
+> ③ `2026-07-13-the-ladder-decision.md` — a DECISION entry: two decoupled ladders, upward-only
+> rates, threshold-decides-signature-executes, Summit = the bytecode ceiling; verify = the
+> policy doc's commit history + the on-chain cap + future SourceTermsUpdated events. All three
+> identity-blind (roles + seat numbers only, zero hex), verify-first, banned-vocabulary clean.
+> NEXT: the founder reads each candidate and says GO per entry — each promotion is its own
+> commit (entry into chronicleRegister.ts, /chronicle renders it, sitemap unchanged); after
+> promotions, /chronicle carries 4 true chapters (M6 THIN-V1 complete).
+>
+> **▶ Prior: 📜 THE PROTOCOL LANGUAGE CONSTITUTION ✅ BUILT (2026-07-14, founder-briefed slice,
 > docs-only): `docs/direction/CANON_PROTOCOL_LANGUAGE.md` IS TIER-0 CANON** (registered in
 > 00_CANON_INDEX). INVARIANTS ONLY — eight blocks: §1 identity paragraph (from the live
 > site's own words) · §2 the six-beat page sequence (the review grid for every future page) ·
