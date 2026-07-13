@@ -1,8 +1,9 @@
 # CHRONICLE CANDIDATE — The ladder decision
 
 ```
-status:    🕯 CANDIDATE — awaiting the founder's promotion (promotion = a
-           founder-approved commit into chronicleRegister.ts; CHR-1 doctrine).
+status:    ✅ PROMOTED — founder GO 2026-07-14. Entry 4 of the public register
+           (artifacts/studio/src/config/chronicleRegister.ts, rendered at
+           /chronicle). This file remains as the candidate-of-record.
 register:  protocol-institutional (solemn-alive, CANON_PROTOCOL_LANGUAGE §8)
 date:      2026-07-13 (the day the ladder was decided and written as canon)
 discipline: identity-blind · amount-blind except the rates, which ARE the
