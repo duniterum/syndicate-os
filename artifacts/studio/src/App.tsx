@@ -23,6 +23,8 @@ import SourceLinkBuilder from "@/pages/SourceLinkBuilder";
 import Support from "@/pages/Support";
 import Archive from "@/pages/Archive";
 import ActivityTeaser from "@/pages/ActivityTeaser";
+import MemberWallet from "@/pages/MemberWallet";
+import MemberToolkit from "@/pages/MemberToolkit";
 import ChronicleTeaser from "@/pages/ChronicleTeaser";
 import FireLedgerTeaser from "@/pages/FireLedgerTeaser";
 import OperatorPreviewUnavailable from "@/pages/OperatorPreviewUnavailable";
@@ -159,6 +161,13 @@ function Router() {
       </PublicRoute>
       <PublicRoute path="/member">
         <MemberAccess />
+      </PublicRoute>
+      {/* ARC SLICE D member doors — flat routes (see the registry note). */}
+      <PublicRoute path="/wallet">
+        <MemberWallet />
+      </PublicRoute>
+      <PublicRoute path="/toolkit">
+        <MemberToolkit />
       </PublicRoute>
       <PublicRoute path="/join">
         <JoinProtocol />

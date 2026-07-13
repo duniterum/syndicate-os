@@ -194,6 +194,25 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },
+  // ARC SLICE D member doors — flat routes, member shell chosen by the page.
+  {
+    routePath: "/wallet",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "Own balances + approvals panel; revoke = the member's own signed act.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
+    routePath: "/toolkit",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "The member action registry as the public conversion surface.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
   // §11 slot 2c designed teasers — honest PENDING promises, public shell.
   {
     routePath: "/activity",

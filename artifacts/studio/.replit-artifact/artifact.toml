@@ -66,6 +66,22 @@ from = "/member/"
 to = "/member.html"
 
 [[services.production.rewrites]]
+from = "/wallet"
+to = "/wallet.html"
+
+[[services.production.rewrites]]
+from = "/wallet/"
+to = "/wallet.html"
+
+[[services.production.rewrites]]
+from = "/toolkit"
+to = "/toolkit.html"
+
+[[services.production.rewrites]]
+from = "/toolkit/"
+to = "/toolkit.html"
+
+[[services.production.rewrites]]
 from = "/join"
 to = "/join.html"
 

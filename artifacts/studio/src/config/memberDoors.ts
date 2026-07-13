@@ -38,6 +38,8 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
       { label: "Member Home", href: "/member", note: "Your seat, your standing — this page." },
       { label: "Referral dashboard", href: "/member#referral-dashboard", note: "Your introductions, standing, and ladder progress." },
       { label: "Recognition", href: "/recognition", note: "How the protocol recognizes members." },
+      { label: "Wallet", href: "/wallet", note: "Your balances and approvals — revoke is your own signed act." },
+      { label: "Toolkit", href: "/toolkit", note: "Every member action in one place — locks visible." },
       { label: "Protocol graph", href: "/map", note: "The protocol, drawn — every surface on one map." },
     ],
   },

@@ -2,7 +2,28 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ MEMBER HOME ARC — SLICE C ✅ BUILT (2026-07-14): the §11 slot-2c DESIGNED TEASERS.**
+> **▶ MEMBER HOME ARC — SLICE D ✅ BUILT (2026-07-14) — THE ARC IS COMPLETE (shell + A + B +
+> C + D, one commit each, all pushed):** the WALLET DOOR + the TOOLKIT (§11 point 7).
+> **⚠️ ROUTE DEVIATION (infra truth wins, honest note):** the ordered /member/wallet would
+> emit a `member/` DIRECTORY in dist and resurrect the 2.0 trailing-slash redirect on /member
+> — routes are FLAT: **/wallet** + **/toolkit** (doors labeled Wallet · Toolkit; member shell
+> on both; full lockstep: registry 39 routes · rewrites 22/44 · surface 23 public · prerender
+> 23 shells = 17 INDEX + 6 noindex). **/wallet** = `wallet/MemberWalletPanel.tsx`: own SYN +
+> USDC balances live (fail-closed) · THE APPROVALS PANEL (own allowances toward KNOWN
+> spenders — USDC→Sale V3 today; "an approval is not a payment" in plain words; the checkout
+> approves EXACT amounts, stated) · REVOKE = approve(spender, 0), the member's OWN signed
+> wallet act, SIMULATE-FIRST + honest revert translation, NEVER a server write · the SYN/USDC
+> pool as an EXTERNAL-posture link to the ON-CHAIN PAIR (verify-links lpPair; a DEX deep-link
+> was deliberately NOT invented — the founder supplies the exact canonical URL if wanted;
+> "pool is a courtesy" doctrine lines carried). **/toolkit** = the Slice-A action registry as
+> the public conversion surface (visitor-verified live: 3 locked-visible actions with
+> reasons + the open /join action + the 10-door shell). RUNTIME-VERIFIED on the local rig:
+> /wallet honest connect state · /fire-ledger renders the REAL live burn (21,273 SYN — the
+> chain figure) · /toolkit conversion state · a real duplicate-key bug in TeaserSurface
+> caught in console and fixed (index keys for repeating preview shapes). Green: tsc 0 ·
+> 12 guards · seo 39 routes · rewrites · surface · build 23 shells.
+>
+> **▶ Prior: MEMBER HOME ARC — SLICE C ✅ BUILT (2026-07-14): the §11 slot-2c DESIGNED TEASERS.**
 > New chassis `components/TeaserSurface.tsx` (living-chassis pattern): one-paragraph
 > what-this-will-be · existing posture badge · a "Design preview — the shape, not data" block
 > (abstract rows, ZERO figures) · what-unlocks-it · return hook (historical FOMO only) + an

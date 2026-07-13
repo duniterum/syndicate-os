@@ -154,6 +154,42 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     notes:
       "Public wallet session + member self-readback (Public Online Integration MVP). Read-only; no transaction path.",
   },
+  // ARC SLICE D — member doors (FLAT routes: a /member/* path would emit a
+  // member/ directory and resurrect the 2.0 trailing-slash redirect on /member).
+  {
+    path: "/wallet",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "Wallet — your balances & approvals",
+    description:
+      "Your own SYN and USDC balances and your own approvals toward the protocol's known contracts — read live, own-row only. Revoking an approval is a transaction you sign in your own wallet.",
+    canonicalPath: "/wallet",
+    changefreq: "monthly",
+    priority: 0.5,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "identity",
+    primaryIntent: "proof",
+    proofRoute: "/status",
+    notes: "Own-row reads + member-signed revoke (approve 0). No server write.",
+  },
+  {
+    path: "/toolkit",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "Toolkit — what a seat can do",
+    description:
+      "Every member action in one place — real acts only. Locked actions stay visible with their plain reason, so a visitor sees exactly what a seat unlocks.",
+    canonicalPath: "/toolkit",
+    changefreq: "monthly",
+    priority: 0.5,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "identity",
+    primaryIntent: "join",
+    proofRoute: "/status",
+    notes: "The action registry as the public conversion surface.",
+  },
   {
     path: "/join",
     routeType: "PUBLIC",

@@ -50,8 +50,10 @@ export function TeaserSurface({ spec, liveSlot }: { spec: TeaserSpec; liveSlot?:
       </div>
       <Card className="border-dashed border-border/60 bg-card/20 p-5 mb-10" aria-label="Design preview — no real data">
         <div className="space-y-3">
-          {spec.previewRows.map((row) => (
-            <div key={row.label} className="flex items-center gap-3">
+          {/* Static ordered shapes — index keys are correct (labels may repeat,
+              e.g. the Fire Ledger's three "A burn event" rows). */}
+          {spec.previewRows.map((row, i) => (
+            <div key={`${i}-${row.label}`} className="flex items-center gap-3">
               <span className="h-2 w-2 rounded-full bg-border" aria-hidden="true" />
               <span className="text-sm text-foreground/80 w-40 shrink-0">{row.label}</span>
               <span className="h-2 flex-1 rounded bg-border/50" aria-hidden="true" />
