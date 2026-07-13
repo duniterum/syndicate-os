@@ -28,6 +28,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > `introductions:check` fails on drift. All green: studio tsc 0 + 12 guards + seo 323 + rewrites
 > + surface 218 + build 18 shells · api tsc 0 + canon + reality 138/138 + auth-zone 649 + intro
 > guard 27. LADDER-PROMOTION-SCREEN is now UNBLOCKED (consumes durableIntroductions directly).
+> **POST-DEPLOY CORRECTION (2026-07-13, honesty register material):** Replit's point-3 "DRIFT =
+> new attributed purchase" (and my own framing) was an OVER-READ — the totals never moved
+> (2/1/2); the v1 `--check` hashed the FULL model including the moving `asOfBlock`, so it could
+> NEVER pass. Fixed same-day: `readmodelContentJson` (head normalized out) + the check now
+> compares DATA content and says "the head advancing alone is not drift" — proven live
+> (committed 90183425 vs head 90183507 → OK). No new attributed purchase has occurred; the
+> protocol's first indexed truth stands at 2 attributed / 1 source / 2 durable.
 >
 > **▶ Prior: 🏆 R2 IS DONE — THE FIRST CONVENTION-DERIVED MEMBER SOURCE IS LIVE ON-CHAIN (2026-07-13,
 > both founder signatures):** sourceId `0x804e80f1…ae974` = keccak256("SYN.SOURCE.V1",

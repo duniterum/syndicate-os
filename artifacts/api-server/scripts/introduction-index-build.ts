@@ -48,6 +48,7 @@ import {
 import { SALE_SCAN_TARGETS, FINANCIAL_TARGETS } from "../src/data/protocolTargets";
 import {
   buildIntroductionReadmodel,
+  readmodelContentJson,
   readmodelHash,
   INTRODUCTION_READMODEL_VERSION,
   type AttributedPurchaseRow,
@@ -209,13 +210,23 @@ export const INTRODUCTION_SNAPSHOT: IntroductionSnapshot = ${JSON.stringify(
   assertNoAddressLeak(JSON.stringify(model), "introduction snapshot model");
 
   if (checkOnly) {
-    const existing = readFileSync(SNAPSHOT_PATH, "utf8");
-    const existingHash = existing.match(/"snapshotHash":\s*"(sha256:[0-9a-f]{64})"/)?.[1];
-    if (existingHash !== hash) {
-      console.error(`[introductions:build --check] DRIFT: committed ${existingHash} vs live ${hash}`);
+    // Compare DATA content, not the moving head: the committed asOfBlock is
+    // always behind the live head, so a full-model compare would drift on
+    // every new block even with zero new events (flaw caught 2026-07-13).
+    const { INTRODUCTION_SNAPSHOT } = await import(
+      "../src/lib/protocol/introductionSnapshot"
+    );
+    const committed = readmodelContentJson(INTRODUCTION_SNAPSHOT.model);
+    const live = readmodelContentJson(model);
+    if (committed !== live) {
+      console.error(
+        `[introductions:build --check] DATA DRIFT — the chain carries introduction data the committed snapshot does not (committed asOfBlock ${INTRODUCTION_SNAPSHOT.model.asOfBlock}, live head ${model.asOfBlock}). Re-run introductions:build.`,
+      );
       process.exit(1);
     }
-    console.log(`[introductions:build --check] OK — committed snapshot matches the live chain (${hash}).`);
+    console.log(
+      `[introductions:build --check] OK — data content identical (committed asOfBlock ${INTRODUCTION_SNAPSHOT.model.asOfBlock}, live head ${model.asOfBlock}; the head advancing alone is not drift).`,
+    );
     return;
   }
 

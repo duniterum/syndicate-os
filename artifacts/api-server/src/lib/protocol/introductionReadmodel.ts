@@ -219,3 +219,14 @@ export function readmodelCanonicalJson(m: IntroductionReadmodel): string {
 export function readmodelHash(m: IntroductionReadmodel): string {
   return `sha256:${createHash("sha256").update(readmodelCanonicalJson(m)).digest("hex")}`;
 }
+
+/**
+ * Canonical JSON of the DATA content only — asOfBlock normalized out. The
+ * chain head advances every scan, so a drift check comparing full models can
+ * NEVER pass (a real flaw caught on the first live re-scan, 2026-07-13:
+ * four distinct hashes over identical 2/1/2 totals). Two builds whose rows
+ * and totals are identical are the SAME data, read at different heads.
+ */
+export function readmodelContentJson(m: IntroductionReadmodel): string {
+  return readmodelCanonicalJson({ ...m, asOfBlock: 0 });
+}

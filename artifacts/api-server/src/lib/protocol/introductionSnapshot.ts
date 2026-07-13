@@ -27,7 +27,7 @@ export const INTRODUCTION_SNAPSHOT: IntroductionSnapshot = {
     "chainId": 43114,
     "saleKey": "MEMBERSHIP_SALE_V3",
     "fromBlock": 88505301,
-    "asOfBlock": 90180944,
+    "asOfBlock": 90183425,
     "durableTest": "SYN_BALANCE_HELD",
     "totals": {
       "attributedPurchases": 2,
@@ -48,9 +48,9 @@ export const INTRODUCTION_SNAPSHOT: IntroductionSnapshot = {
       }
     }
   },
-  "snapshotHash": "sha256:f6de0e2ef9bcec6516d5bc55d57963065022a98224f18ea7f209f501fb9192c6",
+  "snapshotHash": "sha256:5ed25fd35b9d4408b623d351d825d4c89c16dc0be5f07cd2ac9220afa9b77b47",
   "provenance": {
-    "builtAt": "2026-07-13T05:27:58.016Z",
+    "builtAt": "2026-07-13T06:11:28.826Z",
     "builderVersion": "introduction-readmodel v1 (R5, July 2026)",
     "rpcCallCount": 4
   }
