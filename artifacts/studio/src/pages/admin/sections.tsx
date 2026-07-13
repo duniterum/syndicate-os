@@ -54,6 +54,7 @@ import {
   SupportQueuePanel,
 } from "@/components/referral/AdminOperatorSurfaces";
 import { ProtocolRealityPanel } from "@/components/ProtocolReality";
+import { ChroniclePrepare } from "@/components/admin/ChroniclePrepare";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
 
 // Maps AdminHome's section ids to the mounted admin sub-routes.
@@ -150,6 +151,8 @@ export function AdminOperatorsSection() {
 export function AdminContentSection() {
   return (
     <div className="space-y-6">
+      {/* CHR-1 — prepare a Chronicle entry (promotion = a founder commit). */}
+      <ChroniclePrepare />
       <AdminContentPanel />
       <AdminPackagesPanel />
       <AdminAddressLabelsPanel />

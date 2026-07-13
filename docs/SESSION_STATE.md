@@ -2,7 +2,23 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ ORIGIN-HARVEST ARC — SLICE ACT-1 ✅ BUILT (2026-07-14): ACTIVITY V1 + FIRE LEDGER
+> **▶ ORIGIN-HARVEST ARC — SLICE CHR-1 ✅ BUILT (2026-07-14): CHRONICLE V1 — zero infra, the
+> register is a COMMITTED FILE, promotion is a FOUNDER ACT.** `config/chronicleRegister.ts`
+> (typed entries: id · dateUtc · title · sections · verifyNote; register discipline pinned in
+> the header: protocol-institutional · identity-blind · amount-blind · verify-first; EMPTY at
+> ship). /chronicle = TWO honest states: register empty → the designed teaser + "the first
+> entry awaits the founder's promotion" (no invented history); register speaks → the solemn
+> oldest-first record with per-entry verify cards + the no-silent-edits footer ("the
+> register's own history is public in the repository"). The origin labs promotion screens
+> ADAPTED into `components/admin/ChroniclePrepare.tsx` (Content section of the console,
+> VERIFIED absent from the public bundle): formats a candidate into the exact entry shape for
+> the founder's commit — writes NOTHING, no DB, no auto-promotion ever. /chronicle SEO stays
+> PENDING/noindex per the rule (flips to INDEX only when the first entry is promoted). The
+> 2026-07-12 duplicate-seat candidate is PRESENTED to the founder at the END of this order —
+> the founder decides. Green: tsc 0 · 12 guards · seo 40 · rewrites 23/46 · surface 24 ·
+> build 24 shells.
+>
+> **▶ Prior: ORIGIN-HARVEST ARC — SLICE ACT-1 ✅ BUILT (2026-07-14): ACTIVITY V1 + FIRE LEDGER
 > DETAIL — one recent-window RPC feed spine, the teasers GREW into live pages.**
 > `lib/activityFeed.ts`: client chunked getLogs over ~24h (43,200 blocks, 2000/chunk, address
 > array), events RETARGETED VERBATIM from today's repo — MembershipPurchasedV3 (24 params from
