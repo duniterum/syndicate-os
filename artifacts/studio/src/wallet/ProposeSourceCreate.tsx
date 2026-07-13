@@ -180,10 +180,11 @@ export default function ProposeSourceCreate() {
   const { writeContractAsync } = useWriteContract();
 
   // Registry address + explorer base: server-sourced (verify-links), never
-  // hardcoded. Fail closed when absent.
+  // hardcoded. Fail closed when absent — the optional chain covers .links too,
+  // so a malformed envelope renders the unavailable state, never a crash.
   const { data: verifyData } = useGetProtocolVerifyLinks();
   const registryUrl =
-    verifyData?.links.find((l) => l.id === "sourceRegistry")?.url ?? null;
+    verifyData?.links?.find((l) => l.id === "sourceRegistry")?.url ?? null;
   const registryAddr = registryUrl ? addressFromExplorerUrl(registryUrl) : null;
   const explorerBase = registryUrl ? explorerBaseFromUrl(registryUrl) : null;
 

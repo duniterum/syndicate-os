@@ -77,6 +77,16 @@ export default defineConfig({
     fs: {
       strict: true,
     },
+    // DEV-ONLY: relative /api calls reach the local api-server instead of the
+    // SPA fallback (in production the serving layer routes /api on one domain;
+    // dev has no such layer). Without this, the client parses index.html as an
+    // API body. Override with VITE_DEV_API_PROXY when the api runs elsewhere.
+    proxy: {
+      "/api": {
+        target: process.env.VITE_DEV_API_PROXY ?? "http://localhost:5000",
+        changeOrigin: true,
+      },
+    },
   },
   preview: {
     port,
