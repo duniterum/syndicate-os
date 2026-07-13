@@ -2,7 +2,22 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ ⚙️ M-MAP ARC OPENED — SLICE M4-a ✅ BUILT (2026-07-13, founder pick: M4 first): THE EVENT
+> **▶ 🏭 SLICE M4-a ✅ SEALED IN PROD (2026-07-13, Replit-verified on thesyndicate.money):
+> THE UNATTENDED LOOP LIVES.** Replit report: pull 24/24 hash-verified · NO real migration
+> (backbone reuses existing tables; the drizzle-push unique-constraint suggestion was the KNOWN
+> false positive and was correctly REFUSED — would have truncated a table) · full gate green
+> (16 studio + 18 API guards incl. backbone 44) · flag set IN PRODUCTION ONLY (dev deliberately
+> stays dark — default-deny intact) · published. RUNTIME PROOF, three status reads: ① 19:34 UTC
+> cycle 1 FAILED CLOSED ("6/6 scan unit(s) errored", redacted, rescheduled — expected cold-start
+> catch-up over the huge pinned ranges on the public RPC; the doctrine working, not an anomaly);
+> ② 19:42 UTC cycle 2 SELF-HEALED via the cursor: 6/6 units ok to head 90,229,777, 2 events
+> indexed, 26 block timestamps verified-enriched; ③ 19:48 UTC cycle 3 exactly 300s later,
+> incremental in ~6s, head 90,230,350, 0 new events (a quiet five minutes — honest, not
+> invented). Reality spine 57 signals green in prod. OPS NOTE (founder-optional, nothing
+> requires it today): provisioning AVALANCHE_RPC_URL (QuickNode) in prod would speed up cold
+> catch-ups; cruise cadence is fine on the public RPC.
+>
+> **▶ Prior: ⚙️ M-MAP ARC OPENED — SLICE M4-a ✅ BUILT (2026-07-13, founder pick: M4 first): THE EVENT
 > BACKBONE RUNS UNATTENDED.** The founder chose M4 (critical path) over M0 on screen. The
 > existing indexer machinery now runs by itself inside the served process — REUSED end to end,
 > nothing parallel: `src/backbone/` = backboneRunner (boot + interval cycles: ① incremental
