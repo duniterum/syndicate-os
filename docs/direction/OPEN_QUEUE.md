@@ -177,6 +177,14 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   promotion contract · the self-service issuer (SPEC §⑦) · Router V4. The registry is
   Ownable2Step → the eventual ownership handover is a clean two-step transfer.
 
+- **🔴 THE MVP-FINAL MASTER BRIEF + THE 30-DAY MAP ARE CANON (founder-decided 2026-07-14):
+  `docs/direction/MVP_FINAL_MASTER_BRIEF.md`** — the complete final MVP scope (the challenge ·
+  the 30-day proof metric with FLOOR/TARGET · the seven pieces · the voice · standing laws ·
+  facts corrections · the ordered M0–M10 map with THIN-V1 definitions, critical path = M4
+  event backbone, early win = M1+M2+M3). **The founder picks slice 1 from the map; nothing
+  opens before that pick.** All existing queue items are folded into the map (this queue stays
+  the item-level truth; the map is the sequence).
+
 - **⏳ QUEUED SLICE — GIFT-A-SEAT (founder-approved 2026-07-13; opens POST-HAND-SELLING-PHASE
   unless the founder signals earlier; EXECUTE ONLY ON FOUNDER GO).** The checkout learns the
   contract's EXISTING recipient parameter (`buy(gross, recipient, …)` — deployed, unused).
@@ -186,13 +194,12 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   ③ honest copy: "the seat will be written to THEIR wallet, permanently"; ④ referral applies
   normally to gifted purchases; ⑤ the receipt records buyer ≠ recipient so the story can later
   read "bought as gift". DEPENDS ON: the live C5 checkout (satisfied); pairs naturally with
-  IDENTITY-ALIAS for the label rendering. **FOUNDER CONTEXT (docs truth — no rediscovery):
-  the existing test seats have a DESTINY — they are GIFTS.** Seat #13 (`0x0Dd8…c4D20`) and
-  seat #14 (`0xEA88…35881`) were bought by the founder as gift seats for friends; the friends
-  will ADOPT the wallets and later attach their own alias via IDENTITY-ALIAS, with "bought as
-  gift" rendered from receipt truth (buyer ≠ eventual identity). Until adoption they stay
-  labeled founder tests wherever the honesty label applies. GIFT-A-SEAT is the clean path for
-  FUTURE gifts (recipient field); #13/#14 are the pre-slice generation, adopted-wallet path.
+  IDENTITY-ALIAS for the label rendering. **FOUNDER CONTEXT — CORRECTED (2026-07-14, MASTER
+  BRIEF §7 supersedes the earlier note): seat #13 (`0x0Dd8…c4D20`) is the FOUNDER'S OWN seat —
+  NOT a gift. Seat #14 (`0xEA88…35881`) and any FUTURE founder-bought test seats are the gifts
+  awaiting adoption** (founder-test label until adopted; then "bought as gift" renders from
+  receipt truth buyer ≠ eventual identity). GIFT-A-SEAT is the clean path for FUTURE gifts
+  (recipient field); #14 is the pre-slice generation, adopted-wallet path.
 
 - **⏳ QUEUED SLICE — IDENTITY-ALIAS (founder-approved 2026-07-13; opens POST-HAND-SELLING-PHASE
   unless the founder signals earlier; EXECUTE ONLY ON FOUNDER GO).** The opt-in identity layer
