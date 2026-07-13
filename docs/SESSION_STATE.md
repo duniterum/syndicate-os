@@ -545,3 +545,4 @@ SYN-as-reward, boost/multiplier, cash-convertible discount) and lawyer-gates the
 
 Read the real repo → 4-line gate → **wait for founder GO** → build + guards (Replit is the build gate) →
 show diff → founder approves → commit + push `main` → tick `DESIGN_ROADMAP` → deploy verdict (🚀 / ✅).
+
