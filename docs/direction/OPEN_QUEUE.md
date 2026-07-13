@@ -150,6 +150,22 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   are CLOSED per the 2026-07-11 session-update block; their table rows are historical. Q20 looks
   superseded by the live C5 checkout — closing it stays a FOUNDER confirm, not taken here.
 
+- **⏳ QUEUED SLICE — LADDER-PROMOTION-SCREEN (registered 2026-07-13; DEPENDS ON R5; execute
+  only on founder GO).** The Connector-ladder promotion flow per
+  `CONNECTOR_LADDER_POLICY.md`: R5's durable-introduction count crosses a threshold → the
+  promotion is DUE (automatic, nobody grants/refuses) → the PROPOSE screen builds
+  `updateSourceTerms` with ONLY `commissionBps` changed (all other terms verbatim;
+  sourceWallet/payoutWallet must match the record or the registry reverts) → founder signs →
+  `SourceTermsUpdated` public event → persistent reminder until every due promotion is signed.
+  UI spec (binding): progress bar never empty · visible progress everywhere · the season
+  leaderboard carries the recurring competition · the summit stays rare.
+
+- **⏸ PRO-FIRM HORIZON (founder-decided 2026-07-13; ~6 months, on traction; MANDATORY AUDIT
+  each; not in-flight).** No new smart contract until then — the deployed registry's onlyOwner
+  surface + 7 classes cover the whole plan. Deferred to the professional firm: the zero-touch
+  promotion contract · the self-service issuer (SPEC §⑦) · Router V4. The registry is
+  Ownable2Step → the eventual ownership handover is a clean two-step transfer.
+
 - **⏳ QUEUED SLICE (founder-approved for queuing 2026-07-13; EXECUTE ONLY ON FOUNDER GO):
   SEO-301 — /source-attribution permanent redirect.** Rationale (advisor-verified vs Google
   canonicalization docs + our ZERO-twin-pages law): the live noindex-alias works, but grade AAA for
