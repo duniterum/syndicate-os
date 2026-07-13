@@ -1,26 +1,35 @@
-# Activity Heartbeat Read-Model (internal, server-only)
+# Activity Heartbeat Read-Model (server-internal; backbone-rebuilt)
 
-Status: **INTERNAL READ-MODEL ONLY** — no persistence, no route, no UI, no
-public projection. A public activity surface is a separate, founder-gated
-slice that does not exist yet.
+Status (M4-a, founder GO 2026-07-13): **SERVER-INTERNAL READ-MODEL, rebuilt
+UNATTENDED by the event backbone.** The ONLY public projection is the
+address-safe AGGREGATE report (counts/buckets/coverage/day-dates) served at
+`/api/backbone/status`. Per-item public serving (the feed endpoint) stays a
+separate founder-gated slice (M4-b). Persistence of the model itself: still
+none — in-memory only, rebuilt each cycle.
 
 ## What it is
 
-An in-memory derivation of "protocol activity" from two already-proven,
-founder-gated sources:
+An in-memory derivation of "protocol activity" from two already-proven
+sources (written by the founder-gated scripts AND, since M4-a, by the
+unattended backbone's incremental cycles):
 
 - **Part A** — `sale_event_raw`, the insert-only raw sale-event index.
 - **Protocol Time** — `block_timestamp`, the chain-verified block-timestamp
   cache (never wall-clock).
 
 It mirrors the member-continuity pattern exactly: a **pure builder**, a
-**read-only derive runner**, and a **guard suite**.
+**shared loader**, a **read-only derive runner**, and guard suites.
 
 | File | Role |
 | --- | --- |
-| `artifacts/api-server/scripts/activity-heartbeat-readmodel.ts` | Pure builder: no db, no network, no clock. Deterministic, fail-closed. |
-| `artifacts/api-server/scripts/activity-heartbeat-derive.ts` | Read-only selects → builder → address-safe report. `activity:derive`. |
+| `artifacts/api-server/src/backbone/activityHeartbeatReadmodel.ts` | Pure builder: no db, no network, no clock. Deterministic, fail-closed. (Moved from scripts/ in M4-a.) |
+| `artifacts/api-server/src/backbone/backboneDb.ts` | THE one lazy-DB zone of the backbone: scan persistence + Protocol Time inserts + the shared activity loader (decodedJson whitelist + divergence cross-check). |
+| `artifacts/api-server/src/backbone/backboneRunner.ts` | The unattended runner: boot + interval cycles (scan → enrich → rebuild), fail-closed per cycle, last-good kept, dark by default (`SYNDICATE_BACKBONE_ENABLED === "true"` exact literal). |
+| `artifacts/api-server/src/backbone/blockTimeEnrich.ts` | Incremental Protocol Time enrichment (never-verified blocks only; the full re-verification replay stays `protocol-time:enrich`). |
+| `artifacts/api-server/src/routes/backboneStatus.ts` | `/api/backbone/status` — address-safe aggregate snapshot; output-gated. |
+| `artifacts/api-server/scripts/activity-heartbeat-derive.ts` | Shared loader → builder → determinism verification → address-safe report. `activity:derive`. |
 | `artifacts/api-server/scripts/activity-heartbeat.guard.ts` | Fixture + static-scan guard. `activity:guard`. |
+| `artifacts/api-server/scripts/backbone.guard.ts` | The backbone zone's own guard (exposure literal, one-DB-file, write discipline, failure posture, output gate). `backbone:guard`. |
 
 ## Derivation rules
 
@@ -63,15 +72,19 @@ into the model at all: derive's `decodedJson` access is whitelisted to exactly
   divergence-witness hash for every row where both exist; any mismatch aborts.
 - Exits non-zero unless consistency + determinism are fully green.
 
-## What this slice deliberately does NOT do
+## What the backbone (M4-a) deliberately does NOT do
 
-- No table, no migration, no runtime DB writes (served backend stays
-  read-only; DB rows exist only via the existing founder-gated scripts).
-- No API route, no UI, no public projection of any kind.
-- No RPC: chain truth was already verified upstream by the indexer and the
-  Protocol Time enrichment; this adds no new network dependency.
+- No new tables, no migrations: the unattended cycles write ONLY what the
+  founder-gated scripts already write (raw rows, cursors, block timestamps —
+  all idempotent inserts / the engine's cursor upsert).
+- No per-item public projection: `/api/backbone/status` serves the address-
+  safe AGGREGATE report only; the feed endpoint is the separate M4-b slice.
+- No new event kinds: purchases (+ folded Routed) only, exactly the proven
+  scan units; registry lifecycle / burns / notifications wait.
 - No identity claims: activity is not identity authority; the Chronicle,
   Register, and holder index remain separate concerns.
+- Never on by accident: dark by default in every environment; the founder's
+  exact `SYNDICATE_BACKBONE_ENABLED="true"` literal is the only ignition.
 
 ## The receipt thread — one truth through five surfaces (advisor synthesis, 2026-07-13)
 

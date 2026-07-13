@@ -2,9 +2,11 @@
  * Activity Heartbeat Read-Model — GUARD SUITE.
  * ---------------------------------------------
  * Fixture checks exercise the pure builder fail-closed paths and the
- * address-safe report; static scans (comment-stripped) hold the boundary:
- * pure builder, read-only derive, whitelisted decodedJson access, no served
- * import, no route, taxonomy reconciled to the vendored canon.
+ * address-safe report; static scans (comment-stripped) hold the M4-a
+ * boundary: pure builder (now served from src/backbone/), read-only derive,
+ * whitelisted decodedJson access confined to the shared backbone loader,
+ * served imports confined to the backbone zone, no /activity route, taxonomy
+ * reconciled to the vendored canon.
  *
  * Run: pnpm --filter @workspace/api-server run activity:guard
  */
@@ -20,7 +22,7 @@ import {
   ACTIVITY_HEARTBEAT_READ_MODEL_META,
   type ActivityBuildInput,
   type RawSaleEventInput,
-} from "./activity-heartbeat-readmodel";
+} from "../src/backbone/activityHeartbeatReadmodel";
 import { assertAddressSafeJson } from "./member-continuity-readmodel";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -307,10 +309,10 @@ check(
 );
 check(
   report.meta === ACTIVITY_HEARTBEAT_READ_MODEL_META &&
-    report.meta.publicProjection === "NONE" &&
+    report.meta.publicProjection === "ADDRESS_SAFE_AGGREGATE_ONLY" &&
     report.meta.persistence === "NONE_IN_MEMORY_ONLY",
-  "report meta binds ACTIVITY_HEARTBEAT posture (no projection, no persistence)",
-  "report meta drifted from the declared posture",
+  "report meta binds the M4-a posture (aggregate-only projection, no persistence)",
+  "report meta drifted from the declared M4-a posture",
 );
 expectThrow("leak scan trips on planted hex address", () =>
   assertAddressSafeJson(
@@ -322,12 +324,18 @@ expectThrow("leak scan trips on planted hex address", () =>
 // Static scans (comment-stripped).
 // ---------------------------------------------------------------------------
 
-const readmodelSrc = stripComments(
-  readFileSync(path.resolve(here, "activity-heartbeat-readmodel.ts"), "utf8"),
+const readmodelPath = path.resolve(
+  apiDir,
+  "src",
+  "backbone",
+  "activityHeartbeatReadmodel.ts",
 );
+const backboneDbPath = path.resolve(apiDir, "src", "backbone", "backboneDb.ts");
+const readmodelSrc = stripComments(readFileSync(readmodelPath, "utf8"));
 const deriveSrc = stripComments(
   readFileSync(path.resolve(here, "activity-heartbeat-derive.ts"), "utf8"),
 );
+const backboneDbSrc = stripComments(readFileSync(backboneDbPath, "utf8"));
 
 // Builder purity: no db / network / rpc / clock.
 for (const banned of [
@@ -379,10 +387,12 @@ for (const banned of [
   );
 }
 
-// decodedJson whitelist: exactly {firstSeat, memberNumber} accessed; gated
-// economics literals never appear in either activity script.
+// decodedJson whitelist: exactly {firstSeat, memberNumber} accessed, and ONLY
+// inside the shared backbone loader (the one loader for derive AND the
+// unattended runner); gated economics literals never appear anywhere in the
+// activity chain. The derive script itself performs NO decodedJson access.
 const decodedAccesses = [
-  ...deriveSrc.matchAll(/\bd\.(\w+)|"(\w+)" in d\b/g),
+  ...backboneDbSrc.matchAll(/\bd\.(\w+)|"(\w+)" in d\b/g),
 ]
   .map((m) => m[1] ?? m[2])
   .filter((k): k is string => Boolean(k));
@@ -390,10 +400,16 @@ const allowedKeys = new Set(["firstSeat", "memberNumber"]);
 check(
   decodedAccesses.length > 0 &&
     decodedAccesses.every((k) => allowedKeys.has(k)),
-  "derive decodedJson access whitelist is exactly {firstSeat, memberNumber}",
-  `derive reads non-whitelisted decodedJson keys: ${decodedAccesses
+  "shared loader decodedJson access whitelist is exactly {firstSeat, memberNumber}",
+  `shared loader reads non-whitelisted decodedJson keys: ${decodedAccesses
     .filter((k) => !allowedKeys.has(k))
     .join(", ")}`,
+);
+check(
+  !/\bd\.(\w+)|"(\w+)" in d\b/.test(deriveSrc) &&
+    !deriveSrc.includes("decodedJson"),
+  "derive performs no decodedJson access of its own (loader is the one gate)",
+  "derive grew its own decodedJson access — the shared loader must stay the only gate",
 );
 const gatedLiterals = [
   "referral" + "Amount",
@@ -408,17 +424,19 @@ const gatedLiterals = [
 ];
 for (const lit of gatedLiterals) {
   check(
-    !readmodelSrc.includes(lit) && !deriveSrc.includes(lit),
+    !readmodelSrc.includes(lit) && !deriveSrc.includes(lit) && !backboneDbSrc.includes(lit),
     `gated economics literal absent: ${lit}`,
-    `activity scripts must never reference gated field ${lit}`,
+    `activity chain must never reference gated field ${lit}`,
   );
 }
 
-// Divergence-witness cross-check present in derive.
+// Divergence-witness cross-check present in the shared loader (hard fail).
 check(
-  deriveSrc.includes("blockHash") && deriveSrc.includes("cacheHashByBlock"),
-  "derive cross-checks raw block_hash against the Protocol Time cache",
-  "derive is missing the block-hash divergence cross-check",
+  backboneDbSrc.includes("blockHash") &&
+    backboneDbSrc.includes("cacheHashByBlock") &&
+    backboneDbSrc.includes("divergedRows > 0"),
+  "shared loader cross-checks raw block_hash against the Protocol Time cache (hard fail)",
+  "shared loader is missing the block-hash divergence cross-check",
 );
 
 // Taxonomy reconciliation: local literals must match the vendored canon.
@@ -448,7 +466,11 @@ if (existsSync(canonPath)) {
   );
 }
 
-// Served code never imports the activity scripts; no activity route exists.
+// M4-a boundary: the read-model lives in the served BACKBONE ZONE now, and
+// ONLY that zone may touch it. Outside src/backbone/, served code never
+// references the activity machinery; no per-item /activity route exists
+// anywhere (the aggregate-only /backbone/status route is the approved
+// projection; per-item serving is the separate founder-gated M4-b slice).
 function walk(dir: string): string[] {
   const out: string[] = [];
   for (const name of readdirSync(dir)) {
@@ -460,22 +482,30 @@ function walk(dir: string): string[] {
   }
   return out;
 }
+const backboneDir = path.resolve(apiDir, "src", "backbone");
 const servedFiles = walk(path.resolve(apiDir, "src"));
 for (const f of servedFiles) {
+  if (f.startsWith(backboneDir)) continue; // the approved zone
   const code = stripComments(readFileSync(f, "utf8"));
   check(
-    !code.includes("activity-heartbeat"),
-    `served ${path.relative(apiDir, f)}: no activity import`,
-    `served file ${path.relative(apiDir, f)} references activity-heartbeat — the read-model must stay script-only`,
+    !code.includes("activity-heartbeat") &&
+      !code.includes("activityHeartbeat"),
+    `served ${path.relative(apiDir, f)}: no activity reference outside the backbone zone`,
+    `served file ${path.relative(apiDir, f)} references the activity machinery — it must stay inside src/backbone/`,
   );
 }
+check(
+  existsSync(readmodelPath) && existsSync(backboneDbPath),
+  "backbone zone carries the read-model + the shared loader",
+  "backbone zone files missing (activityHeartbeatReadmodel.ts / backboneDb.ts)",
+);
 const routesFiles = servedFiles.filter((f) => /routes?/i.test(f));
 for (const f of routesFiles) {
   const code = stripComments(readFileSync(f, "utf8")).toLowerCase();
   check(
     !code.includes("/activity"),
     `${path.relative(apiDir, f)}: no /activity route`,
-    `${path.relative(apiDir, f)} declares an /activity route — no public activity surface is approved`,
+    `${path.relative(apiDir, f)} declares an /activity route — per-item serving is not approved (M4-b)`,
   );
 }
 

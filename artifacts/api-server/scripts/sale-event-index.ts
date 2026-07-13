@@ -37,14 +37,11 @@ import {
   DEFAULT_MIN_CHUNK_SIZE,
   expandScanUnits,
   runSaleEventScan,
-  type CursorKey,
-  type CursorState,
-  type CursorUpsert,
   type Persistence,
-  type RawEventRecord,
   type ScanUnit,
 } from "../src/lib/protocol/saleEventIndexer";
 import { ethBlockNumber } from "../src/lib/protocol/evmRead";
+import { makeSaleEventPersistence } from "../src/backbone/backboneDb";
 
 type Mode = "dry-run" | "backfill" | "status";
 
@@ -96,84 +93,21 @@ function parseArgs(argv: string[]): {
   };
 }
 
-/** Build a Drizzle-backed persistence adapter (dynamically imports @workspace/db). */
+/**
+ * Build the Drizzle-backed persistence adapter. The adapter itself lives in
+ * src/backbone/backboneDb.ts (M4-a) — ONE adapter shared with the unattended
+ * backbone. The CLI keeps pool lifecycle ownership: it closes the pool at the
+ * end of a run (the served process never does).
+ */
 async function makeDrizzlePersistence(): Promise<{ persistence: Persistence; close: () => Promise<void> }> {
-  const { db, pool, indexerCursor, saleEventRaw } = await import("@workspace/db");
-  const { and, eq } = await import("drizzle-orm");
-
-  const persistence: Persistence = {
-    async getCursor(key: CursorKey): Promise<CursorState | null> {
-      const rows = await db
-        .select()
-        .from(indexerCursor)
-        .where(
-          and(
-            eq(indexerCursor.chainId, key.chainId),
-            eq(indexerCursor.contractKey, key.contractKey),
-            eq(indexerCursor.eventName, key.eventName),
-          ),
-        );
-      const r = rows[0];
-      return r
-        ? { fromBlock: r.fromBlock, lastScannedBlock: r.lastScannedBlock, status: r.status, lastError: r.lastError }
-        : null;
-    },
-    async upsertCursor(input: CursorUpsert): Promise<void> {
-      await db
-        .insert(indexerCursor)
-        .values({
-          chainId: input.key.chainId,
-          contractKey: input.key.contractKey,
-          eventName: input.key.eventName,
-          generation: input.generation,
-          fromBlock: input.fromBlock,
-          lastScannedBlock: input.lastScannedBlock,
-          lastLogIndex: input.lastLogIndex,
-          status: input.status,
-          lastError: input.lastError,
-          updatedAt: new Date(),
-        })
-        .onConflictDoUpdate({
-          target: [indexerCursor.chainId, indexerCursor.contractKey, indexerCursor.eventName],
-          set: {
-            generation: input.generation,
-            fromBlock: input.fromBlock,
-            lastScannedBlock: input.lastScannedBlock,
-            lastLogIndex: input.lastLogIndex,
-            status: input.status,
-            lastError: input.lastError,
-            updatedAt: new Date(),
-          },
-        });
-    },
-    async insertEvents(recs: readonly RawEventRecord[]): Promise<number> {
-      if (recs.length === 0) return 0;
-      const inserted = await db
-        .insert(saleEventRaw)
-        .values(
-          recs.map((r) => ({
-            chainId: r.chainId,
-            contractKey: r.contractKey,
-            generation: r.generation,
-            eventName: r.eventName,
-            blockNumber: r.blockNumber,
-            blockHash: r.blockHash,
-            transactionHash: r.transactionHash,
-            logIndex: r.logIndex,
-            topic0: r.topic0,
-            decodedJson: r.decodedJson,
-            rawJson: r.rawJson,
-          })),
-        )
-        .onConflictDoNothing({
-          target: [saleEventRaw.chainId, saleEventRaw.transactionHash, saleEventRaw.logIndex],
-        })
-        .returning({ id: saleEventRaw.id });
-      return inserted.length;
+  const persistence = await makeSaleEventPersistence();
+  return {
+    persistence,
+    close: async () => {
+      const { pool } = await import("@workspace/db");
+      await pool.end();
     },
   };
-
-  return { persistence, close: () => pool.end() };
 }
 
 async function printStatus(): Promise<void> {

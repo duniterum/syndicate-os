@@ -467,9 +467,12 @@ check(
 
 const routeFiles = readdirSync("src/routes").sort();
 check(
-  "public route surface unchanged (health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate, verifyLinks only)",
+  "public route surface pinned (backboneStatus, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate, verifyLinks only)",
   JSON.stringify(routeFiles) ===
     JSON.stringify([
+      // Founder-approved backbone status route (M4-a): address-safe aggregate
+      // snapshot only; its output gate is pinned by backbone.guard.ts.
+      "backboneStatus.ts",
       "health.ts",
       "holderIndex.ts",
       "index.ts",

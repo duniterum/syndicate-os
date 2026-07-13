@@ -213,6 +213,10 @@ const DB_LAZY_ALLOW = new Set([
   "src/auth/memberRoster.ts",
   "src/operator/referralTermsService.ts",
   "src/operator/operatorRegistryService.ts",
+  // Founder-approved event backbone (M4-a): THE one DB zone of the unattended
+  // indexer (scan persistence + Protocol Time inserts + activity loader),
+  // lazy-only, never pool.end(). Discipline pinned by backbone.guard.ts.
+  "src/backbone/backboneDb.ts",
 ]);
 const DB_STATIC_IMPORT_RE =
   /(from\s*["']@workspace\/db["'])|(import\s*["']@workspace\/db["'])|(require\s*\(\s*["']@workspace\/db["']\s*\))/;
@@ -223,7 +227,7 @@ const dbImporters = servedFiles.filter((f) => {
   return !(DB_LAZY_ALLOW.has(rel) && !DB_STATIC_IMPORT_RE.test(code));
 });
 check(
-  "NO served src file imports @workspace/db (lazy-only allow-list: operatorContext.ts + memberRoster.ts + referralTermsService.ts + operatorRegistryService.ts)",
+  "NO served src file imports @workspace/db (lazy-only allow-list: operatorContext.ts + memberRoster.ts + referralTermsService.ts + operatorRegistryService.ts + backboneDb.ts)",
   dbImporters.length === 0,
   dbImporters.map((f) => relative(ROOT, f)).join(", "),
 );

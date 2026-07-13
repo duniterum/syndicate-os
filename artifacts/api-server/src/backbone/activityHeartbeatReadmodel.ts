@@ -2,14 +2,15 @@
  * Activity Heartbeat Read-Model — PURE BUILDER (server-only, in-memory).
  * ----------------------------------------------------------------------
  * Derives the internal "activity heartbeat" view of protocol activity from
- * Part A raw sale-event rows + the Protocol Time block-timestamp cache. It is
- * a READ-MODEL, not a product surface: no persistence, no route, no UI, no
- * public projection. It exists so a later founder-approved slice can wire an
- * honest activity surface from an already-proven derivation.
+ * Part A raw sale-event rows + the Protocol Time block-timestamp cache.
+ * Moved from scripts/activity-heartbeat-readmodel.ts in slice M4-a (founder
+ * GO): the served backbone zone rebuilds this model unattended, and the ONLY
+ * public projection is the address-safe AGGREGATE report (counts/buckets —
+ * never items). Per-item serving stays a separate founder-gated slice (M4-b).
  *
  * Purity rules (guard-enforced):
  *   - No database, network, or RPC imports. Inputs arrive as narrow
- *     projections mapped by the derive runner.
+ *     projections mapped by the backbone DB zone / derive runner.
  *   - No wall-clock reads (`Date.now` / zero-arg `new Date()`): every
  *     timestamp is chain-verified block time passed in by the caller.
  *   - Deterministic: input order never changes the output.
@@ -30,7 +31,7 @@ import type {
   SyndicateProofDomain,
   SyndicateSurface,
 } from "@workspace/os-contracts";
-import { assertAddressSafeJson } from "./member-continuity-readmodel";
+import { assertAddressSafeJson } from "../lib/protocol/addressSafety";
 
 // ---------------------------------------------------------------------------
 // OS vocabulary binding (existing os-contracts taxonomy only — nothing minted).
@@ -40,14 +41,18 @@ export const ACTIVITY_HEARTBEAT_READ_MODEL_META: {
   readonly domain: SyndicateProofDomain;
   readonly surface: SyndicateSurface;
   readonly adapterKind: SyndicateAdapterKind;
-  /** Today: no public projection of activity exists or is approved. */
-  readonly publicProjection: "NONE";
+  /**
+   * M4-a posture: the ONLY public projection is the address-safe aggregate
+   * report (counts, buckets, coverage, day-granularity dates). Items are
+   * never served; a per-item feed is a separate founder-gated slice (M4-b).
+   */
+  readonly publicProjection: "ADDRESS_SAFE_AGGREGATE_ONLY";
   readonly persistence: "NONE_IN_MEMORY_ONLY";
 } = {
   domain: "ACTIVITY_HEARTBEAT",
   surface: "SERVER_SIDE_CANON",
   adapterKind: "ACTIVITY_INDEX_ADAPTER",
-  publicProjection: "NONE",
+  publicProjection: "ADDRESS_SAFE_AGGREGATE_ONLY",
   persistence: "NONE_IN_MEMORY_ONLY",
 };
 
@@ -60,7 +65,7 @@ export const ACTIVITY_DOCTRINE = [
   "firstSeat is reported only where the contract emitted it; V1 rows are 'unknown', never inferred.",
   "Gated economics stay gated: referral and source fields are never read into this model.",
   "The taxonomy (kind/category) mirrors the vendored canon protocol-event registry; this file never invents a parallel taxonomy.",
-  "No persistence, no route, no UI: in-memory derivation with an address-safe report as the only output.",
+  "No item-level public projection: the address-safe aggregate report is the ONLY serialization out (M4-a backbone status); per-item serving is a separate founder-gated slice.",
   "Wallets, transaction hashes, member numbers, block numbers, decodedJson and rawJson never appear in any report.",
 ] as const;
 
@@ -91,7 +96,7 @@ export const ROUTED_GENERATIONS: ReadonlySet<SaleGeneration> = new Set([
 ]);
 
 // ---------------------------------------------------------------------------
-// Input shapes (narrow projections mapped by the derive runner).
+// Input shapes (narrow projections mapped by the backbone DB zone).
 // ---------------------------------------------------------------------------
 
 export interface RawSaleEventInput {

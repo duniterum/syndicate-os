@@ -8,7 +8,7 @@
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
-    "release:gate": "pnpm run typecheck && pnpm --filter @workspace/studio run seo:check && pnpm --filter @workspace/studio run seo:rewrites:check && pnpm --filter @workspace/studio run surface:audit && pnpm --filter @workspace/studio run guards && pnpm --filter @workspace/api-server run auth-zone:guard && PORT=5173 BASE_PATH=/ pnpm run build"
+    "release:gate": "pnpm run typecheck && pnpm --filter @workspace/studio run seo:check && pnpm --filter @workspace/studio run seo:rewrites:check && pnpm --filter @workspace/studio run surface:audit && pnpm --filter @workspace/studio run guards && pnpm --filter @workspace/api-server run auth-zone:guard && pnpm --filter @workspace/api-server run backbone:guard && PORT=5173 BASE_PATH=/ pnpm run build"
   },
   "private": true,
   "devDependencies": {

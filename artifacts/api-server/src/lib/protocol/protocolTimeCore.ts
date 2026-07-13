@@ -1,11 +1,13 @@
 /**
- * Protocol Time core — pure verification helpers (SERVER-ONLY, script-side).
- * --------------------------------------------------------------------------
+ * Protocol Time core — pure verification helpers (SERVER-ONLY).
+ * --------------------------------------------------------------
  * Pure parsing/verification primitives for chain-derived block timestamps.
- * This module is deliberately:
+ * Moved from scripts/protocol-time-core.ts in slice M4-a so the served
+ * backbone zone (unattended enrichment) and the founder-gated scripts share
+ * ONE source of truth. This module is deliberately:
  *   - DB-free (no @workspace/db import)
  *   - network-free (no transport import)
- *   - canon-free (no ../src/canon import — canon is tsconfig-excluded)
+ *   - canon-free (no src/canon import — canon is tsconfig-excluded)
  *
  * Truth rules enforced here:
  *   - A block timestamp is ONLY ever parsed from an eth_getBlockByNumber
@@ -14,7 +16,7 @@
  *     a timestamp source.
  *   - The returned block number MUST equal the requested block number.
  *   - Divergence between a fetched header and any previously recorded witness
- *     (raw-index block hash or cached row) is a HARD FAIL — the script never
+ *     (raw-index block hash or cached row) is a HARD FAIL — the caller never
  *     silently "corrects" chain history.
  */
 

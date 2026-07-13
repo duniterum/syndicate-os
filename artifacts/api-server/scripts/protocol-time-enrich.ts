@@ -48,7 +48,7 @@ import {
   assertTimeSafeOutput,
   redactError,
   toIsoUtc,
-} from "./protocol-time-core";
+} from "../src/lib/protocol/protocolTimeCore";
 
 const DEFAULT_TIMEOUT_MS = 8000;
 

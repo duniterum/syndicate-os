@@ -2,7 +2,45 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🏁 SESSION SEAL (2026-07-14) — THREE ARCS SEALED IN PROD, Replit-verified 10/10 on
+> **▶ ⚙️ M-MAP ARC OPENED — SLICE M4-a ✅ BUILT (2026-07-13, founder pick: M4 first): THE EVENT
+> BACKBONE RUNS UNATTENDED.** The founder chose M4 (critical path) over M0 on screen. The
+> existing indexer machinery now runs by itself inside the served process — REUSED end to end,
+> nothing parallel: `src/backbone/` = backboneRunner (boot + interval cycles: ① incremental
+> sale-event scan via the SAME `runSaleEventScan` engine + ONE shared Drizzle adapter, cursor-
+> resumed; ② incremental Protocol Time enrichment — never-verified blocks ONLY, witness-checked,
+> the full re-verification replay stays the founder-gated script; ③ in-memory activity read-model
+> rebuild) + backboneDb (THE one lazy-DB file of the zone — scan persistence + block-timestamp
+> inserts + the SHARED activity loader now used by `activity:derive` too — one loader, one
+> decodedJson whitelist, one divergence cross-check) + backboneConfig (DARK BY DEFAULT in EVERY
+> env — exact `SYNDICATE_BACKBONE_ENABLED === "true"` literal; cadence
+> `SYNDICATE_BACKBONE_INTERVAL_SEC`, default 300s, clamped 60–3600). FAILURE POSTURE: any cycle
+> error fails closed (redacted, counted, last-good kept, next cycle scheduled from finally,
+> timer unref'd) — the server can never crash or hang on the backbone; no DATABASE_URL → parks
+> in "no-database". PUBLIC SURFACE: `/api/backbone/status` = address-safe AGGREGATE snapshot
+> only (state, cycle counters, per-unit scannedTo coverage, the read-model's aggregate report),
+> output-gated by the new served `assertAddressSafeJson` (addresses + bare 32-byte hashes;
+> patterns guard-reconciled byte-identical to the script-side scanner). MOVES (one source of
+> truth, scripts now import src): builder → `src/backbone/activityHeartbeatReadmodel.ts` (meta
+> posture honestly updated: publicProjection = ADDRESS_SAFE_AGGREGATE_ONLY); protocol-time core
+> → `src/lib/protocol/protocolTimeCore.ts`; the CLI's Drizzle adapter → backboneDb (CLI keeps
+> pool lifecycle; the SERVER NEVER calls pool.end — shared pool). GUARDS EVOLVED to bind the new
+> posture (scoped exemptions, not removals): activity guard (builder path, loader whitelist,
+> backbone-zone-only imports, /activity still banned), protocol-time guard (route allowlist +
+> backboneStatus, block_timestamp touch = backbone zone only), member-continuity +
+> member-continuity-schema + holder-index (route pin + lazy-DB allowlists + backboneDb), NEW
+> `backbone.guard.ts` (44 checks: exposure literal, one-DB-file, insert-targets-exact, no
+> pool.end, failure posture, output gate) — added to release:gate. DELIBERATELY WAITS (M4-b+):
+> the per-item feed endpoint, new event kinds (registry lifecycle/burns), notifications, the
+> /activity page repoint (M5). Green: api-server tsc 0 · backbone 44 · activity 131 ·
+> protocol-time 38 · member-continuity 92 · schema 28 · holder-index 65 · sale-index 64 ·
+> sale-scan 81 · auth-zone 712 · studio suite green · build 24 shells (21 INDEX). **DEPLOY: the
+> slice is server-runtime; the backbone stays DARK on prod until the founder sets
+> SYNDICATE_BACKBONE_ENABLED=true on Replit (his switch, his moment).** NEXT, IN ORDER: ① M4-b
+> (the served per-item feed endpoint — needs its own gate); ② Q-A/Q-B triage; ③ pending founder
+> decisions (avatar object-storage · DEX deep-link · refresh cadence — note M0's refresh work
+> now partly rides the backbone pattern).
+>
+> **▶ Prior: 🏁 SESSION SEAL (2026-07-14) — THREE ARCS SEALED IN PROD, Replit-verified 10/10 on
 > thesyndicate.money (HEAD `92cf877`):** ① MEMBER HOME ARC — shell `cd1a14c` · A actions/link
 > card `d068e54` · B pill/settings `2e8bc73` · C teasers `d509eb5` · D wallet/toolkit `06bdee8`;
 > ② ORIGIN-HARVEST ARC — L-1 /liquidity `2086403` · ACT-1 activity/fire-ledger `65390f8` ·

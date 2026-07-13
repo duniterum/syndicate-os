@@ -1,5 +1,6 @@
 import app from "./app";
 import { logger } from "./lib/logger";
+import { startBackbone } from "./backbone/backboneRunner";
 
 const rawPort = process.env["PORT"];
 
@@ -22,4 +23,8 @@ app.listen(port, (err) => {
   }
 
   logger.info({ port }, "Server listening");
+
+  // Event backbone (M4-a): dark by default; runs ONLY on the founder's exact
+  // SYNDICATE_BACKBONE_ENABLED="true" opt-in. Never blocks or crashes listen.
+  startBackbone();
 });

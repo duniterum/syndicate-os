@@ -31,7 +31,7 @@ import {
   assertTimeSafeOutput,
   redactError,
   toIsoUtc,
-} from "./protocol-time-core";
+} from "../src/lib/protocol/protocolTimeCore";
 
 let passCount = 0;
 let failCount = 0;
@@ -201,8 +201,13 @@ const here = dirname(fileURLToPath(import.meta.url));
 const enrichSrc = stripComments(
   readFileSync(join(here, "protocol-time-enrich.ts"), "utf8"),
 );
+// M4-a: the core moved to served src (ONE source shared by the founder-gated
+// replay script and the unattended backbone's incremental enrichment).
 const coreSrc = stripComments(
-  readFileSync(join(here, "protocol-time-core.ts"), "utf8"),
+  readFileSync(
+    join(here, "..", "src", "lib", "protocol", "protocolTimeCore.ts"),
+    "utf8",
+  ),
 );
 
 {
@@ -276,6 +281,9 @@ check(
   const routesDir = join(here, "..", "src", "routes");
   const routeFiles = readdirSync(routesDir).sort();
   const allowed = [
+    // Founder-approved backbone status route (M4-a): address-safe aggregate
+    // snapshot only; its output gate is pinned by backbone.guard.ts.
+    "backboneStatus.ts",
     "health.ts",
     "holderIndex.ts",
     "index.ts",
@@ -289,13 +297,18 @@ check(
     "verifyLinks.ts",
   ];
   check(
-    "public route surface unchanged (health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate, verifyLinks only)",
+    "public route surface pinned (backboneStatus, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate, verifyLinks only)",
     JSON.stringify(routeFiles) === JSON.stringify(allowed),
     `routes=${JSON.stringify(routeFiles)}`,
   );
 }
 {
   const srcDir = join(here, "..", "src");
+  // M4-a: the BACKBONE ZONE is the one founder-approved exception — its
+  // incremental enrichment writes the cache and its loader reads it, with the
+  // discipline pinned by backbone.guard.ts. Everything else in src/ stays
+  // forbidden from touching the cache.
+  const backboneDir = join(srcDir, "backbone");
   const files: string[] = [];
   const walk = (dir: string) => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -310,11 +323,12 @@ check(
   };
   walk(srcDir);
   const offenders = files.filter((f) => {
+    if (f.startsWith(backboneDir)) return false; // the approved zone
     const s = stripComments(readFileSync(f, "utf8"));
     return s.includes("blockTimestamp") || s.includes("block_timestamp");
   });
   check(
-    "served src/ NEVER reads the block_timestamp cache",
+    "served src/ outside the backbone zone NEVER touches the block_timestamp cache",
     offenders.length === 0,
     `servedFiles=${files.length}`,
   );

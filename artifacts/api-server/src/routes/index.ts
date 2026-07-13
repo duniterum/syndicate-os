@@ -6,6 +6,7 @@ import sourceValidateRouter from "./sourceValidate";
 import joinQuoteRouter from "./joinQuote";
 import holderIndexRouter from "./holderIndex";
 import verifyLinksRouter from "./verifyLinks";
+import backboneStatusRouter from "./backboneStatus";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(sourceValidateRouter);
 router.use(joinQuoteRouter);
 router.use(holderIndexRouter);
 router.use(verifyLinksRouter);
+router.use(backboneStatusRouter);
 
 export default router;
