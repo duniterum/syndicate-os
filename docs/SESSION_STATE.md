@@ -2,7 +2,21 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 📡 SLICE M4-b ✅ BUILT (2026-07-13, founder GO): THE PUBLIC RECEIPT-LINE FEED —
+> **▶ 🧾 SLICE M4-b ✅ SEALED IN PROD (2026-07-13, Replit-verified 20:10 UTC on
+> thesyndicate.money): THE FEED SPEAKS — 26 receipts, V1→V3, zero addresses.** Replit report:
+> pull 26/26 hash-verified · full gate green (backbone:guard 44→63 confirmed) · dev honestly
+> dark (state "disabled", items [], the honesty line served — no invention when there is
+> nothing) · published. PROD PROOF: backbone cycle 1 clean (ok:1, failed:0 — no cold-start
+> stumble this time), `/api/backbone/feed` serves 26 lines newest-first covering the WHOLE
+> history V1→V3 to head 90,231,688; newest line = the real V3 seat purchase (block 90,187,059,
+> firstSeatBucket true, its 64-hex anchor). VERIFIED: 26/26 distinct well-formed transaction
+> anchors; bounded sweep of the RAW payload found ZERO 0x40-hex and ZERO bare-40-hex patterns —
+> the structural promise held ("don't trust — verify", served). M4 ARC (a+b) = COMPLETE IN
+> PROD: the unattended loop + its two sanctioned projections. NEXT per the order: M5 — repoint
+> /activity (and the fire-ledger spine stays client-RPC for burns — burns are NOT indexed by
+> the backbone yet) onto the served feed: full history replaces the 24h client window.
+>
+> **▶ Prior: 📡 SLICE M4-b ✅ BUILT (2026-07-13, founder GO): THE PUBLIC RECEIPT-LINE FEED —
 > `/api/backbone/feed`.** The read-model's SECOND (and last) sanctioned projection:
 > newest-first receipt lines, hard cap 100 (pagination/filters deliberately wait, M5+), each
 > line = kind · generation · block N · chain-verified time (blockTimestampSec + isoDayUtc) ·
