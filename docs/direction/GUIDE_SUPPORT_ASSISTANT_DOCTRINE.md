@@ -91,3 +91,40 @@ filter catches the embarrassing text before display.
 
 Support is the slice AFTER FAQ (2.3). FAQ ships first; the Guide reuses the FAQ content as its
 grounding corpus, so FAQ is a natural prerequisite.
+
+## The Guide on the member shell — the concierge turn (founder + advisor, 2026-07-13)
+
+*Founder-flagged as strategically important ("trop important pour la suite"). The deterministic
+Guide was mounted on PublicLayout only — a signed-in member on Member Home had NO Guide, while
+members are exactly the people with the most questions. The one-line mount fix ships with the
+quick-actions slice; THIS section captures why it matters beyond the fix.*
+
+**The Guide is the connective tissue of the member OS.** Every system designed for Member Home
+— doors with "Coming soon", notifications, the feedback module, the season card, the ladder —
+generates QUESTIONS. The Guide is where they land. Deep-think consequences, in build order:
+
+1. **Mount (now, one line):** the same `SyndicateGuide` component rides the member shell — no
+   fork, no twin. Same truth rules: consults, never invents; states no figure; routes to proof.
+2. **Member-aware corpus (cheap, deterministic — next Guide slice):** add vetted number-free
+   entries for the member surfaces: "Where is my receipt?" → Your Seat strip · "How do I share
+   my referral link?" → Referral door · "Why does a door say Coming soon?" → the honest-promise
+   explanation (curiosity → understanding: the Guide is the FOMO companion, turning a locked
+   door into a reason to return, never a frustration) · "Why is my promotion waiting?" → the
+   founder rule verbatim (visible, dated, never retroactive). Still zero LLM.
+3. **Level awareness (Phase 3, already doctrine §above):** visitor / holder / member — the
+   member-shell mount is its natural prerequisite: inside the shell the Guide can consume the
+   SAME own-row session state the shell already has (server-answer-only, S7; never a client
+   claim; NEVER another member's row). The Guide then answers "where is MY receipt" by
+   POINTING at the member's own strip — still never speaking a figure itself.
+4. **Onboarding (the first minute of seat #14+):** the Guide greets a NEW member once
+   (deterministic: first S7 session), offers the three first steps (see your receipt · copy
+   your referral link · what your doors mean). Retention begins in the first minute.
+5. **Phase-5 hooks (recognition only):** the Guide can point to quests/Learn & Earn and
+   celebrate a badge IN CONVERSATION — but the Guide NEVER grants XP itself (grants derive
+   from the provable engines; the Guide is a signpost, not a judge).
+
+**Raised stakes, unchanged spine:** a member-context Guide + future LLM escalation = a session
+is present, so the security spine (isolated endpoint · token-based rate/budget · output filter
+· degrade-to-deterministic) is MORE critical, not less — it stays the precondition for any LLM.
+The Guide remains NOT the AI Layer PENDING, and its member answers are own-row or public-proof
+only, per ADR-003 and the Visibility Law.

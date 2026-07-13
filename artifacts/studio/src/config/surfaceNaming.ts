@@ -31,8 +31,6 @@ export const surfaceNames = {
   headerLink: "Membership",
   /** /studio, /admin, /founder — the operator surfaces. */
   console: "Console",
-  /** The member's own introduction network. */
-  introductionNetwork: "My Syndicate",
 } as const;
 
 /**
@@ -50,6 +48,10 @@ export const commonNounOnly: readonly string[] = ["dashboard"];
  * by design). Word-boundary, case-insensitive.
  */
 export const bannedSurfaceNames: readonly string[] = [
+  // FOUNDER DECISION (2026-07-14): "My Syndicate" is DEAD as a surface name —
+  // the possessive-network framing carries a DOWNLINE connotation the referral
+  // doctrine explicitly bans; its content lives in the Referral dashboard.
+  "my syndicate",
   "cockpit",
   "member os",
   "member access", // as prose; the FILE MemberAccess.tsx is fine (no space → not matched)

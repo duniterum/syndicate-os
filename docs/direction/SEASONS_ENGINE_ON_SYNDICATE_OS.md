@@ -303,3 +303,176 @@ build-at-phase.
   build (off-chain DB is simplest and safe; on-chain SeatRecord/1155 for durable collectibles).
 - **Which on-chain actions feed XP** — receipts, introductions, contributions (derive from the
   read spine; avoid arbitrary grants to keep it provable).
+
+---
+
+## 11. Member Home projection — the recognition slot in the shell (advisor harvest, 2026-07-13)
+
+*How the seasons engine SURFACES on Member Home. Captured during the Member Home shell slice so
+the shell reserves the right slots now and Phase 5 drops into them without a redesign. This
+section is a DESIGN DIRECTION (STATE, not law); the shell being built today ships these slots as
+visible "Coming soon" doors/cards on the EXISTING posture system — never hidden, never faked.*
+
+### The member-side chrome worth harvesting (read on disk 2026-07-13)
+
+**Supa-Exchange** (`client/src/`):
+- `SeasonHighlightBubble.tsx` — the compact "current season" card pattern: name + status badge +
+  countdown (`Xd Yh`) + participant count + a thin progress bar + one CTA. Dismissable with a
+  7-day memory. **Harvest the chrome**; REFRAME the copy — never "Compete for rewards!" /
+  "Join & Earn Rewards" (cash framing); ours says the season name + "earn recognition" /
+  "your standing this season".
+- `Seasons.tsx` — own-row **your XP + your rank** next to the leaderboard; **rank-tier visuals**
+  (top-3 crown/medal · top-10 · top-50 ring colors) — pure recognition theater, keep it; past
+  seasons as an **archive accordion** (memory-over-noise, keep).
+- `questHelpers.ts` — quests carry `baseXp + bonusXp` and map to a **per-agent XP axis** on top
+  of global XP. **This is our multi-axis recognition, already engineered**: swap agent-axes for
+  our recognition axes (Capital / Builder / Connector / Operator / Verifier / Historian /
+  Steward…). A quest feeds global XP + its axis XP.
+- `BadgeCelebrationModal.tsx` + provider — the **moment of recognition** (award → celebration →
+  notification). Keep the mechanism; reskin to our tokens (gold = identity).
+- `Feedback.tsx` + `admin/FeedbackAdmin.tsx`/`FeedbackDetail.tsx` — **gamified support/error
+  submission** (founder-remembered, re-found 2026-07-13): 5 categories (Bug · UX · Feature idea ·
+  Question · Other), each SHOWING its XP+points reward up front (`FEEDBACK_REWARDS` /
+  `FEEDBACK_XP_RANGE` in `shared/schema.ts` — read exact values at build); screenshot
+  drag-and-drop · star rating · submit → XP + notification; admin side = the triage console
+  (the ticketing module). DOCTRINE FIT: rewarding the ACT of reporting = recognition for effort
+  (SETTLED-safe). Axis mapping: Bug/UX report → **Verifier** XP · Feature idea → **Builder** XP ·
+  a question promoted into the Living FAQ (master plan E2) → **Historian** XP. Support becomes a
+  recognition engine, not a cost center. Ships as an admin-managed module (enabled switch +
+  triage page in the shell), Phase 3+ with the Guide; XP wiring lands Phase 5.
+
+**entity-chain** (`client/src/pages/Dashboard.tsx`):
+- Grouped feature cards each carrying a **mini stat badge** ("8 active", "Live data") — the
+  per-door teaser number. On Member Home doors: Referral door shows the member's live
+  introduction count; season door shows days remaining. A door with a number pulls a click.
+- The **quick-stats strip** at the top of the dashboard (we already apply it as the live-figure
+  card row). Entity CONTENT stays banned (APY/DAO/staking/faucet) — chrome only.
+
+### Profile · Settings · Header (harvest from Supa, doctrine-filtered — 2026-07-13)
+
+Sources on disk: `Supa-Exchange/client/src/components/AvatarUploader.tsx`, `UserAvatar.tsx`,
+`Header.tsx`, `pages/Settings.tsx` (profile carries level/xp/points — confirms XP belongs on
+the profile surface).
+
+- **Avatar** — Supa's default is a wallet-seeded identicon (dicebear) with an upload dialog
+  (preview · type/size validation · remove→default). SAME mentality as our `MemberSigil`
+  (already built, deterministic from the wallet): the sigil IS the default avatar. "Change
+  image" = opt-in self-expression (Visibility Law: opt-in self-publish — allowed). **The slot
+  is DESIGNED to later accept an NFT avatar** (founder's held-back NFT concept; Archive1155
+  era): keep the avatar source abstraction `sigil | uploaded | nft(FUTURE)` from day one so the
+  NFT lands without a redesign. Never a paid financial advantage — identity/vanity only.
+- **Alias** — opt-in display name, DEFAULT = the seat number (honour-roll canon: a member who
+  wants no name stays a number). Free alias field lands with the Standing slice (Phase 5);
+  SOLD aliases stay lawyer-gated (LIVING_ORGANISM §5). Never required.
+- **Email — NOT harvested.** Supa stores email + verification; storing an email is identity
+  data and cuts against the anti-doxx minimal posture (ADR-003). Notifications stay ON-SITE;
+  any email channel is a separate founder decision, never a silent add.
+- **Settings sections (ours):** Profile (sigil/avatar + alias) · Display (language, theme) ·
+  Notifications on-site (SOON) · Session (wallet · verify · disconnect — LIVE today) · Danger
+  zone = **off-chain profile reset ONLY** ("the seat is permanent" — bytecode; nothing on-chain
+  is deletable and the copy says so).
+- **Header** — the member pill = sigil/avatar + seat # + era badge → opens the existing
+  identity menu (Member Home · Settings · Verify · Disconnect). Reserve two header slots:
+  notification bell + season trophy (both SOON; the Supa `SeasonHighlightBubble` docks off the
+  trophy at Phase 5).
+- **Feedback XP timing rule (anti-spam):** XP is credited when the OPERATOR validates the
+  submission in the triage console, never on raw submission — the reward follows the
+  contribution being real.
+
+### Notification center — in-app only, three channels (harvest Supa, 2026-07-13)
+
+Sources on disk: `Supa-Exchange/server/services/notificationService.ts` (+
+`adminNotificationService.ts`), `client/src/pages/admin/AdminBroadcast.tsx`,
+`AdminNotificationBubbles.tsx`, `components/NotificationBell.tsx`, `pages/Notifications.tsx`;
+entity's template-driven notification generator (ADAPT per the 2.20E audit). **FOUNDER RULE:
+no web2 email — everything lives inside Syndicate OS.** Supa's system is already 100% in-app
+(bell + list page + bubbles), so the harvest fits the rule natively.
+
+Three channels (all one storage, one bell):
+1. **Targeted 1-to-1** — `createNotification(userId,…)` with typed generators. Ours (each
+   carries type · title · body · metadata · CTA): seat confirmed (welcome) · referral events
+   ("a seat was taken through your link" — chain-derived, R5) · **ladder promotion due /
+   promotion signed** (the founder rule made visible: crossing date + "awaiting founder
+   signature") · badge/XP/quest (Phase 5) · security alert. Admin can also hand-send to ONE
+   member (delivered own-row to the session wallet — no directory involved, ADR-003 clean).
+2. **Broadcast → everyone** — the AdminBroadcast console pattern kept whole: title + body +
+   optional CTA + auto-expire + PREVIEW-before-send + history (Active/Expired) + delete +
+   stats. This is the operator's news channel; it is N2/N3 operator COMMUNICATION and must be
+   LABELED as such ("From the operator") — never dressed as chain truth.
+3. **Protocol notifications (automatic)** — derived from the event backbone (M4): season
+   start/end, era transitions, protocol milestones → broadcast; personal on-chain events →
+   targeted. TRUTH-FIRST twist on Supa: any notification about an on-chain fact carries a
+   VERIFY link (explorer/tx), not just a CTA — the notification is a pointer to proof, never
+   the proof itself.
+
+Rules engraved: in-app ONLY (no email/SMS — a future channel is a founder decision) · one
+notification store, one bell, one list page (never parallel systems) · admin side ships as a
+managed MODULE in the shell (enabled switch · broadcast console · audit of what was sent) ·
+notifications never contain another member's wallet/identity (own-row discipline) · the
+header bell slot is already reserved in the Member Home shell wireframe.
+
+### The Member Home slots (wireframe v2, agreed with the founder)
+
+1. **"Your Seat" strip** (LIVE today) — sigil · Member #N · Seat Held · wallet · chapter ·
+   receipt/Share-my-proof.
+2. **Live-figure card row** (partly LIVE today) — SYN balance (live) · Referral standing (live,
+   R5) · USDC routed (Coming soon — receipt adapter).
+2b. **"My referral link" card (founder decision 2026-07-13 — every member, day one).** The
+   member's sourceId is DERIVABLE (`keccak256("SYN.SOURCE.V1", wallet)` — lib/sourceIdentity),
+   so every member gets their PERMANENT `/join?source=` link with TWO honest states: source
+   ACTIVE → "commission paid inside the buyer's own transaction — live"; source NOT YET signed
+   → "your link is permanent — commission activates when your source is founder-signed" (the
+   link never changes; activation upgrades it in place). This is the auto-derived member link
+   card SESSION_STATE marked UNLOCKED after R2. Never a dead or lying copy button.
+2c. **TEASER-page pattern (founder decision 2026-07-13 — the grade-AAA answer to doors onto
+   not-yet-built surfaces).** A door NEVER opens onto an empty shell and is never hidden: the
+   target renders a designed teaser — one paragraph of what the surface will be · an honest
+   posture badge · a small preview explicitly labeled "design preview" (never a fake figure) ·
+   what unlocks it · a return hook ("it will appear here"). Applies to Activity · Chronicle ·
+   Archive · My Syndicate; existing real pages (Recognition, Protocol graph) stay open doors.
+3. **Season card slot** (Coming soon — Phase 5, needs the event backbone) — the reframed
+   SeasonHighlightBubble: season name (=era binding) · countdown · own XP · own rank · next
+   quest chip. NO pool figure, NO USDC, NO claim on Member Home — the cash rail (§8) is
+   operator-side and lawyer-gated; recognition is the ONLY thing this card speaks.
+4. **Quests strip slot** (Coming soon — Phase 5) — 2–3 quest chips (daily/weekly) with XP +
+   axis tag; Learn & Earn = earn **XP** quests ride here (SETTLED).
+5. **"While you were away"** (Coming soon — event indexer) — the return-visit engine from the
+   origin's member-home; recency-truthful.
+6. **Doors (left sidebar)** — short list only (every "Coming soon" is a public promise):
+   Activity · Chronicle · Archive · Recognition · My Syndicate · Protocol graph, each on the
+   existing posture/badge system; Referral door LIVE day one; operator doors invisible to
+   non-operators.
+7. **Recovered from MEMBER_HOME_PLAN (2026-07-13 harmonization — the plan file enters the repo
+   as TIER-3 historical with a SUPERSEDED banner; these are its still-live pieces):**
+   — **Wallet door** (`/member/wallet`): own SYN balance + the **APPROVALS PANEL** (the plan's
+   "most important of all"): read the member's own allowances toward known spenders (Sale V3),
+   explain APPROVE ≠ PAYMENT in plain words, and offer REVOKE (`approve(0)`) — a member-signed
+   own-wallet transaction, never a server write; simulate-first. Plus an EXTERNAL-posture link
+   to the canonical Trader Joe SYN/USDC pool (in-house add-liquidity stays deferred, LI.FI).
+   Chrome harvest: entity `Wallet.tsx`/`EnhancedWallet.tsx`.
+   — **Toolkit** (public): the FULL action registry rendered as the conversion engine — every
+   member action visible, locks visible with reasons, operator categories absent.
+   — **Fire Ledger** (`/fire`): teaser page carrying the LIVE total burn read (readable ⇒
+   displayed — law #1); per-burn detail lights with the event indexer.
+   — **Door cuts confirmed by the plan** (one truth = one page): Protocol graph → targets
+   `/map` · Economy = `/tokenomics` · Registry = `/contracts` · SeatRecord cut (721 not
+   deployed). **My Syndicate: advisor recommends DEAD** (the word evokes the downline tree;
+   its content already lives in the Referral dashboard) — founder word is final; on kill,
+   update the naming canon + any config reference in the same commit.
+   — **Explorer**: internal explorer harvest (entity `Explorer.tsx`/`BlockExplorer.tsx` +
+   origin MiniExplorer) stays the Phase 5–6 item already recorded in LIVING_ORGANISM §9.
+   — Superseded plan lines (do NOT re-import): "CommissionRouterV1 deployed" (chain-verified
+   NOT deployed 2026-07-12) · the two walls (both down: S7 wired, /join sells — seat #13) ·
+   "thresholds to decide" (decided in CONNECTOR_LADDER_POLICY 2026-07-13).
+
+### Alignment notes
+
+- **MVP_FINAL_MASTER_BRIEF pieces 2+3+7** (sharebility · collectible/vanity · Referrer Kit/OG
+  card) interlock with slots 3–4: the vanity layer is the acquisition tool; the season card is
+  its heartbeat. The shell reserves the slots; the pieces land per the M0–M10 map.
+- Ethical FOMO only: "Coming soon" + historical place-in-the-story; never a financial tease.
+- One badge system (the existing posture set) for every "Coming soon" — a second system is the
+  drift this doc exists to prevent.
+- Harvest render source files re-confirmed on disk: `Supa-Exchange/client/src/pages/Seasons.tsx`,
+  `components/SeasonHighlightBubble.tsx`, `components/badges/*`, `lib/questHelpers.ts`;
+  `entity-chain/client/src/pages/Dashboard.tsx`.

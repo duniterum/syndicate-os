@@ -72,3 +72,35 @@ into the model at all: derive's `decodedJson` access is whitelisted to exactly
   Protocol Time enrichment; this adds no new network dependency.
 - No identity claims: activity is not identity authority; the Chronicle,
   Register, and holder index remain separate concerns.
+
+## The receipt thread — one truth through five surfaces (advisor synthesis, 2026-07-13)
+
+*Cross-repo read (syndicate-os prod code + the origin's activity/chronicle design intent).
+DESIGN DIRECTION for the Activity/Chronicle slices; the pipeline above stays the authority.*
+
+The **receipt is the atom**: the on-chain purchase transaction itself (the
+`MembershipPurchasedV3` event — tx hash, block, memberNumber). Nothing is minted or invented;
+the chain emits it. Today it is already served own-row (`memberRoster.lookupMemberReceipt`,
+ADR-003 §3, fail-closed) and rendered with "Share my proof" on the member's Your Seat strip.
+
+Where it attaches, in order — the same atom projected, never duplicated:
+
+1. **Receipt** — the tx (own-row for the member; any visitor can verify it on the explorer).
+2. **Activity** — the heartbeat feed renders it as an event row (type `membership`, proof
+   `On-chain`), per this read-model's EVENT→SIGNAL pipeline. Origin design intent kept: each
+   row carries a type badge + a proof badge + the memory flag.
+3. **Memory** — events of memory grade (archive/milestone in the origin's taxonomy) are
+   "anchored"; transient rows (routing) are not. The flag derives from the event type only.
+4. **Chronicle** — promotion of an anchored event into the solemn record is a HUMAN act
+   (founder), never automatic (candidates live in `docs/chronicle/candidates/`).
+5. **Share card** — the origin's ShareDialog pattern (eyebrow · title · proof lines · share
+   text): the receipt/event becomes the member's shareable proof — this IS the
+   vanity/acquisition layer of `MVP_FINAL_MASTER_BRIEF` (pieces 2+3+7).
+
+**Admin manageability (already law, applied here):** every surface this thread lights up
+(Activity · Chronicle · share cards · seasons later) ships as a MODULE with its founder-owned
+`enabled` switch (a literal — CANON_INVARIANT_VS_STATE) and a management page in the
+WordPress-style admin shell (`ADMIN_SHELL_SPEC.md`), on the Supa admin lifecycle pattern
+(state machine · next-step engine · guarded actions · audit · archive — harvested in
+`SEASONS_ENGINE_ON_SYNDICATE_OS.md` §1). The founder activates, deactivates, and configures
+— plugins, not rebuilds.

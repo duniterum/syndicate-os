@@ -5,14 +5,27 @@
 // STATUS the headline (green "Seat Held" / amber "No Seat Yet"), never a tab.
 // Honest states only — no invented seat; own-row only (ADR-003). Reached via a
 // lazy import from /member (guard-access-state rule 15: only App.tsx statically
-// reaches @/wallet). Slice 1 of Member Home — the identity strip + the empty-
-// state conversion; the shell, quick actions, and nav are later slices.
+// reaches @/wallet).
+//
+// MEMBER SHELL slice (§4 block 4 fold-ins):
+//   · the RECEIPT + "Share my proof" MOVED here from WalletSessionPanel
+//     (moved, not rebuilt — one receipt surface, zero twins);
+//   · live SYN balanceOf rendered (LIVE-PRODUCTION rule: readable → rendered;
+//     token address from the server's verify-links, never hardcoded; fail
+//     closed → no figure, never a stale one);
+//   · the Chapter line from lib/chapters.ts (recognition only — "when you
+//     joined the story", never a rank or a benefit).
 
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { useAccount } from "wagmi";
+import { Check, Copy, ExternalLink } from "lucide-react";
+import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { MemberSigil } from "@/components/member/MemberSigil";
+import { readTokenBalance } from "@/lib/chainReads";
+import { formatRawUnits } from "@/lib/rawUnits";
+import { chapterForSeat } from "@/lib/chapters";
 import {
   fetchMemberStanding,
   shortAddress,
@@ -20,17 +33,19 @@ import {
 } from "./walletSession";
 import { SESSION_CHANGED_EVENT } from "./sessionEvents";
 
+type Receipt = { transaction: string; explorerUrl: string };
+
 type Status =
   | { kind: "checking" }
   | { kind: "signedOut" }
-  | { kind: "member"; seat: string; era: string | null }
+  | { kind: "member"; seat: string; era: string | null; receipt: Receipt | null }
   | { kind: "noSeat" }
   | { kind: "signedIn" }; // S4 but standing unreadable — never a fake seat
 
 function classify(r: MemberStandingReadback | null): Status {
   if (r === null || r.state !== "S4") return { kind: "signedOut" };
   if (r.chainVerified && r.recognized === true && r.memberNumber !== null) {
-    return { kind: "member", seat: r.memberNumber, era: r.era };
+    return { kind: "member", seat: r.memberNumber, era: r.era, receipt: r.receipt };
   }
   if (r.chainVerified && r.recognized === false) return { kind: "noSeat" };
   return { kind: "signedIn" };
@@ -43,9 +58,40 @@ function eraLabel(era: string | null): string | null {
   return null;
 }
 
+/** Token address out of a verify-links explorer URL (token or address form). */
+function addressFromUrl(url: string): string | null {
+  return url.match(/\/(?:token|address)\/(0x[0-9a-fA-F]{40})\b/)?.[1] ?? null;
+}
+
+/**
+ * The wallet's OWN live SYN balance. Fail closed to null on any failure —
+ * the line simply does not render; a figure is never invented or cached
+ * stale. Token address comes from the server's verify-links (synToken).
+ */
+function useOwnSynBalance(wallet: string | undefined): string | null {
+  const { data } = useGetProtocolVerifyLinks();
+  const tokenUrl = data?.links?.find((l) => l.id === "synToken")?.url ?? null;
+  const tokenAddr = tokenUrl ? addressFromUrl(tokenUrl) : null;
+  const [balance, setBalance] = useState<string | null>(null);
+  useEffect(() => {
+    let active = true;
+    setBalance(null);
+    if (!wallet || !tokenAddr) return;
+    void readTokenBalance(tokenAddr, wallet).then((raw) => {
+      if (active && raw !== null) setBalance(formatRawUnits(raw.toString(), 18));
+    });
+    return () => {
+      active = false;
+    };
+  }, [wallet, tokenAddr]);
+  return balance;
+}
+
 export default function MemberYourSeat() {
   const [status, setStatus] = useState<Status>({ kind: "checking" });
+  const [copied, setCopied] = useState(false);
   const { address } = useAccount();
+  const synBalance = useOwnSynBalance(address);
 
   useEffect(() => {
     let active = true;
@@ -62,10 +108,19 @@ export default function MemberYourSeat() {
     };
   }, []);
 
+  function copyProof(url: string) {
+    void navigator.clipboard?.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  }
+
   // Signed-out / still checking: the page's own connect flow handles it.
   if (status.kind === "checking" || status.kind === "signedOut") return null;
 
   const seated = status.kind === "member";
+  const chapter = seated ? chapterForSeat(status.seat) : null;
+
   return (
     <div
       className="rounded-2xl border border-gold/25 bg-gold/5 p-5 sm:p-6"
@@ -107,6 +162,22 @@ export default function MemberYourSeat() {
                 <span className="text-gold">{eraLabel(status.era)}</span>
               </>
             ) : null}
+            {chapter ? (
+              <>
+                <span aria-hidden="true">·</span>
+                <span data-testid="text-seat-chapter">
+                  Chapter {chapter.roman} · {chapter.name}
+                </span>
+              </>
+            ) : null}
+            {synBalance !== null ? (
+              <>
+                <span aria-hidden="true">·</span>
+                <span className="font-mono" data-testid="text-seat-syn-balance">
+                  {synBalance} SYN
+                </span>
+              </>
+            ) : null}
           </div>
 
           {status.kind === "noSeat" ? (
@@ -130,6 +201,50 @@ export default function MemberYourSeat() {
               Your seat is recognized on-chain — read live, never assigned by hand.
               This is your Member Home.
             </p>
+          ) : null}
+
+          {/* The member's OWN receipt — MOVED from WalletSessionPanel (one
+              receipt surface, zero twins). Own-row, canonical explorer URL,
+              fail-closed: absent receipt never degrades the standing. */}
+          {seated && status.receipt !== null ? (
+            <div
+              className="mt-3 rounded-md border border-gold/25 bg-gold/5 p-2.5"
+              data-testid="text-standing-receipt"
+            >
+              <p className="font-mono text-[10px] uppercase tracking-wider text-gold">
+                Your receipt — proof this seat is real
+              </p>
+              <p className="font-mono text-[10px] text-muted-foreground mt-1">
+                Seat #{status.seat} was established by this on-chain purchase.
+                It&apos;s yours to keep and to show — no one has to take your word.
+              </p>
+              <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                <a
+                  href={status.receipt.explorerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Open your membership receipt on the block explorer"
+                  className="inline-flex items-center gap-1 font-mono text-[11px] text-proof hover:underline"
+                  data-testid="link-standing-receipt"
+                >
+                  {status.receipt.transaction.slice(0, 10)}…{status.receipt.transaction.slice(-6)}
+                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => copyProof(status.receipt!.explorerUrl)}
+                  className="inline-flex items-center gap-1 rounded-sm border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground transition-colors hover:border-gold/40 hover:text-foreground"
+                  data-testid="button-standing-receipt-share"
+                >
+                  {copied ? (
+                    <Check className="h-3 w-3 text-proof" aria-hidden="true" />
+                  ) : (
+                    <Copy className="h-3 w-3" aria-hidden="true" />
+                  )}
+                  {copied ? "Copied" : "Share my proof"}
+                </button>
+              </div>
+            </div>
           ) : null}
         </div>
       </div>

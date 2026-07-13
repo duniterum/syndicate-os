@@ -48,14 +48,22 @@ function check(cond: boolean, pass: string, fail: string): void {
 }
 
 // ── 1. The canon is declared and carries its WHY ────────────────────────────
+// "My Syndicate" was REMOVED from the canon (founder, 2026-07-14 — downline
+// connotation; the content lives in the Referral dashboard) and moved to the
+// banned list, which the scan below now enforces.
 check(
   surfaceNames.memberHome === "Member Home" &&
     surfaceNames.identityBlock === "Your Seat" &&
     surfaceNames.headerLink === "Membership" &&
     surfaceNames.console === "Console" &&
-    surfaceNames.introductionNetwork === "My Syndicate",
-  "surfaceNames canon intact (Member Home · Your Seat · Membership · Console · My Syndicate)",
+    !("introductionNetwork" in surfaceNames),
+  "surfaceNames canon intact (Member Home · Your Seat · Membership · Console; My Syndicate removed)",
   "surfaceNames canon drifted from the founder decision",
+);
+check(
+  bannedSurfaceNames.includes("my syndicate"),
+  'bannedSurfaceNames carries "my syndicate" (founder 2026-07-14 — downline connotation)',
+  'bannedSurfaceNames lost "my syndicate"',
 );
 check(
   ["cockpit", "member os", "control tower", "proof surface"].every((t) =>

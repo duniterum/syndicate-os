@@ -2,7 +2,35 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ LADDER-PROMOTION-SCREEN → ✅ SEALED IN PROD (`28ccbaa`, Replit-verified 4/4, 2026-07-13:
+> **▶ MEMBER SHELL — Member Home slice 2, BUILT (founder GO; awaiting diff approval → deploy):**
+> the two-shells rule realized — `components/member/MemberShell.tsx` (left sidebar of member
+> doors, chosen BY THE PAGE inside the public chrome; public pages + prerender untouched) +
+> `config/memberDoors.ts` — RECONCILED at staging time to SEASONS_ENGINE **§11 wireframe v2**
+> (advisor harvest "agreed with the founder", discovered on disk during this slice; repo wins):
+> the SHORT door list (every Coming-soon is a public promise) — Open today: Member Home ·
+> Referral dashboard (anchor; LIVE day one) · Recognition · Protocol graph (/map) · Coming soon
+> (existing LifecycleBadge, locked-visible): Activity PENDING_ADAPTER · Chronicle FUTURE ·
+> Archive PENDING_ADAPTER; NO operator door exists in the config at all. **FOUNDER DECISION
+> (2026-07-14): the "My Syndicate" door is DEAD** (downline connotation; content = the Referral
+> dashboard) — removed from the naming canon, "my syndicate" added to bannedSurfaceNames, the
+> guard adapted in lockstep. `MEMBER_HOME_PLAN` imported to docs/handoff/ as TIER-3 HISTORICAL
+> with a SUPERSEDED banner naming its stale STATE lines (router NOT deployed · both walls down ·
+> thresholds decided in CONNECTOR_LADDER_POLICY).
+> PLUS §11 slots 3–5 RESERVED VISIBLY on the page (dashed coming-soon cards: Season · Quests ·
+> "While you were away" — recognition-only copy, nothing simulated).
+> §4 fold-ins landed: the RECEIPT + "Share my proof" MOVED from WalletSessionPanel into the
+> Your Seat strip (moved, not rebuilt; one receipt surface) · live **SYN balanceOf** rendered in
+> the strip (token address from verify-links, fail-closed) · the **Chapter** line rendered from
+> `lib/chapters.ts` (the deferred item — the clean import path now exists). RETIRED (repo-wins
+> honesty): the old identity-ribbon card + raw AccessStateChip on /member · the STALE "View your
+> receipt — PENDING_ADAPTER" non-link (the receipt is real). The referral dashboard MOVED out of
+> the Source tab to the anchored `#referral-dashboard` section (the sidebar door's target;
+> ladder law "visible progress everywhere"). Verified on the local rig (api+studio): sidebar in
+> DOM with all 10 doors · zero console errors · ribbon + stale link gone · anchor live.
+> Green: tsc 0 · 12 guards · seo/rewrites/surface · build 18 shells. NEXT Member Home slices:
+> quick-actions role registry · member doors deepening (per §4.3/4.5).
+>
+> **▶ Prior: LADDER-PROMOTION-SCREEN → ✅ SEALED IN PROD (`28ccbaa`, Replit-verified 4/4, 2026-07-13:
 > source-standing fail-closed unchanged · intro guard 45/45 on their side · data-drift check OK
 > with the head 1,466 blocks ahead · member banner IN the served bundle, founder panel ABSENT
 > from it). R5 was sealed the same day (`93a69dd` + `56a7f4b` drift-fix, verified 4/4). The

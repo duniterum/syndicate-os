@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Link } from "wouter";
 import {
-  Wallet,
   Users,
   Network,
   Award,
@@ -14,8 +13,8 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
 import { PublicPage } from "@/components/PublicPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
-import { AccessStateChip } from "@/components/access/AccessStateChip";
-import { useAccessState } from "@/components/access/AccessStateProvider";
+import { MemberShell } from "@/components/member/MemberShell";
+import { MEMBER_HOME_RESERVED_SLOTS } from "@/config/memberDoors";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -125,7 +124,6 @@ function FacetPanel({ facet }: { facet: CockpitFacet }) {
 }
 
 export default function MemberAccess() {
-  const accessState = useAccessState();
   const authLive = useAuthAvailability() === "live";
 
   return (
@@ -135,8 +133,14 @@ export default function MemberAccess() {
       lead={memberAccess.intro}
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
+      {/* MEMBER SHELL (two-shells rule): THIS PAGE chooses the member shell —
+          the left sidebar of member doors. Public pages keep the public shell;
+          the prerender sees the same static doors (locked-visible, honest). */}
+      <MemberShell>
       {/* Member Home headline — the "Your Seat" identity strip. Renders only for
-          a signed-in wallet (own-row); a visitor sees the content below as before. */}
+          a signed-in wallet (own-row); a visitor sees the content below as before.
+          Carries the receipt (moved from the session panel), the live SYN
+          balance, and the Chapter line (MEMBER SHELL slice fold-ins). */}
       {authLive && MemberYourSeat ? (
         <Suspense fallback={null}>
           <div className="mb-8">
@@ -144,32 +148,9 @@ export default function MemberAccess() {
           </div>
         </Suspense>
       ) : null}
-      {/* Identity ribbon — wallet-as-identity doctrine + the live session state.
-          The chip reflects the app-wide access state (S1 fail-closed default,
-          S4 after a signed session); it is vocabulary, never evidence. */}
-      <Card className="bg-primary/5 border-primary/20 p-6 mb-8">
-        <div className="flex items-start gap-4">
-          <div className="p-2.5 rounded-md bg-primary/10 text-primary shrink-0">
-            <Wallet className="h-5 w-5" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-              <h2 className="text-base font-medium text-foreground">
-                Your wallet is your identity key
-              </h2>
-              <AccessStateChip stateId={accessState} />
-            </div>
-            <ul className="space-y-3">
-              {memberAccess.points.map((point) => (
-                <li key={point} className="flex items-start gap-3 text-sm text-foreground/90 leading-relaxed">
-                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-                  <span>{point}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </Card>
+      {/* The old "identity ribbon" card (wallet-as-identity copy + raw access
+          chip) is RETIRED — the Your Seat strip IS the identity surface now
+          (one truth, zero twins). */}
 
       {/* One-button wallet connect (Phase 1): RainbowKit connects AND signs
           in (SIWE) against /api/auth in a single flow. Session ≠ membership.
@@ -179,17 +160,18 @@ export default function MemberAccess() {
         {authLive ? <ConnectButton showBalance={false} /> : <WalletAuthComingSoon />}
       </div>
 
-      {/* Status centerpiece — the ONE live surface of Member Home: public
-          wallet session + standing self-readback. Mounted only when the auth
-          zone is live, so a dark zone never renders the sign-in panel. */}
+      {/* Session panel — sign-in + standing self-readback (the receipt now
+          lives in the strip above). */}
       {authLive && WalletSessionPanel ? (
         <Suspense fallback={null}>
           <WalletSessionPanel />
         </Suspense>
       ) : null}
 
-      {/* Quick actions — real surfaces only; the receipt readback is honestly
-          absent (no adapter), so it renders as a labelled non-link. */}
+      {/* Quick actions — real surfaces only. The old "View your receipt —
+          PENDING_ADAPTER" non-link is RETIRED: the receipt is REAL and lives
+          in the Your Seat strip (a pending label over a shipped thing is a
+          stale STATE). */}
       <div className="flex flex-wrap items-center gap-3 mb-12">
         <Link href={ctas.requestSeat.href}>
           <Button>{ctas.requestSeat.label}</Button>
@@ -200,10 +182,33 @@ export default function MemberAccess() {
         <Link href={ctas.viewStatus.href}>
           <Button variant="outline">{ctas.viewStatus.label}</Button>
         </Link>
-        <span className="inline-flex items-center gap-2 rounded-md border border-dashed border-border px-3 py-2 text-sm text-muted-foreground">
-          View your receipt
-          <LifecycleBadge lifecycle="PENDING_ADAPTER" />
-        </span>
+      </div>
+
+      {/* The referral dashboard — MOVED out of the Source tab to a first-class
+          anchored section (the sidebar door targets it; ladder law: visible
+          progress everywhere; moved, never duplicated). */}
+      <section id="referral-dashboard" className="mb-12 scroll-mt-24">
+        <h2 className="type-h2 text-foreground mb-1">Your referral</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-2">
+          Your introductions, your indexed standing, and the Connector ladder.
+        </p>
+        <MemberReferralDashboard />
+      </section>
+
+      {/* SEASONS_ENGINE §11 slots 3–5 — RESERVED VISIBLY (wireframe v2, agreed
+          with the founder): the season card, quests, and "while you were away"
+          land here in Phase 5 / with the event backbone. Coming-soon on the
+          EXISTING posture system; nothing simulated, nothing hidden. */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-12">
+        {MEMBER_HOME_RESERVED_SLOTS.map((slot) => (
+          <Card key={slot.label} className="bg-card/30 border-border/50 border-dashed p-4">
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <span className="text-sm font-medium text-muted-foreground">{slot.label}</span>
+              {slot.lifecycle ? <LifecycleBadge lifecycle={slot.lifecycle} /> : null}
+            </div>
+            <p className="text-[11px] text-muted-foreground leading-snug">{slot.note}</p>
+          </Card>
+        ))}
       </div>
 
       {/* Member Home tabs — state-only (no URL sync); every tab is an honest
@@ -255,8 +260,9 @@ export default function MemberAccess() {
         </TabsContent>
 
         <TabsContent value="source" className="mt-6">
+          {/* The dashboard moved to the anchored #referral-dashboard section
+              above (the sidebar door's target) — moved, never duplicated. */}
           <FacetPanel facet={facets.source} />
-          <MemberReferralDashboard />
         </TabsContent>
 
         <TabsContent value="activity" className="mt-6">
@@ -284,6 +290,7 @@ export default function MemberAccess() {
       <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl pt-6 border-t border-border/50">
         {expectations.body}
       </p>
+      </MemberShell>
     </PublicPage>
   );
 }

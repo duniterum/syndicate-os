@@ -111,7 +111,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       },
       {
         q: "What changes after I join?",
-        a: "A member holds a permanent seat number, an on-chain SYN balance, a rank, an entry in the public archive, and visibility in future identity and verification modules as they ship. My Syndicate becomes the home for the seat and its proofs.",
+        a: "A member holds a permanent seat number, an on-chain SYN balance, a rank, an entry in the public archive, and visibility in future identity and verification modules as they ship. Member Home becomes the home for the seat and its proofs.",
       },
       {
         q: "Is member count the same as economic scale?",
