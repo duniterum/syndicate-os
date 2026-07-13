@@ -348,6 +348,14 @@ export interface SourceStandingReadback {
     asOfBlock: number;
     durableTest: string;
     snapshotHash: string;
+    // Ladder facts (founder simple-transparency rule: the waiting is visible,
+    // dated, and never compensated — the rate applies at on-chain recording).
+    currentBps: number | null;
+    entitledBps: number;
+    entitledTitle: string;
+    promotionDue: boolean;
+    crossedAtBlock: number | null;
+    crossedAtDateUtc: string | null;
   } | null;
   failureReason: string | null;
 }
@@ -377,7 +385,10 @@ export async function fetchSourceStanding(): Promise<SourceStandingReadback | nu
         typeof s.escrowOwedRaw === "string" &&
         typeof s.asOfBlock === "number" &&
         typeof s.durableTest === "string" &&
-        typeof s.snapshotHash === "string"
+        typeof s.snapshotHash === "string" &&
+        typeof s.entitledBps === "number" &&
+        typeof s.entitledTitle === "string" &&
+        typeof s.promotionDue === "boolean"
       ) {
         standing = {
           attributedPurchases: s.attributedPurchases,
@@ -388,6 +399,13 @@ export async function fetchSourceStanding(): Promise<SourceStandingReadback | nu
           asOfBlock: s.asOfBlock,
           durableTest: s.durableTest,
           snapshotHash: s.snapshotHash,
+          currentBps: typeof s.currentBps === "number" ? s.currentBps : null,
+          entitledBps: s.entitledBps,
+          entitledTitle: s.entitledTitle,
+          promotionDue: s.promotionDue,
+          crossedAtBlock: typeof s.crossedAtBlock === "number" ? s.crossedAtBlock : null,
+          crossedAtDateUtc:
+            typeof s.crossedAtDateUtc === "string" ? s.crossedAtDateUtc : null,
         };
       }
     }

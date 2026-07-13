@@ -27,6 +27,7 @@
 // session's own wallet; a directory lookup surface does not exist.
 
 import { createHash } from "node:crypto";
+import { entitledRateRung } from "./connectorLadderCanon";
 
 export const INTRODUCTION_READMODEL_VERSION = "introduction-readmodel v1 (R5, July 2026)";
 
@@ -71,6 +72,22 @@ export type IntroductionSourceStats = {
   escrowOwedRaw: string;
   firstBlock: number;
   lastBlock: number;
+  // ── LADDER-PROMOTION-SCREEN facts (founder rule: simple + transparency) ──
+  /** The source's commission rate read LIVE from the registry at build time. */
+  currentBps: number;
+  /** The rate the durable count entitles per CONNECTOR_LADDER_POLICY. */
+  entitledBps: number;
+  entitledTitle: string;
+  /** true = entitled > current — a promotion is DUE, awaiting the founder's
+   * signature. No gap compensation: the new rate applies at its on-chain
+   * recording (never retroactive); the waiting is visible and dated. */
+  promotionDue: boolean;
+  /** The purchase block of the introduction that crossed the entitled rung's
+   * threshold (among currently-durable ones) — chain-dated, never a clock.
+   * Null when the entitled rung is the base rung (nothing was crossed). */
+  crossedAtBlock: number | null;
+  /** UTC day of that block ("YYYY-MM-DD"), from the block header timestamp. */
+  crossedAtDateUtc: string | null;
 };
 
 export type IntroductionReadmodel = {
@@ -96,6 +113,11 @@ export type BuildInputs = {
   durableByRecipient: Readonly<Record<string, boolean>>;
   /** lowercase sourceId → exact decimal escrow owed (USDC base units). */
   escrowBySourceId: Readonly<Record<string, string>>;
+  /** lowercase sourceId → the registry's LIVE commissionBps at build time. */
+  currentBpsBySourceId: Readonly<Record<string, number>>;
+  /** purchase blockNumber → UTC day ("YYYY-MM-DD") from the block header.
+   * Must cover EVERY row block (fail closed — a date is never guessed). */
+  blockDateByNumber: Readonly<Record<number, string>>;
   fromBlock: number;
   asOfBlock: number;
 };
@@ -109,7 +131,15 @@ function fail(msg: string): never {
  * (rows are sorted by (blockNumber, logIndex)); any shape surprise throws.
  */
 export function buildIntroductionReadmodel(inputs: BuildInputs): IntroductionReadmodel {
-  const { rows, durableByRecipient, escrowBySourceId, fromBlock, asOfBlock } = inputs;
+  const {
+    rows,
+    durableByRecipient,
+    escrowBySourceId,
+    currentBpsBySourceId,
+    blockDateByNumber,
+    fromBlock,
+    asOfBlock,
+  } = inputs;
   if (!Number.isInteger(fromBlock) || fromBlock <= 0) fail("bad fromBlock");
   if (!Number.isInteger(asOfBlock) || asOfBlock < fromBlock) fail("bad asOfBlock");
 
@@ -120,6 +150,8 @@ export function buildIntroductionReadmodel(inputs: BuildInputs): IntroductionRea
   type Acc = {
     purchases: number;
     recipients: Set<string>;
+    /** unique recipient → its FIRST attributed purchase block. */
+    firstBlockByRecipient: Map<string, number>;
     commission: bigint;
     firstBlock: number;
     lastBlock: number;
@@ -150,10 +182,15 @@ export function buildIntroductionReadmodel(inputs: BuildInputs): IntroductionRea
       fail("recipient missing from the durable-balance map (fail closed, never guessed)");
     }
 
+    if (typeof blockDateByNumber[r.blockNumber] !== "string") {
+      fail(`block ${r.blockNumber} missing from the block-date map (fail closed)`);
+    }
+
     const key = sourceKeyOf(sourceId);
     const acc = bySource.get(key) ?? {
       purchases: 0,
       recipients: new Set<string>(),
+      firstBlockByRecipient: new Map<string, number>(),
       commission: 0n,
       firstBlock: r.blockNumber,
       lastBlock: r.blockNumber,
@@ -162,6 +199,10 @@ export function buildIntroductionReadmodel(inputs: BuildInputs): IntroductionRea
     if (acc.sourceId !== sourceId) fail("source key collision (impossible input)");
     acc.purchases += 1;
     acc.recipients.add(recipient);
+    const prevFirst = acc.firstBlockByRecipient.get(recipient);
+    if (prevFirst === undefined || r.blockNumber < prevFirst) {
+      acc.firstBlockByRecipient.set(recipient, r.blockNumber);
+    }
     acc.commission += BigInt(r.acquisitionCostRaw);
     acc.firstBlock = Math.min(acc.firstBlock, r.blockNumber);
     acc.lastBlock = Math.max(acc.lastBlock, r.blockNumber);
@@ -175,9 +216,37 @@ export function buildIntroductionReadmodel(inputs: BuildInputs): IntroductionRea
   let tCommission = 0n;
   for (const key of [...bySource.keys()].sort()) {
     const acc = bySource.get(key)!;
-    const durable = [...acc.recipients].filter((a) => durableByRecipient[a] === true).length;
+    const durableRecipients = [...acc.recipients].filter(
+      (a) => durableByRecipient[a] === true,
+    );
+    const durable = durableRecipients.length;
     const escrow = escrowBySourceId[acc.sourceId] ?? "0";
     if (!DECIMAL_RE.test(escrow)) fail("escrow figure not an exact decimal");
+
+    // ── Ladder facts (LADDER-PROMOTION-SCREEN) ────────────────────────────
+    const currentBps = currentBpsBySourceId[acc.sourceId];
+    if (!Number.isInteger(currentBps) || currentBps < 0) {
+      fail("source missing from the live currentBps map (fail closed)");
+    }
+    const entitled = entitledRateRung(durable);
+    // The crossing block: the k-th earliest first-purchase block among the
+    // CURRENTLY-durable introductions, k = the entitled rung's threshold.
+    // Chain-dated (an event block), never a wall clock. Base rung → null.
+    let crossedAtBlock: number | null = null;
+    let crossedAtDateUtc: string | null = null;
+    if (entitled.durableThreshold > 0) {
+      const durableFirstBlocks = durableRecipients
+        .map((a) => acc.firstBlockByRecipient.get(a))
+        .filter((b): b is number => typeof b === "number")
+        .sort((x, y) => x - y);
+      const kth = durableFirstBlocks[entitled.durableThreshold - 1];
+      if (kth === undefined) fail("entitled rung without enough durable blocks (impossible)");
+      crossedAtBlock = kth;
+      const date = blockDateByNumber[kth];
+      if (typeof date !== "string") fail(`crossing block ${kth} missing from the date map`);
+      crossedAtDateUtc = date;
+    }
+
     out[key] = {
       attributedPurchases: acc.purchases,
       introducedMembers: acc.recipients.size,
@@ -186,6 +255,12 @@ export function buildIntroductionReadmodel(inputs: BuildInputs): IntroductionRea
       escrowOwedRaw: escrow,
       firstBlock: acc.firstBlock,
       lastBlock: acc.lastBlock,
+      currentBps,
+      entitledBps: entitled.bps,
+      entitledTitle: entitled.title,
+      promotionDue: entitled.bps > currentBps,
+      crossedAtBlock,
+      crossedAtDateUtc,
     };
     tPurchases += acc.purchases;
     tIntroduced += acc.recipients.size;

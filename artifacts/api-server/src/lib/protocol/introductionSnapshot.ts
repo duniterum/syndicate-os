@@ -27,7 +27,7 @@ export const INTRODUCTION_SNAPSHOT: IntroductionSnapshot = {
     "chainId": 43114,
     "saleKey": "MEMBERSHIP_SALE_V3",
     "fromBlock": 88505301,
-    "asOfBlock": 90183425,
+    "asOfBlock": 90184731,
     "durableTest": "SYN_BALANCE_HELD",
     "totals": {
       "attributedPurchases": 2,
@@ -44,14 +44,20 @@ export const INTRODUCTION_SNAPSHOT: IntroductionSnapshot = {
         "commissionPaidRaw": "500000",
         "escrowOwedRaw": "0",
         "firstBlock": 88806161,
-        "lastBlock": 90160483
+        "lastBlock": 90160483,
+        "currentBps": 500,
+        "entitledBps": 500,
+        "entitledTitle": "Emerging",
+        "promotionDue": false,
+        "crossedAtBlock": null,
+        "crossedAtDateUtc": null
       }
     }
   },
-  "snapshotHash": "sha256:5ed25fd35b9d4408b623d351d825d4c89c16dc0be5f07cd2ac9220afa9b77b47",
+  "snapshotHash": "sha256:5a3c9df95a6d69d8281ac4c40cc882ed1b9e8168a0e32736d02ca188c65c3e99",
   "provenance": {
-    "builtAt": "2026-07-13T06:11:28.826Z",
+    "builtAt": "2026-07-13T06:34:07.548Z",
     "builderVersion": "introduction-readmodel v1 (R5, July 2026)",
-    "rpcCallCount": 4
+    "rpcCallCount": 8
   }
 };

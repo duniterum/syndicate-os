@@ -2,7 +2,36 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ R5 — THE INTRODUCTION INDEXER, BUILT (2026-07-13, founder GO; awaiting diff approval →
+> **▶ LADDER-PROMOTION-SCREEN — BUILT (2026-07-13, founder GO; awaiting diff approval → deploy):**
+> the ladder's promotion loop end-to-end, on the R5 spine. **FOUNDER RULE ENGRAVED (2026-07-13,
+> "simple + transparency"): NO compensation for the waiting gap between threshold crossing and
+> signature — the rate applies at on-chain recording (never retroactive); the waiting is VISIBLE
+> and DATED** (member screen: "Promotion due — awaiting founder signature" + the crossing date;
+> the public `SourceTermsUpdated` event dates the raise — that IS the answer to "scam" criers).
+> ① Read-model: per-source ladder facts — `currentBps` (live registry read at build),
+> `entitledBps/Title` (from `connectorLadderCanon.ts`, guard-reconciled literal-for-literal
+> against the studio config — one ladder, two artifacts), `promotionDue`, and the CROSSING
+> chain-dated (`crossedAtBlock` = the k-th durable first-purchase block, `crossedAtDateUtc` from
+> the block header — never a wall clock). ② The builder now emits TWIN snapshots — api
+> `introductionSnapshot.ts` + studio `config/introductionIndexSnapshot.ts` (same run, same hash,
+> guard-asserted equal; address-free by construction so the twin can sit in the client repo; it
+> is imported ONLY by the operator-gated panel, verified absent from the public bundle).
+> ③ `/api/auth/source-standing` serves the due fields own-row; `walletSession` parses them.
+> ④ Member banner in the standing section renders the founder rule verbatim. ⑤ Founder console:
+> `wallet/ProposeSourcePromotion.tsx` in /admin/sources — the PERSISTENT REMINDER (renders the
+> due count until every promotion is signed), identity-free due rows, wallet-bind (founder
+> enters the member wallet → derive sourceId → browser sha256 sourceKey must MATCH a due row →
+> live record read → live-vs-indexed rate consistency assert, fail closed) → `updateSourceTerms`
+> with ONLY `commissionBps` changed, all terms VERBATIM from the live record (contract reverts
+> on wallet drift) → Form 2 signing with owner() gate + revert translation. `chainReads`
+> SourceRecordRead extended with startTime/endTime/grossCap/perBuyerCap (exact decimal strings)
+> for verbatim resubmission. Green: studio tsc 0 + 12 guards + seo/rewrites/surface + build 18
+> shells + promotion code ABSENT from public bundle · api tsc 0 + auth-zone 656 + intro guard
+> 45 (ladder fixtures: 10-durable → Trusted-due, crossing = 10th durable block) + canon +
+> reality 138/138. Snapshot regenerated with ladder facts (asOfBlock 90184731, still 2/1/2,
+> nothing due today — the BUILDER_SOURCE sits below Trusted).
+>
+> **▶ Prior: R5 — THE INTRODUCTION INDEXER, BUILT (2026-07-13, founder GO; awaiting diff approval →
 > deploy):** the "one brick, five surfaces" read-model exists on the proven pattern (pure builder
 > · founder-gated build script · guard suite), REUSING the existing scan engine (adaptive chunked
 > zero-gap eth_getLogs over the V3 MembershipPurchasedV3 unit, in memory, no DB) — a snapshot is

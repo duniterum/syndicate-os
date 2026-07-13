@@ -42,6 +42,14 @@ export interface OwnSourceStanding {
     asOfBlock: number;
     durableTest: string;
     snapshotHash: string;
+    // Ladder facts (LADDER-PROMOTION-SCREEN; founder simple-transparency rule).
+    /** Live-at-index registry rate; null for a source the index has no row for. */
+    currentBps: number | null;
+    entitledBps: number;
+    entitledTitle: string;
+    promotionDue: boolean;
+    crossedAtBlock: number | null;
+    crossedAtDateUtc: string | null;
   } | null;
   failureReason: string | null;
 }
@@ -119,6 +127,13 @@ export async function readOwnSourceStanding(
     asOfBlock: INTRODUCTION_SNAPSHOT.model.asOfBlock,
     durableTest: INTRODUCTION_SNAPSHOT.model.durableTest,
     snapshotHash: INTRODUCTION_SNAPSHOT.snapshotHash,
+    // Row-less source (no attributed purchase yet): base rung, nothing due.
+    currentBps: row?.currentBps ?? null,
+    entitledBps: row?.entitledBps ?? 500,
+    entitledTitle: row?.entitledTitle ?? "Emerging",
+    promotionDue: row?.promotionDue ?? false,
+    crossedAtBlock: row?.crossedAtBlock ?? null,
+    crossedAtDateUtc: row?.crossedAtDateUtc ?? null,
   };
   return out;
 }

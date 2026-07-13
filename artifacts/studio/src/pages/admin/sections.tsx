@@ -118,10 +118,16 @@ export function AdminMembersSection() {
 // reached ONLY via a runtime dynamic import (guard rule 15 — only App.tsx
 // imports @/wallet statically).
 const ProposeSourceCreate = lazy(() => import("@/wallet/ProposeSourceCreate"));
+// LADDER-PROMOTION-SCREEN — the persistent due-promotion reminder + the
+// updateSourceTerms PROPOSE flow (Form 2). Same rule-15 dynamic import.
+const ProposeSourcePromotion = lazy(() => import("@/wallet/ProposeSourcePromotion"));
 
 export function AdminSourcesSection() {
   return (
     <div className="space-y-6">
+      <Suspense fallback={null}>
+        <ProposeSourcePromotion />
+      </Suspense>
       <Suspense fallback={null}>
         <ProposeSourceCreate />
       </Suspense>

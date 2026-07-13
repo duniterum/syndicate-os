@@ -63,10 +63,18 @@ const rows = [
   row(3, SRC_A, R2, "500000"), // repeat purchase — same recipient, not a 2nd introduction
   row(4, SRC_B, R3, "100000"),
 ];
+const DATES: Record<number, string> = {
+  88_505_302: "2026-07-01",
+  88_505_303: "2026-07-02",
+  88_505_304: "2026-07-03",
+  88_505_305: "2026-07-04",
+};
 const inputs = {
   rows,
   durableByRecipient: { [R1]: true, [R2]: false, [R3]: true },
   escrowBySourceId: { [SRC_A]: "0", [SRC_B]: "42" },
+  currentBpsBySourceId: { [SRC_A]: 500, [SRC_B]: 500 },
+  blockDateByNumber: DATES,
   fromBlock: 88_505_301,
   asOfBlock: 90_000_000,
 };
@@ -85,6 +93,51 @@ check(a?.commissionPaidRaw === "1000000", "source A: commission sum exact");
 check(b?.durableIntroductions === 1 && b?.escrowOwedRaw === "42", "source B: durable + escrow");
 check(m1.totals.attributedPurchases === 4 && m1.totals.distinctSources === 2, "totals coherent");
 check(m1.durableTest === "SYN_BALANCE_HELD", "the founder-decided durable test is pinned");
+
+// Ladder facts (LADDER-PROMOTION-SCREEN): fixture sources sit on the base
+// rung (1 durable each < 3) → entitled Emerging 500, current 500, NOT due,
+// no crossing (base rung). A 10-durable fixture must go due at Trusted 600
+// with the crossing block = the 10th durable first-purchase block.
+check(
+  a?.currentBps === 500 && a?.entitledBps === 500 && a?.entitledTitle === "Emerging",
+  "source A: base rung entitled (Emerging 500)",
+);
+check(a?.promotionDue === false, "source A: no promotion due at the base rung");
+check(a?.crossedAtBlock === null && a?.crossedAtDateUtc === null, "source A: no crossing at the base rung");
+{
+  const SRC_C = `0x${"c".repeat(64)}`;
+  const wallets = Array.from({ length: 10 }, (_, i) => `0x${String(i).repeat(40)}`);
+  const cRows = wallets.map((w, i) => row(10 + i, SRC_C, w, "250000"));
+  const cDates: Record<number, string> = {};
+  for (const r of cRows) cDates[r.blockNumber] = `2026-06-${String(10 + r.blockNumber - 88_505_311).padStart(2, "0")}`;
+  const mc = buildIntroductionReadmodel({
+    rows: cRows,
+    durableByRecipient: Object.fromEntries(wallets.map((w) => [w, true])),
+    escrowBySourceId: { [SRC_C]: "0" },
+    currentBpsBySourceId: { [SRC_C]: 500 },
+    blockDateByNumber: cDates,
+    fromBlock: 88_505_301,
+    asOfBlock: 90_000_000,
+  });
+  const c = mc.bySource[sourceKeyOf(SRC_C)];
+  check(
+    c?.promotionDue === true && c?.entitledBps === 600 && c?.entitledTitle === "Trusted",
+    "source C: 10 durable → Trusted 600 due over current 500",
+  );
+  check(
+    c?.crossedAtBlock === cRows[9]?.blockNumber &&
+      c?.crossedAtDateUtc === cDates[cRows[9]!.blockNumber],
+    "source C: crossing = the 10th durable first-purchase block, chain-dated",
+  );
+}
+throws(
+  () => buildIntroductionReadmodel({ ...inputs, currentBpsBySourceId: { [SRC_A]: 500 } }),
+  "source missing from the live currentBps map",
+);
+throws(
+  () => buildIntroductionReadmodel({ ...inputs, blockDateByNumber: {} }),
+  "row block missing from the date map",
+);
 
 throws(
   () => buildIntroductionReadmodel({ ...inputs, rows: [row(1, SRC_A, R1, "1.5")] }),
@@ -130,7 +183,44 @@ check(
   "every per-source key is the opaque sourceKey shape",
 );
 
+// Ladder mirror: the server canon table must equal the studio config table
+// literal-for-literal (one ladder, two artifacts, zero drift).
+import { LADDER_RUNGS_CANON } from "../src/lib/protocol/connectorLadderCanon.ts";
 const here = path.dirname(fileURLToPath(import.meta.url));
+{
+  const studioLadder = readFileSync(
+    path.resolve(here, "..", "..", "studio", "src", "config", "connectorLadder.ts"),
+    "utf8",
+  );
+  for (const r of LADDER_RUNGS_CANON) {
+    const line = `{ title: "${r.title}", durableThreshold: ${r.durableThreshold}, bps: ${r.bps}, raisesRate: ${r.raisesRate} }`;
+    check(
+      studioLadder.includes(line),
+      `ladder mirror: studio config carries the exact rung ${r.title} (${line})`,
+    );
+  }
+  check(
+    (studioLadder.match(/\{ title: "/g) ?? []).length === LADDER_RUNGS_CANON.length,
+    "ladder mirror: studio config has exactly the canon rung count",
+  );
+}
+
+// Twin snapshots: the studio copy must carry the SAME hash as the api copy
+// (both emitted by one builder run — a mismatch means a stale twin).
+{
+  const studioTwin = readFileSync(
+    path.resolve(here, "..", "..", "studio", "src", "config", "introductionIndexSnapshot.ts"),
+    "utf8",
+  );
+  const twinHash = studioTwin.match(/"snapshotHash":\s*"(sha256:[0-9a-f]{64})"/)?.[1];
+  check(
+    twinHash === INTRODUCTION_SNAPSHOT.snapshotHash,
+    `twin snapshot hash matches the api snapshot (${INTRODUCTION_SNAPSHOT.snapshotHash})`,
+  );
+  check(!/0x[0-9a-fA-F]{40}/.test(studioTwin), "no 40-hex address run in the studio twin");
+  check(!/0x[0-9a-fA-F]{64}/.test(studioTwin), "no raw bytes32 in the studio twin");
+}
+
 const fileText = readFileSync(
   path.resolve(here, "..", "src", "lib", "protocol", "introductionSnapshot.ts"),
   "utf8",

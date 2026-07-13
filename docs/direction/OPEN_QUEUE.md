@@ -156,8 +156,11 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   one constant). Full state: SESSION_STATE top bullet. LADDER-PROMOTION-SCREEN's R5 dependency
   is now SATISFIED once deployed.
 
-- **⏳ QUEUED SLICE — LADDER-PROMOTION-SCREEN (registered 2026-07-13; DEPENDS ON R5; execute
-  only on founder GO).** The Connector-ladder promotion flow per
+- **⏳ LADDER-PROMOTION-SCREEN — BUILT (2026-07-13, founder GO; awaiting diff approval →
+  deploy).** All four pinned UI rules + the founder's simple-transparency rule (no gap
+  compensation; waiting visible + chain-dated) implemented; full state in SESSION_STATE.
+  *(Original entry, for the record:)* LADDER-PROMOTION-SCREEN (registered 2026-07-13; DEPENDS
+  ON R5; execute only on founder GO). The Connector-ladder promotion flow per
   `CONNECTOR_LADDER_POLICY.md`: R5's durable-introduction count crosses a threshold → the
   promotion is DUE (automatic, nobody grants/refuses) → the PROPOSE screen builds
   `updateSourceTerms` with ONLY `commissionBps` changed (all other terms verbatim;

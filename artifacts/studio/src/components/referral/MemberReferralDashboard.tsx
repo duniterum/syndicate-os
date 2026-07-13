@@ -185,6 +185,23 @@ function IntroductionStanding({ readback }: { readback: StandingReadback | null 
           The threshold decides a promotion; the founder&apos;s signature executes it.
           An acquired rate never decreases.
         </p>
+        {/* FOUNDER RULE (simple + transparency): the waiting between the
+            threshold crossing and the signature is VISIBLE and DATED — never
+            compensated. The public SourceTermsUpdated event dates the raise. */}
+        {s.promotionDue ? (
+          <div className="rounded-md border border-primary/30 bg-primary/5 p-2.5 mt-1">
+            <p className="text-xs text-foreground font-medium">
+              Promotion due — awaiting founder signature: {s.entitledTitle} ·{" "}
+              {s.entitledBps / 100}%
+              {s.crossedAtDateUtc ? ` (threshold crossed ${s.crossedAtDateUtc})` : ""}
+            </p>
+            <p className="text-[11px] text-muted-foreground leading-relaxed mt-0.5">
+              The new rate applies from its on-chain recording; it is never
+              retroactive. The signing is a public on-chain event — the raise is
+              dated for everyone to verify.
+            </p>
+          </div>
+        ) : null}
       </div>
     </Card>
   );

@@ -334,6 +334,12 @@ export interface SourceRecordRead {
   readonly scope: number;
   readonly appliesToRepeatPurchases: boolean;
   readonly metadataHash: `0x${string}`;
+  // Verbatim-resubmission fields (updateSourceTerms requires the FULL terms;
+  // exact decimal strings so nothing is rounded on the way back on-chain).
+  readonly startTime: string;
+  readonly endTime: string;
+  readonly grossCap: string;
+  readonly perBuyerCap: string;
 }
 
 /**
@@ -364,6 +370,10 @@ export async function readSourceRecord(
       scope: Number(r.scope),
       appliesToRepeatPurchases: r.appliesToRepeatPurchases,
       metadataHash: r.metadataHash,
+      startTime: r.startTime.toString(),
+      endTime: r.endTime.toString(),
+      grossCap: r.grossCap.toString(),
+      perBuyerCap: r.perBuyerCap.toString(),
     };
   } catch {
     return null;

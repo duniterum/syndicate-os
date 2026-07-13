@@ -26,7 +26,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { keccak256, encodePacked, getAddress } from "viem";
+import { keccak256, encodePacked, getAddress, decodeAbiParameters } from "viem";
 import {
   DEFAULT_TIMEOUT_MS,
   assertNoAddressLeak,
@@ -34,7 +34,7 @@ import {
   readEnvInt,
   resolveEndpoints,
 } from "../src/lib/protocol/rpcTransport";
-import { ethCall } from "../src/lib/protocol/evmRead";
+import { ethCall, ethGetBlockByNumber } from "../src/lib/protocol/evmRead";
 import { callData } from "../src/lib/protocol/archiveDecoders";
 import { decodeUint256Decimal } from "../src/lib/protocol/saleDecoders";
 import { SELECTOR_BALANCE_OF } from "../src/lib/protocol/financialDecoders";
@@ -71,6 +71,19 @@ const SNAPSHOT_PATH = path.resolve(
   "lib",
   "protocol",
   "introductionSnapshot.ts",
+);
+// The TWIN studio snapshot: same builder run, same model, same hash — read by
+// the operator console (due-promotion list) and any studio surface needing the
+// aggregate. Address-free by construction, so committing it to the client
+// bundle leaks nothing (the introduction guard asserts twin-hash equality).
+const STUDIO_SNAPSHOT_PATH = path.resolve(
+  here,
+  "..",
+  "..",
+  "studio",
+  "src",
+  "config",
+  "introductionIndexSnapshot.ts",
 );
 
 function str(v: unknown): string {
@@ -142,12 +155,63 @@ async function main(): Promise<void> {
     durableByRecipient[rec] = bal !== "0";
   }
   const escrowBySourceId: Record<string, string> = {};
+  const currentBpsBySourceId: Record<string, number> = {};
+  // The registry address: the sale's own immutable view (never hardcoded here).
+  const registryAddr = decodeAbiParameters(
+    [{ type: "address" }],
+    (await call(v3Target.address, callData("0xee9ab677", []))) as `0x${string}`,
+  )[0]; // SOURCE_REGISTRY() — selector pinned in sourceDecoders.ts
+  // SourceRecord tuple layout — SourceRegistryV1.sol struct, field order exact.
+  const SOURCE_RECORD_PARAMS = [
+    {
+      type: "tuple",
+      components: [
+        { name: "sourceWallet", type: "address" },
+        { name: "sourceClass", type: "uint8" },
+        { name: "commissionBps", type: "uint16" },
+        { name: "status", type: "uint8" },
+        { name: "scope", type: "uint8" },
+        { name: "startTime", type: "uint64" },
+        { name: "endTime", type: "uint64" },
+        { name: "grossCap", type: "uint256" },
+        { name: "perBuyerCap", type: "uint256" },
+        { name: "appliesToRepeatPurchases", type: "bool" },
+        { name: "payoutWallet", type: "address" },
+        { name: "metadataHash", type: "bytes32" },
+        { name: "createdBy", type: "address" },
+        { name: "updatedAt", type: "uint64" },
+      ],
+    },
+  ] as const;
+  const SELECTOR_SOURCE_CONFIG = keccak256(
+    encodePacked(["string"], ["sourceConfig(bytes32)"]),
+  ).slice(0, 10);
   for (const sid of new Set(rows.map((r) => r.sourceId.toLowerCase()))) {
     const owed = decodeUint256Decimal(
       await call(v3Target.address, callData(SELECTOR_SOURCE_ESCROW_OWED, [bytes32Word(sid)])),
     );
     if (owed === null) throw new Error("escrow read failed; fail closed");
     escrowBySourceId[sid] = owed;
+    const record = decodeAbiParameters(
+      SOURCE_RECORD_PARAMS,
+      (await call(registryAddr, callData(SELECTOR_SOURCE_CONFIG, [bytes32Word(sid)]))) as `0x${string}`,
+    )[0];
+    currentBpsBySourceId[sid] = Number(record.commissionBps);
+  }
+
+  // Block header dates for every attributed purchase block (crossing dates are
+  // chain-dated — the block timestamp, day-granularity UTC, never a clock).
+  const blockDateByNumber: Record<number, string> = {};
+  for (const bn of new Set(rows.map((r) => r.blockNumber))) {
+    rpcCalls += 1;
+    const header = await ethGetBlockByNumber(transport, bn);
+    const tsHex = (header as { timestamp?: unknown }).timestamp;
+    if (typeof tsHex !== "string" || !/^0x[0-9a-f]+$/i.test(tsHex)) {
+      throw new Error(`block ${bn}: no readable timestamp; fail closed`);
+    }
+    blockDateByNumber[bn] = new Date(Number.parseInt(tsHex, 16) * 1000)
+      .toISOString()
+      .slice(0, 10);
   }
 
   // ── 3. Cross-check: the live engine's memberCount is reachable & sane ─────
@@ -163,6 +227,8 @@ async function main(): Promise<void> {
     rows,
     durableByRecipient,
     escrowBySourceId,
+    currentBpsBySourceId,
+    blockDateByNumber,
     fromBlock: v3Target.fromBlock,
     asOfBlock: summary.head,
   });
@@ -230,7 +296,57 @@ export const INTRODUCTION_SNAPSHOT: IntroductionSnapshot = ${JSON.stringify(
     return;
   }
 
+  const studioModuleSource = `// config/introductionIndexSnapshot.ts — GENERATED FILE. DO NOT EDIT.
+// The TWIN of the api-server's introductionSnapshot (same builder run, same
+// model, same hash — introduction-index.guard asserts equality). Address-free
+// by construction: opaque source keys, counts, rates, block numbers — no
+// wallet, no member number, no tx hash, no raw sourceId. Honest SERVED
+// SNAPSHOT, labeled asOfBlock. Rebuild: api-server introductions:build.
+
+export interface IntroductionIndexSourceStats {
+  readonly attributedPurchases: number;
+  readonly introducedMembers: number;
+  readonly durableIntroductions: number;
+  readonly commissionPaidRaw: string;
+  readonly escrowOwedRaw: string;
+  readonly firstBlock: number;
+  readonly lastBlock: number;
+  readonly currentBps: number;
+  readonly entitledBps: number;
+  readonly entitledTitle: string;
+  readonly promotionDue: boolean;
+  readonly crossedAtBlock: number | null;
+  readonly crossedAtDateUtc: string | null;
+}
+
+export interface IntroductionIndexSnapshot {
+  readonly snapshotHash: string;
+  readonly asOfBlock: number;
+  readonly durableTest: string;
+  readonly totals: {
+    readonly attributedPurchases: number;
+    readonly distinctSources: number;
+    readonly introducedMembers: number;
+    readonly durableIntroductions: number;
+    readonly commissionPaidRaw: string;
+  };
+  readonly bySource: Readonly<Record<string, IntroductionIndexSourceStats>>;
+}
+
+export const INTRODUCTION_INDEX_SNAPSHOT: IntroductionIndexSnapshot = ${JSON.stringify(
+    {
+      snapshotHash: hash,
+      asOfBlock: model.asOfBlock,
+      durableTest: model.durableTest,
+      totals: model.totals,
+      bySource: model.bySource,
+    },
+    null,
+    2,
+  )};
+`;
   writeFileSync(SNAPSHOT_PATH, moduleSource, { encoding: "utf8" });
+  writeFileSync(STUDIO_SNAPSHOT_PATH, studioModuleSource, { encoding: "utf8" });
   console.log(
     `[introductions:build] wrote snapshot — asOfBlock ${model.asOfBlock}, ` +
       `${model.totals.attributedPurchases} attributed purchase(s), ` +
