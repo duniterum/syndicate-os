@@ -2,7 +2,30 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🧾 SLICE M4-b ✅ SEALED IN PROD (2026-07-13, Replit-verified 20:10 UTC on
+> **▶ 💓 SLICE M5 ✅ BUILT (2026-07-13, founder GO): /activity REPOINTED ONTO THE SERVED FEED —
+> the heartbeat gains its complete seat history.** TWO honest sources now compose on the page,
+> each labeled with its OWN coverage in the HealthBanner: ① SEATS from `/api/backbone/feed`
+> (complete indexed record V1→V3, newest-first, server-capped; identity-blind aggregate voice
+> "A seat was written on-chain — a first seat"), ② the RECENT ~24h CLIENT WINDOW unchanged
+> (seat lines WITH their public seat numbers, burns, referral lifecycle). MERGE = dedupe by
+> transaction anchor, the window's richer sentence WINS (zero regression: recent seats keep
+> their numbers; the feed adds depth beneath the window). Fail-soft: feed unavailable/dark →
+> the banner SAYS "the served seat history is unavailable right now — the recent window below
+> stands alone" (never a silent gap). `lib/backboneFeedClient.ts` = fail-closed client parse
+> (anchor shape re-validated, malformed lines skipped + COUNTED in the banner); summary row
+> speaks per-source ("N seat(s) across the indexed history · in the ~24h window: …"); the
+> vision block honestly re-scoped ("what the indexer adds NEXT": burns/referral history,
+> pagination, per-seat feeds, Chronicle candidates). Fire Ledger untouched (burn-only scope
+> never claims served coverage). RUNTIME-VERIFIED both paths: ① local rig (backbone dark) —
+> the fallback banner rendered live, window blocks 90,189,114→90,232,314, honest zero, 0
+> console errors; ② the studio parser run against the REAL PROD payload — 26/26 served lines
+> parsed, 0 skipped, newest = the real V3 first seat (anchor shape OK). Green: studio tsc 0 ·
+> studio guards · build 24 shells (21 INDEX, unchanged — no new route). NEXT per the order:
+> M6 Chronicle thin (more true chapters) / M0/M1… — the founder picks; Q-A/Q-B triage still
+> queued; pending founder decisions unchanged (avatar storage · DEX deep-link · refresh
+> cadence · optional AVALANCHE_RPC_URL for cold catch-ups).
+>
+> **▶ Prior: 🧾 SLICE M4-b ✅ SEALED IN PROD (2026-07-13, Replit-verified 20:10 UTC on
 > thesyndicate.money): THE FEED SPEAKS — 26 receipts, V1→V3, zero addresses.** Replit report:
 > pull 26/26 hash-verified · full gate green (backbone:guard 44→63 confirmed) · dev honestly
 > dark (state "disabled", items [], the honesty line served — no invention when there is

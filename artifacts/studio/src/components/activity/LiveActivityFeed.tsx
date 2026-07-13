@@ -1,12 +1,17 @@
-// components/activity/LiveActivityFeed.tsx — the feed chrome (ARC ACT-1).
+// components/activity/LiveActivityFeed.tsx — the feed chrome (ARC ACT-1;
+// ARC M5: the served history joins the window).
 // ---------------------------------------------------------------------------
 // Origin harvest (LiveActivityFeed/ActivityHealthBanner/ActivityFilterChips/
-// ActivitySummaryRow — ADAPTED to our tokens and the HONESTY LAW): the banner
-// states the RECENT WINDOW truth and that the complete indexed history
-// arrives with the event indexer — never a completeness claim, never proof
-// of absence. Every rendered line is receipt-backed: sentence + type badge +
-// memory flag + the tx proof link (the chain publishes it; the client reads
-// like an explorer — Visibility Law).
+// ActivitySummaryRow — ADAPTED to our tokens and the HONESTY LAW). Since M5,
+// TWO honest sources compose here, each labeled with its own coverage:
+//   • SEATS — the event backbone's served feed (/api/backbone/feed): the
+//     COMPLETE indexed purchase history V1→V3 (newest, server-capped),
+//     identity-blind aggregate voice ("a seat was written · block N · verify").
+//   • RECENT WINDOW — the client chain read (~24h): seat lines WITH their
+//     public seat numbers, burns, referral lifecycle. Unchanged posture.
+// Overlap dedupes by transaction anchor — the window's richer sentence wins.
+// If the served feed is unavailable, the window stands alone and the banner
+// SAYS so — never a silent gap, never proof of absence.
 
 import { useEffect, useMemo, useState } from "react";
 import { Anchor, ExternalLink, RefreshCw } from "lucide-react";
@@ -21,6 +26,7 @@ import {
   type ActivityKind,
   type ActivityScan,
 } from "@/lib/activityFeed";
+import { fetchServedFeed, type ServedFeed } from "@/lib/backboneFeedClient";
 
 const KIND_LABEL: Record<ActivityKind, string> = {
   seat: "Seat",
@@ -82,35 +88,85 @@ export function LiveActivityFeed({
   }, [data]);
 
   const [scan, setScan] = useState<ActivityScan | null>(null);
+  const [served, setServed] = useState<ServedFeed | null>(null);
+  const [servedTried, setServedTried] = useState(false);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<FilterId>("all");
 
   useEffect(() => {
     if (!addrs || loading || scan) return;
     setLoading(true);
-    void scanRecentActivity(addrs).then((s) => {
-      setScan(s);
-      setLoading(false);
-    });
+    // Both sources in parallel: the served history (fail-soft to null) and
+    // the client recent window. Each renders only what it truly covers.
+    void Promise.all([scanRecentActivity(addrs), fetchServedFeed()]).then(
+      ([s, f]) => {
+        setScan(s);
+        setServed(f);
+        setServedTried(true);
+        setLoading(false);
+      },
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addrs]);
 
-  const items = (scan?.items ?? []).filter(
+  // M5 merge: served purchase lines (aggregate voice) join the window's
+  // items; overlap dedupes by transaction anchor — the window's seat line
+  // (it carries the public seat number) wins over the served aggregate line.
+  const merged = useMemo<ActivityItem[]>(() => {
+    const windowItems = scan?.items ?? [];
+    const seen = new Set(windowItems.map((i) => i.txHash.toLowerCase()));
+    const deepLines: ActivityItem[] = (served?.items ?? [])
+      .filter((l) => !seen.has(l.transactionHash.toLowerCase()))
+      .map((l) => ({
+        kind: "seat" as const,
+        sentence: `A seat was written on-chain${l.firstSeatBucket === "true" ? " — a first seat" : ""}.`,
+        blockNumber: l.blockNumber,
+        txHash: l.transactionHash,
+        dateUtc: l.isoDayUtc,
+        memory: true,
+      }));
+    return [...windowItems, ...deepLines].sort(
+      (a, b) => b.blockNumber - a.blockNumber,
+    );
+  }, [scan, served]);
+
+  const items = merged.filter(
     (i) => (onlyKinds ? onlyKinds.includes(i.kind) : true) && matches(i, filter),
   );
 
+  /** Served-history coverage is only claimed where seats are in scope. */
+  const seatsInScope = !onlyKinds || onlyKinds.includes("seat");
+
   return (
     <div>
-      {/* THE HEALTH BANNER — the recent-window honesty, always visible. */}
+      {/* THE HEALTH BANNER — every source labeled with its own coverage. */}
       <Card className="bg-card/30 border-border/50 p-3.5 mb-4">
         <p className="text-[11px] text-muted-foreground leading-relaxed" data-testid="activity-health-banner">
-          <span className="text-foreground font-medium">A recent window, read live from the chain.</span>{" "}
+          {seatsInScope && served && served.items.length > 0 ? (
+            <>
+              <span className="text-foreground font-medium">
+                Seat history: served by the event indexer.
+              </span>{" "}
+              {`The complete indexed record${served.itemsTotal > served.served ? ` — newest ${served.served} of ${served.itemsTotal.toLocaleString("en-US")} lines` : ` — all ${served.itemsTotal.toLocaleString("en-US")} lines`}, as of block ${served.headBlock ? served.headBlock.toLocaleString("en-US") : "…"}${served.linesSkipped > 0 ? ` · ${served.linesSkipped} line(s) failed validation and are NOT shown` : ""}. `}
+            </>
+          ) : seatsInScope && servedTried ? (
+            <>
+              <span className="text-foreground font-medium">
+                The served seat history is unavailable right now
+              </span>
+              {" — the recent window below stands alone. "}
+            </>
+          ) : null}
+          <span className="text-foreground font-medium">
+            {seatsInScope && served && served.items.length > 0
+              ? "Burns & referral events: a recent window, read live from the chain."
+              : "A recent window, read live from the chain."}
+          </span>{" "}
           {scan
             ? `Blocks ${scan.fromBlock.toLocaleString("en-US")} → ${scan.toBlock.toLocaleString("en-US")} (~24h)${scan.chunksFailed > 0 ? ` · ${scan.chunksFailed} range(s) could not be read and are NOT covered` : ""}.`
             : `The last ~${Math.round(DEFAULT_WINDOW_BLOCKS / 1800)} hours of blocks.`}{" "}
           What appears here happened and is verifiable; what does not appear is
-          simply outside this window — never evidence of absence. The complete
-          indexed history arrives with the event indexer.
+          simply outside the stated coverage — never evidence of absence.
         </p>
       </Card>
 
@@ -138,6 +194,8 @@ export function LiveActivityFeed({
             disabled={loading || !addrs}
             onClick={() => {
               setScan(null);
+              setServed(null);
+              setServedTried(false);
             }}
           >
             <RefreshCw className="h-3 w-3 mr-1" aria-hidden="true" /> Re-read
@@ -145,10 +203,15 @@ export function LiveActivityFeed({
         </div>
       ) : null}
 
-      {/* Summary row — counts WITHIN the covered window only. */}
+      {/* Summary row — counts WITHIN each source's stated coverage only. */}
       {scan && !onlyKinds ? (
         <p className="text-[11px] text-muted-foreground mb-3" data-testid="activity-summary">
-          In this window: {scan.items.filter((i) => i.kind === "seat").length} seat(s) ·{" "}
+          {served && served.items.length > 0
+            ? `${merged.filter((i) => i.kind === "seat").length} seat(s) across the indexed history · in the ~24h window: `
+            : "In this window: "}
+          {served && served.items.length > 0
+            ? ""
+            : `${scan.items.filter((i) => i.kind === "seat").length} seat(s) · `}
           {scan.items.filter((i) => i.kind === "burn").length} burn(s) ·{" "}
           {scan.items.filter((i) => i.kind.startsWith("source-")).length} referral event(s).
         </p>
@@ -159,8 +222,8 @@ export function LiveActivityFeed({
       ) : items.length === 0 ? (
         <Card className="bg-card/20 border-dashed border-border/60 p-5">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            No {onlyKinds ? "matching events" : "events"} in this window. That is
-            an honest read of a quiet stretch — not a claim about anything
+            No {onlyKinds ? "matching events" : "events"} within the stated
+            coverage. That is an honest read — not a claim about anything
             outside it.
           </p>
         </Card>
