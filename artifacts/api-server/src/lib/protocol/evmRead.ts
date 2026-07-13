@@ -83,6 +83,13 @@ export type GetLogsRange = {
   toBlock: number;
   /** topic0 filter (event signature hash); further topics left unconstrained. */
   topic0: string;
+  /**
+   * Optional FULL topics filter (M4-c). When present it replaces the default
+   * `[topic0]` — e.g. `[transferTopic0, null, paddedBurnAddress]` narrows an
+   * ERC20 Transfer scan to a single recipient server-side. Absent = the
+   * original behavior, byte-identical.
+   */
+  topics?: readonly (string | null)[];
 };
 
 /** A block header subset as returned by eth_getBlockByNumber (opaque; parsed by caller). */
@@ -125,7 +132,7 @@ export async function ethGetLogs(
       address: range.address,
       fromBlock: "0x" + range.fromBlock.toString(16),
       toBlock: "0x" + range.toBlock.toString(16),
-      topics: [range.topic0],
+      topics: range.topics ? [...range.topics] : [range.topic0],
     },
   ];
   const raw = await transport("eth_getLogs", params);

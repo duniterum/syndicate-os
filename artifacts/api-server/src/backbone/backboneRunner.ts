@@ -53,7 +53,21 @@ import {
   type BackboneConfig,
 } from "./backboneConfig";
 import { enrichMissingBlockTimestamps } from "./blockTimeEnrich";
-import { loadActivityHeartbeatInput, makeSaleEventPersistence } from "./backboneDb";
+import {
+  BACKBONE_EXPECTED_CHAIN_ID,
+  loadActivityHeartbeatInput,
+  loadProtocolEventRows,
+  makeSaleEventPersistence,
+} from "./backboneDb";
+import {
+  runProtocolEventScan,
+  type ProtocolScanStreamSummary,
+} from "./protocolEventScan";
+import {
+  buildProtocolEventReadModel,
+  type ProtocolEventBuildResult,
+} from "./protocolEventReadmodel";
+import { FINANCIAL_TARGETS } from "../data/protocolTargets";
 
 // ---------------------------------------------------------------------------
 // Status state (in-memory, address-free by construction).
@@ -85,8 +99,17 @@ export interface BackboneStatusSnapshot {
     readonly unitsOk: number;
     readonly unitsError: number;
     readonly eventsInserted: number;
+    readonly protocolEventsInserted: number;
     readonly timestampsInserted: number;
     readonly units: readonly UnitStatusLine[];
+    readonly protocolStreams: readonly {
+      readonly streamKey: string;
+      readonly status: string;
+      readonly scannedTo: number | null;
+      readonly rowsInserted: number;
+    }[];
+    readonly burnLedgerTotal: number;
+    readonly lifecycleTotal: number;
     readonly readModel: ActivityAddressSafeReport;
   } | null;
   readonly lastError: {
@@ -122,16 +145,19 @@ const status: MutableStatus = {
 let started = false;
 
 /**
- * Last-good read-model (SERVER-ONLY memory; items carry pairing tokens).
- * The ONLY ways out are the two sanctioned projections: the aggregate report
- * (status) and the receipt-line feed (feedProjection, its own output gate).
+ * Last-good read-models (SERVER-ONLY memory; sale items carry pairing tokens,
+ * burn items carry sender addresses until projected to labels). The ONLY ways
+ * out are the two sanctioned projections: the aggregate report (status) and
+ * the receipt-line feed (feedProjection, its own output gate).
  */
 let lastGoodModel: ActivityBuildResult | null = null;
+let lastGoodProtocolModel: ProtocolEventBuildResult | null = null;
 
 /** Source for the public receipt-line feed (projected + gated by the route). */
 export function getBackboneFeedSource(): FeedSource {
   return {
     model: lastGoodModel,
+    protocolModel: lastGoodProtocolModel,
     state: status.state,
     headBlock: status.lastSuccess?.headBlock ?? null,
     finishedIso: status.lastSuccess?.finishedIso ?? null,
@@ -202,17 +228,50 @@ async function runCycle(): Promise<void> {
     0,
   );
 
-  // ② Incremental Protocol Time enrichment (new blocks only, witness-checked).
+  // ①b Protocol-event lane (M4-c): burns + registry lifecycle, cursor-resumed
+  // through the SAME head the sale scan saw. Fail-closed: a stream error
+  // throws and fails the whole cycle (its cursor stays at the last good block).
+  if (summary.head === null) {
+    throw new Error("scan summary carries no head block — cycle aborted");
+  }
+  const protocolStreams: ProtocolScanStreamSummary[] =
+    await runProtocolEventScan(transport, summary.head);
+  const protocolEventsInserted = protocolStreams.reduce(
+    (acc, s) => acc + s.rowsInserted,
+    0,
+  );
+
+  // ② Incremental Protocol Time enrichment (new blocks only, witness-checked;
+  // covers BOTH raw lanes).
   const enrich = await enrichMissingBlockTimestamps(transport);
 
-  // ③ Rebuild the read-model in memory (pure, fail-closed, address-safe out).
+  // ③ Rebuild the read-models in memory (pure, fail-closed, address-safe out).
   const { input } = await loadActivityHeartbeatInput();
   const model = buildActivityHeartbeatReadModel(input);
   if (!model.consistent) {
     throw new Error("activity read-model rebuild is not consistent — cycle failed closed");
   }
   const report = toAddressSafeActivityReport(model);
+
+  // ③b The protocol-event read-model (burn ledger + lifecycle lines). The
+  // founder label set is the known FOUNDER allocation wallet — a label
+  // decision made HERE, server-side; the sender address never leaves the zone.
+  const founderAddresses = new Set(
+    FINANCIAL_TARGETS.allocationWallets
+      .filter((w) => w.key === "FOUNDER")
+      .map((w) => w.address.toLowerCase()),
+  );
+  const protocolRows = await loadProtocolEventRows();
+  const protocolModel = buildProtocolEventReadModel({
+    expectedChainId: BACKBONE_EXPECTED_CHAIN_ID,
+    burns: protocolRows.burns,
+    lifecycle: protocolRows.lifecycle,
+    blockTimestamps: input.blockTimestamps,
+    founderAddresses,
+  });
+
   lastGoodModel = model;
+  lastGoodProtocolModel = protocolModel;
 
   status.lastSuccess = {
     finishedIso: new Date().toISOString(), // ops metadata, never chain truth
@@ -220,8 +279,17 @@ async function runCycle(): Promise<void> {
     unitsOk: summary.units.length,
     unitsError: 0,
     eventsInserted,
+    protocolEventsInserted,
     timestampsInserted: enrich.inserted,
     units: summarizeUnits(summary),
+    protocolStreams: protocolStreams.map((s) => ({
+      streamKey: s.streamKey,
+      status: s.status,
+      scannedTo: s.scannedTo,
+      rowsInserted: s.rowsInserted,
+    })),
+    burnLedgerTotal: protocolModel.totals.burns,
+    lifecycleTotal: protocolModel.totals.lifecycle,
     readModel: report,
   };
 }

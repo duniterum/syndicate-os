@@ -2,7 +2,44 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🏛 SLICE M6 ✅ SEALED IN PROD (2026-07-14, Replit-verified on
+> **▶ 🔥 SLICE M4-c ✅ BUILT (2026-07-14, founder GO): ACTIVITY COMPLETE HISTORY — burns +
+> referral lifecycle join the seats; /fire-ledger becomes the NUMBERED Proof of Burn record;
+> the home burn total gains its history door.** MODE B built as gated: the backbone's SECOND
+> scan lane (`protocolEventScan.ts` — origin doctrine ported server-side: incremental cursor
+> from block 87,157,852, REORG_OVERLAP 50, topic-filtered getLogs so the sale engine's
+> adaptive splitter isn't needed and the engine stayed BYTE-STABLE 64/81) + additive tables
+> `protocol_event_cursor`/`protocol_event_raw` (drizzle push, purely additive) + the pure
+> `protocolEventReadmodel` (Proof-of-Burn numbering 1-based oldest-first — GAPLESS BY
+> CONSTRUCTION: a failed chunk fails the cycle, the cursor never advances past persisted rows,
+> the origin's PARTIAL state is structurally impossible server-side; Founder/Community label
+> derived from the FOUNDER allocation wallet BEFORE any projection — the sender address never
+> leaves the zone) + the feed extended (kinds burn + 3 lifecycle; per-line logIndex added —
+> one tx can carry two burns; `burnLedger` served COMPLETE oldest-first; honest `lanes` flags;
+> the same mask-then-strict-scan gate, guard-proven: planted sender addresses trip it).
+> CLIENT: LiveActivityFeed renders ALL kinds via the §8 lexicon sentences (single mapping
+> function — no copy invented), lane-aware banner ("Complete history, served by the event
+> indexer… The live window: a recent chain read, refreshing between indexer cycles"),
+> per-history summary; /fire-ledger = live total (REUSED untouched) + the numbered record
+> ("Proof of Burn #N" pills + amount rendered — the amount IS the record — + Founder/Community
+> pill + verify anchor; honest fallback to the window when the served record is unavailable);
+> the RENDERED "Proof of Fire" lead reconciled to "Proof of Burn" (founder's origin doctrine;
+> the PAGE stays Fire Ledger); home hero burn tile gains the door "every burn, numbered →"
+> → /fire-ledger (CREATED — the tile had only the explorer verify link); /activity lead +
+> vision + member-door notes updated honestly. RUNTIME-VERIFIED (local rig, backbone dark):
+> extended feed serves the honest dark shape with lanes flags; /fire-ledger fallback banner +
+> live total 21,273 SYN; /activity fallback banner; the hero door navigates; 0 console errors.
+> The static fire-ledger vision block made STATE-NEUTRAL (it claimed completeness while
+> unavailable — caught in browser, fixed). Green: full tsc 0 · backbone:guard 75 (burn
+> fixtures: numbering, labels, planted-address trips) · activity 133 · protocol-targets
+> 208 · all suites · build 24 shells (21 INDEX, unchanged). WHAT STAYS WINDOWED: nothing for
+> the three kinds' history — the ~24h window is ONLY the freshness layer between cycles
+> (stated in the banner); pagination/notifications/per-member feeds wait at their M-map
+> slices. DEPLOY: needs `drizzle push` for the two ADDITIVE tables (the known unique-
+> constraint false-positive caution stands) — prod backbone picks the lane up on its next
+> cycle after deploy; the first cycle scans ~3.1M blocks per stream topic-filtered (sparse;
+> may take one long cycle or fail-close once and resume — both honest).
+>
+> **▶ Prior: 🏛 SLICE M6 ✅ SEALED IN PROD (2026-07-14, Replit-verified on
 > thesyndicate.money/chronicle): FOUR CHAPTERS LIVE.** Replit report: pull 9/9 hash-verified
 > (HEAD 11dcbf4) · full gate green (15 studio + 18 API guards) · published. PROD PROOF: the
 > four entries render oldest-first (The duplicate seat 07-12 · The first real-money seat

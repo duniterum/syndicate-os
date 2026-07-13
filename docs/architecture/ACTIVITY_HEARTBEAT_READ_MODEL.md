@@ -85,8 +85,14 @@ into the model at all: derive's `decodedJson` access is whitelisted to exactly
   all idempotent inserts / the engine's cursor upsert).
 - No third projection: aggregate report + receipt-line feed, nothing else;
   filters, pagination depth, and personal feeds wait (M5+).
-- No new event kinds: purchases (+ folded Routed) only, exactly the proven
-  scan units; registry lifecycle / burns / notifications wait.
+- Event kinds (M4-c): purchases (+ folded Routed) via the sale lane, PLUS the
+  protocol-event lane — SYN burns (the numbered Proof of Burn record;
+  senders leave the server ONLY as Founder/Community labels) and the three
+  Source Registry lifecycle events (`src/backbone/protocolEventScan.ts` +
+  `protocolEventReadmodel.ts`, additive tables `protocol_event_cursor` /
+  `protocol_event_raw`). Numbering is gapless BY CONSTRUCTION (a failed chunk
+  fails the cycle without advancing the cursor). Notifications and further
+  kinds wait.
 - No identity claims: activity is not identity authority; the Chronicle,
   Register, and holder index remain separate concerns.
 - Never on by accident: dark by default in every environment; the founder's

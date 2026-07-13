@@ -40,9 +40,9 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
       { label: "Recognition", href: "/recognition", note: "How the protocol recognizes members." },
       { label: "Wallet", href: "/wallet", note: "Your balances and approvals — revoke is your own signed act." },
       { label: "Toolkit", href: "/toolkit", note: "Every member action in one place — locks visible." },
-      // ACT-1: the teasers GREW into live recent-window pages — open doors now.
-      { label: "Activity", href: "/activity", note: "The public heartbeat — receipt-backed events, read live." },
-      { label: "Fire Ledger", href: "/fire-ledger", note: "Supply retired in public — live total + recent burns." },
+      // ACT-1 opened these doors; M4-c completed them (served full histories).
+      { label: "Activity", href: "/activity", note: "The public heartbeat — receipt-backed events, complete history served." },
+      { label: "Fire Ledger", href: "/fire-ledger", note: "Supply retired in public — live total + the numbered Proof of Burn record." },
       // First promotion (founder, 2026-07-14): the Chronicle is open.
       { label: "Chronicle", href: "/chronicle", note: "The solemn record — entry one: the duplicate seat." },
       { label: "Protocol graph", href: "/map", note: "The protocol, drawn — every surface on one map." },

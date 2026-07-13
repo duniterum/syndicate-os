@@ -68,6 +68,8 @@ export interface ActivityItem {
   sentence: string;
   blockNumber: number;
   txHash: `0x${string}`;
+  /** Position within the tx — the line's identity (one tx can carry two events). */
+  logIndex: number;
   /** UTC day from the block header — chain time, never a wall clock. */
   dateUtc: string;
   /** Memory grade (the receipt-thread doctrine): anchored events persist. */
@@ -135,6 +137,7 @@ export async function scanRecentActivity(
               sentence: `Seat #${d.args.memberNumber} was written on-chain${d.args.firstSeat ? " — a first seat" : ""}.`,
               blockNumber: Number(log.blockNumber),
               txHash: log.transactionHash,
+              logIndex: log.logIndex ?? 0,
               dateUtc: "",
               memory: true,
             });
@@ -146,6 +149,7 @@ export async function scanRecentActivity(
               sentence: `${fmtSyn(d.args.value)} SYN was retired to the burn address — gone for everyone, forever.`,
               blockNumber: Number(log.blockNumber),
               txHash: log.transactionHash,
+              logIndex: log.logIndex ?? 0,
               dateUtc: "",
               memory: true,
             });
@@ -156,6 +160,7 @@ export async function scanRecentActivity(
                 sentence: "A referral source was created — a founder-signed on-chain act.",
                 blockNumber: Number(log.blockNumber),
                 txHash: log.transactionHash,
+                logIndex: log.logIndex ?? 0,
                 dateUtc: "",
                 memory: true,
               });
@@ -165,6 +170,7 @@ export async function scanRecentActivity(
                 sentence: "A source's terms were updated — a public event; there are no silent edits.",
                 blockNumber: Number(log.blockNumber),
                 txHash: log.transactionHash,
+                logIndex: log.logIndex ?? 0,
                 dateUtc: "",
                 memory: true,
               });
@@ -174,6 +180,7 @@ export async function scanRecentActivity(
                 sentence: "A source's status changed — a public event; there are no silent edits.",
                 blockNumber: Number(log.blockNumber),
                 txHash: log.transactionHash,
+                logIndex: log.logIndex ?? 0,
                 dateUtc: "",
                 memory: true,
               });

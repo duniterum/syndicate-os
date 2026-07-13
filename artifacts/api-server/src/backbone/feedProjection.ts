@@ -1,26 +1,28 @@
 /**
- * Event Backbone — PUBLIC RECEIPT-LINE FEED projection (M4-b, founder GO).
+ * Event Backbone — PUBLIC RECEIPT-LINE FEED projection (M4-b; M4-c extended).
  * --------------------------------------------------------------------------
- * Projects the backbone's last-good activity read-model into the public
- * per-item feed: receipt-backed lines only — "a seat was written · block N ·
- * verify". This is the SECOND (and last) sanctioned serialization out of the
- * read-model, next to the address-safe aggregate report.
+ * Projects the backbone's last-good read-models into the public feed:
+ * receipt-backed lines only — seats, burns (Proof of Burn), and referral
+ * lifecycle. The SECOND (and last) sanctioned serialization out of the
+ * read-models, next to the address-safe aggregate report.
  *
  * Privacy doctrine (guard-enforced):
- *   - Served per line: kind/category/generation, block number, chain-verified
- *     time, the transaction hash (THE verify anchor — public chain data, the
- *     same anchor the client feed renders today), firstSeat bucket, routed
- *     fold flag. NOTHING else.
- *   - NEVER served: wallet addresses (structurally absent from the model),
- *     member numbers (opaque pairing tokens — identity-blind stays law),
- *     log indexes, decodedJson/rawJson.
+ *   - Served per line: kind, block number, chain-verified time, the
+ *     transaction verify anchor + its log index (one tx can carry two burns —
+ *     the pair is the line's identity; both are public chain data), and the
+ *     kind's own facts: generation + firstSeat bucket (seats), the exact
+ *     amount + the Founder/Community LABEL + the Proof of Burn number
+ *     (burns — the amount IS the record), nothing extra (lifecycle).
+ *   - NEVER served: wallet addresses (the burn sender enters the read-model
+ *     and leaves ONLY as its label), member numbers, decodedJson/rawJson.
  *   - Output gate: every transactionHash must match the EXACT 0x+64-hex
  *     transaction shape (a 20-byte address can never pass), those validated
  *     anchors are masked, and the remaining JSON must survive the strict
- *     address scanner — so a smuggled address, bare hash, or over-long hex
+ *     address scanner — a smuggled address, bare hash, or over-long hex
  *     still fails closed.
- *   - Recency-truthful: newest first, hard cap, coverage + honesty stated.
- *     Filters/pagination deliberately wait (M5+).
+ *   - Recency-truthful: newest first, hard cap on the mixed feed; the burn
+ *     ledger is served COMPLETE (it is the numbered public record — rare,
+ *     manual acts). Filters/pagination deliberately wait (M5+).
  */
 
 import { assertAddressSafeJson } from "../lib/protocol/addressSafety";
@@ -28,26 +30,51 @@ import type {
   ActivityBuildResult,
   FirstSeatBucket,
 } from "./activityHeartbeatReadmodel";
+import type {
+  ProtocolEventBuildResult,
+  SenderLabel,
+} from "./protocolEventReadmodel";
 
-/** Hard cap on served lines (newest first). Pagination waits (M5+). */
+/** Hard cap on served mixed-feed lines (newest first). Pagination waits. */
 export const FEED_MAX_ITEMS = 100;
 
 /** EXACT transaction-hash shape: 0x + 64 hex. An address (40 hex) can never pass. */
 export const TX_HASH_SHAPE_RE = /^0x[0-9a-fA-F]{64}$/;
 
-export interface PublicReceiptLine {
-  readonly kind: "purchase";
-  readonly category: "membership-sale";
-  readonly generation: string;
+interface LineCommon {
   readonly blockNumber: number;
   /** Chain-verified epoch seconds (Protocol Time; never wall-clock). */
   readonly blockTimestampSec: number;
   readonly isoDayUtc: string;
   /** The verify anchor (public chain data). Shape-validated, gate-masked. */
   readonly transactionHash: string;
+  /** Position within the anchor tx — the line's identity (public chain data). */
+  readonly logIndex: number;
+}
+
+export interface PublicSeatLine extends LineCommon {
+  readonly kind: "purchase";
+  readonly category: "membership-sale";
+  readonly generation: string;
   readonly firstSeatBucket: FirstSeatBucket;
   readonly routedFolded: boolean;
 }
+
+export interface PublicBurnLine extends LineCommon {
+  readonly kind: "burn";
+  /** 1-based Proof of Burn number, oldest first — valid on the gapless record. */
+  readonly proofOfBurnNumber: number;
+  /** Exact raw 18-decimal base units, decimal string. */
+  readonly amountSynRaw: string;
+  /** Founder or Community — a LABEL, never an address. */
+  readonly senderLabel: SenderLabel;
+}
+
+export interface PublicLifecycleLine extends LineCommon {
+  readonly kind: "source-created" | "source-terms" | "source-status";
+}
+
+export type PublicFeedLine = PublicSeatLine | PublicBurnLine | PublicLifecycleLine;
 
 export interface PublicActivityFeed {
   readonly module: "event-backbone";
@@ -58,46 +85,56 @@ export interface PublicActivityFeed {
     readonly itemsTotal: number;
     readonly served: number;
   };
+  /** Which histories are served COMPLETE in this payload (honest flags). */
+  readonly lanes: {
+    readonly seats: boolean;
+    readonly burns: boolean;
+    readonly referralLifecycle: boolean;
+  };
   readonly honesty: string;
-  readonly items: readonly PublicReceiptLine[];
+  /** Mixed feed, newest first, capped. */
+  readonly items: readonly PublicFeedLine[];
+  /** The COMPLETE numbered Proof of Burn record, oldest first. */
+  readonly burnLedger: readonly PublicBurnLine[];
 }
 
 const FEED_HONESTY_LINE =
-  "Receipt-backed lines only, newest first, from each generation's pinned deployment block to the head the last cycle saw. Between cycles this is a snapshot — never evidence of absence. Every line is verifiable on-chain via its transaction anchor.";
+  "Receipt-backed lines only, newest first, from each stream's pinned deployment block to the head the last cycle saw. Between cycles this is a snapshot — never evidence of absence. Every line is verifiable on-chain via its transaction anchor.";
 
 export interface FeedSource {
   readonly model: ActivityBuildResult | null;
+  readonly protocolModel: ProtocolEventBuildResult | null;
   readonly state: string;
   readonly headBlock: number | null;
   readonly finishedIso: string | null;
 }
 
+function assertAnchor(transactionHash: string): void {
+  if (!TX_HASH_SHAPE_RE.test(transactionHash)) {
+    throw new Error(
+      "feed projection failed closed: a line's verify anchor is not transaction-shaped (value withheld)",
+    );
+  }
+}
+
+function assertSenderLabel(label: string): void {
+  if (label !== "Founder" && label !== "Community") {
+    throw new Error(
+      "feed projection failed closed: a burn sender label is not Founder/Community (value withheld)",
+    );
+  }
+}
+
 /**
- * Build the public feed from the backbone's last-good model. Fail-closed:
- * any line whose transaction anchor is not EXACTLY transaction-shaped throws.
- * A null model (dark / parked / no successful cycle yet) serves an honest
- * empty feed — never an invented one.
+ * Build the public feed from the backbone's last-good models. Fail-closed:
+ * any malformed anchor, amount, or label throws. Null models (dark / parked /
+ * no successful cycle yet) serve an honest empty feed — never an invented one.
  */
 export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
-  const { model } = source;
-  if (model === null) {
-    return {
-      module: "event-backbone",
-      state: source.state,
-      coverage: { headBlock: null, finishedIso: null, itemsTotal: 0, served: 0 },
-      honesty: FEED_HONESTY_LINE,
-      items: [],
-    };
-  }
+  const { model, protocolModel } = source;
 
-  // Model items are ascending (blockNumber, logIndex) — serve newest first.
-  const newestFirst = [...model.items].reverse().slice(0, FEED_MAX_ITEMS);
-  const items: PublicReceiptLine[] = newestFirst.map((item) => {
-    if (!TX_HASH_SHAPE_RE.test(item.transactionHash)) {
-      throw new Error(
-        "feed projection failed closed: a line's verify anchor is not transaction-shaped (value withheld)",
-      );
-    }
+  const seatLines: PublicSeatLine[] = (model?.items ?? []).map((item) => {
+    assertAnchor(item.transactionHash);
     return {
       kind: item.kind,
       category: item.category,
@@ -106,10 +143,59 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
       blockTimestampSec: item.blockTimestampSec,
       isoDayUtc: item.isoDayUtc,
       transactionHash: item.transactionHash,
+      logIndex: item.logIndex,
       firstSeatBucket: item.firstSeatBucket,
       routedFolded: item.routedFolded,
     };
   });
+
+  const burnLedger: PublicBurnLine[] = (protocolModel?.burnLedger ?? []).map(
+    (b) => {
+      assertAnchor(b.transactionHash);
+      assertSenderLabel(b.senderLabel);
+      if (!/^[0-9]+$/.test(b.amountSynRaw)) {
+        throw new Error(
+          "feed projection failed closed: a burn amount is not a clean integer (value withheld)",
+        );
+      }
+      return {
+        kind: "burn" as const,
+        proofOfBurnNumber: b.proofOfBurnNumber,
+        amountSynRaw: b.amountSynRaw,
+        senderLabel: b.senderLabel,
+        blockNumber: b.blockNumber,
+        blockTimestampSec: b.blockTimestampSec,
+        isoDayUtc: b.isoDayUtc,
+        transactionHash: b.transactionHash,
+        logIndex: b.logIndex,
+      };
+    },
+  );
+
+  const lifecycleLines: PublicLifecycleLine[] = (
+    protocolModel?.lifecycleItems ?? []
+  ).map((l) => {
+    assertAnchor(l.transactionHash);
+    return {
+      kind: l.kind,
+      blockNumber: l.blockNumber,
+      blockTimestampSec: l.blockTimestampSec,
+      isoDayUtc: l.isoDayUtc,
+      transactionHash: l.transactionHash,
+      logIndex: l.logIndex,
+    };
+  });
+
+  const allLines: PublicFeedLine[] = [
+    ...seatLines,
+    ...burnLedger,
+    ...lifecycleLines,
+  ].sort((a, b) =>
+    a.blockNumber !== b.blockNumber
+      ? b.blockNumber - a.blockNumber
+      : b.logIndex - a.logIndex,
+  );
+  const items = allLines.slice(0, FEED_MAX_ITEMS);
 
   return {
     module: "event-backbone",
@@ -117,11 +203,17 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
     coverage: {
       headBlock: source.headBlock,
       finishedIso: source.finishedIso,
-      itemsTotal: model.totals.items,
+      itemsTotal: allLines.length,
       served: items.length,
+    },
+    lanes: {
+      seats: model !== null,
+      burns: protocolModel !== null,
+      referralLifecycle: protocolModel !== null,
     },
     honesty: FEED_HONESTY_LINE,
     items,
+    burnLedger,
   };
 }
 

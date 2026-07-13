@@ -1,17 +1,20 @@
 // components/activity/LiveActivityFeed.tsx — the feed chrome (ARC ACT-1;
-// ARC M5: the served history joins the window).
+// ARC M5: the served seat history; ARC M4-c: burns + referral lifecycle
+// complete — the whole heartbeat is served).
 // ---------------------------------------------------------------------------
 // Origin harvest (LiveActivityFeed/ActivityHealthBanner/ActivityFilterChips/
-// ActivitySummaryRow — ADAPTED to our tokens and the HONESTY LAW). Since M5,
-// TWO honest sources compose here, each labeled with its own coverage:
-//   • SEATS — the event backbone's served feed (/api/backbone/feed): the
-//     COMPLETE indexed purchase history V1→V3 (newest, server-capped),
-//     identity-blind aggregate voice ("a seat was written · block N · verify").
-//   • RECENT WINDOW — the client chain read (~24h): seat lines WITH their
-//     public seat numbers, burns, referral lifecycle. Unchanged posture.
-// Overlap dedupes by transaction anchor — the window's richer sentence wins.
-// If the served feed is unavailable, the window stands alone and the banner
-// SAYS so — never a silent gap, never proof of absence.
+// ActivitySummaryRow — ADAPTED to our tokens and the HONESTY LAW). TWO honest
+// sources compose here, each labeled with its own coverage:
+//   • SERVED HISTORIES — /api/backbone/feed: the COMPLETE indexed records for
+//     seats (M5), burns (Proof of Burn, M4-c) and referral lifecycle (M4-c),
+//     identity-blind (a burn sender is a Founder/Community LABEL, never an
+//     address). Every sentence is the CANON_PROTOCOL_LANGUAGE §8 lexicon line.
+//   • RECENT WINDOW — the client chain read (~24h): the freshness layer
+//     between backbone cycles; seat lines carry their public seat numbers.
+// Overlap dedupes by (kind · transaction anchor · log index) — the window's
+// richer sentence wins. If a served lane is unavailable, the window stands
+// alone for it and the banner SAYS so — never a silent gap, never proof of
+// absence.
 
 import { useEffect, useMemo, useState } from "react";
 import { Anchor, ExternalLink, RefreshCw } from "lucide-react";
@@ -26,7 +29,37 @@ import {
   type ActivityKind,
   type ActivityScan,
 } from "@/lib/activityFeed";
-import { fetchServedFeed, type ServedFeed } from "@/lib/backboneFeedClient";
+import {
+  fetchServedFeed,
+  formatSynRaw,
+  type ServedFeed,
+  type ServedFeedLine,
+} from "@/lib/backboneFeedClient";
+
+// The §8 event lexicon — one event kind, ONE canonical sentence. Never
+// reinvented; the served lines carry facts, these lines carry the words.
+function sentenceForServedLine(line: ServedFeedLine): string {
+  switch (line.kind) {
+    case "purchase":
+      return `A seat was written on-chain${line.firstSeatBucket === "true" ? " — a first seat" : ""}.`;
+    case "burn":
+      return `${formatSynRaw(line.amountSynRaw)} SYN was retired to the burn address — gone for everyone, forever.`;
+    case "source-created":
+      return "A referral source was created — a founder-signed on-chain act.";
+    case "source-terms":
+      return "A source's terms were updated — a public event; there are no silent edits.";
+    case "source-status":
+      return "A source's status changed — a public event; there are no silent edits.";
+  }
+}
+
+const SERVED_KIND_TO_WINDOW_KIND: Record<ServedFeedLine["kind"], ActivityKind> = {
+  purchase: "seat",
+  burn: "burn",
+  "source-created": "source-created",
+  "source-terms": "source-terms",
+  "source-status": "source-status",
+};
 
 const KIND_LABEL: Record<ActivityKind, string> = {
   seat: "Seat",
@@ -109,24 +142,34 @@ export function LiveActivityFeed({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addrs]);
 
-  // M5 merge: served purchase lines (aggregate voice) join the window's
-  // items; overlap dedupes by transaction anchor — the window's seat line
-  // (it carries the public seat number) wins over the served aggregate line.
+  // M5/M4-c merge: served lines of EVERY kind join the window's items;
+  // overlap dedupes by (kind · anchor · log index) — the window's richer
+  // sentence (a seat line carries its public seat number) wins.
   const merged = useMemo<ActivityItem[]>(() => {
     const windowItems = scan?.items ?? [];
-    const seen = new Set(windowItems.map((i) => i.txHash.toLowerCase()));
+    const seen = new Set(
+      windowItems.map((i) => `${i.kind}:${i.txHash.toLowerCase()}:${i.logIndex}`),
+    );
     const deepLines: ActivityItem[] = (served?.items ?? [])
-      .filter((l) => !seen.has(l.transactionHash.toLowerCase()))
+      .filter(
+        (l) =>
+          !seen.has(
+            `${SERVED_KIND_TO_WINDOW_KIND[l.kind]}:${l.transactionHash.toLowerCase()}:${l.logIndex}`,
+          ),
+      )
       .map((l) => ({
-        kind: "seat" as const,
-        sentence: `A seat was written on-chain${l.firstSeatBucket === "true" ? " — a first seat" : ""}.`,
+        kind: SERVED_KIND_TO_WINDOW_KIND[l.kind],
+        sentence: sentenceForServedLine(l),
         blockNumber: l.blockNumber,
         txHash: l.transactionHash,
+        logIndex: l.logIndex,
         dateUtc: l.isoDayUtc,
         memory: true,
       }));
-    return [...windowItems, ...deepLines].sort(
-      (a, b) => b.blockNumber - a.blockNumber,
+    return [...windowItems, ...deepLines].sort((a, b) =>
+      a.blockNumber !== b.blockNumber
+        ? b.blockNumber - a.blockNumber
+        : b.logIndex - a.logIndex,
     );
   }, [scan, served]);
 
@@ -134,32 +177,47 @@ export function LiveActivityFeed({
     (i) => (onlyKinds ? onlyKinds.includes(i.kind) : true) && matches(i, filter),
   );
 
-  /** Served-history coverage is only claimed where seats are in scope. */
-  const seatsInScope = !onlyKinds || onlyKinds.includes("seat");
+  // Served coverage is claimed ONLY for lanes that are both in scope and
+  // declared complete by the server (M4-c: seats + burns + referral lifecycle).
+  const laneFor = (k: ActivityKind): boolean =>
+    k === "seat"
+      ? (served?.lanes.seats ?? false)
+      : k === "burn"
+        ? (served?.lanes.burns ?? false)
+        : (served?.lanes.referralLifecycle ?? false);
+  const kindsInScope: readonly ActivityKind[] = onlyKinds ?? [
+    "seat",
+    "burn",
+    "source-created",
+    "source-terms",
+    "source-status",
+  ];
+  const servedComplete =
+    served !== null && served.items.length >= 0 && kindsInScope.every(laneFor);
 
   return (
     <div>
       {/* THE HEALTH BANNER — every source labeled with its own coverage. */}
       <Card className="bg-card/30 border-border/50 p-3.5 mb-4">
         <p className="text-[11px] text-muted-foreground leading-relaxed" data-testid="activity-health-banner">
-          {seatsInScope && served && served.items.length > 0 ? (
+          {servedComplete && served ? (
             <>
               <span className="text-foreground font-medium">
-                Seat history: served by the event indexer.
+                Complete history, served by the event indexer.
               </span>{" "}
-              {`The complete indexed record${served.itemsTotal > served.served ? ` — newest ${served.served} of ${served.itemsTotal.toLocaleString("en-US")} lines` : ` — all ${served.itemsTotal.toLocaleString("en-US")} lines`}, as of block ${served.headBlock ? served.headBlock.toLocaleString("en-US") : "…"}${served.linesSkipped > 0 ? ` · ${served.linesSkipped} line(s) failed validation and are NOT shown` : ""}. `}
+              {`${onlyKinds ? "" : "Seats, burns (Proof of Burn) and referral lifecycle — "}the full indexed record from each stream's first block, as of block ${served.headBlock ? served.headBlock.toLocaleString("en-US") : "…"}${served.itemsTotal > served.served ? ` (newest ${served.served} of ${served.itemsTotal.toLocaleString("en-US")} lines shown)` : ""}${served.linesSkipped > 0 ? ` · ${served.linesSkipped} line(s) failed validation and are NOT shown` : ""}. `}
             </>
-          ) : seatsInScope && servedTried ? (
+          ) : servedTried ? (
             <>
               <span className="text-foreground font-medium">
-                The served seat history is unavailable right now
+                The served history is unavailable right now
               </span>
               {" — the recent window below stands alone. "}
             </>
           ) : null}
           <span className="text-foreground font-medium">
-            {seatsInScope && served && served.items.length > 0
-              ? "Burns & referral events: a recent window, read live from the chain."
+            {servedComplete
+              ? "The live window: a recent chain read, refreshing between indexer cycles."
               : "A recent window, read live from the chain."}
           </span>{" "}
           {scan
@@ -206,14 +264,9 @@ export function LiveActivityFeed({
       {/* Summary row — counts WITHIN each source's stated coverage only. */}
       {scan && !onlyKinds ? (
         <p className="text-[11px] text-muted-foreground mb-3" data-testid="activity-summary">
-          {served && served.items.length > 0
-            ? `${merged.filter((i) => i.kind === "seat").length} seat(s) across the indexed history · in the ~24h window: `
-            : "In this window: "}
-          {served && served.items.length > 0
-            ? ""
-            : `${scan.items.filter((i) => i.kind === "seat").length} seat(s) · `}
-          {scan.items.filter((i) => i.kind === "burn").length} burn(s) ·{" "}
-          {scan.items.filter((i) => i.kind.startsWith("source-")).length} referral event(s).
+          {servedComplete
+            ? `Across the indexed history: ${merged.filter((i) => i.kind === "seat").length} seat(s) · ${merged.filter((i) => i.kind === "burn").length} burn(s) · ${merged.filter((i) => i.kind.startsWith("source-")).length} referral event(s).`
+            : `In this window: ${scan.items.filter((i) => i.kind === "seat").length} seat(s) · ${scan.items.filter((i) => i.kind === "burn").length} burn(s) · ${scan.items.filter((i) => i.kind.startsWith("source-")).length} referral event(s).`}
         </p>
       ) : null}
 
@@ -230,7 +283,7 @@ export function LiveActivityFeed({
       ) : (
         <div className="space-y-2">
           {items.map((i) => (
-            <Card key={`${i.txHash}-${i.blockNumber}-${i.kind}`} className="bg-card/40 border-border/50 p-3.5">
+            <Card key={`${i.txHash}-${i.logIndex}-${i.kind}`} className="bg-card/40 border-border/50 p-3.5">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
                 <StatusPill tone={i.kind === "burn" ? "caution" : "proof"} size="xs">
                   {KIND_LABEL[i.kind]}

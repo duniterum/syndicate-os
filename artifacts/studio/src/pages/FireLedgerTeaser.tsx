@@ -1,17 +1,30 @@
-// pages/FireLedgerTeaser.tsx — /fire-ledger, LIVE V1 (ARC ACT-1; the teaser
-// GREW). The live TOTAL burn (already shipped) + the per-burn RECENT-WINDOW
-// feed from the shared spine (kind: burn only). The vision block stays at the
-// bottom — the complete ledger from block one arrives with the indexer.
+// pages/FireLedgerTeaser.tsx — /fire-ledger, LIVE V2 (ARC ACT-1 grew it;
+// ARC M4-c: the complete NUMBERED Proof of Burn record, served by the event
+// backbone). The live TOTAL burn stays a direct chain read (unchanged); below
+// it, the full record from the first burn — oldest = #1, every line
+// receipt-backed, amounts rendered (the amount IS the record), senders as
+// Founder/Community labels only, never an address. If the served record is
+// unavailable, the honest ~24h window stands in and SAYS so.
+// Naming (founder, final): the PAGE is Fire Ledger (the place); the ACT and
+// its numbered receipts are "Proof of Burn" — every rendered token says burn.
 
-import { Flame } from "lucide-react";
+import { Flame, ExternalLink } from "lucide-react";
+import { useEffect, useState } from "react";
 import { PublicPage } from "@/components/PublicPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
+import { StatusPill } from "@/components/status-pill/StatusPill";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
+import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { useHeroReality } from "@/components/hero/useHeroReality";
 import { LiveActivityFeed } from "@/components/activity/LiveActivityFeed";
+import {
+  fetchServedFeed,
+  formatSynRaw,
+  type ServedFeed,
+} from "@/lib/backboneFeedClient";
 
-// The one figure that is always readable — live, fail-closed.
+// The one figure that is always readable — live, fail-closed. (Unchanged.)
 function LiveTotalBurn() {
   const { burnedSyn } = useHeroReality();
   return (
@@ -44,26 +57,130 @@ function LiveTotalBurn() {
   );
 }
 
+// The complete numbered record (M4-c) — served by the event backbone.
+function ProofOfBurnRecord() {
+  const [served, setServed] = useState<ServedFeed | null>(null);
+  const [tried, setTried] = useState(false);
+  const { data } = useGetProtocolVerifyLinks();
+  const explorerBase = (() => {
+    const u = data?.links?.find((l) => l.id === "membershipSaleV3")?.url ?? null;
+    return u ? (u.match(/^(.*)\/address\//)?.[1] ?? null) : null;
+  })();
+
+  useEffect(() => {
+    void fetchServedFeed().then((f) => {
+      setServed(f);
+      setTried(true);
+    });
+  }, []);
+
+  const available = served !== null && served.lanes.burns;
+  const ledger = available ? [...served.burnLedger].reverse() : []; // newest first on screen
+
+  if (!tried) {
+    return <p className="text-sm text-muted-foreground py-6">Reading the served record…</p>;
+  }
+
+  if (!available) {
+    // Honest fallback: the served record is unavailable — the ~24h window
+    // stands in, and its own banner says exactly what it covers.
+    return (
+      <>
+        <Card className="bg-card/20 border-dashed border-border/60 p-4 mb-4">
+          <p className="text-[11px] text-muted-foreground leading-relaxed">
+            <span className="text-foreground font-medium">
+              The served Proof of Burn record is unavailable right now
+            </span>{" "}
+            — the recent window below stands in. Numbers (#1 → #N) return with
+            the served record; a number is only ever assigned on the complete,
+            gapless history.
+          </p>
+        </Card>
+        <LiveActivityFeed onlyKinds={["burn"]} showFilters={false} />
+      </>
+    );
+  }
+
+  return (
+    <div>
+      <Card className="bg-card/30 border-border/50 p-3.5 mb-4">
+        <p className="text-[11px] text-muted-foreground leading-relaxed" data-testid="burn-record-banner">
+          <span className="text-foreground font-medium">
+            The complete Proof of Burn record, served by the event indexer.
+          </span>{" "}
+          Every burn since the first block — oldest is #1 — as of block{" "}
+          {served.headBlock ? served.headBlock.toLocaleString("en-US") : "…"}. A
+          number is assigned only on the complete, gapless history; the sender
+          is named as Founder or Community, never an address. Between indexer
+          cycles this is a snapshot — never evidence of absence.
+        </p>
+      </Card>
+
+      {ledger.length === 0 ? (
+        <Card className="bg-card/20 border-dashed border-border/60 p-5">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            No burn has been recorded yet within the indexed history. That is
+            an honest read — not a claim about anything outside it.
+          </p>
+        </Card>
+      ) : (
+        <div className="space-y-2">
+          {ledger.map((b) => (
+            <Card key={`${b.transactionHash}-${b.logIndex}`} className="bg-card/40 border-border/50 p-3.5">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                <StatusPill tone="caution" size="xs">
+                  Proof of Burn #{b.proofOfBurnNumber}
+                </StatusPill>
+                <p className="text-sm text-foreground/90 flex-1 min-w-48">
+                  {formatSynRaw(b.amountSynRaw)} SYN was retired to the burn
+                  address — gone for everyone, forever.
+                </p>
+                <StatusPill tone={b.senderLabel === "Founder" ? "proof" : "neutral"} size="xs">
+                  {b.senderLabel}
+                </StatusPill>
+                <span className="font-mono text-[10px] text-muted-foreground">
+                  {b.isoDayUtc} · block {b.blockNumber.toLocaleString("en-US")}
+                </span>
+                {explorerBase ? (
+                  <a
+                    href={`${explorerBase}/tx/${b.transactionHash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-proof/80 hover:text-proof"
+                  >
+                    verify <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
+                  </a>
+                ) : null}
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function FireLedgerTeaser() {
   return (
     <PublicPage
       eyebrow="Fire Ledger"
       title="Supply, retired in public."
-      lead="Proof of Fire is a costly signal: SYN sent to the burn address is gone for everyone, forever — never minting, never a price promise. Below: the live total, and every burn the recent window carries, each with its own verify link."
+      lead="Proof of Burn is a costly signal: SYN sent to the burn address is gone for everyone, forever — a manual, verifiable transfer, never automated, never a price promise. Below: the live total, and the complete numbered record — every burn since the first block, each with its own verify link."
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
       <LiveTotalBurn />
 
-      <h2 className="text-base font-medium text-foreground mb-3">Recent burns</h2>
-      <LiveActivityFeed onlyKinds={["burn"]} showFilters={false} />
+      <h2 className="text-base font-medium text-foreground mb-3">The Proof of Burn record</h2>
+      <ProofOfBurnRecord />
 
       <Card className="bg-card/20 border-dashed border-border/60 p-5 mt-10">
-        <h2 className="text-base font-medium text-foreground mb-1.5">What the event indexer adds</h2>
+        <h2 className="text-base font-medium text-foreground mb-1.5">What the event indexer adds next</h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          The complete ledger — every burn since the first block, who chose the
-          fire (opt-in), page by page — arrives with the event indexer. The
-          total above is already whole; the window above it is exactly what it
-          says it is.
+          The record serves every burn since the first block, numbered from
+          #1 — and always states exactly what it covers. What arrives next:
+          who chose the fire, by their own opt-in name (the identity layer),
+          and pagination as the record grows. The total above is already
+          whole either way.
         </p>
       </Card>
     </PublicPage>

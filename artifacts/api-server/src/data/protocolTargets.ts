@@ -445,3 +445,49 @@ export const SALE_SCAN_TARGETS: readonly SaleScanTarget[] = [
     events: ["MembershipPurchasedV3"],
   },
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Protocol-event SCAN targets — Slice M4-c (SERVER-ONLY, backbone lane 2).
+// -----------------------------------------------------------------------------
+// The backbone's generic protocol-event streams: SYN burns (ERC20 Transfer to
+// the dead address — topic-filtered server-side, so the scan is sparse) and
+// the Source Registry lifecycle events. Both scan from the canonical earliest
+// protocol block (the V1 sale deployment — safely BEFORE the first burn at
+// block 87,703,847 and before the registry deployment; an empty range prefix
+// returns zero logs, nothing can be missed). Addresses reuse the values
+// already pinned above (FINANCIAL_TARGETS / REFERRAL_ATTRIBUTION_SCAN_TARGET)
+// — one address, one source of truth, guard-reconciled.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type ProtocolEventScanTarget = {
+  /** Safe internal stream key — never an address. */
+  streamKey: "SYN_BURN" | "SOURCE_LIFECYCLE";
+  /** Human label for status surfaces (never an address). */
+  label: string;
+  /** SERVER-ONLY address; never emitted. */
+  address: string;
+  /** Pinned canon lower scan bound (the earliest protocol block on record). */
+  fromBlock: number;
+  /** Event names this stream persists (decoders are pinned in the lane). */
+  events: readonly string[];
+  scanOnly: true;
+};
+
+export const PROTOCOL_EVENT_SCAN_TARGETS: readonly ProtocolEventScanTarget[] = [
+  {
+    streamKey: "SYN_BURN",
+    label: "SYN burns (Proof of Burn) — transfer-to-dead scan",
+    address: FINANCIAL_TARGETS.synTokenAddress,
+    fromBlock: 87_157_852,
+    events: ["Transfer"],
+    scanOnly: true,
+  },
+  {
+    streamKey: "SOURCE_LIFECYCLE",
+    label: "Source Registry lifecycle — event scan",
+    address: REFERRAL_ATTRIBUTION_SCAN_TARGET.address,
+    fromBlock: 87_157_852,
+    events: ["SourceCreated", "SourceTermsUpdated", "SourceStatusChanged"],
+    scanOnly: true,
+  },
+];

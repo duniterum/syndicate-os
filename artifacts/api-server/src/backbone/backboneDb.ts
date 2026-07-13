@@ -29,6 +29,12 @@ import type {
   BlockTimestampInput,
   RawSaleEventInput,
 } from "./activityHeartbeatReadmodel";
+import type {
+  ProtocolCursorState,
+  ProtocolEventRecord,
+  RawBurnRowInput,
+  RawLifecycleRowInput,
+} from "./protocolEventScan";
 
 /** Avalanche C-Chain — same expected chain the reality spine reconciles. */
 export const BACKBONE_EXPECTED_CHAIN_ID = 43114;
@@ -158,20 +164,25 @@ export interface UncachedRawBlock {
 }
 
 /**
- * DISTINCT (chainId, blockNumber, witness block_hash) present in
- * sale_event_raw but MISSING from the block_timestamp cache. The incremental
- * complement of the founder-gated full-replay script: the unattended path
- * only ever fetches blocks it has never verified; the full re-verification
- * replay stays `protocol-time:enrich`.
+ * DISTINCT (chainId, blockNumber, witness block_hash) present in EITHER raw
+ * lane (sale_event_raw OR protocol_event_raw, M4-c) but MISSING from the
+ * block_timestamp cache. The incremental complement of the founder-gated
+ * full-replay script: the unattended path only ever fetches blocks it has
+ * never verified; the full re-verification replay stays `protocol-time:enrich`.
  */
 export async function loadUncachedRawBlocks(): Promise<UncachedRawBlock[]> {
   requireDatabaseUrl();
   const { pool } = await import("@workspace/db");
   const res = await pool.query(
-    `select r.chain_id, r.block_number,
+    `with raw_blocks as (
+       select chain_id, block_number, block_hash from sale_event_raw
+       union all
+       select chain_id, block_number, block_hash from protocol_event_raw
+     )
+     select r.chain_id, r.block_number,
             count(distinct r.block_hash) filter (where r.block_hash is not null)::int as hash_variants,
             min(lower(r.block_hash)) as witness_hash
-       from sale_event_raw r
+       from raw_blocks r
        left join block_timestamp t
          on t.chain_id = r.chain_id and t.block_number = r.block_number
       where t.block_number is null
@@ -210,6 +221,168 @@ export async function insertBlockTimestampRow(row: {
     })
     .returning({ blockNumber: blockTimestamp.blockNumber });
   return res.length;
+}
+
+// ---------------------------------------------------------------------------
+// Protocol-event lane (M4-c): cursor + raw-row persistence + read-only loads.
+// ---------------------------------------------------------------------------
+
+export async function getProtocolCursor(
+  chainId: number,
+  streamKey: string,
+  eventName: string,
+): Promise<ProtocolCursorState | null> {
+  requireDatabaseUrl();
+  const { db, protocolEventCursor } = await import("@workspace/db");
+  const { and, eq } = await import("drizzle-orm");
+  const rows = await db
+    .select()
+    .from(protocolEventCursor)
+    .where(
+      and(
+        eq(protocolEventCursor.chainId, chainId),
+        eq(protocolEventCursor.streamKey, streamKey),
+        eq(protocolEventCursor.eventName, eventName),
+      ),
+    );
+  const r = rows[0];
+  return r
+    ? {
+        fromBlock: r.fromBlock,
+        lastScannedBlock: r.lastScannedBlock,
+        status: r.status,
+        lastError: r.lastError,
+      }
+    : null;
+}
+
+export async function upsertProtocolCursor(input: {
+  chainId: number;
+  streamKey: string;
+  eventName: string;
+  fromBlock: number;
+  lastScannedBlock: number;
+  status: string;
+  lastError: string | null;
+}): Promise<void> {
+  requireDatabaseUrl();
+  const { db, protocolEventCursor } = await import("@workspace/db");
+  await db
+    .insert(protocolEventCursor)
+    .values({ ...input, updatedAt: new Date() })
+    .onConflictDoUpdate({
+      target: [
+        protocolEventCursor.chainId,
+        protocolEventCursor.streamKey,
+        protocolEventCursor.eventName,
+      ],
+      set: {
+        fromBlock: input.fromBlock,
+        lastScannedBlock: input.lastScannedBlock,
+        status: input.status,
+        lastError: input.lastError,
+        updatedAt: new Date(),
+      },
+    });
+}
+
+/** Insert protocol-event rows (idempotent). Returns rows actually inserted. */
+export async function insertProtocolEvents(
+  recs: readonly ProtocolEventRecord[],
+): Promise<number> {
+  if (recs.length === 0) return 0;
+  requireDatabaseUrl();
+  const { db, protocolEventRaw } = await import("@workspace/db");
+  const inserted = await db
+    .insert(protocolEventRaw)
+    .values(
+      recs.map((r) => ({
+        chainId: r.chainId,
+        streamKey: r.streamKey,
+        eventName: r.eventName,
+        blockNumber: r.blockNumber,
+        blockHash: r.blockHash,
+        transactionHash: r.transactionHash,
+        logIndex: r.logIndex,
+        topic0: r.topic0,
+        decodedJson: r.decodedJson,
+      })),
+    )
+    .onConflictDoNothing({
+      target: [
+        protocolEventRaw.chainId,
+        protocolEventRaw.transactionHash,
+        protocolEventRaw.logIndex,
+      ],
+    })
+    .returning({ id: protocolEventRaw.id });
+  return inserted.length;
+}
+
+export interface ProtocolEventLoad {
+  burns: RawBurnRowInput[];
+  lifecycle: RawLifecycleRowInput[];
+}
+
+/**
+ * Read-only load of the protocol-event lane for the read-model. decodedJson
+ * access is whitelisted to exactly {from, valueRaw} on BURN rows (the burn
+ * loader's `b.` accessor — pinned by backbone.guard); lifecycle rows read NO
+ * decoded fields at all. The sender address stays inside the zone: the
+ * read-model translates it to a Founder/Community LABEL and the address never
+ * reaches any projection.
+ */
+export async function loadProtocolEventRows(): Promise<ProtocolEventLoad> {
+  requireDatabaseUrl();
+  const db = await import("@workspace/db");
+  const { asc, eq } = await import("drizzle-orm");
+
+  const rows = await db.db
+    .select({
+      streamKey: db.protocolEventRaw.streamKey,
+      eventName: db.protocolEventRaw.eventName,
+      blockNumber: db.protocolEventRaw.blockNumber,
+      logIndex: db.protocolEventRaw.logIndex,
+      transactionHash: db.protocolEventRaw.transactionHash,
+      decodedJson: db.protocolEventRaw.decodedJson,
+    })
+    .from(db.protocolEventRaw)
+    .where(eq(db.protocolEventRaw.chainId, BACKBONE_EXPECTED_CHAIN_ID))
+    .orderBy(
+      asc(db.protocolEventRaw.blockNumber),
+      asc(db.protocolEventRaw.logIndex),
+    );
+
+  const burns: RawBurnRowInput[] = [];
+  const lifecycle: RawLifecycleRowInput[] = [];
+  for (const r of rows) {
+    if (r.streamKey === "SYN_BURN") {
+      // decodedJson WHITELIST (burn rows): exactly {from, valueRaw}.
+      const b = r.decodedJson as Record<string, unknown>;
+      if (typeof b.from !== "string" || typeof b.valueRaw !== "string") {
+        throw new Error("burn row decoded shape invalid — refusing to derive");
+      }
+      burns.push({
+        blockNumber: r.blockNumber,
+        logIndex: r.logIndex,
+        transactionHash: r.transactionHash,
+        fromAddress: b.from,
+        valueRaw: b.valueRaw,
+      });
+    } else if (r.streamKey === "SOURCE_LIFECYCLE") {
+      lifecycle.push({
+        eventName: r.eventName,
+        blockNumber: r.blockNumber,
+        logIndex: r.logIndex,
+        transactionHash: r.transactionHash,
+      });
+    } else {
+      throw new Error(
+        `unknown protocol-event stream "${r.streamKey}" — refusing to derive`,
+      );
+    }
+  }
+  return { burns, lifecycle };
 }
 
 // ---------------------------------------------------------------------------

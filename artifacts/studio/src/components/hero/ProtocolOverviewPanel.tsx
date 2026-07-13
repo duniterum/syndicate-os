@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from "framer-motion";
+import { Link } from "wouter";
 import { Activity, Archive, Droplet, Flame, Gauge, Settings, Shield, Users, WalletCards } from "lucide-react";
 import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
 import { useHeroReality, type HeroReality } from "@/components/hero/useHeroReality";
@@ -117,6 +118,17 @@ export function ProtocolOverviewPanel() {
               <div className="mt-2 text-[11px] text-muted-foreground">{stat.meta}</div>
               {statVerifyIds[stat.id] ? (
                 <VerifyOnChain ids={statVerifyIds[stat.id]} className="mt-1.5 block" />
+              ) : null}
+              {/* M4-c: the burn total's HISTORY DOOR — the figure links to its
+                  receipts (the complete numbered Proof of Burn record). */}
+              {stat.id === "burned" ? (
+                <Link
+                  href="/fire-ledger"
+                  className="mt-1 inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground"
+                  data-testid="link-burn-history"
+                >
+                  every burn, numbered →
+                </Link>
               ) : null}
             </motion.div>
           );
