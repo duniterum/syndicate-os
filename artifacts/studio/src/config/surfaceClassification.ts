@@ -133,12 +133,24 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     enforcement: "PREVIEW_LABELLED",
   },
   {
-    routePath: "/source-attribution",
+    // The canonical referral-program URL (founder, 2026-07-13).
+    routePath: "/referral",
     moduleId: "source-attribution",
     audience: "PUBLIC",
     surface: "PUBLIC_VISITOR",
     layout: "public",
-    summary: "The verified-introduction model, framed attribution-only.",
+    summary: "The referral program — how a bounded commission per completed introduction works.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
+    // Legacy alias of /referral (200 + canonical; links never break). No
+    // moduleId on purpose: the module points at the CANONICAL path /referral.
+    routePath: "/source-attribution",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "Legacy alias of /referral — serves the same referral-program page.",
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },

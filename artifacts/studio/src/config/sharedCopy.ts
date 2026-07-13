@@ -15,7 +15,7 @@ export const ctas: Record<string, Cta> = {
   verifyProof: { label: "Verify proof", href: "/proof" },
   viewStatus: { label: "View status", href: "/status" },
   learn: { label: "Learn how it works", href: "/learning" },
-  exploreSource: { label: "How the referral program works", href: "/source-attribution" },
+  exploreSource: { label: "How the referral program works", href: "/referral" },
   getSupport: { label: "Get support", href: "/support" },
   openConsole: { label: "Open Studio OS", href: "/studio" },
   viewContracts: { label: "Contract & economy memory", href: "/contracts" },

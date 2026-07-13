@@ -248,13 +248,17 @@ for (const entry of publicRoutes) {
       `INDEX route ${entry.path} is missing from public/sitemap.xml (run seo:generate)`,
     );
   } else {
-    // 4. Non-INDEX (PENDING) public routes must NOT be in the sitemap.
+    // 4. Non-INDEX (PENDING/REDIRECT) public routes must NOT be in the sitemap.
+    //    Checked on the route's OWN path: a REDIRECT alias's canonicalPath
+    //    deliberately points at an INDEX route that IS in the sitemap (the
+    //    /source-attribution → /referral alias, founder 2026-07-13) — that is
+    //    the consolidation working, not a leak.
     expect(
       entry.sitemap === false,
       `${entry.indexStatus} route ${entry.path} must have sitemap=false`,
     );
     expect(
-      !inXml,
+      !sitemapLocs.has(CANONICAL_ORIGIN + entry.path),
       `${entry.indexStatus} route ${entry.path} leaked into public/sitemap.xml`,
     );
   }

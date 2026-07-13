@@ -546,3 +546,27 @@ SYN-as-reward, boost/multiplier, cash-convertible discount) and lawyer-gates the
 Read the real repo → 4-line gate → **wait for founder GO** → build + guards (Replit is the build gate) →
 show diff → founder approves → commit + push `main` → tick `DESIGN_ROADMAP` → deploy verdict (🚀 / ✅).
 
+
+> **▶ REFERRAL-FIRST, FOR REAL — ✅ BOTH PARTS BUILT (2026-07-13, founder GO ×2, awaiting push GO):**
+> ① THE DEEP SWEEP shipped (`6ac9977`): every rendered sentence referral-first; the builder success
+> message's stale "not active yet" killed. ② HUMAN URL: **/referral is the canonical program URL**
+> (App route + INDEX/sitemap entry + module/nav/CTA/docs repointed); /source-attribution stays a
+> serving ALIAS (200, `REDIRECT` status → noindex,follow; canonical consolidation — no 301 exists at
+> the static layer until the domain transfer); artifact.toml regenerated 17 routes/34 rules; sitemap
+> regenerated (15 INDEX). ③ MONEY-FLOW VOCABULARY (founder decision, re-engraved by the advisor
+> 2026-07-13 — FLOW-BASED, not a blanket word): `acquisitionCost` = bytecode/ABI word ONLY, banned
+> from every public surface ("acquisition cost" is RESERVED for real future marketing costs — ads,
+> CPA — never the referrer payment). BUYER-side money lines say "Paid to referrer" / referrer
+> payment (never "commission" as the buyer money-line label, never "we pay you X%"). "Commission"
+> stays the business word on the REFERRER's own surfaces (program terms, their dashboard:
+> pending/paid commissions). The canonical formula everywhere: Gross purchase → referrer/source
+> payment, if eligible → net protocol contribution → 70/20/10. The doctrinal sentence VERBATIM where
+> the flow is explained (now in the /referral boundaries): "The referrer is not paid from Syndicate
+> revenue after the fact. The referrer is paid from the purchase transaction before the net protocol
+> contribution is routed." Data source rule unchanged: values from quote(), never registry
+> commissionBps. Applied: /join fail-closed line → "A referrer payment of X% applies";
+> "acquisitionCost" survives only as the cited contract word in the protocol map. `check-public-surface-audit` leak-check adapted IN the
+> slice (own-path test — a REDIRECT alias's canonical pointing at the sitemap IS the consolidation
+> working). Verified in built shells: referral.html canonical=/referral · source-attribution.html
+> noindex,follow. All green: 12 guards · seo:check 34 routes · rewrites:check · surface:audit 218+ ·
+> build 18 shells.

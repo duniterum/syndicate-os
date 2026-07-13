@@ -18,7 +18,7 @@
 // with real money: the first purchase (seat #13) paid the introducer's
 // payoutWallet inside the buyer's own transaction. `programLifecycle` below is
 // the single switch; copy still NEVER says "earn now" — the commission is a
-// bounded acquisition payment, and every protective disclaimer stays pinned by
+// bounded commission, and every protective disclaimer stays pinned by
 // guard-safe-source forever. New sources remain founder-signed on-chain acts
 // (SPEC R2); self-service creation arrives with the emitter (R7).
 //
@@ -39,7 +39,7 @@ export const publicToProtocol: Record<string, string> = {
   Referral: "Source",
   "Referral link": "Source link",
   "Referral code": "Source code / Source ID",
-  "Referral commission": "Acquisition commission / Source payment",
+  "Referral commission": "Source payment (the contract calls it acquisitionCost)",
   "Referral dashboard": "Source dashboard",
   "Referred member": "Introduced member",
   "Referral history": "Source receipts / Introduction history",
@@ -60,11 +60,11 @@ export const wordRoles = {
  * (allowed by the negation-aware copy guard); nothing here is a positive claim.
  */
 export const constitutionalLine =
-  "Referral commissions are transparent acquisition payments for eligible completed member introductions — not passive income, not token yield, not downline, and not a profit promise.";
+  "Referral commissions are transparent payments for eligible completed member introductions — not passive income, not token yield, not downline, and not a profit promise.";
 
 /** Short reusable boundary shown near any commission mention. */
 export const boundaryLine =
-  "A referral commission is a bounded acquisition payment. It is not token yield, not passive income, not equity, and not a guarantee of token appreciation.";
+  "A referral commission is a bounded, one-time payment for a completed introduction. It is not token yield, not passive income, not equity, and not a guarantee of token appreciation.";
 
 /** "Not a charity" — said professionally. */
 export const notCharityLine =
@@ -119,7 +119,7 @@ export const receiptFields: { field: string; meaning: string }[] = [
   { field: "Referral code", meaning: "The on-chain identifier (the protocol calls it a source id)." },
   { field: "Purchase tx", meaning: "Proof of a completed join." },
   { field: "Gross amount", meaning: "Total purchase amount." },
-  { field: "Referral commission", meaning: "Acquisition payment, if eligible." },
+  { field: "Referral commission", meaning: "The commission paid, if eligible." },
   { field: "Net routed", meaning: "Amount routed after the referral commission." },
   { field: "Routing split", meaning: "Protocol allocation." },
   { field: "Status", meaning: "Pending / Paid / Ineligible." },
@@ -170,7 +170,7 @@ export const pausedCopy = {
 export const activeCopy = {
   status: "The referral program is active under the current terms.",
   detail:
-    "An eligible source-linked membership purchase generates a bounded acquisition commission, paid directly to the introducer's wallet inside the buyer's own purchase transaction — on-chain, shown by receipt. New sources are created by a founder-signed on-chain act.",
+    "An eligible source-linked membership purchase generates a bounded commission, paid directly to the introducer's wallet inside the buyer's own purchase transaction — on-chain, shown by receipt. New sources are created by a founder-signed on-chain act.",
 };
 
 /** The copy the surfaces render — selected by the single lifecycle switch. */
@@ -422,7 +422,7 @@ export const referralProgram = {
   heading: "Referral Program",
   poweredBy: "Powered by Source Attribution",
   subheading:
-    "Invite serious members into The Syndicate. An eligible referral can generate a transparent acquisition commission when a completed membership purchase is recorded.",
+    "Invite serious members into The Syndicate. An eligible referral generates a transparent commission when a completed membership purchase is recorded.",
   lifecycle: programLifecycle,
   constitutionalLine,
   boundaryLine,

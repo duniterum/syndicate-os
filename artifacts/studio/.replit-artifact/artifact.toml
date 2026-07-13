@@ -138,6 +138,14 @@ from = "/map/"
 to = "/map.html"
 
 [[services.production.rewrites]]
+from = "/referral"
+to = "/referral.html"
+
+[[services.production.rewrites]]
+from = "/referral/"
+to = "/referral.html"
+
+[[services.production.rewrites]]
 from = "/source-attribution"
 to = "/source-attribution.html"
 

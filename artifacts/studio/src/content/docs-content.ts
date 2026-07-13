@@ -124,7 +124,7 @@ export const DOCS_GROUPS: DocGroup[] = [
         audience: ["Member"],
       },
       {
-        routePath: "/source-attribution",
+        routePath: "/referral",
         purpose:
           "How a verified introduction is recognised — attribution of a growth contribution, never a commission.",
         audience: ["Member", "Builder"],

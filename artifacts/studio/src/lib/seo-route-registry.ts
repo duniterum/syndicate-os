@@ -311,7 +311,9 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     notes: "Read-only composition of GET /api/protocol/reality; archive group deliberately unbound.",
   },
   {
-    path: "/source-attribution",
+    // The CANONICAL human URL (founder, 2026-07-13): people search "referral
+    // program" — the URL is part of the search result and the mental load.
+    path: "/referral",
     routeType: "PUBLIC",
     indexStatus: "INDEX",
     sitemap: true,
@@ -321,8 +323,28 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     // snippet can strip the negation and display the banned word alone. The
     // protective negations live in the page body; metadata stays clean.
     description:
-      "How The Syndicate's referral program works: an eligible completed introduction pays a bounded acquisition commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Membership is not an investment.",
-    canonicalPath: "/source-attribution",
+      "How The Syndicate's referral program works: an eligible completed introduction pays a bounded commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Membership is not an investment.",
+    canonicalPath: "/referral",
+    changefreq: "monthly",
+    priority: 0.6,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "source",
+    primaryIntent: "education",
+    proofRoute: "/status",
+    notes: "The canonical referral-program page (human URL).",
+  },
+  {
+    // LEGACY ALIAS of /referral: serves the same page at 200 (existing links
+    // never break — no 301 exists at the static layer until the domain
+    // transfer), noindex,follow + cross-canonical → Google consolidates.
+    path: "/source-attribution",
+    routeType: "PUBLIC",
+    indexStatus: "REDIRECT",
+    sitemap: false,
+    title: "Referral Program — The Syndicate",
+    description:
+      "How The Syndicate's referral program works: an eligible completed introduction pays a bounded commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Membership is not an investment.",
+    canonicalPath: "/referral",
     changefreq: "monthly",
     priority: 0.6,
     ogImage: DEFAULT_OG_IMAGE,

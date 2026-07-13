@@ -375,7 +375,7 @@ export const modules = [
   {
     id: "source-attribution",
     label: "Referral Program",
-    path: "/source-attribution",
+    path: "/referral",
     zone: "public",
     visible: true,
     enabled: true,

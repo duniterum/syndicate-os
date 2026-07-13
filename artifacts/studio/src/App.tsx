@@ -125,6 +125,13 @@ function Router() {
       <PublicRoute path="/map">
         <ProtocolMap />
       </PublicRoute>
+      {/* /referral is the CANONICAL human URL (founder, 2026-07-13 — people
+          search "referral program"); /source-attribution stays as a serving
+          alias (200 + canonical → /referral; no 301 exists at the static
+          layer until the domain transfer). */}
+      <PublicRoute path="/referral">
+        <SourceAttribution />
+      </PublicRoute>
       <PublicRoute path="/source-attribution">
         <SourceAttribution />
       </PublicRoute>

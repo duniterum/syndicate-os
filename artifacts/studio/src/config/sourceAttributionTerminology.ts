@@ -4,7 +4,7 @@
 //
 // DOCTRINE (founder directive, 2026-07-07 — corrected): a source is a verified
 // introduction. Publicly it is presented as a bounded referral: an eligible,
-// completed introduction carries a transparent acquisition commission, shown
+// completed introduction carries a transparent commission, shown
 // by receipt — never passive income, never token yield, never a downline,
 // never a profit promise, and never an investment.
 // STATE — ACTIVE (founder-published 2026-07-13; the rail is proven with real
@@ -42,7 +42,7 @@ export const sourceRewardConceptLifecycle: DisplayLifecycle = "FUTURE";
  * present on the source-attribution surface.
  */
 export const sourceDisclaimer =
-  "Referral commissions are transparent acquisition payments for eligible completed member introductions — not passive income, not token yield, not downline, and not a profit promise. Membership is not an investment.";
+  "Referral commissions are transparent payments for eligible completed member introductions — not passive income, not token yield, not downline, and not a profit promise. Membership is not an investment.";
 
 export interface SourceModelStep {
   title: string;
@@ -64,7 +64,7 @@ export const sourceAttribution = {
     },
     {
       title: "Commission, then recognition",
-      body: "An eligible completed referral carries a bounded acquisition commission under the current terms, and over time is reflected in non-financial recognition — never passive income, never a downline, and never a profit promise.",
+      body: "An eligible completed referral carries a bounded commission under the current terms, and over time is reflected in non-financial recognition — never passive income, never a downline, and never a profit promise.",
     },
     {
       title: "The chain wins over claims",
@@ -86,10 +86,14 @@ export const sourceAttribution = {
     },
   ] as SourceModelStep[],
   boundaries: [
+    // The doctrinal money-flow sentence — VERBATIM (founder decision, re-engraved
+    // by the advisor 2026-07-13): the flow is Gross purchase → referrer/source
+    // payment, if eligible → net protocol contribution → 70/20/10.
+    "The referrer is not paid from Syndicate revenue after the fact. The referrer is paid from the purchase transaction before the net protocol contribution is routed.",
     "The on-chain referral registry is live and readable; the public /source surface validates a referral code and builds a shareable join link — strictly read-only.",
     "Registering or activating a referral code is a founder-signed, on-chain act. Nothing is created, activated, or written from any public page.",
     "Who referred whom is only ever read from the on-chain record — no public page writes it; the purchase contract records it when a buyer joins through a valid link.",
-    "The commission is a bounded acquisition payment under the current terms; any recognition tied to referrals remains a future, gated concept.",
-    "Membership is not an investment. A referral commission is a bounded acquisition payment — not passive income, not token yield, not equity, and not a profit promise.",
+    "The commission is a bounded, one-time payment under the current terms; any recognition tied to referrals remains a future, gated concept.",
+    "Membership is not an investment. A referral commission is a bounded, one-time payment — not passive income, not token yield, not equity, and not a profit promise.",
   ],
 };
