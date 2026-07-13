@@ -340,7 +340,7 @@ function SourcePaymentLine({
       className="text-xs text-muted-foreground pb-3 mb-3 border-b border-border/40"
       data-testid="text-source-proof-unavailable"
     >
-      A source payment of {pct} applies to this quote. Its destination is{" "}
+      A referral commission of {pct} applies to this quote. Its destination is{" "}
       {state.kind === "loading" ? "loading" : "not confirmed on-chain right now"} — reload to verify.
       No destination is shown unverified.
     </p>

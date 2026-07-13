@@ -60,16 +60,16 @@ function ValidationResult({ sourceId }: { sourceId: string }) {
   if (data.exists === false) {
     return (
       <p className="text-sm text-muted-foreground" data-testid="text-validate-notfound">
-        This introduction id is not registered on-chain. Only the protocol
-        owner can register a source — nothing can be created from this page.
+        This referral code is not registered on-chain. Only the protocol
+        owner can register one — nothing can be created from this page.
       </p>
     );
   }
   if (data.exists === true && data.active === false) {
     return (
       <p className="text-sm text-muted-foreground" data-testid="text-validate-inactive">
-        Registered but not active on-chain. Activation is an owner-side on-chain
-        act; until then this id carries no attribution.
+        Registered but not active on-chain. Activation is a founder-signed
+        on-chain act; until then this referral code does not apply to a join.
       </p>
     );
   }
@@ -87,9 +87,9 @@ function ValidationResult({ sourceId }: { sourceId: string }) {
     return (
       <div data-testid="panel-validate-active">
         <p className="text-sm text-foreground mb-3">
-          Verified introduction recognized — registered and active on-chain. The
-          link you build carries this introduction id; whether a join records
-          that attribution is an on-chain step that is not active yet.
+          Verified referral code — registered and active on-chain. Share the
+          link below: a join through it is recorded on-chain, and the
+          commission is paid inside the buyer&apos;s own purchase transaction.
         </p>
         <div className="flex flex-wrap items-center gap-3">
           <code className="font-mono text-xs bg-muted/60 border border-border/50 rounded px-3 py-2 break-all" data-testid="text-attribution-link">
@@ -105,7 +105,7 @@ function ValidationResult({ sourceId }: { sourceId: string }) {
   }
   return (
     <p className="text-sm text-destructive" data-testid="text-validate-unknown">
-      Introduction state could not be read: {data.failureReason ?? "unknown"}.
+      The referral state could not be read: {data.failureReason ?? "unknown"}.
     </p>
   );
 }
@@ -120,7 +120,7 @@ export default function SourceLinkBuilder() {
     if (!isSourceIdFormat(trimmed)) {
       setSubmitted(null);
       setInputError(
-        "An introduction id is a bytes32 hex value: 0x followed by exactly 64 hex characters.",
+        "A referral code is a bytes32 hex value: 0x followed by exactly 64 hex characters.",
       );
       return;
     }
@@ -158,10 +158,9 @@ export default function SourceLinkBuilder() {
             <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mt-2">
               New here?{" "}
               <Link href={ctas.exploreSource.href} className="text-primary hover:underline">
-                How attribution works
+                How the referral program works
               </Link>{" "}
-              explains verified introductions in full — this page is the
-              read-only tool.
+              explains it in full — this page is the read-only tool.
             </p>
           </div>
         </div>
@@ -175,21 +174,21 @@ export default function SourceLinkBuilder() {
           </div>
           <div>
             <h2 className="text-base font-medium text-foreground">
-              Check an introduction id
+              Check your referral code
             </h2>
             <p className="text-sm text-muted-foreground leading-relaxed mt-1 max-w-2xl">
-              The id is validated server-side against the live registry and is
-              never echoed back or logged. The link you build carries the id
+              The code is validated server-side against the live registry and is
+              never echoed back or logged. The link you build carries the code
               you pasted — share it only if it is yours to share.
             </p>
           </div>
         </div>
 
         <Field
-          label="Introduction id"
+          label="Referral code"
           help="A bytes32 hex value: 0x followed by exactly 64 hex characters."
           error={inputError}
-          placeholder="0x… introduction id (bytes32)"
+          placeholder="0x… referral code (bytes32)"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
@@ -215,8 +214,8 @@ export default function SourceLinkBuilder() {
         The registry behind this page
       </h2>
       <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-6">
-        Live read-only linkage between the active engine and the source
-        registry. Identical to the read on{" "}
+        Live read-only linkage between the active engine and the on-chain
+        referral registry. Identical to the read on{" "}
         <Link href="/status" className="text-primary hover:underline">
           /status
         </Link>

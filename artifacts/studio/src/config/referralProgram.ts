@@ -80,7 +80,7 @@ export interface ProgramState {
   meaning: string;
 }
 export const programStates: ProgramState[] = [
-  { id: "Active", meaning: "The referral/source is usable." },
+  { id: "Active", meaning: "The referral code is usable." },
   { id: "Applied", meaning: "A referral code is attached to this checkout." },
   { id: "Eligible", meaning: "The conditions appear to be met." },
   { id: "Pending", meaning: "Purchase, indexing, or confirmation is not final yet." },
@@ -89,7 +89,7 @@ export const programStates: ProgramState[] = [
   { id: "Flagged", meaning: "Held for anti-abuse or manual review." },
   { id: "Paused", meaning: "The program is not publicly active right now." },
   { id: "Expired", meaning: "The code or attribution window has expired." },
-  { id: "Cleared", meaning: "The buyer removed the source before checkout." },
+  { id: "Cleared", meaning: "The buyer removed the referral code before checkout." },
 ];
 
 /** "How it works" — six plain steps. */
@@ -97,7 +97,7 @@ export const howItWorks: string[] = [
   "Share your referral link with serious people.",
   "A new member reviews the terms.",
   "They join by their own choice.",
-  "The purchase records the source.",
+  "The purchase records the referral on-chain.",
   "The commission is marked pending or paid.",
   "The receipt stays visible in your history.",
 ];
@@ -105,7 +105,7 @@ export const howItWorks: string[] = [
 /** "What counts" — an eligible referral requires all of these. */
 export const eligibility: string[] = [
   "A new buyer (not an existing member).",
-  "A valid source link or code.",
+  "A valid referral link or code.",
   "A completed membership purchase.",
   "No self-referral.",
   "No circular referral.",
@@ -116,11 +116,11 @@ export const eligibility: string[] = [
 
 /** Receipt fields shown for a source-linked purchase. */
 export const receiptFields: { field: string; meaning: string }[] = [
-  { field: "Source ID", meaning: "Referral / source identifier." },
+  { field: "Referral code", meaning: "The on-chain identifier (the protocol calls it a source id)." },
   { field: "Purchase tx", meaning: "Proof of a completed join." },
   { field: "Gross amount", meaning: "Total purchase amount." },
   { field: "Referral commission", meaning: "Acquisition payment, if eligible." },
-  { field: "Net routed", meaning: "Amount routed after the source payment." },
+  { field: "Net routed", meaning: "Amount routed after the referral commission." },
   { field: "Routing split", meaning: "Protocol allocation." },
   { field: "Status", meaning: "Pending / Paid / Ineligible." },
   { field: "Reason", meaning: "Why, if ineligible." },
@@ -132,9 +132,9 @@ export const antiAbuse: string[] = [
   "No circular referral.",
   "No bots or fake accounts.",
   "No wash purchases.",
-  "No source on an already-existing member.",
-  "No hidden or invisible attribution — the source is shown before signing.",
-  "The buyer can clear the source before checkout.",
+  "No referral code on an already-existing member.",
+  "No hidden or invisible attribution — the referral is shown before signing.",
+  "The buyer can clear the referral code before checkout.",
   "Commissions stay pending until confirmation.",
   "Abnormal patterns go to abuse review.",
   "Caps and windows may apply.",
@@ -147,11 +147,11 @@ export const antiAbuse: string[] = [
  */
 export const goodRankings: string[] = [
   "Top Verified Introducers",
-  "Durable Sources",
-  "Long-Term Member Sources",
+  "Durable Referrers",
+  "Long-Term Member Referrers",
   "High-Signal Introducers",
-  "Recognized Sources",
-  "Retention-weighted Source Rank",
+  "Recognized Referrers",
+  "Retention-weighted Referrer Rank",
   "Members Introduced",
   "Active Members Introduced",
 ];

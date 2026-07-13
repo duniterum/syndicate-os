@@ -54,42 +54,42 @@ export const sourceAttribution = {
   // USER word on every public surface; "Source" stays the PROTOCOL word in
   // proof/registry contexts ("powered by Source Attribution").
   heading: "Referral Program",
-  tagline: "A source opens the door. A member decides. The receipt records the introduction.",
+  tagline: "A referral opens the door. A member decides. The receipt records it.",
   intro:
-    "The Syndicate records verified introductions. When a source-linked member joins under active terms, the referral commission is paid directly to the introducer's wallet inside the buyer's own purchase transaction — on-chain, shown by receipt. The program is active under the current terms (founder-published). The public /source page only validates an introduction id and builds a shareable join link — it never creates, activates, or writes anything; a new source itself is a founder-signed on-chain act.",
+    "The Syndicate records every referral on-chain. When someone joins through a referral link under the active terms, the commission is paid directly to the referrer's wallet inside the buyer's own purchase transaction — on-chain, shown by receipt. The public /source page only validates a referral code and builds a shareable join link — it never creates, activates, or writes anything; a new referral code itself is a founder-signed on-chain act.",
   model: [
     {
-      title: "A verified introduction",
-      body: "An existing member introduces someone who joins. The link between them is recorded as the origin of that join.",
+      title: "A verified referral",
+      body: "An existing member introduces someone who joins through their referral link. That link between the two is recorded on-chain as the origin of the join.",
     },
     {
       title: "Commission, then recognition",
-      body: "An eligible completed introduction carries a bounded acquisition commission under the current terms, and over time is reflected in non-financial recognition — never passive income, never a downline, and never a profit promise.",
+      body: "An eligible completed referral carries a bounded acquisition commission under the current terms, and over time is reflected in non-financial recognition — never passive income, never a downline, and never a profit promise.",
     },
     {
-      title: "Source wins over claims",
-      body: "Attribution is only ever read from verified source records. No public claim of who introduced whom outranks the recorded source.",
+      title: "The chain wins over claims",
+      body: "Who referred whom is only ever read from the on-chain record. No public claim outranks it.",
     },
   ] as SourceModelStep[],
   currentState: [
     {
       title: "The registry is on-chain",
-      body: "Verified introductions live in the protocol's on-chain source registry. It is real and readable today — no placeholder stands in for it.",
+      body: "Referral records live in the protocol's on-chain registry (the protocol calls them sources). It is real and readable today — no placeholder stands in for it.",
     },
     {
       title: "/source reads it, read-only",
       body: "The public /source page validates a referral code against the live registry and, when it is active, builds a shareable join link. It never creates, activates, or writes anything.",
     },
     {
-      title: "Creating a source stays owner-gated",
-      body: "Registering and activating a source are owner-side, on-chain acts. A valid active introduction is applied at purchase and the commission is paid inside the buyer's own transaction; any recognition tied to introductions remains a future, gated concept.",
+      title: "Creating a referral code stays founder-gated",
+      body: "Registering and activating a referral code are founder-signed, on-chain acts. A valid active referral is applied at purchase and the commission is paid inside the buyer's own transaction; any recognition tied to referrals remains a future, gated concept.",
     },
   ] as SourceModelStep[],
   boundaries: [
-    "The on-chain source registry is live and readable; the public /source surface validates a referral code and builds a shareable join link — strictly read-only.",
-    "Registering or activating a source is an owner-side, on-chain act. Nothing is created, activated, or written from any public page.",
-    "Attribution is only ever read from verified on-chain source records — no public page writes it; the purchase contract records it when a buyer joins through a valid link.",
-    "The commission is a bounded acquisition payment under the current terms; any recognition tied to introductions remains a future, gated concept.",
+    "The on-chain referral registry is live and readable; the public /source surface validates a referral code and builds a shareable join link — strictly read-only.",
+    "Registering or activating a referral code is a founder-signed, on-chain act. Nothing is created, activated, or written from any public page.",
+    "Who referred whom is only ever read from the on-chain record — no public page writes it; the purchase contract records it when a buyer joins through a valid link.",
+    "The commission is a bounded acquisition payment under the current terms; any recognition tied to referrals remains a future, gated concept.",
     "Membership is not an investment. A referral commission is a bounded acquisition payment — not passive income, not token yield, not equity, and not a profit promise.",
   ],
 };
