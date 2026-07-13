@@ -316,8 +316,12 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     indexStatus: "INDEX",
     sitemap: true,
     title: "Referral Program — The Syndicate",
+    // SEO-metadata law (surface:audit, blocking): banned financial words never
+    // appear in a title/description — NOT EVEN NEGATED. A truncated search
+    // snippet can strip the negation and display the banned word alone. The
+    // protective negations live in the page body; metadata stays clean.
     description:
-      "How The Syndicate's referral program works: an eligible completed introduction pays a bounded acquisition commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Not passive income, not yield, and not an investment.",
+      "How The Syndicate's referral program works: an eligible completed introduction pays a bounded acquisition commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Membership is not an investment.",
     canonicalPath: "/source-attribution",
     changefreq: "monthly",
     priority: 0.6,
