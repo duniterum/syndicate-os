@@ -2,7 +2,23 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🕯 SLICE M6 ✅ CANDIDATES WRITTEN (2026-07-14, founder GO "promotion stays my act"):
+> **▶ 🏛 SLICE M6 ✅ COMPLETE — ALL THREE PROMOTIONS DONE (2026-07-14, founder GO "promote all
+> three"; full texts were read ON SCREEN per the new standing rule): /chronicle carries FOUR
+> true chapters.** One commit per promotion, exactly the doctrine: Entry 2 "The first
+> real-money seat" (`94a40a9`) · Entry 3 "The first referral source" (`f3135a7`) · Entry 4
+> "The ladder decision" (`eafe78a`); each candidate file marked ✅ PROMOTED
+> (candidate-of-record kept). NEW STANDING RULE landed in CLAUDE.md (`5629e2f`, founder,
+> permanent): content awaiting a founder decision is pasted FULL inline — he decides on
+> screen, never opens repo files; file paths alone are not a report. RUNTIME-VERIFIED on the
+> local rig: /chronicle renders all four entries oldest-first, each with its VERIFY card,
+> zero console errors. Green: studio tsc 0 · studio guards · build 24 shells (21 INDEX,
+> unchanged — /chronicle was already INDEX since Entry 1). M6 THIN-V1 COMPLETE (the register
+> holds the duplicate seat · the first real-money seat · the first referral source · the
+> ladder decision; the future "the first duplicate was a gift" chapter waits for its
+> adoption/opt-in moment per MVP brief §7). NEXT: the founder picks — M7 Economy thin /
+> M0-M3 / Q-A/Q-B.
+>
+> **▶ Prior: 🕯 SLICE M6 ✅ CANDIDATES WRITTEN (2026-07-14, founder GO "promotion stays my act"):
 > THREE CHRONICLE CHAPTER CANDIDATES in `docs/chronicle/candidates/`, in the register
 > discipline + CANON_PROTOCOL_LANGUAGE §8 solemn-alive voice — NOT promoted (CHR-1: promotion
 > = a founder-approved commit into chronicleRegister.ts, one GO per entry):**
