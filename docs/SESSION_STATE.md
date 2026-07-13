@@ -2,7 +2,16 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ ORIGIN-HARVEST ARC — SLICE CHR-1 ✅ BUILT (2026-07-14): CHRONICLE V1 — zero infra, the
+> **▶ 🏛️ THE FIRST CHRONICLE PROMOTION (founder GO, 2026-07-14): "The duplicate seat" is
+> ENTRY 1 of the public register.** The candidate's text carried faithfully into
+> `chronicleRegister.ts` (the counts stated as N/M with the as-lived 12/11 narrative — the
+> entry records the day, the live pages record the present); the candidate file marked
+> ✅ PROMOTED (kept as candidate-of-record); /chronicle FLIPPED PENDING→INDEX (sitemap 21
+> INDEX, 3 noindex remain); the Chronicle door moved to "Open today". RUNTIME-VERIFIED:
+> entry renders with its verify card, the empty-state honestly gone. Promotion = this commit —
+> exactly the doctrine.
+>
+> **▶ Prior: ORIGIN-HARVEST ARC — SLICE CHR-1 ✅ BUILT (2026-07-14): CHRONICLE V1 — zero infra, the
 > register is a COMMITTED FILE, promotion is a FOUNDER ACT.** `config/chronicleRegister.ts`
 > (typed entries: id · dateUtc · title · sections · verifyNote; register discipline pinned in
 > the header: protocol-institutional · identity-blind · amount-blind · verify-first; EMPTY at

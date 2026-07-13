@@ -43,6 +43,8 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
       // ACT-1: the teasers GREW into live recent-window pages — open doors now.
       { label: "Activity", href: "/activity", note: "The public heartbeat — receipt-backed events, read live." },
       { label: "Fire Ledger", href: "/fire-ledger", note: "Supply retired in public — live total + recent burns." },
+      // First promotion (founder, 2026-07-14): the Chronicle is open.
+      { label: "Chronicle", href: "/chronicle", note: "The solemn record — entry one: the duplicate seat." },
       { label: "Protocol graph", href: "/map", note: "The protocol, drawn — every surface on one map." },
     ],
   },
@@ -58,8 +60,8 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
     title: "Coming soon",
     doors: [
       // §11 slot 2c — coming-soon doors open their DESIGNED TEASERS, badges
-      // honest. (Activity + Fire Ledger went LIVE in ACT-1 → moved above.)
-      { label: "Chronicle", href: "/chronicle", lifecycle: "FUTURE", note: "The institutional story — founder-promoted turning points." },
+      // honest. (Activity + Fire Ledger live in ACT-1; Chronicle opened by
+      // the first founder promotion, 2026-07-14 → all moved above.)
       { label: "Archive", href: "/archive", lifecycle: "PENDING_ADAPTER", note: "Artifacts as protocol memory — reads not wired yet." },
       // FOUNDER DECISION (2026-07-14): the possessive-network door is DEAD
       // (bannedSurfaceNames carries the term + the why); its content lives in

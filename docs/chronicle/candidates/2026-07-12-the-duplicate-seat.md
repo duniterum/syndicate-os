@@ -1,14 +1,14 @@
 # CHRONICLE CANDIDATE — The duplicate seat
 
 ```
-status:    CANDIDATE — awaiting founder promotion (promotion is a HUMAN act;
-           this document confers nothing by existing)
+status:    ✅ PROMOTED — founder GO 2026-07-14. Entry 1 of the public register
+           (artifacts/studio/src/config/chronicleRegister.ts, rendered at
+           /chronicle). This file remains as the candidate-of-record.
 register:  protocol-institutional
 date:      2026-07-12 (the day the overlap was verified and answered on-chain-truthfully)
 discipline: identity-blind (seat numbers only, no wallet, no person) ·
            amount-blind · protocol-centric framing
-surface:   /chronicle does not exist yet (Phase 5). This candidate waits in the
-           repo; if promoted, it enters the public record oldest-first.
+surface:   /chronicle (live since the promotion; oldest-first).
 ```
 
 ---
