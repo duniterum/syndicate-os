@@ -86,6 +86,16 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://thesyndicate.money/activity</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://thesyndicate.money/fire-ledger</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://thesyndicate.money/source</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

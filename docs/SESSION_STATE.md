@@ -2,7 +2,30 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ ORIGIN-HARVEST ARC — SLICE L-1 ✅ BUILT (2026-07-14, autonomous work order): /liquidity.**
+> **▶ ORIGIN-HARVEST ARC — SLICE ACT-1 ✅ BUILT (2026-07-14): ACTIVITY V1 + FIRE LEDGER
+> DETAIL — one recent-window RPC feed spine, the teasers GREW into live pages.**
+> `lib/activityFeed.ts`: client chunked getLogs over ~24h (43,200 blocks, 2000/chunk, address
+> array), events RETARGETED VERBATIM from today's repo — MembershipPurchasedV3 (24 params from
+> saleEventDecoders, SELF-CHECKED at module load: toEventSelector(signature) must equal the
+> pinned topic0 or the module throws) · ERC20 Transfer filtered to==burnAddress · the 3
+> SourceRegistryV1 lifecycle events (from the .sol). Addresses from verify-links, never
+> hardcoded. Chain-time stamps from block headers (never a wall clock); fail-soft chunks
+> (coverage shrinks HONESTLY, reported in the banner), fail-closed decode. THE HONESTY LAW
+> rendered: the HealthBanner states the exact covered block range + "never evidence of
+> absence" + "the complete indexed history arrives with the event indexer".
+> `components/activity/LiveActivityFeed.tsx` (origin chrome adapted): type pills · memory
+> anchor flag (receipt-thread doctrine) · per-row tx verify link · filter chips · summary row.
+> /activity = the live feed + "what the indexer adds" vision block; /fire-ledger = live total
+> + burn-only feed + vision block; both FLIPPED PENDING→INDEX (real live content; sitemap 20
+> INDEX; lifecycle-guard exemptions removed — the pages render their badge directly); member
+> doors: Activity + Fire Ledger moved to "Open today". **RUNTIME-VERIFIED against the real
+> chain:** banner shows blocks 90,181,087→90,224,287; the feed rendered the REAL seat event
+> (1 seat · 0 burns · 0 referral in-window) — and the "missing" referral events were PROVEN to
+> sit at blocks 90,177,061/90,177,131, ~4k blocks BEFORE the window: the honest window doing
+> exactly what it claims. CSP connect-src verified ('self' https: wss:). Green: tsc 0 · 12
+> guards · seo 40 routes/20 INDEX · rewrites 23/46 · surface 24 · build 24 shells.
+>
+> **▶ Prior: ORIGIN-HARVEST ARC — SLICE L-1 ✅ BUILT (2026-07-14, autonomous work order): /liquidity.**
 > Origin harvest ADAPTED (liquidity.tsx + rail/why/status): ① WhyLpMatters 3 cards, "small on
 > purpose · early LPs shape the pool" framing KEPT; ② the Action Rail — Trade · Add Liquidity ·
 > Become an LP (anchor) · View Pool · Verify Pair (verify-links lpPair, fail-closed).

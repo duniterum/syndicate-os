@@ -24,9 +24,9 @@ const EXEMPT = new Set([
   // §11 slot-2c teaser pages: their honesty label IS rendered — by the shared
   // TeaserSurface chassis from spec.lifecycle (chassis check below pays for
   // the exemption, so it cannot rot into an unlabeled surface).
-  "ActivityTeaser.tsx",
+  // (ACT-1: Activity + Fire Ledger went LIVE and render their badge directly —
+  // removed from this list; only the Chronicle teaser remains chassis-labeled.)
   "ChronicleTeaser.tsx",
-  "FireLedgerTeaser.tsx",
 ]);
 
 // The chassis check that pays for the teaser exemptions: TeaserSurface must

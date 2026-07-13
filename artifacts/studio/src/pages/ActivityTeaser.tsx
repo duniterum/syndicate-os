@@ -1,26 +1,36 @@
-// pages/ActivityTeaser.tsx — /activity designed teaser (§11 slot 2c).
-// Goes live with the event backbone (M4/M5) — until then this page says so.
+// pages/ActivityTeaser.tsx — /activity, LIVE V1 (ARC ACT-1; the teaser GREW).
+// The public heartbeat: a recent-window feed read live from the chain, every
+// line receipt-backed and verify-linked (the feed spine carries the honesty
+// banner). The old teaser's vision block stays at the bottom as "what the
+// indexer adds" — the deeper history is a promise the indexer keeps, not us.
 
-import { TeaserSurface, type TeaserSpec } from "@/components/TeaserSurface";
-
-const spec: TeaserSpec = {
-  eyebrow: "Activity",
-  title: "The public heartbeat.",
-  what:
-    "The protocol learned to speak through verified receipts. Activity will render every on-chain event as a plain sentence — a seat written, supply retired, terms updated — each line receipt-backed with its own verify link, aggregate and address-safe, never a claim. It is the page that proves the protocol is alive without asking you to trust anyone.",
-  lifecycle: "PENDING_ADAPTER",
-  previewRows: [
-    { label: "A seat was written", hint: "block · verify" },
-    { label: "Supply was retired", hint: "block · verify" },
-    { label: "Source terms updated", hint: "public event · verify" },
-    { label: "A referral was paid", hint: "inside the buyer's tx · verify" },
-  ],
-  unlocks:
-    "The event backbone — the indexer that turns raw chain events into receipt-backed lines. The scan machinery already runs for the referral counters; Activity arrives when it runs unattended and serves the feed.",
-  returnHook:
-    "Every purchase, every burn, every public act of the protocol will be readable here — including yours. The story is already being written on-chain; this page will simply read it aloud.",
-};
+import { PublicPage } from "@/components/PublicPage";
+import { LifecycleBadge } from "@/components/LifecycleBadge";
+import { Card } from "@/components/ui/card";
+import { LiveActivityFeed } from "@/components/activity/LiveActivityFeed";
 
 export default function ActivityTeaser() {
-  return <TeaserSurface spec={spec} />;
+  return (
+    <PublicPage
+      eyebrow="Activity"
+      title="The public heartbeat."
+      lead="The protocol speaks through verified receipts. Every line below is an on-chain event from the recent window, rendered as a plain sentence with its own verify link — aggregate and address-safe, never a claim."
+      badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
+    >
+      <LiveActivityFeed />
+
+      {/* What the indexer adds — the old teaser's vision, honestly scoped. */}
+      <Card className="bg-card/20 border-dashed border-border/60 p-5 mt-10">
+        <h2 className="text-base font-medium text-foreground mb-1.5">What the event indexer adds</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          This page reads a recent window directly from the chain, in your
+          browser. The event indexer — the same machinery already counting
+          referral introductions — will serve the COMPLETE history from the
+          first block: full pagination, per-member feeds, and the candidate
+          pipeline that feeds the Chronicle. Until then, the window above is
+          exactly what it says it is.
+        </p>
+      </Card>
+    </PublicPage>
+  );
 }
