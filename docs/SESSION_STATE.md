@@ -2,7 +2,28 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ R1+R2 — THE FIRST MEMBER SOURCE, BUILT (2026-07-13, founder GO; signing = a founder act,
+> **▶ 🏆 R2 IS DONE — THE FIRST CONVENTION-DERIVED MEMBER SOURCE IS LIVE ON-CHAIN (2026-07-13,
+> both founder signatures):** sourceId `0x804e80f1…ae974` = keccak256("SYN.SOURCE.V1",
+> `0x88EC79AF…Dd73`) — the FIRST source following the SPEC §③ convention. Chain-verified:
+> class MEMBER_INTRODUCTION · 500 bps · LIFETIME · no caps · repeat=true · sourceWallet ==
+> payoutWallet == the founder wallet · metadataHash EXACTLY `0xc8480867…1e6e48` (== the served
+> terms document, verified on three planes) · created PAUSED 04:19:22Z → ACTIVATED 04:20:36Z
+> (block ~90177188). The founder signed both acts in his own wallet through the PROPOSE screen
+> (Form 2's first real use). LIVE PROOF: the prod quote
+> `/api/join/quote?grossUsdc=5000000&sourceId=0x804e…` returns `sourceValid:true`,
+> `acquisitionCostRaw:250000` (5% = $0.25 on $5), net 4.75 → the member referral link
+> `https://thesyndicate.money/join?source=0x804e80f1…ae974` pays live. NOTE (process, honest):
+> the founder signed create+activate back-to-back, so the planned PAUSED fail-closed spot-check
+> between signatures was skipped — the born-PAUSED sequence itself is contract-enforced and both
+> states were read back on-chain after the fact. UNLOCKED NEXT: the auto-derived member link
+> card (the convention now has a real on-chain instance) · R5 the introduction indexer.
+> LOCAL SIGNING RIG (now proven, reusable): api-server runs on Windows via
+> `NODE_ENV=development; PORT=5000; npm run build; node dist/index.mjs` (the npm dev script is
+> bash-only) · studio needs `.env.local` `VITE_WALLETCONNECT_PROJECT_ID` (public by design —
+> recovered from the prod bundle) · vite dev /api proxy + the fail-closed verify-links read
+> shipped in `8c4843c`.
+>
+> **▶ Prior: R1+R2 — THE FIRST MEMBER SOURCE, BUILT (2026-07-13, founder GO; signing = a founder act,
 > pending):** ① **R1 the program terms document** exists and is PUBLIC:
 > `artifacts/studio/public/referral-program-terms-v1.txt` served at
 > `/referral-program-terms-v1.txt` (flat filename ON PURPOSE — a `referral/` directory would

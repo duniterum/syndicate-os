@@ -135,8 +135,13 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   canonical → /referral (links never break, Google consolidates). Registry + sitemap + artifact.toml
   regen + guards lockstep. Consider /source → /referral-link the same way.
 
-- **⏳ R1+R2 — the first MEMBER_INTRODUCTION source (founder GO 2026-07-13; BUILT, awaiting
-  diff approval → deploy → the founder's TWO signatures).** R1 terms doc public
+- **✅ R1+R2 — DONE ON-CHAIN (2026-07-13): the first convention-derived MEMBER_INTRODUCTION
+  source is ACTIVE** (sourceId `0x804e80f1…ae974`, founder-signed create+activate, metadataHash
+  == the published terms `0xc8480867…1e6e48`, prod quote pays 5% live — full state in
+  SESSION_STATE). Founder confirms closure. NEXT unlocked: the auto-derived member link card ·
+  R5 indexer.
+  *(Original entry, for the record:)* R1+R2 — the first MEMBER_INTRODUCTION source (founder GO
+  2026-07-13; BUILT, awaiting diff approval → deploy → the founder's TWO signatures). R1 terms doc public
   (`/referral-program-terms-v1.txt`, hashed live → metadataHash) + R2 PROPOSE screen
   (Constitution §④ Form 2) in /admin/sources: owner() read live, sourceId derived
   (`SYN.SOURCE.V1`), createSource born PAUSED → fail-closed /join check → setSourceStatus(ACTIVE),
