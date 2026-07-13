@@ -27,14 +27,14 @@ export const INTRODUCTION_SNAPSHOT: IntroductionSnapshot = {
     "chainId": 43114,
     "saleKey": "MEMBERSHIP_SALE_V3",
     "fromBlock": 88505301,
-    "asOfBlock": 90184731,
+    "asOfBlock": 90187222,
     "durableTest": "SYN_BALANCE_HELD",
     "totals": {
-      "attributedPurchases": 2,
-      "distinctSources": 1,
-      "introducedMembers": 2,
-      "durableIntroductions": 2,
-      "commissionPaidRaw": "500000"
+      "attributedPurchases": 3,
+      "distinctSources": 2,
+      "introducedMembers": 3,
+      "durableIntroductions": 3,
+      "commissionPaidRaw": "750000"
     },
     "bySource": {
       "src_36101e67d77b151bd9b04938": {
@@ -51,13 +51,28 @@ export const INTRODUCTION_SNAPSHOT: IntroductionSnapshot = {
         "promotionDue": false,
         "crossedAtBlock": null,
         "crossedAtDateUtc": null
+      },
+      "src_ea47feba757c852a42c68dbb": {
+        "attributedPurchases": 1,
+        "introducedMembers": 1,
+        "durableIntroductions": 1,
+        "commissionPaidRaw": "250000",
+        "escrowOwedRaw": "0",
+        "firstBlock": 90187059,
+        "lastBlock": 90187059,
+        "currentBps": 500,
+        "entitledBps": 500,
+        "entitledTitle": "Emerging",
+        "promotionDue": false,
+        "crossedAtBlock": null,
+        "crossedAtDateUtc": null
       }
     }
   },
-  "snapshotHash": "sha256:5a3c9df95a6d69d8281ac4c40cc882ed1b9e8168a0e32736d02ca188c65c3e99",
+  "snapshotHash": "sha256:a5409ac3cb27d2e5fc75484a1cdfa4fc20934c4de98d52524b1d080ce57aa2ca",
   "provenance": {
-    "builtAt": "2026-07-13T06:34:07.548Z",
+    "builtAt": "2026-07-13T07:17:27.139Z",
     "builderVersion": "introduction-readmodel v1 (R5, July 2026)",
-    "rpcCallCount": 8
+    "rpcCallCount": 12
   }
 };
