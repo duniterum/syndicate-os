@@ -130,12 +130,12 @@ export default function SourceLinkBuilder() {
 
   return (
     <PublicPage
-      eyebrow="Verified Introduction"
-      title="Build an attribution link"
-      lead="Validate an introduction id against the on-chain source registry and build a shareable join link — read-only. Nothing is created, activated, or written from this page."
+      eyebrow="Referral"
+      title="Build your referral link"
+      lead="Validate your referral code against the on-chain registry and build a shareable join link — read-only. Nothing is created, activated, or written from this page."
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
-      {/* How introductions work — honest framing */}
+      {/* How referrals work — honest framing (program ACTIVE since 2026-07-13) */}
       <Card className="bg-primary/5 border-primary/20 p-6 mb-12">
         <div className="flex items-start gap-4">
           <div className="p-2.5 rounded-md bg-primary/10 text-primary shrink-0">
@@ -143,14 +143,17 @@ export default function SourceLinkBuilder() {
           </div>
           <div>
             <h2 className="text-base font-medium text-foreground mb-2">
-              A verified introduction is an on-chain fact
+              A referral is an on-chain fact
             </h2>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
-              Sources live in the protocol's on-chain registry. Only the
-              protocol owner can register one, and only the owner can activate
-              it — recognition of who opened the door, never a payment. This
-              page can only read that registry: paste an id below to check it
-              and, if it is active, build the attribution link.
+              Referral codes (the protocol calls them sources) live in the
+              on-chain registry. Only the protocol owner can register one, and
+              only the owner can activate it. Under the active terms, an
+              eligible completed introduction pays a bounded commission to the
+              introducer's wallet inside the buyer's own transaction — shown by
+              receipt, never a promise. This page can only read the registry:
+              paste your code below to check it and, if it is active, build
+              your link.
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mt-2">
               New here?{" "}

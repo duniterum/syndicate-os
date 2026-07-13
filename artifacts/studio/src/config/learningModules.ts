@@ -134,9 +134,9 @@ export const knowledgeOsMap = {
     {
       id: "inspect",
       verb: "Inspect",
-      title: "Validate a source link, read-only",
+      title: "Validate a referral link, read-only",
       detail:
-        "Validate an introduction id against the on-chain registry, or build an attribution link — read-only, no transaction.",
+        "Validate a referral code against the on-chain registry, or build a shareable referral link — read-only, no transaction.",
       href: "/source",
     },
     {

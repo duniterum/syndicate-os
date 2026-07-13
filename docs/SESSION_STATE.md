@@ -33,8 +33,18 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > pinned forever — the copy guard even caught "payout"/"your share" during the build and the wording
 > was corrected, working as designed). NOTE: the auto-derived member link card is NOT in this slice —
 > the existing BUILDER_SOURCE id predates the `SYN.SOURCE.V1` derivation (verified: no variant
-> matches); it lands with the first convention-following member source (R2). NEXT = R2 (the founder
-> creates the first member source) or the R5 indexer, at the founder's signal.
+> matches); it lands with the first convention-following member source (R2).
+> **REFERRAL-FIRST NAMING (founder order, 2026-07-13, same arc):** "Referral" is the USER word on
+> every public surface — human-readable, no mental load; "Source" stays the PROTOCOL word in
+> proof/registry/operator contexts ("powered by Source Attribution"). Renamed: footer/nav labels
+> ("Source Attribution"→"Referral Program", "Verified Introduction"→"Referral Link"), page titles
+> (/source-attribution → "Referral Program", /source → "Build your referral link"), SEO entries, the
+> /join card ("Referral link detected"), quote lines, CTAs, learning/docs/facts copy ("introduction
+> id"→"referral code"). This pass ALSO killed two claims the activation had made false ("never a
+> payment/commission" on the builder card + the /source-attribution SEO description). The old
+> language lock ("verified introduction — NOT referral", LIVING_ORGANISM §8) is SUPERSEDED by the
+> founder's 2026-07-07-corrected word roles + this order. NEXT = R2 (the founder creates the first
+> member source) or the R5 indexer, at the founder's signal.
 >
 > **▶ Prior: 🔴🚀 C5 GO-LIVE (founder GO, 2026-07-13) — THE FLIP IS IN THIS COMMIT.** `CHECKOUT_ENABLED = true`:
 > the two-signature approve→buy is PUBLISHED on `/join` (checkout chunk verified PRESENT in the bundle;

@@ -164,26 +164,26 @@ function IntroductionStatus({ sourceId }: { sourceId: string }) {
   let ok = false;
   if (!formatValid) {
     line =
-      "The introduction id in this link is not a valid id format — a join would proceed without attribution.";
+      "The referral code in this link is not a valid format — a join would proceed without it.";
   } else if (isLoading) {
-    line = "Validating the introduction against the on-chain registry…";
+    line = "Validating the referral code against the on-chain registry…";
   } else if (isError || !data) {
     line =
-      "Introduction validation is unavailable right now (possibly rate-limited) — nothing is assumed; reload to retry.";
+      "Referral validation is unavailable right now (possibly rate-limited) — nothing is assumed; reload to retry.";
   } else if (!data.chainVerified) {
-    line = `Introduction could not be validated: ${data.failureReason ?? "live registry read unavailable"}.`;
+    line = `The referral code could not be validated: ${data.failureReason ?? "live registry read unavailable"}.`;
   } else if (data.exists === false) {
     line =
-      "This introduction id is not registered on-chain — a join would proceed without attribution.";
+      "This referral code is not registered on-chain — a join would proceed without it.";
   } else if (data.exists === true && data.active === false) {
     line =
-      "This introduction is registered but not active — a join today would proceed without attribution.";
+      "This referral code is registered but not active — a join today would proceed without it.";
   } else if (data.exists === true && data.active === true) {
     ok = true;
     line =
-      "Verified introduction recognized — a join through this link would be attributed to the introducer on-chain.";
+      "Verified referral recognized — a join through this link is attributed to the introducer on-chain.";
   } else {
-    line = `Introduction state could not be read: ${data.failureReason ?? "unknown"}.`;
+    line = `The referral state could not be read: ${data.failureReason ?? "unknown"}.`;
   }
 
   return (
@@ -197,7 +197,7 @@ function IntroductionStatus({ sourceId }: { sourceId: string }) {
         </div>
         <div>
           <h2 className="text-sm font-medium text-foreground mb-1">
-            Introduction link detected
+            Referral link detected
           </h2>
           <p className="text-sm text-muted-foreground leading-relaxed" data-testid="text-introduction-status">
             {line}
@@ -477,10 +477,10 @@ function QuotePanel({
   const floorRaw = computeMinSynOutRaw(q.synOutRaw);
   const sourceLine =
     data.sourceProvided && data.sourceValid === true
-      ? "A verified introduction is applied to this quote."
+      ? "A verified referral is applied to this quote."
       : data.sourceProvided
-        ? "The introduction link is not valid or not active — this quote is computed without it."
-        : "No introduction — a direct join.";
+        ? "The referral link is not valid or not active — this quote is computed without it."
+        : "No referral — a direct join.";
 
   return (
     <div className="animate-in fade-in duration-300" data-testid="panel-quote-result">

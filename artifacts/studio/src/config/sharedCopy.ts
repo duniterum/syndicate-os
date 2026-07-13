@@ -11,7 +11,7 @@ export interface Cta {
 
 export const ctas: Record<string, Cta> = {
   requestSeat: { label: "Take your seat", href: "/join" },
-  buildLink: { label: "Build an introduction link", href: "/source" },
+  buildLink: { label: "Build your referral link", href: "/source" },
   verifyProof: { label: "Verify proof", href: "/proof" },
   viewStatus: { label: "View status", href: "/status" },
   learn: { label: "Learn how it works", href: "/learning" },

@@ -189,7 +189,7 @@ export const modules = [
   },
   {
     id: "source-link",
-    label: "Verified Introduction",
+    label: "Referral Link",
     path: "/source",
     zone: "public",
     visible: true,
@@ -197,7 +197,7 @@ export const modules = [
     live: false,
     phase: "live",
     description:
-      "Validate an introduction id against the on-chain registry and build an attribution link — read-only; nothing is created or activated here.",
+      "Validate a referral code against the on-chain registry and build a shareable referral link — read-only; nothing is created or activated here.",
     dependencies: [],
     nav: { header: false, sidebar: false, footer: true },
     icon: Link2,
@@ -374,7 +374,7 @@ export const modules = [
   },
   {
     id: "source-attribution",
-    label: "Source Attribution",
+    label: "Referral Program",
     path: "/source-attribution",
     zone: "public",
     visible: true,
@@ -382,7 +382,8 @@ export const modules = [
     live: false,
     phase: "live",
     truthStatus: surfaceStatus.sourceAttribution,
-    description: "How verified introductions work — recognition, never a paid reward.",
+    description:
+      "How the referral program works — a bounded commission per eligible completed introduction, paid inside the buyer's own transaction, plus long-term recognition.",
     dependencies: [],
     nav: { header: false, sidebar: false, footer: true },
     icon: Share2,

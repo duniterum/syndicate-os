@@ -205,7 +205,7 @@ export const studioPreviewPanel = {
       id: "source",
       label: "Source attribution",
       lifecycle: "PENDING_ADAPTER",
-      detail: "Verified-introduction links, once the source indexer is wired.",
+      detail: "Per-member referral histories, once the introduction indexer is wired.",
     },
     {
       id: "activity",
@@ -280,7 +280,7 @@ export const homepagePromotedStrip = {
     "membership-join":
       "Read the live membership engine and compute an exact join quote — figures straight from the active engine, never estimated.",
     "verified-introduction":
-      "Validate an introduction id against the on-chain registry and build an attribution link — recognition, never a paid role.",
+      "Validate a referral code against the on-chain registry and build your referral link — a bounded commission per eligible completed introduction, never a paid role or salary.",
     "member-cockpit":
       "Sign a wallet session and read your own standing straight from the active engine — a self-readback; no directory of other wallets exists.",
     "protocol-reality":
@@ -495,7 +495,7 @@ export const heroSystem = {
       { id: "chronicle", label: "Chronicle / Memory", sub: "Recorded", angle: 126 },
       { id: "nft", label: "NFT Artifacts", sub: "Live · minted on-chain", angle: 153 },
       { id: "lpfees", label: "LP Fee Flow", sub: "Not tracked yet", angle: 207 },
-      { id: "referrals", label: "Verified Introductions", sub: "Attribution only", angle: 234 },
+      { id: "referrals", label: "Referrals", sub: "Attribution only", angle: 234 },
       { id: "future", label: "Future Streams", sub: "Coming", angle: 260 },
     ] as HeroFlowSource[],
     routes: [
@@ -556,10 +556,10 @@ export const heroSystem = {
       { id: "lpfees", label: "LP Fee Flow", status: "Not tracked yet" },
       {
         id: "referrals",
-        label: "Verified Introductions",
+        label: "Referrals",
         bind: "attributionActivities",
         unit: "attribution activities",
-        note: "Activity count — no commission",
+        note: "Activity count — not a commission figure",
       },
       { id: "future", label: "Other / Future Streams", status: "Coming" },
     ] as HeroSource[],

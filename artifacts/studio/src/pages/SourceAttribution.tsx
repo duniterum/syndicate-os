@@ -15,16 +15,17 @@ import { ctas } from "@/config/sharedCopy";
 export default function SourceAttribution() {
   return (
     <PublicPage
-      eyebrow="Verified introductions"
+      eyebrow="Referral"
       title={sourceAttribution.heading}
       lead={sourceAttribution.intro}
       badge={<LifecycleBadge lifecycle={sourceAttributionLifecycle} />}
     >
       <p className="text-lg text-foreground/90 font-light max-w-2xl mb-12">{sourceAttribution.tagline}</p>
 
-      {/* ── Referral Program (public layer over Source; paused today) ──────── */}
+      {/* ── The program terms (public "Referral" layer over the protocol's
+             "Source" vocabulary — ACTIVE since 2026-07-13) ────────────────── */}
       <div className="flex flex-wrap items-center gap-3 mb-1">
-        <h2 className="type-h2 text-foreground">{referralProgram.heading}</h2>
+        <h2 className="type-h2 text-foreground">How it works</h2>
         <LifecycleBadge lifecycle={referralProgram.lifecycle} />
       </div>
       <p className="font-mono text-xs text-primary mb-4">{referralProgram.poweredBy}</p>

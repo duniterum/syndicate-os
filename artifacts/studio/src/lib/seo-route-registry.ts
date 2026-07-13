@@ -315,9 +315,9 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     routeType: "PUBLIC",
     indexStatus: "INDEX",
     sitemap: true,
-    title: "Source Attribution — Verified Introductions",
+    title: "Referral Program — The Syndicate",
     description:
-      "How The Syndicate recognises a verified introduction — the origin of a join. Attribution is recognition of a growth contribution, never a commission or financial benefit. Nothing is wired today.",
+      "How The Syndicate's referral program works: an eligible completed introduction pays a bounded acquisition commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Not passive income, not yield, and not an investment.",
     canonicalPath: "/source-attribution",
     changefreq: "monthly",
     priority: 0.6,
@@ -558,9 +558,9 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     routeType: "PUBLIC",
     indexStatus: "INDEX",
     sitemap: true,
-    title: "Verified Introduction — Build an Attribution Link",
+    title: "Build Your Referral Link — The Syndicate",
     description:
-      "Validate an introduction id against the on-chain source registry and build a shareable join link. Read-only: nothing is created, activated, or written from this page.",
+      "Validate your referral code against the on-chain registry and build a shareable join link. Read-only: nothing is created, activated, or written from this page.",
     canonicalPath: "/source",
     changefreq: "weekly",
     priority: 0.5,

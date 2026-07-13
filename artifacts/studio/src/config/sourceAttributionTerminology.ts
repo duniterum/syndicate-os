@@ -50,7 +50,10 @@ export interface SourceModelStep {
 }
 
 export const sourceAttribution = {
-  heading: "Source attribution",
+  // Human-readable, referral-first (founder, 2026-07-13): "Referral" is the
+  // USER word on every public surface; "Source" stays the PROTOCOL word in
+  // proof/registry contexts ("powered by Source Attribution").
+  heading: "Referral Program",
   tagline: "A source opens the door. A member decides. The receipt records the introduction.",
   intro:
     "The Syndicate records verified introductions. When a source-linked member joins under active terms, the referral commission is paid directly to the introducer's wallet inside the buyer's own purchase transaction — on-chain, shown by receipt. The program is active under the current terms (founder-published). The public /source page only validates an introduction id and builds a shareable join link — it never creates, activates, or writes anything; a new source itself is a founder-signed on-chain act.",
@@ -75,7 +78,7 @@ export const sourceAttribution = {
     },
     {
       title: "/source reads it, read-only",
-      body: "The public /source page validates an introduction id against the live registry and, when the id is active, builds a shareable join link. It never creates, activates, or writes anything.",
+      body: "The public /source page validates a referral code against the live registry and, when it is active, builds a shareable join link. It never creates, activates, or writes anything.",
     },
     {
       title: "Creating a source stays owner-gated",
@@ -83,7 +86,7 @@ export const sourceAttribution = {
     },
   ] as SourceModelStep[],
   boundaries: [
-    "The on-chain source registry is live and readable; the public /source surface validates an introduction id and builds a shareable join link — strictly read-only.",
+    "The on-chain source registry is live and readable; the public /source surface validates a referral code and builds a shareable join link — strictly read-only.",
     "Registering or activating a source is an owner-side, on-chain act. Nothing is created, activated, or written from any public page.",
     "Attribution is only ever read from verified on-chain source records — no public page writes it; the purchase contract records it when a buyer joins through a valid link.",
     "The commission is a bounded acquisition payment under the current terms; any recognition tied to introductions remains a future, gated concept.",

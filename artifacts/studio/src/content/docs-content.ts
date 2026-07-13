@@ -157,7 +157,7 @@ export const DOCS_GROUPS: DocGroup[] = [
       {
         routePath: "/source",
         purpose:
-          "Validate an introduction id against the on-chain source registry and build a shareable join link — read-only.",
+          "Validate your referral code against the on-chain registry and build a shareable join link — read-only.",
         audience: ["Builder", "Verifier"],
       },
     ],
