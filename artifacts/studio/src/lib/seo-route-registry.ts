@@ -109,7 +109,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Status — What's Live vs Pending",
     description:
-      "The authoritative ledger of what is wired versus posture-only across The Syndicate. Most surfaces are awaiting a verified source today.",
+      "The honest ledger of what is live versus pending across The Syndicate — seats selling, indexers running, every figure read from the chain, every surface labelled.",
     canonicalPath: "/status",
     changefreq: "weekly",
     priority: 0.8,
@@ -126,7 +126,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Proof — Verify The Syndicate",
     description:
-      "What public, auditable proof will mean for The Syndicate — membership receipts, source attribution, and burn events — and an honest account of why none is wired yet.",
+      "Verify The Syndicate for yourself: membership receipts, treasury routing, numbered burns and referral payments — read live from the chain, each with its own verify link.",
     canonicalPath: "/proof",
     changefreq: "weekly",
     priority: 0.7,
@@ -352,9 +352,9 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     routeType: "PUBLIC",
     indexStatus: "INDEX",
     sitemap: true,
-    title: "Protocol Map — Read-Only Protocol Reality",
+    title: "Protocol Map — The Live Protocol, Reconciled",
     description:
-      "The Syndicate's public proof organism: chain identity, contract code presence, token metadata, membership-sale lifecycle, and source registry posture — reconciled read-only against vendored canon. Fail-closed; nothing invented.",
+      "The Syndicate's public proof organism: chain identity, contract code, token metadata, sale lifecycle and referral-registry posture — every check reconciled against pinned canon and read live. If something can't be read, we say so.",
     canonicalPath: "/map",
     changefreq: "weekly",
     priority: 0.7,
@@ -414,7 +414,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Support — Help & Review",
     description:
-      "Where help and review requests will live. An honest preview today — nothing is stored, sent, or written to a backend until the intake flow is wired.",
+      "Get help now: the on-site Guide answers instantly and the official channels are one click away. A full ticket system is not built yet — no form here stores or sends anything.",
     canonicalPath: "/support",
     changefreq: "monthly",
     priority: 0.4,
@@ -431,7 +431,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: false,
     title: "Archive & Chronicle",
     description:
-      "The Syndicate's archive and chronicle — protocol memory and milestones. Archive reads are not wired and nothing is minted; this is concept memory today.",
+      "The Syndicate's archive — protocol memory minted on-chain. Artifacts are live on Avalanche today, mint counts and prices read from the chain; the full museum surface is still being built.",
     canonicalPath: null,
     ogImage: DEFAULT_OG_IMAGE,
     ownerSurface: "archive",
@@ -449,7 +449,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Activity — the public heartbeat",
     description:
-      "Every on-chain protocol event in the recent window, rendered as a receipt-backed sentence with its own verify link — seats written, supply retired, referral events. Read live from the chain.",
+      "The protocol's public heartbeat: the complete indexed history — seats written, burns numbered, referral events — every line a receipt-backed sentence with its own verify link.",
     canonicalPath: "/activity",
     changefreq: "daily",
     priority: 0.6,
@@ -466,7 +466,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Chronicle — the institutional story",
     description:
-      "The protocol's solemn record — founder-promoted turning points, each verifiable on-chain. Entry one: the duplicate seat, owned in public instead of hidden.",
+      "The protocol's solemn record — founder-promoted turning points, each verifiable on-chain. The register is public and grows only by founder-signed commits — no silent edits.",
     canonicalPath: "/chronicle",
     changefreq: "monthly",
     priority: 0.5,
@@ -483,7 +483,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Fire Ledger — supply retired in public",
     description:
-      "The live total of SYN retired to the burn address, plus every burn in the recent window as its own dated, verifiable event. The complete ledger arrives with the event indexer.",
+      "Every burn, numbered: the live total of SYN retired to the burn address and the complete Proof of Burn record — dated, verifiable, served by the protocol's own indexer.",
     canonicalPath: "/fire-ledger",
     changefreq: "daily",
     priority: 0.5,
@@ -694,7 +694,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Build Your Referral Link — The Syndicate",
     description:
-      "Validate your referral code against the on-chain registry and build a shareable join link. Read-only: nothing is created, activated, or written from this page.",
+      "Validate a referral code against the on-chain registry and build a shareable join link. Checking is free and writes nothing — the link you build pays you inside your referral's own transaction once they join.",
     canonicalPath: "/source",
     changefreq: "weekly",
     priority: 0.5,

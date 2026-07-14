@@ -62,7 +62,7 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
       // §11 slot 2c — coming-soon doors open their DESIGNED TEASERS, badges
       // honest. (Activity + Fire Ledger live in ACT-1; Chronicle opened by
       // the first founder promotion, 2026-07-14 → all moved above.)
-      { label: "Archive", href: "/archive", lifecycle: "PENDING_ADAPTER", note: "Artifacts as protocol memory — reads not wired yet." },
+      { label: "Archive", href: "/archive", lifecycle: "PENDING_ADAPTER", note: "Artifacts as protocol memory — minted on-chain, counts read live." },
       // FOUNDER DECISION (2026-07-14): the possessive-network door is DEAD
       // (bannedSurfaceNames carries the term + the why); its content lives in
       // the Referral dashboard door.

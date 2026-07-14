@@ -108,7 +108,7 @@ export const routeMemory: RouteMemoryEntry[] = [
     description: "Archive artifacts and collectible protocol memory.",
     classification: "PROOF_OR_ARCHIVE",
     disposition:
-      "Represented as archive concept memory. Archive reads are not wired and nothing is minted.",
+      "Represented as the archive memory surface; artifacts are minted on-chain and counts read live.",
     mappedRoute: "/archive",
   },
   {

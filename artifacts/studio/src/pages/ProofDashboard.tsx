@@ -42,7 +42,7 @@ const facets: ProofFacet[] = [
   {
     icon: Library,
     title: "Archive memory",
-    body: "Historical protocol artifacts held in the archive. Archive reads are not wired yet.",
+    body: "Historical protocol artifacts held in the archive — minted on-chain, counts and prices read live from the contract.",
     lifecycle: "PENDING_ADAPTER",
   },
 ];

@@ -16,7 +16,7 @@ export interface LearningModule {
 }
 
 export const learningIntro =
-  "Plain-language education about The Syndicate and how to read this foundation. The lessons are real and available now; the protocol surfaces they describe are mostly not wired yet — the Status ledger always shows what is real today.";
+  "Plain-language education about The Syndicate and how to read it. The lessons are real and available now — and so is the protocol: seats sell on-chain today, and the Status ledger always shows exactly what is live.";
 
 export const learningModules: LearningModule[] = [
   {
@@ -26,7 +26,7 @@ export const learningModules: LearningModule[] = [
     topics: [
       "The Syndicate records verifiable membership, attribution, and recognition.",
       "Membership is not a security or financial instrument and promises no financial gain.",
-      "This site is a read-only foundation: it shows the shape of the protocol, honestly labelled.",
+      "The protocol is live: seats are bought on-chain, and every figure on this site is read from the chain, honestly labelled.",
     ],
   },
   {
@@ -35,8 +35,8 @@ export const learningModules: LearningModule[] = [
     summary: "Every unwired value is truth-labelled, never faked.",
     topics: [
       "Lifecycle labels tell you the honest status of each surface (read-only proof, paused, pending, future).",
-      "Nothing invents numbers, members, or balances — if it is not wired, it says so.",
-      "The Status page is the authoritative ledger of what is real versus awaiting a source.",
+      "Nothing invents numbers, members, or balances — if something can't be read, the site says so.",
+      "The Status page is the authoritative ledger of what is live versus pending.",
     ],
   },
   {

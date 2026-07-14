@@ -127,7 +127,7 @@ export const contractMemory: ContractMemoryEntry[] = [
     category: "archive",
     domain: "ARCHIVE_NFT_MEMORY",
     lifecycle: "READ_ONLY_PROOF",
-    note: "Archive contract named in canon; some artifact classes are open, others gated. Reads are not wired and nothing is minted here.",
+    note: "Archive contract live on-chain; some artifact classes are open, others gated. Mint counts and prices are read live from the contract.",
   },
   // --- Identity ------------------------------------------------------------
   {

@@ -134,7 +134,7 @@ export const howItWorks = {
       step: "04",
       title: "Return",
       description:
-        "Come back to your Member Home to read your standing, your receipt trail, and your next step — always read-only, always yours.",
+        "Come back to your Member Home to read your standing, your receipt trail, and your next step — your own row, always yours.",
     },
     {
       step: "05",

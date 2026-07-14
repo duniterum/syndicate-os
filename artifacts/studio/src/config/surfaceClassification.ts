@@ -190,7 +190,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     audience: "PUBLIC",
     surface: "PUBLIC_VISITOR",
     layout: "public",
-    summary: "Archive & chronicle concept memory. Reads not wired.",
+    summary: "Archive & chronicle memory; artifact reads live.",
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },

@@ -2,7 +2,33 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ ⚖️ SLICE S1 ✅ BUILT (2026-07-14, the FINAL "SETTLE EVERYTHING" work order opened —
+> **▶ 🔍 SLICE S2 ✅ BUILT (2026-07-14, founder GO on the full table read on screen): THE
+> FULL-SITE TRUTH AUDIT — the read-only-era DNA is DEAD across the entire served public
+> layer.** The audit verified every founder finding against chain+repo and found MORE:
+> ① SEO layer (10 rewrites, all founder-approved per line): /proof (the proof page denied
+> the proof — "none is wired yet" DIED) · /archive ("nothing is minted" vs 17 minted
+> live) · /status ("most surfaces awaiting" → the live-vs-pending truth) · /map (title
+> "Read-Only Protocol Reality" → "The Live Protocol, Reconciled" + desc modernized) ·
+> /fire-ledger ("complete ledger ARRIVES" — it's been SERVED since M4-c; beyond the
+> founder's list) · /activity ("recent window" — complete history served since M5; beyond
+> the list) · /chronicle (frozen "Entry one" → the growing-register truth, no frozen
+> count) · /source (the true nuance: checking writes nothing, the link PAYS inside the
+> referral's own transaction) · /support (the Guide answers NOW; the ticket intake
+> honestly not built). ② CONTENT layer (12 lines, same DNA): home how-it-works "always
+> read-only" DIED · /proof archive card · /learning "read-only foundation" + "mostly not
+> wired" DIED · contractMemory/moduleRegistry/modules×2/routeMemory/surfaceClassification/
+> memberDoors archive-era notes all flipped to minted-on-chain-counts-live truth.
+> VERIFIED-KEEP (honest today): /contracts (page has zero live reads — canon reference
+> truth) · /recognition (genuinely future, noindex) · /join (the healthy register) ·
+> W2's four texts · /studio+admin robots Disallow confirmed in the built robots.txt.
+> PROOF: "read-only" at 0 occurrences across ALL 24 served shells (was the site-wide
+> DNA); every era phrase 0-swept. Green: seo 395 · all studio guards · surface:audit
+> 254 · build 24 shells (21 INDEX). DEPLOY: 🚀 — THE TRUTH BATCH (carries W2 + S2; the
+> served meta finally tells Google the protocol is alive). NEXT: S3 surgical home fixes
+> (preview gate) · S4 structural cure (the era-vocabulary guard is fed by this audit's
+> exact pattern list).
+>
+> **▶ Prior: ⚖️ SLICE S1 ✅ BUILT (2026-07-14, the FINAL "SETTLE EVERYTHING" work order opened —
 > supersedes all prior orders): THE VISUAL CHANGE LAW ENGRAVED + THE W-HOME VERDICT
 > RECORDED.** ① VERDICT (permanent record): the W-HOME four-scene home restaging was
 > **founder-REJECTED at the preview gate 2026-07-14** — never committed, reverted clean

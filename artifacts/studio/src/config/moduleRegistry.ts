@@ -265,7 +265,7 @@ const specs: readonly RegistrySpec[] = [
     riskClass: "READ_ONLY_PUBLIC",
     forbiddenClaims: [],
     notes:
-      "Chronicle/heartbeat remains a concept surface; the activity read-model is script-only and unwired. Archive reads are not wired.",
+      "Chronicle is live with founder-promoted chapters; the activity read-model is served by the event backbone. Archive mint counts and prices read live.",
   },
   {
     registryId: "recognition",
