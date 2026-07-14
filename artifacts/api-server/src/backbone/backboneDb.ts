@@ -34,6 +34,10 @@ import type {
   ProtocolEventRecord,
   RawBurnRowInput,
   RawLifecycleRowInput,
+  RawLpLiquidityRowInput,
+  RawLpTokenMintRowInput,
+  RawArchiveMintRowInput,
+  RawArchivePauseRowInput,
 } from "./protocolEventScan";
 
 /** Avalanche C-Chain — same expected chain the reality spine reconciles. */
@@ -322,6 +326,10 @@ export async function insertProtocolEvents(
 export interface ProtocolEventLoad {
   burns: RawBurnRowInput[];
   lifecycle: RawLifecycleRowInput[];
+  lpLiquidity: RawLpLiquidityRowInput[];
+  lpTokenMints: RawLpTokenMintRowInput[];
+  archiveMints: RawArchiveMintRowInput[];
+  archivePauses: RawArchivePauseRowInput[];
 }
 
 /**
@@ -355,6 +363,10 @@ export async function loadProtocolEventRows(): Promise<ProtocolEventLoad> {
 
   const burns: RawBurnRowInput[] = [];
   const lifecycle: RawLifecycleRowInput[] = [];
+  const lpLiquidity: RawLpLiquidityRowInput[] = [];
+  const lpTokenMints: RawLpTokenMintRowInput[] = [];
+  const archiveMints: RawArchiveMintRowInput[] = [];
+  const archivePauses: RawArchivePauseRowInput[] = [];
   for (const r of rows) {
     if (r.streamKey === "SYN_BURN") {
       // decodedJson WHITELIST (burn rows): exactly {from, valueRaw}.
@@ -370,7 +382,68 @@ export async function loadProtocolEventRows(): Promise<ProtocolEventLoad> {
         valueRaw: b.valueRaw,
       });
     } else if (r.streamKey === "SOURCE_LIFECYCLE") {
+      // decodedJson WHITELIST (lifecycle rows): at most {commissionBps} — a
+      // rate on SourceTermsUpdated rows (H1a ⑧), never an address.
+      const l = r.decodedJson as Record<string, unknown>;
       lifecycle.push({
+        eventName: r.eventName,
+        blockNumber: r.blockNumber,
+        logIndex: r.logIndex,
+        transactionHash: r.transactionHash,
+        commissionBps:
+          typeof l.commissionBps === "number" && Number.isSafeInteger(l.commissionBps)
+            ? l.commissionBps
+            : null,
+      });
+    } else if (r.streamKey === "LP_LIQUIDITY") {
+      // decodedJson WHITELIST (lp rows): {amount0Raw, amount1Raw, withdrawer?}.
+      const p = r.decodedJson as Record<string, unknown>;
+      if (
+        (r.eventName !== "Mint" && r.eventName !== "Burn") ||
+        typeof p.amount0Raw !== "string" ||
+        typeof p.amount1Raw !== "string"
+      ) {
+        throw new Error("lp row decoded shape invalid — refusing to derive");
+      }
+      lpLiquidity.push({
+        eventName: r.eventName,
+        blockNumber: r.blockNumber,
+        logIndex: r.logIndex,
+        transactionHash: r.transactionHash,
+        amount0Raw: p.amount0Raw,
+        amount1Raw: p.amount1Raw,
+        withdrawer: typeof p.withdrawer === "string" ? p.withdrawer : null,
+      });
+    } else if (r.streamKey === "LP_TOKEN_MINT") {
+      // decodedJson WHITELIST: exactly {depositor} (label source, never emitted).
+      const t = r.decodedJson as Record<string, unknown>;
+      if (typeof t.depositor !== "string") {
+        throw new Error("lp token mint row decoded shape invalid — refusing to derive");
+      }
+      lpTokenMints.push({
+        blockNumber: r.blockNumber,
+        logIndex: r.logIndex,
+        transactionHash: r.transactionHash,
+        depositor: t.depositor,
+      });
+    } else if (r.streamKey === "ARCHIVE_MINT") {
+      // decodedJson WHITELIST: exactly {artifactId, quantityRaw} — no minter.
+      const a = r.decodedJson as Record<string, unknown>;
+      if (typeof a.artifactId !== "number" || typeof a.quantityRaw !== "string") {
+        throw new Error("archive mint row decoded shape invalid — refusing to derive");
+      }
+      archiveMints.push({
+        blockNumber: r.blockNumber,
+        logIndex: r.logIndex,
+        transactionHash: r.transactionHash,
+        artifactId: a.artifactId,
+        quantityRaw: a.quantityRaw,
+      });
+    } else if (r.streamKey === "ARCHIVE_PAUSE") {
+      if (r.eventName !== "Paused" && r.eventName !== "Unpaused") {
+        throw new Error("archive pause row shape invalid — refusing to derive");
+      }
+      archivePauses.push({
         eventName: r.eventName,
         blockNumber: r.blockNumber,
         logIndex: r.logIndex,
@@ -382,7 +455,7 @@ export async function loadProtocolEventRows(): Promise<ProtocolEventLoad> {
       );
     }
   }
-  return { burns, lifecycle };
+  return { burns, lifecycle, lpLiquidity, lpTokenMints, archiveMints, archivePauses };
 }
 
 // ---------------------------------------------------------------------------

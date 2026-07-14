@@ -2,7 +2,43 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🕳 SLICE S6 ✅ BUILT (2026-07-15, founder GO on the on-screen report): THE INTERNAL-PLAN
+> **▶ 💗 SLICE H1a ✅ BUILT (2026-07-15, founder GO on the COMPLETE table + 3 corrections):
+> THE COMPLETE HEARTBEAT ARC OPENED — six new event classes end-to-end on the M4-c
+> machinery.** THE SYSTEM-FIRST LAW + THE HEARTBEAT COMPLETENESS INVARIANT engraved in
+> CLAUDE.md; the full 17-class inventory was presented ON SCREEN (both quarries swept:
+> origin = 14 kinds + 11 canonical milestones; disk = every ABI event) and the founder
+> ticked ⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑯⑰ YES · ⑮+third-party NO, with 3 DOCTRINE corrections:
+> ⑰ IS yes (SPEC_REFERRAL §⑨ settled — Sephora/Marriott precedent, never re-litigate) ·
+> THE FOUNDER VOICE RULE (founder acts SAY the founder — skin in the game is the trust
+> engine; identity-blindness protects MEMBERS only) · THE VISIBILITY RULE (lines carry
+> what the chain publishes, amounts included; the one discipline: never a MEMBER wallet).
+> H1a DELIVERS: ② repeat-purchase sentence upgraded ("A member expanded their footprint")
+> · ⑤⑥ LP add/remove lane (pair Mint/Burn + same-tx LP-token-mint depositor join →
+> Founder/Community label, fail-closed) · ⑧ ladder-promotion reading (SourceTermsUpdated
+> decodes commissionBps → exact rate-raising rung → "A source rose to {rung}") · ⑨
+> archive pause/unpause lane · ⑪ artifact-mint lane (canon labels First Signal/Patron
+> Seal; minter never stored) · ⑯ wallet rotations join the lifecycle lane. Founder label
+> set extended to the routing wallets (vault/liquidity/operations — pipes per the
+> Visibility Law; existing burns unaffected, all already Founder). Feed: 3 new line
+> shapes + lanes {liquidity, archive}; client: parse + §8 sentences (ONE shared mapping)
+> + facts row (amounts) + /activity filters (Liquidity · Archive) + mini-feed facts.
+> §8 canon updated (7 new LIVE sentences recorded); "payout wallet" → "payment wallet"
+> (copy guard caught the register breach — working as designed). Green: tsc both ·
+> backbone guard 89→94 (new pins: promotion reading, LP labels, artifact labels,
+> ceremonial actions, 11-item ordering, new lane flags; planted addresses still trip) ·
+> api 17 · studio 14 · build. Runtime: /activity fail-closed path verified (6 filter
+> chips, honest fallback, live window). DEPLOY: 🚀 recommended NOW — the new lanes start
+> their paced cold catch-up (~8 cycles) and TODAY'S founder LP add renders once caught
+> up (within pinned range by construction); carries the backlog (S6 + /recognition fix).
+> REMAINING IN THE ARC (H2/H3, founder-ticked, next slices): ⑦ treasury moves (needs the
+> routing-dedup design — per-purchase routing transfers must not duplicate purchase
+> lines) · ⑩ deployments (registry-derived) · ⑫ era transitions · ⑬ MILESTONES (origin
+> activity-milestones.ts harvested whole — 11 canon defs; crossings derivable GAPLESSLY
+> from indexed events, no new persistence) · ⑭ chronicle-entry lines (register-derived) ·
+> ⑰ capital-axis rungs (needs HOME_RANK_LADDER harvest from origin + per-seat cumulative
+> spend from purchase events; seat numbers public, wallets never).
+>
+> **▶ Prior: 🕳 SLICE S6 ✅ BUILT (2026-07-15, founder GO on the on-screen report): THE INTERNAL-PLAN
 > LEAKAGE SWEEP — the class is extinct and guard-pinned.** Three findings, three kills:
 > ① /status's financial-group description carried a LIE + a LEAK in one phrase ("no
 > commission is paid — CommissionRouterV1 is not deployed" — referrers ARE paid, and the

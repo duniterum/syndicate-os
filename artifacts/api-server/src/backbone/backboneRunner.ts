@@ -285,19 +285,31 @@ async function runCycle(): Promise<string | null> {
   }
   const report = toAddressSafeActivityReport(model);
 
-  // ③b The protocol-event read-model (burn ledger + lifecycle lines). The
-  // founder label set is the known FOUNDER allocation wallet — a label
-  // decision made HERE, server-side; the sender address never leaves the zone.
-  const founderAddresses = new Set(
-    FINANCIAL_TARGETS.allocationWallets
+  // ③b The protocol-event read-model (burn ledger + lifecycle + liquidity +
+  // archive lines — H1a, the complete heartbeat arc). The founder label set:
+  // the FOUNDER allocation wallet PLUS the protocol's own routing wallets
+  // (vault / liquidity / operations — infra pipes per the Visibility Law;
+  // the founder's public acts flow through them). THE FOUNDER VOICE RULE
+  // (founder correction 2, 2026-07-15): skin in the game is the trust engine —
+  // founder acts SAY the founder. A label decision made HERE, server-side;
+  // no address ever leaves the zone.
+  const founderAddresses = new Set([
+    ...FINANCIAL_TARGETS.allocationWallets
       .filter((w) => w.key === "FOUNDER")
       .map((w) => w.address.toLowerCase()),
-  );
+    FINANCIAL_TARGETS.vaultWallet.toLowerCase(),
+    FINANCIAL_TARGETS.liquidityWallet.toLowerCase(),
+    FINANCIAL_TARGETS.operationsWallet.toLowerCase(),
+  ]);
   const protocolRows = await loadProtocolEventRows();
   const protocolModel = buildProtocolEventReadModel({
     expectedChainId: BACKBONE_EXPECTED_CHAIN_ID,
     burns: protocolRows.burns,
     lifecycle: protocolRows.lifecycle,
+    lpLiquidity: protocolRows.lpLiquidity,
+    lpTokenMints: protocolRows.lpTokenMints,
+    archiveMints: protocolRows.archiveMints,
+    archivePauses: protocolRows.archivePauses,
     blockTimestamps: input.blockTimestamps,
     founderAddresses,
   });

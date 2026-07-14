@@ -247,6 +247,24 @@ because the amount IS the record; seat lines never carry money).
 All six live in `lib/activityFeed.ts` / `src/backbone/feedProjection.ts` consumers;
 the memory-anchor flag (receipt-thread doctrine) renders on Chronicle-grade kinds.
 
+### LIVE sentences added by H1a (the complete-heartbeat arc, founder-approved table + corrections, 2026-07-15)
+
+Two corrections govern every entry here and forward: **THE FOUNDER VOICE RULE** (when the
+act is the founder committing his own stake or signing with his own hand, the sentence
+SAYS the founder — identity-blindness protects MEMBERS, never hides founder acts) and
+**THE VISIBILITY RULE** (lines carry what the chain publishes — amounts included; the one
+discipline stands: the server never emits a MEMBER's wallet address).
+
+| Event | The canonical sentence | Variants |
+|---|---|---|
+| Repeat purchase (② upgraded) | "A member expanded their footprint — recorded on-chain." | bucket "unknown" keeps the plain seat line — never a claim |
+| Liquidity added (⑤) | "Liquidity was added to the public pool — the founder deepened the market." | Community actor: "— the market deepened." Amounts render as line facts. |
+| Liquidity removed (⑥) | "Liquidity was withdrawn from the public pool — a founder-signed public act." | Community actor: "— a public act." |
+| Ladder promotion (⑧, RESERVED → LIVE) | "A source rose to {rung} — recorded on-chain." | fires when a terms update lands exactly on a rate-raising rung above base |
+| Archive pause/unpause (⑨) | "The archive was paused — a founder-signed public act." | resumed: "The archive resumed — a founder-signed public act." |
+| Artifact mint (⑪) | "A {artifact} was minted — protocol memory, written to the chain." | {artifact} ∈ canon labels (First Signal · Patron Seal · Artifact #N); minter never named |
+| Source wallet rotation (⑯) | "A source's payment wallet was rotated — a public act; there are no silent edits." | covers both wallet and payment-wallet rotations |
+
 ### RESERVED sentences (authored now; their surfaces are not built — labels, not locks)
 
 | Event | The canonical sentence (RESERVED) | Notes |

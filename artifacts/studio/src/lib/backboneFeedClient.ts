@@ -21,6 +21,8 @@ const LIFECYCLE_KINDS = new Set([
   "source-created",
   "source-terms",
   "source-status",
+  // H1a (⑯): wallet rotations — public administrative acts.
+  "source-wallet",
 ]);
 
 interface ServedLineCommon {
@@ -49,10 +51,39 @@ export interface ServedBurnLine extends ServedLineCommon {
 }
 
 export interface ServedLifecycleLine extends ServedLineCommon {
-  kind: "source-created" | "source-terms" | "source-status";
+  kind: "source-created" | "source-terms" | "source-status" | "source-wallet";
+  /** H1a (⑧): the rung a source rose to when the terms update IS a promotion. */
+  risenToTitle: string | null;
 }
 
-export type ServedFeedLine = ServedSeatLine | ServedBurnLine | ServedLifecycleLine;
+// ── H1a — the complete heartbeat's served lines ─────────────────────────────
+export interface ServedLpLine extends ServedLineCommon {
+  kind: "lp-add" | "lp-remove";
+  /** Exact raw base units (SYN 18-dec / USDC 6-dec) — public chain figures. */
+  amountSynRaw: string;
+  amountUsdcRaw: string;
+  /** The founder voice rule: founder acts SAY the founder. */
+  actorLabel: "Founder" | "Community";
+}
+
+export interface ServedArchiveMintLine extends ServedLineCommon {
+  kind: "archive-mint";
+  artifactLabel: string;
+  quantityRaw: string;
+}
+
+export interface ServedArchivePauseLine extends ServedLineCommon {
+  kind: "archive-pause";
+  action: "paused" | "resumed";
+}
+
+export type ServedFeedLine =
+  | ServedSeatLine
+  | ServedBurnLine
+  | ServedLifecycleLine
+  | ServedLpLine
+  | ServedArchiveMintLine
+  | ServedArchivePauseLine;
 
 export interface ServedFeed {
   state: string;
@@ -65,7 +96,13 @@ export interface ServedFeed {
   itemsTotal: number;
   served: number;
   /** Which histories the server declared COMPLETE in this payload. */
-  lanes: { seats: boolean; burns: boolean; referralLifecycle: boolean };
+  lanes: {
+    seats: boolean;
+    burns: boolean;
+    referralLifecycle: boolean;
+    liquidity: boolean;
+    archive: boolean;
+  };
   /** Malformed lines skipped by THIS client's validation (honesty count). */
   linesSkipped: number;
   /** Mixed feed, newest first, server-capped. */
@@ -147,7 +184,46 @@ function parseLine(raw: unknown): ServedFeedLine | null {
     return {
       kind: r.kind as ServedLifecycleLine["kind"],
       ...common,
+      risenToTitle: typeof r.risenToTitle === "string" ? r.risenToTitle : null,
     };
+  }
+  if (r.kind === "lp-add" || r.kind === "lp-remove") {
+    if (
+      typeof r.amountSynRaw !== "string" ||
+      !/^[0-9]+$/.test(r.amountSynRaw) ||
+      typeof r.amountUsdcRaw !== "string" ||
+      !/^[0-9]+$/.test(r.amountUsdcRaw) ||
+      (r.actorLabel !== "Founder" && r.actorLabel !== "Community")
+    ) {
+      return null;
+    }
+    return {
+      kind: r.kind,
+      ...common,
+      amountSynRaw: r.amountSynRaw,
+      amountUsdcRaw: r.amountUsdcRaw,
+      actorLabel: r.actorLabel,
+    };
+  }
+  if (r.kind === "archive-mint") {
+    if (
+      typeof r.artifactLabel !== "string" ||
+      r.artifactLabel.length === 0 ||
+      typeof r.quantityRaw !== "string" ||
+      !/^[0-9]+$/.test(r.quantityRaw)
+    ) {
+      return null;
+    }
+    return {
+      kind: "archive-mint",
+      ...common,
+      artifactLabel: r.artifactLabel,
+      quantityRaw: r.quantityRaw,
+    };
+  }
+  if (r.kind === "archive-pause") {
+    if (r.action !== "paused" && r.action !== "resumed") return null;
+    return { kind: "archive-pause", ...common, action: r.action };
   }
   return null;
 }
@@ -203,6 +279,8 @@ export async function fetchServedFeed(): Promise<ServedFeed | null> {
         seats: lanesRaw.seats === true,
         burns: lanesRaw.burns === true,
         referralLifecycle: lanesRaw.referralLifecycle === true,
+        liquidity: lanesRaw.liquidity === true,
+        archive: lanesRaw.archive === true,
       },
       linesSkipped,
       items,
@@ -219,21 +297,77 @@ export function formatSynRaw(amountSynRaw: string): string {
   return whole.toLocaleString("en-US");
 }
 
+/** Format a raw 6-decimal USDC amount for a sentence (2 decimals, localized). */
+export function formatUsdcRaw(amountUsdcRaw: string): string {
+  const units = BigInt(amountUsdcRaw);
+  const whole = units / 1_000_000n;
+  const cents = (units % 1_000_000n) / 10_000n;
+  return `${whole.toLocaleString("en-US")}.${cents.toString().padStart(2, "0")}`;
+}
+
 // The §8 event lexicon — one event kind, ONE canonical sentence. Never
 // reinvented; the served lines carry facts, these lines carry the words.
-// (Moved here from LiveActivityFeed in M1-b so the hero's live mini-feed and
-// the /activity page speak from the SAME single mapping — no copy invented.)
+// (One mapping, shared by the hero's live mini-feed and /activity.)
+// H1a — THE COMPLETE HEARTBEAT ARC (founder-approved table + corrections):
+//   · THE FOUNDER VOICE RULE: when the act is the founder committing his own
+//     stake or signing with his own hand, the sentence SAYS the founder —
+//     skin in the game is the trust engine. Identity-blindness protects
+//     MEMBERS; it never hides the founder's public acts.
+//   · THE VISIBILITY RULE: lines carry what the chain publishes — amounts
+//     included; the verify anchor leads to the full transaction anyway.
 export function sentenceForServedLine(line: ServedFeedLine): string {
   switch (line.kind) {
     case "purchase":
-      return `A seat was written on-chain${line.firstSeatBucket === "true" ? " — a first seat" : ""}.`;
+      // ② founder upgrade: a REPEAT purchase speaks the expansion; the
+      // "unknown" bucket stays the plain honest seat line (never a claim).
+      return line.firstSeatBucket === "true"
+        ? "A seat was written on-chain — a first seat."
+        : line.firstSeatBucket === "false"
+          ? "A member expanded their footprint — recorded on-chain."
+          : "A seat was written on-chain.";
     case "burn":
       return `${formatSynRaw(line.amountSynRaw)} SYN was retired to the burn address — gone for everyone, forever.`;
     case "source-created":
       return "A referral source was created — a founder-signed on-chain act.";
     case "source-terms":
-      return "A source's terms were updated — a public event; there are no silent edits.";
+      return line.risenToTitle !== null
+        ? `A source rose to ${line.risenToTitle} — recorded on-chain.`
+        : "A source's terms were updated — a public event; there are no silent edits.";
     case "source-status":
       return "A source's status changed — a public event; there are no silent edits.";
+    case "source-wallet":
+      return "A source's payment wallet was rotated — a public act; there are no silent edits.";
+    case "lp-add":
+      return line.actorLabel === "Founder"
+        ? "Liquidity was added to the public pool — the founder deepened the market."
+        : "Liquidity was added to the public pool — the market deepened.";
+    case "lp-remove":
+      return line.actorLabel === "Founder"
+        ? "Liquidity was withdrawn from the public pool — a founder-signed public act."
+        : "Liquidity was withdrawn from the public pool — a public act.";
+    case "archive-mint":
+      return `A ${line.artifactLabel} was minted — protocol memory, written to the chain.`;
+    case "archive-pause":
+      return line.action === "paused"
+        ? "The archive was paused — a founder-signed public act."
+        : "The archive resumed — a founder-signed public act.";
+  }
+}
+
+/**
+ * The line's public FACTS beyond the sentence (the Visibility rule: amounts
+ * included, rendered in the line's meta row beside block/date/verify).
+ */
+export function factsForServedLine(line: ServedFeedLine): string | null {
+  switch (line.kind) {
+    case "lp-add":
+    case "lp-remove":
+      return `${formatSynRaw(line.amountSynRaw)} SYN + ${formatUsdcRaw(line.amountUsdcRaw)} USDC`;
+    case "burn":
+      return `Proof of Burn #${line.proofOfBurnNumber} · ${line.senderLabel}`;
+    case "archive-mint":
+      return BigInt(line.quantityRaw) > 1n ? `× ${line.quantityRaw}` : null;
+    default:
+      return null;
   }
 }

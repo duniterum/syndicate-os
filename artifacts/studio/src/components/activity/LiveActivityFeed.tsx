@@ -32,6 +32,7 @@ import {
 import {
   fetchServedFeed,
   sentenceForServedLine,
+  factsForServedLine,
   type ServedFeed,
   type ServedFeedLine,
 } from "@/lib/backboneFeedClient";
@@ -45,6 +46,12 @@ const SERVED_KIND_TO_WINDOW_KIND: Record<ServedFeedLine["kind"], ActivityKind> =
   "source-created": "source-created",
   "source-terms": "source-terms",
   "source-status": "source-status",
+  // H1a — the complete heartbeat's kinds (served-feed only).
+  "source-wallet": "source-wallet",
+  "lp-add": "lp-add",
+  "lp-remove": "lp-remove",
+  "archive-mint": "archive-mint",
+  "archive-pause": "archive-pause",
 };
 
 const KIND_LABEL: Record<ActivityKind, string> = {
@@ -53,23 +60,32 @@ const KIND_LABEL: Record<ActivityKind, string> = {
   "source-created": "Referral",
   "source-terms": "Referral",
   "source-status": "Referral",
+  "source-wallet": "Referral",
+  "lp-add": "Liquidity",
+  "lp-remove": "Liquidity",
+  "archive-mint": "Archive",
+  "archive-pause": "Archive",
 };
 
 function addressFromUrl(url: string): string | null {
   return url.match(/\/(?:token|address)\/(0x[0-9a-fA-F]{40})\b/)?.[1] ?? null;
 }
 
-type FilterId = "all" | "seat" | "burn" | "referral";
+type FilterId = "all" | "seat" | "burn" | "referral" | "liquidity" | "archive";
 const FILTERS: { id: FilterId; label: string }[] = [
   { id: "all", label: "All" },
   { id: "seat", label: "Seats" },
   { id: "burn", label: "Burns" },
   { id: "referral", label: "Referral events" },
+  { id: "liquidity", label: "Liquidity" },
+  { id: "archive", label: "Archive" },
 ];
 
 function matches(item: ActivityItem, f: FilterId): boolean {
   if (f === "all") return true;
   if (f === "referral") return item.kind.startsWith("source-");
+  if (f === "liquidity") return item.kind === "lp-add" || item.kind === "lp-remove";
+  if (f === "archive") return item.kind === "archive-mint" || item.kind === "archive-pause";
   return item.kind === f;
 }
 
@@ -143,15 +159,22 @@ export function LiveActivityFeed({
             `${SERVED_KIND_TO_WINDOW_KIND[l.kind]}:${l.transactionHash.toLowerCase()}:${l.logIndex}`,
           ),
       )
-      .map((l) => ({
-        kind: SERVED_KIND_TO_WINDOW_KIND[l.kind],
-        sentence: sentenceForServedLine(l),
-        blockNumber: l.blockNumber,
-        txHash: l.transactionHash,
-        logIndex: l.logIndex,
-        dateUtc: l.isoDayUtc,
-        memory: true,
-      }));
+      .map((l) => {
+        // THE VISIBILITY RULE (H1a): the line carries what the chain
+        // publishes — amounts and public facts join the sentence.
+        const facts = factsForServedLine(l);
+        return {
+          kind: SERVED_KIND_TO_WINDOW_KIND[l.kind],
+          sentence: facts
+            ? `${sentenceForServedLine(l)} (${facts})`
+            : sentenceForServedLine(l),
+          blockNumber: l.blockNumber,
+          txHash: l.transactionHash,
+          logIndex: l.logIndex,
+          dateUtc: l.isoDayUtc,
+          memory: true,
+        };
+      });
     return [...windowItems, ...deepLines].sort((a, b) =>
       a.blockNumber !== b.blockNumber
         ? b.blockNumber - a.blockNumber
@@ -164,19 +187,29 @@ export function LiveActivityFeed({
   );
 
   // Served coverage is claimed ONLY for lanes that are both in scope and
-  // declared complete by the server (M4-c: seats + burns + referral lifecycle).
+  // declared complete by the server (H1a: seats + burns + referral lifecycle
+  // + liquidity + archive — the complete heartbeat).
   const laneFor = (k: ActivityKind): boolean =>
     k === "seat"
       ? (served?.lanes.seats ?? false)
       : k === "burn"
         ? (served?.lanes.burns ?? false)
-        : (served?.lanes.referralLifecycle ?? false);
+        : k === "lp-add" || k === "lp-remove"
+          ? (served?.lanes.liquidity ?? false)
+          : k === "archive-mint" || k === "archive-pause"
+            ? (served?.lanes.archive ?? false)
+            : (served?.lanes.referralLifecycle ?? false);
   const kindsInScope: readonly ActivityKind[] = onlyKinds ?? [
     "seat",
     "burn",
     "source-created",
     "source-terms",
     "source-status",
+    "source-wallet",
+    "lp-add",
+    "lp-remove",
+    "archive-mint",
+    "archive-pause",
   ];
   const servedComplete =
     served !== null && served.items.length >= 0 && kindsInScope.every(laneFor);
@@ -191,7 +224,7 @@ export function LiveActivityFeed({
               <span className="text-foreground font-medium">
                 Complete history, served by the event indexer.
               </span>{" "}
-              {`${onlyKinds ? "" : "Seats, burns (Proof of Burn) and referral lifecycle — "}the full indexed record from each stream's first block, as of block ${served.headBlock ? served.headBlock.toLocaleString("en-US") : "…"}${served.burnsAsOfBlock !== null && served.headBlock !== null && served.burnsAsOfBlock < served.headBlock - 1_000 ? ` · burns & referral lifecycle are catching up — complete up to block ${served.burnsAsOfBlock.toLocaleString("en-US")}` : ""}${served.itemsTotal > served.served ? ` (newest ${served.served} of ${served.itemsTotal.toLocaleString("en-US")} lines shown)` : ""}${served.linesSkipped > 0 ? ` · ${served.linesSkipped} line(s) failed validation and are NOT shown` : ""}. `}
+              {`${onlyKinds ? "" : "Seats, burns (Proof of Burn), referral lifecycle, liquidity and archive mints — "}the full indexed record from each stream's first block, as of block ${served.headBlock ? served.headBlock.toLocaleString("en-US") : "…"}${served.burnsAsOfBlock !== null && served.headBlock !== null && served.burnsAsOfBlock < served.headBlock - 1_000 ? ` · the protocol lanes are catching up — complete up to block ${served.burnsAsOfBlock.toLocaleString("en-US")}` : ""}${served.itemsTotal > served.served ? ` (newest ${served.served} of ${served.itemsTotal.toLocaleString("en-US")} lines shown)` : ""}${served.linesSkipped > 0 ? ` · ${served.linesSkipped} line(s) failed validation and are NOT shown` : ""}. `}
             </>
           ) : servedTried ? (
             <>

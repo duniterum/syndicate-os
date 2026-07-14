@@ -71,10 +71,39 @@ export interface PublicBurnLine extends LineCommon {
 }
 
 export interface PublicLifecycleLine extends LineCommon {
-  readonly kind: "source-created" | "source-terms" | "source-status";
+  readonly kind: "source-created" | "source-terms" | "source-status" | "source-wallet";
+  /** H1a (⑧): the rung a source rose to, when the terms update IS a promotion. */
+  readonly risenToTitle: string | null;
 }
 
-export type PublicFeedLine = PublicSeatLine | PublicBurnLine | PublicLifecycleLine;
+// ── H1a — the complete heartbeat's new public lines ─────────────────────────
+export interface PublicLpLine extends LineCommon {
+  readonly kind: "lp-add" | "lp-remove";
+  /** Exact raw base units (SYN 18-dec, USDC 6-dec) — public per the chain. */
+  readonly amountSynRaw: string;
+  readonly amountUsdcRaw: string;
+  /** Founder or Community — the burns precedent (the founder voice rule). */
+  readonly actorLabel: SenderLabel;
+}
+
+export interface PublicArchiveMintLine extends LineCommon {
+  readonly kind: "archive-mint";
+  readonly artifactLabel: string;
+  readonly quantityRaw: string;
+}
+
+export interface PublicArchivePauseLine extends LineCommon {
+  readonly kind: "archive-pause";
+  readonly action: "paused" | "resumed";
+}
+
+export type PublicFeedLine =
+  | PublicSeatLine
+  | PublicBurnLine
+  | PublicLifecycleLine
+  | PublicLpLine
+  | PublicArchiveMintLine
+  | PublicArchivePauseLine;
 
 export interface PublicActivityFeed {
   readonly module: "event-backbone";
@@ -98,6 +127,8 @@ export interface PublicActivityFeed {
     readonly seats: boolean;
     readonly burns: boolean;
     readonly referralLifecycle: boolean;
+    readonly liquidity: boolean;
+    readonly archive: boolean;
   };
   readonly honesty: string;
   /** Mixed feed, newest first, capped. */
@@ -188,6 +219,7 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
     assertAnchor(l.transactionHash);
     return {
       kind: l.kind,
+      risenToTitle: l.risenToTitle,
       blockNumber: l.blockNumber,
       blockTimestampSec: l.blockTimestampSec,
       isoDayUtc: l.isoDayUtc,
@@ -196,10 +228,69 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
     };
   });
 
+  // ── H1a — liquidity, artifact-mint and ceremonial lines ──
+  const lpLines: PublicLpLine[] = (protocolModel?.lpItems ?? []).map((p) => {
+    assertAnchor(p.transactionHash);
+    assertSenderLabel(p.actorLabel);
+    if (!/^[0-9]+$/.test(p.amountSynRaw) || !/^[0-9]+$/.test(p.amountUsdcRaw)) {
+      throw new Error(
+        "feed projection failed closed: an lp amount is not a clean integer (value withheld)",
+      );
+    }
+    return {
+      kind: p.kind,
+      amountSynRaw: p.amountSynRaw,
+      amountUsdcRaw: p.amountUsdcRaw,
+      actorLabel: p.actorLabel,
+      blockNumber: p.blockNumber,
+      blockTimestampSec: p.blockTimestampSec,
+      isoDayUtc: p.isoDayUtc,
+      transactionHash: p.transactionHash,
+      logIndex: p.logIndex,
+    };
+  });
+  const archiveMintLines: PublicArchiveMintLine[] = (
+    protocolModel?.archiveMintItems ?? []
+  ).map((a) => {
+    assertAnchor(a.transactionHash);
+    if (!/^[0-9]+$/.test(a.quantityRaw)) {
+      throw new Error(
+        "feed projection failed closed: a mint quantity is not a clean integer (value withheld)",
+      );
+    }
+    return {
+      kind: a.kind,
+      artifactLabel: a.artifactLabel,
+      quantityRaw: a.quantityRaw,
+      blockNumber: a.blockNumber,
+      blockTimestampSec: a.blockTimestampSec,
+      isoDayUtc: a.isoDayUtc,
+      transactionHash: a.transactionHash,
+      logIndex: a.logIndex,
+    };
+  });
+  const archivePauseLines: PublicArchivePauseLine[] = (
+    protocolModel?.archivePauseItems ?? []
+  ).map((c) => {
+    assertAnchor(c.transactionHash);
+    return {
+      kind: c.kind,
+      action: c.action,
+      blockNumber: c.blockNumber,
+      blockTimestampSec: c.blockTimestampSec,
+      isoDayUtc: c.isoDayUtc,
+      transactionHash: c.transactionHash,
+      logIndex: c.logIndex,
+    };
+  });
+
   const allLines: PublicFeedLine[] = [
     ...seatLines,
     ...burnLedger,
     ...lifecycleLines,
+    ...lpLines,
+    ...archiveMintLines,
+    ...archivePauseLines,
   ].sort((a, b) =>
     a.blockNumber !== b.blockNumber
       ? b.blockNumber - a.blockNumber
@@ -222,6 +313,8 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
       seats: model !== null,
       burns: protocolModel !== null,
       referralLifecycle: protocolModel !== null,
+      liquidity: protocolModel !== null,
+      archive: protocolModel !== null,
     },
     honesty: FEED_HONESTY_LINE,
     items,

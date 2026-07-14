@@ -24,8 +24,13 @@
 import type {
   RawBurnRowInput,
   RawLifecycleRowInput,
+  RawLpLiquidityRowInput,
+  RawLpTokenMintRowInput,
+  RawArchiveMintRowInput,
+  RawArchivePauseRowInput,
 } from "./protocolEventScan";
 import type { BlockTimestampInput } from "./activityHeartbeatReadmodel";
+import { LADDER_RUNGS_CANON } from "../lib/protocol/connectorLadderCanon";
 
 export type SenderLabel = "Founder" | "Community";
 
@@ -43,10 +48,57 @@ export interface BurnLedgerItem {
   readonly isoDayUtc: string;
 }
 
-export type LifecycleKind = "source-created" | "source-terms" | "source-status";
+export type LifecycleKind =
+  | "source-created"
+  | "source-terms"
+  | "source-status"
+  | "source-wallet";
 
 export interface LifecycleItem {
   readonly kind: LifecycleKind;
+  readonly blockNumber: number;
+  readonly logIndex: number;
+  readonly transactionHash: string;
+  readonly blockTimestampSec: number;
+  readonly isoDayUtc: string;
+  /**
+   * H1a (⑧): on a source-terms row whose new rate matches a rate-raising
+   * ladder rung, the rung's TITLE — the "a source rose to {rung}" fact.
+   * Null on every other row. A title, never an address, never a bps echo.
+   */
+  readonly risenToTitle: string | null;
+}
+
+// ── H1a — the new public line shapes (labels and figures only) ──────────────
+export interface LpLiquidityItem {
+  readonly kind: "lp-add" | "lp-remove";
+  /** token0 = SYN raw 18-dec; token1 = USDC raw 6-dec (the amount IS public). */
+  readonly amountSynRaw: string;
+  readonly amountUsdcRaw: string;
+  /** Founder or Community — the burns precedent; the address never leaves. */
+  readonly actorLabel: SenderLabel;
+  readonly blockNumber: number;
+  readonly logIndex: number;
+  readonly transactionHash: string;
+  readonly blockTimestampSec: number;
+  readonly isoDayUtc: string;
+}
+
+export interface ArchiveMintItem {
+  readonly kind: "archive-mint";
+  /** Canon artifact label (First Signal / Patron Seal / Artifact #N). */
+  readonly artifactLabel: string;
+  readonly quantityRaw: string;
+  readonly blockNumber: number;
+  readonly logIndex: number;
+  readonly transactionHash: string;
+  readonly blockTimestampSec: number;
+  readonly isoDayUtc: string;
+}
+
+export interface ArchivePauseItem {
+  readonly kind: "archive-pause";
+  readonly action: "paused" | "resumed";
   readonly blockNumber: number;
   readonly logIndex: number;
   readonly transactionHash: string;
@@ -58,6 +110,10 @@ export interface ProtocolEventBuildInput {
   readonly expectedChainId: number;
   readonly burns: readonly RawBurnRowInput[];
   readonly lifecycle: readonly RawLifecycleRowInput[];
+  readonly lpLiquidity: readonly RawLpLiquidityRowInput[];
+  readonly lpTokenMints: readonly RawLpTokenMintRowInput[];
+  readonly archiveMints: readonly RawArchiveMintRowInput[];
+  readonly archivePauses: readonly RawArchivePauseRowInput[];
   readonly blockTimestamps: readonly BlockTimestampInput[];
   /** Lowercased known founder wallet addresses (the allocation registry). */
   readonly founderAddresses: ReadonlySet<string>;
@@ -67,9 +123,15 @@ export interface ProtocolEventBuildResult {
   /** Oldest-first, numbered — the complete Proof of Burn record. */
   readonly burnLedger: readonly BurnLedgerItem[];
   readonly lifecycleItems: readonly LifecycleItem[];
+  readonly lpItems: readonly LpLiquidityItem[];
+  readonly archiveMintItems: readonly ArchiveMintItem[];
+  readonly archivePauseItems: readonly ArchivePauseItem[];
   readonly totals: {
     readonly burns: number;
     readonly lifecycle: number;
+    readonly lp: number;
+    readonly archiveMints: number;
+    readonly archivePauses: number;
   };
 }
 
@@ -77,7 +139,29 @@ const LIFECYCLE_KIND_BY_EVENT: Record<string, LifecycleKind> = {
   SourceCreated: "source-created",
   SourceTermsUpdated: "source-terms",
   SourceStatusChanged: "source-status",
+  // H1a (⑯): wallet rotations — public administrative acts, one kind.
+  SourceWalletUpdated: "source-wallet",
+  SourcePayoutWalletUpdated: "source-wallet",
 };
+
+/** Canon artifact labels (the archive ID registry's public names). */
+const ARTIFACT_LABEL_BY_ID: Record<number, string> = {
+  1: "First Signal",
+  3: "Patron Seal",
+};
+
+/**
+ * bps → the rate-raising rung it lands on exactly; null when not a rung.
+ * The BASE rung (threshold 0) never reads as a "rise" — creation terms at the
+ * base rate are a birth, not a promotion.
+ */
+function rungTitleForBps(bps: number | null | undefined): string | null {
+  if (typeof bps !== "number") return null;
+  const rung = LADDER_RUNGS_CANON.find(
+    (r) => r.raisesRate && r.bps === bps && r.durableThreshold > 0,
+  );
+  return rung ? rung.title : null;
+}
 
 function fail(message: string): never {
   // Never echo addresses, hashes, or decoded material.
@@ -154,12 +238,91 @@ export function buildProtocolEventReadModel(
       transactionHash: l.transactionHash,
       blockTimestampSec: ts,
       isoDayUtc: isoDayUtcFromSeconds(ts),
+      risenToTitle:
+        l.eventName === "SourceTermsUpdated" ? rungTitleForBps(l.commissionBps) : null,
+    };
+  });
+
+  // ── H1a ⑤⑥ — liquidity lines with the Founder/Community label ──
+  // A pool Mint's depositor is identified by the SAME-TX LP-token mint
+  // (pair Transfer from 0x0 → depositor); a Burn carries its withdrawer on
+  // the event itself. Fail-closed: an unidentifiable actor is a fault —
+  // the label is never guessed.
+  const depositorByTx = new Map<string, string>();
+  for (const t of input.lpTokenMints) {
+    if (!/^0x[0-9a-fA-F]{40}$/.test(t.depositor)) fail("lp depositor not address-shaped");
+    depositorByTx.set(t.transactionHash.toLowerCase(), t.depositor.toLowerCase());
+  }
+  const labelOf = (address: string | null | undefined): SenderLabel => {
+    if (typeof address !== "string" || !/^0x[0-9a-fA-F]{40}$/.test(address)) {
+      fail("liquidity actor is not address-shaped");
+    }
+    return founderAddresses.has(address.toLowerCase()) ? "Founder" : "Community";
+  };
+  const lpItems: LpLiquidityItem[] = input.lpLiquidity.map((p) => {
+    if (!/^[0-9]+$/.test(p.amount0Raw) || !/^[0-9]+$/.test(p.amount1Raw)) {
+      fail("lp amount is not a clean integer");
+    }
+    const ts = timeOf(p.blockNumber);
+    const actor =
+      p.eventName === "Mint"
+        ? depositorByTx.get(p.transactionHash.toLowerCase())
+        : p.withdrawer;
+    return {
+      kind: p.eventName === "Mint" ? "lp-add" : "lp-remove",
+      amountSynRaw: p.amount0Raw,
+      amountUsdcRaw: p.amount1Raw,
+      actorLabel: labelOf(actor),
+      blockNumber: p.blockNumber,
+      logIndex: p.logIndex,
+      transactionHash: p.transactionHash,
+      blockTimestampSec: ts,
+      isoDayUtc: isoDayUtcFromSeconds(ts),
+    };
+  });
+
+  // ── H1a ⑪ — artifact mints (protocol memory; the minter never enters) ──
+  const archiveMintItems: ArchiveMintItem[] = input.archiveMints.map((a) => {
+    if (!/^[0-9]+$/.test(a.quantityRaw)) fail("archive mint quantity is not a clean integer");
+    const ts = timeOf(a.blockNumber);
+    return {
+      kind: "archive-mint",
+      artifactLabel: ARTIFACT_LABEL_BY_ID[a.artifactId] ?? `Artifact #${a.artifactId}`,
+      quantityRaw: a.quantityRaw,
+      blockNumber: a.blockNumber,
+      logIndex: a.logIndex,
+      transactionHash: a.transactionHash,
+      blockTimestampSec: ts,
+      isoDayUtc: isoDayUtcFromSeconds(ts),
+    };
+  });
+
+  // ── H1a ⑨ — ceremonial pause/unpause (founder-signed public acts) ──
+  const archivePauseItems: ArchivePauseItem[] = input.archivePauses.map((c) => {
+    const ts = timeOf(c.blockNumber);
+    return {
+      kind: "archive-pause",
+      action: c.eventName === "Paused" ? "paused" : "resumed",
+      blockNumber: c.blockNumber,
+      logIndex: c.logIndex,
+      transactionHash: c.transactionHash,
+      blockTimestampSec: ts,
+      isoDayUtc: isoDayUtcFromSeconds(ts),
     };
   });
 
   return {
     burnLedger,
     lifecycleItems,
-    totals: { burns: burnLedger.length, lifecycle: lifecycleItems.length },
+    lpItems,
+    archiveMintItems,
+    archivePauseItems,
+    totals: {
+      burns: burnLedger.length,
+      lifecycle: lifecycleItems.length,
+      lp: lpItems.length,
+      archiveMints: archiveMintItems.length,
+      archivePauses: archivePauseItems.length,
+    },
   };
 }

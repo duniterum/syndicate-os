@@ -12,6 +12,7 @@ import { heroSystem, type HeroStat } from "@/config/syndicateFacts";
 import {
   fetchServedFeed,
   sentenceForServedLine,
+  factsForServedLine,
   type ServedFeedLine,
 } from "@/lib/backboneFeedClient";
 import { useGetProtocolVerifyLinks, type VerifyLinkId } from "@workspace/api-client-react";
@@ -263,6 +264,7 @@ function HeroLiveActivity() {
             >
               <p className="text-xs leading-snug text-foreground/90">{sentenceForServedLine(line)}</p>
               <p className="mt-0.5 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground">
+                {factsForServedLine(line) ? <span className="text-foreground/70">{factsForServedLine(line)}</span> : null}
                 {line.isoDayUtc} · block {line.blockNumber.toLocaleString("en-US")}
                 {explorerBase ? (
                   <a

@@ -461,7 +461,13 @@ export const SALE_SCAN_TARGETS: readonly SaleScanTarget[] = [
 
 export type ProtocolEventScanTarget = {
   /** Safe internal stream key — never an address. */
-  streamKey: "SYN_BURN" | "SOURCE_LIFECYCLE";
+  streamKey:
+    | "SYN_BURN"
+    | "SOURCE_LIFECYCLE"
+    | "LP_LIQUIDITY"
+    | "LP_TOKEN_MINT"
+    | "ARCHIVE_MINT"
+    | "ARCHIVE_PAUSE";
   /** Human label for status surfaces (never an address). */
   label: string;
   /** SERVER-ONLY address; never emitted. */
@@ -472,6 +478,13 @@ export type ProtocolEventScanTarget = {
   events: readonly string[];
   scanOnly: true;
 };
+
+/**
+ * H1a (THE COMPLETE HEARTBEAT ARC, founder-approved table 2026-07-15): the
+ * Archive 1155 contract address, mirrored from CONTRACT_TARGETS (canon-
+ * reconciled by the targets guard). SERVER-ONLY, never emitted.
+ */
+const ARCHIVE_1155_ADDRESS = "0xB2AE1eb7aAf7577182e616DA497E0BC822E7D54d";
 
 export const PROTOCOL_EVENT_SCAN_TARGETS: readonly ProtocolEventScanTarget[] = [
   {
@@ -487,7 +500,54 @@ export const PROTOCOL_EVENT_SCAN_TARGETS: readonly ProtocolEventScanTarget[] = [
     label: "Source Registry lifecycle — event scan",
     address: REFERRAL_ATTRIBUTION_SCAN_TARGET.address,
     fromBlock: 87_157_852,
-    events: ["SourceCreated", "SourceTermsUpdated", "SourceStatusChanged"],
+    events: [
+      "SourceCreated",
+      "SourceTermsUpdated",
+      "SourceStatusChanged",
+      // H1a (⑯): wallet rotations join the lifecycle lane — public
+      // administrative acts; "there are no silent edits."
+      "SourceWalletUpdated",
+      "SourcePayoutWalletUpdated",
+    ],
+    scanOnly: true,
+  },
+  // ── H1a — THE COMPLETE HEARTBEAT ARC (founder-approved table) ────────────
+  {
+    // ⑤⑥ liquidity added/removed — the pool's own Mint/Burn events.
+    streamKey: "LP_LIQUIDITY",
+    label: "LP pair liquidity events (add/remove)",
+    address: FINANCIAL_TARGETS.lpPair,
+    fromBlock: 87_157_852,
+    events: ["Mint", "Burn"],
+    scanOnly: true,
+  },
+  {
+    // The pair's LP-token mint Transfer (from 0x0 → depositor): identifies
+    // WHO deposited, for the Founder/Community label (the burns precedent —
+    // the address enters the read-model and leaves only as a label).
+    streamKey: "LP_TOKEN_MINT",
+    label: "LP token mints (depositor identification for the label)",
+    address: FINANCIAL_TARGETS.lpPair,
+    fromBlock: 87_157_852,
+    events: ["Transfer"],
+    scanOnly: true,
+  },
+  {
+    // ⑪ artifact mints — ERC-1155 TransferSingle with from = 0x0.
+    streamKey: "ARCHIVE_MINT",
+    label: "Archive artifact mints (TransferSingle from zero)",
+    address: ARCHIVE_1155_ADDRESS,
+    fromBlock: 87_157_852,
+    events: ["TransferSingle"],
+    scanOnly: true,
+  },
+  {
+    // ⑨ ceremonial pause/unpause on the archive contract.
+    streamKey: "ARCHIVE_PAUSE",
+    label: "Archive pause/unpause (ceremonial founder acts)",
+    address: ARCHIVE_1155_ADDRESS,
+    fromBlock: 87_157_852,
+    events: ["Paused", "Unpaused"],
     scanOnly: true,
   },
 ];

@@ -60,7 +60,15 @@ export type ActivityKind =
   | "burn"
   | "source-created"
   | "source-terms"
-  | "source-status";
+  | "source-status"
+  // H1a — THE COMPLETE HEARTBEAT ARC: these kinds arrive via the SERVED feed
+  // only (the client recent-window scanner deliberately stays seat/burn/
+  // registry-lifecycle; the backbone is the complete source).
+  | "source-wallet"
+  | "lp-add"
+  | "lp-remove"
+  | "archive-mint"
+  | "archive-pause";
 
 export interface ActivityItem {
   kind: ActivityKind;

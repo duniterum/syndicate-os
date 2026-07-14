@@ -481,6 +481,10 @@ const communityAddr = "0x" + "bb".repeat(20);
 const txC = "0x" + "ef".repeat(32);
 const txD = "0x" + "0d".repeat(32);
 const txE = "0x" + "5e".repeat(32);
+const txF = "0x" + "1f".repeat(32);
+const txG = "0x" + "2a".repeat(32);
+const txH = "0x" + "3b".repeat(32);
+const txI = "0x" + "4c".repeat(32);
 const fixtureProtocolModel = buildProtocolEventReadModel({
   expectedChainId: CHAIN,
   burns: [
@@ -501,13 +505,94 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
   ],
   lifecycle: [
     { eventName: "SourceCreated", blockNumber: 150, logIndex: 5, transactionHash: txE },
+    // H1a ⑧: a terms update at the Trusted rung's exact bps = a PROMOTION.
+    {
+      eventName: "SourceTermsUpdated",
+      blockNumber: 150,
+      logIndex: 6,
+      transactionHash: txE,
+      commissionBps: 600,
+    },
+    // H1a ⑯: a wallet rotation — one public lifecycle kind.
+    {
+      eventName: "SourcePayoutWalletUpdated",
+      blockNumber: 150,
+      logIndex: 8,
+      transactionHash: txE,
+    },
+  ],
+  // H1a ⑤⑥: an lp-add whose depositor is identified by the SAME-TX LP-token
+  // mint (Community here) + an lp-remove whose withdrawer is the founder.
+  lpLiquidity: [
+    {
+      eventName: "Mint",
+      blockNumber: 160,
+      logIndex: 3,
+      transactionHash: txF,
+      amount0Raw: "1000" + "0".repeat(18),
+      amount1Raw: "25" + "0".repeat(6),
+    },
+    {
+      eventName: "Burn",
+      blockNumber: 170,
+      logIndex: 4,
+      transactionHash: txG,
+      amount0Raw: "10" + "0".repeat(18),
+      amount1Raw: "1" + "0".repeat(6),
+      withdrawer: founderAddr,
+    },
+  ],
+  lpTokenMints: [
+    { blockNumber: 160, logIndex: 2, transactionHash: txF, depositor: communityAddr },
+  ],
+  // H1a ⑪: an artifact mint — labeled, minter never stored.
+  archiveMints: [
+    { blockNumber: 180, logIndex: 1, transactionHash: txH, artifactId: 1, quantityRaw: "1" },
+  ],
+  // H1a ⑨: a ceremonial pause.
+  archivePauses: [
+    { eventName: "Paused", blockNumber: 190, logIndex: 0, transactionHash: txI },
   ],
   blockTimestamps: [
     { chainId: CHAIN, blockNumber: 100, blockTimestampSec: T0 },
     { chainId: CHAIN, blockNumber: 150, blockTimestampSec: T0 + 3_600 },
+    { chainId: CHAIN, blockNumber: 160, blockTimestampSec: T0 + 4_600 },
+    { chainId: CHAIN, blockNumber: 170, blockTimestampSec: T0 + 5_600 },
+    { chainId: CHAIN, blockNumber: 180, blockTimestampSec: T0 + 6_600 },
+    { chainId: CHAIN, blockNumber: 190, blockTimestampSec: T0 + 7_600 },
   ],
   founderAddresses: new Set([founderAddr]),
 });
+// H1a pins: the promotion reading, the liquidity labels (Community add via
+// the same-tx depositor join; Founder remove via the event's withdrawer),
+// the artifact label, and the ceremonial action.
+check(
+  fixtureProtocolModel.lifecycleItems.some(
+    (l) => l.kind === "source-terms" && l.risenToTitle === "Trusted",
+  ),
+  "a terms update at a rate-raising rung reads as the promotion (risenToTitle)",
+  "the ladder-promotion reading broke",
+);
+check(
+  fixtureProtocolModel.lifecycleItems.some((l) => l.kind === "source-wallet"),
+  "wallet rotations join the lifecycle lane as source-wallet",
+  "the source-wallet kind broke",
+);
+check(
+  fixtureProtocolModel.lpItems.length === 2 &&
+    fixtureProtocolModel.lpItems[0]!.kind === "lp-add" &&
+    fixtureProtocolModel.lpItems[0]!.actorLabel === "Community" &&
+    fixtureProtocolModel.lpItems[1]!.kind === "lp-remove" &&
+    fixtureProtocolModel.lpItems[1]!.actorLabel === "Founder",
+  "liquidity lines carry Founder/Community labels (depositor join + withdrawer)",
+  "the liquidity labeling broke",
+);
+check(
+  fixtureProtocolModel.archiveMintItems[0]!.artifactLabel === "First Signal" &&
+    fixtureProtocolModel.archivePauseItems[0]!.action === "paused",
+  "artifact mints carry canon labels; pauses carry their ceremonial action",
+  "archive lane labeling broke",
+);
 check(
   fixtureProtocolModel.burnLedger.length === 2 &&
     fixtureProtocolModel.burnLedger[0]!.proofOfBurnNumber === 1 &&
@@ -536,11 +621,16 @@ check(
 );
 const feedJson = JSON.stringify(feed);
 check(
-  feed.items.length === 5 &&
+  feed.items.length === 11 &&
     feed.items[0]!.blockNumber === 200 &&
-    feed.items[4]!.blockNumber === 100,
-  "feed serves newest first across kinds",
+    feed.items[10]!.blockNumber === 100,
+  "feed serves newest first across ALL kinds (seats, burns, lifecycle, lp, archive)",
   `feed ordering broke (items=${feed.items.length})`,
+);
+check(
+  feed.lanes.liquidity === true && feed.lanes.archive === true,
+  "the feed declares the liquidity + archive lanes honestly",
+  "the new lane flags broke",
 );
 check(
   feed.burnLedger.length === 2 &&

@@ -76,6 +76,11 @@ constraints, vocabulary, read-only reflexes and blockers NEVER ride back in with
 harvest. Today's system is MORE advanced; we take what the origin had MORE of, never what
 held it back.
 
+**THE HEARTBEAT COMPLETENESS INVARIANT (founder, permanent, 2026-07-15 — STEP 4 of the
+complete-heartbeat order).** Any future contract or protocol wallet joins the heartbeat
+inventory (scan targets + read-model + §8 sentence + /activity) **in the same slice that
+introduces it** — the feed's completeness is an invariant, never a backlog.
+
 **STANDING RULE — the SEO layer rides the slice (founder, permanent, 2026-07-14 — Invariant-vs-State
 applied to metadata).** A slice that changes a page's REALITY updates that page's
 meta/OG/JSON-LD/title AND its source-status/posture entries **in the SAME commit**. A page
