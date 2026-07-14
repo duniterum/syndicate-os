@@ -21,8 +21,8 @@ const dimensions: Dimension[] = [
   },
   {
     title: "Source attribution",
-    body: "Who opened the door is acknowledged as a growth contribution. The registry is paused today.",
-    lifecycle: "NOT_ACTIVE",
+    body: "Who opened the door is acknowledged as a growth contribution. The referral registry is live and paying today; its recognition dimension arrives with the recognition model.",
+    lifecycle: "FUTURE",
   },
   {
     title: "Archive memory",

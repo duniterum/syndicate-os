@@ -2,7 +2,18 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🧬 SLICE S4 ✅ BUILT (2026-07-15, founder GO): THE STRUCTURAL CURE — the era-drift
+> **▶ 🧬 S4 ✅ SEALED IN PROD (2026-07-15, Replit-verified 5/5 on thesyndicate.money, bundle
+> `index-cWnrNV-i.js`): THE STRUCTURAL CURE IS LIVE — /api/source-status serves today's
+> truth (asOf 2026-07-14, backbone/chronicle/archive/routing notes state the live facts,
+> "not wired" at ZERO case-insensitive), /status header + /archive lead + /member facets
+> honest in prod, zero console errors. The era-drift class is now structurally blocked on
+> BOTH sides before any deploy. + MICRO-FIX on Replit's sharp observation: /recognition's
+> "The registry is paused today" was yesterday's truth (registryLive=true, founder source
+> ACTIVE, referrers paid) → rewritten to the live truth, verified rendered on the rig;
+> rides the next deploy (BATCHABLE — client-only, /recognition noindex). DEPLOY BACKLOG:
+> the /recognition micro-fix only.
+>
+> **▶ Prior: 🧬 SLICE S4 ✅ BUILT (2026-07-15, founder GO): THE STRUCTURAL CURE — the era-drift
 > class can never return silently.** ① The server's source-status registry (the 2026-07-03
 > fossil) reconciled to today: NINE entries promoted/rewritten (proof · membership ·
 > treasury · routing · chronicle · learning · indexer · archive · source — the backbone,
