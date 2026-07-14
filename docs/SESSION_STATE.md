@@ -2,7 +2,29 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🗣 SLICE W2 ✅ BUILT (2026-07-14, founder GO + the MASTER work order's Part-0 closure):
+> **▶ ⚖️ SLICE S1 ✅ BUILT (2026-07-14, the FINAL "SETTLE EVERYTHING" work order opened —
+> supersedes all prior orders): THE VISUAL CHANGE LAW ENGRAVED + THE W-HOME VERDICT
+> RECORDED.** ① VERDICT (permanent record): the W-HOME four-scene home restaging was
+> **founder-REJECTED at the preview gate 2026-07-14** — never committed, reverted clean
+> (main stayed at W2 `ed03ebc`, prod never moved; the gate worked exactly as designed).
+> The CURRENT home composition is the founder's choice and STAYS. Any future home layout
+> change starts from a FRESH founder-approved wireframe — never from the rejected layout.
+> ② THE VISUAL CHANGE LAW engraved in CLAUDE.md (permanent): layout/composition changes
+> start from a founder-approved WIREFRAME before any code · every looks-changing slice
+> ends at the PREVIEW GATE (real rendered page, founder's own browser, desktop AND mobile)
+> before any commit · copy/truth-only changes need the full final text on screen.
+> ③ RECONCILIATION of the superseded orders: W1 canon = DONE (`fc0c76d`) · W2 SEO texts =
+> SEALED (`ed03ebc`) · W-HOME = REJECTED (surgical survivors — LIVE-only hero chips +
+> throne majesty — become their own slice S3, preview-gated) · W-SOUL/W-LEAK/W5/W6 fold
+> into the new S-map. **THE S-MAP (founder GO per slice): S2 full-site truth audit
+> (HIGHEST — the served meta still tells the read-only era on /proof /archive /status
+> /map /contracts /source /support; full table on screen, founder decides per line) ·
+> S3 surgical home fixes (chips LIVE-only + throne, NOTHING else moves, preview gate) ·
+> S4 structural cure (/status derived · era-drift vocabulary guard · meta-updates-ride-
+> the-slice law) · S5 soul import (awaits the founder's paste) · S6 internal-plan leakage
+> sweep · S7 member home finish (wireframe FIRST) · S8 performance audit.**
+>
+> **▶ Prior: 🗣 SLICE W2 ✅ BUILT (2026-07-14, founder GO + the MASTER work order's Part-0 closure):
 > THE SEO TRUTH SWEEP + THE HUMAN-FIRST LAW (amended verbatim) + THE IDENTITY PARAGRAPH
 > REWRITTEN HUMAN.** ① CANON_PROTOCOL_LANGUAGE §1 AMENDED (founder on screen): the
 > identity paragraph is now the human-first, live-production text ("The Syndicate is a

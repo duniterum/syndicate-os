@@ -52,3 +52,15 @@ Whenever CONTENT awaits the founder's decision — chronicle candidates, public 
 wording, any words he must approve — the report pastes the FULL text INLINE in the chat
 message. The founder decides on screen; he never opens repo files to read. File paths
 alone are not a report.
+
+**THE VISUAL CHANGE LAW (founder, permanent, 2026-07-14 — the W-HOME rejection's lesson).**
+The founder is visual.
+① Any change to a page's LAYOUT or COMPOSITION starts from a **founder-approved
+wireframe** — before any code.
+② Every slice that changes what a page looks like ends at the **PREVIEW GATE** before any
+commit: local rig running (studio + api against the real chain), the exact localhost URL
+handed to the founder, he reviews the REAL rendered page in his own browser, desktop AND
+mobile width. **Only approval of what he SEES unlocks commit.** A rejection costs nothing —
+revert clean, record the verdict, prod never moved.
+③ Copy/truth-only changes need no wireframe but the full final text on screen (the
+standing rule above).
