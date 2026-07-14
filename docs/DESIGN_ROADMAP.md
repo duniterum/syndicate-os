@@ -65,6 +65,21 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   ⑥ le rail Inspect calme (Verify · Registry · Token · Liquidity). **Tokens only,
   +0 couleur brute** ; mobile IN-slice vérifié (375px, pilule compacte, 0 overflow).
   Trône/map/panneaux intouchés (M1-b).
+- [x] **Hero home — M1-b (la carte vivante)** (`SeatFlowDiagram.tsx` + `heroIconLanguage.ts`
+  + `ProtocolOverviewPanel.tsx` + `HeroLedger.tsx` + `LiveReadTag.tsx` + serveur
+  `realityService.ts`) : le sweep vérité — « LIVE · READ-ONLY » MORT partout (→ « Live
+  chain read ») ; LOI STRUCTURELLE : chaque sous-label de nœud DÉRIVÉ du statut réel
+  (resolver sur les reads live + le registre chronicle) ; « Paid to referrers » LIVE
+  (0.75 USDC, item spine `financial.referral.paidToReferrersTotal`, modèle-M0-préféré) —
+  la note d'excuse morte ; nœud Proof of Burn AJOUTÉ (comble l'orbite vide, porte
+  /fire-ledger) ; PORTES sur 6 nœuds (/join /chronicle /archive /liquidity /referral
+  /fire-ledger) ; mini-feed live dans le panneau (le « Coming » mort — lexique §8 partagé,
+  fail-closed) ; « Members » → « Seats » (loi sièges) ; carte « Awaiting Wiring » +
+  « Radical Honesty » réécrites à la vérité du jour ; UN langage d'icônes (goutte d'eau
+  morte → Coins ; Briefcase ops ; ScrollText chronicle ; Gem NFT). **Tokens only, +0
+  couleur brute** ; mobile IN-slice : les nœuds = grille de chips cliquables sous la
+  carte (375px, 0 overflow) ; 10 nœuds, 0 collision (rééquilibrage orbites : future →
+  haut-droit).
 
 ### Phase 6 — Audits (le sceau grade-AAA)
 - [ ] Accessibilité (WCAG AA / APCA, focus, clavier, cibles ≥44px)
@@ -79,7 +94,7 @@ Design **100 % fini, verrouillé** = toutes les cases de "Définition de FINI" c
 → **on n'y revient plus jamais.**
 
 ## Suivi couleur — ✅ FERMÉ
-Sprawl : **0** couleur brute (slice 2.3 FAQ : **+0** · slice 2.4 Docs : **+0** · slice ⓪ liveness : **+0** — MembersProvenance 100 % tokens · arc Member Home 2026-07-14 : MEMBER SHELL **+0** · slice A actions/lien/Guide **+0** · slice B pill/settings **+0** · slice C teasers (TeaserSurface + 3 pages) **+0** · slice D wallet/toolkit **+0** · arc harvest L-1 /liquidity **+0** · ACT-1 feed (LiveActivityFeed + 2 pages live) **+0** · CHR-1 chronicle (register + panneau console) **+0** · M1-a hero premier acte (HeroStatusChips + HeroSeatLine + rail Inspect) **+0** — tout en tokens). Guard
+Sprawl : **0** couleur brute (slice 2.3 FAQ : **+0** · slice 2.4 Docs : **+0** · slice ⓪ liveness : **+0** — MembersProvenance 100 % tokens · arc Member Home 2026-07-14 : MEMBER SHELL **+0** · slice A actions/lien/Guide **+0** · slice B pill/settings **+0** · slice C teasers (TeaserSurface + 3 pages) **+0** · slice D wallet/toolkit **+0** · arc harvest L-1 /liquidity **+0** · ACT-1 feed (LiveActivityFeed + 2 pages live) **+0** · CHR-1 chronicle (register + panneau console) **+0** · M1-a hero premier acte (HeroStatusChips + HeroSeatLine + rail Inspect) **+0** · M1-b carte vivante (heroIconLanguage + nœud burn + mini-feed) **+0** — tout en tokens). Guard
 `no-raw-color` **BLOQUANT** dans la gate (`pnpm guards`), toute nouvelle couleur brute casse le
 build. Du pic de **137 sites** → **0** au fil des slices d'harmonisation.
 Une seule exception documentée : `QrCodeBlock` (fond blanc du canvas QR, requis pour la lisibilité),

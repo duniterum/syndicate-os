@@ -2,7 +2,54 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🎭 SLICE M1-a ✅ BUILT (2026-07-14, founder GO — the M1 hero arc OPENED, the founder's
+> **▶ 🗺 SLICE M1-b ✅ BUILT (2026-07-14, founder work order + GO after the truth-sweep gate):
+> THE LIVING MAP TELLS TODAY'S TRUTH — the throne/flame/orbital design the founder loves
+> stays; every claim on it is now derived, doored, and live.** TRUTH SWEEP EXECUTED (chain +
+> repo win): ① "LIVE · READ-ONLY" KILLED everywhere — the `LiveReadTag` literal is now "Live
+> chain read" (state-driven live/checking/unavailable machinery untouched); ② REFERRAL MONEY
+> SURFACED AS STRENGTH: new reality-spine item `financial.referral.paidToReferrersTotal`
+> (realityService 7b) — the introduction read-model's aggregate totals.commissionPaidRaw,
+> M0-preferred (live model when ≥ snapshot's asOfBlock, committed snapshot = boot fallback),
+> AGGREGATE ONLY, fail-closed on gate/chain mismatch; the REFERRALS node + sources card now
+> render "Paid to referrers — inside the buyer's own transaction" (local rig: 0.75 USDC, the
+> real snapshot truth) with verify anchor — the "attribution only / not a commission figure"
+> apology DIED (+ the stale server note "No commission has ever been paid on-chain" rewritten);
+> ③ STRUCTURAL LAW BUILT: `deriveNodeSub()` in SeatFlowDiagram — every node sub-label derived
+> at render from live reads or the committed chronicle register, frozen `sub` strings deleted
+> from config (HeroFlowSource carries `door` instead); membership deliberately derives from
+> the sale's inflow read, NOT the member count (a bare member figure would violate the
+> guard-freshness provenance law — the count renders twice elsewhere WITH MembersProvenance);
+> ④ DOORS: membership→/join · chronicle→/chronicle ("4 chapters public", register-derived) ·
+> nft→/archive ("Live · 17 minted") · LP Pool→/liquidity ("Live · reserves on-chain") ·
+> referrals→/referral · NEW Proof of Burn node→/fire-ledger ("Live · 21,273 SYN"); Future
+> Streams honest "Declared", inert; ⑤ ORBITS REBALANCED: future → the empty top-right slot,
+> burn bottom-right — 10 nodes, 0 collisions measured at the narrowest md container;
+> ⑥ ONE ICON LANGUAGE (`hero/heroIconLanguage.ts`, shared map+cards): water-drop for
+> liquidity DIED → Coins; operations → Briefcase; chronicle → ScrollText; nft → Gem;
+> ⑦ THE OVERVIEW PANEL'S LIES FIXED: "Recent activity — Coming with the event backbone" DIED
+> → `HeroLiveActivity` renders the newest served receipt lines through the §8 lexicon
+> (`sentenceForServedLine` MOVED to backboneFeedClient — one mapping shared with /activity,
+> no copy duplicated), per-line tx verify anchor (explorer base from verify-links,
+> fail-closed), honest unavailable note + "complete history →" door when the feed is dark;
+> "Members" label → "Seats" (the 12/11 law: seats, not people); ⑧ "Radical Honesty" section
+> rewritten to TODAY: LIVE = Seat Checkout · Event Backbone · Referral Direct Payment;
+> "Awaiting Wiring" = ONLY the genuinely-absent (Commission Router NOT_LIVE · Identity Alias ·
+> Notifications FUTURE_MODULE — items carry their own TruthStatus, the stale surfaceStatus
+> indirection dropped for this card); ⑨ MOBILE IN-SLICE: `SeatFlowSurface` wrapper — on
+> mobile the map keeps throne/center/orbits and the nodes render as a 2-col clickable chip
+> grid beneath (all 7 verified visible at 375px, doors intact, 0 overflow; desktop nodes
+> hidden). RUNTIME-VERIFIED on the local rig (api-server rebuilt + restarted): the new spine
+> item serves 750000 raw (= 0.75 USDC); every node sub renders derived; "Live chain read"
+> everywhere; mini-feed fails closed honestly (backbone dark locally); 0 real console errors
+> (buffered vite/HMR artifacts from mid-edit proven stale via a hooked full remount: 0 key
+> warnings). Green: FULL gate — workspace tsc 0 · seo 395 · rewrites 23/46 · surface:audit
+> 254 · all 12 studio guards (copy guard caught "pooled" in two comments → reworded;
+> freshness guard caught the bare member figure on the map → derived from inflow instead —
+> both guards working) · auth-zone 754 · backbone 89 · introductions 45 · build 24 shells
+> (21 INDEX, unchanged). +0 raw color. DEPLOY: 🚀 BATCHABLE — one deploy carries M1-a + M1-b
+> (server payload change is additive + fail-closed; prod keeps the old hero until then).
+>
+> **▶ Prior: 🎭 SLICE M1-a ✅ BUILT (2026-07-14, founder GO — the M1 hero arc OPENED, the founder's
 > plateau pick): THE HERO'S FIRST ACT — the origin's design LANGUAGE harvested, never its
 > constraints (the origin was read-only; this is LIVE PRODUCTION — seats bought with real
 > money, in-page, today).** The left column rebuilt to the founder's six-block order, all

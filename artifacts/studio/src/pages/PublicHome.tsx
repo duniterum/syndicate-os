@@ -21,7 +21,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { TruthLabel } from "@/components/TruthLabel";
 import { SampleTag } from "@/components/SampleTag";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
-import { SeatFlowDiagram } from "@/components/hero/SeatFlowDiagram";
+import { SeatFlowSurface } from "@/components/hero/SeatFlowDiagram";
 import { ProtocolOverviewPanel } from "@/components/hero/ProtocolOverviewPanel";
 import { HeroLedger } from "@/components/hero/HeroLedger";
 import { HeroStatusChips } from "@/components/hero/HeroStatusChips";
@@ -32,7 +32,6 @@ import {
   realityGroupSummary,
   type RegistryPostureQueries,
 } from "@/components/registry/registryPosture";
-import { surfaceStatus } from "@/config/truthStatus";
 import { moduleRegistry } from "@/config/moduleRegistry";
 import { useAuthAvailability } from "@/lib/authAvailability";
 import {
@@ -330,7 +329,7 @@ export default function PublicHome() {
               </motion.div>
 
               <div className="order-2 flex min-h-[430px] items-center justify-center overflow-hidden rounded-[1.05rem] border border-gold/18 bg-[radial-gradient(circle_at_50%_40%,hsl(var(--gold)/0.1),transparent_48%)] xl:min-h-[440px]">
-                <SeatFlowDiagram />
+                <SeatFlowSurface />
               </div>
 
               <div className="order-4 xl:order-3 xl:min-h-[440px]">
@@ -414,8 +413,8 @@ export default function PublicHome() {
               </h3>
               <ul className="space-y-6">
                 {awaitingWiring.map((item) => (
-                  <li key={item.surfaceId} className="flex items-start gap-4">
-                    <div className="mt-0.5"><TruthLabel variant={surfaceStatus[item.surfaceId]} /></div>
+                  <li key={item.title} className="flex items-start gap-4">
+                    <div className="mt-0.5"><TruthLabel variant={item.status} /></div>
                     <div>
                       <h4 className="mb-1 text-sm font-medium text-foreground">{item.title}</h4>
                       <p className="text-xs text-muted-foreground">{item.note}</p>

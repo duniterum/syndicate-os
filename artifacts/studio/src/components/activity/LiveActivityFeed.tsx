@@ -31,27 +31,13 @@ import {
 } from "@/lib/activityFeed";
 import {
   fetchServedFeed,
-  formatSynRaw,
+  sentenceForServedLine,
   type ServedFeed,
   type ServedFeedLine,
 } from "@/lib/backboneFeedClient";
 
-// The §8 event lexicon — one event kind, ONE canonical sentence. Never
-// reinvented; the served lines carry facts, these lines carry the words.
-function sentenceForServedLine(line: ServedFeedLine): string {
-  switch (line.kind) {
-    case "purchase":
-      return `A seat was written on-chain${line.firstSeatBucket === "true" ? " — a first seat" : ""}.`;
-    case "burn":
-      return `${formatSynRaw(line.amountSynRaw)} SYN was retired to the burn address — gone for everyone, forever.`;
-    case "source-created":
-      return "A referral source was created — a founder-signed on-chain act.";
-    case "source-terms":
-      return "A source's terms were updated — a public event; there are no silent edits.";
-    case "source-status":
-      return "A source's status changed — a public event; there are no silent edits.";
-  }
-}
+// The §8 event lexicon lives in backboneFeedClient (one mapping, shared with
+// the hero's live mini-feed since M1-b — no copy invented twice).
 
 const SERVED_KIND_TO_WINDOW_KIND: Record<ServedFeedLine["kind"], ActivityKind> = {
   purchase: "seat",

@@ -60,26 +60,31 @@ export const protocolSurfaces: ProtocolSurface[] = [
 ];
 
 export interface AwaitingWiringItem {
-  surfaceId: SurfaceId;
+  /** The item's own honest badge — no shared surface map needed here. */
+  status: TruthStatus;
   title: string;
   note: string;
 }
 
+// M1-b truth sweep: the old three "not wired" claims were YESTERDAY'S truth —
+// the membership indexer, the protocol event lanes, and the source indexer all
+// run live in production today. This card now lists ONLY what genuinely does
+// not exist yet; each item carries its own honest status badge.
 export const awaitingWiring: AwaitingWiringItem[] = [
   {
-    surfaceId: "membership",
-    title: "Membership State",
-    note: "Membership contracts are vendored read-only; the live membership indexer is not wired.",
+    status: "NOT_LIVE",
+    title: "Commission Router",
+    note: "The routed-commission contract is not deployed. Referrers are paid today by the direct-payment model — inside the buyer's own transaction, enforced by the sale contract.",
   },
   {
-    surfaceId: "proofOfFire",
-    title: "Proof of Fire Events",
-    note: "Protocol event taxonomy is vendored; the live event adapter is not wired.",
+    status: "FUTURE_MODULE",
+    title: "Identity Alias",
+    note: "A human-readable name above the wallet hex — opt-in, default invisible, founder-curated. The chain will speak of persons.",
   },
   {
-    surfaceId: "sourceAttribution",
-    title: "Source Attribution",
-    note: "Source registry ABI is vendored; the live source indexer is not wired.",
+    status: "FUTURE_MODULE",
+    title: "Notifications",
+    note: "Member notifications ride the event backbone's served feed; the bell is reserved in the header today.",
   },
 ];
 
@@ -146,27 +151,33 @@ export interface OperationalItem {
   description: string;
 }
 
+// M1-b truth sweep: the LIVE list told 2026-buildout truth ("app shell",
+// "console foundation") while the protocol sells seats with real money and
+// indexes its own history unattended. Rewritten to TODAY's operational facts.
 export const operationalReality = {
   title: "Radical Honesty",
-  subtitle: "What is operational today vs awaiting source integration.",
+  subtitle: "What is operational today vs what genuinely does not exist yet.",
   liveHeading: "Operational Reality",
   pendingHeading: "Awaiting Wiring",
   statusCta: { label: "View Full Status Hub", href: "/status" },
   live: [
     {
       icon: TerminalSquare,
-      title: "Public App Shell",
-      description: "The architecture, navigation, and structural layouts are live.",
+      title: "Seat Checkout",
+      description:
+        "Seats are bought in-page with real money — an exact live quote, signed from your own wallet, routed 70/20/10 by the contract.",
     },
     {
       icon: Activity,
-      title: "Truth-Label System",
-      description: "Strict visual markers preventing deception across all surfaces.",
+      title: "Event Backbone",
+      description:
+        "The protocol indexes its own history unattended: seats, numbered burns, and referral lifecycle — served with verify anchors.",
     },
     {
       icon: ShieldCheck,
-      title: "Studio OS Foundation",
-      description: "The internal console shell for data presentation is built.",
+      title: "Referral Direct Payment",
+      description:
+        "Eligible referrers are paid inside the buyer's own transaction — nothing to claim, verifiable by hash.",
     },
   ] as OperationalItem[],
 };
@@ -410,7 +421,12 @@ export interface HeroStat {
 export interface HeroSource {
   id: string;
   label: string;
-  bind?: "aggregateInflowUsdc" | "attributionActivities" | "nftMintedTotal" | "nftRevenueUsdc";
+  bind?:
+    | "aggregateInflowUsdc"
+    | "attributionActivities"
+    | "nftMintedTotal"
+    | "nftRevenueUsdc"
+    | "paidToReferrersUsdc";
   unit?: string;
   status?: string;
   note?: string;
@@ -436,7 +452,8 @@ export interface HeroSplit {
 export interface HeroFlowSource {
   id: string;
   label: string;
-  sub: string;
+  /** The page this node opens; null = no page exists yet (node stays inert). */
+  door: string | null;
   angle: number;
 }
 
@@ -525,32 +542,39 @@ export const heroSystem = {
     centerNote: "You are the institution",
   },
 
-  // Radial flow diagram. Inbound source nodes feed the seat; the CANONICAL
-  // 70/20/10 split routes value out. Each node's `sub` line is its honest
-  // state — only Membership Sales is a live on-chain stream today. Package
-  // Sales is NOT a node: packages are membership-sale tiers, not a distinct
-  // on-chain stream. NFT and LP Fee Flow stay DISTINCT nodes (never "LP NFT").
+  // Radial flow diagram — THE LIVING MAP (M1-b). Inbound source nodes feed the
+  // seat; the CANONICAL 70/20/10 split routes value out; Proof of Burn is the
+  // one SYN outflow. STRUCTURAL LAW: no node carries a frozen `sub` string —
+  // every sub-label is DERIVED from real status at render time
+  // (SeatFlowDiagram's resolver over the live reads + the chronicle register),
+  // so the map can never lie again by staying still. `door` = the page the
+  // node opens (null = no page yet, the node stays inert). Package Sales is
+  // NOT a node: packages are membership-sale tiers, not a distinct stream.
   flow: {
     sources: [
-      { id: "membership", label: "Membership Sales", sub: "Live · on-chain", angle: 100 },
-      { id: "chronicle", label: "Chronicle / Memory", sub: "Recorded", angle: 126 },
-      { id: "nft", label: "NFT Artifacts", sub: "Live · minted on-chain", angle: 153 },
-      { id: "lpfees", label: "LP Fee Flow", sub: "Not tracked yet", angle: 207 },
-      { id: "referrals", label: "Referrals", sub: "Attribution only", angle: 234 },
-      { id: "future", label: "Future Streams", sub: "Coming", angle: 260 },
+      { id: "membership", label: "Membership Sales", door: "/join", angle: 100 },
+      { id: "chronicle", label: "Chronicle / Memory", door: "/chronicle", angle: 126 },
+      { id: "nft", label: "NFT Artifacts", door: "/archive", angle: 153 },
+      { id: "lpfees", label: "LP Pool", door: "/liquidity", angle: 207 },
+      { id: "referrals", label: "Referrals", door: "/referral", angle: 234 },
+      { id: "future", label: "Future Streams", door: null, angle: 260 },
     ] as HeroFlowSource[],
     routes: [
       { id: "vault", label: "Vault", ratio: "70%", tone: "vault", angle: 52 },
       { id: "liquidity", label: "Liquidity", ratio: "20%", tone: "liquidity", angle: 0 },
       { id: "operations", label: "Operations", ratio: "10%", tone: "operations", angle: -52 },
     ] as HeroFlowRoute[],
+    // The SYN outflow node — real and live-readable (the numbered Proof of
+    // Burn record); fills the map's bottom-right orbit slot.
+    burn: { id: "burn", label: "Proof of Burn", door: "/fire-ledger" },
   },
 
   overview: {
     title: "Protocol overview",
-    liveNote: "Live · read-only",
     stats: [
-      { id: "members", label: "Members", bind: "membersTotal", meta: "Holder Index · recognised seats" },
+      // Seats vocabulary law: memberCount() counts SEATS (one wallet can hold
+      // two) — the stat never says "Members".
+      { id: "members", label: "Seats", bind: "membersTotal", meta: "Live engine memberCount() · seats, not people" },
       { id: "gross", label: "Cumulative inflow", bind: "grossTotalUsdc", unit: "USDC", meta: "Membership + NFT · incl. founder test transactions" },
       { id: "vault", label: "Vault balance", bind: "vaultUsdc", unit: "USDC", meta: "70% routing target" },
       { id: "liquidity", label: "LP reserves", bind: "lpReserves", meta: "20% routing target" },
@@ -567,10 +591,15 @@ export const heroSystem = {
     },
   },
 
+  // M1-b truth sweep: "coming with the event backbone" DIED — the backbone is
+  // live in production and serves the complete receipt-line feed. The panel
+  // renders the newest served lines, fail-closed to an honest unavailable note.
   activity: {
-    title: "Recent activity",
-    // Honest empty state — NO fabricated activity items are ever shown.
-    comingNote: "Live activity feed coming with the event backbone.",
+    title: "Live activity",
+    doorLabel: "complete history →",
+    doorHref: "/activity",
+    unavailableNote:
+      "The served activity feed is unavailable right now — nothing is invented. The complete history lives at /activity.",
   },
 
   sources: {
@@ -596,11 +625,14 @@ export const heroSystem = {
       },
       { id: "lpfees", label: "LP Fee Flow", status: "Not tracked yet" },
       {
+        // M1-b: the apology note ("attribution only — not a commission
+        // figure") DIED. Referrers are paid REAL money inside the buyer's own
+        // transaction — the differentiator, stated as strength, verify-linked.
         id: "referrals",
         label: "Referrals",
-        bind: "attributionActivities",
-        unit: "attribution activities",
-        note: "Activity count — not a commission figure",
+        bind: "paidToReferrersUsdc",
+        unit: "USDC",
+        note: "Paid to referrers — inside the buyer's own transaction",
       },
       { id: "future", label: "Other / Future Streams", status: "Coming" },
     ] as HeroSource[],

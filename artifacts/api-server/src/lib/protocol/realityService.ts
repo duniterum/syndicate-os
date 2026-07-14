@@ -63,6 +63,8 @@ import {
 } from "./sourceDecoders";
 import { HISTORICAL_FREEZE_WALLETS } from "./historicalFreezeWallets";
 import { REFERRAL_ATTRIBUTION_SNAPSHOT } from "./referralAttributionSnapshot";
+import { INTRODUCTION_SNAPSHOT } from "./introductionSnapshot";
+import { getLiveIntroductionModel } from "./introductionLiveModel";
 import {
   SELECTOR_TOTAL_USDC_RAISED,
   SELECTOR_BALANCE_OF,
@@ -1635,11 +1637,54 @@ async function buildFinancialGroup(
         confidence: snapshotValid ? "MEDIUM" : "LOW",
         lifecycle: snapshotValid ? "READ_ONLY_PROOF" : "PAUSED_BY_PRECAUTION",
         note: snapshotValid
-          ? `Count of SourceRegistryV1 lifecycle events observed on-chain (indexed as of block ${snap.asOfBlock}, scan floor block ${snap.fromBlock}) — an ACTIVITY COUNT only, never a USDC or commission figure. No commission has ever been paid on-chain; CommissionRouterV1 is not deployed. Not a live per-request read: the RPC provider caps eth_getLogs ranges, so the count is served from a founder-gated, hash-pinned indexed snapshot.`
+          ? `Count of SourceRegistryV1 lifecycle events observed on-chain (indexed as of block ${snap.asOfBlock}, scan floor block ${snap.fromBlock}) — an ACTIVITY COUNT only, never a USDC figure (the USDC actually paid to referrers is its own item, financial.referral.paidToReferrersTotal). Not a live per-request read: the RPC provider caps eth_getLogs ranges, so the count is served from a founder-gated, hash-pinned indexed snapshot.`
           : "The attribution activity snapshot failed its gate/chain-identity checks; the count is reported unavailable rather than served from an unverified snapshot.",
         failureReason: snapshotValid
           ? null
           : "attribution snapshot gate/chain mismatch (fail closed — regenerate via the founder-gated build)",
+        asOf,
+      }),
+    );
+  }
+
+  // 7b) USDC actually PAID TO REFERRERS — the introduction read-model's
+  //     aggregate totals.commissionPaidRaw: the sum of the per-purchase source
+  //     payments the V3 sale pays the referrer INSIDE the buyer's own
+  //     transaction (the direct-payment model — real money, already paid,
+  //     nothing claimable). AGGREGATE ONLY: no per-source rows, no wallets, no
+  //     member material leaves the model here. M0 preference: the backbone's
+  //     live-refreshed model when at least as fresh; the committed snapshot is
+  //     the boot fallback. Fail-closed: an invalid shape serves null.
+  {
+    const liveModel = getLiveIntroductionModel();
+    const active =
+      liveModel !== null &&
+      liveModel.model.asOfBlock >= INTRODUCTION_SNAPSHOT.model.asOfBlock
+        ? { model: liveModel.model, provenance: "backbone live refresh" }
+        : { model: INTRODUCTION_SNAPSHOT.model, provenance: "committed snapshot" };
+    const paidRaw = active.model.totals.commissionPaidRaw;
+    const paidValid =
+      active.model.gate === "INTRODUCTION_READMODEL_V1" &&
+      active.model.chainId === EXPECTED_CHAIN_ID &&
+      typeof paidRaw === "string" &&
+      /^[0-9]+$/.test(paidRaw);
+    items.push(
+      buildItem({
+        id: "financial.referral.paidToReferrersTotal",
+        label: "Paid to referrers — cumulative USDC (raw @6dec), direct-payment model",
+        value: paidValid ? paidRaw : null,
+        sourceType: "INDEXED_CHAIN_SCAN",
+        sourceRef: `introduction read-model (${active.provenance}, asOfBlock ${active.model.asOfBlock})`,
+        chainId: paidValid ? active.model.chainId : null,
+        contractRole: "sale",
+        confidence: paidValid ? "HIGH" : "LOW",
+        lifecycle: paidValid ? "READ_ONLY_PROOF" : "PAUSED_BY_PRECAUTION",
+        note: paidValid
+          ? `Cumulative USDC paid to referral sources by the active sale engine, inside each buyer's own transaction (as of block ${active.model.asOfBlock}). An aggregate sum from the introduction read-model's attributed purchases — transparent payment for eligible completed member introductions, never passive income or yield.`
+          : "The introduction read-model failed its gate/chain-identity checks; the paid-to-referrers total is reported unavailable rather than invented.",
+        failureReason: paidValid
+          ? null
+          : "introduction read-model gate/chain mismatch (fail closed)",
         asOf,
       }),
     );

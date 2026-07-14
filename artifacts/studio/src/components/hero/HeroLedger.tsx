@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Box, Droplet, LockKeyhole, Network, Settings, Shield, Sparkles, Users } from "lucide-react";
+import { LockKeyhole, Sparkles } from "lucide-react";
 import { SampleTag } from "@/components/SampleTag";
 import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
 import { useHeroReality } from "@/components/hero/useHeroReality";
+// M1-b: icons come from the hero's ONE shared icon language (map + cards).
+import { heroSourceIcons, heroRouteIcons } from "@/components/hero/heroIconLanguage";
 import { VerifyOnChain, VERIFY_SLOGAN } from "@/components/VerifyOnChain";
 import { heroSystem } from "@/config/syndicateFacts";
 import { Amount } from "@/components/amount/Amount";
@@ -24,19 +26,6 @@ const routeVerifyIds: Record<string, readonly VerifyLinkId[]> = {
   operations: ["operationsWallet"],
 };
 
-const sourceIcons = {
-  membership: Users,
-  nft: Box,
-  lpfees: Droplet,
-  referrals: Network,
-  future: Sparkles,
-};
-
-const routeIcons = {
-  vault: Shield,
-  liquidity: Droplet,
-  operations: Settings,
-};
 
 // Categorical route accents → the tokenized data-viz palette, matching the
 // flagship ProtocolOverviewPanel so the two hero panels stay consistent.
@@ -54,7 +43,7 @@ export function HeroLedger() {
     return heroSystem.entryPreview.split.map((s) => ({ ...s, amount: selected * s.ratio }));
   }, [selected]);
 
-  const sourcesLive = reality.aggregateInflowUsdc !== null || reality.attributionActivities !== null;
+  const sourcesLive = reality.aggregateInflowUsdc !== null || reality.paidToReferrersUsdc !== null;
   const sourcesTag = sourcesLive ? "live" : reality.loading ? "checking" : "unavailable";
 
   const routedByTone: Record<string, string | null> = {
@@ -85,15 +74,19 @@ export function HeroLedger() {
         </div>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {heroSystem.sources.items.map((item, index) => {
-            const Icon = sourceIcons[item.id as keyof typeof sourceIcons] ?? Sparkles;
+            const Icon = heroSourceIcons[item.id] ?? Sparkles;
             const isMoneyBind =
-              item.bind === "aggregateInflowUsdc" || item.bind === "nftRevenueUsdc";
+              item.bind === "aggregateInflowUsdc" ||
+              item.bind === "nftRevenueUsdc" ||
+              item.bind === "paidToReferrersUsdc";
             const moneyValue =
               item.bind === "aggregateInflowUsdc"
                 ? reality.aggregateInflowUsdc
                 : item.bind === "nftRevenueUsdc"
                   ? reality.nftRevenueUsdc
-                  : null;
+                  : item.bind === "paidToReferrersUsdc"
+                    ? reality.paidToReferrersUsdc
+                    : null;
             const countValue =
               item.bind === "attributionActivities"
                 ? reality.attributionActivities
@@ -167,7 +160,7 @@ export function HeroLedger() {
         </div>
         <div className="grid grid-cols-3 gap-2">
           {heroSystem.routing.routes.map((route, index) => {
-            const Icon = routeIcons[route.id as keyof typeof routeIcons];
+            const Icon = heroRouteIcons[route.id] ?? Sparkles;
             const amount = routedByTone[route.id] ?? null;
             const balance = balanceByTone[route.id] ?? null;
             return (

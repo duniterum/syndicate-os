@@ -1,13 +1,20 @@
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "wouter";
-import { Activity, Archive, Droplet, Flame, Gauge, Settings, Shield, Users, WalletCards } from "lucide-react";
+import { Activity, Archive, ExternalLink, Flame, Gauge, Users, WalletCards } from "lucide-react";
 import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
 import { useHeroReality, type HeroReality } from "@/components/hero/useHeroReality";
+import { heroRouteIcons } from "@/components/hero/heroIconLanguage";
 import { MembersProvenance } from "@/components/living/MembersProvenance";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { Icon } from "@/components/icon/Icon";
 import { heroSystem, type HeroStat } from "@/config/syndicateFacts";
-import type { VerifyLinkId } from "@workspace/api-client-react";
+import {
+  fetchServedFeed,
+  sentenceForServedLine,
+  type ServedFeedLine,
+} from "@/lib/backboneFeedClient";
+import { useGetProtocolVerifyLinks, type VerifyLinkId } from "@workspace/api-client-react";
 
 // "Don't trust — verify" explorer targets per stat (protocol infrastructure
 // ONLY — links come from the read-only verify-links endpoint, fail-closed).
@@ -20,12 +27,14 @@ const statVerifyIds: Record<string, readonly VerifyLinkId[]> = {
   burned: ["burnAddress"],
 };
 
+// M1-b: vault/liquidity/operations wear the hero's ONE shared icon language
+// (the literal water-drop for liquidity died — liquidity is token reserves).
 const statIcons = {
   members: Users,
   gross: WalletCards,
-  vault: Shield,
-  liquidity: Droplet,
-  operations: Settings,
+  vault: heroRouteIcons.vault,
+  liquidity: heroRouteIcons.liquidity,
+  operations: heroRouteIcons.operations,
   burned: Flame,
 };
 
@@ -186,18 +195,91 @@ export function ProtocolOverviewPanel() {
         </div>
       </div>
 
-      <div className="mt-3 flex min-h-0 flex-1 flex-col rounded-xl border border-border/80 bg-background/42 p-3.5 dark:border-white/10 dark:bg-black/32">
-        <div className="mb-3 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-            <Icon icon={Activity} size="sm" tone="live" />
-            {heroSystem.activity.title}
-          </div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Coming</span>
-        </div>
-        <div className="grid flex-1 place-items-center rounded-lg border border-dashed border-border/80 bg-card/40 px-3 py-6 text-center dark:border-white/10">
-          <p className="max-w-[28ch] text-xs text-muted-foreground">{heroSystem.activity.comingNote}</p>
-        </div>
-      </div>
+      <HeroLiveActivity />
     </motion.aside>
+  );
+}
+
+/**
+ * M1-b — the hero's live heartbeat teaser. The old "coming with the event
+ * backbone" block DIED: the backbone runs in production and serves the
+ * complete receipt-line feed. This renders the NEWEST served lines through
+ * the §8 lexicon (the same single sentence mapping as /activity), each with
+ * its transaction verify anchor (explorer base derived from verify-links,
+ * fail-closed). Feed unavailable → an honest note, never a guess.
+ */
+const HERO_FEED_LINES = 3;
+
+function HeroLiveActivity() {
+  const [lines, setLines] = useState<ServedFeedLine[] | null | undefined>(undefined);
+  const { data: verifyLinks } = useGetProtocolVerifyLinks();
+  const explorerBase = (() => {
+    const u = verifyLinks?.links?.find((l) => l.id === "membershipSaleV3")?.url;
+    return u ? (u.match(/^(.*)\/address\//)?.[1] ?? null) : null;
+  })();
+
+  useEffect(() => {
+    let alive = true;
+    void fetchServedFeed().then((feed) => {
+      if (!alive) return;
+      setLines(feed === null ? null : feed.items.slice(0, HERO_FEED_LINES));
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  return (
+    <div className="mt-3 flex min-h-0 flex-1 flex-col rounded-xl border border-border/80 bg-background/42 p-3.5 dark:border-white/10 dark:bg-black/32">
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          <Icon icon={Activity} size="sm" tone="live" />
+          {heroSystem.activity.title}
+        </div>
+        <Link
+          href={heroSystem.activity.doorHref}
+          className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground"
+          data-testid="link-hero-activity-history"
+        >
+          {heroSystem.activity.doorLabel}
+        </Link>
+      </div>
+      {lines === undefined ? (
+        <div className="grid flex-1 place-items-center px-3 py-4 text-center">
+          <p className="text-xs text-muted-foreground">Checking…</p>
+        </div>
+      ) : lines === null || lines.length === 0 ? (
+        <div className="grid flex-1 place-items-center rounded-lg border border-dashed border-border/80 bg-card/40 px-3 py-4 text-center dark:border-white/10">
+          <p className="max-w-[30ch] text-xs text-muted-foreground">
+            {heroSystem.activity.unavailableNote}
+          </p>
+        </div>
+      ) : (
+        <ul className="grid gap-1.5">
+          {lines.map((line) => (
+            <li
+              key={`${line.transactionHash}:${line.logIndex}`}
+              className="rounded-lg border border-border/70 bg-card/50 px-2.5 py-2 dark:border-white/10"
+            >
+              <p className="text-xs leading-snug text-foreground/90">{sentenceForServedLine(line)}</p>
+              <p className="mt-0.5 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground">
+                {line.isoDayUtc} · block {line.blockNumber.toLocaleString("en-US")}
+                {explorerBase ? (
+                  <a
+                    href={`${explorerBase}/tx/${line.transactionHash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-0.5 text-proof/80 hover:text-proof"
+                  >
+                    Verify
+                    <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
+                  </a>
+                ) : null}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }

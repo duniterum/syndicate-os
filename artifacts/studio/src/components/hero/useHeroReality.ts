@@ -88,6 +88,12 @@ export interface HeroReality {
   burnedSyn: string | null;
   /** Referral attribution ACTIVITY COUNT (never a USDC/commission figure). */
   attributionActivities: string | null;
+  /**
+   * Cumulative USDC actually PAID TO REFERRERS by the sale engine, inside each
+   * buyer's own transaction (direct-payment model) — the introduction
+   * read-model's aggregate total, served by the reality spine. Fail-closed.
+   */
+  paidToReferrersUsdc: string | null;
   /** Archive1155 minted counts — live reads from the archive group. */
   nftFirstSignalMinted: string | null;
   nftPatronSealMinted: string | null;
@@ -231,6 +237,11 @@ export function useHeroReality(): HeroReality {
     lpSyn: formatBaseUnits(findFinancial(financial, "financial.lp.reserveSyn"), 18, 2),
     burnedSyn: formatBaseUnits(findFinancial(financial, "financial.burn.synBalance"), 18, 0),
     attributionActivities: attribution === null ? null : attribution.toLocaleString("en-US"),
+    paidToReferrersUsdc: formatBaseUnits(
+      findFinancial(financial, "financial.referral.paidToReferrersTotal"),
+      6,
+      2,
+    ),
     nftFirstSignalMinted: firstSignalMinted === null ? null : firstSignalMinted.toLocaleString("en-US"),
     nftPatronSealMinted: patronSealMinted === null ? null : patronSealMinted.toLocaleString("en-US"),
     nftMintedTotal: nftMintedTotal === null ? null : nftMintedTotal.toLocaleString("en-US"),

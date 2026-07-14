@@ -8,8 +8,11 @@ import { StatusPill, type StatusTone } from "@/components/status-pill/StatusPill
 //   unavailable → the live read failed — fail-closed, nothing is invented
 export type LiveReadState = "live" | "checking" | "unavailable";
 
+// M1-b truth sweep: "Live · read-only" DIED — it framed the PROTOCOL as
+// read-only while seats sell live, in-page, with real money. The tag's honest
+// claim is about the FIGURE: it is a live chain read. States stay fail-closed.
 const STATE_TEXT: Record<LiveReadState, string> = {
-  live: "Live · read-only",
+  live: "Live chain read",
   checking: "Checking…",
   unavailable: "Live read unavailable",
 };
