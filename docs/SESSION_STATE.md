@@ -2,7 +2,34 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🎯 A1 HEADER EXTENSION ✅ BUILT (2026-07-14, founder order on prod screenshot — the
+> **▶ ♻️ SLICE M0 ✅ BUILT (2026-07-14, founder GO): THE INTRODUCTION READ-MODEL REFRESHES
+> ITSELF — and the member link card was found ALREADY BUILT (REUSED, not rebuilt).**
+> **Part 2 first (the honest finding):** `MyReferralLinkCard` (§11 slot 2b) already ships in
+> MemberReferralDashboard — derive (`SYN.SOURCE.V1`) + live registry read + copy + QR + share
+> menu + the two honest states. Zero work; reported REUSED per the standing rule.
+> **Part 1 (the substance):** `src/backbone/introductionRefresh.ts` — the R5 model rebuilt
+> IN-PROCESS on every backbone cycle: attributed rows from the backbone's OWN gapless sale
+> lane (NOT a ~850-call rescan — ~a dozen live eth_calls per cycle: balanceOf per introduced
+> member = the durable test · escrow + live commissionBps per source via the sale's own
+> SOURCE_REGISTRY() view · memberCount cross-check); block dates from the Protocol Time cache
+> (zero RPC, never a clock); COMPLETENESS FAIL-CLOSED (the V3 cursor must sit at the cycle
+> head or the refresh SKIPS — a hole never becomes a model); the built model is leak-scanned
+> BEFORE it is held. Serving: `introductionLiveModel.ts` holder (pure state, no cycles) —
+> `sourceStandingRead` PREFERS the live model when ≥ the committed snapshot's asOfBlock
+> (the snapshot stays the boot fallback; asOfBlock always honest; payload shape unchanged).
+> Runner: ISOLATED like the protocol lane (fault/skip = partial note, heartbeat untouched);
+> status.lastSuccess gains the address-free introductionRefresh block. The zone's SECOND
+> (and last) lazy-DB file — guard-pinned: decodedJson whitelist exactly {sourceId, recipient,
+> acquisitionCost} (gated fields legitimate ONLY here server-side), leak-scan-before-hold,
+> setter callable only by the refresh; allowlists updated (holder-index 66 ·
+> member-continuity-schema 29). The founder-gated `introductions:build` script + weekly
+> cadence + before-promotion re-run stay LAW for the COMMITTED snapshot; the in-process
+> refresh is the automation M0 promised on top (Q18's refresh half now automated in serving).
+> Green: full tsc 0 · backbone:guard 88 · activity 134 · introductions guard · auth-zone 754 ·
+> all suites · build 24 shells (unchanged). DEPLOY: 🚀 (server runtime; carries the batched
+> header CTA — the deploy backlog empties with this deploy).
+>
+> **▶ Prior: 🎯 A1 HEADER EXTENSION ✅ BUILT (2026-07-14, founder order on prod screenshot — the
 > header's "Take your seat" survived next to the seated pill while the hero already said
 > "Expand your footprint"):** the HEADER seat CTA (desktop + mobile sheet) now rides the SAME
 > session-aware module — `HeroSeatCta` gained size/onNavigate props; PublicLayout's

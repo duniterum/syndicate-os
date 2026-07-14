@@ -27,6 +27,7 @@ import {
 import { SOURCE_LINKAGE_TARGET } from "../../data/protocolTargets";
 import { sourceKeyOf } from "./introductionReadmodel";
 import { INTRODUCTION_SNAPSHOT } from "./introductionSnapshot";
+import { getLiveIntroductionModel } from "./introductionLiveModel";
 
 export interface OwnSourceStanding {
   chainVerified: boolean;
@@ -115,18 +116,26 @@ export async function readOwnSourceStanding(
     out.sourceActive = null;
   }
 
-  // The counters: the source's own row in the R5 snapshot. A source with no
-  // attributed purchase yet honestly reads zeros as of the same block.
-  const row = INTRODUCTION_SNAPSHOT.model.bySource[sourceKeyOf(sourceId)] ?? null;
+  // The counters: the source's own row in the R5 read-model. M0: PREFER the
+  // backbone's live-refreshed model when it is at least as fresh; the
+  // committed snapshot stays the boot fallback (the server is never worse
+  // than the last founder-gated build). asOfBlock stays honest either way.
+  const liveModel = getLiveIntroductionModel();
+  const active =
+    liveModel !== null &&
+    liveModel.model.asOfBlock >= INTRODUCTION_SNAPSHOT.model.asOfBlock
+      ? { model: liveModel.model, hash: liveModel.modelHash }
+      : { model: INTRODUCTION_SNAPSHOT.model, hash: INTRODUCTION_SNAPSHOT.snapshotHash };
+  const row = active.model.bySource[sourceKeyOf(sourceId)] ?? null;
   out.standing = {
     attributedPurchases: row?.attributedPurchases ?? 0,
     introducedMembers: row?.introducedMembers ?? 0,
     durableIntroductions: row?.durableIntroductions ?? 0,
     commissionPaidRaw: row?.commissionPaidRaw ?? "0",
     escrowOwedRaw: row?.escrowOwedRaw ?? "0",
-    asOfBlock: INTRODUCTION_SNAPSHOT.model.asOfBlock,
-    durableTest: INTRODUCTION_SNAPSHOT.model.durableTest,
-    snapshotHash: INTRODUCTION_SNAPSHOT.snapshotHash,
+    asOfBlock: active.model.asOfBlock,
+    durableTest: active.model.durableTest,
+    snapshotHash: active.hash,
     // Row-less source (no attributed purchase yet): base rung, nothing due.
     currentBps: row?.currentBps ?? null,
     entitledBps: row?.entitledBps ?? 500,

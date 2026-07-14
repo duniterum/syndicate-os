@@ -217,6 +217,10 @@ const DB_LAZY_ALLOW = new Set([
   // indexer (scan persistence + Protocol Time inserts + activity loader),
   // lazy-only, never pool.end(). Discipline pinned by backbone.guard.ts.
   "src/backbone/backboneDb.ts",
+  // Founder-approved introduction refresh (M0): the zone's second (and last)
+  // lazy-DB file — reads the backbone's own sale lane + the Protocol Time
+  // cache to rebuild the R5 model in memory. Pinned by backbone.guard.ts.
+  "src/backbone/introductionRefresh.ts",
 ]);
 const DB_STATIC_IMPORT_RE =
   /(from\s*["']@workspace\/db["'])|(import\s*["']@workspace\/db["'])|(require\s*\(\s*["']@workspace\/db["']\s*\))/;
@@ -227,7 +231,7 @@ const dbImporters = servedFiles.filter((f) => {
   return !(DB_LAZY_ALLOW.has(rel) && !DB_STATIC_IMPORT_RE.test(code));
 });
 check(
-  "NO served src file imports @workspace/db (lazy-only allow-list: operatorContext.ts + memberRoster.ts + referralTermsService.ts + operatorRegistryService.ts + backboneDb.ts)",
+  "NO served src file imports @workspace/db (lazy-only allow-list: operatorContext.ts + memberRoster.ts + referralTermsService.ts + operatorRegistryService.ts + backboneDb.ts + introductionRefresh.ts)",
   dbImporters.length === 0,
   dbImporters.map((f) => relative(ROOT, f)).join(", "),
 );

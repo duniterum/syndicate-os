@@ -128,24 +128,32 @@ check(
 );
 
 const DB_TOUCH_RE = /@workspace\/db/;
-const dbTouchers = zoneFiles.filter((f) =>
-  DB_TOUCH_RE.test(stripComments(readFileSync(f, "utf8"))),
-);
+const dbTouchers = zoneFiles
+  .filter((f) => DB_TOUCH_RE.test(stripComments(readFileSync(f, "utf8"))))
+  .map((f) => path.relative(apiDir, f).split(path.sep).join("/"))
+  .sort();
 check(
-  dbTouchers.length === 1 &&
-    dbTouchers[0]!.endsWith(`${path.sep}backboneDb.ts`),
-  "backboneDb.ts is the ONE file of the zone touching @workspace/db",
-  `zone DB boundary broken: [${dbTouchers.map((f) => path.relative(apiDir, f)).join(", ")}]`,
+  JSON.stringify(dbTouchers) ===
+    JSON.stringify([
+      "src/backbone/backboneDb.ts",
+      // M0: the introduction refresh — the zone's SECOND (and last) DB file.
+      "src/backbone/introductionRefresh.ts",
+    ]),
+  "exactly two zone files touch @workspace/db (backboneDb + introductionRefresh)",
+  `zone DB boundary broken: [${dbTouchers.join(", ")}]`,
 );
+for (const rel of ["src/backbone/backboneDb.ts", "src/backbone/introductionRefresh.ts"]) {
+  const src = stripComments(read(rel));
+  check(
+    /import\s*\(\s*["']@workspace\/db["']\s*\)/.test(src) &&
+      !/from\s*["']@workspace\/db["']/.test(src) &&
+      !/import\s*["']@workspace\/db["']/.test(src) &&
+      !/require\s*\(\s*["']@workspace\/db["']\s*\)/.test(src),
+    `${rel} reaches @workspace/db via lazy dynamic import() only`,
+    `${rel} uses a static/bare/require @workspace/db form`,
+  );
+}
 const dbSrc = stripComments(read("src/backbone/backboneDb.ts"));
-check(
-  /import\s*\(\s*["']@workspace\/db["']\s*\)/.test(dbSrc) &&
-    !/from\s*["']@workspace\/db["']/.test(dbSrc) &&
-    !/import\s*["']@workspace\/db["']/.test(dbSrc) &&
-    !/require\s*\(\s*["']@workspace\/db["']\s*\)/.test(dbSrc),
-  "backboneDb reaches @workspace/db via lazy dynamic import() only",
-  "backboneDb uses a static/bare/require @workspace/db form",
-);
 
 const routeSrc = stripComments(read("src/routes/backboneStatus.ts"));
 const feedRouteSrc = stripComments(read("src/routes/backboneFeed.ts"));
@@ -204,11 +212,50 @@ for (const f of zoneFiles) {
   if (f.endsWith(`${path.sep}backboneDb.ts`)) continue;
   if (f.endsWith(`${path.sep}activityHeartbeatReadmodel.ts`)) continue;
   if (f.endsWith(`${path.sep}protocolEventScan.ts`)) continue;
+  if (f.endsWith(`${path.sep}introductionRefresh.ts`)) continue; // own whitelist below
   const src = stripComments(readFileSync(f, "utf8"));
   check(
     !src.includes("decodedJson") && !src.includes("rawJson"),
     `${path.relative(apiDir, f)}: no decodedJson/rawJson access`,
     `${path.relative(apiDir, f)} touches decodedJson/rawJson outside the loader/lane`,
+  );
+}
+
+// M0 — the introduction refresh's own discipline: its decodedJson whitelist
+// is exactly {sourceId, recipient, acquisitionCost} (gated fields, legitimate
+// ONLY in this file server-side), and the built model is leak-scanned BEFORE
+// it is ever held; nothing else in src may set the live model.
+{
+  const introSrc = stripComments(read("src/backbone/introductionRefresh.ts"));
+  const introAccesses = [...introSrc.matchAll(/\bp\.(\w+)/g)]
+    .map((m) => m[1])
+    .filter((k): k is string => Boolean(k));
+  const allowedIntro = new Set(["sourceId", "recipient", "acquisitionCost"]);
+  check(
+    introAccesses.length > 0 && introAccesses.every((k) => allowedIntro.has(k)),
+    "introduction refresh decodedJson whitelist is exactly {sourceId, recipient, acquisitionCost}",
+    `introduction refresh reads non-whitelisted decodedJson keys: ${introAccesses
+      .filter((k) => !allowedIntro.has(k))
+      .join(", ")}`,
+  );
+  const leakIdx = introSrc.indexOf("assertNoAddressLeak(JSON.stringify(model))");
+  const setIdx = introSrc.indexOf("setLiveIntroductionModel(");
+  check(
+    leakIdx !== -1 && setIdx !== -1 && leakIdx < setIdx,
+    "the refreshed model is leak-scanned BEFORE it is held",
+    "introduction refresh holds a model without the leak scan first",
+  );
+  const setters = walk(path.resolve(apiDir, "src")).filter((f) =>
+    stripComments(readFileSync(f, "utf8")).includes("setLiveIntroductionModel("),
+  );
+  check(
+    setters.length === 2 &&
+      setters.some((f) => f.endsWith(`${path.sep}introductionRefresh.ts`)) &&
+      setters.some((f) => f.endsWith(`${path.sep}introductionLiveModel.ts`)),
+    "the live introduction model is set ONLY by the refresh (holder + refresh, nothing else)",
+    `unexpected setLiveIntroductionModel caller(s): [${setters
+      .map((f) => path.relative(apiDir, f))
+      .join(", ")}]`,
   );
 }
 

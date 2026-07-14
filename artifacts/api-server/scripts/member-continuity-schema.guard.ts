@@ -239,6 +239,9 @@ const LAZY_DB_ALLOW = new Set([
   // Founder-approved event backbone (M4-a): THE one DB zone of the unattended
   // indexer, lazy-only. Discipline pinned by backbone.guard.ts.
   join(SERVED_SRC, "backbone", "backboneDb.ts"),
+  // Founder-approved introduction refresh (M0): the zone's second lazy-DB
+  // file. Discipline pinned by backbone.guard.ts.
+  join(SERVED_SRC, "backbone", "introductionRefresh.ts"),
 ]);
 const DYNAMIC_DB_IMPORT_RE = /import\s*\(\s*["']@workspace\/db["']\s*\)/;
 function walk(dir: string, hits: string[]): void {

@@ -67,6 +67,10 @@ import {
   buildProtocolEventReadModel,
   type ProtocolEventBuildResult,
 } from "./protocolEventReadmodel";
+import {
+  refreshIntroductionModel,
+  type IntroductionRefreshSummary,
+} from "./introductionRefresh";
 import { FINANCIAL_TARGETS } from "../data/protocolTargets";
 
 // ---------------------------------------------------------------------------
@@ -116,6 +120,14 @@ export interface BackboneStatusSnapshot {
     }[];
     readonly burnLedgerTotal: number;
     readonly lifecycleTotal: number;
+    /** M0: the in-process introduction refresh (address-free counts only). */
+    readonly introductionRefresh: {
+      readonly refreshed: boolean;
+      readonly skippedReason: string | null;
+      readonly asOfBlock: number | null;
+      readonly attributedRows: number;
+      readonly distinctSources: number;
+    } | null;
     readonly readModel: ActivityAddressSafeReport;
   } | null;
   readonly lastError: {
@@ -290,6 +302,17 @@ async function runCycle(): Promise<string | null> {
     founderAddresses,
   });
 
+  // ③c The introduction read-model refresh (M0) — ISOLATED like the protocol
+  // lane: a fault or an honest skip never darkens the heartbeat; the previous
+  // live model (or the committed snapshot) keeps serving the standing reads.
+  let introRefresh: IntroductionRefreshSummary | null = null;
+  let introFault: string | null = null;
+  try {
+    introRefresh = await refreshIntroductionModel(transport, summary.head);
+  } catch (err) {
+    introFault = err instanceof Error ? err.message : String(err);
+  }
+
   lastGoodModel = model;
   lastGoodProtocolModel = protocolModel;
   burnsAsOfBlock =
@@ -317,13 +340,31 @@ async function runCycle(): Promise<string | null> {
     })),
     burnLedgerTotal: protocolModel.totals.burns,
     lifecycleTotal: protocolModel.totals.lifecycle,
+    introductionRefresh: introRefresh
+      ? {
+          refreshed: introRefresh.refreshed,
+          skippedReason: introRefresh.skippedReason,
+          asOfBlock: introRefresh.asOfBlock,
+          attributedRows: introRefresh.attributedRows,
+          distinctSources: introRefresh.distinctSources,
+        }
+      : null,
     readModel: report,
   };
 
-  // A stream fault makes the cycle PARTIAL — everything above still serves.
-  return streamFaults.length > 0
-    ? `${streamFaults.length} protocol stream(s) faulted — catch-up resumes from the persisted cursor`
-    : null;
+  // A stream/refresh fault makes the cycle PARTIAL — everything above still serves.
+  const partialNotes: string[] = [];
+  if (streamFaults.length > 0) {
+    partialNotes.push(
+      `${streamFaults.length} protocol stream(s) faulted — catch-up resumes from the persisted cursor`,
+    );
+  }
+  if (introFault !== null) {
+    partialNotes.push(
+      "introduction refresh faulted — the previous model keeps serving",
+    );
+  }
+  return partialNotes.length > 0 ? partialNotes.join(" · ") : null;
 }
 
 // ---------------------------------------------------------------------------
