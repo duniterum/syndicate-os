@@ -80,6 +80,17 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   couleur brute** ; mobile IN-slice : les nœuds = grille de chips cliquables sous la
   carte (375px, 0 overflow) ; 10 nœuds, 0 collision (rééquilibrage orbites : future →
   haut-droit).
+- [x] **Header + Footer — M1-c (la finition)** (`PublicLayout.tsx` + `brand.ts` +
+  `guard-nav-link-display.ts` NOUVEAU) : LA BARRE VERTICALE RÉCURRENTE MORTE À LA RACINE —
+  cause : `<Link>` wouter = `<a>` inline ; inline + padding + enfant block = peinture
+  fragmentée (hover/focus en lamelles verticales ; cyan avant `8221b06` qui n'a fait que
+  recolorer). Fix : display explicite à la source (nav header + rail Inspect M1-a +
+  /liquidity) + `focus-visible:` ; ÉPINGLÉ par la nouvelle garde (tout `<Link>`/`<a>` avec
+  padding sans display = build rouge, repo entier). Header harmonisé : tooltips
+  read-only-era morts ; pilules AVALANCHE/LIVE DÉRIVÉES du spine (fail-closed) ; badge
+  CH #001 depuis LA config chapitre ; trigger mobile 44px ; anneaux focus-visible or
+  (sheet, footer, social). Footer : « Read-only foundation shell. » mort → la ligne
+  live-production « don't trust, verify ». Responsive vérifié 375/768/1440 × 2 thèmes.
 
 ### Phase 6 — Audits (le sceau grade-AAA)
 - [ ] Accessibilité (WCAG AA / APCA, focus, clavier, cibles ≥44px)
@@ -94,7 +105,7 @@ Design **100 % fini, verrouillé** = toutes les cases de "Définition de FINI" c
 → **on n'y revient plus jamais.**
 
 ## Suivi couleur — ✅ FERMÉ
-Sprawl : **0** couleur brute (slice 2.3 FAQ : **+0** · slice 2.4 Docs : **+0** · slice ⓪ liveness : **+0** — MembersProvenance 100 % tokens · arc Member Home 2026-07-14 : MEMBER SHELL **+0** · slice A actions/lien/Guide **+0** · slice B pill/settings **+0** · slice C teasers (TeaserSurface + 3 pages) **+0** · slice D wallet/toolkit **+0** · arc harvest L-1 /liquidity **+0** · ACT-1 feed (LiveActivityFeed + 2 pages live) **+0** · CHR-1 chronicle (register + panneau console) **+0** · M1-a hero premier acte (HeroStatusChips + HeroSeatLine + rail Inspect) **+0** · M1-b carte vivante (heroIconLanguage + nœud burn + mini-feed) **+0** — tout en tokens). Guard
+Sprawl : **0** couleur brute (slice 2.3 FAQ : **+0** · slice 2.4 Docs : **+0** · slice ⓪ liveness : **+0** — MembersProvenance 100 % tokens · arc Member Home 2026-07-14 : MEMBER SHELL **+0** · slice A actions/lien/Guide **+0** · slice B pill/settings **+0** · slice C teasers (TeaserSurface + 3 pages) **+0** · slice D wallet/toolkit **+0** · arc harvest L-1 /liquidity **+0** · ACT-1 feed (LiveActivityFeed + 2 pages live) **+0** · CHR-1 chronicle (register + panneau console) **+0** · M1-a hero premier acte (HeroStatusChips + HeroSeatLine + rail Inspect) **+0** · M1-b carte vivante (heroIconLanguage + nœud burn + mini-feed) **+0** · M1-c header/footer (barre récurrente morte à la racine + garde `guard-nav-link-display` + pilules dérivées) **+0** — tout en tokens). Guard
 `no-raw-color` **BLOQUANT** dans la gate (`pnpm guards`), toute nouvelle couleur brute casse le
 build. Du pic de **137 sites** → **0** au fil des slices d'harmonisation.
 Une seule exception documentée : `QrCodeBlock` (fond blanc du canvas QR, requis pour la lisibilité),

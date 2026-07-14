@@ -90,7 +90,7 @@ function InspectRail({ className = "" }: { className?: string }) {
         <Link
           key={item.href}
           href={item.href}
-          className="rounded border border-border/60 bg-background/40 px-2.5 py-1.5 text-muted-foreground transition-colors hover:border-gold/60 hover:text-foreground dark:border-white/10 dark:bg-white/[0.03]"
+          className="inline-flex items-center rounded border border-border/60 bg-background/40 px-2.5 py-1.5 text-muted-foreground transition-colors hover:border-gold/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45 dark:border-white/10 dark:bg-white/[0.03]"
         >
           {item.label}
         </Link>

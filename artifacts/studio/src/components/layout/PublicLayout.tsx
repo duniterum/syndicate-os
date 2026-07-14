@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { headerNav, headerNavPrimary, headerNavMore, footerGroups, navLabel } from "@/config/navigation";
-import { brand, brandAssets, headerChips, socialLinks, type SocialLink } from "@/config/brand";
+import { brand, brandAssets, headerChips, socialLinks, type HeaderChipState, type SocialLink } from "@/config/brand";
+import { useGetProtocolReality } from "@workspace/api-client-react";
 import { heroSystem } from "@/config/syndicateFacts";
 import { SyndicateGuide } from "@/components/guide/SyndicateGuide";
 
@@ -77,30 +78,48 @@ function SeatCtaSlot({
 // SINGLE human-facing signed-in/standing surface; the S-vocabulary stays for the
 // operator console + AccessStateSimulator only.
 
-function ChainPill() {
+// M1-c structural law: the header's status chips are DERIVED from the Protocol
+// Reality Spine read at render time — never frozen "Live" text. Fail-closed:
+// a failed read says Unavailable, loading says Checking…. (The old tooltips
+// claimed a "read-only public surface" — read-only-era leftovers, dead: the
+// protocol sells seats live, in-page.)
+function useHeaderChipState(): HeaderChipState {
+  const { data, isLoading, isError } = useGetProtocolReality();
+  if (isLoading) return "checking";
+  if (isError || !data) return "unavailable";
+  return "live";
+}
+
+const chipStateTone: Record<HeaderChipState, string> = {
+  live: "border-proof/30 bg-proof/10 text-proof",
+  checking: "border-border bg-muted/40 text-muted-foreground",
+  unavailable: "border-destructive/35 bg-destructive/10 text-destructive",
+};
+
+function ChainPill({ state }: { state: HeaderChipState }) {
   return (
     <span
-      title="Avalanche C-Chain — live read-only public surface"
-      className="hidden items-center gap-2 whitespace-nowrap rounded-xl border border-proof/30 bg-proof/10 px-2.5 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-proof shadow-sm 2xl:inline-flex"
+      title="Avalanche C-Chain — every public figure is a live chain read, fail-closed"
+      className={`hidden items-center gap-2 whitespace-nowrap rounded-xl border px-2.5 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] shadow-sm 2xl:inline-flex ${chipStateTone[state]}`}
     >
       <span className="grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-avax shadow-[0_0_18px_-8px_hsl(var(--avax)/0.9)]">
         <img src="/brand/avalanche-avax-token.png" alt="Avalanche" className="h-full w-full object-cover" />
       </span>
-      <span>{headerChips.chainName}</span>
+      <span className="text-foreground/85">{headerChips.chainName}</span>
       <span className="text-muted-foreground">·</span>
-      <span className="text-proof">{headerChips.chainState}</span>
+      <span>{headerChips.states[state]}</span>
     </span>
   );
 }
 
-function LiveChip() {
+function LiveChip({ state }: { state: HeaderChipState }) {
   return (
     <span
-      title="Live on-chain reads — the public surface is currently read-only"
-      className="hidden items-center gap-1.5 rounded-xl border border-proof/30 bg-proof/10 px-2.5 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-proof lg:inline-flex"
+      title="Live on-chain reads — fail-closed, never invented"
+      className={`hidden items-center gap-1.5 rounded-xl border px-2.5 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.1em] lg:inline-flex ${chipStateTone[state]}`}
     >
       <Activity className="h-3.5 w-3.5" />
-      {headerChips.liveBadge}
+      {headerChips.states[state]}
     </span>
   );
 }
@@ -131,7 +150,7 @@ function SocialIconRow({ className, iconClass }: { className?: string; iconClass
           rel="noopener noreferrer"
           title={link.label}
           aria-label={link.label}
-          className="grid h-9 w-9 place-items-center rounded-xl border border-gold/25 bg-gold/5 text-muted-foreground transition-colors hover:border-gold/45 hover:bg-gold/10 hover:text-gold"
+          className="grid h-9 w-9 place-items-center rounded-xl border border-gold/25 bg-gold/5 text-muted-foreground transition-colors hover:border-gold/45 hover:bg-gold/10 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45"
         >
           <SocialGlyph kind={link.kind} className={iconClass ?? "h-4 w-4"} />
         </a>
@@ -154,11 +173,13 @@ function Wordmark() {
           {brand.descriptor}
         </span>
       </span>
+      {/* M1-c: the chapter badge reads from the ONE chapter config (shared
+          with the hero's overview panel) — never a hardcoded literal here. */}
       <span
-        title="Current chapter — Genesis Signal"
+        title={`${heroSystem.overview.chapter.label} — ${heroSystem.overview.chapter.value}`}
         className="ml-1 hidden rounded-full border border-gold/35 bg-gold/10 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider text-gold sm:inline-flex"
       >
-        CH #001
+        {heroSystem.overview.chapter.badge}
       </span>
     </Link>
   );
@@ -168,6 +189,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const reduceMotion = useReducedMotion();
+  const chipState = useHeaderChipState();
 
   return (
     <div className="flex min-h-[100dvh] flex-col bg-background text-foreground selection:bg-gold/30">
@@ -189,9 +211,14 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                   animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
                   transition={{ delay: 0.06 + index * 0.035, duration: 0.3 }}
                 >
+                  {/* M1-c ROOT-CAUSE FIX: a wouter <Link> is a bare inline <a>;
+                      inline + padding + block child = fragmented hover/focus
+                      paint (the recurring vertical gold/cyan bar). inline-flex
+                      heals the box; focus-visible keeps the ring for keyboards
+                      and off mouse clicks. Pinned by guard-nav-link-display. */}
                   <Link
                     href={item.path}
-                    className={`group relative rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus:outline-none focus:ring-2 focus:ring-gold/45 2xl:px-3 2xl:text-[12px] ${
+                    className={`group relative inline-flex items-center rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45 2xl:px-3 2xl:text-[12px] ${
                       location === item.path ? "text-foreground" : "text-muted-foreground"
                     }`}
                   >
@@ -213,7 +240,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               >
                 <DropdownMenu>
                   <DropdownMenuTrigger
-                    className={`group relative inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus:outline-none focus:ring-2 focus:ring-gold/45 data-[state=open]:bg-gold/8 data-[state=open]:text-gold 2xl:px-3 2xl:text-[12px] ${
+                    className={`group relative inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45 data-[state=open]:bg-gold/8 data-[state=open]:text-gold 2xl:px-3 2xl:text-[12px] ${
                       headerNavMore.some((item) => item.path === location)
                         ? "text-foreground"
                         : "text-muted-foreground"
@@ -255,8 +282,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <SocialIconRow className="hidden items-center gap-1.5 lg:flex" iconClass="h-3.5 w-3.5" />
-            <ChainPill />
-            <LiveChip />
+            <ChainPill state={chipState} />
+            <LiveChip state={chipState} />
             <ThemeToggle />
             <Link
               href="/proof"
@@ -281,7 +308,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="min-h-10 min-w-10 rounded-xl border border-gold/30 bg-gold/8 text-gold xl:hidden">
+                <Button variant="ghost" size="icon" className="min-h-11 min-w-11 rounded-xl border border-gold/30 bg-gold/8 text-gold xl:hidden">
                   {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                   <span className="sr-only">Toggle menu</span>
                 </Button>
@@ -298,7 +325,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                       key={item.id}
                       href={item.path}
                       onClick={() => setMobileOpen(false)}
-                      className={`flex min-h-12 items-center justify-between rounded-xl border border-border bg-card px-4 py-3 text-base font-medium transition-colors hover:border-gold/30 hover:text-gold ${
+                      className={`flex min-h-12 items-center justify-between rounded-xl border border-border bg-card px-4 py-3 text-base font-medium transition-colors hover:border-gold/30 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45 ${
                         location === item.path ? "text-foreground" : "text-muted-foreground"
                       }`}
                     >
@@ -306,8 +333,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                       <span className="font-mono text-xs text-gold">{item.path}</span>
                     </Link>
                   ))}
-                  <div className="mt-2 rounded-xl border border-proof/20 bg-proof/5 px-4 py-3 text-xs text-proof">
-                    {headerChips.mobileChainNote}
+                  <div className={`mt-2 rounded-xl border px-4 py-3 text-xs ${chipStateTone[chipState]}`}>
+                    {headerChips.chainName} · {headerChips.states[chipState]}
                   </div>
                   <div className="mt-2 flex flex-col gap-2">
                     {socialLinks.map((link) => (
@@ -351,7 +378,10 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 <ul className="space-y-3">
                   {group.items.map((item) => (
                     <li key={item.id}>
-                      <Link href={item.path} className="text-sm text-foreground transition-colors hover:text-gold">
+                      <Link
+                        href={item.path}
+                        className="rounded text-sm text-foreground transition-colors hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45"
+                      >
                         {navLabel(item, "footer")}
                       </Link>
                     </li>
@@ -367,7 +397,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-gold"
+                className="inline-flex items-center gap-2 rounded text-sm text-muted-foreground transition-colors hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45"
               >
                 <SocialGlyph kind={link.kind} className="h-4 w-4" />
                 <span>{link.label}</span>

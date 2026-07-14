@@ -60,7 +60,7 @@ function ActionRail() {
             href={a.href ?? a.anchor}
             target={a.href ? "_blank" : undefined}
             rel={a.href ? "noopener noreferrer" : undefined}
-            className={`group rounded-md border px-3 py-3 text-left transition-colors ${railClass(a.variant)}`}
+            className={`group block rounded-md border px-3 py-3 text-left transition-colors ${railClass(a.variant)}`}
             data-testid={`liquidity-action-${a.label.toLowerCase().replace(/[^a-z]+/g, "-")}`}
           >
             <span className="flex items-center gap-1 font-mono text-[11px] uppercase tracking-[0.16em] font-semibold text-foreground">

@@ -5,7 +5,9 @@ export const brand = {
   product: "Studio OS",
   tagline: "A Living Protocol",
   descriptor: "On-chain membership protocol",
-  foundationNote: "Read-only foundation shell.",
+  // M1-c truth sweep: "Read-only foundation shell." DIED — the protocol sells
+  // seats live, in-page. The footer line states the live-production posture.
+  foundationNote: "Every public figure is a live chain read — don't trust, verify.",
   rightsNote: "All rights reserved.",
 } as const;
 
@@ -18,16 +20,21 @@ export const brandAssets = {
 } as const;
 
 /**
- * Header chip wording. "Live" is honest here — the header chips describe the
- * live, read-only chain reads (Protocol Reality Spine) that power the public
- * surfaces. Kept in config so no live-state label is ever hardcoded in JSX.
+ * Header chip wording. M1-c structural law: the chips' STATE is never frozen —
+ * PublicLayout derives live/checking/unavailable from the Protocol Reality
+ * Spine read at render time and picks the matching label here. Kept in config
+ * so no live-state label is ever hardcoded in JSX.
  */
 export const headerChips = {
   chainName: "Avalanche",
-  chainState: "Live",
-  liveBadge: "Live",
-  mobileChainNote: "Avalanche · Live",
+  states: {
+    live: "Live",
+    checking: "Checking…",
+    unavailable: "Unavailable",
+  },
 } as const;
+
+export type HeaderChipState = keyof typeof headerChips.states;
 
 /**
  * Official public channels. Labels are deliberately DISTINCT (two Telegram

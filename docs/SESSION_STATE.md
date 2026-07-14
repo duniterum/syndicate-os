@@ -2,7 +2,41 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🗺 SLICE M1-b ✅ BUILT (2026-07-14, founder work order + GO after the truth-sweep gate):
+> **▶ 🔧 SLICE M1-c ✅ BUILT (2026-07-14, founder work order + GO after the gate): HEADER +
+> FOOTER FINISH — THE RECURRING BAR IS DEAD AT THE ROOT, AS A CLASS.** ① ROOT CAUSE FOUND
+> AND PROVEN (the founder's screenshot bug, "fixed" repeatedly, always returned): wouter's
+> `<Link>` renders a bare `<a>` = `display:inline`; an INLINE box with padding + a block
+> child has FRAGMENTED paint geometry — its hover background (`hover:bg-gold/8`) and focus
+> ring painted as broken slivers, the "vertical gold line" under each nav link (CYAN before
+> commit `8221b06`, which recolored `--ring` cyan→gold and called it "kills recurring cyan
+> bars at root" — it recolored the bars, never killed them; every later fix changed colors
+> while the geometry stayed). Measured proof on the rig: nav anchors 60px tall bleeding 16px
+> above the header vs the More BUTTON's sane 24px; `inline-flex` heals to 23px. FIX =
+> explicit display at the source (header nav links; the same latent class found + fixed in
+> the M1-a Inspect rail and /liquidity's action rail) + `focus:` → `focus-visible:` (no ring
+> smear on mouse clicks — the founder's "active state" sighting). PINNED FOREVER: NEW
+> `guard-nav-link-display.ts` in the guards chain — any padded `<Link>`/`<a>` without an
+> explicit display class FAILS the build, repo-wide (9 box-styled links conform today); the
+> bug class cannot return under any color. ② HEADER HARMONIZED to live-production: the
+> read-only-era tooltips DIED ("live read-only public surface" · "currently read-only");
+> the AVALANCHE/LIVE pills now DERIVE from the reality-spine read (live/checking/unavailable,
+> fail-closed, `chipStateTone` + `headerChips.states` config — frozen "Live" text dead);
+> the mobile sheet's chain note derives the same state; the CH #001 badge reads from the ONE
+> chapter config (shared with the hero overview; the hardcoded literal died); mobile sheet
+> trigger 40px → 44px (touch-target floor); focus-visible gold rings harmonized on mobile
+> sheet links, footer links, social anchors. ③ FOOTER: the site-wide bottom-line claim
+> "Read-only foundation shell." DIED → "Every public figure is a live chain read — don't
+> trust, verify."; links stay registry-driven (real routes only, verified). PHASE-2 ITEM 13
+> RECONCILED HONESTLY in the frozen list (guards half done + footer harmonized; remains:
+> final IA per CONTENT_SUITE_SPEC — needs Knowledge/Glossary/Roadmap pages — + sitemap
+> lastmod). ④ RESPONSIVE VERIFIED in-browser: 1440 (nav row uniform, chips derived) · 768
+> (nav hidden, hamburger, header 58px, no overflow) · 375 (trigger 44×44, all 12 sheet
+> links ≥44px, derived chain note, no overflow) · both themes · footer groups stack.
+> Green: studio tsc 0 · ALL guards incl. the new one · seo 395 · surface:audit 254 · build
+> 24 shells (21 INDEX, unchanged). +0 raw color. DEPLOY: 🚀 BATCHABLE — one deploy carries
+> M1-a + M1-b + M1-c.
+>
+> **▶ Prior: 🗺 SLICE M1-b ✅ BUILT (2026-07-14, founder work order + GO after the truth-sweep gate):
 > THE LIVING MAP TELLS TODAY'S TRUTH — the throne/flame/orbital design the founder loves
 > stays; every claim on it is now derived, doored, and live.** TRUTH SWEEP EXECUTED (chain +
 > repo win): ① "LIVE · READ-ONLY" KILLED everywhere — the `LiveReadTag` literal is now "Live
@@ -1262,7 +1296,13 @@ markers update. New session work lives BELOW in "Phase 3–6 / later", never wov
 12. **2.11 Join / entry-tiers UI** — featured tiers + custom-amount compose + live quote preview
     (gross → source payment → net → 70/20/10) + 5-step flow; read-only; figures from chain.
 13. **Footer IA + sitemap + per-page SEO guards** — footer per `CONTENT_SUITE_SPEC`; add banned-word,
-    no-fake-live, sitemap-leak, index-only-real-content guards.
+    no-fake-live, sitemap-leak, index-only-real-content guards. **⚙ RECONCILED HONESTLY (M1-c,
+    2026-07-14): the GUARDS half is ✅ DONE long since** (guard-forbidden-copy · guard-no-fake-live ·
+    seo:check 395 incl. sitemap-leak + index-only-real-content) **and the footer was HARMONIZED to
+    live-production truth in M1-c** (registry-driven, real routes, the "Read-only foundation shell."
+    claim dead). **REMAINS OPEN:** the final footer IA per `CONTENT_SUITE_SPEC` §IA (its target
+    grouping needs 2.5 Knowledge base · 2.7 Glossary · 2.8 Roadmap — pages that don't exist yet)
+    + sitemap `lastmod`. The item closes when those land.
 
 ## Phase 3–6 / later work — captured this session (NOT scheduled into the frozen Phase-2 list above)
 

@@ -581,7 +581,9 @@ export const heroSystem = {
       { id: "operations", label: "Operations balance", bind: "opsUsdc", unit: "USDC", meta: "10% routing target" },
       { id: "burned", label: "Burned all-time", bind: "burnedSyn", unit: "SYN", meta: "Proof of Fire" },
     ] as HeroStat[],
-    chapter: { label: "Current chapter", value: "Genesis Signal", meta: "Chapter #1" },
+    // The ONE chapter config — the hero overview card AND the header wordmark
+    // badge read from here (M1-c: the header's "CH #001" literal died).
+    chapter: { label: "Current chapter", value: "Genesis Signal", meta: "Chapter #1", badge: "CH #001" },
     // Chapter I window (#1–#333) comes from the vendored archive canon; the
     // filled count is the LIVE Holder Index memberTotal — never fabricated.
     seats: {
