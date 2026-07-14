@@ -16,7 +16,7 @@ export default function Archive() {
     <PublicPage
       eyebrow="Archive & chronicle"
       title="Protocol memory, kept honestly."
-      lead="The archive holds the protocol's artifacts; the chronicle is its narrative memory of milestones. Both are concept memory today — archive reads are not wired and nothing is minted here."
+      lead="The archive holds the protocol's artifacts; the chronicle is its narrative memory of milestones. Artifacts mint on-chain today — counts and prices are read live from the contract; the full museum surface is still being built."
       badge={<TruthLabel variant={surfaceStatus.archive} />}
     >
       <h2 className="type-h2 text-foreground mb-5">The archive</h2>

@@ -86,8 +86,13 @@ const STATUS_BADGE: Record<Posture, string> = {
 /**
  * Canon-lock timestamp for this static registry. Fixed (not request-time) so the
  * posture-only payload is deterministic and never implies a live read.
+ * S4 (2026-07-14): the whole canon was re-reconciled against today's protocol
+ * reality — the pre-C5 "not wired" era entries died (backbone live, chronicle
+ * live, archive minting live, routing figures served). Whoever changes the
+ * protocol's reality updates the matching entry IN THE SAME SLICE (the
+ * Invariant-vs-State law applied to this registry).
  */
-const CANON_AS_OF = "2026-07-03T00:00:00.000Z";
+const CANON_AS_OF = "2026-07-14T00:00:00.000Z";
 
 type CanonEntry = {
   key: string;
@@ -118,17 +123,17 @@ const CANON: CanonEntry[] = [
     publicClass: "SAFE_PUBLIC",
     sourceRef: "vendored:the-syndicate/contracts/contract-registry.ts@cf4ca34",
     confidence: "high",
-    note: "Contract registry and ABIs are vendored and pinned from TheSyndicate main canon; full addresses are held server-side only and never exposed in this payload. Live contract reads are not wired.",
+    note: "Contract registry and ABIs are vendored and pinned from TheSyndicate main canon; full addresses are held server-side only and never exposed in this payload. Live contract reads are served by the protocol reality spine.",
     surface: "/contracts",
   },
   {
     key: "proof",
     label: "Proof",
-    posture: "NOT_WIRED",
+    posture: "READ_ONLY_PROOF",
     publicClass: "SAFE_PUBLIC",
-    sourceRef: "vendored:the-syndicate/proof/protocol-event-registry.ts@cf4ca34",
-    confidence: "medium",
-    note: "Protocol event registry (event taxonomy) is vendored and pinned; live event/proof data still requires an indexer/adapter before it can be wired.",
+    sourceRef: "internal:event-backbone@M4",
+    confidence: "high",
+    note: "Live event/proof data is served: the event backbone indexes seats, numbered burns and referral lifecycle unattended, and the public feed carries a transaction verify anchor on every line.",
     surface: "/proof",
   },
   {
@@ -158,7 +163,7 @@ const CANON: CanonEntry[] = [
     publicClass: "SAFE_PUBLIC",
     sourceRef: "canon:referral-attribution",
     confidence: "high",
-    note: "Introduction/source registry is readable: the live spine surfaces the engine↔registry linkage and a read-only validate endpoint checks a single id on demand. Per-member attribution readback and anonymized analytics remain unwired; registration and activation are owner-side on-chain acts.",
+    note: "Introduction/source registry is live: the spine surfaces the engine↔registry linkage, a read-only validate endpoint checks ids on demand, each signed source reads its OWN standing (introductions, durables, pay) from the introduction read-model, and the aggregate paid-to-referrers total is served publicly. Registration and activation stay owner-side on-chain acts.",
     surface: "/source",
   },
   {
@@ -174,11 +179,11 @@ const CANON: CanonEntry[] = [
   {
     key: "membership",
     label: "Membership",
-    posture: "NOT_WIRED",
+    posture: "READ_ONLY_PROOF",
     publicClass: "FOUNDER_DECISION",
     sourceRef: "canon:institutional-register-registry",
-    confidence: "medium",
-    note: "No public member directory, index, or PII is served — the only wired membership read is each signed wallet's own live self-readback (see walletSession). Aggregate/history-safe surfaces remain unwired.",
+    confidence: "high",
+    note: "No public member directory, index, or PII is served — ever, by design. What IS live: each signed wallet's own self-readback, the aggregate holder index, and the complete address-free seat history served by the event backbone.",
     surface: "/member",
   },
   {
@@ -204,21 +209,21 @@ const CANON: CanonEntry[] = [
   {
     key: "treasury",
     label: "Treasury",
-    posture: "NOT_WIRED",
+    posture: "READ_ONLY_PROOF",
     publicClass: "ECONOMIC_DASHBOARD_SAFE",
-    sourceRef: "canon:treasury-ledger-doctrine",
-    confidence: "medium",
-    note: "Treasury transparency requires an indexer with transaction anchoring; not wired.",
+    sourceRef: "internal:reality-spine-financial",
+    confidence: "high",
+    note: "Live treasury balances are served by the reality spine (vault and operations USDC, LP reserves, the seven allocation wallets). A per-transaction anchored treasury ledger is the remaining future layer.",
     surface: "/treasury",
   },
   {
     key: "routing",
     label: "Routing",
-    posture: "NOT_WIRED",
+    posture: "READ_ONLY_PROOF",
     publicClass: "ECONOMIC_DASHBOARD_SAFE",
-    sourceRef: "canon:treasury-ledger-doctrine",
-    confidence: "medium",
-    note: "USDC routing flow requires an indexer; not wired.",
+    sourceRef: "internal:reality-spine-financial",
+    confidence: "high",
+    note: "The 70/20/10 routing is enforced by the sale contract and its figures are served live: cumulative inflows per engine plus the routed-target balances that confirm the split.",
     surface: "/treasury",
   },
   {
@@ -238,27 +243,27 @@ const CANON: CanonEntry[] = [
     publicClass: "PUBLIC_MEMORY_SAFE",
     sourceRef: "vendored:the-syndicate/archive/archive-id-registry.ts@cf4ca34",
     confidence: "high",
-    note: "Archive ID registry (static artifact IDs) and the Archive NFT ABI are vendored and pinned; live archive reads are not wired.",
+    note: "Archive ID registry and the Archive NFT ABI are vendored and pinned; live archive reads are served (artifact configuration, mint counts and prices read from the contract — artifacts are minted on-chain today).",
     surface: "/archive",
   },
   {
     key: "chronicle",
     label: "Chronicle",
-    posture: "NOT_WIRED",
+    posture: "READ_ONLY_PROOF",
     publicClass: "PUBLIC_MEMORY_SAFE",
-    sourceRef: "canon:chronicle-registry",
-    confidence: "medium",
-    note: "Protocol memory exists in TheSyndicate main canon but is not yet vendored or pinned in this rebuild. Promotes to read-only proof once vendored.",
+    sourceRef: "canon:chronicle-register@committed",
+    confidence: "high",
+    note: "The Chronicle is live: founder-promoted chapters served from the committed public register — an entry enters only by a founder-approved commit; no database, no silent edits.",
     surface: "/chronicle",
   },
   {
     key: "learning",
     label: "Learning",
-    posture: "NOT_WIRED",
+    posture: "READ_ONLY_PROOF",
     publicClass: "SAFE_PUBLIC",
-    sourceRef: "canon:learning-canon",
-    confidence: "medium",
-    note: "Canon and education content exists in TheSyndicate main but is not yet vendored or pinned in this rebuild. Promotes to read-only proof once vendored.",
+    sourceRef: "canon:learning-page@committed",
+    confidence: "high",
+    note: "The education page is live: plain-language lessons on wallets, transactions, membership, and how to verify any figure on the site.",
     surface: "/learning",
   },
   {
@@ -274,11 +279,11 @@ const CANON: CanonEntry[] = [
   {
     key: "indexer",
     label: "Indexer",
-    posture: "FUTURE",
+    posture: "READ_ONLY_PROOF",
     publicClass: "INTERNAL_ONLY",
-    sourceRef: "internal:indexer-design",
-    confidence: "low",
-    note: "Data-health/indexer reserved; design pending.",
+    sourceRef: "internal:event-backbone@M4",
+    confidence: "high",
+    note: "The event backbone runs unattended in production: cursor-resumed incremental scans (seats, burns, referral lifecycle), Protocol Time enrichment, and the served address-safe feed — fail-closed on every cycle.",
     surface: "/indexer",
   },
   {

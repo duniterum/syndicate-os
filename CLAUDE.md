@@ -64,6 +64,14 @@ mobile width. **Only approval of what he SEES unlocks commit.** A rejection cost
 revert clean, record the verdict, prod never moved.
 ③ Copy/truth-only changes need no wireframe but the full final text on screen (the
 standing rule above).
+**STANDING RULE — the SEO layer rides the slice (founder, permanent, 2026-07-14 — Invariant-vs-State
+applied to metadata).** A slice that changes a page's REALITY updates that page's
+meta/OG/JSON-LD/title AND its source-status/posture entries **in the SAME commit**. A page
+whose reality moved while its served head stood still is a truth bug (the read-only-era
+pattern: every pre-C5 page kept announcing the dead era to Google). Enforcement:
+`guard-era-drift` (studio) + `source-status-truth:guard` (api) go red on the vocabulary
+class; the rule covers what no pattern can name.
+
 ④ **A preview handed to the founder must be VISUALLY COMPLETE** (founder, 2026-07-14):
 every asset loading (DOM-level check — each visible `img` has `naturalWidth > 0`), both
 themes, desktop AND mobile — verified by Claude Code BEFORE handing the URL. A broken

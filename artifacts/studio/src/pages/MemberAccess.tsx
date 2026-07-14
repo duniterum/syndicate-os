@@ -75,14 +75,14 @@ const facets = {
   source: {
     icon: Network,
     title: "Attribution origin",
-    body: "The verified introduction behind your join. As a source, an eligible completed introduction can carry a transparent referral commission (paused today) and, over time, non-financial recognition — never passive income, never a profit promise. Introduction links validate read-only on the source builder; your own attribution readback is not yet served.",
+    body: "The verified introduction behind your join. As a source, an eligible completed introduction pays you inside the buyer's own transaction — and your own standing (introductions, durable seats, what you've been paid) is served in your referral dashboard. Never passive income, never a profit promise.",
     lifecycle: "PENDING_ADAPTER",
     links: [ctas.buildLink, ctas.exploreSource],
   } as CockpitFacet,
   activity: {
     icon: Activity,
     title: "Your activity",
-    body: "Verified protocol events tied to your wallet become your public, shareable proof of participation. The event adapter is not wired — no feed is served, and none is simulated.",
+    body: "The protocol's event history is live — seats, numbered burns and referral events, each with its verify anchor, on the public Activity page. Your own per-wallet feed arrives with a future slice; nothing is simulated meanwhile.",
     lifecycle: "PENDING_ADAPTER",
     links: [ctas.verifyProof],
   } as CockpitFacet,
@@ -96,7 +96,7 @@ const facets = {
   archive: {
     icon: Library,
     title: "Archive holdings",
-    body: "Any archive artifacts tied to your wallet. Artifacts are protocol memory — never a membership seat or a financial right. Archive reads are not wired; the public archive doctrine is.",
+    body: "Any archive artifacts tied to your wallet. Artifacts are protocol memory — never a membership seat or a financial right. They mint on-chain today (counts and prices read live); your own per-wallet holdings readback arrives with a future slice.",
     lifecycle: "PENDING_ADAPTER",
     links: [ctas.viewArchive],
   } as CockpitFacet,

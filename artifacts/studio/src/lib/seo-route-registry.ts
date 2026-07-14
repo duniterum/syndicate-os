@@ -134,7 +134,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     ownerSurface: "transparency",
     primaryIntent: "verify",
     proofRoute: "/proof",
-    notes: "Honest proof explainer (no placeholder data). Proof adapters not wired.",
+    notes: "Honest proof explainer (no placeholder data). Proof served live by the event backbone.",
   },
   {
     path: "/member",

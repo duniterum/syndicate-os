@@ -190,7 +190,7 @@ export const operationalReality = {
 export const studioPreview = {
   title: "Studio OS Console",
   description:
-    "Access the operational proof console. It currently serves as the foundational shell; protocol data is awaiting source wiring.",
+    "Access the operational proof console — read-only panels over the module registry and the protocol's live postures.",
   cta: { label: "Open Studio OS", href: "/studio" },
   mockStatus: "DESIGN_PREVIEW" as TruthStatus,
 };
@@ -240,7 +240,7 @@ export const studioPreviewPanel = {
       id: "notices",
       label: "Notice OS",
       lifecycle: "FUTURE",
-      detail: "Read-only protocol notices; no broadcast is wired.",
+      detail: "Protocol notices — a future module; nothing is broadcast today.",
     },
     {
       id: "admin",
@@ -345,7 +345,7 @@ export const membershipIdentity = {
     {
       step: "01",
       title: "Wallet address",
-      body: "Your self-custodied wallet on the Avalanche C-Chain is your decentralized identity key. Inspecting a wallet here would only ever read public facts — never a transaction, signature, or write — and that inspection is not wired in this foundation yet.",
+      body: "Your self-custodied wallet on the Avalanche C-Chain is your decentralized identity key. Signed in, you read your own balances and approvals live — and only your own: this site never inspects other people's wallets, by design.",
       lifecycle: "PENDING_ADAPTER",
     },
     {
@@ -375,7 +375,7 @@ export const membershipIdentity = {
     {
       step: "06",
       title: "Activity & proof",
-      body: "Verified protocol events become your public, shareable proof of participation. The event adapter that reads them is not wired here yet.",
+      body: "Verified protocol events are your public, shareable proof of participation — served live on the Activity page with verify anchors. Your own per-wallet feed arrives with a future slice.",
       lifecycle: "PENDING_ADAPTER",
     },
   ] as IdentityStage[],

@@ -160,7 +160,7 @@ export default function SystemStatus() {
         <div>
           <h1 className="type-h1 text-foreground">System Status</h1>
           <p className="text-muted-foreground mt-2">
-            Honesty hub detailing exactly what is real versus not wired.
+            Honesty hub detailing exactly what is live versus pending.
           </p>
         </div>
       </div>
@@ -169,13 +169,13 @@ export default function SystemStatus() {
         <div className="mb-4">
           <h2 className="type-h2 text-foreground">Protocol reality</h2>
           <p className="text-muted-foreground text-sm mt-1 max-w-3xl">
-            Strictly read-only reads of public Avalanche C-Chain facts — chain identity, contract
-            code presence, ERC-20 symbol/decimals, archive configuration, and read-only
-            membership-sale state. The active V3 sale engine's public figures (available SYN, gross
-            USDC received, receipt count) are surfaced as exact raw base units. No balances, holders,
-            wallet, or any purchase, transaction, referral, or write surface exists. Addresses are
-            resolved server-side and never appear in this payload; every read is truth-labelled, and
-            any value that cannot be verified renders as null with a reason.
+            Live reads of public Avalanche C-Chain facts — chain identity, contract code presence,
+            ERC-20 symbol/decimals, archive configuration, and membership-sale state. The active V3
+            sale engine's public figures (available SYN, gross USDC received, receipt count) are
+            surfaced as exact raw base units. This payload itself carries no member data and no
+            wallet addresses — reading it writes nothing; joining happens on /join, signed from
+            your own wallet. Every read is truth-labelled, and any value that cannot be verified
+            renders as null with a reason.
           </p>
         </div>
         <ProtocolRealityPanel showMeta />

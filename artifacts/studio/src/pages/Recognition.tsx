@@ -41,7 +41,7 @@ export default function Recognition() {
     <PublicPage
       eyebrow="Recognition"
       title="Recognition, not a financial benefit."
-      lead="Recognition is structural: it acknowledges verified participation and contribution to The Syndicate. It is never a financial benefit, a security, or a promise of gain — and it is a future concept, not wired today."
+      lead="Recognition is structural: it acknowledges verified participation and contribution to The Syndicate. It is never a financial benefit, a security, or a promise of gain — and it is a future concept: no standing figure is computed today."
       badge={<TruthLabel variant={surfaceStatus.recognition} />}
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-14">

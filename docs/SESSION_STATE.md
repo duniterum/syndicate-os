@@ -2,7 +2,31 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🌐 THE TRUTH BATCH + S3 ✅ SEALED IN PROD (2026-07-14, Replit-verified 7/7 on
+> **▶ 🧬 SLICE S4 ✅ BUILT (2026-07-15, founder GO): THE STRUCTURAL CURE — the era-drift
+> class can never return silently.** ① The server's source-status registry (the 2026-07-03
+> fossil) reconciled to today: NINE entries promoted/rewritten (proof · membership ·
+> treasury · routing · chronicle · learning · indexer · archive · source — the backbone,
+> the committed chronicle register, live archive mints, served routing figures, own-row
+> source standing + the public paid aggregate all STATED) + asOf bumped + /status's two
+> inline era proses fixed. ② NEW `guard-era-drift` (studio 14th): case-insensitive (the
+> /contracts capital-R lesson), comment-stripping, CLAIM-shaped patterns (mechanism
+> "read-only" stays free), 8-entry allowlist each with its written reason. ③ NEW
+> `source-status-truth:guard` (api 17th, 161 checks): era vocabulary dead in the served
+> payload + posture promotions PINNED (no silent regression) + positive truth pins (notes
+> must state the live facts). ④ THE GUARD PROVED THE CURE PRE-COMMIT: it caught 14 MORE
+> lies the six manual sweeps missed — /archive's own page lead ("nothing is minted here"
+> vs 17 minted!) · modules /proof description ("why none is wired yet") · /member's three
+> facets (referral "paused today" · "event adapter is not wired" · "archive reads not
+> wired") · identity stages · notices · studioPreview · /map & /proof classification
+> summaries · the /studio console note — ALL rewritten to today's truth. ⑤ THE LAW
+> engraved in CLAUDE.md: the SEO layer rides the slice (reality change ⇒ meta/OG/posture
+> updated in the SAME commit). Green: tsc both · api 17 guards (incl. new 161) · studio
+> 14 guards · seo 395 · build 24 shells. DEPLOY: 🚀 recommended now (/status + /member
+> lie in prod today — the S2 class). WHAT REMAINS DECLARED (not silent): full posture
+> DERIVATION from live reads = a future slice; today the registry is truth-pinned by
+> guard, which makes standing-still-while-reality-moves a red build.
+>
+> **▶ Prior: 🌐 THE TRUTH BATCH + S3 ✅ SEALED IN PROD (2026-07-14, Replit-verified 7/7 on
 > thesyndicate.money, bundle `index-DmjsTAJQ.js`, HEAD `d355c5c`): GOOGLE NOW HEARS THE
 > LIVING PROTOCOL.** Prod proof: ① / meta+og serve the human-first identity ("A members
 > club that lives on-chain…") — the read-only era line at ZERO; ② /proof no longer

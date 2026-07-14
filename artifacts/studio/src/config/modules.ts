@@ -133,7 +133,7 @@ export const modules = [
     live: false,
     phase: "live",
     truthStatus: surfaceStatus.proofOfFire,
-    description: "What public proof will mean — and why none is wired yet.",
+    description: "Verify the protocol: receipts, routing, numbered burns and referral payments — read live, each with its verify link.",
     dependencies: ["eventAdapter"],
     nav: { header: true, sidebar: false, footer: true },
     icon: ShieldCheck,

@@ -28,7 +28,7 @@ export default function Home() {
         </p>
       </div>
 
-      <DataStatusNote description="This console is a read-only foundation. The only live read is a strictly read-only protocol reality feed (public Avalanche C-Chain facts — no balances, amounts, wallets, transactions, or writes). Every operator surface below is a preview, and nothing here acts." />
+      <DataStatusNote description="This console reads and never writes. Its live read is the protocol reality feed (public Avalanche C-Chain facts — no member data, no wallets, no transactions). Every operator surface below is a preview, and nothing here acts." />
 
       <div className="mb-12">
         <ProtocolRealitySummary />
