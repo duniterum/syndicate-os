@@ -2,7 +2,29 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🛠 M4-c CONVERGENCE FIX ✅ BUILT (2026-07-14, on Replit's measured prod diagnosis —
+> **▶ 🔥 SLICE M4-c ✅ SEALED IN PROD (2026-07-14, Replit-verified, 4-point check on
+> thesyndicate.money): THE COMPLETE HEARTBEAT SERVES — seats + numbered Proof of Burn +
+> referral lifecycle.** Convergence fix (`15e933f`) worked FASTER than estimated: cycle 1
+> post-deploy caught up all ~3M blocks in one pass (the paced budget + throttle kept the RPC
+> from cutting); cycles ok=2 · partial=0 · failed=0; both streams caughtUp:true, cursor
+> tracking the head incrementally (90,246,894 → 90,247,186). ① STATUS: both streams ok ·
+> burnLedgerTotal 7 · lifecycleTotal 9 · seats 26. ② FEED: lanes all true; burnLedger #1→#7
+> GAPLESS; senders ONLY "Founder"; ZERO 0x40-hex in the raw payload (only 64-hex tx anchors).
+> ③ /fire-ledger live capture: total 21,273 SYN + the record banner verbatim ("…oldest is #1 —
+> complete up to block 90,247,186…"); numbered cards with FOUNDER badge + VERIFY; Proof of
+> Burn #1 confirmed served (block 87,703,847 · 1,000 SYN · Founder). ④ /activity banner
+> VERBATIM ("Complete history, served by the event indexer. Seats, burns (Proof of Burn) and
+> referral lifecycle…"); counter "26 seat(s) · 7 burn(s) · 9 referral event(s)". The M5
+> regression fully healed (seats returned cycle 1 via lane isolation). RECORD-ONLY
+> observation (Replit, non-blocking — do NOT patch without evidence per the runtime-evidence
+> rule): lastSuccess rowsInserted/protocolEventsInserted read 0 while the DB gained rows —
+> LIKELY honest: the pre-fix prod cycles (running every 5 min while the fix was built) kept
+> partially inserting rows before each 403, so the fix's cycle 1 found most rows already
+> present (idempotent inserts return 0) and later cycles genuinely insert 0 in quiet windows;
+> the counter reflects the LAST cycle only. Verify against logs at the next backbone touch if
+> it still looks off. THE M4 ARC (a+b+c) IS COMPLETE IN PROD.
+>
+> **▶ Prior: 🛠 M4-c CONVERGENCE FIX ✅ BUILT (2026-07-14, on Replit's measured prod diagnosis —
 > 403 rate-limit; 3 cycles failed; cursor never moved; /activity + /fire-ledger DARK in prod
 > including the M5 seat lines).** Root cause exactly as Replit measured: the protocol lane
 > wrote its cursor ONLY after a full ~2.5M-block pass → the RPC 403-cut every cycle →
