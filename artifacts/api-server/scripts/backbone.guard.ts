@@ -238,6 +238,15 @@ for (const f of zoneFiles) {
       .filter((k) => !allowedIntro.has(k))
       .join(", ")}`,
   );
+  // The prod-measured literal lesson (2026-07-14): the completeness check
+  // must speak the CURSOR TABLE's persisted vocabulary ("complete"/"idle" —
+  // saleEventIndexer:485), never the in-memory summary's "ok".
+  check(
+    introSrc.includes('r.status === "complete"') &&
+      !introSrc.includes('r.status === "ok"'),
+    "introduction refresh checks the PERSISTED cursor vocabulary (complete/idle, never the summary's ok)",
+    "introduction refresh compares the cursor against a status literal the table never carries",
+  );
   const leakIdx = introSrc.indexOf("assertNoAddressLeak(JSON.stringify(model))");
   const setIdx = introSrc.indexOf("setLiveIntroductionModel(");
   check(

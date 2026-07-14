@@ -2,7 +2,20 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ ♻️ SLICE M0 ✅ BUILT (2026-07-14, founder GO): THE INTRODUCTION READ-MODEL REFRESHES
+> **▶ 🩹 M0 CURSOR-LITERAL FIX ✅ BUILT (2026-07-14, on Replit's prod diagnosis — the refresh
+> skipped every cycle: `saleLaneCompleteTo` required cursor status `"ok"`, a literal that
+> exists ONLY in the engine's in-memory run summary; the CURSOR TABLE's persisted vocabulary
+> is `complete | idle | running | error` (saleEventIndexer:485 — verified in repo AND in the
+> prod DB: V3 cursor at head with status "complete"). The fail-closed skip worked exactly as
+> designed — honest reason, nothing invented, snapshot kept serving.** FIX: the check now
+> anchors on the decisive fact (cursor `lastScannedBlock >= head`) and accepts the persisted
+> non-fault literals (`complete`/`idle`); NEW GUARD PIN (backbone:guard 89): the refresh must
+> speak the persisted cursor vocabulary, never the summary's "ok" — the literal-drift class
+> is now caught at the gate. Deploy NOW (the slice's purpose is unfulfilled in prod — never
+> batched). Everything else in the c53d9f7 deploy verified sane by Replit: header CTA in the
+> bundle bit-exact · protocol lanes caughtUp at head · burns 7 / lifecycle 9 · zero regression.
+>
+> **▶ Prior: ♻️ SLICE M0 ✅ BUILT (2026-07-14, founder GO): THE INTRODUCTION READ-MODEL REFRESHES
 > ITSELF — and the member link card was found ALREADY BUILT (REUSED, not rebuilt).**
 > **Part 2 first (the honest finding):** `MyReferralLinkCard` (§11 slot 2b) already ships in
 > MemberReferralDashboard — derive (`SYN.SOURCE.V1`) + live registry read + copy + QR + share

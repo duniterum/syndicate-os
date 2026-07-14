@@ -125,7 +125,16 @@ async function saleLaneCompleteTo(head: number): Promise<boolean> {
       ),
     );
   const r = rows[0];
-  return r !== undefined && r.status === "ok" && r.lastScannedBlock >= head;
+  // The PERSISTED cursor vocabulary is "complete" | "idle" | "running" |
+  // "error" (saleEventIndexer writes "complete" when lastScanned >= head —
+  // "ok" exists ONLY in the in-memory run summary; the first prod run proved
+  // the difference). The decisive fact is the cursor sitting at the head;
+  // the status check only excludes a faulted/mid-write lane.
+  return (
+    r !== undefined &&
+    r.lastScannedBlock >= head &&
+    (r.status === "complete" || r.status === "idle")
+  );
 }
 
 /** Attributed V3 rows from the backbone's own gapless sale lane. */
