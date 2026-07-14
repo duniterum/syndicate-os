@@ -69,6 +69,7 @@ import {
   FINANCIAL_TARGETS,
 } from "../src/data/protocolTargets";
 import { REFERRAL_ATTRIBUTION_SNAPSHOT } from "../src/lib/protocol/referralAttributionSnapshot";
+import { INTRODUCTION_SNAPSHOT } from "../src/lib/protocol/introductionSnapshot";
 
 // ── tiny check harness ───────────────────────────────────────────────────────
 type Check = { name: string; ok: boolean; detail?: string };
@@ -345,10 +346,10 @@ async function main(): Promise<void> {
     check("happy: source zeroSourceJoin true (SERVER_SIDE_CANON, READ_ONLY_PROOF)", byId(e, "source.zeroSourceJoin")?.value === true && byId(e, "source.zeroSourceJoin")?.sourceType === "SERVER_SIDE_CANON" && byId(e, "source.zeroSourceJoin")?.lifecycle === "READ_ONLY_PROOF");
     // Financial group (Slice N1 + Reconciliation): 13 items, values LIVE from
     // the transport except the attribution count (static hash-pinned snapshot).
-    check("fin: financial group has exactly 24 items", e.groups.financial.length === 24, String(e.groups.financial.length));
+    check("fin: financial group has exactly 25 items", e.groups.financial.length === 25, String(e.groups.financial.length));
     const finIds = e.groups.financial.map((i) => i.id).sort().join(",");
     check(
-      "fin: exact id set (16 base [incl. genesisOffset + distinctWallets + seatOverlap] + SYN totalSupply + 7 allocation balances = 24)",
+      "fin: exact id set (16 base [incl. genesisOffset + distinctWallets + seatOverlap] + SYN totalSupply + 7 allocation balances + paidToReferrersTotal = 25)",
       finIds ===
         [
           "financial.burn.synBalance",
@@ -372,6 +373,7 @@ async function main(): Promise<void> {
           "financial.members.seatOverlap",
           "financial.ops.usdcBalance",
           "financial.referral.attributionActivity",
+          "financial.referral.paidToReferrersTotal",
           "financial.referral.registryLive",
           "financial.token.synTotalSupply",
           "financial.vault.usdcBalance",
@@ -420,10 +422,24 @@ async function main(): Promise<void> {
     const attr = byId(e, "financial.referral.attributionActivity");
     check("fin: attribution count equals the pinned snapshot totalEvents (string, INDEXED_CHAIN_SCAN)", attr?.value === String(REFERRAL_ATTRIBUTION_SNAPSHOT.totalEvents) && attr?.valueType === "string" && attr?.sourceType === "INDEXED_CHAIN_SCAN" && attr?.contractRole === "source-registry");
     check("fin: attribution confidence MEDIUM + READ_ONLY_PROOF (snapshot verified)", attr?.confidence === "MEDIUM" && attr?.lifecycle === "READ_ONLY_PROOF" && attr?.failureReason === null);
-    check("fin: attribution note pins ACTIVITY-COUNT-not-USDC + no-commission-ever + router-not-deployed", (attr?.note ?? "").includes("ACTIVITY COUNT only, never a USDC or commission figure") && (attr?.note ?? "").includes("No commission has ever been paid") && (attr?.note ?? "").includes("CommissionRouterV1 is not deployed"));
+    // M1-b truth sweep: the old "No commission has ever been paid" claim DIED —
+    // referrers ARE paid (V3 direct-payment model). The note now points to the
+    // dedicated paid-to-referrers item instead of denying the payment exists.
+    check("fin: attribution note pins ACTIVITY-COUNT-not-USDC + points to the paidToReferrersTotal item", (attr?.note ?? "").includes("ACTIVITY COUNT only, never a USDC figure") && (attr?.note ?? "").includes("financial.referral.paidToReferrersTotal") && !(attr?.note ?? "").includes("No commission has ever been paid"));
     check("fin: attribution note pins the indexed asOfBlock (honest freshness)", (attr?.note ?? "").includes(`as of block ${REFERRAL_ATTRIBUTION_SNAPSHOT.asOfBlock}`));
     check("fin: attribution sourceRef carries the snapshot hash pin (truncated)", (attr?.sourceRef ?? "").includes(REFERRAL_ATTRIBUTION_SNAPSHOT.snapshotHash.slice(0, 18)));
     check("fin: snapshot internal consistency (byEvent + other == totalEvents, VERIFIED, chain 43114)", Object.values(REFERRAL_ATTRIBUTION_SNAPSHOT.byEvent).reduce((a, b) => a + b, 0) + REFERRAL_ATTRIBUTION_SNAPSHOT.otherEventCount === REFERRAL_ATTRIBUTION_SNAPSHOT.totalEvents && REFERRAL_ATTRIBUTION_SNAPSHOT.status === "VERIFIED" && REFERRAL_ATTRIBUTION_SNAPSHOT.chainId === 43114);
+    // 7b — USDC actually PAID TO REFERRERS (M1-b): the introduction read-model's
+    // aggregate. In this rig no live model exists, so the committed snapshot
+    // MUST be the source (M0 preference falls back to it); chain identity is
+    // pinned INSIDE the model, so the item is snapshot-backed, not a live read.
+    const paid = byId(e, "financial.referral.paidToReferrersTotal");
+    check("fin: paidToReferrersTotal equals the committed introduction snapshot's aggregate (string, INDEXED_CHAIN_SCAN, sale role)", paid?.value === INTRODUCTION_SNAPSHOT.model.totals.commissionPaidRaw && paid?.valueType === "string" && paid?.sourceType === "INDEXED_CHAIN_SCAN" && paid?.contractRole === "sale");
+    check("fin: paidToReferrersTotal HIGH + READ_ONLY_PROOF (model gate verified)", paid?.confidence === "HIGH" && paid?.lifecycle === "READ_ONLY_PROOF" && paid?.failureReason === null);
+    check("fin: paidToReferrersTotal note pins the direct-payment doctrine (inside the buyer's own transaction, never passive income)", (paid?.note ?? "").includes("inside each buyer's own transaction") && (paid?.note ?? "").includes("never passive income or yield"));
+    check("fin: paidToReferrersTotal note pins the model's asOfBlock (honest freshness)", (paid?.note ?? "").includes(`as of block ${INTRODUCTION_SNAPSHOT.model.asOfBlock}`));
+    check("fin: paidToReferrersTotal sourceRef declares its provenance (committed snapshot in this rig)", (paid?.sourceRef ?? "").includes("committed snapshot") && (paid?.sourceRef ?? "").includes(`asOfBlock ${INTRODUCTION_SNAPSHOT.model.asOfBlock}`));
+    check("fin: introduction snapshot internal consistency (gate + chain 43114 + numeric aggregate)", INTRODUCTION_SNAPSHOT.model.gate === "INTRODUCTION_READMODEL_V1" && INTRODUCTION_SNAPSHOT.model.chainId === 43114 && /^[0-9]+$/.test(INTRODUCTION_SNAPSHOT.model.totals.commissionPaidRaw));
     // balanceOf calldata discipline: exactly 3 reads, each addressed to the
     // right token AND encoding the right wallet argument.
     const vaultCall = balanceOfCalls.find((c) => c.to === USDC_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.vaultWallet));
@@ -454,8 +470,13 @@ async function main(): Promise<void> {
     check("unreachable: every token value null", e.groups.tokens.every((i) => i.value === null));
     check("unreachable: every archive value null", e.groups.archive.every((i) => i.value === null));
     check("unreachable: every sale value null", e.groups.sale.every((i) => i.value === null));
-    check("unreachable: every CHAIN-READ financial value null + failureReason (no stored fallback)", e.groups.financial.every((i) => i.id === "financial.referral.attributionActivity" || (i.value === null && i.failureReason !== null)));
+    // Snapshot-backed items (chain identity pinned INSIDE their model, not a
+    // live read) legitimately survive an unreachable transport: the attribution
+    // count and (M1-b) the paid-to-referrers aggregate.
+    const SNAPSHOT_BACKED = new Set(["financial.referral.attributionActivity", "financial.referral.paidToReferrersTotal"]);
+    check("unreachable: every CHAIN-READ financial value null + failureReason (no stored fallback)", e.groups.financial.every((i) => SNAPSHOT_BACKED.has(i.id) || (i.value === null && i.failureReason !== null)));
     check("unreachable: attribution count SURVIVES (static snapshot, honestly labelled INDEXED_CHAIN_SCAN — not a live read)", byId(e, "financial.referral.attributionActivity")?.value === String(REFERRAL_ATTRIBUTION_SNAPSHOT.totalEvents) && byId(e, "financial.referral.attributionActivity")?.sourceType === "INDEXED_CHAIN_SCAN");
+    check("unreachable: paidToReferrersTotal SURVIVES (committed introduction snapshot, INDEXED_CHAIN_SCAN — not a live read)", byId(e, "financial.referral.paidToReferrersTotal")?.value === INTRODUCTION_SNAPSHOT.model.totals.commissionPaidRaw && byId(e, "financial.referral.paidToReferrersTotal")?.sourceType === "INDEXED_CHAIN_SCAN");
     check("unreachable: source registryLinkage null + failureReason, static canon facts survive", byId(e, "source.registryLinkage")?.value === null && byId(e, "source.registryLinkage")?.failureReason !== null && byId(e, "source.creationPolicy")?.value === "OWNER_ONLY" && byId(e, "source.zeroSourceJoin")?.value === true);
     check("unreachable: chain.network still string", byId(e, "chain.network")?.value === "Avalanche C-Chain");
     check("unreachable: NO address leak + discipline passes", noAddressLeak(e) && disciplinePasses(e));
@@ -468,7 +489,7 @@ async function main(): Promise<void> {
     check("wrong-chain: NO eth_getCode / NO eth_call", !methods.includes("eth_getCode") && !methods.includes("eth_call"));
     check("wrong-chain: rpcReachable true", byId(e, "chain.rpcReachable")?.value === true);
     check("wrong-chain: identityVerified null + LOW + failureReason mentions chain id", byId(e, "chain.identityVerified")?.value === null && byId(e, "chain.identityVerified")?.confidence === "LOW" && (byId(e, "chain.identityVerified")?.failureReason ?? "").includes("chain id"));
-    check("wrong-chain: contracts/sale/tokens/archive/financial all null (attribution snapshot exempt — its chain identity is pinned inside the snapshot)", [...e.groups.contracts, ...e.groups.sale, ...e.groups.tokens, ...e.groups.archive, ...e.groups.financial].every((i) => i.id === "financial.referral.attributionActivity" || i.value === null));
+    check("wrong-chain: contracts/sale/tokens/archive/financial all null (snapshot-backed items exempt — their chain identity is pinned inside their snapshots)", [...e.groups.contracts, ...e.groups.sale, ...e.groups.tokens, ...e.groups.archive, ...e.groups.financial].every((i) => i.id === "financial.referral.attributionActivity" || i.id === "financial.referral.paidToReferrersTotal" || i.value === null));
   }
 
   // 4) CANON MISMATCH: SYN symbol reads "XXX" → value null, NEVER normalized.

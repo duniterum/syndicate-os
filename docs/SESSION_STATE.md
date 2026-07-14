@@ -2,7 +2,26 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🔧 SLICE M1-c ✅ BUILT (2026-07-14, founder work order + GO after the gate): HEADER +
+> **▶ 🩹 M1 GATE FIX ✅ BUILT (2026-07-14, on Replit's prod-gate diagnosis — deploy STOPPED
+> correctly at a red gate): `protocol-reality-check.guard.ts` had not followed M1-b.**
+> Replit's discipline held (gate rouge = no publication) and its diagnosis was exact: the
+> SERVICE was correct and fail-closed; only the guard was stale. FIXED all four lags:
+> financial count 24→25 · exact id set += `financial.referral.paidToReferrersTotal` · the
+> attribution-note pin now requires the NEW text (ACTIVITY COUNT + pointer to the paid item)
+> and REJECTS the dead "No commission has ever been paid" claim · unreachable/wrong-chain
+> exemptions extended to the snapshot-backed paid item (same posture as attributionActivity:
+> chain identity pinned inside the model, not a live read). PLUS 7 new checks pinning the
+> item itself (snapshot equality, INDEXED_CHAIN_SCAN, sale role, HIGH/READ_ONLY_PROOF,
+> direct-payment doctrine note, asOfBlock freshness, provenance in sourceRef, snapshot
+> internal consistency): guard now 145/145. **THE MISS FIXED AS A CLASS (why it happened):
+> the root `release:gate` ran only 2 of the api-server's guards (auth-zone + backbone) while
+> Replit runs all 18 — local green ≠ Replit green.** NEW `@workspace/api-server "guards"`
+> chain (all 16 env-independent guards) wired INTO `release:gate`; the 2 DB-coupled partB
+> guards live in `guards:db` (DATABASE_URL required — Replit-side per the Windows
+> best-effort rule). All 16 verified green locally before push. The deploy cycle resumes:
+> Replit re-pulls, replays the full suite, publishes, then the 5-point prod verification.
+>
+> **▶ Prior: 🔧 SLICE M1-c ✅ BUILT (2026-07-14, founder work order + GO after the gate): HEADER +
 > FOOTER FINISH — THE RECURRING BAR IS DEAD AT THE ROOT, AS A CLASS.** ① ROOT CAUSE FOUND
 > AND PROVEN (the founder's screenshot bug, "fixed" repeatedly, always returned): wouter's
 > `<Link>` renders a bare `<a>` = `display:inline`; an INLINE box with padding + a block
