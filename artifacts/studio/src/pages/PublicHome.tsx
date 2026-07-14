@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import {
@@ -30,6 +30,7 @@ import {
 } from "@/components/registry/registryPosture";
 import { surfaceStatus } from "@/config/truthStatus";
 import { moduleRegistry } from "@/config/moduleRegistry";
+import { useAuthAvailability } from "@/lib/authAvailability";
 import {
   heroSystem,
   howItWorks,
@@ -39,6 +40,36 @@ import {
   homepagePromotedStrip,
   homepageModuleStrip,
 } from "@/config/syndicateFacts";
+
+// Q-A (founder decision A1): the hero's PRIMARY CTA is session-aware — a
+// SEATED member sees "Expand your footprint" (a further purchase adds SYN to
+// their seat, never a second seat); everyone else keeps the canonical
+// "Take your seat". The wallet module loads lazily ONLY when the auth zone is
+// live (the MemberHeaderSlot pattern); dark zone / loading / any failure →
+// the generic, fail-closed.
+const HeroSeatCta = lazy(() => import("@/wallet/HeroSeatCta"));
+const HERO_PRIMARY_CTA_CLASS =
+  "h-12 w-full rounded-xl border border-gold/75 bg-gold px-6 font-semibold text-gold-foreground shadow-[0_0_34px_-8px_hsl(var(--gold)/0.75)] hover:bg-gold/90 sm:w-auto";
+
+function GenericHeroCta() {
+  return (
+    <Link href={heroSystem.primaryCta.href}>
+      <Button size="lg" className={HERO_PRIMARY_CTA_CLASS} data-testid="hero-primary-cta">
+        {heroSystem.primaryCta.label}
+      </Button>
+    </Link>
+  );
+}
+
+function HeroPrimaryCtaSlot() {
+  const authLive = useAuthAvailability() === "live";
+  if (!authLive) return <GenericHeroCta />;
+  return (
+    <Suspense fallback={<GenericHeroCta />}>
+      <HeroSeatCta className={HERO_PRIMARY_CTA_CLASS} generic={heroSystem.primaryCta} />
+    </Suspense>
+  );
+}
 
 function ProofRail({ className = "" }: { className?: string }) {
   return (
@@ -281,14 +312,7 @@ export default function PublicHome() {
                 <ProofRail className="mt-4 max-w-[330px]" />
 
                 <div className="mt-4 flex flex-col gap-2.5 sm:flex-row xl:flex-col 2xl:flex-row">
-                  <Link href={heroSystem.primaryCta.href}>
-                    <Button
-                      size="lg"
-                      className="h-12 w-full rounded-xl border border-gold/75 bg-gold px-6 font-semibold text-gold-foreground shadow-[0_0_34px_-8px_hsl(var(--gold)/0.75)] hover:bg-gold/90 sm:w-auto"
-                    >
-                      {heroSystem.primaryCta.label}
-                    </Button>
-                  </Link>
+                  <HeroPrimaryCtaSlot />
                   <Link href={heroSystem.secondaryCta.href}>
                     <Button
                       variant="outline"

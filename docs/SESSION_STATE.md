@@ -2,7 +2,28 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🔥 SLICE M4-c ✅ SEALED IN PROD (2026-07-14, Replit-verified, 4-point check on
+> **▶ 🎯 Q-A/Q-B TRIAGE ✅ BUILT — BOTH CLOSED (2026-07-14, founder decisions A1 + B2-plus;
+> the briefly-built B1 sentence REVERTED same slice on founder override):**
+> **Q-A (A1):** the home-hero primary CTA is session-aware via the lazy wallet module
+> `wallet/HeroSeatCta.tsx` (the JoinSeatLine/MemberHeaderSlot pattern): SEATED → "Expand your
+> footprint" → /join (title: "You hold your seat — a further purchase adds SYN to it, never a
+> second seat."); everyone else + checking + dark auth + any failure → "Take your seat"
+> (fail-closed generic). Scope: home hero only. **Q-B (B2-plus):** BY-DESIGN, documented, NO
+> copy — founder research: grade-AAA dapps don't explain the divergence, they choose a
+> pattern; we are PATTERN 2 (session survives wallet disconnect — the official wagmi SIWE
+> posture); the pill is the SEAT (institutional standing), rendered while the server session
+> lives; no signOutOnDisconnect (MetaMask locks on its own schedule; the seat must not
+> flicker). SILENT-RESUME VERIFIED in the repo (finding: CLEAN, no patch): the pill resolves
+> from the server only; SESSION_CHANGED_EVENT never fires from wallet-extension events; the
+> panel's accountsChanged clears a local display only; same-address re-link never prompts
+> (the re-sign path renders only in the signedOut branch); RainbowKit's auth status derives
+> from the server session. Nuance recorded: an explicit MetaMask per-site revoke may
+> (version-dependent, inside RainbowKit) end the session — a deliberate act, clean
+> signed-out, not a flicker; the founder's own screenshot proves extension LOCK does not.
+> Full mechanics in OPEN_QUEUE's Q-B closure. Green: studio tsc 0 · guards · build 24
+> shells (unchanged); local rig renders the fail-closed generic hero, 0 console errors.
+>
+> **▶ Prior: 🔥 SLICE M4-c ✅ SEALED IN PROD (2026-07-14, Replit-verified, 4-point check on
 > thesyndicate.money): THE COMPLETE HEARTBEAT SERVES — seats + numbered Proof of Burn +
 > referral lifecycle.** Convergence fix (`15e933f`) worked FASTER than estimated: cycle 1
 > post-deploy caught up all ~3M blocks in one pass (the paced budget + throttle kept the RPC

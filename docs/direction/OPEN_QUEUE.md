@@ -238,19 +238,40 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   promotion contract · the self-service issuer (SPEC §⑦) · Router V4. The registry is
   Ownable2Step → the eventual ownership handover is a clean two-step transfer.
 
-- **🟡 Q-A — header pill vs "Take your seat" CTA (founder observation, screenshot-sourced
-  2026-07-14; INVESTIGATE IN ITS OWN SLICE, not fixed now).** A seated session shows the
-  "Seat #14" pill AND the generic "Take your seat" conversion CTA simultaneously — for a
-  seated wallet the conversion CTA is probably wrong (one wallet = one seat; a further buy
-  adds SYN, never a second seat). Decide: contextual CTA (seated → "Expand your footprint")
-  vs keeping the generic. Founder decides the copy model; the slice implements.
+- **✅ Q-A — CLOSED (founder decision A1, 2026-07-14, triage slice).** Root cause: the pill
+  is server-resolved (SIWE standing) while the hero CTA was a static config — two truth
+  sources, one screen. DECIDED + BUILT: the home-hero primary CTA is session-aware — a
+  seated member sees "Expand your footprint" → /join (title: "You hold your seat — a further
+  purchase adds SYN to it, never a second seat."); everyone else, all loading/failure paths,
+  and the dark auth zone keep "Take your seat" (fail-closed generic; the /join page's
+  member-aware JoinSeatLine pattern reused via lazy wallet module `wallet/HeroSeatCta.tsx`).
+  Scope: home hero only; teaser/archive CTAs stay generic (extendable later on founder ask).
 
-- **🟡 Q-B — MetaMask "Not connected" vs the seated site pill (founder observation,
-  screenshot-sourced 2026-07-14; INVESTIGATE, may be BY-DESIGN).** The wallet extension
-  showed "Not connected" while the site pill showed a seated session. Likely: the pill
-  reflects the SERVER SIWE session (durable) while the extension shows the live wallet
-  connection — two different truths. Clarify what the pill claims, whether the divergence
-  needs an indicator, and document the answer; only then decide if anything changes.
+- **✅ Q-B — CLOSED as BY-DESIGN, DOCUMENTED (founder decision B2-plus, 2026-07-14, triage
+  slice; supersedes the briefly-built B1 sentence, reverted same slice).** Two different
+  truths, both correct: the pill speaks the SERVER SIWE session (durable cookie; standing
+  reads need no live wallet link); MetaMask's "Not connected" speaks the EXTENSION's own
+  site-connection (its own lock/timeout/revoke schedule). Industry patterns researched by
+  the founder: (1) header follows the extension + silent resume (AppKit/Reown
+  signOutOnDisconnect default) vs (2) session survives wallet disconnect (the official
+  wagmi SIWE example: "disconnect your wallet, and you are still securely logged in").
+  **FOUNDER DECISION: we are pattern 2 — the pill is the SEAT (institutional standing, not
+  a trading connection); it renders while the server session lives; NO
+  sign-out-on-wallet-disconnect; NO explanatory sentence (explaining an oddity admits it's
+  visible).** SILENT-RESUME VERIFICATION (repo-verified, this slice): ① the pill resolves
+  ONLY from fetchMemberStanding (server) and re-reads ONLY on SESSION_CHANGED_EVENT; ② that
+  event fires exclusively from sign-in success, logout, and the RainbowKit adapter's
+  verify/signOut — NO repo code couples wallet-extension events (accountsChanged /
+  disconnect) to the session; ③ the /member panel's accountsChanged listener clears a LOCAL
+  display only ("the anonymous server session is unaffected", in code); ④ re-link of the
+  same address is fully silent — the re-sign path renders only in the signedOut branch, so
+  a living session never prompts; ⑤ RainbowKit's auth status derives from the SERVER
+  session (fetchSessionState), not the wagmi connection. Nuance recorded (no action): an
+  explicit per-site REVOKE inside MetaMask may — version-dependent, inside the RainbowKit
+  library — end the server session; that is a deliberate user act resolving to a clean
+  signed-out state, not a flicker; prod evidence (the founder's own screenshot: locked
+  extension + living pill) confirms the installed version does NOT sign out on extension
+  lock. FORWARD PATH: CLEAN — no patch needed, none made.
 
 - **🔴 THE MVP-FINAL MASTER BRIEF + THE 30-DAY MAP ARE CANON (founder-decided 2026-07-14):
   `docs/direction/MVP_FINAL_MASTER_BRIEF.md`** — the complete final MVP scope (the challenge ·
