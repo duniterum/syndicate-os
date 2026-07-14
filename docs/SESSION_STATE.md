@@ -2,7 +2,25 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 👑 SLICE S3 ✅ BUILT + FOUNDER-APPROVED AT THE PREVIEW GATE (2026-07-14): THE TWO
+> **▶ 🌐 THE TRUTH BATCH + S3 ✅ SEALED IN PROD (2026-07-14, Replit-verified 7/7 on
+> thesyndicate.money, bundle `index-DmjsTAJQ.js`, HEAD `d355c5c`): GOOGLE NOW HEARS THE
+> LIVING PROTOCOL.** Prod proof: ① / meta+og serve the human-first identity ("A members
+> club that lives on-chain…") — the read-only era line at ZERO; ② /proof no longer
+> denies the proof; ③ /map titled "The Live Protocol, Reconciled"; ④ "read-only" at
+> zero across all 24 served heads EXCEPT /contracts (3× — the founder-validated
+> DELIBERATE KEEP: static canon-memory page; future scans whitelist that route; NOTE
+> for S4: the era guard must be CASE-INSENSITIVE — my local sweep missed capital
+> "Read-only", Replit's caught it); ⑤ hero chips LIVE-only in prod + throne visibly
+> larger, halo up, image rendering perfectly — AND the living map already showed
+> TODAY'S burn on its own (total 24,606 SYN; "3,333 SYN was retired…" at block
+> 90,310,363 — the derived-status law paying off in real time); ⑥ the four rewritten
+> descriptions serve; ⑦ zero console errors. Full gate green at Replit (17/17 blob-
+> verified, 254+395 studio, 16 api + 2 DB guards). DEPLOY BACKLOG: EMPTY. NEXT (S-map):
+> S4 structural cure (/status derived · case-insensitive era-vocabulary guard with the
+> explicit /contracts whitelist · meta-rides-the-slice law) · S5 soul import (awaits
+> founder paste) · S6 leakage sweep · S7 member home (wireframe first) · S8 performance.
+>
+> **▶ Prior: 👑 SLICE S3 ✅ BUILT + FOUNDER-APPROVED AT THE PREVIEW GATE (2026-07-14): THE TWO
 > SURGICAL HOME FIXES — nothing else moved.** ① The hero's PENDING chips DIED (LIVE-only
 > row: SYN Token · Seat Sale · 70/20/10 Routing · LP Pool · Referral Registry · Proof of
 > Burn; mobile pill "6 live — verify below") — the engraved rule: an internal plan (the
