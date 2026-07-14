@@ -2,7 +2,24 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🔍 SLICE S2 ✅ BUILT (2026-07-14, founder GO on the full table read on screen): THE
+> **▶ 👑 SLICE S3 ✅ BUILT + FOUNDER-APPROVED AT THE PREVIEW GATE (2026-07-14): THE TWO
+> SURGICAL HOME FIXES — nothing else moved.** ① The hero's PENDING chips DIED (LIVE-only
+> row: SYN Token · Seat Sale · 70/20/10 Routing · LP Pool · Referral Registry · Proof of
+> Burn; mobile pill "6 live — verify below") — the engraved rule: an internal plan (the
+> Commission Router class) never becomes a public chip; ② THRONE MAJESTY restored on the
+> CURRENT map (160→208px desktop / 168 mobile, halo up, breathing room; 0 collisions
+> measured vs all 10 nodes + routing badges at 375/800/1440). PREVIEW DEFECT CAUGHT BY
+> THE FOUNDER + fixed at the root: the local rig's vite had been launched with
+> `BASE_PATH=/` silently MSYS-converted to `C:/Program Files/Git/` — a phantom base that
+> 404'd every absolute-src image (throne, brand marks) on the rig only (prod never
+> affected). Rig relaunched with `MSYS2_ENV_CONV_EXCL="BASE_PATH"`; **RULE ④ ENGRAVED in
+> CLAUDE.md's Visual Change Law: a preview handed to the founder must be VISUALLY
+> COMPLETE — DOM-level image check (every visible img naturalWidth>0), both themes,
+> desktop AND mobile, verified BEFORE handing the URL.** Founder approved the flawless
+> re-show on his own browser. Green: tsc · all guards · build 24 shells. DEPLOY: 🚀 —
+> ONE deploy carries the truth batch W2+S2 + S3.
+>
+> **▶ Prior: 🔍 SLICE S2 ✅ BUILT (2026-07-14, founder GO on the full table read on screen): THE
 > FULL-SITE TRUTH AUDIT — the read-only-era DNA is DEAD across the entire served public
 > layer.** The audit verified every founder finding against chain+repo and found MORE:
 > ① SEO layer (10 rewrites, all founder-approved per line): /proof (the proof page denied

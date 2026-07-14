@@ -1,9 +1,13 @@
-// ① The hero's honest LIVE/PENDING posture rows — the origin's design
-// language harvested (two labelled rows on desktop, one compact summary pill
-// on mobile), rebuilt on our tokens. These are static posture DECLARATIONS
-// (no figures, nothing fake-live); the live reconciliation behind them is the
-// TrustStatusStrip and /status. PENDING lists only what is genuinely not
-// deployed or wired today.
+// ① The hero's honest LIVE posture row — the origin's design language
+// harvested (a labelled row on desktop, one compact summary pill on mobile),
+// rebuilt on our tokens. Static posture DECLARATIONS (no figures, nothing
+// fake-live); the live reconciliation behind them is the TrustStatusStrip
+// and /status.
+//
+// S3 (founder law, engraved): the PENDING chips DIED on the hero — PENDING is
+// reserved for surfaces publicly promised on the site (doors/teasers keep
+// their honest badge in their own place); an internal plan (the Commission
+// Router class) NEVER becomes a public chip. The hook shows what IS.
 import { heroSystem } from "@/config/syndicateFacts";
 
 function StatusRow({
@@ -44,16 +48,15 @@ function StatusRow({
 }
 
 export function HeroStatusChips({ className = "" }: { className?: string }) {
-  const { live, pending, mobileNoteTail } = heroSystem.statusChips;
+  const { live, mobileNoteTail } = heroSystem.statusChips;
   return (
     <div className={className}>
       <div className="hidden flex-col gap-1.5 md:flex">
         <StatusRow label="Live" tone="live" items={live} />
-        <StatusRow label="Pending" tone="pending" items={pending} />
       </div>
       <span className="inline-flex items-center gap-1.5 rounded-full border border-success/40 bg-success/10 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-success md:hidden">
         <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" aria-hidden />
-        {live.length} live · {pending.length} pending — {mobileNoteTail}
+        {live.length} live — {mobileNoteTail}
       </span>
     </div>
   );

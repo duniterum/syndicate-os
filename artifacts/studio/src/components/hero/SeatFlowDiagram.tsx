@@ -228,9 +228,13 @@ export function SeatFlowDiagram() {
         ) : null}
       </svg>
 
-      <div className="absolute left-1/2 top-[5%] z-30 w-[130px] -translate-x-1/2 sm:w-[146px] xl:w-[160px]">
+      {/* S3 throne majesty (founder order — the M1-b regression healed):
+          "the seat is the center" is LITERAL. Scale up, halo up, breathing
+          room kept — the throne is the undisputed king of the scene. The map
+          composition itself does not move. */}
+      <div className="absolute left-1/2 top-[3%] z-30 w-[168px] -translate-x-1/2 sm:w-[188px] xl:w-[208px]">
         <motion.div
-          animate={reduceMotion ? undefined : { y: [0, -3, 0], filter: ["drop-shadow(0 0 16px hsl(var(--gold) / 0.36))", "drop-shadow(0 0 28px hsl(var(--gold) / 0.62))", "drop-shadow(0 0 16px hsl(var(--gold) / 0.36))"] }}
+          animate={reduceMotion ? undefined : { y: [0, -4, 0], filter: ["drop-shadow(0 0 24px hsl(var(--gold) / 0.44))", "drop-shadow(0 0 42px hsl(var(--gold) / 0.72))", "drop-shadow(0 0 24px hsl(var(--gold) / 0.44))"] }}
           transition={{ duration: 5.2, repeat: Infinity, ease: "easeInOut" }}
         >
           <SeatThroneMark className="h-auto w-full" />

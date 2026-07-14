@@ -64,3 +64,10 @@ mobile width. **Only approval of what he SEES unlocks commit.** A rejection cost
 revert clean, record the verdict, prod never moved.
 ③ Copy/truth-only changes need no wireframe but the full final text on screen (the
 standing rule above).
+④ **A preview handed to the founder must be VISUALLY COMPLETE** (founder, 2026-07-14):
+every asset loading (DOM-level check — each visible `img` has `naturalWidth > 0`), both
+themes, desktop AND mobile — verified by Claude Code BEFORE handing the URL. A broken
+preview costs founder trust and money. (Origin of the rule: the S3 preview shipped with
+a broken throne image — a Git Bash `BASE_PATH=/` → `C:/Program Files/Git/` env
+conversion had silently rebased the dev rig; launch the rig with
+`MSYS2_ENV_CONV_EXCL="BASE_PATH"` and always run the image check.)
