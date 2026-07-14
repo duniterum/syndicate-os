@@ -2,7 +2,23 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🩹 M0 CURSOR-LITERAL FIX ✅ BUILT (2026-07-14, on Replit's prod diagnosis — the refresh
+> **▶ ♻️ SLICE M0 ✅ SEALED IN PROD (2026-07-14, Replit-verified on thesyndicate.money):
+> THE LIVING MODEL TOOK OVER FROM THE FOUNDER FREEZE.** Post-fix deploy: cycle 1 succeeded
+> first try (no boot stumble); cycles ok:2 · failed:0; `introductionRefresh` reads EXACTLY
+> the expected values from cycle 1 — refreshed:true · asOfBlock = the cycle head (90,256,042
+> → 90,256,346, climbing ~300 blocks per 5-min cycle) · attributedRows 3 · distinctSources 2.
+> The served standing now prefers the live model (its asOfBlock passed the frozen 90,187,222
+> from cycle 1); the committed snapshot stays the boot fallback forever. Zero regression:
+> burns 7 · lifecycle 9 · both protocol lanes caughtUp at head. The header CTA batch was
+> verified in the same deploy window (bundle bit-exact). Bug→fix→proof loop closed in under
+> a day: Replit's prod diagnosis (the "ok"-vs-"complete" literal) → the one-line fix + the
+> guard pin (backbone 89) → two consecutive proven cycles. **THE MACHINERY HALF OF THE M-MAP
+> IS DONE: M0 ✅ M4 ✅ M5 ✅ M6 ✅.** Remaining: the FACE (M1 hero · M2 sharebility · M3
+> collectible — where CONVERSION + REFERRAL-SHOWCASE get their stage) · M7 Economy · M8+
+> tail · the seven-signatures Chronicle chapter awaiting the founder's act (raw material
+> committed, partial anchors to resolve first).
+>
+> **▶ Prior: 🩹 M0 CURSOR-LITERAL FIX ✅ BUILT (2026-07-14, on Replit's prod diagnosis — the refresh
 > skipped every cycle: `saleLaneCompleteTo` required cursor status `"ok"`, a literal that
 > exists ONLY in the engine's in-memory run summary; the CURSOR TABLE's persisted vocabulary
 > is `complete | idle | running | error` (saleEventIndexer:485 — verified in repo AND in the
