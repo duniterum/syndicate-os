@@ -64,6 +64,18 @@ mobile width. **Only approval of what he SEES unlocks commit.** A rejection cost
 revert clean, record the verdict, prod never moved.
 ③ Copy/truth-only changes need no wireframe but the full final text on screen (the
 standing rule above).
+**THE SYSTEM-FIRST LAW (founder, 2026-07-14, permanent — the gold-mine lesson).**
+Before ANY slice that builds "a part of X" (an activity feed, a settings page, an admin
+screen, notifications, milestones…), the gate MUST first present the COMPLETE inventory of
+what X contains — in the origin repos AND in today's deployed reality — the whole system
+on screen; the founder picks the scope FROM the full picture. Building 3 lanes when the
+system has 15 classes is the named failure mode. HARVEST-BEFORE-BUILD applies at SYSTEM
+scale, not slice scale. AND THE MIRROR RULE: the origin is a QUARRY, never a LAW — harvest
+its completeness and ambition (it had far more machine than we've rebuilt), but its old
+constraints, vocabulary, read-only reflexes and blockers NEVER ride back in with the
+harvest. Today's system is MORE advanced; we take what the origin had MORE of, never what
+held it back.
+
 **STANDING RULE — the SEO layer rides the slice (founder, permanent, 2026-07-14 — Invariant-vs-State
 applied to metadata).** A slice that changes a page's REALITY updates that page's
 meta/OG/JSON-LD/title AND its source-status/posture entries **in the SAME commit**. A page
