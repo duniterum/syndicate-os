@@ -66,16 +66,13 @@ export interface AwaitingWiringItem {
   note: string;
 }
 
-// M1-b truth sweep: the old three "not wired" claims were YESTERDAY'S truth —
-// the membership indexer, the protocol event lanes, and the source indexer all
-// run live in production today. This card now lists ONLY what genuinely does
-// not exist yet; each item carries its own honest status badge.
+// M1-b truth sweep + S6 leakage sweep: this card lists ONLY what is genuinely
+// pending AND publicly promised on the site (Identity Alias = the "SOON" slot
+// in member settings; Notifications = the reserved header bell). An INTERNAL
+// plan never becomes a public promise (founder rule, guard-pinned — the
+// Commission Router row died here 2026-07-15; the direct-payment fact lives
+// in the LIVE column beside this card).
 export const awaitingWiring: AwaitingWiringItem[] = [
-  {
-    status: "NOT_LIVE",
-    title: "Commission Router",
-    note: "The routed-commission contract is not deployed. Referrers are paid today by the direct-payment model — inside the buyer's own transaction, enforced by the sale contract.",
-  },
   {
     status: "FUTURE_MODULE",
     title: "Identity Alias",
@@ -489,7 +486,8 @@ export const heroSystem = {
       "Referral Registry",
       "Proof of Burn",
     ],
-    pending: ["Commission Router", "Identity Alias", "Notifications"],
+    // S3 killed the PENDING row on the hero; S6 removed the dead list itself
+    // (it carried an internal-plan name — the guard now pins that class).
     mobileNoteTail: "verify below",
   },
 

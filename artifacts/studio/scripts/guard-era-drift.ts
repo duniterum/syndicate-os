@@ -45,6 +45,10 @@ const ERA_PATTERNS: { re: RegExp; name: string }[] = [
   { re: /awaiting a verified source/i, name: "awaiting a verified source" },
   { re: /awaiting source (wiring|integration)/i, name: "awaiting source wiring" },
   { re: /coming with the event backbone/i, name: "coming with the event backbone" },
+  // S6 (founder rule, engraved): an INTERNAL PLAN never becomes a public
+  // promise — the Commission Router is a V4 internal discussion, never
+  // announced anywhere; its name in a user-facing string is a leak.
+  { re: /commission ?router/i, name: "internal-plan leak (Commission Router)" },
 ];
 
 // path substring → allowed pattern names with the reason they are honest TODAY.

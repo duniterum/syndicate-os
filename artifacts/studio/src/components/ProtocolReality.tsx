@@ -36,7 +36,7 @@ const groupBlurb: Record<RealityGroupKey, string> = {
   tokens: "Public ERC-20 metadata only — symbol and decimals. No balances or supply.",
   archive: "Whether each artifact id is configured on-chain, and the contract pause flag.",
   financial:
-    "Aggregate on-chain financial figures — per-engine cumulative USDC inflow (V1 + V2a + V2b + V3, including founder buildout test transactions; never external customer revenue) with a fail-closed total, vault + operations balances (current balances, not cumulative inflow — USDC routes 70/20/10 to vault/liquidity/operations), pool reserves, burned SYN, the live member tally, and the referral attribution ACTIVITY count (indexed chain scan; no commission is paid — CommissionRouterV1 is not deployed). Exact raw base units; every figure fails closed to unavailable, never to a stored constant.",
+    "Aggregate on-chain financial figures — per-engine cumulative USDC inflow (V1 + V2a + V2b + V3, including founder buildout test transactions; never external customer revenue) with a fail-closed total, vault + operations balances (current balances, not cumulative inflow — USDC routes 70/20/10 to vault/liquidity/operations), pool reserves, burned SYN, the live member tally, the referral attribution activity count, and the cumulative USDC paid to referrers inside each buyer's own transaction. Exact raw base units; every figure fails closed to unavailable, never to a stored constant.",
 };
 
 const sourceTypeText: Record<string, string> = {

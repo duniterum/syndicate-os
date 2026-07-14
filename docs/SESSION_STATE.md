@@ -2,7 +2,25 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🧬 S4 ✅ SEALED IN PROD (2026-07-15, Replit-verified 5/5 on thesyndicate.money, bundle
+> **▶ 🕳 SLICE S6 ✅ BUILT (2026-07-15, founder GO on the on-screen report): THE INTERNAL-PLAN
+> LEAKAGE SWEEP — the class is extinct and guard-pinned.** Three findings, three kills:
+> ① /status's financial-group description carried a LIE + a LEAK in one phrase ("no
+> commission is paid — CommissionRouterV1 is not deployed" — referrers ARE paid, and the
+> internal contract name showed to every visitor) → rewritten to the paid-inside-the-
+> buyer's-transaction truth; ② the home "Awaiting Wiring" card's Commission Router row
+> DIED (founder decision per his engraved rule: an internal plan never announced is never
+> a public promise; the direct-payment fact lives in the LIVE column beside it) — Identity
+> Alias + Notifications legitimately stay (both publicly promised on the site: the SOON
+> slot in member settings, the reserved header bell); ③ the dead `statusChips.pending`
+> config deleted. GUARD-PINNED: `/commission ?router/i` joined guard-era-drift's patterns —
+> the internal-plan name in any user-facing string is now a red build. Sweep of Router V4 /
+> SeatRecord721 / pro-firm / white-label / SaaS: zero public hits. Verified rendered on the
+> rig (home clean, card keeps its two rows, LIVE column intact). Green: tsc · era guard ·
+> all 14 studio guards · build. DEPLOY: 🚀 BATCHABLE (client-only; joins the /recognition
+> micro-fix in the backlog). NEXT: S7 member-home wireframe (founder review) · S8 perf ·
+> S5 on the founder's paste.
+>
+> **▶ Prior: 🧬 S4 ✅ SEALED IN PROD (2026-07-15, Replit-verified 5/5 on thesyndicate.money, bundle
 > `index-cWnrNV-i.js`): THE STRUCTURAL CURE IS LIVE — /api/source-status serves today's
 > truth (asOf 2026-07-14, backbone/chronicle/archive/routing notes state the live facts,
 > "not wired" at ZERO case-insensitive), /status header + /archive lead + /member facets
