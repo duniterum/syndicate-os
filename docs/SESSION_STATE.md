@@ -2,7 +2,30 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🩹 M1 GATE FIX ✅ BUILT (2026-07-14, on Replit's prod-gate diagnosis — deploy STOPPED
+> **▶ 🏛 THE M1 ARC ✅ SEALED IN PROD (2026-07-14, Replit-verified 5/5 on thesyndicate.money,
+> bundle `index-B1jpFXKo.js`, HEAD `7a02718`): THE FOUNDER'S MOMENTUM FACE OPENED — hero ·
+> living map · header/footer, one deploy carrying all three batched slices + the gate fix.**
+> Replit's 5-point prod proof: ① the hero's new left column live (LIVE/PENDING chips ·
+> editorial headline · "14 SEATS ON-CHAIN — THE NEXT SEAT IS #15 — OPEN NOW" coherent with
+> the live memberCount · ONE gold CTA · Inspect rail); ② the living map serves every DERIVED
+> sub-label in prod ("Live · seats selling now" · "4 chapters public" · "Live · 17 minted" ·
+> "Live · reserves on-chain" · "Live · 0.75 USDC paid" · "Live · 21,273 SYN") and all six
+> node doors are real anchors answering 200 (/join /chronicle /archive /liquidity /referral
+> /fire-ledger); ③ `financial.referral.paidToReferrersTotal` serves "750000" (0.75 USDC)
+> HIGH — **from the BACKBONE'S LIVE MODEL (asOfBlock 90,308,039, climbing): the M0
+> live-preference working in prod exactly as designed**, cross-coherent with the map's
+> rendered figure; ④ AVALANCHE·LIVE pills render; the new footer line serves and
+> "Read-only foundation shell." is GONE from the build; the vertical-bar root fix is locked
+> by guard-nav-link-display passing on the exact deployed code; ⑤ zero console errors.
+> Full gate green at Replit including the repaired protocol-reality guard (145/145) and the
+> class fix (full api suite now in release:gate — the local-green ≠ Replit-green hole is
+> closed). DEPLOY BACKLOG: EMPTY. Two record-only founder-eye checks remain (not blockers,
+> unphotographable by the capture tooling): nav hover shows no vertical bar · the overall
+> look of the new hero. THE PLATEAU NOW: M2 sharebility/Referrer Kit · M3 seat majesty
+> (CONVERSION register + REFERRAL-SHOWCASE stage there) · M7 Economy · PIPELINE-CHRONICLE ·
+> the seven-signatures Chronicle story (partial anchors to resolve first). The founder picks.
+>
+> **▶ Prior: 🩹 M1 GATE FIX ✅ BUILT (2026-07-14, on Replit's prod-gate diagnosis — deploy STOPPED
 > correctly at a red gate): `protocol-reality-check.guard.ts` had not followed M1-b.**
 > Replit's discipline held (gate rouge = no publication) and its diagnosis was exact: the
 > SERVICE was correct and fail-closed; only the guard was stale. FIXED all four lags:
