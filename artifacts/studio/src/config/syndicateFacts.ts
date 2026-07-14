@@ -381,13 +381,6 @@ export const membershipIdentity = {
 // no wallet write — membership is recognised, never sold as an investment.
 // ---------------------------------------------------------------------------
 
-export interface HeroProofRailItem {
-  mark: string;
-  label: string;
-  note: string;
-  tone: "avax" | "gold" | "cyan";
-}
-
 /**
  * Live-bound hero stat descriptor. `bind` names the field of `useHeroReality()`
  * that supplies the value; the components render an honest "Checking… /
@@ -456,20 +449,68 @@ export interface HeroFlowRoute {
 }
 
 export const heroSystem = {
+  // M1-a — the hero's first act, harvested from the origin's design LANGUAGE
+  // (never its constraints: the origin was read-only; this is LIVE PRODUCTION —
+  // seats are bought with real money, in-page, today). Copy is CONVERSION
+  // register (CANON_PROTOCOL_LANGUAGE §7): every bold claim carries — or sits
+  // next to — its verify path. Verify-link ids live in the components (the
+  // HeroLedger pattern), never in this config.
   eyebrow: "The seat is the center",
-  headlineLead: "Take your seat in a living",
-  headlineEmphasis: "protocol.",
-  subheadline:
-    "A transparent on-chain membership institution where every seat, receipt, and routed contribution becomes part of the public operating record.",
+  headlineLead: "A permanent, numbered seat,",
+  headlineEmphasis: "written on-chain.",
   primaryCta: seatCta,
-  secondaryCta: { label: "View public proof", href: "/proof" },
 
-  proofRail: [
-    { mark: "A", label: "Avalanche", note: "Target C-Chain", tone: "avax" },
-    { mark: "70", label: "Canonical", note: "70 / 20 / 10", tone: "gold" },
-    { mark: "✓", label: "Public proof", note: "Read-only", tone: "cyan" },
-    { mark: "◇", label: "Memory", note: "Recorded", tone: "gold" },
-  ] as HeroProofRailItem[],
+  // ① Honest LIVE/PENDING protocol posture chips. Static DECLARATIONS of
+  // posture (no figures — the live reconciliation is the TrustStatusStrip and
+  // /status). PENDING lists ONLY what is genuinely not deployed/wired today.
+  statusChips: {
+    live: [
+      "SYN Token",
+      "Seat Sale",
+      "70/20/10 Routing",
+      "LP Pool",
+      "Referral Registry",
+      "Proof of Burn",
+    ],
+    pending: ["Commission Router", "Identity Alias", "Notifications"],
+    mobileNoteTail: "verify below",
+  },
+
+  // ③ The OS in plain words — what the public memory IS and why it matters.
+  // Human sentences, zero jargon walls; the exact money-flow vocabulary
+  // ("net contribution") is law, not style.
+  explainer: [
+    "The Syndicate is a membership institution that keeps its memory in public: every seat, every receipt, every burn is written to Avalanche, where anyone can read it.",
+    "Join, and the contract writes your numbered seat into that record — permanent, verifiable, recognized on-chain rather than granted by hand.",
+    "Every net contribution routes 70 / 20 / 10 to vault, liquidity and operations — enforced by the contract, and every figure on this page is a live chain read.",
+  ],
+
+  // ④ The living seat line — read from the chain, fail-closed. Speaks in
+  // SEATS (memberCount() counts seats; one wallet can hold two — never
+  // "Members"). The next-seat number is an INVITATION derived from the live
+  // count; it disappears fail-closed when the read is unavailable. A member's
+  // recorded seat number still ONLY ever comes from the emitted event.
+  seatLine: {
+    countSuffix: "seats on-chain",
+    nextLead: "the next seat is",
+    openNote: "open now",
+    couldBeLead: "You could hold",
+    couldBeTail: "— permanently recorded on Avalanche.",
+    checking: "Reading the chain…",
+    fallback: "Every seat is permanently recorded and verifiable on Avalanche.",
+  },
+
+  // ⑥ The quiet Inspect rail — the crypto-native actions a first-time visitor
+  // scans for, one click away, never competing with the seat CTA.
+  inspectRail: {
+    lead: "Inspect",
+    items: [
+      { label: "Verify", href: "/proof" },
+      { label: "Registry", href: "/contracts" },
+      { label: "Token", href: "/tokenomics" },
+      { label: "Liquidity", href: "/liquidity" },
+    ],
+  },
 
   // The centrepiece figure — LIVE gross cumulative on-chain inflow: membership
   // sales aggregate (V1+V2A+V2+V3) PLUS NFT artifact revenue (live mint price ×

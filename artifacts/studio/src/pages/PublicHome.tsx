@@ -13,6 +13,7 @@ import {
 import {
   useGetProtocolReality,
   useGetSourceStatus,
+  type VerifyLinkId,
 } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -23,6 +24,9 @@ import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { SeatFlowDiagram } from "@/components/hero/SeatFlowDiagram";
 import { ProtocolOverviewPanel } from "@/components/hero/ProtocolOverviewPanel";
 import { HeroLedger } from "@/components/hero/HeroLedger";
+import { HeroStatusChips } from "@/components/hero/HeroStatusChips";
+import { HeroSeatLine } from "@/components/hero/HeroSeatLine";
+import { VerifyOnChain } from "@/components/VerifyOnChain";
 import {
   RegistryPostureChip,
   realityGroupSummary,
@@ -48,6 +52,10 @@ import {
 // live (the MemberHeaderSlot pattern); dark zone / loading / any failure →
 // the generic, fail-closed.
 const HeroSeatCta = lazy(() => import("@/wallet/HeroSeatCta"));
+
+// ② The headline's claim ("a permanent, numbered seat, written on-chain") is
+// proven by the active sale engine — its verify path sits directly under it.
+const HEADLINE_VERIFY_IDS: readonly VerifyLinkId[] = ["membershipSaleV3"];
 const HERO_PRIMARY_CTA_CLASS =
   "h-12 w-full rounded-xl border border-gold/75 bg-gold px-6 font-semibold text-gold-foreground shadow-[0_0_34px_-8px_hsl(var(--gold)/0.75)] hover:bg-gold/90 sm:w-auto";
 
@@ -71,32 +79,24 @@ function HeroPrimaryCtaSlot() {
   );
 }
 
-function ProofRail({ className = "" }: { className?: string }) {
+/** ⑥ The quiet Inspect rail — crypto-native doors, never competing with the CTA. */
+function InspectRail({ className = "" }: { className?: string }) {
   return (
-    <div className={`grid gap-2 ${className}`}>
-      {heroSystem.proofRail.map((item) => (
-        <div
-          key={item.label}
-          className="flex min-h-11 items-center gap-3 rounded-xl border border-gold/18 bg-background/54 px-3 py-2 shadow-sm dark:border-white/10 dark:bg-white/[0.025]"
+    <nav
+      aria-label="Protocol inspect actions"
+      className={`flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] ${className}`}
+    >
+      <span className="mr-1 text-muted-foreground/80">{heroSystem.inspectRail.lead}</span>
+      {heroSystem.inspectRail.items.map((item) => (
+        <Link
+          key={item.href}
+          href={item.href}
+          className="rounded border border-border/60 bg-background/40 px-2.5 py-1.5 text-muted-foreground transition-colors hover:border-gold/60 hover:text-foreground dark:border-white/10 dark:bg-white/[0.03]"
         >
-          <span
-            className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border font-mono text-[10px] font-black ${
-              item.tone === "avax"
-                ? "border-avax/30 bg-avax text-white shadow-[0_0_18px_-10px_hsl(var(--avax)/0.9)]"
-                : item.tone === "cyan"
-                  ? "border-primary/35 bg-primary/10 text-primary"
-                  : "border-gold/35 bg-gold/10 text-gold"
-            }`}
-          >
-            {item.tone === "avax" ? <img src="/brand/avalanche-avax-token.png" alt="Avalanche" className="h-full w-full rounded-full object-cover" /> : item.mark}
-          </span>
-          <span className="min-w-0">
-            <span className="block truncate text-[12px] font-semibold text-foreground dark:text-white">{item.label}</span>
-            <span className="block truncate text-[11px] text-muted-foreground">{item.note}</span>
-          </span>
-        </div>
+          {item.label}
+        </Link>
       ))}
-    </div>
+    </nav>
   );
 }
 
@@ -287,12 +287,20 @@ export default function PublicHome() {
         <div className="relative z-10 mx-auto w-full max-w-[1840px] px-3 pb-3 pt-2 md:px-5 md:pb-4 md:pt-2.5">
           <div className="syn-cockpit-card overflow-hidden rounded-[1.25rem] border border-gold/30 bg-card/82 shadow-xl backdrop-blur-xl dark:bg-black/54">
             <div className="grid grid-cols-1 gap-2.5 p-3 md:p-3.5 xl:grid-cols-[0.74fr_1.28fr_0.84fr] xl:grid-rows-[minmax(440px,auto)_auto] xl:gap-2.5 2xl:grid-cols-[0.72fr_1.34fr_0.82fr]">
+              {/* M1-a — the hero's first act, in the origin's design language,
+                  LIVE-PRODUCTION posture: ① honest posture chips · ② editorial
+                  headline (CONVERSION register, verify path adjacent) · ③ the
+                  OS in plain words · ④ the living seat line (chain read,
+                  fail-closed) · ⑤ ONE dominant session-aware seat CTA · ⑥ the
+                  quiet Inspect rail. */}
               <motion.div
                 initial={{ opacity: 0, y: 14, filter: "blur(8px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ duration: 0.62, ease: [0.22, 1, 0.36, 1] }}
-                className="order-1 flex min-h-[420px] flex-col justify-start rounded-[1.05rem] border border-gold/18 bg-card/66 p-4 pt-6 shadow-sm dark:bg-black/28 xl:min-h-[440px] xl:p-5 xl:pt-7"
+                className="order-1 flex min-h-[420px] flex-col justify-start rounded-[1.05rem] border border-gold/18 bg-card/66 p-4 pt-5 shadow-sm dark:bg-black/28 xl:min-h-[440px] xl:p-5 xl:pt-6"
               >
+                <HeroStatusChips className="mb-4" />
+
                 <div className="mb-3 inline-flex items-center gap-2">
                   <span className="h-1 w-8 rounded-full bg-gold shadow-[0_0_18px_hsl(var(--gold)/0.65)]" />
                   <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-gold">
@@ -300,30 +308,25 @@ export default function PublicHome() {
                   </span>
                 </div>
 
-                <h1 className="type-h1 max-w-[420px] text-foreground dark:text-white">
+                <h1 className="type-h1 max-w-[440px] text-foreground dark:text-white">
                   {heroSystem.headlineLead}{" "}
                   <span className="text-gold">{heroSystem.headlineEmphasis}</span>
                 </h1>
+                <VerifyOnChain ids={HEADLINE_VERIFY_IDS} className="mt-1.5 block" />
 
-                <p className="mt-3 max-w-[390px] text-[0.8rem] leading-5 text-muted-foreground xl:text-[0.88rem]">
-                  {heroSystem.subheadline}
-                </p>
+                <div className="mt-3 max-w-[420px] space-y-2 text-[0.8rem] leading-5 text-muted-foreground xl:text-[0.88rem]">
+                  {heroSystem.explainer.map((sentence) => (
+                    <p key={sentence}>{sentence}</p>
+                  ))}
+                </div>
 
-                <ProofRail className="mt-4 max-w-[330px]" />
+                <HeroSeatLine className="mt-4" />
 
                 <div className="mt-4 flex flex-col gap-2.5 sm:flex-row xl:flex-col 2xl:flex-row">
                   <HeroPrimaryCtaSlot />
-                  <Link href={heroSystem.secondaryCta.href}>
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className="group h-12 w-full rounded-xl border-border bg-background/50 px-6 text-foreground hover:border-primary/40 hover:bg-primary/5 dark:border-white/15 dark:bg-white/[0.025] dark:text-white sm:w-auto"
-                    >
-                      {heroSystem.secondaryCta.label}
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                    </Button>
-                  </Link>
                 </div>
+
+                <InspectRail className="mt-auto pt-5" />
               </motion.div>
 
               <div className="order-2 flex min-h-[430px] items-center justify-center overflow-hidden rounded-[1.05rem] border border-gold/18 bg-[radial-gradient(circle_at_50%_40%,hsl(var(--gold)/0.1),transparent_48%)] xl:min-h-[440px]">

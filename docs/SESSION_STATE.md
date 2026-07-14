@@ -2,7 +2,42 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🏁 SESSION SEAL (2026-07-14 evening) — THE MACHINERY HALF OF THE M-MAP IS DONE, ALL
+> **▶ 🎭 SLICE M1-a ✅ BUILT (2026-07-14, founder GO — the M1 hero arc OPENED, the founder's
+> plateau pick): THE HERO'S FIRST ACT — the origin's design LANGUAGE harvested, never its
+> constraints (the origin was read-only; this is LIVE PRODUCTION — seats bought with real
+> money, in-page, today).** The left column rebuilt to the founder's six-block order, all
+> reads LIVE and fail-closed: ① honest LIVE/PENDING posture chips (`hero/HeroStatusChips.tsx`
+> — static posture declarations, no figures; PENDING = only the genuinely-not-deployed:
+> Commission Router · Identity Alias · Notifications; origin's mobile variant harvested:
+> compact "6 live · 3 pending" pill under md); ② editorial headline in the CONVERSION
+> register ("A permanent, numbered seat, written on-chain.") with its verify path
+> (`membershipSaleV3`) directly beneath; ③ the OS in 3 plain human sentences (public memory ·
+> the numbered seat · net-contribution 70/20/10 — the mute A/70/✓/◇ ProofRail chips DIED);
+> ④ THE LIVING SEAT LINE (`hero/HeroSeatLine.tsx`) — "N seats on-chain · the next seat is
+> #N+1 — open now" + "You could hold seat #N+1 — permanently recorded on Avalanche", read
+> from the live memberCount() (SPEAKS IN SEATS, never "Members"), verify-linked, fail-closed
+> to checking/generic; guard-freshness ENFORCED the compact `MembersProvenance` beneath it
+> (the 12/11 readback: "14 seats / 13 distinct wallets (1 holds two)" rendered live);
+> ⑤ the ONE dominant session-aware seat CTA (HeroSeatCta UNTOUCHED; the secondary "View
+> public proof" outline button removed — single visual priority, the Inspect rail covers
+> verify); ⑥ the quiet Inspect rail (Verify /proof · Registry /contracts · Token /tokenomics ·
+> Liquidity /liquidity) filling the dead space (mt-auto). Throne/map/panels/ledger UNTOUCHED
+> (M1-b re-houses them). RUNTIME-VERIFIED on the local rig BOTH paths: API dark → every block
+> fails closed honestly (no verify links, fallback seat sentence, 0 console errors); API live
+> (local api-server against the real chain) → "14 SEATS ON-CHAIN · THE NEXT SEAT IS #15 —
+> OPEN NOW" + verify links + provenance line, matching prod truth (newest prod seat = #14);
+> mobile 375px verified structurally (compact pill visible, desktop rows hidden, full block
+> order, 0 horizontal overflow). Green: FULL release:gate — workspace tsc 0 · seo:check ·
+> rewrites:check · surface:audit · all 12 studio guards (freshness caught the missing
+> provenance → fixed, the guard working) · auth-zone 875 · backbone 89 · build 24 shells
+> (21 INDEX, unchanged). +0 raw color. FOUND & FLAGGED for M1-b (NOT touched, panels frozen
+> by the gate): `awaitingWiring` in syndicateFacts (the "pending" card in Operational
+> Reality, lower on home) is STALE — it still claims the membership indexer / event adapter /
+> source indexer are "not wired" while all three are LIVE in prod; must be rewritten honestly
+> in M1-b. Windows note (best-effort law respected): release:gate's final `PORT=… pnpm build`
+> step is POSIX-only → ran the identical step via bash, green; pnpm reached via corepack shim.
+>
+> **▶ Prior: 🏁 SESSION SEAL (2026-07-14 evening) — THE MACHINERY HALF OF THE M-MAP IS DONE, ALL
 > SEALED IN PROD (Replit-verified on thesyndicate.money):** ① **M4 arc complete** — M4-a
 > unattended backbone (`7cd492b`, + convergence fix `15e933f`) · M4-b gated receipt-line feed
 > (`32d00d6`) · M4-c complete history: burns as the numbered Proof of Burn record + referral
