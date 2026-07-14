@@ -58,6 +58,9 @@ export interface ServedFeed {
   state: string;
   headBlock: number | null;
   finishedIso: string | null;
+  /** The protocol lane's honest bounds — below headBlock while catching up. */
+  burnsAsOfBlock: number | null;
+  lifecycleAsOfBlock: number | null;
   /** Total indexed lines server-side across kinds (served = newest cap). */
   itemsTotal: number;
   served: number;
@@ -192,6 +195,8 @@ export async function fetchServedFeed(): Promise<ServedFeed | null> {
       headBlock: toInt(coverage.headBlock),
       finishedIso:
         typeof coverage.finishedIso === "string" ? coverage.finishedIso : null,
+      burnsAsOfBlock: toInt(coverage.burnsAsOfBlock),
+      lifecycleAsOfBlock: toInt(coverage.lifecycleAsOfBlock),
       itemsTotal: toInt(coverage.itemsTotal) ?? items.length,
       served: toInt(coverage.served) ?? items.length,
       lanes: {

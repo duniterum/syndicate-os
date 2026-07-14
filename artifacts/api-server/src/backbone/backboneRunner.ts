@@ -92,7 +92,12 @@ export interface BackboneStatusSnapshot {
   readonly enabled: boolean;
   readonly state: BackboneState;
   readonly intervalSec: number;
-  readonly cycles: { readonly ok: number; readonly failed: number };
+  /** partial = the serving state refreshed but a protocol stream faulted. */
+  readonly cycles: {
+    readonly ok: number;
+    readonly partial: number;
+    readonly failed: number;
+  };
   readonly lastSuccess: {
     readonly finishedIso: string;
     readonly headBlock: number | null;
@@ -105,7 +110,8 @@ export interface BackboneStatusSnapshot {
     readonly protocolStreams: readonly {
       readonly streamKey: string;
       readonly status: string;
-      readonly scannedTo: number | null;
+      readonly cursorBlock: number | null;
+      readonly caughtUp: boolean;
       readonly rowsInserted: number;
     }[];
     readonly burnLedgerTotal: number;
@@ -127,6 +133,7 @@ interface MutableStatus {
   state: BackboneState;
   intervalSec: number;
   cyclesOk: number;
+  cyclesPartial: number;
   cyclesFailed: number;
   lastSuccess: BackboneStatusSnapshot["lastSuccess"];
   lastError: BackboneStatusSnapshot["lastError"];
@@ -137,6 +144,7 @@ const status: MutableStatus = {
   state: "disabled",
   intervalSec: 0,
   cyclesOk: 0,
+  cyclesPartial: 0,
   cyclesFailed: 0,
   lastSuccess: null,
   lastError: null,
@@ -152,6 +160,9 @@ let started = false;
  */
 let lastGoodModel: ActivityBuildResult | null = null;
 let lastGoodProtocolModel: ProtocolEventBuildResult | null = null;
+/** The protocol lane's honest coverage bounds (its cursors), for projections. */
+let burnsAsOfBlock: number | null = null;
+let lifecycleAsOfBlock: number | null = null;
 
 /** Source for the public receipt-line feed (projected + gated by the route). */
 export function getBackboneFeedSource(): FeedSource {
@@ -161,6 +172,8 @@ export function getBackboneFeedSource(): FeedSource {
     state: status.state,
     headBlock: status.lastSuccess?.headBlock ?? null,
     finishedIso: status.lastSuccess?.finishedIso ?? null,
+    burnsAsOfBlock,
+    lifecycleAsOfBlock,
   };
 }
 
@@ -171,7 +184,11 @@ export function getBackboneStatus(): BackboneStatusSnapshot {
     enabled: status.enabled,
     state: status.state,
     intervalSec: status.intervalSec,
-    cycles: { ok: status.cyclesOk, failed: status.cyclesFailed },
+    cycles: {
+      ok: status.cyclesOk,
+      partial: status.cyclesPartial,
+      failed: status.cyclesFailed,
+    },
     lastSuccess: status.lastSuccess,
     lastError: status.lastError,
     honesty: HONESTY_LINE,
@@ -198,7 +215,7 @@ function summarizeUnits(summary: ScanRunSummary): UnitStatusLine[] {
   }));
 }
 
-async function runCycle(): Promise<void> {
+async function runCycle(): Promise<string | null> {
   const timeoutMs =
     readEnvInt(process.env["AVALANCHE_RPC_TIMEOUT_MS"]) ?? DEFAULT_TIMEOUT_MS;
   const transport = makeFetchTransport(resolveEndpoints(), timeoutMs);
@@ -229,8 +246,10 @@ async function runCycle(): Promise<void> {
   );
 
   // ①b Protocol-event lane (M4-c): burns + registry lifecycle, cursor-resumed
-  // through the SAME head the sale scan saw. Fail-closed: a stream error
-  // throws and fails the whole cycle (its cursor stays at the last good block).
+  // toward the SAME head the sale scan saw, within this cycle's block budget.
+  // ISOLATED: a stream fault is recorded (its cursor sits at the last
+  // persisted chunk) but NEVER darkens the seat lane or the serving state —
+  // the persisted prefix is gapless and serves honestly with its own asOf.
   if (summary.head === null) {
     throw new Error("scan summary carries no head block — cycle aborted");
   }
@@ -240,6 +259,7 @@ async function runCycle(): Promise<void> {
     (acc, s) => acc + s.rowsInserted,
     0,
   );
+  const streamFaults = protocolStreams.filter((s) => s.status === "error");
 
   // ② Incremental Protocol Time enrichment (new blocks only, witness-checked;
   // covers BOTH raw lanes).
@@ -272,6 +292,12 @@ async function runCycle(): Promise<void> {
 
   lastGoodModel = model;
   lastGoodProtocolModel = protocolModel;
+  burnsAsOfBlock =
+    protocolStreams.find((s) => s.streamKey === "SYN_BURN")?.cursorBlock ??
+    burnsAsOfBlock;
+  lifecycleAsOfBlock =
+    protocolStreams.find((s) => s.streamKey === "SOURCE_LIFECYCLE")
+      ?.cursorBlock ?? lifecycleAsOfBlock;
 
   status.lastSuccess = {
     finishedIso: new Date().toISOString(), // ops metadata, never chain truth
@@ -285,13 +311,19 @@ async function runCycle(): Promise<void> {
     protocolStreams: protocolStreams.map((s) => ({
       streamKey: s.streamKey,
       status: s.status,
-      scannedTo: s.scannedTo,
+      cursorBlock: s.cursorBlock,
+      caughtUp: s.caughtUp,
       rowsInserted: s.rowsInserted,
     })),
     burnLedgerTotal: protocolModel.totals.burns,
     lifecycleTotal: protocolModel.totals.lifecycle,
     readModel: report,
   };
+
+  // A stream fault makes the cycle PARTIAL — everything above still serves.
+  return streamFaults.length > 0
+    ? `${streamFaults.length} protocol stream(s) faulted — catch-up resumes from the persisted cursor`
+    : null;
 }
 
 // ---------------------------------------------------------------------------
@@ -309,19 +341,34 @@ function scheduleNext(delayMs: number, cfg: BackboneConfig): void {
 async function runCycleSafe(cfg: BackboneConfig): Promise<void> {
   status.state = "running";
   try {
-    await runCycle();
-    status.cyclesOk += 1;
-    logger.info(
-      {
-        backbone: {
-          cyclesOk: status.cyclesOk,
-          eventsInserted: status.lastSuccess?.eventsInserted,
-          timestampsInserted: status.lastSuccess?.timestampsInserted,
-          headBlock: status.lastSuccess?.headBlock,
+    const partial = await runCycle();
+    if (partial !== null) {
+      // The serving state refreshed; a protocol stream is still catching up
+      // or faulted — honest middle state, never a dark site.
+      status.cyclesPartial += 1;
+      status.lastError = {
+        atIso: new Date().toISOString(),
+        message: toSafeErrorMessage(new Error(partial)),
+      };
+      logger.warn(
+        { backbone: { cyclesPartial: status.cyclesPartial, note: status.lastError.message } },
+        "backbone cycle PARTIAL (serving state refreshed; protocol lane resumes next cycle)",
+      );
+    } else {
+      status.cyclesOk += 1;
+      logger.info(
+        {
+          backbone: {
+            cyclesOk: status.cyclesOk,
+            eventsInserted: status.lastSuccess?.eventsInserted,
+            protocolEventsInserted: status.lastSuccess?.protocolEventsInserted,
+            timestampsInserted: status.lastSuccess?.timestampsInserted,
+            headBlock: status.lastSuccess?.headBlock,
+          },
         },
-      },
-      "backbone cycle OK",
-    );
+        "backbone cycle OK",
+      );
+    }
   } catch (err) {
     status.cyclesFailed += 1;
     status.lastError = {

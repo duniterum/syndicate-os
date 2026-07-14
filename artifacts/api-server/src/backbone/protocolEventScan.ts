@@ -1,6 +1,7 @@
 /**
- * Event Backbone — PROTOCOL-EVENT SCAN LANE (M4-c, founder GO).
- * --------------------------------------------------------------
+ * Event Backbone — PROTOCOL-EVENT SCAN LANE (M4-c; convergence fix after the
+ * first prod run's measured 403 rate-limit — Replit diagnosis, founder relay).
+ * ---------------------------------------------------------------------------
  * The backbone's second lane: SYN burns (Proof of Burn) + Source Registry
  * lifecycle, scanned unattended with the origin scanner's doctrine ported
  * onto the backbone's discipline:
@@ -8,17 +9,27 @@
  *   - INCREMENTAL CURSOR from the pinned canon block, never a lookback window
  *     (Proof of Burn #001 sits at block 87,703,847, far behind the head — a
  *     window would age it out; the cursor never does).
+ *   - PER-CHUNK CURSOR PERSISTENCE (the convergence law, same as the sale
+ *     lane): the cursor advances after EVERY persisted chunk, so a mid-scan
+ *     rate-limit cut resumes exactly where it stopped — the lane converges
+ *     across cycles even when the provider throttles it.
+ *   - BLOCK BUDGET PER CYCLE: at most PROTOCOL_SCAN_MAX_BLOCKS_PER_CYCLE
+ *     blocks advance per stream per cycle, with a small inter-chunk delay —
+ *     the catch-up is paced instead of hammering the RPC into a 403.
  *   - REORG OVERLAP: every resume re-scans the last 50 blocks (origin P4a);
  *     inserts are idempotent, so the overlap can never duplicate.
- *   - GAPLESS BY CONSTRUCTION: the cursor advances only past fully persisted
- *     chunks; a failed chunk aborts the stream WITHOUT advancing, so the
- *     persisted history can never contain a hole. Proof-of-Burn numbering is
- *     therefore always valid on persisted rows — the origin's PARTIAL state
- *     is structurally impossible server-side.
- *   - TOPIC-FILTERED getLogs: burns are `Transfer(_, burnAddress, _)` filtered
- *     server-side by topics, so the scan is sparse (no adaptive splitter
- *     needed — the proven sale engine stays untouched).
+ *   - GAPLESS BY CONSTRUCTION: the cursor only ever advances past persisted
+ *     chunks and the scan is strictly sequential from the pinned block, so
+ *     the persisted history can never contain a hole. Proof-of-Burn
+ *     numbering is therefore always valid on persisted rows — up to the
+ *     cursor, which the projections state honestly as the lane's coverage.
+ *   - ONE LIFECYCLE PASS: the three registry events scan as a single
+ *     topic0 OR-list pass (eth_getLogs array semantics) — a third of the
+ *     calls the first version made.
  *   - FAIL-CLOSED DECODE: a malformed log throws; nothing is guessed.
+ *   - NEVER THROWS ACROSS STREAMS: one stream's failure is recorded in its
+ *     summary + cursor and must not kill the other stream or the cycle's
+ *     serving state (the runner isolates the lane).
  *
  * Signatures transcribed VERBATIM from today's repo (the studio feed spine,
  * itself transcribed from the deployed .sol) and SELF-CHECKED at module load:
@@ -72,8 +83,16 @@ const LIFECYCLE_NAME_BY_TOPIC0: Record<string, string> = Object.fromEntries(
 /** Fixed chunk (topic-filtered streams are sparse) + origin reorg overlap. */
 export const PROTOCOL_SCAN_CHUNK = 2000;
 export const PROTOCOL_REORG_OVERLAP = 50;
+/**
+ * Catch-up pacing (the convergence budget): at most this many blocks advance
+ * per stream per cycle (~200 getLogs at CHUNK=2000), with a small delay
+ * between calls. The ~3.1M-block cold catch-up converges in ~8 cycles
+ * (~40 min at the 5-min cadence) instead of 403-looping forever.
+ */
+export const PROTOCOL_SCAN_MAX_BLOCKS_PER_CYCLE = 400_000;
+export const PROTOCOL_SCAN_CHUNK_DELAY_MS = 150;
 
-// ── Shapes shared with backboneDb / the read-model ──────────────────────────
+// ── Shapes shared with backboneDb / the read-model / the runner ─────────────
 export interface ProtocolCursorState {
   fromBlock: number;
   lastScannedBlock: number;
@@ -114,11 +133,16 @@ export interface RawLifecycleRowInput {
 export interface ProtocolScanStreamSummary {
   streamKey: string;
   scannedFrom: number | null;
-  scannedTo: number | null;
+  /** The cursor after this cycle — the lane's honest coverage bound. */
+  cursorBlock: number | null;
+  /** True when the cursor reached the cycle's head (the lane is caught up). */
+  caughtUp: boolean;
   chunksScanned: number;
   logsSeen: number;
   rowsInserted: number;
   status: "ok" | "error";
+  /** Redaction happens at the runner before this ever reaches status output. */
+  error: string | null;
 }
 
 // ── Fail-closed log field parsing ────────────────────────────────────────────
@@ -142,10 +166,7 @@ function parseTxHash(value: unknown): string {
 
 /** topic → the 20-byte address it right-pads (fail-closed). */
 function topicToAddress(topic: unknown): string {
-  if (
-    typeof topic !== "string" ||
-    !/^0x0{24}[0-9a-fA-F]{40}$/.test(topic)
-  ) {
+  if (typeof topic !== "string" || !/^0x0{24}[0-9a-fA-F]{40}$/.test(topic)) {
     throw new Error("topic: not an address-carrying topic");
   }
   return ("0x" + topic.slice(26)).toLowerCase();
@@ -167,8 +188,8 @@ function dataToUint256Decimal(data: unknown): string {
   return BigInt(data).toString(10);
 }
 
-// ── Decoders (fail-closed; skip-never-guess is NOT allowed here — a stream
-//    scans exactly its own filtered events, so an undecodable log is a fault). ──
+// ── Decoders (fail-closed; a stream scans exactly its own filtered events,
+//    so an undecodable log is a fault, never a skip). ────────────────────────
 function decodeBurnLog(log: RawLogEntry, burnAddress: string): ProtocolEventRecord {
   const topics = Array.isArray(log.topics) ? log.topics : [];
   if (topics.length !== 3 || topics[0] !== TRANSFER_TOPIC0) {
@@ -212,12 +233,19 @@ function decodeLifecycleLog(log: RawLogEntry): ProtocolEventRecord {
   };
 }
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    const t = setTimeout(resolve, ms);
+    if (typeof t.unref === "function") t.unref();
+  });
+}
+
 // ── The scan ─────────────────────────────────────────────────────────────────
 /**
- * Scan both protocol-event streams incrementally through `head`. Cursor
- * discipline: each chunk is persisted before the cursor advances past it; a
- * failure aborts the stream with its cursor at the last good block and the
- * cycle fails closed (the runner records it; the next cycle resumes).
+ * Advance both protocol-event streams toward `head`, within this cycle's
+ * block budget. NEVER throws: each stream's outcome (including a mid-scan
+ * rate-limit cut) is recorded in its summary and its cursor — the persisted
+ * prefix is always gapless and the next cycle resumes from the exact cut.
  */
 export async function runProtocolEventScan(
   transport: RpcTransport,
@@ -230,21 +258,23 @@ export async function runProtocolEventScan(
     const summary: ProtocolScanStreamSummary = {
       streamKey: target.streamKey,
       scannedFrom: null,
-      scannedTo: null,
+      cursorBlock: null,
+      caughtUp: false,
       chunksScanned: 0,
       logsSeen: 0,
       rowsInserted: 0,
       status: "ok",
+      error: null,
     };
     summaries.push(summary);
 
-    // One cursor per stream (eventName "*" — the stream's topics filter is
-    // the event selection; per-event cursors would triple the burn scan).
+    // One cursor per stream (eventName "*" — the topics filter IS the event
+    // selection; the lifecycle events share one OR-list pass).
     const cursor = await getProtocolCursor(
       EXPECTED_CHAIN_ID,
       target.streamKey,
       "*",
-    );
+    ).catch(() => null);
     const resumeFrom =
       cursor === null
         ? target.fromBlock
@@ -253,88 +283,75 @@ export async function runProtocolEventScan(
             cursor.lastScannedBlock + 1 - PROTOCOL_REORG_OVERLAP,
           );
     summary.scannedFrom = resumeFrom;
+    summary.cursorBlock = cursor?.lastScannedBlock ?? null;
+
+    // This cycle's budget: converge in paced steps, never hammer the RPC.
+    const budgetEnd = Math.min(
+      head,
+      resumeFrom + PROTOCOL_SCAN_MAX_BLOCKS_PER_CYCLE - 1,
+    );
+
+    const topics: readonly (string | readonly string[] | null)[] =
+      target.streamKey === "SYN_BURN"
+        ? [TRANSFER_TOPIC0, null, addressToTopic(burnAddress)]
+        : [Object.values(LIFECYCLE_TOPIC0)];
+    const decode =
+      target.streamKey === "SYN_BURN"
+        ? (log: RawLogEntry) => decodeBurnLog(log, burnAddress)
+        : decodeLifecycleLog;
 
     try {
-      if (target.streamKey === "SYN_BURN") {
-        // Topic-filtered to the burn recipient server-side: sparse by design.
-        const burnTopics = [TRANSFER_TOPIC0, null, addressToTopic(burnAddress)];
-        await scanStream(transport, target.address, burnTopics, resumeFrom, head, summary, (log) =>
-          decodeBurnLog(log, burnAddress),
-        );
-      } else {
-        // Lifecycle: three sparse per-event passes over the same range share
-        // ONE stream cursor (advanced only after all three pass per chunk —
-        // implemented as sequential whole-range passes, then one cursor write).
-        let inserted = 0;
-        let seen = 0;
-        for (const name of target.events) {
-          const t0 = LIFECYCLE_TOPIC0[name];
-          if (!t0) throw new Error(`no pinned topic0 for "${name}"`);
-          const passSummary: ProtocolScanStreamSummary = { ...summary, chunksScanned: 0, logsSeen: 0, rowsInserted: 0 };
-          await scanStream(transport, target.address, [t0], resumeFrom, head, passSummary, decodeLifecycleLog);
-          inserted += passSummary.rowsInserted;
-          seen += passSummary.logsSeen;
-          summary.chunksScanned += passSummary.chunksScanned;
+      for (
+        let start = Math.min(resumeFrom, budgetEnd);
+        start <= budgetEnd;
+        start += PROTOCOL_SCAN_CHUNK
+      ) {
+        const end = Math.min(start + PROTOCOL_SCAN_CHUNK - 1, budgetEnd);
+        const logs = await ethGetLogs(transport, {
+          address: target.address,
+          fromBlock: start,
+          toBlock: end,
+          topic0: typeof topics[0] === "string" ? topics[0] : "",
+          topics,
+        });
+        summary.chunksScanned += 1;
+        summary.logsSeen += logs.length;
+        if (logs.length > 0) {
+          summary.rowsInserted += await insertProtocolEvents(logs.map(decode));
         }
-        summary.logsSeen = seen;
-        summary.rowsInserted = inserted;
+        // THE CONVERGENCE LAW: persist the cursor after EVERY chunk — a cut
+        // (rate limit, restart) resumes exactly here; the prefix is gapless.
+        await upsertProtocolCursor({
+          chainId: EXPECTED_CHAIN_ID,
+          streamKey: target.streamKey,
+          eventName: "*",
+          fromBlock: target.fromBlock,
+          lastScannedBlock: end,
+          status: end >= head ? "complete" : "catching-up",
+          lastError: null,
+        });
+        summary.cursorBlock = end;
+        if (end < budgetEnd) await sleep(PROTOCOL_SCAN_CHUNK_DELAY_MS);
       }
-      summary.scannedTo = head;
-      await upsertProtocolCursor({
-        chainId: EXPECTED_CHAIN_ID,
-        streamKey: target.streamKey,
-        eventName: "*",
-        fromBlock: target.fromBlock,
-        lastScannedBlock: head,
-        status: "ok",
-        lastError: null,
-      });
+      summary.caughtUp = summary.cursorBlock !== null && summary.cursorBlock >= head;
     } catch (err) {
+      // The cursor already sits at the last PERSISTED chunk — record the
+      // fault and move on to the next stream; the runner isolates the lane.
       summary.status = "error";
-      const message = err instanceof Error ? err.message : String(err);
+      summary.error = err instanceof Error ? err.message : String(err);
       await upsertProtocolCursor({
         chainId: EXPECTED_CHAIN_ID,
         streamKey: target.streamKey,
         eventName: "*",
         fromBlock: target.fromBlock,
-        lastScannedBlock: cursor?.lastScannedBlock ?? target.fromBlock - 1,
+        lastScannedBlock: summary.cursorBlock ?? target.fromBlock - 1,
         status: "error",
-        lastError: message.slice(0, 200),
+        lastError: summary.error.slice(0, 200),
       }).catch(() => {
         /* cursor bookkeeping failure never masks the scan error */
       });
-      throw new Error(
-        `protocol-event stream ${target.streamKey} failed: ${message}`,
-      );
     }
   }
 
   return summaries;
-}
-
-async function scanStream(
-  transport: RpcTransport,
-  address: string,
-  topics: readonly (string | null)[],
-  fromBlock: number,
-  head: number,
-  summary: ProtocolScanStreamSummary,
-  decode: (log: RawLogEntry) => ProtocolEventRecord,
-): Promise<void> {
-  for (let start = Math.min(fromBlock, head); start <= head; start += PROTOCOL_SCAN_CHUNK) {
-    const end = Math.min(start + PROTOCOL_SCAN_CHUNK - 1, head);
-    const logs = await ethGetLogs(transport, {
-      address,
-      fromBlock: start,
-      toBlock: end,
-      topic0: typeof topics[0] === "string" ? topics[0] : "",
-      topics,
-    });
-    summary.chunksScanned += 1;
-    summary.logsSeen += logs.length;
-    if (logs.length > 0) {
-      const records = logs.map(decode);
-      summary.rowsInserted += await insertProtocolEvents(records);
-    }
-  }
 }

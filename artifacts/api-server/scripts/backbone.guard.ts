@@ -43,6 +43,10 @@ import {
 import { buildActivityHeartbeatReadModel } from "../src/backbone/activityHeartbeatReadmodel";
 import { buildProtocolEventReadModel } from "../src/backbone/protocolEventReadmodel";
 import {
+  PROTOCOL_SCAN_MAX_BLOCKS_PER_CYCLE,
+  PROTOCOL_SCAN_CHUNK_DELAY_MS,
+} from "../src/backbone/protocolEventScan";
+import {
   buildPublicFeed,
   assertFeedSafeJson,
   FEED_MAX_ITEMS,
@@ -266,6 +270,46 @@ check(
   );
 }
 
+// M4-c convergence discipline (the measured prod 403 lesson):
+{
+  const laneSrc = stripComments(read("src/backbone/protocolEventScan.ts"));
+  const persistIdx = laneSrc.indexOf("await upsertProtocolCursor");
+  const loopIdx = laneSrc.indexOf("for (\n        let start");
+  check(
+    laneSrc.includes("PROTOCOL_SCAN_MAX_BLOCKS_PER_CYCLE - 1") &&
+      PROTOCOL_SCAN_MAX_BLOCKS_PER_CYCLE >= 100_000 &&
+      PROTOCOL_SCAN_MAX_BLOCKS_PER_CYCLE <= 1_000_000,
+    "protocol lane: per-cycle block budget applied and sanely bounded",
+    "protocol lane budget missing or out of bounds",
+  );
+  check(
+    PROTOCOL_SCAN_CHUNK_DELAY_MS >= 50 && PROTOCOL_SCAN_CHUNK_DELAY_MS <= 2_000,
+    "protocol lane: inter-chunk throttle present and sane",
+    "protocol lane throttle missing or out of bounds",
+  );
+  check(
+    persistIdx !== -1 &&
+      laneSrc.includes("lastScannedBlock: end") &&
+      (loopIdx === -1 || persistIdx > loopIdx),
+    "protocol lane: the cursor persists after EVERY chunk (the convergence law)",
+    "protocol lane lost per-chunk cursor persistence — a rate-limit cut would loop forever",
+  );
+  check(
+    !/^\s*throw /m.test(
+      laneSrc.slice(laneSrc.indexOf("export async function runProtocolEventScan")),
+    ),
+    "protocol lane: stream faults are recorded, never thrown across streams",
+    "protocol lane throws across streams — one fault would darken the cycle",
+  );
+  const runnerSrc2 = stripComments(read("src/backbone/backboneRunner.ts"));
+  check(
+    runnerSrc2.includes("cyclesPartial") &&
+      runnerSrc2.includes("streamFaults"),
+    "runner isolates the protocol lane: a stream fault = a PARTIAL cycle, the serving state still refreshes",
+    "runner lost the lane isolation — a protocol fault would darken the seats again",
+  );
+}
+
 // ---------------------------------------------------------------------------
 // E. Output gate: route shape + scanner behaviour + pattern reconciliation.
 // ---------------------------------------------------------------------------
@@ -425,7 +469,15 @@ const feed = buildPublicFeed({
   state: "idle",
   headBlock: 300,
   finishedIso: "2026-07-13T00:00:00.000Z",
+  burnsAsOfBlock: 250,
+  lifecycleAsOfBlock: 250,
 });
+check(
+  feed.coverage.burnsAsOfBlock === 250 &&
+    feed.coverage.lifecycleAsOfBlock === 250,
+  "the feed states the protocol lane's honest coverage bounds (cursors)",
+  "feed coverage lost the lane asOf bounds",
+);
 const feedJson = JSON.stringify(feed);
 check(
   feed.items.length === 5 &&
@@ -483,6 +535,8 @@ expectThrow("projection fails closed on an address-shaped verify anchor", () =>
     state: "idle",
     headBlock: 300,
     finishedIso: null,
+    burnsAsOfBlock: null,
+    lifecycleAsOfBlock: null,
   }),
 );
 expectThrow("projection fails closed on a non-canonical sender label", () =>
@@ -500,6 +554,8 @@ expectThrow("projection fails closed on a non-canonical sender label", () =>
     state: "idle",
     headBlock: 300,
     finishedIso: null,
+    burnsAsOfBlock: null,
+    lifecycleAsOfBlock: null,
   }),
 );
 {
@@ -509,6 +565,8 @@ expectThrow("projection fails closed on a non-canonical sender label", () =>
     state: "disabled",
     headBlock: null,
     finishedIso: null,
+    burnsAsOfBlock: null,
+    lifecycleAsOfBlock: null,
   });
   check(
     empty.items.length === 0 &&

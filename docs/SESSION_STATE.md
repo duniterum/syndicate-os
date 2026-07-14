@@ -2,7 +2,30 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🔥 SLICE M4-c ✅ BUILT (2026-07-14, founder GO): ACTIVITY COMPLETE HISTORY — burns +
+> **▶ 🛠 M4-c CONVERGENCE FIX ✅ BUILT (2026-07-14, on Replit's measured prod diagnosis —
+> 403 rate-limit; 3 cycles failed; cursor never moved; /activity + /fire-ledger DARK in prod
+> including the M5 seat lines).** Root cause exactly as Replit measured: the protocol lane
+> wrote its cursor ONLY after a full ~2.5M-block pass → the RPC 403-cut every cycle →
+> no-convergence loop; and one lane's throw failed the WHOLE cycle, so the in-memory last-good
+> (lost at redeploy) never populated — the public regression. FIVE fixes, all guard-pinned
+> (backbone:guard 75→81): ① PER-CHUNK CURSOR PERSISTENCE (the sale lane's law) — every
+> persisted chunk advances the cursor, a cut resumes exactly there, prefix stays gapless;
+> ② PER-CYCLE BLOCK BUDGET 400k/stream + 150ms inter-chunk throttle (~8 paced cycles to
+> converge, never a 403 hammer); ③ ONE lifecycle pass (topic0 OR-array via eth_getLogs
+> semantics — a third of the calls); ④ LANE ISOLATION — runProtocolEventScan NEVER throws
+> across streams; a stream fault = a PARTIAL cycle (new cycles.partial counter): the seat
+> lane, enrichment, and BOTH read-models still refresh and serve — the site can never go dark
+> on a lane fault again; ⑤ HONEST CATCH-UP COVERAGE — feed coverage gains
+> burnsAsOfBlock/lifecycleAsOfBlock (the cursors); numbering stays valid mid-catch-up (strictly
+> sequential from the pinned block → #1 guaranteed first); the fire-ledger banner says
+> "complete up to block X — the indexer is catching up…" and /activity appends the catch-up
+> note while cursors lag the head. Local smoke: extended payloads carry the new fields;
+> cycles {ok, partial, failed}. Green: full tsc 0 · backbone 81 · studio suite · build 24
+> shells. EXPECTED IN PROD: first cycles report PARTIAL-or-OK with cursorBlock climbing
+> ~400k/cycle; seats serve again from the FIRST cycle; burns/lifecycle lanes complete in
+> ~8 cycles (~40 min), then all cycles OK.
+>
+> **▶ Prior: 🔥 SLICE M4-c ✅ BUILT (2026-07-14, founder GO): ACTIVITY COMPLETE HISTORY — burns +
 > referral lifecycle join the seats; /fire-ledger becomes the NUMBERED Proof of Burn record;
 > the home burn total gains its history door.** MODE B built as gated: the backbone's SECOND
 > scan lane (`protocolEventScan.ts` — origin doctrine ported server-side: incremental cursor

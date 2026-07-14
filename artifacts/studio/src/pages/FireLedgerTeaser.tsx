@@ -76,6 +76,11 @@ function ProofOfBurnRecord() {
 
   const available = served !== null && served.lanes.burns;
   const ledger = available ? [...served.burnLedger].reverse() : []; // newest first on screen
+  const catchingUp =
+    available &&
+    served.burnsAsOfBlock !== null &&
+    served.headBlock !== null &&
+    served.burnsAsOfBlock < served.headBlock - 1_000;
 
   if (!tried) {
     return <p className="text-sm text-muted-foreground py-6">Reading the served record…</p>;
@@ -106,12 +111,16 @@ function ProofOfBurnRecord() {
       <Card className="bg-card/30 border-border/50 p-3.5 mb-4">
         <p className="text-[11px] text-muted-foreground leading-relaxed" data-testid="burn-record-banner">
           <span className="text-foreground font-medium">
-            The complete Proof of Burn record, served by the event indexer.
+            The Proof of Burn record, served by the event indexer.
           </span>{" "}
-          Every burn since the first block — oldest is #1 — as of block{" "}
-          {served.headBlock ? served.headBlock.toLocaleString("en-US") : "…"}. A
-          number is assigned only on the complete, gapless history; the sender
-          is named as Founder or Community, never an address. Between indexer
+          Every burn since the first block — oldest is #1 — complete up to
+          block{" "}
+          {(served.burnsAsOfBlock ?? served.headBlock)?.toLocaleString("en-US") ?? "…"}
+          {catchingUp
+            ? " — the indexer is catching up toward the chain head; newer burns appear as it advances"
+            : ""}
+          . A number is assigned only on the gapless record; the sender is
+          named as Founder or Community, never an address. Between indexer
           cycles this is a snapshot — never evidence of absence.
         </p>
       </Card>

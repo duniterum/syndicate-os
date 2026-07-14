@@ -84,6 +84,14 @@ export interface PublicActivityFeed {
     readonly finishedIso: string | null;
     readonly itemsTotal: number;
     readonly served: number;
+    /**
+     * The protocol lane's honest bounds (its cursors). During a catch-up
+     * these sit BELOW headBlock: burns/lifecycle are complete UP TO here —
+     * the record grows as the indexer advances; never evidence of absence
+     * beyond it.
+     */
+    readonly burnsAsOfBlock: number | null;
+    readonly lifecycleAsOfBlock: number | null;
   };
   /** Which histories are served COMPLETE in this payload (honest flags). */
   readonly lanes: {
@@ -107,6 +115,8 @@ export interface FeedSource {
   readonly state: string;
   readonly headBlock: number | null;
   readonly finishedIso: string | null;
+  readonly burnsAsOfBlock: number | null;
+  readonly lifecycleAsOfBlock: number | null;
 }
 
 function assertAnchor(transactionHash: string): void {
@@ -205,6 +215,8 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
       finishedIso: source.finishedIso,
       itemsTotal: allLines.length,
       served: items.length,
+      burnsAsOfBlock: source.burnsAsOfBlock,
+      lifecycleAsOfBlock: source.lifecycleAsOfBlock,
     },
     lanes: {
       seats: model !== null,
