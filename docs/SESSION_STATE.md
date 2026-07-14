@@ -2,7 +2,23 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🎯 Q-A/Q-B TRIAGE ✅ BUILT — BOTH CLOSED (2026-07-14, founder decisions A1 + B2-plus;
+> **▶ 🎯 A1 HEADER EXTENSION ✅ BUILT (2026-07-14, founder order on prod screenshot — the
+> header's "Take your seat" survived next to the seated pill while the hero already said
+> "Expand your footprint"):** the HEADER seat CTA (desktop + mobile sheet) now rides the SAME
+> session-aware module — `HeroSeatCta` gained size/onNavigate props; PublicLayout's
+> `SeatCtaSlot` mirrors the MemberHeaderSlot discipline (lazy, auth-gated, Suspense fallback
+> = the generic; fail-closed everywhere). One module, three mounts (hero · header · mobile),
+> zero duplicated truth. **DEPLOY BACKLOG (batchable rule, founder 2026-07-14): this slice
+> is COMMITTED, NOT YET DEPLOYED — it rides the next deploy (client-only, fail-closed;
+> prod header still shows the generic until then).** ALSO RECORDED (founder question
+> answered): the MIRRORED Q-B
+> direction — a site-session end (deploy wipes in-memory sessions) does NOT and must not
+> revoke the MetaMask link (the link is the user's grant, managed in the wallet; it powers
+> the one-click re-sign) — appended to the Q-B closure in OPEN_QUEUE. A1 PROD-VERIFIED by
+> the founder's own screenshots meanwhile: hero "Expand your footprint" with the seated
+> Genesis session · generic in the signed-out window; Replit verified the bundle bit-exact.
+>
+> **▶ Prior: 🎯 Q-A/Q-B TRIAGE ✅ BUILT — BOTH CLOSED (2026-07-14, founder decisions A1 + B2-plus;
 > the briefly-built B1 sentence REVERTED same slice on founder override):**
 > **Q-A (A1):** the home-hero primary CTA is session-aware via the lazy wallet module
 > `wallet/HeroSeatCta.tsx` (the JoinSeatLine/MemberHeaderSlot pattern): SEATED → "Expand your

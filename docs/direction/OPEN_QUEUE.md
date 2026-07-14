@@ -272,6 +272,13 @@ Full detail + the consolidated **A/B/C/D slice list** live in
   signed-out state, not a flicker; prod evidence (the founder's own screenshot: locked
   extension + living pill) confirms the installed version does NOT sign out on extension
   lock. FORWARD PATH: CLEAN — no patch needed, none made.
+  **MIRRORED DIRECTION (founder question 2026-07-14, answered + recorded):** when the SITE
+  session ends (e.g. a deploy wipes the in-memory sessions) while MetaMask still shows
+  connected — ALSO by design, pattern 2 mirrored. The wallet link is the USER'S grant to the
+  site, owned and managed inside the wallet; the site never reaches in to revoke it (no
+  grade-AAA dapp force-revokes on session end). Keeping the link alive is what makes
+  recovery one click: the header's "Sign in" re-sign path uses the still-connected wallet —
+  no reconnect ceremony. The two truths end independently in BOTH directions.
 
 - **🔴 THE MVP-FINAL MASTER BRIEF + THE 30-DAY MAP ARE CANON (founder-decided 2026-07-14):
   `docs/direction/MVP_FINAL_MASTER_BRIEF.md`** — the complete final MVP scope (the challenge ·

@@ -34,6 +34,42 @@ function MemberHeaderSlot({ variant }: { variant: "desktop" | "mobile" }) {
   );
 }
 
+// Q-A extension (founder order, 2026-07-14): the HEADER's seat CTA is
+// session-aware too — a seated member reads "Expand your footprint" next to
+// their pill, never the generic invite the hero already stopped showing them.
+// Same module, same discipline: lazy, auth-gated, fail-closed to the generic.
+const HeroSeatCta = lazy(() => import("@/wallet/HeroSeatCta"));
+
+function SeatCtaSlot({
+  className,
+  size,
+  onNavigate,
+}: {
+  className: string;
+  size: "sm" | "default";
+  onNavigate?: () => void;
+}) {
+  const authLive = useAuthAvailability() === "live";
+  const generic = (
+    <Link href={heroSystem.primaryCta.href} onClick={onNavigate}>
+      <Button size={size} className={className}>
+        {heroSystem.primaryCta.label}
+      </Button>
+    </Link>
+  );
+  if (!authLive) return generic;
+  return (
+    <Suspense fallback={generic}>
+      <HeroSeatCta
+        className={className}
+        size={size}
+        generic={heroSystem.primaryCta}
+        onNavigate={onNavigate}
+      />
+    </Suspense>
+  );
+}
+
 // NOTE: the raw access-state session chip ("S4 · SIGNED — UNVERIFIED") was
 // removed from the public header — it is internal S1–S14 vocabulary and, once
 // membership recognition shipped, it contradicted the member identity menu (a
@@ -236,14 +272,12 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             <span className="hidden md:inline-flex">
               <MemberHeaderSlot variant="desktop" />
             </span>
-            <Link href={heroSystem.primaryCta.href} className="hidden md:inline-flex">
-              <Button
+            <span className="hidden md:inline-flex">
+              <SeatCtaSlot
                 size="sm"
                 className="min-h-9 rounded-xl border border-gold/60 bg-gold px-4 font-semibold text-gold-foreground shadow-[0_0_28px_-14px_hsl(var(--gold)/0.9)] hover:bg-gold/90 xl:px-5"
-              >
-                {heroSystem.primaryCta.label}
-              </Button>
-            </Link>
+              />
+            </span>
 
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
@@ -291,11 +325,11 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                   </div>
                   <div className="mt-2 flex flex-col gap-2 border-t border-border/50 pt-4">
                     <MemberHeaderSlot variant="mobile" />
-                    <Link href={heroSystem.primaryCta.href} onClick={() => setMobileOpen(false)}>
-                      <Button className="min-h-12 w-full justify-center rounded-xl bg-gold font-semibold text-gold-foreground hover:bg-gold/90">
-                        {heroSystem.primaryCta.label}
-                      </Button>
-                    </Link>
+                    <SeatCtaSlot
+                      size="default"
+                      className="min-h-12 w-full justify-center rounded-xl bg-gold font-semibold text-gold-foreground hover:bg-gold/90"
+                      onNavigate={() => setMobileOpen(false)}
+                    />
                   </div>
                 </nav>
               </SheetContent>

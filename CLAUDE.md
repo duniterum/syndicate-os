@@ -25,6 +25,13 @@ So at the end of each slice, Claude Code states, in ONE clear line, a verdict:
   instruction to hand Replit: *"pull main, deploy, run migrations, report."*
 - **✅ NO DEPLOY** — if it's a pure internal/code change fully verified by local
   build + guards (e.g. an atom not yet wired to a visible surface). Safe to continue.
+- **🚀 DEPLOY — BATCHABLE (founder rule, 2026-07-14: each deploy costs ~10 min + $3-5)** —
+  a deployable slice that breaks nothing while undeployed (client-only, fail-closed,
+  additive; prod simply stays on the previous build) SAYS SO and rides the NEXT deploy
+  instead of forcing its own. Claude Code keeps a one-line "deploy backlog" in
+  SESSION_STATE listing every committed-not-yet-deployed slice; the next 🚀 DEPLOY
+  carries them all, and Replit's verification covers the whole batch. Fixes to broken
+  prod, schema/env changes, and anything the founder wants live NOW never batch.
 
 When a deploy is done, the founder pastes Replit's report back here; Claude Code then acts
 on the real runtime truth (render, DB, errors) and fixes anything server-specific.

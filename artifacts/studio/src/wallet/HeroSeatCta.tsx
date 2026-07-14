@@ -19,9 +19,14 @@ import { SESSION_CHANGED_EVENT } from "./sessionEvents";
 export default function HeroSeatCta({
   className,
   generic,
+  size = "lg",
+  onNavigate,
 }: {
   className: string;
   generic: { label: string; href: string };
+  size?: "sm" | "default" | "lg";
+  /** Optional navigation side-effect (the mobile sheet closes itself). */
+  onNavigate?: () => void;
 }) {
   // null = checking → render the generic (never a flash of a wrong claim).
   const [seated, setSeated] = useState<boolean | null>(null);
@@ -59,8 +64,8 @@ export default function HeroSeatCta({
       : { label: generic.label, href: generic.href, title: undefined };
 
   return (
-    <Link href={cta.href}>
-      <Button size="lg" className={className} title={cta.title} data-testid="hero-primary-cta">
+    <Link href={cta.href} onClick={onNavigate}>
+      <Button size={size} className={className} title={cta.title} data-testid="hero-primary-cta">
         {cta.label}
       </Button>
     </Link>
