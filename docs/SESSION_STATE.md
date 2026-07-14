@@ -2,7 +2,32 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🏛 THE M1 ARC ✅ SEALED IN PROD (2026-07-14, Replit-verified 5/5 on thesyndicate.money,
+> **▶ 📐 SLICE W1 ✅ BUILT (2026-07-14, founder GO — the CONVERSION-DOCTRINE work order opened,
+> six slices W1–W6 cut and accepted): `docs/direction/CANON_CONVERSION_SURFACE.md` IS
+> TIER-0 CANON** (registered in 00_CANON_INDEX beside its sibling the Language
+> Constitution — words vs stage: language wins on wording, this doc wins on placement/
+> hierarchy/weight/speed). INVARIANTS ONLY: §1 the 5-second test (What is this? Who for?
+> Do what next? — every public page MUST pass) · §2 desire before proof (emotion → figure
+> → verify) · §3 ONE primary CTA per surface · §4 hero geometry (60–100% desktop, 50–70%
+> mobile, first viewport never wasted) · §5 THE HYBRID WIDTH LAW (scenes full-bleed, text
+> ~1200–1440px — the boxed frame dies) · §6 performance budgets (LCP < 2.5s mobile ·
+> images WebP/AVIF < 500KB) · §7 mobile AAA (≥44px, thumb CTA, block order) · §8 trust =
+> verify links inside the claim's visual group · §9 THE REVIEW GRID (9 questions at every
+> public-page slice gate; a "no" is fixed in-slice or a founder-visible deviation).
+> Enforcement = the grid at the gate (minimal guards until MVP per CANON_LOI_ANTIBLOCAGE;
+> measurable rules graduate to guards when their slices land). QUEUE (work order W2–W6,
+> founder GO per slice): W2 SEO truth sweep (⚠ requires a founder-approved amendment of
+> CANON_PROTOCOL_LANGUAGE §1 — the identity paragraph carries the dead "read-only" era
+> claim; old/new pasted ON SCREEN at the W2 gate) · W3 map semantic truth (in-left/
+> out-right · Future Streams to sources · Chronicle to a memory orbit · referral drawn as
+> paid-inside-the-buyer's-tx · burn as SYN outflow · icon-above/label-below evaluated ·
+> collisions at EVERY breakpoint) · W4 wide-screen home + throne majesty · W5 member home
+> finish (founder's 4 flags + 2 WORSE findings: /member still says referral "paused
+> today" and "the event adapter is not wired" — both false in prod) · W6 performance
+> (throne webp fine at 68KB; the header logo PNG is 284KB and avax mark 195KB — cheap
+> wins queued).
+>
+> **▶ Prior: 🏛 THE M1 ARC ✅ SEALED IN PROD (2026-07-14, Replit-verified 5/5 on thesyndicate.money,
 > bundle `index-B1jpFXKo.js`, HEAD `7a02718`): THE FOUNDER'S MOMENTUM FACE OPENED — hero ·
 > living map · header/footer, one deploy carrying all three batched slices + the gate fix.**
 > Replit's 5-point prod proof: ① the hero's new left column live (LIVE/PENDING chips ·
