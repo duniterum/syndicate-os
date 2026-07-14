@@ -2,7 +2,30 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ ♻️ SLICE M0 ✅ SEALED IN PROD (2026-07-14, Replit-verified on thesyndicate.money):
+> **▶ 🏁 SESSION SEAL (2026-07-14 evening) — THE MACHINERY HALF OF THE M-MAP IS DONE, ALL
+> SEALED IN PROD (Replit-verified on thesyndicate.money):** ① **M4 arc complete** — M4-a
+> unattended backbone (`7cd492b`, + convergence fix `15e933f`) · M4-b gated receipt-line feed
+> (`32d00d6`) · M4-c complete history: burns as the numbered Proof of Burn record + referral
+> lifecycle (`117396d`); ② **M5** /activity complete seat history (`01c760f`); ③ **THE
+> PROTOCOL LANGUAGE CONSTITUTION** TIER-0 (`4929026`); ④ **M6** four Chronicle chapters live
+> (promotions `94a40a9`/`f3135a7`/`eafe78a`); ⑤ **Q-A/Q-B closed** (A1 session-aware seat CTA
+> — hero `e3e32b9` + header `f274e85`; Q-B by-design pattern-2, silent-resume repo-verified);
+> ⑥ **M0** living introduction refresh (`c53d9f7` + cursor-literal fix `6d143f0`, sealed
+> `9d224d1`). **STANDING RULES ADDED (CLAUDE.md):** content decisions pasted FULL inline ·
+> DEPLOY-BATCHABLE verdict (deploy backlog: EMPTY tonight). **QUEUE TODAY:** four founder
+> decisions CLOSED (avatar=App Storage · no DEX deep-link · weekly cadence · optional RPC) ·
+> PIPELINE-CHRONICLE + REFERRAL-SHOWCASE + i18n horizon recorded. **ZERO PENDING THREADS:**
+> main == prod-verified HEAD, deploy backlog empty, no unanswered confirms from today;
+> record-only notes stand (chronicle dead empty-state string · rowsInserted counter ·
+> partial tx anchors in the seven-signatures raw material). **THE PLATEAU (founder picks,
+> nothing opens before):** M1 hero · M2 sharebility/Referrer Kit · M3 seat majesty (the
+> momentum face — CONVERSION register + REFERRAL-SHOWCASE take their stage there) · M7
+> Economy · PIPELINE-CHRONICLE · **the seven-signatures Chronicle story awaiting the
+> founder's act** (raw material committed 2026-07-14: all seven historical seats claimed,
+> 01:58–02:27 GMT; resolve the partial anchors before writing the candidate). Next session
+> boots on "hi" per the standard boot sequence.
+>
+> **▶ Prior: ♻️ SLICE M0 ✅ SEALED IN PROD (2026-07-14, Replit-verified on thesyndicate.money):
 > THE LIVING MODEL TOOK OVER FROM THE FOUNDER FREEZE.** Post-fix deploy: cycle 1 succeeded
 > first try (no boot stumble); cycles ok:2 · failed:0; `introductionRefresh` reads EXACTLY
 > the expected values from cycle 1 — refreshed:true · asOfBlock = the cycle head (90,256,042
