@@ -2,7 +2,30 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 📐 SLICE W1 ✅ BUILT (2026-07-14, founder GO — the CONVERSION-DOCTRINE work order opened,
+> **▶ 🗣 SLICE W2 ✅ BUILT (2026-07-14, founder GO + the MASTER work order's Part-0 closure):
+> THE SEO TRUTH SWEEP + THE HUMAN-FIRST LAW (amended verbatim) + THE IDENTITY PARAGRAPH
+> REWRITTEN HUMAN.** ① CANON_PROTOCOL_LANGUAGE §1 AMENDED (founder on screen): the
+> identity paragraph is now the human-first, live-production text ("The Syndicate is a
+> members club that lives on-chain — on Avalanche — and it is open today…"); the dead
+> "read-only, fail-closed, never invented" era claim survives only in git history — no
+> surface may quote it; ② NEW §3-bis THE HUMAN-FIRST LAW engraved in the founder's
+> AMENDED verbatim (both audiences at once: newcomer understands first read · native
+> never talked down to · crypto-standard vocab stays natural · INTERNAL machinery jargon
+> never user-facing except after the human words) + the standing note: /learning is THE
+> one education page, never a /learn route, Learn & Earn lands ON it (SEASONS §7.5);
+> ③ SEO registry: home + /member + /learning descriptions rewritten (founder-approved on
+> screen, four texts re-passed under the amended law — already compliant); meta +
+> og:description VERIFIED in the built shells; the era phrase at 0 occurrences across
+> all 24 shells; the one residual "read-only" (map.html) is the DELIBERATE KEEP class
+> (the proof organism's mechanism truth, page-level honest). Green: seo 395 · studio
+> guards · build 24 shells (21 INDEX). DEPLOY: 🚀 BATCHABLE (rides the W-HOME deploy).
+> NEXT (master work order): W-SOUL (founder pastes the doctrine paper; import TIER-1
+> with the SUPERSEDED-TERMS banner) · W-HOME (home as a story, the 4-scene wireframe
+> CONTRACT — mandatory PREVIEW GATE: founder approves the rendered localhost page in his
+> own browser before ANY commit) · W-LEAK (internal-plan leakage sweep — the Commission
+> Router class: an internal plan never announced must never be a public chip/promise).
+>
+> **▶ Prior: 📐 SLICE W1 ✅ BUILT (2026-07-14, founder GO — the CONVERSION-DOCTRINE work order opened,
 > six slices W1–W6 cut and accepted): `docs/direction/CANON_CONVERSION_SURFACE.md` IS
 > TIER-0 CANON** (registered in 00_CANON_INDEX beside its sibling the Language
 > Constitution — words vs stage: language wins on wording, this doc wins on placement/

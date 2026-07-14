@@ -91,7 +91,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "The Syndicate — Proof-First Membership Protocol",
     description:
-      "The Syndicate — a proof-first membership protocol on Avalanche. Membership, treasury routing, and recognition figures are read live from the blockchain — read-only, fail-closed, never invented.",
+      "A members club that lives on-chain. Your seat is permanent, numbered, and verifiable — and it's open today. Every figure on this site is read live from the chain. Check it yourself.",
     canonicalPath: "/",
     changefreq: "weekly",
     priority: 1.0,
@@ -143,7 +143,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Member Home — Wallet Session & Standing",
     description:
-      "Sign with your wallet to prove control and read your own standing — a live, read-only self-readback from the active membership engine. Session ≠ membership; no directory of other wallets exists.",
+      "Sign in with your wallet and see your own standing: your seat, the people you brought in, and what you've been paid — read live from the chain. Only your own row; there is no directory of members.",
     canonicalPath: "/member",
     changefreq: "weekly",
     priority: 0.7,
@@ -233,7 +233,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Learn — How The Syndicate Works",
     description:
-      "Plain-language education about wallets, transactions, proof, membership, and how to read this honest, read-only foundation.",
+      "Plain-language lessons: wallets, transactions, how membership works here — and how to verify any figure on this site for yourself.",
     canonicalPath: "/learning",
     changefreq: "weekly",
     priority: 0.6,

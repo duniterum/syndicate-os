@@ -23,15 +23,18 @@ Origin lineage: the vocabulary-contract pattern (APPROVED_CONCEPTS / FORBIDDEN_L
 ## §1 — THE IDENTITY PARAGRAPH
 
 The single paragraph. Every surface that must say *what The Syndicate is* says this —
-adapted in length, never in substance. (Drafted from the live site's own words: the
-home/SEO identity line and the whitepaper lead.)
+adapted in length, never in substance. (AMENDED by the founder 2026-07-14, W2: the
+original carried the dead read-only-era claim — the protocol has been LIVE PRODUCTION
+since seat #13 was bought with real money — and predated the Human-First Law (§3-bis).
+The prior wording survives only in git history; no surface may quote it.)
 
-> **The Syndicate is a proof-first membership protocol on Avalanche.** You join by
-> acquiring SYN — SYN is the seat: a permanent, numbered, on-chain membership, not a
-> financial product. Every serious claim the protocol makes is readable, labelled, and
-> verifiable: membership, treasury routing, and recognition figures are read live from
-> the blockchain — read-only, fail-closed, never invented. We do not project or
-> simulate. We show what is true right now — and you verify it.
+> **The Syndicate is a members club that lives on-chain — on Avalanche — and it is
+> open today.** You join by taking a seat: you buy SYN, the club's token, and your
+> seat is written to the chain — permanent, numbered, impossible to fake. A seat is a
+> membership, not an investment. Bring someone in, and your share is paid automatically
+> inside their own transaction, the moment they join. Every figure on this site is read
+> live from the chain. If something can't be read, we say so — we never invent a
+> figure. And you never take our word for anything: every claim carries a verify link.
 
 ---
 
@@ -66,6 +69,28 @@ labels, and proves. Confidence comes from verifiability, not adjectives.
   your seat · Rise · Seal · Verify · Leave a trace · Be remembered · Protocol memory ·
   Public record · Recognition.** These are the verbs and nouns of belonging; surfaces
   reach for these before inventing new ones.
+
+---
+
+## §3-bis — THE HUMAN-FIRST LAW (founder, 2026-07-14 — this AMENDED form supersedes every draft)
+
+> THE HUMAN-FIRST LAW (founder, 2026-07-14). The Syndicate speaks to BOTH audiences at
+> once: the crypto-native and the newcomer. Every user-facing text must be
+> understandable on first read by a person with zero crypto background — but never by
+> dumbing down: standard crypto vocabulary natives expect (on-chain, wallet,
+> transaction, mint, burn, verify) stays natural where context carries it. What the law
+> kills is INTERNAL jargon — our machinery words (Holder Index, freeze root,
+> self-readback, fail-closed, read-model) — never user-facing unless a verifier
+> genuinely needs them, and then only AFTER the human words, in parentheses or a
+> following clause. Test: a newcomer understands the sentence; a native doesn't feel
+> talked down to. Both must be true, always.
+
+(Founder-authored verbatim. Binds every register in §7 — PROOF included: institutional
+never means internal-jargon-first. The §1 identity paragraph is written under this law.)
+
+**Standing note (founder, 2026-07-14): `/learning` is THE one education page.** Never
+create a `/learn` route or any parallel education surface; Learn & Earn (Phase 5) lands
+as a layer ON `/learning` per `SEASONS_ENGINE_ON_SYNDICATE_OS.md` §7.5.
 
 ---
 
