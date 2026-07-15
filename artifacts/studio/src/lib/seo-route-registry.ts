@@ -449,7 +449,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Activity — the public heartbeat",
     description:
-      "The protocol's public heartbeat: the complete indexed history — seats written, burns numbered, referral events, liquidity, archive mints, treasury movements and milestone crossings — every line a receipt-backed sentence with its own verify link.",
+      "The protocol's public heartbeat: the complete indexed history — seats written, burns numbered, referral events, liquidity, archive mints, treasury movements, milestone crossings and era turns — every line a receipt-backed sentence with its own verify link.",
     canonicalPath: "/activity",
     changefreq: "daily",
     priority: 0.6,
@@ -458,7 +458,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "proof",
     proofRoute: "/status",
     notes:
-      "Complete served history (indexer) + recent-window freshness layer. H2-⑬: the Milestones panel — canonical crossings anchored to their exact transactions. H2-⑦: treasury movements (post-Fold-Law — routing detail never duplicates a purchase).",
+      "Complete served history (indexer) + recent-window freshness layer. H2-⑬: the Milestones panel — canonical crossings anchored to their exact transactions. H2-⑦: treasury movements (post-Fold-Law — routing detail never duplicates a purchase). H2-⑫: era turns (witnessed page turns; line-on-crossing only, never a countdown).",
   },
   {
     path: "/chronicle",

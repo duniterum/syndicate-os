@@ -57,6 +57,8 @@ const SERVED_KIND_TO_WINDOW_KIND: Record<ServedFeedLine["kind"], ActivityKind> =
   "treasury-move": "treasury-move",
   // H2-⑬ — milestone crossings (served-feed only).
   milestone: "milestone",
+  // H2-⑫ — era transitions (served-feed only).
+  "era-transition": "era-transition",
 };
 
 const KIND_LABEL: Record<ActivityKind, string> = {
@@ -72,6 +74,7 @@ const KIND_LABEL: Record<ActivityKind, string> = {
   "archive-pause": "Archive",
   "treasury-move": "Treasury",
   milestone: "Milestone",
+  "era-transition": "Era",
 };
 
 function addressFromUrl(url: string): string | null {
@@ -86,7 +89,8 @@ type FilterId =
   | "liquidity"
   | "archive"
   | "treasury-move"
-  | "milestone";
+  | "milestone"
+  | "era-transition";
 const FILTERS: { id: FilterId; label: string }[] = [
   { id: "all", label: "All" },
   { id: "seat", label: "Seats" },
@@ -96,6 +100,7 @@ const FILTERS: { id: FilterId; label: string }[] = [
   { id: "archive", label: "Archive" },
   { id: "treasury-move", label: "Treasury" },
   { id: "milestone", label: "Milestones" },
+  { id: "era-transition", label: "Eras" },
 ];
 
 function matches(item: ActivityItem, f: FilterId): boolean {
@@ -223,7 +228,9 @@ export function LiveActivityFeed({
               ? (served?.lanes.treasury ?? false)
               : k === "milestone"
                 ? (served?.lanes.milestones ?? false)
-                : (served?.lanes.referralLifecycle ?? false);
+                : k === "era-transition"
+                  ? (served?.lanes.eras ?? false)
+                  : (served?.lanes.referralLifecycle ?? false);
   const kindsInScope: readonly ActivityKind[] = onlyKinds ?? [
     "seat",
     "burn",
@@ -237,6 +244,7 @@ export function LiveActivityFeed({
     "archive-pause",
     "treasury-move",
     "milestone",
+    "era-transition",
   ];
   const servedComplete =
     served !== null && served.items.length >= 0 && kindsInScope.every(laneFor);
@@ -251,7 +259,7 @@ export function LiveActivityFeed({
               <span className="text-foreground font-medium">
                 Complete history, served by the event indexer.
               </span>{" "}
-              {`${onlyKinds ? "" : "Seats, burns (Proof of Burn), referral lifecycle, liquidity, archive mints, treasury movements and milestone crossings — "}the full indexed record from each stream's first block, as of block ${served.headBlock ? served.headBlock.toLocaleString("en-US") : "…"}${served.burnsAsOfBlock !== null && served.headBlock !== null && served.burnsAsOfBlock < served.headBlock - 1_000 ? ` · the protocol lanes are catching up — complete up to block ${served.burnsAsOfBlock.toLocaleString("en-US")}` : ""}${served.itemsTotal > served.served ? ` (newest ${served.served} of ${served.itemsTotal.toLocaleString("en-US")} lines shown)` : ""}${served.linesSkipped > 0 ? ` · ${served.linesSkipped} line(s) failed validation and are NOT shown` : ""}. `}
+              {`${onlyKinds ? "" : "Seats, burns (Proof of Burn), referral lifecycle, liquidity, archive mints, treasury movements, milestone crossings and era turns — "}the full indexed record from each stream's first block, as of block ${served.headBlock ? served.headBlock.toLocaleString("en-US") : "…"}${served.burnsAsOfBlock !== null && served.headBlock !== null && served.burnsAsOfBlock < served.headBlock - 1_000 ? ` · the protocol lanes are catching up — complete up to block ${served.burnsAsOfBlock.toLocaleString("en-US")}` : ""}${served.itemsTotal > served.served ? ` (newest ${served.served} of ${served.itemsTotal.toLocaleString("en-US")} lines shown)` : ""}${served.linesSkipped > 0 ? ` · ${served.linesSkipped} line(s) failed validation and are NOT shown` : ""}. `}
             </>
           ) : servedTried ? (
             <>

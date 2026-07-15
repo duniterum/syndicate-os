@@ -76,12 +76,14 @@ import {
   buildMilestoneReadModel,
   type MilestoneBuildResult,
 } from "./milestoneReadmodel";
+import { buildEraReadModel, type EraBuildResult } from "./eraReadmodel";
 import { ethCall } from "../lib/protocol/evmRead";
 import {
   decodeUint256Decimal,
   SELECTOR_TOTAL_GROSS_USDC,
 } from "../lib/protocol/saleDecoders";
 import {
+  SELECTOR_CURRENT_ERA,
   SELECTOR_MEMBER_COUNT,
   SELECTOR_TOTAL_USDC_RAISED,
 } from "../lib/protocol/financialDecoders";
@@ -187,6 +189,8 @@ let lastGoodModel: ActivityBuildResult | null = null;
 let lastGoodProtocolModel: ProtocolEventBuildResult | null = null;
 /** H2-⑬: the derived milestone model (crossings + honest progress). */
 let lastGoodMilestoneModel: MilestoneBuildResult | null = null;
+/** H2-⑫: the derived era-transition model (witnessed page turns only). */
+let lastGoodEraModel: EraBuildResult | null = null;
 /** The protocol lane's honest coverage bounds (its cursors), for projections. */
 let burnsAsOfBlock: number | null = null;
 let lifecycleAsOfBlock: number | null = null;
@@ -197,6 +201,7 @@ export function getBackboneFeedSource(): FeedSource {
     model: lastGoodModel,
     protocolModel: lastGoodProtocolModel,
     milestoneModel: lastGoodMilestoneModel,
+    eraModel: lastGoodEraModel,
     state: status.state,
     headBlock: status.lastSuccess?.headBlock ?? null,
     finishedIso: status.lastSuccess?.finishedIso ?? null,
@@ -401,6 +406,40 @@ async function runCycle(): Promise<string | null> {
     milestoneFault = err instanceof Error ? err.message : String(err);
   }
 
+  // ③b3 The era-transition read-model (H2-⑫) — the witness pattern over the
+  // sale lane; LINE-ON-CROSSING ONLY (era bounds are bytecode, never framed
+  // as scarcity pressure — no approaching display exists). One fail-soft
+  // live currentEra() read on the ACTIVE engine as overclaim protection;
+  // sealed engines' histories are frozen chain truth.
+  let eraModel: EraBuildResult | null = null;
+  let eraFault: string | null = null;
+  try {
+    let liveActiveEngineEra: number | null = null;
+    try {
+      const eraDec = decodeUint256Decimal(
+        await ethCall(
+          transport,
+          FINANCIAL_TARGETS.memberCountEngine.address,
+          SELECTOR_CURRENT_ERA,
+        ),
+      );
+      const eraNum = eraDec !== null ? Number(eraDec) : NaN;
+      liveActiveEngineEra = Number.isSafeInteger(eraNum) ? eraNum : null;
+    } catch {
+      liveActiveEngineEra = null;
+    }
+    eraModel = buildEraReadModel({
+      expectedChainId: BACKBONE_EXPECTED_CHAIN_ID,
+      rawEvents: input.rawEvents,
+      blockTimestamps: input.blockTimestamps,
+      liveActiveEngineEra,
+      // The active engine = the memberCountEngine's generation (V3 today).
+      activeEngine: "V3",
+    });
+  } catch (err) {
+    eraFault = err instanceof Error ? err.message : String(err);
+  }
+
   // ③c The introduction read-model refresh (M0) — ISOLATED like the protocol
   // lane: a fault or an honest skip never darkens the heartbeat; the previous
   // live model (or the committed snapshot) keeps serving the standing reads.
@@ -414,9 +453,10 @@ async function runCycle(): Promise<string | null> {
 
   lastGoodModel = model;
   lastGoodProtocolModel = protocolModel;
-  // H2-⑬: a milestone fault keeps the previous good milestone model (the
+  // H2-⑬/⑫: a derived-layer fault keeps the previous good model (the
   // heartbeat itself is never darkened by the derived layer).
   if (milestoneModel !== null) lastGoodMilestoneModel = milestoneModel;
+  if (eraModel !== null) lastGoodEraModel = eraModel;
   burnsAsOfBlock =
     protocolStreams.find((s) => s.streamKey === "SYN_BURN")?.cursorBlock ??
     burnsAsOfBlock;
@@ -469,6 +509,11 @@ async function runCycle(): Promise<string | null> {
   if (milestoneFault !== null) {
     partialNotes.push(
       "milestone derivation faulted — the previous milestone model keeps serving",
+    );
+  }
+  if (eraFault !== null) {
+    partialNotes.push(
+      "era derivation faulted — the previous era model keeps serving",
     );
   }
   return partialNotes.length > 0 ? partialNotes.join(" · ") : null;

@@ -102,6 +102,16 @@ export interface ServedMilestoneLine extends ServedLineCommon {
   target: number;
 }
 
+// ── H2-⑫ — era transitions (witnessed rate-table page turns; the class is
+// armed even while history holds none — line-on-crossing ONLY, never a
+// countdown: era bounds are bytecode, never framed as scarcity pressure) ────
+export interface ServedEraLine extends ServedLineCommon {
+  kind: "era-transition";
+  era: number;
+  /** The engine whose rate table turned (public generation label). */
+  engine: string;
+}
+
 export type ServedFeedLine =
   | ServedSeatLine
   | ServedBurnLine
@@ -110,7 +120,8 @@ export type ServedFeedLine =
   | ServedArchiveMintLine
   | ServedArchivePauseLine
   | ServedTreasuryLine
-  | ServedMilestoneLine;
+  | ServedMilestoneLine
+  | ServedEraLine;
 
 /** H2-⑬ — the served Milestones panel block (/activity). */
 export interface ServedMilestones {
@@ -148,6 +159,7 @@ export interface ServedFeed {
     archive: boolean;
     treasury: boolean;
     milestones: boolean;
+    eras: boolean;
   };
   /** Malformed lines skipped by THIS client's validation (honesty count). */
   linesSkipped: number;
@@ -322,6 +334,19 @@ function parseLine(raw: unknown): ServedFeedLine | null {
       target,
     };
   }
+  if (r.kind === "era-transition") {
+    const era = toInt(r.era);
+    if (
+      era === null ||
+      era < 1 ||
+      typeof r.engine !== "string" ||
+      r.engine.length === 0 ||
+      /0x[0-9a-fA-F]{6,}/.test(r.engine)
+    ) {
+      return null;
+    }
+    return { kind: "era-transition", ...common, era, engine: r.engine };
+  }
   return null;
 }
 
@@ -426,6 +451,7 @@ export async function fetchServedFeed(): Promise<ServedFeed | null> {
         archive: lanesRaw.archive === true,
         treasury: lanesRaw.treasury === true,
         milestones: lanesRaw.milestones === true,
+        eras: lanesRaw.eras === true,
       },
       linesSkipped,
       items,
@@ -526,6 +552,10 @@ export function sentenceForServedLine(line: ServedFeedLine): string {
               ? `Seat #${line.target.toLocaleString("en-US")} was sealed — a protocol milestone.`
               : `A protocol milestone was sealed — ${line.label}.`;
       }
+    // H2-⑫ — ERA TRANSITIONS (§8 sentence graduated verbatim from RESERVED).
+    // Line-on-crossing ONLY — never a countdown, never scarcity framing.
+    case "era-transition":
+      return `The protocol entered era ${line.era.toLocaleString("en-US")} — the rate table turned a page, on schedule, on-chain.`;
   }
 }
 
@@ -549,6 +579,9 @@ export function factsForServedLine(line: ServedFeedLine): string | null {
       return line.milestoneKind === "seats" && line.target > 1
         ? line.label
         : null;
+    case "era-transition":
+      // Generation as detail, never hierarchy (§8 variant axes).
+      return line.engine;
     default:
       return null;
   }

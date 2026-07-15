@@ -75,6 +75,7 @@ import {
   SELECTOR_GET_RESERVES,
   SELECTOR_TOKEN0,
   SELECTOR_MEMBER_COUNT,
+  SELECTOR_CURRENT_ERA,
   SELECTOR_GENESIS_OFFSET,
   SELECTOR_NEXT_SEAT_NUMBER,
   SELECTOR_TOTAL_SUPPLY,
@@ -125,6 +126,7 @@ function main(): void {
   check("selector: totalGrossUsdc() derived", SELECTOR_TOTAL_GROSS_USDC === functionSelector("totalGrossUsdc()"), SELECTOR_TOTAL_GROSS_USDC);
   check("selector: receiptCount() derived", SELECTOR_RECEIPT_COUNT === functionSelector("receiptCount()"), SELECTOR_RECEIPT_COUNT);
   check("selector: memberCount() derived", SELECTOR_MEMBER_COUNT === functionSelector("memberCount()"), SELECTOR_MEMBER_COUNT);
+  check("selector: currentEra() derived", SELECTOR_CURRENT_ERA === functionSelector("currentEra()"), SELECTOR_CURRENT_ERA);
   check("selector: GENESIS_OFFSET() derived", SELECTOR_GENESIS_OFFSET === functionSelector("GENESIS_OFFSET()"), SELECTOR_GENESIS_OFFSET);
   check("selector: nextSeatNumber() derived", SELECTOR_NEXT_SEAT_NUMBER === functionSelector("nextSeatNumber()"), SELECTOR_NEXT_SEAT_NUMBER);
 

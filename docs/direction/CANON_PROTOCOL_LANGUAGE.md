@@ -296,6 +296,19 @@ fundraising register never enters); always **seats**. The 11 canon defs live in
 | USDC threshold crossed | "The protocol crossed {N} USDC routed through the sale — 70/20/10, on-chain." | {N} ∈ canon thresholds (100 · 1,000 · 10,000) |
 | Seat-cohort threshold crossed | "Seat #{N} was sealed — a protocol milestone." | the cohort's canon label (e.g. "Genesis Signal sealed (#1–#333)") renders as the line's FACT |
 
+### LIVE-armed sentence added by H2-⑫ (era transitions, founder GO 2026-07-15)
+
+The RESERVED era sentence graduated VERBATIM. Derivation = the WITNESS PATTERN: the first
+purchase carrying era n within one engine's gapless history anchors the transition line.
+**LINE-ON-CROSSING ONLY** (founder-confirmed at the gate): no "approaching era n" meter,
+countdown, or progress display exists anywhere — era bounds are bytecode, never framed as
+scarcity pressure (the seat-not-security shield). All three engines sit in era 1 as of
+2026-07-15 (chain-read at the gate): the class is armed, its history honestly empty.
+
+| Event | The canonical sentence | Variants |
+|---|---|---|
+| Era transition (⑫) | "The protocol entered era {n} — the rate table turned a page, on schedule, on-chain." | the engine (V2A/V2B/V3) renders as the line's FACT — detail, never hierarchy |
+
 ### RESERVED sentences (authored now; their surfaces are not built — labels, not locks)
 
 | Event | The canonical sentence (RESERVED) | Notes |
@@ -303,7 +316,6 @@ fundraising register never enters); always **seats**. The 11 canon defs live in
 | Source activated | "A referral source went active — introductions now pay inside the buyer's own transaction." | lifecycle detail of the status-change event |
 | Source paused | "A referral source was paused — a public event; nothing is erased." | pause never erases; the terms doc governs escrow wording |
 | Ladder promotion | "A source rose to {rung} — recorded on-chain." | {rung} ∈ the §5 ladder only; "rose" honors the approved concept "Rise"; a rate never decreases, so the sentence never has a downward twin |
-| Era advance | "The protocol entered era {n} — the rate table turned a page, on schedule, on-chain." | era bounds are bytecode; never framed as scarcity pressure |
 | Chronicle promotion | "An event entered the Chronicle — promoted by the founder, recorded forever." | promotion is a HUMAN act (CHR-1 doctrine); the sentence never implies automation |
 
 **Variant axes (all entries):** first-seat (where emitted) · generation V1/V2A/V2B/V3

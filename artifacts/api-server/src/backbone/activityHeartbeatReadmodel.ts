@@ -65,7 +65,7 @@ export const ACTIVITY_DOCTRINE = [
   "Chain-verified time only: every item timestamp comes from the block-timestamp cache (eth_getBlockByNumber-verified); wall-clock never enters.",
   "Routed rows are routing detail of their purchase transaction, not separate activity; they fold into the paired purchase and are counted as folded.",
   "firstSeat is reported only where the contract emitted it; V1 rows are 'unknown', never inferred.",
-  "Gated economics stay gated: referral and source fields are never read into this model. The purchase's own public gross-USDC figure (one decoded key per generation — not a gated field) is whitelisted in the shared loader for the milestone read-model's cumulative walk only; it never renders per-line and never enters the aggregate report.",
+  "Gated economics stay gated: referral and source fields are never read into this model. The purchase's own public gross-USDC figure and the engine's public era page (decoded protocol parameters — not gated fields) are whitelisted in the shared loader for the milestone and era read-models only; neither renders per-line nor enters the aggregate report.",
   "The taxonomy (kind/category) mirrors the vendored canon protocol-event registry; this file never invents a parallel taxonomy.",
   "Exactly TWO sanctioned projections: the address-safe aggregate report (status) and the receipt-line feed (feedProjection, M4-b) — nothing else ever serializes the model.",
   "Wallets, member numbers, log indexes, decodedJson and rawJson never appear in ANY public output; the transaction hash appears ONLY as the feed's per-line verify anchor (public chain data), never in the aggregate report.",
@@ -128,6 +128,14 @@ export interface RawSaleEventInput {
    * Routed rows (routing detail, not a purchase).
    */
   readonly usdcGrossRaw: string | null;
+  /**
+   * H2-⑫: the engine's rate-table page this purchase was made in — a PUBLIC
+   * protocol parameter (uint16, never an address). Consumed ONLY by the
+   * era read-model's transition-witness walk; never rendered per-line,
+   * never enters the aggregate report. null where the generation carries
+   * no era (V1) and on Routed rows.
+   */
+  readonly era: number | null;
 }
 
 export interface BlockTimestampInput {
@@ -465,6 +473,7 @@ export function toAddressSafeActivityReport(
     '"logIndex"',
     '"blockTimestampSec"',
     '"usdcGrossRaw"',
+    '"era"',
   ]) {
     if (json.includes(forbiddenField)) {
       throw new Error(

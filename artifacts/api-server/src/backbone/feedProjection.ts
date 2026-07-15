@@ -39,6 +39,7 @@ import type {
   MilestoneBuildResult,
   MilestoneKind,
 } from "./milestoneReadmodel";
+import type { EraBuildResult } from "./eraReadmodel";
 
 /** Hard cap on served mixed-feed lines (newest first). Pagination waits. */
 export const FEED_MAX_ITEMS = 100;
@@ -125,6 +126,16 @@ export interface PublicMilestoneLine extends LineCommon {
   readonly target: number;
 }
 
+// ── H2-⑫ — era transitions (the witness pattern; line-on-crossing ONLY —
+// era bounds are bytecode, never framed as scarcity pressure) ────────────────
+export interface PublicEraLine extends LineCommon {
+  readonly kind: "era-transition";
+  /** The era the protocol entered. */
+  readonly era: number;
+  /** The engine whose rate table turned (public generation label). */
+  readonly engine: string;
+}
+
 export type PublicFeedLine =
   | PublicSeatLine
   | PublicBurnLine
@@ -133,7 +144,8 @@ export type PublicFeedLine =
   | PublicArchiveMintLine
   | PublicArchivePauseLine
   | PublicTreasuryLine
-  | PublicMilestoneLine;
+  | PublicMilestoneLine
+  | PublicEraLine;
 
 /** H2-⑬ — the /activity Milestones panel block (address-safe by shape). */
 export interface PublicMilestones {
@@ -180,6 +192,8 @@ export interface PublicActivityFeed {
     readonly treasury: boolean;
     /** H2-⑬: milestone crossings, derived from the lanes above. */
     readonly milestones: boolean;
+    /** H2-⑫: era transitions (witnessed page turns; empty until one). */
+    readonly eras: boolean;
   };
   readonly honesty: string;
   /** Mixed feed, newest first, capped. */
@@ -198,6 +212,8 @@ export interface FeedSource {
   readonly protocolModel: ProtocolEventBuildResult | null;
   /** H2-⑬: the milestone model (null = dark / no successful build yet). */
   readonly milestoneModel: MilestoneBuildResult | null;
+  /** H2-⑫: the era-transition model (null = dark). */
+  readonly eraModel: EraBuildResult | null;
   readonly state: string;
   readonly headBlock: number | null;
   readonly finishedIso: string | null;
@@ -227,7 +243,7 @@ function assertSenderLabel(label: string): void {
  * no successful cycle yet) serve an honest empty feed — never an invented one.
  */
 export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
-  const { model, protocolModel, milestoneModel } = source;
+  const { model, protocolModel, milestoneModel, eraModel } = source;
 
   const seatLines: PublicSeatLine[] = (model?.items ?? []).map((item) => {
     assertAnchor(item.transactionHash);
@@ -404,6 +420,33 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
       }
     : null;
 
+  // ── H2-⑫ — era transitions (witnessed page turns; empty until one) ──
+  const eraLines: PublicEraLine[] = (eraModel?.transitions ?? []).map((t) => {
+    assertAnchor(t.transactionHash);
+    if (!Number.isSafeInteger(t.era) || t.era < 1) {
+      throw new Error(
+        "feed projection failed closed: an era transition carries no clean era (value withheld)",
+      );
+    }
+    return {
+      kind: "era-transition" as const,
+      era: t.era,
+      engine: t.engine,
+      blockNumber: t.blockNumber,
+      blockTimestampSec: t.blockTimestampSec,
+      isoDayUtc: t.isoDayUtc,
+      transactionHash: t.transactionHash,
+      logIndex: t.logIndex,
+    };
+  });
+
+  // Derived kinds share their anchor with the event that crossed/witnessed
+  // them; in the newest-first feed the crossing reads as the CONSEQUENCE —
+  // the derived line ranks newer than its underlying event (the tie-break
+  // law, H2-⑬; H2-⑫ era lines join the same rank).
+  const derivedRank = (k: PublicFeedLine["kind"]): number =>
+    k === "milestone" || k === "era-transition" ? 1 : 0;
+
   const allLines: PublicFeedLine[] = [
     ...seatLines,
     ...burnLedger,
@@ -413,15 +456,13 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
     ...archivePauseLines,
     ...treasuryLines,
     ...milestoneLines,
+    ...eraLines,
   ].sort((a, b) =>
     a.blockNumber !== b.blockNumber
       ? b.blockNumber - a.blockNumber
       : a.logIndex !== b.logIndex
         ? b.logIndex - a.logIndex
-        : // A milestone shares its anchor with the event that crossed it; in
-          // the newest-first feed the crossing reads as the CONSEQUENCE — the
-          // milestone line ranks newer than its underlying event.
-          (b.kind === "milestone" ? 1 : 0) - (a.kind === "milestone" ? 1 : 0),
+        : derivedRank(b.kind) - derivedRank(a.kind),
   );
   const items = allLines.slice(0, FEED_MAX_ITEMS);
 
@@ -444,6 +485,7 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
       archive: protocolModel !== null,
       treasury: protocolModel !== null,
       milestones: milestoneModel !== null,
+      eras: eraModel !== null,
     },
     honesty: FEED_HONESTY_LINE,
     items,

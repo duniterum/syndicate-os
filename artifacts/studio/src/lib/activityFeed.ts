@@ -73,7 +73,9 @@ export type ActivityKind =
   | "treasury-move"
   // H2-⑬ — milestone crossings: derived server-side from the gapless
   // indexed history; the client window scanner never produces this kind.
-  | "milestone";
+  | "milestone"
+  // H2-⑫ — era transitions: derived witness lines (served feed only).
+  | "era-transition";
 
 export interface ActivityItem {
   kind: ActivityKind;

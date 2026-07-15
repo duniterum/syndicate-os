@@ -39,6 +39,11 @@
  *      cross-check WITHHOLDS a contradicted milestone (fail-closed), a
  *      missing purchase amount fails the build closed, and milestone lines
  *      rank newer than their underlying event on a shared anchor.
+ *   J. Eras (H2-⑫): the witness pattern holds — a transition anchors to the
+ *      first purchase of the new era; the birth era is never a line; an era
+ *      regression fails closed; the live currentEra() read withholds a
+ *      contradicted transition; and NO approaching/progress shape exists
+ *      (era bounds are bytecode, never framed as scarcity pressure).
  *
  * Run: pnpm --filter @workspace/api-server run backbone:guard
  */
@@ -68,6 +73,7 @@ import {
   buildMilestoneReadModel,
   PROTOCOL_MILESTONES,
 } from "../src/backbone/milestoneReadmodel";
+import { buildEraReadModel } from "../src/backbone/eraReadmodel";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const apiDir = path.resolve(here, "..");
@@ -473,6 +479,7 @@ const fixtureModel = buildActivityHeartbeatReadModel({
       firstSeat: null,
       memberNumber: null,
       usdcGrossRaw: null,
+      era: null,
     },
     {
       chainId: CHAIN,
@@ -484,6 +491,7 @@ const fixtureModel = buildActivityHeartbeatReadModel({
       firstSeat: true,
       memberNumber: 424242,
       usdcGrossRaw: null,
+      era: 1,
     },
   ],
   blockTimestamps: [
@@ -720,6 +728,7 @@ const milestonePurchases = [
     firstSeat: null,
     memberNumber: null,
     usdcGrossRaw: "50" + "0".repeat(6),
+    era: null,
   },
   {
     chainId: CHAIN,
@@ -731,6 +740,7 @@ const milestonePurchases = [
     firstSeat: true,
     memberNumber: 2,
     usdcGrossRaw: "60" + "0".repeat(6),
+    era: 1,
   },
 ];
 const milestoneTs = [
@@ -818,10 +828,142 @@ expectThrow("milestone build fails closed on a purchase without its amount", () 
   }),
 );
 
+// ---------------------------------------------------------------------------
+// I. Era transitions (H2-⑫): the witness pattern + fail-closed paths.
+// ---------------------------------------------------------------------------
+
+// Two V3 purchases: era 1 (the engine's birth — never a line) then era 2 —
+// ONE witnessed transition, anchored to the era-2 purchase's exact tx.
+const eraPurchases = [
+  {
+    chainId: CHAIN,
+    generation: "V3",
+    eventName: "MembershipPurchasedV3",
+    blockNumber: 100,
+    logIndex: 0,
+    transactionHash: txA,
+    firstSeat: true,
+    memberNumber: 1,
+    usdcGrossRaw: null,
+    era: 1,
+  },
+  {
+    chainId: CHAIN,
+    generation: "V3",
+    eventName: "MembershipPurchasedV3",
+    blockNumber: 200,
+    logIndex: 1,
+    transactionHash: txB,
+    firstSeat: true,
+    memberNumber: 2,
+    usdcGrossRaw: null,
+    era: 2,
+  },
+];
+const fixtureEraModel = buildEraReadModel({
+  expectedChainId: CHAIN,
+  rawEvents: eraPurchases,
+  blockTimestamps: milestoneTs,
+  liveActiveEngineEra: 2,
+  activeEngine: "V3",
+});
+check(
+  fixtureEraModel.transitions.length === 1 &&
+    fixtureEraModel.transitions[0]!.era === 2 &&
+    fixtureEraModel.transitions[0]!.engine === "V3" &&
+    fixtureEraModel.transitions[0]!.blockNumber === 200 &&
+    fixtureEraModel.transitions[0]!.transactionHash === txB,
+  "an era transition anchors to its witnessing purchase; the birth era is never a line",
+  "the era witness derivation broke",
+);
+// Scarcity-pressure structural pin: the era model exposes NO approaching/
+// progress/countdown shape — line-on-crossing only (the §8 canon note).
+{
+  const eraJson = JSON.stringify(fixtureEraModel);
+  check(
+    !eraJson.includes("approaching") &&
+      !eraJson.includes("progress") &&
+      !eraJson.includes("remaining") &&
+      !eraJson.includes("countdown"),
+    "the era model carries NO approaching/progress shape — never scarcity framing",
+    "an era progress/approaching shape appeared — the anti-scarcity doctrine broke",
+  );
+}
+// Overclaim protection: a live era read BELOW the indexed witness withholds.
+{
+  const contradicted = buildEraReadModel({
+    expectedChainId: CHAIN,
+    rawEvents: eraPurchases,
+    blockTimestamps: milestoneTs,
+    liveActiveEngineEra: 1,
+    activeEngine: "V3",
+  });
+  check(
+    contradicted.transitions.length === 0 &&
+      contradicted.notes.some((n) => n.includes("withheld")),
+    "a live-era contradiction WITHHOLDS the transition with an honest note (fail-closed)",
+    "the era live cross-check no longer withholds a contradicted transition",
+  );
+}
+// Live-read unavailability keeps event-derived truth serving, honestly noted.
+{
+  const noLive = buildEraReadModel({
+    expectedChainId: CHAIN,
+    rawEvents: eraPurchases,
+    blockTimestamps: milestoneTs,
+    liveActiveEngineEra: null,
+    activeEngine: "V3",
+  });
+  check(
+    noLive.transitions.length === 1 &&
+      noLive.notes.some((n) => n.includes("live era cross-check unavailable")),
+    "era live-read unavailability keeps the witnessed transition serving, honestly noted",
+    "era posture on a missing live read broke",
+  );
+}
+// An engine born beyond era 1: honest note, never an invented anchor.
+{
+  const bornLate = buildEraReadModel({
+    expectedChainId: CHAIN,
+    rawEvents: [{ ...eraPurchases[1]!, era: 3 }],
+    blockTimestamps: milestoneTs,
+    liveActiveEngineEra: 3,
+    activeEngine: "V3",
+  });
+  check(
+    bornLate.transitions.length === 0 &&
+      bornLate.notes.some((n) => n.includes("left no purchase witness")),
+    "an engine born beyond era 1 yields a note, never an invented anchor",
+    "the unwitnessed-birth posture broke",
+  );
+}
+expectThrow("era build fails closed on an era regression", () =>
+  buildEraReadModel({
+    expectedChainId: CHAIN,
+    rawEvents: [
+      { ...eraPurchases[0]!, era: 2 },
+      { ...eraPurchases[1]!, era: 1 },
+    ],
+    blockTimestamps: milestoneTs,
+    liveActiveEngineEra: null,
+    activeEngine: "V3",
+  }),
+);
+expectThrow("era build fails closed on an era-engine purchase without its era", () =>
+  buildEraReadModel({
+    expectedChainId: CHAIN,
+    rawEvents: [{ ...eraPurchases[0]!, era: null }],
+    blockTimestamps: milestoneTs,
+    liveActiveEngineEra: null,
+    activeEngine: "V3",
+  }),
+);
+
 const feed = buildPublicFeed({
   model: fixtureModel,
   protocolModel: fixtureProtocolModel,
   milestoneModel: fixtureMilestoneModel,
+  eraModel: fixtureEraModel,
   state: "idle",
   headBlock: 300,
   finishedIso: "2026-07-13T00:00:00.000Z",
@@ -836,10 +978,10 @@ check(
 );
 const feedJson = JSON.stringify(feed);
 check(
-  feed.items.length === 16 &&
+  feed.items.length === 17 &&
     feed.items[0]!.blockNumber === 200 &&
-    feed.items[15]!.blockNumber === 100,
-  "feed serves newest first across ALL kinds (seats, burns, lifecycle, lp, archive, treasury, milestones)",
+    feed.items[16]!.blockNumber === 100,
+  "feed serves newest first across ALL kinds (seats, burns, lifecycle, lp, archive, treasury, milestones, eras)",
   `feed ordering broke (items=${feed.items.length})`,
 );
 // H2-⑦: the treasury lines ride the feed with LABELS only — the planted
@@ -877,6 +1019,7 @@ expectThrow("feed gate trips on an address-shaped treasury organ label", () =>
       ],
     },
     milestoneModel: null,
+    eraModel: null,
     state: "idle",
     headBlock: 300,
     finishedIso: null,
@@ -884,14 +1027,24 @@ expectThrow("feed gate trips on an address-shaped treasury organ label", () =>
     lifecycleAsOfBlock: null,
   }),
 );
-// H2-⑬: a milestone shares its anchor with the event that crossed it — in
-// the newest-first feed the crossing reads as the CONSEQUENCE (ranks newer).
+// H2-⑬/⑫: derived lines share their anchor with the event that crossed/
+// witnessed them — in the newest-first feed the crossing reads as the
+// CONSEQUENCE (both derived kinds rank newer than the underlying purchase).
 check(
   feed.items[0]!.kind === "milestone" &&
-    feed.items[1]!.kind === "purchase" &&
-    feed.items[1]!.blockNumber === 200,
-  "a milestone line ranks newer than its underlying event on a shared anchor",
-  "the milestone tie-break broke — the crossing no longer reads as the consequence",
+    feed.items[1]!.kind === "era-transition" &&
+    feed.items[2]!.kind === "purchase" &&
+    feed.items[2]!.blockNumber === 200,
+  "derived lines (milestone + era) rank newer than their underlying event on a shared anchor",
+  "the derived tie-break broke — a crossing no longer reads as the consequence",
+);
+check(
+  feed.lanes.eras === true &&
+    feed.items.filter((i) => i.kind === "era-transition").length === 1 &&
+    feedJson.includes('"era":2') &&
+    feedJson.includes('"engine":"V3"'),
+  "the era lane serves its witnessed transition (era + engine as public facts)",
+  "the era lane broke",
 );
 check(
   feed.lanes.liquidity === true && feed.lanes.archive === true,
@@ -982,6 +1135,7 @@ expectThrow("projection fails closed on an address-shaped verify anchor", () =>
     },
     protocolModel: null,
     milestoneModel: null,
+    eraModel: null,
     state: "idle",
     headBlock: 300,
     finishedIso: null,
@@ -1002,6 +1156,7 @@ expectThrow("projection fails closed on a non-canonical sender label", () =>
       ],
     },
     milestoneModel: null,
+    eraModel: null,
     state: "idle",
     headBlock: 300,
     finishedIso: null,
@@ -1014,6 +1169,7 @@ expectThrow("projection fails closed on a non-canonical sender label", () =>
     model: null,
     protocolModel: null,
     milestoneModel: null,
+    eraModel: null,
     state: "disabled",
     headBlock: null,
     finishedIso: null,
@@ -1028,6 +1184,7 @@ expectThrow("projection fails closed on a non-canonical sender label", () =>
       empty.lanes.burns === false &&
       empty.lanes.treasury === false &&
       empty.lanes.milestones === false &&
+      empty.lanes.eras === false &&
       empty.milestones === null,
     "null models serve an honest empty feed with honest lane flags (never invented)",
     "empty-feed posture broke",

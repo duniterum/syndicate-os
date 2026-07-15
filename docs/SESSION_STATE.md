@@ -2,6 +2,43 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 📖 SLICE H2-⑫ ✅ BUILT (2026-07-15, founder GO after the marketing-vs-guardrail
+> exchange — the anti-scarcity doctrine explained and CONFIRMED, the era-facts-table
+> idea noted as a possible future /tokenomics slice): ERA TRANSITIONS ARM THE HEARTBEAT
+> UNDER THE WITNESS PATTERN.** THE CHAIN'S TRUTH READ AT THE GATE (public RPC, live):
+> all three engines (V2A · V2B · V3) answer currentEra()/activeEra() = 1 — ZERO era
+> transitions have ever occurred; every purchase in history was era-1. NO EraAdvanced
+> event exists in any deployed ABI — a transition's only witnesses are the era field on
+> each V2/V3 purchase + the live views. DESIGN: the witness pattern (milestone family) —
+> within ONE engine's gapless history, the first purchase carrying era n anchors "The
+> protocol entered era {n}" to its exact tx (the §8 RESERVED sentence GRADUATED verbatim);
+> cross-engine restarts are ⑩'s story, never a transition; birth-era > 1 = honest note,
+> never an invented anchor; era regression fails the build closed. THE ANTI-SCARCITY
+> DOCTRINE ENGRAVED AS STRUCTURE (guard-pinned): the era model exposes NO approaching/
+> progress/remaining/countdown shape — LINE-ON-CROSSING ONLY (era bounds are bytecode,
+> never framed as scarcity pressure; the seat-not-security shield). MACHINERY: era joins
+> the loader whitelist ({firstSeat, memberNumber, usdcAmount, usdcIn, grossUsdc, era} —
+> a public protocol parameter, both guard suites re-pinned); pure eraReadmodel.ts;
+> runner ③b3 with ONE fail-soft live currentEra() read on the ACTIVE engine (V3) as
+> overclaim protection (contradiction → withheld + note; sealed engines are frozen chain
+> truth, no read needed); SELECTOR_CURRENT_ERA pinned + derived (targets guard 209);
+> feed kind "era-transition" {era, engine} + lanes.eras + the tie-break generalized to
+> derivedRank (milestone + era rank newer than their witnessing event — the consequence
+> law). Client: parse + sentence + engine-as-fact + "Eras" filter chip (10 chips; honest
+> empty until history writes the first line). §8 canon: RESERVED row → LIVE-armed H2-⑫
+> section. SEO-rides-the-slice: /activity lead/banner/next-card ("era turns"), meta
+> description + notes, sourceStatus proof note. RUNTIME-VERIFIED on the rig: fail-closed
+> path (10 chips, honest empty, zero console errors) AND the era line exercised via the
+> debug fetch-intercept (sentence + (V3) fact + tie-break above its witnessing seat +
+> filter isolation; patch cleared, real state confirmed back; the ⑬ Re-read repair
+> proven again in passing). Green: workspace tsc · seo 395 · rewrites · surface:audit
+> 254 · ALL studio guards · ALL 17 api guards (backbone 115→127 · activity 136 ·
+> targets 209) · build 24 shells. DEPLOY: 🚀 BATCHABLE (additive + fail-closed; the
+> class arms itself on the first post-deploy cycle and serves ZERO lines today — the
+> honest outcome; the feed changes only the lane flag + enumerations until the chain
+> turns its first page). NEXT IN H2: ⑭ Chronicle lines → ⑰ capital axis → ⑩
+> deployments; then S7 (wireframe approved) · S8 perf · S5 on the paste.
+
 > **▶ 🏦 SLICE H2-⑦ ✅ SEALED IN PROD (2026-07-15, Replit-verified on thesyndicate.money,
 > prod bundle `index-tJ-y8ufg.js`, 15/15 blob-verified, no migration — 13 tables / 142
 > columns dev==prod; founder GO A on the gate — the three routing organs, USDC + SYN):

@@ -134,7 +134,7 @@ const CANON: CanonEntry[] = [
     publicClass: "SAFE_PUBLIC",
     sourceRef: "internal:event-backbone@M4",
     confidence: "high",
-    note: "Live event/proof data is served: the event backbone indexes the complete heartbeat unattended — seats, numbered burns, referral lifecycle, liquidity, archive mints, treasury movements and milestone crossings — and the public feed carries a transaction verify anchor on every line.",
+    note: "Live event/proof data is served: the event backbone indexes the complete heartbeat unattended — seats, numbered burns, referral lifecycle, liquidity, archive mints, treasury movements, milestone crossings and era turns — and the public feed carries a transaction verify anchor on every line.",
     surface: "/proof",
   },
   {

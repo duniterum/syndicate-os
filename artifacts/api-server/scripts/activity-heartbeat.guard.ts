@@ -70,6 +70,7 @@ function ev(partial: Partial<RawSaleEventInput>): RawSaleEventInput {
     firstSeat: null,
     memberNumber: null,
     usdcGrossRaw: null,
+    era: null,
     ...partial,
   };
 }
@@ -406,11 +407,13 @@ const allowedKeys = new Set([
   "usdcAmount",
   "usdcIn",
   "grossUsdc",
+  // H2-⑫: the engine's PUBLIC rate-table page (era-transition witness only).
+  "era",
 ]);
 check(
   decodedAccesses.length > 0 &&
     decodedAccesses.every((k) => allowedKeys.has(k)),
-  "shared loader decodedJson access whitelist is exactly {firstSeat, memberNumber, usdcAmount, usdcIn, grossUsdc}",
+  "shared loader decodedJson access whitelist is exactly {firstSeat, memberNumber, usdcAmount, usdcIn, grossUsdc, era}",
   `shared loader reads non-whitelisted decodedJson keys: ${decodedAccesses
     .filter((k) => !allowedKeys.has(k))
     .join(", ")}`,

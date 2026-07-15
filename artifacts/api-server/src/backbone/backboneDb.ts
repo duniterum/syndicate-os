@@ -14,9 +14,10 @@
  *     UPSERT (the engine's fail-closed cursor discipline), blockTimestamp
  *     INSERT (onConflictDoNothing). No update elsewhere, no delete, ever.
  *   - decodedJson access is whitelisted to exactly {firstSeat, memberNumber,
- *     usdcAmount, usdcIn, grossUsdc} — the last three are the purchase's own
- *     PUBLIC gross-USDC figure (one per generation, H2-⑬ milestone cumsum
- *     only); gated economics (referral/source fields) are never read.
+ *     usdcAmount, usdcIn, grossUsdc, era} — the USDC keys are the purchase's
+ *     own PUBLIC gross figure (one per generation, H2-⑬ milestone cumsum
+ *     only) and era is the engine's PUBLIC rate-table page (H2-⑫ transition
+ *     witness only); gated economics (referral/source fields) are never read.
  */
 
 import type {
@@ -553,9 +554,11 @@ export async function loadActivityHeartbeatInput(): Promise<ActivityHeartbeatLoa
 
   const rawEvents: RawSaleEventInput[] = rawRows.map((r) => {
     // decodedJson WHITELIST: exactly {firstSeat, memberNumber, usdcAmount,
-    // usdcIn, grossUsdc}. The USDC keys are the purchase's own PUBLIC gross
-    // figure (one per generation, H2-⑬ milestone cumulative walk only);
-    // gated economics never enter this model.
+    // usdcIn, grossUsdc, era}. The USDC keys are the purchase's own PUBLIC
+    // gross figure (one per generation, H2-⑬ milestone cumulative walk only);
+    // era is the engine's PUBLIC rate-table page (H2-⑫ transition witness
+    // only — a protocol parameter, never an address); gated economics never
+    // enter this model.
     const d = r.decodedJson as Record<string, unknown>;
     // Per-generation public gross-USDC value (Routed rows carry none here):
     // V1 TokensPurchased → usdcAmount · V2 Purchased → usdcIn ·
@@ -584,6 +587,14 @@ export async function loadActivityHeartbeatInput(): Promise<ActivityHeartbeatLoa
       usdcGrossRaw:
         typeof usdcValue === "string" && /^[0-9]+$/.test(usdcValue)
           ? usdcValue
+          : null,
+      // H2-⑫: only the era-carrying purchase events (V2 Purchased / V3
+      // MembershipPurchasedV3); V1 and Routed rows carry none.
+      era:
+        (r.eventName === "Purchased" ||
+          r.eventName === "MembershipPurchasedV3") &&
+        "era" in d
+          ? toInt(d.era, "decoded era")
           : null,
     };
   });
