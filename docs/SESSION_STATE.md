@@ -2,7 +2,19 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🩹 H1a-FIX ✅ BUILT (2026-07-15, on Replit's prod diagnosis — H1a otherwise SEALED
+> **▶ 💗 THE H1a ARC ✅ SEALED IN PROD (2026-07-15, Replit-verified 3/3 post-fix on
+> thesyndicate.money): THE COMPLETE HEARTBEAT'S FIRST SIX CLASSES ARE LIVE.** The
+> founder's LP add renders TRUE: "1,913.6 SYN + 39.85 USDC · Founder" with its anchor
+> (block 90,319,681) — and the fix revealed THREE MORE historical LP adds now correctly
+> told (356.8 SYN + 5 USDC · 463.4 SYN + 5 USDC · 200 SYN + 2 USDC): the pool's whole
+> story, narrated. Reserves coherence sane (feed sum ~2,933.8 SYN / ~51.85 USDC vs live
+> spine ~2,678.8 / ~55.78 — drift = the swaps since, the right direction). Zero
+> regression: burns #1–#8 gapless · 26 seats (V1:5 V2A:3 V2B:6 V3:12) · 17 mints ·
+> 9 source events · 6 streams caughtUp. NO re-index was needed (neutral persisted rows —
+> as designed). Replit's ops note recorded: an instance ROLL (autoscale restart) is not
+> a PUBLISH — detection method = a fix-keyed observable flipping on the first cycle.
+>
+> **▶ Prior: 🩹 H1a-FIX ✅ BUILT (2026-07-15, on Replit's prod diagnosis — H1a otherwise SEALED
 > 5/5 IN PROD: all 6 streams caughtUp in ~1h, TODAY'S founder LP add indexed at block
 > 90,319,681 with its verify anchor, 17 archive mints (11 First Signal + 6 Patron Seal),
 > burns #1→#8 gapless, /activity chips live, zero member addresses): THE LP AMOUNT
