@@ -20,16 +20,28 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > label. RIG-VERIFIED: the A line + the degrade rendered verbatim, zero console errors.
 > Green: workspace tsc · ALL api guards (activity 137 · backbone 130 with the named-
 > referrer pins: full referrer address never serializes, referredByShort short-form
-> pinned) · studio guards · build 24 shells. **PUSH DELIBERATELY HELD: the H2-P(B)+
-> backfill deploy was already in flight at Replit when the override landed — pushing
-> mid-cycle could race the pull. The commit goes to origin the moment Replit's report
-> arrives; A then rides the NEXT deploy (🚀 BATCHABLE — client+server voice change,
-> fail-closed).**
+> pinned) · studio guards · build 24 shells. PUSH WAS DELIBERATELY HELD while the
+> H2-P(B)+backfill deploy was in flight at Replit (mid-cycle race avoidance) —
+> **RELEASED with this seal: H2-P-a is on origin. DEPLOY BACKLOG: H2-P-a (`c5e5033`,
+> 🚀 BATCHABLE — client+server voice change, fail-closed; on deploy the ~3 referred
+> purchases in history name their referrer short-form on the next rebuild).**
 
-> **▶ 🦁 SLICE H2-P ✅ BUILT (2026-07-15, FOUNDER DOCTRINE AMENDMENT — gate first, then GO
-> with the two recommended choices confirmed: item 5 = B VEILED · backfill = ii): THE
-> PRIDE OF THE PUBLIC RECORD — the member-address masking REPEALED on the feed; the
-> origin voice restored.** THE AMENDMENT RECORDED (never silent): ADR-003 gains its
+> **▶ 🦁 SLICE H2-P ✅ SEALED IN PROD (2026-07-15, Replit-verified on thesyndicate.money,
+> prod bundle `index-DQjWV_6N.js`, 19/19 blob-verified incl. the backfill script; FOUNDER
+> DOCTRINE AMENDMENT — gate first, then GO; item 5 shipped as B, overridden to A the same
+> day in H2-P-a below): THE PRIDE OF THE PUBLIC RECORD — the member-address masking
+> REPEALED on the feed; the origin voice restored.** PROD PROOF (Replit): **28 short
+> forms serve on member acts and ZERO full 40-hex addresses leak anywhere — the
+> short-form law held under real fire**; THE BACKFILL RESTORED ALL 17 ARCHIVE MINTS
+> (dry-run first: each row re-proven from the chain's own logs — exact block, hash +
+> logIndex, artifactId/quantity re-decoded and confronted; then `--write`: one
+> all-or-nothing transaction, post-write verify 17/17 — 11 First Signal + 6 artifact #3,
+> 7 distinct minters, short forms only at the console); the next backbone cycle rebuilt
+> and the feed's 17 archive lines now speak their minter; ZERO regression (70 lines
+> intact — 8 burns · 4 milestones · 2 treasury acts; the 4 shared hashes = the witness
+> pattern, legitimate); one transient RPC-caprice cycle failed CLOSED and self-repaired
+> from the cursor — the designed discipline, observed live. Gate green at Replit
+> (heartbeat 137 · backbone 130 · auth-zone 768 · source-status 161). THE AMENDMENT RECORDED (never silent): ADR-003 gains its
 > 2026-07-15 amendment block — §1.2 NARROWED not deleted (the feed republishes what ONE
 > chain event itself carries; NO lookup API, NO roster endpoint, NO enrichment, NO
 > cross-event join; the core stands: no KYC, no directory, own-row zone untouched).
