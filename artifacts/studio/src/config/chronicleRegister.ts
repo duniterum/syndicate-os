@@ -21,6 +21,12 @@ export interface ChronicleEntry {
   id: string;
   /** The day the recorded thing happened (UTC). */
   dateUtc: string;
+  /**
+   * H2-⑭: the day the FOUNDER's promoting commit landed (UTC) — the
+   * promotion act the activity feed narrates ("… entered the Chronicle").
+   * Structural data, never prose; recorded per entry at promotion time.
+   */
+  promotedUtc: string;
   title: string;
   sections: readonly ChronicleSection[];
   /** How a reader verifies this record themselves (verify-first, always). */
@@ -37,6 +43,7 @@ export const CHRONICLE_REGISTER: readonly ChronicleEntry[] = [
   {
     id: "2026-07-12-the-duplicate-seat",
     dateUtc: "2026-07-12",
+    promotedUtc: "2026-07-14",
     title: "The duplicate seat",
     sections: [
       {
@@ -60,6 +67,7 @@ export const CHRONICLE_REGISTER: readonly ChronicleEntry[] = [
   {
     id: "2026-07-12-the-first-real-money-seat",
     dateUtc: "2026-07-12",
+    promotedUtc: "2026-07-14",
     title: "The first real-money seat",
     sections: [
       {
@@ -83,6 +91,7 @@ export const CHRONICLE_REGISTER: readonly ChronicleEntry[] = [
   {
     id: "2026-07-13-the-first-referral-source",
     dateUtc: "2026-07-13",
+    promotedUtc: "2026-07-14",
     title: "The first referral source",
     sections: [
       {
@@ -106,6 +115,7 @@ export const CHRONICLE_REGISTER: readonly ChronicleEntry[] = [
   {
     id: "2026-07-13-the-ladder-decision",
     dateUtc: "2026-07-13",
+    promotedUtc: "2026-07-14",
     title: "The ladder decision",
     sections: [
       {

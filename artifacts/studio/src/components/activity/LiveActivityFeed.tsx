@@ -17,6 +17,7 @@
 // absence.
 
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "wouter";
 import { Anchor, ExternalLink, RefreshCw } from "lucide-react";
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { Card } from "@/components/ui/card";
@@ -37,6 +38,7 @@ import {
   type ServedFeedLine,
 } from "@/lib/backboneFeedClient";
 import { MilestonesPanel } from "@/components/activity/MilestonesPanel";
+import { CHRONICLE_REGISTER } from "@/config/chronicleRegister";
 
 // The §8 event lexicon lives in backboneFeedClient (one mapping, shared with
 // the hero's live mini-feed since M1-b — no copy invented twice).
@@ -75,6 +77,7 @@ const KIND_LABEL: Record<ActivityKind, string> = {
   "treasury-move": "Treasury",
   milestone: "Milestone",
   "era-transition": "Era",
+  "chronicle-entry": "Chronicle",
 };
 
 function addressFromUrl(url: string): string | null {
@@ -90,17 +93,22 @@ type FilterId =
   | "archive"
   | "treasury-move"
   | "milestone"
-  | "era-transition";
+  | "era-transition"
+  | "chronicle-entry";
 const FILTERS: { id: FilterId; label: string }[] = [
   { id: "all", label: "All" },
   { id: "seat", label: "Seats" },
   { id: "burn", label: "Burns" },
-  { id: "referral", label: "Referral events" },
+  // H2-⑭ founder decision A: this chip filters the REGISTRY's own admin
+  // lifecycle (source created/terms/status/wallet) — named for what it is;
+  // member referrals live inside seat lines ("brought by 0x…").
+  { id: "referral", label: "Referral registry" },
   { id: "liquidity", label: "Liquidity" },
   { id: "archive", label: "Archive" },
   { id: "treasury-move", label: "Treasury" },
   { id: "milestone", label: "Milestones" },
   { id: "era-transition", label: "Eras" },
+  { id: "chronicle-entry", label: "Chronicle" },
 ];
 
 function matches(item: ActivityItem, f: FilterId): boolean {
@@ -201,11 +209,37 @@ export function LiveActivityFeed({
           memory: true,
         };
       });
-    return [...windowItems, ...deepLines].sort((a, b) =>
-      a.blockNumber !== b.blockNumber
+    // H2-⑭ — Chronicle promotions join from the committed register (CHR-1:
+    // a promotion is a founder COMMIT, not a chain event — no anchor exists
+    // and none is invented; the line links into the record itself and wears
+    // the PROMOTION date).
+    const chronicleLines: ActivityItem[] = CHRONICLE_REGISTER.map((e, idx) => ({
+      kind: "chronicle-entry" as const,
+      sentence: `“${e.title}” entered the Chronicle — promoted by the founder, recorded forever.`,
+      blockNumber: 0,
+      txHash: `0x${e.id}` as `0x${string}`,
+      logIndex: idx,
+      dateUtc: e.promotedUtc,
+      memory: true,
+      readHref: `/chronicle#${e.id}`,
+    }));
+
+    // Ordering: chain lines keep exact block order among themselves; a
+    // register line slots by its promotion DAY (block order is monotonic
+    // with days, so the mix stays truthful) and reads as the day's headline.
+    const isChron = (i: ActivityItem) => i.kind === "chronicle-entry";
+    return [...windowItems, ...deepLines, ...chronicleLines].sort((a, b) => {
+      if (isChron(a) || isChron(b)) {
+        const ad = a.dateUtc || "9999-12-31";
+        const bd = b.dateUtc || "9999-12-31";
+        if (ad !== bd) return ad > bd ? -1 : 1;
+        if (isChron(a) !== isChron(b)) return isChron(a) ? -1 : 1;
+        return b.logIndex - a.logIndex;
+      }
+      return a.blockNumber !== b.blockNumber
         ? b.blockNumber - a.blockNumber
-        : b.logIndex - a.logIndex,
-    );
+        : b.logIndex - a.logIndex;
+    });
   }, [scan, served]);
 
   const items = merged.filter(
@@ -360,9 +394,20 @@ export function LiveActivityFeed({
                   </span>
                 ) : null}
                 <span className="font-mono text-[10px] text-muted-foreground">
-                  {i.dateUtc || "—"} · block {i.blockNumber.toLocaleString("en-US")}
+                  {/* Register-derived lines have no chain anchor — the date
+                      alone is honest; "block 0" would be a lie. */}
+                  {i.readHref
+                    ? i.dateUtc || "—"
+                    : `${i.dateUtc || "—"} · block ${i.blockNumber.toLocaleString("en-US")}`}
                 </span>
-                {explorerBase ? (
+                {i.readHref ? (
+                  <Link
+                    href={i.readHref}
+                    className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-proof/80 hover:text-proof"
+                  >
+                    read the record <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
+                  </Link>
+                ) : explorerBase ? (
                   <a
                     href={`${explorerBase}/tx/${i.txHash}`}
                     target="_blank"

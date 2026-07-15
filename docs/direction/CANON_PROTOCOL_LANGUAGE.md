@@ -331,6 +331,19 @@ honest degrade when the event's wallet field is malformed. When the alias layer 
 | Burn / LP facts row | the Community actor's short form joins the facts ("Proof of Burn #N · 0x123…abcd") | Founder lines carry no short form — the founder voice rule |
 | Client window (seat) | same registry voice as the served feed — one lexicon, one register | — |
 
+### LIVE sentence added by H2-⑭ (Chronicle promotions, founder GO + chip decision A, 2026-07-15)
+
+Register-derived (CHR-1: a promotion is a founder COMMIT, not a chain event) — the line is
+built client-side from the committed register, wears the PROMOTION date (`promotedUtc`,
+structural field), carries NO invented anchor, and links INTO the record ("read the
+record →" /chronicle#id) where the entry's own verifyNote teaches chain verification.
+Chip decision A (founder): the lifecycle chip is labeled **"Referral registry"** — it
+filters the registry's own administrative acts; member referrals live inside seat lines.
+
+| Event | The canonical sentence | Variants |
+|---|---|---|
+| Chronicle promotion (⑭) | "“{title}” entered the Chronicle — promoted by the founder, recorded forever." | an entry without a title keeps the RESERVED untitled form |
+
 ### RESERVED sentences (authored now; their surfaces are not built — labels, not locks)
 
 | Event | The canonical sentence (RESERVED) | Notes |
@@ -338,7 +351,6 @@ honest degrade when the event's wallet field is malformed. When the alias layer 
 | Source activated | "A referral source went active — introductions now pay inside the buyer's own transaction." | lifecycle detail of the status-change event |
 | Source paused | "A referral source was paused — a public event; nothing is erased." | pause never erases; the terms doc governs escrow wording |
 | Ladder promotion | "A source rose to {rung} — recorded on-chain." | {rung} ∈ the §5 ladder only; "rose" honors the approved concept "Rise"; a rate never decreases, so the sentence never has a downward twin |
-| Chronicle promotion | "An event entered the Chronicle — promoted by the founder, recorded forever." | promotion is a HUMAN act (CHR-1 doctrine); the sentence never implies automation |
 
 **Variant axes (all entries):** first-seat (where emitted) · generation V1/V2A/V2B/V3
 (rendered as detail, never as hierarchy) · memory-anchor (Chronicle-grade kinds carry

@@ -75,12 +75,17 @@ export type ActivityKind =
   // indexed history; the client window scanner never produces this kind.
   | "milestone"
   // H2-⑫ — era transitions: derived witness lines (served feed only).
-  | "era-transition";
+  | "era-transition"
+  // H2-⑭ — Chronicle promotions: register-derived (client-side, CHR-1 —
+  // a promotion is a founder COMMIT, not a chain event; no tx anchor exists
+  // and none is invented; the line links into the record itself).
+  | "chronicle-entry";
 
 export interface ActivityItem {
   kind: ActivityKind;
-  /** The receipt-backed sentence (aggregate voice — no member address). */
+  /** The receipt-backed sentence (H2-P: the chain's own voice, short form). */
   sentence: string;
+  /** 0 on register-derived lines (no chain anchor exists — see readHref). */
   blockNumber: number;
   txHash: `0x${string}`;
   /** Position within the tx — the line's identity (one tx can carry two events). */
@@ -89,6 +94,11 @@ export interface ActivityItem {
   dateUtc: string;
   /** Memory grade (the receipt-thread doctrine): anchored events persist. */
   memory: boolean;
+  /**
+   * H2-⑭: register-derived lines carry an INTERNAL read link instead of an
+   * explorer verify anchor ("read the record →" into /chronicle#id).
+   */
+  readHref?: string;
 }
 
 export interface ActivityScan {

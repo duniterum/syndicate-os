@@ -33,6 +33,8 @@ export function ChroniclePrepare() {
   const snippet = `  {
     id: ${tsString(id)},
     dateUtc: ${tsString(dateUtc)},
+    // H2-⑭: set to the day of THIS promoting commit (the feed narrates it).
+    promotedUtc: "YYYY-MM-DD",
     title: ${tsString(title)},
     sections: [
       { heading: "The record", body: ${tsString(record)} },

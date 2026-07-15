@@ -2,6 +2,31 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 📜 SLICE H2-⑭ ✅ BUILT (2026-07-15, founder GO + chip decision A on the gate):
+> CHRONICLE PROMOTIONS JOIN THE HEARTBEAT — register-derived, client-only, honest about
+> what a promotion IS.** CHR-1 respected structurally: a promotion is a founder COMMIT,
+> not a chain event — so the line derives CLIENT-SIDE from the committed register (the
+> one truth; the server/scans/DB untouched — no parallel copy); the register interface
+> gained `promotedUtc` (structural field, the 4 entries stamped 2026-07-14 per their
+> promotion comments; the console's ChroniclePrepare snippet now emits it); NO INVENTED
+> ANCHORS — the line wears the PROMOTION date alone (never "block 0") and links INTO the
+> record ("read the record →" /chronicle#id) where the entry's own verifyNote teaches
+> chain verification. SENTENCE (§8 RESERVED graduated TITLED): "“The duplicate seat”
+> entered the Chronicle — promoted by the founder, recorded forever." (untitled reserved
+> form = the degrade). ORDERING: chain lines keep exact block order among themselves; a
+> register line slots by its promotion DAY and reads as the day's headline. CHIP
+> DECISION A (founder): the lifecycle chip renamed "Referral events" → **"Referral
+> registry"** (it filters the registry's own admin acts; member referrals live inside
+> seat lines "brought by 0x…") + new "Chronicle" chip (11 chips). RIG-VERIFIED WITH
+> REAL DATA (no fixture — the register ships in the client): all 4 promotion lines
+> rendered titled + dated + linked, the link lands on /chronicle#id, zero console
+> errors. SEO/lead ride ("Chronicle promotions join from the committed register").
+> Green: workspace tsc · studio guards · seo 395 · surface:audit 254 · build 24 shells.
+> DEPLOY: 🚀 BATCHABLE (client-only, fail-closed; prod feed gains the 4 promotion lines
+> + the two chip changes on deploy). NEXT IN H2: ⑰ capital axis (HOME_RANK_LADDER
+> harvest + per-seat cumulative spend; seat numbers public) → ⑩ deployments; then S7
+> (wireframe approved) · S8 perf · S5 on the paste.
+
 > **▶ 🤝 SLICE H2-P-a ✅ SEALED IN PROD (2026-07-15, Replit-verified on thesyndicate.money,
 > prod bundle `index-ByNwYhu1.js`, 82/82 blob-verified; FOUNDER OVERRIDE — item 5 revised
 > B → A the same day, on the advisor's argument the founder confirmed): THE REFERRER IS
