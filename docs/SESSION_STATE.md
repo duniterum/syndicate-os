@@ -2,6 +2,34 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🪨 SLICE H2-⑰ ✅ BUILT (2026-07-15, founder GO — names as the gate table, sentence 1,
+> chip yes): THE CAPITAL AXIS — per-seat footprint recognition under the witness
+> pattern's third application.** THE FOUNDER-NAMED REGISTER (canon,
+> `capitalAxisReadmodel.ts`, guard-pinned verbatim): Citizen $5 (BASE — the seat's birth
+> state, never a line) · Resident $10 · Advocate $25 · Patron $50 (deliberate harmony
+> with the Patron Seal, founder call) · Strategist $75 · Vanguard $100 · Architect $250 ·
+> Benefactor $500 · Guardian $1,000 · Keystone $2,500 · Inner Circle $5,000 · Monolith
+> $10,000 — six origin names renamed per SPEC_REFERRAL §⑨ (role/axis/class collisions).
+> THE SETTLED DOCTRINE AS STRUCTURE: the RED LINE guard-pinned (no financial-benefit
+> vocabulary can exist in the module — recognition only, the Sephora precedent); a rung
+> never descends; one purchase crossing several rungs = ONE line (the highest); V1 rows
+> excluded with an honest note (no ordinal, never guessed); NO approaching/progress
+> shape (the anti-scarcity pin's third extension); the line carries rung TITLE + seat
+> ordinal, NEVER the amount (seat lines never carry money). SENTENCE (founder pick 1):
+> "Seat #14 rose to Vanguard — a footprint recognized on the capital axis, never
+> revoked." DERIVATION: per-seat cumulative gross USDC over the SAME gapless lane
+> (memberNumber + amounts, already whitelisted — zero new persistence, zero live reads
+> needed); feed kind "capital-rise" + lanes.capital + derivedRank (the consequence law);
+> "Footprint" chip (12 chips). RIG-VERIFIED: sentence 1 verbatim + tie-break above its
+> witnessing purchase + chip row + zero console errors (debug intercept, cleared).
+> S7 NOTE: the member home reads THIS canon file for the seat's standing rung. Green:
+> workspace tsc · ALL api guards (backbone 130→141: register pins · red-line vocab ·
+> witness-walk fixtures · V1-exclusion honesty · anti-scarcity shape) · studio guards ·
+> seo 395 · surface 254 · build 24 shells. DEPLOY: 🚀 BATCHABLE — carries ⑭ (the two
+> ride together; on deploy the historical rises derive on the first cycle). NEXT IN H2:
+> ⑩ deployments (the LAST heartbeat class) — then H2 CLOSES; S7 (wireframe approved) ·
+> S8 perf · S5 on the paste.
+
 > **▶ 📜 SLICE H2-⑭ ✅ BUILT (2026-07-15, founder GO + chip decision A on the gate):
 > CHRONICLE PROMOTIONS JOIN THE HEARTBEAT — register-derived, client-only, honest about
 > what a promotion IS.** CHR-1 respected structurally: a promotion is a founder COMMIT,

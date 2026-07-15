@@ -449,7 +449,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Activity — the public heartbeat",
     description:
-      "The protocol's public heartbeat: the complete indexed history — seats written, burns numbered, referral events, liquidity, archive mints, treasury movements, milestone crossings and era turns — every line a receipt-backed sentence with its own verify link.",
+      "The protocol's public heartbeat: the complete indexed history — seats written, burns numbered, referral events, liquidity, archive mints, treasury movements, milestone crossings, era turns and footprint rises — every line a receipt-backed sentence with its own verify link.",
     canonicalPath: "/activity",
     changefreq: "daily",
     priority: 0.6,
@@ -458,7 +458,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "proof",
     proofRoute: "/status",
     notes:
-      "Complete served history (indexer) + recent-window freshness layer. H2-⑬: the Milestones panel — canonical crossings anchored to their exact transactions. H2-⑦: treasury movements (post-Fold-Law — routing detail never duplicates a purchase). H2-⑫: era turns (witnessed page turns; line-on-crossing only, never a countdown). H2-P: THE PRIDE OF THE PUBLIC RECORD — lines speak the origin voice (member number + short-form signature; a full address never serializes; ADR-003 amendment). H2-⑭: Chronicle promotions join from the committed register (no invented anchors; 'read the record' links) + chip decision A ('Referral registry').",
+      "Complete served history (indexer) + recent-window freshness layer. H2-⑬: the Milestones panel — canonical crossings anchored to their exact transactions. H2-⑦: treasury movements (post-Fold-Law — routing detail never duplicates a purchase). H2-⑫: era turns (witnessed page turns; line-on-crossing only, never a countdown). H2-P: THE PRIDE OF THE PUBLIC RECORD — lines speak the origin voice (member number + short-form signature; a full address never serializes; ADR-003 amendment). H2-⑭: Chronicle promotions join from the committed register (no invented anchors; 'read the record' links) + chip decision A ('Referral registry'). H2-⑰: capital-axis footprint rises (12 founder-named rungs; recognition only — the red line guard-pinned; base rung silent).",
   },
   {
     path: "/chronicle",

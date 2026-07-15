@@ -79,7 +79,9 @@ export type ActivityKind =
   // H2-⑭ — Chronicle promotions: register-derived (client-side, CHR-1 —
   // a promotion is a founder COMMIT, not a chain event; no tx anchor exists
   // and none is invented; the line links into the record itself).
-  | "chronicle-entry";
+  | "chronicle-entry"
+  // H2-⑰ — capital-axis rises: derived witness lines (served feed only).
+  | "capital-rise";
 
 export interface ActivityItem {
   kind: ActivityKind;

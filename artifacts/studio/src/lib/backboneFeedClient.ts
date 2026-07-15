@@ -128,6 +128,16 @@ export interface ServedEraLine extends ServedLineCommon {
   engine: string;
 }
 
+// ── H2-⑰ — capital-axis rises (footprint recognition; rung title only —
+// never an amount, never a benefit; the base rung never lines) ──────────────
+export interface ServedCapitalLine extends ServedLineCommon {
+  kind: "capital-rise";
+  /** The seat whose footprint rose (public ordinal). */
+  seatNumber: number;
+  /** The rung reached (founder-named canon title — recognition only). */
+  rung: string;
+}
+
 export type ServedFeedLine =
   | ServedSeatLine
   | ServedBurnLine
@@ -137,7 +147,8 @@ export type ServedFeedLine =
   | ServedArchivePauseLine
   | ServedTreasuryLine
   | ServedMilestoneLine
-  | ServedEraLine;
+  | ServedEraLine
+  | ServedCapitalLine;
 
 /** H2-⑬ — the served Milestones panel block (/activity). */
 export interface ServedMilestones {
@@ -176,6 +187,7 @@ export interface ServedFeed {
     treasury: boolean;
     milestones: boolean;
     eras: boolean;
+    capital: boolean;
   };
   /** Malformed lines skipped by THIS client's validation (honesty count). */
   linesSkipped: number;
@@ -397,6 +409,19 @@ function parseLine(raw: unknown): ServedFeedLine | null {
     }
     return { kind: "era-transition", ...common, era, engine: r.engine };
   }
+  if (r.kind === "capital-rise") {
+    const seatNumber = toInt(r.seatNumber);
+    if (
+      seatNumber === null ||
+      seatNumber < 1 ||
+      typeof r.rung !== "string" ||
+      r.rung.length === 0 ||
+      /0x[0-9a-fA-F]{6,}/.test(r.rung)
+    ) {
+      return null;
+    }
+    return { kind: "capital-rise", ...common, seatNumber, rung: r.rung };
+  }
   return null;
 }
 
@@ -502,6 +527,7 @@ export async function fetchServedFeed(): Promise<ServedFeed | null> {
         treasury: lanesRaw.treasury === true,
         milestones: lanesRaw.milestones === true,
         eras: lanesRaw.eras === true,
+        capital: lanesRaw.capital === true,
       },
       linesSkipped,
       items,
@@ -632,6 +658,11 @@ export function sentenceForServedLine(line: ServedFeedLine): string {
     // Line-on-crossing ONLY — never a countdown, never scarcity framing.
     case "era-transition":
       return `The protocol entered era ${line.era.toLocaleString("en-US")} — the rate table turned a page, on schedule, on-chain.`;
+    // H2-⑰ — CAPITAL-AXIS RISES (founder sentence 1, 2026-07-15). The rung
+    // is RECOGNITION only (the Sephora precedent; the red line: never a
+    // rate, never a benefit); acquired forever — it never descends.
+    case "capital-rise":
+      return `Seat #${line.seatNumber.toLocaleString("en-US")} rose to ${line.rung} — a footprint recognized on the capital axis, never revoked.`;
   }
 }
 

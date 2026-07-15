@@ -344,6 +344,23 @@ filters the registry's own administrative acts; member referrals live inside sea
 |---|---|---|
 | Chronicle promotion (⑭) | "“{title}” entered the Chronicle — promoted by the founder, recorded forever." | an entry without a title keeps the RESERVED untitled form |
 
+### LIVE sentence added by H2-⑰ (the capital axis, founder GO — names, sentence 1, chip — 2026-07-15)
+
+The origin HOME_RANK_LADDER harvested whole (12 thresholds, $5 → $10,000); six names
+renamed per SPEC_REFERRAL §⑨ and the full set founder-approved at the gate: **Citizen ·
+Resident · Advocate · Patron · Strategist · Vanguard · Architect · Benefactor · Guardian ·
+Keystone · Inner Circle · Monolith**. THE SETTLED DOCTRINE: a rung names a seat's ECONOMIC
+FOOTPRINT, never a membership category (the seat is binary); recognition only — the red
+line (never a better SYN rate, never a benefit) is guard-pinned as structure; a rung is
+acquired and never descends; the BASE rung (Citizen) is the seat's birth state — never a
+line; one purchase crossing several rungs = ONE line, the highest; no approaching shape
+exists (the anti-scarcity pin extends here). The line carries the rung TITLE and the
+public seat number — never the amount (seat lines never carry money).
+
+| Event | The canonical sentence | Variants |
+|---|---|---|
+| Capital rise (⑰) | "Seat #14 rose to Vanguard — a footprint recognized on the capital axis, never revoked." | — |
+
 ### RESERVED sentences (authored now; their surfaces are not built — labels, not locks)
 
 | Event | The canonical sentence (RESERVED) | Notes |

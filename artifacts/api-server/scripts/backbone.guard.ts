@@ -44,6 +44,12 @@
  *      regression fails closed; the live currentEra() read withholds a
  *      contradicted transition; and NO approaching/progress shape exists
  *      (era bounds are bytecode, never framed as scarcity pressure).
+ *   K. Capital axis (H2-⑰): the founder-named 12-rung register holds
+ *      (thresholds ascending, $5 base); the RED LINE is structural (no
+ *      financial-benefit vocabulary in the module — recognition only); the
+ *      base rung never lines; one purchase crossing several rungs yields
+ *      ONE line (the highest); V1 rows are excluded with an honest note;
+ *      and NO approaching/progress shape exists.
  *
  * Run: pnpm --filter @workspace/api-server run backbone:guard
  */
@@ -74,6 +80,10 @@ import {
   PROTOCOL_MILESTONES,
 } from "../src/backbone/milestoneReadmodel";
 import { buildEraReadModel } from "../src/backbone/eraReadmodel";
+import {
+  buildCapitalAxisReadModel,
+  CAPITAL_AXIS_LADDER,
+} from "../src/backbone/capitalAxisReadmodel";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const apiDir = path.resolve(here, "..");
@@ -981,11 +991,158 @@ expectThrow("era build fails closed on an era-engine purchase without its era", 
   }),
 );
 
+// ---------------------------------------------------------------------------
+// K. Capital axis (H2-⑰): the founder-named register + the witness walk.
+// ---------------------------------------------------------------------------
+
+// The register holds: 12 rungs, founder-named at the gate, thresholds
+// strictly ascending from the $5 base — and the RED LINE is structural: no
+// financial-benefit vocabulary can exist anywhere in the module.
+check(
+  CAPITAL_AXIS_LADDER.length === 12 &&
+    CAPITAL_AXIS_LADDER[0]!.title === "Citizen" &&
+    CAPITAL_AXIS_LADDER[0]!.usdc === 5 &&
+    CAPITAL_AXIS_LADDER[11]!.title === "Monolith" &&
+    CAPITAL_AXIS_LADDER[11]!.usdc === 10_000 &&
+    CAPITAL_AXIS_LADDER.map((r) => r.title).join("|") ===
+      "Citizen|Resident|Advocate|Patron|Strategist|Vanguard|Architect|Benefactor|Guardian|Keystone|Inner Circle|Monolith" &&
+    CAPITAL_AXIS_LADDER.every(
+      (r, i) => i === 0 || r.usdc > CAPITAL_AXIS_LADDER[i - 1]!.usdc,
+    ),
+  "the capital register holds: 12 founder-named rungs, thresholds strictly ascending ($5 → $10,000)",
+  "the capital register drifted from the founder-approved table",
+);
+check(
+  !/(bonus|discount|multiplier|reward|yield|cashback|better rate)/i.test(
+    stripComments(read("src/backbone/capitalAxisReadmodel.ts")),
+  ),
+  "the RED LINE holds: no financial-benefit vocabulary exists in the capital module (recognition only)",
+  "financial-benefit vocabulary entered the capital module — the red line broke",
+);
+
+// The witness walk: seat 2 buys $5 (the BASE rung — silent) then $20 (cum
+// $25 — crossing Resident AND Advocate in one purchase = ONE line, the
+// highest); seat 3 buys $5 only (never a line); a V1 row with no ordinal is
+// excluded with an honest note.
+const fixtureCapitalModel = buildCapitalAxisReadModel({
+  expectedChainId: CHAIN,
+  rawEvents: [
+    {
+      chainId: CHAIN,
+      generation: "V3",
+      eventName: "MembershipPurchasedV3",
+      blockNumber: 100,
+      logIndex: 0,
+      transactionHash: txA,
+      firstSeat: true,
+      memberNumber: 2,
+      usdcGrossRaw: "5" + "0".repeat(6),
+      era: 1,
+      memberAddress: null,
+      referredBySource: false,
+      referrerAddress: null,
+    },
+    {
+      chainId: CHAIN,
+      generation: "V3",
+      eventName: "MembershipPurchasedV3",
+      blockNumber: 100,
+      logIndex: 5,
+      transactionHash: txC,
+      firstSeat: false,
+      memberNumber: 2,
+      usdcGrossRaw: "20" + "0".repeat(6),
+      era: 1,
+      memberAddress: null,
+      referredBySource: false,
+      referrerAddress: null,
+    },
+    {
+      chainId: CHAIN,
+      generation: "V3",
+      eventName: "MembershipPurchasedV3",
+      blockNumber: 200,
+      logIndex: 1,
+      transactionHash: txB,
+      firstSeat: true,
+      memberNumber: 3,
+      usdcGrossRaw: "5" + "0".repeat(6),
+      era: 1,
+      memberAddress: null,
+      referredBySource: false,
+      referrerAddress: null,
+    },
+    {
+      chainId: CHAIN,
+      generation: "V1",
+      eventName: "TokensPurchased",
+      blockNumber: 100,
+      logIndex: 9,
+      transactionHash: txD,
+      firstSeat: null,
+      memberNumber: null,
+      usdcGrossRaw: "50" + "0".repeat(6),
+      era: null,
+      memberAddress: null,
+      referredBySource: false,
+      referrerAddress: null,
+    },
+  ],
+  blockTimestamps: milestoneTs,
+});
+check(
+  fixtureCapitalModel.rises.length === 1 &&
+    fixtureCapitalModel.rises[0]!.seatNumber === 2 &&
+    fixtureCapitalModel.rises[0]!.rung === "Advocate" &&
+    fixtureCapitalModel.rises[0]!.blockNumber === 100 &&
+    fixtureCapitalModel.rises[0]!.logIndex === 5 &&
+    fixtureCapitalModel.rises[0]!.transactionHash === txC,
+  "the footprint walk: the base rung is silent, one purchase crossing two rungs yields ONE line (the highest), anchored to its purchase",
+  "the capital witness walk broke",
+);
+check(
+  fixtureCapitalModel.notes.some((n) => n.includes("honestly excluded")),
+  "V1 rows without a seat ordinal are excluded with an honest note — never guessed",
+  "the V1 exclusion honesty broke",
+);
+// Anti-scarcity extends to this class: no approaching/progress shape exists.
+check(
+  !JSON.stringify(fixtureCapitalModel).includes("approaching") &&
+    !JSON.stringify(fixtureCapitalModel).includes("progress") &&
+    !JSON.stringify(fixtureCapitalModel).includes("remaining"),
+  "the capital model carries NO approaching/progress shape — never scarcity framing",
+  "a capital approaching/progress shape appeared — the anti-scarcity doctrine broke",
+);
+expectThrow("capital build fails closed on an attributed purchase without its amount", () =>
+  buildCapitalAxisReadModel({
+    expectedChainId: CHAIN,
+    rawEvents: [
+      {
+        chainId: CHAIN,
+        generation: "V3",
+        eventName: "MembershipPurchasedV3",
+        blockNumber: 100,
+        logIndex: 0,
+        transactionHash: txA,
+        firstSeat: true,
+        memberNumber: 2,
+        usdcGrossRaw: null,
+        era: 1,
+        memberAddress: null,
+        referredBySource: false,
+        referrerAddress: null,
+      },
+    ],
+    blockTimestamps: milestoneTs,
+  }),
+);
+
 const feed = buildPublicFeed({
   model: fixtureModel,
   protocolModel: fixtureProtocolModel,
   milestoneModel: fixtureMilestoneModel,
   eraModel: fixtureEraModel,
+  capitalModel: fixtureCapitalModel,
   state: "idle",
   headBlock: 300,
   finishedIso: "2026-07-13T00:00:00.000Z",
@@ -1000,11 +1157,19 @@ check(
 );
 const feedJson = JSON.stringify(feed);
 check(
-  feed.items.length === 17 &&
+  feed.items.length === 18 &&
     feed.items[0]!.blockNumber === 200 &&
-    feed.items[16]!.blockNumber === 100,
-  "feed serves newest first across ALL kinds (seats, burns, lifecycle, lp, archive, treasury, milestones, eras)",
+    feed.items[17]!.blockNumber === 100,
+  "feed serves newest first across ALL kinds (seats, burns, lifecycle, lp, archive, treasury, milestones, eras, capital)",
   `feed ordering broke (items=${feed.items.length})`,
+);
+check(
+  feed.lanes.capital === true &&
+    feed.items.filter((i) => i.kind === "capital-rise").length === 1 &&
+    feedJson.includes('"rung":"Advocate"') &&
+    feedJson.includes('"seatNumber":2'),
+  "the capital lane serves its witnessed rise (seat ordinal + rung title as public facts)",
+  "the capital lane broke",
 );
 // H2-⑦: the treasury lines ride the feed with LABELS only — the planted
 // organ + external addresses must never appear anywhere in the payload.
@@ -1042,6 +1207,7 @@ expectThrow("feed gate trips on an address-shaped treasury organ label", () =>
     },
     milestoneModel: null,
     eraModel: null,
+    capitalModel: null,
     state: "idle",
     headBlock: 300,
     finishedIso: null,
@@ -1171,6 +1337,7 @@ expectThrow("projection fails closed on a non-lowercase/full pride actor", () =>
     protocolModel: null,
     milestoneModel: null,
     eraModel: null,
+    capitalModel: null,
     state: "idle",
     headBlock: 300,
     finishedIso: null,
@@ -1202,6 +1369,7 @@ expectThrow("projection fails closed on an address-shaped verify anchor", () =>
     protocolModel: null,
     milestoneModel: null,
     eraModel: null,
+    capitalModel: null,
     state: "idle",
     headBlock: 300,
     finishedIso: null,
@@ -1223,6 +1391,7 @@ expectThrow("projection fails closed on a non-canonical sender label", () =>
     },
     milestoneModel: null,
     eraModel: null,
+    capitalModel: null,
     state: "idle",
     headBlock: 300,
     finishedIso: null,
@@ -1236,6 +1405,7 @@ expectThrow("projection fails closed on a non-canonical sender label", () =>
     protocolModel: null,
     milestoneModel: null,
     eraModel: null,
+    capitalModel: null,
     state: "disabled",
     headBlock: null,
     finishedIso: null,
@@ -1251,6 +1421,7 @@ expectThrow("projection fails closed on a non-canonical sender label", () =>
       empty.lanes.treasury === false &&
       empty.lanes.milestones === false &&
       empty.lanes.eras === false &&
+      empty.lanes.capital === false &&
       empty.milestones === null,
     "null models serve an honest empty feed with honest lane flags (never invented)",
     "empty-feed posture broke",

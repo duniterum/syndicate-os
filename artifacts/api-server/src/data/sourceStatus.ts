@@ -134,7 +134,7 @@ const CANON: CanonEntry[] = [
     publicClass: "SAFE_PUBLIC",
     sourceRef: "internal:event-backbone@M4",
     confidence: "high",
-    note: "Live event/proof data is served: the event backbone indexes the complete heartbeat unattended — seats, numbered burns, referral lifecycle, liquidity, archive mints, treasury movements, milestone crossings and era turns — and the public feed carries a transaction verify anchor on every line.",
+    note: "Live event/proof data is served: the event backbone indexes the complete heartbeat unattended — seats, numbered burns, referral lifecycle, liquidity, archive mints, treasury movements, milestone crossings, era turns and footprint rises — and the public feed carries a transaction verify anchor on every line.",
     surface: "/proof",
   },
   {
@@ -284,7 +284,7 @@ const CANON: CanonEntry[] = [
     publicClass: "INTERNAL_ONLY",
     sourceRef: "internal:event-backbone@M4",
     confidence: "high",
-    note: "The event backbone runs unattended in production: cursor-resumed incremental scans across the complete heartbeat (seats, burns, referral lifecycle, liquidity, archive, treasury, milestones, eras), Protocol Time enrichment, and the served feed — lines speak the chain's own facts in short form (never a full address, never a lookup), fail-closed on every cycle.",
+    note: "The event backbone runs unattended in production: cursor-resumed incremental scans across the complete heartbeat (seats, burns, referral lifecycle, liquidity, archive, treasury, milestones, eras, capital), Protocol Time enrichment, and the served feed — lines speak the chain's own facts in short form (never a full address, never a lookup), fail-closed on every cycle.",
     surface: "/indexer",
   },
   {

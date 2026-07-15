@@ -43,6 +43,7 @@ import type {
   MilestoneKind,
 } from "./milestoneReadmodel";
 import type { EraBuildResult } from "./eraReadmodel";
+import type { CapitalBuildResult } from "./capitalAxisReadmodel";
 
 /** Hard cap on served mixed-feed lines (newest first). Pagination waits. */
 export const FEED_MAX_ITEMS = 100;
@@ -160,6 +161,17 @@ export interface PublicEraLine extends LineCommon {
   readonly engine: string;
 }
 
+// ── H2-⑰ — capital-axis rises (the witness pattern; LINE-ON-RISE only —
+// the base rung is the seat's birth state; the rung title is recognition,
+// never a benefit; the line never carries the cumulative amount) ────────────
+export interface PublicCapitalLine extends LineCommon {
+  readonly kind: "capital-rise";
+  /** The seat whose footprint rose (public ordinal). */
+  readonly seatNumber: number;
+  /** The rung reached (founder-named canon title — recognition only). */
+  readonly rung: string;
+}
+
 export type PublicFeedLine =
   | PublicSeatLine
   | PublicBurnLine
@@ -169,7 +181,8 @@ export type PublicFeedLine =
   | PublicArchivePauseLine
   | PublicTreasuryLine
   | PublicMilestoneLine
-  | PublicEraLine;
+  | PublicEraLine
+  | PublicCapitalLine;
 
 /** H2-⑬ — the /activity Milestones panel block (address-safe by shape). */
 export interface PublicMilestones {
@@ -218,6 +231,8 @@ export interface PublicActivityFeed {
     readonly milestones: boolean;
     /** H2-⑫: era transitions (witnessed page turns; empty until one). */
     readonly eras: boolean;
+    /** H2-⑰: capital-axis rises (per-seat footprint recognition). */
+    readonly capital: boolean;
   };
   readonly honesty: string;
   /** Mixed feed, newest first, capped. */
@@ -238,6 +253,8 @@ export interface FeedSource {
   readonly milestoneModel: MilestoneBuildResult | null;
   /** H2-⑫: the era-transition model (null = dark). */
   readonly eraModel: EraBuildResult | null;
+  /** H2-⑰: the capital-axis model (null = dark). */
+  readonly capitalModel: CapitalBuildResult | null;
   readonly state: string;
   readonly headBlock: number | null;
   readonly finishedIso: string | null;
@@ -285,7 +302,8 @@ function shortForm(address: string | null): string | null {
  * no successful cycle yet) serve an honest empty feed — never an invented one.
  */
 export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
-  const { model, protocolModel, milestoneModel, eraModel } = source;
+  const { model, protocolModel, milestoneModel, eraModel, capitalModel } =
+    source;
 
   const seatLines: PublicSeatLine[] = (model?.items ?? []).map((item) => {
     assertAnchor(item.transactionHash);
@@ -499,12 +517,39 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
     };
   });
 
+  // ── H2-⑰ — capital-axis rises (footprint recognition; rung title only) ──
+  const capitalLines: PublicCapitalLine[] = (capitalModel?.rises ?? []).map(
+    (r) => {
+      assertAnchor(r.transactionHash);
+      if (!Number.isSafeInteger(r.seatNumber) || r.seatNumber < 1) {
+        throw new Error(
+          "feed projection failed closed: a capital rise carries no clean seat ordinal (value withheld)",
+        );
+      }
+      if (typeof r.rung !== "string" || r.rung.length === 0 || /0x[0-9a-fA-F]{6,}/.test(r.rung)) {
+        throw new Error(
+          "feed projection failed closed: a capital rung title is malformed (value withheld)",
+        );
+      }
+      return {
+        kind: "capital-rise" as const,
+        seatNumber: r.seatNumber,
+        rung: r.rung,
+        blockNumber: r.blockNumber,
+        blockTimestampSec: r.blockTimestampSec,
+        isoDayUtc: r.isoDayUtc,
+        transactionHash: r.transactionHash,
+        logIndex: r.logIndex,
+      };
+    },
+  );
+
   // Derived kinds share their anchor with the event that crossed/witnessed
   // them; in the newest-first feed the crossing reads as the CONSEQUENCE —
   // the derived line ranks newer than its underlying event (the tie-break
-  // law, H2-⑬; H2-⑫ era lines join the same rank).
+  // law, H2-⑬; the era and capital lines join the same rank).
   const derivedRank = (k: PublicFeedLine["kind"]): number =>
-    k === "milestone" || k === "era-transition" ? 1 : 0;
+    k === "milestone" || k === "era-transition" || k === "capital-rise" ? 1 : 0;
 
   const allLines: PublicFeedLine[] = [
     ...seatLines,
@@ -516,6 +561,7 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
     ...treasuryLines,
     ...milestoneLines,
     ...eraLines,
+    ...capitalLines,
   ].sort((a, b) =>
     a.blockNumber !== b.blockNumber
       ? b.blockNumber - a.blockNumber
@@ -545,6 +591,7 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
       treasury: protocolModel !== null,
       milestones: milestoneModel !== null,
       eras: eraModel !== null,
+      capital: capitalModel !== null,
     },
     honesty: FEED_HONESTY_LINE,
     items,

@@ -77,6 +77,10 @@ import {
   type MilestoneBuildResult,
 } from "./milestoneReadmodel";
 import { buildEraReadModel, type EraBuildResult } from "./eraReadmodel";
+import {
+  buildCapitalAxisReadModel,
+  type CapitalBuildResult,
+} from "./capitalAxisReadmodel";
 import { ethCall } from "../lib/protocol/evmRead";
 import {
   decodeUint256Decimal,
@@ -191,6 +195,8 @@ let lastGoodProtocolModel: ProtocolEventBuildResult | null = null;
 let lastGoodMilestoneModel: MilestoneBuildResult | null = null;
 /** H2-⑫: the derived era-transition model (witnessed page turns only). */
 let lastGoodEraModel: EraBuildResult | null = null;
+/** H2-⑰: the derived capital-axis model (footprint rises only). */
+let lastGoodCapitalModel: CapitalBuildResult | null = null;
 /** The protocol lane's honest coverage bounds (its cursors), for projections. */
 let burnsAsOfBlock: number | null = null;
 let lifecycleAsOfBlock: number | null = null;
@@ -202,6 +208,7 @@ export function getBackboneFeedSource(): FeedSource {
     protocolModel: lastGoodProtocolModel,
     milestoneModel: lastGoodMilestoneModel,
     eraModel: lastGoodEraModel,
+    capitalModel: lastGoodCapitalModel,
     state: status.state,
     headBlock: status.lastSuccess?.headBlock ?? null,
     finishedIso: status.lastSuccess?.finishedIso ?? null,
@@ -440,6 +447,23 @@ async function runCycle(): Promise<string | null> {
     eraFault = err instanceof Error ? err.message : String(err);
   }
 
+  // ③b4 The capital-axis read-model (H2-⑰) — per-seat footprint rises via
+  // the witness pattern over the SAME gapless lane; pure, no live reads
+  // (the gapless history IS the truth; no per-seat live view exists).
+  // LINE-ON-RISE ONLY — the base rung is the seat's birth state and the
+  // anti-scarcity pin extends to this class (no approaching shape exists).
+  let capitalModel: CapitalBuildResult | null = null;
+  let capitalFault: string | null = null;
+  try {
+    capitalModel = buildCapitalAxisReadModel({
+      expectedChainId: BACKBONE_EXPECTED_CHAIN_ID,
+      rawEvents: input.rawEvents,
+      blockTimestamps: input.blockTimestamps,
+    });
+  } catch (err) {
+    capitalFault = err instanceof Error ? err.message : String(err);
+  }
+
   // ③c The introduction read-model refresh (M0) — ISOLATED like the protocol
   // lane: a fault or an honest skip never darkens the heartbeat; the previous
   // live model (or the committed snapshot) keeps serving the standing reads.
@@ -457,6 +481,7 @@ async function runCycle(): Promise<string | null> {
   // heartbeat itself is never darkened by the derived layer).
   if (milestoneModel !== null) lastGoodMilestoneModel = milestoneModel;
   if (eraModel !== null) lastGoodEraModel = eraModel;
+  if (capitalModel !== null) lastGoodCapitalModel = capitalModel;
   burnsAsOfBlock =
     protocolStreams.find((s) => s.streamKey === "SYN_BURN")?.cursorBlock ??
     burnsAsOfBlock;
@@ -514,6 +539,11 @@ async function runCycle(): Promise<string | null> {
   if (eraFault !== null) {
     partialNotes.push(
       "era derivation faulted — the previous era model keeps serving",
+    );
+  }
+  if (capitalFault !== null) {
+    partialNotes.push(
+      "capital-axis derivation faulted — the previous capital model keeps serving",
     );
   }
   return partialNotes.length > 0 ? partialNotes.join(" · ") : null;
