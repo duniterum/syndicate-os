@@ -48,10 +48,27 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > from the first cycle). NEXT: ⑭ Chronicle lines on the settled voice → ⑰ → ⑩ → S7 ·
 > S8 · S5. (⑫'s Replit seal remains pending its deploy report — separate thread.)
 
-> **▶ 📖 SLICE H2-⑫ ✅ BUILT (2026-07-15, founder GO after the marketing-vs-guardrail
-> exchange — the anti-scarcity doctrine explained and CONFIRMED, the era-facts-table
-> idea noted as a possible future /tokenomics slice): ERA TRANSITIONS ARM THE HEARTBEAT
-> UNDER THE WITNESS PATTERN.** THE CHAIN'S TRUTH READ AT THE GATE (public RPC, live):
+> **▶ 📖 SLICE H2-⑫ ✅ SEALED IN PROD (2026-07-15, Replit-verified on thesyndicate.money,
+> prod bundle `index-BnljnxgH.js`, 17/17 blob-verified, no migration — 13 tables / 142
+> columns dev==prod; founder GO after the marketing-vs-guardrail exchange — the
+> anti-scarcity doctrine explained and CONFIRMED, the era-facts-table idea noted as a
+> possible future /tokenomics slice): ERA TRANSITIONS ARM THE HEARTBEAT UNDER THE
+> WITNESS PATTERN.** PROD PROOF (Replit): the eras lane is ACTIVE with **zero era
+> lines — exactly what truth requires** (all three engines read era 1 live; the class
+> armed honestly empty); the anti-scarcity doctrine holds in the shipped bundle (no
+> countdown/progress/pressure shape — the only "countdown" is the doctrine sentence's
+> own negation; Replit's initial "only … left" hits self-diagnosed as greedy-regex
+> artifacts on the minified bundle, strict scan clean); zero regression (fold law
+> holds, zero duplicate txs, zero addresses, burns #1–#8, 4 milestones anchored);
+> engine at its CLEANEST start yet (2/2 cycles, zero partial, all streams caughtUp).
+> **⑦'s BONUS TRUTH LANDED IN THE SAME VERIFICATION: the treasury cold catch-up
+> FINISHED and TWO GENUINE TREASURY ACTS emerged from the fold — two SYN inflows into
+> the vault (≈4,998,500 and ≈6,989,000 SYN, 2026-07-10), each anchored to its exact
+> transaction, organ labels only. The feed grew 68 → 70 lines — the lane's first
+> genuine lines, discovered by the machinery, not typed by anyone.**
+> **DEPLOY BACKLOG: H2-P (`89646ba`, the pride amendment) — NOT YET DEPLOYED; its
+> deploy carries the founder-gated backfill step (`archive:minter-backfill -- --write`,
+> once, report the row count).** THE CHAIN'S TRUTH READ AT THE GATE (public RPC, live):
 > all three engines (V2A · V2B · V3) answer currentEra()/activeEra() = 1 — ZERO era
 > transitions have ever occurred; every purchase in history was era-1. NO EraAdvanced
 > event exists in any deployed ABI — a transition's only witnesses are the era field on
