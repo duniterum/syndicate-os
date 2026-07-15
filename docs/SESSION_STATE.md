@@ -2,10 +2,20 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🤝 SLICE H2-P-a ✅ BUILT, COMMITTED, PUSH HELD (2026-07-15, FOUNDER OVERRIDE — item 5
-> revised B → A the same day, on the advisor's argument the founder confirmed): THE
-> REFERRER IS NAMED — "Member #14 · 0xea8…5881 entered the public registry — brought by
-> 0x3f2…0a91."** WHY (founder engraved): the referrer is the proud party — referrer
+> **▶ 🤝 SLICE H2-P-a ✅ SEALED IN PROD (2026-07-15, Replit-verified on thesyndicate.money,
+> prod bundle `index-ByNwYhu1.js`, 82/82 blob-verified; FOUNDER OVERRIDE — item 5 revised
+> B → A the same day, on the advisor's argument the founder confirmed): THE REFERRER IS
+> NAMED.** PROD PROOF (Replit): **the 3 referred purchases in history now name their
+> referrer short-form in the public feed — Member #14 (0xea8…5881) brought by
+> 0x88e…dd73 (the founder's own source, Jul 13) · Member #13 (0x0dd…4d20) brought by
+> 0x244…c721 (Jul 12) · Member #10 (0x620…c75f) brought by 0x244…c721 (Jun 25). THE SAME
+> REFERRER APPEARS TWICE — the growth engine made visible, exactly as the founder
+> argued.** The short-form law held again: 48 short forms served (15 distinct), ZERO
+> full 40-hex anywhere (the 70 tx hashes are 64-hex, excluded by the bound), zero
+> malformed — the veiled degrade never had to fire. Zero regression (70 lines: 26
+> purchases · 17 mints ALL with minter · 8 burns · 4 milestones · 2 treasury · LP/source
+> intact). Engine 2/2 cycles, first post-boot cycle partial then self-resolved (designed).
+> **DEPLOY BACKLOG: EMPTY.** WHY (founder engraved): the referrer is the proud party — referrer
 > pride is the growth engine (SPEC_REFERRAL §⑨ honour-roll; paid referral kits later —
 > a veiled referrer defeats the product). STRUCTURALLY CLEAN BY THE GATE'S OWN LOGIC:
 > sourceWallet lives in the SAME V3 purchase log — one event republished, no relationship
