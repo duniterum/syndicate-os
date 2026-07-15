@@ -2,7 +2,40 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 💗 THE H1a ARC ✅ SEALED IN PROD (2026-07-15, Replit-verified 3/3 post-fix on
+> **▶ 🏁 SESSION SEAL (end of day 2026-07-14, sealed 2026-07-15) — THE 6TH-ITERATION DAY:
+> everything settled once, on a base that cannot rot again.** SEALED IN PROD during the
+> day (all Replit-verified on thesyndicate.money): **M1 arc** (M1-a hero first act ·
+> M1-b living map with derived node truth + doors + paid-to-referrers live · M1-c header
+> root-cause + guard-nav-link-display) · **W1** Conversion Doctrine TIER-0 · **W2** SEO
+> truth texts + THE HUMAN-FIRST LAW (amended verbatim) + the identity paragraph rewritten
+> human · **S1** Visual Change Law + the W-HOME rejection verdict (the four-scene
+> restaging = founder-rejected at the preview gate; the CURRENT home composition is his
+> choice and STANDS; any future home layout starts from a fresh approved wireframe) ·
+> **S2+S3** the truth batch + surgical fixes (era DNA at zero across served heads;
+> /contracts = the one founder-validated exception; hero chips LIVE-only; throne majesty)
+> · **S4** structural cure (source-status fossil reconciled · guard-era-drift ·
+> source-status-truth 161 · SEO-rides-the-slice law) · **S6** internal-plan leakage
+> extinct + guard-pinned · **H1a + fix** (six new heartbeat classes; the LP orientation
+> pinned as canon after Replit's prod catch — THREE historical liquidity adds now
+> narrated true; no re-index needed, neutral rows as designed). LAWS ENGRAVED (8):
+> Human-First (amended) · Visual Change (wireframe→preview gate→visually-complete) ·
+> System-First + Mirror (quarry, never law) · PENDING=publicly-promised-only ·
+> SEO-same-commit · Heartbeat Completeness Invariant · Founder Voice · Visibility.
+> The advisor's lessons file committed deliberately (`f99220f`, TIER-3 index).
+> **DEPLOY BACKLOG: EMPTY** (everything sealed through `d9b4275`). **THE PLATEAU FOR THE
+> NEXT SESSION (H2 opens on founder GO, fresh session):** ① **H2 in the proposed order:
+> ⑬ the 11 origin milestones FIRST (the biggest narrative win — derivable gaplessly from
+> the indexed history, no new persistence) → ⑦ treasury (anti-duplicate routing design
+> first: per-purchase routing transfers must never duplicate purchase lines) → ⑫ eras →
+> ⑭ Chronicle lines → ⑰ capital axis (settled-yes, SPEC_REFERRAL §⑨) → ⑩ deployments**;
+> ② **S7 member home** — wireframe ALREADY founder-approved (two states: the door band /
+> your-seat hero; ONE connect CTA; dead band dies; jargon falls), code NOT started,
+> preview gate applies; ③ **S8 performance** (throne webp fine; header PNGs 284KB+195KB
+> = the cheap wins); ④ **S5 the soul document** — awaits the founder's paste
+> (SUPERSEDED-TERMS banner spec recorded in the order). Next session boots on "hi" per
+> the standard boot sequence.
+>
+> **▶ Prior: 💗 THE H1a ARC ✅ SEALED IN PROD (2026-07-15, Replit-verified 3/3 post-fix on
 > thesyndicate.money): THE COMPLETE HEARTBEAT'S FIRST SIX CLASSES ARE LIVE.** The
 > founder's LP add renders TRUE: "1,913.6 SYN + 39.85 USDC · Founder" with its anchor
 > (block 90,319,681) — and the fix revealed THREE MORE historical LP adds now correctly
