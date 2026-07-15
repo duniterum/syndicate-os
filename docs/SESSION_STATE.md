@@ -2,9 +2,23 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🪨 SLICE H2-⑰ ✅ BUILT (2026-07-15, founder GO — names as the gate table, sentence 1,
-> chip yes): THE CAPITAL AXIS — per-seat footprint recognition under the witness
-> pattern's third application.** THE FOUNDER-NAMED REGISTER (canon,
+> **▶ 🪨 SLICE H2-⑰ ✅ SEALED IN PROD together with ⑭ (2026-07-15, Replit-verified on
+> thesyndicate.money, prod bundle `index-rz_RHitB.js`, 14/14 blob-verified, no migration
+> — 142/142 columns dev==prod; founder GO — names as the gate table, sentence 1, chip
+> yes): THE CAPITAL AXIS — per-seat footprint recognition under the witness pattern's
+> third application.** PROD PROOF (Replit): **THE AXIS CAME ALIVE — the feed grew 70 →
+> 75 lines with FIVE genuine footprint rises, each anchored to its exact crossing
+> purchase: Seat #6 → Advocate then Patron (Jun 17, two separate purchases) · Seat #9 →
+> Resident (Jun 23) · Seat #12 → Resident then Advocate (Jul 5).** Every engraved rule
+> held on the record: rung title + seat ordinal only (NO amount field exists in the
+> lines), one-purchase-one-line verified (the same-seat pairs come from distinct
+> transactions), the Chronicle promotion voice ships in the bundle with the "Referral
+> registry" chip, ZERO 40-hex in the feed (the bundle's 13 hex constants = wallet-SDK
+> library sentinels, not protocol/member addresses; "passive income" = the disclaimer's
+> negation only). Zero regression (the prior 70 lines byte-intact incl. the 3 named
+> referrers); engine 2/2 cycles, first post-boot cycle partial then self-resolved
+> (designed). Gate green at Replit (heartbeat 137 · backbone 141 · auth-zone 775 ·
+> source-status 161). **DEPLOY BACKLOG: EMPTY.** THE FOUNDER-NAMED REGISTER (canon,
 > `capitalAxisReadmodel.ts`, guard-pinned verbatim): Citizen $5 (BASE — the seat's birth
 > state, never a line) · Resident $10 · Advocate $25 · Patron $50 (deliberate harmony
 > with the Patron Seal, founder call) · Strategist $75 · Vanguard $100 · Architect $250 ·
@@ -30,9 +44,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ⑩ deployments (the LAST heartbeat class) — then H2 CLOSES; S7 (wireframe approved) ·
 > S8 perf · S5 on the paste.
 
-> **▶ 📜 SLICE H2-⑭ ✅ BUILT (2026-07-15, founder GO + chip decision A on the gate):
-> CHRONICLE PROMOTIONS JOIN THE HEARTBEAT — register-derived, client-only, honest about
-> what a promotion IS.** CHR-1 respected structurally: a promotion is a founder COMMIT,
+> **▶ 📜 SLICE H2-⑭ ✅ SEALED IN PROD together with ⑰ (2026-07-15, Replit-verified,
+> same deploy `index-rz_RHitB.js`; prod proof: the promotion voice in the shipped
+> bundle, the register-derived lines with "read the record →" and NO invented anchors,
+> "Referral registry" chip live; founder GO + chip decision A on the gate): CHRONICLE
+> PROMOTIONS JOIN THE HEARTBEAT — register-derived, client-only, honest about what a
+> promotion IS.** CHR-1 respected structurally: a promotion is a founder COMMIT,
 > not a chain event — so the line derives CLIENT-SIDE from the committed register (the
 > one truth; the server/scans/DB untouched — no parallel copy); the register interface
 > gained `promotedUtc` (structural field, the 4 entries stamped 2026-07-14 per their
