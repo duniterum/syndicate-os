@@ -2,9 +2,69 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🏛️ SLICE H2-⑩ ✅ BUILT — AND H2 CLOSES (2026-07-15, founder GO — sentence 1 + the
-> pool line): DEPLOYMENTS — the protocol's births, chain-verified, and THE HEARTBEAT'S
-> FOUNDING INVENTORY IS COMPLETE.** THE DISCOVERY (read-only, at the gate): all 8
+> **▶ 🏁 SESSION SEAL (2026-07-15) — THE H2 DAY: the complete heartbeat's founding
+> inventory, opened and CLOSED in one session, every slice SEALED IN PROD on
+> thesyndicate.money (final bundle `index-CZSNZlO5.js`).** THE LEDGER (8 slices, 6
+> deploys, zero regressions, all Replit-verified): **⑬ MILESTONES** (11 canon defs,
+> 4 sealed + anchored — the protocol's own dates entered the record: first seat Jun 4 ·
+> First Signal Jun 6 · Patron Seal Jun 7 · $100 routed Jun 17; approaching honest;
+> + the /activity Re-read repair) · **⑦ TREASURY under THE FOLD LAW** (the founder's
+> anti-duplicate requirement as structure — 17 movements ALL folded as routing detail,
+> then the catch-up surfaced TWO genuine vault SYN inflows nobody typed; burn
+> sovereignty pinned) · **⑫ ERAS** (witness pattern; all three engines era 1 — armed
+> honestly empty; ANTI-SCARCITY engraved as structure: no countdown/approaching shape
+> can exist) · **H2-P THE PRIDE OF THE PUBLIC RECORD** (founder doctrine amendment,
+> ADR-003 2026-07-15: member masking repealed on the feed — the origin voice restored;
+> THE SHORT-FORM LAW: only 0x123…abcd ever serializes, the 40-hex scanners stay armed —
+> proven in prod: 28→48 short forms, ZERO leaks, the veiled degrade never fired; the
+> 17 archive mints backfilled from the chain's own logs 17/17, one transaction) ·
+> **H2-P-a THE NAMED REFERRER** (founder override B→A same day: "brought by
+> 0x3f2…0a91" — the 3 referred purchases name their bringers; the same referrer twice
+> on the record — the growth engine visible; alias layer M2/M3 will replace the address
+> on this line) · **⑭ CHRONICLE** (register-derived, promotedUtc structural, no
+> invented anchors, "read the record →"; chip decision A: "Referral registry") ·
+> **⑰ CAPITAL AXIS** (12 founder-named rungs Citizen→Monolith; 5 genuine footprint
+> rises found in history — Seat #6 →Advocate→Patron · #9 →Resident · #12
+> →Resident→Advocate; rung + ordinal only, NEVER the amount; the RED LINE guard-pinned;
+> rungs never descend) · **⑩ DEPLOYMENTS** (8 births chain-verified at the gate —
+> June 4 = THE BIRTH DAY: token + first sale + public market in one day; Jun 21 = the
+> referral architecture in one act; canon pins reconciled EXACTLY; the pool's own
+> line). **PROD TODAY: 75 served lines + 8 deployments + 4 Chronicle promotions
+> client-derived · 13 filter chips · the Milestones panel · named members, bringers,
+> minters (short-form) · zero full addresses ever · engine at its cleanest.**
+> **DEPLOY BACKLOG: EMPTY.** LAWS/DOCTRINE ENGRAVED TODAY: THE FOLD LAW (a transfer in
+> a narrated tx is routing detail — folds every future class automatically) · THE
+> SHORT-FORM LAW + the pride amendment (ADR-003, recorded, core intact: no KYC, no
+> directory, no lookup, no enrichment beyond one event; the founder-voice rule stands) ·
+> ANTI-SCARCITY extended to eras + capital (structural, guard-pinned) · THE WITNESS
+> PATTERN as the house pattern (milestones/eras/capital) · BURN SOVEREIGNTY · the
+> capital RED LINE (recognition only, never a financial edge) · CHR-1 honored (no
+> invented anchors, ever). NOTED FOR LATER (not opened): the era-facts table on
+> /tokenomics (marketing, doctrinally clean — founder interest logged) · treasury
+> external counterparties stay unnamed (extensible by founder call) · the DEX-trader
+> class stays OUT unless its own gate · S7 reads capitalAxisReadmodel's ladder for the
+> seat's standing rung. **THE PLATEAU FOR THE NEXT SESSION: ① S7 MEMBER HOME first —
+> wireframe ALREADY founder-approved (two states: door band / your-seat hero; ONE
+> connect CTA; dead band dies; jargon falls), code NOT started, THE PREVIEW GATE + the
+> visually-complete rule apply (rig with MSYS2_ENV_CONV_EXCL="BASE_PATH", image check,
+> both themes, desktop AND mobile, founder's own browser before ANY commit); ② S8
+> PERFORMANCE (throne webp fine; header logo PNG 284KB + avax mark 195KB = the cheap
+> wins); ③ S5 THE SOUL DOCUMENT — awaits the founder's paste (SUPERSEDED-TERMS banner
+> spec recorded).** Next session boots on "hi" per the standard boot sequence.
+
+> **▶ 🏛️ SLICE H2-⑩ ✅ SEALED IN PROD — AND H2 IS CLOSED (2026-07-15, Replit-verified on
+> thesyndicate.money, prod bundle `index-CZSNZlO5.js`, 7/7 blob-verified, no migration —
+> client-only; founder GO — sentence 1 + the pool line): DEPLOYMENTS — the protocol's
+> births, chain-verified, and THE HEARTBEAT'S FOUNDING INVENTORY IS COMPLETE.** PROD
+> PROOF (Replit): the pool line ships VERBATIM ("The SYN/USDC pool was created — the
+> public market opened."), the Deployments chip live (13 chips), the 8 chain-verified
+> creation-tx anchors in the shipped bundle; ADDRESS DISCIPLINE PROVEN AT DEPTH — Replit
+> REFUSED TO SEAL until it traced 3 non-library 40-hex constants: all three = the LP
+> pool's public infra links (DexScreener/Trader Joe URLs, founder-verified canon from a
+> prior sealed slice, identical in the previous bundle; THIS slice adds zero addresses);
+> the served feed: zero 40-hex across 75 lines; vocabulary conform (the doctrine speaks
+> by refusing); zero regression; THE CLEANEST STARTUP OBSERVED YET — 2/2 cycles, zero
+> partial, zero failure, lastError null.** THE DISCOVERY (read-only, at the gate): all 8
 > deployment blocks + creation transactions binary-searched from the chain
 > (eth_getCode + receipts) — SYN Token 87,149,157 · Sale V1 87,157,852 · LP Pair
 > 87,163,331 (ALL THREE 2026-06-04 — the protocol's BIRTH DAY, matching the first-seat
