@@ -2,7 +2,22 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 💗 SLICE H1a ✅ BUILT (2026-07-15, founder GO on the COMPLETE table + 3 corrections):
+> **▶ 🩹 H1a-FIX ✅ BUILT (2026-07-15, on Replit's prod diagnosis — H1a otherwise SEALED
+> 5/5 IN PROD: all 6 streams caughtUp in ~1h, TODAY'S founder LP add indexed at block
+> 90,319,681 with its verify anchor, 17 archive mints (11 First Signal + 6 Patron Seal),
+> burns #1→#8 gapless, /activity chips live, zero member addresses): THE LP AMOUNT
+> INVERSION dead at the root.** Cause: the read-model mapped amount0→SYN STATICALLY while
+> the real pair's IMMUTABLE token0 is USDC (prod proof: spine-oriented reserves ~2,678
+> SYN / ~55 USDC + the founder's add ≈ 39.85 USDC / 1,913.6 SYN — the spine itself always
+> displayed correctly because it orients DYNAMICALLY via token0() each read). FIX:
+> persisted rows were already NEUTRAL (amount0Raw/amount1Raw) — **NO RE-INDEX NEEDED**,
+> Replit's ask #2 falls away; the orientation is now a PINNED CANON FACT
+> (`FINANCIAL_TARGETS.lpPairToken0 = "USDC"`, provenance-commented) passed into the
+> read-model (`lpToken0IsSyn`) — never assumed. GUARD-PINNED (backbone 94→95): with
+> token0=USDC the model must map amount1→SYN — the inversion class can never return.
+> Green: tsc both · backbone 95 · targets 208 · api 17.
+>
+> **▶ Prior: 💗 SLICE H1a ✅ BUILT (2026-07-15, founder GO on the COMPLETE table + 3 corrections):
 > THE COMPLETE HEARTBEAT ARC OPENED — six new event classes end-to-end on the M4-c
 > machinery.** THE SYSTEM-FIRST LAW + THE HEARTBEAT COMPLETENESS INVARIANT engraved in
 > CLAUDE.md; the full 17-class inventory was presented ON SCREEN (both quarries swept:

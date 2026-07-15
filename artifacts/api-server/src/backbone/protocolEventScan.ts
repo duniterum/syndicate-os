@@ -326,8 +326,9 @@ function decodeLpLiquidityLog(log: RawLogEntry): ProtocolEventRecord {
   if (!isMint && !isBurn) throw new Error("lp log: unknown topic0");
   const words = dataToWords(log.data, 2, "lp liquidity");
   const decodedJson: Record<string, unknown> = {
-    // token0 = SYN, token1 = USDC (pinned by the reality spine's reserve
-    // orientation; the targets guard reconciles the pair address).
+    // NEUTRAL amounts, in the pair's own token0/token1 order — orientation
+    // (which is SYN) is decided at the read-model from the pinned canon fact
+    // (H1a-fix: the real pair's token0 is USDC; never assume an order here).
     amount0Raw: BigInt(words[0]).toString(10),
     amount1Raw: BigInt(words[1]).toString(10),
   };

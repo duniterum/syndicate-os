@@ -117,6 +117,12 @@ export interface ProtocolEventBuildInput {
   readonly blockTimestamps: readonly BlockTimestampInput[];
   /** Lowercased known founder wallet addresses (the allocation registry). */
   readonly founderAddresses: ReadonlySet<string>;
+  /**
+   * H1a-fix: the pair's immutable token0 orientation (canon pin, chain-
+   * verified). Persisted LP rows store NEUTRAL amount0/amount1; this input
+   * decides which is SYN — never assumed.
+   */
+  readonly lpToken0IsSyn: boolean;
 }
 
 export interface ProtocolEventBuildResult {
@@ -270,8 +276,10 @@ export function buildProtocolEventReadModel(
         : p.withdrawer;
     return {
       kind: p.eventName === "Mint" ? "lp-add" : "lp-remove",
-      amountSynRaw: p.amount0Raw,
-      amountUsdcRaw: p.amount1Raw,
+      // Orientation is the PINNED canon fact — never an assumption (the
+      // H1a-fix lesson: the real pair's token0 is USDC).
+      amountSynRaw: input.lpToken0IsSyn ? p.amount0Raw : p.amount1Raw,
+      amountUsdcRaw: input.lpToken0IsSyn ? p.amount1Raw : p.amount0Raw,
       actorLabel: labelOf(actor),
       blockNumber: p.blockNumber,
       logIndex: p.logIndex,

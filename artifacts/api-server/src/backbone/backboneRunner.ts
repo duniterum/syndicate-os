@@ -312,6 +312,9 @@ async function runCycle(): Promise<string | null> {
     archivePauses: protocolRows.archivePauses,
     blockTimestamps: input.blockTimestamps,
     founderAddresses,
+    // H1a-fix: the pair's immutable token0 orientation (canon pin, chain-
+    // verified 2026-07-15 — token0 is USDC). Never assumed in the read-model.
+    lpToken0IsSyn: FINANCIAL_TARGETS.lpPairToken0 === "SYN",
   });
 
   // ③c The introduction read-model refresh (M0) — ISOLATED like the protocol

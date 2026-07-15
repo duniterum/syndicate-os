@@ -297,6 +297,8 @@ export type FinancialTargets = {
   synTokenAddress: string;
   /** SERVER-ONLY AMM pair address (getReserves/token0 call target). */
   lpPair: string;
+  /** The pair's IMMUTABLE token0 (canon pin, chain-verified 2026-07-15). */
+  lpPairToken0: "USDC" | "SYN";
   /** The ACTIVE engine whose memberCount() is the live aggregate member tally. */
   memberCountEngine: { key: "MEMBERSHIP_SALE_V3"; address: string };
   /**
@@ -346,6 +348,17 @@ export const FINANCIAL_TARGETS: FinancialTargets = {
   usdcTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
   synTokenAddress: "0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170",
   lpPair: "0xe12491b79c9cfc6a07db8cd7fc8b3da0bb019389",
+  /**
+   * The pair's IMMUTABLE token0 (H1a-fix, chain-verified 2026-07-15): token0
+   * is USDC, token1 is SYN — proven in prod by the reality spine's oriented
+   * reserves (~2,678 SYN / ~55 USDC) and the founder's LP-add tx
+   * (amount0 ≈ 39.85 USDC / amount1 ≈ 1,913.6 SYN). A UniV2-style pair can
+   * never change token0, so this is canon, not state. The reality spine keeps
+   * its own DYNAMIC token0() orientation for reserves (mismatch → null); the
+   * backbone read-model orients its persisted amount0/amount1 rows with this
+   * pin.
+   */
+  lpPairToken0: "USDC",
   memberCountEngine: {
     key: "MEMBERSHIP_SALE_V3",
     address: "0x2A6cFc76906e758B934209AFf5A163c9bC20132E",

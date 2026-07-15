@@ -523,22 +523,25 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
   ],
   // H1a ⑤⑥: an lp-add whose depositor is identified by the SAME-TX LP-token
   // mint (Community here) + an lp-remove whose withdrawer is the founder.
+  // H1a-fix: amounts are NEUTRAL in the pair's real order — token0 = USDC,
+  // token1 = SYN (the prod-verified orientation; the inversion bug is pinned
+  // below and can never return).
   lpLiquidity: [
     {
       eventName: "Mint",
       blockNumber: 160,
       logIndex: 3,
       transactionHash: txF,
-      amount0Raw: "1000" + "0".repeat(18),
-      amount1Raw: "25" + "0".repeat(6),
+      amount0Raw: "25" + "0".repeat(6),
+      amount1Raw: "1000" + "0".repeat(18),
     },
     {
       eventName: "Burn",
       blockNumber: 170,
       logIndex: 4,
       transactionHash: txG,
-      amount0Raw: "10" + "0".repeat(18),
-      amount1Raw: "1" + "0".repeat(6),
+      amount0Raw: "1" + "0".repeat(6),
+      amount1Raw: "10" + "0".repeat(18),
       withdrawer: founderAddr,
     },
   ],
@@ -562,7 +565,16 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
     { chainId: CHAIN, blockNumber: 190, blockTimestampSec: T0 + 7_600 },
   ],
   founderAddresses: new Set([founderAddr]),
+  lpToken0IsSyn: false,
 });
+// H1a-fix pin (the prod-caught inversion, dead forever): with token0 = USDC,
+// the read-model must map amount1 → SYN and amount0 → USDC.
+check(
+  fixtureProtocolModel.lpItems[0]!.amountSynRaw === "1000" + "0".repeat(18) &&
+    fixtureProtocolModel.lpItems[0]!.amountUsdcRaw === "25" + "0".repeat(6),
+  "LP amounts orient via the pinned token0 canon (token0=USDC ⇒ amount1 is SYN)",
+  "the LP amount orientation inverted again",
+);
 // H1a pins: the promotion reading, the liquidity labels (Community add via
 // the same-tx depositor join; Founder remove via the event's withdrawer),
 // the artifact label, and the ceremonial action.
