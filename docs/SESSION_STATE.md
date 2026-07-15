@@ -2,6 +2,45 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🏆 SLICE H2-⑬ ✅ BUILT (2026-07-15, founder GO on the full 11-row inventory + the 4
+> sentences on screen; order locked H2 → S7 → S8): THE MILESTONE LAYER — the protocol's
+> canonical account of itself, derived GAPLESSLY from the indexed history, no new
+> persistence.** The origin's 11 canon defs harvested whole (`milestoneReadmodel.ts`),
+> adapted per the Mirror Rule: always "routed" never "raised" (guard-pinned), always
+> SEATS; the seat milestones ARE the chapter boundaries (333/1,000/3,333/10,000 —
+> chapters.ts canon, one story with the Chronicle). LIVE TRUTH READ THIS SESSION
+> (public RPC): inflows V1 25 + V2a 15 + V2b 110 + V3 60 = 210 USDC · memberCount 14 →
+> FOUR milestones already SEALED (first seat · First Signal · Patron Seal · $100 routed),
+> each will anchor to its exact crossing tx on the first post-deploy cycle (decodedJson
+> already persists the amounts — NO re-index). MACHINERY: RawSaleEventInput +
+> usdcGrossRaw (the purchase's own PUBLIC gross figure — per-generation key, whitelist
+> extended {firstSeat, memberNumber, usdcAmount, usdcIn, grossUsdc}, loader-confined,
+> never per-line, never in the aggregate report, guard-pinned both suites); pure
+> `buildMilestoneReadModel` (USDC cumsum walk → crossing anchor · seat ordinal anchor ·
+> first-mint anchor; fail-closed on a missing amount/timestamp); runner ③b2 with 5
+> fail-soft live eth_calls as OVERCLAIM PROTECTION (a live-read contradiction WITHHOLDS
+> the milestone with an honest note; unavailability never suppresses event truth — noted);
+> feed: kind "milestone" + `milestones` panel block + lanes.milestones + the tie-break law
+> (a milestone ranks NEWER than its underlying event on a shared anchor — the crossing
+> reads as the consequence); client: parse + §8 sentences (approved verbatim; future
+> crossings auto-sentence by class) + facts (cohort label) + Milestones filter chip +
+> `MilestonesPanel` (sealed w/ verify anchors · approaching w/ honest progress · binary
+> milestones say "awaiting its first on-chain act", never a fake bar · server notes
+> rendered). §8 canon: H2-⑬ table added. SEO-rides-the-slice: /activity description +
+> notes, sourceStatus proof+indexer notes speak the complete heartbeat, asOf → 2026-07-15.
+> + IN-SLICE REPAIR (found at the rig): /activity's Re-read button NEVER refetched (the
+> [addrs]-keyed effect never re-armed — pre-existing) → readNonce dep, verified working.
+> RUNTIME-VERIFIED on the rig: fail-closed path (backbone dark → panel hidden, honest
+> banner, 7 chips, zero console errors) AND the full panel + feed lines + filter + tie-break
+> exercised via a debug fetch-intercept fixture (source untouched, patch cleared, real
+> state confirmed back). Green: workspace tsc · seo 395 · rewrites · surface:audit 254 ·
+> ALL studio guards · ALL 17 api guards (activity 134→136 · backbone 95→110 ·
+> source-status-truth 161) · build 24 shells. DEPLOY: 🚀 BATCHABLE (additive + fail-closed;
+> prod keeps the current heartbeat until deployed; on deploy the milestone model builds on
+> the FIRST cycle — no catch-up, no re-index). NEXT IN H2 (founder-ticked order): ⑦
+> treasury (routing-dedup design first) → ⑫ eras → ⑭ Chronicle lines → ⑰ capital axis →
+> ⑩ deployments; then S7 member home (wireframe approved) · S8 perf · S5 on the paste.
+>
 > **▶ 🏁 SESSION SEAL (end of day 2026-07-14, sealed 2026-07-15) — THE 6TH-ITERATION DAY:
 > everything settled once, on a base that cannot rot again.** SEALED IN PROD during the
 > day (all Replit-verified on thesyndicate.money): **M1 arc** (M1-a hero first act ·

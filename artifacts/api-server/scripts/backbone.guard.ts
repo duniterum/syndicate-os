@@ -27,6 +27,12 @@
  *      address can never pass), the feed gate masks only validated anchors
  *      and strict-scans the rest, newest-first + hard cap hold, and the
  *      route scans before sending.
+ *   H. Milestones (H2-⑬): the 11 canon defs hold (ids, vocabulary — always
+ *      "routed", never fundraising register), crossings anchor to the EXACT
+ *      transaction (USDC cumsum · seat ordinal · first mint), the live
+ *      cross-check WITHHOLDS a contradicted milestone (fail-closed), a
+ *      missing purchase amount fails the build closed, and milestone lines
+ *      rank newer than their underlying event on a shared anchor.
  *
  * Run: pnpm --filter @workspace/api-server run backbone:guard
  */
@@ -52,6 +58,10 @@ import {
   FEED_MAX_ITEMS,
   TX_HASH_SHAPE_RE,
 } from "../src/backbone/feedProjection";
+import {
+  buildMilestoneReadModel,
+  PROTOCOL_MILESTONES,
+} from "../src/backbone/milestoneReadmodel";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const apiDir = path.resolve(here, "..");
@@ -456,6 +466,7 @@ const fixtureModel = buildActivityHeartbeatReadModel({
       transactionHash: txA,
       firstSeat: null,
       memberNumber: null,
+      usdcGrossRaw: null,
     },
     {
       chainId: CHAIN,
@@ -466,6 +477,7 @@ const fixtureModel = buildActivityHeartbeatReadModel({
       transactionHash: txB,
       firstSeat: true,
       memberNumber: 424242,
+      usdcGrossRaw: null,
     },
   ],
   blockTimestamps: [
@@ -616,9 +628,152 @@ check(
   "burn ledger numbering or labeling broke",
 );
 
+// ---------------------------------------------------------------------------
+// H. Milestones (H2-⑬): canon defs + crossing derivation + fail-closed paths.
+// ---------------------------------------------------------------------------
+
+// The 11 canon defs hold: unique ids, the vocabulary law (usdc labels speak
+// "routed" — the routing register; the fundraising register never enters),
+// seat milestones ARE the chapter boundaries.
+check(
+  PROTOCOL_MILESTONES.length === 11 &&
+    new Set(PROTOCOL_MILESTONES.map((m) => m.id)).size === 11,
+  "the 11 origin milestones hold with unique ids",
+  `milestone defs drifted (count=${PROTOCOL_MILESTONES.length})`,
+);
+check(
+  PROTOCOL_MILESTONES.filter((m) => m.kind === "usdc").every((m) =>
+    m.label.includes("routed"),
+  ) && PROTOCOL_MILESTONES.every((m) => !/raised?/i.test(m.label)),
+  'usdc milestone labels speak "routed" — the fundraising register never enters',
+  "a milestone label broke the routed-never-raised vocabulary law",
+);
+check(
+  PROTOCOL_MILESTONES.some((m) => m.id === "seats-333" && m.target === 333) &&
+    PROTOCOL_MILESTONES.some((m) => m.id === "seats-1000" && m.target === 1000) &&
+    PROTOCOL_MILESTONES.some((m) => m.id === "seats-3333" && m.target === 3333) &&
+    PROTOCOL_MILESTONES.some((m) => m.id === "seats-10000" && m.target === 10000),
+  "the seat milestones are the chapter boundaries (333 · 1,000 · 3,333 · 10,000)",
+  "the seat milestones drifted from the canon chapter boundaries",
+);
+
+// A clean milestone fixture: two purchases (V1 50 USDC · V3 seat #2, 60 USDC
+// — cumulative 110 crosses the $100 threshold AT the V3 purchase) + the
+// protocol model's First Signal mint. Live reads AGREE (memberCount 2,
+// inflow 110) — three crossings seal, each anchored to its exact tx.
+const milestonePurchases = [
+  {
+    chainId: CHAIN,
+    generation: "V1",
+    eventName: "TokensPurchased",
+    blockNumber: 100,
+    logIndex: 0,
+    transactionHash: txA,
+    firstSeat: null,
+    memberNumber: null,
+    usdcGrossRaw: "50" + "0".repeat(6),
+  },
+  {
+    chainId: CHAIN,
+    generation: "V3",
+    eventName: "MembershipPurchasedV3",
+    blockNumber: 200,
+    logIndex: 1,
+    transactionHash: txB,
+    firstSeat: true,
+    memberNumber: 2,
+    usdcGrossRaw: "60" + "0".repeat(6),
+  },
+];
+const milestoneTs = [
+  { chainId: CHAIN, blockNumber: 100, blockTimestampSec: T0 },
+  { chainId: CHAIN, blockNumber: 200, blockTimestampSec: T0 + 86_400 },
+];
+const fixtureMilestoneModel = buildMilestoneReadModel({
+  expectedChainId: CHAIN,
+  rawEvents: milestonePurchases,
+  blockTimestamps: milestoneTs,
+  archiveMintItems: fixtureProtocolModel.archiveMintItems,
+  liveMemberCount: 2,
+  liveInflowAggregateRaw: "110" + "0".repeat(6),
+});
+check(
+  fixtureMilestoneModel.sealed.length === 3 &&
+    fixtureMilestoneModel.sealed[0]!.id === "first-seat" &&
+    fixtureMilestoneModel.sealed[0]!.blockNumber === 100 &&
+    fixtureMilestoneModel.sealed[0]!.transactionHash === txA &&
+    fixtureMilestoneModel.sealed[1]!.id === "first-signal-mint" &&
+    fixtureMilestoneModel.sealed[1]!.blockNumber === 180 &&
+    fixtureMilestoneModel.sealed[2]!.id === "routed-100" &&
+    fixtureMilestoneModel.sealed[2]!.blockNumber === 200 &&
+    fixtureMilestoneModel.sealed[2]!.transactionHash === txB,
+  "milestone crossings anchor to the EXACT transaction (first purchase · first mint · the $100-crossing purchase)",
+  "milestone crossing anchors broke",
+);
+check(
+  fixtureMilestoneModel.approaching.some(
+    (a) => a.id === "routed-1k" && a.currentUsdcRaw === "110" + "0".repeat(6),
+  ) &&
+    fixtureMilestoneModel.approaching.some(
+      (a) => a.id === "seats-100" && a.currentSeats === 2,
+    ) &&
+    fixtureMilestoneModel.approaching.some((a) => a.id === "patron-seal-mint"),
+  "approaching milestones carry honest indexed-history progress",
+  "approaching milestone progress broke",
+);
+// The live cross-check WITHHOLDS a contradicted crossing (fail-closed): the
+// events say $100 crossed, the live inflow read says 90 — the line is
+// withheld and the note says so.
+{
+  const contradicted = buildMilestoneReadModel({
+    expectedChainId: CHAIN,
+    rawEvents: milestonePurchases,
+    blockTimestamps: milestoneTs,
+    archiveMintItems: fixtureProtocolModel.archiveMintItems,
+    liveMemberCount: 2,
+    liveInflowAggregateRaw: "90" + "0".repeat(6),
+  });
+  check(
+    !contradicted.sealed.some((s) => s.id === "routed-100") &&
+      contradicted.approaching.some((a) => a.id === "routed-100") &&
+      contradicted.notes.some((n) => n.includes("withheld")),
+    "a live-read contradiction WITHHOLDS the milestone with an honest note (fail-closed)",
+    "the milestone live cross-check no longer withholds a contradicted crossing",
+  );
+}
+// Live-read unavailability never suppresses event-derived truth — it only
+// removes the extra check, and the notes say so.
+{
+  const noLive = buildMilestoneReadModel({
+    expectedChainId: CHAIN,
+    rawEvents: milestonePurchases,
+    blockTimestamps: milestoneTs,
+    archiveMintItems: fixtureProtocolModel.archiveMintItems,
+    liveMemberCount: null,
+    liveInflowAggregateRaw: null,
+  });
+  check(
+    noLive.sealed.length === 3 &&
+      noLive.notes.some((n) => n.includes("live cross-check unavailable")),
+    "live-read unavailability keeps event-derived truth serving, honestly noted",
+    "milestone posture on missing live reads broke",
+  );
+}
+expectThrow("milestone build fails closed on a purchase without its amount", () =>
+  buildMilestoneReadModel({
+    expectedChainId: CHAIN,
+    rawEvents: [{ ...milestonePurchases[0]!, usdcGrossRaw: null }],
+    blockTimestamps: milestoneTs,
+    archiveMintItems: [],
+    liveMemberCount: null,
+    liveInflowAggregateRaw: null,
+  }),
+);
+
 const feed = buildPublicFeed({
   model: fixtureModel,
   protocolModel: fixtureProtocolModel,
+  milestoneModel: fixtureMilestoneModel,
   state: "idle",
   headBlock: 300,
   finishedIso: "2026-07-13T00:00:00.000Z",
@@ -633,16 +788,62 @@ check(
 );
 const feedJson = JSON.stringify(feed);
 check(
-  feed.items.length === 11 &&
+  feed.items.length === 14 &&
     feed.items[0]!.blockNumber === 200 &&
-    feed.items[10]!.blockNumber === 100,
-  "feed serves newest first across ALL kinds (seats, burns, lifecycle, lp, archive)",
+    feed.items[13]!.blockNumber === 100,
+  "feed serves newest first across ALL kinds (seats, burns, lifecycle, lp, archive, milestones)",
   `feed ordering broke (items=${feed.items.length})`,
+);
+// H2-⑬: a milestone shares its anchor with the event that crossed it — in
+// the newest-first feed the crossing reads as the CONSEQUENCE (ranks newer).
+check(
+  feed.items[0]!.kind === "milestone" &&
+    feed.items[1]!.kind === "purchase" &&
+    feed.items[1]!.blockNumber === 200,
+  "a milestone line ranks newer than its underlying event on a shared anchor",
+  "the milestone tie-break broke — the crossing no longer reads as the consequence",
 );
 check(
   feed.lanes.liquidity === true && feed.lanes.archive === true,
   "the feed declares the liquidity + archive lanes honestly",
   "the new lane flags broke",
+);
+check(
+  feed.lanes.milestones === true &&
+    feed.milestones !== null &&
+    feed.milestones.sealed.length === 3 &&
+    feed.milestones.sealed[0]!.milestoneId === "first-seat" &&
+    feed.milestones.approaching.length === 8,
+  "the feed serves the Milestones panel block (3 sealed + 8 approaching, honest flags)",
+  "the milestones block broke",
+);
+expectThrow("feed gate trips on a planted address in a milestone label", () =>
+  assertFeedSafeJson(
+    JSON.stringify(
+      buildPublicFeed({
+        model: null,
+        protocolModel: null,
+        milestoneModel: {
+          ...fixtureMilestoneModel,
+          approaching: [
+            {
+              id: "seats-100",
+              label: "0x" + "ee".repeat(20),
+              kind: "seats",
+              target: 100,
+              currentSeats: 2,
+              currentUsdcRaw: null,
+            },
+          ],
+        },
+        state: "idle",
+        headBlock: 300,
+        finishedIso: null,
+        burnsAsOfBlock: null,
+        lifecycleAsOfBlock: null,
+      }),
+    ),
+  ),
 );
 check(
   feed.burnLedger.length === 2 &&
@@ -690,6 +891,7 @@ expectThrow("projection fails closed on an address-shaped verify anchor", () =>
       ],
     },
     protocolModel: null,
+    milestoneModel: null,
     state: "idle",
     headBlock: 300,
     finishedIso: null,
@@ -709,6 +911,7 @@ expectThrow("projection fails closed on a non-canonical sender label", () =>
         },
       ],
     },
+    milestoneModel: null,
     state: "idle",
     headBlock: 300,
     finishedIso: null,
@@ -720,6 +923,7 @@ expectThrow("projection fails closed on a non-canonical sender label", () =>
   const empty = buildPublicFeed({
     model: null,
     protocolModel: null,
+    milestoneModel: null,
     state: "disabled",
     headBlock: null,
     finishedIso: null,
@@ -731,7 +935,9 @@ expectThrow("projection fails closed on a non-canonical sender label", () =>
       empty.coverage.itemsTotal === 0 &&
       empty.burnLedger.length === 0 &&
       empty.lanes.seats === false &&
-      empty.lanes.burns === false,
+      empty.lanes.burns === false &&
+      empty.lanes.milestones === false &&
+      empty.milestones === null,
     "null models serve an honest empty feed with honest lane flags (never invented)",
     "empty-feed posture broke",
   );

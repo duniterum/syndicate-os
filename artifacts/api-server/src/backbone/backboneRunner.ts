@@ -72,6 +72,19 @@ import {
   type IntroductionRefreshSummary,
 } from "./introductionRefresh";
 import { FINANCIAL_TARGETS } from "../data/protocolTargets";
+import {
+  buildMilestoneReadModel,
+  type MilestoneBuildResult,
+} from "./milestoneReadmodel";
+import { ethCall } from "../lib/protocol/evmRead";
+import {
+  decodeUint256Decimal,
+  SELECTOR_TOTAL_GROSS_USDC,
+} from "../lib/protocol/saleDecoders";
+import {
+  SELECTOR_MEMBER_COUNT,
+  SELECTOR_TOTAL_USDC_RAISED,
+} from "../lib/protocol/financialDecoders";
 
 // ---------------------------------------------------------------------------
 // Status state (in-memory, address-free by construction).
@@ -172,6 +185,8 @@ let started = false;
  */
 let lastGoodModel: ActivityBuildResult | null = null;
 let lastGoodProtocolModel: ProtocolEventBuildResult | null = null;
+/** H2-⑬: the derived milestone model (crossings + honest progress). */
+let lastGoodMilestoneModel: MilestoneBuildResult | null = null;
 /** The protocol lane's honest coverage bounds (its cursors), for projections. */
 let burnsAsOfBlock: number | null = null;
 let lifecycleAsOfBlock: number | null = null;
@@ -181,6 +196,7 @@ export function getBackboneFeedSource(): FeedSource {
   return {
     model: lastGoodModel,
     protocolModel: lastGoodProtocolModel,
+    milestoneModel: lastGoodMilestoneModel,
     state: status.state,
     headBlock: status.lastSuccess?.headBlock ?? null,
     finishedIso: status.lastSuccess?.finishedIso ?? null,
@@ -317,6 +333,60 @@ async function runCycle(): Promise<string | null> {
     lpToken0IsSyn: FINANCIAL_TARGETS.lpPairToken0 === "SYN",
   });
 
+  // ③b2 The milestone read-model (H2-⑬) — derived GAPLESSLY from the two
+  // lanes above, no new persistence. The live memberCount + inflow reads are
+  // OVERCLAIM PROTECTION only (5 eth_calls, fail-soft): unavailable reads
+  // never darken the model — the builder notes the posture honestly; a
+  // contradiction WITHHOLDS the contradicted milestone, fail-closed.
+  let milestoneModel: MilestoneBuildResult | null = null;
+  let milestoneFault: string | null = null;
+  try {
+    let liveMemberCount: number | null = null;
+    let liveInflowAggregateRaw: string | null = null;
+    try {
+      const mcDec = decodeUint256Decimal(
+        await ethCall(
+          transport,
+          FINANCIAL_TARGETS.memberCountEngine.address,
+          SELECTOR_MEMBER_COUNT,
+        ),
+      );
+      const mcNum = mcDec !== null ? Number(mcDec) : NaN;
+      liveMemberCount = Number.isSafeInteger(mcNum) ? mcNum : null;
+
+      let inflowSum = 0n;
+      let inflowOk = true;
+      for (const t of FINANCIAL_TARGETS.inflows) {
+        const selector =
+          t.view === "totalUsdcRaised"
+            ? SELECTOR_TOTAL_USDC_RAISED
+            : SELECTOR_TOTAL_GROSS_USDC;
+        const dec = decodeUint256Decimal(
+          await ethCall(transport, t.address, selector),
+        );
+        if (dec === null) {
+          inflowOk = false;
+          break;
+        }
+        inflowSum += BigInt(dec);
+      }
+      liveInflowAggregateRaw = inflowOk ? inflowSum.toString(10) : null;
+    } catch {
+      liveMemberCount = null;
+      liveInflowAggregateRaw = null;
+    }
+    milestoneModel = buildMilestoneReadModel({
+      expectedChainId: BACKBONE_EXPECTED_CHAIN_ID,
+      rawEvents: input.rawEvents,
+      blockTimestamps: input.blockTimestamps,
+      archiveMintItems: protocolModel.archiveMintItems,
+      liveMemberCount,
+      liveInflowAggregateRaw,
+    });
+  } catch (err) {
+    milestoneFault = err instanceof Error ? err.message : String(err);
+  }
+
   // ③c The introduction read-model refresh (M0) — ISOLATED like the protocol
   // lane: a fault or an honest skip never darkens the heartbeat; the previous
   // live model (or the committed snapshot) keeps serving the standing reads.
@@ -330,6 +400,9 @@ async function runCycle(): Promise<string | null> {
 
   lastGoodModel = model;
   lastGoodProtocolModel = protocolModel;
+  // H2-⑬: a milestone fault keeps the previous good milestone model (the
+  // heartbeat itself is never darkened by the derived layer).
+  if (milestoneModel !== null) lastGoodMilestoneModel = milestoneModel;
   burnsAsOfBlock =
     protocolStreams.find((s) => s.streamKey === "SYN_BURN")?.cursorBlock ??
     burnsAsOfBlock;
@@ -377,6 +450,11 @@ async function runCycle(): Promise<string | null> {
   if (introFault !== null) {
     partialNotes.push(
       "introduction refresh faulted — the previous model keeps serving",
+    );
+  }
+  if (milestoneFault !== null) {
+    partialNotes.push(
+      "milestone derivation faulted — the previous milestone model keeps serving",
     );
   }
   return partialNotes.length > 0 ? partialNotes.join(" · ") : null;

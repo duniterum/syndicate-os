@@ -65,7 +65,7 @@ export const ACTIVITY_DOCTRINE = [
   "Chain-verified time only: every item timestamp comes from the block-timestamp cache (eth_getBlockByNumber-verified); wall-clock never enters.",
   "Routed rows are routing detail of their purchase transaction, not separate activity; they fold into the paired purchase and are counted as folded.",
   "firstSeat is reported only where the contract emitted it; V1 rows are 'unknown', never inferred.",
-  "Gated economics stay gated: referral and source fields are never read into this model.",
+  "Gated economics stay gated: referral and source fields are never read into this model. The purchase's own public gross-USDC figure (one decoded key per generation — not a gated field) is whitelisted in the shared loader for the milestone read-model's cumulative walk only; it never renders per-line and never enters the aggregate report.",
   "The taxonomy (kind/category) mirrors the vendored canon protocol-event registry; this file never invents a parallel taxonomy.",
   "Exactly TWO sanctioned projections: the address-safe aggregate report (status) and the receipt-line feed (feedProjection, M4-b) — nothing else ever serializes the model.",
   "Wallets, member numbers, log indexes, decodedJson and rawJson never appear in ANY public output; the transaction hash appears ONLY as the feed's per-line verify anchor (public chain data), never in the aggregate report.",
@@ -120,6 +120,14 @@ export interface RawSaleEventInput {
    * reported. The V2B sentinel 0 is a valid opaque token, never a member.
    */
   readonly memberNumber: number | null;
+  /**
+   * H2-⑬: the purchase's own PUBLIC gross-USDC figure (6-dec raw decimal
+   * string; V1 usdcAmount · V2 usdcIn · V3 grossUsdc — not a gated economics
+   * field). Consumed ONLY by the milestone read-model's cumulative walk;
+   * never rendered per-line, never enters the aggregate report. null on
+   * Routed rows (routing detail, not a purchase).
+   */
+  readonly usdcGrossRaw: string | null;
 }
 
 export interface BlockTimestampInput {
@@ -456,6 +464,7 @@ export function toAddressSafeActivityReport(
     '"firstSeat"',
     '"logIndex"',
     '"blockTimestampSec"',
+    '"usdcGrossRaw"',
   ]) {
     if (json.includes(forbiddenField)) {
       throw new Error(

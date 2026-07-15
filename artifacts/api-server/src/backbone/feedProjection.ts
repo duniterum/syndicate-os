@@ -34,6 +34,10 @@ import type {
   ProtocolEventBuildResult,
   SenderLabel,
 } from "./protocolEventReadmodel";
+import type {
+  MilestoneBuildResult,
+  MilestoneKind,
+} from "./milestoneReadmodel";
 
 /** Hard cap on served mixed-feed lines (newest first). Pagination waits. */
 export const FEED_MAX_ITEMS = 100;
@@ -97,13 +101,41 @@ export interface PublicArchivePauseLine extends LineCommon {
   readonly action: "paused" | "resumed";
 }
 
+// ── H2-⑬ — milestone crossings (derived, anchored to the crossing tx) ───────
+export interface PublicMilestoneLine extends LineCommon {
+  readonly kind: "milestone";
+  readonly milestoneId: string;
+  /** Founder-approved public label (canon defs, milestoneReadmodel). */
+  readonly label: string;
+  readonly milestoneKind: MilestoneKind;
+  readonly target: number;
+}
+
 export type PublicFeedLine =
   | PublicSeatLine
   | PublicBurnLine
   | PublicLifecycleLine
   | PublicLpLine
   | PublicArchiveMintLine
-  | PublicArchivePauseLine;
+  | PublicArchivePauseLine
+  | PublicMilestoneLine;
+
+/** H2-⑬ — the /activity Milestones panel block (address-safe by shape). */
+export interface PublicMilestones {
+  /** Sealed crossings, oldest first — each IS a feed line with its anchor. */
+  readonly sealed: readonly PublicMilestoneLine[];
+  /** Canon order; honest progress from the indexed history. */
+  readonly approaching: readonly {
+    readonly id: string;
+    readonly label: string;
+    readonly kind: MilestoneKind;
+    readonly target: number;
+    readonly currentSeats: number | null;
+    readonly currentUsdcRaw: string | null;
+  }[];
+  /** Honest derivation notes (withheld lines, live-read posture). */
+  readonly notes: readonly string[];
+}
 
 export interface PublicActivityFeed {
   readonly module: "event-backbone";
@@ -129,12 +161,16 @@ export interface PublicActivityFeed {
     readonly referralLifecycle: boolean;
     readonly liquidity: boolean;
     readonly archive: boolean;
+    /** H2-⑬: milestone crossings, derived from the lanes above. */
+    readonly milestones: boolean;
   };
   readonly honesty: string;
   /** Mixed feed, newest first, capped. */
   readonly items: readonly PublicFeedLine[];
   /** The COMPLETE numbered Proof of Burn record, oldest first. */
   readonly burnLedger: readonly PublicBurnLine[];
+  /** H2-⑬: the Milestones panel block (null while the model is dark). */
+  readonly milestones: PublicMilestones | null;
 }
 
 const FEED_HONESTY_LINE =
@@ -143,6 +179,8 @@ const FEED_HONESTY_LINE =
 export interface FeedSource {
   readonly model: ActivityBuildResult | null;
   readonly protocolModel: ProtocolEventBuildResult | null;
+  /** H2-⑬: the milestone model (null = dark / no successful build yet). */
+  readonly milestoneModel: MilestoneBuildResult | null;
   readonly state: string;
   readonly headBlock: number | null;
   readonly finishedIso: string | null;
@@ -172,7 +210,7 @@ function assertSenderLabel(label: string): void {
  * no successful cycle yet) serve an honest empty feed — never an invented one.
  */
 export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
-  const { model, protocolModel } = source;
+  const { model, protocolModel, milestoneModel } = source;
 
   const seatLines: PublicSeatLine[] = (model?.items ?? []).map((item) => {
     assertAnchor(item.transactionHash);
@@ -284,6 +322,39 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
     };
   });
 
+  // ── H2-⑬ — milestone crossings + the panel block ──
+  const milestoneLines: PublicMilestoneLine[] = (
+    milestoneModel?.sealed ?? []
+  ).map((m) => {
+    assertAnchor(m.transactionHash);
+    return {
+      kind: "milestone" as const,
+      milestoneId: m.id,
+      label: m.label,
+      milestoneKind: m.kind,
+      target: m.target,
+      blockNumber: m.blockNumber,
+      blockTimestampSec: m.blockTimestampSec,
+      isoDayUtc: m.isoDayUtc,
+      transactionHash: m.transactionHash,
+      logIndex: m.logIndex,
+    };
+  });
+  const milestones: PublicMilestones | null = milestoneModel
+    ? {
+        sealed: milestoneLines,
+        approaching: milestoneModel.approaching.map((a) => ({
+          id: a.id,
+          label: a.label,
+          kind: a.kind,
+          target: a.target,
+          currentSeats: a.currentSeats,
+          currentUsdcRaw: a.currentUsdcRaw,
+        })),
+        notes: milestoneModel.notes,
+      }
+    : null;
+
   const allLines: PublicFeedLine[] = [
     ...seatLines,
     ...burnLedger,
@@ -291,10 +362,16 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
     ...lpLines,
     ...archiveMintLines,
     ...archivePauseLines,
+    ...milestoneLines,
   ].sort((a, b) =>
     a.blockNumber !== b.blockNumber
       ? b.blockNumber - a.blockNumber
-      : b.logIndex - a.logIndex,
+      : a.logIndex !== b.logIndex
+        ? b.logIndex - a.logIndex
+        : // A milestone shares its anchor with the event that crossed it; in
+          // the newest-first feed the crossing reads as the CONSEQUENCE — the
+          // milestone line ranks newer than its underlying event.
+          (b.kind === "milestone" ? 1 : 0) - (a.kind === "milestone" ? 1 : 0),
   );
   const items = allLines.slice(0, FEED_MAX_ITEMS);
 
@@ -315,10 +392,12 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
       referralLifecycle: protocolModel !== null,
       liquidity: protocolModel !== null,
       archive: protocolModel !== null,
+      milestones: milestoneModel !== null,
     },
     honesty: FEED_HONESTY_LINE,
     items,
     burnLedger,
+    milestones,
   };
 }
 

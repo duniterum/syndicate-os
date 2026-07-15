@@ -13,8 +13,10 @@
  *     saleEventRaw INSERT (idempotent, onConflictDoNothing), indexerCursor
  *     UPSERT (the engine's fail-closed cursor discipline), blockTimestamp
  *     INSERT (onConflictDoNothing). No update elsewhere, no delete, ever.
- *   - decodedJson access is whitelisted to exactly {firstSeat, memberNumber};
- *     gated economics (referral/source fields) are never read.
+ *   - decodedJson access is whitelisted to exactly {firstSeat, memberNumber,
+ *     usdcAmount, usdcIn, grossUsdc} — the last three are the purchase's own
+ *     PUBLIC gross-USDC figure (one per generation, H2-⑬ milestone cumsum
+ *     only); gated economics (referral/source fields) are never read.
  */
 
 import type {
@@ -522,9 +524,22 @@ export async function loadActivityHeartbeatInput(): Promise<ActivityHeartbeatLoa
   }
 
   const rawEvents: RawSaleEventInput[] = rawRows.map((r) => {
-    // decodedJson WHITELIST: exactly {firstSeat, memberNumber}. Nothing else
-    // is read; gated economics never enter this model.
+    // decodedJson WHITELIST: exactly {firstSeat, memberNumber, usdcAmount,
+    // usdcIn, grossUsdc}. The USDC keys are the purchase's own PUBLIC gross
+    // figure (one per generation, H2-⑬ milestone cumulative walk only);
+    // gated economics never enter this model.
     const d = r.decodedJson as Record<string, unknown>;
+    // Per-generation public gross-USDC value (Routed rows carry none here):
+    // V1 TokensPurchased → usdcAmount · V2 Purchased → usdcIn ·
+    // V3 MembershipPurchasedV3 → grossUsdc.
+    const usdcValue =
+      r.eventName === "TokensPurchased"
+        ? d.usdcAmount
+        : r.eventName === "Purchased"
+          ? d.usdcIn
+          : r.eventName === "MembershipPurchasedV3"
+            ? d.grossUsdc
+            : undefined;
     return {
       chainId: r.chainId,
       generation: r.generation,
@@ -537,6 +552,10 @@ export async function loadActivityHeartbeatInput(): Promise<ActivityHeartbeatLoa
       memberNumber:
         "memberNumber" in d
           ? toInt(d.memberNumber, "decoded memberNumber")
+          : null,
+      usdcGrossRaw:
+        typeof usdcValue === "string" && /^[0-9]+$/.test(usdcValue)
+          ? usdcValue
           : null,
     };
   });

@@ -265,6 +265,22 @@ discipline stands: the server never emits a MEMBER's wallet address).
 | Artifact mint (⑪) | "A {artifact} was minted — protocol memory, written to the chain." | {artifact} ∈ canon labels (First Signal · Patron Seal · Artifact #N); minter never named |
 | Source wallet rotation (⑯) | "A source's payment wallet was rotated — a public act; there are no silent edits." | covers both wallet and payment-wallet rotations |
 
+### LIVE sentences added by H2-⑬ (the milestone layer, founder-approved table, 2026-07-15)
+
+Milestone crossings are DERIVED lines: each anchors to the exact transaction where the
+chain crossed a canonical threshold (seat ordinal · cumulative USDC routed · first-of-kind
+mint). Vocabulary law: always **"routed"**, never "raised" (the routing register — the
+fundraising register never enters); always **seats**. The 11 canon defs live in
+`src/backbone/milestoneReadmodel.ts`; the seat milestones ARE the chapter boundaries.
+
+| Event | The canonical sentence | Variants |
+|---|---|---|
+| First seat (milestone) | "The protocol's first seat was sealed on Avalanche." | — |
+| First Signal first mint | "The Archive's first First Signal was minted." | — |
+| First Patron Seal first mint | "The Archive's first Patron Seal was minted." | — |
+| USDC threshold crossed | "The protocol crossed {N} USDC routed through the sale — 70/20/10, on-chain." | {N} ∈ canon thresholds (100 · 1,000 · 10,000) |
+| Seat-cohort threshold crossed | "Seat #{N} was sealed — a protocol milestone." | the cohort's canon label (e.g. "Genesis Signal sealed (#1–#333)") renders as the line's FACT |
+
 ### RESERVED sentences (authored now; their surfaces are not built — labels, not locks)
 
 | Event | The canonical sentence (RESERVED) | Notes |

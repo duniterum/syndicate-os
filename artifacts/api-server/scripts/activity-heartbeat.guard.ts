@@ -69,6 +69,7 @@ function ev(partial: Partial<RawSaleEventInput>): RawSaleEventInput {
     transactionHash: "tx-a",
     firstSeat: null,
     memberNumber: null,
+    usdcGrossRaw: null,
     ...partial,
   };
 }
@@ -387,20 +388,29 @@ for (const banned of [
   );
 }
 
-// decodedJson whitelist: exactly {firstSeat, memberNumber} accessed, and ONLY
-// inside the shared backbone loader (the one loader for derive AND the
-// unattended runner); gated economics literals never appear anywhere in the
-// activity chain. The derive script itself performs NO decodedJson access.
+// decodedJson whitelist: exactly {firstSeat, memberNumber, usdcAmount,
+// usdcIn, grossUsdc} accessed, and ONLY inside the shared backbone loader
+// (the one loader for derive AND the unattended runner). The three USDC keys
+// are the purchase's own PUBLIC gross figure (one per generation — H2-⑬
+// milestone cumulative walk; NOT gated economics per saleEventSemantics);
+// gated economics literals never appear anywhere in the activity chain.
+// The derive script itself performs NO decodedJson access.
 const decodedAccesses = [
   ...backboneDbSrc.matchAll(/\bd\.(\w+)|"(\w+)" in d\b/g),
 ]
   .map((m) => m[1] ?? m[2])
   .filter((k): k is string => Boolean(k));
-const allowedKeys = new Set(["firstSeat", "memberNumber"]);
+const allowedKeys = new Set([
+  "firstSeat",
+  "memberNumber",
+  "usdcAmount",
+  "usdcIn",
+  "grossUsdc",
+]);
 check(
   decodedAccesses.length > 0 &&
     decodedAccesses.every((k) => allowedKeys.has(k)),
-  "shared loader decodedJson access whitelist is exactly {firstSeat, memberNumber}",
+  "shared loader decodedJson access whitelist is exactly {firstSeat, memberNumber, usdcAmount, usdcIn, grossUsdc}",
   `shared loader reads non-whitelisted decodedJson keys: ${decodedAccesses
     .filter((k) => !allowedKeys.has(k))
     .join(", ")}`,
@@ -418,15 +428,24 @@ const gatedLiterals = [
   "source" + "Class",
   '"buyer"',
   '"recipient"',
-  "usdc" + "In",
   "syn" + "Out",
-  "gross" + "Usdc",
+  "acquisition" + "Cost",
 ];
 for (const lit of gatedLiterals) {
   check(
     !readmodelSrc.includes(lit) && !deriveSrc.includes(lit) && !backboneDbSrc.includes(lit),
     `gated economics literal absent: ${lit}`,
     `activity chain must never reference gated field ${lit}`,
+  );
+}
+// The purchase's PUBLIC gross-USDC keys (H2-⑬): legitimate ONLY in the shared
+// loader's whitelist (the milestone cumsum input); the pure builder and the
+// derive script never touch the raw keys themselves.
+for (const lit of ["usdc" + "Amount", "usdc" + "In", "gross" + "Usdc"]) {
+  check(
+    !readmodelSrc.includes(lit) && !deriveSrc.includes(lit),
+    `public USDC key confined to the loader: ${lit}`,
+    `raw USDC key ${lit} leaked outside the shared loader`,
   );
 }
 

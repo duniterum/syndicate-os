@@ -36,6 +36,7 @@ import {
   type ServedFeed,
   type ServedFeedLine,
 } from "@/lib/backboneFeedClient";
+import { MilestonesPanel } from "@/components/activity/MilestonesPanel";
 
 // The §8 event lexicon lives in backboneFeedClient (one mapping, shared with
 // the hero's live mini-feed since M1-b — no copy invented twice).
@@ -52,6 +53,8 @@ const SERVED_KIND_TO_WINDOW_KIND: Record<ServedFeedLine["kind"], ActivityKind> =
   "lp-remove": "lp-remove",
   "archive-mint": "archive-mint",
   "archive-pause": "archive-pause",
+  // H2-⑬ — milestone crossings (served-feed only).
+  milestone: "milestone",
 };
 
 const KIND_LABEL: Record<ActivityKind, string> = {
@@ -65,13 +68,21 @@ const KIND_LABEL: Record<ActivityKind, string> = {
   "lp-remove": "Liquidity",
   "archive-mint": "Archive",
   "archive-pause": "Archive",
+  milestone: "Milestone",
 };
 
 function addressFromUrl(url: string): string | null {
   return url.match(/\/(?:token|address)\/(0x[0-9a-fA-F]{40})\b/)?.[1] ?? null;
 }
 
-type FilterId = "all" | "seat" | "burn" | "referral" | "liquidity" | "archive";
+type FilterId =
+  | "all"
+  | "seat"
+  | "burn"
+  | "referral"
+  | "liquidity"
+  | "archive"
+  | "milestone";
 const FILTERS: { id: FilterId; label: string }[] = [
   { id: "all", label: "All" },
   { id: "seat", label: "Seats" },
@@ -79,6 +90,7 @@ const FILTERS: { id: FilterId; label: string }[] = [
   { id: "referral", label: "Referral events" },
   { id: "liquidity", label: "Liquidity" },
   { id: "archive", label: "Archive" },
+  { id: "milestone", label: "Milestones" },
 ];
 
 function matches(item: ActivityItem, f: FilterId): boolean {
@@ -127,6 +139,10 @@ export function LiveActivityFeed({
   const [servedTried, setServedTried] = useState(false);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<FilterId>("all");
+  // The Re-read counter: bumping it re-arms the fetch effect below (state
+  // resets alone never re-fire an [addrs]-keyed effect — the button stalled
+  // on "Reading the chain…" forever; found at the H2-⑬ rig verification).
+  const [readNonce, setReadNonce] = useState(0);
 
   useEffect(() => {
     if (!addrs || loading || scan) return;
@@ -142,7 +158,7 @@ export function LiveActivityFeed({
       },
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addrs]);
+  }, [addrs, readNonce]);
 
   // M5/M4-c merge: served lines of EVERY kind join the window's items;
   // overlap dedupes by (kind · anchor · log index) — the window's richer
@@ -198,7 +214,9 @@ export function LiveActivityFeed({
           ? (served?.lanes.liquidity ?? false)
           : k === "archive-mint" || k === "archive-pause"
             ? (served?.lanes.archive ?? false)
-            : (served?.lanes.referralLifecycle ?? false);
+            : k === "milestone"
+              ? (served?.lanes.milestones ?? false)
+              : (served?.lanes.referralLifecycle ?? false);
   const kindsInScope: readonly ActivityKind[] = onlyKinds ?? [
     "seat",
     "burn",
@@ -210,6 +228,7 @@ export function LiveActivityFeed({
     "lp-remove",
     "archive-mint",
     "archive-pause",
+    "milestone",
   ];
   const servedComplete =
     served !== null && served.items.length >= 0 && kindsInScope.every(laneFor);
@@ -224,7 +243,7 @@ export function LiveActivityFeed({
               <span className="text-foreground font-medium">
                 Complete history, served by the event indexer.
               </span>{" "}
-              {`${onlyKinds ? "" : "Seats, burns (Proof of Burn), referral lifecycle, liquidity and archive mints — "}the full indexed record from each stream's first block, as of block ${served.headBlock ? served.headBlock.toLocaleString("en-US") : "…"}${served.burnsAsOfBlock !== null && served.headBlock !== null && served.burnsAsOfBlock < served.headBlock - 1_000 ? ` · the protocol lanes are catching up — complete up to block ${served.burnsAsOfBlock.toLocaleString("en-US")}` : ""}${served.itemsTotal > served.served ? ` (newest ${served.served} of ${served.itemsTotal.toLocaleString("en-US")} lines shown)` : ""}${served.linesSkipped > 0 ? ` · ${served.linesSkipped} line(s) failed validation and are NOT shown` : ""}. `}
+              {`${onlyKinds ? "" : "Seats, burns (Proof of Burn), referral lifecycle, liquidity, archive mints and milestone crossings — "}the full indexed record from each stream's first block, as of block ${served.headBlock ? served.headBlock.toLocaleString("en-US") : "…"}${served.burnsAsOfBlock !== null && served.headBlock !== null && served.burnsAsOfBlock < served.headBlock - 1_000 ? ` · the protocol lanes are catching up — complete up to block ${served.burnsAsOfBlock.toLocaleString("en-US")}` : ""}${served.itemsTotal > served.served ? ` (newest ${served.served} of ${served.itemsTotal.toLocaleString("en-US")} lines shown)` : ""}${served.linesSkipped > 0 ? ` · ${served.linesSkipped} line(s) failed validation and are NOT shown` : ""}. `}
             </>
           ) : servedTried ? (
             <>
@@ -246,6 +265,13 @@ export function LiveActivityFeed({
           simply outside the stated coverage — never evidence of absence.
         </p>
       </Card>
+
+      {/* H2-⑬ — the Milestones panel: the protocol's canonical account
+          (full-feed surfaces only; a restricted feed like the Fire Ledger
+          stays a single-purpose record). */}
+      {!onlyKinds && served?.milestones ? (
+        <MilestonesPanel milestones={served.milestones} explorerBase={explorerBase} />
+      ) : null}
 
       {showFilters ? (
         <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -273,6 +299,7 @@ export function LiveActivityFeed({
               setScan(null);
               setServed(null);
               setServedTried(false);
+              setReadNonce((n) => n + 1);
             }}
           >
             <RefreshCw className="h-3 w-3 mr-1" aria-hidden="true" /> Re-read

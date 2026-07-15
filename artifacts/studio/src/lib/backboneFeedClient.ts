@@ -77,13 +77,43 @@ export interface ServedArchivePauseLine extends ServedLineCommon {
   action: "paused" | "resumed";
 }
 
+// ── H2-⑬ — milestone crossings (derived server-side, anchored to the
+// crossing transaction; the label is the founder-approved canon label) ──────
+export type ServedMilestoneKind = "seats" | "usdc" | "first-mint";
+
+export interface ServedMilestoneLine extends ServedLineCommon {
+  kind: "milestone";
+  milestoneId: string;
+  label: string;
+  milestoneKind: ServedMilestoneKind;
+  target: number;
+}
+
 export type ServedFeedLine =
   | ServedSeatLine
   | ServedBurnLine
   | ServedLifecycleLine
   | ServedLpLine
   | ServedArchiveMintLine
-  | ServedArchivePauseLine;
+  | ServedArchivePauseLine
+  | ServedMilestoneLine;
+
+/** H2-⑬ — the served Milestones panel block (/activity). */
+export interface ServedMilestones {
+  /** Sealed crossings, oldest first, each with its verify anchor. */
+  sealed: ServedMilestoneLine[];
+  /** Canon order; honest progress from the indexed history. */
+  approaching: {
+    id: string;
+    label: string;
+    kind: ServedMilestoneKind;
+    target: number;
+    currentSeats: number | null;
+    currentUsdcRaw: string | null;
+  }[];
+  /** The server's honest derivation notes (shown, never hidden). */
+  notes: string[];
+}
 
 export interface ServedFeed {
   state: string;
@@ -102,6 +132,7 @@ export interface ServedFeed {
     referralLifecycle: boolean;
     liquidity: boolean;
     archive: boolean;
+    milestones: boolean;
   };
   /** Malformed lines skipped by THIS client's validation (honesty count). */
   linesSkipped: number;
@@ -109,6 +140,8 @@ export interface ServedFeed {
   items: ServedFeedLine[];
   /** The COMPLETE numbered Proof of Burn record, oldest first. */
   burnLedger: ServedBurnLine[];
+  /** H2-⑬: the Milestones panel block (null = the model is dark). */
+  milestones: ServedMilestones | null;
 }
 
 function toInt(v: unknown): number | null {
@@ -225,7 +258,77 @@ function parseLine(raw: unknown): ServedFeedLine | null {
     if (r.action !== "paused" && r.action !== "resumed") return null;
     return { kind: "archive-pause", ...common, action: r.action };
   }
+  if (r.kind === "milestone") {
+    const target = toInt(r.target);
+    if (
+      typeof r.milestoneId !== "string" ||
+      r.milestoneId.length === 0 ||
+      typeof r.label !== "string" ||
+      r.label.length === 0 ||
+      target === null ||
+      target < 1 ||
+      (r.milestoneKind !== "seats" &&
+        r.milestoneKind !== "usdc" &&
+        r.milestoneKind !== "first-mint")
+    ) {
+      return null;
+    }
+    return {
+      kind: "milestone",
+      ...common,
+      milestoneId: r.milestoneId,
+      label: r.label,
+      milestoneKind: r.milestoneKind,
+      target,
+    };
+  }
   return null;
+}
+
+/** Parse the served Milestones block. null on any shape failure (honest). */
+function parseMilestones(raw: unknown): ServedMilestones | null {
+  if (typeof raw !== "object" || raw === null) return null;
+  const m = raw as Record<string, unknown>;
+  if (!Array.isArray(m.sealed) || !Array.isArray(m.approaching)) return null;
+
+  const sealed: ServedMilestoneLine[] = [];
+  for (const s of m.sealed) {
+    const line = parseLine(s);
+    if (!line || line.kind !== "milestone") return null; // one bad row = no panel
+    sealed.push(line);
+  }
+
+  const approaching: ServedMilestones["approaching"] = [];
+  for (const a of m.approaching) {
+    if (typeof a !== "object" || a === null) return null;
+    const r = a as Record<string, unknown>;
+    const target = toInt(r.target);
+    if (
+      typeof r.id !== "string" ||
+      typeof r.label !== "string" ||
+      target === null ||
+      (r.kind !== "seats" && r.kind !== "usdc" && r.kind !== "first-mint")
+    ) {
+      return null;
+    }
+    approaching.push({
+      id: r.id,
+      label: r.label,
+      kind: r.kind,
+      target,
+      currentSeats: toInt(r.currentSeats),
+      currentUsdcRaw:
+        typeof r.currentUsdcRaw === "string" && /^[0-9]+$/.test(r.currentUsdcRaw)
+          ? r.currentUsdcRaw
+          : null,
+    });
+  }
+
+  const notes = Array.isArray(m.notes)
+    ? m.notes.filter((n): n is string => typeof n === "string")
+    : [];
+
+  return { sealed, approaching, notes };
 }
 
 /**
@@ -281,10 +384,12 @@ export async function fetchServedFeed(): Promise<ServedFeed | null> {
         referralLifecycle: lanesRaw.referralLifecycle === true,
         liquidity: lanesRaw.liquidity === true,
         archive: lanesRaw.archive === true,
+        milestones: lanesRaw.milestones === true,
       },
       linesSkipped,
       items,
       burnLedger,
+      milestones: parseMilestones(b.milestones),
     };
   } catch {
     return null; // honest unavailability — the consumer says so
@@ -351,6 +456,23 @@ export function sentenceForServedLine(line: ServedFeedLine): string {
       return line.action === "paused"
         ? "The archive was paused — a founder-signed public act."
         : "The archive resumed — a founder-signed public act.";
+    // H2-⑬ — MILESTONE CROSSINGS (founder-approved sentences, 2026-07-15).
+    // Vocabulary law: always "routed", never "raised"; always SEATS.
+    case "milestone":
+      switch (line.milestoneId) {
+        case "first-seat":
+          return "The protocol's first seat was sealed on Avalanche.";
+        case "first-signal-mint":
+          return "The Archive's first First Signal was minted.";
+        case "patron-seal-mint":
+          return "The Archive's first Patron Seal was minted.";
+        default:
+          return line.milestoneKind === "usdc"
+            ? `The protocol crossed ${line.target.toLocaleString("en-US")} USDC routed through the sale — 70/20/10, on-chain.`
+            : line.milestoneKind === "seats"
+              ? `Seat #${line.target.toLocaleString("en-US")} was sealed — a protocol milestone.`
+              : `A protocol milestone was sealed — ${line.label}.`;
+      }
   }
 }
 
@@ -367,6 +489,13 @@ export function factsForServedLine(line: ServedFeedLine): string | null {
       return `Proof of Burn #${line.proofOfBurnNumber} · ${line.senderLabel}`;
     case "archive-mint":
       return BigInt(line.quantityRaw) > 1n ? `× ${line.quantityRaw}` : null;
+    case "milestone":
+      // The cohort milestones carry their canon label as the line's fact
+      // (the sentence names only the seat ordinal); the first-of-kind and
+      // USDC sentences already say everything the label says.
+      return line.milestoneKind === "seats" && line.target > 1
+        ? line.label
+        : null;
     default:
       return null;
   }

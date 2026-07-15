@@ -92,7 +92,8 @@ const STATUS_BADGE: Record<Posture, string> = {
  * protocol's reality updates the matching entry IN THE SAME SLICE (the
  * Invariant-vs-State law applied to this registry).
  */
-const CANON_AS_OF = "2026-07-14T00:00:00.000Z";
+// H2-⑬ (2026-07-15): the milestone layer joined the served heartbeat.
+const CANON_AS_OF = "2026-07-15T00:00:00.000Z";
 
 type CanonEntry = {
   key: string;
@@ -133,7 +134,7 @@ const CANON: CanonEntry[] = [
     publicClass: "SAFE_PUBLIC",
     sourceRef: "internal:event-backbone@M4",
     confidence: "high",
-    note: "Live event/proof data is served: the event backbone indexes seats, numbered burns and referral lifecycle unattended, and the public feed carries a transaction verify anchor on every line.",
+    note: "Live event/proof data is served: the event backbone indexes the complete heartbeat unattended — seats, numbered burns, referral lifecycle, liquidity, archive mints and milestone crossings — and the public feed carries a transaction verify anchor on every line.",
     surface: "/proof",
   },
   {
@@ -283,7 +284,7 @@ const CANON: CanonEntry[] = [
     publicClass: "INTERNAL_ONLY",
     sourceRef: "internal:event-backbone@M4",
     confidence: "high",
-    note: "The event backbone runs unattended in production: cursor-resumed incremental scans (seats, burns, referral lifecycle), Protocol Time enrichment, and the served address-safe feed — fail-closed on every cycle.",
+    note: "The event backbone runs unattended in production: cursor-resumed incremental scans across the complete heartbeat (seats, burns, referral lifecycle, liquidity, archive, milestones), Protocol Time enrichment, and the served address-safe feed — fail-closed on every cycle.",
     surface: "/indexer",
   },
   {

@@ -68,7 +68,10 @@ export type ActivityKind =
   | "lp-add"
   | "lp-remove"
   | "archive-mint"
-  | "archive-pause";
+  | "archive-pause"
+  // H2-⑬ — milestone crossings: derived server-side from the gapless
+  // indexed history; the client window scanner never produces this kind.
+  | "milestone";
 
 export interface ActivityItem {
   kind: ActivityKind;
