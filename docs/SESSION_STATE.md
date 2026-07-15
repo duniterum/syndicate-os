@@ -2,9 +2,25 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🏦 SLICE H2-⑦ ✅ BUILT (2026-07-15, founder GO A on the gate — the three routing
-> organs, USDC + SYN): TREASURY MOVEMENTS JOIN THE HEARTBEAT UNDER THE FOLD LAW — the
-> founder's anti-duplicate requirement, engraved as structure.** THE FOLD LAW (the
+> **▶ 🏦 SLICE H2-⑦ ✅ SEALED IN PROD (2026-07-15, Replit-verified on thesyndicate.money,
+> prod bundle `index-tJ-y8ufg.js`, 15/15 blob-verified, no migration — 13 tables / 142
+> columns dev==prod; founder GO A on the gate — the three routing organs, USDC + SYN):
+> TREASURY MOVEMENTS JOIN THE HEARTBEAT UNDER THE FOLD LAW — the founder's
+> anti-duplicate requirement, engraved as structure.** PROD PROOF (Replit): **THE FOLD
+> LAW HELD ITS FIRST REAL-WORLD TEST** — 17 treasury movements indexed at verification
+> time, ALL routing detail of already-narrated transactions (purchases · liquidity),
+> ALL folded: the 68-line feed shows ZERO transaction duplicates and ZERO addresses
+> (organ labels only); burns #1–#8 sovereign and intact; the 4 milestone crossings
+> still anchored; feed categories unchanged (26 purchases · 17 mints · 8 burns · 4
+> liquidity · 4 milestones · 9 source); reality spine + holder index (10 members) live;
+> engine healthy 2/2 cycles, first post-boot cycle partial then self-repaired via
+> cursors (the known cold-scan pattern); "passive income" in the bundle = existing
+> disavowal copy only, doctrine-conform. Full gate green at Replit (heartbeat 136 ·
+> backbone 115 · auth-zone 761 · source-status 161 · DB 42/42). HONEST TAIL (autonomous,
+> no action needed): the 4 treasury streams finish their paced cold catch-up (~1–2 h);
+> any GENUINE historical treasury act (a transfer in an otherwise-silent tx) surfaces
+> as a Treasury line with its anchor when its block is reached — the lane is declared
+> active, never a false absence. **DEPLOY BACKLOG: EMPTY.** THE FOLD LAW (the
 > slice's first-class deliverable, guard-pinned): a treasury transfer whose transaction
 > already carries a first-class heartbeat line (purchase · lp add/remove · burn · archive
 > · lifecycle) is that line's ROUTING DETAIL — folded and counted, never a second line;
