@@ -2,6 +2,40 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🏦 SLICE H2-⑦ ✅ BUILT (2026-07-15, founder GO A on the gate — the three routing
+> organs, USDC + SYN): TREASURY MOVEMENTS JOIN THE HEARTBEAT UNDER THE FOLD LAW — the
+> founder's anti-duplicate requirement, engraved as structure.** THE FOLD LAW (the
+> slice's first-class deliverable, guard-pinned): a treasury transfer whose transaction
+> already carries a first-class heartbeat line (purchase · lp add/remove · burn · archive
+> · lifecycle) is that line's ROUTING DETAIL — folded and counted, never a second line;
+> the narrated-tx union is built structurally each cycle, so every FUTURE narrated class
+> folds its own routing side-effects automatically (26 purchases can never become ~78
+> phantom lines). MACHINERY: 4 new scan streams (TREASURY_USDC_IN/OUT · TREASURY_SYN_IN/
+> OUT — eth_getLogs can't OR across topic positions; organ set as OR-list within one
+> position), NO new tables (generic cursor/raw lane, additive keys, paced catch-up ~8
+> cycles); direction NEVER trusted from the stream — derived from the organ set
+> (in/out/internal; an internal organ→organ transfer dedupes at the raw unique key);
+> BURN SOVEREIGNTY pinned: the SYN decoder YIELDS burn-address logs to the burn lane
+> (the raw table's (chain,tx,logIndex) unique key means a treasury row could displace a
+> Proof of Burn row — it never can now, static + fixture pinned); organ addresses enter
+> the model and leave ONLY as labels ("the vault" · "the liquidity wallet" · "the
+> operations wallet"); external counterparties never named; native AVAX honestly out of
+> scope (no event, no receipt). Feed: kind "treasury-move" + lanes.treasury + label
+> discipline gate (an address-shaped organ label fails closed). Client: parse + the 3
+> founder-approved §8 sentences (out: "a founder-signed treasury act; there are no
+> silent moves" · in: "recorded on-chain" · internal: "an internal treasury rebalance,
+> publicly recorded") + Treasury filter chip. §8 canon: H2-⑦ table. SEO-rides-the-slice:
+> /activity lead+banner+next-card, meta description+notes, sourceStatus proof+indexer
+> notes. RUNTIME-VERIFIED on the rig: all 3 sentence classes rendered + filter isolates
+> them + 8 chips + zero console errors (debug fetch-intercept, source untouched, cleared).
+> Green: tsc both · seo 395 · rewrites · surface:audit 254 · ALL studio guards · ALL 17
+> api guards (backbone 110→115: Fold Law · classification · label discipline ·
+> burn-sovereignty pins) · build 24 shells. DEPLOY: 🚀 BATCHABLE (additive + fail-closed;
+> on deploy the 4 streams start their paced cold catch-up ≈8 cycles ≈40 min, then
+> genuine treasury acts appear — routing detail stays folded). NEXT IN H2: ⑫ eras →
+> ⑭ Chronicle lines → ⑰ capital axis → ⑩ deployments; then S7 (wireframe approved) ·
+> S8 perf · S5 on the paste.
+>
 > **▶ 🏆 SLICE H2-⑬ ✅ SEALED IN PROD (2026-07-15, Replit-verified on thesyndicate.money,
 > bundle `index-D3ZO3sKj.js`, 76/76 blob-verified, founder GO on the full 11-row inventory
 > + the 4 sentences on screen; order locked H2 → S7 → S8): THE MILESTONE LAYER — the

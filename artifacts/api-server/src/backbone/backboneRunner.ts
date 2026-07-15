@@ -318,6 +318,17 @@ async function runCycle(): Promise<string | null> {
     FINANCIAL_TARGETS.operationsWallet.toLowerCase(),
   ]);
   const protocolRows = await loadProtocolEventRows();
+  // H2-⑦: the organ label map (address → public LABEL; decided ONCE here,
+  // addresses never leave the zone) + the Fold Law's sale-lane tx set (a
+  // treasury transfer inside a purchase transaction is routing detail).
+  const organLabelByAddress = new Map<string, string>([
+    [FINANCIAL_TARGETS.vaultWallet.toLowerCase(), "the vault"],
+    [FINANCIAL_TARGETS.liquidityWallet.toLowerCase(), "the liquidity wallet"],
+    [FINANCIAL_TARGETS.operationsWallet.toLowerCase(), "the operations wallet"],
+  ]);
+  const saleTransactionHashes = new Set(
+    model.items.map((i) => i.transactionHash.toLowerCase()),
+  );
   const protocolModel = buildProtocolEventReadModel({
     expectedChainId: BACKBONE_EXPECTED_CHAIN_ID,
     burns: protocolRows.burns,
@@ -326,8 +337,11 @@ async function runCycle(): Promise<string | null> {
     lpTokenMints: protocolRows.lpTokenMints,
     archiveMints: protocolRows.archiveMints,
     archivePauses: protocolRows.archivePauses,
+    treasury: protocolRows.treasury,
     blockTimestamps: input.blockTimestamps,
     founderAddresses,
+    organLabelByAddress,
+    saleTransactionHashes,
     // H1a-fix: the pair's immutable token0 orientation (canon pin, chain-
     // verified 2026-07-15 — token0 is USDC). Never assumed in the read-model.
     lpToken0IsSyn: FINANCIAL_TARGETS.lpPairToken0 === "SYN",

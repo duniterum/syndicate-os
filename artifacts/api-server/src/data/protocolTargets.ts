@@ -480,7 +480,12 @@ export type ProtocolEventScanTarget = {
     | "LP_LIQUIDITY"
     | "LP_TOKEN_MINT"
     | "ARCHIVE_MINT"
-    | "ARCHIVE_PAUSE";
+    | "ARCHIVE_PAUSE"
+    // H2-⑦ — treasury movements (in/out per token; see the targets note).
+    | "TREASURY_USDC_IN"
+    | "TREASURY_USDC_OUT"
+    | "TREASURY_SYN_IN"
+    | "TREASURY_SYN_OUT";
   /** Human label for status surfaces (never an address). */
   label: string;
   /** SERVER-ONLY address; never emitted. */
@@ -561,6 +566,48 @@ export const PROTOCOL_EVENT_SCAN_TARGETS: readonly ProtocolEventScanTarget[] = [
     address: ARCHIVE_1155_ADDRESS,
     fromBlock: 87_157_852,
     events: ["Paused", "Unpaused"],
+    scanOnly: true,
+  },
+  // ── H2-⑦ — TREASURY MOVEMENTS (founder GO A, 2026-07-15): the three
+  // routing organs (vault / liquidity / operations), USDC + SYN transfers.
+  // eth_getLogs cannot OR across topic positions, so each token needs an IN
+  // pass (to ∈ organs) and an OUT pass (from ∈ organs) — four streams. An
+  // internal organ→organ transfer matches both passes and dedupes at the raw
+  // table's (chain, tx, logIndex) unique key; direction is NEVER trusted from
+  // the stream — the read-model derives it from the organ set. ORDER MATTERS:
+  // these scan AFTER SYN_BURN so a burn's row always wins the unique key (and
+  // the treasury SYN decoder additionally yields burn-address logs entirely —
+  // the numbered Proof of Burn record stays sovereign).
+  {
+    streamKey: "TREASURY_USDC_IN",
+    label: "Treasury USDC inflows (to ∈ routing organs)",
+    address: FINANCIAL_TARGETS.usdcTokenAddress,
+    fromBlock: 87_157_852,
+    events: ["Transfer"],
+    scanOnly: true,
+  },
+  {
+    streamKey: "TREASURY_USDC_OUT",
+    label: "Treasury USDC outflows (from ∈ routing organs)",
+    address: FINANCIAL_TARGETS.usdcTokenAddress,
+    fromBlock: 87_157_852,
+    events: ["Transfer"],
+    scanOnly: true,
+  },
+  {
+    streamKey: "TREASURY_SYN_IN",
+    label: "Treasury SYN inflows (to ∈ routing organs)",
+    address: FINANCIAL_TARGETS.synTokenAddress,
+    fromBlock: 87_157_852,
+    events: ["Transfer"],
+    scanOnly: true,
+  },
+  {
+    streamKey: "TREASURY_SYN_OUT",
+    label: "Treasury SYN outflows (from ∈ routing organs)",
+    address: FINANCIAL_TARGETS.synTokenAddress,
+    fromBlock: 87_157_852,
+    events: ["Transfer"],
     scanOnly: true,
   },
 ];

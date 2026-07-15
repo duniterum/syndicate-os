@@ -28,6 +28,7 @@ import type {
   RawLpTokenMintRowInput,
   RawArchiveMintRowInput,
   RawArchivePauseRowInput,
+  RawTreasuryRowInput,
 } from "./protocolEventScan";
 import type { BlockTimestampInput } from "./activityHeartbeatReadmodel";
 import { LADDER_RUNGS_CANON } from "../lib/protocol/connectorLadderCanon";
@@ -106,6 +107,24 @@ export interface ArchivePauseItem {
   readonly isoDayUtc: string;
 }
 
+// ── H2-⑦ — treasury movements (organ LABELS only; addresses never leave) ────
+export interface TreasuryMoveItem {
+  readonly kind: "treasury-move";
+  readonly token: "USDC" | "SYN";
+  /** Exact raw base units (USDC 6-dec / SYN 18-dec), decimal string. */
+  readonly amountRaw: string;
+  readonly movement: "in" | "out" | "internal";
+  /** The organ the sentence names (out/internal: source; in: destination). */
+  readonly organLabel: string;
+  /** internal moves only: the destination organ. */
+  readonly toOrganLabel: string | null;
+  readonly blockNumber: number;
+  readonly logIndex: number;
+  readonly transactionHash: string;
+  readonly blockTimestampSec: number;
+  readonly isoDayUtc: string;
+}
+
 export interface ProtocolEventBuildInput {
   readonly expectedChainId: number;
   readonly burns: readonly RawBurnRowInput[];
@@ -114,9 +133,25 @@ export interface ProtocolEventBuildInput {
   readonly lpTokenMints: readonly RawLpTokenMintRowInput[];
   readonly archiveMints: readonly RawArchiveMintRowInput[];
   readonly archivePauses: readonly RawArchivePauseRowInput[];
+  /** H2-⑦: treasury transfer rows (organ set topic-filtered by the lane). */
+  readonly treasury: readonly RawTreasuryRowInput[];
   readonly blockTimestamps: readonly BlockTimestampInput[];
   /** Lowercased known founder wallet addresses (the allocation registry). */
   readonly founderAddresses: ReadonlySet<string>;
+  /**
+   * H2-⑦: lowercased organ address → its public LABEL ("the vault" /
+   * "the liquidity wallet" / "the operations wallet"). The ONLY place organ
+   * membership is decided; no address ever leaves the model.
+   */
+  readonly organLabelByAddress: ReadonlyMap<string, string>;
+  /**
+   * H2-⑦ THE FOLD LAW input: the sale lane's purchase transaction hashes
+   * (lowercased). A treasury transfer whose transaction already carries a
+   * first-class heartbeat line — a purchase (this set) or any of THIS
+   * model's own lines (burn, lifecycle, lp, archive) — is ROUTING DETAIL of
+   * that line: folded and counted, never a second line.
+   */
+  readonly saleTransactionHashes: ReadonlySet<string>;
   /**
    * H1a-fix: the pair's immutable token0 orientation (canon pin, chain-
    * verified). Persisted LP rows store NEUTRAL amount0/amount1; this input
@@ -132,12 +167,17 @@ export interface ProtocolEventBuildResult {
   readonly lpItems: readonly LpLiquidityItem[];
   readonly archiveMintItems: readonly ArchiveMintItem[];
   readonly archivePauseItems: readonly ArchivePauseItem[];
+  /** H2-⑦: genuine treasury acts (post-Fold-Law; routing detail excluded). */
+  readonly treasuryItems: readonly TreasuryMoveItem[];
   readonly totals: {
     readonly burns: number;
     readonly lifecycle: number;
     readonly lp: number;
     readonly archiveMints: number;
     readonly archivePauses: number;
+    readonly treasuryMoves: number;
+    /** Treasury rows folded as routing detail of narrated transactions. */
+    readonly treasuryRowsFolded: number;
   };
 }
 
@@ -319,18 +359,78 @@ export function buildProtocolEventReadModel(
     };
   });
 
+  // ── H2-⑦ — treasury movements under THE FOLD LAW ──
+  // The narrated set: every transaction already carrying a first-class
+  // heartbeat line — the sale lane's purchases (input) plus THIS model's own
+  // burn / lifecycle / lp / archive lines. A treasury transfer inside such a
+  // transaction is that line's routing detail: folded, counted, never a
+  // second line. Structural, not a filter list — every future narrated class
+  // added to this union folds its own routing side-effects automatically.
+  const narratedTxs = new Set<string>();
+  for (const h of input.saleTransactionHashes) narratedTxs.add(h.toLowerCase());
+  for (const x of burnLedger) narratedTxs.add(x.transactionHash.toLowerCase());
+  for (const x of lifecycleItems) narratedTxs.add(x.transactionHash.toLowerCase());
+  for (const x of lpItems) narratedTxs.add(x.transactionHash.toLowerCase());
+  for (const x of archiveMintItems) narratedTxs.add(x.transactionHash.toLowerCase());
+  for (const x of archivePauseItems) narratedTxs.add(x.transactionHash.toLowerCase());
+
+  let treasuryRowsFolded = 0;
+  const treasuryItems: TreasuryMoveItem[] = [];
+  for (const t of input.treasury) {
+    if (!/^[0-9]+$/.test(t.valueRaw)) fail("treasury amount is not a clean integer");
+    if (
+      !/^0x[0-9a-fA-F]{40}$/.test(t.fromAddress) ||
+      !/^0x[0-9a-fA-F]{40}$/.test(t.toAddress)
+    ) {
+      fail("treasury endpoint is not address-shaped");
+    }
+    if (narratedTxs.has(t.transactionHash.toLowerCase())) {
+      treasuryRowsFolded += 1;
+      continue;
+    }
+    const fromOrgan = input.organLabelByAddress.get(t.fromAddress.toLowerCase()) ?? null;
+    const toOrgan = input.organLabelByAddress.get(t.toAddress.toLowerCase()) ?? null;
+    if (fromOrgan === null && toOrgan === null) {
+      // The stream's topic filter guarantees organ membership — a row with
+      // neither endpoint in the organ set is a derivation fault.
+      fail("treasury row touches no known organ");
+    }
+    const ts = timeOf(t.blockNumber);
+    treasuryItems.push({
+      kind: "treasury-move",
+      token: t.token,
+      amountRaw: t.valueRaw,
+      movement: fromOrgan !== null && toOrgan !== null ? "internal" : fromOrgan !== null ? "out" : "in",
+      organLabel: fromOrgan ?? (toOrgan as string),
+      toOrganLabel: fromOrgan !== null && toOrgan !== null ? toOrgan : null,
+      blockNumber: t.blockNumber,
+      logIndex: t.logIndex,
+      transactionHash: t.transactionHash,
+      blockTimestampSec: ts,
+      isoDayUtc: isoDayUtcFromSeconds(ts),
+    });
+  }
+  treasuryItems.sort((a, b) =>
+    a.blockNumber !== b.blockNumber
+      ? a.blockNumber - b.blockNumber
+      : a.logIndex - b.logIndex,
+  );
+
   return {
     burnLedger,
     lifecycleItems,
     lpItems,
     archiveMintItems,
     archivePauseItems,
+    treasuryItems,
     totals: {
       burns: burnLedger.length,
       lifecycle: lifecycleItems.length,
       lp: lpItems.length,
       archiveMints: archiveMintItems.length,
       archivePauses: archivePauseItems.length,
+      treasuryMoves: treasuryItems.length,
+      treasuryRowsFolded,
     },
   };
 }

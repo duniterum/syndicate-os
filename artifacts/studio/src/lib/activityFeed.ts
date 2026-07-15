@@ -69,6 +69,8 @@ export type ActivityKind =
   | "lp-remove"
   | "archive-mint"
   | "archive-pause"
+  // H2-⑦ — treasury movements: served-feed only (post-Fold-Law).
+  | "treasury-move"
   // H2-⑬ — milestone crossings: derived server-side from the gapless
   // indexed history; the client window scanner never produces this kind.
   | "milestone";

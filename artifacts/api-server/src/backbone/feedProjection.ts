@@ -33,6 +33,7 @@ import type {
 import type {
   ProtocolEventBuildResult,
   SenderLabel,
+  TreasuryMoveItem,
 } from "./protocolEventReadmodel";
 import type {
   MilestoneBuildResult,
@@ -101,6 +102,19 @@ export interface PublicArchivePauseLine extends LineCommon {
   readonly action: "paused" | "resumed";
 }
 
+// ── H2-⑦ — treasury movements (organ LABELS only; post-Fold-Law) ────────────
+export interface PublicTreasuryLine extends LineCommon {
+  readonly kind: "treasury-move";
+  readonly token: "USDC" | "SYN";
+  /** Exact raw base units — public per the Visibility Rule. */
+  readonly amountRaw: string;
+  readonly movement: "in" | "out" | "internal";
+  /** A LABEL ("the vault" / "the liquidity wallet" / "the operations
+   *  wallet") — never an address; external counterparties never named. */
+  readonly organLabel: string;
+  readonly toOrganLabel: string | null;
+}
+
 // ── H2-⑬ — milestone crossings (derived, anchored to the crossing tx) ───────
 export interface PublicMilestoneLine extends LineCommon {
   readonly kind: "milestone";
@@ -118,6 +132,7 @@ export type PublicFeedLine =
   | PublicLpLine
   | PublicArchiveMintLine
   | PublicArchivePauseLine
+  | PublicTreasuryLine
   | PublicMilestoneLine;
 
 /** H2-⑬ — the /activity Milestones panel block (address-safe by shape). */
@@ -161,6 +176,8 @@ export interface PublicActivityFeed {
     readonly referralLifecycle: boolean;
     readonly liquidity: boolean;
     readonly archive: boolean;
+    /** H2-⑦: treasury movements (post-Fold-Law genuine acts). */
+    readonly treasury: boolean;
     /** H2-⑬: milestone crossings, derived from the lanes above. */
     readonly milestones: boolean;
   };
@@ -322,6 +339,38 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
     };
   });
 
+  // ── H2-⑦ — treasury movements (labels validated, amounts clean) ──
+  const treasuryLines: PublicTreasuryLine[] = (
+    protocolModel?.treasuryItems ?? []
+  ).map((t: TreasuryMoveItem) => {
+    assertAnchor(t.transactionHash);
+    if (!/^[0-9]+$/.test(t.amountRaw)) {
+      throw new Error(
+        "feed projection failed closed: a treasury amount is not a clean integer (value withheld)",
+      );
+    }
+    // Organ labels are the read-model's canon strings — an address-shaped
+    // "label" must never pass (fail-closed, value withheld).
+    if (/0x[0-9a-fA-F]{6,}/.test(t.organLabel) || /0x[0-9a-fA-F]{6,}/.test(t.toOrganLabel ?? "")) {
+      throw new Error(
+        "feed projection failed closed: a treasury organ label is address-shaped (value withheld)",
+      );
+    }
+    return {
+      kind: t.kind,
+      token: t.token,
+      amountRaw: t.amountRaw,
+      movement: t.movement,
+      organLabel: t.organLabel,
+      toOrganLabel: t.toOrganLabel,
+      blockNumber: t.blockNumber,
+      blockTimestampSec: t.blockTimestampSec,
+      isoDayUtc: t.isoDayUtc,
+      transactionHash: t.transactionHash,
+      logIndex: t.logIndex,
+    };
+  });
+
   // ── H2-⑬ — milestone crossings + the panel block ──
   const milestoneLines: PublicMilestoneLine[] = (
     milestoneModel?.sealed ?? []
@@ -362,6 +411,7 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
     ...lpLines,
     ...archiveMintLines,
     ...archivePauseLines,
+    ...treasuryLines,
     ...milestoneLines,
   ].sort((a, b) =>
     a.blockNumber !== b.blockNumber
@@ -392,6 +442,7 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
       referralLifecycle: protocolModel !== null,
       liquidity: protocolModel !== null,
       archive: protocolModel !== null,
+      treasury: protocolModel !== null,
       milestones: milestoneModel !== null,
     },
     honesty: FEED_HONESTY_LINE,

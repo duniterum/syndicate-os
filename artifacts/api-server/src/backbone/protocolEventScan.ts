@@ -194,6 +194,21 @@ export interface RawArchivePauseRowInput {
   transactionHash: string;
 }
 
+// ── H2-⑦ — treasury-movement row (loader → read-model) ──────────────────────
+export interface RawTreasuryRowInput {
+  /** Which token contract emitted the Transfer (derived from the streamKey). */
+  token: "USDC" | "SYN";
+  blockNumber: number;
+  logIndex: number;
+  transactionHash: string;
+  /** SERVER-ONLY — the read-model translates organ addresses to LABELS and
+   *  an external counterparty to "external"; no address ever leaves. */
+  fromAddress: string;
+  toAddress: string;
+  /** Exact raw base units (USDC 6-dec / SYN 18-dec), decimal string. */
+  valueRaw: string;
+}
+
 export interface ProtocolScanStreamSummary {
   streamKey: string;
   scannedFrom: number | null;
@@ -401,6 +416,40 @@ function decodeArchiveMintLog(log: RawLogEntry): ProtocolEventRecord {
   };
 }
 
+// H2-⑦ — treasury Transfer decoder. Returns null (a DELIBERATE yield, not a
+// skip of an undecodable log) for exactly one boundary: a SYN transfer whose
+// recipient is the canonical burn address belongs to the SYN_BURN lane — the
+// numbered Proof of Burn record stays sovereign over the (chain, tx, logIndex)
+// unique key, and the Fold Law would fold the treasury view anyway (the burn
+// line narrates that transaction). Everything else decodes fail-closed.
+function decodeTreasuryLog(
+  log: RawLogEntry,
+  streamKey: string,
+  synBurnAddress: string,
+): ProtocolEventRecord | null {
+  const topics = Array.isArray(log.topics) ? log.topics : [];
+  if (topics.length !== 3 || topics[0] !== TRANSFER_TOPIC0) {
+    throw new Error("treasury log: unexpected topics shape");
+  }
+  const from = topicToAddress(topics[1]);
+  const to = topicToAddress(topics[2]);
+  if (streamKey.startsWith("TREASURY_SYN") && to === synBurnAddress.toLowerCase()) {
+    return null; // the burn lane owns this log — yield, never displace
+  }
+  return {
+    chainId: EXPECTED_CHAIN_ID,
+    streamKey,
+    eventName: "Transfer",
+    blockNumber: parseHexNumber(log.blockNumber, "log.blockNumber"),
+    blockHash: typeof log.blockHash === "string" ? log.blockHash.toLowerCase() : null,
+    transactionHash: parseTxHash(log.transactionHash),
+    logIndex: parseHexNumber(log.logIndex, "log.logIndex"),
+    topic0: TRANSFER_TOPIC0,
+    // SERVER-ONLY: organ membership + labels are decided in the read-model.
+    decodedJson: { from, to, valueRaw: dataToUint256Decimal(log.data) },
+  };
+}
+
 function decodeArchivePauseLog(log: RawLogEntry): ProtocolEventRecord {
   const topics = Array.isArray(log.topics) ? log.topics : [];
   const t0 = typeof topics[0] === "string" ? topics[0] : "";
@@ -480,11 +529,19 @@ export async function runProtocolEventScan(
 
     // Per-stream topic filter + fail-closed decoder (H1a: the map replaced
     // the two-stream ternary; every stream stays a single getLogs pass).
+    // H2-⑦: the three routing organs as topic-filter values (OR within one
+    // topic position — eth_getLogs array semantics; server-only addresses).
+    const organTopics = [
+      addressToTopic(FINANCIAL_TARGETS.vaultWallet),
+      addressToTopic(FINANCIAL_TARGETS.liquidityWallet),
+      addressToTopic(FINANCIAL_TARGETS.operationsWallet),
+    ];
     const STREAM_CONFIG: Record<
       string,
       {
         topics: readonly (string | readonly string[] | null)[];
-        decode: (log: RawLogEntry) => ProtocolEventRecord;
+        /** null = a deliberate, documented yield to another lane. */
+        decode: (log: RawLogEntry) => ProtocolEventRecord | null;
       }
     > = {
       SYN_BURN: {
@@ -510,6 +567,29 @@ export async function runProtocolEventScan(
       ARCHIVE_PAUSE: {
         topics: [[PAUSED_TOPIC0, UNPAUSED_TOPIC0]],
         decode: decodeArchivePauseLog,
+      },
+      // H2-⑦ — treasury movements (scan AFTER SYN_BURN by target order; the
+      // burn row always wins the unique key, and the SYN decoders yield
+      // burn-address logs entirely).
+      TREASURY_USDC_IN: {
+        topics: [TRANSFER_TOPIC0, null, organTopics],
+        decode: (log: RawLogEntry) =>
+          decodeTreasuryLog(log, "TREASURY_USDC_IN", burnAddress),
+      },
+      TREASURY_USDC_OUT: {
+        topics: [TRANSFER_TOPIC0, organTopics],
+        decode: (log: RawLogEntry) =>
+          decodeTreasuryLog(log, "TREASURY_USDC_OUT", burnAddress),
+      },
+      TREASURY_SYN_IN: {
+        topics: [TRANSFER_TOPIC0, null, organTopics],
+        decode: (log: RawLogEntry) =>
+          decodeTreasuryLog(log, "TREASURY_SYN_IN", burnAddress),
+      },
+      TREASURY_SYN_OUT: {
+        topics: [TRANSFER_TOPIC0, organTopics],
+        decode: (log: RawLogEntry) =>
+          decodeTreasuryLog(log, "TREASURY_SYN_OUT", burnAddress),
       },
     };
     const config = STREAM_CONFIG[target.streamKey];
@@ -538,7 +618,15 @@ export async function runProtocolEventScan(
         summary.chunksScanned += 1;
         summary.logsSeen += logs.length;
         if (logs.length > 0) {
-          summary.rowsInserted += await insertProtocolEvents(logs.map(decode));
+          // A null decode is a DELIBERATE yield to another lane (H2-⑦: the
+          // burn lane owns SYN transfers to the burn address) — filtered,
+          // never persisted from this stream. Undecodable logs still throw.
+          const records = logs
+            .map(decode)
+            .filter((r): r is ProtocolEventRecord => r !== null);
+          if (records.length > 0) {
+            summary.rowsInserted += await insertProtocolEvents(records);
+          }
         }
         // THE CONVERGENCE LAW: persist the cursor after EVERY chunk — a cut
         // (rate limit, restart) resumes exactly here; the prefix is gapless.

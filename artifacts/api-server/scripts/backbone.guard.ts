@@ -27,6 +27,12 @@
  *      address can never pass), the feed gate masks only validated anchors
  *      and strict-scans the rest, newest-first + hard cap hold, and the
  *      route scans before sending.
+ *   I. Treasury (H2-⑦): THE FOLD LAW holds — a treasury transfer inside an
+ *      already-narrated transaction (purchase, lp, burn, archive) is folded,
+ *      never a second line; genuine acts classify in/out/internal from the
+ *      organ set (never from the stream); organ addresses NEVER reach the
+ *      feed (labels only); the SYN decoder yields burn-address logs to the
+ *      burn lane (the numbered record stays sovereign).
  *   H. Milestones (H2-⑬): the 11 canon defs hold (ids, vocabulary — always
  *      "routed", never fundraising register), crossings anchor to the EXACT
  *      transaction (USDC cumsum · seat ordinal · first mint), the live
@@ -490,6 +496,12 @@ const fixtureModel = buildActivityHeartbeatReadModel({
 // line. The planted sender addresses must NEVER reach any serialized output.
 const founderAddr = "0x" + "aa".repeat(20);
 const communityAddr = "0x" + "bb".repeat(20);
+// H2-⑦ fixture organs + an external counterparty (planted — must never leak).
+const vaultAddr = "0x" + "cc".repeat(20);
+const opsAddr = "0x" + "dd".repeat(20);
+const externalAddr = "0x" + "77".repeat(20);
+const txJ = "0x" + "6d".repeat(32);
+const txK = "0x" + "7e".repeat(32);
 const txC = "0x" + "ef".repeat(32);
 const txD = "0x" + "0d".repeat(32);
 const txE = "0x" + "5e".repeat(32);
@@ -568,17 +580,53 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
   archivePauses: [
     { eventName: "Paused", blockNumber: 190, logIndex: 0, transactionHash: txI },
   ],
+  // H2-⑦ — four treasury rows exercising THE FOLD LAW + classification:
+  //   · txB = the seat purchase's routing transfer → FOLDED (the sale set)
+  //   · txF = the lp-add's funding transfer → FOLDED (own-model narration)
+  //   · txJ = a genuine vault outflow to an external counterparty → "out"
+  //   · txK = a vault → operations transfer → "internal"
+  treasury: [
+    { token: "USDC", blockNumber: 200, logIndex: 9, transactionHash: txB, fromAddress: externalAddr, toAddress: vaultAddr, valueRaw: "42" + "0".repeat(6) },
+    { token: "USDC", blockNumber: 160, logIndex: 8, transactionHash: txF, fromAddress: vaultAddr, toAddress: externalAddr, valueRaw: "25" + "0".repeat(6) },
+    { token: "USDC", blockNumber: 165, logIndex: 1, transactionHash: txJ, fromAddress: vaultAddr, toAddress: externalAddr, valueRaw: "7" + "0".repeat(6) },
+    { token: "SYN", blockNumber: 175, logIndex: 2, transactionHash: txK, fromAddress: vaultAddr, toAddress: opsAddr, valueRaw: "1500" + "0".repeat(18) },
+  ],
   blockTimestamps: [
     { chainId: CHAIN, blockNumber: 100, blockTimestampSec: T0 },
     { chainId: CHAIN, blockNumber: 150, blockTimestampSec: T0 + 3_600 },
     { chainId: CHAIN, blockNumber: 160, blockTimestampSec: T0 + 4_600 },
+    { chainId: CHAIN, blockNumber: 165, blockTimestampSec: T0 + 5_100 },
     { chainId: CHAIN, blockNumber: 170, blockTimestampSec: T0 + 5_600 },
+    { chainId: CHAIN, blockNumber: 175, blockTimestampSec: T0 + 6_100 },
     { chainId: CHAIN, blockNumber: 180, blockTimestampSec: T0 + 6_600 },
     { chainId: CHAIN, blockNumber: 190, blockTimestampSec: T0 + 7_600 },
+    { chainId: CHAIN, blockNumber: 200, blockTimestampSec: T0 + 8_600 },
   ],
   founderAddresses: new Set([founderAddr]),
+  organLabelByAddress: new Map([
+    [vaultAddr, "the vault"],
+    [opsAddr, "the operations wallet"],
+  ]),
+  saleTransactionHashes: new Set([txB]),
   lpToken0IsSyn: false,
 });
+// H2-⑦ pins: THE FOLD LAW + classification + label discipline.
+check(
+  fixtureProtocolModel.treasuryItems.length === 2 &&
+    fixtureProtocolModel.totals.treasuryRowsFolded === 2,
+  "THE FOLD LAW holds: routing transfers inside narrated transactions fold (2 folded, 2 genuine)",
+  `the Fold Law broke (items=${fixtureProtocolModel.treasuryItems.length}, folded=${fixtureProtocolModel.totals.treasuryRowsFolded})`,
+);
+check(
+  fixtureProtocolModel.treasuryItems[0]!.movement === "out" &&
+    fixtureProtocolModel.treasuryItems[0]!.organLabel === "the vault" &&
+    fixtureProtocolModel.treasuryItems[0]!.toOrganLabel === null &&
+    fixtureProtocolModel.treasuryItems[1]!.movement === "internal" &&
+    fixtureProtocolModel.treasuryItems[1]!.organLabel === "the vault" &&
+    fixtureProtocolModel.treasuryItems[1]!.toOrganLabel === "the operations wallet",
+  "treasury movements classify in/out/internal from the ORGAN SET (never from the stream)",
+  "treasury movement classification broke",
+);
 // H1a-fix pin (the prod-caught inversion, dead forever): with token0 = USDC,
 // the read-model must map amount1 → SYN and amount0 → USDC.
 check(
@@ -788,11 +836,53 @@ check(
 );
 const feedJson = JSON.stringify(feed);
 check(
-  feed.items.length === 14 &&
+  feed.items.length === 16 &&
     feed.items[0]!.blockNumber === 200 &&
-    feed.items[13]!.blockNumber === 100,
-  "feed serves newest first across ALL kinds (seats, burns, lifecycle, lp, archive, milestones)",
+    feed.items[15]!.blockNumber === 100,
+  "feed serves newest first across ALL kinds (seats, burns, lifecycle, lp, archive, treasury, milestones)",
   `feed ordering broke (items=${feed.items.length})`,
+);
+// H2-⑦: the treasury lines ride the feed with LABELS only — the planted
+// organ + external addresses must never appear anywhere in the payload.
+check(
+  feed.lanes.treasury === true &&
+    feed.items.filter((i) => i.kind === "treasury-move").length === 2 &&
+    !feedJson.includes(vaultAddr) &&
+    !feedJson.includes(opsAddr) &&
+    !feedJson.includes(externalAddr) &&
+    feedJson.includes('"organLabel":"the vault"'),
+  "treasury lines serve organ LABELS only — no organ or counterparty address in the payload",
+  "the treasury label discipline broke",
+);
+// Static pin — burn sovereignty: the treasury SYN decoder must yield logs
+// whose recipient is the burn address (the numbered Proof of Burn record owns
+// the (chain, tx, logIndex) unique key; a treasury row must never displace it).
+check(
+  stripComments(read("src/backbone/protocolEventScan.ts")).includes(
+    "to === synBurnAddress.toLowerCase()",
+  ),
+  "the treasury SYN decoder yields burn-address logs to the burn lane (Proof of Burn sovereign)",
+  "the burn-sovereignty yield disappeared from the treasury decoder",
+);
+expectThrow("feed gate trips on an address-shaped treasury organ label", () =>
+  buildPublicFeed({
+    model: null,
+    protocolModel: {
+      ...fixtureProtocolModel,
+      treasuryItems: [
+        {
+          ...fixtureProtocolModel.treasuryItems[0]!,
+          organLabel: "0x" + "ee".repeat(20),
+        },
+      ],
+    },
+    milestoneModel: null,
+    state: "idle",
+    headBlock: 300,
+    finishedIso: null,
+    burnsAsOfBlock: null,
+    lifecycleAsOfBlock: null,
+  }),
 );
 // H2-⑬: a milestone shares its anchor with the event that crossed it — in
 // the newest-first feed the crossing reads as the CONSEQUENCE (ranks newer).
@@ -936,6 +1026,7 @@ expectThrow("projection fails closed on a non-canonical sender label", () =>
       empty.burnLedger.length === 0 &&
       empty.lanes.seats === false &&
       empty.lanes.burns === false &&
+      empty.lanes.treasury === false &&
       empty.lanes.milestones === false &&
       empty.milestones === null,
     "null models serve an honest empty feed with honest lane flags (never invented)",

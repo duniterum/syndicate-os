@@ -40,6 +40,7 @@ import type {
   RawLpTokenMintRowInput,
   RawArchiveMintRowInput,
   RawArchivePauseRowInput,
+  RawTreasuryRowInput,
 } from "./protocolEventScan";
 
 /** Avalanche C-Chain — same expected chain the reality spine reconciles. */
@@ -332,6 +333,7 @@ export interface ProtocolEventLoad {
   lpTokenMints: RawLpTokenMintRowInput[];
   archiveMints: RawArchiveMintRowInput[];
   archivePauses: RawArchivePauseRowInput[];
+  treasury: RawTreasuryRowInput[];
 }
 
 /**
@@ -369,6 +371,7 @@ export async function loadProtocolEventRows(): Promise<ProtocolEventLoad> {
   const lpTokenMints: RawLpTokenMintRowInput[] = [];
   const archiveMints: RawArchiveMintRowInput[] = [];
   const archivePauses: RawArchivePauseRowInput[] = [];
+  const treasury: RawTreasuryRowInput[] = [];
   for (const r of rows) {
     if (r.streamKey === "SYN_BURN") {
       // decodedJson WHITELIST (burn rows): exactly {from, valueRaw}.
@@ -451,13 +454,38 @@ export async function loadProtocolEventRows(): Promise<ProtocolEventLoad> {
         logIndex: r.logIndex,
         transactionHash: r.transactionHash,
       });
+    } else if (r.streamKey.startsWith("TREASURY_")) {
+      // decodedJson WHITELIST (treasury rows, H2-⑦): exactly {from, to,
+      // valueRaw} — SERVER-ONLY addresses; the read-model translates organ
+      // membership to LABELS and no address ever leaves the zone. The token
+      // derives from the stream key (a USDC log can never enter a SYN
+      // stream — the contract-address filter guarantees it). Direction is
+      // NEVER read from the stream key: an internal organ→organ transfer
+      // dedupes to one row under whichever direction-stream persisted it.
+      const tr = r.decodedJson as Record<string, unknown>;
+      if (
+        typeof tr.from !== "string" ||
+        typeof tr.to !== "string" ||
+        typeof tr.valueRaw !== "string"
+      ) {
+        throw new Error("treasury row decoded shape invalid — refusing to derive");
+      }
+      treasury.push({
+        token: r.streamKey.startsWith("TREASURY_USDC") ? "USDC" : "SYN",
+        blockNumber: r.blockNumber,
+        logIndex: r.logIndex,
+        transactionHash: r.transactionHash,
+        fromAddress: tr.from,
+        toAddress: tr.to,
+        valueRaw: tr.valueRaw,
+      });
     } else {
       throw new Error(
         `unknown protocol-event stream "${r.streamKey}" — refusing to derive`,
       );
     }
   }
-  return { burns, lifecycle, lpLiquidity, lpTokenMints, archiveMints, archivePauses };
+  return { burns, lifecycle, lpLiquidity, lpTokenMints, archiveMints, archivePauses, treasury };
 }
 
 // ---------------------------------------------------------------------------

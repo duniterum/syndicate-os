@@ -265,6 +265,21 @@ discipline stands: the server never emits a MEMBER's wallet address).
 | Artifact mint (⑪) | "A {artifact} was minted — protocol memory, written to the chain." | {artifact} ∈ canon labels (First Signal · Patron Seal · Artifact #N); minter never named |
 | Source wallet rotation (⑯) | "A source's payment wallet was rotated — a public act; there are no silent edits." | covers both wallet and payment-wallet rotations |
 
+### LIVE sentences added by H2-⑦ (treasury movements, founder GO A, 2026-07-15)
+
+Treasury lines obey **THE FOLD LAW** (the anti-duplicate design, founder-required): a
+transfer whose transaction already carries a first-class heartbeat line (a purchase, an
+LP add/remove, a burn, an archive mint…) is that line's ROUTING DETAIL — folded, never a
+second line. Scope: the three routing organs (the vault · the liquidity wallet · the
+operations wallet), USDC + SYN. Organs render as LABELS; external counterparties are
+never named; native AVAX movements emit no event and honestly cannot have a line.
+
+| Event | The canonical sentence | Variants |
+|---|---|---|
+| Treasury outflow | "{amount} {token} moved out of {organ} — a founder-signed treasury act; there are no silent moves." | — |
+| Treasury inflow (non-purchase) | "{amount} {token} entered {organ} — recorded on-chain." | — |
+| Internal rebalance | "{amount} {token} moved from {organ} to {organ} — an internal treasury rebalance, publicly recorded." | one line per transfer (the two direction scans dedupe at the raw key) |
+
 ### LIVE sentences added by H2-⑬ (the milestone layer, founder-approved table, 2026-07-15)
 
 Milestone crossings are DERIVED lines: each anchors to the exact transaction where the

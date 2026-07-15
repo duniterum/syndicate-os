@@ -77,6 +77,19 @@ export interface ServedArchivePauseLine extends ServedLineCommon {
   action: "paused" | "resumed";
 }
 
+// ── H2-⑦ — treasury movements (organ LABELS only, post-Fold-Law: a transfer
+// inside an already-narrated transaction is routing detail, never a line) ───
+export interface ServedTreasuryLine extends ServedLineCommon {
+  kind: "treasury-move";
+  token: "USDC" | "SYN";
+  /** Exact raw base units — public per the Visibility Rule. */
+  amountRaw: string;
+  movement: "in" | "out" | "internal";
+  /** "the vault" / "the liquidity wallet" / "the operations wallet". */
+  organLabel: string;
+  toOrganLabel: string | null;
+}
+
 // ── H2-⑬ — milestone crossings (derived server-side, anchored to the
 // crossing transaction; the label is the founder-approved canon label) ──────
 export type ServedMilestoneKind = "seats" | "usdc" | "first-mint";
@@ -96,6 +109,7 @@ export type ServedFeedLine =
   | ServedLpLine
   | ServedArchiveMintLine
   | ServedArchivePauseLine
+  | ServedTreasuryLine
   | ServedMilestoneLine;
 
 /** H2-⑬ — the served Milestones panel block (/activity). */
@@ -132,6 +146,7 @@ export interface ServedFeed {
     referralLifecycle: boolean;
     liquidity: boolean;
     archive: boolean;
+    treasury: boolean;
     milestones: boolean;
   };
   /** Malformed lines skipped by THIS client's validation (honesty count). */
@@ -257,6 +272,31 @@ function parseLine(raw: unknown): ServedFeedLine | null {
   if (r.kind === "archive-pause") {
     if (r.action !== "paused" && r.action !== "resumed") return null;
     return { kind: "archive-pause", ...common, action: r.action };
+  }
+  if (r.kind === "treasury-move") {
+    if (
+      (r.token !== "USDC" && r.token !== "SYN") ||
+      typeof r.amountRaw !== "string" ||
+      !/^[0-9]+$/.test(r.amountRaw) ||
+      (r.movement !== "in" && r.movement !== "out" && r.movement !== "internal") ||
+      typeof r.organLabel !== "string" ||
+      r.organLabel.length === 0 ||
+      /0x[0-9a-fA-F]{6,}/.test(r.organLabel) ||
+      (r.toOrganLabel !== null &&
+        r.toOrganLabel !== undefined &&
+        (typeof r.toOrganLabel !== "string" || /0x[0-9a-fA-F]{6,}/.test(r.toOrganLabel)))
+    ) {
+      return null;
+    }
+    return {
+      kind: "treasury-move",
+      ...common,
+      token: r.token,
+      amountRaw: r.amountRaw,
+      movement: r.movement,
+      organLabel: r.organLabel,
+      toOrganLabel: typeof r.toOrganLabel === "string" ? r.toOrganLabel : null,
+    };
   }
   if (r.kind === "milestone") {
     const target = toInt(r.target);
@@ -384,6 +424,7 @@ export async function fetchServedFeed(): Promise<ServedFeed | null> {
         referralLifecycle: lanesRaw.referralLifecycle === true,
         liquidity: lanesRaw.liquidity === true,
         archive: lanesRaw.archive === true,
+        treasury: lanesRaw.treasury === true,
         milestones: lanesRaw.milestones === true,
       },
       linesSkipped,
@@ -456,6 +497,18 @@ export function sentenceForServedLine(line: ServedFeedLine): string {
       return line.action === "paused"
         ? "The archive was paused — a founder-signed public act."
         : "The archive resumed — a founder-signed public act.";
+    // H2-⑦ — TREASURY MOVEMENTS (founder-approved sentences, 2026-07-15).
+    // Organ LABELS only; external counterparties never named; a transfer in
+    // an already-narrated transaction never reaches here (the Fold Law).
+    case "treasury-move": {
+      const amount =
+        line.token === "SYN" ? formatSynRaw(line.amountRaw) : formatUsdcRaw(line.amountRaw);
+      return line.movement === "internal"
+        ? `${amount} ${line.token} moved from ${line.organLabel} to ${line.toOrganLabel ?? "another organ"} — an internal treasury rebalance, publicly recorded.`
+        : line.movement === "out"
+          ? `${amount} ${line.token} moved out of ${line.organLabel} — a founder-signed treasury act; there are no silent moves.`
+          : `${amount} ${line.token} entered ${line.organLabel} — recorded on-chain.`;
+    }
     // H2-⑬ — MILESTONE CROSSINGS (founder-approved sentences, 2026-07-15).
     // Vocabulary law: always "routed", never "raised"; always SEATS.
     case "milestone":
