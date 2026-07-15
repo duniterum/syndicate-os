@@ -2,10 +2,21 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🏆 SLICE H2-⑬ ✅ BUILT (2026-07-15, founder GO on the full 11-row inventory + the 4
-> sentences on screen; order locked H2 → S7 → S8): THE MILESTONE LAYER — the protocol's
-> canonical account of itself, derived GAPLESSLY from the indexed history, no new
-> persistence.** The origin's 11 canon defs harvested whole (`milestoneReadmodel.ts`),
+> **▶ 🏆 SLICE H2-⑬ ✅ SEALED IN PROD (2026-07-15, Replit-verified on thesyndicate.money,
+> bundle `index-D3ZO3sKj.js`, 76/76 blob-verified, founder GO on the full 11-row inventory
+> + the 4 sentences on screen; order locked H2 → S7 → S8): THE MILESTONE LAYER — the
+> protocol's canonical account of itself, derived GAPLESSLY from the indexed history, no
+> new persistence.** PROD PROOF (Replit): the milestone model built on the FIRST cycle as
+> designed (no re-index — 13 tables / 142 columns dev==prod, nothing to migrate); the 4
+> sealed crossings serve WITH their exact tx anchors and the protocol's own dates are now
+> public record — **first seat Jun 4 · First Signal Jun 6 · Patron Seal Jun 7 · $100
+> routed Jun 17 (2026)**; approaching honest and alive (14→100 seats · $210→$1,000);
+> the crossings ride the feed as lines; /activity serves the panel; ZERO regression
+> (LP orientation still true 1,913.6 SYN + 39.85 USDC · burns #1–#8 gapless · 26 seats ·
+> 17 mints · source events intact · 68/68 items = 64 heartbeat lines + 4 crossings,
+> all lanes live · backbone 2/2 cycles OK, 6 streams caughtUp). Full gate green at
+> Replit (heartbeat 136 · backbone 110 · auth-zone 761 · source-status 161 · DB 42/42).
+> **DEPLOY BACKLOG: EMPTY.** The origin's 11 canon defs harvested whole (`milestoneReadmodel.ts`),
 > adapted per the Mirror Rule: always "routed" never "raised" (guard-pinned), always
 > SEATS; the seat milestones ARE the chapter boundaries (333/1,000/3,333/10,000 —
 > chapters.ts canon, one story with the Chronicle). LIVE TRUTH READ THIS SESSION
