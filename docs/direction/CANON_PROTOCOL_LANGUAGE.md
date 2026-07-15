@@ -361,6 +361,19 @@ public seat number — never the amount (seat lines never carry money).
 |---|---|---|
 | Capital rise (⑰) | "Seat #14 rose to Vanguard — a footprint recognized on the capital axis, never revoked." | — |
 
+### LIVE sentences added by H2-⑩ (deployments, founder GO — sentence 1 + the pool line, 2026-07-15)
+
+Canon-registry-derived (the ⑭ pattern WITH real chain anchors): each line's block, date
+and creation transaction were chain-verified at the gate (`deploymentRegistry.ts`,
+provenance-noted — the three sale pins reconciled EXACTLY against canon). Deployments are
+founder acts — the voice says so (the founder-voice rule). This class completes the
+heartbeat's FOUNDING INVENTORY: an engine's era-1 birth is ⑩'s line (the ⑫ note closes).
+
+| Event | The canonical sentence | Variants |
+|---|---|---|
+| Contract deployed (⑩) | "{label} was deployed — a founder act, permanent on Avalanche." | — |
+| Pool created (⑩) | "The SYN/USDC pool was created — the public market opened." | the factory call is the anchor |
+
 ### RESERVED sentences (authored now; their surfaces are not built — labels, not locks)
 
 | Event | The canonical sentence (RESERVED) | Notes |

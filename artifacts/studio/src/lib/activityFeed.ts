@@ -81,7 +81,10 @@ export type ActivityKind =
   // and none is invented; the line links into the record itself).
   | "chronicle-entry"
   // H2-⑰ — capital-axis rises: derived witness lines (served feed only).
-  | "capital-rise";
+  | "capital-rise"
+  // H2-⑩ — deployments: canon-registry-derived (client-side) with REAL
+  // creation-tx anchors, chain-verified at the gate (deploymentRegistry.ts).
+  | "deployment";
 
 export interface ActivityItem {
   kind: ActivityKind;

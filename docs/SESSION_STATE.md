@@ -2,6 +2,32 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🏛️ SLICE H2-⑩ ✅ BUILT — AND H2 CLOSES (2026-07-15, founder GO — sentence 1 + the
+> pool line): DEPLOYMENTS — the protocol's births, chain-verified, and THE HEARTBEAT'S
+> FOUNDING INVENTORY IS COMPLETE.** THE DISCOVERY (read-only, at the gate): all 8
+> deployment blocks + creation transactions binary-searched from the chain
+> (eth_getCode + receipts) — SYN Token 87,149,157 · Sale V1 87,157,852 · LP Pair
+> 87,163,331 (ALL THREE 2026-06-04 — the protocol's BIRTH DAY, matching the first-seat
+> milestone) · Archive1155 87,331,091 (Jun 6) · V2a 88,095,827 (Jun 15) · V2b
+> 88,193,183 (Jun 17) · Source Registry 88,502,674 + V3 88,505,301 (BOTH Jun 21 — the
+> referral architecture born as one act); the three canon sale pins reconciled EXACTLY
+> against the chain (both records proven). DESIGN: `deploymentRegistry.ts` (studio
+> canon, provenance-noted, the ⑭ pattern WITH real anchors — every line's verify link
+> opens a real creation tx; client-derived, server untouched, zero persistence);
+> sentence 1 founder-voiced ("Membership Sale V3 was deployed — a founder act,
+> permanent on Avalanche.") + the pool's own line ("The SYN/USDC pool was created —
+> the public market opened."); "Deployments" chip (13 chips); the ⑫ note closes (an
+> engine's era-1 birth is ⑩'s line); a future deployment joins the registry in its
+> own slice per the Completeness Invariant. RIG-VERIFIED with REAL canon data (no
+> fixture): all 8 lines rendered block-ordered with real anchors, filter isolates,
+> zero console errors. Green: workspace tsc · studio guards · seo 395 · surface 254 ·
+> build 24 shells (api suite untouched — client-only). DEPLOY: 🚀 BATCHABLE
+> (client-only, fail-closed). **THE H2 ARC IS COMPLETE: ⑬ milestones · ⑦ treasury +
+> Fold Law · ⑫ eras · P pride + P-a named referrer · ⑭ Chronicle · ⑰ capital axis ·
+> ⑩ deployments — the founder-ticked inventory of 2026-07-15, all built in ONE day,
+> every prior slice already SEALED IN PROD.** NEXT PLATEAU: S7 member home (wireframe
+> approved, preview gate) · S8 performance · S5 on the founder's paste.
+
 > **▶ 🪨 SLICE H2-⑰ ✅ SEALED IN PROD together with ⑭ (2026-07-15, Replit-verified on
 > thesyndicate.money, prod bundle `index-rz_RHitB.js`, 14/14 blob-verified, no migration
 > — 142/142 columns dev==prod; founder GO — names as the gate table, sentence 1, chip

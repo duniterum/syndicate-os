@@ -39,6 +39,7 @@ import {
 } from "@/lib/backboneFeedClient";
 import { MilestonesPanel } from "@/components/activity/MilestonesPanel";
 import { CHRONICLE_REGISTER } from "@/config/chronicleRegister";
+import { DEPLOYMENT_REGISTRY } from "@/config/deploymentRegistry";
 
 // The §8 event lexicon lives in backboneFeedClient (one mapping, shared with
 // the hero's live mini-feed since M1-b — no copy invented twice).
@@ -81,6 +82,7 @@ const KIND_LABEL: Record<ActivityKind, string> = {
   "era-transition": "Era",
   "chronicle-entry": "Chronicle",
   "capital-rise": "Footprint",
+  deployment: "Deployment",
 };
 
 function addressFromUrl(url: string): string | null {
@@ -98,7 +100,8 @@ type FilterId =
   | "milestone"
   | "era-transition"
   | "chronicle-entry"
-  | "capital-rise";
+  | "capital-rise"
+  | "deployment";
 const FILTERS: { id: FilterId; label: string }[] = [
   { id: "all", label: "All" },
   { id: "seat", label: "Seats" },
@@ -114,6 +117,7 @@ const FILTERS: { id: FilterId; label: string }[] = [
   { id: "era-transition", label: "Eras" },
   { id: "chronicle-entry", label: "Chronicle" },
   { id: "capital-rise", label: "Footprint" },
+  { id: "deployment", label: "Deployments" },
 ];
 
 function matches(item: ActivityItem, f: FilterId): boolean {
@@ -232,8 +236,25 @@ export function LiveActivityFeed({
     // Ordering: chain lines keep exact block order among themselves; a
     // register line slots by its promotion DAY (block order is monotonic
     // with days, so the mix stays truthful) and reads as the day's headline.
+    // H2-⑩ — deployments: the protocol's births, from the committed canon
+    // registry (chain-verified at the gate). REAL creation-tx anchors — the
+    // lines sort by their true blocks like any chain line. Founder-voice
+    // rule: deployments ARE founder acts, and the sentence says so; the
+    // pool's creation carries its own line — the market's opening.
+    const deploymentLines: ActivityItem[] = DEPLOYMENT_REGISTRY.map((d) => ({
+      kind: "deployment" as const,
+      sentence: d.isPoolCreation
+        ? "The SYN/USDC pool was created — the public market opened."
+        : `${d.label} was deployed — a founder act, permanent on Avalanche.`,
+      blockNumber: d.blockNumber,
+      txHash: d.transactionHash,
+      logIndex: 0,
+      dateUtc: d.dateUtc,
+      memory: true,
+    }));
+
     const isChron = (i: ActivityItem) => i.kind === "chronicle-entry";
-    return [...windowItems, ...deepLines, ...chronicleLines].sort((a, b) => {
+    return [...windowItems, ...deepLines, ...chronicleLines, ...deploymentLines].sort((a, b) => {
       if (isChron(a) || isChron(b)) {
         const ad = a.dateUtc || "9999-12-31";
         const bd = b.dateUtc || "9999-12-31";
