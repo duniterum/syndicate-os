@@ -150,11 +150,18 @@ ce qu'UN SEUL événement de chaîne porte lui-même (le log V3 publie nombre et
 ensemble) — **jamais** d'annuaire, **jamais** d'API de lookup, **jamais** d'enrichissement
 au-delà des champs de l'événement, **jamais** de jointure roster/cross-événement.
 
-**Le « qui-a-amené-qui » (décision fondateur, forme B — VOILÉE) :** la ligne dit « brought
-by a verified referral » — un BOOLÉEN dérivé du sourceId de l'événement, réduit dans le
-loader ; l'identité de la source ne sort jamais. La forme A (l'arête nominative
-« Member #27 brought Member #456 ») est **réservée** à l'arc Referrer Kit (opt-in des
-sources) — jamais une extension silencieuse.
+**Le « qui-a-amené-qui » (FOUNDER OVERRIDE le jour même, 2026-07-15 : la forme B voilée
+est REMPLACÉE par la forme A — le référreur NOMMÉ) :** motif fondateur engraved : le
+référreur est la partie fière — sa fierté est le moteur de croissance (SPEC_REFERRAL §⑨,
+honour-roll décidé ; des kits référreur payants seront vendus — un référreur voilé tue le
+produit). Structurellement propre par la logique même de ce gate : le `sourceWallet` vit
+dans le MÊME log d'achat V3 — un seul événement republié, aucune jointure de relation.
+Rendu : « Member #14 · 0xea8…5881 entered the public registry — brought by 0x3f2…0a91 » —
+forme courte, même discipline de scanner ; le sourceId reste réduit au booléen (l'id ne
+sort jamais) ; un événement référé dont le champ wallet serait malformé dégrade à la
+formulation voilée (« brought by a verified referral ») — un trou honnête, jamais une
+invention. Quand la couche alias arrivera (M2/M3), l'alias remplacera l'adresse sur cette
+même ligne (« brought by CryptoKemal » — la vitrine).
 
 **Ce qui NE change PAS — le cœur tient :** pas de KYC / aucune identité réelle stockée ·
 pas d'annuaire ni de lookup · zone own-row/auth intacte · le rapport agrégé du backbone

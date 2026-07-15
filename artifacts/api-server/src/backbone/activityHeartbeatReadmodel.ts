@@ -153,11 +153,18 @@ export interface RawSaleEventInput {
    */
   readonly memberAddress: string | null;
   /**
-   * H2-P (veiled who-brought-whom, founder choice B): TRUE iff the V3
-   * event's own sourceId is non-zero. The boolean is ALL that leaves the
-   * loader — the id, the source, the referrer never do.
+   * H2-P: TRUE iff the V3 event's own source id is non-zero (the loader's
+   * reduction; the id itself never leaves).
    */
   readonly referredBySource: boolean;
+  /**
+   * H2-P founder override A (2026-07-15): the event's OWN referrer — the V3
+   * log's sourceWallet, same event, no join. SERVER-ONLY full address; it
+   * leaves ONLY as the projection's short form ("brought by 0x3f2…0a91").
+   * null when unreferred or when the wallet field is malformed (the line
+   * degrades to the veiled wording — an honest gap, never a guess).
+   */
+  readonly referrerAddress: string | null;
 }
 
 export interface BlockTimestampInput {
@@ -207,8 +214,10 @@ export interface ActivityItem {
   readonly memberNumber: number | null;
   /** H2-P: SERVER-ONLY full actor address (projection emits SHORT FORM only). */
   readonly memberAddress: string | null;
-  /** H2-P (founder choice B): the veiled referred flag — a boolean, nothing more. */
+  /** H2-P: the referred flag (the loader's source-id reduction). */
   readonly referredBySource: boolean;
+  /** H2-P override A: SERVER-ONLY full referrer address (short form serves). */
+  readonly referrerAddress: string | null;
 }
 
 export interface ActivityCheck {
@@ -374,6 +383,7 @@ export function buildActivityHeartbeatReadModel(
           : null,
       memberAddress: purchase.memberAddress,
       referredBySource: purchase.referredBySource,
+      referrerAddress: purchase.referrerAddress,
     });
   }
 
@@ -517,6 +527,7 @@ export function toAddressSafeActivityReport(
     '"memberAddress"',
     '"memberShort"',
     '"referredBySource"',
+    '"referrerAddress"',
   ]) {
     if (json.includes(forbiddenField)) {
       throw new Error(

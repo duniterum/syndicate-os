@@ -558,14 +558,14 @@ export async function loadActivityHeartbeatInput(): Promise<ActivityHeartbeatLoa
 
   const rawEvents: RawSaleEventInput[] = rawRows.map((r) => {
     // decodedJson WHITELIST: exactly {firstSeat, memberNumber, usdcAmount,
-    // usdcIn, grossUsdc, era, buyer, recipient, sourceId}. The USDC keys are
-    // the purchase's own PUBLIC gross figure (H2-⑬ cumsum only); era is the
-    // engine's PUBLIC rate-table page (H2-⑫ witness only); buyer/recipient
-    // are the event's own PUBLIC actor (H2-P pride amendment — SERVER-ONLY
-    // full address in the model, leaves ONLY as a short form); sourceId is
-    // read ONLY to derive the referred BOOLEAN (the veiled who-brought-whom,
-    // founder choice B) — the id itself never leaves this closure. Gated
-    // economics never enter this model.
+    // usdcIn, grossUsdc, era, buyer, recipient, sourceId, sourceWallet}. The
+    // USDC keys are the purchase's own PUBLIC gross figure (H2-⑬ cumsum
+    // only); era is the engine's PUBLIC rate-table page (H2-⑫ witness only);
+    // buyer/recipient are the event's own PUBLIC actor and sourceWallet its
+    // own PUBLIC referrer (H2-P pride amendment + founder override A —
+    // SERVER-ONLY full addresses in the model, leaving ONLY as short forms);
+    // sourceId is read ONLY as the referred test — the id itself never
+    // leaves this closure. Gated economics never enter this model.
     const d = r.decodedJson as Record<string, unknown>;
     // H2-P: the seat's holder — V3 recipient (gifts land on the recipient),
     // else the buyer. Routed rows carry no actor here.
@@ -575,13 +575,24 @@ export async function loadActivityHeartbeatInput(): Promise<ActivityHeartbeatLoa
         : r.eventName === "TokensPurchased" || r.eventName === "Purchased"
           ? d.buyer
           : undefined;
-    // H2-P (veiled referral, founder choice B): TRUE iff the V3 event's own
-    // sourceId is non-zero. The boolean is all that ever leaves.
+    // H2-P (founder override A, 2026-07-15): the referrer IS the proud party —
+    // the V3 event's OWN sourceWallet (same log, one event republished, no
+    // join) rides as a SERVER-ONLY full address and leaves only as a short
+    // form. sourceId is still read ONLY as the referred test (the id never
+    // leaves); a referred purchase whose wallet is malformed degrades to the
+    // veiled wording — an honest gap, never a guess.
     const referredBySource =
       r.eventName === "MembershipPurchasedV3" &&
       typeof d.sourceId === "string" &&
       /^0x[0-9a-fA-F]{64}$/.test(d.sourceId) &&
       BigInt(d.sourceId) !== 0n;
+    const referrerAddress =
+      referredBySource &&
+      typeof d.sourceWallet === "string" &&
+      /^0x[0-9a-fA-F]{40}$/.test(d.sourceWallet) &&
+      BigInt(d.sourceWallet) !== 0n
+        ? d.sourceWallet.toLowerCase()
+        : null;
     // Per-generation public gross-USDC value (Routed rows carry none here):
     // V1 TokensPurchased → usdcAmount · V2 Purchased → usdcIn ·
     // V3 MembershipPurchasedV3 → grossUsdc.
@@ -623,6 +634,7 @@ export async function loadActivityHeartbeatInput(): Promise<ActivityHeartbeatLoa
           ? actorValue.toLowerCase()
           : null,
       referredBySource,
+      referrerAddress,
     };
   });
 

@@ -43,8 +43,10 @@ export interface ServedSeatLine extends ServedLineCommon {
   memberNumber: number | null;
   /** H2-P: the actor's SHORT FORM only — a full address never parses. */
   memberShort: string | null;
-  /** H2-P (founder choice B): the veiled referred flag. */
+  /** H2-P: the referred flag (the event's own source-id test). */
   referred: boolean;
+  /** H2-P override A: the referrer's SHORT FORM (same event, no join). */
+  referredByShort: string | null;
 }
 
 export interface ServedBurnLine extends ServedLineCommon {
@@ -235,12 +237,14 @@ function parseLine(raw: unknown): ServedFeedLine | null {
 
   if (r.kind === "purchase") {
     const memberShort = toShort(r.memberShort);
+    const referredByShort = toShort(r.referredByShort);
     if (
       typeof r.generation !== "string" ||
       typeof r.firstSeatBucket !== "string" ||
       !BUCKETS.has(r.firstSeatBucket) ||
       typeof r.routedFolded !== "boolean" ||
-      memberShort === undefined
+      memberShort === undefined ||
+      referredByShort === undefined
     ) {
       return null;
     }
@@ -254,6 +258,7 @@ function parseLine(raw: unknown): ServedFeedLine | null {
       memberNumber: memberNumber !== null && memberNumber > 0 ? memberNumber : null,
       memberShort,
       referred: r.referred === true,
+      referredByShort,
     };
   }
   if (r.kind === "burn") {
@@ -553,7 +558,14 @@ export function sentenceForServedLine(line: ServedFeedLine): string {
             ? "A member expanded their footprint — recorded on-chain."
             : "A seat was written on-chain.";
       }
-      const referred = line.referred ? " — brought by a verified referral" : "";
+      // Founder override A (2026-07-15): the referrer is the proud party —
+      // named short-form from the SAME event; the veiled wording survives
+      // only as the honest degrade when the event's wallet field is absent.
+      const referred = line.referred
+        ? line.referredByShort !== null
+          ? ` — brought by ${line.referredByShort}`
+          : " — brought by a verified referral"
+        : "";
       return line.firstSeatBucket === "false"
         ? `${who} expanded their footprint — recorded on-chain.`
         : `${who} entered the public registry${referred}.`;

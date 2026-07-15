@@ -317,12 +317,15 @@ scarcity pressure (the seat-not-security shield). All three engines sit in era 1
 
 The origin voice recovered from the archive, restored verbatim. Identity facts are the
 EVENT'S OWN (number + short-form address); lines whose rows predate the amendment keep the
-H1a voice (an honest gap, never a guess). The who-brought-whom renders VEILED (founder
-choice B); the nominative edge (form A) is reserved for the Referrer Kit arc.
+H1a voice (an honest gap, never a guess). The who-brought-whom renders NAMED (founder
+override A, same day — the referrer is the proud party; sourceWallet lives in the SAME
+purchase event: one event republished, no join); the veiled wording survives only as the
+honest degrade when the event's wallet field is malformed. When the alias layer arrives
+(M2/M3), the alias replaces the address on this same line.
 
 | Event | The canonical sentence (pride voice) | Variants |
 |---|---|---|
-| Seat entered (first/unknown) | "Member #15 · 0x123…abcd entered the public registry." | no number (V1): "0x123…abcd entered the public registry." · referred (V3, veiled B): append " — brought by a verified referral" |
+| Seat entered (first/unknown) | "Member #15 · 0x123…abcd entered the public registry." | no number (V1): "0x123…abcd entered the public registry." · referred (V3, override A): append " — brought by 0x3f2…0a91" (degrade: " — brought by a verified referral") |
 | Repeat purchase | "Member #15 · 0x123…abcd expanded their footprint — recorded on-chain." | — |
 | Artifact mint | "0x123…abcd archived First Signal · token ID 1." | pre-backfill rows keep "A {artifact} was minted — protocol memory, written to the chain." |
 | Burn / LP facts row | the Community actor's short form joins the facts ("Proof of Burn #N · 0x123…abcd") | Founder lines carry no short form — the founder voice rule |

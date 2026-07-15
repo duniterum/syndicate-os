@@ -2,6 +2,30 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🤝 SLICE H2-P-a ✅ BUILT, COMMITTED, PUSH HELD (2026-07-15, FOUNDER OVERRIDE — item 5
+> revised B → A the same day, on the advisor's argument the founder confirmed): THE
+> REFERRER IS NAMED — "Member #14 · 0xea8…5881 entered the public registry — brought by
+> 0x3f2…0a91."** WHY (founder engraved): the referrer is the proud party — referrer
+> pride is the growth engine (SPEC_REFERRAL §⑨ honour-roll; paid referral kits later —
+> a veiled referrer defeats the product). STRUCTURALLY CLEAN BY THE GATE'S OWN LOGIC:
+> sourceWallet lives in the SAME V3 purchase log — one event republished, no relationship
+> join (the aggregation concern doesn't apply; ADR-003 amendment revised accordingly,
+> recorded). MACHINERY: loader whitelist += sourceWallet (loader-confined, both suites
+> re-pinned); referrerAddress SERVER-ONLY through the model → referredByShort (short
+> form) on seat lines; sourceId still boolean-only (the id never leaves); MALFORMED-
+> WALLET DEGRADE: the veiled wording ("brought by a verified referral") survives ONLY
+> as the honest gap, never a guess; alias-layer note recorded (M2/M3: the alias replaces
+> the address on this same line). FLAG NOTED FOR THE ⑭ GATE (advisor, founder decides
+> there): the "Referral events" chip labels registry ADMIN lifecycle — propose a clearer
+> label. RIG-VERIFIED: the A line + the degrade rendered verbatim, zero console errors.
+> Green: workspace tsc · ALL api guards (activity 137 · backbone 130 with the named-
+> referrer pins: full referrer address never serializes, referredByShort short-form
+> pinned) · studio guards · build 24 shells. **PUSH DELIBERATELY HELD: the H2-P(B)+
+> backfill deploy was already in flight at Replit when the override landed — pushing
+> mid-cycle could race the pull. The commit goes to origin the moment Replit's report
+> arrives; A then rides the NEXT deploy (🚀 BATCHABLE — client+server voice change,
+> fail-closed).**
+
 > **▶ 🦁 SLICE H2-P ✅ BUILT (2026-07-15, FOUNDER DOCTRINE AMENDMENT — gate first, then GO
 > with the two recommended choices confirmed: item 5 = B VEILED · backfill = ii): THE
 > PRIDE OF THE PUBLIC RECORD — the member-address masking REPEALED on the feed; the

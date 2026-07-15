@@ -73,6 +73,7 @@ function ev(partial: Partial<RawSaleEventInput>): RawSaleEventInput {
     era: null,
     memberAddress: null,
     referredBySource: false,
+    referrerAddress: null,
     ...partial,
   };
 }
@@ -415,14 +416,17 @@ const allowedKeys = new Set([
   // SERVER-ONLY full address in the model; short form is all that serializes.
   "buyer",
   "recipient",
-  // H2-P (founder choice B): reduced to the referred BOOLEAN in the loader;
-  // the id itself never leaves the closure.
+  // H2-P: reduced to the referred BOOLEAN in the loader; the id itself
+  // never leaves the closure.
   "sourceId",
+  // H2-P founder override A (2026-07-15): the event's OWN referrer — same
+  // log, no join; SERVER-ONLY full address, short form is all that serves.
+  "sourceWallet",
 ]);
 check(
   decodedAccesses.length > 0 &&
     decodedAccesses.every((k) => allowedKeys.has(k)),
-  "shared loader decodedJson access whitelist is exactly {firstSeat, memberNumber, usdcAmount, usdcIn, grossUsdc, era, buyer, recipient, sourceId}",
+  "shared loader decodedJson access whitelist is exactly {firstSeat, memberNumber, usdcAmount, usdcIn, grossUsdc, era, buyer, recipient, sourceId, sourceWallet}",
   `shared loader reads non-whitelisted decodedJson keys: ${decodedAccesses
     .filter((k) => !allowedKeys.has(k))
     .join(", ")}`,
@@ -435,7 +439,6 @@ check(
 );
 const gatedLiterals = [
   "referral" + "Amount",
-  "source" + "Wallet",
   "source" + "Class",
   "syn" + "Out",
   "acquisition" + "Cost",
@@ -459,6 +462,8 @@ for (const lit of [
   '"buyer"',
   '"recipient"',
   "source" + "Id",
+  // H2-P override A: the referrer key is loader-confined like the actor keys.
+  "source" + "Wallet",
 ]) {
   check(
     !readmodelSrc.includes(lit) && !deriveSrc.includes(lit),

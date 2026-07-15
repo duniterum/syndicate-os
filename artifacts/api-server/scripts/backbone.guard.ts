@@ -483,6 +483,7 @@ const fixtureModel = buildActivityHeartbeatReadModel({
       // H2-P: a pre-amendment-shaped row — the fallback voice must hold.
       memberAddress: null,
       referredBySource: false,
+      referrerAddress: null,
     },
     {
       chainId: CHAIN,
@@ -495,9 +496,11 @@ const fixtureModel = buildActivityHeartbeatReadModel({
       memberNumber: 424242,
       usdcGrossRaw: null,
       era: 1,
-      // H2-P: the pride voice + the veiled referred flag (founder choice B).
+      // H2-P: the pride voice; override A — the referrer named from the
+      // SAME event (a planted full address that must never serialize).
       memberAddress: "0x" + "bb".repeat(20),
       referredBySource: true,
+      referrerAddress: "0x" + "cc".repeat(20),
     },
   ],
   blockTimestamps: [
@@ -738,6 +741,7 @@ const milestonePurchases = [
     era: null,
     memberAddress: null,
     referredBySource: false,
+    referrerAddress: null,
   },
   {
     chainId: CHAIN,
@@ -752,6 +756,7 @@ const milestonePurchases = [
     era: 1,
     memberAddress: null,
     referredBySource: false,
+    referrerAddress: null,
   },
 ];
 const milestoneTs = [
@@ -859,6 +864,7 @@ const eraPurchases = [
     era: 1,
     memberAddress: null,
     referredBySource: false,
+    referrerAddress: null,
   },
   {
     chainId: CHAIN,
@@ -873,6 +879,7 @@ const eraPurchases = [
     era: 2,
     memberAddress: null,
     referredBySource: false,
+    referrerAddress: null,
   },
 ];
 const fixtureEraModel = buildEraReadModel({
@@ -1118,21 +1125,26 @@ check(
 check(
   !feedJson.includes(founderAddr) &&
     !feedJson.includes(communityAddr) &&
+    !feedJson.includes("0x" + "cc".repeat(20)) &&
     !feedJson.includes("fromAddress") &&
     !feedJson.includes("senderAddress") &&
     !feedJson.includes("memberAddress") &&
     !feedJson.includes("minterAddress") &&
-    !feedJson.includes("actorAddress"),
-  "pride discipline: full actor addresses and their server-only field names never serialize",
+    !feedJson.includes("actorAddress") &&
+    !feedJson.includes("referrerAddress"),
+  "pride discipline: full actor/referrer addresses and their server-only field names never serialize",
   "the feed leaked a full address or a server-only address field",
 );
 check(
   feedJson.includes('"memberNumber":424242') &&
     feedJson.includes('"memberShort":"0xbbb…bbbb"') &&
     feedJson.includes('"referred":true') &&
+    // Founder override A (2026-07-15): the referrer named from the SAME
+    // event — short form, no join; the growth engine's pride.
+    feedJson.includes('"referredByShort":"0xccc…cccc"') &&
     feedJson.includes('"minterShort":"0xbbb…bbbb"'),
-  "the pride voice serves: the event's own member number + SHORT-FORM signatures (the origin voice restored)",
-  "the pride fields broke — number/short-form/referred missing from the feed",
+  "the pride voice serves: member number + SHORT-FORM signatures + the named referrer (override A)",
+  "the pride fields broke — number/short-form/referred-by missing from the feed",
 );
 check(
   feed.burnLedger[0]!.senderLabel === "Founder" &&

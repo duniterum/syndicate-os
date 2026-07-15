@@ -71,8 +71,15 @@ export interface PublicSeatLine extends LineCommon {
   readonly memberNumber: number | null;
   /** H2-P: the actor's SHORT FORM (never a full address). */
   readonly memberShort: string | null;
-  /** H2-P (founder choice B): the veiled referred flag — a boolean only. */
+  /** H2-P: the referred flag (the event's own source-id test). */
   readonly referred: boolean;
+  /**
+   * H2-P founder override A: the referrer's SHORT FORM — the same event's
+   * own sourceWallet, republished (no join). null when unreferred or when
+   * the event's wallet field is malformed (the sentence degrades to the
+   * veiled wording).
+   */
+  readonly referredByShort: string | null;
 }
 
 export interface PublicBurnLine extends LineCommon {
@@ -297,6 +304,8 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
       memberNumber: item.memberNumber,
       memberShort: shortForm(item.memberAddress),
       referred: item.referredBySource,
+      // Override A: the referrer is the proud party — same event, no join.
+      referredByShort: shortForm(item.referrerAddress),
     };
   });
 
