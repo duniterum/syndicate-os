@@ -147,9 +147,19 @@ export async function scanRecentActivity(
         try {
           if (t0 === TOPICS.seat && log.address.toLowerCase() === addrs.sale.toLowerCase()) {
             const d = decodeEventLog({ abi: FEED_ABI, eventName: "MembershipPurchasedV3", data: log.data, topics: log.topics });
+            // H2-P — the pride amendment: the window speaks the SAME origin
+            // voice as the served feed (one §8 lexicon, one register). The
+            // recipient is the seat's holder; short form only.
+            const holder = (d.args.recipient ?? d.args.buyer) as string | undefined;
+            const holderShort =
+              typeof holder === "string" && /^0x[0-9a-fA-F]{40}$/.test(holder)
+                ? `0x${holder.slice(2, 5).toLowerCase()}…${holder.slice(-4).toLowerCase()}`
+                : null;
             items.push({
               kind: "seat",
-              sentence: `Seat #${d.args.memberNumber} was written on-chain${d.args.firstSeat ? " — a first seat" : ""}.`,
+              sentence: d.args.firstSeat
+                ? `Member #${d.args.memberNumber} ${holderShort ? `· ${holderShort} ` : ""}entered the public registry.`
+                : `Member #${d.args.memberNumber} ${holderShort ? `· ${holderShort} ` : ""}expanded their footprint — recorded on-chain.`,
               blockNumber: Number(log.blockNumber),
               txHash: log.transactionHash,
               logIndex: log.logIndex ?? 0,

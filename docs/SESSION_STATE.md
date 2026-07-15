@@ -2,6 +2,52 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🦁 SLICE H2-P ✅ BUILT (2026-07-15, FOUNDER DOCTRINE AMENDMENT — gate first, then GO
+> with the two recommended choices confirmed: item 5 = B VEILED · backfill = ii): THE
+> PRIDE OF THE PUBLIC RECORD — the member-address masking REPEALED on the feed; the
+> origin voice restored.** THE AMENDMENT RECORDED (never silent): ADR-003 gains its
+> 2026-07-15 amendment block — §1.2 NARROWED not deleted (the feed republishes what ONE
+> chain event itself carries; NO lookup API, NO roster endpoint, NO enrichment, NO
+> cross-event join; the core stands: no KYC, no directory, own-row zone untouched).
+> THE STRUCTURAL KEY: only the SHORT FORM (0x123…abcd — 3+4 hex, exact-shape-pinned)
+> ever serializes; the full address stays server-only and the UNCHANGED output scanners
+> (40-hex) stay armed — a full member address in any payload is still a red build/500.
+> VOICE (§8 amended, origin verbatim): seats "Member #15 · 0x123…abcd entered the public
+> registry." (repeat → "expanded their footprint"; V1/pre-amendment rows keep the H1a
+> voice — honest gap, never a guess) · archive "0x123…abcd archived First Signal · token
+> ID 1." · burns/LP: Community short form joins the FACTS row; THE FOUNDER VOICE RULE
+> STANDS (founder acts say the founder, no short form) · the client WINDOW speaks the
+> same registry voice (one lexicon). WHO-BROUGHT-WHOM = B VEILED (founder decision):
+> "— brought by a verified referral" — a BOOLEAN reduced from the event's own sourceId
+> in the loader (the id never leaves, guard-pinned); form A (the nominative edge) is
+> RESERVED for the Referrer Kit arc, never a silent extension. MACHINERY: loader
+> whitelist {+buyer, +recipient, +sourceId→boolean} (both guard suites re-pinned; the
+> gated literals '"buyer"'/'"recipient"'/sourceId reclassified LOADER-CONFINED);
+> memberNumber/memberAddress/referred ride ActivityItem server-only → projection emits
+> {memberNumber, memberShort, referred} on seats, {actorShort} on burns/LP (Community
+> only), {artifactId, minterShort} on archive mints; the ARCHIVE_MINT decoder now stores
+> the minter + `archive:minter-backfill` (founder-gated, DRY-RUN default, --write to
+> apply) restores the 17 historical mints FROM THE CHAIN'S OWN LOGS — one transaction,
+> cross-checked fail-closed per row, decoded_json only: THE named write-discipline
+> exception, recorded in ADR-003. CHRONICLE REGISTER HOLDS (my read, stated at the gate:
+> its identity-blind line is the register's own literary discipline; promotion is a
+> human act — the founder writes future chapters as he wishes). Aggregate status report
+> stays blind (forbidden-fields extended: memberAddress/memberShort/referredBySource).
+> SEO/copy ride: /activity lead (the "address-safe" claim → the pride truth), §8 render
+> rules, sourceStatus notes, protocolOsMap reality (its stale "no route no UI" claim
+> also cured), ACTIVITY_HEARTBEAT_READ_MODEL.md. RUNTIME-VERIFIED on the rig (debug
+> fetch-intercept, cleared after): all five voices rendered — pride+veiled referral ·
+> repeat · V1 fallback · archive origin-verbatim · burn facts short form; zero console
+> errors. Green: workspace tsc · seo 395 · rewrites · surface:audit 254 · ALL studio
+> guards · ALL 17 api guards (activity 137 · backbone 130 — the identity-blind family
+> REWRITTEN into pride pins: full-address absence + short-form presence + founder-voice
+> split + non-lowercase-actor throw · member-continuity emitter pins hold untouched —
+> short forms can never be 40-hex) · build 24 shells. DEPLOY: 🚀 recommended (server +
+> client + the founder-gated backfill step: after publish, Replit runs
+> `archive:minter-backfill -- --write` ONCE and reports; forward mints carry the minter
+> from the first cycle). NEXT: ⑭ Chronicle lines on the settled voice → ⑰ → ⑩ → S7 ·
+> S8 · S5. (⑫'s Replit seal remains pending its deploy report — separate thread.)
+
 > **▶ 📖 SLICE H2-⑫ ✅ BUILT (2026-07-15, founder GO after the marketing-vs-guardrail
 > exchange — the anti-scarcity doctrine explained and CONFIRMED, the era-facts-table
 > idea noted as a possible future /tokenomics slice): ERA TRANSITIONS ARM THE HEARTBEAT

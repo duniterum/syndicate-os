@@ -145,8 +145,8 @@ export const protocolOsMap: OsMapDomain[] = [
         summary:
           "In-memory activity derivation over the raw index and Protocol Time — purchases with Routed rows folded in, chain-verified day granularity.",
         reality:
-          "Pure in-memory read-model with an address-safe report; no table, no route, no UI. A public activity surface is a separate founder-gated slice.",
-        asOf: "17 activity items from 26 raw rows — operator script, 2026-07-02",
+          "Rebuilt unattended by the event backbone each cycle and served on /activity as the receipt-line feed (H2-P: lines speak the origin voice — member number + short-form signature; a full address never serializes). The aggregate status report stays address-safe.",
+        asOf: "served live by the event backbone — the complete indexed history",
       },
     ],
   },

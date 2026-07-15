@@ -71,6 +71,8 @@ function ev(partial: Partial<RawSaleEventInput>): RawSaleEventInput {
     memberNumber: null,
     usdcGrossRaw: null,
     era: null,
+    memberAddress: null,
+    referredBySource: false,
     ...partial,
   };
 }
@@ -409,11 +411,18 @@ const allowedKeys = new Set([
   "grossUsdc",
   // H2-⑫: the engine's PUBLIC rate-table page (era-transition witness only).
   "era",
+  // H2-P (the pride amendment, ADR-003 2026-07-15): the event's own actor —
+  // SERVER-ONLY full address in the model; short form is all that serializes.
+  "buyer",
+  "recipient",
+  // H2-P (founder choice B): reduced to the referred BOOLEAN in the loader;
+  // the id itself never leaves the closure.
+  "sourceId",
 ]);
 check(
   decodedAccesses.length > 0 &&
     decodedAccesses.every((k) => allowedKeys.has(k)),
-  "shared loader decodedJson access whitelist is exactly {firstSeat, memberNumber, usdcAmount, usdcIn, grossUsdc, era}",
+  "shared loader decodedJson access whitelist is exactly {firstSeat, memberNumber, usdcAmount, usdcIn, grossUsdc, era, buyer, recipient, sourceId}",
   `shared loader reads non-whitelisted decodedJson keys: ${decodedAccesses
     .filter((k) => !allowedKeys.has(k))
     .join(", ")}`,
@@ -427,10 +436,7 @@ check(
 const gatedLiterals = [
   "referral" + "Amount",
   "source" + "Wallet",
-  "source" + "Id",
   "source" + "Class",
-  '"buyer"',
-  '"recipient"',
   "syn" + "Out",
   "acquisition" + "Cost",
 ];
@@ -441,16 +447,34 @@ for (const lit of gatedLiterals) {
     `activity chain must never reference gated field ${lit}`,
   );
 }
-// The purchase's PUBLIC gross-USDC keys (H2-⑬): legitimate ONLY in the shared
-// loader's whitelist (the milestone cumsum input); the pure builder and the
-// derive script never touch the raw keys themselves.
-for (const lit of ["usdc" + "Amount", "usdc" + "In", "gross" + "Usdc"]) {
+// Loader-confined raw keys: the PUBLIC gross-USDC keys (H2-⑬ cumsum), the
+// event's own actor keys (H2-P pride — buyer/recipient; ADR-003 amendment
+// 2026-07-15), and sourceId (H2-P founder choice B — reduced to a BOOLEAN in
+// the loader; the id never leaves). The pure builder and the derive script
+// never touch any raw key themselves.
+for (const lit of [
+  "usdc" + "Amount",
+  "usdc" + "In",
+  "gross" + "Usdc",
+  '"buyer"',
+  '"recipient"',
+  "source" + "Id",
+]) {
   check(
     !readmodelSrc.includes(lit) && !deriveSrc.includes(lit),
-    `public USDC key confined to the loader: ${lit}`,
-    `raw USDC key ${lit} leaked outside the shared loader`,
+    `loader-confined raw key: ${lit}`,
+    `raw key ${lit} leaked outside the shared loader`,
   );
 }
+// H2-P: the sourceId reduction — the loader may test it, never store it: the
+// only sourceId accesses are the boolean reduction, and the id string never
+// lands in a produced field.
+check(
+  backboneDbSrc.includes("referredBySource") &&
+    !/referredBySource[^=]*=[^=]*d\.sourceId(?!\s*===|\s*!==|\s*\)|,|;)/.test(backboneDbSrc),
+  "sourceId is reduced to the referred boolean in the loader — the id never leaves",
+  "the loader stores sourceId beyond the boolean reduction",
+);
 
 // Divergence-witness cross-check present in the shared loader (hard fail).
 check(

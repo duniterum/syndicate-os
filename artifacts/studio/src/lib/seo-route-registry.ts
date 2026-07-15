@@ -458,7 +458,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "proof",
     proofRoute: "/status",
     notes:
-      "Complete served history (indexer) + recent-window freshness layer. H2-⑬: the Milestones panel — canonical crossings anchored to their exact transactions. H2-⑦: treasury movements (post-Fold-Law — routing detail never duplicates a purchase). H2-⑫: era turns (witnessed page turns; line-on-crossing only, never a countdown).",
+      "Complete served history (indexer) + recent-window freshness layer. H2-⑬: the Milestones panel — canonical crossings anchored to their exact transactions. H2-⑦: treasury movements (post-Fold-Law — routing detail never duplicates a purchase). H2-⑫: era turns (witnessed page turns; line-on-crossing only, never a countdown). H2-P: THE PRIDE OF THE PUBLIC RECORD — lines speak the origin voice (member number + short-form signature; a full address never serializes; ADR-003 amendment).",
   },
   {
     path: "/chronicle",

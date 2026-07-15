@@ -128,3 +128,41 @@ unreachable/fin-*, `FULL_ADDRESS_RE`) **ne sont pas touchés** et tournent toujo
 **Portée :** ce lever concerne **uniquement** le net runtime `assertProtocolRealityDiscipline`.
 Les guards de contenu build-time (`guard-forbidden-copy` côté studio, `verify-canon-integrity`
 côté canon) ne bloquent aucun membre et ne sont **pas** touchés par cet amendement.
+
+---
+
+## Amendement 2026-07-15 — LA FIERTÉ DU REGISTRE PUBLIC (décision fondateur : le masquage des adresses membres est levé sur le FLUX)
+
+**Qui / quoi :** le **fondateur** a annulé le masquage des adresses membres dans le flux
+d'activité (tranche H2-P). Motif engraved : la chaîne est publique, chaque adresse vit déjà
+sur l'explorer et dans nos propres ancres de vérification ; le masquage théâtral côté serveur
+ne protège personne et supprime la **FIERTÉ** du membre — le moteur statut-par-preuve
+(« je peux montrer le registre »). Les archives de l'origine, retrouvées cette semaine, parlent
+verbatim par adresse (« 0x123…abcd entered the public registry » · « 0x123…abcd archived
+First Signal ») — la fierté-par-adresse EST la voix d'origine ; le masquage était notre
+déviation, pas la tradition.
+
+**Ce qui change :** le flux (et les surfaces qui le relaient) PEUT afficher le numéro de
+membre de l'événement et l'adresse de son acteur en **FORME COURTE** (« 0x123…abcd »),
+telle que l'origine le faisait. Le §1.2 (« le mapping memberNumber → wallet reste
+server-only, jamais sérialisé ») est **restreint, pas supprimé** : le flux ne republie que
+ce qu'UN SEUL événement de chaîne porte lui-même (le log V3 publie nombre et wallet
+ensemble) — **jamais** d'annuaire, **jamais** d'API de lookup, **jamais** d'enrichissement
+au-delà des champs de l'événement, **jamais** de jointure roster/cross-événement.
+
+**Le « qui-a-amené-qui » (décision fondateur, forme B — VOILÉE) :** la ligne dit « brought
+by a verified referral » — un BOOLÉEN dérivé du sourceId de l'événement, réduit dans le
+loader ; l'identité de la source ne sort jamais. La forme A (l'arête nominative
+« Member #27 brought Member #456 ») est **réservée** à l'arc Referrer Kit (opt-in des
+sources) — jamais une extension silencieuse.
+
+**Ce qui NE change PAS — le cœur tient :** pas de KYC / aucune identité réelle stockée ·
+pas d'annuaire ni de lookup · zone own-row/auth intacte · le rapport agrégé du backbone
+reste aveugle (ni nombres, ni adresses) · **une adresse COMPLÈTE de membre ne se sérialise
+nulle part** — la forme courte est dérivée côté serveur et les scanners de sortie (40-hex)
+restent armés, inchangés : une adresse complète dans un payload reste un build rouge / 500 ·
+la règle voix-fondateur tient (les actes du fondateur DISENT le fondateur) · l'ancre de
+vérification reste le chemin de la vérité complète. **Exception d'écriture nommée :** le
+script founder-gated `archive:minter-backfill` restaure, UNE fois, le minter des 17 mints
+historiques depuis les logs de la chaîne elle-même (update de `decoded_json` seul,
+cross-check fail-closed avant toute écriture).

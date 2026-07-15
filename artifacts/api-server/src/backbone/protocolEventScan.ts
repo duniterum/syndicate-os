@@ -185,6 +185,12 @@ export interface RawArchiveMintRowInput {
   transactionHash: string;
   artifactId: number;
   quantityRaw: string;
+  /**
+   * H2-P: the minter (SERVER-ONLY full address; the pride voice emits its
+   * SHORT FORM only). null on rows persisted before the amendment until the
+   * founder-gated archive:minter-backfill restores it from the chain.
+   */
+  minter: string | null;
 }
 
 export interface RawArchivePauseRowInput {
@@ -401,8 +407,12 @@ function decodeArchiveMintLog(log: RawLogEntry): ProtocolEventRecord {
   if (!Number.isSafeInteger(artifactId) || artifactId < 0) {
     throw new Error("archive mint log: artifact id is not a safe integer");
   }
-  // The minter (topics[3]) is a MEMBER wallet — deliberately NOT stored:
-  // the line needs no label, so the address never even enters the row.
+  // H2-P (THE PRIDE OF THE PUBLIC RECORD, founder amendment 2026-07-15):
+  // the minter (topics[3]) IS stored — the origin voice reads "0x123…abcd
+  // archived First Signal"; the address leaves the server as a SHORT FORM
+  // only (the projection derives it; a full member address never serializes).
+  // Rows persisted before this amendment lack the field; the founder-gated
+  // archive:minter-backfill script restores it from the chain's own logs.
   return {
     chainId: EXPECTED_CHAIN_ID,
     streamKey: "ARCHIVE_MINT",
@@ -412,7 +422,11 @@ function decodeArchiveMintLog(log: RawLogEntry): ProtocolEventRecord {
     transactionHash: parseTxHash(log.transactionHash),
     logIndex: parseHexNumber(log.logIndex, "log.logIndex"),
     topic0: ERC1155_TRANSFER_SINGLE_TOPIC0,
-    decodedJson: { artifactId, quantityRaw: BigInt(words[1]).toString(10) },
+    decodedJson: {
+      artifactId,
+      quantityRaw: BigInt(words[1]).toString(10),
+      minter: topicToAddress(topics[3]),
+    },
   };
 }
 

@@ -40,8 +40,13 @@ export interface BurnLedgerItem {
   readonly proofOfBurnNumber: number;
   /** Exact raw 18-decimal base units, decimal string (the amount IS the record). */
   readonly amountSynRaw: string;
-  /** The sender, as a label ONLY — the address never leaves the server. */
+  /** Founder or Community — the label the sentence speaks. */
   readonly senderLabel: SenderLabel;
+  /**
+   * H2-P: SERVER-ONLY full sender address — the pride voice emits its SHORT
+   * FORM only (Community acts; Founder lines keep the founder voice).
+   */
+  readonly actorAddress: string;
   readonly blockNumber: number;
   readonly logIndex: number;
   readonly transactionHash: string;
@@ -76,8 +81,14 @@ export interface LpLiquidityItem {
   /** token0 = SYN raw 18-dec; token1 = USDC raw 6-dec (the amount IS public). */
   readonly amountSynRaw: string;
   readonly amountUsdcRaw: string;
-  /** Founder or Community — the burns precedent; the address never leaves. */
+  /** Founder or Community — the burns precedent. */
   readonly actorLabel: SenderLabel;
+  /**
+   * H2-P: SERVER-ONLY full actor address (depositor / withdrawer) — the
+   * pride voice emits its SHORT FORM only, Community acts only. null when
+   * the depositor join found no same-tx LP-token mint.
+   */
+  readonly actorAddress: string | null;
   readonly blockNumber: number;
   readonly logIndex: number;
   readonly transactionHash: string;
@@ -89,7 +100,14 @@ export interface ArchiveMintItem {
   readonly kind: "archive-mint";
   /** Canon artifact label (First Signal / Patron Seal / Artifact #N). */
   readonly artifactLabel: string;
+  /** H2-P: the artifact's on-chain token id (public — the origin voice names it). */
+  readonly artifactId: number;
   readonly quantityRaw: string;
+  /**
+   * H2-P: SERVER-ONLY full minter address (short form serves; null on
+   * pre-amendment rows until the founder-gated backfill runs).
+   */
+  readonly minterAddress: string | null;
   readonly blockNumber: number;
   readonly logIndex: number;
   readonly transactionHash: string;
@@ -264,6 +282,8 @@ export function buildProtocolEventReadModel(
       senderLabel: founderAddresses.has(b.fromAddress.toLowerCase())
         ? "Founder"
         : "Community",
+      // H2-P: SERVER-ONLY; the projection emits the short form (Community).
+      actorAddress: b.fromAddress.toLowerCase(),
       blockNumber: b.blockNumber,
       logIndex: b.logIndex,
       transactionHash: b.transactionHash,
@@ -321,6 +341,8 @@ export function buildProtocolEventReadModel(
       amountSynRaw: input.lpToken0IsSyn ? p.amount0Raw : p.amount1Raw,
       amountUsdcRaw: input.lpToken0IsSyn ? p.amount1Raw : p.amount0Raw,
       actorLabel: labelOf(actor),
+      // H2-P: SERVER-ONLY; the projection emits the short form (Community).
+      actorAddress: typeof actor === "string" ? actor.toLowerCase() : null,
       blockNumber: p.blockNumber,
       logIndex: p.logIndex,
       transactionHash: p.transactionHash,
@@ -329,14 +351,21 @@ export function buildProtocolEventReadModel(
     };
   });
 
-  // ── H1a ⑪ — artifact mints (protocol memory; the minter never enters) ──
+  // ── H1a ⑪ — artifact mints (protocol memory). H2-P: the minter enters
+  // SERVER-ONLY and leaves as the pride voice's short form; pre-amendment
+  // rows carry null until the founder-gated backfill restores them. ──
   const archiveMintItems: ArchiveMintItem[] = input.archiveMints.map((a) => {
     if (!/^[0-9]+$/.test(a.quantityRaw)) fail("archive mint quantity is not a clean integer");
+    if (a.minter !== null && !/^0x[0-9a-fA-F]{40}$/.test(a.minter)) {
+      fail("archive minter is not address-shaped");
+    }
     const ts = timeOf(a.blockNumber);
     return {
       kind: "archive-mint",
       artifactLabel: ARTIFACT_LABEL_BY_ID[a.artifactId] ?? `Artifact #${a.artifactId}`,
+      artifactId: a.artifactId,
       quantityRaw: a.quantityRaw,
+      minterAddress: a.minter !== null ? a.minter.toLowerCase() : null,
       blockNumber: a.blockNumber,
       logIndex: a.logIndex,
       transactionHash: a.transactionHash,

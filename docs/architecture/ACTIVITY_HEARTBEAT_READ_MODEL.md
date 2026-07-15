@@ -59,17 +59,26 @@ It mirrors the member-continuity pattern exactly: a **pure builder**, a
   Routed row, pairing-token mismatch, conflicting or missing timestamps all
   throw. Nothing is guessed or normalized.
 
-## Privacy / reporting boundary
+## Privacy / reporting boundary (H2-P amended — THE PRIDE OF THE PUBLIC RECORD)
 
-The only serialization path out is `toAddressSafeActivityReport`:
-counts, generation/bucket aggregates, coverage counts, a day-granularity date
-range, and pass/fail checks. It structurally excludes items and self-scans its
-own JSON — fail-closed — for hex identity material (shared
-`assertAddressSafeJson`) and for forbidden field names (`memberNumber`,
+Founder override 2026-07-15 (recorded in ADR-003): the FEED speaks the origin
+voice — each line carries the event's own member number and its actor's
+SHORT-FORM address ("0x123…abcd"). The full address stays SERVER-ONLY: only
+the projection's short form serializes, the unchanged output scanners still
+fail closed on any full address, and nothing is ever enriched beyond what one
+event carries (no lookup API, no roster join). The founder voice rule stands.
+The who-brought-whom renders VEILED (founder choice B): a boolean reduced in
+the loader from the event's own source id — the id never leaves.
+
+The AGGREGATE report (`toAddressSafeActivityReport`) stays blind: counts,
+generation/bucket aggregates, coverage counts, day-granularity dates, checks.
+It structurally excludes items and self-scans its own JSON — fail-closed —
+for hex identity material and forbidden field names (`memberNumber`,
 `blockNumber`, `transactionHash`, `firstSeat`, `logIndex`,
-`blockTimestampSec`). Gated economics (referral/source fields) are never read
-into the model at all: derive's `decodedJson` access is whitelisted to exactly
-`{firstSeat, memberNumber}` and the guard scans for gated literals.
+`blockTimestampSec`, `usdcGrossRaw`, `era`, `memberAddress`, `memberShort`,
+`referredBySource`). The loader's `decodedJson` whitelist is exactly
+`{firstSeat, memberNumber, usdcAmount, usdcIn, grossUsdc, era, buyer,
+recipient, sourceId}` — the guard pins it and scans for gated literals.
 
 ## Derive runner extras
 

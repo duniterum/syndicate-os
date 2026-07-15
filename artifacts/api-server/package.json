@@ -56,7 +56,8 @@
     "guards:db": "pnpm run partB-canon:guard && pnpm run partB-import:guard",
     "auth-skeleton:test": "tsx ./scripts/auth-skeleton-test.ts",
     "operator-write:test": "tsx ./scripts/operator-write-test.ts",
-    "operator-list:test": "tsx ./scripts/operator-list-test.ts"
+    "operator-list:test": "tsx ./scripts/operator-list-test.ts",
+    "archive:minter-backfill": "tsx ./scripts/archive-minter-backfill.ts"
   },
   "dependencies": {
     "@workspace/api-zod": "workspace:*",

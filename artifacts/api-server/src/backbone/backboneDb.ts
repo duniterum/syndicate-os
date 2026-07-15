@@ -433,7 +433,10 @@ export async function loadProtocolEventRows(): Promise<ProtocolEventLoad> {
         depositor: t.depositor,
       });
     } else if (r.streamKey === "ARCHIVE_MINT") {
-      // decodedJson WHITELIST: exactly {artifactId, quantityRaw} — no minter.
+      // decodedJson WHITELIST: exactly {artifactId, quantityRaw, minter}.
+      // H2-P: the minter (SERVER-ONLY full address) feeds the pride voice —
+      // it leaves the zone as a SHORT FORM only. Pre-amendment rows lack it
+      // (null) until the founder-gated archive:minter-backfill runs.
       const a = r.decodedJson as Record<string, unknown>;
       if (typeof a.artifactId !== "number" || typeof a.quantityRaw !== "string") {
         throw new Error("archive mint row decoded shape invalid — refusing to derive");
@@ -444,6 +447,7 @@ export async function loadProtocolEventRows(): Promise<ProtocolEventLoad> {
         transactionHash: r.transactionHash,
         artifactId: a.artifactId,
         quantityRaw: a.quantityRaw,
+        minter: typeof a.minter === "string" ? a.minter : null,
       });
     } else if (r.streamKey === "ARCHIVE_PAUSE") {
       if (r.eventName !== "Paused" && r.eventName !== "Unpaused") {
@@ -554,12 +558,30 @@ export async function loadActivityHeartbeatInput(): Promise<ActivityHeartbeatLoa
 
   const rawEvents: RawSaleEventInput[] = rawRows.map((r) => {
     // decodedJson WHITELIST: exactly {firstSeat, memberNumber, usdcAmount,
-    // usdcIn, grossUsdc, era}. The USDC keys are the purchase's own PUBLIC
-    // gross figure (one per generation, H2-⑬ milestone cumulative walk only);
-    // era is the engine's PUBLIC rate-table page (H2-⑫ transition witness
-    // only — a protocol parameter, never an address); gated economics never
-    // enter this model.
+    // usdcIn, grossUsdc, era, buyer, recipient, sourceId}. The USDC keys are
+    // the purchase's own PUBLIC gross figure (H2-⑬ cumsum only); era is the
+    // engine's PUBLIC rate-table page (H2-⑫ witness only); buyer/recipient
+    // are the event's own PUBLIC actor (H2-P pride amendment — SERVER-ONLY
+    // full address in the model, leaves ONLY as a short form); sourceId is
+    // read ONLY to derive the referred BOOLEAN (the veiled who-brought-whom,
+    // founder choice B) — the id itself never leaves this closure. Gated
+    // economics never enter this model.
     const d = r.decodedJson as Record<string, unknown>;
+    // H2-P: the seat's holder — V3 recipient (gifts land on the recipient),
+    // else the buyer. Routed rows carry no actor here.
+    const actorValue =
+      r.eventName === "MembershipPurchasedV3"
+        ? (typeof d.recipient === "string" ? d.recipient : d.buyer)
+        : r.eventName === "TokensPurchased" || r.eventName === "Purchased"
+          ? d.buyer
+          : undefined;
+    // H2-P (veiled referral, founder choice B): TRUE iff the V3 event's own
+    // sourceId is non-zero. The boolean is all that ever leaves.
+    const referredBySource =
+      r.eventName === "MembershipPurchasedV3" &&
+      typeof d.sourceId === "string" &&
+      /^0x[0-9a-fA-F]{64}$/.test(d.sourceId) &&
+      BigInt(d.sourceId) !== 0n;
     // Per-generation public gross-USDC value (Routed rows carry none here):
     // V1 TokensPurchased → usdcAmount · V2 Purchased → usdcIn ·
     // V3 MembershipPurchasedV3 → grossUsdc.
@@ -596,6 +618,11 @@ export async function loadActivityHeartbeatInput(): Promise<ActivityHeartbeatLoa
         "era" in d
           ? toInt(d.era, "decoded era")
           : null,
+      memberAddress:
+        typeof actorValue === "string" && /^0x[0-9a-fA-F]{40}$/.test(actorValue)
+          ? actorValue.toLowerCase()
+          : null,
+      referredBySource,
     };
   });
 

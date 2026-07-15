@@ -6,23 +6,26 @@
  * lifecycle. The SECOND (and last) sanctioned serialization out of the
  * read-models, next to the address-safe aggregate report.
  *
- * Privacy doctrine (guard-enforced):
+ * Privacy doctrine (guard-enforced; H2-P amended — THE PRIDE OF THE PUBLIC
+ * RECORD, founder override 2026-07-15, recorded in ADR-003):
  *   - Served per line: kind, block number, chain-verified time, the
- *     transaction verify anchor + its log index (one tx can carry two burns —
- *     the pair is the line's identity; both are public chain data), and the
- *     kind's own facts: generation + firstSeat bucket (seats), the exact
- *     amount + the Founder/Community LABEL + the Proof of Burn number
- *     (burns — the amount IS the record), nothing extra (lifecycle).
- *   - NEVER served: wallet addresses (the burn sender enters the read-model
- *     and leaves ONLY as its label), member numbers, decodedJson/rawJson.
- *   - Output gate: every transactionHash must match the EXACT 0x+64-hex
- *     transaction shape (a 20-byte address can never pass), those validated
- *     anchors are masked, and the remaining JSON must survive the strict
- *     address scanner — a smuggled address, bare hash, or over-long hex
- *     still fails closed.
+ *     transaction verify anchor + its log index, and the kind's own facts —
+ *     INCLUDING, since H2-P, the event's own member number and its actor's
+ *     SHORT-FORM address (the origin voice: "0x123…abcd entered the public
+ *     registry"). The feed narrates what the chain publishes, full stop.
+ *   - NEVER served: a FULL wallet address (short form only — derived here,
+ *     from the event's own field, never enriched, never joined), gated
+ *     referral/source identity (the veiled referred flag is a boolean),
+ *     decodedJson/rawJson. The founder voice rule stands: founder acts SAY
+ *     the founder; their short form is withheld in favor of the name.
+ *   - Output gate UNCHANGED and still armed: every transactionHash must
+ *     match the EXACT 0x+64-hex transaction shape, validated anchors are
+ *     masked, and the remaining JSON must survive the strict address
+ *     scanner — a FULL address (40-hex), bare hash, or over-long hex still
+ *     fails closed. A short form (3+4 hex around an ellipsis) can never
+ *     trip it and can never BE a full address.
  *   - Recency-truthful: newest first, hard cap on the mixed feed; the burn
- *     ledger is served COMPLETE (it is the numbered public record — rare,
- *     manual acts). Filters/pagination deliberately wait (M5+).
+ *     ledger is served COMPLETE (the numbered public record).
  */
 
 import { assertAddressSafeJson } from "../lib/protocol/addressSafety";
@@ -64,6 +67,12 @@ export interface PublicSeatLine extends LineCommon {
   readonly generation: string;
   readonly firstSeatBucket: FirstSeatBucket;
   readonly routedFolded: boolean;
+  /** H2-P: the event's own member number (V2B sentinel normalized to null). */
+  readonly memberNumber: number | null;
+  /** H2-P: the actor's SHORT FORM (never a full address). */
+  readonly memberShort: string | null;
+  /** H2-P (founder choice B): the veiled referred flag — a boolean only. */
+  readonly referred: boolean;
 }
 
 export interface PublicBurnLine extends LineCommon {
@@ -72,8 +81,10 @@ export interface PublicBurnLine extends LineCommon {
   readonly proofOfBurnNumber: number;
   /** Exact raw 18-decimal base units, decimal string. */
   readonly amountSynRaw: string;
-  /** Founder or Community — a LABEL, never an address. */
+  /** Founder or Community — the label the sentence speaks. */
   readonly senderLabel: SenderLabel;
+  /** H2-P: Community sender's SHORT FORM (null on Founder — the voice rule). */
+  readonly actorShort: string | null;
 }
 
 export interface PublicLifecycleLine extends LineCommon {
@@ -90,12 +101,18 @@ export interface PublicLpLine extends LineCommon {
   readonly amountUsdcRaw: string;
   /** Founder or Community — the burns precedent (the founder voice rule). */
   readonly actorLabel: SenderLabel;
+  /** H2-P: Community actor's SHORT FORM (null on Founder — the voice rule). */
+  readonly actorShort: string | null;
 }
 
 export interface PublicArchiveMintLine extends LineCommon {
   readonly kind: "archive-mint";
   readonly artifactLabel: string;
+  /** H2-P: the artifact's on-chain token id (the origin voice names it). */
+  readonly artifactId: number;
   readonly quantityRaw: string;
+  /** H2-P: the minter's SHORT FORM (null on pre-backfill rows — honest gap). */
+  readonly minterShort: string | null;
 }
 
 export interface PublicArchivePauseLine extends LineCommon {
@@ -237,6 +254,24 @@ function assertSenderLabel(label: string): void {
   }
 }
 
+/** The served short form's exact shape: 0x + 3 hex + … + 4 hex, nothing else. */
+export const SHORT_FORM_RE = /^0x[0-9a-f]{3}…[0-9a-f]{4}$/;
+
+/**
+ * H2-P — the ONE place a member address becomes public voice: the origin's
+ * short form ("0x123…abcd"). Input must be a full 40-hex address (fail-closed);
+ * the output can never be mistaken for one and can never trip the gate.
+ */
+function shortForm(address: string | null): string | null {
+  if (address === null) return null;
+  if (!/^0x[0-9a-f]{40}$/.test(address)) {
+    throw new Error(
+      "feed projection failed closed: a pride actor is not a lowercased full address (value withheld)",
+    );
+  }
+  return `0x${address.slice(2, 5)}…${address.slice(-4)}`;
+}
+
 /**
  * Build the public feed from the backbone's last-good models. Fail-closed:
  * any malformed anchor, amount, or label throws. Null models (dark / parked /
@@ -258,6 +293,10 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
       logIndex: item.logIndex,
       firstSeatBucket: item.firstSeatBucket,
       routedFolded: item.routedFolded,
+      // H2-P: the event's own public identity facts, short form only.
+      memberNumber: item.memberNumber,
+      memberShort: shortForm(item.memberAddress),
+      referred: item.referredBySource,
     };
   });
 
@@ -275,6 +314,10 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
         proofOfBurnNumber: b.proofOfBurnNumber,
         amountSynRaw: b.amountSynRaw,
         senderLabel: b.senderLabel,
+        // H2-P + the founder voice rule: the founder's acts say the founder;
+        // Community pride carries the short form.
+        actorShort:
+          b.senderLabel === "Community" ? shortForm(b.actorAddress) : null,
         blockNumber: b.blockNumber,
         blockTimestampSec: b.blockTimestampSec,
         isoDayUtc: b.isoDayUtc,
@@ -313,6 +356,9 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
       amountSynRaw: p.amountSynRaw,
       amountUsdcRaw: p.amountUsdcRaw,
       actorLabel: p.actorLabel,
+      // H2-P + the founder voice rule (Community pride only).
+      actorShort:
+        p.actorLabel === "Community" ? shortForm(p.actorAddress) : null,
       blockNumber: p.blockNumber,
       blockTimestampSec: p.blockTimestampSec,
       isoDayUtc: p.isoDayUtc,
@@ -332,7 +378,11 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
     return {
       kind: a.kind,
       artifactLabel: a.artifactLabel,
+      artifactId: a.artifactId,
       quantityRaw: a.quantityRaw,
+      // H2-P: the origin voice ("0x123…abcd archived First Signal"); null
+      // on pre-backfill rows — an honest gap, never an invented actor.
+      minterShort: shortForm(a.minterAddress),
       blockNumber: a.blockNumber,
       blockTimestampSec: a.blockTimestampSec,
       isoDayUtc: a.isoDayUtc,

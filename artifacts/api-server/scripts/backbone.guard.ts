@@ -480,6 +480,9 @@ const fixtureModel = buildActivityHeartbeatReadModel({
       memberNumber: null,
       usdcGrossRaw: null,
       era: null,
+      // H2-P: a pre-amendment-shaped row — the fallback voice must hold.
+      memberAddress: null,
+      referredBySource: false,
     },
     {
       chainId: CHAIN,
@@ -492,6 +495,9 @@ const fixtureModel = buildActivityHeartbeatReadModel({
       memberNumber: 424242,
       usdcGrossRaw: null,
       era: 1,
+      // H2-P: the pride voice + the veiled referred flag (founder choice B).
+      memberAddress: "0x" + "bb".repeat(20),
+      referredBySource: true,
     },
   ],
   blockTimestamps: [
@@ -582,7 +588,8 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
   ],
   // H1a ⑪: an artifact mint — labeled, minter never stored.
   archiveMints: [
-    { blockNumber: 180, logIndex: 1, transactionHash: txH, artifactId: 1, quantityRaw: "1" },
+    // H2-P: the minter enters SERVER-ONLY (short form serves).
+    { blockNumber: 180, logIndex: 1, transactionHash: txH, artifactId: 1, quantityRaw: "1", minter: communityAddr },
   ],
   // H1a ⑨: a ceremonial pause.
   archivePauses: [
@@ -729,6 +736,8 @@ const milestonePurchases = [
     memberNumber: null,
     usdcGrossRaw: "50" + "0".repeat(6),
     era: null,
+    memberAddress: null,
+    referredBySource: false,
   },
   {
     chainId: CHAIN,
@@ -741,6 +750,8 @@ const milestonePurchases = [
     memberNumber: 2,
     usdcGrossRaw: "60" + "0".repeat(6),
     era: 1,
+    memberAddress: null,
+    referredBySource: false,
   },
 ];
 const milestoneTs = [
@@ -846,6 +857,8 @@ const eraPurchases = [
     memberNumber: 1,
     usdcGrossRaw: null,
     era: 1,
+    memberAddress: null,
+    referredBySource: false,
   },
   {
     chainId: CHAIN,
@@ -858,6 +871,8 @@ const eraPurchases = [
     memberNumber: 2,
     usdcGrossRaw: null,
     era: 2,
+    memberAddress: null,
+    referredBySource: false,
   },
 ];
 const fixtureEraModel = buildEraReadModel({
@@ -1096,21 +1111,60 @@ check(
   "the complete numbered burn ledger is served oldest-first with honest lane flags",
   "burn ledger serving broke",
 );
+// H2-P — THE PRIDE OF THE PUBLIC RECORD (founder amendment, ADR-003
+// 2026-07-15): the feed speaks the origin voice. FULL addresses and their
+// server-side field names still never serialize; the SHORT FORM is all
+// that ever leaves.
 check(
-  !feedJson.includes("memberNumber") &&
-    !feedJson.includes("424242") &&
-    !feedJson.includes(founderAddr) &&
+  !feedJson.includes(founderAddr) &&
     !feedJson.includes(communityAddr) &&
     !feedJson.includes("fromAddress") &&
-    !feedJson.includes("senderAddress"),
-  "feed is identity-blind: no member numbers, and burn senders appear ONLY as labels — never an address",
-  "feed leaked a pairing token or a burn sender address",
+    !feedJson.includes("senderAddress") &&
+    !feedJson.includes("memberAddress") &&
+    !feedJson.includes("minterAddress") &&
+    !feedJson.includes("actorAddress"),
+  "pride discipline: full actor addresses and their server-only field names never serialize",
+  "the feed leaked a full address or a server-only address field",
+);
+check(
+  feedJson.includes('"memberNumber":424242') &&
+    feedJson.includes('"memberShort":"0xbbb…bbbb"') &&
+    feedJson.includes('"referred":true') &&
+    feedJson.includes('"minterShort":"0xbbb…bbbb"'),
+  "the pride voice serves: the event's own member number + SHORT-FORM signatures (the origin voice restored)",
+  "the pride fields broke — number/short-form/referred missing from the feed",
+);
+check(
+  feed.burnLedger[0]!.senderLabel === "Founder" &&
+    feed.burnLedger[0]!.actorShort === null &&
+    feed.burnLedger[1]!.senderLabel === "Community" &&
+    feed.burnLedger[1]!.actorShort === "0xbbb…bbbb",
+  "the founder voice rule stands: founder acts say the founder (no short form); Community pride carries it",
+  "the founder-voice/short-form split broke on burns",
 );
 check(
   feedJson.includes('"senderLabel":"Founder"') &&
     feedJson.includes('"senderLabel":"Community"'),
   "burn lines carry their Founder/Community labels",
   "burn labels missing from the feed",
+);
+expectThrow("projection fails closed on a non-lowercase/full pride actor", () =>
+  buildPublicFeed({
+    model: {
+      ...fixtureModel,
+      items: [
+        { ...fixtureModel.items[1]!, memberAddress: "0x" + "AB".repeat(20) },
+      ],
+    },
+    protocolModel: null,
+    milestoneModel: null,
+    eraModel: null,
+    state: "idle",
+    headBlock: 300,
+    finishedIso: null,
+    burnsAsOfBlock: null,
+    lifecycleAsOfBlock: null,
+  }),
 );
 assertFeedSafeJson(feedJson);
 ok.push("feed gate passes a well-formed feed (anchors masked, rest clean)");

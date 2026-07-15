@@ -284,7 +284,7 @@ const CANON: CanonEntry[] = [
     publicClass: "INTERNAL_ONLY",
     sourceRef: "internal:event-backbone@M4",
     confidence: "high",
-    note: "The event backbone runs unattended in production: cursor-resumed incremental scans across the complete heartbeat (seats, burns, referral lifecycle, liquidity, archive, treasury, milestones), Protocol Time enrichment, and the served address-safe feed — fail-closed on every cycle.",
+    note: "The event backbone runs unattended in production: cursor-resumed incremental scans across the complete heartbeat (seats, burns, referral lifecycle, liquidity, archive, treasury, milestones, eras), Protocol Time enrichment, and the served feed — lines speak the chain's own facts in short form (never a full address, never a lookup), fail-closed on every cycle.",
     surface: "/indexer",
   },
   {

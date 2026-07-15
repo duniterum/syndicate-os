@@ -16,7 +16,7 @@ export default function ActivityTeaser() {
     <PublicPage
       eyebrow="Activity"
       title="The public heartbeat."
-      lead="The protocol speaks through verified receipts. Seats, burns, referral events, liquidity, archive mints, treasury movements, milestone crossings and era turns are served by the event indexer — the complete on-chain record, newest first — refreshed live from the chain between cycles. Every line carries its own verify link — aggregate and address-safe, never a claim."
+      lead="The protocol speaks through verified receipts. Seats, burns, referral events, liquidity, archive mints, treasury movements, milestone crossings and era turns are served by the event indexer — the complete on-chain record, newest first — refreshed live from the chain between cycles. Every line names its act the way the chain wrote it — member number, short-form signature — and carries its own verify link to the full transaction. Never a claim, never more than the chain itself publishes."
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
       <LiveActivityFeed />

@@ -18,13 +18,21 @@
  *   - Fail closed: wrong chain, unknown event shape, unpaired Routed row, or
  *     a missing verified block timestamp throws — never a guessed value.
  *
- * Privacy doctrine:
- *   - `transactionHash` is a SERVER-ONLY opaque pairing key; `memberNumber`
- *     is a SERVER-ONLY opaque pairing/reconciliation token (NEVER identity,
- *     never reported). Neither ever reaches the report, and the only
- *     serialization path out is `toAddressSafeActivityReport`, a whitelist
- *     projection that fail-closes by scanning its own output.
- *   - Gated economics (referral/source fields) are never read into inputs.
+ * Privacy doctrine (H2-P amended — THE PRIDE OF THE PUBLIC RECORD, founder
+ * override 2026-07-15, recorded in ADR-003):
+ *   - The FEED narrates what the chain publishes: the event's own member
+ *     number and its actor's SHORT-FORM address render per line (the origin
+ *     voice — "0x123…abcd entered the public registry"). The FULL address
+ *     stays SERVER-ONLY: only the projection's short form ever serializes,
+ *     and the unchanged output scanners still fail closed on any full
+ *     address. No enrichment: never a field beyond what ONE event carries,
+ *     no lookup API, no roster join.
+ *   - The AGGREGATE report stays blind: neither member numbers, addresses,
+ *     hashes nor per-item rows ever reach `toAddressSafeActivityReport`,
+ *     which fail-closes by scanning its own output.
+ *   - Gated economics (referral/source fields) are never read into inputs —
+ *     except the loader's sourceId → BOOLEAN reduction (the veiled
+ *     who-brought-whom, founder choice B; the id itself never leaves).
  */
 
 import type {
@@ -60,15 +68,15 @@ export const ACTIVITY_HEARTBEAT_READ_MODEL_META: {
 
 export const ACTIVITY_DOCTRINE = [
   "Derived, never authority: rebuildable at any time from Part A raw rows + the Protocol Time cache; deleting the read-model loses nothing.",
-  "Activity is not identity authority: it never assigns, infers, or exposes member numbers; memberNumber is an opaque pairing token only.",
+  "Activity is not identity authority: it never assigns or infers a member number — it carries ONLY what the event itself emitted (H2-P: the event's own number + its actor's short-form address render on the feed line; the V2B sentinel 0 stays a pairing token, never a member).",
   "Activity is not the Chronicle, the Register, or the Archive; nothing here auto-promotes into any of those.",
   "Chain-verified time only: every item timestamp comes from the block-timestamp cache (eth_getBlockByNumber-verified); wall-clock never enters.",
   "Routed rows are routing detail of their purchase transaction, not separate activity; they fold into the paired purchase and are counted as folded.",
   "firstSeat is reported only where the contract emitted it; V1 rows are 'unknown', never inferred.",
-  "Gated economics stay gated: referral and source fields are never read into this model. The purchase's own public gross-USDC figure and the engine's public era page (decoded protocol parameters — not gated fields) are whitelisted in the shared loader for the milestone and era read-models only; neither renders per-line nor enters the aggregate report.",
+  "Gated economics stay gated: referral and source fields are never read into this model — except the loader's source-id → BOOLEAN reduction (H2-P, founder choice B: the veiled referred flag; the id never leaves). The purchase's own public gross-USDC figure and era page stay whitelisted for the milestone and era read-models only.",
   "The taxonomy (kind/category) mirrors the vendored canon protocol-event registry; this file never invents a parallel taxonomy.",
   "Exactly TWO sanctioned projections: the address-safe aggregate report (status) and the receipt-line feed (feedProjection, M4-b) — nothing else ever serializes the model.",
-  "Wallets, member numbers, log indexes, decodedJson and rawJson never appear in ANY public output; the transaction hash appears ONLY as the feed's per-line verify anchor (public chain data), never in the aggregate report.",
+  "THE PRIDE OF THE PUBLIC RECORD (H2-P, ADR-003 amendment 2026-07-15): feed lines carry the event's own member number and the actor's SHORT-FORM address — the origin voice restored. A FULL member address never serializes anywhere (the unchanged output scanners fail closed on one); decodedJson/rawJson never leave; the aggregate report stays blind to numbers, addresses and per-item rows.",
 ] as const;
 
 // ---------------------------------------------------------------------------
@@ -136,6 +144,20 @@ export interface RawSaleEventInput {
    * no era (V1) and on Routed rows.
    */
   readonly era: number | null;
+  /**
+   * H2-P (THE PRIDE OF THE PUBLIC RECORD, founder amendment 2026-07-15):
+   * the event's own PUBLIC actor — V3 recipient (the seat's holder), else
+   * the buyer. SERVER-ONLY as a full address; it leaves the server ONLY as
+   * the feed projection's SHORT FORM. Never enriched, never joined beyond
+   * this event's own fields; never enters the aggregate report.
+   */
+  readonly memberAddress: string | null;
+  /**
+   * H2-P (veiled who-brought-whom, founder choice B): TRUE iff the V3
+   * event's own sourceId is non-zero. The boolean is ALL that leaves the
+   * loader — the id, the source, the referrer never do.
+   */
+  readonly referredBySource: boolean;
 }
 
 export interface BlockTimestampInput {
@@ -177,6 +199,16 @@ export interface ActivityItem {
   readonly firstSeatBucket: FirstSeatBucket;
   /** True when a Routed routing row was folded into this purchase. */
   readonly routedFolded: boolean;
+  /**
+   * H2-P: the event's own member number (PUBLIC — the chain publishes it in
+   * the same log; V2B's sentinel 0 normalizes to null). Serves on the feed
+   * line beside the short-form address; still NEVER in the aggregate report.
+   */
+  readonly memberNumber: number | null;
+  /** H2-P: SERVER-ONLY full actor address (projection emits SHORT FORM only). */
+  readonly memberAddress: string | null;
+  /** H2-P (founder choice B): the veiled referred flag — a boolean, nothing more. */
+  readonly referredBySource: boolean;
 }
 
 export interface ActivityCheck {
@@ -334,6 +366,14 @@ export function buildActivityHeartbeatReadModel(
             ? "false"
             : "unknown",
       routedFolded: routed.length === 1,
+      // H2-P: the event's own public identity facts (the V2B sentinel 0 is
+      // a pairing token, never a member — normalized to null here).
+      memberNumber:
+        purchase.memberNumber !== null && purchase.memberNumber > 0
+          ? purchase.memberNumber
+          : null,
+      memberAddress: purchase.memberAddress,
+      referredBySource: purchase.referredBySource,
     });
   }
 
@@ -474,6 +514,9 @@ export function toAddressSafeActivityReport(
     '"blockTimestampSec"',
     '"usdcGrossRaw"',
     '"era"',
+    '"memberAddress"',
+    '"memberShort"',
+    '"referredBySource"',
   ]) {
     if (json.includes(forbiddenField)) {
       throw new Error(

@@ -1,14 +1,14 @@
 // lib/backboneFeedClient.ts — the SERVED feed client (ARC M5; M4-c extended).
 // ---------------------------------------------------------------------------
 // Reads /api/backbone/feed — the event backbone's receipt-line projection:
-// the COMPLETE indexed histories, newest first, for seats (M5), burns
-// (Proof of Burn, M4-c) and referral lifecycle (M4-c). Identity-blind by
-// design: a line carries kind · block · chain-verified time · the transaction
-// verify anchor (+ its log index — one tx can carry two burns) · the kind's
-// own facts (generation/firstSeat for seats; the exact amount, the
-// Founder/Community LABEL and the Proof of Burn number for burns) — no seat
-// numbers, no wallets (the server's output gate enforces it; this client
-// re-validates the shape anyway, fail-closed).
+// the COMPLETE indexed histories, newest first. H2-P (THE PRIDE OF THE
+// PUBLIC RECORD, founder amendment 2026-07-15): a line carries kind · block ·
+// chain-verified time · the transaction verify anchor · the kind's own facts
+// INCLUDING the event's own member number and its actor's SHORT-FORM address
+// (the origin voice). A FULL address never parses here (the short-form shape
+// is exact, fail-closed); the server's unchanged output gate enforces the
+// same on its side. No enrichment, no lookup — the feed narrates what the
+// chain publishes, and the verify anchor is the full-truth path.
 //
 // HONESTY LAW: a null return means "the served history is unavailable right
 // now" — the consumer falls back to the client recent window and SAYS so.
@@ -39,6 +39,12 @@ export interface ServedSeatLine extends ServedLineCommon {
   generation: string;
   firstSeatBucket: "true" | "false" | "unknown";
   routedFolded: boolean;
+  /** H2-P (the pride amendment): the event's own member number. */
+  memberNumber: number | null;
+  /** H2-P: the actor's SHORT FORM only — a full address never parses. */
+  memberShort: string | null;
+  /** H2-P (founder choice B): the veiled referred flag. */
+  referred: boolean;
 }
 
 export interface ServedBurnLine extends ServedLineCommon {
@@ -48,6 +54,8 @@ export interface ServedBurnLine extends ServedLineCommon {
   /** Exact raw 18-decimal base units, decimal string. */
   amountSynRaw: string;
   senderLabel: "Founder" | "Community";
+  /** H2-P: Community sender's short form (null on Founder — the voice rule). */
+  actorShort: string | null;
 }
 
 export interface ServedLifecycleLine extends ServedLineCommon {
@@ -64,12 +72,18 @@ export interface ServedLpLine extends ServedLineCommon {
   amountUsdcRaw: string;
   /** The founder voice rule: founder acts SAY the founder. */
   actorLabel: "Founder" | "Community";
+  /** H2-P: Community actor's short form (null on Founder — the voice rule). */
+  actorShort: string | null;
 }
 
 export interface ServedArchiveMintLine extends ServedLineCommon {
   kind: "archive-mint";
   artifactLabel: string;
+  /** H2-P: the artifact's on-chain token id (the origin voice names it). */
+  artifactId: number | null;
   quantityRaw: string;
+  /** H2-P: the minter's short form (null on pre-backfill rows). */
+  minterShort: string | null;
 }
 
 export interface ServedArchivePauseLine extends ServedLineCommon {
@@ -175,6 +189,21 @@ function toInt(v: unknown): number | null {
   return typeof v === "number" && Number.isSafeInteger(v) ? v : null;
 }
 
+// H2-P: the served short form's EXACT shape (0x + 3 hex + … + 4 hex). A full
+// address, an over-long hex, or any other string is NOT a valid short form.
+const SHORT_FORM_RE = /^0x[0-9a-f]{3}…[0-9a-f]{4}$/;
+
+/**
+ * Parse a pride short-form field fail-closed: absent/null → null (an honest
+ * gap); a well-shaped short form → itself; ANYTHING ELSE → undefined (the
+ * whole line is rejected — a malformed identity never renders).
+ */
+function toShort(v: unknown): string | null | undefined {
+  if (v === null || v === undefined) return null;
+  if (typeof v === "string" && SHORT_FORM_RE.test(v)) return v;
+  return undefined;
+}
+
 function parseCommon(r: Record<string, unknown>): ServedLineCommon | null {
   const blockNumber = toInt(r.blockNumber);
   const blockTimestampSec = toInt(r.blockTimestampSec);
@@ -205,30 +234,38 @@ function parseLine(raw: unknown): ServedFeedLine | null {
   if (!common) return null;
 
   if (r.kind === "purchase") {
+    const memberShort = toShort(r.memberShort);
     if (
       typeof r.generation !== "string" ||
       typeof r.firstSeatBucket !== "string" ||
       !BUCKETS.has(r.firstSeatBucket) ||
-      typeof r.routedFolded !== "boolean"
+      typeof r.routedFolded !== "boolean" ||
+      memberShort === undefined
     ) {
       return null;
     }
+    const memberNumber = toInt(r.memberNumber);
     return {
       kind: "purchase",
       ...common,
       generation: r.generation,
       firstSeatBucket: r.firstSeatBucket as "true" | "false" | "unknown",
       routedFolded: r.routedFolded,
+      memberNumber: memberNumber !== null && memberNumber > 0 ? memberNumber : null,
+      memberShort,
+      referred: r.referred === true,
     };
   }
   if (r.kind === "burn") {
     const n = toInt(r.proofOfBurnNumber);
+    const actorShort = toShort(r.actorShort);
     if (
       n === null ||
       n < 1 ||
       typeof r.amountSynRaw !== "string" ||
       !/^[0-9]+$/.test(r.amountSynRaw) ||
-      (r.senderLabel !== "Founder" && r.senderLabel !== "Community")
+      (r.senderLabel !== "Founder" && r.senderLabel !== "Community") ||
+      actorShort === undefined
     ) {
       return null;
     }
@@ -238,6 +275,7 @@ function parseLine(raw: unknown): ServedFeedLine | null {
       proofOfBurnNumber: n,
       amountSynRaw: r.amountSynRaw,
       senderLabel: r.senderLabel,
+      actorShort,
     };
   }
   if (typeof r.kind === "string" && LIFECYCLE_KINDS.has(r.kind)) {
@@ -248,12 +286,14 @@ function parseLine(raw: unknown): ServedFeedLine | null {
     };
   }
   if (r.kind === "lp-add" || r.kind === "lp-remove") {
+    const actorShort = toShort(r.actorShort);
     if (
       typeof r.amountSynRaw !== "string" ||
       !/^[0-9]+$/.test(r.amountSynRaw) ||
       typeof r.amountUsdcRaw !== "string" ||
       !/^[0-9]+$/.test(r.amountUsdcRaw) ||
-      (r.actorLabel !== "Founder" && r.actorLabel !== "Community")
+      (r.actorLabel !== "Founder" && r.actorLabel !== "Community") ||
+      actorShort === undefined
     ) {
       return null;
     }
@@ -263,14 +303,17 @@ function parseLine(raw: unknown): ServedFeedLine | null {
       amountSynRaw: r.amountSynRaw,
       amountUsdcRaw: r.amountUsdcRaw,
       actorLabel: r.actorLabel,
+      actorShort,
     };
   }
   if (r.kind === "archive-mint") {
+    const minterShort = toShort(r.minterShort);
     if (
       typeof r.artifactLabel !== "string" ||
       r.artifactLabel.length === 0 ||
       typeof r.quantityRaw !== "string" ||
-      !/^[0-9]+$/.test(r.quantityRaw)
+      !/^[0-9]+$/.test(r.quantityRaw) ||
+      minterShort === undefined
     ) {
       return null;
     }
@@ -278,7 +321,9 @@ function parseLine(raw: unknown): ServedFeedLine | null {
       kind: "archive-mint",
       ...common,
       artifactLabel: r.artifactLabel,
+      artifactId: toInt(r.artifactId),
       quantityRaw: r.quantityRaw,
+      minterShort,
     };
   }
   if (r.kind === "archive-pause") {
@@ -489,14 +534,30 @@ export function formatUsdcRaw(amountUsdcRaw: string): string {
 //     included; the verify anchor leads to the full transaction anyway.
 export function sentenceForServedLine(line: ServedFeedLine): string {
   switch (line.kind) {
-    case "purchase":
-      // ② founder upgrade: a REPEAT purchase speaks the expansion; the
-      // "unknown" bucket stays the plain honest seat line (never a claim).
-      return line.firstSeatBucket === "true"
-        ? "A seat was written on-chain — a first seat."
-        : line.firstSeatBucket === "false"
-          ? "A member expanded their footprint — recorded on-chain."
-          : "A seat was written on-chain.";
+    // H2-P — THE PRIDE OF THE PUBLIC RECORD (founder amendment 2026-07-15):
+    // the origin voice restored — "0x123…abcd entered the public registry".
+    // The veiled referral append is founder choice B; identity facts are the
+    // event's own, short form only; lines without them keep the H1a voice.
+    case "purchase": {
+      const who =
+        line.memberNumber !== null && line.memberShort !== null
+          ? `Member #${line.memberNumber.toLocaleString("en-US")} · ${line.memberShort}`
+          : line.memberShort !== null
+            ? line.memberShort
+            : null;
+      if (who === null) {
+        // Pre-amendment fallback voice (an honest gap, never a guess).
+        return line.firstSeatBucket === "true"
+          ? "A seat was written on-chain — a first seat."
+          : line.firstSeatBucket === "false"
+            ? "A member expanded their footprint — recorded on-chain."
+            : "A seat was written on-chain.";
+      }
+      const referred = line.referred ? " — brought by a verified referral" : "";
+      return line.firstSeatBucket === "false"
+        ? `${who} expanded their footprint — recorded on-chain.`
+        : `${who} entered the public registry${referred}.`;
+    }
     case "burn":
       return `${formatSynRaw(line.amountSynRaw)} SYN was retired to the burn address — gone for everyone, forever.`;
     case "source-created":
@@ -518,7 +579,10 @@ export function sentenceForServedLine(line: ServedFeedLine): string {
         ? "Liquidity was withdrawn from the public pool — a founder-signed public act."
         : "Liquidity was withdrawn from the public pool — a public act.";
     case "archive-mint":
-      return `A ${line.artifactLabel} was minted — protocol memory, written to the chain.`;
+      // H2-P origin voice: "0x123…abcd archived First Signal · token ID 1."
+      return line.minterShort !== null
+        ? `${line.minterShort} archived ${line.artifactLabel}${line.artifactId !== null ? ` · token ID ${line.artifactId}` : ""}.`
+        : `A ${line.artifactLabel} was minted — protocol memory, written to the chain.`;
     case "archive-pause":
       return line.action === "paused"
         ? "The archive was paused — a founder-signed public act."
@@ -567,9 +631,10 @@ export function factsForServedLine(line: ServedFeedLine): string | null {
   switch (line.kind) {
     case "lp-add":
     case "lp-remove":
-      return `${formatSynRaw(line.amountSynRaw)} SYN + ${formatUsdcRaw(line.amountUsdcRaw)} USDC`;
+      // H2-P: Community pride rides the facts row; the founder voice stands.
+      return `${formatSynRaw(line.amountSynRaw)} SYN + ${formatUsdcRaw(line.amountUsdcRaw)} USDC${line.actorShort !== null ? ` · ${line.actorShort}` : ""}`;
     case "burn":
-      return `Proof of Burn #${line.proofOfBurnNumber} · ${line.senderLabel}`;
+      return `Proof of Burn #${line.proofOfBurnNumber} · ${line.actorShort ?? line.senderLabel}`;
     case "archive-mint":
       return BigInt(line.quantityRaw) > 1n ? `× ${line.quantityRaw}` : null;
     case "milestone":

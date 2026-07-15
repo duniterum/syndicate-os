@@ -228,10 +228,14 @@ surface — Activity, Chronicle candidates, future notifications, "since you wer
 — the PROOF register carrying the narrative breath of the approved concepts (§3:
 leave a trace, be remembered).
 
-**Render rules (every entry):** always WITH the sentence — block number, chain-verified
-date (block time, never a wall clock), and the transaction verify link. NEVER — wallet
-addresses. Amounts follow each surface's own policy (the burn line names its amount
-because the amount IS the record; seat lines never carry money).
+**Render rules (every entry; H2-P amended — THE PRIDE OF THE PUBLIC RECORD, founder
+override 2026-07-15, recorded in ADR-003):** always WITH the sentence — block number,
+chain-verified date (block time, never a wall clock), and the transaction verify link.
+Member identity renders as the EVENT'S OWN facts in SHORT FORM ("0x123…abcd" — the origin
+voice); a FULL wallet address never serializes anywhere (the output scanners stay armed);
+no enrichment beyond what one event carries; the founder voice rule stands (founder acts
+SAY the founder — no short form). Amounts follow each surface's own policy (the burn line
+names its amount because the amount IS the record; seat lines never carry money).
 
 ### LIVE sentences (captured from the shipped M5 surfaces — the baseline)
 
@@ -308,6 +312,21 @@ scarcity pressure (the seat-not-security shield). All three engines sit in era 1
 | Event | The canonical sentence | Variants |
 |---|---|---|
 | Era transition (⑫) | "The protocol entered era {n} — the rate table turned a page, on schedule, on-chain." | the engine (V2A/V2B/V3) renders as the line's FACT — detail, never hierarchy |
+
+### LIVE sentences amended by H2-P (THE PRIDE OF THE PUBLIC RECORD, founder override 2026-07-15)
+
+The origin voice recovered from the archive, restored verbatim. Identity facts are the
+EVENT'S OWN (number + short-form address); lines whose rows predate the amendment keep the
+H1a voice (an honest gap, never a guess). The who-brought-whom renders VEILED (founder
+choice B); the nominative edge (form A) is reserved for the Referrer Kit arc.
+
+| Event | The canonical sentence (pride voice) | Variants |
+|---|---|---|
+| Seat entered (first/unknown) | "Member #15 · 0x123…abcd entered the public registry." | no number (V1): "0x123…abcd entered the public registry." · referred (V3, veiled B): append " — brought by a verified referral" |
+| Repeat purchase | "Member #15 · 0x123…abcd expanded their footprint — recorded on-chain." | — |
+| Artifact mint | "0x123…abcd archived First Signal · token ID 1." | pre-backfill rows keep "A {artifact} was minted — protocol memory, written to the chain." |
+| Burn / LP facts row | the Community actor's short form joins the facts ("Proof of Burn #N · 0x123…abcd") | Founder lines carry no short form — the founder voice rule |
+| Client window (seat) | same registry voice as the served feed — one lexicon, one register | — |
 
 ### RESERVED sentences (authored now; their surfaces are not built — labels, not locks)
 
