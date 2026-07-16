@@ -2,8 +2,14 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🔥 SLICE AUD-P0 ✅ BUILT + FOUNDER GO ON THE FULL TEXT — COMMITTED, AWAITING
-> DEPLOY (2026-07-16): THE /PROOF TRUTH KILL — the audit's three converging P0s dead.**
+> **▶ 🔥 SLICE AUD-P0 ✅ SEALED IN PROD (2026-07-16, Replit-verified 4/4 on
+> thesyndicate.money, prod bundle `index-D3GZLiNl.js` — SHA-256 1218ef47…d8379c64
+> byte-identical to the reproduced local build — anchor `e5598fb`, 41/41
+> blob-verified, no migration): the audit's three converging P0s DEAD IN PROD —
+> /proof serves the truth (title/pill/CTA/4 facet doors all in the served bundle),
+> the 4 dead-era phrases at 0 occurrences in the whole served dist, feed
+> byte-identical 75=75, engine healthy (known self-repairing boot cycle only).
+> Build + founder-GO record follows: THE /PROOF TRUTH KILL.**
 > ProofDashboard rewritten whole to today's truth (title "Proof, live from the chain." ·
 > live lead/banner · 4 facets rewritten with doors to their living surfaces replacing
 > dead badges · verification steps in present tense · honest StatusPill "Served from
