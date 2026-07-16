@@ -2,6 +2,29 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ ✅ THE DOUBLE DEPLOY SEALED IN PROD (2026-07-16, third-session boot —
+> Replit-verified 6/6 on thesyndicate.money, prod bundle `index-Dakgj6M2.js`
+> SHA-256 508a7535…1785229e byte-identical to the reproduced local build, anchor
+> `2fcf348`, 72/72 blob-verified, no migration): the two pending truths are LIVE —
+> ① the Holder Index serves memberTotal **14** (8 historical-freeze #1–#8 + 6
+> V3-emitted #9–#14, timestamp coverage 14/14, run #5, snapshot hash 65acf2f1…
+> exactly the founder-armed regeneration committed at 768c3c1) — the stale
+> 2026-07-03 count of 10 is dead; ② /contracts serves ALL FOUR sale engines
+> ("Membership Sale V2a" ×2 · "V2b" ×2 · "seats #3 to #5 were born here" in the
+> served bundle; the bare "Membership Sale V2" label at 0 occurrences — the
+> sale-scan 86/86 completeness pin holds in prod); ③ feed 78/78 reference lines
+> intact, zero 40-hex; ④ engine 2 cycles OK, 6/6 units, head advancing
+> 90,481,828 → 90,482,446, 10/10 protocol streams caught up (the boot partial
+> self-repaired, known pattern); ⑤ /api/source-status serves its 24 postures;
+> ⑥ the local-rig "V2 code present" residual flipped at deploy exactly as the
+> AUD-TRUTH-3 seal predicted. Gates replayed green on Replit (tsc ×2 · build 27
+> shells · ALL studio guards incl. access-state 935 · the 17 api guards incl.
+> sale-scan 86/86, auth-zone 802, holder-index 66, member-continuity 92 ·
+> surface 278 · seo 431/43 routes · rewrites 52); feed reference refreshed at 78;
+> anchor advanced. Nothing to commit data-side — the snapshot pushed IS the one
+> served. DEPLOY BACKLOG: EMPTY.** NEXT per the GO'd plan: **THE RECEIPT SLICE**
+> (approved wireframe: zones A–G + identity head + living zone + next door).
+
 > **▶ 🏁 SESSION SEAL (2026-07-16, second session) — THE CLEAN BASE DAY.**
 > SEALED IN PROD TODAY (all Replit-verified on thesyndicate.money, every bundle
 > byte-identical SHA-256): **D-TRUTH** (`index-BWApQcKx.js` — all 8 genesis seats
