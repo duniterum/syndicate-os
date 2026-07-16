@@ -78,6 +78,36 @@ path — never as a promo, quest, season, or engagement reward.
 
 ### 5. GAMBLING (paid entry + random chance + prize) → **SETTLED NO.**
 
+### 6. RECEIPT & OUTWARD-ARTIFACT SETTLED BLOCK → **SETTLED** (founder-ordered engraving,
+2026-07-17 — this session regressed on THREE already-settled rules: banned vocabulary
+returning (coupon · payout · contribution · routing in buyer-facing text), the dead #14
+mock returning, and amount-hiding against the Visibility Law. Each cost the founder a
+re-explanation. This block exists so the NEXT violation is a RED BUILD, never a founder
+explanation. Enforcement: `artifacts/studio/scripts/guard-receipt-ticket.ts` — blocking
+in the studio gate.)
+
+- **① AMOUNTS ARE NEVER HIDDEN — on any surface or any artifact** (`CANON_VISIBILITY_LAW.md`,
+  TIER-0: on a chain, "hiding" does not exist; the amount is ALREADY public in the very
+  transaction our verify links and QR codes open. Hiding it on a card/ticket/page while
+  linking to it is THEATRE — the exact class the law forbids. **We have NO SHAME.**) The one
+  structural discipline stays what it always was: the SERVER never emits a MEMBER address —
+  nothing else is ever concealed. "Recognition, never money" governs RANKS and the public
+  feed's own-voice (the capital red line: rung without amount) — it is NOT a license to
+  strip real figures from a member's own receipt artifacts. *Guard: the share card must
+  render the commerce total (amounts-visible pin); the ticket's money zones are pinned.*
+- **② THE BUYER-FACING LEXICON IS SETTLED.** Affirmative: **"proof of purchase" · "TOTAL
+  PAID" · "WHERE YOUR MONEY WENT" · "paid first"**. Dead and staying dead in buyer-facing
+  text: **contribution · routed/routing · payout · coupon (even negated — the truncation
+  law) · net-routed**. *Guard: buyer's-tongue pins + red-line vocabulary pins on the whole
+  receipt module; `guard-forbidden-copy` site-wide.*
+- **③ REAL-ROW ONLY — the mock class can never return.** Every figure on a money document
+  is a real indexed event's own field (ADR-001 REAL-ROW + TICKET-AMOUNTS-ARE-EXACT); no
+  dollar-figure or wallet/tx-hash literal may exist in the receipt module, and NO page may
+  ever mount the ticket/builder. *Guard: the REAL-ROW CLASS pins.*
+- **④ READABILITY BEFORE DECORATION.** Nothing decorative may cost contrast or size
+  (ADR-001 floor: ≥12px, no italic/serif on the ticket surface, full-contrast doctrine
+  line). *Guard: readability pins (italic/font-serif banned, sub-12px banned).*
+
 ---
 
 ## For Claude (advisor) and Claude Code — behavioral rule

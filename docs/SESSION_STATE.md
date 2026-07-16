@@ -2,6 +2,43 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🃏 RIDER RECEIPT-SHARE ✅ BUILT + FOUNDER GO ON THE RENDERED CARD
+> (2026-07-17): THE 1200×630 SHARE CARD — and THE §6 ENGRAVING.** The card
+> (`wallet/ReceiptShareCard.tsx`): 1.91:1 share standard, text inside the
+> 90px central safe zone, ~130KB (300KB WhatsApp ceiling with quality
+> step-down, pinned), **TOTAL PAID + the full proof line VISIBLE** — the
+> founder caught my "recognition, never money" amount-hiding as a VISIBILITY
+> LAW violation (the amount is already public in the tx the card's QR
+> links to; hiding it is theatre). THE ORDERED ENGRAVING landed:
+> `SETTLED_RULES_DO_NOT_RELITIGATE.md` **§6 RECEIPT & OUTWARD-ARTIFACT
+> SETTLED BLOCK** (① amounts NEVER hidden — no-shame is doctrine; ② the
+> buyer lexicon settled, dead words stay dead: contribution · routed/routing
+> · payout · coupon-even-negated · net-routed; ③ REAL-ROW only, the mock
+> class dead; ④ readability before decoration) — ENFORCED by guard pins
+> (amounts-visible: the card MUST render commerce.total; canon-presence: the
+> guard breaks if §6 leaves the doc; buyer's-tongue + red-line grew payout/
+> net-routed; a violation is a RED BUILD, never a founder explanation). The
+> card's QR = the member's OWN introduction link (prop from the ticket's ONE
+> resolver site, pinned); Share = card file + proof text (native file-share
+> when supported; fallback download + clipboard); print/PDF still carry the
+> paper alone. Rig catch: the off-viewport clone rasterized BLANK — caught
+> by LOOKING at the pixel artifact, fixed with the static-position clone
+> override, pinned. **ALSO ENGRAVED: THE FIRSTS ENGINE
+> (LIVING_ORGANISM_MASTER_PLAN §7b, founder-designed)** — firsts-per-class
+> as an OPEN registry (never a hardcoded list; a new module's firsts join
+> the watch structurally), the founder-reviewed seed inventory (B1 verifies
+> EACH against the indexed chain — the record outranks the list), the
+> receipt-witness tie (a FIRST is a milestone class; its ticket carries the
+> gold witness; the Chronicle entry points back — verifiable museum pieces;
+> historical FOMO only, never financial), doctrine whole (CHR-1 · anti-
+> scarcity structural · Visibility Law), builds at B1's slot; nothing more
+> rides early (the witness hook already shipped, pinned). Gate: tsc ×2 ·
+> build 27 shells · ALL studio guards (**receipt 83/83** — the anti-mock pin
+> went green at the injection revert, as designed) · seo 431 · surface 278 ·
+> rewrites 52 · api guards green (2001 PASS). **DEPLOY: 🚀 THE ONE-SHOT —
+> this rider + the sealed receipt slice (2f1ed57) ride ONE Replit cycle
+> (founder order); the paste block handed at the session's part ③.**
+
 > **▶ 🎫 SLICE RECEIPT ✅ BUILT + FOUNDER GO AT THE PREVIEW GATE (2026-07-16/17,
 > FOUR live correction rounds ①–⑫ on the founder's screen — the approved
 > wireframe realized, then corrected on sight): THE PROTOCOL RECEIPT — the

@@ -156,6 +156,49 @@ Activity → Chronicle candidate → recommended surfaces).
 **Build state:** `syndicate-os` has ONLY the proven backend `activity-heartbeat` read-model +
 `/archive` as concept ("reads not wired"). The **origin has the full cathedral** → harvest it.
 
+### 7b. THE FIRSTS ENGINE (founder-designed, engraved 2026-07-17 — builds at B1's slot)
+
+The Chronicle's detection becomes a **PERMANENT, EVOLUTIVE ENGINE**, extending the canonical
+pipeline above at the SIGNAL→CANDIDATE stage. This subsection is the design B1 builds from.
+
+- **THE PRINCIPLE — an OPEN registry of classes, never a hardcoded list.** Firsts-per-class:
+  every event class the protocol ever gains — today's purchases, burns, LP, rungs, sources,
+  AND every future module, income stream, artifact kind, season, alias, partner class —
+  automatically has its "first" watched **the day its class exists**. A new module joining the
+  protocol = its firsts join the watch STRUCTURALLY, nobody remembering to add them (the
+  HEARTBEAT COMPLETENESS INVARIANT applied to memory). **System-First at build:** B1 opens by
+  sweeping the REAL registries and the full event inventory for the COMPLETE class list before
+  designing — never a subset (the 3-lanes-when-15-exist failure is the named enemy).
+- **THE SEED INVENTORY** (founder-reviewed 2026-07-17; **B1 verifies EACH against the indexed
+  chain at its gate — the record outranks this list, always**): already on chain — the birth
+  day (token + first sale + LP pool, one day, three acts) · first seat #1 · first First Signal
+  mint · first Patron Seal · first founder burn (Proof of Burn #1) · first referred seat
+  (believed #10 — predates #13; verify) · first real-money referral seat (#13) · first rung
+  rise (Seat #6 → Advocate) · first footprint Patron · **first seat of EACH of the four
+  engines** (V1 · V2a · V2b · V3 — the four-engines law lives here too) · first genuine
+  treasury act · first duplicate seat · first gifted seat if the record carries one. **Armed
+  honestly empty for the future:** first COMMUNITY burn · first community LP add · first
+  chained referral (a member brought by a member who was brought) · first era transition ·
+  Chapter II crossing (#334) · 100th seat · first alias · first Connector promotion · first
+  Partner · first season · first Learn & Earn completion — and every class any future module
+  brings (open registry, structurally).
+- **THE TIE TO THE RECEIPT (already built, 2026-07-17):** the ticket's witness line exists and
+  prints ONLY when the event truly carries a milestone (ordinal-honesty pin). A FIRST is a
+  milestone class — the receipt of a first carries its gold witness, and the Chronicle entry
+  points back to that ticket: the Genesis ticket, the first-referral ticket, the first-burn
+  record become **verifiable museum pieces**. Historical FOMO only ("miss my place in the
+  story") — never financial.
+- **DOCTRINE UNCHANGED, all of it:** CHR-1 whole (the machine DETECTS and PROPOSES in the
+  console queue; the FOUNDER promotes, one commit per promotion) · anti-scarcity as structure
+  (no countdown, no "approaching first" pressure shape — a first is witnessed when it happens,
+  never dangled) · the Visibility Law (detection candidates and receipts carry what the chain
+  publishes, amounts included; the Chronicle VOICE keeps its own settled register rules at
+  promotion).
+- **WHAT RIDES BEFORE B1:** nothing more — the witness-line hook is already built and pinned
+  in the receipt slice (the spine accepts a witness only as caller-proven data); B1's detector
+  is its one legitimate feeder. No other piece is cheap enough to ride early without violating
+  System-First.
+
 ## 8. Language locks
 
 - **verified introduction / introduced by** — NOT "referral." *A source opens the door, a

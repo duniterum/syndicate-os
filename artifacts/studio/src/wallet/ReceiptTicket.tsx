@@ -27,6 +27,7 @@ import { brandAssets } from "@/config/brand";
 import { readArtifactBalance } from "@/lib/chainReads";
 import { payingSourceId } from "@/lib/sourceIdentity";
 import { fetchSourceStanding } from "./walletSession";
+import { ReceiptShareCard, rasterizeShareCard } from "./ReceiptShareCard";
 import type {
   MembershipReceiptModel,
   ReceiptDoor,
@@ -146,6 +147,7 @@ export default function ReceiptTicket({
   wallet: string | undefined;
 }) {
   const paperRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const door = useReceiptNextDoor(wallet);
   const referralLink = useOwnReferralLink(wallet);
   usePrintCleanTheme();
@@ -174,13 +176,48 @@ export default function ReceiptTicket({
 
   async function handleShare() {
     if (!shareText) return;
-    if (typeof navigator.share === "function") {
+    // RECEIPT-SHARE rider: the share artifact is the 1200×630 CARD (the
+    // member's introduction QR on it) + the proof text. The card only exists
+    // when the link resolved — a share never carries a half-built artifact.
+    let cardFile: File | null = null;
+    if (cardRef.current && referralLink) {
+      try {
+        cardFile = await rasterizeShareCard(cardRef.current);
+      } catch {
+        cardFile = null;
+      }
+    }
+    if (
+      cardFile &&
+      typeof navigator.share === "function" &&
+      typeof navigator.canShare === "function" &&
+      navigator.canShare({ files: [cardFile] })
+    ) {
+      try {
+        await navigator.share({
+          title: model.head.docTitle,
+          text: shareText,
+          files: [cardFile],
+        });
+        return;
+      } catch {
+        /* share sheet dismissed — fall through */
+      }
+    } else if (typeof navigator.share === "function" && !cardFile) {
       try {
         await navigator.share({ title: model.head.docTitle, text: shareText });
         return;
       } catch {
-        /* share sheet dismissed — fall through to copy */
+        /* share sheet dismissed — fall through */
       }
+    }
+    // Fallback: the card downloads (when built) and the text lands on the
+    // clipboard — nothing is lost on platforms without file-share.
+    if (cardFile) {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(cardFile);
+      a.download = cardFile.name;
+      a.click();
     }
     try {
       await navigator.clipboard.writeText(shareText);
@@ -492,6 +529,14 @@ export default function ReceiptTicket({
       <p className="w-[340px] max-w-full mx-auto text-xs text-muted-foreground text-center mt-2 print:hidden">
         Printing this page (Ctrl/Cmd+P) gives a clean Save-as-PDF of the ticket alone.
       </p>
+
+      {/* RECEIPT-SHARE rider: the offscreen 1200×630 card the Share action
+          rasterizes — mounted only once the member's link resolved (the
+          card's QR IS that link; no link, no card). Off-viewport + print
+          projections never include it. */}
+      {referralLink ? (
+        <ReceiptShareCard ref={cardRef} model={model} referralLink={referralLink} />
+      ) : null}
     </div>
   );
 }

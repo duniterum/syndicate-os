@@ -224,6 +224,17 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   rig : 5 tickets DOM-vérifiés (réel #13 · GENESIS V1 · V2a #3 · 2 stress),
   2 thèmes, 375+desktop, zéro overflow. Placements binder/porte Receipts →
   A1 ; share-card 1200×630 → rider ; `/receipt/{txHash}` → roadmap gravée.
+- [x] **RECEIPT-SHARE — LA CARTE DE PARTAGE (2026-07-17, GO fondateur sur le
+  rendu)** : `ReceiptShareCard` 1200×630 (1.91:1, zone sûre 90px, ~130KB —
+  plafond 300KB à paliers pinné), **TOTAL PAID + la ligne de preuve complète
+  VISIBLES** (Loi de Visibilité TIER-0 — l'engravure §6 RECEIPT &
+  OUTWARD-ARTIFACT dans SETTLED_RULES, appliquée par les pins amounts-visible
+  + canon-presence), le QR = le lien d'introduction du membre (prop depuis
+  l'unique site résolveur), rastérisation maison (override static-position —
+  le clone hors-viewport rendait blanc, attrapé au pixel) ; Share = carte +
+  texte (fichiers natifs quand supportés, repli téléchargement + copie) ;
+  print/PDF toujours le papier seul. **+0 couleur brute** ; guard receipt
+  **83 pins** ; rig : les deux thèmes inspectés au pixel.
 
 ### Phase 6 — Audits (le sceau grade-AAA)
 - [ ] Accessibilité (WCAG AA / APCA, focus, clavier, cibles ≥44px)

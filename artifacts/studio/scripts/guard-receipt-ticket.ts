@@ -58,6 +58,7 @@ const srcDir = path.resolve(here, "..", "src");
 
 const SPINE = path.join(srcDir, "lib", "protocolCommerceReceipt.ts");
 const TICKET = path.join(srcDir, "wallet", "ReceiptTicket.tsx");
+const CARD = path.join(srcDir, "wallet", "ReceiptShareCard.tsx");
 const CHECKOUT = path.join(srcDir, "wallet", "JoinCheckout.tsx");
 const INDEX_CSS = path.join(srcDir, "index.css");
 
@@ -103,17 +104,20 @@ function check(cond: boolean, pass: string, fail: string): void {
 
 const spineRaw = read(SPINE);
 const ticketRaw = read(TICKET);
+const cardRaw = read(CARD);
 const checkoutRaw = read(CHECKOUT);
 const spine = stripComments(spineRaw);
 const ticket = stripComments(ticketRaw);
+const card = stripComments(cardRaw);
 const moduleFiles: readonly (readonly [string, string])[] = [
   ["protocolCommerceReceipt.ts", spine],
   ["ReceiptTicket.tsx", ticket],
+  ["ReceiptShareCard.tsx", card],
 ];
 
 // ── 1. THE RED LINE ──────────────────────────────────────────────────────────
 const RED_LINE =
-  /\b(discounts?|coupons?|promos?|promotions?|promotional|rewards?|cash-?backs?|bonus(es)?|loyalty)\b|\bpoints\s+(earned|balance|program)\b/i;
+  /\b(discounts?|coupons?|promos?|promotions?|promotional|rewards?|cash-?backs?|bonus(es)?|loyalty|payouts?|net-?routed)\b|\bpoints\s+(earned|balance|program)\b/i;
 for (const [name, code] of moduleFiles) {
   const m = code.match(RED_LINE);
   check(
@@ -447,6 +451,70 @@ check(
     !/[^ab(]V2[^ab0-9]/.test(spineRaw.replace(/V2a|V2b|"V2"/g, "")),
   "spine: all four engines named precisely (V1 · V2a · V2b · V3, no bare V2)",
   "spine: the four-engines truth must stay precise — V2a and V2b by name and address, never a bare V2",
+);
+
+// ── 13c. THE SHARE CARD (RECEIPT-SHARE rider, founder GO 2026-07-17) ─────────
+// The receipt's outward projection: 1200×630 inside the central safe zone,
+// WhatsApp-safe weight, the member's OWN link as the QR — carrying THE REAL
+// FIGURES like the ticket does (THE VISIBILITY LAW, TIER-0: the amount is
+// already public in the very transaction the card links to; hiding it is
+// theatre — the settled block §6, SETTLED_RULES_DO_NOT_RELITIGATE.md).
+check(
+  /SHARE_CARD_WIDTH = 1200/.test(cardRaw) && /SHARE_CARD_HEIGHT = 630/.test(cardRaw),
+  "card: pinned to the 1200×630 share standard (1.91:1)",
+  "card: the share standard dimensions (1200×630) must not drift",
+);
+check(
+  /SHARE_CARD_MAX_BYTES = 300_000/.test(cardRaw) &&
+    /toDataURL\("image\/jpeg", q\)/.test(cardRaw),
+  "card: WhatsApp-safe ceiling with quality step-down",
+  "card: the <300KB export ceiling and its step-down loop must stay",
+);
+check(
+  /px-\[90px\]/.test(cardRaw),
+  "card: the central safe zone padding holds",
+  "card: text must live inside the central safe zone (90px padding)",
+);
+check(
+  /model\.commerce\.total/.test(card),
+  "card: AMOUNTS VISIBLE — the card renders the commerce total (Visibility Law §6①)",
+  "card: the commerce total left the card — amounts are NEVER hidden on any artifact (CANON_VISIBILITY_LAW, settled §6①)",
+);
+{
+  const settled = read(
+    path.resolve(here, "..", "..", "..", "docs", "direction", "SETTLED_RULES_DO_NOT_RELITIGATE.md"),
+  );
+  check(
+    /RECEIPT & OUTWARD-ARTIFACT SETTLED BLOCK/.test(settled) &&
+      /AMOUNTS ARE NEVER HIDDEN/.test(settled) &&
+      /THE BUYER-FACING LEXICON IS SETTLED/.test(settled) &&
+      /REAL-ROW ONLY/.test(settled) &&
+      /READABILITY BEFORE DECORATION/.test(settled),
+    "canon: the settled block §6 stays engraved (a violation is a red build, never a founder explanation)",
+    "canon: the RECEIPT & OUTWARD-ARTIFACT SETTLED BLOCK left SETTLED_RULES_DO_NOT_RELITIGATE.md — re-engrave it, never delete it",
+  );
+}
+check(
+  !/join\?source=/.test(card) && /referralLink: string/.test(cardRaw),
+  "card: the link arrives as a prop from the ONE resolver site, never rebuilt",
+  "card: the referral link must arrive as a prop — never a second construction site",
+);
+check(
+  /referralLink \?/.test(ticketRaw) && /ReceiptShareCard ref=\{cardRef\}/.test(ticketRaw),
+  "ticket: the card mounts only once the member's link resolved",
+  "ticket: the share card must mount only with a resolved link (no half-built artifact)",
+);
+check(
+  /print:hidden/.test(cardRaw),
+  "card: excluded from the print projection (the proof paper stays clean)",
+  "card: must carry print:hidden — exports and prints carry the paper alone",
+);
+check(
+  /rasterizeShareCard/.test(ticketRaw) &&
+    /toSvg\(node, \{/.test(cardRaw) &&
+    /position: "static"/.test(cardRaw),
+  "card: rasterized through the house SVG→canvas path (clone positioning neutralized)",
+  "card: the generator must use the house toSvg path WITH the static-position clone override (the off-viewport clone renders blank otherwise — caught 2026-07-17)",
 );
 
 // ── 14. THE ROADMAP ──────────────────────────────────────────────────────────
