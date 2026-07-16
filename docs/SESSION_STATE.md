@@ -2,8 +2,21 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🧭 SLICE D-TRUTH ✅ BUILT + FOUNDER GO — COMMITTED, AWAITING DEPLOY (2026-07-16,
-> preview-gate record below; founder "GO D-TRUTH" + sequence ①→④ approved as argued):
+> **▶ 🧭 SLICE D-TRUTH ✅ SEALED IN PROD (2026-07-16, Replit-verified 6/6 on
+> thesyndicate.money, prod bundle `index-BWApQcKx.js`, anchor `235205c`, 32/32
+> blob-verified, no migration): PROD PROOF — ① capital-standing 200 with real
+> standing for ALL 8 genesis seats (seat 1 → Patron, 70000000 raw = $70 cumulative ·
+> seat 6 → Patron $50 · seats 2–5/7/8 → Citizen $5 · correct nextRung each · ?seat=abc
+> still 400) — the V1×frozen-roster join LIVE; ② the feed BYTE-IDENTICAL 75=75 lines
+> vs the pre-deploy reference (capital-rise 14=14, zero new lines, zero 40-hex) — the
+> founder's no-retroactive-lines decision held exactly as the guard proved; ③
+> member-purchases honest S1 shape signed-out; ④ D2 ownership index WARM
+> (introductionRefresh refreshed:true · 3 attributed rows · 2 distinct sources ·
+> asOfBlock tracking head) both clean cycles; ⑤ both new strings in the served bundle,
+> member chunks zero-address, dropdown ≥12px; ⑥ /member + /wallet clean, engine 2/2 ok
+> cycles, head advancing, only the known self-repairing boot cycle in the historical
+> lastError register (verified by design, never cleared by success). Build+founder-GO
+> record follows (2026-07-16, founder "GO D-TRUTH" + sequence ①→④ approved as argued):
 > THE OLD DATA ENTERS THE DASHBOARD.** D1 GENESIS FOOTPRINTS: the capital walk joins
 > every early-era row (V1 + V2B pairing sentinels) to its frozen genesis seat via
 > HISTORICAL_FREEZE_WALLETS as an OPTIONAL builder input (runner supplies it; the pure
