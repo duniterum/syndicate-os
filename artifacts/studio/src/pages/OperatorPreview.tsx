@@ -16,8 +16,10 @@ const detailById: Record<string, string[]> = {
   ],
   source: [
     "Operate the verified-introduction source registry.",
-    "Paused by precaution today — no attribution is read or written.",
-    "Activation is gated behind founder approval and real wiring.",
+    // AUD-P0 sweep (2026-07-16): the dead-registry claim DIED — the registry
+    // is live and paying today; this preview panel's controls stay disabled.
+    "The registry is live and paying today — referred joins pay their source inside the buyer's own transaction.",
+    "The controls here are a preview — founder-signed on-chain acts run the registry.",
   ],
 };
 

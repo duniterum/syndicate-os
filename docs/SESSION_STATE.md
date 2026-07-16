@@ -2,6 +2,23 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🔥 SLICE AUD-P0 ✅ BUILT + FOUNDER GO ON THE FULL TEXT — COMMITTED, AWAITING
+> DEPLOY (2026-07-16): THE /PROOF TRUTH KILL — the audit's three converging P0s dead.**
+> ProofDashboard rewritten whole to today's truth (title "Proof, live from the chain." ·
+> live lead/banner · 4 facets rewritten with doors to their living surfaces replacing
+> dead badges · verification steps in present tense · honest StatusPill "Served from
+> the public record" · CTA "Open the live record"); `safetyCopy.readOnly` ("view-only:
+> no payments, no live chain reads") RETIRED at source with a dated never-revive note;
+> the strengthened era-drift guard (4 new patterns: none-of-it-is-wired ·
+> no-live-chain-reads · view-only-no-payments · paused-by-precaution) immediately
+> caught + killed a SECOND live instance (OperatorPreview source panel's dead-registry
+> claim → rewritten to the paying truth) — the P0 class can never ship again. SEO note
+> rode. Gate: tsc · build 24 shells · ALL studio guards (era stricter) · ALL 17 api
+> guards · seo 395 · rig-verified (lies absent, doors present, zero overflow).
+> DEPLOY: 🚀 its own deploy per the GO'd slicing plan. NEXT: AUD-T (Terms/Privacy/Risk
+> drafts — founder reads full text on screen) → AUD-TRUTH era-drift sweep (~15 P1
+> defects) → receipt slice (approved wireframe) → the plan's order.
+
 > **▶ ✅ THE WIREFRAME ROUND — ALL FIVE FOUNDER VERDICTS IN (2026-07-16; wireframes at
 > artifacts/mockup-sandbox/public/wireframes-2026-07-16.html, committed as the approved
 > record): ① TICKET GO** — with the founder's five figure-doubts ALL CONFIRMED against

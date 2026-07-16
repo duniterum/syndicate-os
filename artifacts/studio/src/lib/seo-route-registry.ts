@@ -134,7 +134,8 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     ownerSurface: "transparency",
     primaryIntent: "verify",
     proofRoute: "/proof",
-    notes: "Honest proof explainer (no placeholder data). Proof served live by the event backbone.",
+    notes:
+      "AUD-P0 (2026-07-16): the page rewritten to today's truth — all four proof organs LIVE with doors to their living surfaces; the dead-era lead, banner and facet claims DIED (the audit's three converging P0s); safetyCopy.readOnly retired. The served head had already told the truth — the page now matches it.",
   },
   {
     path: "/member",

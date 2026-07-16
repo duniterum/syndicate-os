@@ -31,6 +31,7 @@ export const safetyCopy = {
     "If anything we write disagrees with the real code or on-chain proof, the proof wins and we correct the words.",
   noFakeData:
     "We never make up numbers, members, balances, or activity. Anything we can't yet show live is clearly marked as not live.",
-  readOnly:
-    "Right now this is view-only: no payments, no live chain reads, and nothing is changed behind the scenes.",
+  // AUD-P0 (2026-07-16): the dead-era "readOnly" line DIED here — it publicly
+  // claimed "no payments, no live chain reads" while the protocol sold seats
+  // live. Its only consumer was /proof, rewritten the same day. Never revive.
 };

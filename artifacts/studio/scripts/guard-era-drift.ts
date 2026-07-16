@@ -41,6 +41,13 @@ const ERA_PATTERNS: { re: RegExp; name: string }[] = [
   { re: /currently read[- ]only/i, name: "read-only site-claim" },
   { re: /none is wired/i, name: "none is wired" },
   { re: /not wired/i, name: "not wired" },
+  // AUD-P0 (2026-07-16): the /proof P0 class — phrasings that slipped the
+  // patterns above and let the flagship verify page deny live payments for
+  // weeks. Never again.
+  { re: /none of it is wired/i, name: "none of it is wired (the /proof P0)" },
+  { re: /no live chain reads/i, name: "no live chain reads (the /proof P0)" },
+  { re: /view[- ]only: no payments/i, name: "view-only-no-payments (the /proof P0)" },
+  { re: /paused by precaution/i, name: "paused-by-precaution (dead registry claim)" },
   { re: /nothing is minted/i, name: "nothing is minted" },
   { re: /awaiting a verified source/i, name: "awaiting a verified source" },
   { re: /awaiting source (wiring|integration)/i, name: "awaiting source wiring" },
