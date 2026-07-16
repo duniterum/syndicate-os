@@ -2,6 +2,25 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🔗 MICRO-SLICE BUILDER-LINK ✅ SEALED IN PROD (2026-07-16, Replit-verified 4/4
+> on thesyndicate.money, prod bundle `index-DSnsVSxD.js` — byte-identical SHA-256 to
+> the local build — anchor `a8a43c6`, 9/9 blob-verified, no migration): founder
+> Ruling ① LIVE — every share surface (link card · share card · quick-action copy)
+> advertises the source that PAYS the wallet via ONE resolver (payingSourceId:
+> server-resolved own-row sourceIdHex first, canonical derivation fallback; the two
+> doctrine pins amended DATED, the public snapshot stays raw-sourceId-free). PROD
+> PROOF: ① signed-out source-standing 200 S1-honest with sourceIdHex:null; ② the
+> provenance line "This is your founder-signed source's link" in the served bundle;
+> ③ feed byte-identical 75=75, zero wallet addresses (87 raw matches = 64-hex tx-hash
+> prefixes, boundary semantics hold); ④ engine 2/2 cycles, 6/6 units, head advancing.
+> THE FOUNDER'S END-TO-END PRODUCTION REFERRAL TEST IS UNBLOCKED. NEXT (the approved
+> ①→④ sequence): the WIREFRAME ROUND on the founder's screen (enriched receipt ticket
+> incl. THE LIVING TICKET doctrine — identity head · living zone · next door · V1
+> print-clean-PDF stance · phased roadmap + hard filters engraved at its build ·
+> member-menu door→icon map + active state · post-login home named zones ·
+> Piece 4 law text · /admin-in-prod security gate) + THE TOTAL SITE AUDIT fleet
+> launches at the handover.**
+
 > **▶ 🧭 SLICE D-TRUTH ✅ SEALED IN PROD (2026-07-16, Replit-verified 6/6 on
 > thesyndicate.money, prod bundle `index-BWApQcKx.js`, anchor `235205c`, 32/32
 > blob-verified, no migration): PROD PROOF — ① capital-standing 200 with real
