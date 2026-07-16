@@ -25,7 +25,8 @@
     "guard:naming": "node scripts/guard-surface-naming.ts",
     "guard:navdisplay": "node scripts/guard-nav-link-display.ts",
     "guard:era": "node scripts/guard-era-drift.ts",
-    "guards": "node scripts/guard-lifecycle-labels.ts && node scripts/guard-forbidden-copy.ts && node scripts/guard-safe-source.ts && node scripts/guard-surface-coverage.ts && node scripts/guard-route-nav-drift.ts && node scripts/guard-posture-map.ts && node scripts/guard-no-fake-live.ts && node scripts/guard-freshness.ts && node scripts/guard-operator-gate.ts && node scripts/guard-access-state.ts && node scripts/guard-surface-naming.ts && node scripts/guard-nav-link-display.ts && node scripts/guard-era-drift.ts && node guards/no-raw-color.mjs",
+    "guard:receipt": "node scripts/guard-receipt-ticket.ts",
+    "guards": "node scripts/guard-lifecycle-labels.ts && node scripts/guard-forbidden-copy.ts && node scripts/guard-safe-source.ts && node scripts/guard-surface-coverage.ts && node scripts/guard-route-nav-drift.ts && node scripts/guard-posture-map.ts && node scripts/guard-no-fake-live.ts && node scripts/guard-freshness.ts && node scripts/guard-operator-gate.ts && node scripts/guard-access-state.ts && node scripts/guard-surface-naming.ts && node scripts/guard-nav-link-display.ts && node scripts/guard-era-drift.ts && node scripts/guard-receipt-ticket.ts && node guards/no-raw-color.mjs",
     "guard:opgate": "node scripts/guard-operator-gate.ts",
     "guard:access": "node scripts/guard-access-state.ts",
     "guard:color": "node guards/no-raw-color.mjs"
@@ -78,6 +79,7 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "catalog:",
+    "html-to-image": "1.11.13",
     "input-otp": "^1.4.2",
     "lucide-react": "catalog:",
     "next-themes": "^0.4.6",

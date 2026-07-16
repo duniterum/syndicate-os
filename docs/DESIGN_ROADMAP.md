@@ -206,6 +206,24 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   de succès) · cloche era-drift guérie · menu header au plancher 12px · bloc
   formaté. **+0 couleur brute** ; rig : toutes les chaînes rendues, ancien jargon à
   zéro, 2 guards suites vertes.
+- [x] **RECEIPT — LE TICKET DU PROTOCOLE (2026-07-16/17, wireframe approuvé +
+  4 rounds de corrections fondateur ①–⑫)** : spine `protocolCommerceReceipt`
+  extensible par kind, né UNIQUEMENT d'événements confirmés (filtre Mirror),
+  chiffres = les champs de l'événement (no-recompute), montants EXACTS qui
+  somment ; couverture historique QUATRE MOTEURS (V1 `TokensPurchased` ·
+  V2a/V2b `Purchased`+`Routed` apparié · V3) avec l'ABSENCE HONNÊTE typée ;
+  surface `ReceiptTicket` zones A–G (marque or au fronton · bloc commerce
+  TOTAL PAID · bloc preuve WHERE YOUR MONEY WENT · doctrine droite pleine
+  encre filet or · QR verify · UNE porte d'état réel) ; dégradation gracieuse
+  (repli pleine largeur, jamais tronqué/rétréci) ; export pur (Save-image =
+  le papier seul · print-clean Save-as-PDF) ; le partage porte le lien du
+  membre via LE résolveur (Ruling ①) ; placement checkout-success (l'impasse
+  post-achat est morte) ; `guard-receipt-ticket` **63 pins** (ligne rouge ·
+  anti-rareté · une-porte-max · ordinal · no-recompute · REAL-ROW classe ·
+  pureté d'export · quatre-moteurs précis · lisibilité). **+0 couleur brute** ;
+  rig : 5 tickets DOM-vérifiés (réel #13 · GENESIS V1 · V2a #3 · 2 stress),
+  2 thèmes, 375+desktop, zéro overflow. Placements binder/porte Receipts →
+  A1 ; share-card 1200×630 → rider ; `/receipt/{txHash}` → roadmap gravée.
 
 ### Phase 6 — Audits (le sceau grade-AAA)
 - [ ] Accessibilité (WCAG AA / APCA, focus, clavier, cibles ≥44px)
@@ -220,7 +238,7 @@ Design **100 % fini, verrouillé** = toutes les cases de "Définition de FINI" c
 → **on n'y revient plus jamais.**
 
 ## Suivi couleur — ✅ FERMÉ
-Sprawl : **0** couleur brute (slice 2.3 FAQ : **+0** · slice 2.4 Docs : **+0** · slice ⓪ liveness : **+0** — MembersProvenance 100 % tokens · arc Member Home 2026-07-14 : MEMBER SHELL **+0** · slice A actions/lien/Guide **+0** · slice B pill/settings **+0** · slice C teasers (TeaserSurface + 3 pages) **+0** · slice D wallet/toolkit **+0** · arc harvest L-1 /liquidity **+0** · ACT-1 feed (LiveActivityFeed + 2 pages live) **+0** · CHR-1 chronicle (register + panneau console) **+0** · M1-a hero premier acte (HeroStatusChips + HeroSeatLine + rail Inspect) **+0** · M1-b carte vivante (heroIconLanguage + nœud burn + mini-feed) **+0** · M1-c header/footer (barre récurrente morte à la racine + garde `guard-nav-link-display` + pilules dérivées) **+0** · S7 member home (bande d'accès + héros Your Seat + pilule échelon) **+0** · S7-b tableau de bord membre (bandeau + KPI + pouls + puces mobiles) **+0** — tout en tokens). Guard
+Sprawl : **0** couleur brute (slice 2.3 FAQ : **+0** · slice 2.4 Docs : **+0** · slice ⓪ liveness : **+0** — MembersProvenance 100 % tokens · arc Member Home 2026-07-14 : MEMBER SHELL **+0** · slice A actions/lien/Guide **+0** · slice B pill/settings **+0** · slice C teasers (TeaserSurface + 3 pages) **+0** · slice D wallet/toolkit **+0** · arc harvest L-1 /liquidity **+0** · ACT-1 feed (LiveActivityFeed + 2 pages live) **+0** · CHR-1 chronicle (register + panneau console) **+0** · M1-a hero premier acte (HeroStatusChips + HeroSeatLine + rail Inspect) **+0** · M1-b carte vivante (heroIconLanguage + nœud burn + mini-feed) **+0** · M1-c header/footer (barre récurrente morte à la racine + garde `guard-nav-link-display` + pilules dérivées) **+0** · S7 member home (bande d'accès + héros Your Seat + pilule échelon) **+0** · S7-b tableau de bord membre (bandeau + KPI + pouls + puces mobiles) **+0** · RECEIPT ticket (spine + ReceiptTicket + guard 63 pins) **+0** — tout en tokens). Guard
 `no-raw-color` **BLOQUANT** dans la gate (`pnpm guards`), toute nouvelle couleur brute casse le
 build. Du pic de **137 sites** → **0** au fil des slices d'harmonisation.
 Une seule exception documentée : `QrCodeBlock` (fond blanc du canvas QR, requis pour la lisibilité),

@@ -282,7 +282,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "join",
     proofRoute: "/status",
     notes:
-      "Public joining surface (Public Online Integration MVP): live sale group + exact quote + optional ?source= attribution validation. Transaction sending deliberately not enabled.",
+      "Public joining surface: live sale group + exact quote + optional ?source= attribution validation + the two-signature approve→buy checkout (C5 go-live). A confirmed purchase prints THE PROTOCOL RECEIPT ticket (receipt slice 2026-07-16) — seat, routing lines from the event's own fields, QR verify, one next door.",
   },
   {
     path: "/learning",

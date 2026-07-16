@@ -1,0 +1,497 @@
+// wallet/ReceiptTicket.tsx (build-time-gated wallet module)
+//
+// THE PROTOCOL RECEIPT — the founder-approved ticket (wireframe 2026-07-16):
+// zones A–G + identity head + living zone + next door, in the house skin
+// (command-room ink + gold, both themes). Purely presentational: it renders
+// the MembershipReceiptModel VERBATIM — every figure was placed there by the
+// spine from the confirmed event's own fields, and this file performs no
+// arithmetic, no chain read for the figures, no derivation (the hard filters
+// live in lib/protocolCommerceReceipt.ts and the receipt guard pins both).
+//
+// THE ONE DOOR: the next-door zone renders exactly one door, decided from the
+// wallet's REAL state (a live Archive holding read; the referral door needs
+// no read — every seated wallet's link exists). Never a list, never urgency.
+//
+// V1 export stance (approved): "Save image" rasterizes the ticket (SVG
+// foreignObject via html-to-image); the print stylesheet + light-theme print
+// hook give a clean browser Save-as-PDF. The dedicated PDF engine ships with
+// the public /receipt/{txHash} slice — one rendering path, one truth.
+
+import { useEffect, useRef, useState } from "react";
+import { Link } from "wouter";
+import QRCode from "react-qr-code";
+import { ExternalLink } from "lucide-react";
+import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
+import { Button } from "@/components/ui/button";
+import { brandAssets } from "@/config/brand";
+import { readArtifactBalance } from "@/lib/chainReads";
+import { payingSourceId } from "@/lib/sourceIdentity";
+import { fetchSourceStanding } from "./walletSession";
+import type {
+  MembershipReceiptModel,
+  ReceiptDoor,
+} from "@/lib/protocolCommerceReceipt";
+
+/** Token address out of a verify-links explorer URL (token or address form). */
+function addressFromUrl(url: string): string | null {
+  return url.match(/\/(?:token|address)\/(0x[0-9a-fA-F]{40})\b/)?.[1] ?? null;
+}
+
+// The two real doors of V1. The Archive door claims openness only on a
+// CONFIRMED zero holding of The First Signal (id 1 — the archive id canon,
+// same as ownReads); any unreadable state falls back to the referral door,
+// which is true for every seated wallet with no read at all.
+const REFERRAL_DOOR: ReceiptDoor = {
+  title: "Your referral link is ready",
+  body: "— open Referral to share it.",
+  href: "/referral",
+};
+const ARCHIVE_DOOR: ReceiptDoor = {
+  title: "The Archive is open",
+  body: "— The First Signal awaits.",
+  href: "/archive",
+};
+
+/**
+ * ⑪ THE MEMBER'S OWN LINK ON THE SHARE ARTIFACT (founder, 2026-07-17): the
+ * shared receipt is also the member's recruitment tool (the settled
+ * referrer-pride doctrine), so the SHARE text carries their permanent link —
+ * resolved by THE one resolver (Ruling ①: server-resolved paying source
+ * first, canonical SYN.SOURCE.V1 derivation as the fallback; reused, never
+ * rebuilt). ONE-DOOR-MAX holds: the door zone still renders exactly one
+ * door — the link lives in the Zone G share ACTION, outside the paper, so
+ * the print/PDF accounting document stays clean by construction.
+ */
+function useOwnReferralLink(wallet: string | undefined): string | null {
+  const [link, setLink] = useState<string | null>(null);
+  useEffect(() => {
+    let active = true;
+    setLink(null);
+    if (!wallet) return;
+    const resolve = (sourceIdHex: string | null) => {
+      const id = payingSourceId(sourceIdHex, wallet);
+      if (active && id) setLink(`https://thesyndicate.money/join?source=${id}`);
+    };
+    fetchSourceStanding()
+      .then((r) => resolve(r?.sourceIdHex ?? null))
+      .catch(() => resolve(null));
+    return () => {
+      active = false;
+    };
+  }, [wallet]);
+  return link;
+}
+
+/** Decide THE one door from the wallet's real state. Fail-closed to the
+ *  door that is true without any read. */
+function useReceiptNextDoor(wallet: string | undefined): ReceiptDoor {
+  const { data } = useGetProtocolVerifyLinks();
+  const archiveUrl = data?.links?.find((l) => l.id === "nftArchive")?.url ?? null;
+  const archiveAddr = archiveUrl ? addressFromUrl(archiveUrl) : null;
+  const [door, setDoor] = useState<ReceiptDoor>(REFERRAL_DOOR);
+  useEffect(() => {
+    let active = true;
+    if (!wallet || !archiveAddr) return;
+    void readArtifactBalance(archiveAddr, wallet, 1).then((raw) => {
+      if (!active || raw === null) return;
+      setDoor(raw === 0n ? ARCHIVE_DOOR : REFERRAL_DOOR);
+    });
+    return () => {
+      active = false;
+    };
+  }, [wallet, archiveAddr]);
+  return door;
+}
+
+/** While mounted, a browser print renders in the LIGHT tokens (a printer
+ *  never paints the command-room ink), restoring the member's theme after.
+ *  This is what makes the V1 browser Save-as-PDF print-clean. */
+function usePrintCleanTheme(): void {
+  useEffect(() => {
+    let wasDark = false;
+    const before = () => {
+      const root = document.documentElement;
+      wasDark = root.classList.contains("dark");
+      if (wasDark) {
+        root.classList.remove("dark");
+        root.classList.add("light");
+      }
+    };
+    const after = () => {
+      if (!wasDark) return;
+      const root = document.documentElement;
+      root.classList.remove("light");
+      root.classList.add("dark");
+    };
+    window.addEventListener("beforeprint", before);
+    window.addEventListener("afterprint", after);
+    return () => {
+      window.removeEventListener("beforeprint", before);
+      window.removeEventListener("afterprint", after);
+    };
+  }, []);
+}
+
+function ZoneRule() {
+  return <div className="border-t border-dashed border-border" aria-hidden="true" />;
+}
+
+export default function ReceiptTicket({
+  model,
+  wallet,
+}: {
+  model: MembershipReceiptModel;
+  /** The connected wallet — the identity the sigil seals and the state the
+   *  one door is decided from. */
+  wallet: string | undefined;
+}) {
+  const paperRef = useRef<HTMLDivElement>(null);
+  const door = useReceiptNextDoor(wallet);
+  const referralLink = useOwnReferralLink(wallet);
+  usePrintCleanTheme();
+  const [copied, setCopied] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const txUrl = model.proof.explorerTxUrl;
+  const shortTx = `${model.proof.txHash.slice(0, 6)}…${model.proof.txHash.slice(-4)}`;
+  // ⑪ the share artifact: sealed proof + the member's own link (when it
+  // resolves — a share never carries a broken or half-derived link).
+  const shareText = txUrl
+    ? `The Syndicate — ${model.living.coordinate}. Sealed proof: ${txUrl}` +
+      (referralLink ? `\nMy introduction link: ${referralLink}` : "")
+    : null;
+
+  async function handleCopy() {
+    if (!txUrl) return;
+    try {
+      await navigator.clipboard.writeText(txUrl);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      /* clipboard refused — the Verify link still carries the URL */
+    }
+  }
+
+  async function handleShare() {
+    if (!shareText) return;
+    if (typeof navigator.share === "function") {
+      try {
+        await navigator.share({ title: model.head.docTitle, text: shareText });
+        return;
+      } catch {
+        /* share sheet dismissed — fall through to copy */
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(shareText);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      /* clipboard refused — the Verify link still carries the proof */
+    }
+  }
+
+  async function handleSaveImage() {
+    const node = paperRef.current;
+    if (!node || saving) return;
+    setSaving(true);
+    try {
+      // toSvg (styles + fonts inlined; the fonts stylesheet is CORS-readable
+      // via index.html's crossorigin) + the HOUSE SVG→canvas rasterization
+      // (the QrCodeBlock precedent). html-to-image's own toPng is avoided:
+      // its internal decode() hangs on large foreignObject SVGs (verified at
+      // the rig) — onload never does.
+      const { toSvg } = await import("html-to-image");
+      const svgUrl = await toSvg(node);
+      const img = new Image();
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error("ticket raster image failed to load"));
+        img.src = svgUrl;
+      });
+      const scale = 3;
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth * scale;
+      canvas.height = img.naturalHeight * scale;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const a = document.createElement("a");
+      a.href = canvas.toDataURL("image/png");
+      a.download = `syndicate-receipt-${model.proof.txHash.slice(0, 10)}.png`;
+      a.click();
+    } catch {
+      /* rasterizer failed — the printed/PDF path and explorer proof remain */
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="receipt-print-root w-full max-w-[372px]" data-testid="receipt-ticket">
+      {/* ── the ticket paper (zones A–F + the one door) ── */}
+      <div
+        ref={paperRef}
+        className="w-[340px] max-w-full mx-auto rounded-[10px] border border-border bg-card px-[18px] pt-5 pb-3.5 shadow-xl"
+      >
+        {/* Zone A · identity head — THE SYNDICATE's own gold mark: an official
+            document carries the ISSUER's seal (founder correction 2026-07-17;
+            the member's wallet-derived sigil is the HOLDER's identity and
+            stays on the member surfaces). */}
+        <div className="py-3 px-0.5 text-center">
+          <div className="flex justify-center mb-2">
+            <img
+              src={brandAssets["syn-mark-gold"]}
+              alt="The Syndicate mark"
+              className="h-11 w-auto object-contain"
+              data-testid="receipt-brand-mark"
+            />
+          </div>
+          <div className="font-mono text-sm font-semibold tracking-[0.24em]">
+            {model.head.protocol}
+          </div>
+          <div className="font-mono text-xs font-semibold tracking-[0.18em] text-muted-foreground mt-1">
+            {model.head.protocolSub}
+          </div>
+          <div className="text-xs mt-1.5">{model.head.docTitle}</div>
+          <div className="text-xs text-muted-foreground mt-1">{model.head.chainLine}</div>
+          {model.head.chapterChip ? (
+            <div className="mt-2">
+              <span
+                className="inline-block rounded-full border border-gold/35 bg-gold/10 px-2.5 py-px text-xs text-gold"
+                data-testid="receipt-chapter-chip"
+              >
+                {model.head.chapterChip}
+              </span>
+            </div>
+          ) : null}
+        </div>
+
+        <ZoneRule />
+
+        {/* Zone B · when, sealed where */}
+        <div className="py-3 px-0.5 flex flex-wrap justify-between gap-x-3 text-[13px]">
+          <span className="text-muted-foreground" data-testid="receipt-context-line">
+            {model.context.dateUtc ? `${model.context.dateUtc} · ` : ""}
+            {model.context.blockDisplay}
+          </span>
+          {model.context.eraLabel !== null ? (
+            <span className="font-mono text-muted-foreground">{model.context.eraLabel}</span>
+          ) : null}
+        </div>
+
+        <ZoneRule />
+
+        {/* Zone C · the seat. ⑨ THE STRESS LAW (founder, 2026-07-17): exact
+            values never round, never shrink, never truncate — a value too
+            wide for its row WRAPS to its own full-width right-aligned line
+            (flex-wrap + ml-auto), the label standing above it. */}
+        <div className="py-3 px-0.5">
+          {model.seatLines.map((line) => (
+            <div
+              key={line.label}
+              className="flex flex-wrap justify-between gap-x-3 text-[13px] leading-[1.9]"
+            >
+              <span className="text-muted-foreground">{line.label}</span>
+              <span
+                className={`font-mono text-right ml-auto min-w-0 break-words ${line.em ? "text-[15px] font-semibold" : ""}`}
+              >
+                {line.value}
+                {line.suffix ? (
+                  <span className="text-xs text-muted-foreground"> {line.suffix}</span>
+                ) : null}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <ZoneRule />
+
+        {/* THE COMMERCE BLOCK · what I bought, what I paid — the buyer's own
+            story first (founder correction 2026-07-17). */}
+        <div className="py-3 px-0.5" data-testid="receipt-commerce-zone">
+          <div className="flex flex-wrap justify-between gap-x-3 text-[13px] leading-[1.9]">
+            <span data-testid="receipt-item-line">{model.commerce.itemLine.label}</span>
+            <span className="font-mono text-right ml-auto min-w-0 break-words font-semibold">
+              {model.commerce.itemLine.value}
+            </span>
+          </div>
+          <div className="flex flex-wrap justify-between items-baseline gap-x-3 mt-1.5">
+            <span className="font-mono text-xs font-semibold tracking-[0.14em] text-muted-foreground">
+              {model.commerce.total.label}
+            </span>
+            <span
+              className="font-mono text-xl font-semibold text-right ml-auto min-w-0 break-words"
+              data-testid="receipt-total"
+            >
+              {model.commerce.total.value}
+            </span>
+          </div>
+        </div>
+
+        {/* THE PROOF BLOCK · our signature — where the money went, inside the
+            buyer's own transaction. Every figure is the event's own field;
+            an event that never carried its splits prints NO proof block
+            (⑫ honest absence — the zone and its rule simply don't exist). */}
+        {model.moneyProof !== null ? (
+          <>
+            <ZoneRule />
+            <div className="py-3 px-0.5" data-testid="receipt-money-zone">
+              <div
+                className="font-mono text-xs font-semibold tracking-[0.18em] text-gold"
+                data-testid="receipt-proof-title"
+              >
+                {model.moneyProof.title}
+              </div>
+              <div className="text-xs text-muted-foreground mb-1.5">
+                {model.moneyProof.subtitle}
+              </div>
+              {model.moneyProof.paidFirstLine ? (
+                <div className="flex flex-wrap justify-between gap-x-3 text-[13px] leading-[1.9]">
+                  <span className="text-muted-foreground">
+                    {model.moneyProof.paidFirstLine.label}
+                  </span>
+                  <span className="font-mono text-right ml-auto min-w-0 break-words">
+                    {model.moneyProof.paidFirstLine.value}
+                  </span>
+                </div>
+              ) : null}
+              <div
+                className="text-[13px] leading-[1.9] text-muted-foreground"
+                data-testid="receipt-remainder-lead"
+              >
+                {model.moneyProof.remainderLead}
+              </div>
+              {model.moneyProof.splitLines.map((line) => (
+                <div
+                  key={line.label}
+                  className={`flex flex-wrap justify-between gap-x-3 text-[13px] leading-[1.9] ${line.indent ? "pl-3.5" : ""}`}
+                >
+                  <span className="text-muted-foreground">{line.label}</span>
+                  <span className="font-mono text-right ml-auto min-w-0 break-words">{line.value}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : null}
+
+        <ZoneRule />
+
+        {/* Living zone · the story coordinate (grows with the record) */}
+        <div className="py-3 px-0.5 text-[12.5px] leading-relaxed">
+          <div className="font-mono text-xs" data-testid="receipt-coordinate">
+            {model.living.coordinate}
+          </div>
+          {model.living.witnessLine ? (
+            <div className="text-gold mt-1" data-testid="receipt-witness-line">
+              ✦ {model.living.witnessLine}
+            </div>
+          ) : null}
+          {/* ⑩ READABILITY FIRST (founder, 2026-07-17): upright, the ticket's
+              own sans, full foreground contrast, above the 12px floor — the
+              doctrine's distinction is the gold accent + spacing, never a
+              legibility penalty. */}
+          <div className="border-l-2 border-gold/40 pl-2.5 mt-2 text-[13px] leading-relaxed text-foreground">
+            “{model.living.doctrine}”
+          </div>
+        </div>
+
+        <ZoneRule />
+
+        {/* Zone F · verify */}
+        <div className="py-3 px-0.5">
+          <div className="font-mono text-xs font-semibold tracking-[0.22em] text-center text-gold mb-2.5">
+            ONE WALLET · ONE SEAT
+          </div>
+          <div className="flex items-center gap-3">
+            {txUrl ? (
+              <div className="shrink-0 rounded-md border border-border bg-white p-1.5">
+                <QRCode value={txUrl} size={72} />
+              </div>
+            ) : null}
+            <div className="text-xs leading-normal text-muted-foreground">
+              <div className="font-mono text-xs font-semibold tracking-[0.14em] text-foreground">
+                SCAN TO VERIFY
+              </div>
+              {txUrl
+                ? "Opens the transaction on the public explorer."
+                : "The explorer link could not be resolved — the transaction hash below is the proof; look it up on any Avalanche explorer."}
+              <br />
+              <span className="font-mono" data-testid="receipt-tx-short">
+                tx {shortTx}
+              </span>
+            </div>
+          </div>
+          <div className="font-mono text-xs font-semibold tracking-[0.22em] text-center text-muted-foreground mt-2.5">
+            DON&apos;T TRUST — VERIFY
+          </div>
+          <div className="text-xs text-center text-muted-foreground mt-1.5">
+            Sealed by the protocol · {model.context.blockDisplay} — the transaction hash{" "}
+            <em>is</em> the signature.
+          </div>
+        </div>
+
+        <ZoneRule />
+
+        {/* THE ONE DOOR · decided from the wallet's real state */}
+        <div className="pt-3 pb-1 px-0.5">
+          <Link
+            href={door.href}
+            className="block rounded-lg border border-gold/30 bg-gold/[0.07] px-3 py-2 text-[12.5px] leading-normal text-foreground hover:bg-gold/10 transition-colors"
+            data-testid="receipt-next-door"
+          >
+            <b className="text-gold font-semibold">{door.title}</b>{" "}
+            <span className="text-muted-foreground">{door.body}</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* Zone G · actions — outside the ticket paper */}
+      <div className="w-[340px] max-w-full mx-auto flex flex-wrap gap-2 justify-center border-t border-border mt-3.5 pt-3 px-1 print:hidden">
+        {txUrl ? (
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              className="min-h-11"
+              onClick={() => void handleCopy()}
+              data-testid="button-receipt-copy"
+            >
+              {copied ? "Copied" : "Copy link"}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="min-h-11"
+              onClick={() => void handleShare()}
+              data-testid="button-receipt-share"
+            >
+              Share
+            </Button>
+          </>
+        ) : null}
+        <Button
+          variant="outline"
+          size="sm"
+          className="min-h-11 border-gold/50 text-gold hover:text-gold"
+          onClick={() => void handleSaveImage()}
+          disabled={saving}
+          data-testid="button-receipt-save-image"
+        >
+          {saving ? "Rendering…" : "Save image"}
+        </Button>
+        {txUrl ? (
+          <Button variant="outline" size="sm" className="min-h-11" asChild data-testid="button-receipt-verify">
+            <a href={txUrl} target="_blank" rel="noopener noreferrer">
+              Verify
+              <ExternalLink className="ml-1 h-3 w-3" aria-hidden="true" />
+            </a>
+          </Button>
+        ) : null}
+      </div>
+      <p className="w-[340px] max-w-full mx-auto text-xs text-muted-foreground text-center mt-2 print:hidden">
+        Printing this page (Ctrl/Cmd+P) gives a clean Save-as-PDF of the ticket alone.
+      </p>
+    </div>
+  );
+}

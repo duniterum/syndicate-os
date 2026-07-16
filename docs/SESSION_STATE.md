@@ -2,6 +2,72 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🎫 SLICE RECEIPT ✅ BUILT + FOUNDER GO AT THE PREVIEW GATE (2026-07-16/17,
+> FOUR live correction rounds ①–⑫ on the founder's screen — the approved
+> wireframe realized, then corrected on sight): THE PROTOCOL RECEIPT — the
+> post-purchase dead end is DEAD.** THE SPINE (`lib/protocolCommerceReceipt.ts`,
+> kind-extensible): born ONLY from confirmed events (THE MIRROR FILTER — the
+> type cannot express PARTIAL/PREVIEW), every figure the event's OWN field
+> (NO-RECOMPUTE), TICKET-AMOUNTS-ARE-EXACT (full precision, lines sum),
+> ORDINAL HONESTY (witness = caller-proven data or absent), ONE-DOOR-MAX.
+> **⑫ FOUR-ENGINES HISTORY** (the founder's catch, twice — a bare "V2" tried
+> to live in the spine comments and the new pin killed all three instances):
+> V1 `TokensPurchased` (splits, no seat/era/rate) · V2a 0x0b883F…/V2b
+> 0x507E9c… `Purchased`+paired `Routed` (a Purchased-alone ticket prints NO
+> proof block — the fold rides A1) · V3 full 25 fields; HONEST ABSENCE typed
+> (`| null`) and pinned. CHAIN-PROVEN AT THE GATE: the REAL #13 (V3) · THE
+> FIRST PURCHASE (V1, block 87,158,947, 2026-06-04 — Seat #1, $3.50/$1.00/
+> $0.50 summing to $5.00 exactly, NO era line) · seat #3's birth (V2a, block
+> 88,105,075 — era/rate present, NO proof block) · 2 stress tickets from the
+> REAL registries (Monolith $10,000 → 1,000,000 SYN · $9,999.99 cent-fractions
+> $6,649.99335 summing exact). THE SURFACE (`wallet/ReceiptTicket.tsx`, zones
+> A–G): the GOLD SYNDICATE MARK heads the paper (the issuer's seal — founder
+> ⑤) · commerce block first ("Membership — Seat #N" from RECEIPT_PRODUCT_NAMES
+> [kind] + **TOTAL PAID**) · proof block second ("WHERE YOUR MONEY WENT — in
+> your own transaction" · "Referral · paid first" · "The remaining $X:" from
+> the event's protocolContribution · Vault/Liquidity/Operations exact) ·
+> doctrine line UPRIGHT full-contrast with gold accent (founder ⑩ — italic +
+> font-serif now BANNED on the ticket by pin) · QR verify · ONE door from the
+> wallet's REAL state (live First Signal read; both variants rig-proven) ·
+> graceful degrade (founder ⑨: wide values wrap to their own right-aligned
+> line; truncate/nowrap/ellipsis banned by pin; zero overflow at 375 through
+> the stress maxima). EXPORTS PURE (founder ⑥): Save-image rasterizes the
+> paper alone (toSvg + the house SVG→canvas path — toPng's decode() hangs,
+> rig-proven), print-clean Save-as-PDF (print CSS + light-ink beforeprint
+> hook), actions print-hidden outside the raster node. THE SHARE ARTIFACT
+> (founder ⑪): share text = sealed proof + the member's OWN link via THE one
+> resolver (payingSourceId, Ruling ① — pinned: reuse mandatory, ONE
+> construction site, link NEVER in the paper region). BUYER'S TONGUE (founder
+> ②③ + the ultracode 3-lens adversarial verify): "proof of purchase" (routing
+> proof dead + pinned dead) · routed/routing + contribution banned from
+> buyer-facing strings · "Avalanche C-Chain (43114)" · doors speak buyer
+> words · the success line's "this page only reads it" family died. RIDERS
+> FIXED IN PASSING: fonts `crossorigin` in index.html (Save-image would have
+> failed IN PROD — CORS-unreadable stylesheet) · /join SEO note pre-C5 fossil
+> ("transaction sending deliberately not enabled") truthed. **guard-receipt-
+> ticket: 63/63 pins** incl. THE REAL-ROW CLASS PIN (founder ⑧ — no $-figure/
+> hex literals in the module; NO page may ever mount the ticket/builder: the
+> #14-mock class is structurally dead — the pin held the rig preview RED until
+> its revert, exactly as designed) + the FOUR-ENGINES precision pin (bare "V2"
+> can never return). DECISIONS AT THE GATE: product name "Membership" (④,
+> approved as rendered) · share-card 1200×630 = the immediate next rider
+> (⑦, the tall ticket's Save-image ships now) · placements ②③ (D3 rows "View
+> receipt" + Receipts door + the V2 Routed fold) ride A1 per the GO'd plan ·
+> /receipt/{txHash} = the engraved roadmap slice. QUEUED (P2 human-tongue
+> wave, verifier finds, pre-existing): checkout "(claim gate · allowance ·
+> balance)" · "slippage floor" · raw wallet-error passthrough. NEW DEP:
+> html-to-image (rasterizer). ENV NOTE: pnpm --force stripped the win32
+> native binaries (linux-only overrides by design) — restored durably
+> (memory: windows-native-binaries-restore-recipe). Gate: tsc ×2 · build 27
+> shells · ALL studio guards (access-state 948 · receipt 63/63 · era · copy ·
+> 0 raw-color) · seo 431/43 routes · surface 278 · rewrites 52 · ALL 17 api
+> guards (1268 PASS) · rig DOM-verified 5 tickets × 2 themes × 375+desktop,
+> zero overflow, zero sub-12px, zero console errors; exports pixel-verified.
+> **DEPLOY: 🚀 BATCHABLE (client-only, fail-closed, additive — prod's
+> checkout keeps the previous success panel until the next deploy; nothing
+> breaks undeployed). Deploy backlog: THIS slice.** NEXT per the GO'd plan:
+> RECEIPT-SHARE rider (1200×630, its own mini-gate) → ② MENU → ③ HOME.
+
 > **▶ ✅ THE DOUBLE DEPLOY SEALED IN PROD (2026-07-16, third-session boot —
 > Replit-verified 6/6 on thesyndicate.money, prod bundle `index-Dakgj6M2.js`
 > SHA-256 508a7535…1785229e byte-identical to the reproduced local build, anchor

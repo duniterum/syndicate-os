@@ -23,7 +23,7 @@
 // recipient is EXPLICITLY the connected wallet (Q12; gifting = C4, and the
 // historical gate must then run on the RECIPIENT).
 
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState, type ReactNode } from "react";
 import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { parseEventLogs } from "viem";
@@ -44,6 +44,15 @@ import {
 import { resolveHistoricalGate, type HistoricalGateVerdict } from "@/lib/historicalMembers";
 import { computeMinSynOutRaw } from "@/lib/checkoutVocabulary";
 import { formatRawUnits } from "@/lib/rawUnits";
+import {
+  buildMembershipReceipt,
+  type ConfirmedMembershipPurchase,
+} from "@/lib/protocolCommerceReceipt";
+
+// THE TICKET (receipt slice, 2026-07-16) — the confirmed purchase prints its
+// solemn paper right here, killing the post-purchase dead end. Lazy: the
+// ticket (QR + rasterizer) loads only after a purchase actually confirms.
+const ReceiptTicket = lazy(() => import("@/wallet/ReceiptTicket"));
 
 const ZERO_BYTES32 =
   "0x0000000000000000000000000000000000000000000000000000000000000000" as const;
@@ -166,6 +175,11 @@ type Receipt = {
   firstSeat: boolean;
   txHash: string;
   synOutRaw: string;
+  /** The full confirmed event, verbatim — the ticket's only source (law 4). */
+  event: ConfirmedMembershipPurchase;
+  blockNumber: string;
+  /** Sealing-block UNIX timestamp, or null when the block read failed. */
+  blockTimestamp: number | null;
 };
 
 export default function JoinCheckout({
@@ -421,11 +435,40 @@ export default function JoinCheckout({
         );
         return;
       }
+      // The ticket's date line: the sealing block's own timestamp. A failed
+      // read degrades honestly — the ticket anchors on the block number alone.
+      let blockTimestamp: number | null = null;
+      try {
+        const block = await publicClient.getBlock({ blockNumber: txReceipt.blockNumber });
+        blockTimestamp = Number(block.timestamp);
+      } catch {
+        blockTimestamp = null;
+      }
       setReceipt({
         seat: ev.args.memberNumber.toString(),
         firstSeat: ev.args.firstSeat,
         txHash: hash,
         synOutRaw: ev.args.synOut.toString(),
+        // Every ticket figure below is the event's OWN field, verbatim
+        // (law 4 + the ticket's no-recompute filter).
+        event: {
+          memberNumber: ev.args.memberNumber.toString(),
+          recipient: ev.args.recipient,
+          grossUsdcRaw: ev.args.grossUsdc.toString(),
+          acquisitionCostRaw: ev.args.acquisitionCost.toString(),
+          protocolContributionRaw: ev.args.protocolContribution.toString(),
+          vaultAmountRaw: ev.args.vaultAmount.toString(),
+          liquidityAmountRaw: ev.args.liquidityAmount.toString(),
+          operationsAmountRaw: ev.args.operationsAmount.toString(),
+          synOutRaw: ev.args.synOut.toString(),
+          synPerUsdc: ev.args.synPerUsdc.toString(),
+          era: ev.args.era,
+          firstSeat: ev.args.firstSeat,
+          sourceId: ev.args.sourceId,
+          sourceWallet: ev.args.sourceWallet,
+        },
+        blockNumber: txReceipt.blockNumber.toString(),
+        blockTimestamp,
       });
     } catch (e) {
       setError(explainError(e));
@@ -436,6 +479,20 @@ export default function JoinCheckout({
 
   if (receipt) {
     const txUrl = explorerBase ? `${explorerBase}/tx/${receipt.txHash}` : null;
+    // THE TICKET — born from the confirmed event's own fields only. A null
+    // model (malformed anchor) falls back to the plain proof panel: the
+    // headline + explorer link never depend on the ticket rendering.
+    const ticketModel = buildMembershipReceipt({
+      event: receipt.event,
+      proof: {
+        txHash: receipt.txHash,
+        blockNumber: receipt.blockNumber,
+        explorerTxUrl: txUrl,
+      },
+      blockTimestamp: receipt.blockTimestamp,
+      usdcDecimals,
+      synDecimals,
+    });
     return (
       <Shell tone="proof">
         <div className="flex items-start gap-3">
@@ -448,7 +505,7 @@ export default function JoinCheckout({
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {formatRawUnits(receipt.synOutRaw, synDecimals)} SYN sent to your wallet.
-              The receipt event is the authority — this page only reads it.
+              Your ticket below is printed from the sealed transaction itself.
             </p>
             {txUrl ? (
               <a
@@ -464,6 +521,13 @@ export default function JoinCheckout({
             ) : null}
           </div>
         </div>
+        {ticketModel ? (
+          <div className="mt-5 flex justify-center">
+            <Suspense fallback={null}>
+              <ReceiptTicket model={ticketModel} wallet={address} />
+            </Suspense>
+          </div>
+        ) : null}
       </Shell>
     );
   }

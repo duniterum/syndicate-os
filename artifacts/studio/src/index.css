@@ -317,3 +317,30 @@ body {
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
 }
+
+/* ---------------------------------------------------------------------------
+   THE RECEIPT TICKET — print-clean Save-as-PDF (V1 stance, approved wireframe
+   2026-07-16). When a ticket is on the page, a browser print renders the
+   ticket paper ALONE (the theme flip to light ink is handled by the ticket's
+   own beforeprint hook; the dedicated PDF engine ships with /receipt/{txHash}).
+   Browsers without :has() simply print the whole page — an honest degrade.
+   --------------------------------------------------------------------------- */
+@media print {
+  body:has(.receipt-print-root) * {
+    visibility: hidden;
+  }
+  body:has(.receipt-print-root) .receipt-print-root,
+  body:has(.receipt-print-root) .receipt-print-root * {
+    visibility: visible;
+  }
+  body:has(.receipt-print-root) .receipt-print-root {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: none;
+  }
+  body:has(.receipt-print-root) .receipt-print-root [class*="shadow"] {
+    box-shadow: none;
+  }
+}
