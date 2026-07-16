@@ -2,8 +2,14 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ ⚖️ SLICE AUD-T ✅ BUILT + FOUNDER GO ON ALL THREE FULL TEXTS — COMMITTED,
-> AWAITING DEPLOY (2026-07-16): THE LEGAL LAYER SHIPS — the audit's fourth P0 dead.**
+> **▶ ⚖️ SLICE AUD-T ✅ SEALED IN PROD (2026-07-16, Replit-verified 6/6 on
+> thesyndicate.money, prod bundle `index-ClCsdU33.js` — SHA-256 a1bafe21…ba3dcfd0
+> byte-identical to the reproduced local build — anchor `0ef9033`, 14/14
+> blob-verified, no migration): THE LEGAL LAYER IS LIVE — /terms · /privacy · /risk
+> all 200 with titles + the draft pill, the footer Legal group site-wide, sitemap 24
+> INDEX incl. the three, the three key lines in the served bundle, feed byte-identical
+> 75=75, engine healthy (10 protocol streams caughtUp). The audit's fourth P0 is dead:
+> the protocol sells seats under published terms. Build + founder-GO record follows.**
 > /terms + /privacy + /risk routed (PublicPage chassis, StatusPill "Version 1 —
 > draft of 2026-07-16" — honestly awaiting qualified counsel per the doctrine's own
 > header), footer-linked SITE-WIDE (new "Legal" group, registry-driven), SEO-registered
