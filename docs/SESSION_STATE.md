@@ -18,10 +18,19 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > by standing-approval-revoke). **④ LAW GO verbatim** — in ADR-001. **⑤ /ADMIN: the
 > neutral wall** (zero admin vocabulary at the bare URL; console reveals only after the
 > server confirms the operator role); build after the audit. **THE TOTAL SITE AUDIT
-> FLEET RETURNED (31/31 agents, 15 lenses + adversarial verification, zero errors)** —
-> canon doc assembly in flight → docs/audits/TOTAL_SITE_AUDIT_2026-07-16.md; next
-> meeting point: the audit doc + the cross-lens ranking + the slicing plan on the
-> founder's screen, then the build order (receipt slice first).**
+> FLEET RETURNED (31/31 agents, 15 lenses + adversarial verification, zero errors)**
+> — **CANON at docs/audits/TOTAL_SITE_AUDIT_2026-07-16.md: 184 verified findings
+> (P0 ×4 · P1 ×41 (~24 distinct) · P2 ×64 · P3 ×75, 0 refuted, 9 corrected).
+> THE P0s: three converge on /proof — the flagship verify page publicly claims
+> "view-only: no payments, no live chain reads" + "none of it is wired yet" while the
+> protocol SELLS SEATS LIVE (ProofDashboard.tsx:23-99 + sharedCopy.ts:34-35) — and
+> the fourth is the MISSING TERMS OF USE during live sales (lens 7). SLICING PLAN
+> (in the doc §Slicing plan, awaiting founder GO): ① AUD-P0 /proof truth kill →
+> ② AUD-T terms/legal drafts (founder reads full text on screen; pairs with S5) →
+> ③ AUD-TRUTH site-wide era-drift sweep → ④ receipt slice → ⑤ menu → ⑥ home →
+> ⑦ AUD-ROUTE routing/SEO → ⑧ /admin-in-prod (before M-INT-1 — the ledger's home) →
+> ⑨ M-INT-1 → A1(binder) → B1 → A2 → M-INT-2 → ⑩ S8 · Archive→NFT decision ·
+> P2/P3 waves. Next meeting point: the founder reads the audit + GOes the plan.**
 
 > **▶ 🔗 MICRO-SLICE BUILDER-LINK ✅ SEALED IN PROD (2026-07-16, Replit-verified 4/4
 > on thesyndicate.money, prod bundle `index-DSnsVSxD.js` — byte-identical SHA-256 to
