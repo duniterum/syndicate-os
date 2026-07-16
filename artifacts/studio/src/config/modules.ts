@@ -20,6 +20,7 @@ import {
   Link2,
   LayoutDashboard,
   Map as MapIcon,
+  AlertTriangle,
   type LucideIcon,
 } from "lucide-react";
 import type { TruthStatus } from "./truthStatus";
@@ -300,6 +301,53 @@ export const modules = [
     dependencies: [],
     nav: { header: false, sidebar: false, footer: true },
     icon: HelpCircle,
+  },
+  // ── AUD-T (founder GO 2026-07-16): the legal layer — the audit's fourth P0
+  // dead. Three routed pages, footer-linked site-wide, honest draft labels.
+  {
+    id: "terms",
+    label: "Terms of Use",
+    path: "/terms",
+    zone: "public",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description:
+      "The terms that govern the site and the protocol: what a seat is and is not, how a purchase works, the referral program's rules, and what the protocol never does.",
+    dependencies: [],
+    nav: { header: false, sidebar: false, footer: true },
+    icon: FileText,
+  },
+  {
+    id: "privacy",
+    label: "Privacy Policy",
+    path: "/privacy",
+    zone: "public",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description:
+      "Built to know almost nothing about you: no accounts, no identity checks, one functional cookie, no analytics — said plainly, with what little does exist disclosed.",
+    dependencies: [],
+    nav: { header: false, sidebar: false, footer: true },
+    icon: ShieldCheck,
+  },
+  {
+    id: "risk",
+    label: "Risk Disclosure",
+    path: "/risk",
+    zone: "public",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description:
+      "Read before you sign: price can fall to zero, contracts can have flaws, keys are your only access, transactions are final, and the rules keep changing.",
+    dependencies: [],
+    nav: { header: false, sidebar: false, footer: true },
+    icon: AlertTriangle,
   },
   {
     id: "docs",

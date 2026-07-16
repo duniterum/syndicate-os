@@ -61,6 +61,8 @@ const footerGroupSpec: { heading: string; itemIds: string[] }[] = [
   { heading: "Protocol", itemIds: ["proof", "map", "status", "contracts", "source-attribution"] },
   { heading: "Learn", itemIds: ["whitepaper", "tokenomics", "faq", "docs", "learning", "recognition", "archive"] },
   { heading: "Membership", itemIds: ["member", "join", "source-link", "support"] },
+  // AUD-T (2026-07-16): the legal layer on every public page's footer.
+  { heading: "Legal", itemIds: ["terms", "privacy", "risk"] },
   { heading: "Console", itemIds: ["studio"] },
 ];
 

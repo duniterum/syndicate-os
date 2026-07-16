@@ -121,6 +121,41 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },
+  // AUD-T (2026-07-16): the legal layer — three prose pages, footer-linked
+  // site-wide, honestly labeled Version-1 drafts awaiting counsel.
+  {
+    routePath: "/terms",
+    moduleId: "terms",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary:
+      "Terms of Use — founder-approved text: what a seat is and is not, purchase finality, the referral program's rules, no custody, the public record.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
+    routePath: "/privacy",
+    moduleId: "privacy",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary:
+      "Privacy Policy — every claim harvested from real code: one functional cookie, two local preferences, zero analytics, logs disclosed plainly.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
+    routePath: "/risk",
+    moduleId: "risk",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary:
+      "Risk Disclosure — honest and specific: price can fall to zero, contracts can flaw, keys are the only access, transactions are final.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
   {
     routePath: "/docs",
     moduleId: "docs",

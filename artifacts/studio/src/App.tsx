@@ -13,6 +13,10 @@ import Learning from "@/pages/Learning";
 import Whitepaper from "@/pages/Whitepaper";
 import Tokenomics from "@/pages/Tokenomics";
 import Faq from "@/pages/Faq";
+// AUD-T (2026-07-16): the legal layer — the audit's fourth P0 dead.
+import Terms from "@/pages/Terms";
+import Privacy from "@/pages/Privacy";
+import Risk from "@/pages/Risk";
 import Docs from "@/pages/Docs";
 import Recognition from "@/pages/Recognition";
 import ContractMemory from "@/pages/ContractMemory";
@@ -121,6 +125,15 @@ function Router() {
       </PublicRoute>
       <PublicRoute path="/faq">
         <Faq />
+      </PublicRoute>
+      <PublicRoute path="/terms">
+        <Terms />
+      </PublicRoute>
+      <PublicRoute path="/privacy">
+        <Privacy />
+      </PublicRoute>
+      <PublicRoute path="/risk">
+        <Risk />
       </PublicRoute>
       <PublicRoute path="/docs">
         <Docs />

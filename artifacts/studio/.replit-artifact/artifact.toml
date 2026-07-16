@@ -58,6 +58,30 @@ from = "/proof/"
 to = "/proof.html"
 
 [[services.production.rewrites]]
+from = "/terms"
+to = "/terms.html"
+
+[[services.production.rewrites]]
+from = "/terms/"
+to = "/terms.html"
+
+[[services.production.rewrites]]
+from = "/privacy"
+to = "/privacy.html"
+
+[[services.production.rewrites]]
+from = "/privacy/"
+to = "/privacy.html"
+
+[[services.production.rewrites]]
+from = "/risk"
+to = "/risk.html"
+
+[[services.production.rewrites]]
+from = "/risk/"
+to = "/risk.html"
+
+[[services.production.rewrites]]
 from = "/member"
 to = "/member.html"
 

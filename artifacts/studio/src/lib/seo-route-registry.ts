@@ -137,6 +137,62 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     notes:
       "AUD-P0 (2026-07-16): the page rewritten to today's truth — all four proof organs LIVE with doors to their living surfaces; the dead-era lead, banner and facet claims DIED (the audit's three converging P0s); safetyCopy.readOnly retired. The served head had already told the truth — the page now matches it.",
   },
+  // AUD-T (2026-07-16): the legal layer. SEO-metadata law: NO banned financial
+  // word in title/description, NOT EVEN NEGATED (truncation strips negation).
+  {
+    path: "/terms",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "Terms of Use — The Syndicate",
+    description:
+      "The terms that govern thesyndicate.money: what a seat is, how a purchase works on Avalanche C-Chain, the referral program's rules, and what the protocol never does.",
+    canonicalPath: "/terms",
+    changefreq: "monthly",
+    priority: 0.3,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "transparency",
+    primaryIntent: "education",
+    proofRoute: "/proof",
+    notes:
+      "AUD-T (2026-07-16, founder GO on the full text): Version 1 draft, honestly labeled as awaiting qualified counsel; governing law + entity + contact = pending lines, never invented. Doctrine-verified: zero banned vocabulary; negated disclaimers live in the BODY only.",
+  },
+  {
+    path: "/privacy",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "Privacy Policy — The Syndicate",
+    description:
+      "Built to know almost nothing about you: no accounts, no identity checks, one functional session cookie, no analytics — with the little that does exist said plainly.",
+    canonicalPath: "/privacy",
+    changefreq: "monthly",
+    priority: 0.3,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "transparency",
+    primaryIntent: "education",
+    proofRoute: "/proof",
+    notes:
+      "AUD-T (2026-07-16): every claim harvested from real code (cookie flags/TTLs, the two browser-preference keys, zero analytics verified, pino logs + IP throttle, on-chain mirror disclosure, WalletConnect + public RPC third parties) and adversarially fact-checked. Retention window + entity + contact = pending lines.",
+  },
+  {
+    path: "/risk",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "Risk Disclosure — The Syndicate",
+    description:
+      "Read before you sign: the price of SYN can fall to zero, smart contracts can have flaws, your keys are your only access, and blockchain transactions are final.",
+    canonicalPath: "/risk",
+    changefreq: "monthly",
+    priority: 0.3,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "transparency",
+    primaryIntent: "education",
+    proofRoute: "/proof",
+    notes:
+      "AUD-T (2026-07-16): honest and specific, never boilerplate — downside-only price language, purchase-flow protections stated exactly as coded (no simulation claim), immutable-code-not-frozen-behavior precision, no audit implied. Liquidity section reuses the /liquidity Risk Notice lexicon.",
+  },
   {
     path: "/member",
     routeType: "PUBLIC",

@@ -2,6 +2,28 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ ⚖️ SLICE AUD-T ✅ BUILT + FOUNDER GO ON ALL THREE FULL TEXTS — COMMITTED,
+> AWAITING DEPLOY (2026-07-16): THE LEGAL LAYER SHIPS — the audit's fourth P0 dead.**
+> /terms + /privacy + /risk routed (PublicPage chassis, StatusPill "Version 1 —
+> draft of 2026-07-16" — honestly awaiting qualified counsel per the doctrine's own
+> header), footer-linked SITE-WIDE (new "Legal" group, registry-driven), SEO-registered
+> (banned-word-free meta EVEN NEGATED per the truncation law), sitemap 21→24 INDEX,
+> shells 24→27, surfaceClassification + modules entries added. The texts = the
+> founder-approved drafts VERBATIM (7-agent fleet: canon+code harvest → draft →
+> adversarial doctrine pass; 12 fact-corrections applied; drafts archived at
+> docs/legal/drafts/). Founder-decision placeholders render as honest pending lines
+> (entity/governing law/contact/retention — "arrives with the next version"), never
+> invented. OPEN FOUNDER DECISIONS carried: entity+jurisdiction · durable contact
+> channel · log retention window · eligibility floor · checkout acceptance mechanics
+> (its own slice if adopted) · on-chain hash commitment of the docs · never-message-
+> first policy · counsel review before the drafts lose their draft label. Guard
+> lessons: negation-adjacency reflows + "financial product" prohibition phrasing +
+> the storage-token note reword. Gate: tsc · build 27 shells · ALL studio guards ·
+> seo 431 (43 routes) · surface 281 (27 public aligned) · rewrites 52 · ALL 17 api
+> guards · rig-verified 3/3 (draft pills, key lines, footer Legal group, zero
+> console errors, zero overflow). DEPLOY: 🚀. NEXT per the GO'd plan: AUD-TRUTH
+> (the site-wide era-drift sweep, ~15 P1 defects) → receipt slice → menu → home.
+
 > **▶ 🔥 SLICE AUD-P0 ✅ SEALED IN PROD (2026-07-16, Replit-verified 4/4 on
 > thesyndicate.money, prod bundle `index-D3GZLiNl.js` — SHA-256 1218ef47…d8379c64
 > byte-identical to the reproduced local build — anchor `e5598fb`, 41/41
