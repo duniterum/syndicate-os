@@ -54,7 +54,7 @@ export const HOLDER_INDEX_SNAPSHOT: HolderIndexSnapshot = {
   "status": "VERIFIED",
   "chainId": 43114,
   "freezeBlock": 88496414,
-  "memberTotal": 10,
+  "memberTotal": 14,
   "eras": [
     {
       "era": "PART_B_FREEZE_ROOT",
@@ -68,22 +68,22 @@ export const HOLDER_INDEX_SNAPSHOT: HolderIndexSnapshot = {
       "era": "V3_EMITTED",
       "label": "V3 engine event",
       "doctrine": "Seats #9+: authority is the memberNumber emitted by V3 engine events on-chain. Read from raw indexed events, never inferred, never renumbered.",
-      "count": 2,
+      "count": 6,
       "seatNumberLow": 9,
-      "seatNumberHigh": 10
+      "seatNumberHigh": 14
     }
   ],
   "timestampCoverage": {
-    "withVerifiedTimestamp": 10,
-    "total": 10
+    "withVerifiedTimestamp": 14,
+    "total": 14
   },
   "provenance": {
-    "runId": 1,
-    "builtAt": "2026-07-03T15:34:31.927Z",
+    "runId": 5,
+    "builtAt": "2026-07-16T15:26:53.673Z",
     "builderVersion": "member-continuity-builder/1.1.0-s3b",
-    "sourceDeterminismHash": "sha256:1c416aeec6fcdd77eed9ddcbde886dfd2a936d2ce4658290836a251064e9d6a4",
-    "inputSaleEventCount": 26,
-    "inputMaxSaleEventRawId": 26
+    "sourceDeterminismHash": "sha256:439192b47e63a44e21ab59f3cce54fe7be34d6c9af557100ead4d2983ee42249",
+    "inputSaleEventCount": 35,
+    "inputMaxSaleEventRawId": 41
   },
   "boundaries": [
     "Aggregate counts only: no wallet addresses, no per-seat public roster, no memberNumber-to-wallet linkage, no directory.",
@@ -91,5 +91,5 @@ export const HOLDER_INDEX_SNAPSHOT: HolderIndexSnapshot = {
     "Era provenance is always labelled: historical freeze / on-chain root (#1–#8) vs V3 engine event (#9+). The two authorities are never collapsed into one undifferentiated sequence.",
     "Membership recognition only — no financial framing, no economic projection. Member self-readback is session-bound OWN-ROW only (founder Decision 5a): a signed wallet may resolve its own standing against this snapshot; no public directory, roster, or arbitrary lookup exists."
   ],
-  "snapshotHash": "sha256:9cf82d908d7079a207a54b57877b0e87ba45a0a388ee08456dd46192421c211a"
+  "snapshotHash": "sha256:65acf2f15c3e336d0bb79ef884cdfbb3446f283d071c94c8c252e56b2d717dc4"
 } as const;

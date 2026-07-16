@@ -2,6 +2,63 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🏁 SESSION SEAL (2026-07-16, second session) — THE CLEAN BASE DAY.**
+> SEALED IN PROD TODAY (all Replit-verified on thesyndicate.money, every bundle
+> byte-identical SHA-256): **D-TRUTH** (`index-BWApQcKx.js` — all 8 genesis seats
+> stand: #1 Patron $70 · #6 Patron $50 · rest Citizen; feed byte-identical; D2
+> ownership index warm; member-purchases route live; own Archive holdings on
+> /wallet) · **BUILDER-LINK** (`index-DSnsVSxD.js` — every share surface advertises
+> the PAYING source via ONE resolver; founder's end-to-end referral test unblocked)
+> · **AUD-P0** (`index-D3GZLiNl.js` — /proof truth rewrite, the 3 converging P0s
+> dead) · **AUD-T** (`index-ClCsdU33.js` — THE LEGAL LAYER: /terms /privacy /risk
+> live, footer Legal group site-wide, the 4th P0 dead) · **AUD-TRUTH**
+> (`index-Cw5BCIY1.js` — the lens-1/2/3 P1 era-drift sweep dead across 6 pages +
+> FAQ JSON-LD + whitepaper + served API note; the checkout-ripping redirect fixed;
+> pg pool crash-proofed; feed grew 75→78 with 3 GENUINE treasury moves) ·
+> **AUD-TRUTH-2** (`index-DvclxgU9.js` — the founder's prod-walk fixes: admin map
+> MOVED to /os-map via shared SurfaceMapSection, footer Console dead,
+> PUBLIC-SEES-ADMIN-NEVER real; /recognition + /docs + Member Continuity promotion)
+> — **plus the DATA STEP executed one-writer style: member-continuity run #5 (14
+> records, on-chain match true) + holder-index snapshot REGENERATED (memberTotal
+> 14, hash 65acf2f1…, reconciled 66/66) — committed here, prod says 14 at the next
+> deploy.** ALSO TODAY: THE WIREFRAME ROUND (5 founder GOs: ticket incl. LIVING
+> TICKET doctrine + real receipt #13 verbatim · menu 13 rows + icons · home zones ·
+> THE RESEARCH-GROUNDED DESIGN METHOD LAW in ADR-001 with REAL-ROW + TICKET-
+> AMOUNTS-ARE-EXACT · /admin neutral wall) at
+> artifacts/mockup-sandbox/public/wireframes-2026-07-16.html · **THE TOTAL SITE
+> AUDIT canon** at docs/audits/TOTAL_SITE_AUDIT_2026-07-16.md (31 agents, 184
+> verified findings — ALL FOUR P0s NOW DEAD IN PROD; ~24 distinct P1s: lenses
+> 1/2/3 killed today, lens-4 P1s ride /admin, a11y P1s ride menu/home slices) ·
+> AUD-T's legal drafts archived at docs/legal/drafts/. **THE PLATEAU FOR THE NEXT
+> SESSION (the founder-approved plan, in order): ① THE RECEIPT SLICE — wireframe
+> approved: zones A–G + identity head + living zone + next door, OUR skin, both
+> themes; kind-extensible ProtocolCommerceReceipt spine harvested from TheSyndicate
+> quarry (protocol-commerce-receipt.ts + SuccessReceipt.tsx + source-attributed-
+> receipts.ts, react-qr-code already a dep); born ONLY from indexed events
+> (PARTIAL/PREVIEW die at the Mirror filter); figures from the event's own fields
+> NEVER recomputed, EXACT precision (lines sum); REAL-ROW rule; V1 = checkout
+> success (kills the post-purchase dead end) + print-clean Save-as-PDF; guard pins:
+> ticket red line (discount/coupon/promo/reward/points/cashback/bonus banned in
+> module), anti-scarcity living zone, one-door-max, ordinal honesty, no recompute
+> literals; placements ②(A1 binder)+③(Receipts door) ride A1; the receipt roadmap
+> (public /receipt/{txHash} · living ticket · receipt-as-artifact→lens 12) + hard
+> filters engraved at build → ② MENU slice (approved: 5 primaries + THE RECORD +
+> GROWTH + Settings pinned; gold tint + left bar + focus ring) → ③ HOME
+> recomposition (approved zones Z1–Z8; 6 KPIs; Z3 attention real-state-only; Z4 =
+> D3 rows w/ View-receipt) → ④ AUD-ROUTE (lens 6+9 P1s) → ⑤ /ADMIN-IN-PROD
+> (Ruling ②: neutral wall, server-side operator sessions per OPERATOR_WALLET_AUTH
+> canon, public-sees-admin-never guard on dist chunks; before M-INT-1 — the
+> ledger's home) → ⑥ M-INT-1 → A1(binder) → B1 → A2 → M-INT-2 → S8 perf ·
+> Archive→NFT naming decision (audit lens 12 options) · P2/P3 waves (incl. the
+> API decimals field for raw figures · the 215 sub-12px sweep + guard).
+> OPEN FOUNDER DECISIONS CARRIED: entity + governing law · durable contact channel
+> · log retention window · eligibility floor · checkout acceptance mechanics ·
+> on-chain hash commitment of the legal docs · never-message-first policy ·
+> counsel review lifts the draft label · Q5/Q6/Q9/Q13/Q20 (older). PENDING AT
+> HANDOFF: the holder-index snapshot commit below needs its deploy (prod Holder
+> Index says 10 until then — the paste block was handed with the seal). Next
+> session boots on "hi" → THE RECEIPT SLICE.**
+
 > **▶ 📷 SLICE AUD-TRUTH-2 ✅ BUILT + FOUNDER GO — COMMITTED, AWAITING DEPLOY
 > (2026-07-16, the founder's own prod walk — 8 screenshots): ① /recognition
 > "Archive memory: Not live yet" DIED → the honest dimension split (archive+
