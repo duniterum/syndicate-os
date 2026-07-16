@@ -13,7 +13,11 @@
 //      is never told "no source exists" while their own source pays them,
 //   4. resolves the source's OWN counters from the generated R5 snapshot via
 //      the opaque sourceKey (an honest SERVED SNAPSHOT, labeled asOfBlock).
-// The account and the sourceId never leave this module's return value.
+// The account never leaves this module's return value. AMENDED 2026-07-16
+// (founder Ruling ①, dated): the RESOLVED source id is served OWN-ROW as
+// sourceIdHex — the link card must advertise the source that actually PAYS
+// the wallet (the member's own material, session-bound; 64-hex passes the
+// address gates; the public snapshot stays raw-sourceId-free, unchanged).
 
 import { keccak256, encodePacked, getAddress } from "viem";
 import {
@@ -46,6 +50,9 @@ export interface OwnSourceStanding {
    * record is this account). Null when no source resolved.
    */
   sourceOrigin: "canonical" | "founder-signed" | null;
+  /** Ruling ① (2026-07-16): the RESOLVED source's bytes32 id, own-row only —
+   * the link the member should share is the source that pays them. */
+  sourceIdHex: string | null;
   standing: {
     attributedPurchases: number;
     introducedMembers: number;
@@ -75,6 +82,7 @@ export async function readOwnSourceStanding(
     sourceOnChain: null,
     sourceActive: null,
     sourceOrigin: null,
+    sourceIdHex: null,
     standing: null,
     failureReason: null,
   };
@@ -181,6 +189,9 @@ export async function readOwnSourceStanding(
     liveModel.model.asOfBlock >= INTRODUCTION_SNAPSHOT.model.asOfBlock
       ? { model: liveModel.model, hash: liveModel.modelHash }
       : { model: INTRODUCTION_SNAPSHOT.model, hash: INTRODUCTION_SNAPSHOT.snapshotHash };
+  // Ruling ① (2026-07-16): the resolved id travels own-row so the client
+  // advertises the PAYING source's link (canonical or founder-signed alike).
+  out.sourceIdHex = resolvedId.toLowerCase();
   const row = active.model.bySource[sourceKeyOf(resolvedId)] ?? null;
   out.standing = {
     attributedPurchases: row?.attributedPurchases ?? 0,

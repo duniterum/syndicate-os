@@ -14,7 +14,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { MEMBER_ACTIONS, type MemberAction } from "@/config/memberActions";
-import { deriveSourceId } from "@/lib/sourceIdentity";
+import { payingSourceId } from "@/lib/sourceIdentity";
 
 type OwnState = {
   signedIn: boolean;
@@ -95,8 +95,16 @@ function ActionCard({ action, own, address }: { action: MemberAction; own: OwnSt
           variant="outline"
           data-testid="action-copy-referral-link"
           onClick={() => {
-            const id = deriveSourceId(address);
-            if (id) copy(`https://thesyndicate.money/join?source=${id}`);
+            // Ruling ① (2026-07-16): copy the PAYING source's link — the
+            // server-resolved own-row id first (the referral dashboard's
+            // sanctioned dynamic-import seam), canonical as the fallback.
+            void import("@/wallet/walletSession")
+              .then((m) => m.fetchSourceStanding())
+              .catch(() => null)
+              .then((rb) => {
+                const id = payingSourceId(rb?.sourceIdHex, address);
+                if (id) copy(`https://thesyndicate.money/join?source=${id}`);
+              });
           }}
         >
           {copied === action.id ? <Check className="h-3.5 w-3.5 mr-1.5" /> : <Copy className="h-3.5 w-3.5 mr-1.5" />}

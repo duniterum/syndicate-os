@@ -25,6 +25,10 @@
 // (sha256 of the lowercase sourceId, prefixed + truncated so no 40-hex run
 // can ever appear). The own-row endpoint re-derives the key from the
 // session's own wallet; a directory lookup surface does not exist.
+// AMENDED 2026-07-16 (founder Ruling ①, dated): the SNAPSHOT stays exactly
+// this — raw-sourceId-free. Separately, the AUTH-ZONE own-row readback now
+// serves the session's OWN resolved sourceIdHex (the paying source's link
+// is the member's own material); this file's discipline is unchanged.
 
 import { createHash } from "node:crypto";
 import { entitledRateRung } from "./connectorLadderCanon";

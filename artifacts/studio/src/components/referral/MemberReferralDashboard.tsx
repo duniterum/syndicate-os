@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { ladderProgress } from "@/config/connectorLadder";
-import { deriveSourceId } from "@/lib/sourceIdentity";
+import { payingSourceId } from "@/lib/sourceIdentity";
 import { readSourceConfig } from "@/lib/chainReads";
 import { Copy, Check, Link2, ShieldCheck, QrCode } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -198,7 +198,7 @@ function IntroductionStanding({ readback }: { readback: StandingReadback | null 
 
 // The §11-2b card implementation: permanent derived link + live two-state
 // honesty + copy/QR/share, all wired to the REAL link (the sample is gone).
-function MyReferralLinkCard() {
+function MyReferralLinkCard({ readback }: { readback: StandingReadback | null }) {
   const { address } = useAccount();
   const [copied, setCopied] = useState(false);
   const [showQr, setShowQr] = useState(false);
@@ -212,7 +212,10 @@ function MyReferralLinkCard() {
   const registryAddr = registryUrl
     ? (registryUrl.match(/\/address\/(0x[0-9a-fA-F]{40})\b/)?.[1] ?? null)
     : null;
-  const sourceId = address ? deriveSourceId(address) : null;
+  // Ruling ① (2026-07-16): advertise the source that PAYS this wallet —
+  // the server-resolved id first, canonical derivation as the fallback.
+  const founderSigned = readback?.sourceOrigin === "founder-signed";
+  const sourceId = payingSourceId(readback?.sourceIdHex, address);
   const link = sourceId ? `https://thesyndicate.money/join?source=${sourceId}` : null;
 
   useEffect(() => {
@@ -255,8 +258,12 @@ function MyReferralLinkCard() {
           </div>
           <p className="text-sm text-muted-foreground mt-2 leading-relaxed" data-testid="text-link-state">
             {active === true
-              ? "Your source is ACTIVE — the commission is paid inside the buyer's own transaction, live."
-              : "Your link is permanent — derived from your wallet, it never changes. The commission activates when your source is founder-signed."}
+              ? founderSigned
+                ? "This is your founder-signed source's link — the source whose commission is paid to this wallet, ACTIVE inside the buyer's own transaction."
+                : "Your source is ACTIVE — the commission is paid inside the buyer's own transaction, live."
+              : founderSigned
+                ? "This is your founder-signed source's link — the source whose commission is paid to this wallet."
+                : "Your link is permanent — derived from your wallet, it never changes. The commission activates when your source is founder-signed."}
           </p>
           <div className="flex flex-wrap items-center gap-2 mt-3">
             <Button variant="outline" size="sm" onClick={() => setShowQr((v) => !v)}>
@@ -286,7 +293,9 @@ export function MemberReferralDashboard() {
   const readback = useOwnSourceStanding();
   const { address } = useAccount();
   const s = readback?.standing ?? null;
-  const sourceId = address ? deriveSourceId(address) : null;
+  // Ruling ① (2026-07-16): the share card carries the SAME paying-source
+  // link as the link card — one resolver, zero drift between surfaces.
+  const sourceId = payingSourceId(readback?.sourceIdHex, address);
   const shareLink = sourceId
     ? `https://thesyndicate.money/join?source=${sourceId}`
     : null;
@@ -334,7 +343,7 @@ export function MemberReferralDashboard() {
             ACTIVE      → the commission is paid inside the buyer's own tx;
             not signed  → the link is permanent; commission activates when the
                           source is founder-signed. Same link forever. */}
-      <MyReferralLinkCard />
+      <MyReferralLinkCard readback={readback} />
 
       {/* Per-receipt introduction history — the ONE genuinely-not-served
           piece, said honestly (the counts above are already indexed and

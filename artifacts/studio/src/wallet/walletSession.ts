@@ -342,6 +342,9 @@ export interface SourceStandingReadback {
   /** D2 — which resolution answered: the wallet's canonical id, or a
    * founder-signed source whose registry record pays this wallet. */
   sourceOrigin: "canonical" | "founder-signed" | null;
+  /** Ruling ① — the resolved PAYING source's bytes32 id (own-row): the link
+   * to advertise. Null when no source resolved (canonical derive applies). */
+  sourceIdHex: string | null;
   standing: {
     attributedPurchases: number;
     introducedMembers: number;
@@ -421,6 +424,10 @@ export async function fetchSourceStanding(): Promise<SourceStandingReadback | nu
       sourceOrigin:
         o.sourceOrigin === "canonical" || o.sourceOrigin === "founder-signed"
           ? o.sourceOrigin
+          : null,
+      sourceIdHex:
+        typeof o.sourceIdHex === "string" && /^0x[0-9a-f]{64}$/.test(o.sourceIdHex)
+          ? o.sourceIdHex
           : null,
       standing,
       failureReason: typeof o.failureReason === "string" ? o.failureReason : null,

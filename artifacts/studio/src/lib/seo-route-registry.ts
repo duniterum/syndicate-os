@@ -152,7 +152,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "join",
     proofRoute: "/status",
     notes:
-      "S7/S7-b: full-screen door (one connect CTA) for visitors; the member DASHBOARD (identity band, live KPI tiles, pulse, referral, capital/protocol/chronicle cards) for signed members. View-only; no transaction path. D-TRUTH (2026-07-16): genesis seats' early-era footprints join the capital walk (standing-only — the public feed unchanged); founder-signed source standing resolves via the wallet-of-record fallback; the capital card lists the member's own purchase record with verify anchors; a definitive zero renders 0, never a dash.",
+      "S7/S7-b: full-screen door (one connect CTA) for visitors; the member DASHBOARD (identity band, live KPI tiles, pulse, referral, capital/protocol/chronicle cards) for signed members. View-only; no transaction path. D-TRUTH (2026-07-16): genesis seats' early-era footprints join the capital walk (standing-only — the public feed unchanged); founder-signed source standing resolves via the wallet-of-record fallback; the capital card lists the member's own purchase record with verify anchors; a definitive zero renders 0, never a dash. Ruling ① (2026-07-16): every share surface (link card, share card, quick action) advertises the PAYING source's link — server-resolved own-row sourceIdHex first, canonical derivation fallback.",
   },
   // ARC SLICE D — member doors (FLAT routes: a /member/* path would emit a
   // member/ directory and resurrect the 2.0 trailing-slash redirect on /member).

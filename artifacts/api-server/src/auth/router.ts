@@ -563,6 +563,7 @@ router.get("/source-standing", async (req: Request, res: Response) => {
           sourceOnChain: null,
           sourceActive: null,
           sourceOrigin: null,
+          sourceIdHex: null,
           standing: null,
           failureReason:
             "no active wallet session; sign in to read your referral standing",
@@ -578,6 +579,9 @@ router.get("/source-standing", async (req: Request, res: Response) => {
     // D-TRUTH D2: which resolution answered — "canonical" or "founder-signed"
     // (the own-row fallback). Additive; clients ignore unknown fields.
     sourceOrigin: resolved.sourceOrigin,
+    // Ruling ① (2026-07-16): the resolved PAYING source's id, own-row only
+    // (64-hex — passes the boundary-aware address gate below).
+    sourceIdHex: resolved.sourceIdHex,
     standing: resolved.standing,
     failureReason: resolved.failureReason,
   };
