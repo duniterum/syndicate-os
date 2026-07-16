@@ -40,28 +40,24 @@ export type SurfaceId =
   | "coreApiRpc"
   | "contractState";
 
-// Post-vendoring (Slice 2.7) truth posture for each protocol surface.
-// Doctrine: a surface whose ABI / registry / taxonomy canon is now vendored must
-// NOT claim it is "awaiting" that canon. The remaining honest gap is the LIVE
-// wiring (event adapter, indexer, RPC), labelled "… Not Wired".
-//   - proofOfFire / proofEventParser: protocol event taxonomy + ABIs are
-//     vendored → the live event adapter is the gap (EVENT_ADAPTER_NOT_WIRED),
-//     not a missing ABI.
-//   - sourceAttribution: SourceRegistryV1 ABI is vendored → the source indexer
-//     is the gap (SOURCE_INDEXER_NOT_WIRED), not a missing canon index.
-//   - archive: Archive1155 ABI + archive ID registry are vendored → canon
-//     exists; the gap is live archive reads (ARCHIVE_READS_NOT_WIRED), not
-//     "future".
-//   - membership: contract registers are vendored (member records are NOT) →
-//     the live membership indexer is the gap (SYNDICATE_INDEXER_NOT_WIRED).
-//     (founder-confirmed correct)
-//   - recognition: no dedicated recognition canon vendored → genuine future
-//     product surface (FUTURE_MODULE).
+// ⚠️ S7 TRUTH SWEEP (2026-07-16) — READ BEFORE CONSUMING THIS MAP.
+// The Slice-2.7-era "… NOT_WIRED" photographs below are HISTORY for four
+// keys: membership (Holder Index + standing readback LIVE), proofOfFire
+// (the event backbone serves the complete heartbeat), sourceAttribution
+// (program ACTIVE + R5 introduction indexer LIVE), archive (mints/counts
+// read live). Every consumer that rendered those four as "Not live yet"
+// was retired in the sweep — a LIVE surface renders NO TruthLabel (the
+// /join precedent). The keys stay for type totality only; do NOT wire a
+// new consumer to them without re-deriving today's truth first.
+// Still honestly not-live: recognition (the standing model — the capital
+// axis lives on /activity, the full model doesn't), founderControls,
+// publicDashboard, coreApiRpc, contractState, proofEventParser (operator
+// parser console).
 export const surfaceStatus: Record<SurfaceId, TruthStatus> = {
-  membership: "SYNDICATE_INDEXER_NOT_WIRED",
-  proofOfFire: "EVENT_ADAPTER_NOT_WIRED",
-  sourceAttribution: "SOURCE_INDEXER_NOT_WIRED",
-  archive: "ARCHIVE_READS_NOT_WIRED",
+  membership: "SYNDICATE_INDEXER_NOT_WIRED", // RETIRED FROM RENDER — live since 2026-07-11
+  proofOfFire: "EVENT_ADAPTER_NOT_WIRED", // RETIRED FROM RENDER — heartbeat live
+  sourceAttribution: "SOURCE_INDEXER_NOT_WIRED", // RETIRED FROM RENDER — R5 live
+  archive: "ARCHIVE_READS_NOT_WIRED", // RETIRED FROM RENDER — reads live
   recognition: "FUTURE_MODULE",
   proofEventParser: "EVENT_ADAPTER_NOT_WIRED",
   founderControls: "AWAITING_FOUNDER_APPROVAL",

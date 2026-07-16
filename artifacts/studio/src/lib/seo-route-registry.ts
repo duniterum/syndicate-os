@@ -141,7 +141,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     routeType: "PUBLIC",
     indexStatus: "INDEX",
     sitemap: true,
-    title: "Member Home — Wallet Session & Standing",
+    title: "Member Home — Your Seat, Your Standing",
     description:
       "Sign in with your wallet and see your own standing: your seat, the people you brought in, and what you've been paid — read live from the chain. Only your own row; there is no directory of members.",
     canonicalPath: "/member",
@@ -152,7 +152,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "join",
     proofRoute: "/status",
     notes:
-      "Public wallet session + member self-readback (Public Online Integration MVP). Read-only; no transaction path.",
+      "S7 recomposition: door band (one connect CTA) for visitors, your-seat hero (sigil, seat, capital rung, receipt) for members. View-only; no transaction path.",
   },
   // ARC SLICE D — member doors (FLAT routes: a /member/* path would emit a
   // member/ directory and resurrect the 2.0 trailing-slash redirect on /member).

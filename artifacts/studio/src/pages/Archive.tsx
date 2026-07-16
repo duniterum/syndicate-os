@@ -1,11 +1,9 @@
 import { Link } from "wouter";
 import { ScrollText } from "lucide-react";
 import { PublicPage } from "@/components/PublicPage";
-import { TruthLabel } from "@/components/TruthLabel";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { surfaceStatus } from "@/config/truthStatus";
 import { getContractsByCategory } from "@/config/contractMemory";
 import { ctas } from "@/config/sharedCopy";
 
@@ -17,7 +15,11 @@ export default function Archive() {
       eyebrow="Archive & chronicle"
       title="Protocol memory, kept honestly."
       lead="The archive holds the protocol's artifacts; the chronicle is its narrative memory of milestones. Artifacts mint on-chain today — counts and prices are read live from the contract; the full museum surface is still being built."
-      badge={<TruthLabel variant={surfaceStatus.archive} />}
+      // S7 truth sweep (2026-07-16): the "Not live yet" TruthLabel DIED —
+      // artifacts mint on-chain today and every figure is a live read; the
+      // page is a verified view-only surface (the honest remaining gap, the
+      // per-wallet holdings view, is stated in the lead).
+      badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
       <h2 className="type-h2 text-foreground mb-5">The archive</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-14">

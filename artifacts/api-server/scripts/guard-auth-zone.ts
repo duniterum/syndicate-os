@@ -484,12 +484,15 @@ if (!existsSync(studioDistDir)) {
   const REQUIRED_WALLET_PROBES = [
     // Wallet-chunk transport + honesty copy: their presence proves the
     // public wallet session shell shipped in the production-default build.
-    // (Copy updated with the member-self readback slice: continuity is now a
-    // live SELF-readback for the signed wallet only, so the honesty lines
-    // changed — these are the new stable wallet-chunk strings.)
+    // (Copy updated with the member-self readback slice, then again by S7:
+    // the session panel retired — the honesty doctrine now ships in the
+    // Member Home door band ("proves control of a wallet", "session ≠
+    // membership" via syndicateFacts) and the own-row phrase "ever your own
+    // row" replaced the machinery word "self-readback", which fell under the
+    // Human-First Law. These are the new stable build strings.)
     "/api/auth",
     "proves control of a wallet",
-    "self-readback",
+    "ever your own row",
   ];
   for (const probe of REQUIRED_WALLET_PROBES) {
     const hits = distFiles.filter((f) => read(f).includes(probe));

@@ -45,6 +45,11 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
       { label: "Fire Ledger", href: "/fire-ledger", note: "Supply retired in public — live total + the numbered Proof of Burn record." },
       // First promotion (founder, 2026-07-14): the Chronicle is open.
       { label: "Chronicle", href: "/chronicle", note: "The solemn record — entry one: the duplicate seat." },
+      // S7 truth sweep (2026-07-16): the Archive door's "coming soon /
+      // not live yet" badge DIED — /archive is open with artifacts minted
+      // on-chain (counts and prices read live); the per-wallet holdings
+      // view is the honest remaining gap, said on the page itself.
+      { label: "Archive", href: "/archive", note: "Artifacts as protocol memory — minted on-chain, counts read live." },
       { label: "Protocol graph", href: "/map", note: "The protocol, drawn — every surface on one map." },
     ],
   },
@@ -56,18 +61,9 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
       { label: "Liquidity", href: "/liquidity", note: "The SYN/USDC pool — why it exists, read live, LP-side actions." },
     ],
   },
-  {
-    title: "Coming soon",
-    doors: [
-      // §11 slot 2c — coming-soon doors open their DESIGNED TEASERS, badges
-      // honest. (Activity + Fire Ledger live in ACT-1; Chronicle opened by
-      // the first founder promotion, 2026-07-14 → all moved above.)
-      { label: "Archive", href: "/archive", lifecycle: "PENDING_ADAPTER", note: "Artifacts as protocol memory — minted on-chain, counts read live." },
-      // FOUNDER DECISION (2026-07-14): the possessive-network door is DEAD
-      // (bannedSurfaceNames carries the term + the why); its content lives in
-      // the Referral dashboard door.
-    ],
-  },
+  // (The "Coming soon" group emptied with the S7 truth sweep — every door
+  // above opens a real page today. FOUNDER DECISION 2026-07-14 stands: the
+  // possessive-network door is DEAD; its content lives in Referral dashboard.)
 ];
 
 /** The §11 slots 3–5, reserved VISIBLY on Member Home (cards, not doors):
@@ -75,5 +71,7 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
 export const MEMBER_HOME_RESERVED_SLOTS: readonly MemberDoor[] = [
   { label: "Season", lifecycle: "FUTURE", note: "The current season — your XP, your rank, the next quest. Recognition only, never a cash figure." },
   { label: "Quests", lifecycle: "FUTURE", note: "Daily and weekly recognition quests — Learn & Earn earns XP." },
-  { label: "While you were away", lifecycle: "PENDING_ADAPTER", note: "What the protocol lived since your last visit — recency-truthful, from the event indexer." },
+  // S7 truth sweep: the event record itself is LIVE (the complete heartbeat)
+  // — what's still to build is this member surface on top of it.
+  { label: "While you were away", lifecycle: "FUTURE", note: "What the protocol lived since your last visit — the event record is live; this member surface arrives on it." },
 ];

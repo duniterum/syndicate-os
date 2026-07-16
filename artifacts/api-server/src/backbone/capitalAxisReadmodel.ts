@@ -85,6 +85,21 @@ export interface CapitalRiseItem {
   readonly isoDayUtc: string;
 }
 
+/**
+ * S7 — a seat's CURRENT standing on the capital axis: the same walk's end
+ * state (never a second derivation). Title + public ordinal ONLY — the
+ * cumulative amount never leaves this module, and no next-rung/approaching
+ * shape exists (the anti-scarcity pin). A seat whose footprint is not
+ * derivable (V1-era rows carry no ordinal) is simply ABSENT — never guessed.
+ */
+export interface CapitalStandingItem {
+  /** Public seat ordinal. */
+  readonly seatNumber: number;
+  /** The rung the seat stands on today (base "Citizen" included — a STATE
+   *  readback is not a line; LINE-ON-RISE governs the feed, not this). */
+  readonly rung: string;
+}
+
 export interface CapitalBuildInput {
   readonly expectedChainId: number;
   readonly rawEvents: readonly RawSaleEventInput[];
@@ -94,6 +109,8 @@ export interface CapitalBuildInput {
 export interface CapitalBuildResult {
   /** Chain order (oldest first). */
   readonly rises: readonly CapitalRiseItem[];
+  /** S7: every walked seat's current rung, seat-ordinal ascending. */
+  readonly standingBySeat: readonly CapitalStandingItem[];
   /** Honest derivation notes (V1 exclusion, sentinel skips) — address-free. */
   readonly notes: readonly string[];
 }
@@ -205,5 +222,17 @@ export function buildCapitalAxisReadModel(
     );
   }
 
-  return { rises, notes };
+  // S7 — the walk's end state, folded once here (one derivation, one truth):
+  // each walked seat's current rung, base included. The cumulative amount
+  // dies inside this function; only the title travels.
+  const standingBySeat: CapitalStandingItem[] = [...cumBySeat.entries()]
+    .map(([seatNumber, cumRaw]) => ({ seatNumber, idx: rungIndexFor(cumRaw) }))
+    .filter((s) => s.idx >= 0)
+    .sort((a, b) => a.seatNumber - b.seatNumber)
+    .map((s) => ({
+      seatNumber: s.seatNumber,
+      rung: CAPITAL_AXIS_LADDER[s.idx]!.title,
+    }));
+
+  return { rises, standingBySeat, notes };
 }

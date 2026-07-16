@@ -132,9 +132,11 @@ export const modules = [
     enabled: true,
     live: false,
     phase: "live",
-    truthStatus: surfaceStatus.proofOfFire,
+    // S7 truth sweep (2026-07-16): the "not live yet" badge DIED — the event
+    // backbone serves the complete heartbeat (a live surface renders no
+    // TruthLabel; the /join precedent).
     description: "Verify the protocol: receipts, routing, numbered burns and referral payments — read live, each with its verify link.",
-    dependencies: ["eventAdapter"],
+    dependencies: [],
     nav: { header: true, sidebar: false, footer: true },
     icon: ShieldCheck,
     flag: "proofDashboard",
@@ -163,11 +165,13 @@ export const modules = [
     visible: true,
     enabled: true,
     live: false,
-    phase: "draft",
-    truthStatus: "AWAITING_FOUNDER_APPROVAL",
+    phase: "live",
+    // S7 truth sweep (2026-07-16): "AWAITING_FOUNDER_APPROVAL / draft" was a
+    // fossil — the founder switched auth ON (2026-07-11) and Member Home is a
+    // live production surface (session, own seat, receipt, referral standing).
     description:
-      "Wallet session plus a read-only self-readback of your own signed wallet's standing. Seat issuance stays founder-gated; nothing is written from this app.",
-    dependencies: ["founderApproval", "membershipIndexer"],
+      "Member Home: connect your wallet and read your own record live — seat, receipt, referral standing. Only ever your own row; nothing is written from this app.",
+    dependencies: [],
     nav: { header: false, sidebar: false, footer: true },
     icon: Users,
     flag: "membershipLive",
@@ -381,7 +385,9 @@ export const modules = [
     enabled: true,
     live: false,
     phase: "live",
-    truthStatus: surfaceStatus.sourceAttribution,
+    // S7 truth sweep (2026-07-16): the "not live yet" badge DIED — the
+    // program is ACTIVE (LIVE_ACTION, real money proven) and the R5
+    // introduction indexer serves live standing.
     description:
       "How the referral program works — a bounded commission per eligible completed introduction, paid inside the buyer's own transaction, plus long-term recognition.",
     dependencies: [],
@@ -411,8 +417,10 @@ export const modules = [
     visible: true,
     enabled: true,
     live: false,
-    phase: "future",
-    truthStatus: surfaceStatus.archive,
+    phase: "live",
+    // S7 truth sweep (2026-07-16): the "not live yet / future" posture DIED —
+    // artifacts mint on-chain today (17 minted, counts and prices read live);
+    // the per-wallet holdings view is the honest remaining gap.
     description: "Archive & chronicle — protocol memory; artifacts minted on-chain, counts and prices read live.",
     dependencies: [],
     nav: { header: false, sidebar: false, footer: true },

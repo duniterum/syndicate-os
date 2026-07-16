@@ -1,11 +1,13 @@
 // components/referral/MemberReferralDashboard.tsx
 //
-// The member-facing referral dashboard: link + code, summary stats, an
-// introductions-over-time trend, and recent-introduction history. The referral
-// program is PAUSED, so every figure here is SAMPLE (illustrative shape, never
-// a live read) and carries a SampleTag; the paused banner sits on top. At
-// activation the sample arrays are swapped for verified read-model / receipt
-// data and the SampleTags come off — the layout does not change.
+// The member-facing referral dashboard — REAL figures only (S7 truth sweep,
+// 2026-07-16). The program is ACTIVE (LIVE_ACTION, founder 2026-07-13) and
+// the R5 introduction indexer is live: every figure rendered here is the
+// signed wallet's OWN indexed standing (counts, commission paid, escrow,
+// ladder progress) plus live registry reads — never a sample. The old
+// paused-era SAMPLE blocks (fake summary/trend/history dollars) died with
+// the sweep; the one honestly-not-served piece — per-receipt introduction
+// rows — renders as a labeled coming-soon card, never a fake figure.
 
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
@@ -17,101 +19,45 @@ import { Copy, Check, Link2, ShieldCheck, QrCode } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SampleTag } from "@/components/SampleTag";
 import { StatCard } from "@/components/stat-card/StatCard";
-import { StatusPill, type StatusTone } from "@/components/status-pill/StatusPill";
-import { DataTable, type Column } from "@/components/data-table/DataTable";
+import { StatusPill } from "@/components/status-pill/StatusPill";
 import { ShareCard } from "@/components/referral/ShareCard";
 import { ShareMenu } from "@/components/referral/ShareMenu";
 import { QrCodeBlock } from "@/components/referral/QrCodeBlock";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
-import {
-  referralProgram,
-  memberStatsSample,
-  memberHistorySample,
-  memberTrendSample,
-  type ReferralHistoryRow,
-} from "@/config/referralProgram";
-
-// Referral status → tokenized StatusPill tone. Paid is settled (proof/cyan),
-// Pending is caution (amber), anything else (Ineligible) is inert → neutral.
-function referralStatusTone(status: string): StatusTone {
-  if (status === "Paid") return "proof";
-  if (status === "Pending") return "caution";
-  return "neutral";
-}
-
-const historyColumns: Column<ReferralHistoryRow>[] = [
-  {
-    key: "referred",
-    header: "Referred",
-    cell: (r) => <span className="font-mono text-xs text-foreground/80">{r.referred}</span>,
-  },
-  {
-    key: "date",
-    header: "Date",
-    cell: (r) => <span className="text-muted-foreground">{r.date}</span>,
-  },
-  {
-    key: "status",
-    header: "Status",
-    cell: (r) => (
-      <StatusPill tone={referralStatusTone(r.status)} size="xs">
-        {r.status}
-      </StatusPill>
-    ),
-  },
-  {
-    key: "commission",
-    header: "Commission",
-    align: "right",
-    cell: (r) => <span className="font-mono text-foreground/80">{r.commission}</span>,
-  },
-];
-
-function TrendChart({ data }: { data: { label: string; value: number }[] }) {
-  const w = 320;
-  const h = 96;
-  const gap = 8;
-  const max = Math.max(1, ...data.map((d) => d.value));
-  const bw = (w - gap * (data.length - 1)) / data.length;
-  return (
-    <svg viewBox={`0 0 ${w} ${h}`} width="100%" height={h} role="img" aria-label="Sample introductions over time">
-      {data.map((d, i) => {
-        const bh = Math.round((d.value / max) * (h - 18));
-        const x = i * (bw + gap);
-        const y = h - bh - 14;
-        return (
-          <g key={d.label}>
-            <rect x={x} y={y} width={bw} height={bh} rx={3} className="fill-primary/40" />
-            <text x={x + bw / 2} y={h - 2} textAnchor="middle" className="fill-muted-foreground" style={{ fontSize: 9 }}>
-              {d.label}
-            </text>
-          </g>
-        );
-      })}
-    </svg>
-  );
-}
+import { referralProgram } from "@/config/referralProgram";
 
 // R5 — the signed wallet's OWN indexed introduction standing (counts from the
 // introduction snapshot + live registry existence), fetched through the
 // gated wallet module via a runtime dynamic import (guard rule 15). Null =
 // not loaded / no session / read failed → the section renders its honest
-// PENDING state; a figure only ever comes from the readback.
+// sign-in state; a figure only ever comes from the readback.
 type StandingReadback = import("@/wallet/walletSession").SourceStandingReadback;
 
 function useOwnSourceStanding(): StandingReadback | null {
   const [standing, setStanding] = useState<StandingReadback | null>(null);
   useEffect(() => {
     let active = true;
-    void import("@/wallet/walletSession").then(({ fetchSourceStanding }) =>
-      fetchSourceStanding().then((r) => {
-        if (active) setStanding(r);
-      }),
-    );
+    let cleanup: (() => void) | null = null;
+    // Re-read on session changes (S7): the member connects on the door band
+    // and this section resolves in place — no reload needed.
+    void Promise.all([
+      import("@/wallet/walletSession"),
+      import("@/wallet/sessionEvents"),
+    ]).then(([ws, ev]) => {
+      if (!active) return;
+      const read = () => {
+        void ws.fetchSourceStanding().then((r) => {
+          if (active) setStanding(r);
+        });
+      };
+      read();
+      window.addEventListener(ev.SESSION_CHANGED_EVENT, read);
+      cleanup = () => window.removeEventListener(ev.SESSION_CHANGED_EVENT, read);
+    });
     return () => {
       active = false;
+      cleanup?.();
     };
   }, []);
   return standing;
@@ -134,11 +80,13 @@ function IntroductionStanding({ readback }: { readback: StandingReadback | null 
       <Card className="bg-card/40 border-border/50 p-5 mb-6">
         <div className="flex items-center gap-2 mb-1">
           <span className="text-sm font-medium text-foreground">Your introduction standing</span>
-          <LifecycleBadge lifecycle="PENDING_ADAPTER" />
+          {/* S7 truth sweep: the read IS live — signed out is a session
+              state, never a "not live yet" claim. */}
+          <LifecycleBadge lifecycle="AUTH_REQUIRED" />
         </div>
         <p className="text-xs text-muted-foreground leading-relaxed">
           {readback?.failureReason ??
-            "Sign in with your wallet to read your own indexed standing. No figure is shown without the read."}
+            "The standing read is live — sign in with your wallet to see your own. No figure is shown without the read."}
         </p>
       </Card>
     );
@@ -297,6 +245,12 @@ function MyReferralLinkCard() {
 
 export function MemberReferralDashboard() {
   const readback = useOwnSourceStanding();
+  const { address } = useAccount();
+  const s = readback?.standing ?? null;
+  const sourceId = address ? deriveSourceId(address) : null;
+  const shareLink = sourceId
+    ? `https://thesyndicate.money/join?source=${sourceId}`
+    : null;
 
   return (
     <div>
@@ -313,8 +267,8 @@ export function MemberReferralDashboard() {
           <div>
             <p className="text-sm font-medium text-foreground mb-0.5">{referralProgram.statusCopy.status}</p>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              The dashboard below is a sample of the coming per-member view — no figure here is
-              live yet; the introduction read-model (indexer) is what wires it.
+              Every figure below is your own — indexed introductions and live
+              registry reads, only ever your own row. Never a sample.
             </p>
           </div>
         </div>
@@ -323,8 +277,16 @@ export function MemberReferralDashboard() {
       {/* R5 — the OWN indexed standing + Connector ladder progress (real). */}
       <IntroductionStanding readback={readback} />
 
-      {/* Shareable verified-introducer card — the one-tap share asset */}
-      <ShareCard />
+      {/* Shareable verified-introducer card — REAL figures from the standing
+          above + the member's real link; renders only when the standing read
+          answered (never a sample, never a fake dollar). */}
+      {s !== null && shareLink !== null ? (
+        <ShareCard
+          introduced={s.introducedMembers}
+          commissionPaidUsd={s.commissionPaidRaw !== "0" ? usd(s.commissionPaidRaw) : null}
+          link={shareLink}
+        />
+      ) : null}
 
       {/* THE REFERRAL LINK CARD (§11 slot 2b) — REAL, replacing the sample:
           the member's PERMANENT link, derived from their wallet (SPEC §③ —
@@ -335,43 +297,20 @@ export function MemberReferralDashboard() {
                           source is founder-signed. Same link forever. */}
       <MyReferralLinkCard />
 
-      {/* Summary stats */}
-      <div className="flex items-center gap-2 mb-3">
-        <h4 className="text-sm font-medium text-foreground">Summary</h4>
-        <SampleTag kind="simulated" />
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
-        {memberStatsSample.map((s) => (
-          <StatCard key={s.label} label={s.label}>
-            {s.sampleValue}
-          </StatCard>
-        ))}
-      </div>
-
-      {/* Trend + history */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-4">
-        <Card className="bg-card/40 border-border/50 p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <h4 className="text-sm font-medium text-foreground">Introductions over time</h4>
-            <SampleTag kind="simulated" />
-          </div>
-          <TrendChart data={memberTrendSample} />
-        </Card>
-
-        <Card className="bg-card/40 border-border/50 p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <h4 className="text-sm font-medium text-foreground">Recent introductions</h4>
-            <SampleTag kind="simulated" />
-          </div>
-          <DataTable
-            columns={historyColumns}
-            rows={memberHistorySample}
-            getRowKey={(r) => r.referred}
-            density="compact"
-            zebra
-          />
-        </Card>
-      </div>
+      {/* Per-receipt introduction history — the ONE genuinely-not-served
+          piece, said honestly (the counts above are already indexed and
+          live). Never a fake table, never a sample dollar (S7 truth sweep). */}
+      <Card className="bg-card/30 border-border/50 border-dashed p-5 mb-6">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-sm font-medium text-muted-foreground">Per-introduction receipts</span>
+          <LifecycleBadge lifecycle="PENDING_ADAPTER" />
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          Receipt-backed proof of each individual introduction — the
+          per-receipt history arrives with row-level serving. Your counts
+          above are already indexed and live.
+        </p>
+      </Card>
 
       <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">{referralProgram.boundaryLine}</p>
     </div>

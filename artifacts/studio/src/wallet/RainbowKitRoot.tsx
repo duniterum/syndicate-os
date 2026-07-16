@@ -68,12 +68,15 @@ export function WalletAuthProvider({ children }: { children: ReactNode }) {
   // is live, at which point the provider mounts automatically (no code change).
   const availability = useAuthAvailability();
   if (availability !== "live") {
-    return <RainbowKitProvider>{children}</RainbowKitProvider>;
+    return <RainbowKitProvider locale="en-US">{children}</RainbowKitProvider>;
   }
 
   return (
     <RainbowKitAuthenticationProvider adapter={rainbowAuthAdapter} status={status}>
-      <RainbowKitProvider>{children}</RainbowKitProvider>
+      {/* locale pinned: the site speaks English — RainbowKit otherwise follows
+          the browser locale and the S7 door band CTA would render translated,
+          incoherent with the page (caught on the rig, 2026-07-16). */}
+      <RainbowKitProvider locale="en-US">{children}</RainbowKitProvider>
     </RainbowKitAuthenticationProvider>
   );
 }

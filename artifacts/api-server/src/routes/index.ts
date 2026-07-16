@@ -8,6 +8,7 @@ import holderIndexRouter from "./holderIndex";
 import verifyLinksRouter from "./verifyLinks";
 import backboneStatusRouter from "./backboneStatus";
 import backboneFeedRouter from "./backboneFeed";
+import capitalStandingRouter from "./capitalStanding";
 
 const router: IRouter = Router();
 
@@ -20,5 +21,6 @@ router.use(holderIndexRouter);
 router.use(verifyLinksRouter);
 router.use(backboneStatusRouter);
 router.use(backboneFeedRouter);
+router.use(capitalStandingRouter);
 
 export default router;

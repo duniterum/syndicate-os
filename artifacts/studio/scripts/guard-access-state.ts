@@ -567,15 +567,32 @@ check(
   "App.tsx loads WalletSessionBoot only via the gated conditional dynamic import",
   'App.tsx must load WalletSessionBoot via `WALLET_SESSION_PREVIEW_ENABLED ? lazy(() => import("@/wallet/WalletSessionBoot")) : null`',
 );
+// S7 (founder-approved wireframe, 2026-07-15): WalletSessionPanel is RETIRED
+// — the door band carries the ONE connect CTA (RainbowKit connect+SIWE) and
+// its honesty doctrine moved to guard-pinned copy (§16 below). The page's
+// wallet reach is exactly the two gated conditional lazy imports (hero +
+// settings) plus the sanctioned dynamic session read.
 const memberAccessCode = stripComments(
   read(path.resolve(srcDir, "pages/MemberAccess.tsx")),
 );
 check(
-  /WALLET_SESSION_PREVIEW_ENABLED\s*\?\s*lazy\(\(\) => import\("@\/wallet\/WalletSessionPanel"\)\)\s*:\s*null/.test(
+  /WALLET_SESSION_PREVIEW_ENABLED\s*\?\s*lazy\(\(\) => import\("@\/wallet\/MemberYourSeat"\)\)\s*:\s*null/.test(
     memberAccessCode,
   ),
-  "MemberAccess.tsx loads WalletSessionPanel only via the gated conditional dynamic import",
-  'MemberAccess.tsx must load WalletSessionPanel via `WALLET_SESSION_PREVIEW_ENABLED ? lazy(() => import("@/wallet/WalletSessionPanel")) : null`',
+  "MemberAccess.tsx loads MemberYourSeat only via the gated conditional dynamic import",
+  'MemberAccess.tsx must load MemberYourSeat via `WALLET_SESSION_PREVIEW_ENABLED ? lazy(() => import("@/wallet/MemberYourSeat")) : null`',
+);
+check(
+  /WALLET_SESSION_PREVIEW_ENABLED\s*\?\s*lazy\(\(\) => import\("@\/wallet\/MemberSettings"\)\)\s*:\s*null/.test(
+    memberAccessCode,
+  ),
+  "MemberAccess.tsx loads MemberSettings only via the gated conditional dynamic import",
+  'MemberAccess.tsx must load MemberSettings via `WALLET_SESSION_PREVIEW_ENABLED ? lazy(() => import("@/wallet/MemberSettings")) : null`',
+);
+check(
+  !memberAccessCode.includes("WalletSessionPanel"),
+  "MemberAccess.tsx no longer composes the retired WalletSessionPanel",
+  "MemberAccess.tsx references WalletSessionPanel — the panel was retired with S7 (ONE connect CTA; its honesty copy is pinned in config/syndicateFacts.ts)",
 );
 // Phase 3 slice 2 — AdminShell's wallet reach is pinned to exactly the two
 // flag-conditional lazy loads (operator badge + sign-in action). Any other
@@ -642,21 +659,32 @@ check(
   "vite.config.ts must NOT define __WALLET_SESSION_PREVIEW__ — the build flag was retired when the wallet session went public",
 );
 
-// ── 16. (S2) Verbatim honesty copy in the wallet panel ───────────────────────
-const walletPanelRaw = read(path.resolve(srcDir, "wallet/WalletSessionPanel.tsx"));
+// ── 16. (S2, re-carried by S7) Verbatim honesty copy ─────────────────────────
+// The session panel was retired with the S7 recomposition (ONE connect CTA;
+// Human-First Law). The founder-required DOCTRINE phrases survive verbatim in
+// the door band copy (config/syndicateFacts.ts memberHome) — pinned here so
+// they can never silently fall out. The panel's mechanical furniture
+// ("SESSION:", "(signed)") and the machinery word "self-readback" retired
+// WITH the panel; the own-row honesty is carried user-facing by the lead
+// ("ever your own row" — also the auth-zone dist probe).
+const memberHomeCopyRaw = read(path.resolve(srcDir, "config/syndicateFacts.ts"));
 for (const phrase of [
-  "SESSION:",
-  "(signed)",
-  "session ≠ membership",
   "proves control of a wallet",
-  "self-readback",
+  "session ≠ membership",
+  "ever your own row",
 ]) {
   check(
-    walletPanelRaw.includes(phrase),
-    `wallet panel carries verbatim honesty copy: "${phrase}"`,
-    `WalletSessionPanel.tsx must carry the verbatim honesty copy "${phrase}" (founder-required)`,
+    memberHomeCopyRaw.includes(phrase),
+    `member home copy carries verbatim honesty phrase: "${phrase}"`,
+    `config/syndicateFacts.ts must carry the verbatim honesty phrase "${phrase}" (founder-required; re-pinned by S7)`,
   );
 }
+// The verify teaching folded into the hero must keep teaching the read.
+check(
+  read(path.resolve(srcDir, "wallet/MemberYourSeat.tsx")).includes("memberNumberOf"),
+  "the your-seat hero keeps the verify teaching (memberNumberOf)",
+  "MemberYourSeat.tsx lost the memberNumberOf verify teaching — the seat must stay self-verifiable on screen",
+);
 
 // ── 17. (S2) Wallet module boundary: /api/auth only, no member lookup ────────
 const walletDirAbs = path.resolve(srcDir, "wallet");

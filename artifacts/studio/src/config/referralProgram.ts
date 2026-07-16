@@ -197,54 +197,24 @@ export const memberCards: MemberReferralCard[] = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────
-// SAMPLE dashboard data — shape only, never live.
-// Every figure below is illustrative and MUST render behind a SampleTag /
-// paused banner. It shows a member and an operator what the live dashboard
-// will look like; it is never read as real activity. At activation these
-// arrays are replaced by verified read-model / receipt data.
+// SAMPLE data — OPERATOR-CONSOLE previews only (design shape, SampleTag'd).
+// S7 truth sweep (2026-07-16): the MEMBER-side samples (fake summary/trend/
+// history dollars, SAMPLE-CODE link, sample share card) were DELETED — the
+// program is ACTIVE and the R5 indexer serves the member's own real figures;
+// the member dashboard renders REAL data or an honest labeled gap, never a
+// sample. What remains below previews operator console surfaces that are
+// genuinely not built (enabled:false modules).
 // ─────────────────────────────────────────────────────────────────────────
-
-export const sampleReferralLink = "https://thesyndicate.money/join?source=SAMPLE-CODE";
-export const sampleReferralCode = "SAMPLE-CODE";
 
 export interface ReferralStat {
   label: string;
   sampleValue: string;
 }
-export const memberStatsSample: ReferralStat[] = [
-  { label: "Introductions", sampleValue: "12" },
-  { label: "Eligible", sampleValue: "9" },
-  { label: "Members joined", sampleValue: "7" },
-  { label: "Pending commission", sampleValue: "$35.00" },
-  { label: "Paid commission", sampleValue: "$120.00" },
-];
-
-export interface ReferralHistoryRow {
-  referred: string;
-  date: string;
-  status: string;
-  commission: string;
-}
-export const memberHistorySample: ReferralHistoryRow[] = [
-  { referred: "0x71C…976F", date: "Today", status: "Pending", commission: "$5.00" },
-  { referred: "0x3A2…145A", date: "Yesterday", status: "Paid", commission: "$5.00" },
-  { referred: "0x9F4…22B1", date: "3 days ago", status: "Paid", commission: "$5.00" },
-  { referred: "0xC08…7E30", date: "Last week", status: "Ineligible", commission: "—" },
-];
 
 export interface TrendPoint {
   label: string;
   value: number;
 }
-export const memberTrendSample: TrendPoint[] = [
-  { label: "W1", value: 2 },
-  { label: "W2", value: 1 },
-  { label: "W3", value: 4 },
-  { label: "W4", value: 3 },
-  { label: "W5", value: 5 },
-  { label: "W6", value: 4 },
-  { label: "W7", value: 6 },
-];
 
 export const adminKpisSample: ReferralStat[] = [
   { label: "Source-attributed buys", sampleValue: "34" },
@@ -415,21 +385,8 @@ export const supportQueueSample: { id: string; subject: string; requester: strin
   { id: "T-1039", subject: "Update my source label", requester: "0x9F4…22B1", status: "Resolved" },
 ];
 
-/**
- * The shareable "verified introducer" card — a referrer's public, on-chain
- * verifiable proof + their referral link, designed to be shared in one tap.
- * The differentiator vs ordinary referral programs: the figures are not claims,
- * they are on-chain and verifiable. Sample today (paused); real at activation.
- */
-export const shareCardSample = {
-  eyebrow: "Verified on-chain",
-  headline: "7 members introduced",
-  subline: "$120 in verified referral commissions",
-  tagline: "Proof, not claims — every figure is on-chain and verifiable.",
-  proofHref: "/proof",
-  joinHref: "/join?source=SAMPLE-CODE",
-  link: sampleReferralLink,
-};
+// (The share-card sample died in the S7 truth sweep — ShareCard.tsx now
+// renders ONLY the member's own indexed figures and real derived link.)
 
 /** The whole public surface, assembled — read by /source when it renders. */
 export const referralProgram = {

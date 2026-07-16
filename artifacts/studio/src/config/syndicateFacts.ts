@@ -1,63 +1,20 @@
 import {
-  Users,
   Activity,
-  Network,
-  Database,
   TerminalSquare,
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
 import {
-  surfaceStatus,
   homepageStatus,
   type TruthStatus,
-  type SurfaceId,
   type DisplayLifecycle,
 } from "./truthStatus";
 
-export interface ProtocolSurface {
-  id: SurfaceId;
-  homeLabel: string;
-  homeBlurb: string;
-  truthStatus: TruthStatus;
-  icon: LucideIcon;
-  iconClass: string;
-}
-
-export const protocolSurfaces: ProtocolSurface[] = [
-  {
-    id: "membership",
-    homeLabel: "Membership",
-    homeBlurb: "Immutable records of protocol seats and historical standing.",
-    truthStatus: surfaceStatus.membership,
-    icon: Users,
-    iconClass: "text-primary",
-  },
-  {
-    id: "proofOfFire",
-    homeLabel: "Proof of Fire",
-    homeBlurb: "Verifiable burn records mapped directly to member attribution.",
-    truthStatus: surfaceStatus.proofOfFire,
-    icon: Activity,
-    iconClass: "text-viz-5",
-  },
-  {
-    id: "sourceAttribution",
-    homeLabel: "Source Attribution",
-    homeBlurb: "Cryptographic proof of network origin and source attribution.",
-    truthStatus: surfaceStatus.sourceAttribution,
-    icon: Network,
-    iconClass: "text-viz-1",
-  },
-  {
-    id: "archive",
-    homeLabel: "Archive / Memory",
-    homeBlurb: "Historical preservation of protocol actions and recognition.",
-    truthStatus: surfaceStatus.archive,
-    icon: Database,
-    iconClass: "text-viz-3",
-  },
-];
+// (S7 truth sweep, 2026-07-16: the dead `protocolSurfaces` config was
+// DELETED — it had no consumer and still photographed the read-only era
+// ("not wired" badges on the live membership/heartbeat/referral/archive
+// organs). A live surface renders no not-live badge; dead config carrying
+// stale claims is a lie waiting for an import.)
 
 export interface AwaitingWiringItem {
   /** The item's own honest badge — no shared surface map needed here. */
@@ -310,72 +267,41 @@ export const expectations = {
   body: "The Syndicate is an attribution and recognition protocol. Membership does not constitute an investment, security, or financial instrument, and carries no promise of financial gain. The systems provided serve as tools for verifiable truth and historical memory. Participants must rely on their own verification of on-chain reality before interacting.",
 };
 
-export const memberAccess = {
-  heading: "Membership is your wallet",
-  intro:
-    "In The Syndicate, your wallet address is your identity — there is no account to create. Membership is not granted by a form; it is recognized from a verified on-chain Membership Sale receipt and resolved through the Holder Index into a member record. One thing is live here today, read-only: sign a wallet session below and this page reads YOUR signed wallet's own standing straight from the active engine (a self-readback — no directory of other wallets exists). The historical member record (seats #1–#8) stays verified server-side against the on-chain freeze root and is not published; every other value below stays truth-labelled rather than simulated.",
-  points: [
-    "Your self-custodied wallet address is the identity key — no usernames, no passwords, no accounts.",
-    "Membership is recognized, not requested: a verified Membership Sale receipt is what establishes a seat.",
-    "Member number, chapter, and recognition standing are derived facts read from on-chain history — never assigned by hand.",
-    "Taking a seat is live on Join — two signatures from your own wallet. This page stays a read-only self-readback of your own signed wallet's standing — no balances, no member directory, no other wallet's record.",
+// ---------------------------------------------------------------------------
+// S7 — MEMBER HOME (founder-approved wireframe, 2026-07-15): two states —
+// the DOOR BAND (visitor: one human sentence, ONE connect CTA) and the
+// YOUR-SEAT HERO (member). The old jargon facets and the stale stage table
+// ("Member Home is a future surface", "Holder Index", PENDING_ADAPTER on
+// live things) were retired with the recomposition — the Human-First Law.
+// Two doctrine phrases below are FOUNDER-REQUIRED VERBATIM and guard-pinned
+// (guard-access-state §16): "proves control of a wallet" · "session ≠
+// membership". The own-row phrase "ever your own row" is the dist probe.
+// ---------------------------------------------------------------------------
+export const memberHome = {
+  eyebrow: "Member Home",
+  door: {
+    title: "Your seat lives here.",
+    lead: "Connect your wallet and this page reads your own record, live from the chain — your seat, your receipt, your standing. Only ever your own row: there is no directory of members.",
+    honestyControl:
+      "Connecting proves control of a wallet — session ≠ membership; a seat is what the chain recognizes.",
+    honestySafety:
+      "View-only and account-free: no email, no password, and nothing here ever moves funds.",
+  },
+  stepsHeading: "How a seat works",
+  steps: [
+    {
+      title: "Your wallet is the identity",
+      body: "No usernames, no accounts. Your self-custodied wallet is the only key — and this page can only ever read what the chain says about your own wallet.",
+    },
+    {
+      title: "One purchase writes the seat",
+      body: "A seat is taken on Join, signed from your own wallet. The purchase itself is your receipt — numbered, permanent, verifiable by anyone.",
+    },
+    {
+      title: "Standing is read, never granted",
+      body: "Member number, chapter, and footprint are read from on-chain history. Nothing is assigned by hand — and nothing is ever a financial promise.",
+    },
   ],
-};
-
-export interface IdentityStage {
-  step: string;
-  title: string;
-  body: string;
-  lifecycle: DisplayLifecycle;
-}
-
-// The wallet-as-identity organism. Each stage carries an HONEST lifecycle:
-// the wallet/chain identity is verifiable today (see /status), receipt →
-// index → derived facts are real architecture pending the live indexer
-// (PENDING_ADAPTER), and Member Home is FUTURE. Since the C5 go-live
-// (founder, 2026-07-13) the buy flow IS live on /join — signed from the
-// visitor's own wallet; nothing here grants a seat by itself.
-export const membershipIdentity = {
-  heading: "How membership identity works",
-  lead: "A deterministic chain from wallet to recognition. Each stage is labelled for exactly how real it is in this foundation — no stage is simulated.",
-  stages: [
-    {
-      step: "01",
-      title: "Wallet address",
-      body: "Your self-custodied wallet on the Avalanche C-Chain is your decentralized identity key. Signed in, you read your own balances and approvals live — and only your own: this site never inspects other people's wallets, by design.",
-      lifecycle: "PENDING_ADAPTER",
-    },
-    {
-      step: "02",
-      title: "Membership Sale receipt",
-      body: "A verified on-chain purchase receipt is the proof that establishes a seat — the spine the entire member read-model hangs off. The buy flow is live on Join (two signatures from your own wallet); the receipt event is what establishes the seat, and this page only reads it.",
-      lifecycle: "PENDING_ADAPTER",
-    },
-    {
-      step: "03",
-      title: "Holder Index",
-      body: "The receipt is resolved through the Holder Index, which reconstructs membership identity from on-chain history. The historical member record is verified server-side against the on-chain freeze root, and a server-only foundation of the Holder Index read-model now derives and reconciles member continuity internally — nothing is persisted or surfaced yet.",
-      lifecycle: "PENDING_ADAPTER",
-    },
-    {
-      step: "04",
-      title: "Member number, chapter & rank",
-      body: "Your member number, chapter, and recognition standing are derived facts — read from verified history, never assigned by hand. Recognition is structural standing, never a financial benefit.",
-      lifecycle: "PENDING_ADAPTER",
-    },
-    {
-      step: "05",
-      title: "Member Home",
-      body: "Your Member Home surfaces seat, receipts, archive holdings, and next actions once the indexer resolves them. It is a future surface, not live today.",
-      lifecycle: "FUTURE",
-    },
-    {
-      step: "06",
-      title: "Activity & proof",
-      body: "Verified protocol events are your public, shareable proof of participation — served live on the Activity page with verify anchors. Your own per-wallet feed arrives with a future slice.",
-      lifecycle: "PENDING_ADAPTER",
-    },
-  ] as IdentityStage[],
 };
 
 // ---------------------------------------------------------------------------

@@ -92,6 +92,39 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   (sheet, footer, social). Footer : « Read-only foundation shell. » mort → la ligne
   live-production « don't trust, verify ». Responsive vérifié 375/768/1440 × 2 thèmes.
 
+- [x] **Member Home — S7 (la recomposition wireframe, 2026-07-16)** (`pages/MemberAccess.tsx`
+  réécrit + `wallet/MemberYourSeat.tsx` héros + `lib/capitalStanding.ts` + serveur
+  `routes/capitalStanding.ts` + `capitalAxisReadmodel.standingBySeat`) : le wireframe
+  fondateur-approuvé réalisé — DEUX ÉTATS : visiteur = **bande d'accès** (une phrase
+  humaine, **UN SEUL CTA connect** RainbowKit, locale épinglée en) · membre = **héros
+  Your Seat** (sigil 72px · Member #N en h1 · Seat Held · **échelon capital** titre-seul
+  depuis la marche canon serveur, fail-closed · chapitre · SYN · reçu · enseignement
+  verify `memberNumberOf`). La bande morte MORTE (l'en-tête générique + badge machine +
+  long intro) ; le JARGON TOMBÉ (les 6 onglets-facettes et la table 6 étapes
+  Holder-Index/PENDING_ADAPTER — qui mentaient contre le protocole vivant — retirés ;
+  3 étapes humaines pour le visiteur) ; le panneau session RETIRÉ (sa doctrine
+  d'honnêteté verbatim re-épinglée dans la copie de la bande, guard §16 adapté).
+  + **PLEIN ÉCRAN** (ordre fondateur au gate 2026-07-16) : le premier viewport EST la
+  scène (`min-h-[calc(100svh-3.75rem)]` desktop · 65svh mobile, contenu centré — §4
+  respecté). + **LE BALAYAGE VÉRITÉ LIVE-vs-PAS-LIVE** (ordre fondateur, même gate —
+  la réalité du protocole, jamais le texte) : la bannière referral « no figure here is
+  live yet » MORTE (l'indexeur R5 est VIVANT) · badge « Not live yet » sur la standing
+  déconnectée → « Sign in required » (AUTH_REQUIRED — un état de session, pas un
+  mensonge de vie) · les 3 blocs SAMPLE (résumé/tendance/historique à dollars inventés)
+  MORTS — remplacés par la carte honnête « Per-introduction receipts » (la seule pièce
+  vraiment non servie) · ShareCard DEVENUE RÉELLE (chiffres own-row R5 + vrai lien
+  dérivé ; le swap promis « à l'activation » enfin fait) · porte Archive → « Open
+  today » (17 mints vivants) · slot away → FUTURE (le record est vivant, la surface
+  non) · modules /member /proof /referral /archive : les badges « Not live yet /
+  Not switched on yet » MORTS (précédent /join : une surface vivante ne porte AUCUN
+  TruthLabel) · /archive page badge → « Verified — view only » · `protocolSurfaces`
+  (config mort porteur des mensonges) SUPPRIMÉ · `surfaceStatus` : 4 clés RETIRÉES DU
+  RENDU avec note datée · hooks standing/actions : re-lecture sur session-changed (la
+  page se résout EN PLACE après connexion, zéro reload).
+  **Tokens only, +0 couleur brute** ; rig vérifié DOM-level : 2 thèmes · 375/desktop ·
+  0 débordement · images chargées · les deux états exercés (intercept debug, nettoyé) ·
+  zéro sample servi · bande = plein écran mesuré (660/661px).
+
 ### Phase 6 — Audits (le sceau grade-AAA)
 - [ ] Accessibilité (WCAG AA / APCA, focus, clavier, cibles ≥44px)
 - [ ] Responsive (fluide, container queries, 320 → 2560, pliables)
@@ -105,7 +138,7 @@ Design **100 % fini, verrouillé** = toutes les cases de "Définition de FINI" c
 → **on n'y revient plus jamais.**
 
 ## Suivi couleur — ✅ FERMÉ
-Sprawl : **0** couleur brute (slice 2.3 FAQ : **+0** · slice 2.4 Docs : **+0** · slice ⓪ liveness : **+0** — MembersProvenance 100 % tokens · arc Member Home 2026-07-14 : MEMBER SHELL **+0** · slice A actions/lien/Guide **+0** · slice B pill/settings **+0** · slice C teasers (TeaserSurface + 3 pages) **+0** · slice D wallet/toolkit **+0** · arc harvest L-1 /liquidity **+0** · ACT-1 feed (LiveActivityFeed + 2 pages live) **+0** · CHR-1 chronicle (register + panneau console) **+0** · M1-a hero premier acte (HeroStatusChips + HeroSeatLine + rail Inspect) **+0** · M1-b carte vivante (heroIconLanguage + nœud burn + mini-feed) **+0** · M1-c header/footer (barre récurrente morte à la racine + garde `guard-nav-link-display` + pilules dérivées) **+0** — tout en tokens). Guard
+Sprawl : **0** couleur brute (slice 2.3 FAQ : **+0** · slice 2.4 Docs : **+0** · slice ⓪ liveness : **+0** — MembersProvenance 100 % tokens · arc Member Home 2026-07-14 : MEMBER SHELL **+0** · slice A actions/lien/Guide **+0** · slice B pill/settings **+0** · slice C teasers (TeaserSurface + 3 pages) **+0** · slice D wallet/toolkit **+0** · arc harvest L-1 /liquidity **+0** · ACT-1 feed (LiveActivityFeed + 2 pages live) **+0** · CHR-1 chronicle (register + panneau console) **+0** · M1-a hero premier acte (HeroStatusChips + HeroSeatLine + rail Inspect) **+0** · M1-b carte vivante (heroIconLanguage + nœud burn + mini-feed) **+0** · M1-c header/footer (barre récurrente morte à la racine + garde `guard-nav-link-display` + pilules dérivées) **+0** · S7 member home (bande d'accès + héros Your Seat + pilule échelon) **+0** — tout en tokens). Guard
 `no-raw-color` **BLOQUANT** dans la gate (`pnpm guards`), toute nouvelle couleur brute casse le
 build. Du pic de **137 sites** → **0** au fil des slices d'harmonisation.
 Une seule exception documentée : `QrCodeBlock` (fond blanc du canvas QR, requis pour la lisibilité),

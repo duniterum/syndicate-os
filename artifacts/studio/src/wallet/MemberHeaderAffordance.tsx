@@ -131,8 +131,9 @@ export default function MemberHeaderAffordance({
   // wallet connection persists — so RainbowKit stops offering the connect modal
   // and a member would otherwise be stranded.
   //
-  // Sign via the EXACT proven path the /member WalletSessionPanel uses (the only
-  // sign flow verified in prod): the injected provider directly (window.ethereum),
+  // Sign via the EXACT prod-proven path (walletSession.signInWithWallet — the
+  // flow the retired /member session panel verified): the injected provider
+  // directly (window.ethereum),
   // and eth_requestAccounts FIRST to activate the account before signing — some
   // wallets require that to unlock personal_sign for this page. Fall back to the
   // wagmi connector's provider only for non-injected wallets. signInWithWallet

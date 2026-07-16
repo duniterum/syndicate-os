@@ -467,7 +467,7 @@ check(
 
 const routeFiles = readdirSync("src/routes").sort();
 check(
-  "public route surface pinned (backboneFeed, backboneStatus, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate, verifyLinks only)",
+  "public route surface pinned (backboneFeed, backboneStatus, capitalStanding, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate, verifyLinks only)",
   JSON.stringify(routeFiles) ===
     JSON.stringify([
       // Founder-approved backbone feed route (M4-b): receipt lines only —
@@ -476,6 +476,10 @@ check(
       // Founder-approved backbone status route (M4-a): address-safe aggregate
       // snapshot only; its output gate is pinned by backbone.guard.ts.
       "backboneStatus.ts",
+      // S7 capital-standing route: one PUBLIC seat ordinal in, a rung TITLE
+      // out — the canon walk's end state (capitalAxisReadmodel), no wallet
+      // material on the path, no amount served; same output gate as the feed.
+      "capitalStanding.ts",
       "health.ts",
       "holderIndex.ts",
       "index.ts",

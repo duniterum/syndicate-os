@@ -22,23 +22,36 @@ type OwnState = {
   receiptUrl: string | null;
 };
 
-/** Own-row session facts via the sanctioned dynamic wallet import. */
+/** Own-row session facts via the sanctioned dynamic wallet import.
+ * Re-reads on session changes (S7): the member connects on the door band
+ * and the locked actions unlock in place — no reload needed. */
 function useOwnState(): OwnState {
   const [state, setState] = useState<OwnState>({ signedIn: false, seated: false, receiptUrl: null });
   useEffect(() => {
     let active = true;
-    void import("@/wallet/walletSession").then(({ fetchMemberStanding }) =>
-      fetchMemberStanding().then((r) => {
-        if (!active) return;
-        setState({
-          signedIn: r?.state === "S4",
-          seated: r?.recognized === true,
-          receiptUrl: r?.receipt?.explorerUrl ?? null,
+    let cleanup: (() => void) | null = null;
+    void Promise.all([
+      import("@/wallet/walletSession"),
+      import("@/wallet/sessionEvents"),
+    ]).then(([ws, ev]) => {
+      if (!active) return;
+      const read = () => {
+        void ws.fetchMemberStanding().then((r) => {
+          if (!active) return;
+          setState({
+            signedIn: r?.state === "S4",
+            seated: r?.recognized === true,
+            receiptUrl: r?.receipt?.explorerUrl ?? null,
+          });
         });
-      }),
-    );
+      };
+      read();
+      window.addEventListener(ev.SESSION_CHANGED_EVENT, read);
+      cleanup = () => window.removeEventListener(ev.SESSION_CHANGED_EVENT, read);
+    });
     return () => {
       active = false;
+      cleanup?.();
     };
   }, []);
   return state;
