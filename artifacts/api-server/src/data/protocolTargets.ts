@@ -76,7 +76,10 @@ export const CONTRACT_TARGETS: readonly ContractTarget[] = [
   { key: "SYN_TOKEN", label: "SYN token", role: "token", address: "0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170" },
   { key: "USDC", label: "USDC (Avalanche)", role: "stablecoin", address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E" },
   { key: "MEMBERSHIP_SALE", label: "Membership Sale (V1)", role: "sale", address: "0x0020Df30C127306f0F5B44E6a6E4368D2855842d" },
-  { key: "MEMBERSHIP_SALE_V2", label: "Membership Sale V2", role: "sale", address: "0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b" },
+  // AUD-TRUTH-3 (2026-07-16): the LABEL says V2b — this address IS the V2b
+  // engine (block 88,193,183); V2a (0x0b883F…2b48) lives in the scan targets.
+  // The internal KEY never changes (it keys DB cursor/raw rows).
+  { key: "MEMBERSHIP_SALE_V2", label: "Membership Sale V2b", role: "sale", address: "0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b" },
   { key: "MEMBERSHIP_SALE_V3", label: "Membership Sale V3", role: "sale", address: "0x2A6cFc76906e758B934209AFf5A163c9bC20132E" },
   { key: "SOURCE_REGISTRY_V1", label: "Source Registry V1", role: "source-registry", address: "0x780013bB358be6be95b401901264FC7c22a595a6" },
   { key: "ARCHIVE_1155", label: "Archive 1155", role: "archive1155", address: "0xB2AE1eb7aAf7577182e616DA497E0BC822E7D54d" },

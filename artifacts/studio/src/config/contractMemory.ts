@@ -82,14 +82,28 @@ export const contractMemory: ContractMemoryEntry[] = [
     lifecycle: "HISTORICAL_PROOF",
     note: "Earliest sale contract, retained as protocol history. No buy flow exists here.",
   },
+  // AUD-TRUTH-3 (founder catch, 2026-07-16): FOUR sale engines exist on-chain
+  // — V1 · V2a · V2b · V3 (all four scanned gaplessly by the backbone; seats
+  // #3–#5 born on V2a, #6–#8 on V2b). The public inventory listed only three,
+  // and its "V2" card was really the V2b engine. The missing card + the
+  // precise label enter here; internal contract KEYS never change (DB rows).
   {
-    id: "membership-sale-v2",
-    label: "Membership Sale V2",
+    id: "membership-sale-v2a",
+    label: "Membership Sale V2a",
     role: "Superseded membership sale",
     category: "membership",
     domain: "MEMBERSHIP_SEAT_RECEIPT",
     lifecycle: "HISTORICAL_PROOF",
-    note: "A later sale contract kept as a historical source for member continuity. Not transactable here.",
+    note: "The second-generation engine that preceded V2b — seats #3 to #5 were born here. Sealed; its full purchase history is indexed and served on the live record.",
+  },
+  {
+    id: "membership-sale-v2",
+    label: "Membership Sale V2b",
+    role: "Superseded membership sale",
+    category: "membership",
+    domain: "MEMBERSHIP_SEAT_RECEIPT",
+    lifecycle: "HISTORICAL_PROOF",
+    note: "The third-generation engine — seats #6 to #8 were born here. Kept as a historical source for member continuity; sealed, indexed, not transactable.",
   },
   {
     id: "membership-sale-v3",

@@ -37,6 +37,9 @@ import {
 } from "../src/canon/the-syndicate/contracts/abi/sale-abi";
 
 import { keccak256Hex } from "./avalanche-archive-posture-check";
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import {
   SALE_SCAN_TARGETS,
@@ -241,6 +244,39 @@ function main(): void {
     leakThrew = true;
   }
   check("safety: address-free scan summary passes leak guard", !leakThrew);
+
+  // ── AUD-TRUTH-3 (founder catch, 2026-07-16): PUBLIC INVENTORY COMPLETENESS ──
+  // The class that slipped every lens: an ABSENCE. Four sale engines exist
+  // on-chain (V1 · V2a · V2b · V3, all four scanned above) — the public
+  // /contracts memory listed three, and its "V2" card was really V2b. This
+  // pin reconciles the STUDIO inventory against the engine truth forever:
+  // one precisely-labelled card per engine, and the ambiguous bare "V2"
+  // label can never return. (The api-guard-pins-studio-files precedent:
+  // introduction-index.guard.)
+  {
+    const studioContractMemory = readFileSync(
+      resolve(
+        dirname(fileURLToPath(import.meta.url)),
+        "..", "..", "studio", "src", "config", "contractMemory.ts",
+      ),
+      "utf8",
+    );
+    for (const label of [
+      "Membership Sale (v1)",
+      "Membership Sale V2a",
+      "Membership Sale V2b",
+      "Membership Sale V3",
+    ]) {
+      check(
+        `public inventory: /contracts carries the "${label}" card (one card per on-chain engine)`,
+        studioContractMemory.includes(`label: "${label}"`),
+      );
+    }
+    check(
+      'public inventory: the ambiguous bare "Membership Sale V2" label never returns',
+      !studioContractMemory.includes('label: "Membership Sale V2"'),
+    );
+  }
 
   // ── report ──────────────────────────────────────────────────────────────────
   let failed = 0;

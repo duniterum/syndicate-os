@@ -51,7 +51,22 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ledger's home) → ⑥ M-INT-1 → A1(binder) → B1 → A2 → M-INT-2 → S8 perf ·
 > Archive→NFT naming decision (audit lens 12 options) · P2/P3 waves (incl. the
 > API decimals field for raw figures · the 215 sub-12px sweep + guard).
-> OPEN FOUNDER DECISIONS CARRIED: entity + governing law · durable contact channel
+> **AUD-TRUTH-3 (the founder's four-engines catch, sealed at handoff):** the founder
+> asked "V1 V2 V2a V2b V3??" — chain truth: FOUR engines (V1 0x0020Df… · V2a
+> 0x0b883F… · V2b 0x507E9c… · V3 0x2A6cFc…), no bare "V2" exists; but the public
+> /contracts inventory listed THREE cards and its "V2" card was really V2b, and
+> the canon CONTRACT_TARGETS label said "Membership Sale V2" for the V2b address.
+> FIXED: V2a card added (seats #3–#5 born there) + V2b precisely labelled (cards
+> + api label; internal KEYS untouched — they key DB rows) + THE STRUCTURAL CURE:
+> sale-scan:guard grew the PUBLIC-INVENTORY-COMPLETENESS pin (86/86 — one
+> precisely-labelled /contracts card per on-chain engine, the bare "V2" label can
+> never return; the ABSENCE class now has a guard). WHY IT ESCAPED (recorded
+> honestly): an absence has no string to scan — every truth lens verified CLAIMS,
+> none reconciled inventory against the scan targets; the card predates the
+> System-First law. Follow-up noted: the reality panel's code-present rows read
+> from CONTRACT_TARGETS which carries no V2a key — adding it = a typed-union +
+> live-read extension, its own micro-slice. OPEN FOUNDER DECISIONS CARRIED:
+> entity + governing law · durable contact channel
 > · log retention window · eligibility floor · checkout acceptance mechanics ·
 > on-chain hash commitment of the legal docs · never-message-first policy ·
 > counsel review lifts the draft label · Q5/Q6/Q9/Q13/Q20 (older). PENDING AT
