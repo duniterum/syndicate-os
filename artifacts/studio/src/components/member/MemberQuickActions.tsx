@@ -78,9 +78,9 @@ function ActionCard({ action, own, address }: { action: MemberAction; own: OwnSt
         </span>
         {locked ? <Lock className="h-3.5 w-3.5 text-muted-foreground shrink-0" aria-hidden="true" /> : null}
       </div>
-      <p className="text-[11px] text-muted-foreground leading-snug mb-2.5">{action.note}</p>
+      <p className="text-xs text-muted-foreground leading-snug mb-2.5">{action.note}</p>
       {locked ? (
-        <p className="text-[11px] text-warning" data-testid={`action-locked-${action.id}`}>
+        <p className="text-xs text-warning" data-testid={`action-locked-${action.id}`}>
           {action.lockReason}
         </p>
       ) : action.kind === "route" && action.href ? (
@@ -117,7 +117,7 @@ function ActionCard({ action, own, address }: { action: MemberAction; own: OwnSt
       ) : (
         // Unlocked but its own-row material has not resolved yet — honest wait,
         // never a dead button.
-        <p className="text-[11px] text-muted-foreground">Reading your own row…</p>
+        <p className="text-xs text-muted-foreground">Reading your own row…</p>
       )}
     </Card>
   );

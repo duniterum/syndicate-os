@@ -61,7 +61,7 @@ export function MembersProvenance({
 
   if (variant === "compact") {
     return (
-      <p className={cn("font-mono text-[10px] leading-relaxed text-muted-foreground", className)}>
+      <p className={cn("font-mono text-xs leading-relaxed text-muted-foreground", className)}>
         {historicalFreeze} historical · {v3Emitted} live V3
         {hasSnapshot ? (
           <>

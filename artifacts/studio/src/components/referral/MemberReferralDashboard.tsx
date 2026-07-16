@@ -76,17 +76,28 @@ function usd(raw: string): string {
 function IntroductionStanding({ readback }: { readback: StandingReadback | null }) {
   const s = readback?.standing ?? null;
   if (readback === null || s === null) {
+    // Three DISTINCT honest states (S7-b — the founder's screenshot caught
+    // "Sign in required" shown to a SIGNED-IN member whose wallet simply has
+    // no source yet; a badge must never claim the wrong reason):
+    //   · signed in, no source/standing → no badge; the failureReason says it
+    //   · signed out (S1)               → "Sign in required"
+    //   · read failed / not loaded      → honest unavailable, nothing assumed
+    const signedIn = readback?.state === "S4";
     return (
       <Card className="bg-card/40 border-border/50 p-5 mb-6">
-        <div className="flex items-center gap-2 mb-1">
+        <div className="flex flex-wrap items-center gap-2 mb-1">
           <span className="text-sm font-medium text-foreground">Your introduction standing</span>
-          {/* S7 truth sweep: the read IS live — signed out is a session
-              state, never a "not live yet" claim. */}
-          <LifecycleBadge lifecycle="AUTH_REQUIRED" />
+          {readback !== null && !signedIn ? (
+            <LifecycleBadge lifecycle="AUTH_REQUIRED" />
+          ) : null}
         </div>
-        <p className="text-xs text-muted-foreground leading-relaxed">
-          {readback?.failureReason ??
-            "The standing read is live — sign in with your wallet to see your own. No figure is shown without the read."}
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {signedIn
+            ? (readback?.failureReason ??
+              "No indexed standing exists for this wallet yet — a new source is a founder-signed on-chain act.")
+            : readback !== null
+              ? "The standing read is live — sign in with your wallet to see your own. No figure is shown without the read."
+              : "The standing read is unavailable right now — nothing is assumed, nothing is invented."}
         </p>
       </Card>
     );
@@ -96,7 +107,7 @@ function IntroductionStanding({ readback }: { readback: StandingReadback | null 
     <Card className="bg-card/40 border-border/50 p-5 mb-6">
       <div className="flex flex-wrap items-center gap-2 mb-3">
         <span className="text-sm font-medium text-foreground">Your introduction standing</span>
-        <span className="font-mono text-[10px] text-muted-foreground">
+        <span className="font-mono text-xs text-muted-foreground">
           indexed · as of block {s.asOfBlock}
         </span>
       </div>
@@ -130,7 +141,7 @@ function IntroductionStanding({ readback }: { readback: StandingReadback | null 
         >
           <div className="h-full rounded-full bg-primary/70" style={{ width: `${p.ratio * 100}%` }} />
         </div>
-        <p className="text-[11px] text-muted-foreground leading-relaxed">
+        <p className="text-sm text-muted-foreground leading-relaxed">
           A durable introduction is an introduced member whose wallet still holds SYN.
           The threshold decides a promotion; the founder&apos;s signature executes it.
           An acquired rate never decreases.
@@ -145,7 +156,7 @@ function IntroductionStanding({ readback }: { readback: StandingReadback | null 
               {s.entitledBps / 100}%
               {s.crossedAtDateUtc ? ` (threshold crossed ${s.crossedAtDateUtc})` : ""}
             </p>
-            <p className="text-[11px] text-muted-foreground leading-relaxed mt-0.5">
+            <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
               The new rate applies from its on-chain recording; it is never
               retroactive. The signing is a public on-chain event — the raise is
               dated for everyone to verify.
@@ -214,7 +225,7 @@ function MyReferralLinkCard() {
               {copied ? "Copied" : "Copy"}
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground mt-2" data-testid="text-link-state">
+          <p className="text-sm text-muted-foreground mt-2 leading-relaxed" data-testid="text-link-state">
             {active === true
               ? "Your source is ACTIVE — the commission is paid inside the buyer's own transaction, live."
               : "Your link is permanent — derived from your wallet, it never changes. The commission activates when your source is founder-signed."}
@@ -233,7 +244,7 @@ function MyReferralLinkCard() {
           ) : null}
         </>
       ) : (
-        <p className="text-xs text-muted-foreground">
+        <p className="text-sm text-muted-foreground leading-relaxed">
           Connect and sign in with your wallet to derive your permanent referral
           link. It exists before anyone signs anything — one wallet, one link,
           forever.
@@ -305,14 +316,14 @@ export function MemberReferralDashboard() {
           <span className="text-sm font-medium text-muted-foreground">Per-introduction receipts</span>
           <LifecycleBadge lifecycle="PENDING_ADAPTER" />
         </div>
-        <p className="text-xs text-muted-foreground leading-relaxed">
+        <p className="text-sm text-muted-foreground leading-relaxed">
           Receipt-backed proof of each individual introduction — the
           per-receipt history arrives with row-level serving. Your counts
           above are already indexed and live.
         </p>
       </Card>
 
-      <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">{referralProgram.boundaryLine}</p>
+      <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">{referralProgram.boundaryLine}</p>
     </div>
   );
 }

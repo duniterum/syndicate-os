@@ -1,17 +1,24 @@
 /**
- * GET /api/backbone/capital-standing?seat=N — one seat's capital-axis rung (S7).
+ * GET /api/backbone/capital-standing?seat=N — one seat's capital-axis
+ * standing (S7 · S7-b).
  * ---------------------------------------------------------------------------
- * The Member Home hero reads the seat's CURRENT standing on the capital axis
- * from the SAME canon walk the feed's rises come from (capitalAxisReadmodel —
+ * The Member Home reads the seat's CURRENT standing on the capital axis from
+ * the SAME canon walk the feed's rises come from (capitalAxisReadmodel —
  * one derivation, one truth; the feed is capped and can never be re-folded
  * client-side without silently understating one day).
  *
- * Doctrine (H2-⑰, engraved):
- *   - PUBLIC data only: a seat ordinal in, a rung TITLE out. No wallet
- *     material exists anywhere on this path; the cumulative amount never
- *     leaves the read-model. Seat→rung is recomputable by anyone from the
- *     chain — this is legibility, never disclosure (CANON_VISIBILITY_LAW).
- *   - NO approaching/next-rung shape is served (the anti-scarcity pin).
+ * Doctrine:
+ *   - PUBLIC data only: a seat ordinal in; the rung TITLE, the seat's
+ *     cumulative gross USDC, the founder-named LADDER and the NEXT rung out.
+ *     S7-b (founder, 2026-07-16 — THE OWN-ACCOUNT DISPLAY RULE,
+ *     GAMIFICATION_LEGAL_DOCTRINE): the member's own dashboard shows his own
+ *     footprint, the ladder and the next rung — the Sephora account pattern,
+ *     guidance. Every figure here is public chain data made legible
+ *     (CANON_VISIBILITY_LAW); no wallet material exists on this path.
+ *   - The FEED's voice is untouched: a feed line never carries the amount,
+ *     and the public anti-scarcity narrative pins stand.
+ *   - The red line stands: a rung unlocks recognition only — this route
+ *     serves facts, never a benefit.
  *   - Fail-closed: model dark or seat unwalked (V1 rows carry no ordinal)
  *     → rung null with an honest note — never a guess.
  * No DB read, no RPC: one in-memory snapshot per request, same output gate
@@ -21,6 +28,7 @@
 import { Router, type IRouter } from "express";
 import { getBackboneFeedSource } from "../backbone/backboneRunner";
 import { assertFeedSafeJson } from "../backbone/feedProjection";
+import { CAPITAL_AXIS_LADDER } from "../backbone/capitalAxisReadmodel";
 
 const router: IRouter = Router();
 
@@ -38,19 +46,38 @@ router.get("/backbone/capital-standing", (req, res) => {
 
     const source = getBackboneFeedSource();
     const modelAvailable = source.capitalModel !== null;
-    const rung =
+    const standing =
       source.capitalModel?.standingBySeat.find(
         (s) => s.seatNumber === seatNumber,
-      )?.rung ?? null;
+      ) ?? null;
+
+    // The founder-named canon ladder (public), and the rung ABOVE the seat's
+    // current one — own-account guidance (null at the summit or when the
+    // seat's footprint is not derivable).
+    const ladder = CAPITAL_AXIS_LADDER.map((r) => ({
+      title: r.title,
+      usdc: r.usdc,
+    }));
+    const currentIdx =
+      standing !== null
+        ? CAPITAL_AXIS_LADDER.findIndex((r) => r.title === standing.rung)
+        : -1;
+    const nextRung =
+      currentIdx >= 0 && currentIdx < CAPITAL_AXIS_LADDER.length - 1
+        ? ladder[currentIdx + 1]!
+        : null;
 
     const payload = {
       module: "event-backbone",
       state: source.state,
       headBlock: source.headBlock,
       seatNumber,
-      rung,
+      rung: standing?.rung ?? null,
+      cumulativeUsdcRaw: standing?.cumulativeUsdcRaw ?? null,
+      nextRung,
+      ladder,
       note:
-        rung !== null
+        standing !== null
           ? null
           : modelAvailable
             ? "no derivable footprint for this seat — early-era purchases carry no seat ordinal and are honestly excluded, never guessed"

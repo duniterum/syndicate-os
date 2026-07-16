@@ -31,7 +31,7 @@ export function VerifyOnChain({
   const links = resolved as NonNullable<(typeof resolved)[number]>[];
 
   const anchorClass =
-    "inline-flex items-center gap-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-proof/80 transition-colors hover:text-proof";
+    "inline-flex items-center gap-0.5 font-mono text-xs font-semibold uppercase tracking-[0.1em] text-proof/80 transition-colors hover:text-proof";
 
   if (links.length === 1) {
     const link = links[0];
@@ -53,7 +53,7 @@ export function VerifyOnChain({
 
   return (
     <span className={`inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5 ${className ?? ""}`}>
-      <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-muted-foreground/70">
+      <span className="font-mono text-xs font-semibold uppercase tracking-[0.1em] text-muted-foreground/70">
         Verify:
       </span>
       {links.map((link) => (

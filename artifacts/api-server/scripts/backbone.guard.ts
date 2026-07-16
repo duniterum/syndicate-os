@@ -1116,24 +1116,30 @@ check(
 // S7 — the standing fold (the walk's end state, one derivation): seat 2 ends
 // on Advocate ($25 cum), seat 3 stands on the BASE rung Citizen (a STATE
 // readback includes the base — LINE-ON-RISE governs the feed, not this), an
-// unwalked seat is ABSENT (V1 exclusion honesty), and a standing row carries
-// the rung TITLE and the public ordinal ONLY — never an amount field.
+// unwalked seat is ABSENT (V1 exclusion honesty). S7-b (FOUNDER DECISION
+// 2026-07-16, THE OWN-ACCOUNT DISPLAY RULE — GAMIFICATION_LEGAL_DOCTRINE):
+// the row ALSO carries the seat's cumulative gross USDC so the member's own
+// dashboard can show footprint + ladder + next rung (the Sephora account
+// pattern; public chain data). THE FEED'S VOICE IS UNTOUCHED — the feed-line
+// no-amount pin below still holds.
 check(
   fixtureCapitalModel.standingBySeat.length === 2 &&
     fixtureCapitalModel.standingBySeat[0]!.seatNumber === 2 &&
     fixtureCapitalModel.standingBySeat[0]!.rung === "Advocate" &&
+    fixtureCapitalModel.standingBySeat[0]!.cumulativeUsdcRaw === "25000000" &&
     fixtureCapitalModel.standingBySeat[1]!.seatNumber === 3 &&
     fixtureCapitalModel.standingBySeat[1]!.rung === "Citizen" &&
+    fixtureCapitalModel.standingBySeat[1]!.cumulativeUsdcRaw === "5000000" &&
     !fixtureCapitalModel.standingBySeat.some((s) => s.seatNumber === 99),
-  "the standing fold: walked seats carry their current rung (base included), unwalked seats are absent — never guessed",
+  "the standing fold: walked seats carry their current rung + exact cumulative (base included), unwalked seats are absent — never guessed",
   "the capital standing fold broke",
 );
 check(
   fixtureCapitalModel.standingBySeat.every(
-    (s) => Object.keys(s).join("|") === "seatNumber|rung",
+    (s) => Object.keys(s).join("|") === "seatNumber|rung|cumulativeUsdcRaw",
   ),
-  "a standing row is {seatNumber, rung} EXACTLY — the cumulative amount never leaves the module",
-  "a capital standing row grew beyond {seatNumber, rung} — seat standing must never carry money",
+  "a standing row is {seatNumber, rung, cumulativeUsdcRaw} EXACTLY (S7-b own-account rule) — the FEED line still never carries the amount",
+  "a capital standing row drifted from its founder-decided exact shape",
 );
 expectThrow("capital build fails closed on an attributed purchase without its amount", () =>
   buildCapitalAxisReadModel({

@@ -38,7 +38,7 @@ function DoorRow({ label, href, lifecycle, note, active }: {
         </span>
         {lifecycle ? <LifecycleBadge lifecycle={lifecycle} /> : null}
       </div>
-      <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">{note}</p>
+      <p className="text-xs text-muted-foreground leading-snug mt-0.5">{note}</p>
     </div>
   );
   // A door is a LINK only when its surface exists today; a coming-soon door is
@@ -54,22 +54,55 @@ function DoorRow({ label, href, lifecycle, note, active }: {
 
 export function MemberShell({ children }: { children: ReactNode }) {
   const [location] = useLocation();
+  const allDoors = MEMBER_DOOR_GROUPS.flatMap((g) => g.doors);
   return (
     <div className="lg:grid lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-8">
-      <aside className="mb-8 lg:mb-0">
+      {/* Below lg the tall door list becomes ONE horizontally scrollable chip
+          row (S7-b: the sidebar must never push the member's own record a
+          full screen down on mobile). Same doors, same truth, two renders. */}
+      <nav
+        aria-label="Member doors"
+        className="lg:hidden mb-6 -mx-4 px-4 flex gap-2 overflow-x-auto pb-2"
+      >
+        {allDoors.map((door) =>
+          door.href ? (
+            <Link
+              key={door.label}
+              href={door.href}
+              className={`inline-flex items-center shrink-0 rounded-full border px-4 min-h-11 text-xs transition-colors ${
+                door.href === location
+                  ? "border-gold/40 bg-gold/10 text-foreground"
+                  : "border-border/60 bg-card/40 text-muted-foreground hover:text-foreground"
+              }`}
+              data-testid={`door-chip-${door.label.toLowerCase().replace(/[^a-z]+/g, "-")}`}
+            >
+              {door.label}
+            </Link>
+          ) : (
+            <span
+              key={door.label}
+              className="inline-flex items-center shrink-0 rounded-full border border-border/40 bg-card/20 px-4 min-h-11 text-xs text-muted-foreground/70"
+              data-testid={`door-chip-${door.label.toLowerCase().replace(/[^a-z]+/g, "-")}`}
+            >
+              {door.label}
+            </span>
+          ),
+        )}
+      </nav>
+      <aside className="hidden lg:block">
         <nav
           aria-label="Member doors"
           className="lg:sticky lg:top-24 rounded-xl border border-border/50 bg-card/30 p-3 space-y-4"
         >
           <div className="flex items-center gap-2 px-1">
             <DoorOpen className="h-4 w-4 text-gold" aria-hidden="true" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <span className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
               Your doors
             </span>
           </div>
           {MEMBER_DOOR_GROUPS.map((group) => (
             <div key={group.title}>
-              <p className="px-1 mb-1.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70">
+              <p className="px-1 mb-1.5 font-mono text-xs uppercase tracking-wider text-muted-foreground/70">
                 {group.title}
               </p>
               <div className="space-y-1">

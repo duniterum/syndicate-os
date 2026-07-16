@@ -51,6 +51,9 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
       // view is the honest remaining gap, said on the page itself.
       { label: "Archive", href: "/archive", note: "Artifacts as protocol memory — minted on-chain, counts read live." },
       { label: "Protocol graph", href: "/map", note: "The protocol, drawn — every surface on one map." },
+      // S7-b (founder, 2026-07-16): Settings was reachable only through the
+      // header menu — the door list is the member's map, so the door exists.
+      { label: "Settings", href: "/member#settings", note: "Theme, session, avatar — off-chain comfort; the seat is never a setting." },
     ],
   },
   {

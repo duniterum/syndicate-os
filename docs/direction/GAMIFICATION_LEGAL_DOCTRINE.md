@@ -60,3 +60,30 @@ Connector / Operator / Verifier / Historian / Steward…) and is **status, not m
 
 If any gamification is ever attached to the support assistant, it must be **recognition
 only** under this doctrine — never spendable-for-money points.
+
+---
+
+## THE OWN-ACCOUNT DISPLAY RULE (founder, 2026-07-16 — SETTLED, never re-litigate)
+
+**"The Syndicate recognizes capital without reducing identity to capital."** We are a
+business, not a charity — capital is shown proudly, as ONE axis beside the others.
+Two surface classes, two disciplines (the third occurrence of an agent over-applying
+the public rule to the private view forced this engraving):
+
+- **PUBLIC narrative surfaces** (the activity feed, eras, /join): the anti-scarcity
+  pins stand UNCHANGED — no countdown/approaching/pressure shapes, and a feed line
+  carries the rung TITLE + seat ordinal, never the amount (the line's dignity; anyone
+  can recompute from the chain).
+- **THE MEMBER'S OWN ACCOUNT** (the dashboard, own-row): the SEPHORA ACCOUNT PATTERN,
+  researched and universal (Sephora VIB / Marriott nights / airline miles trackers):
+  the member SEES his own cumulative capital footprint (his own public purchases,
+  summed), his rung, THE FULL LADDER, the NEXT rung and honest progress toward it —
+  **guidance, the goal-gradient that moves members**. This is legal precisely because
+  of what a rung UNLOCKS: recognition, status, access — **never a better SYN price,
+  never yield, never any financial advantage** (SPEC_REFERRAL §⑨ red line). The
+  shield line renders BESIDE the ladder wherever it appears, and rungs never descend.
+
+The Connector ladder (referral dashboard) already lived under this rule — "visible
+progress everywhere"; the capital axis now joins it. Amounts served for this purpose
+are PUBLIC chain data made legible (CANON_VISIBILITY_LAW), own-account-scoped in
+presentation; the feed's no-amount voice is untouched.

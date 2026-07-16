@@ -119,7 +119,7 @@
   --text-h3: clamp(1.2rem, 1.1rem + 0.5vw, 1.55rem);
   --text-body: clamp(1rem, 0.96rem + 0.18vw, 1.1rem);
   --text-label: 0.8125rem;
-  --text-caption: 0.6875rem;
+  --text-caption: 0.75rem; /* READABILITY FLOOR (ADR-001 2026-07-16): nothing readable under 12px */
   /* Fluid spacing (base 4/8pt) + section rhythm. */
   --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem;
   --space-6: 1.5rem; --space-8: 2rem; --space-12: 3rem; --space-16: 4rem;
@@ -227,9 +227,9 @@
    cockpit chrome stops drifting into many one-off font sizes. Color and
    spacing stay as Tailwind utilities; these only own family/size/weight/case.
    --------------------------------------------------------------------------- */
-.syn-eyebrow { font-family: var(--app-font-mono); font-size: 11px; line-height: 1.1; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2em; }
-.syn-label   { font-family: var(--app-font-mono); font-size: 10px; line-height: 1.15; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; }
-.syn-caption { font-family: var(--app-font-mono); font-size: 9px; line-height: 1.2; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; }
+.syn-eyebrow { font-family: var(--app-font-mono); font-size: 12px; line-height: 1.1; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2em; }
+.syn-label   { font-family: var(--app-font-mono); font-size: 12px; line-height: 1.15; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; }
+.syn-caption { font-family: var(--app-font-mono); font-size: 12px; line-height: 1.2; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; }
 
 /* Reference-fidelity public hero cockpit utilities. */
 .syn-command-grid {
@@ -309,3 +309,11 @@
 .type-label { font-family: var(--app-font-sans); font-size: var(--text-label); line-height: 1.3; font-weight: 500; }
 .type-caption { font-family: var(--app-font-mono); font-size: var(--text-caption); line-height: 1.3; letter-spacing: 0.02em; }
 .measure { max-width: var(--measure); }
+
+/* THE FLUID SURFACE RULE (ADR-001 amendment, 2026-07-16) — safe-area awareness:
+   with viewport-fit=cover the app owns the notch zones (iOS/Android landscape);
+   env() resolves to 0 everywhere else, so this costs nothing on desktops. */
+body {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}

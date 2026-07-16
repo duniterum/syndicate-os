@@ -589,6 +589,33 @@ check(
   "MemberAccess.tsx loads MemberSettings only via the gated conditional dynamic import",
   'MemberAccess.tsx must load MemberSettings via `WALLET_SESSION_PREVIEW_ENABLED ? lazy(() => import("@/wallet/MemberSettings")) : null`',
 );
+// S7-b: the dashboard's KPI row is the third gated wallet surface.
+check(
+  /WALLET_SESSION_PREVIEW_ENABLED\s*\?\s*lazy\(\(\) => import\("@\/wallet\/MemberKpiRow"\)\)\s*:\s*null/.test(
+    memberAccessCode,
+  ),
+  "MemberAccess.tsx loads MemberKpiRow only via the gated conditional dynamic import",
+  'MemberAccess.tsx must load MemberKpiRow via `WALLET_SESSION_PREVIEW_ENABLED ? lazy(() => import("@/wallet/MemberKpiRow")) : null`',
+);
+// S7-b: the capital footprint card (own-account display rule) — fourth gated
+// wallet surface; its shield line is pinned below with the honesty copy.
+check(
+  /WALLET_SESSION_PREVIEW_ENABLED\s*\?\s*lazy\(\(\) => import\("@\/wallet\/CapitalAxisCard"\)\)\s*:\s*null/.test(
+    memberAccessCode,
+  ),
+  "MemberAccess.tsx loads CapitalAxisCard only via the gated conditional dynamic import",
+  'MemberAccess.tsx must load CapitalAxisCard via `WALLET_SESSION_PREVIEW_ENABLED ? lazy(() => import("@/wallet/CapitalAxisCard")) : null`',
+);
+// THE SHIELD LINE (founder red line, SPEC_REFERRAL §⑨ + the own-account
+// display rule): wherever the ladder shows, the recognition-only boundary
+// speaks beside it.
+check(
+  read(path.resolve(srcDir, "wallet/CapitalAxisCard.tsx")).includes(
+    "never unlocks a better SYN price",
+  ),
+  "CapitalAxisCard carries the shield line (recognition only, never a better SYN price)",
+  "CapitalAxisCard.tsx lost the shield line — the ladder must never show without the recognition-only boundary",
+);
 check(
   !memberAccessCode.includes("WalletSessionPanel"),
   "MemberAccess.tsx no longer composes the retired WalletSessionPanel",

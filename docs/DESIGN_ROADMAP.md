@@ -125,6 +125,77 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   0 débordement · images chargées · les deux états exercés (intercept debug, nettoyé) ·
   zéro sample servi · bande = plein écran mesuré (660/661px).
 
+- [x] **Member Home — S7-b LE TABLEAU DE BORD MEMBRE (2026-07-16, direction artistique
+  fondateur au sceau S7 : captures prod + référence QuickNode ; recherche best-practices
+  F-pattern/KPI/grille 12 col)** (`MemberAccess.tsx` bifurqué porte/dashboard +
+  `wallet/MemberYourSeat.tsx` → bandeau d'identité compact + `wallet/MemberKpiRow.tsx`
+  NOUVEAU + `wallet/ownReads.ts` hooks partagés + `components/member/MemberPulse.tsx`
+  NOUVEAU (lexique §8 réutilisé) + `MemberShell` puces mobiles) : l'état CONNECTÉ devient
+  un vrai tableau de bord pleine largeur (max-w-7xl) — zone 1 bandeau d'identité (sigil ·
+  Member #N · échelon · reçu-puce + verify) · zone 2 les 4 tuiles KPI vivantes (SYN ·
+  introductions durables · commission payée · escrow — chaque chiffre avec provenance,
+  tiret honnête sinon) · zone 3 grille de travail (referral 2/3 + slots réservés 1/3) ·
+  zone 4 le pouls du protocole (5 lignes §8 + porte /activity ; My|Protocol y atterrira
+  avec A1) · zone 5 verify + settings + expectations. La carte-héros flottant dans le
+  vide MORTE ; les quick-actions dupliquées = visiteur-seul (conversion). DEUX DÉFAUTS
+  des captures fondateur tués : le badge « Sign in required » menti à un membre connecté
+  sans source (3 états distincts maintenant) · le badge Notifications chevauchant son
+  texte (Row flex-wrap + FUTURE honnête). Portes mobiles = rangée de puces défilante
+  (le contenu n'est plus poussé d'un écran). Le guard nav-link-display a attrapé la
+  puce sans display (la classe du bug barre-verticale) — corrigé inline-flex.
+  **Tokens only, +0 couleur brute** ; rig vérifié : porte visiteur INTACTE (plein écran
+  centré) · dashboard exercé (cas réel fondateur : genesis sans échelon ni source —
+  tout honnête) · 2 thèmes · 375 (puces + KPI 2×2 + bandeau à 123px du haut) · 0
+  débordement · intercept nettoyé.
+  + **LA RÈGLE D'AFFICHAGE OWN-ACCOUNT RÉGLÉE UNE FOIS POUR TOUTES** (fondateur,
+  2026-07-16, gravée dans GAMIFICATION_LEGAL_DOCTRINE — « The Syndicate recognizes
+  capital without reducing identity to capital ») : surfaces publiques = anti-rareté
+  intact (le flux ne porte jamais le montant) · LE COMPTE DU MEMBRE = le pattern
+  Sephora/Marriott (recherche + SPEC §⑨) : son cumul, son échelon, l'échelle entière,
+  le PROCHAIN échelon + progression honnête — la ligne-bouclier toujours à côté
+  (« never a better SYN price », guard-pinnée). Réalisé : `CapitalAxisCard` (colonne
+  droite zone 3 — $cumulés + Next: X at $Y + barre + les 12 échelons en dévoilement
+  progressif) · route capital-standing étendue (cumulativeUsdcRaw + ladder + nextRung ;
+  pin backbone amendé daté) · porte **Settings** ajoutée au menu (manquait — vu
+  fondateur). Rig : Seat #14 → $5.00 · Next Resident at $10 · barre 50 % exacte ·
+  12 rangs · bouclier rendu.
+  + **L'ATTERRISSAGE APRÈS-LOGIN RE-ORDONNÉ AU STANDARD MONDIAL** (fondateur au gate,
+  recherche Binance/Coinbase/Crypto.com : portefeuille D'ABORD, activité récente,
+  état système/annonces — jamais un programme en tête) : KPI v2 = **Your SYN · Your
+  USDC (nouveau hook, USDC() du moteur) · Your footprint ($cum · échelon) ·
+  Introductions** ; colonne gauche : **le pouls MÈNE**, le referral suit (ancre
+  intacte) ; colonne droite tirée des portes : carte capital · **« The protocol
+  today »** (5 faits vivants du spine : sièges + provenance double-autorité
+  guard-exigée MembersProvenance compact · brûlé · réserves pool · mints · payé aux
+  référents, « verify → ») · **« The Chronicle »** dernière entrée du registre
+  (l'analogue annonces) · slots. Conteneur élargi max-w-screen-2xl (les marges mortes
+  des flèches fondateur). guard-freshness a exigé la provenance sur le chiffre-membres
+  — servi. Rig : spine RÉEL rendu (14 sièges · 24 606 SYN · pool 2 678,77/55,78 ·
+  17 mints) · « The ladder decision » en tête de Chronicle · pouls avant referral ·
+  375 propre (l'alerte débordement = pane effondré à 0px, prouvé artefact).
+
+- [x] **LE PLANCHER DE LISIBILITÉ — S7-c (fondateur, 2026-07-16 ; gravé ADR-001
+  amendement ; recherché WCAG/A11Y Collective/WebAIM/Section508)** : copie de lecture
+  ≥ 14px `leading-relaxed` · étiquettes/méta ≥ 12px · corps prose 16px+ · valeurs
+  KPI ≥ 18px (20px livré) · titres de cartes 16px · **RIEN sous 12px** — les classes
+  `text-[9-11px]` interdites aux nouvelles surfaces. APPLIQUÉ : toute la composition
+  /member (10 fichiers, mesuré au rig : **0 élément sous 12px** dans les DEUX états)
+  + LE NIVEAU TOKEN (la vraie correction système) : `.syn-eyebrow/.syn-label/
+  .syn-caption` 11/10/9px → 12px · `--text-caption` 11px → 12px · VerifyOnChain
+  9px → 12px · MembersProvenance 10px → 12px — les atomes partagés montent partout
+  (home 1440 + 375 vérifiées : zéro débordement, images OK). RESTE (tranche sweep
+  générale, notée ADR-001) : ~121 micro-classes arbitraires sur la home + autres
+  pages + le futur guard `no-sub-12px-text`.
+- [x] **LA RÈGLE DE LA SURFACE FLUIDE — S7-d (fondateur, 2026-07-16 ; gravée ADR-001
+  bis ; recherchée UXPin/Polypane/MDN/HIG-Material)** : surfaces applicatives =
+  **FLUIDES pleine largeur** (jamais de cap ; gouttières `px-4/6/8` ; la lisibilité
+  est bornée par les cartes) · prose = cap 1200–1440 (loi hybride inchangée) ·
+  **`viewport-fit=cover` + safe-areas `env()`** sur le body (encoches iOS/Android) ·
+  **`maximum-scale=1` SUPPRIMÉ** (bloquait le zoom — violation WCAG 1.4.4 attrapée
+  et corrigée) · `svh`/`dvh` jamais `vh` nu · **cibles tactiles ≥ 44px** (puces
+  portes mobiles : 44px mesurés). Dashboard membre mesuré bord à bord à 1920 ·
+  375 propre · test standard 320→2560 engravé.
+
 ### Phase 6 — Audits (le sceau grade-AAA)
 - [ ] Accessibilité (WCAG AA / APCA, focus, clavier, cibles ≥44px)
 - [ ] Responsive (fluide, container queries, 320 → 2560, pliables)
@@ -138,7 +209,7 @@ Design **100 % fini, verrouillé** = toutes les cases de "Définition de FINI" c
 → **on n'y revient plus jamais.**
 
 ## Suivi couleur — ✅ FERMÉ
-Sprawl : **0** couleur brute (slice 2.3 FAQ : **+0** · slice 2.4 Docs : **+0** · slice ⓪ liveness : **+0** — MembersProvenance 100 % tokens · arc Member Home 2026-07-14 : MEMBER SHELL **+0** · slice A actions/lien/Guide **+0** · slice B pill/settings **+0** · slice C teasers (TeaserSurface + 3 pages) **+0** · slice D wallet/toolkit **+0** · arc harvest L-1 /liquidity **+0** · ACT-1 feed (LiveActivityFeed + 2 pages live) **+0** · CHR-1 chronicle (register + panneau console) **+0** · M1-a hero premier acte (HeroStatusChips + HeroSeatLine + rail Inspect) **+0** · M1-b carte vivante (heroIconLanguage + nœud burn + mini-feed) **+0** · M1-c header/footer (barre récurrente morte à la racine + garde `guard-nav-link-display` + pilules dérivées) **+0** · S7 member home (bande d'accès + héros Your Seat + pilule échelon) **+0** — tout en tokens). Guard
+Sprawl : **0** couleur brute (slice 2.3 FAQ : **+0** · slice 2.4 Docs : **+0** · slice ⓪ liveness : **+0** — MembersProvenance 100 % tokens · arc Member Home 2026-07-14 : MEMBER SHELL **+0** · slice A actions/lien/Guide **+0** · slice B pill/settings **+0** · slice C teasers (TeaserSurface + 3 pages) **+0** · slice D wallet/toolkit **+0** · arc harvest L-1 /liquidity **+0** · ACT-1 feed (LiveActivityFeed + 2 pages live) **+0** · CHR-1 chronicle (register + panneau console) **+0** · M1-a hero premier acte (HeroStatusChips + HeroSeatLine + rail Inspect) **+0** · M1-b carte vivante (heroIconLanguage + nœud burn + mini-feed) **+0** · M1-c header/footer (barre récurrente morte à la racine + garde `guard-nav-link-display` + pilules dérivées) **+0** · S7 member home (bande d'accès + héros Your Seat + pilule échelon) **+0** · S7-b tableau de bord membre (bandeau + KPI + pouls + puces mobiles) **+0** — tout en tokens). Guard
 `no-raw-color` **BLOQUANT** dans la gate (`pnpm guards`), toute nouvelle couleur brute casse le
 build. Du pic de **137 sites** → **0** au fil des slices d'harmonisation.
 Une seule exception documentée : `QrCodeBlock` (fond blanc du canvas QR, requis pour la lisibilité),

@@ -104,3 +104,51 @@ big-bang.
 **Note de vérité (design) :** la mémoire distillée disait « Raleway » ; le brand board
 dit **Instrument Serif / Work Sans / IBM Plex Mono**. Le brand board est l'autorité,
 comme la chaîne l'est pour les chiffres. *À reconfirmer si la marque a encore évolué.*
+
+---
+
+## Amendement 2026-07-16 — LE PLANCHER DE LISIBILITÉ (fondateur ; recherché WCAG/a11y)
+
+**Constat fondateur (preview S7-b) : « des petits textes pas très lisibles, pas la bonne
+taille. »** Recherche (A11Y Collective, Orange a11y, WebAIM, Section508) : corps ≥ 16px,
+secondaire ≥ 14px, plancher pratique 12px, interligne ≥ 1,5, unités relatives, zoom 200 %
+sans perte. **LA RÈGLE (design général, toutes surfaces à venir) :**
+
+1. **Copie de lecture (phrases, notes, explications, mentions légales) : ≥ 14px**
+   (`text-sm`) avec `leading-relaxed`.
+2. **Étiquettes / méta / provenance (une ligne, mono uppercase) : ≥ 12px** (`text-xs`).
+3. **Corps principal des pages prose : 16px+** (`type-body` — le token existe).
+4. **RIEN d'utilisateur-visible sous 12px.** Les classes arbitraires `text-[9px]`/
+   `text-[10px]`/`text-[11px]` sont INTERDITES dans toute nouvelle surface ; les tokens
+   (`--text-label` 13px · `--text-caption` 11px→à réévaluer au sweep) priment sur les
+   tailles arbitraires.
+5. **Valeurs de tuiles/KPI : ≥ 18px** ; titres de cartes : ≥ 16px.
+6. **Liens : affordance visible** (couleur + hover, jamais la taille seule).
+
+**Appliqué (2026-07-16) : toute la composition /member** (shell/portes, settings, bandeau,
+KPI, cartes capital/protocole/chronicle, pouls, referral, porte visiteur). **RESTE (tranche
+sweep générale, notée) :** le reste du site (header affordance, checkout, admin console,
+`syn-label`/`syn-caption` 9–10px, MembersProvenance compact) + un guard `no-sub-12px-text`
+qui rendra le plancher structurel.
+
+## Amendement 2026-07-16 (bis) — LA RÈGLE DE LA SURFACE FLUIDE (fondateur ; recherché)
+
+**Constat fondateur : un cap de largeur (`max-w-screen-2xl`) n'est jamais « plein écran
+partout ».** Recherche (UXPin 2025, fluid design, Polypane safe-areas, MDN viewport units,
+Apple HIG/Material touch targets) : **LA RÈGLE (générale, toutes surfaces) :**
+
+1. **Surfaces APPLICATIVES (dashboards, consoles) : FLUIDES pleine largeur** — jamais de
+   cap ; gouttières responsives seulement (`px-4 sm:px-6 lg:px-8`). La lisibilité des
+   textes est bornée PAR LES CARTES de la grille, jamais par un cap de page.
+2. **Surfaces PROSE : cap 1200–1440px** (la loi hybride existante, inchangée).
+3. **Multi-appareils/OS (iOS · Android · desktop)** : `viewport-fit=cover` + safe-areas
+   `env(safe-area-inset-*)` sur le body (coût zéro hors encoches) ; **JAMAIS
+   `maximum-scale=1`** (bloquait le zoom — violation WCAG 1.4.4, corrigée ce jour) ;
+   hauteurs en `svh` (héros stables) / `dvh` (suivi dynamique), jamais `vh` nu.
+4. **Cibles tactiles ≥ 44px** (Apple 44 / Material 48) avec ≥ 8px d'espacement — les
+   puces de navigation mobiles du member shell sont à 44px mesurés.
+5. **Test de toute surface : 320 → 2560px**, deux thèmes, deux OS mobiles au preview.
+
+Appliqué ce jour : le dashboard membre fluide (1920 mesuré bord à bord, gouttières
+internes seules) · viewport meta corrigée (zoom 200 % restauré) · safe-areas globales ·
+puces 44px. Le reste du site suit la même règle à chaque tranche qui le touche.

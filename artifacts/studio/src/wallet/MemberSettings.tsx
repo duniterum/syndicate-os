@@ -47,11 +47,13 @@ function Row({
 }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-3 border-b border-border/40 last:border-b-0">
-      <div className="sm:w-40 shrink-0 flex items-center gap-2">
+      {/* flex-wrap: a long title + badge must wrap INSIDE this column, never
+          overlap the body text (founder screenshot, 2026-07-16). */}
+      <div className="sm:w-44 shrink-0 flex flex-wrap items-center gap-2">
         <span className="text-sm font-medium text-foreground">{title}</span>
         {lifecycle ? <LifecycleBadge lifecycle={lifecycle} /> : null}
       </div>
-      <p className="flex-1 text-xs text-muted-foreground leading-relaxed">{body}</p>
+      <p className="flex-1 text-sm text-muted-foreground leading-relaxed">{body}</p>
       {children ? <div className="shrink-0">{children}</div> : null}
     </div>
   );
@@ -79,7 +81,7 @@ export default function MemberSettings() {
   return (
     <Card className="bg-card/40 border-border/50 p-5">
       <h2 className="text-base font-medium text-foreground mb-1">Settings</h2>
-      <p className="text-xs text-muted-foreground leading-relaxed mb-4">
+      <p className="text-sm text-muted-foreground leading-relaxed mb-4">
         Everything here is off-chain comfort. Your seat and your proofs live on
         the chain and are not settings. No email is ever asked for or stored.
       </p>
@@ -111,10 +113,13 @@ export default function MemberSettings() {
         <ThemeToggle />
       </Row>
 
+      {/* S7-b truth: the event record itself is LIVE — what's still to build
+          is the notification surface on top of it (FUTURE, like the away
+          slot; "not live yet" claimed a missing adapter that exists). */}
       <Row
         title="Notifications"
-        body="Arrives with the event backbone — the bell in the header is already reserved for it."
-        lifecycle="PENDING_ADAPTER"
+        body="The event record is live — member notifications arrive on it; the bell in the header is already reserved."
+        lifecycle="FUTURE"
       />
 
       <Row

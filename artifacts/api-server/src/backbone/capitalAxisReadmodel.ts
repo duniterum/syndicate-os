@@ -87,10 +87,18 @@ export interface CapitalRiseItem {
 
 /**
  * S7 — a seat's CURRENT standing on the capital axis: the same walk's end
- * state (never a second derivation). Title + public ordinal ONLY — the
- * cumulative amount never leaves this module, and no next-rung/approaching
- * shape exists (the anti-scarcity pin). A seat whose footprint is not
+ * state (never a second derivation). A seat whose footprint is not
  * derivable (V1-era rows carry no ordinal) is simply ABSENT — never guessed.
+ *
+ * S7-b (founder decision 2026-07-16, THE OWN-ACCOUNT DISPLAY RULE —
+ * GAMIFICATION_LEGAL_DOCTRINE): the standing row ALSO carries the seat's
+ * cumulative gross USDC, so the member's OWN dashboard can show his own
+ * footprint, the ladder, and the next rung (the Sephora account pattern —
+ * guidance, legal because a rung unlocks recognition only, never a
+ * financial edge). This is PUBLIC chain data made legible (the purchases
+ * carry seat ordinal + amount on-chain; anyone can recompute). The FEED's
+ * voice is untouched: a feed line still never carries the amount, and the
+ * public anti-scarcity pins (no countdown/approaching narrative) stand.
  */
 export interface CapitalStandingItem {
   /** Public seat ordinal. */
@@ -98,6 +106,8 @@ export interface CapitalStandingItem {
   /** The rung the seat stands on today (base "Citizen" included — a STATE
    *  readback is not a line; LINE-ON-RISE governs the feed, not this). */
   readonly rung: string;
+  /** Cumulative gross USDC, raw 6-decimal base units (decimal string). */
+  readonly cumulativeUsdcRaw: string;
 }
 
 export interface CapitalBuildInput {
@@ -223,15 +233,17 @@ export function buildCapitalAxisReadModel(
   }
 
   // S7 — the walk's end state, folded once here (one derivation, one truth):
-  // each walked seat's current rung, base included. The cumulative amount
-  // dies inside this function; only the title travels.
+  // each walked seat's current rung, base included. S7-b: the cumulative
+  // travels too (the own-account display rule — public chain data; the feed
+  // line still never carries it).
   const standingBySeat: CapitalStandingItem[] = [...cumBySeat.entries()]
-    .map(([seatNumber, cumRaw]) => ({ seatNumber, idx: rungIndexFor(cumRaw) }))
+    .map(([seatNumber, cumRaw]) => ({ seatNumber, cumRaw, idx: rungIndexFor(cumRaw) }))
     .filter((s) => s.idx >= 0)
     .sort((a, b) => a.seatNumber - b.seatNumber)
     .map((s) => ({
       seatNumber: s.seatNumber,
       rung: CAPITAL_AXIS_LADDER[s.idx]!.title,
+      cumulativeUsdcRaw: s.cumRaw.toString(),
     }));
 
   return { rises, standingBySeat, notes };
