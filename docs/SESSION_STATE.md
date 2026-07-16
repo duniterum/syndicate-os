@@ -11,7 +11,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > Settings door · THE 3 DESIGN LAWS engraved in ADR-001: READABILITY FLOOR ·
 > FLUID SURFACE · OWN-ACCOUNT DISPLAY (GAMIFICATION doctrine — Sephora account
 > pattern, settled forever) · the WCAG zoom cure (maximum-scale removed) · bundle
-> `index-lSsHS13k.js`). **S7-e BUILT + FOUNDER GO (this commit, rides to Replit):**
+> `index-lSsHS13k.js`). **S7-e ✅ SEALED IN PROD (Replit 6/6, bundle
+> `index-CJU-JUzs.js`, 19/19 blob-verified — the MemberWalletPanel chunk hash
+> byte-identical local↔prod; the 40-hex rise 13→40 in the main bundle fully
+> classified as viem/wagmi library constants redistributed by chunking, member
+> chunks at zero; honest residue: one 10px in JoinCheckout + one 11px in
+> MemberWalletPanel = 2 of the 219 mapped general-sweep sites; engine 2/2 cycles,
+> lastError null; capital-standing still serving the extended shape):**
 > the 18 audit-confirmed defects dead — human number display (formatRawUnitsDisplay,
 > FLOORED so money never overstates: 6,260.06 SYN · 2.99 USDC; KPI + /wallet +
 > checkout) · 9 jargon sites rewritten human-first (memberNumberOf parenthesized,
