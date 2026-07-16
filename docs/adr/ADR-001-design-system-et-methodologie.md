@@ -152,3 +152,23 @@ Apple HIG/Material touch targets) : **LA RÈGLE (générale, toutes surfaces) :*
 Appliqué ce jour : le dashboard membre fluide (1920 mesuré bord à bord, gouttières
 internes seules) · viewport meta corrigée (zoom 200 % restauré) · safe-areas globales ·
 puces 44px. Le reste du site suit la même règle à chaque tranche qui le touche.
+
+---
+
+## AMENDMENT — THE RESEARCH-GROUNDED DESIGN METHOD (founder, permanent, 2026-07-16 — approved verbatim at the wireframe gate)
+
+Every future surface: (a) RESEARCH the world-class standard for that surface type —
+named references, never taste alone; (b) WIREFRAME with named zones, every zone
+answering "what decision or action does this serve?"; (c) the founder approves the
+wireframe ON SCREEN before any visual code; (d) BUILD on our tokens and the engraved
+laws (readability floor · fluid surface · own-account display · anti-scarcity ·
+Human-First); (e) the PREVIEW GATE before any commit. One harmonized design system —
+never patches on patches.
+
+Companion rules engraved the same day (the receipt wireframe's lesson, founder + Claude
+Code verdicts, chain-verified against receipt member #13 · block 90,160,483):
+- **THE REAL-ROW RULE:** even illustrative figures on a money document come from ONE
+  real indexed receipt, verbatim — assembled examples are how inconsistencies creep in.
+- **TICKET AMOUNTS ARE EXACT:** on a receipt, amounts render at full USDC precision
+  (trailing zeros trimmed: $3.325 · $0.95 · $0.475) so every line SUMS — the S7-e
+  floored-display law governs dashboard KPIs; a receipt is an accounting document.

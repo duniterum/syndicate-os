@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>WIREFRAME ROUND — 2026-07-16 (receipt ticket · member menu · post-login home)</title>
+<style>
+  /* ── The REAL studio tokens (index.css), verbatim values ── */
+  :root{
+    --gold: 38 74% 44%;
+    --font-sans: 'Work Sans','Inter',system-ui,sans-serif;
+    --font-serif: 'Instrument Serif',Georgia,serif;
+    --font-mono: 'IBM Plex Mono',Menlo,ui-monospace,monospace;
+  }
+  .t-dark{ --background:224 71% 4%; --foreground:213 31% 91%; --border:216 34% 17%; --card:222 47% 7%; --muted-fg:215.4 16.3% 56.9%; }
+  .t-light{ --background:210 40% 98%; --foreground:222 47% 11%; --border:214 32% 91%; --card:0 0% 100%; --muted-fg:215 16% 47%; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-sans);background:#0b0e14;color:#cdd5e0;padding:32px 16px 96px;max-width:1180px;margin:0 auto}
+  h1{font-size:22px;margin-bottom:4px} h2{font-size:18px;margin:48px 0 6px;color:#e8c56a}
+  .sub{font-size:13px;color:#8a94a6;margin-bottom:18px;line-height:1.5;max-width:70ch}
+  .zonetag{position:absolute;top:-9px;left:8px;font:600 12px var(--font-mono);letter-spacing:.08em;color:#e8c56a;background:#0b0e14;padding:0 6px;border-radius:3px}
+  .row{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+  .panel{background:hsl(var(--background));color:hsl(var(--foreground));border:1px solid hsl(var(--border));border-radius:12px;padding:24px}
+  .note{font-size:12px;color:#8a94a6;margin-top:10px;line-height:1.5;max-width:46ch}
+
+  /* ══ SECTION 1 — THE RECEIPT TICKET ══ */
+  .ticket-wrap{width:372px}
+  .ticket{width:340px;margin:0 auto;background:hsl(var(--card));color:hsl(var(--foreground));border:1px solid hsl(var(--border));border-radius:10px;padding:20px 18px 14px;position:relative;box-shadow:0 8px 28px rgba(0,0,0,.25)}
+  .tz{position:relative;padding:12px 2px}
+  .tz + .tz{border-top:1px dashed hsl(var(--border))}
+  .mono{font-family:var(--font-mono)}
+  .muted{color:hsl(var(--muted-fg))}
+  .gold{color:hsl(var(--gold))}
+  /* Zone ID — identity head */
+  .monogram{width:44px;height:44px;border-radius:999px;border:1.5px solid hsl(var(--gold));display:flex;align-items:center;justify-content:center;font:600 18px var(--font-serif);color:hsl(var(--gold));margin:0 auto 8px;letter-spacing:.05em}
+  .head-title{font:600 14px var(--font-mono);letter-spacing:.24em;text-align:center}
+  .head-sub{font:600 10.5px var(--font-mono);letter-spacing:.18em;text-align:center;margin-top:4px}
+  .head-line{font-size:12px;text-align:center;margin-top:6px}
+  .chapter{display:inline-block;border:1px solid hsl(var(--gold) / .35);background:hsl(var(--gold) / .09);color:hsl(var(--gold));border-radius:999px;padding:1px 10px;font:500 12px var(--font-sans);margin-top:8px}
+  .kv{display:flex;justify-content:space-between;gap:12px;font-size:13px;line-height:1.9}
+  .kv .k{color:hsl(var(--muted-fg))}
+  .kv .v{font-family:var(--font-mono);text-align:right}
+  .kv .em{font-size:15px;font-weight:600}
+  .indent{padding-left:14px}
+  .total{display:flex;justify-content:space-between;align-items:baseline}
+  .total .k{font:600 12px var(--font-mono);letter-spacing:.14em}
+  .total .v{font:600 20px var(--font-mono)}
+  .living{font-size:12.5px;line-height:1.6}
+  .living .coord{font-family:var(--font-mono);font-size:12px}
+  .living .witness{color:hsl(var(--gold))}
+  .doctrine{font-family:var(--font-serif);font-size:13.5px;font-style:italic;line-height:1.5;margin-top:6px}
+  .verify{display:flex;gap:12px;align-items:center}
+  .qr{width:84px;height:84px;flex:none;border:1px solid hsl(var(--border));border-radius:6px;padding:6px;background:#fff}
+  .vtxt{font-size:11.5px;line-height:1.55;color:hsl(var(--muted-fg))}
+  .vtxt .tag{font:600 12px var(--font-mono);letter-spacing:.14em;color:hsl(var(--foreground))}
+  .dtv{font:600 12px var(--font-mono);letter-spacing:.22em;text-align:center;margin-top:10px}
+  .seal{font-size:11.5px;text-align:center;color:hsl(var(--muted-fg));margin-top:6px}
+  .nextdoor{border:1px solid hsl(var(--gold) / .3);background:hsl(var(--gold) / .07);border-radius:8px;padding:9px 12px;font-size:12.5px;line-height:1.5}
+  .nextdoor b{color:hsl(var(--gold));font-weight:600}
+  .actions{display:flex;gap:8px;justify-content:center;border-top:1px solid hsl(var(--border));margin-top:14px;padding:12px 4px 2px;width:340px;margin-left:auto;margin-right:auto}
+  .abtn{font:500 12px var(--font-sans);border:1px solid hsl(var(--border));background:transparent;color:hsl(var(--foreground));border-radius:8px;padding:7px 10px;min-height:34px}
+  .abtn.primary{border-color:hsl(var(--gold) / .5);color:hsl(var(--gold))}
+
+  /* ══ SECTION 2 — MEMBER MENU ══ */
+  .menu{width:264px;padding:14px 10px}
+  .mgroup{font:600 11px var(--font-mono);letter-spacing:.16em;color:hsl(var(--muted-fg));text-transform:uppercase;padding:14px 10px 6px}
+  .mitem{display:flex;gap:10px;align-items:center;font-size:14px;padding:9px 10px;border-radius:8px;border-left:2px solid transparent;color:hsl(var(--foreground))}
+  .mitem svg{width:16px;height:16px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;color:hsl(var(--muted-fg))}
+  .mitem.active{background:hsl(var(--gold) / .1);border-left-color:hsl(var(--gold));font-weight:600}
+  .mitem.active svg{color:hsl(var(--gold))}
+  .mitem.hover{background:hsl(var(--border) / .45)}
+  .mitem.focus{outline:2px solid hsl(var(--gold) / .65);outline-offset:2px}
+  .mstate{font-size:11px;color:#8a94a6;margin-left:auto;font-family:var(--font-mono)}
+  .mfuture{opacity:.68}
+  .mfuture .badge{font:500 10.5px var(--font-mono);border:1px solid hsl(var(--border));border-radius:999px;padding:0 7px;color:hsl(var(--muted-fg));margin-left:auto}
+
+  /* ══ SECTION 3 — HOME ZONES ══ */
+  .zone{border:1.5px dashed #5a647a;border-radius:10px;padding:14px;position:relative;margin-top:16px;color:#aab3c2;font-size:12.5px;line-height:1.55}
+  .zone .zt{font:600 12px var(--font-mono);letter-spacing:.1em;color:#e8c56a;display:block;margin-bottom:4px}
+  .grid-home{display:grid;grid-template-columns:2fr 1fr;gap:16px;max-width:860px}
+  .kpirow{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:16px}
+  .kpi{border:1.5px dashed #5a647a;border-radius:8px;padding:10px 8px;font:500 10.5px var(--font-mono);color:#aab3c2;text-align:center;line-height:1.5}
+  .mobilecol{width:220px}
+  .mobilecol .zone{margin-top:10px;padding:10px}
+  table{border-collapse:collapse;font-size:13px;margin-top:12px}
+  th,td{border:1px solid #2a3242;padding:7px 12px;text-align:left;vertical-align:top}
+  th{color:#e8c56a;font:600 12px var(--font-mono);letter-spacing:.06em}
+  td .why{color:#8a94a6;font-size:12px}
+</style>
+</head>
+<body>
+<h1>WIREFRAME ROUND — 2026-07-16</h1>
+<p class="sub">Three pieces for founder approval. Skins use the studio's REAL tokens (values copied from <span class="mono">index.css</span>: command-room ink <span class="mono">hsl(224 71% 4%)</span>, gold <span class="mono">hsl(38 74% 44%)</span>, Work Sans / Instrument Serif / IBM Plex Mono). Ticket figures are ONE REAL INDEXED RECEIPT VERBATIM (member #13 · block 90,160,483 · decoded from the chain 2026-07-16). TICKET AMOUNTS ARE EXACT — full USDC precision, lines sum to the cent-fraction ($0.25 + $4.75 = $5.00; $3.325 + $0.95 + $0.475 = $4.75); the S7-e floor rule governs dashboard KPIs, a receipt is an accounting document.</p>
+
+<!-- ═══════════════ SECTION 1 — THE RECEIPT TICKET ═══════════════ -->
+<h2>1 · THE PROTOCOL RECEIPT — zones A–G + identity head + living zone + next door (both themes)</h2>
+<p class="sub">Your Zone contract verbatim, skinned as a Syndicate object. Dashed separators = the ticket metaphor; ink + gold = ours. The QR shown is a placeholder pattern — the build renders a real scannable QR (react-qr-code, already a dependency) encoding the explorer URL.</p>
+<div class="row">
+
+<!-- DARK ticket -->
+<div class="ticket-wrap t-dark">
+  <div class="ticket">
+    <div class="tz" style="border-top:none"><span class="zonetag">ID · A</span>
+      <div class="monogram">SS</div>
+      <div class="head-title">THE SYNDICATE</div>
+      <div class="head-sub muted">ON-CHAIN MEMBERSHIP PROTOCOL</div>
+      <div class="head-line">Membership receipt — routing proof</div>
+      <div class="head-line muted" style="font-size:11.5px">Avalanche C-Chain · chainId 43114</div>
+      <div style="text-align:center"><span class="chapter">Chapter I · Genesis Signal</span></div>
+    </div>
+    <div class="tz"><span class="zonetag">B</span>
+      <div class="kv"><span class="k">2026-07-12 · block 90,160,483</span><span class="v muted">Era 1</span></div>
+    </div>
+    <div class="tz"><span class="zonetag">C</span>
+      <div class="kv"><span class="k">Seat</span><span class="v em">Member #13</span></div>
+      <div class="kv"><span class="k">Holder</span><span class="v">0x0Dd…4D20</span></div>
+      <div class="kv"><span class="k">SYN received</span><span class="v">500 SYN <span class="muted" style="font-size:11px">(100 SYN / USDC)</span></span></div>
+      <div class="kv"><span class="k">Referral</span><span class="v">brought by 0x244…C721</span></div>
+    </div>
+    <div class="tz"><span class="zonetag">D</span>
+      <div class="kv"><span class="k">Gross USDC</span><span class="v">$5.00</span></div>
+      <div class="kv indent"><span class="k">Referral payout</span><span class="v">$0.25 · paid first</span></div>
+      <div class="kv"><span class="k">Protocol contribution</span><span class="v">$4.75</span></div>
+      <div class="kv indent"><span class="k">Vault · 70%</span><span class="v">$3.325</span></div>
+      <div class="kv indent"><span class="k">Liquidity · 20%</span><span class="v">$0.95</span></div>
+      <div class="kv indent"><span class="k">Operations · 10%</span><span class="v">$0.475</span></div>
+    </div>
+    <div class="tz"><span class="zonetag">E</span>
+      <div class="total"><span class="k muted">TOTAL</span><span class="v">$5.00 USDC</span></div>
+    </div>
+    <div class="tz"><span class="zonetag">LIVING</span>
+      <div class="living">
+        <div class="coord">Seat #13 of Chapter I · Era 1</div>
+        <div class="muted" style="font-size:11.5px">(no witness line — this purchase sealed no milestone; the line prints only when the event truly carries one)</div>
+        <div class="doctrine muted">“SYN is the seat — one wallet, one seat; more SYN is footprint, never more seats.”</div>
+      </div>
+    </div>
+    <div class="tz"><span class="zonetag">F</span>
+      <div class="dtv gold" style="margin:0 0 10px">ONE WALLET · ONE SEAT</div>
+      <div class="verify">
+        <svg class="qr" viewBox="0 0 21 21"><rect width="21" height="21" fill="#fff"/><path fill="#000" d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0zM2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2zM9 0h1v2H9zM11 1h2v1h-2zM9 3h2v1H9zM12 3h1v3h-1zM9 5h1v2H9zM11 6h1v1h-1zM0 9h2v1H0zM3 9h2v2H3zM6 9h1v1H6zM8 8h1v3H8zM10 9h2v1h-2zM13 8h2v2h-2zM16 9h1v1h-1zM18 9h3v1h-3zM1 11h1v2H1zM4 12h2v1H4zM7 11h1v2H7zM9 12h2v2H9zM12 11h1v2h-1zM14 12h2v1h-2zM17 11h2v2h-2zM20 12h1v2h-1zM9 15h1v2H9zM11 14h1v2h-1zM13 15h2v1h-2zM16 15h1v3h-1zM18 15h1v1h-1zM9 18h2v2H9zM12 17h1v2h-1zM14 18h2v1h-2zM18 17h3v1h-3zM13 20h1v1h-1zM17 20h2v1h-2z"/></svg>
+        <div class="vtxt">
+          <div class="tag">SCAN TO VERIFY</div>
+          Opens the transaction on the public explorer.<br>
+          <span class="mono">tx 0x353b…2178</span>
+        </div>
+      </div>
+      <div class="dtv muted">DON'T TRUST — VERIFY</div>
+      <div class="seal">Sealed by the protocol · block 90,160,483 — the transaction hash <em>is</em> the signature.</div>
+    </div>
+    <div class="tz" style="padding-bottom:4px"><span class="zonetag">NEXT DOOR</span>
+      <div class="nextdoor"><b>The Archive is open</b> — First Signal awaits. One door, from your wallet's real state; access, never a coupon.</div>
+    </div>
+  </div>
+  <div class="actions t-dark">
+    <button class="abtn">Copy link</button><button class="abtn">Share</button><button class="abtn primary">Save image</button><button class="abtn">Verify ↗</button>
+  </div>
+  <p class="note">Zone G sits OUTSIDE the ticket paper (separated top border). “Save image” exports the ticket; the clean print stylesheet gives “Save as PDF” via the browser in V1 — the dedicated PDF engine ships with the /receipt/{txHash} slice (one rendering path, one truth).</p>
+</div>
+
+<!-- LIGHT ticket -->
+<div class="ticket-wrap t-light">
+  <div class="ticket">
+    <div class="tz" style="border-top:none">
+      <div class="monogram">SS</div>
+      <div class="head-title">THE SYNDICATE</div>
+      <div class="head-sub muted">ON-CHAIN MEMBERSHIP PROTOCOL</div>
+      <div class="head-line">Membership receipt — routing proof</div>
+      <div class="head-line muted" style="font-size:11.5px">Avalanche C-Chain · chainId 43114</div>
+      <div style="text-align:center"><span class="chapter">Chapter I · Genesis Signal</span></div>
+    </div>
+    <div class="tz">
+      <div class="kv"><span class="k">2026-07-12 · block 90,160,483</span><span class="v muted">Era 1</span></div>
+    </div>
+    <div class="tz">
+      <div class="kv"><span class="k">Seat</span><span class="v em">Member #13</span></div>
+      <div class="kv"><span class="k">Holder</span><span class="v">0x0Dd…4D20</span></div>
+      <div class="kv"><span class="k">SYN received</span><span class="v">500 SYN <span class="muted" style="font-size:11px">(100 SYN / USDC)</span></span></div>
+      <div class="kv"><span class="k">Referral</span><span class="v">brought by 0x244…C721</span></div>
+    </div>
+    <div class="tz">
+      <div class="kv"><span class="k">Gross USDC</span><span class="v">$5.00</span></div>
+      <div class="kv indent"><span class="k">Referral payout</span><span class="v">$0.25 · paid first</span></div>
+      <div class="kv"><span class="k">Protocol contribution</span><span class="v">$4.75</span></div>
+      <div class="kv indent"><span class="k">Vault · 70%</span><span class="v">$3.325</span></div>
+      <div class="kv indent"><span class="k">Liquidity · 20%</span><span class="v">$0.95</span></div>
+      <div class="kv indent"><span class="k">Operations · 10%</span><span class="v">$0.475</span></div>
+    </div>
+    <div class="tz">
+      <div class="total"><span class="k muted">TOTAL</span><span class="v">$5.00 USDC</span></div>
+    </div>
+    <div class="tz">
+      <div class="living">
+        <div class="coord">Seat #13 of Chapter I · Era 1</div>
+        <div class="witness gold">✦ Witness-line VARIANT (real class, e.g. seat #6's Jun 17 rise): “This purchase witnessed a footprint rise — Patron reached.”</div>
+        <div class="doctrine muted">“SYN is the seat — one wallet, one seat; more SYN is footprint, never more seats.”</div>
+      </div>
+    </div>
+    <div class="tz">
+      <div class="dtv gold" style="margin:0 0 10px">ONE WALLET · ONE SEAT</div>
+      <div class="verify">
+        <svg class="qr" viewBox="0 0 21 21"><rect width="21" height="21" fill="#fff"/><path fill="#000" d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0zM2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2zM9 0h1v2H9zM11 1h2v1h-2zM9 3h2v1H9zM12 3h1v3h-1zM9 5h1v2H9zM11 6h1v1h-1zM0 9h2v1H0zM3 9h2v2H3zM6 9h1v1H6zM8 8h1v3H8zM10 9h2v1h-2zM13 8h2v2h-2zM16 9h1v1h-1zM18 9h3v1h-3zM1 11h1v2H1zM4 12h2v1H4zM7 11h1v2H7zM9 12h2v2H9zM12 11h1v2h-1zM14 12h2v1h-2zM17 11h2v2h-2zM20 12h1v2h-1zM9 15h1v2H9zM11 14h1v2h-1zM13 15h2v1h-2zM16 15h1v3h-1zM18 15h1v1h-1zM9 18h2v2H9zM12 17h1v2h-1zM14 18h2v1h-2zM18 17h3v1h-3zM13 20h1v1h-1zM17 20h2v1h-2z"/></svg>
+        <div class="vtxt">
+          <div class="tag">SCAN TO VERIFY</div>
+          Opens the transaction on the public explorer.<br>
+          <span class="mono">tx 0x353b…2178</span>
+        </div>
+      </div>
+      <div class="dtv muted">DON'T TRUST — VERIFY</div>
+      <div class="seal">Sealed by the protocol · block 90,160,483 — the transaction hash <em>is</em> the signature.</div>
+    </div>
+    <div class="tz" style="padding-bottom:4px">
+      <div class="nextdoor"><b>Your referral link is ready</b> — the source that pays your wallet. One door, never a coupon.</div>
+    </div>
+  </div>
+  <div class="actions t-light" style="background:hsl(210 40% 98%);border-radius:0 0 10px 10px">
+    <button class="abtn">Copy link</button><button class="abtn">Share</button><button class="abtn primary">Save image</button><button class="abtn">Verify ↗</button>
+  </div>
+  <p class="note">Light theme, same anatomy. The NEXT DOOR zone shows the second door variant here (referral-ready) — the build renders exactly ONE, from the wallet's real state.</p>
+</div>
+</div>
+
+<!-- ═══════════════ SECTION 2 — MEMBER MENU ═══════════════ -->
+<h2>2 · MEMBER LEFT MENU — icons, groups, unmistakable active state</h2>
+<p class="sub">12 doors today (+ Receipts at its slice = 13 rows below) exceed the 5–7 rule → grouping proposal: 5 primaries (the daily loop) · THE RECORD (protocol memory) · GROWTH · Settings pinned last. Active = gold tint + persistent left bar (never color alone) · hover = subtle tint · keyboard focus = visible gold ring. Receipts joins the primaries at its slice (shown FUTURE).</p>
+<div class="row">
+  <div class="panel t-dark menu">
+    <div class="mgroup">Member</div>
+    <div class="mitem active"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Member Home<span class="mstate">← active</span></div>
+    <div class="mitem"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M16 12h4M2 10h20"/></svg>Wallet</div>
+    <div class="mitem hover"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M19 8v6M16 11h6"/></svg>Referral<span class="mstate">← hover</span></div>
+    <div class="mitem"><svg viewBox="0 0 24 24"><path d="M2 12h4l3-8 4 16 3-8h6"/></svg>Activity</div>
+    <div class="mitem focus"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z"/></svg>Toolkit<span class="mstate">← focus ring</span></div>
+    <div class="mitem mfuture"><svg viewBox="0 0 24 24"><path d="M5 3h14v18l-2.3-1.7L14.4 21l-2.4-1.7L9.6 21l-2.3-1.7L5 21z"/><path d="M9 8h6M9 12h6"/></svg>Receipts<span class="badge">at its slice</span></div>
+    <div class="mgroup">The record</div>
+    <div class="mitem"><svg viewBox="0 0 24 24"><path d="M8 3h11a2 2 0 0 1 2 2v13"/><path d="M8 3a2.5 2.5 0 0 0-2.5 2.5V19A2.5 2.5 0 0 0 8 21.5h13"/><path d="M11 8h6M11 12h6"/></svg>Chronicle</div>
+    <div class="mitem"><svg viewBox="0 0 24 24"><path d="M12 3s-4 4.5-4 8a4 4 0 0 0 8 0c0-3.5-4-8-4-8z"/><path d="M10 15c-1 1.5-1 3 0 4.5M14 15c1 1.5 1 3 0 4.5"/></svg>Fire Ledger</div>
+    <div class="mitem"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/><path d="M10 13h4"/></svg>Archive</div>
+    <div class="mitem"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4"/><path d="M8.5 12.5 7 21l5-3 5 3-1.5-8.5"/></svg>Recognition</div>
+    <div class="mitem"><svg viewBox="0 0 24 24"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></svg>Protocol graph</div>
+    <div class="mgroup">Growth</div>
+    <div class="mitem"><svg viewBox="0 0 24 24"><path d="M7 8s-3 3.2-3 5.5a3 3 0 0 0 6 0C10 11.2 7 8 7 8zM16 3s-4 4.3-4 7.5a4 4 0 0 0 8 0C20 7.3 16 3 16 3zM13 16s-2 2.2-2 3.7a2 2 0 0 0 4 0c0-1.5-2-3.7-2-3.7z"/></svg>Liquidity</div>
+    <div class="mgroup" style="border-top:1px solid hsl(var(--border));margin-top:10px;padding-top:14px">Off-chain comfort</div>
+    <div class="mitem"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.4 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6A7 7 0 0 0 5 12a7 7 0 0 0 .1 1.2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.4-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.2-.8.2-1.2z"/></svg>Settings</div>
+  </div>
+  <div style="max-width:560px">
+    <table>
+      <tr><th>Door</th><th>Icon (lucide)</th><th>Why this metaphor</th></tr>
+      <tr><td>Member Home</td><td class="mono">house</td><td class="why">The arrival point — universal, unambiguous.</td></tr>
+      <tr><td>Wallet</td><td class="mono">wallet</td><td class="why">Literal: balances + approvals.</td></tr>
+      <tr><td>Referral</td><td class="mono">user-plus</td><td class="why">You bring a PERSON in — the introduction, not the link artifact.</td></tr>
+      <tr><td>Activity</td><td class="mono">activity</td><td class="why">The pulse line — the heartbeat is the product's own name for it.</td></tr>
+      <tr><td>Toolkit</td><td class="mono">wrench</td><td class="why">Tools; locks stay visible inside.</td></tr>
+      <tr><td>Receipts <span class="why">(at its slice)</span></td><td class="mono">receipt</td><td class="why">The ticket binder — literal glyph exists in lucide.</td></tr>
+      <tr><td>Chronicle</td><td class="mono">book-open</td><td class="why">The solemn record = the book of record.</td></tr>
+      <tr><td>Fire Ledger</td><td class="mono">flame</td><td class="why">Proof of Burn — the flame IS the surface's name.</td></tr>
+      <tr><td>Archive</td><td class="mono">archive</td><td class="why">Literal: the memory box.</td></tr>
+      <tr><td>Recognition</td><td class="mono">award</td><td class="why">The medal — recognition, never money.</td></tr>
+      <tr><td>Protocol graph</td><td class="mono">map</td><td class="why">Route IS /map; the drawn territory.</td></tr>
+      <tr><td>Liquidity</td><td class="mono">droplets</td><td class="why">The pool — DeFi's own convention.</td></tr>
+      <tr><td>Settings</td><td class="mono">settings</td><td class="why">The gear, pinned last, visually separated — comfort, never protocol.</td></tr>
+    </table>
+    <p class="note">Active-state spec (WCAG 2.2 AA): background <span class="mono">gold/10</span> + persistent 2px left bar in gold + weight 600 — shape AND color, never color alone. Hover: <span class="mono">border/45</span> tint. Focus-visible: 2px gold ring, 2px offset. All rows ≥44px touch height at mobile widths.</p>
+  </div>
+</div>
+
+<!-- ═══════════════ SECTION 3 — POST-LOGIN HOME ═══════════════ -->
+<h2>3 · POST-LOGIN HOME — named zones (research-grounded recomposition of S7-b)</h2>
+<p class="sub">Grounding: the Linear/Stripe/Vercel post-login grammar — ① identity/context strip, ② decision KPIs above the fold, ③ an INBOX-class “needs me” zone (Linear's triage · Stripe's “to review”), ④ recent own activity with drill-in (Stripe payments-list pattern), ⑤ navigation as cards after the work, never before. Everything sealed in S7-b stays — this RECOMPOSES the grid and adds two zones (Z3 attention · Z4 recent activity, fed by D-TRUTH's own rows). Every zone answers a decision.</p>
+<div class="row">
+<div style="flex:1;min-width:520px;max-width:860px">
+  <div class="zone" style="margin-top:0"><span class="zt">Z1 · IDENTITY BAND (sealed — unchanged)</span>sigil · Member #N · Seat Held · rung pill · receipt chip · verify. <b>Decision: “am I recognized, can I prove it?”</b></div>
+  <div class="kpirow">
+    <div class="kpi">YOUR SYN</div><div class="kpi">YOUR USDC</div><div class="kpi">FOOTPRINT<br>$ · rung</div><div class="kpi">INTRODUCTIONS<br>n durable</div><div class="kpi">RECEIPTS<br>count → binder</div><div class="kpi">ARTIFACTS<br>n held</div>
+  </div>
+  <p class="note" style="margin-top:6px">Z2 · KPI ROW — grows 4 → 6 (Receipts · Artifacts, both live post-D-TRUTH). Each tile = a decision: top-up? share link? open binder? mint? Zero decorative tiles.</p>
+  <div class="grid-home">
+    <div>
+      <div class="zone"><span class="zt">Z3 · NEEDS YOUR ATTENTION</span>0–3 cards, derived ONLY from real state: promotion due (founder signature pending) · a standing approval you may want to revoke · a milestone your seat witnessed. EMPTY = one honest line (“Nothing needs you — the record is quiet.”). Never marketing, never urgency theater — the anti-scarcity law binds this zone.<br><b>Decision: “what do I act on now?”</b></div>
+      <div class="zone"><span class="zt">Z4 · YOUR RECENT ACTIVITY (D3 rows)</span>Your last 5 own purchases — date · floored amount · “View receipt” (opens the ticket, Piece 1 placement ②) · “All receipts →”. <b>Decision: “what happened on my account; can I show it?”</b></div>
+      <div class="zone"><span class="zt">Z5 · THE PROTOCOL PULSE (sealed — moves below own-work)</span>The 5 §8 lines w/ verify anchors — after YOUR items: the world standard puts my-work above world-news.</div>
+    </div>
+    <div>
+      <div class="zone"><span class="zt">Z6 · CAPITAL AXIS (sealed card, unchanged)</span>own cumulative · ladder · next · purchase record · shield line</div>
+      <div class="zone"><span class="zt">Z7 · PROTOCOL TODAY + CHRONICLE (sealed cards)</span>five spine facts · newest Chronicle entry</div>
+      <div class="zone"><span class="zt">Z8 · DOORS (grouped grid — mirrors the left menu groups)</span>with the Receipts door + live count teaser at its slice</div>
+    </div>
+  </div>
+</div>
+<div class="mobilecol">
+  <p class="note" style="margin-top:0"><b>Mobile (375):</b> single column, order = Z1 → Z2 (2×3) → Z3 → Z4 → Z6 → Z5 → Z7 → Z8. The member's own material always outranks world-news.</p>
+  <div class="zone">Z1 identity</div><div class="zone">Z2 KPIs 2×3</div><div class="zone">Z3 attention</div><div class="zone">Z4 my activity</div><div class="zone">Z6 capital</div><div class="zone">Z5 pulse</div><div class="zone">Z7 today</div><div class="zone">Z8 doors</div>
+</div>
+</div>
+<p class="note" style="max-width:70ch">Not in this wireframe (stays as-is until its own gate): the reserved FUTURE slots (Season · Quests · While-you-were-away) keep their honest cards inside Z8's group; the header, the door band for visitors, and every sealed card's INTERNAL anatomy are untouched.</p>
+</body>
+</html>

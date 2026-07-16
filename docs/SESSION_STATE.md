@@ -2,6 +2,27 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ ✅ THE WIREFRAME ROUND — ALL FIVE FOUNDER VERDICTS IN (2026-07-16; wireframes at
+> artifacts/mockup-sandbox/public/wireframes-2026-07-16.html, committed as the approved
+> record): ① TICKET GO** — with the founder's five figure-doubts ALL CONFIRMED against
+> the chain (real receipt member #13 · block 90,160,483 · tx 0x353bf2…2178 decoded
+> 2026-07-16: gross $5.00 → acquisitionCost $0.25 PAID FIRST → protocolContribution
+> $4.75 → vault $3.325 / liquidity $0.95 / operations $0.475 — ALL the event's own
+> fields, 25-field MembershipPurchasedV3; synOut 500 SYN at synPerUsdc 100; the mock's
+> $5.50/11,478-SYN/fake-tx/stitched-date/Vanguard-pairing all corrected); THE REAL-ROW
+> RULE + TICKET-AMOUNTS-ARE-EXACT engraved in ADR-001 with the METHOD LAW; PDF stance
+> accepted (print-clean V1, engine at /receipt/{txHash}). **② MENU GO** (grouping+icons;
+> GROWTH keeps its name — navigation, not a member promise; count corrected 12 doors +
+> Receipts-at-its-slice = 13 rows). **③ HOME GO** (all zones; "session expiring"
+> dropped from Z3 — founder instinct upheld: a system event, not a decision; replaced
+> by standing-approval-revoke). **④ LAW GO verbatim** — in ADR-001. **⑤ /ADMIN: the
+> neutral wall** (zero admin vocabulary at the bare URL; console reveals only after the
+> server confirms the operator role); build after the audit. **THE TOTAL SITE AUDIT
+> FLEET RETURNED (31/31 agents, 15 lenses + adversarial verification, zero errors)** —
+> canon doc assembly in flight → docs/audits/TOTAL_SITE_AUDIT_2026-07-16.md; next
+> meeting point: the audit doc + the cross-lens ranking + the slicing plan on the
+> founder's screen, then the build order (receipt slice first).**
+
 > **▶ 🔗 MICRO-SLICE BUILDER-LINK ✅ SEALED IN PROD (2026-07-16, Replit-verified 4/4
 > on thesyndicate.money, prod bundle `index-DSnsVSxD.js` — byte-identical SHA-256 to
 > the local build — anchor `a8a43c6`, 9/9 blob-verified, no migration): founder
