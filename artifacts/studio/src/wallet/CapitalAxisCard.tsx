@@ -18,7 +18,7 @@ import {
 } from "@/lib/capitalStanding";
 import { fetchMemberStanding } from "./walletSession";
 import { SESSION_CHANGED_EVENT } from "./sessionEvents";
-import { usdFromRaw } from "./ownReads";
+import { usdFromRaw, useOwnPurchases } from "./ownReads";
 
 const SHIELD_LINE =
   "Recognition only — a rung never unlocks a better SYN price or any financial benefit, and it never descends. The seat itself is binary: every seat is the same seat.";
@@ -26,6 +26,9 @@ const SHIELD_LINE =
 export default function CapitalAxisCard() {
   const [seat, setSeat] = useState<string | null>(null);
   const [standing, setStanding] = useState<CapitalStanding | null>(null);
+  // D-TRUTH D3: the sum's own addends — every indexed purchase, each with
+  // its verify anchor (the "recomputable by anyone" claim gets its record).
+  const purchases = useOwnPurchases();
 
   useEffect(() => {
     let active = true;
@@ -126,11 +129,53 @@ export default function CapitalAxisCard() {
         </>
       ) : (
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Your seat&apos;s earliest purchases aren&apos;t part of this count
-          yet — the early-era record joins soon. Nothing is guessed in the
-          meantime; the full ladder lives below.
+          Your footprint couldn&apos;t be read just now — nothing is assumed,
+          nothing is invented. It returns as soon as the record answers; the
+          full ladder lives below.
         </p>
       )}
+
+      {/* D-TRUTH D3: the record behind the sum — every own purchase with its
+          verify anchor (same progressive-disclosure pattern as the ladder). */}
+      <details className="mt-3 group" data-testid="own-purchase-record">
+        <summary className="cursor-pointer text-xs font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground">
+          Your purchase record — every entry verifiable
+        </summary>
+        {purchases?.rows && purchases.rows.length > 0 ? (
+          <ul className="mt-2 grid gap-0.5">
+            {purchases.rows.map((r) => (
+              <li
+                key={r.transaction}
+                className="flex items-baseline justify-between gap-3 rounded px-2 py-1 text-sm text-muted-foreground"
+              >
+                <span className="font-mono">{r.isoDayUtc}</span>
+                <span className="font-mono text-foreground/90">
+                  {usdFromRaw(r.amountRaw)}
+                </span>
+                <a
+                  href={r.explorerUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gold/90 hover:text-gold underline underline-offset-2"
+                >
+                  verify ↗
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          // Human-First (S7-e law): the honest human sentence; the server's
+          // exact reason stays available to verifiers via the tooltip.
+          <p
+            className="mt-2 text-sm text-muted-foreground leading-relaxed"
+            title={purchases?.failureReason ?? undefined}
+          >
+            {purchases?.rows
+              ? "No purchase rows in the indexed record for this wallet."
+              : "The record couldn't be read just now — nothing is assumed, nothing is invented. Try again in a moment."}
+          </p>
+        )}
+      </details>
 
       {/* Progressive disclosure: the full founder-named ladder. */}
       <details className="mt-3 group">

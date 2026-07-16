@@ -339,6 +339,9 @@ export interface SourceStandingReadback {
   chainVerified: boolean;
   sourceOnChain: boolean | null;
   sourceActive: boolean | null;
+  /** D2 — which resolution answered: the wallet's canonical id, or a
+   * founder-signed source whose registry record pays this wallet. */
+  sourceOrigin: "canonical" | "founder-signed" | null;
   standing: {
     attributedPurchases: number;
     introducedMembers: number;
@@ -415,8 +418,84 @@ export async function fetchSourceStanding(): Promise<SourceStandingReadback | nu
       chainVerified: o.chainVerified === true,
       sourceOnChain: typeof o.sourceOnChain === "boolean" ? o.sourceOnChain : null,
       sourceActive: typeof o.sourceActive === "boolean" ? o.sourceActive : null,
+      sourceOrigin:
+        o.sourceOrigin === "canonical" || o.sourceOrigin === "founder-signed"
+          ? o.sourceOrigin
+          : null,
       standing,
       failureReason: typeof o.failureReason === "string" ? o.failureReason : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+// ── D-TRUTH D3: own purchase-history rows (the member's own receipts) ───────
+export interface OwnPurchaseRowReadback {
+  isoDayUtc: string;
+  /** Gross USDC, 6-dec raw decimal string — humanized at render. */
+  amountRaw: string;
+  /** The purchase's own 64-hex verify anchor + its canonical explorer URL. */
+  transaction: string;
+  explorerUrl: string;
+  block: number | null;
+  /** Engine generation — a public protocol parameter (V1 · V2A · V2B · V3). */
+  engine: string;
+}
+
+export interface OwnPurchasesReadback {
+  state: "S1" | "S4";
+  /** null = the record model is unavailable (honest gap, never guessed). */
+  rows: OwnPurchaseRowReadback[] | null;
+  failureReason: string | null;
+}
+
+/**
+ * Read the signed wallet's OWN purchase rows (every indexed purchase — the
+ * cumulative footprint's addends, each with its verify anchor). Null on ANY
+ * transport/shape failure — the caller renders an honest gap, never a guess.
+ */
+export async function fetchOwnPurchases(): Promise<OwnPurchasesReadback | null> {
+  try {
+    const res = await fetch("/api/auth/member-purchases", { method: "GET" });
+    if (!res.ok) return null;
+    const body: unknown = await res.json();
+    if (typeof body !== "object" || body === null) return null;
+    const o = body as Record<string, unknown>;
+    if (o.state !== "S1" && o.state !== "S4") return null;
+
+    let rows: OwnPurchaseRowReadback[] | null = null;
+    if (Array.isArray(o.rows)) {
+      rows = [];
+      for (const raw of o.rows) {
+        if (typeof raw !== "object" || raw === null) return null;
+        const r = raw as Record<string, unknown>;
+        if (
+          typeof r.isoDayUtc !== "string" ||
+          typeof r.amountRaw !== "string" ||
+          !/^[0-9]+$/.test(r.amountRaw) ||
+          typeof r.transaction !== "string" ||
+          typeof r.explorerUrl !== "string" ||
+          typeof r.engine !== "string"
+        ) {
+          return null;
+        }
+        rows.push({
+          isoDayUtc: r.isoDayUtc,
+          amountRaw: r.amountRaw,
+          transaction: r.transaction,
+          explorerUrl: r.explorerUrl,
+          block: typeof r.block === "number" ? r.block : null,
+          engine: r.engine,
+        });
+      }
+    }
+
+    return {
+      state: o.state,
+      rows,
+      failureReason:
+        typeof o.failureReason === "string" ? o.failureReason : null,
     };
   } catch {
     return null;

@@ -22,9 +22,13 @@
  * Derivation (the witness pattern, third application): per-seat cumulative
  * gross USDC walks the SAME gapless purchase lane the milestones use
  * (memberNumber + the purchase's own public amount, both whitelisted).
- * V1 purchases carry no seat ordinal and are HONESTLY EXCLUDED from
- * per-seat footprints (counted + noted, never guessed). The V2B sentinel 0
- * is a pairing token, never a seat.
+ *
+ * D-TRUTH D1 (founder GO 2026-07-16): early-era rows that carry NO seat
+ * ordinal (V1 purchases, V2B pairing sentinels) but whose buyer wallet is
+ * in the Merkle-frozen genesis roster JOIN their frozen seat (#1–#8) for
+ * STANDING ONLY — the roster map arrives as a SERVER-ONLY builder input
+ * (never from the DB; the wallet never leaves). Rows that still match no
+ * seat stay HONESTLY EXCLUDED (counted + noted, never guessed).
  *
  * Purity: no db, no network, no clock. Fail closed on malformed amounts.
  * The line carries the RUNG TITLE and the public seat number only — never
@@ -68,6 +72,15 @@ export const CAPITAL_AXIS_LADDER: readonly CapitalRung[] = [
 
 const USDC_BASE = 1_000_000n; // 6-decimal base units per whole USDC
 
+/**
+ * D-TRUTH D1 — THE FOUNDER'S NO-RETROACTIVE-LINES DECISION (2026-07-16,
+ * reversible only at a founder gate): joined genesis rows recognize
+ * STANDING only. The public feed's rise record stays EXACTLY as it was
+ * witnessed — the rise walk never reads a joined row, so every sealed
+ * feed line is byte-identical with or without the roster input.
+ */
+export const GENESIS_JOIN_EMITS_RISES = false;
+
 // ---------------------------------------------------------------------------
 // Shapes.
 // ---------------------------------------------------------------------------
@@ -87,8 +100,9 @@ export interface CapitalRiseItem {
 
 /**
  * S7 — a seat's CURRENT standing on the capital axis: the same walk's end
- * state (never a second derivation). A seat whose footprint is not
- * derivable (V1-era rows carry no ordinal) is simply ABSENT — never guessed.
+ * state (never a second derivation). D1: genesis seats join via the frozen
+ * roster, so every seat with indexed purchases stands here; a seat whose
+ * rows genuinely match nothing is simply ABSENT — never guessed.
  *
  * S7-b (founder decision 2026-07-16, THE OWN-ACCOUNT DISPLAY RULE —
  * GAMIFICATION_LEGAL_DOCTRINE): the standing row ALSO carries the seat's
@@ -114,6 +128,18 @@ export interface CapitalBuildInput {
   readonly expectedChainId: number;
   readonly rawEvents: readonly RawSaleEventInput[];
   readonly blockTimestamps: readonly BlockTimestampInput[];
+  /**
+   * D-TRUTH D1 — SERVER-ONLY roster join input (OPTIONAL; the walk without
+   * it behaves exactly as before): lowercase buyer wallet → frozen genesis
+   * seat (#1–#8), from the Merkle-frozen roster committed on-chain behind
+   * V1_MEMBER_ROOT (historicalFreezeWallets — never the DB). Early-era rows
+   * whose wallet matches fold into STANDING for that seat; they NEVER emit
+   * a rise (GENESIS_JOIN_EMITS_RISES). Per-era resolution is structural:
+   * only rows WITHOUT an event seat ordinal consult the map, so a genesis
+   * wallet that also holds a V3 seat (the #7/#11 overlap) keeps its V3
+   * purchases on the V3 seat and its early-era purchases on the frozen one.
+   */
+  readonly genesisSeatByWallet?: ReadonlyMap<string, number>;
 }
 
 export interface CapitalBuildResult {
@@ -154,7 +180,8 @@ function rungIndexFor(cumRaw: bigint): number {
 export function buildCapitalAxisReadModel(
   input: CapitalBuildInput,
 ): CapitalBuildResult {
-  const { expectedChainId, rawEvents, blockTimestamps } = input;
+  const { expectedChainId, rawEvents, blockTimestamps, genesisSeatByWallet } =
+    input;
   const notes: string[] = [];
 
   const tsByBlock = new Map<number, number>();
@@ -189,13 +216,36 @@ export function buildCapitalAxisReadModel(
 
   const rises: CapitalRiseItem[] = [];
   const cumBySeat = new Map<number, bigint>();
+  // D1: standing-only fold for roster-joined early-era rows. Kept apart from
+  // cumBySeat so the RISE walk's cumulative is untouched — the witnessed feed
+  // can never change (the founder's no-retroactive-lines decision).
+  const joinedCumBySeat = new Map<number, bigint>();
+  let joinedCount = 0;
   let unattributed = 0;
 
   for (const p of purchases) {
-    // V1 rows carry no seat ordinal; the V2B sentinel 0 is never a seat.
-    // Both are honestly excluded from per-seat footprints — never guessed.
+    // Rows without an event seat ordinal (V1 rows; the V2B sentinel 0 is
+    // never a seat): D1 joins them to their Merkle-frozen genesis seat via
+    // the SERVER-ONLY roster input — for STANDING only, never a rise. A row
+    // whose wallet matches no frozen seat stays honestly excluded.
     if (p.memberNumber === null || p.memberNumber <= 0) {
-      unattributed += 1;
+      const joinedSeat =
+        genesisSeatByWallet?.get(p.memberAddress?.toLowerCase() ?? "") ??
+        undefined;
+      if (joinedSeat !== undefined) {
+        if (p.usdcGrossRaw === null || !/^[0-9]+$/.test(p.usdcGrossRaw)) {
+          fail(
+            "a roster-joined purchase carries no clean USDC amount — the footprint walk refuses to guess",
+          );
+        }
+        joinedCumBySeat.set(
+          joinedSeat,
+          (joinedCumBySeat.get(joinedSeat) ?? 0n) + BigInt(p.usdcGrossRaw),
+        );
+        joinedCount += 1;
+      } else {
+        unattributed += 1;
+      }
       continue;
     }
     if (p.usdcGrossRaw === null || !/^[0-9]+$/.test(p.usdcGrossRaw)) {
@@ -226,6 +276,11 @@ export function buildCapitalAxisReadModel(
     }
   }
 
+  if (joinedCount > 0) {
+    notes.push(
+      `${joinedCount} early-era purchase(s) joined to their frozen genesis seats for standing (the Merkle-frozen roster attribution); rise lines stay exactly as witnessed — the founder's decision of 2026-07-16`,
+    );
+  }
   if (unattributed > 0) {
     notes.push(
       `${unattributed} purchase(s) carry no seat ordinal (V1 rows / pairing sentinels) — honestly excluded from per-seat footprints, never guessed`,
@@ -235,8 +290,17 @@ export function buildCapitalAxisReadModel(
   // S7 — the walk's end state, folded once here (one derivation, one truth):
   // each walked seat's current rung, base included. S7-b: the cumulative
   // travels too (the own-account display rule — public chain data; the feed
-  // line still never carries it).
-  const standingBySeat: CapitalStandingItem[] = [...cumBySeat.entries()]
+  // line still never carries it). D1: roster-joined early-era amounts fold
+  // in HERE — standing tells the whole footprint; the rise record above
+  // never saw them.
+  const standingCumBySeat = new Map<number, bigint>(cumBySeat);
+  for (const [seatNumber, add] of joinedCumBySeat) {
+    standingCumBySeat.set(
+      seatNumber,
+      (standingCumBySeat.get(seatNumber) ?? 0n) + add,
+    );
+  }
+  const standingBySeat: CapitalStandingItem[] = [...standingCumBySeat.entries()]
     .map(([seatNumber, cumRaw]) => ({ seatNumber, cumRaw, idx: rungIndexFor(cumRaw) }))
     .filter((s) => s.idx >= 0)
     .sort((a, b) => a.seatNumber - b.seatNumber)

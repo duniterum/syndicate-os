@@ -28,6 +28,7 @@ import {
   readTokenBalance,
 } from "@/lib/chainReads";
 import { formatRawUnits, formatRawUnitsDisplay } from "@/lib/rawUnits";
+import { useOwnArchiveHoldings } from "./ownReads";
 
 const ERC20_APPROVE_ABI = [
   {
@@ -76,6 +77,8 @@ export default function MemberWalletPanel() {
   const poolUrl = urlFor("lpPair");
 
   const [reads, setReads] = useState<Reads>({ syn: null, usdc: null, usdcAllowanceToSale: null });
+  // D-TRUTH D5: own Archive artifact holdings (live ERC-1155 reads).
+  const artifacts = useOwnArchiveHoldings(address);
   const [usdcToken, setUsdcToken] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -167,6 +170,37 @@ export default function MemberWalletPanel() {
           </p>
         </Card>
       </div>
+
+      {/* D-TRUTH D5: your OWN Archive artifact holdings — a live per-artifact
+          balance read (the own-balance class), zero shown as a real zero. */}
+      <Card className="p-4 border-border/50 bg-card/40">
+        <p className="text-xs text-muted-foreground mb-1">Your Archive artifacts</p>
+        {artifacts !== null ? (
+          <div
+            className="flex flex-wrap items-baseline gap-x-6 gap-y-1"
+            data-testid="wallet-artifact-holdings"
+          >
+            {artifacts.map((a) => (
+              <p key={a.id} className="font-mono text-lg text-foreground">
+                {a.count}{" "}
+                <span className="text-xs text-muted-foreground">
+                  × {a.label}
+                </span>
+              </p>
+            ))}
+          </div>
+        ) : (
+          <p
+            className="font-mono text-lg text-foreground"
+            data-testid="wallet-artifact-holdings"
+          >
+            —{" "}
+            <span className="text-xs text-muted-foreground">
+              holdings unreadable right now (nothing is assumed)
+            </span>
+          </p>
+        )}
+      </Card>
 
       {/* THE APPROVALS PANEL — known protocol spenders only, own-row. */}
       <Card className="p-5 border-border/50 bg-card/40">

@@ -127,6 +127,17 @@ function IntroductionStanding({ readback }: { readback: StandingReadback | null 
           recorded up to block {s.asOfBlock.toLocaleString("en-US")}
         </span>
       </div>
+      {/* D-TRUTH D2: when the standing resolved through the founder-signed
+          fallback, say so — these figures belong to that source, not to the
+          wallet's canonical link (which the link card derives separately). */}
+      {readback?.sourceOrigin === "founder-signed" ? (
+        <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+          These figures are the record of your founder-signed source — the
+          source whose commission is paid to this wallet. The referral-link
+          card shows your wallet&apos;s canonical link, which is its own
+          separate source.
+        </p>
+      ) : null}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
         <StatCard label="Introductions">{String(s.introducedMembers)}</StatCard>
         <StatCard label="Durable introductions">{String(s.durableIntroductions)}</StatCard>

@@ -19,8 +19,9 @@
  *     and the public anti-scarcity narrative pins stand.
  *   - The red line stands: a rung unlocks recognition only — this route
  *     serves facts, never a benefit.
- *   - Fail-closed: model dark or seat unwalked (V1 rows carry no ordinal)
- *     → rung null with an honest note — never a guess.
+ *   - Fail-closed: model dark or seat genuinely unwalked → rung null with an
+ *     honest note — never a guess. (D-TRUTH D1: early-era rows now JOIN
+ *     their frozen genesis seats in the walk, standing-only.)
  * No DB read, no RPC: one in-memory snapshot per request, same output gate
  * as the feed (defense in depth on an address-free payload).
  */
@@ -80,7 +81,7 @@ router.get("/backbone/capital-standing", (req, res) => {
         standing !== null
           ? null
           : modelAvailable
-            ? "no derivable footprint for this seat — early-era purchases carry no seat ordinal and are honestly excluded, never guessed"
+            ? "no walked purchases for this seat in the indexed record — standing unavailable, never guessed"
             : "the capital model has not built yet — standing unavailable, never guessed",
     };
     const serialized = JSON.stringify(payload);

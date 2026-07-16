@@ -6,7 +6,12 @@
 //   1. derives the account's canonical sourceId (keccak256("SYN.SOURCE.V1",
 //      account) — SPEC §③; the emitter will compute the same on-chain),
 //   2. live-reads registry existence + active state (fail closed to null),
-//   3. resolves the source's OWN counters from the generated R5 snapshot via
+//   3. D-TRUTH D2 (founder GO 2026-07-16): when NO canonical source exists,
+//      falls back to any INDEXED source whose registry wallet of record is
+//      this same bound account (sourceOwnershipIndex — the founder-signed
+//      BUILDER class; sourceOrigin says which path answered), so a member
+//      is never told "no source exists" while their own source pays them,
+//   4. resolves the source's OWN counters from the generated R5 snapshot via
 //      the opaque sourceKey (an honest SERVED SNAPSHOT, labeled asOfBlock).
 // The account and the sourceId never leave this module's return value.
 
@@ -28,12 +33,19 @@ import { SOURCE_LINKAGE_TARGET } from "../../data/protocolTargets";
 import { sourceKeyOf } from "./introductionReadmodel";
 import { INTRODUCTION_SNAPSHOT } from "./introductionSnapshot";
 import { getLiveIntroductionModel } from "./introductionLiveModel";
+import { getOwnedSources } from "./sourceOwnershipIndex";
 
 export interface OwnSourceStanding {
   chainVerified: boolean;
   /** true/false = live registry answer; null = read unavailable (fail closed). */
   sourceOnChain: boolean | null;
   sourceActive: boolean | null;
+  /**
+   * D2 — which resolution answered: "canonical" (the wallet's own derived
+   * id) or "founder-signed" (an indexed source whose registry wallet of
+   * record is this account). Null when no source resolved.
+   */
+  sourceOrigin: "canonical" | "founder-signed" | null;
   standing: {
     attributedPurchases: number;
     introducedMembers: number;
@@ -62,6 +74,7 @@ export async function readOwnSourceStanding(
     chainVerified: false,
     sourceOnChain: null,
     sourceActive: null,
+    sourceOrigin: null,
     standing: null,
     failureReason: null,
   };
@@ -81,15 +94,18 @@ export async function readOwnSourceStanding(
     return out;
   }
 
-  const word = bytes32Word(sourceId);
-  try {
-    out.sourceOnChain = decodeBool(
+  const existsOnChain = async (id: string): Promise<boolean | null> =>
+    decodeBool(
       await ethCall(
         transport,
         SOURCE_LINKAGE_TARGET.registryAddress,
-        callData(SELECTOR_SOURCE_EXISTS, [word]),
+        callData(SELECTOR_SOURCE_EXISTS, [bytes32Word(id)]),
       ),
     );
+
+  let resolvedId: string = sourceId;
+  try {
+    out.sourceOnChain = await existsOnChain(sourceId);
   } catch {
     out.sourceOnChain = null;
   }
@@ -97,11 +113,50 @@ export async function readOwnSourceStanding(
     out.failureReason = "source existence read failed (reported as unavailable)";
     return out;
   }
-  if (!out.sourceOnChain) {
-    out.sourceActive = false;
-    out.failureReason =
-      "no on-chain referral source exists for this wallet yet — a new source is a founder-signed on-chain act";
-    return out;
+  if (out.sourceOnChain) {
+    out.sourceOrigin = "canonical";
+  } else {
+    // D2 — the wallet's canonical id does not exist: fall back to any INDEXED
+    // source whose registry wallet of record is this same bound account (the
+    // founder-signed class). The account is only ever a lookup key here.
+    const owned = getOwnedSources(boundAccount.toLowerCase());
+    if (owned === null) {
+      // The index has never built this process lifetime — resolution is
+      // UNAVAILABLE, never a definitive "no source exists".
+      out.sourceOnChain = null;
+      out.failureReason =
+        "the source index is still warming after a restart — your standing returns shortly; nothing is assumed";
+      return out;
+    }
+    const canonicalLower = sourceId.toLowerCase();
+    for (const cand of owned) {
+      if (cand.sourceId === canonicalLower) continue; // already answered false
+      let exists: boolean | null;
+      try {
+        exists = await existsOnChain(cand.sourceId);
+      } catch {
+        exists = null;
+      }
+      if (exists === null) {
+        out.sourceOnChain = null;
+        out.failureReason =
+          "source existence read failed (reported as unavailable)";
+        return out;
+      }
+      if (exists) {
+        resolvedId = cand.sourceId;
+        out.sourceOnChain = true;
+        out.sourceOrigin = "founder-signed";
+        break;
+      }
+    }
+    if (out.sourceOnChain !== true) {
+      out.sourceOnChain = false;
+      out.sourceActive = false;
+      out.failureReason =
+        "no on-chain referral source exists for this wallet yet — a new source is a founder-signed on-chain act";
+      return out;
+    }
   }
 
   try {
@@ -109,7 +164,7 @@ export async function readOwnSourceStanding(
       await ethCall(
         transport,
         SOURCE_LINKAGE_TARGET.registryAddress,
-        callData(SELECTOR_SOURCE_IS_ACTIVE, [word]),
+        callData(SELECTOR_SOURCE_IS_ACTIVE, [bytes32Word(resolvedId)]),
       ),
     );
   } catch {
@@ -126,7 +181,7 @@ export async function readOwnSourceStanding(
     liveModel.model.asOfBlock >= INTRODUCTION_SNAPSHOT.model.asOfBlock
       ? { model: liveModel.model, hash: liveModel.modelHash }
       : { model: INTRODUCTION_SNAPSHOT.model, hash: INTRODUCTION_SNAPSHOT.snapshotHash };
-  const row = active.model.bySource[sourceKeyOf(sourceId)] ?? null;
+  const row = active.model.bySource[sourceKeyOf(resolvedId)] ?? null;
   out.standing = {
     attributedPurchases: row?.attributedPurchases ?? 0,
     introducedMembers: row?.introducedMembers ?? 0,

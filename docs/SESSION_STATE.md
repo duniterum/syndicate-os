@@ -2,6 +2,87 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🧭 SLICE D-TRUTH ✅ BUILT + FOUNDER GO — COMMITTED, AWAITING DEPLOY (2026-07-16,
+> preview-gate record below; founder "GO D-TRUTH" + sequence ①→④ approved as argued):
+> THE OLD DATA ENTERS THE DASHBOARD.** D1 GENESIS FOOTPRINTS: the capital walk joins
+> every early-era row (V1 + V2B pairing sentinels) to its frozen genesis seat via
+> HISTORICAL_FREEZE_WALLETS as an OPTIONAL builder input (runner supplies it; the pure
+> builder stays DB-free) — **STANDING ONLY: the rise record is byte-identical with and
+> without the join, guard-proven (backbone.guard builds the walk both ways and demands
+> identical rises); `GENESIS_JOIN_EMITS_RISES = false` source-pinned — the founder's
+> no-retroactive-lines decision, reversible only at a founder gate.** The three false
+> copy sites died (KPI tooltip "early-era not derivable" · CapitalAxisCard "joins soon"
+> · capital-standing route note). D2 FOUNDER-SIGNED SOURCE FALLBACK: sourceOwnershipIndex
+> (lib/protocol, server-only in-memory) holds payoutWallet→sourceId edges captured from
+> the introduction refresh's EXISTING SourceRecord decode (zero new RPC, zero DB, zero
+> backfill — REUSE-BEFORE-CREATE; the audit's lifecycle-rows fold was IMPOSSIBLE:
+> decodeLifecycleLog persists decodedJson={} — corrected at build); readOwnSourceStanding
+> falls back canonical→owned (first live-EXISTS wins), serves `sourceOrigin:
+> "canonical"|"founder-signed"`; warming state honest ("index warming", never a false
+> "no source exists"); client provenance line on the referral dashboard. D3 OWN PURCHASE
+> ROWS: ownPurchaseReadmodel (pure, same lane, wallet-keyed SERVER-ONLY) + runner retain
+> + NEW auth route GET /api/auth/member-purchases (cookie-only, member-standing
+> discipline verbatim, 64-hex anchors pass the boundary-aware gate) + CapitalAxisCard
+> gains "Your purchase record — every entry verifiable" (progressive disclosure, date ·
+> floored $ · verify ↗ — the sum's addends; rig-verified 5.00+50.00+5.50 = $60.50).
+> D6 ZERO IS 0: Introductions KPI renders "0 durable · 0 total" on the registry's
+> definitive no-source answer (dash = unreadable only; tooltip says so). D5 OWN ARCHIVE
+> HOLDINGS (re-verified CONFIRMED by fresh adversarial scout — shown nowhere, derivable
+> client-only): /wallet gains "Your Archive artifacts" (live ERC-1155 balanceOf ids 1+3,
+> address from verify-links nftArchive, fail-closed WHOLE). Stale sourceDecoders header
+> corrected dated (M0 reads sourceConfig). SEO rode the slice (/member + /wallet notes).
+> GATE RECORD: tsc ×2 · build 24 shells · ALL 14 studio guards (access-state 915) ·
+> ALL 17 api guards (auth-zone 802 · backbone w/ 4 new D1 pins) · seo 395 · rewrites ·
+> surface 254 · +0 raw color · rig DOM-verified (S7 screenshot-down precedent): member
+> state via debug intercept (Member #1 wearing Patron · $60.50 · 2 durable · zero-mode 0
+> · intercept cleared, real state confirmed back) · 2/2 images · 0 sub-12px · both themes
+> · 375 zero overflow · zero console errors. **DEPLOY: 🚀 (server read-models + auth
+> route + member surfaces; NO migration, NO backfill) — Replit: pull main, deploy,
+> report. D2 warm-up nuance: after each restart, standing says "warming" until the first
+> introduction-refresh cycle (honest, minutes).**
+> **THE FOUNDER PACKAGE + RULINGS (2026-07-16, verbatim decisions — the acted plan):**
+> sequence ①→④ APPROVED: ① this seal → ② WIREFRAME ROUND on the founder's screen (no
+> code before approval): (a) THE PROTOCOL RECEIPT "ticket" — kind-extensible commerce
+> receipt spine harvested from TheSyndicate quarry (protocol-commerce-receipt.ts +
+> source-attributed-receipts.ts + SuccessReceipt.tsx — CONFIRMED present; react-qr-code
+> already a dep); founder wireframe contract zones A–G (header/meta/seat/money/total/
+> QR-verify/action-bar incl. Save-image); OUR skin (command-room ink + gold), both
+> themes; born ONLY from indexed/confirmed events (Mirror Rule: PARTIAL/PREVIEW die);
+> figures from the event's own fields, floored, never recomputed; placements: checkout
+> success ① · A1 receipt binder ② · Receipts door ③; (b) MEMBER LEFT MENU: door→icon
+> mapping for approval + unmistakable active state (tint + left indicator, never color
+> alone) + focus ring + 5–7 primaries or grouping proposal; (c) POST-LOGIN HOME
+> research-grounded (Linear/Stripe/Vercel-class study) — named zones: identity band ·
+> 4–6 decision KPIs · attention · recent activity (feeds on D3) · doors; EXTENDS S7-b,
+> sealed stays sealed; (d) PIECE 4 LAW engraving text inline (ADR-001: THE
+> RESEARCH-GROUNDED DESIGN METHOD: research → named-zone wireframe → founder approves →
+> build on tokens+laws → preview gate). → ③ TOTAL SITE AUDIT (ultracode, 15 lenses,
+> ONE sweep, audit-only, docs/audits/ dated canon doc; brief recorded in the 2026-07-16
+> founder message) launches right after the wireframes are handed — its lenses then
+> check the approved wireframes before build. → ④ build order: Receipt slice (checkout
+> success — kills the post-purchase dead end) → menu → home recomposition → re-confirmed
+> M-INT-1 → A1-as-receipt-binder → B1 → A2 → M-INT-2; S8 + S5 queued.
+> **RULING ① BUILDER LINK: YES** — micro-slice: the link card serves the source that
+> PAYS the wallet (founder-signed BUILDER first when canonical differs; generalized
+> paying-source-first; own-row sourceIdHex served; the two doctrine pins
+> (sourceStandingRead header "sourceId never leaves" + introductionReadmodel ADR-003
+> no-raw-sourceId posture) amended DATED; 64-hex passes the gates) — SLOT: first build
+> slice right after this deploy's Replit verification (no wireframe needed — Visual
+> Change Law ③ copy/truth class; unblocks the founder's end-to-end production referral
+> test). **RULING ② /ADMIN IN PRODUCTION: GATE IT** — the control room ships in prod
+> reachable ONLY by direct URL + real server-side operator/founder session (fail-closed,
+> never client-only hiding), ZERO public trace (no link/nav/sitemap/SEO/feed/bundle
+> strings on public+member surfaces — public-sees-admin-never joins admin-sees-public-
+> never); read ADMIN_SHELL_SPEC + RBAC canon before proposing auth (step-up for founder
+> root if canon defines); full blast radius: build flags, guards, deploy. Historical
+> scar (5 prior iterations): admin LEAKED into public frontend — the failure was leaks,
+> not admin-in-prod. SLOT: gate presented WITH the wireframe round; build lands after
+> the audit (lens 4 public/private boundary informs it — zero rework). OPEN ITEMS
+> CARRIED: sourceId-echo now RESOLVED by Ruling ① · Q5/Q6/Q9/Q13/Q20 still unanswered ·
+> 219 sub-12px general-sweep sites + no-sub-12px guard queued. Founder meeting points:
+> gates and wireframes only. Next session boots on "hi" → the wireframe round (② above)
+> unless the Replit report is pasted first (then: verify seal, then ②).
+
 > **▶ 🏁 SESSION SEAL (2026-07-16) — THE MEMBER DASHBOARD DAY + THE TOTAL AUDIT.**
 > SEALED IN PROD TODAY (all Replit-verified on thesyndicate.money): **S7** (the
 > approved wireframe: full-screen centered door · ONE connect CTA · the truth sweep —

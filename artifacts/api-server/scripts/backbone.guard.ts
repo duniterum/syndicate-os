@@ -1141,6 +1141,102 @@ check(
   "a standing row is {seatNumber, rung, cumulativeUsdcRaw} EXACTLY (S7-b own-account rule) — the FEED line still never carries the amount",
   "a capital standing row drifted from its founder-decided exact shape",
 );
+// ── D-TRUTH D1 (FOUNDER DECISION 2026-07-16 — no retroactive lines) ─────────
+// The frozen-roster join folds early-era rows (V1 + V2B sentinel-0) into
+// STANDING only. The same rows built WITH and WITHOUT the roster input must
+// keep the rise record BYTE-IDENTICAL (the witnessed feed can never change);
+// the joined seat gains its full footprint; an honest note says so; and the
+// source pins the founder's flag OFF.
+const genesisWallet = "0x" + "ab".repeat(20);
+const joinFixtureRows = [
+  {
+    chainId: CHAIN,
+    generation: "V3",
+    eventName: "MembershipPurchasedV3",
+    blockNumber: 100,
+    logIndex: 0,
+    transactionHash: txA,
+    firstSeat: true,
+    memberNumber: 2,
+    usdcGrossRaw: "5" + "0".repeat(6),
+    era: 1,
+    memberAddress: null,
+    referredBySource: false,
+    referrerAddress: null,
+  },
+  {
+    chainId: CHAIN,
+    generation: "V1",
+    eventName: "TokensPurchased",
+    blockNumber: 100,
+    logIndex: 9,
+    transactionHash: txD,
+    firstSeat: null,
+    memberNumber: null,
+    usdcGrossRaw: "50" + "0".repeat(6),
+    era: null,
+    memberAddress: genesisWallet,
+    referredBySource: false,
+    referrerAddress: null,
+  },
+  {
+    // A V2B pairing sentinel (memberNumber 0) by the same genesis wallet —
+    // joined per-era to the frozen seat, never treated as a seat itself.
+    chainId: CHAIN,
+    generation: "V2B",
+    eventName: "Purchased",
+    blockNumber: 150,
+    logIndex: 2,
+    transactionHash: txD,
+    firstSeat: false,
+    memberNumber: 0,
+    usdcGrossRaw: "10" + "0".repeat(6),
+    era: 1,
+    memberAddress: genesisWallet,
+    referredBySource: false,
+    referrerAddress: null,
+  },
+];
+const joinBase = buildCapitalAxisReadModel({
+  expectedChainId: CHAIN,
+  rawEvents: joinFixtureRows,
+  blockTimestamps: milestoneTs,
+});
+const joinApplied = buildCapitalAxisReadModel({
+  expectedChainId: CHAIN,
+  rawEvents: joinFixtureRows,
+  blockTimestamps: milestoneTs,
+  genesisSeatByWallet: new Map([[genesisWallet, 1]]),
+});
+check(
+  JSON.stringify(joinApplied.rises) === JSON.stringify(joinBase.rises),
+  "the roster join changes NO rise — the witnessed feed record is byte-identical with and without it (the founder's no-retroactive-lines decision)",
+  "the roster join altered the rise record — the no-retroactive-lines decision broke",
+);
+check(
+  joinApplied.standingBySeat.some(
+    (s) =>
+      s.seatNumber === 1 &&
+      s.rung === "Patron" &&
+      s.cumulativeUsdcRaw === "60000000",
+  ) &&
+    !joinBase.standingBySeat.some((s) => s.seatNumber === 1),
+  "the roster join gives the genesis seat its FULL footprint in standing (V1 + sentinel rows summed; $60 → Patron), absent without the join",
+  "the genesis standing join broke",
+);
+check(
+  joinApplied.notes.some((n) => n.includes("joined to their frozen genesis seats")) &&
+    !joinApplied.notes.some((n) => n.includes("honestly excluded")),
+  "the join is said in an honest note, and no excluded-rows note remains when every early-era row joined",
+  "the genesis-join honesty note broke",
+);
+check(
+  read("src/backbone/capitalAxisReadmodel.ts").includes(
+    "GENESIS_JOIN_EMITS_RISES = false",
+  ),
+  "the founder's no-retroactive-lines flag is pinned OFF in source (flipping it is a founder gate)",
+  "GENESIS_JOIN_EMITS_RISES drifted from the founder's decision",
+);
 expectThrow("capital build fails closed on an attributed purchase without its amount", () =>
   buildCapitalAxisReadModel({
     expectedChainId: CHAIN,

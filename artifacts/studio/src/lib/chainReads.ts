@@ -292,6 +292,44 @@ export async function readTokenBalance(
   }
 }
 
+// D-TRUTH D5: the member's OWN Archive artifact holdings — a plain public
+// ERC-1155 view (the boundary law's "what is yours" class: the client reads
+// own balances; the contract address arrives from verify-links, never
+// hardcoded). Minimal fragment authored here, the ERC20_READ_ABI precedent;
+// shape pinned by the vendored canon ABI (archive-nft-abi.ts).
+const ERC1155_READ_ABI = [
+  {
+    type: "function",
+    name: "balanceOf",
+    stateMutability: "view",
+    inputs: [
+      { name: "account", type: "address" },
+      { name: "id", type: "uint256" },
+    ],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+] as const;
+
+/** Live ERC-1155 balanceOf(account, id), raw count. Null on failure. */
+export async function readArtifactBalance(
+  contractAddress: string,
+  owner: string,
+  id: number,
+): Promise<bigint | null> {
+  if (!isAddress(contractAddress) || !isAddress(owner)) return null;
+  if (!Number.isSafeInteger(id) || id < 0) return null;
+  try {
+    return await publicClient.readContract({
+      address: getAddress(contractAddress),
+      abi: ERC1155_READ_ABI,
+      functionName: "balanceOf",
+      args: [getAddress(owner), BigInt(id)],
+    });
+  } catch {
+    return null;
+  }
+}
+
 // R2 PROPOSE reads (Constitution §④ Form 2): the registry's live owner() —
 // the ONLY wallet that can sign createSource/setSourceStatus (Ownable2Step) —
 // and the FULL source record so the PROPOSE screen can show a derived

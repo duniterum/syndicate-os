@@ -65,6 +65,9 @@ import { lookupGenesisMember, lookupMemberReceipt } from "./memberRoster";
 import { resolveOwnStanding } from "../lib/protocol/holderIndexStanding";
 import { txUrl } from "../canon/the-syndicate/chain/chain-registry";
 import { assertProtocolRealityDiscipline } from "../lib/protocol/payloadDiscipline";
+// D-TRUTH D3: the backbone's own-purchase read-model (SERVER-ONLY wallet
+// keys) — the auth zone serves a session's OWN rows out of it, nothing else.
+import { getOwnPurchaseSource } from "../backbone/backboneRunner";
 
 const router: Router = Router();
 
@@ -559,6 +562,7 @@ router.get("/source-standing", async (req: Request, res: Response) => {
           chainVerified: false,
           sourceOnChain: null,
           sourceActive: null,
+          sourceOrigin: null,
           standing: null,
           failureReason:
             "no active wallet session; sign in to read your referral standing",
@@ -571,6 +575,9 @@ router.get("/source-standing", async (req: Request, res: Response) => {
     chainVerified: resolved.chainVerified,
     sourceOnChain: resolved.sourceOnChain,
     sourceActive: resolved.sourceActive,
+    // D-TRUTH D2: which resolution answered — "canonical" or "founder-signed"
+    // (the own-row fallback). Additive; clients ignore unknown fields.
+    sourceOrigin: resolved.sourceOrigin,
     standing: resolved.standing,
     failureReason: resolved.failureReason,
   };
@@ -587,6 +594,90 @@ router.get("/source-standing", async (req: Request, res: Response) => {
   req.log.info({
     event: "auth.source_standing.checked",
     code: !sessionActive ? "none" : resolved.standing !== null ? "mapped" : "unavailable",
+  });
+  res.json(payload);
+});
+
+// ── GET /api/auth/member-purchases ──────────────────────────────────────────
+// D-TRUTH D3 — own purchase-history SELF-READBACK (the member-standing
+// discipline verbatim): the ONLY input is the session cookie; the bound
+// account picks the session's OWN rows out of the backbone's own-purchase
+// read-model and only dates, public amounts and 64-hex verify anchors leave.
+// ADR-003 §3: a member's own receipts are theirs to see and share; no lookup
+// surface for arbitrary wallets exists and the session's own key is never
+// echoed. Fail-closed: model dark → an honest reason, never a guess.
+router.get("/member-purchases", (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "auth.member_purchases.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const boundAccount =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+
+  const sessionActive = boundAccount !== null;
+  let rows:
+    | {
+        isoDayUtc: string;
+        amountRaw: string;
+        transaction: string;
+        explorerUrl: string;
+        block: number;
+        engine: string;
+      }[]
+    | null = null;
+  let failureReason: string | null = null;
+  if (boundAccount === null) {
+    failureReason =
+      "no active wallet session; sign in to read your own purchase record";
+  } else {
+    const source = getOwnPurchaseSource();
+    if (source === null) {
+      failureReason =
+        "the record model has not built yet — your rows return shortly; nothing is assumed";
+    } else {
+      const own = source.rowsByWallet.get(boundAccount.toLowerCase()) ?? [];
+      rows = [];
+      for (const r of own) {
+        const explorerUrl = txUrl(r.transactionHash);
+        if (explorerUrl === null) continue; // an anchor we cannot verify-link never serves
+        rows.push({
+          isoDayUtc: r.isoDayUtc,
+          amountRaw: r.usdcGrossRaw,
+          transaction: r.transactionHash,
+          explorerUrl,
+          block: r.blockNumber,
+          engine: r.generation,
+        });
+      }
+    }
+  }
+
+  const payload = {
+    state: sessionActive ? ("S4" as const) : ("S1" as const),
+    rows,
+    failureReason,
+  };
+  // Leak gates: payload discipline + boundary-aware address scan (40-hex
+  // fail-closes; the rows' 64-hex verify anchors pass). The bound account
+  // never enters the payload object — defense in depth.
+  try {
+    assertProtocolRealityDiscipline(payload);
+    if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(JSON.stringify(payload))) {
+      throw new Error("address-shaped token in payload");
+    }
+  } catch {
+    req.log.warn({ event: "auth.member_purchases.discipline_rejected" });
+    deny(res, 500, "unavailable");
+    return;
+  }
+  req.log.info({
+    event: "auth.member_purchases.checked",
+    code: !sessionActive ? "none" : rows !== null ? "mapped" : "unavailable",
   });
   res.json(payload);
 });

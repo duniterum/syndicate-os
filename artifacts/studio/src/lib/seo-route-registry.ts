@@ -152,7 +152,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "join",
     proofRoute: "/status",
     notes:
-      "S7/S7-b: full-screen door (one connect CTA) for visitors; the member DASHBOARD (identity band, live KPI tiles, pulse, referral, capital/protocol/chronicle cards) for signed members. View-only; no transaction path.",
+      "S7/S7-b: full-screen door (one connect CTA) for visitors; the member DASHBOARD (identity band, live KPI tiles, pulse, referral, capital/protocol/chronicle cards) for signed members. View-only; no transaction path. D-TRUTH (2026-07-16): genesis seats' early-era footprints join the capital walk (standing-only — the public feed unchanged); founder-signed source standing resolves via the wallet-of-record fallback; the capital card lists the member's own purchase record with verify anchors; a definitive zero renders 0, never a dash.",
   },
   // ARC SLICE D — member doors (FLAT routes: a /member/* path would emit a
   // member/ directory and resurrect the 2.0 trailing-slash redirect on /member).
@@ -163,7 +163,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Wallet — your balances & approvals",
     description:
-      "Your own SYN and USDC balances and your own approvals toward the protocol's known contracts — read live, own-row only. Revoking an approval is a transaction you sign in your own wallet.",
+      "Your own SYN, USDC and Archive artifact balances, plus your own approvals toward the protocol's known contracts — read live, own-row only. Revoking an approval is a transaction you sign in your own wallet.",
     canonicalPath: "/wallet",
     changefreq: "monthly",
     priority: 0.5,
@@ -171,7 +171,8 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     ownerSurface: "identity",
     primaryIntent: "proof",
     proofRoute: "/status",
-    notes: "Own-row reads + member-signed revoke (approve 0). No server write.",
+    notes:
+      "Own-row reads + member-signed revoke (approve 0). No server write. D-TRUTH D5 (2026-07-16): own Archive artifact holdings read live per artifact (client ERC-1155 balanceOf; address from verify-links).",
   },
   {
     path: "/toolkit",

@@ -52,6 +52,10 @@ import {
   type AttributedPurchaseRow,
 } from "../lib/protocol/introductionReadmodel";
 import { setLiveIntroductionModel } from "../lib/protocol/introductionLiveModel";
+import {
+  setSourceOwnershipIndex,
+  type OwnedSourceEdge,
+} from "../lib/protocol/sourceOwnershipIndex";
 import { SALE_SCAN_TARGETS, FINANCIAL_TARGETS } from "../data/protocolTargets";
 import { BACKBONE_EXPECTED_CHAIN_ID } from "./backboneDb";
 
@@ -266,6 +270,16 @@ export async function refreshIntroductionModel(
 
   const escrowBySourceId: Record<string, string> = {};
   const currentBpsBySourceId: Record<string, number> = {};
+  // D-TRUTH D2: the SourceRecord this loop already decodes carries the
+  // source's wallet of record — keep the SERVER-ONLY wallet→sourceId edge
+  // (sourceOwnershipIndex) instead of throwing it away. Zero extra reads.
+  const ownershipByWallet = new Map<string, OwnedSourceEdge[]>();
+  const lastBlockBySourceId = new Map<string, number>();
+  for (const r of rows) {
+    const sid = r.sourceId.toLowerCase();
+    const prev = lastBlockBySourceId.get(sid) ?? 0;
+    if (r.blockNumber > prev) lastBlockBySourceId.set(sid, r.blockNumber);
+  }
   const distinctSources = new Set(rows.map((r) => r.sourceId.toLowerCase()));
   summary.distinctSources = distinctSources.size;
   if (distinctSources.size > 0) {
@@ -294,7 +308,18 @@ export async function refreshIntroductionModel(
         )) as `0x${string}`,
       )[0];
       currentBpsBySourceId[sid] = Number(record.commissionBps);
+      // D2: the wallet the registry pays for this source, lowercased —
+      // SERVER-ONLY, matched later against a session's own bound account.
+      const walletOfRecord = String(record.payoutWallet).toLowerCase();
+      if (/^0x[0-9a-f]{40}$/.test(walletOfRecord)) {
+        const edges = ownershipByWallet.get(walletOfRecord) ?? [];
+        edges.push({ sourceId: sid, lastBlock: lastBlockBySourceId.get(sid) ?? 0 });
+        ownershipByWallet.set(walletOfRecord, edges);
+      }
     }
+  }
+  for (const edges of ownershipByWallet.values()) {
+    edges.sort((a, b) => b.lastBlock - a.lastBlock); // most recently active first
   }
 
   // Cross-check: the live engine's memberCount is reachable & sane.
@@ -329,6 +354,10 @@ export async function refreshIntroductionModel(
     modelHash: readmodelHash(model),
     refreshedIso: new Date().toISOString(), // ops metadata, never chain truth
   });
+  // D2: publish the ownership edge in the same breath as the model it
+  // belongs to (one cycle, one truth). Empty map when no source has an
+  // attributed purchase — a built-and-empty index, never a dark one.
+  setSourceOwnershipIndex(ownershipByWallet, head);
 
   summary.refreshed = true;
   summary.asOfBlock = head;

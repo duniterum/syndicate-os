@@ -81,6 +81,11 @@ import {
   buildCapitalAxisReadModel,
   type CapitalBuildResult,
 } from "./capitalAxisReadmodel";
+import {
+  buildOwnPurchaseReadModel,
+  type OwnPurchaseBuildResult,
+} from "./ownPurchaseReadmodel";
+import { HISTORICAL_FREEZE_WALLETS } from "../lib/protocol/historicalFreezeWallets";
 import { ethCall } from "../lib/protocol/evmRead";
 import {
   decodeUint256Decimal,
@@ -197,6 +202,15 @@ let lastGoodMilestoneModel: MilestoneBuildResult | null = null;
 let lastGoodEraModel: EraBuildResult | null = null;
 /** H2-⑰: the derived capital-axis model (footprint rises only). */
 let lastGoodCapitalModel: CapitalBuildResult | null = null;
+/** D-TRUTH D3: the own-purchase rows model (SERVER-ONLY wallet keys; the
+ * auth zone serves a session's own rows only — never a lookup surface). */
+let lastGoodOwnPurchaseModel: OwnPurchaseBuildResult | null = null;
+
+/** D-TRUTH D1: the Merkle-frozen genesis roster as the capital walk's
+ * SERVER-ONLY join input (lowercase wallet → seat #1–#8; never emitted). */
+const GENESIS_SEAT_BY_WALLET: ReadonlyMap<string, number> = new Map(
+  HISTORICAL_FREEZE_WALLETS.map((w) => [w.wallet.toLowerCase(), w.memberNumber]),
+);
 /** The protocol lane's honest coverage bounds (its cursors), for projections. */
 let burnsAsOfBlock: number | null = null;
 let lifecycleAsOfBlock: number | null = null;
@@ -215,6 +229,13 @@ export function getBackboneFeedSource(): FeedSource {
     burnsAsOfBlock,
     lifecycleAsOfBlock,
   };
+}
+
+/** D-TRUTH D3 — the own-purchase model, for the AUTH ZONE only (own-row
+ * serving; SERVER-ONLY wallet keys). Deliberately NOT part of FeedSource:
+ * the public feed projection never reads it. */
+export function getOwnPurchaseSource(): OwnPurchaseBuildResult | null {
+  return lastGoodOwnPurchaseModel;
 }
 
 /** Address-free snapshot for the status route (structure is already safe). */
@@ -459,9 +480,28 @@ async function runCycle(): Promise<string | null> {
       expectedChainId: BACKBONE_EXPECTED_CHAIN_ID,
       rawEvents: input.rawEvents,
       blockTimestamps: input.blockTimestamps,
+      // D-TRUTH D1: the frozen genesis roster joins early-era rows to their
+      // seats for STANDING only — the rise record stays exactly as witnessed.
+      genesisSeatByWallet: GENESIS_SEAT_BY_WALLET,
     });
   } catch (err) {
     capitalFault = err instanceof Error ? err.message : String(err);
+  }
+
+  // ③b5 The own-purchase read-model (D-TRUTH D3) — the member's own receipt
+  // rows over the SAME gapless lane; SERVER-ONLY wallet keys, served only as
+  // a session's own rows by the auth zone. A fault keeps the previous good
+  // model (the derived-layer discipline).
+  let ownPurchaseModel: OwnPurchaseBuildResult | null = null;
+  let ownPurchaseFault: string | null = null;
+  try {
+    ownPurchaseModel = buildOwnPurchaseReadModel({
+      expectedChainId: BACKBONE_EXPECTED_CHAIN_ID,
+      rawEvents: input.rawEvents,
+      blockTimestamps: input.blockTimestamps,
+    });
+  } catch (err) {
+    ownPurchaseFault = err instanceof Error ? err.message : String(err);
   }
 
   // ③c The introduction read-model refresh (M0) — ISOLATED like the protocol
@@ -482,6 +522,7 @@ async function runCycle(): Promise<string | null> {
   if (milestoneModel !== null) lastGoodMilestoneModel = milestoneModel;
   if (eraModel !== null) lastGoodEraModel = eraModel;
   if (capitalModel !== null) lastGoodCapitalModel = capitalModel;
+  if (ownPurchaseModel !== null) lastGoodOwnPurchaseModel = ownPurchaseModel;
   burnsAsOfBlock =
     protocolStreams.find((s) => s.streamKey === "SYN_BURN")?.cursorBlock ??
     burnsAsOfBlock;
@@ -544,6 +585,11 @@ async function runCycle(): Promise<string | null> {
   if (capitalFault !== null) {
     partialNotes.push(
       "capital-axis derivation faulted — the previous capital model keeps serving",
+    );
+  }
+  if (ownPurchaseFault !== null) {
+    partialNotes.push(
+      "own-purchase derivation faulted — the previous own-rows model keeps serving",
     );
   }
   return partialNotes.length > 0 ? partialNotes.join(" · ") : null;

@@ -113,7 +113,7 @@ export default function MemberKpiRow() {
             ? `${usdFromRaw(footprint.cumulativeUsdcRaw!)} · ${footprint.rung}`
             : null
         }
-        detail="Your cumulative on-chain purchases and the rung they place you on — recognition only, never a financial benefit. Early-era footprints are honestly not derivable."
+        detail="Your cumulative on-chain purchases — every era, the earliest included — and the rung they place you on. Recognition only, never a financial benefit."
         testId="kpi-footprint"
       />
       <KpiTile
@@ -121,9 +121,13 @@ export default function MemberKpiRow() {
         value={
           s !== null
             ? `${s.durableIntroductions} durable · ${s.introducedMembers} total`
-            : null
+            : sourceStanding?.sourceOnChain === false
+              ? // D-TRUTH D6: the registry answered DEFINITIVELY — no source,
+                // so the count is exactly zero. A dash is for the unreadable.
+                "0 durable · 0 total"
+              : null
         }
-        detail="Members you brought in, from the indexed introduction record — durable means their wallet still holds SYN."
+        detail="Members you brought in, from the indexed introduction record — durable means their wallet still holds SYN. Zero is a real answer; a dash means the record could not be read."
         testId="kpi-introductions"
       />
     </div>

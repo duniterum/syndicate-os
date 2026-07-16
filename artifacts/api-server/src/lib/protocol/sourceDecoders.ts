@@ -2,9 +2,11 @@
  * Source / join read selectors + decoders (SERVED, canon-free) — Public MVP.
  * ---------------------------------------------------------------------------
  * Strictly read-only helpers for the Verified Introduction (source) surface:
- *   - SourceRegistryV1: sourceExists(bytes32) / isActive(bytes32) booleans ONLY.
- *     The registry's sourceConfig view (wallets, terms) is NEVER read or
- *     surfaced by served code.
+ *   - SourceRegistryV1: sourceExists(bytes32) / isActive(bytes32) booleans ONLY
+ *     from THIS module. (Doc corrected 2026-07-16: since M0 the backbone's
+ *     introduction refresh reads sourceConfig server-side for the live rate —
+ *     and D2 keeps its wallet-of-record edge server-only. No wallet or term is
+ *     ever SURFACED; that discipline stands.)
  *   - MembershipSaleV3: SOURCE_REGISTRY() linkage check (address compared
  *     SERVER-SIDE only, never emitted) and quote(uint256,address,bytes32) as
  *     EXACT raw base-unit strings (never humanized, never a JS number).

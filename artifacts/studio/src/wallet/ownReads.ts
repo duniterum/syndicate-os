@@ -7,10 +7,19 @@
 
 import { useEffect, useState } from "react";
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
-import { readSaleUsdcToken, readTokenBalance } from "@/lib/chainReads";
+import {
+  readArtifactBalance,
+  readSaleUsdcToken,
+  readTokenBalance,
+} from "@/lib/chainReads";
 import { formatRawUnitsDisplay } from "@/lib/rawUnits";
 import { fetchCapitalRung } from "@/lib/capitalStanding";
-import { fetchSourceStanding, type SourceStandingReadback } from "./walletSession";
+import {
+  fetchOwnPurchases,
+  fetchSourceStanding,
+  type OwnPurchasesReadback,
+  type SourceStandingReadback,
+} from "./walletSession";
 import { SESSION_CHANGED_EVENT } from "./sessionEvents";
 
 /** Token address out of a verify-links explorer URL (token or address form). */
@@ -113,6 +122,96 @@ export function useOwnSourceStanding(): SourceStandingReadback | null {
     };
   }, []);
   return standing;
+}
+
+/**
+ * D-TRUTH D3: the wallet's OWN purchase rows (the footprint's addends, each
+ * with its verify anchor). Re-reads on session changes; null on any failure.
+ */
+export function useOwnPurchases(): OwnPurchasesReadback | null {
+  const [readback, setReadback] = useState<OwnPurchasesReadback | null>(null);
+  useEffect(() => {
+    let active = true;
+    const read = () => {
+      void fetchOwnPurchases().then((r) => {
+        if (active) setReadback(r);
+      });
+    };
+    read();
+    window.addEventListener(SESSION_CHANGED_EVENT, read);
+    return () => {
+      active = false;
+      window.removeEventListener(SESSION_CHANGED_EVENT, read);
+    };
+  }, []);
+  return readback;
+}
+
+/**
+ * D-TRUTH D5: the two publicly mintable Archive artifacts. Ids + public
+ * titles are protocol canon (the archive id registry; the same names the
+ * reality spine serves on /archive and the feed speaks per mint). The
+ * CONTRACT address still arrives live from verify-links — never hardcoded.
+ */
+export const OWN_ARCHIVE_ARTIFACTS = [
+  { id: 1, label: "The First Signal" },
+  { id: 3, label: "Patron Seal" },
+] as const;
+
+export interface OwnArtifactHolding {
+  readonly id: number;
+  readonly label: string;
+  /** Live count as a plain integer string ("0" is a real, definitive zero). */
+  readonly count: string;
+}
+
+/**
+ * D5: the wallet's OWN Archive artifact holdings — live ERC-1155 balanceOf
+ * per configured artifact (the own-balance class: read client-side, the
+ * SYN-balance pattern). Null while unreadable; a served row's zero is real.
+ */
+export function useOwnArchiveHoldings(
+  wallet: string | undefined,
+): readonly OwnArtifactHolding[] | null {
+  const { data } = useGetProtocolVerifyLinks();
+  const archiveUrl =
+    data?.links?.find((l) => l.id === "nftArchive")?.url ?? null;
+  const archiveAddr = archiveUrl ? addressFromUrl(archiveUrl) : null;
+  const [holdings, setHoldings] = useState<readonly OwnArtifactHolding[] | null>(
+    null,
+  );
+  useEffect(() => {
+    let active = true;
+    setHoldings(null);
+    if (!wallet || !archiveAddr) return;
+    void Promise.all(
+      OWN_ARCHIVE_ARTIFACTS.map((a) =>
+        readArtifactBalance(archiveAddr, wallet, a.id).then(
+          (raw): OwnArtifactHolding | null =>
+            raw !== null
+              ? { id: a.id, label: a.label, count: raw.toString() }
+              : null,
+        ),
+      ),
+    ).then((rows) => {
+      if (!active) return;
+      // Fail closed WHOLE: one unreadable artifact means the panel says
+      // "unavailable" rather than a silently partial list.
+      const complete: OwnArtifactHolding[] = [];
+      for (const r of rows) {
+        if (r === null) {
+          setHoldings(null);
+          return;
+        }
+        complete.push(r);
+      }
+      setHoldings(complete);
+    });
+    return () => {
+      active = false;
+    };
+  }, [wallet, archiveAddr]);
+  return holdings;
 }
 
 /** Whole-USDC display from 6-decimal base units, e.g. "$0.50". */
