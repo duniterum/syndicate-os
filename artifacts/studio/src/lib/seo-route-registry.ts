@@ -152,7 +152,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "join",
     proofRoute: "/status",
     notes:
-      "S7 recomposition: door band (one connect CTA) for visitors, your-seat hero (sigil, seat, capital rung, receipt) for members. View-only; no transaction path.",
+      "S7/S7-b: full-screen door (one connect CTA) for visitors; the member DASHBOARD (identity band, live KPI tiles, pulse, referral, capital/protocol/chronicle cards) for signed members. View-only; no transaction path.",
   },
   // ARC SLICE D — member doors (FLAT routes: a /member/* path would emit a
   // member/ directory and resurrect the 2.0 trailing-slash redirect on /member).

@@ -11,9 +11,13 @@ import { Card } from "@/components/ui/card";
 import { CHRONICLE_REGISTER } from "@/config/chronicleRegister";
 
 export function ChronicleLatest() {
+  // Self-audit fix (2026-07-16): "latest" is decided by the PROMOTION date,
+  // never by array position — the founder may promote entries out of order.
   const latest =
     CHRONICLE_REGISTER.length > 0
-      ? CHRONICLE_REGISTER[CHRONICLE_REGISTER.length - 1]!
+      ? [...CHRONICLE_REGISTER].sort((a, b) =>
+          a.promotedUtc.localeCompare(b.promotedUtc),
+        )[CHRONICLE_REGISTER.length - 1]!
       : null;
 
   return (

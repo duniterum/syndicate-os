@@ -117,7 +117,7 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > | Q27 | **Green main — 7 stale-guard fixes** (all STALE, two adversarially verified). | ✅ CLOSED `a83d812` (16/16 Linux) | — |
 > | Q28 | **`surfaceNaming.ts` + `guard-surface-naming` (BLOCKING) + 52-site sweep** — naming canon locked; all cockpit/Member-OS/control-tower leaks cleared. | ✅ CLOSED `c1d6700` | — |
 > | Q29 | **Widen the wire (S7/S11)** — `WIRABLE = [S1,S4,S7,S11]`; server-side elevation `resolveWiredAccessState` (S4→S7→S11, fail→S1, never a client claim); guard-access-state 688; false comment rewritten. | ✅ CLOSED [this commit] | — |
-> | Q30 | **Member Home** (`/member`) — identity strip "Your Seat" · empty-state conversion → `/join` · role-filtered quick actions (locked-visible, operator cats removed) · live figures (MOVE receipt, render SYN balanceOf) · nav. Then action registry → doors → `/join` purchase (APPROVE≠PAYMENT). | 🟡 NEXT | build slice by slice |
+> | Q30 | **Member Home** (`/member`) — identity strip "Your Seat" · empty-state conversion → `/join` · role-filtered quick actions (locked-visible, operator cats removed) · live figures (MOVE receipt, render SYN balanceOf) · nav. Then action registry → doors → `/join` purchase (APPROVE≠PAYMENT). | ✅ CLOSED (arc 2026-07-14 shell/A–D + **S7/S7-b dashboard 2026-07-16**: door + world-standard dashboard, KPI tiles, capital card, pulse; sealed via SESSION_STATE) | — |
 
 | # | Item (one line) | Status | Next move | Evidence |
 |---|---|---|---|---|
