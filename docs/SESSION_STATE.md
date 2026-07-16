@@ -2,6 +2,70 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🚪 SLICE S7 ✅ BUILT + FOUNDER-APPROVED AT THE PREVIEW GATE (2026-07-16, two live
+> art-direction rounds on the rig; founder "go in the right order, grade AAA for all"):
+> MEMBER HOME — THE APPROVED WIREFRAME REALIZED + THE LIVE-vs-NOT TRUTH SWEEP.**
+> THE PAGE (two states, ONE connect CTA): visitor = the FULL-SCREEN CENTERED door band
+> ("Your seat lives here." · one RainbowKit connect+SIWE CTA, locale pinned en-US ·
+> honesty verbatim "proves control of a wallet" + "session ≠ membership" — guard §16
+> re-pinned, dist probe "ever your own row" replaced the machinery word) · member = the
+> YOUR-SEAT HERO (sigil 72px · Member #N as h1 · Seat Held · **capital rung pill** —
+> title only, served by NEW public route `/api/backbone/capital-standing?seat=N` from
+> the canon walk's `standingBySeat` fold (backbone guard 141→143: base-Citizen state
+> readback, unwalked-seat absence, {seatNumber,rung} EXACT shape) · chapter · SYN ·
+> receipt · memberNumberOf verify teaching · honest unreadable+retry state). The dead
+> band DIED; the jargon FELL (6 facet tabs + the 6-stage Holder-Index table — which
+> LIED "Member Home… not live today" — retired; 3 human steps for visitors); the
+> session panel RETIRED (WalletSessionPanel deleted; guards §15/§16 adapted, auth-zone
+> dist probes updated). FOUNDER ART-DIRECTION AT THE GATE (both fixed same-day):
+> ① FULL SCREEN — the band fills the first viewport (65svh mobile / 100svh−header
+> desktop, `calc(100svh_-_3.75rem)` underscore form — the space-less calc DROPPED as
+> invalid CSS on the founder's browser and silently fell back to mobile height, caught
+> from his screenshot); ② CENTERED SCENE — the left-anchored block read "boxed" on wide
+> screens; both axes centered now. **THE TRUTH SWEEP (founder order: live-vs-not from
+> PROTOCOL REALITY, never page text):** referral dashboard REAL-ONLY (the "no figure
+> here is live yet" banner lie DIED — R5 is live; the 3 SAMPLE blocks with fake dollars
+> DELETED from config; ShareCard became REAL — own indexed figures + real derived link,
+> renders only on a real standing read; signed-out standing badge PENDING_ADAPTER →
+> AUTH_REQUIRED "Sign in required"); Archive door → "Open today" (Coming-soon group
+> emptied and removed); away-slot → FUTURE ("the event record is live; this member
+> surface arrives on it"); modules.ts badges DIED on live surfaces (/member
+> AWAITING_FOUNDER_APPROVAL/draft → live+honest description · /proof · /referral ·
+> /archive — the /join precedent: a live surface renders NO TruthLabel); /archive page
+> badge → READ_ONLY_PROOF "Verified — view only"; dead `protocolSurfaces` config
+> DELETED; `surfaceStatus` 4 keys marked RETIRED-FROM-RENDER with dated note;
+> standing/actions hooks re-read on SESSION_CHANGED (the page resolves IN PLACE after
+> connect — no reload). /member SEO title → "Member Home — Your Seat, Your Standing" +
+> honest notes (rides the slice). RIG-VERIFIED (DOM-level; the pane's screenshot
+> capture was down): both themes · 375+desktop · zero overflow · images loaded · both
+> states exercised via debug fetch-intercept (cleared, real state confirmed back) ·
+> zero samples served · band full-screen measured exact · the pre-existing dev-only
+> ConnectModal/Hydrate console warning proven on bare main (not this slice, absent in
+> prod builds). Green: workspace tsc ×2 · ALL 14 studio guards (access-state §15/§16
+> adapted) · ALL 17 api guards (backbone 143 · member-continuity 92 · protocol-time 38
+> — route-surface pins extended for capitalStanding.ts · auth-zone 782 with the new
+> dist probes) · seo 395 · surface 254 · build 24 shells · +0 raw color. DEPLOY: 🚀
+> (server route + visible member home — the founder art-directed it live; backlog
+> empty, nothing batched). **DOCTRINE CLARIFICATION RECORDED (never re-raise): admin
+> member-intelligence needs NO ADR-003 amendment** — the operator track already designs
+> the users/member-registry tab, audit log, exports (WALLET_FIRST…USER_REGISTRY_DESIGN
+> §D); ADR-003 forbids the PUBLIC directory + the wallet↔person link, not the gated
+> business console; S1/S3 stay untracked by design; my red-line over-call retracted
+> (second occurrence of the partial-read failure mode — memory pinned). **THE ACTED
+> ORDER (founder work order 2026-07-16, "go in the right order, grade AAA for all"):
+> ① M-INT-1 the member ledger — operator-side per-seat dossier + RFM/at-risk segments
+> + internal rankings (durable ambassadors · footprints · active/dormant), from
+> ALREADY-INDEXED data (capital walk + R5 + roster + heartbeat lanes), founder-gated
+> S11+, zero new collection, zero public-surface change → ② A1 "My Activity" — the
+> member's own-row lens on the indexed record (bridge design decided at ITS gate) →
+> ③ B1 THE FIRSTS — derived firsts-per-class detection (first burn/community-LP/
+> referred-purchase/rung-rise…) feeding a Chronicle-candidates queue in the console
+> (CHR-1 intact: the machine PROPOSES, the founder PROMOTES) → ④ A2 "My Chronicle"
+> (own milestones + register presence) → ⑤ M-INT-2 the §D users-registry/audit
+> surfaces. S8 perf + S5 (founder paste) stay queued behind. On-chain prospect views
+> (SYN-holders-without-seats) ride M-INT; session-logging of unsigned connects stays
+> OUT (S3 invisible by design).** Next session boots on "hi".
+
 > **▶ 🏁 SESSION SEAL (2026-07-15) — THE H2 DAY: the complete heartbeat's founding
 > inventory, opened and CLOSED in one session, every slice SEALED IN PROD on
 > thesyndicate.money (final bundle `index-CZSNZlO5.js`).** THE LEDGER (8 slices, 6
