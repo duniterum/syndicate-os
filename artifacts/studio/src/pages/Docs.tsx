@@ -18,11 +18,15 @@ import { DOCS_GROUPS, DOCS_JOURNEY } from "@/content/docs-content";
 
 const TOC: IndexEntry[] = DOCS_GROUPS.map((g) => ({ id: g.id, label: g.title }));
 
-/** Card status, DERIVED from the route registry — never a hardcoded live label. */
+/** Card status, DERIVED from the route registry — never a hardcoded live label.
+ * AUD-TRUTH-2 (founder prod walk, 2026-07-16): the labels say what the registry
+ * actually KNOWS — whether the page is open and listed — never "Ready"/"Pending"
+ * liveness claims (the /support card wore READY beside its own honest
+ * nothing-is-stored text; /archive wore PENDING beside live mints). */
 function docStatus(path: string): { tone: StatusTone; label: string } {
   const entry = getRouteSeoByPath(path);
-  if (entry.indexStatus === "INDEX") return { tone: "proof", label: "Ready" };
-  if (entry.indexStatus === "PENDING") return { tone: "caution", label: "Pending" };
+  if (entry.indexStatus === "INDEX") return { tone: "proof", label: "Open" };
+  if (entry.indexStatus === "PENDING") return { tone: "caution", label: "Open · unlisted" };
   return { tone: "neutral", label: "Reference" };
 }
 

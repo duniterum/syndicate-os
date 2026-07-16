@@ -332,11 +332,16 @@ const CANON: CanonEntry[] = [
   {
     key: "continuity",
     label: "Member Continuity",
-    posture: "VERIFIED_SOURCE_PENDING_ADAPTER",
+    // AUD-TRUTH-2 (founder prod walk, 2026-07-16): the pending-adapter badge
+    // DIED — the own-row standing readback is LIVE behind sign-in (S4/S7),
+    // genesis seats resolve from the frozen roster, and D-TRUTH joined their
+    // early-era footprints. READ_ONLY_PROOF: verified, view-only, live —
+    // a PROMOTION (this registry's postures never regress).
+    posture: "READ_ONLY_PROOF",
     publicClass: "FOUNDER_DECISION",
     sourceRef: "internal:historical-member-freeze",
     confidence: "high",
-    note: "Historical member continuity (the frozen early-era record) is imported and reconciled server-side against the on-chain root, fail-closed. No public projection is served; the active engine's standing is readable only as each signed wallet's own self-readback.",
+    note: "Historical member continuity (the frozen early-era record) is imported and reconciled server-side against the on-chain root, fail-closed. No public projection is served; each signed wallet reads its OWN standing live on the member page — sign-in is the only key.",
     surface: "/member",
   },
   {

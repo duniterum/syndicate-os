@@ -26,8 +26,11 @@ const dimensions: Dimension[] = [
   },
   {
     title: "Archive memory",
-    body: "Contributions that endure become part of the protocol's archive and chronicle.",
-    lifecycle: "PENDING_ADAPTER",
+    // AUD-TRUTH-2 (founder prod walk, 2026-07-16): "Not live yet" DIED — the
+    // archive mints and the chronicle publishes TODAY; what remains future is
+    // this recognition DIMENSION (same honest split as the source card).
+    body: "Contributions that endure become part of the protocol's archive and chronicle — both open and publishing today; this recognition dimension arrives with the recognition model.",
+    lifecycle: "FUTURE",
   },
   {
     title: "Standing over time",

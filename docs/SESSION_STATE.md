@@ -2,6 +2,36 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 📷 SLICE AUD-TRUTH-2 ✅ BUILT + FOUNDER GO — COMMITTED, AWAITING DEPLOY
+> (2026-07-16, the founder's own prod walk — 8 screenshots): ① /recognition
+> "Archive memory: Not live yet" DIED → the honest dimension split (archive+
+> chronicle live today; the recognition DIMENSION arrives with the model; badge
+> FUTURE). ② /docs badge conflation DIED — docStatus labels say what the registry
+> KNOWS: Open / Open · unlisted / Reference (READY-beside-nothing-stored and
+> PENDING-beside-live-mints both dead). ③ PUBLIC-SEES-ADMIN-NEVER made real ahead
+> of the /admin slice: the operator/admin surface map MOVED (never deleted) to
+> /os-map via the NEW shared SurfaceMapSection (one registry projection, two
+> homes, can never fork); public /status renders PUBLIC+MEMBER only; the footer
+> Console group DIED site-wide (navigation.ts). ④ /status "Member Continuity —
+> pending adapter" PROMOTED to READ_ONLY_PROOF (the own-row standing readback is
+> live behind sign-in; note carries the sign-in truth; 161 pins green; postures
+> never regress). ⑤ the raw-base-units figure on /status → rides the P2
+> human-readable wave (needs an API decimals field, never string-sniffing).
+> ⑥ Holder Index 10 vs 14 seats = the 2026-07-03 founder-gated snapshot is
+> STALE — the rebuild rides THIS deploy's Replit instruction (Replit runs the
+> gated builder, PASTES the regenerated snapshot, Claude Code commits — the
+> one-writer choreography). Guard lesson: PostureBadge joined the lifecycle-label
+> guard's accepted honesty labels (truthful widening). Gate: tsc ×2 · build 27
+> shells · ALL studio + 17 api guards · seo 43 routes · surface 281 · rig
+> DOM-verified (/status operator-free + map intact · /os-map all-audiences map
+> w/ admin rows · /recognition · /docs · footer), zero console errors.
+> DEPLOY: 🚀. ALSO ENGRAVED HERE — **AUD-TRUTH ✅ SEALED IN PROD (Replit 6/6,
+> bundle `index-Cw5BCIY1.js` SHA-256 byte-identical, anchor `8705139`): the 4 new
+> truths served · the 6 dead phrases at zero · source-status token /tokenomics ·
+> FAQ JSON-LD two-ladders w/ Cornerstone=0 · feed 75→78 (3 GENUINE treasury moves
+> indexed live during the window — living growth) · engine healthy, pool guard
+> compiled in.** NEXT per the GO'd plan: THE RECEIPT SLICE (approved wireframe).
+
 > **▶ 🧹 SLICE AUD-TRUTH ✅ BUILT + FOUNDER GO ON ALL TEXTS — COMMITTED, AWAITING
 > DEPLOY (2026-07-16): THE SITE-WIDE ERA-DRIFT SWEEP — the audit's lens-1/2/3 P1
 > layer dead (~13 distinct truth defects) + two P1 functional riders.** THE KILLS:

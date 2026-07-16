@@ -1,5 +1,6 @@
 import { Network, ServerOff } from "lucide-react";
 import { DataStatusNote } from "@/components/DataStatusNote";
+import { SurfaceMapSection } from "@/components/SurfaceMapSection";
 import { TruthLabel } from "@/components/TruthLabel";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
@@ -114,6 +115,22 @@ export default function OsMap() {
             </section>
           );
         })}
+      </div>
+
+      {/* AUD-TRUTH-2 (founder Ruling ②, 2026-07-16): the COMPLETE surface map
+          lives HERE, on the operator side — moved from the public /status,
+          never deleted. All three audiences, one shared projection. */}
+      <div className="mt-12">
+        <h2 className="type-h2 text-foreground mb-2">Surface map — all audiences</h2>
+        <p className="text-muted-foreground text-sm mb-6 max-w-2xl">
+          Every surface in the foundation, its audience, and its honest lifecycle —
+          projected from the surface-classification registry. The public /status
+          shows visitors the PUBLIC and MEMBER sections only; the operator view
+          here carries the whole organism.
+        </p>
+        <SurfaceMapSection
+          audiences={["PUBLIC", "MEMBER_PREVIEW", "OPERATOR_PREVIEW"]}
+        />
       </div>
     </div>
   );

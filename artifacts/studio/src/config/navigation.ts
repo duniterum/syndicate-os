@@ -63,7 +63,8 @@ const footerGroupSpec: { heading: string; itemIds: string[] }[] = [
   { heading: "Membership", itemIds: ["member", "join", "source-link", "support"] },
   // AUD-T (2026-07-16): the legal layer on every public page's footer.
   { heading: "Legal", itemIds: ["terms", "privacy", "risk"] },
-  { heading: "Console", itemIds: ["studio"] },
+  // AUD-TRUTH-2 (founder Ruling ②, 2026-07-16): the Console footer group DIED —
+  // PUBLIC-SEES-ADMIN-NEVER: no operator door on any public or member surface.
 ];
 
 export const footerGroups: FooterGroup[] = footerGroupSpec.map((g) => ({

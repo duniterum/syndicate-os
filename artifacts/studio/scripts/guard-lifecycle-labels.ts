@@ -48,7 +48,11 @@ const EXEMPT = new Set([
 // TruthLabel is a thin wrapper over it, and it replaced the older
 // LifecycleBadge/PostureBadge sprawl. A page rendering any of these carries an
 // honesty label. (The whitepaper labels every section with a <StatusPill>.)
-const LABEL_RE = /\b(LifecycleBadge|TruthLabel|StatusPill)\b/;
+// AUD-TRUTH-2 (2026-07-16): PostureBadge joined the accepted labels — it IS an
+// honesty label (the source-status registry's posture text, e.g. "Verified —
+// view only"); /status carries one per registry row and lost its only
+// TruthLabel when the operator surface map moved to /os-map.
+const LABEL_RE = /\b(LifecycleBadge|TruthLabel|StatusPill|PostureBadge)\b/;
 
 const errors: string[] = [];
 let ok = 0;
