@@ -2,9 +2,22 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🚪 SLICE S7 ✅ BUILT + FOUNDER-APPROVED AT THE PREVIEW GATE (2026-07-16, two live
+> **▶ 🚪 SLICE S7 ✅ SEALED IN PROD (2026-07-16, Replit-verified 6/6 on thesyndicate.money,
+> prod bundle `index-Cta5zhDH.js`, 25/26 files blob-verified + 1 deletion confirmed, no
+> migration — 142/142 parity): PROD PROOF — the centered full-screen door serves (desktop
+> AND mobile viewport), `capital-standing?seat=14` answers 200 with the REAL walk's rung
+> (`"rung":"Citizen"` — seat #14's honest $5 footprint) and 400 on `?seat=abc`, the hero
+> structure ships (seat/receipt/chapter/rung pill; connected state validated by the
+> founder at the preview gate), ZERO sample figures in the bundle ("$120"/"SAMPLE-CODE"
+> absent), /activity intact (75 lines incl. 5 capital rises, zero 40-hex), zero console
+> errors; engine 2/2 cycles, zero partial, lastError null. FOLLOW-UP OPENED AT THE SEAL
+> (founder, video + QuickNode reference): the CONNECTED member state must become a true
+> full-width dashboard — S7-b wireframe first (Visual Change Law), research-grounded
+> (Binance/Coinbase/Kraken/Revolut/QuickNode class); the acted order flexes: S7-b
+> wireframe → M-INT-1 → A1 → B1 → A2 → M-INT-2. Original build record follows:**
+> BUILT + FOUNDER-APPROVED AT THE PREVIEW GATE (2026-07-16, two live
 > art-direction rounds on the rig; founder "go in the right order, grade AAA for all"):
-> MEMBER HOME — THE APPROVED WIREFRAME REALIZED + THE LIVE-vs-NOT TRUTH SWEEP.**
+> MEMBER HOME — THE APPROVED WIREFRAME REALIZED + THE LIVE-vs-NOT TRUTH SWEEP.
 > THE PAGE (two states, ONE connect CTA): visitor = the FULL-SCREEN CENTERED door band
 > ("Your seat lives here." · one RainbowKit connect+SIWE CTA, locale pinned en-US ·
 > honesty verbatim "proves control of a wallet" + "session ≠ membership" — guard §16
