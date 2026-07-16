@@ -8,7 +8,7 @@
 import { useEffect, useState } from "react";
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { readSaleUsdcToken, readTokenBalance } from "@/lib/chainReads";
-import { formatRawUnits } from "@/lib/rawUnits";
+import { formatRawUnitsDisplay } from "@/lib/rawUnits";
 import { fetchCapitalRung } from "@/lib/capitalStanding";
 import { fetchSourceStanding, type SourceStandingReadback } from "./walletSession";
 import { SESSION_CHANGED_EVENT } from "./sessionEvents";
@@ -32,7 +32,9 @@ export function useOwnSynBalance(wallet: string | undefined): string | null {
     setBalance(null);
     if (!wallet || !tokenAddr) return;
     void readTokenBalance(tokenAddr, wallet).then((raw) => {
-      if (active && raw !== null) setBalance(formatRawUnits(raw.toString(), 18));
+      // Human display (S7-e): 2 decimals, exact half-up — never the 18-digit tail.
+      if (active && raw !== null)
+        setBalance(formatRawUnitsDisplay(raw.toString(), 18, 2));
     });
     return () => {
       active = false;
@@ -59,7 +61,8 @@ export function useOwnUsdcBalance(wallet: string | undefined): string | null {
     void readSaleUsdcToken(saleAddr).then((usdc) => {
       if (!active || usdc === null) return;
       void readTokenBalance(usdc, wallet).then((raw) => {
-        if (active && raw !== null) setBalance(formatRawUnits(raw.toString(), 6));
+        if (active && raw !== null)
+          setBalance(formatRawUnitsDisplay(raw.toString(), 6, 2));
       });
     });
     return () => {

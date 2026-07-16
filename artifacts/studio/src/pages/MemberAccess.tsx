@@ -159,7 +159,7 @@ export default function MemberAccess() {
                   <section id="referral-dashboard" className="scroll-mt-24">
                     <h2 className="type-h2 text-foreground mb-1">Your referral</h2>
                     <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-2">
-                      Your introductions, your indexed standing, and the Connector
+                      The people you brought in, your standing, and the Connector
                       ladder.
                     </p>
                     <MemberReferralDashboard />
@@ -180,7 +180,7 @@ export default function MemberAccess() {
                   <div>
                     <h2 className="type-h2 text-foreground mb-1">Coming to your seat</h2>
                     <p className="text-sm text-muted-foreground leading-relaxed mb-2">
-                      Reserved on the existing posture system — nothing simulated.
+                      Reserved, honestly — nothing here is simulated.
                     </p>
                     <div className="grid gap-3">
                       {MEMBER_HOME_RESERVED_SLOTS.map((slot) => (
@@ -310,7 +310,7 @@ export default function MemberAccess() {
             <section id="referral-dashboard" className="mb-12 scroll-mt-24">
               <h2 className="type-h2 text-foreground mb-1">Your referral</h2>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-2">
-                Your introductions, your indexed standing, and the Connector
+                The people you brought in, your standing, and the Connector
                 ladder.
               </p>
               <MemberReferralDashboard />

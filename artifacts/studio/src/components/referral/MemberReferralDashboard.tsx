@@ -63,6 +63,19 @@ function useOwnSourceStanding(): StandingReadback | null {
   return standing;
 }
 
+/**
+ * S7-e — server diagnostics never reach a member verbatim (Human-First Law):
+ * known reasons get their human sentence; anything else gets the honest
+ * generic. The exact reason stays available to verifiers via the tooltip.
+ */
+function humanReadFailure(reason: string | null | undefined): string | null {
+  if (!reason) return null;
+  if (reason.includes("no on-chain referral source")) {
+    return "No referral source exists for this wallet yet — a new source is a founder-signed on-chain act.";
+  }
+  return "The live read didn't answer just now — nothing is assumed, nothing is invented. Try again in a moment.";
+}
+
 function usd(raw: string): string {
   const n = BigInt(raw);
   const whole = n / 1_000_000n;
@@ -91,10 +104,13 @@ function IntroductionStanding({ readback }: { readback: StandingReadback | null 
             <LifecycleBadge lifecycle="AUTH_REQUIRED" />
           ) : null}
         </div>
-        <p className="text-sm text-muted-foreground leading-relaxed">
+        <p
+          className="text-sm text-muted-foreground leading-relaxed"
+          title={readback?.failureReason ?? undefined}
+        >
           {signedIn
-            ? (readback?.failureReason ??
-              "No indexed standing exists for this wallet yet — a new source is a founder-signed on-chain act.")
+            ? (humanReadFailure(readback?.failureReason) ??
+              "No referral standing exists for this wallet yet — a new source is a founder-signed on-chain act.")
             : readback !== null
               ? "The standing read is live — sign in with your wallet to see your own. No figure is shown without the read."
               : "The standing read is unavailable right now — nothing is assumed, nothing is invented."}
@@ -108,7 +124,7 @@ function IntroductionStanding({ readback }: { readback: StandingReadback | null 
       <div className="flex flex-wrap items-center gap-2 mb-3">
         <span className="text-sm font-medium text-foreground">Your introduction standing</span>
         <span className="font-mono text-xs text-muted-foreground">
-          indexed · as of block {s.asOfBlock}
+          recorded up to block {s.asOfBlock.toLocaleString("en-US")}
         </span>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
@@ -124,8 +140,9 @@ function IntroductionStanding({ readback }: { readback: StandingReadback | null 
           </span>
           {p.next ? (
             <span className="text-muted-foreground">
-              {p.next.title} at {p.next.durableThreshold} durable
-              {p.next.raisesRate ? ` · ${p.next.bps / 100}%` : " · title"}
+              {p.next.raisesRate
+                ? `Next: ${p.next.title} at ${p.next.durableThreshold} durable introductions — the rate rises to ${p.next.bps / 100}%`
+                : `Next: ${p.next.title} at ${p.next.durableThreshold} durable introductions — a recognition title; the rate stays`}
             </span>
           ) : (
             <span className="text-muted-foreground">the summit — the on-chain cap</span>

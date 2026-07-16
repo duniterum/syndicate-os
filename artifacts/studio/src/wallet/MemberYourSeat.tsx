@@ -238,12 +238,14 @@ export default function MemberYourSeat() {
         </div>
       ) : null}
 
-      {/* The verify teaching (guard-pinned): the engine itself answers for
-          the seat — anyone can check. One quiet line. */}
+      {/* The verify teaching (guard-pinned): human words FIRST, the machinery
+          term only in parentheses for verifiers (Human-First Law; S7-e —
+          founder-flagged: the old line read as a builder instruction). */}
       {seated ? (
-        <p className="mt-3 font-mono text-xs text-muted-foreground">
-          Read live, never assigned by hand — verify it yourself: call{" "}
-          <code>memberNumberOf</code> with your address on the engine above.
+        <p className="mt-3 text-xs text-muted-foreground">
+          Your seat is read live from the public engine — never assigned by
+          hand. Anyone can verify it on-chain (the engine&apos;s own{" "}
+          <code>memberNumberOf</code> record).
         </p>
       ) : null}
     </div>

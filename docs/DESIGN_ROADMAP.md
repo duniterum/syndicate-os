@@ -196,6 +196,17 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   portes mobiles : 44px mesurés). Dashboard membre mesuré bord à bord à 1920 ·
   375 propre · test standard 320→2560 engravé.
 
+- [x] **S7-e — LE PASSAGE HUMAIN-LISIBLE (2026-07-16, les 18 défauts confirmés par
+  l'audit total ultracode — `docs/audits/MEMBER_HOME_TOTAL_AUDIT_2026-07-16.md`)** :
+  `formatRawUnitsDisplay` (TRONQUÉ — l'argent ne surestime jamais : 6,260.06 SYN ·
+  2.99 USDC ; KPI + /wallet + checkout ; approbations restent exactes) · 9 sites de
+  jargon réécrits Human-First (memberNumberOf en parenthèses, « fail-closed » jamais
+  à l'acheteur, diagnostics serveur humanisés + raison exacte en tooltip, ligne
+  d'échelle en anglais courant) · **login header → atterrit sur /member** (2 points
+  de succès) · cloche era-drift guérie · menu header au plancher 12px · bloc
+  formaté. **+0 couleur brute** ; rig : toutes les chaînes rendues, ancien jargon à
+  zéro, 2 guards suites vertes.
+
 ### Phase 6 — Audits (le sceau grade-AAA)
 - [ ] Accessibilité (WCAG AA / APCA, focus, clavier, cibles ≥44px)
 - [ ] Responsive (fluide, container queries, 320 → 2560, pliables)

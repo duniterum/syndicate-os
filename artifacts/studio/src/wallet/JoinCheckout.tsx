@@ -324,8 +324,9 @@ export default function JoinCheckout({
     return (
       <Shell>
         <p className="text-sm text-muted-foreground" data-testid="text-checkout-read-failed">
-          Live verification failed: {phase.reason}. Fail-closed — nothing can be
-          signed until the live reads succeed. Reload to retry.
+          Live verification didn&apos;t succeed: {phase.reason}. For your
+          safety, nothing can be signed until every live check passes. Reload
+          to retry.
         </p>
       </Shell>
     );

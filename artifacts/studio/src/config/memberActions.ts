@@ -64,7 +64,7 @@ export const MEMBER_ACTIONS: readonly MemberAction[] = [
   {
     id: "verify-seat",
     label: "Verify my seat on chain",
-    note: "Call the engine's own memberNumberOf with your address — the same read behind every figure here.",
+    note: "The public engine answers for your seat — the same live record behind every figure here.",
     kind: "verify-seat",
     lock: "seat",
     lockReason: "Requires a seat — the engine answers for seated wallets.",

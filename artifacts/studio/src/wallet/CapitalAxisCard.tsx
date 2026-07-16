@@ -126,8 +126,9 @@ export default function CapitalAxisCard() {
         </>
       ) : (
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Your early-era footprint predates the walked record — honestly not
-          derivable, never guessed. The ladder below is the living canon.
+          Your seat&apos;s earliest purchases aren&apos;t part of this count
+          yet — the early-era record joins soon. Nothing is guessed in the
+          meantime; the full ladder lives below.
         </p>
       )}
 

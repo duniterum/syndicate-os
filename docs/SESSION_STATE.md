@@ -2,9 +2,67 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🎛 SLICE S7-b/c/d ✅ BUILT + FOUNDER GO AT THE PREVIEW GATE (2026-07-16, four live
-> art-direction rounds; awaiting Replit deploy): THE MEMBER DASHBOARD AT THE WORLD
-> STANDARD + THREE GENERAL DESIGN LAWS ENGRAVED (ADR-001 amendments, researched).**
+> **▶ 🏁 SESSION SEAL (2026-07-16) — THE MEMBER DASHBOARD DAY + THE TOTAL AUDIT.**
+> SEALED IN PROD TODAY (all Replit-verified on thesyndicate.money): **S7** (the
+> approved wireframe: full-screen centered door · ONE connect CTA · the truth sweep —
+> zero samples, modules badges dead on live surfaces, bundle `index-Cta5zhDH.js`) ·
+> **S7-b/c/d** (the world-standard dashboard: identity band + 4 live KPI tiles + pulse
+> leads + capital card w/ ladder+next+shield + protocol-today + Chronicle cards +
+> Settings door · THE 3 DESIGN LAWS engraved in ADR-001: READABILITY FLOOR ·
+> FLUID SURFACE · OWN-ACCOUNT DISPLAY (GAMIFICATION doctrine — Sephora account
+> pattern, settled forever) · the WCAG zoom cure (maximum-scale removed) · bundle
+> `index-lSsHS13k.js`). **S7-e BUILT + FOUNDER GO (this commit, rides to Replit):**
+> the 18 audit-confirmed defects dead — human number display (formatRawUnitsDisplay,
+> FLOORED so money never overstates: 6,260.06 SYN · 2.99 USDC; KPI + /wallet +
+> checkout) · 9 jargon sites rewritten human-first (memberNumberOf parenthesized,
+> "fail-closed" never said to a buyer, server diagnostics humanized w/ exact reason
+> in tooltip, ladder next-rung line in plain English, alias/slots/wait states) ·
+> **header sign-in LANDS on /member** (both success points: rainbowAuthAdapter.verify
+> + reSign, wouter navigate) · bell tooltip era-drift cured · header dropdown raised
+> to the 12px floor. **THE TOTAL AUDIT (ultracode fleet: 35 agents · 9 lenses · 170
+> findings · 24 adversarially confirmed) is CANON at
+> `docs/audits/MEMBER_HOME_TOTAL_AUDIT_2026-07-16.md`** — the complete backlog:
+> confirmed defects (all fixed in S7-e), data-slices, 21 design gaps, 20 polish, the
+> 86-item ledger (incl.: avatar storage decision CLOSED = Replit App Storage; old
+> founder questions Q5/Q6/Q9/Q13/Q20 still unanswered; 219 sub-12px sites mapped for
+> the general sweep + future no-sub-12px-text guard). DOCTRINE RECORDED: admin-sees-
+> public-never is SETTLED (§D operator design; no ADR-003 amendment needed — the
+> over-call pattern memory-pinned). **THE PLATEAU FOR THE NEXT SESSION (founder-GO'd
+> order): ① D-TRUTH — the old data enters the dashboard: D1 genesis footprints
+> (V1 purchases × frozen roster join — buyer+amount already indexed, memberRoster
+> maps wallet→seats #1-8; serve per-seat cumulative; VERIFIED derivable) · D2 the
+> founder's referral standing (source-standing derives ONLY canonical keccak
+> sourceId — add own-row fallback: any indexed source whose payoutWallet == bound
+> account; VERIFIED BY HASH: BUILDER_SOURCE = snapshot row src_36101e67… with $0.50
+> paid) · D3 own purchase history rows (all indexed) · D6 zero ≠ unavailable in KPI
+> tiles · (D5 archive own holdings — re-verify, quota killed its verifier) →
+> ② M-INT-1 member ledger (operator dossiers/RFM) → ③ A1 My Activity → ④ B1 the
+> Firsts/Chronicle queue → ⑤ A2 My Chronicle → M-INT-2. Heavy design gaps to inject
+> at their slices (audit §C): member has NO expand/Join action on own dashboard ·
+> post-purchase dead end (no door to Member Home) · silent session-expiry demotion ·
+> em-dash conflates loading/error/absence · CapitalAxisCard vanishes on 500 ·
+> via= channel (R3) never built · door mini-stat badges. S8 perf + S5 (founder
+> paste) queued. Next session boots on "hi".**
+
+> **▶ 🎛 SLICE S7-b/c/d ✅ SEALED IN PROD (2026-07-16, Replit-verified 6/6 on
+> thesyndicate.money, prod bundle `index-lSsHS13k.js`, 26/26 blob-verified incl. the 5
+> new member components, no migration — 142/142): PROD PROOF — visitor door unchanged
+> (desktop+mobile) · the member dashboard ships in the lazy member chunks (4 KPI tiles ·
+> capital card w/ shield line · protocol today · Chronicle · Settings door) ·
+> capital-standing serves the extended shape (seat 14: Citizen · 5000000 · next Resident
+> $10 · the 12-rung ladder; 400 on abc) · THE WCAG CURE IS LIVE (no maximum-scale,
+> viewport-fit=cover, pinch-zoom free) · /member chunks carry ZERO sub-12px classes
+> (header dropdown + other pages = the noted general sweep) · feed 75 lines zero 40-hex ·
+> zero console errors · engine 2/2 cycles healthy. FOUNDER FOLLOW-UP OPENED AT THE SEAL
+> (prod screenshot, S7-e + data-truth): 18-decimal SYN balance must format human ·
+> the memberNumberOf teaching line reads as jargon · header sign-in must LAND on
+> /member · genesis footprints + the founder's own referral standing show "—" while THE
+> REAL OLD ON-CHAIN DATA EXISTS (V1 purchases × frozen roster; BUILDER_SOURCE payout =
+> the founder's wallet) — must be derived, never dashed · plus the full design-research
+> inventory audit (all repo specs vs the built page). Original build record follows:**
+> BUILT + FOUNDER GO AT THE PREVIEW GATE (2026-07-16, four live
+> art-direction rounds): THE MEMBER DASHBOARD AT THE WORLD
+> STANDARD + THREE GENERAL DESIGN LAWS ENGRAVED (ADR-001 amendments, researched).
 > **S7-b THE DASHBOARD** (after-login standard — Binance/Coinbase/QuickNode: portfolio
 > first, recent activity, system state; never a program as the landing): connected
 > /member = identity band (compact; receipt chip + verify right) + **4 live KPI tiles**

@@ -117,7 +117,7 @@ function ActionCard({ action, own, address }: { action: MemberAction; own: OwnSt
       ) : (
         // Unlocked but its own-row material has not resolved yet — honest wait,
         // never a dead button.
-        <p className="text-xs text-muted-foreground">Reading your own row…</p>
+        <p className="text-xs text-muted-foreground">Reading your own record…</p>
       )}
     </Card>
   );

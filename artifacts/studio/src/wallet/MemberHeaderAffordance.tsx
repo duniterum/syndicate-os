@@ -18,6 +18,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
+import { navigate } from "wouter/use-browser-location";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import {
@@ -152,6 +153,8 @@ export default function MemberHeaderAffordance({
       if (!provider) throw new Error("no_provider");
       await requestAccount(provider); // activate the account, like the panel does
       await signInWithWallet(provider, address);
+      // S7-e (founder order): a successful header sign-in LANDS on Member Home.
+      if (window.location.pathname !== "/member") navigate("/member");
     } catch {
       setSignError(true);
     } finally {
@@ -281,7 +284,7 @@ export default function MemberHeaderAffordance({
         <>
           <span
             className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/50 text-muted-foreground/60"
-            title="Notifications — coming soon (arrives with the event backbone)."
+            title="Notifications — coming soon, built on the live event record (the bell is reserved for it)."
             aria-disabled="true"
             data-testid="header-bell-reserved"
           >
@@ -366,7 +369,7 @@ export default function MemberHeaderAffordance({
               <span className="text-xs text-muted-foreground">
                 {eraLabel(status.era) ? `${eraLabel(status.era)} member` : "Member"}
               </span>
-              <span className="inline-flex items-center gap-1 rounded-full border border-proof/40 bg-proof/10 px-2 py-0.5 text-[11px] font-medium text-proof">
+              <span className="inline-flex items-center gap-1 rounded-full border border-proof/40 bg-proof/10 px-2 py-0.5 text-xs font-medium text-proof">
                 <ShieldCheck className="h-3 w-3" aria-hidden="true" />
                 Verified on chain
               </span>
@@ -379,7 +382,7 @@ export default function MemberHeaderAffordance({
           {chapter ? (
             <div className="mt-2">
               <span
-                className="inline-flex items-center gap-1.5 rounded-full border border-gold/30 bg-gold/10 px-2 py-0.5 text-[11px] font-medium text-gold"
+                className="inline-flex items-center gap-1.5 rounded-full border border-gold/30 bg-gold/10 px-2 py-0.5 text-xs font-medium text-gold"
                 title="The chapter of the story you joined in — recognition, not a rank; earlier is never 'better'."
               >
                 <BookOpen className="h-3 w-3" aria-hidden="true" />
@@ -401,7 +404,7 @@ export default function MemberHeaderAffordance({
                   target="_blank"
                   rel="noopener noreferrer"
                   title={`Your entry transaction ${status.receipt.transaction.slice(0, 10)}…${status.receipt.transaction.slice(-6)} — the on-chain purchase that established seat #${status.seat}`}
-                  className="inline-flex items-center gap-1 font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-proof/80 transition-colors hover:text-proof"
+                  className="inline-flex items-center gap-1 font-mono text-xs font-semibold uppercase tracking-[0.1em] text-proof/80 transition-colors hover:text-proof"
                 >
                   Verify my seat on-chain
                   <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
@@ -412,7 +415,7 @@ export default function MemberHeaderAffordance({
             </div>
           ) : null}
 
-          <p className="mt-3 rounded-md border border-border bg-muted/40 px-2.5 py-2 text-[11px] leading-relaxed text-muted-foreground">
+          <p className="mt-3 rounded-md border border-border bg-muted/40 px-2.5 py-2 text-xs leading-relaxed text-muted-foreground">
             {status.kind === "member" ? (
               <>
                 Your <span className="text-gold">seat</span> is your membership. Signing in with

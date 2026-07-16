@@ -27,7 +27,7 @@ import {
   readSaleUsdcToken,
   readTokenBalance,
 } from "@/lib/chainReads";
-import { formatRawUnits } from "@/lib/rawUnits";
+import { formatRawUnits, formatRawUnitsDisplay } from "@/lib/rawUnits";
 
 const ERC20_APPROVE_ABI = [
   {
@@ -91,8 +91,9 @@ export default function MemberWalletPanel() {
       usdcAddr && saleAddr ? readAllowance(usdcAddr, address, saleAddr) : Promise.resolve(null),
     ]);
     setReads({
-      syn: syn !== null ? formatRawUnits(syn.toString(), 18) : null,
-      usdc: usdc !== null ? formatRawUnits(usdc.toString(), 6) : null,
+      // Human display (S7-e, readability floor): 2 decimals, exact half-up.
+      syn: syn !== null ? formatRawUnitsDisplay(syn.toString(), 18, 2) : null,
+      usdc: usdc !== null ? formatRawUnitsDisplay(usdc.toString(), 6, 2) : null,
       usdcAllowanceToSale: allowance,
     });
   }, [address, saleAddr, synAddr]);

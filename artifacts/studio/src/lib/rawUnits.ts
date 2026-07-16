@@ -41,3 +41,22 @@ export function formatRawUnits(raw: string, decimals: number): string {
   const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return frac ? `${grouped}.${frac}` : grouped;
 }
+
+/**
+ * HUMAN DISPLAY rendering (S7-e, READABILITY FLOOR — ADR-001): the same exact
+ * string math, TRUNCATED (floored) to `display` fractional digits. Floored on
+ * purpose: a money display must never overstate what the wallet holds
+ * (2.998916 USDC renders "2.99", never "3"). The raw string remains the wire
+ * truth for verifiers. Pure bigint math — no floats, ever.
+ */
+export function formatRawUnitsDisplay(
+  raw: string,
+  decimals: number,
+  display = 2,
+): string {
+  if (!/^\d+$/.test(raw)) return raw;
+  if (display >= decimals) return formatRawUnits(raw, decimals);
+  const scale = 10n ** BigInt(decimals - display);
+  const floored = BigInt(raw) / scale;
+  return formatRawUnits(floored.toString(), display);
+}

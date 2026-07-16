@@ -96,7 +96,7 @@ export default function MemberSettings() {
 
       <Row
         title="Alias"
-        body="A human-readable name above your wallet — opt-in, invisible by default, own-row, lineage-tracked. Arrives with the IDENTITY-ALIAS slice."
+        body="A display name above your wallet — opt-in, invisible by default, always your choice. Coming with the alias feature."
         lifecycle="FUTURE"
       />
 

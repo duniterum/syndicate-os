@@ -16,6 +16,7 @@
 
 import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { createSiweMessage } from "viem/siwe";
+import { navigate } from "wouter/use-browser-location";
 import { announceSessionChanged } from "./sessionEvents";
 
 interface Challenge {
@@ -63,7 +64,13 @@ export const rainbowAuthAdapter = createAuthenticationAdapter({
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ message, signature }),
     });
-    if (res.ok) announceSessionChanged();
+    if (res.ok) {
+      announceSessionChanged();
+      // S7-e (founder order): signing in LANDS the member on their home —
+      // every RainbowKit sign-in (header included) completes here. No-op when
+      // already on /member (the door band's own flow).
+      if (window.location.pathname !== "/member") navigate("/member");
+    }
     return res.ok;
   },
 
