@@ -2,6 +2,39 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🧹 SLICE AUD-TRUTH ✅ BUILT + FOUNDER GO ON ALL TEXTS — COMMITTED, AWAITING
+> DEPLOY (2026-07-16): THE SITE-WIDE ERA-DRIFT SWEEP — the audit's lens-1/2/3 P1
+> layer dead (~13 distinct truth defects) + two P1 functional riders.** THE KILLS:
+> /contracts (registry card speaks the PAYING truth, badge Paused→Verified · Proof
+> of Fire live · "this app only reads" banner died) · /status ("Not live yet" gone
+> from Contracts — live surface renders no label; operator source console badge now
+> describes ITSELF (Preview), the retired sourceAttribution reason code no longer
+> renders; the two "arrives with the backbone" summaries live-truthed) · /archive
+> (the 4-lens Chronicle-denial defect dead: "solemn record is open" + Read-the-
+> Chronicle button; the false this-page-reads-live claim died; "when the reads are
+> wired" tail rewritten "what's here today, what's still building") · /learning (3
+> pre-C5 fossils dead incl. "never as compensation" — the commission truth) ·
+> /support (membership-live vs channel-unwired split honestly) · /docs (3 cards:
+> "never a commission" died) · /faq (the REPEALED Citizen→Cornerstone SYN-balance
+> rank system dead in the served JSON-LD — the two real ladders speak: capital axis
+> Citizen→Monolith + Connector Emerging→Summit; banned rung title purged) ·
+> /whitepaper (§8 PAUSED→VERIFIED "public minting is open today" · §10 referral +
+> activity moved from future to "already active this way") · served API source-
+> status token note (dead "nothing wired" + phantom /token surface → /tokenomics
+> truth; 161 pins green). RIDERS: #40 the checkout-ripping redirect FIXED
+> (FLOW_SURFACES list — sign-in inside /join /source /wallet /toolkit /liquidity
+> resolves IN PLACE; out-of-flow still lands /member per the founder order) ·
+> #41 pg pool "error" handler (an idle-connection error can no longer crash the
+> api-server process). THE GUARD LEARNED 8 PHRASINGS (no-chronicle-entries ·
+> reads-not-yet-wired · when-the-reads-are-wired · does-not-read-the-chain-yet ·
+> never-a-commission · never-as-compensation · citizen-to-cornerstone ·
+> arrives-with-the-backbone). Gate: tsc ×2 · build 27 shells · ALL studio guards
+> (era stricter) · ALL 17 api guards (source-status 161) · seo 43 routes · surface
+> 281 · rig DOM-verified 6 pages (old lies absent, new truths present, FAQ JSON-LD
+> Cornerstone=0, zero console errors). DEPLOY: 🚀. NEXT per the GO'd plan: THE
+> RECEIPT SLICE (approved wireframe + living-ticket doctrine + REAL-ROW/EXACT
+> rules) → menu → home → AUD-ROUTE → /admin-in-prod → M-INT-1 → A1 → B1 → A2.
+
 > **▶ ⚖️ SLICE AUD-T ✅ SEALED IN PROD (2026-07-16, Replit-verified 6/6 on
 > thesyndicate.money, prod bundle `index-ClCsdU33.js` — SHA-256 a1bafe21…ba3dcfd0
 > byte-identical to the reproduced local build — anchor `0ef9033`, 14/14

@@ -48,6 +48,16 @@ const ERA_PATTERNS: { re: RegExp; name: string }[] = [
   { re: /no live chain reads/i, name: "no live chain reads (the /proof P0)" },
   { re: /view[- ]only: no payments/i, name: "view-only-no-payments (the /proof P0)" },
   { re: /paused by precaution/i, name: "paused-by-precaution (dead registry claim)" },
+  // AUD-TRUTH (2026-07-16): the P1 era-drift sweep's escaped phrasings —
+  // each shipped a lie about a live organ for weeks. Never again.
+  { re: /no chronicle entries/i, name: "chronicle denial (AUD-TRUTH P1)" },
+  { re: /reads? (are |is )?not yet wired/i, name: "reads-not-yet-wired (AUD-TRUTH P1)" },
+  { re: /when the reads are wired/i, name: "when-the-reads-are-wired (AUD-TRUTH P1)" },
+  { re: /does not read the chain yet/i, name: "does-not-read-the-chain-yet (AUD-TRUTH P1)" },
+  { re: /never a commission/i, name: "commission denial (the program pays — AUD-TRUTH P1)" },
+  { re: /never as compensation/i, name: "compensation denial (the program pays — AUD-TRUTH P1)" },
+  { re: /citizen to cornerstone/i, name: "repealed SYN-balance rank system (AUD-TRUTH P1)" },
+  { re: /arriv(es|e) with the (event )?backbone/i, name: "arrives-with-the-backbone (AUD-TRUTH P1)" },
   { re: /nothing is minted/i, name: "nothing is minted" },
   { re: /awaiting a verified source/i, name: "awaiting a verified source" },
   { re: /awaiting source (wiring|integration)/i, name: "awaiting source wiring" },

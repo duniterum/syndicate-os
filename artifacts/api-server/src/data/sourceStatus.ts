@@ -204,8 +204,10 @@ const CANON: CanonEntry[] = [
     publicClass: "ECONOMIC_DASHBOARD_SAFE",
     sourceRef: "vendored:the-syndicate/contracts/syndicate-config.ts@cf4ca34",
     confidence: "high",
-    note: "Token constants (SYN symbol, 18 decimals, USDC payment token, token and contract addresses) are vendored and pinned in the canon config; addresses are server-side only and never exposed. No price, supply, or balances are wired or exposed.",
-    surface: "/token",
+    // AUD-TRUTH (2026-07-16): the dead "nothing wired" claim DIED and the
+    // phantom /token surface with it — live token figures serve on /tokenomics.
+    note: "Token constants (SYN symbol, 18 decimals, USDC payment token, token and contract addresses) are vendored and pinned in the canon config; addresses leave the server only as explorer verify-links. Live token figures — supply, the burn total, the pool — serve on the Tokenomics page from the reality spine.",
+    surface: "/tokenomics",
   },
   {
     key: "treasury",

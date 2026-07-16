@@ -119,7 +119,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       },
       {
         q: "What is a featured entry tier?",
-        a: "A featured entry amount on Join is simply a highlighted amount mapped one-to-one to a recognition tier, showing the SYN you would receive at the current live rate. Recognition only — no payout, no entitlement, no private terms, and no bonus tokens. Any custom amount above the minimum works exactly the same.",
+        a: "A featured entry amount on Join is simply a highlighted amount, aligned with the capital axis's public rungs and showing the SYN you would receive at the current live rate. Recognition only — no entitlement, no private terms, and no bonus tokens. Any custom amount above the minimum works exactly the same.",
       },
       {
         q: "What are the distribution eras?",
@@ -189,7 +189,10 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       },
       {
         q: "How do ranks work?",
-        a: "Rank is derived from a wallet's on-chain SYN balance, across a series of tiers from Citizen to Cornerstone. Rank reflects contribution depth, archive recognition, and visibility — never a wealth leaderboard, never bonus tokens, and never a better rate.",
+        // AUD-TRUTH (2026-07-16): the repealed SYN-balance Citizen→Cornerstone
+        // system DIED (it was serving in the FAQPage JSON-LD). Today's truth:
+        // two public-record ladders — the capital axis and the Connector ladder.
+        a: "Recognition runs on the public record, on two ladders. The capital axis names a seat's cumulative purchase footprint across twelve rungs, from Citizen to Monolith. The Connector ladder recognises durable introductions, from Emerging to Summit. Recognition only — never a wealth leaderboard, never bonus tokens, and never a better rate.",
       },
       {
         q: "What is institutional trust capital?",

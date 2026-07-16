@@ -107,8 +107,10 @@ export const contractMemory: ContractMemoryEntry[] = [
     role: "Source-attribution registry",
     category: "source",
     domain: "SOURCE_VERIFIED_INTRODUCTION",
-    lifecycle: "PAUSED_BY_PRECAUTION",
-    note: "A deployed source-policy registry, intentionally inactive. No attribution is read or written here.",
+    // AUD-TRUTH (2026-07-16): the dead-registry claim DIED — the registry is
+    // live behind the paying referral program (the era-drift P1 class).
+    lifecycle: "READ_ONLY_PROOF",
+    note: "The deployed source-policy registry behind the live referral program: founder-signed sources are checked here at purchase time, and an eligible attributed purchase pays its bounded commission inside the buyer's own transaction.",
   },
   {
     id: "commission-router-candidate",
@@ -211,8 +213,10 @@ export const contractMemory: ContractMemoryEntry[] = [
     role: "Burn / contribution proof",
     category: "proof",
     domain: "PROOF_OF_FIRE_BURN_EVENTS",
-    lifecycle: "PENDING_ADAPTER",
-    note: "Burn-based proof identifiers exist in canon but require event read-model wiring before any event can be shown.",
+    // AUD-TRUTH (2026-07-16): the numbered burn record went live with the
+    // event backbone — the pending claim was a fossil.
+    lifecycle: "READ_ONLY_PROOF",
+    note: "The numbered Proof of Burn record is live: every burn is a line with its transaction on the Fire Ledger, and the retired total is read live from the chain.",
   },
 ];
 

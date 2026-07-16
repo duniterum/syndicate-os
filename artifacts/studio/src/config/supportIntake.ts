@@ -49,8 +49,10 @@ export const supportIntake = {
     {
       id: "access",
       label: "Membership access",
-      description: "Questions about seats and membership — founder-gated and not live yet.",
-      lifecycle: "FOUNDER_GATED",
+      // AUD-TRUTH (2026-07-16): membership itself is LIVE — only this support
+      // channel is still unwired; the description now says which is which.
+      description: "Questions about seats and membership — the sale itself is live on Join; this support channel is not wired yet.",
+      lifecycle: "NOT_ACTIVE",
     },
     {
       id: "security",

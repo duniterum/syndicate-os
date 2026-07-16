@@ -71,10 +71,11 @@ export default function ContractMemory() {
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-6">
           Beyond memory: strictly read-only public reads of contract code presence, membership-sale
-          lifecycle, and archive configuration on Avalanche C-Chain. The active V3 sale engine's
-          public figures are surfaced as exact raw base units. No addresses, no wallet, and no
-          purchase, transaction, or referral surface — this app only reads. Any unverifiable value
-          renders as null with a reason.
+          lifecycle, and archive configuration on Avalanche C-Chain. The active V3 sale engine&apos;s
+          public figures are surfaced as exact raw base units. The panel below only reads — joining
+          and referral payments happen in transactions you sign from your own wallet on the Join
+          page; the site itself signs nothing and holds nothing. Any unverifiable value renders as
+          null with a reason.
         </p>
         <ProtocolRealityPanel groups={["contracts", "sale", "archive"]} />
       </section>

@@ -126,7 +126,7 @@ export const DOCS_GROUPS: DocGroup[] = [
       {
         routePath: "/referral",
         purpose:
-          "How a verified introduction is recognised — attribution of a growth contribution, never a commission.",
+          "How a verified introduction works — an eligible completed introduction pays a bounded commission inside the buyer's own transaction, transparently.",
         audience: ["Member", "Builder"],
       },
       {
@@ -151,7 +151,7 @@ export const DOCS_GROUPS: DocGroup[] = [
       {
         routePath: "/proof",
         purpose:
-          "What public, auditable proof will mean — membership receipts, attribution, burn — and an honest account of what isn't wired yet.",
+          "Proof, live from the chain — membership receipts, attribution, burns — and where to verify each yourself.",
         audience: ["Verifier"],
       },
       {
@@ -177,7 +177,7 @@ export const DOCS_GROUPS: DocGroup[] = [
       {
         routePath: "/archive",
         purpose:
-          "The archive and chronicle — protocol memory and milestones. Concept memory today; reads not yet wired.",
+          "The archive and chronicle — protocol memory and milestones. Artifacts mint on-chain; the chronicle publishes its promoted entries.",
         audience: ["Member", "Verifier"],
       },
     ],

@@ -66,10 +66,19 @@ export const rainbowAuthAdapter = createAuthenticationAdapter({
     });
     if (res.ok) {
       announceSessionChanged();
-      // S7-e (founder order): signing in LANDS the member on their home —
-      // every RainbowKit sign-in (header included) completes here. No-op when
-      // already on /member (the door band's own flow).
-      if (window.location.pathname !== "/member") navigate("/member");
+      // S7-e (founder order): an OUT-OF-FLOW sign-in (header on a content
+      // page) LANDS the member on their home. AUD-TRUTH P1 #40 (2026-07-16):
+      // a sign-in INSIDE a flow surface resolves IN PLACE — above all the
+      // /join checkout, a live money path a redirect must never rip apart.
+      const FLOW_SURFACES = [
+        "/member",
+        "/join",
+        "/source",
+        "/wallet",
+        "/toolkit",
+        "/liquidity",
+      ];
+      if (!FLOW_SURFACES.includes(window.location.pathname)) navigate("/member");
     }
     return res.ok;
   },

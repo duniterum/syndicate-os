@@ -56,7 +56,7 @@ export const learningModules: LearningModule[] = [
     topics: [
       "Public claims do not outrank code, canon, or live proof — source wins.",
       "Proof means anyone can independently verify a fact against the chain.",
-      "This foundation does not read the chain yet, so proof surfaces stay labelled as pending.",
+      "Every figure on this site is a live chain read or a line of the indexed public record — each with its verify path.",
     ],
   },
   {
@@ -64,9 +64,9 @@ export const learningModules: LearningModule[] = [
     title: "Membership & recognition",
     summary: "What a seat means, and how contribution is recognised.",
     topics: [
-      "A seat is a verifiable membership record, founder-gated and not live yet.",
+      "A seat is a verifiable on-chain membership record — bought on Join, signed from your own wallet, live today.",
       "Recognition acknowledges verified participation — it is structural, not a financial benefit.",
-      "Source attribution records who introduced a member, as recognition, never as compensation.",
+      "Source attribution records who introduced a member — and an eligible introduction pays a bounded commission inside the buyer's own transaction, transparently.",
     ],
   },
   {

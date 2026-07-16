@@ -217,7 +217,10 @@ export const modules = [
     enabled: false,
     live: false,
     phase: "future",
-    truthStatus: surfaceStatus.sourceAttribution,
+    // AUD-TRUTH (2026-07-16): the retired sourceAttribution reason code no
+    // longer renders on /status — the badge now describes THIS console's own
+    // honest state (a preview), never the live-and-paying referral program.
+    truthStatus: "DESIGN_PREVIEW",
     description:
       "Operator source console. Read-only; source creation and activation remain owner-side on-chain acts.",
     dependencies: ["chainIndex"],
@@ -403,8 +406,9 @@ export const modules = [
     enabled: true,
     live: false,
     phase: "live",
-    truthStatus: "LIVE_SOURCE_MISSING",
-    description: "Read-only contract & economy memory — roles and structure, no live reads.",
+    // AUD-TRUTH (2026-07-16): the "Not live yet" badge DIED — the page renders
+    // the live read-only reality panel; a live surface renders NO TruthLabel.
+    description: "Read-only contract & economy memory — roles, structure, and the live read-only reality panel.",
     dependencies: [],
     nav: { header: false, sidebar: false, footer: true },
     icon: FileText,

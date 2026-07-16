@@ -197,11 +197,12 @@ export default function Whitepaper() {
               <VerifyOnChain ids={["lpPair", "synToken"]} />
             </ProseSection>
 
-            <ProseSection id="archive" title="The Archive — SYN is the seat, NFTs are the memory" eyebrow={<Eyebrow n={8} status="PAUSED" />}>
+            <ProseSection id="archive" title="The Archive — SYN is the seat, NFTs are the memory" eyebrow={<Eyebrow n={8} status="VERIFIED" />}>
               <p>
                 The NFTs are <strong>not</strong> a speculative collection — they are memory artifacts
                 (chapters, seals, proofs). Minted to date: <strong>{r.nftMintedTotal ?? <Pending />}</strong>.
-                The Archive is read-only today.
+                Public minting is open today for the configured artifacts; every mint is a public
+                line on the live record.
               </p>
               <VerifyOnChain ids={["nftArchive"]} />
             </ProseSection>
@@ -222,8 +223,9 @@ export default function Whitepaper() {
                 The Syndicate OS grows by <strong>activating modules</strong> — like installing plugins.
                 Each carries a public status (active or future), read from the protocol's registry, so a
                 new module flips from future to active <strong>by itself</strong> here — nothing is
-                rewritten. Known future modules: later eras · marketplace · source payment/referral ·
-                gamification &amp; seasons · admin console · live activity feed.
+                rewritten. Already active this way: the referral program and the live activity
+                record. Known future modules: later eras · marketplace · gamification &amp; seasons ·
+                admin console.
               </p>
             </ProseSection>
 

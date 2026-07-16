@@ -14,11 +14,11 @@ export default function Archive() {
     <PublicPage
       eyebrow="Archive & chronicle"
       title="Protocol memory, kept honestly."
-      lead="The archive holds the protocol's artifacts; the chronicle is its narrative memory of milestones. Artifacts mint on-chain today — counts and prices are read live from the contract; the full museum surface is still being built."
-      // S7 truth sweep (2026-07-16): the "Not live yet" TruthLabel DIED —
-      // artifacts mint on-chain today and every figure is a live read; the
-      // page is a verified view-only surface (the honest remaining gap, the
-      // per-wallet holdings view, is stated in the lead).
+      lead="The archive holds the protocol's artifacts; the chronicle is its narrative memory of milestones. Artifacts mint on-chain today — every mint is a public line on the live record — and the chronicle publishes its promoted entries. The full museum surface is still being built."
+      // AUD-TRUTH (2026-07-16): the lead no longer claims THIS page performs
+      // live reads (it renders contract memory; the live figures serve on the
+      // reality spine and the live record) — and the chronicle denial DIED:
+      // /chronicle is open with promoted entries.
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
       <h2 className="type-h2 text-foreground mb-5">The archive</h2>
@@ -41,12 +41,18 @@ export default function Archive() {
               <ScrollText className="h-4 w-4 text-primary" />
               <h3 className="text-base font-medium text-foreground">Chronicle</h3>
             </div>
-            <LifecycleBadge lifecycle="DESIGN_CONCEPT" />
+            {/* AUD-TRUTH (2026-07-16): the concept badge + the entries denial
+                DIED — the register is open and its promotions ride the feed. */}
+            <LifecycleBadge lifecycle="READ_ONLY_PROOF" />
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            A narrative record of protocol milestones and decisions. A design concept today — no
-            chronicle entries are stored or published in this foundation.
+          <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+            The solemn record is open: founder-promoted entries are published,
+            each anchored into the public record — entry one: the duplicate
+            seat.
           </p>
+          <Link href="/chronicle">
+            <Button variant="outline" size="sm">Read the Chronicle</Button>
+          </Link>
         </Card>
       </div>
 
@@ -62,16 +68,18 @@ export default function Archive() {
       {/* §11 slot 2c teaser elements — what unlocks it + the return hook
           (the page already carries the honest paragraph, badges, and real
           contract-memory content, so nothing was gutted to add them). */}
-      <h2 className="text-base font-medium text-foreground mb-1.5">What unlocks it</h2>
+      <h2 className="text-base font-medium text-foreground mb-1.5">What&apos;s here today, what&apos;s still building</h2>
       <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-8">
-        Archive reads against the deployed Archive 1155 contract — wiring them is
-        its own slice. Nothing renders here before it can be read and verified.
+        Every artifact mint is already on the public record with its transaction,
+        and a signed-in member&apos;s own holdings show live on their wallet door.
+        What&apos;s still building is the museum surface itself — the full gallery
+        is its own slice. Nothing renders here before it can be read and verified.
       </p>
       <Card className="bg-gold/5 border-gold/25 p-5">
         <p className="text-sm text-foreground/90 leading-relaxed mb-3">
           Artifacts are protocol memory: what a seat has witnessed stays witnessed.
-          When the reads are wired, this page becomes the shelf your seat&apos;s
-          history sits on.
+          Your own holdings already show on your wallet door; the gallery this
+          page becomes is on its way.
         </p>
         <div className="flex flex-wrap gap-3">
           <Link href="/member">
