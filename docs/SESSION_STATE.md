@@ -2,6 +2,47 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🎛 SLICE S7-b/c/d ✅ BUILT + FOUNDER GO AT THE PREVIEW GATE (2026-07-16, four live
+> art-direction rounds; awaiting Replit deploy): THE MEMBER DASHBOARD AT THE WORLD
+> STANDARD + THREE GENERAL DESIGN LAWS ENGRAVED (ADR-001 amendments, researched).**
+> **S7-b THE DASHBOARD** (after-login standard — Binance/Coinbase/QuickNode: portfolio
+> first, recent activity, system state; never a program as the landing): connected
+> /member = identity band (compact; receipt chip + verify right) + **4 live KPI tiles**
+> (Your SYN · Your USDC — NEW hook off the engine's own USDC() · **Your footprint
+> "$cum · rung"** · Introductions) + work grid (THE PULSE LEADS — 5 §8 lines w/ verify
+> anchors, gains My|Protocol with A1 — then the full referral module, anchor intact) +
+> right column drawn from the doors (**CapitalAxisCard**: own cumulative + ladder 12
+> rungs + "Next: X at $Y" + exact progress bar + THE SHIELD LINE guard-pinned ·
+> **ProtocolSnapshot**: 5 live spine facts incl. seats WITH MembersProvenance
+> (guard-freshness enforced) · **ChronicleLatest**: the register's newest entry ·
+> reserved slots) + Settings DOOR added to the left menu (founder catch). THE
+> OWN-ACCOUNT DISPLAY RULE engraved in GAMIFICATION_LEGAL_DOCTRINE (founder: "recognizes
+> capital without reducing identity to capital"; Sephora account pattern — own amounts/
+> ladder/next legal because a rung unlocks recognition ONLY; the public feed's no-amount
+> voice UNTOUCHED; my third public-vs-own-row over-call retracted, memory pinned).
+> capital-standing route EXTENDED {cumulativeUsdcRaw, ladder, nextRung} (backbone pin
+> amended, dated). TWO founder-screenshot defects killed: "Sign in required" lied to a
+> signed-in no-source member (3 distinct states now) · Notifications badge overlapped
+> its text (Row flex-wrap; badge FUTURE — the record is live, the surface isn't).
+> **S7-c THE READABILITY FLOOR** (ADR-001; WCAG/A11Y-researched): reading copy ≥14px ·
+> labels/meta ≥12px · KPI values 20px · card titles 16px · NOTHING user-facing <12px —
+> applied to the whole /member composition (measured: 0 sub-12px in BOTH states) AND at
+> TOKEN level (syn-eyebrow/label/caption 11/10/9→12px · --text-caption→12px ·
+> VerifyOnChain 9→12 · MembersProvenance 10→12 — sitewide atoms; home spot-checked
+> 1440+375 clean). Remaining: the general sweep (~121 arbitrary micro-classes on other
+> pages) + future guard no-sub-12px-text — noted in ADR-001. **S7-d THE FLUID SURFACE
+> RULE** (ADR-001 bis): app surfaces FLUID full-width (no cap; gutters px-4/6/8; cards
+> bound line length) · prose keeps 1200–1440 · viewport-fit=cover + body safe-areas
+> (iOS/Android notches) · **maximum-scale=1 REMOVED — the site-wide zoom block was a
+> WCAG 1.4.4 violation, caught & cured** · svh/dvh never bare vh · touch targets ≥44px
+> (door chips measured 44) · test standard 320→2560. Dashboard measured edge-to-edge at
+> 1920; 375 clean. Green: tsc ×2 · ALL studio guards (access-state grew: KpiRow +
+> CapitalAxisCard pins + shield-line pin) · ALL 17 api guards (backbone 143 amended
+> pins) · seo 395 · surface 254 · build 24 shells · +0 raw color. DEPLOY: 🚀 (server
+> route extension + the whole dashboard + the a11y viewport cure). NEXT: **M-INT-1**
+> (the member ledger — operator-side dossiers/RFM from indexed data) → A1 → B1 → A2 →
+> M-INT-2; S8 perf; S5 on the paste.
+
 > **▶ 🚪 SLICE S7 ✅ SEALED IN PROD (2026-07-16, Replit-verified 6/6 on thesyndicate.money,
 > prod bundle `index-Cta5zhDH.js`, 25/26 files blob-verified + 1 deletion confirmed, no
 > migration — 142/142 parity): PROD PROOF — the centered full-screen door serves (desktop
