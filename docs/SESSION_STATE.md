@@ -2,6 +2,35 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ ✅ THE COMPLETE RECEIPT PRODUCT SEALED IN PROD (2026-07-17, THE ONE-SHOT
+> CYCLE — Replit-verified 6/6 on thesyndicate.money, prod entry bundle
+> `index-BXOINcQ0.js` SHA-256 a02c6dae…dd58 byte-identical PLUS the
+> JoinCheckout (9482b87c…) and ReceiptTicket (7909b1ed…) chunks byte-verified,
+> anchor `cd2958f`, 14/14 blob-verified, no migration, html-to-image installed
+> frozen-lockfile; pulled UNDER a GitHub REST outage via direct git smart-HTTP
+> — pack-object cryptographic verification, an even stronger integrity proof):
+> both commits live in ONE cycle as the founder ordered — `2f1ed57` THE
+> RECEIPT SLICE + `cd2958f` THE SHARE-CARD RIDER. PROD PROOF: ① byte-identical
+> bundles; ② /join 200 with the four living strings served ("Membership
+> receipt — proof of purchase" · "WHERE YOUR MONEY WENT" · "TOTAL PAID" ·
+> "syn-mark-gold" ×5); ③ the dead stay dead ("routing proof" 0× · "Referral
+> payout" 0×); ④ feed 78/78 byte-identical, zero 40-hex; ⑤ engine clean boot
+> (cycles ok:2/failed:0, head 90,495,238 → 90,495,534, 6/6 scan units — V1 ·
+> V2A ×2 · V2B ×2 · V3); ⑥ healthz + 24 source-status postures. Replit gates
+> replayed green pre-publish (tsc ×3 · 27 shells · receipt 83/83 ·
+> access-state 959 · operator-gate 2563 · 17 api guards · surface 278 · seo
+> 431 · rewrites 52 · dist probes). TWO HONEST CORRECTIONS RECORDED: the
+> engine's canonical count is 6 SCAN UNITS (the earlier "10/10" counted
+> verified files, not streams) · the public feed endpoint is
+> `/api/backbone/feed` (`/activity` does not exist — my deploy block said
+> /activity; Replit adapted and flagged it). **DEPLOY BACKLOG: EMPTY. The
+> post-purchase dead end is dead IN PRODUCTION — a confirmed /join purchase
+> now prints its ticket, exports its proofs, and shares the member's own
+> card.** NEXT per the acted order: **② MENU** (the P2 human-tongue checkout
+> rider may ride with it) → ③ HOME → AUD-ROUTE → /admin-in-prod → M-INT-1 →
+> A1 (receipt binder + V2 Routed fold) → B1 (THE FIRSTS engine from §7b).
+> Next session boots on "hi".**
+
 > **▶ 🃏 RIDER RECEIPT-SHARE ✅ BUILT + FOUNDER GO ON THE RENDERED CARD
 > (2026-07-17): THE 1200×630 SHARE CARD — and THE §6 ENGRAVING.** The card
 > (`wallet/ReceiptShareCard.tsx`): 1.91:1 share standard, text inside the
