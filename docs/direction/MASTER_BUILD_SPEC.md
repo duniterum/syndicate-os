@@ -31,13 +31,14 @@ guards (Replit is the build gate) → show the diff → founder approves → com
 
 ---
 
-## PHASE 1 — Design substrate  ·  ~4 slices left  ·  IN PROGRESS
+## PHASE 1 — Design substrate  ·  ~2 slices left  ·  IN PROGRESS (substrate closed; 2 adoption migrations remain)
 Done: Foundation · Amount · StatusPill · Button+Tag · StatCard · Table · Field · Icons (8 atoms).
-- [ ] Migrate the hero KPI grid → StatCard/Amount/StatusPill (biggest color-sprawl drop)
-- [ ] Migrate PublicHome + TruthLabel → StatusPill
-- [ ] Adopt the fluid type scale across all surfaces
-- [ ] Color sprawl → 0 → flip the color guard to **BLOCKING**
+- [ ] Migrate the hero KPI grid → StatCard/Amount/StatusPill (biggest color-sprawl drop) — **still open: Q16 · `DESIGN_ROADMAP` Phase 3 "Grille KPI" (`ProtocolOverviewPanel` un-migrated)**
+- [ ] Migrate PublicHome + TruthLabel → StatusPill — **still open: `PublicHome.tsx` still renders `<TruthLabel>` (~L417); tracked under `DESIGN_ROADMAP` "Adoption"**
+- [x] Adopt the fluid type scale across all surfaces (`.type-*` site-wide — `DESIGN_ROADMAP` §Fondation / §Phase 4)
+- [x] Color sprawl → 0 → color guard **BLOCKING** in the guards gate (verified live 2026-07-17; 1 documented exception: QrCodeBlock canvas)
 (Prose atom ships in Phase 2 with the Whitepaper — it needs a real content home.)
+> **RECONCILED 2026-07-17 (Q8):** SESSION_STATE's "PHASE 1 → ✅ CLOSED" scopes to the **8 atoms + color→0 + type scale** (the substrate — all true and guard-enforced). The two boxes still open above are **adoption migrations** (hero KPI grid, TruthLabel→StatusPill) that `DESIGN_ROADMAP` tracks as Phase-3 patterns / the open "Adoption" line — NOT substrate. No contradiction: MASTER_BUILD_SPEC's "Phase 1" is the wider set (substrate + these two adoptions).
 
 ## PHASE 2 — Content + rendering foundation  ·  ~13 slices
 - [x] **2.0 Rendering fix (do FIRST):** ✅ build-time prerender/SSG of the shell — per-route
