@@ -19,6 +19,45 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 
 ---
 
+> **▶ 2026-07-17 — QUEUE RECONCILIATION (the session's read-back sweep; this file had not been
+> updated since 2026-07-14 while four slices sealed in prod — the exact drift this file exists to
+> kill; caught by the founder's "last check" order). NOTHING below is closed by me — closure is
+> the founder's act; these are EVIDENCE NOTES + NEW items.**
+>
+> **Overtaken by prod-sealed evidence (founder closes or keeps open):**
+> - **Q18 (stale holder-index snapshot)** — the founder-armed regeneration ran: memberTotal **14**,
+>   snapshot hash 65acf2f1…, reconciled 66/66, SEALED in prod 2026-07-16 (`768c3c1` + the DOUBLE
+>   DEPLOY seal). Cadence half already closed 2026-07-14 (weekly + always before signing a promotion).
+> - **Q20 (/join stale "transaction sending deliberately not enabled" note)** — the fossil was
+>   truthed in the RECEIPT slice (`2f1ed57`, 2026-07-16/17); checkout is LIVE in prod.
+> - **Q11 / Q21 / Q30** — already marked closed above; all now prod-sealed several times over.
+> - **Q15 (roadmap ticked per slice)** — STANDING and held: ② MENU · ③ HOME ticked in their commits
+>   (AUD-* slices are audit-workstream, not design entries — consistent with AUD-P0/T/TRUTH practice).
+>
+> **NEW OPEN items (2026-07-16/17 sessions):**
+> - 🔴 **Q31 — THE ICON ARTWORK CALL.** `public/favicon.svg` is an OFF-BRAND cyan shield (#0DCCF2 —
+>   not a token; the mark is the gold monogram). The apple-touch/PNG/manifest icon micro-slice is
+>   BLOCKED on the founder choosing the artwork; no local SVG rasterizer exists (its own micro-slice:
+>   devDep + generate-icons script + assets + link/manifest lines in ONE commit — never link tags
+>   before the files exist). Evidence: AUD-ROUTE reconcile fleet, `7e6d8ee` deferral note.
+> - ⏳ **Q32 — THE 23-DESCRIPTIONS META WAVE.** 23 SEO descriptions exceed the ~160-char SERP budget
+>   (worst /activity 273; the protective "Not a security; no promise of gain" tails sit past the cut
+>   on /faq /docs /tokenomics). Rewrite ALL on screen for the founder + add the guard length ceiling
+>   in the same slice (ceiling before rewrites = red gate). Evidence: AUD-ROUTE reconcile, F2.
+> - ⏸ **Q33 — *Teaser filename renames** (ActivityTeaser/ChronicleTeaser/FireLedgerTeaser serve LIVE
+>   surfaces; comment-truthed in `7e6d8ee`, files queued for their own mechanical rename).
+> - 🔵 **Q34 — ConnectModal setState-in-render dev warning** (pre-existing, proven at HEAD via stash
+>   2026-07-17; spun off as its own task/session by the founder — running independently).
+> - 🔴 **Q35 — THE AUD-T LEGAL DECISION SET (carried from 2026-07-16, restated here so the queue is
+>   whole):** entity + governing law · durable contact channel · log retention window · eligibility
+>   floor · checkout acceptance mechanics · on-chain hash commitment of the legal docs ·
+>   never-message-first policy · counsel review lifts the draft label.
+>
+> **Prod state at this reconciliation:** ② MENU + ③ HOME + AUD-ROUTE sealed (`e5de807`/`7e6d8ee`,
+> bundles byte-verified); deploy backlog EMPTY; next slice per the acted order = /admin-in-prod.
+
+---
+
 ## Merge report vs the founder's from-memory A–K list
 
 - **Agreed (A–K all still open, none already closed):** A→Q1 · B→Q2 · C→Q3 · D→Q4 · E→Q9 · F→Q10 ·
