@@ -1,4 +1,4 @@
-// pages/ActivityTeaser.tsx — /activity, LIVE V3 (ARC ACT-1 grew it; ARC M5
+// pages/Activity.tsx — /activity, LIVE V3 (ARC ACT-1 grew it; ARC M5
 // served the seat history; ARC M4-c + H1a completed the heartbeat: burns,
 // referral lifecycle, liquidity and archive join the seats; H2-⑬ added the
 // MILESTONE layer — canonical crossings derived from the same gapless
@@ -11,7 +11,7 @@ import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { LiveActivityFeed } from "@/components/activity/LiveActivityFeed";
 
-export default function ActivityTeaser() {
+export default function Activity() {
   return (
     <PublicPage
       eyebrow="Activity"

@@ -1,4 +1,4 @@
-// pages/FireLedgerTeaser.tsx — /fire-ledger, LIVE V2 (ARC ACT-1 grew it;
+// pages/FireLedger.tsx — /fire-ledger, LIVE V2 (ARC ACT-1 grew it;
 // ARC M4-c: the complete NUMBERED Proof of Burn record, served by the event
 // backbone). The live TOTAL burn stays a direct chain read (unchanged); below
 // it, the full record from the first burn — oldest = #1, every line
@@ -169,7 +169,7 @@ function ProofOfBurnRecord() {
   );
 }
 
-export default function FireLedgerTeaser() {
+export default function FireLedger() {
   return (
     <PublicPage
       eyebrow="Fire Ledger"

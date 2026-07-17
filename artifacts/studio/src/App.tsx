@@ -26,12 +26,12 @@ import JoinProtocol from "@/pages/JoinProtocol";
 import SourceLinkBuilder from "@/pages/SourceLinkBuilder";
 import Support from "@/pages/Support";
 import Archive from "@/pages/Archive";
-import ActivityTeaser from "@/pages/ActivityTeaser";
+import Activity from "@/pages/Activity";
 import MemberWallet from "@/pages/MemberWallet";
 import Liquidity from "@/pages/Liquidity";
 import MemberToolkit from "@/pages/MemberToolkit";
 import ChronicleTeaser from "@/pages/ChronicleTeaser";
-import FireLedgerTeaser from "@/pages/FireLedgerTeaser";
+import FireLedger from "@/pages/FireLedger";
 import OperatorPreviewUnavailable from "@/pages/OperatorPreviewUnavailable";
 import { OPERATOR_PREVIEW_ENABLED } from "@/config/operatorPreviewGate";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
@@ -160,18 +160,19 @@ function Router() {
       <PublicRoute path="/archive">
         <Archive />
       </PublicRoute>
-      {/* §11 slot 2c, GROWN UP (AUD-ROUTE 2026-07-17): born as noindex
-          teasers, LIVE since ACT-1/CHR-1/the heartbeat — the trio serves the
-          real indexed record (INDEX + sitemap; the *Teaser filenames are the
-          surviving fossil, queued for their own rename). */}
+      {/* §11 slot 2c, GROWN UP: Activity + Fire Ledger went LIVE (ACT-1 / the
+          heartbeat) and are now named for their surface. Chronicle keeps the
+          Teaser name honestly — its register is empty, so it still renders the
+          FUTURE teaser until the founder promotes the first entry. All three
+          serve the real indexed record (INDEX + sitemap). */}
       <PublicRoute path="/activity">
-        <ActivityTeaser />
+        <Activity />
       </PublicRoute>
       <PublicRoute path="/chronicle">
         <ChronicleTeaser />
       </PublicRoute>
       <PublicRoute path="/fire-ledger">
-        <FireLedgerTeaser />
+        <FireLedger />
       </PublicRoute>
       <PublicRoute path="/recognition">
         <Recognition />
