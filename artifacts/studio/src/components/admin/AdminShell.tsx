@@ -381,7 +381,10 @@ export default function AdminShell() {
             <AccountMenu />
           </div>
         </header>
-        <main className="flex-1 min-w-0 p-6 lg:p-8 max-w-6xl w-full mx-auto">
+        {/* FULL-WIDTH WORK SURFACES (founder, 2026-07-18, the work-first law's
+            companion): the console is a working tool — dense tables and
+            dossiers use the whole screen; no narrow centered column. */}
+        <main className="flex-1 min-w-0 p-6 lg:p-8 w-full">
           <ActiveSection />
         </main>
       </SidebarInset>
