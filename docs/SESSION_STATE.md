@@ -2,6 +2,32 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ ✅ ② MENU + ③ HOME SEALED IN PROD (2026-07-17, ONE Replit cycle as
+> ordered — the batched deploy): prod entry bundle `index-8lM7E_3t.js`
+> SHA-256 1751a00b…90f0 byte-identical to Replit's local rebuild PLUS the
+> `MemberKpiRow-CaAhotU2.js` chunk byte-verified (a5108899…), anchor
+> `e5de807`, 4 commits pulled (2b769d8 · 988616f docs + 1a8baac ② +
+> e5de807 ③), 17/17 blob-verified, no migration, no env change.** PROD
+> PROOF: ① /member + /toolkit both 200 serving the new bundle; ② the four
+> menu groups in the served bundle (Member · The record · Growth ·
+> Off-chain comfort); ③ the six KPI labels served incl. Receipts +
+> Artifacts; ④ feed 78/78 byte-identical, zero 40-hex; ⑤ engine clean
+> (cycles ok:2/failed:0, head 90,503,422 → 90,503,713, 6/6 scan units);
+> ⑥ healthz ok + 24 source-status postures. Gates replayed green on Replit
+> pre-publish (typecheck · build 27 shells · **member-menu 34/34 +
+> member-home 30/30 now in the permanent chain** · receipt 83/83 ·
+> access-state **983** — grew 959→983 by scanning the two new wallet
+> modules, the guard working as designed · surface 278 · seo 431 ·
+> rewrites 52 · the 17 api guards + DB). **The member menu (13 doors · 4
+> groups · icons · gold active bar · the dead-click class dead) and the
+> dashboard recomposition (my-work above world-news · 6 KPI tiles · the
+> attention zone · own recent activity with verify anchors · the doors
+> grid) are LIVE on thesyndicate.money. DEPLOY BACKLOG: EMPTY.** NEXT per
+> the acted order: **AUD-ROUTE** (lens 6+9 P1s: alias canonical ·
+> duplicates/orphans · the Home-vs-PublicHome class) → /admin-in-prod →
+> M-INT-1 → A1 (receipt binder + placements ②③ + V2 Routed fold) → B1
+> (THE FIRSTS engine). Next session boots on "hi".**
+
 > **▶ 🏠 SLICE ③ HOME ✅ BUILT + FOUNDER GO AT THE PREVIEW GATE (2026-07-17):
 > THE APPROVED DASHBOARD RECOMPOSITION — wireframe 2026-07-16 §3 zones
 > Z1–Z8, sealed stays sealed.** Z2 KPI row 4→6 (`MemberKpiRow`): + Receipts (own D3
