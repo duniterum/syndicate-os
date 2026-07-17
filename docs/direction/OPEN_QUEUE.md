@@ -35,12 +35,23 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 >   a safe additive build-emit slice (vite-plugin-compression2, br q11 + gzip l9, threshold 1KB,
 >   `deleteOriginalAssets:false`, js/css/svg/json + post-prerender HTML pass; byte-identity
 >   proven) **OR** the deferred Express-front topology slice (do NOT touch asset delivery).
->   🔴 awaiting founder GO + the Replit answer.
+>   **✅ VERDICT (c) — MEASURED IN PROD (Replit, 2026-07-17):** the static host compresses
+>   NOTHING (no `Content-Encoding`/`Vary` on `/` or the entry JS; 1.62MB raw; the API too),
+>   serves NO pre-compressed siblings (`.br`/`.gz` → 404), and exposes NO host compression
+>   setting → build-time precompression = DEAD WEIGHT, NOT added. Pingdom also flags
+>   `cache-control: private` + no Expires (assets un-cacheable) — SAME host-layer class.
+>   **Both fixes DEFERRED (founder's call; do NOT touch asset delivery):** ⟶ a CDN in front of
+>   the domain (Cloudflare free = Brotli + edge cache + the www→apex 301, all in one, ZERO code,
+>   pure edge transport) = **RECOMMENDED**; or front the static build with the Express server +
+>   compression/cache middleware (code, sensitive). New deferred slice: **SEO-TRANSPORT (CDN)**
+>   — also subsumes the www→apex item.
 > - **② Q31 favicon — founder CHOSE the gold `syn-mark-gold` mark** (retire the off-brand cyan
 >   shield). Reality: the mark exists ONLY as a 544×427/284KB PNG (no inline SVG; header+receipt
 >   render the PNG), and NO image tooling is installed. So it is the Q31 micro-slice (pure-JS
 >   icon generator → small square favicon/apple-touch PNGs from the existing asset + `<head>`
->   link updates), one commit. ⏳ built on founder GO; batches with ① in one deploy cycle.
+>   link updates), one commit. **✅ CONFIRMED LIVE in prod (`6b5727e`, Replit ④: /favicon.svg +
+>   /favicon-32.png + /apple-touch-icon.png all 200, gold mark served, cyan shield dead; Pingdom
+>   "favicon small & cacheable" A/100). Founder closes.**
 >
 > **WAIT FOR MVP-FINAL (content-bound → `docs/direction/MVP_FINAL_CHECKLIST.md`, the AUTHORITY
 > for these; do NOT restate their detail here — no parallel truth):**

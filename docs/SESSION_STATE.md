@@ -2,6 +2,35 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ ✅ BATCH SEALED IN PROD (2026-07-17, Replit-verified 6/6 — ONE cycle):
+> Q33 *Teaser renames + the `assertAddressSafeAggregate` api rename + the Q31
+> gold favicon.** HEAD `6b5727e`, 9 commits ahead of anchor `7e6d8ee`, 26/26
+> blobs SHA-verified (incl. the two Q33 file renames), no migration. Bundle
+> BYTE-IDENTICAL: `index-BfqGonuU.js` SHA-256 `93c93b91…e3695` local == prod
+> (renames don't touch shipped code, so the name held). Gates green: typecheck ·
+> 27 shells · studio (access-state 983 · receipt 83 · menu 34 · home 30 ·
+> surface 296 · seo 435 · rewrites 52) · api (auth-zone 802 · backbone 151 ·
+> activity 140 · source-status 161 · DB 42/42) · feed 78/78 zero-address ·
+> healthz ok · engine 6/6 head 90,554,524. **FAVICON CONFIRMED:** the gold
+> syn-mark serves (/favicon.svg + /favicon-32.png + /apple-touch-icon.png all
+> 200, cyan shield dead; Pingdom "favicon small & cacheable" A/100). **DEPLOY
+> BACKLOG: EMPTY.**
+>
+> **COMPRESSION — VERDICT (c), MEASURED IN PROD (Replit):** the studio static
+> host compresses NOTHING (no `Content-Encoding`/`Vary` on `/` or the entry JS;
+> 1.62MB raw over the wire; the API too), serves NO pre-compressed `.br`/`.gz`
+> siblings (both 404), and exposes NO host compression setting. So build-time
+> precompression = DEAD WEIGHT — **NOT added** (per the founder's (c) rule).
+> Pingdom also flags `cache-control: private` + no Expires (assets un-cacheable)
+> — the SAME host-layer limit. **Both are DEFERRED to a new slice SEO-TRANSPORT:
+> RECOMMENDED = a CDN in front of the domain (Cloudflare free = Brotli + edge
+> cache + the www→apex 301, all at once, ZERO code, pure edge transport — it
+> also subsumes the deferred www→apex item); alternative = fronting the static
+> build with the Express server + compression/cache middleware (code, sensitive,
+> touches asset delivery — the founder's explicit out-of-scope area).** Founder
+> decides; nothing built. NEXT per the acted order (unchanged): **/admin-in-prod
+> → M-INT-1 → A1 → B1.**
+
 > **▶ 2026-07-17 — MECHANICAL / DECISION-LIGHT BATCH (founder "go in the right
 > order"; 4 slices, committed + pushed to main `bcb686f`→`1746d2e`, no founder
 > content/visual gate needed — renames + doc-truth only).**
