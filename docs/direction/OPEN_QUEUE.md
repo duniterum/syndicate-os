@@ -33,6 +33,23 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 >   operator/operator_session/audit_log table migration status unconfirmed — Replit
 >   confirms/migrates at the deploy.
 > - ⏸ **Q38 — step-up signatures** (design §B): founder confirms the live set, or defers.
+> - 🔵 **Q39 — RELOCATE THE SHARED-CONFIG OPERATOR LABELS** (the wall's tracked
+>   follow-up; own careful slice). `src/config/modules.ts` carries the operator
+>   modules' human labels/descriptions ("Admin Console", "Studio OS", "Operator
+>   console skeleton…"); because `/status` + public chrome import modules.ts, those
+>   CONFIG strings ride into the public entry bundle. A PRE-EXISTING, NON-RENDERED
+>   leak (operator modules are header/footer-false; /status filters operator rows —
+>   nothing public displays them). Kill it cleanly: relocate the operator display
+>   strings to a console-only source + thread the shared `SurfaceMapSection`
+>   operator label as data (it's imported by both /status and /os-map). Then widen
+>   guard-admin-dist back to the full admin-vocabulary probe set. Recorded in
+>   guard-admin-dist.mjs (the deliberate scope exclusion + reason).
+>
+> **/ADMIN-IN-PROD STATUS: the NEUTRAL WALL is BUILT + on main (`02f24d6`),
+> fail-closed, verified (build + runtime: internal routes → HTTP 404, neutral
+> title, zero admin trace). GO-LIVE for operators = Q36 (founder_root seed) + Q37
+> (Replit DATABASE_URL + tables). Next inside the console after go-live: M-INT-1
+> (the member ledger, renders in /admin/members).**
 
 > **▶ 2026-07-17 (later) — THE SAFE-SEO GATE: founder decisions, split by self-adapting vs
 > content-bound.** External audit flagged near-raw served assets (transport/perf). Founder

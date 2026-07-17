@@ -2,6 +2,33 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 2026-07-17 (end) — /ADMIN-IN-PROD: THE NEUTRAL WALL BUILT + ON MAIN
+> (`02f24d6`+`cd823d8`), fail-closed. NOT YET LIVE for operators.** The console now
+> SHIPS in prod but reveals ONLY after the server confirms an ACTIVE operator role
+> (App.tsx OperatorRoute: fail-closed reveal seeded from the dev-only bypass →
+> resolved by GET /api/auth/operator-context (isOperator && role) → re-read on
+> SESSION_CHANGED_EVENT; non-operators get the EXACT catch-all 404). The console is
+> an unconditional lazy() import = its own chunk, never the entry bundle, never
+> fetched until revealed. `OperatorPreviewUnavailable` DELETED (its "Internal
+> preview is not enabled" copy admitted a surface at the bare URL — the wall
+> violation, now guard-forbidden). All 15 INTERNAL registry entries neutralized
+> (title/desc mirror the 404 — kills the per-surface title bundle-string leak).
+> guard-operator-gate RE-FIT (separate-chunk seam + full wall-shape + retired-copy
+> dead); NEW guard-admin-dist.mjs (build gate: entry + 28 shells admin-clean of the
+> console-code class, console isolated). VERIFIED: typecheck 0 · opgate 2589 ·
+> access-state 981 · seo 435 · surface 296 · rewrites 52 · build 27 shells + 324
+> byte-verified twins + admin-dist PASS · RUNTIME (serve.mjs): /admin /studio
+> /os-map /admin/operators ALL → HTTP 404, `<title>Page Not Found</title>`, zero
+> admin vocab, no console chunk in the served HTML.
+> **GO-LIVE for operators needs (not this commit): Q36 the founder_root seed
+> (founder act — which wallet) + Q37 Replit provisions DATABASE_URL + migrates the
+> operator/audit tables. Until then NO operator can reveal — everyone gets the 404,
+> so the wall is safe to ship now.** Deferred, tracked: Q39 — the SHARED-config
+> operator labels (modules.ts, ride the entry via /status's import) relocate to a
+> console-only source (a pre-existing, non-rendered leak; its own careful slice).
+> DEPLOY: 🚀 BATCHABLE — client-only, fail-closed; rides the admin go-live with
+> Q36+Q37.
+
 > **▶ 2026-07-17 (end of session) — SESSION DEEP-READ VERIFIED + THE /ADMIN-IN-PROD
 > INVENTORY CORRECTED (first-hand, against code AND live prod).** Session verification:
 > 13 commits `1514bf6`→`1155e34`, ALL pushed (HEAD == origin/main), tree clean, every
