@@ -2,6 +2,25 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 2026-07-17 (later) — SEO-TRANSPORT ACTIVATED ON MAIN (`b62c3c3`), NOT YET
+> LIVE — awaiting the founder's Replit publish click.** Replit confirmed the deploy
+> reads the COMMITTED artifact.toml (repo = single source of truth; no divergent
+> override) and validated the exact content. Committed the switch: artifact.toml
+> static→`[services.production.run] node serve.mjs` + health "/", `BASE_PATH="/"`
+> in BOTH build.env (Vite/prerender need it at build — Replit's one correction) and
+> run.env, [services.env] dev kept; the 52 toml rewrites RETIRED (serve.mjs owns
+> routing from the registry-generated `routeTable.generated.json`, seo:rewrites:check
+> green on the table). VERIFIED on the real prod port 18425: health /→200 index.html,
+> clean URLs→200, entry JS→402KB Brotli, real 404; full gate + 316 byte-verified
+> twins. serve.mjs resolves dist/public from import.meta.url (cwd-independent —
+> Replit's vigilance note, already satisfied). **GO-LIVE = the founder's Replit
+> publish click:** founder tells Replit "c'est sur main" → Replit pulls (blob-verifies
+> serve.mjs + precompress + toml byte-for-byte vs its validated local) + full gates +
+> local smoke → publish card → founder clicks → post-publish battery (27 shells +
+> real 404 · Content-Encoding: br + Vary on / and the entry JS · immutable on
+> /assets/* · byte-identity via Accept-Encoding: identity). Prod stays on the current
+> static build until that click.
+
 > **▶ 2026-07-17 (later) — SEO-TRANSPORT: the studio Node server BUILT + ON MAIN
 > (`1dc2031`), INERT. NOT YET LIVE.** Replit's compression verdict was (c) — the
 > static layer can't compress or set headers. Founder chose the NON-CDN path (CDN
