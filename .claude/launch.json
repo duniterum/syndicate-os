@@ -14,7 +14,7 @@
     {
       "name": "api-server",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "artifacts/api-server"],
+      "runtimeArgs": ["run", "dev:rig", "--prefix", "artifacts/api-server"],
       "port": 5000,
       "env": {
         "PORT": "5000",

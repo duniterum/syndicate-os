@@ -2,6 +2,83 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🚪 SLICE ② MENU ✅ BUILT + GATE GREEN + FOUNDER GO AT THE GATE
+> (2026-07-17, the wording rider rode): THE APPROVED MEMBER MENU — wireframe
+> 2026-07-16 §2 realized.** `memberDoors.ts`: 13 rows in FOUR groups (Member:
+> 5 primaries + Receipts locked-visible FUTURE "Coming later" via the EXISTING
+> badge system · The record: Chronicle/Fire Ledger/Archive/Recognition/
+> Protocol graph · Growth: Liquidity — the name stays, navigation never a
+> member promise · Off-chain comfort: Settings pinned LAST, `separated`),
+> a lucide icon KEY per door (config stays Node-loadable; MemberShell maps
+> key→component, Record-total — a missing icon is a red build); label
+> "Referral dashboard" → "Referral" (the approved table). `MemberShell.tsx`:
+> compact icon rows; active = gold/10 tint + persistent 2px gold left bar +
+> weight 600 + gold icon — shape AND color, never color alone (WCAG 1.4.1) —
+> + `aria-current="page"` on rows AND mobile chips; hover border/45;
+> focus-visible gold ring; group titles at the 12px floor (ADR-001 outranks
+> the wireframe's 11px token); the /70 muted-foreground alphas purged (audit
+> lens-8 light-theme contrast). THE DEAD-CLICK CLASS DIED (audit lens-14 P2 —
+> it lives in these files): `RouteScrollManager` reads pathname+hash
+> reactively via wouter's `useLocationProperty` (a wouter Link's pushState
+> fires NO hashchange and wouter's location is pathname-only — the root
+> cause) + a ~5s retry loop for late-mounting hash targets (#settings mounts
+> only after session resolve), cancelled at the first user gesture; TIMER,
+> never rAF — RIG-PROVEN: rAF never fires in a hidden/occluded tab (the same
+> frame-freeze leaves mid-flight CSS transitions sampling stale colors — a
+> rig artifact, not a code bug; pinned here for the next debugger).
+> Rig-verified end-to-end: /toolkit → Referral door →
+> /member#referral-dashboard scrolls the target to exactly the 80px header
+> offset, aria-current follows; 13 chips at 44px, 375 zero overflow; both
+> themes verified at the computed level (light gold #C3861D flips); images
+> OK; zero slice console errors (the /wallet ConnectModal/Hydrate dev
+> warning is PRE-EXISTING — proven at HEAD via stash; separate task noted).
+> THE PRE-COMMIT ADVERSARIAL PASS (ultracode, 3 lenses + refutation — 11
+> CONFIRMED all fixed · 5 refuted): same-door RE-CLICK now re-scrolls to its
+> section with NO duplicate history entry (wouter Links never reach native
+> same-hash behavior; preventDefault + the exported scrollToHash; rig-proven
+> with the retry window dead — 1548px exact) · the retry loop RE-CORRECTS
+> drift through its window (lazy content above the anchor pushes it away;
+> Safari has no scroll anchoring) · cancel set grew pointer/mousedown
+> (Firefox native-scrollbar = accepted residual, documented) · the inert
+> mobile Receipts chip carries ITS badge "Coming later" (the chip row is the
+> ONLY mobile menu; a dead tap must say why) · the guard was hardened
+> against its own FALSE GREEN (an icon-less door used to render a 14th row
+> while the count stayed green; pins now anchor to CODE shapes — a header
+> comment can no longer satisfy them; bans widened to any px/rem sub-12 and
+> any muted-foreground alpha). `guard-member-menu` **34 pins**, wired into
+> the guards chain. THE WORDING RIDER (the queued P2 human-tongue checkout
+> strings; full texts shown on screen at the gate; founder reply "GO menu /
+> GO menu + wording" read as the fuller GO — recorded verbatim; ③ then
+> CORRECTED by the adversarial pass, truth-first over the approved draft):
+> ① "(claim gate · allowance · balance)" → "your eligibility, your spending
+> approval, your balance…" · ② "slippage floor" → "Your minimum-received
+> protection" · ③ the raw-error fallback is now attribution-NEUTRAL — 'The
+> transaction did not go through. The reported reason: "<first line, marked
+> … when truncated>"' (the line can be viem's or an RPC node's, not provably
+> the wallet's — "Your wallet reported" was itself an invented claim, caught
+> and killed pre-commit) — AND the receipt-wait is SPLIT from the write:
+> after a signed+broadcast approve/buy, an RPC read failure now says "Your
+> approval/purchase was sent (0x…) but its confirmation could not be read
+> from here — the transaction stands on the chain regardless of this page"
+> (the old path claimed "did not go through" for purchases that may have
+> SUCCEEDED — the worst possible lie on the money path, dead). Bundle-proven:
+> 5 living strings served ("The reported reason" · "Your approval was sent" ·
+> "Your purchase was sent" · eligibility line · minimum-received line), the
+> dead at 0 ("Your wallet reported" · the checkout "claim gate" parenthetical
+> · "slippage floor could not" · "Referral dashboard"; the two surviving
+> "claim gate" prose sites are the Chronicle entry + MembersProvenance
+> historical truth, untouched by design). RIG RIDER (Windows): api-server
+> `dev:rig` (the POSIX `export` dev script cannot run under cmd; the Replit
+> path untouched) + launch.json points at it. Gate: tsc ×2 · build 27
+> shells · ALL studio guards (access-state 959 · receipt 83/83 ·
+> **member-menu 34/34**) · seo 431 · surface 278 · rewrites 52. **DEPLOY:
+> 🚀 BATCHABLE (client-only, fail-closed, additive — prod keeps the previous
+> menu + checkout strings until the next deploy; nothing breaks undeployed).
+> Deploy backlog: THIS slice.** NEXT per the acted order: **③ HOME
+> recomposition** (approved zones Z1–Z8; 6 KPIs; Z3 attention
+> real-state-only; Z4 = D3 rows w/ View-receipt) → AUD-ROUTE →
+> /admin-in-prod → M-INT-1 → A1 → B1.**
+
 > **▶ ✅ THE COMPLETE RECEIPT PRODUCT SEALED IN PROD (2026-07-17, THE ONE-SHOT
 > CYCLE — Replit-verified 6/6 on thesyndicate.money, prod entry bundle
 > `index-BXOINcQ0.js` SHA-256 a02c6dae…dd58 byte-identical PLUS the

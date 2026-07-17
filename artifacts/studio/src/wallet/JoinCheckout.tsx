@@ -155,8 +155,15 @@ function explainError(e: unknown): string {
   for (const [name, text] of KNOWN_REVERTS) {
     if (raw.includes(name)) return text;
   }
+  // P2 human-tongue (founder GO 2026-07-17) + the adversarial-review catch:
+  // the raw line can come from the wallet, viem, or an RPC node — so it is
+  // presented as "the reported reason", never attributed to a speaker this
+  // code cannot prove; a truncated quote is MARKED (…), never passed off as
+  // the whole. This fallback is only reached when writeContractAsync itself
+  // threw — no hash exists, so "did not go through" is honest here.
   const firstLine = raw.split("\n")[0] ?? raw;
-  return `The transaction did not go through: ${firstLine.slice(0, 180)}. Nothing is assumed — verify your wallet activity on the explorer.`;
+  const shown = firstLine.length > 160 ? `${firstLine.slice(0, 160)}…` : firstLine;
+  return `The transaction did not go through. The reported reason: "${shown}". Nothing is assumed — verify your wallet activity on the explorer.`;
 }
 
 type Phase =
@@ -310,7 +317,8 @@ export default function JoinCheckout({
     return (
       <Shell>
         <p className="text-sm text-muted-foreground" data-testid="text-checkout-reading">
-          Reading your live on-chain state (claim gate · allowance · balance)…
+          Reading your live on-chain state — your eligibility, your spending
+          approval, your balance…
         </p>
       </Shell>
     );
@@ -364,7 +372,19 @@ export default function JoinCheckout({
         args: [saleAddress as `0x${string}`, gross!],
         chainId: avalanche.id,
       });
-      await publicClient.waitForTransactionReceipt({ hash });
+      // The receipt wait runs on the app's OWN RPC client, after the wallet
+      // already signed and broadcast — a failure HERE is a read failure,
+      // never a failed approval, and must never be blamed on the wallet
+      // (adversarial-review catch: a timeout would have rendered "did not
+      // go through" for an approval that stands on the chain).
+      try {
+        await publicClient.waitForTransactionReceipt({ hash });
+      } catch {
+        setError(
+          `Your approval was sent (${hash.slice(0, 10)}…) but its confirmation could not be read from here. Nothing is assumed — the transaction stands on the chain regardless of this page; retry in a moment or verify it on the explorer.`,
+        );
+        return;
+      }
       // The chain is the truth — re-read the allowance rather than assume it.
       await resolve();
     } catch (e) {
@@ -395,7 +415,7 @@ export default function JoinCheckout({
       }
       const minSynOut = computeMinSynOutRaw(q.quote.synOutRaw);
       if (minSynOut === null) {
-        setError("The slippage floor could not be computed from the fresh quote — nothing was signed.");
+        setError("Your minimum-received protection could not be computed from the fresh quote — nothing was signed.");
         return;
       }
       // AUDIT FIX (1.2) — quote/purchase divergence: the read-only quote merely
@@ -421,7 +441,18 @@ export default function JoinCheckout({
         ],
         chainId: avalanche.id,
       });
-      const txReceipt = await publicClient.waitForTransactionReceipt({ hash });
+      // Same read-vs-write split as handleApprove: the purchase is already
+      // signed and broadcast; a receipt-read failure is the app's, not the
+      // buyer's, and the message must not claim the purchase failed.
+      let txReceipt: Awaited<ReturnType<typeof publicClient.waitForTransactionReceipt>>;
+      try {
+        txReceipt = await publicClient.waitForTransactionReceipt({ hash });
+      } catch {
+        setError(
+          `Your purchase was sent (${hash.slice(0, 10)}…) but its confirmation could not be read from here. Nothing is assumed — the transaction stands on the chain regardless of this page; verify it on the explorer or reload in a moment.`,
+        );
+        return;
+      }
       // Law 4: the seat is read from the receipt EVENT only.
       const events = parseEventLogs({
         abi: PURCHASE_EVENT_ABI,

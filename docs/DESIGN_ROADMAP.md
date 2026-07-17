@@ -235,6 +235,43 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   texte (fichiers natifs quand supportés, repli téléchargement + copie) ;
   print/PDF toujours le papier seul. **+0 couleur brute** ; guard receipt
   **83 pins** ; rig : les deux thèmes inspectés au pixel.
+- [x] **② MENU — LE MENU MEMBRE APPROUVÉ (2026-07-17, wireframe GO fondateur
+  2026-07-16 §2)** : les 13 rangées en QUATRE groupes (Member : 5 primaires +
+  Receipts visible-verrouillé « Coming later » badge existant · The record ·
+  Growth — le nom reste, navigation jamais promesse · Off-chain comfort :
+  Settings épinglé DERNIER, séparé) ; icône lucide par porte (la table
+  approuvée) ; état actif = teinte gold/10 + **barre gauche 2px persistante**
+  + graisse 600 + icône or — forme ET couleur, jamais couleur seule (WCAG
+  1.4.1) + `aria-current="page"` ; hover = teinte border/45 ; focus clavier =
+  anneau or visible ; titre de groupe au plancher 12px (ADR-001 > le 11px de
+  la maquette). LES CORRECTIFS AUDIT QUI HABITENT CES FICHIERS : ① la classe
+  clic-mort des portes hash MORTE (`RouteScrollManager` lit pathname+hash via
+  `useLocationProperty` — le pushState de wouter n'émet aucun hashchange —
+  + boucle de retry ~5s pour les cibles à montage tardif type #settings,
+  annulée à l'input utilisateur : molette · toucher · touche · pointeur
+  (scrollbar native Firefox = résiduel accepté, documenté) ; minuterie,
+  jamais rAF — rig-prouvé : rAF ne tire jamais dans un onglet caché) ;
+  ② `aria-current` sur portes ET puces ; ③ les alphas /70 muted-foreground
+  du shell purgés (contraste thème clair). Étiquette « Referral dashboard »
+  → « Referral » (la maquette). LA PASSE ADVERSARIALE PRÉ-COMMIT (ultracode
+  3 lentilles + réfutation, 11 confirmés corrigés · 5 réfutés) : re-clic
+  sur la porte déjà active = re-scroll vers sa section sans entrée
+  d'historique dupliquée (rig-prouvé fenêtre morte : 1548px pile) · la
+  boucle RE-CORRIGE la dérive pendant sa fenêtre (le contenu lazy au-dessus
+  de la cible pousse l'ancre ; Safari n'a pas de scroll anchoring) · la puce
+  mobile inerte Receipts porte SON badge « Coming later » (un tap mort doit
+  dire pourquoi — la rangée de puces est le SEUL menu mobile) · le guard
+  durci contre son propre faux-vert (une porte sans icône comptait 0 rangée ;
+  pins ancrés aux formes de CODE, plus jamais satisfaits par un commentaire ;
+  bans élargis px/rem + tout alpha). `guard-member-menu` **34 pins**.
+  **+0 couleur brute** ; rig : 13 rangées DOM-vérifiées, actif/inactif
+  mesurés (barre 2px or, 600, aria-current), les deux thèmes au niveau calculé
+  (l'or clair #C3861D flippe), 375 = 13 puces à 44px zéro débordement, scroll
+  hash bout-en-bout (cible à 80px pile), images OK, zéro erreur console de la
+  slice (l'avertissement ConnectModal/Hydrate de /wallet = pré-existant,
+  prouvé à HEAD par stash, tâche séparée notée). Rider rig Windows :
+  `dev:rig` api-server (le `export` POSIX ne tourne pas sous cmd) +
+  launch.json pointé dessus.
 
 ### Phase 6 — Audits (le sceau grade-AAA)
 - [ ] Accessibilité (WCAG AA / APCA, focus, clavier, cibles ≥44px)
@@ -249,7 +286,7 @@ Design **100 % fini, verrouillé** = toutes les cases de "Définition de FINI" c
 → **on n'y revient plus jamais.**
 
 ## Suivi couleur — ✅ FERMÉ
-Sprawl : **0** couleur brute (slice 2.3 FAQ : **+0** · slice 2.4 Docs : **+0** · slice ⓪ liveness : **+0** — MembersProvenance 100 % tokens · arc Member Home 2026-07-14 : MEMBER SHELL **+0** · slice A actions/lien/Guide **+0** · slice B pill/settings **+0** · slice C teasers (TeaserSurface + 3 pages) **+0** · slice D wallet/toolkit **+0** · arc harvest L-1 /liquidity **+0** · ACT-1 feed (LiveActivityFeed + 2 pages live) **+0** · CHR-1 chronicle (register + panneau console) **+0** · M1-a hero premier acte (HeroStatusChips + HeroSeatLine + rail Inspect) **+0** · M1-b carte vivante (heroIconLanguage + nœud burn + mini-feed) **+0** · M1-c header/footer (barre récurrente morte à la racine + garde `guard-nav-link-display` + pilules dérivées) **+0** · S7 member home (bande d'accès + héros Your Seat + pilule échelon) **+0** · S7-b tableau de bord membre (bandeau + KPI + pouls + puces mobiles) **+0** · RECEIPT ticket (spine + ReceiptTicket + guard 63 pins) **+0** — tout en tokens). Guard
+Sprawl : **0** couleur brute (slice 2.3 FAQ : **+0** · slice 2.4 Docs : **+0** · slice ⓪ liveness : **+0** — MembersProvenance 100 % tokens · arc Member Home 2026-07-14 : MEMBER SHELL **+0** · slice A actions/lien/Guide **+0** · slice B pill/settings **+0** · slice C teasers (TeaserSurface + 3 pages) **+0** · slice D wallet/toolkit **+0** · arc harvest L-1 /liquidity **+0** · ACT-1 feed (LiveActivityFeed + 2 pages live) **+0** · CHR-1 chronicle (register + panneau console) **+0** · M1-a hero premier acte (HeroStatusChips + HeroSeatLine + rail Inspect) **+0** · M1-b carte vivante (heroIconLanguage + nœud burn + mini-feed) **+0** · M1-c header/footer (barre récurrente morte à la racine + garde `guard-nav-link-display` + pilules dérivées) **+0** · S7 member home (bande d'accès + héros Your Seat + pilule échelon) **+0** · S7-b tableau de bord membre (bandeau + KPI + pouls + puces mobiles) **+0** · RECEIPT ticket (spine + ReceiptTicket + guard 63 pins) **+0** · ② MENU membre (memberDoors + MemberShell + RouteScrollManager + guard 34 pins) **+0** — tout en tokens). Guard
 `no-raw-color` **BLOQUANT** dans la gate (`pnpm guards`), toute nouvelle couleur brute casse le
 build. Du pic de **137 sites** → **0** au fil des slices d'harmonisation.
 Une seule exception documentée : `QrCodeBlock` (fond blanc du canvas QR, requis pour la lisibilité),
