@@ -785,17 +785,20 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
   );
   // Approved route pin (verb-aware): the operator zone exposes EXACTLY these
   // verb+path pairs, in this order, and nothing else. Any new route must be
-  // founder-approved and added here explicitly. GET /operators is the ONLY
-  // sanctioned READ (Phase 3 slice 1 — masked registry list); everything else
-  // stays a POST write.
+  // founder-approved and added here explicitly. TWO sanctioned READs:
+  // GET /operators (Phase 3 slice 1 — masked registry list, admin-tier) and
+  // GET /member-ledger (M-INT-1, founder-acted 2026-07-16 — the per-seat
+  // member ledger, FOUNDER-ONLY because it pairs memberNumber↔walletShort per
+  // the §D privacy overlay). Everything else stays a POST write.
   const APPROVED_ROUTES: ReadonlyArray<readonly [string, string]> = [
     ["post", "/referral-terms"],
     ["post", "/operators"],
     ["post", "/operators/suspend"],
     ["get", "/operators"],
+    ["get", "/member-ledger"],
   ];
   const FOUNDER_ONLY_ROUTES = new Set(["post /operators", "post /operators/suspend"]);
-  const READ_ONLY_ROUTES = new Set(["get /operators"]);
+  const READ_ONLY_ROUTES = new Set(["get /operators", "get /member-ledger"]);
   // Close alternate Express route-declaration syntaxes BEFORE enumerating:
   // .route(...).post(...), bracketed verbs (router["post"]), computed access,
   // and any router.use beyond the two sanctioned scoped middleware lines could
@@ -869,17 +872,41 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
           `route ${routeKey}: READ route never touches req.body`,
           `src/operator/router.ts route ${routeKey} is a sanctioned READ — it must not read req.body at all`,
         );
-        check(
-          /WRITE_ROLES\.has\(/.test(block),
-          `route ${routeKey}: admin-tier allow-list gate (WRITE_ROLES)`,
-          `src/operator/router.ts route ${routeKey} must gate on WRITE_ROLES.has(ctx.role)`,
-        );
-        check(
-          /listOperators\(\)/.test(block) &&
-            !/inviteOperator\(|suspendOperator\(|upsertReferralTerms\(/.test(block),
-          `route ${routeKey}: delegates to the masked list read ONLY (no write service reachable)`,
-          `src/operator/router.ts route ${routeKey} must call listOperators() and must never reach inviteOperator/suspendOperator/upsertReferralTerms`,
-        );
+        if (routeKey === "get /member-ledger") {
+          // M-INT-1: FOUNDER-ONLY (memberNumber↔walletShort pairings are
+          // restricted to founder_root by the §D privacy overlay — stricter
+          // than the admin tier), delegates ONLY to the ledger read, and the
+          // serialized payload must pass the 40-hex fail-closed scanner
+          // before it leaves the server.
+          check(
+            /ctx\.role\s*!==\s*"founder_root"/.test(block) && !/WRITE_ROLES/.test(block),
+            `route ${routeKey}: founder_root ONLY (member pairings are founder-gated)`,
+            `src/operator/router.ts route ${routeKey} role gate drifted — the member ledger must deny unless ctx.role === "founder_root" and must NOT use the broader WRITE_ROLES allow-list`,
+          );
+          check(
+            /readMemberLedger\(/.test(block) &&
+              !/inviteOperator\(|suspendOperator\(|upsertReferralTerms\(|saveReferralTerm\(|listOperators\(/.test(block),
+            `route ${routeKey}: delegates to the ledger read ONLY (no other service reachable)`,
+            `src/operator/router.ts route ${routeKey} must call readMemberLedger() and must never reach any write service or the registry list`,
+          );
+          check(
+            /assertAddressSafeAggregate\(\s*JSON\.stringify\(/.test(block),
+            `route ${routeKey}: serialized payload passes the 40-hex fail-closed scanner`,
+            `src/operator/router.ts route ${routeKey} must run assertAddressSafeAggregate(JSON.stringify(...)) over the payload before res.json`,
+          );
+        } else {
+          check(
+            /WRITE_ROLES\.has\(/.test(block),
+            `route ${routeKey}: admin-tier allow-list gate (WRITE_ROLES)`,
+            `src/operator/router.ts route ${routeKey} must gate on WRITE_ROLES.has(ctx.role)`,
+          );
+          check(
+            /listOperators\(\)/.test(block) &&
+              !/inviteOperator\(|suspendOperator\(|upsertReferralTerms\(/.test(block),
+            `route ${routeKey}: delegates to the masked list read ONLY (no write service reachable)`,
+            `src/operator/router.ts route ${routeKey} must call listOperators() and must never reach inviteOperator/suspendOperator/upsertReferralTerms`,
+          );
+        }
       } else {
         check(
           /\.safeParse\(\s*req\.body\s*\)/.test(block),
@@ -1170,6 +1197,52 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
         /slice\(-4\)/.test(regCode),
       "registry service: listOperators masks wallets server-side (slice(0,6)…slice(-4))",
       "operatorRegistryService.ts must mask wallets server-side in listOperators — the full wallet never leaves the server",
+    );
+  }
+
+  // 9e-ML. M-INT-1 member-ledger service pins (mirrors the registry-service
+  // discipline): fail-closed gate, pure module, masked short wallets ONLY in
+  // the row shape, no transaction anchors in v1 rows (audit A21 — a later
+  // founder-gated amendment), and every access audit-logged.
+  {
+    const mlCode = stripComments(read(path.resolve(srcDir, "operator", "memberLedgerService.ts")));
+    check(
+      /if \(!gateOpen\(\)\) return \{ ok: false, reason: "unavailable" \};/.test(mlCode),
+      "ledger service: opens with the fail-closed exposure gate",
+      'memberLedgerService.ts must start readMemberLedger with `if (!gateOpen()) return { ok: false, reason: "unavailable" };`',
+    );
+    check(
+      !/\b(console|res|req|logger)\s*\./.test(mlCode),
+      "ledger service: pure service module — no response, request, or log surface",
+      "memberLedgerService.ts must stay a pure service (no res/req/console/logger)",
+    );
+    check(
+      /catch\s*(\([^)]*\))?\s*\{[\s\S]{0,200}?ok:\s*false/.test(mlCode),
+      "ledger service: any error fails closed (ok: false)",
+      "memberLedgerService.ts must return ok: false from its catch",
+    );
+    check(
+      /walletShort: string;/.test(mlCode) &&
+        !/\bwallet: string;/.test(mlCode.replace(/actor: \{[\s\S]*?\}/, "")) &&
+        /slice\(0,\s*6\)/.test(mlCode) &&
+        /slice\(-4\)/.test(mlCode),
+      "ledger service: rows carry the masked walletShort ONLY (slice(0,6)…slice(-4)); no full-wallet row field",
+      "memberLedgerService.ts row shape drifted — LedgerRow may carry only the server-masked walletShort, never a full wallet field",
+    );
+    check(
+      !/transactionHash|entryTransaction/.test(mlCode),
+      "ledger service: v1 rows carry NO transaction anchors (A21 — later founder-gated amendment)",
+      "memberLedgerService.ts serializes a transaction anchor — v1 ledger rows are anchor-free until the founder-gated A21 amendment",
+    );
+    check(
+      /"member-ledger\.read"/.test(mlCode) && /auditLog/.test(mlCode),
+      "ledger service: every access writes the member-ledger.read audit row",
+      "memberLedgerService.ts must write an auditLog row (action member-ledger.read) on every successful read",
+    );
+    check(
+      /SEGMENT_DEFINITIONS/.test(mlCode) && /segmentDefinitions/.test(mlCode),
+      "ledger service: segment definitions ship in the payload (the console renders the exact math)",
+      "memberLedgerService.ts must serve SEGMENT_DEFINITIONS in the payload — a segment chip without its definition is an unexplained judgment",
     );
   }
 

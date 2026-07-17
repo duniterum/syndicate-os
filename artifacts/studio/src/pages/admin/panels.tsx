@@ -456,7 +456,8 @@ export function AdminMembersPanel() {
         <Link href="/member" className="text-proof hover:underline">
           /member
         </Link>
-        . Member management tooling is a future founder-gated slice.
+        . The member ledger above is the founder-gated management view
+        (M-INT-1); the full users-registry tab is M-INT-2.
       </p>
     </PanelCard>
   );

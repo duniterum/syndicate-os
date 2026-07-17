@@ -261,6 +261,8 @@ const adminGraph: Record<string, string[]> = {
   '"@/pages/admin/sections"': [path.join("components", "admin", "AdminShell.tsx")],
   '"@/pages/admin/panels"': [path.join("pages", "admin", "sections.tsx")],
   '"@/pages/admin/AdminHome"': [path.join("pages", "admin", "sections.tsx")],
+  // M-INT-1: the member ledger joins the strict chain (sections.tsx only).
+  '"@/pages/admin/memberLedger"': [path.join("pages", "admin", "sections.tsx")],
 };
 for (const [spec, allowedImporters] of Object.entries(adminGraph)) {
   let importedByAllowed = false;

@@ -81,6 +81,86 @@ export async function listOperators(): Promise<ListOperatorsResult> {
   }
 }
 
+// ── M-INT-1: the member ledger (founder-only read) ──────────────────────────
+export interface LedgerReferral {
+  introduced: number;
+  durable: number;
+  commissionPaidRaw: string;
+  entitledTitle: string;
+  promotionDue: boolean;
+}
+export interface LedgerRow {
+  id: string;
+  seat: number;
+  walletShort: string;
+  authority: string;
+  entryDay: string | null;
+  rung: string | null;
+  footprintUsdcRaw: string | null;
+  purchaseCount: number;
+  lastPurchaseDay: string | null;
+  purchasesTotalRaw: string | null;
+  referral: LedgerReferral | null;
+  segment: "ACTIVE" | "SETTLED" | "DORMANT";
+}
+export interface LedgerPayload {
+  rows: LedgerRow[];
+  totals: {
+    seats: number;
+    active: number;
+    settled: number;
+    dormant: number;
+    sourceOwners: number;
+    promotionsDue: number;
+  };
+  segmentDefinitions: Record<string, string>;
+  recencyAnchorDay: string | null;
+  introductionsAsOfBlock: number | null;
+  honesty: string;
+}
+export type MemberLedgerResult =
+  | { status: "ok"; payload: LedgerPayload }
+  | { status: "denied" }
+  | { status: "unavailable" };
+
+// GET the member ledger (M-INT-1). FOUNDER-ONLY server-side; wallets arrive
+// pre-masked. Fail-closed exactly like listOperators: 401/403/404 → "denied"
+// (deliberately indistinguishable), transport/shape → "unavailable".
+export async function fetchMemberLedger(): Promise<MemberLedgerResult> {
+  try {
+    const res = await fetch("/api/operator/member-ledger", { method: "GET" });
+    if (res.ok) {
+      const body: unknown = await res.json();
+      const p =
+        typeof body === "object" && body !== null
+          ? (body as Record<string, unknown>).payload
+          : null;
+      if (typeof p !== "object" || p === null) return { status: "unavailable" };
+      const payload = p as Record<string, unknown>;
+      const rowsRaw = payload.rows;
+      if (!Array.isArray(rowsRaw) || typeof payload.totals !== "object" || payload.totals === null) {
+        return { status: "unavailable" };
+      }
+      const rows = rowsRaw.filter(
+        (r): r is LedgerRow =>
+          typeof r === "object" &&
+          r !== null &&
+          typeof (r as Record<string, unknown>).seat === "number" &&
+          typeof (r as Record<string, unknown>).walletShort === "string" &&
+          typeof (r as Record<string, unknown>).segment === "string",
+      );
+      return {
+        status: "ok",
+        payload: { ...(p as unknown as LedgerPayload), rows },
+      };
+    }
+    if (res.status === 401 || res.status === 403 || res.status === 404) return { status: "denied" };
+    return { status: "unavailable" };
+  } catch {
+    return { status: "unavailable" };
+  }
+}
+
 // Founder-only registry write: invite (create) a new ACTIVE operator. Same
 // fail-closed shape as saveReferralTerm — any non-OK (dark 404 / 401 / 403 /
 // 400 validation / transport) resolves to { ok:false, reason }, never throws.

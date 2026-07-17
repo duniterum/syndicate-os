@@ -40,6 +40,7 @@ import {
   AdminFlagsPanel,
   AdminHealthPanel,
 } from "@/pages/admin/panels";
+import { MemberLedgerPanel } from "@/pages/admin/memberLedger";
 import { AdminReferralPanel } from "@/components/referral/AdminReferralPanel";
 import { AdminModulesConsole } from "@/components/referral/AdminModulesConsole";
 import { AdminReferralCrud } from "@/components/referral/AdminReferralCrud";
@@ -109,6 +110,10 @@ export function AdminDashboardSection() {
 export function AdminMembersSection() {
   return (
     <div className="space-y-6">
+      {/* M-INT-1: the member ledger — the section's centerpiece (founder-only
+          read; masked wallets; audit-logged). The posture panel keeps the
+          server-only PII boundary statement below it. */}
+      <MemberLedgerPanel />
       <AdminMembersPanel />
     </div>
   );

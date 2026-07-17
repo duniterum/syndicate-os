@@ -20,6 +20,8 @@ import { throttleKey } from "../auth/clientIdentity";
 import { lookupActiveOperator } from "../auth/operatorContext";
 import { saveReferralTerm } from "./referralTermsService";
 import { inviteOperator, suspendOperator, listOperators } from "./operatorRegistryService";
+import { readMemberLedger } from "./memberLedgerService";
+import { assertAddressSafeAggregate } from "../lib/protocol/rpcTransport";
 
 const router: IRouter = Router();
 
@@ -213,6 +215,46 @@ router.get("/operators", async (req: Request, res: Response) => {
   }
   req.log.info({ event: "operator.listed", code: "ok" });
   res.json({ ok: true, operators: result.operators });
+});
+
+// ── GET /api/operator/member-ledger (M-INT-1) ───────────────────────────────
+// FOUNDER-ONLY READ: the per-seat member ledger — a projection of already-
+// indexed data with SERVER-MASKED short wallets (the §D privacy overlay
+// restricts memberNumber↔wallet pairings to founder_root, stricter than the
+// admin-tier WRITE_ROLES). No query/params exist (never a lookup API —
+// ADR-003); the serialized payload must pass the 40-hex fail-closed scanner
+// before it leaves; every access writes an audit row inside the service.
+router.get("/member-ledger", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "operator.ledger.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const account =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  if (account === null) {
+    deny(res, 401, "no_session");
+    return;
+  }
+  const ctx = await lookupActiveOperator(account);
+  if (!ctx.isOperator || ctx.role !== "founder_root") {
+    req.log.warn({ event: "operator.ledger.denied", code: "insufficient_role" });
+    deny(res, 403, "insufficient_role");
+    return;
+  }
+  const result = await readMemberLedger({ wallet: account, role: ctx.role });
+  if (!result.ok) {
+    deny(res, result.reason === "unavailable" ? 503 : 400, result.reason);
+    return;
+  }
+  // Fail-closed output scan: a full 20-byte address anywhere in the payload
+  // (masked short forms pass) turns this response into a 500, never a leak.
+  assertAddressSafeAggregate(JSON.stringify(result.payload));
+  req.log.info({ event: "operator.ledger.read", code: "ok" });
+  res.json({ ok: true, payload: result.payload });
 });
 
 export default router;

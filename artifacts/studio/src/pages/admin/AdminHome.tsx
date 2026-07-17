@@ -143,6 +143,21 @@ export default function AdminHome({ role, onNavigate, realitySlot }: AdminHomePr
         </div>
       </div>
 
+      {/* Q40 (founder, 2026-07-17: "what I need is at the bottom"): LIVE
+          content leads — the real Protocol reality renders FIRST; the honest
+          KPI placeholders are demoted below it until their reads are wired. */}
+      {realitySlot ? (
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <CardTitle className="text-base">Protocol reality</CardTitle>
+            <Badge variant="secondary" className="text-[10px]">
+              Live · on-chain
+            </Badge>
+          </div>
+          {realitySlot}
+        </Card>
+      ) : null}
+
       {/* Business KPIs — honest preview, NO fabricated numbers */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {PREVIEW_KPIS.map((k) => {
@@ -162,19 +177,6 @@ export default function AdminHome({ role, onNavigate, realitySlot }: AdminHomePr
           );
         })}
       </div>
-
-      {/* Live protocol reality (REAL data, wired by the shell) */}
-      {realitySlot ? (
-        <Card className="p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <CardTitle className="text-base">Protocol reality</CardTitle>
-            <Badge variant="secondary" className="text-[10px]">
-              Live · on-chain
-            </Badge>
-          </div>
-          {realitySlot}
-        </Card>
-      ) : null}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Needs attention */}
