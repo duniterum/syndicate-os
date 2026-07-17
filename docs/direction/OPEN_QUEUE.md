@@ -45,11 +45,17 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 >   guard-admin-dist back to the full admin-vocabulary probe set. Recorded in
 >   guard-admin-dist.mjs (the deliberate scope exclusion + reason).
 >
-> **/ADMIN-IN-PROD STATUS: the NEUTRAL WALL is BUILT + on main (`02f24d6`),
-> fail-closed, verified (build + runtime: internal routes → HTTP 404, neutral
-> title, zero admin trace). GO-LIVE for operators = Q36 (founder_root seed) + Q37
-> (Replit DATABASE_URL + tables). Next inside the console after go-live: M-INT-1
-> (the member ledger, renders in /admin/members).**
+> **✅ /ADMIN-IN-PROD SEALED (2026-07-17): the wall is LIVE on thesyndicate.money
+> (world → 404 neutral, triple-verified) and the CONSOLE IS THE FOUNDER'S — Q36
+> ceremony done (founder_root `0x88ec…dd73` ACTIVE since 19:57Z, audit-rowed,
+> disarmed, verify healthy) + Q37 done (tables present, constraints dev==prod).
+> Founder-verified in prod: badge "Operator · founder_root", 10 sections, live
+> reality. Q36 + Q37 → founder closes. Q38 step-up stays deferred (own slice).**
+> - 🔵 **Q40 — ADMIN DASHBOARD REORDER (founder, 2026-07-17: "what I need is at
+>   the bottom").** The Dashboard leads with the four DEAD KPI placeholder cards
+>   ("Live reads coming") while the LIVE content (Protocol reality, the real
+>   work) sits below. Reorder: live content first, placeholders demoted/collapsed
+>   until wired. Small UX slice — ride it with M-INT-1 (same surface family).
 
 > **▶ 2026-07-17 (later) — THE SAFE-SEO GATE: founder decisions, split by self-adapting vs
 > content-bound.** External audit flagged near-raw served assets (transport/perf). Founder

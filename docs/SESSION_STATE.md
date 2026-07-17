@@ -2,6 +2,34 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ ✅ /ADMIN-IN-PROD SEALED — THE CONSOLE IS LIVE BEHIND THE WALL (2026-07-17,
+> Replit full cycle + founder-verified in prod + independently curl-verified).**
+> THE COMPLETE PROOF, all three sides: ① REPLIT: HEAD `5d30ab6` 16/16 blobs, gates
+> green (studio 3,588 · admin-dist 90 · API 802/151/140/161 · DB 42/42), publish,
+> wall battery (4 admin routes → 404 "Page Not Found", zero admin vocab, zero
+> console-chunk ref, byte-identity `3e54631b…9458af`), Q37 (tables existed via
+> Publish schema sync, contraints dev==prod, 0 rows, verify NOT SEEDED — the db push
+> TRUNCATE false-positive on member_continuity_verification_run was REFUSED, right
+> call), Q36 CEREMONY (dry-run → ✅ SEEDED founder_root `0x88ec…dd73` ACTIVE, audit
+> row same transaction, disarmed, verify 1 row healthy, since 19:57:00Z). ② THE
+> FOUNDER, on thesyndicate.money: signed in with `0x88EC…Dd73` → the console
+> REVEALED — "Signed in as an operator · founder_root", badge "Operator ·
+> founder_root", all 10 sections, live Protocol reality (screenshots on record).
+> The header pill honestly said "no seat yet" — seat ≠ operator, the designed
+> separation. ③ CLAUDE, independent curl: /admin no-session → 404 neutral zero
+> vocab; operator-context no-session → fail-closed. **THE BOOTSTRAP TIMING QUIRK
+> (founder question, answered):** the founder's first signed-in visit hit the wall
+> because it happened in the window between the publish (wall live) and the
+> ceremony (seed at 19:57Z) — the row didn't exist yet, the wall answered
+> correctly. The MetaMask SYN-token add was UNRELATED (a local display list; the
+> session is a server cookie, the role a DB row) — its only effect was causing the
+> RELOAD, which re-read the role after the seed had landed. Steady-state has no
+> such window (sign-in fires the re-read in place); the role-granted-while-page-
+> open case was bootstrap-only. Q36+Q37 = done (founder closes). NEXT: M-INT-1
+> (the member ledger, in /admin/members) · Q39 (config-label relocation) · NEW Q40
+> (founder: reorder the admin dashboard — "what I need is at the bottom": demote
+> the dead KPI placeholder cards, lead with the live content).
+
 > **▶ 2026-07-17 (final) — Q36 PHASE 0 ON MAIN (`cb30915`): the founder_root SEED
 > CEREMONY script + operator:verify.** Founder GO on the go-live plan; Q36 decision =
 > the canon Founder wallet `0x88EC79AF…Dd73` (verified == FINANCIAL_TARGETS FOUNDER),
