@@ -20,7 +20,7 @@ restates almost nothing. Read this first, then open only the source docs your ta
 | Canon file | Controls |
 |---|---|
 | `replit.md` | Operating constitution: run/verify commands, phase gates, forbidden UI copy list, recognition vocabulary, homepage governance, architecture decisions, gotchas |
-| `docs/handoff/new-session-handoff-2026-07-03-first-clean-schema-publish.md` | **Current state** (latest handoff): live production truth, GitHub/tag state, DB state, auth posture, next slice |
+| `docs/SESSION_STATE.md` | **Current state** — the living resume point (read first every session): latest prod-sealed slice, deploy backlog, next slice, and the open-queue pointer. *(The 2026-07-03 first-clean-schema-publish handoff remains the DB/tag/auth-posture durability checkpoint — §5 do-not-repeat + §7 freshness contract.)* |
 | `the-syndicate-master-operating-map.md` (repo root) | Master operating map of the whole protocol/business |
 | `docs/strategy/CORRECTED_DOCTRINE_REHARVEST_2_20G.md` | Corrected doctrine baseline (supersedes earlier harvest framings) |
 | `docs/strategy/GRAND_RECONCILIATION_AND_CARTE_BLANCHE_UNBLOCK_2026-07-06.md` | Founder carte-blanche authority: which *process* gates are lifted (implementation now standing-authorized, Phases 1–10) vs which *truth/safety* invariants are kept; the Boost-Protocol source resolution; route/phase reconciliation |
@@ -58,7 +58,7 @@ restates almost nothing. Read this first, then open only the source docs your ta
 | Task | Read first |
 |---|---|
 | Replit ops, run/verify commands, phase gates | `replit.md` |
-| "What is the current state?" | `docs/handoff/new-session-handoff-2026-07-03-first-clean-schema-publish.md` |
+| "What is the current state?" | `docs/SESSION_STATE.md` (living resume; the 2026-07-03 handoff = DB/durability checkpoint only) |
 | Public/private boundary, leak questions | `docs/architecture/SOURCE_BOUNDARY_MANIFEST.md` |
 | Business mechanics: what to keep vs reject | `docs/architecture/CAPABILITY_HARVEST_AND_REUSE_MAP.md` |
 | Corrected doctrine baseline | `docs/strategy/CORRECTED_DOCTRINE_REHARVEST_2_20G.md` |
@@ -85,7 +85,8 @@ restates almost nothing. Read this first, then open only the source docs your ta
 | Status | Docs |
 |---|---|
 | **Canonical / current** | Everything in section 2 |
-| **Current handoff** | `docs/handoff/new-session-handoff-2026-07-03-first-clean-schema-publish.md` |
+| **Current handoff / resume point** | `docs/SESSION_STATE.md` (living, read first every session) |
+| **Durability / DB checkpoint** | `docs/handoff/new-session-handoff-2026-07-03-first-clean-schema-publish.md` (last full prod/DB/auth audit; tag `prod-2026-07-03-first-clean-schema-publish`) |
 | **Reference-only** | `docs/architecture/PRIOR_ART_RECONCILIATION_2_19D.md`; `docs/strategy/DUNITERUM_CAPABILITY_HARVEST_2_20E.md`; `docs/strategy/PRINCIPAL_PRIOR_ART_AUDIT_THESYNDICATE_2_20F.md`; `docs/handoff/syndicate-hero-header-design-export.md`; external prior-art `HOLDER_INDEX_ARCHITECTURE.md` (pattern-only — its event-replay numbering and public wallet-profile pages are superseded) |
 | **Historical record** (point-in-time; do not derive current state from them) | `docs/audits/SLICE_*` reports (except 2_17, whose language rules remain canon); `docs/phase1-*`; `docs/strategy/FULL_VISIBLE_OS_ORGANISM_2_21A.md` |
 | **Operational checklist** | `docs/internal/deploy-readiness-checklist.md` |
@@ -96,6 +97,7 @@ restates almost nothing. Read this first, then open only the source docs your ta
 - When a canon doc is added, renamed, retired, or superseded, **update this compass in the same slice**.
 - When a new handoff is written, repoint section 2/4/6 to it in the same slice.
 - **A stale compass is a bug** — fix the pointer, never the canon.
+- **Repoint 2026-07-17 (Q22):** §2/§4/§6 "current state / current handoff" now point at the living `docs/SESSION_STATE.md` (the resume point that advances every slice) instead of a dated handoff that had gone ~2 weeks stale; the 2026-07-03 handoff is retained solely as the DB/durability checkpoint (§5, §6). The per-handoff repoint rule above governs that checkpoint class, not the living pointer.
 
 ## 8. Next consumer
 
