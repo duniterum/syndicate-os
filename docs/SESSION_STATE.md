@@ -2,6 +2,23 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ M-INT-1 BUILT + ON MAIN (`cadcb17`, 2026-07-18) — THE MEMBER LEDGER + Q40.**
+> GET /api/operator/member-ledger (FOUNDER-ONLY — §D pairing overlay; no params =
+> no lookup API; masked walletShort; NO v1 anchors per A21; payload passes the
+> 40-hex scanner; every read audit-rowed) serving per-seat dossiers joined from
+> the ALREADY-INDEXED record only (continuity spine · capital axis · own-purchase
+> R/F/M · R5 via the ownership index). Segments chain-anchored (recency vs the
+> newest indexed purchase day; definitions served verbatim — no login data exists
+> by design). Console: MemberLedgerPanel = the Members centerpiece (summary cards
+> · dossier table · durable-ambassadors + footprints rankings · definitions
+> legend · honest denied/unavailable). Q40 rode: AdminHome leads with live
+> Protocol reality, placeholders demoted. guard-auth-zone 828 (route+service
+> pins) · opgate adminGraph grew · all gates green · ledger strings isolated in
+> the console chunk (entry clean). DEPLOY BACKLOG: M-INT-1 (`cadcb17`) — 🚀
+> BATCHABLE, one cycle; the founder sees REAL rows on their live session
+> post-deploy (the admin-go-live pattern). NEXT after the seal: A1 → B1 → A2 →
+> M-INT-2 · the Q42 wave · Q39.
+
 > **▶ ✅ THE TWO TRUTH SWEEPS SEALED IN PROD (2026-07-18, Replit 5/5 + independently
 > curl-verified: dead class 0 in the served entry — "read-only signals reconciled"/
 > "Read-only preview"/"Verified — view only"/"Read-only proof" all 0; living class
