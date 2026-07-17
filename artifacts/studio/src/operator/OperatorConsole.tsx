@@ -40,7 +40,10 @@ const pageRoutePath: Record<OperatorConsolePage, string> = {
 
 // The AccessGate here is the IA-1 access-state shell for console surfaces
 // (all PREVIEW_LABELLED — renders unchanged). It is visibility/UX only; the
-// real console gate remains the build-time OPERATOR_PREVIEW_ENABLED exclusion.
+// real console gate is the NEUTRAL WALL in App.tsx's OperatorRoute (Ruling ②):
+// this chunk is not even requested until the SERVER confirms an ACTIVE
+// operator role via /api/auth/operator-context. The build-time flag is a
+// dev-only reveal bypass, never the production gate.
 // For the sectioned admin surface the gate classifies the EXACT mounted
 // /admin/* section route (every section is individually classified); an
 // unknown /admin/* location fails closed to the root "/admin" classification.

@@ -501,17 +501,25 @@ for (const abs of allSrcFiles) {
     `${rel} statically imports or re-exports the wallet module — only App.tsx (root providers) may reach @/wallet/ statically`,
   );
 }
-// App.tsx may statically import ONLY the RainbowKitRoot providers from wallet/.
+// App.tsx may statically import EXACTLY these three wallet specifiers, each
+// pinned to its named import — the provider pair (Phase 1 root providers) and
+// the two neutral-wall reads (/admin-in-prod, Ruling ②: OperatorRoute resolves
+// the reveal from the SERVER's operator-context and re-reads on session
+// change). Widened DELIBERATELY 2026-07-17 from the single provider import;
+// anything beyond these three is still a boundary violation.
 const appWalletImports = appCode.match(
   new RegExp(String.raw`import\s+(?!type\b)[^;]*from\s+"@\/wallet\/[^"]*"`, "g"),
 ) ?? [];
+const APP_WALLET_PINS = [
+  /import\s*\{\s*WalletWagmiProvider\s*,\s*WalletAuthProvider\s*\}\s*from\s*"@\/wallet\/RainbowKitRoot"/,
+  /import\s*\{\s*fetchOperatorContext\s*\}\s*from\s*"@\/wallet\/walletSession"/,
+  /import\s*\{\s*SESSION_CHANGED_EVENT\s*\}\s*from\s*"@\/wallet\/sessionEvents"/,
+];
 check(
-  appWalletImports.length === 1 &&
-    /import\s*\{\s*WalletWagmiProvider\s*,\s*WalletAuthProvider\s*\}\s*from\s*"@\/wallet\/RainbowKitRoot"/.test(
-      appWalletImports[0],
-    ),
-  "App.tsx statically imports ONLY { WalletWagmiProvider, WalletAuthProvider } from RainbowKitRoot",
-  'App.tsx must have exactly one static wallet import: `import { WalletWagmiProvider, WalletAuthProvider } from "@/wallet/RainbowKitRoot"`',
+  appWalletImports.length === APP_WALLET_PINS.length &&
+    APP_WALLET_PINS.every((pin) => appWalletImports.some((imp) => pin.test(imp))),
+  "App.tsx statically imports exactly the three pinned wallet specifiers (providers + the wall's operator-context reads)",
+  "App.tsx wallet imports must be EXACTLY: { WalletWagmiProvider, WalletAuthProvider } from RainbowKitRoot · { fetchOperatorContext } from walletSession · { SESSION_CHANGED_EVENT } from sessionEvents — nothing more, nothing less",
 );
 // Provider chain order pinned: wagmi OUTSIDE the query client, RainbowKit
 // auth INSIDE it (wagmi v2 requires TanStack Query below it).

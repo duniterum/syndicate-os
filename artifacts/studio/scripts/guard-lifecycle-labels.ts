@@ -4,10 +4,8 @@
 //
 // Allowlisted (render no protocol/surface VALUES, so need no label):
 //   - Learning.tsx  : real, fully-live educational prose.
-//   - not-found.tsx : utility 404 fallback.
-//   - OperatorPreviewUnavailable.tsx : utility fallback shown at INTERNAL
-//     routes when the build-time operator preview gate is off; renders only
-//     honest posture prose, no protocol/surface values.
+//   - not-found.tsx : utility 404 fallback (also serves as the neutral wall
+//     at INTERNAL routes for non-operators — /admin-in-prod, Ruling ②).
 //
 // Node-loadable (Node >= 22.6 / 24), dependency-free.
 
@@ -20,7 +18,6 @@ const pagesDir = path.resolve(here, "..", "src", "pages");
 const EXEMPT = new Set([
   "Learning.tsx",
   "not-found.tsx",
-  "OperatorPreviewUnavailable.tsx",
   // §11 slot-2c teaser pages: their honesty label IS rendered — by the shared
   // TeaserSurface chassis from spec.lifecycle (chassis check below pays for
   // the exemption, so it cannot rot into an unlabeled surface).

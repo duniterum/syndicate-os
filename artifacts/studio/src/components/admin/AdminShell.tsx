@@ -3,9 +3,10 @@
 // Phase 2 slice 1 — the AAA admin shell: a persistent sectioned layout
 // (sidebar + top bar) that replaces the former single flat /admin page.
 // Console-graph only: this module is statically imported ONLY by
-// operator/OperatorConsole.tsx, so the operator preview gate still excludes
-// the entire admin surface from default production builds (a visibility
-// gate, not authentication).
+// operator/OperatorConsole.tsx, so the entire admin surface lives in the
+// console's separate lazy chunk — never the public entry bundle — and is
+// requested only after App.tsx's neutral wall confirms the operator role
+// server-side (Ruling ②; authority is enforced at the API, never by hiding).
 //
 // TRUTH-FIRST chrome rules:
 //   • the notification bell carries NO badge/count — no notification system
@@ -367,9 +368,10 @@ export default function AdminShell() {
                   Internal operator console. Every panel is read-only over the
                   module registry and the posture APIs; write controls are
                   previews owned by the founder-gated operator write zone. The
-                  route is excluded from default production builds by the
-                  operator preview gate — a visibility gate, not
-                  authentication.
+                  console reveals only after the server confirms an ACTIVE
+                  operator role — a non-operator at this URL sees the standard
+                  not-found page, and every privileged action is enforced
+                  server-side.
                 </p>
               </PopoverContent>
             </Popover>

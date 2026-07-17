@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --config vite.config.ts --host 0.0.0.0",
-    "build": "vite build --config vite.config.ts && node scripts/prerender-routes.ts && node scripts/precompress-dist.mjs && node scripts/precompress-verify.mjs",
+    "build": "vite build --config vite.config.ts && node scripts/prerender-routes.ts && node scripts/precompress-dist.mjs && node scripts/precompress-verify.mjs && node scripts/guard-admin-dist.mjs",
+    "guard:admindist": "node scripts/guard-admin-dist.mjs",
     "precompress": "node scripts/precompress-dist.mjs",
     "precompress:verify": "node scripts/precompress-verify.mjs",
     "serve:prod": "node server/serve.mjs",

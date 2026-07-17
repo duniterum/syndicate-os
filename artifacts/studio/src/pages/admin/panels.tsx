@@ -9,8 +9,9 @@
 // file — buttons that would write do not exist, not even disabled ones.
 // Posture is derived at render time and fails closed: a missing category,
 // failed fetch, or unknown key renders "unavailable (fail-closed)", never an
-// invented value. These routes are excluded from default production builds by
-// the operator preview gate (visibility gate, not authentication).
+// invented value. These routes live in the console's separate lazy chunk and
+// reveal only after the server confirms the operator role (the neutral wall in
+// App.tsx — Ruling ②; authority is enforced at the API, never by hiding).
 
 import React from "react";
 import { Link } from "wouter";

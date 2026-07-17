@@ -80,6 +80,22 @@ export const DEFAULT_OG_IMAGE = "/opengraph.jpg";
 export const TWITTER_CARD_TYPE = "summary_large_image";
 
 /**
+ * THE NEUTRAL WALL AT THE HEAD LAYER (/admin-in-prod, Ruling ② — 2026-07-17).
+ * This registry ships in the PUBLIC entry bundle (it drives the runtime head),
+ * so INTERNAL entries must carry ZERO admin vocabulary in their FIELDS:
+ * view-source at an INTERNAL path must read exactly like the catch-all 404
+ * (same title, same description). What each internal surface actually is lives
+ * in COMMENTS above its entry (stripped from the build) and in the console
+ * code itself (a separate lazy chunk, requested only after the server confirms
+ * an ACTIVE operator role). The old per-surface titles ("Admin Console —
+ * Broadcast (Internal)" …) were a bundle-string leak of the exact class
+ * Ruling ② kills. guard-operator-gate pins these constants and the dist scan.
+ */
+export const NEUTRAL_WALL_TITLE = "Page Not Found";
+export const NEUTRAL_WALL_DESCRIPTION = "Unknown route fallback.";
+const NEUTRAL_WALL_NOTE = "Internal route: neutral head (mirrors the catch-all).";
+
+/**
  * Every actual route in `src/App.tsx` plus the catch-all — the COUNT is never
  * written here (it rotted once: "14 routes" survived to a 42-route reality);
  * router↔registry parity is enforced by scripts/check-seo-registry.ts.
@@ -555,199 +571,189 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     proofRoute: "/status",
     notes: "ACT-1 LIVE (total + recent-window burn feed, honesty banner).",
   },
+  // /studio — the operator console overview (Shell + OperatorOverview).
   {
     path: "/studio",
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Studio OS — Operator Console",
-    description: "Operator-facing console. Not a public destination.",
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes:
-      "INTERNAL: hard-gated by the build-time operator preview gate (operatorPreviewGate.ts) — default production builds exclude the console code and render a safe unavailable page. Robots/noindex remain defense-in-depth. Auth is a later slice.",
+    notes: NEUTRAL_WALL_NOTE,
   },
+  // /proof-studio — draft proof tooling (disabled forms, read-only).
   {
     path: "/proof-studio",
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Proof Studio — Operator",
-    description:
-      "Draft proof tooling for operators (disabled forms). Not a public destination.",
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes:
-      "INTERNAL: operator-only. Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+    notes: NEUTRAL_WALL_NOTE,
   },
+  // /founder — founder/operator copy-only preview surface.
   {
     path: "/founder",
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Founder — Operator",
-    description: "Founder/operator surface. Not a public destination.",
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes:
-      "INTERNAL: hard-gated by the build-time operator preview gate; excluded from default production builds. Auth later.",
+    notes: NEUTRAL_WALL_NOTE,
   },
+  // /os-map — the full-protocol visibility map (founder preview; live-bound
+  // spine evidence panels). Robots disallow remains defense-in-depth.
   {
     path: "/os-map",
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Protocol OS Map — Internal Founder Preview",
-    description:
-      "Internal founder preview mapping the full protocol organism. Not a public destination.",
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes:
-      "INTERNAL founder preview: full-protocol visibility map. Hard-gated by the build-time operator preview gate; excluded from default production builds. Robots disallow remains defense-in-depth.",
+    notes: NEUTRAL_WALL_NOTE,
   },
+  // /admin — the sectioned console dashboard (Phase 2 slice 1): read-only
+  // panels over the module registry and live postures.
   {
     path: "/admin",
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Admin Console — Dashboard (Internal)",
-    description:
-      "Internal sectioned operator console dashboard. Not a public destination.",
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes:
-      "INTERNAL admin console dashboard (sectioned shell, Phase 2 slice 1): read-only panels over the module registry and live postures. Hard-gated by the build-time operator preview gate; excluded from default production builds. Robots disallow remains defense-in-depth.",
+    notes: NEUTRAL_WALL_NOTE,
   },
+  // /admin/members — members & continuity postures (M-INT-1's future home).
   {
     path: "/admin/members",
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Admin Console — Members (Internal)",
-    description:
-      "Internal admin section: members & continuity postures. Not a public destination.",
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes:
-      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+    notes: NEUTRAL_WALL_NOTE,
   },
+  // /admin/sources — source registry, referral terms + review queue.
   {
     path: "/admin/sources",
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Admin Console — Sources & Referrals (Internal)",
-    description:
-      "Internal admin section: source registry, referral terms and review queue previews. Not a public destination.",
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes:
-      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+    notes: NEUTRAL_WALL_NOTE,
   },
+  // /admin/operators — operator roles + registry (live invite/suspend/list).
   {
     path: "/admin/operators",
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Admin Console — Operators (Internal)",
-    description:
-      "Internal admin section: operator roles and registry previews. Not a public destination.",
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes:
-      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+    notes: NEUTRAL_WALL_NOTE,
   },
+  // /admin/content — content governance, packages, address-label reservations.
   {
     path: "/admin/content",
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Admin Console — Content (Internal)",
-    description:
-      "Internal admin section: homepage/content governance, packages and address-label reservations. Not a public destination.",
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes:
-      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+    notes: NEUTRAL_WALL_NOTE,
   },
+  // /admin/modules — module registry governance overlay.
   {
     path: "/admin/modules",
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Admin Console — Modules (Internal)",
-    description:
-      "Internal admin section: module registry governance overlay. Not a public destination.",
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes:
-      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+    notes: NEUTRAL_WALL_NOTE,
   },
+  // /admin/broadcast — broadcast preview surface (send disabled).
   {
     path: "/admin/broadcast",
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Admin Console — Broadcast (Internal)",
-    description:
-      "Internal admin section: broadcast preview surface. Not a public destination.",
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes:
-      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+    notes: NEUTRAL_WALL_NOTE,
   },
+  // /admin/audit — audit-log preview + activity postures.
   {
     path: "/admin/audit",
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Admin Console — Audit Log (Internal)",
-    description:
-      "Internal admin section: audit log preview and activity postures. Not a public destination.",
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes:
-      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+    notes: NEUTRAL_WALL_NOTE,
   },
+  // /admin/support — support queue preview surface.
   {
     path: "/admin/support",
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Admin Console — Support (Internal)",
-    description:
-      "Internal admin section: support queue preview surface. Not a public destination.",
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes:
-      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+    notes: NEUTRAL_WALL_NOTE,
   },
+  // /admin/settings — build flags + system health, read-only.
   {
     path: "/admin/settings",
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Admin Console — Settings (Internal)",
-    description:
-      "Internal admin section: build flags and system health, read-only. Not a public destination.",
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes:
-      "INTERNAL admin section (sectioned shell). Hard-gated by the build-time operator preview gate; excluded from default production builds.",
+    notes: NEUTRAL_WALL_NOTE,
   },
   {
     path: "/source",
@@ -767,19 +773,20 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     notes:
       "Public Verified-Introduction link builder (Public Online Integration MVP). The old operator source console moved to /os-source.",
   },
+  // /os-source — the operator source console (read-only; creation/activation
+  // stay owner-side on-chain acts). Was /source before the public link
+  // builder took that path.
   {
     path: "/os-source",
     routeType: "INTERNAL",
     indexStatus: "INTERNAL",
     sitemap: false,
-    title: "Source — Operator Console",
-    description:
-      "Operator source console. Read-only; source creation and activation remain owner-side on-chain acts.",
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
     canonicalPath: null,
     ownerSurface: "operator",
     primaryIntent: "operator",
-    notes:
-      "INTERNAL: hard-gated by the build-time operator preview gate; excluded from default production builds. Was /source before the public link builder took that path.",
+    notes: NEUTRAL_WALL_NOTE,
   },
   {
     path: "*",

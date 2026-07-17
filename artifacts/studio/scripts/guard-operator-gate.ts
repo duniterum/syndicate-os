@@ -1,23 +1,31 @@
-// Guard: operator preview hard gate.
-// The build-time gate (config/operatorPreviewGate.ts + vite define) must keep
-// every registry-INTERNAL route reachable ONLY through the gated dynamic
-// import of the OperatorConsole module, so a default production build
-// excludes the console code entirely:
+// Guard: the NEUTRAL WALL (/admin-in-prod, Ruling ② — supersedes the old
+// "console excluded from the bundle" model on 2026-07-17).
+// The console SHIPS in production as a SEPARATE lazy chunk, and the reveal is
+// SERVER-CONFIRMED ROLE ONLY: a non-operator at a bare INTERNAL URL gets the
+// exact catch-all 404 composition, zero admin vocabulary, and the console
+// chunk is never requested. This guard proves the structure that keeps the
+// public-sees-admin-never class dead:
 //   1. every INTERNAL registry path is routed through <OperatorRoute> in App.tsx;
 //   2. App.tsx has NO static (runtime) import of the console module, Shell, or
-//      any console page — only the type-only import and the gated dynamic import;
-//   3. the gate constant folds statically: it references import.meta.env.DEV and
-//      __OPERATOR_PREVIEW__ only, and uses no runtime signals (location/hostname/
-//      fetch/clock);
+//      any console page — only the type-only import and the UNCONDITIONAL lazy
+//      dynamic import (the separate-chunk seam), and OperatorRoute implements
+//      the wall: fail-closed reveal state seeded from OPERATOR_PREVIEW_ENABLED
+//      (dev-only bypass — folds false in prod), server operator-context read,
+//      SESSION_CHANGED_EVENT re-read, and the <NotFound /> wall branch;
+//   3. the dev-bypass constant folds statically: it references
+//      import.meta.env.DEV and __OPERATOR_PREVIEW__ only, and uses no runtime
+//      signals (location/hostname/fetch/clock);
 //   4. vite.config.ts defines __OPERATOR_PREVIEW__ from VITE_OPERATOR_PREVIEW;
 //   5. OperatorConsole.tsx is the ONLY static importer of Shell and the console
-//      pages anywhere in src/;
+//      pages anywhere in src/ (so admin code stays in the console chunk);
 //   6. no public-chrome file renders a literal link to an INTERNAL path (the
 //      /studio teaser lives in syndicateFacts.ts config and is the intended,
-//      documented exception — it renders the safe unavailable page when gated);
+//      documented exception — it renders the 404 wall when not revealed);
 //   7. dist-grep probe strings stay meaningful: the OS-map banner copy exists
-//      only in gated modules, and the unavailable-page copy exists in the
-//      always-bundled fallback;
+//      only in gated modules (in dist it may appear ONLY in the console chunk,
+//      never the entry bundle), and the RETIRED fallback copy ("Internal
+//      preview is not enabled…") exists NOWHERE — that page admitted an
+//      internal surface at the bare URL, the exact wall violation;
 //   8. the /os-map live proof binding stays operator-gated and fail-closed:
 //      the adapter/panel modules are importable only from the gated graph,
 //      the adapter is pure (no fetch/state/clock) and consumes only the
@@ -134,12 +142,53 @@ check(
   "App.tsx should import OperatorConsolePage as `import type` only",
 );
 check(
-  /OPERATOR_PREVIEW_ENABLED\s*\?\s*lazy\(\(\) => import\("@\/operator\/OperatorConsole"\)\)\s*:\s*null/.test(
+  /const OperatorConsole = lazy\(\(\) => import\("@\/operator\/OperatorConsole"\)\)/.test(
     app,
   ),
-  "App.tsx loads OperatorConsole only via the gated conditional dynamic import",
-  "App.tsx must load OperatorConsole via `OPERATOR_PREVIEW_ENABLED ? lazy(() => import(...)) : null`",
+  "App.tsx loads OperatorConsole via the unconditional lazy dynamic import (separate chunk)",
+  "App.tsx must load OperatorConsole via `const OperatorConsole = lazy(() => import(...))` — the separate-chunk seam",
 );
+
+// ── 2b. The NEUTRAL WALL shape in OperatorRoute (Ruling ②) ──────────────────
+// Fail-closed reveal: seeded from the dev-only bypass (folds false in prod),
+// resolved ONLY by the server's operator-context, re-read on session change,
+// and the non-revealed branch renders the EXACT catch-all 404 composition.
+const operatorRouteBlock = app.match(
+  /function OperatorRoute\(\{ page \}: \{ page: OperatorConsolePage \}\) \{[\s\S]*?\n\}/,
+)?.[0];
+check(
+  operatorRouteBlock !== undefined,
+  "App.tsx declares the OperatorRoute wall component",
+  "App.tsx must declare `function OperatorRoute({ page }: { page: OperatorConsolePage })` — the neutral wall lives there",
+);
+if (operatorRouteBlock) {
+  check(
+    /useState\(OPERATOR_PREVIEW_ENABLED\)/.test(operatorRouteBlock),
+    "wall reveal state is fail-closed (seeded from the statically-folding dev bypass)",
+    "OperatorRoute must seed its reveal state as `useState(OPERATOR_PREVIEW_ENABLED)` — fail-closed false in prod",
+  );
+  check(
+    /fetchOperatorContext\(\)/.test(operatorRouteBlock) &&
+      /ctx\.isOperator && ctx\.role !== null/.test(operatorRouteBlock),
+    "wall reveal resolves ONLY from the server operator-context (isOperator && role)",
+    "OperatorRoute must resolve the reveal from fetchOperatorContext() requiring `ctx.isOperator && ctx.role !== null`",
+  );
+  check(
+    /SESSION_CHANGED_EVENT/.test(operatorRouteBlock),
+    "wall re-reads the role on SESSION_CHANGED_EVENT (sign-in resolves in place)",
+    "OperatorRoute must re-read operator-context on SESSION_CHANGED_EVENT",
+  );
+  check(
+    /<PublicLayout>\s*<NotFound \/>\s*<\/PublicLayout>/.test(operatorRouteBlock),
+    "the wall branch renders the exact catch-all 404 composition (PublicLayout + NotFound)",
+    "OperatorRoute's non-revealed branch must render <PublicLayout><NotFound /></PublicLayout> — zero admin vocabulary",
+  );
+  check(
+    !/window\.location|hostname|localStorage|document\.cookie/.test(operatorRouteBlock),
+    "wall uses no client-side identity signals (server truth only)",
+    "OperatorRoute must not read client-side identity signals — the server's operator-context is the only reveal authority",
+  );
+}
 
 // ── 3. Gate constant folds statically ────────────────────────────────────────
 check(
@@ -241,7 +290,7 @@ for (const [spec, allowedImporters] of Object.entries(adminGraph)) {
 const publicChrome = [
   "components/layout/PublicLayout.tsx",
   "pages/PublicHome.tsx",
-  "pages/OperatorPreviewUnavailable.tsx",
+  "pages/not-found.tsx",
 ];
 for (const rel of publicChrome) {
   const code = stripComments(read(rel));
@@ -255,8 +304,14 @@ for (const rel of publicChrome) {
 }
 
 // ── 7. Dist-grep probe strings stay meaningful ───────────────────────────────
+// OSMAP_PROBE: exists only in gated modules → in dist it may appear ONLY in
+// the console lazy chunk, never the public entry bundle (the dist proof).
+// RETIRED_FALLBACK_PROBE: the dead OperatorPreviewUnavailable copy — it
+// admitted an internal surface existed at the bare URL (the wall violation
+// class). It must exist NOWHERE in src; deploy verification greps dist for
+// its absence too.
 const OSMAP_PROBE = "INTERNAL FOUNDER PREVIEW";
-const FALLBACK_PROBE = "Internal preview is not enabled on this deployment";
+const RETIRED_FALLBACK_PROBE = "Internal preview is not enabled on this deployment";
 const gatedFiles = new Set(
   [
     "operator/OperatorConsole.tsx",
@@ -287,11 +342,23 @@ check(
   `probe string "${OSMAP_PROBE}" present in gated modules only`,
   `probe string "${OSMAP_PROBE}" not found in gated modules — dist-grep proof has no target`,
 );
-check(
-  read("pages/OperatorPreviewUnavailable.tsx").includes(FALLBACK_PROBE),
-  "fallback probe string present in OperatorPreviewUnavailable",
-  "OperatorPreviewUnavailable.tsx must contain the fallback probe string",
-);
+// The retired-fallback class stays dead: the copy may reappear NOWHERE
+// (this guard file lives in scripts/, outside the scanned src/ tree).
+{
+  let retiredFound: string | null = null;
+  for (const file of allFiles) {
+    const code = stripComments(readFileSync(file, "utf8"));
+    if (code.includes(RETIRED_FALLBACK_PROBE)) {
+      retiredFound = path.relative(srcDir, file);
+      break;
+    }
+  }
+  check(
+    retiredFound === null,
+    "retired fallback copy (the wall-violation class) exists nowhere in src",
+    `the retired "Internal preview…" fallback copy reappeared in ${retiredFound} — the neutral wall forbids admitting an internal surface at the bare URL`,
+  );
+}
 
 // ── 8. /os-map live proof binding stays operator-gated + fail-closed ────────
 const adapterRaw = read("operator/protocolRealityEvidence.ts");

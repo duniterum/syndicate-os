@@ -1,4 +1,4 @@
-import { lazy, Suspense, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -32,7 +32,10 @@ import Liquidity from "@/pages/Liquidity";
 import MemberToolkit from "@/pages/MemberToolkit";
 import ChronicleTeaser from "@/pages/ChronicleTeaser";
 import FireLedger from "@/pages/FireLedger";
-import OperatorPreviewUnavailable from "@/pages/OperatorPreviewUnavailable";
+// /admin-in-prod (Ruling ②): the old OperatorPreviewUnavailable fallback is
+// DEAD — it admitted an internal surface existed ("Internal preview is not
+// enabled…"), violating the neutral wall. Non-operators now get the exact
+// catch-all 404 composition (NotFound below), zero admin vocabulary.
 import { OPERATOR_PREVIEW_ENABLED } from "@/config/operatorPreviewGate";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
 import type { OperatorConsolePage } from "@/operator/OperatorConsole";
@@ -43,20 +46,25 @@ import { AccessGate } from "@/components/access/AccessGate";
 // guard-access-state rule 15 pins this exact wiring (App.tsx is the ONLY file
 // allowed to statically reach @/wallet/).
 import { WalletWagmiProvider, WalletAuthProvider } from "@/wallet/RainbowKitRoot";
+// /admin-in-prod (Ruling ②, neutral wall): the OperatorRoute reveal reads the
+// SERVER's operator-context (fail-closed) and re-checks on session change —
+// rule 15 already names App.tsx as the only static @/wallet/ reach.
+import { fetchOperatorContext } from "@/wallet/walletSession";
+import { SESSION_CHANGED_EVENT } from "@/wallet/sessionEvents";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { RouteScrollManager } from "@/components/RouteScrollManager";
 import { SeoHeadManager } from "@/components/SeoHeadManager";
 
 const queryClient = new QueryClient();
 
-// Operator preview hard gate: the console module (Shell + every INTERNAL page)
-// is reachable ONLY through this conditional dynamic import. When the gate
-// folds to `false` at build time (default production posture), Rollup
-// eliminates the import entirely — the console code is not in the bundle and
-// INTERNAL routes render the safe unavailable page instead.
-const OperatorConsole = OPERATOR_PREVIEW_ENABLED
-  ? lazy(() => import("@/operator/OperatorConsole"))
-  : null;
+// /admin-in-prod (Ruling ②, founder GO ⑤): the console module (Shell + every
+// INTERNAL page) SHIPS in production — as a SEPARATE lazy chunk that is never
+// part of the public entry bundle and is not even REQUESTED until the server
+// confirms an ACTIVE operator role (the neutral wall in OperatorRoute below).
+// OPERATOR_PREVIEW_ENABLED is now a DEV-ONLY reveal bypass (it folds to false
+// in default production builds); it is visibility for development, never the
+// production gate — authority lives server-side (operator-context, fail-closed).
+const OperatorConsole = lazy(() => import("@/operator/OperatorConsole"));
 
 // Wallet session boot seam (S2): app-root session resolution stays reachable
 // ONLY through this conditional dynamic import. Since Phase 1 the gate is a
@@ -67,11 +75,32 @@ const WalletSessionBoot = WALLET_SESSION_PREVIEW_ENABLED
   ? lazy(() => import("@/wallet/WalletSessionBoot"))
   : null;
 
+// THE NEUTRAL WALL (Ruling ②): at a bare INTERNAL URL a non-operator sees the
+// EXACT catch-all 404 composition — zero admin vocabulary, zero new strings —
+// and the console chunk is never fetched. The reveal happens IN PLACE when the
+// server confirms the role (fail-closed default false; re-reads on
+// SESSION_CHANGED_EVENT, so signing in via the header resolves it live).
 function OperatorRoute({ page }: { page: OperatorConsolePage }) {
-  if (!OperatorConsole) {
+  const [revealed, setRevealed] = useState(OPERATOR_PREVIEW_ENABLED);
+  useEffect(() => {
+    if (OPERATOR_PREVIEW_ENABLED) return; // dev bypass — prod folds this away
+    let active = true;
+    const read = () => {
+      void fetchOperatorContext().then((ctx) => {
+        if (active) setRevealed(ctx.isOperator && ctx.role !== null);
+      });
+    };
+    read();
+    window.addEventListener(SESSION_CHANGED_EVENT, read);
+    return () => {
+      active = false;
+      window.removeEventListener(SESSION_CHANGED_EVENT, read);
+    };
+  }, []);
+  if (!revealed) {
     return (
       <PublicLayout>
-        <OperatorPreviewUnavailable />
+        <NotFound />
       </PublicLayout>
     );
   }
