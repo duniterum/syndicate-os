@@ -51,6 +51,22 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > disarmed, verify healthy) + Q37 done (tables present, constraints dev==prod).
 > Founder-verified in prod: badge "Operator · founder_root", 10 sections, live
 > reality. Q36 + Q37 → founder closes. Q38 step-up stays deferred (own slice).**
+> - 🔴 **Q41 — THE 2nd/3rd FOUNDER WALLETS (founder recall, 2026-07-17 — the past
+>   discussion FOUND: `IDENTITY_ROLES_SPINE_CANON.md:74-78`).** The recorded canon
+>   decision: "2–3 founder wallets" = the founder's RECOVERY PROPERTY, implemented
+>   as MULTIPLE `founder_root` ROWS in the governed registry (auditable,
+>   suspendable) — never an env whitelist; the bootstrap seed creates only the
+>   FIRST row, "after that the registry governs." This SUPERSEDES the session's
+>   interim "option A single root" framing (which was my general-industry advice;
+>   the canon decision was made WITH the founder and stands unless he re-decides).
+>   Execution needs NO code: the founder invites wallet 2 (and optionally 3) as
+>   `founder_root` from /admin/operators himself (founder-gated live write, audit-
+>   rowed, ACTIVE on creation; the last-ACTIVE-founder guard prevents ever reaching
+>   zero roots). AAA discipline per wallet: hardware-backed · stored separately
+>   from the primary · used for nothing else · tested once. Loss playbook: lose
+>   wallet 1 → sign in with wallet 2 → SUSPEND row 1 (next-request effect) →
+>   invite a replacement; all-lost → the §F offline ceremony (manual, founder-
+>   authorized). 🔴 founder decides: which wallet(s), and he executes the invites.
 > - 🔵 **Q40 — ADMIN DASHBOARD REORDER (founder, 2026-07-17: "what I need is at
 >   the bottom").** The Dashboard leads with the four DEAD KPI placeholder cards
 >   ("Live reads coming") while the LIVE content (Protocol reality, the real
