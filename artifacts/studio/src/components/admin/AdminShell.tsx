@@ -59,7 +59,6 @@ import {
 } from "@/components/ui/popover";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { TruthLabel } from "@/components/TruthLabel";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
 import {
@@ -323,7 +322,10 @@ export default function AdminShell() {
             <h1 className="text-sm font-semibold text-foreground truncate">
               {active.label}
             </h1>
-            <TruthLabel variant="DESIGN_PREVIEW" />
+            {/* Truth-sweep completeness (2026-07-18, the founder's own screenshot
+                caught the survivor): the BLANKET section chip died — the shell
+                is live and operator-gated; honesty lives per panel (live panels
+                say live, preview panels say preview). */}
           </div>
           <div className="ml-auto flex items-center gap-1.5">
             <SectionJump />

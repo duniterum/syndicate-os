@@ -340,7 +340,9 @@ export function AdminOperatorsCrud() {
       <div className="flex items-center gap-3 flex-wrap mb-1">
         <UsersRound className="h-5 w-5 text-muted-foreground" />
         <h2 className="text-base font-semibold text-foreground">Operators &amp; roles</h2>
-        <TruthLabel variant="DESIGN_PREVIEW" />
+        <span className="font-mono text-[10px] uppercase tracking-wider text-primary">
+          Live · founder-gated writes
+        </span>
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl mb-5 leading-relaxed">
         Manage who can operate the protocol. Invite and suspend are LIVE — founder-gated writes into the real
