@@ -2,6 +2,21 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 2026-07-17 (night) — THE TWO TRUTH SWEEPS ON MAIN, deploy backlog = BOTH
+> (🚀 BATCHABLE, one cycle):** ① CONSOLE sweep `89e43c4` (preview-gated/read-only-era
+> fossils dead across /studio /os-map /admin; the FABRICATED /admin/sources sample
+> figures DELETED; "Program status Paused" lie → LIVE on-chain truth; feature-flag
+> states truthed; founder-controls "not switched on yet" dead). ② PUBLIC sweep
+> `6fb2d2e` (founder GO copy): "read-only signals reconciled"→"live signals
+> verified" · "Read-only proof"/"Verified — view only"→"Verified on-chain" ·
+> Entry Preview→Entry Calculator pointing at Join · /wallet + /toolkit →
+> LIVE_ACTION badges · the three sign-in tooltips humanized. Dead class proven
+> absent from every built chunk. STANDING RULE engraved (queue + memory): gates
+> ONLY for security/chain-truth/money/legal/go-live — never re-block on answered
+> questions. Q42 (admin-controllability wave) queued with the full gap table.
+> NEXT: deploy the sweeps (founder paste) → M-INT-1 (recon done, builds to
+> preview) → the acted order → the Q42 wave.
+
 > **▶ ✅ /ADMIN-IN-PROD SEALED — THE CONSOLE IS LIVE BEHIND THE WALL (2026-07-17,
 > Replit full cycle + founder-verified in prod + independently curl-verified).**
 > THE COMPLETE PROOF, all three sides: ① REPLIT: HEAD `5d30ab6` 16/16 blobs, gates
