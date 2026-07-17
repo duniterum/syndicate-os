@@ -2,6 +2,28 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ ✅ THE TWO TRUTH SWEEPS SEALED IN PROD (2026-07-18, Replit 5/5 + independently
+> curl-verified: dead class 0 in the served entry — "read-only signals reconciled"/
+> "Read-only preview"/"Verified — view only"/"Read-only proof" all 0; living class
+> served — Entry Calculator 1 · live signals verified 2 · Verified on-chain 3;
+> console chunk clean of the fake figures, "Program status … LIVE on-chain" present;
+> the wall holds (4 routes → 404 neutral); byte-identity `c928a289…85bab8`; feed
+> 78/78, engine 6/6 head advancing). The founder's "GO LIVE EVERYWHERE" order is
+> DONE: the site speaks living-production language everywhere, honesty intact.
+> DEPLOY BACKLOG: EMPTY.**
+>
+> **▶ ✅ Q41 EXECUTED BY THE FOUNDER (2026-07-18, screenshot on record): TWO ACTIVE
+> founder_root rows** — "Founder" `0x88ec…dd73` + "Founder Second Wallet"
+> `0x2445…c721` (the founder's own 9-year wallet, historical seat #1 — canon-known,
+> his choice per Q41's founder-decides). The canon recovery property is ARMED: lose
+> either wallet → sign in with the other → suspend the lost row → invite a
+> replacement; the last-ACTIVE-founder guard prevents zero-root. Both invites rode
+> the live audited write path. AAA note (recorded, not a blocker): the second root
+> is a daily-use wallet — the quiet-root discipline (root wallets do root acts only)
+> stays the recommendation; the founder decided. Founder closes Q41.
+> NEXT: **M-INT-1** (recon DONE — builds straight to the founder preview; the real
+> R5 figures replace the deleted fakes) → the acted order → the Q42 wave.
+
 > **▶ 2026-07-17 (night) — THE TWO TRUTH SWEEPS ON MAIN, deploy backlog = BOTH
 > (🚀 BATCHABLE, one cycle):** ① CONSOLE sweep `89e43c4` (preview-gated/read-only-era
 > fossils dead across /studio /os-map /admin; the FABRICATED /admin/sources sample

@@ -66,7 +66,14 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > disarmed, verify healthy) + Q37 done (tables present, constraints dev==prod).
 > Founder-verified in prod: badge "Operator · founder_root", 10 sections, live
 > reality. Q36 + Q37 → founder closes. Q38 step-up stays deferred (own slice).**
-> - 🔴 **Q41 — THE 2nd/3rd FOUNDER WALLETS (founder recall, 2026-07-17 — the past
+> - **✅ Q41 EXECUTED BY THE FOUNDER (2026-07-18, evidence: /admin/operators
+>   screenshot + the audited invite writes): TWO ACTIVE founder_root rows —
+>   `0x88ec…dd73` "Founder" + `0x2445…c721` "Founder Second Wallet" (his own
+>   canon-known 9-year wallet; his choice). The recovery property is ARMED: lose
+>   one → the other suspends it → invite a replacement; the last-ACTIVE-founder
+>   guard makes zero-root impossible. AAA note recorded (not a blocker): quiet-root
+>   discipline stays the recommendation. Founder closes.**
+>   *(Original entry:)* 🔴 **Q41 — THE 2nd/3rd FOUNDER WALLETS (founder recall, 2026-07-17 — the past
 >   discussion FOUND: `IDENTITY_ROLES_SPINE_CANON.md:74-78`).** The recorded canon
 >   decision: "2–3 founder wallets" = the founder's RECOVERY PROPERTY, implemented
 >   as MULTIPLE `founder_root` ROWS in the governed registry (auditable,
