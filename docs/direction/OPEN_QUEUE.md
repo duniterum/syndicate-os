@@ -19,6 +19,21 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 
 ---
 
+> **▶ 2026-07-17 (STANDING RULE, founder, emphatic — engraved here AND in agent memory):
+> NEVER RE-BLOCK ON AN ANSWERED QUESTION. Founder gates exist ONLY for: security/
+> authority · on-chain data truth · money paths · legal/public-copy wording · go-live
+> env flips. Everything else BUILDS autonomously to the preview/diff. A question
+> answered once (queue/canon/state) is answered forever.**
+>
+> - 🔵 **Q42 — THE ADMIN-CONTROLLABILITY WAVE (founder, 2026-07-17: "a lot of things
+>   we created I can't control as founder from the admin — check frontend + member
+>   home").** The gap list = the full list on screen this session (audit-log READ ·
+>   broadcast send · real feature-flag writes incl. the referral kill-switch · module
+>   activate/deactivate real · content management from admin · support intake ·
+>   operator edit · chronicle-promote pathway (CHR-1 canon question) · notification
+>   center). Each = its own slice on the proven write-zone + audit pattern; ordered
+>   after the acted order or interleaved at the founder's word.
+
 > **▶ 2026-07-17 (end) — /ADMIN-IN-PROD OPENED (founder GO; scope A the neutral wall).**
 > Inventory CORRECTED first-hand before building: operator auth ALREADY LIVE in prod
 > (operator-context 200 fail-closed · /api/operator 401 — not dark), the operator login UI
