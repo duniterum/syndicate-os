@@ -25,6 +25,28 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > env flips. Everything else BUILDS autonomously to the preview/diff. A question
 > answered once (queue/canon/state) is answered forever.**
 >
+> - 🔴 **Q43 — NOTIF-1: PER-MEMBER CONTACT + BROADCAST + MEMBER INBOX (founder,
+>   2026-07-18, pulled FORWARD from the Q42 wave — "I have here a member: what can
+>   I do as admin? I can contact the member alone — we already talked about it").**
+>   THE RECORDED CANON (found): HARVEST-02 Admin Broadcast / Member Inbox (P1,
+>   ADAPT from Supa AdminBroadcast + notification bubbles + notification-generator
+>   — role-gated + audited, no PII, deps roles ✅ live) + HARVEST-08 Notification
+>   Center read model (P1 — member inbox persisted as a read model behind auth, NO
+>   live push/email) + MASTER_BUILD_SPEC Phase 4 broadcast / Phase 5 notifications
+>   + the §D matrix (broadcast = admin-tier + approval; step-up in design). THE
+>   SLICE: ① `notification` table (recipient server-only, audience MEMBER|ALL,
+>   audited creation) — MIGRATION; ② operator writes: notify-one (the client sends
+>   SEAT + text; the SERVER resolves seat→wallet via continuity — no wallet ever
+>   in a client request) + broadcast-all — founder-gated, zod, throttled, audit-
+>   rowed (the proven write-zone shape); ③ the ledger row grows the ACTION MENU
+>   ("Message this member" prefilled) = the INTERCONNECTIVITY PATTERN's first
+>   instance (every entity row carries its actions); ④ the console Broadcast
+>   composer's Send goes LIVE; the bell goes honest-live; ⑤ Member Home gains the
+>   own-row INBOX (session wallet → own messages only; member-home/menu guard pins
+>   amended deliberately). V1 exclusions (named): no read-state persistence (v2 —
+>   it would be the first member-side write; the write-zone invariant stays), no
+>   email/push ever (HARVEST-08). DEPLOY: real migration — its own cycle, never
+>   batched. STATUS: NEXT SLICE on the founder's GO.
 > - 🔵 **Q42 — THE ADMIN-CONTROLLABILITY WAVE (founder, 2026-07-17: "a lot of things
 >   we created I can't control as founder from the admin — check frontend + member
 >   home").** The gap list = the full list on screen this session (audit-log READ ·
