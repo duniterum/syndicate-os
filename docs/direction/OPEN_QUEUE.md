@@ -19,6 +19,41 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 
 ---
 
+> **▶ 2026-07-17 (later) — THE SAFE-SEO GATE: founder decisions, split by self-adapting vs
+> content-bound.** External audit flagged near-raw served assets (transport/perf). Founder
+> firewall: transport/static-layer only; nothing near MetaMask/chain reads/reality spine.
+>
+> **DO NOW (self-adapting, done once, alive forever):**
+> - **① Compression — MEASURED 2026-07-17 (Claude ran the live header read):** the host serves
+>   assets **RAW** — `/assets/index-BfqGonuU.js` returned `Content-Length: 1622905` (full 1.62MB)
+>   with **NO `Content-Encoding`, NO `Vary`** despite `Accept-Encoding: br,gzip`; `Server: Google
+>   Frontend`. So outcome **(a) is FALSE** (no on-the-fly compression; the audit was right, not
+>   stale). (b) vs (c) — whether the static host serves pre-compressed `.br/.gz` siblings — is a
+>   **Replit host capability** (same class as www→apex; `artifact.toml` is rewrites-only, no
+>   header/encoding mechanism; the api-server serves `/api/*` only, never the studio dist).
+>   NEXT: one question to Replit — *enable host compression, or confirm sibling-serving?* → then
+>   a safe additive build-emit slice (vite-plugin-compression2, br q11 + gzip l9, threshold 1KB,
+>   `deleteOriginalAssets:false`, js/css/svg/json + post-prerender HTML pass; byte-identity
+>   proven) **OR** the deferred Express-front topology slice (do NOT touch asset delivery).
+>   🔴 awaiting founder GO + the Replit answer.
+> - **② Q31 favicon — founder CHOSE the gold `syn-mark-gold` mark** (retire the off-brand cyan
+>   shield). Reality: the mark exists ONLY as a 544×427/284KB PNG (no inline SVG; header+receipt
+>   render the PNG), and NO image tooling is installed. So it is the Q31 micro-slice (pure-JS
+>   icon generator → small square favicon/apple-touch PNGs from the existing asset + `<head>`
+>   link updates), one commit. ⏳ built on founder GO; batches with ① in one deploy cycle.
+>
+> **WAIT FOR MVP-FINAL (content-bound → `docs/direction/MVP_FINAL_CHECKLIST.md`, the AUTHORITY
+> for these; do NOT restate their detail here — no parallel truth):**
+> - **Q32** (the 23 over-budget meta descriptions) → **MVP_FINAL_CHECKLIST Item 1.**
+> - **llms.txt** (full drafted text engraved there, ready; founder chose to wait, not
+>   post-and-patch) → **Item 2.**
+> - **goal-3 SSR** (full-body prerender; recorded NO_ACTION-for-now — seat framing + verify
+>   promise already reach crawlers via baked head meta) → **Item 3.**
+>   **FIRING MECHANISM (founder, explicit): the checklist does NOT auto-fire — no trigger, no
+>   date, no code path. It runs ONLY when the founder says "MVP final, run the checklist," and
+>   Claude executes it manually, item by item, each through the normal gate. Committed + pushed
+>   so it survives across sessions.**
+
 > **▶ 2026-07-17 — QUEUE RECONCILIATION (the session's read-back sweep; this file had not been
 > updated since 2026-07-14 while four slices sealed in prod — the exact drift this file exists to
 > kill; caught by the founder's "last check" order). NOTHING below is closed by me — closure is
