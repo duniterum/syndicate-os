@@ -18,7 +18,12 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { SESSION_CHANGED_EVENT } from "@/lib/sessionEvents";
-import { UsersRound, UserPlus, Pencil, Ban, Link2 } from "lucide-react";
+import { UsersRound, UserPlus, Pencil, Ban, Link2, ChevronDown } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -351,23 +356,9 @@ export function AdminOperatorsCrud() {
         slice. Admin-tier changes also need a step-up signature and founder approval.
       </p>
 
-      {/* Role hierarchy */}
-      <div className="mb-6">
-        <div className="text-sm font-medium text-foreground mb-3">Role hierarchy</div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {operatorRoles.map((r, i) => (
-            <div key={r.role} className="rounded-md border border-border/50 p-3">
-              <div className="flex items-center gap-2 mb-0.5">
-                <span className="font-mono text-[10px] text-muted-foreground">{String(i + 1).padStart(2, "0")}</span>
-                <span className="text-sm font-medium text-foreground">{r.role}</span>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">{r.scope}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Operator registry */}
+      {/* THE WORK-FIRST PAGE LAW (founder, 2026-07-18): the registry — the
+          founder's actual work surface — leads; the role-hierarchy REFERENCE
+          moved into the collapsed expander below it. */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <div className="text-sm font-medium text-foreground">Operator registry</div>
@@ -438,6 +429,31 @@ export function AdminOperatorsCrud() {
             ))}
         </div>
       </div>
+      {/* Reference layer — collapsed by default (the work-first law). */}
+      <Collapsible className="mt-6">
+        <div className="rounded-md border border-border/50">
+          <CollapsibleTrigger className="flex w-full items-center gap-2 p-3 text-left group">
+            <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+            <span className="text-sm font-medium text-foreground">Role hierarchy</span>
+            <span className="ml-auto text-xs text-muted-foreground">
+              reference — what each role may do
+            </span>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="px-3 pb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {operatorRoles.map((r, i) => (
+                <div key={r.role} className="rounded-md border border-border/50 p-3">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="font-mono text-[10px] text-muted-foreground">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="text-sm font-medium text-foreground">{r.role}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{r.scope}</p>
+                </div>
+              ))}
+            </div>
+          </CollapsibleContent>
+        </div>
+      </Collapsible>
       <SuspendOperatorDialog
         target={suspendTarget}
         onSuspended={reload}

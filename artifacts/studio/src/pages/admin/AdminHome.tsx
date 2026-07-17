@@ -20,11 +20,17 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
+  ChevronDown,
   Info,
   TrendingUp,
   Package,
@@ -143,41 +149,10 @@ export default function AdminHome({ role, onNavigate, realitySlot }: AdminHomePr
         </div>
       </div>
 
-      {/* Q40 (founder, 2026-07-17: "what I need is at the bottom"): LIVE
-          content leads — the real Protocol reality renders FIRST; the honest
-          KPI placeholders are demoted below it until their reads are wired. */}
-      {realitySlot ? (
-        <Card className="p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <CardTitle className="text-base">Protocol reality</CardTitle>
-            <Badge variant="secondary" className="text-[10px]">
-              Live · on-chain
-            </Badge>
-          </div>
-          {realitySlot}
-        </Card>
-      ) : null}
-
-      {/* Business KPIs — honest preview, NO fabricated numbers */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {PREVIEW_KPIS.map((k) => {
-          const Icon = k.icon;
-          return (
-            <Card key={k.key} className="p-4">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                <Icon className="h-4 w-4" />
-                <span>{k.label}</span>
-                <KpiTooltip text={k.tooltip} />
-              </div>
-              <div className="text-2xl font-medium text-muted-foreground/50">—</div>
-              <Badge variant="outline" className="mt-2 text-[10px]">
-                Live reads coming
-              </Badge>
-            </Card>
-          );
-        })}
-      </div>
-
+      {/* THE WORK-FIRST PAGE LAW (founder, permanent, 2026-07-18): the page
+          opens on THE WORK — actions and decisions. Reference/diagnostic
+          material lives in collapsed expanders at the bottom; the operator
+          never scrolls past diagnostics to reach a button. */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Needs attention */}
         <Card>
@@ -228,6 +203,63 @@ export default function AdminHome({ role, onNavigate, realitySlot }: AdminHomePr
           </CardContent>
         </Card>
       </div>
+
+      {/* Reference layer — collapsed by default (the work-first law). The data
+          stays one click away, never in the way. */}
+      {realitySlot ? (
+        <Collapsible>
+          <Card className="p-0">
+            <CollapsibleTrigger className="flex w-full items-center gap-2 p-4 text-left group">
+              <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+              <CardTitle className="text-sm">Protocol reality</CardTitle>
+              <Badge variant="secondary" className="text-[10px]">
+                Live · on-chain
+              </Badge>
+              <span className="ml-auto text-xs text-muted-foreground">
+                expand to inspect the live chain signals
+              </span>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="px-4 pb-4">
+              {realitySlot}
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
+      ) : null}
+
+      <Collapsible>
+        <Card className="p-0">
+          <CollapsibleTrigger className="flex w-full items-center gap-2 p-4 text-left group">
+            <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+            <CardTitle className="text-sm">Business KPIs</CardTitle>
+            <Badge variant="outline" className="text-[10px]">
+              Live reads coming
+            </Badge>
+            <span className="ml-auto text-xs text-muted-foreground">
+              planned figures — nothing wired yet, nothing invented
+            </span>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="px-4 pb-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {PREVIEW_KPIS.map((k) => {
+                const Icon = k.icon;
+                return (
+                  <Card key={k.key} className="p-4">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                      <Icon className="h-4 w-4" />
+                      <span>{k.label}</span>
+                      <KpiTooltip text={k.tooltip} />
+                    </div>
+                    <div className="text-2xl font-medium text-muted-foreground/50">—</div>
+                    <Badge variant="outline" className="mt-2 text-[10px]">
+                      Live reads coming
+                    </Badge>
+                  </Card>
+                );
+              })}
+            </div>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
     </div>
   );
 }

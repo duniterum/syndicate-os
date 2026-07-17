@@ -76,6 +76,17 @@ constraints, vocabulary, read-only reflexes and blockers NEVER ride back in with
 harvest. Today's system is MORE advanced; we take what the origin had MORE of, never what
 held it back.
 
+**THE WORK-FIRST PAGE LAW (founder, permanent, 2026-07-18 — the dashboard-scroll lesson).**
+Grade-AAA composition on EVERY page, admin AND front end, applied at build time — never
+after the founder complains page by page:
+① The page opens on THE WORK — the actions, decisions, and figures its user came for.
+② Diagnostic/verification/reference material is shown ONLY if necessary; otherwise it
+lives in a COLLAPSED expander (retractable section, chevron, closed by default) at the
+BOTTOM — one click away, never in the way. The user NEVER scrolls past reference
+material to reach a button.
+③ If information serves nobody on that page, it is not shown at all.
+This is senior judgment owed on the FIRST build of every surface.
+
 **THE HEARTBEAT COMPLETENESS INVARIANT (founder, permanent, 2026-07-15 — STEP 4 of the
 complete-heartbeat order).** Any future contract or protocol wallet joins the heartbeat
 inventory (scan targets + read-model + §8 sentence + /activity) **in the same slice that
