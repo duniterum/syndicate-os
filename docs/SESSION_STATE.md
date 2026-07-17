@@ -2,6 +2,60 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🧭 THE CLEAN HANDOFF (2026-07-18 — the founder's order: "the cleanest handoff
+> possible, read back deeply, do not forget anything"). THE SESSION IN FULL:**
+>
+> **SEALED IN PROD (each triple-verified — Replit battery + founder eyes + independent curl):**
+> ① the mechanical batch (Q33 *Teaser renames · Q22 compass repoint · Q8 spec
+> reconcile · `assertAddressSafeAggregate` rename) · ② Q31 the gold favicon ·
+> ③ SEO-TRANSPORT (serve.mjs: Brotli+gzip twins byte-verified, immutable/ETag
+> caching — ~4× lighter, Pingdom A-95; CDN + www→apex PARKED for "the end") ·
+> ④ /ADMIN-IN-PROD (the neutral wall: world → 404 neutral; Q36 founder_root
+> ceremony `0x88ec…dd73` audited + Q37 tables; founder verified "Operator ·
+> founder_root" live) · ⑤ THE TWO TRUTH SWEEPS (console + public: the read-only
+> era vocabulary at 0 in the served bundles; the fabricated /admin/sources
+> figures DELETED; "Entry Calculator" points at Join; /wallet + /toolkit wear
+> LIVE_ACTION) · ⑥ Q41 founder-executed (TWO ACTIVE founder_root rows —
+> `0x88ec…dd73` + `0x2445…c721`; the recovery property armed; quiet-root
+> discipline noted).
+>
+> **ON MAIN, AWAITING ONE REPLIT CYCLE (the handoff point): M-INT-1 + Q40
+> (`cadcb17`) + the guard-allowlist sync fix (`be0aace`).** Replit STOPPED
+> fail-closed at 2 red guards (its diagnosis exact: the new lazy-DB service was
+> missing from member-continuity-schema LAZY_DB_ALLOW + holder-index
+> DB_LAZY_ALLOW — guard sync, not a perimeter violation); the fix is pushed and
+> locally green (30/30 · 67 · auth-zone 828). LESSON ENGRAVED in the fix commit:
+> a new zone lazy-DB file joins THREE guard lists. **The founder has ALREADY SEEN
+> the ledger rendering the real 14 rows** (screenshot on record: seat #1 Patron
+> $70 · 2 intro/2 durable/$0.50 paid · 13 active/1 settled — the dev preview);
+> prod confirmation = the founder's session after the green cycle.
+>
+> **ENGRAVED THIS SESSION (survives every future session):** the STANDING RULE
+> (gates ONLY security · chain-truth · money · legal/public copy · go-live; never
+> re-block an answered question) — in the queue AND agent memory; the live-truth-
+> ledger lesson (consult source-status/SESSION_STATE before re-research); the
+> founder-describes-by-function lesson; the two-authorities model;
+> MVP_FINAL_CHECKLIST (fires ONLY on the founder's words "MVP final, run the
+> checklist").
+>
+> **THE FORWARD LIST (the engraved order):** ⓪ Replit re-runs the M-INT-1 cycle
+> (HEAD `be0aace`) → founder confirms the ledger in prod → seal. ① A1 "My
+> Activity" (own-row receipt binder) → ② B1 THE FIRSTS (Chronicle-candidates
+> queue) → ③ A2 "My Chronicle" → ④ M-INT-2 (§D users-registry/audit tab).
+> ⑤ THE Q42 WAVE (admin controllability, one slice each): audit READ → real
+> flag writes + referral kill-switch → broadcast → modules real → support intake
+> → content management → operator edit → /staff anti-impersonation → prospects
+> lane (new scan lane) → notification center → Q38 step-up. ⑥ Q39 config-label
+> relocation (+ the console breadcrumb "Page Not Found" fix). FOUNDER-ONLY:
+> close Q31/Q36/Q37/Q41 · Q35 legal set · the MVP-final trigger · CDN at the end.
+>
+> **CARRIED NUANCES (named, none urgent):** the front rewrites asset
+> Cache-Control public→private (browser cache fine via immutable) · Pingdom's
+> "gzip D" is a legacy false-flag (Brotli not credited) · "Sign in as operator"
+> string ships in the public wallet chunk (Q39-adjacent) · ChronicleTeaser.tsx
+> renames the day the first entry is promoted · serve.mjs owns studio serving
+> (routing generated from the registry; drift-guarded). Next session boots on "hi".
+
 > **▶ M-INT-1 BUILT + ON MAIN (`cadcb17`, 2026-07-18) — THE MEMBER LEDGER + Q40.**
 > GET /api/operator/member-ledger (FOUNDER-ONLY — §D pairing overlay; no params =
 > no lookup API; masked walletShort; NO v1 anchors per A21; payload passes the
