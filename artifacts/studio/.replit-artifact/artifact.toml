@@ -17,239 +17,36 @@ localPort = 18425
 [services.development]
 run = "pnpm --filter @workspace/studio run dev"
 
+# Compression/caching switch (2026-07): production no longer uses the platform's
+# static handoff. The studio is served by artifacts/studio/server/serve.mjs —
+# same model as the api-server, same single deployment. The server owns the
+# clean-URL routing (generated from src/lib/seo-route-registry.ts, drift-guarded
+# by seo:rewrites:check), the real 404.html, Brotli/gzip via build-emitted
+# .br/.gz twins (originals byte-untouched), and cache headers (immutable on
+# /assets/*, no-cache+ETag on HTML). The old serve = "static" + publicDir +
+# generated [[services.production.rewrites]] block is REMOVED — routing lives
+# in the server now, from the same registry.
+
 [services.production]
-build = [ "pnpm", "--filter", "@workspace/studio", "run", "build" ]
-publicDir = "artifacts/studio/dist/public"
-serve = "static"
 
-# Slice 2.0 (rendering fix): the build prerenders one FLAT static HTML per public
-# route (scripts/prerender-routes.ts) — /status -> status.html, home -> index.html
-# — plus a real 404.html. Flat files (NOT <route>/index.html directories) are
-# deliberate: a directory makes the static host auto-redirect /status -> /status/
-# (the directory redirect fires BEFORE any rewrite), which breaks "served URL ==
-# <link rel=canonical>". Confirmed live on Replit 2026-07-10. The old blanket SPA
-# rewrite (/* -> /index.html) is REMOVED (it forced a soft-404 200 on unknown paths).
-#
-# Live serving is owned by the deploy layer (Replit handoff): serve each no-slash
-# route directly from its flat <route>.html at 200 (no directory redirect, and NO
-# deploy-layer flatten step — the build already emits flat files); return 404.html
-# with a real HTTP 404 for unmatched paths. (www->apex 301 is DEFERRED to the
-# domain transfer ~Sept 2026 — registrar-level, not here; HSTS/preload = Phase 6.)
+[services.production.build]
+args = [ "pnpm", "--filter", "@workspace/studio", "run", "build" ]
 
-# >>> GENERATED clean-URL rewrites — source: src/lib/seo-route-registry.ts (PUBLIC+PENDING, non-home).
-# Do NOT hand-edit. Regenerate: pnpm --filter @workspace/studio run seo:rewrites
-# (drift is caught by seo:rewrites:check in the release gate). Home is served
-# by index.html; unmatched paths fall through to the real 404.html.
+[services.production.build.env]
+NODE_ENV = "production"
+PORT = "18425"
+BASE_PATH = "/"
 
-[[services.production.rewrites]]
-from = "/status"
-to = "/status.html"
+[services.production.run]
+args = [ "node", "artifacts/studio/server/serve.mjs" ]
 
-[[services.production.rewrites]]
-from = "/status/"
-to = "/status.html"
+[services.production.run.env]
+PORT = "18425"
+NODE_ENV = "production"
+BASE_PATH = "/"
 
-[[services.production.rewrites]]
-from = "/proof"
-to = "/proof.html"
-
-[[services.production.rewrites]]
-from = "/proof/"
-to = "/proof.html"
-
-[[services.production.rewrites]]
-from = "/terms"
-to = "/terms.html"
-
-[[services.production.rewrites]]
-from = "/terms/"
-to = "/terms.html"
-
-[[services.production.rewrites]]
-from = "/privacy"
-to = "/privacy.html"
-
-[[services.production.rewrites]]
-from = "/privacy/"
-to = "/privacy.html"
-
-[[services.production.rewrites]]
-from = "/risk"
-to = "/risk.html"
-
-[[services.production.rewrites]]
-from = "/risk/"
-to = "/risk.html"
-
-[[services.production.rewrites]]
-from = "/member"
-to = "/member.html"
-
-[[services.production.rewrites]]
-from = "/member/"
-to = "/member.html"
-
-[[services.production.rewrites]]
-from = "/wallet"
-to = "/wallet.html"
-
-[[services.production.rewrites]]
-from = "/wallet/"
-to = "/wallet.html"
-
-[[services.production.rewrites]]
-from = "/toolkit"
-to = "/toolkit.html"
-
-[[services.production.rewrites]]
-from = "/toolkit/"
-to = "/toolkit.html"
-
-[[services.production.rewrites]]
-from = "/liquidity"
-to = "/liquidity.html"
-
-[[services.production.rewrites]]
-from = "/liquidity/"
-to = "/liquidity.html"
-
-[[services.production.rewrites]]
-from = "/join"
-to = "/join.html"
-
-[[services.production.rewrites]]
-from = "/join/"
-to = "/join.html"
-
-[[services.production.rewrites]]
-from = "/learning"
-to = "/learning.html"
-
-[[services.production.rewrites]]
-from = "/learning/"
-to = "/learning.html"
-
-[[services.production.rewrites]]
-from = "/whitepaper"
-to = "/whitepaper.html"
-
-[[services.production.rewrites]]
-from = "/whitepaper/"
-to = "/whitepaper.html"
-
-[[services.production.rewrites]]
-from = "/tokenomics"
-to = "/tokenomics.html"
-
-[[services.production.rewrites]]
-from = "/tokenomics/"
-to = "/tokenomics.html"
-
-[[services.production.rewrites]]
-from = "/faq"
-to = "/faq.html"
-
-[[services.production.rewrites]]
-from = "/faq/"
-to = "/faq.html"
-
-[[services.production.rewrites]]
-from = "/docs"
-to = "/docs.html"
-
-[[services.production.rewrites]]
-from = "/docs/"
-to = "/docs.html"
-
-[[services.production.rewrites]]
-from = "/recognition"
-to = "/recognition.html"
-
-[[services.production.rewrites]]
-from = "/recognition/"
-to = "/recognition.html"
-
-[[services.production.rewrites]]
-from = "/contracts"
-to = "/contracts.html"
-
-[[services.production.rewrites]]
-from = "/contracts/"
-to = "/contracts.html"
-
-[[services.production.rewrites]]
-from = "/map"
-to = "/map.html"
-
-[[services.production.rewrites]]
-from = "/map/"
-to = "/map.html"
-
-[[services.production.rewrites]]
-from = "/referral"
-to = "/referral.html"
-
-[[services.production.rewrites]]
-from = "/referral/"
-to = "/referral.html"
-
-[[services.production.rewrites]]
-from = "/source-attribution"
-to = "/source-attribution.html"
-
-[[services.production.rewrites]]
-from = "/source-attribution/"
-to = "/source-attribution.html"
-
-[[services.production.rewrites]]
-from = "/support"
-to = "/support.html"
-
-[[services.production.rewrites]]
-from = "/support/"
-to = "/support.html"
-
-[[services.production.rewrites]]
-from = "/archive"
-to = "/archive.html"
-
-[[services.production.rewrites]]
-from = "/archive/"
-to = "/archive.html"
-
-[[services.production.rewrites]]
-from = "/activity"
-to = "/activity.html"
-
-[[services.production.rewrites]]
-from = "/activity/"
-to = "/activity.html"
-
-[[services.production.rewrites]]
-from = "/chronicle"
-to = "/chronicle.html"
-
-[[services.production.rewrites]]
-from = "/chronicle/"
-to = "/chronicle.html"
-
-[[services.production.rewrites]]
-from = "/fire-ledger"
-to = "/fire-ledger.html"
-
-[[services.production.rewrites]]
-from = "/fire-ledger/"
-to = "/fire-ledger.html"
-
-[[services.production.rewrites]]
-from = "/source"
-to = "/source.html"
-
-[[services.production.rewrites]]
-from = "/source/"
-to = "/source.html"
-
-# <<< END generated clean-URL rewrites
+[services.production.health.startup]
+path = "/"
 
 [services.env]
 PORT = "18425"
