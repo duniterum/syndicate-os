@@ -2,6 +2,41 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 2026-07-17 (end of session) — SESSION DEEP-READ VERIFIED + THE /ADMIN-IN-PROD
+> INVENTORY CORRECTED (first-hand, against code AND live prod).** Session verification:
+> 13 commits `1514bf6`→`1155e34`, ALL pushed (HEAD == origin/main), tree clean, every
+> shipped slice PROD-SEALED by Replit (mechanical batch · favicon · SEO-TRANSPORT/Brotli)
+> and independently curl-verified. MVP_FINAL_CHECKLIST engraved (`b0e1f45`), fires only
+> on the founder's explicit word.
+>
+> **THE CORRECTED /ADMIN-IN-PROD FACTS (supersede the earlier gate's overstatement —
+> "check what we already did," founder order; each verified first-hand):**
+> - **Operator auth is ALREADY LIVE in prod** (probed 2026-07-17): `GET
+>   /api/auth/operator-context` no-session → 200 `{isOperator:false,role:null}` (zone
+>   EXPOSED, fail-closed — `SYNDICATE_AUTH_ENABLED` is set) · `GET /api/operator/operators`
+>   no-session → **401** (the write zone is LIVE + auth-gated, not dark).
+> - **The operator login UI is BUILT, not a stub**: `OperatorSignInAction.tsx` (RainbowKit
+>   connect + SIWE, resolves role in place on SESSION_CHANGED_EVENT) + `OperatorBadge.tsx`
+>   (live role chip from operator-context). The "WalletAuthComingSoon" stub is Shell.tsx
+>   (the /studio overview chrome), NOT /admin — AdminShell carries the real login.
+> - **The leak-prevention framework EXISTS**: guard-operator-gate (gated dynamic import ·
+>   dist-grep probe strings · no-public-links · strict admin import graph). 4 live writes
+>   (referral-terms/invite/suspend/list) each already writing audit_log rows.
+> - **The REAL remaining delta for /admin-in-prod (small, focused):** ① the NEUTRAL WALL
+>   — replace the build-flag reveal (OperatorConsole.tsx:42-46 says today's AccessGate is
+>   "visibility/UX only") with the server-confirmed-role reveal; the current prod fallback
+>   ("Internal preview is not enabled on this deployment") VIOLATES the wall (admits an
+>   internal surface) → non-operators must get the exact NotFound composition, zero new
+>   vocabulary. Serving layer needs NO change (INTERNAL routes already HTTP-404 at
+>   serve.mjs; the SPA takes over post-hydration). ② guard-operator-gate RE-FIT (console
+>   ships as a separate lazy chunk: prove entry-bundle-clean + reveal-only-on-server-role,
+>   stricter never weaker) + registry fossils truthed. ③ Replit: confirm DATABASE_URL +
+>   operator/audit tables migrated in prod (DB exists — partB guards green; table status
+>   unconfirmed). ④ 🔴 FOUNDER: the founder_root wallet + one-time seed (offline act; no
+>   self-service by design). ⑤ step-up signatures = design-only, founder-optional.
+> - Dev keeps the OPERATOR_PREVIEW build-flag as a DEV-ONLY bypass; prod reveal = server
+>   role, period.
+
 > **▶ ✅ SEO-TRANSPORT SEALED IN PROD (2026-07-17, Replit 6/6 + independently
 > curl-verified): thesyndicate.money now serves BROTLI.** The studio serves
 > through `serve.mjs` (compression + caching), LIVE. MY OWN CURL vs prod: entry JS

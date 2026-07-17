@@ -19,6 +19,21 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 
 ---
 
+> **▶ 2026-07-17 (end) — /ADMIN-IN-PROD OPENED (founder GO; scope A the neutral wall).**
+> Inventory CORRECTED first-hand before building: operator auth ALREADY LIVE in prod
+> (operator-context 200 fail-closed · /api/operator 401 — not dark), the operator login UI
+> BUILT (OperatorSignInAction + OperatorBadge), 4 audited writes live. The slice's real
+> delta = the neutral wall (server-confirmed-role reveal; non-operators get the exact
+> NotFound composition — today's "Internal preview is not enabled" fallback violates the
+> wall) + guard-operator-gate re-fit (console ships as separate lazy chunk; entry-clean +
+> reveal-only-on-role, stricter never weaker). NEW open items:
+> - 🔴 **Q36 — THE FOUNDER_ROOT SEED**: which wallet is founder-root + the one-time
+>   offline enrollment (no self-service by design). Without it nobody passes the wall.
+> - 🔵 **Q37 — Replit prod-DB confirm**: DATABASE_URL present (partB guards green) but
+>   operator/operator_session/audit_log table migration status unconfirmed — Replit
+>   confirms/migrates at the deploy.
+> - ⏸ **Q38 — step-up signatures** (design §B): founder confirms the live set, or defers.
+
 > **▶ 2026-07-17 (later) — THE SAFE-SEO GATE: founder decisions, split by self-adapting vs
 > content-bound.** External audit flagged near-raw served assets (transport/perf). Founder
 > firewall: transport/static-layer only; nothing near MetaMask/chain reads/reality spine.
