@@ -2,23 +2,45 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 🧭 SLICE AUD-ROUTE ✅ BUILT + FOUNDER GO AT THE PREVIEW GATE
-> (2026-07-17, COMMITTED + PUSHED; the Replit deploy block HANDED —
-> AWAITING THE REPLIT REPORT. NEXT SESSION BOOTS ON "hi": the founder
-> pastes Replit's report → verify it against the expectations below →
-> engrave the prod seal → then the acted order resumes: /admin-in-prod →
-> M-INT-1 → A1 → B1. REPLIT VERIFICATION EXPECTATIONS: ① new entry bundle
-> byte-identical; ② footer serves the six new doors (Activity · Fire
-> Ledger · Liquidity · Chronicle · Wallet · Toolkit) and the More menu's
-> Chronicle → /chronicle; ③ the dead claim at 0 in the served bundle
-> ("read live from the contract" · "artifact reads live"); ④ the
-> source-attribution.html shell carries rel=canonical →
-> https://thesyndicate.money/referral while staying noindex,follow and
-> OUT of sitemap.xml; ⑤ og:site_name + twitter:site + theme-color in the
-> shells; ⑥ /api responses carry X-Robots-Tag: noindex, nofollow — the
-> API SERVER MUST REDEPLOY TOO (one additive header in app.ts); ⑦ feed
-> byte-identical, engine 6/6, healthz. DEPLOY BACKLOG UNTIL THE REPORT:
-> this slice only.): ROUTING + SEO RATIONALIZATION — the audit's lens 6+9 layer,
+> **▶ ✅ SLICE AUD-ROUTE SEALED IN PROD (2026-07-17, Replit-verified ①–⑦
+> ALL GREEN on thesyndicate.money — the studio AND the api-server rode ONE
+> cycle: prod entry bundle `index-BfqGonuU.js` SHA-256 93c93b91…3695
+> byte-identical to Replit's local rebuild, anchor `7e6d8ee`, 26/26
+> blob-verified incl. the Home→OperatorOverview rename handled cleanly, no
+> migration, no env change, no install. PROD PROOF: ② the six doors served
+> (Activity · Fire Ledger · Liquidity · Chronicle · Wallet · Toolkit;
+> /chronicle referenced 8× — the More menu's "Chronicle" finally delivers
+> /chronicle); ③ the dead claims at 0 in the served bundle ("read live
+> from the contract" · "artifact reads live"); ④ the served
+> source-attribution.html carries rel=canonical →
+> https://thesyndicate.money/referral, robots noindex,follow kept, 0
+> sitemap occurrences; ⑤ og:site_name "The Syndicate" · twitter:site
+> @TheSyndicateOne · theme-color #030711 served; ⑥ X-Robots-Tag: noindex,
+> nofollow LIVE on all 5 probed /api routes — absent pre-publish, present
+> post-publish = THE PROOF the api-server deploy landed; ⑦ feed 78/78
+> byte-identical zero-address, engine boot-partial self-repaired via the
+> persisted cursor (the known pattern — cycles ok:2/partial:1/failed:0,
+> head 90,508,088 → 90,508,702, 6/6 scan units), healthz ok + 24 postures.
+> Gates replayed green on Replit pre-publish (typecheck · 27 shells ·
+> drift w/ the NEW reverse check · menu 34 · home 30 · receipt 83 ·
+> access-state 983 · operator-gate green at the rename · surface 296 ·
+> seo 435 · rewrites 52 · the 17 api guards + DB). **DEPLOY BACKLOG:
+> EMPTY.** NEXT per the acted order: **/admin-in-prod** (Ruling ②: the
+> neutral wall — zero admin vocabulary at the bare URL, console reveals
+> only after the server confirms the operator role; server-side operator
+> sessions per OPERATOR_WALLET_AUTH canon; public-sees-admin-never guard
+> on dist chunks; deliberately BEFORE M-INT-1 — the ledger's home) →
+> M-INT-1 → A1 (receipt binder + placements ②③ + V2 Routed fold) → B1
+> (THE FIRSTS engine, §7b). CARRIED FOUNDER DECISIONS (open): the icon
+> ARTWORK call (favicon.svg is an off-brand cyan shield — the
+> apple-touch/PNG/manifest micro-slice waits on the mark choice; no local
+> rasterizer exists, its own micro-slice) · the 23-descriptions >160-char
+> meta wave (every rewrite read on screen) · entity + governing law ·
+> durable contact channel · log retention · eligibility floor · checkout
+> acceptance mechanics · on-chain hash commitment of legal docs ·
+> never-message-first policy · counsel review lifts the draft label ·
+> Q5/Q6/Q9/Q13/Q20 (older). Next session boots on "hi".): ROUTING + SEO
+> RATIONALIZATION — the audit's lens 6+9 layer,
 > RECONCILED against HEAD first (7-cluster fleet: several findings already
 > dead via AUD-TRUTH/-2; the residue mapped precisely).** THE KILLS:
 > ① THE ARCHIVE READ-LIVE CLAIM CLASS dead at NINE sites (the adversarial
