@@ -55,6 +55,8 @@
     "source-status-truth:guard": "tsx ./scripts/source-status-truth.guard.ts",
     "guards": "pnpm run introductions:guard && pnpm run live-read:guard && pnpm run token-metadata:guard && pnpm run archive-posture:guard && pnpm run protocol-reality:guard && pnpm run protocol-targets:guard && pnpm run sale-scan:guard && pnpm run sale-index:guard && pnpm run sale-semantics:guard && pnpm run member-continuity:guard && pnpm run member-continuity-schema:guard && pnpm run protocol-time:guard && pnpm run holder-index:guard && pnpm run activity:guard && pnpm run backbone:guard && pnpm run auth-zone:guard && pnpm run source-status-truth:guard",
     "guards:db": "pnpm run partB-canon:guard && pnpm run partB-import:guard",
+    "operator:seed-founder-root": "tsx ./scripts/operator-seed-founder-root.ts",
+    "operator:verify": "tsx ./scripts/operator-registry-verify.ts",
     "auth-skeleton:test": "tsx ./scripts/auth-skeleton-test.ts",
     "operator-write:test": "tsx ./scripts/operator-write-test.ts",
     "operator-list:test": "tsx ./scripts/operator-list-test.ts",
