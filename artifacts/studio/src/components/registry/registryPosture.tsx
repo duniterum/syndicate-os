@@ -110,7 +110,7 @@ export function RegistryPostureChip({
     return fallback ?? <PostureUnavailable text="Proof unavailable (fail-closed)" />;
   return (
     <span className="font-mono text-[11px] text-proof">
-      {summary.readable}/{summary.total} read-only signals reconciled
+      {summary.readable}/{summary.total} live signals verified
     </span>
   );
 }

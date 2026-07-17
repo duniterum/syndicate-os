@@ -16,7 +16,7 @@ export default function MemberToolkit() {
       eyebrow="Toolkit"
       title="What a seat can do."
       lead="Every member action, in one place — real acts only. What your wallet unlocks is shown unlocked; what a seat unlocks stays visible with the plain reason, so you can see exactly what joining opens."
-      badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
+      badge={<LifecycleBadge lifecycle="LIVE_ACTION" />}
     >
       <MemberShell>
         <MemberQuickActions />

@@ -511,7 +511,7 @@ export function AdminSourcesPanel() {
               const s = realityGroupSummary(reality, "source");
               return s ? (
                 <span className="font-mono text-[11px] text-proof">
-                  {s.readable}/{s.total} read-only signals reconciled
+                  {s.readable}/{s.total} live signals verified
                 </span>
               ) : (
                 <Unavailable text="Proof unavailable (fail-closed)" />

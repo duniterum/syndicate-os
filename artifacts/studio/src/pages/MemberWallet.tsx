@@ -3,7 +3,9 @@
 // pool pointer. FLAT route deliberately (/member/wallet would create a member/
 // directory in the built output and resurrect the 2.0 trailing-slash redirect
 // on /member — infra truth wins; the door label stays "Wallet").
-// The page badge is READ_ONLY_PROOF: every FIGURE here is a read; the one
+// Truth sweep 2026-07-17 (founder GO copy): the badge is LIVE_ACTION — this
+// page hosts real signed member acts (revoke/approvals from your own wallet);
+// every FIGURE here is still a read; the one
 // write (revoke) is the member's OWN wallet act that this page only BUILDS —
 // the signature happens in their wallet, never here, never on a server.
 
@@ -23,7 +25,7 @@ export default function MemberWallet() {
       eyebrow="Wallet"
       title="Your wallet, read honestly."
       lead="Your own balances and your own approvals toward the protocol's known contracts — read live, own-row only, never a directory. The one action here (revoking an approval) is a transaction you sign in your own wallet."
-      badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
+      badge={<LifecycleBadge lifecycle="LIVE_ACTION" />}
     >
       <MemberShell>
         {MemberWalletPanel ? (

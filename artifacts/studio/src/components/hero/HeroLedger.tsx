@@ -252,7 +252,7 @@ export function HeroLedger() {
             </div>
           ))}
         </div>
-        <p className="mt-3 text-[10px] text-muted-foreground">Preview of the routing split only. No wallet, no write, no transaction.</p>
+        <p className="mt-3 text-[10px] text-muted-foreground">A calculator only — your real entry happens on Join, signed from your own wallet.</p>
       </motion.section>
     </div>
   );

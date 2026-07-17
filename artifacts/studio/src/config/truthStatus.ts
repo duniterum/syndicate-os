@@ -133,7 +133,9 @@ export type DisplayLifecycle =
   | "LIVE_ACTION";
 
 export const displayLifecycleText: Record<DisplayLifecycle, string> = {
-  READ_ONLY_PROOF: "Verified — view only",
+  // Truth sweep 2026-07-17 (founder): "view only"/"read-only" developer-speak
+  // died site-wide — a human reads "verified", the posture stays honest.
+  READ_ONLY_PROOF: "Verified on-chain",
   HISTORICAL_PROOF: "Verified history",
   PAUSED_BY_PRECAUTION: "Paused for safety",
   PENDING_ADAPTER: "Not live yet",

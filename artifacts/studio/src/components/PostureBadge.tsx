@@ -15,7 +15,7 @@ import type { SourcePosture } from "@workspace/os-contracts";
 export type BadgePosture = SourcePosture;
 
 export const postureText: Record<BadgePosture, string> = {
-  READ_ONLY_PROOF: "Read-only proof",
+  READ_ONLY_PROOF: "Verified on-chain",
   NOT_WIRED: "Not wired",
   VERIFIED_SOURCE_PENDING_ADAPTER: "Verified source pending adapter",
   AUTH_REQUIRED: "Auth required",

@@ -179,7 +179,7 @@ export default function MemberHeaderAffordance({
           variant="outline"
           size={mobile ? "default" : "sm"}
           onClick={() => openConnectModal()}
-          title="Already a member? Connect + sign to read your standing (read-only — proves wallet control only)."
+          title="Already a member? Connect + sign to read your standing — signing proves wallet control only and never moves anything."
           className={triggerBase}
         >
           <Wallet className={mobile ? "mr-2 h-4 w-4 text-gold" : "mr-1.5 h-4 w-4 text-gold"} aria-hidden="true" />
@@ -198,7 +198,7 @@ export default function MemberHeaderAffordance({
             <Button
               variant="outline"
               size={mobile ? "default" : "sm"}
-              title="Sign-in didn't complete — open Member to sign in (read-only, proves wallet control only)."
+              title="Sign-in didn't complete — open Member to sign in. Signing proves wallet control only and never moves anything."
               className={triggerBase}
             >
               <Wallet className={mobile ? "mr-2 h-4 w-4 text-gold" : "mr-1.5 h-4 w-4 text-gold"} aria-hidden="true" />
@@ -213,7 +213,7 @@ export default function MemberHeaderAffordance({
           size={mobile ? "default" : "sm"}
           onClick={() => void reSign()}
           disabled={signing}
-          title="Your wallet is connected but your session expired — sign to restore it (read-only, proves wallet control only)."
+          title="Your wallet is connected but your session expired — sign to restore it. Signing proves wallet control only and never moves anything."
           className={triggerBase}
         >
           <Wallet className={mobile ? "mr-2 h-4 w-4 text-gold" : "mr-1.5 h-4 w-4 text-gold"} aria-hidden="true" />

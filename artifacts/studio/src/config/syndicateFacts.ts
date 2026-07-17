@@ -227,7 +227,7 @@ export const trustStrip = {
     { key: "sale", label: "Membership sale" },
     { key: "source", label: "Source registry" },
   ] as { key: "chain" | "sale" | "source"; label: string }[],
-  reconciledNote: "read-only signals reconciled",
+  reconciledNote: "live signals verified",
   failText: "Live posture unavailable — nothing is assumed.",
   links: [
     { label: "Status hub", href: "/status" },
@@ -597,9 +597,9 @@ export const heroSystem = {
   // 70/20/10 split. Deliberately NO per-SYN price and NO "you receive N SYN"
   // purchase framing — membership is recognised, not sold as an investment.
   entryPreview: {
-    title: "Entry Preview",
-    note: "Preview — a simulated entry routes by the canonical 70 / 20 / 10 split.",
-    readonlyNote: "Read-only preview · No transaction",
+    title: "Entry Calculator",
+    note: "Try any amount — it routes by the canonical 70 / 20 / 10 split.",
+    readonlyNote: "A calculator — take your real seat on Join",
     amounts: [5, 10, 25, 50, 75],
     defaultAmount: 5,
     split: [
@@ -610,6 +610,6 @@ export const heroSystem = {
   },
 
   disclaimer:
-    "Every figure on this page is read live from the Avalanche blockchain — nothing is invented. When a live read is briefly unavailable, we say so instead of guessing. The 70 / 20 / 10 routing is canonical, and anything marked Preview is a demonstration, not live data.",
+    "Every figure on this page is read live from the Avalanche blockchain — nothing is invented. When a live read is briefly unavailable, we say so instead of guessing. The 70 / 20 / 10 routing is canonical; the entry calculator is a demonstration — your real entry happens on Join, signed from your own wallet.",
 };
 
