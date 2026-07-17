@@ -27,7 +27,7 @@
 
 import {
   DEFAULT_TIMEOUT_MS,
-  assertNoAddressLeak,
+  assertAddressSafeAggregate,
   makeFetchTransport,
   readEnvInt,
   resolveEndpoints,
@@ -202,7 +202,7 @@ async function main(): Promise<void> {
       headOverride,
     });
     const serialized = JSON.stringify(summary, null, 2);
-    assertNoAddressLeak(serialized);
+    assertAddressSafeAggregate(serialized);
     process.stdout.write(serialized + "\n");
     return;
   }
@@ -218,7 +218,7 @@ async function main(): Promise<void> {
       maxBlocksPerUnit: null, // scan through head
     });
     const serialized = JSON.stringify(summary, null, 2);
-    assertNoAddressLeak(serialized);
+    assertAddressSafeAggregate(serialized);
     process.stdout.write(serialized + "\n");
     const failed = summary.units.filter((u) => u.status === "error");
     if (failed.length > 0) process.exitCode = 1;

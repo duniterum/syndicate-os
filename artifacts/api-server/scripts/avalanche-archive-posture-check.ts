@@ -60,7 +60,7 @@ import {
   makeFetchTransport,
   resolveEndpoints,
   readEnvInt,
-  assertNoAddressLeak,
+  assertAddressSafeAggregate,
   DEFAULT_TIMEOUT_MS,
   EXPECTED_CHAIN_ID,
   EXPECTED_CHAIN_ID_HEX,
@@ -513,7 +513,7 @@ async function main(): Promise<void> {
 
   const result = await getArchivePostureCheck({ transport, archive, artifacts });
   const serialized = JSON.stringify(result, null, 2);
-  assertNoAddressLeak(serialized); // defense-in-depth before printing
+  assertAddressSafeAggregate(serialized); // defense-in-depth before printing
   console.log(serialized);
 
   if (!result.rpcReachable) {

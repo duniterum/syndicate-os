@@ -13,7 +13,7 @@
  *     (no-op success) or the run HARD FAILS. Never ON CONFLICT DO NOTHING.
  *
  * PRIVACY: the printed report is address-safe by construction and re-checked
- * by assertNoAddressLeak before printing. Wallets/txs/proofs never leave the DB
+ * by assertAddressSafeAggregate before printing. Wallets/txs/proofs never leave the DB
  * boundary. Contract addresses stay inside protocolTargets (server-side).
  *
  * Usage:
@@ -25,7 +25,7 @@
 import { createHash } from "node:crypto";
 import {
   DEFAULT_TIMEOUT_MS,
-  assertNoAddressLeak,
+  assertAddressSafeAggregate,
   makeFetchTransport,
   resolveEndpoints,
 } from "../src/lib/protocol/rpcTransport";
@@ -219,7 +219,7 @@ function gateReport(gate: GateOutcome) {
 
 function printSafe(report: unknown): void {
   const serialized = JSON.stringify(report, null, 2);
-  assertNoAddressLeak(serialized);
+  assertAddressSafeAggregate(serialized);
   console.log(serialized);
 }
 
@@ -388,7 +388,7 @@ main().catch((err) => {
   // embed request payloads); print message text only after the leak guard.
   const message = err instanceof Error ? err.message : String(err);
   try {
-    assertNoAddressLeak(message);
+    assertAddressSafeAggregate(message);
     console.error(`[partB-import] FAILED: ${message}`);
   } catch {
     console.error("[partB-import] FAILED: (detail redacted by address-leak guard)");

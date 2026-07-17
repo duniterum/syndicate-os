@@ -36,7 +36,7 @@ import {
   type SaleGeneration,
 } from "../src/data/protocolTargets";
 import { SALE_EVENT_DEFS_BY_NAME } from "../src/lib/protocol/saleEventDecoders";
-import { assertNoAddressLeak } from "../src/lib/protocol/rpcTransport";
+import { assertAddressSafeAggregate } from "../src/lib/protocol/rpcTransport";
 
 // ── tiny check harness ───────────────────────────────────────────────────────
 type Check = { name: string; ok: boolean; detail?: string };
@@ -124,7 +124,7 @@ function main(): void {
   // 6) The serialized bridge leaks no address.
   let leakThrew = false;
   try {
-    assertNoAddressLeak(JSON.stringify(SALE_EVENT_SEMANTICS));
+    assertAddressSafeAggregate(JSON.stringify(SALE_EVENT_SEMANTICS));
   } catch {
     leakThrew = true;
   }

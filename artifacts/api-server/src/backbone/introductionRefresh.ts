@@ -34,7 +34,7 @@
 
 import { keccak256, encodePacked, getAddress, decodeAbiParameters } from "viem";
 import {
-  assertNoAddressLeak,
+  assertAddressSafeAggregate,
   type RpcTransport,
 } from "../lib/protocol/rpcTransport";
 import { ethCall } from "../lib/protocol/evmRead";
@@ -347,7 +347,7 @@ export async function refreshIntroductionModel(
   });
 
   // The model is address-free by construction — prove it before holding it.
-  assertNoAddressLeak(JSON.stringify(model));
+  assertAddressSafeAggregate(JSON.stringify(model));
 
   setLiveIntroductionModel({
     model,

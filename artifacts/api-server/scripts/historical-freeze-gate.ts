@@ -17,7 +17,7 @@
  * Run:  pnpm --filter @workspace/api-server run freeze-gate:status
  */
 
-import { assertNoAddressLeak } from "../src/lib/protocol/rpcTransport";
+import { assertAddressSafeAggregate } from "../src/lib/protocol/rpcTransport";
 import {
   HISTORICAL_FREEZE_GATE,
   type FreezeGateStatus,
@@ -124,7 +124,7 @@ async function main(): Promise<void> {
     boundaries: g.boundaries,
   };
   const serialized = JSON.stringify(report, null, 2);
-  assertNoAddressLeak(serialized);
+  assertAddressSafeAggregate(serialized);
 
   process.stdout.write(
     `HISTORICAL FREEZE GATE — static: ${g.status} · db-derived: ${derived} · ${
@@ -143,7 +143,7 @@ async function main(): Promise<void> {
 main().catch((err) => {
   const message = err instanceof Error ? err.message : String(err);
   try {
-    assertNoAddressLeak(message);
+    assertAddressSafeAggregate(message);
     console.error(`[freeze-gate:status] FAILED: ${message}`);
   } catch {
     console.error("[freeze-gate:status] FAILED: (detail redacted by address-leak guard)");

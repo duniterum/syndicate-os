@@ -279,7 +279,7 @@ for (const f of zoneFiles) {
     "introduction refresh checks the PERSISTED cursor vocabulary (complete/idle, never the summary's ok)",
     "introduction refresh compares the cursor against a status literal the table never carries",
   );
-  const leakIdx = introSrc.indexOf("assertNoAddressLeak(JSON.stringify(model))");
+  const leakIdx = introSrc.indexOf("assertAddressSafeAggregate(JSON.stringify(model))");
   const setIdx = introSrc.indexOf("setLiveIntroductionModel(");
   check(
     leakIdx !== -1 && setIdx !== -1 && leakIdx < setIdx,

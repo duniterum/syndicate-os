@@ -50,7 +50,7 @@ import {
   SALE_EVENT_DEFS_BY_NAME,
   type EventParam,
 } from "../src/lib/protocol/saleEventDecoders";
-import { FULL_ADDRESS_RE, assertNoAddressLeak } from "../src/lib/protocol/rpcTransport";
+import { FULL_ADDRESS_RE, assertAddressSafeAggregate } from "../src/lib/protocol/rpcTransport";
 
 // ── tiny check harness ───────────────────────────────────────────────────────
 type Check = { name: string; ok: boolean; detail?: string };
@@ -239,7 +239,7 @@ function main(): void {
   );
   let leakThrew = false;
   try {
-    assertNoAddressLeak(JSON.stringify(safeSummary));
+    assertAddressSafeAggregate(JSON.stringify(safeSummary));
   } catch {
     leakThrew = true;
   }

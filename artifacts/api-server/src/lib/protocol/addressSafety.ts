@@ -8,7 +8,7 @@
  * Mirrors the script-side scanner in scripts/member-continuity-readmodel.ts
  * (same two patterns — kept byte-identical by the backbone guard). The looser
  * address-only scan for RPC run summaries stays in rpcTransport.ts
- * (assertNoAddressLeak); THIS scanner is the stricter one for anything the
+ * (assertAddressSafeAggregate); THIS scanner is the stricter one for anything the
  * server serializes toward a public surface.
  */
 

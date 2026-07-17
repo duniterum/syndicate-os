@@ -19,7 +19,7 @@
  */
 
 import type { RpcTransport } from "../src/lib/protocol/rpcTransport";
-import { assertNoAddressLeak } from "../src/lib/protocol/rpcTransport";
+import { assertAddressSafeAggregate } from "../src/lib/protocol/rpcTransport";
 import {
   runSaleEventScan,
   type CursorKey,
@@ -269,7 +269,7 @@ async function main(): Promise<void> {
     // 2b) Address-free run summary passes the leak guard.
     let leaked = false;
     try {
-      assertNoAddressLeak(JSON.stringify(summary));
+      assertAddressSafeAggregate(JSON.stringify(summary));
     } catch {
       leaked = true;
     }
@@ -503,7 +503,7 @@ async function main(): Promise<void> {
     check("count-mode: no rows persisted (dry-run)", u?.rowsInserted === 0);
     let leaked = false;
     try {
-      assertNoAddressLeak(JSON.stringify(summary));
+      assertAddressSafeAggregate(JSON.stringify(summary));
     } catch {
       leaked = true;
     }

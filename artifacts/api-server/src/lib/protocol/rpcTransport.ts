@@ -118,8 +118,7 @@ export function makeFetchTransport(urls: string[], timeoutMs = DEFAULT_TIMEOUT_M
 
 // ── Guard: this SPECIFIC aggregate/diagnostic output must carry no raw address ──
 // WHAT THIS ACTUALLY GUARDS (read CANON_VISIBILITY_LAW before "fixing" this):
-// The name is LEGACY and misleading — it is NOT a rule that "addresses are
-// forbidden." Per the Visibility Law:
+// NOT a rule that "addresses are forbidden." Per the Visibility Law:
 //   • The SERVER emits no MEMBER address — not out of secrecy, but because NO
 //     DIRECTORY EXISTS to emit. This guard is a belt-and-braces on aggregate/
 //     summary/diagnostic outputs (partB import, sale-index summaries, reality
@@ -130,9 +129,10 @@ export function makeFetchTransport(urls: string[], timeoutMs = DEFAULT_TIMEOUT_M
 //   • The CLIENT is OUT OF SCOPE — it reads the public chain like an explorer.
 //     A client reading a payoutWallet before signing is the Visibility Law working,
 //     NOT a violation. Do not cite this guard to block a client-side chain read.
-// (Rename tracked: SESSION_STATE — a mechanical rename across its 24 call sites
-// belongs to its own careful slice; this comment carries the doctrine meanwhile.)
-export function assertNoAddressLeak(serialized: string): void {
+// (Renamed 2026-07-17 from the legacy `assertNoAddressLeak` — that name read as
+// blanket address secrecy; this one states the real contract: the aggregate
+// serialized here is asserted address-safe. The doctrine above is the authority.)
+export function assertAddressSafeAggregate(serialized: string): void {
   if (FULL_ADDRESS_RE.test(serialized)) {
     throw new Error(
       "SAFETY VIOLATION: a raw 0x address appeared in an aggregate/diagnostic output that must be address-free; refusing to emit. (Infra addresses go through verifyLinks, not here — see CANON_VISIBILITY_LAW.)",

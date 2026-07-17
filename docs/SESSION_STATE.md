@@ -2717,9 +2717,12 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   the SERVER emits no MEMBER address (no directory exists — member-standing own-row, source = 2 booleans,
   UNCHANGED); the CLIENT reads the chain like an explorer. Corollary: what PROVES is public, what GRANTS
   ACCESS is a secret (a contract address proves; an RPC token grants access). Loaded at every boot (TIER-0).
-  FOLLOW-UP (tracked): `assertNoAddressLeak` (rpcTransport.ts + a twin in avalanche-live-read-check.ts) is
-  MISNAMED — its comment now carries the correct doctrine (infra allowed, client out of scope), but a
-  mechanical rename across its 24 call sites / 10 files is its own careful slice (do not rush; tsc-verified).
+  FOLLOW-UP — ✅ DONE (2026-07-17): `assertNoAddressLeak` → `assertAddressSafeAggregate` (the rpcTransport.ts
+  export + the self-contained twin in avalanche-live-read-check.ts). The misnomer read as blanket address
+  secrecy; the new name states the real contract (the aggregate serialized here is asserted address-safe;
+  infra addresses still ride verifyLinks, client still out of scope — doctrine unchanged, only the name).
+  Renamed across all 28 occurrences / 14 api-server code files, incl. backbone.guard's code-as-string check
+  (`assertAddressSafeAggregate(JSON.stringify(model))`); api typecheck + guards green.
 - **TIER-0 LAW (founder, 2026-07-12) — `docs/direction/CANON_INVARIANT_VS_STATE.md`.** The
   anti-drift law that ends the 6-rebuild loop: every repo statement is an **INVARIANT** (a rule
   about *how* — only the founder authors it; agents cite/obey, never invent) or a **STATE** (a

@@ -29,7 +29,7 @@ import path from "node:path";
 import { keccak256, encodePacked, getAddress, decodeAbiParameters } from "viem";
 import {
   DEFAULT_TIMEOUT_MS,
-  assertNoAddressLeak,
+  assertAddressSafeAggregate,
   makeFetchTransport,
   readEnvInt,
   resolveEndpoints,
@@ -273,7 +273,7 @@ export const INTRODUCTION_SNAPSHOT: IntroductionSnapshot = ${JSON.stringify(
 `;
 
   // The leak net inspects the CONTENT we are about to serve (fail closed).
-  assertNoAddressLeak(JSON.stringify(model), "introduction snapshot model");
+  assertAddressSafeAggregate(JSON.stringify(model), "introduction snapshot model");
 
   if (checkOnly) {
     // Compare DATA content, not the moving head: the committed asOfBlock is

@@ -277,7 +277,7 @@ export async function getLiveReadCheck(opts: {
 }
 
 // ── Runtime self-guard: refuse to emit output containing a full address ───────
-export function assertNoAddressLeak(serialized: string): void {
+export function assertAddressSafeAggregate(serialized: string): void {
   if (FULL_ADDRESS_RE.test(serialized)) {
     throw new Error(
       "SAFETY VIOLATION: a full 0x address was detected in live-read output; refusing to emit.",
@@ -325,7 +325,7 @@ async function main(): Promise<void> {
 
   const result = await getLiveReadCheck({ transport, targets });
   const serialized = JSON.stringify(result, null, 2);
-  assertNoAddressLeak(serialized); // defense-in-depth before printing
+  assertAddressSafeAggregate(serialized); // defense-in-depth before printing
   console.log(serialized);
 
   // Fail closed (non-zero exit) on unreachable RPC or wrong chain.
