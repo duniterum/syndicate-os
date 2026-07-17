@@ -242,6 +242,10 @@ const LAZY_DB_ALLOW = new Set([
   // Founder-approved introduction refresh (M0): the zone's second lazy-DB
   // file. Discipline pinned by backbone.guard.ts.
   join(SERVED_SRC, "backbone", "introductionRefresh.ts"),
+  // M-INT-1 (founder-acted 2026-07-16): the member-ledger read — the
+  // continuity spine joined to the in-memory read-models, founder_root-only,
+  // masked, audit-logged. Lazy-only; full shape pinned by guard-auth-zone.ts.
+  join(SERVED_SRC, "operator", "memberLedgerService.ts"),
 ]);
 const DYNAMIC_DB_IMPORT_RE = /import\s*\(\s*["']@workspace\/db["']\s*\)/;
 function walk(dir: string, hits: string[]): void {

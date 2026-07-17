@@ -217,10 +217,14 @@ const DB_LAZY_ALLOW = new Set([
   // indexer (scan persistence + Protocol Time inserts + activity loader),
   // lazy-only, never pool.end(). Discipline pinned by backbone.guard.ts.
   "src/backbone/backboneDb.ts",
-  // Founder-approved introduction refresh (M0): the zone's second (and last)
-  // lazy-DB file — reads the backbone's own sale lane + the Protocol Time
-  // cache to rebuild the R5 model in memory. Pinned by backbone.guard.ts.
+  // Founder-approved introduction refresh (M0): reads the backbone's own sale
+  // lane + the Protocol Time cache to rebuild the R5 model in memory. Pinned
+  // by backbone.guard.ts.
   "src/backbone/introductionRefresh.ts",
+  // M-INT-1 (founder-acted 2026-07-16): the member-ledger read — continuity
+  // spine + in-memory read-models, founder_root-only, masked, audit-logged.
+  // Lazy-only; full shape pinned by guard-auth-zone.ts.
+  "src/operator/memberLedgerService.ts",
 ]);
 const DB_STATIC_IMPORT_RE =
   /(from\s*["']@workspace\/db["'])|(import\s*["']@workspace\/db["'])|(require\s*\(\s*["']@workspace\/db["']\s*\))/;
