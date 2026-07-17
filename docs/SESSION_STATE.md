@@ -2,6 +2,28 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ ✅ CONSOLE-POLISH SEALED IN PROD (2026-07-18, Replit 5/5 at HEAD `d2fe123`).**
+> The batch (`d02af1e` + `c087829` WORK-FIRST + `39a010e` FULL-WIDTH) is live:
+> Dashboard opens on Quick actions/Needs attention with diagnostics collapsed ·
+> Operators leads with the registry, role hierarchy collapsed · work surfaces
+> full-width · the blanket [Preview] section chip dead · ROOT_RECOVERY_CEREMONY
+> in the repo. Proof: gates 100% green (auth-zone 828 · studio 3 601 PASS ·
+> build 324 twins + admin-dist 90) · DOUBLE byte-identity (entry `c3876b4c…`,
+> console chunk `0afc82bd…` prod == local) · wall 404-neutral ×4 · ledger 401
+> fail-closed · dead strings 0 / living strings ×1 each in the served chunk,
+> public entry 0 everywhere · healthz ok · feed 78/78 · engine self-healed to
+> 6/6 after one documented fail-closed cycle (RPC under catch-up scan; cursor
+> auto-repair, no intervention, no loss). **DEPLOY BACKLOG: EMPTY.**
+> **TWO RESIDUES RULED LEGITIMATE (never re-ask):** ① `DESIGN_PREVIEW` ×1 in the
+> chunk = the two honest per-panel chips (Content & Homepage + Source review
+> queue, both genuinely design-preview) sharing one minifier-deduped literal.
+> ② `max-w-6xl` ×1 = `OperatorOverview.tsx` (/studio launcher) — Claude Code
+> ruling: the FULL-WIDTH law targets DENSE WORK TABLES; a card-grid launcher has
+> none, the centered column is correct composition there. No action. (PublicHome
+> + SystemStatus uses are public pages, out of scope.) Final prod visual = the
+> founder's session at /admin. NEXT: **Q43 NOTIF-1 on the founder's GO** (own
+> deploy cycle — real migration, never batched).
+
 > **▶ 🧭 FINAL HANDOFF (2026-07-18, session end — supersedes the earlier handoff
 > block below). VERIFIED AT THIS MOMENT: tree clean · zero unpushed commits ·
 > HEAD `9bf8de7` · all 15 memory files + index present.**
