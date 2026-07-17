@@ -2,6 +2,24 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ ✅ M-INT-1 + Q40 SEALED IN PROD (2026-07-18, Replit 5/5 at HEAD `b77bec5` +
+> independently curl-verified).** THE MEMBER LEDGER IS LIVE: GET
+> /api/operator/member-ledger no-session → **401 fail-closed** (curl-proven) ·
+> the wall holds (/admin → 404 neutral) · the ledger exists ONLY in the isolated
+> console chunk (entry bundle: "Member ledger" ×0 — curl-proven) · DOUBLE
+> byte-identity (entry `e8c6bd29…` AND console chunk `1db09ad7…` prod == local)
+> · gates 100% green at the exact announced counts (the two formerly-red guards:
+> member-continuity-schema 30/30 · holder-index 67) · feed 78/78 · engine 6/6
+> head advancing · healthz ok. Q40 (live-reality-first dashboard) rode the same
+> build. The founder had ALREADY validated the composition visually (the 14-row
+> screenshot); the final prod visual = the founder's session at /admin →
+> Members. **DEPLOY BACKLOG: `d02af1e`** (the completeness-audit catches: the
+> blanket [Preview] section chip dies + the Operators panel "Live ·
+> founder-gated writes" chip + ROOT_RECOVERY_CEREMONY.md) — 🚀 BATCHABLE, rides
+> the next cycle. NEXT per the engraved order: **A1 "My Activity"** (own-row
+> receipt binder) → B1 → A2 → M-INT-2 · the Q42 wave · Q39 — on the founder's
+> word.
+
 > **▶ 🧭 THE CLEAN HANDOFF (2026-07-18 — the founder's order: "the cleanest handoff
 > possible, read back deeply, do not forget anything"). THE SESSION IN FULL:**
 >
