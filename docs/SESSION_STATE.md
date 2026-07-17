@@ -2,6 +2,38 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 2026-07-17 — MECHANICAL / DECISION-LIGHT BATCH (founder "go in the right
+> order"; 4 slices, committed + pushed to main `bcb686f`→`1746d2e`, no founder
+> content/visual gate needed — renames + doc-truth only).**
+> - **Q33 — *Teaser filename fossils truthed** (`1514bf6`): `ActivityTeaser`→
+>   `Activity`, `FireLedgerTeaser`→`FireLedger` (both LIVE surfaces; git-mv
+>   history kept). **ChronicleTeaser DELIBERATELY KEPT** — its register is empty
+>   so its dominant state renders the FUTURE teaser; the name is accurate today
+>   and renames only when the founder promotes the first Chronicle entry.
+>   Studio gate green (tsc · all guards · seo 435 · surface 296 · rewrites 52 ·
+>   build 27 shells). Founder closes the queue item.
+> - **Q22 — Compass repoint** (`014238b`): §2/§4/§6 "current state / current
+>   handoff" → the living `docs/SESSION_STATE.md` (the 2026-07-03 pointer had gone
+>   ~2 weeks stale); 2026-07-03 handoff kept as the DB/durability checkpoint.
+> - **Q8 — MASTER_BUILD_SPEC Phase-1 checkboxes reconciled** (`3902d80`): ticked
+>   ONLY the two provably-done boxes (fluid type · color→0 guard BLOCKING);
+>   LEFT OPEN the hero KPI grid (Q16) and PublicHome+TruthLabel→StatusPill
+>   (`PublicHome.tsx` still renders `<TruthLabel>` — verified, not assumed). Added
+>   the note that SESSION_STATE's "Phase 1 CLOSED" scopes to the 8 atoms — no
+>   contradiction, no false tick.
+> - **Guard rename** (`1746d2e`): `assertNoAddressLeak`→`assertAddressSafeAggregate`
+>   across 14 api-server files (30 occurrences incl. the twin + backbone.guard's
+>   code-as-string check); behavior byte-identical. api tsc 0 · backbone 151/151 ·
+>   sale-semantics 67/67.
+>
+> **DEPLOY BACKLOG (was EMPTY after AUD-ROUTE):** now **Q33 studio rename (client)
+> + the api leak-guard rename (server)** — BOTH 🚀 BATCHABLE, behavior/output-
+> identical; prod runs the current build unchanged until the next cycle carries
+> them. Q22 + Q8 = ✅ NO DEPLOY (internal docs). STILL OPEN (founder): Q31 icon
+> artwork · Q32 the 23-descriptions meta wave · Q34 ConnectModal warning (own
+> session) · Q35 the AUD-T legal set · older Q5/Q6/Q9/Q13/Q16/Q20. NEXT per the
+> acted order UNCHANGED: **/admin-in-prod → M-INT-1 → A1 → B1**.
+
 > **▶ ✅ SLICE AUD-ROUTE SEALED IN PROD (2026-07-17, Replit-verified ①–⑦
 > ALL GREEN on thesyndicate.money — the studio AND the api-server rode ONE
 > cycle: prod entry bundle `index-BfqGonuU.js` SHA-256 93c93b91…3695
