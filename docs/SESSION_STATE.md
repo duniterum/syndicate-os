@@ -2,6 +2,25 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 2026-07-17 (final) — Q36 PHASE 0 ON MAIN (`cb30915`): the founder_root SEED
+> CEREMONY script + operator:verify.** Founder GO on the go-live plan; Q36 decision =
+> the canon Founder wallet `0x88EC79AF…Dd73` (verified == FINANCIAL_TARGETS FOUNDER),
+> option A (single root; backups OFFLINE, no online rows). The script: dual-armed
+> (--write + FOUNDER_ROOT_SEED_APPROVED) · FIRST-SEED-ONLY (any existing founder_root
+> → hard refuse; rotation/recovery = §F, never a re-run) · wallet PINNED to canon,
+> never an input · one transaction (row + operator.seed-founder-root audit entry) ·
+> post-write readback. Fail-closed proven live (no DATABASE_URL → refuses at the Q37
+> gate). THE GO-LIVE CYCLE (one Replit session): deploy the wall → Q37 (drizzle push,
+> tables, verify empty) → Q36 ceremony (dry-run → armed run → disarm → verify 1 ACTIVE
+> founder_root) → founder phase-4 verification on thesyndicate.money (sign-in 0x88EC →
+> /admin reveals → badge founder_root → Operators list loads → incognito /admin = 404).
+> Q38 step-up deferred (own slice; writes are founder-only + audited meanwhile).
+> LESSONS ENGRAVED in memory: founder describes screens by FUNCTION (match behavior,
+> never literal labels; verify on the dev server before contradicting) + the TWO
+> AUTHORITIES model (wallet-signed chain acts — the founder already signed the first
+> referral source from /admin/sources, R2 2026-07-13 — vs server registry writes,
+> which are what Q36+Q37 unlock).
+
 > **▶ 2026-07-17 (end) — /ADMIN-IN-PROD: THE NEUTRAL WALL BUILT + ON MAIN
 > (`02f24d6`+`cd823d8`), fail-closed. NOT YET LIVE for operators.** The console now
 > SHIPS in prod but reveals ONLY after the server confirms an ACTIVE operator role
