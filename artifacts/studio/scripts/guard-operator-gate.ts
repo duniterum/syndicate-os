@@ -120,7 +120,7 @@ for (const p of internalPaths) {
 
 // ── 2. App.tsx: no static runtime import of console modules ─────────────────
 const staticConsoleImport =
-  /import\s+(?!type\b)[^;]*from\s+"@\/(components\/layout\/Shell|pages\/(Home|ProofStudio|OperatorPreview|OsMap)|operator\/OperatorConsole)"/;
+  /import\s+(?!type\b)[^;]*from\s+"@\/(components\/layout\/Shell|pages\/(OperatorOverview|ProofStudio|OperatorPreview|OsMap)|operator\/OperatorConsole)"/;
 check(
   !staticConsoleImport.test(app),
   "App.tsx has no static runtime import of Shell/console pages/OperatorConsole",
@@ -173,7 +173,7 @@ check(
 // ── 5. OperatorConsole is the only static importer of console modules ────────
 const consoleModulePatterns = [
   '"@/components/layout/Shell"',
-  '"@/pages/Home"',
+  '"@/pages/OperatorOverview"',
   '"@/pages/ProofStudio"',
   '"@/pages/OperatorPreview"',
   '"@/pages/OsMap"',
@@ -263,7 +263,7 @@ const gatedFiles = new Set(
     "operator/protocolRealityEvidence.ts",
     "operator/LiveEvidencePanel.tsx",
     "components/layout/Shell.tsx",
-    "pages/Home.tsx",
+    "pages/OperatorOverview.tsx",
     "pages/ProofStudio.tsx",
     "pages/OperatorPreview.tsx",
     "pages/OsMap.tsx",

@@ -37,6 +37,19 @@ export function ThemeProvider({
 
     root.classList.remove("light", "dark");
     root.classList.add(theme);
+
+    // AUD-ROUTE (2026-07-17): keep the browser-chrome color honest with the
+    // in-app theme (the static template ships the default-dark ink; the app's
+    // theme is a class toggle, not an OS media query, so only this effect
+    // knows the real state). The value is READ from the live --background
+    // token after the class flip — one color source, zero raw literals.
+    const themeColor = window.document.querySelector<HTMLMetaElement>(
+      'meta[name="theme-color"]',
+    );
+    if (themeColor) {
+      const bg = getComputedStyle(root).getPropertyValue("--background").trim();
+      if (bg) themeColor.setAttribute("content", `hsl(${bg})`);
+    }
   }, [theme]);
 
   const value = {

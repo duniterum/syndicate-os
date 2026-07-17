@@ -160,7 +160,10 @@ function Router() {
       <PublicRoute path="/archive">
         <Archive />
       </PublicRoute>
-      {/* §11 slot 2c designed teasers — honest PENDING/noindex promises. */}
+      {/* §11 slot 2c, GROWN UP (AUD-ROUTE 2026-07-17): born as noindex
+          teasers, LIVE since ACT-1/CHR-1/the heartbeat — the trio serves the
+          real indexed record (INDEX + sitemap; the *Teaser filenames are the
+          surviving fossil, queued for their own rename). */}
       <PublicRoute path="/activity">
         <ActivityTeaser />
       </PublicRoute>

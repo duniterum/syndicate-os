@@ -4,15 +4,24 @@
 // route registry (the single source of truth), and harmonizes document.title,
 // description, robots, canonical, and OG/Twitter tags on every navigation.
 //
-// HONEST SCOPE: this is client-side/runtime metadata only. It improves browser
-// state and JS-executing crawlers; static social/AI preview bots that do not run
-// JS may still read the base index.html until SSR/prerender lands later. This
-// component renders nothing.
+// HONEST SCOPE (truthed by AUD-ROUTE, 2026-07-17): this is the RUNTIME half of
+// a two-half system — every build also bakes the same registry head into flat
+// per-route shells (scripts/prerender-routes.ts), so non-JS bots read real
+// metadata; this manager keeps the head correct across CLIENT navigations.
+// This component renders nothing.
 
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { resolveRouteHead } from "@/lib/seo-route-registry";
-import { serializeOrganizationJsonLd, ORG_JSONLD_ID } from "@/lib/seo-jsonld";
+import { OG_IMAGE_ALT, OG_LOCALE, OG_SITE_NAME, X_HANDLE } from "@/config/brand";
+import {
+  serializeOrganizationJsonLd,
+  serializeWebSiteJsonLd,
+  serializeBreadcrumbJsonLd,
+  ORG_JSONLD_ID,
+  WEBSITE_JSONLD_ID,
+  BREADCRUMB_JSONLD_ID,
+} from "@/lib/seo-jsonld";
 
 /** Create-or-update a <meta name="..."> tag. Tags we create are marked managed. */
 function upsertMetaByName(name: string, content: string): void {
@@ -68,8 +77,15 @@ function setCanonical(href: string | null): void {
  * rather than creating a duplicate.
  */
 function setOrganizationJsonLd(active: boolean): void {
-  const existing = document.getElementById(ORG_JSONLD_ID);
-  if (!active) {
+  setKeyedJsonLd(ORG_JSONLD_ID, active ? serializeOrganizationJsonLd() : null);
+}
+
+/** Upsert (or remove, when payload is null) a keyed JSON-LD script tag —
+ * generalized from the ORG pattern for the AUD-ROUTE WebSite + Breadcrumb
+ * blocks; the prerendered node (matched by id) is reused, never duplicated. */
+function setKeyedJsonLd(id: string, payload: string | null): void {
+  const existing = document.getElementById(id);
+  if (payload === null) {
     if (existing) existing.remove();
     return;
   }
@@ -77,11 +93,11 @@ function setOrganizationJsonLd(active: boolean): void {
   if (!el) {
     el = document.createElement("script");
     el.type = "application/ld+json";
-    el.id = ORG_JSONLD_ID;
+    el.id = id;
     el.setAttribute("data-seo-managed", "true");
     document.head.appendChild(el);
   }
-  el.textContent = serializeOrganizationJsonLd();
+  el.textContent = payload;
 }
 
 export function SeoHeadManager(): null {
@@ -99,13 +115,23 @@ export function SeoHeadManager(): null {
     upsertMetaByProperty("og:description", head.description);
     upsertMetaByProperty("og:url", head.ogUrl);
     upsertMetaByProperty("og:image", head.ogImage);
+    // AUD-ROUTE: attribution + a11y of every social card (one brand source).
+    upsertMetaByProperty("og:site_name", OG_SITE_NAME);
+    upsertMetaByProperty("og:locale", OG_LOCALE);
+    upsertMetaByProperty("og:image:alt", OG_IMAGE_ALT);
 
     upsertMetaByName("twitter:card", head.twitterCard);
+    upsertMetaByName("twitter:site", X_HANDLE);
     upsertMetaByName("twitter:title", head.title);
     upsertMetaByName("twitter:description", head.description);
     upsertMetaByName("twitter:image", head.ogImage);
 
     setOrganizationJsonLd(location === "/");
+    setKeyedJsonLd(
+      WEBSITE_JSONLD_ID,
+      location === "/" ? serializeWebSiteJsonLd() : null,
+    );
+    setKeyedJsonLd(BREADCRUMB_JSONLD_ID, serializeBreadcrumbJsonLd(location));
   }, [location]);
 
   return null;

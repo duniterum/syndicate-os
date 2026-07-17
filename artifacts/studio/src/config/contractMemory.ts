@@ -143,7 +143,10 @@ export const contractMemory: ContractMemoryEntry[] = [
     category: "archive",
     domain: "ARCHIVE_NFT_MEMORY",
     lifecycle: "READ_ONLY_PROOF",
-    note: "Archive contract live on-chain; some artifact classes are open, others gated. Mint counts and prices are read live from the contract.",
+    // AUD-ROUTE (2026-07-17): "counts and prices are read live" DIED here —
+    // the pages rendering this note perform no live reads; the honest truth
+    // is that every mint lands on the indexed public record.
+    note: "Archive contract live on-chain; some artifact classes are open, others gated. Every mint lands as a public line on the indexed record.",
   },
   // --- Identity ------------------------------------------------------------
   {

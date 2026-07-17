@@ -2,6 +2,94 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🧭 SLICE AUD-ROUTE ✅ BUILT + FOUNDER GO AT THE PREVIEW GATE
+> (2026-07-17, COMMITTED + PUSHED; the Replit deploy block HANDED —
+> AWAITING THE REPLIT REPORT. NEXT SESSION BOOTS ON "hi": the founder
+> pastes Replit's report → verify it against the expectations below →
+> engrave the prod seal → then the acted order resumes: /admin-in-prod →
+> M-INT-1 → A1 → B1. REPLIT VERIFICATION EXPECTATIONS: ① new entry bundle
+> byte-identical; ② footer serves the six new doors (Activity · Fire
+> Ledger · Liquidity · Chronicle · Wallet · Toolkit) and the More menu's
+> Chronicle → /chronicle; ③ the dead claim at 0 in the served bundle
+> ("read live from the contract" · "artifact reads live"); ④ the
+> source-attribution.html shell carries rel=canonical →
+> https://thesyndicate.money/referral while staying noindex,follow and
+> OUT of sitemap.xml; ⑤ og:site_name + twitter:site + theme-color in the
+> shells; ⑥ /api responses carry X-Robots-Tag: noindex, nofollow — the
+> API SERVER MUST REDEPLOY TOO (one additive header in app.ts); ⑦ feed
+> byte-identical, engine 6/6, healthz. DEPLOY BACKLOG UNTIL THE REPORT:
+> this slice only.): ROUTING + SEO RATIONALIZATION — the audit's lens 6+9 layer,
+> RECONCILED against HEAD first (7-cluster fleet: several findings already
+> dead via AUD-TRUTH/-2; the residue mapped precisely).** THE KILLS:
+> ① THE ARCHIVE READ-LIVE CLAIM CLASS dead at NINE sites (the adversarial
+> pass caught my first sweep missing the four most visible: /proof's facet
+> card — header-primary! — /status's surface-map summary, routeMemory,
+> truthStatus comments; plus contractMemory note rendered on /archive +
+> /contracts, the Z8 door note, modules + moduleRegistry + the /archive SEO
+> description): every site now speaks the truth — mints are OPEN and every
+> mint rides the INDEXED RECORD; no page claims live reads it does not
+> perform. ② THE CHROME WAYFINDING LIE dead: header "Chronicle" finally
+> points AT /chronicle (it navigated to /archive); the SIX chrome-invisible
+> live routes joined modules.ts + the footer (Protocol += Activity · Fire
+> Ledger · Liquidity; Learn += Chronicle; Membership += Wallet · Toolkit;
+> Liquidity deliberately NOT Membership — flow separation); nav.header
+> flags corrected to MATCH headerSpec (contracts/member/recognition true;
+> learning/home false; studio footer-flag lie dead); surfaceClassification
+> carries the six moduleIds (the /status map speaks human labels) + its
+> teaser fossils truthed. STRUCTURAL CURE: guard-route-nav-drift grew THE
+> REVERSE CHECK (every PUBLIC/PENDING route must have a module — the
+> six-invisible-routes ABSENCE class can never silently return) + all its
+> textual scans now comment-stripped (the sibling-guard house pattern).
+> ③ THE ALIAS CANONICAL implemented as documented: getCanonicalUrl emits
+> the REDIRECT class's cross-canonical (/source-attribution →
+> https://thesyndicate.money/referral, noindex,follow kept, out of
+> sitemap); check-seo-registry grew the three-way branch (REDIRECT must
+> cross-canonicalize into a registered INDEX target; all other non-INDEX
+> stay null) — dist-proven in the alias shell. ④ FOSSILS truthed: registry
+> banner (the rotted "14 routes" count REMOVED — parity is guard-enforced,
+> never hand-counted), teaser comments (registry + App.tsx + surface-
+> classification), catch-all soft-404 note, prerender-"not added yet"
+> claims (registry + SeoHeadManager), index.html dead-era description →
+> mirrors the registry "/" entry VERBATIM (parity now guard-checked).
+> ⑤ SOCIAL/MACHINE LAYER: og:site_name · og:locale · og:image:alt ·
+> twitter:site (@TheSyndicateOne) in all three head layers (template ·
+> prerender · runtime; constants in brand.ts — one source); WebSite JSON-LD
+> (homepage, NO SearchAction — the site has no search endpoint, declaring
+> one would be invented) + BreadcrumbList JSON-LD (INDEX routes off-home,
+> projected from the same registry breadcrumb the visible bar uses) baked +
+> runtime-mirrored; theme-color meta synced live from the --background
+> token (zero raw color — the no-raw-color guard caught my first hex
+> attempt, as designed); /api serves X-Robots-Tag noindex,nofollow
+> (deliberately NO robots Disallow — a crawl block would stop the header
+> being read). ⑥ MISC: the 404 page's "Take your seat" now sources
+> sharedCopy (→/join — the money path from the 404 can never drift);
+> OperatorConsole's source console classifies against /os-source (the
+> naming trap's FIRST VICTIM, caught by the reconcile fleet); Home.tsx →
+> OperatorOverview.tsx (the founder-named Home-vs-PublicHome hazard dead;
+> guard literals + replit.md updated — the adversarial pass caught the
+> third literal at guard-operator-gate:123); routeMemory's two stale
+> mappings truthed (dormant config). THE PRE-COMMIT ADVERSARIAL PASS: 11
+> CONFIRMED all fixed · 1 refuted — headline: my own class-kill was
+> INCOMPLETE (the /proof + /status renders survived it) and my slice
+> summary CLAIMED an App.tsx edit never made; both corrected, the lesson
+> recorded. DEFERRED (named, not silent): the 23-descriptions >160-char
+> meta wave + guard ceiling (founder reads every rewrite on screen — its
+> own copy slice) · the icon-asset micro-slice (apple-touch/PNG/manifest —
+> BLOCKED on a founder artwork decision: today's favicon.svg is an
+> OFF-BRAND cyan shield, not the gold mark; no local rasterizer exists —
+> its own micro-slice) · the *Teaser filename renames. Gate: repo tsc 0 ·
+> ALL studio guards exit 0 (drift 210 w/ reverse check · member-menu 34 ·
+> member-home 30 · operator-gate green at the rename) · seo:check 435 ·
+> surface:audit 296 · rewrites 52 · build + 27 shells · dist post-
+> conditions proven (cross-canonical · WebSite/Breadcrumb · og:site_name ·
+> theme-color · honest /archive description) · rig-verified (footer 6 new
+> links + /studio dead-link absent · More dropdown Chronicle→/chronicle ·
+> 404 CTA →/join · /proof + /status honest lines · API header live ·
+> theme-color hsl token). **DEPLOY: 🚀 BATCHABLE (client + prerendered
+> shells + ONE additive api header — fail-closed; prod keeps the old
+> chrome until the next cycle). NEXT after founder GO: /admin-in-prod →
+> M-INT-1 → A1 → B1.**
+
 > **▶ ✅ ② MENU + ③ HOME SEALED IN PROD (2026-07-17, ONE Replit cycle as
 > ordered — the batched deploy): prod entry bundle `index-8lM7E_3t.js`
 > SHA-256 1751a00b…90f0 byte-identical to Replit's local rebuild PLUS the

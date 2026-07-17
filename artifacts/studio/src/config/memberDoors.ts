@@ -71,7 +71,9 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
     doors: [
       { label: "Chronicle", icon: "book-open", href: "/chronicle", note: "The solemn record — entry one: the duplicate seat." },
       { label: "Fire Ledger", icon: "flame", href: "/fire-ledger", note: "Supply retired in public — live total + the numbered Proof of Burn record." },
-      { label: "Archive", icon: "archive", href: "/archive", note: "Artifacts as protocol memory — minted on-chain, counts read live." },
+      // AUD-ROUTE (2026-07-17): "counts read live" DIED — /archive renders
+      // static memory today; the mints themselves ride the indexed record.
+      { label: "Archive", icon: "archive", href: "/archive", note: "Artifacts as protocol memory — minted on-chain, every mint on the public record." },
       { label: "Recognition", icon: "award", href: "/recognition", note: "How the protocol recognizes members." },
       { label: "Protocol graph", icon: "map", href: "/map", note: "The protocol, drawn — every surface on one map." },
     ],

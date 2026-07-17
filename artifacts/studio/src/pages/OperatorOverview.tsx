@@ -12,7 +12,11 @@ import {
   surfaceAudienceText,
 } from "@/config/surfaceClassification";
 
-export default function Home() {
+// pages/OperatorOverview.tsx — the OPERATOR console overview served at
+// /studio (AUD-ROUTE rename, 2026-07-17: this file was named Home.tsx while
+// the public "/" lives in PublicHome.tsx — the audit's named wrong-file edit
+// hazard; the id inversion in modules.ts is documented there).
+export default function OperatorOverview() {
   const operator = consoleSurfaces().filter((s) => s.routePath !== "/studio");
   const publics = publicSurfaces();
 

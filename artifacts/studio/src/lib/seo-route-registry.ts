@@ -8,9 +8,10 @@
 // tags per route. Helpers below (getRobotsDirective, getCanonicalUrl,
 // getOgImageUrl, toAbsoluteUrl, matchRoute) are the contract for that manager.
 //
-// This is still a client-rendered SPA — runtime metadata improves browser and
-// JS-executing-crawler state, but static social/AI preview bots that do not run
-// JS may still see the base index.html until SSR/prerender is added later.
+// Non-JS bots are served too (AUD-ROUTE truth, 2026-07-17): every build runs
+// scripts/prerender-routes.ts, which bakes this registry's per-route head
+// (title/meta/canonical/JSON-LD) into flat static shells — static social/AI
+// preview bots read the prerendered shell, never a bare index.html.
 //
 // Keep this file dependency-free (no imports) so the Node scripts in `scripts/`
 // can load it directly via Node's native TypeScript support.
@@ -79,7 +80,9 @@ export const DEFAULT_OG_IMAGE = "/opengraph.jpg";
 export const TWITTER_CARD_TYPE = "summary_large_image";
 
 /**
- * Every actual route in `src/App.tsx` (14 explicit routes + the catch-all).
+ * Every actual route in `src/App.tsx` plus the catch-all — the COUNT is never
+ * written here (it rotted once: "14 routes" survived to a 42-route reality);
+ * router↔registry parity is enforced by scripts/check-seo-registry.ts.
  * Routes named only in founder memory but NOT present in the app are
  * intentionally omitted (documented in the slice report, never invented here).
  */
@@ -489,7 +492,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: false,
     title: "Archive & Chronicle",
     description:
-      "The Syndicate's archive — protocol memory minted on-chain. Artifacts are live on Avalanche today, mint counts and prices read from the chain; the full museum surface is still being built.",
+      "The Syndicate's archive — protocol memory minted on-chain. Artifacts are live on Avalanche today and every mint lands on the public record; the full museum surface is still being built.",
     canonicalPath: null,
     ogImage: DEFAULT_OG_IMAGE,
     ownerSurface: "archive",
@@ -497,9 +500,9 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     proofRoute: "/status",
     notes: "ARCHIVE_READS_NOT_WIRED. NOINDEX until archive reads are wired.",
   },
-  // §11 slot 2c — designed teasers (Member Home arc, 2026-07-14): honest
-  // what-this-will-be pages, NOINDEX until each goes live. A teaser is a
-  // public promise with a posture badge — never a fake surface.
+  // §11 slot 2c, GROWN UP (born 2026-07-14 as noindex teasers; LIVE since
+  // ACT-1/CHR-1/the heartbeat): /activity, /chronicle and /fire-ledger serve
+  // the real indexed record today — INDEX + sitemap, no posture badge.
   {
     path: "/activity",
     routeType: "PUBLIC",
@@ -789,7 +792,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     ownerSurface: "utility",
     primaryIntent: "utility",
     notes:
-      "Catch-all (wouter pathless <Route> → not-found.tsx). Currently returns HTTP 200 (soft-404); true 404 + noindex deferred to Slice 2.18E.",
+      "Catch-all (wouter pathless <Route> → not-found.tsx). The REAL 404 ships: prerender writes a branded noindex 404.html and the serving layer returns it with true HTTP 404 for unmatched paths (the old soft-404 note rotted here while the fix shipped — AUD-ROUTE truthed it).",
   },
 ];
 
@@ -841,12 +844,18 @@ export function toAbsoluteUrl(pathname: string): string {
 }
 
 /**
- * Absolute self-canonical URL for an indexable route, or null when the route
- * must not advertise a canonical (non-INDEX / no canonicalPath). Returning null
- * tells the head manager to REMOVE any stale canonical left by a prior route.
+ * Canonical URL by INDEX-STATUS CLASS (AUD-ROUTE 2026-07-17 — the class rule):
+ *   INDEX    → self-canonical at its own canonicalPath.
+ *   REDIRECT → CROSS-canonical at its target's canonicalPath — the alias
+ *              consolidation the entry itself documents (noindex,follow +
+ *              cross-canonical → Google consolidates). Before this, the alias
+ *              promised the canonical in its note but never emitted it.
+ *   all else → null (a noindex route must not advertise a canonical);
+ *              null tells the head manager to REMOVE any stale canonical.
  */
 export function getCanonicalUrl(entry: SeoRouteEntry): string | null {
-  if (entry.indexStatus !== "INDEX" || entry.canonicalPath === null) return null;
+  if (entry.canonicalPath === null) return null;
+  if (entry.indexStatus !== "INDEX" && entry.indexStatus !== "REDIRECT") return null;
   return toAbsoluteUrl(entry.canonicalPath);
 }
 

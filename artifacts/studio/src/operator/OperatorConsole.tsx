@@ -10,7 +10,7 @@
 
 import { useLocation } from "wouter";
 import { Shell } from "@/components/layout/Shell";
-import Home from "@/pages/Home";
+import OperatorOverview from "@/pages/OperatorOverview";
 import ProofStudio from "@/pages/ProofStudio";
 import OperatorPreview from "@/pages/OperatorPreview";
 import OsMap from "@/pages/OsMap";
@@ -29,7 +29,11 @@ const pageRoutePath: Record<OperatorConsolePage, string> = {
   studio: "/studio",
   "proof-studio": "/proof-studio",
   founder: "/founder",
-  source: "/source",
+  // AUD-ROUTE (2026-07-17): the operator source console mounts at /os-source
+  // (App.tsx) — "/source" here made the AccessGate classify against the
+  // PUBLIC link-builder route (the source-family naming trap's first victim;
+  // harmless today, live the day any surface flips to GATED).
+  source: "/os-source",
   "os-map": "/os-map",
   admin: "/admin",
 };
@@ -54,7 +58,7 @@ function renderPage(page: OperatorConsolePage) {
     case "studio":
       return (
         <Shell>
-          <Home />
+          <OperatorOverview />
         </Shell>
       );
     case "proof-studio":

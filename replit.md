@@ -26,7 +26,7 @@ A premium, proof-first web foundation for The Syndicate — a membership/recogni
   - `src/components/layout/PublicLayout.tsx` — public marketing chrome (header/nav/footer)
   - `src/components/layout/Shell.tsx` — console sidebar shell + `DataStatusNote`
   - `src/pages/PublicHome.tsx` — public homepage at `/`
-  - `src/pages/Home.tsx` — console overview at `/studio`
+  - `src/pages/OperatorOverview.tsx` — console overview at `/studio` (renamed from Home.tsx, AUD-ROUTE 2026-07-17 — the public "/" lives in PublicHome.tsx)
   - `src/components/TruthLabel.tsx` — the truth-label chip system (source of truth for honesty labels)
   - `src/components/ThemeProvider.tsx` / `ThemeToggle.tsx` — light/dark theming (default dark, persisted to `localStorage`)
   - `src/index.css` — theme tokens: `:root` = light, `.dark` = dark

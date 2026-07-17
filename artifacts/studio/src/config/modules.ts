@@ -21,6 +21,10 @@ import {
   LayoutDashboard,
   Map as MapIcon,
   AlertTriangle,
+  Droplets,
+  Flame,
+  Wallet,
+  Wrench,
   type LucideIcon,
 } from "lucide-react";
 import type { TruthStatus } from "./truthStatus";
@@ -54,10 +58,15 @@ export interface SyndicateModule {
   flag?: FeatureFlag;
 }
 
-// One module list, two audiences. `nav` controls placement:
-//   - header  → public marketing header (kept concise: Home / Proof / Learn / Status)
+// One module list, two audiences. `nav` documents placement INTENT:
+//   - header  → the module sits in the public header (the ORDER, LABEL and
+//     zone are curated by navigation.ts headerSpec; agreement between the
+//     flag and the spec is BY CONVENTION, reviewed at the gate — no guard
+//     enforces it today)
 //   - sidebar → operator console (Studio OS, Proof Studio, Source, Founder)
-//   - footer  → public footer (grouped in navigation.ts)
+//   - footer  → public footer (grouped in navigation.ts footerGroupSpec)
+// AUD-ROUTE (2026-07-17): the header flags were dead-and-contradictory (four
+// rendered modules carried header:false) — the flags now MATCH headerSpec.
 export const modules = [
   {
     id: "home",
@@ -70,7 +79,8 @@ export const modules = [
     phase: "live",
     description: "Public front door for The Syndicate.",
     dependencies: [],
-    nav: { header: true, sidebar: false, footer: false },
+    // AUD-ROUTE: the wordmark serves home — no headerSpec item, flag truthful.
+    nav: { header: false, sidebar: false, footer: false },
     icon: Home,
     flag: "publicHomepage",
   },
@@ -86,7 +96,9 @@ export const modules = [
     phase: "live",
     description: "Operator console overview for the proof foundation.",
     dependencies: [],
-    nav: { header: false, sidebar: true, footer: true },
+    // AUD-ROUTE: footer flag was a dead lie since AUD-TRUTH-2 killed the
+    // Console footer group (PUBLIC-SEES-ADMIN-NEVER) — flag now truthful.
+    nav: { header: false, sidebar: true, footer: false },
     icon: TerminalSquare,
     flag: "studioShell",
   },
@@ -173,7 +185,7 @@ export const modules = [
     description:
       "Member Home: connect your wallet and read your own record live — seat, receipt, referral standing. Only ever your own row; nothing is written from this app.",
     dependencies: [],
-    nav: { header: false, sidebar: false, footer: true },
+    nav: { header: true, sidebar: false, footer: true },
     icon: Users,
     flag: "membershipLive",
   },
@@ -256,7 +268,7 @@ export const modules = [
     truthStatus: surfaceStatus.recognition,
     description: "The recognition model, explained as a future concept — never a financial reward.",
     dependencies: [],
-    nav: { header: false, sidebar: false, footer: true },
+    nav: { header: true, sidebar: false, footer: true },
     icon: Award,
     flag: "recognitionLive",
   },
@@ -378,7 +390,9 @@ export const modules = [
     phase: "live",
     description: "Plain-language education about the protocol and how to read this foundation.",
     dependencies: [],
-    nav: { header: true, sidebar: false, footer: true },
+    // AUD-ROUTE: header flag was TRUE while headerSpec never rendered it —
+    // the flag now speaks the truth (footer Learn group only).
+    nav: { header: false, sidebar: false, footer: true },
     icon: Library,
   },
   {
@@ -410,7 +424,7 @@ export const modules = [
     // the live read-only reality panel; a live surface renders NO TruthLabel.
     description: "Read-only contract & economy memory — roles, structure, and the live read-only reality panel.",
     dependencies: [],
-    nav: { header: false, sidebar: false, footer: true },
+    nav: { header: true, sidebar: false, footer: true },
     icon: FileText,
   },
   {
@@ -471,12 +485,105 @@ export const modules = [
     live: false,
     phase: "live",
     // S7 truth sweep (2026-07-16): the "not live yet / future" posture DIED —
-    // artifacts mint on-chain today (17 minted, counts and prices read live);
-    // the per-wallet holdings view is the honest remaining gap.
-    description: "Archive & chronicle — protocol memory; artifacts minted on-chain, counts and prices read live.",
+    // artifacts mint on-chain today. AUD-ROUTE (2026-07-17): the "counts and
+    // prices read live" claim DIED too — the /archive page renders static
+    // memory; every mint rides the indexed record. The museum surface with
+    // page-level live reads is the honest remaining gap.
+    description: "Archive & chronicle — protocol memory; artifacts minted on-chain, every mint on the indexed record.",
     dependencies: [],
     nav: { header: false, sidebar: false, footer: true },
     icon: Archive,
+  },
+  // ── AUD-ROUTE (2026-07-17): the six live public routes that were INVISIBLE
+  // in all public chrome — mounted in App.tsx and registered in the SEO
+  // registry since their slices, but absent here, so navigation.ts could
+  // never surface them ("the single route source of truth" was false).
+  // Placement: footer groups per each page's nature; /chronicle also takes
+  // the header "Chronicle" seat that /archive was squatting (the label
+  // finally delivers the page it promises).
+  {
+    id: "chronicle",
+    label: "Chronicle",
+    path: "/chronicle",
+    zone: "public",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description: "The solemn record — founder-promoted turning points, each anchored into the public record.",
+    dependencies: [],
+    nav: { header: true, sidebar: false, footer: true },
+    icon: BookOpen,
+  },
+  {
+    id: "activity",
+    label: "Activity",
+    path: "/activity",
+    zone: "public",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description: "The public heartbeat — the complete indexed history, every line a receipt-backed sentence with its verify link.",
+    dependencies: [],
+    nav: { header: false, sidebar: false, footer: true },
+    icon: Activity,
+  },
+  {
+    id: "fire-ledger",
+    label: "Fire Ledger",
+    path: "/fire-ledger",
+    zone: "public",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description: "Every burn, numbered — the live total of SYN retired and the complete Proof of Burn record.",
+    dependencies: [],
+    nav: { header: false, sidebar: false, footer: true },
+    icon: Flame,
+  },
+  {
+    id: "wallet",
+    label: "Wallet",
+    path: "/wallet",
+    zone: "member",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description: "Your own balances and approvals, read live — revoke is your own signed act.",
+    dependencies: [],
+    nav: { header: false, sidebar: false, footer: true },
+    icon: Wallet,
+  },
+  {
+    id: "toolkit",
+    label: "Toolkit",
+    path: "/toolkit",
+    zone: "member",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description: "Every member action in one place — locks visible.",
+    dependencies: [],
+    nav: { header: false, sidebar: false, footer: true },
+    icon: Wrench,
+  },
+  {
+    id: "liquidity",
+    label: "Liquidity",
+    path: "/liquidity",
+    zone: "public",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description: "The SYN/USDC pool — why it exists, read live, LP-side actions. Never a Join surface (flow separation).",
+    dependencies: [],
+    nav: { header: false, sidebar: false, footer: true },
+    icon: Droplets,
   },
 ] as const satisfies readonly SyndicateModule[];
 

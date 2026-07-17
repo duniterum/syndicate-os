@@ -225,13 +225,18 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     audience: "PUBLIC",
     surface: "PUBLIC_VISITOR",
     layout: "public",
-    summary: "Archive & chronicle memory; artifact reads live.",
+    // AUD-ROUTE (2026-07-17): "artifact reads live" DIED — the page renders
+    // static memory; every mint rides the indexed record.
+    summary: "Archive & chronicle memory; every mint on the indexed record.",
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },
   // ARC L-1 — the liquidity surface (LP-side flow only, public shell).
+  // AUD-ROUTE (2026-07-17): the six chrome-visible routes carry their
+  // moduleId so the public surface map speaks their human labels.
   {
     routePath: "/liquidity",
+    moduleId: "liquidity",
     audience: "PUBLIC",
     surface: "PUBLIC_VISITOR",
     layout: "public",
@@ -242,6 +247,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
   // ARC SLICE D member doors — flat routes, member shell chosen by the page.
   {
     routePath: "/wallet",
+    moduleId: "wallet",
     audience: "PUBLIC",
     surface: "PUBLIC_VISITOR",
     layout: "public",
@@ -251,6 +257,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
   },
   {
     routePath: "/toolkit",
+    moduleId: "toolkit",
     audience: "PUBLIC",
     surface: "PUBLIC_VISITOR",
     layout: "public",
@@ -258,9 +265,11 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },
-  // §11 slot 2c designed teasers — honest PENDING promises, public shell.
+  // §11 slot 2c, GROWN UP (AUD-ROUTE 2026-07-17): the born-as-teasers trio
+  // serves the real indexed record today — live surfaces, public shell.
   {
     routePath: "/activity",
+    moduleId: "activity",
     audience: "PUBLIC",
     surface: "PUBLIC_VISITOR",
     layout: "public",
@@ -270,15 +279,18 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
   },
   {
     routePath: "/chronicle",
+    moduleId: "chronicle",
     audience: "PUBLIC",
     surface: "PUBLIC_VISITOR",
     layout: "public",
-    summary: "Chronicle teaser — the solemn record; promotion is a human act.",
+    // AUD-ROUTE: "teaser" DIED — the register is open and serves its entries.
+    summary: "The solemn record, open — founder-promoted entries; promotion is a human act.",
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },
   {
     routePath: "/fire-ledger",
+    moduleId: "fire-ledger",
     audience: "PUBLIC",
     surface: "PUBLIC_VISITOR",
     layout: "public",

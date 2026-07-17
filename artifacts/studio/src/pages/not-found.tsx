@@ -2,12 +2,16 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Compass, Home, Activity, ShieldCheck, ArrowRight } from "lucide-react";
+import { ctas } from "@/config/sharedCopy";
 
 const recoveryLinks = [
   { href: "/", label: "Back to home", icon: Home, primary: true },
   { href: "/status", label: "View status", icon: Activity, primary: false },
   { href: "/proof", label: "Verify proof", icon: ShieldCheck, primary: false },
-  { href: "/member", label: "Take your seat", icon: ArrowRight, primary: false },
+  // AUD-ROUTE (2026-07-17): this buy-intent CTA pointed at /member while
+  // canon binds the label to /join — sourced from sharedCopy so the money
+  // path from the 404 page can never drift again.
+  { href: ctas.requestSeat.href, label: ctas.requestSeat.label, icon: ArrowRight, primary: false },
 ];
 
 export default function NotFound() {

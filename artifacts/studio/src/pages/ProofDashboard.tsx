@@ -50,7 +50,9 @@ const facets: ProofFacet[] = [
   {
     icon: Library,
     title: "Archive memory",
-    body: "Artifacts minted on-chain as protocol memory — every mint on the public record, counts and prices read live from the contract.",
+    // AUD-ROUTE (2026-07-17): "counts and prices read live" DIED across the
+    // class — /archive renders static memory; the mints ride the indexed record.
+    body: "Artifacts minted on-chain as protocol memory — every mint a public line on the indexed record.",
     href: "/archive",
     door: "The Archive",
   },

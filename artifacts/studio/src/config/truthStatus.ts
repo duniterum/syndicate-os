@@ -44,10 +44,12 @@ export type SurfaceId =
 // The Slice-2.7-era "… NOT_WIRED" photographs below are HISTORY for four
 // keys: membership (Holder Index + standing readback LIVE), proofOfFire
 // (the event backbone serves the complete heartbeat), sourceAttribution
-// (program ACTIVE + R5 introduction indexer LIVE), archive (mints/counts
-// read live). Every consumer that rendered those four as "Not live yet"
-// was retired in the sweep — a LIVE surface renders NO TruthLabel (the
-// /join precedent). The keys stay for type totality only; do NOT wire a
+// (program ACTIVE + R5 introduction indexer LIVE), archive (minting is
+// OPEN and every mint rides the indexed record — the /archive PAGE itself
+// still renders static memory; AUD-ROUTE 2026-07-17 truthed this line).
+// Every consumer that rendered those four as "Not live yet" was retired
+// in the sweep — a LIVE surface renders NO TruthLabel (the /join
+// precedent). The keys stay for type totality only; do NOT wire a
 // new consumer to them without re-deriving today's truth first.
 // Still honestly not-live: recognition (the standing model — the capital
 // axis lives on /activity, the full model doesn't), founderControls,
@@ -57,7 +59,7 @@ export const surfaceStatus: Record<SurfaceId, TruthStatus> = {
   membership: "SYNDICATE_INDEXER_NOT_WIRED", // RETIRED FROM RENDER — live since 2026-07-11
   proofOfFire: "EVENT_ADAPTER_NOT_WIRED", // RETIRED FROM RENDER — heartbeat live
   sourceAttribution: "SOURCE_INDEXER_NOT_WIRED", // RETIRED FROM RENDER — R5 live
-  archive: "ARCHIVE_READS_NOT_WIRED", // RETIRED FROM RENDER — reads live
+  archive: "ARCHIVE_READS_NOT_WIRED", // RETIRED FROM RENDER — minting open, mints ride the indexed record
   recognition: "FUTURE_MODULE",
   proofEventParser: "EVENT_ADAPTER_NOT_WIRED",
   founderControls: "AWAITING_FOUNDER_APPROVAL",

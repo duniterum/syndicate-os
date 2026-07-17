@@ -37,12 +37,22 @@ import {
 } from "../src/lib/seo-route-registry.ts";
 import {
   serializeOrganizationJsonLd,
+  serializeWebSiteJsonLd,
+  serializeBreadcrumbJsonLd,
   ORG_JSONLD_ID,
+  WEBSITE_JSONLD_ID,
+  BREADCRUMB_JSONLD_ID,
 } from "../src/lib/seo-jsonld.ts";
 import {
   serializeFaqJsonLd,
   FAQ_JSONLD_ID,
 } from "../src/lib/seo-faq-jsonld.ts";
+import {
+  OG_IMAGE_ALT,
+  OG_LOCALE,
+  OG_SITE_NAME,
+  X_HANDLE,
+} from "../src/config/brand.ts";
 
 // --- HTML head helpers. Escape for the two contexts we write into. -------------
 function attr(value: string): string {
@@ -84,10 +94,14 @@ function setKeyedJsonLd(html: string, id: string, json: string | null): string {
   const tag = `<script type="application/ld+json" id="${id}" data-seo-managed="true">${safe}</script>`;
   return stripped.replace(/<\/head>/, `    ${tag}\n  </head>`);
 }
-/** Route-specific JSON-LD: Organization on the homepage, FAQPage on /faq. */
+/** Route-specific JSON-LD: Organization + WebSite on the homepage, FAQPage on
+ * /faq, BreadcrumbList on every INDEX route off-home (AUD-ROUTE — the builder
+ * itself returns null for everything else; one policy, one source). */
 function setRouteJsonLd(html: string, location: string): string {
   let out = setKeyedJsonLd(html, ORG_JSONLD_ID, location === "/" ? serializeOrganizationJsonLd() : null);
+  out = setKeyedJsonLd(out, WEBSITE_JSONLD_ID, location === "/" ? serializeWebSiteJsonLd() : null);
   out = setKeyedJsonLd(out, FAQ_JSONLD_ID, location === "/faq" ? serializeFaqJsonLd() : null);
+  out = setKeyedJsonLd(out, BREADCRUMB_JSONLD_ID, serializeBreadcrumbJsonLd(location));
   return out;
 }
 
@@ -143,7 +157,12 @@ function renderRoute(template: string, location: string): string {
   html = setMetaProp(html, "og:description", head.description);
   html = setMetaProp(html, "og:url", head.ogUrl);
   html = setMetaProp(html, "og:image", head.ogImage);
+  // AUD-ROUTE: attribution + a11y of every social card (one brand source).
+  html = setMetaProp(html, "og:site_name", OG_SITE_NAME);
+  html = setMetaProp(html, "og:locale", OG_LOCALE);
+  html = setMetaProp(html, "og:image:alt", OG_IMAGE_ALT);
   html = setMetaName(html, "twitter:card", head.twitterCard);
+  html = setMetaName(html, "twitter:site", X_HANDLE);
   html = setMetaName(html, "twitter:title", head.title);
   html = setMetaName(html, "twitter:description", head.description);
   html = setMetaName(html, "twitter:image", head.ogImage);

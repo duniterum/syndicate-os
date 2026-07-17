@@ -296,6 +296,17 @@ if (!existsSync(indexHtmlPath)) {
     `index.html default og:url uses the canonical origin`,
     `index.html must set default og:url to "${CANONICAL_ORIGIN}/"`,
   );
+  // AUD-ROUTE (2026-07-17): the template description must MIRROR the registry
+  // "/" entry — the old template carried a dead-era text ("read-only,
+  // fail-closed") for five slices while the registry moved on; one homepage
+  // description, one source, parity guarded.
+  const homeEntry = seoRouteRegistry.find((r) => r.path === "/");
+  check(
+    homeEntry !== undefined &&
+      indexSrc.includes(`name="description" content="${homeEntry.description}"`),
+    `index.html base description mirrors the registry "/" entry verbatim`,
+    `index.html's <meta name="description"> must equal the registry "/" description verbatim (the dev-served template must never drift from the canon head)`,
+  );
 }
 
 // --- resolveRouteHead contract (the 2.18C runtime metadata guarantees). --------
@@ -313,6 +324,32 @@ for (const route of seoRouteRegistry) {
       head.ogUrl === head.canonical,
       `resolveRouteHead("${route.path}") og:url matches its canonical`,
       `INDEX route "${route.path}" must have og:url === canonical (canonical=${String(head.canonical)}, ogUrl=${String(head.ogUrl)})`,
+    );
+  } else if (route.indexStatus === "REDIRECT") {
+    // AUD-ROUTE (2026-07-17): the REDIRECT class MUST emit its cross-canonical
+    // — the consolidation the alias entry documents (noindex,follow +
+    // cross-canonical). Before this, the old blanket null-check actively
+    // enforced the gap the audit found.
+    check(
+      route.canonicalPath !== null && route.canonicalPath !== route.path,
+      `REDIRECT route "${route.path}" declares a CROSS canonicalPath`,
+      `REDIRECT route "${route.path}" must declare a canonicalPath pointing at its target (never itself, never null)`,
+    );
+    const target = seoRouteRegistry.find((r) => r.path === route.canonicalPath);
+    check(
+      target !== undefined && target.indexStatus === "INDEX",
+      `REDIRECT route "${route.path}" canonicalizes into a registered INDEX route`,
+      `REDIRECT route "${route.path}" must point its canonical at a registered INDEX route (never into a noindex page) — got target "${String(route.canonicalPath)}"`,
+    );
+    check(
+      head.canonical === `${CANONICAL_ORIGIN}${route.canonicalPath}`,
+      `resolveRouteHead("${route.path}") emits the cross-canonical to its target`,
+      `REDIRECT route "${route.path}" must resolve canonical="${CANONICAL_ORIGIN}${String(route.canonicalPath)}" (got ${String(head.canonical)})`,
+    );
+    check(
+      head.ogUrl === head.canonical,
+      `resolveRouteHead("${route.path}") og:url matches its cross-canonical`,
+      `REDIRECT route "${route.path}" must have og:url === canonical`,
     );
   } else {
     check(

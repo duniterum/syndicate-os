@@ -19,11 +19,15 @@ export interface HeaderNavItem {
 // Zones: "primary" renders as a top-level header link; "more" collapses into
 // the one-step "More" dropdown. ONE spec array keeps the curation (and the
 // surface-audit textual parse) in a single place — 3 primary + 5 more = 8.
+// AUD-ROUTE (2026-07-17): the "Chronicle" item finally points AT /chronicle
+// (it navigated to /archive — a label promising a page the link never
+// delivered, while the real live record was unreachable from public chrome);
+// /archive keeps its footer Learn seat.
 const headerSpec: { id: string; label: string; zone: "primary" | "more" }[] = [
   { id: "proof", label: "Protocol", zone: "primary" },
   { id: "contracts", label: "Economy", zone: "primary" },
   { id: "member", label: "Membership", zone: "primary" },
-  { id: "archive", label: "Chronicle", zone: "more" },
+  { id: "chronicle", label: "Chronicle", zone: "more" },
   { id: "recognition", label: "Recognition", zone: "more" },
   { id: "join", label: "Join", zone: "more" },
   { id: "docs", label: "Docs", zone: "more" },
@@ -57,10 +61,15 @@ export interface FooterGroup {
   items: SyndicateModule[];
 }
 
+// AUD-ROUTE (2026-07-17): the six chrome-invisible live routes joined their
+// natural shelves — Activity/Fire Ledger/Liquidity beside the proof-and-
+// economy family, Chronicle beside Archive on the memory shelf, Wallet/
+// Toolkit with the member family. Liquidity deliberately NOT in Membership
+// (the FLOW-SEPARATION LAW: the LP surface never carries Join framing).
 const footerGroupSpec: { heading: string; itemIds: string[] }[] = [
-  { heading: "Protocol", itemIds: ["proof", "map", "status", "contracts", "source-attribution"] },
-  { heading: "Learn", itemIds: ["whitepaper", "tokenomics", "faq", "docs", "learning", "recognition", "archive"] },
-  { heading: "Membership", itemIds: ["member", "join", "source-link", "support"] },
+  { heading: "Protocol", itemIds: ["proof", "map", "status", "contracts", "activity", "fire-ledger", "liquidity", "source-attribution"] },
+  { heading: "Learn", itemIds: ["whitepaper", "tokenomics", "faq", "docs", "learning", "recognition", "archive", "chronicle"] },
+  { heading: "Membership", itemIds: ["member", "join", "wallet", "toolkit", "source-link", "support"] },
   // AUD-T (2026-07-16): the legal layer on every public page's footer.
   { heading: "Legal", itemIds: ["terms", "privacy", "risk"] },
   // AUD-TRUTH-2 (founder Ruling ②, 2026-07-16): the Console footer group DIED —

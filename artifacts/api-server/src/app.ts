@@ -19,6 +19,12 @@ app.use((_req, res, next) => {
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Referrer-Policy", "no-referrer");
+  // AUD-ROUTE (2026-07-17): same-origin /api JSON was crawlable and could
+  // surface as raw-JSON SERP entries competing with the real pages — the
+  // header refuses indexing while leaving the endpoints fully crawlable
+  // (deliberately NO robots.txt Disallow: a crawl block would stop this
+  // header from ever being read for already-discovered URLs).
+  res.setHeader("X-Robots-Tag", "noindex, nofollow");
   next();
 });
 

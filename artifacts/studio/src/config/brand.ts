@@ -48,6 +48,16 @@ export interface SocialLink {
   kind: "x" | "telegram";
 }
 
+// AUD-ROUTE (2026-07-17): social-card constants — ONE source for the base
+// template, the build-time prerender, and the runtime head manager (the
+// handle matches socialLinks[x].href; brand.ts stays dependency-free so the
+// Node SEO scripts can load these directly).
+export const X_HANDLE = "@TheSyndicateOne";
+export const OG_SITE_NAME = brand.name;
+export const OG_LOCALE = "en_US";
+export const OG_IMAGE_ALT =
+  "The Syndicate — a proof-first membership protocol on Avalanche C-Chain";
+
 export const socialLinks: readonly SocialLink[] = [
   {
     id: "x",

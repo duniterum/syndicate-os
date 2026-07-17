@@ -17,9 +17,20 @@ import { seoRouteRegistry } from "../src/lib/seo-route-registry.ts";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const cfg = path.resolve(here, "..", "src", "config");
-const appSrc = readFileSync(path.resolve(here, "..", "src", "App.tsx"), "utf8");
-const modulesSrc = readFileSync(path.resolve(cfg, "modules.ts"), "utf8");
-const navSrc = readFileSync(path.resolve(cfg, "navigation.ts"), "utf8");
+// Comments are invisible to every textual scan (the guard-operator-gate house
+// pattern; AUD-ROUTE 2026-07-17): a prose comment containing `path: "/x"`
+// must never inject a phantom module path that masks a deleted entry.
+const stripComments = (t: string) =>
+  t.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+const appSrc = stripComments(
+  readFileSync(path.resolve(here, "..", "src", "App.tsx"), "utf8"),
+);
+const modulesSrc = stripComments(
+  readFileSync(path.resolve(cfg, "modules.ts"), "utf8"),
+);
+const navSrc = stripComments(
+  readFileSync(path.resolve(cfg, "navigation.ts"), "utf8"),
+);
 
 const errors: string[] = [];
 const ok: string[] = [];
@@ -71,6 +82,24 @@ for (const p of modulePaths) {
     registryPaths.has(p),
     `module path ${p} is a real route`,
     `module path ${p} is not a registered route`,
+  );
+}
+
+// AUD-ROUTE (2026-07-17) — THE REVERSE DIRECTION the audit proved missing:
+// every public-facing route must have a module entry, or it is structurally
+// invisible to all public chrome (navigation.ts builds header/footer from
+// module ids only — six live routes were unreachable this way). REDIRECT
+// aliases are the one legitimate module-less class (they are the target's
+// shadow, never their own destination).
+const modulePathSet = new Set(modulePaths);
+for (const r of seoRouteRegistry) {
+  if (r.path === "*") continue;
+  if (r.routeType !== "PUBLIC" && r.routeType !== "PENDING") continue;
+  if (r.indexStatus === "REDIRECT") continue;
+  check(
+    modulePathSet.has(r.path),
+    `public route ${r.path} has a module entry (chrome-visible)`,
+    `public route ${r.path} has NO modules.ts entry — structurally invisible to header/footer (the six-invisible-routes class; add a module or classify the route deliberately)`,
   );
 }
 

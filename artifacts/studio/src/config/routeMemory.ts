@@ -64,7 +64,9 @@ export const routeMemory: RouteMemoryEntry[] = [
     classification: "MERGE_PUBLIC",
     disposition:
       "Folded into an honest member preview and seat framing. The live buy flow now lives at /join (C5 go-live, founder 2026-07-13).",
-    mappedRoute: "/member",
+    // AUD-ROUTE (2026-07-17): the mapping now matches its own disposition —
+    // the legacy buy flow maps to the live /join, not the member door.
+    mappedRoute: "/join",
   },
   {
     id: "institutional-register",
@@ -108,7 +110,7 @@ export const routeMemory: RouteMemoryEntry[] = [
     description: "Archive artifacts and collectible protocol memory.",
     classification: "PROOF_OR_ARCHIVE",
     disposition:
-      "Represented as the archive memory surface; artifacts are minted on-chain and counts read live.",
+      "Represented as the archive memory surface; artifacts are minted on-chain and every mint lands on the indexed record.",
     mappedRoute: "/archive",
   },
   {
@@ -136,7 +138,9 @@ export const routeMemory: RouteMemoryEntry[] = [
     classification: "SOURCE_ATTRIBUTION",
     disposition:
       "Public-safe attribution vision on its own surface; the operator surface stays paused.",
-    mappedRoute: "/source-attribution",
+    // AUD-ROUTE (2026-07-17): map to the CANONICAL route — /source-attribution
+    // is the legacy 200-alias that cross-canonicalizes into /referral.
+    mappedRoute: "/referral",
   },
   {
     id: "learning-docs",

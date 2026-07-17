@@ -265,7 +265,7 @@ const specs: readonly RegistrySpec[] = [
     riskClass: "READ_ONLY_PUBLIC",
     forbiddenClaims: [],
     notes:
-      "Chronicle is live with founder-promoted chapters; the activity read-model is served by the event backbone. Archive mint counts and prices read live.",
+      "Chronicle is live with founder-promoted chapters; the activity read-model is served by the event backbone. Every archive mint lands on the indexed record.",
   },
   {
     registryId: "recognition",
