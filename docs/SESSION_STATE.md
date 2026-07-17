@@ -2,6 +2,34 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🧭 FINAL HANDOFF (2026-07-18, session end — supersedes the earlier handoff
+> block below). VERIFIED AT THIS MOMENT: tree clean · zero unpushed commits ·
+> HEAD `9bf8de7` · all 15 memory files + index present.**
+>
+> **IN FLIGHT: the CONSOLE-POLISH batch cycle** (handed to Replit at session end;
+> all console-chunk client-side, NO migration): `d02af1e` (blanket [Preview]
+> section chip dead + "Live · founder-gated writes" chip + ROOT_RECOVERY_CEREMONY
+> one-pager) · `c087829` (THE WORK-FIRST PAGE LAW — permanent, in CLAUDE.md — +
+> Dashboard opens on Quick actions/Needs attention with Protocol reality + KPI
+> placeholders in collapsed expanders + Operators leads with the registry, role
+> hierarchy collapsed) · `39a010e` (FULL-WIDTH work surfaces — the max-w-6xl
+> centered column dead). Post-publish visual = the founder's session: Dashboard
+> opens on the buttons, sections full-width, no blanket Preview chips.
+>
+> **NEXT SLICE ON THE FOUNDER'S GO: Q43 NOTIF-1** (queue `9bf8de7` carries the
+> full plan + the recovered HARVEST-02/08 canon): per-member contact from the
+> ledger row (client sends SEAT only; server resolves the wallet), broadcast-all
+> live, member own-row inbox, the bell honest-live. ⚠ REAL MIGRATION (the
+> notification table) — its OWN deploy cycle, never batched. THEN the order:
+> A1 → B1 → A2 → M-INT-2 → the rest of the Q42 wave → Q39.
+>
+> **THE SESSION'S LAWS (all engraved in CLAUDE.md + memory, binding from boot):**
+> the WORK-FIRST PAGE LAW (pages open on the work; reference in collapsed
+> expanders; AAA on the first build) · FULL-WIDTH work surfaces · the STANDING
+> RULE (gates only security/chain-truth/money/legal/go-live; never re-block an
+> answered question) · the live-truth ledger · describe-by-function · the
+> two-authorities model. Next session boots on "hi".
+
 > **▶ ✅ M-INT-1 + Q40 SEALED IN PROD (2026-07-18, Replit 5/5 at HEAD `b77bec5` +
 > independently curl-verified).** THE MEMBER LEDGER IS LIVE: GET
 > /api/operator/member-ledger no-session → **401 fail-closed** (curl-proven) ·
