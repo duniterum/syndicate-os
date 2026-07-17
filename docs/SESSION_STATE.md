@@ -2,6 +2,32 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 2026-07-17 (later) — SEO-TRANSPORT: the studio Node server BUILT + ON MAIN
+> (`1dc2031`), INERT. NOT YET LIVE.** Replit's compression verdict was (c) — the
+> static layer can't compress or set headers. Founder chose the NON-CDN path (CDN
+> parked for "the end"). Built the exact model the api-server already runs:
+> `server/serve.mjs` (serves dist/public; clean-URL routing from the
+> registry-generated `server/routeTable.generated.json`; `.br`/`.gz` twins by
+> Accept-Encoding; Cache-Control immutable for /assets/*, no-cache+ETag for HTML,
+> max-age=3600+ETag else; path-traversal safe; real 404) + `precompress-dist.mjs`
+> (Brotli q11 + gzip 9 twins at build) + `precompress-verify.mjs` (build guard:
+> every twin decompresses byte-identical). ZERO new runtime deps (node: builtins).
+> Routing generated from the SAME registry as the toml rewrites, drift-guarded by
+> seo:rewrites:check (now covers both outputs). VERIFIED locally vs the real dist:
+> entry JS 1.62MB → 402KB Brotli (75%); byte-identity proven THREE ways (on-disk
+> == raw-served == br-decompressed-from-wire, all f24d766c…); build guard 316/316
+> twins byte-identical; 3-lens adversarial red-team = SHIP, all confirmed low
+> findings fixed (direct .br/.gz→404 · fail-loud startup · read-body-before-headers
+> · Accept-Encoding "*" · ETag/304 for all cacheable + If-None-Match list/"*").
+> INERT: prod still serves static (Replit confirmed the host 404s the twins), so
+> the CODE changes NOTHING live. **ACTIVATION = the artifact.toml switch** (remove
+> `serve="static"`/`publicDir`/the 52 rewrites; add `[services.production.run]`
+> node serve.mjs + PORT 18425 + health "/"), the ONE thing to settle with Replit:
+> confirm its deploy reads the COMMITTED artifact.toml (single source of truth),
+> NOT a diverging override; then commit the switch + one deploy + Replit's
+> post-publish battery (routing/encoding/cache/byte-identity). Next order
+> (unchanged): /admin-in-prod → M-INT-1 → A1 → B1.
+
 > **▶ ✅ BATCH SEALED IN PROD (2026-07-17, Replit-verified 6/6 — ONE cycle):
 > Q33 *Teaser renames + the `assertAddressSafeAggregate` api rename + the Q31
 > gold favicon.** HEAD `6b5727e`, 9 commits ahead of anchor `7e6d8ee`, 26/26
