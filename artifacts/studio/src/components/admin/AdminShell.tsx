@@ -275,7 +275,7 @@ export default function AdminShell() {
                 Syndicate Admin
               </div>
               <div className="font-mono text-[10px] text-muted-foreground truncate">
-                internal · preview-gated
+                internal · operator-gated
               </div>
             </div>
           </div>

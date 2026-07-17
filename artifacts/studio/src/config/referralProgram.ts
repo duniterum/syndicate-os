@@ -216,39 +216,12 @@ export interface TrendPoint {
   value: number;
 }
 
-export const adminKpisSample: ReferralStat[] = [
-  { label: "Source-attributed buys", sampleValue: "34" },
-  { label: "Gross USDC (source)", sampleValue: "$4,250" },
-  { label: "Commissions paid", sampleValue: "$720" },
-  { label: "Commissions pending", sampleValue: "$180" },
-  { label: "Net routed after commission", sampleValue: "$3,350" },
-];
-
-export interface TopSourceRow {
-  source: string;
-  introduced: number;
-  durable: number;
-  quality: string;
-}
-export const adminTopSourcesSample: TopSourceRow[] = [
-  { source: "0x71C…976F", introduced: 9, durable: 7, quality: "High" },
-  { source: "0x3A2…145A", introduced: 6, durable: 5, quality: "High" },
-  { source: "0x9F4…22B1", introduced: 5, durable: 2, quality: "Medium" },
-];
-export const adminAbuseFlagsSample: { flag: string; count: string }[] = [
-  { flag: "Self-referral attempts", count: "3" },
-  { flag: "Circular referral attempts", count: "1" },
-  { flag: "Flagged for review", count: "2" },
-];
-export const adminConversionSample: TrendPoint[] = [
-  { label: "W1", value: 3 },
-  { label: "W2", value: 2 },
-  { label: "W3", value: 5 },
-  { label: "W4", value: 4 },
-  { label: "W5", value: 7 },
-  { label: "W6", value: 5 },
-  { label: "W7", value: 8 },
-];
+// TRUTH SWEEP (founder order, 2026-07-17): the fabricated admin sample blocks
+// (KPI cards, "Top durable sources" rows, abuse-review counts, the conversion
+// chart) are DELETED — the program is LIVE and paying; invented figures on the
+// operator console violated the truth-first law even sample-tagged. The REAL
+// per-source figures live in the R5 read-model server-side and reach the
+// console wired (M-INT-1), never as samples.
 
 // ── Commission tiers (source classes), hard cap, and transparency event ──────
 // Human-readable %. Storage/emission on-chain is basis points (bps): 5% = 500,
@@ -364,12 +337,16 @@ export const sourceReviewSample: { source: string; requested: string; status: st
   { source: "0x9F4…22B1", requested: "2 days ago", status: "Flagged" },
 ];
 
+// Truth sweep 2026-07-17: the flag STATES below now mirror live reality (the
+// referral program is publicly live and paying; the operator console is live
+// behind the neutral wall). The toggles themselves remain a preview — a real
+// flag write is a future step-up write in the operator write zone.
 export const featureFlagsSample: { key: string; label: string; on: boolean }[] = [
-  { key: "referralPublic", label: "Public referral program", on: false },
+  { key: "referralPublic", label: "Public referral program", on: true },
   { key: "walletSession", label: "Wallet session (SIWE)", on: true },
   { key: "sourceValidate", label: "Source link validation", on: true },
-  { key: "operatorConsole", label: "Operator console", on: false },
-  { key: "archiveReads", label: "Archive reads", on: false },
+  { key: "operatorConsole", label: "Operator console", on: true },
+  { key: "archiveReads", label: "Archive reads (page-level live reads)", on: false },
 ];
 
 export const auditLogSample: { actor: string; action: string; target: string; when: string }[] = [

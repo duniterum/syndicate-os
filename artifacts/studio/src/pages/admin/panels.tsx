@@ -648,18 +648,19 @@ export function AdminFlagsPanel() {
           <TableBody>
             <TableRow>
               <TableCell>
-                <div className="text-sm">Operator preview gate</div>
+                <div className="text-sm">Operator reveal (dev bypass)</div>
                 <div className="font-mono text-[10px] text-muted-foreground">
                   OPERATOR_PREVIEW_ENABLED
                 </div>
               </TableCell>
               <TableCell className="text-xs text-muted-foreground">
-                Build-time (this bundle)
+                Build-time dev-only bypass — the production reveal is the
+                server-confirmed operator role (the neutral wall)
               </TableCell>
               <TableCell className="text-right font-mono text-[11px]">
                 {OPERATOR_PREVIEW_ENABLED
-                  ? "enabled in this build"
-                  : "excluded from this build"}
+                  ? "dev bypass active in this build"
+                  : "server-role reveal (production posture)"}
               </TableCell>
             </TableRow>
             <TableRow>

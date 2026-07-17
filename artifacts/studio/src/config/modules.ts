@@ -249,8 +249,10 @@ export const modules = [
     enabled: false,
     live: false,
     phase: "future",
-    truthStatus: "AWAITING_FOUNDER_APPROVAL",
-    description: "Founder/operator controls preview. Gated until founder verification.",
+    truthStatus: "DESIGN_PREVIEW",
+    // Truth sweep 2026-07-17: "Gated until founder verification" was a fossil —
+    // founder authentication is LIVE (server-confirmed founder_root in prod).
+    description: "Founder/operator controls preview. Founder authentication is live; these controls stay a preview until wired.",
     dependencies: ["founderApproval"],
     nav: { header: false, sidebar: true, footer: false },
     icon: Briefcase,

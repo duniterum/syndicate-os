@@ -8,7 +8,8 @@
 //   - selection is IN-MEMORY ONLY (React state). Never localStorage, never
 //     any persistence: a sticky simulated state would be a confusion hazard.
 //   - simulating a state changes NOTHING outside this panel — no session, no
-//     authority, no app-wide state. The app-wide provider stays hardwired S1.
+//     authority. (Truth sweep 2026-07-17: the app-wide provider is no longer
+//     hardwired S1 — it wires S1⇄S4⇄S7⇄S11 live from the server session.)
 // Every simulated view carries the SIMULATED STATE — NOT WIRED warning.
 
 import { useState } from "react";
@@ -37,10 +38,12 @@ export function AccessStateSimulator() {
         {SIMULATOR_PROBE}
       </p>
       <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-        Preview-only matrix explorer. Selecting a state changes nothing outside
-        this panel — no session, no persistence, no authority. The app-wide
-        access state is hardwired to S1 (anonymous visitor) because no
-        authentication system exists.
+        Matrix explorer. Selecting a state changes nothing outside this panel —
+        no session, no persistence, no authority. The app-wide access state is
+        LIVE: it resolves from the real server session (S1 ⇄ S4 ⇄ S7 ⇄ S11,
+        fail-closed to S1), and INTERNAL routes are gated in production by the
+        server-confirmed operator role. This panel only previews the §3 matrix
+        for states other than your own.
       </p>
 
       <div className="flex flex-wrap gap-1.5 mb-4">

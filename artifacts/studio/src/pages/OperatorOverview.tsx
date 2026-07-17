@@ -28,11 +28,11 @@ export default function OperatorOverview() {
           Studio OS
         </h1>
         <p className="text-muted-foreground mt-2">
-          Operator console for the read-only proof foundation.
+          Operator console for the live protocol.
         </p>
       </div>
 
-      <DataStatusNote description="This console reads and never writes. Its live read is the protocol reality feed (public Avalanche C-Chain facts — no member data, no wallets, no transactions). Every operator surface below is a preview, and nothing here acts." />
+      <DataStatusNote description="This console reads the live protocol reality feed (public Avalanche C-Chain facts). The protocol is in live production: checkout, the referral program, and member auth run in prod, and the admin write zone is live — founder-gated writes (operator invite/suspend, referral terms), each recorded in the audit log. On-chain acts are signed by the founder's own wallet. Surfaces still marked preview below are previews; everything else is real." />
 
       <div className="mb-12">
         <ProtocolRealitySummary />

@@ -13,7 +13,7 @@
 // (anything not exactly S4 collapses to signed-out). Honest states only — no
 // invented seat, no "simulated" mode, no photo upload (the mark is a fixed
 // glyph, not a profile). NO operator/Founder-Console entry: the operator
-// console is preview-gated OUT of default production builds, so a public link
+// console reveals only on a server-confirmed operator role, so a public link
 // to it would be a dead end — members see member things only.
 
 import { useEffect, useState } from "react";

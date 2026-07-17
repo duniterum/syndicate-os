@@ -11,8 +11,10 @@ import NotFound from "@/pages/not-found";
 const detailById: Record<string, string[]> = {
   founder: [
     "Review and approve membership and source-activation requests.",
-    "Hold founder-gated controls behind verified authentication.",
-    "Nothing here acts — every control is disabled in this preview.",
+    // Truth sweep 2026-07-17: founder authentication is LIVE (server-confirmed
+    // founder_root); the live founder controls run in /admin today.
+    "Founder authentication is live — the working founder controls live in the Admin console (operators, referral terms, propose-source), each write audit-logged.",
+    "This page stays a copy-only preview of future dedicated Founder OS controls; nothing on THIS page acts.",
   ],
   source: [
     "Operate the verified-introduction source registry.",

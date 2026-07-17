@@ -63,20 +63,26 @@ export function AdminReferralCrud() {
         <TruthLabel variant="DESIGN_PREVIEW" />
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl mb-5 leading-relaxed">
-        Edit the terms and rules here. Save submits term values through the founder-gated operator write
-        zone once it is enabled; until then nothing is saved. Program activation is a separate, later step —
-        Save never activates the program.
+        Edit the terms and rules here. Save submits term values through the LIVE
+        founder-gated operator write zone — a real write, recorded in the audit
+        log (server-side 30% hard cap). Save never activates or pauses the
+        program: program state is an on-chain fact.
       </p>
 
-      {/* Activation */}
+      {/* Program state — the on-chain truth + the future kill-switch (preview) */}
       <div className="flex items-center justify-between rounded-md border border-border/50 p-4 mb-6">
         <div>
           <div className="text-sm font-medium text-foreground">Program status</div>
-          <div className="text-xs text-muted-foreground">{active ? "Active (preview)" : "Paused"}</div>
+          <div className="text-xs text-muted-foreground">
+            LIVE on-chain — the registry pays referred joins inside the buyer&apos;s own
+            transaction (see the live source reads above).
+          </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground">{active ? "Active" : "Paused"}</span>
-          <Switch checked={active} onCheckedChange={setActive} aria-label="Activate or pause the program" />
+          <span className="text-xs text-muted-foreground">
+            Kill-switch (future write{active ? " · toggled in preview" : ""})
+          </span>
+          <Switch checked={active} onCheckedChange={setActive} aria-label="Preview of the future program kill-switch" />
         </div>
       </div>
 

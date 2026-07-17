@@ -52,9 +52,13 @@ export type SurfaceId =
 // precedent). The keys stay for type totality only; do NOT wire a
 // new consumer to them without re-deriving today's truth first.
 // Still honestly not-live: recognition (the standing model — the capital
-// axis lives on /activity, the full model doesn't), founderControls,
-// publicDashboard, coreApiRpc, contractState, proofEventParser (operator
-// parser console).
+// axis lives on /activity, the full model doesn't), coreApiRpc,
+// contractState, proofEventParser (operator parser console).
+// TRUTH SWEEP 2026-07-17 (founder order, live production mode): the /os-map
+// consumer of the four retired keys was the missed survivor — its nodes now
+// bind honest lifecycles directly. founderControls dropped its
+// "Not switched on yet" fossil: founder auth is LIVE (server-confirmed
+// founder_root); the dedicated Founder OS page is honestly a DESIGN_PREVIEW.
 export const surfaceStatus: Record<SurfaceId, TruthStatus> = {
   membership: "SYNDICATE_INDEXER_NOT_WIRED", // RETIRED FROM RENDER — live since 2026-07-11
   proofOfFire: "EVENT_ADAPTER_NOT_WIRED", // RETIRED FROM RENDER — heartbeat live
@@ -62,8 +66,8 @@ export const surfaceStatus: Record<SurfaceId, TruthStatus> = {
   archive: "ARCHIVE_READS_NOT_WIRED", // RETIRED FROM RENDER — minting open, mints ride the indexed record
   recognition: "FUTURE_MODULE",
   proofEventParser: "EVENT_ADAPTER_NOT_WIRED",
-  founderControls: "AWAITING_FOUNDER_APPROVAL",
-  publicDashboard: "DESIGN_PREVIEW",
+  founderControls: "DESIGN_PREVIEW", // founder auth LIVE; the dedicated surface is the preview
+  publicDashboard: "DESIGN_PREVIEW", // RETIRED FROM RENDER — the public surfaces are live production
   coreApiRpc: "NOT_LIVE",
   contractState: "LIVE_SOURCE_MISSING",
 };
