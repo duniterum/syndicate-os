@@ -41,9 +41,11 @@ import type { MemberDoor, MemberDoorIcon } from "@/config/memberDoors";
 import type { MouseEvent, ReactNode } from "react";
 
 // Approved icon table (config carries Node-loadable string keys; the map to
-// components lives here). Record<MemberDoorIcon, …> makes tsc enforce
-// totality: a new icon key without its component is a red build.
-const DOOR_ICONS: Record<MemberDoorIcon, LucideIcon> = {
+// components lives here — exported so the Z8 doors grid renders the SAME
+// icons, one table, never two drifting copies). Record<MemberDoorIcon, …>
+// makes tsc enforce totality: a new icon key without its component is a red
+// build.
+export const DOOR_ICONS: Record<MemberDoorIcon, LucideIcon> = {
   house: House,
   wallet: Wallet,
   "user-plus": UserPlus,
@@ -72,7 +74,9 @@ const FOCUS_RING =
 // pushing a duplicate history entry (its Link has no same-URL guard and
 // never reaches the browser's native same-hash re-scroll) — instead a hash
 // door re-scrolls to its section, a plain door returns to the top.
-function makeSameDoorClick(href: string, active: boolean) {
+// Exported: the Z8 doors grid carries same-URL cards by construction
+// (Member Home on /member) and needs the same guard.
+export function makeSameDoorClick(href: string, active: boolean) {
   if (!active) return undefined;
   return (e: MouseEvent<HTMLAnchorElement>) => {
     if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey || e.button !== 0) return;

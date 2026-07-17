@@ -1,16 +1,20 @@
-// pages/MemberAccess.tsx — MEMBER HOME (S7 recomposition · S7-b dashboard).
+// pages/MemberAccess.tsx — MEMBER HOME (S7 · S7-b · ③ HOME recomposition).
 // ---------------------------------------------------------------------------
 // TWO STATES, TWO SHAPES (founder-approved wireframes, 2026-07-15/16):
 //   · Visitor / signed out — THE DOOR: a full-screen centered scene, one
 //     human sentence, ONE connect CTA (RainbowKit connect + SIWE in a single
 //     flow). Below: how a seat works, the locked-visible actions, the doors.
-//   · Signed in — THE DASHBOARD (S7-b, founder art direction at the S7 seal;
-//     research-grounded: F-pattern, KPI row top-left, 12-col card grid,
-//     full width): zone 1 the identity band (sigil · Member #N · rung ·
-//     receipt chip) · zone 2 the four live KPI tiles · zone 3 the work grid
-//     (referral engine 2/3 + reserved slots 1/3) · zone 4 the protocol pulse
-//     · zone 5 verify-the-foundation + settings + expectations. Our edge
-//     over the references: every figure carries its verify path.
+//   · Signed in — THE DASHBOARD, ③ HOME recomposition (approved wireframe
+//     2026-07-16 §3 — the Linear/Stripe/Vercel post-login grammar; every
+//     zone answers a decision; sealed stays sealed):
+//       Z1 identity band (sealed) · Z2 KPI row 4→6 · Z3 NEEDS YOUR
+//       ATTENTION (0–3 cards, real state only; the anti-scarcity law binds)
+//       · Z4 YOUR RECENT ACTIVITY (own D3 rows) · Z5 the protocol pulse
+//       (sealed — moves BELOW own work: my-work above world-news) + the
+//       referral engine · Z6 capital axis (sealed) · Z7 protocol today +
+//       Chronicle (sealed) · Z8 THE DOORS as a grouped grid (mirrors the
+//       menu groups) · then verify + settings + expectations.
+//     Our edge over the references: every figure carries its verify path.
 // The member quick-actions grid is VISITOR-ONLY (the conversion surface,
 // locks visible); for a member every action lives in context (band, referral
 // card, header CTA, doors) — no duplicate buttons.
@@ -23,6 +27,7 @@ import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { MemberShell } from "@/components/member/MemberShell";
 import { MEMBER_HOME_RESERVED_SLOTS } from "@/config/memberDoors";
 import { MemberQuickActions } from "@/components/member/MemberQuickActions";
+import { MemberDoorsGrid } from "@/components/member/MemberDoorsGrid";
 import { MemberPulse } from "@/components/member/MemberPulse";
 import { ProtocolSnapshot } from "@/components/member/ProtocolSnapshot";
 import { ChronicleLatest } from "@/components/member/ChronicleLatest";
@@ -54,6 +59,17 @@ const CapitalAxisCard = WALLET_SESSION_PREVIEW_ENABLED
 // SLICE B — the UI-only settings panel (zero new writes; honest rows).
 const MemberSettings = WALLET_SESSION_PREVIEW_ENABLED
   ? lazy(() => import("@/wallet/MemberSettings"))
+  : null;
+
+// ③ HOME Z3 — needs-your-attention (real-state-only cards; same gated
+// boundary: it reads the live allowance + own-row standing).
+const MemberAttention = WALLET_SESSION_PREVIEW_ENABLED
+  ? lazy(() => import("@/wallet/MemberAttention"))
+  : null;
+
+// ③ HOME Z4 — the member's own recent purchases (D3 rows, verify anchors).
+const MemberRecentActivity = WALLET_SESSION_PREVIEW_ENABLED
+  ? lazy(() => import("@/wallet/MemberRecentActivity"))
   : null;
 
 /**
@@ -144,15 +160,30 @@ export default function MemberAccess() {
         <section className="py-10 md:py-12">
           <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
             <MemberShell>
-              {/* Zone 3 — the work grid, after-login standard order: the
-                  LIVING RECORD first (recent activity — the exchange
-                  pattern), then the referral engine; beside them the
-                  recognition + system-state column drawn from the doors. */}
+              {/* The work grid — the approved Z3–Z8 order: MY decisions and
+                  MY record first (Z3 attention · Z4 own activity), the world
+                  after (Z5 pulse), the engine beneath; recognition + system
+                  state + the doors in the right column. */}
               <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-10">
                 <div className="xl:col-span-2 min-w-0">
-                  {/* The pulse leads — recent activity is what every
-                      world-class dashboard lands on (gains My | Protocol
-                      with A1). */}
+                  {/* Z3 — what do I act on now? (real state only). */}
+                  {MemberAttention ? (
+                    <div className="mb-8">
+                      <Suspense fallback={null}>
+                        <MemberAttention />
+                      </Suspense>
+                    </div>
+                  ) : null}
+                  {/* Z4 — what happened on my account; can I show it? */}
+                  {MemberRecentActivity ? (
+                    <div className="mb-8">
+                      <Suspense fallback={null}>
+                        <MemberRecentActivity />
+                      </Suspense>
+                    </div>
+                  ) : null}
+                  {/* Z5 — the protocol pulse (sealed), BELOW own work: the
+                      world standard puts my-work above world-news. */}
                   <div className="mb-8">
                     <MemberPulse />
                   </div>
@@ -166,17 +197,20 @@ export default function MemberAccess() {
                   </section>
                 </div>
                 <div className="min-w-0 grid gap-6 content-start">
-                  {/* The capital axis — own-account guidance (footprint,
+                  {/* Z6 — the capital axis — own-account guidance (footprint,
                       ladder, next rung; the shield line inside). */}
                   {CapitalAxisCard ? (
                     <Suspense fallback={null}>
                       <CapitalAxisCard />
                     </Suspense>
                   ) : null}
-                  {/* The system state + the record's newest chapter — the
-                      doors' own truths, surfaced as living summaries. */}
+                  {/* Z7 — the system state + the record's newest chapter —
+                      the doors' own truths, surfaced as living summaries. */}
                   <ProtocolSnapshot />
                   <ChronicleLatest />
+                  {/* Z8 — the doors as a grouped grid (mirrors the menu
+                      groups — navigation as cards AFTER the work). */}
+                  <MemberDoorsGrid />
                   <div>
                     <h2 className="type-h2 text-foreground mb-1">Coming to your seat</h2>
                     <p className="text-sm text-muted-foreground leading-relaxed mb-2">

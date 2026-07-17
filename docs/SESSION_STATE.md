@@ -2,6 +2,56 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🏠 SLICE ③ HOME ✅ BUILT + FOUNDER GO AT THE PREVIEW GATE (2026-07-17):
+> THE APPROVED DASHBOARD RECOMPOSITION — wireframe 2026-07-16 §3 zones
+> Z1–Z8, sealed stays sealed.** Z2 KPI row 4→6 (`MemberKpiRow`): + Receipts (own D3
+> rows.length — a served [] is a REAL 0, null is a dash) + Artifacts (own
+> Archive ERC-1155 balances summed). Z3 `MemberAttention` (NEW): 0–2 cards
+> from REAL state only — ① promotion due (own-row `promotionDue`, the
+> founder-signature truth in calm words) · ② standing USDC approval open
+> (live allowance read; ≥$1B renders "an effectively unlimited amount",
+> never a 72-digit figure) — the founder's Z3 verdict honored (session-
+> expiring dead; milestone-witnessed NOT readable today → honestly absent);
+> empty = the approved quiet line VERBATIM, and the quiet line renders ONLY
+> when EVERY class gave a definitive answer (an unreadable class gets the
+> could-not-read line — overclaim killed). Z4 `MemberRecentActivity` (NEW):
+> own last 5 purchases (block-desc), date · exact usdFromRaw amount ·
+> engine · verify ↗ per row; View-receipt/binder affordances deliberately
+> ABSENT (they ride A1 per the GO'd placement). Z5 pulse moved BELOW own
+> work (my-work above world-news); referral + its anchor intact. Z8
+> `MemberDoorsGrid` (NEW): the doors as grouped cards from THE one config +
+> THE one exported icon table (can never fork from the menu); same-URL
+> cards carry the same-door guard (no dead history entries). Visitor door
+> composition UNTOUCHED. THE PRE-COMMIT ADVERSARIAL PASS (ultracode, 3
+> lenses + refutation — 15 CONFIRMED all fixed · 3 refuted), the kills:
+> ① the "printed its ticket at checkout" PAST-TENSE claim fabricated
+> history for every pre-receipt-era purchase (V1 2026-06-04 onward) — now
+> present-tense mechanism only ("a purchase made at checkout NOW prints
+> its ticket"), guard-pinned; ② the quiet line could render while the
+> promotion class was UNREADABLE (served standing:null without the
+> definitive no-source marker) — the readability state machine now tracks
+> each class; ③ failed fetches spun "Reading…" FOREVER — settled wrappers
+> distinguish in-flight from failed (both zones); ④ unlimited approvals
+> printed as astronomical dollars — named honestly; ⑤ Z8 same-URL cards
+> pushed dead history entries — guarded; ⑥ guard-member-home scanned the
+> WHOLE two-composition file (a visitor-branch mount satisfied dashboard
+> pins — false green) — now region-scoped to the dashboard branch, ALL
+> pins comment-stripped both directions, KPI-label regex prop-anchored,
+> receipt-affordance ban widened. `guard-member-home` **30 pins**, wired
+> into the guards chain. Rig-verified (the house injection, reverted +
+> tsc-proven clean): Z-order exact (attention → recent → pulse), 6 KPI
+> tiles, 13 door cards, honest fail-closed states everywhere (no session on
+> the rig = could-not-read lines, never quiet, never stuck), 375 = zero
+> overflow, images OK; the one sub-12px node is the SHARED LifecycleBadge
+> atom (site-wide class, rides the queued P2 sweep — this slice authors no
+> sub-12px). Gate: tsc ×2 · build 27 shells · ALL studio guards
+> (member-home 30/30 · member-menu 34/34 · access-state 959 · receipt
+> 83/83) · seo 431 · surface 278 · rewrites 52. **DEPLOY: 🚀 BATCHABLE
+> (client-only, fail-closed, additive — prod keeps the S7-b dashboard until
+> the next deploy). Deploy backlog: ② MENU (1a8baac) + ③ HOME — the next
+> 🚀 DEPLOY carries both, ONE Replit cycle. NEXT per the acted order:
+> AUD-ROUTE (lens 6+9 P1s) → /admin-in-prod → M-INT-1 → A1 → B1.**
+
 > **▶ 🚪 SLICE ② MENU ✅ BUILT + GATE GREEN + FOUNDER GO AT THE GATE
 > (2026-07-17, the wording rider rode): THE APPROVED MEMBER MENU — wireframe
 > 2026-07-16 §2 realized.** `memberDoors.ts`: 13 rows in FOUR groups (Member:

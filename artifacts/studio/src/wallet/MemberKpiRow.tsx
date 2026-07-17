@@ -2,17 +2,22 @@
 //
 // S7-b — THE KPI ROW (dashboard zone 2, the after-login standard: YOUR
 // portfolio first — Binance/Coinbase land on balances, never on a program).
-// Four live tiles, top-left where the eye lands (F-pattern): Your SYN ·
-// Your USDC · Your capital footprint (own cumulative + rung — the
-// OWN-ACCOUNT DISPLAY RULE, GAMIFICATION_LEGAL_DOCTRINE) · Introductions.
+// ③ HOME (approved wireframe 2026-07-16 §3, Z2): the row grows 4 → 6 —
+// Your SYN · Your USDC · Your capital footprint (own cumulative + rung —
+// the OWN-ACCOUNT DISPLAY RULE, GAMIFICATION_LEGAL_DOCTRINE) ·
+// Introductions · Receipts (own confirmed purchases — the binder surface
+// arrives at its slice) · Artifacts (own Archive holdings, live ERC-1155).
 // Every tile is Label → live Value → provenance tooltip; a figure that
-// cannot be read renders an honest "—" — never invented, never stale.
-// Own-row only; commission/escrow detail lives in the referral module.
+// cannot be read renders an honest "—" — never invented, never stale; a
+// zero is a real answer. Own-row only; commission/escrow detail lives in
+// the referral module. Zero decorative tiles — each answers a decision.
 
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { Card } from "@/components/ui/card";
 import {
+  useOwnArchiveHoldings,
+  useOwnPurchases,
   useOwnSourceStanding,
   useOwnSynBalance,
   useOwnUsdcBalance,
@@ -86,14 +91,22 @@ export default function MemberKpiRow() {
   const usdcBalance = useOwnUsdcBalance(address);
   const sourceStanding = useOwnSourceStanding();
   const footprint = useOwnFootprint();
+  const purchases = useOwnPurchases();
+  const artifacts = useOwnArchiveHoldings(address);
   const s = sourceStanding?.standing ?? null;
   const walked =
     footprint !== null &&
     footprint.rung !== null &&
     footprint.cumulativeUsdcRaw !== null;
+  // A served empty list is a REAL zero; null means the record was unreadable.
+  const receiptCount = purchases?.rows ? purchases.rows.length : null;
+  const artifactCount =
+    artifacts !== null
+      ? artifacts.reduce((sum, a) => sum + Number(a.count), 0)
+      : null;
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
       <KpiTile
         label="Your SYN"
         value={synBalance !== null ? `${synBalance} SYN` : null}
@@ -129,6 +142,18 @@ export default function MemberKpiRow() {
         }
         detail="Members you brought in, from the indexed introduction record — durable means their wallet still holds SYN. Zero is a real answer; a dash means the record could not be read."
         testId="kpi-introductions"
+      />
+      <KpiTile
+        label="Receipts"
+        value={receiptCount !== null ? `${receiptCount} confirmed` : null}
+        detail="Your own confirmed purchases, from the indexed record — every era, the earliest included. A purchase made at checkout now prints its ticket; the receipt binder surface arrives at its slice."
+        testId="kpi-receipts"
+      />
+      <KpiTile
+        label="Artifacts"
+        value={artifactCount !== null ? `${artifactCount} held` : null}
+        detail="Archive artifacts your wallet holds — live ERC-1155 balances read from the Archive contract, never cached."
+        testId="kpi-artifacts"
       />
     </div>
   );
