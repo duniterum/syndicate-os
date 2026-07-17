@@ -19,7 +19,7 @@
 //   pnpm --filter @workspace/studio run seo:rewrites          (write)
 //   pnpm --filter @workspace/studio run seo:rewrites:check    (verify)
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { seoRouteRegistry } from "../src/lib/seo-route-registry.ts";
@@ -63,8 +63,24 @@ function buildBlock(): string {
   return lines.join("\n");
 }
 
+/**
+ * The SAME rewrite table as a JSON map for the studio's production Node server
+ * (server/serve.mjs): every clean-URL path → its flat <route>.html. Generated
+ * from the same rewriteRoutes() source so the server and the (static-era) TOML
+ * rewrites can never diverge — the --check below guards BOTH outputs.
+ */
+function buildRouteTableJson(): string {
+  const table: Record<string, string> = {};
+  for (const slug of rewriteRoutes()) {
+    table[`/${slug}`] = `/${slug}.html`;
+    table[`/${slug}/`] = `/${slug}.html`;
+  }
+  return JSON.stringify(table, null, 2) + "\n";
+}
+
 const here = path.dirname(fileURLToPath(import.meta.url));
 const tomlPath = path.resolve(here, "..", ".replit-artifact", "artifact.toml");
+const routeTablePath = path.resolve(here, "..", "server", "routeTable.generated.json");
 const src = readFileSync(tomlPath, "utf8");
 
 const anchorIdx = src.indexOf(ANCHOR);
@@ -92,18 +108,31 @@ function regionStart(): number {
 const start = regionStart();
 const next = `${src.slice(0, start)}${buildBlock()}\n\n${src.slice(anchorIdx)}`;
 const count = rewriteRoutes().length;
+const nextJson = buildRouteTableJson();
+const currentJson = existsSync(routeTablePath) ? readFileSync(routeTablePath, "utf8") : "";
 
 if (process.argv.includes("--check")) {
-  if (next !== src) {
+  const tomlDrift = next !== src;
+  const jsonDrift = nextJson !== currentJson;
+  if (tomlDrift || jsonDrift) {
+    const which = [
+      tomlDrift ? "artifact.toml" : null,
+      jsonDrift ? "server/routeTable.generated.json" : null,
+    ]
+      .filter(Boolean)
+      .join(" + ");
     console.error(
-      `[seo:rewrites] DRIFT — artifact.toml rewrites are out of sync with the SEO registry (${count} route(s), ${count * 2} rules expected). Run: pnpm --filter @workspace/studio run seo:rewrites`,
+      `[seo:rewrites] DRIFT — ${which} out of sync with the SEO registry (${count} route(s), ${count * 2} rules expected). Run: pnpm --filter @workspace/studio run seo:rewrites`,
     );
     process.exit(1);
   }
-  console.log(`[seo:rewrites] OK — artifact.toml matches the registry (${count} routes, ${count * 2} rules).`);
+  console.log(
+    `[seo:rewrites] OK — artifact.toml + server route table match the registry (${count} routes, ${count * 2} rules).`,
+  );
 } else {
   writeFileSync(tomlPath, next, "utf8");
+  writeFileSync(routeTablePath, nextJson, "utf8");
   console.log(
-    `[seo:rewrites] wrote ${count * 2} clean-URL rewrite(s) for ${count} route(s) into artifact.toml`,
+    `[seo:rewrites] wrote ${count * 2} clean-URL rewrite(s) for ${count} route(s) → artifact.toml + server/routeTable.generated.json`,
   );
 }
