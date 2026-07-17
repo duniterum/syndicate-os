@@ -44,12 +44,14 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 >   the domain (Cloudflare free = Brotli + edge cache + the www→apex 301, all in one, ZERO code,
 >   pure edge transport) = **RECOMMENDED**; or front the static build with the Express server +
 >   compression/cache middleware (code, sensitive).
->   **▶ UPDATE 2026-07-17: founder chose the NON-CDN path (CDN parked for "the end").
->   SEO-TRANSPORT server BUILT + on main `1dc2031`, INERT** — `server/serve.mjs` +
->   build-time Brotli/gzip twins + byte-identity guard, verified + adversarially
->   red-teamed (SHIP). Prod unchanged until the ACTIVATION: the artifact.toml switch
->   (static→`run` node serve.mjs), pending Replit confirming its deploy reads the
->   COMMITTED toml (not an override). CDN (subsumes www→apex) still available later.
+>   **▶ ✅ SEALED IN PROD 2026-07-17 (founder chose the NON-CDN path; CDN parked for
+>   "the end"): thesyndicate.money serves BROTLI.** `server/serve.mjs` (built `1dc2031`,
+>   activated `b62c3c3`) is live — entry JS `Content-Encoding: br` 402KB vs 1.62MB
+>   (~4× lighter), gzip fallback, byte-identity prod==local, Pingdom A 95 (was B-).
+>   Red-teamed (SHIP) before commit. Benign nuances (no action): front rewrites asset
+>   Cache-Control public→private (browser cache OK via immutable); Pingdom "gzip"
+>   still D (legacy tool doesn't credit Brotli). Compression dossier CLOSED — founder
+>   confirms. www→apex + the CDN (which would subsume it) remain deferred for later.
 > - **② Q31 favicon — founder CHOSE the gold `syn-mark-gold` mark** (retire the off-brand cyan
 >   shield). Reality: the mark exists ONLY as a 544×427/284KB PNG (no inline SVG; header+receipt
 >   render the PNG), and NO image tooling is installed. So it is the Q31 micro-slice (pure-JS

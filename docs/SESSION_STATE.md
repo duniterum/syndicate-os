@@ -2,6 +2,24 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ ✅ SEO-TRANSPORT SEALED IN PROD (2026-07-17, Replit 6/6 + independently
+> curl-verified): thesyndicate.money now serves BROTLI.** The studio serves
+> through `serve.mjs` (compression + caching), LIVE. MY OWN CURL vs prod: entry JS
+> `Content-Encoding: br` **402,252 B** (vs 1,622,905 raw = ~4× lighter) · gzip
+> FALLBACK confirmed (a gzip-only client gets `Content-Encoding: gzip`) · identity
+> intact 1,622,905 · `/` br + no-cache · `/assets/*` immutable · direct `.br` → 404.
+> Replit: 27 shells 200 + real 404, **byte-identity prod == local build**
+> (SHA-256 `f24d766c…03cb4`), all studio+API gates, feed 78/78 zero-address, engine
+> 6/6 (head 90,558,895 → 90,559,196), healthz ok, /api live (V3 6,994,000 SYN
+> available). **Pingdom: grade A 95** (was B-), 450KB, 228ms. TWO benign nuances,
+> NO ACTION: (a) the front (Google Frontend) rewrites asset `Cache-Control:
+> public`→`private` — browser cache still fully works via `immutable`+max-age, only
+> shared/intermediary caches excluded; (b) Pingdom's legacy "Compress with gzip"
+> still reads D — a tooling artifact (it doesn't credit Brotli, which is superior,
+> and the site serves the gzip fallback too); real-world compression is live and
+> optimal. **DEPLOY BACKLOG: EMPTY. Compression dossier CLOSED** (founder confirms).
+> Next order (unchanged): **/admin-in-prod → M-INT-1 → A1 → B1.**
+
 > **▶ 2026-07-17 (later) — SEO-TRANSPORT ACTIVATED ON MAIN (`b62c3c3`), NOT YET
 > LIVE — awaiting the founder's Replit publish click.** Replit confirmed the deploy
 > reads the COMMITTED artifact.toml (repo = single source of truth; no divergent
