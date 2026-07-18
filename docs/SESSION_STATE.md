@@ -23,27 +23,38 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   `max-w-5xl` column dead), **no explanatory hero when connected** (opens on the
 >   work), and the `/member` "Your referral" dedup. Shared pieces: `SignInWall`,
 >   `MemberAppPage`, `lib/useSignedIn`.
-> - 🚀 **DEPLOY BACKLOG (committed, NOT yet deployed) — SLICE 2 (`1b0c51b`):**
->   the GENERAL member-surface layout. `MemberAppPage` is now THE wrapper every
->   member door uses (`kind="content"` public doors → in-shell + light header when
->   connected, SEO-safe public hero when not; `kind="account"` /wallet+/toolkit →
->   straight to the work). **Shell continuity:** the 6 content doors (Chronicle ·
->   Activity · Archive · Recognition · Fire Ledger · Liquidity) now render INSIDE
->   the dashboard shell when connected (they used to break out). **Hero copy
+> - ✅ **SEALED IN PROD — access-model SLICE 2 (`1b0c51b`, anchor `a6b44da`,
+>   Replit full prod battery GREEN 2026-07-18):** the GENERAL member-surface
+>   layout. `MemberAppPage` is now THE wrapper every member door uses
+>   (`kind="content"` public doors → in-shell + light header when connected,
+>   SEO-safe public hero when not; `kind="account"` /wallet+/toolkit → straight to
+>   the work). **Shell continuity:** the 6 content doors (Chronicle · Activity ·
+>   Archive · Recognition · Fire Ledger · Liquidity) now render INSIDE the
+>   dashboard shell when connected (they used to break out). **Hero copy
 >   humanized** — the honesty is `session ≠ SEAT` (the seat IS the membership), in
 >   plain words: no `≠` symbol, no "your own row". The INVARIANT is unchanged, so
->   `guard-access-state` + the `guard-auth-zone` dist probe are **re-pinned to the
+>   `guard-access-state` + the `guard-auth-zone` dist probe were **re-pinned to the
 >   same truth in human words** ("proves control of a wallet" kept verbatim — the
->   security probe untouched). **VERDICT: 🚀 DEPLOY, client-only, no migration.**
->   Replit: *pull main, deploy, report* — note the auth-zone dist probe changed
->   `"ever your own row"` → `"no list of members"` (both are honest own-row
->   strings shipped in the copy).
-> - **NEXT (after slice 2 deploys):** ① pagination (`/activity` newest-first feed +
->   the newsroom Chronicle sort/filter/pagination = `chr-newsroom-page`); ②
->   `/member` FULL migration to `MemberAppPage` (it is the one bespoke page left —
->   its own door/dashboard fork works and is full-width, but it does not yet use
->   the shared wrapper); ③ then continue the `MEMBER_HOME_FINISH_ORDER` (the Phase-A
->   defects: founder BUILDER_SOURCE derivation, genesis footprint "—", etc.).
+>   security probe untouched); the auth-zone dist probe string moved
+>   `"ever your own row"` → `"no list of members"` (both honest own-row strings).
+>   **SEAL EVIDENCE (Replit, client-only, NO migration):** 16/16 files blob-hash
+>   verified + full typecheck; gates all green at advanced counts (auth-zone 920 ·
+>   notif-vocab 62/62 · operator-gate 2680 · admin-dist 93 · member-menu 35/35 ·
+>   access-state 1030, re-pinned 0-fail); byte-identity remote==local
+>   (`index-BTcSwvFd.js` `37ade6e4…`, `OperatorConsole-Dg0ax5fw.js` `ecfd8109…`);
+>   the wall holds (/admin /studio /os-map /os-source /founder /proof-studio → 404
+>   neutral); public 200 (/notifications /member /); endpoints /api/operator/
+>   notifications → 401, member inbox → 200 honest S1; healthz ok, feed 78 items,
+>   engine healthy (a documented partial-reboot "2 streams faulted" self-healed via
+>   the persisted cursor — 2 clean cycles, headBlock advancing 90.647M→90.648M). No
+>   anomalies. **DEPLOY BACKLOG: EMPTY. Tree clean at `4998f72`.**
+> - **NEXT (slice 2 now live — the access-model arc's layout spine is complete):**
+>   ① pagination (`/activity` newest-first feed + the newsroom Chronicle
+>   sort/filter/pagination = `chr-newsroom-page`); ② `/member` FULL migration to
+>   `MemberAppPage` (it is the one bespoke page left — its own door/dashboard fork
+>   works and is full-width, but it does not yet use the shared wrapper); ③ then
+>   continue the `MEMBER_HOME_FINISH_ORDER` (the Phase-A defects: founder
+>   BUILDER_SOURCE derivation, genesis footprint "—", etc.).
 > - **DO NOT build member-facing layout/composition without the founder** (VISUAL
 >   CHANGE LAW: wireframe → preview gate). Copy = full text on screen first.
 >
