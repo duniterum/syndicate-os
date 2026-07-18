@@ -48,11 +48,18 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > byte-identity confirmed; the wall holds; endpoints 401/200-S1; engine healthy.
 > **DEPLOY BACKLOG: EMPTY.**
 >
-> **FOUNDER'S REMAINING MANUAL ACTS (housekeeping, not a slice):** from
-> /admin/broadcast → "Sent", delete the 3 TEST notifications via the Trash button
-> (confirm dialog) — "TEST FOR MEMBER NO 1", "TEST" (all members), "Hi This Is The
-> First Message" — keeping ONLY **"This message opens the record."** (the real
-> first Founder broadcast). Founder-only; Founder closes Q43 after this.
+> **✅ HOUSEKEEPING DONE + Q43 CLOSED (EVIDENCE-confirmed 2026-07-18):** the 3 TEST
+> notifications were deleted from /admin/broadcast → "Sent"; only **"This message
+> opens the record."** (the real first Founder broadcast) remains. Q43 THE
+> NOTIFICATION CENTER is CLOSED. **PROOF (not memory):** in the prior "Admin and
+> Membership" session the founder posted his OWN SCREENSHOT of the Sent list
+> showing ONLY that one line — the 3 tests were already gone (he saw "nothing to
+> click" because there was nothing left to delete). **NEVER re-raise this.** A prod
+> manual act leaves NO repo trace, so this ledger's earlier "remaining manual act"
+> block was STALE and contradicted the same session's own handoff — the exact
+> from-memory drift the ledger exists to kill. When prod-only state is ever in
+> doubt, grep the session transcripts (`~/.claude/projects/<proj>/*.jsonl`) for the
+> real evidence; never recite a doc line or anyone's memory.
 >
 > **v2 GROWTH (next notification work, recorded — NOT built):** the AUTO
 > protocol-event generator (a seat taken → notif, a promotion due → notif, a

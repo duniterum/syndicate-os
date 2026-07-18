@@ -25,8 +25,14 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > env flips. Everything else BUILDS autonomously to the preview/diff. A question
 > answered once (queue/canon/state) is answered forever.**
 >
-> - ⏳ **Q43 — THE NOTIFICATION CENTER: ✅ SEALED IN PROD, awaiting only the
->   founder's explicit close (founder, 2026-07-18).** EVIDENCE (HEAD `ac3f30c`,
+> - ✅ **Q43 — THE NOTIFICATION CENTER: CLOSED (EVIDENCE-confirmed 2026-07-18).**
+>   The 3 test notifications were deleted from /admin/broadcast → Sent; only "This
+>   message opens the record." remains; Q43 is CLOSED. PROOF (not memory): the
+>   founder's OWN SCREENSHOT in the prior "Admin and Membership" session showed the
+>   Sent list with only that one line — the tests were already gone. A prod manual
+>   act leaves NO repo trace; NEVER re-raise it (the stale "remaining act" line was
+>   the exact drift this file exists to kill).
+>   EVIDENCE (sealed in prod, HEAD at seal `ac3f30c`,
 >   Replit verified EACH cycle): NOTIF-1 (`881b166`/`a45d8b8`) = bell + tabs
 >   All/Protocol/Mine + `/notifications` page + member own-row inbox + two-tier
 >   seen/read receipts + per-member contact + broadcast + honest admin bell (the
@@ -39,10 +45,10 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 >   (`ac3f30c`) = consistent gold type-icon · the final hardening batch (`51e68de`
 >   = read-path server-authoritative re-validation + gold Sent icon + shared
 >   Select dropdown height-cap/scroll) all SEALED (Replit 6/6, no migration).
->   DEPLOY BACKLOG: EMPTY; tree clean. FOUNDER'S REMAINING MANUAL ACT
->   (housekeeping): /admin/broadcast → Sent → delete the 3 test notifications
->   (Trash → confirm), keep only "This message opens the record." **Only the
->   founder closes Q43** (after the housekeeping delete). v2 GROWTH (recorded, not
+>   DEPLOY BACKLOG: EMPTY; tree clean. ✅ HOUSEKEEPING DONE + Q43 CLOSED
+>   (founder-confirmed in chat 2026-07-18): the 3 test notifications were deleted
+>   from /admin/broadcast → Sent; only "This message opens the record." remains.
+>   NEVER re-raise this. v2 GROWTH (recorded, not
 >   built): the auto protocol-event generator — `category` seeded NULL so NO second
 >   migration; picture in `docs/reference/LIVING_NOTIFICATION_LAYER.md`.
 >   ORIGINAL ASK (kept for the record):
