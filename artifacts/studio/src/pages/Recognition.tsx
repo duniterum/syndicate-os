@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { PublicPage } from "@/components/PublicPage";
+import { MemberAppPage } from "@/components/member/MemberAppPage";
 import { TruthLabel } from "@/components/TruthLabel";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
@@ -41,7 +41,7 @@ const dimensions: Dimension[] = [
 
 export default function Recognition() {
   return (
-    <PublicPage
+    <MemberAppPage
       eyebrow="Recognition"
       title="Recognition, not a financial benefit."
       lead="Recognition is structural: it acknowledges verified participation and contribution to The Syndicate. It is never a financial benefit, a security, or a promise of gain — and it is a future concept: no standing figure is computed today."
@@ -67,6 +67,6 @@ export default function Recognition() {
           <Button variant="outline">{ctas.learn.label}</Button>
         </Link>
       </div>
-    </PublicPage>
+    </MemberAppPage>
   );
 }

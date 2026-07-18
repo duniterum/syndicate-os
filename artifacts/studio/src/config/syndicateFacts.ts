@@ -281,11 +281,11 @@ export const memberHome = {
   eyebrow: "Member Home",
   door: {
     title: "Your seat lives here.",
-    lead: "Connect your wallet and this page reads your own record, live from the chain — your seat, your receipt, your standing. Only ever your own row: there is no directory of members.",
+    lead: "This is Member Home. Connect your wallet and it reads your own record straight from the chain — the seat you hold, its receipt, and where you stand. You only ever see your own: no list of members to browse, and nothing about you is stored.",
     honestyControl:
-      "Connecting proves control of a wallet — session ≠ membership; a seat is what the chain recognizes.",
+      "Connecting proves control of a wallet — it doesn't give you a seat. Your seat is your membership: you take it on Join, and the chain writes it — numbered and permanent.",
     honestySafety:
-      "View-only and account-free: no email, no password, and nothing here ever moves funds.",
+      "No account, no email, no password — your wallet is your only key. Signing in moves no money; and we never hold your funds — taking a seat or clearing an approval is a transaction you sign yourself, in your own wallet.",
   },
   stepsHeading: "How a seat works",
   steps: [

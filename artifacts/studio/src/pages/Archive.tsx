@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { ScrollText } from "lucide-react";
-import { PublicPage } from "@/components/PublicPage";
+import { MemberAppPage } from "@/components/member/MemberAppPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ export default function Archive() {
   const archiveEntries = getContractsByCategory("archive");
 
   return (
-    <PublicPage
+    <MemberAppPage
       eyebrow="Archive & chronicle"
       title="Protocol memory, kept honestly."
       lead="The archive holds the protocol's artifacts; the chronicle is its narrative memory of milestones. Artifacts mint on-chain today — every mint is a public line on the live record — and the chronicle publishes its promoted entries. The full museum surface is still being built."
@@ -90,6 +90,6 @@ export default function Archive() {
           </Link>
         </div>
       </Card>
-    </PublicPage>
+    </MemberAppPage>
   );
 }

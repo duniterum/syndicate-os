@@ -572,7 +572,7 @@ if (!existsSync(studioDistDir)) {
     // Human-First Law. These are the new stable build strings.)
     "/api/auth",
     "proves control of a wallet",
-    "ever your own row",
+    "no list of members",
   ];
   for (const probe of REQUIRED_WALLET_PROBES) {
     const hits = distFiles.filter((f) => read(f).includes(probe));

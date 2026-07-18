@@ -10,7 +10,7 @@
 
 import { Flame, ExternalLink } from "lucide-react";
 import { useEffect, useState } from "react";
-import { PublicPage } from "@/components/PublicPage";
+import { MemberAppPage } from "@/components/member/MemberAppPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { StatusPill } from "@/components/status-pill/StatusPill";
@@ -171,7 +171,7 @@ function ProofOfBurnRecord() {
 
 export default function FireLedger() {
   return (
-    <PublicPage
+    <MemberAppPage
       eyebrow="Fire Ledger"
       title="Supply, retired in public."
       lead="Proof of Burn is a costly signal: SYN sent to the burn address is gone for everyone, forever — a manual, verifiable transfer, never automated, never a price promise. Below: the live total, and the complete numbered record — every burn since the first block, each with its own verify link."
@@ -192,6 +192,6 @@ export default function FireLedger() {
           whole either way.
         </p>
       </Card>
-    </PublicPage>
+    </MemberAppPage>
   );
 }

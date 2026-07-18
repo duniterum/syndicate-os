@@ -1,8 +1,11 @@
 // components/member/MemberShell.tsx — the MEMBER SHELL (two-shells rule).
 // ---------------------------------------------------------------------------
-// The PAGE chooses the shell: Member Home composes this; public pages never
-// do (a signed-in member browsing /whitepaper keeps the public shell — he is
-// not trapped in a bubble; Google is always an anonymous visitor, so the 2.0
+// WHO composes the shell (founder rule 2026-07-18, CANON_ACCESS_MODEL): a
+// member DOOR page composes it via <MemberAppPage> AND ONLY when the viewer is
+// CONNECTED — so the member stays oriented (never leaves the dashboard). A
+// general public page (/whitepaper) never does (a signed member reading it keeps
+// the public shell — not trapped in a bubble), and the ANONYMOUS/prerender view
+// is always the standalone public page (Google never sees the shell → the 2.0
 // prerender is untouched). This is a PRESENTATIONAL wrapper INSIDE the public
 // chrome: a left sidebar of member doors + the page content. It renders for
 // everyone — locked doors are the spec's return-visit hook (locked ≠ hidden);

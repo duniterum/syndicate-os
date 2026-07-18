@@ -301,7 +301,7 @@ export default function MemberAccess() {
       </section>
 
       <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4 max-w-5xl">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
           <MemberShell>
             {/* How a seat works — three human steps. */}
             <div className="mb-12" data-testid="member-how-a-seat-works">

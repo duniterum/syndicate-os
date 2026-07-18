@@ -6,7 +6,7 @@
 //   · register CARRIES ENTRIES → the solemn public record, oldest-first,
 //     protocol-institutional voice, identity/amount-blind, verify-first.
 
-import { PublicPage } from "@/components/PublicPage";
+import { MemberAppPage } from "@/components/member/MemberAppPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { TeaserSurface, type TeaserSpec } from "@/components/TeaserSurface";
@@ -41,7 +41,7 @@ export default function ChronicleTeaser() {
     a.dateUtc.localeCompare(b.dateUtc),
   );
   return (
-    <PublicPage
+    <MemberAppPage
       eyebrow="Chronicle"
       title="The institutional story."
       lead="Turning points only — each entry promoted by a human decision, written in the protocol's own voice, and verifiable by anyone. Oldest first: the story in the order it was lived."
@@ -80,6 +80,6 @@ export default function ChronicleTeaser() {
           is public in the repository.
         </p>
       </Card>
-    </PublicPage>
+    </MemberAppPage>
   );
 }

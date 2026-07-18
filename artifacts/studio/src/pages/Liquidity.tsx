@@ -7,7 +7,7 @@
 // price via useTokenomics) — no new read path, fail-closed.
 
 import { ArrowDown, ExternalLink } from "lucide-react";
-import { PublicPage } from "@/components/PublicPage";
+import { MemberAppPage } from "@/components/member/MemberAppPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { Card } from "@/components/ui/card";
@@ -130,7 +130,7 @@ function LpStatus() {
 
 export default function Liquidity() {
   return (
-    <PublicPage
+    <MemberAppPage
       eyebrow="Liquidity"
       title="LP is what makes SYN tradable."
       lead="Before any chart or reserve number — understand why a liquidity pool exists at all. The pool below is small on purpose: every early LP shapes how SYN trades for everyone who comes after."
@@ -175,6 +175,6 @@ export default function Liquidity() {
           </p>
         </Card>
       </section>
-    </PublicPage>
+    </MemberAppPage>
   );
 }

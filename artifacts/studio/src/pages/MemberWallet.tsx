@@ -12,7 +12,6 @@
 import { lazy, Suspense } from "react";
 import { MemberAppPage } from "@/components/member/MemberAppPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
-import { MemberShell } from "@/components/member/MemberShell";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
 
 const MemberWalletPanel = WALLET_SESSION_PREVIEW_ENABLED
@@ -22,18 +21,17 @@ const MemberWalletPanel = WALLET_SESSION_PREVIEW_ENABLED
 export default function MemberWallet() {
   return (
     <MemberAppPage
+      kind="account"
       eyebrow="Wallet"
       title="Your wallet, read honestly."
       lead="Your own balances and your own approvals toward the protocol's known contracts — read live, own-row only, never a directory. The one action here (revoking an approval) is a transaction you sign in your own wallet."
       badge={<LifecycleBadge lifecycle="LIVE_ACTION" />}
     >
-      <MemberShell>
-        {MemberWalletPanel ? (
-          <Suspense fallback={null}>
-            <MemberWalletPanel />
-          </Suspense>
-        ) : null}
-      </MemberShell>
+      {MemberWalletPanel ? (
+        <Suspense fallback={null}>
+          <MemberWalletPanel />
+        </Suspense>
+      ) : null}
     </MemberAppPage>
   );
 }

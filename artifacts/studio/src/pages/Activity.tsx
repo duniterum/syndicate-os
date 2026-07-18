@@ -6,14 +6,14 @@
 // stays the freshness layer between cycles. The vision block states exactly
 // what arrives NEXT.
 
-import { PublicPage } from "@/components/PublicPage";
+import { MemberAppPage } from "@/components/member/MemberAppPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { LiveActivityFeed } from "@/components/activity/LiveActivityFeed";
 
 export default function Activity() {
   return (
-    <PublicPage
+    <MemberAppPage
       eyebrow="Activity"
       title="The public heartbeat."
       lead="The protocol speaks through verified receipts. Seats, burns, referral events, liquidity, archive mints, treasury movements, milestone crossings, era turns and footprint rises are served by the event indexer — the complete on-chain record, newest first — refreshed live from the chain between cycles; Chronicle promotions and the protocol's deployments join from the committed canon. Every line names its act the way the chain wrote it — member number, short-form signature — and carries its own verify link to the full transaction. Never a claim, never more than the chain itself publishes."
@@ -34,6 +34,6 @@ export default function Activity() {
           covers.
         </p>
       </Card>
-    </PublicPage>
+    </MemberAppPage>
   );
 }

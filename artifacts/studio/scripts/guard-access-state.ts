@@ -703,10 +703,14 @@ check(
 // WITH the panel; the own-row honesty is carried user-facing by the lead
 // ("ever your own row" — also the auth-zone dist probe).
 const memberHomeCopyRaw = read(path.resolve(srcDir, "config/syndicateFacts.ts"));
+// Humanized 2026-07-18 (founder): the honesty INVARIANT is unchanged (connecting
+// proves wallet control · a session is not a seat · own-row only, no directory);
+// only the wording moved from jargon ("session ≠ membership", "your own row") to
+// human language. The guard now pins the TRUTH in its human form, not the symbol.
 for (const phrase of [
   "proves control of a wallet",
-  "session ≠ membership",
-  "ever your own row",
+  "it doesn't give you a seat",
+  "no list of members",
 ]) {
   check(
     memberHomeCopyRaw.includes(phrase),

@@ -7,20 +7,18 @@
 
 import { MemberAppPage } from "@/components/member/MemberAppPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
-import { MemberShell } from "@/components/member/MemberShell";
 import { MemberQuickActions } from "@/components/member/MemberQuickActions";
 
 export default function MemberToolkit() {
   return (
     <MemberAppPage
+      kind="account"
       eyebrow="Toolkit"
       title="What a seat can do."
       lead="Every member action, in one place — real acts only. What your wallet unlocks is shown unlocked; what a seat unlocks stays visible with the plain reason, so you can see exactly what joining opens."
       badge={<LifecycleBadge lifecycle="LIVE_ACTION" />}
     >
-      <MemberShell>
-        <MemberQuickActions />
-      </MemberShell>
+      <MemberQuickActions />
     </MemberAppPage>
   );
 }
