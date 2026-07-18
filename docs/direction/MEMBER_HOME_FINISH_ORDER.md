@@ -49,6 +49,10 @@ human-first copy; readability floor (no sub-12px); WORK-FIRST composition; ADR-0
 7. **Live introduction-count badge** on the Referral door + snapshot-refresh automation (M0).
 8. **A1 — My Activity** — own-row receipt binder + "My | Protocol" pulse lens + Receipts door/tile
    go live. **SYSTEM-FIRST inventory on screen + wireframe.** (Engraved-next; feeds other zones.)
+   **READ FIRST at this slice: `docs/reference/A1_BENCHMARK_AND_HONESTY_CONTRACT.md`** (TIER-0 — the
+   grade-AAA external benchmark per surface + the A1 HONESTY CONTRACT the first build must pass).
+   Scope ladder: S0 binder · +S1 My|Protocol lens · +S2 per-row histories (M10) — all client-only,
+   zero new indexing; S3 receipt-roadmap / S4 auto-generator are their own later slices.
 9. **M10 — per-receipt / per-introduction row histories** (verify-linked, own-row) — wireframe, rides A1.
 10. **Verify-first affordances** — visible verify links on the footprint sum + KPI tiles (not hover-only).
 11. **Ownership — own Archive ERC-1155 holdings** on the page — wireframe.
