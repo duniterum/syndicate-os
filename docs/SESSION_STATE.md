@@ -2,6 +2,31 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ ✅ Q43 NOTIF-1 SEALED IN PROD (2026-07-18, Replit 6/6 at HEAD `881b166`) +
+> THE WORK-FIRST RECOMPOSITION (founder AAA rejection of the hero cut → fixed
+> same session).** Replit: 2 tables migrated (`notification` +
+> `notification_receipt`, dev DB; the known Drizzle truncate false-positive
+> refused safely — continuity intact 1 run/12 records) · gates green at the
+> new counts (auth-zone 906 · studio 3 659 · member-menu 35 · admin-dist 93)
+> · prod battery: operator notifications 401 fail-closed · member-inbox 200
+> honest S1 · wall ×6 404 · SHA identical · feed 78 · engine advancing.
+> **THE FOUNDER ACTED THE SEAL:** smoke test = message to his OWN seat #1
+> (`0x2445…c721` row) — the header bell lit with badge 1, popover tabs
+> working, /notifications rendering the real row; THEN the FIRST FOUNDER
+> BROADCAST sent (option A wording — "This message opens the record.", the
+> Chronicle claim deferred until the promote pathway exists). THE CHANNEL IS
+> ALIVE. **RECOMPOSITION on his rejection ("vraiment pas AAA"):**
+> /notifications violated the WORK-FIRST LAW — full-screen marketing hero,
+> duplicated lead, static "Sign in required" badge lying to a signed-in
+> member, bell popover surviving navigation. Fixed: compact dashboard band
+> (173px) → THE INBOX immediately · every duplicate line dead ("never
+> emails" ×1) · NO static badge BY DECISION (every candidate lied in some
+> state; honesty is state-aware in the panel, locked by a new
+> guard-lifecycle-labels chassis check paying the exemption) · popover
+> closes on View all. All green; awaiting one quick client-only cycle.
+> NEXT after this seal: A1 "My Activity" → B1 → A2 → M-INT-2 · the Q42 wave
+> (incl. chronicle-promote, which closes the broadcast's Chronicle loop) · Q39.
+
 > **▶ 🔨 Q43 NOTIF-1 BUILT + ON MAIN (2026-07-18, founder GO ×3: slice → revised
 > wireframe → commit; preview gate passed on the rig). THE NOTIFICATION CENTER —
 > the no-email canon made real (in-app is the protocol's ONLY channel, ever):**

@@ -62,6 +62,9 @@ export default function MemberNotificationsBell() {
   // undefined = in-flight · null = failed/unavailable · readback = served.
   const [inbox, setInbox] = useState<OwnInboxReadback | null | undefined>(undefined);
   const [tab, setTab] = useState<Tab>("all");
+  // Controlled popover so "View all" can CLOSE it on navigate (an open
+  // popover floating over the destination page is a dead layer).
+  const [open, setOpen] = useState(false);
 
   const read = useCallback(() => {
     void fetchOwnInbox().then(setInbox);
@@ -82,8 +85,9 @@ export default function MemberNotificationsBell() {
   const unseen = inbox.unseenCount ?? 0;
   const visible = filterRows(rows, tab).slice(0, POPOVER_LIMIT);
 
-  function handleOpenChange(open: boolean) {
-    if (!open || unseen === 0) return;
+  function handleOpenChange(next: boolean) {
+    setOpen(next);
+    if (!next || unseen === 0) return;
     // Seen ≠ read: the badge clears, the dots stay until each item is clicked.
     void postInboxSeen().then((ok) => {
       if (ok && inbox && inbox.state === "S4") {
@@ -130,7 +134,7 @@ export default function MemberNotificationsBell() {
   );
 
   return (
-    <Popover onOpenChange={handleOpenChange}>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         {/* Chrome matches the neighboring reserved trophy slot exactly —
             the bell simply went from reserved to live in place. */}
@@ -217,7 +221,9 @@ export default function MemberNotificationsBell() {
               Mark all as read
             </Button>
             <Button asChild variant="ghost" size="sm" className="flex-1 text-xs">
-              <Link href="/notifications">View all</Link>
+              <Link href="/notifications" onClick={() => setOpen(false)}>
+                View all
+              </Link>
             </Button>
           </div>
         </PopoverContent>

@@ -24,6 +24,14 @@ const EXEMPT = new Set([
   // (ACT-1: Activity + Fire Ledger went LIVE and render their badge directly —
   // removed from this list; only the Chronicle teaser remains chassis-labeled.)
   "ChronicleTeaser.tsx",
+  // NOTIF-1 (founder AAA recomposition 2026-07-18): /notifications is a WORK
+  // surface whose truth is STATE-AWARE — every static badge lied in some
+  // state ("Sign in required" to a signed-in member; LIVE_ACTION's "signed
+  // from your wallet" for a session act). Its honesty label lives in the
+  // wallet panel per state (the "Live · your own row" chip + the honest
+  // sign-in/denied/unavailable cards) — the chassis check below pays for
+  // this exemption, so it cannot rot into an unlabeled surface.
+  "MemberNotifications.tsx",
 ]);
 
 // The chassis check that pays for the teaser exemptions: TeaserSurface must
@@ -37,6 +45,25 @@ const EXEMPT = new Set([
   if (!/LifecycleBadge/.test(chassis) || !/spec\.lifecycle/.test(chassis)) {
     console.error(
       "[guard:lifecycle] FAIL — TeaserSurface no longer renders <LifecycleBadge lifecycle={spec.lifecycle}>; the teaser-page exemptions are void.",
+    );
+    process.exit(1);
+  }
+}
+// The chassis check that pays for the MemberNotifications exemption: the
+// wallet panel must keep its state-aware honesty — the live chip AND the
+// honest fail-closed line. If either disappears, this guard goes red even
+// though the page is exempt.
+{
+  const panel = readFileSync(
+    path.resolve(here, "..", "src", "wallet", "MemberNotificationsPanel.tsx"),
+    "utf8",
+  );
+  if (
+    !/Live · your own row/.test(panel) ||
+    !/unavailable right now \(fail-closed\)/.test(panel)
+  ) {
+    console.error(
+      "[guard:lifecycle] FAIL — MemberNotificationsPanel lost its state-aware honesty (the 'Live · your own row' chip or the fail-closed line); the MemberNotifications.tsx exemption is void.",
     );
     process.exit(1);
   }

@@ -148,8 +148,7 @@ export default function MemberNotificationsPanel() {
         </h2>
         <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
           Sign in with your wallet on Member Home to read your own inbox —
-          messages to you alone and announcements to all members. Real messages
-          from the Syndicate appear only here; the protocol never emails.
+          your messages and the announcements to all members are waiting here.
         </p>
       </Card>
     );
@@ -195,10 +194,16 @@ export default function MemberNotificationsPanel() {
 
   return (
     <Card className="p-6">
-      <div className="mb-1 flex flex-wrap items-center gap-3">
-        <BellRing className="h-5 w-5 text-muted-foreground" />
-        <h2 className="text-base font-semibold text-foreground">Notifications</h2>
-        <span className="font-mono text-xs uppercase tracking-wider text-primary">
+      {/* WORK-FIRST (founder, 2026-07-18): the panel opens on the work — tabs
+          + mark-all in ONE row; the page band above already said what this
+          is, exactly once. */}
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <BellRing className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+        {tabButton("all", "All")}
+        {tabButton("protocol", "Protocol")}
+        {tabButton("mine", "Mine")}
+        {tabButton("unread", "Unread", rows.filter((r) => r.unread).length)}
+        <span className="font-mono text-xs uppercase tracking-wider text-primary hidden sm:inline">
           Live · your own row
         </span>
         <Button
@@ -210,19 +215,6 @@ export default function MemberNotificationsPanel() {
         >
           Mark all as read
         </Button>
-      </div>
-      <p className="mb-4 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-        Messages to you alone and announcements to all members — the
-        protocol&apos;s only channel; nothing unread ever expires, and real
-        messages from the Syndicate appear only here. The protocol never
-        emails.
-      </p>
-
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        {tabButton("all", "All")}
-        {tabButton("protocol", "Protocol")}
-        {tabButton("mine", "Mine")}
-        {tabButton("unread", "Unread", rows.filter((r) => r.unread).length)}
       </div>
 
       {filtered.length === 0 && (
