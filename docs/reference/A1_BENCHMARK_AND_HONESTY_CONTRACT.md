@@ -32,10 +32,17 @@ pass after the founder complains.**
 1. **VERIFY-FIRST ROW.** Every figure carries its own proof affordance — a compact `Verify ↗` that
    resolves to the mono tx-hash and links to the Avalanche explorer (Snowtrace). No number appears
    without a path to its proof; **a figure we can't prove, we don't show.** Same on desktop + mobile.
-2. **OWN-ROW ONLY.** The surface shows the member's OWN events; the server never emits another
-   member's address; **no leaderboard, no "others", no ranked comparison, ever** (ADR-003).
-   Aggregates (pot, treasury, payout totals) are shown as the TRUE on-chain aggregate with their own
-   proof link — never disaggregated into a roster of people.
+2. **OWN-ROW — AND WE HIDE NOTHING ON-CHAIN** (THE VISIBILITY LAW, TIER-0; founder correction
+   2026-07-19 — an earlier draft here said "never another member's address", which OVER-APPLIED it).
+   The surface is the member's OWN standing. But *"on a chain, hiding does not exist"* — **what is
+   forbidden is NOT the ADDRESS; it is the non-consensual LINK between a wallet and a PERSON.** Two
+   disciplines: the CLIENT does not HIDE chain-emitted addresses (the buyer/recipient the chain emits,
+   the wallet that pays you AND the one you pay) — shown short-form, because the chain already
+   publishes them; the SERVER refuses to FABRICATE — no member directory, no search, no reverse-index
+   (seat→wallet). The RED LINE: **never a name / alias / email** (no PII — we don't collect email;
+   an alias is opt-in self-publish ONLY), never a wallet↔person link, never a browsable directory,
+   never exposing a NON-CONSENTING member (fabricating new exposure), no leaderboard / ranked
+   comparison. Aggregates shown as the TRUE on-chain total with their proof. (Canon: `CANON_VISIBILITY_LAW.md`.)
 3. **ANTI-FINANCIALIZATION SKIN.** Amounts are static and neutral — no animated counters, no
    green-pump, no ROI/APY/yield/%-gain, no all-time-high badges, no streaks, no countdowns, no
    confetti, no scarcity/urgency copy. State is carried by label + icon, never colour alone.
@@ -123,9 +130,11 @@ Event row = restrained honest-function type token → plain-language sentence (h
 where real → relative time (absolute on expand) → inline `Verified on-chain` chip (tx → Snowtrace) +
 confirmed/pending/failed dot; grouped under sticky day headers. **Mine** = strictly own-row, behind
 the sign-in wall (not-connected → conversion state, never others' data as a teaser). **Protocol** =
-public events but **member-level de-identified** ("A member joined" / "12 today") with contract-level
-facts shown in full — completeness of the pulse without a directory of who. Refresh = "N new" pill +
-an "as of block N" freshness stamp (no fake ticker).
+public events shown AS THE CHAIN EMITS THEM — short-form addresses included (the client reads the
+chain like an explorer; per the Visibility Law we HIDE nothing on-chain), honestly BATCHED for
+readability ("12 joined today") — batching is for legibility, NEVER to conceal — with contract-level
+facts in full. What we never do: fabricate a directory/search or attach a name/alias/email to an
+address. Refresh = "N new" pill + an "as of block N" freshness stamp (no fake ticker).
 
 **Our edge:** every row is provable and we make provability the primary citizen of the line. Mine
 becomes a personal ledger where every self-figure is independently verifiable; Protocol turns public
@@ -134,8 +143,10 @@ exact inverse of an engagement feed.
 
 **Founder decisions:** (1) default lens for a connected member = **Mine-first** (fallback to Protocol
 when Mine is empty) vs Protocol-as-universal-default — recommend Mine-first; (2) section name stays
-"Pulse", toggle = Mine/Protocol; (3) confirm the ADR-003 de-identification line for Protocol member
-events; (4) recommend the feed stays a calm ledger with NO unread state — the bell owns "unread".
+"Pulse", toggle = Mine/Protocol; (3) confirm the Visibility-Law line for the Protocol lens — show
+chain-emitted short-form addresses (we hide nothing on-chain), batch for readability, and NEVER
+attach a name/alias/email or build a directory/search; (4) recommend the feed stays a calm ledger
+with NO unread state — the bell owns "unread".
 
 ### S2 · Per-row histories & detail (M10)
 The member's OWN itemized histories — introductions (who/when), receipts, commissions — each a
@@ -163,9 +174,11 @@ cross-sell promo rows in the ledger.
 
 **Our version:** opens on the itemized record ("47 entries — every one verifiable"); controls row =
 type-filter chips (All / Introductions / Receipts / Commissions) + a date sort. Row = mono date +
-serif human label + privacy-safe counterpart hint (**a pseudonymous handle the member already knows —
-NEVER the other's address or a profile link**) + right-aligned amount (**introductions carry a neutral
-NON-CASH marker, never $0** — an intro is never read as a payout) + status pill + a persistent VERIFY
+serif human label + the counterpart AS THE CHAIN EMITS IT (**the buyer's short-form address the
+chain already published — per the Visibility Law we HIDE nothing on-chain — but NEVER a name/alias/
+email and NEVER a link to a profile or directory of that person**) + right-aligned amount
+(**introductions carry a neutral NON-CASH marker, never $0** — an intro is never read as a payout) +
+status pill + a persistent VERIFY
 handle **on the row**. Row → non-modal right drawer **headlined by the proof** (full hash + copy +
 explorer) → event timeline → the figure with a "how this was computed" trace to the on-chain event →
 in-app download of THIS record (no email). Mobile: stacked cards, full-height sheet, bounded
