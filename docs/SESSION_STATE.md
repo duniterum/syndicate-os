@@ -2,21 +2,63 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ ⏭️ NEXT (founder-approved 2026-07-18, session end — founder resting, said
-> "prépare tout et attend moi"): FINISH MEMBER HOME, in order.** The full
-> definition-of-done + the 21-step ordered plan (4 phases) live in
-> **`docs/direction/MEMBER_HOME_FINISH_ORDER.md` — START THERE.** Phase A first
-> (live truth defects): ① remove the duplicate "Your referral" heading (pure
-> build) · ② member gamification copy = SHOW the money + keep XP≠season-cagnotte
-> clear · ③ founder BUILDER_SOURCE derivation · ④ genesis footprint derivation ·
-> ⑤ shared-read 3-state. **Do NOT build member-facing changes without the
-> founder** (VISUAL CHANGE LAW: wireframe → preview gate). Full backlog (173 open
-> items, 14 categories) = `docs/direction/BACKLOG.html`. **HARD-WON DOCTRINE (do
-> not re-litigate):** XP/Learn&Earn = recognition, never cash · the season
-> cagnotte = REAL company USDC (merit, lawyer-gated = `gam-payout`, Phase-5
-> deferred) · **WE SHOW THE MONEY** (Visibility Law TIER-0 — "company, not
-> charity"; the "never a cash figure" copy is itself a defect) · Q16 + PublicHome
-> TruthLabel = PUBLIC home, NOT Member Home.
+> **▶ ⏭️ READ-FIRST BOOT (2026-07-18, the founder's standing order — "stop making
+> me re-explain; make the canonical files the thing you read before any work").
+> BEFORE touching anything, READ these, in order, and do NOT re-derive or re-ask
+> what they already answer:**
+> 1. `docs/direction/CANON_ACCESS_MODEL.md` (TIER-0) — the site-wide ACCESS MODEL
+>    (tiers · the seat=membership law · the operator wall · the sign-in wall ·
+>    no-hero-when-connected · shell-continuity · full-screen S7-d) + the applied
+>    `tier × surface` pattern. **Every member surface follows it via
+>    `MemberAppPage`; change the pattern once, all pages follow — never page by page.**
+> 2. `docs/direction/MEMBER_HOME_FINISH_ORDER.md` — the ordered plan to finish Member Home.
+> 3. `docs/direction/BACKLOG.html` — the full 173-item backlog, 14 categories.
+> 4. `docs/direction/OPEN_QUEUE.md` — in-flight decisions.
+>
+> **WHERE WE ARE (2026-07-18, this session):**
+> - ✅ **SEALED IN PROD — access-model SLICE 1 (`b2e3e85`, Replit 6/6):** the
+>   session-resolved **sign-in wall** on member-account surfaces (the `/wallet`
+>   "balances while logged out" leak CLOSED — gate on the SESSION, never the
+>   wagmi address; Q-B handled), **full-width** `/wallet`+`/toolkit` (the narrow
+>   `max-w-5xl` column dead), **no explanatory hero when connected** (opens on the
+>   work), and the `/member` "Your referral" dedup. Shared pieces: `SignInWall`,
+>   `MemberAppPage`, `lib/useSignedIn`.
+> - 🚀 **DEPLOY BACKLOG (committed, NOT yet deployed) — SLICE 2 (`1b0c51b`):**
+>   the GENERAL member-surface layout. `MemberAppPage` is now THE wrapper every
+>   member door uses (`kind="content"` public doors → in-shell + light header when
+>   connected, SEO-safe public hero when not; `kind="account"` /wallet+/toolkit →
+>   straight to the work). **Shell continuity:** the 6 content doors (Chronicle ·
+>   Activity · Archive · Recognition · Fire Ledger · Liquidity) now render INSIDE
+>   the dashboard shell when connected (they used to break out). **Hero copy
+>   humanized** — the honesty is `session ≠ SEAT` (the seat IS the membership), in
+>   plain words: no `≠` symbol, no "your own row". The INVARIANT is unchanged, so
+>   `guard-access-state` + the `guard-auth-zone` dist probe are **re-pinned to the
+>   same truth in human words** ("proves control of a wallet" kept verbatim — the
+>   security probe untouched). **VERDICT: 🚀 DEPLOY, client-only, no migration.**
+>   Replit: *pull main, deploy, report* — note the auth-zone dist probe changed
+>   `"ever your own row"` → `"no list of members"` (both are honest own-row
+>   strings shipped in the copy).
+> - **NEXT (after slice 2 deploys):** ① pagination (`/activity` newest-first feed +
+>   the newsroom Chronicle sort/filter/pagination = `chr-newsroom-page`); ②
+>   `/member` FULL migration to `MemberAppPage` (it is the one bespoke page left —
+>   its own door/dashboard fork works and is full-width, but it does not yet use
+>   the shared wrapper); ③ then continue the `MEMBER_HOME_FINISH_ORDER` (the Phase-A
+>   defects: founder BUILDER_SOURCE derivation, genesis footprint "—", etc.).
+> - **DO NOT build member-facing layout/composition without the founder** (VISUAL
+>   CHANGE LAW: wireframe → preview gate). Copy = full text on screen first.
+>
+> **HARD-WON DOCTRINE (this session — do NOT re-litigate):**
+> - **SEAT = the on-chain membership, ALWAYS** (binary, numbered). A session
+>   proves wallet control; the SEAT is the membership. Never confuse
+>   session/seat/membership; the `Sx` access-state codes are internal (S7 ≠ Seat 7).
+> - **WE SHOW THE MONEY** (Visibility Law TIER-0 — "company, not charity"; hiding
+>   an on-chain amount is theatre). XP/Learn&Earn = recognition, never cash; the
+>   season cagnotte = REAL company USDC (merit, lawyer-gated = `gam-payout`,
+>   Phase-5 deferred). "never a cash figure" copy was itself a defect.
+> - A member surface: connected = the WORK (no explanatory hero); not-signed =
+>   the teaser/hero. Own-row only, never a directory (ADR-003).
+> - Prod manual acts leave NO repo trace — never recite a stale "founder to-do";
+>   grep the transcripts for evidence, not memory (the Q43 lesson).
 
 > **▶ 🧭 CLEAN HANDOFF — THE NOTIFICATION CENTER IS COMPLETE & LIVE (2026-07-18,
 > session end; verified by a 4-lens completeness audit — API/security SHIP-READY,

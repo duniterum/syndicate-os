@@ -122,7 +122,20 @@ hero). Applies to EVERY member-account surface — general rule, not per-page.
 
 ## Status
 - **Decision + applied pattern: founder-confirmed 2026-07-18; benchmarked + critic-verified (SOUND with 3 adjustments, all folded in above).**
-- **DONE (founder-approved 2026-07-18): `/wallet` + `/toolkit`** — the session-gated sign-in wall (leak closed), full-width (S7-d), and the no-hero-when-connected rule (§H) via `SignInWall` + `MemberAppPage` + `useSignedIn`. Also the `/member` "Your referral" dedup.
-- **Next (founder-flagged 2026-07-18, to fold in): (1) SHELL CONTINUITY — the other member doors (`/chronicle`, `/activity`, `/archive`, `/recognition`, `/fire-ledger`, `/liquidity`, `/map`) break OUT of the dashboard shell; when connected they should render INSIDE the MemberShell (sidebar stays, the member stays oriented). (2) `/chronicle` UI: unfinished sorting links + descending order + needs PAGINATION.** Each its own slice through the preview gate.
+- **✅ SLICE 1 SEALED IN PROD (`b2e3e85`):** the session-gated sign-in wall on
+  member-account surfaces (`/wallet` leak closed — gate on the SESSION, not the
+  wagmi address; Q-B handled), full-width `/wallet`+`/toolkit` (S7-d), the
+  no-hero-when-connected rule (§H), the `/member` "Your referral" dedup. Pieces:
+  `SignInWall`, `MemberAppPage`, `lib/useSignedIn`.
+- **🚀 SLICE 2 COMMITTED (`1b0c51b`), pending deploy:** `MemberAppPage` is now THE
+  general member-surface wrapper (`kind` = content|account). SHELL CONTINUITY DONE
+  — the 6 content doors (Chronicle · Activity · Archive · Recognition · Fire
+  Ledger · Liquidity) render INSIDE the shell when connected. Hero copy HUMANIZED
+  (session ≠ SEAT, plain words); `guard-access-state` + the `guard-auth-zone` dist
+  probe re-pinned to the same honesty invariant in human words ("proves control
+  of a wallet" kept verbatim). Client-only, no migration → Replit pull/deploy/report.
+- **Next: (1) pagination — `/activity` newest-first feed + the newsroom Chronicle
+  sort/filter/pagination (`chr-newsroom-page`); (2) `/member` full migration to
+  `MemberAppPage` (the one bespoke page left).** Each through the preview gate.
 - Authority companions: `CANON_VISIBILITY_LAW.md` · `ADR-003` · `CANON_PROTOCOL_LANGUAGE.md` ·
   `surfaceNaming.ts` · `DESIGN_ROADMAP.md` (S7-d). `OPEN_QUEUE.md` + `SESSION_STATE.md` track status.
