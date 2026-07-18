@@ -45,6 +45,20 @@ gagne en cas de conflit*. Vit dans le repo : `docs/00_CANON_INDEX.md`.
 | `docs/direction/CANON_CONVERSION_SURFACE.md` | **LA DOCTRINE DES SURFACES DE CONVERSION (fondateur, 2026-07-14, binding — INVARIANTS ONLY, la règle de mesure de TOUTE page publique).** Le jumeau visuel de la Constitution du Langage (elle gouverne les mots ; ce doc gouverne la scène : hiérarchie, géométrie, poids, vitesse). §1 le test des 5 secondes (What is this? Who is it for? What do I do next? — ~14% du web passe ; chaque page Syndicate DOIT) · §2 le désir avant la preuve (emotion → figure → verify ; la data live = notre différenciateur, jamais cachée, la hiérarchie guide) · §3 UN SEUL CTA primaire par surface (~3× la conversion ; le secondaire reste discret) · §4 géométrie du héros (60–100% viewport desktop, 50–70% mobile ; le premier écran jamais gaspillé) · §5 LA LOI DE LARGEUR HYBRIDE (scènes full-bleed bord à bord, texte contraint ~1200–1440px — le site ne doit plus jamais sembler « encadré dans une boîte ») · §6 budgets de performance (LCP < 2,5s mobile · images WebP/AVIF < 500KB) · §7 mobile AAA (cibles ≥44px, ordre des blocs, CTA au pouce) · §8 signaux de confiance = verify links + chiffres honnêtes, le verify DANS le groupe visuel de la claim · §9 LA GRILLE DE REVUE (9 questions, courue à chaque gate de page publique). Enforcement : la grille au gate (guards minimaux jusqu'au MVP per CANON_LOI_ANTIBLOCAGE). |
 | `docs/direction/CANON_PROTOCOL_LANGUAGE.md` | **LA CONSTITUTION DU LANGAGE (fondateur, 2026-07-14, binding — INVARIANTS ONLY, ne périme jamais).** Comment le protocole PARLE : §1 le paragraphe d'identité · §2 la séquence six temps de toute page publique (what this is → live → pending → proof → do now → never promise) · §3 la voix (opérateur calme ; concepts approuvés Enter/Take your seat/Rise/Seal/Verify/Leave a trace/Be remembered…) · §4 les rôles de mots tranchés (referral=public, source=protocole, « Paid to referrer » côté acheteur, la formule money-flow, la phrase doctrinale verbatim, acquisitionCost=bytecode-only) · §5 LE vocabulaire banni consolidé (les guards = bras d'enforcement ; divergences flaggées) · §6 les lignes verbatim jamais reformulées (récoltées exactes du repo) · §7 les TROIS registres (PROOF institutionnel · CONVERSION marketing-intelligent sous la loi « bold claim + verify link » + les lignes vitrines referral · MEMBER chaleureux) · §8 le lexique d'événements (1 event = 1 phrase canonique ; LIVE capturées de M5 + RESERVED autorées). L'application CONVERSION ride M1/M2/M3. |
 
+## RÉFÉRENCE — dossiers feuille-de-route (NE PAS charger au boot ; consulter au slice concerné)
+
+Dossiers de destination Claude-advisor (2026-07-18, `docs/reference/`). **Indicatifs,
+PAS des specs** — ils décrivent où une future surface doit arriver ; ils plient
+devant la parole du fondateur, le repo live et le canon réglé. À lire au moment de
+construire la slice correspondante, jamais au boot.
+
+| Fichier | Ce que c'est | Slice concernée |
+|---|---|---|
+| `docs/reference/SWAP_BRIDGE_RAMP.md` | Le ramp swap/bridge (moteur LI.FI, porte-pas-marché, jamais d'approbation infinie, câblage admin↔backend↔frontend, le fee comme choix fondateur). | Le ramp swap/bridge (future) |
+| `docs/reference/SWAP_GAMIFICATION_LEGAL_DOSSIER.md` | Le benchmark swap + l'inventaire gamification Supa + **la recherche légale US/Suisse/monde** et le CHANGEMENT DE DOCTRINE du pot de saison (paiement au mérite autorisé, jamais chance). | Le moteur saison/gamification (future) |
+| `docs/reference/CHRONICLE_LIVING_NEWSROOM.md` | Le Chronicle comme newsroom AAA (on-chain + off-chain document-backed, preuve durable hash+doc+lien officiel, intelligence de détection). | Le newsroom Chronicle (B1/future) |
+| `docs/reference/LIVING_NOTIFICATION_LAYER.md` | Ce que NOTIF-1 (déjà scellé en prod) devient : catégories A/B/C/D, moteur de préférences, inventaire complet des événements auto. `never-message-first = externe uniquement`. | La croissance NOTIF-1 (future) |
+
 ## TIER 1 — Vue holistique, plan & canonical (CHARGER AU BOOT)
 
 | Fichier | Ce que c'est |
