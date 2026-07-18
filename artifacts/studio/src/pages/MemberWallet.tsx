@@ -10,7 +10,7 @@
 // the signature happens in their wallet, never here, never on a server.
 
 import { lazy, Suspense } from "react";
-import { PublicPage } from "@/components/PublicPage";
+import { MemberAppPage } from "@/components/member/MemberAppPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { MemberShell } from "@/components/member/MemberShell";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
@@ -21,7 +21,7 @@ const MemberWalletPanel = WALLET_SESSION_PREVIEW_ENABLED
 
 export default function MemberWallet() {
   return (
-    <PublicPage
+    <MemberAppPage
       eyebrow="Wallet"
       title="Your wallet, read honestly."
       lead="Your own balances and your own approvals toward the protocol's known contracts — read live, own-row only, never a directory. The one action here (revoking an approval) is a transaction you sign in your own wallet."
@@ -34,6 +34,6 @@ export default function MemberWallet() {
           </Suspense>
         ) : null}
       </MemberShell>
-    </PublicPage>
+    </MemberAppPage>
   );
 }

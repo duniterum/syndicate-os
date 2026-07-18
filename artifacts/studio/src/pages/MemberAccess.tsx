@@ -188,11 +188,6 @@ export default function MemberAccess() {
                     <MemberPulse />
                   </div>
                   <section id="referral-dashboard" className="scroll-mt-24">
-                    <h2 className="type-h2 text-foreground mb-1">Your referral</h2>
-                    <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-2">
-                      The people you brought in, your standing, and the Connector
-                      ladder.
-                    </p>
                     <MemberReferralDashboard />
                   </section>
                 </div>
@@ -342,11 +337,6 @@ export default function MemberAccess() {
             {/* The referral dashboard — anchored (the sidebar door's
                 target); honest signed-out states inside. */}
             <section id="referral-dashboard" className="mb-12 scroll-mt-24">
-              <h2 className="type-h2 text-foreground mb-1">Your referral</h2>
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-2">
-                The people you brought in, your standing, and the Connector
-                ladder.
-              </p>
               <MemberReferralDashboard />
             </section>
 

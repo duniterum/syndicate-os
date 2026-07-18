@@ -302,10 +302,15 @@ export function MemberReferralDashboard() {
 
   return (
     <div>
-      <div className="mt-8 mb-2 flex flex-wrap items-center gap-3">
-        <h3 className="text-base font-medium text-foreground">Your referral</h3>
+      {/* The component owns its heading (title + lifecycle + framing) so it can
+          never be duplicated by whoever mounts it — fixes the h2+h3 stutter. */}
+      <div className="mt-8 mb-1 flex flex-wrap items-center gap-3">
+        <h2 className="type-h2 text-foreground">Your referral</h2>
         <LifecycleBadge lifecycle={referralProgram.lifecycle} />
       </div>
+      <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-2">
+        The people you brought in, your standing, and the Connector ladder.
+      </p>
 
       <Card className="bg-primary/5 border-primary/30 p-4 mb-6">
         <div className="flex items-start gap-3">

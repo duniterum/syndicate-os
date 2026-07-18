@@ -110,10 +110,19 @@ Visibility Law (own reads live on tools/verify; a private dashboard behind sign-
 ### G. Operator wall (2-D, server-authoritative, fail-closed)
 `membership rung × operator role`. CLIENT wall = the neutral 404 (`OperatorRoute`, reveals only on server `operator-context` `isOperator && role`, reads no client identity signals). SERVER wall = `/api/operator` behind `authExposureGate` (dark by default), throttle → session account → ACTIVE registry role; `WRITE_ROLES={founder_root, protocol_admin}`; **founder_root-only** for operator create/suspend, notification writes, and the §D member-ledger. Keep the server role distinction authoritative; the client only needs "revealed or not".
 
+### H. Connected opens on the WORK — NO explanatory hero (founder, 2026-07-18)
+A member-account page shows the explanatory hero (eyebrow/title/lead) **ONLY when NOT signed** —
+it is the visitor's teaser. **When signed/connected, the page opens directly on the work,
+full-width, with NO hero** (the WORK-FIRST PAGE LAW: a member came for the work, not an
+explanation). Encoded in `components/member/MemberAppPage.tsx` (session-aware via the entry-safe
+`useSignedIn` hook; defaults to the work layout while resolving so a member never flashes the
+hero). Applies to EVERY member-account surface — general rule, not per-page.
+
 ---
 
 ## Status
 - **Decision + applied pattern: founder-confirmed 2026-07-18; benchmarked + critic-verified (SOUND with 3 adjustments, all folded in above).**
-- **Next: refactor page by page against this pattern — first `/member` + `/wallet` (the leak + the narrow column the founder saw), through the preview gate.** The `/wallet` session-gate is a **PRIVACY fix** + the width fix is founder-visible → **🚀 DEPLOY, NOT batchable** when it lands.
+- **DONE (founder-approved 2026-07-18): `/wallet` + `/toolkit`** — the session-gated sign-in wall (leak closed), full-width (S7-d), and the no-hero-when-connected rule (§H) via `SignInWall` + `MemberAppPage` + `useSignedIn`. Also the `/member` "Your referral" dedup.
+- **Next (founder-flagged 2026-07-18, to fold in): (1) SHELL CONTINUITY — the other member doors (`/chronicle`, `/activity`, `/archive`, `/recognition`, `/fire-ledger`, `/liquidity`, `/map`) break OUT of the dashboard shell; when connected they should render INSIDE the MemberShell (sidebar stays, the member stays oriented). (2) `/chronicle` UI: unfinished sorting links + descending order + needs PAGINATION.** Each its own slice through the preview gate.
 - Authority companions: `CANON_VISIBILITY_LAW.md` · `ADR-003` · `CANON_PROTOCOL_LANGUAGE.md` ·
   `surfaceNaming.ts` · `DESIGN_ROADMAP.md` (S7-d). `OPEN_QUEUE.md` + `SESSION_STATE.md` track status.

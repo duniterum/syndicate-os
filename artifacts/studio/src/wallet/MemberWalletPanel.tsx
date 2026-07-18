@@ -29,6 +29,7 @@ import {
 } from "@/lib/chainReads";
 import { formatRawUnits, formatRawUnitsDisplay } from "@/lib/rawUnits";
 import { useOwnArchiveHoldings } from "./ownReads";
+import { SignInWall } from "./SignInWall";
 
 const ERC20_APPROVE_ABI = [
   {
@@ -64,7 +65,11 @@ type Reads = {
   usdcAllowanceToSale: bigint | null;
 };
 
-export default function MemberWalletPanel() {
+// The panel BODY — rendered ONLY when the session is S4 (SignInWall gates it),
+// so the live balance reads never fire for an unsigned wallet. A member whose
+// wallet is disconnected but session still lives (Q-B) lands on the reconnect
+// state below, never the sign-in wall.
+function WalletPanelBody() {
   const { address, chainId } = useAccount();
   const { switchChain, isPending: switching } = useSwitchChain();
   const { openConnectModal } = useConnectModal();
@@ -138,15 +143,18 @@ export default function MemberWalletPanel() {
     }
   }, [address, usdcToken, saleAddr, busy, writeContractAsync, refresh]);
 
+  // Signed (SignInWall let us through) but the wallet is disconnected (Q-B):
+  // the session/membership is intact, but reading LIVE balances needs the
+  // connected wallet's address. Offer a reconnect — never the sign-in wall.
   if (!address) {
     return (
       <Card className="p-5 border-border/50 bg-card/40">
         <p className="text-sm text-muted-foreground">
-          Connect and sign in with your wallet to read your own balances and
-          approvals. Nothing here is a directory — you only ever see your own row.
+          You're signed in, but your wallet is disconnected. Reconnect it to read
+          your live balances and approvals — own-row only, never a directory.
         </p>
         <Button size="sm" variant="outline" className="mt-3" onClick={() => openConnectModal?.()}>
-          <WalletIcon className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" /> Connect wallet
+          <WalletIcon className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" /> Reconnect wallet
         </Button>
       </Card>
     );
@@ -276,5 +284,24 @@ export default function MemberWalletPanel() {
         </div>
       </Card>
     </div>
+  );
+}
+
+// The member-account gate wraps the panel: nothing personal renders (and no
+// live read fires) until the session is S4. Resolved from the SESSION, never
+// the wagmi address — this is the fix for the "balances while logged out" leak.
+export default function MemberWalletPanel() {
+  return (
+    <SignInWall
+      teaser={
+        <p className="text-sm text-foreground leading-relaxed">
+          Your own SYN and USDC balances, your Archive artifacts, and your
+          approvals toward the protocol's known contracts live here — read live
+          from the chain, own-row only.
+        </p>
+      }
+    >
+      <WalletPanelBody />
+    </SignInWall>
   );
 }
