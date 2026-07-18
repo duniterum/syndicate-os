@@ -74,10 +74,46 @@ Every page refactor applies, **in the same slice**: the §3 matrix (per surface 
 full-screen law + the §1 terminology law. Reference both worlds (web3 for connect/sign/seat/own
 reads; fintech/SaaS for access tiers, empty/teaser/conversion states, and full-screen layout).
 
+---
+
+## THE APPLIED PATTERN (benchmarked + critic-verified — `wf_aa9e24e7`, 2026-07-18)
+
+### A. The matrix — `tier × surface type`
+| Surface type | Visitor | Connected-no-seat | Member (holds a seat) | Operator |
+|---|---|---|---|---|
+| **Member-account** (member home · `/wallet` · referral standing · receipts · toolkit member actions · the notification **"Mine"** inbox + **the header bell's own unread count**) | **Sign-in wall** — teaser + one "Connect + sign in" CTA · **zero personal figures** | **not signed** → still the wall ("connected — sign in to read your account"); **signed, no seat (S4)** → **conversion** (own reads that ARE the point render · seat-only value shown LOCKED with its reason · CTA "Take your seat") | full dashboard (Member #N · KPIs · own reads · seat actions unlocked) | membership decides; operator adds nothing here |
+| **Tool** (future swap/ramp · verify · proof) | fully usable to settlement; only the terminal button says "Connect wallet" | **stays open + live** (a swap is the on-ramp TO a seat); the only gate is the signature at settlement | identical tool | operator adds nothing |
+| **Public** (home · proof · docs · status · contracts · `/referral` program page · notifications **"All/Protocol"**) | fully open, truth + tease, no personal figures | identical (public never personalizes; only the deterministic referral-**link** hash derives from a connected address — **tool-open, NOT gated**) | identical | identical (+ the `/studio` pointer = 404 for non-operators) |
+| **Operator console** (`/admin/*`) | **neutral 404** | same 404 | **same 404 — a seat NEVER grants admin** | revealed only on server-confirmed operator role (founder_root = off-line seed) |
+
+### B. The SignInWall — one shared component, resolved from `fetchSessionState()`, **NEVER `wagmi` address**
+Four states: (1) **Not connected** → teaser; (2) **Connected-not-signed** → **still the wall** ("connected — sign in to read your account", zero figures) — *the branch missing today that causes the leak*; (3) **Signed-no-seat (S4)** → conversion; (4) **Member (S7)** → wall gone. Rule: the member account is a **curated off-chain private composition** → it opens only on a **proven S4 session**; raw read-from-address-alone lives on the OPEN tool/verify surfaces. Gates **NOT-SIGNED only** — never a disconnected-but-still-signed member (Q-B).
+
+### C. Full-screen law (S7-d sharpened + guarded)
+Every page is exactly ONE mode, by FUNCTION:
+- **App / data / console** (hosts `MemberShell` or a data grid) = **fluid full-width**: `w-full` + gutters `px-4 sm:px-6 lg:px-8` only, **no page-level max-width**; readability bounded **PER CARD** (`container-type: inline-size`). Fill wide screens by **multiplying columns** (`grid repeat(auto-fit, minmax(280–360px, 1fr))`), never stretching one. Prime top band = a 4–6 tile KPI strip (Work-First).
+- **Prose** (hero · whitepaper · terms · docs) = cap the running **text measure** ~65–70ch (`max-w-2xl` body / `max-w-3xl` headline), optionally in a 1200–1440 band. The cap is the MEASURE, never the page.
+- Breakpoints **add panes** (single-col → sidebar+main ~905px). Ultra-wide (>1600): app caps card count, gutters absorb slack; prose margins grow. 320→2560 · `svh/dvh` · `viewport-fit=cover` + safe-areas · targets ≥44px · never `maximum-scale=1`.
+
+### D. The diagnosed LEAK (founder-found) + fixes
+- **`/wallet` (`MemberWalletPanel.tsx:141`) gates on `if (!address)` (wagmi), NOT the session** → a connected-but-unsigned wallet (or an expired session = "logged out") renders own SYN/USDC/Archive/allowance. **FIX: gate on `fetchSessionState()==='S4'` + add the connected-not-signed branch.** (Doubly wrong per Q-B: it would also blank a still-signed member who disconnected.)
+- **`/wallet` + `/toolkit` host `<MemberShell>` inside PublicPage's `max-w-5xl` (1024px) body** → the narrow column with huge margins. **FIX: `PublicPage variant='app'` drops the body cap (keeps the hero text caps).**
+- **`/member`**: door + dashboard already correct (session-gated, fluid). Keep the referral-**link** generation **tool-open** (public non-sensitive hash — do NOT session-gate it; critic).
+
+### E. Two new BLOCKING guards
+- **`guard-fluid-surface`**: any file rendering `<MemberShell>` must NOT sit inside a `max-w-*` body (red on today's `/wallet` + `/toolkit`).
+- **`guard-seat-vocab`**: no member/visitor-facing string contains an `Sx` literal (scrub `AccessBlockedPanel`'s "(S1)"), and no copy equates "session"/"license" with "seat" — **EXEMPT the operator-console diagnostic surfaces** (`AccessStateSimulator`, `AccessStateChip`, behind the neutral wall) where `Sx` IS the intended internal vocabulary.
+
+### F. Grounded (no relitigation)
+Visibility Law (own reads live on tools/verify; a private dashboard behind sign-in ≠ hiding a public fact; we still SHOW the money everywhere it's shown) · ADR-003 (own-row; the only memberNumber↔wallet pairing = the founder_root-gated §D member-ledger) · Q-B (session persists → gate NOT-SIGNED only) · naming canon.
+
+### G. Operator wall (2-D, server-authoritative, fail-closed)
+`membership rung × operator role`. CLIENT wall = the neutral 404 (`OperatorRoute`, reveals only on server `operator-context` `isOperator && role`, reads no client identity signals). SERVER wall = `/api/operator` behind `authExposureGate` (dark by default), throttle → session account → ACTIVE registry role; `WRITE_ROLES={founder_root, protocol_admin}`; **founder_root-only** for operator create/suspend, notification writes, and the §D member-ledger. Keep the server role distinction authoritative; the client only needs "revealed or not".
+
+---
+
 ## Status
-- **Decision: founder-confirmed 2026-07-18.**
-- **Applied pattern (the detailed `tier × surface-type` matrix + encodable full-screen rules +
-  the sign-in-wall/conversion states + the critic's settled-law check): PENDING the benchmarked
-  research (`wf_aa9e24e7`), appended to this doc when it returns.**
+- **Decision + applied pattern: founder-confirmed 2026-07-18; benchmarked + critic-verified (SOUND with 3 adjustments, all folded in above).**
+- **Next: refactor page by page against this pattern — first `/member` + `/wallet` (the leak + the narrow column the founder saw), through the preview gate.** The `/wallet` session-gate is a **PRIVACY fix** + the width fix is founder-visible → **🚀 DEPLOY, NOT batchable** when it lands.
 - Authority companions: `CANON_VISIBILITY_LAW.md` · `ADR-003` · `CANON_PROTOCOL_LANGUAGE.md` ·
   `surfaceNaming.ts` · `DESIGN_ROADMAP.md` (S7-d). `OPEN_QUEUE.md` + `SESSION_STATE.md` track status.
