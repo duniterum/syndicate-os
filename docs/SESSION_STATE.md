@@ -2,6 +2,22 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ ⏭️ NEXT (founder-approved 2026-07-18, session end — founder resting, said
+> "prépare tout et attend moi"): FINISH MEMBER HOME, in order.** The full
+> definition-of-done + the 21-step ordered plan (4 phases) live in
+> **`docs/direction/MEMBER_HOME_FINISH_ORDER.md` — START THERE.** Phase A first
+> (live truth defects): ① remove the duplicate "Your referral" heading (pure
+> build) · ② member gamification copy = SHOW the money + keep XP≠season-cagnotte
+> clear · ③ founder BUILDER_SOURCE derivation · ④ genesis footprint derivation ·
+> ⑤ shared-read 3-state. **Do NOT build member-facing changes without the
+> founder** (VISUAL CHANGE LAW: wireframe → preview gate). Full backlog (173 open
+> items, 14 categories) = `docs/direction/BACKLOG.html`. **HARD-WON DOCTRINE (do
+> not re-litigate):** XP/Learn&Earn = recognition, never cash · the season
+> cagnotte = REAL company USDC (merit, lawyer-gated = `gam-payout`, Phase-5
+> deferred) · **WE SHOW THE MONEY** (Visibility Law TIER-0 — "company, not
+> charity"; the "never a cash figure" copy is itself a defect) · Q16 + PublicHome
+> TruthLabel = PUBLIC home, NOT Member Home.
+
 > **▶ 🧭 CLEAN HANDOFF — THE NOTIFICATION CENTER IS COMPLETE & LIVE (2026-07-18,
 > session end; verified by a 4-lens completeness audit — API/security SHIP-READY,
 > studio/UX PASS, doctrine grade-AAA, no forgotten wiring). Q43 NOTIF-1 → NOTIF-2
