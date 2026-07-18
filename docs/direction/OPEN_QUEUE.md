@@ -36,9 +36,10 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 >   whitelist, mechanism-decides palette, pickers in both composers · NOTIF-2b
 >   (`f100640`, no migration) = no dead clicks + founder-gated AUDITED delete
 >   (Trash + confirm, cascade receipts + `notification.delete` audit) · icon fix
->   (`ac3f30c`) = consistent gold type-icon · one final hardening commit (read-path
->   re-validation + operator gold icon, no migration) rides the last deploy.
->   Deploy backlog: that one commit; tree clean. FOUNDER'S REMAINING MANUAL ACT
+>   (`ac3f30c`) = consistent gold type-icon · the final hardening batch (`51e68de`
+>   = read-path server-authoritative re-validation + gold Sent icon + shared
+>   Select dropdown height-cap/scroll) all SEALED (Replit 6/6, no migration).
+>   DEPLOY BACKLOG: EMPTY; tree clean. FOUNDER'S REMAINING MANUAL ACT
 >   (housekeeping): /admin/broadcast → Sent → delete the 3 test notifications
 >   (Trash → confirm), keep only "This message opens the record." **Only the
 >   founder closes Q43** (after the housekeeping delete). v2 GROWTH (recorded, not

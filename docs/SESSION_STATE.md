@@ -5,8 +5,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **▶ 🧭 CLEAN HANDOFF — THE NOTIFICATION CENTER IS COMPLETE & LIVE (2026-07-18,
 > session end; verified by a 4-lens completeness audit — API/security SHIP-READY,
 > studio/UX PASS, doctrine grade-AAA, no forgotten wiring). Q43 NOTIF-1 → NOTIF-2
-> → NOTIF-2b → the icon fix ALL SEALED IN PROD through `ac3f30c` (Replit verified
-> EACH cycle 5/5–6/6; founder-pasted seal reports on record — not from memory).**
+> → NOTIF-2b → the icon fix → the read-path hardening → the Select dropdown fix
+> ALL SEALED IN PROD through `51e68de` (Replit verified EACH cycle 5/5–6/6;
+> founder-pasted seal reports on record — not from memory). **DEPLOY BACKLOG:
+> EMPTY. Tree clean.** THE NOTIFICATION CENTER IS 100% COMPLETE AND LIVE.**
 >
 > **WHAT'S LIVE (the whole channel — no email, ever; in-app is THE channel):**
 > ① NOTIF-1 (`881b166` + WORK-FIRST recomposition `a45d8b8`) — the member BELL in
@@ -33,22 +35,18 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > read-state (dark `--muted-foreground` was reading stark-white); read-state moved
 > to the title (bold/foreground unread · normal/muted read).
 >
-> **🔨 ONE FINAL POLISH/HARDENING COMMIT (this session's last — the audit's two
-> worth-doing findings), client + API, NO migration, ON MAIN awaiting the LAST
-> deploy:** (a) the member-inbox READ path now re-validates icon∈palette +
-> link∈whitelist server-side (nulls anything off-list before serving) — the
+> **✅ THE FINAL POLISH/HARDENING SEALED (Replit 6/6 at `51e68de`, 3-commit
+> no-migration batch):** (a) the member-inbox READ path re-validates icon∈palette
+> + link∈whitelist server-side (nulls anything off-list before serving) — the
 > internal-only guarantee is server-authoritative on BOTH write and read, never
 > client-dependent, future-proof against a v2 generator that ever skipped
-> validation; (b) the operator "Sent" list icon → gold (cross-surface
-> consistency with the bell/page). Green: api+studio typecheck · auth-zone 920 ·
-> notif-vocab 62/62 · continuity 32 · holder-index 69 · build 332 twins +
-> admin-dist 93, no operator string in the public entry.
-> **🚀 DEPLOY — NO MIGRATION (the last cycle):** Replit pulls main, deploys,
-> reports. **DEPLOY BACKLOG (both client+API, NO migration, ride one cycle):**
-> `49f4d39` (read-path re-validation + gold Sent icon + this handoff) ·
-> `f0ded93` (shared Select dropdown height-cap + scroll — the founder's
+> validation (`49f4d39`); (b) the operator "Sent" list icon → gold (`49f4d39`);
+> (c) the shared shadcn Select dropdown is height-capped + scrolls — the
 > destination picker of 16 items ran off-screen; now caps at ~10 + scrolls,
-> fixes every Select app-wide).
+> fixes EVERY Select app-wide (`f0ded93`). All gates green at the sealed counts
+> (auth-zone 920 · notif-vocab 62/62 · operator-gate 2650 · admin-dist 93);
+> byte-identity confirmed; the wall holds; endpoints 401/200-S1; engine healthy.
+> **DEPLOY BACKLOG: EMPTY.**
 >
 > **FOUNDER'S REMAINING MANUAL ACTS (housekeeping, not a slice):** from
 > /admin/broadcast → "Sent", delete the 3 TEST notifications via the Trash button
