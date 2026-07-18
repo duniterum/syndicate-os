@@ -66,14 +66,26 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >     payout wallet `0x2445…C721`). The D2 payoutWallet fallback (`sourceStandingRead.ts:127-167`,
 >     index keyed on `payoutWallet`, `introductionRefresh.ts:311-318`) was already sealed;
 >     the boot block carried the pre-seal audit forward = drift. No multi-wallet broadening needed.
->   - **Step 2** (gamification "Season" copy) — 🔴 REAL, tiny: `memberDoors.ts:114`
->     "Recognition only, never a cash figure" is a Visibility-Law defect (implies
->     hiding). Content gate: founder picks the wording. Quests slot (`:115`) left
->     ALONE per the hard-won doctrine (no "never a payment" pile-on on the XP clause).
+>   - **Step 2** (gamification "Season" copy) — ✅ SEALED IN PROD (`e42c20f`, Replit
+>     green 2026-07-18): `memberDoors.ts:114` → candidate B ("XP earns standing, not
+>     money; when the company funds a season reward it's real USDC for effort — paid
+>     openly, every amount shown"); the "never a cash figure" Visibility-Law defect dead.
 >   - **Step 5** (three-state "—" honesty + shared read + CapitalAxisCard
->     no-vanish/retry + race guard) — 🔨 REAL pure-build, autonomous to preview.
+>     no-vanish/retry + race guard) — ✅ SEALED IN PROD (`e42c20f`): one shared settled
+>     race-guarded `useSettledOwnCapitalStanding` consumed by `CapitalAxisCard`
+>     (never vanishes: loading/failed+Retry/honest-no-rung) + the KPI footprint tile;
+>     happy path byte-identical; adversarial review clean; all guards + tsc green.
+>   - **PHASE A COMPLETE** (2026-07-18) — all 5 truth defects on the founder's own
+>     page resolved (1/3/4 already sealed D2/D-TRUTH; 2/5 sealed `e42c20f`).
+>     **DEPLOY BACKLOG: EMPTY. Tree clean.**
 >   - THEN: ② `/member` migration to `MemberAppPage` (wireframe); ③ the newsroom
->     pagination arc (`/activity` newest-first + `chr-newsroom-page`).
+>     pagination arc (`/activity` newest-first + `chr-newsroom-page`);
+>     ④ **NEW (founder, 2026-07-18) — the DOORS-DEDUP question:** the dashboard's
+>     right-column `MemberDoorsGrid` (Z8) renders the SAME `MEMBER_DOOR_GROUPS` as the
+>     left `MemberShell` sidebar — a verified duplicate (only the one-line door
+>     descriptions differ). Founder wants it removed to free the right column
+>     (WORK-FIRST). Composition change → wireframe + preview gate + `guard-member-home`
+>     Z8 pin update. UNDER GATE.
 > - **DO NOT build member-facing layout/composition without the founder** (VISUAL
 >   CHANGE LAW: wireframe → preview gate). Copy = full text on screen first.
 >
