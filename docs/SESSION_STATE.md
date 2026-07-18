@@ -2,6 +2,42 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🔨 Q43 NOTIF-1 BUILT + ON MAIN (2026-07-18, founder GO ×3: slice → revised
+> wireframe → commit; preview gate passed on the rig). THE NOTIFICATION CENTER —
+> the no-email canon made real (in-app is the protocol's ONLY channel, ever):**
+> ① SCHEMA (⚠ REAL MIGRATION, this slice's OWN deploy cycle, never batched):
+> `notification` (audience MEMBER|ALL · recipient_wallet server-only, NULL for
+> broadcasts · no seat column — the pairing lives only in the continuity spine)
+> + `notification_receipt` (per-member seen/read — the two-tier world-class
+> model: badge = UNSEEN, an item reads only when CLICKED; fixes the origin's
+> recorded broadcast-read-state gap). ② API: founder_root-only writes POST
+> /notifications/member (client sends SEAT only; server resolves seat→wallet)
+> + /notifications/broadcast + masked GET list; member own-row GET /member-inbox
+> (rows carry NO wallet) + THE FIRST member-side writes POST /member-inbox/seen
+> + /read (own receipts only). ③ CONSOLE: ledger rows grew the ACTION MENU
+> ("Message this member" — the interconnectivity pattern's first instance) ·
+> Broadcast Send LIVE + sent history · the admin bell honest-live. ④ MEMBER:
+> the HEADER BELL went live IN its §11 reserved slot (badge, tabs All/Protocol/
+> Mine, View all) for EVERY signed session; the TROPHY stays reserved beside it
+> (founder: both belong to all members, not only resolved seats) · /notifications
+> dedicated page (FLAT route — the /member/* trap avoided) · menu door
+> Notifications ABOVE Settings in the renamed **"Account"** group (founder:
+> human words, never jargon — "Off-chain comfort" died everywhere member-visible)
+> · "While you were away" reserved slot retired (its promise lives in the
+> center; v2 = the protocol-event generator, recorded). Guards amended
+> deliberately: auth-zone 828→906 (route pins + notificationService block +
+> memberInbox = the THIRD auth DB bridge, write-capable own-row) ·
+> continuity-schema 32 · holder-index 69 · member-menu 35 (14 rows) ·
+> surface/SEO/modules registries + sitemap (25 INDEX) + routeTable all carry
+> /notifications · build 332 twins + admin-dist 93, console strings isolated
+> (entry 0). Research on record: the Supa quarry (3 subsystems, 30 types) + the
+> world-class synthesis (Binance/Kraken/Revolut/Coinbase/GitHub/Linear, cited)
+> — both in the transcript, the taxonomy is the v2 generator's seed. **🚀
+> DEPLOY — OWN CYCLE: Replit pulls main, runs `pnpm --filter @workspace/db
+> push` (2 new tables), deploys, reports.** Post-deploy seal = the founder
+> sends the first broadcast from /admin/broadcast on his live session and it
+> lights his own header bell.
+
 > **▶ ✅ CONSOLE-POLISH SEALED IN PROD (2026-07-18, Replit 5/5 at HEAD `d2fe123`).**
 > The batch (`d02af1e` + `c087829` WORK-FIRST + `39a010e` FULL-WIDTH) is live:
 > Dashboard opens on Quick actions/Needs attention with diagnostics collapsed ·

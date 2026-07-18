@@ -14,8 +14,25 @@
 // (guard-operator-gate §5b pins the chain).
 
 import { useEffect, useState } from "react";
-import { BookUser, TrendingUp, Users2, Sparkles } from "lucide-react";
+import { BookUser, TrendingUp, Users2, Sparkles, MoreHorizontal, MessageSquare } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -24,8 +41,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useToast } from "@/hooks/use-toast";
 import {
   fetchMemberLedger,
+  notifyMember,
   type LedgerPayload,
   type LedgerRow,
 } from "@/lib/operatorClient";
@@ -62,6 +81,107 @@ function SegmentChip({ segment }: { segment: LedgerRow["segment"] }) {
   );
 }
 
+// NOTIF-1: honest reason→message map for the notify-member write (no generic
+// errors — the founder sees exactly why a send was refused).
+function notifyFailureText(reason: string | null): string {
+  switch (reason) {
+    case "throttled":
+      return "Too many requests in a short window — wait a moment and retry.";
+    case "no_session":
+      return "Your operator session is gone. Sign in again, then resend.";
+    case "insufficient_role":
+      return "Messaging members is founder-gated; this session's role cannot send.";
+    case "unknown_seat":
+      return "That seat is not on the continuity spine — nothing was sent.";
+    case "address_in_text":
+      return "The message contains a raw wallet address — remove it; served messages never carry addresses.";
+    case "bad_title":
+    case "bad_body":
+    case "bad_request":
+      return "Title and message are both required (title ≤ 120, message ≤ 2000 characters).";
+    case "unavailable":
+      return "The write zone is unavailable (fail-closed) — nothing was sent.";
+    case "unreachable":
+      return "The API was unreachable — check the connection and retry.";
+    default:
+      return `The send was refused (${reason ?? "unknown"}) — nothing was sent.`;
+  }
+}
+
+// NOTIF-1 — "Message this member": the ledger row's first action (the
+// interconnectivity pattern: every entity row carries its actions). The dialog
+// is prefilled with the seat context; the request carries the SEAT only — the
+// server resolves seat→wallet on the continuity spine.
+function MessageMemberDialog({
+  row,
+  onClose,
+}: {
+  row: LedgerRow;
+  onClose: () => void;
+}) {
+  const { toast } = useToast();
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSend() {
+    if (submitting) return;
+    setSubmitting(true);
+    setError(null);
+    const result = await notifyMember(row.seat, title, body);
+    setSubmitting(false);
+    if (result.ok) {
+      toast({ title: `Message sent to seat #${row.seat}` });
+      onClose();
+      return;
+    }
+    setError(notifyFailureText(result.reason));
+  }
+
+  return (
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Message seat #{row.seat}</DialogTitle>
+          <DialogDescription>
+            Delivered to this member&apos;s inbox on their next visit ({row.walletShort} ·{" "}
+            {row.authority === "PART_B_FREEZE_ROOT" ? "genesis" : "v3"}). Founder-gated,
+            audit-logged; no email or push exists.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3">
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Title"
+            maxLength={120}
+          />
+          <Textarea
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            placeholder="Your message to this member…"
+            rows={5}
+            maxLength={2000}
+          />
+          {error !== null && <p className="text-sm text-destructive">{error}</p>}
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" onClick={onClose} disabled={submitting}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => void handleSend()}
+            disabled={submitting || title.trim().length === 0 || body.trim().length === 0}
+          >
+            {submitting ? "Sending…" : "Send message"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg border border-border p-3">
@@ -73,6 +193,7 @@ function StatCard({ label, value }: { label: string; value: string }) {
 
 export function MemberLedgerPanel() {
   const [state, setState] = useState<State>({ kind: "loading" });
+  const [messageRow, setMessageRow] = useState<LedgerRow | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -143,6 +264,9 @@ export function MemberLedgerPanel() {
                   <TableHead>Last purchase</TableHead>
                   <TableHead>Referral</TableHead>
                   <TableHead>Segment</TableHead>
+                  <TableHead className="w-10">
+                    <span className="sr-only">Actions</span>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -185,6 +309,27 @@ export function MemberLedgerPanel() {
                     </TableCell>
                     <TableCell>
                       <SegmentChip segment={r.segment} />
+                    </TableCell>
+                    <TableCell>
+                      {/* The row action menu (interconnectivity pattern). */}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            aria-label={`Actions for seat #${r.seat}`}
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => setMessageRow(r)}>
+                            <MessageSquare className="h-4 w-4 mr-2" />
+                            Message this member
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -258,6 +403,10 @@ export function MemberLedgerPanel() {
             </p>
           </div>
         </>
+      )}
+
+      {messageRow !== null && (
+        <MessageMemberDialog row={messageRow} onClose={() => setMessageRow(null)} />
       )}
     </Card>
   );

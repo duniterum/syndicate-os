@@ -225,6 +225,13 @@ const DB_LAZY_ALLOW = new Set([
   // spine + in-memory read-models, founder_root-only, masked, audit-logged.
   // Lazy-only; full shape pinned by guard-auth-zone.ts.
   "src/operator/memberLedgerService.ts",
+  // NOTIF-1 (Q43, founder GO 2026-07-18): the notification write services —
+  // founder_root-only, seat→wallet server-side, audit-rowed. Lazy-only;
+  // pinned by guard-auth-zone.ts.
+  "src/operator/notificationService.ts",
+  // NOTIF-1: the member OWN-ROW inbox read — session wallet only, served rows
+  // carry no wallet. Lazy-only; fail-closed.
+  "src/auth/memberInbox.ts",
 ]);
 const DB_STATIC_IMPORT_RE =
   /(from\s*["']@workspace\/db["'])|(import\s*["']@workspace\/db["'])|(require\s*\(\s*["']@workspace\/db["']\s*\))/;

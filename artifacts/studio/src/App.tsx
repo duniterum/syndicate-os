@@ -28,6 +28,7 @@ import Support from "@/pages/Support";
 import Archive from "@/pages/Archive";
 import Activity from "@/pages/Activity";
 import MemberWallet from "@/pages/MemberWallet";
+import MemberNotifications from "@/pages/MemberNotifications";
 import Liquidity from "@/pages/Liquidity";
 import MemberToolkit from "@/pages/MemberToolkit";
 import ChronicleTeaser from "@/pages/ChronicleTeaser";
@@ -210,6 +211,9 @@ function Router() {
         <MemberAccess />
       </PublicRoute>
       {/* ARC SLICE D member doors — flat routes (see the registry note). */}
+      <PublicRoute path="/notifications">
+        <MemberNotifications />
+      </PublicRoute>
       <PublicRoute path="/wallet">
         <MemberWallet />
       </PublicRoute>

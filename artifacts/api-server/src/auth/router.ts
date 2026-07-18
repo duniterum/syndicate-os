@@ -62,6 +62,12 @@ import { throttleKey } from "./clientIdentity";
 import { readEngineMemberNumber } from "./engineReadback";
 import { lookupActiveOperator } from "./operatorContext";
 import { lookupGenesisMember, lookupMemberReceipt } from "./memberRoster";
+import {
+  readOwnInbox,
+  markInboxSeen,
+  markInboxRead,
+  type InboxPayload,
+} from "./memberInbox";
 import { resolveOwnStanding } from "../lib/protocol/holderIndexStanding";
 import { txUrl } from "../canon/the-syndicate/chain/chain-registry";
 import { assertProtocolRealityDiscipline } from "../lib/protocol/payloadDiscipline";
@@ -684,6 +690,133 @@ router.get("/member-purchases", (req: Request, res: Response) => {
     code: !sessionActive ? "none" : rows !== null ? "mapped" : "unavailable",
   });
   res.json(payload);
+});
+
+// ── GET /api/auth/member-inbox ──────────────────────────────────────────────
+// NOTIF-1 — own-row NOTIFICATION CENTER self-readback (the member-purchases
+// discipline verbatim): the ONLY input is the session cookie; the bound
+// account picks the session's OWN notification rows (its member-addressed
+// messages + ALL broadcasts) joined to its OWN seen/read receipts. Served
+// rows carry NO wallet at all — title/body/time/scope/unread only, plus the
+// unseen count (the bell badge). HARVEST-08 + the no-email canon: in-app is
+// the only channel. Fail-closed: DB dark → an honest reason, never a guess.
+router.get("/member-inbox", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "auth.member_inbox.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const boundAccount =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+
+  const sessionActive = boundAccount !== null;
+  let inbox: InboxPayload | null = null;
+  let failureReason: string | null = null;
+  if (boundAccount === null) {
+    failureReason = "no active wallet session; sign in to read your own inbox";
+  } else {
+    inbox = await readOwnInbox(boundAccount);
+    if (inbox === null) {
+      failureReason = "the inbox is unavailable right now — nothing is assumed";
+    }
+  }
+
+  const payload = {
+    state: sessionActive ? ("S4" as const) : ("S1" as const),
+    rows: inbox?.rows ?? null,
+    unseenCount: inbox?.unseenCount ?? null,
+    failureReason,
+  };
+  // Leak gates: payload discipline + boundary-aware address scan (40-hex
+  // fail-closes; the write zone already refuses address-bearing text, so a
+  // served inbox can never carry one). The bound account never enters the
+  // payload object — defense in depth.
+  try {
+    assertProtocolRealityDiscipline(payload);
+    if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(JSON.stringify(payload))) {
+      throw new Error("address-shaped token in payload");
+    }
+  } catch {
+    req.log.warn({ event: "auth.member_inbox.discipline_rejected" });
+    deny(res, 500, "unavailable");
+    return;
+  }
+  req.log.info({
+    event: "auth.member_inbox.checked",
+    code: !sessionActive ? "none" : inbox !== null ? "mapped" : "unavailable",
+  });
+  res.json(payload);
+});
+
+// ── POST /api/auth/member-inbox/seen ────────────────────────────────────────
+// NOTIF-1 — the member's OWN mark-seen (opening the bell clears the badge;
+// items stay unread until clicked). THE FIRST member-side write: own-row
+// receipts only, keyed server-side to the bound account; no body input at
+// all. Cross-site defense: the zone-wide rejectCrossOrigin + SameSite=Strict.
+router.post("/member-inbox/seen", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "auth.member_inbox_seen.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const boundAccount =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  if (boundAccount === null) {
+    deny(res, 401, "no_session");
+    return;
+  }
+  const ok = await markInboxSeen(boundAccount);
+  if (!ok) {
+    deny(res, 503, "unavailable");
+    return;
+  }
+  req.log.info({ event: "auth.member_inbox_seen.ok" });
+  res.json({ ok: true });
+});
+
+// ── POST /api/auth/member-inbox/read ────────────────────────────────────────
+// NOTIF-1 — the member's OWN mark-read: one id (clicking an item) or all
+// (mark-all-read; body omits id). Own-row receipts only; ids outside the
+// member's own window are ignored server-side.
+router.post("/member-inbox/read", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "auth.member_inbox_read.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const boundAccount =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  if (boundAccount === null) {
+    deny(res, 401, "no_session");
+    return;
+  }
+  const body: unknown = req.body;
+  let id: string | null = null;
+  if (typeof body === "object" && body !== null && "id" in body) {
+    const raw = (body as Record<string, unknown>).id;
+    if (typeof raw !== "string" || raw.length === 0 || raw.length > 64) {
+      deny(res, 400, "bad_request");
+      return;
+    }
+    id = raw;
+  }
+  const ok = await markInboxRead(boundAccount, id);
+  if (!ok) {
+    deny(res, 503, "unavailable");
+    return;
+  }
+  req.log.info({ event: "auth.member_inbox_read.ok" });
+  res.json({ ok: true });
 });
 
 // ── POST /api/auth/logout ───────────────────────────────────────────────────

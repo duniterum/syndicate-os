@@ -194,6 +194,109 @@ export async function inviteOperator(
   }
 }
 
+// ── NOTIF-1: notifications (founder-only writes + masked list) ──────────────
+// Founder-only write: message ONE member. The client sends the SEAT number
+// only — the server resolves seat→wallet on the continuity spine; no wallet
+// ever enters a client request. Same fail-closed shape as the other writes.
+export async function notifyMember(
+  seat: number,
+  title: string,
+  body: string,
+): Promise<WriteResult> {
+  try {
+    const res = await fetch("/api/operator/notifications/member", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ seat, title, body }),
+    });
+    if (res.ok) return { ok: true, reason: null };
+    let reason: string | null = null;
+    try {
+      const resBody: unknown = await res.json();
+      if (typeof resBody === "object" && resBody !== null) {
+        const r = (resBody as Record<string, unknown>).reason;
+        if (typeof r === "string") reason = r;
+      }
+    } catch {
+      // No JSON body (e.g. a dark-zone 404) — fall back to the status code.
+    }
+    return { ok: false, reason: reason ?? String(res.status) };
+  } catch {
+    return { ok: false, reason: "unreachable" };
+  }
+}
+
+// Founder-only write: broadcast ONE message to ALL members (a single persisted
+// row — the read model; no push, no email). Same fail-closed shape.
+export async function sendBroadcast(title: string, body: string): Promise<WriteResult> {
+  try {
+    const res = await fetch("/api/operator/notifications/broadcast", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ title, body }),
+    });
+    if (res.ok) return { ok: true, reason: null };
+    let reason: string | null = null;
+    try {
+      const resBody: unknown = await res.json();
+      if (typeof resBody === "object" && resBody !== null) {
+        const r = (resBody as Record<string, unknown>).reason;
+        if (typeof r === "string") reason = r;
+      }
+    } catch {
+      // no JSON body
+    }
+    return { ok: false, reason: reason ?? String(res.status) };
+  } catch {
+    return { ok: false, reason: "unreachable" };
+  }
+}
+
+export interface NotificationListItem {
+  id: string;
+  audience: string;
+  recipientShort: string | null;
+  title: string;
+  body: string;
+  createdAtIso: string | null;
+}
+export type ListNotificationsResult =
+  | { status: "ok"; notifications: NotificationListItem[] }
+  | { status: "denied" }
+  | { status: "unavailable" };
+
+// GET the recent sent notifications (founder-only; recipients arrive
+// pre-masked). Fail-closed exactly like listOperators: 401/403/404 → "denied"
+// (deliberately indistinguishable), transport/shape → "unavailable".
+export async function fetchNotifications(): Promise<ListNotificationsResult> {
+  try {
+    const res = await fetch("/api/operator/notifications", { method: "GET" });
+    if (res.ok) {
+      const body: unknown = await res.json();
+      const raw =
+        typeof body === "object" && body !== null
+          ? (body as Record<string, unknown>).notifications
+          : null;
+      const notifications: NotificationListItem[] = Array.isArray(raw)
+        ? raw.filter(
+            (n): n is NotificationListItem =>
+              typeof n === "object" &&
+              n !== null &&
+              typeof (n as Record<string, unknown>).id === "string" &&
+              typeof (n as Record<string, unknown>).audience === "string" &&
+              typeof (n as Record<string, unknown>).title === "string" &&
+              typeof (n as Record<string, unknown>).body === "string",
+          )
+        : [];
+      return { status: "ok", notifications };
+    }
+    if (res.status === 401 || res.status === 403 || res.status === 404) return { status: "denied" };
+    return { status: "unavailable" };
+  } catch {
+    return { status: "unavailable" };
+  }
+}
+
 // Founder-only registry write: suspend an operator by its stable id (from the
 // masked registry list — no full wallet needed client-side). Same fail-closed
 // shape as the others.

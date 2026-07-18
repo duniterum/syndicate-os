@@ -232,6 +232,25 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
   },
   // ARC SLICE D — member doors (FLAT routes: a /member/* path would emit a
   // member/ directory and resurrect the 2.0 trailing-slash redirect on /member).
+  // NOTIF-1 (founder-approved wireframe 2026-07-18, no-email canon).
+  {
+    path: "/notifications",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "Notifications — your inbox, the protocol's only channel",
+    description:
+      "Messages to you alone and announcements to all members, read with your own wallet session. The protocol never emails — real messages from the Syndicate appear only in this inbox, and nothing unread ever expires.",
+    canonicalPath: "/notifications",
+    changefreq: "monthly",
+    priority: 0.4,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "identity",
+    primaryIntent: "proof",
+    proofRoute: "/status",
+    notes:
+      "NOTIF-1: own-row inbox only (session wallet → own messages + broadcasts; no directory, no lookup). Read/seen receipts are the member's own server-side state. Anti-phishing stance: the in-app inbox is the ONLY trusted channel (Revolut pattern).",
+  },
   {
     path: "/wallet",
     routeType: "PUBLIC",

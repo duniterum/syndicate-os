@@ -21,6 +21,7 @@ import {
   Activity,
   Archive,
   Award,
+  Bell,
   BookOpen,
   DoorOpen,
   Droplets,
@@ -47,6 +48,7 @@ import type { MouseEvent, ReactNode } from "react";
 // build.
 export const DOOR_ICONS: Record<MemberDoorIcon, LucideIcon> = {
   house: House,
+  bell: Bell,
   wallet: Wallet,
   "user-plus": UserPlus,
   activity: Activity,

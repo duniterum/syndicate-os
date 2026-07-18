@@ -20,9 +20,11 @@ import { sql } from "drizzle-orm";
 import {
   boolean,
   check,
+  index,
   integer,
   jsonb,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uniqueIndex,
@@ -99,6 +101,70 @@ export const referralTerm = pgTable(
   }),
 );
 
+/**
+ * Notifications — NOTIF-1 (Q43): operator→member messages + broadcasts, and the
+ * member's own-row inbox read model (HARVEST-02/-08: persisted read model only —
+ * no live push, no email, ever). Written ONLY by founder-gated write-zone
+ * endpoints (each write also audit-rowed); read by the member's own session
+ * (recipient_wallet = session wallet) or as an ALL broadcast.
+ *
+ * PII posture: `recipient_wallet` is SERVER-ONLY — it never appears in any
+ * payload (member inbox rows carry no wallet at all; the operator list masks).
+ * The row deliberately does NOT store the member number: the wallet↔seat
+ * pairing lives only in the continuity spine, never duplicated here or in audit.
+ */
+export const notification = pgTable(
+  "notification",
+  {
+    id: text("id").primaryKey(),
+    audience: text("audience").notNull(), // MEMBER (one recipient) | ALL (broadcast)
+    recipientWallet: text("recipient_wallet"), // lowercased entry wallet; NULL for ALL
+    title: text("title").notNull(),
+    body: text("body").notNull(),
+    createdByRole: text("created_by_role").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    audienceValid: check(
+      "notification_audience_valid",
+      sql`${t.audience} in ('MEMBER','ALL')`,
+    ),
+    recipientCoherent: check(
+      "notification_recipient_coherent",
+      sql`(${t.audience} = 'ALL' and ${t.recipientWallet} is null) or (${t.audience} = 'MEMBER' and ${t.recipientWallet} is not null)`,
+    ),
+    // Expression-free by discipline (dev→prod introspection constraint).
+    recipientIdx: index("notification_recipient_wallet_idx").on(t.recipientWallet),
+  }),
+);
+
+/**
+ * Notification receipts — NOTIF-1 (founder GO 2026-07-18): the per-member
+ * seen/read state that makes the bell honest with NO email ever (badge =
+ * unseen count; an item reads only when clicked). One row per member ×
+ * notification, created lazily on first seen/read — this also models per-
+ * member read-state for audience=ALL broadcasts (the origin's recorded gap).
+ * THE FIRST member-side write: own-row ONLY (member_wallet = the session's
+ * bound account, server-side), fail-closed, never operator-written.
+ *
+ * PII posture: `member_wallet` is SERVER-ONLY (lowercased); receipts never
+ * appear in any payload — they only shape `unread`/`unseenCount` fields.
+ */
+export const notificationReceipt = pgTable(
+  "notification_receipt",
+  {
+    notificationId: text("notification_id").notNull(),
+    memberWallet: text("member_wallet").notNull(),
+    seenAt: timestamp("seen_at", { withTimezone: true }),
+    readAt: timestamp("read_at", { withTimezone: true }),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.notificationId, t.memberWallet] }),
+    // Expression-free by discipline (dev→prod introspection constraint).
+    memberIdx: index("notification_receipt_member_idx").on(t.memberWallet),
+  }),
+);
+
 // ── drizzle-zod schemas for fail-closed endpoint validation ──────────────────
 export const insertOperatorSchema = createInsertSchema(operator);
 export const selectOperatorSchema = createSelectSchema(operator);
@@ -106,3 +172,7 @@ export const insertOperatorSessionSchema = createInsertSchema(operatorSession);
 export const insertAuditLogSchema = createInsertSchema(auditLog);
 export const insertReferralTermSchema = createInsertSchema(referralTerm);
 export const selectReferralTermSchema = createSelectSchema(referralTerm);
+export const insertNotificationSchema = createInsertSchema(notification);
+export const selectNotificationSchema = createSelectSchema(notification);
+export const insertNotificationReceiptSchema = createInsertSchema(notificationReceipt);
+export const selectNotificationReceiptSchema = createSelectSchema(notificationReceipt);

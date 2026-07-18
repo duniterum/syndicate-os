@@ -20,6 +20,7 @@ import type { DisplayLifecycle } from "./truthStatus";
 /** The approved door→icon table (wireframe §2, founder GO) — lucide keys. */
 export type MemberDoorIcon =
   | "house"
+  | "bell"
   | "wallet"
   | "user-plus"
   | "activity"
@@ -47,7 +48,7 @@ export interface MemberDoor {
 
 export interface MemberDoorGroup {
   title: string;
-  /** Visually separated from the groups above (Off-chain comfort — never protocol). */
+  /** Visually separated from the groups above (Account — comfort, never protocol). */
   separated?: boolean;
   doors: readonly MemberDoor[];
 }
@@ -86,13 +87,21 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
       { label: "Liquidity", icon: "droplets", href: "/liquidity", note: "The SYN/USDC pool — why it exists, read live, LP-side actions." },
     ],
   },
+  // Founder, 2026-07-18: the group speaks HUMAN — "Account", the word every
+  // member knows (the old "Off-chain comfort" was engineer jargon).
   {
-    title: "Off-chain comfort",
+    title: "Account",
     separated: true,
     doors: [
+      // NOTIF-1 (founder decision 2026-07-18): the notification-center door
+      // lives HERE, above Settings — on desktop the HEADER BELL is the primary
+      // entry (the world-class pattern), so the menu door is the secondary /
+      // mobile path and belongs in the bottom utilities group, keeping the
+      // daily-loop group lean.
+      { label: "Notifications", icon: "bell", href: "/notifications", note: "Your inbox — messages to you and announcements to all members. The protocol never emails." },
       // S7-b (founder, 2026-07-16): the door list is the member's map, so the
       // Settings door exists — pinned last, separated: comfort, never protocol.
-      { label: "Settings", icon: "settings", href: "/member#settings", note: "Theme, session, avatar — off-chain comfort; the seat is never a setting." },
+      { label: "Settings", icon: "settings", href: "/member#settings", note: "Theme, session, avatar — comfort only; the seat is never a setting." },
     ],
   },
   // (FOUNDER DECISION 2026-07-14 stands: the possessive-network door is DEAD;
@@ -104,7 +113,7 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
 export const MEMBER_HOME_RESERVED_SLOTS: readonly MemberDoor[] = [
   { label: "Season", lifecycle: "FUTURE", note: "The current season — your XP, your rank, the next quest. Recognition only, never a cash figure." },
   { label: "Quests", lifecycle: "FUTURE", note: "Daily and weekly recognition quests — Learn & Earn earns XP." },
-  // S7 truth sweep: the event record itself is LIVE (the complete heartbeat)
-  // — what's still to build is this member surface on top of it.
-  { label: "While you were away", lifecycle: "FUTURE", note: "What the protocol lived since your last visit — the event record is live; this member surface arrives on it." },
+  // NOTIF-1 (2026-07-18): "While you were away" RETIRED from the reserved
+  // slots — its promise now lives in the notification center (the bell +
+  // /notifications; protocol activity events feed it at the v2 generator).
 ];

@@ -9,8 +9,9 @@
 // server-side (Ruling ②; authority is enforced at the API, never by hiding).
 //
 // TRUTH-FIRST chrome rules:
-//   • the notification bell carries NO badge/count — no notification system
-//     exists, and the popover says so honestly;
+//   • the notification bell is HONEST-LIVE (NOTIF-1): it reads the real sent
+//     list (founder-only GET /api/operator/notifications) on open — real rows,
+//     or an honest denied/unavailable line; still NO fabricated badge/count;
 //   • the account menu shows the live OperatorBadge (fail-closed readback of
 //     GET /api/auth/operator-context) — never a fabricated identity;
 //   • sign-out calls the real logoutSession() through the flag-conditional
@@ -60,6 +61,10 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import {
+  fetchNotifications,
+  type NotificationListItem,
+} from "@/lib/operatorClient";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
 import {
   AdminDashboardSection,
@@ -121,6 +126,90 @@ const OperatorBadge = WALLET_SESSION_PREVIEW_ENABLED
 const OperatorSignInAction = WALLET_SESSION_PREVIEW_ENABLED
   ? React.lazy(() => import("@/wallet/OperatorSignInAction"))
   : null;
+
+// HONEST-LIVE bell (NOTIF-1): opens onto the REAL sent list — the same
+// founder-only read the Broadcast panel uses. Reads lazily on first open (no
+// per-load fetch); honest denied/unavailable lines; no fabricated badge.
+function NotificationsBell() {
+  const [sent, setSent] = useState<
+    NotificationListItem[] | "denied" | "unavailable" | null
+  >(null);
+  const [opened, setOpened] = useState(false);
+
+  useEffect(() => {
+    if (!opened) return;
+    let active = true;
+    void fetchNotifications().then((r) => {
+      if (!active) return;
+      setSent(r.status === "ok" ? r.notifications : r.status);
+    });
+    return () => {
+      active = false;
+    };
+  }, [opened]);
+
+  return (
+    <Popover onOpenChange={(open) => open && setOpened(true)}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          aria-label="Notifications"
+        >
+          <Bell className="h-4 w-4" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent align="end" className="w-80 text-sm">
+        <div className="font-medium text-foreground mb-1.5">
+          Sent notifications
+        </div>
+        {sent === null && (
+          <p className="text-xs text-muted-foreground">Reading the sent list…</p>
+        )}
+        {sent === "denied" && (
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            The sent list answers only a founder-root session.
+          </p>
+        )}
+        {sent === "unavailable" && (
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            The sent list is unavailable right now (fail-closed) — nothing is
+            guessed.
+          </p>
+        )}
+        {Array.isArray(sent) && sent.length === 0 && (
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Nothing has been sent yet. Broadcast to all members from the
+            Broadcast section, or message one member from their Member-ledger
+            row.
+          </p>
+        )}
+        {Array.isArray(sent) && sent.length > 0 && (
+          <div className="max-h-72 overflow-y-auto -mx-1 px-1 divide-y divide-border/50">
+            {sent.slice(0, 10).map((n) => (
+              <div key={n.id} className="py-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-foreground truncate">
+                    {n.title}
+                  </span>
+                  <span className="ml-auto shrink-0 font-mono text-[9px] uppercase tracking-wider text-muted-foreground">
+                    {n.audience === "ALL" ? "all" : n.recipientShort ?? "member"}
+                  </span>
+                </div>
+                {n.createdAtIso !== null && (
+                  <div className="font-mono text-[10px] text-muted-foreground mt-0.5">
+                    {n.createdAtIso.slice(0, 16).replace("T", " ")} UTC
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 function AccountMenu() {
   const [, navigate] = useLocation();
@@ -329,28 +418,7 @@ export default function AdminShell() {
           </div>
           <div className="ml-auto flex items-center gap-1.5">
             <SectionJump />
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  aria-label="Notifications"
-                >
-                  <Bell className="h-4 w-4" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent align="end" className="w-72 text-sm">
-                <div className="font-medium text-foreground mb-1">
-                  Notifications
-                </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  No notification system exists yet — nothing is wired, so
-                  there is no count and no feed. This bell becomes real only
-                  after a founder-approved slice.
-                </p>
-              </PopoverContent>
-            </Popover>
+            <NotificationsBell />
             <Popover>
               <PopoverTrigger asChild>
                 <Button

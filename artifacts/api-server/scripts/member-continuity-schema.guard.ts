@@ -246,6 +246,13 @@ const LAZY_DB_ALLOW = new Set([
   // continuity spine joined to the in-memory read-models, founder_root-only,
   // masked, audit-logged. Lazy-only; full shape pinned by guard-auth-zone.ts.
   join(SERVED_SRC, "operator", "memberLedgerService.ts"),
+  // NOTIF-1 (Q43, founder GO 2026-07-18): the notification write services
+  // (notify-one via server-side seat→wallet, broadcast, masked list) —
+  // founder_root-only, audit-rowed. Lazy-only; pinned by guard-auth-zone.ts.
+  join(SERVED_SRC, "operator", "notificationService.ts"),
+  // NOTIF-1: the member OWN-ROW inbox read (session wallet → own rows +
+  // broadcasts; served rows carry no wallet). Lazy-only; fail-closed.
+  join(SERVED_SRC, "auth", "memberInbox.ts"),
 ]);
 const DYNAMIC_DB_IMPORT_RE = /import\s*\(\s*["']@workspace\/db["']\s*\)/;
 function walk(dir: string, hits: string[]): void {

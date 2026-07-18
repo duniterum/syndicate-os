@@ -5,18 +5,28 @@
 // individually so the sectioned admin shell can rehome each card on its own
 // route (moved, not rewritten).
 //
-// PREVIEW ONLY. Broadcast send, flag toggles, and support actions are writes
-// owned by the founder-gated operator write zone; the audit log is read-only by
-// nature and shown here with sample rows. Nothing persists yet.
+// BROADCAST IS LIVE (NOTIF-1, Q43): Send posts to the founder-gated write zone
+// (one persisted audience=ALL row — the member-inbox read model; no push, no
+// email) and the sent history reads back from the real table. Flag toggles and
+// support actions remain previews owned by later Q42 slices; the audit-log
+// panel still shows sample rows.
 
+import { useEffect, useState } from "react";
 import { Megaphone, ScrollText, ToggleLeft, LifeBuoy } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { SampleTag } from "@/components/SampleTag";
 import { TruthLabel } from "@/components/TruthLabel";
+import { useToast } from "@/hooks/use-toast";
+import {
+  sendBroadcast,
+  fetchNotifications,
+  type NotificationListItem,
+} from "@/lib/operatorClient";
 import { featureFlagsSample, auditLogSample, supportQueueSample } from "@/config/referralProgram";
 
 function Head({ icon: Icon, title, sample }: { icon: typeof Megaphone; title: string; sample?: boolean }) {
@@ -30,24 +40,145 @@ function Head({ icon: Icon, title, sample }: { icon: typeof Megaphone; title: st
   );
 }
 
+// NOTIF-1: honest reason→message map for the broadcast write.
+function broadcastFailureText(reason: string | null): string {
+  switch (reason) {
+    case "throttled":
+      return "Too many requests in a short window — wait a moment and retry.";
+    case "no_session":
+      return "Your operator session is gone. Sign in again, then resend.";
+    case "insufficient_role":
+      return "Broadcasting is founder-gated; this session's role cannot send.";
+    case "address_in_text":
+      return "The announcement contains a raw wallet address — remove it; served messages never carry addresses.";
+    case "bad_title":
+    case "bad_body":
+    case "bad_request":
+      return "Title and announcement are both required (title ≤ 120, text ≤ 2000 characters).";
+    case "unavailable":
+      return "The write zone is unavailable (fail-closed) — nothing was sent.";
+    case "unreachable":
+      return "The API was unreachable — check the connection and retry.";
+    default:
+      return `The send was refused (${reason ?? "unknown"}) — nothing was sent.`;
+  }
+}
+
+// LIVE (NOTIF-1): the broadcast composer posts to the founder-gated write zone
+// and the sent history below reads back from the real notification table.
 export function BroadcastPanel() {
+  const { toast } = useToast();
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [sent, setSent] = useState<NotificationListItem[] | "denied" | "unavailable" | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    void fetchNotifications().then((r) => {
+      if (!active) return;
+      setSent(r.status === "ok" ? r.notifications : r.status);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  async function handleSend() {
+    if (submitting) return;
+    setSubmitting(true);
+    setError(null);
+    const result = await sendBroadcast(title, body);
+    setSubmitting(false);
+    if (result.ok) {
+      toast({ title: "Broadcast sent to all members" });
+      setTitle("");
+      setBody("");
+      // Re-read the real table — live readback, never an optimistic guess.
+      const r = await fetchNotifications();
+      setSent(r.status === "ok" ? r.notifications : r.status);
+      return;
+    }
+    setError(broadcastFailureText(result.reason));
+  }
+
   return (
     <Card id="broadcast" className="p-6 scroll-mt-24">
-      <Head icon={Megaphone} title="Broadcast" />
+      <div className="flex items-center gap-3 flex-wrap mb-3">
+        <Megaphone className="h-5 w-5 text-muted-foreground" />
+        <h2 className="text-base font-semibold text-foreground">Broadcast</h2>
+        <span className="font-mono text-[10px] uppercase tracking-wider text-primary">
+          Live · founder-gated writes
+        </span>
+      </div>
       <p className="text-sm text-muted-foreground max-w-3xl mb-4 leading-relaxed">
-        Send an official announcement to members. Preview: composing works, sending is enabled with the operator
-        write zone (broadcast approval is a step-up action).
+        Send an official announcement to every member&apos;s inbox (single members are
+        messaged from their Member-ledger row). Founder-gated and audit-logged;
+        delivered on each member&apos;s next visit — no email or push exists.
       </p>
-      <Input placeholder="Announcement title" className="mb-3" />
-      <textarea
+      <Input
+        placeholder="Announcement title"
+        className="mb-3"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        maxLength={120}
+      />
+      <Textarea
         placeholder="Write the announcement…"
         rows={3}
-        className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground mb-3"
+        className="mb-3"
+        value={body}
+        onChange={(e) => setBody(e.target.value)}
+        maxLength={2000}
       />
-      <Button disabled title="Enabled with the operator write zone">
+      {error !== null && <p className="text-sm text-destructive mb-3">{error}</p>}
+      <Button
+        onClick={() => void handleSend()}
+        disabled={submitting || title.trim().length === 0 || body.trim().length === 0}
+      >
         <Megaphone className="h-4 w-4 mr-1.5" />
-        Send broadcast
+        {submitting ? "Sending…" : "Send broadcast"}
       </Button>
+
+      {/* Sent history — the real table read back, newest first. */}
+      <div className="mt-6">
+        <h3 className="text-sm font-medium text-foreground mb-2">Sent</h3>
+        {sent === null && <p className="text-xs text-muted-foreground">Reading the sent list…</p>}
+        {sent === "denied" && (
+          <p className="text-xs text-muted-foreground">
+            The sent list answers only a founder-root session.
+          </p>
+        )}
+        {sent === "unavailable" && (
+          <p className="text-xs text-muted-foreground">
+            The sent list is unavailable right now (fail-closed) — nothing is guessed.
+          </p>
+        )}
+        {Array.isArray(sent) && sent.length === 0 && (
+          <p className="text-xs text-muted-foreground">Nothing has been sent yet.</p>
+        )}
+        {Array.isArray(sent) && sent.length > 0 && (
+          <div className="rounded-md border border-border/50 divide-y divide-border/50">
+            {sent.map((n) => (
+              <div key={n.id} className="p-3">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm text-foreground">{n.title}</span>
+                  <Badge variant="outline" className="text-[10px] font-normal">
+                    {n.audience === "ALL" ? "all members" : `member ${n.recipientShort ?? ""}`}
+                  </Badge>
+                  {n.createdAtIso !== null && (
+                    <span className="font-mono text-[10px] text-muted-foreground ml-auto">
+                      {n.createdAtIso.slice(0, 16).replace("T", " ")} UTC
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{n.body}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </Card>
   );
 }

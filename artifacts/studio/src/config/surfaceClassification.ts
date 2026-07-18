@@ -245,6 +245,18 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     enforcement: "PREVIEW_LABELLED",
   },
   // ARC SLICE D member doors — flat routes, member shell chosen by the page.
+  // NOTIF-1 (founder-approved wireframe 2026-07-18): the notification center.
+  {
+    routePath: "/notifications",
+    moduleId: "notifications",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary:
+      "The member notification center — own-row inbox (operator messages + broadcasts) behind the bell; the protocol's only channel (no email).",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
   {
     routePath: "/wallet",
     moduleId: "wallet",

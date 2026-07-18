@@ -11,6 +11,8 @@
   "/risk/": "/risk.html",
   "/member": "/member.html",
   "/member/": "/member.html",
+  "/notifications": "/notifications.html",
+  "/notifications/": "/notifications.html",
   "/wallet": "/wallet.html",
   "/wallet/": "/wallet.html",
   "/toolkit": "/toolkit.html",

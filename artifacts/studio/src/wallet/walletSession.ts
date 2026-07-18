@@ -509,6 +509,110 @@ export async function fetchOwnPurchases(): Promise<OwnPurchasesReadback | null> 
   }
 }
 
+// ── NOTIF-1: the member's own notification center (no-email canon) ──────────
+export interface OwnInboxRow {
+  id: string;
+  /** "you" = addressed to this member alone; "all" = a broadcast. */
+  scope: "you" | "all";
+  title: string;
+  body: string;
+  createdAtIso: string | null;
+  /** true until the member CLICKS the item (or marks all read). */
+  unread: boolean;
+}
+
+export interface OwnInboxReadback {
+  state: "S1" | "S4";
+  /** null = the inbox is unavailable (honest gap, never guessed). */
+  rows: OwnInboxRow[] | null;
+  /** The bell badge: rows never marked seen. null when unavailable. */
+  unseenCount: number | null;
+  failureReason: string | null;
+}
+
+/**
+ * Read the signed wallet's OWN inbox (its operator messages + broadcasts,
+ * joined to its own seen/read receipts). Null on ANY transport/shape failure
+ * — the caller renders an honest gap, never a guess.
+ */
+export async function fetchOwnInbox(): Promise<OwnInboxReadback | null> {
+  try {
+    const res = await fetch("/api/auth/member-inbox", { method: "GET" });
+    if (!res.ok) return null;
+    const body: unknown = await res.json();
+    if (typeof body !== "object" || body === null) return null;
+    const o = body as Record<string, unknown>;
+    if (o.state !== "S1" && o.state !== "S4") return null;
+
+    let rows: OwnInboxRow[] | null = null;
+    if (Array.isArray(o.rows)) {
+      rows = [];
+      for (const raw of o.rows) {
+        if (typeof raw !== "object" || raw === null) return null;
+        const r = raw as Record<string, unknown>;
+        if (
+          typeof r.id !== "string" ||
+          (r.scope !== "you" && r.scope !== "all") ||
+          typeof r.title !== "string" ||
+          typeof r.body !== "string" ||
+          typeof r.unread !== "boolean"
+        ) {
+          return null;
+        }
+        rows.push({
+          id: r.id,
+          scope: r.scope,
+          title: r.title,
+          body: r.body,
+          createdAtIso: typeof r.createdAtIso === "string" ? r.createdAtIso : null,
+          unread: r.unread,
+        });
+      }
+    }
+
+    return {
+      state: o.state,
+      rows,
+      unseenCount: typeof o.unseenCount === "number" ? o.unseenCount : null,
+      failureReason:
+        typeof o.failureReason === "string" ? o.failureReason : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Mark the own inbox SEEN (opening the bell clears the badge; items stay
+ * unread until clicked). Fail-closed: false on any failure, never a retry
+ * storm — the badge simply reappears next read.
+ */
+export async function postInboxSeen(): Promise<boolean> {
+  try {
+    const res = await fetch("/api/auth/member-inbox/seen", { method: "POST" });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Mark ONE own notification read (or ALL when id is omitted). Fail-closed:
+ * false on any failure — the caller re-reads instead of guessing.
+ */
+export async function postInboxRead(id?: string): Promise<boolean> {
+  try {
+    const res = await fetch("/api/auth/member-inbox/read", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(id === undefined ? {} : { id }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 /** Truncated display form of a long hash pin, e.g. sha256:9cf82d90…211a. */
 export function shortHashPin(pin: string): string {
   const [algo, hex] = pin.includes(":")

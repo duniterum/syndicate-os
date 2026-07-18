@@ -220,7 +220,14 @@ const OPERATOR_BRIDGE_FILE = "auth/operatorContext.ts";
 // roster, read-only, lazily imported, own-row, fail-closed. Pinned below to the
 // same registry-less-by-default shape as the operator bridge.
 const MEMBER_BRIDGE_FILE = "auth/memberRoster.ts";
-const DB_BRIDGE_FILES = new Set([OPERATOR_BRIDGE_FILE, MEMBER_BRIDGE_FILE]);
+// NOTIF-1 (Q43, founder GO 2026-07-18): memberInbox.ts is the THIRD sanctioned
+// DB-reaching auth file — the member's OWN-ROW notification center: the inbox
+// read (own rows + ALL broadcasts joined to own receipts) AND the FIRST
+// member-side writes (seen/read receipts, own-row keyed to the bound account
+// — the no-email canon needs an honest badge). Lazily imported, fail-closed.
+// Pinned below to the exact own-row shape.
+const INBOX_BRIDGE_FILE = "auth/memberInbox.ts";
+const DB_BRIDGE_FILES = new Set([OPERATOR_BRIDGE_FILE, MEMBER_BRIDGE_FILE, INBOX_BRIDGE_FILE]);
 const REGISTRY_REACH = /@workspace\/db|drizzle|historical_member|memberRoot|ACTIVE/;
 // For helpers OUTSIDE src/auth (one-hop transitive scan) only true DB reach
 // counts — "ACTIVE" is a legitimate chain-decode status word in read-only
@@ -350,6 +357,79 @@ for (const abs of authFiles) {
       !/\b(console|res|req|logger)\s*\./.test(code),
       `${MEMBER_BRIDGE_FILE}: pure lookup module — no response, request, or log surface`,
       `${MEMBER_BRIDGE_FILE} must stay a pure lookup module (no res/req/console/logger) so the verified account can never be echoed or logged from here`,
+    );
+  }
+}
+{
+  const inboxAbs = path.join(srcDir, INBOX_BRIDGE_FILE);
+  const inboxExists = existsSync(inboxAbs);
+  check(
+    inboxExists,
+    `${INBOX_BRIDGE_FILE}: present`,
+    `${INBOX_BRIDGE_FILE} missing — remove its guard exception if the inbox read is retired`,
+  );
+  if (inboxExists) {
+    const code = stripComments(read(inboxAbs));
+    check(
+      !/^\s*import[^;]*@workspace\/db/m.test(code) &&
+        /await import\(\s*["']@workspace\/db["']\s*\)/.test(code),
+      `${INBOX_BRIDGE_FILE}: @workspace/db is lazily imported only`,
+      `${INBOX_BRIDGE_FILE} must import @workspace/db ONLY via a lazy await import() — a top-level import couples the read-only server to a DB at boot`,
+    );
+    {
+      const flagGateIdx = code.search(/AUTH_EXPOSURE_FLAG\]\s*!==\s*["']true["']/);
+      const dbUrlIdx = code.indexOf("DATABASE_URL");
+      const lazyImportIdx = code.search(/await import\(\s*["']@workspace\/db["']\s*\)/);
+      check(
+        flagGateIdx !== -1 &&
+          dbUrlIdx !== -1 &&
+          lazyImportIdx !== -1 &&
+          flagGateIdx < lazyImportIdx &&
+          dbUrlIdx < lazyImportIdx,
+        `${INBOX_BRIDGE_FILE}: exposure-flag + DATABASE_URL gate executes BEFORE the lazy DB import`,
+        `${INBOX_BRIDGE_FILE} must check the auth exposure flag and DATABASE_URL presence BEFORE the lazy @workspace/db import — gate order drifted`,
+      );
+    }
+    check(
+      /catch\s*(\([^)]*\))?\s*\{[^}]*return null/.test(code),
+      `${INBOX_BRIDGE_FILE}: any error fails closed to null`,
+      `${INBOX_BRIDGE_FILE} must return null from its catch — DB errors must never invent an inbox`,
+    );
+    // Own-row ONLY: every account use is lowercased into `me`, notification
+    // selection is EXACTLY own-wallet rows + ALL broadcasts, and receipt
+    // writes key on the bound account — no lookup surface for arbitrary
+    // wallets exists anywhere in the module.
+    check(
+      /const me = account\.toLowerCase\(\);/.test(code) &&
+        /eq\(notification\.recipientWallet,\s*me\)/.test(code) &&
+        /eq\(notification\.audience,\s*["']ALL["']\)/.test(code),
+      `${INBOX_BRIDGE_FILE}: own-row where clause (session wallet + ALL broadcasts only)`,
+      `${INBOX_BRIDGE_FILE} where clause drifted — notification selection must be ONLY eq(recipientWallet, me) OR eq(audience, "ALL") with me = account.toLowerCase()`,
+    );
+    check(
+      /memberWallet:\s*me/.test(code) &&
+        /eq\(notificationReceipt\.memberWallet,\s*me\)/.test(code) &&
+        !/memberWallet:\s*(?!me)[a-zA-Z]/.test(code),
+      `${INBOX_BRIDGE_FILE}: receipt writes are own-row ONLY (memberWallet = the bound account)`,
+      `${INBOX_BRIDGE_FILE} receipt write drifted — every receipt insert/update must key memberWallet to the session's own lowercased account`,
+    );
+    check(
+      /\.limit\(INBOX_LIMIT\)/.test(code),
+      `${INBOX_BRIDGE_FILE}: reads are bounded (limit)`,
+      `${INBOX_BRIDGE_FILE} must bound its reads with .limit(INBOX_LIMIT)`,
+    );
+    {
+      const rowShape = code.match(/export interface InboxRow \{[\s\S]*?\n\}/)?.[0] ?? "";
+      check(
+        rowShape.length > 0 && !/[wW]allet/.test(rowShape),
+        `${INBOX_BRIDGE_FILE}: served InboxRow carries NO wallet field`,
+        `${INBOX_BRIDGE_FILE} InboxRow drifted — served inbox rows carry title/body/time/scope only, never any wallet material`,
+      );
+    }
+    check(
+      !/\b(console|res|req|logger)\s*\./.test(code),
+      `${INBOX_BRIDGE_FILE}: pure lookup module — no response, request, or log surface`,
+      `${INBOX_BRIDGE_FILE} must stay a pure lookup module (no res/req/console/logger) so the verified account can never be echoed or logged from here`,
     );
   }
 }
@@ -796,9 +876,24 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
     ["post", "/operators/suspend"],
     ["get", "/operators"],
     ["get", "/member-ledger"],
+    // NOTIF-1 (Q43, founder GO 2026-07-18): notify ONE member (seat only in
+    // the body — the server resolves seat→wallet), broadcast to ALL, and the
+    // masked recent list (the honest bell). ALL THREE founder_root-only.
+    ["post", "/notifications/member"],
+    ["post", "/notifications/broadcast"],
+    ["get", "/notifications"],
   ];
-  const FOUNDER_ONLY_ROUTES = new Set(["post /operators", "post /operators/suspend"]);
-  const READ_ONLY_ROUTES = new Set(["get /operators", "get /member-ledger"]);
+  const FOUNDER_ONLY_ROUTES = new Set([
+    "post /operators",
+    "post /operators/suspend",
+    "post /notifications/member",
+    "post /notifications/broadcast",
+  ]);
+  const READ_ONLY_ROUTES = new Set([
+    "get /operators",
+    "get /member-ledger",
+    "get /notifications",
+  ]);
   // Close alternate Express route-declaration syntaxes BEFORE enumerating:
   // .route(...).post(...), bracketed verbs (router["post"]), computed access,
   // and any router.use beyond the two sanctioned scoped middleware lines could
@@ -888,6 +983,28 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
               !/inviteOperator\(|suspendOperator\(|upsertReferralTerms\(|saveReferralTerm\(|listOperators\(/.test(block),
             `route ${routeKey}: delegates to the ledger read ONLY (no other service reachable)`,
             `src/operator/router.ts route ${routeKey} must call readMemberLedger() and must never reach any write service or the registry list`,
+          );
+          check(
+            /assertAddressSafeAggregate\(\s*JSON\.stringify\(/.test(block),
+            `route ${routeKey}: serialized payload passes the 40-hex fail-closed scanner`,
+            `src/operator/router.ts route ${routeKey} must run assertAddressSafeAggregate(JSON.stringify(...)) over the payload before res.json`,
+          );
+        } else if (routeKey === "get /notifications") {
+          // NOTIF-1: FOUNDER-ONLY (the list pairs masked recipients with
+          // founder-authored text), delegates ONLY to the masked list read,
+          // and the serialized payload passes the 40-hex fail-closed scanner.
+          check(
+            /ctx\.role\s*!==\s*"founder_root"/.test(block) && !/WRITE_ROLES/.test(block),
+            `route ${routeKey}: founder_root ONLY (the sent list is founder-gated)`,
+            `src/operator/router.ts route ${routeKey} role gate drifted — the notifications list must deny unless ctx.role === "founder_root" and must NOT use the broader WRITE_ROLES allow-list`,
+          );
+          check(
+            /listNotifications\(\)/.test(block) &&
+              !/inviteOperator\(|suspendOperator\(|upsertReferralTerms\(|saveReferralTerm\(|sendMemberNotification\(|broadcastNotification\(/.test(
+                block,
+              ),
+            `route ${routeKey}: delegates to the masked notification list ONLY (no write service reachable)`,
+            `src/operator/router.ts route ${routeKey} must call listNotifications() and must never reach any write service`,
           );
           check(
             /assertAddressSafeAggregate\(\s*JSON\.stringify\(/.test(block),
@@ -1243,6 +1360,62 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
       /SEGMENT_DEFINITIONS/.test(mlCode) && /segmentDefinitions/.test(mlCode),
       "ledger service: segment definitions ship in the payload (the console renders the exact math)",
       "memberLedgerService.ts must serve SEGMENT_DEFINITIONS in the payload — a segment chip without its definition is an unexplained judgment",
+    );
+  }
+
+  // 9e-NT. NOTIF-1 notification service pins (mirrors the registry-service
+  // discipline): fail-closed gate, pure module, seat→wallet resolved server-
+  // side on the continuity spine (never from the client), the wallet↔seat
+  // pairing NEVER in audit (seat-only target), address-bearing text refused at
+  // write time, masked recipients in the list, and every write audit-rowed.
+  {
+    const ntCode = stripComments(read(path.resolve(srcDir, "operator", "notificationService.ts")));
+    check(
+      (ntCode.match(/if \(!gateOpen\(\)\) return \{ ok: false, reason: "unavailable" \};/g) ?? [])
+        .length === 3,
+      "notification service: all three entries open with the fail-closed exposure gate",
+      'notificationService.ts must start sendMemberNotification, broadcastNotification AND listNotifications with `if (!gateOpen()) return { ok: false, reason: "unavailable" };`',
+    );
+    check(
+      !/\b(console|res|req|logger)\s*\./.test(ntCode),
+      "notification service: pure service module — no response, request, or log surface",
+      "notificationService.ts must stay a pure service (no res/req/console/logger)",
+    );
+    check(
+      /catch\s*(\([^)]*\))?\s*\{[\s\S]{0,200}?ok:\s*false/.test(ntCode),
+      "notification service: any error fails closed (ok: false)",
+      "notificationService.ts must return ok: false from its catch",
+    );
+    check(
+      /memberContinuityRecord\.memberNumber,\s*input\.seat/.test(ntCode) &&
+        !/input\.wallet|recipientWallet:\s*input/.test(ntCode),
+      "notification service: seat→wallet resolved on the continuity spine ONLY (no client wallet input)",
+      "notificationService.ts must resolve the recipient from the seat via memberContinuityRecord — a wallet must never arrive as an input",
+    );
+    check(
+      /target:\s*`seat#\$\{input\.seat\}`/.test(ntCode) &&
+        !/target:\s*wallet/.test(ntCode),
+      "notification service: audit target is the seat ONLY (the wallet↔seat pairing never lands in audit)",
+      "notificationService.ts audit row drifted — the notify-member audit target must be `seat#${input.seat}`, never the wallet",
+    );
+    check(
+      /"notification\.send-member"/.test(ntCode) &&
+        /"notification\.broadcast"/.test(ntCode) &&
+        /auditLog/.test(ntCode),
+      "notification service: every write audit-rowed (notification.send-member / notification.broadcast)",
+      "notificationService.ts must write an auditLog row inside each write transaction",
+    );
+    check(
+      /address_in_text/.test(ntCode),
+      "notification service: address-bearing text refused at write time (the inbox leak scan can never trip)",
+      "notificationService.ts must refuse titles/bodies containing a raw 40-hex address (reason address_in_text)",
+    );
+    check(
+      /recipientShort/.test(ntCode) &&
+        /slice\(0,\s*6\)/.test(ntCode) &&
+        /slice\(-4\)/.test(ntCode),
+      "notification service: the list masks recipients server-side (slice(0,6)…slice(-4))",
+      "notificationService.ts must mask recipient wallets server-side in listNotifications — the full wallet never leaves the server",
     );
   }
 

@@ -1,10 +1,15 @@
 // guard-member-menu.ts — THE APPROVED MEMBER MENU, pinned.
 // ---------------------------------------------------------------------------
 // Founder GO 2026-07-16 (wireframes-2026-07-16.html §2, THE VISUAL CHANGE
-// LAW): the member left menu is an APPROVED COMPOSITION — 13 rows in FOUR
-// groups (Member: 5 primaries + Receipts locked-visible · The record ·
-// Growth, name pinned: navigation, not a member promise · Off-chain comfort:
-// Settings LAST, separated), one approved lucide icon per door, and an
+// LAW) + NOTIF-1 amendment (founder decision 2026-07-18: the Notifications
+// door joins the BOTTOM utilities group ABOVE Settings — on desktop the
+// header bell is the primary entry, the door is the secondary/mobile path;
+// no-email canon): the member left menu is an APPROVED COMPOSITION — 14 rows
+// in FOUR groups (Member: 5 primaries + Receipts locked-visible · The record ·
+// Growth, name pinned: navigation, not a member promise · Account (renamed
+// from the jargon "Off-chain comfort" — founder 2026-07-18, human-readable
+// law): Notifications then Settings LAST, separated), one approved lucide
+// icon per door, and an
 // UNMISTAKABLE active state: gold tint + persistent left bar + weight —
 // shape AND color, never color alone (WCAG 1.4.1) — plus aria-current and a
 // visible focus ring. Hash doors must match by pathname+hash (the dead-click
@@ -52,11 +57,11 @@ const menuText = failures === 0 ? doorsText.slice(menuStart, menuEnd) : "";
 const groupTitles = [...menuText.matchAll(/title: "([^"]+)"/g)].map((m) => m[1]);
 pin(
   JSON.stringify(groupTitles) ===
-    JSON.stringify(["Member", "The record", "Growth", "Off-chain comfort"]),
-  `groups must be exactly [Member · The record · Growth · Off-chain comfort] in order — got [${groupTitles.join(" · ")}]`,
+    JSON.stringify(["Member", "The record", "Growth", "Account"]),
+  `groups must be exactly [Member · The record · Growth · Account] in order — got [${groupTitles.join(" · ")}]`,
 );
 
-// ── 2 · The 13 rows in the approved order, each with its approved icon ──────
+// ── 2 · The 14 rows in the approved order, each with its approved icon ──────
 const APPROVED: ReadonlyArray<readonly [label: string, icon: string]> = [
   ["Member Home", "house"],
   ["Wallet", "wallet"],
@@ -70,6 +75,7 @@ const APPROVED: ReadonlyArray<readonly [label: string, icon: string]> = [
   ["Recognition", "award"],
   ["Protocol graph", "map"],
   ["Liquidity", "droplets"],
+  ["Notifications", "bell"],
   ["Settings", "settings"],
 ];
 // EVERY door object counts (a door without an icon is still a visible row —
@@ -80,8 +86,8 @@ const rows = [...menuText.matchAll(/label: "([^"]+)", icon: "([^"]+)"/g)].map(
   (m) => [m[1], m[2]] as const,
 );
 pin(
-  allLabels.length === 13,
-  `the menu is 13 rows (12 doors + Receipts locked-visible) — got ${allLabels.length} door objects`,
+  allLabels.length === 14,
+  `the menu is 14 rows (13 doors + Receipts locked-visible; NOTIF-1 added Notifications) — got ${allLabels.length} door objects`,
 );
 pin(
   rows.length === allLabels.length,
@@ -108,11 +114,11 @@ pin(
 // ── 4 · Settings: pinned LAST, in the separated comfort group ───────────────
 pin(
   allLabels[allLabels.length - 1] === "Settings",
-  "Settings is pinned LAST (off-chain comfort, never protocol)",
+  "Settings is pinned LAST (account comfort, never protocol)",
 );
 pin(
-  /title: "Off-chain comfort",\s*separated: true/.test(menuText),
-  "the Off-chain comfort group is visually separated (separated: true)",
+  /title: "Account",\s*separated: true/.test(menuText),
+  "the Account group is visually separated (separated: true)",
 );
 
 // ── 5 · The shell renders the approved states (CODE shapes, not comments) ───

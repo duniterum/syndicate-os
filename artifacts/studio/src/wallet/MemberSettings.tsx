@@ -82,8 +82,9 @@ export default function MemberSettings() {
     <Card className="bg-card/40 border-border/50 p-5">
       <h2 className="text-base font-medium text-foreground mb-1">Settings</h2>
       <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-        Everything here is off-chain comfort. Your seat and your proofs live on
-        the chain and are not settings. No email is ever asked for or stored.
+        Everything here is comfort only — how the app looks and behaves for
+        you. Your seat and your proofs live on the chain and are not settings.
+        No email is ever asked for or stored.
       </p>
 
       <Row
@@ -148,7 +149,7 @@ export default function MemberSettings() {
 
       <Row
         title="Reset profile"
-        body="Clears off-chain comfort settings only, once profile settings exist. THE SEAT IS PERMANENT — nothing on this page can ever touch it."
+        body="Clears your comfort settings only, once profile settings exist. THE SEAT IS PERMANENT — nothing on this page can ever touch it."
         lifecycle="FUTURE"
       />
     </Card>

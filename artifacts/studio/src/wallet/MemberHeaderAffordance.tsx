@@ -32,7 +32,6 @@ import {
   ShieldCheck,
   ExternalLink,
   BookOpen,
-  Bell,
   Trophy,
   Settings as SettingsIcon,
 } from "lucide-react";
@@ -48,6 +47,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
+import MemberNotificationsBell from "./MemberNotificationsBell";
 import {
   fetchMemberStanding,
   getInjectedProvider,
@@ -276,20 +276,17 @@ export default function MemberHeaderAffordance({
 
   return (
     <div className={mobile ? "flex w-full items-center gap-2" : "flex items-center gap-1.5"}>
-      {/* Reserved header icons (§11 "Header"): notification bell + season
-          trophy — visible, inert, honestly "Coming soon" (locked ≠ hidden;
-          the return-visit hook). They light up with the event backbone /
-          seasons engine — never before. */}
-      {seated && !mobile ? (
+      {/* The §11 header icons, for EVERY signed session (founder, 2026-07-18:
+          the bell and the trophy belong to all members, not only resolved
+          seats — the world-class pattern: signed in = bell): the notification
+          bell is LIVE in its reserved slot (NOTIF-1 — badge = own unseen
+          count, tabs All/Protocol/Mine, View all → /notifications; the
+          component itself hides without S4). The season TROPHY stays reserved
+          exactly as harvested (locked ≠ hidden; it lights up with the seasons
+          engine — never before). */}
+      {!mobile ? (
         <>
-          <span
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/50 text-muted-foreground/60"
-            title="Notifications — coming soon, built on the live event record (the bell is reserved for it)."
-            aria-disabled="true"
-            data-testid="header-bell-reserved"
-          >
-            <Bell className="h-3.5 w-3.5" aria-hidden="true" />
-          </span>
+          <MemberNotificationsBell />
           <span
             className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/50 text-muted-foreground/60"
             title="Seasons & recognition — coming soon (recognition only, never a cash figure)."

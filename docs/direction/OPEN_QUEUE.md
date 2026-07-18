@@ -47,6 +47,20 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 >   it would be the first member-side write; the write-zone invariant stays), no
 >   email/push ever (HARVEST-08). DEPLOY: real migration — its own cycle, never
 >   batched. STATUS: NEXT SLICE on the founder's GO.
+>   **EVIDENCE (2026-07-18, BUILT + ON MAIN — awaiting its own Replit cycle):**
+>   built to the revised founder-approved wireframe (bell = the front door,
+>   world-class): header bell LIVE in the §11 reserved slot for EVERY signed
+>   session (trophy stays reserved beside it — founder: both for all members) ·
+>   tabs All/Protocol/Mine · View all → /notifications (FLAT route, dedicated
+>   page) · menu door above Settings in the "Account" group (renamed from
+>   jargon, founder law: human words) · READ-RECEIPTS PULLED INTO v1 on the
+>   founder's GO (the badge can't work without them): notification_receipt =
+>   per-member seen/read, THE FIRST member-side writes (own-row only, pinned
+>   906-strong in guard-auth-zone) · console: ledger action menu + live
+>   Broadcast + honest admin bell · v1 exclusions now: no protocol-event
+>   generator (v2 — the Supa 30-type taxonomy + world-class synthesis on
+>   record), no severity tiers/pinned banner (v2), read-receipts DONE (was v2).
+>   Founder closes after the prod seal (first broadcast lights his own bell).
 > - 🔵 **Q42 — THE ADMIN-CONTROLLABILITY WAVE (founder, 2026-07-17: "a lot of things
 >   we created I can't control as founder from the admin — check frontend + member
 >   home").** The gap list = the full list on screen this session (audit-log READ ·

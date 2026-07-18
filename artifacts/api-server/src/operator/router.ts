@@ -21,6 +21,13 @@ import { lookupActiveOperator } from "../auth/operatorContext";
 import { saveReferralTerm } from "./referralTermsService";
 import { inviteOperator, suspendOperator, listOperators } from "./operatorRegistryService";
 import { readMemberLedger } from "./memberLedgerService";
+import {
+  sendMemberNotification,
+  broadcastNotification,
+  listNotifications,
+  NOTIFICATION_TITLE_MAX,
+  NOTIFICATION_BODY_MAX,
+} from "./notificationService";
 import { assertAddressSafeAggregate } from "../lib/protocol/rpcTransport";
 
 const router: IRouter = Router();
@@ -51,6 +58,19 @@ const InviteOperatorBody = z.object({
 
 const SuspendOperatorBody = z.object({
   id: z.string().min(1).max(64),
+});
+
+// NOTIF-1: the client sends a SEAT number only — never a wallet. The server
+// resolves seat→wallet on the continuity spine inside the service.
+const NotifyMemberBody = z.object({
+  seat: z.number().int().min(1),
+  title: z.string().min(1).max(NOTIFICATION_TITLE_MAX),
+  body: z.string().min(1).max(NOTIFICATION_BODY_MAX),
+});
+
+const BroadcastBody = z.object({
+  title: z.string().min(1).max(NOTIFICATION_TITLE_MAX),
+  body: z.string().min(1).max(NOTIFICATION_BODY_MAX),
 });
 
 // ── POST /api/operator/referral-terms ───────────────────────────────────────
@@ -255,6 +275,130 @@ router.get("/member-ledger", async (req: Request, res: Response) => {
   assertAddressSafeAggregate(JSON.stringify(result.payload));
   req.log.info({ event: "operator.ledger.read", code: "ok" });
   res.json({ ok: true, payload: result.payload });
+});
+
+// ── POST /api/operator/notifications/member (NOTIF-1) ───────────────────────
+// FOUNDER-ONLY WRITE: message ONE member. The body carries a SEAT number only;
+// the service resolves seat→wallet server-side on the continuity spine — no
+// wallet ever appears in a client request. Audited inside the service (seat
+// only — the pairing never lands in audit).
+router.post("/notifications/member", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "operator.notify_member.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const account =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  if (account === null) {
+    deny(res, 401, "no_session");
+    return;
+  }
+  const ctx = await lookupActiveOperator(account);
+  if (!ctx.isOperator || ctx.role !== "founder_root") {
+    req.log.warn({ event: "operator.notify_member.denied", code: "insufficient_role" });
+    deny(res, 403, "insufficient_role");
+    return;
+  }
+  const parsed = NotifyMemberBody.safeParse(req.body);
+  if (!parsed.success) {
+    deny(res, 400, "bad_request");
+    return;
+  }
+  const result = await sendMemberNotification({
+    seat: parsed.data.seat,
+    title: parsed.data.title,
+    body: parsed.data.body,
+    actorWallet: account,
+    actorRole: ctx.role,
+  });
+  if (!result.ok) {
+    deny(res, result.reason === "unavailable" ? 503 : 400, result.reason);
+    return;
+  }
+  req.log.info({ event: "operator.notify_member.sent", code: "ok" });
+  res.json({ ok: true });
+});
+
+// ── POST /api/operator/notifications/broadcast (NOTIF-1) ────────────────────
+// FOUNDER-ONLY WRITE: one message to ALL members (a single audience=ALL row —
+// the persisted read model; no push, no email, ever). Audited in the service.
+router.post("/notifications/broadcast", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "operator.broadcast.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const account =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  if (account === null) {
+    deny(res, 401, "no_session");
+    return;
+  }
+  const ctx = await lookupActiveOperator(account);
+  if (!ctx.isOperator || ctx.role !== "founder_root") {
+    req.log.warn({ event: "operator.broadcast.denied", code: "insufficient_role" });
+    deny(res, 403, "insufficient_role");
+    return;
+  }
+  const parsed = BroadcastBody.safeParse(req.body);
+  if (!parsed.success) {
+    deny(res, 400, "bad_request");
+    return;
+  }
+  const result = await broadcastNotification({
+    title: parsed.data.title,
+    body: parsed.data.body,
+    actorWallet: account,
+    actorRole: ctx.role,
+  });
+  if (!result.ok) {
+    deny(res, result.reason === "unavailable" ? 503 : 400, result.reason);
+    return;
+  }
+  req.log.info({ event: "operator.broadcast.sent", code: "ok" });
+  res.json({ ok: true });
+});
+
+// ── GET /api/operator/notifications (NOTIF-1) ───────────────────────────────
+// FOUNDER-ONLY READ: the recent sent list (the honest bell + composer history).
+// Masked short wallets only; no query/params; the payload passes the 40-hex
+// fail-closed scanner before it leaves.
+router.get("/notifications", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "operator.notifications.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const account =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  if (account === null) {
+    deny(res, 401, "no_session");
+    return;
+  }
+  const ctx = await lookupActiveOperator(account);
+  if (!ctx.isOperator || ctx.role !== "founder_root") {
+    req.log.warn({ event: "operator.notifications.denied", code: "insufficient_role" });
+    deny(res, 403, "insufficient_role");
+    return;
+  }
+  const result = await listNotifications();
+  if (!result.ok) {
+    deny(res, result.reason === "unavailable" ? 503 : 400, result.reason);
+    return;
+  }
+  assertAddressSafeAggregate(JSON.stringify(result.notifications));
+  req.log.info({ event: "operator.notifications.listed", code: "ok" });
+  res.json({ ok: true, notifications: result.notifications });
 });
 
 export default router;
