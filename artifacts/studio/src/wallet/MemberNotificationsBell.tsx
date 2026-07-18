@@ -180,17 +180,15 @@ export default function MemberNotificationsBell() {
             <div className="divide-y divide-border/50 border-t border-border/50">
               {visible.map((r) => {
                 const Icon = iconFor(r.icon);
-                // The row leads with its type icon (gold when unread), or the
-                // gold unread dot as the fallback marker. The icon is
-                // decorative-supportive (aria-hidden) — the title is the name.
+                // The row leads with its TYPE icon in a CONSISTENT gold (the
+                // icon shows type, never read-state — a state-coupled colour
+                // read as a stark near-white in dark mode). Read-state lives on
+                // the TITLE (bold+foreground unread / normal+muted read). The
+                // icon is decorative-supportive (aria-hidden). No-icon rows keep
+                // the gold unread dot as the fallback marker.
                 const lead =
                   Icon !== null ? (
-                    <Icon
-                      aria-hidden="true"
-                      className={`mt-0.5 h-4 w-4 shrink-0 ${
-                        r.unread ? "text-gold" : "text-muted-foreground"
-                      }`}
-                    />
+                    <Icon aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
                   ) : (
                     <span
                       aria-hidden="true"
@@ -205,7 +203,9 @@ export default function MemberNotificationsBell() {
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center gap-2">
                         <span
-                          className={`truncate text-sm ${r.unread ? "font-semibold" : ""}`}
+                          className={`truncate text-sm ${
+                            r.unread ? "font-semibold text-foreground" : "text-muted-foreground"
+                          }`}
                         >
                           {r.title}
                         </span>

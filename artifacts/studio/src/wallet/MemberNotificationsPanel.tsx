@@ -46,12 +46,12 @@ function NotificationCard({
   const Icon = iconFor(row.icon);
   const clickable = isKnownLink(row.linkPath);
   const destLabel = linkLabel(row.linkPath);
+  // The type icon is a CONSISTENT gold (type, never read-state — a
+  // state-coupled colour reads as a stark near-white in dark mode). Read-state
+  // lives on the title. No-icon rows keep the gold unread dot.
   const lead =
     Icon !== null ? (
-      <Icon
-        aria-hidden="true"
-        className={`mt-1 h-5 w-5 shrink-0 ${row.unread ? "text-gold" : "text-muted-foreground"}`}
-      />
+      <Icon aria-hidden="true" className="mt-1 h-5 w-5 shrink-0 text-gold" />
     ) : (
       <span
         aria-hidden="true"
@@ -65,7 +65,13 @@ function NotificationCard({
       {lead}
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-center gap-2">
-          <span className={`text-sm ${row.unread ? "font-semibold" : ""}`}>{row.title}</span>
+          <span
+            className={`text-sm ${
+              row.unread ? "font-semibold text-foreground" : "text-muted-foreground"
+            }`}
+          >
+            {row.title}
+          </span>
           <span
             className={`rounded-full px-2 py-0.5 text-xs ${
               row.scope === "you" ? "bg-gold/10 text-gold" : "bg-border/40 text-muted-foreground"
