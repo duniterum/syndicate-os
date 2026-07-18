@@ -39,12 +39,6 @@ const attentionCode = stripComments(attentionRaw);
 const recentCode = stripComments(
   readFileSync(join(SRC, "wallet", "MemberRecentActivity.tsx"), "utf8"),
 );
-const doorsGridCode = stripComments(
-  readFileSync(
-    join(SRC, "components", "member", "MemberDoorsGrid.tsx"),
-    "utf8",
-  ),
-);
 
 let pins = 0;
 let failures = 0;
@@ -93,7 +87,6 @@ for (const sealed of [
   "<CapitalAxisCard",
   "<ProtocolSnapshot",
   "<ChronicleLatest",
-  "<MemberDoorsGrid",
   "<MemberSettings",
   "<VerifyFoundationRow",
 ]) {
@@ -187,25 +180,15 @@ pin(
   "no PAST-TENSE ticket claim anywhere — most indexed purchases predate the receipt product (fabricated history, adversarial-review kill)",
 );
 
-// ── 5 · Z8: the doors grid mirrors the ONE config + the ONE icon table ──────
+// ── 5 · The doors live ONCE — the sidebar, never a duplicate Z8 grid ────────
+// The dashboard's right column used to mount <MemberDoorsGrid>, a full-column
+// duplicate of the MemberShell sidebar (the SAME MEMBER_DOOR_GROUPS, only the
+// one-line descriptions differed). Removed 2026-07-18 (founder, WORK-FIRST):
+// the doors are the sidebar's job; the right column is freed for real work.
+// This pin keeps the duplicate from creeping back.
 pin(
-  /MEMBER_DOOR_GROUPS/.test(doorsGridCode) &&
-    /from "@\/config\/memberDoors"/.test(doorsGridCode),
-  "Z8 renders MEMBER_DOOR_GROUPS from the one config (the grid can never fork from the menu)",
-);
-pin(
-  /DOOR_ICONS/.test(doorsGridCode) &&
-    /from "@\/components\/member\/MemberShell"/.test(doorsGridCode),
-  "Z8 uses the sidebar's exported icon table — one table, never two drifting copies",
-);
-pin(
-  /door\.lifecycle \?/.test(doorsGridCode),
-  "Z8 locked doors stay visible WITH the lifecycle badge (locked ≠ hidden)",
-);
-pin(
-  /makeSameDoorClick/.test(doorsGridCode) &&
-    /useLocationProperty\(/.test(doorsGridCode),
-  "Z8 same-URL cards carry the same-door guard (no dead history entries — Member Home is same-URL by construction)",
+  !dashText.includes("<MemberDoorsGrid"),
+  "the dashboard does NOT re-mount the duplicate doors grid (doors live in the MemberShell sidebar only — removed 2026-07-18, WORK-FIRST)",
 );
 
 if (failures > 0) {

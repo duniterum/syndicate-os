@@ -27,7 +27,6 @@ import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { MemberShell } from "@/components/member/MemberShell";
 import { MEMBER_HOME_RESERVED_SLOTS } from "@/config/memberDoors";
 import { MemberQuickActions } from "@/components/member/MemberQuickActions";
-import { MemberDoorsGrid } from "@/components/member/MemberDoorsGrid";
 import { MemberPulse } from "@/components/member/MemberPulse";
 import { ProtocolSnapshot } from "@/components/member/ProtocolSnapshot";
 import { ChronicleLatest } from "@/components/member/ChronicleLatest";
@@ -203,9 +202,10 @@ export default function MemberAccess() {
                       the doors' own truths, surfaced as living summaries. */}
                   <ProtocolSnapshot />
                   <ChronicleLatest />
-                  {/* Z8 — the doors as a grouped grid (mirrors the menu
-                      groups — navigation as cards AFTER the work). */}
-                  <MemberDoorsGrid />
+                  {/* The doors live in the MemberShell sidebar (left, sticky) —
+                      the Z8 grid was a full-column duplicate of that same
+                      MEMBER_DOOR_GROUPS and was removed (founder 2026-07-18,
+                      WORK-FIRST): one door list, freeing the right column. */}
                   <div>
                     <h2 className="type-h2 text-foreground mb-1">Coming to your seat</h2>
                     <p className="text-sm text-muted-foreground leading-relaxed mb-2">
