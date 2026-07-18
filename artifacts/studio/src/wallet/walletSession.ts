@@ -516,6 +516,10 @@ export interface OwnInboxRow {
   scope: "you" | "all";
   title: string;
   body: string;
+  /** NOTIF-2: a curated lucide icon key (or null) — rendered fail-closed. */
+  icon: string | null;
+  /** NOTIF-2: an internal deep-link path (or null) — clickable if whitelisted. */
+  linkPath: string | null;
   createdAtIso: string | null;
   /** true until the member CLICKS the item (or marks all read). */
   unread: boolean;
@@ -564,6 +568,8 @@ export async function fetchOwnInbox(): Promise<OwnInboxReadback | null> {
           scope: r.scope,
           title: r.title,
           body: r.body,
+          icon: typeof r.icon === "string" ? r.icon : null,
+          linkPath: typeof r.linkPath === "string" ? r.linkPath : null,
           createdAtIso: typeof r.createdAtIso === "string" ? r.createdAtIso : null,
           unread: r.unread,
         });

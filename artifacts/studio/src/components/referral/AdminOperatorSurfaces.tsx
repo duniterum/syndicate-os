@@ -27,6 +27,11 @@ import {
   fetchNotifications,
   type NotificationListItem,
 } from "@/lib/operatorClient";
+import {
+  NotificationComposerFields,
+  type NotificationComposerValue,
+} from "./NotificationComposerFields";
+import { iconFor, linkLabel } from "@/lib/notificationIcons";
 import { featureFlagsSample, auditLogSample, supportQueueSample } from "@/config/referralProgram";
 
 function Head({ icon: Icon, title, sample }: { icon: typeof Megaphone; title: string; sample?: boolean }) {
@@ -55,6 +60,10 @@ function broadcastFailureText(reason: string | null): string {
     case "bad_body":
     case "bad_request":
       return "Title and announcement are both required (title ≤ 120, text ≤ 2000 characters).";
+    case "bad_icon":
+      return "That icon is not in the palette — pick one from the set (or None).";
+    case "bad_link":
+      return "That destination is not allowed — pick one from the list (internal only).";
     case "unavailable":
       return "The write zone is unavailable (fail-closed) — nothing was sent.";
     case "unreachable":
@@ -72,6 +81,7 @@ export function BroadcastPanel() {
   const [body, setBody] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [opts, setOpts] = useState<NotificationComposerValue>({ icon: null, link: null });
   const [sent, setSent] = useState<NotificationListItem[] | "denied" | "unavailable" | null>(null);
 
   useEffect(() => {
@@ -89,12 +99,13 @@ export function BroadcastPanel() {
     if (submitting) return;
     setSubmitting(true);
     setError(null);
-    const result = await sendBroadcast(title, body);
+    const result = await sendBroadcast(title, body, opts.icon, opts.link);
     setSubmitting(false);
     if (result.ok) {
       toast({ title: "Broadcast sent to all members" });
       setTitle("");
       setBody("");
+      setOpts({ icon: null, link: null });
       // Re-read the real table — live readback, never an optimistic guess.
       const r = await fetchNotifications();
       setSent(r.status === "ok" ? r.notifications : r.status);
@@ -132,6 +143,9 @@ export function BroadcastPanel() {
         onChange={(e) => setBody(e.target.value)}
         maxLength={2000}
       />
+      <div className="mb-3">
+        <NotificationComposerFields value={opts} onChange={setOpts} />
+      </div>
       {error !== null && <p className="text-sm text-destructive mb-3">{error}</p>}
       <Button
         onClick={() => void handleSend()}
@@ -160,22 +174,32 @@ export function BroadcastPanel() {
         )}
         {Array.isArray(sent) && sent.length > 0 && (
           <div className="rounded-md border border-border/50 divide-y divide-border/50">
-            {sent.map((n) => (
-              <div key={n.id} className="p-3">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-sm text-foreground">{n.title}</span>
-                  <Badge variant="outline" className="text-[10px] font-normal">
-                    {n.audience === "ALL" ? "all members" : `member ${n.recipientShort ?? ""}`}
-                  </Badge>
-                  {n.createdAtIso !== null && (
-                    <span className="font-mono text-[10px] text-muted-foreground ml-auto">
-                      {n.createdAtIso.slice(0, 16).replace("T", " ")} UTC
-                    </span>
+            {sent.map((n) => {
+              const Icon = iconFor(n.icon);
+              const dest = linkLabel(n.linkPath);
+              return (
+                <div key={n.id} className="p-3">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {Icon !== null && (
+                      <Icon className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
+                    )}
+                    <span className="text-sm text-foreground">{n.title}</span>
+                    <Badge variant="outline" className="text-[10px] font-normal">
+                      {n.audience === "ALL" ? "all members" : `member ${n.recipientShort ?? ""}`}
+                    </Badge>
+                    {n.createdAtIso !== null && (
+                      <span className="font-mono text-[10px] text-muted-foreground ml-auto">
+                        {n.createdAtIso.slice(0, 16).replace("T", " ")} UTC
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{n.body}</p>
+                  {dest !== null && (
+                    <p className="text-[11px] text-muted-foreground/80 mt-1">↳ opens {dest}</p>
                   )}
                 </div>
-                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{n.body}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

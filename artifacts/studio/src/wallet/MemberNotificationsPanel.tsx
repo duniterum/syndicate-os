@@ -8,7 +8,8 @@
 // served rows grouped Today / Earlier. Clicking an item marks it read.
 
 import { useCallback, useEffect, useState } from "react";
-import { BellRing } from "lucide-react";
+import { Link } from "wouter";
+import { BellRing, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -19,6 +20,7 @@ import {
 } from "./walletSession";
 import { SESSION_CHANGED_EVENT } from "./sessionEvents";
 import { relativeDay } from "./MemberNotificationsBell";
+import { iconFor, isKnownLink, linkLabel } from "@/lib/notificationIcons";
 
 type PageTab = "all" | "protocol" | "mine" | "unread";
 const PAGE_STEP = 20;
@@ -41,44 +43,72 @@ function NotificationCard({
   row: OwnInboxRow;
   onRead: (id: string) => void;
 }) {
-  return (
+  const Icon = iconFor(row.icon);
+  const clickable = isKnownLink(row.linkPath);
+  const destLabel = linkLabel(row.linkPath);
+  const lead =
+    Icon !== null ? (
+      <Icon
+        aria-hidden="true"
+        className={`mt-1 h-5 w-5 shrink-0 ${row.unread ? "text-gold" : "text-muted-foreground"}`}
+      />
+    ) : (
+      <span
+        aria-hidden="true"
+        className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${
+          row.unread ? "bg-gold" : "bg-transparent"
+        }`}
+      />
+    );
+  const inner = (
+    <span className="flex items-start gap-2.5">
+      {lead}
+      <span className="min-w-0 flex-1">
+        <span className="flex flex-wrap items-center gap-2">
+          <span className={`text-sm ${row.unread ? "font-semibold" : ""}`}>{row.title}</span>
+          <span
+            className={`rounded-full px-2 py-0.5 text-xs ${
+              row.scope === "you" ? "bg-gold/10 text-gold" : "bg-border/40 text-muted-foreground"
+            }`}
+          >
+            {row.scope === "you" ? "to you" : "all members"}
+          </span>
+          <span className="ml-auto shrink-0 font-mono text-xs text-muted-foreground">
+            {relativeDay(row.createdAtIso)}
+          </span>
+        </span>
+        <span className="mt-1 block whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+          {row.body}
+        </span>
+        {clickable && destLabel !== null && (
+          <span className="mt-1.5 inline-flex items-center gap-1 text-xs font-medium text-primary">
+            Open {destLabel}
+            <ArrowRight aria-hidden="true" className="h-3 w-3" />
+          </span>
+        )}
+      </span>
+    </span>
+  );
+  const base = "block w-full px-4 py-3 text-left transition-colors";
+  // Clickable ONLY when the served path is an exact whitelist member: the
+  // whole card navigates to the subject AND marks read. A non-clickable card
+  // is self-contained (the body is the destination) and only marks read —
+  // never a dead click that goes nowhere.
+  return clickable ? (
+    <Link
+      href={row.linkPath as string}
+      onClick={() => row.unread && onRead(row.id)}
+      className={`${base} hover:bg-border/30 ${row.unread ? "" : "opacity-80"}`}
+    >
+      {inner}
+    </Link>
+  ) : (
     <button
       type="button"
       onClick={() => row.unread && onRead(row.id)}
-      className={`w-full px-4 py-3 text-left transition-colors ${
-        row.unread ? "hover:bg-border/30" : "opacity-80"
-      }`}
+      className={`${base} ${row.unread ? "hover:bg-border/30" : "opacity-80"}`}
     >
-      <span className="flex items-start gap-2.5">
-        <span
-          aria-hidden="true"
-          className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${
-            row.unread ? "bg-gold" : "bg-transparent"
-          }`}
-        />
-        <span className="min-w-0 flex-1">
-          <span className="flex flex-wrap items-center gap-2">
-            <span className={`text-sm ${row.unread ? "font-semibold" : ""}`}>
-              {row.title}
-            </span>
-            <span
-              className={`rounded-full px-2 py-0.5 text-xs ${
-                row.scope === "you"
-                  ? "bg-gold/10 text-gold"
-                  : "bg-border/40 text-muted-foreground"
-              }`}
-            >
-              {row.scope === "you" ? "to you" : "all members"}
-            </span>
-            <span className="ml-auto shrink-0 font-mono text-xs text-muted-foreground">
-              {relativeDay(row.createdAtIso)}
-            </span>
-          </span>
-          <span className="mt-1 block whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-            {row.body}
-          </span>
-        </span>
-      </span>
+      {inner}
     </button>
   );
 }

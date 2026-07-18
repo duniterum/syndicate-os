@@ -19,6 +19,10 @@
 // read model only — no live push, no email, ever.
 
 import { randomUUID } from "node:crypto";
+import {
+  NOTIFICATION_ICON_PALETTE,
+  NOTIFICATION_LINK_PATHS,
+} from "@workspace/os-contracts";
 import { AUTH_EXPOSURE_FLAG } from "../auth/authExposure";
 
 export type NotificationWriteResult = { ok: true } | { ok: false; reason: string };
@@ -32,12 +36,25 @@ export const NOTIFICATION_BODY_MAX = 2000;
 // time with a clear reason instead of poisoning the read model.
 const RAW_ADDRESS = /0x[0-9a-fA-F]{40}/;
 
+// NOTIF-2: the authoritative allow-lists (the single source in os-contracts).
+// A client-supplied icon/link is NEVER trusted — only exact-match membership
+// passes. The internal-only boundary is THIS Set, never a `/`-prefix test.
+const ICON_SET: ReadonlySet<string> = new Set(NOTIFICATION_ICON_PALETTE);
+const LINK_SET: ReadonlySet<string> = new Set(NOTIFICATION_LINK_PATHS);
+
 function gateOpen(): boolean {
   return (
     process.env[AUTH_EXPOSURE_FLAG] === "true" &&
     process.env.DATABASE_URL != null &&
     process.env.DATABASE_URL.length > 0
   );
+}
+
+/** Empty/whitespace → null; otherwise the trimmed value. */
+function nullable(v: string | null | undefined): string | null {
+  if (v == null) return null;
+  const t = v.trim();
+  return t.length > 0 ? t : null;
 }
 
 function textReason(title: string, body: string): string | null {
@@ -47,10 +64,23 @@ function textReason(title: string, body: string): string | null {
   return null;
 }
 
+// Optional icon + internal link: a non-null icon must be a palette member; a
+// non-null link must be an EXACT whitelist member. Protocol-relative / backslash
+// forms are refused explicitly (defense-in-depth; the Set already excludes them).
+function optionReason(icon: string | null, link: string | null): string | null {
+  if (icon !== null && !ICON_SET.has(icon)) return "bad_icon";
+  if (link !== null) {
+    if (link.startsWith("//") || link.startsWith("/\\") || !LINK_SET.has(link)) return "bad_link";
+  }
+  return null;
+}
+
 export interface SendMemberNotificationInput {
   seat: number;
   title: string;
   body: string;
+  icon?: string | null;
+  link?: string | null;
   actorWallet: string;
   actorRole: string;
 }
@@ -62,6 +92,10 @@ export async function sendMemberNotification(
   if (!Number.isInteger(input.seat) || input.seat < 1) return { ok: false, reason: "bad_seat" };
   const bad = textReason(input.title, input.body);
   if (bad !== null) return { ok: false, reason: bad };
+  const icon = nullable(input.icon);
+  const linkPath = nullable(input.link);
+  const optBad = optionReason(icon, linkPath);
+  if (optBad !== null) return { ok: false, reason: optBad };
 
   try {
     const { db, memberContinuityRecord, notification, auditLog } = await import("@workspace/db");
@@ -84,6 +118,9 @@ export async function sendMemberNotification(
         recipientWallet: wallet,
         title: input.title.trim(),
         body: input.body.trim(),
+        icon, // validated ∈ palette or null
+        linkPath, // validated ∈ whitelist or null
+        category: null, // v1 free-text send; v2 generator owns category
         createdByRole: input.actorRole,
       });
       await tx.insert(auditLog).values({
@@ -105,6 +142,8 @@ export async function sendMemberNotification(
 export interface BroadcastNotificationInput {
   title: string;
   body: string;
+  icon?: string | null;
+  link?: string | null;
   actorWallet: string;
   actorRole: string;
 }
@@ -115,6 +154,10 @@ export async function broadcastNotification(
   if (!gateOpen()) return { ok: false, reason: "unavailable" };
   const bad = textReason(input.title, input.body);
   if (bad !== null) return { ok: false, reason: bad };
+  const icon = nullable(input.icon);
+  const linkPath = nullable(input.link);
+  const optBad = optionReason(icon, linkPath);
+  if (optBad !== null) return { ok: false, reason: optBad };
 
   try {
     const { db, notification, auditLog } = await import("@workspace/db");
@@ -125,6 +168,9 @@ export async function broadcastNotification(
         recipientWallet: null,
         title: input.title.trim(),
         body: input.body.trim(),
+        icon, // validated ∈ palette or null
+        linkPath, // validated ∈ whitelist or null
+        category: null, // v1 free-text send; v2 generator owns category
         createdByRole: input.actorRole,
       });
       await tx.insert(auditLog).values({
@@ -152,6 +198,8 @@ export interface NotificationListRow {
   recipientShort: string | null; // masked 0x1234…abcd, null for ALL
   title: string;
   body: string;
+  icon: string | null;
+  linkPath: string | null;
   createdAtIso: string | null;
 }
 export type NotificationListResult =
@@ -172,6 +220,8 @@ export async function listNotifications(): Promise<NotificationListResult> {
         recipientWallet: notification.recipientWallet,
         title: notification.title,
         body: notification.body,
+        icon: notification.icon,
+        linkPath: notification.linkPath,
         createdAt: notification.createdAt,
       })
       .from(notification)
@@ -186,6 +236,8 @@ export async function listNotifications(): Promise<NotificationListResult> {
           : null,
       title: r.title,
       body: r.body,
+      icon: r.icon,
+      linkPath: r.linkPath,
       createdAtIso: r.createdAt instanceof Date ? r.createdAt.toISOString() : null,
     }));
     return { ok: true, notifications };

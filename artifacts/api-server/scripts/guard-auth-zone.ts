@@ -1417,6 +1417,36 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
       "notification service: the list masks recipients server-side (slice(0,6)…slice(-4))",
       "notificationService.ts must mask recipient wallets server-side in listNotifications — the full wallet never leaves the server",
     );
+    // NOTIF-2: the optional icon + internal link are validated fail-closed
+    // against the os-contracts single source. A non-null icon outside the
+    // palette → bad_icon; a non-null link outside the EXACT-MATCH whitelist →
+    // bad_link. The internal-only boundary is Set membership, never a prefix
+    // test (`//evil.com` / `/\evil.com` are refused explicitly).
+    check(
+      /from "@workspace\/os-contracts"/.test(ntCode) &&
+        /NOTIFICATION_ICON_PALETTE/.test(ntCode) &&
+        /NOTIFICATION_LINK_PATHS/.test(ntCode),
+      "notification service: icon palette + link whitelist imported from the os-contracts single source",
+      "notificationService.ts must import NOTIFICATION_ICON_PALETTE + NOTIFICATION_LINK_PATHS from @workspace/os-contracts — the one literal server + studio + guards share",
+    );
+    check(
+      /ICON_SET\.has\(/.test(ntCode) && /return "bad_icon"/.test(ntCode),
+      "notification service: a non-null icon outside the palette is refused (bad_icon)",
+      "notificationService.ts must refuse a non-null icon not in ICON_SET with reason bad_icon",
+    );
+    check(
+      /LINK_SET\.has\(/.test(ntCode) &&
+        /return "bad_link"/.test(ntCode) &&
+        /startsWith\("\/\/"\)/.test(ntCode) &&
+        !/startsWith\("\/"\)\s*&&/.test(ntCode),
+      "notification service: a non-null link is EXACT-MATCH whitelisted; // refused (bad_link); never a startsWith('/') gate",
+      "notificationService.ts must refuse a non-null link unless LINK_SET.has(link), explicitly reject the // protocol-relative form (bad_link), and NEVER admit a link by a startsWith('/') prefix test",
+    );
+    check(
+      !/req\.body|input\.category/.test(ntCode) && /category: null/.test(ntCode),
+      "notification service: v1 stores category NULL (no client-set category)",
+      "notificationService.ts must store category: null on v1 sends — the v2 generator owns category; the client never sets it",
+    );
   }
 
   // 9f. Fixture discipline parity: no wallet-address / 64-hex literals in the

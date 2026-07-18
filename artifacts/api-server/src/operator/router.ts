@@ -62,15 +62,23 @@ const SuspendOperatorBody = z.object({
 
 // NOTIF-1: the client sends a SEAT number only — never a wallet. The server
 // resolves seat→wallet on the continuity spine inside the service.
+// NOTIF-2: optional icon + internal link — shape-gated here (length + type);
+// the EXACT-MATCH authority is the service (bad_icon / bad_link against the
+// os-contracts palette + whitelist). A raw URL never has a field: `link` is
+// always a whitelisted internal path key, validated server-side.
 const NotifyMemberBody = z.object({
   seat: z.number().int().min(1),
   title: z.string().min(1).max(NOTIFICATION_TITLE_MAX),
   body: z.string().min(1).max(NOTIFICATION_BODY_MAX),
+  icon: z.string().max(40).nullish(),
+  link: z.string().max(128).nullish(),
 });
 
 const BroadcastBody = z.object({
   title: z.string().min(1).max(NOTIFICATION_TITLE_MAX),
   body: z.string().min(1).max(NOTIFICATION_BODY_MAX),
+  icon: z.string().max(40).nullish(),
+  link: z.string().max(128).nullish(),
 });
 
 // ── POST /api/operator/referral-terms ───────────────────────────────────────
@@ -312,6 +320,8 @@ router.post("/notifications/member", async (req: Request, res: Response) => {
     seat: parsed.data.seat,
     title: parsed.data.title,
     body: parsed.data.body,
+    icon: parsed.data.icon,
+    link: parsed.data.link,
     actorWallet: account,
     actorRole: ctx.role,
   });
@@ -355,6 +365,8 @@ router.post("/notifications/broadcast", async (req: Request, res: Response) => {
   const result = await broadcastNotification({
     title: parsed.data.title,
     body: parsed.data.body,
+    icon: parsed.data.icon,
+    link: parsed.data.link,
     actorWallet: account,
     actorRole: ctx.role,
   });

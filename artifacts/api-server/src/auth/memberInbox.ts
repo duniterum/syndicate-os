@@ -27,10 +27,16 @@ export interface InboxRow {
   scope: "you" | "all";
   title: string;
   body: string;
+  /** NOTIF-2: a curated lucide icon key, or null. Carries no address. */
+  icon: string | null;
+  /** NOTIF-2: an internal deep-link (whitelisted path key), or null. */
+  linkPath: string | null;
   createdAtIso: string | null;
   /** true until the member CLICKS the item (or marks all read). */
   unread: boolean;
 }
+// NOTE: `category` is deliberately NOT carried to the member payload in v1
+// (it is NULL for every v1 send and not member-surfaced) — no needless field.
 
 export interface InboxPayload {
   rows: InboxRow[];
@@ -68,6 +74,8 @@ export async function readOwnInbox(account: string): Promise<InboxPayload | null
         audience: notification.audience,
         title: notification.title,
         body: notification.body,
+        icon: notification.icon,
+        linkPath: notification.linkPath,
         createdAt: notification.createdAt,
         seenAt: notificationReceipt.seenAt,
         readAt: notificationReceipt.readAt,
@@ -94,6 +102,8 @@ export async function readOwnInbox(account: string): Promise<InboxPayload | null
       scope: r.audience === "MEMBER" ? ("you" as const) : ("all" as const),
       title: r.title,
       body: r.body,
+      icon: r.icon,
+      linkPath: r.linkPath,
       createdAtIso: r.createdAt instanceof Date ? r.createdAt.toISOString() : null,
       unread: r.readAt === null,
     }));

@@ -16,8 +16,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
-import { Bell } from "lucide-react";
+import { Bell, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { iconFor, isKnownLink } from "@/lib/notificationIcons";
 import {
   Popover,
   PopoverContent,
@@ -177,37 +178,80 @@ export default function MemberNotificationsBell() {
           )}
           {visible.length > 0 && (
             <div className="divide-y divide-border/50 border-t border-border/50">
-              {visible.map((r) => (
-                <button
-                  key={r.id}
-                  type="button"
-                  onClick={() => markRead(r.id)}
-                  className="flex w-full items-start gap-2 py-2 text-left hover:bg-border/30 rounded-sm px-1"
-                >
-                  <span
-                    aria-hidden="true"
-                    className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${
-                      r.unread ? "bg-gold" : "bg-transparent"
-                    }`}
-                  />
-                  <span className="min-w-0 flex-1">
-                    <span className="flex items-center gap-2">
-                      <span
-                        className={`truncate text-sm ${r.unread ? "font-semibold" : ""}`}
-                      >
-                        {r.title}
+              {visible.map((r) => {
+                const Icon = iconFor(r.icon);
+                // The row leads with its type icon (gold when unread), or the
+                // gold unread dot as the fallback marker. The icon is
+                // decorative-supportive (aria-hidden) — the title is the name.
+                const lead =
+                  Icon !== null ? (
+                    <Icon
+                      aria-hidden="true"
+                      className={`mt-0.5 h-4 w-4 shrink-0 ${
+                        r.unread ? "text-gold" : "text-muted-foreground"
+                      }`}
+                    />
+                  ) : (
+                    <span
+                      aria-hidden="true"
+                      className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${
+                        r.unread ? "bg-gold" : "bg-transparent"
+                      }`}
+                    />
+                  );
+                const inner = (
+                  <>
+                    {lead}
+                    <span className="min-w-0 flex-1">
+                      <span className="flex items-center gap-2">
+                        <span
+                          className={`truncate text-sm ${r.unread ? "font-semibold" : ""}`}
+                        >
+                          {r.title}
+                        </span>
+                        <span className="ml-auto shrink-0 font-mono text-xs text-muted-foreground">
+                          {relativeDay(r.createdAtIso)}
+                        </span>
                       </span>
-                      <span className="ml-auto shrink-0 font-mono text-xs text-muted-foreground">
-                        {relativeDay(r.createdAtIso)}
+                      <span className="mt-0.5 block truncate text-xs text-muted-foreground">
+                        {r.scope === "you" ? "To you · " : "All members · "}
+                        {r.body}
                       </span>
                     </span>
-                    <span className="mt-0.5 block truncate text-xs text-muted-foreground">
-                      {r.scope === "you" ? "To you · " : "All members · "}
-                      {r.body}
-                    </span>
-                  </span>
-                </button>
-              ))}
+                  </>
+                );
+                const rowClass =
+                  "flex w-full items-start gap-2 py-2 text-left hover:bg-border/30 rounded-sm px-1";
+                // Clickable ONLY when the served path is an exact whitelist
+                // member (fail-closed): the whole row is a real link that
+                // navigates to the subject, closes the popover, and marks read.
+                return isKnownLink(r.linkPath) ? (
+                  <Link
+                    key={r.id}
+                    href={r.linkPath}
+                    onClick={() => {
+                      markRead(r.id);
+                      setOpen(false);
+                    }}
+                    className={rowClass}
+                  >
+                    {inner}
+                    <ChevronRight
+                      aria-hidden="true"
+                      className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground"
+                    />
+                  </Link>
+                ) : (
+                  <button
+                    key={r.id}
+                    type="button"
+                    onClick={() => markRead(r.id)}
+                    className={rowClass}
+                  >
+                    {inner}
+                  </button>
+                );
+              })}
             </div>
           )}
           <div className="mt-2.5 flex items-center gap-2 border-t border-border/50 pt-2.5">

@@ -122,6 +122,14 @@ export const notification = pgTable(
     title: text("title").notNull(),
     body: text("body").notNull(),
     createdByRole: text("created_by_role").notNull(),
+    // NOTIF-2 (clickable + icons, founder GO 2026-07-18) — all ADDITIVE nullable
+    // text, no new CHECK/index (expression-free; the internal-only boundary is
+    // the server EXACT-MATCH whitelist, never a DB `like '/%'` — `//evil.com`
+    // would satisfy that). No column carries an address, so the 40-hex scan
+    // and the no-wallet regex are unaffected.
+    icon: text("icon"), // a curated lucide key ∈ NOTIFICATION_ICON_PALETTE; NULL = no icon
+    linkPath: text("link_path"), // an internal path ∈ NOTIFICATION_LINK_WHITELIST; NULL = not clickable
+    category: text("category"), // (v2) taxonomy token; NULL for every v1 free-text send
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => ({

@@ -202,12 +202,14 @@ export async function notifyMember(
   seat: number,
   title: string,
   body: string,
+  icon?: string | null,
+  link?: string | null,
 ): Promise<WriteResult> {
   try {
     const res = await fetch("/api/operator/notifications/member", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ seat, title, body }),
+      body: JSON.stringify({ seat, title, body, icon: icon ?? null, link: link ?? null }),
     });
     if (res.ok) return { ok: true, reason: null };
     let reason: string | null = null;
@@ -228,12 +230,17 @@ export async function notifyMember(
 
 // Founder-only write: broadcast ONE message to ALL members (a single persisted
 // row — the read model; no push, no email). Same fail-closed shape.
-export async function sendBroadcast(title: string, body: string): Promise<WriteResult> {
+export async function sendBroadcast(
+  title: string,
+  body: string,
+  icon?: string | null,
+  link?: string | null,
+): Promise<WriteResult> {
   try {
     const res = await fetch("/api/operator/notifications/broadcast", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ title, body }),
+      body: JSON.stringify({ title, body, icon: icon ?? null, link: link ?? null }),
     });
     if (res.ok) return { ok: true, reason: null };
     let reason: string | null = null;
@@ -258,6 +265,8 @@ export interface NotificationListItem {
   recipientShort: string | null;
   title: string;
   body: string;
+  icon: string | null;
+  linkPath: string | null;
   createdAtIso: string | null;
 }
 export type ListNotificationsResult =

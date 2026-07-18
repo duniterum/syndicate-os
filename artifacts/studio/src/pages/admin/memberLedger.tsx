@@ -43,6 +43,10 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import {
+  NotificationComposerFields,
+  type NotificationComposerValue,
+} from "@/components/referral/NotificationComposerFields";
+import {
   fetchMemberLedger,
   notifyMember,
   type LedgerPayload,
@@ -95,6 +99,10 @@ function notifyFailureText(reason: string | null): string {
       return "That seat is not on the continuity spine — nothing was sent.";
     case "address_in_text":
       return "The message contains a raw wallet address — remove it; served messages never carry addresses.";
+    case "bad_icon":
+      return "That icon is not in the palette — pick one from the set (or None).";
+    case "bad_link":
+      return "That destination is not allowed — pick one from the list (internal only).";
     case "bad_title":
     case "bad_body":
     case "bad_request":
@@ -122,6 +130,7 @@ function MessageMemberDialog({
   const { toast } = useToast();
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [opts, setOpts] = useState<NotificationComposerValue>({ icon: null, link: null });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -129,7 +138,7 @@ function MessageMemberDialog({
     if (submitting) return;
     setSubmitting(true);
     setError(null);
-    const result = await notifyMember(row.seat, title, body);
+    const result = await notifyMember(row.seat, title, body, opts.icon, opts.link);
     setSubmitting(false);
     if (result.ok) {
       toast({ title: `Message sent to seat #${row.seat}` });
@@ -164,6 +173,7 @@ function MessageMemberDialog({
             rows={5}
             maxLength={2000}
           />
+          <NotificationComposerFields value={opts} onChange={setOpts} />
           {error !== null && <p className="text-sm text-destructive">{error}</p>}
         </div>
         <DialogFooter>

@@ -2,6 +2,38 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🔨 NOTIF-2 CLICKABLE + ICONS BUILT + ON MAIN (2026-07-18, founder GO — the
+> "finish it perfect, don't come back" pass; 2 design workflows adversarially
+> verified + 2 founder icon corrections applied).** Notifications now carry an
+> optional ICON (curated lucide key) + an optional internal DEEP-LINK, both
+> operator-chosen in the console composers, both rendered on the member bell +
+> /notifications page (whole-row clickable when the destination is set).
+> **SINGLE SOURCE:** `lib/os-contracts/src/notifications.ts` — the icon palette
+> (23 keys), the internal link whitelist ({path,label}), the forbidden-icon set,
+> and the (v2) category taxonomy — imported by the API validator, the studio
+> renderer/pickers, and the guard, so server ↔ studio can NEVER drift.
+> **DOCTRINE (founder, corrected):** "mechanism decides, not the symbol" — the
+> palette carries honest FUNCTION glyphs (vault, gift, trophy, receipt) and bans
+> only GAIN-PROMISE ones (rocket/moon/chart-up/diamond-pump/raining-money/dice);
+> Chronicle got its icon (book-open) after the empty-slot catch. **ANTI-PHISHING
+> (verifier's load-bearing fix):** links are internal-only by EXACT-MATCH Set
+> membership — NEVER a `/`-prefix test (`//evil.com` satisfies `like '/%'`), and
+> `//` / `/\` are refused explicitly; a client free-text URL field never exists.
+> **MIGRATION:** 3 ADDITIVE nullable text columns (icon, link_path, category) —
+> no new CHECK/index (expression-free → idempotent push); `category` is NULL in
+> v1, added now so the v2 event-generator needs NO second migration. GREEN: api
+> typecheck · studio typecheck · auth-zone 910 (+4 icon/link pins) ·
+> notif-vocab 62/62 (new guard: palette∩forbidden=∅, every key mapped, every
+> destination a real route) · operator-gate 2650 · build 332 twins + admin-dist
+> 93, console strings 0 in the public entry · page clean desktop+mobile.
+> v1 exclusions (recorded): the auto protocol-event generator (v2 — the taxonomy
+> is seeded), the external verify/explorer link (v2, infra-only), dismiss /
+> severity tiers. The 4 roadmap dossiers are in `docs/reference/` (`1923d30`).
+> **🚀 DEPLOY — OWN CYCLE:** Replit pulls main, runs `pnpm --filter @workspace/db
+> push` (3 additive columns — MUST re-push with zero drift), deploys, reports.
+> Post-deploy seal = the founder sends a broadcast WITH an icon + a destination
+> and it appears iconized + clickable on their own bell/page.
+
 > **▶ ✅ Q43 NOTIF-1 SEALED IN PROD (2026-07-18, Replit 6/6 at HEAD `881b166`) +
 > THE WORK-FIRST RECOMPOSITION (founder AAA rejection of the hero cut → fixed
 > same session).** Replit: 2 tables migrated (`notification` +
