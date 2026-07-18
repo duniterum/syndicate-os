@@ -47,6 +47,18 @@ pass after the founder complains.**
    green-pump, no ROI/APY/yield/%-gain, no all-time-high badges, no streaks, no countdowns, no
    confetti, no scarcity/urgency copy. State is carried by label + icon, never colour alone.
    Recognition (XP/tier) lives in a visibly different, non-monetary register and never converts to cash.
+   **CHARTS POLICY (founder 2026-07-19 — "I want the charts"; reconciles Visibility Law + this
+   invariant).** Charts are ALLOWED and welcome — but a chart shows a RECORD, never a RETURN. Three
+   rules, always: (a) **the record, not the return** — the chart plots what HAPPENED (dated, on-chain
+   events), like a bank statement's history; NEVER a projection, a trend-line-to-the-future, a "+X%",
+   or any "it will keep rising" implication (that framing is the security/passive-income red line the
+   legal shield forbids — SYN is a seat, not a security); (b) **statement framing, not performance** —
+   neutral axes, no green-pump, no dopamine animation, no "you're earning!" copy; it reads like an
+   accountant's ledger, not a trading app's PnL; (c) **every point verifiable** — each bar/point ties
+   to its on-chain event (verify-first). Charts are richest on the ADMIN + protocol/Economy surfaces;
+   on the MEMBER page they are the member's OWN record, framed as a statement, in an EVOLUTIVE slot
+   that stays honest when sparse (2 points ≠ a trend → an honest "the record is still short" state)
+   and blooms as data grows. Accessible: a data-table alternative, never colour-alone (WCAG).
 4. **HONEST THREE STATES.** Every surface ships LOADING (a skeleton matching the real layout that's
    coming — never a spinner/fake progress), EMPTY ("No receipts yet" + one true next step — never a
    teaser posing as data), and ERROR (what failed + retry — never a silent zero rendered as truth).
