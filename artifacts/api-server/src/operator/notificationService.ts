@@ -245,3 +245,51 @@ export async function listNotifications(): Promise<NotificationListResult> {
     return { ok: false, reason: "unavailable" };
   }
 }
+
+// Founder-gated DELETE: retire a notification (a mistaken/outdated/test send).
+// A deliberate, AUDITED administrative act — distinct from the "nothing unread
+// auto-expires" covenant (that bans SILENT expiry, not an operator's decision).
+// The notification AND its per-member receipts are removed in ONE transaction
+// (cascade), then an audit row records the act. Fail-closed like every write.
+export interface DeleteNotificationInput {
+  id: string;
+  actorWallet: string;
+  actorRole: string;
+}
+
+export async function deleteNotification(
+  input: DeleteNotificationInput,
+): Promise<NotificationWriteResult> {
+  if (!gateOpen()) return { ok: false, reason: "unavailable" };
+  if (input.id.length === 0 || input.id.length > 64) return { ok: false, reason: "bad_id" };
+
+  try {
+    const { db, notification, notificationReceipt, auditLog } = await import("@workspace/db");
+    const { eq } = await import("drizzle-orm");
+    let result: NotificationWriteResult = { ok: false, reason: "not_found" };
+    await db.transaction(async (tx) => {
+      const found = await tx
+        .select({ id: notification.id, audience: notification.audience })
+        .from(notification)
+        .where(eq(notification.id, input.id))
+        .limit(1);
+      if (found[0] === undefined) return; // not_found → nothing removed
+      // Cascade: the per-member read receipts go first, then the row itself.
+      await tx.delete(notificationReceipt).where(eq(notificationReceipt.notificationId, input.id));
+      await tx.delete(notification).where(eq(notification.id, input.id));
+      await tx.insert(auditLog).values({
+        id: randomUUID(),
+        actorWallet: input.actorWallet,
+        actorRole: input.actorRole,
+        action: "notification.delete",
+        target: input.id,
+        detail: { audience: found[0].audience },
+        stepUpSigned: false,
+      });
+      result = { ok: true };
+    });
+    return result;
+  } catch {
+    return { ok: false, reason: "unavailable" };
+  }
+}

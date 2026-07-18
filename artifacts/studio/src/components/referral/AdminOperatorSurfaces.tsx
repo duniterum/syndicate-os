@@ -12,19 +12,30 @@
 // panel still shows sample rows.
 
 import { useEffect, useState } from "react";
-import { Megaphone, ScrollText, ToggleLeft, LifeBuoy } from "lucide-react";
+import { Megaphone, ScrollText, ToggleLeft, LifeBuoy, Trash2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { SampleTag } from "@/components/SampleTag";
 import { TruthLabel } from "@/components/TruthLabel";
 import { useToast } from "@/hooks/use-toast";
 import {
   sendBroadcast,
   fetchNotifications,
+  deleteNotification,
   type NotificationListItem,
 } from "@/lib/operatorClient";
 import {
@@ -83,6 +94,8 @@ export function BroadcastPanel() {
   const [error, setError] = useState<string | null>(null);
   const [opts, setOpts] = useState<NotificationComposerValue>({ icon: null, link: null });
   const [sent, setSent] = useState<NotificationListItem[] | "denied" | "unavailable" | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<NotificationListItem | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -94,6 +107,22 @@ export function BroadcastPanel() {
       active = false;
     };
   }, []);
+
+  async function handleDelete() {
+    if (deleteTarget === null || deleting) return;
+    setDeleting(true);
+    const result = await deleteNotification(deleteTarget.id);
+    setDeleting(false);
+    setDeleteTarget(null);
+    if (result.ok) {
+      toast({ title: "Notification deleted" });
+      // Re-read the real table — never an optimistic guess.
+      const r = await fetchNotifications();
+      setSent(r.status === "ok" ? r.notifications : r.status);
+    } else {
+      toast({ title: "Delete failed", description: `The delete was refused (${result.reason ?? "unknown"}).` });
+    }
+  }
 
   async function handleSend() {
     if (submitting) return;
@@ -192,6 +221,15 @@ export function BroadcastPanel() {
                         {n.createdAtIso.slice(0, 16).replace("T", " ")} UTC
                       </span>
                     )}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 shrink-0 text-muted-foreground hover:text-destructive"
+                      aria-label={`Delete notification "${n.title}"`}
+                      onClick={() => setDeleteTarget(n)}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                    </Button>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{n.body}</p>
                   {dest !== null && (
@@ -203,6 +241,40 @@ export function BroadcastPanel() {
           </div>
         )}
       </div>
+
+      {/* Founder-gated delete — an audited administrative act (removes the
+          notification from every recipient's inbox + its receipts). Distinct
+          from the no-auto-expiry covenant. */}
+      <AlertDialog open={deleteTarget !== null} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this notification?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {deleteTarget !== null && (
+                <>
+                  &ldquo;{deleteTarget.title}&rdquo; will be removed from{" "}
+                  {deleteTarget.audience === "ALL"
+                    ? "every member's inbox"
+                    : "this member's inbox"}
+                  , along with its read receipts. This is audit-logged and cannot be undone.
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                void handleDelete();
+              }}
+              disabled={deleting}
+            >
+              {deleting ? "Deleting…" : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 }

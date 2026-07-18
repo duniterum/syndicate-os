@@ -2,6 +2,28 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ ✅ NOTIF-2 SEALED IN PROD (2026-07-18, Replit 6/6 at HEAD `8905df9`; prod
+> schema confirmed — the 3 columns + 2 indexes live on neondb, idempotent push
+> proven) + 🔨 NOTIF-2b FOLLOW-UP ON MAIN (client + API, NO migration).** The
+> founder's live test: icons render on the bell/page, and a broadcast WITH a
+> destination is clickable (chevron → navigates). TWO gaps fixed this slice:
+> ① NO DEAD CLICKS — a notification WITHOUT a destination was inert in the
+> popover (truncated body unreadable); now EVERY popover row is a link (with a
+> destination → the subject; without → the full /notifications page), always
+> marks read + closes. ② DELETE CONTROL (founder ask "keep only the real first
+> broadcast, erase the tests") — a founder-gated, AUDITED `POST
+> /api/operator/notifications/delete` (removes the row + its receipts in one tx,
+> action notification.delete) + a Trash button with a confirm dialog on each
+> Broadcast "Sent" row. Doctrine: a founder-decided delete is an audited admin
+> act (the origin had it), DISTINCT from the "nothing unread auto-expires"
+> covenant. GREEN: api typecheck · auth-zone 920 (+ delete route/service pins) ·
+> studio typecheck + all guards (notif-vocab 62/62, operator-gate 2650) · build
+> 332 twins + admin-dist 93, "Delete this notification" ×1 console / 0 public.
+> **🚀 DEPLOY — NO MIGRATION** (delete uses existing tables): Replit pulls main,
+> deploys, reports. THEN the founder deletes the 3 test notifications from
+> /admin/broadcast → Sent (Trash → confirm), keeping only "This message opens
+> the record." (the real first Founder broadcast).
+
 > **▶ 🔨 NOTIF-2 CLICKABLE + ICONS BUILT + ON MAIN (2026-07-18, founder GO — the
 > "finish it perfect, don't come back" pass; 2 design workflows adversarially
 > verified + 2 founder icon corrections applied).** Notifications now carry an

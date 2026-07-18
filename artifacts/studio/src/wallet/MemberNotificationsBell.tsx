@@ -222,13 +222,18 @@ export default function MemberNotificationsBell() {
                 );
                 const rowClass =
                   "flex w-full items-start gap-2 py-2 text-left hover:bg-border/30 rounded-sm px-1";
-                // Clickable ONLY when the served path is an exact whitelist
-                // member (fail-closed): the whole row is a real link that
-                // navigates to the subject, closes the popover, and marks read.
-                return isKnownLink(r.linkPath) ? (
+                // NO DEAD CLICKS (founder, 2026-07-18): EVERY popover row is a
+                // real link. With a whitelisted destination it navigates to the
+                // subject (chevron affordance). WITHOUT one it opens the full
+                // /notifications page so the truncated message is always
+                // readable — clicking is never a no-op. Both close the popover
+                // and mark the item read (read = clicked, the two-tier model).
+                const toSubject = isKnownLink(r.linkPath);
+                const href = isKnownLink(r.linkPath) ? r.linkPath : "/notifications";
+                return (
                   <Link
                     key={r.id}
-                    href={r.linkPath}
+                    href={href}
                     onClick={() => {
                       markRead(r.id);
                       setOpen(false);
@@ -238,18 +243,11 @@ export default function MemberNotificationsBell() {
                     {inner}
                     <ChevronRight
                       aria-hidden="true"
-                      className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground"
+                      className={`mt-0.5 h-4 w-4 shrink-0 ${
+                        toSubject ? "text-muted-foreground" : "text-muted-foreground/40"
+                      }`}
                     />
                   </Link>
-                ) : (
-                  <button
-                    key={r.id}
-                    type="button"
-                    onClick={() => markRead(r.id)}
-                    className={rowClass}
-                  >
-                    {inner}
-                  </button>
                 );
               })}
             </div>

@@ -25,6 +25,7 @@ import {
   sendMemberNotification,
   broadcastNotification,
   listNotifications,
+  deleteNotification,
   NOTIFICATION_TITLE_MAX,
   NOTIFICATION_BODY_MAX,
 } from "./notificationService";
@@ -79,6 +80,11 @@ const BroadcastBody = z.object({
   body: z.string().min(1).max(NOTIFICATION_BODY_MAX),
   icon: z.string().max(40).nullish(),
   link: z.string().max(128).nullish(),
+});
+
+// NOTIF-2b: delete a notification by its stable id (from the masked list).
+const DeleteNotificationBody = z.object({
+  id: z.string().min(1).max(64),
 });
 
 // ── POST /api/operator/referral-terms ───────────────────────────────────────
@@ -375,6 +381,50 @@ router.post("/notifications/broadcast", async (req: Request, res: Response) => {
     return;
   }
   req.log.info({ event: "operator.broadcast.sent", code: "ok" });
+  res.json({ ok: true });
+});
+
+// ── POST /api/operator/notifications/delete (NOTIF-2b) ──────────────────────
+// FOUNDER-ONLY WRITE: retire a notification by its stable id (a mistaken /
+// outdated / test send). A deliberate audited act — distinct from the
+// no-auto-expiry covenant. The service removes the row + its receipts in one
+// transaction and audit-rows the deletion.
+router.post("/notifications/delete", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "operator.notif_delete.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const account =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  if (account === null) {
+    deny(res, 401, "no_session");
+    return;
+  }
+  const ctx = await lookupActiveOperator(account);
+  if (!ctx.isOperator || ctx.role !== "founder_root") {
+    req.log.warn({ event: "operator.notif_delete.denied", code: "insufficient_role" });
+    deny(res, 403, "insufficient_role");
+    return;
+  }
+  const parsed = DeleteNotificationBody.safeParse(req.body);
+  if (!parsed.success) {
+    deny(res, 400, "bad_request");
+    return;
+  }
+  const result = await deleteNotification({
+    id: parsed.data.id,
+    actorWallet: account,
+    actorRole: ctx.role,
+  });
+  if (!result.ok) {
+    deny(res, result.reason === "unavailable" ? 503 : 400, result.reason);
+    return;
+  }
+  req.log.info({ event: "operator.notif_delete.ok", code: "ok" });
   res.json({ ok: true });
 });
 

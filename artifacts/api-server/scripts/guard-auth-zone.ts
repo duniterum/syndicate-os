@@ -881,6 +881,7 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
     // masked recent list (the honest bell). ALL THREE founder_root-only.
     ["post", "/notifications/member"],
     ["post", "/notifications/broadcast"],
+    ["post", "/notifications/delete"],
     ["get", "/notifications"],
   ];
   const FOUNDER_ONLY_ROUTES = new Set([
@@ -888,6 +889,7 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
     "post /operators/suspend",
     "post /notifications/member",
     "post /notifications/broadcast",
+    "post /notifications/delete",
   ]);
   const READ_ONLY_ROUTES = new Set([
     "get /operators",
@@ -1372,9 +1374,9 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
     const ntCode = stripComments(read(path.resolve(srcDir, "operator", "notificationService.ts")));
     check(
       (ntCode.match(/if \(!gateOpen\(\)\) return \{ ok: false, reason: "unavailable" \};/g) ?? [])
-        .length === 3,
-      "notification service: all three entries open with the fail-closed exposure gate",
-      'notificationService.ts must start sendMemberNotification, broadcastNotification AND listNotifications with `if (!gateOpen()) return { ok: false, reason: "unavailable" };`',
+        .length === 4,
+      "notification service: all four entries open with the fail-closed exposure gate",
+      'notificationService.ts must start sendMemberNotification, broadcastNotification, listNotifications AND deleteNotification with `if (!gateOpen()) return { ok: false, reason: "unavailable" };`',
     );
     check(
       !/\b(console|res|req|logger)\s*\./.test(ntCode),
@@ -1446,6 +1448,15 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
       !/req\.body|input\.category/.test(ntCode) && /category: null/.test(ntCode),
       "notification service: v1 stores category NULL (no client-set category)",
       "notificationService.ts must store category: null on v1 sends — the v2 generator owns category; the client never sets it",
+    );
+    // NOTIF-2b: the founder-gated delete removes the row AND its receipts in one
+    // transaction (cascade), then audit-rows the act (distinct from auto-expiry).
+    check(
+      /"notification\.delete"/.test(ntCode) &&
+        /delete\(notificationReceipt\)/.test(ntCode) &&
+        /delete\(notification\)/.test(ntCode),
+      "notification service: delete cascades the receipts + audit-rows the act (notification.delete)",
+      "notificationService.ts deleteNotification must delete notificationReceipt rows AND the notification in one tx, and write an auditLog row (action notification.delete)",
     );
   }
 

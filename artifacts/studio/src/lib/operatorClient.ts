@@ -269,6 +269,33 @@ export interface NotificationListItem {
   linkPath: string | null;
   createdAtIso: string | null;
 }
+
+// Founder-only: delete a notification by its stable id (a mistaken / outdated /
+// test send). Removes it from every recipient's inbox + its receipts. Same
+// fail-closed shape as the other writes.
+export async function deleteNotification(id: string): Promise<WriteResult> {
+  try {
+    const res = await fetch("/api/operator/notifications/delete", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    if (res.ok) return { ok: true, reason: null };
+    let reason: string | null = null;
+    try {
+      const body: unknown = await res.json();
+      if (typeof body === "object" && body !== null) {
+        const r = (body as Record<string, unknown>).reason;
+        if (typeof r === "string") reason = r;
+      }
+    } catch {
+      // no JSON body
+    }
+    return { ok: false, reason: reason ?? String(res.status) };
+  } catch {
+    return { ok: false, reason: "unreachable" };
+  }
+}
 export type ListNotificationsResult =
   | { status: "ok"; notifications: NotificationListItem[] }
   | { status: "denied" }
