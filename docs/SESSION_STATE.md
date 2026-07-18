@@ -80,12 +80,15 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >     **DEPLOY BACKLOG: EMPTY. Tree clean.**
 >   - THEN: ② `/member` migration to `MemberAppPage` (wireframe); ③ the newsroom
 >     pagination arc (`/activity` newest-first + `chr-newsroom-page`);
->     ④ **NEW (founder, 2026-07-18) — the DOORS-DEDUP question:** the dashboard's
->     right-column `MemberDoorsGrid` (Z8) renders the SAME `MEMBER_DOOR_GROUPS` as the
->     left `MemberShell` sidebar — a verified duplicate (only the one-line door
->     descriptions differ). Founder wants it removed to free the right column
->     (WORK-FIRST). Composition change → wireframe + preview gate + `guard-member-home`
->     Z8 pin update. UNDER GATE.
+>     ④ **DOORS-DEDUP — ✅ SEALED IN PROD (`41c5f7d`, Replit green 2026-07-18).** The
+>     dashboard's right-column `MemberDoorsGrid` (Z8) was a verified duplicate of the
+>     `MemberShell` sidebar (both rendered the SAME `MEMBER_DOOR_GROUPS`; only the
+>     one-line descriptions differed). REMOVED (founder, WORK-FIRST): `MemberDoorsGrid.tsx`
+>     deleted, `MemberAccess` unmounts it, descriptions dropped (labels suffice); the
+>     4 `guard-member-home` Z8 grid pins → 1 anti-regression pin ("do not re-mount the
+>     duplicate"; member-home 26/26). Doors now live ONCE (sidebar). The RIGHT COLUMN
+>     IS FREED for the next real work zone (A1 "My Activity"). Prod: MemberDoorsGrid
+>     absent from the served bundle. **DEPLOY BACKLOG: EMPTY. Tree clean.**
 > - **DO NOT build member-facing layout/composition without the founder** (VISUAL
 >   CHANGE LAW: wireframe → preview gate). Copy = full text on screen first.
 >
