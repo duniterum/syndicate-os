@@ -210,7 +210,7 @@ export function BroadcastPanel() {
                 <div key={n.id} className="p-3">
                   <div className="flex items-center gap-2 flex-wrap">
                     {Icon !== null && (
-                      <Icon className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
+                      <Icon className="h-4 w-4 text-gold shrink-0" aria-hidden="true" />
                     )}
                     <span className="text-sm text-foreground">{n.title}</span>
                     <Badge variant="outline" className="text-[10px] font-normal">

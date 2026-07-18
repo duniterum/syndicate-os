@@ -2,6 +2,76 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 🧭 CLEAN HANDOFF — THE NOTIFICATION CENTER IS COMPLETE & LIVE (2026-07-18,
+> session end; verified by a 4-lens completeness audit — API/security SHIP-READY,
+> studio/UX PASS, doctrine grade-AAA, no forgotten wiring). Q43 NOTIF-1 → NOTIF-2
+> → NOTIF-2b → the icon fix ALL SEALED IN PROD through `ac3f30c` (Replit verified
+> EACH cycle 5/5–6/6; founder-pasted seal reports on record — not from memory).**
+>
+> **WHAT'S LIVE (the whole channel — no email, ever; in-app is THE channel):**
+> ① NOTIF-1 (`881b166` + WORK-FIRST recomposition `a45d8b8`) — the member BELL in
+> the §11 header slot (badge = own UNSEEN count; tabs All/Protocol/Mine; View all
+> → the dedicated `/notifications` page) · the two-tier seen/read receipts (badge
+> clears on open, an item reads on CLICK) · per-member contact from the ledger row
+> (client sends SEAT only; server resolves seat→wallet) · broadcast-all · the
+> honest admin bell. The FOUNDER ACTED THE SEAL: his first broadcast
+> "This message opens the record." lit his own bell.
+> ② NOTIF-2 (`8905df9`, its own migration cycle — 3 ADDITIVE nullable columns
+> icon/link_path/category, idempotent/drift-free push, prod schema confirmed on
+> neondb) — operator-chosen ICON (curated lucide palette) + internal DEEP-LINK,
+> both from the SINGLE SOURCE `lib/os-contracts/src/notifications.ts` (API
+> validator + studio renderer + pickers + guard all import the one literal);
+> anti-phishing = EXACT-MATCH internal whitelist (never a `/`-prefix; `//`/`\`
+> refused; NO free-text URL field, permanent); mechanism-decides palette (vault/
+> gift/trophy/receipt kept, gain-promise glyphs banned). Icon + destination
+> pickers in BOTH composers (broadcast + ledger message).
+> ③ NOTIF-2b (`f100640`, NO migration) — NO DEAD CLICKS (every popover row is a
+> link: with a destination → the subject; without → the full page) · founder-gated
+> AUDITED DELETE (`POST /api/operator/notifications/delete`, cascade receipts +
+> `notification.delete` audit row) with a Trash button + confirm on each Sent row.
+> ④ ICON FIX (`ac3f30c`, client-only) — consistent GOLD type-icon decoupled from
+> read-state (dark `--muted-foreground` was reading stark-white); read-state moved
+> to the title (bold/foreground unread · normal/muted read).
+>
+> **🔨 ONE FINAL POLISH/HARDENING COMMIT (this session's last — the audit's two
+> worth-doing findings), client + API, NO migration, ON MAIN awaiting the LAST
+> deploy:** (a) the member-inbox READ path now re-validates icon∈palette +
+> link∈whitelist server-side (nulls anything off-list before serving) — the
+> internal-only guarantee is server-authoritative on BOTH write and read, never
+> client-dependent, future-proof against a v2 generator that ever skipped
+> validation; (b) the operator "Sent" list icon → gold (cross-surface
+> consistency with the bell/page). Green: api+studio typecheck · auth-zone 920 ·
+> notif-vocab 62/62 · continuity 32 · holder-index 69 · build 332 twins +
+> admin-dist 93, no operator string in the public entry.
+> **🚀 DEPLOY — NO MIGRATION (the last cycle):** Replit pulls main, deploys,
+> reports. **DEPLOY BACKLOG: this one commit.**
+>
+> **FOUNDER'S REMAINING MANUAL ACTS (housekeeping, not a slice):** from
+> /admin/broadcast → "Sent", delete the 3 TEST notifications via the Trash button
+> (confirm dialog) — "TEST FOR MEMBER NO 1", "TEST" (all members), "Hi This Is The
+> First Message" — keeping ONLY **"This message opens the record."** (the real
+> first Founder broadcast). Founder-only; Founder closes Q43 after this.
+>
+> **v2 GROWTH (next notification work, recorded — NOT built):** the AUTO
+> protocol-event generator (a seat taken → notif, a promotion due → notif, a
+> Chronicle entry → notif, a treasury swap → "the treasury acquired X, verify").
+> `category` is seeded NULL in v1 so it needs NO second migration; the Supa 30-type
+> quarry + the Binance/Kraken/Revolut synthesis are its seed; the full picture is
+> `docs/reference/LIVING_NOTIFICATION_LAYER.md` (+ 3 sibling roadmap dossiers,
+> `1923d30`; also: the swap/bridge ramp, the season/gamification engine + legal
+> line, the Chronicle newsroom). Also recorded v2: severity/pinned tiers, the
+> external verify-link (infra-only), per-category preferences, dismiss.
+> **NEXT per the engraved order (on the founder's word):** A1 "My Activity" → B1
+> THE FIRSTS → A2 → M-INT-2 → the Q42 wave (incl. chronicle-promote, which closes
+> the manifesto's Chronicle loop) → Q39. Next session boots on "hi".
+>
+> **SESSION LAWS ENGRAVED (agent memory + docs):** mechanism-decides-not-symbol
+> (ban gain-promise glyphs, keep honest function symbols; never over-apply
+> anti-financialization against settled canon) · human-readable labels ("Account",
+> never "Off-chain comfort") · the no-email canon + never-message-first = external
+> only · the season-pot doctrine change (merit-measured payouts allowed, never
+> chance) · the roadmap dossiers live in docs/reference/.
+
 > **▶ ✅ NOTIF-2 SEALED IN PROD (2026-07-18, Replit 6/6 at HEAD `8905df9`; prod
 > schema confirmed — the 3 columns + 2 indexes live on neondb, idempotent push
 > proven) + 🔨 NOTIF-2b FOLLOW-UP ON MAIN (client + API, NO migration).** The

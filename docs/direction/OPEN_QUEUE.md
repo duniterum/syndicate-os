@@ -25,6 +25,26 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > env flips. Everything else BUILDS autonomously to the preview/diff. A question
 > answered once (queue/canon/state) is answered forever.**
 >
+> - ⏳ **Q43 — THE NOTIFICATION CENTER: ✅ SEALED IN PROD, awaiting only the
+>   founder's explicit close (founder, 2026-07-18).** EVIDENCE (HEAD `ac3f30c`,
+>   Replit verified EACH cycle): NOTIF-1 (`881b166`/`a45d8b8`) = bell + tabs
+>   All/Protocol/Mine + `/notifications` page + member own-row inbox + two-tier
+>   seen/read receipts + per-member contact + broadcast + honest admin bell (the
+>   founder sent the first broadcast "This message opens the record." and it lit
+>   his own bell) · NOTIF-2 (`8905df9`, migration) = operator-chosen icon +
+>   internal deep-link, single-source os-contracts, exact-match anti-phishing
+>   whitelist, mechanism-decides palette, pickers in both composers · NOTIF-2b
+>   (`f100640`, no migration) = no dead clicks + founder-gated AUDITED delete
+>   (Trash + confirm, cascade receipts + `notification.delete` audit) · icon fix
+>   (`ac3f30c`) = consistent gold type-icon · one final hardening commit (read-path
+>   re-validation + operator gold icon, no migration) rides the last deploy.
+>   Deploy backlog: that one commit; tree clean. FOUNDER'S REMAINING MANUAL ACT
+>   (housekeeping): /admin/broadcast → Sent → delete the 3 test notifications
+>   (Trash → confirm), keep only "This message opens the record." **Only the
+>   founder closes Q43** (after the housekeeping delete). v2 GROWTH (recorded, not
+>   built): the auto protocol-event generator — `category` seeded NULL so NO second
+>   migration; picture in `docs/reference/LIVING_NOTIFICATION_LAYER.md`.
+>   ORIGINAL ASK (kept for the record):
 > - 🔴 **Q43 — NOTIF-1: PER-MEMBER CONTACT + BROADCAST + MEMBER INBOX (founder,
 >   2026-07-18, pulled FORWARD from the Q42 wave — "I have here a member: what can
 >   I do as admin? I can contact the member alone — we already talked about it").**

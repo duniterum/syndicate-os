@@ -19,7 +19,21 @@
 // non-null seen_at (reading implies seeing), so mark-seen can insert-ignore.
 // Any miss — no DB, zone disabled, error — fails closed (null / false).
 
+import {
+  NOTIFICATION_ICON_PALETTE,
+  NOTIFICATION_LINK_PATHS,
+} from "@workspace/os-contracts";
 import { AUTH_EXPOSURE_FLAG } from "./authExposure";
+
+// READ-PATH re-validation authority (defense-in-depth, hardening 2026-07-18):
+// the write zone already validates icon∈palette + link∈whitelist, but the
+// SERVER stays the sole authority on READ too — a stored icon/link outside the
+// current palette/whitelist is nulled before it is served. So the anti-phishing
+// guarantee (internal-only links) NEVER depends on the client, even for a row
+// that might one day enter through a future v2 generator or a direct DB write
+// that skipped optionReason(). Pure vocabulary constants — no DB/registry reach.
+const ICON_SET = new Set<string>(NOTIFICATION_ICON_PALETTE);
+const LINK_SET = new Set<string>(NOTIFICATION_LINK_PATHS);
 
 export interface InboxRow {
   id: string;
@@ -102,8 +116,11 @@ export async function readOwnInbox(account: string): Promise<InboxPayload | null
       scope: r.audience === "MEMBER" ? ("you" as const) : ("all" as const),
       title: r.title,
       body: r.body,
-      icon: r.icon,
-      linkPath: r.linkPath,
+      // Server re-validates on read: a non-palette icon / non-whitelist link is
+      // nulled here, never served — the internal-only guarantee is server-side
+      // on both write AND read, never client-dependent.
+      icon: r.icon !== null && ICON_SET.has(r.icon) ? r.icon : null,
+      linkPath: r.linkPath !== null && LINK_SET.has(r.linkPath) ? r.linkPath : null,
       createdAtIso: r.createdAt instanceof Date ? r.createdAt.toISOString() : null,
       unread: r.readAt === null,
     }));
