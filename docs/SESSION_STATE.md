@@ -44,7 +44,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > notif-vocab 62/62 · continuity 32 · holder-index 69 · build 332 twins +
 > admin-dist 93, no operator string in the public entry.
 > **🚀 DEPLOY — NO MIGRATION (the last cycle):** Replit pulls main, deploys,
-> reports. **DEPLOY BACKLOG: this one commit.**
+> reports. **DEPLOY BACKLOG (both client+API, NO migration, ride one cycle):**
+> `49f4d39` (read-path re-validation + gold Sent icon + this handoff) ·
+> `f0ded93` (shared Select dropdown height-cap + scroll — the founder's
+> destination picker of 16 items ran off-screen; now caps at ~10 + scrolls,
+> fixes every Select app-wide).
 >
 > **FOUNDER'S REMAINING MANUAL ACTS (housekeeping, not a slice):** from
 > /admin/broadcast → "Sent", delete the 3 TEST notifications via the Trash button
