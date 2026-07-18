@@ -19,15 +19,29 @@ human-first copy; readability floor (no sub-12px); WORK-FIRST composition; ADR-0
 ## The order — 21 steps, 4 phases
 
 ### 🔴 Phase A — live truth defects (fix first: cheapest, most damaging, on the founder's own page)
-1. **Remove the duplicate "Your referral" heading** (h2+h3 stutter) — pure build, preview.
-2. **Member gamification copy — SHOW the money + keep XP ≠ season-cagnotte clear.** Fix the slot
-   copy "Recognition only, never a cash figure" (it implies hiding — a Visibility-Law defect).
-   Hold three truths at once (see "hard-won doctrine" below). Founder OKs final wording inline.
-3. **Founder BUILDER_SOURCE derivation** — match indexed sources by payoutWallet so his ACTIVE
-   source (2 durable · $0.50) resolves everywhere; kills "no source exists". Small chain-truth gate.
-4. **Genesis (#1–#8) footprint derivation** — derive cumulative USD + rung from V1 rows × frozen
-   roster instead of "—". Small chain-truth gate (retroactive RISE lines).
-5. **Shared read + true three-state "—" + CapitalAxisCard retry/no-vanish + race guard** — pure build.
+> **⚠️ RECONCILED 2026-07-18 (5-agent map `wf_aa4aa0ab` + Claude-Code direct verify): steps 1 & 4
+> were ALREADY SEALED before this doc was written — the doc carried the pre-D-TRUTH audit A1
+> forward (documentation drift). Verified reality below. Remaining REAL work = steps 2 + 5 (+ a
+> founder chain-fact for 3).**
+1. ✅ **DONE (access-model slice 1).** ~~Remove the duplicate "Your referral" heading~~ — the
+   component now owns its single h2 (`MemberReferralDashboard.tsx:308`, "so it can never be
+   duplicated by whoever mounts it"); no h2+h3 stutter remains.
+2. 🔴 **REAL — Member gamification copy — SHOW the money + keep XP ≠ season-cagnotte clear.** Fix the
+   slot copy "Recognition only, never a cash figure" (`memberDoors.ts:114`, the "Season" slot — it
+   implies hiding, a Visibility-Law defect). Hold three truths at once (see "hard-won doctrine" below).
+   Founder OKs final wording inline. Quests slot (`:115`) left ALONE — no "never a payment" pile-on.
+3. ✅ **CONFIRMED WORKING (founder's /member screenshot 2026-07-18).** The D2 payoutWallet fallback
+   (`sourceStandingRead.ts:127-167`; index keyed on `payoutWallet` ONLY, `introductionRefresh.ts:311-318`)
+   was already sealed at `235205c`. The founder signs in with his payout wallet (`0x2445…C721`), so
+   his source resolves: "Introductions 2 durable · 2 total" + footprint "$70.00 · Patron" render live.
+   The doc was stale. No multi-wallet broadening needed.
+4. ✅ **DONE + SEALED (slice D-TRUTH `235205c`, 2026-07-16, Replit 6/6).** Real standing for all 8
+   genesis seats is live (seat 1 → Patron $70; seats 2–5/7/8 → Citizen $5). The "—" was the
+   pre-D-TRUTH state. `GENESIS_JOIN_EMITS_RISES=false` (`capitalAxisReadmodel.ts:82`) = the founder's
+   settled no-retroactive-lines call. Nothing to build; the doc was stale.
+5. 🔨 **REAL (pure build) — Shared read + true three-state "—" + CapitalAxisCard retry/no-vanish +
+   race guard.** 3 zones fan out duplicate reads today; the card vanishes on failure with no retry,
+   and one ambiguous "—" conflates loading / read-failure / honest-null. Autonomous to preview.
 
 ### 🟡 Phase B — the core (what makes the page "finished")
 6. **Auth/nav flow** — land on /member after sign-in · "Open Member Home" CTA on the receipt ·

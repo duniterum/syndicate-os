@@ -111,7 +111,7 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
 /** The §11 slots 3–5, reserved VISIBLY on Member Home (cards, not doors):
  * recognition speaks here later; nothing is faked today. */
 export const MEMBER_HOME_RESERVED_SLOTS: readonly MemberDoor[] = [
-  { label: "Season", lifecycle: "FUTURE", note: "The current season — your XP, your rank, the next quest. Recognition only, never a cash figure." },
+  { label: "Season", lifecycle: "FUTURE", note: "The current season — your XP, your rank, the next quest. XP earns standing, not money; when the company funds a season reward it's real USDC for effort — paid openly, every amount shown." },
   { label: "Quests", lifecycle: "FUTURE", note: "Daily and weekly recognition quests — Learn & Earn earns XP." },
   // NOTIF-1 (2026-07-18): "While you were away" RETIRED from the reserved
   // slots — its promise now lives in the notification center (the bell +

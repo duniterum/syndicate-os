@@ -5,7 +5,7 @@
 // hook fails closed to null on any failure — a line/tile simply does not
 // render a figure; nothing is invented or cached stale.
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import {
   readArtifactBalance,
@@ -13,8 +13,13 @@ import {
   readTokenBalance,
 } from "@/lib/chainReads";
 import { formatRawUnitsDisplay } from "@/lib/rawUnits";
-import { fetchCapitalRung } from "@/lib/capitalStanding";
 import {
+  fetchCapitalRung,
+  fetchCapitalStanding,
+  type CapitalStanding,
+} from "@/lib/capitalStanding";
+import {
+  fetchMemberStanding,
   fetchOwnPurchases,
   fetchSourceStanding,
   type OwnPurchasesReadback,
@@ -99,6 +104,74 @@ export function useOwnCapitalRung(seat: string | null): string | null {
     };
   }, [seat]);
   return rung;
+}
+
+/**
+ * S7-e (Phase-A step 5) — the member's OWN capital standing (seat → footprint +
+ * rung) as ONE settled, RACE-GUARDED read: the settled idiom of the dashboard's
+ * other zones (MemberAttention / MemberRecentActivity), extended with a sequence
+ * guard those older hooks lack — a stale wallet-switch response can NEVER
+ * overwrite a fresher one. Four honest states, never one ambiguous "—":
+ *   loading — a read is in flight
+ *   failed  — the member-standing OR capital-standing read failed (transport)
+ *   no-seat — signed in, but no recognized seat → there is no footprint
+ *   ready   — served; within it, `standing.rung === null` is the SERVER's honest
+ *             "no rung yet" gap, distinct from a failed read
+ * `refresh()` re-runs the read (the retry affordance). Re-reads on session change.
+ * ONE implementation, consumed by the KPI footprint tile and the capital card.
+ */
+export type OwnCapitalStanding =
+  | { readonly status: "loading" }
+  | { readonly status: "failed" }
+  | { readonly status: "no-seat" }
+  | { readonly status: "ready"; readonly standing: CapitalStanding };
+
+export function useSettledOwnCapitalStanding(): {
+  readonly capital: OwnCapitalStanding;
+  readonly refresh: () => void;
+} {
+  const [capital, setCapital] = useState<OwnCapitalStanding>({
+    status: "loading",
+  });
+  // The sequence guard: every read (mount, session change, retry) bumps the
+  // ref; a resolution whose seq is no longer the latest is dropped. The
+  // mounted ref drops any resolution that lands after unmount (the settled
+  // sibling hooks' `active` flag, as a ref since `read` is a stable closure).
+  const seqRef = useRef(0);
+  const mountedRef = useRef(true);
+  const read = useCallback(() => {
+    const seq = ++seqRef.current;
+    setCapital({ status: "loading" });
+    void fetchMemberStanding().then((r) => {
+      if (!mountedRef.current || seq !== seqRef.current) return; // stale/unmounted
+      if (r === null) {
+        setCapital({ status: "failed" });
+        return;
+      }
+      const seat =
+        r.state === "S4" && r.recognized === true ? r.memberNumber : null;
+      if (!seat) {
+        setCapital({ status: "no-seat" });
+        return;
+      }
+      void fetchCapitalStanding(seat).then((s) => {
+        if (!mountedRef.current || seq !== seqRef.current) return; // stale/unmounted
+        setCapital(
+          s === null ? { status: "failed" } : { status: "ready", standing: s },
+        );
+      });
+    });
+  }, []);
+  useEffect(() => {
+    mountedRef.current = true;
+    read();
+    window.addEventListener(SESSION_CHANGED_EVENT, read);
+    return () => {
+      mountedRef.current = false;
+      window.removeEventListener(SESSION_CHANGED_EVENT, read);
+    };
+  }, [read]);
+  return { capital, refresh: read };
 }
 
 /**

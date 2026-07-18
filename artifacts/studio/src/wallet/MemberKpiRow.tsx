@@ -12,7 +12,6 @@
 // zero is a real answer. Own-row only; commission/escrow detail lives in
 // the referral module. Zero decorative tiles — each answers a decision.
 
-import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { Card } from "@/components/ui/card";
 import {
@@ -21,14 +20,9 @@ import {
   useOwnSourceStanding,
   useOwnSynBalance,
   useOwnUsdcBalance,
+  useSettledOwnCapitalStanding,
   usdFromRaw,
 } from "./ownReads";
-import {
-  fetchCapitalStanding,
-  type CapitalStanding,
-} from "@/lib/capitalStanding";
-import { fetchMemberStanding } from "./walletSession";
-import { SESSION_CHANGED_EVENT } from "./sessionEvents";
 
 function KpiTile({
   label,
@@ -56,41 +50,16 @@ function KpiTile({
   );
 }
 
-/** Own seat → own capital standing (footprint + rung), fail-closed. */
-function useOwnFootprint(): CapitalStanding | null {
-  const [standing, setStanding] = useState<CapitalStanding | null>(null);
-  useEffect(() => {
-    let active = true;
-    const read = () => {
-      void fetchMemberStanding().then((r) => {
-        if (!active) return;
-        const seat =
-          r?.state === "S4" && r.recognized === true ? r.memberNumber : null;
-        if (seat === null) {
-          setStanding(null);
-          return;
-        }
-        void fetchCapitalStanding(seat).then((s) => {
-          if (active) setStanding(s);
-        });
-      });
-    };
-    read();
-    window.addEventListener(SESSION_CHANGED_EVENT, read);
-    return () => {
-      active = false;
-      window.removeEventListener(SESSION_CHANGED_EVENT, read);
-    };
-  }, []);
-  return standing;
-}
-
 export default function MemberKpiRow() {
   const { address } = useAccount();
   const synBalance = useOwnSynBalance(address);
   const usdcBalance = useOwnUsdcBalance(address);
   const sourceStanding = useOwnSourceStanding();
-  const footprint = useOwnFootprint();
+  // Phase-A step 5: the shared, settled, race-guarded footprint read — the
+  // tile's "—" now carries a state-accurate reason (loading vs failed vs
+  // honest-no-rung), never one ambiguous dash.
+  const { capital } = useSettledOwnCapitalStanding();
+  const footprint = capital.status === "ready" ? capital.standing : null;
   const purchases = useOwnPurchases();
   const artifacts = useOwnArchiveHoldings(address);
   const s = sourceStanding?.standing ?? null;
@@ -126,7 +95,15 @@ export default function MemberKpiRow() {
             ? `${usdFromRaw(footprint.cumulativeUsdcRaw!)} · ${footprint.rung}`
             : null
         }
-        detail="Your cumulative on-chain purchases — every era, the earliest included — and the rung they place you on. Recognition only, never a financial benefit."
+        detail={
+          walked
+            ? "Your cumulative on-chain purchases — every era, the earliest included — and the rung they place you on. Recognition only, never a financial benefit."
+            : capital.status === "loading"
+              ? "Reading your footprint from the record…"
+              : capital.status === "failed"
+                ? "Your footprint could not be read just now — retry from the capital footprint card below."
+                : "No footprint on the ladder yet — nothing is assumed."
+        }
         testId="kpi-footprint"
       />
       <KpiTile

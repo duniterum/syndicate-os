@@ -48,13 +48,32 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   engine healthy (a documented partial-reboot "2 streams faulted" self-healed via
 >   the persisted cursor — 2 clean cycles, headBlock advancing 90.647M→90.648M). No
 >   anomalies. **DEPLOY BACKLOG: EMPTY. Tree clean at `4998f72`.**
-> - **NEXT (slice 2 now live — the access-model arc's layout spine is complete):**
->   ① pagination (`/activity` newest-first feed + the newsroom Chronicle
->   sort/filter/pagination = `chr-newsroom-page`); ② `/member` FULL migration to
->   `MemberAppPage` (it is the one bespoke page left — its own door/dashboard fork
->   works and is full-width, but it does not yet use the shared wrapper); ③ then
->   continue the `MEMBER_HOME_FINISH_ORDER` (the Phase-A defects: founder
->   BUILDER_SOURCE derivation, genesis footprint "—", etc.).
+> - **NEXT — FINISH MEMBER HOME FIRST (founder direction 2026-07-18, "va dans le
+>   meilleur ordre logique"; the newsroom/pagination is a SEPARATE arc — it waits).
+>   PHASE A RECONCILED against the real code (5-agent map `wf_aa4aa0ab` + Claude-Code
+>   direct verify) — the finish-order doc was STALE; 2 of 4 defects already sealed:**
+>   - **Step 1** (dup "Your referral" heading) — ✅ DONE in access-model slice 1
+>     (`MemberReferralDashboard.tsx:308` owns its single h2; no stutter remains).
+>   - **Step 4** (genesis #1–#8 footprint "—") — ✅ DONE + SEALED (slice **D-TRUTH
+>     `235205c`**, 2026-07-16, Replit 6/6): `capital-standing` serves real standing
+>     for ALL 8 genesis seats (seat 1 → Patron $70 · seats 2–5/7/8 → Citizen $5).
+>     The "—" was the PRE-D-TRUTH state; the boot block carried the pre-seal audit
+>     A1 forward = documentation drift. `GENESIS_JOIN_EMITS_RISES=false`
+>     (`capitalAxisReadmodel.ts:82`) is the founder's settled no-retro-lines call.
+>   - **Step 3** (founder BUILDER_SOURCE resolves everywhere) — ✅ CONFIRMED WORKING in
+>     prod (founder's own /member screenshot 2026-07-18: "Introductions **2 durable · 2
+>     total**" resolves + footprint "**$70.00 · Patron**" renders — he signs in with his
+>     payout wallet `0x2445…C721`). The D2 payoutWallet fallback (`sourceStandingRead.ts:127-167`,
+>     index keyed on `payoutWallet`, `introductionRefresh.ts:311-318`) was already sealed;
+>     the boot block carried the pre-seal audit forward = drift. No multi-wallet broadening needed.
+>   - **Step 2** (gamification "Season" copy) — 🔴 REAL, tiny: `memberDoors.ts:114`
+>     "Recognition only, never a cash figure" is a Visibility-Law defect (implies
+>     hiding). Content gate: founder picks the wording. Quests slot (`:115`) left
+>     ALONE per the hard-won doctrine (no "never a payment" pile-on on the XP clause).
+>   - **Step 5** (three-state "—" honesty + shared read + CapitalAxisCard
+>     no-vanish/retry + race guard) — 🔨 REAL pure-build, autonomous to preview.
+>   - THEN: ② `/member` migration to `MemberAppPage` (wireframe); ③ the newsroom
+>     pagination arc (`/activity` newest-first + `chr-newsroom-page`).
 > - **DO NOT build member-facing layout/composition without the founder** (VISUAL
 >   CHANGE LAW: wireframe → preview gate). Copy = full text on screen first.
 >
