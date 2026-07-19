@@ -143,6 +143,14 @@ Ladder truth (`config/connectorLadder.ts`): Emerging 5% (0) · Active 5% (3, tit
 - **SLICE 6 — THE REMAINING ADD (NEXT):** recognition/season (Phase-5).
 
 ## RESEARCH LEDGER (never re-search these — the findings are canon here)
+- `wf_5cd698f4-983` (2026-07-19) — the RECEIPT & SHARE SYSTEM inventory (slice 5.1 gate):
+  `docs/reference/RECEIPT_AND_SHARE_SYSTEM_INVENTORY.md`.
+- `wf_55016fd7-5a0` (2026-07-19) — the COMMISSION RECEIPTS design direction (5 lenses:
+  Stripe/Wise/Mercury · Safe/Etherscan/Blockscout · Apple/Shopify/wallet-passes ·
+  NN-g/Baymard/WCAG/ARIA · repo harmony audit): verdict = in-place accordion receipts,
+  month-grouped, ticket grammar propagated, one money formatter, 15 harmony rules.
+  `docs/reference/COMMISSION_RECEIPTS_DESIGN_DIRECTION.md` + the mockup
+  `docs/design/commissions-receipts-mockup.html`.
 - `wf_8d4fae85` + `wf_81dd540b` (2026-07-19) — the page benchmark + SYSTEM-FIRST inventory
   (§ above: adopt/reject lists, the 5 tabs, the 48-piece system map).
 - `wf_b01f310a` (2026-07-19) — the CHANNEL COMPOSER web benchmark (GA URL Builder ·

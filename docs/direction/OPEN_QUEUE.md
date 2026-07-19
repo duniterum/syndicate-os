@@ -74,12 +74,14 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > SETTLED-LAW SILENCE RULE engraved in CLAUDE.md the same commit** → 🔴 **slice 5.1
 > (founder, emphatic: the anatomy card is TOO PLAIN — the house receipt language exists):
 > SYSTEM-FIRST inventory DONE → `docs/reference/RECEIPT_AND_SHARE_SYSTEM_INVENTORY.md`
-> (durable; never re-search). The SCOPE MENU is on the founder's screen: A = the commission
-> receipt ticket (the spine's anticipated "commission" kind, client-only) · B = A + the
-> shareable 1200×630 commission card (the proven engine) · C = Referrer Kit v1 (the queued
-> M2) · D = the receipt binder + public receipt page (the engraved roadmap next step, 2–3
-> slices) · E = living link previews (the origin's crown jewel; server infra). They stack.
-> FOUNDER PICKS — no build before his pick.** →
+> (durable; never re-search). Founder's answer refined the scope: ALL receipts past+future ·
+> external AAA benchmark (our base ≠ ceiling) · harmonize, no patchwork. ✅ Benchmark +
+> direction DONE (`wf_55016fd7-5a0` → `docs/reference/COMMISSION_RECEIPTS_DESIGN_DIRECTION.md`:
+> in-place accordion receipts · month groups · ticket grammar · one money formatter · 15
+> harmony rules) + THE MOCKUP built and self-verified:
+> `docs/design/commissions-receipts-mockup.html` (artifact ff736ea9). 🔴 AWAITING THE
+> FOUNDER'S VISUAL APPROVAL — approval unlocks the build; scope B/C/D/E of the menu (share
+> card · Referrer Kit · binder · living previews) stack LATER without rework.** →
 > slice 6 (⑥ recognition/season Phase-5, after 5.1). Full state: SESSION_STATE.md.
 
 > **▶ 2026-07-17 (STANDING RULE, founder, emphatic — engraved here AND in agent memory):

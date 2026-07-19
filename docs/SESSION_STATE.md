@@ -397,11 +397,25 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   biggest leak" and built live per-wallet/per-milestone preview generation —
 >   the harvest); origin also holds the member-card family + 5 proof cards + the
 >   ~30-field commission receipt doctrine ("the receipt must explain itself").
->   SCOPE MENU on the founder's screen: A commission receipt ticket (client-only)
->   · B = A + shareable 1200×630 commission card · C Referrer Kit v1 (M2) ·
->   D receipt binder + public receipt page (the engraved roadmap, 2–3 slices) ·
->   E living link previews (server infra, own arc). 🔴 FOUNDER PICKS; no build
->   before his pick.
+>   SCOPE MENU presented; the founder's ANSWER (2026-07-19, emphatic) refined the
+>   scope: ALL receipts PAST + FUTURE first-class (never only the latest) · deep
+>   EXTERNAL AAA benchmark ("our base is not the ceiling") · HARMONIZE — no
+>   patchwork of eras, one clean system. → **✅ THE BENCHMARK + DIRECTION DONE
+>   (`wf_55016fd7-5a0`, 5 lenses: Stripe/Wise/Mercury/PayPal/Ramp ·
+>   Safe/Etherscan/Blockscout/Binance/Zerion · Apple/Shopify/Square/wallet-passes
+>   · NN-g/Baymard/WCAG/ARIA-APG · repo harmony audit): VERDICT = a register of
+>   receipt rows expanding IN PLACE (accordion, multiple open) into the full
+>   7-zone commission document in the ticket's exact grammar; month groups with
+>   exact subtotals; ONE money formatter (usdExact everywhere, the flooring one
+>   retired from referral); pills carry words never money; the worked example
+>   moves to a collapsed reference expander; the legal line sealed behind a
+>   dashed rule; 15 harmony rules each fixing a named audit sin; scale-ready
+>   0→300 rows; extends without rework to the share card + the binder. Durable:
+>   `docs/reference/COMMISSION_RECEIPTS_DESIGN_DIRECTION.md`.** THE MOCKUP built
+>   + self-verified (both themes · 375px · accordion ARIA · no h-scroll):
+>   `docs/design/commissions-receipts-mockup.html`, published for viewing
+>   (artifact ff736ea9). 🔴 **AWAITING THE FOUNDER'S VISUAL APPROVAL of the
+>   mockup — approval unlocks the build slice; no production code before it.**
 > - **SLICE 6 (NEXT) — THE REMAINING ADD** (from the SYSTEM-FIRST harvest
 >   `wf_81dd540b`): ⑥ recognition/season axis (Phase-5). Its honest-future SHELL is
 >   live in the Ladder & recognition tab; the slice replaces the shell with the real

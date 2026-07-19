@@ -1,0 +1,464 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commissions — le registre de reçus (maquette)</title>
+<style>
+  /* ── The Syndicate house tokens, verbatim from artifacts/studio/src/index.css ── */
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --card: 0 0% 100%;
+    --muted-foreground: 215 16% 47%;
+    --gold: 38 74% 44%;
+    --proof: 190 90% 40%;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: 224 71% 4%;
+      --foreground: 213 31% 91%;
+      --border: 216 34% 17%;
+      --card: 222 47% 7%;
+      --muted-foreground: 215.4 16.3% 56.9%;
+      --gold: 42 92% 60%;
+      --proof: 190 90% 45%;
+    }
+  }
+  :root[data-theme="dark"] {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+    --border: 216 34% 17%;
+    --card: 222 47% 7%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+    --gold: 42 92% 60%;
+    --proof: 190 90% 45%;
+  }
+  :root[data-theme="light"] {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --card: 0 0% 100%;
+    --muted-foreground: 215 16% 47%;
+    --gold: 38 74% 44%;
+    --proof: 190 90% 40%;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: ui-monospace, "Cascadia Mono", "JetBrains Mono", Menlo, Consolas, monospace; }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  .page { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; }
+
+  /* ── mockup chrome (annotations, not product) ── */
+  .mock-banner {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    border: 1px dashed hsl(var(--gold) / .45); border-radius: 10px;
+    background: hsl(var(--gold) / .07); padding: 10px 14px; margin-bottom: 22px;
+    font-size: 12.5px; color: hsl(var(--muted-foreground));
+  }
+  .mock-banner b { color: hsl(var(--gold)); font-weight: 600; }
+  .theme-btn {
+    margin-left: auto; cursor: pointer; border: 1px solid hsl(var(--border));
+    background: hsl(var(--card)); color: hsl(var(--foreground));
+    border-radius: 8px; padding: 6px 12px; font-size: 12.5px; min-height: 36px;
+  }
+  .theme-btn:focus-visible, .row-trigger:focus-visible, .ref-trigger:focus-visible, .copy-btn:focus-visible {
+    outline: 2px solid hsl(var(--gold)); outline-offset: 2px;
+  }
+  .annot {
+    font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase;
+    color: hsl(var(--gold) / .8); margin: 34px 0 10px;
+  }
+  .annot::before { content: "◤ "; }
+
+  /* ── the frame context: the tab strip (canon, unchanged) ── */
+  .tabs {
+    display: flex; gap: 22px; border-bottom: 1px solid hsl(var(--border));
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 10px 2px 11px; white-space: nowrap; font-size: 13.5px;
+    color: hsl(var(--muted-foreground)); position: relative;
+  }
+  .tab.active { color: hsl(var(--foreground)); font-weight: 500; }
+  .tab.active::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+    background: hsl(var(--gold));
+  }
+
+  /* ── 1 · THE RECORD HEADER ── */
+  .record-header {
+    border: 1px solid hsl(var(--border)); background: hsl(var(--card) / .4);
+    border-radius: 10px; padding: 20px; margin: 22px 0 24px;
+  }
+  .rh-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .rh-title { font-size: 14px; font-weight: 500; }
+  .pill {
+    display: inline-flex; align-items: center; border-radius: 999px;
+    font-size: 12px; padding: 1px 9px; border: 1px solid; white-space: nowrap;
+  }
+  .pill-live  { color: hsl(var(--proof)); border-color: hsl(var(--proof) / .4); background: hsl(var(--proof) / .08); }
+  .pill-gold  { color: hsl(var(--gold));  border-color: hsl(var(--gold) / .4);  background: hsl(var(--gold) / .08); }
+  .pill-plain { color: hsl(var(--muted-foreground)); border-color: hsl(var(--border)); background: transparent; }
+  .rh-facts { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: baseline; }
+  .rh-fact { display: flex; align-items: baseline; gap: 7px; }
+  .rh-fact .k { font-size: 12.5px; color: hsl(var(--muted-foreground)); }
+  .rh-fact .v { font-size: 15px; font-weight: 600; }
+  .rh-note { font-size: 12px; color: hsl(var(--muted-foreground)); margin-top: 10px; }
+
+  /* ── 2 · THE RECEIPTS ── */
+  .month { margin-bottom: 22px; }
+  .month-head {
+    display: flex; align-items: baseline; gap: 12px;
+    font-size: 12px; letter-spacing: .18em; color: hsl(var(--muted-foreground));
+    margin-bottom: 10px; padding: 0 2px;
+  }
+  .month-head .sum { margin-left: auto; letter-spacing: 0; font-size: 12.5px; }
+
+  .receipt { margin-bottom: 12px; }
+  .rowcard {
+    border: 1px solid hsl(var(--border)); background: hsl(var(--card));
+    border-radius: 10px; overflow: hidden;
+    box-shadow: 0 1px 2px hsl(224 71% 2% / .18);
+  }
+  .rowcard::before {
+    /* the perforation genre marker — the paper's torn top edge */
+    content: ""; display: block; border-top: 1px dashed hsl(var(--border));
+    margin: 6px 14px 0;
+  }
+  .row-trigger {
+    display: flex; width: 100%; align-items: center; gap: 12px;
+    padding: 12px 14px 14px; min-height: 48px; cursor: pointer;
+    background: none; border: none; color: inherit; font: inherit; text-align: left;
+  }
+  .rt-date { font-size: 13px; color: hsl(var(--muted-foreground)); white-space: nowrap; }
+  .rt-who  { font-size: 13px; }
+  .rt-pills { display: flex; gap: 6px; margin-left: auto; }
+  .rt-amt {
+    font-size: 15px; font-weight: 600; color: hsl(var(--gold)); white-space: nowrap;
+  }
+  .caret {
+    width: 14px; height: 14px; flex: none; color: hsl(var(--muted-foreground));
+    transition: transform .18s ease;
+  }
+  .receipt[data-open="true"] .caret { transform: rotate(180deg); }
+  @media (prefers-reduced-motion: reduce) { .caret { transition: none; } }
+
+  /* the expanded document — the 7-zone commission receipt */
+  .doc { display: none; padding: 2px 18px 14px; }
+  .receipt[data-open="true"] .doc { display: block; }
+  .zone-rule { border-top: 1px dashed hsl(var(--border)); margin: 0; }
+  .zone { padding: 12px 2px; }
+  .zone-title {
+    font-size: 12px; font-weight: 600; letter-spacing: .18em;
+    color: hsl(var(--gold)); margin-bottom: 6px;
+  }
+  .headline { font-size: 13.5px; }
+  .recordline { font-size: 12.5px; color: hsl(var(--muted-foreground)); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+  .mrow {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 12px;
+    font-size: 13px; line-height: 1.9;
+  }
+  .mrow .k { color: hsl(var(--muted-foreground)); }
+  .mrow .v { margin-left: auto; text-align: right; min-width: 0; overflow-wrap: anywhere; }
+  .mrow .v.em { font-size: 15px; font-weight: 600; }
+  .mrow .v.gold { color: hsl(var(--gold)); font-size: 15px; font-weight: 600; }
+  .mrow.indent { padding-left: 14px; }
+  .k .share { font-size: 12px; color: hsl(var(--muted-foreground) / .75); }
+  .calc { font-size: 12px; color: hsl(var(--muted-foreground)); }
+  .state-line { font-size: 13px; }
+  .state-line .final { color: hsl(var(--foreground)); font-weight: 500; }
+  .proof-zone { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+  .txchip { font-size: 12.5px; color: hsl(var(--muted-foreground)); }
+  .copy-btn {
+    border: 1px solid hsl(var(--border)); background: none; color: hsl(var(--muted-foreground));
+    border-radius: 7px; font-size: 12px; padding: 4px 10px; cursor: pointer; min-height: 32px;
+  }
+  .verify {
+    margin-left: auto; font-size: 12.5px; text-decoration: underline;
+    text-underline-offset: 3px; color: hsl(var(--proof) / .85);
+  }
+  .verify:hover { color: hsl(var(--proof)); }
+  .foot {
+    text-align: center; font-size: 12px; font-weight: 600; letter-spacing: .22em;
+    color: hsl(var(--muted-foreground)); padding: 12px 0 4px;
+  }
+
+  /* ── 3 · reference expander + 4 · legal seal ── */
+  .ref { border: 1px solid hsl(var(--border)); background: hsl(var(--card) / .4); border-radius: 10px; margin-top: 26px; }
+  .ref-trigger {
+    display: flex; width: 100%; align-items: center; gap: 10px; padding: 13px 16px;
+    background: none; border: none; color: inherit; font: inherit; cursor: pointer; text-align: left;
+    font-size: 13.5px; min-height: 48px;
+  }
+  .ref .doc { padding: 0 16px 14px; }
+  .ref[data-open="true"] .doc { display: block; }
+  .ref .caret { margin-left: auto; }
+  .ref[data-open="true"] .caret { transform: rotate(180deg); }
+  .legal {
+    border-top: 1px dashed hsl(var(--border)); margin-top: 28px; padding-top: 14px;
+    font-size: 13px; color: hsl(var(--muted-foreground)); max-width: 46em;
+  }
+
+  /* ── the states strip (annotation section) ── */
+  .state-card {
+    border: 1px solid hsl(var(--border)); background: hsl(var(--card) / .4);
+    border-radius: 10px; padding: 16px; margin-bottom: 12px; font-size: 13px;
+    color: hsl(var(--muted-foreground));
+  }
+  .skeleton { display: flex; align-items: center; gap: 12px; }
+  .sk { background: hsl(var(--border) / .6); border-radius: 6px; height: 12px; }
+  .retry {
+    border: 1px solid hsl(var(--border)); background: none; color: hsl(var(--foreground));
+    border-radius: 7px; font-size: 12.5px; padding: 5px 12px; margin-left: 8px; cursor: pointer;
+  }
+
+  /* ── mobile: the two-line row ── */
+  @media (max-width: 480px) {
+    .row-trigger { flex-wrap: wrap; row-gap: 2px; }
+    .rt-who { order: 1; }
+    .rt-amt { order: 2; margin-left: auto; }
+    .caret { order: 3; }
+    .rt-date { order: 4; flex-basis: 60%; }
+    .rt-pills { order: 5; margin-left: auto; }
+  }
+</style>
+
+<div class="page">
+  <div class="mock-banner">
+    <span><b>MAQUETTE</b> — /referral/commissions · le registre de reçus · démo interactive (clique les lignes) · tes 2 vraies commissions</span>
+    <button type="button" class="theme-btn" id="themeBtn">Thème : auto</button>
+  </div>
+
+  <!-- the frame context: canon, unchanged -->
+  <nav class="tabs" aria-label="Referral">
+    <span class="tab">Overview</span>
+    <span class="tab">Introductions</span>
+    <span class="tab active" aria-current="page">Commissions</span>
+    <span class="tab">Ladder &amp; recognition</span>
+    <span class="tab">Channels</span>
+  </nav>
+
+  <!-- ── 1 · THE RECORD HEADER ── -->
+  <section class="record-header">
+    <div class="rh-title-row">
+      <span class="rh-title">Your commissions — the record</span>
+      <span class="pill pill-live">Live · your own row</span>
+    </div>
+    <div class="rh-facts">
+      <span class="rh-fact"><span class="k">Commissions</span><span class="v mono tnum">2</span></span>
+      <span class="rh-fact"><span class="k">Lifetime</span><span class="v mono tnum">$0.50</span></span>
+      <span class="rh-fact"><span class="k">Paid</span><span class="v mono tnum">$0.50</span></span>
+      <span class="rh-fact"><span class="k">In escrow</span><span class="v mono tnum">$0.00</span></span>
+    </div>
+    <p class="rh-note">Each commission below is its own on-chain receipt — your indexed record, up to block 90,690,519.</p>
+  </section>
+
+  <!-- ── 2 · THE RECEIPTS ── -->
+  <section aria-label="Commission receipts">
+    <div class="month">
+      <div class="month-head mono">JULY 2026 <span class="sum tnum">1 commission · $0.25</span></div>
+
+      <article class="receipt" data-open="true">
+        <div class="rowcard">
+          <button type="button" class="row-trigger" aria-expanded="true" aria-controls="doc-1">
+            <span class="rt-date">Jul 12, 2026</span>
+            <span class="rt-who mono">0x0dd…4d20</span>
+            <span class="rt-pills"><span class="pill pill-live">Paid</span><span class="pill pill-gold">Durable</span></span>
+            <span class="rt-amt mono tnum">+$0.25</span>
+            <svg class="caret" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+
+          <div class="doc" id="doc-1">
+            <div class="zone-rule"></div>
+            <div class="zone">
+              <p class="headline" style="margin:0"><span class="mono">0x0dd…4d20</span> joined through your introduction.</p>
+              <div class="recordline" style="margin-top:6px">
+                <span>Jul 12, 2026</span>
+                <span class="mono tnum">block 90,050,100</span>
+                <span>receipt <span class="mono">0x353b…2178</span></span>
+              </div>
+            </div>
+
+            <div class="zone-rule"></div>
+            <div class="zone">
+              <div class="zone-title mono">THE MONEY — IN THE BUYER'S OWN TRANSACTION</div>
+              <div class="mrow"><span class="k">The buyer paid</span><span class="v mono tnum em">$5.00</span></div>
+              <div class="mrow">
+                <span class="k">Your commission <span class="calc">— 5% of $5.00</span></span>
+                <span class="v mono tnum gold">+$0.25</span>
+              </div>
+              <div class="mrow"><span class="k">To the company</span><span class="v mono tnum">$4.75</span></div>
+              <div class="mrow indent"><span class="k">Vault <span class="share">· 70%</span></span><span class="v mono tnum">$3.325</span></div>
+              <div class="mrow indent"><span class="k">Liquidity <span class="share">· 20%</span></span><span class="v mono tnum">$0.95</span></div>
+              <div class="mrow indent"><span class="k">Operations <span class="share">· 10%</span></span><span class="v mono tnum">$0.475</span></div>
+            </div>
+
+            <div class="zone-rule"></div>
+            <div class="zone state-line">
+              <span class="final">Final — settled on-chain.</span>
+              <span style="color: hsl(var(--muted-foreground))"> Your commission was paid inside the buyer's transaction, in the same block.</span>
+            </div>
+
+            <div class="zone-rule"></div>
+            <div class="zone proof-zone">
+              <span class="txchip">tx <span class="mono">0x353b…2178</span></span>
+              <button type="button" class="copy-btn" data-copy="0x353bf2c0">Copy</button>
+              <a class="verify" href="#" onclick="return false">Verify on Snowtrace ↗</a>
+            </div>
+
+            <div class="zone-rule"></div>
+            <div class="foot mono">DON'T TRUST — VERIFY</div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="month">
+      <div class="month-head mono">JUNE 2026 <span class="sum tnum">1 commission · $0.25</span></div>
+
+      <article class="receipt" data-open="false">
+        <div class="rowcard">
+          <button type="button" class="row-trigger" aria-expanded="false" aria-controls="doc-2">
+            <span class="rt-date">Jun 25, 2026</span>
+            <span class="rt-who mono">0x620…c75f</span>
+            <span class="rt-pills"><span class="pill pill-live">Paid</span><span class="pill pill-gold">Durable</span></span>
+            <span class="rt-amt mono tnum">+$0.25</span>
+            <svg class="caret" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+
+          <div class="doc" id="doc-2">
+            <div class="zone-rule"></div>
+            <div class="zone">
+              <p class="headline" style="margin:0"><span class="mono">0x620…c75f</span> joined through your introduction.</p>
+              <div class="recordline" style="margin-top:6px">
+                <span>Jun 25, 2026</span>
+                <span class="mono tnum">block 89,214,067</span>
+                <span>receipt <span class="mono">0x8f2a…91be</span></span>
+              </div>
+            </div>
+            <div class="zone-rule"></div>
+            <div class="zone">
+              <div class="zone-title mono">THE MONEY — IN THE BUYER'S OWN TRANSACTION</div>
+              <div class="mrow"><span class="k">The buyer paid</span><span class="v mono tnum em">$5.00</span></div>
+              <div class="mrow">
+                <span class="k">Your commission <span class="calc">— 5% of $5.00</span></span>
+                <span class="v mono tnum gold">+$0.25</span>
+              </div>
+              <div class="mrow"><span class="k">To the company</span><span class="v mono tnum">$4.75</span></div>
+              <div class="mrow indent"><span class="k">Vault <span class="share">· 70%</span></span><span class="v mono tnum">$3.325</span></div>
+              <div class="mrow indent"><span class="k">Liquidity <span class="share">· 20%</span></span><span class="v mono tnum">$0.95</span></div>
+              <div class="mrow indent"><span class="k">Operations <span class="share">· 10%</span></span><span class="v mono tnum">$0.475</span></div>
+            </div>
+            <div class="zone-rule"></div>
+            <div class="zone state-line">
+              <span class="final">Final — settled on-chain.</span>
+              <span style="color: hsl(var(--muted-foreground))"> Your commission was paid inside the buyer's transaction, in the same block.</span>
+            </div>
+            <div class="zone-rule"></div>
+            <div class="zone proof-zone">
+              <span class="txchip">tx <span class="mono">0x8f2a…91be</span></span>
+              <button type="button" class="copy-btn" data-copy="0x8f2a">Copy</button>
+              <a class="verify" href="#" onclick="return false">Verify on Snowtrace ↗</a>
+            </div>
+            <div class="zone-rule"></div>
+            <div class="foot mono">DON'T TRUST — VERIFY</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── 3 · THE REFERENCE EXPANDER ── -->
+  <section class="ref" data-open="false">
+    <button type="button" class="ref-trigger" aria-expanded="false" aria-controls="doc-ref">
+      <span>How a commission is computed</span>
+      <span class="pill pill-plain">Worked example</span>
+      <svg class="caret" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="doc" id="doc-ref">
+      <div class="zone-rule"></div>
+      <div class="zone">
+        <div class="mrow"><span class="k">A buyer takes a seat</span><span class="v mono tnum">$5.00</span></div>
+        <div class="mrow"><span class="k">Your commission at your current rung <span class="calc">— 5%</span></span><span class="v mono tnum">$0.25</span></div>
+        <div class="mrow"><span class="k">To the company</span><span class="v mono tnum">$4.75</span></div>
+        <p style="font-size:12.5px; color: hsl(var(--muted-foreground)); margin: 8px 0 0">
+          Paid to your wallet inside the buyer's own transaction, in the same block. Your rate rises with
+          durable introductions — see Ladder &amp; recognition.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 4 · THE LEGAL SEAL ── -->
+  <p class="legal">
+    A referral commission is a bounded, one-time payment for a completed introduction. It is not
+    token yield, not passive income, not equity, and not a guarantee of token appreciation.
+  </p>
+
+  <!-- ── annotation: the evolutive states ── -->
+  <div class="annot">États — la même surface, honnête à 0 ligne, en chargement, en échec</div>
+
+  <div class="state-card">
+    <b style="color:hsl(var(--foreground)); font-weight:500">Vide (0 commission)</b><br>
+    No commissions yet. When someone joins through your introduction, its receipt appears here — anchored on-chain.
+  </div>
+
+  <div class="state-card">
+    <b style="color:hsl(var(--foreground)); font-weight:500">Chargement</b> — squelette de la vraie ligne, jamais un spinner :
+    <div class="skeleton" style="margin-top:10px">
+      <span class="sk" style="width:72px"></span>
+      <span class="sk" style="width:96px"></span>
+      <span class="sk" style="width:52px; margin-left:auto"></span>
+      <span class="sk" style="width:14px"></span>
+    </div>
+  </div>
+
+  <div class="state-card">
+    <b style="color:hsl(var(--foreground)); font-weight:500">Échec</b> —
+    Couldn't reach the chain — your record is unchanged.
+    <button type="button" class="retry">Retry</button>
+  </div>
+
+  <div class="annot">À 300 lignes — les mêmes lignes, groupées par mois avec sous-totaux exacts ; « Load earlier months » à la frontière ; export CSV ; jamais une deuxième grammaire</div>
+</div>
+
+<script>
+  // accordion — multiple open allowed, ARIA kept truthful
+  document.querySelectorAll(".row-trigger, .ref-trigger").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var host = btn.closest("[data-open]");
+      var open = host.getAttribute("data-open") === "true";
+      host.setAttribute("data-open", open ? "false" : "true");
+      btn.setAttribute("aria-expanded", open ? "false" : "true");
+    });
+  });
+  // copy demo
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      try { navigator.clipboard.writeText(btn.getAttribute("data-copy") || ""); } catch (e) {}
+      var t = btn.textContent; btn.textContent = "Copied";
+      setTimeout(function () { btn.textContent = t; }, 1400);
+    });
+  });
+  // theme toggle: auto → dark → light
+  var modes = ["auto", "dark", "light"];
+  var i = 0;
+  var btn = document.getElementById("themeBtn");
+  btn.addEventListener("click", function () {
+    i = (i + 1) % modes.length;
+    var m = modes[i];
+    if (m === "auto") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", m);
+    btn.textContent = "Thème : " + m;
+  });
+</script>
