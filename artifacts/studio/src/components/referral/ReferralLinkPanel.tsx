@@ -156,13 +156,63 @@ function useOwnChannelBreakdown(): ChannelReadback | null {
   return readback;
 }
 
-// The channels card — LIVE since slice ③ (the click store ships): the
-// landing counts per tag server-side (aggregate only — never who clicked),
-// and a conversion appears only after its purchase receipt is verified
-// on-chain by the server itself.
-function ChannelsCard() {
-  const readback = useOwnChannelBreakdown();
-  const served = readback !== null && readback.available;
+// ── The channel composer (founder ask 2026-07-19 + the web benchmark
+// `wf_b01f310a`: GA URL Builder's live-assembling URL · Bitly's channel-as-
+// chip · FirstPromoter's copy-per-row list). STATELESS by design: the link
+// IS base + tag, so nothing is stored anywhere (no link objects, no
+// localStorage — the privacy policy pins two preferences), no shortener
+// ever (the full visible URL is the verifiability product), and the
+// aggregate table below doubles as the member's link list. ──────────────
+const CHANNEL_PRESETS: { slug: string; label: string }[] = [
+  { slug: "x", label: "X (Twitter)" },
+  { slug: "telegram", label: "Telegram" },
+  { slug: "whatsapp", label: "WhatsApp" },
+  { slug: "discord", label: "Discord" },
+  { slug: "youtube", label: "YouTube" },
+  { slug: "instagram", label: "Instagram" },
+];
+
+/** The channel-tag law, mirrored from the server (the server stays the
+ * authority): lowercase slug, spaces folded to hyphens, invalid stripped. */
+function normalizeChannelTag(raw: string): string {
+  return raw
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9_-]/g, "")
+    .replace(/^[-_]+/, "")
+    .slice(0, 24);
+}
+
+function ChannelsCard({ readback }: { readback: StandingReadback | null }) {
+  const { address } = useAccount();
+  const breakdown = useOwnChannelBreakdown();
+  const served = breakdown !== null && breakdown.available;
+  // Ruling ① — the SAME paying-source resolver as every link surface.
+  const sourceId = payingSourceId(readback?.sourceIdHex, address);
+  const baseLink = sourceId
+    ? `https://thesyndicate.money/join?source=${sourceId}`
+    : null;
+
+  const [selected, setSelected] = useState<string | null>(null); // preset slug | "custom" | null
+  const [customRaw, setCustomRaw] = useState("");
+  const [customTouched, setCustomTouched] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null); // which link was copied
+
+  const customTag = normalizeChannelTag(customRaw);
+  const tag =
+    selected === "custom" ? (customTag.length > 0 ? customTag : null) : selected;
+  const taggedLink = baseLink && tag ? `${baseLink}&via=${tag}` : baseLink;
+  const customInvalid =
+    selected === "custom" && customTouched && customRaw.trim().length > 0 && customTag.length === 0;
+
+  function copyText(text: string, key: string) {
+    void navigator.clipboard?.writeText(text).then(() => {
+      setCopied(key);
+      setTimeout(() => setCopied((c) => (c === key ? null : c)), 2000);
+    });
+  }
+
   return (
     <Card className="bg-card/40 border-border/50 p-5 mb-6">
       <div className="flex items-center gap-2 mb-1">
@@ -174,51 +224,167 @@ function ChannelsCard() {
         ) : null}
       </div>
       <p className="text-sm text-muted-foreground leading-relaxed">
-        Add <span className="font-mono text-foreground/80">&amp;via=twitter</span>,{" "}
-        <span className="font-mono text-foreground/80">&amp;via=blog</span> or{" "}
-        <span className="font-mono text-foreground/80">&amp;via=telegram</span> to
-        your link. Landings are counted per channel — aggregate daily counts
-        only, never who clicked — and a conversion is recorded only after its
-        purchase receipt is verified on-chain.
+        One link, yours for good — tag it to see which channel works. We count
+        clicks per channel, per day — never who clicked — and a join is
+        recorded only after its purchase receipt is verified on-chain.
       </p>
-      {!served ? (
+
+      {baseLink ? (
+        <>
+          {/* Where will you share it? — one chip, or none (none = the bare link). */}
+          <p className="text-sm font-medium text-foreground mt-4 mb-2">
+            Where will you share it?
+          </p>
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Where will you share it?">
+            {CHANNEL_PRESETS.map((c) => {
+              const active = selected === c.slug;
+              return (
+                <button
+                  key={c.slug}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => setSelected(active ? null : c.slug)}
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-4 min-h-11 text-sm transition-colors ${
+                    active
+                      ? "border-gold/40 bg-gold/10 font-semibold text-foreground"
+                      : "border-border/60 bg-card/40 text-muted-foreground hover:text-foreground"
+                  }`}
+                  data-testid={`channel-chip-${c.slug}`}
+                >
+                  {active ? <Check className="h-3.5 w-3.5" aria-hidden /> : null}
+                  {c.label}
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              aria-pressed={selected === "custom"}
+              onClick={() => setSelected(selected === "custom" ? null : "custom")}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-4 min-h-11 text-sm transition-colors ${
+                selected === "custom"
+                  ? "border-gold/40 bg-gold/10 font-semibold text-foreground"
+                  : "border-border/60 bg-card/40 text-muted-foreground hover:text-foreground"
+              }`}
+              data-testid="channel-chip-custom"
+            >
+              {selected === "custom" ? <Check className="h-3.5 w-3.5" aria-hidden /> : null}
+              Custom…
+            </button>
+          </div>
+          {selected === "custom" ? (
+            <div className="mt-2">
+              <Input
+                autoFocus
+                value={customRaw}
+                onChange={(e) => setCustomRaw(e.target.value)}
+                onBlur={() => setCustomTouched(true)}
+                placeholder="your channel — e.g. newsletter"
+                aria-label="Custom channel name"
+                aria-invalid={customInvalid}
+                className="max-w-xs"
+                data-testid="input-custom-channel"
+              />
+              {customInvalid ? (
+                <p className="text-xs text-destructive mt-1">
+                  Lowercase letters, numbers, hyphens — up to 24 characters.
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+
+          {/* The live URL — preview, validation and copy target in one.
+              The base never disappears; the tag segment appears only once
+              valid, so Copy can never produce a broken link. */}
+          <div className="mt-3 rounded-md border border-border/60 bg-card/30 p-3">
+            <p className="font-mono text-xs text-foreground/90 break-all" data-testid="text-tagged-link">
+              {baseLink}
+              {tag ? <span className="font-semibold text-gold">&amp;via={tag}</span> : null}
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 mt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => taggedLink && copyText(taggedLink, "composer")}
+              data-testid="button-copy-tagged-link"
+            >
+              {copied === "composer" ? <Check className="h-4 w-4 mr-1.5" /> : <Copy className="h-4 w-4 mr-1.5" />}
+              {copied === "composer" ? "Copied" : "Copy link"}
+            </Button>
+            {taggedLink ? (
+              <ShareMenu url={taggedLink} text="Join The Syndicate with my verified introduction." />
+            ) : null}
+            <span role="status" className="sr-only">
+              {copied !== null ? "Link copied" : ""}
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+            This is the full link — what you see is exactly what they get.
+            Never shortened.
+          </p>
+        </>
+      ) : (
         <p className="text-sm text-muted-foreground leading-relaxed mt-3">
-          {readback === null
+          Connect and sign in with your wallet to derive your permanent
+          referral link — then tag it per channel here.
+        </p>
+      )}
+
+      {/* The aggregate table — it IS your link list: each row's Copy
+          regenerates base + tag deterministically; rows exist only for tags
+          with recorded clicks (no fake rows, no stored link objects). */}
+      {!served ? (
+        <p className="text-sm text-muted-foreground leading-relaxed mt-4">
+          {breakdown === null
             ? "The channel read is resolving — nothing is assumed, nothing is invented."
             : "The channel read is unavailable right now — nothing is assumed, nothing is invented."}
         </p>
-      ) : readback.rows.length === 0 ? (
-        <div className="rounded-md border border-dashed border-border/60 bg-card/30 p-4 mt-3">
+      ) : breakdown.rows.length === 0 ? (
+        <div className="rounded-md border border-dashed border-border/60 bg-card/30 p-4 mt-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            No channels tracked yet. Share your link with a{" "}
-            <span className="font-mono text-foreground/80">&amp;via=</span> tag and
-            your channel breakdown appears here.
+            No clicks tracked yet. Share a tagged link — its channel appears
+            here with its clicks and verified joins.
           </p>
         </div>
       ) : (
-        <div className="mt-3 overflow-x-auto">
+        <div className="mt-4 overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-muted-foreground">
                 <th className="font-mono text-xs uppercase tracking-wider font-normal py-1.5 pr-4">Channel</th>
                 <th className="font-mono text-xs uppercase tracking-wider font-normal py-1.5 pr-4">Clicks</th>
-                <th className="font-mono text-xs uppercase tracking-wider font-normal py-1.5">Conversions</th>
+                <th className="font-mono text-xs uppercase tracking-wider font-normal py-1.5 pr-4">Joins</th>
+                <th className="py-1.5"><span className="sr-only">Copy this channel&apos;s link</span></th>
               </tr>
             </thead>
             <tbody>
-              {readback.rows.map((row) => (
+              {breakdown.rows.map((row) => (
                 <tr key={row.via} className="border-t border-border/40">
                   <td className="font-mono text-foreground/90 py-2 pr-4">{row.via}</td>
                   <td className="font-mono text-foreground py-2 pr-4">{row.clicks}</td>
-                  <td className="font-mono text-gold py-2">{row.conversions}</td>
+                  <td className="font-mono text-gold py-2 pr-4">{row.conversions}</td>
+                  <td className="py-2 text-right">
+                    {baseLink ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => copyText(`${baseLink}&via=${row.via}`, row.via)}
+                        data-testid={`button-copy-row-${row.via}`}
+                      >
+                        {copied === row.via ? <Check className="h-3.5 w-3.5 mr-1" /> : <Copy className="h-3.5 w-3.5 mr-1" />}
+                        {copied === row.via ? "Copied" : "Copy"}
+                      </Button>
+                    ) : null}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
           <p className="text-xs text-muted-foreground leading-relaxed mt-2">
-            A conversion is a completed purchase whose receipt the server
-            verified on-chain against your source — the channel is off-chain,
-            the proof is not.
+            A join is a completed purchase whose receipt the server verified
+            on-chain against your source — the channel is off-chain, the
+            proof is not. We count clicks per channel, per day — never who
+            clicked.
           </p>
         </div>
       )}
@@ -246,8 +412,9 @@ export function ReferralLinkPanel({ readback }: { readback: StandingReadback | n
     <div>
       <MyReferralLinkCard readback={readback} />
 
-      {/* SPEC R3 — the channels breakdown, LIVE (slice ③: the click store). */}
-      <ChannelsCard />
+      {/* SPEC R3 — the channels composer + breakdown, LIVE (slice ③ + the
+          founder's generate-the-link ask, benchmark wf_b01f310a). */}
+      <ChannelsCard readback={readback} />
 
       {/* Reference — always available, never leading (WORK-FIRST). */}
       <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">

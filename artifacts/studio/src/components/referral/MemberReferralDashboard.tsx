@@ -52,8 +52,13 @@ const TABS: { id: ReferralTabId; label: string; href: string }[] = [
   { id: "link", label: "Link & channels", href: "/referral/link" },
 ];
 
-const TAB_FOCUS_RING =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/65 focus-visible:ring-offset-2 ring-offset-background";
+// Tab focus indicator: a rounded background TINT, never a boxing ring — the
+// offset ring drew a floating rectangle around the active tab the moment any
+// key was pressed while it held click-focus (founder-caught: his screenshot
+// shortcut lit :focus-visible). WCAG stays satisfied: tint + underline +
+// weight mark focus, shape-and-color, never color alone.
+const TAB_FOCUS_STYLE =
+  "focus-visible:outline-none focus-visible:bg-gold/10 rounded-t-md";
 
 // The four figures — ABOVE the tabs, always (Visibility Law: the money is
 // never behind a tab). Three DISTINCT honest states when the read has not
@@ -110,15 +115,21 @@ function ReferralFigures({ readback }: { readback: StandingReadback | null }) {
       verify ↗
     </a>
   ) : undefined;
+  // Centered tiles (founder, 2026-07-19): label, figure and verify all
+  // center-aligned. Scoped here via className — the shared StatCard atom
+  // keeps its default left alignment everywhere else. ([&>div]:justify-center
+  // centers the label's flex row; it is inert on the block-level value/meta
+  // rows, which text-center handles.)
+  const CENTERED = "text-center [&>div]:justify-center";
   return (
     <div className="mt-6">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatCard label="Introductions">{String(s.introducedMembers)}</StatCard>
-        <StatCard label="Durable introductions">{String(s.durableIntroductions)}</StatCard>
-        <StatCard label="Commission paid" tone="identity" meta={verifyOwn}>
+        <StatCard label="Introductions" className={CENTERED}>{String(s.introducedMembers)}</StatCard>
+        <StatCard label="Durable introductions" className={CENTERED}>{String(s.durableIntroductions)}</StatCard>
+        <StatCard label="Commission paid" tone="identity" meta={verifyOwn} className={CENTERED}>
           {usd(s.commissionPaidRaw)}
         </StatCard>
-        <StatCard label="Held in escrow" tone="identity" meta={verifyOwn}>
+        <StatCard label="Held in escrow" tone="identity" meta={verifyOwn} className={CENTERED}>
           {usd(s.escrowOwedRaw)}
         </StatCard>
       </div>
@@ -176,35 +187,43 @@ export function MemberReferralDashboard({ tab = "overview" }: { tab?: ReferralTa
       {/* THE FOUR FIGURES — above the tabs, always. */}
       <ReferralFigures readback={readback} />
 
-      {/* THE TAB STRIP — underline tabs at real sub-routes; the URL decides. */}
-      <nav
-        aria-label="Referral sections"
-        className="flex gap-1 overflow-x-auto border-b border-border/50 mt-6 mb-6"
-      >
-        {TABS.map((t) => {
-          const active = t.id === tab;
-          return (
-            <Link
-              key={t.id}
-              href={t.href}
-              aria-current={active ? "page" : undefined}
-              className={`inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap px-3 py-2.5 -mb-px border-b-2 text-sm transition-colors ${TAB_FOCUS_RING} ${
-                active
-                  ? "border-gold text-foreground font-semibold"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
-              data-testid={`referral-tab-${t.id}`}
-            >
-              {t.label}
-              {t.id === "introductions" && s ? (
-                <span className="font-mono text-xs rounded-full bg-border/40 px-1.5">
-                  {s.introducedMembers}
-                </span>
-              ) : null}
-            </Link>
-          );
-        })}
-      </nav>
+      {/* THE TAB STRIP — underline tabs at real sub-routes; the URL decides.
+          Structure note: the baseline is an ABSOLUTE hairline under the nav
+          (never a border on the scroll container) and the nav hides its
+          scrollbars while staying swipeable — the earlier -mb-px underline
+          overflowed the container by 1px and Windows rendered a stray mini
+          scrollbar beside the tabs (founder-caught in prod). */}
+      <div className="relative mt-6 mb-6">
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-px bg-border/50" />
+        <nav
+          aria-label="Referral sections"
+          className="flex gap-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {TABS.map((t) => {
+            const active = t.id === tab;
+            return (
+              <Link
+                key={t.id}
+                href={t.href}
+                aria-current={active ? "page" : undefined}
+                className={`inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap px-3 py-2.5 border-b-2 text-sm transition-colors ${TAB_FOCUS_STYLE} ${
+                  active
+                    ? "border-gold text-foreground font-semibold"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+                data-testid={`referral-tab-${t.id}`}
+              >
+                {t.label}
+                {t.id === "introductions" && s ? (
+                  <span className="font-mono text-xs rounded-full bg-border/40 px-1.5">
+                    {s.introducedMembers}
+                  </span>
+                ) : null}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
 
       {tab === "overview" ? <ReferralOverviewPanel readback={readback} /> : null}
       {tab === "introductions" ? <ReferralIntroductionsPanel readback={readback} /> : null}

@@ -82,8 +82,11 @@ Ladder truth (`config/connectorLadder.ts`): Emerging 5% (0) · Active 5% (3, tit
   "remember my last tab" overriding a deep link · fake loading on tab switch.
 
 ## The 5 tabs (own-row)
-1. **Overview** (default) — the conversion hero + standing summary + ladder mini + the verified-
-   introducer share card.
+1. **Overview** (default) — **ORDER IS CANON (founder correction 2026-07-19, WORK-FIRST
+   outranks the mockup):** ① the LINK/share block FIRST — always (honest link fallback with
+   Copy+QR+Share when the standing read misses; never an empty opening) → ② the standing
+   summary → ③ the §7 conversion hero LAST (the words a member shares, not the opening).
+   No future pass may revert to the mockup's hero-first order.
 2. **Introductions** — the per-introduction rows (M10) + "durable = still holds SYN" + 2nd-gen (later).
 3. **Commissions** — money by state (paid/escrow) + the commission anatomy + the evolutive chart-
    record slot + the legal line.

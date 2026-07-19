@@ -43,9 +43,13 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > green 2026-07-19, founder-pasted report: neondb tables + unique indexes confirmed · beacons
 > 204 · channel-standing S1-exact · Privacy V2 + Terms §7 served · byte-identity · the synthetic
 > test-id drop PROVED the existence gate)** — "Approved GO and GO-Live" 2026-07-19;
-> guard-auth-zone 1002/1002 → slices 4–6 (the adds, NEXT = ④
-> per-introduction rows: shells live in the tabs; each slice replaces its shell with the real
-> record). Full state: SESSION_STATE.md.
+> guard-auth-zone 1002/1002 → ✅ slice 3.1 (the founder's grade-AAA polish: Overview re-ordered
+> WORK-FIRST link-first — CANON, no revert to the mockup's hero-first · the focus-ring rectangle
+> killed · centered tiles · "recognition title" · THE CHANNEL COMPOSER — chips + live URL +
+> copy-per-row, web benchmark `wf_b01f310a`, stateless/no-shortener) BUILT + COMMITTED
+> [this commit], "GO and GO-Live" 2026-07-19, awaiting the Replit seal (client-only, no
+> migration) → slices 4–6 (the adds, NEXT = ④ per-introduction rows: shells live in the tabs;
+> each slice replaces its shell with the real record). Full state: SESSION_STATE.md.
 
 > **▶ 2026-07-17 (STANDING RULE, founder, emphatic — engraved here AND in agent memory):
 > NEVER RE-BLOCK ON AN ANSWERED QUESTION. Founder gates exist ONLY for: security/

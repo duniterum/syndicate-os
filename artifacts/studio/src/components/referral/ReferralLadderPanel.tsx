@@ -55,9 +55,11 @@ export function ReferralLadderPanel({ readback }: { readback: StandingReadback |
                       ? `you · ${s.durableIntroductions} durable`
                       : `${rung.durableThreshold}${i === LADDER_RUNGS.length - 1 ? " · cap" : ""}`}
                   </p>
+                  {/* Human words, never a cryptic tag (founder-caught: the
+                      bare "TITLE" chip read as a placeholder in prod). */}
                   {!rung.raisesRate ? (
-                    <span className="inline-block mt-1 font-mono text-xs uppercase text-muted-foreground border border-border/60 rounded px-1">
-                      title
+                    <span className="inline-block mt-1 text-xs text-muted-foreground border border-border/60 rounded px-1.5">
+                      recognition title
                     </span>
                   ) : null}
                 </div>

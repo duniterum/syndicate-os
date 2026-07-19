@@ -197,6 +197,32 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   moment where BOTH the standing read and the channel read said honest-unavailable
 >   — a public-RPC blip, fail-closed working as designed; retry resolves.
 >   **DEPLOY BACKLOG: EMPTY. Tree clean.**
+> - ✅ **SLICE 3.1 — THE FOUNDER'S GRADE-AAA POLISH PASS (4 prod-caught corrections +
+>   the CHANNEL COMPOSER), BUILT + COMMITTED [this commit] ("GO and GO-Live"
+>   2026-07-19).** ① Overview re-ordered WORK-FIRST (founder: "not dumping the
+>   sections"): the LINK/share block opens the tab — ALWAYS (honest fallback with
+>   link+Copy+QR+Share when the standing read misses; never an empty opening) →
+>   Where-you-stand → the §7 claim LAST (engraved in memory: the mockup gives the
+>   pieces, never the order). ② The active-tab "rectangle" KILLED — root cause PROVEN
+>   in-browser: click-focus + any keypress (the founder's screenshot shortcut) lights
+>   :focus-visible → the offset ring boxed the tab; tab focus is now a rounded gold
+>   TINT, never a ring; plus the stray mini-scrollbar fixed (the -mb-px underline
+>   overflowed 1px → absolute baseline + hidden scrollbars, still swipeable).
+>   ③ The bare "TITLE" rail chip → "recognition title" (Human-First). ④ The four
+>   figure tiles CENTERED (label+digit+verify; scoped className — the shared StatCard
+>   atom untouched). ⑤ THE CHANNEL COMPOSER (founder ask "user enters the channel, we
+>   generate the link" + web benchmark `wf_b01f310a`: GA URL Builder live-assembling
+>   URL · Bitly channel-as-chip · FirstPromoter copy-per-row): 7 chips (X/Telegram/
+>   WhatsApp/Discord/YouTube/Instagram/Custom…), custom input normalized LIVE
+>   ("My Newsletter!" → my-newsletter), the full URL always visible with the gold
+>   &via= segment appending live, Copy+Share, the aggregate table = the link list
+>   (Channel · Clicks · Joins + Copy per row), STATELESS by design (no link objects,
+>   no localStorage, NEVER a shortener — "Never shortened" on-surface). Adversarial
+>   rejections recorded (no Direct row — untagged landings are deliberately not
+>   counted; no fake "within a day" latency claim). Verified in-browser: chip →
+>   &via=telegram live, toggle-off → bare, normalization live, per-row copy, chips
+>   ≥44px, no h-scroll, zero console errors; tsc + 18 guards + build + admin-dist 93
+>   green. **AWAITING THE REPLIT SEAL (client-only, NO migration).**
 > - **SLICES 4–6 (IN ORDER, NEXT = 4) — THE REMAINING ADDS** (from the SYSTEM-FIRST
 >   harvest `wf_81dd540b`): ④ per-introduction rows (needs the row-level adapter,
 >   server) · ⑤ commission anatomy (the static anatomy card shipped in slice 2; ⑤ = the
