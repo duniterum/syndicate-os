@@ -20,9 +20,21 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import QRCode from "react-qr-code";
-import { ExternalLink } from "lucide-react";
+import {
+  Check,
+  Copy,
+  ExternalLink,
+  Facebook,
+  Linkedin,
+  Mail,
+  MessageCircle,
+  Send,
+  Share2,
+  Twitter,
+} from "lucide-react";
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
+import { shareTargets, type ShareTargetDef } from "@/lib/shareTargets";
 import { brandAssets } from "@/config/brand";
 import { readArtifactBalance } from "@/lib/chainReads";
 import { payingSourceId } from "@/lib/sourceIdentity";
@@ -137,6 +149,26 @@ function ZoneRule() {
   return <div className="border-t border-dashed border-border" aria-hidden="true" />;
 }
 
+// ── R-BIND-2 · THE DUAL SHARE (founder-approved mockup 2026-07-19) ─────────
+// One Share button opens ONE surface: Copy link FIRST (the action that works
+// everywhere) → the six network intents (reusing THE shareTargets module —
+// rendered in the crypto-native order; Facebook/LinkedIn carry the URL only,
+// by those platforms' own rules) → "Share with other apps" (the OS sheet,
+// kept and renamed; the ONLY channel that carries the ticket image) —
+// feature-detected, never a dead button.
+const NETWORK_ORDER = ["x", "whatsapp", "telegram", "linkedin", "facebook", "email"];
+const NETWORK_ICONS: Record<string, typeof Share2> = {
+  x: Twitter,
+  whatsapp: MessageCircle,
+  telegram: Send,
+  linkedin: Linkedin,
+  facebook: Facebook,
+  email: Mail,
+};
+const ORDERED_TARGETS: ShareTargetDef[] = NETWORK_ORDER.map(
+  (id) => shareTargets.find((t) => t.id === id),
+).filter((t): t is ShareTargetDef => t !== undefined);
+
 export default function ReceiptTicket({
   model,
   wallet,
@@ -153,6 +185,10 @@ export default function ReceiptTicket({
   usePrintCleanTheme();
   const [copied, setCopied] = useState(false);
   const [saving, setSaving] = useState(false);
+  // R-BIND-2: the dual share surface + native-share availability (detected
+  // once — the OS button renders only where the sheet truly exists).
+  const [shareOpen, setShareOpen] = useState(false);
+  const nativeShareAvailable = typeof navigator.share === "function";
 
   const txUrl = model.proof.explorerTxUrl;
   const shortTx = `${model.proof.txHash.slice(0, 6)}…${model.proof.txHash.slice(-4)}`;
@@ -174,7 +210,11 @@ export default function ReceiptTicket({
     }
   }
 
-  async function handleShare() {
+  /** R-BIND-2 — "Share with other apps": the OS sheet, the one channel that
+   * carries the ticket PNG. The canShare-gap FIXED (audit): a built card the
+   * platform cannot file-share no longer skips the sheet — text-only
+   * navigator.share is attempted before the download+clipboard fallback. */
+  async function handleNativeShare() {
     if (!shareText) return;
     // RECEIPT-SHARE rider: the share artifact is the 1200×630 CARD (the
     // member's introduction QR on it) + the proof text. The card only exists
@@ -203,7 +243,9 @@ export default function ReceiptTicket({
       } catch {
         /* share sheet dismissed — fall through */
       }
-    } else if (typeof navigator.share === "function" && !cardFile) {
+    } else if (typeof navigator.share === "function") {
+      // Text-only sheet — the platform has a sheet but cannot take the file
+      // (or no card was built): the sheet still opens, nothing dead-ends.
       try {
         await navigator.share({ title: model.head.docTitle, text: shareText });
         return;
@@ -500,9 +542,12 @@ export default function ReceiptTicket({
               variant="outline"
               size="sm"
               className="min-h-11"
-              onClick={() => void handleShare()}
+              onClick={() => setShareOpen((v) => !v)}
+              aria-expanded={shareOpen}
+              aria-controls="receipt-share-surface"
               data-testid="button-receipt-share"
             >
+              <Share2 className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" />
               Share
             </Button>
           </>
@@ -526,6 +571,62 @@ export default function ReceiptTicket({
           </Button>
         ) : null}
       </div>
+      {/* R-BIND-2 · the dual share surface (founder-approved mockup) — in
+          flow under the actions, print-hidden like every action. */}
+      {shareOpen && txUrl ? (
+        <div
+          id="receipt-share-surface"
+          className="w-[340px] max-w-full mx-auto mt-3 rounded-xl border border-border bg-card p-4 print:hidden"
+          data-testid="receipt-share-surface"
+        >
+          <button
+            type="button"
+            onClick={() => void handleCopy()}
+            className="w-full min-h-11 rounded-lg border border-gold/50 bg-gold/[0.08] text-gold text-sm font-medium flex items-center justify-center gap-2 hover:bg-gold/[0.12] transition-colors"
+            data-testid="button-share-copy-link"
+          >
+            {copied ? <Check className="h-4 w-4" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
+            {copied ? "Copied" : "Copy link"}
+          </button>
+          <div className="grid grid-cols-3 gap-2 mt-3">
+            {ORDERED_TARGETS.map((t) => {
+              const Icon = NETWORK_ICONS[t.id] ?? Share2;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => {
+                    window.open(t.build(txUrl, shareText ?? ""), "_blank", "noopener,noreferrer");
+                    setShareOpen(false);
+                  }}
+                  className="flex flex-col items-center gap-1.5 rounded-lg border border-border px-1 py-2.5 min-h-14 text-xs text-foreground hover:bg-muted transition-colors"
+                  data-testid={`button-share-${t.id}`}
+                >
+                  <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                  {t.label}
+                </button>
+              );
+            })}
+          </div>
+          {nativeShareAvailable ? (
+            <button
+              type="button"
+              onClick={() => {
+                setShareOpen(false);
+                void handleNativeShare();
+              }}
+              className="w-full mt-3 min-h-12 rounded-lg border border-border text-foreground text-sm font-medium hover:bg-muted transition-colors"
+              data-testid="button-share-other-apps"
+            >
+              Share with other apps
+              <span className="block text-xs font-normal text-muted-foreground">
+                Sends the ticket image too
+              </span>
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+
       <p className="w-[340px] max-w-full mx-auto text-xs text-muted-foreground text-center mt-2 print:hidden">
         Printing this page (Ctrl/Cmd+P) gives a clean Save-as-PDF of the ticket alone.
       </p>

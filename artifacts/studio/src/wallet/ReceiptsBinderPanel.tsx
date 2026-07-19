@@ -17,9 +17,9 @@
 // full ticket (an engine that never carried the facts) says so honestly and
 // keeps its proof link — absence renders as absence, never a guess.
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAccount } from "wagmi";
-import { ChevronDown, ExternalLink } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { StatusPill } from "@/components/status-pill/StatusPill";
 import ReceiptTicket from "./ReceiptTicket";
@@ -137,6 +137,132 @@ function ticketModelFor(
   });
 }
 
+// ── R-BIND-2 · THE HERO RAIL (founder-approved mockup 2026-07-19) ──────────
+// The cap-5 shelf: the NEWEST receipts that can print a full ticket, OPEN,
+// newest first. The shelf never mounts a sixth — the archive below absorbs
+// the hundreds forever. Chrome (arrows + counter) exists ONLY when the shelf
+// truly overflows its viewport; one open document renders centered with
+// ZERO chrome. Mobile: one ticket per screen, snap, the next paper's edge
+// peeking; controls sit BELOW the rail (fingers never cover the paper).
+const SHELF_CAP = 5;
+
+function ReceiptShelf({
+  rows,
+  decimals,
+  wallet,
+}: {
+  rows: readonly OwnPurchaseRowReadback[];
+  decimals: { usdc: number; syn: number };
+  wallet: string | undefined;
+}) {
+  const shelf = useMemo(() => {
+    const out: { row: OwnPurchaseRowReadback; model: MembershipReceiptModel }[] = [];
+    for (const row of rows) {
+      if (out.length >= SHELF_CAP) break;
+      const model = ticketModelFor(row, decimals);
+      if (model !== null) out.push({ row, model });
+    }
+    return out;
+  }, [rows, decimals]);
+
+  const railRef = useRef<HTMLUListElement>(null);
+  const [overflowing, setOverflowing] = useState(false);
+  const [index, setIndex] = useState(1);
+
+  const measure = useCallback(() => {
+    const el = railRef.current;
+    if (!el) return;
+    setOverflowing(el.scrollWidth > el.clientWidth + 4);
+    const step = el.children[0]?.getBoundingClientRect().width ?? 1;
+    const i = Math.round(el.scrollLeft / (step + 16)) + 1;
+    setIndex(Math.min(Math.max(i, 1), shelf.length));
+  }, [shelf.length]);
+
+  useEffect(() => {
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [measure]);
+
+  const scrollByOne = (dir: -1 | 1) => {
+    const el = railRef.current;
+    if (!el) return;
+    const step = (el.children[0]?.getBoundingClientRect().width ?? 320) + 16;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollBy({ left: dir * step, behavior: reduced ? "auto" : "smooth" });
+  };
+
+  if (shelf.length === 0) return null;
+
+  // One document: centered, ZERO chrome — no rail, no counter, no arrows.
+  if (shelf.length === 1) {
+    return (
+      <section aria-label="Your latest receipt" className="mb-8 flex justify-center">
+        <ReceiptTicket model={shelf[0].model} wallet={wallet} />
+      </section>
+    );
+  }
+
+  return (
+    <section
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Your latest receipts"
+      className="mb-8"
+    >
+      <ul
+        ref={railRef}
+        onScroll={measure}
+        className="flex gap-4 overflow-x-auto snap-x snap-mandatory list-none m-0 pl-6 pr-6 sm:pl-1 sm:pr-1 py-1 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] [overscroll-behavior-x:contain] sm:justify-center"
+      >
+        {shelf.map(({ row, model }, i) => (
+          <li
+            key={row.transaction}
+            role="group"
+            aria-label={`Receipt ${i + 1} of ${shelf.length} — ${dateLabel(row.isoDayUtc)}`}
+            className="flex-none w-[min(340px,calc(100vw-72px))] sm:w-auto snap-center snap-always sm:[scroll-snap-stop:normal] [content-visibility:auto] [contain-intrinsic-size:auto_640px]"
+          >
+            <ReceiptTicket model={model} wallet={wallet} />
+          </li>
+        ))}
+      </ul>
+      {overflowing ? (
+        <div className="flex items-center justify-center gap-4 mt-1">
+          <button
+            type="button"
+            onClick={() => scrollByOne(-1)}
+            aria-label="Previous receipt"
+            className="h-9 w-9 rounded-lg border border-border bg-card text-foreground hover:bg-muted transition-colors flex items-center justify-center"
+            data-testid="button-shelf-prev"
+          >
+            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+          </button>
+          <span className="font-mono text-xs text-muted-foreground tabular-nums" aria-live="polite">
+            {index} of {shelf.length}
+          </span>
+          <button
+            type="button"
+            onClick={() => scrollByOne(1)}
+            aria-label="Next receipt"
+            className="h-9 w-9 rounded-lg border border-border bg-card text-foreground hover:bg-muted transition-colors flex items-center justify-center"
+            data-testid="button-shelf-next"
+          >
+            <ChevronRight className="h-4 w-4" aria-hidden="true" />
+          </button>
+        </div>
+      ) : null}
+      <div className="text-center mt-2">
+        <a
+          href="#receipts-archive"
+          className="text-[13px] text-proof/85 hover:text-proof underline underline-offset-4"
+        >
+          All receipts ({rows.length}) ↓
+        </a>
+      </div>
+    </section>
+  );
+}
+
 function SkeletonRow() {
   return (
     <div className="rounded-[10px] border border-border bg-card px-4 py-4 flex items-center gap-3">
@@ -197,35 +323,53 @@ function BinderBody() {
 
   return (
     <div data-testid="panel-receipts-binder">
-      {/* The record header — the work opens the page. */}
-      <Card className="bg-card/40 border-border/50 p-5 mb-6">
-        <div className="flex flex-wrap items-center gap-2 mb-2">
-          <span className="text-sm font-medium text-foreground">
-            Your receipts — the record
-          </span>
-          {rows !== null ? (
+      {rows !== null && rows.length > 0 ? (
+        // R-BIND-2 · the COMPACT record bar (one line — the page opens ON the
+        // tickets, Work-First) + THE SHELF.
+        <>
+          <div className="flex flex-wrap items-center gap-2.5 mb-4">
+            <span className="text-[15px] font-medium text-foreground">Your receipts</span>
             <StatusPill tone="live" size="xs">
               Live · your own row
             </StatusPill>
+            <span className="ml-auto text-[12.5px] text-muted-foreground tabular-nums">
+              {rows.length} confirmed {rows.length === 1 ? "purchase" : "purchases"}
+            </span>
+          </div>
+          {decimals !== null ? (
+            <ReceiptShelf rows={rows} decimals={decimals} wallet={wallet} />
           ) : null}
-        </div>
-        {rows === null ? (
-          <p
-            className="text-sm text-muted-foreground leading-relaxed"
-            title={readback?.failureReason ?? undefined}
-          >
-            {readback === null
-              ? "The record read is resolving — nothing is assumed, nothing is invented."
-              : "The record is unavailable right now — your record on-chain is unchanged. Try again in a moment."}
-          </p>
-        ) : (
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {rows.length === 0
-              ? "No purchases on this wallet yet — your first receipt prints at checkout, and lives here forever after."
-              : `${rows.length} confirmed ${rows.length === 1 ? "purchase" : "purchases"} — each one reopens below as its full ticket, anchored on-chain.`}
-          </p>
-        )}
-      </Card>
+        </>
+      ) : (
+        // The honest states keep their card (resolving · failed · real zero).
+        <Card className="bg-card/40 border-border/50 p-5 mb-6">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <span className="text-sm font-medium text-foreground">
+              Your receipts — the record
+            </span>
+            {rows !== null ? (
+              <StatusPill tone="live" size="xs">
+                Live · your own row
+              </StatusPill>
+            ) : null}
+          </div>
+          {rows === null ? (
+            <p
+              className="text-sm text-muted-foreground leading-relaxed"
+              title={readback?.failureReason ?? undefined}
+            >
+              {readback === null
+                ? "The record read is resolving — nothing is assumed, nothing is invented."
+                : "The record is unavailable right now — your record on-chain is unchanged. Try again in a moment."}
+            </p>
+          ) : (
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              No purchases on this wallet yet — your first receipt prints at
+              checkout, and lives here forever after.
+            </p>
+          )}
+        </Card>
+      )}
 
       {/* The receipts — month-grouped, newest first, expanding in place. */}
       {readback === null ? (
@@ -233,6 +377,10 @@ function BinderBody() {
           <SkeletonRow />
           <SkeletonRow />
         </div>
+      ) : null}
+
+      {rows !== null && rows.length > 0 ? (
+        <div id="receipts-archive" className="scroll-mt-24" aria-hidden="true" />
       ) : null}
 
       {groups.map((g) => (

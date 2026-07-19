@@ -321,6 +321,28 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   « View-receipt ABSENTS » des entrées ② MENU et ③ HOME ci-dessus sont
   SUPERSÉDÉES par cette entrée.
 
+- [x] **R-BIND-2 — LE RAIL DE TICKETS + LE DOUBLE PARTAGE (2026-07-19, idée
+  fondateur « 4-5 tickets ouverts côte à côte, pense pour le futur » ;
+  maquette approuvée « J'APPROUVE — GO AND GO-LIVE »)** : l'étagère PLAFONNÉE
+  à 5 — les reçus les plus récents OUVERTS, du plus neuf au plus ancien
+  (jamais un 6e monté ; l'archive absorbe les centaines) ; desktop rangée
+  statique → rail seulement au débordement (flèches paires toujours
+  visibles) ; mobile UN ticket par écran, snap, ~20px de VRAI papier du
+  suivant qui dépasse, compteur « n of 5 » + boutons SOUS le rail ; N=1 =
+  document centré ZÉRO chrome ; passerelle « All receipts (N) ↓ » vers
+  l'archive ; content-visibility sur les tickets hors-écran ; sémantique
+  carrousel complète (region + groupes nommés + reduced-motion). LE DOUBLE
+  PARTAGE sur chaque ticket : Copy link EN PREMIER (état Copied) → les 6
+  réseaux (X · WhatsApp · Telegram · LinkedIn · Facebook · Email — les
+  intentions de `shareTargets` réutilisées, réordonnées au rendu) →
+  **« Share with other apps »** (la feuille native gardée, renommée du
+  libellé sanctionné par Google ; détectée — cachée où elle n'existe pas,
+  jamais un bouton mort ; le SEUL canal qui porte l'image) + le correctif
+  canShare (texte-seul tenté avant le repli). Le plancher 12px a attrapé un
+  sous-titre 11px — corrigé. `guard-receipt-ticket` 94/94 · **+0 couleur
+  brute** ; rig : étagère cap-5 prouvée à 6 lignes · N=1 zéro-chrome ·
+  peek 20px mesuré · ordre des réseaux exact · zéro erreur console.
+
 ### Phase 6 — Audits (le sceau grade-AAA)
 - [ ] Accessibilité (WCAG AA / APCA, focus, clavier, cibles ≥44px)
 - [ ] Responsive (fluide, container queries, 320 → 2560, pliables)

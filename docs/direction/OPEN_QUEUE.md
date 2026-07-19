@@ -9,9 +9,16 @@
 > Purchased+Routed fold LANDED; V2-with-commission splits stay honestly absent until their own
 > stitch). Placements A1 ②③ mounted (Z4 "receipt" deep-links · the KPI tile is the door ·
 > "Open ticket" on the seat panel). A1's [Mine|Protocol] lens + per-row histories REMAIN OPEN.
-> 🚀 ITS OWN DEPLOY CYCLE (server + client, NO migration). NEXT in the promised order:
-> /receipt/{txHash} public permalink → ADMIN "Open receipts" on the member ledger → resume
-> the referral register (5.1 approved) + the commission share card. Full state: SESSION_STATE.**
+> 🚀 ITS OWN DEPLOY CYCLE (server + client, NO migration) — **SEALED IN PROD `b79a5ed`
+> (Replit green 2026-07-19: /receipts live, byte-identity, engine ok).** → **R-BIND-2
+> (founder orders on the live binder + mockup approved "J'APPROUVE — GO AND GO-LIVE"):
+> the cap-5 shelf of newest OPEN tickets + the DUAL SHARE (Copy link first · 6 networks ·
+> "Share with other apps" feature-detected) BUILT + COMMITTED [this commit] — 🚀 DEPLOY
+> (client-only, NO migration). The ROTATION answer engraved (in the LINK, not the preview);
+> durable: RBIND2_HERO_SHARE_DIRECTION.md.** NEXT in the promised order:
+> /receipt/{txHash} public permalink (Copy link retargets to it; per-receipt OG cards) →
+> ADMIN "Open receipts" on the member ledger → resume the referral register (5.1 approved)
+> + the commission share card. Full state: SESSION_STATE.**
 *DIRECTION doc, TIER-0 (read every boot). The living list of decisions IN FLIGHT, RECONSTRUCTED FROM
 EVIDENCE (session history + repo on disk), not from memory. Companion to
 `ORIGIN_RECLAMATION_LEDGER.md`. Founder is the authority.*

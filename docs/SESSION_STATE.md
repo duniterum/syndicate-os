@@ -195,8 +195,23 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   with its fact baked in, per-URL preview honest and permanent. THE MOCKUP
 >   built + self-verified (both themes · mobile 380px no h-scroll · the rail
 >   steps · Copied state): `docs/design/receipts-hero-share-mockup.html`
->   (artifact 0256f770). 🔴 **AWAITING THE FOUNDER'S VISUAL APPROVAL —
->   approval unlocks the build slice.**
+>   (artifact 0256f770). **FOUNDER APPROVED ("J'APPROUVE — GO AND GO-LIVE",
+>   2026-07-19) → ✅ R-BIND-2 BUILT + COMMITTED [this commit] — 🚀 DEPLOY
+>   (client-only, NO migration).** THE SHELF: cap-5 newest OPEN tickets in
+>   `ReceiptsBinderPanel` (never a 6th mounted — proven at 6 rows), compact
+>   one-line record bar (Work-First), desktop static-row→overflow-rail with
+>   paired arrows, mobile snap 1-per-screen + 20px REAL paper peek (measured)
+>   + "n of 5" counter/buttons BELOW, N=1 centered zero-chrome (proven),
+>   "All receipts (N) ↓" bridge, content-visibility + full carousel
+>   semantics + reduced-motion. THE DUAL SHARE in `ReceiptTicket`: Copy link
+>   first (Copied state) → the 6 network tiles (shareTargets reused,
+>   reordered X·WhatsApp·Telegram·LinkedIn·Facebook·Email) → "Share with
+>   other apps" feature-detected (hidden where absent — proven in the pane) +
+>   the canShare-gap fix (text-only sheet attempted before fallback). The
+>   12px floor caught an 11px subtitle — fixed; receipt guard 94/94 · menu
+>   35/35 · home 27/27 · build 348 twins · zero console errors. The rig's
+>   frozen smooth-scroll (hidden-pane rAF artifact) proven a non-bug via
+>   instant-scroll counter test ("3 of 5").
 >
 > **▶ 🗂️ THE PAGE-BY-PAGE GRADE-AAA REBUILD (founder pivot 2026-07-19, emphatic:
 > "each LEFT-MENU link presents CLEAN, crème-de-crème; deep-search online + our
