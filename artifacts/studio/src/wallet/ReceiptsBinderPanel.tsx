@@ -213,14 +213,21 @@ function ReceiptShelf({
       <ul
         ref={railRef}
         onScroll={measure}
-        className="flex gap-4 overflow-x-auto snap-x snap-mandatory list-none m-0 pl-6 pr-6 sm:pl-1 sm:pr-1 py-1 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] [overscroll-behavior-x:contain] sm:justify-center"
+        // R-BIND-3 wide-screen fix (founder screenshot, prod): justify-center
+        // on an OVERFLOWING scroll container renders the first ticket BEFORE
+        // the scroll origin — permanently unreachable (scrollLeft can't go
+        // below 0). Centering now comes from the END items' auto margins:
+        // they absorb free space when the shelf FITS (true centering) and
+        // collapse to zero when it overflows (start-aligned, everything
+        // reachable). CSS-only — no measurement race, every browser.
+        className="flex gap-4 overflow-x-auto snap-x snap-mandatory list-none m-0 pl-6 pr-6 sm:pl-1 sm:pr-1 py-1 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] [overscroll-behavior-x:contain]"
       >
         {shelf.map(({ row, model }, i) => (
           <li
             key={row.transaction}
             role="group"
             aria-label={`Receipt ${i + 1} of ${shelf.length} — ${dateLabel(row.isoDayUtc)}`}
-            className="flex-none w-[min(340px,calc(100vw-72px))] sm:w-auto snap-center snap-always sm:[scroll-snap-stop:normal] [content-visibility:auto] [contain-intrinsic-size:auto_640px]"
+            className="flex-none w-[min(340px,calc(100vw-72px))] sm:w-auto snap-center snap-always sm:[scroll-snap-stop:normal] [content-visibility:auto] [contain-intrinsic-size:auto_640px] sm:first:ml-auto sm:last:mr-auto"
           >
             <ReceiptTicket model={model} wallet={wallet} />
           </li>

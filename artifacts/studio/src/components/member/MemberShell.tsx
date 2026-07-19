@@ -100,7 +100,20 @@ export function makeSameDoorClick(href: string, active: boolean) {
   };
 }
 
-function DoorRow({ door, active }: { door: MemberDoor; active: boolean }) {
+// R-BIND-3 fix (investigation catch): the click guard takes the EXACT match
+// only — prefix-matched `active` (styling/aria: the Referral door stays lit
+// on /referral/introductions) fed the guard too, so clicking the door from a
+// sub-route preventDefaulted and NEVER navigated (a dead click). The mobile
+// chip always did it right (exact for the guard, prefix for styling).
+function DoorRow({
+  door,
+  active,
+  exact,
+}: {
+  door: MemberDoor;
+  active: boolean;
+  exact: boolean;
+}) {
   const Icon = door.icon ? DOOR_ICONS[door.icon] : null;
   const inner = (
     <>
@@ -124,7 +137,7 @@ function DoorRow({ door, active }: { door: MemberDoor; active: boolean }) {
     <Link
       href={door.href}
       aria-current={active ? "page" : undefined}
-      onClick={makeSameDoorClick(door.href, active)}
+      onClick={makeSameDoorClick(door.href, exact)}
       className={`flex items-center gap-2.5 rounded-lg border-l-2 px-2.5 py-2 text-foreground transition-colors ${FOCUS_RING} ${
         active ? "border-gold bg-gold/10" : "border-transparent hover:bg-border/45"
       }`}
@@ -212,6 +225,7 @@ export function MemberShell({ children }: { children: ReactNode }) {
                     key={door.label}
                     door={door}
                     active={door.href ? doorIsActive(door.href, activePath) : false}
+                    exact={door.href ? door.href === activePath : false}
                   />
                 ))}
               </div>

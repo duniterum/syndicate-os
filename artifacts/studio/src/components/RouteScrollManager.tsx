@@ -57,25 +57,74 @@ const currentPathWithHash = () => window.location.pathname + window.location.has
  * back/forward scroll restoration alone. Hash navigations scroll to their
  * target, retrying while a late-mounting section renders.
  */
+/** The FULL current url (pathname + search + hash) — the same-door detector
+ *  compares this, so a query-only push keeps the settled rule above (a
+ *  query-only change never resets scroll). */
+const currentFullUrl = () =>
+  window.location.pathname + window.location.search + window.location.hash;
+
 export function RouteScrollManager() {
   const location = useLocationProperty(currentPathWithHash);
   const isPopRef = useRef(false);
   const isFirstRef = useRef(true);
+  // R-BIND-3 scroll fix (prod, founder: "links land at the bottom"): the two
+  // refs the bypass killers compare against — kept current by the location
+  // effect below.
+  const lastSeenRef = useRef(currentPathWithHash());
+  const lastFullRef = useRef(currentFullUrl());
 
-  // Mark back/forward navigations so we can defer to native scroll restoration.
+  // MECHANISM-A KILLER — the unguarded same-door click, site-wide: wouter's
+  // <Link> pushes even for the URL you are already on; the snapshot string
+  // doesn't change, so the location effect never runs and the click reads as
+  // "nothing happened" (from a scrolled page: "it landed me at the bottom").
+  // Catch it at wouter's own "pushState" event: an IDENTICAL full-url push
+  // re-scrolls explicitly (hash → its anchor, else top). pushState ONLY — a
+  // same-URL replaceState is a state write and must never scroll. The shell's
+  // makeSameDoorClick doors preventDefault BEFORE any push, so this listener
+  // never fires for them — their behavior is untouched.
+  useEffect(() => {
+    const onPush = () => {
+      const full = currentFullUrl();
+      if (full === lastFullRef.current) {
+        if (window.location.hash) scrollToHash(window.location.hash);
+        else resetToTop();
+      }
+      lastFullRef.current = full;
+    };
+    window.addEventListener("pushState", onPush);
+    return () => window.removeEventListener("pushState", onPush);
+  }, []);
+
+  // MECHANISM-B KILLER — the stale pop flag: arm it ONLY when the pop truly
+  // changed the reactive snapshot. A pop across a duplicate same-URL entry
+  // (or a query-only step) leaves the flag down — native restoration owns
+  // those; the NEXT real link click must never inherit a pop it wasn't.
   useEffect(() => {
     const onPop = () => {
-      isPopRef.current = true;
+      if (currentPathWithHash() !== lastSeenRef.current) isPopRef.current = true;
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
   useEffect(() => {
+    lastSeenRef.current = location;
+    lastFullRef.current = currentFullUrl();
     const wasPop = isPopRef.current;
     isPopRef.current = false;
     const wasFirst = isFirstRef.current;
     isFirstRef.current = false;
+
+    if (wasPop) {
+      // Back/forward — defer FULLY to native scroll restoration (hash urls
+      // included: a pop onto an anchor restores the user's prior position,
+      // never a re-yank to the anchor — POP restores, PUSH scrolls). The
+      // reused Shell scroll container cannot be natively restored and would
+      // otherwise retain a stale position, so reset only the inner
+      // scroll container(s).
+      resetScrollRoots();
+      return undefined;
+    }
 
     const hash = window.location.hash;
 
@@ -110,7 +159,9 @@ export function RouteScrollManager() {
         if (cancelled) return;
         if (scrollToHash(hash)) {
           found = true;
-        } else if (!found && tries === 0 && !wasPop) {
+        } else if (!found && tries === 0) {
+          // Pop never reaches here (the early return above) — a push toward
+          // a not-yet-mounted anchor lands at the top while it mounts.
           resetToTop();
         }
         tries += 1;
@@ -124,15 +175,6 @@ export function RouteScrollManager() {
       // timing — a timer keeps the scroll working everywhere.
       timer = window.setTimeout(attempt, 0);
       return cancel;
-    }
-
-    if (wasPop) {
-      // Let the browser restore native window scroll (works for the public,
-      // window-scrolled page). The reused Shell scroll container cannot be
-      // natively restored and would otherwise retain a stale position, so
-      // reset only the inner scroll container(s) to the top.
-      resetScrollRoots();
-      return undefined;
     }
 
     // First load with no hash: don't force a jump (preserve any deep link).

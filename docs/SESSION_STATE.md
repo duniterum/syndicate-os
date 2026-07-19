@@ -231,6 +231,45 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   no-scroll-reset-on-navigation class; diagnose with evidence, fix in
 >   RouteScrollManager respecting the menu-guard pins. Investigation
 >   `wf_d1923bc4-f0a` in flight; fixes = a prod-bug slice (never batched).
+>   **✅ R-BIND-3 FIXES BUILT + COMMITTED [this commit] — 🚀 DEPLOY (client-only,
+>   NO migration, never batched: prod defects).** Root causes PROVEN then killed:
+>   ① THE RAIL CLIP — `justify-center` on an overflowing scroll container
+>   renders ticket 1 BEFORE the scroll origin (unreachable; his 2560@125% =
+>   2048 CSS px → 60px overflow → ~30px clipped each side, matching the
+>   screenshot exactly). Fix CSS-only: centering moved to the END items' auto
+>   margins (`sm:first:ml-auto sm:last:mr-auto`) — absorbs space when the
+>   shelf FITS (true centering; his 27"/37" @100% show all 5 centered),
+>   collapses to zero on overflow (start-aligned, arrows work end-to-end);
+>   bonus: the "n of 5" counter math self-heals (it assumed a start origin).
+>   ② THE SCROLL CLASS — TWO cooperating mechanisms: (A) wouter <Link> pushes
+>   even for the CURRENT url; the pathname+hash snapshot doesn't change, the
+>   effect never runs, nothing scrolls (from a scrolled page it reads "landed
+>   at the bottom") — killed at wouter's own "pushState" event: an identical
+>   FULL-url push re-scrolls explicitly (hash → anchor, else top); query-only
+>   pushes stay exempt (the settled rule); replaceState never scrolls.
+>   (B) the pop flag armed on EVERY popstate but cleared only by the effect —
+>   a pop across a duplicate same-URL entry left it ARMED, so the NEXT real
+>   link click took the back/forward branch and skipped the top-reset (the
+>   literal cross-page bottom landing) — killed: the flag arms ONLY when the
+>   pop changed the snapshot; and POP now defers FULLY to native restoration
+>   (hash urls included — no more anchor re-yank on Back). ③ FOUND IN
+>   PASSING, fixed: the desktop member door fed the PREFIX-matched active
+>   into the same-door click guard — clicking "Referral" from
+>   /referral/introductions preventDefaulted and never navigated; the guard
+>   now takes the EXACT match (the mobile chip's proven pattern; styling/
+>   aria keep the prefix). RIG-PROVEN (scrollY scenarios, live): bottom →
+>   same-url push → y=0 ✓ · Back-over-duplicate → cross-page push → y=0 ✓.
+>   Gate: tsc 0 · 18 studio guards green (menu pins on RouteScrollManager
+>   held: real useLocationProperty · retry loop · scrollToHash export) ·
+>   build 348 twins + admin-dist 96. THE COPY-LINK ANSWER + the
+>   /receipt/{txHash} page: scoped whole (`wf_d1923bc4-f0a` lens 3 — the
+>   registry param class · serve.mjs shape-validated prefix rule · the
+>   tx-keyed projection + public GET /api/receipt/{txHash} on the
+>   capitalStanding discipline · pin-10's own dated amendment instruction ·
+>   prerender ":"-crash special-case · the RETARGET of Copy link + the six
+>   network intents to the receipt's own page in the SAME deploy). Its gate
+>   carries the founder decisions: indexing posture (recommend noindex,follow)
+>   · OG static-now/painted-later · PDF engine defer · 5.1-vs-page ordering.
 >
 > **▶ 🗂️ THE PAGE-BY-PAGE GRADE-AAA REBUILD (founder pivot 2026-07-19, emphatic:
 > "each LEFT-MENU link presents CLEAN, crème-de-crème; deep-search online + our
