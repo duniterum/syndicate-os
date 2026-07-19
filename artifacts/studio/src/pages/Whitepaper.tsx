@@ -224,8 +224,7 @@ export default function Whitepaper() {
                 Each carries a public status (active or future), read from the protocol's registry, so a
                 new module flips from future to active <strong>by itself</strong> here — nothing is
                 rewritten. Already active this way: the referral program and the live activity
-                record. Known future modules: later eras · marketplace · gamification &amp; seasons ·
-                admin console.
+                record. Known future modules: later eras · marketplace · gamification &amp; seasons.
               </p>
             </ProseSection>
 

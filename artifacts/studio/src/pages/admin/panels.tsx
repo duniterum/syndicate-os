@@ -189,7 +189,7 @@ const packagesDef: PanelDef = {
   title: "Packages & Advertising",
   icon: Megaphone,
   tooltip:
-    "Future module — nothing exists in the protocol or this app. The panel reserves the operator surface only.",
+    "Future module — no advertising packages or placements exist (the membership checkout on /join is a separate, live surface). The panel reserves the operator surface only.",
 };
 const addressLabelsDef: PanelDef = {
   id: "address-labels",
@@ -540,11 +540,11 @@ export function AdminPackagesPanel() {
   return (
     <PanelCard def={packagesDef} chip={<TruthLabel variant="FUTURE_MODULE" />}>
       <FutureNote>
-        No packages, placements, pricing, or checkout exist anywhere in the
-        protocol or this app. This panel reserves the operator surface for
-        a future concept that would require explicit founder approval
-        before any design or wiring. Any future copy must stay
-        recognition-safe.
+        No advertising packages, placements, or package pricing exist; the
+        membership checkout on /join is a separate, live surface. This panel
+        only reserves the operator surface for a future concept that would
+        require explicit founder approval before any design or wiring. Any
+        future copy must stay recognition-safe.
       </FutureNote>
     </PanelCard>
   );

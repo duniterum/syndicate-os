@@ -443,7 +443,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     ownerSurface: "recognition",
     primaryIntent: "recognition",
     proofRoute: "/status",
-    notes: "Concept page. NOINDEX until the model is live.",
+    notes: "Concept page. NOINDEX until the recognition PAGE is rebuilt (two axes — capital rungs + connector ladder — are already live elsewhere).",
   },
   {
     path: "/contracts",
@@ -452,7 +452,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Contracts — Contract & Economy Memory",
     description:
-      "Read-only memory of The Syndicate's contracts and economy: roles, lifecycle, and treasury routing structure. Canon reference only — no addresses, balances, or live chain reads.",
+      "Read-only memory of The Syndicate's contracts and economy: roles, lifecycle, and the live read-only reality panel — addresses stay server-side; no balances of yours, ever.",
     canonicalPath: "/contracts",
     changefreq: "monthly",
     priority: 0.6,
@@ -460,7 +460,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     ownerSurface: "transparency",
     primaryIntent: "transparency",
     proofRoute: "/status",
-    notes: "Posture-only contract memory. No addresses/balances; nothing read live.",
+    notes: "Contract memory + the live ProtocolRealityPanel (chain/sale/archive groups). Addresses stay server-side.",
   },
   {
     path: "/map",
@@ -735,8 +735,8 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "operator",
     notes: NEUTRAL_WALL_NOTE,
   },
-  // /admin — the sectioned console dashboard (Phase 2 slice 1): read-only
-  // panels over the module registry and live postures.
+  // /admin — the sectioned console dashboard: the founder's live console
+  // (founder-gated audited writes + posture reference).
   {
     path: "/admin",
     routeType: "INTERNAL",
@@ -749,7 +749,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "operator",
     notes: NEUTRAL_WALL_NOTE,
   },
-  // /admin/members — members & continuity postures (M-INT-1's future home).
+  // /admin/members — the member ledger (M-INT-1 live: per-seat dossiers, rankings, per-member contact).
   {
     path: "/admin/members",
     routeType: "INTERNAL",
@@ -814,7 +814,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "operator",
     notes: NEUTRAL_WALL_NOTE,
   },
-  // /admin/broadcast — broadcast preview surface (send disabled).
+  // /admin/broadcast — the live broadcast composer (send + icon/deep-link pickers + audited delete; NOTIF-1/2/2b sealed 2026-07-18).
   {
     path: "/admin/broadcast",
     routeType: "INTERNAL",

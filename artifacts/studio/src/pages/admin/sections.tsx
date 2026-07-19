@@ -19,8 +19,10 @@
 //                (note: no Recognition admin panel existed on the flat page —
 //                none was invented; recognition remains on /recognition)
 //   Modules    → AdminModulesConsole + Modules registry panel
-//   Broadcast  → Broadcast preview card
-//   Audit      → Audit log preview card + Activity & Chronicle panel
+//   Broadcast  → the LIVE broadcast composer + sent history (founder-gated,
+//                audited — NOTIF-1/2/2b)
+//   Audit      → Audit log preview card (the real trail records server-side;
+//                the live read view is its own Q42 slice) + Activity panel
 //   Support    → Support queue preview card
 //   Settings   → Feature-flags preview card + real build-flags panel
 //                + System Health panel

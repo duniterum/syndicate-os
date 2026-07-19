@@ -83,7 +83,7 @@ export const routeMemory: RouteMemoryEntry[] = [
     description: "The member-only cockpit for a signed-in seat holder.",
     classification: "AUTH_MEMBER_FUTURE",
     disposition:
-      "Shown only as a labelled member preview. The real cockpit requires authentication that is not built.",
+      "Lives on as Member Home — the signed-in cockpit at /member behind the sign-in wall.",
     mappedRoute: "/member",
   },
   {

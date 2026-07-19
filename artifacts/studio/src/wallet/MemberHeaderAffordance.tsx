@@ -289,7 +289,7 @@ export default function MemberHeaderAffordance({
           <MemberNotificationsBell />
           <span
             className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/50 text-muted-foreground/60"
-            title="Seasons & recognition — coming soon (recognition only, never a cash figure)."
+            title="Seasons & recognition — coming with the season engine. XP earns standing; funded season rewards are real USDC, paid openly."
             aria-disabled="true"
             data-testid="header-trophy-reserved"
           >

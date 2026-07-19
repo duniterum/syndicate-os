@@ -70,16 +70,21 @@ export const osMapNodeClass: Record<string, OsMapEvidenceClass> = {
   "member-freeze": "SERVER_ONLY_STATUS",
   "member-continuity": "SERVER_ONLY_STATUS",
   "activity-heartbeat": "SERVER_ONLY_STATUS",
-  "proof-of-fire": "BLOCKED_FUTURE",
-  "membership-index": "BLOCKED_FUTURE",
-  "source-attribution": "BLOCKED_FUTURE",
-  archive: "BLOCKED_FUTURE",
+  // Fossil sweep 2026-07-19: re-classed BLOCKED_FUTURE → STATIC_DOCTRINE —
+  // live sources exist (backbone feed, introduction read-model) and these
+  // cards say LIVE; a "BLOCKED · FUTURE SOURCE" chip contradicted them. The
+  // cards themselves still render curated copy (the public-dashboard
+  // precedent), not a live bind — binding is its own future slice.
+  "proof-of-fire": "STATIC_DOCTRINE",
+  "membership-index": "STATIC_DOCTRINE",
+  "source-attribution": "STATIC_DOCTRINE",
+  archive: "STATIC_DOCTRINE",
   "public-dashboard": "STATIC_DOCTRINE",
   "member-cockpit": "STATIC_DOCTRINE",
   recognition: "STATIC_DOCTRINE",
   "founder-controls": "STATIC_DOCTRINE",
-  // Future & Governance Concepts (config/protocolOsMap.ts) — labelled concepts
-  // only; each card renders curated static copy, nothing live behind it.
+  // Future & Governance Concepts (config/protocolOsMap.ts) — each card
+  // renders curated static copy (its node states its own honest reality).
   "notice-os": "STATIC_DOCTRINE",
   "knowledge-os": "STATIC_DOCTRINE",
   acknowledgement: "STATIC_DOCTRINE",

@@ -104,10 +104,11 @@ export function AccessStateSimulator() {
       </div>
 
       <p className="mt-4 text-[11px] text-muted-foreground leading-relaxed">
-        “Matrix outcome” is the future §3 access matrix from the checkpointed
-        design doc. “Rendered today” is reality: every surface is
-        PREVIEW_LABELLED, so nothing is gated and nothing here authorizes
-        anything.
+        “Matrix outcome” is the §3 access matrix from the checkpointed design
+        doc. “Rendered today” is the CLIENT side only: every surface stays
+        PREVIEW_LABELLED — visibility, never permission. The real walls (the
+        member sign-in wall, the operator wall) are enforced server-side.
+        Nothing HERE authorizes anything.
       </p>
     </Card>
   );

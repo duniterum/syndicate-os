@@ -87,6 +87,26 @@ material to reach a button.
 ③ If information serves nobody on that page, it is not shown at all.
 This is senior judgment owed on the FIRST build of every surface.
 
+**THE DONE-IS-DONE LAW (founder, permanent, 2026-07-19 — "on avance de quelques pas
+et tu nous fais reculer d'un pas ; 50 jours comme ça, insoutenable").**
+A capability that SHIPPED must never be re-presented as future, re-planned, or
+rebuilt — on any surface, in any doc, by any session. The named fossil: /member
+Settings said "Notifications — Coming later" a day after notifications sealed live.
+Mechanism (structural, never memorial):
+① `artifacts/studio/src/config/featureStatus.ts` is the ONE live-vs-future truth,
+in CODE. A slice that makes a capability live flips its key IN THE SAME COMMIT.
+② `guard-feature-truth` (BLOCKING, in the guards chain) pins every user-visible
+"coming" claim to a registry key: a claim on a live key = RED BUILD; an
+unregistered new claim = RED; hardcoded "Coming later" outside the badge atom =
+RED. The gate — not memory, not the founder — catches the fossil class forever.
+③ Sessions: before writing ANY "coming/future/arrives" copy or re-opening ANY
+capability, read featureStatus.ts. A "live" key is ANSWERED FOREVER (the
+settled-law rule applies): build on it, never re-propose it.
+④ End of every session: the SESSION_STATE boot block's WHERE-WE-ARE names, in
+this order, (a) what went LIVE (with the registry flips), (b) what is IN FLIGHT
+with its exact next step, (c) the founder's pending decisions — so the next
+session resumes in one read, never re-derives.
+
 **THE SETTLED-LAW SILENCE RULE (founder, permanent, 2026-07-19 — "j'en ai marre de
 t'expliquer à chaque session ; règle-moi ça une bonne fois pour toutes").**
 Two classes of SETTLED law kept resurfacing in founder-visible text. That stops here:

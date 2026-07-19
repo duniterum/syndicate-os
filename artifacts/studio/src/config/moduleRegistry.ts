@@ -147,7 +147,7 @@ const specs: readonly RegistrySpec[] = [
     riskClass: "SESSION_SELF_READBACK",
     forbiddenClaims: [],
     notes:
-      "Public SIWE session lives inside /member (no dedicated route). Session ≠ membership. Production exposure stays dark unless the founder sets the server-side auth exposure flag.",
+      "Public SIWE session lives inside /member (no dedicated route). Session ≠ membership. Auth exposure is ON in production (founder, 2026-07-11); the server-side flag remains the kill-switch.",
   },
   {
     registryId: "member-cockpit",
@@ -213,7 +213,7 @@ const specs: readonly RegistrySpec[] = [
     riskClass: "SERVER_ONLY_PII",
     forbiddenClaims: ["WEALTH_RANKING"],
     notes:
-      "Verified historical-member freeze is server-only (wallet PII). No UI, API, or projection exposes it; any public member surface is a separate founder-gated slice.",
+      "Verified historical-member freeze is server-only (wallet PII). No PUBLIC projection is served; the two lawful views are each wallet's own signed readback and the founder-only, audit-logged ledger.",
   },
   {
     registryId: "address-labels",
@@ -249,7 +249,7 @@ const specs: readonly RegistrySpec[] = [
     riskClass: "CONTENT_ONLY",
     forbiddenClaims: ["FINANCIAL_UPSIDE", "INCOME_PROMISE", "GUARANTEED_OUTCOME", "GAMBLING_FRAMING"],
     notes:
-      "Future concept only. No packages, pricing, checkout, or placements exist. Any future copy must stay recognition-safe and founder-approved.",
+      "Future concept only. No advertising packages, placements, or package pricing exist; the membership checkout on /join is a separate, live surface. Any future copy must stay recognition-safe and founder-approved.",
   },
   {
     registryId: "activity-chronicle",

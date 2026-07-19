@@ -435,13 +435,12 @@ export default function AdminShell() {
                   About this console
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Internal operator console. Every panel is read-only over the
-                  module registry and the posture APIs; write controls are
-                  previews owned by the founder-gated operator write zone. The
-                  console reveals only after the server confirms an ACTIVE
-                  operator role — a non-operator at this URL sees the standard
-                  not-found page, and every privileged action is enforced
-                  server-side.
+                  Internal operator console. Panels mix live founder-gated
+                  writes — audit-logged, enforced server-side — with labelled
+                  previews. The console reveals only after the server confirms
+                  an ACTIVE operator role — a non-operator at this URL sees
+                  the standard not-found page, and every privileged action is
+                  enforced server-side.
                 </p>
               </PopoverContent>
             </Popover>

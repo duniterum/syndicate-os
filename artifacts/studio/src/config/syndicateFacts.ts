@@ -1,14 +1,11 @@
 import {
   Activity,
+  Bell,
   TerminalSquare,
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
-import {
-  homepageStatus,
-  type TruthStatus,
-  type DisplayLifecycle,
-} from "./truthStatus";
+import { homepageStatus, type TruthStatus } from "./truthStatus";
 
 // (S7 truth sweep, 2026-07-16: the dead `protocolSurfaces` config was
 // DELETED — it had no consumer and still photographed the read-only era
@@ -25,7 +22,8 @@ export interface AwaitingWiringItem {
 
 // M1-b truth sweep + S6 leakage sweep: this card lists ONLY what is genuinely
 // pending AND publicly promised on the site (Identity Alias = the "SOON" slot
-// in member settings; Notifications = the reserved header bell). An INTERNAL
+// in member settings; Notifications left this list 2026-07-19 — the bell and
+// /notifications are LIVE and the fact moved to the live column). An INTERNAL
 // plan never becomes a public promise (founder rule, guard-pinned — the
 // Commission Router row died here 2026-07-15; the direct-payment fact lives
 // in the LIVE column beside this card).
@@ -34,11 +32,6 @@ export const awaitingWiring: AwaitingWiringItem[] = [
     status: "FUTURE_MODULE",
     title: "Identity Alias",
     note: "A human-readable name above the wallet hex — opt-in, default invisible, founder-curated. The chain will speak of persons.",
-  },
-  {
-    status: "FUTURE_MODULE",
-    title: "Notifications",
-    note: "Member notifications ride the event backbone's served feed; the bell is reserved in the header today.",
   },
 ];
 
@@ -133,83 +126,21 @@ export const operationalReality = {
       description:
         "Eligible referrers are paid inside the buyer's own transaction — nothing to claim, verifiable by hash.",
     },
+    {
+      icon: Bell,
+      title: "Member notifications",
+      description:
+        "Every member carries an in-app inbox — the bell in the header, messages to you and announcements to all. The protocol never emails.",
+    },
   ] as OperationalItem[],
 };
 
-// RETIRED FROM THE PUBLIC HOME (founder decision, 2026-07-13): the teaser
-// promoted an operator category on a public view (locked-vs-hidden law). Its
-// intent — "members see us advancing" — belongs to the future public Roadmap
-// page (Phase-2 slice 2.8, registry-driven). Config kept for that reuse; no
-// public surface renders it today.
-export const studioPreview = {
-  title: "Studio OS Console",
-  description:
-    "Access the operational proof console — read-only panels over the module registry and the protocol's live postures.",
-  cta: { label: "Open Studio OS", href: "/studio" },
-  mockStatus: "DESIGN_PREVIEW" as TruthStatus,
-};
-
-/**
- * Illustrative "OS Preview" for the homepage Studio teaser (right half).
- * These are SAMPLE rows, not live data: the panel header carries an
- * "Illustrative" SampleTag and every row carries its own honest lifecycle
- * label. No figure here is read from any source — it conveys the shape of the
- * operator console only. Rendered by PublicHome.tsx (Homepage governance
- * rule 7: homepage copy lives here, not as inline strings).
- */
-export const studioPreviewPanel = {
-  eyebrow: "OS Preview",
-  rows: [
-    {
-      id: "proof",
-      label: "Proof of Fire",
-      lifecycle: "PENDING_ADAPTER",
-      detail: "On-chain proof events, once the event adapter is wired.",
-    },
-    {
-      id: "source",
-      label: "Source attribution",
-      lifecycle: "PENDING_ADAPTER",
-      detail: "Per-member referral histories, once the introduction indexer is wired.",
-    },
-    {
-      id: "activity",
-      label: "Activity chronicle",
-      lifecycle: "FUTURE",
-      detail: "A public activity timeline is a separate founder-gated slice.",
-    },
-    {
-      id: "receipts",
-      label: "Membership receipts",
-      lifecycle: "PENDING_ADAPTER",
-      detail: "Member-facing receipt views await the membership indexer.",
-    },
-    {
-      id: "knowledge",
-      label: "Knowledge OS",
-      lifecycle: "FUTURE",
-      detail: "Guided learn, verify, and inspect surfaces — a future concept.",
-    },
-    {
-      id: "notices",
-      label: "Notice OS",
-      lifecycle: "FUTURE",
-      detail: "Protocol notices — a future module; nothing is broadcast today.",
-    },
-    {
-      id: "admin",
-      label: "Admin gates",
-      lifecycle: "FOUNDER_GATED",
-      detail: "Operator controls stay founder-gated and read-only.",
-    },
-  ] as {
-    id: string;
-    label: string;
-    lifecycle: DisplayLifecycle;
-    detail: string;
-  }[],
-  note: "Preview — a sample of the console's read-only surfaces. No live protocol data is shown here; each row carries its own honest status.",
-};
+// (Fossil sweep, 2026-07-19: the dead `studioPreview` + `studioPreviewPanel`
+// configs — retired from the public home 2026-07-13 and unrendered since —
+// were DELETED. Their sample rows still photographed the read-only era
+// ("once the adapter is wired", "nothing is broadcast today") over organs
+// that are live; dead config carrying stale claims is a lie waiting for an
+// import.)
 
 // ---------------------------------------------------------------------------
 // Homepage recomposition copy (registry-driven sections).

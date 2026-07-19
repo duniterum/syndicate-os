@@ -2,9 +2,12 @@ import { Tag } from "@/components/tag/Tag";
 import { cn } from "@/lib/utils";
 
 // Calm, on-brand placeholder shown where a wallet sign-in entry would appear
-// while the auth zone is dark. In this state no RainbowKit verify flow is
-// mounted, so a visitor never sees the raw "Error preparing message" — just an
-// honest "not open yet, come back" note. Consistent with observe-first.
+// when the auth-availability read fails. Auth is LIVE in production
+// (2026-07-11) — this state is a transient outage, not a future promise
+// (copy re-trued 2026-07-19: the old "coming soon" told a falsehood in the
+// live-auth era). No RainbowKit verify flow is mounted in this state, so a
+// visitor never sees the raw "Error preparing message" — just an honest
+// unavailable note.
 export function WalletAuthComingSoon({ className }: { className?: string }) {
   return (
     <div
@@ -14,9 +17,9 @@ export function WalletAuthComingSoon({ className }: { className?: string }) {
       )}
       data-testid="wallet-auth-coming-soon"
     >
-      <Tag tone="neutral">Coming soon</Tag>
+      <Tag tone="neutral">Unavailable</Tag>
       <span className="text-sm text-muted-foreground">
-        Wallet sign-in isn’t open yet — explore the protocol now and come back when it opens.
+        Sign-in is unavailable right now — try again shortly.
       </span>
     </div>
   );

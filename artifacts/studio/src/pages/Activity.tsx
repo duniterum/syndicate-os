@@ -29,7 +29,8 @@ export default function Activity() {
           referral lifecycle, liquidity, archive, treasury movements,
           milestone crossings and era turns — not a window. What it adds
           next: pagination beyond the newest lines, per-seat feeds,
-          notifications, and the candidate pipeline that feeds the Chronicle.
+          notifications generated from these events, and the candidate
+          pipeline that feeds the Chronicle.
           Until each arrives, every source above states exactly what it
           covers.
         </p>

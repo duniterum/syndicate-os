@@ -93,7 +93,8 @@ const STATUS_BADGE: Record<Posture, string> = {
  * Invariant-vs-State law applied to this registry).
  */
 // H2-⑬ (2026-07-15): the milestone layer joined the served heartbeat.
-const CANON_AS_OF = "2026-07-15T00:00:00.000Z";
+// Fossil sweep (2026-07-19): receipt + operator promoted to today's reality.
+const CANON_AS_OF = "2026-07-19T00:00:00.000Z";
 
 type CanonEntry = {
   key: string;
@@ -150,12 +151,15 @@ const CANON: CanonEntry[] = [
   {
     key: "receipt",
     label: "Receipt",
-    posture: "FUTURE",
+    // Fossil sweep (2026-07-19): promoted FUTURE → READ_ONLY_PROOF — the
+    // checkout ticket (2026-07-16) and the /receipts binder (2026-07-19) are
+    // live; postures only ever promote.
+    posture: "READ_ONLY_PROOF",
     publicClass: "PUBLIC_MEMORY_SAFE",
     sourceRef: "canon:source-attributed-receipts",
-    confidence: "low",
-    note: "Attestation/receipt model reserved; not active in this slice.",
-    surface: "/proof",
+    confidence: "high",
+    note: "Receipts are live: every confirmed purchase prints its protocol ticket at checkout and reopens from the member's own binder at /receipts; commission rows carry their receipt anatomy. The public per-transaction receipt page is the remaining future layer.",
+    surface: "/receipts",
   },
   {
     key: "source",
@@ -292,11 +296,15 @@ const CANON: CanonEntry[] = [
   {
     key: "operator",
     label: "Operator",
-    posture: "FUTURE",
+    // Fossil sweep (2026-07-19): promoted FUTURE → READ_ONLY_PROOF — the
+    // operator wall + audited founder-gated controls are live (2026-07-17).
+    // This payload is PUBLIC: the note stays bland by design and never
+    // enumerates console capabilities.
+    posture: "READ_ONLY_PROOF",
     publicClass: "FOUNDER_OPERATOR_ONLY",
     sourceRef: "canon:founder-review",
-    confidence: "low",
-    note: "Operator/founder controls reserved; authentication deferred.",
+    confidence: "high",
+    note: "Founder-gated operator controls are live behind a neutral wall; every privileged act is recorded in the audit trail.",
     surface: "/founder",
   },
   {

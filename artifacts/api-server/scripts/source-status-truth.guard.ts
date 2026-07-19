@@ -58,6 +58,11 @@ const PROMOTED: Record<string, string> = {
   source: "READ_ONLY_PROOF",
   sale: "READ_ONLY_PROOF",
   buyReadiness: "LIVE_ACTION",
+  // Fossil sweep (2026-07-19): receipts live (checkout ticket + /receipts
+  // binder) and the operator wall + audited controls live — pinned so they
+  // can never regress.
+  receipt: "READ_ONLY_PROOF",
+  operator: "READ_ONLY_PROOF",
 };
 for (const [key, posture] of Object.entries(PROMOTED)) {
   check(`posture[${key}] holds its live promotion (${posture})`, cats[key]?.posture === posture, String(cats[key]?.posture));

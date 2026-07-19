@@ -8,6 +8,10 @@
 > SEALED IN PROD (`a45d8b8`)** — this doc is what NOTIF-1 grows INTO, harvested at
 > the right slice, never a rebuild. Grounded in live web research (notification
 > architecture + GDPR/ePrivacy), 2026-07-18, not memory.
+> **Baseline update 2026-07-19:** NOTIF-2/2b + polish also sealed through
+> `51e68de` (operator icon + deep-link pickers, no-dead-clicks, audited delete,
+> read-path revalidation) — the v2 that remains is the auto generator +
+> preferences.
 
 ## 0. The one-line reframe
 
@@ -114,7 +118,7 @@ Notifications are born from real events on the reality spine (a confirmed purcha
 
 ### 5.4 The broadcast test discipline (learned this session)
 
-Before the real first founder broadcast: send a throwaway test ("test — please ignore") to prove delivery to all members, bell + preview + full body, and the line-break rendering. The real historic first goes ONCE, clean — never a "test 123" as the founder's first recorded signal.
+Before the real first founder broadcast: send a throwaway test ("test — please ignore") to prove delivery to all members, bell + preview + full body, and the line-break rendering. The real historic first goes ONCE, clean — never a "test 123" as the founder's first recorded signal. *(Honored 2026-07-18; kept as doctrine for any future channel.)*
 
 ## PART 6 — WHAT THIS IS NOT (guardrails)
 
@@ -133,6 +137,6 @@ Before the real first founder broadcast: send a throwaway test ("test — please
 3. Mandatory set — exactly which categories are uncuttable (security + own purchase proposed) vs mutable.
 4. Quiet-hours / rate-limit defaults — the operator defaults, member-overridable.
 5. Where the preference-center + automatic-events enrichment sits in the acted order — NOTIF-1's shell is in prod; this is its growth, at which slot?
-6. The first real broadcast — the founder message is drafted and ready; send after the throwaway test proves the channel.
+6. ✅ DONE 2026-07-18 — the first real broadcast was sent ("This message opens the record."), the throwaway tests were deleted, and Q43 is closed on screenshot evidence.
 
 These are the founder's calls. This doc lays the complete field — the doctrine clarifications that keep it unblocked, the researched category/preference architecture, the full automatic-event inventory, and the living admin↔backend↔frontend wiring — so NOTIF-1 grows without a re-design.

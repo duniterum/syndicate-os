@@ -8,13 +8,16 @@
 // `surface` reuses the canonical `SyndicateSurface` vocabulary from
 // @workspace/os-contracts (type-only import → this file stays Node-loadable).
 //
-// IA-1 access-state fields (two-field design, founder-approved):
-//   - `requiredState` records the FUTURE §3-matrix requirement from the
-//     checkpointed identity/access design doc. It is matrix truth on file,
-//     NOT current enforcement — no auth system exists.
-//   - `enforcement` is the current mode: every surface is PREVIEW_LABELLED
-//     (renders exactly as today). GATED is reserved for a future slice with a
-//     real, wired state machine; guard-access-state forbids it until then.
+// IA-1 access-state fields (two-field design, founder-approved; comment
+// re-trued 2026-07-19 — SIWE, the member sign-in wall and the operator wall
+// are live, enforced SERVER-side):
+//   - `requiredState` records the §3-matrix requirement from the checkpointed
+//     identity/access design doc. It is matrix truth on file, NOT client
+//     enforcement.
+//   - `enforcement` is the CLIENT-side mode and stays a visibility field:
+//     every surface is PREVIEW_LABELLED (renders exactly as today). The real
+//     walls are server-side. GATED remains reserved for a future slice with a
+//     wired client state machine; guard-access-state forbids it until then.
 // Frontend gating is visibility/UX only — never permission control.
 
 import type {
@@ -29,10 +32,13 @@ export type SurfaceAudience = "PUBLIC" | "MEMBER_PREVIEW" | "OPERATOR_PREVIEW";
 /** Which chrome wraps the route: the public marketing site, or the console. */
 export type SurfaceLayout = "public" | "console";
 
+// Display text re-trued 2026-07-19: these headings sit over LIVE production
+// surfaces on the public /status surface map — "preview" died with the walls
+// going live (the type names stay; only display text is member-visible).
 export const surfaceAudienceText: Record<SurfaceAudience, string> = {
   PUBLIC: "Public",
-  MEMBER_PREVIEW: "Member preview",
-  OPERATOR_PREVIEW: "Operator preview",
+  MEMBER_PREVIEW: "Member",
+  OPERATOR_PREVIEW: "Operator",
 };
 
 export interface SurfaceClassificationEntry {
@@ -464,7 +470,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
     summary:
-      "Internal admin console dashboard (sectioned shell): read-only panels over the module registry and live postures.",
+      "Admin console dashboard (sectioned shell): the founder's live console — founder-gated, audited writes plus posture reference.",
     requiredState: "S11",
     enforcement: "PREVIEW_LABELLED",
   },
@@ -473,7 +479,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     audience: "OPERATOR_PREVIEW",
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
-    summary: "Admin section: members & continuity postures (read-only).",
+    summary: "Admin section: members & continuity — live founder-gated controls (audited), plus postures.",
     requiredState: "S11",
     enforcement: "PREVIEW_LABELLED",
   },
@@ -483,7 +489,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
     summary:
-      "Admin section: source registry, referral terms and review-queue previews.",
+      "Admin section: source registry and referral terms — live founder-gated controls (audited); the review queue stays a labelled preview.",
     requiredState: "S11",
     enforcement: "PREVIEW_LABELLED",
   },
@@ -492,7 +498,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     audience: "OPERATOR_PREVIEW",
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
-    summary: "Admin section: operator roles and registry previews.",
+    summary: "Admin section: operator roles and registry — live founder-gated controls (audited); edit stays a labelled preview.",
     requiredState: "S11",
     enforcement: "PREVIEW_LABELLED",
   },
@@ -520,7 +526,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     audience: "OPERATOR_PREVIEW",
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
-    summary: "Admin section: broadcast preview surface.",
+    summary: "Admin section: the live broadcast composer and sent history (founder-gated, audited).",
     requiredState: "S11",
     enforcement: "PREVIEW_LABELLED",
   },

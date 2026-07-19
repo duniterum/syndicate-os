@@ -133,7 +133,8 @@ export function ReferralLadderPanel({ readback }: { readback: StandingReadback |
         <p className="text-sm text-muted-foreground leading-relaxed">
           A rate raise is a public on-chain event — dated for anyone to verify,
           never retroactive, and a rung never descends. The dated history of
-          your own raises arrives with row-level serving.
+          your own raises needs its own indexing pass — it arrives with that
+          micro-slice.
         </p>
       </Card>
 

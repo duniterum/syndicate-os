@@ -12,7 +12,7 @@
 //   Alias         — SOON (the queued IDENTITY-ALIAS slice; opt-in, own-row).
 //   Language      — SOON (no i18n mechanism exists; saying otherwise would lie).
 //   Theme         — REAL (the existing ThemeToggle mechanism, reused).
-//   Notifications — SOON (arrives with the event backbone).
+//   Notifications — LIVE (the bell + /notifications since 2026-07-18).
 //   Session       — REAL: wallet + verify + disconnect via the EXISTING
 //                   logoutSession (no new write; the session is in-memory).
 //   Reset profile — SOON (off-chain only; THE SEAT IS PERMANENT — stated).
@@ -22,6 +22,7 @@
 // grouping, defaults); copied nothing (theirs writes to a backend; ours won't).
 
 import { useEffect, useState } from "react";
+import { Link } from "wouter";
 import { useAccount } from "wagmi";
 import { LogOut } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -114,14 +115,24 @@ export default function MemberSettings() {
         <ThemeToggle />
       </Row>
 
-      {/* S7-b truth: the event record itself is LIVE — what's still to build
-          is the notification surface on top of it (FUTURE, like the away
-          slot; "not live yet" claimed a missing adapter that exists). */}
+      {/* DONE-IS-DONE truth (fossil killed 2026-07-19): notifications went
+          FULLY LIVE at NOTIF-1/2/2b (sealed 2026-07-18 — the bell, the
+          inbox, /notifications, read receipts). This row said "Coming later"
+          for a living feature; it now states the reality and opens the door.
+          Per-category preferences remain a real future option — named
+          honestly, no badge on a living feature. */}
       <Row
         title="Notifications"
-        body="The event record is live — member notifications arrive on it; the bell in the header is already reserved."
-        lifecycle="FUTURE"
-      />
+        body="Live — the bell in the header and your inbox at Notifications; messages to you and protocol announcements, in-app only (the protocol never emails). Per-category preferences arrive later."
+      >
+        <Link
+          href="/notifications"
+          className="inline-flex items-center rounded-md border border-border px-2.5 py-1.5 font-mono text-xs text-proof/80 transition-colors hover:border-gold/40 hover:text-proof"
+          data-testid="link-settings-notifications"
+        >
+          Open inbox
+        </Link>
+      </Row>
 
       <Row
         title="Session"

@@ -4,11 +4,11 @@
 // real moduleRegistry gets an activate/deactivate switch, plus create / edit /
 // delete affordances — the "WordPress plugins" surface.
 //
-// PREVIEW ONLY. Toggling a switch changes local UI state, never anything real:
-// enabling/disabling a module, and create/edit/delete, are WRITES that belong
-// to the operator write zone, which is founder-gated and not yet stood up.
-// So the console shows exactly how management will feel, while persisting
-// nothing — matching the read-only, no-write-controls doctrine of this page.
+// PREVIEW ONLY (comment re-trued 2026-07-19). Toggling a switch changes local
+// UI state, never anything real: the founder-gated operator write zone is
+// live and stood up, but the MODULE-MANAGEMENT writes (enable/disable,
+// create/edit/delete) are their own queued slice (Q42). Until that slice
+// lands, this console shows how management will feel while persisting nothing.
 
 import { useState } from "react";
 import { Puzzle, Plus, Pencil, Trash2 } from "lucide-react";
@@ -48,11 +48,11 @@ export function AdminModulesConsole() {
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl mb-4 leading-relaxed">
         Activate or deactivate each module like a plugin. This is a preview: toggles and create / edit / delete
-        change nothing yet — module management becomes real when the operator write zone is enabled.
+        change nothing yet — module management lands with its own slice.
       </p>
 
       <div className="mb-4">
-        <Button variant="outline" size="sm" disabled title="Enabled with the operator write zone">
+        <Button variant="outline" size="sm" disabled title="Lands with the module-management slice">
           <Plus className="h-4 w-4 mr-1.5" />
           New module
         </Button>
@@ -76,10 +76,10 @@ export function AdminModulesConsole() {
                   {m.route ?? "no public route yet"}
                 </div>
               </div>
-              <Button variant="ghost" size="sm" disabled aria-label={`Edit ${m.title}`} title="Enabled with the operator write zone">
+              <Button variant="ghost" size="sm" disabled aria-label={`Edit ${m.title}`} title="Lands with the module-management slice">
                 <Pencil className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="sm" disabled aria-label={`Delete ${m.title}`} title="Enabled with the operator write zone">
+              <Button variant="ghost" size="sm" disabled aria-label={`Delete ${m.title}`} title="Lands with the module-management slice">
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>

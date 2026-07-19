@@ -87,7 +87,7 @@ export const protocolOsMap: OsMapDomain[] = [
         summary:
           "Lifecycle flags for all three engines; public figures for the active V3 engine as exact raw base-unit strings.",
         reality:
-          "Wired read-only. No wallet, purchase, or referral surface exists anywhere in the app.",
+          "Wired read-only. The join purchase signs from the visitor's own wallet on /join; this spine only reads.",
       },
     ],
   },
@@ -95,7 +95,7 @@ export const protocolOsMap: OsMapDomain[] = [
     id: "historical-index",
     label: "Server-Only Historical Index",
     description:
-      "Founder-gated, script-written history. These tables are never read by served code and have no public UI or API surface.",
+      "Founder-gated, script-written history. Apart from the activity heartbeat — rebuilt unattended and served publicly on /activity — these tables are never read by served code and have no public UI or API surface.",
     nodes: [
       {
         id: "sale-event-raw",
@@ -141,7 +141,9 @@ export const protocolOsMap: OsMapDomain[] = [
         id: "activity-heartbeat",
         label: "Activity heartbeat read-model",
         binding: { kind: "lifecycle", lifecycle: "HISTORICAL_PROOF" },
-        notPublic: true,
+        // Fossil sweep 2026-07-19: served publicly on /activity — notPublic
+        // flipped to match the node's own reality line.
+        notPublic: false,
         summary:
           "In-memory activity derivation over the raw index and Protocol Time — purchases with Routed rows folded in, chain-verified day granularity.",
         reality:
@@ -151,10 +153,13 @@ export const protocolOsMap: OsMapDomain[] = [
     ],
   },
   {
+    // Fossil sweep 2026-07-19: the wrapper was the fossil — all four nodes
+    // below are LIVE and serving. Domain id stays (guard-pinned); the label
+    // and description now match the nodes they wrap.
     id: "pending-wiring",
-    label: "Canon Vendored, Wiring Pending",
+    label: "Indexed & Serving",
     description:
-      "Contract canon (ABIs, registries, taxonomies) is vendored; the honest remaining gap is the live adapter or indexer.",
+      "Contract canon (ABIs, registries, taxonomies) is vendored and the adapters are live — every node below serves in production from the event backbone and read-models.",
     nodes: [
       {
         id: "proof-of-fire",
@@ -235,17 +240,21 @@ export const protocolOsMap: OsMapDomain[] = [
   {
     id: "future-governance",
     label: "Future & Governance Concepts",
+    // Fossil sweep 2026-07-19: notice-os, admin-audit and admin-gates outgrew
+    // the "nothing exists" banner — the description now defers to each node.
     description:
-      "Named, not built. Each entry below is a labelled concept only — no route, write, endpoint, or data exists for any of them, and none may be wired without founder approval.",
+      "Concepts named ahead of their build. Where a piece has since gone live, its node says so; the rest stay labelled concepts with no route, write, endpoint, or data — and nothing here is wired without founder approval.",
     nodes: [
       {
         id: "notice-os",
         label: "Notice OS",
-        binding: { kind: "lifecycle", lifecycle: "FUTURE" },
+        // Fossil sweep 2026-07-19: rebound FUTURE → AUTH_REQUIRED — the
+        // notification center is live behind sign-in (2026-07-18).
+        binding: { kind: "lifecycle", lifecycle: "AUTH_REQUIRED" },
         notPublic: false,
-        summary: "A read-only surface for protocol notices and announcements.",
+        summary: "The protocol's notification center — member inbox + the header bell.",
         reality:
-          "Concept only. No broadcast, notification, email, or persistence exists or is designed.",
+          "LIVE as the notification center: member inbox + header bell, founder broadcast and per-member messages, persisted with read receipts. No email — ever, by canon.",
       },
       {
         id: "knowledge-os",
@@ -269,12 +278,14 @@ export const protocolOsMap: OsMapDomain[] = [
       {
         id: "admin-audit",
         label: "Admin audit / activity spine",
-        binding: { kind: "lifecycle", lifecycle: "FUTURE" },
+        // Fossil sweep 2026-07-19: rebound FUTURE → FOUNDER_GATED — audit
+        // persistence is live server-side (2026-07-17).
+        binding: { kind: "lifecycle", lifecycle: "FOUNDER_GATED" },
         notPublic: true,
         summary:
-          "A future append-only audit trail of operator reads (never a write to the protocol).",
+          "The append-only audit trail of privileged operator acts (never a write to the protocol).",
         reality:
-          "Concept only. The activity read-model is script-only today; no audit persistence exists or is designed.",
+          "Audit persistence is LIVE server-side — every privileged act writes an append-only row. The console read view is its own queued slice (Q42).",
       },
       {
         id: "link-registry",
@@ -294,7 +305,7 @@ export const protocolOsMap: OsMapDomain[] = [
         summary:
           "The founder/operator visibility and approval gates governing internal surfaces.",
         reality:
-          "Real today as build-time visibility gates (operator preview, wallet session, server-side auth exposure) — read-only, not authentication.",
+          "The operator wall is live: SIWE + server-confirmed roles; non-operators see the neutral not-found page. Build-time visibility gates remain alongside.",
       },
     ],
   },

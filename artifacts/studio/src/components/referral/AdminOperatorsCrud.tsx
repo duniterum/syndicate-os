@@ -408,7 +408,7 @@ export function AdminOperatorsCrud() {
                   </div>
                   <div className="font-mono text-xs text-muted-foreground truncate">{op.walletShort}</div>
                 </div>
-                <Button variant="ghost" size="sm" disabled aria-label={`Edit ${op.label}`} title="Enabled with the operator write zone">
+                <Button variant="ghost" size="sm" disabled aria-label={`Edit ${op.label}`} title="Lands with its own slice">
                   <Pencil className="h-4 w-4" />
                 </Button>
                 <Button
@@ -473,7 +473,7 @@ export function SourceReviewQueue() {
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl mb-4 leading-relaxed">
         Review requested sources. Preview: approve and flag are writes into the operator registry / audit log —
-        enabled with the founder-gated write zone.
+        the live approve/flag writes land with their Q42 slice.
       </p>
       <table className="w-full text-sm">
         <thead>
@@ -491,8 +491,8 @@ export function SourceReviewQueue() {
               <td className="py-2 text-muted-foreground">{s.requested}</td>
               <td className="py-2 text-muted-foreground">{s.status}</td>
               <td className="py-2 text-right">
-                <Button variant="ghost" size="sm" disabled title="Enabled with the operator write zone">Approve</Button>
-                <Button variant="ghost" size="sm" disabled title="Enabled with the operator write zone">Flag</Button>
+                <Button variant="ghost" size="sm" disabled title="Lands with its own slice">Approve</Button>
+                <Button variant="ghost" size="sm" disabled title="Lands with its own slice">Flag</Button>
               </td>
             </tr>
           ))}

@@ -130,10 +130,13 @@ export const modules = [
     visible: true,
     enabled: true,
     live: false,
-    phase: "draft",
+    // Fossil sweep 2026-07-19: phase draft → live; description re-trued in
+    // wall-safe words (this string rides the public bundle — Q39 owns the
+    // relocation; wording stays bland by design).
+    phase: "live",
     truthStatus: "DESIGN_PREVIEW",
     description:
-      "Operator console skeleton — read-only panels over the module registry and live postures. No write controls exist.",
+      "Operator console — founder-gated; reveals only to a server-confirmed operator role. Privileged acts are audit-logged.",
     dependencies: [],
     nav: { header: false, sidebar: true, footer: false },
     icon: LayoutDashboard,

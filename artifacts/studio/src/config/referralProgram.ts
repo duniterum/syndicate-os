@@ -178,23 +178,11 @@ export const activeCopy = {
 export const currentProgramCopy =
   programLifecycle === "LIVE_ACTION" ? activeCopy : pausedCopy;
 
-/** Member-cockpit referral cards — each labelled for exactly how real it is
- * TODAY (program ACTIVE since 2026-07-13; the introduction read-model /
- * indexer is SPEC slice R5 and is not wired yet, so per-member histories
- * honestly say "Not live yet" rather than pretending). */
-export interface MemberReferralCard {
-  title: string;
-  note: string;
-  lifecycle: DisplayLifecycle;
-}
-export const memberCards: MemberReferralCard[] = [
-  { title: "My referral link", note: "The program is active: validate your source id on /source and build a shareable join link. A new source itself is a founder-signed on-chain act.", lifecycle: "READ_ONLY_PROOF" },
-  { title: "My introductions", note: "Your indexed introduction counts (total and durable), served from the R5 introduction read-model as of its indexed block.", lifecycle: "READ_ONLY_PROOF" },
-  { title: "Referral receipts", note: "Receipt-backed proof of each individual introduction — the per-receipt history arrives with row-level serving; the counts are already indexed.", lifecycle: "PENDING_ADAPTER" },
-  { title: "Pending commissions", note: "Escrow held on-chain for your source (paid out whenever the source is active), read by the indexer.", lifecycle: "READ_ONLY_PROOF" },
-  { title: "Paid commissions", note: "The indexed sum of commissions paid inside buyers' transactions — verifiable on-chain on your own wallet.", lifecycle: "READ_ONLY_PROOF" },
-  { title: "Source standing", note: "Your non-financial recognition as a source, retention-weighted — a future concept.", lifecycle: "FUTURE" },
-];
+// (Fossil sweep, 2026-07-19: the dead exported `memberCards` array — no
+// renderer consumed it — was DELETED. Its "Referral receipts" row still said
+// per-receipt history "arrives with row-level serving" while the R5
+// introduction read-model serves per-introduction rows today; the member
+// dashboard renders REAL data from the read-model, never these cards.)
 
 // ─────────────────────────────────────────────────────────────────────────
 // SAMPLE data — OPERATOR-CONSOLE previews only (design shape, SampleTag'd).
@@ -388,5 +376,4 @@ export const referralProgram = {
   states: programStates,
   vocabulary: publicToProtocol,
   wordRoles,
-  memberCards,
 } as const;

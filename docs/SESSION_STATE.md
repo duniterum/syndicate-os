@@ -2,6 +2,34 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ ⚖️ THE DONE-IS-DONE TRUTH WAVE (founder order 2026-07-19 — the Settings
+> "Notifications Coming later" fossil, a day after notifications sealed live:
+> "on avance et tu nous fais reculer — insoutenable"). COMMITTED [this commit].**
+> - **THE MECHANISM (permanent, guard-enforced):** `src/config/featureStatus.ts`
+>   = the ONE live-vs-future truth in CODE + **`guard-feature-truth`**
+>   (BLOCKING, 19th studio guard, 544 checks, MUTATION-TESTED: declaring a
+>   claimed-future feature live turns the build RED naming every lying
+>   surface). THE DONE-IS-DONE LAW engraved in CLAUDE.md (+ agent memory):
+>   ships → flip the key SAME commit; live keys answered forever; session-end
+>   boot block = live / in-flight+next / founder-pending.
+> - **THE SWEEP (3-agent audit `wf_4ed95ae5-471` + executor): 29 files
+>   re-trued** — member: Settings notifications row LIVE + Open-inbox door ·
+>   homepage awaitingWiring purged · Whitepaper future-modules · trophy
+>   tooltip (two-layer gamification canon) · dead config deleted
+>   (memberCards, studioPreviewPanel) — admin/os-map: /status postures
+>   PROMOTED (receipt + operator → READ_ONLY_PROOF, guard-pinned 163,
+>   CANON_AS_OF 2026-07-19) · notice-os/admin-audit/sale-engines/operator-wall
+>   os-map realities re-trued · console help/audit/referral-crud/modules/
+>   operators copy re-trued ("write zone not enabled" class dead; Q40/Q42
+>   placeholders keep honest reasons) · modules.ts admin entry wall-safe-live
+>   (Q39 noted) · surface headings "Member preview"→"Member" — docs:
+>   DESIGN_ROADMAP ticked whole · MEMBER_HOME_FINISH_ORDER re-trued ·
+>   BACKLOG rows sealed/retired · LIVING_NOTIFICATION_LAYER baseline.
+> - Gate: tsc ×4 · 19 studio guards (access-state 1083 · feature-truth 544) ·
+>   api guards (source-status-truth 163) · seo 503 · audit 328 · build 348
+>   twins + admin-dist 96. **🚀 DEPLOY — ONE cycle carries `c6859f4` (the
+>   R-BIND-3 bug fixes, not yet published) + this truth wave.**
+
 > **▶ ⏭️ READ-FIRST BOOT (2026-07-18, the founder's standing order — "stop making
 > me re-explain; make the canonical files the thing you read before any work").
 > BEFORE touching anything, READ these, in order, and do NOT re-derive or re-ask

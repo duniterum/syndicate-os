@@ -182,7 +182,7 @@ footer b{color:var(--ink-soft);}
     <p class="sec-desc">L'ordre gravé mène (A1 → B1 → A2 → M-INT-2 → la vague Q42 → Q39), puis les grands arcs. Chaque étape avec sa raison. Tu peux dévier à ta guise — c'est une recommandation, pas une loi.</p>
     <ol class="path"><li class="step">
   <span class="snum">1</span>
-  <div class="sbody"><div class="stitle">My Activity (own-row receipt binder)</div><div class="swhy">Head of the engraved order; gives every member their own-row lens and unblocks the C3 cockpit arc.</div></div>
+  <div class="sbody"><div class="stitle">A1 — My Activity : reste la lentille Mine|Protocol</div><div class="swhy">Le classeur own-row (S0) + la porte/placements Receipts sont SCELLÉS via R-BIND 1-3 (2026-07-19) et le cœur S2 via l'arc referral slice ④ ; reste la lentille Mine|Protocol du pouls — puis C3 se débloque.</div></div>
 </li>
 <li class="step">
   <span class="snum">2</span>
@@ -206,7 +206,7 @@ footer b{color:var(--ink-soft);}
 </li>
 <li class="step">
   <span class="snum">7</span>
-  <div class="sbody"><div class="stitle">Fix the two own-row referral/capital defects</div><div class="swhy">founder-standing-derivation and genesis-footprint-derivation are LIVE-PRODUCTION-RULE violations on the founder's own dashboard — small, high-value, buildable now.</div></div>
+  <div class="sbody"><div class="stitle">Fix the two own-row referral/capital defects — ✅ FAIT</div><div class="swhy">Scellé 235205c (fallback payoutWallet + D-TRUTH genesis) ; confirmé en prod par la capture du fondateur 2026-07-18. Plus rien à construire ici.</div></div>
 </li>
 <li class="step">
   <span class="snum">8</span>
@@ -438,8 +438,8 @@ footer b{color:var(--ink-soft);}
     </header>
     <ul class="rows"><li class="row" data-status="open">
     <div class="row-main">
-      <div class="row-head"><span class="pid">A1</span><span class="ptitle">My Activity (own-row receipt binder)</span></div>
-      <p class="psum">Member's own-row lens: receipt binder + placements, My|Protocol tabs on the pulse, view-receipt/binder links, Receipts door. ENGRAVED NEXT SLICE.</p>
+      <div class="row-head"><span class="pid">A1</span><span class="ptitle">My Activity — reste la lentille Mine|Protocol</span></div>
+      <p class="psum">RESTE : la lentille Mine|Protocol sur le pouls. Le classeur own-row (S0), les placements, les liens view-receipt et la porte Receipts sont SCELLÉS via R-BIND 1-3 (2026-07-19) ; le cœur S2 via l'arc referral slice ④. (Le sceau R-BIND n'est jamais « A1 done » ; l'ordre « engraved next » a été supersédé par le pivot page-par-page du fondateur, 2026-07-19.)</p>
       <div class="metas"><span class="meta gate">⚑ wireframe + preview (founder)</span></div>
     </div>
     <span class="chip s-open">À faire</span>
@@ -496,7 +496,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">M10</span><span class="ptitle">Per-receipt row histories</span></div>
       <p class="psum">CŒUR LIVRÉ (arc referral slice ④, founder GO 2026-07-19, commit f5250f8) : lignes par-introduction own-row verify-linked (date · wallet forme-courte ADR-003 · durable · commission · ancre tx) + le record daté des commissions + les propres achats (D3, déjà scellé). RESTE : l'historique des hausses de taux (SourceTermsUpdated indexé SANS sourceId — micro-slice backbone, raison au dossier).</p>
-      <div class="metas"><span class="meta dep">↳ dépend de M4 (done); R5 (done); slice ④ (commit, seal Replit en attente)</span></div>
+      <div class="metas"><span class="meta dep">↳ dépend de M4 (done); R5 (done); slice ④ scellé en prod (f5250f8 + f436c42, 2026-07-19)</span></div>
     </div>
     <span class="chip s-verify">Cœur scellé en prod</span>
   </li>
@@ -524,13 +524,13 @@ footer b{color:var(--ink-soft);}
     </div>
     <span class="chip s-open">À faire</span>
   </li>
-<li class="row" data-status="open">
+<li class="row" data-status="deferred">
     <div class="row-main">
       <div class="row-head"><span class="pid">since-you-were-away</span><span class="ptitle">'Since You Were Away' return recap</span></div>
-      <p class="psum">Return-visit recap of protocol/personal events since last visit; its data dependency (M4/H2 heartbeat) is now LIVE so it is unblocked.</p>
-      
+      <p class="psum">RETIRÉ (2026-07-18) : absorbé par le centre de notifications scellé (MEMBER_HOME_FINISH_ORDER, section « Deferred »).</p>
+
     </div>
-    <span class="chip s-open">À faire</span>
+    <span class="chip s-defer">Retiré</span>
   </li>
 <li class="row" data-status="queued">
     <div class="row-main">
@@ -556,13 +556,13 @@ footer b{color:var(--ink-soft);}
     </div>
     <span class="chip s-defer">Plus tard · horizon</span>
   </li>
-<li class="row" data-status="deferred">
+<li class="row" data-status="queued">
     <div class="row-main">
       <div class="row-head"><span class="pid">receipt-deeplink-page</span><span class="ptitle">/receipt/{txHash} standalone deep-link page</span></div>
-      <p class="psum">Per-transaction receipt deep-link route; 'roadmap gravée' as future work.</p>
+      <p class="psum">SCOPÉ ENTIER par R-BIND-3 (2026-07-19) : la page publique de reçu par transaction — la prochaine slice reçus gravée (le correctif racine du Copy-link). Toujours non construite, correctement.</p>
       <div class="metas"><span class="meta gate">⚑ chain (deep-link by txHash)</span><span class="meta dep">↳ dépend de receipt product (done)</span></div>
     </div>
-    <span class="chip s-defer">Plus tard · horizon</span>
+    <span class="chip s-queue">En file</span>
   </li></ul>
   </section>
 <section class="cat" id="cat1">
@@ -696,29 +696,29 @@ footer b{color:var(--ink-soft);}
       </div>
       <div class="cat-count"><b>17</b><span>éléments</span></div>
     </header>
-    <ul class="rows"><li class="row" data-status="open">
+    <ul class="rows"><li class="row" data-status="verify">
     <div class="row-main">
       <div class="row-head"><span class="pid">founder-standing-derivation</span><span class="ptitle">Match indexed sources by payoutWallet (founder's BUILDER_SOURCE)</span></div>
-      <p class="psum">DEFECT-NOW: source-standing derives only the canonical keccak sourceId, so the founder's ACTIVE BUILDER_SOURCE (2 durable / $0.50 paid) reads 'no source exists' on his own dashboard — violates the OWN-ACCOUNT DISPLAY RULE.</p>
-      <div class="metas"><span class="meta gate">⚑ founder — amend sourceDecoders never-served pin for own-row live read</span><span class="meta dep">↳ dépend de R5 (done)</span></div>
+      <p class="psum">Scellé 235205c (fallback payoutWallet) ; confirmé par la capture prod du fondateur 2026-07-18 (« 2 durable · 2 total » + « $70.00 · Patron » rendus live).</p>
+      <div class="metas"><span class="meta dep">↳ dépend de R5 (done)</span></div>
     </div>
-    <span class="chip s-open">À faire</span>
+    <span class="chip s-verify">Scellé en prod</span>
   </li>
-<li class="row" data-status="open">
+<li class="row" data-status="verify">
     <div class="row-main">
       <div class="row-head"><span class="pid">genesis-footprint-derivation</span><span class="ptitle">Derive genesis (#1–#8) capital footprints instead of '—'</span></div>
-      <p class="psum">DEFECT-NOW: capitalAxisReadmodel excludes V1 rows so founder's seat #1 renders literal '—'; the wallet→seat→cumulative join is derivable from already-indexed data + frozen roster.</p>
-      <div class="metas"><span class="meta gate">⚑ founder — one gate on retroactive historical RISE lines</span></div>
+      <p class="psum">Scellé D-TRUTH 235205c (2026-07-16, Replit 6/6) : les 8 sièges genesis servent leur standing réel (siège 1 → Patron $70) ; GENESIS_JOIN_EMITS_RISES=false = la décision fondateur no-retroactive, réglée.</p>
+
     </div>
-    <span class="chip s-open">À faire</span>
+    <span class="chip s-verify">Scellé en prod</span>
   </li>
-<li class="row" data-status="open">
+<li class="row" data-status="verify">
     <div class="row-main">
       <div class="row-head"><span class="pid">member-link-card-finish</span><span class="ptitle">Auto-derived member link card (finish, small)</span></div>
-      <p class="psum">Permanent keccak-derived /join?source= card built with two honest states, but only the canonical sourceId is derived — misses the founder's different-id ACTIVE source (ties to founder-standing-derivation).</p>
+      <p class="psum">Fermé (2026-07-19) : la résolution payoutWallet (D2, 235205c) + le Ruling ① font que chaque surface de partage sert le lien de la source PAYANTE (sourceIdHex own-row résolu serveur) ; depuis 3.2, le bloc canonique unique ReferralLinkHero est LA surface de lien. Aucun résidu constaté.</p>
       <div class="metas"><span class="meta dep">↳ dépend de R2 (done)</span></div>
     </div>
-    <span class="chip s-open">À faire</span>
+    <span class="chip s-verify">Scellé en prod</span>
   </li>
 <li class="row" data-status="verify">
     <div class="row-main">
@@ -1963,7 +1963,7 @@ BLOCKED-ON-FOUNDER GATES (nothing Claude Code can unblock alone): the AUD-T lega
 
 FIRE-ONLY-ON-COMMAND: the MVP_FINAL_CHECKLIST does NOT auto-fire — Q32 (23 meta descriptions + guard ceiling) and llms.txt run only when the founder says 'MVP final, run the checklist', each rewrite read on screen.
 
-DEFECTS-NOW worth pulling forward (small, high value, own-row truth violations): founder-standing-derivation (BUILDER_SOURCE reads 'no source' on the founder's dashboard), genesis-footprint-derivation (seat #1 renders '—').
+DEFECTS-NOW — SUPERSEDED (2026-07-19): the two pulled-forward defects (founder-standing-derivation, genesis-footprint-derivation) were BOTH sealed at 235205c (payoutWallet fallback; D-TRUTH genesis standing) and confirmed on the founder's prod screenshot 2026-07-18. Kept only as a dated record.
 
 HORIZON (~6 months / post-traction, no build now): all new smart contracts — zero-touch promotion contract, self-service issuer (R7), Router V4, the new sale/era contract — each mandatory-audit-gated; plus the white-label referral-rail SaaS and i18n. Domain-transfer infra (CDN, www→apex 301, HSTS, SEO-301) parks to ~Sept 2026.
 

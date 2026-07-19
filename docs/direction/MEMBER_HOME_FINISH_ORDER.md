@@ -21,15 +21,14 @@ human-first copy; readability floor (no sub-12px); WORK-FIRST composition; ADR-0
 ### 🔴 Phase A — live truth defects (fix first: cheapest, most damaging, on the founder's own page)
 > **⚠️ RECONCILED 2026-07-18 (5-agent map `wf_aa4aa0ab` + Claude-Code direct verify): steps 1 & 4
 > were ALREADY SEALED before this doc was written — the doc carried the pre-D-TRUTH audit A1
-> forward (documentation drift). Verified reality below. Remaining REAL work = steps 2 + 5 (+ a
-> founder chain-fact for 3).**
+> forward (documentation drift). Verified reality below.
+> ✅ PHASE A COMPLETE 2026-07-18 (1/3/4 pre-sealed; 2/5 sealed `e42c20f`).**
 1. ✅ **DONE (access-model slice 1).** ~~Remove the duplicate "Your referral" heading~~ — the
    component now owns its single h2 (`MemberReferralDashboard.tsx:308`, "so it can never be
    duplicated by whoever mounts it"); no h2+h3 stutter remains.
-2. 🔴 **REAL — Member gamification copy — SHOW the money + keep XP ≠ season-cagnotte clear.** Fix the
-   slot copy "Recognition only, never a cash figure" (`memberDoors.ts:114`, the "Season" slot — it
-   implies hiding, a Visibility-Law defect). Hold three truths at once (see "hard-won doctrine" below).
-   Founder OKs final wording inline. Quests slot (`:115`) left ALONE — no "never a payment" pile-on.
+2. ✅ **SEALED (`e42c20f`, 2026-07-18) — Member gamification copy.** `memberDoors.ts:114` now
+   carries candidate B ("XP earns standing, not money; … real USDC for effort — paid openly").
+   Quests slot (`:115`) left ALONE as ordered.
 3. ✅ **CONFIRMED WORKING (founder's /member screenshot 2026-07-18).** The D2 payoutWallet fallback
    (`sourceStandingRead.ts:127-167`; index keyed on `payoutWallet` ONLY, `introductionRefresh.ts:311-318`)
    was already sealed at `235205c`. The founder signs in with his payout wallet (`0x2445…C721`), so
@@ -39,20 +38,22 @@ human-first copy; readability floor (no sub-12px); WORK-FIRST composition; ADR-0
    genesis seats is live (seat 1 → Patron $70; seats 2–5/7/8 → Citizen $5). The "—" was the
    pre-D-TRUTH state. `GENESIS_JOIN_EMITS_RISES=false` (`capitalAxisReadmodel.ts:82`) = the founder's
    settled no-retroactive-lines call. Nothing to build; the doc was stale.
-5. 🔨 **REAL (pure build) — Shared read + true three-state "—" + CapitalAxisCard retry/no-vanish +
-   race guard.** 3 zones fan out duplicate reads today; the card vanishes on failure with no retry,
-   and one ambiguous "—" conflates loading / read-failure / honest-null. Autonomous to preview.
+5. ✅ **SEALED (`e42c20f`, 2026-07-18) — Shared read + true three-state "—" + CapitalAxisCard
+   retry/no-vanish + race guard.** Shared race-guarded `useSettledOwnCapitalStanding`, three-state
+   honesty, the card never vanishes + Retry.
 
 ### 🟡 Phase B — the core (what makes the page "finished")
-6. **Auth/nav flow** — land on /member after sign-in · "Open Member Home" CTA on the receipt ·
-   in-place session-expiry re-sign. **Confirm live auth posture with Replit** (reachability = risk #1).
+6. **Auth/nav flow** — ✅ land on /member after sign-in (delivered by S7-e, sealed 2026-07-16) ·
+   "Open Member Home" CTA on the receipt · in-place session-expiry re-sign (both still open).
+   **Confirm live auth posture with Replit** (reachability = risk #1).
 7. **Live introduction-count badge** on the Referral door + snapshot-refresh automation (M0).
-8. **A1 — My Activity** — own-row receipt binder + "My | Protocol" pulse lens + Receipts door/tile
-   go live. **SYSTEM-FIRST inventory on screen + wireframe.** (Engraved-next; feeds other zones.)
+8. **A1 — My Activity** — S0 binder + Receipts door/placements ✅ SEALED via R-BIND 1-3
+   (2026-07-19: `/receipts` live, door flipped locked→LIVE, Z4 deep-links, KPI tile as door,
+   cap-5 ticket shelf + dual share); S2 core ✅ via referral slice ④ (`f5250f8`/`f436c42`).
+   **REMAINING = S1, the Mine|Protocol pulse lens** (the R-BIND seal is never "A1 done").
    **READ FIRST at this slice: `docs/reference/A1_BENCHMARK_AND_HONESTY_CONTRACT.md`** (TIER-0 — the
    grade-AAA external benchmark per surface + the A1 HONESTY CONTRACT the first build must pass).
-   Scope ladder: S0 binder · +S1 My|Protocol lens · +S2 per-row histories (M10) — all client-only,
-   zero new indexing; S3 receipt-roadmap / S4 auto-generator are their own later slices.
+   S3 receipt-roadmap / S4 auto-generator remain their own later slices.
 9. **M10 — per-receipt / per-introduction row histories** — ✅ CORE DELIVERED via the
    referral arc (slice ④, 2026-07-19, commit `f5250f8`): per-introduction rows + the dated
    commission record live on /referral (own-row, verify-linked, ADR-003 short-form); own

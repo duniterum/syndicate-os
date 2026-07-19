@@ -4,10 +4,10 @@
 // program, edit commission / split / caps / attribution window, and flip the
 // eligibility rules. This is the "manage the program" surface.
 //
-// PREVIEW ONLY. Fields are editable so management feels real, but Save persists
-// nothing — activating/pausing and editing terms are WRITES owned by the
-// founder-gated operator write zone. When that zone is enabled, Save wires to
-// it and the program goes live under the saved terms.
+// LIVE founder-gated writes (comment re-trued 2026-07-19): Save submits term
+// values through the live operator write zone — audit-logged, server-side 30%
+// hard cap. Save never activates or pauses the program (program state is an
+// on-chain fact); the kill-switch toggle stays a labelled preview (Q42).
 
 import { useState } from "react";
 import { SlidersHorizontal, Save } from "lucide-react";
@@ -15,7 +15,6 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { TruthLabel } from "@/components/TruthLabel";
 import { referralSettingsSample, referralEditableTerms, referralEligibilityToggles, commissionTiers, commissionCapPct, rateChangeEvent } from "@/config/referralProgram";
 import { saveReferralTerm } from "@/lib/operatorClient";
 
@@ -60,7 +59,9 @@ export function AdminReferralCrud() {
       <div className="flex items-center gap-3 flex-wrap mb-1">
         <SlidersHorizontal className="h-5 w-5 text-muted-foreground" />
         <h2 className="text-base font-semibold text-foreground">Referral program settings</h2>
-        <TruthLabel variant="DESIGN_PREVIEW" />
+        <span className="font-mono text-[10px] uppercase tracking-wider text-primary">
+          Live · founder-gated writes
+        </span>
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl mb-5 leading-relaxed">
         Edit the terms and rules here. Save submits term values through the LIVE
@@ -169,7 +170,7 @@ export function AdminReferralCrud() {
             {saveState.kind === "saving" ? "Saving…" : "Save changes"}
           </Button>
           <span className="text-xs text-muted-foreground">
-            Saves terms through the founder-gated operator write zone (audit-logged). The program stays paused until you activate it.
+            Saves terms through the founder-gated operator write zone (audit-logged). Program state is an on-chain fact and is live; Save changes terms only.
           </span>
         </div>
         {saveState.kind === "saved" ? (
@@ -180,7 +181,7 @@ export function AdminReferralCrud() {
           </div>
         ) : saveState.kind === "unavailable" ? (
           <div className="text-xs text-muted-foreground">
-            The operator write zone isn't enabled yet — nothing was saved.
+            The write zone is unavailable right now (fail-closed) — nothing was saved.
           </div>
         ) : saveState.kind === "partial" ? (
           <div className="text-xs text-muted-foreground">
