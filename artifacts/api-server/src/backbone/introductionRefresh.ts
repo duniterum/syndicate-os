@@ -52,6 +52,12 @@ import {
   type AttributedPurchaseRow,
 } from "../lib/protocol/introductionReadmodel";
 import { setLiveIntroductionModel } from "../lib/protocol/introductionLiveModel";
+// Slice ④ (founder GO 2026-07-19): the per-row model — same cycle, same
+// rows, same durable flags; published in the same breath as the aggregate.
+import {
+  setIntroductionRowsModel,
+  type OwnIntroductionRow,
+} from "../lib/protocol/introductionRowsModel";
 import {
   setSourceOwnershipIndex,
   type OwnedSourceEdge,
@@ -141,8 +147,12 @@ async function saleLaneCompleteTo(head: number): Promise<boolean> {
   );
 }
 
+/** Slice ④: the attributed row + its own tx-hash COLUMN (never a decodedJson
+ * field — the whitelist below is unchanged); feeds the per-row model only. */
+type AttributedRowWithTx = AttributedPurchaseRow & { transactionHash: string };
+
 /** Attributed V3 rows from the backbone's own gapless sale lane. */
-async function loadAttributedRows(): Promise<AttributedPurchaseRow[]> {
+async function loadAttributedRows(): Promise<AttributedRowWithTx[]> {
   const db = await import("@workspace/db");
   const { and, asc, eq } = await import("drizzle-orm");
   const raw = await db.db
@@ -151,6 +161,7 @@ async function loadAttributedRows(): Promise<AttributedPurchaseRow[]> {
       eventName: db.saleEventRaw.eventName,
       blockNumber: db.saleEventRaw.blockNumber,
       logIndex: db.saleEventRaw.logIndex,
+      transactionHash: db.saleEventRaw.transactionHash,
       decodedJson: db.saleEventRaw.decodedJson,
     })
     .from(db.saleEventRaw)
@@ -162,11 +173,12 @@ async function loadAttributedRows(): Promise<AttributedPurchaseRow[]> {
     )
     .orderBy(asc(db.saleEventRaw.blockNumber), asc(db.saleEventRaw.logIndex));
 
-  const rows: AttributedPurchaseRow[] = [];
+  const rows: AttributedRowWithTx[] = [];
   for (const r of raw) {
     // decodedJson WHITELIST (introduction refresh): exactly {sourceId,
     // recipient, acquisitionCost} — gated fields, legitimate ONLY here; the
     // built model is address-free by construction and leak-scanned below.
+    // (transactionHash is the row's own COLUMN, not a decodedJson field.)
     const p = r.decodedJson as Record<string, unknown>;
     const sourceId = str(p.sourceId);
     if (sourceId.toLowerCase() === ZERO_BYTES32) continue; // not attributed
@@ -175,12 +187,21 @@ async function loadAttributedRows(): Promise<AttributedPurchaseRow[]> {
       eventName: r.eventName,
       blockNumber: r.blockNumber,
       logIndex: r.logIndex,
+      transactionHash: r.transactionHash,
       sourceId,
       recipient: str(p.recipient),
       acquisitionCostRaw: str(p.acquisitionCost),
     });
   }
   return rows;
+}
+
+/** ADR-003 short form (`0x123…abcd`) — fail-closed: a malformed address
+ * yields null and its row is dropped, never invented (the feedProjection
+ * discipline; the short form can never trip the 40-hex output gate). */
+function shortWho(addressLower: string): string | null {
+  if (!/^0x[0-9a-f]{40}$/.test(addressLower)) return null;
+  return `0x${addressLower.slice(2, 5)}…${addressLower.slice(-4)}`;
 }
 
 /** Chain-verified UTC day per row block, from the Protocol Time cache. */
@@ -349,11 +370,42 @@ export async function refreshIntroductionModel(
   // The model is address-free by construction — prove it before holding it.
   assertAddressSafeAggregate(JSON.stringify(model));
 
+  // Slice ④ — the PER-ROW model, from the SAME rows, dates and durable flags
+  // this cycle already computed (zero extra reads). ADR-003: the introduced
+  // wallet enters each row as the server-derived SHORT form only; a malformed
+  // address drops its row (never invented). Keys (full sourceIds) are
+  // SERVER-ONLY; the values are leak-scanned before the model is held.
+  const rowsBySourceId = new Map<string, OwnIntroductionRow[]>();
+  for (const r of rows) {
+    const who = shortWho(r.recipient.toLowerCase());
+    if (who === null) continue;
+    const sid = r.sourceId.toLowerCase();
+    const list = rowsBySourceId.get(sid) ?? [];
+    list.push({
+      isoDayUtc: blockDateByNumber[r.blockNumber] ?? "",
+      blockNumber: r.blockNumber,
+      logIndex: r.logIndex,
+      transactionHash: r.transactionHash.toLowerCase(),
+      who,
+      commissionRaw: r.acquisitionCostRaw,
+      durable: durableByRecipient[r.recipient.toLowerCase()] === true,
+    });
+    rowsBySourceId.set(sid, list);
+  }
+  for (const list of rowsBySourceId.values()) {
+    list.sort((a, b) => b.blockNumber - a.blockNumber || b.logIndex - a.logIndex);
+  }
+  assertAddressSafeAggregate(
+    JSON.stringify(Array.from(rowsBySourceId.values())),
+  );
+
   setLiveIntroductionModel({
     model,
     modelHash: readmodelHash(model),
     refreshedIso: new Date().toISOString(), // ops metadata, never chain truth
   });
+  // Published in the same breath as the aggregate (one cycle, one truth).
+  setIntroductionRowsModel({ asOfBlock: head, rowsBySourceId });
   // D2: publish the ownership edge in the same breath as the model it
   // belongs to (one cycle, one truth). Empty map when no source has an
   // attributed purchase — a built-and-empty index, never a dark one.

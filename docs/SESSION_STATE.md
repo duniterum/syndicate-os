@@ -258,7 +258,37 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   green.
 > - **🚀 DEPLOY BACKLOG (rides the NEXT deploy): slice 3.3 [this commit] —
 >   client-only, fail-closed, additive; prod meanwhile serves 1aff636.**
-> - **SLICES 4–6 (IN ORDER, NEXT = 4) — THE REMAINING ADDS** (from the SYSTEM-FIRST
+> - ✅ **SLICE 4 — THE PER-INTRODUCTION ROWS (founder GO 2026-07-19), BUILT +
+>   COMMITTED [this commit] — 🚀 REAL DEPLOY CYCLE (server + client, NO migration;
+>   carries the 3.3 batch).** SYSTEM-FIRST map `wf_21cebd15` proved: ALL row data
+>   already in `sale_event_raw` (24 fields + tx-hash COLUMN) + `block_timestamp`
+>   (enforced coverage); per-wallet durable flags computed each cycle but discarded
+>   at aggregation; the D3 member-purchases route = the exact pattern. BUILT:
+>   ① `introductionRowsModel.ts` (in-memory holder: full sourceId → rows, SERVER-ONLY
+>   keys; rows = isoDayUtc · blockNumber/logIndex · 64-hex txHash · `who` in ADR-003
+>   SHORT form (0x123…abcd, derived server-side, malformed → row dropped) ·
+>   commissionRaw · durable flag) · ② `introductionRefresh` extended (tx-hash COLUMN
+>   added to the select — the decodedJson whitelist {sourceId, recipient,
+>   acquisitionCost} UNCHANGED, introductions:guard 45/45 held; rows model built from
+>   the SAME cycle rows/dates/durable flags, zero extra reads, leak-scanned, published
+>   in the same breath as the aggregate) · ③ `GET /api/auth/introduction-rows` (D3
+>   discipline verbatim: throttle → session-only input → readOwnSourceStanding
+>   resolution → rows + txUrl per row → 40-hex boundary scan; honest reasons: no
+>   session / model warming / no source) · ④ studio: `fetchOwnIntroductions` +
+>   shared `useOwnIntroductions` → the Introductions tab's LIVE rows table (Date ·
+>   Who short-form · Durable/Not-durable pill · Commission · verify↗ + the as-of
+>   block note) and the Commissions tab's DATED RECORD list (CHARTS POLICY: record
+>   lines while sparse, "a chart takes over as the history grows") — both
+>   PENDING_ADAPTER shells replaced. **RATE-RAISE HISTORY STAYS A SHELL — recorded
+>   reason:** SourceTermsUpdated IS indexed (protocol_event_raw, decodedJson
+>   {commissionBps}, verified timestamps) but the sourceId (topics[1]) is NOT
+>   persisted → per-source attribution impossible without a small backbone change
+>   (decodeLifecycleLog + topics[1] + a SOURCE_LIFECYCLE rescan) — its own future
+>   micro-slice, never a guess served meanwhile. GATE: api tsc 0 · introductions
+>   45/45 · auth-zone green · studio tsc 0 · 18 guards · build + admin-dist 93 ·
+>   DOM-verified (rows table + pills + dated record + verify links, old shells gone;
+>   console: only the tracked Q34 warning + a stale HMR artifact, prod build clean).
+> - **SLICES 5–6 (IN ORDER, NEXT = 5) — THE REMAINING ADDS** (from the SYSTEM-FIRST
 >   harvest `wf_81dd540b`): ④ per-introduction rows (needs the row-level adapter,
 >   server) · ⑤ commission anatomy (the static anatomy card shipped in slice 2; ⑤ = the
 >   receipt-backed breakdown) · ⑥ recognition/season axis (Phase-5). Their honest-future

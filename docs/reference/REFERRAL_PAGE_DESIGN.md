@@ -126,7 +126,30 @@ Ladder truth (`config/connectorLadder.ts`): Emerging 5% (0) · Active 5% (3, tit
   anonymous 204-always beacons, daily AGGREGATE counters (no visitor identity ever — ADR-003),
   conversions receipt-verified on-chain by the server, own-row breakdown live in the Link &
   channels tab, Privacy V2 + Terms §7 legal sweep in the same commit.
-- **SLICES 4–6 — THE REMAINING ADDS (in order, NEXT = 4):** per-introduction rows ·
-  commission anatomy (receipt-backed breakdown; the static anatomy card shipped in slice 2) ·
-  recognition/season. Backend pieces land as honest-future states; the shells are live —
-  each slice replaces its shell with the real record.
+- ✅ **SLICE 4 — PER-INTRODUCTION ROWS, BUILT + COMMITTED (founder GO 2026-07-19; rides the
+  next deploy with 3.3).** The row model lives in memory off the existing sale lane (no
+  migration): Introductions tab = the live rows table (date · who SHORT-FORM · durable pill ·
+  commission · verify↗); Commissions tab = the dated record list (CHARTS POLICY: lines while
+  sparse). **RECORDED GAP — rate-raise history:** SourceTermsUpdated is indexed WITHOUT its
+  sourceId (topics not persisted) → per-source raise history needs decodeLifecycleLog +
+  topics[1] + a SOURCE_LIFECYCLE rescan (own micro-slice); the shell stays honest meanwhile.
+- **SLICES 5–6 — THE REMAINING ADDS (in order, NEXT = 5):** commission anatomy (receipt-backed
+  breakdown; the static anatomy card shipped in slice 2) · recognition/season (Phase-5).
+
+## RESEARCH LEDGER (never re-search these — the findings are canon here)
+- `wf_8d4fae85` + `wf_81dd540b` (2026-07-19) — the page benchmark + SYSTEM-FIRST inventory
+  (§ above: adopt/reject lists, the 5 tabs, the 48-piece system map).
+- `wf_b01f310a` (2026-07-19) — the CHANNEL COMPOSER web benchmark (GA URL Builder ·
+  Bitly Campaigns · FirstPromoter · Amazon/Impact/PartnerStack/Rewardful + NN/g/Baymard +
+  adversarial): verdict = stateless composer, chips + live full-URL + copy-per-row table;
+  REJECT shorteners / saved link objects / localStorage / per-visitor tags / QR-in-composer.
+- `wf_317c67c8` (2026-07-19) — the PAGE-STRUCTURE benchmark (Binance/Bybit/OKX/Kraken/
+  Coinbase/Gate + FirstPromoter/Rewardful/PartnerStack/Impact): verdict = banner → LINK HERO
+  → figures → tabs; "nothing scrolls between a new member and the link"; the link exactly
+  ONCE page-wide (duplication = the named failure mode).
+- `wf_21cebd15` (2026-07-19) — the ROWS map: sale_event_raw holds all 24 V3 fields + tx-hash
+  column; block_timestamp coverage enforced; durable per-wallet computed each cycle;
+  D3 member-purchases = the serving pattern; SourceTermsUpdated indexed WITHOUT sourceId.
+- `wf_9fabf210` (2026-07-19) — the &via INVARIANT map: the constitution names the channel log
+  a permitted server write (§③ N2); the three-zone amendment grammar; every "read-only/zero
+  analytics" claim that had to move (Privacy V2, Terms §7, COMPASS #11, replit.md).

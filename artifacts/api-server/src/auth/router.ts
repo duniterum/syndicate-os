@@ -70,6 +70,9 @@ import {
 } from "./memberInbox";
 // SPEC R3 — the own-row channel breakdown (the FOURTH sanctioned DB bridge).
 import { readOwnChannelBreakdown } from "./channelStanding";
+// Slice ④ — the per-introduction rows holder (pure spine state, no DB reach;
+// the D3 own-purchase pattern applied to the introducer's axis).
+import { getIntroductionRowsModel } from "../lib/protocol/introductionRowsModel";
 import { resolveOwnStanding } from "../lib/protocol/holderIndexStanding";
 import { txUrl } from "../canon/the-syndicate/chain/chain-registry";
 import { assertProtocolRealityDiscipline } from "../lib/protocol/payloadDiscipline";
@@ -654,6 +657,103 @@ router.get("/channel-standing", async (req: Request, res: Response) => {
   req.log.info({
     event: "auth.channel_standing.checked",
     code: !sessionActive ? "none" : breakdown !== null ? "served" : "unavailable",
+  });
+  res.json(payload);
+});
+
+// ── GET /api/auth/introduction-rows ─────────────────────────────────────────
+// Slice ④ (founder GO 2026-07-19) — the member's OWN per-introduction rows:
+// each attributed join as a chain-event fact (verified UTC day · the
+// introduced wallet in ADR-003 SHORT form only · the R5 durable flag · the
+// commission paid · the 64-hex verify anchor + canonical explorer URL). The
+// D3 member-purchases discipline verbatim: session cookie = the ONLY input;
+// the resolved source picks rows SERVER-SIDE; the full sourceId map key and
+// the bound account never enter the payload; 40-hex fail-closed scan (short
+// forms and 64-hex anchors pass by construction). Fail-closed: no session /
+// model not built / source unresolved → an honest reason, never a guess.
+router.get("/introduction-rows", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "auth.introduction_rows.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const boundAccount =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  const sessionActive = boundAccount !== null;
+
+  let rows:
+    | {
+        isoDayUtc: string;
+        who: string;
+        durable: boolean;
+        commissionRaw: string;
+        transaction: string;
+        explorerUrl: string;
+        block: number;
+      }[]
+    | null = null;
+  let asOfBlock: number | null = null;
+  let failureReason: string | null = null;
+
+  if (boundAccount === null) {
+    failureReason = "no active wallet session; sign in to read your own introduction record";
+  } else {
+    const model = getIntroductionRowsModel();
+    if (model === null) {
+      failureReason =
+        "the record model has not built yet — your rows return shortly; nothing is assumed";
+    } else {
+      const resolved = await readOwnSourceStanding(boundAccount);
+      if (resolved.sourceIdHex === null) {
+        failureReason =
+          resolved.failureReason ??
+          "no referral source exists for this wallet yet — a new source is a founder-signed on-chain act";
+      } else {
+        asOfBlock = model.asOfBlock;
+        rows = [];
+        for (const r of model.rowsBySourceId.get(resolved.sourceIdHex) ?? []) {
+          const explorerUrl = txUrl(r.transactionHash);
+          if (explorerUrl === null) continue; // an anchor we cannot verify-link never serves
+          rows.push({
+            isoDayUtc: r.isoDayUtc,
+            who: r.who,
+            durable: r.durable,
+            commissionRaw: r.commissionRaw,
+            transaction: r.transactionHash,
+            explorerUrl,
+            block: r.blockNumber,
+          });
+        }
+      }
+    }
+  }
+
+  const payload = {
+    state: sessionActive ? ("S4" as const) : ("S1" as const),
+    rows,
+    asOfBlock,
+    failureReason,
+  };
+  // Leak gates: payload discipline + boundary-aware address scan (a bare
+  // 40-hex fail-closes; short forms and 64-hex anchors pass). The bound
+  // account and the full sourceId never enter the payload object.
+  try {
+    assertProtocolRealityDiscipline(payload);
+    if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(JSON.stringify(payload))) {
+      throw new Error("address-shaped token in payload");
+    }
+  } catch {
+    req.log.warn({ event: "auth.introduction_rows.discipline_rejected" });
+    deny(res, 500, "unavailable");
+    return;
+  }
+  req.log.info({
+    event: "auth.introduction_rows.checked",
+    code: !sessionActive ? "none" : rows !== null ? "mapped" : "unavailable",
   });
   res.json(payload);
 });

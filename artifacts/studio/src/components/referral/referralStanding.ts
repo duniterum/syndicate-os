@@ -45,6 +45,38 @@ export function useOwnSourceStanding(): StandingReadback | null {
   return standing;
 }
 
+// Slice ④ — the member's OWN per-introduction rows (same dynamic-import +
+// session-event discipline; fetched by the panels that render the record).
+export type OwnIntroductionsReadback =
+  import("@/wallet/walletSession").OwnIntroductionsReadback;
+
+export function useOwnIntroductions(): OwnIntroductionsReadback | null {
+  const [readback, setReadback] = useState<OwnIntroductionsReadback | null>(null);
+  useEffect(() => {
+    let active = true;
+    let cleanup: (() => void) | null = null;
+    void Promise.all([
+      import("@/wallet/walletSession"),
+      import("@/wallet/sessionEvents"),
+    ]).then(([ws, ev]) => {
+      if (!active) return;
+      const read = () => {
+        void ws.fetchOwnIntroductions().then((r) => {
+          if (active) setReadback(r);
+        });
+      };
+      read();
+      window.addEventListener(ev.SESSION_CHANGED_EVENT, read);
+      cleanup = () => window.removeEventListener(ev.SESSION_CHANGED_EVENT, read);
+    });
+    return () => {
+      active = false;
+      cleanup?.();
+    };
+  }, []);
+  return readback;
+}
+
 /**
  * S7-e — server diagnostics never reach a member verbatim (Human-First Law):
  * known reasons get their human sentence; anything else gets the honest

@@ -8,10 +8,13 @@
 
 import { Card } from "@/components/ui/card";
 import { StatusPill } from "@/components/status-pill/StatusPill";
-import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { ladderProgress } from "@/config/connectorLadder";
 import { referralProgram } from "@/config/referralProgram";
-import { usd, type StandingReadback } from "@/components/referral/referralStanding";
+import {
+  usd,
+  useOwnIntroductions,
+  type StandingReadback,
+} from "@/components/referral/referralStanding";
 
 /** $5.00 seat purchase at `bps` → the commission in dollars, two decimals. */
 function commissionOnFiveDollars(bps: number): string {
@@ -59,20 +62,11 @@ export function ReferralCommissionsPanel({ readback }: { readback: StandingReadb
         </p>
       </Card>
 
-      {/* The evolutive chart slot — a record, never a return. No bars render
-          until the per-payment record is served (a decorative sparkline would
-          be a fake figure). */}
-      <Card className="bg-card/30 border-border/50 border-dashed p-5 mb-6">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-sm font-medium text-muted-foreground">Your commissions — the record</span>
-          <LifecycleBadge lifecycle="PENDING_ADAPTER" />
-        </div>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          A chart appears here once the per-payment record is served — the
-          record, never a projection. Each point will tie to its on-chain
-          receipt.
-        </p>
-      </Card>
+      {/* Slice ④ — the dated commission RECORD, live from the per-row model.
+          CHARTS POLICY: the record, never a projection — while the history
+          is sparse the record renders as dated receipt lines (each tied to
+          its on-chain anchor); a chart takes over as the story grows. */}
+      <CommissionRecordCard />
 
       <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
         {referralProgram.boundaryLine}
@@ -80,3 +74,61 @@ export function ReferralCommissionsPanel({ readback }: { readback: StandingReadb
     </div>
   );
 }
+
+// The dated record — REAL rows only; honest states, never a sample.
+function CommissionRecordCard() {
+  const intro = useOwnIntroductions();
+  const rows = intro?.rows ?? null;
+  return (
+    <Card className="bg-card/40 border-border/50 p-5 mb-6">
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-sm font-medium text-foreground">Your commissions — the record</span>
+        {rows !== null ? (
+          <StatusPill tone="live" size="xs">Live · your own row</StatusPill>
+        ) : null}
+      </div>
+      {rows === null ? (
+        <p
+          className="text-sm text-muted-foreground leading-relaxed"
+          title={intro?.failureReason ?? undefined}
+        >
+          {intro === null
+            ? "The record read is resolving — nothing is assumed, nothing is invented."
+            : "The record is unavailable right now — nothing is assumed, nothing is invented. Try again in a moment."}
+        </p>
+      ) : rows.length === 0 ? (
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          No commissions on your record yet — each one appears here dated,
+          with its on-chain proof.
+        </p>
+      ) : (
+        <div className="mt-2">
+          <ul className="space-y-1.5">
+            {rows.map((r) => (
+              <li
+                key={r.transaction}
+                className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t border-border/40 pt-1.5 first:border-t-0 first:pt-0"
+              >
+                <span className="font-mono text-xs text-muted-foreground whitespace-nowrap">{r.isoDayUtc}</span>
+                <span className="font-mono text-sm text-gold">{usd(r.commissionRaw)}</span>
+                <a
+                  href={r.explorerUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex font-mono text-xs text-proof/80 hover:text-proof underline underline-offset-2 ml-auto"
+                >
+                  verify ↗
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+            The record, never a projection — each line is its own on-chain
+            receipt; a chart takes over as the history grows.
+          </p>
+        </div>
+      )}
+    </Card>
+  );
+}
+

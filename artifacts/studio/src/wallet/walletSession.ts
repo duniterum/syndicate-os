@@ -479,6 +479,81 @@ export async function fetchChannelBreakdown(): Promise<ChannelBreakdownReadback 
   }
 }
 
+// ── Slice ④: own per-introduction rows (the introducer's axis) ──────────────
+export interface OwnIntroductionRowReadback {
+  isoDayUtc: string;
+  /** The introduced wallet, ADR-003 short form (`0x123…abcd`) — server-derived. */
+  who: string;
+  /** The R5 durable test at asOfBlock: the introduced wallet still holds SYN. */
+  durable: boolean;
+  /** Commission paid for this introduction (USDC 6-dec raw decimal string). */
+  commissionRaw: string;
+  /** 64-hex verify anchor + its canonical explorer URL, served per row. */
+  transaction: string;
+  explorerUrl: string;
+  block: number;
+}
+
+export interface OwnIntroductionsReadback {
+  state: "S1" | "S4";
+  rows: OwnIntroductionRowReadback[] | null;
+  asOfBlock: number | null;
+  failureReason: string | null;
+}
+
+/**
+ * Read the signed wallet's OWN per-introduction rows (each attributed join:
+ * verified day · short-form wallet · durable flag · commission · verify
+ * anchor). Null on ANY failure — the caller renders an honest gap, never a
+ * guess.
+ */
+export async function fetchOwnIntroductions(): Promise<OwnIntroductionsReadback | null> {
+  try {
+    const res = await fetch("/api/auth/introduction-rows", { method: "GET" });
+    if (!res.ok) return null;
+    const body: unknown = await res.json();
+    if (typeof body !== "object" || body === null) return null;
+    const o = body as Record<string, unknown>;
+    if (o.state !== "S1" && o.state !== "S4") return null;
+    let rows: OwnIntroductionRowReadback[] | null = null;
+    if (Array.isArray(o.rows)) {
+      rows = [];
+      for (const r of o.rows) {
+        if (typeof r !== "object" || r === null) continue;
+        const row = r as Record<string, unknown>;
+        if (
+          typeof row.isoDayUtc === "string" &&
+          typeof row.who === "string" &&
+          typeof row.durable === "boolean" &&
+          typeof row.commissionRaw === "string" &&
+          /^[0-9]+$/.test(row.commissionRaw) &&
+          typeof row.transaction === "string" &&
+          typeof row.explorerUrl === "string" &&
+          typeof row.block === "number"
+        ) {
+          rows.push({
+            isoDayUtc: row.isoDayUtc,
+            who: row.who,
+            durable: row.durable,
+            commissionRaw: row.commissionRaw,
+            transaction: row.transaction,
+            explorerUrl: row.explorerUrl,
+            block: row.block,
+          });
+        }
+      }
+    }
+    return {
+      state: o.state,
+      rows,
+      asOfBlock: typeof o.asOfBlock === "number" ? o.asOfBlock : null,
+      failureReason: typeof o.failureReason === "string" ? o.failureReason : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
 // ── D-TRUTH D3: own purchase-history rows (the member's own receipts) ───────
 export interface OwnPurchaseRowReadback {
   isoDayUtc: string;
