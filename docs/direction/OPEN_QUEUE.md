@@ -1,5 +1,19 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> - 🔴 **Q44 — THE /receipt/{txHash} PAGE GATE: three founder answers pending (posed
+>   2026-07-19; the slice is fully scoped in `wf_d1923bc4-f0a` lens 3 + SESSION_STATE;
+>   the Copy-link confusion's ROOT fix — the button stays, its destination becomes the
+>   member's own receipt page, and the six network shares carry it too; the retarget
+>   ships in the SAME deploy as the page, never before).**
+>   ① INDEXING POSTURE of individual receipt pages — recommended **noindex,follow**
+>   (anyone with the link sees everything, shares unfurl perfectly; Google never
+>   accumulates a browsable corpus of purchase pages) vs indexed. ② THE PAINTED
+>   PER-RECEIPT PREVIEW CARD (the founder's rotation lives IN THE LINK — engraved) —
+>   its own next slice (recommended, the engraved order) vs pulled into this one.
+>   ③ ORDER — the receipt page first, or the commission-receipts register (5.1,
+>   mockup approved) first. The founder may answer "recommandations" = noindex ·
+>   card next slice · receipt page first. NOTHING opens before his three answers.
+
 > **▶ 2026-07-19 (aparté, founder order) — R-BIND: THE RECEIPTS BINDER, BUILT + COMMITTED
 > [this commit], GO and GO-Live given after the creation-discussion audit (`wf_657b9cb4-673`:
 > 20 decisions honored · 5 engraved-for-later · 3 micro-verdicts resolved and closed forever —
