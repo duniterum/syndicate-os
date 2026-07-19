@@ -58,9 +58,11 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > ✅ slice 4 (THE PER-INTRODUCTION ROWS: in-memory rows model from the existing sale lane —
 > tx-hash column + ADR-003 short-form who + per-row durable, zero extra reads, no migration;
 > `GET /api/auth/introduction-rows` on the D3 discipline; the Introductions rows table + the
-> Commissions dated record LIVE, both shells replaced) COMMITTED [this commit] — **🚀 REAL
-> DEPLOY CYCLE server+client, carries the 3.3 batch; Replit block ready in the 2026-07-19
-> handoff.** RECORDED GAP (own micro-slice, do not re-discover): rate-raise history needs
+> Commissions dated record LIVE, both shells replaced) **SEALED IN PROD — `f5250f8` (+ the
+> 3.3 batch) then the `f436c42` FIX cycle (Replit green 2026-07-19: the unbounded 40-hex
+> scan faulted on legitimate 64-hex tx anchors every cycle, prod-proven; the boundary-aware
+> gate fixed it — ok:2/partial:0, rows model publishing, client byte-identical; lesson
+> engraved in SESSION_STATE + the handoff). DEPLOY BACKLOG: EMPTY.** RECORDED GAP (own micro-slice, do not re-discover): rate-raise history needs
 > SourceTermsUpdated's sourceId (topics[1]) persisted + a SOURCE_LIFECYCLE rescan — the event
 > IS indexed but without per-source attribution → slices 5–6 (NEXT = ⑤ commission anatomy
 > receipt-backed · ⑥ recognition/season Phase-5). Full state: SESSION_STATE.md.

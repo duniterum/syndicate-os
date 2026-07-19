@@ -304,6 +304,17 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   scans are for address-AND-anchor-free aggregates ONLY; and an empty dev table is a
 >   blind spot: a server model needs a real-data or fixture smoke before deploy.**
 >   Gate: api tsc 0 · introductions 45/45 · auth-zone green.
+>   **✅ SEALED IN PROD (`f436c42`, Replit green 2026-07-19, founder-pasted report):
+>   cycles ok:2/partial:0, ZERO "introduction refresh faulted" (counters AND logs),
+>   headBlock advancing, the rows model PUBLISHES every cycle; endpoint S1-shape
+>   exact; wall/healthz/feed green; entry byte-identical to f5250f8's build (server-
+>   only fix, not one client byte moved); the bounded-gate demo re-proven in prod
+>   (bare-40 throws · 64-hex passes · short form passes). THE WHOLE SLICE-4 CYCLE
+>   (f5250f8 + the 3.3 batch + f436c42) IS SEALED. DEPLOY BACKLOG: EMPTY (the
+>   38add66 audit sweep + this seal commit ride the next cycle, docs-only). OPS
+>   NANO-NOTE (recorded, no action): the engine status lastError field is STICKY —
+>   judge health by counters + logs, never that field. LIVING SEAL = the founder's
+>   act: sign in on /referral/introductions → his 2 real rows.**
 > - **SLICES 5–6 (IN ORDER, NEXT = 5) — THE REMAINING ADDS** (from the SYSTEM-FIRST
 >   harvest `wf_81dd540b`): ④ per-introduction rows (needs the row-level adapter,
 >   server) · ⑤ commission anatomy (the static anatomy card shipped in slice 2; ⑤ = the
