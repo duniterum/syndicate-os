@@ -39,9 +39,11 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > → ✅ slice 3 (the `&via` CHANNELS ANALYTICS, SPEC R3 whole: the THIRD sanctioned write zone
 > `src/channel/` — anonymous aggregate click counters + receipt-verified conversions, NO visitor
 > identity by construction; own-row breakdown live in the Link & channels tab; Privacy → V2 draft +
-> Terms §7 correction, founder-approved wording) BUILT + COMMITTED [this commit] — "Approved GO and
-> GO-Live" 2026-07-19; guard-auth-zone 1002/1002; **AWAITING THE REPLIT SEAL: REAL MIGRATION (2
-> additive tables), its own cycle, never batched** → slices 4–6 (the adds, NEXT = ④
+> Terms §7 correction, founder-approved wording) **SEALED IN PROD `a65df77` (Replit MIGRATION cycle
+> green 2026-07-19, founder-pasted report: neondb tables + unique indexes confirmed · beacons
+> 204 · channel-standing S1-exact · Privacy V2 + Terms §7 served · byte-identity · the synthetic
+> test-id drop PROVED the existence gate)** — "Approved GO and GO-Live" 2026-07-19;
+> guard-auth-zone 1002/1002 → slices 4–6 (the adds, NEXT = ④
 > per-introduction rows: shells live in the tabs; each slice replaces its shell with the real
 > record). Full state: SESSION_STATE.md.
 

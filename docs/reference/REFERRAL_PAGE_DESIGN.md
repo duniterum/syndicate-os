@@ -104,8 +104,9 @@ Ladder truth (`config/connectorLadder.ts`): Emerging 5% (0) · Active 5% (3, tit
   + the evolutive chart slot (honest — NO decorative bars) + honest-future shells for every add.
   Truth deviations from the mockup (deliberate): no sample introduction rows, no fake sparkline;
   the by-state money card renders only when the own read answered.
-- ✅ **SLICE 3 — THE `&via` CHANNELS ANALYTICS (SPEC R3 whole), BUILT + COMMITTED (founder
-  approved wording + GO-Live 2026-07-19; awaiting the Replit MIGRATION seal — its own cycle).**
+- ✅ **SLICE 3 — THE `&via` CHANNELS ANALYTICS (SPEC R3 whole), SEALED IN PROD (`a65df77`,
+  Replit MIGRATION cycle green 2026-07-19: neondb tables + unique indexes confirmed, beacons
+  204, Privacy V2 served, byte-identity; founder wording + GO-Live approved).**
   The third sanctioned write zone `src/channel/` (constitutional mechanism, guard section 10):
   anonymous 204-always beacons, daily AGGREGATE counters (no visitor identity ever — ADR-003),
   conversions receipt-verified on-chain by the server, own-row breakdown live in the Link &

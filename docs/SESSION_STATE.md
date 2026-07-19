@@ -175,8 +175,28 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   the two lazy-DB allow-lists amended deliberately) · seo 491 · audit 322 · build 32
 >   shells + byte-identical compression + admin-dist 93 · rig-verified (beacon 204 once,
 >   garbage conversion silently dropped, honest card states, Privacy v2 renders, zero
->   console errors). **AWAITING THE REPLIT SEAL — REAL MIGRATION (2 additive tables →
->   `pnpm --filter @workspace/db push`), ITS OWN CYCLE, NEVER BATCHED.**
+>   console errors). **✅ SEALED IN PROD (`a65df77`, Replit MIGRATION CYCLE green
+>   2026-07-19, founder-pasted report):** neondb confirmed — both tables + unique
+>   indexes (`…triple_unique`, `…tx_unique`) present, 0 rows · dev push replayed
+>   drift-free (the known member_continuity churn false-positive interrupted the batch
+>   once; the 4 missing indexes were applied additively in one tx per the sealed
+>   recipe) · IN PROD: POST /api/channel/click valid → 204 empty, garbage → 204 ·
+>   channel-standing no-session → 200 `{"state":"S1","available":false,"rows":[]}`
+>   exact · /privacy serves V2 + "no third-party analytics" ×3, /terms "makes no
+>   database writes" = 0 hits · wall holds · byte-identity prod==local (entry
+>   `index-CvDbFGOJ.js`) · engine self-healed the known partial-boot, headBlock
+>   advancing · founder's own screenshot: the 5 tabs + the live Channels card render
+>   on thesyndicate.money/referral/link. **RECORDED NUANCES (no action needed):**
+>   ① Replit's test click was correctly DROPPED — the instruction's test sourceId was
+>   a SYNTHETIC 64-hex (only the short form is on record), so registry
+>   sourceExists=false → the existence gate PROVED itself in prod; real registered
+>   sources count normally. ② Malformed (non-JSON) bodies → 400 from the scoped
+>   Express parser BEFORE the handler — transport layer, generic body in prod (no
+>   echo), same pre-existing class as the auth zone; candidate one-line polish
+>   (swallow parse errors to 204), never urgent. ③ The founder's screenshot caught a
+>   moment where BOTH the standing read and the channel read said honest-unavailable
+>   — a public-RPC blip, fail-closed working as designed; retry resolves.
+>   **DEPLOY BACKLOG: EMPTY. Tree clean.**
 > - **SLICES 4–6 (IN ORDER, NEXT = 4) — THE REMAINING ADDS** (from the SYSTEM-FIRST
 >   harvest `wf_81dd540b`): ④ per-introduction rows (needs the row-level adapter,
 >   server) · ⑤ commission anatomy (the static anatomy card shipped in slice 2; ⑤ = the
