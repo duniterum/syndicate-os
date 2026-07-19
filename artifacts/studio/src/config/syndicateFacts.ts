@@ -281,7 +281,7 @@ export const memberHome = {
   eyebrow: "Member Home",
   door: {
     title: "Your seat lives here.",
-    lead: "This is Member Home. Connect your wallet and it reads your own record straight from the chain — the seat you hold, its receipt, and where you stand. You only ever see your own: no list of members to browse, and nothing about you is stored.",
+    lead: "This is Member Home. Connect your wallet and it reads your own record straight from the chain — the seat you hold, its receipt, and where you stand. You only ever see your own: no list of members to browse, and what little exists about you is served to you alone.",
     honestyControl:
       "Connecting proves control of a wallet — it doesn't give you a seat. Your seat is your membership: you take it on Join, and the chain writes it — numbered and permanent.",
     honestySafety:

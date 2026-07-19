@@ -26,6 +26,7 @@ import {
   type VerifyLinkId,
 } from "@workspace/api-client-react";
 import { PublicPage } from "@/components/PublicPage";
+import { parseViaTag, pingChannelClick } from "@/lib/channelPing";
 import { ProtocolRealityPanel } from "@/components/ProtocolReality";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
@@ -628,6 +629,17 @@ export default function JoinProtocol() {
   const sourceParam = new URLSearchParams(search).get("source");
   const attachSource =
     sourceParam !== null && isSourceIdFormat(sourceParam) ? sourceParam : null;
+
+  // SPEC R3 — the channel beacon (`&via=`): a landing that carries BOTH a
+  // format-valid source and a valid channel tag pings the anonymous click
+  // counter once per page load. Fire-and-forget, aggregate-only server-side
+  // (never who clicked); the server drops anything the registry doesn't know.
+  const viaTag = parseViaTag(search);
+  useEffect(() => {
+    if (attachSource !== null && viaTag !== null) {
+      pingChannelClick(attachSource, viaTag);
+    }
+  }, [attachSource, viaTag]);
 
   const [amountInput, setAmountInput] = useState("");
   const [submittedRaw, setSubmittedRaw] = useState<string | null>(null);

@@ -253,6 +253,13 @@ const LAZY_DB_ALLOW = new Set([
   // NOTIF-1: the member OWN-ROW inbox read (session wallet → own rows +
   // broadcasts; served rows carry no wallet). Lazy-only; fail-closed.
   join(SERVED_SRC, "auth", "memberInbox.ts"),
+  // SPEC R3 (founder GO 2026-07-19): the channel-log store (anonymous
+  // aggregate clicks + receipt-verified conversions — DATABASE_URL-gated,
+  // fail-closed silent) and the member OWN-ROW channel breakdown read.
+  // Lazy-only; full shapes pinned by guard-auth-zone.ts section 10 + the
+  // channelStanding bridge pins.
+  join(SERVED_SRC, "channel", "channelStore.ts"),
+  join(SERVED_SRC, "auth", "channelStanding.ts"),
 ]);
 const DYNAMIC_DB_IMPORT_RE = /import\s*\(\s*["']@workspace\/db["']\s*\)/;
 function walk(dir: string, hits: string[]): void {

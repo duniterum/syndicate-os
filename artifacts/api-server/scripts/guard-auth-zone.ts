@@ -116,10 +116,22 @@ const operatorDir = path.resolve(srcDir, "operator");
 const operatorFiles = allSrcTs.filter((f) =>
   f.startsWith(operatorDir + path.sep),
 );
+// SPEC R3 amendment (channel zone, founder GO 2026-07-19): src/channel is the
+// THIRD sanctioned non-spine zone — the constitutionally-named channel log
+// (CONSTITUTION_AUTORITE §③ N2: "Le log des canaux" · "Les analytics").
+// ANONYMOUS, bounded, fail-closed 204 beacons ONLY (click + receipt-verified
+// conversion) — the least-trusting zone by design: no cookies, no sessions,
+// no identity, no reads, nothing echoed. Excluded from the read-only spine
+// scan and pinned to its exact approved shape by section 10 below.
+const channelDir = path.resolve(srcDir, "channel");
+const channelFiles = allSrcTs.filter((f) =>
+  f.startsWith(channelDir + path.sep),
+);
 const spineFiles = allSrcTs.filter(
   (f) =>
     !f.startsWith(authDir + path.sep) &&
-    !f.startsWith(operatorDir + path.sep),
+    !f.startsWith(operatorDir + path.sep) &&
+    !f.startsWith(channelDir + path.sep),
 );
 
 check(
@@ -139,7 +151,7 @@ for (const abs of spineFiles) {
   check(
     !WRITE_VERB.test(code),
     `${rel}: no write verbs (read-only spine)`,
-    `${rel} declares a write verb (.post/.put/.patch/.delete) outside src/auth and src/operator — the read-only spine must stay GET-only`,
+    `${rel} declares a write verb (.post/.put/.patch/.delete) outside src/auth, src/operator and src/channel — the read-only spine must stay GET-only`,
   );
 }
 const appCode = stripComments(read(path.resolve(srcDir, "app.ts")));
@@ -227,7 +239,19 @@ const MEMBER_BRIDGE_FILE = "auth/memberRoster.ts";
 // — the no-email canon needs an honest badge). Lazily imported, fail-closed.
 // Pinned below to the exact own-row shape.
 const INBOX_BRIDGE_FILE = "auth/memberInbox.ts";
-const DB_BRIDGE_FILES = new Set([OPERATOR_BRIDGE_FILE, MEMBER_BRIDGE_FILE, INBOX_BRIDGE_FILE]);
+// SPEC R3 (founder GO 2026-07-19): channelStanding.ts is the FOURTH sanctioned
+// DB-reaching auth file — the member's OWN-ROW channel breakdown (aggregate
+// clicks + receipt-verified conversions per tag, for the session's own
+// resolved source only; rows written ONLY by the anonymous src/channel zone).
+// Read-only here, lazily imported, fail-closed. Pinned below to the exact
+// own-row shape.
+const CHANNEL_BRIDGE_FILE = "auth/channelStanding.ts";
+const DB_BRIDGE_FILES = new Set([
+  OPERATOR_BRIDGE_FILE,
+  MEMBER_BRIDGE_FILE,
+  INBOX_BRIDGE_FILE,
+  CHANNEL_BRIDGE_FILE,
+]);
 const REGISTRY_REACH = /@workspace\/db|drizzle|historical_member|memberRoot|ACTIVE/;
 // For helpers OUTSIDE src/auth (one-hop transitive scan) only true DB reach
 // counts — "ACTIVE" is a legitimate chain-decode status word in read-only
@@ -430,6 +454,69 @@ for (const abs of authFiles) {
       !/\b(console|res|req|logger)\s*\./.test(code),
       `${INBOX_BRIDGE_FILE}: pure lookup module — no response, request, or log surface`,
       `${INBOX_BRIDGE_FILE} must stay a pure lookup module (no res/req/console/logger) so the verified account can never be echoed or logged from here`,
+    );
+  }
+}
+{
+  const channelBridgeAbs = path.join(srcDir, CHANNEL_BRIDGE_FILE);
+  const channelBridgeExists = existsSync(channelBridgeAbs);
+  check(
+    channelBridgeExists,
+    `${CHANNEL_BRIDGE_FILE}: present`,
+    `${CHANNEL_BRIDGE_FILE} missing — remove its guard exception if the channel breakdown read is retired`,
+  );
+  if (channelBridgeExists) {
+    const code = stripComments(read(channelBridgeAbs));
+    check(
+      !/^\s*import[^;]*@workspace\/db/m.test(code) &&
+        /await import\(\s*\n?\s*["']@workspace\/db["']\s*\n?\s*\)/.test(code),
+      `${CHANNEL_BRIDGE_FILE}: @workspace/db is lazily imported only`,
+      `${CHANNEL_BRIDGE_FILE} must import @workspace/db ONLY via a lazy await import() — a top-level import couples the read-only server to a DB at boot`,
+    );
+    {
+      const flagGateIdx = code.search(/AUTH_EXPOSURE_FLAG\]\s*!==\s*["']true["']/);
+      const dbUrlIdx = code.indexOf("DATABASE_URL");
+      const lazyImportIdx = code.search(/await import\(/);
+      check(
+        flagGateIdx !== -1 &&
+          dbUrlIdx !== -1 &&
+          lazyImportIdx !== -1 &&
+          flagGateIdx < lazyImportIdx &&
+          dbUrlIdx < lazyImportIdx,
+        `${CHANNEL_BRIDGE_FILE}: exposure-flag + DATABASE_URL gate executes BEFORE the lazy DB import`,
+        `${CHANNEL_BRIDGE_FILE} must check the auth exposure flag and DATABASE_URL presence BEFORE the lazy @workspace/db import — gate order drifted`,
+      );
+    }
+    check(
+      /catch\s*(\([^)]*\))?\s*\{[^}]*return null/.test(code),
+      `${CHANNEL_BRIDGE_FILE}: any error fails closed to null`,
+      `${CHANNEL_BRIDGE_FILE} must return null from its catch — DB errors must never invent a breakdown`,
+    );
+    // Own-row ONLY: the source is resolved through the SAME session-account
+    // resolver as source-standing (canonical + D2 founder-signed fallback);
+    // both table reads filter on that resolved id and nothing else.
+    check(
+      /readOwnSourceStanding\(account\.toLowerCase\(\)\)/.test(code) &&
+        /eq\(referralChannelClick\.sourceIdHex,\s*sourceIdHex\)/.test(code) &&
+        /eq\(referralChannelConversion\.sourceIdHex,\s*sourceIdHex\)/.test(code),
+      `${CHANNEL_BRIDGE_FILE}: own-row where clauses (the session's own resolved source only)`,
+      `${CHANNEL_BRIDGE_FILE} drifted — the breakdown must resolve the source via readOwnSourceStanding(account.toLowerCase()) and filter BOTH tables on that resolved id only`,
+    );
+    {
+      const rowShape =
+        code.match(/export interface ChannelBreakdownRow \{[\s\S]*?\n\}/)?.[0] ?? "";
+      check(
+        rowShape.length > 0 &&
+          !/[wW]allet/.test(rowShape) &&
+          !/[sS]ource/.test(rowShape),
+        `${CHANNEL_BRIDGE_FILE}: served ChannelBreakdownRow carries NO wallet/source field`,
+        `${CHANNEL_BRIDGE_FILE} ChannelBreakdownRow drifted — served rows carry via/clicks/conversions only, never wallet or source material`,
+      );
+    }
+    check(
+      !/\b(console|res|req|logger)\s*\./.test(code),
+      `${CHANNEL_BRIDGE_FILE}: pure lookup module — no response, request, or log surface`,
+      `${CHANNEL_BRIDGE_FILE} must stay a pure lookup module (no res/req/console/logger) so the verified account can never be echoed or logged from here`,
     );
   }
 }
@@ -1469,6 +1556,192 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
       !HEX40.test(code) && !HEX64.test(code),
       `${rel}: no wallet-address / 64-hex literals`,
       `${rel} contains wallet-address or 64-hex material`,
+    );
+  }
+}
+
+// ── 10. Channel zone shape (SPEC R3 — founder GO 2026-07-19) ────────────────
+// The THIRD sanctioned zone, pinned to its exact approved shape: two
+// ANONYMOUS fail-closed 204 beacons and NOTHING else. The zone's whole
+// safety argument is what it does NOT have — sessions, cookies, reads,
+// echoes, identity, logs — so this section pins the absences as hard as the
+// presences.
+{
+  const CHANNEL_ZONE_FILES = [
+    "channelStore.ts",
+    "channelThrottle.ts",
+    "router.ts",
+    "sourceExistence.ts",
+    "txVerify.ts",
+  ];
+  const actualChannelFiles = channelFiles
+    .map((f) => path.relative(channelDir, f).split(path.sep).join("/"))
+    .sort();
+  check(
+    JSON.stringify(actualChannelFiles) === JSON.stringify(CHANNEL_ZONE_FILES),
+    `channel zone file set is exactly [${CHANNEL_ZONE_FILES.join(", ")}]`,
+    `src/channel file set drifted (${actualChannelFiles.join(", ")}) — a new channel-zone file is a deliberate guard amendment, never a drive-by`,
+  );
+
+  // 10a. Mount: /api/channel, deliberately NOT behind authExposureGate (an
+  // anonymous click is not an auth act; without a DATABASE_URL the store
+  // drops silently), mounted BEFORE the read-only spine.
+  check(
+    /app\.use\("\/api\/channel",\s*channelRouter\)/.test(appCode) &&
+      !/app\.use\("\/api\/channel",\s*authExposureGate/.test(appCode),
+    "channel router mounted at /api/channel WITHOUT the auth exposure gate (fail-closed via DATABASE_URL absence instead)",
+    'app.ts must mount app.use("/api/channel", channelRouter) — no exposure gate (the zone is anonymous by design and fail-closed via DATABASE_URL)',
+  );
+
+  const channelRouterAbs = path.resolve(channelDir, "router.ts");
+  if (existsSync(channelRouterAbs)) {
+    const chCode = stripComments(read(channelRouterAbs));
+    // 10b. Exactly two POST routes; no GET; no lookup surface; no cookies.
+    check(
+      /router\.post\("\/click",/.test(chCode) &&
+        /router\.post\("\/conversion",/.test(chCode) &&
+        (chCode.match(/router\.(post|put|patch|delete|get)\(/g) ?? []).length === 2,
+      "channel router: exactly POST /click + POST /conversion, nothing else",
+      "src/channel/router.ts route set drifted — the zone is exactly the two approved beacons (POST /click, POST /conversion); anything else is a deliberate amendment",
+    );
+    check(
+      !/req\.(query|params)\b/.test(stripStringLiterals(chCode)),
+      "channel router: no req.query / req.params (no lookup surface)",
+      "src/channel/router.ts reads req.query/req.params — the beacons take a validated body and nothing else",
+    );
+    check(
+      !/cookieParser|req\.cookies|res\.cookie/.test(chCode),
+      "channel router: no cookies in the zone (anonymous by design)",
+      "src/channel/router.ts touches cookies — the channel zone is anonymous; a cookie would be a visitor identifier (ADR-003)",
+    );
+    check(
+      !/sessionStore|getSessionAccount|SESSION_COOKIE_NAME/.test(chCode),
+      "channel router: no session reach (anonymous by design)",
+      "src/channel/router.ts reaches session material — the beacons must never resolve identity",
+    );
+    // 10c. Scoped tiny body parser + origin defense + throttle-first.
+    check(
+      /json\(\{\s*limit:\s*"1kb"\s*\}\)/.test(chCode),
+      "channel router: scoped 1kb JSON parser",
+      'src/channel/router.ts must mount json({ limit: "1kb" }) — scoped, tiny',
+    );
+    check(
+      /isAllowedBrowserOrigin/.test(chCode) && /sec-fetch-site/.test(read(channelRouterAbs)),
+      "channel router: browser origin + fetch-metadata defense present",
+      "src/channel/router.ts must keep the dropCrossOrigin defense (origin allow-list + sec-fetch-site)",
+    );
+    check(
+      /allowChannelClick\(throttleKey\(req\)\)/.test(chCode) &&
+        /allowChannelConversion\(throttleKey\(req\)\)/.test(chCode),
+      "channel router: both beacons throttle-first via the hashed client key",
+      "src/channel/router.ts must throttle both beacons via allowChannelClick/allowChannelConversion(throttleKey(req)) before any work",
+    );
+    // 10d. 204-only: nothing is echoed, nothing exists to probe.
+    check(
+      /res\.status\(204\)\.end\(\)/.test(chCode) &&
+        !/\.json\(/.test(chCode) &&
+        !/res\.send\(/.test(chCode),
+      "channel router: 204-only responses — nothing echoed, no error detail",
+      "src/channel/router.ts must answer ONLY res.status(204).end() — a body/echo creates a probe surface and can leak submitted material",
+    );
+    // 10e. Validation + tag law + verification order.
+    check(
+      /safeParse\(req\.body\)/.test(chCode) &&
+        /\^\[a-z0-9\]\[a-z0-9_-\]\{0,23\}\$/.test(chCode),
+      "channel router: zod-validated body + the pinned channel-tag law",
+      "src/channel/router.ts must zod-safeParse the body and keep the tag law ^[a-z0-9][a-z0-9_-]{0,23}$ (lowercase, short, boring — never prose)",
+    );
+    {
+      const existsIdx = chCode.indexOf("sourceExistsCached");
+      const verifyIdx = chCode.indexOf("verifyConversionOnChain");
+      const recordConvIdx = chCode.indexOf("recordConversion");
+      check(
+        existsIdx !== -1 &&
+          verifyIdx !== -1 &&
+          recordConvIdx !== -1 &&
+          verifyIdx < recordConvIdx,
+        "channel router: conversions are receipt-verified on-chain BEFORE recording; clicks require registry existence",
+        "src/channel/router.ts drifted — recordConversion may run ONLY after verifyConversionOnChain, and clicks/conversions ONLY for a registry-confirmed source",
+      );
+    }
+    // 10f. No log surface: the zone logs nothing at all (a sourceId/tag/tx in
+    // a log line would be a stored trace outside the disclosed record).
+    check(
+      !/req\.log|logger|console\./.test(chCode),
+      "channel router: zero log surface",
+      "src/channel/router.ts must not log — the disclosed record is the DB aggregate, never log lines",
+    );
+  }
+
+  // 10g. Store discipline: DATABASE_URL gate before the lazy import; every
+  // failure swallowed (fail closed); the per-day distinct-tag cap present;
+  // conversion inserts are insert-ignore on the unique tx hash.
+  const channelStoreAbs = path.resolve(channelDir, "channelStore.ts");
+  if (existsSync(channelStoreAbs)) {
+    const stCode = stripComments(read(channelStoreAbs));
+    check(
+      !/^\s*import[^;]*@workspace\/db/m.test(stCode) &&
+        /await import\(/.test(stCode) &&
+        stCode.indexOf("DATABASE_URL") < stCode.indexOf("await import("),
+      "channel store: DATABASE_URL gate executes BEFORE the lazy DB import",
+      "src/channel/channelStore.ts must gate on DATABASE_URL presence BEFORE the lazy @workspace/db import",
+    );
+    check(
+      /MAX_VIAS_PER_SOURCE_PER_DAY/.test(stCode),
+      "channel store: per-source per-day distinct-tag cap present",
+      "src/channel/channelStore.ts must keep the MAX_VIAS_PER_SOURCE_PER_DAY row-growth bound",
+    );
+    check(
+      /onConflictDoNothing\(\)/.test(stCode),
+      "channel store: conversion insert is insert-ignore on the unique tx hash",
+      "src/channel/channelStore.ts conversion write must stay onConflictDoNothing — the unique tx hash is the double-count defense",
+    );
+    check(
+      !/\b(console|res|req|logger)\s*\./.test(stCode),
+      "channel store: pure service module — no response, request, or log surface",
+      "src/channel/channelStore.ts must stay a pure service (no res/req/console/logger)",
+    );
+  }
+
+  // 10h. Verification discipline: chain probed first; tx must have succeeded;
+  // the decode runs against the pinned V3 event; the sale address comes from
+  // the canon target table, never a literal.
+  const txVerifyAbs = path.resolve(channelDir, "txVerify.ts");
+  if (existsSync(txVerifyAbs)) {
+    const tvCode = stripComments(read(txVerifyAbs));
+    check(
+      /probeChain/.test(tvCode) &&
+        /eth_getTransactionReceipt/.test(tvCode) &&
+        tvCode.indexOf("probeChain") < tvCode.indexOf("eth_getTransactionReceipt"),
+      "tx verify: chain identity probed BEFORE the receipt read",
+      "src/channel/txVerify.ts must probeChain before eth_getTransactionReceipt (fail closed on wrong chain)",
+    );
+    check(
+      /status\s*!==\s*"0x1"/.test(tvCode) &&
+        /MEMBERSHIP_PURCHASED_V3_DEF/.test(tvCode) &&
+        /decodeSaleEventLog/.test(tvCode) &&
+        /SALE_TARGETS/.test(tvCode),
+      "tx verify: success-status + pinned V3 event decode + canon sale address",
+      "src/channel/txVerify.ts drifted — it must require receipt status 0x1, decode against MEMBERSHIP_PURCHASED_V3_DEF, and take the sale address from SALE_TARGETS (never a literal)",
+    );
+  }
+
+  // 10i. Fixture/identity parity for the whole zone: no hex literals, no
+  // top-level @workspace/db anywhere, no IP APIs (the zone-wide scans in
+  // sections 2/5/7 already cover storage/credentials/req.ip — these are the
+  // zone-specific extras).
+  for (const abs of channelFiles) {
+    const rel = path.relative(srcDir, abs);
+    const code = stripComments(read(abs));
+    check(
+      !HEX40.test(code) && !HEX64.test(code),
+      `${rel}: no wallet-address / 64-hex literals`,
+      `${rel} contains wallet-address or 64-hex material`,
+    );
+    check(
+      !/^\s*import[^;]*@workspace\/db/m.test(code),
+      `${rel}: no top-level @workspace/db import`,
+      `${rel} imports @workspace/db at top level — DB reach must stay lazy inside channelStore.ts`,
     );
   }
 }

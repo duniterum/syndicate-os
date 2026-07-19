@@ -146,14 +146,44 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   ("4 streams faulted" → cursor recovery, 2 clean cycles, headBlock 90.668M advancing) ·
 >   byte-identity remote==local (entry `index-DTokzzg6.js` + `OperatorConsole-CYNhk8LL.js`
 >   both IDENTICAL). No anomalies. **DEPLOY BACKLOG: EMPTY. Tree clean.**
-> - **SLICES 3–6 (IN ORDER, NEXT = 3) — THE ADDS** (from the SYSTEM-FIRST harvest `wf_81dd540b`):
->   ③ the `&via` channels analytics (biggest gap; the click store = small backend) ·
->   ④ per-introduction rows (needs the row-level adapter, server) · ⑤ commission anatomy
->   (the static anatomy card shipped in slice 2; ⑤ = the receipt-backed breakdown) ·
->   ⑥ recognition/season axis (Phase-5). Their honest-future SHELLS are live in the tabs
->   since slice 2; each slice replaces its shell with the real record. **DON'T show a
->   downline/directory/name/alias/email — but DO show chain-emitted addresses (own-row,
->   we hide nothing).**
+> - ✅ **SLICE 3 — THE `&via` CHANNELS ANALYTICS (SPEC R3 WHOLE), BUILT + COMMITTED
+>   [this commit] (founder approved the LEGAL WORDING + "Approved GO and GO-Live"
+>   2026-07-19).** The THIRD sanctioned write zone `src/channel/` stood up through the
+>   constitutional mechanism (CONSTITUTION_AUTORITE §③ N2 names "le log des canaux" as a
+>   permitted server write; guard-auth-zone section 10 pins the shape — 1002/1002):
+>   two ANONYMOUS 204-always beacons (`POST /api/channel/click|conversion` — throttled
+>   per hashed client key, zod, tag law ^[a-z0-9][a-z0-9_-]{0,23}$, registry-existence
+>   cached, conversions RECEIPT-VERIFIED on-chain by the server before recording,
+>   DATABASE_URL-gated fail-closed, zero echo/zero logs) · 2 NEW TABLES
+>   (`referral_channel_click` = daily aggregate counters, `referral_channel_conversion`
+>   = unique-tx receipt-verified rows — **NO visitor identity by construction**: no IP,
+>   no UA, no cookie, no per-click rows, day grain only; ADR-003) · own-row read
+>   `GET /api/auth/channel-standing` (channelStanding.ts = the FOURTH sanctioned auth
+>   DB bridge; same D2-aware source resolution as source-standing; payload = via/clicks/
+>   conversions only) · client: /join parses `&via`, one click beacon per landing
+>   (in-memory dedupe), the conversion beacon fires AFTER the sealed receipt with the
+>   EVENT's own sourceId (off the money path) · the Link & channels tab's shell became
+>   the LIVE breakdown (honest unavailable/empty/rows states) · THE LEGAL SWEEP in the
+>   same commit: Privacy → Version 2 draft 2026-07-19 (first-party channel counter
+>   disclosed + the notification record-class V1 omission fixed; still zero third-party
+>   analytics), Terms §7 corrected (the "makes no database writes" line was ALREADY
+>   false since NOTIF-1), /privacy + /source metas, syndicateFacts own-row line,
+>   sourceStatus source note, COMPASS #11 (three sanctioned zones named), replit.md,
+>   rollback checklist, OPERATOR_WALLET design §0.4 amendment note, and
+>   `docs/legal/drafts/privacy-amendment-v2-2026-07-19.md` for counsel. GATE: root tsc
+>   0 · studio guards green (access-state 1062) · api guards green (auth-zone 1002 +
+>   the two lazy-DB allow-lists amended deliberately) · seo 491 · audit 322 · build 32
+>   shells + byte-identical compression + admin-dist 93 · rig-verified (beacon 204 once,
+>   garbage conversion silently dropped, honest card states, Privacy v2 renders, zero
+>   console errors). **AWAITING THE REPLIT SEAL — REAL MIGRATION (2 additive tables →
+>   `pnpm --filter @workspace/db push`), ITS OWN CYCLE, NEVER BATCHED.**
+> - **SLICES 4–6 (IN ORDER, NEXT = 4) — THE REMAINING ADDS** (from the SYSTEM-FIRST
+>   harvest `wf_81dd540b`): ④ per-introduction rows (needs the row-level adapter,
+>   server) · ⑤ commission anatomy (the static anatomy card shipped in slice 2; ⑤ = the
+>   receipt-backed breakdown) · ⑥ recognition/season axis (Phase-5). Their honest-future
+>   SHELLS are live in the tabs; each slice replaces its shell with the real record.
+>   **DON'T show a downline/directory/name/alias/email — but DO show chain-emitted
+>   addresses (own-row, we hide nothing).**
 >
 > **HARD-WON DOCTRINE (this session — do NOT re-litigate):**
 > - **SEAT = the on-chain membership, ALWAYS** (binary, numbered). A session

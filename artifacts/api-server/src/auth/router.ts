@@ -68,6 +68,8 @@ import {
   markInboxRead,
   type InboxPayload,
 } from "./memberInbox";
+// SPEC R3 — the own-row channel breakdown (the FOURTH sanctioned DB bridge).
+import { readOwnChannelBreakdown } from "./channelStanding";
 import { resolveOwnStanding } from "../lib/protocol/holderIndexStanding";
 import { txUrl } from "../canon/the-syndicate/chain/chain-registry";
 import { assertProtocolRealityDiscipline } from "../lib/protocol/payloadDiscipline";
@@ -604,6 +606,54 @@ router.get("/source-standing", async (req: Request, res: Response) => {
   req.log.info({
     event: "auth.source_standing.checked",
     code: !sessionActive ? "none" : resolved.standing !== null ? "mapped" : "unavailable",
+  });
+  res.json(payload);
+});
+
+// ── GET /api/auth/channel-standing ──────────────────────────────────────────
+// SPEC R3 (`&via=`, founder GO 2026-07-19) — the member's OWN channel
+// breakdown: aggregate clicks + receipt-verified conversions per tag, for
+// the session's own resolved source only (the same D2-aware resolution as
+// source-standing, inside auth/channelStanding.ts — the FOURTH sanctioned
+// DB-reaching auth file). The ONLY input is the session cookie; no query
+// surface exists; the payload carries no wallet and no source id — just
+// tag/clicks/conversions rows. Fail-closed: gate closed / resolution or DB
+// miss → available:false with empty rows, never an invented zero.
+router.get("/channel-standing", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "auth.channel_standing.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const boundAccount =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+
+  const sessionActive = boundAccount !== null;
+  const breakdown =
+    boundAccount === null ? null : await readOwnChannelBreakdown(boundAccount);
+
+  const payload = {
+    state: sessionActive ? ("S4" as const) : ("S1" as const),
+    available: breakdown !== null,
+    rows: breakdown?.rows ?? [],
+  };
+  try {
+    assertProtocolRealityDiscipline(payload);
+    if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(JSON.stringify(payload))) {
+      throw new Error("address-shaped token in payload");
+    }
+  } catch {
+    req.log.warn({ event: "auth.channel_standing.discipline_rejected" });
+    deny(res, 500, "unavailable");
+    return;
+  }
+  req.log.info({
+    event: "auth.channel_standing.checked",
+    code: !sessionActive ? "none" : breakdown !== null ? "served" : "unavailable",
   });
   res.json(payload);
 });

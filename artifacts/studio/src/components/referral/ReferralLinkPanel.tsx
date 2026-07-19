@@ -122,6 +122,110 @@ function MyReferralLinkCard({ readback }: { readback: StandingReadback | null })
   );
 }
 
+// SPEC R3 — the member's OWN channel breakdown (aggregate clicks + receipt-
+// verified conversions per `&via=` tag), read through the gated wallet module
+// via a runtime dynamic import (guard rule 15) and re-read on session change.
+// Null = not loaded / read failed → the card renders its honest state; a
+// figure only ever comes from the readback.
+type ChannelReadback = import("@/wallet/walletSession").ChannelBreakdownReadback;
+
+function useOwnChannelBreakdown(): ChannelReadback | null {
+  const [readback, setReadback] = useState<ChannelReadback | null>(null);
+  useEffect(() => {
+    let active = true;
+    let cleanup: (() => void) | null = null;
+    void Promise.all([
+      import("@/wallet/walletSession"),
+      import("@/wallet/sessionEvents"),
+    ]).then(([ws, ev]) => {
+      if (!active) return;
+      const read = () => {
+        void ws.fetchChannelBreakdown().then((r) => {
+          if (active) setReadback(r);
+        });
+      };
+      read();
+      window.addEventListener(ev.SESSION_CHANGED_EVENT, read);
+      cleanup = () => window.removeEventListener(ev.SESSION_CHANGED_EVENT, read);
+    });
+    return () => {
+      active = false;
+      cleanup?.();
+    };
+  }, []);
+  return readback;
+}
+
+// The channels card — LIVE since slice ③ (the click store ships): the
+// landing counts per tag server-side (aggregate only — never who clicked),
+// and a conversion appears only after its purchase receipt is verified
+// on-chain by the server itself.
+function ChannelsCard() {
+  const readback = useOwnChannelBreakdown();
+  const served = readback !== null && readback.available;
+  return (
+    <Card className="bg-card/40 border-border/50 p-5 mb-6">
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-sm font-medium text-foreground">
+          Channels — where your clicks come from
+        </span>
+        {served ? (
+          <StatusPill tone="live" size="xs">Live · your own row</StatusPill>
+        ) : null}
+      </div>
+      <p className="text-sm text-muted-foreground leading-relaxed">
+        Add <span className="font-mono text-foreground/80">&amp;via=twitter</span>,{" "}
+        <span className="font-mono text-foreground/80">&amp;via=blog</span> or{" "}
+        <span className="font-mono text-foreground/80">&amp;via=telegram</span> to
+        your link. Landings are counted per channel — aggregate daily counts
+        only, never who clicked — and a conversion is recorded only after its
+        purchase receipt is verified on-chain.
+      </p>
+      {!served ? (
+        <p className="text-sm text-muted-foreground leading-relaxed mt-3">
+          {readback === null
+            ? "The channel read is resolving — nothing is assumed, nothing is invented."
+            : "The channel read is unavailable right now — nothing is assumed, nothing is invented."}
+        </p>
+      ) : readback.rows.length === 0 ? (
+        <div className="rounded-md border border-dashed border-border/60 bg-card/30 p-4 mt-3">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            No channels tracked yet. Share your link with a{" "}
+            <span className="font-mono text-foreground/80">&amp;via=</span> tag and
+            your channel breakdown appears here.
+          </p>
+        </div>
+      ) : (
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-muted-foreground">
+                <th className="font-mono text-xs uppercase tracking-wider font-normal py-1.5 pr-4">Channel</th>
+                <th className="font-mono text-xs uppercase tracking-wider font-normal py-1.5 pr-4">Clicks</th>
+                <th className="font-mono text-xs uppercase tracking-wider font-normal py-1.5">Conversions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {readback.rows.map((row) => (
+                <tr key={row.via} className="border-t border-border/40">
+                  <td className="font-mono text-foreground/90 py-2 pr-4">{row.via}</td>
+                  <td className="font-mono text-foreground py-2 pr-4">{row.clicks}</td>
+                  <td className="font-mono text-gold py-2">{row.conversions}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+            A conversion is a completed purchase whose receipt the server
+            verified on-chain against your source — the channel is off-chain,
+            the proof is not.
+          </p>
+        </div>
+      )}
+    </Card>
+  );
+}
+
 /** A collapsed reference section (WORK-FIRST: closed by default). */
 function ReferenceSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -142,24 +246,8 @@ export function ReferralLinkPanel({ readback }: { readback: StandingReadback | n
     <div>
       <MyReferralLinkCard readback={readback} />
 
-      {/* The &via channels slot — the system's biggest recorded gap (SPEC R3);
-          the click store is its own slice, so this stays an honest shell. */}
-      <Card className="bg-card/30 border-border/50 border-dashed p-5 mb-6">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-sm font-medium text-muted-foreground">
-            Channels — where your clicks come from
-          </span>
-          <LifecycleBadge lifecycle="FUTURE" />
-        </div>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          Add <span className="font-mono text-foreground/80">&amp;via=twitter</span>,{" "}
-          <span className="font-mono text-foreground/80">&amp;via=blog</span> or{" "}
-          <span className="font-mono text-foreground/80">&amp;via=telegram</span> to
-          your link, and this panel will show clicks and conversions per channel —
-          each conversion tied to an on-chain receipt. Self-service and private;
-          the channel breakdown arrives with its own slice.
-        </p>
-      </Card>
+      {/* SPEC R3 — the channels breakdown, LIVE (slice ③: the click store). */}
+      <ChannelsCard />
 
       {/* Reference — always available, never leading (WORK-FIRST). */}
       <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">

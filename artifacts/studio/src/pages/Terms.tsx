@@ -132,11 +132,12 @@ export default function Terms() {
       <S n="7" title="No custody, no advice">
         <p>
           We never hold your funds or your tokens. The site&apos;s backend makes
-          no database writes and no state-changing chain calls, and it signs
-          nothing on your behalf. There is no deposit with us and no withdrawal
-          from us, because nothing of yours ever sits with us. Nothing on this
-          site is financial, legal, or tax advice. Decide with your own judgment
-          or your own advisors.
+          no state-changing chain calls and signs nothing on your behalf; the
+          records it keeps are the operational ones the Privacy Policy lists,
+          and none of them ever touches your funds. There is no deposit with us
+          and no withdrawal from us, because nothing of yours ever sits with
+          us. Nothing on this site is financial, legal, or tax advice. Decide
+          with your own judgment or your own advisors.
         </p>
       </S>
 

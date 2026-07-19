@@ -78,9 +78,12 @@ Publishing is checkpoint-based; rollback = re-publish a known-good state.
 1. **Identify the last known-good checkpoint** (the one behind the currently-live
    deploy, or the last one whose smoke pass was green).
 2. **Re-publish that checkpoint** via Replit's publish flow (publish history /
-   rollback in the deployments pane). No server-side data migration is involved —
-   the served backend is read-only and stateless (no runtime DB writes), so
-   rollback carries no data-loss risk.
+   rollback in the deployments pane). Unless the deploy carried a schema
+   migration (its own cycle by doctrine), no data migration is involved. The
+   runtime writes are confined to the three sanctioned zones (operator writes
+   + audit, member notification receipts, the aggregate channel log) — all
+   additive, none load-bearing for serving — so a code rollback loses no data
+   and breaks nothing; rows written meanwhile simply persist.
 3. **Re-run the smoke pass** (section 3) against production after rollback.
 4. **Environment rollback:** if a flag was changed (e.g. `SYNDICATE_AUTH_ENABLED`),
    unset it in the deployment environment and re-publish — deployment env changes

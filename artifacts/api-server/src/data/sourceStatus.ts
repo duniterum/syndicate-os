@@ -164,7 +164,7 @@ const CANON: CanonEntry[] = [
     publicClass: "SAFE_PUBLIC",
     sourceRef: "canon:referral-attribution",
     confidence: "high",
-    note: "Introduction/source registry is live: the spine surfaces the engine↔registry linkage, a read-only validate endpoint checks ids on demand, each signed source reads its OWN standing (introductions, durables, pay) from the introduction read-model, and the aggregate paid-to-referrers total is served publicly. Registration and activation stay owner-side on-chain acts.",
+    note: "Introduction/source registry is live: the spine surfaces the engine↔registry linkage, a read-only validate endpoint checks ids on demand, each signed source reads its OWN standing (introductions, durables, pay) from the introduction read-model, and the aggregate paid-to-referrers total is served publicly. The channel log (SPEC R3, 2026-07-19) counts link landings per channel tag as aggregate daily counts — never who clicked — and pairs a conversion to its tag only after the server verifies the purchase receipt on-chain; each source reads its own breakdown. Registration and activation stay owner-side on-chain acts.",
     surface: "/source",
   },
   {

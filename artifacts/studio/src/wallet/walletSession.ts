@@ -437,6 +437,48 @@ export async function fetchSourceStanding(): Promise<SourceStandingReadback | nu
   }
 }
 
+// ── SPEC R3: own-row channel breakdown (`&via=` — the channel log's read) ───
+export interface ChannelBreakdownReadback {
+  state: "S1" | "S4";
+  /** false = the read/gate/resolution missed — honest unavailable, never an
+   * invented empty; true + [] = genuinely no channels tracked yet. */
+  available: boolean;
+  rows: { via: string; clicks: number; conversions: number }[];
+}
+
+/**
+ * Read the signed wallet's OWN channel breakdown (aggregate clicks +
+ * receipt-verified conversions per tag, for the session's own source only).
+ * Null on ANY failure — the caller renders the honest state, never a figure.
+ */
+export async function fetchChannelBreakdown(): Promise<ChannelBreakdownReadback | null> {
+  try {
+    const res = await fetch("/api/auth/channel-standing", { method: "GET" });
+    if (!res.ok) return null;
+    const body: unknown = await res.json();
+    if (typeof body !== "object" || body === null) return null;
+    const o = body as Record<string, unknown>;
+    if (o.state !== "S1" && o.state !== "S4") return null;
+    const rows: ChannelBreakdownReadback["rows"] = [];
+    if (Array.isArray(o.rows)) {
+      for (const r of o.rows) {
+        if (typeof r !== "object" || r === null) continue;
+        const row = r as Record<string, unknown>;
+        if (
+          typeof row.via === "string" &&
+          typeof row.clicks === "number" &&
+          typeof row.conversions === "number"
+        ) {
+          rows.push({ via: row.via, clicks: row.clicks, conversions: row.conversions });
+        }
+      }
+    }
+    return { state: o.state, available: o.available === true, rows };
+  } catch {
+    return null;
+  }
+}
+
 // ── D-TRUTH D3: own purchase-history rows (the member's own receipts) ───────
 export interface OwnPurchaseRowReadback {
   isoDayUtc: string;

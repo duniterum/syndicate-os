@@ -183,7 +183,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Privacy Policy — The Syndicate",
     description:
-      "Built to know almost nothing about you: no accounts, no identity checks, one functional session cookie, no analytics — with the little that does exist said plainly.",
+      "Built to know almost nothing about you: no accounts, no identity checks, one functional session cookie, no third-party analytics — with the little that does exist said plainly.",
     canonicalPath: "/privacy",
     changefreq: "monthly",
     priority: 0.3,
@@ -192,7 +192,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "education",
     proofRoute: "/proof",
     notes:
-      "AUD-T (2026-07-16): every claim harvested from real code (cookie flags/TTLs, the two browser-preference keys, zero analytics verified, pino logs + IP throttle, on-chain mirror disclosure, WalletConnect + public RPC third parties) and adversarially fact-checked. Retention window + entity + contact = pending lines.",
+      "AUD-T (2026-07-16): every claim harvested from real code (cookie flags/TTLs, the two browser-preference keys, pino logs + IP throttle, on-chain mirror disclosure, WalletConnect + public RPC third parties) and adversarially fact-checked. V2 draft (SPEC R3, 2026-07-19): the referral channel counter disclosed — the one first-party aggregate record (code+tag+day counts, no visitor identity); third-party analytics still zero. Retention window + entity + contact = pending lines.",
   },
   {
     path: "/risk",
@@ -863,7 +863,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "join",
     proofRoute: "/status",
     notes:
-      "Public Verified-Introduction link builder (Public Online Integration MVP). The old operator source console moved to /os-source.",
+      "Public Verified-Introduction link builder (Public Online Integration MVP). The old operator source console moved to /os-source. SPEC R3 (2026-07-19): checking a code still writes nothing; a landing on a BUILT link that carries a &via= tag adds one to the code owner's per-channel daily count (aggregate only — the page copy discloses it).",
   },
   // /os-source — the operator source console (read-only; creation/activation
   // stay owner-side on-chain acts). Was /source before the public link

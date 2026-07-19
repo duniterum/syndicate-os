@@ -110,7 +110,7 @@ Verify links are served only by the read-only endpoint GET /api/protocol/verify-
 
 ## Legal
 - [Terms of Use](https://thesyndicate.money/terms)
-- [Privacy Policy](https://thesyndicate.money/privacy): No accounts, no identity checks, no analytics.
+- [Privacy Policy](https://thesyndicate.money/privacy): No accounts, no identity checks, no third-party analytics; the one first-party record (the referral channel counter — counts, never people) said plainly.
 - [Risk Disclosure](https://thesyndicate.money/risk): The price of SYN can fall to zero; smart contracts can have flaws; your keys are your only access; blockchain transactions are final.
 
 ## Contact & channels

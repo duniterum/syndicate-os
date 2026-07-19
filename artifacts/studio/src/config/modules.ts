@@ -347,7 +347,7 @@ export const modules = [
     live: false,
     phase: "live",
     description:
-      "Built to know almost nothing about you: no accounts, no identity checks, one functional cookie, no analytics — said plainly, with what little does exist disclosed.",
+      "Built to know almost nothing about you: no accounts, no identity checks, one functional cookie, no third-party analytics — said plainly, with what little does exist disclosed.",
     dependencies: [],
     nav: { header: false, sidebar: false, footer: true },
     icon: ShieldCheck,

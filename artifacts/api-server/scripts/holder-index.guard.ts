@@ -232,6 +232,12 @@ const DB_LAZY_ALLOW = new Set([
   // NOTIF-1: the member OWN-ROW inbox read — session wallet only, served rows
   // carry no wallet. Lazy-only; fail-closed.
   "src/auth/memberInbox.ts",
+  // SPEC R3 (founder GO 2026-07-19): the channel-log store (anonymous
+  // aggregate clicks + receipt-verified conversions, DATABASE_URL-gated) and
+  // the member OWN-ROW channel breakdown read. Lazy-only; pinned by
+  // guard-auth-zone.ts section 10 + the channelStanding bridge pins.
+  "src/channel/channelStore.ts",
+  "src/auth/channelStanding.ts",
 ]);
 const DB_STATIC_IMPORT_RE =
   /(from\s*["']@workspace\/db["'])|(import\s*["']@workspace\/db["'])|(require\s*\(\s*["']@workspace\/db["']\s*\))/;

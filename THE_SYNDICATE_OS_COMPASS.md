@@ -50,7 +50,7 @@ restates almost nothing. Read this first, then open only the source docs your ta
 8. Activity, Chronicle, Register, Archive are distinct surfaces — do not merge their doctrines. (`the-syndicate-master-operating-map.md`)
 9. Designed transparency is intended; accidental raw leaks are forbidden — wallet/proof/tx detail is server-side until deliberately surfaced; the memberNumber→wallet mapping is never exposed. (`SOURCE_BOUNDARY_MANIFEST.md`, `WALLET_IDENTITY_AND_HOLDER_INDEX_DESIGN.md`)
 10. One canon each — posture vocabulary (`lib/os-contracts`), event taxonomy (`protocol-event-registry.ts`), route/IA map (`seo-route-registry.ts`). Parallel versions are doctrine drift.
-11. Served backend is read-only and fails closed: no runtime DB writes, no state-changing chain calls, canon mismatch → `null`, never a normalized/invented value. (`replit.md` — Architecture decisions)
+11. Served backend is read-only and fails closed — no state-changing chain calls, canon mismatch → `null`, never a normalized/invented value — amended by exactly THREE founder-approved sanctioned write zones, each pinned by guard-auth-zone to its approved shape: the operator write zone (`src/operator/`, July 2026), the member own-row notification receipts (`src/auth/memberInbox.ts`, 2026-07-18), and the anonymous aggregate channel log (`src/channel/`, SPEC R3, 2026-07-19 — clicks per referral code+tag+day, receipt-verified conversions, no visitor identity ever). Everything else never writes. (`replit.md` — Architecture decisions)
 12. Source attribution = verified introduction (business mechanics preserved); never multi-level or income-promise framing. (`CAPABILITY_HARVEST_AND_REUSE_MAP.md`, `CORRECTED_DOCTRINE_REHARVEST_2_20G.md`)
 
 ## 4. Task → source-doc routing

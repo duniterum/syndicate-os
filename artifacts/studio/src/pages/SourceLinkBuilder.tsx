@@ -178,8 +178,11 @@ export default function SourceLinkBuilder() {
             </h2>
             <p className="text-sm text-muted-foreground leading-relaxed mt-1 max-w-2xl">
               The code is validated server-side against the live registry and is
-              never echoed back or logged. The link you build carries the code
-              you pasted — share it only if it is yours to share.
+              never echoed back. The link you build carries the code you
+              pasted — share it only if it is yours to share. If you add a
+              channel tag (&amp;via=), landings on your link are counted per
+              channel for the code&apos;s owner — a daily count, never who
+              clicked.
             </p>
           </div>
         </div>

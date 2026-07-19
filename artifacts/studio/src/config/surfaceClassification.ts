@@ -141,7 +141,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PUBLIC_VISITOR",
     layout: "public",
     summary:
-      "Privacy Policy — every claim harvested from real code: one functional cookie, two local preferences, zero analytics, logs disclosed plainly.",
+      "Privacy Policy — every claim harvested from real code: one functional cookie, two local preferences, zero third-party analytics, the first-party referral channel counter disclosed, logs said plainly.",
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },

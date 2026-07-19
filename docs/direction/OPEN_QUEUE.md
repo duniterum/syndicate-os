@@ -36,9 +36,14 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > sub-routes 200 + canonical → /referral + noindex,follow · sitemap 25 exact · wall holds ·
 > byte-identity remote==local · no anomalies)** — founder preview-approved on the rig +
 > "Go and GO-Live" 2026-07-19; full gate green (18 studio + 17 api guards, seo 491, audit 322)
-> → slices 3–6 (the adds, NEXT = ③ `&via` channels analytics: their honest-future shells are
-> LIVE in the tabs since slice 2; each slice replaces its shell with the real record).
-> Full state: SESSION_STATE.md.
+> → ✅ slice 3 (the `&via` CHANNELS ANALYTICS, SPEC R3 whole: the THIRD sanctioned write zone
+> `src/channel/` — anonymous aggregate click counters + receipt-verified conversions, NO visitor
+> identity by construction; own-row breakdown live in the Link & channels tab; Privacy → V2 draft +
+> Terms §7 correction, founder-approved wording) BUILT + COMMITTED [this commit] — "Approved GO and
+> GO-Live" 2026-07-19; guard-auth-zone 1002/1002; **AWAITING THE REPLIT SEAL: REAL MIGRATION (2
+> additive tables), its own cycle, never batched** → slices 4–6 (the adds, NEXT = ④
+> per-introduction rows: shells live in the tabs; each slice replaces its shell with the real
+> record). Full state: SESSION_STATE.md.
 
 > **▶ 2026-07-17 (STANDING RULE, founder, emphatic — engraved here AND in agent memory):
 > NEVER RE-BLOCK ON AN ANSWERED QUESTION. Founder gates exist ONLY for: security/

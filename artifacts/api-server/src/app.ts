@@ -5,6 +5,7 @@ import router from "./routes";
 import authRouter from "./auth/router";
 import { authExposureGate } from "./auth/authExposure";
 import operatorRouter from "./operator/router";
+import channelRouter from "./channel/router";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
@@ -127,6 +128,17 @@ app.use(cors(corsOptions));
 app.use("/api/auth", authExposureGate, authRouter);
 // Operator WRITE zone — same exposure gate; unreachable in prod unless enabled.
 app.use("/api/operator", authExposureGate, operatorRouter);
+// ── Channel zone (SPEC R3, founder GO 2026-07-19) ───────────────────────────
+// The THIRD sanctioned zone — the constitutionally-named channel log
+// (CONSTITUTION_AUTORITE §③ N2). Two anonymous fail-closed 204 beacons
+// (click + receipt-verified conversion), architecturally separate from the
+// read-only spine AND from the auth/operator zones. Deliberately NOT behind
+// authExposureGate: an anonymous click is not an auth act; without a
+// DATABASE_URL every beacon drops silently (204, nothing recorded). The
+// router carries its own scoped 1kb JSON parser, origin check and throttles;
+// the global middleware posture is unchanged (no app-wide body parser, CORS
+// stays credential-free GET-shaped — the beacons are same-origin).
+app.use("/api/channel", channelRouter);
 
 app.use("/api", router);
 

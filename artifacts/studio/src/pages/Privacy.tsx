@@ -1,9 +1,14 @@
 // pages/Privacy.tsx — AUD-T (founder GO on the full text, 2026-07-16).
 // Every claim here was harvested from the REAL code and adversarially
 // verified (the one HttpOnly cookie, two localStorage preferences, zero
-// analytics, pino logs + IP throttle, the on-chain mirror, WalletConnect +
-// public RPC third parties). The "trust-us" shape was removed at the
-// doctrine pass — statements stand flat, counsel can stand behind them.
+// third-party analytics, pino logs + IP throttle, the on-chain mirror,
+// WalletConnect + public RPC third parties). The "trust-us" shape was
+// removed at the doctrine pass — statements stand flat, counsel can stand
+// behind them.
+// Version 2 draft (SPEC R3, founder GO on the wording 2026-07-19): the
+// referral channel counter is disclosed — the site's ONE first-party
+// aggregate record (clicks per referral code + channel tag + day; never who
+// clicked, no cookie, no identifier). Still zero third-party analytics.
 
 import { PublicPage } from "@/components/PublicPage";
 import { Card } from "@/components/ui/card";
@@ -24,7 +29,7 @@ export default function Privacy() {
       eyebrow="Legal"
       title="Privacy Policy"
       lead="The Syndicate is built to know almost nothing about you. This page says plainly what little exists — and what never does."
-      badge={<StatusPill tone="caution">Version 1 — draft of 2026-07-16</StatusPill>}
+      badge={<StatusPill tone="caution">Version 2 — draft of 2026-07-19</StatusPill>}
     >
       <Card className="bg-muted/20 border-border/50 p-4 text-sm text-muted-foreground leading-relaxed mb-10">
         This is a draft. It awaits review by qualified counsel before it counts
@@ -37,8 +42,12 @@ export default function Privacy() {
           There are no accounts, no email addresses, no passwords, no identity
           checks, and no member directory. You connect a wallet; the wallet —
           and the ordinary technical traces any web server sees — is all we see.
-          We run no analytics and no advertising trackers. We sell no data.
-          Nothing leaves except what a connection itself requires.
+          We run no third-party analytics and no advertising trackers. We sell
+          no data. The one counting we do ourselves: when a referral link
+          carries a channel tag, the landing adds one to a daily counter for
+          that referral code and tag — a number, never a person; who clicked
+          is not recorded, anywhere. Nothing else leaves except what a
+          connection itself requires.
         </p>
       </S>
 
@@ -111,6 +120,22 @@ export default function Privacy() {
           already publishes: mirrored, never collected from you. A small
           operator registry, keyed by wallet, controls who can administer the
           protocol.
+        </p>
+        <p>
+          Messages the operator sends to members (the in-app notification
+          center) are stored with each member&apos;s own read state — served
+          only to that member&apos;s signed session, never published.
+        </p>
+        <p>
+          The referral channel counter: when a referral link carries a channel
+          tag (for example <span className="font-mono">&amp;via=twitter</span>),
+          the landing adds one to a daily count for that referral code and tag,
+          and a completed purchase is paired to its tag only after the server
+          verifies the purchase&apos;s public on-chain receipt. These rows hold
+          a referral code, a tag, a day, and a count — no IP address, no
+          browser fingerprint, no cookie, no identifier of who clicked, ever.
+          The breakdown is served only to the referral code&apos;s own signed
+          owner.
         </p>
       </S>
 

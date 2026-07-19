@@ -104,7 +104,13 @@ Ladder truth (`config/connectorLadder.ts`): Emerging 5% (0) · Active 5% (3, tit
   + the evolutive chart slot (honest — NO decorative bars) + honest-future shells for every add.
   Truth deviations from the mockup (deliberate): no sample introduction rows, no fake sparkline;
   the by-state money card renders only when the own read answered.
-- **SLICES 3–6 — THE ADDS (in order, NEXT = 3):** `&via` channels analytics · per-introduction rows ·
+- ✅ **SLICE 3 — THE `&via` CHANNELS ANALYTICS (SPEC R3 whole), BUILT + COMMITTED (founder
+  approved wording + GO-Live 2026-07-19; awaiting the Replit MIGRATION seal — its own cycle).**
+  The third sanctioned write zone `src/channel/` (constitutional mechanism, guard section 10):
+  anonymous 204-always beacons, daily AGGREGATE counters (no visitor identity ever — ADR-003),
+  conversions receipt-verified on-chain by the server, own-row breakdown live in the Link &
+  channels tab, Privacy V2 + Terms §7 legal sweep in the same commit.
+- **SLICES 4–6 — THE REMAINING ADDS (in order, NEXT = 4):** per-introduction rows ·
   commission anatomy (receipt-backed breakdown; the static anatomy card shipped in slice 2) ·
-  recognition/season. Backend pieces land as honest-future states; the shells are live since slice 2 —
+  recognition/season. Backend pieces land as honest-future states; the shells are live —
   each slice replaces its shell with the real record.
