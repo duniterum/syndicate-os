@@ -385,10 +385,23 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   simplifié ?! IT WAS RICH AND WELL DESIGNED. Search our OG CARDS too."** The
 >   protocol already owns a designed receipt language (the receipt ticket,
 >   83 guard pins) + share pieces (ShareCard/ShareMenu/QR) — the new anatomy card
->   must speak IT, not a plain table. SYSTEM-FIRST inventory workflow
->   `wf_5cd698f4-983` in flight (4 readers: the ticket system · OG/share cards ·
->   the origin quarry · deployed reality + canon) → the COMPLETE inventory goes
->   on the founder's screen and HE picks the scope. No build before his pick.
+>   must speak IT, not a plain table. **✅ INVENTORY DONE (`wf_5cd698f4-983`, 4
+>   readers + synthesis) — durable doc: `docs/reference/
+>   RECEIPT_AND_SHARE_SYSTEM_INVENTORY.md` (never re-search).** Headlines: the
+>   ticket = 7-zone paper receipt, checkout-success only, TRANSIENT; the receipt
+>   spine is KIND-EXTENSIBLE by design (a commission receipt = the anticipated
+>   extension, never a parallel model); the 1200×630 share-card engine is proven
+>   (checkout only); the "verified introducer" card is built but UNMOUNTED since
+>   the 5-tab restructure; the Referrer Kit (M2) decided-not-built; site-wide OG
+>   = ONE static 1280×720 image (the origin ranked exactly this "the single
+>   biggest leak" and built live per-wallet/per-milestone preview generation —
+>   the harvest); origin also holds the member-card family + 5 proof cards + the
+>   ~30-field commission receipt doctrine ("the receipt must explain itself").
+>   SCOPE MENU on the founder's screen: A commission receipt ticket (client-only)
+>   · B = A + shareable 1200×630 commission card · C Referrer Kit v1 (M2) ·
+>   D receipt binder + public receipt page (the engraved roadmap, 2–3 slices) ·
+>   E living link previews (server infra, own arc). 🔴 FOUNDER PICKS; no build
+>   before his pick.
 > - **SLICE 6 (NEXT) — THE REMAINING ADD** (from the SYSTEM-FIRST harvest
 >   `wf_81dd540b`): ⑥ recognition/season axis (Phase-5). Its honest-future SHELL is
 >   live in the Ladder & recognition tab; the slice replaces the shell with the real

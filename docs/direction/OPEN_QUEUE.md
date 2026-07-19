@@ -71,11 +71,15 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > backbone whitelist deliberately amended, NO migration) **SEALED IN PROD `854bca7` (Replit
 > green 2026-07-19 — "le cycle le plus propre à ce jour", engine ok on the FIRST post-boot
 > cycle; LIVING SEAL: the founder's own screenshot shows his real receipt rendering) + THE
-> SETTLED-LAW SILENCE RULE engraved in CLAUDE.md the same commit** → 🔴 **slice 5.1 OPENED
-> (founder, emphatic): the anatomy card is TOO PLAIN — the protocol already owns a rich
-> designed receipt language (the receipt ticket) + share/OG pieces; deep-map it ALL
-> (system-first inventory `wf_5cd698f4-983` in flight) and put the COMPLETE picture on his
-> screen; HE picks the upgrade scope. No build before his pick.** →
+> SETTLED-LAW SILENCE RULE engraved in CLAUDE.md the same commit** → 🔴 **slice 5.1
+> (founder, emphatic: the anatomy card is TOO PLAIN — the house receipt language exists):
+> SYSTEM-FIRST inventory DONE → `docs/reference/RECEIPT_AND_SHARE_SYSTEM_INVENTORY.md`
+> (durable; never re-search). The SCOPE MENU is on the founder's screen: A = the commission
+> receipt ticket (the spine's anticipated "commission" kind, client-only) · B = A + the
+> shareable 1200×630 commission card (the proven engine) · C = Referrer Kit v1 (the queued
+> M2) · D = the receipt binder + public receipt page (the engraved roadmap next step, 2–3
+> slices) · E = living link previews (the origin's crown jewel; server infra). They stack.
+> FOUNDER PICKS — no build before his pick.** →
 > slice 6 (⑥ recognition/season Phase-5, after 5.1). Full state: SESSION_STATE.md.
 
 > **▶ 2026-07-17 (STANDING RULE, founder, emphatic — engraved here AND in agent memory):
