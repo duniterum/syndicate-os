@@ -86,6 +86,18 @@ const matchers: { term: string; re: RegExp }[] = [
   ...WORDS.map((w) => ({ term: w, re: new RegExp(`\\b${escapeRe(w)}\\b`, "gi") })),
 ];
 
+// Register-exempt sentences (CANON_PROTOCOL_LANGUAGE §7, the CONVERSION
+// register). The canon names ONE flagship line as a deliberate, founder-
+// decided use of a banned word — the referrer-side showcase, where the
+// referrer's pay is named plainly. The exemption is the EXACT sentence, never
+// the word: "payout" anywhere else still fails.
+const REGISTER_EXEMPT: { sentence: string; term: string }[] = [
+  {
+    sentence: "The referral program where the payout is part of the purchase.",
+    term: "payout",
+  },
+];
+
 // Negative-disclaimer awareness (founder directive, 2026-07-07).
 // Doctrine BLOCKS positive financial-upside claims but MUST ALLOW honest
 // negative disclaimers — e.g. "Referral commissions are not passive income,
@@ -122,6 +134,9 @@ for (const fp of walk(srcDir)) {
       for (const m of line.matchAll(re)) {
         const before = line.slice(0, m.index ?? 0);
         if (isNegated(before)) continue; // honest negative disclaimer — allowed
+        // §7 register-exempt flagship line — the exact sentence, term-scoped.
+        if (REGISTER_EXEMPT.some((e) => e.term === term && line.includes(e.sentence)))
+          continue;
         errors.push(
           `${path.relative(srcDir, fp)}:${i + 1} forbidden framing "${term}" \u2014 ${line.trim().slice(0, 100)}`,
         );

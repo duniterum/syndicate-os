@@ -483,6 +483,79 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     proofRoute: "/status",
     notes: "The canonical referral-program page (human URL).",
   },
+  // SLICE 2 (the 5 tabs, 2026-07-19): the referral surface's deep-linkable
+  // tab sub-routes. To an anonymous crawler each serves the SAME public
+  // program page as /referral (the member tabs render only on a signed
+  // session), so they are REDIRECT-class: 200 + cross-canonical → /referral,
+  // never in the sitemap — Google consolidates, shared tab links never break.
+  {
+    path: "/referral/introductions",
+    routeType: "PUBLIC",
+    indexStatus: "REDIRECT",
+    sitemap: false,
+    title: "Referral Program — The Syndicate",
+    description:
+      "How The Syndicate's referral program works: an eligible completed introduction pays a bounded commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Membership is not an investment.",
+    canonicalPath: "/referral",
+    changefreq: "monthly",
+    priority: 0.6,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "source",
+    primaryIntent: "education",
+    proofRoute: "/status",
+    notes: "Referral surface tab (Introductions) — member content behind the session; anon serves the program page.",
+  },
+  {
+    path: "/referral/commissions",
+    routeType: "PUBLIC",
+    indexStatus: "REDIRECT",
+    sitemap: false,
+    title: "Referral Program — The Syndicate",
+    description:
+      "How The Syndicate's referral program works: an eligible completed introduction pays a bounded commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Membership is not an investment.",
+    canonicalPath: "/referral",
+    changefreq: "monthly",
+    priority: 0.6,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "source",
+    primaryIntent: "education",
+    proofRoute: "/status",
+    notes: "Referral surface tab (Commissions) — member content behind the session; anon serves the program page.",
+  },
+  {
+    path: "/referral/ladder",
+    routeType: "PUBLIC",
+    indexStatus: "REDIRECT",
+    sitemap: false,
+    title: "Referral Program — The Syndicate",
+    description:
+      "How The Syndicate's referral program works: an eligible completed introduction pays a bounded commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Membership is not an investment.",
+    canonicalPath: "/referral",
+    changefreq: "monthly",
+    priority: 0.6,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "source",
+    primaryIntent: "education",
+    proofRoute: "/status",
+    notes: "Referral surface tab (Ladder & recognition) — member content behind the session; anon serves the program page.",
+  },
+  {
+    path: "/referral/link",
+    routeType: "PUBLIC",
+    indexStatus: "REDIRECT",
+    sitemap: false,
+    title: "Referral Program — The Syndicate",
+    description:
+      "How The Syndicate's referral program works: an eligible completed introduction pays a bounded commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Membership is not an investment.",
+    canonicalPath: "/referral",
+    changefreq: "monthly",
+    priority: 0.6,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "source",
+    primaryIntent: "education",
+    proofRoute: "/status",
+    notes: "Referral surface tab (Link & channels) — member content behind the session; anon serves the program page.",
+  },
   {
     // LEGACY ALIAS of /referral: serves the same page at 200 (existing links
     // never break — no 301 exists at the static layer until the domain

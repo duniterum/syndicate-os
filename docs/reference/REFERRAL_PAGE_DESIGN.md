@@ -96,7 +96,15 @@ Ladder truth (`config/connectorLadder.ts`): Emerging 5% (0) · Active 5% (3, tit
   referral SURFACE (`ReferralSurface` fork: connected → dashboard in shell; anon+prerender →
   SourceAttribution, SEO intact). Door → `/referral`; referral left `/member` (one door, one surface);
   guards updated. Reuses the proven MemberReferralDashboard as-is (no new content code).
-- **SLICE 2 — THE 5 TABS** on this stable base (the deep-linkable sub-routes + underline tabs +
-  figures-above + content reorganised + the conversion hero + the evolutive chart slot).
-- **SLICES 3–6 — THE ADDS (in order):** `&via` channels analytics · per-introduction rows · commission
-  anatomy · recognition/season. Backend pieces land as honest-future states; the shell exists first.
+- ✅ **SLICE 2 — THE 5 TABS, BUILT + COMMITTED (founder preview-approved + GO-Live ordered
+  2026-07-19; awaiting the Replit seal).** The deep-linkable sub-routes
+  `/referral/{introductions,commissions,ladder,link}` (REDIRECT-class, canonical → /referral,
+  off-sitemap) + underline gold tabs (nav+links, aria-current) + figures-above with verify↗ on the
+  money tiles + content split into the 5 panels + the §7 conversion hero verbatim (+VerifyOnChain)
+  + the evolutive chart slot (honest — NO decorative bars) + honest-future shells for every add.
+  Truth deviations from the mockup (deliberate): no sample introduction rows, no fake sparkline;
+  the by-state money card renders only when the own read answered.
+- **SLICES 3–6 — THE ADDS (in order, NEXT = 3):** `&via` channels analytics · per-introduction rows ·
+  commission anatomy (receipt-backed breakdown; the static anatomy card shipped in slice 2) ·
+  recognition/season. Backend pieces land as honest-future states; the shells are live since slice 2 —
+  each slice replaces its shell with the real record.

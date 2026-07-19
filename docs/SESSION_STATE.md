@@ -118,18 +118,33 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   Z-order + guard-lifecycle-labels (exemption + chassis check) updated. Reuses the
 >   proven MemberReferralDashboard as-is (no new content code = no new bug). **DEPLOY
 >   BACKLOG: EMPTY. Tree clean.**
-> - **SLICE 2 (NEXT) — THE 5 TABS** on this stable base: real deep-linkable sub-routes
->   `/referral/{introductions,commissions,ladder,link}` (the enabling change), UNDERLINE
->   tabs (not pills), the 4 figures ABOVE the tabs (Visibility Law — money never behind a
->   tab), the existing content reorganized into Overview · Introductions · Commissions ·
->   Ladder & recognition · Link & channels + the conversion hero (REFERRAL-SHOWCASE copy)
->   + the evolutive chart-as-record slot.
-> - **SLICES 3–6 (IN ORDER) — THE ADDS** (from the SYSTEM-FIRST harvest `wf_81dd540b`):
->   the `&via` channels analytics (biggest gap; the click store = small backend) ·
->   per-introduction rows (needs the row-level adapter, server) · commission anatomy ·
->   recognition/season axis (Phase-5). Backend pieces land as honest-future states; the
->   shell exists first. **DON'T show a downline/directory/name/alias/email — but DO show
->   chain-emitted addresses (own-row, we hide nothing).**
+> - ✅ **SLICE 2 — THE 5 TABS, BUILT + COMMITTED [this commit] (founder preview-approved
+>   2026-07-19 on the rig; "Go and GO-Live" ordered).** Real deep-linkable sub-routes
+>   `/referral/{introductions,commissions,ladder,link}` — 4 registries in lockstep
+>   (App.tsx · surfaceClassification · seo-route-registry REDIRECT-class canonical→
+>   /referral, off-sitemap · routeTable.generated.json regen 31 routes) · UNDERLINE gold
+>   tabs (nav+links, aria-current; the URL decides the tab; back/refresh/share land
+>   right) · the 4 figures ABOVE the tabs + verify↗ on the money tiles (own explorer
+>   page) · content split into 5 panels (components/referral/Referral*Panel.tsx; the
+>   standing read ONCE in the container, passed down) · the §7 conversion hero VERBATIM
+>   + VerifyOnChain (guard-forbidden-copy gained an exact-sentence register-exempt for
+>   the canon "payout" line) · honest-future slots (NO fake rows, NO decorative
+>   sparkline — the mockup's sample rows/bars deliberately not shipped) · MemberShell
+>   door active on sub-routes (prefix match) · TermsCommitmentHash extracted shared.
+>   GATE: tsc 0 · 18 studio guards green (access-state 1060 · member-home 26/26) ·
+>   seo:check 491 · surface:audit 322 · api guards green (auth-zone 920) · build +
+>   prerender 32 shells (nested referral/*.html emitted) + precompress byte-identical +
+>   admin-dist 93. Browser-verified: 5 tabs traversed connected(sim)+anon, both themes,
+>   375px+desktop no page h-scroll, imgs naturalWidth>0, zero console errors.
+>   **AWAITING THE REPLIT SEAL (client-only + serving route table, NO migration).**
+> - **SLICES 3–6 (IN ORDER, NEXT = 3) — THE ADDS** (from the SYSTEM-FIRST harvest `wf_81dd540b`):
+>   ③ the `&via` channels analytics (biggest gap; the click store = small backend) ·
+>   ④ per-introduction rows (needs the row-level adapter, server) · ⑤ commission anatomy
+>   (the static anatomy card shipped in slice 2; ⑤ = the receipt-backed breakdown) ·
+>   ⑥ recognition/season axis (Phase-5). Their honest-future SHELLS are live in the tabs
+>   since slice 2; each slice replaces its shell with the real record. **DON'T show a
+>   downline/directory/name/alias/email — but DO show chain-emitted addresses (own-row,
+>   we hide nothing).**
 >
 > **HARD-WON DOCTRINE (this session — do NOT re-litigate):**
 > - **SEAT = the on-chain membership, ALWAYS** (binary, numbered). A session

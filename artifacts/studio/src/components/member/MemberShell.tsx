@@ -73,6 +73,13 @@ const doorSlug = (label: string) => label.toLowerCase().replace(/[^a-z]+/g, "-")
 // so /member and /member#settings are DIFFERENT active states (exact match).
 const currentPathWithHash = () => window.location.pathname + window.location.hash;
 
+// A door is active on its exact path/hash AND on its sub-routes — the
+// Referral door stays lit on /referral/commissions (the 5-tab surface,
+// slice 2). Hash doors keep exact matching by construction: an "/x#y" href
+// never prefixes a pathname with a trailing slash.
+const doorIsActive = (href: string, activePath: string) =>
+  href === activePath || activePath.startsWith(`${href}/`);
+
 const FOCUS_RING =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/65 focus-visible:ring-offset-2 ring-offset-background";
 
@@ -152,10 +159,10 @@ export function MemberShell({ children }: { children: ReactNode }) {
             <Link
               key={door.label}
               href={door.href}
-              aria-current={door.href === activePath ? "page" : undefined}
+              aria-current={doorIsActive(door.href, activePath) ? "page" : undefined}
               onClick={makeSameDoorClick(door.href, door.href === activePath)}
               className={`inline-flex items-center shrink-0 rounded-full border px-4 min-h-11 text-xs transition-colors ${FOCUS_RING} ${
-                door.href === activePath
+                doorIsActive(door.href, activePath)
                   ? "border-gold/40 bg-gold/10 font-semibold text-foreground"
                   : "border-border/60 bg-card/40 text-muted-foreground hover:text-foreground"
               }`}
@@ -204,7 +211,7 @@ export function MemberShell({ children }: { children: ReactNode }) {
                   <DoorRow
                     key={door.label}
                     door={door}
-                    active={door.href === activePath}
+                    active={door.href ? doorIsActive(door.href, activePath) : false}
                   />
                 ))}
               </div>

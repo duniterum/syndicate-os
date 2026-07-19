@@ -186,6 +186,23 @@ function Router() {
       <PublicRoute path="/referral">
         <ReferralSurface />
       </PublicRoute>
+      {/* SLICE 2 (the 5 tabs, founder GO 2026-07-19): real deep-linkable
+          sub-routes — the URL decides the tab (refresh/back/bookmark/share
+          all land right; vital for a share surface). Anon at any sub-route
+          gets the same public program page; the SEO registry classes them
+          REDIRECT with canonical → /referral (Google consolidates). */}
+      <PublicRoute path="/referral/introductions">
+        <ReferralSurface tab="introductions" />
+      </PublicRoute>
+      <PublicRoute path="/referral/commissions">
+        <ReferralSurface tab="commissions" />
+      </PublicRoute>
+      <PublicRoute path="/referral/ladder">
+        <ReferralSurface tab="ladder" />
+      </PublicRoute>
+      <PublicRoute path="/referral/link">
+        <ReferralSurface tab="link" />
+      </PublicRoute>
       <PublicRoute path="/source-attribution">
         <SourceAttribution />
       </PublicRoute>

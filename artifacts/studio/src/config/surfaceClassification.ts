@@ -178,6 +178,47 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },
+  // SLICE 2 (the 5 tabs, 2026-07-19): the referral surface's deep-linkable
+  // tab sub-routes. Same fork as /referral (anon → the public program page;
+  // connected → the tabbed dashboard in the shell). No moduleId on purpose:
+  // the module points at the CANONICAL path /referral; the SEO registry
+  // classes these REDIRECT with canonical → /referral.
+  {
+    routePath: "/referral/introductions",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "Referral surface tab: the member's own introduction record.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
+    routePath: "/referral/commissions",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "Referral surface tab: the member's own commission record by state.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
+    routePath: "/referral/ladder",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "Referral surface tab: the Connector ladder and recognition road.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
+    routePath: "/referral/link",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "Referral surface tab: the permanent link, channels, and program reference.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
   {
     // Legacy alias of /referral (200 + canonical; links never break). No
     // moduleId on purpose: the module points at the CANONICAL path /referral.

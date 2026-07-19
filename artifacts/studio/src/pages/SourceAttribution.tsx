@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { ShieldCheck } from "lucide-react";
 import { PublicPage } from "@/components/PublicPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
-import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,33 +11,9 @@ import {
 } from "@/config/sourceAttributionTerminology";
 import { referralProgram } from "@/config/referralProgram";
 import { ctas } from "@/config/sharedCopy";
-import { fetchTermsHash } from "@/lib/termsDocument";
-
-// The expected commitment, computed LIVE from the served terms document
-// (never hardcoded — the same discipline as every other figure). Renders
-// nothing on any failure; the verify link points at the Source Registry,
-// where the same hash is recorded as each member source's metadataHash.
-function TermsCommitmentHash() {
-  const [hash, setHash] = useState<`0x${string}` | null>(null);
-  useEffect(() => {
-    let active = true;
-    void fetchTermsHash().then((read) => {
-      if (active) setHash(read?.hash ?? null);
-    });
-    return () => {
-      active = false;
-    };
-  }, []);
-  if (!hash) return null;
-  return (
-    <span className="block mt-1.5">
-      <span className="font-mono text-xs text-foreground/80 break-all">
-        keccak256: {hash}
-      </span>{" "}
-      <VerifyOnChain ids={["sourceRegistry"]} className="ml-1" />
-    </span>
-  );
-}
+// The live keccak commitment block moved to components/referral/ (slice 2) so
+// the member surface's Link tab renders the SAME proof — one component, zero drift.
+import { TermsCommitmentHash } from "@/components/referral/TermsCommitmentHash";
 
 export default function SourceAttribution() {
   return (
