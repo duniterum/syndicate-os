@@ -1,9 +1,10 @@
 # A1 — GRADE-AAA BENCHMARK + THE A1 HONESTY CONTRACT
 
 **TIER-0 design canon for the A1 "My Activity" arc. Read this at the A1 slice (step 8 of
-`MEMBER_HOME_FINISH_ORDER.md`) BEFORE the wireframe.** The two claude.ai artifacts (🧭 the
-SYSTEM-FIRST inventory + 🎯 this benchmark) are the visual version; **this file is the durable
-truth** (founder HARD RULE: nothing durable lives only in a chat or an artifact).
+`MEMBER_HOME_FINISH_ORDER.md`) BEFORE the wireframe.** The visual versions are IN THE REPO:
+`docs/design/a1-system-inventory.html` (🧭) + `docs/design/a1-benchmark-direction.html` (🎯) — this
+file is the durable truth (founder HARD RULE: nothing durable lives only in a chat or an artifact;
+the repo is the source of truth, never a memory).
 
 **Provenance.** Founder direction 2026-07-18/19 (emphatic): *for each slice, benchmark grade-AAA
 best practices ONLINE and adapt them — do not start from a base we merely THINK is grade-AAA; the

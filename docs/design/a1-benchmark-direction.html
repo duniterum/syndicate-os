@@ -1,0 +1,213 @@
+<title>A1 — benchmarked: best-in-class, filtered, made ours</title>
+<style>
+:root{
+  --paper:#F3F1EA; --card:#FBFAF6; --card2:#F6F4EC; --ink:#1C1A15; --ink-soft:#403C33; --muted:#6E695D;
+  --hair:#E2DCCE; --hair2:#D8D1BF;
+  --gold:#9A6B12; --gold-soft:#B98A2A; --gold-bg:rgba(154,107,18,.09);
+  --take:#2F6B49; --take-bg:rgba(47,107,73,.10);
+  --drop:#A63626; --drop-bg:rgba(166,54,38,.08);
+  --shadow:0 1px 2px rgba(28,26,21,.05),0 8px 24px rgba(28,26,21,.06);
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#100F0B; --card:#191712; --card2:#211E17; --ink:#EDE8DC; --ink-soft:#C8C2B4; --muted:#948E80;
+  --hair:#2A2720; --hair2:#37332A;
+  --gold:#E6B44C; --gold-soft:#D6A63E; --gold-bg:rgba(230,180,76,.12);
+  --take:#7EC298; --take-bg:rgba(126,194,152,.11);
+  --drop:#EC8871; --drop-bg:rgba(236,136,113,.10);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+}}
+:root[data-theme="light"]{
+  --paper:#F3F1EA; --card:#FBFAF6; --card2:#F6F4EC; --ink:#1C1A15; --ink-soft:#403C33; --muted:#6E695D;
+  --hair:#E2DCCE; --hair2:#D8D1BF;
+  --gold:#9A6B12; --gold-soft:#B98A2A; --gold-bg:rgba(154,107,18,.09);
+  --take:#2F6B49; --take-bg:rgba(47,107,73,.10);
+  --drop:#A63626; --drop-bg:rgba(166,54,38,.08);
+  --shadow:0 1px 2px rgba(28,26,21,.05),0 8px 24px rgba(28,26,21,.06);
+}
+:root[data-theme="dark"]{
+  --paper:#100F0B; --card:#191712; --card2:#211E17; --ink:#EDE8DC; --ink-soft:#C8C2B4; --muted:#948E80;
+  --hair:#2A2720; --hair2:#37332A;
+  --gold:#E6B44C; --gold-soft:#D6A63E; --gold-bg:rgba(230,180,76,.12);
+  --take:#7EC298; --take-bg:rgba(126,194,152,.11);
+  --drop:#EC8871; --drop-bg:rgba(236,136,113,.10);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  line-height:1.55;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1000px;margin:0 auto;padding:clamp(20px,5vw,52px) clamp(16px,4vw,40px) 96px;}
+.serif{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;}
+.mono{font-family:"Cascadia Code","JetBrains Mono","SF Mono",ui-monospace,Consolas,monospace;}
+.eyebrow{font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600;
+  font-family:"Cascadia Code",ui-monospace,Consolas,monospace;}
+h1{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-weight:600;
+  font-size:clamp(29px,5vw,48px);line-height:1.05;margin:.35em 0 .25em;letter-spacing:-.01em;text-wrap:balance;}
+.lede{color:var(--ink-soft);font-size:clamp(15px,2vw,17.5px);max-width:64ch;margin:0 0 6px;}
+.asof{color:var(--muted);font-size:12.5px;margin-top:8px;}.asof b{color:var(--ink-soft);font-weight:600;}
+
+.thesis{margin:26px 0 8px;border-left:4px solid var(--gold);background:var(--gold-bg);border-radius:0 12px 12px 0;padding:18px 22px;}
+.thesis .k{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600;}
+.thesis p{margin:8px 0 0;font-size:15.5px;color:var(--ink);line-height:1.55;}
+.thesis b{color:var(--ink);font-weight:600;}
+
+.surface{margin:30px 0 0;background:var(--card);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--shadow);
+  padding:22px clamp(16px,3vw,26px) 20px;}
+.s-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+.s-tag{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:11px;font-weight:700;color:var(--gold);
+  background:var(--gold-bg);border:1px solid color-mix(in srgb,var(--gold) 30%,transparent);border-radius:6px;padding:2px 8px;}
+.s-head h2{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-weight:600;font-size:clamp(19px,2.6vw,24px);margin:0;letter-spacing:-.01em;}
+.studied{margin:12px 0 2px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.studied .lbl{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:4px;}
+.ref{font-size:11.5px;color:var(--ink-soft);border:1px solid var(--hair2);background:var(--card2);border-radius:999px;padding:3px 9px;}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;}
+.col h3{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  margin:0 0 8px;display:flex;align-items:center;gap:7px;}
+.col.take h3{color:var(--take);} .col.drop h3{color:var(--drop);}
+.col ul{list-style:none;margin:0;padding:0;display:grid;gap:7px;}
+.col li{font-size:13.5px;line-height:1.42;color:var(--ink-soft);padding-left:18px;position:relative;}
+.col.take li:before{content:"✓";position:absolute;left:0;color:var(--take);font-weight:700;}
+.col.drop li:before{content:"✕";position:absolute;left:0;color:var(--drop);font-weight:700;}
+.col li b{color:var(--ink);font-weight:600;}
+.ours{margin-top:16px;background:var(--gold-bg);border:1px solid color-mix(in srgb,var(--gold) 26%,var(--hair));border-radius:11px;padding:13px 16px;}
+.ours .k{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+.ours p{margin:5px 0 0;font-size:13.5px;color:var(--ink);line-height:1.5;}
+.ours b{color:var(--ink);font-weight:600;}
+
+.contract{margin:40px 0 0;border-radius:16px;border:1px solid color-mix(in srgb,var(--gold) 34%,var(--hair));
+  background:linear-gradient(180deg,var(--gold-bg),transparent 44%),var(--card);box-shadow:var(--shadow);padding:24px clamp(16px,3vw,28px) 20px;}
+.contract h2{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-weight:600;font-size:clamp(21px,3vw,27px);margin:.3em 0 .1em;}
+.contract .sub{color:var(--ink-soft);font-size:14px;margin:0 0 14px;max-width:72ch;}
+.inv{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:2px;}
+.inv li{display:flex;gap:14px;padding:12px 0;border-top:1px solid var(--hair);}
+.inv li:first-child{border-top:none;}
+.inv .n{flex:none;width:30px;height:30px;border-radius:8px;background:var(--gold);color:var(--paper);display:grid;place-items:center;
+  font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-weight:700;font-size:13px;}
+.inv .t{font-weight:600;color:var(--ink);font-size:14.5px;}
+.inv .d{color:var(--muted);font-size:13px;margin-top:2px;line-height:1.45;}
+
+/* A deliberately single-look panel: a fixed dark ground in BOTH themes so the
+   closing thesis always reads as an inset, and the hardcoded cream text is safe. */
+.edge{margin:34px 0 0;padding:24px clamp(18px,3vw,28px);border-radius:16px;
+  background:#14110B;color:#F3F1EA;border:1px solid #2A2720;}
+.edge .k{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#D6A63E;font-weight:600;}
+.edge p{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-size:clamp(18px,2.6vw,25px);line-height:1.4;margin:10px 0 0;color:#F3F1EA;text-wrap:balance;}
+.edge b{color:var(--gold-soft);}
+
+.next{margin-top:30px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:13.5px;}
+.next .pill{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--ink-soft);border:1px solid var(--hair2);border-radius:999px;padding:5px 12px;background:var(--card);}
+.next .arw{color:var(--gold);font-weight:700;}
+footer{margin-top:34px;color:var(--muted);font-size:11.5px;border-top:1px solid var(--hair);padding-top:16px;line-height:1.7;}
+footer b{color:var(--ink-soft);}
+@media (max-width:600px){.cols{grid-template-columns:1fr;}}
+@media (prefers-reduced-motion:no-preference){
+  .surface,.contract,.edge,.thesis{animation:rise .5s cubic-bezier(.2,.7,.2,1) both;}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+}
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">The Syndicate OS · grade-AAA benchmark · A1 “My Activity”</div>
+  <h1 class="serif">The best in class — adversarially filtered, made ours</h1>
+  <p class="lede">You were right not to trust the origin as a ceiling. So we studied how the best products in the world actually build these three surfaces — then split the <b>craft</b> (worth taking) from the <b>manipulation</b> (must reject), and rebuilt each through our own non-negotiables.</p>
+  <div class="asof">Benchmarked <b>19 Jul 2026</b> · sources: Stripe · Rainbow · Apple Wallet · Coinbase · Wise/Revolut · GitHub · Linear · Mercury · Zerion · Etherscan · Zerodha — and the authorities: <b>NN/g · Baymard · W3C WAI · Carbon · FTC · deceptive.design</b>. Every borrowed pattern passed our sieve or was dropped.</div>
+
+  <div class="thesis">
+    <div class="k">The thesis the research proved</div>
+    <p>The best products do the craft beautifully <b>and</b> weaponise dark patterns — fake urgency, number-go-up, streaks, buyer leaderboards, email-you-back receipts. We take the craft and ban the manipulation. And we have the one thing <b>none of them</b> have: every figure here is <b>provable on-chain, not asserted</b>. So provability becomes the product — we don’t <i>ask</i> for trust, we hand over the proof.</p>
+  </div>
+
+  <!-- S0 -->
+  <section class="surface">
+    <div class="s-head"><span class="s-tag">S0 · Binder</span><h2 class="serif">The receipt binder</h2></div>
+    <div class="studied"><span class="lbl">studied</span><span class="ref">Stripe receipts</span><span class="ref">Rainbow expanded tx</span><span class="ref">Apple Wallet Orders</span><span class="ref">Coinbase / Wise / Revolut</span><span class="ref">Baymard · NN/g · W3C WAI</span></div>
+    <div class="cols">
+      <div class="col take"><h3>Take the craft</h3><ul>
+        <li><b>List → detail</b>: open on a scannable list; a row opens the full ticket.</li>
+        <li><b>Fixed receipt anatomy</b>: what+status+time → reference № → itemization → proof, every time.</li>
+        <li><b>Status always current</b> — reflects the latest chain truth, never a stale “success”.</li>
+        <li><b>Roll-up as a statement</b>, not a scoreboard: “N receipts · total · since date”.</li>
+      </ul></div>
+      <div class="col drop"><h3>Reject the manipulation</h3><ul>
+        <li><b>Expiring receipts</b> (Stripe links die in 30 days) — ours are permanent.</li>
+        <li><b>Email-as-receipt</b> (“check your inbox”) — the in-app binder <i>is</i> the record.</li>
+        <li><b>Upsell on the receipt</b> (“buy again”, promos) — it’s a record, not an ad.</li>
+        <li><b>“You spent X” spend-framing</b> & buyer leaderboards.</li>
+      </ul></div>
+    </div>
+    <div class="ours"><div class="k">→ Our version</div><p>Opens on your receipt list (gold only on the total). Each row → the <b>permanent</b> full ticket that used to vanish after checkout, ending in a <b>proof block</b>: the tx hash → Snowtrace, copy-hash, Save-as-PDF. No expiry, no email, no upsell.</p></div>
+  </section>
+
+  <!-- S1 -->
+  <section class="surface">
+    <div class="s-head"><span class="s-tag">S1 · Feed</span><h2 class="serif">The My | Protocol pulse lens</h2></div>
+    <div class="studied"><span class="lbl">studied</span><span class="ref">GitHub activity</span><span class="ref">Linear inbox</span><span class="ref">Zerion / Etherscan</span><span class="ref">segmented-control specs</span><span class="ref">NN/g empty states</span></div>
+    <div class="cols">
+      <div class="col take"><h3>Take the craft</h3><ul>
+        <li><b>Segmented control, not tabs</b>: [ Mine | Protocol ] switch the lens on one shared grammar, in place.</li>
+        <li><b>Decode to human intent</b>: “You were recognized”, not a stack of raw transfers.</li>
+        <li><b>Sticky day headers</b> (Today / This week) + honest batching (“12 joined today”).</li>
+        <li><b>“N new” pill</b> on demand — never a silent ticker that shifts your reading.</li>
+      </ul></div>
+      <div class="col drop"><h3>Reject the manipulation</h3><ul>
+        <li><b>Auto-inject “liveliness”</b> & red-dot unread pressure for non-actionable events.</li>
+        <li><b>FOMO / scarcity</b> (“X joined in the last hour — don’t miss out”).</li>
+        <li><b>Leaderboards / a directory of other members</b> (GitHub-style who-did-what).</li>
+        <li><b>Number-go-up / PnL badges</b> bolted onto rows.</li>
+      </ul></div>
+    </div>
+    <div class="ours"><div class="k">→ Our version</div><p>One feed, a [Mine | Protocol] toggle (gold on the selected side). <b>Mine</b> = strictly your own row, behind the sign-in wall. <b>Protocol</b> = public events, but <b>people de-identified</b> (“A member joined” / “12 today”) with full contract facts — each line carrying its tx proof. A quiet <b>“as of block N”</b> stamp instead of a fake live ticker.</p></div>
+  </section>
+
+  <!-- S2 -->
+  <section class="surface">
+    <div class="s-head"><span class="s-tag">S2 · Histories</span><h2 class="serif">Per-row histories &amp; detail</h2></div>
+    <div class="studied"><span class="lbl">studied</span><span class="ref">Mercury transactions</span><span class="ref">Stripe payment details</span><span class="ref">Coinbase history</span><span class="ref">NN/g data tables</span><span class="ref">Carbon status</span><span class="ref">Baymard sort/filter</span></div>
+    <div class="cols">
+      <div class="col take"><h3>Take the craft</h3><ul>
+        <li><b>Human label first</b> (“Introduction”, “Commission received”) + date — not a raw hash.</li>
+        <li><b>Filter <i>and</i> sort</b>, both visible (they’re distinct jobs).</li>
+        <li><b>Row → non-modal side drawer</b> so the list stays visible and referenceable.</li>
+        <li><b>Status = colour + icon + text</b>, legible in grayscale; detail is an event <b>timeline</b>.</li>
+      </ul></div>
+      <div class="col drop"><h3>Reject the manipulation</h3><ul>
+        <li><b>“Total earned” hero ticker</b> crowning the ledger as growth.</li>
+        <li><b>Directory temptation</b>: linking an introduced person’s row to their profile/downline.</li>
+        <li><b>Colour-only status</b> & <b>email-me-a-copy</b> receipts.</li>
+        <li><b>Asserted figures with no proof</b> (“you earned $X”, trust us).</li>
+      </ul></div>
+    </div>
+    <div class="ours"><div class="k">→ Our version</div><p>Opens on your itemized record (“47 entries — every one verifiable”). Row = date · human label · amount (<b>introductions carry a neutral non-cash marker, never $0</b>) · status pill · <b>Verify handle on the row</b>. Row → a right drawer <b>headlined by the proof</b> + a “how this was computed” trace to the on-chain event. Pseudonymous handles only — never another member’s address.</p></div>
+  </section>
+
+  <!-- CONTRACT -->
+  <div class="contract">
+    <div class="eyebrow" style="color:var(--gold)">The reusable output</div>
+    <h2 class="serif">The A1 honesty contract</h2>
+    <p class="sub">Five invariants every activity, receipt and history surface renders the same way — so they read as one system. This is the checklist the <b>first build</b> of every A1 surface must pass, not a cleanup after you complain.</p>
+    <ol class="inv">
+      <li><span class="n">1</span><div><div class="t">Verify-first row</div><div class="d">Every figure carries a <span class="mono">Verify ↗</span> to the explorer. A figure we can’t prove, we don’t show.</div></div></li>
+      <li><span class="n">2</span><div><div class="t">Own-row only</div><div class="d">Never another member’s address, no leaderboard, ever (ADR-003). Aggregates shown as the true on-chain total with their own proof — never a roster of people.</div></div></li>
+      <li><span class="n">3</span><div><div class="t">Anti-financialization skin</div><div class="d">Static, neutral amounts — no counters, green-pump, ROI/APY, streaks, countdowns, or confetti. Recognition lives in a visibly non-monetary register.</div></div></li>
+      <li><span class="n">4</span><div><div class="t">Honest three states</div><div class="d">Loading (skeleton matching the real layout) · Empty (“nothing yet” + one true next step) · Error (what failed + retry). Pending stays Pending until the chain confirms.</div></div></li>
+      <li><span class="n">5</span><div><div class="t">Accessible by construction</div><div class="d">Semantic table/feed, ARIA, keyboard reach, WCAG 2.2 AA in both themes, reduced-motion, absolute time always available.</div></div></li>
+    </ol>
+  </div>
+
+  <!-- EDGE -->
+  <div class="edge">
+    <div class="k">Why ours beats both the origin and the references</div>
+    <p>The theatre fintech uses to <b>manufacture</b> trust — fake scarcity, countdown timers, confetti — we replace with the one thing none of them can offer: <b>a verifiable receipt</b>. A calm “Confirmed on-chain ↗” out-trusts any celebration animation, precisely because you can click and watch it be true.</p>
+  </div>
+
+  <div class="next">
+    <span class="pill">Pick the scope (S0 / +S1 / +S2)</span><span class="arw">→</span>
+    <span class="pill">I draw the wireframe — grounded in this</span><span class="arw">→</span>
+    <span class="pill">preview gate</span><span class="arw">→</span>
+    <span class="pill">build</span>
+  </div>
+
+  <footer>
+    Method: 4 web-research agents, sources cited &amp; credibility-graded (primary docs · authoritative UX · teardown). Every pattern filtered through: verify-first · own-row (ADR-003) · anti-financialization · no-email · WORK-FIRST · the gold/paper design system. <b>Nothing is built until you pick the scope and approve a wireframe.</b>
+  </footer>
+</div>

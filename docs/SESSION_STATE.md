@@ -101,8 +101,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > edge. **Durable canon: `docs/reference/A1_BENCHMARK_AND_HONESTY_CONTRACT.md`** (TIER-0
 > — the A1 honesty contract · the CHARTS POLICY "record, not return" · the Visibility-Law
 > correction: **address ≠ identity, we HIDE NOTHING on-chain; the red line is
-> name/alias/email**). Visual design lives in 4 claude.ai artifacts (inventory 🧭 ·
-> benchmark 🎯 · referral mockup 🔗 · referral tabs 🗂️).
+> name/alias/email**). Visual design lives IN THE REPO — `docs/design/` (a1-system-inventory 🧭 ·
+> a1-benchmark-direction 🎯 · referral-page-mockup 🔗 · referral-tabs-mockup 🗂️) + the durable
+> referral canon `docs/reference/REFERRAL_PAGE_DESIGN.md`. (Also published to claude.ai for viewing;
+> the REPO is the source of truth.)
 >
 > **▷ REFERRAL PAGE = the FIRST page (founder GO: 5 tabs · do it ALL in the right
 > order · elevate now · GO-LIVE). THE ORDERED ARC:**

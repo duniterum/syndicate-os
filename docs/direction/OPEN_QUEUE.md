@@ -19,6 +19,21 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 
 ---
 
+> **▶ 2026-07-19 — THE PAGE-BY-PAGE GRADE-AAA REBUILD (founder pivot; in-flight arc).**
+> Each LEFT-MENU member page gets the grade-AAA / crème-de-crème treatment, one by one:
+> benchmark EXTERNAL best-in-class online + adversarially filter (take craft, reject dark patterns)
+> + sieve through our non-negotiables + synthesize on our on-chain-provable edge — never the origin
+> harvest as the ceiling (method engraved: agent memory `benchmark-external-not-origin-ceiling`).
+> **Durable canon (the repo is the source of truth, not a memory):**
+> `docs/reference/A1_BENCHMARK_AND_HONESTY_CONTRACT.md` · `docs/reference/REFERRAL_PAGE_DESIGN.md` ·
+> the mockups in `docs/design/`. **DECISIONS LOCKED this session:** charts = a RECORD, never a return
+> (CHARTS POLICY) · **address ≠ identity** (Visibility Law — we HIDE NOTHING on-chain; the red line
+> is name/alias/email, never the address) · REFERRAL = the first page: 5 tabs · do it ALL in order ·
+> elevate `/referral` to real deep-linkable routes · GO-LIVE.
+> **REFERRAL ARC (ordered):** ✅ slice 1 (the elevation) SEALED IN PROD `d29765d` → slice 2 (the 5
+> tabs on the stable base) → slices 3–6 (the adds: `&via` channels analytics · per-introduction rows
+> · commission anatomy · recognition/season). Full state: SESSION_STATE.md.
+
 > **▶ 2026-07-17 (STANDING RULE, founder, emphatic — engraved here AND in agent memory):
 > NEVER RE-BLOCK ON AN ANSWERED QUESTION. Founder gates exist ONLY for: security/
 > authority · on-chain data truth · money paths · legal/public-copy wording · go-live

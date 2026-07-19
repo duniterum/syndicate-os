@@ -1,0 +1,274 @@
+<title>Referral page — grade-AAA mockup (your real data)</title>
+<style>
+:root{
+  --paper:#F3F1EA; --card:#FBFAF6; --card2:#F6F4EC; --ink:#1C1A15; --ink-soft:#403C33; --muted:#6E695D;
+  --hair:#E2DCCE; --hair2:#D8D1BF;
+  --gold:#9A6B12; --gold-soft:#B98A2A; --gold-bg:rgba(154,107,18,.10);
+  --proof:#0E7490; --proof-bg:rgba(14,116,144,.10);
+  --shadow:0 1px 2px rgba(28,26,21,.05),0 10px 30px rgba(28,26,21,.06);
+  --stage:#EAE6DC;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#100F0B; --card:#191712; --card2:#211E17; --ink:#EDE8DC; --ink-soft:#C8C2B4; --muted:#948E80;
+  --hair:#2A2720; --hair2:#37332A;
+  --gold:#E6B44C; --gold-soft:#D6A63E; --gold-bg:rgba(230,180,76,.13);
+  --proof:#5FD3E6; --proof-bg:rgba(95,211,230,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 34px rgba(0,0,0,.4);
+  --stage:#0A0906;
+}}
+:root[data-theme="light"]{
+  --paper:#F3F1EA; --card:#FBFAF6; --card2:#F6F4EC; --ink:#1C1A15; --ink-soft:#403C33; --muted:#6E695D;
+  --hair:#E2DCCE; --hair2:#D8D1BF; --gold:#9A6B12; --gold-soft:#B98A2A; --gold-bg:rgba(154,107,18,.10);
+  --proof:#0E7490; --proof-bg:rgba(14,116,144,.10);
+  --shadow:0 1px 2px rgba(28,26,21,.05),0 10px 30px rgba(28,26,21,.06); --stage:#EAE6DC;
+}
+:root[data-theme="dark"]{
+  --paper:#100F0B; --card:#191712; --card2:#211E17; --ink:#EDE8DC; --ink-soft:#C8C2B4; --muted:#948E80;
+  --hair:#2A2720; --hair2:#37332A; --gold:#E6B44C; --gold-soft:#D6A63E; --gold-bg:rgba(230,180,76,.13);
+  --proof:#5FD3E6; --proof-bg:rgba(95,211,230,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 34px rgba(0,0,0,.4); --stage:#0A0906;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--stage);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1060px;margin:0 auto;padding:clamp(18px,4vw,44px) clamp(14px,3vw,32px) 90px;}
+.serif{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;}
+.mono{font-family:"Cascadia Code","JetBrains Mono","SF Mono",ui-monospace,Consolas,monospace;font-variant-numeric:tabular-nums;}
+
+/* intro */
+.eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600;font-family:"Cascadia Code",ui-monospace,Consolas,monospace;}
+.intro h1{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-weight:600;font-size:clamp(24px,4vw,38px);line-height:1.08;margin:.3em 0 .2em;letter-spacing:-.01em;}
+.intro p{color:var(--ink-soft);font-size:14.5px;max-width:70ch;margin:0;}
+.intro .note{color:var(--muted);font-size:12px;margin-top:8px;}
+
+/* the mockup stage frame */
+.screen{margin:22px 0 6px;background:var(--paper);border:1px solid var(--hair2);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;}
+.chrome{display:flex;align-items:center;gap:7px;padding:9px 14px;border-bottom:1px solid var(--hair);background:var(--card2);}
+.chrome .dot{width:9px;height:9px;border-radius:50%;background:var(--hair2);}
+.chrome .url{margin-left:8px;font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:11px;color:var(--muted);}
+.page{padding:clamp(18px,3vw,30px);}
+
+/* header */
+.h-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;}
+.h-title{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-weight:600;font-size:clamp(22px,3vw,28px);color:var(--ink);letter-spacing:-.01em;}
+.badge{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:10.5px;font-weight:600;letter-spacing:.02em;border-radius:999px;padding:3px 9px;border:1px solid transparent;}
+.badge.live{color:var(--proof);background:var(--proof-bg);border-color:color-mix(in srgb,var(--proof) 30%,transparent);}
+.badge.pending{color:var(--muted);background:color-mix(in srgb,var(--muted) 10%,transparent);border-color:var(--hair2);}
+.sub{color:var(--muted);font-size:14px;margin:6px 0 0;}
+.strip{margin:16px 0 0;display:flex;gap:12px;align-items:flex-start;background:var(--gold-bg);border:1px solid color-mix(in srgb,var(--gold) 26%,var(--hair));border-radius:12px;padding:13px 16px;}
+.strip .ic{color:var(--gold);flex:none;margin-top:1px;}
+.strip .t{font-size:13.5px;color:var(--ink);font-weight:600;}
+.strip .d{font-size:13px;color:var(--muted);margin-top:2px;line-height:1.45;}
+.strip .asof{margin-left:auto;font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:11px;color:var(--muted);white-space:nowrap;align-self:center;}
+
+/* section label */
+.slabel{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:26px 0 10px;display:flex;align-items:center;gap:8px;}
+.slabel:after{content:"";flex:1;height:1px;background:var(--hair);}
+
+/* KPI stat row */
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+@media(min-width:720px){.kpis{grid-template-columns:repeat(4,1fr);}}
+.kpi{background:var(--card);border:1px solid var(--hair);border-radius:13px;padding:15px 16px;position:relative;}
+.kpi.settled{border-color:color-mix(in srgb,var(--gold) 22%,var(--hair));}
+.kpi .l{font-size:12px;color:var(--muted);letter-spacing:.01em;}
+.kpi .v{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:26px;font-weight:600;color:var(--ink);line-height:1.05;margin-top:8px;font-variant-numeric:tabular-nums;}
+.kpi .v.money{color:var(--gold);}
+.kpi .m{font-size:11.5px;color:var(--muted);margin-top:7px;line-height:1.35;}
+.verify{display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:11px;color:var(--proof);text-decoration:none;border:1px solid color-mix(in srgb,var(--proof) 30%,transparent);background:var(--proof-bg);border-radius:6px;padding:2px 7px;}
+.split{display:inline-block;font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);border:1px solid color-mix(in srgb,var(--gold) 30%,transparent);border-radius:4px;padding:1px 5px;margin-left:6px;}
+
+/* ladder rail */
+.rail-card{margin-top:12px;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:18px 18px 16px;}
+.rail-scroll{overflow-x:auto;padding-bottom:6px;}
+.rail{display:grid;grid-template-columns:repeat(7,minmax(92px,1fr));min-width:660px;}
+.rung{position:relative;text-align:center;padding-top:26px;}
+.rung .bar{position:absolute;top:11px;left:0;right:0;height:3px;background:var(--hair2);}
+.rung:first-child .bar{left:50%;}
+.rung:last-child .bar{right:50%;}
+.rung .bar.done{background:var(--gold);}
+.rung .bar.part{background:linear-gradient(90deg,var(--gold) 67%,var(--hair2) 67%);}
+.node{position:absolute;top:4px;left:50%;transform:translateX(-50%);width:16px;height:16px;border-radius:50%;
+  background:var(--card);border:2px solid var(--hair2);z-index:1;}
+.rung.done .node{background:var(--gold);border-color:var(--gold);}
+.rung.current .node{width:20px;height:20px;top:2px;background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-bg);}
+.rung .rt{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-size:13px;color:var(--muted);font-weight:600;}
+.rung.current .rt,.rung.done .rt{color:var(--ink);}
+.rung .rate{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:11px;color:var(--muted);margin-top:1px;}
+.rung.current .rate{color:var(--gold);font-weight:600;}
+.rung .thr{font-size:10px;color:var(--muted);margin-top:2px;}
+.rung .tt{display:inline-block;font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border:1px solid var(--hair2);border-radius:3px;padding:0 3px;margin-top:3px;}
+.rail-note{font-size:13px;color:var(--muted);margin:14px 2px 0;line-height:1.5;max-width:80ch;}
+.rail-note b{color:var(--ink-soft);}
+
+/* link block */
+.link-card{margin-top:12px;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:18px;}
+.link-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.link-head .t{font-size:14px;font-weight:600;color:var(--ink);}
+.pill{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:10px;font-weight:600;letter-spacing:.02em;border-radius:999px;padding:2px 8px;}
+.pill.proof{color:var(--proof);background:var(--proof-bg);border:1px solid color-mix(in srgb,var(--proof) 30%,transparent);}
+.link-row{display:flex;gap:8px;flex-wrap:wrap;}
+.link-field{flex:1;min-width:0;font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:12px;color:var(--ink-soft);background:var(--card2);border:1px solid var(--hair2);border-radius:9px;padding:10px 12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.btn{font-size:12.5px;font-weight:600;border-radius:9px;padding:9px 14px;border:1px solid var(--hair2);background:var(--card2);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+.btn.primary{background:var(--gold);border-color:var(--gold);color:var(--paper);}
+.link-actions{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap;}
+.link-note{font-size:13px;color:var(--muted);margin-top:11px;line-height:1.5;}
+
+/* share card */
+.share{margin-top:12px;background:linear-gradient(135deg,var(--card2),var(--card));border:1px solid color-mix(in srgb,var(--gold) 24%,var(--hair));border-radius:14px;padding:18px 20px;}
+.share .k{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--proof);}
+.share .big{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-size:clamp(19px,2.4vw,24px);color:var(--ink);margin:6px 0 2px;font-weight:600;}
+.share .row{display:flex;gap:18px;flex-wrap:wrap;margin-top:8px;}
+.share .cell .cv{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:18px;font-weight:600;color:var(--gold);}
+.share .cell .cl{font-size:11px;color:var(--muted);}
+.share .foot{font-size:12px;color:var(--muted);margin-top:12px;border-top:1px solid var(--hair);padding-top:9px;}
+
+/* tail expanders */
+.tail{margin-top:14px;display:grid;gap:8px;}
+.exp{background:var(--card);border:1px solid var(--hair);border-radius:11px;padding:12px 15px;display:flex;align-items:center;gap:10px;}
+.exp .chev{color:var(--muted);font-size:12px;}
+.exp .et{font-size:13.5px;color:var(--ink-soft);font-weight:600;}
+.exp .badge{margin-left:auto;}
+.boundary{margin-top:16px;font-size:12.5px;color:var(--muted);line-height:1.55;border-top:1px solid var(--hair);padding-top:12px;max-width:82ch;}
+
+/* decode + calls */
+.decode{margin:30px 0 0;background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow);}
+.decode h2{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-weight:600;font-size:21px;margin:0 0 4px;}
+.decode .sd{color:var(--muted);font-size:13.5px;margin:0 0 14px;}
+.dg{display:grid;gap:10px;}
+@media(min-width:640px){.dg{grid-template-columns:1fr 1fr;}}
+.di{display:flex;gap:10px;font-size:13px;color:var(--ink-soft);line-height:1.4;}
+.di .n{color:var(--gold);font-weight:700;}
+.di b{color:var(--ink);}
+.calls{margin:24px 0 0;border-radius:14px;border:1px solid color-mix(in srgb,var(--gold) 30%,var(--hair));background:linear-gradient(180deg,var(--gold-bg),transparent 50%),var(--card);padding:20px 22px;box-shadow:var(--shadow);}
+.calls .eyebrow{color:var(--gold);}
+.calls h2{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-weight:600;font-size:21px;margin:.3em 0 10px;}
+.calls ol{margin:0;padding-left:20px;display:grid;gap:9px;}
+.calls li{font-size:13.5px;color:var(--ink-soft);line-height:1.45;}
+.calls li b{color:var(--ink);}
+.calls .rec{color:var(--proof);font-weight:600;}
+footer{margin-top:26px;color:var(--muted);font-size:11.5px;border-top:1px solid var(--hair);padding-top:14px;line-height:1.65;}
+footer b{color:var(--ink-soft);}
+@media (prefers-reduced-motion:no-preference){.screen,.decode,.calls{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}}
+</style>
+
+<div class="wrap">
+  <div class="intro">
+    <div class="eyebrow">Grade-AAA mockup · your Referral page · your real data</div>
+    <h1 class="serif">Your referral — the crème-de-crème redesign</h1>
+    <p>Benchmarked against PartnerStack · Binance · Dub · Stripe Connect · Patreon, and the authorities (NN/g · Baymard · Web3 UX) — the craft taken, the MLM/hype dropped, filtered through your doctrine. This is a <b>proposal to react to</b>, not the live page.</p>
+    <p class="note">Every figure below is your real standing (source <span class="mono">0x8338…cf620</span> · 2 durable · $0.50 paid). Toggle light/dark to see both.</p>
+  </div>
+
+  <div class="screen">
+    <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">thesyndicate.money/member#referral · connected</span></div>
+    <div class="page">
+
+      <!-- HEADER -->
+      <div class="h-row">
+        <span class="h-title serif">Your referral</span>
+        <span class="badge live">◆ Live — signed from your wallet</span>
+      </div>
+      <p class="sub">The people you brought in, your standing, and the Connector ladder.</p>
+      <div class="strip">
+        <svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div><div class="t">The referral program is active.</div><div class="d">Every figure below is your own — indexed introductions and live registry reads, only ever your own row. Never a sample.</div></div>
+        <div class="asof">recorded up to block 90,653,618</div>
+      </div>
+
+      <!-- STANDING -->
+      <div class="slabel">Your standing</div>
+      <div class="kpis">
+        <div class="kpi"><div class="l">Introductions</div><div class="v">2</div><div class="m">members you brought in</div></div>
+        <div class="kpi"><div class="l">Durable introductions</div><div class="v">2</div><div class="m">still holding SYN — the counter that sets your rung</div></div>
+        <div class="kpi settled"><div class="l">Commission paid <span class="split">settled</span></div><div class="v money">$0.50</div><a class="verify" href="#">↗ verify on-chain</a></div>
+        <div class="kpi settled"><div class="l">Held in escrow <span class="split">owed</span></div><div class="v money">$0.00</div><a class="verify" href="#">↗ verify on-chain</a></div>
+      </div>
+      <p class="rail-note" style="margin-top:10px">Paid to your wallet <b>inside the buyer’s own purchase transaction</b>, on-chain and instant, with an escrow net when a payout can’t settle in-transaction. <b>Settled</b> = already routed; <b>owed</b> = paid whenever your source is active.</p>
+
+      <!-- LADDER -->
+      <div class="slabel">The Connector ladder</div>
+      <div class="rail-card">
+        <div class="rail-scroll"><div class="rail">
+          <div class="rung current"><div class="bar part"></div><div class="node"></div><div class="rt">Emerging</div><div class="rate">5%</div><div class="thr">you are here · 2 durable</div></div>
+          <div class="rung"><div class="bar"></div><div class="node"></div><div class="rt">Active</div><div class="rate">5%</div><div class="thr">3 durable</div><span class="tt">title</span></div>
+          <div class="rung"><div class="bar"></div><div class="node"></div><div class="rt">Trusted</div><div class="rate">6%</div><div class="thr">10 durable</div><span class="tt">rate ↑</span></div>
+          <div class="rung"><div class="bar"></div><div class="node"></div><div class="rt">Established</div><div class="rate">7%</div><div class="thr">25 durable</div><span class="tt">rate ↑</span></div>
+          <div class="rung"><div class="bar"></div><div class="node"></div><div class="rt">Durable</div><div class="rate">8%</div><div class="thr">60 durable</div><span class="tt">rate ↑</span></div>
+          <div class="rung"><div class="bar"></div><div class="node"></div><div class="rt">Foundational</div><div class="rate">10%</div><div class="thr">150 durable</div><span class="tt">rate ↑</span></div>
+          <div class="rung"><div class="bar"></div><div class="node"></div><div class="rt">Summit</div><div class="rate">12%</div><div class="thr">300 · the cap</div></div>
+        </div></div>
+        <p class="rail-note"><b>Next: Active at 3 durable introductions</b> — a recognition title; the rate stays 5%. A durable introduction is an introduced member whose wallet still holds SYN. The threshold decides a promotion; the founder’s signature executes it. <b>An acquired rate never decreases.</b></p>
+      </div>
+
+      <!-- LINK -->
+      <div class="slabel">Your referral link</div>
+      <div class="link-card">
+        <div class="link-head"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg><span class="t">Your permanent link</span><span class="pill proof">◆ Source active</span></div>
+        <div class="link-row">
+          <div class="link-field">https://thesyndicate.money/join?source=0x8338e9ff…1cf620</div>
+          <button class="btn primary">⧉ Copy</button>
+        </div>
+        <div class="link-actions">
+          <button class="btn">▣ QR code</button>
+          <button class="btn">↗ Share</button>
+          <span style="align-self:center;font-family:'Cascadia Code',ui-monospace,Consolas,monospace;font-size:11px;color:var(--muted)">+ add <b>&via=</b> to see where clicks come from (private, own analytics)</span>
+        </div>
+        <p class="link-note">Your link is <b>permanent</b> — derived from your wallet, it never changes. The commission is paid inside the buyer’s own transaction while your source is active.</p>
+      </div>
+
+      <!-- SHARE CARD -->
+      <div class="slabel">Your verified-introducer card</div>
+      <div class="share">
+        <div class="k">◆ Verified on-chain</div>
+        <div class="big serif">You’ve introduced the record.</div>
+        <div class="row">
+          <div class="cell"><div class="cv">2</div><div class="cl">members introduced</div></div>
+          <div class="cell"><div class="cv">$0.50</div><div class="cl">in verified referral commissions</div></div>
+        </div>
+        <div class="foot">Proof, not claims — every figure is on-chain and verifiable. <span class="mono">thesyndicate.money/join?source=0x8338…</span></div>
+      </div>
+
+      <!-- TAIL -->
+      <div class="slabel">Detail &amp; terms — one click away</div>
+      <div class="tail">
+        <div class="exp"><span class="chev">▸</span><span class="et">Per-introduction receipts</span><span class="badge pending">Coming</span></div>
+        <div class="exp"><span class="chev">▸</span><span class="et">How the commission works</span></div>
+        <div class="exp"><span class="chev">▸</span><span class="et">What counts — eligibility &amp; anti-abuse</span></div>
+        <div class="exp"><span class="chev">▸</span><span class="et">Program terms — the hashed document</span></div>
+      </div>
+      <p class="boundary">A referral commission is a bounded, one-time payment for a completed introduction. It is not token yield, not passive income, not equity, and not a guarantee of token appreciation.</p>
+
+    </div>
+  </div>
+
+  <!-- DECODE -->
+  <div class="decode">
+    <h2 class="serif">What makes this grade-AAA</h2>
+    <p class="sd">The craft we took from the best — and the manipulation we refused.</p>
+    <div class="dg">
+      <div class="di"><span class="n">✓</span><div><b>One-screen standing</b> — your 4 figures, the link and the ladder all legible without a single drill-down (PartnerStack/Dub). Detail &amp; terms collapse to the bottom.</div></div>
+      <div class="di"><span class="n">✓</span><div><b>Settled vs owed, each labelled</b> — “Commission paid” beside “Held in escrow”, so you never wonder why two numbers differ (Stripe Connect’s trust discipline).</div></div>
+      <div class="di"><span class="n">✓</span><div><b>Verify on every figure</b> — a cyan “verify on-chain ↗” beside the money. No number is asserted; each links its proof. The one thing no affiliate dashboard can match.</div></div>
+      <div class="di"><span class="n">✓</span><div><b>The ladder is a road, never a leaderboard</b> — your rung, your rate, the next threshold, Summit as a distant landmark. A count-progress, not a filling-money bar (Patreon removed theirs — it misled).</div></div>
+      <div class="di"><span class="n">✕</span><div><b>No downline, ever</b> — you never see who you introduced. Own-row only (ADR-003) — the hard line that separates us from MLM.</div></div>
+      <div class="di"><span class="n">✕</span><div><b>No hype</b> — no “earn up to X”, no projections, no countdowns, no confetti, no leaderboards. The money is shown openly; its legal shape is stated in the same breath.</div></div>
+    </div>
+  </div>
+
+  <!-- YOUR CALLS -->
+  <div class="calls">
+    <div class="eyebrow">On discute — tes 5 choix sur cette page</div>
+    <h2 class="serif">Your calls</h2>
+    <ol>
+      <li><b>The &amp;via click analytics</b> — surface “where your clicks came from” on this page now (subtle, under the link), or hold it to its own slice? <span class="rec">Reco: a subtle affordance now, full analytics later.</span></li>
+      <li><b>The share card</b> — show introductions only, or introductions + the real $0.50? Both are Visibility-Law-legal. <span class="rec">Reco: show the money (company, not charity) — but you decide.</span></li>
+      <li><b>The ladder length</b> — always render all 7 rungs (the full road), or collapse the distant ones until you’re closer? <span class="rec">Reco: keep the full road — it honours Summit’s rarity.</span></li>
+      <li><b>The money wording</b> — “Commission paid” / “Held in escrow”, or “Paid to you” / “Owed to you (pending payout)”? <span class="rec">Your pick, read on screen.</span></li>
+      <li><b>Per-introduction receipts</b> — confirm the row shows YOUR own attributed purchases (tx · amount · status), never the introduced members’ identities. <span class="rec">The ADR-003 line, locked at the wireframe.</span></li>
+    </ol>
+  </div>
+
+  <footer>
+    Sources: PartnerStack · Binance · Dub · Rewardful · Stripe Connect/Express · Patreon · Gumroad · YouTube Studio · Voucherify · Avark Web3-UX — and NN/g · Baymard · deceptive.design · FTC. Filtered through: verify-first · own-row (ADR-003, no downline) · Visibility Law (show the money) · anti-financialization · legal commission framing · WORK-FIRST · the gold/paper system. <b>Nothing is built until you approve the wireframe.</b>
+  </footer>
+</div>

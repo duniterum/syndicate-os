@@ -1,0 +1,237 @@
+<title>A1 · My Activity — the whole system on one screen</title>
+<style>
+:root{
+  --paper:#F3F1EA; --card:#FBFAF6; --card2:#F6F4EC; --ink:#1C1A15; --ink-soft:#403C33; --muted:#6E695D;
+  --hair:#E2DCCE; --hair2:#D8D1BF;
+  --gold:#9A6B12; --gold-soft:#B98A2A; --gold-bg:rgba(154,107,18,.09);
+  --live:#2F6B49; --live-bg:rgba(47,107,73,.11);
+  --miss:#A63626; --miss-bg:rgba(166,54,38,.09);
+  --quarry:#5B4C86; --quarry-bg:rgba(91,76,134,.10);
+  --lock:#8A5E12; --lock-bg:rgba(154,107,18,.11);
+  --shadow:0 1px 2px rgba(28,26,21,.05),0 8px 24px rgba(28,26,21,.06);
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#100F0B; --card:#191712; --card2:#211E17; --ink:#EDE8DC; --ink-soft:#C8C2B4; --muted:#948E80;
+  --hair:#2A2720; --hair2:#37332A;
+  --gold:#E6B44C; --gold-soft:#D6A63E; --gold-bg:rgba(230,180,76,.12);
+  --live:#7EC298; --live-bg:rgba(126,194,152,.12);
+  --miss:#EC8871; --miss-bg:rgba(236,136,113,.12);
+  --quarry:#B3A2E0; --quarry-bg:rgba(179,162,224,.13);
+  --lock:#E6B44C; --lock-bg:rgba(230,180,76,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+}}
+:root[data-theme="light"]{
+  --paper:#F3F1EA; --card:#FBFAF6; --card2:#F6F4EC; --ink:#1C1A15; --ink-soft:#403C33; --muted:#6E695D;
+  --hair:#E2DCCE; --hair2:#D8D1BF;
+  --gold:#9A6B12; --gold-soft:#B98A2A; --gold-bg:rgba(154,107,18,.09);
+  --live:#2F6B49; --live-bg:rgba(47,107,73,.11);
+  --miss:#A63626; --miss-bg:rgba(166,54,38,.09);
+  --quarry:#5B4C86; --quarry-bg:rgba(91,76,134,.10);
+  --lock:#8A5E12; --lock-bg:rgba(154,107,18,.11);
+  --shadow:0 1px 2px rgba(28,26,21,.05),0 8px 24px rgba(28,26,21,.06);
+}
+:root[data-theme="dark"]{
+  --paper:#100F0B; --card:#191712; --card2:#211E17; --ink:#EDE8DC; --ink-soft:#C8C2B4; --muted:#948E80;
+  --hair:#2A2720; --hair2:#37332A;
+  --gold:#E6B44C; --gold-soft:#D6A63E; --gold-bg:rgba(230,180,76,.12);
+  --live:#7EC298; --live-bg:rgba(126,194,152,.12);
+  --miss:#EC8871; --miss-bg:rgba(236,136,113,.12);
+  --quarry:#B3A2E0; --quarry-bg:rgba(179,162,224,.13);
+  --lock:#E6B44C; --lock-bg:rgba(230,180,76,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  line-height:1.55;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1000px;margin:0 auto;padding:clamp(20px,5vw,52px) clamp(16px,4vw,40px) 96px;}
+.serif{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;}
+.mono{font-family:"Cascadia Code","JetBrains Mono","SF Mono",ui-monospace,Consolas,monospace;}
+
+.eyebrow{font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600;
+  font-family:"Cascadia Code",ui-monospace,Consolas,monospace;}
+h1{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-weight:600;
+  font-size:clamp(29px,5vw,48px);line-height:1.05;margin:.35em 0 .25em;letter-spacing:-.01em;text-wrap:balance;}
+.lede{color:var(--ink-soft);font-size:clamp(15px,2vw,17.5px);max-width:64ch;margin:0 0 6px;}
+.asof{color:var(--muted);font-size:12.5px;margin-top:8px;}
+.asof b{color:var(--ink-soft);font-weight:600;}
+
+.scale{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:30px 0 6px;}
+.stat{background:var(--card);border:1px solid var(--hair);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);}
+.stat .n{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-size:32px;font-weight:600;line-height:1;
+  font-variant-numeric:tabular-nums;color:var(--gold);}
+.stat.plain .n{color:var(--ink);}
+.stat.warn .n{color:var(--miss);}
+.stat .l{color:var(--muted);font-size:12.5px;margin-top:9px;letter-spacing:.01em;line-height:1.4;}
+
+.insight{margin:24px 0;border-left:4px solid var(--gold);background:var(--gold-bg);border-radius:0 12px 12px 0;
+  padding:18px 22px;}
+.insight .k{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--gold);font-weight:600;}
+.insight p{margin:8px 0 0;font-size:15.5px;color:var(--ink);line-height:1.5;}
+.insight b{color:var(--ink);font-weight:600;}
+
+section.band{margin:34px 0 0;}
+.band-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding-bottom:12px;border-bottom:2px solid var(--hair2);}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;transform:translateY(1px);}
+.dot.live{background:var(--live)} .dot.miss{background:var(--miss)} .dot.quarry{background:var(--quarry)}
+.band-head h2{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-weight:600;font-size:clamp(19px,2.6vw,24px);
+  margin:0;letter-spacing:-.01em;}
+.band-head .cap{color:var(--muted);font-size:13px;margin-left:auto;}
+ul.rows{list-style:none;margin:0;padding:0;}
+.row{display:flex;gap:14px;align-items:flex-start;padding:13px 2px;border-bottom:1px solid var(--hair);}
+.row:last-child{border-bottom:none;}
+.chip{flex:none;font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:10px;font-weight:600;
+  letter-spacing:.04em;border-radius:999px;padding:3px 9px;white-space:nowrap;border:1px solid transparent;margin-top:1px;
+  min-width:74px;text-align:center;}
+.chip.live{color:var(--live);background:var(--live-bg);border-color:color-mix(in srgb,var(--live) 30%,transparent);}
+.chip.lock{color:var(--lock);background:var(--lock-bg);border-color:color-mix(in srgb,var(--lock) 32%,transparent);}
+.chip.miss{color:var(--miss);background:var(--miss-bg);border-color:color-mix(in srgb,var(--miss) 32%,transparent);}
+.chip.quarry{color:var(--quarry);background:var(--quarry-bg);border-color:color-mix(in srgb,var(--quarry) 32%,transparent);}
+.row .b{min-width:0;}
+.row .t{font-weight:600;font-size:14.5px;color:var(--ink);}
+.row .d{color:var(--muted);font-size:13px;margin-top:2px;line-height:1.45;}
+.mirror{margin-top:14px;background:var(--quarry-bg);border:1px solid color-mix(in srgb,var(--quarry) 30%,var(--hair));
+  border-radius:10px;padding:13px 16px;font-size:13px;color:var(--ink-soft);line-height:1.5;}
+.mirror b{color:var(--quarry);font-weight:600;}
+
+.decision{margin:44px 0 0;border-radius:16px;border:1px solid color-mix(in srgb,var(--gold) 34%,var(--hair));
+  background:linear-gradient(180deg,var(--gold-bg),transparent 46%),var(--card);box-shadow:var(--shadow);
+  padding:24px clamp(16px,3vw,28px) 12px;}
+.decision .eyebrow{color:var(--gold);}
+.decision h2{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-weight:600;font-size:clamp(21px,3vw,27px);
+  margin:.3em 0 .15em;}
+.decision .sub{color:var(--ink-soft);font-size:14px;margin:0 0 8px;max-width:70ch;}
+.ladder{list-style:none;margin:18px 0 0;padding:0;position:relative;}
+.ladder:before{content:"";position:absolute;left:17px;top:10px;bottom:26px;width:2px;
+  background:linear-gradient(var(--gold),color-mix(in srgb,var(--gold) 20%,transparent));}
+.step{display:flex;gap:16px;padding:0 0 18px;position:relative;}
+.snum{flex:none;width:36px;height:36px;border-radius:9px;background:var(--card);border:1.5px solid var(--gold);
+  color:var(--gold);display:grid;place-items:center;font-family:"Cascadia Code",ui-monospace,Consolas,monospace;
+  font-weight:700;font-size:13px;z-index:1;}
+.step.rec .snum{background:var(--gold);color:var(--paper);}
+.sbody{padding-top:1px;min-width:0;}
+.stitle{font-weight:600;font-size:15.5px;color:var(--ink);display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;}
+.tag{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:10px;font-weight:600;letter-spacing:.03em;
+  border-radius:5px;padding:2px 7px;}
+.tag.client{color:var(--live);background:var(--live-bg);}
+.tag.server{color:var(--lock);background:var(--lock-bg);}
+.tag.rec{color:var(--paper);background:var(--gold);}
+.swhy{color:var(--muted);font-size:13.5px;margin-top:3px;line-height:1.48;max-width:72ch;}
+.swhy b{color:var(--ink-soft);}
+
+.rec-line{margin:8px 0 4px;padding:15px 18px;border-radius:12px;background:var(--live-bg);
+  border:1px solid color-mix(in srgb,var(--live) 30%,var(--hair));font-size:14.5px;color:var(--ink);line-height:1.5;}
+.rec-line b{color:var(--live);font-weight:700;}
+
+.next{margin-top:30px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:13.5px;}
+.next .pill{font-family:"Cascadia Code",ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--ink-soft);
+  border:1px solid var(--hair2);border-radius:999px;padding:5px 12px;background:var(--card);}
+.next .arw{color:var(--gold);font-weight:700;}
+footer{margin-top:38px;color:var(--muted);font-size:12px;border-top:1px solid var(--hair);padding-top:16px;line-height:1.6;}
+footer b{color:var(--ink-soft);}
+@media (max-width:560px){
+  .band-head .cap{margin-left:0;flex-basis:100%;}
+  .chip{min-width:0;}
+}
+@media (prefers-reduced-motion:no-preference){
+  .band,.stat,.decision,.insight{animation:rise .5s cubic-bezier(.2,.7,.2,1) both;}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+}
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">The Syndicate OS · SYSTEM-FIRST inventory · A1 “My Activity”</div>
+  <h1 class="serif">Your activity &amp; receipts — the whole machine, on one screen</h1>
+  <p class="lede">Before we build one part of it: the complete picture — what’s already live in prod, what’s missing, and what the origin had more of. You pick the scope from the whole, never from a slice. (That’s the law: building 3 lanes when the system has 15 is the named failure.)</p>
+  <div class="asof">Harvested <b>19 Jul 2026</b> by 4 parallel readers — prod (studio + api) · the origin quarry (<span class="mono">TheSyndicate</span> + <span class="mono">Supa-Exchange</span>) · the canon. Cross-checked against live code so <b>LIVE vs missing is honest</b>, not doc-drift.</div>
+
+  <div class="scale">
+    <div class="stat"><div class="n">14</div><div class="l">event kinds the origin merged into one feed (we surface ~10 today)</div></div>
+    <div class="stat plain"><div class="n">5</div><div class="l">of your own data feeds <b>already serving</b> server-side (purchases · seat · footprint · introductions · inbox)</div></div>
+    <div class="stat warn"><div class="n">0</div><div class="l">surfaces that show you <b>YOUR</b> side today — no “My” lens, no receipt binder</div></div>
+    <div class="stat plain"><div class="n">~28</div><div class="l">notification types the exchange quarry catalogued (a completeness reference)</div></div>
+  </div>
+
+  <div class="insight">
+    <div class="k">The one insight</div>
+    <p>The <b>Protocol</b> side is already live, and <b>every “My” figure already comes back from the server</b>. A1 is mostly a <b>surface</b> to lay over data you already have — not a new machine. That’s why the honest first slice needs <b>zero new indexing</b>.</p>
+  </div>
+
+  <section class="band">
+    <div class="band-head"><span class="dot live"></span><h2 class="serif">Already live today</h2><span class="cap">most of the machine exists</span></div>
+    <ul class="rows">
+      <li class="row"><span class="chip live">LIVE</span><div class="b"><div class="t">The public heartbeat — <span class="mono">/activity</span></div><div class="d">The complete protocol history: seats, burns, liquidity, archive mints, treasury moves, milestones, era turns, footprint rises, Chronicle promotions — every line verify-linked. 12 filter chips. This is the “Protocol” half ready to go.</div></div></li>
+      <li class="row"><span class="chip live">LIVE</span><div class="b"><div class="t">The dashboard pulse (5 lines)</div><div class="d">The 5 newest protocol lines on your Member Home. Its own code says: <i>“when A1 lands, this zone gains the My | Protocol lens.”</i></div></div></li>
+      <li class="row"><span class="chip live">LIVE</span><div class="b"><div class="t">The full receipt ticket</div><div class="d">The solemn on-chain receipt — seat, “where your money went”, QR verify, save-as-PDF, share card. It exists — <b>but only for a flash at checkout</b>; a past purchase can’t be reopened.</div></div></li>
+      <li class="row"><span class="chip live">LIVE</span><div class="b"><div class="t">All 5 of your own data feeds</div><div class="d">Your purchases (as rows) · your seat + founding receipt · your footprint + 12-rung ladder · your introductions (counts) · your inbox — <b>all already served</b>, own-row only, behind the sign-in wall.</div></div></li>
+    </ul>
+  </section>
+
+  <section class="band">
+    <div class="band-head"><span class="dot miss"></span><h2 class="serif">What’s missing — your “My” side</h2><span class="cap">the surface, not the data</span></div>
+    <ul class="rows">
+      <li class="row"><span class="chip lock">LOCKED</span><div class="b"><div class="t">The receipt binder</div><div class="d">The “Receipts” door is visible but locked. Your receipts are never gathered — you can see the <i>count</i> (“6 confirmed”) but can’t browse or reopen them.</div></div></li>
+      <li class="row"><span class="chip miss">NOT BUILT</span><div class="b"><div class="t">The My | Protocol pulse lens</div><div class="d">No toggle to flip the pulse to <i>your own</i> events. The data to build it (your rows) is already live.</div></div></li>
+      <li class="row"><span class="chip miss">NOT BUILT</span><div class="b"><div class="t">Per-row histories (M10)</div><div class="d">Your introductions are a <i>total</i> only — never itemised (“who, when”). Same for per-receipt / per-commission rows.</div></div></li>
+      <li class="row"><span class="chip lock">CAPPED</span><div class="b"><div class="t">“Your recent activity” stops at 5</div><div class="d">Rows 6+ are <b>already fetched but never shown</b> — there’s no “view all”. Lifting the cap is nearly free.</div></div></li>
+      <li class="row"><span class="chip miss">GAP</span><div class="b"><div class="t">The V2 “Routed” proof fold</div><div class="d">Some older-engine tickets don’t print their money-flow proof block — the paired on-chain event isn’t folded in yet.</div></div></li>
+    </ul>
+  </section>
+
+  <section class="band">
+    <div class="band-head"><span class="dot quarry"></span><h2 class="serif">What the origin had more of</h2><span class="cap">the quarry — harvest, don’t copy</span></div>
+    <ul class="rows">
+      <li class="row"><span class="chip quarry">QUARRY</span><div class="b"><div class="t">A 14-kind event machine with meaning</div><div class="d">One pipeline that read 6 chain sources and, per event, said <i>what it means · what it changes · who did it</i> — richer than today’s one-sentence lines.</div></div></li>
+      <li class="row"><span class="chip quarry">QUARRY</span><div class="b"><div class="t">A real receipt binder — with totals</div><div class="d">A per-wallet history table (block · USDC · SYN · tx) <b>plus rolled-up totals</b> (count / total paid / commission / net). The binder we don’t have yet.</div></div></li>
+      <li class="row"><span class="chip quarry">QUARRY</span><div class="b"><div class="t">The My | Protocol split, already composed</div><div class="d">The origin placed “what changed for the protocol” next to “your history since you joined” in one row — the exact lens A1 wants.</div></div></li>
+      <li class="row"><span class="chip quarry">QUARRY</span><div class="b"><div class="t">~28 notification types + bell + inbox (Supa)</div><div class="d">A full catalogue of “when X happens, tell the member”, a bell with tabs, and a tabbed transaction-history page.</div></div></li>
+    </ul>
+    <div class="mirror"><b>The mirror rule.</b> Harvest the origin’s <b>completeness and ambition</b> — never its baggage. Leave behind: the read-only-era hedging (“pending / not portable / candidate, not official”), the XP/level gain-framing, and the email reflex. Today’s system is more advanced; we take what it had <i>more</i> of, not what held it back. (And “Since you were away” is <b>retired</b> — it lives in the notification centre now; we do not rebuild it.)</div>
+  </section>
+
+  <div class="decision">
+    <div class="eyebrow">The decision — you pick from the whole picture</div>
+    <h2 class="serif">The scope ladder for A1</h2>
+    <p class="sub">Each rung adds to the one before. The green tag = client-only, zero new indexing (rides a normal deploy). The amber tag = needs a small server change or its own slice.</p>
+    <ol class="ladder">
+      <li class="step rec">
+        <span class="snum">S0</span>
+        <div class="sbody"><div class="stitle">Receipt binder <span class="tag client">client-only</span> <span class="tag rec">recommended start</span></div>
+          <div class="swhy">Your purchases as browsable rows, each with a <b>“view receipt”</b> that reopens the ticket we already built — and the <b>Receipts door goes live</b>. Lifts the 5-row cap. <b>Zero new backend.</b></div></div>
+      </li>
+      <li class="step rec">
+        <span class="snum">S1</span>
+        <div class="sbody"><div class="stitle">+ My | Protocol pulse lens <span class="tag client">client-only</span> <span class="tag rec">recommended</span></div>
+          <div class="swhy">A toggle on the pulse: <b>Protocol</b> (live now) vs <b>Mine</b> (your own events). The data’s already there.</div></div>
+      </li>
+      <li class="step rec">
+        <span class="snum">S2</span>
+        <div class="sbody"><div class="stitle">+ Per-row histories — M10 <span class="tag client">client-only</span> <span class="tag rec">recommended</span></div>
+          <div class="swhy">Your introductions / receipts / commissions <b>itemised</b>, verify-linked per row. Closes the last “coming soon” cards on your page.</div></div>
+      </li>
+      <li class="step">
+        <span class="snum">S3</span>
+        <div class="sbody"><div class="stitle">+ Receipt roadmap <span class="tag server">small server</span></div>
+          <div class="swhy">A public <span class="mono">/receipt/{tx}</span> page, the living ticket + share card, and the V2 “Routed” proof fold. Its own slice.</div></div>
+      </li>
+      <li class="step">
+        <span class="snum">S4</span>
+        <div class="sbody"><div class="stitle">+ Auto-generator <span class="tag server">own slice</span></div>
+          <div class="swhy">Personal events <b>pushed as they happen</b> — “your referral succeeded”, “commission paid $X”, “you rose to Patron”. Sets up the FIRSTS engine → My Chronicle next.</div></div>
+      </li>
+    </ol>
+    <div class="rec-line">My recommendation: ship <b>S0 + S1 + S2</b> as “A1, thin version” — all three are client-only, zero new indexing, and they’re exactly the finish-order definition of A1. <b>S3 and S4 are their own later slices</b> (each touches the server or is its own machine) — we don’t fold them in silently.</div>
+  </div>
+
+  <div class="next">
+    <span class="pill">You pick the scope</span><span class="arw">→</span>
+    <span class="pill">I draw the wireframe</span><span class="arw">→</span>
+    <span class="pill">preview gate (desktop + mobile)</span><span class="arw">→</span>
+    <span class="pill">build</span>
+  </div>
+
+  <footer>
+    Own-row only (ADR-003) · every figure carries its verify link · the heartbeat stays complete (any new contract joins the feed in the same slice). <b>Nothing is built until you pick the scope and approve a wireframe.</b>
+  </footer>
+</div>
