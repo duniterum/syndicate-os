@@ -31,12 +31,14 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > is name/alias/email, never the address) · REFERRAL = the first page: 5 tabs · do it ALL in order ·
 > elevate `/referral` to real deep-linkable routes · GO-LIVE.
 > **REFERRAL ARC (ordered):** ✅ slice 1 (the elevation) SEALED IN PROD `d29765d` → ✅ slice 2
-> (THE 5 TABS at real sub-routes `/referral/{introductions,commissions,ladder,link}`) BUILT +
-> COMMITTED [this commit] — founder preview-approved on the rig + "Go and GO-Live" ordered
-> 2026-07-19; full gate green (18 studio + 17 api guards, seo 491, audit 322, build 32 shells);
-> AWAITING THE REPLIT SEAL (no migration) → slices 3–6 (the adds, NEXT = ③ `&via` channels
-> analytics: their honest-future shells are LIVE in the tabs since slice 2; each slice replaces
-> its shell with the real record). Full state: SESSION_STATE.md.
+> (THE 5 TABS at real sub-routes `/referral/{introductions,commissions,ladder,link}`)
+> **SEALED IN PROD `5d9cb58` (Replit 7/7 green 2026-07-19, founder-pasted report on record:
+> sub-routes 200 + canonical → /referral + noindex,follow · sitemap 25 exact · wall holds ·
+> byte-identity remote==local · no anomalies)** — founder preview-approved on the rig +
+> "Go and GO-Live" 2026-07-19; full gate green (18 studio + 17 api guards, seo 491, audit 322)
+> → slices 3–6 (the adds, NEXT = ③ `&via` channels analytics: their honest-future shells are
+> LIVE in the tabs since slice 2; each slice replaces its shell with the real record).
+> Full state: SESSION_STATE.md.
 
 > **▶ 2026-07-17 (STANDING RULE, founder, emphatic — engraved here AND in agent memory):
 > NEVER RE-BLOCK ON AN ANSWERED QUESTION. Founder gates exist ONLY for: security/

@@ -96,8 +96,8 @@ Ladder truth (`config/connectorLadder.ts`): Emerging 5% (0) · Active 5% (3, tit
   referral SURFACE (`ReferralSurface` fork: connected → dashboard in shell; anon+prerender →
   SourceAttribution, SEO intact). Door → `/referral`; referral left `/member` (one door, one surface);
   guards updated. Reuses the proven MemberReferralDashboard as-is (no new content code).
-- ✅ **SLICE 2 — THE 5 TABS, BUILT + COMMITTED (founder preview-approved + GO-Live ordered
-  2026-07-19; awaiting the Replit seal).** The deep-linkable sub-routes
+- ✅ **SLICE 2 — THE 5 TABS, SEALED IN PROD (`5d9cb58`, Replit 7/7 green 2026-07-19;
+  founder preview-approved + GO-Live).** The deep-linkable sub-routes
   `/referral/{introductions,commissions,ladder,link}` (REDIRECT-class, canonical → /referral,
   off-sitemap) + underline gold tabs (nav+links, aria-current) + figures-above with verify↗ on the
   money tiles + content split into the 5 panels + the §7 conversion hero verbatim (+VerifyOnChain)

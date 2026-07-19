@@ -136,7 +136,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   prerender 32 shells (nested referral/*.html emitted) + precompress byte-identical +
 >   admin-dist 93. Browser-verified: 5 tabs traversed connected(sim)+anon, both themes,
 >   375px+desktop no page h-scroll, imgs naturalWidth>0, zero console errors.
->   **AWAITING THE REPLIT SEAL (client-only + serving route table, NO migration).**
+>   **✅ SEALED IN PROD (`5d9cb58`, Replit 7/7 green 2026-07-19, founder-pasted report):**
+>   26/26 files blob-hash verified, anchor advanced, typecheck ✓; gates green at the new
+>   counts (operator-gate 2750 · access-state 1060 · admin-dist 93 — rises = 8 new files
+>   scanned, expected); static server 54 → 62 rules; IN PROD: /referral 200 index,follow ·
+>   the 4 sub-routes hard-GET 200 each with canonical → /referral + noindex,follow ·
+>   /source-attribution intact · sitemap exactly 25 URLs, zero /referral/* · wall holds
+>   (404 neutral) · healthz ok, feed 78 items, engine self-healed a known partial-boot
+>   ("4 streams faulted" → cursor recovery, 2 clean cycles, headBlock 90.668M advancing) ·
+>   byte-identity remote==local (entry `index-DTokzzg6.js` + `OperatorConsole-CYNhk8LL.js`
+>   both IDENTICAL). No anomalies. **DEPLOY BACKLOG: EMPTY. Tree clean.**
 > - **SLICES 3–6 (IN ORDER, NEXT = 3) — THE ADDS** (from the SYSTEM-FIRST harvest `wf_81dd540b`):
 >   ③ the `&via` channels analytics (biggest gap; the click store = small backend) ·
 >   ④ per-introduction rows (needs the row-level adapter, server) · ⑤ commission anatomy
