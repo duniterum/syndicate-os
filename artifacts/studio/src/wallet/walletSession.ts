@@ -599,6 +599,26 @@ export async function fetchOwnIntroductions(): Promise<OwnIntroductionsReadback 
 }
 
 // ── D-TRUTH D3: own purchase-history rows (the member's own receipts) ───────
+/** R-BIND — one purchase's own receipt facts (the event's own fields; every
+ * nullable is honest absence). Feeds the binder's full-ticket build. */
+export interface OwnPurchaseReceiptFacts {
+  seat: number | null;
+  /** The row's own actor (the ticket's Holder), ADR-003 short form only. */
+  holderShort: string | null;
+  commissionRaw: string | null;
+  netRaw: string | null;
+  vaultRaw: string | null;
+  liquidityRaw: string | null;
+  operationsRaw: string | null;
+  synOutRaw: string | null;
+  synPerUsdc: string | null;
+  era: number | null;
+  firstSeat: boolean | null;
+  sourceIdHex: string | null;
+  /** The referrer, ADR-003 short form only — server-derived. */
+  broughtByShort: string | null;
+}
+
 export interface OwnPurchaseRowReadback {
   isoDayUtc: string;
   /** Gross USDC, 6-dec raw decimal string — humanized at render. */
@@ -609,13 +629,58 @@ export interface OwnPurchaseRowReadback {
   block: number | null;
   /** Engine generation — a public protocol parameter (V1 · V2A · V2B · V3). */
   engine: string;
+  /** R-BIND: chain-verified epoch seconds of the sealing block, or null. */
+  sealedAtSec: number | null;
+  /** R-BIND: the receipt facts, or null — the binder row then renders
+   *  without a full ticket (honest absence, never a guess). */
+  receipt: OwnPurchaseReceiptFacts | null;
 }
 
 export interface OwnPurchasesReadback {
   state: "S1" | "S4";
   /** null = the record model is unavailable (honest gap, never guessed). */
   rows: OwnPurchaseRowReadback[] | null;
+  /** R-BIND: the server's chain-verified token decimals, or null (a ticket
+   *  is built only when the served facts are whole). */
+  decimals: { usdc: number; syn: number } | null;
   failureReason: string | null;
+}
+
+/** R-BIND — parse one row's receipt facts: each field typed or null; a
+ * malformed object degrades to null (honest absence), never a partial lie. */
+function parsePurchaseReceiptFacts(v: unknown): OwnPurchaseReceiptFacts | null {
+  if (typeof v !== "object" || v === null) return null;
+  const a = v as Record<string, unknown>;
+  const dec = (x: unknown): string | null =>
+    typeof x === "string" && /^[0-9]+$/.test(x) ? x : null;
+  const int = (x: unknown): number | null =>
+    typeof x === "number" && Number.isSafeInteger(x) && x >= 0 ? x : null;
+  return {
+    seat: int(a.seat),
+    holderShort:
+      typeof a.holderShort === "string" &&
+      /^0x[0-9a-f]{3}…[0-9a-f]{4}$/.test(a.holderShort)
+        ? a.holderShort
+        : null,
+    commissionRaw: dec(a.commissionRaw),
+    netRaw: dec(a.netRaw),
+    vaultRaw: dec(a.vaultRaw),
+    liquidityRaw: dec(a.liquidityRaw),
+    operationsRaw: dec(a.operationsRaw),
+    synOutRaw: dec(a.synOutRaw),
+    synPerUsdc: dec(a.synPerUsdc),
+    era: int(a.era),
+    firstSeat: typeof a.firstSeat === "boolean" ? a.firstSeat : null,
+    sourceIdHex:
+      typeof a.sourceIdHex === "string" && /^0x[0-9a-f]{64}$/.test(a.sourceIdHex)
+        ? a.sourceIdHex
+        : null,
+    broughtByShort:
+      typeof a.broughtByShort === "string" &&
+      /^0x[0-9a-f]{3}…[0-9a-f]{4}$/.test(a.broughtByShort)
+        ? a.broughtByShort
+        : null,
+  };
 }
 
 /**
@@ -655,13 +720,36 @@ export async function fetchOwnPurchases(): Promise<OwnPurchasesReadback | null> 
           explorerUrl: r.explorerUrl,
           block: typeof r.block === "number" ? r.block : null,
           engine: r.engine,
+          sealedAtSec:
+            typeof r.sealedAtSec === "number" &&
+            Number.isSafeInteger(r.sealedAtSec) &&
+            r.sealedAtSec > 0
+              ? r.sealedAtSec
+              : null,
+          receipt: parsePurchaseReceiptFacts(r.receipt),
         });
+      }
+    }
+
+    let decimals: OwnPurchasesReadback["decimals"] = null;
+    if (typeof o.decimals === "object" && o.decimals !== null) {
+      const d = o.decimals as Record<string, unknown>;
+      if (
+        typeof d.usdc === "number" &&
+        Number.isSafeInteger(d.usdc) &&
+        d.usdc >= 0 &&
+        typeof d.syn === "number" &&
+        Number.isSafeInteger(d.syn) &&
+        d.syn >= 0
+      ) {
+        decimals = { usdc: d.usdc, syn: d.syn };
       }
     }
 
     return {
       state: o.state,
       rows,
+      decimals,
       failureReason:
         typeof o.failureReason === "string" ? o.failureReason : null,
     };

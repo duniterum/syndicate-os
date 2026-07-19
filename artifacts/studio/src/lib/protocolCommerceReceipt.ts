@@ -171,6 +171,9 @@ export interface MembershipReceiptModel {
  */
 export interface ConfirmedMembershipPurchase {
   readonly memberNumber: string;
+  /** The seat's holder: a full 40-hex address (checkout's decoded log —
+   *  rendered short) OR an already-short ADR-003 form from an own-row read
+   *  (rendered verbatim; the server never serves the full form). */
   readonly recipient: string;
   readonly grossUsdcRaw: string;
   /** V3 only — null on engines that never carried a referral figure. */
@@ -189,8 +192,14 @@ export interface ConfirmedMembershipPurchase {
   readonly firstSeat: boolean | null;
   /** bytes32; the zero id means "no introduction on this purchase". */
   readonly sourceId: string | null;
+  /** The referrer: a full 40-hex address (checkout's decoded log — rendered
+   *  short) OR an already-short ADR-003 form from an own-row read (`0x244…c721`
+   *  — rendered verbatim; the server never serves the full form). */
   readonly sourceWallet: string | null;
 }
+
+/** ADR-003 short referrer form (`0x` + 3 hex + `…` + 4 hex). */
+const SHORT_REF_RE = /^0x[0-9a-fA-F]{3}…[0-9a-fA-F]{4}$/;
 
 export interface MembershipReceiptInput {
   readonly event: ConfirmedMembershipPurchase;
@@ -276,8 +285,9 @@ export function buildMembershipReceipt(
     ev.sourceId !== null &&
     ev.sourceWallet !== null &&
     ev.sourceId.toLowerCase() !== ZERO_BYTES32 &&
-    /^0x[0-9a-fA-F]{40}$/.test(ev.sourceWallet) &&
-    !/^0x0{40}$/.test(ev.sourceWallet);
+    ((/^0x[0-9a-fA-F]{40}$/.test(ev.sourceWallet) &&
+      !/^0x0{40}$/.test(ev.sourceWallet)) ||
+      SHORT_REF_RE.test(ev.sourceWallet));
   // The paid-to-referrer line prints only when the event truly carried one.
   const hasSourcePayment =
     hasIntroduction &&
@@ -287,7 +297,12 @@ export function buildMembershipReceipt(
 
   const seatLines: ReceiptContextLine[] = [
     { label: "Seat", value: `Member #${seatDisplay}`, em: true },
-    { label: "Holder", value: SHORT(ev.recipient) },
+    {
+      label: "Holder",
+      // A served short form prints verbatim (it IS the fact); a full
+      // address prints in the ticket's own short form. Display only.
+      value: SHORT_REF_RE.test(ev.recipient) ? ev.recipient : SHORT(ev.recipient),
+    },
   ];
   if (ev.synOutRaw !== null) {
     seatLines.push({
@@ -300,7 +315,12 @@ export function buildMembershipReceipt(
     });
   }
   if (hasIntroduction && ev.sourceWallet !== null) {
-    seatLines.push({ label: "Referral", value: `brought by ${SHORT(ev.sourceWallet)}` });
+    // A short form renders verbatim (it IS the served fact); a full address
+    // renders in the ticket's own short form. Display only — never derived.
+    const refDisplay = SHORT_REF_RE.test(ev.sourceWallet)
+      ? ev.sourceWallet
+      : SHORT(ev.sourceWallet);
+    seatLines.push({ label: "Referral", value: `brought by ${refDisplay}` });
   }
 
   // THE COMMERCE BLOCK — the buyer's perspective: the product bought at its

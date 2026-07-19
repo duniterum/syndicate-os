@@ -270,6 +270,25 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
       "Own-row reads + member-signed revoke (approve 0). No server write. D-TRUTH D5 (2026-07-16): own Archive artifact holdings read live per artifact (client ERC-1155 balanceOf; address from verify-links).",
   },
   {
+    // R-BIND (founder order 2026-07-19): the Receipts binder door goes live.
+    path: "/receipts",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "Receipts — your purchases, each one a ticket",
+    description:
+      "Every confirmed purchase on your wallet, reopenable as its full receipt — dated, exact, and anchored to its own transaction on Avalanche. Your own record only; nothing here is a promise, everything is a proof.",
+    canonicalPath: "/receipts",
+    changefreq: "monthly",
+    priority: 0.4,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "identity",
+    primaryIntent: "proof",
+    proofRoute: "/status",
+    notes:
+      "R-BIND: the binder surface (A1 placement ③) — own-row purchase rows from the D3 read, each expanding to the checkout-sealed ticket rendering (one spine, one rendering path). No server write.",
+  },
+  {
     path: "/toolkit",
     routeType: "PUBLIC",
     indexStatus: "INDEX",

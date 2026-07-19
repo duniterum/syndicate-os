@@ -174,9 +174,16 @@ pin(
   /RECENT_LIMIT = 5/.test(recentCode),
   "Z4 shows the last 5 rows (the approved count)",
 );
+// R-BIND (2026-07-19, deliberate amendment — the A1 placement ② LANDED):
+// the old "no receipt affordance" pin flips to its positive form: Z4 rows
+// MUST carry the binder door (the GO'd placement, now live at /receipts).
 pin(
-  !/View receipt|Open receipt|ReceiptTicket|\/receipts?\b/i.test(recentCode),
-  "Z4 mounts NO receipt-opening affordance, by any name or path — placements ride A1 per the GO'd decision",
+  /href="\/receipts"/.test(recentCode),
+  "Z4 carries the binder door (/receipts) — the GO'd A1 placement ②, live since R-BIND",
+);
+pin(
+  !/ReceiptTicket|buildMembershipReceipt/.test(recentCode),
+  "Z4 links the binder, never mounts the ticket itself (one rendering surface — the binder)",
 );
 pin(
   !/printed its ticket/.test(recentCode) && !/printed its ticket/.test(kpiCode),

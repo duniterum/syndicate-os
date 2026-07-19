@@ -29,6 +29,7 @@ import Support from "@/pages/Support";
 import Archive from "@/pages/Archive";
 import Activity from "@/pages/Activity";
 import MemberWallet from "@/pages/MemberWallet";
+import MemberReceipts from "@/pages/MemberReceipts";
 import MemberNotifications from "@/pages/MemberNotifications";
 import Liquidity from "@/pages/Liquidity";
 import MemberToolkit from "@/pages/MemberToolkit";
@@ -238,6 +239,9 @@ function Router() {
       </PublicRoute>
       <PublicRoute path="/wallet">
         <MemberWallet />
+      </PublicRoute>
+      <PublicRoute path="/receipts">
+        <MemberReceipts />
       </PublicRoute>
       <PublicRoute path="/liquidity">
         <Liquidity />

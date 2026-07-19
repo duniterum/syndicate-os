@@ -24,6 +24,7 @@ import {
   Bell,
   Droplets,
   Flame,
+  Receipt,
   Wallet,
   Wrench,
   type LucideIcon,
@@ -559,6 +560,21 @@ export const modules = [
     dependencies: [],
     nav: { header: false, sidebar: false, footer: true },
     icon: Wallet,
+  },
+  // R-BIND (founder order 2026-07-19): the Receipts binder door goes live.
+  {
+    id: "receipts",
+    label: "Receipts",
+    path: "/receipts",
+    zone: "member",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description: "Your receipt binder — every confirmed purchase, reopenable as its full ticket.",
+    dependencies: [],
+    nav: { header: false, sidebar: false, footer: true },
+    icon: Receipt,
   },
   // NOTIF-1 (founder-approved wireframe 2026-07-18, no-email canon).
   {

@@ -32,6 +32,7 @@ import type {
   BlockTimestampInput,
   RawSaleEventInput,
 } from "./activityHeartbeatReadmodel";
+import type { RawReceiptFactInput } from "./ownPurchaseReadmodel";
 import type {
   ProtocolCursorState,
   ProtocolEventRecord,
@@ -514,6 +515,11 @@ function toBool(value: unknown, label: string): boolean {
 
 export interface ActivityHeartbeatLoad {
   input: ActivityBuildInput;
+  /** R-BIND (the Receipts binder, founder order 2026-07-19): the own-receipt
+   * facts projection — SAME read pass, its OWN whitelist (below); consumed
+   * ONLY by the own-purchase model's fold, served ONLY as a session's own
+   * rows (ADR-003 §3). */
+  rawReceiptFacts: RawReceiptFactInput[];
   /** Divergence-witness cross-check evidence (hashes never leave the zone). */
   rowsWithBothHashes: number;
 }
@@ -638,6 +644,67 @@ export async function loadActivityHeartbeatInput(): Promise<ActivityHeartbeatLoa
     };
   });
 
+  // --- R-BIND: the OWN-RECEIPT facts projection (same read pass) ---------
+  // decodedJson RECEIPT WHITELIST (deliberate, 2026-07-19, the binder slice —
+  // ADR-003 §3 own-row receipts): the MONEY fields {acquisitionCost,
+  // protocolContribution, vaultAmount, liquidityAmount, operationsAmount,
+  // referralAmount, synOut, synAmount, synPerUsdc} + the already-whitelisted
+  // context {memberNumber, era, firstSeat, sourceId, sourceWallet}. Numbers,
+  // booleans and 64-hex ids only; sourceWallet leaves ONLY as the derived
+  // ADR-003 SHORT form. These facts feed EXCLUSIVELY the own-purchase fold —
+  // never an aggregate, never the public feed.
+  const dec = (v: unknown): string | null =>
+    typeof v === "string" && /^[0-9]+$/.test(v) ? v : null;
+  const shortRef = (v: unknown): string | null =>
+    typeof v === "string" &&
+    /^0x[0-9a-fA-F]{40}$/.test(v) &&
+    BigInt(v) !== 0n
+      ? `0x${v.slice(2, 5).toLowerCase()}…${v.slice(-4).toLowerCase()}`
+      : null;
+  const rawReceiptFacts: RawReceiptFactInput[] = rawRows.map((r) => {
+    const d = r.decodedJson as Record<string, unknown>;
+    const isV1 = r.eventName === "TokensPurchased";
+    const isV2 = r.eventName === "Purchased";
+    const isV3 = r.eventName === "MembershipPurchasedV3";
+    const isRouted = r.eventName === "Routed";
+    const sourceIdHex =
+      isV3 &&
+      typeof d.sourceId === "string" &&
+      /^0x[0-9a-fA-F]{64}$/.test(d.sourceId) &&
+      BigInt(d.sourceId) !== 0n
+        ? d.sourceId.toLowerCase()
+        : null;
+    return {
+      blockNumber: r.blockNumber,
+      logIndex: r.logIndex,
+      transactionHash: r.transactionHash,
+      eventName: r.eventName,
+      commissionRaw: isV3
+        ? dec(d.acquisitionCost)
+        : isRouted
+          ? dec(d.referralAmount)
+          : null,
+      netRaw: isV3 ? dec(d.protocolContribution) : null,
+      vaultRaw: isV1 || isV3 || isRouted ? dec(d.vaultAmount) : null,
+      liquidityRaw: isV1 || isV3 || isRouted ? dec(d.liquidityAmount) : null,
+      operationsRaw: isV1 || isV3 || isRouted ? dec(d.operationsAmount) : null,
+      synOutRaw: isV1 ? dec(d.synAmount) : isV2 || isV3 ? dec(d.synOut) : null,
+      synPerUsdc: isV2 || isV3 ? dec(d.synPerUsdc) : null,
+      memberNumber:
+        (isV2 || isV3) && "memberNumber" in d
+          ? toInt(d.memberNumber, "decoded memberNumber")
+          : null,
+      era:
+        (isV2 || isV3) && "era" in d ? toInt(d.era, "decoded era") : null,
+      firstSeat:
+        (isV2 || isV3) && "firstSeat" in d
+          ? toBool(d.firstSeat, "decoded firstSeat")
+          : null,
+      sourceIdHex,
+      broughtByShort: sourceIdHex !== null ? shortRef(d.sourceWallet) : null,
+    };
+  });
+
   // --- Protocol Time: verified block timestamps (read-only) ---
   const tsRows = await db.db
     .select({
@@ -682,6 +749,7 @@ export async function loadActivityHeartbeatInput(): Promise<ActivityHeartbeatLoa
       rawEvents,
       blockTimestamps,
     },
+    rawReceiptFacts,
     rowsWithBothHashes,
   };
 }

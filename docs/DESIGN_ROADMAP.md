@@ -299,6 +299,28 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   375 zéro débordement (le seul sous-12px = l'atome partagé LifecycleBadge,
   vague P2). GO fondateur au gate preview (2026-07-17).
 
+- [x] **R-BIND — LE CLASSEUR DE REÇUS (2026-07-19, ordre fondateur « tous les
+  reçus, le ticket partout » ; GO au gate preview)** : la porte Receipts du
+  menu VIVANTE (verrouillée→vive, les 2 pins §3 du guard basculés même
+  commit) ; `/receipts` = le registre (lignes groupées par mois · date ·
+  Seat #N · moteur · TOTAL exact or · chevron) où chaque ligne s'ouvre SUR
+  PLACE en VRAI `ReceiptTicket` (une colonne vertébrale, un seul chemin de
+  rendu — le classeur MONTE le ticket, ne le réimplémente jamais) ; le
+  PLIAGE V2 gravé « rides the binder slice » LIVRÉ (Purchased+Routed même
+  transaction) ; V1 genesis via le roster gelé ; l'absence honnête partout
+  (V2B sentinelle → repli + preuve) ; rachat d'un membre assis = étiquette
+  « · footprint » depuis le drapeau de l'événement (jamais un second siège) ;
+  lien profond `?tx=` (la ligne de l'accueil ouvre SON ticket) ; placements
+  A1 ②③ montés : Z4 lignes → « receipt » + la tuile Receipts devenue porte
+  + « Open ticket » sur le panneau de siège. Serveur : faits de reçu own-row
+  (2 listes blanches amendées délibérément, datées), décimales servies
+  canon. `guard-receipt-ticket` **94 pins** (le panneau couvert) ·
+  member-menu 35 · member-home 27. **+0 couleur brute** ; rig : ticket
+  complet DOM-vérifié (7 zones · sceau chargé · QR puce blanche · 2 thèmes ·
+  375 sans débordement · zéro erreur console). Les notes « Coming later » /
+  « View-receipt ABSENTS » des entrées ② MENU et ③ HOME ci-dessus sont
+  SUPERSÉDÉES par cette entrée.
+
 ### Phase 6 — Audits (le sceau grade-AAA)
 - [ ] Accessibilité (WCAG AA / APCA, focus, clavier, cibles ≥44px)
 - [ ] Responsive (fluide, container queries, 320 → 2560, pliables)
@@ -312,7 +334,7 @@ Design **100 % fini, verrouillé** = toutes les cases de "Définition de FINI" c
 → **on n'y revient plus jamais.**
 
 ## Suivi couleur — ✅ FERMÉ
-Sprawl : **0** couleur brute (slice 2.3 FAQ : **+0** · slice 2.4 Docs : **+0** · slice ⓪ liveness : **+0** — MembersProvenance 100 % tokens · arc Member Home 2026-07-14 : MEMBER SHELL **+0** · slice A actions/lien/Guide **+0** · slice B pill/settings **+0** · slice C teasers (TeaserSurface + 3 pages) **+0** · slice D wallet/toolkit **+0** · arc harvest L-1 /liquidity **+0** · ACT-1 feed (LiveActivityFeed + 2 pages live) **+0** · CHR-1 chronicle (register + panneau console) **+0** · M1-a hero premier acte (HeroStatusChips + HeroSeatLine + rail Inspect) **+0** · M1-b carte vivante (heroIconLanguage + nœud burn + mini-feed) **+0** · M1-c header/footer (barre récurrente morte à la racine + garde `guard-nav-link-display` + pilules dérivées) **+0** · S7 member home (bande d'accès + héros Your Seat + pilule échelon) **+0** · S7-b tableau de bord membre (bandeau + KPI + pouls + puces mobiles) **+0** · RECEIPT ticket (spine + ReceiptTicket + guard 63 pins) **+0** · ② MENU membre (memberDoors + MemberShell + RouteScrollManager + guard 34 pins) **+0** · ③ HOME (MemberAttention + MemberRecentActivity + MemberDoorsGrid + KPI 6 + guard 30 pins) **+0** · ARC MODÈLE D'ACCÈS 2026-07-18 (SignInWall + MemberAppPage + continuité shell, slices 1+2) **+0** · Phase A finish (copy Season + lecture capital 3-états partagée) **+0** · doors-dedup (grille dupliquée `MemberDoorsGrid` retirée, guard 26 pins) **+0** · Referral élévation (`ReferralSurface` fork, `/referral` surface membre) **+0** — tout en tokens). Guard
+Sprawl : **0** couleur brute (slice 2.3 FAQ : **+0** · slice 2.4 Docs : **+0** · slice ⓪ liveness : **+0** — MembersProvenance 100 % tokens · arc Member Home 2026-07-14 : MEMBER SHELL **+0** · slice A actions/lien/Guide **+0** · slice B pill/settings **+0** · slice C teasers (TeaserSurface + 3 pages) **+0** · slice D wallet/toolkit **+0** · arc harvest L-1 /liquidity **+0** · ACT-1 feed (LiveActivityFeed + 2 pages live) **+0** · CHR-1 chronicle (register + panneau console) **+0** · M1-a hero premier acte (HeroStatusChips + HeroSeatLine + rail Inspect) **+0** · M1-b carte vivante (heroIconLanguage + nœud burn + mini-feed) **+0** · M1-c header/footer (barre récurrente morte à la racine + garde `guard-nav-link-display` + pilules dérivées) **+0** · S7 member home (bande d'accès + héros Your Seat + pilule échelon) **+0** · S7-b tableau de bord membre (bandeau + KPI + pouls + puces mobiles) **+0** · RECEIPT ticket (spine + ReceiptTicket + guard 63 pins) **+0** · ② MENU membre (memberDoors + MemberShell + RouteScrollManager + guard 34 pins) **+0** · ③ HOME (MemberAttention + MemberRecentActivity + MemberDoorsGrid + KPI 6 + guard 30 pins) **+0** · ARC MODÈLE D'ACCÈS 2026-07-18 (SignInWall + MemberAppPage + continuité shell, slices 1+2) **+0** · Phase A finish (copy Season + lecture capital 3-états partagée) **+0** · doors-dedup (grille dupliquée `MemberDoorsGrid` retirée, guard 26 pins) **+0** · Referral élévation (`ReferralSurface` fork, `/referral` surface membre) **+0** · R-BIND classeur de reçus (`ReceiptsBinderPanel` + `MemberReceipts`) **+0** — tout en tokens). Guard
 `no-raw-color` **BLOQUANT** dans la gate (`pnpm guards`), toute nouvelle couleur brute casse le
 build. Du pic de **137 sites** → **0** au fil des slices d'harmonisation.
 Une seule exception documentée : `QrCodeBlock` (fond blanc du canvas QR, requis pour la lisibilité),

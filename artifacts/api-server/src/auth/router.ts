@@ -799,6 +799,28 @@ router.get("/member-purchases", (req: Request, res: Response) => {
         explorerUrl: string;
         block: number;
         engine: string;
+        // R-BIND (the Receipts binder) — the row's own receipt facts:
+        // chain-verified seconds + the event's own money/context fields
+        // (numbers, booleans, a 64-hex id, an ADR-003 short form ONLY), or
+        // null (honest absence — the binder then shows the row without a
+        // full ticket, never a guess). ADR-003 §3: a member's own receipts
+        // are theirs to see and share.
+        sealedAtSec: number;
+        receipt: {
+          seat: number | null;
+          holderShort: string | null;
+          commissionRaw: string | null;
+          netRaw: string | null;
+          vaultRaw: string | null;
+          liquidityRaw: string | null;
+          operationsRaw: string | null;
+          synOutRaw: string | null;
+          synPerUsdc: string | null;
+          era: number | null;
+          firstSeat: boolean | null;
+          sourceIdHex: string | null;
+          broughtByShort: string | null;
+        } | null;
       }[]
     | null = null;
   let failureReason: string | null = null;
@@ -823,6 +845,8 @@ router.get("/member-purchases", (req: Request, res: Response) => {
           explorerUrl,
           block: r.blockNumber,
           engine: r.generation,
+          sealedAtSec: r.sealedAtSec,
+          receipt: r.receipt === null ? null : { ...r.receipt },
         });
       }
     }
@@ -831,6 +855,10 @@ router.get("/member-purchases", (req: Request, res: Response) => {
   const payload = {
     state: sessionActive ? ("S4" as const) : ("S1" as const),
     rows,
+    // R-BIND: the chain-verified token decimals (the token-metadata guard's
+    // canon — same constants the join-quote serves; ONE truth source so the
+    // binder's exact amounts re-base on served facts, never a client literal).
+    decimals: { usdc: 6 as const, syn: 18 as const },
     failureReason,
   };
   // Leak gates: payload discipline + boundary-aware address scan (40-hex

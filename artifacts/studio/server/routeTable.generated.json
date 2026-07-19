@@ -15,6 +15,8 @@
   "/notifications/": "/notifications.html",
   "/wallet": "/wallet.html",
   "/wallet/": "/wallet.html",
+  "/receipts": "/receipts.html",
+  "/receipts/": "/receipts.html",
   "/toolkit": "/toolkit.html",
   "/toolkit/": "/toolkit.html",
   "/liquidity": "/liquidity.html",

@@ -422,11 +422,27 @@ const allowedKeys = new Set([
   // H2-P founder override A (2026-07-15): the event's OWN referrer — same
   // log, no join; SERVER-ONLY full address, short form is all that serves.
   "sourceWallet",
+  // R-BIND (deliberate amendment 2026-07-19, the Receipts-binder slice —
+  // ADR-003 §3 own-row receipts): the OWN-RECEIPT money fields, read in the
+  // SAME loader pass into a SEPARATE projection consumed ONLY by the
+  // own-purchase fold and served ONLY as a session's own rows. They never
+  // enter the activity read-model, the aggregate report, or the public feed
+  // (the gated-literal check below still bans them from the readmodel and
+  // the derive script).
+  "acquisitionCost",
+  "protocolContribution",
+  "vaultAmount",
+  "liquidityAmount",
+  "operationsAmount",
+  "referralAmount",
+  "synOut",
+  "synAmount",
+  "synPerUsdc",
 ]);
 check(
   decodedAccesses.length > 0 &&
     decodedAccesses.every((k) => allowedKeys.has(k)),
-  "shared loader decodedJson access whitelist is exactly {firstSeat, memberNumber, usdcAmount, usdcIn, grossUsdc, era, buyer, recipient, sourceId, sourceWallet}",
+  "shared loader decodedJson access whitelist is exactly {firstSeat, memberNumber, usdcAmount, usdcIn, grossUsdc, era, buyer, recipient, sourceId, sourceWallet} + the R-BIND own-receipt money fields",
   `shared loader reads non-whitelisted decodedJson keys: ${decodedAccesses
     .filter((k) => !allowedKeys.has(k))
     .join(", ")}`,
@@ -437,6 +453,11 @@ check(
   "derive performs no decodedJson access of its own (loader is the one gate)",
   "derive grew its own decodedJson access — the shared loader must stay the only gate",
 );
+// R-BIND amendment (2026-07-19): the gated-economics ban now scopes to the
+// ACTIVITY chain proper (readmodel + derive). The shared loader legitimately
+// carries these literals in its own-receipt projection (own-row serving,
+// ADR-003 §3) — whitelisted above; the activity read-model and the derive
+// script must still never touch them.
 const gatedLiterals = [
   "referral" + "Amount",
   "source" + "Class",
@@ -445,9 +466,9 @@ const gatedLiterals = [
 ];
 for (const lit of gatedLiterals) {
   check(
-    !readmodelSrc.includes(lit) && !deriveSrc.includes(lit) && !backboneDbSrc.includes(lit),
-    `gated economics literal absent: ${lit}`,
-    `activity chain must never reference gated field ${lit}`,
+    !readmodelSrc.includes(lit) && !deriveSrc.includes(lit),
+    `gated economics literal absent from the activity chain: ${lit}`,
+    `activity readmodel/derive must never reference gated field ${lit}`,
   );
 }
 // Loader-confined raw keys: the PUBLIC gross-USDC keys (H2-⑬ cumsum), the

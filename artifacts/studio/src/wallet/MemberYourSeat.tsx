@@ -198,6 +198,14 @@ export default function MemberYourSeat() {
               )}
               {copied ? "Copied" : "Share my proof"}
             </button>
+            {/* R-BIND: the founding purchase reopens as its full ticket. */}
+            <Link
+              href="/receipts"
+              className="inline-flex items-center rounded-md border border-border px-2.5 py-1.5 font-mono text-xs text-proof/80 transition-colors hover:border-gold/40 hover:text-proof"
+              data-testid="link-standing-open-binder"
+            >
+              Open ticket
+            </Link>
             <VerifyOnChain ids={["membershipSaleV3"]} />
           </div>
         ) : null}

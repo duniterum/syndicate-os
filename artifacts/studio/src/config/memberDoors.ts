@@ -62,9 +62,10 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
       { label: "Referral", icon: "user-plus", href: "/referral", note: "Your introductions, standing, and ladder progress." },
       { label: "Activity", icon: "activity", href: "/activity", note: "The public heartbeat — receipt-backed events, complete history served." },
       { label: "Toolkit", icon: "wrench", href: "/toolkit", note: "Every member action in one place — locks visible." },
-      // The receipt product is LIVE at checkout (2026-07-17 seal); the BINDER
-      // surface arrives at its slice (A1) — locked-visible per the doctrine pin.
-      { label: "Receipts", icon: "receipt", lifecycle: "FUTURE", note: "Your receipts in one binder. Every confirmed purchase already prints its ticket at checkout — the binder surface is coming." },
+      // R-BIND (founder order 2026-07-19): the BINDER IS LIVE — the doctrine
+      // pin's locked→live transition (the door was approved in the 2026-07-16
+      // wireframe; its surface exists today at /receipts).
+      { label: "Receipts", icon: "receipt", href: "/receipts", note: "Your receipts in one binder — every confirmed purchase, reopenable as its full ticket." },
     ],
   },
   {

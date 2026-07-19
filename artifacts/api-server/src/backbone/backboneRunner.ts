@@ -327,7 +327,7 @@ async function runCycle(): Promise<string | null> {
   const enrich = await enrichMissingBlockTimestamps(transport);
 
   // ③ Rebuild the read-models in memory (pure, fail-closed, address-safe out).
-  const { input } = await loadActivityHeartbeatInput();
+  const { input, rawReceiptFacts } = await loadActivityHeartbeatInput();
   const model = buildActivityHeartbeatReadModel(input);
   if (!model.consistent) {
     throw new Error("activity read-model rebuild is not consistent — cycle failed closed");
@@ -499,6 +499,10 @@ async function runCycle(): Promise<string | null> {
       expectedChainId: BACKBONE_EXPECTED_CHAIN_ID,
       rawEvents: input.rawEvents,
       blockTimestamps: input.blockTimestamps,
+      // R-BIND (the binder slice): the loader's own-receipt facts + the
+      // frozen genesis roster join V1 rows to their seats — STANDING only.
+      rawReceiptFacts,
+      genesisSeatByWallet: GENESIS_SEAT_BY_WALLET,
     });
   } catch (err) {
     ownPurchaseFault = err instanceof Error ? err.message : String(err);

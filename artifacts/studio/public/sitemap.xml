@@ -46,6 +46,11 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://thesyndicate.money/receipts</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
     <loc>https://thesyndicate.money/toolkit</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

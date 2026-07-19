@@ -87,7 +87,7 @@ const rows = [...menuText.matchAll(/label: "([^"]+)", icon: "([^"]+)"/g)].map(
 );
 pin(
   allLabels.length === 14,
-  `the menu is 14 rows (13 doors + Receipts locked-visible; NOTIF-1 added Notifications) — got ${allLabels.length} door objects`,
+  `the menu is 14 rows (all LIVE doors since R-BIND opened Receipts, 2026-07-19; NOTIF-1 added Notifications) — got ${allLabels.length} door objects`,
 );
 pin(
   rows.length === allLabels.length,
@@ -100,15 +100,17 @@ for (const [i, [label, icon]] of APPROVED.entries()) {
   );
 }
 
-// ── 3 · Receipts: locked-visible via the EXISTING badge system, never a link ─
+// ── 3 · Receipts: LIVE (R-BIND, founder order 2026-07-19 — the doctrine
+// pin's locked→live transition: the binder surface exists at /receipts, so
+// the door is a link now; the FUTURE badge would be a lie today) ───────────
 const receiptsRow = menuText.match(/\{ label: "Receipts"[^}]*\}/)?.[0] ?? "";
 pin(
-  receiptsRow.includes('lifecycle: "FUTURE"'),
-  'Receipts is locked-visible with lifecycle: "FUTURE" (the existing badge system — never a second one)',
+  receiptsRow.includes('href: "/receipts"'),
+  'Receipts is a LIVE door to "/receipts" (the binder surface exists — R-BIND 2026-07-19)',
 );
 pin(
-  !receiptsRow.includes("href"),
-  "Receipts carries NO href until its surface exists (a door is a link only when its surface exists today)",
+  !receiptsRow.includes("lifecycle"),
+  "Receipts carries NO lifecycle badge anymore (a live door never wears a Coming-later badge)",
 );
 
 // ── 4 · Settings: pinned LAST, in the separated comfort group ───────────────

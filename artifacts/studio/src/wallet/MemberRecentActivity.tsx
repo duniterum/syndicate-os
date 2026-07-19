@@ -4,15 +4,17 @@
 // member's own last purchases, fed by the D3 own-row read (the Stripe
 // payments-list pattern — my work above world news). Every figure is the
 // indexed record's own field (usdFromRaw, never recomputed) and every row
-// carries its verify anchor. The "View receipt" affordance and the binder
-// door ride A1 per the GO'd placement decision — nothing here pretends the
-// binder exists early. Zero rows served = a real, honest zero. A fetch that
-// FAILED is never shown as still reading (the settled wrapper); and the
-// footer speaks the mechanism in PRESENT tense only — most indexed rows
-// predate the receipt product and never printed a ticket (adversarial-
-// review catch: asserting they did would fabricate history).
+// carries its verify anchor. R-BIND (2026-07-19): the GO'd A1 placement ②
+// LANDED — every row now carries its "receipt" door into the live binder
+// (/receipts), where the row reopens as its full ticket. Zero rows served =
+// a real, honest zero. A fetch that FAILED is never shown as still reading
+// (the settled wrapper); and the footer speaks the mechanism in PRESENT
+// tense only — most indexed rows predate the receipt product and never
+// printed a checkout ticket (their binder ticket is built from the indexed
+// record, which is the truth either way).
 
 import { useEffect, useState } from "react";
+import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { fetchOwnPurchases, type OwnPurchasesReadback } from "./walletSession";
 import { SESSION_CHANGED_EVENT } from "./sessionEvents";
@@ -85,6 +87,15 @@ export default function MemberRecentActivity() {
               <span className="hidden sm:inline font-mono text-xs text-muted-foreground">
                 {r.engine}
               </span>
+              {/* GAP-3b verdict: the link opens THIS row's own ticket in the
+                  binder (the ?tx= deep-open), honoring "View receipt — opens
+                  the ticket". */}
+              <Link
+                href={`/receipts?tx=${r.transaction}`}
+                className="text-proof/80 hover:text-proof underline underline-offset-2 text-xs"
+              >
+                receipt
+              </Link>
               <a
                 href={r.explorerUrl}
                 target="_blank"
@@ -113,8 +124,11 @@ export default function MemberRecentActivity() {
         </p>
       )}
       <p className="mt-3 text-xs text-muted-foreground leading-snug border-t border-border/40 pt-2">
-        A purchase made at checkout now prints its ticket; the receipt binder
-        surface arrives at its slice.
+        Every purchase reopens as its full ticket in{" "}
+        <Link href="/receipts" className="text-proof/80 hover:text-proof underline underline-offset-2">
+          your binder
+        </Link>
+        .
       </p>
     </Card>
   );

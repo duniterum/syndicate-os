@@ -102,17 +102,24 @@ function check(cond: boolean, pass: string, fail: string): void {
   else errors.push(fail);
 }
 
+const BINDER = path.join(srcDir, "wallet", "ReceiptsBinderPanel.tsx");
 const spineRaw = read(SPINE);
 const ticketRaw = read(TICKET);
 const cardRaw = read(CARD);
 const checkoutRaw = read(CHECKOUT);
+const binderRaw = read(BINDER);
 const spine = stripComments(spineRaw);
 const ticket = stripComments(ticketRaw);
 const card = stripComments(cardRaw);
+const binder = stripComments(binderRaw);
+// R-BIND (deliberate coverage growth, 2026-07-19): the binder panel joins
+// the module set — every content law (red line, buyer's tongue, exactness,
+// literals) now scans it too. It MOUNTS the ticket; it never re-implements.
 const moduleFiles: readonly (readonly [string, string])[] = [
   ["protocolCommerceReceipt.ts", spine],
   ["ReceiptTicket.tsx", ticket],
   ["ReceiptShareCard.tsx", card],
+  ["ReceiptsBinderPanel.tsx", binder],
 ];
 
 // ── 1. THE RED LINE ──────────────────────────────────────────────────────────

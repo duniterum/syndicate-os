@@ -95,6 +95,62 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > - **DO NOT build member-facing layout/composition without the founder** (VISUAL
 >   CHANGE LAW: wireframe → preview gate). Copy = full text on screen first.
 >
+> **▶ 🧾 R-BIND — THE RECEIPTS BINDER + TICKET-EVERYWHERE (founder aparté order
+> 2026-07-19: "fais apparaître Receipts au menu, tous les reçus, puis le ticket
+> partout — admin et front"; GO and GO-Live given after the CREATION-DISCUSSION
+> AUDIT `wf_657b9cb4-673` returned its ledger: 20 decisions HONORED · 5
+> provably engraved-for-later · 3 micro-verdicts resolved). BUILT + COMMITTED
+> [this commit] — 🚀 DEPLOY (server + client, NO migration).**
+> - **THE BINDER (/receipts):** the menu door flipped locked→LIVE (guard §3
+>   pins flipped same commit); month-grouped rows (date · Seat #N · engine ·
+>   exact gold TOTAL) each opening IN PLACE as the REAL `ReceiptTicket` — one
+>   spine, one rendering path; the binder MOUNTS the ticket (pin 10 stays green
+>   as written: the page never names it, the wallet-module panel does).
+>   Sign-in wall (member-account canon). Honest states everywhere (resolving ·
+>   failed · real zero · the V2B-sentinel fallback "The transaction itself is
+>   the receipt." + explorer).
+> - **THE ENGRAVED ⑫ FOLD LANDED:** V2A/V2B Purchased+Routed same-transaction
+>   fold (clean pairings print their REAL proof block). ENGRAVED (audit GAP-2a):
+>   a V2 routing that carried a commission keeps its splits honestly ABSENT
+>   until that stitch's own extension — never mis-led under 70/20/10 captions.
+> - **SERVER (own-row receipt facts):** the own-purchase model serves per-row
+>   receipt facts (seat incl. the frozen-genesis join · holder/referrer in
+>   ADR-003 short forms · the money fields · era/rate/SYN · sealed-at seconds ·
+>   the chain-verified decimals) — two decodedJson whitelists amended
+>   DELIBERATELY, dated (activity-heartbeat guard: the own-receipt fields ride
+>   the loader ONLY, still banned from the activity chain; protocol-time
+>   vocabulary confined via the `sealedAtSec` naming).
+> - **PLACEMENTS A1 ②③ MOUNTED:** Z4 rows carry "receipt" DEEP-OPENING their
+>   own ticket (`?tx=` — GAP-3b verdict) + the binder footer link; the Receipts
+>   KPI tile IS the door now; "Open ticket" on the seat panel. guard-member-home
+>   Z4 pin flipped to its positive form (27/27).
+> - **GAP-3 VERDICTS (closed forever):** (a) repeat purchase by a seated member
+>   = the row wears "· footprint" from the event's OWN first-purchase flag
+>   (never a second seat — the one-seat law said on the register, not only in
+>   the doctrine line); (b) home-row link deep-opens its own ticket; (c) the
+>   door carries no live count — the count lives on the tile-door (accepted
+>   as-built; one founder word reopens).
+> - **ENGRAVED (audit GAP-2b): this slice = the binder + placements ②③ ONLY —
+>   A1's [Mine|Protocol] lens + per-row histories REMAIN OPEN on the A1 line
+>   (MEMBER_HOME_FINISH_ORDER); the R-BIND seal is never "A1 done".**
+> - **EVOLUTIVE (audit §3, confirmed absorbed without rework):** commission
+>   receipts (5.1, the approved register) · artifact-mint kind · gift receipts
+>   (buyer≠recipient fact) · season papers (§6 binds the day they exist) · the
+>   LIVING TICKET + /receipt/{txHash} + PDF engine (guard-pinned roadmap) ·
+>   B1 witness lines feed binder tickets automatically.
+> - GATE: tsc 0 ×4 · studio guards ALL green (receipt 94/94 — the binder panel
+>   joined the scanned set · menu 35/35 · home 27/27 · access-state 1081 ·
+>   operator-gate 2790) · api guards ALL green · seo 503 (26 INDEX, /receipts
+>   entered registry+sitemap same slice) · audit 328 · build 33 shells +
+>   byte-identical compression + admin-dist 96 · rig: the full ticket
+>   DOM-verified inside the binder (7 zones · gold mark loaded · QR on its
+>   white chip both themes · exact sums incl. the $10.00 stress render ·
+>   footprint tag on repeat only · deep-open lands right · 375px no h-scroll ·
+>   zero console errors) · route S1-shape + decimals exact on the rig.
+> - NEXT (the promised order): the public /receipt/{txHash} permalink slice →
+>   ADMIN ("Open receipts" on the member-ledger action menu) → resume the
+>   referral register (5.1 approved) + the commission share card.
+>
 > **▶ 🗂️ THE PAGE-BY-PAGE GRADE-AAA REBUILD (founder pivot 2026-07-19, emphatic:
 > "each LEFT-MENU link presents CLEAN, crème-de-crème; deep-search online + our
 > system; company not charity — SHOW things, legally").** Method engraved (agent

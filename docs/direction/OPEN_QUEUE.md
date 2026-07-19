@@ -1,4 +1,17 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
+
+> **▶ 2026-07-19 (aparté, founder order) — R-BIND: THE RECEIPTS BINDER, BUILT + COMMITTED
+> [this commit], GO and GO-Live given after the creation-discussion audit (`wf_657b9cb4-673`:
+> 20 decisions honored · 5 engraved-for-later · 3 micro-verdicts resolved and closed forever —
+> repeat purchase wears "· footprint" from the event's own flag; home-row link deep-opens its
+> own ticket via ?tx=; the door's count lives on the tile-door). The Receipts menu door is
+> LIVE → /receipts (every own purchase reopening IN PLACE as the REAL ticket; the engraved V2
+> Purchased+Routed fold LANDED; V2-with-commission splits stay honestly absent until their own
+> stitch). Placements A1 ②③ mounted (Z4 "receipt" deep-links · the KPI tile is the door ·
+> "Open ticket" on the seat panel). A1's [Mine|Protocol] lens + per-row histories REMAIN OPEN.
+> 🚀 ITS OWN DEPLOY CYCLE (server + client, NO migration). NEXT in the promised order:
+> /receipt/{txHash} public permalink → ADMIN "Open receipts" on the member ledger → resume
+> the referral register (5.1 approved) + the commission share card. Full state: SESSION_STATE.**
 *DIRECTION doc, TIER-0 (read every boot). The living list of decisions IN FLIGHT, RECONSTRUCTED FROM
 EVIDENCE (session history + repo on disk), not from memory. Companion to
 `ORIGIN_RECLAMATION_LEDGER.md`. Founder is the authority.*

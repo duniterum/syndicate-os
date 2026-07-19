@@ -309,6 +309,18 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     enforcement: "PREVIEW_LABELLED",
   },
   {
+    // R-BIND (founder order 2026-07-19): the Receipts binder — every own
+    // purchase reopenable as its full ticket (the A1 placement ③).
+    routePath: "/receipts",
+    moduleId: "receipts",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "The member's receipt binder — own purchases, each reopenable as its full ticket.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
     routePath: "/toolkit",
     moduleId: "toolkit",
     audience: "PUBLIC",

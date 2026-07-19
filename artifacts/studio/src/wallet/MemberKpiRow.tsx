@@ -13,6 +13,7 @@
 // the referral module. Zero decorative tiles — each answers a decision.
 
 import { useAccount } from "wagmi";
+import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import {
   useOwnArchiveHoldings,
@@ -29,14 +30,20 @@ function KpiTile({
   value,
   detail,
   testId,
+  href,
 }: {
   label: string;
   value: string | null;
   detail: string;
   testId: string;
+  /** R-BIND: an internal door — the tile becomes a link (e.g. the binder). */
+  href?: string;
 }) {
-  return (
-    <Card className="bg-card/40 border-border/50 p-4" title={detail}>
+  const card = (
+    <Card
+      className={`bg-card/40 border-border/50 p-4 ${href ? "transition-colors hover:border-border" : ""}`}
+      title={detail}
+    >
       <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
         {label}
       </p>
@@ -47,6 +54,13 @@ function KpiTile({
         {value ?? "—"}
       </p>
     </Card>
+  );
+  return href ? (
+    <Link href={href} className="block">
+      {card}
+    </Link>
+  ) : (
+    card
   );
 }
 
@@ -123,8 +137,9 @@ export default function MemberKpiRow() {
       <KpiTile
         label="Receipts"
         value={receiptCount !== null ? `${receiptCount} confirmed` : null}
-        detail="Your own confirmed purchases, from the indexed record — every era, the earliest included. A purchase made at checkout now prints its ticket; the receipt binder surface arrives at its slice."
+        detail="Your own confirmed purchases, from the indexed record — every era, the earliest included. Open the binder: each one reopens as its full ticket."
         testId="kpi-receipts"
+        href="/receipts"
       />
       <KpiTile
         label="Artifacts"
