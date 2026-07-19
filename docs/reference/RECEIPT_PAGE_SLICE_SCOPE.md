@@ -1,4 +1,11 @@
-# /receipt/{txHash} — THE COMPLETE SLICE SCOPE (build-ready; founder Q44 gate)
+# /receipt/{txHash} — THE COMPLETE SLICE SCOPE (✅ BUILT 2026-07-20 — historical record)
+
+> **⚖️ DONE-IS-DONE: THIS SLICE SHIPPED.** The page + the retarget were built
+> 2026-07-20 (wireframe founder-approved "ok for mee"; `featureStatus.ts
+> receiptPublicPage = live` is the registry of record). This document is the
+> engraved SCOPE that guided the build — read it as provenance, never as a
+> plan; nothing below is future work. The next slice in the sealed order is
+> the painted per-receipt preview cards (§6's rider).
 
 **Provenance.** Scoped file-by-file by the investigation workflow `wf_d1923bc4-f0a` (lens 3),
 2026-07-19 — the root fix for the founder's Copy-link confusion (the button stays; its

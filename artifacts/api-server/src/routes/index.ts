@@ -9,6 +9,7 @@ import verifyLinksRouter from "./verifyLinks";
 import backboneStatusRouter from "./backboneStatus";
 import backboneFeedRouter from "./backboneFeed";
 import capitalStandingRouter from "./capitalStanding";
+import receiptLookupRouter from "./receiptLookup";
 
 const router: IRouter = Router();
 
@@ -22,5 +23,6 @@ router.use(verifyLinksRouter);
 router.use(backboneStatusRouter);
 router.use(backboneFeedRouter);
 router.use(capitalStandingRouter);
+router.use(receiptLookupRouter);
 
 export default router;

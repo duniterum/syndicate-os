@@ -30,10 +30,14 @@ import {
  * 2026-07-19): one purchase's own RECEIPT facts — the event's OWN money
  * fields, verbatim raw decimal strings, plus a server-derived SHORT referrer
  * form. Numbers, booleans, 64-hex ids and short forms ONLY (the payload
- * boundary gate stays untouched by construction). Served exclusively to the
- * SESSION'S OWN wallet (ADR-003 §3: a member's own receipts are theirs to
- * see and share). Every nullable is HONEST ABSENCE — an engine that never
- * emitted a field serves null, never a guess (the ticket's ⑫ law).
+ * boundary gate stays untouched by construction). Served on TWO sanctioned
+ * paths: (a) the session's own wallet via /api/auth/member-purchases
+ * (ADR-003 §3 — a member's own receipts are theirs to see and share), and
+ * (b) since the /receipt/{txHash} slice (Q44, founder-sealed 2026-07-20),
+ * PUBLICLY by transaction anchor via GET /api/receipt/{txHash} — the same
+ * short-form, wallet-free facts, addressed by the receipt's own public
+ * hash. Every nullable is HONEST ABSENCE — an engine that never emitted a
+ * field serves null, never a guess (the ticket's ⑫ law).
  */
 export interface OwnReceiptFacts {
   /** The seat: V2A/V3 the event's own memberNumber; V1 the frozen genesis
@@ -119,6 +123,16 @@ export interface OwnPurchaseBuildInput {
 export interface OwnPurchaseBuildResult {
   /** SERVER-ONLY: lowercase actor wallet → own rows, newest first. */
   readonly rowsByWallet: ReadonlyMap<string, readonly OwnPurchaseRow[]>;
+  /**
+   * The /receipt/{txHash} public page's projection (Q44 sealed 2026-07-19;
+   * built 2026-07-20): the SAME row objects keyed by their lowercase 64-hex
+   * transaction hash — a PUBLIC anchor, exactly as public as the transaction
+   * a receipt cites. The rows carry short-form actors by construction and no
+   * wallet field, so serving one leaks nothing rowsByWallet protects
+   * (rowsByWallet itself stays SERVER-ONLY). Same-transaction rows keep
+   * event order (logIndex ascending).
+   */
+  readonly rowsByTxHash: ReadonlyMap<string, readonly OwnPurchaseRow[]>;
 }
 
 function fail(message: string): never {
@@ -227,6 +241,7 @@ export function buildOwnPurchaseReadModel(
   }
 
   const rowsByWallet = new Map<string, OwnPurchaseRow[]>();
+  const rowsByTxHash = new Map<string, OwnPurchaseRow[]>();
   for (const e of rawEvents) {
     if (e.chainId !== expectedChainId) {
       fail(`raw event on unexpected chain ${e.chainId} (expected ${expectedChainId})`);
@@ -248,7 +263,7 @@ export function buildOwnPurchaseReadModel(
     }
     const key = e.memberAddress.toLowerCase();
     const rows = rowsByWallet.get(key) ?? [];
-    rows.push({
+    const row: OwnPurchaseRow = {
       isoDayUtc: isoDayUtcFromSeconds(ts),
       sealedAtSec: ts,
       blockNumber: e.blockNumber,
@@ -257,8 +272,15 @@ export function buildOwnPurchaseReadModel(
       usdcGrossRaw: e.usdcGrossRaw,
       generation: e.generation,
       receipt: receiptFactsFor(e, factByEvent, routedByTx, input.genesisSeatByWallet),
-    });
+    };
+    rows.push(row);
     rowsByWallet.set(key, rows);
+    // The public tx-keyed projection: the SAME row object, keyed by its own
+    // public anchor (see the interface note — nothing wallet-keyed serves).
+    const txKey = e.transactionHash.toLowerCase();
+    const txRows = rowsByTxHash.get(txKey) ?? [];
+    txRows.push(row);
+    rowsByTxHash.set(txKey, txRows);
   }
 
   // Newest first — the display order (the receipt list reads downward in time).
@@ -269,6 +291,11 @@ export function buildOwnPurchaseReadModel(
         : b.logIndex - a.logIndex,
     );
   }
+  // Same-transaction rows in event order (logIndex ascending) — the public
+  // page prints the FIRST as the transaction's document.
+  for (const rows of rowsByTxHash.values()) {
+    rows.sort((a, b) => a.logIndex - b.logIndex);
+  }
 
-  return { rowsByWallet };
+  return { rowsByWallet, rowsByTxHash };
 }

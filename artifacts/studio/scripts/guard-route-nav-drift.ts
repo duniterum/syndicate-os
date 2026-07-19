@@ -96,6 +96,11 @@ for (const r of seoRouteRegistry) {
   if (r.path === "*") continue;
   if (r.routeType !== "PUBLIC" && r.routeType !== "PENDING") continue;
   if (r.indexStatus === "REDIRECT") continue;
+  // PARAM class (dated 2026-07-20, the /receipt/{txHash} slice — mirrors the
+  // REDIRECT exemption above): a per-transaction permalink is structurally
+  // not a nav destination — no header/footer chrome can link "a receipt";
+  // the page is reached by shared links only, deliberately module-less.
+  if (r.path.includes("/:")) continue;
   check(
     modulePathSet.has(r.path),
     `public route ${r.path} has a module entry (chrome-visible)`,

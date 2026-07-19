@@ -9,8 +9,8 @@
 // The register grammar (the founder-approved receipts composition, mockup
 // 2026-07-19): a record header · month-grouped rows (newest first, exact
 // figures) · each row expands to its ticket · honest empty/loading/failed
-// states. Multiple rows may be open at once; the URL never changes (the
-// public per-transaction page is its own engraved future slice).
+// states. Multiple rows may be open at once; the URL never changes — each
+// ticket's permanent public address is /receipt/{txHash} (live 2026-07-20).
 //
 // Truth laws: every figure is the served row's own fact (exact re-base,
 // never floored, never recomputed); a row whose record cannot express a
@@ -24,10 +24,10 @@ import { Card } from "@/components/ui/card";
 import { StatusPill } from "@/components/status-pill/StatusPill";
 import ReceiptTicket from "./ReceiptTicket";
 import {
-  buildMembershipReceipt,
   formatAmountExact,
   type MembershipReceiptModel,
 } from "@/lib/protocolCommerceReceipt";
+import { ticketModelFor } from "./receiptRowModel";
 import {
   fetchOwnPurchases,
   type OwnPurchaseRowReadback,
@@ -100,42 +100,9 @@ function usdExact(raw: string, usdcDecimals: number): string | null {
   return v === null ? null : `$${v}`;
 }
 
-/** Build the row's FULL ticket model, or null when the record cannot
- *  express one (no receipt facts / no seat / no block) — honest absence. */
-function ticketModelFor(
-  row: OwnPurchaseRowReadback,
-  decimals: { usdc: number; syn: number },
-): MembershipReceiptModel | null {
-  const f = row.receipt;
-  if (f === null || f.seat === null || f.holderShort === null) return null;
-  if (row.block === null) return null;
-  return buildMembershipReceipt({
-    event: {
-      memberNumber: String(f.seat),
-      recipient: f.holderShort,
-      grossUsdcRaw: row.amountRaw,
-      acquisitionCostRaw: f.commissionRaw,
-      protocolContributionRaw: f.netRaw,
-      vaultAmountRaw: f.vaultRaw,
-      liquidityAmountRaw: f.liquidityRaw,
-      operationsAmountRaw: f.operationsRaw,
-      synOutRaw: f.synOutRaw,
-      synPerUsdc: f.synPerUsdc,
-      era: f.era,
-      firstSeat: f.firstSeat,
-      sourceId: f.sourceIdHex,
-      sourceWallet: f.broughtByShort,
-    },
-    proof: {
-      txHash: row.transaction,
-      blockNumber: String(row.block),
-      explorerTxUrl: row.explorerUrl,
-    },
-    blockTimestamp: row.sealedAtSec,
-    usdcDecimals: decimals.usdc,
-    synDecimals: decimals.syn,
-  });
-}
+// The row → ticket-model mapper moved to ./receiptRowModel at the
+// /receipt/{txHash} slice (2026-07-20) — ONE mapper for the binder and the
+// public per-transaction mount; the binder's semantics are unchanged.
 
 // ── R-BIND-2 · THE HERO RAIL (founder-approved mockup 2026-07-19) ──────────
 // The cap-5 shelf: the NEWEST receipts that can print a full ticket, OPEN,

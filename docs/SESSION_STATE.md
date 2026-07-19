@@ -45,28 +45,47 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > - **LIVE (featureStatus.ts = the registry of record):** notifications ·
 >   /receipts binder + the cap-5 shelf + dual share · checkout ticket + share
 >   card · referral 5 tabs + channels + rows + receipt-backed anatomy · the
->   R-BIND-3 fixes · the truth wave. All sealed through `da1bd5c`.
-> - **IN FLIGHT:** nothing building. Next builds, in the founder's promised
->   order once Q44 answers land: the /receipt/{txHash} public page (+ Copy
->   link/network retarget, same deploy) → the painted per-receipt preview
->   card + link-rotation slice → ADMIN "Open receipts" on the member ledger →
->   the commission-receipts register (5.1, mockup approved) + commission
->   share card → recognition/season (slice 6).
-> - **FOUNDER-PENDING: NOTHING on the arc — Q44 CLOSED WHOLE (2026-07-19):**
->   ① noindex,follow · ② the painted cards = their own slice, RIGHT AFTER the
->   page and BEFORE the referral register (the founder's ordering word) ·
->   ③ the page first. THE SEALED ORDER: page+retarget → painted cards+rotation
->   → admin Open-receipts → 5.1 register+share card → season. Parked as
->   recorded: Q35 legal set · Q39/Q40/Q42 admin waves · Q32/MVP-final items ·
->   the deferred list.
+>   R-BIND-3 fixes · the truth wave (all sealed through `da1bd5c`) — **+ THE
+>   /receipt/{txHash} PUBLIC PAGE (R-PAGE, this commit, 2026-07-20 —
+>   `receiptPublicPage` flipped live SAME commit): the app's first param
+>   route (registry `paramTailPattern` → generator `paramRoutes.generated
+>   .json` → serve.mjs step 3b shape-valid-or-404 → prerender one-shell
+>   receipt.html) · `GET /api/receipt/{txHash}` (tx-keyed projection, the
+>   binder's exact row shape, boundary-aware leak gates, throttle) · the
+>   page (verdict bar "Sealed on-chain" + THE ticket born in the wallet
+>   module + provenance + 4 honest states + the visitor door "Seats are
+>   open") · THE RETARGET (Copy link + 6 network intents → the page;
+>   Verify/QR stay the explorer) — wireframe founder-approved ("ok for
+>   mee"), noindex,follow per Q44-①.**
+> - **GATE EVIDENCE (this commit):** tsc all workspaces · 19 studio guards
+>   (receipt 127 pins — 3 new files scanned; feature-truth 552; drift 228 on
+>   49 routes; lifecycle chassis-check added) · 17 api guards (the two
+>   route-surface pins amended dated: member-continuity 92/92 ·
+>   protocol-time 38/38; auth-zone 1022 · source-status 163) · seo 509 ·
+>   surface:audit 333 · prod build green (receipt.html shell: noindex, no
+>   canonical, twins) · serve probes 200/404 matrix exact · rig DOM-verified
+>   (runtime head · full ticket · retarget URLs proven · states · 2 themes ·
+>   375+desktop · zero console errors; DB-less rig shows the honest
+>   unavailable state by design — the living seal happens in prod, the
+>   slice-4/5 pattern). **🚀 DEPLOY (server + client, NO migration) — NEVER
+>   batchable (page + retarget land together).**
+> - **IN FLIGHT:** nothing building. Next, the sealed order: the painted
+>   per-receipt preview cards + link-rotation slice (satori+resvg on the api,
+>   per-URL heads — `paintedPreviewCards` registered future) → ADMIN "Open
+>   receipts" on the member ledger → the commission-receipts register (5.1,
+>   mockup approved) + commission share card → recognition/season (slice 6).
+> - **FOUNDER-PENDING: NOTHING on the arc.** Parked as recorded: Q35 legal
+>   set · Q39/Q40/Q42 admin waves · Q32/MVP-final items · the deferred list.
+>   Taken-by-default (flagged, overridable): the dedicated PDF engine stays
+>   its own rider (print already saves clean).
 > - **THE NEXT SESSION'S EXACT OPENING (no re-explaining, ever):** boot per
->   CLAUDE.md → this handoff → OPEN_QUEUE Q44 → read
->   `docs/reference/RECEIPT_PAGE_SLICE_SCOPE.md` (build-ready, file-level) +
->   `RBIND2_HERO_SHARE_DIRECTION.md` §3-4 → produce the /receipt/{txHash}
->   WIREFRAME for founder approval (Visual Change Law) → build the ordered
->   work list → the retarget rides the same deploy. featureStatus.ts is the
->   live-vs-future truth; the receipt system inventory + creation-audit +
->   commission-register direction are all engraved in docs/reference/.
+>   CLAUDE.md → this handoff → confirm the Replit deploy report landed (if
+>   not, the deploy is the only open step) → open the painted-cards slice:
+>   read `RBIND2_HERO_SHARE_DIRECTION.md` §3 (the rotation answer + the
+>   settled technical footnotes) + `RECEIPT_PAGE_SLICE_SCOPE.md` §6 (the two
+>   recorded serving mechanisms) → SYSTEM-FIRST inventory, then wireframe of
+>   the card design for founder approval. featureStatus.ts is the
+>   live-vs-future truth.
 
 > **▶ ⏭️ READ-FIRST BOOT (2026-07-18, the founder's standing order — "stop making
 > me re-explain; make the canonical files the thing you read before any work").

@@ -62,6 +62,16 @@ export interface SeoRouteEntry {
   primaryIntent: string;
   primaryCTA?: string;
   proofRoute?: string;
+  /**
+   * PARAM routes only (paths containing "/:", the /receipt/{txHash} class,
+   * 2026-07-20): the anchored regex the SERVING layer requires of the param
+   * tail — generate-serving-rewrites emits it as a param rule and serve.mjs
+   * serves the route's ONE shell exclusively for shape-valid tails (any
+   * other tail under the prefix stays a real 404; the no-SPA-fallback
+   * invariant holds). Required on every param entry — the generator fails
+   * loud on a shapeless prefix.
+   */
+  paramTailPattern?: string;
   notes?: string;
 }
 
@@ -287,6 +297,35 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     proofRoute: "/status",
     notes:
       "R-BIND: the binder surface (A1 placement ③) — own-row purchase rows from the D3 read, each expanding to the checkout-sealed ticket rendering (one spine, one rendering path). No server write.",
+  },
+  {
+    // The /receipt/{txHash} public permalink (Q44 sealed whole, founder
+    // 2026-07-19; built 2026-07-20) — the app's FIRST param route: every
+    // shape-valid transaction hash serves the same shell; the page reads its
+    // own facts from the public per-transaction record. noindex,follow is the
+    // founder's ① answer: anyone with the link sees everything and shares
+    // unfurl, but search never accumulates a browsable corpus of purchase
+    // pages. Per-receipt painted preview cards are the NEXT engraved slice.
+    path: "/receipt/:txHash",
+    routeType: "PUBLIC",
+    indexStatus: "NOINDEX",
+    sitemap: false,
+    // ONE shell serves the whole class — including junk hashes that carry no
+    // purchase — so the baked title names the DOCUMENT TYPE (the ticket's own
+    // doc-title grammar) and never asserts that THIS hash is sealed; the page
+    // itself renders the honest verdict per hash. The assertive per-receipt
+    // head arrives with the painted-cards slice.
+    title: "Membership Receipt — Proof of Purchase",
+    description:
+      "One purchase's permanent receipt — the seat, the exact figures, and where the money went, every line the transaction's own record. Verify it on the public explorer.",
+    canonicalPath: null,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "identity",
+    primaryIntent: "proof",
+    proofRoute: "/status",
+    paramTailPattern: "^0x[0-9a-fA-F]{64}$",
+    notes:
+      "PARAM route (the first): serve.mjs serves the one receipt.html shell for shape-valid hashes only (any other /receipt/* tail → real 404). Copy link and the network shares retarget here in the same slice.",
   },
   {
     path: "/toolkit",
@@ -991,9 +1030,31 @@ export function normalizeLocation(location: string): string {
 }
 
 /**
- * Match a current location to its registry entry. Exact-path match only (the
- * app has no dynamic/param routes today); anything unmatched falls back to the
- * catch-all "*" entry so unknown routes get noindex metadata.
+ * Segment-wise param match ("/receipt/:txHash" ↔ "/receipt/0xabc…"): same
+ * segment count, literal segments equal, a ":" segment accepts any non-empty
+ * value. Pure + dependency-free (the Node scripts load this file directly).
+ */
+function matchesParamPath(pattern: string, normalized: string): boolean {
+  const pat = pattern.split("/");
+  const loc = normalized.split("/");
+  if (pat.length !== loc.length) return false;
+  for (let i = 0; i < pat.length; i++) {
+    const seg = pat[i] ?? "";
+    if (seg.startsWith(":")) {
+      if ((loc[i] ?? "").length === 0) return false;
+    } else if (seg !== loc[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * Match a current location to its registry entry: exact path first, then the
+ * PARAM-route class (entries containing "/:" match segment-wise — the
+ * /receipt/{txHash} slice, 2026-07-20, so every live receipt URL resolves its
+ * own entry's head instead of the 404 head); anything unmatched falls back to
+ * the catch-all "*" entry so unknown routes get noindex metadata.
  */
 export function matchRoute(
   location: string,
@@ -1002,6 +1063,10 @@ export function matchRoute(
   const normalized = normalizeLocation(location);
   const exact = registry.find((r) => r.path === normalized);
   if (exact) return exact;
+  const param = registry.find(
+    (r) => r.path.includes("/:") && matchesParamPath(r.path, normalized),
+  );
+  if (param) return param;
   const catchAll = registry.find((r) => r.path === "*");
   if (catchAll) return catchAll;
   // Defensive: a registry without a catch-all still returns a noindex-able shape.
@@ -1133,8 +1198,9 @@ export interface RouteBreadcrumb {
 
 /**
  * Resolve breadcrumb + posture/index context for a location in one call.
- * The trail is intentionally shallow (Home → current) because the app has a flat
- * route table — there are no nested route segments to model.
+ * The trail is intentionally shallow (Home → current): the route table is flat
+ * except the PARAM class (/receipt/{txHash}), whose crumb links the REAL
+ * location — a ":param" pattern is never a navigable href.
  */
 export function getRouteBreadcrumb(location: string): RouteBreadcrumb {
   const normalized = normalizeLocation(location);
@@ -1145,7 +1211,10 @@ export function getRouteBreadcrumb(location: string): RouteBreadcrumb {
     home: { label: "Home", path: "/" },
     current: isHome
       ? null
-      : { label: getRouteLabel(entry), path: isNotFound ? normalized : entry.path },
+      : {
+          label: getRouteLabel(entry),
+          path: isNotFound || entry.path.includes("/:") ? normalized : entry.path,
+        },
     posture: getRoutePostureLabel(entry),
     indexLabel: getRouteIndexLabel(entry),
     isHome,

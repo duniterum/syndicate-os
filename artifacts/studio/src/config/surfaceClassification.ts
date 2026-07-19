@@ -327,6 +327,19 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     enforcement: "PREVIEW_LABELLED",
   },
   {
+    // The /receipt/{txHash} public permalink (Q44 sealed; the first PARAM
+    // route, 2026-07-20). No moduleId: a per-transaction address is reached
+    // by shared links, never by nav chrome (the drift guard's dated
+    // param-class exemption records this deliberately).
+    routePath: "/receipt/:txHash",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "One purchase's public receipt page — the full ticket at its permanent address, verifiable by anyone with the link.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
     routePath: "/toolkit",
     moduleId: "toolkit",
     audience: "PUBLIC",

@@ -1,0 +1,486 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reçu public — /receipt/{txHash} (maquette)</title>
+<style>
+  /* ── Tokens — verbatim from artifacts/studio/src/index.css (the house mockup family) ── */
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --card: 0 0% 100%;
+    --muted-foreground: 215 16% 47%;
+    --gold: 38 74% 44%;
+    --proof: 190 90% 40%;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: 224 71% 4%;
+      --foreground: 213 31% 91%;
+      --border: 216 34% 17%;
+      --card: 222 47% 7%;
+      --muted-foreground: 215.4 16.3% 56.9%;
+      --gold: 42 92% 60%;
+      --proof: 190 90% 45%;
+    }
+  }
+  :root[data-theme="dark"] {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+    --border: 216 34% 17%;
+    --card: 222 47% 7%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+    --gold: 42 92% 60%;
+    --proof: 190 90% 45%;
+  }
+  :root[data-theme="light"] {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --card: 0 0% 100%;
+    --muted-foreground: 215 16% 47%;
+    --gold: 38 74% 44%;
+    --proof: 190 90% 40%;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace; }
+  .tnum { font-variant-numeric: tabular-nums; }
+  .muted { color: hsl(var(--muted-foreground)); }
+  a { color: hsl(var(--proof) / .85); text-decoration: none; }
+  a:hover { color: hsl(var(--proof)); }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  :focus-visible { outline: 2px solid hsl(var(--gold)); outline-offset: 2px; }
+
+  .page { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+
+  /* ── Mockup chrome ── */
+  .mock-banner {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    border: 1px dashed hsl(var(--gold) / .45); border-radius: 10px;
+    background: hsl(var(--gold) / .07); padding: 10px 14px; margin-bottom: 20px;
+    font-size: 12.5px; color: hsl(var(--muted-foreground));
+  }
+  .mock-banner b { color: hsl(var(--gold)); font-weight: 600; }
+  .theme-btn {
+    margin-left: auto; cursor: pointer; border: 1px solid hsl(var(--border));
+    background: hsl(var(--card)); color: hsl(var(--foreground)); border-radius: 8px;
+    padding: 6px 12px; font-size: 12.5px; min-height: 36px;
+  }
+  .annot {
+    font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+    color: hsl(var(--gold) / .8); margin: 36px 0 12px;
+  }
+  .annot::before { content: "◤ "; }
+  .note {
+    border: 1px dashed hsl(var(--border)); border-radius: 10px;
+    background: hsl(var(--card) / .4); padding: 12px 14px; margin: 12px 0 0;
+    font-size: 12.5px; color: hsl(var(--muted-foreground));
+  }
+  .note b { color: hsl(var(--foreground)); font-weight: 600; }
+  .note ul { margin: 6px 0 0 18px; }
+  .note li { margin-top: 4px; }
+
+  /* ── The public shell, simplified (canon, unchanged) ── */
+  .pub-header {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    border: 1px solid hsl(var(--border)); border-bottom: 1px solid hsl(var(--border));
+    border-radius: 10px 10px 0 0; background: hsl(var(--card) / .6);
+    padding: 10px 14px; font-size: 12.5px;
+  }
+  .ph-mark {
+    width: 26px; height: 26px; border: 1.5px solid hsl(var(--gold) / .45); border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: hsl(var(--gold));
+  }
+  .ph-name { font-weight: 600; letter-spacing: .18em; font-size: 11.5px; }
+  .ph-desc { font-size: 10px; color: hsl(var(--gold)); letter-spacing: .04em; }
+  .ph-nav { margin-left: auto; color: hsl(var(--muted-foreground)); }
+  .ph-cta {
+    border: 1px solid hsl(var(--gold) / .45); background: hsl(var(--gold) / .1);
+    color: hsl(var(--gold)); border-radius: 999px; font-size: 11.5px; padding: 2px 11px;
+  }
+  .pub-frame {
+    border: 1px solid hsl(var(--border)); border-top: 0; border-radius: 0 0 10px 10px;
+    padding: 22px 16px 30px; background: hsl(var(--background));
+  }
+  .pub-footer {
+    text-align: center; font-size: 11.5px; color: hsl(var(--muted-foreground));
+    border-top: 1px solid hsl(var(--border) / .6); margin-top: 26px; padding-top: 14px;
+  }
+
+  /* ── Z1 · the verdict bar ── */
+  .verdict {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    max-width: 372px; margin: 0 auto 14px;
+  }
+  .pill {
+    display: inline-flex; align-items: center; border-radius: 999px;
+    font-size: 12px; padding: 1px 9px; border: 1px solid; white-space: nowrap;
+  }
+  .pill-live { color: hsl(var(--proof)); border-color: hsl(var(--proof) / .4); background: hsl(var(--proof) / .08); }
+  .v-title { font-size: 14px; font-weight: 500; }
+  .v-right { margin-left: auto; font-size: 12px; color: hsl(var(--muted-foreground)); }
+
+  /* ── Z2 · the ticket paper (the house 7-zone document, verbatim grammar) ── */
+  .tk-wrap { max-width: 372px; margin: 0 auto; }
+  .ticket {
+    width: 340px; max-width: 100%; margin: 0 auto;
+    border: 1px solid hsl(var(--border)); border-radius: 10px;
+    background: hsl(var(--card)); padding: 20px 18px 14px;
+    box-shadow: 0 8px 28px hsl(224 71% 2% / .25);
+  }
+  .tk-head { text-align: center; padding-bottom: 12px; }
+  .tk-mark {
+    width: 34px; height: 34px; margin: 0 auto 8px; border: 1.5px solid hsl(var(--gold));
+    border-radius: 999px; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: hsl(var(--gold)); letter-spacing: .05em;
+  }
+  .tk-proto { font-size: 12.5px; font-weight: 600; letter-spacing: .24em; }
+  .tk-sub { font-size: 9.5px; font-weight: 600; letter-spacing: .18em; color: hsl(var(--muted-foreground)); margin-top: 2px; }
+  .tk-doc { font-size: 11px; margin-top: 6px; }
+  .tk-chain { font-size: 10.5px; color: hsl(var(--muted-foreground)); margin-top: 2px; }
+  .tk-chip {
+    display: inline-block; border: 1px solid hsl(var(--gold) / .35); background: hsl(var(--gold) / .1);
+    color: hsl(var(--gold)); border-radius: 999px; font-size: 10.5px; padding: 0 9px; margin-top: 6px;
+  }
+  .tk-rule { border: 0; border-top: 1px dashed hsl(var(--border)); margin: 0; }
+  .tk-zone { padding: 10px 1px; }
+  .tk-ctx { display: flex; align-items: baseline; gap: 8px; font-size: 13px; }
+  .tk-ctx .era { margin-left: auto; font-size: 12px; color: hsl(var(--muted-foreground)); }
+  .tk-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: 13px; line-height: 1.9; }
+  .tk-row .k { color: hsl(var(--muted-foreground)); }
+  .tk-row .v { margin-left: auto; text-align: right; word-break: break-word; }
+  .tk-row .v.em { font-size: 15px; font-weight: 600; }
+  .tk-row .v .sfx { color: hsl(var(--muted-foreground)); font-size: 11.5px; }
+  .tk-total { display: flex; align-items: baseline; margin-top: 4px; }
+  .tk-total .k { font-size: 10.5px; font-weight: 600; letter-spacing: .14em; color: hsl(var(--muted-foreground)); }
+  .tk-total .v { margin-left: auto; font-size: 20px; font-weight: 600; }
+  .tk-gold-title { font-size: 10px; font-weight: 600; letter-spacing: .16em; color: hsl(var(--gold)); }
+  .tk-subnote { font-size: 10.5px; color: hsl(var(--muted-foreground)); margin: 2px 0 6px; }
+  .tk-lead { font-size: 13px; margin-top: 4px; }
+  .tk-split { padding-left: 14px; }
+  .tk-coord { font-size: 12px; }
+  .tk-doctrine {
+    border-left: 2px solid hsl(var(--gold) / .4); padding-left: 10px; margin-top: 8px;
+    font-size: 13px; line-height: 1.55;
+  }
+  .tk-verify { text-align: center; }
+  .tk-vtitle { font-size: 10.5px; font-weight: 600; letter-spacing: .22em; color: hsl(var(--gold)); margin-bottom: 8px; }
+  .tk-qr {
+    display: inline-block; background: #fff; border: 1px solid hsl(var(--border));
+    border-radius: 6px; padding: 5px; line-height: 0;
+  }
+  .tk-scan { font-size: 10.5px; font-weight: 600; letter-spacing: .14em; margin-top: 7px; }
+  .tk-scan-sub { font-size: 11px; color: hsl(var(--muted-foreground)); margin-top: 2px; }
+  .tk-tx { font-size: 12px; margin-top: 5px; }
+  .tk-dont { font-size: 11px; font-weight: 600; letter-spacing: .22em; color: hsl(var(--muted-foreground)); margin-top: 9px; }
+  .tk-seal { font-size: 10.5px; color: hsl(var(--muted-foreground)); margin-top: 5px; }
+  .tk-door {
+    display: block; border: 1px solid hsl(var(--gold) / .3); background: hsl(var(--gold) / .07);
+    border-radius: 8px; padding: 9px 11px; margin: 12px 0 4px; font-size: 12.5px;
+  }
+  .tk-door b { color: hsl(var(--gold)); font-weight: 600; }
+  .tk-door span { color: hsl(var(--muted-foreground)); }
+
+  /* ── Z3 · actions + the dual share surface (below the paper) ── */
+  .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 14px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    min-height: 44px; padding: 0 14px; border-radius: 8px;
+    border: 1px solid hsl(var(--border)); background: hsl(var(--card));
+    font-size: 13px;
+  }
+  .btn:hover { border-color: hsl(var(--muted-foreground) / .5); }
+  .btn-gold { border-color: hsl(var(--gold) / .5); }
+  .share-surface {
+    border: 1px solid hsl(var(--border)); background: hsl(var(--card));
+    border-radius: 10px; padding: 12px; margin-top: 10px;
+    box-shadow: 0 18px 50px hsl(224 71% 2% / .4);
+  }
+  .share-surface[hidden] { display: none; }
+  .share-copy {
+    display: flex; width: 100%; align-items: center; justify-content: center;
+    min-height: 44px; border-radius: 8px; border: 1px solid hsl(var(--gold) / .5);
+    background: hsl(var(--gold) / .1); color: hsl(var(--gold)); font-weight: 600; font-size: 13px;
+  }
+  .net-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+  .net {
+    min-height: 40px; border: 1px solid hsl(var(--border)); border-radius: 8px;
+    background: transparent; font-size: 12.5px;
+  }
+  .net:hover { border-color: hsl(var(--muted-foreground) / .5); }
+  .share-native {
+    display: block; width: 100%; min-height: 44px; margin-top: 8px;
+    border: 1px solid hsl(var(--border)); border-radius: 8px; background: transparent;
+    font-size: 13px;
+  }
+  .prov {
+    text-align: center; font-size: 12px; color: hsl(var(--muted-foreground));
+    max-width: 372px; margin: 16px auto 0;
+  }
+
+  /* ── State variants ── */
+  .variant-grid { display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start; }
+  .variant { border: 1px dashed hsl(var(--border)); border-radius: 12px; padding: 14px; max-width: 100%; flex: 1 1 320px; }
+  .variant .vt {
+    font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+    color: hsl(var(--muted-foreground)); margin-bottom: 10px;
+  }
+  .state-card {
+    border: 1px solid hsl(var(--border)); background: hsl(var(--card) / .4);
+    border-radius: 10px; padding: 16px; font-size: 13px; color: hsl(var(--muted-foreground));
+  }
+  .state-card .fg { color: hsl(var(--foreground)); }
+  .skel {
+    width: 300px; max-width: 100%; height: 380px; border: 1px solid hsl(var(--border));
+    border-radius: 10px;
+    background: linear-gradient(180deg, hsl(var(--border) / .35), hsl(var(--border) / .12));
+    margin: 0 auto 10px;
+  }
+
+  @media (max-width: 480px) {
+    .v-right { margin-left: 0; flex-basis: 100%; }
+    .actions .btn { flex: 1 1 40%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<div class="page">
+
+  <div class="mock-banner">
+    <b>MAQUETTE — /receipt/{txHash}</b>
+    <span>le reçu public permanent · démo interactive (thème, partage, copies) · données de démonstration · <span class="mono">noindex,follow</span></span>
+    <button class="theme-btn" id="themeBtn" type="button">Thème : auto</button>
+  </div>
+
+  <div class="annot">La page — vue visiteur anonyme (celui qui reçoit le lien)</div>
+
+  <div class="pub-header" aria-hidden="true">
+    <span class="ph-mark">SS</span>
+    <span class="ph-name">THE SYNDICATE</span>
+    <span class="ph-desc mono">On-chain membership protocol</span>
+    <span class="ph-nav">Protocol · Economy · Membership · ⋯</span>
+    <span class="ph-cta">Join</span>
+  </div>
+  <div class="pub-frame">
+
+    <!-- Z1 · verdict-first -->
+    <div class="verdict">
+      <span class="pill pill-live">Sealed on-chain</span>
+      <span class="v-title">Membership receipt — Seat #544</span>
+      <span class="v-right mono tnum">tx 0x1a2b…9f0e</span>
+    </div>
+
+    <!-- Z2 · the house ticket, verbatim grammar -->
+    <div class="tk-wrap">
+      <div class="ticket">
+        <div class="tk-head">
+          <div class="tk-mark" role="img" aria-label="The Syndicate mark">SS</div>
+          <div class="tk-proto mono">THE SYNDICATE</div>
+          <div class="tk-sub mono">ON-CHAIN MEMBERSHIP PROTOCOL</div>
+          <div class="tk-doc">Membership receipt — proof of purchase</div>
+          <div class="tk-chain">Avalanche C-Chain (43114)</div>
+          <span class="tk-chip">Chapter I · Genesis Signal</span>
+        </div>
+        <hr class="tk-rule">
+        <div class="tk-zone tk-ctx">
+          <span class="tnum">2026-06-04 · block 87,158,947</span>
+          <span class="era mono">Era 1</span>
+        </div>
+        <hr class="tk-rule">
+        <div class="tk-zone">
+          <div class="tk-row"><span class="k">Seat</span><span class="v em mono tnum">Member #544</span></div>
+          <div class="tk-row"><span class="k">Holder</span><span class="v mono">0x1a2b…3c4d</span></div>
+          <div class="tk-row"><span class="k">SYN received</span><span class="v mono tnum">100 SYN <span class="sfx">(20 SYN / USDC)</span></span></div>
+          <div class="tk-row"><span class="k">Referral</span><span class="v mono">brought by 0x9f8e…7d6c</span></div>
+        </div>
+        <hr class="tk-rule">
+        <div class="tk-zone">
+          <div class="tk-row"><span class="k">Membership — Seat #544</span><span class="v mono tnum" style="font-weight:600">$5.00</span></div>
+          <div class="tk-total"><span class="k mono">TOTAL PAID</span><span class="v mono tnum">$5.00 USDC</span></div>
+        </div>
+        <hr class="tk-rule">
+        <div class="tk-zone">
+          <div class="tk-gold-title mono">WHERE YOUR MONEY WENT</div>
+          <div class="tk-subnote">— in your own transaction</div>
+          <div class="tk-row"><span class="k">Referral · paid first</span><span class="v mono tnum">$0.25</span></div>
+          <div class="tk-lead">The remaining <span class="mono tnum">$4.75</span>:</div>
+          <div class="tk-split">
+            <div class="tk-row"><span class="k">Vault · 70%</span><span class="v mono tnum">$3.325</span></div>
+            <div class="tk-row"><span class="k">Liquidity · 20%</span><span class="v mono tnum">$0.95</span></div>
+            <div class="tk-row"><span class="k">Operations · 10%</span><span class="v mono tnum">$0.475</span></div>
+          </div>
+        </div>
+        <hr class="tk-rule">
+        <div class="tk-zone">
+          <div class="tk-coord mono">Seat #544 of Chapter I · Era 1</div>
+          <div class="tk-doctrine">“SYN is the seat — one wallet, one seat; more SYN is footprint, never more seats.”</div>
+        </div>
+        <hr class="tk-rule">
+        <div class="tk-zone tk-verify">
+          <div class="tk-vtitle mono">ONE WALLET · ONE SEAT</div>
+          <div class="tk-qr"><canvas id="qr1" width="84" height="84" aria-label="QR — the transaction on the public explorer"></canvas></div>
+          <div class="tk-scan mono">SCAN TO VERIFY</div>
+          <div class="tk-scan-sub">Opens the transaction on the public explorer.</div>
+          <div class="tk-tx mono">tx 0x1a2b…9f0e</div>
+          <div class="tk-dont mono">DON'T TRUST — VERIFY</div>
+          <div class="tk-seal">Sealed by the protocol · block 87,158,947 — the transaction hash <em>is</em> the signature.</div>
+        </div>
+        <a class="tk-door" href="#" onclick="return false"><b>Seats are open</b> <span>— see how membership works.</span></a>
+      </div>
+
+      <!-- Z3 · actions -->
+      <div class="actions">
+        <button class="btn" type="button" data-copy>Copy link</button>
+        <button class="btn" type="button" id="shareBtn" aria-expanded="false">Share</button>
+        <button class="btn btn-gold" type="button">Save image</button>
+        <a class="btn" href="#" onclick="return false">Verify ↗</a>
+      </div>
+      <div class="share-surface" id="shareSurface" hidden>
+        <button class="share-copy" type="button" data-copy>Copy link</button>
+        <div class="net-grid">
+          <button class="net" type="button">X</button>
+          <button class="net" type="button">WhatsApp</button>
+          <button class="net" type="button">Telegram</button>
+          <button class="net" type="button">LinkedIn</button>
+          <button class="net" type="button">Facebook</button>
+          <button class="net" type="button">Email</button>
+        </div>
+        <button class="share-native" type="button">Share with other apps</button>
+      </div>
+      <p class="prov">This page is this receipt's permanent address — anyone with the link can verify it against the chain.</p>
+    </div>
+
+    <div class="pub-footer">© 2026 The Syndicate. All rights reserved. · Every public figure is a live chain read — don't trust, verify.</div>
+  </div>
+
+  <div class="note">
+    <b>Ce que cette page décide (à approuver) :</b>
+    <ul>
+      <li><b>Le ticket est LE document</b> — le même papier 7 zones que le checkout et le classeur, à l'identique. Rien de réinventé.</li>
+      <li><b>La ligne de verdict</b> au-dessus du papier : pastille <b>« Sealed on-chain »</b> + « Membership receipt — Seat #544 » + le n° de reçu (le hash court). Celui qui reçoit le lien comprend en une seconde.</li>
+      <li><b>La porte pour un visiteur</b> (nouvelle copie) : <b>« Seats are open — see how membership works. »</b> → /join. Une porte, jamais une liste, jamais de pression. Le détenteur connecté garde SA porte réelle (Referral / Archive).</li>
+      <li><b>Copy link copie CETTE adresse</b> (thesyndicate.money/receipt/…) — c'est le retarget promis : le bouton du checkout et du classeur pointeront ici aussi, même déploiement. <b>Verify et le QR restent l'explorer</b>, un clic plus profond.</li>
+      <li><b>La ligne de provenance</b> sous les actions (nouvelle copie) : « This page is this receipt's permanent address — anyone with the link can verify it against the chain. »</li>
+      <li><b>« Share with other apps »</b> : pour un visiteur anonyme, il partage le texte + le lien (pas d'image de carte — la carte QR porte le lien d'introduction du MEMBRE, donc session). Le bouton n'apparaît que si l'appareil sait le faire.</li>
+      <li><b>Aperçu des partages cette tranche :</b> l'image générique du site. Les cartes peintes par reçu = la tranche SUIVANTE, l'ordre que tu as scellé.</li>
+      <li><b>noindex,follow</b> — ta réponse Q44-① : tout le monde avec le lien voit tout, Google n'accumule jamais d'annuaire.</li>
+    </ul>
+  </div>
+
+  <div class="annot">La couche propriétaire — quand le détenteur est connecté</div>
+  <div class="variant">
+    <div class="vt">Le même papier + ses affordances à lui</div>
+    <div class="tk-wrap">
+      <a class="tk-door" href="#" onclick="return false"><b>Your referral link is ready</b> <span>— open Referral to share it.</span></a>
+      <div class="share-surface" style="margin-top:10px">
+        <button class="share-copy" type="button" data-copy>Copy link</button>
+        <div class="net-grid">
+          <button class="net" type="button">X</button>
+          <button class="net" type="button">WhatsApp</button>
+          <button class="net" type="button">Telegram</button>
+          <button class="net" type="button">LinkedIn</button>
+          <button class="net" type="button">Facebook</button>
+          <button class="net" type="button">Email</button>
+        </div>
+        <button class="share-native" type="button">Share with other apps<br><span class="muted" style="font-size:11px">Sends the ticket image too</span></button>
+      </div>
+      <p class="prov"><a href="#" onclick="return false">Open your binder — /receipts ↗</a></p>
+    </div>
+    <div class="note" style="margin-top:12px">Le détenteur retrouve sa porte réelle, son lien d'introduction dans les partages, la carte-image dans la feuille système, et le raccourci vers son classeur. Le document lui-même ne change pas d'un pixel — un reçu est un reçu.</div>
+  </div>
+
+  <div class="annot">États — honnêtes, jamais inventés</div>
+  <div class="variant-grid">
+    <div class="variant">
+      <div class="vt">Résolution</div>
+      <div class="skel" aria-hidden="true"></div>
+      <div class="state-card">The record read is resolving — nothing is assumed, nothing is invented.</div>
+    </div>
+    <div class="variant">
+      <div class="vt">Registre indisponible</div>
+      <div class="state-card">The record is unavailable right now — the on-chain record is unchanged. Try again in a moment.</div>
+    </div>
+    <div class="variant">
+      <div class="vt">Transaction inconnue / trop récente</div>
+      <div class="state-card"><span class="fg">No purchase receipt on this transaction in the served record.</span><br>Sealed moments ago? The served record may still be catching up — retry shortly.<br><a href="#" onclick="return false">Verify on the explorer ↗</a></div>
+    </div>
+    <div class="variant">
+      <div class="vt">Reçu incomplet (moteur ancien)</div>
+      <div class="state-card">This engine's record does not carry every fact a full ticket needs — nothing is guessed. The transaction itself is the receipt.<br><a href="#" onclick="return false">Verify on the explorer ↗</a></div>
+    </div>
+  </div>
+
+  <div class="annot">Mobile &amp; détails</div>
+  <div class="note">
+    <ul style="margin-left:18px">
+      <li><b>Réduis la fenêtre pour le vivre (375 px)</b> — le papier garde ses 340 px tant qu'ils tiennent, puis prend la largeur disponible ; la ligne de verdict passe sur deux lignes ; les actions se répartissent 2×2.</li>
+      <li>Thème clair / sombre via le bouton en haut — les deux sont finis.</li>
+      <li>Le QR est illustratif dans la maquette ; en vrai il encode l'adresse de la transaction sur l'explorer.</li>
+      <li>En-tête et pied de page publics : canon, inchangés (rendus simplifiés ici).</li>
+      <li>Impression (Ctrl/Cmd+P) : le document seul, propre — comme partout.</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+  var modes = ["auto", "dark", "light"], mi = 0;
+  var tb = document.getElementById("themeBtn");
+  tb.addEventListener("click", function () {
+    mi = (mi + 1) % modes.length;
+    if (modes[mi] === "auto") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", modes[mi]);
+    tb.textContent = "Thème : " + modes[mi];
+  });
+
+  var shareBtn = document.getElementById("shareBtn");
+  var surface = document.getElementById("shareSurface");
+  shareBtn.addEventListener("click", function () {
+    var open = surface.hasAttribute("hidden");
+    if (open) surface.removeAttribute("hidden"); else surface.setAttribute("hidden", "");
+    shareBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+
+  var copies = document.querySelectorAll("[data-copy]");
+  for (var i = 0; i < copies.length; i++) {
+    (function (btn) {
+      btn.addEventListener("click", function () {
+        var old = btn.textContent;
+        btn.textContent = "Copied";
+        setTimeout(function () { btn.textContent = old; }, 1500);
+      });
+    })(copies[i]);
+  }
+
+  /* Illustrative QR — deterministic pattern, three finder squares */
+  (function () {
+    var c = document.getElementById("qr1");
+    if (!c || !c.getContext) return;
+    var ctx = c.getContext("2d"), n = 21, s = 4;
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, 84, 84);
+    ctx.fillStyle = "#000";
+    var seed = 42;
+    function rnd() { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+    function finder(x, y) {
+      ctx.fillRect(x * s, y * s, 7 * s, 7 * s);
+      ctx.fillStyle = "#fff"; ctx.fillRect((x + 1) * s, (y + 1) * s, 5 * s, 5 * s);
+      ctx.fillStyle = "#000"; ctx.fillRect((x + 2) * s, (y + 2) * s, 3 * s, 3 * s);
+    }
+    for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) {
+      var inFinder = (x < 8 && y < 8) || (x > 12 && y < 8) || (x < 8 && y > 12);
+      if (!inFinder && rnd() > 0.55) ctx.fillRect(x * s + 1, y * s + 1, s, s);
+    }
+    finder(0, 0); finder(14, 0); finder(0, 14);
+  })();
+</script>

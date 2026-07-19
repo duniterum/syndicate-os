@@ -26,10 +26,12 @@
 //     the caller from the wallet's REAL state — never a list, never a pitch.
 //
 // THE ROADMAP (engraved, builds at its own gates — never silently begun):
-//   V1 = the checkout-success ticket (this build). Next, in order: the public
-//   /receipt/{txHash} page (one rendering path, the dedicated PDF engine) →
-//   the LIVING TICKET (the ticket re-reads the record and gains lines the
-//   seat later earns) → receipt-as-artifact (the audit's lens-12 option).
+//   V1 = the checkout-success ticket (BUILT) → the public /receipt/{txHash}
+//   page (BUILT 2026-07-20 — every receipt's permanent address, one rendering
+//   path; the dedicated PDF engine stays its own rider — founder default,
+//   print already saves clean). Next, in order: the LIVING TICKET (the ticket
+//   re-reads the record and gains lines the seat later earns) →
+//   receipt-as-artifact (the audit's lens-12 option).
 //
 // Kind-extensible: "membership" ships first; every future protocol commerce
 // class (artifact mint, …) adds a kind + builder HERE, in the same slice that

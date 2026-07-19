@@ -684,6 +684,42 @@ function parsePurchaseReceiptFacts(v: unknown): OwnPurchaseReceiptFacts | null {
 }
 
 /**
+ * Parse ONE served purchase row (strict shape; null on any malformed field).
+ * ONE parser for both the session's own rows and the /receipt/{txHash}
+ * public per-transaction read (2026-07-20): one fact shape, one validation —
+ * the public page can never accept a row the binder would refuse.
+ */
+export function parseOwnPurchaseRow(raw: unknown): OwnPurchaseRowReadback | null {
+  if (typeof raw !== "object" || raw === null) return null;
+  const r = raw as Record<string, unknown>;
+  if (
+    typeof r.isoDayUtc !== "string" ||
+    typeof r.amountRaw !== "string" ||
+    !/^[0-9]+$/.test(r.amountRaw) ||
+    typeof r.transaction !== "string" ||
+    typeof r.explorerUrl !== "string" ||
+    typeof r.engine !== "string"
+  ) {
+    return null;
+  }
+  return {
+    isoDayUtc: r.isoDayUtc,
+    amountRaw: r.amountRaw,
+    transaction: r.transaction,
+    explorerUrl: r.explorerUrl,
+    block: typeof r.block === "number" ? r.block : null,
+    engine: r.engine,
+    sealedAtSec:
+      typeof r.sealedAtSec === "number" &&
+      Number.isSafeInteger(r.sealedAtSec) &&
+      r.sealedAtSec > 0
+        ? r.sealedAtSec
+        : null,
+    receipt: parsePurchaseReceiptFacts(r.receipt),
+  };
+}
+
+/**
  * Read the signed wallet's OWN purchase rows (every indexed purchase — the
  * cumulative footprint's addends, each with its verify anchor). Null on ANY
  * transport/shape failure — the caller renders an honest gap, never a guess.
@@ -701,33 +737,9 @@ export async function fetchOwnPurchases(): Promise<OwnPurchasesReadback | null> 
     if (Array.isArray(o.rows)) {
       rows = [];
       for (const raw of o.rows) {
-        if (typeof raw !== "object" || raw === null) return null;
-        const r = raw as Record<string, unknown>;
-        if (
-          typeof r.isoDayUtc !== "string" ||
-          typeof r.amountRaw !== "string" ||
-          !/^[0-9]+$/.test(r.amountRaw) ||
-          typeof r.transaction !== "string" ||
-          typeof r.explorerUrl !== "string" ||
-          typeof r.engine !== "string"
-        ) {
-          return null;
-        }
-        rows.push({
-          isoDayUtc: r.isoDayUtc,
-          amountRaw: r.amountRaw,
-          transaction: r.transaction,
-          explorerUrl: r.explorerUrl,
-          block: typeof r.block === "number" ? r.block : null,
-          engine: r.engine,
-          sealedAtSec:
-            typeof r.sealedAtSec === "number" &&
-            Number.isSafeInteger(r.sealedAtSec) &&
-            r.sealedAtSec > 0
-              ? r.sealedAtSec
-              : null,
-          receipt: parsePurchaseReceiptFacts(r.receipt),
-        });
+        const row = parseOwnPurchaseRow(raw);
+        if (row === null) return null;
+        rows.push(row);
       }
     }
 

@@ -297,6 +297,12 @@ check(
     "joinQuote.ts",
     "protocolReality.ts",
     "publicReadThrottle.ts",
+    // The /receipt/{txHash} public read (Q44 sealed; slice 2026-07-20): one
+    // shape-validated tx hash in, that purchase's own receipt row out. It
+    // relays the row's sealedAtSec exactly as the auth read does (the field
+    // is named WITHOUT the cache vocabulary by design) and never touches
+    // the block_timestamp cache — the scan below covers it like every route.
+    "receiptLookup.ts",
     "sourceStatus.ts",
     "sourceValidate.ts",
     // Founder-approved explorer-links route (infra addresses only, never member
@@ -304,7 +310,7 @@ check(
     "verifyLinks.ts",
   ];
   check(
-    "public route surface pinned (backboneFeed, backboneStatus, capitalStanding, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate, verifyLinks only)",
+    "public route surface pinned (backboneFeed, backboneStatus, capitalStanding, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, receiptLookup, sourceStatus, sourceValidate, verifyLinks only)",
     JSON.stringify(routeFiles) === JSON.stringify(allowed),
     `routes=${JSON.stringify(routeFiles)}`,
   );

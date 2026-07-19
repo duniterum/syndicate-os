@@ -1,5 +1,18 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-20 — R-PAGE: THE /receipt/{txHash} PUBLIC PAGE + THE RETARGET, BUILT
+> [this commit] (Q44's sealed order, step 1).** Wireframe founder-approved on screen
+> ("ok for mee") → the whole engraved scope built: the first PARAM route class
+> (registry+generator+serve.mjs step 3b+prerender one-shell), `GET /api/receipt/{txHash}`
+> (tx-keyed projection, binder row shape, leak gates), the page (verdict bar · THE ticket ·
+> provenance · 4 honest states · visitor door "Seats are open — see how membership works."),
+> and THE RETARGET (Copy link + the 6 networks → the page; Verify/QR stay the explorer).
+> noindex,follow (Q44-①) · `receiptPublicPage` live same commit · guard-receipt 127 pins ·
+> the two api route-surface pins amended dated. Full gate green + rig DOM-verified
+> (SESSION_STATE gate-evidence block). Default taken (overridable): the PDF engine stays
+> its own rider. **🚀 DEPLOY (server + client, NO migration) — NEVER batchable.** NEXT in
+> the sealed order: the painted per-receipt preview cards + link rotation.
+
 > - ✅ **Q44 — CLOSED WHOLE (the founder's three answers, 2026-07-19; no agent re-opens):
 >   ① noindex,follow · ② the painted per-receipt preview card = ITS OWN SLICE, placed
 >   RIGHT AFTER the receipt page and BEFORE the referral register ("c'est un gros
@@ -17,7 +30,10 @@
 >   ① ✅ CLOSED (founder "non", 2026-07-19): individual receipt pages are
 >   **noindex,follow** — anyone with the link sees everything, shares unfurl; Google
 >   never accumulates a browsable corpus of purchase pages.
->   ② 🔴 OPEN — THE PAINTED PREVIEW CARD, explained in human words for the founder's
+>   ② ✅ CLOSED (founder 2026-07-19, part of the whole-Q44 closure: the painted cards
+>   are their OWN slice, RIGHT AFTER the page and BEFORE the referral register — no
+>   agent re-opens; the 🔴 below is the preserved ORIGINAL wording only):
+>   *(original ② wording:)* THE PAINTED PREVIEW CARD, explained in human words for the founder's
 >   answer: when a receipt link is pasted on X/WhatsApp, the platform shows a PICTURE.
 >   With the page slice alone, that picture is the SITE's one generic image (the link
 >   works, the page is beautiful — the preview just isn't personalized). The PAINTED

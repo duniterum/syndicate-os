@@ -196,10 +196,30 @@ const routes = seoRouteRegistry.filter(
 
 let written = 0;
 for (const route of routes) {
-  const html = renderRoute(template, route.path);
+  let html = renderRoute(template, route.path);
+  // PARAM routes: the ONE shell serves every URL of the class, so a baked
+  // og:url would be the literal pattern ("…/receipt/:txHash") — a URL the
+  // serving layer 404s, and the address crawlers would canonicalize EVERY
+  // share onto. Strip it: without og:url, crawlers key the card to the URL
+  // they fetched (each receipt its own), and the runtime head manager stamps
+  // the real self-referential og:url for humans. Per-URL baked heads are the
+  // engraved next slice (painted preview cards).
+  if (route.path.includes("/:")) {
+    html = html.replace(/\s*<meta property="og:url"[^>]*>/, "");
+  }
   let outPath: string;
   if (route.path === "/") {
     outPath = path.join(distDir, "index.html");
+  } else if (route.path.includes("/:")) {
+    // PARAM route (the /receipt/{txHash} class, 2026-07-20): ONE shell serves
+    // every shape-valid URL (serve.mjs param rules). ":" is illegal in Windows
+    // file names, so the shell is named by the literal prefix (receipt.html);
+    // the baked head is the entry's own (noindex, no canonical, static OG) —
+    // per-URL heads are the engraved NEXT slice (painted preview cards).
+    outPath = path.join(
+      distDir,
+      `${route.path.replace(/^\/+/, "").split("/:")[0]}.html`,
+    );
   } else {
     // Flat file (e.g. /status -> status.html) — never a directory, so the static
     // host cannot auto-redirect /status -> /status/. Public routes are

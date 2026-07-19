@@ -20,8 +20,10 @@
 //   - Routing is reproduced from the SAME source as the retired artifact.toml
 //     rewrites: server/routeTable.generated.json is emitted by seo:rewrites from
 //     seo-route-registry, and seo:rewrites:check blocks drift at the gate.
-//   - Clean-URL → flat <route>.html; home → index.html; unmatched → real 404.html
-//     (HTTP 404). NO SPA fallback (an unknown path must 404, never soft-200).
+//   - Clean-URL → flat <route>.html; home → index.html; PARAM rules (the
+//     /receipt/{txHash} class) → the route's ONE shell for shape-valid tails
+//     only; unmatched → real 404.html (HTTP 404). NO SPA fallback (an unknown
+//     path must 404, never soft-200).
 //   - The client JS / wallet / chain reads are untouched — HTTP compression is
 //     invisible to app code (same URLs, same bytes after the browser decodes).
 
@@ -39,6 +41,16 @@ const PORT = Number.parseInt(process.env.PORT ?? "18425", 10);
 const ROUTE_TABLE = JSON.parse(
   readFileSync(path.join(HERE, "routeTable.generated.json"), "utf8"),
 );
+
+// Registry-derived PARAM rules (the /receipt/{txHash} class, 2026-07-20):
+// each rule serves ONE shell exclusively for shape-valid tails under its
+// prefix — any other tail stays a real 404, so the no-SPA-fallback invariant
+// holds at its tightest (the one soft state left is a well-formed hash with
+// no purchase, which the page renders as an honest "no receipt" under
+// noindex). Read once at startup; missing/broken file is fatal like the table.
+const PARAM_ROUTES = JSON.parse(
+  readFileSync(path.join(HERE, "paramRoutes.generated.json"), "utf8"),
+).map((rule) => ({ ...rule, re: new RegExp(rule.tailPattern) }));
 
 // Fail LOUD, never silent: a dropped/empty build must not deploy as a "healthy"
 // all-404 site. The route table already crashes at import if missing; assert the
@@ -230,6 +242,25 @@ function handle(req, res) {
         filePath = t;
         servedRel = target;
       }
+    }
+  }
+
+  // 3b) PARAM-rule class (registry-derived; the /receipt/{txHash} slice):
+  //     a shape-valid tail under a declared prefix serves that route's ONE
+  //     shell at 200 (a single trailing slash tolerated, matching the
+  //     literal class); anything else under the prefix falls to the real 404.
+  if (!filePath) {
+    for (const rule of PARAM_ROUTES) {
+      if (!pathname.startsWith(rule.prefix)) continue;
+      const tail = pathname.slice(rule.prefix.length).replace(/\/$/, "");
+      if (rule.re.test(tail)) {
+        const t = resolveFile(rule.shell);
+        if (t) {
+          filePath = t;
+          servedRel = rule.shell;
+        }
+      }
+      break; // one rule owns its prefix; a non-matching tail 404s
     }
   }
 

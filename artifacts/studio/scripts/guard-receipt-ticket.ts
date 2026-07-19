@@ -103,6 +103,9 @@ function check(cond: boolean, pass: string, fail: string): void {
 }
 
 const BINDER = path.join(srcDir, "wallet", "ReceiptsBinderPanel.tsx");
+const ROW_MODEL = path.join(srcDir, "wallet", "receiptRowModel.ts");
+const PUBLIC_TICKET = path.join(srcDir, "wallet", "PublicReceiptTicket.tsx");
+const PUBLIC_PANEL = path.join(srcDir, "components", "receipt", "PublicReceiptPanel.tsx");
 const spineRaw = read(SPINE);
 const ticketRaw = read(TICKET);
 const cardRaw = read(CARD);
@@ -115,11 +118,17 @@ const binder = stripComments(binderRaw);
 // R-BIND (deliberate coverage growth, 2026-07-19): the binder panel joins
 // the module set — every content law (red line, buyer's tongue, exactness,
 // literals) now scans it too. It MOUNTS the ticket; it never re-implements.
+// /receipt/{txHash} (coverage growth again, 2026-07-20): the row→model
+// mapper, the public wallet mount, and the public page panel join the same
+// set — the whole public-door chain lives under every content law.
 const moduleFiles: readonly (readonly [string, string])[] = [
   ["protocolCommerceReceipt.ts", spine],
   ["ReceiptTicket.tsx", ticket],
   ["ReceiptShareCard.tsx", card],
   ["ReceiptsBinderPanel.tsx", binder],
+  ["receiptRowModel.ts", stripComments(read(ROW_MODEL))],
+  ["PublicReceiptTicket.tsx", stripComments(read(PUBLIC_TICKET))],
+  ["PublicReceiptPanel.tsx", stripComments(read(PUBLIC_PANEL))],
 ];
 
 // ── 1. THE RED LINE ──────────────────────────────────────────────────────────
@@ -313,18 +322,29 @@ for (const [name, code] of moduleFiles) {
   );
 }
 {
-  const pagesDir = path.join(srcDir, "pages");
+  // Pin 10 AMENDED (dated 2026-07-20, the /receipt/{txHash} slice — the
+  // amendment this pin's own failure message sanctioned). The scan GREW:
+  // src/pages AND src/components are now covered (the mock class stays dead
+  // in both). The ONE sanctioned reference site is the public receipt panel,
+  // which lazy-mounts the WALLET module's PublicReceiptTicket and never
+  // re-implements the paper — it joined the scanned module set above, so
+  // every content law binds it too.
+  const SANCTIONED = new Set(["components/receipt/PublicReceiptPanel.tsx"]);
   const offenders: string[] = [];
-  for (const abs of walk(pagesDir)) {
-    const code = stripComments(read(abs));
-    if (/ReceiptTicket|buildMembershipReceipt/.test(code)) {
-      offenders.push(path.relative(srcDir, abs));
+  for (const dir of ["pages", "components"]) {
+    for (const abs of walk(path.join(srcDir, dir))) {
+      const rel = path.relative(srcDir, abs).replace(/\\/g, "/");
+      if (SANCTIONED.has(rel)) continue;
+      const code = stripComments(read(abs));
+      if (/ReceiptTicket|buildMembershipReceipt/.test(code)) {
+        offenders.push(rel);
+      }
     }
   }
   check(
     offenders.length === 0,
-    "pages: no page ever mounts the ticket or the builder (the mock class is structurally dead)",
-    `pages: ticket/builder referenced outside the wallet module: ${offenders.join(", ")} — a ticket is born ONLY from a confirmed event in the wallet module (amend this pin, dated, at the /receipt/{txHash} slice)`,
+    "pages+components: only the sanctioned public panel ever references the ticket (the mock class is structurally dead)",
+    `pages/components: ticket/builder referenced outside the wallet module: ${offenders.join(", ")} — a ticket is born ONLY from a confirmed event in the wallet module (the one sanctioned mount is the /receipt/{txHash} panel, dated 2026-07-20)`,
   );
 }
 

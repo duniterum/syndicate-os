@@ -467,7 +467,7 @@ check(
 
 const routeFiles = readdirSync("src/routes").sort();
 check(
-  "public route surface pinned (backboneFeed, backboneStatus, capitalStanding, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, sourceStatus, sourceValidate, verifyLinks only)",
+  "public route surface pinned (backboneFeed, backboneStatus, capitalStanding, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, receiptLookup, sourceStatus, sourceValidate, verifyLinks only)",
   JSON.stringify(routeFiles) ===
     JSON.stringify([
       // Founder-approved backbone feed route (M4-b): receipt lines only —
@@ -486,6 +486,14 @@ check(
       "joinQuote.ts",
       "protocolReality.ts",
       "publicReadThrottle.ts",
+      // The /receipt/{txHash} public read (Q44 sealed whole 2026-07-19;
+      // founder-approved slice 2026-07-20): ONE shape-validated 64-hex tx
+      // hash in, that purchase's OWN receipt row out — the binder's exact
+      // fact shape, short-form actors by construction, payload-discipline +
+      // boundary-aware leak gates, publicReadThrottle. It reads the
+      // tx-keyed projection only; the wallet-keyed map stays server-only
+      // and this route stays under the blanket word bans below.
+      "receiptLookup.ts",
       "sourceStatus.ts",
       "sourceValidate.ts",
       "verifyLinks.ts",

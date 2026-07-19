@@ -38,6 +38,12 @@ const EXEMPT = new Set([
   // LifecycleBadge). It holds no content of its own, so the honesty label lives
   // in its children — the chassis check below pays for this exemption.
   "ReferralSurface.tsx",
+  // /receipt/{txHash} (2026-07-20): the page only opens the door; its truth is
+  // STATE-AWARE and lives in the panel — the "Sealed on-chain" StatusPill on a
+  // real document, the honest unavailable/no-receipt cards otherwise (a static
+  // page badge would lie in some state, the MemberNotifications lesson). The
+  // chassis check below pays for this exemption.
+  "PublicReceipt.tsx",
 ]);
 
 // The chassis check that pays for the teaser exemptions: TeaserSurface must
@@ -70,6 +76,31 @@ const EXEMPT = new Set([
   ) {
     console.error(
       "[guard:lifecycle] FAIL — MemberNotificationsPanel lost its state-aware honesty (the 'Live · your own row' chip or the fail-closed line); the MemberNotifications.tsx exemption is void.",
+    );
+    process.exit(1);
+  }
+}
+// The chassis check that pays for the PublicReceipt.tsx exemption: the
+// public receipt chain must keep its state-aware honesty — the "Sealed
+// on-chain" pill lives in the WALLET mount (rendered only over a
+// strictly-parsed row — the review-verified truth order) and the honest
+// unavailable line in the panel. If either disappears, this guard goes red
+// even though the page is exempt.
+{
+  const panel = readFileSync(
+    path.resolve(here, "..", "src", "components", "receipt", "PublicReceiptPanel.tsx"),
+    "utf8",
+  );
+  const mount = readFileSync(
+    path.resolve(here, "..", "src", "wallet", "PublicReceiptTicket.tsx"),
+    "utf8",
+  );
+  if (
+    !/Sealed on-chain/.test(mount) ||
+    !/The record is unavailable right now/.test(panel)
+  ) {
+    console.error(
+      "[guard:lifecycle] FAIL — the public receipt chain lost its state-aware honesty (the 'Sealed on-chain' pill in PublicReceiptTicket, or the honest unavailable line in PublicReceiptPanel); the PublicReceipt.tsx exemption is void.",
     );
     process.exit(1);
   }

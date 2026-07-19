@@ -14,8 +14,9 @@
 //
 // V1 export stance (approved): "Save image" rasterizes the ticket (SVG
 // foreignObject via html-to-image); the print stylesheet + light-theme print
-// hook give a clean browser Save-as-PDF. The dedicated PDF engine ships with
-// the public /receipt/{txHash} slice — one rendering path, one truth.
+// hook give a clean browser Save-as-PDF. The public /receipt/{txHash} page is
+// LIVE (2026-07-20, this same rendering path — one truth); the dedicated PDF
+// engine stays its own rider (founder default: print already saves clean).
 
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
@@ -172,16 +173,30 @@ const ORDERED_TARGETS: ShareTargetDef[] = NETWORK_ORDER.map(
 export default function ReceiptTicket({
   model,
   wallet,
+  doorOverride,
 }: {
   model: MembershipReceiptModel;
   /** The connected wallet — the identity the sigil seals and the state the
    *  one door is decided from. */
   wallet: string | undefined;
+  /** The /receipt/{txHash} public mount (2026-07-20, review-hardened): the
+   *  VISITOR's door, used until the viewer's OWN referral link has actually
+   *  resolved — the member doors ("Your referral link is ready" / "The
+   *  Archive is open") are buyer claims, true only of a wallet whose link
+   *  exists; an anonymous or seatless viewer gets the one honest door
+   *  instead. A resolved link restores the real-state decision. Still a
+   *  single optional door object — ONE DOOR MAX holds. */
+  doorOverride?: ReceiptDoor;
 }) {
   const paperRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const door = useReceiptNextDoor(wallet);
+  const hookDoor = useReceiptNextDoor(wallet);
   const referralLink = useOwnReferralLink(wallet);
+  // The one door: the visitor door stands until the viewer's OWN link has
+  // resolved (proof the member claims are true of THEM); then the real
+  // decision applies. Callers without an override are member surfaces —
+  // unchanged.
+  const door = doorOverride && referralLink === null ? doorOverride : hookDoor;
   usePrintCleanTheme();
   const [copied, setCopied] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -192,17 +207,23 @@ export default function ReceiptTicket({
 
   const txUrl = model.proof.explorerTxUrl;
   const shortTx = `${model.proof.txHash.slice(0, 6)}…${model.proof.txHash.slice(-4)}`;
+  // THE RETARGET (the /receipt/{txHash} slice, Q44 sealed — ships in the
+  // SAME deploy as the page, never before): the link a member HANDS someone
+  // is the receipt's own public page — the one address that renders the full
+  // document for anyone with the link. The explorer proof stays exactly one
+  // click deeper: Verify and the QR are UNCHANGED.
+  const receiptPageUrl = `https://thesyndicate.money/receipt/${model.proof.txHash}`;
   // ⑪ the share artifact: sealed proof + the member's own link (when it
   // resolves — a share never carries a broken or half-derived link).
   const shareText = txUrl
-    ? `The Syndicate — ${model.living.coordinate}. Sealed proof: ${txUrl}` +
+    ? `The Syndicate — ${model.living.coordinate}. Sealed proof: ${receiptPageUrl}` +
       (referralLink ? `\nMy introduction link: ${referralLink}` : "")
     : null;
 
   async function handleCopy() {
     if (!txUrl) return;
     try {
-      await navigator.clipboard.writeText(txUrl);
+      await navigator.clipboard.writeText(receiptPageUrl);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1600);
     } catch {
@@ -596,7 +617,9 @@ export default function ReceiptTicket({
                   key={t.id}
                   type="button"
                   onClick={() => {
-                    window.open(t.build(txUrl, shareText ?? ""), "_blank", "noopener,noreferrer");
+                    // THE RETARGET: every network intent carries the
+                    // receipt's own public page (see receiptPageUrl above).
+                    window.open(t.build(receiptPageUrl, shareText ?? ""), "_blank", "noopener,noreferrer");
                     setShareOpen(false);
                   }}
                   className="flex flex-col items-center gap-1.5 rounded-lg border border-border px-1 py-2.5 min-h-14 text-xs text-foreground hover:bg-muted transition-colors"

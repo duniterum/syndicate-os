@@ -30,6 +30,7 @@ import Archive from "@/pages/Archive";
 import Activity from "@/pages/Activity";
 import MemberWallet from "@/pages/MemberWallet";
 import MemberReceipts from "@/pages/MemberReceipts";
+import PublicReceipt from "@/pages/PublicReceipt";
 import MemberNotifications from "@/pages/MemberNotifications";
 import Liquidity from "@/pages/Liquidity";
 import MemberToolkit from "@/pages/MemberToolkit";
@@ -242,6 +243,13 @@ function Router() {
       </PublicRoute>
       <PublicRoute path="/receipts">
         <MemberReceipts />
+      </PublicRoute>
+      {/* The /receipt/{txHash} public permalink (Q44 sealed order; the app's
+          FIRST param route). The serving layer admits only shape-valid
+          64-hex tails (any other /receipt/* path is a real 404), so this
+          route mounts exclusively on well-formed receipt addresses. */}
+      <PublicRoute path="/receipt/:txHash">
+        <PublicReceipt />
       </PublicRoute>
       <PublicRoute path="/liquidity">
         <Liquidity />
