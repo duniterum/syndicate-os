@@ -52,6 +52,12 @@ STAMPED SUPERSEDED — the built canon outranks them.
 4. Hidden-pane: computed styles freeze under transitions — disable inline before reading.
 5. The three-zone write-amendment grammar (constitution → named zone → guard section →
    COMPASS/replit.md one-liners → Privacy/Terms in the SAME commit) is now proven twice.
+6. **The slice-4-fix lesson (prod-proven by Replit):** a leak-scan must match the payload's
+   legitimate anchor shapes — the UNBOUNDED 40-hex scanner (`assertAddressSafeAggregate`) is
+   for address-AND-anchor-free aggregates ONLY; any payload carrying 64-hex tx anchors uses
+   the boundary-aware gate `/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/`. AND: an empty dev table is
+   a blind spot ([] passes every scan); browser-stub checks never exercise the server build
+   path — smoke a server model with real/fixture rows before deploy.
 
 ## THE REPLIT BLOCK (④ + the 3.3 batch — one cycle, NO migration)
 ```

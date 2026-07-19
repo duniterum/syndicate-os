@@ -288,6 +288,22 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   45/45 · auth-zone green · studio tsc 0 · 18 guards · build + admin-dist 93 ·
 >   DOM-verified (rows table + pills + dated record + verify links, old shells gone;
 >   console: only the tracked Q34 warning + a stale HMR artifact, prod build clean).
+> - ✅ **SLICE 4-FIX — THE ROWS-MODEL LEAK-GATE (prod-broken fix, its own immediate
+>   cycle, NEVER batched), COMMITTED [this commit].** Replit's f5250f8 battery PROVED
+>   a deterministic server fault: the rows model carries legitimate 64-hex tx anchors,
+>   but I scanned it with `assertAddressSafeAggregate` (UNBOUNDED /0x[0-9a-fA-F]{40}/)
+>   — every 64-hex contains a 40-hex substring → the introduction refresh faulted
+>   EVERY cycle (ok:0 partial:3), the rows model never published (fail-closed held:
+>   nothing leaked, the aggregate kept serving). The EMPTY dev sale table hid it ([]
+>   passes any scan) and the browser-stub verification never exercised the server
+>   build path. FIX: the rows payload now uses the BOUNDARY-AWARE gate
+>   `/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/` (the routes' own gate) — proven: tx-64 passes
+>   · bare-40 fail-closes · short-form passes; the aggregate model keeps the unbounded
+>   scanner (it is address-free AND anchor-free by construction). **LESSON (engraved):
+>   a leak-scan must match the payload's legitimate anchor shapes — unbounded 40-hex
+>   scans are for address-AND-anchor-free aggregates ONLY; and an empty dev table is a
+>   blind spot: a server model needs a real-data or fixture smoke before deploy.**
+>   Gate: api tsc 0 · introductions 45/45 · auth-zone green.
 > - **SLICES 5–6 (IN ORDER, NEXT = 5) — THE REMAINING ADDS** (from the SYSTEM-FIRST
 >   harvest `wf_81dd540b`): ④ per-introduction rows (needs the row-level adapter,
 >   server) · ⑤ commission anatomy (the static anatomy card shipped in slice 2; ⑤ = the

@@ -395,9 +395,21 @@ export async function refreshIntroductionModel(
   for (const list of rowsBySourceId.values()) {
     list.sort((a, b) => b.blockNumber - a.blockNumber || b.logIndex - a.logIndex);
   }
-  assertAddressSafeAggregate(
-    JSON.stringify(Array.from(rowsBySourceId.values())),
-  );
+  // BOUNDARY-AWARE address gate for the ROWS payload (prod-proven fix,
+  // Replit cycle f5250f8): the rows legitimately carry 64-hex tx anchors,
+  // and the unbounded aggregate scanner would fault on ANY of them (every
+  // 64-hex contains a 40-hex substring — the refresh faulted every cycle in
+  // prod while the empty dev table hid it). A bare 40-hex address still
+  // fail-closes; short forms (0x123…abcd) and 64-hex anchors pass — the
+  // exact gate the serving routes use.
+  {
+    const rowsJson = JSON.stringify(Array.from(rowsBySourceId.values()));
+    if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(rowsJson)) {
+      throw new Error(
+        "address-shaped token in the introduction rows model — fail closed",
+      );
+    }
+  }
 
   setLiveIntroductionModel({
     model,
