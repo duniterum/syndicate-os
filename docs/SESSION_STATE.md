@@ -52,12 +52,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   card + link-rotation slice → ADMIN "Open receipts" on the member ledger →
 >   the commission-receipts register (5.1, mockup approved) + commission
 >   share card → recognition/season (slice 6).
-> - **FOUNDER-PENDING:** 🔴 Q44-② ONLY (the painted per-receipt preview card:
->   NOW inside the page slice, or NEXT as its own slice — recommended NEXT;
->   the human explanation is engraved in the Q44 item). Q44-① CLOSED
->   (noindex,follow) · Q44-③ CLOSED (the receipt page FIRST, then 5.1).
->   Parked as recorded: Q35 legal set · Q39/Q40/Q42 admin waves ·
->   Q32/MVP-final items · the deferred list.
+> - **FOUNDER-PENDING: NOTHING on the arc — Q44 CLOSED WHOLE (2026-07-19):**
+>   ① noindex,follow · ② the painted cards = their own slice, RIGHT AFTER the
+>   page and BEFORE the referral register (the founder's ordering word) ·
+>   ③ the page first. THE SEALED ORDER: page+retarget → painted cards+rotation
+>   → admin Open-receipts → 5.1 register+share card → season. Parked as
+>   recorded: Q35 legal set · Q39/Q40/Q42 admin waves · Q32/MVP-final items ·
+>   the deferred list.
 > - **THE NEXT SESSION'S EXACT OPENING (no re-explaining, ever):** boot per
 >   CLAUDE.md → this handoff → OPEN_QUEUE Q44 → read
 >   `docs/reference/RECEIPT_PAGE_SLICE_SCOPE.md` (build-ready, file-level) +

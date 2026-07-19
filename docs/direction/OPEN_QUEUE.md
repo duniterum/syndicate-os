@@ -1,6 +1,15 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
-> - 🔴 **Q44 — THE /receipt/{txHash} PAGE GATE: three founder answers pending (posed
+> - ✅ **Q44 — CLOSED WHOLE (the founder's three answers, 2026-07-19; no agent re-opens):
+>   ① noindex,follow · ② the painted per-receipt preview card = ITS OWN SLICE, placed
+>   RIGHT AFTER the receipt page and BEFORE the referral register ("c'est un gros
+>   chantier donc on le place dans le bon ordre avant de commencer le referral") ·
+>   ③ the receipt page FIRST, done properly — the good base. THE SEALED ORDER:
+>   /receipt/{txHash} page + the Copy-link/network retarget (same deploy) → the painted
+>   cards + link-rotation slice → ADMIN "Open receipts" on the member ledger → the
+>   commission-receipts register (5.1, mockup approved) + its share card → season
+>   (slice 6). Build-ready scope: `docs/reference/RECEIPT_PAGE_SLICE_SCOPE.md`.**
+>   *(Original entry:)* 🔴 **Q44 — THE /receipt/{txHash} PAGE GATE: three founder answers pending (posed
 >   2026-07-19; the slice is fully scoped in `wf_d1923bc4-f0a` lens 3 + SESSION_STATE;
 >   the Copy-link confusion's ROOT fix — the button stays, its destination becomes the
 >   member's own receipt page, and the six network shares carry it too; the retarget
