@@ -212,6 +212,25 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   35/35 · home 27/27 · build 348 twins · zero console errors. The rig's
 >   frozen smooth-scroll (hidden-pane rAF artifact) proven a non-bug via
 >   instant-scroll counter test ("3 of 5").
+>   **✅ SEALED IN PROD (`bd248d5`, Replit green 2026-07-19 — "le cycle le
+>   plus propre observé": engine ok from the FIRST post-boot cycle, not even
+>   a partial):** 7/7 blob-verified (2 UI components + docs, no server files,
+>   no migration — exactly as announced) · entry `index-v8vYVvRc.js`
+>   byte-identical · gates green at the counts · /receipts serves the shelf +
+>   dual share in prod · wall/healthz/feed 78 · headBlock 90,701,519→90,701,811.
+> - **▶ R-BIND-3 OPENED (founder on the LIVE shelf, 2026-07-19):**
+>   ① WIDE-SCREEN BUG — on 27"/37" the shelf renders edge-to-edge with the
+>   FIRST ticket clipped unreachable (the justify-center-on-overflow CSS
+>   class of bug; his screenshot = evidence); intelligent wide adaptation
+>   ordered. ② COPY-LINK CONFUSION (founder deep-think order, "don't say yes
+>   because it's easy"): Copy link hands a raw Snowtrace URL — nonsense for
+>   new members; the ROOT fix is the engraved /receipt/{txHash} page (Copy
+>   link then copies the member's OWN receipt page; the network intents gain
+>   the same honest destination). ③ SCROLL BUG (site-wide, "souvent"):
+>   internal links often land at the BOTTOM of target pages — the
+>   no-scroll-reset-on-navigation class; diagnose with evidence, fix in
+>   RouteScrollManager respecting the menu-guard pins. Investigation
+>   `wf_d1923bc4-f0a` in flight; fixes = a prod-bug slice (never batched).
 >
 > **▶ 🗂️ THE PAGE-BY-PAGE GRADE-AAA REBUILD (founder pivot 2026-07-19, emphatic:
 > "each LEFT-MENU link presents CLEAN, crème-de-crème; deep-search online + our
