@@ -480,6 +480,18 @@ export async function fetchChannelBreakdown(): Promise<ChannelBreakdownReadback 
 }
 
 // ── Slice ④: own per-introduction rows (the introducer's axis) ──────────────
+/** Slice ⑤ — the receipt-backed anatomy of one commission: the sale event's
+ * own amounts (USDC base-unit decimal strings), server-cross-checked; null
+ * when the server could not hold a consistent breakdown (never invented). */
+export interface OwnReceiptAnatomyReadback {
+  grossRaw: string;
+  commissionBps: number;
+  netRaw: string;
+  vaultRaw: string;
+  liquidityRaw: string;
+  operationsRaw: string;
+}
+
 export interface OwnIntroductionRowReadback {
   isoDayUtc: string;
   /** The introduced wallet, ADR-003 short form (`0x123…abcd`) — server-derived. */
@@ -492,6 +504,8 @@ export interface OwnIntroductionRowReadback {
   transaction: string;
   explorerUrl: string;
   block: number;
+  /** Slice ⑤: the receipt breakdown, or null — the card falls back honestly. */
+  anatomy: OwnReceiptAnatomyReadback | null;
 }
 
 export interface OwnIntroductionsReadback {
@@ -499,6 +513,35 @@ export interface OwnIntroductionsReadback {
   rows: OwnIntroductionRowReadback[] | null;
   asOfBlock: number | null;
   failureReason: string | null;
+}
+
+/** Slice ⑤ — parse a row's anatomy: every field whole and well-formed, or
+ * null (the panel falls back to the static example, never a partial figure). */
+function parseReceiptAnatomy(v: unknown): OwnReceiptAnatomyReadback | null {
+  if (typeof v !== "object" || v === null) return null;
+  const a = v as Record<string, unknown>;
+  const dec = (x: unknown): x is string => typeof x === "string" && /^[0-9]+$/.test(x);
+  if (
+    dec(a.grossRaw) &&
+    typeof a.commissionBps === "number" &&
+    Number.isSafeInteger(a.commissionBps) &&
+    a.commissionBps >= 0 &&
+    a.commissionBps <= 10_000 &&
+    dec(a.netRaw) &&
+    dec(a.vaultRaw) &&
+    dec(a.liquidityRaw) &&
+    dec(a.operationsRaw)
+  ) {
+    return {
+      grossRaw: a.grossRaw,
+      commissionBps: a.commissionBps,
+      netRaw: a.netRaw,
+      vaultRaw: a.vaultRaw,
+      liquidityRaw: a.liquidityRaw,
+      operationsRaw: a.operationsRaw,
+    };
+  }
+  return null;
 }
 
 /**
@@ -539,6 +582,7 @@ export async function fetchOwnIntroductions(): Promise<OwnIntroductionsReadback 
             transaction: row.transaction,
             explorerUrl: row.explorerUrl,
             block: row.block,
+            anatomy: parseReceiptAnatomy(row.anatomy),
           });
         }
       }

@@ -57,6 +57,7 @@ import { setLiveIntroductionModel } from "../lib/protocol/introductionLiveModel"
 import {
   setIntroductionRowsModel,
   type OwnIntroductionRow,
+  type OwnReceiptAnatomy,
 } from "../lib/protocol/introductionRowsModel";
 import {
   setSourceOwnershipIndex,
@@ -148,8 +149,24 @@ async function saleLaneCompleteTo(head: number): Promise<boolean> {
 }
 
 /** Slice ④: the attributed row + its own tx-hash COLUMN (never a decodedJson
- * field — the whitelist below is unchanged); feeds the per-row model only. */
-type AttributedRowWithTx = AttributedPurchaseRow & { transactionHash: string };
+ * field — the whitelist below is unchanged); feeds the per-row model only.
+ * Slice ⑤: + the receipt's own AMOUNT fields (numbers only, no addresses) —
+ * null when any of them is malformed; the row itself still serves. */
+type AttributedRowWithTx = AttributedPurchaseRow & {
+  transactionHash: string;
+  grossRaw: string | null;
+  commissionBps: number | null;
+  netRaw: string | null;
+  vaultRaw: string | null;
+  liquidityRaw: string | null;
+  operationsRaw: string | null;
+};
+
+/** Exact decimal string (base units) or null — anatomy fields fail SOFT to
+ * null (the breakdown is dropped, never the row; slice-④ truth unaffected). */
+function decStr(v: unknown): string | null {
+  return typeof v === "string" && /^[0-9]+$/.test(v) ? v : null;
+}
 
 /** Attributed V3 rows from the backbone's own gapless sale lane. */
 async function loadAttributedRows(): Promise<AttributedRowWithTx[]> {
@@ -176,12 +193,16 @@ async function loadAttributedRows(): Promise<AttributedRowWithTx[]> {
   const rows: AttributedRowWithTx[] = [];
   for (const r of raw) {
     // decodedJson WHITELIST (introduction refresh): exactly {sourceId,
-    // recipient, acquisitionCost} — gated fields, legitimate ONLY here; the
+    // recipient, acquisitionCost} + the slice-⑤ AMOUNT fields {grossUsdc,
+    // protocolContribution, vaultAmount, liquidityAmount, operationsAmount,
+    // commissionBps} — amounts are numbers only (never addresses); the
     // built model is address-free by construction and leak-scanned below.
     // (transactionHash is the row's own COLUMN, not a decodedJson field.)
     const p = r.decodedJson as Record<string, unknown>;
     const sourceId = str(p.sourceId);
     if (sourceId.toLowerCase() === ZERO_BYTES32) continue; // not attributed
+    const bpsStr = decStr(p.commissionBps);
+    const bps = bpsStr === null ? null : Number(bpsStr);
     rows.push({
       chainId: r.chainId,
       eventName: r.eventName,
@@ -191,9 +212,44 @@ async function loadAttributedRows(): Promise<AttributedRowWithTx[]> {
       sourceId,
       recipient: str(p.recipient),
       acquisitionCostRaw: str(p.acquisitionCost),
+      grossRaw: decStr(p.grossUsdc),
+      commissionBps: bps !== null && Number.isSafeInteger(bps) && bps <= 10_000 ? bps : null,
+      netRaw: decStr(p.protocolContribution),
+      vaultRaw: decStr(p.vaultAmount),
+      liquidityRaw: decStr(p.liquidityAmount),
+      operationsRaw: decStr(p.operationsAmount),
     });
   }
   return rows;
+}
+
+/** Slice ⑤ — the receipt-backed anatomy, held ONLY when the event's own
+ * amounts are whole AND internally consistent (commission + net == gross;
+ * vault + liquidity + operations == net — the contract's `_routeAmounts`
+ * identity). Anything off → null: an inconsistent receipt is never invented
+ * into a breakdown, and the slice-④ row itself is unaffected. */
+function receiptAnatomy(r: AttributedRowWithTx): OwnReceiptAnatomy | null {
+  const { grossRaw, commissionBps, netRaw, vaultRaw, liquidityRaw, operationsRaw } = r;
+  if (
+    grossRaw === null ||
+    commissionBps === null ||
+    netRaw === null ||
+    vaultRaw === null ||
+    liquidityRaw === null ||
+    operationsRaw === null
+  ) {
+    return null;
+  }
+  const gross = BigInt(grossRaw);
+  const net = BigInt(netRaw);
+  if (BigInt(r.acquisitionCostRaw) + net !== gross) return null;
+  // The routing must match the contract's `_routeAmounts` EXACTLY (70/20/10,
+  // operations = remainder) — the card captions those shares, so a receipt
+  // routed any other way must never render under them (review wf_c1b2d966).
+  if (BigInt(vaultRaw) !== (net * 70n) / 100n) return null;
+  if (BigInt(liquidityRaw) !== (net * 20n) / 100n) return null;
+  if (BigInt(vaultRaw) + BigInt(liquidityRaw) + BigInt(operationsRaw) !== net) return null;
+  return { grossRaw, commissionBps, netRaw, vaultRaw, liquidityRaw, operationsRaw };
 }
 
 /** ADR-003 short form (`0x123…abcd`) — fail-closed: a malformed address
@@ -389,6 +445,7 @@ export async function refreshIntroductionModel(
       who,
       commissionRaw: r.acquisitionCostRaw,
       durable: durableByRecipient[r.recipient.toLowerCase()] === true,
+      anatomy: receiptAnatomy(r),
     });
     rowsBySourceId.set(sid, list);
   }

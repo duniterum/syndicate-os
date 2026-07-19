@@ -694,6 +694,16 @@ router.get("/introduction-rows", async (req: Request, res: Response) => {
         transaction: string;
         explorerUrl: string;
         block: number;
+        // Slice ⑤ — the receipt-backed breakdown: the event's own amounts
+        // (numbers only, no addresses), or null (fail-closed, never invented).
+        anatomy: {
+          grossRaw: string;
+          commissionBps: number;
+          netRaw: string;
+          vaultRaw: string;
+          liquidityRaw: string;
+          operationsRaw: string;
+        } | null;
       }[]
     | null = null;
   let asOfBlock: number | null = null;
@@ -726,6 +736,7 @@ router.get("/introduction-rows", async (req: Request, res: Response) => {
             transaction: r.transactionHash,
             explorerUrl,
             block: r.blockNumber,
+            anatomy: r.anatomy === null ? null : { ...r.anatomy },
           });
         }
       }

@@ -87,6 +87,24 @@ material to reach a button.
 ③ If information serves nobody on that page, it is not shown at all.
 This is senior judgment owed on the FIRST build of every surface.
 
+**THE SETTLED-LAW SILENCE RULE (founder, permanent, 2026-07-19 — "j'en ai marre de
+t'expliquer à chaque session ; règle-moi ça une bonne fois pour toutes").**
+Two classes of SETTLED law kept resurfacing in founder-visible text. That stops here:
+① **PII / addresses are settled LAW, never a discussion.** ADR-003 + `CANON_VISIBILITY_LAW`
++ the A1 honesty contract (locked again 2026-07-19 in OPEN_QUEUE): address ≠ identity —
+chain-emitted addresses render short-form, we hide NOTHING on-chain; the red line is
+name/alias/email; own-row, no directory. The GUARDS enforce it (boundary-aware scans,
+auth-zone, forbidden-copy). Claude Code verifies through the guards SILENTLY and NEVER
+shows the founder "leak/PII" as an open question, a review headline, a lens name, or a
+risk to re-decide. Green guard = nothing to say; red guard = a bug report in human words.
+② **The word law extends to CHAT.** Everything the founder READS — reports, gates,
+previews, review verdicts — speaks HUMAN words only. Bytecode/ABI vocabulary
+("acquisitionCost"/"acquisition cost" — ruling 2026-07-13, the word is "commission" —
+field names, protocol jargon) lives in code and technical docs ONLY. A banned word
+surfacing in a chat report is the same defect class the copy guard kills on public
+surfaces. These laws are ANSWERED FOREVER (the 2026-07-17 standing rule applies):
+no agent re-opens, re-explains, or re-asks them — in any form, on any surface.
+
 **THE HEARTBEAT COMPLETENESS INVARIANT (founder, permanent, 2026-07-15 — STEP 4 of the
 complete-heartbeat order).** Any future contract or protocol wallet joins the heartbeat
 inventory (scan targets + read-model + §8 sentence + /activity) **in the same slice that

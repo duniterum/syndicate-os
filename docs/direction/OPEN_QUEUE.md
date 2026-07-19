@@ -64,8 +64,13 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > gate fixed it — ok:2/partial:0, rows model publishing, client byte-identical; lesson
 > engraved in SESSION_STATE + the handoff). DEPLOY BACKLOG: EMPTY.** RECORDED GAP (own micro-slice, do not re-discover): rate-raise history needs
 > SourceTermsUpdated's sourceId (topics[1]) persisted + a SOURCE_LIFECYCLE rescan — the event
-> IS indexed but without per-source attribution → slices 5–6 (NEXT = ⑤ commission anatomy
-> receipt-backed · ⑥ recognition/season Phase-5). Full state: SESSION_STATE.md.
+> IS indexed but without per-source attribution → ✅ slice 5 (THE RECEIPT-BACKED COMMISSION
+> ANATOMY: the Commissions tab's anatomy card = the member's latest REAL receipt, the event's
+> own amounts gross → commission → net → Vault/Liquidity/Operations 70/20/10, exact sums,
+> verify↗; fail-closed to the static example; 6 amount fields added to the rows model +
+> backbone whitelist deliberately amended, NO migration) COMMITTED [this commit], founder
+> preview-approved + "GO and GO-Live" 2026-07-19 — 🚀 ITS OWN DEPLOY CYCLE →
+> slice 6 (NEXT = ⑥ recognition/season Phase-5). Full state: SESSION_STATE.md.
 
 > **▶ 2026-07-17 (STANDING RULE, founder, emphatic — engraved here AND in agent memory):
 > NEVER RE-BLOCK ON AN ANSWERED QUESTION. Founder gates exist ONLY for: security/

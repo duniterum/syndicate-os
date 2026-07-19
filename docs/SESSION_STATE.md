@@ -321,11 +321,56 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   purchase predating the website checkout — the record serves what the chain
 >   published, not what memory expected; its verify link is the answer. That is the
 >   product.**
-> - **SLICES 5–6 (IN ORDER, NEXT = 5) — THE REMAINING ADDS** (from the SYSTEM-FIRST
->   harvest `wf_81dd540b`): ④ per-introduction rows (needs the row-level adapter,
->   server) · ⑤ commission anatomy (the static anatomy card shipped in slice 2; ⑤ = the
->   receipt-backed breakdown) · ⑥ recognition/season axis (Phase-5). Their honest-future
->   SHELLS are live in the tabs; each slice replaces its shell with the real record.
+> - ✅ **SLICE 5 — THE RECEIPT-BACKED COMMISSION ANATOMY (founder "go" 2026-07-19 =
+>   the arc GO; preview-approved on the rig + "GO and GO-Live"), COMMITTED
+>   [this commit] — 🚀 DEPLOY (server + client, NO migration).** The Commissions
+>   tab's static anatomy example is replaced by the member's LATEST REAL RECEIPT —
+>   the event's OWN amounts, never recomputed: The buyer paid (grossUsdc) → Your
+>   commission at the sale's bps (gold) → Sent to the Syndicate (protocolContribution)
+>   → Vault 70% · Liquidity 20% · Operations 10% (vaultAmount/liquidityAmount/
+>   operationsAmount), dated + verify↗. EXACT figures on purpose (usdExact, never
+>   floored): $0.25 + $4.75 = $5.00 and $3.325 + $0.95 + $0.475 = $4.75 sum ON
+>   SCREEN exactly as on-chain. BUILT: ① `OwnReceiptAnatomy` on the rows model
+>   (numbers only — grossRaw/commissionBps/netRaw/vaultRaw/liquidityRaw/
+>   operationsRaw) · ② `introductionRefresh` reads 6 MORE decodedJson AMOUNT fields
+>   (whitelist amendment engraved in backbone.guard.ts — the event's address-typed
+>   fields stay forbidden; fail-SOFT `decStr`: a malformed amount nulls the anatomy,
+>   never the row, never the cycle) + `receiptAnatomy` holds a breakdown ONLY when
+>   internally consistent (commission + net == gross AND vault+liq+ops == net — an
+>   inconsistent receipt is never invented into a breakdown) · ③ the route serves
+>   `anatomy` per row (numbers pass the boundary-aware gate untouched) · ④ client
+>   parser all-or-nothing (`parseReceiptAnatomy`) + the panel's ONE shared read for
+>   both cards; newest-row-with-anatomy drives the card; anatomy null → the static
+>   example renders verbatim (the honest fallback, verified). GATE: tsc 0 (4
+>   projects) · 18 studio guards (access-state 1064) · api guards (auth-zone 1015 ·
+>   backbone whitelist deliberately amended) · seo 491 · rewrites 62 · audit 322 ·
+>   build 32 shells + precompress byte-identical + admin-dist 93 · browser-verified
+>   via the in-page sim (receipt card exact figures + fallback + record intact ·
+>   375px no h-scroll · both themes · imgs loaded · zero console errors) · rig
+>   S1-shape exact · adversarial review workflow `wf_c1b2d966-008` run pre-seal —
+>   its 4 real findings FIXED in the same commit: ① the server also proves the
+>   exact 70/20/10 proportions (contract `_routeAmounts` math), so the card's
+>   share captions can never sit over a differently-routed receipt; ② the card
+>   renders ONLY when the TRUE newest receipt carries the breakdown (`rows[0]`
+>   strict — an older receipt never renders under the "latest" label); ③ the
+>   record lines use the same exact formatter as the card (one receipt, one
+>   figure, never $0.325 vs $0.32 one card apart; the by-state TOTALS stay
+>   floored by the S7-e display law); ④ backbone.guard.ts now PINS the rows-model
+>   discipline (boundary-aware scan BEFORE hold + sole-setter — the f436c42
+>   lesson made durable; guard 151→153). **RIG NOTE (founder-confirmed):**
+>   localhost has no Replit DB → the rig shows the honest fallback; the LIVING
+>   receipt card appears in prod (the slice-4 pattern).
+>   **⚖️ ENGRAVED THIS COMMIT (founder order, emphatic): THE SETTLED-LAW SILENCE
+>   RULE (CLAUDE.md + agent memory)** — settled law never resurfaces in
+>   founder-visible text: the PII/address posture is guard-enforced settled law
+>   (verify silently; never a founder-facing question/lens/headline), and chat
+>   speaks HUMAN words only (the 2026-07-13 word ruling extends to reports:
+>   "commission", never the bytecode word).
+> - **SLICE 6 (NEXT) — THE REMAINING ADD** (from the SYSTEM-FIRST harvest
+>   `wf_81dd540b`): ⑥ recognition/season axis (Phase-5). Its honest-future SHELL is
+>   live in the Ladder & recognition tab; the slice replaces the shell with the real
+>   record. Plus the recorded rate-raise-history micro-slice (SourceTermsUpdated
+>   topics[1] + SOURCE_LIFECYCLE rescan — do not re-discover).
 >   **DON'T show a downline/directory/name/alias/email — but DO show chain-emitted
 >   addresses (own-row, we hide nothing).**
 >

@@ -133,8 +133,14 @@ Ladder truth (`config/connectorLadder.ts`): Emerging 5% (0) · Active 5% (3, tit
   sparse). **RECORDED GAP — rate-raise history:** SourceTermsUpdated is indexed WITHOUT its
   sourceId (topics not persisted) → per-source raise history needs decodeLifecycleLog +
   topics[1] + a SOURCE_LIFECYCLE rescan (own micro-slice); the shell stays honest meanwhile.
-- **SLICES 5–6 — THE REMAINING ADDS (in order, NEXT = 5):** commission anatomy (receipt-backed
-  breakdown; the static anatomy card shipped in slice 2) · recognition/season (Phase-5).
+- ✅ **SLICE 5 — THE RECEIPT-BACKED COMMISSION ANATOMY, COMMITTED (founder preview-approved +
+  "GO and GO-Live" 2026-07-19).** The Commissions tab's anatomy card = the member's latest REAL
+  receipt (the event's own amounts: gross → commission at the sale's bps → net → Vault 70% ·
+  Liquidity 20% · Operations 10%), EXACT figures that sum on screen as on-chain, dated +
+  verify↗; server-cross-checked consistency (an inconsistent receipt → null → the static
+  example renders, never a partial); 6 amount-only fields on the rows model (no addresses,
+  whitelist amendment engraved in backbone.guard.ts); NO migration.
+- **SLICE 6 — THE REMAINING ADD (NEXT):** recognition/season (Phase-5).
 
 ## RESEARCH LEDGER (never re-search these — the findings are canon here)
 - `wf_8d4fae85` + `wf_81dd540b` (2026-07-19) — the page benchmark + SYSTEM-FIRST inventory

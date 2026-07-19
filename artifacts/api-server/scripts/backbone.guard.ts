@@ -254,18 +254,32 @@ for (const f of zoneFiles) {
 }
 
 // M0 — the introduction refresh's own discipline: its decodedJson whitelist
-// is exactly {sourceId, recipient, acquisitionCost} (gated fields, legitimate
-// ONLY in this file server-side), and the built model is leak-scanned BEFORE
-// it is ever held; nothing else in src may set the live model.
+// is exactly {sourceId, recipient, acquisitionCost} + the slice-⑤ AMOUNT
+// fields {grossUsdc, protocolContribution, vaultAmount, liquidityAmount,
+// operationsAmount, commissionBps} (deliberate amendment 2026-07-19, the
+// receipt-backed commission anatomy: amounts and a bps only — NUMBERS, never
+// addresses; the event's address-typed fields buyer/sourceWallet stay
+// forbidden), and the built model is leak-scanned BEFORE it is ever held;
+// nothing else in src may set the live model.
 {
   const introSrc = stripComments(read("src/backbone/introductionRefresh.ts"));
   const introAccesses = [...introSrc.matchAll(/\bp\.(\w+)/g)]
     .map((m) => m[1])
     .filter((k): k is string => Boolean(k));
-  const allowedIntro = new Set(["sourceId", "recipient", "acquisitionCost"]);
+  const allowedIntro = new Set([
+    "sourceId",
+    "recipient",
+    "acquisitionCost",
+    "grossUsdc",
+    "protocolContribution",
+    "vaultAmount",
+    "liquidityAmount",
+    "operationsAmount",
+    "commissionBps",
+  ]);
   check(
     introAccesses.length > 0 && introAccesses.every((k) => allowedIntro.has(k)),
-    "introduction refresh decodedJson whitelist is exactly {sourceId, recipient, acquisitionCost}",
+    "introduction refresh decodedJson whitelist is exactly {sourceId, recipient, acquisitionCost} + the slice-⑤ amount fields",
     `introduction refresh reads non-whitelisted decodedJson keys: ${introAccesses
       .filter((k) => !allowedIntro.has(k))
       .join(", ")}`,
@@ -295,6 +309,30 @@ for (const f of zoneFiles) {
       setters.some((f) => f.endsWith(`${path.sep}introductionLiveModel.ts`)),
     "the live introduction model is set ONLY by the refresh (holder + refresh, nothing else)",
     `unexpected setLiveIntroductionModel caller(s): [${setters
+      .map((f) => path.relative(apiDir, f))
+      .join(", ")}]`,
+  );
+  // Slice-④/⑤ ROWS-MODEL pins (the f436c42 prod lesson made durable — the
+  // rows payload carries legitimate 64-hex anchors, so its gate must be the
+  // BOUNDARY-AWARE scan, and it must run BEFORE the model is held): the
+  // boundary-aware regex appears in this file and precedes the set call, and
+  // only the refresh (+ the holder module) may set the rows model.
+  const rowsGateIdx = introSrc.indexOf("(?![0-9a-fA-F])");
+  const rowsSetIdx = introSrc.indexOf("setIntroductionRowsModel(");
+  check(
+    rowsGateIdx !== -1 && rowsSetIdx !== -1 && rowsGateIdx < rowsSetIdx,
+    "the rows model is boundary-aware leak-scanned BEFORE it is held",
+    "introduction refresh holds the rows model without the boundary-aware scan first",
+  );
+  const rowSetters = walk(path.resolve(apiDir, "src")).filter((f) =>
+    stripComments(readFileSync(f, "utf8")).includes("setIntroductionRowsModel("),
+  );
+  check(
+    rowSetters.length === 2 &&
+      rowSetters.some((f) => f.endsWith(`${path.sep}introductionRefresh.ts`)) &&
+      rowSetters.some((f) => f.endsWith(`${path.sep}introductionRowsModel.ts`)),
+    "the rows model is set ONLY by the refresh (holder + refresh, nothing else)",
+    `unexpected setIntroductionRowsModel caller(s): [${rowSetters
       .map((f) => path.relative(apiDir, f))
       .join(", ")}]`,
   );
