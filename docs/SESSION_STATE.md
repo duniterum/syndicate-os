@@ -147,9 +147,31 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   white chip both themes · exact sums incl. the $10.00 stress render ·
 >   footprint tag on repeat only · deep-open lands right · 375px no h-scroll ·
 >   zero console errors) · route S1-shape + decimals exact on the rig.
-> - NEXT (the promised order): the public /receipt/{txHash} permalink slice →
->   ADMIN ("Open receipts" on the member-ledger action menu) → resume the
->   referral register (5.1 approved) + the commission share card.
+> - **✅ SEALED IN PROD (`b79a5ed`, Replit green 2026-07-19, founder-pasted
+>   report):** 29/29 blob-verified (4 commits incl. the 5.1-gate docs) ·
+>   typecheck + build (entry `index-Cl8K_YTb.js` `a1d46c35…` + console
+>   `caa9ce98…` byte-identical prod==local, 348 twins, 30 shells — /receipts
+>   NEW) · gates green at the new counts (receipt 94/94 · operator-gate 2790 ·
+>   access-state 1081 · home 27/27) · IN PROD: /receipts 200 index,follow +
+>   canonical + sitemap · wall holds · healthz ok · introduction-rows honest
+>   S1 · the banned phrase ×0 · feed 78 · engine: the usual first-cycle
+>   partial self-healed by cursor, then ok:2 clean, headBlock 90,697,527→
+>   90,698,130. **THE MEMBERS' BINDER IS LIVE. DEPLOY BACKLOG: EMPTY.**
+> - **▶ R-BIND-2 OPENED (founder orders on the live binder, 2026-07-19):**
+>   ① SCALE — think 300+ tickets: AAA pagination/layout/sorting (his
+>   indicatives: by type · month · year) + his floated idea: the first 4-5
+>   tickets OPEN side-by-side as an always-visible hero so a new member
+>   understands ("??!!" = a question to answer, not an order); ② the Copy
+>   link / Verify mentality — both carry the SAME explorer link today; the
+>   clean split needs the receipt's OWN public page (/receipt/{txHash} — the
+>   engraved next slice anyway); ③ SHARE — keep the mechanism, but the
+>   ticket's Share becomes the referral-style network menu
+>   (X/FB/WhatsApp/Telegram/LinkedIn/Email/Copy), and the share TITLE/text
+>   changes — founder must approve the words on screen. **Founder ordered:
+>   ASK QUESTIONS on any doubt before building ("on a perdu assez de temps").
+>   Questions posed 2026-07-19 (hero layout choice · copy-link split ·
+>   share text); build waits on his answers + the wireframe gate for the
+>   layout change.**
 >
 > **▶ 🗂️ THE PAGE-BY-PAGE GRADE-AAA REBUILD (founder pivot 2026-07-19, emphatic:
 > "each LEFT-MENU link presents CLEAN, crème-de-crème; deep-search online + our
