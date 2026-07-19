@@ -66,13 +66,16 @@ const dashText =
     : "";
 
 // ── 1 · The Z order in the DASHBOARD composition (JSX mount order) ──────────
+// Referral was elevated to its own surface /referral (2026-07-19, founder GO —
+// one door, one surface); it no longer mounts in the /member dashboard. The
+// "Introductions" KPI tile (guard-pinned in the KPI row below) keeps the count
+// on this page.
 const zOrder = [
   "<MemberYourSeat",
   "<MemberKpiRow",
   "<MemberAttention",
   "<MemberRecentActivity",
   "<MemberPulse",
-  "<MemberReferralDashboard",
 ];
 const idx = zOrder.map((tag) => dashText.indexOf(tag));
 pin(

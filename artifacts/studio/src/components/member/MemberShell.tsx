@@ -15,8 +15,9 @@
 // rows; active = gold/10 tint + persistent 2px left bar + weight 600 — shape
 // AND color, never color alone (WCAG 1.4.1) — plus aria-current="page";
 // hover = border/45 tint; keyboard focus = a visible gold ring. Hash doors
-// (/member#settings, /member#referral-dashboard) match by pathname+hash via
-// useLocationProperty — wouter's location is pathname-only and blind to them.
+// (e.g. /member#settings) match by pathname+hash via useLocationProperty —
+// wouter's location is pathname-only and blind to them. (Referral was elevated
+// to its own route /referral on 2026-07-19; it is no longer a hash door.)
 
 import { Link } from "wouter";
 import { useLocationProperty } from "wouter/use-browser-location";

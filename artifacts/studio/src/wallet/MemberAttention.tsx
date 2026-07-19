@@ -141,7 +141,7 @@ export default function MemberAttention() {
           nothing is owed until then, and a rung never descends.
         </p>
         <Link
-          href="/member#referral-dashboard"
+          href="/referral"
           className="mt-2 inline-flex items-center font-mono text-xs uppercase tracking-[0.14em] text-gold/90 hover:text-gold"
           data-testid="attention-promotion-door"
         >

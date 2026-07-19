@@ -33,7 +33,6 @@ import { ChronicleLatest } from "@/components/member/ChronicleLatest";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { memberHome, expectations } from "@/config/syndicateFacts";
-import { MemberReferralDashboard } from "@/components/referral/MemberReferralDashboard";
 import { WalletAuthComingSoon } from "@/components/WalletAuthComingSoon";
 import { useAuthAvailability } from "@/lib/authAvailability";
 import { ctas } from "@/config/sharedCopy";
@@ -186,9 +185,10 @@ export default function MemberAccess() {
                   <div className="mb-8">
                     <MemberPulse />
                   </div>
-                  <section id="referral-dashboard" className="scroll-mt-24">
-                    <MemberReferralDashboard />
-                  </section>
+                  {/* Referral lives on its own surface now — the "Referral"
+                      door opens /referral (elevated 2026-07-19, founder GO:
+                      one door, one surface). The "Introductions" KPI tile above
+                      keeps the count on this page. */}
                 </div>
                 <div className="min-w-0 grid gap-6 content-start">
                   {/* Z6 — the capital axis — own-account guidance (footprint,
@@ -334,11 +334,9 @@ export default function MemberAccess() {
               <MemberQuickActions />
             </div>
 
-            {/* The referral dashboard — anchored (the sidebar door's
-                target); honest signed-out states inside. */}
-            <section id="referral-dashboard" className="mb-12 scroll-mt-24">
-              <MemberReferralDashboard />
-            </section>
+            {/* Referral moved to its own surface /referral (elevated
+                2026-07-19) — the visitor's "How a seat works" + doors carry the
+                conversion; the program page itself is /referral when anon. */}
 
             {/* SEASONS_ENGINE §11 slots 3–5 — RESERVED VISIBLY. */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-12">

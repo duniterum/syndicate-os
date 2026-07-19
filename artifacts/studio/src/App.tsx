@@ -22,6 +22,7 @@ import Recognition from "@/pages/Recognition";
 import ContractMemory from "@/pages/ContractMemory";
 import ProtocolMap from "@/pages/ProtocolMap";
 import SourceAttribution from "@/pages/SourceAttribution";
+import ReferralSurface from "@/pages/ReferralSurface";
 import JoinProtocol from "@/pages/JoinProtocol";
 import SourceLinkBuilder from "@/pages/SourceLinkBuilder";
 import Support from "@/pages/Support";
@@ -177,9 +178,13 @@ function Router() {
       {/* /referral is the CANONICAL human URL (founder, 2026-07-13 — people
           search "referral program"); /source-attribution stays as a serving
           alias (200 + canonical → /referral; no 301 exists at the static
-          layer until the domain transfer). */}
+          layer until the domain transfer). ELEVATED 2026-07-19 (founder GO):
+          /referral is now the member referral SURFACE — connected members get
+          their dashboard IN the shell; anon + the prerender still get the
+          public SourceAttribution program page (SEO untouched). The /source-
+          attribution alias stays the plain public page. */}
       <PublicRoute path="/referral">
-        <SourceAttribution />
+        <ReferralSurface />
       </PublicRoute>
       <PublicRoute path="/source-attribution">
         <SourceAttribution />

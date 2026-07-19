@@ -59,7 +59,7 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
     doors: [
       { label: "Member Home", icon: "house", href: "/member", note: "Your seat, your standing — this page." },
       { label: "Wallet", icon: "wallet", href: "/wallet", note: "Your balances and approvals — revoke is your own signed act." },
-      { label: "Referral", icon: "user-plus", href: "/member#referral-dashboard", note: "Your introductions, standing, and ladder progress." },
+      { label: "Referral", icon: "user-plus", href: "/referral", note: "Your introductions, standing, and ladder progress." },
       { label: "Activity", icon: "activity", href: "/activity", note: "The public heartbeat — receipt-backed events, complete history served." },
       { label: "Toolkit", icon: "wrench", href: "/toolkit", note: "Every member action in one place — locks visible." },
       // The receipt product is LIVE at checkout (2026-07-17 seal); the BINDER

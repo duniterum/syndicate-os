@@ -32,6 +32,12 @@ const EXEMPT = new Set([
   // sign-in/denied/unavailable cards) — the chassis check below pays for
   // this exemption, so it cannot rot into an unlabeled surface.
   "MemberNotifications.tsx",
+  // /referral (elevated 2026-07-19): ReferralSurface is a PURE FORK — it renders
+  // SourceAttribution (anon; a page guarded directly below) or the
+  // MemberReferralDashboard (connected; carries its own "Your referral" +
+  // LifecycleBadge). It holds no content of its own, so the honesty label lives
+  // in its children — the chassis check below pays for this exemption.
+  "ReferralSurface.tsx",
 ]);
 
 // The chassis check that pays for the teaser exemptions: TeaserSurface must
@@ -64,6 +70,23 @@ const EXEMPT = new Set([
   ) {
     console.error(
       "[guard:lifecycle] FAIL — MemberNotificationsPanel lost its state-aware honesty (the 'Live · your own row' chip or the fail-closed line); the MemberNotifications.tsx exemption is void.",
+    );
+    process.exit(1);
+  }
+}
+// The chassis check that pays for the ReferralSurface.tsx exemption: the
+// connected branch renders MemberReferralDashboard, which must keep its own
+// LifecycleBadge (the "Your referral" heading). The anon branch renders
+// SourceAttribution, a page this guard scans directly. If the dashboard ever
+// loses its badge, this guard goes red even though ReferralSurface is exempt.
+{
+  const dash = readFileSync(
+    path.resolve(here, "..", "src", "components", "referral", "MemberReferralDashboard.tsx"),
+    "utf8",
+  );
+  if (!/LifecycleBadge/.test(dash)) {
+    console.error(
+      "[guard:lifecycle] FAIL — MemberReferralDashboard no longer renders <LifecycleBadge>; the ReferralSurface.tsx exemption is void.",
     );
     process.exit(1);
   }
