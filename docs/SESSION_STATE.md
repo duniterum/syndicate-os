@@ -92,6 +92,40 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > - **DO NOT build member-facing layout/composition without the founder** (VISUAL
 >   CHANGE LAW: wireframe → preview gate). Copy = full text on screen first.
 >
+> **▶ 🗂️ THE PAGE-BY-PAGE GRADE-AAA REBUILD (founder pivot 2026-07-19, emphatic:
+> "each LEFT-MENU link presents CLEAN, crème-de-crème; deep-search online + our
+> system; company not charity — SHOW things, legally").** Method engraved (agent
+> memory `benchmark-external-not-origin-ceiling`): for EACH member page, benchmark
+> external grade-AAA best-in-class + adversarially filter (take craft, reject dark
+> patterns) + sieve through our non-negotiables + synthesize on our on-chain-provable
+> edge. **Durable canon: `docs/reference/A1_BENCHMARK_AND_HONESTY_CONTRACT.md`** (TIER-0
+> — the A1 honesty contract · the CHARTS POLICY "record, not return" · the Visibility-Law
+> correction: **address ≠ identity, we HIDE NOTHING on-chain; the red line is
+> name/alias/email**). Visual design lives in 4 claude.ai artifacts (inventory 🧭 ·
+> benchmark 🎯 · referral mockup 🔗 · referral tabs 🗂️).
+>
+> **▷ REFERRAL PAGE = the FIRST page (founder GO: 5 tabs · do it ALL in the right
+> order · elevate now · GO-LIVE). THE ORDERED ARC:**
+> - ✅ **SLICE 1 — THE ELEVATION, SEALED IN PROD (`d29765d`, Replit green 2026-07-19).**
+>   `/referral` is now the member referral SURFACE (`ReferralSurface` fork: connected →
+>   dashboard in the shell; anon + prerender → SourceAttribution, SEO intact). Referral
+>   door → `/referral`; referral LEFT `/member` (one door, one surface); guard-member-home
+>   Z-order + guard-lifecycle-labels (exemption + chassis check) updated. Reuses the
+>   proven MemberReferralDashboard as-is (no new content code = no new bug). **DEPLOY
+>   BACKLOG: EMPTY. Tree clean.**
+> - **SLICE 2 (NEXT) — THE 5 TABS** on this stable base: real deep-linkable sub-routes
+>   `/referral/{introductions,commissions,ladder,link}` (the enabling change), UNDERLINE
+>   tabs (not pills), the 4 figures ABOVE the tabs (Visibility Law — money never behind a
+>   tab), the existing content reorganized into Overview · Introductions · Commissions ·
+>   Ladder & recognition · Link & channels + the conversion hero (REFERRAL-SHOWCASE copy)
+>   + the evolutive chart-as-record slot.
+> - **SLICES 3–6 (IN ORDER) — THE ADDS** (from the SYSTEM-FIRST harvest `wf_81dd540b`):
+>   the `&via` channels analytics (biggest gap; the click store = small backend) ·
+>   per-introduction rows (needs the row-level adapter, server) · commission anatomy ·
+>   recognition/season axis (Phase-5). Backend pieces land as honest-future states; the
+>   shell exists first. **DON'T show a downline/directory/name/alias/email — but DO show
+>   chain-emitted addresses (own-row, we hide nothing).**
+>
 > **HARD-WON DOCTRINE (this session — do NOT re-litigate):**
 > - **SEAT = the on-chain membership, ALWAYS** (binary, numbered). A session
 >   proves wallet control; the SEAT is the membership. Never confuse
