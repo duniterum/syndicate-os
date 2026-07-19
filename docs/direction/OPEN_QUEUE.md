@@ -68,9 +68,15 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > ANATOMY: the Commissions tab's anatomy card = the member's latest REAL receipt, the event's
 > own amounts gross → commission → net → Vault/Liquidity/Operations 70/20/10, exact sums,
 > verify↗; fail-closed to the static example; 6 amount fields added to the rows model +
-> backbone whitelist deliberately amended, NO migration) COMMITTED [this commit], founder
-> preview-approved + "GO and GO-Live" 2026-07-19 — 🚀 ITS OWN DEPLOY CYCLE →
-> slice 6 (NEXT = ⑥ recognition/season Phase-5). Full state: SESSION_STATE.md.
+> backbone whitelist deliberately amended, NO migration) **SEALED IN PROD `854bca7` (Replit
+> green 2026-07-19 — "le cycle le plus propre à ce jour", engine ok on the FIRST post-boot
+> cycle; LIVING SEAL: the founder's own screenshot shows his real receipt rendering) + THE
+> SETTLED-LAW SILENCE RULE engraved in CLAUDE.md the same commit** → 🔴 **slice 5.1 OPENED
+> (founder, emphatic): the anatomy card is TOO PLAIN — the protocol already owns a rich
+> designed receipt language (the receipt ticket) + share/OG pieces; deep-map it ALL
+> (system-first inventory `wf_5cd698f4-983` in flight) and put the COMPLETE picture on his
+> screen; HE picks the upgrade scope. No build before his pick.** →
+> slice 6 (⑥ recognition/season Phase-5, after 5.1). Full state: SESSION_STATE.md.
 
 > **▶ 2026-07-17 (STANDING RULE, founder, emphatic — engraved here AND in agent memory):
 > NEVER RE-BLOCK ON AN ANSWERED QUESTION. Founder gates exist ONLY for: security/

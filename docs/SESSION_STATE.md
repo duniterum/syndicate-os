@@ -366,6 +366,29 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   (verify silently; never a founder-facing question/lens/headline), and chat
 >   speaks HUMAN words only (the 2026-07-13 word ruling extends to reports:
 >   "commission", never the bytecode word).
+>   **✅ SEALED IN PROD (`854bca7`, Replit green 2026-07-19, founder-pasted report —
+>   "le cycle le plus propre à ce jour"):** 11/11 blob-verified · typecheck + build ·
+>   gates at the new counts (backbone 153 with the slice-5 pins · auth-zone 1015 ·
+>   operator-gate 2770 · access-state 1064 · admin-dist 93) · byte-identity
+>   prod==local (entry `index-Bt2GFCCX.js` `3b920eb1…` + console `OperatorConsole-
+>   BoMEEHxZ.js` `00337701…`) · endpoint no-session → 200 S1-shape exact · the
+>   banned phrase ×0 in the served entry · ENGINE OK ON THE FIRST POST-BOOT CYCLE
+>   (unprecedented; then ok:2/partial:0/failed:0, headBlock 90,689,912→90,690,207)
+>   · wall holds · healthz ok · feed 78. **LIVING SEAL DONE (the founder's own
+>   screenshot): the receipt card renders his REAL latest receipt on
+>   thesyndicate.money/referral/commissions — $5.00 → $0.25 (5%) → $4.75 →
+>   $3.325/$0.95/$0.475, dated 2026-07-12, verify↗; Paid $0.50 · Escrow $0.00 up
+>   to block 90,689,912. DEPLOY BACKLOG: EMPTY.**
+> - **▶ SLICE 5.1 OPENED (founder order 2026-07-19, emphatic — the simplified-card
+>   rejection): "check à quoi ressemble notre RECEIPT — deep understand what we
+>   have, how it works, design, SHAREABILITY — pourquoi on montre un truc
+>   simplifié ?! IT WAS RICH AND WELL DESIGNED. Search our OG CARDS too."** The
+>   protocol already owns a designed receipt language (the receipt ticket,
+>   83 guard pins) + share pieces (ShareCard/ShareMenu/QR) — the new anatomy card
+>   must speak IT, not a plain table. SYSTEM-FIRST inventory workflow
+>   `wf_5cd698f4-983` in flight (4 readers: the ticket system · OG/share cards ·
+>   the origin quarry · deployed reality + canon) → the COMPLETE inventory goes
+>   on the founder's screen and HE picks the scope. No build before his pick.
 > - **SLICE 6 (NEXT) — THE REMAINING ADD** (from the SYSTEM-FIRST harvest
 >   `wf_81dd540b`): ⑥ recognition/season axis (Phase-5). Its honest-future SHELL is
 >   live in the Ladder & recognition tab; the slice replaces the shell with the real
