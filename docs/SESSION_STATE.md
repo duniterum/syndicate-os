@@ -78,7 +78,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   - **PHASE A COMPLETE** (2026-07-18) — all 5 truth defects on the founder's own
 >     page resolved (1/3/4 already sealed D2/D-TRUTH; 2/5 sealed `e42c20f`).
 >     **DEPLOY BACKLOG: EMPTY. Tree clean.**
->   - THEN: ② `/member` migration to `MemberAppPage` (wireframe); ③ the newsroom
+>   - THEN — ⚠️ **NOW REORDERED by the founder's 2026-07-19 pivot (see the
+>     PAGE-BY-PAGE GRADE-AAA REBUILD block just below): REFERRAL is the FIRST page,
+>     not the migration.** These stay valid but sequence AFTER / within the page-by-page
+>     rebuild: ② `/member` migration to `MemberAppPage` (wireframe); ③ the newsroom
 >     pagination arc (`/activity` newest-first + `chr-newsroom-page`);
 >     ④ **DOORS-DEDUP — ✅ SEALED IN PROD (`41c5f7d`, Replit green 2026-07-18).** The
 >     dashboard's right-column `MemberDoorsGrid` (Z8) was a verified duplicate of the
