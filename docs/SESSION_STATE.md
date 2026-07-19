@@ -52,10 +52,20 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   card + link-rotation slice → ADMIN "Open receipts" on the member ledger →
 >   the commission-receipts register (5.1, mockup approved) + commission
 >   share card → recognition/season (slice 6).
-> - **FOUNDER-PENDING:** 🔴 Q44 (three answers: receipt-page indexing
->   posture · painted-card timing · order vs 5.1 — "recommandations" =
->   noindex · card next slice · page first). Parked as recorded: Q35 legal
->   set · Q39/Q40/Q42 admin waves · Q32/MVP-final items · the deferred list.
+> - **FOUNDER-PENDING:** 🔴 Q44-② ONLY (the painted per-receipt preview card:
+>   NOW inside the page slice, or NEXT as its own slice — recommended NEXT;
+>   the human explanation is engraved in the Q44 item). Q44-① CLOSED
+>   (noindex,follow) · Q44-③ CLOSED (the receipt page FIRST, then 5.1).
+>   Parked as recorded: Q35 legal set · Q39/Q40/Q42 admin waves ·
+>   Q32/MVP-final items · the deferred list.
+> - **THE NEXT SESSION'S EXACT OPENING (no re-explaining, ever):** boot per
+>   CLAUDE.md → this handoff → OPEN_QUEUE Q44 → read
+>   `docs/reference/RECEIPT_PAGE_SLICE_SCOPE.md` (build-ready, file-level) +
+>   `RBIND2_HERO_SHARE_DIRECTION.md` §3-4 → produce the /receipt/{txHash}
+>   WIREFRAME for founder approval (Visual Change Law) → build the ordered
+>   work list → the retarget rides the same deploy. featureStatus.ts is the
+>   live-vs-future truth; the receipt system inventory + creation-audit +
+>   commission-register direction are all engraved in docs/reference/.
 
 > **▶ ⏭️ READ-FIRST BOOT (2026-07-18, the founder's standing order — "stop making
 > me re-explain; make the canonical files the thing you read before any work").

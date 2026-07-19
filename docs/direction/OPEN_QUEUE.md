@@ -5,14 +5,26 @@
 >   the Copy-link confusion's ROOT fix — the button stays, its destination becomes the
 >   member's own receipt page, and the six network shares carry it too; the retarget
 >   ships in the SAME deploy as the page, never before).**
->   ① INDEXING POSTURE of individual receipt pages — recommended **noindex,follow**
->   (anyone with the link sees everything, shares unfurl perfectly; Google never
->   accumulates a browsable corpus of purchase pages) vs indexed. ② THE PAINTED
->   PER-RECEIPT PREVIEW CARD (the founder's rotation lives IN THE LINK — engraved) —
->   its own next slice (recommended, the engraved order) vs pulled into this one.
->   ③ ORDER — the receipt page first, or the commission-receipts register (5.1,
->   mockup approved) first. The founder may answer "recommandations" = noindex ·
->   card next slice · receipt page first. NOTHING opens before his three answers.
+>   ① ✅ CLOSED (founder "non", 2026-07-19): individual receipt pages are
+>   **noindex,follow** — anyone with the link sees everything, shares unfurl; Google
+>   never accumulates a browsable corpus of purchase pages.
+>   ② 🔴 OPEN — THE PAINTED PREVIEW CARD, explained in human words for the founder's
+>   answer: when a receipt link is pasted on X/WhatsApp, the platform shows a PICTURE.
+>   With the page slice alone, that picture is the SITE's one generic image (the link
+>   works, the page is beautiful — the preview just isn't personalized). The PAINTED
+>   card = our server paints each receipt its OWN 1200×630 image with its real figures
+>   (a mini ticket: Seat #N · the amount · the date) — the shared link then SHOWS the
+>   receipt before anyone clicks; his link-rotation idea lives in this same machinery.
+>   Cost of pulling it INTO the page slice: new image-painting dependencies on the api
+>   server + per-URL head serving now (a heavier, riskier slice). Recommended: the page
+>   ships FIRST with the generic image (fast, safe), the painted cards land as the very
+>   next slice on the same foundations. FOUNDER PICKS: painted cards NOW (one big slice)
+>   or NEXT (two clean slices, recommended).
+>   ③ ✅ CLOSED (founder, 2026-07-19): the receipt page FIRST, done properly — the 5.1
+>   commission register then starts from the good base (every receipt already carries
+>   its shareable address). **THE BUILD-READY SCOPE IS ENGRAVED:
+>   `docs/reference/RECEIPT_PAGE_SLICE_SCOPE.md` — the next session reads it + this item
+>   and opens with the WIREFRAME; nothing is re-derived, nothing re-asked.**
 
 > **▶ 2026-07-19 (aparté, founder order) — R-BIND: THE RECEIPTS BINDER, BUILT + COMMITTED
 > [this commit], GO and GO-Live given after the creation-discussion audit (`wf_657b9cb4-673`:
