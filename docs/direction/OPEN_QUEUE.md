@@ -50,10 +50,13 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > (Replit green 2026-07-19)** → ✅ slice 3.2 (THE PAGE STRUCTURE, canon: heading → banner →
 > THE LINK HERO exactly once → 4 centered figures → tabs; duplication killed; tab renamed
 > Channels; padding tightened uniformly — benchmark `wf_317c67c8` confirms "nothing scrolls
-> between a new member and the link") BUILT + COMMITTED [this commit], "GO and GO-Live"
-> 2026-07-19, awaiting the Replit seal (client-only, no migration) → slices 4–6 (the adds,
-> NEXT = ④ per-introduction rows: shells live in the tabs; each slice replaces its shell with
-> the real record). Full state: SESSION_STATE.md.
+> between a new member and the link") **SEALED IN PROD `1aff636` (Replit green 2026-07-19)**
+> → ✅ slice 3.3 (vocabulary + rail fixes: "acquisition commission" killed per the FOUND
+> 2026-07-13 ruling + the ban engraved into guard-forbidden-copy · rail edge-to-edge ·
+> "recognition title" chip removed) COMMITTED [this commit] — **🚀 BATCHABLE, rides the next
+> deploy (founder cadence call: each cycle ≈ 20 min; prod stays figure-honest meanwhile)** →
+> slices 4–6 (the adds, NEXT = ④ per-introduction rows: shells live in the tabs; each slice
+> replaces its shell with the real record). Full state: SESSION_STATE.md.
 
 > **▶ 2026-07-17 (STANDING RULE, founder, emphatic — engraved here AND in agent memory):
 > NEVER RE-BLOCK ON AN ANSWERED QUESTION. Founder gates exist ONLY for: security/

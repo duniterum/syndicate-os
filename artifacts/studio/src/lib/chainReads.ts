@@ -105,7 +105,7 @@ const STATUS_ACTIVE = 1;
 const SOURCE_ID_RE = /^0x[0-9a-fA-F]{64}$/;
 
 export interface SourceRead {
-  /** WHO gets paid (the address the contract pushes the acquisition cost to). */
+  /** WHO gets paid (the address the contract pushes the acquisitionCost to). */
   readonly payoutWallet: string;
   /** The source's identity wallet (may differ from payoutWallet — deliberate). */
   readonly sourceWallet: string;

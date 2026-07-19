@@ -48,6 +48,15 @@ const PHRASES = [
   "community's funds",
   "shared funds",
   "common pot",
+  // Recorded ruling 2026-07-13 (SESSION_STATE, flow-based) — enforced here
+  // 2026-07-19 after the founder caught "acquisition commission" live on the
+  // Commissions tab: `acquisitionCost` is the bytecode/ABI word ONLY (the
+  // camelCase FIELD name in code never matches these spaced phrases); the
+  // spoken money word on referrer surfaces is plainly "commission".
+  // "member acquisition" (the approved notCharityLine) stays legal — only
+  // the money-word misuses are banned.
+  "acquisition cost",
+  "acquisition commission",
 ];
 // Single words: matched on word boundaries (bare "return"/"reward" are allowed).
 // All terms below are negation-aware (isNegated exempts honest disclaimers like

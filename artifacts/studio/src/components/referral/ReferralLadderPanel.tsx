@@ -22,21 +22,34 @@ export function ReferralLadderPanel({ readback }: { readback: StandingReadback |
         <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-4">
           The Connector ladder — your road
         </p>
+        {/* EDGE-TO-EDGE rail (founder-caught 2026-07-19: half-column dead
+            space flanked the road) — the first rung aligns flush LEFT, the
+            last flush RIGHT, the road spans the full card width. The
+            "recognition title" chip is GONE (twice founder-flagged as
+            confusing floating furniture) — the Next-sentence below already
+            says it in a full human sentence. */}
         <div className="overflow-x-auto pb-2">
           <div className="grid grid-cols-[repeat(7,minmax(92px,1fr))] min-w-[640px]">
             {LADDER_RUNGS.map((rung, i) => {
               const isCurrent = i === currentIdx;
               const acquired = currentIdx >= 0 && i <= currentIdx;
+              const first = i === 0;
+              const last = i === LADDER_RUNGS.length - 1;
+              const alignText = first ? "text-left" : last ? "text-right" : "text-center";
+              const nodePos = first
+                ? "left-0"
+                : last
+                  ? "right-0"
+                  : "left-1/2 -translate-x-1/2";
+              const barSpan = first ? "left-2 right-0" : last ? "left-0 right-2" : "left-0 right-0";
               return (
-                <div key={rung.title} className="relative text-center pt-6">
+                <div key={rung.title} className={`relative ${alignText} pt-6`}>
                   {/* the road segment behind the node */}
                   <div
-                    className={`absolute top-[9px] h-0.5 ${acquired ? "bg-gold/60" : "bg-border"} ${
-                      i === 0 ? "left-1/2 right-0" : i === LADDER_RUNGS.length - 1 ? "left-0 right-1/2" : "left-0 right-0"
-                    }`}
+                    className={`absolute top-[9px] h-0.5 ${acquired ? "bg-gold/60" : "bg-border"} ${barSpan}`}
                   />
                   <div
-                    className={`absolute left-1/2 -translate-x-1/2 rounded-full border-2 ${
+                    className={`absolute rounded-full border-2 ${nodePos} ${
                       isCurrent
                         ? "top-0 h-4 w-4 bg-gold border-gold ring-4 ring-gold/15"
                         : acquired
@@ -53,15 +66,8 @@ export function ReferralLadderPanel({ readback }: { readback: StandingReadback |
                   <p className="text-xs text-muted-foreground">
                     {isCurrent && s
                       ? `you · ${s.durableIntroductions} durable`
-                      : `${rung.durableThreshold}${i === LADDER_RUNGS.length - 1 ? " · cap" : ""}`}
+                      : `${rung.durableThreshold}${last ? " · cap" : ""}`}
                   </p>
-                  {/* Human words, never a cryptic tag (founder-caught: the
-                      bare "TITLE" chip read as a placeholder in prod). */}
-                  {!rung.raisesRate ? (
-                    <span className="inline-block mt-1 text-xs text-muted-foreground border border-border/60 rounded px-1.5">
-                      recognition title
-                    </span>
-                  ) : null}
                 </div>
               );
             })}

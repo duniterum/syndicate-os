@@ -47,8 +47,12 @@ export function ReferralCommissionsPanel({ readback }: { readback: StandingReadb
         <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">
           The anatomy of one commission
         </p>
+        {/* "commission", plainly — the referrer-surface word (CANON §4).
+            "acquisitionCost" is the bytecode/ABI word ONLY, banned from every
+            public surface (recorded ruling 2026-07-13, SESSION_STATE + the
+            master brief: never "acquisition cost"). */}
         <p className="text-sm text-foreground/90 leading-relaxed">
-          A $5.00 seat purchase → {s ? "your" : "a"} {rateBps / 100}% acquisition
+          A $5.00 seat purchase → {s ? "your" : "a"} {rateBps / 100}%
           commission = <span className="font-medium text-gold">{commissionOnFiveDollars(rateBps)}</span> —
           paid to {s ? "your" : "the introducer's"} wallet inside the
           buyer&apos;s own transaction, in the same block.

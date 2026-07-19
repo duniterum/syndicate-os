@@ -238,8 +238,26 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   never a second bare link). Top padding tightened 40/56→24/32px UNIFORMLY
 >   (ReferralSurface + MemberAppPage — every member door) + the dashboard's relic mt-8
 >   dropped (header→title gap 76→44px). Registry summaries truth-updated. Structure
->   canon engraved in REFERRAL_PAGE_DESIGN. **AWAITING THE REPLIT SEAL (client-only,
->   NO migration).**
+>   canon engraved in REFERRAL_PAGE_DESIGN. **✅ SEALED IN PROD (`1aff636`, Replit
+>   green 2026-07-19, founder-pasted report: 11/11 blob-verified · "Pick a channel"
+>   ×1 + "Channels" ×2 + hero "Your referral link" ×1 in the served entry · SEO
+>   intact · wall holds · byte-identity prod==local, fingerprints kept in double).**
+> - ✅ **SLICE 3.3 — THE VOCABULARY + RAIL FIXES, COMMITTED [this commit] — 🚀
+>   BATCHABLE (founder cadence call 2026-07-19: "petites corrections, prochaine
+>   commit" — the 2026-07-14 batching rule applied; prod stays functional and
+>   figure-honest meanwhile).** ① "acquisition commission" KILLED on the Commissions
+>   tab (the recorded 2026-07-13 ruling FOUND and cited: SESSION_STATE:3930 —
+>   acquisitionCost = bytecode word ONLY; §4: the referrer-surface word is
+>   "commission", plainly) + the ruling ENGRAVED INTO guard-forbidden-copy
+>   ("acquisition cost" + "acquisition commission" phrase bans; the new ban
+>   immediately caught + fixed a pre-existing chainReads.ts comment fossil).
+>   ② The ladder rail EDGE-TO-EDGE (0px dead space both sides — was a half-column
+>   each; first rung flush left, Summit flush right). ③ The "recognition title"
+>   chip REMOVED from the rail (twice founder-flagged; the Next-sentence carries
+>   the explanation in human words). Verified in-browser + tsc + 18 guards + build
+>   green.
+> - **🚀 DEPLOY BACKLOG (rides the NEXT deploy): slice 3.3 [this commit] —
+>   client-only, fail-closed, additive; prod meanwhile serves 1aff636.**
 > - **SLICES 4–6 (IN ORDER, NEXT = 4) — THE REMAINING ADDS** (from the SYSTEM-FIRST
 >   harvest `wf_81dd540b`): ④ per-introduction rows (needs the row-level adapter,
 >   server) · ⑤ commission anatomy (the static anatomy card shipped in slice 2; ⑤ = the
