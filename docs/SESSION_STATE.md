@@ -167,11 +167,36 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   engraved next slice anyway); ③ SHARE — keep the mechanism, but the
 >   ticket's Share becomes the referral-style network menu
 >   (X/FB/WhatsApp/Telegram/LinkedIn/Email/Copy), and the share TITLE/text
->   changes — founder must approve the words on screen. **Founder ordered:
->   ASK QUESTIONS on any doubt before building ("on a perdu assez de temps").
->   Questions posed 2026-07-19 (hero layout choice · copy-link split ·
->   share text); build waits on his answers + the wireframe gate for the
->   layout change.**
+>   changes — founder must approve the words on screen. **Founder answered in
+>   his own words (2026-07-19): HIS hero — 4-5 OPEN tickets side-by-side,
+>   designed for the FUTURE ("c'est normal, pas d'utilisateurs — pense plus
+>   loin"; mobile-adapted, explicitly allowed) · KEEP the native sheet (he
+>   likes it) but RENAME + ADD the referral network menu · answer the
+>   ROTATING-previews idea factually, never assume.**
+> - **✅ R-BIND-2 RESEARCH DONE (`wf_a0c4cdce-90c`, 5 lenses: Google/Apple
+>   Wallet rails + NN-g/Baymard · YouTube-Music/Spotify dual-share naming ·
+>   X/WhatsApp/FB OG-cache mechanics · Stripe receipt pages · repo
+>   constraints). Durable: `docs/reference/RBIND2_HERO_SHARE_DIRECTION.md` —
+>   never re-search.** VERDICTS: cap-5 shelf of the newest OPEN tickets
+>   (desktop static row → rail only on overflow with paired always-visible
+>   arrows; mobile one-per-screen snap + real paper peek + "n of 5" counter
+>   BELOW; N=1/2 = ZERO chrome; performance: never a 6th mounted, QR deferred
+>   near-viewport) · dual share = Copy link FIRST (copied state) → X ·
+>   WhatsApp · Telegram · LinkedIn · Facebook · Email (reuse shareTargets.ts
+>   intents, reorder at render; FB/LinkedIn carry the URL only — truth table
+>   recorded) → **"Share with other apps"** (the Google-sanctioned label;
+>   feature-detected, hidden when absent — never a dead button; the ONLY
+>   channel that carries the ticket PNG) + the canShare-gap fix in
+>   handleShare · Copy link stays the explorer link THIS slice (Snowtrace
+>   serves zero preview tags — stated honestly); /receipt/{txHash} +
+>   per-receipt OG cards + THE ROTATION ride their engraved slices — the
+>   rotation lives IN THE LINK, not the preview (platform caches freeze a
+>   URL's preview ~1w-1mo; WhatsApp forever): each share hands a variant URL
+>   with its fact baked in, per-URL preview honest and permanent. THE MOCKUP
+>   built + self-verified (both themes · mobile 380px no h-scroll · the rail
+>   steps · Copied state): `docs/design/receipts-hero-share-mockup.html`
+>   (artifact 0256f770). 🔴 **AWAITING THE FOUNDER'S VISUAL APPROVAL —
+>   approval unlocks the build slice.**
 >
 > **▶ 🗂️ THE PAGE-BY-PAGE GRADE-AAA REBUILD (founder pivot 2026-07-19, emphatic:
 > "each LEFT-MENU link presents CLEAN, crème-de-crème; deep-search online + our
