@@ -368,8 +368,11 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
   **Sequencing:** rides the backbone — M4-c gives it the generic protocol-event lane;
   opens at its M-map moment, founder's pick.
 
-- **⏳ QUEUED SLICE — REFERRAL-SHOWCASE (founder-decided 2026-07-14; EXECUTE ONLY ON FOUNDER
-  GO).** Apply the CONVERSION register (`CANON_PROTOCOL_LANGUAGE.md` §7) to the REFERRAL
+- **⏳ REFERRAL-SHOWCASE — /referral HALF DONE (arc slice 2, sealed prod `5d9cb58`
+  2026-07-19): the four §7 flagship lines live VERBATIM + VerifyOnChain in the Overview
+  "Your unique claim" hero. REMAINING (still queued): the /join referral card + the
+  Referrer Kit / OG card (rides M2/M3).** *(Original entry:)* QUEUED SLICE —
+  REFERRAL-SHOWCASE (founder-decided 2026-07-14; EXECUTE ONLY ON FOUNDER GO). Apply the CONVERSION register (`CANON_PROTOCOL_LANGUAGE.md` §7) to the REFERRAL
   surfaces: /referral, the /join referral card, and the future Referrer Kit / OG card (MVP
   brief piece 7). The material = the four flagship §7 lines ("You don't wait to get paid…" ·
   "Nothing to claim…" · "A referral payment can never break a sale — and can never be lost." ·
