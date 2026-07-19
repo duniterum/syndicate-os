@@ -372,8 +372,11 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   **+0 couleur brute**. Rig : tête runtime exacte (titre registre ·
   noindex · zéro canonical · og:url auto-référent) · matrice 200/404
   prouvée · ticket complet + retarget + états DOM-vérifiés · 2 thèmes ·
-  375+desktop · zéro erreur console. Les cartes peintes par reçu = la
-  slice suivante de l'ordre scellé.
+  375+desktop · zéro erreur console. **SCELLÉ EN PROD `e002aa5` (Replit vert
+  2026-07-20 — sceau vivant : le ticket complet du Seat #14 rendu à son
+  adresse permanente ; matrice 200/404 exacte en prod ; head conforme
+  Q44-①).** Les cartes peintes par reçu = la slice suivante de l'ordre
+  scellé.
 
 - [x] **NOTIF — LE CENTRE DE NOTIFICATIONS (2026-07-18, scellé jusqu'à
   51e68de)** : la cloche du header (badge = non-vus propres, onglets

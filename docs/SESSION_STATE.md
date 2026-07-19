@@ -57,18 +57,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   open") · THE RETARGET (Copy link + 6 network intents → the page;
 >   Verify/QR stay the explorer) — wireframe founder-approved ("ok for
 >   mee"), noindex,follow per Q44-①.**
-> - **GATE EVIDENCE (this commit):** tsc all workspaces · 19 studio guards
->   (receipt 127 pins — 3 new files scanned; feature-truth 552; drift 228 on
->   49 routes; lifecycle chassis-check added) · 17 api guards (the two
->   route-surface pins amended dated: member-continuity 92/92 ·
->   protocol-time 38/38; auth-zone 1022 · source-status 163) · seo 509 ·
->   surface:audit 333 · prod build green (receipt.html shell: noindex, no
->   canonical, twins) · serve probes 200/404 matrix exact · rig DOM-verified
->   (runtime head · full ticket · retarget URLs proven · states · 2 themes ·
->   375+desktop · zero console errors; DB-less rig shows the honest
->   unavailable state by design — the living seal happens in prod, the
->   slice-4/5 pattern). **🚀 DEPLOY (server + client, NO migration) — NEVER
->   batchable (page + retarget land together).**
+> - **✅ SEALED IN PROD (`e002aa5`, Replit green 2026-07-20, founder-pasted
+>   report):** 29/29 blob-verified · paramRoutes.generated.json in the boot ·
+>   prod serving probes 200/404 matrix exact · receipt head exact (title ·
+>   noindex,follow · canonical ×0 · og:url ×0, per Q44-①) · **the REAL-HASH
+>   test:** /api/receipt/0xa30f…fb50 (the 2026-07-13 purchase) served the
+>   full exact row — Seat #14 · $5.00 gross · commission $0.25 · net $4.75 ·
+>   3.325/0.95/0.475 · 500 SYN @100/USDC · era 1 · first seat · brought by
+>   0x88e…dd73 · block 90,187,059 · **THE LIVING SEAL:** the full ticket
+>   renders in a prod browser (verdict bar · all zones · QR), Copy link
+>   targets /receipt/ in the served bundle · battery clean (healthz · feed
+>   78 · wall 404 · byte-identity · engine ok:2 after the usual self-healed
+>   boot partial, head 90,745,269→90,745,591). Gate counts at seal: receipt
+>   127 · feature-truth 552 · operator-gate 2840 · access-state 1113 ·
+>   auth-zone 1022 · source-status 163 · admin-dist 99. **DEPLOY BACKLOG:
+>   EMPTY. Tree clean.**
 > - **IN FLIGHT:** nothing building. Next, the sealed order: the painted
 >   per-receipt preview cards + link-rotation slice (satori+resvg on the api,
 >   per-URL heads — `paintedPreviewCards` registered future) → ADMIN "Open
