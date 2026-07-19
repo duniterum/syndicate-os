@@ -1,15 +1,21 @@
-// components/referral/ReferralLinkPanel.tsx — TAB 5 · Link & channels.
+// components/referral/ReferralLinkPanel.tsx — TAB 5 · Channels.
 //
-// The member's permanent link as the hero utility block (link + copy + QR +
-// share — the §11-2b card, moved here verbatim from the pre-tab dashboard),
-// the honest &via channels slot (the click store is its own future slice),
-// and the COLLAPSED reference layer (WORK-FIRST: how-it-works, eligibility &
-// anti-abuse, the hashed terms — one click away, never in the way).
+// FOUNDER STRUCTURE ORDER (2026-07-19): the canonical LINK block moved ABOVE
+// the tabs (ReferralLinkHero — the page hero, exactly once); this tab is the
+// CHANNEL layer only: the composer (chips + the TAGGED link — never the bare
+// link again, that would be the duplication the founder killed), the
+// aggregate analytics table that doubles as the link list, and the COLLAPSED
+// reference layer (WORK-FIRST: how-it-works, eligibility & anti-abuse, the
+// hashed terms — one click away, never in the way).
+//
+// Composer provenance: the web benchmark `wf_b01f310a` (GA URL Builder's
+// live-assembling URL · Bitly's channel-as-chip · FirstPromoter's
+// copy-per-row). STATELESS by design: no link objects, no localStorage,
+// NEVER a shortener — the full visible URL is the verifiability product.
 
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
-import { Check, ChevronDown, Copy, Link2, QrCode } from "lucide-react";
+import { Check, ChevronDown, Copy } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,106 +27,10 @@ import {
 import { StatusPill } from "@/components/status-pill/StatusPill";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { ShareMenu } from "@/components/referral/ShareMenu";
-import { QrCodeBlock } from "@/components/referral/QrCodeBlock";
 import { TermsCommitmentHash } from "@/components/referral/TermsCommitmentHash";
 import { payingSourceId } from "@/lib/sourceIdentity";
-import { readSourceConfig } from "@/lib/chainReads";
 import { referralProgram } from "@/config/referralProgram";
 import type { StandingReadback } from "@/components/referral/referralStanding";
-
-// The §11-2b card implementation: permanent derived link + live two-state
-// honesty + copy/QR/share, all wired to the REAL link (the sample is gone).
-// Moved verbatim from MemberReferralDashboard.tsx in the 5-tab split.
-function MyReferralLinkCard({ readback }: { readback: StandingReadback | null }) {
-  const { address } = useAccount();
-  const [copied, setCopied] = useState(false);
-  const [showQr, setShowQr] = useState(false);
-  // Live registry state for the derived source: true=ACTIVE · false=known but
-  // not active OR not created yet · null=read unavailable (fail closed — the
-  // permanence statement stands; no activity claim is made).
-  const [active, setActive] = useState<boolean | null>(null);
-  const { data: verifyData } = useGetProtocolVerifyLinks();
-  const registryUrl =
-    verifyData?.links?.find((l) => l.id === "sourceRegistry")?.url ?? null;
-  const registryAddr = registryUrl
-    ? (registryUrl.match(/\/address\/(0x[0-9a-fA-F]{40})\b/)?.[1] ?? null)
-    : null;
-  // Ruling ① (2026-07-16): advertise the source that PAYS this wallet —
-  // the server-resolved id first, canonical derivation as the fallback.
-  const founderSigned = readback?.sourceOrigin === "founder-signed";
-  const sourceId = payingSourceId(readback?.sourceIdHex, address);
-  const link = sourceId ? `https://thesyndicate.money/join?source=${sourceId}` : null;
-
-  useEffect(() => {
-    let alive = true;
-    setActive(null);
-    if (!registryAddr || !sourceId) return;
-    void readSourceConfig(registryAddr, sourceId).then((r) => {
-      if (alive) setActive(r === null ? null : r.active);
-    });
-    return () => {
-      alive = false;
-    };
-  }, [registryAddr, sourceId]);
-
-  function copyLink() {
-    if (!link) return;
-    void navigator.clipboard?.writeText(link).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    });
-  }
-
-  return (
-    <Card className="bg-card/40 border-border/50 p-5 mb-6">
-      <div className="flex items-center gap-2 mb-3">
-        <Link2 className="h-4 w-4 text-gold" />
-        <span className="text-sm font-medium text-foreground">Your referral link</span>
-        {active === true ? (
-          <StatusPill tone="proof" size="xs">Source active</StatusPill>
-        ) : null}
-      </div>
-      {link ? (
-        <>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Input readOnly value={link} className="font-mono text-xs" data-testid="input-my-referral-link" />
-            <Button variant="outline" size="sm" onClick={copyLink} className="shrink-0">
-              {copied ? <Check className="h-4 w-4 mr-1.5" /> : <Copy className="h-4 w-4 mr-1.5" />}
-              {copied ? "Copied" : "Copy"}
-            </Button>
-          </div>
-          <p className="text-sm text-muted-foreground mt-2 leading-relaxed" data-testid="text-link-state">
-            {active === true
-              ? founderSigned
-                ? "This is your founder-signed source's link — the source whose commission is paid to this wallet, ACTIVE inside the buyer's own transaction."
-                : "Your source is ACTIVE — the commission is paid inside the buyer's own transaction, live."
-              : founderSigned
-                ? "This is your founder-signed source's link — the source whose commission is paid to this wallet."
-                : "Your link is permanent — derived from your wallet, it never changes. The commission activates when your source is founder-signed."}
-          </p>
-          <div className="flex flex-wrap items-center gap-2 mt-3">
-            <Button variant="outline" size="sm" onClick={() => setShowQr((v) => !v)}>
-              <QrCode className="h-4 w-4 mr-1.5" />
-              Get QR code
-            </Button>
-            <ShareMenu url={link} text="Join The Syndicate with my verified introduction." />
-          </div>
-          {showQr ? (
-            <div className="mt-4 pt-4 border-t border-border/50">
-              <QrCodeBlock value={link} />
-            </div>
-          ) : null}
-        </>
-      ) : (
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          Connect and sign in with your wallet to derive your permanent referral
-          link. It exists before anyone signs anything — one wallet, one link,
-          forever.
-        </p>
-      )}
-    </Card>
-  );
-}
 
 // SPEC R3 — the member's OWN channel breakdown (aggregate clicks + receipt-
 // verified conversions per `&via=` tag), read through the gated wallet module
@@ -156,13 +66,6 @@ function useOwnChannelBreakdown(): ChannelReadback | null {
   return readback;
 }
 
-// ── The channel composer (founder ask 2026-07-19 + the web benchmark
-// `wf_b01f310a`: GA URL Builder's live-assembling URL · Bitly's channel-as-
-// chip · FirstPromoter's copy-per-row list). STATELESS by design: the link
-// IS base + tag, so nothing is stored anywhere (no link objects, no
-// localStorage — the privacy policy pins two preferences), no shortener
-// ever (the full visible URL is the verifiability product), and the
-// aggregate table below doubles as the member's link list. ──────────────
 const CHANNEL_PRESETS: { slug: string; label: string }[] = [
   { slug: "x", label: "X (Twitter)" },
   { slug: "telegram", label: "Telegram" },
@@ -188,7 +91,7 @@ function ChannelsCard({ readback }: { readback: StandingReadback | null }) {
   const { address } = useAccount();
   const breakdown = useOwnChannelBreakdown();
   const served = breakdown !== null && breakdown.available;
-  // Ruling ① — the SAME paying-source resolver as every link surface.
+  // Ruling ① — the SAME paying-source resolver as the hero (zero drift).
   const sourceId = payingSourceId(readback?.sourceIdHex, address);
   const baseLink = sourceId
     ? `https://thesyndicate.money/join?source=${sourceId}`
@@ -202,7 +105,7 @@ function ChannelsCard({ readback }: { readback: StandingReadback | null }) {
   const customTag = normalizeChannelTag(customRaw);
   const tag =
     selected === "custom" ? (customTag.length > 0 ? customTag : null) : selected;
-  const taggedLink = baseLink && tag ? `${baseLink}&via=${tag}` : baseLink;
+  const taggedLink = baseLink && tag ? `${baseLink}&via=${tag}` : null;
   const customInvalid =
     selected === "custom" && customTouched && customRaw.trim().length > 0 && customTag.length === 0;
 
@@ -231,7 +134,7 @@ function ChannelsCard({ readback }: { readback: StandingReadback | null }) {
 
       {baseLink ? (
         <>
-          {/* Where will you share it? — one chip, or none (none = the bare link). */}
+          {/* Where will you share it? — one chip, or none. */}
           <p className="text-sm font-medium text-foreground mt-4 mb-2">
             Where will you share it?
           </p>
@@ -292,36 +195,44 @@ function ChannelsCard({ readback }: { readback: StandingReadback | null }) {
             </div>
           ) : null}
 
-          {/* The live URL — preview, validation and copy target in one.
-              The base never disappears; the tag segment appears only once
-              valid, so Copy can never produce a broken link. */}
-          <div className="mt-3 rounded-md border border-border/60 bg-card/30 p-3">
-            <p className="font-mono text-xs text-foreground/90 break-all" data-testid="text-tagged-link">
-              {baseLink}
-              {tag ? <span className="font-semibold text-gold">&amp;via={tag}</span> : null}
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2 mt-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => taggedLink && copyText(taggedLink, "composer")}
-              data-testid="button-copy-tagged-link"
-            >
-              {copied === "composer" ? <Check className="h-4 w-4 mr-1.5" /> : <Copy className="h-4 w-4 mr-1.5" />}
-              {copied === "composer" ? "Copied" : "Copy link"}
-            </Button>
-            {taggedLink ? (
-              <ShareMenu url={taggedLink} text="Join The Syndicate with my verified introduction." />
-            ) : null}
-            <span role="status" className="sr-only">
-              {copied !== null ? "Link copied" : ""}
-            </span>
-          </div>
-          <p className="text-xs text-muted-foreground leading-relaxed mt-2">
-            This is the full link — what you see is exactly what they get.
-            Never shortened.
-          </p>
+          {/* The TAGGED link only — the bare link lives ONCE, in the page
+              hero above the tabs (founder: no duplication). No tag → an
+              honest hint, no second copy of the link anywhere. */}
+          {taggedLink ? (
+            <>
+              <div className="mt-3 rounded-md border border-border/60 bg-card/30 p-3">
+                <p className="font-mono text-xs text-foreground/90 break-all" data-testid="text-tagged-link">
+                  {baseLink}
+                  <span className="font-semibold text-gold">&amp;via={tag}</span>
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 mt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => copyText(taggedLink, "composer")}
+                  data-testid="button-copy-tagged-link"
+                >
+                  {copied === "composer" ? <Check className="h-4 w-4 mr-1.5" /> : <Copy className="h-4 w-4 mr-1.5" />}
+                  {copied === "composer" ? "Copied" : "Copy link"}
+                </Button>
+                <ShareMenu url={taggedLink} text="Join The Syndicate with my verified introduction." />
+                <span role="status" className="sr-only">
+                  {copied !== null ? "Link copied" : ""}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+                This is the full link — what you see is exactly what they get.
+                Never shortened.
+              </p>
+            </>
+          ) : (
+            <div className="mt-3 rounded-md border border-dashed border-border/60 bg-card/30 p-3">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Pick a channel — your tagged link appears here, ready to copy.
+              </p>
+            </div>
+          )}
         </>
       ) : (
         <p className="text-sm text-muted-foreground leading-relaxed mt-3">
@@ -410,10 +321,9 @@ function ReferenceSection({ title, children }: { title: string; children: React.
 export function ReferralLinkPanel({ readback }: { readback: StandingReadback | null }) {
   return (
     <div>
-      <MyReferralLinkCard readback={readback} />
-
       {/* SPEC R3 — the channels composer + breakdown, LIVE (slice ③ + the
-          founder's generate-the-link ask, benchmark wf_b01f310a). */}
+          founder's generate-the-link ask, benchmark wf_b01f310a). The
+          canonical bare link lives ABOVE the tabs (ReferralLinkHero). */}
       <ChannelsCard readback={readback} />
 
       {/* Reference — always available, never leading (WORK-FIRST). */}

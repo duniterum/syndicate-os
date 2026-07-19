@@ -31,6 +31,7 @@ import {
   useOwnSourceStanding,
   type StandingReadback,
 } from "@/components/referral/referralStanding";
+import { ReferralLinkHero } from "@/components/referral/ReferralLinkHero";
 import { ReferralOverviewPanel } from "@/components/referral/ReferralOverviewPanel";
 import { ReferralIntroductionsPanel } from "@/components/referral/ReferralIntroductionsPanel";
 import { ReferralCommissionsPanel } from "@/components/referral/ReferralCommissionsPanel";
@@ -49,7 +50,10 @@ const TABS: { id: ReferralTabId; label: string; href: string }[] = [
   { id: "introductions", label: "Introductions", href: "/referral/introductions" },
   { id: "commissions", label: "Commissions", href: "/referral/commissions" },
   { id: "ladder", label: "Ladder & recognition", href: "/referral/ladder" },
-  { id: "link", label: "Link & channels", href: "/referral/link" },
+  // Label "Channels" (2026-07-19): the LINK itself moved above the tabs as
+  // the page hero; this tab holds the channel composer + analytics +
+  // reference. The route stays /referral/link (registry stability).
+  { id: "link", label: "Channels", href: "/referral/link" },
 ];
 
 // Tab focus indicator: a rounded background TINT, never a boxing ring — the
@@ -156,7 +160,9 @@ export function MemberReferralDashboard({ tab = "overview" }: { tab?: ReferralTa
     <div>
       {/* The component owns its heading (title + lifecycle + framing) so it can
           never be duplicated by whoever mounts it — fixes the h2+h3 stutter. */}
-      <div className="mt-8 mb-1 flex flex-wrap items-center gap-3">
+      {/* No top margin: the dashboard IS the page now (the mt-8 was a relic
+          of the embedded-in-/member era; founder 2026-07-19: start high). */}
+      <div className="mb-1 flex flex-wrap items-center gap-3">
         <h2 className="type-h2 text-foreground">Your referral</h2>
         <LifecycleBadge lifecycle={referralProgram.lifecycle} />
       </div>
@@ -183,6 +189,11 @@ export function MemberReferralDashboard({ tab = "overview" }: { tab?: ReferralTa
           ) : null}
         </div>
       </Card>
+
+      {/* THE LINK — the page's hero utility, above the tabs, visible on
+          EVERY tab, exactly ONCE (founder structure order 2026-07-19: "a new
+          member wants to see the LINK immediately"). */}
+      <ReferralLinkHero readback={readback} />
 
       {/* THE FOUR FIGURES — above the tabs, always. */}
       <ReferralFigures readback={readback} />

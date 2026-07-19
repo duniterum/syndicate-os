@@ -554,7 +554,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     ownerSurface: "source",
     primaryIntent: "education",
     proofRoute: "/status",
-    notes: "Referral surface tab (Link & channels) — member content behind the session; anon serves the program page.",
+    notes: "Referral surface tab (Channels — the canonical link lives above the tabs since 3.2) — member content behind the session; anon serves the program page.",
   },
   {
     // LEGACY ALIAS of /referral: serves the same page at 200 (existing links

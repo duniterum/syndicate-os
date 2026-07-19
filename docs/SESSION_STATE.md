@@ -222,7 +222,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   counted; no fake "within a day" latency claim). Verified in-browser: chip →
 >   &via=telegram live, toggle-off → bare, normalization live, per-row copy, chips
 >   ≥44px, no h-scroll, zero console errors; tsc + 18 guards + build + admin-dist 93
->   green. **AWAITING THE REPLIT SEAL (client-only, NO migration).**
+>   green. **✅ SEALED IN PROD (`2893611`, Replit green 2026-07-19, founder-pasted
+>   report: 8/8 blob-verified · the 3 new member strings ×1 in the served entry ·
+>   SEO intact · wall holds · byte-identity prod==local).**
+> - ✅ **SLICE 3.2 — THE PAGE STRUCTURE (founder order, twice-corrected, now CANON +
+>   benchmark-confirmed `wf_317c67c8`: Binance/Bybit/OKX/Kraken/Coinbase + 4 SaaS
+>   portals — "nothing scrolls between a new member and the link"), BUILT + COMMITTED
+>   [this commit] ("GO and GO-Live").** The vertical order is now: heading → banner →
+>   **THE LINK HERO** (`ReferralLinkHero.tsx` — the ONE canonical link block: URL +
+>   Copy + QR + Share + two-state honesty, ABOVE the tabs, on every tab, exactly ONCE
+>   on the page) → the 4 centered figures → tabs. THE DUPLICATION KILLED (the founder's
+>   "mixed": the link had spread to Overview + the Link-tab card + the composer):
+>   Overview = standing + §7 claim only; the tab renamed **Channels** (route
+>   /referral/link stays); the composer shows ONLY the tagged variant (no tag → hint,
+>   never a second bare link). Top padding tightened 40/56→24/32px UNIFORMLY
+>   (ReferralSurface + MemberAppPage — every member door) + the dashboard's relic mt-8
+>   dropped (header→title gap 76→44px). Registry summaries truth-updated. Structure
+>   canon engraved in REFERRAL_PAGE_DESIGN. **AWAITING THE REPLIT SEAL (client-only,
+>   NO migration).**
 > - **SLICES 4–6 (IN ORDER, NEXT = 4) — THE REMAINING ADDS** (from the SYSTEM-FIRST
 >   harvest `wf_81dd540b`): ④ per-introduction rows (needs the row-level adapter,
 >   server) · ⑤ commission anatomy (the static anatomy card shipped in slice 2; ⑤ = the

@@ -31,8 +31,10 @@ export default function ReferralSurface({ tab = "overview" }: { tab?: ReferralTa
 
   if (signedIn) {
     // Connected → in the member shell, full-width, work-first (S7-d).
+    // Top padding TIGHT (founder 2026-07-19: the work starts high — 24/32px,
+    // not 40/56px; bottom keeps the scroll comfort), matching MemberAppPage.
     return (
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-10 md:py-14">
+      <div className="w-full px-4 sm:px-6 lg:px-8 pt-6 md:pt-8 pb-10 md:pb-14">
         <MemberShell>
           <MemberReferralDashboard tab={tab} />
         </MemberShell>

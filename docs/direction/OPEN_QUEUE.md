@@ -46,10 +46,14 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > guard-auth-zone 1002/1002 → ✅ slice 3.1 (the founder's grade-AAA polish: Overview re-ordered
 > WORK-FIRST link-first — CANON, no revert to the mockup's hero-first · the focus-ring rectangle
 > killed · centered tiles · "recognition title" · THE CHANNEL COMPOSER — chips + live URL +
-> copy-per-row, web benchmark `wf_b01f310a`, stateless/no-shortener) BUILT + COMMITTED
-> [this commit], "GO and GO-Live" 2026-07-19, awaiting the Replit seal (client-only, no
-> migration) → slices 4–6 (the adds, NEXT = ④ per-introduction rows: shells live in the tabs;
-> each slice replaces its shell with the real record). Full state: SESSION_STATE.md.
+> copy-per-row, web benchmark `wf_b01f310a`, stateless/no-shortener) **SEALED IN PROD `2893611`
+> (Replit green 2026-07-19)** → ✅ slice 3.2 (THE PAGE STRUCTURE, canon: heading → banner →
+> THE LINK HERO exactly once → 4 centered figures → tabs; duplication killed; tab renamed
+> Channels; padding tightened uniformly — benchmark `wf_317c67c8` confirms "nothing scrolls
+> between a new member and the link") BUILT + COMMITTED [this commit], "GO and GO-Live"
+> 2026-07-19, awaiting the Replit seal (client-only, no migration) → slices 4–6 (the adds,
+> NEXT = ④ per-introduction rows: shells live in the tabs; each slice replaces its shell with
+> the real record). Full state: SESSION_STATE.md.
 
 > **▶ 2026-07-17 (STANDING RULE, founder, emphatic — engraved here AND in agent memory):
 > NEVER RE-BLOCK ON AN ANSWERED QUESTION. Founder gates exist ONLY for: security/

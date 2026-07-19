@@ -49,9 +49,11 @@ export function MemberAppPage({ eyebrow, title, lead, badge, children, kind = "c
 
   if (showWork) {
     // Connected → in the shell, full-width. Content doors keep a LIGHT header;
-    // account surfaces open straight on the work.
+    // account surfaces open straight on the work. Top padding TIGHT (founder
+    // 2026-07-19, referral pass: the work starts high — 24/32px, uniform
+    // across every member door; bottom keeps the scroll comfort).
     return (
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-10 md:py-14">
+      <div className="w-full px-4 sm:px-6 lg:px-8 pt-6 md:pt-8 pb-10 md:pb-14">
         <MemberShell>
           {!account ? (
             <header className="mb-8">

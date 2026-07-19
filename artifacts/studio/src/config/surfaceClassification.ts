@@ -215,7 +215,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     audience: "PUBLIC",
     surface: "PUBLIC_VISITOR",
     layout: "public",
-    summary: "Referral surface tab: the permanent link, channels, and program reference.",
+    summary: "Referral surface tab: the channel composer, channel analytics, and program reference (the canonical link lives above the tabs).",
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },

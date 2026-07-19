@@ -81,18 +81,30 @@ Ladder truth (`config/connectorLadder.ts`): Emerging 5% (0) · Active 5% (3, tit
   client-only-no-URL · colour-only active · jargon labels · burying the work/money behind a tab ·
   "remember my last tab" overriding a deep link · fake loading on tab switch.
 
+## THE PAGE STRUCTURE — CANON (founder order 2026-07-19 + the page benchmark `wf_317c67c8`:
+## Binance/Bybit/OKX/Kraken/Coinbase + FirstPromoter/Rewardful/PartnerStack/Impact)
+**Vertical order, binding: heading → truth banner → THE LINK HERO → the 4 figures → tabs.**
+- **THE LINK HERO** (`ReferralLinkHero.tsx`): the ONE canonical link block — full URL + Copy +
+  QR + Share + the two-state honesty — ABOVE the tabs, visible on EVERY tab, **exactly ONCE
+  on the whole page** ("nothing scrolls between a new member and the link"). NO surface may
+  repeat the bare link: the Channels composer shows only the TAGGED variant (no tag → a hint,
+  never a second copy). Top padding tight (24/32px, uniform via MemberAppPage).
+- 5 of 6 exchanges open on the link block; no serious portal duplicates the link — the
+  2026-07-19 "mixed" duplication (link in Overview + Link-tab card + composer) is the named
+  failure mode; never rebuild it.
+
 ## The 5 tabs (own-row)
-1. **Overview** (default) — **ORDER IS CANON (founder correction 2026-07-19, WORK-FIRST
-   outranks the mockup):** ① the LINK/share block FIRST — always (honest link fallback with
-   Copy+QR+Share when the standing read misses; never an empty opening) → ② the standing
-   summary → ③ the §7 conversion hero LAST (the words a member shares, not the opening).
-   No future pass may revert to the mockup's hero-first order.
+1. **Overview** (default) — the standing summary ("Where you stand" → Ladder deep-link) + the
+   §7 conversion claim (the words a member shares — the link itself lives in the hero above).
+   No link duplication, ever.
 2. **Introductions** — the per-introduction rows (M10) + "durable = still holds SYN" + 2nd-gen (later).
 3. **Commissions** — money by state (paid/escrow) + the commission anatomy + the evolutive chart-
    record slot + the legal line.
 4. **Ladder & recognition** — the 7-rung rail + dated raise history + own-row recognition + the season slot.
-5. **Link & channels** — link/QR/share/Referrer-kit + the `&via` channels analytics + collapsed
-   reference (how-it-works · eligibility · anti-abuse · terms + keccak verify) + alias (later).
+5. **Channels** (route `/referral/link`, label renamed 3.2 — the link lives in the page hero) —
+   the channel composer (chips + live tagged URL + copy-per-row table, benchmark `wf_b01f310a`)
+   + collapsed reference (how-it-works · eligibility · anti-abuse · terms + keccak verify) +
+   alias (later).
 
 ## The ordered arc (slice by slice → preview → gate → deploy)
 - ✅ **SLICE 1 — THE ELEVATION, SEALED IN PROD (`d29765d`, 2026-07-19).** `/referral` = the member
