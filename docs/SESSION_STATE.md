@@ -29,6 +29,33 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   api guards (source-status-truth 163) · seo 503 · audit 328 · build 348
 >   twins + admin-dist 96. **🚀 DEPLOY — ONE cycle carries `c6859f4` (the
 >   R-BIND-3 bug fixes, not yet published) + this truth wave.**
+> - **✅ SEALED IN PROD (`da1bd5c`, Replit green 2026-07-19, founder-pasted
+>   report):** 38/38 blob-verified (4 commits: R-BIND-3 fixes + the truth wave
+>   + 2 docs; Replit rightly pulled full main incl. the Q44 docs commit —
+>   mirror fidelity) · entry `index-RiWbDWex.js` + console byte-identical ·
+>   gates green at the NEW counts in prod (feature-truth 544 · source-status
+>   163 · operator-gate 2800 · access-state 1083) · wall 404 · healthz ·
+>   honest S1 · feed 78 · engine ok:2 after the usual self-healed partial
+>   (headBlock 90,706,152→90,706,772). Replit's own verdict: "l'interface ne
+>   peut plus mentir sur l'avenir — toute promesse à venir est vérifiée par
+>   gate." **DEPLOY BACKLOG: EMPTY. Tree clean.**
+>
+> **▶ 📌 THE STANDING HANDOFF (DONE-IS-DONE §④ — the next session resumes
+> here in ONE read):**
+> - **LIVE (featureStatus.ts = the registry of record):** notifications ·
+>   /receipts binder + the cap-5 shelf + dual share · checkout ticket + share
+>   card · referral 5 tabs + channels + rows + receipt-backed anatomy · the
+>   R-BIND-3 fixes · the truth wave. All sealed through `da1bd5c`.
+> - **IN FLIGHT:** nothing building. Next builds, in the founder's promised
+>   order once Q44 answers land: the /receipt/{txHash} public page (+ Copy
+>   link/network retarget, same deploy) → the painted per-receipt preview
+>   card + link-rotation slice → ADMIN "Open receipts" on the member ledger →
+>   the commission-receipts register (5.1, mockup approved) + commission
+>   share card → recognition/season (slice 6).
+> - **FOUNDER-PENDING:** 🔴 Q44 (three answers: receipt-page indexing
+>   posture · painted-card timing · order vs 5.1 — "recommandations" =
+>   noindex · card next slice · page first). Parked as recorded: Q35 legal
+>   set · Q39/Q40/Q42 admin waves · Q32/MVP-final items · the deferred list.
 
 > **▶ ⏭️ READ-FIRST BOOT (2026-07-18, the founder's standing order — "stop making
 > me re-explain; make the canonical files the thing you read before any work").
