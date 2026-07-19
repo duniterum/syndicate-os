@@ -313,8 +313,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   (f5250f8 + the 3.3 batch + f436c42) IS SEALED. DEPLOY BACKLOG: EMPTY (the
 >   38add66 audit sweep + this seal commit ride the next cycle, docs-only). OPS
 >   NANO-NOTE (recorded, no action): the engine status lastError field is STICKY —
->   judge health by counters + logs, never that field. LIVING SEAL = the founder's
->   act: sign in on /referral/introductions → his 2 real rows.**
+>   judge health by counters + logs, never that field. **LIVING SEAL DONE (the
+>   founder's own screenshot, 2026-07-19): thesyndicate.money/referral/introductions
+>   renders his 2 REAL rows live — 2026-07-12 · 0x0dd…4d20 · DURABLE · $0.25 ·
+>   verify↗ and 2026-06-25 · 0x620…c75f · DURABLE · $0.25 · verify↗ (as of block
+>   90,685,795). Note: the 2026-06-25 row is the CHAIN's own record of an attributed
+>   purchase predating the website checkout — the record serves what the chain
+>   published, not what memory expected; its verify link is the answer. That is the
+>   product.**
 > - **SLICES 5–6 (IN ORDER, NEXT = 5) — THE REMAINING ADDS** (from the SYSTEM-FIRST
 >   harvest `wf_81dd540b`): ④ per-introduction rows (needs the row-level adapter,
 >   server) · ⑤ commission anatomy (the static anatomy card shipped in slice 2; ⑤ = the
