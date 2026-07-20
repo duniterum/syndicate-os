@@ -92,7 +92,17 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   #14's sealed figures, verified by eye (44–73KB each). **🚀 DEPLOY
 >   (server + client, NO migration; needs `pnpm install` on the deploy —
 >   3 new packages: satori · @resvg/resvg-js · qrcode).**
-> - **IN FLIGHT after this deploy:** the sealed order continues: ADMIN
+> - **✅ R-CARDS SEALED IN PROD (`2f2a6b7`, Replit green 2026-07-20,
+>   founder-pasted report):** the bundle boots with embedded fonts · the 4
+>   faces painted with the REAL hash (200/PNG/<300Ko, 4 distinct, figures
+>   eye-verified) · fallbacks + per-URL prod heads exact · engine perfect
+>   first cycle.
+> - **DEPLOY BACKLOG (batchable, rides the next cycle): [this commit] the
+>   share-intent DOUBLE-LINK fix** (founder screenshot: X drafts printed the
+>   receipt link twice — shareTargets' contract now honored per intent
+>   family; rig-proven one-link drafts on both families; the receipt stays
+>   the carded link everywhere).
+> - **IN FLIGHT after this:** the sealed order continues: ADMIN
 >   "Open receipts" on the member ledger → the commission-receipts register
 >   (5.1, mockup approved) + commission share card → recognition/season
 >   (slice 6).

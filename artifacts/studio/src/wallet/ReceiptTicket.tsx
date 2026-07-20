@@ -228,6 +228,18 @@ export default function ReceiptTicket({
     ? `The Syndicate — ${model.living.coordinate}. Sealed proof: ${receiptPageUrl}` +
       (referralLink ? `\nMy introduction link: ${referralLink}` : "")
     : null;
+  // The shareTargets contract (founder screenshot, 2026-07-20): `text` never
+  // contains the link — each intent places the url ITSELF, so a text that
+  // embeds it prints the link twice in the draft. Url-param intents (x,
+  // telegram; facebook/linkedin take the url alone) get this URL-FREE text;
+  // the platform appends the receipt url after it, so the receipt stays the
+  // LAST link — the one X cards. Text-only intents (whatsapp, email) keep
+  // the full inline text and an empty url — the receipt link LEADS the
+  // message there (the first link is the one WhatsApp cards).
+  const shareIntentText = txUrl
+    ? `The Syndicate — ${model.living.coordinate}.` +
+      (referralLink ? `\nMy introduction link: ${referralLink}` : "")
+    : null;
 
   async function handleCopy() {
     if (!txUrl) return;
@@ -630,7 +642,13 @@ export default function ReceiptTicket({
                     // THE RETARGET: every network intent carries the
                     // receipt's own public page (see receiptPageUrl above);
                     // each act advances the rotation for the next share.
-                    window.open(t.build(receiptPageUrl, shareText ?? ""), "_blank", "noopener,noreferrer");
+                    // Url/text split per the shareTargets contract — the
+                    // link prints exactly ONCE in every draft.
+                    const [intentUrl, intentText] =
+                      t.id === "whatsapp" || t.id === "email"
+                        ? ["", shareText ?? ""]
+                        : [receiptPageUrl, shareIntentText ?? ""];
+                    window.open(t.build(intentUrl, intentText), "_blank", "noopener,noreferrer");
                     advanceShareFace();
                     setShareOpen(false);
                   }}

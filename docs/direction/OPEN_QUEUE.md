@@ -11,7 +11,17 @@
 > 31 pins (18th api guard chain link) · `paintedPreviewCards` → live same commit ·
 > the node20 build-target fix (the font loader emitted a runtime-unknown API — caught
 > at the rig BEFORE any deploy). Painted proof: the 4 faces rendered with Seat #14's
-> sealed figures, verified by eye. **🚀 DEPLOY (server + client, NO migration).**
+> sealed figures, verified by eye. **✅ SEALED IN PROD `2f2a6b7` (Replit green
+> 2026-07-20, founder-pasted report: pnpm install + resvg native loaded · the bundle
+> BOOTS (the feared class absent) · the 4 painted faces 200/PNG/<300Ko with the REAL
+> hash, 4 distinct images, figures verified visually · fallbacks 302/400 exact ·
+> per-URL heads in prod · engine perfect first cycle).** → **RIDER [this commit],
+> founder screenshot the same day: the share-intent DOUBLE LINK killed — shareTargets'
+> contract honored (text never contains the link; x/telegram get url-free text,
+> whatsapp/email keep it inline with an empty url; the receipt stays the CARDED link
+> on both families). Rig-proven: X intent = one link · WhatsApp = one leading link ·
+> the rotation visible (?f=2 on the second act). 🚀 DEPLOY — BATCHABLE (client-only;
+> prod drafts show the double link until it rides).**
 > NEXT in the sealed order: ADMIN "Open receipts" on the member ledger.
 
 > **▶ 2026-07-20 — R-PAGE: THE /receipt/{txHash} PUBLIC PAGE + THE RETARGET, BUILT
