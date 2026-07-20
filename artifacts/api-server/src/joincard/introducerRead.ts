@@ -20,8 +20,11 @@ import {
   resolveEndpoints,
 } from "../lib/protocol/rpcTransport";
 import { ethCall, probeChain } from "../lib/protocol/evmRead";
-import { callData } from "../lib/protocol/archiveDecoders";
-import { bytes32Word } from "../lib/protocol/sourceDecoders";
+import { callData, decodeBool } from "../lib/protocol/archiveDecoders";
+import {
+  SELECTOR_SOURCE_IS_ACTIVE,
+  bytes32Word,
+} from "../lib/protocol/sourceDecoders";
 import { SOURCE_LINKAGE_TARGET } from "../data/protocolTargets";
 
 /** keccak("sourceConfig(bytes32)")[0..4] — computed, never hand-typed. */
@@ -43,6 +46,10 @@ const cache = new Map<string, CacheEntry>();
 function decodeShortWallet(data: string): string | null {
   if (!/^0x[0-9a-fA-F]{64,}$/.test(data)) return null;
   const word0 = data.slice(2, 2 + 64);
+  // A real address word is 12 zero bytes then 20 address bytes — anything
+  // else is not an address and never becomes a "wallet" (the house
+  // decodeAddressWord discipline).
+  if (!/^0{24}/.test(word0)) return null;
   const addrHex = `0x${word0.slice(24)}`;
   try {
     const a = getAddress(addrHex);
@@ -73,12 +80,23 @@ export async function introducerShortWallet(
     const transport = makeFetchTransport(resolveEndpoints(), timeoutMs);
     const probe = await probeChain(transport);
     if (probe.chainIdOk) {
-      const data = await ethCall(
+      // THE STATUS GATE (adversarial verify 2026-07-21): a PAUSED/REVOKED
+      // source must never unfurl an attribution claim the /join page
+      // itself denies — the registry's own isActive() decides, exactly as
+      // the validation surface does. Inactive → null → the generic image.
+      const activeData = await ethCall(
         transport,
         SOURCE_LINKAGE_TARGET.registryAddress,
-        callData(SELECTOR_SOURCE_CONFIG, [bytes32Word(key)]),
+        callData(SELECTOR_SOURCE_IS_ACTIVE, [bytes32Word(key)]),
       );
-      short = typeof data === "string" ? decodeShortWallet(data) : null;
+      if (decodeBool(activeData) === true) {
+        const data = await ethCall(
+          transport,
+          SOURCE_LINKAGE_TARGET.registryAddress,
+          callData(SELECTOR_SOURCE_CONFIG, [bytes32Word(key)]),
+        );
+        short = typeof data === "string" ? decodeShortWallet(data) : null;
+      }
     }
   } catch {
     short = null; // fail closed — the card falls back to the generic image

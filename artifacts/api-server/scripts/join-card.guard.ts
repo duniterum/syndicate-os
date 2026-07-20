@@ -78,6 +78,16 @@ check(painter.includes("CARD_MAX_BYTES = 300_000") && painter.includes("<= CARD_
 check(reader.includes("probeChain"), "the chain-identity probe left introducerRead");
 check(reader.includes('keccak256') && reader.includes('sourceConfig(bytes32)'), "the computed selector left introducerRead");
 
+// 9 · THE STATUS GATE (adversarial verify 2026-07-21): only an ACTIVE source
+// unfurls an attribution — a paused/revoked source's card must fall to the
+// generic image, exactly as the /join page's own validation denies it.
+check(reader.includes("SELECTOR_SOURCE_IS_ACTIVE"), "the isActive status gate left introducerRead");
+check(reader.includes("decodeBool(activeData) === true"), "the strict active check left introducerRead");
+
+// 10 · the mutable-fact cache law: the painted bytes expire — never immortal.
+check(route.includes("CACHE_TTL_MS"), "the PNG cache TTL left the route");
+check(!route.includes("max-age=86400"), "the day-long HTTP cache returned over a mutable fact");
+
 if (errors.length > 0) {
   console.error(`[guard:join-card] ${errors.length} FAILURE(S):`);
   for (const e of errors) console.error(`  ✗ ${e}`);

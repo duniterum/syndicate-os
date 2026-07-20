@@ -25,10 +25,13 @@ const ID_SHAPE_RE = /^0x[0-9a-fA-F]{64}$/;
 /** The generic fallback — the site's one static card (crawler-followable). */
 const GENERIC_CARD_URL = "https://thesyndicate.money/opengraph.jpg";
 
-/** Tiny in-memory politeness cache (sourceId → bytes) — capped, never a
- * correctness layer (the introducer read has its own TTL truth). */
+/** Tiny in-memory politeness cache (sourceId → bytes) — capped AND TTL'd
+ * (adversarial verify 2026-07-21): the introducer is a MUTABLE fact (a
+ * source's wallet can change, a source can pause), so the painted bytes
+ * expire with the read's own positive TTL — never an immortal card. */
 const CACHE_CAP = 200;
-const cache = new Map<string, Buffer>();
+const CACHE_TTL_MS = 10 * 60 * 1000;
+const cache = new Map<string, { png: Buffer; at: number }>();
 
 function fallback(res: import("express").Response): void {
   res.setHeader("Cache-Control", "public, max-age=300");
@@ -50,12 +53,13 @@ router.get("/join-card/:file", (req, res) => {
       const sourceId = file.slice(0, -4).toLowerCase();
 
       const hit = cache.get(sourceId);
-      if (hit !== undefined) {
-        res.setHeader("Cache-Control", "public, max-age=86400");
+      if (hit !== undefined && Date.now() - hit.at < CACHE_TTL_MS) {
+        res.setHeader("Cache-Control", "public, max-age=600");
         res.setHeader("X-Content-Type-Options", "nosniff");
-        res.type("image/png").send(hit);
+        res.type("image/png").send(hit.png);
         return;
       }
+      if (hit !== undefined) cache.delete(sourceId);
 
       const shortWallet = await introducerShortWallet(sourceId);
       if (shortWallet === null) {
@@ -71,8 +75,8 @@ router.get("/join-card/:file", (req, res) => {
         const oldest = cache.keys().next().value;
         if (oldest !== undefined) cache.delete(oldest);
       }
-      cache.set(sourceId, png);
-      res.setHeader("Cache-Control", "public, max-age=86400");
+      cache.set(sourceId, { png, at: Date.now() });
+      res.setHeader("Cache-Control", "public, max-age=600");
       res.setHeader("X-Content-Type-Options", "nosniff");
       res.type("image/png").send(png);
     } catch {

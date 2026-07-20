@@ -213,9 +213,27 @@
 > generic) · gates ALL EXIT 0 (api tsc + 19 guards incl. join-card 25/25; studio
 > tsc + 19 guards + build + seo 520 + audit 338) · /join strip states render,
 > zero console errors. The ok+introducer happy path = the prod living seal (real
-> registered sources live there — the recorded pattern). 🚀 DEPLOY — its own
-> cycle (server + client, NO migration, NO pnpm install).** NEXT after K2's
-> seal: K3 (the admin axis).
+> registered sources live there — the recorded pattern). → **K2.1 — THE FOUNDER'S
+> RECHECK HONORED [this commit] ("j'ai appris à être méfiant avec toi :)" — two
+> independent verifier agents + my own gap-close). MY GAP CLOSED FIRST: the real
+> api build.mjs + bundle BOOT + route probes had never run locally — now proven
+> (build EXIT 0 · bundle boots · 400/302/null exact; the node20 class absent).
+> THE HANDOFF AUDITOR: every claim VERIFIED against the repo (files · 15 commits ·
+> live keys · guards · git clean+pushed · K-arc coherent) — zero hard mismatches.
+> THE ADVERSARIAL REVIEWER: no deploy blocker; TWO REAL truth defects FIXED: ① THE
+> STATUS GATE — a PAUSED/REVOKED source's link no longer unfurls an attribution
+> the /join page itself denies (introducerRead now requires the registry's own
+> isActive() === true; inactive → the generic image); ② the PNG cache TTL'd 10 min
+> + HTTP max-age 600 (the introducer is a MUTABLE fact — wallet updates, pauses;
+> never an immortal card) + the address-word zero-padding check (the house
+> decodeAddressWord discipline). join-card:guard grew to 29 pins (the status gate
+> + the mutable-fact cache law pinned forever). RECORDED NON-ACTION NITS
+> (inherited receipt-slice patterns, accepted): stale og:image:width/height/alt
+> under substitution · /join.html?source= direct-hit bypass · the
+> "card_address_required" machine code name. Gate: api tsc + 19 guards EXIT 0 ·
+> real build EXIT 0 · bundle boot + probe matrix proven. 🚀 DEPLOY — the cycle
+> takes `0134cc6` + this hardening together (server + client, NO migration, NO
+> pnpm install).** NEXT after K2's seal: K3 (the admin axis).
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21
