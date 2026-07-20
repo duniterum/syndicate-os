@@ -419,6 +419,14 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   chunk console) · rig : l'écran rend l'état honnête founder-only, zéro
   erreur console · revue adversariale 3 coutures = 0 défaut réel (le sceau
   vivant des lignes se fait en prod, la base locale n'existant pas).
+  **SCELLÉ EN PROD `0619818` (Replit vert 2026-07-20 — le scan borné prouvé
+  par la lecture du fondateur lui-même, audit 01:38:47Z ; « les tickets
+  sont là, parfait »).** **+ v2 SCELLÉE `43e84bf` (la correction chapitre
+  du fondateur) : colonne CHAPTER (le canon gelé des tickets — tout membre
+  actuel = I · Genesis Signal), tag d'autorité « genesis »→« roster » (la
+  collision de vocabulaire morte), filtres Chapter + Segment. + rider
+  `39f7667` (la dernière occurrence « genesis » du dialogue de message —
+  l'observation Replit honorée ; en backlog batchable).**
 
 - [x] **NOTIF — LE CENTRE DE NOTIFICATIONS (2026-07-18, scellé jusqu'à
   51e68de)** : la cloche du header (badge = non-vus propres, onglets

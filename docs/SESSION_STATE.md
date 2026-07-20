@@ -115,11 +115,31 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   tickets' frozen canon (every current member = I · Genesis Signal;
 >   transitions by seat number forever) · the authority tag "genesis"→
 >   "roster" · Chapter + Segment filter chips. Byte-identity + the shared
->   chapters chunk served ✓. **→ RIDER [this commit] — Replit's observation
+>   chapters chunk served ✓. **→ RIDER `39f7667` — Replit's observation
 >   honored: the LAST surviving "genesis" (the message dialog's help text)
 >   renamed "roster" too; zero rendered "genesis" remains on the page.
 >   DEPLOY BACKLOG (batchable): this one-string rider — rides the 5.1
 >   cycle, or one paste.**
+> - **TODAY'S LESSONS (2026-07-20 — engraved at their sites, gathered here):**
+>   ① a missing esbuild TARGET let the binary loader emit a runtime-unknown
+>   API (`Uint8Array.fromBase64`) — the rig caught a whole-api prod-boot
+>   failure BEFORE deploy; target node20 pinned in build.mjs. ② the
+>   shareTargets CONTRACT: `text` never contains the link — each intent
+>   places the url itself (the double-link class, founder screenshot).
+>   ③ the VOCABULARY-COLLISION class: the authority tag's word ("genesis")
+>   impersonated Chapter I ("Genesis Signal") — never let two concepts share
+>   a word on one screen; the founder's read is the test. ④ a PARAM shell
+>   must never bake a pattern URL into og:url (crawlers canonicalize onto a
+>   404) — strip at prerender, substitute per URL at serve. ⑤ the
+>   boundary-aware 40-hex scan is the STANDARD on any anchor-carrying
+>   payload (3rd application; the strict form 500s on 64-hex anchors).
+> - **RECORDED MICRO-GAPS (do not re-discover):** (a) same-transaction
+>   multi-purchase rows would share a React key on the binder AND the ledger
+>   expansion (theoretical class — no engine mints it; fix jointly by
+>   appending logIndex to both keys in one pass when touched). (b) flagged
+>   to the founder 2026-07-20, copy kept as approved: the public page's
+>   visitor door "Seats are open — see how membership works." is a standing
+>   claim on permanent links — revisit only if seat sales ever pause.
 > - **IN FLIGHT after this:** the sealed order continues: the
 >   commission-receipts register (5.1, mockup approved) + commission share
 >   card → recognition/season (slice 6).
@@ -128,14 +148,17 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   Taken-by-default (flagged, overridable): the dedicated PDF engine stays
 >   its own rider (print already saves clean).
 > - **THE NEXT SESSION'S EXACT OPENING (no re-explaining, ever):** boot per
->   CLAUDE.md → this handoff → confirm the R-ADMIN Replit deploy report
->   landed (if not, that deploy is the only open step) → open slice 5.1:
+>   CLAUDE.md → this handoff (every 2026-07-20 slice is SEALED IN PROD;
+>   the ONLY deploy-pending item is the batchable one-string rider
+>   `39f7667`, which rides the next cycle automatically) → open slice 5.1:
 >   THE COMMISSION-RECEIPTS REGISTER — the mockup is ALREADY
 >   founder-approved (docs/design/commissions-receipts-mockup.html; the
 >   direction: docs/reference/COMMISSION_RECEIPTS_DESIGN_DIRECTION.md — the
->   ticket grammar, the one money formatter, the 15 harmony rules). Build
->   straight from the approved mockup; its share card rides per the scope
->   menu. featureStatus.ts is the live-vs-future truth.
+>   ticket grammar, the one money formatter, the 15 harmony rules; the
+>   commissions data already serves via the receipt-backed anatomy's rows
+>   model). Build straight from the approved mockup; its share card rides
+>   per the scope menu; the deploy carries `39f7667`. featureStatus.ts is
+>   the live-vs-future truth.
 
 > **▶ ⏭️ READ-FIRST BOOT (2026-07-18, the founder's standing order — "stop making
 > me re-explain; make the canonical files the thing you read before any work").
