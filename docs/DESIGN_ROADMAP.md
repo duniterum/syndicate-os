@@ -464,6 +464,23 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   raw-color documentées par ligne (`no-raw-color-allow`). **+0 couleur brute
   non documentée** (exceptions : QrCodeBlock + l'encre des artefacts
   referrerKit, chacune taguée avec sa raison).
+- [x] **K1.2→K1.4 LE DURCISSEMENT DE L'ARSENAL (2026-07-20, trois lectures
+  vivantes du fondateur + la passe adversariale 3-sceptiques, tout scellé en
+  prod `d170131`)** : le vrai emblème interlock partout (SynMark) · le pack QR
+  (QR nu print PNG+SVG avec zone de silence · QR vidéo) · la carte de
+  résultats · les PLANCHERS TYPO par contexte de vue (ARTIFACT_TYPOGRAPHY_
+  FLOORS.md, portés en code + sonde) · LE CANON DES BANNIÈRES (300×250 ·
+  336×280 · 300×600 · 728×90 · 320×100 ; 468×60 retiré ; hooks du registre
+  approuvé + CtaChip, jamais d'urgence inventée) · le harnais à CINQ sondes
+  (géométrie · boîtes carrées · planchers · chevauchements · centrage QR).
+  **+0 couleur brute non documentée** (+1 exception taguée : le blanc de la
+  zone de silence du SVG).
+- [x] **K2 LE CÔTÉ INVITÉ (2026-07-20, maquette approuvée « GO AND GO-LIVE »,
+  commit 0134cc6)** : le lien /join?source= s'ouvre avec SA carte peinte
+  (serveur, vrai emblème, adresse courte de l'introducteur, registre
+  approuvé verbatim) + la bande honnête « Introduced by 0x… — never changes
+  your price » sur /join quand le registre confirme la source active.
+  **+0 couleur brute** (peintre côté api).
 
 ### Phase 6 — Audits (le sceau grade-AAA)
 - [ ] Accessibilité (WCAG AA / APCA, focus, clavier, cibles ≥44px)

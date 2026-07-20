@@ -212,24 +212,68 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   harness = FIVE probes; 13 artifacts green at worst case. Prod runs
 >   `d170131`, byte-identity exact, engine healthy. NEXT: K2 (the
 >   invitee's side), mockup-first.
-> - **IN FLIGHT after the kit arc:** recognition/season (slice 6, Phase-5)
->   — read the gamification/legal dossier (docs/reference/) +
->   GAMIFICATION_LEGAL_DOCTRINE + SEASONS_ENGINE_ON_SYNDICATE_OS before
->   any proposal.
+> - **▶ K2 BUILT + COMMITTED `0134cc6` (2026-07-20, mockup approved
+>   "approved GO AND GO-LIVE"; full record: OPEN_QUEUE's K2 entry): the
+>   /join?source= painted unfurl (api `src/joincard/` + route + the 19th
+>   api guard `join-card` 25/25 + two route-surface pins amended dated) +
+>   serve.mjs 3c substitution + the introduced-by strip on /join +
+>   `joinInviteeCard` live. PAINTED PROOF eye-verified; substitution +
+>   fail-closed matrices proven; gates ALL EXIT 0 both sides. 🚀 DEPLOY
+>   IN FLIGHT — the founder handed Replit the cycle (server + client, NO
+>   migration, NO pnpm install) as this session closed; the NEXT session
+>   acts on the pasted report FIRST, then the founder's living seal (his
+>   own shared link unfurling with HIS card; the strip on his link).**
+> - **THE SESSION'S LESSONS (2026-07-20/21, all engraved in agent memory
+>   AND at their sites — never re-learn):** ① visual artifacts are NEVER
+>   verified by DOM-text presence — the FIVE-probe harness (fit ·
+>   square-box · type-floor · overlap · QR-centering, at WORST-CASE text)
+>   + the exported-bitmap pixel probe are the standing law
+>   (`artifact-verification-fit-and-pixel-probes`); ② never pipe a guard
+>   chain through `-First N` — PowerShell kills the pipeline mid-run and
+>   "fail-closed" prose matches FAIL; capture the FULL run, gate on the
+>   true exit code; ③ NO fixed seat price exists — the FIRST purchase at
+>   the buyer's chosen amount establishes the seat
+>   (`seat-price-first-purchase-decides`); ④ the local rig has no DB —
+>   the founder verifies online, never a blocker
+>   (`local-rig-no-db-founder-verifies-in-prod`); ⑤ referrer surfaces:
+>   visual-first, think 300, the living system feeds the referrer
+>   (`referrer-surfaces-visual-first-scale-living`); ⑥ tsx cannot load
+>   .ttf — probe painters via an esbuild bundle with build.mjs's exact
+>   flags (target node20, ttf binary, @resvg external); ⑦ a new public
+>   api route joins TWO dated route-surface pins (member-continuity +
+>   protocol-time) — the verifyLinks pattern when it legitimately emits
+>   address material; ⑧ hex colors in COMMENT PROSE trip no-raw-color —
+>   name colors in prose without the hex.
+> - **IN FLIGHT after K2's seal:** K3 — THE ADMIN AXIS (scope engraved in
+>   OPEN_QUEUE's work order: the member-side "Ask for activation" intake
+>   (own-row write, audited, the proven write-zone pattern) → the
+>   SourceReviewQueue LIVE (today a DESIGN_PREVIEW in
+>   AdminOperatorsCrud.tsx) with the server AUTO-PREFLIGHT → stacked
+>   create+activate signing session → propose-pause/revoke doors →
+>   per-source performance + CSV export. The founder's SIGNATURE stays
+>   the law; only the friction dies). Then K4 (no-seat reach decision) ·
+>   P (press kit — all text on screen) · recognition/season (slice 6:
+>   read the gamification/legal dossiers first; the two-layer law holds).
 > - **FOUNDER-PENDING: NOTHING on the arc.** Parked as recorded: Q35 legal
 >   set · Q39/Q40/Q42 admin waves · Q32/MVP-final items · the deferred list.
 >   Taken-by-default (flagged, overridable): the dedicated PDF engine stays
 >   its own rider (print already saves clean).
 > - **THE NEXT SESSION'S EXACT OPENING (no re-explaining, ever):** boot per
->   CLAUDE.md → this handoff. DEPLOY-PENDING: the R-5.1 cycle (this commit
->   + the rider `39f7667`) — if the founder has not yet pasted Replit's
->   report, the deploy instruction stands: *"pull main, deploy, report"*
->   (client-only, NO migration); act on the pasted report (runtime truth)
->   before anything else. Then open slice 6: RECOGNITION/SEASON (Phase-5)
->   — read the roadmap dossiers first (gamification/legal + seasons
->   engine); the two-layer law holds (XP recognition ≠ season USDC pot;
->   the money is SHOWN, Visibility Law). featureStatus.ts is the
->   live-vs-future truth.
+>   CLAUDE.md → this handoff → OPEN_QUEUE whole. ① Act on Replit's K2
+>   report (cycle `0134cc6`, server+client, NO migration — in flight at
+>   session close); fix any runtime truth it surfaces. ② The founder's
+>   living seal: his own /join?source= link unfurling with HIS painted
+>   card + the introduced-by strip. ③ Open K3 (the admin axis — the scope
+>   is engraved in OPEN_QUEUE's work order; read the R-ADMIN precedents:
+>   ProposeSourceCreate/Promotion in wallet/, SourceReviewQueue
+>   DESIGN_PREVIEW in AdminOperatorsCrud.tsx, the Q42 write-zone+audit
+>   pattern; K3 likely carries a MIGRATION for the intake table — its own
+>   cycle, never batched). The durable truths: featureStatus.ts (live vs
+>   future) · docs/reference/REFERRER_KIT_SYSTEM_INVENTORY.md (the
+>   six-lens research, never re-search) · ARTIFACT_TYPOGRAPHY_FLOORS.md
+>   (type floors + banner canon) · the mockups in docs/design/
+>   (commissions-receipts · referral-tools · join-invitee — all
+>   founder-approved). The K-arc order: K3 → K4 → P → season.
 
 > **▶ ⏭️ READ-FIRST BOOT (2026-07-18, the founder's standing order — "stop making
 > me re-explain; make the canonical files the thing you read before any work").
