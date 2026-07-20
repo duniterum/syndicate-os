@@ -1,5 +1,19 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-20 — R-CARDS: THE PAINTED PREVIEW CARDS + THE LINK ROTATION, BUILT
+> [this commit] (Q44's sealed order, step 2; the founder approved the 4-face mockup
+> "approved").** The api paints every receipt its own 1200×630 picture (<300KB, the
+> site's own faces embedded, 4 faces: THE SEAT · WHERE YOUR MONEY WENT · THE STORY ·
+> THE PROOF; real figures visible per the Visibility Law; unpaintable → 302 generic,
+> never invented) · serve.mjs substitutes each receipt URL's OWN head at serve time
+> (self-referential og:url per variant + the painted image) · THE ROTATION lives in
+> the LINK: each share act hands the next face (?f=2..4, wrap). guard receipt-card
+> 31 pins (18th api guard chain link) · `paintedPreviewCards` → live same commit ·
+> the node20 build-target fix (the font loader emitted a runtime-unknown API — caught
+> at the rig BEFORE any deploy). Painted proof: the 4 faces rendered with Seat #14's
+> sealed figures, verified by eye. **🚀 DEPLOY (server + client, NO migration).**
+> NEXT in the sealed order: ADMIN "Open receipts" on the member ledger.
+
 > **▶ 2026-07-20 — R-PAGE: THE /receipt/{txHash} PUBLIC PAGE + THE RETARGET, BUILT
 > [this commit] (Q44's sealed order, step 1).** Wireframe founder-approved on screen
 > ("ok for mee") → the whole engraved scope built: the first PARAM route class

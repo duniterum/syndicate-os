@@ -200,10 +200,9 @@ for (const route of routes) {
   // PARAM routes: the ONE shell serves every URL of the class, so a baked
   // og:url would be the literal pattern ("…/receipt/:txHash") — a URL the
   // serving layer 404s, and the address crawlers would canonicalize EVERY
-  // share onto. Strip it: without og:url, crawlers key the card to the URL
-  // they fetched (each receipt its own), and the runtime head manager stamps
-  // the real self-referential og:url for humans. Per-URL baked heads are the
-  // engraved next slice (painted preview cards).
+  // share onto. Strip it: serve.mjs substitutes each url's OWN og:url (and
+  // the painted card image — the painted-cards slice, 2026-07-20) into this
+  // shell at serve time, and the runtime head manager stamps it for humans.
   if (route.path.includes("/:")) {
     html = html.replace(/\s*<meta property="og:url"[^>]*>/, "");
   }

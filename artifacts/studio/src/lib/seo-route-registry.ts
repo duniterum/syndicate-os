@@ -313,8 +313,9 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     // ONE shell serves the whole class — including junk hashes that carry no
     // purchase — so the baked title names the DOCUMENT TYPE (the ticket's own
     // doc-title grammar) and never asserts that THIS hash is sealed; the page
-    // itself renders the honest verdict per hash. The assertive per-receipt
-    // head arrives with the painted-cards slice.
+    // itself renders the honest verdict per hash. The per-receipt truth in a
+    // share is the PAINTED CARD (live 2026-07-20): serve.mjs substitutes each
+    // valid url's own og:url + painted og/twitter image at serve time.
     title: "Membership Receipt — Proof of Purchase",
     description:
       "One purchase's permanent receipt — the seat, the exact figures, and where the money went, every line the transaction's own record. Verify it on the public explorer.",
@@ -325,7 +326,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     proofRoute: "/status",
     paramTailPattern: "^0x[0-9a-fA-F]{64}$",
     notes:
-      "PARAM route (the first): serve.mjs serves the one receipt.html shell for shape-valid hashes only (any other /receipt/* tail → real 404). Copy link and the network shares retarget here in the same slice.",
+      "PARAM route (the first): serve.mjs serves the one receipt.html shell for shape-valid hashes only (any other /receipt/* tail → real 404), substituting each url's own og:url + painted card image at serve time (painted-cards slice, 2026-07-20). Copy link and the network shares carry this page + the rotating face.",
   },
   {
     path: "/toolkit",

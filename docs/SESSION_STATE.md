@@ -72,23 +72,42 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   127 · feature-truth 552 · operator-gate 2840 · access-state 1113 ·
 >   auth-zone 1022 · source-status 163 · admin-dist 99. **DEPLOY BACKLOG:
 >   EMPTY. Tree clean.**
-> - **IN FLIGHT:** nothing building. Next, the sealed order: the painted
->   per-receipt preview cards + link-rotation slice (satori+resvg on the api,
->   per-URL heads — `paintedPreviewCards` registered future) → ADMIN "Open
->   receipts" on the member ledger → the commission-receipts register (5.1,
->   mockup approved) + commission share card → recognition/season (slice 6).
+> - **▶ R-CARDS BUILT [this commit] (2026-07-20, the founder's "approved" on
+>   the 4-face mockup): THE PAINTED PREVIEW CARDS + THE LINK ROTATION.** The
+>   api paints each receipt its own 1200×630 (<300KB; Work Sans + IBM Plex
+>   Mono embedded, OFL; 4 faces, real figures visible, QR to the explorer;
+>   unpaintable → 302 generic) via `GET /api/receipt-card/{tx}.png?f=1..4` ·
+>   serve.mjs substitutes each receipt URL's OWN head at serve time
+>   (self-referential og:url per variant + the painted image; pure string
+>   ops, twins never served substituted) · the rotation lives in the LINK
+>   (each share act advances ?f); `paintedPreviewCards` → live SAME commit ·
+>   guard receipt-card 31 pins joins the api chain (18 links) · THE BUILD
+>   FIX ENGRAVED: esbuild target node20 (the binary font loader emitted
+>   `Uint8Array.fromBase64`, unknown to the runtime — the rig caught a
+>   would-be prod boot failure BEFORE deploy). GATE: api tsc + 18 guards ·
+>   studio tsc + 19 guards (feature-truth green with the flip) · build ·
+>   seo 509 + rewrites + surface:audit · substitution probes (bare/?f=3/
+>   out-of-range/404/literals-intact) · card-route probes (302 generic on
+>   dark model · 400s) · THE PAINTED PROOF: 4 faces rendered with Seat
+>   #14's sealed figures, verified by eye (44–73KB each). **🚀 DEPLOY
+>   (server + client, NO migration; needs `pnpm install` on the deploy —
+>   3 new packages: satori · @resvg/resvg-js · qrcode).**
+> - **IN FLIGHT after this deploy:** the sealed order continues: ADMIN
+>   "Open receipts" on the member ledger → the commission-receipts register
+>   (5.1, mockup approved) + commission share card → recognition/season
+>   (slice 6).
 > - **FOUNDER-PENDING: NOTHING on the arc.** Parked as recorded: Q35 legal
 >   set · Q39/Q40/Q42 admin waves · Q32/MVP-final items · the deferred list.
 >   Taken-by-default (flagged, overridable): the dedicated PDF engine stays
 >   its own rider (print already saves clean).
 > - **THE NEXT SESSION'S EXACT OPENING (no re-explaining, ever):** boot per
->   CLAUDE.md → this handoff → confirm the Replit deploy report landed (if
->   not, the deploy is the only open step) → open the painted-cards slice:
->   read `RBIND2_HERO_SHARE_DIRECTION.md` §3 (the rotation answer + the
->   settled technical footnotes) + `RECEIPT_PAGE_SLICE_SCOPE.md` §6 (the two
->   recorded serving mechanisms) → SYSTEM-FIRST inventory, then wireframe of
->   the card design for founder approval. featureStatus.ts is the
->   live-vs-future truth.
+>   CLAUDE.md → this handoff → confirm the R-CARDS Replit deploy report
+>   landed (if not, that deploy is the only open step; it needs
+>   `pnpm install` — 3 new packages) → open the ADMIN "Open receipts"
+>   slice on the member ledger: SYSTEM-FIRST inventory of the operator
+>   member-ledger surface first (the §D console canon —
+>   memberLedgerService already reads rowsByWallet), then the wireframe
+>   for founder approval. featureStatus.ts is the live-vs-future truth.
 
 > **▶ ⏭️ READ-FIRST BOOT (2026-07-18, the founder's standing order — "stop making
 > me re-explain; make the canonical files the thing you read before any work").

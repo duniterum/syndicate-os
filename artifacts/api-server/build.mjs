@@ -17,11 +17,19 @@ async function buildAll() {
   await esbuild({
     entryPoints: [path.resolve(artifactDir, "src/index.ts")],
     platform: "node",
+    // Pin the runtime floor: without a target, esbuild's binary loader emits
+    // Uint8Array.fromBase64 — an API today's Node runtimes don't ship, and
+    // the server refuses to boot (caught at the rig, 2026-07-20). node20
+    // makes the loader emit its own decoder; every runtime we serve is ≥20.
+    target: ["node20"],
     bundle: true,
     format: "esm",
     outdir: distDir,
     outExtension: { ".js": ".mjs" },
     logLevel: "info",
+    // The receipt-card painter's fonts ride INSIDE the bundle as raw bytes
+    // (no runtime filesystem paths, no deploy-shape dependency).
+    loader: { ".ttf": "binary" },
     // Some packages may not be bundleable, so we externalize them, we can add more here as needed.
     // Some of the packages below may not be imported or installed, but we're adding them in case they are in the future.
     // Examples of unbundleable packages:
@@ -29,6 +37,9 @@ async function buildAll() {
     // - use path traversal to read files (e.g. @google-cloud/secret-manager loads sibling .proto files)
     external: [
       "*.node",
+      // resvg loads its platform-native binding dynamically — must resolve
+      // from node_modules at runtime, never from inside the bundle.
+      "@resvg/*",
       "sharp",
       "better-sqlite3",
       "sqlite3",

@@ -207,12 +207,21 @@ export default function ReceiptTicket({
 
   const txUrl = model.proof.explorerTxUrl;
   const shortTx = `${model.proof.txHash.slice(0, 6)}…${model.proof.txHash.slice(-4)}`;
+  // THE ROTATION (the founder's idea, engraved — the painted-cards slice,
+  // 2026-07-20): the rotation lives in the LINK, never the preview. Every
+  // share act hands out the CURRENT face's link, then advances — four
+  // shares, four different honest painted pictures, each one permanent
+  // (platforms photograph a page once; a variant url is its own object).
+  // Stateless by design: the counter lives in the mount, no shortener,
+  // no server state.
+  const [shareFace, setShareFace] = useState(1);
+  const advanceShareFace = () => setShareFace((f) => (f % 4) + 1);
   // THE RETARGET (the /receipt/{txHash} slice, Q44 sealed — ships in the
   // SAME deploy as the page, never before): the link a member HANDS someone
   // is the receipt's own public page — the one address that renders the full
   // document for anyone with the link. The explorer proof stays exactly one
   // click deeper: Verify and the QR are UNCHANGED.
-  const receiptPageUrl = `https://thesyndicate.money/receipt/${model.proof.txHash}`;
+  const receiptPageUrl = `https://thesyndicate.money/receipt/${model.proof.txHash}${shareFace > 1 ? `?f=${shareFace}` : ""}`;
   // ⑪ the share artifact: sealed proof + the member's own link (when it
   // resolves — a share never carries a broken or half-derived link).
   const shareText = txUrl
@@ -225,6 +234,7 @@ export default function ReceiptTicket({
     try {
       await navigator.clipboard.writeText(receiptPageUrl);
       setCopied(true);
+      advanceShareFace(); // the NEXT copy hands the next face's link
       window.setTimeout(() => setCopied(false), 1600);
     } catch {
       /* clipboard refused — the Verify link still carries the URL */
@@ -618,8 +628,10 @@ export default function ReceiptTicket({
                   type="button"
                   onClick={() => {
                     // THE RETARGET: every network intent carries the
-                    // receipt's own public page (see receiptPageUrl above).
+                    // receipt's own public page (see receiptPageUrl above);
+                    // each act advances the rotation for the next share.
                     window.open(t.build(receiptPageUrl, shareText ?? ""), "_blank", "noopener,noreferrer");
+                    advanceShareFace();
                     setShareOpen(false);
                   }}
                   className="flex flex-col items-center gap-1.5 rounded-lg border border-border px-1 py-2.5 min-h-14 text-xs text-foreground hover:bg-muted transition-colors"
@@ -637,6 +649,7 @@ export default function ReceiptTicket({
               onClick={() => {
                 setShareOpen(false);
                 void handleNativeShare();
+                advanceShareFace();
               }}
               className="w-full mt-3 min-h-12 rounded-lg border border-border text-foreground text-sm font-medium hover:bg-muted transition-colors"
               data-testid="button-share-other-apps"

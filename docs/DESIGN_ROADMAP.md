@@ -378,6 +378,30 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   Q44-①).** Les cartes peintes par reçu = la slice suivante de l'ordre
   scellé.
 
+- [x] **R-CARDS — LES CARTES PEINTES PAR REÇU + LA ROTATION (2026-07-20,
+  faces approuvées fondateur « approved » sur la maquette 4-faces)** : le
+  peintre serveur (satori + resvg + les polices DU SITE embarquées — Work
+  Sans + IBM Plex Mono, OFL) peint chaque reçu en 1200×630 < 300 Ko, 4
+  faces (LE SIÈGE · OÙ EST ALLÉ L'ARGENT · L'HISTOIRE · LA PREUVE — encre
+  fixe salle-de-commandement, chiffres RÉELS visibles par Loi de
+  Visibilité, QR « SCAN TO VERIFY » vers l'explorer) ;
+  `GET /api/receipt-card/{tx}.png?f=1..4` (throttle · cache long ·
+  in-paintable → 302 image générique, jamais inventé) ; `serve.mjs`
+  substitue à la volée le head PAR URL du shell reçu (og:url
+  auto-référent par variante + l'image peinte en og/twitter — substitution
+  pure, zéro dépendance, jumeaux précompressés jamais servis substitués) ;
+  LA ROTATION DANS LE LIEN (l'idée du fondateur, gravée) : chaque acte de
+  partage donne le lien de la face suivante (?f=2..4 puis retour) ;
+  `guard receipt-card` **31 pins** (montants visibles · vocabulaire banni ·
+  standard 1200×630/300 Ko · fail-closed · polices+licence) ; correctif
+  build gravé : cible node20 (le loader binaire émettait
+  `Uint8Array.fromBase64`, inconnu du runtime — attrapé au rig AVANT tout
+  déploiement). `paintedPreviewCards` → live même commit. **+0 couleur
+  brute** (cartes hors thème par conception — encre fixe). Rig : 4 faces
+  peintes avec les chiffres scellés du Seat #14 et vérifiées à l'œil ·
+  substitution head prouvée (nue / ?f=3 / hors-plage / 404) · route carte
+  302-générique sur modèle éteint · boot serveur vert.
+
 - [x] **NOTIF — LE CENTRE DE NOTIFICATIONS (2026-07-18, scellé jusqu'à
   51e68de)** : la cloche du header (badge = non-vus propres, onglets
   All/Protocol/Mine, View all → `/notifications`) · la page `/notifications`

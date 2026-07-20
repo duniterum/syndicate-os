@@ -297,6 +297,10 @@ check(
     "joinQuote.ts",
     "protocolReality.ts",
     "publicReadThrottle.ts",
+    // The painted preview cards (2026-07-20): one hash + face in, a painted
+    // PNG out — relays the row's sealedAtSec like the reads do; never
+    // touches the block_timestamp cache (the scan below covers it).
+    "receiptCard.ts",
     // The /receipt/{txHash} public read (Q44 sealed; slice 2026-07-20): one
     // shape-validated tx hash in, that purchase's own receipt row out. It
     // relays the row's sealedAtSec exactly as the auth read does (the field
@@ -310,7 +314,7 @@ check(
     "verifyLinks.ts",
   ];
   check(
-    "public route surface pinned (backboneFeed, backboneStatus, capitalStanding, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, receiptLookup, sourceStatus, sourceValidate, verifyLinks only)",
+    "public route surface pinned (backboneFeed, backboneStatus, capitalStanding, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, receiptCard, receiptLookup, sourceStatus, sourceValidate, verifyLinks only)",
     JSON.stringify(routeFiles) === JSON.stringify(allowed),
     `routes=${JSON.stringify(routeFiles)}`,
   );

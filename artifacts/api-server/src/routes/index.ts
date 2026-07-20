@@ -10,6 +10,7 @@ import backboneStatusRouter from "./backboneStatus";
 import backboneFeedRouter from "./backboneFeed";
 import capitalStandingRouter from "./capitalStanding";
 import receiptLookupRouter from "./receiptLookup";
+import receiptCardRouter from "./receiptCard";
 
 const router: IRouter = Router();
 
@@ -24,5 +25,6 @@ router.use(backboneStatusRouter);
 router.use(backboneFeedRouter);
 router.use(capitalStandingRouter);
 router.use(receiptLookupRouter);
+router.use(receiptCardRouter);
 
 export default router;

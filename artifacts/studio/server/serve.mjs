@@ -52,6 +52,51 @@ const PARAM_ROUTES = JSON.parse(
   readFileSync(path.join(HERE, "paramRoutes.generated.json"), "utf8"),
 ).map((rule) => ({ ...rule, re: new RegExp(rule.tailPattern) }));
 
+// Mirrors the SEO registry's CANONICAL_ORIGIN (serve.mjs stays dependency-
+// free; the registry is the source of truth — a change there changes here).
+const CANONICAL_ORIGIN = "https://thesyndicate.money";
+// The painted-card face variants the share rotation hands out (the
+// painted-cards slice, 2026-07-20). Kept in sync with the api painter's
+// FACE_COUNT; an out-of-range or absent ?f simply means the default face.
+const FACE_RE = /^[1-4]$/;
+
+// Per-URL head for the PARAM class (the painted-cards slice): the ONE baked
+// shell gains THIS url's own head at serve time — a self-referential og:url
+// (each shared variant is its own graph object, per the engraved rotation
+// footnotes) and the receipt's own painted picture as og/twitter image.
+// Pure string substitution, no DB, no deps; served identity-encoded (the
+// precompressed twins hold the UNSUBSTITUTED bytes and are never used here).
+// The api paints the picture — an unknown hash's card 302s to the generic
+// site image there, so this substitution never needs to know the record.
+function sendParamShell(req, res, absPath, rule, tail, face) {
+  let html = readFileSync(absPath, "utf8");
+  const suffix = face !== null ? `?f=${face}` : "";
+  const pageUrl = `${CANONICAL_ORIGIN}${rule.prefix}${tail}${suffix}`;
+  const cardUrl = `${CANONICAL_ORIGIN}/api/receipt-card/${tail}.png${suffix}`;
+  const ogUrlTag = `<meta property="og:url" content="${pageUrl}" />`;
+  html = /<meta property="og:url"[^>]*>/.test(html)
+    ? html.replace(/<meta property="og:url"[^>]*>/, ogUrlTag)
+    : html.replace("</head>", `    ${ogUrlTag}\n  </head>`);
+  html = html.replace(
+    /(<meta property="og:image" content=")[^"]*(")/,
+    `$1${cardUrl}$2`,
+  );
+  html = html.replace(
+    /(<meta name="twitter:image" content=")[^"]*(")/,
+    `$1${cardUrl}$2`,
+  );
+  const body = Buffer.from(html);
+  const headers = {
+    "Content-Type": "text/html; charset=utf-8",
+    "Cache-Control": "no-cache",
+    "Vary": "Accept-Encoding",
+    "X-Content-Type-Options": "nosniff",
+    "Content-Length": String(body.length),
+  };
+  res.writeHead(200, headers);
+  res.end(req.method === "HEAD" ? undefined : body);
+}
+
 // Fail LOUD, never silent: a dropped/empty build must not deploy as a "healthy"
 // all-404 site. The route table already crashes at import if missing; assert the
 // content root + its home shell the same way.
@@ -204,8 +249,12 @@ function handle(req, res) {
   }
 
   let pathname;
+  let faceParam = null;
   try {
-    pathname = decodeURIComponent(new URL(req.url, "http://localhost").pathname);
+    const u = new URL(req.url, "http://localhost");
+    pathname = decodeURIComponent(u.pathname);
+    const f = u.searchParams.get("f");
+    if (f !== null && FACE_RE.test(f)) faceParam = f;
   } catch {
     send404(req, res);
     return;
@@ -248,7 +297,9 @@ function handle(req, res) {
   // 3b) PARAM-rule class (registry-derived; the /receipt/{txHash} slice):
   //     a shape-valid tail under a declared prefix serves that route's ONE
   //     shell at 200 (a single trailing slash tolerated, matching the
-  //     literal class); anything else under the prefix falls to the real 404.
+  //     literal class) — WITH this url's own head substituted in (the
+  //     painted-cards slice); anything else under the prefix falls to the
+  //     real 404.
   if (!filePath) {
     for (const rule of PARAM_ROUTES) {
       if (!pathname.startsWith(rule.prefix)) continue;
@@ -256,8 +307,8 @@ function handle(req, res) {
       if (rule.re.test(tail)) {
         const t = resolveFile(rule.shell);
         if (t) {
-          filePath = t;
-          servedRel = rule.shell;
+          sendParamShell(req, res, t, rule, tail, faceParam);
+          return;
         }
       }
       break; // one rule owns its prefix; a non-matching tail 404s

@@ -37,6 +37,7 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   channelAnalytics: { status: "live", since: "2026-07-19", where: "/referral/link" },
   introductionRows: { status: "live", since: "2026-07-19", where: "/referral/introductions" },
   receiptPublicPage: { status: "live", since: "2026-07-20", where: "/receipt/{txHash}" },
+  paintedPreviewCards: { status: "live", since: "2026-07-20", where: "/receipt/{txHash} link previews (4 faces + rotation)" },
 
   // ── FUTURE (the only keys a future-claim may cite) ──────────────────────
   avatarUpload: { status: "future", since: "2026-07-14", where: "Member Home arc (App Storage decided)" },
@@ -47,6 +48,5 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   seasonEngine: { status: "future", since: "2026-07-19", where: "recognition/season Phase-5" },
   rateRaiseHistory: { status: "future", since: "2026-07-19", where: "the SOURCE_LIFECYCLE rescan micro-slice" },
   secondGeneration: { status: "future", since: "2026-07-19", where: "the 2nd-generation own-row view" },
-  paintedPreviewCards: { status: "future", since: "2026-07-20", where: "per-receipt painted preview cards + link rotation (the sealed next slice)" },
   commissionRegister: { status: "future", since: "2026-07-19", where: "slice 5.1 (mockup approved)" },
 };

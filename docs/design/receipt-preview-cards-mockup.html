@@ -1,0 +1,327 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cartes peintes — l'aperçu par reçu + la rotation (maquette)</title>
+<style>
+  /* ── Tokens — verbatim from artifacts/studio/src/index.css (the house mockup family) ── */
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --card: 0 0% 100%;
+    --muted-foreground: 215 16% 47%;
+    --gold: 38 74% 44%;
+    --proof: 190 90% 40%;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: 224 71% 4%;
+      --foreground: 213 31% 91%;
+      --border: 216 34% 17%;
+      --card: 222 47% 7%;
+      --muted-foreground: 215.4 16.3% 56.9%;
+      --gold: 42 92% 60%;
+      --proof: 190 90% 45%;
+    }
+  }
+  :root[data-theme="dark"] {
+    --background: 224 71% 4%; --foreground: 213 31% 91%; --border: 216 34% 17%;
+    --card: 222 47% 7%; --muted-foreground: 215.4 16.3% 56.9%; --gold: 42 92% 60%; --proof: 190 90% 45%;
+  }
+  :root[data-theme="light"] {
+    --background: 210 40% 98%; --foreground: 222 47% 11%; --border: 214 32% 91%;
+    --card: 0 0% 100%; --muted-foreground: 215 16% 47%; --gold: 38 74% 44%; --proof: 190 90% 40%;
+  }
+
+  /* The PAINTED CARD is a fixed-ink artifact — it renders on the PLATFORMS'
+     backgrounds (X, WhatsApp…), never in our theme. One look, the command
+     room: near-black ink + gold. These are the card's own constants. */
+  .card {
+    --ck-bg: hsl(222 47% 7%);
+    --ck-fg: hsl(213 31% 91%);
+    --ck-muted: hsl(215.4 16.3% 56.9%);
+    --ck-border: hsl(216 34% 22%);
+    --ck-gold: hsl(42 92% 60%);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace; }
+  .tnum { font-variant-numeric: tabular-nums; }
+  a { color: hsl(var(--proof) / .85); text-decoration: none; }
+  a:hover { color: hsl(var(--proof)); }
+  :focus-visible { outline: 2px solid hsl(var(--gold)); outline-offset: 2px; }
+
+  .page { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+
+  .mock-banner {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    border: 1px dashed hsl(var(--gold) / .45); border-radius: 10px;
+    background: hsl(var(--gold) / .07); padding: 10px 14px; margin-bottom: 20px;
+    font-size: 12.5px; color: hsl(var(--muted-foreground));
+  }
+  .mock-banner b { color: hsl(var(--gold)); font-weight: 600; }
+  .theme-btn {
+    margin-left: auto; cursor: pointer; border: 1px solid hsl(var(--border));
+    background: hsl(var(--card)); color: hsl(var(--foreground)); border-radius: 8px;
+    padding: 6px 12px; font-size: 12.5px; min-height: 36px;
+  }
+  .annot {
+    font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+    color: hsl(var(--gold) / .8); margin: 36px 0 12px;
+  }
+  .annot::before { content: "◤ "; }
+  .note {
+    border: 1px dashed hsl(var(--border)); border-radius: 10px;
+    background: hsl(var(--card) / .4); padding: 12px 14px; margin: 12px 0 0;
+    font-size: 12.5px; color: hsl(var(--muted-foreground));
+  }
+  .note b { color: hsl(var(--foreground)); font-weight: 600; }
+  .note ul { margin: 6px 0 0 18px; }
+  .note li { margin-top: 4px; }
+
+  /* ── the 1200×630 card, scaled responsively ── */
+  .cardwrap {
+    position: relative; width: 100%; max-width: 640px; margin: 0 auto;
+    aspect-ratio: 1200 / 630; overflow: hidden; border-radius: 10px;
+    box-shadow: 0 8px 28px hsl(224 71% 2% / .35);
+  }
+  .card {
+    position: absolute; top: 0; left: 0; width: 1200px; height: 630px;
+    transform-origin: top left;
+    background: var(--ck-bg); color: var(--ck-fg);
+    border: 2px solid var(--ck-border);
+  }
+  .card-inner {
+    height: 100%; width: 100%; display: flex; align-items: center;
+    justify-content: space-between; gap: 56px; padding: 56px 90px;
+  }
+  .ck-mast { display: flex; align-items: center; gap: 16px; }
+  .ck-mark {
+    width: 48px; height: 48px; border: 2px solid var(--ck-gold); border-radius: 999px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 19px; font-weight: 700; color: var(--ck-gold);
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+  }
+  .ck-proto { font-size: 24px; font-weight: 600; letter-spacing: .24em; }
+  .ck-sub { font-size: 14px; font-weight: 600; letter-spacing: .18em; color: var(--ck-muted); }
+  .ck-huge { font-size: 64px; font-weight: 600; line-height: 1; }
+  .ck-big { font-size: 34px; font-weight: 600; }
+  .ck-chip {
+    display: inline-block; border: 1px solid hsl(42 92% 60% / .4); background: hsl(42 92% 60% / .1);
+    color: var(--ck-gold); border-radius: 999px; font-size: 20px; padding: 5px 16px;
+  }
+  .ck-label { font-size: 16px; font-weight: 600; letter-spacing: .14em; color: var(--ck-muted); }
+  .ck-line { font-size: 18px; color: var(--ck-muted); }
+  .ck-small { font-size: 16px; color: var(--ck-muted); }
+  .ck-gold-line { font-size: 19px; font-weight: 600; letter-spacing: .22em; color: var(--ck-gold); }
+  .ck-goldtitle { font-size: 20px; font-weight: 600; letter-spacing: .18em; color: var(--ck-gold); }
+  .ck-qrbox { border-radius: 12px; border: 1px solid var(--ck-border); background: #fff; padding: 16px; display: inline-block; line-height: 0; }
+  .ck-row { display: flex; align-items: baseline; gap: 24px; font-size: 26px; }
+  .ck-row .k { color: var(--ck-muted); }
+  .ck-row .v { margin-left: auto; font-weight: 600; }
+  .ck-doctrine { border-left: 3px solid hsl(42 92% 60% / .4); padding-left: 18px; font-size: 24px; line-height: 1.45; }
+
+  .facegrid { display: grid; gap: 22px; }
+  .facelabel {
+    font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+    color: hsl(var(--muted-foreground)); margin: 14px 0 6px;
+  }
+
+  /* ── the chat-unfurl demo ── */
+  .chat {
+    max-width: 420px; margin: 0 auto; border: 1px solid hsl(var(--border));
+    border-radius: 14px; background: hsl(var(--card) / .5); padding: 16px;
+  }
+  .bubble {
+    background: hsl(var(--card)); border: 1px solid hsl(var(--border));
+    border-radius: 12px; padding: 10px 12px; max-width: 100%;
+  }
+  .bubble .msg { font-size: 13px; word-break: break-all; color: hsl(var(--proof) / .9); }
+  .unfurl { border: 1px solid hsl(var(--border)); border-radius: 10px; overflow: hidden; margin-top: 8px; }
+  .unfurl .cardwrap { max-width: 100%; border-radius: 0; box-shadow: none; }
+  .unfurl .meta { padding: 8px 10px; font-size: 12px; color: hsl(var(--muted-foreground)); background: hsl(var(--card)); }
+  .unfurl .meta b { color: hsl(var(--foreground)); font-size: 12.5px; display: block; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="page">
+
+  <div class="mock-banner">
+    <b>MAQUETTE — LES CARTES PEINTES PAR REÇU + LA ROTATION</b>
+    <span>l'image que montre X / WhatsApp / Telegram quand un lien de reçu est collé · chiffres RÉELS du reçu scellé Seat #14 · démo interactive</span>
+    <button class="theme-btn" id="themeBtn" type="button">Thème : auto</button>
+  </div>
+
+  <div class="note" style="margin-bottom:8px">
+    <b>La carte est à encre FIXE</b> — elle s'affiche sur les fonds des plateformes, jamais dans notre thème.
+    Le bouton thème change la page autour ; les cartes, elles, gardent l'encre de la salle de commandement (noir + or), comme la carte de partage déjà prouvée.
+  </div>
+
+  <div class="annot">Ce que reçoit un groupe WhatsApp — la démo</div>
+  <div class="chat">
+    <div class="bubble">
+      <div class="msg">thesyndicate.money/receipt/0xa30f…fb50</div>
+      <div class="unfurl">
+        <div class="cardwrap" data-face="1"></div>
+        <div class="meta"><b>Membership Receipt — Proof of Purchase</b>thesyndicate.money</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="annot">Les 4 faces — une par pression de Share (la rotation vit dans le LIEN)</div>
+  <div class="facegrid">
+    <div>
+      <div class="facelabel">Face 1 · LE SIÈGE (la face par défaut — le lien nu)</div>
+      <div class="cardwrap" data-face="1"></div>
+    </div>
+    <div>
+      <div class="facelabel">Face 2 · OÙ EST ALLÉ L'ARGENT (?f=2)</div>
+      <div class="cardwrap" data-face="2"></div>
+    </div>
+    <div>
+      <div class="facelabel">Face 3 · L'HISTOIRE (?f=3)</div>
+      <div class="cardwrap" data-face="3"></div>
+    </div>
+    <div>
+      <div class="facelabel">Face 4 · LA PREUVE (?f=4)</div>
+      <div class="cardwrap" data-face="4"></div>
+    </div>
+  </div>
+
+  <div class="annot">La rotation, en mots humains (ta réponse gravée, appliquée)</div>
+  <div class="note">
+    <ul>
+      <li><b>Chaque pression de Share donne le lien de la face suivante</b> — …/receipt/0xa30f…fb50, puis ?f=2, puis ?f=3, puis ?f=4, puis retour. Quatre partages, quatre images différentes, toutes honnêtes et permanentes.</li>
+      <li><b>Rien ne tourne après coup</b> : les plateformes photographient la page UNE fois — c'est pour ça que la rotation vit dans le lien, pas dans l'aperçu (l'impossibilité que tu connais, contournée par ton idée).</li>
+      <li><b>Toutes les faces ouvrent la MÊME page</b> — le reçu complet ; la face ne change que la photo d'annonce.</li>
+      <li><b>Les chiffres sont VRAIS et visibles</b> (Loi de Visibilité) — ce sont ceux de la transaction que la carte cite.</li>
+      <li><b>Le QR des faces 1 et 4</b> encode l'adresse de vérification sur l'explorer — « SCAN TO VERIFY », comme le ticket.</li>
+      <li>Lien inconnu / hash sans achat → l'image générique du site (rien de peint, rien d'inventé).</li>
+      <li>Notre serveur peint chaque image lui-même (moins de 300 Ko — WhatsApp-safe) ; rien à acheter, rien d'externe.</li>
+    </ul>
+  </div>
+
+  <div class="annot">Ce que la slice construit (après ton approbation visuelle)</div>
+  <div class="note">
+    <ul>
+      <li>Le peintre d'images sur notre serveur API (deux nouvelles briques logicielles auditées + une police embarquée) — une adresse d'image par reçu et par face, en cache long.</li>
+      <li>Le serveur de pages insère, au moment de servir, l'adresse de SA photo dans chaque page de reçu valide (aucune base de données, substitution pure).</li>
+      <li>Le bouton Share du ticket fait tourner la face à chaque pression.</li>
+      <li>Gates : les chiffres visibles épinglés sur chaque face · le vocabulaire banni scanné · <span class="mono">paintedPreviewCards</span> → live dans le même commit.</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+  var modes = ["auto", "dark", "light"], mi = 0;
+  var tb = document.getElementById("themeBtn");
+  tb.addEventListener("click", function () {
+    mi = (mi + 1) % modes.length;
+    if (modes[mi] === "auto") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", modes[mi]);
+    tb.textContent = "Thème : " + modes[mi];
+  });
+
+  /* Illustrative QR (deterministic) drawn into a canvas of given size. */
+  function drawQr(canvas, size) {
+    var ctx = canvas.getContext("2d"), n = 21, s = Math.floor(size / n);
+    canvas.width = n * s; canvas.height = n * s;
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#000";
+    var seed = 77;
+    function rnd() { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+    function finder(x, y) {
+      ctx.fillRect(x * s, y * s, 7 * s, 7 * s);
+      ctx.fillStyle = "#fff"; ctx.fillRect((x + 1) * s, (y + 1) * s, 5 * s, 5 * s);
+      ctx.fillStyle = "#000"; ctx.fillRect((x + 2) * s, (y + 2) * s, 3 * s, 3 * s);
+    }
+    for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) {
+      var inF = (x < 8 && y < 8) || (x > 12 && y < 8) || (x < 8 && y > 12);
+      if (!inF && rnd() > 0.55) ctx.fillRect(x * s + 1, y * s + 1, s, s);
+    }
+    finder(0, 0); finder(14, 0); finder(0, 14);
+  }
+
+  /* The four faces — REAL sealed figures (Seat #14, tx 0xa30f…fb50). */
+  var MAST = '<div class="ck-mast"><div class="ck-mark">SS</div><div>' +
+    '<div class="ck-proto mono">THE SYNDICATE</div>' +
+    '<div class="ck-sub mono">ON-CHAIN MEMBERSHIP PROTOCOL · Avalanche C-Chain (43114)</div>' +
+    '</div></div>';
+
+  var FACES = {
+    "1":
+      '<div class="card-inner"><div style="min-width:0">' + MAST +
+      '<div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:24px;margin-top:34px">' +
+      '<div class="ck-huge mono tnum">Member #14</div>' +
+      '<span class="ck-chip">Chapter I · Genesis Signal</span></div>' +
+      '<div style="display:flex;align-items:baseline;gap:16px;margin-top:26px">' +
+      '<span class="ck-label mono">TOTAL PAID</span><span class="ck-big mono tnum">$5.00 USDC</span></div>' +
+      '<div class="ck-line" style="margin-top:10px">Referral · paid first $0.25 — The remaining $4.75: Vault · 70% $3.325 · Liquidity · 20% $0.95 · Operations · 10% $0.475</div>' +
+      '<div class="ck-line" style="margin-top:20px">Seat held — written on-chain · 2026-07-13 · block 90,187,059</div>' +
+      '<div class="ck-small mono" style="margin-top:8px">Verify tx 0xa30f…fb50 · thesyndicate.money</div>' +
+      '<div class="ck-gold-line mono" style="margin-top:20px">ONE WALLET · ONE SEAT</div>' +
+      '</div><div style="flex-shrink:0;text-align:center">' +
+      '<div class="ck-qrbox"><canvas data-qr="230"></canvas></div>' +
+      '<div class="mono" style="font-size:19px;font-weight:600;letter-spacing:.16em;margin-top:14px">SCAN TO VERIFY</div>' +
+      '<div class="ck-small" style="margin-top:4px">the transaction, on-chain</div>' +
+      '</div></div>',
+    "2":
+      '<div class="card-inner"><div style="min-width:0;width:100%">' + MAST +
+      '<div class="ck-goldtitle mono" style="margin-top:30px">WHERE YOUR MONEY WENT</div>' +
+      '<div class="ck-small" style="margin-top:2px">— in the buyer’s own transaction · Seat #14</div>' +
+      '<div style="max-width:760px;margin-top:22px">' +
+      '<div class="ck-row mono tnum"><span class="k">TOTAL PAID</span><span class="v" style="font-size:34px">$5.00 USDC</span></div>' +
+      '<div class="ck-row mono tnum" style="margin-top:10px"><span class="k">Referral · paid first</span><span class="v">$0.25</span></div>' +
+      '<div class="ck-row mono tnum" style="margin-top:10px"><span class="k">Vault · 70%</span><span class="v">$3.325</span></div>' +
+      '<div class="ck-row mono tnum" style="margin-top:10px"><span class="k">Liquidity · 20%</span><span class="v">$0.95</span></div>' +
+      '<div class="ck-row mono tnum" style="margin-top:10px"><span class="k">Operations · 10%</span><span class="v">$0.475</span></div>' +
+      '</div>' +
+      '<div class="ck-small mono" style="margin-top:24px">Verify tx 0xa30f…fb50 · thesyndicate.money</div>' +
+      '</div></div>',
+    "3":
+      '<div class="card-inner"><div style="min-width:0">' + MAST +
+      '<div class="ck-huge mono" style="margin-top:36px;font-size:54px">Seat #14 of Chapter I · Era 1</div>' +
+      '<div class="ck-doctrine" style="margin-top:26px">“SYN is the seat — one wallet, one seat; more SYN is footprint, never more seats.”</div>' +
+      '<div class="ck-line" style="margin-top:24px">500 SYN received (100 SYN / USDC) · 2026-07-13 · block 90,187,059</div>' +
+      '<div class="ck-small mono" style="margin-top:8px">Verify tx 0xa30f…fb50 · thesyndicate.money</div>' +
+      '</div></div>',
+    "4":
+      '<div class="card-inner"><div style="min-width:0">' + MAST +
+      '<div class="ck-goldtitle mono" style="margin-top:34px;letter-spacing:.22em">SEALED BY THE PROTOCOL</div>' +
+      '<div class="ck-big mono tnum" style="margin-top:16px">block 90,187,059 · 2026-07-13</div>' +
+      '<div class="ck-line" style="margin-top:14px">the transaction hash <em>is</em> the signature</div>' +
+      '<div class="mono" style="font-size:22px;margin-top:10px;word-break:break-all;color:var(--ck-muted)">0xa30f…fb50</div>' +
+      '<div class="ck-gold-line mono" style="margin-top:24px">DON’T TRUST — VERIFY</div>' +
+      '</div><div style="flex-shrink:0;text-align:center">' +
+      '<div class="ck-qrbox"><canvas data-qr="250"></canvas></div>' +
+      '<div class="mono" style="font-size:19px;font-weight:600;letter-spacing:.16em;margin-top:14px">SCAN TO VERIFY</div>' +
+      '</div></div>'
+  };
+
+  var wraps = document.querySelectorAll(".cardwrap");
+  for (var i = 0; i < wraps.length; i++) {
+    var card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = FACES[wraps[i].getAttribute("data-face")] || "";
+    wraps[i].appendChild(card);
+  }
+  var qrs = document.querySelectorAll("canvas[data-qr]");
+  for (var q = 0; q < qrs.length; q++) drawQr(qrs[q], parseInt(qrs[q].getAttribute("data-qr"), 10));
+
+  function rescale() {
+    var all = document.querySelectorAll(".cardwrap");
+    for (var j = 0; j < all.length; j++) {
+      var c = all[j].querySelector(".card");
+      if (c) c.style.transform = "scale(" + all[j].clientWidth / 1200 + ")";
+    }
+  }
+  rescale();
+  window.addEventListener("resize", rescale);
+</script>

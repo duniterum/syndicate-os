@@ -467,7 +467,7 @@ check(
 
 const routeFiles = readdirSync("src/routes").sort();
 check(
-  "public route surface pinned (backboneFeed, backboneStatus, capitalStanding, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, receiptLookup, sourceStatus, sourceValidate, verifyLinks only)",
+  "public route surface pinned (backboneFeed, backboneStatus, capitalStanding, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, receiptCard, receiptLookup, sourceStatus, sourceValidate, verifyLinks only)",
   JSON.stringify(routeFiles) ===
     JSON.stringify([
       // Founder-approved backbone feed route (M4-b): receipt lines only —
@@ -486,6 +486,13 @@ check(
       "joinQuote.ts",
       "protocolReality.ts",
       "publicReadThrottle.ts",
+      // The painted preview cards (Q44 sealed order; founder-approved faces
+      // 2026-07-20): one 64-hex hash + face in, that receipt's painted
+      // 1200×630 PNG out — the same tx-keyed projection, painted in the
+      // dedicated src/receiptcard zone (the route itself stays thin AND
+      // under the blanket word bans below); anything unpaintable 302s to
+      // the generic site image, never an invented card.
+      "receiptCard.ts",
       // The /receipt/{txHash} public read (Q44 sealed whole 2026-07-19;
       // founder-approved slice 2026-07-20): ONE shape-validated 64-hex tx
       // hash in, that purchase's OWN receipt row out — the binder's exact
