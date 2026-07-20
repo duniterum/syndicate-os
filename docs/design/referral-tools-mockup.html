@@ -1,0 +1,452 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Referral Tools — l'arsenal du référent (maquette)</title>
+<style>
+  /* ── The Syndicate house tokens, verbatim from artifacts/studio/src/index.css ── */
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --card: 0 0% 100%;
+    --muted-foreground: 215 16% 47%;
+    --gold: 38 74% 44%;
+    --proof: 190 90% 40%;
+    --ink: 224 71% 4%;
+    --ink-fg: 213 31% 91%;
+    --ink-gold: 42 92% 60%;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --background: 224 71% 4%; --foreground: 213 31% 91%; --border: 216 34% 17%; --card: 222 47% 7%; --muted-foreground: 215.4 16.3% 56.9%; --gold: 42 92% 60%; --proof: 190 90% 45%; }
+  }
+  :root[data-theme="dark"]  { --background: 224 71% 4%; --foreground: 213 31% 91%; --border: 216 34% 17%; --card: 222 47% 7%; --muted-foreground: 215.4 16.3% 56.9%; --gold: 42 92% 60%; --proof: 190 90% 45%; }
+  :root[data-theme="light"] { --background: 210 40% 98%; --foreground: 222 47% 11%; --border: 214 32% 91%; --card: 0 0% 100%; --muted-foreground: 215 16% 47%; --gold: 38 74% 44%; --proof: 190 90% 40%; }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: hsl(var(--background)); color: hsl(var(--foreground)); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace; }
+  .tnum { font-variant-numeric: tabular-nums; }
+  .page { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
+
+  .mock-banner { display:flex; flex-wrap:wrap; align-items:center; gap:10px; border:1px dashed hsl(var(--gold)/.45); border-radius:10px; background:hsl(var(--gold)/.07); padding:10px 14px; margin-bottom:22px; font-size:12.5px; color:hsl(var(--muted-foreground)); }
+  .mock-banner b { color:hsl(var(--gold)); font-weight:600; }
+  .theme-btn { margin-left:auto; cursor:pointer; border:1px solid hsl(var(--border)); background:hsl(var(--card)); color:hsl(var(--foreground)); border-radius:8px; padding:6px 12px; font-size:12.5px; min-height:36px; }
+  .annot { font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:hsl(var(--gold)/.8); margin:34px 0 10px; }
+  .annot::before { content:"◤ "; }
+
+  .tabs { display:flex; gap:22px; border-bottom:1px solid hsl(var(--border)); overflow-x:auto; scrollbar-width:none; }
+  .tabs::-webkit-scrollbar { display:none; }
+  .tab { padding:10px 2px 11px; white-space:nowrap; font-size:13.5px; color:hsl(var(--muted-foreground)); position:relative; }
+  .tab.active { color:hsl(var(--foreground)); font-weight:500; }
+  .tab.active::after { content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:hsl(var(--gold)); }
+  .tab .new { font-size:10px; color:hsl(var(--gold)); border:1px solid hsl(var(--gold)/.4); border-radius:999px; padding:0 6px; margin-left:5px; }
+
+  .section-title { display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; margin:26px 0 4px; }
+  .section-title h2 { font-size:15px; font-weight:600; margin:0; }
+  .section-title .why { font-size:12.5px; color:hsl(var(--muted-foreground)); }
+
+  .card-frame { border:1px solid hsl(var(--border)); background:hsl(var(--card)/.4); border-radius:10px; padding:18px; }
+
+  /* ── artefacts: always INK (server-painted, theme-independent) ── */
+  .artefact { background:hsl(var(--ink)); color:hsl(var(--ink-fg)); border:1px solid hsl(216 34% 17%); border-radius:8px; overflow:hidden; position:relative; flex:none; }
+  .a-gold { color:hsl(var(--ink-gold)); }
+  .a-muted { color:hsl(215 16% 60%); }
+  .a-mark { display:inline-flex; align-items:center; justify-content:center; border:1.5px solid hsl(var(--ink-gold)); color:hsl(var(--ink-gold)); border-radius:999px; font-weight:700; }
+
+  /* standing card 1200×630 shown at 50% */
+  .std-card { width:600px; height:315px; max-width:100%; padding:26px 30px; display:flex; flex-direction:column; }
+  .std-head { display:flex; align-items:center; gap:10px; }
+  .std-head .a-mark { width:26px; height:26px; font-size:11px; }
+  .std-title { font-size:13px; letter-spacing:.22em; font-weight:700; }
+  .std-sub { font-size:9px; letter-spacing:.18em; color:hsl(215 16% 60%); }
+  .std-seat { font-size:30px; font-weight:700; margin-top:26px; font-family:ui-monospace,Consolas,monospace; }
+  .std-line { font-size:14px; color:hsl(213 31% 80%); margin-top:8px; }
+  .std-facts { font-size:11.5px; color:hsl(215 16% 60%); margin-top:14px; font-family:ui-monospace,Consolas,monospace; }
+  .std-foot { margin-top:auto; display:flex; align-items:flex-end; gap:14px; }
+  .std-verify { font-size:10px; letter-spacing:.22em; font-weight:600; color:hsl(215 16% 60%); }
+  .qr { background:#fff; border-radius:6px; padding:5px; }
+  .qr svg { display:block; }
+
+  .fmt-row { display:flex; flex-wrap:wrap; gap:16px; align-items:flex-start; margin-top:16px; }
+  .fmt { text-align:center; }
+  .fmt .lbl { font-size:11.5px; color:hsl(var(--muted-foreground)); margin-top:6px; font-family:ui-monospace,Consolas,monospace; }
+  .sq-card { width:140px; height:140px; padding:12px; display:flex; flex-direction:column; }
+  .sq-card .a-mark { width:18px; height:18px; font-size:8px; }
+  .sq-seat { font-size:15px; font-weight:700; margin-top:10px; font-family:ui-monospace,Consolas,monospace; }
+  .sq-sub { font-size:8.5px; color:hsl(215 16% 60%); margin-top:4px; }
+  .story-card { width:122px; height:216px; padding:12px; display:flex; flex-direction:column; }
+  .story-seat { font-size:14px; font-weight:700; margin-top:14px; font-family:ui-monospace,Consolas,monospace; }
+  .story-sub { font-size:8px; color:hsl(215 16% 60%); margin-top:4px; }
+  .story-card .qr { align-self:flex-start; margin-top:auto; }
+
+  /* real-size banners */
+  .banner-wrap { overflow-x:auto; padding-bottom:6px; }
+  .bn { display:flex; align-items:center; gap:14px; padding:0 18px; }
+  .bn-728 { width:728px; height:90px; }
+  .bn-468 { width:468px; height:60px; gap:10px; padding:0 12px; }
+  .bn-300 { width:300px; height:250px; flex-direction:column; justify-content:center; text-align:center; gap:10px; padding:18px; }
+  .bn .a-mark { width:34px; height:34px; font-size:13px; }
+  .bn-468 .a-mark { width:26px; height:26px; font-size:10px; }
+  .bn-title { font-size:15px; font-weight:700; letter-spacing:.14em; white-space:nowrap; }
+  .bn-sub { font-size:10.5px; color:hsl(215 16% 60%); letter-spacing:.06em; white-space:nowrap; }
+  .bn-468 .bn-title { font-size:12px; }
+  .bn-468 .bn-sub { font-size:9px; }
+  .bn-intro { margin-left:auto; text-align:right; font-family:ui-monospace,Consolas,monospace; font-size:10.5px; color:hsl(213 31% 80%); white-space:nowrap; }
+  .bn-300 .bn-intro { margin-left:0; text-align:center; }
+  .bn-actions { display:flex; gap:8px; margin:10px 18px 0; flex-wrap:wrap; }
+
+  .btn { cursor:pointer; border:1px solid hsl(var(--border)); background:hsl(var(--card)); color:hsl(var(--foreground)); border-radius:8px; padding:7px 12px; font-size:12.5px; min-height:36px; }
+  .btn-gold { border-color:hsl(var(--gold)/.5); color:hsl(var(--gold)); background:hsl(var(--gold)/.07); }
+  .btn:focus-visible { outline:2px solid hsl(var(--gold)); outline-offset:2px; }
+
+  /* poster A4 */
+  .poster { width:222px; height:314px; padding:20px 16px; display:flex; flex-direction:column; align-items:center; text-align:center; }
+  .poster .a-mark { width:30px; height:30px; font-size:12px; }
+  .poster-t { font-size:12px; font-weight:700; letter-spacing:.18em; margin-top:10px; }
+  .poster-s { font-size:8.5px; color:hsl(215 16% 60%); margin-top:6px; line-height:1.5; }
+  .poster .qr { margin:14px 0 8px; }
+  .poster-scan { font-size:9px; letter-spacing:.2em; font-weight:700; color:hsl(var(--ink-gold)); }
+  .poster-foot { margin-top:auto; font-size:8px; letter-spacing:.16em; color:hsl(215 16% 60%); }
+
+  /* living moments */
+  .moment { display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; border:1px solid hsl(var(--border)); background:hsl(var(--card)); border-radius:10px; padding:12px 14px; margin-bottom:10px; }
+  .moment::before { content:""; display:none; }
+  .m-date { font-size:12.5px; color:hsl(var(--muted-foreground)); white-space:nowrap; font-family:ui-monospace,Consolas,monospace; }
+  .m-text { font-size:13.5px; }
+  .m-text b { font-weight:600; }
+  .m-share { margin-left:auto; }
+
+  /* creators */
+  .creator-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
+  .creator { border:1px solid hsl(var(--border)); background:hsl(var(--card)/.4); border-radius:10px; padding:16px; }
+  .creator h3 { font-size:13.5px; font-weight:600; margin:0 0 4px; }
+  .creator .tag { font-size:11px; color:hsl(var(--gold)); font-family:ui-monospace,Consolas,monospace; }
+  .creator p { font-size:12.5px; color:hsl(var(--muted-foreground)); margin:8px 0; }
+  .snippet { font-family:ui-monospace,Consolas,monospace; font-size:11.5px; background:hsl(var(--background)); border:1px solid hsl(var(--border)); border-radius:8px; padding:10px; color:hsl(var(--foreground)); overflow-wrap:anywhere; margin-bottom:8px; }
+
+  /* words */
+  .word-line { display:flex; flex-wrap:wrap; align-items:center; gap:10px; border-top:1px dashed hsl(var(--border)); padding:10px 2px; }
+  .word-line:first-of-type { border-top:none; }
+  .word-line .q { font-size:13.5px; flex:1 1 320px; }
+  .pill { display:inline-flex; align-items:center; border-radius:999px; font-size:12px; padding:1px 9px; border:1px solid; white-space:nowrap; }
+  .pill-plain { color:hsl(var(--muted-foreground)); border-color:hsl(var(--border)); background:transparent; }
+
+  /* rules expander */
+  .ref { border:1px solid hsl(var(--border)); background:hsl(var(--card)/.4); border-radius:10px; margin-top:26px; }
+  .ref-trigger { display:flex; width:100%; align-items:center; gap:10px; padding:13px 16px; background:none; border:none; color:inherit; font:inherit; cursor:pointer; text-align:left; font-size:13.5px; min-height:48px; }
+  .ref .doc { display:none; padding:0 16px 14px; }
+  .ref[data-open="true"] .doc { display:block; }
+  .caret { width:14px; height:14px; flex:none; color:hsl(var(--muted-foreground)); transition:transform .18s ease; margin-left:auto; }
+  .ref[data-open="true"] .caret { transform:rotate(180deg); }
+  .rule-cols { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; border-top:1px dashed hsl(var(--border)); padding-top:12px; }
+  .rule-cols h4 { font-size:12px; letter-spacing:.14em; text-transform:uppercase; margin:0 0 6px; }
+  .rule-cols ul { margin:0; padding-left:18px; font-size:12.5px; color:hsl(var(--muted-foreground)); line-height:1.8; }
+
+  .legal { border-top:1px dashed hsl(var(--border)); margin-top:28px; padding-top:14px; font-size:13px; color:hsl(var(--muted-foreground)); max-width:46em; }
+</style>
+
+<div class="page">
+  <div class="mock-banner">
+    <span><b>MAQUETTE</b> — /referral/tools · l'ARSENAL du référent (nouvel onglet) · tout artefact est MONTRÉ, jamais décrit · démo interactive</span>
+    <button type="button" class="theme-btn" id="themeBtn">Thème : auto</button>
+  </div>
+
+  <nav class="tabs" aria-label="Referral">
+    <span class="tab">Overview</span>
+    <span class="tab">Introductions</span>
+    <span class="tab">Commissions</span>
+    <span class="tab">Ladder &amp; recognition</span>
+    <span class="tab">Channels</span>
+    <span class="tab active" aria-current="page">Tools<span class="new">NOUVEAU</span></span>
+  </nav>
+
+  <!-- ═══ 1 · LA CARTE ═══ -->
+  <div class="section-title">
+    <h2>Ta carte — peinte par le serveur, chiffres prouvés par la chaîne</h2>
+    <span class="why">le même moteur qui peint déjà les reçus partagés</span>
+  </div>
+  <div class="card-frame">
+    <div class="artefact std-card">
+      <div class="std-head">
+        <span class="a-mark">SS</span>
+        <div>
+          <div class="std-title">THE SYNDICATE</div>
+          <div class="std-sub">ON-CHAIN MEMBERSHIP PROTOCOL · AVALANCHE C-CHAIN</div>
+        </div>
+      </div>
+      <div class="std-seat a-gold">Seat #1 · Chapter I — Genesis Signal</div>
+      <div class="std-line">2 durable introductions · Emerging Connector</div>
+      <div class="std-facts">source 0x88e…dd73 · verified on-chain · thesyndicate.money</div>
+      <div class="std-foot">
+        <div class="qr" data-qr="17" data-scale="3"></div>
+        <div>
+          <div class="std-verify">SCAN — JOIN THROUGH MY INTRODUCTION</div>
+          <div class="std-verify" style="margin-top:6px">DON'T TRUST — VERIFY</div>
+        </div>
+      </div>
+    </div>
+    <div class="fmt-row">
+      <div class="fmt">
+        <div class="artefact sq-card">
+          <span class="a-mark">SS</span>
+          <div class="sq-seat a-gold">Seat #1</div>
+          <div class="sq-sub">Chapter I · 2 durable</div>
+          <div class="qr" data-qr="13" data-scale="2" style="margin-top:auto; align-self:flex-start"></div>
+        </div>
+        <div class="lbl">1080×1080 · post</div>
+      </div>
+      <div class="fmt">
+        <div class="artefact story-card">
+          <span class="a-mark" style="width:16px;height:16px;font-size:7px">SS</span>
+          <div class="story-seat a-gold">Seat #1</div>
+          <div class="story-sub">Chapter I<br>Genesis Signal<br>2 durable intro.</div>
+          <div class="qr" data-qr="13" data-scale="2"></div>
+        </div>
+        <div class="lbl">1080×1920 · story / status</div>
+      </div>
+      <div class="fmt" style="flex:1; min-width:200px; text-align:left">
+        <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-start">
+          <button type="button" class="btn btn-gold" data-copy="card">Télécharger PNG (les 3 formats)</button>
+          <button type="button" class="btn" data-copy="https://thesyndicate.money/join?source=0x88e…dd73">Copier mon lien</button>
+          <button type="button" class="btn" data-copy="share">Partager…</button>
+          <span style="font-size:12px; color:hsl(var(--muted-foreground))">La carte ne montre QUE ce que la chaîne prouve — siège, chapitre, introductions durables, échelon. Jamais un chiffre d'argent projeté.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 2 · LES BANNERS ═══ -->
+  <div class="section-title">
+    <h2>Tes banners — taille réelle, ton lien déjà dedans</h2>
+    <span class="why">il voit le banner, pas le texte</span>
+  </div>
+  <div class="card-frame" style="padding:18px 0">
+    <div class="banner-wrap">
+      <div class="artefact bn bn-728" style="margin:0 18px">
+        <span class="a-mark">SS</span>
+        <div>
+          <div class="bn-title">THE SYNDICATE</div>
+          <div class="bn-sub">ON-CHAIN MEMBERSHIP · EVERY PURCHASE IS A VERIFIABLE RECEIPT</div>
+        </div>
+        <div class="bn-intro a-gold">Introduced by 0x88e…dd73<br><span class="a-muted">thesyndicate.money</span></div>
+        <div class="qr" data-qr="13" data-scale="2"></div>
+      </div>
+    </div>
+    <div class="bn-actions"><span class="mono" style="font-size:11.5px;color:hsl(var(--muted-foreground));align-self:center">728×90 · leaderboard</span><button type="button" class="btn" data-copy="b728">Télécharger PNG</button><button type="button" class="btn" data-copy="embed728">Copier le code d'intégration</button></div>
+
+    <div class="banner-wrap" style="margin-top:16px">
+      <div class="artefact bn bn-468" style="margin:0 18px">
+        <span class="a-mark">SS</span>
+        <div>
+          <div class="bn-title">THE SYNDICATE</div>
+          <div class="bn-sub">PROOF-FIRST MEMBERSHIP</div>
+        </div>
+        <div class="bn-intro a-gold" style="font-size:9px">Introduced by 0x88e…dd73</div>
+      </div>
+    </div>
+    <div class="bn-actions"><span class="mono" style="font-size:11.5px;color:hsl(var(--muted-foreground));align-self:center">468×60 · classique</span><button type="button" class="btn" data-copy="b468">Télécharger PNG</button><button type="button" class="btn" data-copy="embed468">Copier le code</button></div>
+
+    <div class="banner-wrap" style="margin-top:16px">
+      <div class="artefact bn bn-300" style="margin:0 18px">
+        <span class="a-mark">SS</span>
+        <div>
+          <div class="bn-title">THE SYNDICATE</div>
+          <div class="bn-sub">ON-CHAIN MEMBERSHIP PROTOCOL</div>
+        </div>
+        <div class="qr" data-qr="17" data-scale="3"></div>
+        <div class="bn-intro a-gold">Introduced by 0x88e…dd73</div>
+      </div>
+    </div>
+    <div class="bn-actions"><span class="mono" style="font-size:11.5px;color:hsl(var(--muted-foreground));align-self:center">300×250 · rectangle</span><button type="button" class="btn" data-copy="b300">Télécharger PNG</button><button type="button" class="btn" data-copy="embed300">Copier le code</button></div>
+  </div>
+
+  <!-- ═══ 3 · LE MONDE HORS-LIGNE ═══ -->
+  <div class="section-title">
+    <h2>Le monde hors-ligne — l'affiche à imprimer</h2>
+    <span class="why">A4 prêt à imprimer, le QR fait tout le travail</span>
+  </div>
+  <div class="card-frame" style="display:flex; flex-wrap:wrap; gap:18px; align-items:flex-start">
+    <div class="fmt">
+      <div class="artefact poster">
+        <span class="a-mark">SS</span>
+        <div class="poster-t">THE SYNDICATE</div>
+        <div class="poster-s">On-chain membership protocol.<br>Every purchase is a receipt<br>anyone can verify.</div>
+        <div class="qr" data-qr="21" data-scale="4"></div>
+        <div class="poster-scan">SCAN TO SEE HOW IT WORKS</div>
+        <div class="poster-foot">INTRODUCED BY 0x88e…dd73 · DON'T TRUST — VERIFY</div>
+      </div>
+      <div class="lbl">A4 · affiche</div>
+    </div>
+    <div style="flex:1; min-width:220px; display:flex; flex-direction:column; gap:8px; align-items:flex-start">
+      <button type="button" class="btn btn-gold" data-copy="poster">Télécharger l'affiche (PDF A4 + PNG)</button>
+      <button type="button" class="btn" data-copy="cardprint">Télécharger la carte de visite (85×55)</button>
+      <span style="font-size:12px; color:hsl(var(--muted-foreground))">Le lien du QR porte <span class="mono">&amp;via=print</span> — tu vois dans Channels combien de personnes sont venues du monde réel.</span>
+    </div>
+  </div>
+
+  <!-- ═══ 4 · LES MOMENTS VIVANTS ═══ -->
+  <div class="section-title">
+    <h2>Les moments vivants — le système travaille pour toi</h2>
+    <span class="why">événements réels, datés, prouvables — jamais inventés</span>
+  </div>
+  <div>
+    <div class="moment">
+      <span class="m-date">12 juil. 2026</span>
+      <span class="m-text"><b>Ton introduction a scellé le Seat&nbsp;#14.</b> Son reçu est une preuve partageable — la carte peinte voyage avec le lien.</span>
+      <button type="button" class="btn m-share" data-copy="m1">Partager le reçu</button>
+    </div>
+    <div class="moment">
+      <span class="m-date">19 juil. 2026</span>
+      <span class="m-text"><b>Ton standing a atteint 2 introductions durables.</b> Ta carte est à jour — partage-la.</span>
+      <button type="button" class="btn m-share" data-copy="m2">Partager ma carte</button>
+    </div>
+    <div class="moment">
+      <span class="m-date">20 juil. 2026</span>
+      <span class="m-text"><b>Le protocole a avancé — bloc 90,757,345, le moteur a scellé son cycle.</b> Un moment protocole, vérifiable par n'importe qui.</span>
+      <button type="button" class="btn m-share" data-copy="m3">Partager le moment</button>
+    </div>
+    <p style="font-size:12px; color:hsl(var(--muted-foreground)); margin:8px 2px 0">
+      Alimenté par l'indexeur et la Chronicle — les classes d'événements qui concernent ton travail de référent
+      (tes introductions scellées, ton standing, les moments protocole). Les plus récents d'abord ·
+      « Charger les moments précédents » à la frontière.
+    </p>
+  </div>
+
+  <!-- ═══ 5 · POUR LES CRÉATEURS ═══ -->
+  <div class="section-title">
+    <h2>Pour les créateurs — chaque audience a son kit, déjà tagué</h2>
+    <span class="why">le canal (&amp;via=) est déjà dans chaque artefact — Channels compte tout</span>
+  </div>
+  <div class="creator-grid">
+    <div class="creator">
+      <h3>YouTubeur · Streamer <span class="tag">&amp;via=youtube</span></h3>
+      <p>Le bloc description prêt à coller sous la vidéo :</p>
+      <div class="snippet">The Syndicate — on-chain membership protocol on Avalanche. Every purchase is a verifiable receipt. My introduction link:
+https://thesyndicate.money/join?source=0x88e…dd73&amp;via=youtube</div>
+      <button type="button" class="btn" data-copy="yt">Copier le bloc</button>
+    </div>
+    <div class="creator">
+      <h3>Blogueur · Site <span class="tag">&amp;via=blog</span></h3>
+      <p>Le badge à intégrer — l'image vit chez nous, ton lien dedans :</p>
+      <div class="snippet">&lt;a href="https://thesyndicate.money/join?source=0x88e…dd73&amp;via=blog"&gt;&lt;img src="…/badge/0x88e…dd73.png" alt="The Syndicate — introduced by 0x88e…dd73"&gt;&lt;/a&gt;</div>
+      <button type="button" class="btn" data-copy="blog">Copier le code</button>
+    </div>
+    <div class="creator">
+      <h3>Messageries · Statuts <span class="tag">&amp;via=whatsapp</span></h3>
+      <p>Le format story 1080×1920 (ci-dessus) + la ligne prête :</p>
+      <div class="snippet">I hold Seat #1 of The Syndicate — proof on-chain, not promises. See how membership works: https://thesyndicate.money/join?source=0x88e…dd73&amp;via=whatsapp</div>
+      <button type="button" class="btn" data-copy="wa">Copier la ligne</button>
+    </div>
+    <div class="creator">
+      <h3>Monde réel <span class="tag">&amp;via=print</span></h3>
+      <p>L'affiche A4 et la carte de visite (section ci-dessus) — le QR porte le tag print ; les scans se comptent dans Channels comme n'importe quel canal.</p>
+    </div>
+  </div>
+
+  <!-- ═══ 6 · LES MOTS ═══ -->
+  <div class="section-title">
+    <h2>Les mots — les quatre phrases maison, prouvables, à copier</h2>
+    <span class="why">le texte de l'artefact est FIXE ; autour, tes mots restent les tiens</span>
+  </div>
+  <div class="card-frame">
+    <div class="word-line"><span class="q">« You don't wait to get paid. The contract pays you inside your referral's own transaction — before we ever see the money. One signature. Two recipients. Verify the hash yourself. »</span><button type="button" class="btn" data-copy="w1">Copier</button></div>
+    <div class="word-line"><span class="q">« Nothing to claim. It's already in your wallet when the block confirms. »</span><button type="button" class="btn" data-copy="w2">Copier</button></div>
+    <div class="word-line"><span class="q">« A referral payment can never break a sale — and can never be lost. »</span><button type="button" class="btn" data-copy="w3">Copier</button></div>
+    <div class="word-line"><span class="q">« The referral program where the payout is part of the purchase. »</span><button type="button" class="btn" data-copy="w4">Copier</button></div>
+  </div>
+
+  <!-- ═══ 7 · LES RÈGLES (repliées) ═══ -->
+  <section class="ref" data-open="false">
+    <button type="button" class="ref-trigger" aria-expanded="false" aria-controls="rules-doc">
+      <span>Comment bien promouvoir — ce qu'on dit, ce qu'on ne dit jamais</span>
+      <span class="pill pill-plain">Guide</span>
+      <svg class="caret" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="doc" id="rules-doc">
+      <div class="rule-cols">
+        <div>
+          <h4 style="color:hsl(var(--proof))">Ce que tu peux dire</h4>
+          <ul>
+            <li>adhésion · siège · reçu · preuve · vérifier</li>
+            <li>« chaque achat est un reçu on-chain »</li>
+            <li>« la commission est payée dans la transaction de l'acheteur »</li>
+            <li>« ne me crois pas — vérifie le hash »</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="color:hsl(var(--muted-foreground))">Ce que nous ne disons jamais</h4>
+          <ul>
+            <li>rendement · revenu passif · investissement</li>
+            <li>promesse de gain · « gagne jusqu'à X »</li>
+            <li>urgence inventée · compte à rebours</li>
+            <li>réseau à niveaux · « recrute N de plus »</li>
+          </ul>
+        </div>
+      </div>
+      <p style="font-size:12px; color:hsl(var(--muted-foreground)); margin:10px 0 0">Un référent qui promet un gain met le programme en danger — la source peut être suspendue. Les artefacts ci-dessus sont déjà conformes : partage-les tels quels.</p>
+    </div>
+  </section>
+
+  <p class="legal">A referral commission is a bounded, one-time payment for a completed introduction. It is not token yield, not passive income, not equity, and not a guarantee of token appreciation.</p>
+
+  <!-- annotations -->
+  <div class="annot">À 300 filleuls — cette page ne grossit pas</div>
+  <p style="font-size:12.5px; color:hsl(var(--muted-foreground)); margin:0 0 8px">
+    Les artefacts sont des CONSTANTES par membre (une carte, des banners, une affiche — toujours à jour, jamais plus nombreux).
+    Ce qui grandit vit ailleurs, déjà construit pour l'échelle : les lignes par introduction (tableau), le registre des commissions
+    (mois + sous-totaux + « charger les mois précédents »), les compteurs par canal. Les moments vivants gardent les plus récents.
+  </p>
+  <div class="annot">Modulaire — chaque section est un module indépendant</div>
+  <p style="font-size:12.5px; color:hsl(var(--muted-foreground)); margin:0">
+    Carte · Banners · Hors-ligne · Moments · Créateurs · Mots · Guide : chaque module s'étend seul (nouveau format, nouvelle
+    audience, nouvelle classe d'événement) sans toucher les autres. Le peintre serveur existe déjà (les cartes de reçus) ;
+    les tags de canal existent déjà (Channels) ; les événements existent déjà (l'indexeur). Rien n'est réinventé.
+  </p>
+</div>
+
+<script>
+  // fake QR — deterministic pattern, visual placeholder only
+  document.querySelectorAll("[data-qr]").forEach(function (host) {
+    var n = parseInt(host.getAttribute("data-qr"), 10) || 17;
+    var s = parseInt(host.getAttribute("data-scale"), 10) || 3;
+    var seed = 42; function rnd() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+    var svg = '<svg width="' + n * s + '" height="' + n * s + '" xmlns="http://www.w3.org/2000/svg">';
+    function finder(x, y) {
+      svg += '<rect x="' + x * s + '" y="' + y * s + '" width="' + 7 * s + '" height="' + 7 * s + '" fill="#000"/>';
+      svg += '<rect x="' + (x + 1) * s + '" y="' + (y + 1) * s + '" width="' + 5 * s + '" height="' + 5 * s + '" fill="#fff"/>';
+      svg += '<rect x="' + (x + 2) * s + '" y="' + (y + 2) * s + '" width="' + 3 * s + '" height="' + 3 * s + '" fill="#000"/>';
+    }
+    for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) {
+      var inFinder = (x < 8 && y < 8) || (x >= n - 8 && y < 8) || (x < 8 && y >= n - 8);
+      if (!inFinder && rnd() > 0.55) svg += '<rect x="' + x * s + '" y="' + y * s + '" width="' + s + '" height="' + s + '" fill="#000"/>';
+    }
+    finder(0, 0); finder(n - 7, 0); finder(0, n - 7);
+    host.innerHTML = svg + "</svg>";
+  });
+  // copy demo
+  document.querySelectorAll("[data-copy]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      try { navigator.clipboard.writeText(btn.getAttribute("data-copy") || ""); } catch (e) {}
+      var t = btn.textContent; btn.textContent = "C'est copié ✓";
+      setTimeout(function () { btn.textContent = t; }, 1400);
+    });
+  });
+  // rules expander
+  document.querySelectorAll(".ref-trigger").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var host = btn.closest("[data-open]");
+      var open = host.getAttribute("data-open") === "true";
+      host.setAttribute("data-open", open ? "false" : "true");
+      btn.setAttribute("aria-expanded", open ? "false" : "true");
+    });
+  });
+  // theme toggle
+  var modes = ["auto", "dark", "light"]; var i = 0;
+  var tb = document.getElementById("themeBtn");
+  tb.addEventListener("click", function () {
+    i = (i + 1) % modes.length; var m = modes[i];
+    if (m === "auto") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", m);
+    tb.textContent = "Thème : " + m;
+  });
+</script>

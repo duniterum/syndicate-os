@@ -20,9 +20,25 @@
 > POST-SEAL founder order (2026-07-20, emphatic): pull the REFERRER KIT forward —
 > "give ALL to the referrer so his work becomes very very easy" + the ADMIN management
 > axis (source confirmation without manual friction) + the connected-no-seat promoter
-> picture. SYSTEM-FIRST inventory in flight (origin harvest + external AAA benchmark +
-> today's reality + admin axis); the founder picks scope from the full picture.
-> NEXT after that: recognition/season (slice 6).
+> picture. ✅ SYSTEM-FIRST inventory DONE + ENGRAVED:
+> `docs/reference/REFERRER_KIT_SYSTEM_INVENTORY.md` (6 lenses, mirror-rule +
+> settled-law headers, verify-first items — durable, never re-search). The menu
+> presented (K1 kit page · K2 invitee side · K3 admin axis · K4 reach · P press kit).
+> → **FOUNDER ENRICHMENT (2026-07-20, second order — engraved in agent memory
+> `referrer-surfaces-visual-first-scale-living`):** ① VISUAL-FIRST — the referrer sees
+> THE BANNER, never text; kit surfaces and their mockups SHOW artifacts at real size
+> (468×60 · 728×90 · 300×250…); ② think 300 referred — scalable/evolutive/modular by
+> design; ③ a dedicated sub-tab ("Tools") holding the preconfigured shareables +
+> printables (offline world) + audience kits (YouTuber, blogger, messaging, print);
+> ④ THE LIVING MOMENTS — Activity/Chronicle/indexer events that concern referral become
+> dated provable shareable moments handed to the referrer; ⑤ the money/effort/recognition
+> axes ride the surface; ⑥ nothing blocks — build to the preview. 🔴 **THE K1 WIREFRAME
+> IS ON SCREEN: `docs/design/referral-tools-mockup.html` (visual-first: standing card
+> 1200×630 + square + story · 3 real-size banners · A4 poster + business card (&via=print)
+> · living-moments rail · creator kits pre-tagged &via · the 4 flagship copy lines · the
+> promote guide, collapsed · at-300 + modularity annotations). AWAITING THE FOUNDER'S
+> VISUAL APPROVAL — approval opens the K1 build.** NEXT after the kit arc:
+> recognition/season (slice 6).
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21
