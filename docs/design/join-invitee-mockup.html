@@ -1,0 +1,118 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K2 — le côté invité (maquette)</title>
+<style>
+  :root {
+    --background: 210 40% 98%; --foreground: 222 47% 11%; --border: 214 32% 91%;
+    --card: 0 0% 100%; --muted-foreground: 215 16% 47%; --gold: 38 74% 44%; --proof: 190 90% 40%;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --background: 224 71% 4%; --foreground: 213 31% 91%; --border: 216 34% 17%; --card: 222 47% 7%; --muted-foreground: 215.4 16.3% 56.9%; --gold: 42 92% 60%; --proof: 190 90% 45%; }
+  }
+  :root[data-theme="dark"]  { --background: 224 71% 4%; --foreground: 213 31% 91%; --border: 216 34% 17%; --card: 222 47% 7%; --muted-foreground: 215.4 16.3% 56.9%; --gold: 42 92% 60%; --proof: 190 90% 45%; }
+  :root[data-theme="light"] { --background: 210 40% 98%; --foreground: 222 47% 11%; --border: 214 32% 91%; --card: 0 0% 100%; --muted-foreground: 215 16% 47%; --gold: 38 74% 44%; --proof: 190 90% 40%; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: hsl(var(--background)); color: hsl(var(--foreground)); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace; }
+  .page { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
+  .mock-banner { display:flex; flex-wrap:wrap; align-items:center; gap:10px; border:1px dashed hsl(var(--gold)/.45); border-radius:10px; background:hsl(var(--gold)/.07); padding:10px 14px; margin-bottom:22px; font-size:12.5px; color:hsl(var(--muted-foreground)); }
+  .mock-banner b { color:hsl(var(--gold)); font-weight:600; }
+  .theme-btn { margin-left:auto; cursor:pointer; border:1px solid hsl(var(--border)); background:hsl(var(--card)); color:hsl(var(--foreground)); border-radius:8px; padding:6px 12px; font-size:12.5px; min-height:36px; }
+  .annot { font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:hsl(var(--gold)/.8); margin:30px 0 10px; }
+  .annot::before { content:"◤ "; }
+  .note { font-size:12.5px; color:hsl(var(--muted-foreground)); margin:8px 0 0; max-width:46em; }
+
+  /* the ink artifact (server-painted, theme-independent) */
+  .ink { background:#090E1A; color:#E1E7EF; border:1px solid #25344B; border-radius:8px; }
+  .gold { color:#F7BF3B; }
+  .muted { color:#7F8EA3; }
+  .mark { display:inline-flex; align-items:center; justify-content:center; border:2px solid #E3A92B; color:#E3A92B; border-radius:999px; font-weight:700; }
+
+  /* the unfurl card 1200×630 @ 0.5 */
+  .unfurl { width:600px; height:315px; max-width:100%; padding:24px 32px; display:flex; flex-direction:column; }
+  .u-head { display:flex; align-items:center; gap:12px; }
+  .u-title { font-size:15px; letter-spacing:2.8px; font-weight:700; }
+  .u-sub { font-size:10px; letter-spacing:1px; color:#7F8EA3; margin-top:2px; }
+  .u-hook { font-size:27px; line-height:1.2; font-weight:600; color:#F7BF3B; margin-top:26px; }
+  .u-by { font-size:15px; color:#E1E7EF; margin-top:8px; }
+  .u-line { font-size:12px; color:#7F8EA3; margin-top:10px; }
+  .u-foot { margin-top:auto; display:flex; align-items:baseline; gap:14px; }
+  .u-door { font-size:13px; font-weight:600; letter-spacing:2px; color:#F7BF3B; }
+  .u-site { font-size:11px; color:#7F8EA3; margin-left:auto; }
+
+  /* the chat/social frame around the unfurl */
+  .chat { border:1px solid hsl(var(--border)); background:hsl(var(--card)); border-radius:12px; padding:14px; max-width:640px; }
+  .chat .msg { font-size:13px; margin-bottom:8px; }
+  .chat .lnk { color:hsl(var(--proof)); text-decoration:underline; overflow-wrap:anywhere; font-size:12px; }
+
+  /* the /join page strip */
+  .join-frame { border:1px solid hsl(var(--border)); background:hsl(var(--card)/.4); border-radius:10px; padding:18px; }
+  .strip { display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; border:1px solid hsl(var(--gold)/.3); background:hsl(var(--gold)/.06); border-radius:10px; padding:10px 14px; }
+  .strip .ic { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:8px; background:hsl(var(--gold)/.12); color:hsl(var(--gold)); font-size:13px; }
+  .strip .t { font-size:13.5px; }
+  .strip .m { font-size:12px; color:hsl(var(--muted-foreground)); flex-basis:100%; margin-left:38px; }
+  .ghost { border:1px dashed hsl(var(--border)); border-radius:10px; padding:14px; margin-top:12px; color:hsl(var(--muted-foreground)); font-size:12.5px; }
+</style>
+
+<div class="page">
+  <div class="mock-banner">
+    <span><b>MAQUETTE K2</b> — le côté INVITÉ : ce que voit la personne qui reçoit ton lien · démo interactive</span>
+    <button type="button" class="theme-btn" id="themeBtn">Thème : auto</button>
+  </div>
+
+  <!-- 1 · l'aperçu du lien partagé -->
+  <div class="annot">1 · Aujourd'hui vs demain — l'aperçu du lien /join?source=… partagé</div>
+  <div class="chat">
+    <div class="msg">« Regarde — chaque achat est un reçu vérifiable on-chain : »</div>
+    <div class="lnk">thesyndicate.money/join?source=0x353b…2178&amp;via=whatsapp</div>
+    <div class="ghost">AUJOURD'HUI : l'image générique du site (la même pour toutes les pages) — le lien le plus partagé du système n'a pas son propre visage.</div>
+    <div style="margin-top:12px">
+      <div class="ink unfurl">
+        <div class="u-head">
+          <span class="mark" style="width:34px;height:27px;border-radius:10px;font-size:13px">SS</span>
+          <div>
+            <div class="u-title mono">THE SYNDICATE</div>
+            <div class="u-sub mono">ON-CHAIN MEMBERSHIP PROTOCOL</div>
+          </div>
+        </div>
+        <div class="u-hook mono">You were introduced.</div>
+        <div class="u-by">by <span class="mono">0x88e…dd73</span> — the introduction is recorded on-chain when you take your seat.</div>
+        <div class="u-line">Every purchase is a verifiable receipt. Proof, not promises.</div>
+        <div class="u-foot">
+          <span class="u-door mono">SEATS ARE OPEN — SEE HOW MEMBERSHIP WORKS</span>
+          <span class="u-site mono">thesyndicate.money</span>
+        </div>
+      </div>
+    </div>
+    <p class="note">DEMAIN : la carte peinte par le serveur (même moteur que les cartes de reçus), personnalisée par la SOURCE du lien — l'adresse courte de l'introducteur, jamais un nom. L'emblème réel remplace le « SS » de la maquette.</p>
+  </div>
+  <p class="note">Mécanique (invisible, annotée pour mémoire) : le serveur sert l'en-tête de /join avec l'image peinte quand ?source= est présent et de forme valide — repli à l'image générique sinon (fail-closed, jamais inventé). noindex inchangé ; &amp;via intact ; aucune migration.</p>
+
+  <!-- 2 · la ligne honnête sur la page /join -->
+  <div class="annot">2 · Sur la page /join elle-même — l'introduction dite honnêtement, AVANT le checkout</div>
+  <div class="join-frame">
+    <p style="font-size:15px; font-weight:600; margin:0 0 10px">Join — take your seat</p>
+    <div class="strip">
+      <span class="ic">⛓</span>
+      <span class="t">Introduced by <span class="mono">0x88e…dd73</span></span>
+      <span class="m">The introduction is recorded on-chain inside your own purchase — you always see it before signing, and it never changes your price.</span>
+    </div>
+    <div class="ghost">…le reste de la page /join, INCHANGÉ (le checkout montre déjà la ligne de commission dans le devis avant signature — la loi « no hidden attribution » tient déjà là).</div>
+  </div>
+  <p class="note">La bande n'apparaît QUE si ?source= est présent et valide sur le registre (lecture existante — zéro nouvelle surface). Adresse courte seulement — jamais un nom, jamais un annuaire. Le mot exact « never changes your price » honore ta correction : aucun prix fixe n'existe, l'achat de l'invité est à SON montant.</p>
+
+  <div class="annot">À 300 — rien ne grossit</div>
+  <p class="note">La carte est peinte par source (cache serveur, comme les cartes de reçus) ; la bande est une ligne. Les deux vivent du même registre public déjà lu.</p>
+</div>
+
+<script>
+  var modes = ["auto", "dark", "light"]; var i = 0;
+  var tb = document.getElementById("themeBtn");
+  tb.addEventListener("click", function () {
+    i = (i + 1) % modes.length; var m = modes[i];
+    if (m === "auto") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", m);
+    tb.textContent = "Thème : " + m;
+  });
+</script>

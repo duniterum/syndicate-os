@@ -182,7 +182,19 @@
 > healthz · engine ok=3 post-boot, headBlock advancing · feed 78). thesyndicate.money
 > runs d170131 — the referrer's arsenal, floor-readable, canon banners, price
 > corrected. The founder's own eye on the live arsenal = the living seal.**
-> NEXT: K2 (the invitee's side) — OPEN, mockup-first.
+> → **K2 OPENED MOCKUP-FIRST [this commit]: 🔴 THE WIREFRAME IS ON SCREEN —
+> `docs/design/join-invitee-mockup.html` (visual-first): ① the /join?source= unfurl
+> card, server-painted per SOURCE (the receipt-card machinery reused; facts = the
+> introducer's short wallet from the public registry — never a name; "You were
+> introduced." · "by 0x88e…dd73 — recorded on-chain when you take your seat." ·
+> "Every purchase is a verifiable receipt." · the approved door line; fail-closed to
+> the generic image; noindex + &via untouched; NO migration); ② the honest
+> introduced-by STRIP on /join, shown ONLY when ?source= is valid on the registry
+> (existing read, zero new surface), short address only, "it never changes your
+> price" (the founder's price correction honored — the invitee buys at THEIR
+> amount). AWAITING THE FOUNDER'S VISUAL APPROVAL — approval opens the K2 build
+> (server painter route + serve-time head substitution + the /join strip, one
+> cycle).** NEXT after K2: K3 (the admin axis).
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21
