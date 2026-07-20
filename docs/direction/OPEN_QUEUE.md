@@ -116,8 +116,26 @@
 > ran ("fail-closed" prose matches FAIL case-insensitively). The standing shape:
 > capture the FULL run, gate on the true exit code. Re-run to completion: guards
 > EXIT 0 with `no-raw-color: 0 sites` as the LAST line · tsc · build EXIT 0 (twins
-> 354 · admin-dist 99). 🚀 DEPLOY — the fix cycle (client-only, NO migration).**
-> NEXT: the founder's online seal of the fixed arsenal → K2.
+> 354 · admin-dist 99). **✅ SEALED IN PROD `38a987f` (Replit green 2026-07-20:
+> refusal → one-line fix → republication looped in ~12 min; byte-identity — same
+> bundle SHAs as the refused build, the comment was minifier-stripped; /referral/tools
+> + /syn-mark-gold.svg + /referrer-badge.png all 200; engine ok=2, feed 78).**
+> → **K1.2 BUILT [this commit] (the founder's second live read + enrichment orders):**
+> ① THE STORY WHITE-VOID KILLED — the QR's white box stretched full-width in the
+> story's flex COLUMN (nothing overflowed, so the fit probe was blind to it);
+> `alignSelf: flex-start` pins every QrBox, and the harness gained THE SQUARE-BOX
+> PROBE (every white QR box must be square) + a story-export pixel assertion
+> (right-of-QR: white=0, ink=9000 — proven in the exported bitmap). ② THE QR PACK:
+> `QrPrint` 1000×1000 (naked white-box code, &via=print — t-shirts/stickers/flyers,
+> any color around it) with PNG AND vector SVG download; `QrVideo` 900×900
+> (&via=youtube — the on-screen code a creator keeps in a corner or holds for a
+> minute; viewers scan the screen). ③ THE RECORD CARD (1200×630, "N members
+> introduced" + standing + "verify it, don't trust it") — mounts ONLY on a real
+> record, never an empty boast, never money (the no-cash-flex canon holds); the
+> founder's "il a amené 10 personnes, c'est déjà prêt" answered. All three ride the
+> one KIT_ARTIFACTS table (11 artifacts, all probes green at worst case). Gate all
+> EXIT 0. 🚀 DEPLOY — the K1.2 cycle (client-only, NO migration).** NEXT: the
+> founder's online seal → K2.
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21

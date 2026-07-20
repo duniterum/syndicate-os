@@ -286,11 +286,14 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
     og: useRef<HTMLDivElement | null>(null),
     square: useRef<HTMLDivElement | null>(null),
     story: useRef<HTMLDivElement | null>(null),
+    record: useRef<HTMLDivElement | null>(null),
     b728: useRef<HTMLDivElement | null>(null),
     b468: useRef<HTMLDivElement | null>(null),
     b300: useRef<HTMLDivElement | null>(null),
     poster: useRef<HTMLDivElement | null>(null),
     bizcard: useRef<HTMLDivElement | null>(null),
+    qrprint: useRef<HTMLDivElement | null>(null),
+    qrvideo: useRef<HTMLDivElement | null>(null),
   } as const;
 
   // The member's permanent link — same derivation as the hero above the tabs
@@ -311,6 +314,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
   }
 
   const durable = s?.durableIntroductions ?? null;
+  const introduced = s?.introducedMembers ?? null;
   const rungTitle = durable !== null ? ladderProgress(durable).current.title : null;
   const standingLine =
     durable !== null && rungTitle !== null
@@ -319,6 +323,11 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
   const facts: KitFacts = {
     seatLine,
     standingLine,
+    // The record card mounts only on a REAL record — never an empty boast.
+    recordLine:
+      introduced !== null && introduced > 0
+        ? `${introduced} member${introduced === 1 ? "" : "s"} introduced`
+        : null,
     shortWallet: `${address.slice(0, 6)}…${address.slice(-4)}`,
     joinLink,
   };
@@ -362,6 +371,23 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
             </div>
           </div>
         </div>
+        {facts.recordLine !== null ? (
+          <div>
+            <div className="overflow-x-auto pb-1">
+              <ScaledPreview width={1200} height={630} scale={0.5} nodeRef={refs.record}>
+                {spec("record").render(facts)}
+              </ScaledPreview>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 mt-2.5">
+              <span className="font-mono text-xs text-muted-foreground">{spec("record").label}</span>
+              <ArtifactActions spec={spec("record")} nodeRef={refs.record} joinLink={joinLink} gold />
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+              Your record card — the results, ready to show. Proof, not
+              claims: every figure on it is on-chain and verifiable by anyone.
+            </p>
+          </div>
+        ) : null}
         <p className="text-xs text-muted-foreground leading-relaxed">
           The card shows only what the chain proves — your seat, your chapter,
           your durable introductions, your rung. The QR scans straight to your
@@ -408,6 +434,34 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
               <span className="font-mono text-xs text-muted-foreground">{spec("bizcard").label}</span>
               <ArtifactActions spec={spec("bizcard")} nodeRef={refs.bizcard} joinLink={joinLink} />
             </div>
+          </div>
+          <div>
+            <ScaledPreview width={1000} height={1000} scale={0.16} nodeRef={refs.qrprint}>
+              {spec("qrprint").render(facts)}
+            </ScaledPreview>
+            <div className="flex flex-wrap items-center gap-2 mt-2.5 max-w-[300px]">
+              <span className="font-mono text-xs text-muted-foreground">{spec("qrprint").label}</span>
+              <ArtifactActions spec={spec("qrprint")} nodeRef={refs.qrprint} joinLink={joinLink} />
+              <button
+                type="button"
+                onClick={() => {
+                  const svg = refs.qrprint.current?.querySelector("svg");
+                  if (svg === null || svg === undefined) return;
+                  const data = new XMLSerializer().serializeToString(svg);
+                  const blob = new Blob([data], { type: "image/svg+xml;charset=utf-8" });
+                  triggerDownload(URL.createObjectURL(blob), "syndicate-qr-print.svg");
+                }}
+                className="h-9 rounded-lg border border-border bg-card px-3 text-xs text-foreground hover:bg-muted transition-colors"
+                data-testid="button-kit-download-qr-svg"
+              >
+                Download SVG (vector)
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed mt-2 max-w-[300px]">
+              The naked code, untouched — put it on a t-shirt, a sticker, a
+              flyer, any color around it. The SVG scales to any print size
+              without losing sharpness.
+            </p>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed min-w-[200px] flex-1">
             Print them as they are — export is 2× for crisp paper. Anyone who
@@ -491,6 +545,19 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
             label="Copy the block"
             testid="button-kit-creator-youtube"
           />
+          <p className="text-xs text-muted-foreground leading-relaxed mt-3 mb-2">
+            And the on-screen QR — keep it in a corner of the video, or hold
+            it for a minute; viewers scan the screen and land on your join page:
+          </p>
+          <div className="flex flex-wrap items-start gap-3">
+            <ScaledPreview width={900} height={900} scale={0.14} nodeRef={refs.qrvideo}>
+              {spec("qrvideo").render(facts)}
+            </ScaledPreview>
+            <div className="flex flex-col gap-2">
+              <span className="font-mono text-xs text-muted-foreground">{spec("qrvideo").label}</span>
+              <ArtifactActions spec={spec("qrvideo")} nodeRef={refs.qrvideo} joinLink={joinLink} />
+            </div>
+          </div>
         </Card>
         <Card className="bg-card/40 border-border/50 p-4">
           <p className="text-sm font-medium text-foreground">

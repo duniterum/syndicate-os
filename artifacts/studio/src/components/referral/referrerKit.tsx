@@ -34,6 +34,9 @@ export interface KitFacts {
   seatLine: string | null;
   /** "2 durable introductions · Emerging Connector", or null. */
   standingLine: string | null;
+  /** "14 members introduced", or null when the record is empty/unread —
+   * the record card renders only when this exists (never an empty boast). */
+  recordLine: string | null;
   /** ADR-003 short form of the member's own wallet ("0x88e…dd73"). */
   shortWallet: string;
   /** The member's permanent introduction link (canonical, untagged). */
@@ -78,6 +81,10 @@ function QrBox({ url, size }: { url: string; size: number }) {
         borderRadius: 8,
         padding: Math.max(8, Math.round(size / 20)),
         flexShrink: 0,
+        // The white box is EXACTLY the QR's box — never stretched by a flex
+        // column (the story-card white-void defect, founder-caught in prod;
+        // the harness square-box probe pins this class now).
+        alignSelf: "flex-start",
       }}
     >
       <QRCode value={url} size={size} />
@@ -260,6 +267,78 @@ export function Banner300({ facts }: { facts: KitFacts }) {
   );
 }
 
+// ── The record card · 1200×630 — the referrer's RESULTS, proof not claims ───
+// (founder order 2026-07-20: "il a amené 10 personnes, c'est déjà prêt — tout
+// est on-chain et vérifiable"). Chain-proven counts only; the panel mounts it
+// ONLY when a real record exists — never an empty boast, never money.
+export function RecordCard({ facts }: { facts: KitFacts }) {
+  return (
+    <div style={{ ...artefactRoot(1200, 630), padding: "44px 64px 40px" }}>
+      <Masthead mark={64} title={24} sub={13} />
+      <div className="font-mono" style={{ fontSize: 56, lineHeight: 1.2, fontWeight: 600, color: INK_GOLD, marginTop: 34 }}>
+        {facts.recordLine ?? "An on-chain introduction record"}
+      </div>
+      {facts.standingLine !== null ? (
+        <div style={{ fontSize: 26, color: INK_FG, marginTop: 12 }}>{facts.standingLine}</div>
+      ) : null}
+      <div style={{ fontSize: 21, color: INK_MUTED, marginTop: 12 }}>
+        Every introduction is an on-chain record — verify it, don&apos;t trust it.
+      </div>
+      <div className="font-mono" style={{ fontSize: 19, color: INK_MUTED, marginTop: 12 }}>
+        source {facts.shortWallet} · thesyndicate.money
+      </div>
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 28, marginTop: "auto" }}>
+        <QrBox url={facts.joinLink} size={140} />
+        <VerifyLines size={17} lines={["SCAN — JOIN THROUGH MY INTRODUCTION", "DON'T TRUST — VERIFY"]} />
+      </div>
+    </div>
+  );
+}
+
+// ── The QR pack — the naked code, ready for any surface ─────────────────────
+// Pure white-box QR (&via=print): t-shirts, stickers, flyers — any color
+// around it, the code stays scannable untouched (founder order 2026-07-20:
+// "sans manipuler, pour le mettre sur un t-shirt").
+export function QrPrint({ facts }: { facts: KitFacts }) {
+  const url = withVia(facts.joinLink, "print");
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: 1000,
+        height: 1000,
+        background: "#ffffff", // no-raw-color-allow: QR needs a solid white background to stay scannable (QrCodeBlock precedent)
+        boxSizing: "border-box",
+        overflow: "hidden",
+      }}
+    >
+      <QRCode value={url} size={840} />
+    </div>
+  );
+}
+
+// The video QR (&via=youtube): made to sit in a video corner or hold a
+// one-minute sequence — dark card, the code, the site, nothing else. Viewers
+// scan on screen and land on the member's join page.
+export function QrVideo({ facts }: { facts: KitFacts }) {
+  const url = withVia(facts.joinLink, "youtube");
+  return (
+    <div style={{ ...artefactRoot(900, 900), alignItems: "center", justifyContent: "center", gap: 34, padding: 60 }}>
+      <QrBox url={url} size={560} />
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+        <span className="font-mono" style={{ fontSize: 26, fontWeight: 600, letterSpacing: 5, color: INK_GOLD, whiteSpace: "nowrap" }}>
+          SCAN — JOIN THROUGH MY INTRODUCTION
+        </span>
+        <span className="font-mono" style={{ fontSize: 21, letterSpacing: 3, color: INK_MUTED, whiteSpace: "nowrap" }}>
+          thesyndicate.money
+        </span>
+      </div>
+    </div>
+  );
+}
+
 // ── The offline world — print artifacts (&via=print rides the QR) ───────────
 export function PosterA4({ facts }: { facts: KitFacts }) {
   const url = withVia(facts.joinLink, "print");
@@ -327,9 +406,12 @@ export const KIT_ARTIFACTS: readonly KitArtifactSpec[] = [
   { id: "og", label: "1200×630 · link preview", width: 1200, height: 630, exportScale: 1, filename: "syndicate-card-1200x630.png", render: (f) => <CardOg facts={f} /> },
   { id: "square", label: "1080×1080 · post", width: 1080, height: 1080, exportScale: 1, filename: "syndicate-card-1080x1080.png", render: (f) => <CardSquare facts={f} /> },
   { id: "story", label: "1080×1920 · story", width: 1080, height: 1920, exportScale: 1, filename: "syndicate-card-1080x1920.png", render: (f) => <CardStory facts={f} /> },
+  { id: "record", label: "1200×630 · your record", width: 1200, height: 630, exportScale: 1, filename: "syndicate-record-1200x630.png", render: (f) => <RecordCard facts={f} /> },
   { id: "b728", label: "728×90 · leaderboard", width: 728, height: 90, exportScale: 2, filename: "syndicate-banner-728x90.png", render: (f) => <Banner728 facts={f} /> },
   { id: "b468", label: "468×60 · classic", width: 468, height: 60, exportScale: 2, filename: "syndicate-banner-468x60.png", render: (f) => <Banner468 facts={f} /> },
   { id: "b300", label: "300×250 · rectangle", width: 300, height: 250, exportScale: 2, filename: "syndicate-banner-300x250.png", render: (f) => <Banner300 facts={f} /> },
   { id: "poster", label: "A4 · poster", width: 1240, height: 1754, exportScale: 2, filename: "syndicate-poster-a4.png", render: (f) => <PosterA4 facts={f} /> },
   { id: "bizcard", label: "85×55 · business card", width: 1004, height: 650, exportScale: 2, filename: "syndicate-business-card.png", render: (f) => <BizCard facts={f} /> },
+  { id: "qrprint", label: "QR only · print", width: 1000, height: 1000, exportScale: 2, filename: "syndicate-qr-print.png", render: (f) => <QrPrint facts={f} /> },
+  { id: "qrvideo", label: "QR · video overlay", width: 900, height: 900, exportScale: 2, filename: "syndicate-qr-video.png", render: (f) => <QrVideo facts={f} /> },
 ];
