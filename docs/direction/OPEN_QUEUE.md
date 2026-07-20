@@ -32,13 +32,38 @@
 > printables (offline world) + audience kits (YouTuber, blogger, messaging, print);
 > ④ THE LIVING MOMENTS — Activity/Chronicle/indexer events that concern referral become
 > dated provable shareable moments handed to the referrer; ⑤ the money/effort/recognition
-> axes ride the surface; ⑥ nothing blocks — build to the preview. 🔴 **THE K1 WIREFRAME
-> IS ON SCREEN: `docs/design/referral-tools-mockup.html` (visual-first: standing card
-> 1200×630 + square + story · 3 real-size banners · A4 poster + business card (&via=print)
-> · living-moments rail · creator kits pre-tagged &via · the 4 flagship copy lines · the
-> promote guide, collapsed · at-300 + modularity annotations). AWAITING THE FOUNDER'S
-> VISUAL APPROVAL — approval opens the K1 build.** NEXT after the kit arc:
-> recognition/season (slice 6).
+> axes ride the surface; ⑥ nothing blocks — build to the preview. ✅ **THE K1 WIREFRAME
+> APPROVED (founder 2026-07-20: "ÇA ME CONVIENT… C'EST APPROUVÉ! … GO AND GO-LIVE"):
+> `docs/design/referral-tools-mockup.html`** (visual-first: standing card 1200×630 +
+> square + story · 3 real-size banners · A4 poster + business card (&via=print) ·
+> living-moments rail · creator kits pre-tagged &via · the 4 flagship copy lines · the
+> promote guide, collapsed · at-300 + modularity annotations).
+> **THE ENGRAVED WORK ORDER (deep-rethink applied; GO and GO-Live given for the arc —
+> each slice still runs the full gate + rig verification before its seal):**
+> · **K1 — THE ARSENAL** (one cycle, server+client, NO migration, NO new packages):
+>   K1a the painter family (R-CARDS machinery extended: standing card og/square/story ·
+>   banners 728×90/468×60/300×250 · A4 poster · business card — sourceId-keyed PUBLIC
+>   chain-proven facts only, print formats bake &via=print, throttled, fail-closed,
+>   guard-pinned like receipt-card) + K1b the /referral/tools tab per the approved
+>   mockup (gallery modules · living moments v1 from EXISTING reads: own introductions →
+>   share the receipt page; standing → share the card · creator kits on the SAME &via
+>   vocabulary Channels already counts · flagship lines · promote guide) + the
+>   notification-whitelist fossil fix (/member#referral-dashboard → /referral) +
+>   `referrerKit` live in featureStatus SAME commit. VERIFY-FIRST inside K1: the
+>   contract's no-SYN-introducer truth (read the .sol) before any "who gets paid" copy.
+> · **K2 — THE INVITEE'S SIDE** (own cycle): per-source serve-time head substitution on
+>   /join?source= + the painted join card + the honest "Introduced by 0x…" line
+>   (short form only — the origin note reborn under today's canon).
+> · **K3 — THE ADMIN AXIS** (own careful cycle(s), the proven write-zone pattern):
+>   the member-side "Ask for activation" intake (own-row, throttled, audited) → the
+>   review queue LIVE with the server AUTO-PREFLIGHT (the manual /join PAUSED check
+>   dies) → stacked create+activate signing session → propose-pause/revoke doors →
+>   per-source performance + CSV export (admin sees, public never). The founder's
+>   SIGNATURE stays the law — only the friction around it dies.
+> · **K4 — REACH & LIFECYCLE**: reaching the no-seat promoter (founder decision at its
+>   gate: wallet-addressed sends) + remaining lifecycle doors.
+> · **P — THE PRESS KIT page** (public; every word to the founder on screen at its slice).
+> · Then **recognition/season (slice 6)**. NEXT ACTION: K1 builds now.
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21
