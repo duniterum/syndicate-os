@@ -73,18 +73,25 @@ export function SynMark({ width }: { width: number }) {
 }
 
 function QrBox({ url, size }: { url: string; size: number }) {
+  // EXPLICIT square dims — the structural kill of the white-void class: a
+  // sized box can never be stretched by a flex column, AND (unlike the old
+  // alignSelf override, adversarial-verify 2026-07-20) it still obeys every
+  // parent's alignment — centered columns center it, centered rows center
+  // it vertically, the story column keeps it at its own edge.
+  const pad = Math.max(8, Math.round(size / 20));
+  const box = size + pad * 2;
   return (
     <span
       style={{
         display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: box,
+        height: box,
         background: "#ffffff", // no-raw-color-allow: QR needs a solid white background to stay scannable (QrCodeBlock precedent)
         borderRadius: 8,
-        padding: Math.max(8, Math.round(size / 20)),
         flexShrink: 0,
-        // The white box is EXACTLY the QR's box — never stretched by a flex
-        // column (the story-card white-void defect, founder-caught in prod;
-        // the harness square-box probe pins this class now).
-        alignSelf: "flex-start",
+        boxSizing: "border-box",
       }}
     >
       <QRCode value={url} size={size} />
@@ -324,24 +331,22 @@ export function Banner600({ facts }: { facts: KitFacts }) {
   );
 }
 
+// Restructured after the adversarial verify (2026-07-20): the old 3-line
+// side column collided with the CTA chip deterministically. Mobile = the
+// smallest canvas → ONE message, two centered rows, nothing overlaps.
 export function Banner320({ facts }: { facts: KitFacts }) {
   return (
-    <div style={{ ...artefactRoot(320, 100), flexDirection: "row", alignItems: "center", gap: 9, padding: "0 12px" }}>
-      <SynMark width={32} />
-      <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-        <span className="font-mono" style={{ fontSize: 13, fontWeight: 600, letterSpacing: 1.6, whiteSpace: "nowrap" }}>
+    <div style={{ ...artefactRoot(320, 100), alignItems: "center", justifyContent: "center", gap: 8, padding: "0 12px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <SynMark width={28} />
+        <span className="font-mono" style={{ fontSize: 12.5, fontWeight: 600, letterSpacing: 1.5, whiteSpace: "nowrap" }}>
           THE SYNDICATE
         </span>
-        <span style={{ fontSize: 10, color: INK_MUTED, whiteSpace: "nowrap", marginTop: 2 }}>
-          Proof, not promises.
-        </span>
-        <span className="font-mono" style={{ fontSize: 10, color: INK_GOLD, whiteSpace: "nowrap", marginTop: 3 }}>
-          Introduced by {facts.shortWallet}
-        </span>
+        <CtaChip text="TAKE YOUR SEAT" size={10} />
       </div>
-      <div style={{ marginLeft: "auto", display: "flex" }}>
-        <CtaChip text="SEE HOW IT WORKS" size={10} />
-      </div>
+      <span className="font-mono" style={{ fontSize: 10, color: INK_GOLD, whiteSpace: "nowrap" }}>
+        Introduced by {facts.shortWallet}
+      </span>
     </div>
   );
 }
@@ -454,12 +459,12 @@ export function BizCard({ facts }: { facts: KitFacts }) {
           <br />
           Proof, not promises.
         </span>
-        <span className="font-mono" style={{ fontSize: 31, color: INK_GOLD, marginTop: "auto", whiteSpace: "nowrap" }}>
+        <span className="font-mono" style={{ fontSize: 30, color: INK_GOLD, marginTop: "auto", whiteSpace: "nowrap" }}>
           Introduced by {facts.shortWallet}
         </span>
         <span className="font-mono" style={{ fontSize: 30, color: INK_MUTED, marginTop: 10 }}>thesyndicate.money</span>
       </div>
-      <QrBox url={url} size={360} />
+      <QrBox url={url} size={344} />
     </div>
   );
 }

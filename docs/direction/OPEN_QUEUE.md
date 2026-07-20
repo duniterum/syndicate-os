@@ -147,13 +147,36 @@
 > 300×250 · 336×280 · 300×600 · 728×90 · 320×100 mobile; the legacy 468×60 RETIRED;
 > extend-later noted (970×250 · 600×200). ③ THE COPY SIEVE VERDICT engraved: the
 > marketing formulas' craft ADOPTED (benefit hooks · one message · action-verb CTA ·
-> landing match) — invented urgency/discounts REJECTED BY LAW (a fixed on-chain seat
-> price makes any promo claim a provable lie; the constraint is protective, never
-> useless); every banner now carries an approved-register hook + a CtaChip ("SEE HOW
-> IT WORKS" / "SCAN TO JOIN"). 13 artifacts, FOUR probes green at worst case (the fit
+> landing match) — invented urgency/discounts REJECTED BY LAW (there is NO list price
+> to discount: the FIRST purchase at the buyer's chosen amount establishes the seat —
+> founder correction 2026-07-20, engraved in agent memory
+> `seat-price-first-purchase-decides` — so any promo claim is chain-refutable; the
+> constraint is protective, never useless); every banner now carries an
+> approved-register hook + a CtaChip ("SEE HOW IT WORKS" / "SCAN TO JOIN"). 13 artifacts, FOUR probes green at worst case (the fit
 > probe caught its own 6px regressions on b300/b336 before any eye did — the
-> discipline works). Gate all EXIT 0. 🚀 DEPLOY — ONE cycle carries K1.2 + K1.3
-> (client-only, NO migration).** NEXT: the founder's online seal → K2.
+> discipline works). → **K1.4 — THE PRE-GO ADVERSARIAL HARDENING [this commit]
+> (founder order: "deep think avec toutes tes casquettes… si oui GO"; 3-skeptic
+> workflow `wf_02a3da5c-520` + my own sweep). FIXED, every real finding: ① the
+> b300/b336/b600 previews got their overflow containers (my sweep found it, skeptic 1
+> confirmed the 375px math — page never scrolls horizontally); ② the QrBox alignSelf
+> over-correction KILLED: explicit square dims replace it (a sized box can't stretch
+> AND obeys every parent's alignment — the QR was left-pinned in centered columns and
+> top-pinned in centered rows); ③ Banner320 RESTRUCTURED (the old side column
+> collided with the CTA chip deterministically — now two centered rows, CTA "TAKE
+> YOUR SEAT", nothing overlaps); ④ share failures are never silent (canShare probe,
+> link-only fallback, image-download fallback, honest status notes — the iOS
+> activation-expiry class); ⑤ the print SVG gained its QUIET ZONE (4 white modules —
+> "any color around it" now true) + object-URL revoke; ⑥ BizCard intro line fits its
+> column (QR 344, intro 30 ≥ the 30px floor). + THE FOUNDER'S PRICE CORRECTION
+> engraved (memory `seat-price-first-purchase-decides` + 3 sites fixed incl. the
+> member-visible banner footer): NO fixed seat price exists — the FIRST purchase at
+> the buyer's chosen amount establishes the seat. THE HARNESS now runs FIVE probes
+> (fit · square-box · type-floor · OVERLAP — no two visual leaves intersect ·
+> QR-CENTERING) — all 13 artifacts green at worst case; the b320 collision class and
+> the off-center class are structurally dead. Gate all EXIT 0 (one new tagged
+> raw-color exception: the SVG quiet zone's white). 🚀 DEPLOY — ONE cycle carries
+> K1.2 + K1.3 + K1.4 (client-only, NO migration).** NEXT: the founder's online
+> seal → K2.
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21

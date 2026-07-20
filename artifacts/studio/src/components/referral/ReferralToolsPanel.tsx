@@ -117,6 +117,14 @@ function ArtifactActions({
 }) {
   const [busy, setBusy] = useState<null | "download" | "share">(null);
   const [copied, setCopied] = useState(false);
+  // Transient honest feedback — a failure is never silent (adversarial
+  // verify 2026-07-20: iOS activation expiry and unsupported file-share
+  // used to masquerade as a closed sheet).
+  const [note, setNote] = useState<string | null>(null);
+  const say = (msg: string) => {
+    setNote(msg);
+    window.setTimeout(() => setNote(null), 2600);
+  };
   const nativeShareAvailable =
     typeof navigator !== "undefined" && typeof navigator.share === "function";
   const node = () => (nodeRef.current?.firstElementChild as HTMLElement | null) ?? null;
@@ -133,6 +141,7 @@ function ArtifactActions({
           void rasterizeToPng(el, spec.width, spec.height, spec.exportScale)
             .then((png) => {
               if (png !== null) triggerDownload(png, spec.filename);
+              else say("Couldn't prepare the image — try again");
             })
             .finally(() => setBusy(null));
         }}
@@ -170,23 +179,47 @@ function ArtifactActions({
             const el = node();
             if (el === null) return;
             setBusy("share");
-            void rasterizeToPng(el, spec.width, spec.height, spec.exportScale)
-              .then(async (png) => {
-                if (png === null) return;
-                try {
-                  const blob = await (await fetch(png)).blob();
-                  const file = new File([blob], spec.filename, { type: "image/png" });
+            void (async () => {
+              let png: string | null = null;
+              try {
+                png = await rasterizeToPng(el, spec.width, spec.height, spec.exportScale);
+                if (png === null) throw new Error("raster failed");
+                const blob = await (await fetch(png)).blob();
+                const file = new File([blob], spec.filename, { type: "image/png" });
+                const canShareFiles =
+                  typeof navigator.canShare === "function" &&
+                  navigator.canShare({ files: [file] });
+                if (canShareFiles) {
                   await navigator.share({
                     title: "The Syndicate",
                     text: "The Syndicate — an on-chain introduction record.",
                     url: joinLink,
                     files: [file],
                   });
-                } catch {
-                  /* member closed the sheet — nothing to do */
+                } else {
+                  // This engine shares links but not files — share the link,
+                  // hand the picture as a download (honest, never silent).
+                  await navigator.share({
+                    title: "The Syndicate",
+                    text: "The Syndicate — an on-chain introduction record.",
+                    url: joinLink,
+                  });
+                  triggerDownload(png, spec.filename);
+                  say("Link shared — the image was downloaded");
                 }
-              })
-              .finally(() => setBusy(null));
+              } catch (e) {
+                const aborted = e instanceof DOMException && e.name === "AbortError";
+                if (!aborted) {
+                  // A real failure (activation expiry, engine quirk): the
+                  // member still gets the artifact + the link.
+                  if (png !== null) triggerDownload(png, spec.filename);
+                  navigator.clipboard.writeText(joinLink).catch(() => {});
+                  say("Sheet unavailable — image downloaded, link copied");
+                }
+              } finally {
+                setBusy(null);
+              }
+            })();
           }}
           className="inline-flex items-center gap-1.5 h-9 rounded-lg border border-border bg-card px-3 text-xs text-foreground hover:bg-muted transition-colors disabled:opacity-60"
           data-testid={`button-kit-share-${spec.id}`}
@@ -194,6 +227,11 @@ function ArtifactActions({
           <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
           {busy === "share" ? "Preparing…" : "Share…"}
         </button>
+      ) : null}
+      {note !== null ? (
+        <span className="text-xs text-muted-foreground" role="status">
+          {note}
+        </span>
       ) : null}
     </div>
   );
@@ -403,10 +441,14 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
       <Card className="bg-card/40 border-border/50 p-5">
         <div className="flex flex-wrap items-start gap-6">
           {(["b300", "b336", "b600"] as const).map((id) => (
-            <div key={id}>
-              <ScaledPreview width={spec(id).width} height={spec(id).height} scale={1} nodeRef={refs[id]}>
-                {spec(id).render(facts)}
-              </ScaledPreview>
+            <div key={id} className="max-w-full">
+              {/* overflow container: a 336px preview must scroll INSIDE its
+                  box on a small phone — the page never scrolls horizontally */}
+              <div className="overflow-x-auto pb-1">
+                <ScaledPreview width={spec(id).width} height={spec(id).height} scale={1} nodeRef={refs[id]}>
+                  {spec(id).render(facts)}
+                </ScaledPreview>
+              </div>
               <div className="flex flex-wrap items-center gap-2 mt-2 max-w-[336px]">
                 <span className="font-mono text-xs text-muted-foreground">{spec(id).label}</span>
                 <ArtifactActions spec={spec(id)} nodeRef={refs[id]} joinLink={joinLink} />
@@ -432,8 +474,8 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
         <p className="text-xs text-muted-foreground leading-relaxed mt-4">
           The five formats that actually perform — medium rectangle, large
           rectangle, half page, leaderboard, and the mobile banner. Every hook
-          is a provable house line; never urgency, never a discount — a seat's
-          price is an on-chain fact.
+          is a provable house line; never urgency, never a discount — every
+          claim on these banners can be checked against the chain.
         </p>
       </Card>
 
@@ -471,9 +513,28 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
                 onClick={() => {
                   const svg = refs.qrprint.current?.querySelector("svg");
                   if (svg === null || svg === undefined) return;
-                  const data = new XMLSerializer().serializeToString(svg);
-                  const blob = new Blob([data], { type: "image/svg+xml;charset=utf-8" });
-                  triggerDownload(URL.createObjectURL(blob), "syndicate-qr-print.svg");
+                  // QUIET ZONE (adversarial verify 2026-07-20): the raw QR
+                  // svg ends flush at the finder patterns; the print standard
+                  // demands 4 modules of white margin — without it, "any
+                  // color around it" breaks the scan. Wrap in an outer svg
+                  // with the white margin baked in.
+                  const vb = svg.getAttribute("viewBox")?.split(/\s+/) ?? [];
+                  const n = Number(vb[2] ?? 0) || 29;
+                  const q = 4;
+                  const t = n + q * 2;
+                  const inner = new XMLSerializer()
+                    .serializeToString(svg)
+                    .replace(
+                      /<svg([^>]*)>/,
+                      `<svg$1 x="${q}" y="${q}" width="${n}" height="${n}">`,
+                    );
+                  const out =
+                    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${t} ${t}">` +
+                    `<rect width="${t}" height="${t}" fill="#ffffff"/>${inner}</svg>`; // no-raw-color-allow: the QR quiet zone must be solid white to stay scannable (QrCodeBlock precedent)
+                  const blob = new Blob([out], { type: "image/svg+xml;charset=utf-8" });
+                  const href = URL.createObjectURL(blob);
+                  triggerDownload(href, "syndicate-qr-print.svg");
+                  window.setTimeout(() => URL.revokeObjectURL(href), 5000);
                 }}
                 className="h-9 rounded-lg border border-border bg-card px-3 text-xs text-foreground hover:bg-muted transition-colors"
                 data-testid="button-kit-download-qr-svg"

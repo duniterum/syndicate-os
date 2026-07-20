@@ -43,9 +43,12 @@ charts). Extend-later without rework (the KIT_ARTIFACTS table): 970×250 billboa
   one clear CTA · banner copy matches the landing page (ours: /join — "Seats are
   open — see how membership works.").
 - **REJECTED — BY LAW, not by habit**: invented urgency, countdowns, flash offers,
-  discount claims ("-50%", "stocks limités"). The seat price is a fixed on-chain fact;
-  a promo claim would be a provable lie, and the anti-financialization canon exists to
-  keep every public claim provable. This constraint is protective, never useless.
+  discount claims ("-50%", "stocks limités"). There is NO list price to discount — the
+  FIRST purchase, at the buyer's chosen amount, establishes the seat (founder
+  correction 2026-07-20; SYN scales with the amount, repeat purchases are footprint) —
+  so a promo claim is a chain-refutable lie by construction, and the
+  anti-financialization canon exists to keep every public claim provable. This
+  constraint is protective, never useless.
 - **The approved hook register** (already-served house lines only): "Every purchase is
   a verifiable receipt." · "Proof, not promises." · "Don't trust — verify." · CTA:
   "SEE HOW IT WORKS" / "SCAN TO JOIN" · personalization: "Introduced by 0x…".
