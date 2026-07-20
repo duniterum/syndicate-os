@@ -148,9 +148,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   admin-dist 99) · build + prerender 34 + twins 352 · seo 509 · rewrites
 >   · surface audit 333 · rig 4-combo DOM-verified with the REAL component
 >   + REAL client parser (throwaway page-world harness, deleted before
->   commit; founder reviewed the live rig page and gave GO). **🚀 DEPLOY —
->   its own cycle (client-only, NO migration, no pnpm install), CARRIES the
->   batchable rider `39f7667`; the backlog empties at the seal.**
+>   commit; founder reviewed the live rig page and gave GO). **✅ SEALED IN
+>   PROD `e2911be` (Replit green 2026-07-20, founder-pasted report): 9/9
+>   blobs · byte-identity entry `index-ONifdE63.js` + console EXACT · gates
+>   at the sealed counts (operator-gate 2840 · access-state 1113 · receipt
+>   127 · feature-truth 552 · admin-dist 99 · 352 twins) · /receipt matrix
+>   exact · "acquisition commission" ×0 · engine ok:2 after the usual
+>   self-healed boot partial (head 90,757,345→90,757,971) · zero rendered
+>   "genesis" (the rider RODE — Replit proved ×0 in the served console
+>   chunk) · THE LIVING SEAL: the founder's own screenshot — his real
+>   register at /referral/commissions, the July receipt open, every figure
+>   exact. DEPLOY BACKLOG: EMPTY. + THE SHARE-PROOF (probed from here,
+>   prod): the shared link's served head carries the painted face
+>   (og:image + twitter summary_large_image → face-3 PNG 200/46KB) — the
+>   X compose window never previews unfurls; the card appears on the
+>   POSTED tweet.**
 > - **TODAY'S LESSONS (2026-07-20 — engraved at their sites, gathered here):**
 >   ① a missing esbuild TARGET let the binary loader emit a runtime-unknown
 >   API (`Uint8Array.fromBase64`) — the rig caught a whole-api prod-boot
