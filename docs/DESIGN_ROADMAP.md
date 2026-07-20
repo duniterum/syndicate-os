@@ -454,6 +454,16 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   Introductions) · la porte de partage vers la page permanente du reçu
   (rotation dans le lien, contrat shareTargets par famille, prouvé au rig).
   **+0 couleur brute**.
+- [x] **K1 L'ARSENAL DU RÉFÉRENT (2026-07-20, maquette approuvée « GO AND
+  GO-LIVE »)** : le 6ᵉ onglet Tools — la carte de standing (og/carré/story,
+  chiffres prouvés par la chaîne), les banners aux tailles réelles
+  (728×90 · 468×60 · 300×250), l'affiche A4 + carte de visite (&via=print),
+  les moments vivants (les propres lignes du membre), les kits créateurs
+  pré-tagués &via, les 4 phrases maison, le guide replié. Artefacts en ENCRE
+  FIXE (canon R-CARDS — export identique dans les deux thèmes), exceptions
+  raw-color documentées par ligne (`no-raw-color-allow`). **+0 couleur brute
+  non documentée** (exceptions : QrCodeBlock + l'encre des artefacts
+  referrerKit, chacune taguée avec sa raison).
 
 ### Phase 6 — Audits (le sceau grade-AAA)
 - [ ] Accessibilité (WCAG AA / APCA, focus, clavier, cibles ≥44px)

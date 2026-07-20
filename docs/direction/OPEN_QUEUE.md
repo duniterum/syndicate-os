@@ -63,7 +63,33 @@
 > · **K4 — REACH & LIFECYCLE**: reaching the no-seat promoter (founder decision at its
 >   gate: wallet-addressed sends) + remaining lifecycle doors.
 > · **P — THE PRESS KIT page** (public; every word to the founder on screen at its slice).
-> · Then **recognition/season (slice 6)**. NEXT ACTION: K1 builds now.
+> · Then **recognition/season (slice 6)**.
+> **▶ K1 BUILT + COMMITTED [this commit] (2026-07-20, the arc's GO and GO-Live standing).**
+> DEEP-RETHINK IMPROVEMENT APPLIED (recorded): K1 shipped CLIENT-ONLY — the artifacts
+> render in the browser on the proven ReceiptShareCard raster path (fixed R-CARDS ink,
+> identical export in both themes; og card exports ~98KB PNG, rig-proven); the SERVER
+> painter family moves to K2 where it is structurally required (the /join?source=
+> unfurl). The verify-first CONTRACT TRUTH read (MembershipSaleV3.sol:446-460, engraved):
+> a MEMBER_INTRODUCTION source wallet holding ZERO SYN at purchase time → explicit-link
+> purchase REVERTS (ReferrerNotSeated); auto-linked repeat purchase proceeds with NO
+> commission — the kit's guide carries the canon sentence. SHIPPED: the 6th tab "Tools"
+> (/referral/tools, registry+classification+rewrites, 35 shells) · referrerKit.tsx (the
+> fixed-ink artifact family: standing card og/square/story · banners 728×90/468×60/300×250
+> · A4 poster + business card, print QRs bake &via=print) · ReferralToolsPanel (card
+> module + downloads + native share · banners real-size · offline pack · LIVING MOMENTS
+> v1 from the member's own rows (introduction sealed → copy the receipt link; standing →
+> the card) · creator kits pre-tagged &via=youtube/blog/whatsapp/print · the 4 flagship
+> lines · the promote guide collapsed with the SYN-holding truth · legal seal) · the
+> origin badge harvested (public/referrer-badge.png, the interlock listing badge) · THE
+> WHITELIST FOSSIL FIXED dated (os-contracts: /member#referral-dashboard →
+> /referral/introductions; old rows render non-clickable, fail-closed) · `referrerKit`
+> LIVE in featureStatus SAME commit. GATE green whole: studio tsc + 19 guards
+> (access-state 1121 · feature-truth 556 · notif-vocab 62) + build (35 shells · twins 352
+> · admin-dist 99) + seo 520 + rewrites 33 + audit 338 · api tsc + 18 guards (auth-zone
+> 1057) · rig: artifact DOM + export probe green, /referral/tools anon fork serves, zero
+> console errors. **🚀 DEPLOY — its own cycle (client + the os-contracts whitelist line;
+> NO migration, NO pnpm install). The founder's living seal: his signed session on
+> /referral/tools in prod.** NEXT: K2.
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21

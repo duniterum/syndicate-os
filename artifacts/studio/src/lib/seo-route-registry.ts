@@ -616,6 +616,23 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     notes: "Referral surface tab (Channels — the canonical link lives above the tabs since 3.2) — member content behind the session; anon serves the program page.",
   },
   {
+    path: "/referral/tools",
+    routeType: "PUBLIC",
+    indexStatus: "REDIRECT",
+    sitemap: false,
+    title: "Referral Program — The Syndicate",
+    description:
+      "How The Syndicate's referral program works: an eligible completed introduction pays a bounded commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Membership is not an investment.",
+    canonicalPath: "/referral",
+    changefreq: "monthly",
+    priority: 0.6,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "source",
+    primaryIntent: "education",
+    proofRoute: "/status",
+    notes: "Referral surface tab (Tools — K1 the referrer's arsenal, 2026-07-20) — member content behind the session; anon serves the program page.",
+  },
+  {
     // LEGACY ALIAS of /referral: serves the same page at 200 (existing links
     // never break — no 301 exists at the static layer until the domain
     // transfer), noindex,follow + cross-canonical → Google consolidates.

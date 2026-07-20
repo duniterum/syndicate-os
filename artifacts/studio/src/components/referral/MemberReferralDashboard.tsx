@@ -37,13 +37,15 @@ import { ReferralIntroductionsPanel } from "@/components/referral/ReferralIntrod
 import { ReferralCommissionsPanel } from "@/components/referral/ReferralCommissionsPanel";
 import { ReferralLadderPanel } from "@/components/referral/ReferralLadderPanel";
 import { ReferralLinkPanel } from "@/components/referral/ReferralLinkPanel";
+import { ReferralToolsPanel } from "@/components/referral/ReferralToolsPanel";
 
 export type ReferralTabId =
   | "overview"
   | "introductions"
   | "commissions"
   | "ladder"
-  | "link";
+  | "link"
+  | "tools";
 
 const TABS: { id: ReferralTabId; label: string; href: string }[] = [
   { id: "overview", label: "Overview", href: "/referral" },
@@ -54,6 +56,9 @@ const TABS: { id: ReferralTabId; label: string; href: string }[] = [
   // the page hero; this tab holds the channel composer + analytics +
   // reference. The route stays /referral/link (registry stability).
   { id: "link", label: "Channels", href: "/referral/link" },
+  // K1 · THE ARSENAL (founder-approved mockup 2026-07-20): the referrer's
+  // ready-made shareables — card, banners, print pack, moments, creator kits.
+  { id: "tools", label: "Tools", href: "/referral/tools" },
 ];
 
 // Tab focus indicator: a rounded background TINT, never a boxing ring — the
@@ -243,6 +248,7 @@ export function MemberReferralDashboard({ tab = "overview" }: { tab?: ReferralTa
       {tab === "commissions" ? <ReferralCommissionsPanel readback={readback} /> : null}
       {tab === "ladder" ? <ReferralLadderPanel readback={readback} /> : null}
       {tab === "link" ? <ReferralLinkPanel readback={readback} /> : null}
+      {tab === "tools" ? <ReferralToolsPanel readback={readback} /> : null}
     </div>
   );
 }

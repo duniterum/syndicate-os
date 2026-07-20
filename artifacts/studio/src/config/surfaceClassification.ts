@@ -226,6 +226,15 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     enforcement: "PREVIEW_LABELLED",
   },
   {
+    routePath: "/referral/tools",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "Referral surface tab: the referrer's arsenal (K1) — standing card, banners, print pack, living moments, creator kits.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
     // Legacy alias of /referral (200 + canonical; links never break). No
     // moduleId on purpose: the module points at the CANONICAL path /referral.
     routePath: "/source-attribution",

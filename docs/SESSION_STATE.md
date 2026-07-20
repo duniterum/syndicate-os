@@ -183,10 +183,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   to the founder 2026-07-20, copy kept as approved: the public page's
 >   visitor door "Seats are open — see how membership works." is a standing
 >   claim on permanent links — revisit only if seat sales ever pause.
-> - **IN FLIGHT after this:** the sealed order's LAST step:
->   recognition/season (slice 6, Phase-5) — read the gamification/legal
->   dossier (docs/reference/) + GAMIFICATION_LEGAL_DOCTRINE +
->   SEASONS_ENGINE_ON_SYNDICATE_OS before any proposal.
+> - **▶ THE REFERRER KIT ARC (founder orders 2026-07-20, post-5.1-seal;
+>   the full record lives in OPEN_QUEUE — read it whole):** inventory
+>   engraved (docs/reference/REFERRER_KIT_SYSTEM_INVENTORY.md) → the K1
+>   "Tools" wireframe approved ("ÇA ME CONVIENT… GO AND GO-LIVE") → the
+>   work order engraved (K1 arsenal → K2 invitee side → K3 admin axis →
+>   K4 reach → P press kit → season) → **K1 BUILT + COMMITTED [this
+>   commit]** (client-only rethink; the server painter family moves to K2;
+>   the contract truth MembershipSaleV3.sol:446-460 engraved; whitelist
+>   fossil fixed dated; `referrerKit` live). 🚀 DEPLOY — its own cycle
+>   (client + one os-contracts line, NO migration); the founder's living
+>   seal = his signed session on /referral/tools in prod.
+> - **IN FLIGHT after the kit arc:** recognition/season (slice 6, Phase-5)
+>   — read the gamification/legal dossier (docs/reference/) +
+>   GAMIFICATION_LEGAL_DOCTRINE + SEASONS_ENGINE_ON_SYNDICATE_OS before
+>   any proposal.
 > - **FOUNDER-PENDING: NOTHING on the arc.** Parked as recorded: Q35 legal
 >   set · Q39/Q40/Q42 admin waves · Q32/MVP-final items · the deferred list.
 >   Taken-by-default (flagged, overridable): the dedicated PDF engine stays

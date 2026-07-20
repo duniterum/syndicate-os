@@ -87,13 +87,18 @@ export const NOTIFICATION_FORBIDDEN_ICONS = [
  * Internal deep-link destinations a notification may point to. EXACT-MATCH
  * whitelist — the write validator refuses any link_path not in this set, and
  * the client renders a non-member path as non-clickable (fail-closed). Every
- * target is an own-row surface (/member, /wallet, /member#referral-dashboard)
+ * target is an own-row surface (/member, /wallet, /referral/introductions)
  * or a public aggregate/content page — none keyed by another member's identity
  * (ADR-003 own-row/no-directory). `/notifications` is excluded (self-referential).
+ * FOSSIL FIX (K1, 2026-07-20, deliberate + dated): the referral dashboard
+ * moved to /referral's real sub-routes in the 5-tabs slice (2026-07-19); the
+ * old /member#referral-dashboard anchor pointed at a surface that no longer
+ * hosts the dashboard. Old rows carrying the dead anchor render non-clickable
+ * (the fail-closed client rule) — honest, never a broken jump.
  */
 export const NOTIFICATION_LINK_WHITELIST = [
   { path: "/member", label: "Member Home — your seat & standing" },
-  { path: "/member#referral-dashboard", label: "Referral dashboard — your introductions & ladder" },
+  { path: "/referral/introductions", label: "Referral dashboard — your introductions & ladder" },
   { path: "/wallet", label: "Wallet — balances & approvals" },
   { path: "/toolkit", label: "Toolkit — what a seat can do" },
   { path: "/activity", label: "Activity — the public heartbeat" },

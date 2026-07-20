@@ -205,6 +205,9 @@ function Router() {
       <PublicRoute path="/referral/link">
         <ReferralSurface tab="link" />
       </PublicRoute>
+      <PublicRoute path="/referral/tools">
+        <ReferralSurface tab="tools" />
+      </PublicRoute>
       <PublicRoute path="/source-attribution">
         <SourceAttribution />
       </PublicRoute>
