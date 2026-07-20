@@ -107,9 +107,17 @@
 > 486 gold pixels in the seat band · QR 1306 white/1295 black) — the export is
 > visually sound, mechanically; ④ ArtifactActions (Download · Copy my link · Share…)
 > under EVERY artifact, driven by the one KIT_ARTIFACTS table; ⑤ preview boxes
-> bordered for light mode. Gate green whole (tsc · 19 guards · build 35 shells ·
-> twins 354 · seo 520 · audit 338). 🚀 DEPLOY — the fix cycle (client-only, NO
-> migration).** NEXT: the founder's online seal of the fixed arsenal → K2.
+> bordered for light mode. → **RIDER [this commit] — REPLIT'S RED GATE HONORED
+> (cycle d4958a8 refused, prod stayed on f7ab3f6): no-raw-color caught the hex in the
+> header COMMENT PROSE (the 7 real constants were tagged; the prose was not) —
+> reworded without the hex. AND the second root cause engraved (agent memory,
+> gate-discipline corollary): my local "GUARDS GREEN" was a false positive — piping
+> the chain through `Select-Object -First 5` KILLED the pipeline before no-raw-color
+> ran ("fail-closed" prose matches FAIL case-insensitively). The standing shape:
+> capture the FULL run, gate on the true exit code. Re-run to completion: guards
+> EXIT 0 with `no-raw-color: 0 sites` as the LAST line · tsc · build EXIT 0 (twins
+> 354 · admin-dist 99). 🚀 DEPLOY — the fix cycle (client-only, NO migration).**
+> NEXT: the founder's online seal of the fixed arsenal → K2.
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21

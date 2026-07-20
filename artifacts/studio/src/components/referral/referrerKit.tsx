@@ -8,8 +8,8 @@
 // money projection, never a gain promise.
 //
 // V2 (founder defect report, 2026-07-20 — the K1-FIX lesson): ① the REAL
-// brand mark — the interlock emblem (brand gold #E3A92B, BRAND_GUIDELINES
-// fixed) inlined as SVG paths, never a placeholder monogram; ② every layout
+// brand mark — the interlock emblem (the fixed brand gold of
+// BRAND_GUIDELINES) inlined as SVG paths, never a placeholder monogram; ② every layout
 // re-sized so NOTHING clips (the 2-line seat coordinate is the design case,
 // not an accident) — the harness FIT PROBE (scroll vs client bounds on every
 // artifact) is the gate for this file's geometry, not eyeballs.
