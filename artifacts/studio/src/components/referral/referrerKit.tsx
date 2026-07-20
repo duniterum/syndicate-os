@@ -106,16 +106,20 @@ function artefactRoot(w: number, h: number): CSSProperties {
   };
 }
 
+// READABILITY LAW (founder order 2026-07-20 + ARTIFACT_TYPOGRAPHY_FLOORS):
+// less text, bigger type. The masthead sub is SHORT (the category, nothing
+// more) so every line can sit above its format's type floor — a feed image
+// is seen at ~40% size, print at 300dpi (30px ≈ 7pt), a poster from meters.
 function Masthead({ mark, title, sub }: { mark: number; title: number; sub: number }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: Math.round(mark / 3) }}>
       <SynMark width={mark} />
       <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-        <span className="font-mono" style={{ fontSize: title, fontWeight: 600, letterSpacing: title * 0.2, color: INK_FG, whiteSpace: "nowrap" }}>
+        <span className="font-mono" style={{ fontSize: title, fontWeight: 600, letterSpacing: title * 0.18, color: INK_FG, whiteSpace: "nowrap" }}>
           THE SYNDICATE
         </span>
-        <span className="font-mono" style={{ fontSize: sub, fontWeight: 600, letterSpacing: sub * 0.14, color: INK_MUTED, marginTop: 2, whiteSpace: "nowrap" }}>
-          ON-CHAIN MEMBERSHIP PROTOCOL · AVALANCHE C-CHAIN
+        <span className="font-mono" style={{ fontSize: sub, fontWeight: 600, letterSpacing: sub * 0.1, color: INK_MUTED, marginTop: 4, whiteSpace: "nowrap" }}>
+          ON-CHAIN MEMBERSHIP PROTOCOL
         </span>
       </div>
     </div>
@@ -140,19 +144,19 @@ function VerifyLines({ size, lines }: { size: number; lines: string[] }) {
 export function CardOg({ facts }: { facts: KitFacts }) {
   return (
     <div style={{ ...artefactRoot(1200, 630), padding: "44px 64px 40px" }}>
-      <Masthead mark={64} title={24} sub={13} />
-      <div className="font-mono" style={{ fontSize: 42, lineHeight: 1.22, fontWeight: 600, color: INK_GOLD, marginTop: 30 }}>
+      <Masthead mark={72} title={30} sub={20} />
+      <div className="font-mono" style={{ fontSize: 58, lineHeight: 1.18, fontWeight: 600, color: INK_GOLD, marginTop: 24 }}>
         {facts.seatLine ?? "An on-chain introduction record"}
       </div>
       {facts.standingLine !== null ? (
-        <div style={{ fontSize: 25, color: INK_FG, marginTop: 10 }}>{facts.standingLine}</div>
+        <div style={{ fontSize: 32, color: INK_FG, marginTop: 12 }}>{facts.standingLine}</div>
       ) : null}
-      <div className="font-mono" style={{ fontSize: 19, color: INK_MUTED, marginTop: 12 }}>
-        source {facts.shortWallet} · verified on-chain · thesyndicate.money
+      <div className="font-mono" style={{ fontSize: 23, color: INK_MUTED, marginTop: 12 }}>
+        source {facts.shortWallet} · thesyndicate.money
       </div>
       <div style={{ display: "flex", alignItems: "flex-end", gap: 28, marginTop: "auto" }}>
         <QrBox url={facts.joinLink} size={150} />
-        <VerifyLines size={17} lines={["SCAN — JOIN THROUGH MY INTRODUCTION", "DON'T TRUST — VERIFY"]} />
+        <VerifyLines size={23} lines={["SCAN — JOIN THROUGH MY INTRODUCTION", "DON'T TRUST — VERIFY"]} />
       </div>
     </div>
   );
@@ -162,19 +166,19 @@ export function CardOg({ facts }: { facts: KitFacts }) {
 export function CardSquare({ facts }: { facts: KitFacts }) {
   return (
     <div style={{ ...artefactRoot(1080, 1080), padding: 64 }}>
-      <Masthead mark={58} title={22} sub={12} />
-      <div className="font-mono" style={{ fontSize: 50, lineHeight: 1.24, fontWeight: 600, color: INK_GOLD, marginTop: 84 }}>
+      <Masthead mark={68} title={28} sub={20} />
+      <div className="font-mono" style={{ fontSize: 58, lineHeight: 1.2, fontWeight: 600, color: INK_GOLD, marginTop: 64 }}>
         {facts.seatLine ?? "An on-chain introduction record"}
       </div>
       {facts.standingLine !== null ? (
-        <div style={{ fontSize: 28, color: INK_FG, marginTop: 14 }}>{facts.standingLine}</div>
+        <div style={{ fontSize: 32, color: INK_FG, marginTop: 14 }}>{facts.standingLine}</div>
       ) : null}
-      <div className="font-mono" style={{ fontSize: 20, color: INK_MUTED, marginTop: 16 }}>
+      <div className="font-mono" style={{ fontSize: 23, color: INK_MUTED, marginTop: 14 }}>
         source {facts.shortWallet} · thesyndicate.money
       </div>
       <div style={{ display: "flex", alignItems: "flex-end", gap: 30, marginTop: "auto" }}>
         <QrBox url={facts.joinLink} size={230} />
-        <VerifyLines size={18} lines={["SCAN TO JOIN", "DON'T TRUST — VERIFY"]} />
+        <VerifyLines size={23} lines={["SCAN TO JOIN", "DON'T TRUST — VERIFY"]} />
       </div>
     </div>
   );
@@ -184,63 +188,88 @@ export function CardSquare({ facts }: { facts: KitFacts }) {
 export function CardStory({ facts }: { facts: KitFacts }) {
   return (
     <div style={{ ...artefactRoot(1080, 1920), padding: 76 }}>
-      <Masthead mark={62} title={23} sub={12.5} />
-      <div className="font-mono" style={{ fontSize: 58, lineHeight: 1.26, fontWeight: 600, color: INK_GOLD, marginTop: 190 }}>
+      <Masthead mark={76} title={32} sub={22} />
+      <div className="font-mono" style={{ fontSize: 76, lineHeight: 1.22, fontWeight: 600, color: INK_GOLD, marginTop: 170 }}>
         {facts.seatLine ?? "An on-chain introduction record"}
       </div>
       {facts.standingLine !== null ? (
-        <div style={{ fontSize: 32, color: INK_FG, marginTop: 20 }}>{facts.standingLine}</div>
+        <div style={{ fontSize: 38, color: INK_FG, marginTop: 22 }}>{facts.standingLine}</div>
       ) : null}
-      <div className="font-mono" style={{ fontSize: 23, color: INK_MUTED, marginTop: 22 }}>
-        source {facts.shortWallet} · verified on-chain
+      <div className="font-mono" style={{ fontSize: 27, color: INK_MUTED, marginTop: 22 }}>
+        source {facts.shortWallet} · thesyndicate.money
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 24, marginTop: "auto" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 26, marginTop: "auto" }}>
         <QrBox url={facts.joinLink} size={280} />
-        <VerifyLines size={21} lines={["SCAN — JOIN THROUGH MY INTRODUCTION", "DON'T TRUST — VERIFY"]} />
+        <VerifyLines size={26} lines={["SCAN — JOIN THROUGH MY INTRODUCTION", "DON'T TRUST — VERIFY"]} />
       </div>
     </div>
   );
 }
 
-// ── Banners — the standard web sizes, sized so NOTHING clips ────────────────
+// The CTA chip — the one action affordance on banners (adopted craft: a
+// clear action verb; the wording is the APPROVED visitor-door register —
+// never urgency, never a discount, never a promise the chain can't prove).
+function CtaChip({ text, size }: { text: string; size: number }) {
+  return (
+    <span
+      className="font-mono"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        border: `1.5px solid ${INK_GOLD}`,
+        color: INK_GOLD,
+        borderRadius: 8,
+        padding: `${Math.round(size * 0.55)}px ${Math.round(size * 1.1)}px`,
+        fontSize: size,
+        fontWeight: 600,
+        letterSpacing: size * 0.1,
+        whiteSpace: "nowrap",
+        flexShrink: 0,
+      }}
+    >
+      {text}
+    </span>
+  );
+}
+
+// ── Banners — THE PERFORMING SET (ARTIFACT_TYPOGRAPHY_FLOORS §banner canon:
+// Google's top performers 300×250 · 336×280 · 300×600 · 728×90 + mobile
+// 320×100; the legacy 468×60 is retired). One message per banner, a hook
+// from the approved register, one CTA — sized so NOTHING clips. ─────────────
 export function Banner728({ facts }: { facts: KitFacts }) {
   return (
     <div style={{ ...artefactRoot(728, 90), flexDirection: "row", alignItems: "center", gap: 12, padding: "0 16px" }}>
       <SynMark width={44} />
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <span className="font-mono" style={{ fontSize: 19, fontWeight: 600, letterSpacing: 3, whiteSpace: "nowrap" }}>
+        <span className="font-mono" style={{ fontSize: 18, fontWeight: 600, letterSpacing: 2.6, whiteSpace: "nowrap" }}>
           THE SYNDICATE
         </span>
-        <span className="font-mono" style={{ fontSize: 10.5, letterSpacing: 1.2, color: INK_MUTED, whiteSpace: "nowrap" }}>
-          ON-CHAIN MEMBERSHIP PROTOCOL
+        <span style={{ fontSize: 11.5, color: INK_MUTED, whiteSpace: "nowrap", marginTop: 3 }}>
+          Proof, not promises.
         </span>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", marginLeft: "auto" }}>
-        <span className="font-mono" style={{ fontSize: 12, color: INK_GOLD, whiteSpace: "nowrap" }}>
-          Introduced by {facts.shortWallet}
-        </span>
-        <span className="font-mono" style={{ fontSize: 10, color: INK_MUTED, whiteSpace: "nowrap" }}>
-          thesyndicate.money
-        </span>
-      </div>
+      <CtaChip text="SEE HOW IT WORKS" size={11} />
+      <span className="font-mono" style={{ fontSize: 12.5, color: INK_GOLD, marginLeft: "auto", whiteSpace: "nowrap" }}>
+        Introduced by {facts.shortWallet}
+      </span>
       <QrBox url={facts.joinLink} size={52} />
     </div>
   );
 }
 
-export function Banner468({ facts }: { facts: KitFacts }) {
+export function Banner336({ facts }: { facts: KitFacts }) {
   return (
-    <div style={{ ...artefactRoot(468, 60), flexDirection: "row", alignItems: "center", gap: 10, padding: "0 12px" }}>
-      <SynMark width={30} />
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <span className="font-mono" style={{ fontSize: 14, fontWeight: 600, letterSpacing: 2, whiteSpace: "nowrap" }}>
-          THE SYNDICATE
-        </span>
-        <span className="font-mono" style={{ fontSize: 8, letterSpacing: 0.8, color: INK_MUTED, whiteSpace: "nowrap" }}>
-          PROOF-FIRST MEMBERSHIP
-        </span>
-      </div>
-      <span className="font-mono" style={{ fontSize: 10, color: INK_GOLD, marginLeft: "auto", whiteSpace: "nowrap" }}>
+    <div style={{ ...artefactRoot(336, 280), alignItems: "center", justifyContent: "center", gap: 5, padding: 12, textAlign: "center" }}>
+      <SynMark width={40} />
+      <span className="font-mono" style={{ fontSize: 17, fontWeight: 600, letterSpacing: 2.6, whiteSpace: "nowrap", marginTop: 2 }}>
+        THE SYNDICATE
+      </span>
+      <span style={{ fontSize: 11, color: INK_MUTED, whiteSpace: "nowrap" }}>
+        Every purchase is a verifiable receipt.
+      </span>
+      <QrBox url={facts.joinLink} size={88} />
+      <CtaChip text="SCAN TO JOIN" size={11} />
+      <span className="font-mono" style={{ fontSize: 12, color: INK_GOLD, whiteSpace: "nowrap" }}>
         Introduced by {facts.shortWallet}
       </span>
     </div>
@@ -249,20 +278,70 @@ export function Banner468({ facts }: { facts: KitFacts }) {
 
 export function Banner300({ facts }: { facts: KitFacts }) {
   return (
-    <div style={{ ...artefactRoot(300, 250), alignItems: "center", justifyContent: "center", gap: 7, padding: 14, textAlign: "center" }}>
-      <SynMark width={40} />
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <span className="font-mono" style={{ fontSize: 15, fontWeight: 600, letterSpacing: 2.4, whiteSpace: "nowrap" }}>
-          THE SYNDICATE
-        </span>
-        <span className="font-mono" style={{ fontSize: 9, letterSpacing: 1, color: INK_MUTED, whiteSpace: "nowrap" }}>
-          ON-CHAIN MEMBERSHIP PROTOCOL
-        </span>
-      </div>
-      <QrBox url={facts.joinLink} size={88} />
-      <span className="font-mono" style={{ fontSize: 10.5, color: INK_GOLD, whiteSpace: "nowrap" }}>
+    <div style={{ ...artefactRoot(300, 250), alignItems: "center", justifyContent: "center", gap: 4, padding: 10, textAlign: "center" }}>
+      <SynMark width={34} />
+      <span className="font-mono" style={{ fontSize: 16, fontWeight: 600, letterSpacing: 2.4, whiteSpace: "nowrap", marginTop: 2 }}>
+        THE SYNDICATE
+      </span>
+      <span style={{ fontSize: 10.5, color: INK_MUTED, whiteSpace: "nowrap" }}>
+        Every purchase is a verifiable receipt.
+      </span>
+      <QrBox url={facts.joinLink} size={78} />
+      <CtaChip text="SCAN TO JOIN" size={10.5} />
+      <span className="font-mono" style={{ fontSize: 11.5, color: INK_GOLD, whiteSpace: "nowrap" }}>
         Introduced by {facts.shortWallet}
       </span>
+    </div>
+  );
+}
+
+export function Banner600({ facts }: { facts: KitFacts }) {
+  return (
+    <div style={{ ...artefactRoot(300, 600), alignItems: "center", padding: "34px 24px 28px", textAlign: "center" }}>
+      <SynMark width={60} />
+      <span className="font-mono" style={{ fontSize: 20, fontWeight: 600, letterSpacing: 2.8, whiteSpace: "nowrap", marginTop: 12 }}>
+        THE SYNDICATE
+      </span>
+      <span style={{ fontSize: 13, color: INK_MUTED, lineHeight: 1.45, marginTop: 8, maxWidth: 240 }}>
+        Every purchase is a verifiable receipt.
+      </span>
+      <div style={{ marginTop: 18, display: "flex" }}>
+        <QrBox url={facts.joinLink} size={168} />
+      </div>
+      <div style={{ marginTop: 16, display: "flex" }}>
+        <CtaChip text="SCAN TO JOIN" size={13} />
+      </div>
+      <span style={{ fontSize: 12.5, color: INK_MUTED, lineHeight: 1.45, marginTop: 14, maxWidth: 240 }}>
+        Seats are open — see how membership works.
+      </span>
+      <span className="font-mono" style={{ fontSize: 12, color: INK_GOLD, whiteSpace: "nowrap", marginTop: "auto" }}>
+        Introduced by {facts.shortWallet}
+      </span>
+      <span className="font-mono" style={{ fontSize: 11, color: INK_MUTED, whiteSpace: "nowrap", marginTop: 6 }}>
+        thesyndicate.money
+      </span>
+    </div>
+  );
+}
+
+export function Banner320({ facts }: { facts: KitFacts }) {
+  return (
+    <div style={{ ...artefactRoot(320, 100), flexDirection: "row", alignItems: "center", gap: 9, padding: "0 12px" }}>
+      <SynMark width={32} />
+      <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+        <span className="font-mono" style={{ fontSize: 13, fontWeight: 600, letterSpacing: 1.6, whiteSpace: "nowrap" }}>
+          THE SYNDICATE
+        </span>
+        <span style={{ fontSize: 10, color: INK_MUTED, whiteSpace: "nowrap", marginTop: 2 }}>
+          Proof, not promises.
+        </span>
+        <span className="font-mono" style={{ fontSize: 10, color: INK_GOLD, whiteSpace: "nowrap", marginTop: 3 }}>
+          Introduced by {facts.shortWallet}
+        </span>
+      </div>
+      <div style={{ marginLeft: "auto", display: "flex" }}>
+        <CtaChip text="SEE HOW IT WORKS" size={10} />
+      </div>
     </div>
   );
 }
@@ -274,22 +353,19 @@ export function Banner300({ facts }: { facts: KitFacts }) {
 export function RecordCard({ facts }: { facts: KitFacts }) {
   return (
     <div style={{ ...artefactRoot(1200, 630), padding: "44px 64px 40px" }}>
-      <Masthead mark={64} title={24} sub={13} />
-      <div className="font-mono" style={{ fontSize: 56, lineHeight: 1.2, fontWeight: 600, color: INK_GOLD, marginTop: 34 }}>
+      <Masthead mark={72} title={30} sub={20} />
+      <div className="font-mono" style={{ fontSize: 66, lineHeight: 1.15, fontWeight: 600, color: INK_GOLD, marginTop: 26 }}>
         {facts.recordLine ?? "An on-chain introduction record"}
       </div>
       {facts.standingLine !== null ? (
-        <div style={{ fontSize: 26, color: INK_FG, marginTop: 12 }}>{facts.standingLine}</div>
+        <div style={{ fontSize: 30, color: INK_FG, marginTop: 10 }}>{facts.standingLine}</div>
       ) : null}
-      <div style={{ fontSize: 21, color: INK_MUTED, marginTop: 12 }}>
+      <div style={{ fontSize: 25, color: INK_MUTED, marginTop: 10 }}>
         Every introduction is an on-chain record — verify it, don&apos;t trust it.
-      </div>
-      <div className="font-mono" style={{ fontSize: 19, color: INK_MUTED, marginTop: 12 }}>
-        source {facts.shortWallet} · thesyndicate.money
       </div>
       <div style={{ display: "flex", alignItems: "flex-end", gap: 28, marginTop: "auto" }}>
         <QrBox url={facts.joinLink} size={140} />
-        <VerifyLines size={17} lines={["SCAN — JOIN THROUGH MY INTRODUCTION", "DON'T TRUST — VERIFY"]} />
+        <VerifyLines size={23} lines={["SCAN — JOIN THROUGH MY INTRODUCTION", "DON'T TRUST — VERIFY"]} />
       </div>
     </div>
   );
@@ -325,13 +401,13 @@ export function QrPrint({ facts }: { facts: KitFacts }) {
 export function QrVideo({ facts }: { facts: KitFacts }) {
   const url = withVia(facts.joinLink, "youtube");
   return (
-    <div style={{ ...artefactRoot(900, 900), alignItems: "center", justifyContent: "center", gap: 34, padding: 60 }}>
-      <QrBox url={url} size={560} />
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-        <span className="font-mono" style={{ fontSize: 26, fontWeight: 600, letterSpacing: 5, color: INK_GOLD, whiteSpace: "nowrap" }}>
-          SCAN — JOIN THROUGH MY INTRODUCTION
+    <div style={{ ...artefactRoot(900, 900), alignItems: "center", justifyContent: "center", gap: 36, padding: 56 }}>
+      <QrBox url={url} size={580} />
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+        <span className="font-mono" style={{ fontSize: 40, fontWeight: 600, letterSpacing: 6, color: INK_GOLD, whiteSpace: "nowrap" }}>
+          SCAN TO JOIN
         </span>
-        <span className="font-mono" style={{ fontSize: 21, letterSpacing: 3, color: INK_MUTED, whiteSpace: "nowrap" }}>
+        <span className="font-mono" style={{ fontSize: 28, letterSpacing: 3, color: INK_MUTED, whiteSpace: "nowrap" }}>
           thesyndicate.money
         </span>
       </div>
@@ -343,21 +419,21 @@ export function QrVideo({ facts }: { facts: KitFacts }) {
 export function PosterA4({ facts }: { facts: KitFacts }) {
   const url = withVia(facts.joinLink, "print");
   return (
-    <div style={{ ...artefactRoot(1240, 1754), alignItems: "center", padding: "110px 100px 90px", textAlign: "center" }}>
-      <SynMark width={170} />
-      <span className="font-mono" style={{ fontSize: 54, fontWeight: 600, letterSpacing: 11, marginTop: 40, whiteSpace: "nowrap" }}>
+    <div style={{ ...artefactRoot(1240, 1754), alignItems: "center", padding: "96px 80px 76px", textAlign: "center" }}>
+      <SynMark width={200} />
+      <span className="font-mono" style={{ fontSize: 92, fontWeight: 600, letterSpacing: 13, marginTop: 44, whiteSpace: "nowrap" }}>
         THE SYNDICATE
       </span>
-      <span style={{ fontSize: 26, color: INK_MUTED, lineHeight: 1.6, marginTop: 22, maxWidth: 780 }}>
+      <span style={{ fontSize: 36, color: INK_MUTED, lineHeight: 1.5, marginTop: 26, maxWidth: 920 }}>
         On-chain membership protocol. Every purchase is a receipt anyone can verify.
       </span>
-      <div style={{ marginTop: 64, display: "flex" }}>
+      <div style={{ marginTop: 60, display: "flex" }}>
         <QrBox url={url} size={520} />
       </div>
-      <span className="font-mono" style={{ fontSize: 28, fontWeight: 600, letterSpacing: 5.5, color: INK_GOLD, marginTop: 40, whiteSpace: "nowrap" }}>
+      <span className="font-mono" style={{ fontSize: 40, fontWeight: 600, letterSpacing: 6, color: INK_GOLD, marginTop: 44, whiteSpace: "nowrap" }}>
         SCAN TO SEE HOW IT WORKS
       </span>
-      <span className="font-mono" style={{ fontSize: 19, letterSpacing: 2.6, color: INK_MUTED, marginTop: "auto", whiteSpace: "nowrap" }}>
+      <span className="font-mono" style={{ fontSize: 25, letterSpacing: 3, color: INK_MUTED, marginTop: "auto", whiteSpace: "nowrap" }}>
         INTRODUCED BY {facts.shortWallet} · DON&apos;T TRUST — VERIFY
       </span>
     </div>
@@ -367,23 +443,23 @@ export function PosterA4({ facts }: { facts: KitFacts }) {
 export function BizCard({ facts }: { facts: KitFacts }) {
   const url = withVia(facts.joinLink, "print");
   return (
-    <div style={{ ...artefactRoot(1004, 650), flexDirection: "row", alignItems: "center", gap: 50, padding: 64 }}>
+    <div style={{ ...artefactRoot(1004, 650), flexDirection: "row", alignItems: "center", gap: 44, padding: 56 }}>
       <div style={{ display: "flex", flexDirection: "column", height: "100%", flex: 1, minWidth: 0 }}>
-        <SynMark width={86} />
-        <span className="font-mono" style={{ fontSize: 32, fontWeight: 600, letterSpacing: 4.5, marginTop: 24, whiteSpace: "nowrap" }}>
+        <SynMark width={104} />
+        <span className="font-mono" style={{ fontSize: 42, fontWeight: 600, letterSpacing: 4, marginTop: 24, whiteSpace: "nowrap" }}>
           THE SYNDICATE
         </span>
-        <span style={{ fontSize: 17, color: INK_MUTED, marginTop: 10, lineHeight: 1.5 }}>
+        <span style={{ fontSize: 30, color: INK_MUTED, marginTop: 12, lineHeight: 1.45 }}>
           On-chain membership.
           <br />
           Proof, not promises.
         </span>
-        <span className="font-mono" style={{ fontSize: 18, color: INK_GOLD, marginTop: "auto", whiteSpace: "nowrap" }}>
+        <span className="font-mono" style={{ fontSize: 31, color: INK_GOLD, marginTop: "auto", whiteSpace: "nowrap" }}>
           Introduced by {facts.shortWallet}
         </span>
-        <span className="font-mono" style={{ fontSize: 14.5, color: INK_MUTED, marginTop: 8 }}>thesyndicate.money</span>
+        <span className="font-mono" style={{ fontSize: 30, color: INK_MUTED, marginTop: 10 }}>thesyndicate.money</span>
       </div>
-      <QrBox url={url} size={350} />
+      <QrBox url={url} size={360} />
     </div>
   );
 }
@@ -398,20 +474,27 @@ export interface KitArtifactSpec {
   height: number;
   /** Export scale (print formats export at 2× for crisp paper). */
   exportScale: number;
+  /** The format's TYPE FLOOR in px (ARTIFACT_TYPOGRAPHY_FLOORS law): no
+   * text node inside the artifact may compute below it. Derived from the
+   * viewing context — feed images are seen at ~40% size, print at 300dpi
+   * (30px ≈ 7pt), a poster from meters. The harness probe enforces it. */
+  typeFloor: number;
   filename: string;
   render: (facts: KitFacts) => ReactNode;
 }
 
 export const KIT_ARTIFACTS: readonly KitArtifactSpec[] = [
-  { id: "og", label: "1200×630 · link preview", width: 1200, height: 630, exportScale: 1, filename: "syndicate-card-1200x630.png", render: (f) => <CardOg facts={f} /> },
-  { id: "square", label: "1080×1080 · post", width: 1080, height: 1080, exportScale: 1, filename: "syndicate-card-1080x1080.png", render: (f) => <CardSquare facts={f} /> },
-  { id: "story", label: "1080×1920 · story", width: 1080, height: 1920, exportScale: 1, filename: "syndicate-card-1080x1920.png", render: (f) => <CardStory facts={f} /> },
-  { id: "record", label: "1200×630 · your record", width: 1200, height: 630, exportScale: 1, filename: "syndicate-record-1200x630.png", render: (f) => <RecordCard facts={f} /> },
-  { id: "b728", label: "728×90 · leaderboard", width: 728, height: 90, exportScale: 2, filename: "syndicate-banner-728x90.png", render: (f) => <Banner728 facts={f} /> },
-  { id: "b468", label: "468×60 · classic", width: 468, height: 60, exportScale: 2, filename: "syndicate-banner-468x60.png", render: (f) => <Banner468 facts={f} /> },
-  { id: "b300", label: "300×250 · rectangle", width: 300, height: 250, exportScale: 2, filename: "syndicate-banner-300x250.png", render: (f) => <Banner300 facts={f} /> },
-  { id: "poster", label: "A4 · poster", width: 1240, height: 1754, exportScale: 2, filename: "syndicate-poster-a4.png", render: (f) => <PosterA4 facts={f} /> },
-  { id: "bizcard", label: "85×55 · business card", width: 1004, height: 650, exportScale: 2, filename: "syndicate-business-card.png", render: (f) => <BizCard facts={f} /> },
-  { id: "qrprint", label: "QR only · print", width: 1000, height: 1000, exportScale: 2, filename: "syndicate-qr-print.png", render: (f) => <QrPrint facts={f} /> },
-  { id: "qrvideo", label: "QR · video overlay", width: 900, height: 900, exportScale: 2, filename: "syndicate-qr-video.png", render: (f) => <QrVideo facts={f} /> },
+  { id: "og", label: "1200×630 · link preview", width: 1200, height: 630, exportScale: 1, typeFloor: 20, filename: "syndicate-card-1200x630.png", render: (f) => <CardOg facts={f} /> },
+  { id: "square", label: "1080×1080 · post", width: 1080, height: 1080, exportScale: 1, typeFloor: 20, filename: "syndicate-card-1080x1080.png", render: (f) => <CardSquare facts={f} /> },
+  { id: "story", label: "1080×1920 · story", width: 1080, height: 1920, exportScale: 1, typeFloor: 22, filename: "syndicate-card-1080x1920.png", render: (f) => <CardStory facts={f} /> },
+  { id: "record", label: "1200×630 · your record", width: 1200, height: 630, exportScale: 1, typeFloor: 20, filename: "syndicate-record-1200x630.png", render: (f) => <RecordCard facts={f} /> },
+  { id: "b300", label: "300×250 · medium rectangle", width: 300, height: 250, exportScale: 2, typeFloor: 10, filename: "syndicate-banner-300x250.png", render: (f) => <Banner300 facts={f} /> },
+  { id: "b336", label: "336×280 · large rectangle", width: 336, height: 280, exportScale: 2, typeFloor: 10, filename: "syndicate-banner-336x280.png", render: (f) => <Banner336 facts={f} /> },
+  { id: "b600", label: "300×600 · half page", width: 300, height: 600, exportScale: 2, typeFloor: 10, filename: "syndicate-banner-300x600.png", render: (f) => <Banner600 facts={f} /> },
+  { id: "b728", label: "728×90 · leaderboard", width: 728, height: 90, exportScale: 2, typeFloor: 10, filename: "syndicate-banner-728x90.png", render: (f) => <Banner728 facts={f} /> },
+  { id: "b320", label: "320×100 · mobile", width: 320, height: 100, exportScale: 2, typeFloor: 10, filename: "syndicate-banner-320x100.png", render: (f) => <Banner320 facts={f} /> },
+  { id: "poster", label: "A4 · poster", width: 1240, height: 1754, exportScale: 2, typeFloor: 25, filename: "syndicate-poster-a4.png", render: (f) => <PosterA4 facts={f} /> },
+  { id: "bizcard", label: "85×55 · business card", width: 1004, height: 650, exportScale: 2, typeFloor: 30, filename: "syndicate-business-card.png", render: (f) => <BizCard facts={f} /> },
+  { id: "qrprint", label: "QR only · print", width: 1000, height: 1000, exportScale: 2, typeFloor: 1, filename: "syndicate-qr-print.png", render: (f) => <QrPrint facts={f} /> },
+  { id: "qrvideo", label: "QR · video overlay", width: 900, height: 900, exportScale: 2, typeFloor: 28, filename: "syndicate-qr-video.png", render: (f) => <QrVideo facts={f} /> },
 ];

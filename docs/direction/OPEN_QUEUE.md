@@ -134,8 +134,26 @@
 > record, never an empty boast, never money (the no-cash-flex canon holds); the
 > founder's "il a amené 10 personnes, c'est déjà prêt" answered. All three ride the
 > one KIT_ARTIFACTS table (11 artifacts, all probes green at worst case). Gate all
-> EXIT 0. 🚀 DEPLOY — the K1.2 cycle (client-only, NO migration).** NEXT: the
-> founder's online seal → K2.
+> EXIT 0. → **K1.3 [this commit] — THE READABILITY + BANNER-CANON PASS (founder
+> orders 2026-07-20, emphatic: "c'est illisible… c'est censé être toi l'expert" + the
+> Kinsta/lightzoom deep-read order):** ① ARTIFACT_TYPOGRAPHY_FLOORS.md engraved (NEW
+> durable law: the floor comes from the VIEWING CONTEXT — feed images seen at ~40%,
+> print at 300dpi where 30px≈7pt, posters read from meters; per-format floors carried
+> IN CODE by `KIT_ARTIFACTS[].typeFloor` and enforced by the harness TYPE-FLOOR PROBE);
+> every artifact's typography rebuilt on the floors (bizcard 17px→30px+, poster
+> headline 54→92, all cards' hooks/verify ≥23); "less text, bigger type" — cut lines
+> instead of shrinking them. ② THE BANNER FORMAT CANON settled une-bonne-fois-pour-
+> toutes (deep-read Kinsta FR + lightzoom + senior synthesis): the performing set =
+> 300×250 · 336×280 · 300×600 · 728×90 · 320×100 mobile; the legacy 468×60 RETIRED;
+> extend-later noted (970×250 · 600×200). ③ THE COPY SIEVE VERDICT engraved: the
+> marketing formulas' craft ADOPTED (benefit hooks · one message · action-verb CTA ·
+> landing match) — invented urgency/discounts REJECTED BY LAW (a fixed on-chain seat
+> price makes any promo claim a provable lie; the constraint is protective, never
+> useless); every banner now carries an approved-register hook + a CtaChip ("SEE HOW
+> IT WORKS" / "SCAN TO JOIN"). 13 artifacts, FOUR probes green at worst case (the fit
+> probe caught its own 6px regressions on b300/b336 before any eye did — the
+> discipline works). Gate all EXIT 0. 🚀 DEPLOY — ONE cycle carries K1.2 + K1.3
+> (client-only, NO migration).** NEXT: the founder's online seal → K2.
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21

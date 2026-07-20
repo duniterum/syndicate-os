@@ -287,9 +287,11 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
     square: useRef<HTMLDivElement | null>(null),
     story: useRef<HTMLDivElement | null>(null),
     record: useRef<HTMLDivElement | null>(null),
-    b728: useRef<HTMLDivElement | null>(null),
-    b468: useRef<HTMLDivElement | null>(null),
     b300: useRef<HTMLDivElement | null>(null),
+    b336: useRef<HTMLDivElement | null>(null),
+    b600: useRef<HTMLDivElement | null>(null),
+    b728: useRef<HTMLDivElement | null>(null),
+    b320: useRef<HTMLDivElement | null>(null),
     poster: useRef<HTMLDivElement | null>(null),
     bizcard: useRef<HTMLDivElement | null>(null),
     qrprint: useRef<HTMLDivElement | null>(null),
@@ -395,22 +397,44 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
         </p>
       </Card>
 
-      {/* 2 · THE BANNERS — real size, the link in the pixels. */}
-      <SectionTitle title="Your banners — real size, your link already inside" why="download, then place them anywhere you publish" />
-      <Card className="bg-card/40 border-border/50 p-5 space-y-5">
-        {(["b728", "b468", "b300"] as const).map((id) => (
-          <div key={id}>
-            <div className="overflow-x-auto pb-1">
+      {/* 2 · THE BANNERS — the performing set (Google's top formats +
+          mobile), real size, one message + one CTA each. */}
+      <SectionTitle title="Your banners — the formats that perform, real size" why="one message, one action — download, then place them anywhere you publish" />
+      <Card className="bg-card/40 border-border/50 p-5">
+        <div className="flex flex-wrap items-start gap-6">
+          {(["b300", "b336", "b600"] as const).map((id) => (
+            <div key={id}>
               <ScaledPreview width={spec(id).width} height={spec(id).height} scale={1} nodeRef={refs[id]}>
                 {spec(id).render(facts)}
               </ScaledPreview>
+              <div className="flex flex-wrap items-center gap-2 mt-2 max-w-[336px]">
+                <span className="font-mono text-xs text-muted-foreground">{spec(id).label}</span>
+                <ArtifactActions spec={spec(id)} nodeRef={refs[id]} joinLink={joinLink} />
+              </div>
             </div>
-            <div className="flex flex-wrap items-center gap-2 mt-2">
-              <span className="font-mono text-xs text-muted-foreground">{spec(id).label}</span>
-              <ArtifactActions spec={spec(id)} nodeRef={refs[id]} joinLink={joinLink} />
+          ))}
+        </div>
+        <div className="space-y-5 mt-6">
+          {(["b728", "b320"] as const).map((id) => (
+            <div key={id}>
+              <div className="overflow-x-auto pb-1">
+                <ScaledPreview width={spec(id).width} height={spec(id).height} scale={1} nodeRef={refs[id]}>
+                  {spec(id).render(facts)}
+                </ScaledPreview>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 mt-2">
+                <span className="font-mono text-xs text-muted-foreground">{spec(id).label}</span>
+                <ArtifactActions spec={spec(id)} nodeRef={refs[id]} joinLink={joinLink} />
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed mt-4">
+          The five formats that actually perform — medium rectangle, large
+          rectangle, half page, leaderboard, and the mobile banner. Every hook
+          is a provable house line; never urgency, never a discount — a seat's
+          price is an on-chain fact.
+        </p>
       </Card>
 
       {/* 3 · THE OFFLINE WORLD — print-ready, the QR does the work. */}
