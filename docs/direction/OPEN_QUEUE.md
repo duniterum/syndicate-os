@@ -227,7 +227,18 @@
 > + HTTP max-age 600 (the introducer is a MUTABLE fact — wallet updates, pauses;
 > never an immortal card) + the address-word zero-padding check (the house
 > decodeAddressWord discipline). join-card:guard grew to 29 pins (the status gate
-> + the mutable-fact cache law pinned forever). RECORDED NON-ACTION NITS
+> + the mutable-fact cache law pinned forever). **✅ K2 SEALED IN PROD `0134cc6`
+> (Replit green 2026-07-21, founder-pasted report — the cycle ran BEFORE K2.1):
+> 15/15 blobs · first server+client cycle · zero dependency change verified (the
+> promise held) · api gates 2317 PASS incl. join-card 25/25 · byte-identity entry
+> `index-DNC2gt7x.js` + console EXACT · the new routes' fail-closed matrix proven
+> IN PROD (non-source hash → 302 generic · evil.exe → 400 · introducer unknown →
+> {"shortWallet":null} · zero 40-hex in responses, anti-leak scan) · /join +
+> /join?source= 200 · wall 404 · engine ok=2, headBlock advancing · feed 78.
+> Replit's own line: "l'invité qui clique un lien d'introduction voit un unfurl
+> peint par source et un bandeau honnête — l'arc K1→K2 est en prod de bout en
+> bout." K2.1 (`87f47df`) rides the NEXT pull — its guard shows 29/29 there.**
+> RECORDED NON-ACTION NITS
 > (inherited receipt-slice patterns, accepted): stale og:image:width/height/alt
 > under substitution · /join.html?source= direct-hit bypass · the
 > "card_address_required" machine code name. Gate: api tsc + 19 guards EXIT 0 ·
