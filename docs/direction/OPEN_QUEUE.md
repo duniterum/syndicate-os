@@ -87,9 +87,29 @@
 > (access-state 1121 · feature-truth 556 · notif-vocab 62) + build (35 shells · twins 352
 > · admin-dist 99) + seo 520 + rewrites 33 + audit 338 · api tsc + 18 guards (auth-zone
 > 1057) · rig: artifact DOM + export probe green, /referral/tools anon fork serves, zero
-> console errors. **🚀 DEPLOY — its own cycle (client + the os-contracts whitelist line;
-> NO migration, NO pnpm install). The founder's living seal: his signed session on
-> /referral/tools in prod.** NEXT: K2.
+> console errors. **✅ SEALED IN PROD `f7ab3f6` (Replit green 2026-07-20, founder-pasted
+> report: 15/15 blobs · API prudence rebuild+boot for the shared-contracts whitelist
+> line (/referral/introductions ×1, fossil ×0) · gates grown (operator-gate 2860 ·
+> access-state 1121 · feature-truth 556) · /referral/tools 200 + badge 200 in prod ·
+> byte-identity exact · "le cycle le plus propre jamais vu", ok dès le 1er cycle).**
+> → **K1-FIX BUILT [this commit] (the founder's defect report on the live arsenal —
+> screenshots, emphatic): the shipped artifacts CLIPPED (og card cut mid-QR, liturgy
+> missing; 728 banner overflowed, QR+text truncated; 300 rogné), share actions existed
+> only on the top module, and a placeholder "SS" monogram rode instead of THE REAL
+> INTERLOCK EMBLEM. Root cause engraved (agent memory
+> `artifact-verification-fit-and-pixel-probes`): the harness verified DOM-text
+> presence, not visual fit — innerText reads clipped content. THE FIX: ① the REAL
+> brand mark (origin syn-mark-gold.svg harvested → public/ + inlined SynMark
+> component, brand gold #E3A92B) on every artifact; ② every layout re-sized for the
+> 2-LINE worst case (Seat #3,334 · Chapter IV — First Ten Thousand · Foundational),
+> proven by the new FIT PROBE (scroll bounds + every descendant inside root, all 8
+> artifacts green); ③ THE PIXEL PROBE samples the actual exported bitmap (ink corner ·
+> 486 gold pixels in the seat band · QR 1306 white/1295 black) — the export is
+> visually sound, mechanically; ④ ArtifactActions (Download · Copy my link · Share…)
+> under EVERY artifact, driven by the one KIT_ARTIFACTS table; ⑤ preview boxes
+> bordered for light mode. Gate green whole (tsc · 19 guards · build 35 shells ·
+> twins 354 · seo 520 · audit 338). 🚀 DEPLOY — the fix cycle (client-only, NO
+> migration).** NEXT: the founder's online seal of the fixed arsenal → K2.
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21

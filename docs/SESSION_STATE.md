@@ -191,9 +191,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   K4 reach → P press kit → season) → **K1 BUILT + COMMITTED [this
 >   commit]** (client-only rethink; the server painter family moves to K2;
 >   the contract truth MembershipSaleV3.sol:446-460 engraved; whitelist
->   fossil fixed dated; `referrerKit` live). 🚀 DEPLOY — its own cycle
->   (client + one os-contracts line, NO migration); the founder's living
->   seal = his signed session on /referral/tools in prod.
+>   fossil fixed dated; `referrerKit` live) → ✅ SEALED IN PROD `f7ab3f6`
+>   (Replit green 2026-07-20: 15/15 blobs · API prudence rebuild for the
+>   whitelist line · /referral/tools 200 + badge 200 · byte-identity ·
+>   cleanest cycle yet) → **K1-FIX [this commit]: the founder's defect
+>   report on the live arsenal (clipped cards/banners, missing QRs, share
+>   actions only on top, placeholder monogram) — THE REAL INTERLOCK EMBLEM
+>   on every artifact (SynMark, brand gold #E3A92B, origin harvest) ·
+>   worst-case-fit layouts · THE FIT PROBE + THE PIXEL PROBE now gate all
+>   artifact geometry (all 8 green; export sampled: ink corner, 486 gold
+>   pixels, QR 1306/1295) · ArtifactActions under EVERY artifact via the
+>   one KIT_ARTIFACTS table. LESSON ENGRAVED (agent memory
+>   `artifact-verification-fit-and-pixel-probes`): visual artifacts are
+>   never verified by DOM-text presence — innerText reads clipped content.
+>   🚀 DEPLOY — the fix cycle (client-only, NO migration); the founder's
+>   online seal of the fixed arsenal follows.
 > - **IN FLIGHT after the kit arc:** recognition/season (slice 6, Phase-5)
 >   — read the gamification/legal dossier (docs/reference/) +
 >   GAMIFICATION_LEGAL_DOCTRINE + SEASONS_ENGINE_ON_SYNDICATE_OS before

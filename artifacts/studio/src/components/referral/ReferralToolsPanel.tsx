@@ -1,15 +1,16 @@
-// components/referral/ReferralToolsPanel.tsx — TAB 6 · Tools (K1 · THE ARSENAL).
+// components/referral/ReferralToolsPanel.tsx — TAB 6 · Tools (K1 · THE ARSENAL, v2).
 //
 // The referrer's arsenal, per the founder-approved mockup
 // (docs/design/referral-tools-mockup.html): everything a referrer needs,
-// SHOWN not described — the standing card in three formats, real-size
-// banners, the offline print pack, the living moments the system hands
-// them, per-audience creator kits (each pre-tagged with the &via channel
-// vocabulary Channels already counts), the four flagship copy lines, and
-// the promote guide folded away. VISUAL-FIRST law (founder, 2026-07-20):
-// the human sees the banner, not the text. AT 300 law: this page does not
-// grow — artifacts are per-member constants; what grows lives in the tabs
-// built for scale.
+// SHOWN not described. VISUAL-FIRST law (founder, 2026-07-20): the human
+// sees the banner, not the text. AT 300 law: this page does not grow —
+// artifacts are per-member constants.
+//
+// V2 (founder defect report, 2026-07-20): every artifact now carries its
+// OWN action row (Download · Copy my link · Share…) — never only the top
+// module; the artifact table (KIT_ARTIFACTS) drives previews, downloads and
+// the harness fit probe from ONE source, so a future format joins every
+// affordance automatically.
 //
 // Truth laws: every figure on an artifact is the member's own session read
 // (seat via member-standing, durable/rung via source standing) — a missing
@@ -33,15 +34,9 @@ import {
   type StandingReadback,
 } from "@/components/referral/referralStanding";
 import {
-  Banner300,
-  Banner468,
-  Banner728,
-  BizCard,
-  CardOg,
-  CardSquare,
-  CardStory,
-  PosterA4,
+  KIT_ARTIFACTS,
   withVia,
+  type KitArtifactSpec,
   type KitFacts,
 } from "@/components/referral/referrerKit";
 
@@ -98,7 +93,7 @@ function ScaledPreview({
   return (
     <div
       style={{ width: width * scale, height: height * scale, overflow: "hidden" }}
-      className="rounded-lg shrink-0"
+      className="rounded-lg border border-border shrink-0"
     >
       <div ref={nodeRef} style={{ transform: `scale(${scale})`, transformOrigin: "top left", width, height }}>
         {children}
@@ -107,48 +102,100 @@ function ScaledPreview({
   );
 }
 
-function DownloadButton({
-  label,
+/** EVERY artifact's own action row (v2 — the founder's rule): Download ·
+ * Copy my link · Share… (native, carrying the artifact's PNG file). */
+function ArtifactActions({
+  spec,
   nodeRef,
-  width,
-  height,
-  scale = 1,
-  filename,
+  joinLink,
   gold = false,
 }: {
-  label: string;
+  spec: KitArtifactSpec;
   nodeRef: RefObject<HTMLDivElement | null>;
-  width: number;
-  height: number;
-  scale?: number;
-  filename: string;
+  joinLink: string;
   gold?: boolean;
 }) {
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState<null | "download" | "share">(null);
+  const [copied, setCopied] = useState(false);
+  const nativeShareAvailable =
+    typeof navigator !== "undefined" && typeof navigator.share === "function";
+  const node = () => (nodeRef.current?.firstElementChild as HTMLElement | null) ?? null;
+
   return (
-    <button
-      type="button"
-      disabled={busy}
-      onClick={() => {
-        const el = nodeRef.current?.firstElementChild as HTMLElement | null;
-        if (el === null || el === undefined) return;
-        setBusy(true);
-        void rasterizeToPng(el, width, height, scale)
-          .then((png) => {
-            if (png !== null) triggerDownload(png, filename);
-          })
-          .finally(() => setBusy(false));
-      }}
-      className={`inline-flex items-center gap-1.5 h-9 rounded-lg border px-3 text-xs transition-colors disabled:opacity-60 ${
-        gold
-          ? "border-gold/50 text-gold bg-gold/5 hover:bg-gold/10"
-          : "border-border bg-card text-foreground hover:bg-muted"
-      }`}
-      data-testid={`button-kit-download-${filename.replace(/[^a-z0-9]+/gi, "-")}`}
-    >
-      <Download className="h-3.5 w-3.5" aria-hidden="true" />
-      {busy ? "Preparing…" : label}
-    </button>
+    <div className="flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        disabled={busy !== null}
+        onClick={() => {
+          const el = node();
+          if (el === null) return;
+          setBusy("download");
+          void rasterizeToPng(el, spec.width, spec.height, spec.exportScale)
+            .then((png) => {
+              if (png !== null) triggerDownload(png, spec.filename);
+            })
+            .finally(() => setBusy(null));
+        }}
+        className={`inline-flex items-center gap-1.5 h-9 rounded-lg border px-3 text-xs transition-colors disabled:opacity-60 ${
+          gold
+            ? "border-gold/50 text-gold bg-gold/5 hover:bg-gold/10"
+            : "border-border bg-card text-foreground hover:bg-muted"
+        }`}
+        data-testid={`button-kit-download-${spec.id}`}
+      >
+        <Download className="h-3.5 w-3.5" aria-hidden="true" />
+        {busy === "download" ? "Preparing…" : "Download PNG"}
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          navigator.clipboard
+            .writeText(joinLink)
+            .then(() => {
+              setCopied(true);
+              window.setTimeout(() => setCopied(false), 1400);
+            })
+            .catch(() => {});
+        }}
+        className="h-9 rounded-lg border border-border bg-card px-3 text-xs text-foreground hover:bg-muted transition-colors"
+        data-testid={`button-kit-copy-${spec.id}`}
+      >
+        {copied ? "Copied ✓" : "Copy my link"}
+      </button>
+      {nativeShareAvailable ? (
+        <button
+          type="button"
+          disabled={busy !== null}
+          onClick={() => {
+            const el = node();
+            if (el === null) return;
+            setBusy("share");
+            void rasterizeToPng(el, spec.width, spec.height, spec.exportScale)
+              .then(async (png) => {
+                if (png === null) return;
+                try {
+                  const blob = await (await fetch(png)).blob();
+                  const file = new File([blob], spec.filename, { type: "image/png" });
+                  await navigator.share({
+                    title: "The Syndicate",
+                    text: "The Syndicate — an on-chain introduction record.",
+                    url: joinLink,
+                    files: [file],
+                  });
+                } catch {
+                  /* member closed the sheet — nothing to do */
+                }
+              })
+              .finally(() => setBusy(null));
+          }}
+          className="inline-flex items-center gap-1.5 h-9 rounded-lg border border-border bg-card px-3 text-xs text-foreground hover:bg-muted transition-colors disabled:opacity-60"
+          data-testid={`button-kit-share-${spec.id}`}
+        >
+          <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
+          {busy === "share" ? "Preparing…" : "Share…"}
+        </button>
+      ) : null}
+    </div>
   );
 }
 
@@ -220,6 +267,12 @@ function useOwnSeatLine(): string | null {
   return seatLine;
 }
 
+const spec = (id: string): KitArtifactSpec => {
+  const found = KIT_ARTIFACTS.find((a) => a.id === id);
+  if (found === undefined) throw new Error(`unknown kit artifact: ${id}`);
+  return found;
+};
+
 // ── the tab ─────────────────────────────────────────────────────────────────
 export function ReferralToolsPanel({ readback }: { readback: StandingReadback | null }) {
   const { address } = useAccount();
@@ -229,14 +282,16 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
   const rows = intro?.rows ?? null;
   const [guideOpen, setGuideOpen] = useState(false);
 
-  const ogRef = useRef<HTMLDivElement | null>(null);
-  const sqRef = useRef<HTMLDivElement | null>(null);
-  const stRef = useRef<HTMLDivElement | null>(null);
-  const b728Ref = useRef<HTMLDivElement | null>(null);
-  const b468Ref = useRef<HTMLDivElement | null>(null);
-  const b300Ref = useRef<HTMLDivElement | null>(null);
-  const posterRef = useRef<HTMLDivElement | null>(null);
-  const bizRef = useRef<HTMLDivElement | null>(null);
+  const refs = {
+    og: useRef<HTMLDivElement | null>(null),
+    square: useRef<HTMLDivElement | null>(null),
+    story: useRef<HTMLDivElement | null>(null),
+    b728: useRef<HTMLDivElement | null>(null),
+    b468: useRef<HTMLDivElement | null>(null),
+    b300: useRef<HTMLDivElement | null>(null),
+    poster: useRef<HTMLDivElement | null>(null),
+    bizcard: useRef<HTMLDivElement | null>(null),
+  } as const;
 
   // The member's permanent link — same derivation as the hero above the tabs
   // (payingSourceId: the source that PAYS this wallet, canonical fallback).
@@ -268,9 +323,6 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
     joinLink,
   };
 
-  const nativeShareAvailable =
-    typeof navigator !== "undefined" && typeof navigator.share === "function";
-
   return (
     <div data-testid="panel-referrer-kit">
       {/* 1 · THE CARD — painted from the member's own chain-proven facts. */}
@@ -278,131 +330,90 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
         title="Your card — chain-proven figures only"
         why="what the chain proves, nothing else — never a money projection"
       />
-      <Card className="bg-card/40 border-border/50 p-5">
-        <div className="overflow-x-auto pb-1">
-          <ScaledPreview width={1200} height={630} scale={0.5} nodeRef={ogRef}>
-            <CardOg facts={facts} />
-          </ScaledPreview>
+      <Card className="bg-card/40 border-border/50 p-5 space-y-5">
+        <div>
+          <div className="overflow-x-auto pb-1">
+            <ScaledPreview width={1200} height={630} scale={0.5} nodeRef={refs.og}>
+              {spec("og").render(facts)}
+            </ScaledPreview>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 mt-2.5">
+            <span className="font-mono text-xs text-muted-foreground">{spec("og").label}</span>
+            <ArtifactActions spec={spec("og")} nodeRef={refs.og} joinLink={joinLink} gold />
+          </div>
         </div>
-        <div className="flex flex-wrap items-start gap-4 mt-4">
-          <div className="text-center">
-            <ScaledPreview width={1080} height={1080} scale={0.13} nodeRef={sqRef}>
-              <CardSquare facts={facts} />
+        <div className="flex flex-wrap items-start gap-6">
+          <div>
+            <ScaledPreview width={1080} height={1080} scale={0.24} nodeRef={refs.square}>
+              {spec("square").render(facts)}
             </ScaledPreview>
-            <p className="font-mono text-xs text-muted-foreground mt-1.5">1080×1080 · post</p>
-          </div>
-          <div className="text-center">
-            <ScaledPreview width={1080} height={1920} scale={0.113} nodeRef={stRef}>
-              <CardStory facts={facts} />
-            </ScaledPreview>
-            <p className="font-mono text-xs text-muted-foreground mt-1.5">1080×1920 · story</p>
-          </div>
-          <div className="flex flex-col items-start gap-2 min-w-[220px] flex-1">
-            <DownloadButton gold label="Download PNG (link preview)" nodeRef={ogRef} width={1200} height={630} filename="syndicate-card-1200x630.png" />
-            <DownloadButton label="Download PNG (post)" nodeRef={sqRef} width={1080} height={1080} filename="syndicate-card-1080x1080.png" />
-            <DownloadButton label="Download PNG (story)" nodeRef={stRef} width={1080} height={1920} filename="syndicate-card-1080x1920.png" />
-            <div className="flex flex-wrap gap-2">
-              <CopyButton value={joinLink} label="Copy my link" testid="button-kit-copy-link" />
-              {nativeShareAvailable ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    const el = ogRef.current?.firstElementChild as HTMLElement | null;
-                    if (el === null || el === undefined) return;
-                    void rasterizeToPng(el, 1200, 630, 1).then(async (png) => {
-                      if (png === null) return;
-                      try {
-                        const blob = await (await fetch(png)).blob();
-                        const file = new File([blob], "syndicate-card.png", { type: "image/png" });
-                        await navigator.share({
-                          title: "The Syndicate",
-                          text: "The Syndicate — an on-chain introduction record.",
-                          url: joinLink,
-                          files: [file],
-                        });
-                      } catch {
-                        /* member closed the sheet — nothing to do */
-                      }
-                    });
-                  }}
-                  className="inline-flex items-center gap-1.5 h-9 rounded-lg border border-border bg-card px-3 text-xs text-foreground hover:bg-muted transition-colors"
-                  data-testid="button-kit-share-native"
-                >
-                  <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
-                  Share…
-                </button>
-              ) : null}
+            <div className="flex flex-wrap items-center gap-2 mt-2.5 max-w-[260px]">
+              <span className="font-mono text-xs text-muted-foreground">{spec("square").label}</span>
+              <ArtifactActions spec={spec("square")} nodeRef={refs.square} joinLink={joinLink} />
             </div>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              The card shows only what the chain proves — your seat, your
-              chapter, your durable introductions, your rung. The QR scans
-              straight to your permanent link.
-            </p>
+          </div>
+          <div>
+            <ScaledPreview width={1080} height={1920} scale={0.135} nodeRef={refs.story}>
+              {spec("story").render(facts)}
+            </ScaledPreview>
+            <div className="flex flex-wrap items-center gap-2 mt-2.5 max-w-[260px]">
+              <span className="font-mono text-xs text-muted-foreground">{spec("story").label}</span>
+              <ArtifactActions spec={spec("story")} nodeRef={refs.story} joinLink={joinLink} />
+            </div>
           </div>
         </div>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          The card shows only what the chain proves — your seat, your chapter,
+          your durable introductions, your rung. The QR scans straight to your
+          permanent link.
+        </p>
       </Card>
 
       {/* 2 · THE BANNERS — real size, the link in the pixels. */}
       <SectionTitle title="Your banners — real size, your link already inside" why="download, then place them anywhere you publish" />
       <Card className="bg-card/40 border-border/50 p-5 space-y-5">
-        <div>
-          <div className="overflow-x-auto pb-1">
-            <ScaledPreview width={728} height={90} scale={1} nodeRef={b728Ref}>
-              <Banner728 facts={facts} />
-            </ScaledPreview>
+        {(["b728", "b468", "b300"] as const).map((id) => (
+          <div key={id}>
+            <div className="overflow-x-auto pb-1">
+              <ScaledPreview width={spec(id).width} height={spec(id).height} scale={1} nodeRef={refs[id]}>
+                {spec(id).render(facts)}
+              </ScaledPreview>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 mt-2">
+              <span className="font-mono text-xs text-muted-foreground">{spec(id).label}</span>
+              <ArtifactActions spec={spec(id)} nodeRef={refs[id]} joinLink={joinLink} />
+            </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2 mt-2">
-            <span className="font-mono text-xs text-muted-foreground">728×90 · leaderboard</span>
-            <DownloadButton label="Download PNG" nodeRef={b728Ref} width={728} height={90} scale={2} filename="syndicate-banner-728x90.png" />
-          </div>
-        </div>
-        <div>
-          <div className="overflow-x-auto pb-1">
-            <ScaledPreview width={468} height={60} scale={1} nodeRef={b468Ref}>
-              <Banner468 facts={facts} />
-            </ScaledPreview>
-          </div>
-          <div className="flex flex-wrap items-center gap-2 mt-2">
-            <span className="font-mono text-xs text-muted-foreground">468×60 · classic</span>
-            <DownloadButton label="Download PNG" nodeRef={b468Ref} width={468} height={60} scale={2} filename="syndicate-banner-468x60.png" />
-          </div>
-        </div>
-        <div>
-          <ScaledPreview width={300} height={250} scale={1} nodeRef={b300Ref}>
-            <Banner300 facts={facts} />
-          </ScaledPreview>
-          <div className="flex flex-wrap items-center gap-2 mt-2">
-            <span className="font-mono text-xs text-muted-foreground">300×250 · rectangle</span>
-            <DownloadButton label="Download PNG" nodeRef={b300Ref} width={300} height={250} scale={2} filename="syndicate-banner-300x250.png" />
-          </div>
-        </div>
+        ))}
       </Card>
 
       {/* 3 · THE OFFLINE WORLD — print-ready, the QR does the work. */}
       <SectionTitle title="The offline world — print and hand out" why="the QR carries &via=print — real-world scans count in Channels" />
       <Card className="bg-card/40 border-border/50 p-5">
-        <div className="flex flex-wrap items-start gap-5">
-          <div className="text-center">
-            <ScaledPreview width={1240} height={1754} scale={0.18} nodeRef={posterRef}>
-              <PosterA4 facts={facts} />
+        <div className="flex flex-wrap items-start gap-6">
+          <div>
+            <ScaledPreview width={1240} height={1754} scale={0.18} nodeRef={refs.poster}>
+              {spec("poster").render(facts)}
             </ScaledPreview>
-            <p className="font-mono text-xs text-muted-foreground mt-1.5">A4 · poster</p>
+            <div className="flex flex-wrap items-center gap-2 mt-2.5 max-w-[280px]">
+              <span className="font-mono text-xs text-muted-foreground">{spec("poster").label}</span>
+              <ArtifactActions spec={spec("poster")} nodeRef={refs.poster} joinLink={joinLink} gold />
+            </div>
           </div>
-          <div className="text-center">
-            <ScaledPreview width={1004} height={650} scale={0.22} nodeRef={bizRef}>
-              <BizCard facts={facts} />
+          <div>
+            <ScaledPreview width={1004} height={650} scale={0.28} nodeRef={refs.bizcard}>
+              {spec("bizcard").render(facts)}
             </ScaledPreview>
-            <p className="font-mono text-xs text-muted-foreground mt-1.5">85×55 · business card</p>
+            <div className="flex flex-wrap items-center gap-2 mt-2.5 max-w-[300px]">
+              <span className="font-mono text-xs text-muted-foreground">{spec("bizcard").label}</span>
+              <ArtifactActions spec={spec("bizcard")} nodeRef={refs.bizcard} joinLink={joinLink} />
+            </div>
           </div>
-          <div className="flex flex-col items-start gap-2 min-w-[220px] flex-1">
-            <DownloadButton gold label="Download the poster (print PNG)" nodeRef={posterRef} width={1240} height={1754} scale={2} filename="syndicate-poster-a4.png" />
-            <DownloadButton label="Download the business card" nodeRef={bizRef} width={1004} height={650} scale={2} filename="syndicate-business-card.png" />
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Print them as they are. Anyone who scans lands on your join
-              page — and the visit counts under the <span className="font-mono">print</span>{" "}
-              channel in Channels.
-            </p>
-          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed min-w-[200px] flex-1">
+            Print them as they are — export is 2× for crisp paper. Anyone who
+            scans lands on your join page, and the visit counts under the{" "}
+            <span className="font-mono">print</span> channel in Channels.
+          </p>
         </div>
       </Card>
 
@@ -424,7 +435,9 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
                 <span className="font-medium">Your standing: {standingLine}.</span>{" "}
                 <span className="text-muted-foreground">Your card is up to date — share it.</span>
               </span>
-              <DownloadButton label="Download the card" nodeRef={ogRef} width={1200} height={630} filename="syndicate-card-1200x630.png" />
+              <span className="ml-auto">
+                <ArtifactActions spec={spec("og")} nodeRef={refs.og} joinLink={joinLink} />
+              </span>
             </Card>
           ) : null}
           {rows.slice(0, 5).map((r) => (
