@@ -483,6 +483,13 @@ check(
       "health.ts",
       "holderIndex.ts",
       "index.ts",
+      // K2 (2026-07-20, founder-approved invitee card): the /join?source=
+      // unfurl painter + the introducer short-form surface. Its REAL
+      // invariants (ADR-003 short form derived server-side, full address
+      // never leaves, fail-closed 302 to the generic image, approved
+      // register only) are pinned by join-card:guard — the verifyLinks
+      // pattern applied.
+      "joinCard.ts",
       "joinQuote.ts",
       "protocolReality.ts",
       "publicReadThrottle.ts",
@@ -522,7 +529,10 @@ check(
   const stripRoute = (src: string): string =>
     src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
   const holderAllowed = new Set(["holderIndex.ts", "index.ts"]);
-  const addressEmitApproved = new Set(["verifyLinks.ts"]);
+  // joinCard.ts joined 2026-07-20 (K2): it emits the introducer's ADR-003
+  // SHORT form only (public registry data); join-card:guard pins that no
+  // full address ever surfaces in the route — the verifyLinks pattern.
+  const addressEmitApproved = new Set(["verifyLinks.ts", "joinCard.ts"]);
   check(
     "no wallet/proof/continuity route code exists (comment-stripped; verifyLinks pinned separately)",
     routeFiles.every(

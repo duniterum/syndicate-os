@@ -59,6 +59,10 @@ const CANONICAL_ORIGIN = "https://thesyndicate.money";
 // painted-cards slice, 2026-07-20). Kept in sync with the api painter's
 // FACE_COUNT; an out-of-range or absent ?f simply means the default face.
 const FACE_RE = /^[1-4]$/;
+// K2 (the invitee's side, 2026-07-20): a shared /join?source= link unfurls
+// with ITS introducer's painted card. Shape gate mirrors the api route; an
+// invalid or absent source simply serves the untouched shell.
+const SOURCE_RE = /^0x[0-9a-fA-F]{64}$/;
 
 // Per-URL head for the PARAM class (the painted-cards slice): the ONE baked
 // shell gains THIS url's own head at serve time — a self-referential og:url
@@ -250,11 +254,14 @@ function handle(req, res) {
 
   let pathname;
   let faceParam = null;
+  let sourceParam = null;
   try {
     const u = new URL(req.url, "http://localhost");
     pathname = decodeURIComponent(u.pathname);
     const f = u.searchParams.get("f");
     if (f !== null && FACE_RE.test(f)) faceParam = f;
+    const src = u.searchParams.get("source");
+    if (src !== null && SOURCE_RE.test(src)) sourceParam = src;
   } catch {
     send404(req, res);
     return;
@@ -315,6 +322,18 @@ function handle(req, res) {
     }
   }
 
+  // 3c) K2 — the invitee's unfurl: /join carrying a shape-valid ?source=
+  //     serves its shell with THIS link's own head (self-referential og:url
+  //     + the introducer's painted card). Same pure-string discipline as the
+  //     param class; the api 302s unknown sources to the generic image, so
+  //     this substitution never needs to know the registry. rel=canonical
+  //     stays /join untouched (the SEO identity; og:url is the share-graph
+  //     identity — the receipt-card footnote applied).
+  if (filePath && sourceParam !== null && (pathname === "/join" || pathname === "/join/")) {
+    sendJoinShell(req, res, filePath, sourceParam);
+    return;
+  }
+
   // 4) Nothing matched → the real 404.
   if (!filePath) {
     send404(req, res);
@@ -322,6 +341,34 @@ function handle(req, res) {
   }
 
   sendFile(req, res, filePath, servedRel, 200);
+}
+
+// K2 — the /join?source= head substitution (the sendParamShell grammar).
+function sendJoinShell(req, res, absPath, sourceId) {
+  let html = readFileSync(absPath, "utf8");
+  const pageUrl = `${CANONICAL_ORIGIN}/join?source=${sourceId}`;
+  const cardUrl = `${CANONICAL_ORIGIN}/api/join-card/${sourceId}.png`;
+  const ogUrlTag = `<meta property="og:url" content="${pageUrl}" />`;
+  html = /<meta property="og:url"[^>]*>/.test(html)
+    ? html.replace(/<meta property="og:url"[^>]*>/, ogUrlTag)
+    : html.replace("</head>", `    ${ogUrlTag}\n  </head>`);
+  html = html.replace(
+    /(<meta property="og:image" content=")[^"]*(")/,
+    `$1${cardUrl}$2`,
+  );
+  html = html.replace(
+    /(<meta name="twitter:image" content=")[^"]*(")/,
+    `$1${cardUrl}$2`,
+  );
+  const body = Buffer.from(html);
+  res.writeHead(200, {
+    "Content-Type": "text/html; charset=utf-8",
+    "Cache-Control": "no-cache",
+    "Vary": "Accept-Encoding",
+    "X-Content-Type-Options": "nosniff",
+    "Content-Length": String(body.length),
+  });
+  res.end(req.method === "HEAD" ? undefined : body);
 }
 
 createServer((req, res) => {

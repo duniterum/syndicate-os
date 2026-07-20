@@ -149,6 +149,33 @@ function HistoricalGateSlot() {
 
 // ── Introduction (?source=) status ──────────────────────────────────────────
 
+// K2 (founder-approved mockup, 2026-07-20): once the registry confirms the
+// source is active, the strip says WHO introduced — the introducer's SHORT
+// wallet, server-derived (ADR-003: never a name, never the full address).
+// Fail-closed: no wallet resolved → the honest generic line stands.
+function useIntroducerShortWallet(sourceId: string, enabled: boolean): string | null {
+  const [shortWallet, setShortWallet] = useState<string | null>(null);
+  useEffect(() => {
+    if (!enabled) return;
+    let active = true;
+    void fetch(`/api/source/introducer?sourceId=${sourceId}`, { method: "GET" })
+      .then(async (r) => (r.ok ? ((await r.json()) as { shortWallet?: unknown }) : null))
+      .then((body) => {
+        if (!active) return;
+        setShortWallet(
+          body !== null && typeof body.shortWallet === "string" ? body.shortWallet : null,
+        );
+      })
+      .catch(() => {
+        if (active) setShortWallet(null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [sourceId, enabled]);
+  return shortWallet;
+}
+
 function IntroductionStatus({ sourceId }: { sourceId: string }) {
   const formatValid = isSourceIdFormat(sourceId);
   const { data, isLoading, isError } = useGetSourceValidate(
@@ -160,6 +187,10 @@ function IntroductionStatus({ sourceId }: { sourceId: string }) {
       },
     },
   );
+  const isActiveSource =
+    formatValid && !isLoading && !isError && data !== undefined &&
+    data.chainVerified && data.exists === true && data.active === true;
+  const introducer = useIntroducerShortWallet(sourceId, isActiveSource);
 
   let line: string;
   let ok = false;
@@ -189,19 +220,27 @@ function IntroductionStatus({ sourceId }: { sourceId: string }) {
 
   return (
     <Card
-      className={`p-5 mb-10 ${ok ? "border-primary/30 bg-primary/5" : "bg-card/40 border-border/50"}`}
+      className={`p-5 mb-10 ${ok ? "border-gold/30 bg-gold/5" : "bg-card/40 border-border/50"}`}
       data-testid="panel-join-introduction"
     >
       <div className="flex items-start gap-3">
-        <div className="p-2 rounded-md bg-primary/10 text-primary shrink-0">
+        <div className={`p-2 rounded-md shrink-0 ${ok ? "bg-gold/10 text-gold" : "bg-primary/10 text-primary"}`}>
           <Link2 className="h-4 w-4" />
         </div>
         <div>
-          <h2 className="text-sm font-medium text-foreground mb-1">
-            Referral link detected
+          <h2 className="text-sm font-medium text-foreground mb-1" data-testid="text-introduction-title">
+            {ok && introducer !== null ? (
+              <>
+                Introduced by <span className="font-mono">{introducer}</span>
+              </>
+            ) : (
+              "Referral link detected"
+            )}
           </h2>
           <p className="text-sm text-muted-foreground leading-relaxed" data-testid="text-introduction-status">
-            {line}
+            {ok && introducer !== null
+              ? "The introduction is recorded on-chain inside your own purchase — you always see it before signing, and it never changes your price."
+              : line}
           </p>
           <p className="font-mono text-[10px] text-muted-foreground mt-2">
             Read-only registry validation · the server never echoes the id back

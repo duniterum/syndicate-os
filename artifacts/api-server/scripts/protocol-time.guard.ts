@@ -294,6 +294,10 @@ check(
     "health.ts",
     "holderIndex.ts",
     "index.ts",
+    // K2 (2026-07-20): the invitee unfurl card + introducer short-form
+    // surface — pure registry read + painter; carries no time material and
+    // never touches the block_timestamp cache (the scan below covers it).
+    "joinCard.ts",
     "joinQuote.ts",
     "protocolReality.ts",
     "publicReadThrottle.ts",

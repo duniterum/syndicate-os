@@ -192,9 +192,30 @@
 > introduced-by STRIP on /join, shown ONLY when ?source= is valid on the registry
 > (existing read, zero new surface), short address only, "it never changes your
 > price" (the founder's price correction honored — the invitee buys at THEIR
-> amount). AWAITING THE FOUNDER'S VISUAL APPROVAL — approval opens the K2 build
-> (server painter route + serve-time head substitution + the /join strip, one
-> cycle).** NEXT after K2: K3 (the admin axis).
+> amount). ✅ MOCKUP APPROVED ("approved GO AND GO-LIVE") → **K2 BUILT + COMMITTED
+> [this commit]:** API — `src/joincard/` (the painter: satori/resvg + the house
+> fonts + THE REAL EMBLEM inlined as a data-URI; the approved register verbatim;
+> 1200×630 ≤300KB; the introducer read: cached sourceConfig eth_call, computed
+> selector, ADR-003 short form derived server-side, TTL positive/negative,
+> fail-closed null) + `routes/joinCard.ts` (GET /api/join-card/{sourceId}.png —
+> throttled, 400 on shape, 302 generic on any doubt; GET /api/source/introducer —
+> { shortWallet } fail-closed null) + `join-card:guard` (25 pins, the 19th api
+> chain link) + the TWO route-surface pins amended dated (member-continuity +
+> protocol-time — the verifyLinks pattern applied). STUDIO — serve.mjs 3c: a
+> shape-valid /join?source= serves its shell with self-referential og:url + the
+> painted card (bare/invalid → untouched shell); JoinProtocol's validation card
+> ENRICHED into the approved strip ("Introduced by 0x… · never changes your
+> price") when the registry confirms active + the introducer resolves;
+> `joinInviteeCard` LIVE same commit. PROVEN: the PAINTED PROOF eye-verified
+> (44.8KB, the real emblem, every line at its floor) · substitution matrix exact
+> (valid → painted head + self-ref og:url; bare/invalid → generic untouched) ·
+> rig fail-closed matrix against the REAL chain (introducer null · 400 · 302 →
+> generic) · gates ALL EXIT 0 (api tsc + 19 guards incl. join-card 25/25; studio
+> tsc + 19 guards + build + seo 520 + audit 338) · /join strip states render,
+> zero console errors. The ok+introducer happy path = the prod living seal (real
+> registered sources live there — the recorded pattern). 🚀 DEPLOY — its own
+> cycle (server + client, NO migration, NO pnpm install).** NEXT after K2's
+> seal: K3 (the admin axis).
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21

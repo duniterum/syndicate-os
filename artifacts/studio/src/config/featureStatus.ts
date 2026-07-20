@@ -40,6 +40,7 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   paintedPreviewCards: { status: "live", since: "2026-07-20", where: "/receipt/{txHash} link previews (4 faces + rotation)" },
   commissionRegister: { status: "live", since: "2026-07-20", where: "/referral/commissions" },
   referrerKit: { status: "live", since: "2026-07-20", where: "/referral/tools" },
+  joinInviteeCard: { status: "live", since: "2026-07-20", where: "/join?source= unfurl + the introduced-by strip" },
 
   // ── FUTURE (the only keys a future-claim may cite) ──────────────────────
   avatarUpload: { status: "future", since: "2026-07-14", where: "Member Home arc (App Storage decided)" },
