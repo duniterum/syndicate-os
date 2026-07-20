@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { StatusPill } from "@/components/status-pill/StatusPill";
 import {
-  usd,
+  usdExact,
   useOwnIntroductions,
   type StandingReadback,
 } from "@/components/referral/referralStanding";
@@ -67,7 +67,9 @@ function IntroductionRowsCard() {
                       <StatusPill tone="neutral" size="xs">Not durable</StatusPill>
                     )}
                   </td>
-                  <td className="font-mono text-gold py-2 pr-4">{usd(r.commissionRaw)}</td>
+                  {/* usdExact (harmony rule #5): the same commission must
+                      never show two different dollar figures one tab apart. */}
+                  <td className="font-mono text-gold py-2 pr-4">{usdExact(r.commissionRaw)}</td>
                   <td className="py-2 text-right whitespace-nowrap">
                     <a
                       href={r.explorerUrl}

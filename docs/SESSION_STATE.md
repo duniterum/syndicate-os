@@ -120,6 +120,37 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   renamed "roster" too; zero rendered "genesis" remains on the page.
 >   DEPLOY BACKLOG (batchable): this one-string rider — rides the 5.1
 >   cycle, or one paste.**
+> - **▶ R-5.1 BUILT + COMMITTED [this commit] (2026-07-20, mockup
+>   founder-approved 2026-07-19; preview "GO and GO-Live" on the rig
+>   2026-07-20): THE COMMISSION RECEIPTS REGISTER — /referral/commissions
+>   rebuilt as the register of till receipts.** Month-grouped ticket rows
+>   (perforation chrome, binder grammar) expanding IN PLACE into the 7-zone
+>   document: headline · record line (date · block · receipt = short tx) ·
+>   the money story PRINTED (gross → commission "— pct of gross" → net →
+>   Vault/Liquidity/Operations one-string labels, sums closing on screen;
+>   anatomy-null rows honestly render the commission alone) · "Final —
+>   settled on-chain" · proof (Copy full hash + Verify on Snowtrace ↗) ·
+>   THE SHARE DOOR (§7 + the sealed order's "share card": quiet row → the
+>   receipt's PERMANENT page /receipt/{tx} — the painted cards already
+>   dress every link; rotation in the LINK; shareTargets contract per
+>   family, rig-proven: X one link · ?f=2 on the 2nd act · WhatsApp inline
+>   once) · the DON'T TRUST — VERIFY foot. Record header (count · lifetime
+>   · paid · escrow, exact) · worked example in the collapsed reference
+>   expander (chipped, never a state pill) · boundary line sealed behind a
+>   dashed rule. THE SWEEP (harmony #5/#6): usdExact promoted to
+>   referralStanding as THE one referral money formatter (flooring usd()
+>   DELETED; the four tiles + the Introductions table swapped); verify
+>   hover polarity unified (rest /80 → hover full). Grammar re-implemented
+>   in components/ (rule 15 + receipt-ticket Pin 10 — the wallet ticket
+>   never imported); accordion state React-memory only (rule 12).
+>   `commissionRegister` → LIVE same commit (DONE-IS-DONE). GATE: tsc ·
+>   19 guards green (feature-truth 552 · access-state 1113 · receipt 127 ·
+>   admin-dist 99) · build + prerender 34 + twins 352 · seo 509 · rewrites
+>   · surface audit 333 · rig 4-combo DOM-verified with the REAL component
+>   + REAL client parser (throwaway page-world harness, deleted before
+>   commit; founder reviewed the live rig page and gave GO). **🚀 DEPLOY —
+>   its own cycle (client-only, NO migration, no pnpm install), CARRIES the
+>   batchable rider `39f7667`; the backlog empties at the seal.**
 > - **TODAY'S LESSONS (2026-07-20 — engraved at their sites, gathered here):**
 >   ① a missing esbuild TARGET let the binary loader emit a runtime-unknown
 >   API (`Uint8Array.fromBase64`) — the rig caught a whole-api prod-boot
@@ -140,25 +171,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   to the founder 2026-07-20, copy kept as approved: the public page's
 >   visitor door "Seats are open — see how membership works." is a standing
 >   claim on permanent links — revisit only if seat sales ever pause.
-> - **IN FLIGHT after this:** the sealed order continues: the
->   commission-receipts register (5.1, mockup approved) + commission share
->   card → recognition/season (slice 6).
+> - **IN FLIGHT after this:** the sealed order's LAST step:
+>   recognition/season (slice 6, Phase-5) — read the gamification/legal
+>   dossier (docs/reference/) + GAMIFICATION_LEGAL_DOCTRINE +
+>   SEASONS_ENGINE_ON_SYNDICATE_OS before any proposal.
 > - **FOUNDER-PENDING: NOTHING on the arc.** Parked as recorded: Q35 legal
 >   set · Q39/Q40/Q42 admin waves · Q32/MVP-final items · the deferred list.
 >   Taken-by-default (flagged, overridable): the dedicated PDF engine stays
 >   its own rider (print already saves clean).
 > - **THE NEXT SESSION'S EXACT OPENING (no re-explaining, ever):** boot per
->   CLAUDE.md → this handoff (every 2026-07-20 slice is SEALED IN PROD;
->   the ONLY deploy-pending item is the batchable one-string rider
->   `39f7667`, which rides the next cycle automatically) → open slice 5.1:
->   THE COMMISSION-RECEIPTS REGISTER — the mockup is ALREADY
->   founder-approved (docs/design/commissions-receipts-mockup.html; the
->   direction: docs/reference/COMMISSION_RECEIPTS_DESIGN_DIRECTION.md — the
->   ticket grammar, the one money formatter, the 15 harmony rules; the
->   commissions data already serves via the receipt-backed anatomy's rows
->   model). Build straight from the approved mockup; its share card rides
->   per the scope menu; the deploy carries `39f7667`. featureStatus.ts is
->   the live-vs-future truth.
+>   CLAUDE.md → this handoff. DEPLOY-PENDING: the R-5.1 cycle (this commit
+>   + the rider `39f7667`) — if the founder has not yet pasted Replit's
+>   report, the deploy instruction stands: *"pull main, deploy, report"*
+>   (client-only, NO migration); act on the pasted report (runtime truth)
+>   before anything else. Then open slice 6: RECOGNITION/SEASON (Phase-5)
+>   — read the roadmap dossiers first (gamification/legal + seasons
+>   engine); the two-layer law holds (XP recognition ≠ season USDC pot;
+>   the money is SHOWN, Visibility Law). featureStatus.ts is the
+>   live-vs-future truth.
 
 > **▶ ⏭️ READ-FIRST BOOT (2026-07-18, the founder's standing order — "stop making
 > me re-explain; make the canonical files the thing you read before any work").

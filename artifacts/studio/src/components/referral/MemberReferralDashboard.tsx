@@ -27,7 +27,7 @@ import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { referralProgram } from "@/config/referralProgram";
 import {
   humanReadFailure,
-  usd,
+  usdExact,
   useOwnSourceStanding,
   type StandingReadback,
 } from "@/components/referral/referralStanding";
@@ -114,7 +114,9 @@ function ReferralFigures({ readback }: { readback: StandingReadback | null }) {
       href={ownAddressUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="font-mono text-xs text-proof hover:text-proof/80 underline underline-offset-2"
+      // The one verify idiom (harmony rule #6): rest text-proof/80, hover
+      // text-proof — brighten on approach, same polarity as every register.
+      className="font-mono text-xs text-proof/80 hover:text-proof underline underline-offset-2"
     >
       verify ↗
     </a>
@@ -131,10 +133,10 @@ function ReferralFigures({ readback }: { readback: StandingReadback | null }) {
         <StatCard label="Introductions" className={CENTERED}>{String(s.introducedMembers)}</StatCard>
         <StatCard label="Durable introductions" className={CENTERED}>{String(s.durableIntroductions)}</StatCard>
         <StatCard label="Commission paid" tone="identity" meta={verifyOwn} className={CENTERED}>
-          {usd(s.commissionPaidRaw)}
+          {usdExact(s.commissionPaidRaw)}
         </StatCard>
         <StatCard label="Held in escrow" tone="identity" meta={verifyOwn} className={CENTERED}>
-          {usd(s.escrowOwedRaw)}
+          {usdExact(s.escrowOwedRaw)}
         </StatCard>
       </div>
       {/* D-TRUTH D2: when the standing resolved through the founder-signed

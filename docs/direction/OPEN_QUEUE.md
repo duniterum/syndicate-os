@@ -1,5 +1,22 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-20 — SLICE 5.1: THE COMMISSION RECEIPTS REGISTER + ITS SHARE DOOR, BUILT
+> [this commit] (Q44's sealed order, step 4; mockup founder-approved 2026-07-19; preview
+> "GO and GO-Live" on the rig 2026-07-20).** /referral/commissions rebuilt as the register:
+> month-grouped ticket rows expanding IN PLACE into the 7-zone commission document (the
+> ticket grammar re-implemented in components/ per rule 15 + Pin 10 — never imported);
+> record header with exact figures; worked example chipped in the collapsed reference
+> expander; boundary line sealed. The SWEEP: `usdExact` = THE one referral money formatter
+> (flooring `usd()` deleted; tiles + Introductions table swapped); one verify idiom, one
+> hover polarity. THE SHARE DOOR = the sealed order's "share card": each document shares
+> its PERMANENT public page /receipt/{tx} (the painted 4-face cards already dress every
+> link); rotation in the link, shareTargets contract per family — rig-proven (X one link ·
+> ?f=2 on the 2nd act · WhatsApp inline once). `commissionRegister` → LIVE same commit.
+> Gate green whole (tsc · 19 guards · build+twins · seo 509 · audit 333) · rig 4-combo
+> DOM-verified. **🚀 DEPLOY — its own cycle (client-only, NO migration), CARRIES the
+> batchable rider `39f7667`.** NEXT (the sealed order's last step): recognition/season
+> (slice 6).
+
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21
 > amendment the service header had reserved as founder-gated).** The Purchases cell is
@@ -201,9 +218,11 @@ analysed, awaiting GO) · ✅ CLOSED (founder-confirmed) · ⏸ DEFERRED (tracke
 > direction DONE (`wf_55016fd7-5a0` → `docs/reference/COMMISSION_RECEIPTS_DESIGN_DIRECTION.md`:
 > in-place accordion receipts · month groups · ticket grammar · one money formatter · 15
 > harmony rules) + THE MOCKUP built and self-verified:
-> `docs/design/commissions-receipts-mockup.html` (artifact ff736ea9). 🔴 AWAITING THE
-> FOUNDER'S VISUAL APPROVAL — approval unlocks the build; scope B/C/D/E of the menu (share
-> card · Referrer Kit · binder · living previews) stack LATER without rework.** →
+> `docs/design/commissions-receipts-mockup.html` (artifact ff736ea9). ✅ MOCKUP APPROVED +
+> BUILT + COMMITTED [this commit] 2026-07-20 (preview "GO and GO-Live" on the rig — see the
+> slice-5.1 entry at the top of this file); scope B (share card) LANDED as the share door on
+> the permanent-page link (the painted cards already dress it); scopes C/D/E (Referrer Kit ·
+> binder convergence · living previews) stack LATER without rework.** →
 > slice 6 (⑥ recognition/season Phase-5, after 5.1). Full state: SESSION_STATE.md.
 
 > **▶ 2026-07-17 (STANDING RULE, founder, emphatic — engraved here AND in agent memory):
