@@ -97,27 +97,33 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   faces painted with the REAL hash (200/PNG/<300Ko, 4 distinct, figures
 >   eye-verified) · fallbacks + per-URL prod heads exact · engine perfect
 >   first cycle.
-> - **DEPLOY BACKLOG (batchable, rides the next cycle): [this commit] the
->   share-intent DOUBLE-LINK fix** (founder screenshot: X drafts printed the
->   receipt link twice — shareTargets' contract now honored per intent
->   family; rig-proven one-link drafts on both families; the receipt stays
->   the carded link everywhere).
-> - **IN FLIGHT after this:** the sealed order continues: ADMIN
->   "Open receipts" on the member ledger → the commission-receipts register
->   (5.1, mockup approved) + commission share card → recognition/season
->   (slice 6).
+> - **▶ R-ADMIN BUILT [this commit] (2026-07-20, wireframe approved + "GO
+>   and GO-Live"): "OPEN RECEIPTS" ON THE MEMBER LEDGER — the A21 amendment
+>   the service had reserved.** The Purchases cell = THE DOOR (in-place
+>   receipt lines, binder grammar; each line → its permanent public address
+>   + Explorer; one rendering path). Server: lines join the founder-only
+>   payload (zero lookup params); the route's leak scan → boundary-aware;
+>   the two reserving auth-zone pins amended dated. Gate green (auth-zone
+>   re-pinned · admin-dist 99) · rig honest-state clean · 3-seam adversarial
+>   verify = 0 real findings. **🚀 DEPLOY (server + client, NO migration) —
+>   CARRIES the batchable share-draft fix `cb4776d` (the deploy backlog
+>   empties with this cycle).**
+> - **IN FLIGHT after this deploy:** the sealed order continues: the
+>   commission-receipts register (5.1, mockup approved) + commission share
+>   card → recognition/season (slice 6).
 > - **FOUNDER-PENDING: NOTHING on the arc.** Parked as recorded: Q35 legal
 >   set · Q39/Q40/Q42 admin waves · Q32/MVP-final items · the deferred list.
 >   Taken-by-default (flagged, overridable): the dedicated PDF engine stays
 >   its own rider (print already saves clean).
 > - **THE NEXT SESSION'S EXACT OPENING (no re-explaining, ever):** boot per
->   CLAUDE.md → this handoff → confirm the R-CARDS Replit deploy report
->   landed (if not, that deploy is the only open step; it needs
->   `pnpm install` — 3 new packages) → open the ADMIN "Open receipts"
->   slice on the member ledger: SYSTEM-FIRST inventory of the operator
->   member-ledger surface first (the §D console canon —
->   memberLedgerService already reads rowsByWallet), then the wireframe
->   for founder approval. featureStatus.ts is the live-vs-future truth.
+>   CLAUDE.md → this handoff → confirm the R-ADMIN Replit deploy report
+>   landed (if not, that deploy is the only open step) → open slice 5.1:
+>   THE COMMISSION-RECEIPTS REGISTER — the mockup is ALREADY
+>   founder-approved (docs/design/commissions-receipts-mockup.html; the
+>   direction: docs/reference/COMMISSION_RECEIPTS_DESIGN_DIRECTION.md — the
+>   ticket grammar, the one money formatter, the 15 harmony rules). Build
+>   straight from the approved mockup; its share card rides per the scope
+>   menu. featureStatus.ts is the live-vs-future truth.
 
 > **▶ ⏭️ READ-FIRST BOOT (2026-07-18, the founder's standing order — "stop making
 > me re-explain; make the canonical files the thing you read before any work").

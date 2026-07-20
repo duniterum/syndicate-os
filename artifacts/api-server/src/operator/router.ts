@@ -251,13 +251,15 @@ router.get("/operators", async (req: Request, res: Response) => {
   res.json({ ok: true, operators: result.operators });
 });
 
-// ── GET /api/operator/member-ledger (M-INT-1) ───────────────────────────────
+// ── GET /api/operator/member-ledger (M-INT-1; A21 shipped 2026-07-20) ───────
 // FOUNDER-ONLY READ: the per-seat member ledger — a projection of already-
 // indexed data with SERVER-MASKED short wallets (the §D privacy overlay
 // restricts memberNumber↔wallet pairings to founder_root, stricter than the
 // admin-tier WRITE_ROLES). No query/params exist (never a lookup API —
-// ADR-003); the serialized payload must pass the 40-hex fail-closed scanner
-// before it leaves; every access writes an audit row inside the service.
+// ADR-003). A21: rows now carry their receipts' 64-hex verify anchors, so
+// the output scan is the BOUNDARY-AWARE 40-hex form (the f436c42 lesson —
+// anchors pass, a bare address fail-closes); every access writes an audit
+// row inside the service.
 router.get("/member-ledger", async (req: Request, res: Response) => {
   if (!allowRequest(throttleKey(req))) {
     req.log.warn({ event: "operator.ledger.throttled" });
@@ -284,9 +286,13 @@ router.get("/member-ledger", async (req: Request, res: Response) => {
     deny(res, result.reason === "unavailable" ? 503 : 400, result.reason);
     return;
   }
-  // Fail-closed output scan: a full 20-byte address anywhere in the payload
-  // (masked short forms pass) turns this response into a 500, never a leak.
-  assertAddressSafeAggregate(JSON.stringify(result.payload));
+  // Fail-closed output scan, BOUNDARY-AWARE (A21): a bare 20-byte address
+  // anywhere in the payload turns this response into a 500, never a leak —
+  // while the receipts' legitimate 64-hex verify anchors pass (the f436c42
+  // form, same as the public receipt read).
+  if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(JSON.stringify(result.payload))) {
+    throw new Error("address-shaped token in ledger payload");
+  }
   req.log.info({ event: "operator.ledger.read", code: "ok" });
   res.json({ ok: true, payload: result.payload });
 });

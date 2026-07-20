@@ -402,6 +402,24 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   substitution head prouvée (nue / ?f=3 / hors-plage / 404) · route carte
   302-générique sur modèle éteint · boot serveur vert.
 
+- [x] **R-ADMIN — « OPEN RECEIPTS » SUR LE MEMBER LEDGER (2026-07-20,
+  wireframe approuvé fondateur + « GO and GO-Live » ; l'amendement A21 que
+  le service avait gravé « founder-gated »)** : la colonne Purchases devient
+  LA PORTE — « 6 · $30.00 » se clique et les reçus du siège s'ouvrent EN
+  PLACE (grammaire du classeur portée au registre) ; chaque ligne : date ·
+  Seat #N (· footprint / first seat, le drapeau du moteur) · moteur ·
+  montant exact · **« Open receipt ↗ »** vers l'ADRESSE PUBLIQUE PERMANENTE
+  (un seul chemin de rendu du ticket : sa page) + « Explorer ↗ » ; côté
+  serveur les lignes rejoignent la charge existante (zéro nouveau paramètre
+  — jamais une API de recherche) et la sonde anti-fuite de la route passe à
+  la forme boundary-aware (leçon f436c42) ; les DEUX pins auth-zone qui
+  réservaient A21 amendés datés selon leur propre instruction ;
+  founder_root-only + audit inchangés. **+0 couleur brute**. Vérif : gates
+  vertes (auth-zone re-épinglé · admin-dist 99 — la copie reste dans le
+  chunk console) · rig : l'écran rend l'état honnête founder-only, zéro
+  erreur console · revue adversariale 3 coutures = 0 défaut réel (le sceau
+  vivant des lignes se fait en prod, la base locale n'existant pas).
+
 - [x] **NOTIF — LE CENTRE DE NOTIFICATIONS (2026-07-18, scellé jusqu'à
   51e68de)** : la cloche du header (badge = non-vus propres, onglets
   All/Protocol/Mine, View all → `/notifications`) · la page `/notifications`

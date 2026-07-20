@@ -1,5 +1,19 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
+> (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21
+> amendment the service header had reserved as founder-gated).** The Purchases cell is
+> THE DOOR: the seat's receipt lines open in place (binder grammar), each linking OUT
+> to its permanent public address (/receipt/… — one rendering path) + Explorer. Server:
+> the lines join the existing founder-only payload (zero lookup params, the settled
+> contract); the route's leak scan goes boundary-aware (f436c42); the TWO auth-zone
+> pins that reserved A21 amended dated per their own instruction. Gate green (auth-zone
+> re-pinned · admin-dist 99 — console-chunk isolation holds) · rig honest-state clean ·
+> 3-seam adversarial verify = 0 real findings (the living seal of the lines happens in
+> prod — no local DB, the founder's own recorded pattern). **🚀 DEPLOY (server + client,
+> NO migration) — carries the batchable share-draft fix `cb4776d`.** NEXT in the sealed
+> order: the commission-receipts register (5.1, mockup approved) + its share card.
+
 > **▶ 2026-07-20 — R-CARDS: THE PAINTED PREVIEW CARDS + THE LINK ROTATION, BUILT
 > [this commit] (Q44's sealed order, step 2; the founder approved the 4-face mockup
 > "approved").** The api paints every receipt its own 1200×630 picture (<300KB, the

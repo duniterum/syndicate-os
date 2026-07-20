@@ -1073,10 +1073,17 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
             `route ${routeKey}: delegates to the ledger read ONLY (no other service reachable)`,
             `src/operator/router.ts route ${routeKey} must call readMemberLedger() and must never reach any write service or the registry list`,
           );
+          // A21 AMENDED (founder-gated, wireframe-approved + GO 2026-07-20):
+          // the ledger rows now carry 64-hex verify anchors, so THIS route's
+          // output scan is the BOUNDARY-AWARE 40-hex form (the f436c42
+          // lesson — the strict aggregate scanner would 500 on every anchor).
+          // A bare 20-byte address still fail-closes the response.
           check(
-            /assertAddressSafeAggregate\(\s*JSON\.stringify\(/.test(block),
-            `route ${routeKey}: serialized payload passes the 40-hex fail-closed scanner`,
-            `src/operator/router.ts route ${routeKey} must run assertAddressSafeAggregate(JSON.stringify(...)) over the payload before res.json`,
+            /0x\[0-9a-fA-F\]\{40\}\(\?!\[0-9a-fA-F\]\)/.test(block) &&
+              /JSON\.stringify\(result\.payload\)/.test(block) &&
+              /throw new Error/.test(block),
+            `route ${routeKey}: serialized payload passes the BOUNDARY-AWARE 40-hex fail-closed scan (A21)`,
+            `src/operator/router.ts route ${routeKey} must run the boundary-aware 40-hex fail-closed scan (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/) over JSON.stringify(result.payload) and throw before res.json`,
           );
         } else if (routeKey === "get /notifications") {
           // NOTIF-1: FOUNDER-ONLY (the list pairs masked recipients with
@@ -1435,10 +1442,19 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
       "ledger service: rows carry the masked walletShort ONLY (slice(0,6)…slice(-4)); no full-wallet row field",
       "memberLedgerService.ts row shape drifted — LedgerRow may carry only the server-masked walletShort, never a full wallet field",
     );
+    // A21 SHIPPED (the amendment this pin reserved — founder-gated,
+    // wireframe-approved + "GO and GO-Live" 2026-07-20): rows now carry
+    // their receipts' verify anchors. The pin flips to guarding the
+    // amendment's OWN laws: the receipt lines are the sanctioned public row
+    // shape mapped from the own-purchase read-model (one spine, one fact
+    // shape), an anchor without its explorer link never serves, and the
+    // route's boundary-aware output scan (pinned above) stays the net.
     check(
-      !/transactionHash|entryTransaction/.test(mlCode),
-      "ledger service: v1 rows carry NO transaction anchors (A21 — later founder-gated amendment)",
-      "memberLedgerService.ts serializes a transaction anchor — v1 ledger rows are anchor-free until the founder-gated A21 amendment",
+      /LedgerReceiptLine/.test(mlCode) &&
+        /txUrl\(r\.transactionHash\)/.test(mlCode) &&
+        /if \(explorerUrl === null\) continue;/.test(mlCode),
+      "ledger service: A21 receipt lines ride the sanctioned shape — an anchor we cannot verify-link never serves",
+      "memberLedgerService.ts A21 drifted — receipt lines must map through txUrl(r.transactionHash) and skip null explorer links (the auth-route discipline)",
     );
     check(
       /"member-ledger\.read"/.test(mlCode) && /auditLog/.test(mlCode),

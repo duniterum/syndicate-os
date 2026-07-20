@@ -10,11 +10,17 @@
 // audit-logged server-side. Honest states: loading / ok / denied / unavailable
 // — never a fake fallback, never a sample row.
 //
+// A21 — OPEN RECEIPTS (founder-gated amendment, wireframe-approved + GO
+// 2026-07-20): the Purchases cell is THE DOOR — it expands the seat's receipt
+// lines IN PLACE (the member binder's grammar brought to the register), each
+// line linking OUT to the receipt's permanent public address (/receipt/…).
+// One rendering path for the ticket: its page — nothing re-implemented here.
+//
 // Admin-graph discipline: imported ONLY by pages/admin/sections.tsx
 // (guard-operator-gate §5b pins the chain).
 
-import { useEffect, useState } from "react";
-import { BookUser, TrendingUp, Users2, Sparkles, MoreHorizontal, MessageSquare } from "lucide-react";
+import { Fragment, useEffect, useState } from "react";
+import { BookUser, ChevronDown, ExternalLink, TrendingUp, Users2, Sparkles, MoreHorizontal, MessageSquare } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -204,6 +210,17 @@ function StatCard({ label, value }: { label: string; value: string }) {
 export function MemberLedgerPanel() {
   const [state, setState] = useState<State>({ kind: "loading" });
   const [messageRow, setMessageRow] = useState<LedgerRow | null>(null);
+  // A21: which seats' receipt expansions are open (multiple at once, the
+  // binder's discipline).
+  const [openReceipts, setOpenReceipts] = useState<ReadonlySet<string>>(new Set());
+  const toggleReceipts = (id: string) => {
+    setOpenReceipts((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   useEffect(() => {
     let active = true;
@@ -228,8 +245,9 @@ export function MemberLedgerPanel() {
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl mb-5 leading-relaxed">
         Every seat&apos;s dossier from the already-indexed record: entry, capital
-        standing, own purchases, referral standing. Wallets are masked
-        server-side; this read is audit-logged.
+        standing, own purchases — each one reopenable at its permanent receipt
+        address — referral standing. Wallets are masked server-side; this read
+        is audit-logged.
       </p>
 
       {state.kind === "loading" && (
@@ -281,7 +299,8 @@ export function MemberLedgerPanel() {
               </TableHeader>
               <TableBody>
                 {state.payload.rows.map((r) => (
-                  <TableRow key={r.id}>
+                  <Fragment key={r.id}>
+                  <TableRow>
                     <TableCell className="font-mono text-xs">#{r.seat}</TableCell>
                     <TableCell className="font-mono text-xs text-muted-foreground">
                       {r.walletShort}
@@ -297,7 +316,28 @@ export function MemberLedgerPanel() {
                       {usd(r.footprintUsdcRaw)}
                     </TableCell>
                     <TableCell className="text-right font-mono text-xs">
-                      {r.purchaseCount > 0 ? `${r.purchaseCount} · ${usd(r.purchasesTotalRaw)}` : "—"}
+                      {/* A21 — THE DOOR: the Purchases figure opens the seat's
+                          receipts in place; a seat with none keeps "—". */}
+                      {r.purchaseCount > 0 && r.receipts.length > 0 ? (
+                        <button
+                          type="button"
+                          onClick={() => toggleReceipts(r.id)}
+                          aria-expanded={openReceipts.has(r.id)}
+                          aria-controls={`ledger-receipts-${r.seat}`}
+                          className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-0.5 min-h-7 font-mono text-xs tabular-nums hover:border-muted-foreground/50 transition-colors"
+                          data-testid={`button-ledger-receipts-${r.seat}`}
+                        >
+                          {r.purchaseCount} · {usd(r.purchasesTotalRaw)}
+                          <ChevronDown
+                            className={`h-3 w-3 text-muted-foreground transition-transform motion-reduce:transition-none ${openReceipts.has(r.id) ? "rotate-180" : ""}`}
+                            aria-hidden="true"
+                          />
+                        </button>
+                      ) : r.purchaseCount > 0 ? (
+                        `${r.purchaseCount} · ${usd(r.purchasesTotalRaw)}`
+                      ) : (
+                        "—"
+                      )}
                     </TableCell>
                     <TableCell className="font-mono text-xs text-muted-foreground">
                       {r.lastPurchaseDay ?? "—"}
@@ -342,6 +382,67 @@ export function MemberLedgerPanel() {
                       </DropdownMenu>
                     </TableCell>
                   </TableRow>
+                  {/* A21 — the receipt lines, in place under the row. Each
+                      line links OUT to the receipt's permanent public
+                      address; the ticket renders only there (one spine, one
+                      rendering path). */}
+                  {openReceipts.has(r.id) && r.receipts.length > 0 ? (
+                    <TableRow id={`ledger-receipts-${r.seat}`} className="hover:bg-transparent">
+                      <TableCell colSpan={10} className="bg-card/50 pl-9 pr-3 py-0">
+                        <div className="border-l-2 border-gold/35 my-2.5 pl-3.5 py-0.5">
+                          {r.receipts.map((line) => (
+                            <div
+                              key={line.transaction}
+                              className="flex flex-wrap items-baseline gap-x-3.5 gap-y-1 py-1.5 text-xs border-b border-dashed border-border/70 last:border-b-0"
+                            >
+                              <span className="font-mono tabular-nums text-muted-foreground whitespace-nowrap">
+                                {line.isoDayUtc}
+                              </span>
+                              <span className="font-mono tabular-nums">
+                                Seat #{r.seat}
+                                {line.firstSeat === false ? (
+                                  <span className="text-muted-foreground"> · footprint</span>
+                                ) : line.firstSeat === true ? (
+                                  <span className="text-muted-foreground"> · first seat</span>
+                                ) : null}
+                              </span>
+                              <span className="font-mono text-muted-foreground">{line.engine}</span>
+                              <span className="ml-auto font-mono tabular-nums font-semibold text-gold">
+                                {usd(line.amountRaw)}
+                              </span>
+                              <span className="flex items-center gap-3 whitespace-nowrap">
+                                <a
+                                  href={`/receipt/${line.transaction}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-proof/85 hover:text-proof"
+                                  data-testid={`link-ledger-receipt-${line.transaction.slice(2, 10)}`}
+                                >
+                                  Open receipt ↗
+                                </a>
+                                <a
+                                  href={line.explorerUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 font-mono text-[11px] text-proof/70 hover:text-proof"
+                                >
+                                  Explorer
+                                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                                </a>
+                              </span>
+                            </div>
+                          ))}
+                          <p className="pt-1.5 pb-1 text-[11px] text-muted-foreground">
+                            Verify anchors · founder-only · this read is
+                            audit-logged. An engine that never carried every
+                            fact opens on the explorer instead — nothing is
+                            guessed.
+                          </p>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ) : null}
+                  </Fragment>
                 ))}
               </TableBody>
             </Table>

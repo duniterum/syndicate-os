@@ -89,6 +89,19 @@ export interface LedgerReferral {
   entitledTitle: string;
   promotionDue: boolean;
 }
+/** A21: one receipt line on a ledger row — the sanctioned public row shape
+ *  (the console renders date · flag · engine · amount and LINKS OUT to the
+ *  receipt's permanent public address; the ticket renders only there). */
+export interface LedgerReceiptLine {
+  isoDayUtc: string;
+  amountRaw: string;
+  transaction: string;
+  explorerUrl: string;
+  engine: string;
+  /** The event's own first-purchase flag, or null (engines that never
+   *  carried it) — the row says footprint/first seat from THIS, never a guess. */
+  firstSeat: boolean | null;
+}
 export interface LedgerRow {
   id: string;
   seat: number;
@@ -100,6 +113,8 @@ export interface LedgerRow {
   purchaseCount: number;
   lastPurchaseDay: string | null;
   purchasesTotalRaw: string | null;
+  /** A21 (founder-gated, 2026-07-20): the seat's receipts, newest first. */
+  receipts: LedgerReceiptLine[];
   referral: LedgerReferral | null;
   segment: "ACTIVE" | "SETTLED" | "DORMANT";
 }
@@ -141,14 +156,55 @@ export async function fetchMemberLedger(): Promise<MemberLedgerResult> {
       if (!Array.isArray(rowsRaw) || typeof payload.totals !== "object" || payload.totals === null) {
         return { status: "unavailable" };
       }
-      const rows = rowsRaw.filter(
-        (r): r is LedgerRow =>
-          typeof r === "object" &&
-          r !== null &&
-          typeof (r as Record<string, unknown>).seat === "number" &&
-          typeof (r as Record<string, unknown>).walletShort === "string" &&
-          typeof (r as Record<string, unknown>).segment === "string",
-      );
+      const rows = rowsRaw
+        .filter(
+          (r): r is Record<string, unknown> =>
+            typeof r === "object" &&
+            r !== null &&
+            typeof (r as Record<string, unknown>).seat === "number" &&
+            typeof (r as Record<string, unknown>).walletShort === "string" &&
+            typeof (r as Record<string, unknown>).segment === "string",
+        )
+        .map((r) => ({
+          ...(r as unknown as LedgerRow),
+          // A21: parse the receipt lines strictly; a malformed line drops
+          // (honest absence) rather than rendering a half-fact — the flag
+          // rides from the served receipt facts.
+          receipts: (Array.isArray(r.receipts) ? r.receipts : []).flatMap(
+            (line): LedgerReceiptLine[] => {
+              if (typeof line !== "object" || line === null) return [];
+              const l = line as Record<string, unknown>;
+              if (
+                typeof l.isoDayUtc !== "string" ||
+                typeof l.amountRaw !== "string" ||
+                !/^[0-9]+$/.test(l.amountRaw) ||
+                typeof l.transaction !== "string" ||
+                !/^0x[0-9a-fA-F]{64}$/.test(l.transaction) ||
+                typeof l.explorerUrl !== "string" ||
+                typeof l.engine !== "string"
+              ) {
+                return [];
+              }
+              const facts =
+                typeof l.receipt === "object" && l.receipt !== null
+                  ? (l.receipt as Record<string, unknown>)
+                  : null;
+              return [
+                {
+                  isoDayUtc: l.isoDayUtc,
+                  amountRaw: l.amountRaw,
+                  transaction: l.transaction,
+                  explorerUrl: l.explorerUrl,
+                  engine: l.engine,
+                  firstSeat:
+                    facts !== null && typeof facts.firstSeat === "boolean"
+                      ? facts.firstSeat
+                      : null,
+                },
+              ];
+            },
+          ),
+        }));
       return {
         status: "ok",
         payload: { ...(p as unknown as LedgerPayload), rows },

@@ -1,0 +1,226 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — Open receipts sur le Member ledger (maquette)</title>
+<style>
+  :root {
+    --background: 210 40% 98%; --foreground: 222 47% 11%; --border: 214 32% 91%;
+    --card: 0 0% 100%; --muted-foreground: 215 16% 47%; --gold: 38 74% 44%; --proof: 190 90% 40%;
+    --primary: 190 90% 40%; --warning: 38 92% 50%; --destructive: 0 84% 60%;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --background: 224 71% 4%; --foreground: 213 31% 91%; --border: 216 34% 17%;
+      --card: 222 47% 7%; --muted-foreground: 215.4 16.3% 56.9%; --gold: 42 92% 60%; --proof: 190 90% 45%;
+      --primary: 190 90% 45%; --warning: 42 92% 60%; --destructive: 0 84% 65%; }
+  }
+  :root[data-theme="dark"] { --background: 224 71% 4%; --foreground: 213 31% 91%; --border: 216 34% 17%;
+    --card: 222 47% 7%; --muted-foreground: 215.4 16.3% 56.9%; --gold: 42 92% 60%; --proof: 190 90% 45%;
+    --primary: 190 90% 45%; --warning: 42 92% 60%; --destructive: 0 84% 65%; }
+  :root[data-theme="light"] { --background: 210 40% 98%; --foreground: 222 47% 11%; --border: 214 32% 91%;
+    --card: 0 0% 100%; --muted-foreground: 215 16% 47%; --gold: 38 74% 44%; --proof: 190 90% 40%;
+    --primary: 190 90% 40%; --warning: 38 92% 50%; --destructive: 0 84% 60%; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: hsl(var(--background)); color: hsl(var(--foreground));
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5; }
+  .mono { font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace; }
+  .tnum { font-variant-numeric: tabular-nums; }
+  a { color: hsl(var(--proof) / .85); text-decoration: none; }
+  a:hover { color: hsl(var(--proof)); }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  :focus-visible { outline: 2px solid hsl(var(--gold)); outline-offset: 2px; }
+  .page { max-width: 980px; margin: 0 auto; padding: 24px 16px 64px; }
+
+  .mock-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    border: 1px dashed hsl(var(--gold) / .45); border-radius: 10px; background: hsl(var(--gold) / .07);
+    padding: 10px 14px; margin-bottom: 20px; font-size: 12.5px; color: hsl(var(--muted-foreground)); }
+  .mock-banner b { color: hsl(var(--gold)); font-weight: 600; }
+  .theme-btn { margin-left: auto; cursor: pointer; border: 1px solid hsl(var(--border));
+    background: hsl(var(--card)); color: hsl(var(--foreground)); border-radius: 8px; padding: 6px 12px;
+    font-size: 12.5px; min-height: 36px; }
+  .annot { font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+    color: hsl(var(--gold) / .8); margin: 32px 0 12px; }
+  .annot::before { content: "◤ "; }
+  .note { border: 1px dashed hsl(var(--border)); border-radius: 10px; background: hsl(var(--card) / .4);
+    padding: 12px 14px; margin: 12px 0 0; font-size: 12.5px; color: hsl(var(--muted-foreground)); }
+  .note b { color: hsl(var(--foreground)); }
+  .note ul { margin: 6px 0 0 18px; } .note li { margin-top: 4px; }
+
+  /* ── the console card grammar ── */
+  .card { border: 1px solid hsl(var(--border)); border-radius: 12px; background: hsl(var(--card)); padding: 24px; }
+  .head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .head h2 { font-size: 15px; font-weight: 600; }
+  .chip-live { font-family: ui-monospace, Menlo, monospace; font-size: 10px; text-transform: uppercase;
+    letter-spacing: .08em; color: hsl(var(--primary)); margin-left: 8px; }
+  .intro { font-size: 13px; color: hsl(var(--muted-foreground)); margin-bottom: 16px; }
+  .intro b { color: hsl(var(--foreground)); font-weight: 500; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-weight: 500; color: hsl(var(--muted-foreground));
+    border-bottom: 1px solid hsl(var(--border)); padding: 8px 10px; white-space: nowrap; }
+  th.r, td.r { text-align: right; }
+  td { border-bottom: 1px solid hsl(var(--border) / .6); padding: 8px 10px; vertical-align: baseline; }
+  .seg { display: inline-block; border: 1px solid; border-radius: 999px; font-family: ui-monospace, Menlo, monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: .06em; padding: 1px 8px; }
+  .seg-active { color: hsl(var(--primary)); border-color: hsl(var(--primary) / .4); background: hsl(var(--primary) / .1); }
+  .seg-settled { color: hsl(var(--muted-foreground)); border-color: hsl(var(--border)); }
+  .tag { font-size: 9px; text-transform: uppercase; color: hsl(var(--muted-foreground)); margin-left: 6px; }
+
+  /* THE NEW PIECE — the receipts toggle + expansion */
+  .rcpt-toggle { display: inline-flex; align-items: center; gap: 6px; border: 1px solid hsl(var(--border));
+    background: transparent; border-radius: 7px; padding: 2px 9px; font-size: 12px; min-height: 26px;
+    font-variant-numeric: tabular-nums; }
+  .rcpt-toggle:hover { border-color: hsl(var(--muted-foreground) / .5); }
+  .rcpt-toggle .chev { font-size: 10px; color: hsl(var(--muted-foreground)); transition: transform .15s; }
+  .rcpt-toggle[aria-expanded="true"] .chev { transform: rotate(180deg); }
+  .rcpt-row td { background: hsl(var(--card) / .5); padding: 0 10px 0 34px; }
+  .rcpt-box { border-left: 2px solid hsl(var(--gold) / .35); margin: 10px 0 14px; padding: 2px 0 2px 14px; }
+  .rcpt-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px;
+    font-size: 12.5px; padding: 5px 0; border-bottom: 1px dashed hsl(var(--border) / .7); }
+  .rcpt-line:last-of-type { border-bottom: 0; }
+  .rcpt-line .d { color: hsl(var(--muted-foreground)); white-space: nowrap; }
+  .rcpt-line .amt { font-weight: 600; color: hsl(var(--gold)); margin-left: auto; }
+  .rcpt-line .links { display: flex; gap: 12px; white-space: nowrap; }
+  .rcpt-foot { font-size: 11px; color: hsl(var(--muted-foreground)); padding-top: 6px; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="page">
+  <div class="mock-banner">
+    <b>MAQUETTE — /admin/members : « OPEN RECEIPTS » sur le Member ledger</b>
+    <span>l'amendement A21 gravé (le dossier profond par siège, founder-gated) · démo interactive · données de démonstration</span>
+    <button class="theme-btn" id="themeBtn" type="button">Thème : auto</button>
+  </div>
+
+  <div class="annot">Le ledger — la colonne Purchases devient LA porte (clic = les reçus s'ouvrent sous la ligne)</div>
+
+  <div class="card">
+    <div class="head">
+      <h2>Member ledger</h2>
+      <span class="chip-live">Live · indexed record · founder-only</span>
+    </div>
+    <p class="intro">Every seat's dossier from the already-indexed record: entry, capital standing, own purchases <b>— each one reopenable at its permanent receipt address —</b> referral standing. Wallets are masked server-side; this read is audit-logged.</p>
+
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Seat</th><th>Wallet</th><th>Entry</th><th>Rung</th>
+            <th class="r">Footprint</th><th class="r">Purchases</th>
+            <th>Last purchase</th><th>Segment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono tnum">#1</td>
+            <td class="mono">0x8338…f620<span class="tag">genesis</span></td>
+            <td class="mono tnum">2026-05-28</td><td>Cornerstone</td>
+            <td class="r mono tnum">$30.00</td>
+            <td class="r">
+              <button class="rcpt-toggle mono tnum" id="tg1" aria-expanded="true" aria-controls="rc1">
+                6 · $30.00 <span class="chev">▼</span>
+              </button>
+            </td>
+            <td class="mono tnum" style="color:hsl(var(--muted-foreground))">2026-07-14</td>
+            <td><span class="seg seg-active">active</span></td>
+          </tr>
+          <tr class="rcpt-row" id="rc1">
+            <td colspan="8">
+              <div class="rcpt-box">
+                <div class="rcpt-line">
+                  <span class="d mono tnum">2026-07-14</span><span class="mono tnum">Seat #1 · footprint</span><span class="mono" style="color:hsl(var(--muted-foreground))">V3</span>
+                  <span class="amt mono tnum">$5.00</span>
+                  <span class="links"><a href="#" onclick="return false">Open receipt ↗</a><a href="#" onclick="return false" class="mono" style="font-size:11px">Explorer ↗</a></span>
+                </div>
+                <div class="rcpt-line">
+                  <span class="d mono tnum">2026-07-13</span><span class="mono tnum">Seat #1 · footprint</span><span class="mono" style="color:hsl(var(--muted-foreground))">V3</span>
+                  <span class="amt mono tnum">$5.00</span>
+                  <span class="links"><a href="#" onclick="return false">Open receipt ↗</a><a href="#" onclick="return false" class="mono" style="font-size:11px">Explorer ↗</a></span>
+                </div>
+                <div class="rcpt-line">
+                  <span class="d mono tnum">2026-06-30</span><span class="mono tnum">Seat #1 · footprint</span><span class="mono" style="color:hsl(var(--muted-foreground))">V2a</span>
+                  <span class="amt mono tnum">$5.00</span>
+                  <span class="links"><a href="#" onclick="return false">Open receipt ↗</a><a href="#" onclick="return false" class="mono" style="font-size:11px">Explorer ↗</a></span>
+                </div>
+                <div class="rcpt-line">
+                  <span class="d mono tnum">2026-06-11</span><span class="mono tnum">Seat #1</span><span class="mono" style="color:hsl(var(--muted-foreground))">V1</span>
+                  <span class="amt mono tnum">$15.00</span>
+                  <span class="links"><a href="#" onclick="return false">Open receipt ↗</a><a href="#" onclick="return false" class="mono" style="font-size:11px">Explorer ↗</a></span>
+                </div>
+                <div class="rcpt-foot">Verify anchors · founder-only · this read is audit-logged. An engine that never carried every fact opens on the explorer instead — nothing is guessed.</div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="mono tnum">#14</td>
+            <td class="mono">0x88e5…dd73<span class="tag">v3</span></td>
+            <td class="mono tnum">2026-07-13</td><td>Emerging</td>
+            <td class="r mono tnum">$5.00</td>
+            <td class="r">
+              <button class="rcpt-toggle mono tnum" id="tg2" aria-expanded="false" aria-controls="rc2">
+                1 · $5.00 <span class="chev">▼</span>
+              </button>
+            </td>
+            <td class="mono tnum" style="color:hsl(var(--muted-foreground))">2026-07-13</td>
+            <td><span class="seg seg-active">active</span></td>
+          </tr>
+          <tr class="rcpt-row" id="rc2" hidden>
+            <td colspan="8">
+              <div class="rcpt-box">
+                <div class="rcpt-line">
+                  <span class="d mono tnum">2026-07-13</span><span class="mono tnum">Seat #14 · first seat</span><span class="mono" style="color:hsl(var(--muted-foreground))">V3</span>
+                  <span class="amt mono tnum">$5.00</span>
+                  <span class="links"><a href="#" onclick="return false">Open receipt ↗</a><a href="#" onclick="return false" class="mono" style="font-size:11px">Explorer ↗</a></span>
+                </div>
+                <div class="rcpt-foot">Verify anchors · founder-only · this read is audit-logged.</div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="mono tnum">#7</td>
+            <td class="mono">0x1a2b…3c4d<span class="tag">v3</span></td>
+            <td class="mono tnum">2026-06-04</td><td>Emerging</td>
+            <td class="r mono tnum">$5.00</td>
+            <td class="r"><span class="mono tnum" style="color:hsl(var(--muted-foreground))">—</span></td>
+            <td class="mono tnum" style="color:hsl(var(--muted-foreground))">—</td>
+            <td><span class="seg seg-settled">settled</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>Ce que cette maquette décide (à approuver) :</b>
+    <ul>
+      <li><b>La colonne Purchases devient LA porte</b> : « 6 · $30.00 » se clique et les reçus du siège s'ouvrent EN PLACE sous la ligne — la grammaire du classeur membre, portée au registre. Un siège sans achat garde « — » (rien à ouvrir).</li>
+      <li><b>Chaque ligne de reçu</b> : date · Seat #N (· footprint / first seat, le drapeau du moteur lui-même) · moteur · montant exact · <b>« Open receipt ↗ »</b> — qui ouvre l'ADRESSE PUBLIQUE PERMANENTE du reçu (/receipt/…), le document complet qu'on vient de sceller — et « Explorer ↗ » un clic plus profond. <b>Un seul chemin de rendu du ticket : sa page. Rien de re-implémenté dans la console.</b></li>
+      <li><b>C'est l'amendement A21 gravé</b> : le ledger v1 avait été SCELLÉ sans ancres de transaction, « le dossier profond par siège = un amendement ultérieur, founder-gated ». Ton approbation ici EST cette porte. Ancres visibles : founder_root uniquement, lecture auditée (inchangé).</li>
+      <li><b>Le reste de l'écran ne bouge pas</b> : colonnes, segments, Message this member, classements, définitions — tout inchangé (la colonne Actions reste, hors cadre ici).</li>
+      <li><b>Sous le capot (technique, pour mémoire)</b> : les lignes de reçus rejoignent la charge du ledger existant (aucun nouveau paramètre, jamais une API de recherche — le contrat ADR-003 tient) ; et la sonde anti-fuite de la route passe à la forme boundary-aware (la leçon f436c42) — sinon chaque ancre 64-hex ferait tout échouer.</li>
+    </ul>
+  </div>
+
+  <div class="annot">États (inchangés — le panneau les a déjà)</div>
+  <div class="note">Chargement « Reading the ledger… » · refus founder-only · indisponible fail-closed : tout existe déjà, rien de nouveau à inventer. Le seul état neuf : un siège à 0 achat n'a simplement pas de porte.</div>
+</div>
+
+<script>
+  var modes = ["auto", "dark", "light"], mi = 0;
+  var tb = document.getElementById("themeBtn");
+  tb.addEventListener("click", function () {
+    mi = (mi + 1) % modes.length;
+    if (modes[mi] === "auto") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", modes[mi]);
+    tb.textContent = "Thème : " + modes[mi];
+  });
+  function wire(tgId, rcId) {
+    var tg = document.getElementById(tgId), rc = document.getElementById(rcId);
+    tg.addEventListener("click", function () {
+      var open = rc.hasAttribute("hidden");
+      if (open) rc.removeAttribute("hidden"); else rc.setAttribute("hidden", "");
+      tg.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  }
+  wire("tg1", "rc1"); wire("tg2", "rc2");
+</script>
