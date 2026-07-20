@@ -110,14 +110,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   post-boot ledger read — audit member-ledger.read 01:38:47Z; the X draft
 >   carries the link once in the served bundle; battery clean; the founder's
 >   living-seal click: "les tickets sont là, parfait").**
-> - **▶ R-ADMIN v2 BUILT [this commit] — THE FOUNDER'S CHAPTER CORRECTION
->   (his ledger read: the "genesis" authority tag impersonated the chapter):**
->   a CHAPTER column from the tickets' frozen canon (chapterForSeat — every
->   current member = I · Genesis Signal, transitions by seat number forever) ·
->   the tag renamed "genesis"→"roster" · Chapter + Segment filter chips.
->   Client-only; mockup v2 approved + GO; gates + build green (admin-dist 99).
->   **DEPLOY BACKLOG (batchable): this correction — one paste publishes it
->   (or it rides the 5.1 deploy).**
+> - **✅ R-ADMIN v2 SEALED IN PROD (`43e84bf`, Replit green 2026-07-20):
+>   THE FOUNDER'S CHAPTER CORRECTION** — the CHAPTER column from the
+>   tickets' frozen canon (every current member = I · Genesis Signal;
+>   transitions by seat number forever) · the authority tag "genesis"→
+>   "roster" · Chapter + Segment filter chips. Byte-identity + the shared
+>   chapters chunk served ✓. **→ RIDER [this commit] — Replit's observation
+>   honored: the LAST surviving "genesis" (the message dialog's help text)
+>   renamed "roster" too; zero rendered "genesis" remains on the page.
+>   DEPLOY BACKLOG (batchable): this one-string rider — rides the 5.1
+>   cycle, or one paste.**
 > - **IN FLIGHT after this:** the sealed order continues: the
 >   commission-receipts register (5.1, mockup approved) + commission share
 >   card → recognition/season (slice 6).

@@ -168,8 +168,12 @@ function MessageMemberDialog({
         <DialogHeader>
           <DialogTitle>Message seat #{row.seat}</DialogTitle>
           <DialogDescription>
+            {/* "roster", never "genesis" — the founder's 2026-07-20 chapter
+                correction covers EVERY authority mention on this page (the
+                word collided with Chapter I "Genesis Signal"; Replit's
+                observation caught this last survivor). */}
             Delivered to this member&apos;s inbox on their next visit ({row.walletShort} ·{" "}
-            {row.authority === "PART_B_FREEZE_ROOT" ? "genesis" : "v3"}). Founder-gated,
+            {row.authority === "PART_B_FREEZE_ROOT" ? "roster" : "v3"}). Founder-gated,
             audit-logged; no email or push exists.
           </DialogDescription>
         </DialogHeader>
