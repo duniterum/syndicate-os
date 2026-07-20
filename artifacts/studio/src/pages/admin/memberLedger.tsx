@@ -58,6 +58,14 @@ import {
   type LedgerPayload,
   type LedgerRow,
 } from "@/lib/operatorClient";
+// The founder's 2026-07-20 correction: the ledger now shows each seat's
+// CHAPTER from the one frozen canon the tickets use (chapterForSeat — a pure
+// function of the seat number), because the authority tag's old word
+// ("genesis") collided with Chapter I's name ("Genesis Signal") and read as
+// the chapter. The tag now says "roster" (who NUMBERED the seat: the frozen
+// founding roster #1–#8 vs the V3 engine) — it can never impersonate the
+// chapter again.
+import { chapterForSeat } from "@/lib/chapters";
 
 type State =
   | { kind: "loading" }
@@ -221,6 +229,10 @@ export function MemberLedgerPanel() {
       return next;
     });
   };
+  // The founder's filters (2026-07-20): slice the register by chapter and by
+  // segment — client-side over the already-served rows, null = All.
+  const [chapterFilter, setChapterFilter] = useState<string | null>(null);
+  const [segmentFilter, setSegmentFilter] = useState<LedgerRow["segment"] | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -278,12 +290,84 @@ export function MemberLedgerPanel() {
             <StatCard label="Promotions due" value={String(state.payload.totals.promotionsDue)} />
           </div>
 
+          {/* The founder's filters — chapter + segment, over the served rows. */}
+          {(() => {
+            const chapterCounts = new Map<string, { label: string; count: number }>();
+            for (const r of state.payload.rows) {
+              const ch = chapterForSeat(r.seat);
+              if (ch === null) continue;
+              const key = ch.roman;
+              const entry = chapterCounts.get(key) ?? {
+                label: `${ch.roman} · ${ch.name}`,
+                count: 0,
+              };
+              entry.count += 1;
+              chapterCounts.set(key, entry);
+            }
+            const chip = (active: boolean) =>
+              `inline-flex items-center rounded-md border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider transition-colors ${
+                active
+                  ? "border-primary/40 bg-primary/10 text-primary"
+                  : "border-border text-muted-foreground hover:border-muted-foreground/50"
+              }`;
+            return (
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-4">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Chapter
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setChapterFilter(null)}
+                  className={chip(chapterFilter === null)}
+                  data-testid="filter-chapter-all"
+                >
+                  All ({state.payload.rows.length})
+                </button>
+                {[...chapterCounts.entries()].map(([roman, c]) => (
+                  <button
+                    key={roman}
+                    type="button"
+                    onClick={() => setChapterFilter(chapterFilter === roman ? null : roman)}
+                    className={chip(chapterFilter === roman)}
+                    data-testid={`filter-chapter-${roman}`}
+                  >
+                    {c.label} ({c.count})
+                  </button>
+                ))}
+                <span className="w-2" aria-hidden="true" />
+                <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Segment
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSegmentFilter(null)}
+                  className={chip(segmentFilter === null)}
+                  data-testid="filter-segment-all"
+                >
+                  All
+                </button>
+                {(["ACTIVE", "SETTLED", "DORMANT"] as const).map((seg) => (
+                  <button
+                    key={seg}
+                    type="button"
+                    onClick={() => setSegmentFilter(segmentFilter === seg ? null : seg)}
+                    className={chip(segmentFilter === seg)}
+                    data-testid={`filter-segment-${seg.toLowerCase()}`}
+                  >
+                    {seg.charAt(0) + seg.slice(1).toLowerCase()}
+                  </button>
+                ))}
+              </div>
+            );
+          })()}
+
           {/* The ledger table */}
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Seat</TableHead>
+                  <TableHead>Chapter</TableHead>
                   <TableHead>Wallet</TableHead>
                   <TableHead>Entry</TableHead>
                   <TableHead>Rung</TableHead>
@@ -298,14 +382,34 @@ export function MemberLedgerPanel() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {state.payload.rows.map((r) => (
+                {state.payload.rows
+                  .filter(
+                    (r) =>
+                      (chapterFilter === null ||
+                        chapterForSeat(r.seat)?.roman === chapterFilter) &&
+                      (segmentFilter === null || r.segment === segmentFilter),
+                  )
+                  .map((r) => (
                   <Fragment key={r.id}>
                   <TableRow>
                     <TableCell className="font-mono text-xs">#{r.seat}</TableCell>
+                    <TableCell>
+                      {/* The seat's chapter — the tickets' own frozen canon. */}
+                      {(() => {
+                        const ch = chapterForSeat(r.seat);
+                        return ch === null ? (
+                          <span className="text-muted-foreground text-xs">—</span>
+                        ) : (
+                          <span className="inline-flex items-center whitespace-nowrap rounded-md border border-border px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                            {ch.roman} · {ch.name}
+                          </span>
+                        );
+                      })()}
+                    </TableCell>
                     <TableCell className="font-mono text-xs text-muted-foreground">
                       {r.walletShort}
                       <span className="ml-1.5 text-[9px] uppercase tracking-wider text-muted-foreground/70">
-                        {r.authority === "PART_B_FREEZE_ROOT" ? "genesis" : "v3"}
+                        {r.authority === "PART_B_FREEZE_ROOT" ? "roster" : "v3"}
                       </span>
                     </TableCell>
                     <TableCell className="font-mono text-xs text-muted-foreground">
@@ -388,7 +492,7 @@ export function MemberLedgerPanel() {
                       rendering path). */}
                   {openReceipts.has(r.id) && r.receipts.length > 0 ? (
                     <TableRow id={`ledger-receipts-${r.seat}`} className="hover:bg-transparent">
-                      <TableCell colSpan={10} className="bg-card/50 pl-9 pr-3 py-0">
+                      <TableCell colSpan={11} className="bg-card/50 pl-9 pr-3 py-0">
                         <div className="border-l-2 border-gold/35 my-2.5 pl-3.5 py-0.5">
                           {r.receipts.map((line) => (
                             <div

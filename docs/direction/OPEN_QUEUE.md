@@ -10,9 +10,19 @@
 > pins that reserved A21 amended dated per their own instruction. Gate green (auth-zone
 > re-pinned · admin-dist 99 — console-chunk isolation holds) · rig honest-state clean ·
 > 3-seam adversarial verify = 0 real findings (the living seal of the lines happens in
-> prod — no local DB, the founder's own recorded pattern). **🚀 DEPLOY (server + client,
-> NO migration) — carries the batchable share-draft fix `cb4776d`.** NEXT in the sealed
-> order: the commission-receipts register (5.1, mockup approved) + its share card.
+> prod — no local DB, the founder's own recorded pattern). **✅ SEALED IN PROD `0619818`
+> (Replit green 2026-07-20, founder-pasted report: 10/10 blobs · auth-zone amended 1057 ·
+> the boundary-aware scan PROVEN by the founder's own post-boot ledger read (audit line
+> member-ledger.read 01:38:47Z — the anchors passed) · the X draft carries the link ONCE
+> in the served bundle · battery clean; the founder's living-seal click confirmed — "les
+> tickets sont là, parfait").** → **RIDER [this commit] — THE FOUNDER'S CHAPTER
+> CORRECTION (his read of the ledger: "genesis" tag ≠ the chapter): ① a CHAPTER column
+> from the tickets' frozen canon (chapterForSeat — every current member = I · Genesis
+> Signal) · ② the authority tag renamed "genesis"→"roster" (the collision dead) ·
+> ③ Chapter + Segment FILTER CHIPS over the served rows. Client-only, mockup v2
+> founder-approved + GO. 🚀 DEPLOY — BATCHABLE (the founder's console shows the old tag
+> until it rides; one paste publishes it).** NEXT in the sealed order: the
+> commission-receipts register (5.1, mockup approved) + its share card.
 
 > **▶ 2026-07-20 — R-CARDS: THE PAINTED PREVIEW CARDS + THE LINK ROTATION, BUILT
 > [this commit] (Q44's sealed order, step 2; the founder approved the 4-face mockup

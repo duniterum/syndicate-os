@@ -105,10 +105,20 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   payload (zero lookup params); the route's leak scan → boundary-aware;
 >   the two reserving auth-zone pins amended dated. Gate green (auth-zone
 >   re-pinned · admin-dist 99) · rig honest-state clean · 3-seam adversarial
->   verify = 0 real findings. **🚀 DEPLOY (server + client, NO migration) —
->   CARRIES the batchable share-draft fix `cb4776d` (the deploy backlog
->   empties with this cycle).**
-> - **IN FLIGHT after this deploy:** the sealed order continues: the
+>   verify = 0 real findings. **✅ SEALED IN PROD `0619818` (Replit green
+>   2026-07-20: the boundary-aware scan proven by the founder's own
+>   post-boot ledger read — audit member-ledger.read 01:38:47Z; the X draft
+>   carries the link once in the served bundle; battery clean; the founder's
+>   living-seal click: "les tickets sont là, parfait").**
+> - **▶ R-ADMIN v2 BUILT [this commit] — THE FOUNDER'S CHAPTER CORRECTION
+>   (his ledger read: the "genesis" authority tag impersonated the chapter):**
+>   a CHAPTER column from the tickets' frozen canon (chapterForSeat — every
+>   current member = I · Genesis Signal, transitions by seat number forever) ·
+>   the tag renamed "genesis"→"roster" · Chapter + Segment filter chips.
+>   Client-only; mockup v2 approved + GO; gates + build green (admin-dist 99).
+>   **DEPLOY BACKLOG (batchable): this correction — one paste publishes it
+>   (or it rides the 5.1 deploy).**
+> - **IN FLIGHT after this:** the sealed order continues: the
 >   commission-receipts register (5.1, mockup approved) + commission share
 >   card → recognition/season (slice 6).
 > - **FOUNDER-PENDING: NOTHING on the arc.** Parked as recorded: Q35 legal

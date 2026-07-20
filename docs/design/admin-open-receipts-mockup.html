@@ -87,12 +87,27 @@
 
 <div class="page">
   <div class="mock-banner">
-    <b>MAQUETTE — /admin/members : « OPEN RECEIPTS » sur le Member ledger</b>
-    <span>l'amendement A21 gravé (le dossier profond par siège, founder-gated) · démo interactive · données de démonstration</span>
+    <b>MAQUETTE v2 — /admin/members : CHAPITRE + FILTRES + le tag corrigé</b>
+    <span>la correction du fondateur (2026-07-20) : le mot « genesis » du tag entrait en collision avec le chapitre « Genesis Signal » · démo interactive</span>
     <button class="theme-btn" id="themeBtn" type="button">Thème : auto</button>
   </div>
 
-  <div class="annot">Le ledger — la colonne Purchases devient LA porte (clic = les reçus s'ouvrent sous la ligne)</div>
+  <div class="annot">Les filtres — trancher le registre par chapitre et par segment</div>
+  <div class="card" style="padding:14px 24px; margin-bottom:14px">
+    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;font-size:12.5px">
+      <span class="mono" style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:hsl(var(--muted-foreground))">Chapter</span>
+      <span class="seg seg-active" style="cursor:pointer">All (14)</span>
+      <span class="seg seg-settled" style="cursor:pointer">I · Genesis Signal (14)</span>
+      <span style="width:14px"></span>
+      <span class="mono" style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:hsl(var(--muted-foreground))">Segment</span>
+      <span class="seg seg-active" style="cursor:pointer">All</span>
+      <span class="seg seg-settled" style="cursor:pointer">Active</span>
+      <span class="seg seg-settled" style="cursor:pointer">Settled</span>
+      <span class="seg seg-settled" style="cursor:pointer">Dormant</span>
+    </div>
+  </div>
+
+  <div class="annot">Le ledger — la colonne CHAPTER (le canon des tickets) + le tag d'autorité renommé</div>
 
   <div class="card">
     <div class="head">
@@ -105,7 +120,7 @@
       <table>
         <thead>
           <tr>
-            <th>Seat</th><th>Wallet</th><th>Entry</th><th>Rung</th>
+            <th>Seat</th><th>Chapter</th><th>Wallet</th><th>Entry</th><th>Rung</th>
             <th class="r">Footprint</th><th class="r">Purchases</th>
             <th>Last purchase</th><th>Segment</th>
           </tr>
@@ -113,7 +128,8 @@
         <tbody>
           <tr>
             <td class="mono tnum">#1</td>
-            <td class="mono">0x8338…f620<span class="tag">genesis</span></td>
+            <td><span class="seg seg-settled" style="white-space:nowrap">I · Genesis Signal</span></td>
+            <td class="mono">0x8338…f620<span class="tag">roster</span></td>
             <td class="mono tnum">2026-05-28</td><td>Cornerstone</td>
             <td class="r mono tnum">$30.00</td>
             <td class="r">
@@ -125,7 +141,7 @@
             <td><span class="seg seg-active">active</span></td>
           </tr>
           <tr class="rcpt-row" id="rc1">
-            <td colspan="8">
+            <td colspan="9">
               <div class="rcpt-box">
                 <div class="rcpt-line">
                   <span class="d mono tnum">2026-07-14</span><span class="mono tnum">Seat #1 · footprint</span><span class="mono" style="color:hsl(var(--muted-foreground))">V3</span>
@@ -153,6 +169,7 @@
           </tr>
           <tr>
             <td class="mono tnum">#14</td>
+            <td><span class="seg seg-settled" style="white-space:nowrap">I · Genesis Signal</span></td>
             <td class="mono">0x88e5…dd73<span class="tag">v3</span></td>
             <td class="mono tnum">2026-07-13</td><td>Emerging</td>
             <td class="r mono tnum">$5.00</td>
@@ -165,7 +182,7 @@
             <td><span class="seg seg-active">active</span></td>
           </tr>
           <tr class="rcpt-row" id="rc2" hidden>
-            <td colspan="8">
+            <td colspan="9">
               <div class="rcpt-box">
                 <div class="rcpt-line">
                   <span class="d mono tnum">2026-07-13</span><span class="mono tnum">Seat #14 · first seat</span><span class="mono" style="color:hsl(var(--muted-foreground))">V3</span>
@@ -178,6 +195,7 @@
           </tr>
           <tr>
             <td class="mono tnum">#7</td>
+            <td><span class="seg seg-settled" style="white-space:nowrap">I · Genesis Signal</span></td>
             <td class="mono">0x1a2b…3c4d<span class="tag">v3</span></td>
             <td class="mono tnum">2026-06-04</td><td>Emerging</td>
             <td class="r mono tnum">$5.00</td>
