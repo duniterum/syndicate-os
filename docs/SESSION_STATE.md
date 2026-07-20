@@ -194,18 +194,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   fossil fixed dated; `referrerKit` live) → ✅ SEALED IN PROD `f7ab3f6`
 >   (Replit green 2026-07-20: 15/15 blobs · API prudence rebuild for the
 >   whitelist line · /referral/tools 200 + badge 200 · byte-identity ·
->   cleanest cycle yet) → **K1-FIX [this commit]: the founder's defect
->   report on the live arsenal (clipped cards/banners, missing QRs, share
->   actions only on top, placeholder monogram) — THE REAL INTERLOCK EMBLEM
->   on every artifact (SynMark, brand gold #E3A92B, origin harvest) ·
->   worst-case-fit layouts · THE FIT PROBE + THE PIXEL PROBE now gate all
->   artifact geometry (all 8 green; export sampled: ink corner, 486 gold
->   pixels, QR 1306/1295) · ArtifactActions under EVERY artifact via the
->   one KIT_ARTIFACTS table. LESSON ENGRAVED (agent memory
->   `artifact-verification-fit-and-pixel-probes`): visual artifacts are
->   never verified by DOM-text presence — innerText reads clipped content.
->   🚀 DEPLOY — the fix cycle (client-only, NO migration); the founder's
->   online seal of the fixed arsenal follows.
+>   cleanest cycle yet) → **THE K1 HARDENING LADDER, ALL SEALED IN PROD
+>   (Replit green 2026-07-20, three founder live-reads honored):**
+>   K1-FIX `d4958a8`→`38a987f` (the real interlock emblem SynMark ·
+>   worst-case-fit layouts · FIT+PIXEL probes born · Replit's red gate on
+>   a comment hex honored — the gate-discipline corollary engraved:
+>   capture the FULL guard run, never pipe through -First N) → K1.2
+>   `252f149` (story white-void killed · the QR pack: naked print QR
+>   PNG+SVG + video-overlay QR · THE RECORD CARD "N members introduced" ·
+>   SQUARE-BOX probe) → K1.3+K1.4 `d170131` (ARTIFACT_TYPOGRAPHY_FLOORS
+>   engraved: per-context type floors IN CODE + probe; THE BANNER CANON:
+>   300×250 · 336×280 · 300×600 · 728×90 · 320×100, 468×60 retired;
+>   approved-register hooks + CtaChip; the 3-skeptic adversarial pass —
+>   QR centering fixed, b320 collision killed, share never fails silent,
+>   SVG quiet zone; THE PRICE CORRECTION: no fixed seat price — the FIRST
+>   purchase decides, memory `seat-price-first-purchase-decides`). The
+>   harness = FIVE probes; 13 artifacts green at worst case. Prod runs
+>   `d170131`, byte-identity exact, engine healthy. NEXT: K2 (the
+>   invitee's side), mockup-first.
 > - **IN FLIGHT after the kit arc:** recognition/season (slice 6, Phase-5)
 >   — read the gamification/legal dossier (docs/reference/) +
 >   GAMIFICATION_LEGAL_DOCTRINE + SEASONS_ENGINE_ON_SYNDICATE_OS before

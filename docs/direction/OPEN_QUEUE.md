@@ -174,9 +174,15 @@
 > (fit · square-box · type-floor · OVERLAP — no two visual leaves intersect ·
 > QR-CENTERING) — all 13 artifacts green at worst case; the b320 collision class and
 > the off-center class are structurally dead. Gate all EXIT 0 (one new tagged
-> raw-color exception: the SVG quiet zone's white). 🚀 DEPLOY — ONE cycle carries
-> K1.2 + K1.3 + K1.4 (client-only, NO migration).** NEXT: the founder's online
-> seal → K2.
+> raw-color exception: the SVG quiet zone's white). **✅ THE WHOLE K1 ARC SEALED IN
+> PROD (Replit green 2026-07-20, founder-pasted report): K1.2 `252f149` (byte-identity
+> ✓, engine mature ok=25) then K1.3+K1.4 `d170131` in one cycle (4/4 blobs ·
+> byte-identity entry `index-DA182lVU.js` + console EXACT · wall 404 · /referral/tools
+> + /syn-mark-gold.svg + /referrer-badge.png 200 · "acquisition commission" ×0 ·
+> healthz · engine ok=3 post-boot, headBlock advancing · feed 78). thesyndicate.money
+> runs d170131 — the referrer's arsenal, floor-readable, canon banners, price
+> corrected. The founder's own eye on the live arsenal = the living seal.**
+> NEXT: K2 (the invitee's side) — OPEN, mockup-first.
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21
