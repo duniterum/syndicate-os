@@ -1,0 +1,347 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K3 — l'axe admin (maquette)</title>
+<style>
+  :root {
+    --background: 210 40% 98%; --foreground: 222 47% 11%; --border: 214 32% 91%;
+    --card: 0 0% 100%; --muted-foreground: 215 16% 47%; --gold: 38 74% 44%; --proof: 190 90% 40%;
+    --ok: 142 60% 33%; --danger: 0 68% 44%;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --background: 224 71% 4%; --foreground: 213 31% 91%; --border: 216 34% 17%; --card: 222 47% 7%; --muted-foreground: 215.4 16.3% 56.9%; --gold: 42 92% 60%; --proof: 190 90% 45%; --ok: 142 55% 48%; --danger: 0 72% 58%; }
+  }
+  :root[data-theme="dark"]  { --background: 224 71% 4%; --foreground: 213 31% 91%; --border: 216 34% 17%; --card: 222 47% 7%; --muted-foreground: 215.4 16.3% 56.9%; --gold: 42 92% 60%; --proof: 190 90% 45%; --ok: 142 55% 48%; --danger: 0 72% 58%; }
+  :root[data-theme="light"] { --background: 210 40% 98%; --foreground: 222 47% 11%; --border: 214 32% 91%; --card: 0 0% 100%; --muted-foreground: 215 16% 47%; --gold: 38 74% 44%; --proof: 190 90% 40%; --ok: 142 60% 33%; --danger: 0 68% 44%; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: hsl(var(--background)); color: hsl(var(--foreground)); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace; }
+  .page { max-width: 920px; margin: 0 auto; padding: 24px 16px 64px; }
+  .mock-banner { display:flex; flex-wrap:wrap; align-items:center; gap:10px; border:1px dashed hsl(var(--gold)/.45); border-radius:10px; background:hsl(var(--gold)/.07); padding:10px 14px; margin-bottom:22px; font-size:12.5px; color:hsl(var(--muted-foreground)); }
+  .mock-banner b { color:hsl(var(--gold)); font-weight:600; }
+  .theme-btn { margin-left:auto; cursor:pointer; border:1px solid hsl(var(--border)); background:hsl(var(--card)); color:hsl(var(--foreground)); border-radius:8px; padding:6px 12px; font-size:12.5px; min-height:36px; }
+  .annot { font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:hsl(var(--gold)/.8); margin:34px 0 10px; }
+  .annot::before { content:"◤ "; }
+  .note { font-size:12.5px; color:hsl(var(--muted-foreground)); margin:8px 0 0; max-width:52em; }
+  .ghost { border:1px dashed hsl(var(--border)); border-radius:10px; padding:12px 14px; margin-top:10px; color:hsl(var(--muted-foreground)); font-size:12.5px; }
+
+  /* app panel chrome */
+  .panel { border:1px solid hsl(var(--border)); background:hsl(var(--card)); border-radius:12px; padding:20px; }
+  .p-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:4px; }
+  .p-head h3 { font-size:15px; font-weight:600; margin:0; }
+  .live-tag { font-family:ui-monospace,monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:hsl(var(--gold)); }
+  .p-intro { font-size:13px; color:hsl(var(--muted-foreground)); margin:2px 0 14px; max-width:48em; }
+
+  .pill { display:inline-flex; align-items:center; gap:5px; border-radius:999px; font-size:11px; padding:2px 10px; border:1px solid; }
+  .pill.ok { color:hsl(var(--ok)); border-color:hsl(var(--ok)/.4); background:hsl(var(--ok)/.08); }
+  .pill.wait { color:hsl(var(--gold)); border-color:hsl(var(--gold)/.4); background:hsl(var(--gold)/.08); }
+  .pill.off { color:hsl(var(--muted-foreground)); border-color:hsl(var(--border)); background:transparent; }
+  .pill.bad { color:hsl(var(--danger)); border-color:hsl(var(--danger)/.4); background:hsl(var(--danger)/.08); }
+
+  .btn { display:inline-flex; align-items:center; gap:6px; cursor:pointer; border-radius:9px; padding:8px 14px; font-size:13px; font-weight:600; border:1px solid hsl(var(--border)); background:hsl(var(--card)); color:hsl(var(--foreground)); }
+  .btn.primary { background:hsl(var(--gold)); border-color:hsl(var(--gold)); color:#1A1408; }
+  .btn.quiet { font-weight:500; color:hsl(var(--muted-foreground)); }
+  .btn.danger { color:hsl(var(--danger)); border-color:hsl(var(--danger)/.5); }
+  .btn.disabled { opacity:.45; cursor:not-allowed; }
+
+  /* member hero strip */
+  .hero-line { display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; }
+  .link-box { font-size:12.5px; border:1px solid hsl(var(--border)); border-radius:8px; padding:7px 10px; background:hsl(var(--background)); overflow-wrap:anywhere; }
+  .strip { display:flex; flex-wrap:wrap; align-items:flex-start; gap:8px 12px; border:1px solid hsl(var(--gold)/.3); background:hsl(var(--gold)/.06); border-radius:10px; padding:11px 14px; margin-top:12px; }
+  .strip.okline { border-color:hsl(var(--ok)/.35); background:hsl(var(--ok)/.06); }
+  .strip.badline { border-color:hsl(var(--danger)/.3); background:hsl(var(--danger)/.05); }
+  .strip .ic { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:8px; background:hsl(var(--gold)/.12); color:hsl(var(--gold)); font-size:13px; flex:none; }
+  .strip.okline .ic { background:hsl(var(--ok)/.12); color:hsl(var(--ok)); }
+  .strip.badline .ic { background:hsl(var(--danger)/.1); color:hsl(var(--danger)); }
+  .strip .t { font-size:13.5px; }
+  .strip .m { font-size:12px; color:hsl(var(--muted-foreground)); flex-basis:100%; margin-left:38px; }
+
+  .steps { display:flex; flex-wrap:wrap; gap:6px 18px; font-size:12px; color:hsl(var(--muted-foreground)); margin:10px 0 0 38px; }
+  .steps .done { color:hsl(var(--ok)); }
+  .steps .now { color:hsl(var(--gold)); font-weight:600; }
+
+  /* admin queue card */
+  .req { border:1px solid hsl(var(--border)); border-radius:10px; padding:14px; margin-top:12px; }
+  .req-head { display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 14px; }
+  .req-head .who { font-size:13.5px; font-weight:600; }
+  .req-head .meta { font-size:12px; color:hsl(var(--muted-foreground)); }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 12px; }
+  .chip { display:inline-flex; align-items:center; gap:6px; font-size:11.5px; border-radius:7px; padding:3px 9px; border:1px solid; }
+  .chip.ok { color:hsl(var(--ok)); border-color:hsl(var(--ok)/.35); background:hsl(var(--ok)/.06); }
+  .chip.bad { color:hsl(var(--danger)); border-color:hsl(var(--danger)/.4); background:hsl(var(--danger)/.06); }
+  .chip.norun { color:hsl(var(--muted-foreground)); border-color:hsl(var(--border)); background:hsl(var(--background)); }
+  .verbs { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .decline-box { margin-top:10px; }
+  .decline-box textarea { width:100%; min-height:52px; resize:vertical; border:1px solid hsl(var(--border)); border-radius:8px; background:hsl(var(--background)); color:hsl(var(--foreground)); font:inherit; font-size:12.5px; padding:8px 10px; }
+
+  /* signing session stepper */
+  .stage { display:flex; gap:12px; margin-top:12px; }
+  .stage .rail { display:flex; flex-direction:column; align-items:center; }
+  .stage .dot { width:22px; height:22px; border-radius:999px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; border:2px solid hsl(var(--border)); color:hsl(var(--muted-foreground)); background:hsl(var(--card)); flex:none; }
+  .stage .dot.done { border-color:hsl(var(--ok)); color:hsl(var(--ok)); }
+  .stage .dot.now { border-color:hsl(var(--gold)); color:hsl(var(--gold)); }
+  .stage .cord { width:2px; flex:1; background:hsl(var(--border)); margin:4px 0; }
+  .stage .body { padding-bottom:16px; min-width:0; flex:1; }
+  .stage .s-title { font-size:13.5px; font-weight:600; }
+  .stage .s-sub { font-size:12px; color:hsl(var(--muted-foreground)); margin-top:2px; max-width:44em; }
+
+  /* modal */
+  .modal { border:1px solid hsl(var(--danger)/.4); border-radius:12px; background:hsl(var(--card)); padding:18px; max-width:480px; box-shadow:0 8px 30px hsl(222 47% 5% / .18); }
+  .modal h4 { margin:0 0 8px; font-size:14.5px; }
+  .modal p { font-size:12.5px; color:hsl(var(--muted-foreground)); margin:0 0 6px; }
+  .modal b { color:hsl(var(--foreground)); }
+
+  /* performance table */
+  .tbl-wrap { overflow-x:auto; margin-top:10px; }
+  table.perf { width:100%; border-collapse:collapse; font-size:12.5px; min-width:760px; }
+  table.perf th { text-align:left; font-size:11px; font-weight:500; color:hsl(var(--muted-foreground)); padding:6px 10px 8px; border-bottom:1px solid hsl(var(--border)); white-space:nowrap; }
+  table.perf td { padding:8px 10px; border-bottom:1px solid hsl(var(--border)/.6); white-space:nowrap; font-variant-numeric:tabular-nums; }
+  table.perf td.num { text-align:right; }
+  table.perf th.num { text-align:right; }
+  .filters { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:2px; }
+  .filters .f { font-size:11.5px; border:1px solid hsl(var(--border)); border-radius:999px; padding:3px 11px; color:hsl(var(--muted-foreground)); cursor:pointer; }
+  .filters .f.on { border-color:hsl(var(--gold)/.5); color:hsl(var(--gold)); background:hsl(var(--gold)/.07); }
+  .asof { font-size:11.5px; color:hsl(var(--muted-foreground)); margin-top:10px; }
+
+  .bell { border:1px solid hsl(var(--border)); border-radius:10px; padding:10px 14px; display:flex; gap:10px; align-items:flex-start; background:hsl(var(--card)); max-width:520px; }
+  .bell .ic { flex:none; width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center; background:hsl(var(--ok)/.1); color:hsl(var(--ok)); }
+  .bell .bt { font-size:13px; font-weight:600; }
+  .bell .bb { font-size:12px; color:hsl(var(--muted-foreground)); }
+</style>
+
+<div class="page">
+  <div class="mock-banner">
+    <span><b>MAQUETTE K3</b> — l'axe admin : le membre demande, le serveur vérifie, TOI tu signes. Ta signature reste la loi — seule la friction meurt.</span>
+    <button type="button" class="theme-btn" id="themeBtn">Thème : auto</button>
+  </div>
+
+  <p class="note" style="margin-top:0">Le système entier en une phrase : <b>① le membre demande l'activation depuis /referral → ② la demande arrive dans ta file sur /admin/sources, déjà vérifiée par le serveur → ③ tu approuves et signes (deux signatures enchaînées sur un seul écran) → ④ les portes pause/revoke pilotent la vie de la source → ⑤ la table de performance + export CSV.</b> Cinq faces, montrées dans l'ordre de la vie réelle d'une demande.</p>
+
+  <!-- ═══════════ FACE 1 · le côté membre ═══════════ -->
+  <div class="annot">1 · Côté membre — la porte « Ask for activation » (sur /referral, dans la zone du lien)</div>
+  <div class="ghost">AUJOURD'HUI : la phrase sans porte — « The commission activates when your source is founder-signed. » Le membre lit que l'acte existe… et n'a aucun moyen de le demander. Et il ne peut pas distinguer « rien n'existe encore » de « enregistré mais pas encore actif ».</div>
+
+  <p class="note" style="margin-top:14px"><b>État A — pas encore demandé.</b> Le statut dit la vérité distinctement, et la porte est là :</p>
+  <div class="panel">
+    <div class="hero-line">
+      <span class="link-box mono">thesyndicate.money/join?source=0x4af3…9c21</span>
+      <span class="pill off">Not yet active</span>
+    </div>
+    <div class="strip">
+      <span class="ic">✦</span>
+      <span class="t">Your link is permanent — derived from your wallet, it never changes. The commission starts when the founder signs your source on-chain.</span>
+      <span class="m"><button type="button" class="btn primary" style="margin-top:6px">Ask for activation</button></span>
+    </div>
+  </div>
+
+  <p class="note" style="margin-top:14px"><b>État B — demande envoyée.</b> Statut honnête, étapes visibles, rien n'est bloqué en attendant :</p>
+  <div class="panel">
+    <div class="strip">
+      <span class="ic">⋯</span>
+      <span class="t"><b>Request received.</b> The founder reviews personally and signs on-chain.</span>
+      <span class="m">You'll be notified here the moment it's decided. Your link already works — anyone who joins through it is recorded on-chain either way.</span>
+    </div>
+    <div class="steps"><span class="done">✓ Request received</span><span class="now">● Under review</span><span>○ Founder signs on-chain</span></div>
+  </div>
+
+  <p class="note" style="margin-top:14px"><b>État C — activée.</b> La cloche annonce la décision (jamais d'email — canon), et la zone du lien passe à l'état actif qui existe déjà :</p>
+  <div class="bell">
+    <span class="ic">✓</span>
+    <div>
+      <div class="bt">Your referral link is active</div>
+      <div class="bb">The founder signed the activation on-chain. Commissions apply from your next introduction. → /referral</div>
+    </div>
+  </div>
+
+  <p class="note" style="margin-top:14px"><b>État D — refusée.</b> Jamais un silence : une raison humaine, écrite par toi au moment du refus :</p>
+  <div class="panel">
+    <div class="strip badline">
+      <span class="ic">—</span>
+      <span class="t"><b>Request declined.</b></span>
+      <span class="m">“Your wallet holds no SYN right now — the contract refuses commissions to a wallet without SYN. Hold SYN, then ask again.” — the founder</span>
+    </div>
+  </div>
+  <p class="note">Mécanique (invisible) : la porte vit DANS le tableau de bord /referral existant — invisible aux visiteurs anonymes par construction. Écriture own-row, throttlée, auditée (le pattern éprouvé). Qui peut demander : <b>les membres assis</b> (décision par défaut, modifiable — le promoteur sans seat est la décision K4, déjà parquée à son gate).</p>
+
+  <!-- ═══════════ FACE 2 · la file de revue ═══════════ -->
+  <div class="annot">2 · Côté admin — la file de revue passe LIVE (/admin/sources, en tête quand des demandes attendent)</div>
+  <div class="panel">
+    <div class="p-head">
+      <h3>🗂 Source review queue</h3>
+      <span class="live-tag">Live · founder-gated writes</span>
+    </div>
+    <p class="p-intro">Every request arrives already checked by the server. You decide from one card — nothing to hunt, nothing to verify by hand.</p>
+
+    <!-- request 1 : tout vert -->
+    <div class="req">
+      <div class="req-head">
+        <span class="who mono">0x4aF3…9c21</span>
+        <span class="meta">Seat #17 · member since 12 Jul 2026 · asked 2 h ago</span>
+        <span class="pill wait" style="margin-left:auto">Waiting</span>
+      </div>
+      <div class="chips">
+        <span class="chip ok">✓ Holds SYN</span>
+        <span class="chip ok">✓ Seat held</span>
+        <span class="chip ok">✓ Link derived from the wallet</span>
+        <span class="chip ok">✓ Not yet on the registry</span>
+        <span class="chip ok">✓ Terms document hash matches</span>
+        <span class="chip ok">✓ Registry read fresh</span>
+      </div>
+      <div class="verbs">
+        <button type="button" class="btn primary">Approve — open the signing session</button>
+        <button type="button" class="btn quiet">Decline — with a reason</button>
+        <button type="button" class="btn quiet">Hold</button>
+      </div>
+    </div>
+
+    <!-- request 2 : un échec + un check non couru -->
+    <div class="req">
+      <div class="req-head">
+        <span class="who mono">0xB7c2…44Ee</span>
+        <span class="meta">Seat #21 · member since 18 Jul 2026 · asked yesterday</span>
+        <span class="pill wait" style="margin-left:auto">Waiting</span>
+      </div>
+      <div class="chips">
+        <span class="chip bad">✕ Holds SYN — 0 at last read</span>
+        <span class="chip ok">✓ Seat held</span>
+        <span class="chip ok">✓ Link derived from the wallet</span>
+        <span class="chip ok">✓ Not yet on the registry</span>
+        <span class="chip norun">◌ Terms document hash — didn't run (blocking)</span>
+        <span class="chip ok">✓ Registry read fresh</span>
+      </div>
+      <p class="p-intro" style="margin:0 0 10px; max-width:none">A failed or unrun check blocks the signing door — fail-closed, never a silent pass. The card says exactly why: a wallet holding no SYN would make an explicit-link purchase revert on-chain.</p>
+      <div class="verbs">
+        <button type="button" class="btn primary disabled">Approve — blocked by checks</button>
+        <button type="button" class="btn quiet">Decline — with a reason</button>
+        <button type="button" class="btn quiet">Hold</button>
+      </div>
+      <div class="decline-box">
+        <textarea readonly>A short reason the member will read — required. Example: “Your wallet holds no SYN right now — hold SYN, then ask again.”</textarea>
+      </div>
+    </div>
+
+    <!-- fermée par la réalité -->
+    <div class="req" style="opacity:.75">
+      <div class="req-head">
+        <span class="who mono">0x91aD…07f4</span>
+        <span class="meta">Seat #9 · asked 3 days ago</span>
+        <span class="pill off" style="margin-left:auto">Closed by reality</span>
+      </div>
+      <p class="p-intro" style="margin:6px 0 0; max-width:none">This wallet's source was already created and activated on-chain (tx <span class="mono">0x8f2c…11ab</span>). The chain answered before you did — no decision needed.</p>
+    </div>
+  </div>
+  <p class="note"><b>L'état vide est un état conçu :</b> « No requests waiting. Last decision: approved <span class="mono">0x4aF3…9c21</span> — 22 Jul 2026, tx <span class="mono">0x8f2c…11ab</span>. » Tu sais d'un coup d'œil que rien ne pourrit. Les 3 fausses lignes du preview actuel meurent, le badge « Preview » meurt, le panneau passe « Live · founder-gated writes ».</p>
+
+  <!-- ═══════════ FACE 3 · la session de signature ═══════════ -->
+  <div class="annot">3 · La session de signature enchaînée — deux signatures, un seul écran, zéro friction entre les deux</div>
+  <div class="panel">
+    <div class="p-head"><h3>✒ Signing session — <span class="mono">0x4aF3…9c21</span></h3></div>
+    <p class="p-intro">The wallet screen shows exactly what the request card showed — you never compose parameters at signature time.</p>
+    <div class="stage">
+      <div class="rail"><span class="dot done">✓</span><span class="cord"></span></div>
+      <div class="body">
+        <div class="s-title">Create the source — signed</div>
+        <div class="s-sub">tx <span class="mono">0x3d81…c2f0</span> · confirmed. Every source is born paused — on purpose: the fail-closed window.</div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="rail"><span class="dot done">✓</span><span class="cord"></span></div>
+      <div class="body">
+        <div class="s-title">Server preflight — all green</div>
+        <div class="s-sub">✓ The /join quote refuses the link while paused (verified server-side — the check you used to do by hand in a second tab) · ✓ on-chain terms hash matches the served document · ✓ registry status as expected. Re-read live at this moment — never a stored verdict.</div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="rail"><span class="dot now">3</span></div>
+      <div class="body">
+        <div class="s-title">Activate — sign in your wallet</div>
+        <div class="s-sub" style="margin-bottom:8px">One signature left. The link starts paying commission from the next introduction.</div>
+        <button type="button" class="btn primary">Activate the source — sign in your wallet</button>
+      </div>
+    </div>
+  </div>
+  <p class="note">Ce qui NE change PAS : deux signatures (le contrat crée toute source en pause — créer ≠ activer, c'est voulu et ça reste). Ce qui MEURT : ouvrir /join à la main entre les deux pour vérifier le devis. La vérification devient une porte de CODE, fail-closed — aujourd'hui c'est une consigne écrite que rien n'impose.</p>
+
+  <!-- ═══════════ FACE 4 · pause / revoke ═══════════ -->
+  <div class="annot">4 · Les portes pause / revoke — friction proportionnelle, la signature wallet EST la confirmation finale</div>
+  <div class="panel">
+    <div class="p-head"><h3>Source <span class="mono">0x353b…2178</span></h3><span class="pill ok">Active</span></div>
+    <p class="p-intro">Pause d'abord (réversible), revoke en dessous (permanent) — jamais côte à côte, jamais un « Are you sure? » générique.</p>
+    <div class="strip">
+      <span class="ic">⏸</span>
+      <span class="t"><b>Pause this source</b> — reversible</span>
+      <span class="m">New joins through this link stop being attributed while paused — the /join page says so honestly to anyone who opens it. Everything already earned is untouched. Resume anytime with one signature.<br><button type="button" class="btn" style="margin-top:8px">Pause — sign in your wallet</button></span>
+    </div>
+    <div class="strip badline" style="margin-top:10px">
+      <span class="ic">⏻</span>
+      <span class="t"><b>Revoke this source</b> — permanent</span>
+      <span class="m">Opens the confirmation below. Revoking is forever — kept one step further away than pause.</span>
+    </div>
+    <div style="margin-top:14px">
+      <div class="modal">
+        <h4>Revoke <span class="mono">0x353b…2178</span> — permanent</h4>
+        <p><b>This source can never be activated again.</b> The link stops being attributed forever. Commissions already paid and the on-chain history remain — nothing is ever deleted.</p>
+        <p>Your wallet signature is the final confirmation — nothing else to type.</p>
+        <div class="verbs" style="margin-top:10px">
+          <button type="button" class="btn danger">Revoke — sign in your wallet</button>
+          <button type="button" class="btn quiet">Keep the source</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="note">Les deux portes sont des propositions du même acte contrat que l'activation (le même levier, trois positions) — construites par le système, signées par toi. L'écran relit l'état réel sur le registre avant de proposer quoi que ce soit : une transition que le contrat refuse n'est jamais proposée.</p>
+
+  <!-- ═══════════ FACE 5 · performance + CSV ═══════════ -->
+  <div class="annot">5 · La performance par source + export CSV — toi tu vois tout, le public jamais</div>
+  <div class="panel">
+    <div class="p-head">
+      <h3>Per-source performance</h3>
+      <span class="live-tag">Live · founder-only</span>
+      <button type="button" class="btn" style="margin-left:auto">Export CSV</button>
+    </div>
+    <div class="filters">
+      <span class="f on">All</span><span class="f">Active</span><span class="f">Paused</span><span class="f">Revoked</span>
+    </div>
+    <div class="tbl-wrap">
+      <table class="perf">
+        <thead><tr>
+          <th>Source</th><th>Status</th><th class="num">Introduced</th><th class="num">Durable</th><th class="num">Purchases</th><th class="num">Commission paid</th><th class="num">In escrow</th><th class="num">Rate</th><th>Promotion</th><th>Last activity</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td class="mono">0x353b…2178</td><td><span class="pill ok">Active</span></td>
+            <td class="num">2</td><td class="num">2</td><td class="num">3</td><td class="num">$0.35</td><td class="num">$0.10</td><td class="num">5%</td><td>—</td><td>20 Jul 2026</td>
+          </tr>
+          <tr>
+            <td class="mono">0x4aF3…9c21</td><td><span class="pill ok">Active</span></td>
+            <td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num">5%</td><td>—</td><td>just activated</td>
+          </tr>
+          <tr>
+            <td class="mono">0x91aD…07f4</td><td><span class="pill off">Paused</span></td>
+            <td class="num">1</td><td class="num">1</td><td class="num">1</td><td class="num">$0.05</td><td class="num">$0.00</td><td class="num">5%</td><td>—</td><td>14 Jul 2026</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="asof">As of block <span class="mono">90,781,599</span> — the read-model's own clock, stated, never assumed. Figures d'exemple pour la maquette.</p>
+  </div>
+  <p class="note"><b>Le CSV est exactement l'écran :</b> mêmes lignes (le filtre actif), mêmes colonnes, mêmes mots dans les en-têtes — fichier <span class="mono">sources-2026-07-22.csv</span>, téléchargé au clic, sans options. Un écart écran/fichier serait un bug de vérité. « Durable » peut DESCENDRE (un membre qui vend son SYN sort du compte) — la table le dit, jamais une courbe qui ne monte que. Zéro symbole de gain, des faits.</p>
+
+  <!-- ═══════════ l'ordre + à 300 ═══════════ -->
+  <div class="annot">L'ordre de construction (chaque tranche : gate + preview avant commit)</div>
+  <p class="note"><b>K3.a</b> — l'intake membre + la file live (la vraie migration : la table des demandes — son propre cycle de déploiement, jamais groupé) · <b>K3.b</b> — la session de signature enchaînée + les portes pause/revoke (client) · <b>K3.c</b> — la performance par source + CSV (serveur + client). La cloche annonce chaque décision (le canal existant — jamais d'email).</p>
+
+  <div class="annot">À 300 — rien ne grossit</div>
+  <p class="note">La file reste une poignée de cartes à la fois (une demande = une décision = une fermeture — rien ne s'accumule sans état) ; la table par source scrolle et s'exporte ; les vérifications serveur sont des lectures qui existent déjà, mises en cache selon la loi des faits mutables (K2.1). Pas de scores, pas de classements, pas d'approbation en masse — chaque activation est une signature.</p>
+</div>
+
+<script>
+  var modes = ["auto", "dark", "light"]; var i = 0;
+  var tb = document.getElementById("themeBtn");
+  tb.addEventListener("click", function () {
+    i = (i + 1) % modes.length; var m = modes[i];
+    if (m === "auto") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", m);
+    tb.textContent = "Thème : " + m;
+  });
+</script>
