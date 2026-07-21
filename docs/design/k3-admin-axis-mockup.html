@@ -147,7 +147,12 @@
       <span class="m">
         <span class="chip ok">✓ A seat — Seat #21 is yours</span>&nbsp;
         <span class="chip bad">✕ SYN in your wallet — you hold none right now</span><br>
-        <span style="display:block; margin-top:6px">The contract refuses commissions to a wallet holding no SYN. Hold any amount and this check turns green on its own.</span>
+        <span style="display:block; margin-top:6px">The contract refuses commissions to a wallet holding no SYN. Hold any amount and this check turns green on its own. Two ways to hold SYN:</span>
+        <span style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px">
+          <button type="button" class="btn">Add to your footprint — /join</button>
+          <button type="button" class="btn">Swap USDC → SYN on the live pool ↗</button>
+        </span>
+        <span style="display:block; margin-top:6px; font-size:11.5px">/join uses the protocol's entry rate and grows your footprint. The pool (Trader Joe, on-chain) trades at its own market price — independent of the entry rate; the protocol promises nothing about it.</span>
         <button type="button" class="btn primary disabled" style="margin-top:8px">Ask for activation — needs the check above</button>
       </span>
     </div>
@@ -195,7 +200,12 @@
     <div class="strip">
       <span class="ic">◔</span>
       <span class="t"><b>Active — but paying nothing right now:</b> your wallet holds no SYN.</span>
-      <span class="m">Your link stays active and every introduction is still recorded on-chain. Commissions resume on their own the moment your wallet holds SYN again — any amount.</span>
+      <span class="m">Your link stays active and every introduction is still recorded on-chain. Commissions resume on their own the moment your wallet holds SYN again — any amount.
+        <span style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px">
+          <button type="button" class="btn">Add to your footprint — /join</button>
+          <button type="button" class="btn">Swap USDC → SYN on the live pool ↗</button>
+        </span>
+      </span>
     </div>
   </div>
 
