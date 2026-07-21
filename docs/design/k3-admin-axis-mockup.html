@@ -119,9 +119,9 @@
 
   <!-- ═══════════ FACE 1 · le côté membre ═══════════ -->
   <div class="annot">1 · Côté membre — la porte « Ask for activation » (sur /referral, dans la zone du lien)</div>
-  <div class="ghost">AUJOURD'HUI : la phrase sans porte — « The commission activates when your source is founder-signed. » Le membre lit que l'acte existe… et n'a aucun moyen de le demander. Et il ne peut pas distinguer « rien n'existe encore » de « enregistré mais pas encore actif ».</div>
+  <div class="ghost">AUJOURD'HUI : la phrase sans porte — « The commission activates when your source is founder-signed. » Le membre lit que l'acte existe… et n'a aucun moyen de le demander, ni de savoir s'il REMPLIT les conditions. Et il ne peut pas distinguer « rien n'existe encore » de « enregistré mais pas encore actif ».</div>
 
-  <p class="note" style="margin-top:14px"><b>État A — pas encore demandé.</b> Le statut dit la vérité distinctement, et la porte est là :</p>
+  <p class="note" style="margin-top:14px"><b>État A — éligible, pas encore demandé.</b> La carte d'éligibilité : les conditions vérifiées EN DIRECT sur SON wallet — les mêmes vérifications serveur que ta file, montrées au membre AVANT le bouton. Personne ne demande une chose qui sera refusée à coup sûr :</p>
   <div class="panel">
     <div class="hero-line">
       <span class="link-box mono">thesyndicate.money/join?source=0x4af3…9c21</span>
@@ -129,8 +129,41 @@
     </div>
     <div class="strip">
       <span class="ic">✦</span>
-      <span class="t">Your link is permanent — derived from your wallet, it never changes. The commission starts when the founder signs your source on-chain.</span>
-      <span class="m"><button type="button" class="btn primary" style="margin-top:6px">Ask for activation</button></span>
+      <span class="t"><b>What activation needs</b> — checked live against your wallet:</span>
+      <span class="m">
+        <span class="chip ok">✓ A seat — Seat #17 is yours</span>&nbsp;
+        <span class="chip ok">✓ SYN in your wallet — you hold 500 SYN</span><br>
+        <span style="display:block; margin-top:6px">Any amount of SYN counts — there is no minimum. Commissions only pay while your wallet holds SYN.</span>
+        <button type="button" class="btn primary" style="margin-top:8px">Ask for activation</button>
+      </span>
+    </div>
+  </div>
+
+  <p class="note" style="margin-top:14px"><b>État A′ — membre assis, mais zéro SYN.</b> Le bouton dit pourquoi il est fermé et ce qui le rouvre — jamais une demande vouée au refus, jamais un refus-théâtre :</p>
+  <div class="panel">
+    <div class="strip badline">
+      <span class="ic">✕</span>
+      <span class="t"><b>What activation needs</b> — checked live against your wallet:</span>
+      <span class="m">
+        <span class="chip ok">✓ A seat — Seat #21 is yours</span>&nbsp;
+        <span class="chip bad">✕ SYN in your wallet — you hold none right now</span><br>
+        <span style="display:block; margin-top:6px">The contract refuses commissions to a wallet holding no SYN. Hold any amount and this check turns green on its own.</span>
+        <button type="button" class="btn primary disabled" style="margin-top:8px">Ask for activation — needs the check above</button>
+      </span>
+    </div>
+  </div>
+
+  <p class="note" style="margin-top:14px"><b>État A″ — connecté SANS seat.</b> Sur notre site, membre = un seat. La même carte devient une porte de conversion honnête — rien n'est caché, rien n'est promis :</p>
+  <div class="panel">
+    <div class="strip">
+      <span class="ic">✦</span>
+      <span class="t"><b>What activation needs</b>:</span>
+      <span class="m">
+        <span class="chip bad">✕ A seat — you don't have one yet</span>&nbsp;
+        <span class="chip norun">◌ SYN — comes with your seat</span><br>
+        <span style="display:block; margin-top:6px">Your first purchase takes your seat and puts SYN in your wallet — both checks turn green in one act.</span>
+        <button type="button" class="btn" style="margin-top:8px">See how membership works</button>
+      </span>
     </div>
   </div>
 
@@ -153,15 +186,28 @@
     </div>
   </div>
 
-  <p class="note" style="margin-top:14px"><b>État D — refusée.</b> Jamais un silence : une raison humaine, écrite par toi au moment du refus :</p>
+  <p class="note" style="margin-top:14px"><b>État C′ — active mais ne paie pas (la vérité vivante, APRÈS activation).</b> Le solde SYN est un fait qui bouge : vendre tout son SYN laisse le lien actif mais suspend la commission — le canon exige de le DIRE, pas de le laisser découvrir :</p>
+  <div class="panel">
+    <div class="hero-line">
+      <span class="link-box mono">thesyndicate.money/join?source=0x4af3…9c21</span>
+      <span class="pill ok">Source active</span>
+    </div>
+    <div class="strip">
+      <span class="ic">◔</span>
+      <span class="t"><b>Active — but paying nothing right now:</b> your wallet holds no SYN.</span>
+      <span class="m">Your link stays active and every introduction is still recorded on-chain. Commissions resume on their own the moment your wallet holds SYN again — any amount.</span>
+    </div>
+  </div>
+
+  <p class="note" style="margin-top:14px"><b>État D — refusée.</b> Les conditions machine sont déjà filtrées AVANT la demande — un refus est donc toujours un jugement humain, et jamais un silence : une raison écrite par toi, que le membre lit vraiment :</p>
   <div class="panel">
     <div class="strip badline">
       <span class="ic">—</span>
       <span class="t"><b>Request declined.</b></span>
-      <span class="m">“Your wallet holds no SYN right now — the contract refuses commissions to a wallet without SYN. Hold SYN, then ask again.” — the founder</span>
+      <span class="m">“I'm keeping activations small while the program settles — ask me again soon.” — the founder</span>
     </div>
   </div>
-  <p class="note">Mécanique (invisible) : la porte vit DANS le tableau de bord /referral existant — invisible aux visiteurs anonymes par construction. Écriture own-row, throttlée, auditée (le pattern éprouvé). Qui peut demander : <b>les membres assis</b> (décision par défaut, modifiable — le promoteur sans seat est la décision K4, déjà parquée à son gate).</p>
+  <p class="note">Mécanique (invisible) : la porte vit DANS le tableau de bord /referral existant — invisible aux visiteurs anonymes par construction. Écriture own-row, throttlée, auditée (le pattern éprouvé). La carte d'éligibilité et ta file lisent LES MÊMES vérifications serveur (une seule vérité, deux faces), en direct — jamais un verdict stocké, le solde SYN étant un fait mutable (la loi K2.1). Qui peut demander : <b>les membres assis</b> (décision par défaut, modifiable — le promoteur sans seat voit la porte de conversion ; sa décision d'intake reste K4, déjà parquée à son gate).</p>
 
   <!-- ═══════════ FACE 2 · la file de revue ═══════════ -->
   <div class="annot">2 · Côté admin — la file de revue passe LIVE (/admin/sources, en tête quand des demandes attendent)</div>
@@ -209,7 +255,7 @@
         <span class="chip norun">◌ Terms document hash — didn't run (blocking)</span>
         <span class="chip ok">✓ Registry read fresh</span>
       </div>
-      <p class="p-intro" style="margin:0 0 10px; max-width:none">A failed or unrun check blocks the signing door — fail-closed, never a silent pass. The card says exactly why: a wallet holding no SYN would make an explicit-link purchase revert on-chain.</p>
+      <p class="p-intro" style="margin:0 0 10px; max-width:none">A failed or unrun check blocks the signing door — fail-closed, never a silent pass. The card says exactly why: a wallet holding no SYN would make an explicit-link purchase revert on-chain. (This member passed the check when they asked — the balance moved since. That's WHY every check re-runs live at review time, never a stored verdict.)</p>
       <div class="verbs">
         <button type="button" class="btn primary disabled">Approve — blocked by checks</button>
         <button type="button" class="btn quiet">Decline — with a reason</button>
