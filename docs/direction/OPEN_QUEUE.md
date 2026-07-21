@@ -238,6 +238,22 @@
 > Replit's own line: "l'invité qui clique un lien d'introduction voit un unfurl
 > peint par source et un bandeau honnête — l'arc K1→K2 est en prod de bout en
 > bout." K2.1 (`87f47df`) rides the NEXT pull — its guard shows 29/29 there.**
+> → **✅ K2.1 SEALED IN PROD `7c174cc` (Replit green 2026-07-22, founder-pasted
+> report — the server-only cycle PROVEN): 6/6 blobs (3 api files + 3 docs; the
+> studio build reproduced the K2 SHAs bit-for-bit, studio source untouched) ·
+> full typecheck green · api gates 2317 PASS, join-card 25→29/29 (the status
+> gate + the mutable-fact cache law live) · byte-identity entry
+> `index-DNC2gt7x.js` + console EXACT (same files as K2, coherent with
+> server-only) · THE CACHE LAW PROVEN IN PROD: the fallback card serves
+> max-age=300, painted cards 600 (both per joinCard.ts — the 24h immortal
+> cache dead; the platform front's public→private rewrite noted, known
+> behavior, not a defect) · fail-closed matrix exact (unknown hash → 302
+> generic · bad shape → 400 · introducer null honest · zero 40-hex) · wall
+> 404 · /receipt matrix exact · "acquisition commission" ×0 · healthz ok ·
+> THE CLEANEST ENGINE CYCLE EVER: ok=2 / partial=0 / failed=0, 6/6 units,
+> not even a first-cycle partial, headBlock 90,781,307→90,781,599 · feed 78.
+> Replit's line: "la carte peinte n'apparaît que pour une source active, et
+> rien de mutable n'est gravé 24 h dans un cache." DEPLOY BACKLOG: EMPTY.**
 > RECORDED NON-ACTION NITS
 > (inherited receipt-slice patterns, accepted): stale og:image:width/height/alt
 > under substitution · /join.html?source= direct-hit bypass · the

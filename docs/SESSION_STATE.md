@@ -219,10 +219,19 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   serve.mjs 3c substitution + the introduced-by strip on /join +
 >   `joinInviteeCard` live. PAINTED PROOF eye-verified; substitution +
 >   fail-closed matrices proven; gates ALL EXIT 0 both sides. 🚀 DEPLOY
->   IN FLIGHT — the founder handed Replit the cycle (server + client, NO
->   migration, NO pnpm install) as this session closed; the NEXT session
->   acts on the pasted report FIRST, then the founder's living seal (his
->   own shared link unfurling with HIS card; the strip on his link).**
+>   IN FLIGHT — the founder handed Replit the cycle as this session
+>   closed. → ✅ K2 SEALED IN PROD `0134cc6` (Replit green 2026-07-21,
+>   founder-pasted report: 15/15 blobs · first server+client cycle ·
+>   join-card 25/25 · byte-identity exact · the fail-closed matrix proven
+>   IN PROD · "l'arc K1→K2 est en prod de bout en bout") → K2.1 `87f47df`
+>   (the founder's recheck honored: the status gate — no attribution
+>   unfurl for a PAUSED/REVOKED source — + the mutable-fact cache law)
+>   → ✅ K2.1 SEALED IN PROD `7c174cc` (Replit green 2026-07-22, the
+>   server-only cycle PROVEN: studio SHAs reproduced bit-for-bit ·
+>   join-card 29/29 · the cache law live, fallback 300 / painted 600 ·
+>   THE CLEANEST ENGINE CYCLE EVER: ok=2/partial=0/failed=0, 6/6 units,
+>   headBlock 90,781,307→90,781,599). Full record: OPEN_QUEUE's K2/K2.1
+>   entry. DEPLOY BACKLOG: EMPTY. Tree clean.**
 > - **THE SESSION'S LESSONS (2026-07-20/21, all engraved in agent memory
 >   AND at their sites — never re-learn):** ① visual artifacts are NEVER
 >   verified by DOM-text presence — the FIVE-probe harness (fit ·
@@ -259,11 +268,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   Taken-by-default (flagged, overridable): the dedicated PDF engine stays
 >   its own rider (print already saves clean).
 > - **THE NEXT SESSION'S EXACT OPENING (no re-explaining, ever):** boot per
->   CLAUDE.md → this handoff → OPEN_QUEUE whole. ① Act on Replit's K2
->   report (cycle `0134cc6`, server+client, NO migration — in flight at
->   session close); fix any runtime truth it surfaces. ② The founder's
->   living seal: his own /join?source= link unfurling with HIS painted
->   card + the introduced-by strip. ③ Open K3 (the admin axis — the scope
+>   CLAUDE.md → this handoff → OPEN_QUEUE whole. ① ✅ DONE 2026-07-21/22 —
+>   K2 (`0134cc6`) and K2.1 (`7c174cc`) both sealed in prod, reports
+>   pasted, zero runtime truth to fix; deploy backlog EMPTY. ② Open K3
+>   (the admin axis — the scope
 >   is engraved in OPEN_QUEUE's work order; read the R-ADMIN precedents:
 >   ProposeSourceCreate/Promotion in wallet/, SourceReviewQueue
 >   DESIGN_PREVIEW in AdminOperatorsCrud.tsx, the Q42 write-zone+audit
