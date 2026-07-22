@@ -71,7 +71,17 @@ import {
   refreshIntroductionModel,
   type IntroductionRefreshSummary,
 } from "./introductionRefresh";
-import { FINANCIAL_TARGETS } from "../data/protocolTargets";
+import {
+  ARCHIVE_ARTIFACTS,
+  CONTRACT_TARGETS,
+  FINANCIAL_TARGETS,
+} from "../data/protocolTargets";
+import {
+  SELECTOR_GET_ARTIFACT_CORE,
+  callData,
+  decodeArtifactCoreRead,
+  encodeUint256,
+} from "../lib/protocol/archiveDecoders";
 import {
   buildMilestoneReadModel,
   type MilestoneBuildResult,
@@ -434,6 +444,34 @@ async function runCycle(): Promise<string | null> {
       liveMemberCount = null;
       liveInflowAggregateRaw = null;
     }
+    // AW price GO (2026-07-22): the patronage revenue read — Σ configured
+    // price × minted per artifact (the /economy card's own authority).
+    // Fail-soft null like the other milestone cross-checks.
+    let liveArtifactRevenueRaw: string | null = null;
+    try {
+      const archiveAddr = CONTRACT_TARGETS.find((t) => t.key === "ARCHIVE_1155")?.address;
+      if (archiveAddr) {
+        let sum = 0n;
+        let allOk = true;
+        for (const a of ARCHIVE_ARTIFACTS) {
+          const decoded = decodeArtifactCoreRead(
+            await ethCall(
+              transport,
+              archiveAddr,
+              callData(SELECTOR_GET_ARTIFACT_CORE, [encodeUint256(BigInt(a.id))]),
+            ),
+          );
+          if (!decoded.ok) {
+            allOk = false;
+            break;
+          }
+          sum += decoded.priceUsdc * decoded.minted;
+        }
+        liveArtifactRevenueRaw = allOk ? sum.toString(10) : null;
+      }
+    } catch {
+      liveArtifactRevenueRaw = null;
+    }
     milestoneModel = buildMilestoneReadModel({
       expectedChainId: BACKBONE_EXPECTED_CHAIN_ID,
       rawEvents: input.rawEvents,
@@ -446,6 +484,7 @@ async function runCycle(): Promise<string | null> {
       lpItems: protocolModel.lpItems,
       liveMemberCount,
       liveInflowAggregateRaw,
+      liveArtifactRevenueRaw,
     });
   } catch (err) {
     milestoneFault = err instanceof Error ? err.message : String(err);

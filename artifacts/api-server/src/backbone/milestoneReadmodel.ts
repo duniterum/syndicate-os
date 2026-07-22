@@ -67,7 +67,14 @@ export type MilestoneKind =
   | "burn-syn"
   | "sources-created"
   | "lp-acts"
-  | "archive-count";
+  | "archive-count"
+  // AW price GO (founder, 2026-07-22 "prix ok"): cumulative artifact
+  // patronage USDC — the live-read authority the /economy card already
+  // speaks (configured price × minted). v1 is APPROACHING-ONLY: the
+  // payment wallet (0xe417…) is not an indexed lane yet, so no crossing
+  // can anchor to a transaction — a rung the live figure crosses is NOTED,
+  // never sealed without its anchor (the anchoring law holds).
+  | "archive-usdc";
 
 /** The §2 families (MILESTONE_SYSTEM_EVOLUTION.md). RESERVED families
  *  (alias · ramp · nft-marketplace) ship WITH their modules — law 8. */
@@ -171,6 +178,12 @@ export const PROTOCOL_MILESTONES: readonly MilestoneDef[] = [
   { id: "artifacts-50", label: "50 artifacts archived", kind: "archive-count", family: "archive", target: 50 },
   { id: "artifacts-100", label: "100 artifacts archived", kind: "archive-count", family: "archive", target: 100 },
   { id: "artifacts-333", label: "333 artifacts archived", kind: "archive-count", family: "archive", target: 333 },
+  // The patronage money ladder (founder "prix ok" 2026-07-22).
+  { id: "patronage-100", label: "$100 of artifact patronage", kind: "archive-usdc", family: "archive", target: 100 },
+  { id: "patronage-500", label: "$500 of artifact patronage", kind: "archive-usdc", family: "archive", target: 500 },
+  { id: "patronage-1k", label: "$1,000 of artifact patronage", kind: "archive-usdc", family: "archive", target: 1_000 },
+  { id: "patronage-5k", label: "$5,000 of artifact patronage", kind: "archive-usdc", family: "archive", target: 5_000 },
+  { id: "patronage-10k", label: "$10,000 of artifact patronage", kind: "archive-usdc", family: "archive", target: 10_000 },
 ];
 
 // ---------------------------------------------------------------------------
@@ -194,6 +207,13 @@ export interface MilestoneBuildInput {
   readonly liveMemberCount: number | null;
   /** All-engine cumulative gross USDC inflow, 6-dec raw decimal string. */
   readonly liveInflowAggregateRaw: string | null;
+  /**
+   * Cumulative artifact patronage in raw 6-dec USDC (Σ configured price ×
+   * minted per artifact — the SAME live authority the /economy card
+   * speaks). Fail-soft null. Drives the archive-usdc lane's honest current;
+   * v1 never seals a rung from it (no per-event anchor exists yet).
+   */
+  readonly liveArtifactRevenueRaw: string | null;
 }
 
 export interface SealedMilestone {
@@ -274,6 +294,7 @@ export function buildMilestoneReadModel(
     lpItems,
     liveMemberCount,
     liveInflowAggregateRaw,
+    liveArtifactRevenueRaw,
   } = input;
 
   const notes: string[] = [];
@@ -611,7 +632,7 @@ export function buildMilestoneReadModel(
         continue;
       }
       approachingAll.push(approachingRow(def, { currentCount: lpAdds.length }));
-    } else {
+    } else if (def.kind === "archive-count") {
       // archive-count — the quantity-summed artifact walk.
       const crossing = artifactCrossings.get(def.id) ?? null;
       if (crossing) {
@@ -620,6 +641,24 @@ export function buildMilestoneReadModel(
       }
       approachingAll.push(
         approachingRow(def, { currentCount: Number(cumArtifacts) }),
+      );
+    } else {
+      // archive-usdc — patronage money (v1 APPROACHING-ONLY: the honest
+      // current is the live read; a live-crossed rung is NOTED, never
+      // sealed without a transaction anchor — the anchoring law).
+      const liveRevenue =
+        liveArtifactRevenueRaw !== null && DEC_RE.test(liveArtifactRevenueRaw)
+          ? BigInt(liveArtifactRevenueRaw)
+          : null;
+      if (liveRevenue !== null && liveRevenue >= BigInt(def.target) * USDC_BASE) {
+        notes.push(
+          `"${def.label}" is crossed on the live chain; its anchor awaits the archive payment lane — approaching until it anchors`,
+        );
+      }
+      approachingAll.push(
+        approachingRow(def, {
+          currentUsdcRaw: liveRevenue !== null ? liveRevenue.toString(10) : undefined,
+        }),
       );
     }
   }

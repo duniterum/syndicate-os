@@ -50,10 +50,13 @@ function progressFor(a: ServedMilestones["approaching"][number]): {
       pct,
     };
   }
-  if (a.kind === "usdc" && a.currentUsdcRaw !== null) {
+  if ((a.kind === "usdc" || a.kind === "archive-usdc") && a.currentUsdcRaw !== null) {
     const current = Number(BigInt(a.currentUsdcRaw) / 1_000_000n);
+    // The two money ladders speak their own register: routed (the sale,
+    // 70/20/10) vs patronage (the archive — founder "prix ok" 2026-07-22).
+    const unit = a.kind === "usdc" ? "USDC routed" : "USDC of patronage";
     return {
-      text: `${formatUsdcRaw(a.currentUsdcRaw)} / ${a.target.toLocaleString("en-US")} USDC routed`,
+      text: `${formatUsdcRaw(a.currentUsdcRaw)} / ${a.target.toLocaleString("en-US")} ${unit}`,
       pct: clampPct(current / a.target) ?? 0,
     };
   }

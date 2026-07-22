@@ -775,14 +775,16 @@ check(
   // M-EVO-1 (founder GO 2026-07-22): 11 → 66 defs across the 6 families
   // (MILESTONE_SYSTEM_EVOLUTION.md §2). Unique ids; the 11 origin labels
   // survive VERBATIM inside the grown registry.
-  PROTOCOL_MILESTONES.length === 66 &&
-    new Set(PROTOCOL_MILESTONES.map((m) => m.id)).size === 66 &&
+  // + the patronage money ladder (founder "prix ok" 2026-07-22): 66 → 71.
+  PROTOCOL_MILESTONES.length === 71 &&
+    new Set(PROTOCOL_MILESTONES.map((m) => m.id)).size === 71 &&
+    PROTOCOL_MILESTONES.some((m) => m.id === "patronage-100") &&
     ["first-seat", "seats-333", "routed-100", "first-signal-mint"].every((id) =>
       PROTOCOL_MILESTONES.some((m) => m.id === id),
     ) &&
     PROTOCOL_MILESTONES.some((m) => m.id === "seats-1000000") &&
     new Set(PROTOCOL_MILESTONES.map((m) => m.family)).size === 6,
-  "the 66 family-ladder milestones hold with unique ids (M-EVO-1; the FINAL SEAT rung present)",
+  "the 71 family-ladder milestones hold with unique ids (M-EVO-1 + patronage; the FINAL SEAT rung present)",
   `milestone defs drifted (count=${PROTOCOL_MILESTONES.length})`,
 );
 check(
@@ -853,6 +855,7 @@ const fixtureMilestoneModel = buildMilestoneReadModel({
   lpItems: fixtureProtocolModel.lpItems,
   liveMemberCount: 2,
   liveInflowAggregateRaw: "110" + "0".repeat(6),
+  liveArtifactRevenueRaw: null,
 });
 check(
   // M-EVO-1 (2026-07-22): 3 → 6 sealed — the family walks retro-seal the
@@ -881,7 +884,9 @@ check(
 check(
   // M-EVO-1: approaching = the NEXT rung per (family, kind) lane — 8 lanes,
   // each carrying its OWN honest current figure.
-  fixtureMilestoneModel.approaching.length === 8 &&
+  // 8 → 9 lanes: the archive-usdc patronage lane joins ("prix ok").
+  fixtureMilestoneModel.approaching.length === 9 &&
+    fixtureMilestoneModel.approaching.some((a) => a.id === "patronage-100") &&
     fixtureMilestoneModel.approaching.some(
       (a) => a.id === "routed-1k" && a.currentUsdcRaw === "110" + "0".repeat(6),
     ) &&
@@ -921,6 +926,7 @@ check(
     lpItems: fixtureProtocolModel.lpItems,
     liveMemberCount: 2,
     liveInflowAggregateRaw: "90" + "0".repeat(6),
+    liveArtifactRevenueRaw: null,
   });
   check(
     !contradicted.sealed.some((s) => s.id === "routed-100") &&
@@ -943,6 +949,7 @@ check(
     lpItems: fixtureProtocolModel.lpItems,
     liveMemberCount: null,
     liveInflowAggregateRaw: null,
+    liveArtifactRevenueRaw: null,
   });
   check(
     // M-EVO-1: 3 → 6 (the family retro-seals ride the same fixture).
@@ -963,6 +970,7 @@ expectThrow("milestone build fails closed on a purchase without its amount", () 
     lpItems: [],
     liveMemberCount: null,
     liveInflowAggregateRaw: null,
+    liveArtifactRevenueRaw: null,
   }),
 );
 
@@ -1495,7 +1503,7 @@ check(
     feed.milestones !== null &&
     feed.milestones.sealed.length === 6 &&
     feed.milestones.sealed[0]!.milestoneId === "first-seat" &&
-    feed.milestones.approaching.length === 8 &&
+    feed.milestones.approaching.length === 9 &&
     feed.milestones.approaching.every(
       (a) => typeof (a as { family?: unknown }).family === "string",
     ) &&

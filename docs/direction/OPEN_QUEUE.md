@@ -85,6 +85,22 @@
 > is lines not yet indexed. ③ REPLIT ÉCART 1: the dossier's mint tally was
 > MY arithmetic slip — corrected dated (6 Founder + 11 Community = 17; the
 > server and the chain were right from cycle one; zero code change).
+> **▶ THE FOUNDER'S TWO ANSWERS + BUILD [this commit] (2026-07-22): ① "oui en
+> bas, pleine largeur, sous le feed" — the milestones panel renders FULL WIDTH
+> BELOW the feed (the rail is dead; his word closed my rail argument; the
+> density pass d3fe4b4 holds). ② "prix ok" — THE PATRONAGE LADDER:
+> archive-usdc rungs $100→$10k (71 defs, guard re-pinned; approaching lanes
+> 8→9); the current figure = the LIVE price×minted read (the /economy card's
+> own authority — never a false zero from the unindexed payment lane); v1 is
+> APPROACHING-ONLY (a live-crossed rung is NOTED, never sealed without a
+> transaction anchor — the anchoring law).**
+> - 🔴 **AW-5 — THE ARCHIVE PAYMENT WALLET (chain-discovered 2026-07-22, mint
+>   receipt 0x47c9f7fc…99f6): `0xe4178521946d2c54e2a2c5b154aae07319bbd56f`
+>   receives the artifact patronage USDC and sits in NO registry today.**
+>   The founder NAMES this wallet; then its own slice indexes the archive
+>   payment lane (the heartbeat-completeness invariant), the patronage rungs
+>   gain transaction ANCHORS and can SEAL, and the wallet joins the address
+>   book (dossier §2/§3).
 > **▶ A1+A2+A3+A4 BUILT + COMMITTED [this commit] (2026-07-22 — full record in
 > SESSION_STATE's arc entry):** the Founder Private Wallet in the founder set (7 mints
 > flip at the next cycle) · treasury founder-funding attribution + sentences · feed

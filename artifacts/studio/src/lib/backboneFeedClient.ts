@@ -127,7 +127,8 @@ export type ServedMilestoneKind =
   | "burn-syn"
   | "sources-created"
   | "lp-acts"
-  | "archive-count";
+  | "archive-count"
+  | "archive-usdc";
 export const SERVED_MILESTONE_KINDS: readonly ServedMilestoneKind[] = [
   "seats",
   "usdc",
@@ -137,6 +138,7 @@ export const SERVED_MILESTONE_KINDS: readonly ServedMilestoneKind[] = [
   "sources-created",
   "lp-acts",
   "archive-count",
+  "archive-usdc",
 ];
 
 /** M-EVO-1: the §2 family lanes (MILESTONE_SYSTEM_EVOLUTION.md). */
@@ -156,6 +158,7 @@ export const MILESTONE_FAMILY_BY_KIND: Record<ServedMilestoneKind, ServedMilesto
   "sources-created": "referral",
   "lp-acts": "liquidity",
   "archive-count": "archive",
+  "archive-usdc": "archive",
 };
 export const MILESTONE_FAMILY_LABEL: Record<ServedMilestoneFamily, string> = {
   membership: "Membership",

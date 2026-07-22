@@ -896,12 +896,11 @@ export function LiveActivityFeed({
         </div>
       ) : null}
 
-      {/* S7-d COMPOSITION: fluid full width — the feed is the main column;
-          the milestones account + methodology ride a sticky rail on wide
-          screens (columns multiplied, never one stretched); single natural
-          stack below xl (feed first — WORK-FIRST order intact). */}
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_400px] xl:items-start">
-      <div className="min-w-0">
+      {/* PLACEMENT (founder order 2026-07-22, "tu mets en bas les
+          milestones" — his word closes my rail argument): the feed runs
+          full width; the milestones account renders BELOW it, full width,
+          then the methodology. Fluid, no page cap (S7-d). */}
+      <div>
       {/* Z3 — THE FEED FIRST: newest → oldest, date-grouped, paged. */}
       {loading || scan === null ? (
         <p className="text-sm text-muted-foreground py-6">Reading the chain…</p>
@@ -959,9 +958,9 @@ export function LiveActivityFeed({
 
       </div>
 
-      {/* Z4+Z5 — the rail: the canonical account + the methodology, beside
-          the work at xl (sticky), after it below. */}
-      <aside className="min-w-0 xl:sticky xl:top-16 xl:max-h-[calc(100vh-5rem)] xl:overflow-y-auto xl:pr-1">
+      {/* Z4+Z5 — the canonical account + the methodology, FULL WIDTH below
+          the work (founder placement order, 2026-07-22). */}
+      <div className="mt-8">
       {served?.milestones ? (
         <MilestonesPanel
           milestones={served.milestones}
@@ -1012,7 +1011,6 @@ export function LiveActivityFeed({
           </p>
         </Card>
       </details>
-      </aside>
       </div>
     </div>
   );

@@ -91,11 +91,22 @@ the headline. Every new seal: gold flash line in the live feed + its painted car
 ## 4. THE SLICES
 
 > **STATUS 2026-07-22: M-EVO-1 ✅ + M-EVO-2 ✅ BUILT (AW-4 GO; one cycle with the
-> A-arc; backbone guard 160). RESERVED, dated, never re-invent: commissions-paid
-> + second-generation ladders (the sale-lane raw input carries no commission
-> field yet — its own input-widening micro-slice); PROTOCOL-TIME anniversaries
-> (v2); the celebration layer = M-EVO-3 (own cycle); alias/ramp/nft families
-> ride their modules (law 8).**
+> A-arc; backbone guard 160). PLACEMENT (founder order, same day): the panel
+> renders FULL WIDTH BELOW the feed — the rail experiment is dead. + THE
+> PATRONAGE LADDER (founder "prix ok"): 66 → 71 defs — archive-usdc rungs
+> $100/$500/$1k/$5k/$10k "of artifact patronage", current = the LIVE
+> price×minted read (the /economy card's own authority; never a false zero
+> from the unindexed payment lane); v1 is APPROACHING-ONLY — a live-crossed
+> rung is NOTED, never sealed without a transaction anchor. 🔴 NEW WALLET
+> DISCOVERED (chain receipt, mint tx 0x47c9f7fc…99f6): artifact payments go
+> to `0xe4178521946d2c54e2a2c5b154aae07319bbd56f` — in NO registry today.
+> FOUNDER NAMES IT; then its own slice indexes the archive payment lane
+> (heartbeat-completeness), the patronage rungs gain ANCHORS and can SEAL.
+> RESERVED, dated, never re-invent: commissions-paid + second-generation
+> ladders (the sale-lane raw input carries no commission field yet — its own
+> input-widening micro-slice); PROTOCOL-TIME anniversaries (v2); the
+> celebration layer = M-EVO-3 (own cycle); alias/ramp/nft families ride
+> their modules (law 8).**
 
 | # | Slice | Content | Deploy |
 |---|---|---|---|
