@@ -31,6 +31,19 @@
 >   cycle carries the whole A1+A2+A3+A4 arc** (no migration, all additive/fail-closed;
 >   each cycle costs the founder hours). Only A5 keeps its own cycle (real migration —
 >   never batched).
+> - 🔴 **AW-4 — THE MILESTONE EVOLUTION (founder order 2026-07-22, post-GO: "une
+>   dizaine de milestones… laughable; pense full picture, 9 ères, Alias/Swap/NFT/
+>   Marketplace à venir; entreprise + psychologie + membres contents").** THE DESIGN IS
+>   ENGRAVED: `docs/reference/MILESTONE_SYSTEM_EVOLUTION.md` — the 8-law constitution
+>   (endless ladders · density curve · every milestone NAMED · monotonic-only ·
+>   retro-seal at true anchors · the celebration pipeline: line+notification+painted
+>   card+Chronicle candidate · recognition never cash · the evolutive family registry:
+>   a future module ships WITH its milestone family) + the §2 ladders (~70 defs:
+>   seats→1M FINAL SEAT with era ends as rungs · USDC→$100M · fire acts + %-of-supply ·
+>   referral incl. the second-generation queen proof · liquidity acts · archive ·
+>   reserved Alias/Ramp/NFT/Marketplace families) + M-EVO-1/2/3 slices. FOUNDER GATE:
+>   the milestone NAMES/labels are public copy — the §2 ladder is on his screen; his
+>   GO opens M-EVO-1+2 (one cycle).
 > **▶ A1+A2+A3+A4 BUILT + COMMITTED [this commit] (2026-07-22 — full record in
 > SESSION_STATE's arc entry):** the Founder Private Wallet in the founder set (7 mints
 > flip at the next cycle) · treasury founder-funding attribution + sentences · feed

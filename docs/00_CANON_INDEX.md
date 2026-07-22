@@ -60,6 +60,7 @@ construire la slice correspondante, jamais au boot.
 | `docs/reference/CHRONICLE_LIVING_NEWSROOM.md` | Le Chronicle comme newsroom AAA (on-chain + off-chain document-backed, preuve durable hash+doc+lien officiel, intelligence de détection). | Le newsroom Chronicle (B1/future) |
 | `docs/reference/LIVING_NOTIFICATION_LAYER.md` | Ce que NOTIF-1 (déjà scellé en prod) devient : catégories A/B/C/D, moteur de préférences, inventaire complet des événements auto. `never-message-first = externe uniquement`. | La croissance NOTIF-1 (future) |
 | `docs/reference/WALLET_TRACKING_AND_ACTIVITY_REBUILD.md` | Le dossier wallet-tracking + refonte /activity (2026-07-22) : le mécanisme 3-couches de l'origine (known-addresses → founder-actions → enrichEvent, Founder en OR, TAGGED_TRANSACTIONS off-chain), le carnet d'adresses vérifié, les 17 mints résolus, les 6 trous, les rulings fondateur (business-first · Founder majuscule+or · financement-Founder=avance) et l'ordre A0→A5. | L'arc registre d'adresses + newsroom /activity (en cours) |
+| `docs/reference/MILESTONE_SYSTEM_EVOLUTION.md` | La constitution des milestones (2026-07-22) : les 8 lois (ladder sans fin · courbe de densité · chaque jalon nommé · monotone · retro-seal aux vrais ancrages · pipeline de célébration · reconnaissance jamais cash · registre évolutif par famille), les familles/échelles (~70 défs → 1M de sièges, familles réservées Alias/Ramp/NFT/Marketplace) et l'ordre M-EVO-1→3. | Les slices M-EVO (milestones v2) |
 
 ## TIER 1 — Vue holistique, plan & canonical (CHARGER AU BOOT)
 
