@@ -2,6 +2,48 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 📌 THE 2026-07-22 EVENING HANDOFF (DONE-IS-DONE §④ — the next session
+> resumes HERE in one read).**
+> - **(a) LIVE / SEALED IN PROD:** everything through cycle `1bce58e` (Replit
+>   green, founder-pasted report: the /activity NEWSROOM + A2 pagination +
+>   Founder Private Wallet in the founder set — prod battery clean; two écarts
+>   diagnosed by Replit, both answered below). Earlier same day: the whole
+>   K3 arc + console composition + the one-authority/founder-facet cycle
+>   (`ede59aa`) + the docs/wireframe seal (`c1a57a1`).
+> - **(b) DEPLOY BACKLOG — ONE Replit paste carries all three (server +
+>   client, NO migration, NO install):** `4b90c4e` M-EVO-1+2 (milestones
+>   11→66 defs / 6 families, retro-seal at true anchors, panel v2 family
+>   lanes; backbone guard 160; 3 adversarial-workflow findings killed
+>   pre-commit incl. whole-history pagination via buildPublicFeedWithLines +
+>   pure sliceFeedPage) · `dcfc0de` the harmony pass (ONE serif per page ·
+>   era band one face/size · SERVED line wins the merge dedup → a fresh
+>   founder burn wears its gold chip immediately — Replit écart 2 · dossier
+>   mint tally corrected dated 6 Founder + 11 Community — écart 1, the
+>   server was right) · `f3e5fb8` FULL-SCREEN restored (the page cap is
+>   dead; fluid + feed main column + sticky 400px milestones/methodology
+>   rail at xl; rig-measured 1097+400 @1600px). The ready-to-paste Replit
+>   prompt lives in the chat and re-derives trivially from the three
+>   commit messages.
+> - **(c) FOUNDER-PENDING:** nothing on the arc. Parked ledger unchanged
+>   (Q35 legal set · Q38-Q40 · Q42 remnants · Q32/MVP-final).
+> - **(d) NEXT, in order:** the deploy paste + founder's living seal on
+>   /activity → M-EVO-3 (the milestone celebration layer: painted card +
+>   share + notification-on-seal — own cycle) → A5 (the off-chain purpose
+>   ledger — ⚠ MIGRATION, own cycle) → K4 (no-seat promoter reach, decision
+>   at its gate) → P (press kit — all text on screen) → recognition/season
+>   (slice 6; read the gamification dossiers first).
+> - **(e) THE SESSION'S ENGRAVED LESSONS — now LAW in CLAUDE.md (THE
+>   PRE-HANDOFF GATE, 2026-07-22):** diff built vs approved mockup element
+>   by element + run the law list before EVERY founder-visible handoff,
+>   hotfixes included · fix founder-caught defects FROM the quoted law,
+>   never the symptom · recount every doc figure · context economy
+>   (subagent reads, one consolidated docs pass per slice). Agent-memory
+>   twins: `pre-handoff-gate-and-fix-altitude` · `wireframe-geometry-binds`
+>   · `business-first-true-urgency-allowed` (the two red lines) ·
+>   AW-1/2/3+4 all closed in OPEN_QUEUE. Durable dossiers:
+>   `WALLET_TRACKING_AND_ACTIVITY_REBUILD.md` ·
+>   `MILESTONE_SYSTEM_EVOLUTION.md` (never re-search either).
+
 > **▶ ⚖️ THE DONE-IS-DONE TRUTH WAVE (founder order 2026-07-19 — the Settings
 > "Notifications Coming later" fossil, a day after notifications sealed live:
 > "on avance et tu nous fais reculer — insoutenable"). COMMITTED [this commit].**

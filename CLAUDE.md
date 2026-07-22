@@ -138,6 +138,25 @@ pattern: every pre-C5 page kept announcing the dead era to Google). Enforcement:
 `guard-era-drift` (studio) + `source-status-truth:guard` (api) go red on the vocabulary
 class; the rule covers what no pattern can name.
 
+**THE PRE-HANDOFF GATE (founder, permanent, 2026-07-22 — the /activity triple-failure
+lesson: type drift off the approved mockup · a hotfix page-cap violating the engraved
+full-screen law · a truth-doc arithmetic slip; "90% de mon temps et mon argent à te
+corriger — inadmissible").**
+① Before ANYTHING founder-visible — previews, deploy prompts, AND hotfixes made under
+founder correction — Claude Code diffs the built surface against the approved mockup
+ELEMENT BY ELEMENT (font face + size per element · width behavior · meta-to-text
+proximity) AND runs the change against the engraved-law list (full-screen S7-d: never
+a page cap on an app surface, multiply columns · readability floor · WORK-FIRST ·
+one primary CTA · Visibility Law · the two business red lines). **A hotfix is never
+exempt — that is exactly where the page-cap fault was born.**
+② A founder-caught defect is fixed FROM the governing law — name it, quote it, design
+the fix from it — never from the complaint's surface symptom.
+③ Every figure written into any doc is RECOUNTED from its own list before commit.
+④ CONTEXT ECONOMY (the founder's context and credits are his money): bulk reading goes
+to subagents that return synthesis; targeted reads over whole-file reads; ONE
+consolidated docs update per slice; aim right the first time — a correction cycle
+costs real dollars and the weekly quota.
+
 ④ **A preview handed to the founder must be VISUALLY COMPLETE** (founder, 2026-07-14):
 every asset loading (DOM-level check — each visible `img` has `naturalWidth > 0`), both
 themes, desktop AND mobile — verified by Claude Code BEFORE handing the URL. A broken
