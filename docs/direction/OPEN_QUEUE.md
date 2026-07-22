@@ -400,10 +400,16 @@
 > with the live /join link. The whole K3.a arc proved itself on its first
 > real use: ask → checks → Approve-prefill → two signatures → live. The
 > heartbeat carries both events into the feed//activity on its own.
-> REMAINING ONE CLICK: "Record it — notify the member" on the queue card
-> (closes the request + rings Seat #3's bell). His own alert bell rings
-> from the NEXT new ask (no retro-ring for a pre-rider request — told
-> honestly).**
+> → **✅ THE LOOP CLOSED WHOLE (2026-07-22, the founder's own screenshots
+> — THE LIVING SEAL): "Record it" clicked — Seat #3's bell rang: "Your
+> referral link is active · to you · The founder signed the activation
+> on-chain. Commissions apply from your next introduction." (badge-check
+> icon, the whitelisted /referral link rendering as the explainer door).
+> The member's /referral shows SOURCE ACTIVE with the live link; the
+> read-model recorded past the signing blocks. THE ENTIRE K3.a ARC PROVED
+> END TO END ON ITS FIRST REAL USE: ask → live checks → Approve-prefill →
+> two founder signatures → closed-by-reality → the member's bell. K3.a is
+> CLOSED. His own alert bell rings from the NEXT new ask. NEXT: K3.b.**
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21

@@ -298,9 +298,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   block 90,919,914 — receipts re-verified from here via public RPC,
 >   SourceCreated + SourceStatusChanged emitted to the canonical
 >   registry) → "Source ACTIVE — the referral link is live." THE FIRST
->   MEMBER-REQUESTED ACTIVATION IN PROTOCOL HISTORY. Remaining one click:
->   "Record it — notify the member" (closes the request + rings Seat #3's
->   bell). His own bell rings from the NEXT new ask.**
+>   MEMBER-REQUESTED ACTIVATION IN PROTOCOL HISTORY — and the LOOP CLOSED
+>   WHOLE: "Record it" clicked, Seat #3's bell rang with the exact
+>   sealed copy (founder screenshots, 2026-07-22). K3.a is CLOSED end to
+>   end on its first real use. His own bell rings from the NEXT new ask.**
 > - **IN FLIGHT after K3.a's seal:** K3.b — the stacked create+activate
 >   signing session + the propose-pause/revoke doors (+ the recorded
 >   hardenings: the close verdict's live isActive() read before the bell ·
