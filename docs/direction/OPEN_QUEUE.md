@@ -388,10 +388,22 @@
 > create form with the REQUESTER's wallet through the audited
 > signing-material read + the buffered seam (the toast + the prefilled
 > form verified by his own eye: the maker-checker law working in prod).
-> He deliberately WAITS to sign until after the rider's seal ("on fait ça
-> proprement sans se hâter"). PENDING HIS SIGNATURES: create → activate →
-> "Record it" (the member's bell). His own alert bell rings from the NEXT
-> new ask (no retro-ring for a pre-rider request — told honestly).**
+> He deliberately WAITED to sign until after the rider's seal ("on fait ça
+> proprement sans se hâter"). → **✅ SIGNED AND CHAIN-VERIFIED (2026-07-22
+> — THE FIRST MEMBER-REQUESTED SOURCE ACTIVATION IN PROTOCOL HISTORY):
+> the founder signed BOTH acts for Seat #3's wallet (0x03e9…c6d0, source
+> 0x4fa3bd06…d472dd) — createSource tx 0x36b2…61c7 block 90,919,905 +
+> setSourceStatus(active) tx 0x645b…17ea block 90,919,914, both SUCCESS
+> to the canonical registry, SourceCreated + SourceStatusChanged emitted
+> (receipts re-verified from here via public RPC — never trusted on
+> word). The console shows "Source ACTIVE — the referral link is live"
+> with the live /join link. The whole K3.a arc proved itself on its first
+> real use: ask → checks → Approve-prefill → two signatures → live. The
+> heartbeat carries both events into the feed//activity on its own.
+> REMAINING ONE CLICK: "Record it — notify the member" on the queue card
+> (closes the request + rings Seat #3's bell). His own alert bell rings
+> from the NEXT new ask (no retro-ring for a pre-rider request — told
+> honestly).**
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21

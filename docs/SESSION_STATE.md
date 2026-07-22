@@ -291,12 +291,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   auth-zone at the exact expected 1172 · activation pair proven · engine
 >   self-healed ok=2, headBlock 90,919,346→90,919,661). Every new ask now
 >   rings the founder_root bells in the ask's own transaction. DEPLOY
->   BACKLOG: EMPTY. — AND THE FIRST REAL ASK IS IN: Seat #3, all checks
->   green; the founder's Approve filled the create form with the
->   requester's wallet (seam + audited read proven in prod by his own
->   screenshots). He waits deliberately; PENDING: his two signatures
->   (create → activate) + "Record it" (the member's bell). His own bell
->   rings from the NEXT new ask (pre-rider requests never retro-ring).**
+>   BACKLOG: EMPTY. — AND THE FIRST REAL ASK COMPLETED THE WHOLE ARC:
+>   Seat #3 asked → checks green → the founder's Approve prefilled the
+>   form (seam + audited read proven in prod) → he SIGNED BOTH ACTS
+>   (createSource 0x36b2…61c7 block 90,919,905 · activation 0x645b…17ea
+>   block 90,919,914 — receipts re-verified from here via public RPC,
+>   SourceCreated + SourceStatusChanged emitted to the canonical
+>   registry) → "Source ACTIVE — the referral link is live." THE FIRST
+>   MEMBER-REQUESTED ACTIVATION IN PROTOCOL HISTORY. Remaining one click:
+>   "Record it — notify the member" (closes the request + rings Seat #3's
+>   bell). His own bell rings from the NEXT new ask.**
 > - **IN FLIGHT after K3.a's seal:** K3.b — the stacked create+activate
 >   signing session + the propose-pause/revoke doors (+ the recorded
 >   hardenings: the close verdict's live isActive() read before the bell ·
