@@ -12,17 +12,22 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   earlier: cycle `1bce58e` (A-arc: newsroom v1 + A2 pagination + the
 >   Founder Private Wallet in the founder set + founder-funding treasury
 >   attribution) · the K3 arc + console composition · `ede59aa`.
-> - **(b) DEPLOY BACKLOG — ONE Replit paste (server + client, NO migration,
->   NO install), prod safe meanwhile:** `0a421bf` (docs: the PRE-HANDOFF
->   GATE law + handoff) · `d3fe4b4` (the BREATHING pass: facts beside the
->   sentence in muted mono · roomier cards/groups · calmer panel) ·
->   `f98798f` (FOUNDER ORDERS: milestones FULL WIDTH BELOW the feed — the
->   rail is dead · THE PATRONAGE LADDER archive-usdc $100→$10k, 71 defs,
->   9 approaching lanes, current = the live price×minted authority,
->   v1 approaching-only pending anchors · AW-5 opened). Verify list for the
->   paste: milestones below the feed full width · breathing lines with mono
->   facts · patronage bar "35.50 / 100 USDC of patronage" · 71 defs /
->   guard 160 · everything from f3e5fb8 holds.
+> - **(b) ✅ SEALED IN PROD `f98798f` (Replit green 2026-07-22 evening,
+>   founder-pasted report — the WHOLE backlog in one cycle):** 11/11 blobs ·
+>   byte-identity (entry `index-DEbYBoD7.js` d8b432a1… · console 8155bb67…) ·
+>   backbone 160 + auth-zone 1191 + studio chain green in prod context ·
+>   milestones FULL WIDTH BELOW the feed (zero grid-rail class in the served
+>   bundle) · the breathing pass live (facts in muted mono beside the
+>   sentence) · the patronage bar serving `currentUsdcRaw="35500000"` →
+>   "35.50 / 100 USDC of patronage" · 71 defs confirmed at source
+>   (membership 19 · fire 16 · economy 15 · archive 11 · referral 6 ·
+>   liquidity 4) · pagination 86/86 over 7 cursor pages, terminal null ·
+>   17 mints = 6+11 · Burn #9 gold Founder chip · NEW VERIFICATION CLASS:
+>   Replit ran PLAYWRIGHT visual assertions desktop 1440 + mobile 402 (all
+>   green, screenshots archived) · engine ok=3/0/0, headBlock advancing,
+>   6/6 units. HONEST NOTE (by design): approaching serves 8 rows for 9
+>   lanes — the first-mint lane is FULLY sealed (both firsts), so it has no
+>   next row. **DEPLOY BACKLOG: EMPTY. Tree clean at `f7598ab`.**
 > - **(c) FOUNDER-PENDING:** 🔴 **AW-5 — name the archive payment wallet
 >   `0xe4178521946d2c54e2a2c5b154aae07319bbd56f`** (chain-discovered: it
 >   receives the artifact patronage USDC; in NO registry; once named, its

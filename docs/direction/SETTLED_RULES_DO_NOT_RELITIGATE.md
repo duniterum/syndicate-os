@@ -110,6 +110,19 @@ in the studio gate.)
 
 ---
 
+### 7. BUSINESS-FIRST DISPLAY → **SETTLED** (founder ruling, 2026-07-22, emphatic —
+"on est un business pas une charité; si c'est légal on fait; RIEN qui nous bloque").
+Everything TRUE and legal is SHOWN and SELLS: live auto-updating feeds, historical
+FOMO ("N of 333 Genesis seats — Chapter I seals forever"), milestone progress bars,
+the era-rate band (factual bytecode disclosure — AW-2), bold CONVERSION-register
+marketing. The ONLY red lines an agent may raise (each flagged ONCE, then proceed):
+① a promise of financial GAIN (yield/ROI/passive income — the securities shield);
+② a chain-refutable claim (no invented promos — no list price exists; the FIRST
+purchase decides the seat). Agent caution presented as "our laws" is the
+anti-blocking disease — CANON_LOI_ANTIBLOCAGE applies. Prior narrower pins (the
+H2-⑫ era-meter line-on-crossing rule) were founder-overridden dated 2026-07-22;
+the crypto-lawyer pass at Phase 5 confirms the money-adjacent items as planned.
+
 ## For Claude (advisor) and Claude Code — behavioral rule
 
 **Do NOT re-flag** "earn / referral / commission / reward / season / cagnotte / XP" as doctrine
