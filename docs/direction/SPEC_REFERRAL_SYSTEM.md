@@ -351,11 +351,11 @@ La doctrine dit : **onze axes. Le capital en est UN. Jamais le trône.**
 |---|---|
 | le code humain derrière le hash | **table : `alias` ↔ `wallet` ↔ `sourceId`** |
 | le canal (`&via=`) | **log de canal** — clic, horodatage, conversion |
-| qui a demandé sa source, quand, si c'est approuvé | **file de demandes** *(jusqu'à l'ÉMETTEUR)* |
+| qui a demandé sa source, quand, si c'est approuvé | **file de demandes** *(jusqu'à l'ÉMETTEUR)* — ✅ CONSTRUITE (K3.a, 2026-07-22 : activation_request + la file de revue live) |
 | clics · conversions · taux de transformation | **analytics** |
 | le standing Connector d'un membre | **dérivé de l'indexeur d'events** |
 
-> ## **RIEN DE TOUT ÇA N'EXISTE. C'est la vraie slice à construire.**
+> ## **~~RIEN DE TOUT ÇA N'EXISTE.~~ RE-TRUED 2026-07-22 : le log de canal, les analytics, le standing Connector ET la file de demandes SONT construits et scellés (R3 · R5 · K3.a). Restent : la table alias (IDENTITY-ALIAS, parquée) et l'ÉMETTEUR R7.**
 > **Le contrat, lui, est déjà là.**
 
 ---

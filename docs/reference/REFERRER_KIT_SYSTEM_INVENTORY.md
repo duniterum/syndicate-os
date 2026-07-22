@@ -466,10 +466,10 @@ Sources: [Wise referral](https://wise.com/gb/about/referral) · [Wise invite hel
 
 **(c) Admin-axis gaps nobody inventoried**
 
-18. No intake door: no surface where a member (or no-seat promoter) REQUESTS source activation — the Q42 review queue has no feed. "Confirmation without manual friction" starts with a request mechanism no report proposes.
-19. No friction map of today's actual flow (wallet obtained out-of-band → two founder signatures → MANUAL /join PAUSED check) — and no proposal to automate that fail-closed preflight server-side.
-20. Lifecycle doors missing: console proposes create/activate/promotion only — no propose-pause/propose-revoke door, no batch/multi-source signing session.
-21. No admin referrer intelligence: arbitrary-wallet standing lookup, per-source performance table (the Supa AdminAmbassadors analog), aggregate commission export for accounting/legal — all absent, unproposed.
+18. ✅ CLOSED (K3.a 2026-07-22, prod-sealed: the intake door lives on /referral; the queue has its feed). ORIGINAL: No intake door: no surface where a member (or no-seat promoter) REQUESTS source activation — the Q42 review queue has no feed. "Confirmation without manual friction" starts with a request mechanism no report proposes.
+19. ✅ ADDRESSED (K3.b 2026-07-22: the manual /join check DIED — the quote-refusal is a server-verified CODE gate). ORIGINAL: No friction map of today's actual flow (wallet obtained out-of-band → two founder signatures → MANUAL /join PAUSED check) — and no proposal to automate that fail-closed preflight server-side.
+20. ✅ CLOSED (K3.b 2026-07-22, prod-sealed: pause/revoke doors + the stacked signing session). ORIGINAL: Lifecycle doors missing: console proposes create/activate/promotion only — no propose-pause/propose-revoke door, no batch/multi-source signing session.
+21. ◐ 2 OF 3 CLOSED (K3.c 2026-07-22, prod-sealed: the per-source performance table + the screen-exact CSV live on /admin/sources · Performance). REMAINS OPEN: the arbitrary-wallet standing lookup. ORIGINAL: No admin referrer intelligence: arbitrary-wallet standing lookup, per-source performance table, aggregate commission export for accounting/legal — all absent, unproposed.
 22. Kit-asset governance: where admin-approved banners/copy live, versioning/retirement (the admin half of Notion's resource center) — plus terms-doc versioning (metadataHash pins terms v1; the re-hash/updateSourceTerms process when terms change is uninventoried).
 23. Reaching no-seat referrers: notification addressing is seat-only; no mechanism exists or was proposed for the promoter class the founder just ordered into the picture.
 

@@ -1,7 +1,7 @@
 // pages/admin/AdminHome.tsx
 //
 // Phase 2 — the admin home dashboard. TRUTH-FIRST: this file contains NO
-// fabricated figures. Business KPIs (revenue / packages / artifacts / members)
+// fabricated figures. Business KPIs (revenue / packages / artifacts)
 // are not wired to real reads yet, so they render as explicit "live reads
 // coming" preview cards — never a fake number. The live protocol-reality panel
 // (already real, from GET /api/protocol/reality) is dropped into `realitySlot`

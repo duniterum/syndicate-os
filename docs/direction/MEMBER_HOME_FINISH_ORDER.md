@@ -70,7 +70,7 @@ human-first copy; readability floor (no sub-12px); WORK-FIRST composition; ADR-0
 16. **M8 — opt-in Identity-Alias** over the seat + alias-resolver backend.
 17. **M2 — Referrer Kit v1** (living share card + QR) — wireframe.
 18. **Guide — member-aware deterministic corpus + first-minute onboarding greet** (zero-LLM).
-19. **"Request my source" flow + interim server-side queue** (the MVP-proof-metric mechanism).
+19. ✅ **"Request my source" flow + interim server-side queue** — SEALED IN PROD (K3.a `89057bb`, 2026-07-22: the /referral Ask-for-activation door + the live review queue + bells; proven the same day by Seat #3 first real activation).
 
 ### ⚪ Phase D — polish (end of arc)
 20. **HUMAN-FIRST jargon sweep** across /member.
