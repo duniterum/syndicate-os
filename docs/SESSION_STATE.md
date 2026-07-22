@@ -365,6 +365,25 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   **🚀 DEPLOY next cycle: pull main (HEAD `5695e47`+ or later), client
 >   only, NO migration, NO install; verify /activity's summary line +
 >   the Founder chip + the Membership chip.**
+> - **✅ THE RIDERS SEALED IN PROD `e74dfe1` (Replit green 2026-07-22:
+>   byte-identity, the summary template proven in the served bytes, the
+>   Founder chip + Membership lane served). → THE FOUNDER'S DOUBLE CATCH,
+>   FIXED + COMMITTED `cdddf4a` (server + client — NEXT cycle): ① the
+>   summary's flag-split produced "12 seats" beside the homepage's 14 —
+>   KILLED: the seat figure now quotes THE SAME reality item the homepage
+>   headlines (financial.members.memberCount, live engine read; purchase
+>   events counted as events) — THE ONE-AUTHORITY RULE: any figure living
+>   on two surfaces must share one source, checked at build time; ② the
+>   Founder facet made COMPLETE: + archive pause/resume (kind-level
+>   ceremonial acts) + his LP adds/removes (actorLabel) + his archive
+>   mints (minterLabel NEW in the readmodel/projection from the same
+>   founderAddresses set — null pre-backfill, never guessed). Also the
+>   founder-ordered final-check agent sweep re-trued 6 stale docs
+>   (`dbe81d2`: BACKLOG source-request-queue → Scellé · finish-order
+>   step 19 ✅ · SPEC §⑩ · inventory #18-#21 · DESIGN_ROADMAP entry+tick+
+>   sprawl · AdminHome comment). 🚀 DEPLOY next cycle: `cdddf4a`
+>   (server + client, NO migration, NO install — the backbone re-labels
+>   mints on its own cycles).**
 > - **IN FLIGHT after the riders' seal:** K4 (the no-seat promoter reach
 >   decision at its gate) · P (press kit — all text on screen) ·
 >   recognition/season (slice 6: the two-layer law; read the dossiers
