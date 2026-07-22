@@ -279,11 +279,18 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   + THE FOUNDER'S ASK-ALERT RIDER (his order, same cycle): every new ask
 >   also rings the founder_root wallets' own bells (server-resolved
 >   recipients, link-less by Q39; auth-zone → 1172).
->   **🚀 DEPLOY — ⚠ REAL MIGRATION, its own cycle, NEVER batched: Replit
->   pulls main, runs `pnpm --filter @workspace/db push` (ONE new table),
->   deploys server+client (NO pnpm install), reports. The founder's living
->   seal: his /referral eligibility card + the queue's honest empty state
->   on /admin/sources + his own bell ringing on the first real ask.**
+>   **✅ K3.a SEALED IN PROD `89057bb` (Replit green 2026-07-22,
+>   founder-pasted report): 27/27 blobs · the migration proven BOTH sides
+>   (activation_request additive, 10 cols, CHECK, 3 indexes — dev's known
+>   drizzle false-drift hand-applied + re-verified; prod's publish applied
+>   whole) · gates in prod (feature-truth 560 · api 2408) · byte-identity
+>   exact · the activation route matrix conforms point by point · engine
+>   ok=2 clean, headBlock 90,917,889→90,918,191 · feed 78. ⚠ DEPLOY
+>   BACKLOG: the ask-alert rider `13860ea` (server-only, NO migration, NO
+>   install) — the founder handed Replit the pre-rider prompt; one quick
+>   pull+deploy puts his bell live (members can already ask). His living
+>   seal pending: the /referral card · the queue's empty state · the bell
+>   on the first ask (rider).**
 > - **IN FLIGHT after K3.a's seal:** K3.b — the stacked create+activate
 >   signing session + the propose-pause/revoke doors (+ the recorded
 >   hardenings: the close verdict's live isActive() read before the bell ·

@@ -355,6 +355,27 @@
 >   close-verdict isActive hardening + the own-figures enrichment + the
 >   operator-bell widening if wanted), then K3.c (per-source performance
 >   + CSV).
+> **✅ K3.a SEALED IN PROD `89057bb` (Replit green 2026-07-22,
+> founder-pasted report — the dedicated MIGRATION cycle): 27/27 blobs
+> byte-verified · the migration PROVEN both sides (activation_request
+> created additive, 10 columns, the status CHECK, 3 indexes, 0 rows, no
+> existing table touched; dev hit the known drizzle false-drift on the 2
+> secondary indexes — applied by hand then re-verified column by column;
+> prod's publish applied it whole, read-verified) · full typecheck green ·
+> gates green IN PROD CONTEXT (feature-truth → 560 · api 2408 PASS with
+> the auth zone covering the activation routes) · byte-identity exact
+> (entry `index-DmYtYH5z.js` 9c27af0b… · console `OperatorConsole-
+> DGoKZR6t.js` 0b906582…) · THE ACTIVATION MATRIX CONFORMS POINT BY POINT
+> (GET anon → 200 honest S1 nulls · POST no-session → 401 · the 3
+> operator routes → 401) · wall + public 200s · engine healthy ok=2/
+> partial=0/failed=0, headBlock 90,917,889→90,918,191, feed 78. Replit's
+> verdict: "cycle K3.a scellé et prouvé en production."
+> ⚠ DEPLOY BACKLOG: the ask-alert RIDER `13860ea` (server-only, no
+> migration, no install) — the founder gave Replit the pre-rider prompt;
+> the rider rides the NEXT pull (its own quick cycle if the founder wants
+> the bell NOW — members can already ask). Founder living seal pending:
+> his /referral card · the queue's empty state · the bell on the first
+> real ask (needs the rider live).**
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21
