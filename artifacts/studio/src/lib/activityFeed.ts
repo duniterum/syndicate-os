@@ -104,6 +104,15 @@ export interface ActivityItem {
    * explorer verify anchor ("read the record →" into /chronicle#id).
    */
   readHref?: string;
+  /**
+   * THE SEAT LAW on the purchase lane (founder-caught 2026-07-22): the first
+   * purchase SEATS a member; repeats EXPAND the footprint. true = a first
+   * seat · false = a footprint expansion · null/absent = the engine never
+   * emitted the flag (early records — reported as such, never inferred).
+   * Carried so the SUMMARY can count seats and expansions separately —
+   * "26 seats" for 26 purchase events was a public truth bug.
+   */
+  firstSeat?: boolean | null;
 }
 
 export interface ActivityScan {
@@ -180,6 +189,9 @@ export async function scanRecentActivity(
               logIndex: log.logIndex ?? 0,
               dateUtc: "",
               memory: true,
+              // The event's own flag rides the item (the seat law: the
+              // summary must never count an expansion as a seat).
+              firstSeat: d.args.firstSeat === true,
             });
           } else if (t0 === TOPICS.transfer && log.address.toLowerCase() === addrs.synToken.toLowerCase()) {
             const d = decodeEventLog({ abi: FEED_ABI, eventName: "Transfer", data: log.data, topics: log.topics });

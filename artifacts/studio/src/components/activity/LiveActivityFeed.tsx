@@ -216,6 +216,18 @@ export function LiveActivityFeed({
           logIndex: l.logIndex,
           dateUtc: l.isoDayUtc,
           memory: true,
+          // The seat law rides into the summary: the served bucket says
+          // first-seat / expansion / never-emitted — carried verbatim,
+          // never inferred (founder-caught 2026-07-22). Only the purchase
+          // variant carries the flag (the discriminated union narrows).
+          firstSeat:
+            l.kind === "purchase"
+              ? l.firstSeatBucket === "true"
+                ? true
+                : l.firstSeatBucket === "false"
+                  ? false
+                  : null
+              : undefined,
         };
       });
     // H2-⑭ — Chronicle promotions join from the committed register (CHR-1:
@@ -386,12 +398,28 @@ export function LiveActivityFeed({
         </div>
       ) : null}
 
-      {/* Summary row — counts WITHIN each source's stated coverage only. */}
+      {/* Summary row — counts WITHIN each source's stated coverage only.
+          THE SEAT LAW (founder-caught 2026-07-22): a purchase event is not a
+          seat — the first purchase SEATS, repeats EXPAND the footprint. The
+          summary counts the three truths separately, from the events' own
+          flags (early engines that never emitted the flag are reported as
+          such, never inferred). "26 seat(s)" for 26 purchases was a public
+          truth bug. */}
       {scan && !onlyKinds ? (
         <p className="text-[11px] text-muted-foreground mb-3" data-testid="activity-summary">
-          {servedComplete
-            ? `Across the indexed history: ${merged.filter((i) => i.kind === "seat").length} seat(s) · ${merged.filter((i) => i.kind === "burn").length} burn(s) · ${merged.filter((i) => i.kind.startsWith("source-")).length} referral event(s).`
-            : `In this window: ${scan.items.filter((i) => i.kind === "seat").length} seat(s) · ${scan.items.filter((i) => i.kind === "burn").length} burn(s) · ${scan.items.filter((i) => i.kind.startsWith("source-")).length} referral event(s).`}
+          {(() => {
+            const pool = servedComplete ? merged : scan.items;
+            const seatItems = pool.filter((i) => i.kind === "seat");
+            const firsts = seatItems.filter((i) => i.firstSeat === true).length;
+            const expansions = seatItems.filter((i) => i.firstSeat === false).length;
+            const early = seatItems.length - firsts - expansions;
+            const burns = pool.filter((i) => i.kind === "burn").length;
+            const refs = pool.filter((i) => i.kind.startsWith("source-")).length;
+            const seatPart =
+              `${firsts} seat(s) sealed · ${expansions} footprint expansion(s)` +
+              (early > 0 ? ` · ${early} early purchase record(s)` : "");
+            return `${servedComplete ? "Across the indexed history" : "In this window"}: ${seatPart} · ${burns} burn(s) · ${refs} referral event(s).`;
+          })()}
         </p>
       ) : null}
 
