@@ -551,8 +551,17 @@
 > serving). Replit's verdict: "le Dashboard console vit, les Sources &
 > referrals passent en 5 sous-onglets, et la performance par source avec
 > export CSV est en ligne derrière la porte admin." **⚠ DEPLOY BACKLOG
-> (batchable, client-only): the seat-law summary fix `225f64d` (landed
-> after this cycle's pull) — rides the NEXT pull.**
+> (batchable, client-only — ONE next cycle carries both): ① the seat-law
+> summary fix `225f64d` (founder-caught: "26 seat(s)" counted purchase
+> EVENTS; /activity's summary now counts seats sealed · footprint
+> expansions · early records from the events' own flags; the sweep
+> proved milestones + every other surface already honest — burns and
+> referral-event counts verified unit-true, dedupe verified) · ② the
+> Founder facet + the Membership lane `5695e47` (his orders: a "Founder"
+> actor chip — deployments · registry lifecycle · treasury · chronicle ·
+> his burns via the ledger's own senderLabel, never guessed; the
+> purchase-lane chip renamed "Membership" — seats AND expansions;
+> Footprint keeps the rises). Gates green on both.**
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21

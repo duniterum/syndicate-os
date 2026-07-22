@@ -346,10 +346,30 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   migration, NO pnpm install. The founder's living seal: /admin opens
 >   wired; /admin/sources opens on the queue tab; Performance shows his
 >   real sources; the CSV downloads the screen.**
-> - **IN FLIGHT after the console seal:** K4 (the no-seat promoter reach
+> - **✅ THE CONSOLE SLICE SEALED IN PROD `c08bbc8` (Replit green
+>   2026-07-22: 20/20 blobs · operator-gate 2912 · auth-zone 1191 exact ·
+>   byte-identity `index-C_zxW2Cg.js` · /source-performance 401-walled ·
+>   the cleanest boot ok=2/0/0 · feed 80). Full record: OPEN_QUEUE.**
+> - **▶ THE 2026-07-22 EVENING RIDERS, COMMITTED (deploy backlog — ONE
+>   client-only cycle carries both, batchable, prod safe meanwhile):**
+>   ① `225f64d` — THE SEAT-LAW SUMMARY FIX (founder-caught in prod:
+>   "26 seat(s)" counted 26 PURCHASE EVENTS; the /activity summary now
+>   counts seats sealed · footprint expansions · early purchase records
+>   from the events' OWN firstSeat flags; the sweep proved milestones
+>   and every other surface already honest). ② `5695e47` — THE FOUNDER
+>   FACET + THE MEMBERSHIP LANE (his orders: a "Founder" actor chip —
+>   deployments · registry lifecycle · treasury · chronicle · his burns
+>   via senderLabel, never guessed; the purchase-lane chip renamed
+>   "Membership" — it holds seats AND expansions; Footprint keeps the
+>   rises). Gates green (tsc · 19 guards · build) on both riders.
+>   **🚀 DEPLOY next cycle: pull main (HEAD `5695e47`+ or later), client
+>   only, NO migration, NO install; verify /activity's summary line +
+>   the Founder chip + the Membership chip.**
+> - **IN FLIGHT after the riders' seal:** K4 (the no-seat promoter reach
 >   decision at its gate) · P (press kit — all text on screen) ·
 >   recognition/season (slice 6: the two-layer law; read the dossiers
->   first).
+>   first). FOUNDER-PENDING: nothing new on the arc — the parked ledger
+>   (Q35 · Q38-Q40 · Q42 remnants · Q32/MVP-final) stands as recorded.
 > - **FOUNDER-PENDING: NOTHING on the arc.** Parked as recorded: Q35 legal
 >   set · Q39/Q40/Q42 admin waves · Q32/MVP-final items · the deferred list.
 >   Taken-by-default (flagged, overridable): the dedicated PDF engine stays
