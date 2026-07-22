@@ -121,6 +121,8 @@ export interface PublicArchiveMintLine extends LineCommon {
   readonly quantityRaw: string;
   /** H2-P: the minter's SHORT FORM (null on pre-backfill rows — honest gap). */
   readonly minterShort: string | null;
+  /** The founder facet: Founder/Community per the readmodel's own set. */
+  readonly minterLabel: "Founder" | "Community" | null;
 }
 
 export interface PublicArchivePauseLine extends LineCommon {
@@ -410,6 +412,7 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
       // H2-P: the origin voice ("0x123…abcd archived First Signal"); null
       // on pre-backfill rows — an honest gap, never an invented actor.
       minterShort: shortForm(a.minterAddress),
+      minterLabel: a.minterLabel,
       blockNumber: a.blockNumber,
       blockTimestampSec: a.blockTimestampSec,
       isoDayUtc: a.isoDayUtc,

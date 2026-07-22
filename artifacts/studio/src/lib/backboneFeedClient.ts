@@ -86,6 +86,8 @@ export interface ServedArchiveMintLine extends ServedLineCommon {
   quantityRaw: string;
   /** H2-P: the minter's short form (null on pre-backfill rows). */
   minterShort: string | null;
+  /** The founder facet: Founder/Community per the served label, or null. */
+  minterLabel: "Founder" | "Community" | null;
 }
 
 export interface ServedArchivePauseLine extends ServedLineCommon {
@@ -341,6 +343,10 @@ function parseLine(raw: unknown): ServedFeedLine | null {
       artifactId: toInt(r.artifactId),
       quantityRaw: r.quantityRaw,
       minterShort,
+      minterLabel:
+        r.minterLabel === "Founder" || r.minterLabel === "Community"
+          ? r.minterLabel
+          : null,
     };
   }
   if (r.kind === "archive-pause") {

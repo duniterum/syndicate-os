@@ -108,6 +108,10 @@ export interface ArchiveMintItem {
    * pre-amendment rows until the founder-gated backfill runs).
    */
   readonly minterAddress: string | null;
+  /** THE FOUNDER FACET (2026-07-22): Founder/Community from the SAME
+   * founderAddresses set that labels burns and LP — null when the minter is
+   * unknown (pre-backfill rows; an honest gap, never a guessed actor). */
+  readonly minterLabel: SenderLabel | null;
   readonly blockNumber: number;
   readonly logIndex: number;
   readonly transactionHash: string;
@@ -366,6 +370,12 @@ export function buildProtocolEventReadModel(
       artifactId: a.artifactId,
       quantityRaw: a.quantityRaw,
       minterAddress: a.minter !== null ? a.minter.toLowerCase() : null,
+      minterLabel:
+        a.minter !== null
+          ? founderAddresses.has(a.minter.toLowerCase())
+            ? "Founder"
+            : "Community"
+          : null,
       blockNumber: a.blockNumber,
       logIndex: a.logIndex,
       transactionHash: a.transactionHash,

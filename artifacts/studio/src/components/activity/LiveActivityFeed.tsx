@@ -19,7 +19,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 import { Anchor, ExternalLink, RefreshCw } from "lucide-react";
-import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
+import {
+  useGetProtocolVerifyLinks,
+  useGetProtocolReality,
+} from "@workspace/api-client-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusPill } from "@/components/status-pill/StatusPill";
@@ -134,14 +137,18 @@ const FILTERS: { id: FilterId; label: string }[] = [
 function matches(item: ActivityItem, f: FilterId): boolean {
   if (f === "all") return true;
   if (f === "founder") {
-    // Kind-level founder acts (the canon says so per lane) + per-line
-    // proven founder burns. Seats/milestones/eras stay out (protocol
-    // facts / member acts — the founder's own purchases are not provable
-    // client-side and are never guessed).
+    // THE COMPLETE FOUNDER FACET (his sweep order 2026-07-22): kind-level
+    // founder acts (the canon says so per lane — deployments · registry
+    // lifecycle · treasury · chronicle promotions · the archive's
+    // ceremonial pause/resume) + per-line PROVEN acts via the server's own
+    // founderAddresses labels (his burns · his LP adds/removes · his
+    // archive mints). Seats/milestones/eras stay out (protocol facts /
+    // member acts — never guessed).
     return (
       item.kind === "deployment" ||
       item.kind === "chronicle-entry" ||
       item.kind === "treasury-move" ||
+      item.kind === "archive-pause" ||
       item.kind.startsWith("source-") ||
       item.founderAct === true
     );
@@ -161,6 +168,21 @@ export function LiveActivityFeed({
   showFilters?: boolean;
 }) {
   const { data } = useGetProtocolVerifyLinks();
+  // ONE authority for the seat figure — the SAME reality item the homepage
+  // headlines (financial.members.memberCount, the reconciled live engine
+  // read). The two surfaces can never diverge again. Fail-closed to null.
+  const { data: realityData } = useGetProtocolReality();
+  const liveSeatCount = (() => {
+    const item =
+      realityData?.groups?.financial?.find(
+        (i) => i.id === "financial.members.memberCount",
+      ) ?? null;
+    if (item === null || typeof item.value !== "string" || !/^[0-9]+$/.test(item.value)) {
+      return null;
+    }
+    const n = Number(item.value);
+    return Number.isSafeInteger(n) ? n : null;
+  })();
   const urlFor = (id: string) => data?.links?.find((l) => l.id === id)?.url ?? null;
   const explorerBase = (() => {
     const u = urlFor("membershipSaleV3");
@@ -252,9 +274,19 @@ export function LiveActivityFeed({
                   ? false
                   : null
               : undefined,
-          // The founder facet's per-line proof: the burn ledger's own
-          // senderLabel (window-scanned burns can't prove it and never join).
-          founderAct: l.kind === "burn" ? l.senderLabel === "Founder" : undefined,
+          // The founder facet's per-line proof (the founder's sweep order
+          // 2026-07-22, "check the FULL list"): the served labels the SERVER
+          // derives from its own founderAddresses set — burns (senderLabel),
+          // LP adds/removes (actorLabel), archive mints (minterLabel).
+          // Window-scanned lines can't prove an actor and never join.
+          founderAct:
+            l.kind === "burn"
+              ? l.senderLabel === "Founder"
+              : l.kind === "lp-add" || l.kind === "lp-remove"
+                ? l.actorLabel === "Founder"
+                : l.kind === "archive-mint"
+                  ? l.minterLabel === "Founder"
+                  : undefined,
         };
       });
     // H2-⑭ — Chronicle promotions join from the committed register (CHR-1:
@@ -425,27 +457,27 @@ export function LiveActivityFeed({
         </div>
       ) : null}
 
-      {/* Summary row — counts WITHIN each source's stated coverage only.
-          THE SEAT LAW (founder-caught 2026-07-22): a purchase event is not a
-          seat — the first purchase SEATS, repeats EXPAND the footprint. The
-          summary counts the three truths separately, from the events' own
-          flags (early engines that never emitted the flag are reported as
-          such, never inferred). "26 seat(s)" for 26 purchases was a public
-          truth bug. */}
+      {/* Summary row — ONE seat figure, ONE authority (founder-caught twice,
+          2026-07-22): the SEAT count quotes the SAME live engine
+          memberCount() the homepage headlines (the reality spine's
+          reconciled figure — the two surfaces can never diverge again);
+          purchase EVENTS are counted as events (the seat law: a repeat
+          purchase expands the footprint, it never seats). The flag-split
+          died: it produced "12 seats" beside the homepage's 14 — the exact
+          contradiction class this line exists to avoid. Fail-closed: no
+          live read → no seat claim, never an invented figure. */}
       {scan && !onlyKinds ? (
         <p className="text-[11px] text-muted-foreground mb-3" data-testid="activity-summary">
           {(() => {
             const pool = servedComplete ? merged : scan.items;
-            const seatItems = pool.filter((i) => i.kind === "seat");
-            const firsts = seatItems.filter((i) => i.firstSeat === true).length;
-            const expansions = seatItems.filter((i) => i.firstSeat === false).length;
-            const early = seatItems.length - firsts - expansions;
+            const purchases = pool.filter((i) => i.kind === "seat").length;
             const burns = pool.filter((i) => i.kind === "burn").length;
             const refs = pool.filter((i) => i.kind.startsWith("source-")).length;
-            const seatPart =
-              `${firsts} seat(s) sealed · ${expansions} footprint expansion(s)` +
-              (early > 0 ? ` · ${early} early purchase record(s)` : "");
-            return `${servedComplete ? "Across the indexed history" : "In this window"}: ${seatPart} · ${burns} burn(s) · ${refs} referral event(s).`;
+            const seatsClause =
+              liveSeatCount !== null
+                ? `Seats on-chain: ${liveSeatCount.toLocaleString("en-US")} (live engine read). `
+                : "";
+            return `${seatsClause}${servedComplete ? "Across the indexed history" : "In this window"}: ${purchases} purchase event(s) · ${burns} burn(s) · ${refs} referral event(s).`;
           })()}
         </p>
       ) : null}
