@@ -100,7 +100,10 @@
 >   The founder NAMES this wallet; then its own slice indexes the archive
 >   payment lane (the heartbeat-completeness invariant), the patronage rungs
 >   gain transaction ANCHORS and can SEAL, and the wallet joins the address
->   book (dossier §2/§3).
+>   book (dossier §2/§3). RIDER DECISION at the same gate (sweep-agent catch
+>   2026-07-22): this wallet ALSO minted 2 of the 17 artifacts (`0xe41…d56f`
+>   ×2, today labeled "Community") — once named, the founder rules whether
+>   those 2 mints relabel (protocol-wallet mint) or stay Community.
 > **▶ A1+A2+A3+A4 BUILT + COMMITTED [this commit] (2026-07-22 — full record in
 > SESSION_STATE's arc entry):** the Founder Private Wallet in the founder set (7 mints
 > flip at the next cycle) · treasury founder-funding attribution + sentences · feed

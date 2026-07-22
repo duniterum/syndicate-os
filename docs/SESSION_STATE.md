@@ -2,36 +2,40 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 📌 THE 2026-07-22 EVENING HANDOFF (DONE-IS-DONE §④ — the next session
-> resumes HERE in one read).**
-> - **(a) LIVE / SEALED IN PROD:** everything through cycle `1bce58e` (Replit
->   green, founder-pasted report: the /activity NEWSROOM + A2 pagination +
->   Founder Private Wallet in the founder set — prod battery clean; two écarts
->   diagnosed by Replit, both answered below). Earlier same day: the whole
->   K3 arc + console composition + the one-authority/founder-facet cycle
->   (`ede59aa`) + the docs/wireframe seal (`c1a57a1`).
-> - **(b) DEPLOY BACKLOG — ONE Replit paste carries all three (server +
->   client, NO migration, NO install):** `4b90c4e` M-EVO-1+2 (milestones
->   11→66 defs / 6 families, retro-seal at true anchors, panel v2 family
->   lanes; backbone guard 160; 3 adversarial-workflow findings killed
->   pre-commit incl. whole-history pagination via buildPublicFeedWithLines +
->   pure sliceFeedPage) · `dcfc0de` the harmony pass (ONE serif per page ·
->   era band one face/size · SERVED line wins the merge dedup → a fresh
->   founder burn wears its gold chip immediately — Replit écart 2 · dossier
->   mint tally corrected dated 6 Founder + 11 Community — écart 1, the
->   server was right) · `f3e5fb8` FULL-SCREEN restored (the page cap is
->   dead; fluid + feed main column + sticky 400px milestones/methodology
->   rail at xl; rig-measured 1097+400 @1600px). The ready-to-paste Replit
->   prompt lives in the chat and re-derives trivially from the three
->   commit messages.
-> - **(c) FOUNDER-PENDING:** nothing on the arc. Parked ledger unchanged
->   (Q35 legal set · Q38-Q40 · Q42 remnants · Q32/MVP-final).
-> - **(d) NEXT, in order:** the deploy paste + founder's living seal on
+> **▶ 📌 THE 2026-07-22 EVENING HANDOFF — FINAL (DONE-IS-DONE §④ — the next
+> session resumes HERE in one read; supersedes the earlier same-evening block).**
+> - **(a) LIVE / SEALED IN PROD — through cycle `f3e5fb8` (Replit green,
+>   founder-pasted report):** the /activity NEWSROOM (type harmony · full
+>   screen · Founder chip immediate on the fresh burn · milestones family
+>   lanes retro-sealed · pagination over the WHOLE history proven 86/86 via
+>   7 cursor pages · 17 mints = 6 Founder + 11 Community) + everything
+>   earlier: cycle `1bce58e` (A-arc: newsroom v1 + A2 pagination + the
+>   Founder Private Wallet in the founder set + founder-funding treasury
+>   attribution) · the K3 arc + console composition · `ede59aa`.
+> - **(b) DEPLOY BACKLOG — ONE Replit paste (server + client, NO migration,
+>   NO install), prod safe meanwhile:** `0a421bf` (docs: the PRE-HANDOFF
+>   GATE law + handoff) · `d3fe4b4` (the BREATHING pass: facts beside the
+>   sentence in muted mono · roomier cards/groups · calmer panel) ·
+>   `f98798f` (FOUNDER ORDERS: milestones FULL WIDTH BELOW the feed — the
+>   rail is dead · THE PATRONAGE LADDER archive-usdc $100→$10k, 71 defs,
+>   9 approaching lanes, current = the live price×minted authority,
+>   v1 approaching-only pending anchors · AW-5 opened). Verify list for the
+>   paste: milestones below the feed full width · breathing lines with mono
+>   facts · patronage bar "35.50 / 100 USDC of patronage" · 71 defs /
+>   guard 160 · everything from f3e5fb8 holds.
+> - **(c) FOUNDER-PENDING:** 🔴 **AW-5 — name the archive payment wallet
+>   `0xe4178521946d2c54e2a2c5b154aae07319bbd56f`** (chain-discovered: it
+>   receives the artifact patronage USDC; in NO registry; once named, its
+>   lane indexes in its own slice → the patronage rungs gain anchors and
+>   can SEAL + heartbeat completeness + the address book). Parked ledger
+>   unchanged (Q35 legal set · Q38-Q40 · Q42 remnants · Q32/MVP-final).
+> - **(d) NEXT, in order:** the ONE deploy paste + founder's living seal on
 >   /activity → M-EVO-3 (the milestone celebration layer: painted card +
 >   share + notification-on-seal — own cycle) → A5 (the off-chain purpose
->   ledger — ⚠ MIGRATION, own cycle) → K4 (no-seat promoter reach, decision
->   at its gate) → P (press kit — all text on screen) → recognition/season
->   (slice 6; read the gamification dossiers first).
+>   ledger — ⚠ MIGRATION, own cycle) → AW-5's lane slice (once named) →
+>   K4 (no-seat promoter reach, decision at its gate) → P (press kit — all
+>   text on screen) → recognition/season (slice 6; read the gamification
+>   dossiers first).
 > - **(e) THE SESSION'S ENGRAVED LESSONS — now LAW in CLAUDE.md (THE
 >   PRE-HANDOFF GATE, 2026-07-22):** diff built vs approved mockup element
 >   by element + run the law list before EVERY founder-visible handoff,

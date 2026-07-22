@@ -64,6 +64,13 @@ pulls it in).
 | Future Ecosystem | `0x2530393881820AFe789f1c5D83817B70e46d2963` | allocation |
 | Burn (Proof of Fire) | `0x0000…dEaD` | burn |
 
+**🔴 Unregistered — AW-5 (chain-discovered 2026-07-22, mint receipt `0x47c9f7fc…99f6`):**
+the ARCHIVE PAYMENT WALLET `0xe4178521946d2c54e2a2c5b154aae07319bbd56f` receives the
+artifact patronage USDC and sits in NO registry today. The founder NAMES it; then its own
+slice indexes the archive payment lane (heartbeat-completeness invariant), the patronage
+rungs gain transaction anchors and can SEAL, and the wallet joins this table + §3
+(OPEN_QUEUE AW-5).
+
 **Contracts:** SYN `0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170` · USDC
 `0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E` · Sale V1 `0x0020Df30C127306f0F5B44E6a6E4368D2855842d`
 · V2a `0x0b883Ff08fE78146E4d81237dD7aE8A2a6502b48` · V2b `0x507E9c9C365a865F2A2b94DA9E12ccCC2bBeB88b`
@@ -99,7 +106,7 @@ BTC.b `0x152b9d0FdC40C096757F570A51E494bd4b943E50`, WETH.e `0x49D5c2BdFfac6CE2BF
 2. **The server's founder set CONFLATES founder + pipes** (`backboneRunner.ts:345-352` = founder
    allocation wallet + vault + liquidity + operations). A burn FROM the vault would say
    "Founder" instead of "Vault". Origin separated roles per address.
-3. **The founder's private wallet is absent** from the set → its acts say "Community" (the 7 mints).
+3. **The founder's private wallet is absent** from the set → its acts say "Community" (the 6 mints — tally corrected 2026-07-22, §3).
 4. **No per-line Founder chip** — "Founder" exists only as a filter facet; sentences sometimes
    say "the founder" lowercase. Founder order: **capital-F "Founder", gold**, per line.
 5. **Treasury out/internal sentences hardcode "founder-signed"** regardless of actual signer —
@@ -126,8 +133,8 @@ BTC.b `0x152b9d0FdC40C096757F570A51E494bd4b943E50`, WETH.e `0x49D5c2BdFfac6CE2BF
 ## 6. FOUNDER DECISIONS — ALL CLOSED (2026-07-22, same day; no agent re-opens)
 
 1. ✅ **AW-1 CLOSED** — `0x244531C571966F90F4849E03a507543D90f9C721` joins the founder set,
-   **label "Founder Private Wallet"** (the founder's own naming). The 7 archive mints flip
-   to Founder; his future acts from it say Founder.
+   **label "Founder Private Wallet"** (the founder's own naming). The 6 archive mints flip
+   to Founder (tally corrected 2026-07-22, §3); his future acts from it say Founder.
 2. ✅ **AW-2 CLOSED — YES, the era-price meter ships** ("oui car c'est informatif"): factual
    bytecode disclosure ("Era 1: 100 SYN/$ — N seats before era 2 turns the page"). This
    OVERRIDES the H2-⑫ line-on-crossing pin by founder decision (dated); the guard pin is

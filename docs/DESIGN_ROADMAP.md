@@ -530,6 +530,21 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   target<1 (barre NaN pleine) → rejet + clampPct. backbone guard 156 → **160**.
   **+0 couleur brute**.
 
+- [x] **AMENDEMENT A-ARC/M-EVO — L'ÉTAT FINAL SERVI (2026-07-22, soir : les
+  lectures live du fondateur + la batterie Replit 1bce58e)** : ① HARMONIE
+  TYPO — UNE seule display serif par page (le héros) ; « 14 seats on-chain »
+  repasse en voix stat maison (Work Sans semibold) ; la bande d'ère UNE taille
+  UNE face (l'or = l'emphase). ② Le hotfix max-w-6xl VIOLAIT la loi
+  plein-écran S7-d → REVERTI (pleine largeur fluide) ; puis le rail 400px
+  expérimental TUÉ sur ordre du fondateur (« oui en bas, pleine largeur, sous
+  le feed ») : l'état FINAL = le panel milestones PLEINE LARGEUR SOUS le feed
+  + la passe densité/respiration (d3fe4b4), ordre WORK-FIRST intact.
+  ③ « prix ok » — L'ÉCHELLE DE PATRONAGE : barreaux archive-usdc $100→$10k,
+  registre 66 → **71 jalons** (approaching 8→9 voies ; v1 approaching-only —
+  un barreau franchi live se NOTE, jamais scellé sans ancrage transactionnel ;
+  le chiffre courant = la lecture LIVE prix×minted, l'autorité de la carte
+  /economy). **+0 couleur brute**.
+
 ### Phase 6 — Audits (le sceau grade-AAA)
 - [ ] Accessibilité (WCAG AA / APCA, focus, clavier, cibles ≥44px)
 - [ ] Responsive (fluide, container queries, 320 → 2560, pliables)
