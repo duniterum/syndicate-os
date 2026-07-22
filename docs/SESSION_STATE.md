@@ -285,12 +285,18 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   drizzle false-drift hand-applied + re-verified; prod's publish applied
 >   whole) · gates in prod (feature-truth 560 · api 2408) · byte-identity
 >   exact · the activation route matrix conforms point by point · engine
->   ok=2 clean, headBlock 90,917,889→90,918,191 · feed 78. ⚠ DEPLOY
->   BACKLOG: the ask-alert rider `13860ea` (server-only, NO migration, NO
->   install) — the founder handed Replit the pre-rider prompt; one quick
->   pull+deploy puts his bell live (members can already ask). His living
->   seal pending: the /referral card · the queue's empty state · the bell
->   on the first ask (rider).**
+>   ok=2 clean, headBlock 90,917,889→90,918,191 · feed 78. → ✅ THE RIDER
+>   SEALED IN PROD `aef644a` (Replit green 2026-07-22: 4/4 blobs
+>   server-only · studio build reproduced BIT-IDENTICAL to 89057bb's ·
+>   auth-zone at the exact expected 1172 · activation pair proven · engine
+>   self-healed ok=2, headBlock 90,919,346→90,919,661). Every new ask now
+>   rings the founder_root bells in the ask's own transaction. DEPLOY
+>   BACKLOG: EMPTY. — AND THE FIRST REAL ASK IS IN: Seat #3, all checks
+>   green; the founder's Approve filled the create form with the
+>   requester's wallet (seam + audited read proven in prod by his own
+>   screenshots). He waits deliberately; PENDING: his two signatures
+>   (create → activate) + "Record it" (the member's bell). His own bell
+>   rings from the NEXT new ask (pre-rider requests never retro-ring).**
 > - **IN FLIGHT after K3.a's seal:** K3.b — the stacked create+activate
 >   signing session + the propose-pause/revoke doors (+ the recorded
 >   hardenings: the close verdict's live isActive() read before the bell ·

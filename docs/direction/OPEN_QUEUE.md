@@ -370,12 +370,28 @@
 > operator routes → 401) · wall + public 200s · engine healthy ok=2/
 > partial=0/failed=0, headBlock 90,917,889→90,918,191, feed 78. Replit's
 > verdict: "cycle K3.a scellé et prouvé en production."
-> ⚠ DEPLOY BACKLOG: the ask-alert RIDER `13860ea` (server-only, no
-> migration, no install) — the founder gave Replit the pre-rider prompt;
-> the rider rides the NEXT pull (its own quick cycle if the founder wants
-> the bell NOW — members can already ask). Founder living seal pending:
-> his /referral card · the queue's empty state · the bell on the first
-> real ask (needs the rider live).**
+> → **✅ THE ASK-ALERT RIDER SEALED IN PROD `aef644a` (Replit green
+> 2026-07-22, founder-pasted report — the server-only cycle proven):
+> 4/4 blobs (2 server files + 2 docs, zero studio) · the studio build
+> REPRODUCED bit-identical to the sealed 89057bb client (same names, same
+> SHAs — the server-only proof) · auth-zone at the EXACT expected 1172
+> (the ask-alert pinned: server-resolved recipients, link-less, no admin
+> string near the member whitelist) · byte-identity exact · activation
+> pair proven in prod (GET anon 200 S1 · POST 401) · engine: the known
+> post-boot partial self-healed → ok=2/partial=0, 6/6 units, headBlock
+> 90,919,346→90,919,661 · feed 78. Replit's verdict: "chaque nouvelle
+> demande d'activation sonne la cloche des wallets founder_root ACTIFS
+> dans la même transaction que la demande." DEPLOY BACKLOG: EMPTY.**
+> **THE FIRST REAL ASK, LIVE IN PROD (2026-07-22, founder screenshots):
+> Seat #3's request arrived in the queue — all checks green (seat · SYN ·
+> not yet on the registry) — and the founder's Approve click filled the
+> create form with the REQUESTER's wallet through the audited
+> signing-material read + the buffered seam (the toast + the prefilled
+> form verified by his own eye: the maker-checker law working in prod).
+> He deliberately WAITS to sign until after the rider's seal ("on fait ça
+> proprement sans se hâter"). PENDING HIS SIGNATURES: create → activate →
+> "Record it" (the member's bell). His own alert bell rings from the NEXT
+> new ask (no retro-ring for a pre-rider request — told honestly).**
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21
