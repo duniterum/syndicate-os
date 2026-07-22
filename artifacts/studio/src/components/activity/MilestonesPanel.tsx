@@ -174,23 +174,28 @@ export function MilestonesPanel({
         Milestones — the protocol's canonical account
       </h2>
       {fomoLine ? (
-        <p className="text-sm font-medium text-gold leading-relaxed mb-1.5" data-testid="milestones-fomo">
+        <p className="text-sm font-medium text-gold leading-relaxed mb-2" data-testid="milestones-fomo">
           {fomoLine}
         </p>
       ) : null}
-      <p className="text-xs text-muted-foreground leading-relaxed mb-3">
-        Canonical thresholds across the protocol's families — seats, USDC
-        routed, the fire record, referral registry, pool acts, archive
-        memory — derived from the same gapless indexed history as the feed.
-        A sealed milestone anchors to the exact transaction where the chain
-        crossed it; every family always has a next rung.
-      </p>
+      {/* DENSITY (founder catch 2026-07-22): the methodology paragraph is
+          reference — in the condensed rail it lives inside the expander,
+          never as a wall of text above the lanes. */}
+      {!condensed ? (
+        <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+          Canonical thresholds across the protocol's families — seats, USDC
+          routed, the fire record, referral registry, pool acts, archive
+          memory — derived from the same gapless indexed history as the feed.
+          A sealed milestone anchors to the exact transaction where the chain
+          crossed it; every family always has a next rung.
+        </p>
+      ) : null}
 
       {/* M-EVO-2 — THE FAMILY LANES: sealed count + the next rung's bar. */}
-      <div className="space-y-4" data-testid="milestones-lanes">
+      <div className="mt-4 space-y-5" data-testid="milestones-lanes">
         {lanes.map((lane) => (
           <div key={lane.family} data-testid={`milestones-lane-${lane.family}`}>
-            <div className="flex flex-wrap items-baseline gap-x-3 mb-1.5">
+            <div className="flex flex-wrap items-baseline gap-x-3 mb-2">
               <h3 className="text-xs font-medium uppercase tracking-wider text-foreground/80">
                 {lane.label}
               </h3>
@@ -218,12 +223,18 @@ export function MilestonesPanel({
 
       {/* Condensed: the full sealed record, one click away (WORK-FIRST). */}
       {condensed && milestones.sealed.length > 0 ? (
-        <details className="mt-4" data-testid="milestones-sealed-expander">
+        <details className="mt-5" data-testid="milestones-sealed-expander">
           <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground transition-colors">
             The sealed record ({milestones.sealed.length}) — every crossing
             with its verify anchor
           </summary>
-          <ul className="space-y-1.5 mt-2" data-testid="milestones-sealed">
+          <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+            Canonical thresholds across the protocol's families, derived from
+            the same gapless indexed history as the feed. A sealed milestone
+            anchors to the exact transaction where the chain crossed it;
+            every family always has a next rung.
+          </p>
+          <ul className="space-y-2 mt-3" data-testid="milestones-sealed">
             {milestones.sealed.map((m) => (
               <SealedRow key={m.milestoneId} m={m} explorerBase={explorerBase} />
             ))}

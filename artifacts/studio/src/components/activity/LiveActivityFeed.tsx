@@ -349,13 +349,13 @@ export function LiveActivityFeed({
     const windowItems = (scan?.items ?? []).filter((i) => !servedKeys.has(lineKey(i)));
     const deepLines: ActivityItem[] = servedLines.map((l) => {
       // THE VISIBILITY RULE (H1a): the line carries what the chain
-      // publishes — amounts and public facts join the sentence.
+      // publishes. DENSITY pass (founder catch 2026-07-22): the facts ride
+      // BESIDE the sentence in the data voice — never inside parentheses.
       const facts = factsForServedLine(l);
       return {
         kind: SERVED_KIND_TO_WINDOW_KIND[l.kind],
-        sentence: facts
-          ? `${sentenceForServedLine(l)} (${facts})`
-          : sentenceForServedLine(l),
+        sentence: sentenceForServedLine(l),
+        facts,
         blockNumber: l.blockNumber,
         txHash: l.transactionHash,
         logIndex: l.logIndex,
@@ -641,15 +641,17 @@ export function LiveActivityFeed({
   const yesterdayUtc = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
 
   const renderLine = (i: ActivityItem) => (
+    // DENSITY (founder catch 2026-07-22, ADR-001 FastPay discipline —
+    // "respiration"): roomier card, facts in the muted data voice.
     <Card
       key={lineKey(i)}
-      className={`bg-card/40 border-border/50 p-3.5 ${
+      className={`bg-card/40 border-border/50 p-4 ${
         freshKeys.has(lineKey(i))
           ? "animate-in fade-in slide-in-from-top-2 border-gold/50"
           : ""
       }`}
     >
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <StatusPill tone={i.kind === "burn" ? "caution" : "proof"} size="xs">
           {KIND_LABEL[i.kind]}
         </StatusPill>
@@ -668,7 +670,14 @@ export function LiveActivityFeed({
             Founder
           </span>
         ) : null}
-        <p className="text-sm text-foreground/90 flex-1 min-w-48">{i.sentence}</p>
+        <p className="text-sm leading-relaxed text-foreground/90 flex-1 min-w-48">
+          {i.sentence}
+          {i.facts ? (
+            <span className="ml-2 whitespace-nowrap font-mono text-xs text-muted-foreground">
+              {i.facts}
+            </span>
+          ) : null}
+        </p>
         {i.memory ? (
           <span
             className="inline-flex items-center gap-1 text-xs text-gold"
@@ -904,7 +913,7 @@ export function LiveActivityFeed({
           </p>
         </Card>
       ) : (
-        <div className="space-y-2" data-testid="activity-feed-list">
+        <div className="space-y-2.5" data-testid="activity-feed-list">
           {visible.map((i, idx) => {
             const label = dateGroupLabel(i.dateUtc || "", todayUtc, yesterdayUtc);
             const prevLabel =
@@ -914,7 +923,7 @@ export function LiveActivityFeed({
             return (
               <div key={lineKey(i)}>
                 {label !== prevLabel ? (
-                  <p className="mt-4 mb-2 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground first:mt-0">
+                  <p className="mt-7 mb-2.5 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground first:mt-0">
                     {label}
                   </p>
                 ) : null}
@@ -952,7 +961,7 @@ export function LiveActivityFeed({
 
       {/* Z4+Z5 — the rail: the canonical account + the methodology, beside
           the work at xl (sticky), after it below. */}
-      <aside className="min-w-0 xl:sticky xl:top-16">
+      <aside className="min-w-0 xl:sticky xl:top-16 xl:max-h-[calc(100vh-5rem)] xl:overflow-y-auto xl:pr-1">
       {served?.milestones ? (
         <MilestonesPanel
           milestones={served.milestones}

@@ -105,6 +105,12 @@ export interface ActivityItem {
    */
   readHref?: string;
   /**
+   * DENSITY pass (founder catch 2026-07-22): the served line's public FACTS
+   * ("Proof of Burn #9 · Founder" · LP amounts) travel BESIDE the sentence
+   * in the data voice (mono, muted) — never glued inside it in parentheses.
+   */
+  facts?: string | null;
+  /**
    * THE SEAT LAW on the purchase lane (founder-caught 2026-07-22): the first
    * purchase SEATS a member; repeats EXPAND the footprint. true = a first
    * seat · false = a footprint expansion · null/absent = the engine never
