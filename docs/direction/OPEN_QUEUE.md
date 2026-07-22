@@ -461,6 +461,22 @@
 >   (create → auto-proof → activate → the member's bell, zero manual
 >   clicks after the signatures) and the pause/revoke doors stand on his
 >   active sources. NEXT: K3.c (per-source performance + CSV).**
+> **✅ K3.b SEALED IN PROD `f9f3495` (Replit green 2026-07-22,
+> founder-pasted report): 12/12 blobs byte-verified (3 server · 6 studio
+> incl. the new joinQuoteProbe.ts · 3 docs) · no migration, no install ·
+> gates green in prod context (api 2409 PASS, auth-zone stable 1172) ·
+> byte-identity exact (entry `index-BS9cgiAu.js` 3b4482fe… · console
+> `OperatorConsole-CNW9STV3.js` a18eecd7…) · the activation matrix
+> conforms point by point (GET anon 200 WITH the two new own-figure
+> fields served, honest nulls in S1 · POST 401 · 3 operator routes 401) ·
+> wall + public 200s · engine: post-boot partial then healthy ok=2, 6/6
+> units, headBlock 90,922,378→90,923,006 · **THE FEED GREW 78→80 — Seat
+> #3's two real events (createSource + activation) indexed and served
+> publicly: the heartbeat invariant carrying the first member-requested
+> activation into the protocol's own public story on its own.** Replit's
+> verdict: "la session de signature enchaînée et les portes de cycle de
+> vie sont en ligne, et le feed public reflète déjà la première
+> activation réelle." DEPLOY BACKLOG: EMPTY.**
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21

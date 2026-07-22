@@ -318,13 +318,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   exists-first · dead var); close-TOCTOU weighed, accepted as designed.
 >   Gates all EXIT 0 full runs both sides. NO migration, NO packages, NO
 >   featureStatus flip owed. Full record: OPEN_QUEUE's K3.b entry.
->   **🚀 DEPLOY — server + client, NO migration, NO pnpm install. The
->   founder's living seal: the next activation = ONE fluid session; the
->   doors stand on his active sources.**
-> - **IN FLIGHT after K3.b's seal:** K3.c — per-source performance + CSV
->   (admin sees, public never). Then K4 (no-seat reach decision) · P
->   (press kit — all text on screen) · recognition/season (slice 6: read
->   the gamification/legal dossiers first; the two-layer law holds).
+>   **🚀 DEPLOY — server + client, NO migration, NO pnpm install.** →
+>   **✅ K3.b SEALED IN PROD `f9f3495` (Replit green 2026-07-22: 12/12
+>   blobs · api 2409/auth-zone 1172 · byte-identity `index-BS9cgiAu.js` ·
+>   the matrix point-by-point with the own-figure fields served · THE
+>   FEED GREW 78→80 — Seat #3's real createSource+activation events
+>   serving publicly, the heartbeat invariant at work). DEPLOY BACKLOG:
+>   EMPTY.**
+> - **IN FLIGHT (founder "approved GO and GO-Live dans le bon ordre",
+>   2026-07-22 — the console mockup v2, docs/design/
+>   admin-ia-sources-tabs-mockup.html):** THE CONSOLE COMPOSITION SLICE,
+>   in his order — ① the Dashboard wired (live waiting count in Needs
+>   attention + the referral 4-tile band: sources · promotions due ·
+>   paid-to-referrers verify-linked · members seated — zero new backend)
+>   → ② Sources & referrals in 5 sub-tabs (queue default, /referral
+>   underline grammar, client-side) → ③ K3.c: the Performance tab
+>   (per-source table per Face 5 + screen-exact CSV; the read-model
+>   retains the decoded status; closed-request zero-purchase sources
+>   merged in). Then K4 · P · recognition/season (the two-layer law).
 > - **FOUNDER-PENDING: NOTHING on the arc.** Parked as recorded: Q35 legal
 >   set · Q39/Q40/Q42 admin waves · Q32/MVP-final items · the deferred list.
 >   Taken-by-default (flagged, overridable): the dedicated PDF engine stays
