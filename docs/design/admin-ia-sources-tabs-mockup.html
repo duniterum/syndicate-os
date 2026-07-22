@@ -1,0 +1,149 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Console admin — les sous-onglets de section (maquette)</title>
+<style>
+  :root {
+    --background: 210 40% 98%; --foreground: 222 47% 11%; --border: 214 32% 91%;
+    --card: 0 0% 100%; --muted-foreground: 215 16% 47%; --gold: 38 74% 44%; --proof: 190 90% 40%;
+    --ok: 142 60% 33%; --danger: 0 68% 44%;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --background: 224 71% 4%; --foreground: 213 31% 91%; --border: 216 34% 17%; --card: 222 47% 7%; --muted-foreground: 215.4 16.3% 56.9%; --gold: 42 92% 60%; --proof: 190 90% 45%; --ok: 142 55% 48%; --danger: 0 72% 58%; }
+  }
+  :root[data-theme="dark"]  { --background: 224 71% 4%; --foreground: 213 31% 91%; --border: 216 34% 17%; --card: 222 47% 7%; --muted-foreground: 215.4 16.3% 56.9%; --gold: 42 92% 60%; --proof: 190 90% 45%; --ok: 142 55% 48%; --danger: 0 72% 58%; }
+  :root[data-theme="light"] { --background: 210 40% 98%; --foreground: 222 47% 11%; --border: 214 32% 91%; --card: 0 0% 100%; --muted-foreground: 215 16% 47%; --gold: 38 74% 44%; --proof: 190 90% 40%; --ok: 142 60% 33%; --danger: 0 68% 44%; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: hsl(var(--background)); color: hsl(var(--foreground)); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace; }
+  .page { max-width: 1020px; margin: 0 auto; padding: 24px 16px 64px; }
+  .mock-banner { display:flex; flex-wrap:wrap; align-items:center; gap:10px; border:1px dashed hsl(var(--gold)/.45); border-radius:10px; background:hsl(var(--gold)/.07); padding:10px 14px; margin-bottom:22px; font-size:12.5px; color:hsl(var(--muted-foreground)); }
+  .mock-banner b { color:hsl(var(--gold)); font-weight:600; }
+  .theme-btn { margin-left:auto; cursor:pointer; border:1px solid hsl(var(--border)); background:hsl(var(--card)); color:hsl(var(--foreground)); border-radius:8px; padding:6px 12px; font-size:12.5px; min-height:36px; }
+  .annot { font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:hsl(var(--gold)/.8); margin:34px 0 10px; }
+  .annot::before { content:"◤ "; }
+  .note { font-size:12.5px; color:hsl(var(--muted-foreground)); margin:8px 0 0; max-width:56em; }
+  .ghost { border:1px dashed hsl(var(--border)); border-radius:10px; padding:12px 14px; margin-top:10px; color:hsl(var(--muted-foreground)); font-size:12.5px; }
+
+  /* the console frame */
+  .console { display:flex; border:1px solid hsl(var(--border)); border-radius:12px; overflow:hidden; background:hsl(var(--card)); min-height:430px; }
+  .rail { width:198px; flex:none; border-right:1px solid hsl(var(--border)); padding:14px 10px; background:hsl(var(--background)); }
+  .rail .brand { font-size:12px; font-weight:700; padding:0 8px 12px; }
+  .rail .brand small { display:block; font-weight:400; font-size:10px; color:hsl(var(--muted-foreground)); }
+  .rail .head { font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:hsl(var(--muted-foreground)); padding:4px 8px; }
+  .rail a { display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:8px; font-size:12.5px; color:hsl(var(--muted-foreground)); text-decoration:none; }
+  .rail a.on { background:hsl(var(--gold)/.1); color:hsl(var(--foreground)); font-weight:600; }
+  .rail .badge { margin-left:auto; font-size:10px; font-weight:700; background:hsl(var(--gold)); color:#1A1408; border-radius:999px; padding:0 6px; min-width:16px; text-align:center; }
+  .main { flex:1; min-width:0; padding:18px 20px; }
+  @media (max-width: 700px) {
+    .console { flex-direction:column; }
+    .rail { width:100%; border-right:0; border-bottom:1px solid hsl(var(--border)); }
+  }
+  .main h2 { margin:0 0 2px; font-size:16px; }
+  .main .sub { font-size:12px; color:hsl(var(--muted-foreground)); margin-bottom:12px; }
+
+  /* the level-2 underline tabs — the /referral grammar, verbatim */
+  .tabs { position:relative; margin:0 0 16px; }
+  .tabs .rule { position:absolute; inset-inline:0; bottom:0; height:1px; background:hsl(var(--border)/.7); }
+  .tabs nav { display:flex; gap:4px; overflow-x:auto; scrollbar-width:none; }
+  .tabs nav::-webkit-scrollbar { display:none; }
+  .tab { display:inline-flex; align-items:center; gap:6px; white-space:nowrap; padding:8px 12px 10px; border-bottom:2px solid transparent; font-size:13px; color:hsl(var(--muted-foreground)); cursor:pointer; }
+  .tab.on { border-color:hsl(var(--gold)); color:hsl(var(--foreground)); font-weight:600; }
+  .tab .n { font-size:10px; font-weight:700; background:hsl(var(--gold)); color:#1A1408; border-radius:999px; padding:0 6px; }
+  .tab .d { font-size:10px; font-weight:700; background:hsl(var(--border)); color:hsl(var(--muted-foreground)); border-radius:999px; padding:0 6px; }
+
+  /* queue card (abridged) */
+  .req { border:1px solid hsl(var(--border)); border-radius:10px; padding:12px 14px; }
+  .req .head { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; font-size:13px; }
+  .chip { display:inline-flex; align-items:center; font-size:10.5px; border-radius:7px; padding:2px 8px; border:1px solid hsl(var(--ok)/.35); color:hsl(var(--ok)); background:hsl(var(--ok)/.06); }
+  .btn { display:inline-flex; align-items:center; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:600; border:1px solid hsl(var(--border)); background:hsl(var(--card)); color:hsl(var(--foreground)); cursor:pointer; }
+  .btn.primary { background:hsl(var(--gold)); border-color:hsl(var(--gold)); color:#1A1408; }
+  .btn.quiet { font-weight:500; color:hsl(var(--muted-foreground)); border-color:transparent; }
+  .facebox { border:1px solid hsl(var(--border)); border-radius:10px; padding:12px 14px; margin-top:10px; font-size:12.5px; color:hsl(var(--muted-foreground)); }
+  .facebox b { color:hsl(var(--foreground)); }
+</style>
+
+<div class="page">
+  <div class="mock-banner">
+    <span><b>MAQUETTE — L'ARCHITECTURE DE LA CONSOLE</b> : rail plat au niveau 1, sous-onglets de section au niveau 2 · le verdict du benchmark mondial</span>
+    <button type="button" class="theme-btn" id="themeBtn">Thème : auto</button>
+  </div>
+
+  <p class="note" style="margin-top:0"><b>Le verdict de la recherche (Stripe · Vercel · Linear · Safe{Wallet} · GitLab · IBM Carbon · NN/g) :</b> le rail gauche reste PLAT — dix sections, zéro sous-menu (Vercel vient d'abandonner les onglets hauts exactement à notre échelle ; GitLab et Carbon interdisent un 3e niveau de rail). Une section qui porte plusieurs surfaces de travail les range sous UNE rangée de sous-onglets — et la file de décision est l'onglet PAR DÉFAUT, avec son compteur sur l'onglet ET sur le rail (le pattern Linear-Triage / Safe-queue). C'est aussi notre propre grammaire : les onglets soulignés or de /referral, réutilisés à l'identique — un seul langage, membre et admin.</p>
+
+  <!-- ═══ La face principale ═══ -->
+  <div class="annot">1 · « Sources & referrals » restructurée — la section s'ouvre sur LE TRAVAIL</div>
+  <div class="console">
+    <div class="rail">
+      <div class="brand">Syndicate Admin<small>internal · operator-gated</small></div>
+      <div class="head">Sections</div>
+      <a href="#">▦ Dashboard</a>
+      <a href="#">◫ Members</a>
+      <a href="#" class="on">⛓ Sources &amp; referrals <span class="badge">2</span></a>
+      <a href="#">◉ Operators</a>
+      <a href="#">▤ Content</a>
+      <a href="#">✦ Modules</a>
+      <a href="#">▷ Broadcast</a>
+      <a href="#">≡ Audit log</a>
+      <a href="#">? Support</a>
+      <a href="#">⚙ Settings</a>
+    </div>
+    <div class="main">
+      <h2>Sources &amp; referrals</h2>
+      <div class="sub">Members ask for activation from their referral page; your on-chain signature is the only approval that exists.</div>
+      <div class="tabs">
+        <div class="rule"></div>
+        <nav>
+          <span class="tab on">Review queue <span class="n">2</span></span>
+          <span class="tab">Signing <span class="d">1 due</span></span>
+          <span class="tab">Program terms</span>
+          <span class="tab">Registry</span>
+          <span class="tab">Performance</span>
+        </nav>
+      </div>
+
+      <div class="req">
+        <div class="head">
+          <span class="mono" style="font-weight:600">0x4aF3…9c21</span>
+          <span style="font-size:11px; color:hsl(var(--muted-foreground))">Seat #17 · asked July 22, 2026</span>
+          <span style="margin-left:auto; font-size:10px; border:1px solid hsl(var(--gold)/.4); color:hsl(var(--gold)); border-radius:999px; padding:1px 8px">Waiting</span>
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin:8px 0 10px">
+          <span class="chip">✓ Seat held</span><span class="chip">✓ Holds SYN</span><span class="chip">✓ Not yet on the registry</span>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <span class="btn primary">Approve — open the signing path</span>
+          <span class="btn quiet">Decline — with a reason</span>
+          <span class="btn quiet">Hold</span>
+        </div>
+      </div>
+      <p style="font-size:11.5px; color:hsl(var(--muted-foreground)); margin:10px 0 0">…the second waiting request below. Nothing else on this face — the queue IS the tab.</p>
+    </div>
+  </div>
+  <p class="note"><b>Approve traverse les onglets tout seul :</b> le clic va chercher le wallet (lecture auditée), BASCULE sur l'onglet Signing et remplit le formulaire — la couture tamponnée existe déjà et couvre exactement ce cas (le module se remplit même s'il n'était pas encore monté). Zéro friction ajoutée.</p>
+
+  <!-- ═══ Les autres onglets ═══ -->
+  <div class="annot">2 · Les cinq onglets — chaque surface chez elle, une seule adresse</div>
+  <div class="facebox"><b>Review queue</b> (défaut · compteur) — la file K3.a telle quelle : cartes, puces, verdicts, état vide honnête. Le travail d'abord, toujours.</div>
+  <div class="facebox"><b>Signing</b> (badge « N due » quand des promotions attendent) — Create &amp; manage (la console de vie : créer · activer · pause · revoke · la session liée) + le rappel des promotions dues. Les deux surfaces Form-2, côte à côte.</div>
+  <div class="facebox"><b>Program terms</b> — les termes du programme (l'éditeur founder-gated existant). Rien d'autre.</div>
+  <div class="facebox"><b>Registry</b> — les lectures vivantes du registre + les postures (les panneaux de preuve existants). Référence, pas travail — d'où sa place loin du défaut.</div>
+  <div class="facebox"><b>Performance</b> (K3.c, la face approuvée de la maquette K3) — la table par source + Export CSV. Elle naît directement dans sa maison.</div>
+
+  <div class="annot">3 · La loi engravée — et ce qui ne change pas</div>
+  <p class="note"><b>La loi :</b> une section qui porte plus de 3 surfaces de travail gagne la rangée de sous-onglets (la grammaire /referral, à l'identique) ; la surface-décision est l'onglet par défaut ; jamais de sous-menus dans le rail, jamais deux rangées d'onglets, jamais d'ancre-scroll comme navigation. Aujourd'hui seule « Sources &amp; referrals » la déclenche (6 surfaces → 5 onglets) ; « Content » (4 panneaux) suivra quand son travail vivra. <b>Ce qui ne change pas :</b> le rail (10 sections, plat), le ⌘K, la pleine largeur, l'honnêteté par panneau, le mur neutre. Onglets côté client (pas de nouvelles routes — le mur et les guards restent intouchés) ; le pattern /referral reste le chemin documenté si un jour tu veux des onglets adressables.</p>
+
+  <div class="annot">À 300 — rien ne grossit</div>
+  <p class="note">Le compteur du rail te dit où le travail attend sans ouvrir la section ; la file reste des cartes une-décision-une-sortie ; la table Performance scrolle et s'exporte. Cinq onglets — sous le plafond NN/g de 5-7, pour toujours (une 6e surface rejoint un onglet existant avant d'en créer un nouveau).</p>
+</div>
+
+<script>
+  var modes = ["auto", "dark", "light"]; var i = 0;
+  var tb = document.getElementById("themeBtn");
+  tb.addEventListener("click", function () {
+    i = (i + 1) % modes.length; var m = modes[i];
+    if (m === "auto") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", m);
+    tb.textContent = "Thème : " + m;
+  });
+</script>
