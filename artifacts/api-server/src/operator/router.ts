@@ -29,6 +29,11 @@ import {
   NOTIFICATION_TITLE_MAX,
   NOTIFICATION_BODY_MAX,
 } from "./notificationService";
+import {
+  listActivationRequests,
+  decideActivationRequest,
+  readActivationRequestWallet,
+} from "./activationQueueService";
 import { assertAddressSafeAggregate } from "../lib/protocol/rpcTransport";
 
 const router: IRouter = Router();
@@ -84,6 +89,21 @@ const BroadcastBody = z.object({
 
 // NOTIF-2b: delete a notification by its stable id (from the masked list).
 const DeleteNotificationBody = z.object({
+  id: z.string().min(1).max(64),
+});
+
+// K3.a — the founder's verdicts on an activation request. `reason` is only
+// consumed on decline (the service is the authority: required there, refused
+// with a raw address). `close` records reality — the source turned live
+// on-chain; the service writes the member's bell in the same transaction.
+const DecideActivationBody = z.object({
+  id: z.string().min(1).max(64),
+  verdict: z.enum(["decline", "hold", "reopen", "close"]),
+  reason: z.string().max(500).nullish(),
+});
+
+// K3.a — the signing-material read: one request's FULL wallet (audited).
+const ActivationWalletBody = z.object({
   id: z.string().min(1).max(64),
 });
 
@@ -467,6 +487,142 @@ router.get("/notifications", async (req: Request, res: Response) => {
   assertAddressSafeAggregate(JSON.stringify(result.notifications));
   req.log.info({ event: "operator.notifications.listed", code: "ok" });
   res.json({ ok: true, notifications: result.notifications });
+});
+
+// ── GET /api/operator/activation-requests (K3.a) ────────────────────────────
+// FOUNDER-ONLY READ: the Source review queue — request rows with MASKED
+// wallets, the engine's own live seat figure, and the LIVE preflight checks
+// (fail-closed: a read that didn't run is null, rendered blocking). No
+// query/params. Access is audited inside the service (row counts only).
+// Output scan is the BOUNDARY-AWARE 40-hex form (64-hex source ids pass).
+router.get("/activation-requests", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "operator.activation_queue.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const account =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  if (account === null) {
+    deny(res, 401, "no_session");
+    return;
+  }
+  const ctx = await lookupActiveOperator(account);
+  if (!ctx.isOperator || ctx.role !== "founder_root") {
+    req.log.warn({ event: "operator.activation_queue.denied", code: "insufficient_role" });
+    deny(res, 403, "insufficient_role");
+    return;
+  }
+  const result = await listActivationRequests({ wallet: account, role: ctx.role });
+  if (!result.ok) {
+    deny(res, result.reason === "unavailable" ? 503 : 400, result.reason);
+    return;
+  }
+  if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(JSON.stringify(result.payload))) {
+    throw new Error("address-shaped token in queue payload");
+  }
+  req.log.info({ event: "operator.activation_queue.read", code: "ok" });
+  res.json({ ok: true, payload: result.payload });
+});
+
+// ── POST /api/operator/activation-requests/decide (K3.a) ────────────────────
+// FOUNDER-ONLY WRITE: decline (with the human reason the member reads) /
+// hold / reopen / close (reality answered on-chain). The service flips the
+// status, writes the member's bell where one is owed, and audit-rows the
+// act in ONE transaction. Approve is NEVER here — approval is the founder's
+// on-chain signature, nothing less.
+router.post("/activation-requests/decide", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "operator.activation_decide.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const account =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  if (account === null) {
+    deny(res, 401, "no_session");
+    return;
+  }
+  const ctx = await lookupActiveOperator(account);
+  if (!ctx.isOperator || ctx.role !== "founder_root") {
+    req.log.warn({ event: "operator.activation_decide.denied", code: "insufficient_role" });
+    deny(res, 403, "insufficient_role");
+    return;
+  }
+  const parsed = DecideActivationBody.safeParse(req.body);
+  if (!parsed.success) {
+    deny(res, 400, "bad_request");
+    return;
+  }
+  const result = await decideActivationRequest({
+    id: parsed.data.id,
+    verdict: parsed.data.verdict,
+    reason: parsed.data.reason,
+    actorWallet: account,
+    actorRole: ctx.role,
+  });
+  if (!result.ok) {
+    deny(res, result.reason === "unavailable" ? 503 : 400, result.reason);
+    return;
+  }
+  req.log.info({ event: "operator.activation_decide.ok", code: parsed.data.verdict });
+  res.json({ ok: true });
+});
+
+// ── POST /api/operator/activation-requests/wallet (K3.a) ────────────────────
+// FOUNDER-ONLY READ — THE SIGNING MATERIAL: one request's FULL wallet, so the
+// founder's wallet screen signs exactly the wallet the request named
+// (createSource takes a wallet; the queue list stays masked). This is the
+// queue's ONE deliberate address-emitting response (the verify-links pattern
+// for legitimate address material) — dated pin in guard-auth-zone; every
+// read is audit-rowed inside the service. The 40-hex output scan is
+// DELIBERATELY absent here and here only.
+router.post("/activation-requests/wallet", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "operator.activation_wallet.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const account =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  if (account === null) {
+    deny(res, 401, "no_session");
+    return;
+  }
+  const ctx = await lookupActiveOperator(account);
+  if (!ctx.isOperator || ctx.role !== "founder_root") {
+    req.log.warn({ event: "operator.activation_wallet.denied", code: "insufficient_role" });
+    deny(res, 403, "insufficient_role");
+    return;
+  }
+  const parsed = ActivationWalletBody.safeParse(req.body);
+  if (!parsed.success) {
+    deny(res, 400, "bad_request");
+    return;
+  }
+  const result = await readActivationRequestWallet({
+    id: parsed.data.id,
+    actorWallet: account,
+    actorRole: ctx.role,
+  });
+  if (!result.ok) {
+    deny(res, result.reason === "unavailable" ? 503 : 400, result.reason);
+    return;
+  }
+  // Payload-variable idiom (zone law) — the signing material is deliberate,
+  // founder-only, audited; the response is built outside the json() call.
+  const signingMaterial = { ok: true as const, signerTarget: result.wallet };
+  req.log.info({ event: "operator.activation_wallet.read", code: "ok" });
+  res.json(signingMaterial);
 });
 
 export default router;

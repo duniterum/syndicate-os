@@ -261,6 +261,89 @@
 > real build EXIT 0 · bundle boot + probe matrix proven. 🚀 DEPLOY — the cycle
 > takes `0134cc6` + this hardening together (server + client, NO migration, NO
 > pnpm install).** NEXT after K2's seal: K3 (the admin axis).
+>
+> **▶ K3.a BUILT + COMMITTED [this commit] (2026-07-22 — the mockup
+> founder-approved v3 "GO and GO-Live", docs/design/k3-admin-axis-mockup.html:
+> the eligibility card + quick-link remedies were the founder's own two
+> pushes): THE MEMBER "ASK FOR ACTIVATION" INTAKE + THE LIVE SOURCE REVIEW
+> QUEUE — the arc's first admin-axis cycle.**
+> - **SCHEMA (⚠ REAL MIGRATION — its own deploy cycle, never batched):**
+>   `activation_request` in operatorWriteZone.ts (status CHECK
+>   WAITING/HOLD/DECLINED/CLOSED, flip-never-delete, expression-free indexes;
+>   ONE open request per wallet enforced by pg_advisory_xact_lock inside the
+>   ask transaction — never a partial index).
+> - **MEMBER SIDE:** the FIFTH sanctioned auth DB bridge
+>   (auth/activationRequests.ts — own-row, the ask + its audit row commit in
+>   ONE transaction) + auth/activationEligibility.ts (live seat / SYN /
+>   source reads; the canonical id always derivable) + GET/POST
+>   /api/auth/activation-request (GET = the ONE read behind the eligibility
+>   card; POST re-verifies eligibility LIVE, fail-closed on every leg —
+>   seat + SYN>0 + not-already-live; any null → 503, a read that didn't run
+>   is never a verdict). ActivationDoor.tsx under the link hero: the live
+>   eligibility card (check-before-apply — nobody files a doomed request),
+>   every failed check carrying its remedies inline (/join at the entry rate
+>   + the live pool per liquidityPool.ts, with the market-independence
+>   honesty line), the approved states A/A′/A″/B/C′/D, and the
+>   PAUSED-vs-none truth rendered distinctly at last (the readback served it
+>   unrendered since R5).
+> - **ADMIN SIDE:** SourceReviewQueue LIVE at the HEAD of /admin/sources
+>   (work-first — waiting decisions are THE work): open rows oldest-first,
+>   live preflight chips fail-closed (a check that didn't run BLOCKS, never
+>   a silent pass), three verbs + reality — Approve fetches the audited
+>   signing material and prefills ProposeSourceCreate through a BUFFERED
+>   one-shot seam (the lazy wallet chunk can never lose it); Decline
+>   requires the human sentence the member reads (their bell carries it,
+>   written in the SAME transaction); Hold/Reopen; a request whose source is
+>   already live on-chain shows "Closed by reality" and one click records it
+>   + sends the activation bell. Server: operator/activationQueueService.ts
+>   — open rows NEVER windowed away (two reads: ALL open oldest-first +
+>   a bounded decided tail); the live-check budget spends on the OLDEST,
+>   in batches of 5, and fires ZERO per-row RPC when the chain probe fails;
+>   decide re-asserts the from-status ON the UPDATE (zero rows = bad_state —
+>   two contradictory bells are impossible); the signing-material read
+>   (full wallet for createSource) is founder-only and audited PER READ
+>   (the verify-links pattern for legitimate address material). 3 routes,
+>   founder_root only.
+> - **GUARDS AMENDED (dated, same commit):** auth-zone → 1171 checks (the
+>   5th bridge pin block · 3 operator route pins · the signing-material
+>   exemption pinned to its exact shape) + the two lazy-DB allow-lists.
+> - **DONE-IS-DONE:** `activationIntake` + `sourceReviewQueue` LIVE in
+>   featureStatus SAME commit; the fossil class killed whole:
+>   sourceReviewSample DELETED · "Lands with its own slice" dead · the Q42
+>   panel copy dead · AdminHome's "Source reviews · preview" badge dead ·
+>   /founder's "will review source-activation requests" re-trued ·
+>   surfaceClassification /admin/sources re-trued · os-map founder-controls
+>   reality re-trued.
+> - **THE 3-SEAM ADVERSARIAL VERIFY (3 agents, before commit): 12 real
+>   defects FIXED** — the ask duplicate-row race (advisory lock) · the
+>   decide TOCTOU (status-guarded UPDATE) · the hidden-open-row window
+>   (open rows fetched whole) · the RPC fan-out under degraded chain
+>   (probe-gated + batched) · the POST's non-fail-closed source leg · the
+>   registry chip inventing "paused" on an unrun read · the lost prefill
+>   event (buffered seam) · per-row busy set · last-decision ordered by
+>   DECISION time · the inverted "older/newer" banner · the two
+>   DONE-IS-DONE fossils. **RECORDED NON-ACTION (accepted, dated):** ① the
+>   close verdict trusts the founder's stated reality — one live isActive()
+>   read before the bell is K3.b hardening; ② the queue chips narrowed vs
+>   the mockup's six (the terms-hash check lives as a CODE gate at the
+>   signing screen — stronger than a display chip; "member since" + tx
+>   anchors dropped); ③ the member's pills carry booleans, not the mockup's
+>   own-figures ("Seat #17", "500 SYN") — the K3.b enrichment; ④ a REVOKED
+>   source reaches the signing screen's own honest refusal (the server
+>   serves exists/active booleans, not the status word).
+> - **GATE (all EXIT 0, full runs):** api tsc · 19 api guards (auth-zone
+>   1171) · real api build + bundle BOOT + route matrix (healthz 200 · GET
+>   anon-safe 200 · POST/operator 401 fail-closed) — studio tsc · 19 studio
+>   guards · build (35 shells · 354 twins · admin-dist 99, entry
+>   admin-clean) · seo:check · rewrites:check · surface:audit 338.
+> - **🚀 DEPLOY — ⚠ REAL MIGRATION, its own cycle, NEVER batched.** Replit:
+>   pull main → `pnpm --filter @workspace/db push` (ONE new table
+>   `activation_request`) → deploy (server + client, NO pnpm install) →
+>   report. The founder's living seal online: /referral shows HIS
+>   eligibility card; /admin/sources opens on the live queue's honest empty
+>   state.** NEXT: K3.b (the stacked create+activate signing session + the
+>   pause/revoke doors + the close-verdict isActive hardening + the
+>   own-figures enrichment), then K3.c (per-source performance + CSV).
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21

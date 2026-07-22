@@ -260,6 +260,12 @@ const LAZY_DB_ALLOW = new Set([
   // channelStanding bridge pins.
   join(SERVED_SRC, "channel", "channelStore.ts"),
   join(SERVED_SRC, "auth", "channelStanding.ts"),
+  // K3.a (mockup founder-approved 2026-07-22): the member's OWN activation-
+  // request rows (the FIFTH auth bridge — ask audited in-transaction) and the
+  // founder's review-queue service (list + verdicts + the audited signing-
+  // material read). Lazy-only; full shapes pinned by guard-auth-zone.ts.
+  join(SERVED_SRC, "auth", "activationRequests.ts"),
+  join(SERVED_SRC, "operator", "activationQueueService.ts"),
 ]);
 const DYNAMIC_DB_IMPORT_RE = /import\s*\(\s*["']@workspace\/db["']\s*\)/;
 function walk(dir: string, hits: string[]): void {

@@ -133,6 +133,11 @@ const ProposeSourcePromotion = lazy(() => import("@/wallet/ProposeSourcePromotio
 export function AdminSourcesSection() {
   return (
     <div className="space-y-6">
+      {/* K3.a (founder-approved mockup 2026-07-22 + WORK-FIRST law): the LIVE
+          review queue leads the section — waiting decisions are THE work; its
+          empty state is one honest line. The signing forms follow (Approve
+          prefills the create form below via the one-shot seam). */}
+      <SourceReviewQueue />
       <Suspense fallback={null}>
         <ProposeSourcePromotion />
       </Suspense>
@@ -141,7 +146,6 @@ export function AdminSourcesSection() {
       </Suspense>
       <AdminReferralPanel />
       <AdminReferralCrud />
-      <SourceReviewQueue />
       <AdminSourcesPanel />
     </div>
   );

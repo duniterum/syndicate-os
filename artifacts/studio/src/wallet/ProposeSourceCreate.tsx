@@ -53,6 +53,7 @@ import {
   type SourceRecordRead,
 } from "@/lib/chainReads";
 import { deriveSourceId, SOURCE_ID_NAMESPACE } from "@/lib/sourceIdentity";
+import { PROPOSE_SOURCE_PREFILL_EVENT, consumePendingPrefill } from "@/lib/adminPrefill";
 import { fetchTermsHash, TERMS_CANONICAL_URL } from "@/lib/termsDocument";
 
 // SPEC §② — the founder-decided first-source terms (closed list §⑫).
@@ -196,6 +197,28 @@ export default function ProposeSourceCreate() {
   useEffect(() => {
     if (address && walletInput === "") setWalletInput(address);
   }, [address, walletInput]);
+  // K3.a — the queue→signing seam: the review queue's Approve door hands this
+  // form the request's wallet through a one-shot window event (rule 15: the
+  // queue component never imports the wallet zone; rule 12: no storage). The
+  // form prefills and scrolls itself into view; every existing gate (owner,
+  // chain, hash, live record) still decides whether signing opens.
+  useEffect(() => {
+    const apply = (wallet: unknown) => {
+      if (typeof wallet === "string" && isAddress(wallet)) {
+        setWalletInput(wallet);
+        document
+          .querySelector('[data-testid="input-propose-source-wallet"]')
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    };
+    // Mount-time catch-up: Approve may have fired while this lazy chunk was
+    // still loading — the seam parks the wallet; consume it exactly once.
+    apply(consumePendingPrefill());
+    const onPrefill = (e: Event) =>
+      apply((e as CustomEvent<{ wallet?: unknown }>).detail?.wallet);
+    window.addEventListener(PROPOSE_SOURCE_PREFILL_EVENT, onPrefill);
+    return () => window.removeEventListener(PROPOSE_SOURCE_PREFILL_EVENT, onPrefill);
+  }, []);
   const sourceWallet = isAddress(walletInput.trim()) ? walletInput.trim() : null;
   const sourceId = sourceWallet ? deriveSourceId(sourceWallet) : null;
 

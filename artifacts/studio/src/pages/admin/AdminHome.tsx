@@ -109,8 +109,11 @@ const QUICK_ACTIONS: {
   { key: "broadcast", label: "New broadcast", icon: Megaphone, section: "broadcast" },
 ];
 
-const ATTENTION: { key: string; label: string; icon: typeof Flag; section: AdminSectionId }[] = [
-  { key: "reviews", label: "Source reviews", icon: LinkIcon, section: "sources-referrals" },
+// K3.a (2026-07-22): "Source reviews" is LIVE — the queue reads real intake
+// rows with server preflight; its preview badge died with the slice
+// (DONE-IS-DONE). The other two doors keep their honest preview badge.
+const ATTENTION: { key: string; label: string; icon: typeof Flag; section: AdminSectionId; live?: boolean }[] = [
+  { key: "reviews", label: "Source reviews", icon: LinkIcon, section: "sources-referrals", live: true },
   { key: "support", label: "Support queue", icon: LifeBuoy, section: "support" },
   { key: "flags", label: "Abuse flags", icon: Flag, section: "sources-referrals" },
 ];
@@ -171,9 +174,11 @@ export default function AdminHome({ role, onNavigate, realitySlot }: AdminHomePr
                 >
                   <Icon className="h-4 w-4" />
                   <span>{a.label}</span>
-                  <Badge variant="outline" className="ml-auto text-[10px]">
-                    preview
-                  </Badge>
+                  {a.live ? null : (
+                    <Badge variant="outline" className="ml-auto text-[10px]">
+                      preview
+                    </Badge>
+                  )}
                 </button>
               );
             })}

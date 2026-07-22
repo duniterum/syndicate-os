@@ -253,16 +253,42 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   protocol-time) — the verifyLinks pattern when it legitimately emits
 >   address material; ⑧ hex colors in COMMENT PROSE trip no-raw-color —
 >   name colors in prose without the hex.
-> - **IN FLIGHT after K2's seal:** K3 — THE ADMIN AXIS (scope engraved in
->   OPEN_QUEUE's work order: the member-side "Ask for activation" intake
->   (own-row write, audited, the proven write-zone pattern) → the
->   SourceReviewQueue LIVE (today a DESIGN_PREVIEW in
->   AdminOperatorsCrud.tsx) with the server AUTO-PREFLIGHT → stacked
->   create+activate signing session → propose-pause/revoke doors →
->   per-source performance + CSV export. The founder's SIGNATURE stays
->   the law; only the friction dies). Then K4 (no-seat reach decision) ·
->   P (press kit — all text on screen) · recognition/season (slice 6:
->   read the gamification/legal dossiers first; the two-layer law holds).
+> - **▶ K3.a BUILT + COMMITTED [this commit] (2026-07-22 — mockup v3
+>   founder-approved "GO and GO-Live"; his own two pushes engraved: the
+>   live eligibility card + the quick-link remedies): THE MEMBER INTAKE +
+>   THE LIVE REVIEW QUEUE.** Schema: `activation_request` (⚠ REAL
+>   MIGRATION — its own cycle). Member: the 5th auth bridge + eligibility
+>   reads + GET/POST /api/auth/activation-request + ActivationDoor (states
+>   A/A′/A″/B/C′/D, remedies inline, the PAUSED-vs-none truth rendered at
+>   last). Admin: SourceReviewQueue LIVE at the head of /admin/sources
+>   (oldest-first, fail-closed preflight chips, Approve→audited
+>   signing-material + buffered prefill seam into ProposeSourceCreate,
+>   Decline→the member's bell in the same transaction, closed-by-reality).
+>   Guards: auth-zone 1171 (5th bridge + 3 routes + the signing-material
+>   exemption, all pinned dated). DONE-IS-DONE: `activationIntake` +
+>   `sourceReviewQueue` live SAME commit; the whole fossil class killed
+>   (sourceReviewSample deleted · AdminHome badge · /founder copy ·
+>   surfaceClassification · os-map). 3-seam adversarial verify: 12 real
+>   defects FIXED pre-commit (2 write races · the hidden-open-row window ·
+>   the RPC fan-out · a fail-closed gap · chip verdict invention · the
+>   lost prefill · busy collisions · ordering/wording · 2 fossils); 4
+>   non-actions recorded dated (close-verdict isActive hardening + the
+>   own-figures pills = K3.b). GATE all EXIT 0 full runs (api tsc·19
+>   guards·build·boot matrix — studio tsc·19 guards·build 35/354/99 ·
+>   seo·rewrites·audit 338). Full record: OPEN_QUEUE's K3.a entry.
+>   **🚀 DEPLOY — ⚠ REAL MIGRATION, its own cycle, NEVER batched: Replit
+>   pulls main, runs `pnpm --filter @workspace/db push` (ONE new table),
+>   deploys server+client (NO pnpm install), reports. The founder's living
+>   seal: his /referral eligibility card + the queue's honest empty state
+>   on /admin/sources.**
+> - **IN FLIGHT after K3.a's seal:** K3.b — the stacked create+activate
+>   signing session + the propose-pause/revoke doors (+ the recorded
+>   hardenings: the close verdict's live isActive() read before the bell ·
+>   the member pills' own figures) → K3.c — per-source performance + CSV
+>   (admin sees, public never). The founder's SIGNATURE stays the law;
+>   only the friction dies. Then K4 (no-seat reach decision) · P (press
+>   kit — all text on screen) · recognition/season (slice 6: read the
+>   gamification/legal dossiers first; the two-layer law holds).
 > - **FOUNDER-PENDING: NOTHING on the arc.** Parked as recorded: Q35 legal
 >   set · Q39/Q40/Q42 admin waves · Q32/MVP-final items · the deferred list.
 >   Taken-by-default (flagged, overridable): the dedicated PDF engine stays

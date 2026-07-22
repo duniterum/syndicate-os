@@ -10,10 +10,13 @@ import NotFound from "@/pages/not-found";
 // What each operator surface will do once built. Copy only — nothing here acts.
 const detailById: Record<string, string[]> = {
   founder: [
-    "Review and approve membership and source-activation requests.",
+    // K3.a truth (2026-07-22): the source-activation review is LIVE — members
+    // ask from /referral, the queue decides on /admin/sources. Only the
+    // membership-request review remains future on this line.
+    "Review membership requests. (The source-activation review queue is live today on the Admin console's Sources section.)",
     // Truth sweep 2026-07-17: founder authentication is LIVE (server-confirmed
     // founder_root); the live founder controls run in /admin today.
-    "Founder authentication is live — the working founder controls live in the Admin console (operators, referral terms, propose-source), each write audit-logged.",
+    "Founder authentication is live — the working founder controls live in the Admin console (operators, referral terms, propose-source, the source review queue), each write audit-logged.",
     "This page stays a copy-only preview of future dedicated Founder OS controls; nothing on THIS page acts.",
   ],
   source: [

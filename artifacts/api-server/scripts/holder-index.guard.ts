@@ -238,6 +238,12 @@ const DB_LAZY_ALLOW = new Set([
   // guard-auth-zone.ts section 10 + the channelStanding bridge pins.
   "src/channel/channelStore.ts",
   "src/auth/channelStanding.ts",
+  // K3.a (mockup founder-approved 2026-07-22): the activation intake bridge
+  // (member own-row, ask audited in-transaction) + the review-queue service
+  // (founder-only list/verdicts/signing-material). Lazy-only; pinned by
+  // guard-auth-zone.ts.
+  "src/auth/activationRequests.ts",
+  "src/operator/activationQueueService.ts",
 ]);
 const DB_STATIC_IMPORT_RE =
   /(from\s*["']@workspace\/db["'])|(import\s*["']@workspace\/db["'])|(require\s*\(\s*["']@workspace\/db["']\s*\))/;

@@ -319,11 +319,9 @@ export const operatorsSample: OperatorRow[] = [
   { label: "Auditor", wallet: "0x5D1…88A0", role: "Auditor / read-only", status: "Suspended" },
 ];
 
-export const sourceReviewSample: { source: string; requested: string; status: string }[] = [
-  { source: "0x71C…976F", requested: "Today", status: "Pending review" },
-  { source: "0x3A2…145A", requested: "Yesterday", status: "Approved" },
-  { source: "0x9F4…22B1", requested: "2 days ago", status: "Flagged" },
-];
+// K3.a (2026-07-22): sourceReviewSample DELETED — the Source review queue is
+// LIVE (real intake rows + live server preflight; AdminOperatorsCrud.tsx).
+// Fabricated rows are forbidden on a live console (truth-sweep law).
 
 // Truth sweep 2026-07-17: the flag STATES below now mirror live reality (the
 // referral program is publicly live and paying; the operator console is live

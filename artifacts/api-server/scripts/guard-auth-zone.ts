@@ -246,11 +246,17 @@ const INBOX_BRIDGE_FILE = "auth/memberInbox.ts";
 // Read-only here, lazily imported, fail-closed. Pinned below to the exact
 // own-row shape.
 const CHANNEL_BRIDGE_FILE = "auth/channelStanding.ts";
+// K3.a (mockup founder-approved 2026-07-22, "GO and GO-Live"): the FIFTH
+// sanctioned DB-reaching auth file — the member's OWN activation-request rows
+// (THE SECOND member-side write class). Own-row only, lazily imported,
+// fail-closed, ask audited in the same transaction. Pinned below.
+const ACTIVATION_BRIDGE_FILE = "auth/activationRequests.ts";
 const DB_BRIDGE_FILES = new Set([
   OPERATOR_BRIDGE_FILE,
   MEMBER_BRIDGE_FILE,
   INBOX_BRIDGE_FILE,
   CHANNEL_BRIDGE_FILE,
+  ACTIVATION_BRIDGE_FILE,
 ]);
 const REGISTRY_REACH = /@workspace\/db|drizzle|historical_member|memberRoot|ACTIVE/;
 // For helpers OUTSIDE src/auth (one-hop transitive scan) only true DB reach
@@ -454,6 +460,92 @@ for (const abs of authFiles) {
       !/\b(console|res|req|logger)\s*\./.test(code),
       `${INBOX_BRIDGE_FILE}: pure lookup module — no response, request, or log surface`,
       `${INBOX_BRIDGE_FILE} must stay a pure lookup module (no res/req/console/logger) so the verified account can never be echoed or logged from here`,
+    );
+  }
+}
+{
+  // K3.a — the activation-request bridge pin block (dated 2026-07-22).
+  const activationAbs = path.join(srcDir, ACTIVATION_BRIDGE_FILE);
+  const activationExists = existsSync(activationAbs);
+  check(
+    activationExists,
+    `${ACTIVATION_BRIDGE_FILE}: present`,
+    `${ACTIVATION_BRIDGE_FILE} missing — remove its guard exception if the intake is retired`,
+  );
+  if (activationExists) {
+    const code = stripComments(read(activationAbs));
+    check(
+      !/^\s*import[^;]*@workspace\/db/m.test(code) &&
+        /await import\(\s*["']@workspace\/db["']\s*\)/.test(code),
+      `${ACTIVATION_BRIDGE_FILE}: @workspace/db is lazily imported only`,
+      `${ACTIVATION_BRIDGE_FILE} must import @workspace/db ONLY via a lazy await import() — a top-level import couples the read-only server to a DB at boot`,
+    );
+    {
+      const flagGateIdx = code.search(/AUTH_EXPOSURE_FLAG\]\s*!==\s*["']true["']/);
+      const dbUrlIdx = code.indexOf("DATABASE_URL");
+      const lazyImportIdx = code.search(/await import\(\s*["']@workspace\/db["']\s*\)/);
+      check(
+        flagGateIdx !== -1 &&
+          dbUrlIdx !== -1 &&
+          lazyImportIdx !== -1 &&
+          flagGateIdx < lazyImportIdx &&
+          dbUrlIdx < lazyImportIdx,
+        `${ACTIVATION_BRIDGE_FILE}: exposure-flag + DATABASE_URL gate executes BEFORE the lazy DB import`,
+        `${ACTIVATION_BRIDGE_FILE} must check the auth exposure flag and DATABASE_URL presence BEFORE the lazy @workspace/db import — gate order drifted`,
+      );
+    }
+    check(
+      /catch\s*(\([^)]*\))?\s*\{[^}]*return null/.test(code) &&
+        /catch\s*(\([^)]*\))?\s*\{[^}]*return "unavailable"/.test(code),
+      `${ACTIVATION_BRIDGE_FILE}: every error fails closed (read → null, write → "unavailable")`,
+      `${ACTIVATION_BRIDGE_FILE} must fail closed from every catch — the read returns null, the write returns "unavailable"; a DB error must never invent or lose a request state`,
+    );
+    // Own-row ONLY: every account use is lowercased into `me`; the row
+    // selection AND the insert key on the bound account and nothing else.
+    check(
+      /const me = account\.toLowerCase\(\);/.test(code) &&
+        /eq\(activationRequest\.memberWallet,\s*me\)/.test(code) &&
+        /memberWallet:\s*me/.test(code) &&
+        !/memberWallet:\s*(?!me)[a-zA-Z]/.test(code),
+      `${ACTIVATION_BRIDGE_FILE}: own-row where clause + own-row insert (memberWallet = the bound account)`,
+      `${ACTIVATION_BRIDGE_FILE} drifted — every select must filter eq(activationRequest.memberWallet, me) and every insert must key memberWallet: me with me = account.toLowerCase()`,
+    );
+    // ONE open request per wallet — enforced in the TRANSACTION (never a
+    // partial index): the open-row check must name both open statuses.
+    check(
+      /db\.transaction\(/.test(code) &&
+        /inArray\(activationRequest\.status,\s*\[\s*"WAITING",\s*"HOLD"\s*\]\s*\)/.test(code),
+      `${ACTIVATION_BRIDGE_FILE}: one OPEN request per wallet enforced inside the transaction`,
+      `${ACTIVATION_BRIDGE_FILE} must check for an existing WAITING/HOLD row inside the ask transaction — one open request per wallet is a service invariant`,
+    );
+    // The engraved order: the ASK is AUDITED — the audit row commits in the
+    // SAME transaction as the request row, and its target is the request id
+    // (never a wallet↔seat pairing).
+    check(
+      /tx\.insert\(auditLog\)/.test(code) &&
+        /action:\s*"activation-request\.ask"/.test(code) &&
+        /target:\s*`request#/.test(code),
+      `${ACTIVATION_BRIDGE_FILE}: the ask commits with its audit row (target = the request id)`,
+      `${ACTIVATION_BRIDGE_FILE} must insert the audit_log row inside the same transaction as the request row, action "activation-request.ask", target the request id — never identity material`,
+    );
+    check(
+      /\.limit\(1\)/.test(code),
+      `${ACTIVATION_BRIDGE_FILE}: reads are bounded`,
+      `${ACTIVATION_BRIDGE_FILE} must bound its reads with .limit(...)`,
+    );
+    {
+      const rowShape =
+        code.match(/export interface OwnActivationRequest \{[\s\S]*?\n\}/)?.[0] ?? "";
+      check(
+        rowShape.length > 0 && !/[wW]allet/.test(rowShape),
+        `${ACTIVATION_BRIDGE_FILE}: served OwnActivationRequest carries NO wallet field`,
+        `${ACTIVATION_BRIDGE_FILE} OwnActivationRequest drifted — the member's own view is status/dates/reason only, never any wallet material`,
+      );
+    }
+    check(
+      !/\b(console|res|req|logger)\s*\./.test(code),
+      `${ACTIVATION_BRIDGE_FILE}: pure module — no response, request, or log surface`,
+      `${ACTIVATION_BRIDGE_FILE} must stay a pure module (no res/req/console/logger) so the verified account can never be echoed or logged from here`,
     );
   }
 }
@@ -970,6 +1062,14 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
     ["post", "/notifications/broadcast"],
     ["post", "/notifications/delete"],
     ["get", "/notifications"],
+    // K3.a (mockup founder-approved 2026-07-22): the Source review queue —
+    // the founder's list (live preflight, masked wallets, audited read), the
+    // verdicts (decline/hold/reopen/close — approve is NEVER a server act),
+    // and the signing-material read (ONE request's full wallet, audited per
+    // read — the verify-links pattern). ALL THREE founder_root-only.
+    ["get", "/activation-requests"],
+    ["post", "/activation-requests/decide"],
+    ["post", "/activation-requests/wallet"],
   ];
   const FOUNDER_ONLY_ROUTES = new Set([
     "post /operators",
@@ -977,11 +1077,14 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
     "post /notifications/member",
     "post /notifications/broadcast",
     "post /notifications/delete",
+    "post /activation-requests/decide",
+    "post /activation-requests/wallet",
   ]);
   const READ_ONLY_ROUTES = new Set([
     "get /operators",
     "get /member-ledger",
     "get /notifications",
+    "get /activation-requests",
   ]);
   // Close alternate Express route-declaration syntaxes BEFORE enumerating:
   // .route(...).post(...), bracketed verbs (router["post"]), computed access,
@@ -1107,6 +1210,32 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
             `route ${routeKey}: serialized payload passes the 40-hex fail-closed scanner`,
             `src/operator/router.ts route ${routeKey} must run assertAddressSafeAggregate(JSON.stringify(...)) over the payload before res.json`,
           );
+        } else if (routeKey === "get /activation-requests") {
+          // K3.a (dated 2026-07-22): FOUNDER-ONLY — queue rows pair masked
+          // wallets with seats and live preflight verdicts (§D overlay class);
+          // delegates ONLY to the audited queue list; the serialized payload
+          // passes the BOUNDARY-AWARE 40-hex scan (64-hex source ids pass, a
+          // bare address fail-closes).
+          check(
+            /ctx\.role\s*!==\s*"founder_root"/.test(block) && !/WRITE_ROLES/.test(block),
+            `route ${routeKey}: founder_root ONLY (queue pairings are founder-gated)`,
+            `src/operator/router.ts route ${routeKey} role gate drifted — the activation queue must deny unless ctx.role === "founder_root" and must NOT use the broader WRITE_ROLES allow-list`,
+          );
+          check(
+            /listActivationRequests\(/.test(block) &&
+              !/inviteOperator\(|suspendOperator\(|saveReferralTerm\(|listOperators\(|decideActivationRequest\(|readActivationRequestWallet\(/.test(
+                block,
+              ),
+            `route ${routeKey}: delegates to the audited queue list ONLY (no other service reachable)`,
+            `src/operator/router.ts route ${routeKey} must call listActivationRequests() and must never reach any write service or the signing-material read`,
+          );
+          check(
+            /0x\[0-9a-fA-F\]\{40\}\(\?!\[0-9a-fA-F\]\)/.test(block) &&
+              /JSON\.stringify\(result\.payload\)/.test(block) &&
+              /throw new Error/.test(block),
+            `route ${routeKey}: serialized payload passes the BOUNDARY-AWARE 40-hex fail-closed scan`,
+            `src/operator/router.ts route ${routeKey} must run the boundary-aware 40-hex fail-closed scan over JSON.stringify(result.payload) and throw before res.json`,
+          );
         } else {
           check(
             /WRITE_ROLES\.has\(/.test(block),
@@ -1140,6 +1269,24 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
             `src/operator/router.ts route ${routeKey} must gate on WRITE_ROLES.has(ctx.role)`,
           );
         }
+      }
+      if (routeKey === "post /activation-requests/wallet") {
+        // K3.a (dated 2026-07-22): THE SIGNING-MATERIAL EXEMPTION — the
+        // operator zone's ONE deliberate address-emitting response (the
+        // verify-links pattern for legitimate address material): the
+        // founder's wallet screen must sign exactly the wallet the request
+        // named, and createSource takes a wallet. Founder-only (pinned
+        // above), audited PER READ inside the service, payload built
+        // OUTSIDE the res.json call (the zone's payload-variable idiom).
+        check(
+          /readActivationRequestWallet\(/.test(block) &&
+            /const signingMaterial = \{ ok: true as const, signerTarget: result\.wallet \};/.test(
+              block,
+            ) &&
+            /res\.json\(signingMaterial\);/.test(block),
+          `route ${routeKey}: the deliberate signing-material shape (audited service read, payload-variable idiom)`,
+          `src/operator/router.ts route ${routeKey} drifted — it must delegate to readActivationRequestWallet (audited per read) and build the response as const signingMaterial = { ok: true as const, signerTarget: result.wallet }; res.json(signingMaterial);`,
+        );
       }
     }
   }

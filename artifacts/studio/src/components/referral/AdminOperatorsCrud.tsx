@@ -47,15 +47,20 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { TruthLabel } from "@/components/TruthLabel";
-import { operatorRoles, sourceReviewSample } from "@/config/referralProgram";
+import { operatorRoles } from "@/config/referralProgram";
 import {
   listOperators,
   inviteOperator,
   suspendOperator,
+  listActivationQueue,
+  decideActivation,
+  fetchActivationSigner,
+  type ActivationQueueResult,
   type ListOperatorsResult,
   type OperatorListItem,
 } from "@/lib/operatorClient";
+import { dispatchProposeSourcePrefill } from "@/lib/adminPrefill";
+import { dateLabel } from "@/components/referral/referralStanding";
 
 // Live, read-only registry read (Phase 3 slice 1). Honest states only — no
 // fake fallback: loading, ok (rows or empty), denied (dark zone / no session /
@@ -463,41 +468,331 @@ export function AdminOperatorsCrud() {
   );
 }
 
+// ── K3.a — THE SOURCE REVIEW QUEUE, LIVE (mockup founder-approved 2026-07-22,
+// "GO and GO-Live"). Every request arrives already checked by the server
+// (live preflight — fail-closed: a check that didn't run BLOCKS, never a
+// silent pass). Three exit verbs + reality: Approve opens the signing path
+// (prefills ProposeSourceCreate on this same page — the founder's SIGNATURE
+// is the only approval that exists), Decline requires the human sentence the
+// member will read (their bell carries it, written server-side in the same
+// transaction), Hold parks. A request whose source turned ACTIVE on-chain is
+// closed by reality — one click records it and the member's bell announces
+// the activation. Wallets stay masked; the one full wallet needed to sign is
+// fetched at act time (audited server-side per read). ────────────────────────
+
+function decideFailureText(reason: string | null): string {
+  switch (reason) {
+    case "bad_reason":
+      return "Write a short reason the member will read — required, 500 characters max.";
+    case "address_in_text":
+      return "The reason can't contain a raw wallet address — say it in words instead.";
+    case "bad_state":
+      return "This request moved on since the list loaded — reload and look again.";
+    case "not_found":
+      return "This request no longer exists — reload the queue.";
+    case "insufficient_role":
+      return "Sign in as the founder to decide requests.";
+    case "unavailable":
+    case "unreachable":
+      return "The write didn't go through — nothing changed. Try again in a moment.";
+    default:
+      return "The write was refused — nothing changed. Reload and try again.";
+  }
+}
+
+/** One preflight chip — pass / fail / didn't-run (blocking), never silent. */
+function CheckChip({ ok, pass, fail, norun }: { ok: boolean | null; pass: string; fail: string; norun: string }) {
+  if (ok === true) return <Badge variant="outline" className="text-[10px] font-normal text-live border-live/40">✓ {pass}</Badge>;
+  if (ok === false) return <Badge variant="outline" className="text-[10px] font-normal text-destructive border-destructive/40">✕ {fail}</Badge>;
+  return <Badge variant="outline" className="text-[10px] font-normal text-muted-foreground">◌ {norun}</Badge>;
+}
+
+/** ISO timestamp → the register's one date grammar ("July 22, 2026"). */
+function shortDay(iso: string | null): string {
+  const day = iso?.slice(0, 10) ?? null;
+  return day !== null && /^\d{4}-\d{2}-\d{2}$/.test(day) ? dateLabel(day) : "—";
+}
+
 export function SourceReviewQueue() {
+  const [state, setState] = useState<{ status: "loading" } | ActivationQueueResult>({ status: "loading" });
+  const [tick, setTick] = useState(0);
+  const [declineFor, setDeclineFor] = useState<string | null>(null);
+  const [declineReason, setDeclineReason] = useState("");
+  // Per-row busy SET (adversarial verify 2026-07-22): a single shared id was
+  // overwritten by a second row's act, re-enabling the first mid-flight.
+  const [busyIds, setBusyIds] = useState<ReadonlySet<string>>(new Set());
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
+  const markBusy = (id: string, on: boolean) =>
+    setBusyIds((prev) => {
+      const next = new Set(prev);
+      if (on) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+
+  useEffect(() => {
+    let active = true;
+    void listActivationQueue().then((r) => {
+      if (active) setState(r);
+    });
+    const onSession = () => {
+      void listActivationQueue().then((r) => {
+        if (active) setState(r);
+      });
+    };
+    window.addEventListener(SESSION_CHANGED_EVENT, onSession);
+    return () => {
+      active = false;
+      window.removeEventListener(SESSION_CHANGED_EVENT, onSession);
+    };
+  }, [tick]);
+  const reload = () => {
+    setState({ status: "loading" });
+    setError(null);
+    setTick((t) => t + 1);
+  };
+
+  // Every verdict: fail-closed client call → toast → RE-READ (never optimistic).
+  async function decide(id: string, verdict: "decline" | "hold" | "reopen" | "close", reason?: string) {
+    markBusy(id, true);
+    setError(null);
+    const result = await decideActivation(id, verdict, reason);
+    markBusy(id, false);
+    if (!result.ok) {
+      setError(decideFailureText(result.reason));
+      return;
+    }
+    if (verdict === "decline") {
+      setDeclineFor(null);
+      setDeclineReason("");
+      toast({ title: "Declined", description: "The member's bell carries your reason." });
+    } else if (verdict === "close") {
+      toast({ title: "Recorded", description: "The member's bell announces the activation." });
+    }
+    reload();
+  }
+
+  // Approve = open the signing path: fetch the request's full wallet (the
+  // audited signing material), hand it to ProposeSourceCreate on this same
+  // page, and let every existing gate (owner wallet, chain, terms hash, live
+  // record) decide whether the signature opens. No server state changes here.
+  async function approve(id: string) {
+    markBusy(id, true);
+    setError(null);
+    const result = await fetchActivationSigner(id);
+    markBusy(id, false);
+    if (!result.ok) {
+      setError(decideFailureText(result.reason));
+      return;
+    }
+    dispatchProposeSourcePrefill(result.signerTarget);
+    toast({
+      title: "Signing path opened",
+      description: "The create form on this page now carries this request's wallet.",
+    });
+  }
+
+  const rows = state.status === "ok" ? state.rows : [];
+  // WORK-FIRST: the queue opens on the OLDEST waiting request (the mockup's
+  // law); the decided tail orders by the founder's DECISION time — "Last
+  // decision" must name his last act, never the most recently ASKED row
+  // (adversarial verify 2026-07-22).
+  const open = rows
+    .filter((r) => r.status === "WAITING" || r.status === "HOLD")
+    .slice()
+    .sort((a, b) => (a.askedAtIso ?? "").localeCompare(b.askedAtIso ?? ""));
+  const decided = rows
+    .filter((r) => r.status === "DECLINED" || r.status === "CLOSED")
+    .slice()
+    .sort((a, b) => (b.decidedAtIso ?? "").localeCompare(a.decidedAtIso ?? ""));
+  const lastDecision = decided[0] ?? null;
+
   return (
     <Card id="source-review" className="p-6 scroll-mt-24">
       <div className="flex items-center gap-3 flex-wrap mb-1">
         <Link2 className="h-5 w-5 text-muted-foreground" />
         <h2 className="text-base font-semibold text-foreground">Source review queue</h2>
-        <TruthLabel variant="DESIGN_PREVIEW" />
+        <span className="font-mono text-[10px] uppercase tracking-wider text-primary">
+          Live · founder-gated writes
+        </span>
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl mb-4 leading-relaxed">
-        Review requested sources. Preview: approve and flag are writes into the operator registry / audit log —
-        the live approve/flag writes land with their Q42 slice.
+        Members ask for activation from their referral page; every request
+        arrives here already checked by the server. Approve opens the signing
+        path — your on-chain signature is the only approval that exists.
       </p>
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-left text-xs text-muted-foreground">
-            <th className="font-normal pb-2">Source</th>
-            <th className="font-normal pb-2">Requested</th>
-            <th className="font-normal pb-2">Status</th>
-            <th className="font-normal pb-2 text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sourceReviewSample.map((s) => (
-            <tr key={s.source} className="border-t border-border/40">
-              <td className="py-2 font-mono text-xs text-foreground/80">{s.source}</td>
-              <td className="py-2 text-muted-foreground">{s.requested}</td>
-              <td className="py-2 text-muted-foreground">{s.status}</td>
-              <td className="py-2 text-right">
-                <Button variant="ghost" size="sm" disabled title="Lands with its own slice">Approve</Button>
-                <Button variant="ghost" size="sm" disabled title="Lands with its own slice">Flag</Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+
+      {error !== null ? (
+        <p className="text-xs text-destructive leading-relaxed mb-3" data-testid="text-queue-error">{error}</p>
+      ) : null}
+
+      {state.status === "loading" ? (
+        <p className="text-sm text-muted-foreground">Reading the queue…</p>
+      ) : state.status === "denied" ? (
+        <p className="text-sm text-muted-foreground">
+          Sign in as the founder to read the queue. Nothing is shown without the role.
+        </p>
+      ) : state.status === "unavailable" ? (
+        <p className="text-sm text-muted-foreground">
+          The queue is unavailable right now — nothing is assumed.{" "}
+          <button type="button" className="underline underline-offset-2" onClick={reload}>Re-read</button>
+        </p>
+      ) : open.length === 0 ? (
+        <p className="text-sm text-muted-foreground" data-testid="text-queue-empty">
+          No requests waiting.
+          {lastDecision
+            ? ` Last decision: ${lastDecision.status === "CLOSED" ? "recorded activated" : "declined"} ${lastDecision.walletShort} — ${shortDay(lastDecision.decidedAtIso)}.`
+            : " The door on /referral feeds this queue."}
+        </p>
+      ) : (
+        <div className="space-y-3">
+          {state.uncheckedOpenCount > 0 ? (
+            <p className="text-xs text-muted-foreground">
+              {state.uncheckedOpenCount} newer waiting request(s) beyond the live-check window — the oldest are checked first; decide the ones below, then reload.
+            </p>
+          ) : null}
+          {open.map((r) => {
+            const c = r.checks;
+            const closedByReality = c?.sourceActive === true;
+            const approveReady =
+              !closedByReality &&
+              c !== null &&
+              c.seatHeld === true &&
+              c.holdsSyn === true &&
+              c.sourceOnChain !== null &&
+              c.sourceActive !== null;
+            return (
+              <div key={r.id} className="rounded-md border border-border/50 p-4" data-testid={`queue-request-${r.id}`}>
+                <div className="flex items-baseline gap-3 flex-wrap">
+                  <span className="font-mono text-sm font-medium text-foreground">{r.walletShort}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {r.seat !== null ? `Seat #${r.seat} · ` : ""}asked {shortDay(r.askedAtIso)}
+                  </span>
+                  <Badge variant="outline" className="text-[10px] font-normal ml-auto">
+                    {closedByReality ? "Closed by reality" : r.status === "HOLD" ? "On hold" : "Waiting"}
+                  </Badge>
+                </div>
+
+                {closedByReality ? (
+                  <>
+                    <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                      This wallet's source is already active on-chain — the chain
+                      answered before a decision was needed. Record it so the
+                      member's bell announces the activation.
+                    </p>
+                    <Button
+                      size="sm"
+                      className="mt-2"
+                      disabled={busyIds.has(r.id)}
+                      onClick={() => void decide(r.id, "close")}
+                      data-testid={`button-close-${r.id}`}
+                    >
+                      Record it — notify the member
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex flex-wrap gap-1.5 mt-2.5 mb-3">
+                      <CheckChip ok={c?.seatHeld ?? null} pass="Seat held" fail="No seat" norun="Seat — didn't run (blocking)" />
+                      <CheckChip ok={c?.holdsSyn ?? null} pass="Holds SYN" fail="Holds SYN — 0 at last read" norun="SYN — didn't run (blocking)" />
+                      <CheckChip
+                        // Fail-closed rendering (adversarial verify 2026-07-22):
+                        // an existing source whose is-active read did NOT run
+                        // is UNKNOWN — never asserted "paused". And an
+                        // inactive existing source is stated without guessing
+                        // paused-vs-revoked (the server serves booleans; the
+                        // signing screen reads the full live record and
+                        // refuses a revoked source with its own honest words).
+                        ok={
+                          c === null ||
+                          c.sourceOnChain === null ||
+                          (c.sourceOnChain === true && c.sourceActive === null)
+                            ? null
+                            : true
+                        }
+                        pass={
+                          c?.sourceOnChain === true
+                            ? "On the registry — not active (the signing screen reads the live record)"
+                            : "Not yet on the registry"
+                        }
+                        fail=""
+                        norun="Registry — didn't run (blocking)"
+                      />
+                    </div>
+                    {!approveReady ? (
+                      <p className="text-xs text-muted-foreground mb-2 leading-relaxed">
+                        A failed or unrun check blocks the signing door — fail-closed,
+                        never a silent pass. Decline with a reason, or hold and
+                        reload later.
+                      </p>
+                    ) : null}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Button
+                        size="sm"
+                        disabled={!approveReady || busyIds.has(r.id)}
+                        onClick={() => void approve(r.id)}
+                        data-testid={`button-approve-${r.id}`}
+                      >
+                        {approveReady ? "Approve — open the signing path" : "Approve — blocked by checks"}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        disabled={busyIds.has(r.id)}
+                        onClick={() => {
+                          setDeclineFor(declineFor === r.id ? null : r.id);
+                          setDeclineReason("");
+                        }}
+                        data-testid={`button-decline-${r.id}`}
+                      >
+                        Decline — with a reason
+                      </Button>
+                      {r.status === "WAITING" ? (
+                        <Button variant="ghost" size="sm" disabled={busyIds.has(r.id)} onClick={() => void decide(r.id, "hold")}>
+                          Hold
+                        </Button>
+                      ) : (
+                        <Button variant="ghost" size="sm" disabled={busyIds.has(r.id)} onClick={() => void decide(r.id, "reopen")}>
+                          Reopen
+                        </Button>
+                      )}
+                    </div>
+                    {declineFor === r.id ? (
+                      <div className="mt-3">
+                        <textarea
+                          value={declineReason}
+                          onChange={(e) => setDeclineReason(e.target.value)}
+                          maxLength={500}
+                          placeholder="A short reason the member will read — required."
+                          className="w-full min-h-[52px] rounded-md border border-border bg-background text-foreground text-xs p-2.5 resize-y"
+                          data-testid={`input-decline-reason-${r.id}`}
+                        />
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="mt-1.5"
+                          disabled={declineReason.trim().length === 0 || busyIds.has(r.id)}
+                          onClick={() => void decide(r.id, "decline", declineReason.trim())}
+                          data-testid={`button-decline-confirm-${r.id}`}
+                        >
+                          Decline this request
+                        </Button>
+                      </div>
+                    ) : null}
+                  </>
+                )}
+              </div>
+            );
+          })}
+          {decided.length > 0 ? (
+            <p className="text-xs text-muted-foreground">
+              Decided recently:{" "}
+              {decided.slice(0, 3).map((d) => `${d.walletShort} ${d.status === "CLOSED" ? "activated" : "declined"} ${shortDay(d.decidedAtIso)}`).join(" · ")}
+            </p>
+          ) : null}
+        </div>
+      )}
     </Card>
   );
 }

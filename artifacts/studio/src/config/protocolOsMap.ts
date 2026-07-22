@@ -233,7 +233,7 @@ export const protocolOsMap: OsMapDomain[] = [
         binding: { kind: "surface", surfaceId: "founderControls" },
         notPublic: false,
         summary: "Founder-gated operational controls.",
-        reality: "Founder authentication is LIVE (server-confirmed founder_root); the working controls run in /admin (operators, referral terms, propose-source — audit-logged). The dedicated Founder OS surface stays a preview.",
+        reality: "Founder authentication is LIVE (server-confirmed founder_root); the working controls run in /admin (operators, referral terms, propose-source, the source review queue with its verdict writes — audit-logged). The dedicated Founder OS surface stays a preview.",
       },
     ],
   },

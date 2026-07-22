@@ -173,6 +173,54 @@ export const notificationReceipt = pgTable(
   }),
 );
 
+/**
+ * Activation requests — K3.a (the referrer kit's admin axis, mockup founder-
+ * approved 2026-07-22): a member's own "Ask for activation" intake feeding the
+ * founder's Source review queue. THE SECOND member-side write class (after
+ * notification receipts): own-row ONLY (member_wallet = the session's bound
+ * account, server-side), fail-closed, throttled, audited. The request is a
+ * REQUEST — approval is never a server act: only the founder's on-chain
+ * signatures (createSource / setSourceStatus) move protocol state, and a
+ * request whose source turns ACTIVE on-chain closes by reality.
+ *
+ * Status machine (text CHECK in-list, flip-never-delete like `operator`):
+ *   WAITING → HOLD (founder parks it) → back to WAITING (reopen)
+ *   WAITING/HOLD → DECLINED (founder verdict, human reason the member reads)
+ *   WAITING/HOLD → CLOSED (reality answered: the source is ACTIVE on-chain)
+ * Asking again after DECLINED/CLOSED inserts a NEW row (history preserved);
+ * "one OPEN request per wallet" is enforced in the service transaction —
+ * never by a partial index (expression-free discipline).
+ *
+ * PII posture: `member_wallet` is SERVER-ONLY (lowercased); the row stores NO
+ * member number (the wallet↔seat pairing lives only in the continuity spine).
+ * `source_id_hex` is the wallet's derived 64-hex source id — not an address;
+ * the boundary-aware 40-hex output scan stays clean by construction.
+ */
+export const activationRequest = pgTable(
+  "activation_request",
+  {
+    id: text("id").primaryKey(),
+    memberWallet: text("member_wallet").notNull(), // lowercased; SERVER-ONLY
+    sourceIdHex: text("source_id_hex").notNull(), // derived keccak id (64-hex)
+    status: text("status").notNull().default("WAITING"),
+    askedAt: timestamp("asked_at", { withTimezone: true }).notNull().defaultNow(),
+    decidedAt: timestamp("decided_at", { withTimezone: true }),
+    decidedByRole: text("decided_by_role"), // role only — the actor wallet lives in audit_log
+    declineReason: text("decline_reason"), // the human sentence the member reads
+    closeCause: text("close_cause"), // CLOSED only, e.g. 'activated-on-chain'
+    rowVersion: integer("row_version").notNull().default(1),
+  },
+  (t) => ({
+    statusValid: check(
+      "activation_request_status_valid",
+      sql`${t.status} in ('WAITING','HOLD','DECLINED','CLOSED')`,
+    ),
+    // Expression-free by discipline (dev→prod introspection constraint).
+    memberIdx: index("activation_request_member_idx").on(t.memberWallet),
+    statusIdx: index("activation_request_status_idx").on(t.status),
+  }),
+);
+
 // ── drizzle-zod schemas for fail-closed endpoint validation ──────────────────
 export const insertOperatorSchema = createInsertSchema(operator);
 export const selectOperatorSchema = createSelectSchema(operator);
@@ -184,3 +232,5 @@ export const insertNotificationSchema = createInsertSchema(notification);
 export const selectNotificationSchema = createSelectSchema(notification);
 export const insertNotificationReceiptSchema = createInsertSchema(notificationReceipt);
 export const selectNotificationReceiptSchema = createSelectSchema(notificationReceipt);
+export const insertActivationRequestSchema = createInsertSchema(activationRequest);
+export const selectActivationRequestSchema = createSelectSchema(activationRequest);

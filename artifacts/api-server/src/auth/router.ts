@@ -70,6 +70,13 @@ import {
 } from "./memberInbox";
 // SPEC R3 — the own-row channel breakdown (the FOURTH sanctioned DB bridge).
 import { readOwnChannelBreakdown } from "./channelStanding";
+// K3.a — the member's own activation intake: live eligibility (chain reads
+// only) + the request rows (the FIFTH sanctioned DB bridge).
+import { readActivationEligibility } from "./activationEligibility";
+import {
+  createOwnActivationRequest,
+  readOwnActivationRequest,
+} from "./activationRequests";
 // Slice ④ — the per-introduction rows holder (pure spine state, no DB reach;
 // the D3 own-purchase pattern applied to the introducer's axis).
 import { getIntroductionRowsModel } from "../lib/protocol/introductionRowsModel";
@@ -1005,6 +1012,123 @@ router.post("/member-inbox/read", async (req: Request, res: Response) => {
     return;
   }
   req.log.info({ event: "auth.member_inbox_read.ok" });
+  res.json({ ok: true });
+});
+
+// ── GET /api/auth/activation-request ────────────────────────────────────────
+// K3.a (mockup founder-approved 2026-07-22) — the member's OWN eligibility
+// card + latest request state, in one read. ONE truth, two faces: the same
+// live checks feed the founder's review queue. The ONLY input is the session
+// cookie; the bound account is server-side only; the payload carries booleans,
+// ISO dates, the founder's decline sentence, and the own-row 64-hex source id
+// — never a wallet. Eligibility legs fail closed to null independently.
+router.get("/activation-request", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "auth.activation_request.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const boundAccount =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  const sessionActive = boundAccount !== null;
+
+  const eligibility =
+    boundAccount === null
+      ? null
+      : await readActivationEligibility(boundAccount);
+  const own =
+    boundAccount === null ? null : await readOwnActivationRequest(boundAccount);
+
+  const payload = {
+    state: sessionActive ? ("S4" as const) : ("S1" as const),
+    chainVerified: eligibility?.chainVerified ?? false,
+    seatHeld: eligibility?.seatHeld ?? null,
+    holdsSyn: eligibility?.holdsSyn ?? null,
+    sourceOnChain: eligibility?.sourceOnChain ?? null,
+    sourceActive: eligibility?.sourceActive ?? null,
+    sourceIdHex: eligibility?.sourceIdHex ?? null,
+    request: own?.request ?? null,
+    /** false = the request store is unavailable (fail closed), never "none". */
+    requestReadOk: own !== null,
+    failureReason:
+      boundAccount === null
+        ? "no active wallet session; sign in to read your activation state"
+        : (eligibility?.failureReason ?? null),
+  };
+  try {
+    assertProtocolRealityDiscipline(payload);
+    if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(JSON.stringify(payload))) {
+      throw new Error("address-shaped token in payload");
+    }
+  } catch {
+    req.log.warn({ event: "auth.activation_request.discipline_rejected" });
+    deny(res, 500, "unavailable");
+    return;
+  }
+  req.log.info({
+    event: "auth.activation_request.checked",
+    code: !sessionActive ? "none" : own !== null ? "mapped" : "unavailable",
+  });
+  res.json(payload);
+});
+
+// ── POST /api/auth/activation-request ───────────────────────────────────────
+// K3.a — the member's OWN "Ask for activation" (THE SECOND member-side write
+// class). No body input at all. Eligibility is RE-VERIFIED LIVE server-side
+// at ask time (fail closed: an unavailable read never becomes a verdict):
+// a seat held AND SYN held (any amount — the engraved contract truth) AND
+// the source not already live. One open request per wallet; the row and its
+// audit row commit in one transaction (activationRequests.ts).
+router.post("/activation-request", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "auth.activation_request_ask.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const boundAccount =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  if (boundAccount === null) {
+    deny(res, 401, "no_session");
+    return;
+  }
+
+  const eligibility = await readActivationEligibility(boundAccount);
+  if (eligibility.sourceActive === true) {
+    deny(res, 400, "already_active");
+    return;
+  }
+  if (
+    eligibility.seatHeld === null ||
+    eligibility.holdsSyn === null ||
+    eligibility.sourceActive === null // the not-already-live leg is fail-closed too
+  ) {
+    deny(res, 503, "unavailable"); // a read that didn't run is never a pass
+    return;
+  }
+  if (eligibility.seatHeld !== true || eligibility.holdsSyn !== true) {
+    deny(res, 400, "not_eligible");
+    return;
+  }
+  if (eligibility.sourceIdHex === null) {
+    deny(res, 503, "unavailable");
+    return;
+  }
+
+  const outcome = await createOwnActivationRequest(
+    boundAccount,
+    eligibility.sourceIdHex,
+  );
+  if (outcome === "unavailable") {
+    deny(res, 503, "unavailable");
+    return;
+  }
+  req.log.info({ event: "auth.activation_request_ask.ok", code: outcome });
   res.json({ ok: true });
 });
 

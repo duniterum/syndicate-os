@@ -32,6 +32,7 @@ import {
   type StandingReadback,
 } from "@/components/referral/referralStanding";
 import { ReferralLinkHero } from "@/components/referral/ReferralLinkHero";
+import { ActivationDoor } from "@/components/referral/ActivationDoor";
 import { ReferralOverviewPanel } from "@/components/referral/ReferralOverviewPanel";
 import { ReferralIntroductionsPanel } from "@/components/referral/ReferralIntroductionsPanel";
 import { ReferralCommissionsPanel } from "@/components/referral/ReferralCommissionsPanel";
@@ -201,6 +202,12 @@ export function MemberReferralDashboard({ tab = "overview" }: { tab?: ReferralTa
           EVERY tab, exactly ONCE (founder structure order 2026-07-19: "a new
           member wants to see the LINK immediately"). */}
       <ReferralLinkHero readback={readback} />
+
+      {/* K3.a — the Ask-for-activation door (mockup founder-approved
+          2026-07-22): the live eligibility card + the honest request states,
+          directly under the link it activates. Renders nothing when the
+          source is active and paying. */}
+      <ActivationDoor />
 
       {/* THE FOUR FIGURES — above the tabs, always. */}
       <ReferralFigures readback={readback} />

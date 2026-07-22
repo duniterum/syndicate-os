@@ -5,7 +5,11 @@
 // by construction: any non-OK response — dark zone (404), no session (401),
 // insufficient role (403), validation (400), or a transport error — resolves to
 // { ok: false, reason } and NEVER throws to the caller. This module talks only
-// to "/api/operator/..." and carries no wallet/identity material.
+// to "/api/operator/..." and carries no wallet/identity material — with ONE
+// dated exception (K3.a, 2026-07-22): fetchActivationSigner returns a
+// request's full wallet, the deliberate founder-only signing material
+// (audited server-side per read; used only to build the createSource
+// signature; never rendered as a list).
 
 export interface WriteResult {
   ok: boolean;
@@ -400,6 +404,181 @@ export async function suspendOperator(id: string): Promise<WriteResult> {
       body: JSON.stringify({ id }),
     });
     if (res.ok) return { ok: true, reason: null };
+    let reason: string | null = null;
+    try {
+      const body: unknown = await res.json();
+      if (typeof body === "object" && body !== null) {
+        const r = (body as Record<string, unknown>).reason;
+        if (typeof r === "string") reason = r;
+      }
+    } catch {
+      // no JSON body
+    }
+    return { ok: false, reason: reason ?? String(res.status) };
+  } catch {
+    return { ok: false, reason: "unreachable" };
+  }
+}
+
+// ── K3.a: the Source review queue (founder-only) ────────────────────────────
+// The queue rows arrive with MASKED wallets, the engine's live seat figure,
+// and the server's LIVE preflight checks (null = the read did not run —
+// rendered as its own BLOCKING state, never a pass).
+export interface ActivationQueueChecks {
+  seatHeld: boolean | null;
+  holdsSyn: boolean | null;
+  sourceOnChain: boolean | null;
+  sourceActive: boolean | null;
+}
+export interface ActivationQueueRow {
+  id: string;
+  walletShort: string;
+  seat: string | null;
+  sourceIdHex: string;
+  status: string;
+  askedAtIso: string | null;
+  decidedAtIso: string | null;
+  declineReason: string | null;
+  closeCause: string | null;
+  checks: ActivationQueueChecks | null;
+}
+export type ActivationQueueResult =
+  | {
+      status: "ok";
+      rows: ActivationQueueRow[];
+      openCount: number;
+      uncheckedOpenCount: number;
+    }
+  | { status: "denied" }
+  | { status: "unavailable" };
+
+export async function listActivationQueue(): Promise<ActivationQueueResult> {
+  try {
+    const res = await fetch("/api/operator/activation-requests", { method: "GET" });
+    if (res.ok) {
+      const body: unknown = await res.json();
+      const payload =
+        typeof body === "object" && body !== null
+          ? (body as Record<string, unknown>).payload
+          : null;
+      if (typeof payload !== "object" || payload === null) {
+        return { status: "unavailable" };
+      }
+      const p = payload as Record<string, unknown>;
+      const raw = Array.isArray(p.rows) ? p.rows : [];
+      const rows: ActivationQueueRow[] = [];
+      for (const r of raw) {
+        if (typeof r !== "object" || r === null) continue;
+        const o = r as Record<string, unknown>;
+        if (
+          typeof o.id !== "string" ||
+          typeof o.walletShort !== "string" ||
+          typeof o.sourceIdHex !== "string" ||
+          typeof o.status !== "string"
+        ) {
+          continue;
+        }
+        let checks: ActivationQueueChecks | null = null;
+        if (typeof o.checks === "object" && o.checks !== null) {
+          const c = o.checks as Record<string, unknown>;
+          checks = {
+            seatHeld: typeof c.seatHeld === "boolean" ? c.seatHeld : null,
+            holdsSyn: typeof c.holdsSyn === "boolean" ? c.holdsSyn : null,
+            sourceOnChain:
+              typeof c.sourceOnChain === "boolean" ? c.sourceOnChain : null,
+            sourceActive:
+              typeof c.sourceActive === "boolean" ? c.sourceActive : null,
+          };
+        }
+        rows.push({
+          id: o.id,
+          walletShort: o.walletShort,
+          seat: typeof o.seat === "string" ? o.seat : null,
+          sourceIdHex: o.sourceIdHex,
+          status: o.status,
+          askedAtIso: typeof o.askedAtIso === "string" ? o.askedAtIso : null,
+          decidedAtIso:
+            typeof o.decidedAtIso === "string" ? o.decidedAtIso : null,
+          declineReason:
+            typeof o.declineReason === "string" ? o.declineReason : null,
+          closeCause: typeof o.closeCause === "string" ? o.closeCause : null,
+          checks,
+        });
+      }
+      return {
+        status: "ok",
+        rows,
+        openCount: typeof p.openCount === "number" ? p.openCount : 0,
+        uncheckedOpenCount:
+          typeof p.uncheckedOpenCount === "number" ? p.uncheckedOpenCount : 0,
+      };
+    }
+    if (res.status === 401 || res.status === 403 || res.status === 404) return { status: "denied" };
+    return { status: "unavailable" };
+  } catch {
+    return { status: "unavailable" };
+  }
+}
+
+// Founder-only verdicts: decline (with the human reason the member reads),
+// hold, reopen, close (recording the on-chain reality; the member's bell is
+// written server-side in the same transaction). Approve is NEVER a client or
+// server act — it is the founder's on-chain signature.
+export async function decideActivation(
+  id: string,
+  verdict: "decline" | "hold" | "reopen" | "close",
+  reason?: string,
+): Promise<WriteResult> {
+  try {
+    const res = await fetch("/api/operator/activation-requests/decide", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(reason === undefined ? { id, verdict } : { id, verdict, reason }),
+    });
+    if (res.ok) return { ok: true, reason: null };
+    let reason2: string | null = null;
+    try {
+      const body: unknown = await res.json();
+      if (typeof body === "object" && body !== null) {
+        const r = (body as Record<string, unknown>).reason;
+        if (typeof r === "string") reason2 = r;
+      }
+    } catch {
+      // no JSON body
+    }
+    return { ok: false, reason: reason2 ?? String(res.status) };
+  } catch {
+    return { ok: false, reason: "unreachable" };
+  }
+}
+
+// THE SIGNING MATERIAL (founder-only, audited server-side per read): one
+// request's full wallet, fetched ONLY at the moment the founder opens the
+// signing path — the queue list itself stays masked.
+export type ActivationSignerResult =
+  | { ok: true; signerTarget: string }
+  | { ok: false; reason: string };
+
+export async function fetchActivationSigner(
+  id: string,
+): Promise<ActivationSignerResult> {
+  try {
+    const res = await fetch("/api/operator/activation-requests/wallet", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    if (res.ok) {
+      const body: unknown = await res.json();
+      const target =
+        typeof body === "object" && body !== null
+          ? (body as Record<string, unknown>).signerTarget
+          : null;
+      if (typeof target === "string" && /^0x[0-9a-fA-F]{40}$/.test(target)) {
+        return { ok: true, signerTarget: target };
+      }
+      return { ok: false, reason: "unavailable" };
+    }
     let reason: string | null = null;
     try {
       const body: unknown = await res.json();

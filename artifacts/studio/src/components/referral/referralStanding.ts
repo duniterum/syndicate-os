@@ -82,6 +82,40 @@ export function useOwnIntroductions(retryToken = 0): OwnIntroductionsReadback | 
   return readback;
 }
 
+// K3.a — the member's OWN activation state (eligibility + latest request),
+// same dynamic-import + session-event discipline. The retry token re-runs
+// the read after an ask (the door refreshes to its honest pending state).
+export type ActivationStateReadback =
+  import("@/wallet/walletSession").ActivationStateReadback;
+
+export function useOwnActivationState(retryToken = 0): ActivationStateReadback | null {
+  const [readback, setReadback] = useState<ActivationStateReadback | null>(null);
+  useEffect(() => {
+    let active = true;
+    let cleanup: (() => void) | null = null;
+    if (retryToken > 0) setReadback(null);
+    void Promise.all([
+      import("@/wallet/walletSession"),
+      import("@/wallet/sessionEvents"),
+    ]).then(([ws, ev]) => {
+      if (!active) return;
+      const read = () => {
+        void ws.fetchActivationState().then((r) => {
+          if (active) setReadback(r);
+        });
+      };
+      read();
+      window.addEventListener(ev.SESSION_CHANGED_EVENT, read);
+      cleanup = () => window.removeEventListener(ev.SESSION_CHANGED_EVENT, read);
+    });
+    return () => {
+      active = false;
+      cleanup?.();
+    };
+  }, [retryToken]);
+  return readback;
+}
+
 /**
  * S7-e — server diagnostics never reach a member verbatim (Human-First Law):
  * known reasons get their human sentence; anything else gets the honest

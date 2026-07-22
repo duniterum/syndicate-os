@@ -41,6 +41,8 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   commissionRegister: { status: "live", since: "2026-07-20", where: "/referral/commissions" },
   referrerKit: { status: "live", since: "2026-07-20", where: "/referral/tools" },
   joinInviteeCard: { status: "live", since: "2026-07-20", where: "/join?source= unfurl + the introduced-by strip" },
+  activationIntake: { status: "live", since: "2026-07-22", where: "/referral (the Ask-for-activation door + live eligibility card)" },
+  sourceReviewQueue: { status: "live", since: "2026-07-22", where: "/admin/sources (the founder's review queue: preflight + verdicts + bell)" },
 
   // ── FUTURE (the only keys a future-claim may cite) ──────────────────────
   avatarUpload: { status: "future", since: "2026-07-14", where: "Member Home arc (App Storage decided)" },

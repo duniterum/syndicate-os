@@ -437,6 +437,91 @@ export async function fetchSourceStanding(): Promise<SourceStandingReadback | nu
   }
 }
 
+// ── K3.a: the member's OWN activation state (eligibility + latest request) ──
+// One read feeds the whole Ask-for-activation door (mockup founder-approved
+// 2026-07-22): the live eligibility checks (seat + SYN — the same server
+// truths the founder's review queue reads) and the member's own latest
+// request. Booleans are three-state: null = the read did not run (rendered
+// honestly, never as a verdict).
+export interface ActivationStateReadback {
+  state: "S1" | "S4";
+  chainVerified: boolean;
+  seatHeld: boolean | null;
+  holdsSyn: boolean | null;
+  sourceOnChain: boolean | null;
+  sourceActive: boolean | null;
+  request: {
+    status: string;
+    askedAtIso: string | null;
+    decidedAtIso: string | null;
+    declineReason: string | null;
+    closeCause: string | null;
+  } | null;
+  /** false = the request store is unavailable (fail closed), never "none". */
+  requestReadOk: boolean;
+  failureReason: string | null;
+}
+
+/** Read the signed wallet's OWN activation state. Null on ANY failure. */
+export async function fetchActivationState(): Promise<ActivationStateReadback | null> {
+  try {
+    const res = await fetch("/api/auth/activation-request", { method: "GET" });
+    if (!res.ok) return null;
+    const body: unknown = await res.json();
+    if (typeof body !== "object" || body === null) return null;
+    const o = body as Record<string, unknown>;
+    if (o.state !== "S1" && o.state !== "S4") return null;
+    let request: ActivationStateReadback["request"] = null;
+    if (typeof o.request === "object" && o.request !== null) {
+      const r = o.request as Record<string, unknown>;
+      if (typeof r.status === "string") {
+        request = {
+          status: r.status,
+          askedAtIso: typeof r.askedAtIso === "string" ? r.askedAtIso : null,
+          decidedAtIso: typeof r.decidedAtIso === "string" ? r.decidedAtIso : null,
+          declineReason:
+            typeof r.declineReason === "string" ? r.declineReason : null,
+          closeCause: typeof r.closeCause === "string" ? r.closeCause : null,
+        };
+      }
+    }
+    return {
+      state: o.state,
+      chainVerified: o.chainVerified === true,
+      seatHeld: typeof o.seatHeld === "boolean" ? o.seatHeld : null,
+      holdsSyn: typeof o.holdsSyn === "boolean" ? o.holdsSyn : null,
+      sourceOnChain: typeof o.sourceOnChain === "boolean" ? o.sourceOnChain : null,
+      sourceActive: typeof o.sourceActive === "boolean" ? o.sourceActive : null,
+      request,
+      requestReadOk: o.requestReadOk === true,
+      failureReason: typeof o.failureReason === "string" ? o.failureReason : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * File the signed wallet's OWN activation request (no body — the server
+ * re-verifies eligibility live and derives everything). True = the request
+ * is filed (or already open); false = refused/unavailable — the caller
+ * re-reads the state for the honest why.
+ */
+export async function askForActivation(): Promise<boolean> {
+  try {
+    const res = await fetch("/api/auth/activation-request", { method: "POST" });
+    if (!res.ok) return false;
+    const body: unknown = await res.json();
+    return (
+      typeof body === "object" &&
+      body !== null &&
+      (body as Record<string, unknown>).ok === true
+    );
+  } catch {
+    return false;
+  }
+}
+
 // ── SPEC R3: own-row channel breakdown (`&via=` — the channel log's read) ───
 export interface ChannelBreakdownReadback {
   state: "S1" | "S4";
