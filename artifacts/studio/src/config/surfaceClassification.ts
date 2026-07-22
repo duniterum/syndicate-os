@@ -511,7 +511,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
     summary:
-      "Admin section: source registry, referral terms, and the LIVE Source review queue (K3.a 2026-07-22: real intake rows + server preflight + founder verdicts) — live founder-gated controls (audited).",
+      "Admin section in FIVE sub-tabs (CONSOLE ② 2026-07-22): the LIVE Source review queue (default face) · Signing (create/manage + promotions) · Program terms · Registry · Performance (per-source table + CSV, K3.c) — live founder-gated controls (audited).",
     requiredState: "S11",
     enforcement: "PREVIEW_LABELLED",
   },

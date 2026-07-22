@@ -34,6 +34,7 @@ import {
   decideActivationRequest,
   readActivationRequestWallet,
 } from "./activationQueueService";
+import { listSourcePerformance } from "./sourcePerformanceService";
 import { assertAddressSafeAggregate } from "../lib/protocol/rpcTransport";
 
 const router: IRouter = Router();
@@ -623,6 +624,44 @@ router.post("/activation-requests/wallet", async (req: Request, res: Response) =
   const signingMaterial = { ok: true as const, signerTarget: result.wallet };
   req.log.info({ event: "operator.activation_wallet.read", code: "ok" });
   res.json(signingMaterial);
+});
+
+// ── GET /api/operator/source-performance (K3.c) ─────────────────────────────
+// FOUNDER-ONLY READ: the per-source performance projection (Face 5) — masked
+// owner wallets, 64-hex source ids, live registry status words, read-model
+// stats, asOfBlock stated. No query/params; access audited in the service;
+// output scan is the BOUNDARY-AWARE 40-hex form (64-hex ids pass).
+router.get("/source-performance", async (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "operator.source_performance.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const account =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+  if (account === null) {
+    deny(res, 401, "no_session");
+    return;
+  }
+  const ctx = await lookupActiveOperator(account);
+  if (!ctx.isOperator || ctx.role !== "founder_root") {
+    req.log.warn({ event: "operator.source_performance.denied", code: "insufficient_role" });
+    deny(res, 403, "insufficient_role");
+    return;
+  }
+  const result = await listSourcePerformance({ wallet: account, role: ctx.role });
+  if (!result.ok) {
+    deny(res, result.reason === "unavailable" ? 503 : 400, result.reason);
+    return;
+  }
+  if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(JSON.stringify(result.payload))) {
+    throw new Error("address-shaped token in performance payload");
+  }
+  req.log.info({ event: "operator.source_performance.read", code: "ok" });
+  res.json({ ok: true, payload: result.payload });
 });
 
 export default router;

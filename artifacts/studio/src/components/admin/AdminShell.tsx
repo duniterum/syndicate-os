@@ -350,6 +350,25 @@ export default function AdminShell() {
   );
   const ActiveSection = active.render;
 
+  // CONSOLE ① (mockup v2 approved 2026-07-22): the rail's waiting-count badge
+  // on Sources & referrals — the founder sees where work waits without
+  // opening the section (the Linear-Triage / Safe-queue pattern). Fed by the
+  // SHARED cached signals (one audited read per TTL window across the whole
+  // console); null/denied → no badge, never a fake zero.
+  const [railReviewCount, setRailReviewCount] = useState<number | null>(null);
+  useEffect(() => {
+    let alive = true;
+    void import("@/lib/operatorClient").then(({ fetchConsoleSignals }) =>
+      fetchConsoleSignals().then((s) => {
+        if (!alive) return;
+        setRailReviewCount(s.queue.status === "ok" ? s.queue.openCount : null);
+      }),
+    );
+    return () => {
+      alive = false;
+    };
+  }, [location]);
+
   return (
     <SidebarProvider>
       <Sidebar collapsible="icon">
@@ -383,6 +402,16 @@ export default function AdminShell() {
                       <Link href={s.path}>
                         <s.icon />
                         <span>{s.label}</span>
+                        {s.path === "/admin/sources" &&
+                        railReviewCount !== null &&
+                        railReviewCount > 0 ? (
+                          <span
+                            className="ml-auto rounded-full bg-gold px-1.5 font-mono text-[10px] font-bold text-background group-data-[collapsible=icon]:hidden"
+                            data-testid="badge-rail-review-count"
+                          >
+                            {railReviewCount}
+                          </span>
+                        ) : null}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

@@ -10,10 +10,13 @@
 // REAL ProtocolRealityPanel in its realitySlot.
 //
 // Section-to-panel resolution (former flat page → sections):
-//   Dashboard  → AdminHome + Overview panel
+//   Dashboard  → AdminHome (CONSOLE ① 2026-07-22: + the wired referral KPI
+//                band + the live waiting count) + Overview panel
 //   Members    → Members & Continuity panel
-//   Sources    → AdminReferralPanel + AdminReferralCrud + Sources panel
-//                + SourceReviewQueue (split out of AdminOperatorsCrud)
+//   Sources    → CONSOLE ② 2026-07-22: FIVE sub-tabs (the /referral underline
+//                grammar) — Review queue (default) · Signing (promotion +
+//                create/manage) · Program terms · Registry · Performance
+//                (K3.c: per-source table + CSV)
 //   Operators  → AdminOperatorsCrud (roles + registry)
 //   Content    → Content & Homepage + Packages & Advertising + Address Labels
 //                (note: no Recognition admin panel existed on the flat page —
@@ -43,6 +46,9 @@ import {
   AdminHealthPanel,
 } from "@/pages/admin/panels";
 import { MemberLedgerPanel } from "@/pages/admin/memberLedger";
+import { ReferralKpiBand } from "@/pages/admin/ReferralKpiBand";
+import { SourcePerformancePanel } from "@/pages/admin/SourcePerformancePanel";
+import { consumeRequestedSourcesTab } from "@/lib/adminPrefill";
 import { AdminReferralPanel } from "@/components/referral/AdminReferralPanel";
 import { AdminModulesConsole } from "@/components/referral/AdminModulesConsole";
 import { AdminReferralCrud } from "@/components/referral/AdminReferralCrud";
@@ -64,6 +70,7 @@ import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
 const SECTION_ROUTE: Record<AdminSectionId, string> = {
   operators: "/admin/operators",
   "sources-referrals": "/admin/sources",
+  members: "/admin/members",
   broadcast: "/admin/broadcast",
   support: "/admin/support",
 };
@@ -97,12 +104,31 @@ function useOperatorRole(): string | null {
 export function AdminDashboardSection() {
   const [, navigate] = useLocation();
   const role = useOperatorRole();
+  // CONSOLE ① — the shared cached signals feed the live waiting count (the
+  // queue's own figure; one audited read per TTL window, shared with the
+  // KPI band). null = unknown/denied → no badge, never a fake zero.
+  const [reviewCount, setReviewCount] = useState<number | null>(null);
+  useEffect(() => {
+    let active = true;
+    void import("@/lib/operatorClient").then(({ fetchConsoleSignals }) =>
+      fetchConsoleSignals().then((s) => {
+        if (!active) return;
+        setReviewCount(s.queue.status === "ok" ? s.queue.openCount : null);
+      }),
+    );
+    return () => {
+      active = false;
+    };
+  }, []);
+  const onNavigate = (section: AdminSectionId) => navigate(SECTION_ROUTE[section]);
   return (
     <div className="space-y-6">
       <AdminHome
         role={role}
-        onNavigate={(section) => navigate(SECTION_ROUTE[section])}
+        onNavigate={onNavigate}
         realitySlot={<ProtocolRealityPanel groups={["chain", "contracts", "sale", "financial"]} />}
+        reviewCount={reviewCount}
+        referralBand={<ReferralKpiBand onNavigate={onNavigate} />}
       />
       <AdminOverviewPanel />
     </div>
@@ -130,23 +156,124 @@ const ProposeSourceCreate = lazy(() => import("@/wallet/ProposeSourceCreate"));
 // updateSourceTerms PROPOSE flow (Form 2). Same rule-15 dynamic import.
 const ProposeSourcePromotion = lazy(() => import("@/wallet/ProposeSourcePromotion"));
 
+// ── CONSOLE ② (mockup v2 founder-approved 2026-07-22): the section's FIVE
+// sub-tabs — the /referral underline grammar reused verbatim (one tab
+// language, member and admin; the world benchmark's verdict: flat rail at
+// level 1, one tab row at level 2, the decision queue as the default face).
+// Client-side tab state (the wall and the route guards stay untouched);
+// Approve on the queue SWITCHES to Signing and prefills the create form
+// through the buffered seam (which survives the lazy chunk's late mount).
+type SourcesTabId = "queue" | "signing" | "program" | "registry" | "performance";
+
+const SOURCES_TABS: { id: SourcesTabId; label: string }[] = [
+  { id: "queue", label: "Review queue" },
+  { id: "signing", label: "Signing" },
+  { id: "program", label: "Program terms" },
+  { id: "registry", label: "Registry" },
+  { id: "performance", label: "Performance" },
+];
+
+// The /referral tab focus idiom (no offset ring — the founder-caught class).
+const SOURCES_TAB_FOCUS =
+  "focus-visible:outline-none focus-visible:bg-gold/10 rounded-t-md";
+
 export function AdminSourcesSection() {
+  // A Dashboard door may have pre-selected the destination tab (the one-shot
+  // seam) — a door's label must land where it points.
+  const [tab, setTab] = useState<SourcesTabId>(() => {
+    const requested = consumeRequestedSourcesTab();
+    return SOURCES_TABS.some((t) => t.id === requested)
+      ? (requested as SourcesTabId)
+      : "queue";
+  });
+  // Badges from the SHARED cached signals (one audited read per TTL window,
+  // already primed by the Dashboard/rail): the queue count + promotions due.
+  // badgeTick re-reads after a queue-changing verdict (the cache is
+  // invalidated by the act — a badge must never contradict the queue face).
+  const [badgeTick, setBadgeTick] = useState(0);
+  const [badges, setBadges] = useState<{ queue: number; due: number } | null>(null);
+  useEffect(() => {
+    let active = true;
+    void import("@/lib/operatorClient").then(({ fetchConsoleSignals }) =>
+      fetchConsoleSignals().then((s) => {
+        if (!active) return;
+        setBadges({
+          queue: s.queue.status === "ok" ? s.queue.openCount : 0,
+          due: s.ledger.status === "ok" ? s.ledger.payload.totals.promotionsDue : 0,
+        });
+      }),
+    );
+    return () => {
+      active = false;
+    };
+  }, [tab, badgeTick]);
+
   return (
-    <div className="space-y-6">
-      {/* K3.a (founder-approved mockup 2026-07-22 + WORK-FIRST law): the LIVE
-          review queue leads the section — waiting decisions are THE work; its
-          empty state is one honest line. The signing forms follow (Approve
-          prefills the create form below via the one-shot seam). */}
-      <SourceReviewQueue />
-      <Suspense fallback={null}>
-        <ProposeSourcePromotion />
-      </Suspense>
-      <Suspense fallback={null}>
-        <ProposeSourceCreate />
-      </Suspense>
-      <AdminReferralPanel />
-      <AdminReferralCrud />
-      <AdminSourcesPanel />
+    <div>
+      <div className="relative mb-6">
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-px bg-border/50" />
+        <nav
+          aria-label="Sources & referrals surfaces"
+          className="flex gap-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {SOURCES_TABS.map((t) => {
+            const active = t.id === tab;
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setTab(t.id)}
+                aria-current={active ? "page" : undefined}
+                className={`inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap px-3 py-2.5 border-b-2 text-sm transition-colors ${SOURCES_TAB_FOCUS} ${
+                  active
+                    ? "border-gold text-foreground font-semibold"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+                data-testid={`sources-tab-${t.id}`}
+              >
+                {t.label}
+                {t.id === "queue" && badges !== null && badges.queue > 0 ? (
+                  <span className="font-mono text-[10px] font-bold rounded-full bg-gold text-background px-1.5">
+                    {badges.queue}
+                  </span>
+                ) : null}
+                {t.id === "signing" && badges !== null && badges.due > 0 ? (
+                  <span className="font-mono text-xs rounded-full bg-border/40 px-1.5">
+                    {badges.due} due
+                  </span>
+                ) : null}
+              </button>
+            );
+          })}
+        </nav>
+      </div>
+
+      <div className="space-y-6">
+        {tab === "queue" ? (
+          <SourceReviewQueue
+            onApproveOpened={() => setTab("signing")}
+            onQueueChanged={() => setBadgeTick((t) => t + 1)}
+          />
+        ) : null}
+        {tab === "signing" ? (
+          <>
+            <Suspense fallback={null}>
+              <ProposeSourcePromotion />
+            </Suspense>
+            <Suspense fallback={null}>
+              <ProposeSourceCreate />
+            </Suspense>
+          </>
+        ) : null}
+        {tab === "program" ? <AdminReferralCrud /> : null}
+        {tab === "registry" ? (
+          <>
+            <AdminReferralPanel />
+            <AdminSourcesPanel />
+          </>
+        ) : null}
+        {tab === "performance" ? <SourcePerformancePanel /> : null}
+      </div>
     </div>
   );
 }

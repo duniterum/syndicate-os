@@ -477,6 +477,64 @@
 > verdict: "la session de signature enchaînée et les portes de cycle de
 > vie sont en ligne, et le feed public reflète déjà la première
 > activation réelle." DEPLOY BACKLOG: EMPTY.**
+>
+> **▶ THE CONSOLE COMPOSITION SLICE BUILT + COMMITTED [this commit]
+> (2026-07-22, mockup v2 "approved GO and GO-Live dans le bon ordre" —
+> docs/design/admin-ia-sources-tabs-mockup.html): CONSOLE ①+②+K3.c in the
+> founder's order.**
+> - **① THE DASHBOARD WIRED:** "Source reviews" carries the LIVE waiting
+>   count (gold badge; never a fake zero) + the rail badge on Sources —
+>   both from ONE shared cached signals read (60s TTL, in-flight-deduped,
+>   invalidated by every queue verdict: a badge can never contradict the
+>   queue face). The referral band: 4 wired StatCards — Source owners
+>   (the ledger's own unit, named honestly) · Promotions due · **Paid to
+>   referrers** (Coins icon, gold tone, verify ↗ → the ACTIVE sale
+>   engine's explorer page via verify-links + as-of block — the A1
+>   contract whole) · Members seated. Every tile a DOOR (with tab
+>   preselection through the one-shot seam — a label lands where it
+>   points); zero trend charts (the honesty law at 3-purchase scale);
+>   the dead "Members" placeholder KILLED (its wired twin lives above).
+> - **② THE FIVE SUB-TABS** (the /referral underline grammar verbatim —
+>   one tab language, member and admin; the world benchmark's verdict):
+>   Review queue (default, count badge) · Signing (due badge) · Program
+>   terms · Registry · Performance. Approve switches to Signing and
+>   prefills through the buffered seam; client-side tabs (the wall + the
+>   10-section guard pins untouched).
+> - **③ K3.c — PER-SOURCE PERFORMANCE + CSV (Face 5):** GET
+>   /api/operator/source-performance (founder_root, audited per read,
+>   boundary-scanned): rows = ownership edges + CLOSED asks (BOTH the
+>   recorded id AND the wallet's canonical derivation — the D2 grain;
+>   a member-asked source appears the day it activates) + ONE live
+>   sourceConfig read per row (status word 3 + bps word 2 from the SAME
+>   response — day-one rows carry their real rate), batched 5 with a 20s
+>   wall-clock budget (honest nulls beat a hang), sorted latest-activity
+>   BEFORE the 100-cap with totalKnown stated (no silent caps), the
+>   warming index SAID (never a silently partial table). The panel:
+>   Face 5 columns, filter chips, "Durable can go down" honesty,
+>   asOfBlock footer, **Export CSV = exactly the filtered screen**
+>   (client-side blob, human headers, sources-YYYY-MM-DD.csv).
+> - **GUARDS (dated):** auth-zone → 1191 (the performance route's
+>   founder-only + delegate + boundary pins) · the 2 lazy-DB allow-lists ·
+>   guard-operator-gate's strict admin graph + the 2 new modules.
+>   DONE-IS-DONE: `sourcePerformance` + `consoleReferralKpis` live SAME
+>   commit; surfaceClassification + the sections header re-trued.
+> - **THE 3-SEAM ADVERSARIAL VERIFY: 12 findings — 11 FIXED** (the
+>   warming-null collapse · the D2 merge grain · sort-before-cap +
+>   totalKnown · the RPC budget · the wasted bps word · in-flight dedup ·
+>   verdict invalidation · the verify-↗ drop restored · the "→ Signing"
+>   door that couldn't land (tab preselection born) · the owners/sources
+>   word split · the strict-graph pins) **+ 1 recorded non-action:** a
+>   half-written decline reason dies on a tab switch (rare, short text —
+>   accepted dated).
+> - **GATE (all EXIT 0, full runs):** api tsc · 19 guards (auth-zone
+>   1191) · build · boot probes — studio tsc · 19 guards · build + twins
+>   + admin-dist · seo · rewrites · surface audit.
+> - **🚀 DEPLOY — server + client, NO migration, NO pnpm install.** The
+>   founder's living seal: /admin opens on the wired band + the live
+>   count; /admin/sources opens on the queue TAB with its badges; the
+>   Performance tab shows his real sources and the CSV downloads the
+>   screen. NEXT: K4 (no-seat reach decision at its gate) · P (press
+>   kit) · recognition/season.**
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21

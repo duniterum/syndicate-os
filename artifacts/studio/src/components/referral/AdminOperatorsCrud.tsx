@@ -55,6 +55,7 @@ import {
   listActivationQueue,
   decideActivation,
   fetchActivationSigner,
+  invalidateConsoleSignals,
   type ActivationQueueResult,
   type ListOperatorsResult,
   type OperatorListItem,
@@ -515,7 +516,18 @@ function shortDay(iso: string | null): string {
   return day !== null && /^\d{4}-\d{2}-\d{2}$/.test(day) ? dateLabel(day) : "—";
 }
 
-export function SourceReviewQueue() {
+export function SourceReviewQueue({
+  onApproveOpened,
+  onQueueChanged,
+}: {
+  /** CONSOLE ② — the tabbed section switches to the Signing tab when the
+   * signing path opens (the seam's buffer survives the lazy mount). */
+  onApproveOpened?: () => void;
+  /** CONSOLE ② — fired after a successful verdict so the badges re-read
+   * (the shared cache is invalidated first — a badge must never contradict
+   * the queue face it sits above). */
+  onQueueChanged?: () => void;
+} = {}) {
   const [state, setState] = useState<{ status: "loading" } | ActivationQueueResult>({ status: "loading" });
   const [tick, setTick] = useState(0);
   const [declineFor, setDeclineFor] = useState<string | null>(null);
@@ -572,6 +584,10 @@ export function SourceReviewQueue() {
     } else if (verdict === "close") {
       toast({ title: "Recorded", description: "The member's bell announces the activation." });
     }
+    // The act changed the queue: drop the shared badge cache and tell the
+    // section — the rail/Dashboard refresh on their next read.
+    invalidateConsoleSignals();
+    onQueueChanged?.();
     reload();
   }
 
@@ -592,9 +608,10 @@ export function SourceReviewQueue() {
     // receipt confirms, the signing session closes the request itself and
     // the member's bell rings (Record-it stays as the manual fallback).
     dispatchProposeSourcePrefill(result.signerTarget, id);
+    onApproveOpened?.();
     toast({
       title: "Signing path opened",
-      description: "The create form on this page now carries this request's wallet.",
+      description: "The create form now carries this request's wallet.",
     });
   }
 

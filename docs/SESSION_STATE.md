@@ -325,17 +325,31 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   FEED GREW 78→80 — Seat #3's real createSource+activation events
 >   serving publicly, the heartbeat invariant at work). DEPLOY BACKLOG:
 >   EMPTY.**
-> - **IN FLIGHT (founder "approved GO and GO-Live dans le bon ordre",
->   2026-07-22 — the console mockup v2, docs/design/
->   admin-ia-sources-tabs-mockup.html):** THE CONSOLE COMPOSITION SLICE,
->   in his order — ① the Dashboard wired (live waiting count in Needs
->   attention + the referral 4-tile band: sources · promotions due ·
->   paid-to-referrers verify-linked · members seated — zero new backend)
->   → ② Sources & referrals in 5 sub-tabs (queue default, /referral
->   underline grammar, client-side) → ③ K3.c: the Performance tab
->   (per-source table per Face 5 + screen-exact CSV; the read-model
->   retains the decoded status; closed-request zero-purchase sources
->   merged in). Then K4 · P · recognition/season (the two-layer law).
+> - **▶ THE CONSOLE COMPOSITION SLICE BUILT + COMMITTED [this commit]
+>   (2026-07-22, mockup v2 approved "GO and GO-Live dans le bon ordre"):**
+>   ① the Dashboard WIRED (live waiting count + rail badge from ONE
+>   deduped cached signals read, verdict-invalidated · the referral
+>   4-tile band: Source owners · Promotions due · Paid-to-referrers with
+>   verify ↗ to the sale engine + as-of block · Members seated — every
+>   tile a door with tab preselection; the dead Members placeholder
+>   killed) → ② the FIVE sub-tabs on /admin/sources (the /referral
+>   grammar; queue default with badges; Approve switches to Signing) →
+>   ③ K3.c: GET /api/operator/source-performance (founder-only, audited,
+>   D2-grain merge of edges + CLOSED asks incl. canonical ids, live
+>   status+bps words, budget-bounded, no silent caps, warming said) + the
+>   Face 5 panel with the screen-exact client-side CSV. Guards: auth-zone
+>   1191 · strict admin graph +2 · lazy-DB lists · `sourcePerformance` +
+>   `consoleReferralKpis` live SAME commit. 3-seam adversarial verify: 12
+>   findings, 11 fixed + 1 recorded (decline draft dies on tab switch —
+>   accepted dated). Gates all EXIT 0 full runs both sides. Full record:
+>   OPEN_QUEUE's console-slice entry. **🚀 DEPLOY — server + client, NO
+>   migration, NO pnpm install. The founder's living seal: /admin opens
+>   wired; /admin/sources opens on the queue tab; Performance shows his
+>   real sources; the CSV downloads the screen.**
+> - **IN FLIGHT after the console seal:** K4 (the no-seat promoter reach
+>   decision at its gate) · P (press kit — all text on screen) ·
+>   recognition/season (slice 6: the two-layer law; read the dossiers
+>   first).
 > - **FOUNDER-PENDING: NOTHING on the arc.** Parked as recorded: Q35 legal
 >   set · Q39/Q40/Q42 admin waves · Q32/MVP-final items · the deferred list.
 >   Taken-by-default (flagged, overridable): the dedicated PDF engine stays

@@ -61,3 +61,24 @@ export function getOwnedSources(
   if (current === null) return null;
   return current.byWallet.get(accountLower) ?? [];
 }
+
+/**
+ * K3.c (mockup Face 5, founder-approved): EVERY ownership edge — consumed
+ * ONLY by the founder-gated per-source performance service, which masks the
+ * wallet before anything is serialized (the ADR-003 posture above holds:
+ * this module still never serializes). Null while the index has never built.
+ */
+export function getAllOwnershipEdges(): readonly {
+  wallet: string;
+  sourceId: string;
+  lastBlock: number;
+}[] | null {
+  if (current === null) return null;
+  const out: { wallet: string; sourceId: string; lastBlock: number }[] = [];
+  for (const [wallet, edges] of current.byWallet) {
+    for (const e of edges) {
+      out.push({ wallet, sourceId: e.sourceId, lastBlock: e.lastBlock });
+    }
+  }
+  return out;
+}

@@ -44,3 +44,19 @@ export function consumePendingPrefill(): ProposeSourcePrefillDetail | null {
   pendingPrefill = null;
   return p;
 }
+
+// ── CONSOLE ② — the tab-preselection seam (adversarial verify 2026-07-22:
+// a Dashboard door labeled "→ Signing" must LAND on Signing, not on the
+// default tab). Same one-shot module-memory discipline as the prefill.
+let requestedSourcesTab: string | null = null;
+
+export function requestSourcesTab(tab: string): void {
+  requestedSourcesTab = tab;
+}
+
+/** The requested tab, consumed exactly once by AdminSourcesSection's mount. */
+export function consumeRequestedSourcesTab(): string | null {
+  const t = requestedSourcesTab;
+  requestedSourcesTab = null;
+  return t;
+}

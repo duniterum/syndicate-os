@@ -244,6 +244,9 @@ const DB_LAZY_ALLOW = new Set([
   // guard-auth-zone.ts.
   "src/auth/activationRequests.ts",
   "src/operator/activationQueueService.ts",
+  // K3.c (mockup Face 5, founder-approved 2026-07-22): the per-source
+  // performance read. Lazy-only; pinned by guard-auth-zone.ts.
+  "src/operator/sourcePerformanceService.ts",
 ]);
 const DB_STATIC_IMPORT_RE =
   /(from\s*["']@workspace\/db["'])|(import\s*["']@workspace\/db["'])|(require\s*\(\s*["']@workspace\/db["']\s*\))/;

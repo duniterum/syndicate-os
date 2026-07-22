@@ -594,3 +594,138 @@ export async function fetchActivationSigner(
     return { ok: false, reason: "unreachable" };
   }
 }
+
+// ── CONSOLE ① (mockup v2 founder-approved 2026-07-22): the dashboard's
+// shared signals — ONE audited queue read + ONE audited ledger read per TTL
+// window, shared by the Needs-attention count, the rail badge, and the
+// referral KPI band (politeness: badges must not multiply audit rows on
+// every mount; the K2.1 mutable-fact law keeps the TTL short).
+const CONSOLE_SIGNALS_TTL_MS = 60_000;
+let consoleSignalsAt = 0;
+let consoleSignalsValue: ConsoleSignals | null = null;
+// In-flight dedup (adversarial verify 2026-07-22): three consumers mount
+// together on /admin — without this, each missed the not-yet-resolved cache
+// and fired its OWN audited pair. One promise serves them all.
+let consoleSignalsInFlight: Promise<ConsoleSignals> | null = null;
+
+export interface ConsoleSignals {
+  queue: ActivationQueueResult;
+  ledger: MemberLedgerResult;
+}
+
+/** Drop the cache after a queue-changing verdict — the next reader refetches
+ * (the badge must never contradict the queue face it sits above). */
+export function invalidateConsoleSignals(): void {
+  consoleSignalsValue = null;
+  consoleSignalsAt = 0;
+  consoleSignalsInFlight = null;
+}
+
+export async function fetchConsoleSignals(force = false): Promise<ConsoleSignals> {
+  const now = Date.now();
+  if (
+    !force &&
+    consoleSignalsValue !== null &&
+    now - consoleSignalsAt < CONSOLE_SIGNALS_TTL_MS
+  ) {
+    return consoleSignalsValue;
+  }
+  if (!force && consoleSignalsInFlight !== null) return consoleSignalsInFlight;
+  consoleSignalsInFlight = (async () => {
+    const [queue, ledger] = await Promise.all([
+      listActivationQueue(),
+      fetchMemberLedger(),
+    ]);
+    consoleSignalsValue = { queue, ledger };
+    consoleSignalsAt = Date.now();
+    consoleSignalsInFlight = null;
+    return consoleSignalsValue;
+  })();
+  return consoleSignalsInFlight;
+}
+
+// ── K3.c: the per-source performance read (founder-only, Face 5) ────────────
+export interface SourcePerformanceRow {
+  sourceIdHex: string;
+  ownerShort: string;
+  status: string | null;
+  attributedPurchases: number;
+  introducedMembers: number;
+  durableIntroductions: number;
+  commissionPaidRaw: string;
+  escrowOwedRaw: string;
+  currentBps: number | null;
+  promotionDue: boolean;
+  lastBlock: number | null;
+}
+export type SourcePerformanceResult =
+  | {
+      status: "ok";
+      rows: SourcePerformanceRow[];
+      asOfBlock: number;
+      statusReadOk: boolean;
+      /** Post-boot warm-up: purchase-backed rows missing, said honestly. */
+      indexWarming: boolean;
+      /** All sources known before the row cap — a drop is stated. */
+      totalKnown: number;
+    }
+  | { status: "denied" }
+  | { status: "unavailable" };
+
+export async function fetchSourcePerformance(): Promise<SourcePerformanceResult> {
+  try {
+    const res = await fetch("/api/operator/source-performance", { method: "GET" });
+    if (res.ok) {
+      const body: unknown = await res.json();
+      const p =
+        typeof body === "object" && body !== null
+          ? (body as Record<string, unknown>).payload
+          : null;
+      if (typeof p !== "object" || p === null) return { status: "unavailable" };
+      const payload = p as Record<string, unknown>;
+      const raw = Array.isArray(payload.rows) ? payload.rows : [];
+      const rows: SourcePerformanceRow[] = [];
+      for (const r of raw) {
+        if (typeof r !== "object" || r === null) continue;
+        const o = r as Record<string, unknown>;
+        if (
+          typeof o.sourceIdHex !== "string" ||
+          typeof o.ownerShort !== "string" ||
+          typeof o.attributedPurchases !== "number" ||
+          typeof o.commissionPaidRaw !== "string"
+        ) {
+          continue;
+        }
+        rows.push({
+          sourceIdHex: o.sourceIdHex,
+          ownerShort: o.ownerShort,
+          status: typeof o.status === "string" ? o.status : null,
+          attributedPurchases: o.attributedPurchases,
+          introducedMembers:
+            typeof o.introducedMembers === "number" ? o.introducedMembers : 0,
+          durableIntroductions:
+            typeof o.durableIntroductions === "number" ? o.durableIntroductions : 0,
+          commissionPaidRaw: o.commissionPaidRaw,
+          escrowOwedRaw:
+            typeof o.escrowOwedRaw === "string" ? o.escrowOwedRaw : "0",
+          currentBps: typeof o.currentBps === "number" ? o.currentBps : null,
+          promotionDue: o.promotionDue === true,
+          lastBlock: typeof o.lastBlock === "number" ? o.lastBlock : null,
+        });
+      }
+      return {
+        status: "ok",
+        rows,
+        asOfBlock: typeof payload.asOfBlock === "number" ? payload.asOfBlock : 0,
+        statusReadOk: payload.statusReadOk === true,
+        indexWarming: payload.indexWarming === true,
+        totalKnown:
+          typeof payload.totalKnown === "number" ? payload.totalKnown : rows.length,
+      };
+    }
+    if (res.status === 401 || res.status === 403 || res.status === 404) return { status: "denied" };
+    return { status: "unavailable" };
+  } catch {
+    return { status: "unavailable" };
+  }
+}

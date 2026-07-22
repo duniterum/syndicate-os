@@ -266,6 +266,9 @@ const LAZY_DB_ALLOW = new Set([
   // material read). Lazy-only; full shapes pinned by guard-auth-zone.ts.
   join(SERVED_SRC, "auth", "activationRequests.ts"),
   join(SERVED_SRC, "operator", "activationQueueService.ts"),
+  // K3.c (mockup Face 5, founder-approved 2026-07-22): the per-source
+  // performance read (closed-request merge + audited access). Lazy-only.
+  join(SERVED_SRC, "operator", "sourcePerformanceService.ts"),
 ]);
 const DYNAMIC_DB_IMPORT_RE = /import\s*\(\s*["']@workspace\/db["']\s*\)/;
 function walk(dir: string, hits: string[]): void {

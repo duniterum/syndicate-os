@@ -1084,6 +1084,10 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
     ["get", "/activation-requests"],
     ["post", "/activation-requests/decide"],
     ["post", "/activation-requests/wallet"],
+    // K3.c (mockup Face 5, founder-approved 2026-07-22): the per-source
+    // performance projection — founder_root-only READ, masked owner
+    // wallets, audited per read, boundary-aware output scan.
+    ["get", "/source-performance"],
   ];
   const FOUNDER_ONLY_ROUTES = new Set([
     "post /operators",
@@ -1099,6 +1103,7 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
     "get /member-ledger",
     "get /notifications",
     "get /activation-requests",
+    "get /source-performance",
   ]);
   // Close alternate Express route-declaration syntaxes BEFORE enumerating:
   // .route(...).post(...), bracketed verbs (router["post"]), computed access,
@@ -1223,6 +1228,30 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
             /assertAddressSafeAggregate\(\s*JSON\.stringify\(/.test(block),
             `route ${routeKey}: serialized payload passes the 40-hex fail-closed scanner`,
             `src/operator/router.ts route ${routeKey} must run assertAddressSafeAggregate(JSON.stringify(...)) over the payload before res.json`,
+          );
+        } else if (routeKey === "get /source-performance") {
+          // K3.c (dated 2026-07-22): FOUNDER-ONLY — per-source rows pair
+          // masked owner wallets with performance figures; delegates ONLY to
+          // the audited performance read; boundary-aware 40-hex scan.
+          check(
+            /ctx\.role\s*!==\s*"founder_root"/.test(block) && !/WRITE_ROLES/.test(block),
+            `route ${routeKey}: founder_root ONLY (performance pairings are founder-gated)`,
+            `src/operator/router.ts route ${routeKey} role gate drifted — must deny unless ctx.role === "founder_root" and must NOT use WRITE_ROLES`,
+          );
+          check(
+            /listSourcePerformance\(/.test(block) &&
+              !/inviteOperator\(|suspendOperator\(|saveReferralTerm\(|listOperators\(|decideActivationRequest\(|readActivationRequestWallet\(/.test(
+                block,
+              ),
+            `route ${routeKey}: delegates to the audited performance read ONLY`,
+            `src/operator/router.ts route ${routeKey} must call listSourcePerformance() and must never reach any write service`,
+          );
+          check(
+            /0x\[0-9a-fA-F\]\{40\}\(\?!\[0-9a-fA-F\]\)/.test(block) &&
+              /JSON\.stringify\(result\.payload\)/.test(block) &&
+              /throw new Error/.test(block),
+            `route ${routeKey}: serialized payload passes the BOUNDARY-AWARE 40-hex fail-closed scan`,
+            `src/operator/router.ts route ${routeKey} must run the boundary-aware 40-hex fail-closed scan over JSON.stringify(result.payload) and throw before res.json`,
           );
         } else if (routeKey === "get /activation-requests") {
           // K3.a (dated 2026-07-22): FOUNDER-ONLY — queue rows pair masked

@@ -263,6 +263,11 @@ const adminGraph: Record<string, string[]> = {
   '"@/pages/admin/AdminHome"': [path.join("pages", "admin", "sections.tsx")],
   // M-INT-1: the member ledger joins the strict chain (sections.tsx only).
   '"@/pages/admin/memberLedger"': [path.join("pages", "admin", "sections.tsx")],
+  // CONSOLE ①/③ (2026-07-22): the referral KPI band + the per-source
+  // performance panel join the strict chain (sections.tsx only) — admin
+  // modules may never be reachable from a public surface.
+  '"@/pages/admin/ReferralKpiBand"': [path.join("pages", "admin", "sections.tsx")],
+  '"@/pages/admin/SourcePerformancePanel"': [path.join("pages", "admin", "sections.tsx")],
 };
 for (const [spec, allowedImporters] of Object.entries(adminGraph)) {
   let importedByAllowed = false;

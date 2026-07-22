@@ -35,7 +35,6 @@ import {
   TrendingUp,
   Package,
   Image as ImageIcon,
-  Users,
   UserPlus,
   SlidersHorizontal,
   Megaphone,
@@ -47,6 +46,7 @@ import {
 export type AdminSectionId =
   | "operators"
   | "sources-referrals"
+  | "members"
   | "broadcast"
   | "support";
 
@@ -57,6 +57,14 @@ interface AdminHomeProps {
   onNavigate: (section: AdminSectionId) => void;
   /** The live, real ProtocolReality panel (GET /api/protocol/reality). */
   realitySlot?: ReactNode;
+  /** CONSOLE ① — the LIVE waiting count for Source reviews (the queue's own
+   * figure, shell-wired), or null when unknown/denied (no badge, never a
+   * fake zero). */
+  reviewCount?: number | null;
+  /** CONSOLE ① — the wired referral KPI band (shell-wired data; renders its
+   * own honest states). Sits under the work grid, above the collapsed
+   * reference layer. */
+  referralBand?: ReactNode;
 }
 
 interface PreviewKpi {
@@ -89,13 +97,9 @@ const PREVIEW_KPIS: PreviewKpi[] = [
     tooltip:
       "Count of archive artifacts minted in the period, read on-chain. Not wired yet — will read live.",
   },
-  {
-    key: "members",
-    label: "Members",
-    icon: Users,
-    tooltip:
-      "Distinct member seats, read on-chain. Not wired yet — will read live.",
-  },
+  // CONSOLE ① (2026-07-22): the "Members" placeholder DIED — the wired
+  // "Members seated" tile lives in the referral band above (DONE-IS-DONE:
+  // a wired figure never keeps a "not wired" twin on the same page).
 ];
 
 const QUICK_ACTIONS: {
@@ -137,7 +141,13 @@ function KpiTooltip({ text }: { text: string }) {
   );
 }
 
-export default function AdminHome({ role, onNavigate, realitySlot }: AdminHomeProps) {
+export default function AdminHome({
+  role,
+  onNavigate,
+  realitySlot,
+  reviewCount = null,
+  referralBand,
+}: AdminHomeProps) {
   return (
     <div className="space-y-6">
       {/* Heading + honest identity line */}
@@ -174,7 +184,14 @@ export default function AdminHome({ role, onNavigate, realitySlot }: AdminHomePr
                 >
                   <Icon className="h-4 w-4" />
                   <span>{a.label}</span>
-                  {a.live ? null : (
+                  {/* CONSOLE ①: the live waiting count on the queue's door —
+                      shown only when the wired read answered with work
+                      (never a fake zero, never a badge on unknown). */}
+                  {a.key === "reviews" && reviewCount !== null && reviewCount > 0 ? (
+                    <Badge className="ml-auto text-[10px] bg-gold text-background hover:bg-gold" data-testid="badge-review-count">
+                      {reviewCount} waiting
+                    </Badge>
+                  ) : a.live ? null : (
                     <Badge variant="outline" className="ml-auto text-[10px]">
                       preview
                     </Badge>
@@ -208,6 +225,11 @@ export default function AdminHome({ role, onNavigate, realitySlot }: AdminHomePr
           </CardContent>
         </Card>
       </div>
+
+      {/* CONSOLE ① — the referral module's wired figures (mockup v2 approved):
+          plain dated numbers, doors to their ledgers, zero trend charts at
+          this scale (the honesty law). */}
+      {referralBand ?? null}
 
       {/* Reference layer — collapsed by default (the work-first law). The data
           stays one click away, never in the way. */}
