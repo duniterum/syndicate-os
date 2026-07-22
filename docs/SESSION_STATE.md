@@ -276,11 +276,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   own-figures pills = K3.b). GATE all EXIT 0 full runs (api tsc·19
 >   guards·build·boot matrix — studio tsc·19 guards·build 35/354/99 ·
 >   seo·rewrites·audit 338). Full record: OPEN_QUEUE's K3.a entry.
+>   + THE FOUNDER'S ASK-ALERT RIDER (his order, same cycle): every new ask
+>   also rings the founder_root wallets' own bells (server-resolved
+>   recipients, link-less by Q39; auth-zone → 1172).
 >   **🚀 DEPLOY — ⚠ REAL MIGRATION, its own cycle, NEVER batched: Replit
 >   pulls main, runs `pnpm --filter @workspace/db push` (ONE new table),
 >   deploys server+client (NO pnpm install), reports. The founder's living
 >   seal: his /referral eligibility card + the queue's honest empty state
->   on /admin/sources.**
+>   on /admin/sources + his own bell ringing on the first real ask.**
 > - **IN FLIGHT after K3.a's seal:** K3.b — the stacked create+activate
 >   signing session + the propose-pause/revoke doors (+ the recorded
 >   hardenings: the close verdict's live isActive() read before the bell ·

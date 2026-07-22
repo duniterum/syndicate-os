@@ -100,7 +100,8 @@ export async function createOwnActivationRequest(
 ): Promise<"created" | "exists" | "unavailable"> {
   if (gateClosed()) return "unavailable";
   try {
-    const { db, activationRequest, auditLog } = await import("@workspace/db");
+    const { db, activationRequest, auditLog, operator, notification } =
+      await import("@workspace/db");
     const { eq, and, inArray, sql } = await import("drizzle-orm");
     const me = account.toLowerCase();
     const id = randomUUID();
@@ -142,6 +143,32 @@ export async function createOwnActivationRequest(
         target: `request#${id}`,
         detail: null,
       });
+      // THE FOUNDER'S ALERT (founder order 2026-07-22: "alerte-moi aussi").
+      // The founder is a member too — his bell already exists. The SERVER
+      // resolves the ACTIVE founder_root wallets from the operator registry
+      // (never from any client input) and addresses each an alert row in the
+      // SAME transaction as the ask. No link path on purpose: an /admin
+      // string must never enter the member-facing whitelist (Q39 — no
+      // operator vocabulary in public bundles); the words say where.
+      const founders = await tx
+        .select({ wallet: operator.wallet })
+        .from(operator)
+        .where(
+          and(eq(operator.role, "founder_root"), eq(operator.status, "ACTIVE")),
+        );
+      for (const f of founders) {
+        await tx.insert(notification).values({
+          id: randomUUID(),
+          audience: "MEMBER",
+          recipientWallet: f.wallet.toLowerCase(),
+          title: "New activation request",
+          body: "A member asked for referral activation — it's waiting in your review queue on the console's Sources section.",
+          icon: "user-plus", // ∈ NOTIFICATION_ICON_PALETTE
+          linkPath: null, // deliberate — see the Q39 note above
+          category: null,
+          createdByRole: "member",
+        });
+      }
     });
     return outcome;
   } catch {

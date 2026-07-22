@@ -341,9 +341,20 @@
 >   `activation_request`) → deploy (server + client, NO pnpm install) →
 >   report. The founder's living seal online: /referral shows HIS
 >   eligibility card; /admin/sources opens on the live queue's honest empty
->   state.** NEXT: K3.b (the stacked create+activate signing session + the
->   pause/revoke doors + the close-verdict isActive hardening + the
->   own-figures enrichment), then K3.c (per-source performance + CSV).
+>   state.** → **RIDER [this commit] — THE FOUNDER'S ASK-ALERT (his order
+>   2026-07-22, "alerte-moi aussi 🙂"): the founder is a member too — his
+>   bell already exists. The ask transaction now ALSO addresses an alert
+>   row to every ACTIVE founder_root wallet (recipients resolved
+>   SERVER-SIDE from the operator registry, never client input; both Q41
+>   wallets covered), icon user-plus, deliberately LINK-LESS (Q39: no
+>   /admin string may enter the member-facing whitelist — the words say
+>   where). Same transaction, same migration, zero new client code, zero
+>   new channel. Pinned in guard-auth-zone (→ 1172). Gate re-run whole:
+>   api tsc · 19 guards · build · boot EXIT 0.** NEXT: K3.b (the stacked
+>   create+activate signing session + the pause/revoke doors + the
+>   close-verdict isActive hardening + the own-figures enrichment + the
+>   operator-bell widening if wanted), then K3.c (per-source performance
+>   + CSV).
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21

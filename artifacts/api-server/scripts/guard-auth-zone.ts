@@ -528,6 +528,20 @@ for (const abs of authFiles) {
       `${ACTIVATION_BRIDGE_FILE}: the ask commits with its audit row (target = the request id)`,
       `${ACTIVATION_BRIDGE_FILE} must insert the audit_log row inside the same transaction as the request row, action "activation-request.ask", target the request id — never identity material`,
     );
+    // THE FOUNDER'S ALERT (founder order 2026-07-22, "alerte-moi aussi"):
+    // the ask transaction also addresses a bell row to each ACTIVE
+    // founder_root wallet — recipients resolved SERVER-SIDE from the
+    // operator registry (never from client input), and the alert carries NO
+    // link path (an /admin string must never enter the member-facing
+    // whitelist — Q39: no operator vocabulary in public bundles).
+    check(
+      /eq\(operator\.role,\s*"founder_root"\)/.test(code) &&
+        /eq\(operator\.status,\s*"ACTIVE"\)/.test(code) &&
+        /recipientWallet:\s*f\.wallet\.toLowerCase\(\)/.test(code) &&
+        /linkPath:\s*null/.test(code),
+      `${ACTIVATION_BRIDGE_FILE}: the founder's ask-alert (founder_root-resolved recipients, link-less by Q39)`,
+      `${ACTIVATION_BRIDGE_FILE} drifted — the ask transaction must address the alert to ACTIVE founder_root wallets resolved from the operator registry, with linkPath null (no /admin string may reach the member-facing whitelist)`,
+    );
     check(
       /\.limit\(1\)/.test(code),
       `${ACTIVATION_BRIDGE_FILE}: reads are bounded`,
