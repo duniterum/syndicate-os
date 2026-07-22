@@ -1,5 +1,37 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-22 (evening) — THE WALLET-TRACKING + ACTIVITY-NEWSROOM ARC OPENED (founder
+> orders: "on refait toute la page activity… rationaliser design pagination composition…
+> update all files… pas qu'on revienne rechercher"). THE DOSSIER IS ENGRAVED:
+> `docs/reference/WALLET_TRACKING_AND_ACTIVITY_REBUILD.md`** — the origin's 3-layer
+> wallet-tracking mechanism harvested (known-addresses → founder-actions → enrichEvent →
+> gold Founder styling + the TAGGED_TRANSACTIONS off-chain purpose ledger), the full
+> address book verified, the chain checks done (the 6,666 SYN founder burn indexed
+> "Founder" same day; **the 17 "Community" archive mints RESOLVED: 7 by the founder's
+> private wallet `0x2445…9C721` — mislabeled only because that wallet is not in the
+> server founder set — 10 by real members, correctly Community**), the 6 gaps named,
+> and THE WORK ORDER: **A0 wireframe → A1 address registry + "The Founder funded {organ}"
+> (server) → A2 feed pagination (server) → A3 the /activity newsroom rebuild (client,
+> business version) → A4 docs rider → A5 off-chain purpose ledger (⚠ migration, own
+> cycle)** — 2 deploy cycles total; then K4 → P → season resumes.
+> **FOUNDER RULINGS ENGRAVED (2026-07-22, binding):** ① **BUSINESS-FIRST** — everything
+> TRUE + legal is shown and SELLS (live auto-updating feed, historical FOMO, milestone
+> progress, bold CONVERSION voice); the ONLY red lines: financial-gain promise ·
+> chain-refutable claim; agent caution never masquerades as law (memory:
+> `business-first-true-urgency-allowed`). ② **"Founder" = capital F + GOLD** on every
+> founder-act line. ③ **Founder→protocol-wallet money = the Founder advancing money to
+> the protocol** — the line names it (exact wording at the A1 gate).
+> - ✅ **AW-1 CLOSED (founder, 2026-07-22):** `0x244531C571966F90F4849E03a507543D90f9C721`
+>   (full address chain-recovered from the block-87,350,581 mint log) joins the founder
+>   set, **label "Founder Private Wallet"** (his naming). The 7 mints flip to Founder.
+> - ✅ **AW-2 CLOSED (founder, 2026-07-22): YES — the era-price meter ships** ("oui car
+>   c'est informatif"). Founder override of the H2-⑫ line-on-crossing pin, dated; the
+>   guard pin is amended in A3; crypto-lawyer confirms at Phase 5 as planned.
+> - ✅ **AW-3 CLOSED (founder, 2026-07-22): GO** — and the CADENCE ORDER: **ONE Replit
+>   cycle carries the whole A1+A2+A3+A4 arc** (no migration, all additive/fail-closed;
+>   each cycle costs the founder hours). Only A5 keeps its own cycle (real migration —
+>   never batched).
+
 > **▶ 2026-07-20 — SLICE 5.1: THE COMMISSION RECEIPTS REGISTER + ITS SHARE DOOR, BUILT
 > [this commit] (Q44's sealed order, step 4; mockup founder-approved 2026-07-19; preview
 > "GO and GO-Live" on the rig 2026-07-20).** /referral/commissions rebuilt as the register:

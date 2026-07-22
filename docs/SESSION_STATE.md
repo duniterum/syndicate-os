@@ -396,13 +396,28 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   it to the set is a deliberate dated server change; archive pauses: none
 >   on-chain yet, honestly nothing to label) · engine ok=2/0/0 · feed 80.
 >   DEPLOY BACKLOG: EMPTY.**
-> - **IN FLIGHT after the riders' seal:** K4 (the no-seat promoter reach
->   decision at its gate) · P (press kit — all text on screen) ·
->   recognition/season (slice 6: the two-layer law; read the dossiers
->   first). FOUNDER-PENDING: nothing new on the arc — the parked ledger
->   (Q35 · Q38-Q40 · Q42 remnants · Q32/MVP-final) stands as recorded.
-> - **FOUNDER-PENDING: NOTHING on the arc.** Parked as recorded: Q35 legal
->   set · Q39/Q40/Q42 admin waves · Q32/MVP-final items · the deferred list.
+> - **IN FLIGHT (2026-07-22 evening — THE WALLET-TRACKING + ACTIVITY-NEWSROOM
+>   ARC, opened before K4):** the founder ordered the full /activity rebuild
+>   (rationalized design · pagination · composition · business version) on the
+>   good base (the address registry). THE DOSSIER (durable, never re-search):
+>   `docs/reference/WALLET_TRACKING_AND_ACTIVITY_REBUILD.md` — origin 3-layer
+>   harvest · verified address book · the 17 mints RESOLVED (7 = the founder's
+>   private wallet, mislabeled Community; 10 = real members, correct) · the
+>   6,666 SYN founder burn verified indexed "Founder" · 6 gaps · THE ORDER:
+>   A0 wireframe → A1 address registry + Founder-funded lines (server) →
+>   A2 pagination (server) → A3 the newsroom page (client) → A4 docs rider →
+>   A5 off-chain purpose ledger (⚠ migration, own cycle). 2 deploy cycles;
+>   then K4 → P → season. RULINGS ENGRAVED: business-first (2 red lines
+>   only: gain promise · chain-refutable claim) · "Founder" capital-F GOLD
+>   per line · founder→wallet money = the Founder advancing to the protocol.
+> - **THE ARC'S GATE — ALL THREE CLOSED (founder, 2026-07-22):** AW-1 YES —
+>   `0x244531C571966F90F4849E03a507543D90f9C721` joins the founder set as
+>   **"Founder Private Wallet"** (7 mints flip) · AW-2 YES — the era-price
+>   meter ships ("informatif"; H2-⑫ pin overridden dated, lawyer at Phase 5)
+>   · AW-3 GO + the CADENCE ORDER: **ONE Replit cycle carries A1+A2+A3+A4**
+>   (no migration; A5 alone keeps its migration cycle). FOUNDER-PENDING:
+>   nothing on this arc. Parked as recorded: Q35 legal set · Q39/Q40/Q42
+>   admin waves · Q32/MVP-final items · the deferred list.
 >   Taken-by-default (flagged, overridable): the dedicated PDF engine stays
 >   its own rider (print already saves clean).
 > - **THE NEXT SESSION'S EXACT OPENING (no re-explaining, ever):** boot per

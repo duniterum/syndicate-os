@@ -59,6 +59,7 @@ construire la slice correspondante, jamais au boot.
 | `docs/reference/SWAP_GAMIFICATION_LEGAL_DOSSIER.md` | Le benchmark swap + l'inventaire gamification Supa + **la recherche légale US/Suisse/monde** et le CHANGEMENT DE DOCTRINE du pot de saison (paiement au mérite autorisé, jamais chance). | Le moteur saison/gamification (future) |
 | `docs/reference/CHRONICLE_LIVING_NEWSROOM.md` | Le Chronicle comme newsroom AAA (on-chain + off-chain document-backed, preuve durable hash+doc+lien officiel, intelligence de détection). | Le newsroom Chronicle (B1/future) |
 | `docs/reference/LIVING_NOTIFICATION_LAYER.md` | Ce que NOTIF-1 (déjà scellé en prod) devient : catégories A/B/C/D, moteur de préférences, inventaire complet des événements auto. `never-message-first = externe uniquement`. | La croissance NOTIF-1 (future) |
+| `docs/reference/WALLET_TRACKING_AND_ACTIVITY_REBUILD.md` | Le dossier wallet-tracking + refonte /activity (2026-07-22) : le mécanisme 3-couches de l'origine (known-addresses → founder-actions → enrichEvent, Founder en OR, TAGGED_TRANSACTIONS off-chain), le carnet d'adresses vérifié, les 17 mints résolus, les 6 trous, les rulings fondateur (business-first · Founder majuscule+or · financement-Founder=avance) et l'ordre A0→A5. | L'arc registre d'adresses + newsroom /activity (en cours) |
 
 ## TIER 1 — Vue holistique, plan & canonical (CHARGER AU BOOT)
 

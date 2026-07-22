@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A0 — /activity newsroom wireframe (business version)</title>
+<style>
+  :root[data-theme="dark"]{
+    --bg:#07090f; --surface:#0d1119; --surface-2:#131826; --border:#232a3b;
+    --fg:#e8eaf0; --muted:#9aa3b5; --gold:#e3a92b; --gold-soft:rgba(227,169,43,.12);
+    --cyan:#39c6e0; --cyan-soft:rgba(57,198,224,.10);
+  }
+  :root[data-theme="light"]{
+    --bg:#f7f5f0; --surface:#ffffff; --surface-2:#f0ede5; --border:#ddd6c8;
+    --fg:#1a1d26; --muted:#5c6270; --gold:#c3861d; --gold-soft:rgba(195,134,29,.12);
+    --cyan:#0d7f97; --cyan-soft:rgba(13,127,151,.10);
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--fg);font:14px/1.55 "Work Sans",system-ui,sans-serif;padding-bottom:80px}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  .note{position:fixed;bottom:0;left:0;right:0;background:var(--gold);color:#14100a;font-weight:600;padding:8px 16px;text-align:center;font-size:13px;z-index:50}
+  .zone-tag{display:inline-block;background:var(--gold);color:#14100a;font:700 10px/1 "IBM Plex Mono",monospace;padding:3px 7px;border-radius:3px;margin-bottom:8px;letter-spacing:.08em}
+  .fauxheader{border-bottom:1px solid var(--border);padding:12px 24px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;align-items:center}
+  button.toggle{background:var(--surface-2);color:var(--fg);border:1px solid var(--border);border-radius:20px;padding:6px 14px;cursor:pointer;font-size:12px}
+
+  /* Z1 header band */
+  .z1{padding:26px 0 18px;border-bottom:1px solid var(--border)}
+  .z1 h1{font-size:26px;font-weight:600;letter-spacing:.01em}
+  .z1 .lead{color:var(--muted);margin-top:4px;font-size:14px}
+  .z1 .figures{display:flex;gap:28px;align-items:baseline;margin-top:16px;flex-wrap:wrap}
+  .fig-main{font-size:30px;font-weight:700}
+  .fig-main .live{color:var(--cyan);font-size:11px;font-weight:700;letter-spacing:.12em;vertical-align:middle;margin-left:10px;border:1px solid var(--cyan);border-radius:10px;padding:2px 8px}
+  .fig-sub{color:var(--muted);font-size:13px}
+  /* era meter */
+  .era{margin-top:16px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:12px 16px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+  .era b{color:var(--gold)}
+  .era .bar{flex:1;min-width:200px;height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden}
+  .era .bar i{display:block;height:100%;width:4.2%;background:var(--gold)}
+  .era .mono{font-size:12px;color:var(--muted)}
+
+  /* Z2 facets */
+  .z2{position:sticky;top:0;background:var(--bg);padding:14px 0;border-bottom:1px solid var(--border);z-index:10}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .chip{border:1px solid var(--border);color:var(--muted);border-radius:999px;padding:5px 13px;font-size:12.5px;cursor:pointer;background:transparent}
+  .chip .n{opacity:.6;font-size:11px;margin-left:4px}
+  .chip.active{border-color:var(--fg);color:var(--fg);background:var(--surface-2)}
+  .chip.founder{border-color:var(--gold);color:var(--gold)}
+  .chip.founder.hint{background:var(--gold-soft)}
+
+  /* Z3 feed */
+  .z3{padding-top:18px}
+  .live-note{display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:12px;margin-bottom:10px}
+  .live-note .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
+  @keyframes pulse{50%{opacity:.3}}
+  .dategroup{color:var(--muted);font:600 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;margin:22px 0 10px}
+  .line{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px;flex-wrap:wrap}
+  .line.new{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold-soft) inset;background:linear-gradient(90deg,var(--gold-soft),var(--surface) 30%)}
+  .pill{font:600 10px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;border-radius:4px;padding:4px 8px;color:var(--cyan);background:var(--cyan-soft);white-space:nowrap}
+  .pill.burn{color:var(--gold);background:var(--gold-soft)}
+  .founder-chip{font:700 11px/1 "Work Sans",sans-serif;color:#14100a;background:var(--gold);border-radius:4px;padding:4px 8px;white-space:nowrap}
+  .sentence{flex:1;min-width:260px}
+  .meta{color:var(--muted);font-size:11.5px;white-space:nowrap}
+  .meta a{color:var(--cyan);text-decoration:none;font-weight:600}
+  .loadmore{display:block;margin:22px auto 6px;background:var(--surface-2);border:1px solid var(--border);color:var(--fg);border-radius:8px;padding:12px 34px;font-size:14px;cursor:pointer}
+  .count-note{text-align:center;color:var(--muted);font-size:12px}
+
+  /* Z4 milestones */
+  .z4{margin-top:38px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px 22px}
+  .z4 h2{font-size:16px;margin-bottom:4px}
+  .z4 .fomo{color:var(--gold);font-weight:600;margin:8px 0 14px}
+  .ms{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed var(--border);font-size:13px;flex-wrap:wrap}
+  .ms:last-of-type{border-bottom:none}
+  .ms .ok{color:var(--gold)}
+  .ms .mono{color:var(--muted);font-size:11.5px}
+  .ms .bar{flex-basis:100%;height:4px;background:var(--surface-2);border-radius:2px;overflow:hidden}
+  .ms .bar i{display:block;height:100%;width:4.2%;background:var(--gold)}
+  .z4 details, .z5 details{margin-top:12px;color:var(--muted)}
+  summary{cursor:pointer;font-size:13px}
+
+  /* Z5 */
+  .z5{margin-top:18px;color:var(--muted);font-size:13px}
+  .annot{border:1px dashed var(--gold);border-radius:8px;padding:10px 14px;margin:26px 0;color:var(--muted);font-size:12.5px}
+  .annot b{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="fauxheader"><span>(le header du site — inchangé)</span>
+  <button class="toggle" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'">Basculer clair / sombre</button>
+</div>
+
+<div class="wrap">
+
+  <!-- Z1 -->
+  <section class="z1">
+    <span class="zone-tag">Z1 — L'EN-TÊTE : UNE LIGNE + LE CHIFFRE D'AUTORITÉ</span>
+    <h1>Activity</h1>
+    <p class="lead">The protocol speaks through verified receipts — every line below is an on-chain event you can verify yourself.</p>
+    <div class="figures">
+      <div class="fig-main">14 seats on-chain <span class="live">LIVE</span></div>
+      <div class="fig-sub">Indexed history: 26 purchases · 9 burns · 11 referral acts — complete since each stream's first block</div>
+    </div>
+    <div class="era">
+      <div><b>ERA 1 — GENESIS</b> · 100 SYN per $ · minimum $5</div>
+      <div class="bar"><i></i></div>
+      <div class="mono">Era 2 turns the page at seat #333 — <b style="color:var(--gold)">319 seats away</b></div>
+    </div>
+  </section>
+
+  <div class="annot"><b>Décisions appliquées :</b> le chiffre 14 = LA MÊME lecture live que la home (une seule autorité — la classe 12/14 est morte) ; les comptes d'historique sont subordonnés visuellement ; le compteur d'ère = AW-2 OUI (factuel, informatif, or).</div>
+
+  <!-- Z2 -->
+  <section class="z2">
+    <span class="zone-tag">Z2 — FACETTES STICKY (8 + More)</span>
+    <div class="chips">
+      <span class="chip active">All <span class="n">81</span></span>
+      <span class="chip founder hint">✦ Founder <span class="n">37</span></span>
+      <span class="chip">Membership <span class="n">26</span></span>
+      <span class="chip">Burns <span class="n">9</span></span>
+      <span class="chip">Treasury <span class="n">6</span></span>
+      <span class="chip">Liquidity <span class="n">4</span></span>
+      <span class="chip">Archive <span class="n">17</span></span>
+      <span class="chip">Referral <span class="n">11</span></span>
+      <span class="chip">More ▾</span>
+    </div>
+  </section>
+
+  <!-- Z3 -->
+  <section class="z3">
+    <span class="zone-tag">Z3 — LE TRAVAIL D'ABORD : 12 NEWS, CHRONO DESCENDANT, GROUPÉES PAR DATE</span>
+    <div class="live-note"><span class="dot"></span> Le flux vit — une nouvelle ligne glisse en haut avec un éclat or (ta position de lecture est préservée)</div>
+
+    <div class="dategroup">Today — 22 July 2026</div>
+    <div class="line new">
+      <span class="pill burn">BURN</span><span class="founder-chip">Founder</span>
+      <span class="sentence">6,666 SYN was retired to the burn address — gone for everyone, forever.</span>
+      <span class="meta mono">Proof of Burn #009 · block 90,936,916 · <a href="#">VERIFY ↗</a></span>
+    </div>
+    <div class="line">
+      <span class="pill">REFERRAL</span><span class="founder-chip">Founder</span>
+      <span class="sentence">A referral source went active — introductions now pay inside the buyer's own transaction.</span>
+      <span class="meta mono">block 90,919,914 · <a href="#">VERIFY ↗</a></span>
+    </div>
+    <div class="line">
+      <span class="pill">REFERRAL</span><span class="founder-chip">Founder</span>
+      <span class="sentence">A referral source was created — a founder-signed on-chain act.</span>
+      <span class="meta mono">block 90,919,905 · <a href="#">VERIFY ↗</a></span>
+    </div>
+
+    <div class="dategroup">Earlier in July 2026</div>
+    <div class="line">
+      <span class="pill">TREASURY</span><span class="founder-chip">Founder</span>
+      <span class="sentence">50.00 USDC moved out of the vault — a founder-signed treasury act; there are no silent moves.</span>
+      <span class="meta mono">07-16 · block 90,460,622 · <a href="#">VERIFY ↗</a></span>
+    </div>
+    <div class="line">
+      <span class="pill">SEAT</span>
+      <span class="sentence">Member #14 · 0xea8…5881 entered the public registry — brought by 0x88e…dd73.</span>
+      <span class="meta mono">07-13 · block 90,187,059 · <a href="#">VERIFY ↗</a></span>
+    </div>
+    <div class="line">
+      <span class="pill">SEAT</span>
+      <span class="sentence">Member #13 · 0x0dd…4d20 entered the public registry.</span>
+      <span class="meta mono">07-12 · block 90,160,483 · <a href="#">VERIFY ↗</a></span>
+    </div>
+    <div class="line">
+      <span class="pill">FOOTPRINT</span>
+      <span class="sentence">Seat #14 rose to Vanguard — a footprint recognized on the capital axis, never revoked.</span>
+      <span class="meta mono">07-13 · <a href="#">VERIFY ↗</a></span>
+    </div>
+
+    <div class="dategroup">June 2026</div>
+    <div class="line">
+      <span class="pill">LIQUIDITY</span><span class="founder-chip">Founder</span>
+      <span class="sentence">Liquidity was added to the public pool — the founder deepened the market.</span>
+      <span class="meta mono">06-17 · <a href="#">VERIFY ↗</a></span>
+    </div>
+    <div class="line">
+      <span class="pill">MILESTONE</span>
+      <span class="sentence">The protocol crossed 100 USDC routed through the sale — 70/20/10, on-chain.</span>
+      <span class="meta mono">06-17 · block 88,212,611 · <a href="#">VERIFY ↗</a></span>
+    </div>
+    <div class="line">
+      <span class="pill">DEPLOY</span><span class="founder-chip">Founder</span>
+      <span class="sentence">MembershipSaleV3 was deployed — a founder act, permanent on Avalanche.</span>
+      <span class="meta mono">06-20 · block 88,505,301 · <a href="#">VERIFY ↗</a></span>
+    </div>
+    <div class="line">
+      <span class="pill">ARCHIVE</span><span class="founder-chip">Founder</span>
+      <span class="sentence">0x244…c721 archived First Signal · token ID 1.</span>
+      <span class="meta mono">06-06 · block 87,350,581 · <a href="#">VERIFY ↗</a></span>
+    </div>
+    <div class="line">
+      <span class="pill burn">BURN</span><span class="founder-chip">Founder</span>
+      <span class="sentence">1,000 SYN was retired to the burn address — gone for everyone, forever.</span>
+      <span class="meta mono">Proof of Burn #001 · block 87,703,847 · <a href="#">VERIFY ↗</a></span>
+    </div>
+
+    <button class="loadmore">Load 12 more</button>
+    <p class="count-note">Showing 12 of 81 events — the full history stays one click at a time.</p>
+  </section>
+
+  <div class="annot"><b>Décisions appliquées :</b> la pastille <b>Founder</b> — F majuscule, OR — sur chaque acte Founder (la ligne d'archive 0x244…c721 la porte APRÈS la slice A1 : Founder Private Wallet) ; phrases canon §8 inchangées ; date · bloc · VERIFY sur chaque ligne ; « Load more » (curseur serveur, 12 par page).</div>
+
+  <!-- Z4 -->
+  <section class="z4">
+    <span class="zone-tag">Z4 — LES MILESTONES, APRÈS LE TRAVAIL (condensés + FOMO historique)</span>
+    <h2>Milestones — the protocol's canonical account</h2>
+    <p class="fomo">14 of 333 Genesis seats taken — Chapter I seals forever at seat #333. A place in the founding story is claimed once.</p>
+    <div class="ms"><span><span class="ok">✔</span> First seat sealed</span><span class="mono">2026-06-04 · block 87,158,947 · VERIFY ↗</span></div>
+    <div class="ms"><span><span class="ok">✔</span> First Signal minted</span><span class="mono">2026-06-06 · VERIFY ↗</span></div>
+    <div class="ms"><span><span class="ok">✔</span> First Patron Seal minted</span><span class="mono">2026-06-07 · VERIFY ↗</span></div>
+    <div class="ms"><span><span class="ok">✔</span> $100 routed</span><span class="mono">2026-06-17 · VERIFY ↗</span></div>
+    <div class="ms"><span>Next: <b>Genesis Signal sealed (#1–#333)</b></span><span class="mono">14 / 333 seats</span><span class="bar"><i></i></span></div>
+    <details><summary>All thresholds ($1,000 · $10,000 routed · 100 seats · First Thousand · The Expansion · First Ten Thousand…)</summary>
+      <p style="margin-top:8px">Le panneau complet d'aujourd'hui vit ici, replié — plus jamais devant la première news.</p>
+    </details>
+  </section>
+
+  <!-- Z5 -->
+  <section class="z5">
+    <span class="zone-tag">Z5 — LA MÉTHODO, REPLIÉE EN PIED</span>
+    <details><summary>How this feed works — coverage, live window, verification</summary>
+      <p style="margin-top:8px">Complete history, served by the event indexer… (le paragraphe intégral d'aujourd'hui — l'honnêteté reste entière, elle n'est plus le hall d'entrée). What appears here happened and is verifiable; what does not appear is simply outside the stated coverage — never evidence of absence.</p>
+    </details>
+  </section>
+
+  <div class="annot"><b>Mobile (vérifié au preview gate, pas ici) :</b> facettes défilantes 44px · une ligne = 2 rangées (phrase, puis pastilles+méta) · Load More au pouce · 375px zéro débordement · les deux thèmes (bascule en haut à droite pour aperçu).</div>
+
+</div>
+<div class="note">WIREFRAME A0 — composition seulement (les chiffres sont les vrais de prod au 2026-07-22 ; les comptes de facettes seront les comptes servis réels)</div>
+</body>
+</html>
