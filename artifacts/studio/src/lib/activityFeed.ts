@@ -113,6 +113,14 @@ export interface ActivityItem {
    * "26 seats" for 26 purchase events was a public truth bug.
    */
   firstSeat?: boolean | null;
+  /**
+   * FOUNDER FACET (founder order 2026-07-22, "on ajoute Founder in
+   * sorting"): true only where the act is PROVABLY the founder's from the
+   * served facts (burn lines carry the ledger's own senderLabel). Kind-level
+   * founder acts (deployments · registry lifecycle · treasury · chronicle)
+   * are derived from the kind itself at filter time — never guessed per line.
+   */
+  founderAct?: boolean;
 }
 
 export interface ActivityScan {

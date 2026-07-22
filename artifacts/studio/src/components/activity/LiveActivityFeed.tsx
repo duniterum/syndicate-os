@@ -91,6 +91,7 @@ function addressFromUrl(url: string): string | null {
 
 type FilterId =
   | "all"
+  | "founder"
   | "seat"
   | "burn"
   | "referral"
@@ -104,7 +105,17 @@ type FilterId =
   | "deployment";
 const FILTERS: { id: FilterId; label: string }[] = [
   { id: "all", label: "All" },
-  { id: "seat", label: "Seats" },
+  // THE FOUNDER FACET (founder order 2026-07-22): an ACTOR facet beside the
+  // kind lanes — every act that is provably the founder's: deployments,
+  // registry lifecycle (onlyOwner signatures), treasury moves, chronicle
+  // promotions, and his own burns (the ledger's senderLabel). Never guessed:
+  // a line joins only when the served facts say founder.
+  { id: "founder", label: "Founder" },
+  // "Membership" (the seat-law sweep 2026-07-22): this lane holds FIRST
+  // seats AND footprint expansions — the honest name for its whole content
+  // ("Seats" undercounted-in-word; the separate Footprint chip keeps the
+  // capital-rise recognitions).
+  { id: "seat", label: "Membership" },
   { id: "burn", label: "Burns" },
   // H2-⑭ founder decision A: this chip filters the REGISTRY's own admin
   // lifecycle (source created/terms/status/wallet) — named for what it is;
@@ -122,6 +133,19 @@ const FILTERS: { id: FilterId; label: string }[] = [
 
 function matches(item: ActivityItem, f: FilterId): boolean {
   if (f === "all") return true;
+  if (f === "founder") {
+    // Kind-level founder acts (the canon says so per lane) + per-line
+    // proven founder burns. Seats/milestones/eras stay out (protocol
+    // facts / member acts — the founder's own purchases are not provable
+    // client-side and are never guessed).
+    return (
+      item.kind === "deployment" ||
+      item.kind === "chronicle-entry" ||
+      item.kind === "treasury-move" ||
+      item.kind.startsWith("source-") ||
+      item.founderAct === true
+    );
+  }
   if (f === "referral") return item.kind.startsWith("source-");
   if (f === "liquidity") return item.kind === "lp-add" || item.kind === "lp-remove";
   if (f === "archive") return item.kind === "archive-mint" || item.kind === "archive-pause";
@@ -228,6 +252,9 @@ export function LiveActivityFeed({
                   ? false
                   : null
               : undefined,
+          // The founder facet's per-line proof: the burn ledger's own
+          // senderLabel (window-scanned burns can't prove it and never join).
+          founderAct: l.kind === "burn" ? l.senderLabel === "Founder" : undefined,
         };
       });
     // H2-⑭ — Chronicle promotions join from the committed register (CHR-1:
