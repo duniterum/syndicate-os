@@ -488,6 +488,8 @@ function decideFailureText(reason: string | null): string {
       return "The reason can't contain a raw wallet address — say it in words instead.";
     case "bad_state":
       return "This request moved on since the list loaded — reload and look again.";
+    case "not_active_on_chain":
+      return "The registry doesn't confirm this source is active — the bell only rings on verified on-chain truth. Sign the activation first, or reload.";
     case "not_found":
       return "This request no longer exists — reload the queue.";
     case "insufficient_role":
@@ -586,7 +588,10 @@ export function SourceReviewQueue() {
       setError(decideFailureText(result.reason));
       return;
     }
-    dispatchProposeSourcePrefill(result.signerTarget);
+    // K3.b: the request id rides the seam — after the founder's activation
+    // receipt confirms, the signing session closes the request itself and
+    // the member's bell rings (Record-it stays as the manual fallback).
+    dispatchProposeSourcePrefill(result.signerTarget, id);
     toast({
       title: "Signing path opened",
       description: "The create form on this page now carries this request's wallet.",

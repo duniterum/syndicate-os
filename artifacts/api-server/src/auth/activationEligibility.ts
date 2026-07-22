@@ -41,8 +41,12 @@ export interface ActivationEligibility {
   chainVerified: boolean;
   /** true = the engine recognizes a seat; false = none; null = unavailable. */
   seatHeld: boolean | null;
+  /** The engine's own seat figure (exact decimal string) when recognized. */
+  seatFigure: string | null;
   /** true = SYN balance > 0 (any amount); false = zero; null = unavailable. */
   holdsSyn: boolean | null;
+  /** The wallet's own SYN balance, raw 18-decimal base units (own-row). */
+  synRaw: string | null;
   /** The source resolution the standing route already serves (own-row). */
   sourceOnChain: boolean | null;
   sourceActive: boolean | null;
@@ -67,8 +71,10 @@ export function canonicalSourceIdHex(account: string): string | null {
   }
 }
 
-/** SYN.balanceOf(account) > 0 — live, fail closed to null. */
-export async function readHoldsSyn(account: string): Promise<boolean | null> {
+/** SYN.balanceOf(account) — the EXACT raw 18-decimal base-unit decimal
+ * string, live, fail closed to null. Own-row material (the wallet page
+ * already shows the member their own balance). */
+export async function readSynBalanceRaw(account: string): Promise<string | null> {
   const timeoutMs =
     readEnvInt(process.env["AVALANCHE_RPC_TIMEOUT_MS"]) ?? DEFAULT_TIMEOUT_MS;
   const transport = makeFetchTransport(resolveEndpoints(), timeoutMs);
@@ -77,14 +83,18 @@ export async function readHoldsSyn(account: string): Promise<boolean | null> {
   const data = encodeAddressArg(SELECTOR_BALANCE_OF, account);
   if (data === null) return null;
   try {
-    const decoded = decodeUint256Decimal(
+    return decodeUint256Decimal(
       await ethCall(transport, FINANCIAL_TARGETS.synTokenAddress, data),
     );
-    if (decoded === null) return null;
-    return decoded !== "0";
   } catch {
     return null;
   }
+}
+
+/** SYN.balanceOf(account) > 0 — live, fail closed to null. */
+export async function readHoldsSyn(account: string): Promise<boolean | null> {
+  const raw = await readSynBalanceRaw(account);
+  return raw === null ? null : raw !== "0";
 }
 
 /**
@@ -95,16 +105,18 @@ export async function readHoldsSyn(account: string): Promise<boolean | null> {
 export async function readActivationEligibility(
   boundAccount: string,
 ): Promise<ActivationEligibility> {
-  const [engine, holdsSyn, standing] = await Promise.all([
+  const [engine, synRaw, standing] = await Promise.all([
     readEngineMemberNumber(boundAccount),
-    readHoldsSyn(boundAccount),
+    readSynBalanceRaw(boundAccount),
     readOwnSourceStanding(boundAccount),
   ]);
   const src: OwnSourceStanding = standing;
   return {
     chainVerified: engine.chainVerified || src.chainVerified,
     seatHeld: engine.isRecognized,
-    holdsSyn,
+    seatFigure: engine.isRecognized === true ? engine.engineFigure : null,
+    holdsSyn: synRaw === null ? null : synRaw !== "0",
+    synRaw,
     sourceOnChain: src.sourceOnChain,
     sourceActive: src.sourceActive,
     sourceIdHex: src.sourceIdHex ?? canonicalSourceIdHex(boundAccount),

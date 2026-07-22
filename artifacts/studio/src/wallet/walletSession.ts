@@ -447,7 +447,11 @@ export interface ActivationStateReadback {
   state: "S1" | "S4";
   chainVerified: boolean;
   seatHeld: boolean | null;
+  /** K3.b — the member's own seat figure (exact decimal string) when held. */
+  seatFigure: string | null;
   holdsSyn: boolean | null;
+  /** K3.b — the wallet's own SYN balance, raw 18-decimal base units. */
+  synRaw: string | null;
   sourceOnChain: boolean | null;
   sourceActive: boolean | null;
   request: {
@@ -489,7 +493,15 @@ export async function fetchActivationState(): Promise<ActivationStateReadback | 
       state: o.state,
       chainVerified: o.chainVerified === true,
       seatHeld: typeof o.seatHeld === "boolean" ? o.seatHeld : null,
+      seatFigure:
+        typeof o.seatFigure === "string" && /^[0-9]+$/.test(o.seatFigure)
+          ? o.seatFigure
+          : null,
       holdsSyn: typeof o.holdsSyn === "boolean" ? o.holdsSyn : null,
+      synRaw:
+        typeof o.synRaw === "string" && /^[0-9]+$/.test(o.synRaw)
+          ? o.synRaw
+          : null,
       sourceOnChain: typeof o.sourceOnChain === "boolean" ? o.sourceOnChain : null,
       sourceActive: typeof o.sourceActive === "boolean" ? o.sourceActive : null,
       request,

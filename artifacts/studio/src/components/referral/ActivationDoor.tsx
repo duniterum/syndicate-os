@@ -20,7 +20,15 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusPill } from "@/components/status-pill/StatusPill";
 import { LIQUIDITY_LINKS } from "@/config/liquidityPool";
+import { formatRawUnits } from "@/lib/rawUnits";
 import { useOwnActivationState } from "@/components/referral/referralStanding";
+
+/** Raw 18-decimal SYN → "500 SYN" (exact, trailing zeros trimmed). */
+function synDisplay(raw: string): string {
+  const s = formatRawUnits(raw, 18);
+  const trimmed = s.includes(".") ? s.replace(/\.?0+$/, "") : s;
+  return `${trimmed.length > 0 ? trimmed : "0"} SYN`;
+}
 
 /** The two ways to hold SYN — every no-SYN state carries both doors. */
 function SynRemedies() {
@@ -118,7 +126,6 @@ export function ActivationDoor() {
 
   // ── The eligibility card (no open request) ────────────────────────────────
   const declined = request !== null && request.status === "DECLINED";
-  const eligible = seatHeld === true && holdsSyn === true;
   const checksUnavailable = seatHeld === null || holdsSyn === null;
 
   async function ask() {
@@ -169,14 +176,26 @@ export function ActivationDoor() {
         <>
           <div className="flex flex-wrap gap-2 mt-3">
             {seatHeld === true ? (
-              <StatusPill tone="live" size="xs">✓ A seat — yours</StatusPill>
+              <StatusPill tone="live" size="xs">
+                {/* K3.b own-figures (the approved mockup's pills): the
+                    member's own facts, never a bare checkmark when the
+                    figure is known. Fail-closed: no figure → the boolean
+                    wording stands. */}
+                {readback.seatFigure !== null
+                  ? `✓ A seat — Seat #${readback.seatFigure} is yours`
+                  : "✓ A seat — yours"}
+              </StatusPill>
             ) : (
               <StatusPill tone="danger" size="xs">✕ A seat — you don't have one yet</StatusPill>
             )}
             {seatHeld === false ? (
               <StatusPill tone="neutral" size="xs">◌ SYN — comes with your seat</StatusPill>
             ) : holdsSyn === true ? (
-              <StatusPill tone="live" size="xs">✓ SYN in your wallet</StatusPill>
+              <StatusPill tone="live" size="xs">
+                {readback.synRaw !== null
+                  ? `✓ SYN in your wallet — you hold ${synDisplay(readback.synRaw)}`
+                  : "✓ SYN in your wallet"}
+              </StatusPill>
             ) : (
               <StatusPill tone="danger" size="xs">✕ SYN in your wallet — none right now</StatusPill>
             )}

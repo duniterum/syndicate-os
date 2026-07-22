@@ -1046,7 +1046,12 @@ router.get("/activation-request", async (req: Request, res: Response) => {
     state: sessionActive ? ("S4" as const) : ("S1" as const),
     chainVerified: eligibility?.chainVerified ?? false,
     seatHeld: eligibility?.seatHeld ?? null,
+    // K3.b own-figures (the mockup's approved pills): the member's own seat
+    // number and SYN balance — facts their other own-row surfaces already
+    // show; decimal strings only, the address gates unaffected.
+    seatFigure: eligibility?.seatFigure ?? null,
     holdsSyn: eligibility?.holdsSyn ?? null,
+    synRaw: eligibility?.synRaw ?? null,
     sourceOnChain: eligibility?.sourceOnChain ?? null,
     sourceActive: eligibility?.sourceActive ?? null,
     sourceIdHex: eligibility?.sourceIdHex ?? null,

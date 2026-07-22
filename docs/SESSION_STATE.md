@@ -302,14 +302,29 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   WHOLE: "Record it" clicked, Seat #3's bell rang with the exact
 >   sealed copy (founder screenshots, 2026-07-22). K3.a is CLOSED end to
 >   end on its first real use. His own bell rings from the NEXT new ask.**
-> - **IN FLIGHT after K3.a's seal:** K3.b — the stacked create+activate
->   signing session + the propose-pause/revoke doors (+ the recorded
->   hardenings: the close verdict's live isActive() read before the bell ·
->   the member pills' own figures) → K3.c — per-source performance + CSV
->   (admin sees, public never). The founder's SIGNATURE stays the law;
->   only the friction dies. Then K4 (no-seat reach decision) · P (press
->   kit — all text on screen) · recognition/season (slice 6: read the
->   gamification/legal dossiers first; the two-layer law holds).
+> - **▶ K3.b BUILT + COMMITTED [this commit] (2026-07-22, "GO and
+>   GO-Live", Faces 3-4 of the approved mockup): THE STACKED SESSION + THE
+>   DOORS + THE HARDENINGS.** The manual /join check DIED (the live quote
+>   refusal is a CODE gate, joinQuoteProbe.ts); Approve carries the
+>   request id — the activation receipt AUTO-CLOSES the request + rings
+>   the member's bell (server re-verifies the registry first; Record-it =
+>   the fallback); pause (two-step, reversible) + revoke (consequence
+>   dialog, permanent) + resume doors on the lifecycle console ("Create &
+>   manage"); the close verdict chain-verified (exists-first, recorded-or-
+>   canonical id — D2 closes); the member pills carry their own figures
+>   (Seat #N · X SYN). 3-seam adversarial verify: 8 findings ALL FIXED
+>   (stale-refresh pinning + frozen input in flight · banner honesty ·
+>   inventory re-trued · dialog live-gate · tail resets · D2 grain ·
+>   exists-first · dead var); close-TOCTOU weighed, accepted as designed.
+>   Gates all EXIT 0 full runs both sides. NO migration, NO packages, NO
+>   featureStatus flip owed. Full record: OPEN_QUEUE's K3.b entry.
+>   **🚀 DEPLOY — server + client, NO migration, NO pnpm install. The
+>   founder's living seal: the next activation = ONE fluid session; the
+>   doors stand on his active sources.**
+> - **IN FLIGHT after K3.b's seal:** K3.c — per-source performance + CSV
+>   (admin sees, public never). Then K4 (no-seat reach decision) · P
+>   (press kit — all text on screen) · recognition/season (slice 6: read
+>   the gamification/legal dossiers first; the two-layer law holds).
 > - **FOUNDER-PENDING: NOTHING on the arc.** Parked as recorded: Q35 legal
 >   set · Q39/Q40/Q42 admin waves · Q32/MVP-final items · the deferred list.
 >   Taken-by-default (flagged, overridable): the dedicated PDF engine stays

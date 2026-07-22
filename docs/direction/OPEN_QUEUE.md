@@ -410,6 +410,57 @@
 > END TO END ON ITS FIRST REAL USE: ask → live checks → Approve-prefill →
 > two founder signatures → closed-by-reality → the member's bell. K3.a is
 > CLOSED. His own alert bell rings from the NEXT new ask. NEXT: K3.b.**
+>
+> **▶ K3.b BUILT + COMMITTED [this commit] (2026-07-22, "GO and GO-Live" —
+> Faces 3-4 of the approved mockup): THE STACKED SIGNING SESSION + THE
+> LIFECYCLE DOORS + THE RECORDED HARDENINGS, all landed.**
+> - **THE SESSION:** Approve now carries the REQUEST ID through the
+>   buffered seam; the manual /join check between the two signatures DIED
+>   as promised — `lib/joinQuoteProbe.ts` asks the live quote itself
+>   whether it REFUSES the paused source (a CODE gate: unproven refusal
+>   BLOCKS activation, re-runnable; the quote ACCEPTING = a state-disagree
+>   alarm); after the activation receipt confirms, the session AUTO-CLOSES
+>   the linked request → the member's bell rings with no Record-it click
+>   (the server re-verifies the source live on the registry first — and
+>   Record-it stays the manual fallback). The session banner promises the
+>   auto-close ONLY while the form carries the request's own wallet (the
+>   same condition the close guard enforces).
+> - **THE DOORS (proportional friction, Face 4 verbatim-close):** on an
+>   ACTIVE record — Pause (two-step inline: honest consequence copy →
+>   "Pause — sign in your wallet") above Revoke (a dialog naming the
+>   source + the bold permanent consequence; the wallet signature IS the
+>   final confirmation, no type-to-confirm); a PAUSED record offers
+>   activate (resume) + revoke. All are `setSourceStatus` proposals via
+>   ONE generalized proposer; the heading became "Create & manage…"; the
+>   last ABI-verb button humanized ("Create the source — sign in your
+>   wallet").
+> - **THE HARDENINGS (K3.a's recorded non-actions, closed):** ① the close
+>   verdict VERIFIES the chain live before the bell (exists-first read;
+>   recorded id OR the wallet's canonical derivation — the D2 class can
+>   close; new honest reason `not_active_on_chain` in the failure map);
+>   ② the member's pills carry their OWN figures ("Seat #3 is yours" ·
+>   "you hold 500 SYN" — seatFigure + synRaw served own-row, decimal
+>   strings, fail-closed to the boolean wording).
+> - **THE 3-SEAM ADVERSARIAL VERIFY: 8 findings, ALL FIXED** — the stale
+>   refresh repaint (results pinned to their sourceId; the wallet input
+>   FROZEN while an act is in flight) · the over-promising session banner ·
+>   the inventory doc's dead-reality lines (§2 steps 5-6 + line 230
+>   re-trued dated) · the revoke dialog's silent no-op (live-gated like
+>   the pause confirm) · session-tail resets on a new prefill · the D2
+>   id-grain close dead-end · exists-first on the close read · the dead
+>   `eligible` var. TOCTOU on close weighed and ACCEPTED as designed (the
+>   identical outcome exists one second after any atomic commit; the DB
+>   race is killed by the status-guarded UPDATE).
+> - **GATE (all EXIT 0, full runs):** api tsc · 19 guards · build — studio
+>   tsc · 19 guards · build + twins + admin-dist · the K3.a probes hold.
+>   NO migration, NO new packages, NO featureStatus flip owed (the K3.b
+>   capabilities live under `sourceReviewQueue`/`activationIntake` — the
+>   same doors, deeper machine).
+> - **🚀 DEPLOY — server + client, NO migration, NO pnpm install.** The
+>   founder's living seal: the next activation runs as ONE fluid session
+>   (create → auto-proof → activate → the member's bell, zero manual
+>   clicks after the signatures) and the pause/revoke doors stand on his
+>   active sources. NEXT: K3.c (per-source performance + CSV).**
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21

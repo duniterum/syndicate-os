@@ -29,7 +29,7 @@
 // of guessing. The registry address comes from the server's verify-links —
 // never hardcoded in the client bundle.
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isAddress } from "viem";
@@ -47,13 +47,29 @@ import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   publicClient,
   readRegistryOwner,
   readSourceRecord,
   type SourceRecordRead,
 } from "@/lib/chainReads";
 import { deriveSourceId, SOURCE_ID_NAMESPACE } from "@/lib/sourceIdentity";
-import { PROPOSE_SOURCE_PREFILL_EVENT, consumePendingPrefill } from "@/lib/adminPrefill";
+import {
+  PROPOSE_SOURCE_PREFILL_EVENT,
+  consumePendingPrefill,
+  type ProposeSourcePrefillDetail,
+} from "@/lib/adminPrefill";
+import { probeQuoteRefusal } from "@/lib/joinQuoteProbe";
+import { decideActivation } from "@/lib/operatorClient";
 import { fetchTermsHash, TERMS_CANONICAL_URL } from "@/lib/termsDocument";
 
 // SPEC §② — the founder-decided first-source terms (closed list §⑫).
@@ -172,7 +188,7 @@ function useTermsHash(): TermsState {
   return state;
 }
 
-type Busy = "create" | "activate" | null;
+type Busy = "create" | "activate" | "pause" | "revoke" | null;
 
 export default function ProposeSourceCreate() {
   const { address, chainId: walletChainId } = useAccount();
@@ -202,20 +218,45 @@ export default function ProposeSourceCreate() {
   // queue component never imports the wallet zone; rule 12: no storage). The
   // form prefills and scrolls itself into view; every existing gate (owner,
   // chain, hash, live record) still decides whether signing opens.
+  // K3.b — the LINKED SIGNING SESSION: when Approve opened this path, the
+  // seam carries the request id; after the activation receipt confirms, the
+  // session closes the request and the member's bell rings (the server
+  // re-verifies the source is live before any bell — never trust the client).
+  // The link is bound to the PREFILLED wallet: editing the wallet by hand
+  // unbinds it, so a different signature can never close the wrong request.
+  const [linkedRequest, setLinkedRequest] = useState<{
+    id: string;
+    wallet: string;
+  } | null>(null);
   useEffect(() => {
-    const apply = (wallet: unknown) => {
-      if (typeof wallet === "string" && isAddress(wallet)) {
-        setWalletInput(wallet);
+    const apply = (detail: ProposeSourcePrefillDetail | null | undefined) => {
+      if (
+        detail !== null &&
+        detail !== undefined &&
+        typeof detail.wallet === "string" &&
+        isAddress(detail.wallet)
+      ) {
+        setWalletInput(detail.wallet);
+        // A new session sweeps the previous one's tail lines — a stale
+        // "Request closed" under a fresh banner would read as this request
+        // already answered (adversarial verify).
+        setCloseOutcome(null);
+        setError(null);
+        setLinkedRequest(
+          typeof detail.requestId === "string" && detail.requestId.length > 0
+            ? { id: detail.requestId, wallet: detail.wallet.toLowerCase() }
+            : null,
+        );
         document
           .querySelector('[data-testid="input-propose-source-wallet"]')
           ?.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     };
     // Mount-time catch-up: Approve may have fired while this lazy chunk was
-    // still loading — the seam parks the wallet; consume it exactly once.
+    // still loading — the seam parks the detail; consume it exactly once.
     apply(consumePendingPrefill());
     const onPrefill = (e: Event) =>
-      apply((e as CustomEvent<{ wallet?: unknown }>).detail?.wallet);
+      apply((e as CustomEvent<ProposeSourcePrefillDetail>).detail);
     window.addEventListener(PROPOSE_SOURCE_PREFILL_EVENT, onPrefill);
     return () => window.removeEventListener(PROPOSE_SOURCE_PREFILL_EVENT, onPrefill);
   }, []);
@@ -229,14 +270,25 @@ export default function ProposeSourceCreate() {
   const [error, setError] = useState<string | null>(null);
   const [lastTx, setLastTx] = useState<string | null>(null);
 
+  // K3.b (adversarial verify): refresh results are PINNED to the sourceId
+  // they were read for — an in-flight act's late refresh must never paint a
+  // PREVIOUS wallet's registry state under the CURRENT wallet's id (the
+  // stale-closure overwrite class). The ref always holds the id the screen
+  // is showing; a mismatched result is dropped, never rendered.
+  const currentSourceIdRef = useRef<`0x${string}` | null>(null);
+  useEffect(() => {
+    currentSourceIdRef.current = sourceId;
+  }, [sourceId]);
   const refresh = useCallback(async () => {
     if (!registryAddr) return;
+    const readFor = sourceId;
     const [o, r] = await Promise.all([
       readRegistryOwner(registryAddr),
-      sourceId ? readSourceRecord(registryAddr, sourceId) : Promise.resolve(undefined),
+      readFor ? readSourceRecord(registryAddr, readFor) : Promise.resolve(undefined),
     ]);
+    if (currentSourceIdRef.current !== readFor) return; // stale — drop whole
     setOwner(o);
-    if (sourceId) setRecord(r);
+    if (readFor) setRecord(r);
     else setRecord(undefined);
   }, [registryAddr, sourceId]);
 
@@ -303,27 +355,96 @@ export default function ProposeSourceCreate() {
     }
   }, [signingReady, registryAddr, sourceId, sourceWallet, terms, writeContractAsync, refresh]);
 
-  const doActivate = useCallback(async () => {
-    if (!signingReady || !registryAddr || !sourceId) return;
-    setBusy("activate");
-    setError(null);
-    try {
-      const hash = await writeContractAsync({
-        address: registryAddr as `0x${string}`,
-        abi: REGISTRY_WRITE_ABI,
-        functionName: "setSourceStatus",
-        args: [sourceId, STATUS_ACTIVE],
-        chainId: avalanche.id,
-      });
-      await publicClient.waitForTransactionReceipt({ hash });
-      setLastTx(hash);
-      await refresh();
-    } catch (e) {
-      setError(explainError(e));
-    } finally {
-      setBusy(null);
+  // K3.b — the outcome line of the linked session's automatic closure (the
+  // manual Record-it stays the fallback; failure here never blocks the
+  // on-chain outcome, it only reports honestly).
+  const [closeOutcome, setCloseOutcome] = useState<string | null>(null);
+
+  // K3.b — THE FAIL-CLOSED PROOF AS A CODE GATE: while the record is PAUSED,
+  // the live /join quote is asked whether it REFUSES this source — the exact
+  // check the founder used to run by eye in a second tab. true = refusal
+  // proven (activation may open) · false = the quote ACCEPTS (wrong state —
+  // blocking) · null = the probe didn't answer (blocking, re-runnable).
+  const [quoteRefusal, setQuoteRefusal] = useState<boolean | null>(null);
+  const [quoteProbeTick, setQuoteProbeTick] = useState(0);
+  useEffect(() => {
+    let alive = true;
+    setQuoteRefusal(null);
+    if (
+      record === undefined ||
+      record === null ||
+      !record.exists ||
+      record.status !== STATUS_PAUSED ||
+      !sourceId
+    ) {
+      return;
     }
-  }, [signingReady, registryAddr, sourceId, writeContractAsync, refresh]);
+    void probeQuoteRefusal(sourceId).then((r) => {
+      if (alive) setQuoteRefusal(r);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [record, sourceId, quoteProbeTick]);
+
+  // ONE proposer for the three lifecycle acts (activate / pause / revoke) —
+  // the same wallet-signed setSourceStatus with a different status word.
+  const doSetStatus = useCallback(
+    async (status: number, busyKind: Busy) => {
+      if (!signingReady || !registryAddr || !sourceId) return;
+      setBusy(busyKind);
+      setError(null);
+      try {
+        const hash = await writeContractAsync({
+          address: registryAddr as `0x${string}`,
+          abi: REGISTRY_WRITE_ABI,
+          functionName: "setSourceStatus",
+          args: [sourceId, status],
+          chainId: avalanche.id,
+        });
+        await publicClient.waitForTransactionReceipt({ hash });
+        setLastTx(hash);
+        // THE STACKED SESSION'S TAIL (K3.b): the activation receipt is in —
+        // if this session answers a queue request AND the signed wallet is
+        // exactly the prefilled one, close the request now: the server
+        // re-verifies the source is live on the registry before writing
+        // CLOSED + the member's bell. Any refusal falls back honestly to
+        // the queue's manual Record-it — the signature outcome stands.
+        if (
+          status === STATUS_ACTIVE &&
+          linkedRequest !== null &&
+          sourceWallet !== null &&
+          sourceWallet.toLowerCase() === linkedRequest.wallet
+        ) {
+          const closed = await decideActivation(linkedRequest.id, "close");
+          setCloseOutcome(
+            closed.ok
+              ? "Request closed — the member's bell announces the activation."
+              : "The activation is on-chain, but the request record didn't close — use “Record it” on the queue card above.",
+          );
+          if (closed.ok) setLinkedRequest(null);
+        }
+        await refresh();
+      } catch (e) {
+        setError(explainError(e));
+      } finally {
+        setBusy(null);
+      }
+    },
+    [
+      signingReady,
+      registryAddr,
+      sourceId,
+      sourceWallet,
+      linkedRequest,
+      writeContractAsync,
+      refresh,
+    ],
+  );
+  const doActivate = useCallback(
+    () => doSetStatus(STATUS_ACTIVE, "activate"),
+    [doSetStatus],
+  );
 
   // ── Render ────────────────────────────────────────────────────────────────
 
@@ -424,6 +545,10 @@ export default function ProposeSourceCreate() {
           id="propose-source-wallet"
           value={walletInput}
           onChange={(e) => setWalletInput(e.target.value)}
+          // K3.b (adversarial verify): the target is FROZEN while an act is
+          // in flight — editing mid-signature could repaint the screen under
+          // a different id than the one being signed.
+          disabled={busy !== null}
           spellCheck={false}
           placeholder="0x…"
           className="w-full rounded-md border border-border/50 bg-background/60 px-3 py-2 font-mono text-xs text-foreground outline-none focus:border-primary/60"
@@ -466,6 +591,26 @@ export default function ProposeSourceCreate() {
         </div>
       ) : null}
 
+      {/* K3.b — the linked session banner: promises the automatic closure
+          ONLY while the form still carries the request's own wallet (the
+          same condition the close guard enforces — the banner may never
+          promise what the guard would refuse). */}
+      {linkedRequest !== null &&
+      sourceWallet !== null &&
+      sourceWallet.toLowerCase() === linkedRequest.wallet ? (
+        <p className="text-xs text-muted-foreground">
+          Signing session linked to an activation request — after the
+          activation confirms, the request closes and the member&apos;s bell
+          announces it on its own.
+        </p>
+      ) : linkedRequest !== null ? (
+        <p className="text-xs text-muted-foreground">
+          The wallet no longer matches the linked request — this session
+          won&apos;t close it. Re-open it from the queue&apos;s Approve, or use
+          &ldquo;Record it&rdquo; there after signing.
+        </p>
+      ) : null}
+
       {/* THE STATE + THE ONE NEXT ACT — from the live record, fail closed. */}
       {sourceId ? (
         <StateAndAction
@@ -473,8 +618,12 @@ export default function ProposeSourceCreate() {
           signingReady={signingReady}
           busy={busy}
           onCreate={doCreate}
-          onActivate={doActivate}
+          onActivate={() => void doActivate()}
+          onPause={() => void doSetStatus(STATUS_PAUSED, "pause")}
+          onRevoke={() => void doSetStatus(STATUS_REVOKED, "revoke")}
           onRefresh={() => void refresh()}
+          onReprobeQuote={() => setQuoteProbeTick((t) => t + 1)}
+          quoteRefusal={quoteRefusal}
           sourceId={sourceId}
           explorerBase={explorerBase}
           registryAddr={registryAddr}
@@ -482,6 +631,11 @@ export default function ProposeSourceCreate() {
         />
       ) : null}
 
+      {closeOutcome !== null ? (
+        <p className="text-xs text-muted-foreground" data-testid="text-close-outcome">
+          {closeOutcome}
+        </p>
+      ) : null}
       {error ? (
         <p className="flex items-start gap-2 text-xs text-destructive">
           <ShieldAlert className="h-3.5 w-3.5 mt-0.5 shrink-0" /> {error}
@@ -507,7 +661,7 @@ function PanelHeading() {
       <div className="flex items-center gap-2 mb-1">
         <PenLine className="h-4 w-4 text-primary" />
         <h3 className="text-base font-medium text-foreground">
-          Create a member referral source — Propose, founder signs
+          Create &amp; manage a member referral source — Propose, founder signs
         </h3>
       </div>
       <p className="text-xs text-muted-foreground leading-relaxed">
@@ -529,16 +683,23 @@ function ParamRow({ label, value, mono }: { label: string; value: string; mono?:
   );
 }
 
-// The derived id's live state and the SINGLE next act it allows:
-//   unknown → CREATE (born PAUSED) · PAUSED → verify fail-closed, then
-//   ACTIVATE · ACTIVE → done (the shareable link) · REVOKED → no act.
+// The derived id's live state and its acts (K3.b — the lifecycle console):
+//   unknown → CREATE (born PAUSED) · PAUSED → the CODE-gated preflight, then
+//   ACTIVATE (or Revoke) · ACTIVE → done + the pause/revoke doors ·
+//   REVOKED → terminal, no act. Friction is proportional (the approved Face
+//   4): pause is a two-step inline door, revoke a consequence-naming dialog;
+//   the wallet signature is the final confirmation — never an extra ritual.
 function StateAndAction({
   record,
   signingReady,
   busy,
   onCreate,
   onActivate,
+  onPause,
+  onRevoke,
   onRefresh,
+  onReprobeQuote,
+  quoteRefusal,
   sourceId,
   explorerBase,
   registryAddr,
@@ -549,7 +710,11 @@ function StateAndAction({
   busy: Busy;
   onCreate: () => void;
   onActivate: () => void;
+  onPause: () => void;
+  onRevoke: () => void;
   onRefresh: () => void;
+  onReprobeQuote: () => void;
+  quoteRefusal: boolean | null;
   sourceId: `0x${string}`;
   explorerBase: string | null;
   registryAddr: string;
@@ -557,6 +722,51 @@ function StateAndAction({
 }) {
   const joinPath = `/join?source=${sourceId}`;
   const joinUrl = `https://thesyndicate.money${joinPath}`;
+  const [pauseOpen, setPauseOpen] = useState(false);
+  const [revokeOpen, setRevokeOpen] = useState(false);
+  const shortId = `${sourceId.slice(0, 10)}…${sourceId.slice(-6)}`;
+
+  // The revoke door — permanent, so it names the source and the consequence
+  // in bold before the danger verb; the signature commits (no type-to-confirm
+  // on top of a signature — the approved proportional-friction law).
+  const revokeDialog = (
+    <AlertDialog open={revokeOpen} onOpenChange={setRevokeOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle className="font-mono text-sm">
+            Revoke {shortId} — permanent
+          </AlertDialogTitle>
+          <AlertDialogDescription className="space-y-2">
+            <span className="block">
+              <strong className="text-foreground">
+                This source can never be activated again.
+              </strong>{" "}
+              The link stops being attributed forever. Commissions already paid
+              and the on-chain history remain — nothing is ever deleted.
+            </span>
+            <span className="block">
+              Your wallet signature is the final confirmation — nothing else to
+              type.
+            </span>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Keep the source</AlertDialogCancel>
+          <AlertDialogAction
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            // Live-gated like the inline pause confirm: signingReady can flip
+            // while the dialog is open (wallet/network switch) — a silent
+            // no-op click is never allowed (adversarial verify).
+            disabled={!signingReady || busy !== null}
+            onClick={onRevoke}
+            data-testid="button-revoke-confirm"
+          >
+            Revoke — sign in your wallet
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
 
   if (record === undefined) {
     return <p className="text-xs text-muted-foreground">Reading the live registry state for this id…</p>;
@@ -581,15 +791,15 @@ function StateAndAction({
           This sourceId does not exist on the registry yet. Signing the
           transaction below creates it in PAUSED status — creation and
           activation are two separate signed acts, on purpose: while PAUSED,
-          the live /join quote must show NO referral line (the fail-closed
-          proof), and only then is activation signed.
+          the live /join quote must refuse the link (the fail-closed proof —
+          verified automatically here before activation opens).
         </p>
         <Button
           disabled={!signingReady || busy !== null}
           onClick={onCreate}
           data-testid="button-propose-create-source"
         >
-          {busy === "create" ? "Waiting for your wallet…" : "Build createSource — sign in your wallet"}
+          {busy === "create" ? "Waiting for your wallet…" : "Create the source — sign in your wallet"}
         </Button>
       </div>
     );
@@ -601,7 +811,7 @@ function StateAndAction({
     return (
       <div className="space-y-2">
         <p className="flex items-center gap-2 text-sm text-foreground">
-          <CheckCircle2 className="h-4 w-4 text-primary" /> Source created — status: PAUSED (as designed).
+          <CheckCircle2 className="h-4 w-4 text-primary" /> Source on the registry — status: PAUSED.
         </p>
         {!hashMatches ? (
           <p className="flex items-start gap-2 text-xs text-destructive">
@@ -611,21 +821,48 @@ function StateAndAction({
             the committed one.
           </p>
         ) : null}
-        <p className="text-xs text-muted-foreground">
-          Fail-closed check before activating: open{" "}
-          <a href={joinPath} className="text-proof/80 hover:text-proof underline underline-offset-2">
-            {joinPath.slice(0, 24)}…
-          </a>{" "}
-          — the quote must show NO referral line while the source is PAUSED.
-          Once verified, sign the activation.
-        </p>
+        {/* K3.b — THE MANUAL CHECK, NOW A CODE GATE: the live /join quote is
+            asked directly whether it refuses this source while paused (the
+            fail-closed proof the founder used to verify by eye). A probe
+            that didn't answer BLOCKS and can be re-run — never a silent
+            pass. */}
+        {quoteRefusal === true ? (
+          <p className="flex items-center gap-2 text-xs text-foreground">
+            <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+            The live /join quote refuses this link while paused — verified
+            server-side just now (the fail-closed proof).
+          </p>
+        ) : (
+          <p className="flex items-start gap-2 text-xs text-destructive">
+            <ShieldAlert className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+            {quoteRefusal === false
+              ? "The live /join quote ACCEPTS this source — the registry state disagrees with this screen. Re-read before anything."
+              : "The fail-closed proof hasn't answered — the live /join quote check didn't run. Activation stays blocked until it proves the refusal."}
+            <Button size="sm" variant="ghost" onClick={onReprobeQuote} className="ml-1 h-6 px-2">
+              <RefreshCw className="h-3 w-3 mr-1" /> Re-run
+            </Button>
+          </p>
+        )}
         <Button
-          disabled={!signingReady || busy !== null || !hashMatches}
+          disabled={!signingReady || busy !== null || !hashMatches || quoteRefusal !== true}
           onClick={onActivate}
           data-testid="button-propose-activate-source"
         >
-          {busy === "activate" ? "Waiting for your wallet…" : "Build setSourceStatus(ACTIVE) — sign in your wallet"}
+          {busy === "activate" ? "Waiting for your wallet…" : "Activate the source — sign in your wallet"}
         </Button>
+        {/* The permanent exit stays one deliberate step further away. */}
+        <div className="pt-1">
+          <button
+            type="button"
+            onClick={() => setRevokeOpen(true)}
+            disabled={busy !== null || !signingReady}
+            className="text-xs text-destructive/80 hover:text-destructive underline underline-offset-2 disabled:opacity-50"
+            data-testid="button-open-revoke-paused"
+          >
+            Revoke this source — permanent
+          </button>
+        </div>
+        {revokeDialog}
       </div>
     );
   }
@@ -652,6 +889,59 @@ function StateAndAction({
             Verify on the registry <ExternalLink className="h-3 w-3" />
           </a>
         ) : null}
+
+        {/* K3.b — THE LIFECYCLE DOORS (the approved Face 4): pause first
+            (reversible, a two-step inline door), revoke below (permanent, a
+            consequence-naming dialog) — never side by side, never a generic
+            "Are you sure?". */}
+        <div className="pt-2 mt-1 border-t border-border/50 space-y-2">
+          {!pauseOpen ? (
+            <button
+              type="button"
+              onClick={() => setPauseOpen(true)}
+              disabled={busy !== null || !signingReady}
+              className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2 disabled:opacity-50"
+              data-testid="button-open-pause"
+            >
+              Pause this source — reversible
+            </button>
+          ) : (
+            <div className="rounded-md border border-border/50 p-3 space-y-2">
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                New joins through this link stop being attributed while paused —
+                the /join page says so honestly to anyone who opens it.
+                Everything already earned is untouched. Resume anytime with one
+                signature.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={!signingReady || busy !== null}
+                  onClick={onPause}
+                  data-testid="button-pause-confirm"
+                >
+                  {busy === "pause" ? "Waiting for your wallet…" : "Pause — sign in your wallet"}
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => setPauseOpen(false)}>
+                  Keep it active
+                </Button>
+              </div>
+            </div>
+          )}
+          <div>
+            <button
+              type="button"
+              onClick={() => setRevokeOpen(true)}
+              disabled={busy !== null || !signingReady}
+              className="text-xs text-destructive/80 hover:text-destructive underline underline-offset-2 disabled:opacity-50"
+              data-testid="button-open-revoke"
+            >
+              Revoke this source — permanent
+            </button>
+          </div>
+        </div>
+        {revokeDialog}
       </div>
     );
   }

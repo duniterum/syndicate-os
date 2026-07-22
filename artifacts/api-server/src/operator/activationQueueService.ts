@@ -27,7 +27,7 @@
 import { randomUUID } from "node:crypto";
 import { AUTH_EXPOSURE_FLAG } from "../auth/authExposure";
 import { readEngineMemberNumber } from "../auth/engineReadback";
-import { readHoldsSyn } from "../auth/activationEligibility";
+import { readHoldsSyn, canonicalSourceIdHex } from "../auth/activationEligibility";
 import {
   DEFAULT_TIMEOUT_MS,
   makeFetchTransport,
@@ -280,6 +280,42 @@ export async function listActivationRequests(actor: {
 
 export type ActivationDecideResult = { ok: true } | { ok: false; reason: string };
 
+/**
+ * One standalone live isActive() read — K3.b hardening (the recorded K3.a
+ * non-action, now closed): the "close" verdict's bell claims an on-chain
+ * activation, so the REGISTRY confirms it before the bell is written. The
+ * founder's assertion alone never rings a truth-bearing bell. Fail-closed:
+ * null = the read did not run → refuse, never assume.
+ */
+async function sourceActiveLive(idHex: string): Promise<boolean | null> {
+  try {
+    const timeoutMs =
+      readEnvInt(process.env["AVALANCHE_RPC_TIMEOUT_MS"]) ?? DEFAULT_TIMEOUT_MS;
+    const transport = makeFetchTransport(resolveEndpoints(), timeoutMs);
+    const probe = await probeChain(transport);
+    if (!probe.chainIdOk) return null;
+    // Exists-first, like every sibling registry reader: an unknown id
+    // answers false honestly instead of risking a revert → eternal 503.
+    const exists = decodeBool(
+      await ethCall(
+        transport,
+        SOURCE_LINKAGE_TARGET.registryAddress,
+        callData(SELECTOR_SOURCE_EXISTS, [bytes32Word(idHex)]),
+      ),
+    );
+    if (exists !== true) return exists === false ? false : null;
+    return decodeBool(
+      await ethCall(
+        transport,
+        SOURCE_LINKAGE_TARGET.registryAddress,
+        callData(SELECTOR_SOURCE_IS_ACTIVE, [bytes32Word(idHex)]),
+      ),
+    );
+  } catch {
+    return null;
+  }
+}
+
 export interface DecideActivationInput {
   id: string;
   verdict: "decline" | "hold" | "reopen" | "close";
@@ -315,6 +351,37 @@ export async function decideActivationRequest(
       "@workspace/db"
     );
     const { eq, and, inArray, sql } = await import("drizzle-orm");
+
+    // K3.b — the close verdict is VERIFIED, never asserted: before any write,
+    // the registry itself must confirm the source is live. The read runs
+    // OUTSIDE the transaction (an RPC must never hold a DB connection); the
+    // UPDATE's status guard still protects against a concurrent verdict.
+    if (input.verdict === "close") {
+      const pre = await db
+        .select({
+          sourceIdHex: activationRequest.sourceIdHex,
+          memberWallet: activationRequest.memberWallet,
+        })
+        .from(activationRequest)
+        .where(eq(activationRequest.id, input.id))
+        .limit(1);
+      if (pre[0] === undefined) return { ok: false, reason: "not_found" };
+      // The recorded id first; then the wallet's CANONICAL derivation (the
+      // D2 class: an ask recorded against a founder-signed id while the
+      // signing session creates the canonical one — either being live means
+      // the member's link truly pays; adversarial verify 2026-07-22).
+      let live = await sourceActiveLive(pre[0].sourceIdHex);
+      if (live !== true) {
+        const canonical = canonicalSourceIdHex(pre[0].memberWallet);
+        if (canonical !== null && canonical !== pre[0].sourceIdHex.toLowerCase()) {
+          const liveCanonical = await sourceActiveLive(canonical);
+          if (liveCanonical !== null) live = liveCanonical;
+        }
+      }
+      if (live === null) return { ok: false, reason: "unavailable" };
+      if (live !== true) return { ok: false, reason: "not_active_on_chain" };
+    }
+
     let result: ActivationDecideResult = { ok: false, reason: "not_found" };
     await db.transaction(async (tx) => {
       const found = await tx
