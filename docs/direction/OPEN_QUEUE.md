@@ -44,6 +44,24 @@
 >   reserved Alias/Ramp/NFT/Marketplace families) + M-EVO-1/2/3 slices. FOUNDER GATE:
 >   the milestone NAMES/labels are public copy — the §2 ladder is on his screen; his
 >   GO opens M-EVO-1+2 (one cycle).
+>   → ✅ **AW-4 GO GIVEN ("GO and GO-Live") → M-EVO-1+2 BUILT + COMMITTED [this
+>   commit] (2026-07-22):** the registry 11 → 66 defs / 6 families (new kinds
+>   burn-acts · burn-syn · sources-created · lp-acts · archive-count, derived from
+>   the EXISTING lanes, zero new scans; retro-seal at true anchors; approaching =
+>   next-per-(family,kind), 8 lanes) · the panel v2 family lanes (sealed count +
+>   next bar + the sealed record in a collapsed expander) · THE ADVERSARIAL PASS
+>   (3-skeptic workflow + refutation): 3 REAL defects killed pre-commit — the
+>   pagination counts/cursor spoke from the 100-capped window instead of the whole
+>   history (buildPublicFeedWithLines + pure sliceFeedPage; the newest-cap now
+>   governs ONLY the bare envelope) · the page logic gained BEHAVIORAL fixture
+>   pins (cluster-closed · strictly-older · honest end) · the client approaching
+>   parse rejects target<1 / empty strings + clampPct (the NaN full-bar class
+>   dead). RESERVED honestly (never re-invent): commissions-paid + second-gen
+>   ladders await the sale-lane commission input (own micro-slice); alias/ramp/
+>   nft families ride their modules (law 8). Gates ALL EXIT 0 (backbone 160 ·
+>   api guards whole · studio guards + build + seo/rewrites/audit) · boot matrix
+>   proven (paged 200 / bad 400 / bare byte-path) · rig clean. 🚀 ONE cycle:
+>   server + client, NO migration, NO install.
 > **▶ A1+A2+A3+A4 BUILT + COMMITTED [this commit] (2026-07-22 — full record in
 > SESSION_STATE's arc entry):** the Founder Private Wallet in the founder set (7 mints
 > flip at the next cycle) · treasury founder-funding attribution + sentences · feed

@@ -513,6 +513,23 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   grammaire teintée maison) · 375px 0 débordement · chips 46px ≥ 44 · zéro
   erreur console. **+0 couleur brute**.
 
+- [x] **M-EVO-1+2 — LES MILESTONES ÉVOLUTIFS (2026-07-22, « GO and GO-Live » sur
+  l'échelle §2 du dossier MILESTONE_SYSTEM_EVOLUTION.md)** : le registre 11 → **66
+  jalons** en 6 familles (Membership jusqu'au SIÈGE FINAL 1M avec les fins d'ères
+  en barreaux · Economy → $100M · Fire actes + % de l'offre · Referral créations ·
+  Liquidity actes · Archive), nouveaux kinds dérivés des lanes EXISTANTES (zéro
+  nouveau scan), **retro-seal aux vrais ancrages historiques**, approaching =
+  LE prochain barreau par (famille, kind) — 8 voies au goal-gradient · le panel v2
+  par familles (compte scellé + barre du prochain ; le registre scellé complet en
+  expander replié) · LA PASSE ADVERSARIALE (workflow 3 sceptiques + réfutation) :
+  3 défauts réels CONFIRMÉS et TUÉS avant commit — ① les comptes/curseur de
+  pagination parlaient de la fenêtre cappée à 100 au lieu de l'histoire entière
+  (buildPublicFeedWithLines + sliceFeedPage pure) ; ② la logique de page n'avait
+  que des pins textuels → pins COMPORTEMENTAUX au fixture (cluster jamais scindé ·
+  curseur strictement-plus-vieux · fin honnête) ; ③ le parse client acceptait
+  target<1 (barre NaN pleine) → rejet + clampPct. backbone guard 156 → **160**.
+  **+0 couleur brute**.
+
 ### Phase 6 — Audits (le sceau grade-AAA)
 - [ ] Accessibilité (WCAG AA / APCA, focus, clavier, cibles ≥44px)
 - [ ] Responsive (fluide, container queries, 320 → 2560, pliables)

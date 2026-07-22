@@ -439,6 +439,11 @@ async function runCycle(): Promise<string | null> {
       rawEvents: input.rawEvents,
       blockTimestamps: input.blockTimestamps,
       archiveMintItems: protocolModel.archiveMintItems,
+      // M-EVO-1 (2026-07-22): the fire / referral / liquidity families
+      // derive from the SAME protocol lanes — zero new scans.
+      burnItems: protocolModel.burnLedger,
+      lifecycleItems: protocolModel.lifecycleItems,
+      lpItems: protocolModel.lpItems,
       liveMemberCount,
       liveInflowAggregateRaw,
     });

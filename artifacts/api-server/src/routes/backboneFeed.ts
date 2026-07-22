@@ -10,21 +10,28 @@
  * A2 — PAGINATION (the /activity newsroom arc, founder GO 2026-07-22).
  * ADDITIVE and fail-closed: with NO query params the response is exactly the
  * pre-A2 whole-feed envelope (older clients untouched). With `limit` (1–50):
- *   · items = the newest `limit` lines, extended so a same-anchor CLUSTER
- *     (derived milestone/era lines sharing their purchase's block+logIndex)
- *     is never split across pages — no line can be skipped or duplicated
- *     when new lines prepend between requests;
- *   · `pagination` = { nextCursor, totalCount, kindCounts } — kindCounts are
- *     the WHOLE feed's per-kind totals (the client facet chips speak real
- *     served counts, never client arithmetic);
+ *   · the page walks the WHOLE projected history (`allLines`, uncapped) —
+ *     the newest-100 items cap governs only the bare envelope; pagination
+ *     reaches every line ever indexed (adversarial-verify hardening,
+ *     2026-07-22: counts and cursor must never speak from the capped
+ *     window while coverage.itemsTotal speaks the whole — one authority);
+ *   · pages are CLUSTER-CLOSED via the pure sliceFeedPage (fixture-pinned
+ *     in backbone.guard) — no line can be skipped or duplicated when new
+ *     lines prepend between requests;
+ *   · `pagination` = { nextCursor, totalCount, kindCounts } — WHOLE-history
+ *     figures (the client facet chips speak real served counts);
  *   · `cursor` = "blockNumber:logIndex" (the previous page's last line):
- *     the page starts strictly OLDER than that position. A malformed
- *     cursor/limit is a 400 — never a silent full feed.
+ *     the page starts strictly OLDER. Malformed cursor/limit = 400 — never
+ *     a silent full feed.
  */
 
 import { Router, type IRouter } from "express";
 import { getBackboneFeedSource } from "../backbone/backboneRunner";
-import { assertFeedSafeJson, buildPublicFeed } from "../backbone/feedProjection";
+import {
+  assertFeedSafeJson,
+  buildPublicFeedWithLines,
+  sliceFeedPage,
+} from "../backbone/feedProjection";
 
 const router: IRouter = Router();
 
@@ -33,7 +40,7 @@ const CURSOR_RE = /^[0-9]{1,12}:[0-9]{1,6}$/;
 
 router.get("/backbone/feed", (req, res) => {
   try {
-    const feed = buildPublicFeed(getBackboneFeedSource());
+    const { feed, allLines } = buildPublicFeedWithLines(getBackboneFeedSource());
 
     const rawLimit = req.query.limit;
     const rawCursor = req.query.cursor;
@@ -56,37 +63,19 @@ router.get("/backbone/feed", (req, res) => {
       res.status(400).json({ error: "bad_limit" });
       return;
     }
-    let startIndex = 0;
+    let cursor: { blockNumber: number; logIndex: number } | null = null;
     if (rawCursor !== undefined) {
       if (typeof rawCursor !== "string" || !CURSOR_RE.test(rawCursor)) {
         res.status(400).json({ error: "bad_cursor" });
         return;
       }
       const [cb, cl] = rawCursor.split(":").map(Number) as [number, number];
-      // Strictly older than the cursor position — stable when new lines
-      // prepend between pages (index drift can never skip or repeat).
-      startIndex = feed.items.findIndex(
-        (i) => i.blockNumber < cb || (i.blockNumber === cb && i.logIndex < cl),
-      );
-      if (startIndex === -1) startIndex = feed.items.length;
+      cursor = { blockNumber: cb, logIndex: cl };
     }
 
-    // Cluster-closed page: never split lines sharing (blockNumber, logIndex)
-    // — a derived crossing and its underlying purchase stay on one page.
-    let endIndex = Math.min(startIndex + limit, feed.items.length);
-    while (
-      endIndex > startIndex &&
-      endIndex < feed.items.length &&
-      feed.items[endIndex]!.blockNumber === feed.items[endIndex - 1]!.blockNumber &&
-      feed.items[endIndex]!.logIndex === feed.items[endIndex - 1]!.logIndex
-    ) {
-      endIndex += 1;
-    }
-
-    const pageItems = feed.items.slice(startIndex, endIndex);
-    const last = pageItems.length > 0 ? pageItems[pageItems.length - 1]! : null;
+    const { pageItems, nextCursor } = sliceFeedPage(allLines, limit, cursor);
     const kindCounts: Record<string, number> = {};
-    for (const i of feed.items) {
+    for (const i of allLines) {
       kindCounts[i.kind] = (kindCounts[i.kind] ?? 0) + 1;
     }
 
@@ -94,11 +83,8 @@ router.get("/backbone/feed", (req, res) => {
       ...feed,
       items: pageItems,
       pagination: {
-        nextCursor:
-          last !== null && endIndex < feed.items.length
-            ? `${last.blockNumber}:${last.logIndex}`
-            : null,
-        totalCount: feed.items.length,
+        nextCursor,
+        totalCount: allLines.length,
         kindCounts,
       },
     };

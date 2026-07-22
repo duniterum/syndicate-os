@@ -90,6 +90,13 @@ the headline. Every new seal: gold flash line in the live feed + its painted car
 
 ## 4. THE SLICES
 
+> **STATUS 2026-07-22: M-EVO-1 ✅ + M-EVO-2 ✅ BUILT (AW-4 GO; one cycle with the
+> A-arc; backbone guard 160). RESERVED, dated, never re-invent: commissions-paid
+> + second-generation ladders (the sale-lane raw input carries no commission
+> field yet — its own input-widening micro-slice); PROTOCOL-TIME anniversaries
+> (v2); the celebration layer = M-EVO-3 (own cycle); alias/ramp/nft families
+> ride their modules (law 8).**
+
 | # | Slice | Content | Deploy |
 |---|---|---|---|
 | **M-EVO-1** | The registry v2 (server) | `family` axis + the §2 ladders on the EXISTING read models (seats/usdc/burn acts+cumulative/referral/lp-adds/archive counts — all already indexed; zero new scans) + retro-sealing at true anchors + guard pins (ladder monotonicity · density · anchors) | 🚀 server |

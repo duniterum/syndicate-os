@@ -117,7 +117,54 @@ export interface ServedTreasuryLine extends ServedLineCommon {
 
 // ── H2-⑬ — milestone crossings (derived server-side, anchored to the
 // crossing transaction; the label is the founder-approved canon label) ──────
-export type ServedMilestoneKind = "seats" | "usdc" | "first-mint";
+// M-EVO-1 (2026-07-22): the kinds widened with the family ladders — fire
+// (acts + cumulative SYN), referral creations, liquidity acts, archive count.
+export type ServedMilestoneKind =
+  | "seats"
+  | "usdc"
+  | "first-mint"
+  | "burn-acts"
+  | "burn-syn"
+  | "sources-created"
+  | "lp-acts"
+  | "archive-count";
+export const SERVED_MILESTONE_KINDS: readonly ServedMilestoneKind[] = [
+  "seats",
+  "usdc",
+  "first-mint",
+  "burn-acts",
+  "burn-syn",
+  "sources-created",
+  "lp-acts",
+  "archive-count",
+];
+
+/** M-EVO-1: the §2 family lanes (MILESTONE_SYSTEM_EVOLUTION.md). */
+export type ServedMilestoneFamily =
+  | "membership"
+  | "economy"
+  | "fire"
+  | "referral"
+  | "liquidity"
+  | "archive";
+export const MILESTONE_FAMILY_BY_KIND: Record<ServedMilestoneKind, ServedMilestoneFamily> = {
+  seats: "membership",
+  usdc: "economy",
+  "first-mint": "archive",
+  "burn-acts": "fire",
+  "burn-syn": "fire",
+  "sources-created": "referral",
+  "lp-acts": "liquidity",
+  "archive-count": "archive",
+};
+export const MILESTONE_FAMILY_LABEL: Record<ServedMilestoneFamily, string> = {
+  membership: "Membership",
+  economy: "Economy",
+  fire: "Fire",
+  referral: "Referral",
+  liquidity: "Liquidity",
+  archive: "Archive",
+};
 
 export interface ServedMilestoneLine extends ServedLineCommon {
   kind: "milestone";
@@ -163,14 +210,18 @@ export type ServedFeedLine =
 export interface ServedMilestones {
   /** Sealed crossings, oldest first, each with its verify anchor. */
   sealed: ServedMilestoneLine[];
-  /** Canon order; honest progress from the indexed history. */
+  /** M-EVO-1: the NEXT unsealed rung per (family, kind) lane — one honest
+   *  bar per ladder, with each ladder's own current figure. */
   approaching: {
     id: string;
     label: string;
     kind: ServedMilestoneKind;
+    family: ServedMilestoneFamily;
     target: number;
     currentSeats: number | null;
     currentUsdcRaw: string | null;
+    currentCount: number | null;
+    currentSynRaw: string | null;
   }[];
   /** The server's honest derivation notes (shown, never hidden). */
   notes: string[];
@@ -414,9 +465,7 @@ function parseLine(raw: unknown): ServedFeedLine | null {
       r.label.length === 0 ||
       target === null ||
       target < 1 ||
-      (r.milestoneKind !== "seats" &&
-        r.milestoneKind !== "usdc" &&
-        r.milestoneKind !== "first-mint")
+      !SERVED_MILESTONE_KINDS.includes(r.milestoneKind as ServedMilestoneKind)
     ) {
       return null;
     }
@@ -425,7 +474,7 @@ function parseLine(raw: unknown): ServedFeedLine | null {
       ...common,
       milestoneId: r.milestoneId,
       label: r.label,
-      milestoneKind: r.milestoneKind,
+      milestoneKind: r.milestoneKind as ServedMilestoneKind,
       target,
     };
   }
@@ -477,22 +526,43 @@ function parseMilestones(raw: unknown): ServedMilestones | null {
     const r = a as Record<string, unknown>;
     const target = toInt(r.target);
     if (
+      // M-EVO hardening (adversarial verify, 2026-07-22): the approaching
+      // parser enforces the SAME fail-closed shape the sealed parser does —
+      // a target below 1 or an empty id/label rejects the whole panel
+      // (a 0-target row would render a NaN-width full bar downstream).
       typeof r.id !== "string" ||
+      r.id.length === 0 ||
       typeof r.label !== "string" ||
+      r.label.length === 0 ||
       target === null ||
-      (r.kind !== "seats" && r.kind !== "usdc" && r.kind !== "first-mint")
+      target < 1 ||
+      !SERVED_MILESTONE_KINDS.includes(r.kind as ServedMilestoneKind)
     ) {
       return null;
     }
+    const kind = r.kind as ServedMilestoneKind;
+    // M-EVO-1: family is the SERVER's word; a missing/foreign value falls
+    // back to the kind's canonical family (a total mapping — never a guess).
+    const family =
+      typeof r.family === "string" &&
+      (r.family as ServedMilestoneFamily) in MILESTONE_FAMILY_LABEL
+        ? (r.family as ServedMilestoneFamily)
+        : MILESTONE_FAMILY_BY_KIND[kind];
     approaching.push({
       id: r.id,
       label: r.label,
-      kind: r.kind,
+      kind,
+      family,
       target,
       currentSeats: toInt(r.currentSeats),
       currentUsdcRaw:
         typeof r.currentUsdcRaw === "string" && /^[0-9]+$/.test(r.currentUsdcRaw)
           ? r.currentUsdcRaw
+          : null,
+      currentCount: toInt(r.currentCount),
+      currentSynRaw:
+        typeof r.currentSynRaw === "string" && /^[0-9]+$/.test(r.currentSynRaw)
+          ? r.currentSynRaw
           : null,
     });
   }

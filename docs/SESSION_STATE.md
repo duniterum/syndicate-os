@@ -446,6 +446,28 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   errors; the served-data pieces (mint flip · funding sentences · counts ·
 >   era band) verify in PROD — the recorded no-local-DB pattern. **🚀
 >   DEPLOY — ONE cycle, server + client, NO migration, NO pnpm install.**
+> - **▶ M-EVO-1+2 BUILT + COMMITTED [this commit] (2026-07-22, AW-4 "GO and
+>   GO-Live" on the §2 ladder — MILESTONE_SYSTEM_EVOLUTION.md):** the
+>   milestone registry 11 → **66 defs / 6 families** (Membership → the 1M
+>   FINAL SEAT with era ends as rungs · Economy → $100M · Fire acts +
+>   %-of-supply · Referral creations · Liquidity acts · Archive), new kinds
+>   derived from the EXISTING lanes (zero new scans), RETRO-SEAL at true
+>   historical anchors, approaching = next-per-(family,kind) (8 lanes,
+>   goal-gradient) · the panel v2 family lanes + sealed-record expander ·
+>   THE 3-SKEPTIC ADVERSARIAL WORKFLOW confirmed 3 REAL defects, all killed
+>   pre-commit: pagination counts/cursor spoke from the 100-capped window
+>   (→ buildPublicFeedWithLines + pure sliceFeedPage over the WHOLE
+>   history) · page logic had only textual pins (→ behavioral fixture pins:
+>   cluster-closed · strictly-older · honest end) · client approaching
+>   parse accepted target<1 (→ reject + clampPct; the NaN full-bar class
+>   dead). RESERVED dated: commissions-paid + second-gen ladders (await the
+>   sale-lane commission input field) · alias/ramp/nft families ride their
+>   modules (law 8). GATES all EXIT 0: backbone 156 → **160** · api guards
+>   whole + build + boot matrix (paged 200 · bad 400 · bare intact) ·
+>   studio tsc/guards/build/seo/rewrites/audit · rig clean. The family
+>   lanes' living render verifies in PROD (no local DB — the recorded
+>   pattern). **🚀 DEPLOY — rides the SAME one cycle as the A-arc (server +
+>   client, NO migration, NO pnpm install).**
 >   Taken-by-default (flagged, overridable): the dedicated PDF engine stays
 >   its own rider (print already saves clean).
 > - **THE NEXT SESSION'S EXACT OPENING (no re-explaining, ever):** boot per

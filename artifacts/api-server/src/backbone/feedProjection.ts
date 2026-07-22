@@ -40,6 +40,7 @@ import type {
 } from "./protocolEventReadmodel";
 import type {
   MilestoneBuildResult,
+  MilestoneFamily,
   MilestoneKind,
 } from "./milestoneReadmodel";
 import type { EraBuildResult } from "./eraReadmodel";
@@ -197,14 +198,18 @@ export type PublicFeedLine =
 export interface PublicMilestones {
   /** Sealed crossings, oldest first — each IS a feed line with its anchor. */
   readonly sealed: readonly PublicMilestoneLine[];
-  /** Canon order; honest progress from the indexed history. */
+  /** M-EVO-1: the NEXT unsealed rung per (family, kind) lane — honest
+   *  progress from the indexed history, one bar per ladder. */
   readonly approaching: readonly {
     readonly id: string;
     readonly label: string;
     readonly kind: MilestoneKind;
+    readonly family: MilestoneFamily;
     readonly target: number;
     readonly currentSeats: number | null;
     readonly currentUsdcRaw: string | null;
+    readonly currentCount: number | null;
+    readonly currentSynRaw: string | null;
   }[];
   /** Honest derivation notes (withheld lines, live-read posture). */
   readonly notes: readonly string[];
@@ -311,6 +316,20 @@ function shortForm(address: string | null): string | null {
  * no successful cycle yet) serve an honest empty feed — never an invented one.
  */
 export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
+  return buildPublicFeedWithLines(source).feed;
+}
+
+/**
+ * M-EVO hardening (adversarial verify, 2026-07-22): the WHOLE projected
+ * line set travels beside the capped feed — the A2 route's pagination and
+ * whole-history counts speak from `allLines`, never from the newest-100
+ * window (the one-authority rule: a payload must never contradict itself
+ * once the history outgrows the cap).
+ */
+export function buildPublicFeedWithLines(source: FeedSource): {
+  feed: PublicActivityFeed;
+  allLines: PublicFeedLine[];
+} {
   const { model, protocolModel, milestoneModel, eraModel, capitalModel } =
     source;
 
@@ -500,9 +519,14 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
           id: a.id,
           label: a.label,
           kind: a.kind,
+          family: a.family,
           target: a.target,
           currentSeats: a.currentSeats,
           currentUsdcRaw: a.currentUsdcRaw,
+          // M-EVO-1: act-ladder counts + the cumulative-SYN walk (clean
+          // decimals only — the builder failed closed upstream otherwise).
+          currentCount: a.currentCount,
+          currentSynRaw: a.currentSynRaw,
         })),
         notes: milestoneModel.notes,
       }
@@ -582,7 +606,7 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
   );
   const items = allLines.slice(0, FEED_MAX_ITEMS);
 
-  return {
+  const feed: PublicActivityFeed = {
     module: "event-backbone",
     state: source.state,
     coverage: {
@@ -608,6 +632,54 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
     items,
     burnLedger,
     milestones,
+  };
+  return { feed, allLines };
+}
+
+/**
+ * A2 page slicing as a PURE function (extracted on the adversarial verify's
+ * finding, 2026-07-22 — inline express logic had zero behavioral coverage;
+ * the guard now fixture-pins THIS).
+ * Contract: `lines` newest-first; `cursor` = the previous page's last
+ * (blockNumber, logIndex) — the page starts strictly OLDER; pages are
+ * CLUSTER-CLOSED (lines sharing (blockNumber, logIndex) never split across
+ * a boundary, so a derived crossing stays with its underlying event and a
+ * prepend between requests can never skip or repeat a line).
+ */
+export function sliceFeedPage(
+  lines: readonly PublicFeedLine[],
+  limit: number,
+  cursor: { blockNumber: number; logIndex: number } | null,
+): {
+  pageItems: PublicFeedLine[];
+  nextCursor: string | null;
+} {
+  let startIndex = 0;
+  if (cursor !== null) {
+    startIndex = lines.findIndex(
+      (i) =>
+        i.blockNumber < cursor.blockNumber ||
+        (i.blockNumber === cursor.blockNumber && i.logIndex < cursor.logIndex),
+    );
+    if (startIndex === -1) startIndex = lines.length;
+  }
+  let endIndex = Math.min(startIndex + limit, lines.length);
+  while (
+    endIndex > startIndex &&
+    endIndex < lines.length &&
+    lines[endIndex]!.blockNumber === lines[endIndex - 1]!.blockNumber &&
+    lines[endIndex]!.logIndex === lines[endIndex - 1]!.logIndex
+  ) {
+    endIndex += 1;
+  }
+  const pageItems = lines.slice(startIndex, endIndex);
+  const last = pageItems.length > 0 ? pageItems[pageItems.length - 1]! : null;
+  return {
+    pageItems,
+    nextCursor:
+      last !== null && endIndex < lines.length
+        ? `${last.blockNumber}:${last.logIndex}`
+        : null,
   };
 }
 

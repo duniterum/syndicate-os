@@ -74,6 +74,7 @@ import {
   assertFeedSafeJson,
   FEED_MAX_ITEMS,
   TX_HASH_SHAPE_RE,
+  sliceFeedPage,
 } from "../src/backbone/feedProjection";
 import {
   buildMilestoneReadModel,
@@ -771,9 +772,17 @@ check(
 // "routed" — the routing register; the fundraising register never enters),
 // seat milestones ARE the chapter boundaries.
 check(
-  PROTOCOL_MILESTONES.length === 11 &&
-    new Set(PROTOCOL_MILESTONES.map((m) => m.id)).size === 11,
-  "the 11 origin milestones hold with unique ids",
+  // M-EVO-1 (founder GO 2026-07-22): 11 → 66 defs across the 6 families
+  // (MILESTONE_SYSTEM_EVOLUTION.md §2). Unique ids; the 11 origin labels
+  // survive VERBATIM inside the grown registry.
+  PROTOCOL_MILESTONES.length === 66 &&
+    new Set(PROTOCOL_MILESTONES.map((m) => m.id)).size === 66 &&
+    ["first-seat", "seats-333", "routed-100", "first-signal-mint"].every((id) =>
+      PROTOCOL_MILESTONES.some((m) => m.id === id),
+    ) &&
+    PROTOCOL_MILESTONES.some((m) => m.id === "seats-1000000") &&
+    new Set(PROTOCOL_MILESTONES.map((m) => m.family)).size === 6,
+  "the 66 family-ladder milestones hold with unique ids (M-EVO-1; the FINAL SEAT rung present)",
   `milestone defs drifted (count=${PROTOCOL_MILESTONES.length})`,
 );
 check(
@@ -837,31 +846,65 @@ const fixtureMilestoneModel = buildMilestoneReadModel({
   rawEvents: milestonePurchases,
   blockTimestamps: milestoneTs,
   archiveMintItems: fixtureProtocolModel.archiveMintItems,
+  // M-EVO-1 (2026-07-22): the fire/referral/liquidity families ride the
+  // protocol fixture's own lanes (items carry verified time — no new ts).
+  burnItems: fixtureProtocolModel.burnLedger,
+  lifecycleItems: fixtureProtocolModel.lifecycleItems,
+  lpItems: fixtureProtocolModel.lpItems,
   liveMemberCount: 2,
   liveInflowAggregateRaw: "110" + "0".repeat(6),
 });
 check(
-  fixtureMilestoneModel.sealed.length === 3 &&
+  // M-EVO-1 (2026-07-22): 3 → 6 sealed — the family walks retro-seal the
+  // fixture's own lanes (first burn act · first source creation · first LP
+  // add), each at its EXACT historical transaction. Chain order.
+  fixtureMilestoneModel.sealed.length === 6 &&
     fixtureMilestoneModel.sealed[0]!.id === "first-seat" &&
     fixtureMilestoneModel.sealed[0]!.blockNumber === 100 &&
     fixtureMilestoneModel.sealed[0]!.transactionHash === txA &&
-    fixtureMilestoneModel.sealed[1]!.id === "first-signal-mint" &&
-    fixtureMilestoneModel.sealed[1]!.blockNumber === 180 &&
-    fixtureMilestoneModel.sealed[2]!.id === "routed-100" &&
-    fixtureMilestoneModel.sealed[2]!.blockNumber === 200 &&
-    fixtureMilestoneModel.sealed[2]!.transactionHash === txB,
-  "milestone crossings anchor to the EXACT transaction (first purchase · first mint · the $100-crossing purchase)",
+    fixtureMilestoneModel.sealed[1]!.id === "burn-act-1" &&
+    fixtureMilestoneModel.sealed[1]!.blockNumber === 100 &&
+    fixtureMilestoneModel.sealed[1]!.transactionHash === txC &&
+    fixtureMilestoneModel.sealed[2]!.id === "source-1" &&
+    fixtureMilestoneModel.sealed[2]!.blockNumber === 150 &&
+    fixtureMilestoneModel.sealed[3]!.id === "lp-add-1" &&
+    fixtureMilestoneModel.sealed[3]!.blockNumber === 160 &&
+    fixtureMilestoneModel.sealed[4]!.id === "first-signal-mint" &&
+    fixtureMilestoneModel.sealed[4]!.blockNumber === 180 &&
+    fixtureMilestoneModel.sealed[5]!.id === "routed-100" &&
+    fixtureMilestoneModel.sealed[5]!.blockNumber === 200 &&
+    fixtureMilestoneModel.sealed[5]!.transactionHash === txB &&
+    fixtureMilestoneModel.sealed.every((s) => typeof s.family === "string"),
+  "milestone crossings anchor to the EXACT transaction (purchase · burn · source · LP · mint · the $100 crossing — retro-seal law)",
   "milestone crossing anchors broke",
 );
 check(
-  fixtureMilestoneModel.approaching.some(
-    (a) => a.id === "routed-1k" && a.currentUsdcRaw === "110" + "0".repeat(6),
-  ) &&
+  // M-EVO-1: approaching = the NEXT rung per (family, kind) lane — 8 lanes,
+  // each carrying its OWN honest current figure.
+  fixtureMilestoneModel.approaching.length === 8 &&
     fixtureMilestoneModel.approaching.some(
-      (a) => a.id === "seats-100" && a.currentSeats === 2,
+      (a) => a.id === "routed-1k" && a.currentUsdcRaw === "110" + "0".repeat(6),
+    ) &&
+    fixtureMilestoneModel.approaching.some(
+      (a) => a.id === "seats-10" && a.currentSeats === 2,
+    ) &&
+    fixtureMilestoneModel.approaching.some(
+      (a) => a.id === "burn-act-10" && a.currentCount === 2,
+    ) &&
+    fixtureMilestoneModel.approaching.some(
+      (a) => a.id === "burned-10k" && a.currentSynRaw === "1005" + "0".repeat(18),
+    ) &&
+    fixtureMilestoneModel.approaching.some(
+      (a) => a.id === "sources-5" && a.currentCount === 1,
+    ) &&
+    fixtureMilestoneModel.approaching.some(
+      (a) => a.id === "lp-add-10" && a.currentCount === 1,
+    ) &&
+    fixtureMilestoneModel.approaching.some(
+      (a) => a.id === "artifacts-25" && a.currentCount === 1,
     ) &&
     fixtureMilestoneModel.approaching.some((a) => a.id === "patron-seal-mint"),
-  "approaching milestones carry honest indexed-history progress",
+  "approaching = next-per-lane with honest per-ladder progress (M-EVO-1)",
   "approaching milestone progress broke",
 );
 // The live cross-check WITHHOLDS a contradicted crossing (fail-closed): the
@@ -873,6 +916,9 @@ check(
     rawEvents: milestonePurchases,
     blockTimestamps: milestoneTs,
     archiveMintItems: fixtureProtocolModel.archiveMintItems,
+    burnItems: fixtureProtocolModel.burnLedger,
+    lifecycleItems: fixtureProtocolModel.lifecycleItems,
+    lpItems: fixtureProtocolModel.lpItems,
     liveMemberCount: 2,
     liveInflowAggregateRaw: "90" + "0".repeat(6),
   });
@@ -892,11 +938,15 @@ check(
     rawEvents: milestonePurchases,
     blockTimestamps: milestoneTs,
     archiveMintItems: fixtureProtocolModel.archiveMintItems,
+    burnItems: fixtureProtocolModel.burnLedger,
+    lifecycleItems: fixtureProtocolModel.lifecycleItems,
+    lpItems: fixtureProtocolModel.lpItems,
     liveMemberCount: null,
     liveInflowAggregateRaw: null,
   });
   check(
-    noLive.sealed.length === 3 &&
+    // M-EVO-1: 3 → 6 (the family retro-seals ride the same fixture).
+    noLive.sealed.length === 6 &&
       noLive.notes.some((n) => n.includes("live cross-check unavailable")),
     "live-read unavailability keeps event-derived truth serving, honestly noted",
     "milestone posture on missing live reads broke",
@@ -908,6 +958,9 @@ expectThrow("milestone build fails closed on a purchase without its amount", () 
     rawEvents: [{ ...milestonePurchases[0]!, usdcGrossRaw: null }],
     blockTimestamps: milestoneTs,
     archiveMintItems: [],
+    burnItems: [],
+    lifecycleItems: [],
+    lpItems: [],
     liveMemberCount: null,
     liveInflowAggregateRaw: null,
   }),
@@ -1341,9 +1394,11 @@ check(
 const feedJson = JSON.stringify(feed);
 check(
   // A1 (2026-07-22): 18 → 19 with the founder-funding treasury row.
-  feed.items.length === 19 &&
+  // M-EVO-1 (2026-07-22): 19 → 22 — the retro-sealed family milestones
+  // (first burn act · first source · first LP add) join as feed lines.
+  feed.items.length === 22 &&
     feed.items[0]!.blockNumber === 200 &&
-    feed.items[18]!.blockNumber === 100,
+    feed.items[21]!.blockNumber === 100,
   "feed serves newest first across ALL kinds (seats, burns, lifecycle, lp, archive, treasury, milestones, eras, capital)",
   `feed ordering broke (items=${feed.items.length})`,
 );
@@ -1434,12 +1489,18 @@ check(
   "the new lane flags broke",
 );
 check(
+  // M-EVO-1 (2026-07-22): 3 → 6 sealed; approaching = the 8 lanes, each
+  // with family + its own current figure serving.
   feed.lanes.milestones === true &&
     feed.milestones !== null &&
-    feed.milestones.sealed.length === 3 &&
+    feed.milestones.sealed.length === 6 &&
     feed.milestones.sealed[0]!.milestoneId === "first-seat" &&
-    feed.milestones.approaching.length === 8,
-  "the feed serves the Milestones panel block (3 sealed + 8 approaching, honest flags)",
+    feed.milestones.approaching.length === 8 &&
+    feed.milestones.approaching.every(
+      (a) => typeof (a as { family?: unknown }).family === "string",
+    ) &&
+    JSON.stringify(feed.milestones.approaching).includes('"currentSynRaw"'),
+  "the feed serves the Milestones panel block (6 sealed + the 8 family lanes, honest flags)",
   "the milestones block broke",
 );
 expectThrow("feed gate trips on a planted address in a milestone label", () =>
@@ -1658,6 +1719,66 @@ check(
   "feed pagination: additive bare path + fail-closed 400s + served kindCounts/nextCursor (A2)",
   "the feed pagination contract drifted",
 );
+// M-EVO hardening (adversarial verify, 2026-07-22): the page logic is a
+// PURE function and these pins are BEHAVIORAL — string presence alone let
+// a flipped comparison or a deleted cluster loop ship green.
+// The route must page over the WHOLE history, never the capped window.
+check(
+  feedRouteSrc.includes("buildPublicFeedWithLines") &&
+    feedRouteSrc.includes("sliceFeedPage(allLines") &&
+    feedRouteSrc.includes("totalCount: allLines.length") &&
+    feedRouteSrc.includes("for (const i of allLines)"),
+  "feed pagination speaks from allLines (whole history), never the capped items window",
+  "the pagination whole-history discipline drifted back to the capped window",
+);
+{
+  // A synthetic 5-line history, newest first, with a CLUSTER at (90, 4):
+  // two derived-style lines sharing (block, logIndex).
+  const mk = (blockNumber: number, logIndex: number, tag: string) =>
+    ({
+      kind: "burn",
+      proofOfBurnNumber: 1,
+      amountSynRaw: "1" + "0".repeat(18),
+      senderLabel: "Community",
+      actorShort: null,
+      blockNumber,
+      blockTimestampSec: T0,
+      isoDayUtc: "2026-07-01",
+      transactionHash: "0x" + tag.repeat(32).slice(0, 64),
+      logIndex,
+    }) as unknown as import("../src/backbone/feedProjection").PublicFeedLine;
+  const lines = [
+    mk(100, 1, "aa"),
+    mk(90, 4, "bb"),
+    mk(90, 4, "bc"),
+    mk(90, 2, "bd"),
+    mk(80, 0, "cc"),
+  ];
+  const p1 = sliceFeedPage(lines, 2, null);
+  check(
+    p1.pageItems.length === 3 &&
+      p1.pageItems[2]!.logIndex === 4 &&
+      p1.nextCursor === "90:4",
+    "sliceFeedPage closes a cluster: a page never splits lines sharing (block, logIndex)",
+    "the cluster-closed page law broke",
+  );
+  const p2 = sliceFeedPage(lines, 2, { blockNumber: 90, logIndex: 4 });
+  check(
+    p2.pageItems.length === 2 &&
+      p2.pageItems[0]!.blockNumber === 90 &&
+      p2.pageItems[0]!.logIndex === 2 &&
+      p2.pageItems[1]!.blockNumber === 80 &&
+      p2.nextCursor === null,
+    "sliceFeedPage continues STRICTLY older than the cursor — no duplicate, no skip, honest end",
+    "the strictly-older cursor law broke",
+  );
+  const p3 = sliceFeedPage(lines, 2, { blockNumber: 10, logIndex: 0 });
+  check(
+    p3.pageItems.length === 0 && p3.nextCursor === null,
+    "sliceFeedPage past the end serves an honest empty page",
+    "the past-the-end page behavior broke",
+  );
+}
 check(
   !DB_TOUCH_RE.test(feedRouteSrc) && !feedRouteSrc.includes("fetch("),
   "feed route reads memory only (no DB, no network)",
