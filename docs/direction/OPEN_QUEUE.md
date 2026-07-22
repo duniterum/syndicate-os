@@ -535,6 +535,24 @@
 >   Performance tab shows his real sources and the CSV downloads the
 >   screen. NEXT: K4 (no-seat reach decision at its gate) · P (press
 >   kit) · recognition/season.**
+> **✅ THE CONSOLE SLICE SEALED IN PROD `c08bbc8` (Replit green
+> 2026-07-22, founder-pasted report): 20/20 blobs byte-verified (6 server
+> incl. sourcePerformanceService · 11 studio incl. ReferralKpiBand +
+> SourcePerformancePanel · 3 docs; a manifest snag mid-cycle DETECTED,
+> reconverted, final pull proven 20/20 + typecheck redone on the real
+> code) · no migration, no install · gates green in prod context
+> (operator-gate → 2912 with the 5 sub-tabs pinned · api 2430 PASS ·
+> auth-zone at the EXACT expected 1191) · byte-identity exact (entry
+> `index-C_zxW2Cg.js` 50edcdb6… · console `OperatorConsole-pCCUFrp7.js`
+> 11f5c133…) · the K3.c route walled (GET /source-performance no-session
+> → 401 in prod) · the K3.a/K3.b matrix holds · wall + public 200s ·
+> THE CLEANEST BOOT: ok=2/partial=0/failed=0, 6/6 units, headBlock
+> 90,928,067→90,928,366, feed stable at 80 (Seat #3's real events still
+> serving). Replit's verdict: "le Dashboard console vit, les Sources &
+> referrals passent en 5 sous-onglets, et la performance par source avec
+> export CSV est en ligne derrière la porte admin." **⚠ DEPLOY BACKLOG
+> (batchable, client-only): the seat-law summary fix `225f64d` (landed
+> after this cycle's pull) — rides the NEXT pull.**
 
 > **▶ 2026-07-20 — R-ADMIN: "OPEN RECEIPTS" ON THE MEMBER LEDGER, BUILT [this commit]
 > (Q44's sealed order, step 3; wireframe founder-approved + "GO and GO-Live" — the A21
