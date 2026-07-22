@@ -418,6 +418,34 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   (no migration; A5 alone keeps its migration cycle). FOUNDER-PENDING:
 >   nothing on this arc. Parked as recorded: Q35 legal set · Q39/Q40/Q42
 >   admin waves · Q32/MVP-final items · the deferred list.
+> - **▶ A1+A2+A3+A4 BUILT + COMMITTED [this commit] (2026-07-22, the whole
+>   arc in one cycle per the cadence order):** A1 — `founderPrivateWallet`
+>   in protocolTargets (chain-recovered, AW-1) + the pure founder-wallet
+>   subset drives `counterpartFounder` on treasury moves ("advanced by the
+>   Founder" in / "returned to the Founder" out — the funding doctrine) —
+>   backbone guard **156** (fold law 2 folded/3 genuine · the A1 attribution
+>   pins · the A2 route pins). A2 — /backbone/feed pagination: optional
+>   `limit`/`cursor` (bare request byte-identical), cluster-closed pages,
+>   fail-closed 400s, served `kindCounts`/`totalCount`/`nextCursor`; boot
+>   probe matrix proven (400/400/paged/bare). A3 — the /activity NEWSROOM
+>   per the approved wireframe: Z1 ONE-authority seat headline + the ERA
+>   BAND (eraCanon.ts — bytecode schedule committed as canon; band renders
+>   ONLY on a complete eras lane, an unproven zero is not a zero) · Z2
+>   facets 8+More with SERVER counts (dark history → no numbers), ?facet=
+>   deep links, ✦ Founder gold · Z3 the feed first (12 lines, date groups,
+>   the gold **Founder** per-line chip on proven acts, Load more continuing
+>   past the newest cap via A2, 60s live pulse with slide-in) · Z4
+>   milestones condensed + the Genesis FOMO line · Z5 methodology expander
+>   (degraded coverage still announces at top). A4 — SEO description
+>   re-trued; DESIGN_ROADMAP ticked +0 sprawl. GATES (all EXIT 0, full
+>   runs): api tsc · 19 api guards (backbone 156) · api build + bundle boot
+>   + pagination matrix — studio tsc · 19 guards (feature-truth 568 ·
+>   no-raw-color 0) · build (35 shells · 354 twins · admin-dist 99) · seo
+>   51 routes · rewrites 33 · surface audit 35/15. RIG: 2 themes · 375px
+>   0-overflow · 44px chips · facet/URL/load-more exercised · 0 console
+>   errors; the served-data pieces (mint flip · funding sentences · counts ·
+>   era band) verify in PROD — the recorded no-local-DB pattern. **🚀
+>   DEPLOY — ONE cycle, server + client, NO migration, NO pnpm install.**
 >   Taken-by-default (flagged, overridable): the dedicated PDF engine stays
 >   its own rider (print already saves clean).
 > - **THE NEXT SESSION'S EXACT OPENING (no re-explaining, ever):** boot per

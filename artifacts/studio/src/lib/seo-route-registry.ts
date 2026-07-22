@@ -693,8 +693,10 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     indexStatus: "INDEX",
     sitemap: true,
     title: "Activity — the public heartbeat",
+    // A3 (2026-07-22): the newsroom rebuild — the reality moved (news-first
+    // composition, live feed, paged history), the served head moves with it.
     description:
-      "The protocol's public heartbeat: the complete indexed history — seats written, burns numbered, referral events, liquidity, archive mints, treasury movements, milestone crossings, era turns and footprint rises — every line a receipt-backed sentence with its own verify link.",
+      "The protocol's live newsroom: every on-chain act as a verifiable line, newest first — seats, burns, referrals, treasury, milestones — each with its verify link.",
     canonicalPath: "/activity",
     changefreq: "daily",
     priority: 0.6,

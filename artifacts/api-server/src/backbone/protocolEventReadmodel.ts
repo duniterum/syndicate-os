@@ -140,6 +140,14 @@ export interface TreasuryMoveItem {
   readonly organLabel: string;
   /** internal moves only: the destination organ. */
   readonly toOrganLabel: string | null;
+  /**
+   * A1 (founder funding doctrine, 2026-07-22): true when the move's external
+   * counterparty is a FOUNDER WALLET (in: the sender; out: the recipient;
+   * internal: always false). Money entering an organ from a founder wallet
+   * is the Founder advancing money to the protocol — the sentence says so.
+   * A label decision only; the counterparty address never leaves the model.
+   */
+  readonly counterpartFounder: boolean;
   readonly blockNumber: number;
   readonly logIndex: number;
   readonly transactionHash: string;
@@ -160,6 +168,14 @@ export interface ProtocolEventBuildInput {
   readonly blockTimestamps: readonly BlockTimestampInput[];
   /** Lowercased known founder wallet addresses (the allocation registry). */
   readonly founderAddresses: ReadonlySet<string>;
+  /**
+   * A1 (2026-07-22): the PURE founder-wallet subset (allocation wallet +
+   * the Founder Private Wallet; organs excluded). Drives the treasury
+   * counterpartFounder attribution — an organ can never be a counterparty
+   * of an in/out move (both-organ rows are "internal"), so this set decides
+   * founder funding/return truthfully per address.
+   */
+  readonly founderWalletAddresses: ReadonlySet<string>;
   /**
    * H2-⑦: lowercased organ address → its public LABEL ("the vault" /
    * "the liquidity wallet" / "the operations wallet"). The ONLY place organ
@@ -435,13 +451,23 @@ export function buildProtocolEventReadModel(
       fail("treasury row touches no known organ");
     }
     const ts = timeOf(t.blockNumber);
+    const movement =
+      fromOrgan !== null && toOrgan !== null ? "internal" : fromOrgan !== null ? "out" : "in";
     treasuryItems.push({
       kind: "treasury-move",
       token: t.token,
       amountRaw: t.valueRaw,
-      movement: fromOrgan !== null && toOrgan !== null ? "internal" : fromOrgan !== null ? "out" : "in",
+      movement,
       organLabel: fromOrgan ?? (toOrgan as string),
       toOrganLabel: fromOrgan !== null && toOrgan !== null ? toOrgan : null,
+      // A1 (2026-07-22): founder funding/return said truthfully per address —
+      // in: the SENDER is a founder wallet; out: the RECIPIENT is.
+      counterpartFounder:
+        movement === "in"
+          ? input.founderWalletAddresses.has(t.fromAddress.toLowerCase())
+          : movement === "out"
+            ? input.founderWalletAddresses.has(t.toAddress.toLowerCase())
+            : false,
       blockNumber: t.blockNumber,
       logIndex: t.logIndex,
       transactionHash: t.transactionHash,

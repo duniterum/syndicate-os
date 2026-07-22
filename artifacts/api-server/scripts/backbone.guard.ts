@@ -567,6 +567,8 @@ const opsAddr = "0x" + "dd".repeat(20);
 const externalAddr = "0x" + "77".repeat(20);
 const txJ = "0x" + "6d".repeat(32);
 const txK = "0x" + "7e".repeat(32);
+// A1 (2026-07-22): a genuine founder-funding inflow row (founder → vault).
+const txL = "0x" + "8f".repeat(32);
 const txC = "0x" + "ef".repeat(32);
 const txD = "0x" + "0d".repeat(32);
 const txE = "0x" + "5e".repeat(32);
@@ -656,6 +658,10 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
     { token: "USDC", blockNumber: 160, logIndex: 8, transactionHash: txF, fromAddress: vaultAddr, toAddress: externalAddr, valueRaw: "25" + "0".repeat(6) },
     { token: "USDC", blockNumber: 165, logIndex: 1, transactionHash: txJ, fromAddress: vaultAddr, toAddress: externalAddr, valueRaw: "7" + "0".repeat(6) },
     { token: "SYN", blockNumber: 175, logIndex: 2, transactionHash: txK, fromAddress: vaultAddr, toAddress: opsAddr, valueRaw: "1500" + "0".repeat(18) },
+    // A1 (2026-07-22): a genuine founder-funding inflow — the Founder
+    // advances USDC to the vault; the sentence must SAY the Founder.
+    // (Block 190 — never 200: the shared-anchor tie-break pin owns that block.)
+    { token: "USDC", blockNumber: 190, logIndex: 11, transactionHash: txL, fromAddress: founderAddr, toAddress: vaultAddr, valueRaw: "9" + "0".repeat(6) },
   ],
   blockTimestamps: [
     { chainId: CHAIN, blockNumber: 100, blockTimestampSec: T0 },
@@ -669,6 +675,9 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
     { chainId: CHAIN, blockNumber: 200, blockTimestampSec: T0 + 8_600 },
   ],
   founderAddresses: new Set([founderAddr]),
+  // A1 (2026-07-22): the PURE founder-wallet subset (organs excluded) —
+  // drives the treasury counterpartFounder attribution.
+  founderWalletAddresses: new Set([founderAddr]),
   organLabelByAddress: new Map([
     [vaultAddr, "the vault"],
     [opsAddr, "the operations wallet"],
@@ -678,9 +687,9 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
 });
 // H2-⑦ pins: THE FOLD LAW + classification + label discipline.
 check(
-  fixtureProtocolModel.treasuryItems.length === 2 &&
+  fixtureProtocolModel.treasuryItems.length === 3 &&
     fixtureProtocolModel.totals.treasuryRowsFolded === 2,
-  "THE FOLD LAW holds: routing transfers inside narrated transactions fold (2 folded, 2 genuine)",
+  "THE FOLD LAW holds: routing transfers inside narrated transactions fold (2 folded, 3 genuine — A1 added the founder-funding row)",
   `the Fold Law broke (items=${fixtureProtocolModel.treasuryItems.length}, folded=${fixtureProtocolModel.totals.treasuryRowsFolded})`,
 );
 check(
@@ -692,6 +701,18 @@ check(
     fixtureProtocolModel.treasuryItems[1]!.toOrganLabel === "the operations wallet",
   "treasury movements classify in/out/internal from the ORGAN SET (never from the stream)",
   "treasury movement classification broke",
+);
+// A1 pins (founder funding doctrine, 2026-07-22): the counterparty is said
+// truthfully per address — the founder→vault inflow carries the flag; an
+// external out and an internal rebalance never do.
+check(
+  fixtureProtocolModel.treasuryItems[2]!.movement === "in" &&
+    fixtureProtocolModel.treasuryItems[2]!.organLabel === "the vault" &&
+    fixtureProtocolModel.treasuryItems[2]!.counterpartFounder === true &&
+    fixtureProtocolModel.treasuryItems[0]!.counterpartFounder === false &&
+    fixtureProtocolModel.treasuryItems[1]!.counterpartFounder === false,
+  "founder funding attribution: in-from-founder carries counterpartFounder; external/internal never do (A1, 2026-07-22)",
+  "the founder-funding attribution broke",
 );
 // H1a-fix pin (the prod-caught inversion, dead forever): with token0 = USDC,
 // the read-model must map amount1 → SYN and amount0 → USDC.
@@ -1319,9 +1340,10 @@ check(
 );
 const feedJson = JSON.stringify(feed);
 check(
-  feed.items.length === 18 &&
+  // A1 (2026-07-22): 18 → 19 with the founder-funding treasury row.
+  feed.items.length === 19 &&
     feed.items[0]!.blockNumber === 200 &&
-    feed.items[17]!.blockNumber === 100,
+    feed.items[18]!.blockNumber === 100,
   "feed serves newest first across ALL kinds (seats, burns, lifecycle, lp, archive, treasury, milestones, eras, capital)",
   `feed ordering broke (items=${feed.items.length})`,
 );
@@ -1336,14 +1358,24 @@ check(
 // H2-⑦: the treasury lines ride the feed with LABELS only — the planted
 // organ + external addresses must never appear anywhere in the payload.
 check(
+  // A1 (2026-07-22): 2 → 3 treasury lines (the founder-funding inflow).
   feed.lanes.treasury === true &&
-    feed.items.filter((i) => i.kind === "treasury-move").length === 2 &&
+    feed.items.filter((i) => i.kind === "treasury-move").length === 3 &&
     !feedJson.includes(vaultAddr) &&
     !feedJson.includes(opsAddr) &&
     !feedJson.includes(externalAddr) &&
+    !feedJson.includes(founderAddr) &&
     feedJson.includes('"organLabel":"the vault"'),
   "treasury lines serve organ LABELS only — no organ or counterparty address in the payload",
   "the treasury label discipline broke",
+);
+// A1 pin (2026-07-22): the founder-funding flag SERVES as a boolean label —
+// exactly one true (the founder→vault inflow), never an address beside it.
+check(
+  feedJson.includes('"counterpartFounder":true') &&
+    (feedJson.match(/"counterpartFounder":true/g) ?? []).length === 1,
+  "the founder-funding counterpart flag serves (one true row, boolean only)",
+  "the founder-funding served flag broke",
 );
 // Static pin — burn sovereignty: the treasury SYN decoder must yield logs
 // whose recipient is the burn address (the numbered Proof of Burn record owns
@@ -1605,9 +1637,26 @@ check(
 check(
   feedRouteSrc.includes("assertFeedSafeJson(serialized)") &&
     feedRouteSrc.indexOf("assertFeedSafeJson(serialized)") <
-      feedRouteSrc.indexOf(".send(serialized)"),
-  "feed route scans the serialized payload BEFORE sending it",
+      feedRouteSrc.indexOf(".send(serialized)") &&
+    // A2 (2026-07-22): BOTH response paths (whole feed + the paged envelope)
+    // pass the fail-closed gate — one scan per send, never a bare send.
+    (feedRouteSrc.match(/assertFeedSafeJson\(serialized\)/g) ?? []).length ===
+      (feedRouteSrc.match(/\.send\(serialized\)/g) ?? []).length,
+  "feed route scans the serialized payload BEFORE sending it (every path, A2)",
   "feed route sends without the fail-closed gate",
+);
+// A2 pins (2026-07-22): pagination is ADDITIVE (bare request = the whole
+// envelope) and fail-closed (malformed limit/cursor = 400, never a guess);
+// pages are CLUSTER-CLOSED (a shared-anchor derived line never splits from
+// its underlying event across a page boundary).
+check(
+  feedRouteSrc.includes("rawLimit === undefined && rawCursor === undefined") &&
+    feedRouteSrc.includes('"bad_limit"') &&
+    feedRouteSrc.includes('"bad_cursor"') &&
+    feedRouteSrc.includes("kindCounts") &&
+    feedRouteSrc.includes("nextCursor"),
+  "feed pagination: additive bare path + fail-closed 400s + served kindCounts/nextCursor (A2)",
+  "the feed pagination contract drifted",
 );
 check(
   !DB_TOUCH_RE.test(feedRouteSrc) && !feedRouteSrc.includes("fetch("),

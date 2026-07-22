@@ -342,10 +342,21 @@ async function runCycle(): Promise<string | null> {
   // (founder correction 2, 2026-07-15): skin in the game is the trust engine —
   // founder acts SAY the founder. A label decision made HERE, server-side;
   // no address ever leaves the zone.
-  const founderAddresses = new Set([
+  // AW-1 (founder, 2026-07-22): the founder's PRIVATE wallet ("Founder
+  // Private Wallet", his naming) joins the set — his 7 historical archive
+  // mints and any future act from it say "Founder". The PURE founder-wallet
+  // subset (allocation + private, organs excluded) additionally drives the
+  // treasury counterpart attribution: money entering an organ FROM a founder
+  // wallet is the Founder advancing money to the protocol, and the line says
+  // so (the founder's funding doctrine, dossier §5).
+  const founderWalletAddresses = new Set([
     ...FINANCIAL_TARGETS.allocationWallets
       .filter((w) => w.key === "FOUNDER")
       .map((w) => w.address.toLowerCase()),
+    FINANCIAL_TARGETS.founderPrivateWallet.toLowerCase(),
+  ]);
+  const founderAddresses = new Set([
+    ...founderWalletAddresses,
     FINANCIAL_TARGETS.vaultWallet.toLowerCase(),
     FINANCIAL_TARGETS.liquidityWallet.toLowerCase(),
     FINANCIAL_TARGETS.operationsWallet.toLowerCase(),
@@ -373,6 +384,7 @@ async function runCycle(): Promise<string | null> {
     treasury: protocolRows.treasury,
     blockTimestamps: input.blockTimestamps,
     founderAddresses,
+    founderWalletAddresses,
     organLabelByAddress,
     saleTransactionHashes,
     // H1a-fix: the pair's immutable token0 orientation (canon pin, chain-

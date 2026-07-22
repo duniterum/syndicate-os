@@ -141,6 +141,13 @@ export interface PublicTreasuryLine extends LineCommon {
    *  wallet") — never an address; external counterparties never named. */
   readonly organLabel: string;
   readonly toOrganLabel: string | null;
+  /**
+   * A1 (founder funding doctrine, 2026-07-22 — deliberate whitelist
+   * amendment): true when the move's counterparty is a FOUNDER wallet
+   * (in: advanced by the Founder; out: returned to the Founder). A boolean
+   * label only — no address, no new identity surface.
+   */
+  readonly counterpartFounder: boolean;
 }
 
 // ── H2-⑬ — milestone crossings (derived, anchored to the crossing tx) ───────
@@ -459,6 +466,7 @@ export function buildPublicFeed(source: FeedSource): PublicActivityFeed {
       movement: t.movement,
       organLabel: t.organLabel,
       toOrganLabel: t.toOrganLabel,
+      counterpartFounder: t.counterpartFounder,
       blockNumber: t.blockNumber,
       blockTimestampSec: t.blockTimestampSec,
       isoDayUtc: t.isoDayUtc,

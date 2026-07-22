@@ -134,6 +134,16 @@ BTC.b `0x152b9d0FdC40C096757F570A51E494bd4b943E50`, WETH.e `0x49D5c2BdFfac6CE2BF
 
 ## 7. THE WORK ORDER (the slices — nothing forgotten)
 
+> **STATUS 2026-07-22: A0 ✅ (approved) · A1 ✅ · A2 ✅ · A3 ✅ · A4 ✅ — BUILT,
+> one deploy cycle (see SESSION_STATE's arc entry). A5 remains (⚠ migration,
+> its own cycle). Gaps §4: 1 ✅ (funding lines) · 3 ✅ (private wallet) ·
+> 4 ✅ (gold Founder chip) · 6 → A5. Gap 2 RESOLVED BY DOCTRINE, not code:
+> the organs stay in the founder LABEL set per the engraved founder-voice
+> rule ("his public acts flow through the pipes", 2026-07-15) — the treasury
+> lane already names organs by their own labels; the pure founder-wallet
+> subset now exists for counterpart attribution. Gap 5 stands as-is (out/
+> internal ARE founder-signed acts — organs are founder-controlled EOAs).**
+
 | # | Slice | Content | Deploy |
 |---|---|---|---|
 | **A0** | **Wireframe /activity** | `docs/design/activity-newsroom-mockup.html` — business version, desktop+mobile, founder approves ON SCREEN before any code (Visual Change Law) | none |

@@ -305,6 +305,17 @@ export type FinancialTargets = {
   /** The ACTIVE engine whose memberCount() is the live aggregate member tally. */
   memberCountEngine: { key: "MEMBERSHIP_SALE_V3"; address: string };
   /**
+   * SERVER-ONLY — the founder's PRIVATE wallet (his own naming: "Founder
+   * Private Wallet"; founder decision AW-1, 2026-07-22). Provenance: the
+   * address was chain-recovered from the Archive1155 mint log at block
+   * 87,350,581 (TransferSingle operator/to topics) and matches the canon
+   * short form 0x2445…9C721 (historical member #1, duniter.eth). Joins the
+   * backbone's founder label set so his public acts from this wallet
+   * (7 historical archive mints, future burns/LP) say "Founder" — the
+   * founder-voice rule. Never emitted; label decisions only.
+   */
+  founderPrivateWallet: string;
+  /**
    * Public SYN allocation wallets (the initial-mint tokenomics distribution) —
    * SERVER-ONLY balanceOf(SYN) call targets. Keyed by a safe internal name; the
    * address is never emitted. Reconciled against canon ALLOCATION_WALLETS by the
@@ -366,6 +377,9 @@ export const FINANCIAL_TARGETS: FinancialTargets = {
     key: "MEMBERSHIP_SALE_V3",
     address: "0x2A6cFc76906e758B934209AFf5A163c9bC20132E",
   },
+  // AW-1 (founder, 2026-07-22): "Founder Private Wallet" — chain-recovered
+  // from the block-87,350,581 archive-mint log; see the type doc above.
+  founderPrivateWallet: "0x244531C571966F90F4849E03a507543D90f9C721",
   allocationWallets: [
     { key: "MEMBERSHIP_DISTRIBUTION", label: "Membership Distribution", address: "0x975a4360FA808aC5D2Edb3c3412B2AeB9F5ECec8" },
     { key: "VAULT_RESERVE", label: "Vault Reserve", address: "0x205DdC8921A4C60106930eE35e1F395c8D13f464" },

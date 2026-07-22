@@ -42,16 +42,71 @@ function progressFor(a: ServedMilestones["approaching"][number]): {
 export function MilestonesPanel({
   milestones,
   explorerBase,
+  condensed = false,
+  fomoLine = null,
 }: {
   milestones: ServedMilestones;
   explorerBase: string | null;
+  /**
+   * A3 (the newsroom rebuild, wireframe approved 2026-07-22): the WORK-FIRST
+   * placement — sealed list + the NEXT approaching threshold only, the full
+   * approaching list one click away in a collapsed expander.
+   */
+  condensed?: boolean;
+  /**
+   * A3 (business-first ruling, 2026-07-22): the historical-FOMO line —
+   * TRUE, chain-derived, historical only ("a place in the founding story is
+   * claimed once") — never financial, never invented. Null = not rendered.
+   */
+  fomoLine?: string | null;
 }) {
+  const approachingShown = condensed
+    ? milestones.approaching.slice(0, 1)
+    : milestones.approaching;
+  const approachingRest = condensed ? milestones.approaching.slice(1) : [];
+  const renderApproaching = (list: ServedMilestones["approaching"]) => (
+    <ul className="space-y-2">
+      {list.map((a) => {
+        const p = progressFor(a);
+        return (
+          <li key={a.id}>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5">
+              <span className="text-xs text-foreground/80 flex-1 min-w-40">{a.label}</span>
+              <span className="font-mono text-xs text-muted-foreground">
+                {p ? p.text : "awaiting its first on-chain act"}
+              </span>
+            </div>
+            {p ? (
+              <div
+                className="mt-1 h-1 rounded-full bg-border/40 overflow-hidden"
+                role="progressbar"
+                aria-valuenow={Math.round(p.pct * 100)}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`${a.label} progress`}
+              >
+                <div
+                  className="h-full rounded-full bg-gold/50"
+                  style={{ width: `${Math.max(1, Math.round(p.pct * 100))}%` }}
+                />
+              </div>
+            ) : null}
+          </li>
+        );
+      })}
+    </ul>
+  );
   return (
     <Card className="bg-card/30 border-border/50 p-4 mb-6" data-testid="milestones-panel">
       <h2 className="text-sm font-medium text-foreground mb-1">
         Milestones — the protocol's canonical account
       </h2>
-      <p className="text-[11px] text-muted-foreground leading-relaxed mb-3">
+      {fomoLine ? (
+        <p className="text-sm font-medium text-gold leading-relaxed mb-1.5" data-testid="milestones-fomo">
+          {fomoLine}
+        </p>
+      ) : null}
+      <p className="text-xs text-muted-foreground leading-relaxed mb-3">
         Canonical thresholds — seat ordinals, cumulative USDC routed through
         the sale, first-of-kind mints — derived from the same gapless indexed
         history as the feed. A sealed milestone anchors to the exact
@@ -91,39 +146,18 @@ export function MilestonesPanel({
 
       {milestones.approaching.length > 0 ? (
         <div data-testid="milestones-approaching">
-          <h3 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
-            Approaching
+          <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2">
+            {condensed ? "Next" : "Approaching"}
           </h3>
-          <ul className="space-y-2">
-            {milestones.approaching.map((a) => {
-              const p = progressFor(a);
-              return (
-                <li key={a.id}>
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5">
-                    <span className="text-xs text-foreground/80 flex-1 min-w-40">{a.label}</span>
-                    <span className="font-mono text-[10px] text-muted-foreground">
-                      {p ? p.text : "awaiting its first on-chain act"}
-                    </span>
-                  </div>
-                  {p ? (
-                    <div
-                      className="mt-1 h-1 rounded-full bg-border/40 overflow-hidden"
-                      role="progressbar"
-                      aria-valuenow={Math.round(p.pct * 100)}
-                      aria-valuemin={0}
-                      aria-valuemax={100}
-                      aria-label={`${a.label} progress`}
-                    >
-                      <div
-                        className="h-full rounded-full bg-gold/50"
-                        style={{ width: `${Math.max(1, Math.round(p.pct * 100))}%` }}
-                      />
-                    </div>
-                  ) : null}
-                </li>
-              );
-            })}
-          </ul>
+          {renderApproaching(approachingShown)}
+          {approachingRest.length > 0 ? (
+            <details className="mt-3">
+              <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground transition-colors">
+                All thresholds ({approachingRest.length} more)
+              </summary>
+              <div className="mt-2">{renderApproaching(approachingRest)}</div>
+            </details>
+          ) : null}
         </div>
       ) : null}
 

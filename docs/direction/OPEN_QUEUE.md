@@ -31,6 +31,16 @@
 >   cycle carries the whole A1+A2+A3+A4 arc** (no migration, all additive/fail-closed;
 >   each cycle costs the founder hours). Only A5 keeps its own cycle (real migration —
 >   never batched).
+> **▶ A1+A2+A3+A4 BUILT + COMMITTED [this commit] (2026-07-22 — full record in
+> SESSION_STATE's arc entry):** the Founder Private Wallet in the founder set (7 mints
+> flip at the next cycle) · treasury founder-funding attribution + sentences · feed
+> pagination (cursor, fail-closed, kindCounts) · the /activity newsroom (ONE-authority
+> headline · era band AW-2 · facets with server counts · date-grouped feed with the
+> gold Founder chip · Load more + live pulse · milestones condensed + Genesis FOMO ·
+> methodology expander) · SEO + ROADMAP same commit. Gates ALL EXIT 0 both sides
+> (backbone 156 · feature-truth 568 · build 35/354/99 · boot matrix). 🚀 ONE cycle:
+> server + client, NO migration, NO install. REMAINING in the arc: **A5** (the
+> off-chain purpose ledger — ⚠ MIGRATION, its own cycle) — then K4 → P → season.
 
 > **▶ 2026-07-20 — SLICE 5.1: THE COMMISSION RECEIPTS REGISTER + ITS SHARE DOOR, BUILT
 > [this commit] (Q44's sealed order, step 4; mockup founder-approved 2026-07-19; preview

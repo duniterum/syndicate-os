@@ -106,6 +106,13 @@ export interface ServedTreasuryLine extends ServedLineCommon {
   /** "the vault" / "the liquidity wallet" / "the operations wallet". */
   organLabel: string;
   toOrganLabel: string | null;
+  /**
+   * A1 (founder funding doctrine, 2026-07-22): the move's counterparty is a
+   * founder wallet — in: advanced by the Founder; out: returned to the
+   * Founder. Absent on pre-A1 served payloads → false (honest default:
+   * never a founder claim without the server's word).
+   */
+  counterpartFounder: boolean;
 }
 
 // ── H2-⑬ — milestone crossings (derived server-side, anchored to the
@@ -169,6 +176,21 @@ export interface ServedMilestones {
   notes: string[];
 }
 
+/**
+ * A2 (2026-07-22): the paged envelope's pagination block. Present ONLY when
+ * the request carried `limit`; every figure is the SERVER's word — the
+ * facet chips speak these counts, never client arithmetic over a partial
+ * page. Absent/malformed → null (the consumer treats the payload as whole).
+ */
+export interface ServedFeedPagination {
+  /** "blockNumber:logIndex" of the page's last line; null = no older page. */
+  nextCursor: string | null;
+  /** Whole-history line count across kinds (server-side). */
+  totalCount: number;
+  /** Whole-history per-kind counts (the facet chips' one authority). */
+  kindCounts: Record<string, number>;
+}
+
 export interface ServedFeed {
   state: string;
   headBlock: number | null;
@@ -199,6 +221,8 @@ export interface ServedFeed {
   burnLedger: ServedBurnLine[];
   /** H2-⑬: the Milestones panel block (null = the model is dark). */
   milestones: ServedMilestones | null;
+  /** A2: present only on paged requests (see ServedFeedPagination). */
+  pagination: ServedFeedPagination | null;
 }
 
 function toInt(v: unknown): number | null {
@@ -376,6 +400,9 @@ function parseLine(raw: unknown): ServedFeedLine | null {
       movement: r.movement,
       organLabel: r.organLabel,
       toOrganLabel: typeof r.toOrganLabel === "string" ? r.toOrganLabel : null,
+      // A1: strictly the server's boolean word — anything else reads false
+      // (a founder claim is never inferred client-side).
+      counterpartFounder: r.counterpartFounder === true,
     };
   }
   if (r.kind === "milestone") {
@@ -481,9 +508,19 @@ function parseMilestones(raw: unknown): ServedMilestones | null {
  * Fetch the served receipt-line histories. Returns null on ANY transport/
  * shape failure — the consumer renders the honest fallback, never a guess.
  */
-export async function fetchServedFeed(): Promise<ServedFeed | null> {
+export async function fetchServedFeed(
+  // A2 (2026-07-22): optional paging — absent = the whole-feed request the
+  // pre-A2 consumers always made (byte-identical server behavior).
+  opts?: { limit?: number; cursor?: string },
+): Promise<ServedFeed | null> {
   try {
-    const res = await fetch("/api/backbone/feed", { cache: "no-store" });
+    const params = new URLSearchParams();
+    if (opts?.limit !== undefined) params.set("limit", String(opts.limit));
+    if (opts?.cursor !== undefined) params.set("cursor", opts.cursor);
+    const qs = params.toString();
+    const res = await fetch(`/api/backbone/feed${qs ? `?${qs}` : ""}`, {
+      cache: "no-store",
+    });
     if (!res.ok) return null;
     const body: unknown = await res.json();
     if (typeof body !== "object" || body === null) return null;
@@ -539,6 +576,28 @@ export async function fetchServedFeed(): Promise<ServedFeed | null> {
       items,
       burnLedger,
       milestones: parseMilestones(b.milestones),
+      // A2: the pagination block is taken strictly at the server's word —
+      // any malformed piece collapses the whole block to null (fail-closed).
+      pagination: (() => {
+        if (typeof b.pagination !== "object" || b.pagination === null) return null;
+        const p = b.pagination as Record<string, unknown>;
+        const totalCount = toInt(p.totalCount);
+        const nextCursor =
+          p.nextCursor === null
+            ? null
+            : typeof p.nextCursor === "string" && /^[0-9]+:[0-9]+$/.test(p.nextCursor)
+              ? p.nextCursor
+              : undefined;
+        if (totalCount === null || nextCursor === undefined) return null;
+        const kindCounts: Record<string, number> = {};
+        if (typeof p.kindCounts === "object" && p.kindCounts !== null) {
+          for (const [k, v] of Object.entries(p.kindCounts as Record<string, unknown>)) {
+            const n = toInt(v);
+            if (n !== null) kindCounts[k] = n;
+          }
+        }
+        return { nextCursor, totalCount, kindCounts };
+      })(),
     };
   } catch {
     return null; // honest unavailability — the consumer says so
@@ -637,11 +696,19 @@ export function sentenceForServedLine(line: ServedFeedLine): string {
     case "treasury-move": {
       const amount =
         line.token === "SYN" ? formatSynRaw(line.amountRaw) : formatUsdcRaw(line.amountRaw);
+      // A1 (founder funding doctrine, 2026-07-22): a founder-wallet
+      // counterparty is SAID — money in from the Founder is the Founder
+      // advancing money to the protocol; money out to the Founder is a
+      // return to him. The generic sentences stay for every other party.
       return line.movement === "internal"
         ? `${amount} ${line.token} moved from ${line.organLabel} to ${line.toOrganLabel ?? "another organ"} — an internal treasury rebalance, publicly recorded.`
         : line.movement === "out"
-          ? `${amount} ${line.token} moved out of ${line.organLabel} — a founder-signed treasury act; there are no silent moves.`
-          : `${amount} ${line.token} entered ${line.organLabel} — recorded on-chain.`;
+          ? line.counterpartFounder
+            ? `${amount} ${line.token} moved out of ${line.organLabel} — returned to the Founder, a founder-signed treasury act; there are no silent moves.`
+            : `${amount} ${line.token} moved out of ${line.organLabel} — a founder-signed treasury act; there are no silent moves.`
+          : line.counterpartFounder
+            ? `${amount} ${line.token} entered ${line.organLabel} — advanced by the Founder, recorded on-chain.`
+            : `${amount} ${line.token} entered ${line.organLabel} — recorded on-chain.`;
     }
     // H2-⑬ — MILESTONE CROSSINGS (founder-approved sentences, 2026-07-15).
     // Vocabulary law: always "routed", never "raised"; always SEATS.
