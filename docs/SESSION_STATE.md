@@ -384,6 +384,18 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   sprawl · AdminHome comment). 🚀 DEPLOY next cycle: `cdddf4a`
 >   (server + client, NO migration, NO install — the backbone re-labels
 >   mints on its own cycles).**
+> - **✅ THE ONE-AUTHORITY + FOUNDER-FACET CYCLE SEALED IN PROD `ede59aa`
+>   (Replit green 2026-07-22): 11/11 blobs · byte-identity exact · THE 14
+>   EVERYWHERE (homepage cards + /activity milestones eye-verified; the
+>   summary template in the served bytes binds to the same
+>   financial.members.memberCount; "seat(s) sealed" ×0 — the parallel
+>   authority is dead) · the facet labels SERVING: lp-add 2 Founder +
+>   2 Community · burns 8 Founder · archive mints minterLabel present —
+>   17 "Community" (the minter wallet is NOT in the server's
+>   founderAddresses set — FOUNDER-PENDING: if that wallet is his, adding
+>   it to the set is a deliberate dated server change; archive pauses: none
+>   on-chain yet, honestly nothing to label) · engine ok=2/0/0 · feed 80.
+>   DEPLOY BACKLOG: EMPTY.**
 > - **IN FLIGHT after the riders' seal:** K4 (the no-seat promoter reach
 >   decision at its gate) · P (press kit — all text on screen) ·
 >   recognition/season (slice 6: the two-layer law; read the dossiers
