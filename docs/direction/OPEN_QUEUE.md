@@ -69,8 +69,16 @@
 > semibold; ONE serif display per page: the hero), the era band mixing
 > sans+mono mid-line (now ONE size ONE face, gold = emphasis), and the
 > newsroom stretched edge-to-edge tearing sentences from their date/verify
-> meta (now capped max-w-6xl ≈ the wireframe's own 1180px — THE WIREFRAME'S
-> GEOMETRY BINDS, engraved in agent memory). ② REPLIT ÉCART 2 FIXED: the
+> meta. ⚠ MY FIRST FIX (a max-w-6xl page cap) VIOLATED THE FULL-SCREEN LAW —
+> the founder's second catch the same hour ("Full Screen c'était non????").
+> THE TRUE FIX [this commit]: NO page cap — S7-d holds: fluid full width,
+> columns multiplied: the feed = the main column (minmax(0,1fr)) + a sticky
+> 400px RAIL carrying the milestones account + the methodology at xl;
+> natural single stack below (WORK-FIRST order intact). Rig-measured at
+> 1600px: 1097px feed + 400px sticky rail, zero overflow. The memory
+> `wireframe-geometry-binds` corrected: type treatments bind; a mockup's
+> canvas width is NEVER a cap order — the engraved fluid law wins.
+> ② REPLIT ÉCART 2 FIXED: the
 > SERVED line now WINS the merge dedup (it carries ledger facts + proven
 > actor labels) — a fresh founder burn wears its gold chip and joins the
 > Founder facet IMMEDIATELY, no ~24h window hand-off; the window's only job

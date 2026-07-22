@@ -756,14 +756,15 @@ export function LiveActivityFeed({
   }
 
   // ── THE NEWSROOM (full-feed mode; wireframe c1a57a1, approved). ──
-  // THE WIREFRAME'S GEOMETRY BINDS (founder catch 2026-07-22): the approved
-  // mockup capped the newsroom column at ~1180px — a reading feed stretched
-  // edge-to-edge on a wide screen tears the sentence from its date/verify
-  // meta (the S7-d law's own words: readability bounded per card, never one
-  // column stretched). max-w-6xl (1152px) is the house token nearest the
-  // approved cap; the page around it stays fluid.
+  // THE FULL-SCREEN LAW HOLDS (founder catch #2, 2026-07-22 — "Full Screen
+  // c'était non?"): S7-d forbids a page-level cap on an app surface; wide
+  // screens are filled by MULTIPLYING COLUMNS, never by stretching one and
+  // never by dead margins. So: FLUID full width; at xl the page becomes
+  // feed (main) + a sticky rail carrying the milestones account and the
+  // methodology — the work and its canonical account side by side, no cap,
+  // no 1,500px gap between a sentence and its verify meta.
   return (
-    <div className="mx-auto w-full max-w-6xl">
+    <div className="w-full">
       {/* Z1 — the header band: ONE authority figure + honest history counts
           + the era band. The seat figure quotes the SAME live engine
           memberCount() the homepage headlines (founder-caught twice,
@@ -886,6 +887,12 @@ export function LiveActivityFeed({
         </div>
       ) : null}
 
+      {/* S7-d COMPOSITION: fluid full width — the feed is the main column;
+          the milestones account + methodology ride a sticky rail on wide
+          screens (columns multiplied, never one stretched); single natural
+          stack below xl (feed first — WORK-FIRST order intact). */}
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_400px] xl:items-start">
+      <div className="min-w-0">
       {/* Z3 — THE FEED FIRST: newest → oldest, date-grouped, paged. */}
       {loading || scan === null ? (
         <p className="text-sm text-muted-foreground py-6">Reading the chain…</p>
@@ -941,16 +948,18 @@ export function LiveActivityFeed({
         </div>
       ) : null}
 
-      {/* Z4 — milestones AFTER the work (condensed; the wireframe's order). */}
+      </div>
+
+      {/* Z4+Z5 — the rail: the canonical account + the methodology, beside
+          the work at xl (sticky), after it below. */}
+      <aside className="min-w-0 xl:sticky xl:top-16">
       {served?.milestones ? (
-        <div className="mt-8">
-          <MilestonesPanel
-            milestones={served.milestones}
-            explorerBase={explorerBase}
-            condensed
-            fomoLine={fomoLine}
-          />
-        </div>
+        <MilestonesPanel
+          milestones={served.milestones}
+          explorerBase={explorerBase}
+          condensed
+          fomoLine={fomoLine}
+        />
       ) : null}
 
       {/* Z5 — the whole methodology, one click away (WORK-FIRST: reference
@@ -994,6 +1003,8 @@ export function LiveActivityFeed({
           </p>
         </Card>
       </details>
+      </aside>
+      </div>
     </div>
   );
 }
