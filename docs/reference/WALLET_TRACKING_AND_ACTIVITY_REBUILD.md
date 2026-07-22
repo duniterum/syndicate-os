@@ -79,12 +79,17 @@ BTC.b `0x152b9d0FdC40C096757F570A51E494bd4b943E50`, WETH.e `0x49D5c2BdFfac6CE2BF
   block 90,936,916, from `0x88EC…Dd73` → dead. Indexed and served the same day,
   `senderLabel = "Founder"` — correctly tracked.
 - **The 17 archive mints ("Community") — RESOLVED, not one wallet:**
-  **7 mints by `0x244…c721` (the founder's private wallet)** — blocks 87,350,581 · 87,358,137 ·
-  87,359,440 · 87,378,897 · 87,440,861 · 87,447,442 (×2 in range) — mislabeled "Community"
-  ONLY because that wallet is not in the server's founder set. **10 mints by real members**:
+  **6 mints by `0x244…c721` (the founder's private wallet)** — blocks 87,350,581 · 87,358,137 ·
+  87,359,440 · 87,378,897 · 87,440,861 · 87,447,442 (ONE mint each — Replit's on-chain
+  re-scan of block 87,447,442 found a single mint event) — mislabeled "Community" ONLY
+  because that wallet was not in the server's founder set. **11 mints by real members**:
   `0x03e…c6d0` (Seat #3, ×3) · `0x573…c2cd` (×2) · `0x3b1…ec6a` (×2) · `0x3ff…894f` ·
   `0xab8…e081` · `0xe41…d56f` (×2) — "Community" is CORRECT for them.
-  → The fix is precise: add the private wallet to the founder set → 7 flip, 10 stay.
+  → The fix is precise: add the private wallet to the founder set → **6 flip, 11 stay.**
+  *(CORRECTION 2026-07-22, Replit prod battery on cycle `1bce58e`: this section first
+  said "7 + 10" — an arithmetic slip in MY tally (its own list already summed 11); the
+  server and the chain agreed on 6 + 11 = 17 from the first cycle. The server was right;
+  the dossier was the bug.)*
 
 ## 4. TODAY'S GAPS (syndicate-os vs the origin)
 

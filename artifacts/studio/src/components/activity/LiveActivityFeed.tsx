@@ -325,19 +325,28 @@ export function LiveActivityFeed({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onlyKinds, served === null]);
 
-  // M5/M4-c merge: served lines of EVERY kind join the window's items;
-  // overlap dedupes by (kind · anchor · log index) — the window's richer
-  // sentence (a seat line carries its public seat number) wins.
+  // M5/M4-c merge, REVERSED at the founder's live read (2026-07-22, the
+  // Replit-diagnosed gap): the SERVED line now WINS the dedup — it carries
+  // the ledger facts and the server-proven actor labels (senderLabel /
+  // actorLabel / minterLabel), so a fresh founder burn wears its gold chip
+  // and joins the Founder facet IMMEDIATELY, never after a ~24h window
+  // hand-off. (The old "window wins" note dated from before H2-P gave the
+  // served seat lines their own pride voice — a STATE, not a law.) The
+  // window's only job left is FRESHNESS: lines the indexer has not served
+  // yet.
   const merged = useMemo<ActivityItem[]>(() => {
-    const windowItems = scan?.items ?? [];
-    const seen = new Set(windowItems.map(lineKey));
     const servedLines: ServedFeedLine[] = [];
-    for (const l of [...(served?.items ?? []), ...servedMore]) {
-      const k = servedKey(l);
-      if (seen.has(k)) continue;
-      seen.add(k);
-      servedLines.push(l);
+    {
+      const seenServed = new Set<string>();
+      for (const l of [...(served?.items ?? []), ...servedMore]) {
+        const k = servedKey(l);
+        if (seenServed.has(k)) continue;
+        seenServed.add(k);
+        servedLines.push(l);
+      }
     }
+    const servedKeys = new Set(servedLines.map(servedKey));
+    const windowItems = (scan?.items ?? []).filter((i) => !servedKeys.has(lineKey(i)));
     const deepLines: ActivityItem[] = servedLines.map((l) => {
       // THE VISIBILITY RULE (H1a): the line carries what the chain
       // publishes — amounts and public facts join the sentence.
@@ -747,8 +756,14 @@ export function LiveActivityFeed({
   }
 
   // ── THE NEWSROOM (full-feed mode; wireframe c1a57a1, approved). ──
+  // THE WIREFRAME'S GEOMETRY BINDS (founder catch 2026-07-22): the approved
+  // mockup capped the newsroom column at ~1180px — a reading feed stretched
+  // edge-to-edge on a wide screen tears the sentence from its date/verify
+  // meta (the S7-d law's own words: readability bounded per card, never one
+  // column stretched). max-w-6xl (1152px) is the house token nearest the
+  // approved cap; the page around it stays fluid.
   return (
-    <div>
+    <div className="mx-auto w-full max-w-6xl">
       {/* Z1 — the header band: ONE authority figure + honest history counts
           + the era band. The seat figure quotes the SAME live engine
           memberCount() the homepage headlines (founder-caught twice,
@@ -758,8 +773,12 @@ export function LiveActivityFeed({
           read → no seat claim, never an invented figure. */}
       <div className="mb-5" data-testid="activity-header-band">
         {liveSeatCount !== null ? (
+          // TYPE HARMONY (founder catch 2026-07-22): the page has ONE serif
+          // display — the hero h1. This figure is a STAT and speaks the
+          // house stat voice (Work Sans semibold), exactly as the approved
+          // wireframe drew it. Never a second serif headline.
           <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1" data-testid="activity-summary">
-            <span className="font-serif text-3xl text-foreground">
+            <span className="text-3xl font-semibold tracking-tight text-foreground">
               {liveSeatCount.toLocaleString("en-US")} seats on-chain
             </span>
             <StatusPill tone="proof" size="xs">
@@ -779,6 +798,8 @@ export function LiveActivityFeed({
           </p>
         ) : null}
         {eraBand !== null ? (
+          // TYPE HARMONY: ONE size (text-sm), ONE face (Work Sans) across
+          // the band — gold carries emphasis, never a font change mid-line.
           <div
             className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 rounded-md border border-border/50 border-l-2 border-l-gold bg-card/30 px-3.5 py-2.5"
             data-testid="activity-era-band"
@@ -790,10 +811,10 @@ export function LiveActivityFeed({
               {eraBand.era.synPerUsd.toLocaleString("en-US")} SYN per $ · minimum entry $
               {eraBand.era.minEntryUsd.toLocaleString("en-US")}
             </span>
-            <span className="font-mono text-xs text-muted-foreground">
+            <span className="text-sm text-muted-foreground">
               the rate table turns a page at seat #
               {eraBand.era.endSeat.toLocaleString("en-US")} —{" "}
-              <span className="text-gold">
+              <span className="font-medium text-gold">
                 {eraBand.seatsAway.toLocaleString("en-US")} seats away
               </span>
             </span>

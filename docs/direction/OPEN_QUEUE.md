@@ -62,6 +62,21 @@
 >   api guards whole · studio guards + build + seo/rewrites/audit) · boot matrix
 >   proven (paged 200 / bad 400 / bare byte-path) · rig clean. 🚀 ONE cycle:
 >   server + client, NO migration, NO install.
+> **▶ THE FOUNDER'S LIVE READ + REPLIT'S 1bce58e BATTERY — THE HARMONY FIX
+> [this commit] (2026-07-22, his screenshots, emphatic):** ① TYPE HARMONY —
+> the served page had DEVIATED from the approved wireframe: a second serif
+> headline ("14 seats on-chain" — now the house stat voice, Work Sans
+> semibold; ONE serif display per page: the hero), the era band mixing
+> sans+mono mid-line (now ONE size ONE face, gold = emphasis), and the
+> newsroom stretched edge-to-edge tearing sentences from their date/verify
+> meta (now capped max-w-6xl ≈ the wireframe's own 1180px — THE WIREFRAME'S
+> GEOMETRY BINDS, engraved in agent memory). ② REPLIT ÉCART 2 FIXED: the
+> SERVED line now WINS the merge dedup (it carries ledger facts + proven
+> actor labels) — a fresh founder burn wears its gold chip and joins the
+> Founder facet IMMEDIATELY, no ~24h window hand-off; the window's only job
+> is lines not yet indexed. ③ REPLIT ÉCART 1: the dossier's mint tally was
+> MY arithmetic slip — corrected dated (6 Founder + 11 Community = 17; the
+> server and the chain were right from cycle one; zero code change).
 > **▶ A1+A2+A3+A4 BUILT + COMMITTED [this commit] (2026-07-22 — full record in
 > SESSION_STATE's arc entry):** the Founder Private Wallet in the founder set (7 mints
 > flip at the next cycle) · treasury founder-funding attribution + sentences · feed
