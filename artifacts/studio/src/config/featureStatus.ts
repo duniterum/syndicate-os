@@ -52,7 +52,12 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   languageChoice: { status: "future", since: "2026-07-14", where: "i18n deferred (founder decision)" },
   resetProfile: { status: "future", since: "2026-07-17", where: "profile settings (none exist yet)" },
   notificationPreferences: { status: "future", since: "2026-07-19", where: "per-category preferences (v2)" },
-  seasonEngine: { status: "future", since: "2026-07-19", where: "recognition/season Phase-5" },
+  // Seasons arc 2026-07-23 (harvest dossier §0.14-E): the single seasonEngine
+  // key SPLIT into three — S1→S3 ship progressively and one key cannot
+  // express it. Each flips LIVE in its own go-live commit, never before.
+  seasonRanking: { status: "future", since: "2026-07-23", where: "the seasons arc S2 (/season + home section + member Season slot)" },
+  seasonQuests: { status: "future", since: "2026-07-23", where: "the seasons arc S2 (quest board + member Quests slot)" },
+  seasonBounty: { status: "future", since: "2026-07-23", where: "the seasons arc S3 (the merit primitive + the effort-reward rail; lawyer pass at activation)" },
   rateRaiseHistory: { status: "future", since: "2026-07-19", where: "the SOURCE_LIFECYCLE rescan micro-slice" },
   secondGeneration: { status: "future", since: "2026-07-19", where: "the 2nd-generation own-row view" },
 };

@@ -96,6 +96,10 @@ import {
   type OwnPurchaseBuildResult,
 } from "./ownPurchaseReadmodel";
 import { HISTORICAL_FREEZE_WALLETS } from "../lib/protocol/historicalFreezeWallets";
+import {
+  buildSeasonReadModel,
+  type SeasonBuildResult,
+} from "./seasonReadmodel";
 import { ethCall } from "../lib/protocol/evmRead";
 import {
   decodeUint256Decimal,
@@ -215,6 +219,10 @@ let lastGoodCapitalModel: CapitalBuildResult | null = null;
 /** D-TRUTH D3: the own-purchase rows model (SERVER-ONLY wallet keys; the
  * auth zone serves a session's own rows only — never a lookup surface). */
 let lastGoodOwnPurchaseModel: OwnPurchaseBuildResult | null = null;
+/** S1 (seasons arc, 2026-07-23): the season/XP recognition model — a pure
+ * projection over the same gapless lanes (SERVER-ONLY wallet index inside;
+ * public standings are seat-keyed and address-free). */
+let lastGoodSeasonModel: SeasonBuildResult | null = null;
 
 /** D-TRUTH D1: the Merkle-frozen genesis roster as the capital walk's
  * SERVER-ONLY join input (lowercase wallet → seat #1–#8; never emitted). */
@@ -246,6 +254,15 @@ export function getBackboneFeedSource(): FeedSource {
  * the public feed projection never reads it. */
 export function getOwnPurchaseSource(): OwnPurchaseBuildResult | null {
   return lastGoodOwnPurchaseModel;
+}
+
+/** S1 (seasons arc) — the season/XP model source. Deliberately NOT part of
+ * FeedSource (the feed never reads it); S2's surfaces + the auth zone's
+ * own-row serving read it here. The wallet index inside is SERVER-ONLY —
+ * any served view is seat-keyed, address-free, and output-gated by its
+ * route (the D3 discipline). */
+export function getSeasonSource(): SeasonBuildResult | null {
+  return lastGoodSeasonModel;
 }
 
 /** Address-free snapshot for the status route (structure is already safe). */
@@ -544,6 +561,29 @@ async function runCycle(): Promise<string | null> {
     capitalFault = err instanceof Error ? err.message : String(err);
   }
 
+  // ③b6 The season/XP read-model (S1 of the seasons arc, 2026-07-23) — pure
+  // recognition projection over the SAME gapless lanes (zero new scans, zero
+  // persistence; the genesis retro-credit is the replay itself). Season = Era
+  // on today's chain (§8-⑤); the witnessed transitions segment the seasons;
+  // hors-concours = the founder/organ set that already labels burns and LP.
+  // A fault keeps the previous good model (derived-layer discipline).
+  let seasonModel: SeasonBuildResult | null = null;
+  let seasonFault: string | null = null;
+  try {
+    seasonModel = buildSeasonReadModel({
+      expectedChainId: BACKBONE_EXPECTED_CHAIN_ID,
+      rawEvents: input.rawEvents,
+      blockTimestamps: input.blockTimestamps,
+      burnItems: protocolModel.burnLedger,
+      archiveMintItems: protocolModel.archiveMintItems,
+      eraTransitions: eraModel?.transitions ?? [],
+      genesisSeatByWallet: GENESIS_SEAT_BY_WALLET,
+      horsConcoursWallets: founderAddresses,
+    });
+  } catch (err) {
+    seasonFault = err instanceof Error ? err.message : String(err);
+  }
+
   // ③b5 The own-purchase read-model (D-TRUTH D3) — the member's own receipt
   // rows over the SAME gapless lane; SERVER-ONLY wallet keys, served only as
   // a session's own rows by the auth zone. A fault keeps the previous good
@@ -583,6 +623,7 @@ async function runCycle(): Promise<string | null> {
   if (eraModel !== null) lastGoodEraModel = eraModel;
   if (capitalModel !== null) lastGoodCapitalModel = capitalModel;
   if (ownPurchaseModel !== null) lastGoodOwnPurchaseModel = ownPurchaseModel;
+  if (seasonModel !== null) lastGoodSeasonModel = seasonModel;
   burnsAsOfBlock =
     protocolStreams.find((s) => s.streamKey === "SYN_BURN")?.cursorBlock ??
     burnsAsOfBlock;
@@ -650,6 +691,11 @@ async function runCycle(): Promise<string | null> {
   if (ownPurchaseFault !== null) {
     partialNotes.push(
       "own-purchase derivation faulted — the previous own-rows model keeps serving",
+    );
+  }
+  if (seasonFault !== null) {
+    partialNotes.push(
+      "season derivation faulted — the previous season model keeps serving",
     );
   }
   return partialNotes.length > 0 ? partialNotes.join(" · ") : null;

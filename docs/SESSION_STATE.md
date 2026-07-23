@@ -58,9 +58,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   fallback · 1y expiry → carryover) · rulesHash chain-anchored at season open ·
 >   interim rounds pre-announced 48h. §0.16-①/② re-scoped; BACKLOG pot/bands/floor
 >   rows re-trued.** S1/S2/S3 build BY §0 as amended.
-> - **(d) NEXT, in order (season-first, founder-corrected):** S1 season data foundation
->   (season/XP/quest tables on the existing backbone + deterministic Season=Era read;
->   server-only) → S2 recognition surfaces (/season public page · home season section ·
+> - **(d) NEXT, in order (season-first, founder-corrected):** ✅ **S1 BUILT [this
+>   commit] (founder GO-and-GO-LIVE):** the season engine's data core as a PURE
+>   PROJECTION — zero new tables, zero migration (the repo's own derived-lane
+>   doctrine beat the tables plan): `src/data/seasonConfig.ts` (the ONE rule
+>   sheet: weights · axes · 5 chain-fed ladder quests under the feeder law ·
+>   §0.17 bands · the null-until-founder floor pair) +
+>   `src/backbone/seasonReadmodel.ts` (genesis retro-credit by replay ·
+>   season-of-block by sealing boundaries §0.17-③ · a-seat-=-a-player ·
+>   self-referral dead · purchase-once-per-season · hors-concours = the
+>   founder/organ set · seat-keyed address-free standings + SERVER-ONLY wallet
+>   index) + runner lane ③b6 w/ last-good + `getSeasonSource()` +
+>   featureStatus SPLIT (seasonRanking/seasonQuests/seasonBounty; the ladder
+>   panel's claim repointed). Gates: api typecheck + full api guards (backbone
+>   incl.) + studio typecheck + 19 studio guards + feature-truth 568 — ALL
+>   GREEN. → NEXT: S2 recognition surfaces (/season public page · home season section ·
 >   member Season+Quests slots · admin Seasons rail 1 — wireframe + preview gate EACH;
 >   the split keys `seasonRanking`/`seasonQuests`/`seasonBounty` flip in their
 >   go-live commits, §0.14-E) → S3 Foundry workspace + the merit primitive + the

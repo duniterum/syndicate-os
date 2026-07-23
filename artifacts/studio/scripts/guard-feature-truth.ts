@@ -37,7 +37,10 @@ const PINNED_CLAIM_SITES: Record<string, readonly string[]> = {
   ],
   "components/referral/ReferralLadderPanel.tsx": [
     "rateRaiseHistory",
-    "seasonEngine",
+    // Seasons arc 2026-07-23: the single seasonEngine key split into
+    // seasonRanking/seasonQuests/seasonBounty (§0.14-E); this panel's season
+    // card claims the recognition ranking — S2's deliverable.
+    "seasonRanking",
   ],
   "components/referral/ReferralIntroductionsPanel.tsx": ["secondGeneration"],
   "components/referral/ReferralLinkPanel.tsx": ["aliasLayer"],
