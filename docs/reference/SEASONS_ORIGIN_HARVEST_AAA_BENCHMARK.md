@@ -201,6 +201,38 @@ d'income streams et XP possibles in future — comment tu résous ça?")
   contradicts the protocol's core promise ("written on-chain, forever") and re-opens
   the rug-vector class the 0.7 hardening just closed. Immutability is the product.
 
+### 0.13 WEB2 ACTS IN THE ONE-TRUTH LEDGER (founder question 2026-07-23: "certaines
+actions sont web2/off-chain — comment tu fais les quiz et les quêtes?")
+One ledger, **two proof classes, both labeled — and the whole thing sealed on-chain at
+every era boundary**:
+- **① Two proof classes in the SAME append-only ledger:** `⛓ CHAIN` rows are written by
+  the backbone scan with their tx anchor (purchase · introduction · burn · mint · LP).
+  `▢ APP-ATTESTED` rows are born server-side (quiz passed · recurrent/app quests) and
+  carry their attestation record as anchor. Every surface LABELS the class — a web2
+  fact is never dressed as a chain fact (the mockup's blanket "everything is a live
+  chain read" died for exactly this; chain-refutable = red line).
+- **② The quiz IS the validator (zero-operator):** answer key server-side ONLY (never
+  shipped to the client) · server-side grading, pass ≥70% · ONE completion per lesson
+  per member enforced by a UNIQUE constraint (the cap is structural, not policed) ·
+  XP awarded in the same transaction as the graded attempt · identity = the SIWE
+  wallet session, so even a web2 act is signed by the seat. No human anywhere.
+- **③ App-quests only exist if the server can COMPUTE them:** every metric has a
+  feeder over data we already hold (the §0.3 guard). No self-reported claims, no
+  screenshot review, no submission queues — if we cannot compute it, the quest does
+  not exist. That IS the zero-operator law applied to web2.
+- **④ THE SEAL ROOT — decided STANDARD, no longer post-MVP:** at every season SEAL,
+  the frozen XP state's merkle root is committed on-chain, riding an act the founder
+  already signs (the bounty round opening, or one dedicated seal click when a season
+  has no cash round — era transitions are rare, ×9 then the infinite cadence). From
+  that moment the ENTIRE off-chain season — quizzes included — is tamper-evident:
+  anyone can recompute the published season file against the on-chain root; a
+  rewritten history becomes publicly detectable. Off-chain during the season
+  (labeled), sealed on-chain at the boundary (verifiable forever).
+- **⑤ Why quizzes are NOT on-chain acts:** gas per quiz buys nothing — the quiz's
+  truth lives in the server answer key either way (Coinbase/Binance grade
+  server-side too). Our beat over them is ①+④: labeled provenance + the sealed root
+  they don't have.
+
 ---
 
 ## §1 — ORIGIN: THE SERVER ENGINE (agent synthesis, verbatim)
