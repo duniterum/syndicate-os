@@ -12,6 +12,7 @@ import capitalStandingRouter from "./capitalStanding";
 import receiptLookupRouter from "./receiptLookup";
 import receiptCardRouter from "./receiptCard";
 import joinCardRouter from "./joinCard";
+import seasonRouter from "./season";
 
 const router: IRouter = Router();
 
@@ -28,5 +29,6 @@ router.use(capitalStandingRouter);
 router.use(receiptLookupRouter);
 router.use(receiptCardRouter);
 router.use(joinCardRouter);
+router.use(seasonRouter);
 
 export default router;

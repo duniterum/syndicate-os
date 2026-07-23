@@ -508,6 +508,13 @@ check(
       // tx-keyed projection only; the wallet-keyed map stays server-only
       // and this route stays under the blanket word bans below.
       "receiptLookup.ts",
+      // The /api/season public read (S2 of the seasons arc, founder
+      // GO-and-GO-LIVE 2026-07-23; dossier §0.18 multi-level law): the
+      // backbone's last-good season model as an address-safe projection —
+      // standings carry seat ordinals or the feed's SHORT form only, the
+      // SERVER-ONLY wallet index never serializes, the payload passes the
+      // feed's own address-safety gate before it leaves (season.ts header).
+      "season.ts",
       "sourceStatus.ts",
       "sourceValidate.ts",
       "verifyLinks.ts",

@@ -311,6 +311,10 @@ check(
     // is named WITHOUT the cache vocabulary by design) and never touches
     // the block_timestamp cache — the scan below covers it like every route.
     "receiptLookup.ts",
+    // The /api/season public read (S2 of the seasons arc, 2026-07-23): serves
+    // the in-memory season model only — block numbers, never timestamps; it
+    // never touches the block_timestamp cache (the scan below covers it).
+    "season.ts",
     "sourceStatus.ts",
     "sourceValidate.ts",
     // Founder-approved explorer-links route (infra addresses only, never member
