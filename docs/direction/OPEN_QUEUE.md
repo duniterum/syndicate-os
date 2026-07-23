@@ -24,6 +24,18 @@
 >   fonds" · activation lawyer-gated as planned) → patronage mint quick-win (with AW-5)
 >   → Learn & Earn → SwapRail V1 → K4 → P. M-EVO-3 + A5 keep their engraved specs and
 >   slot where they serve the arc.
+> - **✅ THE HARVEST + WORLD BENCHMARK ENGRAVED (same day, founder order "on prend ça,
+>   on l'améliore, grade AAA"):** `docs/reference/SEASONS_ORIGIN_HARVEST_AAA_BENCHMARK.md`
+>   — the origin's COMPLETE 18-class inventory (~41 gamification tables · 101 quests /
+>   60 metrics · 17 badges · SeasonRewardsPool full read · admin console ~34 actions) +
+>   its 9 traps named (7 currencies · orphan quests · fake txHashes · global claim
+>   lockout · drain-anytime owner) + the world benchmark (Zealy/Galxe/Layer3 ·
+>   Duolingo/GitHub/NRC/battle-pass · Kraken/Coinbase/Binance rails · audited merkle
+>   engineering) + §0 THE SYNTHESIS: one-truth XP ledger · derived season state ·
+>   feeder-guaranteed quests · never-drop levels + seasonal crown · full-ladder ranking
+>   with drawn reward zones · auto-credit bounty via claimFor · the hardened
+>   SeasonBountyPool spec (domain-tagged OZ double-hash leaves, per-round immutable
+>   roots, scoped rescue, Foundry invariants). Never re-search any of it.
 > - **🔴 STILL FOUNDER-PENDING:** AW-5 wallet name (unchanged) · SwapRail decisions
 >   (developer fee % · fee pipe address · thirdweb account ~$99/mo · placement) · pot
 >   size/cadence per season · /season route name + pot wording (at the S2 gate, on

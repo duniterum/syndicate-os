@@ -21,10 +21,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   per-member merit share on the public ranking · ③ vocabulary adapts to the system
 >   (guards amended in each surface's slice) · ④ zero-operator autonomy (XP =
 >   provable/auto facts only, NO validation queues) · ⑤ Season=Era on TODAY's chain.
-> - **(c) THE PACK ENGRAVED [this commit]:**
+> - **(c) THE PACK ENGRAVED (`1e4bb82`):**
 >   `docs/reference/SEASONS_SWAPRAIL_INTEGRATION_STUDY.md` ·
 >   `docs/reference/SWAPRAIL_ASSET_ROUTER_MVP_DECISION.md` ·
->   `docs/reference/season-merkle.reference.ts` · `docs/design/seasons/` (4 mockups).
+>   `docs/reference/season-merkle.reference.ts` · `docs/design/seasons/` (4 mockups) —
+>   **+ [this commit] THE HARVEST + BENCHMARK:**
+>   `docs/reference/SEASONS_ORIGIN_HARVEST_AAA_BENCHMARK.md` (origin 18-class
+>   inventory + 9 traps + world benchmark + §0 synthesis: one-truth XP ledger ·
+>   derived season state · feeder-guaranteed quests · never-drop levels · full-ladder
+>   ranking with drawn zones · auto-credit via claimFor · hardened SeasonBountyPool
+>   spec superseding the advisor's single-hash leaf). S1/S2/S3 build BY §0.
 > - **(d) NEXT, in order (season-first, founder-corrected):** S1 season data foundation
 >   (season/XP/quest tables on the existing backbone + deterministic Season=Era read;
 >   server-only) → S2 recognition surfaces (/season public page · home season section ·
