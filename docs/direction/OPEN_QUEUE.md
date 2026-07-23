@@ -53,12 +53,29 @@
 >   reserve buckets · delta-window rounds · snipe-proof snapshot · % bands ·
 >   anti-farm laws · toothed verification window · chain-anchored rulesHash ·
 >   48h-pre-announced interims.
-> - **🔴 STILL FOUNDER-PENDING (now BACKLOG rows season-route · season-pot ·
->   season-bands-weights · season-floor):** AW-5 wallet name (unchanged) · SwapRail
->   decisions (developer fee % · fee pipe address · thirdweb account ~$99/mo ·
->   placement) · pot commitment amount/cadence · % bands + XP weights (defaults
->   §0.17-④/⑤) · the eligibility floor PAIR · /season route name + the full EN copy
->   (at the S2/S3 gates, on screen).
+> - **✅ THE BUILD DAY (same 2026-07-23, all sealed on main — 21 commits):**
+>   S1 the season engine data core (`a064d4c`: pure projection, zero tables,
+>   genesis retro-credit = the replay) · the founder's LIVE rulings mid-build:
+>   THE PAYOUT CURVE = Option A poker standard (his pick of 3 researched
+>   options; `BOUNTY_CURVE_BP_V1` Σ=10,000bp + dossier §10) · THE DEPTH LAW
+>   (paid depth ~10% of eligible + $20 min-cash floor — never a fixed 25) ·
+>   THE CANON-LADDER FIX (his vocabulary check: intro quests = the Connector
+>   ladder VERBATIM, Active 3→Summit 300 — invented thresholds dead) · §0.18
+>   THE MULTI-LEVEL PLAYERS LAW ("OK ça me va": XP every level · pot seated ·
+>   pending = projection · THE SEAL IS THE DEADLINE) · the VISUAL-FIRST catch
+>   ruling + §9 prize-display craft + the trophy podium/XP-bars/hero-pot
+>   mockup rounds (his eye caught the invalid-clamp CSS bug) · S2a
+>   `GET /api/season` (`a83f7cd`, pinned in both route guards) · S2b THE REAL
+>   /season PAGE (`1b77b66`, preview-gate OK, seasonRanking LIVE, SEO same
+>   commit). **🚀 DEPLOY ORDER OUT: one Replit cycle carries the whole day —
+>   no migration, no new env; awaiting the founder-pasted report.**
+> - **🔴 STILL FOUNDER-PENDING (re-trued after the day's decisions):** AW-5
+>   wallet name (unchanged) · SwapRail decisions (developer fee % · fee pipe
+>   address · thirdweb account ~$99/mo · placement) · pot COMMITMENT amount +
+>   cadence (« Engager au pot » — his one recurring act) · CONFIRM the XP
+>   weight table + the $20 min-cash floor + the eligibility floor pair (S3
+>   gate) · the full EN public copy at each remaining surface gate (bands/
+>   curve DECIDED ✅ Option A · route name /season SHIPPED ✅).
 
 > **▶ 2026-07-22 (evening) — THE WALLET-TRACKING + ACTIVITY-NEWSROOM ARC OPENED (founder
 > orders: "on refait toute la page activity… rationaliser design pagination composition…

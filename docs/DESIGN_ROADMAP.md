@@ -53,7 +53,13 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   `SEASONS_ORIGIN_HARVEST_AAA_BENCHMARK.md` §0 ; maquettes sources : `docs/design/seasons/`,
   à RE-ÉMETTRE corrigées avant tout wireframe gate — §0.14-E).** Surfaces à livrer, chacune
   derrière son preview gate fondateur :
-  - [ ] `/season` — page publique du classement : pot (chiffre ESCROWÉ uniquement + preuve) ·
+  - [x] **`/season` — LIVRÉE (S2b `1b77b66`, 2026-07-23, preview-gate fondateur OK ; 🚀 en
+    cycle de déploiement)** : vraie coquille publique · podium trophée + barres XP · onglets
+    double-horloge · axes alimentés seulement · pastilles AWAITING SEAT (rangs numérotés =
+    éligibles, §0.18) · carte pot badgée FUTURE sur seasonBounty (jamais un chiffre sans
+    preuve) · états fail-closed honnêtes · SEO/sitemap/nav même commit · seasonRanking LIVE ·
+    mobile 375 zéro débordement. **+0 couleur brute.** (Le pot vedette/odomètre + zones $
+    arrivent avec S3 quand le coffre existera.) Ancienne spec pour mémoire : pot engagé + preuve ·
     zones de récompense dessinées sur le tableau (identiques par bande) · double horloge
     (season + all-time) · rang YOU épinglé · filtres d'axes ALIMENTÉS seulement · archive
     inline v1 · SEO/OG/nav dans le même commit · matrice d'états vides · mobile scroll
