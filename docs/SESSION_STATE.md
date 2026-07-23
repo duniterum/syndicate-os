@@ -3,8 +3,34 @@
 Authoritative resume point. **The real repo always wins over any spec.**
 
 > **▶ 📌 2026-07-23 — THE SEASONS + SWAPRAIL ARC OPENED (the resume point; the 22-07
-> block below keeps its seal facts — prod sealed through `f98798f`, deploy backlog
-> EMPTY).**
+> block below keeps its seal facts).**
+> - **🏆 SEALED IN PROD (cycle `1b77b66`, Replit green + FOUNDER SCREENSHOTS —
+>   SEASON 1 IS ALIVE ON thesyndicate.money/season):** 34/34 blobs byte-verified ·
+>   typecheck 4 pkgs · all guards green in prod context (backbone 164 w/ the season
+>   lane · feature-truth 571 · no-raw-color 0) · `GET /api/season` LIVE at the FIRST
+>   heartbeat — 14 rows, playersEarning 14, season 1 / era 1 · standings semantics
+>   EXACT per §0.18 (hors-concours UNNUMBERED: 0x88e…dd73 at 2,050 XP + seat #1
+>   Founder at 1,800, both potEligible:false · rank 1 = #3 600 XP · 2 = #4 500 ·
+>   3 = #5 500) · /activity intact (86 items, distribution unchanged) · engine ok=2,
+>   headBlock advancing, 6/6 units · the page renders desktop + mobile 402px (gold
+>   podium ring, cyan XP bars, Founder/AWAITING SEAT chips, the pot card FUTURE
+>   "Coming later" with NO figure — as designed).
+>   **PROD-TRUTH NOTES:** ① the AW-5 wallet `0xe41…d56f` PLAYS the season (300 XP
+>   Historian, AWAITING SEAT, pseudonymous — still awaiting the founder's name; once
+>   named, decide hors-concours) · ② 0x88e…dd73 wears Founder + AWAITING SEAT
+>   together (both true — a founder-side no-seat source wallet; display-polish
+>   candidate at S2c) · ③ the FUTURE badge renders "Coming later" (the atom's
+>   standard wording).
+>   **DEPLOY BACKLOG (batchable, nothing broken in prod):** `fc92a31` + `8c1506d`
+>   — the full-day-audit fixes (purchase XP once-per-SEASON credit fix · memberDoors
+>   Season-door truth · /season past-seasons block · doc re-trues). The per-season
+>   bug only bites at season 2; the NEXT 🚀 cycle (S2c) carries them.
+>   **NEW FOUNDER QUESTION OPEN (2026-07-23 post-seal): FOOTPRINT purchases** — his
+>   instinct: footprint buys must count too. PROPOSED (awaiting his OK): footprint
+>   credits XP at CAPITAL-RUNG CROSSINGS (+100 XP per rung of the existing 12-rung
+>   capital register — unfarmable: splitting receipts crosses no extra rungs);
+>   first purchase per season keeps its 200. Confirm with the weight table at the
+>   S3 gate.
 > - **(a) THE STUDY:** the founder's advisor mega-dossier verified against the repo
 >   (6-reader workflow). Facts established, never re-research: the durable indexer
 >   ALREADY EXISTS (backbone persists to Postgres — `protocol_event_raw`/`sale_event_raw`
