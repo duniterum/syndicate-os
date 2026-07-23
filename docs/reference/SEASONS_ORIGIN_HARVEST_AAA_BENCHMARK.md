@@ -878,3 +878,27 @@ Sources: kraken.com/legal (fetched 2026-07-23) · robinhood.com/eu support T&Cs 
 **THE S2 RECIPE (distilled for our stack):** Instrument Serif hero figure at 5–8× body size · gold hsl(42 92% 60%) reserved for the FIGURE alone · Plex Mono for delta/base/milestone data lines · one ease-out odometer on entry then stillness · "committed on-chain · verify" badge as the frame (our GTD) · the fund() history as the TI-style growth strip.
 
 Sources: Rakerace 2024-10 (PokerStars lobby) · Pokerfuse · Tips.GG TI25 + dota2.prizetrac.kr · OneEsports · CDC Gaming (progressive meters) · Pro-Lite LED · Washington Post 2023-07 (billboard digits) · Newall et al. Addiction 2025 (PMC12426356) · UX Magazine (Dark UX of video gambling) · CountUp.js · Framer Odometer FX · StriveCloud (Revolut) · dayscottdesign (DraftKings widget) · Valiotti (fonts for data).
+
+---
+
+## §10 — BENCHMARK: PRIZE PAYOUT CURVES (agent synthesis, verbatim — fetched 2026-07-23; the founder rejected flat-within-band top-3 and ordered the world standard BEFORE deciding)
+
+**1) Poker (WSOP/PokerStars standard):** MTTs pay 10–15% of the field (WSOP historically 15%; 2024 rule min-cash >= 2x buy-in). Winner 20–25% of the pool, 2nd ~13–15%, 3rd ~10%, geometric decay through the final table, flat min-cash tiers at the bottom. Small-field refs: 50/30/20 · 46/27/17/10 · 40/23/16/12/9. (beastsofpoker.com 2026 · cardplayer.com WSOP change · pokerchipforum structures)
+
+**2) Esports (The International 2021, $40.0M — Liquipedia exact):** 1st 45.5% · 2nd 13% · 3rd 9% · 4th 6% · 5-6 3.5% · 7-8 2.5% · 9-12 2% · 13-16 1.5% · last 0.25%. Champion >= 44% since 2016.
+
+**3) Golf PGA fixed formula:** 18 / 10.8 / 6.8 / 4.8 / 4 / 3.6 / 3.35 / 3.1 / 2.9 / 2.7 % ... 0.2% at 70th. Chess opens: winner 15–25%, 2nd 10–15%, 3rd 7–12%.
+
+**4) The math + trade-off:** every standard is GEOMETRIC/LOG decay (each rank ~55–75% of the one above) — never linear, NEVER FLAT AT THE TOP; adjacent ranks always differ. Steepness encodes purpose: prestige = top-heavy (summit pull); engagement = shallow+wide (DFS cash games ~50% of entrants near-flat vs GPP <20% top-heavy; Zealy sprints use tiered even-split bands to keep mid-field grinding). Poker sits between: real summit (~22%) + wide cash floor.
+
+**5) THE THREE CURVES on $2,000, 25 paid of 333 (7.5% of field — inside poker's band):**
+| Rank | (a) Poker standard | (b) Esports top-heavy | (c) Engagement-flat |
+|---|---|---|---|
+| 1st | $450 (22.5%) | $900 (45%) | $200 (10%) |
+| 2nd | $290 | $260 | $150 |
+| 3rd | $200 | $180 | $120 |
+| 4–10 | 150/120/100/85/70/60/50 | 120/70/70/50/50/40/40 | $85 each |
+| 11–25 | 11-15: $35 · 16-25: $25 | 11-15: $24 · 16-25: $10 | $62 each |
+| Total | $2,000 | $2,000 | $1,995 |
+
+Research verdict: for a MERIT ENGAGEMENT pot the consensus is (a) or a slightly flattened (a) — the poker shape is the proven compromise (real summit · real breadth · every rank distinct); (b) maximizes the headline FOMO but demoralizes mid-field; (c) maximizes participation but under-rewards the #1 grinder. **FOUNDER DECISION OPEN (BACKLOG season-bands-weights): the curve supersedes §0.17-④ identical-within-band amounts once he picks; zone TINTS stay as visual groupings.** Sources dated 2024–2026.
