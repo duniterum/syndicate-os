@@ -127,6 +127,17 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   anonymous S1 verified live · visitor /member clean (reserved grid gone,
 >   zero overflow). The signed dashboard renders for a REAL session only —
 >   Replit's battery + the founder's own click seal it online.
+> - **🏆 S2d SEALED IN PROD on everything verifiable without a wallet (Replit
+>   green 2026-07-24, founder-pasted):** /api/auth/season-standing anonymous →
+>   S1 all-null + honest reason, zero leak · "Coming to your seat" = 0
+>   occurrences across the ENTIRE served JS (entry + console + 112 chunks
+>   searched) — the dashed cards cannot rebirth · the three cards' strings in
+>   the served chunks ("Your XP" · "Summit" · "nothing to claim" · "lands
+>   directly in your wallet") · byte-identity ×2 · auth-zone guard 1218 (+6) ·
+>   /member 200 both formats · engine advancing 6/6.
+>   **THE LAST CENTIMETER = THE FOUNDER'S SIGNED CLICK:** the three cards
+>   render only for a real SIWE session — his own dashboard look seals S2d
+>   fully (as the commit planned).
 > - **NEXT (the engraved order):** the admin Seasons 2-rails console → S3
 >   (Foundry workspace + SeasonBountyPool + the cash rail per §0.17) —
 >   wireframe + preview gate EACH.
