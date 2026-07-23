@@ -25,6 +25,7 @@ import {
   Droplets,
   Flame,
   Receipt,
+  Trophy,
   Wallet,
   Wrench,
   type LucideIcon,
@@ -521,6 +522,24 @@ export const modules = [
     dependencies: [],
     nav: { header: true, sidebar: false, footer: true },
     icon: BookOpen,
+  },
+  // S2b (seasons arc, founder GO 2026-07-23): the live recognition board —
+  // the season projection served address-safe; the pot area stays FUTURE
+  // (seasonBounty) until the effort rail ships. Footer seat like /activity;
+  // the home season section (S2c) is its prominent public door.
+  {
+    id: "season",
+    label: "Season",
+    path: "/season",
+    zone: "public",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description: "The season's live recognition board — every rank derived from chain-proven acts, replayed from the first block.",
+    dependencies: [],
+    nav: { header: false, sidebar: false, footer: true },
+    icon: Trophy,
   },
   {
     id: "activity",

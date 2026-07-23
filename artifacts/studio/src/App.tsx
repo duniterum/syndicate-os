@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import PublicHome from "@/pages/PublicHome";
+import SeasonRanking from "@/pages/SeasonRanking";
 import ProofDashboard from "@/pages/ProofDashboard";
 import MemberAccess from "@/pages/MemberAccess";
 import SystemStatus from "@/pages/SystemStatus";
@@ -143,6 +144,9 @@ function Router() {
       </PublicRoute>
       <PublicRoute path="/proof">
         <ProofDashboard />
+      </PublicRoute>
+      <PublicRoute path="/season">
+        <SeasonRanking />
       </PublicRoute>
       <PublicRoute path="/status">
         <SystemStatus />

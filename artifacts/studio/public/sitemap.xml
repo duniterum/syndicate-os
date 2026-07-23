@@ -111,6 +111,11 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://thesyndicate.money/season</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://thesyndicate.money/activity</loc>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>

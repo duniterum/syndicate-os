@@ -35,12 +35,16 @@ const PINNED_CLAIM_SITES: Record<string, readonly string[]> = {
     "languageChoice",
     "resetProfile",
   ],
+  // S2b (2026-07-23): the /season page's pot card — the effort rail's frame,
+  // FUTURE-badged until S3 funds it (no figure without its escrow proof).
+  "pages/SeasonRanking.tsx": ["seasonBounty"],
   "components/referral/ReferralLadderPanel.tsx": [
     "rateRaiseHistory",
     // Seasons arc 2026-07-23: the single seasonEngine key split into
-    // seasonRanking/seasonQuests/seasonBounty (§0.14-E); this panel's season
-    // card claims the recognition ranking — S2's deliverable.
-    "seasonRanking",
+    // seasonRanking/seasonQuests/seasonBounty (§0.14-E). S2b shipped the
+    // ranking LIVE — this panel's remaining future claim is the effort
+    // rail ("that rail arrives with its own slice") = seasonBounty.
+    "seasonBounty",
   ],
   "components/referral/ReferralIntroductionsPanel.tsx": ["secondGeneration"],
   "components/referral/ReferralLinkPanel.tsx": ["aliasLayer"],

@@ -360,6 +360,17 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
   },
   // §11 slot 2c, GROWN UP (AUD-ROUTE 2026-07-17): the born-as-teasers trio
   // serves the real indexed record today — live surfaces, public shell.
+  // S2b (seasons arc, 2026-07-23): the live recognition board.
+  {
+    routePath: "/season",
+    moduleId: "season",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "The season's live recognition board — chain-derived standings, pseudonymous.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
   {
     routePath: "/activity",
     moduleId: "activity",

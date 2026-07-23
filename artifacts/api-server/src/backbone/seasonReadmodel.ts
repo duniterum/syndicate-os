@@ -120,7 +120,9 @@ export interface SeasonStandingPublic {
   readonly seat: number | null;
   /** Seated AND not hors-concours — the ONLY wallets the pot may pay (S3). */
   readonly potEligible: boolean;
-  readonly rank: number;
+  /** §0.18: NUMBERED ranks belong to pot-eligible players ONLY — a no-seat or
+   *  hors-concours row is sorted in place but carries null (renders "—"). */
+  readonly rank: number | null;
   readonly xp: number;
   readonly axes: Readonly<Record<SeasonAxis, number>>;
   readonly horsConcours: boolean;
@@ -441,16 +443,23 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
         }
         return (a.seat ?? Number.MAX_SAFE_INTEGER) - (b.seat ?? Number.MAX_SAFE_INTEGER);
       });
-    const standings: SeasonStandingPublic[] = rows.map((r, i) => ({
-      display: r.seat !== null ? `#${r.seat}` : shortForm(r.wallet),
-      seat: r.seat,
-      potEligible: r.seat !== null && !horsConcoursWallets.has(r.wallet),
-      rank: i + 1,
-      xp: r.acc.xp,
-      axes: { ...r.acc.axes },
-      horsConcours: horsConcoursWallets.has(r.wallet),
-      lastActBlock: r.acc.lastActBlock,
-    }));
+    // §0.18: the paid numbering walks ELIGIBLE rows only — nobody's rank
+    // depends on someone else's choice; ineligible rows sort in place, unnumbered.
+    let eligibleRank = 0;
+    const standings: SeasonStandingPublic[] = rows.map((r) => {
+      const potEligible = r.seat !== null && !horsConcoursWallets.has(r.wallet);
+      if (potEligible) eligibleRank += 1;
+      return {
+        display: r.seat !== null ? `#${r.seat}` : shortForm(r.wallet),
+        seat: r.seat,
+        potEligible,
+        rank: potEligible ? eligibleRank : null,
+        xp: r.acc.xp,
+        axes: { ...r.acc.axes },
+        horsConcours: horsConcoursWallets.has(r.wallet),
+        lastActBlock: r.acc.lastActBlock,
+      };
+    });
     const seal = sealBlocks[s - 1] ?? null;
     seasons.push({
       seasonNumber: s,

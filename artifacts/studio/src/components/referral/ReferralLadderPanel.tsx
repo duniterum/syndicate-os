@@ -155,10 +155,10 @@ export function ReferralLadderPanel({ readback }: { readback: StandingReadback |
           <LifecycleBadge lifecycle="FUTURE" />
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          The ladder is your acquired past; a season is the present — XP and
-          recognition rankings, and when the company funds a season reward it
-          is real USDC for effort, paid openly, every amount shown. The season
-          engine arrives with its own slice.
+          The ladder is your acquired past; a season is the present — the live
+          recognition ranking now stands at /season. When the company funds a
+          season reward it is real USDC for effort, paid openly, every amount
+          shown — that rail arrives with its own slice.
         </p>
       </Card>
     </div>

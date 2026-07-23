@@ -98,7 +98,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   chain exit 0). Decisions landed same day: Option-A poker curve
 >   (BOUNTY_CURVE_BP_V1) + depth law + §0.18 multi-level players (XP every
 >   level · pot seated · pending=projection · seal=deadline).**
->   → NEXT: S2b the /season page itself (real shell + SEO registry +
+>   **✅ S2b SEALED [this commit] (founder preview-gate OK — "obligé, pas de
+>   base ici; donnons à Replit et on check en ligne"): the REAL /season page
+>   (real shell · fail-closed DARK/empty states · trophy podium + XP bars ·
+>   the pot card FUTURE-badged on seasonBounty, pinned in guard-feature-truth ·
+>   fed axes only · mobile 375 zero-overflow, rig-verified by measurement) +
+>   the FULL registration same commit (modules.ts "season" footer seat ·
+>   seo-route-registry INDEX/sitemap · surfaceClassification · App route ·
+>   seasonRanking flipped LIVE · ReferralLadderPanel claim repointed to
+>   seasonBounty) + §0.18 eligible-only rank numbering server-side (rank:
+>   number|null) + regenerated: sitemap 27 INDEX · routeTable 34 routes ·
+>   36 prerender shells. Gates: typecheck ×2 · api chain exit 0 · studio 19
+>   guards exit 0 · build exit 0 · seo 532. 🚀 DEPLOY — ONE cycle carries
+>   S1 (a064d4c) + S2a (a83f7cd) + S2b + the day's docs commits; NO migration
+>   (zero new tables), NO new env (the backbone computes the season model on
+>   its next prod cycle). Replit verifies: /season serves the LIVE board ·
+>   GET /api/season state LIVE with standings · the standard battery. The
+>   founder's online click is the living seal.**
+>   → NEXT after the online seal: S2c the home season section (real shell + SEO registry +
 >   surfaceClassification + nav/footer + prerender, same commit; seasonRanking
 >   flips at its go-live; the bounty areas FUTURE-badged on seasonBounty; the
 >   §9 catch recipe: hero pot odometer-ready, trophy podium, XP bars) → then

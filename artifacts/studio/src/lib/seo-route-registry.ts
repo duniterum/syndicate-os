@@ -687,6 +687,26 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
   // §11 slot 2c, GROWN UP (born 2026-07-14 as noindex teasers; LIVE since
   // ACT-1/CHR-1/the heartbeat): /activity, /chronicle and /fire-ledger serve
   // the real indexed record today — INDEX + sitemap, no posture badge.
+  // S2b (seasons arc, founder GO 2026-07-23): the live recognition board —
+  // real indexed standings replayed from genesis; the pot area stays FUTURE
+  // until the effort rail ships (its head copy promises nothing unfunded).
+  {
+    path: "/season",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "Season — the live recognition board",
+    description:
+      "The season's public ranking — every rank derived from chain-proven acts (introductions, burns, mints), pseudonymous, replayed from the first block. Rank never drops.",
+    canonicalPath: "/season",
+    changefreq: "daily",
+    priority: 0.6,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "season",
+    primaryIntent: "proof",
+    proofRoute: "/status",
+    notes: "S2b seasons arc — seasonRanking LIVE; the bounty areas are FUTURE-badged on seasonBounty until S3.",
+  },
   {
     path: "/activity",
     routeType: "PUBLIC",
