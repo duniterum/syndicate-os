@@ -142,7 +142,7 @@ export const SEASON_QUESTS: readonly SeasonQuestDef[] = [
  *
  * THE DEPTH LAW (founder follow-up, same day: "à 100k ça s'arrête toujours au
  * 25e?" — NO): 25 paid is only the $2,000/333 illustration, never a constant.
- * Paid depth = min( ~10% of eligible players, the deepest rank whose prize
+ * Paid depth = min( ~10% of eligible builders, the deepest rank whose prize
  * still clears MIN_PRIZE_USDC ). A bigger pot pays DEEPER and BIGGER at every
  * rank — the poker scaling law: paid places track the FIELD; the min-cash
  * floor keeps the tail meaningful. The table below is the curve SAMPLED at

@@ -59,7 +59,12 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
     éligibles, §0.18) · carte pot badgée FUTURE sur seasonBounty (jamais un chiffre sans
     preuve) · états fail-closed honnêtes · SEO/sitemap/nav même commit · seasonRanking LIVE ·
     mobile 375 zéro débordement. **+0 couleur brute.** (Le pot vedette/odomètre + zones $
-    arrivent avec S3 quand le coffre existera.) Ancienne spec pour mémoire : pot engagé + preuve ·
+    arrivent avec S3 quand le coffre existera.) **S2c-① LIVRÉ [this commit, soir du
+    23-07]** : identité complète des rangs assis « #N + adresse courte » (maquette-exacte,
+    table + podium) · ordinal = la réponse du moteur vivant (#11, vérifié chaîne en direct,
+    SETTLED_RULES §8-⑦) · LE MOT = « builders » (benchmark mondial 3 lentilles,
+    SETTLED_RULES §8-⑥) · puce AWAITING SEAT éteinte sur les lignes hors-concours.
+    **+0 couleur brute.** Ancienne spec pour mémoire : pot engagé + preuve ·
     zones de récompense dessinées sur le tableau (identiques par bande) · double horloge
     (season + all-time) · rang YOU épinglé · filtres d'axes ALIMENTÉS seulement · archive
     inline v1 · SEO/OG/nav dans le même commit · matrice d'états vides · mobile scroll

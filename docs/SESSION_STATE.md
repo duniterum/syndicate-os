@@ -2,6 +2,48 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 📌 2026-07-23 EVENING — S2c-① SEALED [this commit]: THE FOUNDER'S 3 CLOSING
+> NOTES ALL RESOLVED (order "on y va 3-2-1"; this supersedes the closing-notes
+> section of the block below).**
+> - **③ THE WORD IS "BUILDERS"** — the founder rejected the quick pick and ordered a
+>   WORLD BENCHMARK first ("cherche online best practices grade AAA"): 3-lens sweep
+>   (wf_f14915d1), ~30 products — "players" exists ONLY where the product IS a game;
+>   non-game AAA names people by identity-in-the-institution (Strava athletes ·
+>   Duolingo learners · Peloton Members · Layer3 top contributors). Offered
+>   Signatories/Builders/Syndics → HIS PICK: **builders** (seated ranks stay "seated
+>   members", the Delta two-level model). Swept: the 3 /season strings + §0.18 (now
+>   THE MULTI-LEVEL BUILDERS LAW) + API notes + BACKLOG "joueurs"; `playersEarning`
+>   wire key stays code-register. **SETTLED_RULES §8-⑥ — never re-benchmark.**
+> - **② THE ORDINAL IS #11 — CHAIN-VERIFIED LIVE** (4 eth_calls on V3 that evening:
+>   `memberNumberOf(0x3ff…894f)` = 11 · `memberByNumber(7)` = 0x0 empty forever ·
+>   `memberByNumber(11)` = that wallet · `knownMember` = true; the founder's memory
+>   was exact). RULING: a V3-minted seat OVERRIDES the genesis roster for DISPLAY
+>   (seasonReadmodel seat map: V3 first-seat purchases overwrite; sealed-era/roster
+>   numbers stay the fallback) — board/feed/receipts now speak ONE chain ordinal.
+>   One wallet still = one row. **SETTLED_RULES §8-⑦ + dossier §0.18 amended.**
+> - **① SEATED ROWS CARRY THE SHORT ADDRESS** — `shortForm` on every standings row
+>   (the feed's own 3+4 pattern, gate-safe by construction); the page renders
+>   "#N 0x03e…c6d0" mockup-exact (table: same-line mono faint · podium: block line
+>   under the ordinal). Awaiting rows unchanged; client tolerates a field-less
+>   last-good model (renders as before — fail-closed).
+> - **BONUS (same ruling round):** hors-concours rows never wear AWAITING SEAT
+>   (the Founder chip alone; the 0x88e…dd73 polish from the seal notes — done).
+> - **GATES:** typecheck ×2 · api guards chain · studio 19 guards (feature-truth 571,
+>   no-raw-color 0) · build + 36 shells + twins + admin-dist — ALL GREEN; rig: /season
+>   DARK honest card + console clean (no DB here — the founder's S2b rule: the living
+>   seal is the online check after deploy).
+> - **🚀 DEPLOY ORDER OUT [this commit]:** ONE Replit cycle = this commit + the two
+>   batched fixes `fc92a31` + `8c1506d` (per-season purchase XP · member Season-door
+>   truth). No migration, no new env. Verify: /season seated rows show "#N + short
+>   address" · the double wallet shows **#11** (not #7) · "Builders earning" · no
+>   AWAITING chip on the Founder line · standard battery. **DEPLOY BACKLOG after
+>   this cycle: EMPTY.**
+> - **(e) FOUNDER-PENDING (re-trued):** 🔴 AW-5 wallet name (unchanged) · SwapRail
+>   decisions (fee % · fee pipe · thirdweb ~$99/mo · placement) · pot COMMITMENT
+>   amount + cadence (« Engager au pot ») · CONFIRM XP weights + $20 floor +
+>   eligibility floor pair (S3 gate) · EN copy at each remaining surface gate.
+>   The 3 closing notes are CLOSED — nothing of them remains pending.
+
 > **▶ 📌 2026-07-23 — THE SEASONS + SWAPRAIL ARC OPENED (the resume point; the 22-07
 > block below keeps its seal facts).**
 > - **🏆 SEALED IN PROD (cycle `1b77b66`, Replit green + FOUNDER SCREENSHOTS —

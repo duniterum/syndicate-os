@@ -150,6 +150,20 @@ advisor-dossier study; none may be re-opened, re-flagged, or re-explained):
   contract's era advancement (seat count crossing `endSeat`) — deterministic, no admin
   dates, no new contract needed. The future sale/era contract keeps its own horizon; it is
   NOT a season prerequisite.
+- **⑥ THE WORD IS "BUILDERS" (founder, 2026-07-23 evening — after a 3-lens world
+  benchmark, ~30 AAA products).** The people on the season/recognition surfaces are
+  **builders** (identity-in-the-institution, the Strava/Kaito pattern); numbered ranks
+  stay **seated members** (the Delta two-level model). "Players/participants/users"
+  never on a surface; code identifiers (e.g. the `playersEarning` wire key) stay
+  code-register. Never re-open, never re-benchmark.
+- **⑦ THE DISPLAYED SEAT ORDINAL = THE LIVE ENGINE'S ANSWER (founder, 2026-07-23
+  evening — chain-verified live: `memberNumberOf(0x3ff…894f)` = 11, `memberByNumber(7)`
+  = empty forever).** A V3-minted seat overrides the frozen genesis roster and
+  sealed-era numbers for display; one wallet still keys ONE row (§0.14-A). The board,
+  the feed, and the receipts therefore all speak the same chain-emitted ordinal. The
+  #7+#11 double stays celebrated at the Chronicle (Entry 1). Companion display rule,
+  same ruling: a hors-concours row never wears the AWAITING SEAT chip (it never
+  competes for the pot — the Founder chip alone tells the truth).
 
 ## For Claude (advisor) and Claude Code — behavioral rule
 

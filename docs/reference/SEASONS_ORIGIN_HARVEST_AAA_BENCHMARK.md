@@ -554,16 +554,27 @@ marketing budget paying for WORK (introductions are a service); copy never says
 earn-income/yield; purchase XP once-per-season is the anti-"money buys money"
 spine; lawyer pass at activation as planned.
 
-### 0.18 THE MULTI-LEVEL PLAYERS LAW (founder, 2026-07-23 — "plusieurs niveaux
+### 0.18 THE MULTI-LEVEL BUILDERS LAW (founder, 2026-07-23 — "plusieurs niveaux
 d'utilisateurs, referral possible avec du SYN sans seat, swap/marketplace sans
 seat" → "OK ça me va" → the seal question, all one day)
+> **THE WORD IS "BUILDERS" (founder ruling, same day, evening — after a
+> 3-lens world benchmark ~30 products):** "players" exists ONLY where the
+> product IS a game (Chess.com/Fortnite/Steam/Xbox); every non-game AAA
+> names ranked people by their identity in the institution (Strava
+> "athletes" · Duolingo "learners" · Peloton "Members" · Layer3/dYdX "top
+> contributors"). The founder forged OURS: **builders** — those who build
+> the institution, with or without a seat. Surfaces say "builders";
+> numbered ranks stay "seated members" (the Delta two-level model). Sweep
+> applied to this section, the /season page, and the API notes; the wire
+> key `playersEarning` stays code-register. Historic doc blocks keep the
+> old name as record.
 - **XP accrues at EVERY user level.** The chain itself pays commissions to
   no-seat SYN referrers (ReferrerNotSeated checks the BALANCE, never the seat —
   the engraved .sol lesson); future modules (swap · bridge · marketplace) join
   as XP sources WITH their families (§0.11-G4). The engine credits every acting
   wallet (seasonReadmodel, multi-level).
 - **THE POT REQUIRES THE SEAT.** `potEligible` = seated AND not hors-concours.
-  NUMBERED ranks on the money board = eligible members ONLY — a no-seat player
+  NUMBERED ranks on the money board = eligible members ONLY — a no-seat builder
   consumes NO paid slot, so nobody's share ever depends on someone else's
   choice (the §0.17-⑩ occupancy law extended).
 - **THE PENDING SHARE IS A PROJECTION, NEVER A RESERVATION.** The unnumbered
@@ -573,9 +584,17 @@ seat" → "OK ça me va" → the seal question, all one day)
   exists because nothing was ever reserved; the XP, rank history, and
   recognition stay theirs FOREVER; the next season opens the same day and they
   play on. Honest copy engraved on the board caption.
-- **Public identity:** seat ordinal for the seated · the chain-emitted SHORT
-  FORM for no-seat players (the feed projection's own pattern) — never a full
-  address, never a directory.
+- **Public identity:** the chain-emitted SHORT FORM on every row (the feed
+  projection's own pattern — never a full address, never a directory), plus
+  the seat ordinal for the seated (S2c fix, founder 2026-07-23: the board
+  renders BOTH, per the approved ranking mockup).
+- **THE DISPLAYED ORDINAL = THE LIVE ENGINE'S ANSWER (founder ruling
+  2026-07-23, chain-verified live that day):** `memberNumberOf(0x3ff…894f)`
+  = 11 while `memberByNumber(7)` stands empty forever — a V3-minted seat
+  OVERRIDES the frozen genesis roster and sealed-era numbers for DISPLAY.
+  The wallet still keys ONE row (§0.14-A); the feed and receipts already
+  carry the same chain-emitted ordinal (one-authority holds). The #7+#11
+  double stays celebrated at the Chronicle (Entry 1).
 
 ---
 

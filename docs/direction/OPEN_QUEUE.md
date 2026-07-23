@@ -71,6 +71,16 @@
 >   /season PAGE (`1b77b66`, preview-gate OK, seasonRanking LIVE, SEO same
 >   commit). **🚀 DEPLOY ORDER OUT: one Replit cycle carries the whole day —
 >   no migration, no new env; awaiting the founder-pasted report.**
+> - **✅ THE EVENING CLOSING-NOTES CYCLE [this commit] — the founder's 3 board
+>   notes ("on y va 3-2-1") ALL RULED & SHIPPED:** ③ THE WORD = **"builders"**
+>   (his order: world-benchmark FIRST — 3 lenses, ~30 AAA products, "players"
+>   only where the product IS a game; his pick among Signatories/Builders/
+>   Syndics; SETTLED_RULES §8-⑥) · ② THE ORDINAL = **#11** (chain-verified
+>   live: memberNumberOf=11, memberByNumber(7)=empty forever; V3-minted seat
+>   overrides the roster for display; SETTLED_RULES §8-⑦) · ① seated rows
+>   render "#N + short address" mockup-exact (server `shortForm` on every
+>   row) · bonus: no AWAITING chip on hors-concours rows. One commit; the
+>   deploy cycle carries fc92a31 + 8c1506d — backlog empties.
 > - **🔴 STILL FOUNDER-PENDING (re-trued after the day's decisions):** AW-5
 >   wallet name (unchanged) · SwapRail decisions (developer fee % · fee pipe
 >   address · thirdweb account ~$99/mo · placement) · pot COMMITMENT amount +

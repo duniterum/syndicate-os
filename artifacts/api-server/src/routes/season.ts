@@ -1,13 +1,15 @@
 /**
  * GET /api/season — the public season/XP read (S2 of the seasons arc,
  * founder GO 2026-07-23; the law: the harvest dossier §0 as amended, §0.18
- * multi-level players).
+ * multi-level builders — the word is BUILDERS, founder ruling 2026-07-23).
  *
  * Serves the backbone's last-good season model as an ADDRESS-SAFE projection:
  * standings rows carry `display` ("#14" for the seated · the feed projection's
- * SHORT FORM for no-seat players), rank, XP, axes, potEligible, horsConcours —
- * never a full address, never a wallet key (the SERVER-ONLY wallet index stays
- * in memory; own-row serving arrives with the auth-zone wiring). Seal anchors
+ * SHORT FORM for no-seat builders), `shortForm` (the chain-emitted short form,
+ * every row — S2c: the board renders seat + short form together), rank, XP,
+ * axes, potEligible, horsConcours — never a full address, never a wallet key
+ * (the SERVER-ONLY wallet index stays in memory; own-row serving arrives with
+ * the auth-zone wiring). Seal anchors
  * serve the BLOCK NUMBER only in this v1 — the tx-hash verify anchor joins
  * with the feed's exact-shape masking pattern when the first seal exists
  * (today: zero sealed seasons; nothing is invented).

@@ -3,16 +3,19 @@
 // ---------------------------------------------------------------------------
 // WHAT THIS PAGE IS: the season's live recognition board, served by the
 // backbone's season projection (GET /api/season — address-safe rows only:
-// seat ordinals for the seated, the feed's short form for no-seat players).
+// the chain-emitted short form on every row, plus the seat ordinal for the
+// seated — S2c: both render together, per the approved ranking mockup).
 // THE VISUAL-FIRST CATCH LAW (§0.5): the board reads at a glance — trophy
 // podium, proportional XP bars, big display figures — before any sentence.
 // HONESTY POSTURE:
 //   · seasonRanking is LIVE (this page); seasonBounty stays FUTURE — the pot
 //     card renders its frame with a LifecycleBadge and NO figure (no committed
 //     escrow exists yet; a naked number would be a chain-refutable claim).
-//   · §0.18: NUMBERED ranks = pot-eligible players only; a no-seat player
+//   · §0.18: NUMBERED ranks = pot-eligible builders only; a no-seat builder
 //     sorts in place, unnumbered, with the AWAITING SEAT chip — nothing is
 //     reserved for them; the seal is the deadline (the caption says so).
+//     THE WORD IS "BUILDERS" (founder ruling 2026-07-23, world-benchmarked:
+//     identity-in-the-institution nouns, never the game register).
 //   · DARK state: the projection not yet published = an honest warming-up
 //     card — never invented rows.
 //   · The seats gauge is deliberately absent in v1: the live seat count has
@@ -37,6 +40,9 @@ type SeasonAxis = "connector" | "capital" | "steward" | "historian";
 
 interface StandingRow {
   display: string;
+  /** Chain-emitted short form, every row (S2c). Optional: a last-good model
+   *  built before the field existed renders exactly as before — fail-closed. */
+  shortForm?: string;
   seat: number | null;
   potEligible: boolean;
   rank: number | null;
@@ -224,6 +230,11 @@ export default function SeasonRanking() {
                         </div>
                         <div className={`font-serif ${first ? "text-xl" : "text-lg"}`}>
                           {r.display}
+                          {r.seat !== null && r.shortForm && (
+                            <span className="block font-mono text-[10.5px] text-muted-foreground mt-0.5">
+                              {r.shortForm}
+                            </span>
+                          )}
                         </div>
                         <div className="text-[10.5px] text-muted-foreground mt-1">
                           {axisChips(r.axes).map((a) => AXIS_LABEL[a]).join(" · ")}
@@ -242,7 +253,7 @@ export default function SeasonRanking() {
                 <table className="w-full text-sm min-w-[560px]">
                   <caption className="sr-only">
                     Season standings — numbered ranks are seated members; unnumbered rows
-                    are players without a seat.
+                    are builders without a seat.
                   </caption>
                   <thead>
                     <tr className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground text-left">
@@ -268,12 +279,20 @@ export default function SeasonRanking() {
                           <span className={r.seat !== null ? "font-medium" : "font-mono text-muted-foreground"}>
                             {r.display}
                           </span>
+                          {r.seat !== null && r.shortForm && (
+                            <span className="ml-1.5 font-mono text-muted-foreground align-middle">
+                              {r.shortForm}
+                            </span>
+                          )}
                           {r.horsConcours && (
                             <span className="ml-2 rounded border border-gold/40 px-1.5 py-0.5 font-mono text-[9.5px] text-gold align-middle">
                               Founder
                             </span>
                           )}
-                          {r.seat === null && (
+                          {/* Founder polish 2026-07-23: a hors-concours row never
+                              competes for the pot, so AWAITING SEAT is noise there —
+                              the gold Founder chip alone tells the truth. */}
+                          {r.seat === null && !r.horsConcours && (
                             <span className="ml-2 rounded border border-warning/40 px-1.5 py-0.5 font-mono text-[9px] tracking-[0.04em] text-warning align-middle">
                               AWAITING SEAT
                             </span>
@@ -333,7 +352,7 @@ export default function SeasonRanking() {
                 </div>
                 <div className="rounded-xl border border-dashed border-border px-4 py-3 text-sm text-muted-foreground">
                   Season 1 will be the first sealed season. A sealed season becomes a
-                  Chronicle entry and a permanent mark on each player&apos;s record —
+                  Chronicle entry and a permanent mark on each builder&apos;s record —
                   nothing is erased.
                 </div>
               </div>
@@ -372,7 +391,7 @@ export default function SeasonRanking() {
             </p>
             {current && (
               <p className="font-mono text-[11px] text-muted-foreground mt-3">
-                Players earning: <span className="text-foreground">{current.playersEarning}</span>
+                Builders earning: <span className="text-foreground">{current.playersEarning}</span>
               </p>
             )}
           </div>

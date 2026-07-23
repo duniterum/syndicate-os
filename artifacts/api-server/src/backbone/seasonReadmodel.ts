@@ -24,15 +24,15 @@
  *     BALANCE, never the seat), so their acts are real and COUNT — and future
  *     modules (swap · marketplace) join as XP sources with their families.
  *     THE POT requires the seat: `potEligible` = seated AND not hors-concours;
- *     a no-seat player's standing shows the share their rank WOULD pay —
+ *     a no-seat builder's standing shows the share their rank WOULD pay —
  *     PENDING, activated the day they seat (the conversion machine, the K4
  *     lever). Self-referral credits nothing (buyer == introducer).
  *     Hors-concours wallets stay LISTED and flagged — never erased, never paid.
- *     Public identity: seat ordinal for the seated; the chain-emitted SHORT
- *     FORM (the feed projection's own pattern) for no-seat players — never a
- *     full address.
+ *     Public identity: the chain-emitted SHORT FORM for every row (the feed
+ *     projection's own pattern — never a full address), plus the seat
+ *     ordinal for the seated (S2c: the board renders both, per the mockup).
  *   - IDENTITY = THE WALLET (§0.14-A): one rank row per wallet (the #7+#11
- *     double resolves to one player); seats render as attributes. Wallet keys
+ *     double resolves to one builder); seats render as attributes. Wallet keys
  *     are SERVER-ONLY (the D3 own-purchase precedent): the PUBLIC standings
  *     are seat-keyed and address-free; the wallet index exists for the auth
  *     zone's future own-row serving and never enters any public payload.
@@ -111,16 +111,20 @@ interface XpEvent {
   readonly transactionHash: string;
 }
 
-/** Address-safe public standing row (§0.14-D + the multi-level law): the
- *  seated carry their seat ordinal; no-seat players carry the chain-emitted
- *  SHORT FORM only (the feed projection's own pattern) — never a full address. */
+/** Address-safe public standing row (§0.14-D + the multi-level law): every
+ *  row carries the chain-emitted SHORT FORM (the feed projection's own
+ *  pattern — never a full address); the seated carry their seat ordinal
+ *  on top (S2c, founder 2026-07-23: the board shows both, per the approved
+ *  ranking mockup's "#3 0x03e…c6d0" identity). */
 export interface SeasonStandingPublic {
-  /** "#14" for the seated · "0x3f2…0a91" for no-seat players. */
+  /** "#14" for the seated · "0x3f2…0a91" for no-seat builders. */
   readonly display: string;
+  /** The chain-emitted short form ("0x3f2…0a91") — every row, seated too. */
+  readonly shortForm: string;
   readonly seat: number | null;
   /** Seated AND not hors-concours — the ONLY wallets the pot may pay (S3). */
   readonly potEligible: boolean;
-  /** §0.18: NUMBERED ranks belong to pot-eligible players ONLY — a no-seat or
+  /** §0.18: NUMBERED ranks belong to pot-eligible builders ONLY — a no-seat or
    *  hors-concours row is sorted in place but carries null (renders "—"). */
   readonly rank: number | null;
   readonly xp: number;
@@ -143,7 +147,7 @@ export interface SeasonModelPublic {
 /** SERVER-ONLY per-wallet view (future auth-zone own-row serving; never a
  *  public payload — the D3 precedent). */
 export interface WalletSeasonView {
-  /** null = a no-seat player (multi-level law) — XP counts, the pot waits. */
+  /** null = a no-seat builder (multi-level law) — XP counts, the pot waits. */
   readonly seat: number | null;
   readonly lifetimeXp: number;
   readonly level: number;
@@ -207,7 +211,14 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
   // Genesis roster (frozen, seats #1–#8) + every first-seat purchase whose
   // event names its holder. V1 rows without an address are covered by the
   // genesis roster; anything else stays honestly unattributed.
+  // DISPLAYED ORDINAL = THE LIVE ENGINE'S ANSWER (founder ruling 2026-07-23,
+  // chain-verified that day: memberNumberOf(0x3ff…894f) = 11 while
+  // memberByNumber(7) stands empty forever): a V3-minted seat OVERRIDES the
+  // frozen roster and sealed-era numbers — the board shows the contract's own
+  // ordinal, the same number the feed and receipts already carry. The wallet
+  // still keys ONE row (§0.14-A); only the shown number follows the chain.
   const seatByWallet = new Map<string, number>(genesisSeatByWallet);
+  const liveEngineSeated = new Set<string>();
   let unattributedSeats = 0;
   for (const p of purchases) {
     if (p.firstSeat === true && p.memberNumber !== null) {
@@ -216,7 +227,14 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
         unattributedSeats += 1;
         continue;
       }
-      if (!seatByWallet.has(w)) seatByWallet.set(w, p.memberNumber);
+      if (p.generation === "V3") {
+        if (!liveEngineSeated.has(w)) {
+          liveEngineSeated.add(w);
+          seatByWallet.set(w, p.memberNumber);
+        }
+      } else if (!seatByWallet.has(w)) {
+        seatByWallet.set(w, p.memberNumber);
+      }
     }
   }
   if (unattributedSeats > 0) {
@@ -427,7 +445,7 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
   }
 
   // The feed projection's own short form — the ONLY address shape that may
-  // leave the server (multi-level law: no-seat players render short-form).
+  // leave the server (multi-level law: no-seat builders render short-form).
   const shortForm = (w: string): string => `${w.slice(0, 5)}…${w.slice(-4)}`;
   const seasons: SeasonModelPublic[] = [];
   for (let s = 1; s <= currentSeasonNumber; s += 1) {
@@ -453,6 +471,7 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
       if (potEligible) eligibleRank += 1;
       return {
         display: r.seat !== null ? `#${r.seat}` : shortForm(r.wallet),
+        shortForm: shortForm(r.wallet),
         seat: r.seat,
         potEligible,
         rank: potEligible ? eligibleRank : null,
