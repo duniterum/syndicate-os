@@ -151,15 +151,29 @@
   .season-hero .wrap-full{width:100%;padding:0 clamp(24px,5vw,72px)}
   .season-gauge{height:12px;border-radius:8px;background:hsl(0 0% 100%/.04);border:1px solid hsl(var(--border));overflow:hidden}
   .season-gauge>i{display:block;height:100%;width:4.2%;background:linear-gradient(90deg,hsl(42 80% 45%),hsl(var(--gold)))}
-  .podium3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:end}
+  .podium3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:end;position:relative;padding-top:18px}
+  .podium3:before{content:"";position:absolute;left:12%;right:12%;bottom:-4px;height:120px;
+    background:radial-gradient(ellipse 60% 100% at 50% 100%,hsl(var(--gold)/.10),transparent 70%);pointer-events:none}
   @media(max-width:700px){.podium3{grid-template-columns:1fr}}
-  .pod3{border:1px solid hsl(var(--border));border-radius:12px;background:hsl(var(--card));padding:16px;text-align:center}
-  .pod3.p1{border-color:hsl(var(--gold)/.4);padding-top:22px;padding-bottom:22px}
-  .pod3 .rk{width:30px;height:30px;border-radius:50%;margin:0 auto 8px;display:grid;place-items:center;font-family:var(--serif);color:hsl(var(--gold-fg));font-weight:600}
-  .pod3.p1 .rk{background:hsl(var(--gold))} .pod3.p2 .rk{background:hsl(220 8% 74%)} .pod3.p3 .rk{background:hsl(28 55% 55%)}
-  .pod3 .who{font-family:var(--serif);font-size:15px}
-  .pod3 .ax{font-size:10.5px;color:hsl(var(--muted-fg));margin-top:5px}
-  .pod3 .xp{color:hsl(var(--cyan));font-family:var(--mono);font-size:13px;margin-top:6px}
+  .pod3{position:relative;border:1px solid hsl(var(--border));border-radius:14px;background:linear-gradient(180deg,hsl(222 47% 9%),hsl(var(--card)));padding:18px 16px 16px;text-align:center}
+  .pod3.p1{border-color:hsl(var(--gold)/.55);padding:28px 16px 20px;background:linear-gradient(180deg,hsl(42 60% 10%/.85),hsl(var(--card)) 70%);
+    box-shadow:0 0 42px hsl(var(--gold)/.15),inset 0 1px 0 hsl(var(--gold)/.3)}
+  .pod3.p2{border-color:hsl(220 8% 74%/.35)} .pod3.p3{border-color:hsl(28 55% 55%/.4)}
+  .medal3{width:46px;height:46px;border-radius:50%;margin:0 auto 10px;display:grid;place-items:center;font-family:var(--serif);font-size:20px;font-weight:600;color:hsl(240 30% 8%);position:relative}
+  .pod3.p1 .medal3{width:58px;height:58px;font-size:25px;background:radial-gradient(circle at 32% 28%,hsl(45 95% 74%),hsl(42 92% 55%) 55%,hsl(38 80% 42%));
+    box-shadow:0 0 26px hsl(var(--gold)/.5),inset 0 -3px 5px hsl(35 70% 32%/.55)}
+  .pod3.p2 .medal3{background:radial-gradient(circle at 32% 28%,hsl(220 15% 90%),hsl(220 8% 70%) 55%,hsl(220 8% 50%));
+    box-shadow:0 0 14px hsl(220 8% 74%/.3),inset 0 -3px 5px hsl(220 10% 38%/.55)}
+  .pod3.p3 .medal3{background:radial-gradient(circle at 32% 28%,hsl(30 68% 70%),hsl(28 55% 52%) 55%,hsl(26 50% 36%));
+    box-shadow:0 0 14px hsl(28 55% 55%/.3),inset 0 -3px 5px hsl(25 50% 28%/.55)}
+  .crown3{position:absolute;top:-17px;left:50%;transform:translateX(-50%);filter:drop-shadow(0 0 8px hsl(var(--gold)/.5))}
+  .pod3 .who{font-family:var(--serif);font-size:18px}
+  .pod3.p1 .who{font-size:21px}
+  .pod3 .who .mono{display:block;font-size:10.5px;margin-top:3px}
+  .pod3 .ax{font-size:10.5px;color:hsl(var(--muted-fg));margin-top:6px}
+  .pod3 .xp{color:hsl(var(--cyan));font-family:var(--mono);font-size:13px;margin-top:8px}
+  .pod3 .pamt{color:hsl(var(--gold));font-family:var(--serif);font-size:27px;margin-top:6px;line-height:1;text-shadow:0 0 16px hsl(var(--gold)/.4)}
+  .pod3.p1 .pamt{font-size:34px}
   .faint{color:hsl(var(--faint))}
   .season-top{display:grid;grid-template-columns:1.4fr .9fr;gap:30px;align-items:stretch}
   @media(max-width:860px){.season-top{grid-template-columns:1fr}}
@@ -297,9 +311,9 @@
         <a class="plink" href="#" style="border-bottom:1px solid hsl(var(--cyan)/.4);padding-bottom:1px">See full ranking →</a>
       </div>
       <div class="podium3">
-        <div class="pod3 p2"><div class="rk">2</div><div class="who">#7 <span class="mono faint">0x573…c2cd</span></div><div class="ax">Builder</div><div class="xp">1 910 XP</div></div>
-        <div class="pod3 p1"><div class="rk">1</div><div class="who">#3 <span class="mono faint">0x03e…c6d0</span></div><div class="ax">Connector · Verifier</div><div class="xp">2 480 XP</div></div>
-        <div class="pod3 p3"><div class="rk">3</div><div class="who">#12 <span class="mono faint">0x3b1…ec6a</span></div><div class="ax">Historian</div><div class="xp">1 640 XP</div></div>
+        <div class="pod3 p2"><div class="medal3">2</div><div class="who">#7<span class="mono faint">0x573…c2cd</span></div><div class="ax">Steward</div><div class="xp">1 910 XP</div><div class="pamt">$200</div></div>
+        <div class="pod3 p1"><div class="medal3"><svg class="crown3" width="32" height="19" viewBox="0 0 32 19" aria-hidden="true"><path d="M3 17 L3 6.5 L9.5 11.5 L16 2 L22.5 11.5 L29 6.5 L29 17 Z" fill="hsl(42 92% 60%)" stroke="hsl(38 80% 40%)" stroke-width="1.2" stroke-linejoin="round"/></svg>1</div><div class="who">#3<span class="mono faint">0x03e…c6d0</span></div><div class="ax">Connector · Capital</div><div class="xp">2 480 XP</div><div class="pamt">$200</div></div>
+        <div class="pod3 p3"><div class="medal3">3</div><div class="who">#12<span class="mono faint">0x3b1…ec6a</span></div><div class="ax">Historian</div><div class="xp">1 640 XP</div><div class="pamt">$200</div></div>
       </div>
       <div class="caption" style="margin-top:14px">Public, pseudonymous · your rank never drops · your alias replaces your address (opt-in, arriving with the identity layer) · <span style="color:hsl(var(--foreground))">sign in to see yours</span>. Full ranking on its own page.</div>
     </div>
