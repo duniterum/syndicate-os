@@ -113,30 +113,66 @@ export interface SeasonQuestDef {
 }
 
 export const SEASON_QUESTS: readonly SeasonQuestDef[] = [
-  { id: "ladder-intro-1", questClass: "ladder", metricKey: "introductions-converted", target: 1, bonusXp: 100 },
-  { id: "ladder-intro-3", questClass: "ladder", metricKey: "introductions-converted", target: 3, bonusXp: 250 },
-  { id: "ladder-intro-10", questClass: "ladder", metricKey: "introductions-converted", target: 10, bonusXp: 600 },
-  { id: "ladder-burn-1", questClass: "ladder", metricKey: "burn-acts", target: 1, bonusXp: 100 },
-  { id: "ladder-mint-1", questClass: "ladder", metricKey: "archive-mints", target: 1, bonusXp: 100 },
+  // THE CONNECTOR LADDER — the CANON rungs and thresholds, verbatim from
+  // referralProgram.ts commissionTiers (founder vocabulary check 2026-07-23:
+  // "on utilise LES ÉCHELLES ET LES MOTS de notre système, jamais inventés").
+  // The rung titles the surfaces speak are the engraved names; the canon's own
+  // Active note already binds the ladder to season points. V1 counts CONVERTED
+  // introductions; the DURABLE qualifier (the panel's own standing) replaces it
+  // at S2 wiring — one authority, the season never recomputes the ladder.
+  { id: "connector-active", questClass: "ladder", metricKey: "introductions-converted", target: 3, bonusXp: 250 },
+  { id: "connector-trusted", questClass: "ladder", metricKey: "introductions-converted", target: 10, bonusXp: 600 },
+  { id: "connector-established", questClass: "ladder", metricKey: "introductions-converted", target: 25, bonusXp: 1000 },
+  { id: "connector-durable", questClass: "ladder", metricKey: "introductions-converted", target: 60, bonusXp: 1500 },
+  { id: "connector-foundational", questClass: "ladder", metricKey: "introductions-converted", target: 150, bonusXp: 2500 },
+  { id: "connector-summit", questClass: "ladder", metricKey: "introductions-converted", target: 300, bonusXp: 5000 },
+  // FIRSTS — the milestone-canon first-act class, personal (first-seat/
+  // first-mint precedent; a first is a starter completion, never a rung).
+  { id: "first-introduction", questClass: "starter", metricKey: "introductions-converted", target: 1, bonusXp: 100 },
+  { id: "first-burn", questClass: "starter", metricKey: "burn-acts", target: 1, bonusXp: 100 },
+  { id: "first-archive-mint", questClass: "starter", metricKey: "archive-mints", target: 1, bonusXp: 100 },
 ];
 
 /**
- * THE BAND TABLE — §0.17-④ (percentages of the round budget; identical
- * within a band; 95% allocated, 5% → carryover). READ BY NOTHING until S3
- * (the money rail); engraved now so the ONE policy module exists from birth.
- * Founder confirms at the S3 gate (BACKLOG season-bands-weights).
+ * THE PAYOUT CURVE — FOUNDER DECISION 2026-07-23: OPTION A, the poker-standard
+ * geometric curve (dossier §10; SUPERSEDES the flat-within-band §0.17-④ model —
+ * the world standard has NO flat top: adjacent ranks always differ).
+ * Defined in BASIS POINTS of the round budget so the SHAPE scales to any pot —
+ * $2,000 or $100,000, every prize scales proportionally.
+ *
+ * THE DEPTH LAW (founder follow-up, same day: "à 100k ça s'arrête toujours au
+ * 25e?" — NO): 25 paid is only the $2,000/333 illustration, never a constant.
+ * Paid depth = min( ~10% of eligible players, the deepest rank whose prize
+ * still clears MIN_PRIZE_USDC ). A bigger pot pays DEEPER and BIGGER at every
+ * rank — the poker scaling law: paid places track the FIELD; the min-cash
+ * floor keeps the tail meaningful. The table below is the curve SAMPLED at
+ * 25 places; the S3 policy module stretches the same geometric shape to the
+ * computed depth. READ BY NOTHING until S3.
  */
-export interface BountyBandDef {
+export interface BountyCurveStep {
   readonly fromRank: number;
   readonly toRank: number;
-  /** Percent of the round budget EACH wallet in the band receives. */
-  readonly percentEach: number;
+  /** Basis points of the round budget EACH wallet at these ranks receives. */
+  readonly bpEach: number;
 }
-export const BOUNTY_BANDS_V1: readonly BountyBandDef[] = [
-  { fromRank: 1, toRank: 3, percentEach: 10 },
-  { fromRank: 4, toRank: 10, percentEach: 5 },
-  { fromRank: 11, toRank: 25, percentEach: 2 },
+export const BOUNTY_CURVE_BP_V1: readonly BountyCurveStep[] = [
+  { fromRank: 1, toRank: 1, bpEach: 2250 },
+  { fromRank: 2, toRank: 2, bpEach: 1450 },
+  { fromRank: 3, toRank: 3, bpEach: 1000 },
+  { fromRank: 4, toRank: 4, bpEach: 750 },
+  { fromRank: 5, toRank: 5, bpEach: 600 },
+  { fromRank: 6, toRank: 6, bpEach: 500 },
+  { fromRank: 7, toRank: 7, bpEach: 425 },
+  { fromRank: 8, toRank: 8, bpEach: 350 },
+  { fromRank: 9, toRank: 9, bpEach: 300 },
+  { fromRank: 10, toRank: 10, bpEach: 250 },
+  { fromRank: 11, toRank: 15, bpEach: 175 },
+  { fromRank: 16, toRank: 25, bpEach: 125 },
 ];
+// Σ over the 25-place sample = 10,000 bp exactly — the WHOLE pot pays.
+/** The min-cash floor guarding the tail when depth scales (founder-settable
+ *  at the S3 gate; $20 default per the WSOP min-cash-matters principle). */
+export const MIN_PRIZE_USDC_DEFAULT = 20;
 
 /**
  * THE ELIGIBILITY FLOOR PAIR — §0.17-⑤ (BACKLOG season-floor: both figures

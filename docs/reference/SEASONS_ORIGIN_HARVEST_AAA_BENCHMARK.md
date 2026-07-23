@@ -486,11 +486,17 @@ open, immutable for that season.
 - **③ THE SEAL SNAPSHOT IS SNIPE-PROOF:** standings freeze at the block BEFORE
   the sealing purchase; the sealing act's XP belongs to the NEXT season
   (published rule). Nobody times the last seat to rig the frozen board.
-- **④ BANDS ARE PERCENTAGES** of the round budget (identical within band;
-  deterministic tie-break published: earlier attaining block, then seat number).
-  V1 default: ranks 1–3 → 10% each · 4–10 → 5% each · 11–25 → 2% each (95%; the
-  5% remainder → carryover). Fixed dollars cannot match an any-amount pot; the
-  $2,000 examples remain as illustrations.
+- **④ THE PAYOUT CURVE — DECIDED (founder pick 2026-07-23: OPTION A, the
+  poker-standard geometric curve, dossier §10 — supersedes the earlier
+  flat-within-band model; the world standard has NO flat top).** Basis-point
+  curve on the round budget (scales to any pot): 22.5% · 14.5% · 10% · 7.5% ·
+  6% · 5% · 4.25% · 3.5% · 3% · 2.5% · 1.75%×5 · 1.25%×10 = 100% — the WHOLE
+  pot pays. On $2,000: $450/$290/$200/$150→$50/$35/$25. **THE DEPTH LAW
+  (founder follow-up: "à 100k ça s'arrête au 25e?" — NO):** paid depth =
+  min(~10% of eligible players, deepest rank clearing the min-cash floor,
+  default $20) — a bigger pot pays DEEPER and BIGGER (poker scaling law). Zone
+  TINTS remain as visual groupings on the board; deterministic tie-break
+  published: earlier attaining block, then seat number.
 - **⑤ ANTI-FARM LAWS:** purchase XP credits ONCE per wallet per season (kills
   receipt-splitting; a bigger purchase never buys a bigger share — the legal
   spine). Referral XP credits ONLY when the referred wallet independently clears

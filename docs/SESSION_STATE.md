@@ -81,6 +81,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   on OUR tokens · Income tab dead · zero-click autobar · two buckets ·
 >   seal/interim/final rounds · §0.15 pipeline) — NOW AT THE FOUNDER
 >   WIREFRAME GATE (his approval of what he SEES unlocks each surface).**
+>   **THE VISUAL GATE ROUND (founder live, 2026-07-23): member card APPROVED
+>   ("ça c'est bien") · the hero-pot CSS bug HE caught (invalid clamp operators
+>   — silently dropped declarations; fixed repo-wide, verified by MY OWN
+>   computed-style measurement: 112px/128px) · trophy podium (crown + metal
+>   medals) + 24 proportional XP bars (the dead middle killed) · money visible
+>   on BOTH board tabs · THE PAYOUT CURVE DECIDED: Option A poker-standard
+>   (dossier §10 research, 3 options proposed, HIS pick) + THE DEPTH LAW (paid
+>   depth scales with the field ~10% + min-cash floor $20 — never a fixed 25) —
+>   engraved in seasonConfig BOUNTY_CURVE_BP_V1 (Σ=10,000bp) + §0.17-④ + the
+>   BACKLOG row.**
 >   → NEXT: S2 recognition surfaces (/season public page · home season section ·
 >   member Season+Quests slots · admin Seasons rail 1 — wireframe + preview gate EACH;
 >   the split keys `seasonRanking`/`seasonQuests`/`seasonBounty` flip in their
