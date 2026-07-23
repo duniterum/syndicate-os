@@ -64,7 +64,13 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
     table + podium) · ordinal = la réponse du moteur vivant (#11, vérifié chaîne en direct,
     SETTLED_RULES §8-⑦) · LE MOT = « builders » (benchmark mondial 3 lentilles,
     SETTLED_RULES §8-⑥) · puce AWAITING SEAT éteinte sur les lignes hors-concours.
-    **+0 couleur brute.** Ancienne spec pour mémoire : pot engagé + preuve ·
+    **+0 couleur brute.** **S2c-①b (hotfix fondateur, même soir — attrapé sur le
+    tableau LIVE)** : en-tête de colonne « Builder » (loi Member=Seat : la colonne
+    couvre aussi les sans-siège) · lignes identité UNE LIGNE garantie (nowrap +
+    224px maquette-exacte ; Progress absorbe le mou) · nouvel outil de rig
+    « studio-prod-data » (la page locale sur les données prod LIVE — mesure
+    obligatoire avant toute remise d'une tranche visuelle season). **+0 couleur
+    brute.** Ancienne spec pour mémoire : pot engagé + preuve ·
     zones de récompense dessinées sur le tableau (identiques par bande) · double horloge
     (season + all-time) · rang YOU épinglé · filtres d'axes ALIMENTÉS seulement · archive
     inline v1 · SEO/OG/nav dans le même commit · matrice d'états vides · mobile scroll

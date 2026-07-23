@@ -12,6 +12,18 @@
       }
     },
     {
+      "name": "studio-prod-data",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "artifacts/studio"],
+      "port": 5175,
+      "env": {
+        "PORT": "5175",
+        "BASE_PATH": "/",
+        "VITE_DEV_API_PROXY": "https://thesyndicate.money",
+        "NODE_OPTIONS": "--use-system-ca"
+      }
+    },
+    {
       "name": "api-server",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev:rig", "--prefix", "artifacts/api-server"],

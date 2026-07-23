@@ -37,7 +37,27 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   truth). No migration, no new env. Verify: /season seated rows show "#N + short
 >   address" · the double wallet shows **#11** (not #7) · "Builders earning" · no
 >   AWAITING chip on the Founder line · standard battery. **DEPLOY BACKLOG after
->   this cycle: EMPTY.**
+>   this cycle: EMPTY.** ✅ Replit sealed the cycle same evening (all green,
+>   15 rows, #11 live, shortForm 15/15).
+> - **⚠ S2c-①b HOTFIX [this commit] — FOUNDER-CAUGHT on the live board, fixed FROM
+>   the laws (pre-handoff gate ②):** ① the table column header said "Member" over
+>   rows that include no-seat builders — Member=Seat law + the §8-⑥ word: the header
+>   is now **"Builder"** (captions keep "seated members" for numbered ranks). The
+>   header WAS in the recon inventory and the sweep missed it — engraved: column
+>   headers are part of EVERY wording sweep. ② identity cells FOLDED on prod
+>   ("#1 0x244…/c721" · "AWAITING/SEAT"): the width law was skipped — built w-44
+>   (176px) vs the mockup's 220px, then the address was ADDED into it. Fix: w-56 +
+>   whitespace-nowrap on the identity cell (the SINGLE-LINE ROW law: auto layout
+>   sizes the column to content, the flexible Progress bar absorbs) + table min
+>   640. ③ THE STRUCTURAL TOOL so this class can never ship blind again:
+>   launch.json gains **"studio-prod-data"** (port 5175,
+>   `VITE_DEV_API_PROXY=https://thesyndicate.money` +
+>   `NODE_OPTIONS=--use-system-ca`, this box's TLS) — the local rig page renders
+>   the LIVE prod rows; hotfix verified there BY MEASUREMENT: 15/15 identity
+>   lines single-line · header "Builder" 218px (mockup 220) · "Builders earning:
+>   15" · zero visible "players" · zero page overflow. Studio gates re-run green.
+>   Season visual slices now REQUIRE a studio-prod-data measurement pass before
+>   any handoff.
 > - **(e) FOUNDER-PENDING (re-trued):** 🔴 AW-5 wallet name (unchanged) · SwapRail
 >   decisions (fee % · fee pipe · thirdweb ~$99/mo · placement) · pot COMMITMENT
 >   amount + cadence (« Engager au pot ») · CONFIRM XP weights + $20 floor +

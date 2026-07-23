@@ -250,7 +250,7 @@ export default function SeasonRanking() {
 
               {/* The table */}
               <div className="rounded-xl border border-border overflow-x-auto">
-                <table className="w-full text-sm min-w-[560px]">
+                <table className="w-full text-sm min-w-[640px]">
                   <caption className="sr-only">
                     Season standings — numbered ranks are seated members; unnumbered rows
                     are builders without a seat.
@@ -258,7 +258,11 @@ export default function SeasonRanking() {
                   <thead>
                     <tr className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground text-left">
                       <th scope="col" className="px-4 py-3 w-14">#</th>
-                      <th scope="col" className="px-2 py-3 w-44">Member</th>
+                      {/* "Builder" — the ruled word for the WHOLE column (rows with
+                          and without a seat); Member=Seat law: only numbered ranks
+                          are members, the caption says so. Width per the approved
+                          mockup (.nm 220px). */}
+                      <th scope="col" className="px-2 py-3 w-56">Builder</th>
                       <th scope="col" className="px-2 py-3 w-44">Axes</th>
                       <th scope="col" className="px-2 py-3">Progress</th>
                       <th scope="col" className="px-4 py-3 text-right w-28">
@@ -275,7 +279,11 @@ export default function SeasonRanking() {
                         <td className="px-4 py-3 font-serif text-lg text-muted-foreground">
                           {r.rank ?? "—"}
                         </td>
-                        <td className="px-2 py-3">
+                        {/* whitespace-nowrap: the identity line NEVER folds — the
+                            auto table layout sizes this column to its content and
+                            the flexible Progress column absorbs the slack (the
+                            mockup's single-line row law). */}
+                        <td className="px-2 py-3 whitespace-nowrap">
                           <span className={r.seat !== null ? "font-medium" : "font-mono text-muted-foreground"}>
                             {r.display}
                           </span>
