@@ -47,6 +47,11 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   consoleReferralKpis: { status: "live", since: "2026-07-22", where: "/admin Dashboard (the wired referral band + live waiting counts)" },
   // S2b go-live (same commit as the page — DONE-IS-DONE): the board serves.
   seasonRanking: { status: "live", since: "2026-07-23", where: "/season (the live recognition board)" },
+  // S2d go-live (same commit as the member cards — DONE-IS-DONE): the fed
+  // quests serve own-row on /member. The weekly/recurrent quest classes and
+  // Learn & Earn arrive WITH their feeders — their claims cite their own
+  // future keys, never this one.
+  seasonQuests: { status: "live", since: "2026-07-24", where: "/member (the Quests card — the fed ladder + first-act quests, auto-credit)" },
 
   // ── FUTURE (the only keys a future-claim may cite) ──────────────────────
   avatarUpload: { status: "future", since: "2026-07-14", where: "Member Home arc (App Storage decided)" },
@@ -58,7 +63,6 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   // key SPLIT into three — S1→S3 ship progressively and one key cannot
   // express it. Each flips LIVE in its own go-live commit, never before.
   // (seasonRanking flipped LIVE at S2b — it lives in the LIVE section above.)
-  seasonQuests: { status: "future", since: "2026-07-23", where: "the seasons arc S2 (quest board + member Quests slot)" },
   seasonBounty: { status: "future", since: "2026-07-23", where: "the seasons arc S3 (the merit primitive + the effort-reward rail; lawyer pass at activation)" },
   seasonOwnRow: { status: "future", since: "2026-07-24", where: "the /season YOU own-row highlight (auth-zone wiring; CANON_ACCESS_MODEL own-row exception)" },
   rateRaiseHistory: { status: "future", since: "2026-07-19", where: "the SOURCE_LIFECYCLE rescan micro-slice" },

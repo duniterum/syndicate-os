@@ -109,16 +109,11 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
   // its content lives in the Referral dashboard.)
 ];
 
-/** The §11 slots 3–5, reserved VISIBLY on Member Home (cards, not doors):
- * recognition speaks here later; nothing is faked today. */
-export const MEMBER_HOME_RESERVED_SLOTS: readonly MemberDoor[] = [
-  // S2b truth (2026-07-23, DONE-IS-DONE): the SEASON itself is LIVE at /season
-  // (seasonRanking) — what stays future is THIS member card (your own standing
-  // served in place, S2d). The note says so; it never re-presents the live
-  // board as coming.
-  { label: "Season", lifecycle: "FUTURE", note: "The season is LIVE — the public board stands at /season. This card brings YOUR standing here (your XP, your rank, your next quest) with the member slice; when the company funds a season reward it's real USDC for effort — paid openly, every amount shown." },
-  { label: "Quests", lifecycle: "FUTURE", note: "Weekly recognition quests — Learn & Earn earns XP." },
-  // NOTIF-1 (2026-07-18): "While you were away" RETIRED from the reserved
-  // slots — its promise now lives in the notification center (the bell +
-  // /notifications; protocol activity events feed it at the v2 generator).
-];
+/** The §11 reserved slots — EMPTY since S2d (2026-07-24): the Season and
+ * Quests cards shipped FILLED on the dashboard (SeasonStandingCard +
+ * SeasonQuestsCard, own-row data served in place — DONE-IS-DONE, the
+ * seasonQuests key flipped live the same commit). The export stays: it is
+ * the guard-member-menu end anchor, and the next reserved capability (if
+ * ever) declares itself here rather than in anyone's memory.
+ * ("While you were away" was retired 2026-07-18 → the notification center.) */
+export const MEMBER_HOME_RESERVED_SLOTS: readonly MemberDoor[] = [];

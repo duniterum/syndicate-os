@@ -267,6 +267,56 @@ async function main(): Promise<void> {
     `status ${mstAnon.status}, state ${mstAnonJson.state}`,
   );
 
+  // ── S2d: /season-standing — own season self-readback (the same three
+  //    disciplines: leak scan · lookup-param inert · anonymous S1). ─────────
+  const ssnRes = await fetch(`${BASE}/season-standing`, {
+    headers: { cookie: cookiePair },
+  });
+  const ssnBody = await ssnRes.text();
+  const ssnJson = JSON.parse(ssnBody) as {
+    state?: string;
+    quests?: unknown;
+    failureReason?: unknown;
+  };
+  record(
+    "season-standing with session → 200 S4 (quests or an honest reason)",
+    ssnRes.status === 200 &&
+      ssnJson.state === "S4" &&
+      (Array.isArray(ssnJson.quests) ||
+        typeof ssnJson.failureReason === "string"),
+    `status ${ssnRes.status}, state ${ssnJson.state}`,
+  );
+  record(
+    "season-standing response leak scan (no 0x40-hex, no account echo)",
+    !/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(ssnBody) &&
+      !ssnBody.toLowerCase().includes(account.address.slice(2).toLowerCase()),
+    "body carries no wallet-address material",
+  );
+  const ssnProbe = await fetch(
+    `${BASE}/season-standing?account=${strangerAccount.address}`,
+    { headers: { cookie: cookiePair } },
+  );
+  const ssnProbeBody = await ssnProbe.text();
+  record(
+    "season-standing ignores lookup query params (own-row only)",
+    ssnProbe.status === 200 && ssnProbeBody === ssnBody,
+    "query-param probe returned the identical own-row response",
+  );
+  const ssnAnon = await fetch(`${BASE}/season-standing`);
+  const ssnAnonJson = (await ssnAnon.json()) as {
+    state?: string;
+    quests?: unknown;
+    seat?: unknown;
+  };
+  record(
+    "season-standing without session → S1 + nulls (fail closed, not an error)",
+    ssnAnon.status === 200 &&
+      ssnAnonJson.state === "S1" &&
+      ssnAnonJson.quests === null &&
+      ssnAnonJson.seat === null,
+    `status ${ssnAnon.status}, state ${ssnAnonJson.state}`,
+  );
+
   const lo = await post("/logout", undefined, { cookie: cookiePair });
   record(
     "logout → S1",

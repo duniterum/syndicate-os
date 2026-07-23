@@ -95,10 +95,41 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   /season podium wears the medals + crown · desktop AND mobile slices verified ·
 >   byte-identity ×2 · engine advancing 6/6 · feed 86 intact · "Builders earning"
 >   in the served bundle, never "players". **DEPLOY BACKLOG: EMPTY.**
-> - **NEXT (the engraved order):** S2d the member Season+Quests slots (reconcile
->   the member-mockup #14 figures at that gate; MEMBER_HOME_RESERVED_SLOTS flip
->   same commit) → the admin Seasons 2-rails console → S3 (Foundry workspace +
->   SeasonBountyPool + the cash rail per §0.17) — wireframe + preview gate EACH.
+> - **✅ S2d BUILT [this commit] — THE MEMBER SEASON + QUESTS SLOTS FILLED (founder
+>   "GO and GO-Live"; the corrected member mockup, truth-amended):**
+>   ① `GET /api/auth/season-standing` — the own-row season rail (the
+>   member-purchases discipline VERBATIM: session cookie only · walletIndex own
+>   view · the current-season row picked server-side by the session's own seat —
+>   the SAME model row the public board serves, ONE authority · numbers and quest
+>   ids only, leak-gated · fail-closed S1/dark). 4 new auth-skeleton checks, all
+>   green on the rig (S4+quests · leak scan · lookup-param inert · anonymous S1).
+>   ② `SeasonStandingCard` (era ring on the spine + MembersProvenance · rank/XP/
+>   axes from the rail · pot column FUTURE-framed) + `SeasonQuestsCard` (FED
+>   quests only: the Connector ladder VERBATIM + the 3 first-acts; auto-credit
+>   voice; NO weekly-renewal claim — that engine is not built) +
+>   `EffortRewardCard` (the SEPARATE cash rail's emerald frame, push voice
+>   "nothing to claim", FUTURE on seasonBounty, zero figure).
+>   ③ Same commit: MEMBER_HOME_RESERVED_SLOTS emptied (dashed cards died,
+>   dashboard + visitor; the export stays as the menu-guard anchor) ·
+>   featureStatus seasonQuests → LIVE (the fed slice named honestly) ·
+>   guard-member-home 27→30 pins (3 new mounts sealed) · guard-feature-truth
+>   587 (2 new pins) · MemberAccess exempted in guard-lifecycle WITH its
+>   reason (the shell renders no protocol value — every value surface is a
+>   gated wallet component carrying its own label).
+>   **THE RECONCILE RULING APPLIED (the recorded #14 note):** mockup figures
+>   (XP 2 480 · rank #3 · $2 000/$200 · 0x7a4b…) are GEOMETRY, never data —
+>   every figure on the built cards comes from the one model/spine; the pot
+>   columns carry NO number. **GUARD CATCHES fixed FROM the law:**
+>   guard-freshness (provenance on the card's live member figure) ·
+>   guard-access-state (a wallet module speaks to the auth zone ONLY → the
+>   board row moved server-side into the rail). GATES: typecheck ×2 · api
+>   chain green · studio 19 guards · build — ALL GREEN; rig: endpoint
+>   anonymous S1 verified live · visitor /member clean (reserved grid gone,
+>   zero overflow). The signed dashboard renders for a REAL session only —
+>   Replit's battery + the founder's own click seal it online.
+> - **NEXT (the engraved order):** the admin Seasons 2-rails console → S3
+>   (Foundry workspace + SeasonBountyPool + the cash rail per §0.17) —
+>   wireframe + preview gate EACH.
 > - **(e) FOUNDER-PENDING (re-trued):** 🔴 AW-5 wallet name (unchanged) · SwapRail
 >   decisions (fee % · fee pipe · thirdweb ~$99/mo · placement) · pot COMMITMENT
 >   amount + cadence (« Engager au pot ») · CONFIRM XP weights + $20 floor +

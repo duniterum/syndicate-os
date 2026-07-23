@@ -23,14 +23,13 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
-import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { MemberShell } from "@/components/member/MemberShell";
-import { MEMBER_HOME_RESERVED_SLOTS } from "@/config/memberDoors";
 import { MemberQuickActions } from "@/components/member/MemberQuickActions";
 import { MemberPulse } from "@/components/member/MemberPulse";
 import { ProtocolSnapshot } from "@/components/member/ProtocolSnapshot";
 import { ChronicleLatest } from "@/components/member/ChronicleLatest";
 import { Card } from "@/components/ui/card";
+import { EffortRewardCard } from "@/components/season/EffortRewardCard";
 import { Button } from "@/components/ui/button";
 import { memberHome, expectations } from "@/config/syndicateFacts";
 import { WalletAuthComingSoon } from "@/components/WalletAuthComingSoon";
@@ -52,6 +51,18 @@ const MemberKpiRow = WALLET_SESSION_PREVIEW_ENABLED
 // ladder + next rung, the shield line beside it; same gated boundary).
 const CapitalAxisCard = WALLET_SESSION_PREVIEW_ENABLED
   ? lazy(() => import("@/wallet/CapitalAxisCard"))
+  : null;
+
+// S2d — the member's OWN season standing (rank/XP/axes joined from the
+// public board by own seat; era ring on the spine; pot column FUTURE-framed).
+const SeasonStandingCard = WALLET_SESSION_PREVIEW_ENABLED
+  ? lazy(() => import("@/wallet/SeasonStandingCard"))
+  : null;
+
+// S2d — the member's OWN quest progress (the fed ladder + first-act quests,
+// auto-credit voice; own-row via /api/auth/season-standing).
+const SeasonQuestsCard = WALLET_SESSION_PREVIEW_ENABLED
+  ? lazy(() => import("@/wallet/SeasonQuestsCard"))
   : null;
 
 // SLICE B — the UI-only settings panel (zero new writes; honest rows).
@@ -198,6 +209,23 @@ export default function MemberAccess() {
                       <CapitalAxisCard />
                     </Suspense>
                   ) : null}
+                  {/* S2d — the Season + Quests slots FILLED (the reserved
+                      dashed cards died with them; WORK-FIRST: the member's
+                      own figures above the reference cards). */}
+                  {SeasonStandingCard ? (
+                    <Suspense fallback={null}>
+                      <SeasonStandingCard />
+                    </Suspense>
+                  ) : null}
+                  {SeasonQuestsCard ? (
+                    <Suspense fallback={null}>
+                      <SeasonQuestsCard />
+                    </Suspense>
+                  ) : null}
+                  {/* S2d — the SEPARATE cash rail's frame (two-layer law:
+                      recognition never blends with the effort reward; FUTURE
+                      until S3 activates it — no figure without its proof). */}
+                  <EffortRewardCard />
                   {/* Z7 — the system state + the record's newest chapter —
                       the doors' own truths, surfaced as living summaries. */}
                   <ProtocolSnapshot />
@@ -205,33 +233,9 @@ export default function MemberAccess() {
                   {/* The doors live in the MemberShell sidebar (left, sticky) —
                       the Z8 grid was a full-column duplicate of that same
                       MEMBER_DOOR_GROUPS and was removed (founder 2026-07-18,
-                      WORK-FIRST): one door list, freeing the right column. */}
-                  <div>
-                    <h2 className="type-h2 text-foreground mb-1">Coming to your seat</h2>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-2">
-                      Reserved, honestly — nothing here is simulated.
-                    </p>
-                    <div className="grid gap-3">
-                      {MEMBER_HOME_RESERVED_SLOTS.map((slot) => (
-                        <Card
-                          key={slot.label}
-                          className="bg-card/30 border-border/50 border-dashed p-4"
-                        >
-                          <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
-                            <span className="text-sm font-medium text-muted-foreground">
-                              {slot.label}
-                            </span>
-                            {slot.lifecycle ? (
-                              <LifecycleBadge lifecycle={slot.lifecycle} />
-                            ) : null}
-                          </div>
-                          <p className="text-xs text-muted-foreground leading-snug">
-                            {slot.note}
-                          </p>
-                        </Card>
-                      ))}
-                    </div>
-                  </div>
+                      WORK-FIRST): one door list, freeing the right column.
+                      The "Coming to your seat" reserved block died at S2d —
+                      the Season + Quests cards above are its fulfillment. */}
                 </div>
               </div>
 
@@ -338,27 +342,10 @@ export default function MemberAccess() {
                 2026-07-19) — the visitor's "How a seat works" + doors carry the
                 conversion; the program page itself is /referral when anon. */}
 
-            {/* SEASONS_ENGINE §11 slots 3–5 — RESERVED VISIBLY. */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-12">
-              {MEMBER_HOME_RESERVED_SLOTS.map((slot) => (
-                <Card
-                  key={slot.label}
-                  className="bg-card/30 border-border/50 border-dashed p-4"
-                >
-                  <div className="flex items-center justify-between gap-2 mb-1">
-                    <span className="text-sm font-medium text-muted-foreground">
-                      {slot.label}
-                    </span>
-                    {slot.lifecycle ? (
-                      <LifecycleBadge lifecycle={slot.lifecycle} />
-                    ) : null}
-                  </div>
-                  <p className="text-xs text-muted-foreground leading-snug">
-                    {slot.note}
-                  </p>
-                </Card>
-              ))}
-            </div>
+            {/* The SEASONS_ENGINE §11 reserved grid died at S2d — the season
+                is LIVE for members (the Season + Quests cards on the
+                dashboard); the visitor's season conversion lives on the home
+                season band and /season, where own-row data can't leak. */}
 
             <VerifyFoundationRow />
 

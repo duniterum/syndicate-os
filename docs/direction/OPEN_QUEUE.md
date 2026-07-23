@@ -91,6 +91,16 @@
 >   tokens, 0 raw-color sites. Measured on LIVE prod data at the
 >   studio-prod-data rig before handoff. DESIGN_ROADMAP box ticked same
 >   commit.
+> - **✅ S2d THE MEMBER SEASON + QUESTS SLOTS FILLED (2026-07-24, founder "GO
+>   and GO-Live"):** the own-row season rail `GET /api/auth/season-standing`
+>   (member-purchases discipline verbatim; the current-season row picked
+>   server-side by the session's own seat — ONE authority; 4 new skeleton
+>   checks green) + SeasonStandingCard (era ring + provenance · pot column
+>   FUTURE) + SeasonQuestsCard (FED quests only: the Connector ladder
+>   VERBATIM + the 3 firsts; no weekly claim) + the SEPARATE EffortRewardCard
+>   (emerald push frame, FUTURE, zero figure). Reserved slots emptied both
+>   branches; seasonQuests flipped LIVE; guards 27→30 + 587; the #14-figures
+>   note resolved by law (mockup figures = geometry, never data).
 > - **🔴 STILL FOUNDER-PENDING (re-trued after the day's decisions):** AW-5
 >   wallet name (unchanged) · SwapRail decisions (developer fee % · fee pipe
 >   address · thirdweb account ~$99/mo · placement) · pot COMMITMENT amount +

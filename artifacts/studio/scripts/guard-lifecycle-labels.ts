@@ -18,6 +18,12 @@ const pagesDir = path.resolve(here, "..", "src", "pages");
 const EXEMPT = new Set([
   "Learning.tsx",
   "not-found.tsx",
+  // S2d (2026-07-24): the /member page SHELL renders no protocol value of its
+  // own anymore — the reserved dashed cards (the file's last badge sites)
+  // died when the Season+Quests cards shipped FILLED; every value surface on
+  // the page is a gated wallet component carrying its OWN honesty label
+  // (SeasonStandingCard's FUTURE pot frame, CapitalAxisCard, MemberYourSeat…).
+  "MemberAccess.tsx",
   // §11 slot-2c teaser pages: their honesty label IS rendered — by the shared
   // TeaserSurface chassis from spec.lifecycle (chassis check below pays for
   // the exemption, so it cannot rot into an unlabeled surface).

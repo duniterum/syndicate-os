@@ -43,6 +43,11 @@ const PINNED_CLAIM_SITES: Record<string, readonly string[]> = {
   // with the auth-zone wiring — nothing is promised live before it is).
   "components/season/HomeSeasonSection.tsx": ["seasonBounty"],
   "components/season/HomeRegisterBand.tsx": ["seasonOwnRow"],
+  // S2d (2026-07-24): the member Season card's pot column — the same frame
+  // law as every pot surface (no figure without its escrow proof).
+  "wallet/SeasonStandingCard.tsx": ["seasonBounty"],
+  // S2d: the separate cash rail's frame on Member Home (two-layer law).
+  "components/season/EffortRewardCard.tsx": ["seasonBounty"],
   "components/referral/ReferralLadderPanel.tsx": [
     "rateRaiseHistory",
     // Seasons arc 2026-07-23: the single seasonEngine key split into

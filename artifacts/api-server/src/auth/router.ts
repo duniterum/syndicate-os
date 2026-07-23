@@ -85,7 +85,12 @@ import { txUrl } from "../canon/the-syndicate/chain/chain-registry";
 import { assertProtocolRealityDiscipline } from "../lib/protocol/payloadDiscipline";
 // D-TRUTH D3: the backbone's own-purchase read-model (SERVER-ONLY wallet
 // keys) — the auth zone serves a session's OWN rows out of it, nothing else.
-import { getOwnPurchaseSource } from "../backbone/backboneRunner";
+// S2d: the season read-model joins on the same terms (the walletIndex is
+// SERVER-ONLY; a session reads its OWN view, never a directory).
+import { getOwnPurchaseSource, getSeasonSource } from "../backbone/backboneRunner";
+// S2d: the quest registry — the ONE rule sheet; the route derives the
+// session's own quest progress from it (ids/targets/bonuses, no labels).
+import { SEASON_QUESTS } from "../data/seasonConfig";
 
 const router: Router = Router();
 
@@ -884,6 +889,134 @@ router.get("/member-purchases", (req: Request, res: Response) => {
   req.log.info({
     event: "auth.member_purchases.checked",
     code: !sessionActive ? "none" : rows !== null ? "mapped" : "unavailable",
+  });
+  res.json(payload);
+});
+
+// ── GET /api/auth/season-standing ───────────────────────────────────────────
+// S2d — own SEASON self-readback (the member-purchases discipline verbatim):
+// the ONLY input is the session cookie; the bound account picks the session's
+// OWN view out of the season read-model's SERVER-ONLY walletIndex and only
+// numbers and quest ids leave — no key, no short form, never a directory.
+// The current-season rank/XP/axes serve HERE, picked out of the SAME model
+// row the public board serves (by the session's own seat, server-side) —
+// one model, one authority; never a second computation. (The wallet boundary
+// only speaks to the auth zone — guard-access-state — so the card cannot
+// join the public board itself.) Fail-closed: model dark → an honest
+// reason, never a guess; a signed-in wallet with no acts serves its honest
+// zero view. The word law: builders, never the game register.
+router.get("/season-standing", (req: Request, res: Response) => {
+  if (!allowRequest(throttleKey(req))) {
+    req.log.warn({ event: "auth.season_standing.throttled" });
+    deny(res, 429, "throttled");
+    return;
+  }
+
+  const sessionId: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+  const boundAccount =
+    typeof sessionId === "string" && sessionId.length > 0
+      ? getSessionAccount(sessionId)
+      : null;
+
+  const sessionActive = boundAccount !== null;
+  let seat: number | null = null;
+  let lifetimeXp: number | null = null;
+  let level: number | null = null;
+  let currentSeasonNumber: number | null = null;
+  let seasonXp: number | null = null;
+  let seasonRank: number | null = null;
+  let seasonAxes: Record<string, number> | null = null;
+  let quests:
+    | {
+        id: string;
+        questClass: string;
+        target: number;
+        bonusXp: number;
+        current: number;
+        completed: boolean;
+      }[]
+    | null = null;
+  let failureReason: string | null = null;
+  if (boundAccount === null) {
+    failureReason =
+      "no active wallet session; sign in to read your own season record";
+  } else {
+    const source = getSeasonSource();
+    if (source === null) {
+      failureReason =
+        "the season projection has not produced a model yet — your view returns shortly; nothing is assumed";
+    } else {
+      currentSeasonNumber = source.currentSeasonNumber;
+      const own = source.walletIndex.get(boundAccount.toLowerCase()) ?? null;
+      // An unknown wallet (signed in, zero acts, no seat) is an honest zero
+      // view — the season simply has not seen it yet; nothing is invented.
+      const metrics = own?.metrics ?? {
+        "introductions-converted": 0,
+        "burn-acts": 0,
+        "archive-mints": 0,
+      };
+      seat = own?.seat ?? null;
+      lifetimeXp = own?.lifetimeXp ?? 0;
+      level = own?.level ?? 1;
+      const done = own?.questsCompleted ?? [];
+      quests = SEASON_QUESTS.map((q) => {
+        const current = metrics[q.metricKey] ?? 0;
+        return {
+          id: q.id,
+          questClass: q.questClass,
+          target: q.target,
+          bonusXp: q.bonusXp,
+          current,
+          completed: done.includes(q.id) || current >= q.target,
+        };
+      });
+      // The OWN current-season row — the SAME row the public board serves,
+      // picked by the session's own seat (numbers only; a seated wallet with
+      // no acts yet has no row: an honest zero, never an invention).
+      if (seat !== null) {
+        const currentSeason =
+          source.seasons.find((s) => s.seasonNumber === source.currentSeasonNumber) ?? null;
+        const row =
+          currentSeason?.standings.find((r) => r.seat === seat) ?? null;
+        if (row !== null) {
+          seasonXp = row.xp;
+          seasonRank = row.rank;
+          seasonAxes = { ...row.axes };
+        } else {
+          seasonXp = 0;
+        }
+      }
+    }
+  }
+
+  const payload = {
+    state: sessionActive ? ("S4" as const) : ("S1" as const),
+    seat,
+    lifetimeXp,
+    level,
+    currentSeasonNumber,
+    seasonXp,
+    seasonRank,
+    seasonAxes,
+    quests,
+    failureReason,
+  };
+  // Leak gates: payload discipline + boundary-aware address scan — numbers
+  // and quest ids only by construction; the bound key never enters the
+  // payload object. Defense in depth, the member-purchases pattern.
+  try {
+    assertProtocolRealityDiscipline(payload);
+    if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(JSON.stringify(payload))) {
+      throw new Error("address-shaped token in payload");
+    }
+  } catch {
+    req.log.warn({ event: "auth.season_standing.discipline_rejected" });
+    deny(res, 500, "unavailable");
+    return;
+  }
+  req.log.info({
+    event: "auth.season_standing.checked",
+    code: !sessionActive ? "none" : quests !== null ? "mapped" : "unavailable",
   });
   res.json(payload);
 });

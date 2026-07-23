@@ -88,6 +88,12 @@ pin(
 );
 for (const sealed of [
   "<CapitalAxisCard",
+  // S2d (2026-07-24): the Season + Quests slots FILLED — the member's own
+  // season standing and quest progress are shipped capability now
+  // (DONE-IS-DONE: they may evolve, never regress to a reserved card).
+  "<SeasonStandingCard",
+  "<SeasonQuestsCard",
+  "<EffortRewardCard",
   "<ProtocolSnapshot",
   "<ChronicleLatest",
   "<MemberSettings",
@@ -95,7 +101,7 @@ for (const sealed of [
 ]) {
   pin(
     dashText.includes(sealed),
-    `sealed-stays-sealed: the DASHBOARD still mounts ${sealed}> (Z6/Z7/Z8/settings/verify)`,
+    `sealed-stays-sealed: the DASHBOARD still mounts ${sealed}> (Z6/season/quests/Z7/settings/verify)`,
   );
 }
 

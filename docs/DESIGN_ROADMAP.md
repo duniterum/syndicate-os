@@ -89,9 +89,20 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
     commit (description « / » + index.html synchronisé, 532 checks). Le polissage
     podium /season (report S2c) livré même commit. **+8 jetons métal, 0 site couleur
     brute.**
-  - [ ] **Member Home — slots Season + Quests remplis** (`MEMBER_HOME_RESERVED_SLOTS` flip
-    même commit) + carte « récompense d'effort » séparée, badgée FUTURE sur `seasonBounty`
-    jusqu'à S3.
+  - [x] **Member Home — slots Season + Quests REMPLIS (S2d, 2026-07-24, GO-and-GO-LIVE
+    fondateur)** : `SeasonStandingCard` (anneau d'ère sur LA source unique + provenance ·
+    rang/XP/axes servis par le NOUVEAU rail own-row `GET /api/auth/season-standing` — la
+    MÊME ligne de modèle que le tableau public, choisie par le siège de la session côté
+    serveur (une seule autorité + frontière wallet=auth-only, guard-access-state) · colonne
+    pot = cadre badgé FUTURE) · `SeasonQuestsCard` (les quêtes ALIMENTÉES seulement :
+    l'échelle Connector VERBATIM + les 3 premiers actes, voix auto-crédit, AUCUNE promesse
+    hebdomadaire non câblée) · carte « récompense d'effort » SÉPARÉE (`EffortRewardCard`,
+    identité émeraude, voix push « rien à réclamer », badgée FUTURE sur `seasonBounty`,
+    zéro chiffre) · `MEMBER_HOME_RESERVED_SLOTS` vidé même commit (les cartes pointillées
+    mortes, dashboard + visiteur) · `seasonQuests` flippé LIVE même commit · 4 nouveaux
+    checks au test squelette d'auth (S4+quêtes · scan de fuite · paramètre inerte ·
+    anonyme S1 — tous verts sur le rig). La note #14 réconciliée par la loi : les chiffres
+    de maquette sont de la géométrie, jamais des données. **+0 couleur brute.**
   - [ ] **Console admin — section Seasons 2 rails** (chunk opérateur lazy) : rail
     reconnaissance auto (next-step engine + dry-run harvestés de l'origine) · rail effort
     founder-gated (« Engager au pot » vs « Réserve » + rounds seal/interim-48h/final per
