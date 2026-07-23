@@ -72,7 +72,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   featureStatus SPLIT (seasonRanking/seasonQuests/seasonBounty; the ladder
 >   panel's claim repointed). Gates: api typecheck + full api guards (backbone
 >   incl.) + studio typecheck + 19 studio guards + feature-truth 568 — ALL
->   GREEN. → NEXT: S2 recognition surfaces (/season public page · home season section ·
+>   GREEN. **S2 OPENED (founder "OK GO"): the 4 mockups RE-ISSUED CORRECTED
+>   [this commit] per §0.14-E (4-agent pass wf_b465c7d9-472 + independent
+>   killed-pattern sweep: band zones w/ identical amounts · dual time-scope ·
+>   committed-pot honesty + verify · two-proof-classes line · Season-0 dead ·
+>   full-screen no caps · secondary CTA · Pendant-ton-absence deleted ·
+>   money shown on the member card · push wording "rien à réclamer" · admin
+>   on OUR tokens · Income tab dead · zero-click autobar · two buckets ·
+>   seal/interim/final rounds · §0.15 pipeline) — NOW AT THE FOUNDER
+>   WIREFRAME GATE (his approval of what he SEES unlocks each surface).**
+>   → NEXT: S2 recognition surfaces (/season public page · home season section ·
 >   member Season+Quests slots · admin Seasons rail 1 — wireframe + preview gate EACH;
 >   the split keys `seasonRanking`/`seasonQuests`/`seasonBounty` flip in their
 >   go-live commits, §0.14-E) → S3 Foundry workspace + the merit primitive + the

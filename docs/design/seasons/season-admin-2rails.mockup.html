@@ -4,86 +4,94 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Syndicate OS — Console Opérateur · Seasons, Recognition & Bounty</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#09090c; --panel:#131318; --panel2:#181820; --panel3:#1e1e28;
-    --border:#26262f; --border2:#33333f;
-    --txt:#e9e9ee; --muted:#9596a2; --faint:#6a6b76;
-    --gold:#e6c15a; --gold2:#c9a227; --cyan:#38d9f0; --emerald:#46e0a8;
-    --amber:#f2b441; --rose:#f26d8b; --auto:#5fe08a; --violet:#b79cf0;
-    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
-    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --bg:hsl(224 71% 4%); --panel:hsl(224 45% 8%); --panel2:hsl(224 41% 10%); --panel3:hsl(224 37% 13%);
+    --border:hsl(224 30% 16%); --border2:hsl(224 25% 21%);
+    --txt:hsl(224 25% 93%); --muted:hsl(226 10% 62%); --faint:hsl(226 8% 45%);
+    --gold:hsl(42 92% 60%); --gold2:hsl(42 75% 45%); --cyan:hsl(190 90% 50%); --emerald:hsl(158 71% 58%);
+    --amber:hsl(39 87% 60%); --rose:hsl(347 84% 69%); --auto:hsl(140 68% 63%); --violet:hsl(259 74% 78%);
+    --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
+    --sans:"Work Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.5;
     -webkit-font-smoothing:antialiased;padding-bottom:60px}
   .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
-  h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.2px}
-  .mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:.2px}
+  .mono{font-family:var(--mono)}
 
   .ribbon{position:fixed;top:14px;right:-46px;transform:rotate(45deg);
-    background:linear-gradient(90deg,var(--gold2),var(--gold));color:#1a1408;
+    background:linear-gradient(90deg,var(--gold2),var(--gold));color:hsl(42 60% 6%);
     font-size:11px;font-weight:800;letter-spacing:1px;padding:6px 60px;z-index:50;
-    box-shadow:0 3px 14px rgba(0,0,0,.5)}
+    box-shadow:0 3px 14px hsl(0 0% 0% / .5)}
 
-  header{border-bottom:1px solid var(--border);background:linear-gradient(180deg,#0d0d12,#0a0a0e);
+  header{border-bottom:1px solid var(--border);background:linear-gradient(180deg,hsl(224 50% 6%),hsl(224 60% 5%));
     padding:22px 0 20px;position:sticky;top:0;z-index:40;backdrop-filter:blur(6px)}
   .brandrow{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
   .brand{display:flex;align-items:center;gap:12px}
   .sigil{width:34px;height:34px;border-radius:9px;background:radial-gradient(circle at 30% 30%,var(--gold),var(--gold2));
-    box-shadow:0 0 22px rgba(230,193,90,.35);flex:0 0 auto}
-  .brand h1{font-size:19px}
+    box-shadow:0 0 22px hsl(42 92% 60% / .35);flex:0 0 auto}
+  .brand h1{font-size:22px}
   .brand .sub{color:var(--muted);font-size:12.5px;font-family:var(--sans)}
   .rolechip{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--border2);
     border-radius:999px;padding:6px 12px 6px 8px;font-size:12.5px}
   .rolechip .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold)}
+  .econlink{color:var(--muted);font-size:12px;font-weight:600;text-decoration:none;
+    border-bottom:1px dashed var(--border2);padding-bottom:2px;white-space:nowrap}
+  .econlink:hover{color:var(--txt)}
+  .econlink .mono{color:var(--emerald)}
 
   .autobar{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px}
-  .autocell{flex:1;min-width:210px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+  .autocell{flex:1;min-width:170px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
   .autocell .k{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--faint)}
-  .autocell .v{font-family:var(--serif);font-size:22px;margin-top:3px}
+  .autocell .v{font-family:var(--serif);font-size:24px;margin-top:3px}
   .autocell .v .u{font-size:12.5px;color:var(--muted);font-family:var(--sans)}
   .autocell.green .v{color:var(--auto)} .autocell.gold .v{color:var(--gold)} .autocell.amber .v{color:var(--amber)}
 
   section{margin-top:34px}
   .railhead{display:flex;align-items:center;gap:14px;margin-bottom:6px;flex-wrap:wrap}
-  .railno{font-family:var(--serif);font-size:13px;color:var(--faint);border:1px solid var(--border2);border-radius:8px;padding:3px 9px}
-  .railhead h2{font-size:23px}
+  .railno{font-family:var(--serif);font-size:14px;color:var(--faint);border:1px solid var(--border2);border-radius:8px;padding:3px 9px}
+  .railhead h2{font-size:27px}
   .railsub{color:var(--muted);font-size:13.5px;margin:2px 0 18px}
-  .rail-reco{--accent:var(--cyan)} .rail-cash{--accent:var(--emerald)} .rail-web{--accent:var(--violet)}
+  .rail-reco{--accent:var(--cyan)} .rail-cash{--accent:var(--emerald)}
   .railbar{height:3px;border-radius:3px;background:linear-gradient(90deg,var(--accent),transparent);margin-bottom:20px;opacity:.7}
 
   .pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.4px;
     border-radius:999px;padding:4px 10px;border:1px solid transparent;white-space:nowrap}
-  .p-live{color:var(--cyan);background:rgba(56,217,240,.10);border-color:rgba(56,217,240,.4)}
-  .p-auto{color:var(--auto);background:rgba(95,224,138,.10);border-color:rgba(95,224,138,.4)}
-  .p-founder{color:var(--gold);background:rgba(230,193,90,.10);border-color:rgba(230,193,90,.4)}
-  .p-decision{color:var(--amber);background:rgba(242,180,65,.10);border-color:rgba(242,180,65,.4)}
-  .p-legal{color:var(--rose);background:rgba(242,109,139,.10);border-color:rgba(242,109,139,.4)}
-  .p-verify{color:var(--cyan);background:transparent;border-color:rgba(56,217,240,.35)}
-  .p-onchain{color:var(--cyan);background:rgba(56,217,240,.08);border-color:rgba(56,217,240,.45)}
-  .p-app{color:var(--muted);background:rgba(150,150,162,.08);border-color:var(--border2)}
+  .p-live{color:var(--cyan);background:hsl(190 90% 50% / .10);border-color:hsl(190 90% 50% / .4)}
+  .p-auto{color:var(--auto);background:hsl(140 68% 63% / .10);border-color:hsl(140 68% 63% / .4)}
+  .p-founder{color:var(--gold);background:hsl(42 92% 60% / .10);border-color:hsl(42 92% 60% / .4)}
+  .p-decision{color:var(--amber);background:hsl(39 87% 60% / .10);border-color:hsl(39 87% 60% / .4)}
+  .p-legal{color:var(--rose);background:hsl(347 84% 69% / .06);border-color:hsl(347 84% 69% / .28)}
+  .p-verify{color:var(--cyan);background:transparent;border-color:hsl(190 90% 50% / .35)}
+  .p-onchain{color:var(--cyan);background:hsl(190 90% 50% / .08);border-color:hsl(190 90% 50% / .45)}
+  .p-app{color:var(--muted);background:hsl(226 10% 62% / .08);border-color:var(--border2)}
 
   .grid{display:grid;gap:16px}
   .g2{grid-template-columns:1.15fr .85fr}
   @media(max-width:820px){.g2{grid-template-columns:1fr}}
   .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px}
   .card.hero{background:linear-gradient(180deg,var(--panel2),var(--panel))}
-  .card h3{font-size:15.5px;margin-bottom:2px}
+  .card h3{font-size:17.5px;margin-bottom:2px}
   .card .lead{color:var(--muted);font-size:12.5px;margin-bottom:14px}
   .kv{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px dashed var(--border);font-size:13px}
   .kv:first-of-type{border-top:none}
   .kv .lab{color:var(--muted)} .kv .val{text-align:right}
   .val .g{color:var(--gold)} .val .c{color:var(--cyan)} .val .e{color:var(--emerald)}
 
-  .season-title{font-family:var(--serif);font-size:20px}
-  .bar{height:8px;border-radius:6px;background:#0d0d12;border:1px solid var(--border);overflow:hidden;margin:12px 0 6px}
+  .season-title{font-family:var(--serif);font-size:23px}
+  .bar{height:8px;border-radius:6px;background:hsl(224 50% 6%);border:1px solid var(--border);overflow:hidden;margin:12px 0 6px}
   .bar>i{display:block;height:100%;width:4.2%;background:linear-gradient(90deg,var(--gold2),var(--gold))}
   .barnote{font-size:12px;color:var(--muted)}
 
   .steps{display:flex;gap:0;flex-wrap:wrap;margin-top:6px}
-  .step{flex:1;min-width:120px;position:relative;padding:12px 12px 12px 0}
-  .step .name{font-family:var(--serif);font-size:14px}
+  .step{flex:1;min-width:104px;position:relative;padding:12px 12px 12px 0}
+  .step .name{font-family:var(--serif);font-size:15px}
   .step .meta{font-size:11.5px;color:var(--muted);margin-top:3px}
   .step .node{width:11px;height:11px;border-radius:50%;background:var(--accent);margin-bottom:9px;box-shadow:0 0 10px var(--accent)}
   .step.dim .node{background:var(--border2);box-shadow:none}
@@ -94,46 +102,48 @@
   table{width:100%;border-collapse:collapse;font-size:12.8px}
   th,td{text-align:left;padding:10px 10px;border-top:1px solid var(--border);vertical-align:top}
   th{color:var(--faint);font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:uppercase;border-top:none}
-  tbody tr:hover{background:rgba(255,255,255,.015)}
+  tbody tr:hover{background:hsl(0 0% 100% / .015)}
   td .src{font-weight:600} td .sub{color:var(--muted);font-size:11.5px}
 
   .banner{border-radius:12px;padding:13px 15px;font-size:13px;display:flex;gap:11px;align-items:flex-start;margin-top:14px}
   .banner .ic{flex:0 0 auto;font-size:15px;line-height:1.2}
-  .banner-auto{background:rgba(95,224,138,.07);border:1px solid rgba(95,224,138,.3)}
-  .banner-legal{background:rgba(242,109,139,.06);border:1px solid rgba(242,109,139,.28)}
-  .banner-verify{background:rgba(56,217,240,.06);border:1px solid rgba(56,217,240,.28)}
+  .banner-auto{background:hsl(140 68% 63% / .07);border:1px solid hsl(140 68% 63% / .3)}
+  .banner-legal{background:hsl(347 84% 69% / .06);border:1px solid hsl(347 84% 69% / .28)}
+  .banner-verify{background:hsl(190 90% 50% / .06);border:1px solid hsl(190 90% 50% / .28)}
   .banner b{color:var(--txt)}
 
   .lbrow{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--border);font-size:13px}
   .lbrow:first-child{border-top:none}
   .rk{font-family:var(--serif);width:26px;color:var(--gold)}
-  .axis{font-size:10.5px;color:var(--violet);border:1px solid rgba(183,156,240,.35);border-radius:6px;padding:1px 6px}
-  .xp{margin-left:auto;color:var(--cyan);font-variant-numeric:tabular-nums}
+  .axis{font-size:10.5px;color:var(--violet);border:1px solid hsl(259 74% 78% / .35);border-radius:6px;padding:1px 6px}
+  .xp{margin-left:auto;color:var(--cyan);font-family:var(--mono);font-size:12.5px;font-variant-numeric:tabular-nums}
 
   .pipe{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:4px}
   @media(max-width:820px){.pipe{grid-template-columns:repeat(2,1fr)}}
   .pnode{background:var(--panel2);border:1px solid var(--border);border-radius:11px;padding:11px 12px;font-size:12px}
-  .pnode .n{font-family:var(--serif);font-size:13px;margin-bottom:5px}
-  .pnode.decision{border-color:rgba(242,180,65,.45);background:rgba(242,180,65,.05)}
+  .pnode .n{font-family:var(--serif);font-size:15px;margin-bottom:5px}
+  .pnode.window{border-color:hsl(190 90% 50% / .45);background:hsl(190 90% 50% / .05)}
   .pnode .t{color:var(--muted);font-size:11px}
 
-  .fundbox{background:var(--panel2);border:1px solid rgba(242,180,65,.35);border-radius:12px;padding:15px;margin-bottom:14px}
+  .fundbox{background:var(--panel2);border:1px solid hsl(39 87% 60% / .35);border-radius:12px;padding:15px;margin-bottom:14px}
   .fundbox .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .fundinput{font-family:var(--mono);background:hsl(224 50% 6%);border:1px solid var(--border2);border-radius:8px;padding:7px 12px;font-size:13px}
   .ledger{margin-top:12px;border-top:1px dashed var(--border);padding-top:10px}
   .ledger .lg{display:flex;justify-content:space-between;font-size:12.5px;padding:4px 0;color:var(--muted)}
-  .ledger .lg b{color:var(--emerald)}
-  .ledger .tot{display:flex;justify-content:space-between;font-size:13.5px;padding-top:8px;margin-top:4px;border-top:1px solid var(--border)}
-  .ledger .tot b{color:var(--amber);font-family:var(--serif);font-size:17px}
+  .ledger .lg b{color:var(--emerald);font-family:var(--mono);font-weight:500}
+  .ledger .lg b.rsv{color:var(--amber)}
+  .ledger .tot{display:flex;justify-content:space-between;gap:12px;font-size:13.5px;padding-top:8px;margin-top:4px;border-top:1px solid var(--border)}
+  .ledger .tot b{color:var(--gold);font-family:var(--serif);font-size:19px}
+  .ledger .buck{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;padding:4px 0;color:var(--muted)}
+  .ledger .buck b{font-family:var(--mono);font-weight:500;color:var(--txt)}
   .btn{border-radius:9px;padding:9px 16px;font-size:12.5px;font-weight:700;border:1px solid var(--border2);background:var(--panel3);color:var(--txt);cursor:pointer}
-  .btn.gold{background:linear-gradient(90deg,var(--gold2),var(--gold));color:#1a1408;border:none}
-  .btn.ghost{border-color:rgba(242,180,65,.4);color:var(--amber);background:transparent;font-size:12px;padding:6px 12px}
+  .btn.gold{background:linear-gradient(90deg,var(--gold2),var(--gold));color:hsl(42 60% 6%);border:none}
 
   .rounds{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
-  .rnd{flex:1;min-width:150px;background:var(--panel2);border:1px solid var(--border);border-radius:11px;padding:11px 12px}
-  .rnd .rn{font-family:var(--serif);font-size:13.5px;margin-bottom:4px}
+  .rnd{flex:1;min-width:190px;background:var(--panel2);border:1px solid var(--border);border-radius:11px;padding:11px 12px}
+  .rnd .rn{font-family:var(--serif);font-size:15px;margin-bottom:4px}
   .rnd .rr{font-size:11px;color:var(--muted)}
-  .rnd.open{border-color:rgba(70,224,168,.4)}
-  .rnd.future{opacity:.6}
+  .rnd.open{border-color:hsl(158 71% 58% / .4)}
 
   .legalrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 
@@ -142,22 +152,30 @@
   .tier{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
   .arrow{color:var(--faint);font-size:18px;line-height:1;margin:7px 0}
   .mnode{border-radius:10px;padding:9px 13px;font-size:12.5px;border:1px solid var(--border2);background:var(--panel2);text-align:center}
-  .mnode .mt{font-family:var(--serif);font-size:13px}
+  .mnode .mt{font-family:var(--serif);font-size:14.5px}
   .mnode .ms{font-size:10.5px;color:var(--muted);margin-top:2px}
-  .mnode.chain{border-color:rgba(56,217,240,.4)} .mnode.chain .mt{color:var(--cyan)}
+  .mnode.chain{border-color:hsl(190 90% 50% / .4)} .mnode.chain .mt{color:var(--cyan)}
   .mnode.appn{border-color:var(--border2)} .mnode.appn .mt{color:var(--muted)}
-  .mnode.reco{border-color:rgba(230,193,90,.4)} .mnode.reco .mt{color:var(--gold)}
-  .mnode.cash{border-color:rgba(70,224,168,.4)} .mnode.cash .mt{color:var(--emerald)}
+  .mnode.reco{border-color:hsl(42 92% 60% / .4)} .mnode.reco .mt{color:var(--gold)}
+  .mnode.cash{border-color:hsl(158 71% 58% / .4)} .mnode.cash .mt{color:var(--emerald)}
   .fanout{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
   .maplegend{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:16px;font-size:11.5px;color:var(--muted)}
   .maplegend span{display:inline-flex;align-items:center;gap:6px}
   .sw-dot{width:10px;height:10px;border-radius:3px;display:inline-block}
 
+  details.expander{margin-top:16px;background:var(--panel);border:1px solid var(--border);border-radius:14px}
+  details.expander>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    padding:14px 18px;font-family:var(--serif);font-size:17.5px}
+  details.expander>summary::-webkit-details-marker{display:none}
+  details.expander>summary .chev{margin-left:auto;color:var(--faint);font-size:14px;transition:transform .2s}
+  details.expander[open]>summary .chev{transform:rotate(180deg)}
+  details.expander .exbody{padding:0 18px 18px}
+
   .foot{margin-top:40px;border-top:1px solid var(--border);padding-top:18px;color:var(--faint);font-size:12px}
   .foot b{color:var(--muted)}
   .divider{height:1px;background:var(--border);margin:38px 0}
   .switch{display:flex;gap:6px;background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:4px}
-  .switch button{border:none;background:transparent;color:var(--muted);font-size:12px;font-weight:600;padding:6px 14px;border-radius:999px;cursor:pointer}
+  .switch button{border:none;background:transparent;color:var(--muted);font-size:12px;font-weight:600;padding:6px 14px;border-radius:999px;cursor:pointer;font-family:var(--sans)}
   .switch button.on{background:var(--panel3);color:var(--txt)}
   .hidden{display:none}
 </style>
@@ -175,22 +193,22 @@
           <div class="sub">Seasons · Recognition · Bounty &nbsp;·&nbsp; <span class="mono">/admin → seasons</span></div>
         </div>
       </div>
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
         <div class="switch" id="sw">
           <button data-f="all" class="on">Tout</button>
           <button data-f="reco">Recognition</button>
           <button data-f="cash">Bounty</button>
-          <button data-f="map">Interconnexion</button>
-          <button data-f="value">Income</button>
         </div>
+        <a class="econlink" href="#">Flux de revenus → <span class="mono">/economy</span></a>
         <div class="rolechip"><span class="dot"></span> Founder · <span style="color:var(--muted)">step-up</span></div>
       </div>
     </div>
 
     <div class="autobar">
-      <div class="autocell green"><div class="k">XP — intervention opérateur</div><div class="v">0 <span class="u">clic · dérivé de faits prouvables</span></div></div>
-      <div class="autocell gold"><div class="k">Recognition — intervention</div><div class="v">1 <span class="u">clic optionnel · promotion Chronicle</span></div></div>
-      <div class="autocell amber"><div class="k">Bounty cash — intervention</div><div class="v">1 <span class="u">décision · funder (rounds automatisés)</span></div></div>
+      <div class="autocell green"><div class="k">XP</div><div class="v">0 <span class="u">clic</span></div></div>
+      <div class="autocell green"><div class="k">Reconnaissance</div><div class="v">0 <span class="u">clic</span></div></div>
+      <div class="autocell green"><div class="k">Sceau</div><div class="v">0 <span class="u">clic · automatique</span></div></div>
+      <div class="autocell gold"><div class="k">Argent</div><div class="v">1 <span class="u">seul geste — « Engager au pot »</span></div></div>
     </div>
   </div>
 </header>
@@ -218,22 +236,24 @@
         <div class="bar"><i></i></div>
         <div class="barnote">14 / 333 sièges &nbsp;·&nbsp; <span class="pill p-verify">design preview — figure non live</span></div>
         <div style="margin-top:14px">
-          <div class="kv"><span class="lab">Trigger de fin</span><span class="val"><span class="c">memberCount ≥ endSeat</span> (on-chain)</span></div>
+          <div class="kv"><span class="lab">Trigger de fin</span><span class="val"><span class="c mono" style="font-size:12px">memberCount ≥ endSeat</span> (on-chain)</span></div>
           <div class="kv"><span class="lab">Chapitre lié</span><span class="val">I · Genesis Signal <span style="color:var(--muted)">(#1–333)</span></span></div>
           <div class="kv"><span class="lab">Pool / USDC / claim</span><span class="val" style="color:var(--auto)">aucun — reconnaissance uniquement</span></div>
+          <div class="kv"><span class="lab">Prochaine étape (moteur)</span><span class="val">l'ère se remplit → scellement auto → round de scellement</span></div>
         </div>
       </div>
 
       <div class="card">
-        <h3>Cycle de vie</h3>
-        <div class="lead">Presque tout est automatique. Un seul geste humain, optionnel.</div>
+        <h3>Cycle de vie de la season</h3>
+        <div class="lead">Tout est automatique. Le seul clic est un droit éditorial, jamais un devoir.</div>
         <div class="steps">
           <div class="step"><div class="node"></div><div class="name">PLANNED</div><div class="meta">pré-ouvert</div></div>
           <div class="step"><div class="node"></div><div class="name">LIVE</div><div class="meta"><span class="pill p-auto" style="padding:2px 7px">AUTO</span> sur l'ère</div></div>
           <div class="step"><div class="node"></div><div class="name">SEALED</div><div class="meta"><span class="pill p-auto" style="padding:2px 7px">AUTO</span> ère avancée</div></div>
-          <div class="step dim"><div class="node"></div><div class="name">PUBLISHED</div><div class="meta"><span class="pill p-founder" style="padding:2px 7px">1 CLIC</span> founder</div></div>
+          <div class="step"><div class="node"></div><div class="name">ROOT_COMMITTED</div><div class="meta"><span class="pill p-auto" style="padding:2px 7px">AUTO</span> empreinte XP · rôle SEALER</div></div>
+          <div class="step dim"><div class="node"></div><div class="name">PUBLISHED</div><div class="meta"><span class="pill p-founder" style="padding:2px 7px">1 CLIC optionnel</span> Chronicle</div></div>
         </div>
-        <div class="banner banner-auto"><span class="ic">↻</span><div>Snapshot, scellée et candidate Chronicle <b>automatiques</b>. L'opérateur ne fait que <b>promouvoir</b> l'entrée Chronicle (CHR-1 : la machine détecte, le founder promeut).</div></div>
+        <div class="banner banner-auto"><span class="ic">↻</span><div>Snapshot, scellement, empreinte on-chain et round de scellement : <b>automatiques</b>. L'opérateur ne fait que <b>promouvoir</b> l'entrée Chronicle (CHR-1 : la machine détecte, le founder promeut — un droit, jamais un devoir).</div></div>
       </div>
     </div>
 
@@ -273,18 +293,65 @@
         <div class="banner banner-auto" style="margin-top:10px"><span class="ic">→</span><div>Season scellée → <b>entrée Chronicle</b> + <b>marque permanente au profil</b> + <b>milestone ancré à la tx</b>. Immuable, append-only.</div></div>
       </div>
     </div>
+
+    <!-- INTERCONNEXION — expander fermé, en bas du rail -->
+    <details class="expander">
+      <summary>
+        <span class="railno">L'ORGANISME</span> Interconnexion des modules
+        <span class="pill p-verify">one atom · many projections</span>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="exbody">
+        <div class="railsub" style="margin-top:2px">Aucun module n'est un silo. Un même atome on-chain se projette partout — c'est ça, le living organism. <span style="color:var(--faint)">(Ce 1er étage = les actes qui génèrent du XP ; l'inventaire complet des flux de revenus vit sur <b style="color:var(--emerald)">/economy</b>.)</span></div>
+
+        <div class="map">
+          <div class="tier">
+            <div class="mnode chain"><div class="mt">Reçu d'achat</div><div class="ms">Sale V3</div></div>
+            <div class="mnode chain"><div class="mt">Introduction</div><div class="ms">SourceRegistry</div></div>
+            <div class="mnode chain"><div class="mt">Burn</div><div class="ms">Proof of Fire</div></div>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="tier"><div class="mnode chain"><div class="mt">Indexeur → Activity read-model</div><div class="ms">le heartbeat · scan→enrich→rebuild (fail-closed)</div></div></div>
+          <div class="arrow">↓ &nbsp;+ sources app : <span class="pill p-app" style="margin:0 4px">Quiz</span><span class="pill p-app" style="margin:0 4px">Quête</span><span class="pill p-app">Feedback</span></div>
+          <div class="tier"><div class="mnode reco"><div class="mt">XP / Recognition — multi-axes</div><div class="ms">Capital · Connector · Verifier · Builder · Historian…</div></div></div>
+          <div class="arrow">↓</div>
+          <div class="tier"><div class="mnode reco"><div class="mt">Classement de la Season</div><div class="ms">= Ère (fondation) → puis ∞</div></div></div>
+          <div class="arrow">↓ &nbsp;SEAL (auto)</div>
+          <div class="tier"><div class="mnode reco"><div class="mt">Snapshot gelé</div><div class="ms">immuable · append-only</div></div></div>
+          <div class="arrow">↓ se projette en</div>
+          <div class="fanout">
+            <div class="mnode reco"><div class="mt">Chronicle</div><div class="ms">candidate · founder promeut</div></div>
+            <div class="mnode chain"><div class="mt">Milestone</div><div class="ms">ancré à la tx</div></div>
+            <div class="mnode reco"><div class="mt">Profil permanent</div><div class="ms">rang · badges · ne redescend jamais</div></div>
+            <div class="mnode cash"><div class="mt">Cash Bounty</div><div class="ms">← fenêtre delta · rounds</div></div>
+          </div>
+        </div>
+
+        <div class="banner banner-verify" style="margin-top:18px">
+          <span class="ic">↔</span>
+          <div><b>Boucles latérales :</b> <b style="color:var(--violet)">Referral</b> (SourceRegistry) alimente à la fois l'axe <b>Connector</b> du XP <i>et</i> la <b>commission</b> (cash, rail séparé) ; <b style="color:var(--gold)">Learn &amp; Earn</b> nourrit le XP (axe Verifier/Historian) ; l'<b style="color:var(--cyan)">Activity</b> et le <b>Chronicle</b> lisent le même atome que le <b>Receipt</b> et la <b>Share card</b>. Un seul fait, cinq surfaces — jamais deux vérités parallèles.</div>
+        </div>
+
+        <div class="maplegend">
+          <span><i class="sw-dot" style="background:var(--cyan)"></i> on-chain / vérifiable</span>
+          <span><i class="sw-dot" style="background:var(--muted)"></i> app / attesté</span>
+          <span><i class="sw-dot" style="background:var(--gold)"></i> recognition / founder-gated</span>
+          <span><i class="sw-dot" style="background:var(--emerald)"></i> cash (discrétionnaire)</span>
+        </div>
+      </div>
+    </details>
   </section>
 
   <div class="divider"></div>
 
-  <!-- ===================== RAIL 2 — CASH BOUNTY (multi-round) ===================== -->
+  <!-- ===================== RAIL 2 — CASH BOUNTY (pot + rounds) ===================== -->
   <section class="rail-cash" data-rail="cash">
     <div class="railhead">
       <span class="railno">RAIL 02</span><h2>Cash Bounty</h2>
       <span class="pill p-live">LIVE · MVP</span><span class="pill p-founder">FOUNDER-GATED</span>
-      <span class="pill p-auto">● 1 pool / season · rounds multiples</span>
+      <span class="pill p-auto">● 1 pot / season · rounds multiples</span>
     </div>
-    <div class="railsub">Mets de l'argent quand tu veux (tout d'un coup ou petit à petit), distribue plusieurs fois pendant la season. Mérite jamais chance · USDC jamais SYN · argent société.</div>
+    <div class="railsub">Engage de l'argent au pot quand tu veux (tout d'un coup ou petit à petit) — le scellement paie ; si l'ère traîne, accélère avec des rounds intérimaires. Mérite jamais chance · USDC jamais SYN · argent société.</div>
     <div class="railbar"></div>
 
     <div class="legalrow">
@@ -293,184 +360,72 @@
     </div>
 
     <div class="grid g2">
-      <!-- Alimenter le pot : mettre de l'argent -->
+      <!-- Mettre de l'argent : deux poches -->
       <div class="fundbox" style="margin-bottom:0">
         <span class="pill p-decision">● LA SEULE DÉCISION HUMAINE — mettre de l'argent</span>
         <div class="row" style="margin-top:12px">
           <span style="color:var(--muted);font-size:13px">Montant USDC :</span>
           <span class="fundinput">$500</span>
-          <button class="btn gold">Ajouter des fonds →</button>
+          <button class="btn gold">Engager au pot →</button>
+          <button class="btn">Déposer en réserve</button>
         </div>
-        <div style="color:var(--faint);font-size:11.5px;margin-top:8px">Mets <b>tout d'un coup</b> (ex. $2,000) <b>ou petit à petit</b>. Chaque ajout = un versement USDC dans le pot, audit-logué.</div>
+        <div style="color:var(--faint);font-size:11.5px;margin-top:8px"><b style="color:var(--gold)">« Engager au pot »</b> = irrévocable pour la season — c'est <b>LE chiffre public</b> que les membres voient et vers lequel ils travaillent. <b style="color:var(--amber)">« Déposer en réserve »</b> = poche société, retirable après <b>préavis public 72h</b>. Chaque geste = un versement USDC audit-logué.</div>
         <div class="ledger">
-          <div class="lg"><span>Ajout · J1</span><b>+$100</b></div>
-          <div class="lg"><span>Ajout · J4</span><b>+$100</b></div>
-          <div class="lg"><span>Ajout · J7</span><b>+$100</b></div>
-          <div class="tot"><span>Total dans le pot</span><b>$300</b></div>
+          <div class="lg"><span>Engagement au pot · J1</span><b>+$100</b></div>
+          <div class="lg"><span>Engagement au pot · J4</span><b>+$150</b></div>
+          <div class="lg"><span>Dépôt en réserve · J6</span><b class="rsv">+$200</b></div>
+          <div class="lg"><span>Engagement au pot · J7</span><b>+$150</b></div>
+          <div class="tot"><span>Dans le pot — LE chiffre public (engagé restant)</span><b>$300</b></div>
+          <div class="buck"><span>Déjà distribué (round intérimaire 1)</span><b>$100</b></div>
+          <div class="buck"><span>Réserve (retirable · préavis public 72h)</span><b style="color:var(--amber)">$200</b></div>
         </div>
       </div>
 
-      <!-- Bounty en cours (restauré) -->
+      <!-- Bounty en cours -->
       <div class="card">
         <h3>Bounty en cours <span class="pill p-verify" style="margin-left:6px">design preview</span></h3>
         <div class="lead">L'état du pot et du round ouvert, en direct.</div>
         <div class="kv"><span class="lab">Season</span><span class="val">1 — Genesis Signal</span></div>
-        <div class="kv"><span class="lab">Dans le pot</span><span class="val"><span class="e">$300 USDC</span> · argent société</span></div>
-        <div class="kv"><span class="lab">Round en cours</span><span class="val">Round 2 · root <span class="mono">0x9e1c…</span></span></div>
-        <div class="kv"><span class="lab">Fenêtre</span><span class="val">ouvert · jusqu'au prochain palier de sièges</span></div>
-        <div class="kv"><span class="lab">Réclamé</span><span class="val"><span class="e">3 / 6</span> destinataires</span></div>
-        <div class="kv"><span class="lab">Vérifier</span><span class="val"><span class="pill p-verify">verifyClaim() ✓ avant mainnet</span></span></div>
+        <div class="kv"><span class="lab">Dans le pot (public)</span><span class="val"><span class="e">$300 USDC</span> · engagé restant</span></div>
+        <div class="kv"><span class="lab">Déjà distribué</span><span class="val">$100 · intérimaire 1</span></div>
+        <div class="kv"><span class="lab">Round en cours</span><span class="val">Intérimaire 2 · root <span class="mono" style="font-size:12px">0x9e1c…</span> <span class="pill p-live" style="padding:1px 6px;margin-left:4px">ACTIVE</span></span></div>
+        <div class="kv"><span class="lab">Poussé (claimFor)</span><span class="val"><span class="e">3 / 6</span> destinataires</span></div>
+        <div class="kv"><span class="lab">Vérifier</span><span class="val"><span class="pill p-verify">verifyClaim() ✓ dry-run avant activation</span></span></div>
+        <div class="kv"><span class="lab">Prochaine étape (moteur)</span><span class="val">push des 3 parts restantes — le membre ne paie pas le gas</span></div>
       </div>
     </div>
 
-    <!-- distribution rounds -->
+    <!-- rounds de distribution -->
     <div class="card" style="margin-top:16px">
-      <h3>Rounds de distribution <span class="pill p-auto" style="margin-left:6px">policy auto</span></h3>
-      <div class="lead">1 pool, plusieurs rounds de paiement pendant la season. <span class="mono">claimed[round][addr]</span> → aucun blocage entre rounds.</div>
-      <div class="rounds">
-        <div class="rnd"><div class="rn">Round 1</div><div class="rr">root <span class="mono">0x3480…</span> · 5/5 réclamé</div><div style="margin-top:6px"><span class="pill p-auto" style="padding:2px 7px">CLÔTURÉ</span></div></div>
-        <div class="rnd open"><div class="rn">Round 2</div><div class="rr">root <span class="mono">0x9e1c…</span> · 3/6 réclamé</div><div style="margin-top:6px"><span class="pill p-live" style="padding:2px 7px">OUVERT</span></div></div>
-        <div class="rnd future"><div class="rn">Round 3</div><div class="rr">à venir · au prochain palier de sièges</div><div style="margin-top:6px"><span class="pill p-future" style="padding:2px 7px">PLANIFIÉ</span></div></div>
+      <h3>Rounds de distribution</h3>
+      <div class="lead">Un pot, plusieurs paiements pendant la season. Le scellement paie par défaut ; les intérimaires et le round final sont des <b>droits</b>, jamais des obligations. Chaque round vit son propre cycle :
+        <span class="pill p-decision" style="padding:1px 7px">PENDING</span> → <span class="pill p-live" style="padding:1px 7px">ACTIVE</span> → <span class="pill p-app" style="padding:1px 7px">EXPIRED</span>.
       </div>
-      <div class="banner banner-auto"><span class="ic">↻</span><div>Les rounds se déclenchent sur une <b>policy déterministe</b> (ex. top-N mérite, X% du pot à chaque palier de sièges — jamais une date). L'opérateur ne re-signe rien : il a déjà décidé <b>combien mettre</b>.</div></div>
+      <div class="rounds">
+        <div class="rnd"><div class="rn">Round de scellement</div><div class="rr">automatique quand l'ère scelle · paie le pot engagé restant de la season</div><div style="margin-top:6px"><span class="pill p-auto" style="padding:2px 7px">AUTO AU SCEAU</span></div></div>
+        <div class="rnd open"><div class="rn">Rounds intérimaires <span style="color:var(--muted);font-size:11px">(optionnels)</span></div><div class="rr">droit founder · pré-annoncés 48h avec le montant · paient la fenêtre delta depuis le round précédent</div><div style="margin-top:6px"><span class="pill p-founder" style="padding:2px 7px">PRÉ-ANNONCÉ 48H</span></div></div>
+        <div class="rnd"><div class="rn">Round final</div><div class="rr">droit de clôture anticipée · paie 100% du pot restant + carryover · la reconnaissance attend le vrai scellement</div><div style="margin-top:6px"><span class="pill p-founder" style="padding:2px 7px">DROIT FOUNDER</span></div></div>
+      </div>
+      <div class="banner banner-verify"><span class="ic">👁</span><div><b>« Publié pour vérification, puis payé »</b> — jamais un simple « automatique ». Chaque round publie ses standings + sa root pendant la fenêtre <b>PENDING</b> (veto gardien possible) ; après le délai, n'importe qui peut l'activer.</div></div>
     </div>
 
-    <!-- pipeline per round -->
+    <!-- flux du scellement -->
     <div class="card" style="margin-top:16px">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-        <h3>Pipeline d'un round — tout automatisé</h3>
-        <span class="pill p-auto">● 0 intervention après le funding</span>
+        <h3>Le flux du scellement — zéro clic</h3>
+        <span class="pill p-auto">● 0 clic après le funding</span>
       </div>
       <div class="lead">« Automatiser la DISTRIBUTION, garder la DÉCISION discrétionnaire. »</div>
       <div class="pipe">
-        <div class="pnode"><div class="n">1 · Snapshot</div><div class="t"><span class="pill p-auto" style="padding:1px 6px">AUTO</span> rangs du round</div></div>
-        <div class="pnode"><div class="n">2 · Distribution</div><div class="t"><span class="pill p-auto" style="padding:1px 6px">AUTO</span> mérite déterministe (top-N)</div></div>
-        <div class="pnode"><div class="n">3 · Merkle</div><div class="t"><span class="pill p-auto" style="padding:1px 6px">AUTO</span> leaf = <span class="mono">keccak(round,addr,amt)</span></div></div>
-        <div class="pnode"><div class="n">4 · Ouvrir round</div><div class="t"><span class="pill p-auto" style="padding:1px 6px">AUTO</span> setMerkleRoot(roundId)</div></div>
-        <div class="pnode decision"><div class="n">5 · Claim / Push</div><div class="t">membre <b>claim</b> · ou <b>push</b> (top-N)</div></div>
-        <div class="pnode"><div class="n">6 · Clôture</div><div class="t"><span class="pill p-auto" style="padding:1px 6px">AUTO</span> au palier atteint</div></div>
-        <div class="pnode"><div class="n">7 · Reste</div><div class="t"><span class="pill p-auto" style="padding:1px 6px">AUTO</span> reste au pot / round suivant</div></div>
-        <div class="pnode"><div class="n">8 · Audit</div><div class="t"><span class="pill p-auto" style="padding:1px 6px">AUTO</span> tx → <span class="mono">audit_log</span></div></div>
+        <div class="pnode"><div class="n">1 · Scellement</div><div class="t"><span class="pill p-auto" style="padding:1px 6px">AUTO</span> l'ère avance, la season scelle</div></div>
+        <div class="pnode"><div class="n">2 · Empreinte XP on-chain</div><div class="t"><span class="pill p-auto" style="padding:1px 6px">AUTO</span> rôle SEALER · zéro argent</div></div>
+        <div class="pnode window"><div class="n">3 · Round PENDING</div><div class="t"><span class="pill p-verify" style="padding:1px 6px">FENÊTRE PUBLIQUE</span> de vérification · veto gardien possible</div></div>
+        <div class="pnode"><div class="n">4 · Activation</div><div class="t"><span class="pill p-auto" style="padding:1px 6px">AUTO</span> après la fenêtre</div></div>
+        <div class="pnode"><div class="n">5 · Push claimFor</div><div class="t"><span class="pill p-auto" style="padding:1px 6px">AUTO</span> le membre ne paie pas le gas</div></div>
+        <div class="pnode"><div class="n">6 · Parts échouées</div><div class="t">réclamables <b>1 an</b> en pull-claim</div></div>
+        <div class="pnode"><div class="n">7 · Reliquat → carryover</div><div class="t"><span class="pill p-auto" style="padding:1px 6px">AUTO</span> jamais retirable</div></div>
       </div>
-      <div class="banner banner-legal"><span class="ic">⚖</span><div><b>Contrat MVP :</b> <span class="mono">SeasonBountyPool</span> (évolution OZ) — <span class="mono">merkleRootOf[round]</span> + <span class="mono">claimed[round][addr]</span> ; <span class="mono">roundId</span> dans le leaf (pas de rejeu inter-round). Un pool par season, financé en continu, plusieurs distributions.</div></div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- ===================== INTERCONNEXION DES MODULES ===================== -->
-  <section class="rail-web" data-rail="map">
-    <div class="railhead">
-      <span class="railno">L'ORGANISME</span><h2>Interconnexion des modules</h2>
-      <span class="pill p-verify">one atom · many projections</span>
-    </div>
-    <div class="railsub">Aucun module n'est un silo. Un même atome on-chain se projette partout — c'est ça, le living organism. <span style="color:var(--faint)">(Ce 1er étage = les actes qui génèrent du XP ; l'inventaire complet des income streams est dans l'onglet <b style="color:var(--emerald)">Income</b>.)</span></div>
-    <div class="railbar"></div>
-
-    <div class="card">
-      <div class="map">
-        <div class="tier">
-          <div class="mnode chain"><div class="mt">Reçu d'achat</div><div class="ms">Sale V3</div></div>
-          <div class="mnode chain"><div class="mt">Introduction</div><div class="ms">SourceRegistry</div></div>
-          <div class="mnode chain"><div class="mt">Burn</div><div class="ms">Proof of Fire</div></div>
-        </div>
-        <div class="arrow">↓</div>
-        <div class="tier"><div class="mnode chain"><div class="mt">Indexeur → Activity read-model</div><div class="ms">le heartbeat · scan→enrich→rebuild (fail-closed)</div></div></div>
-        <div class="arrow">↓ &nbsp;+ sources app : <span class="pill p-app" style="margin:0 4px">Quiz</span><span class="pill p-app" style="margin:0 4px">Quête</span><span class="pill p-app">Feedback</span></div>
-        <div class="tier"><div class="mnode reco"><div class="mt">XP / Recognition — multi-axes</div><div class="ms">Capital · Connector · Verifier · Builder · Historian…</div></div></div>
-        <div class="arrow">↓</div>
-        <div class="tier"><div class="mnode reco"><div class="mt">Classement de la Season</div><div class="ms">= Ère (fondation) → puis ∞</div></div></div>
-        <div class="arrow">↓ &nbsp;SEAL (auto)</div>
-        <div class="tier"><div class="mnode reco"><div class="mt">Snapshot gelé</div><div class="ms">immuable · append-only</div></div></div>
-        <div class="arrow">↓ se projette en</div>
-        <div class="fanout">
-          <div class="mnode reco"><div class="mt">Chronicle</div><div class="ms">candidate · founder promeut</div></div>
-          <div class="mnode chain"><div class="mt">Milestone</div><div class="ms">ancré à la tx</div></div>
-          <div class="mnode reco"><div class="mt">Profil permanent</div><div class="ms">rang · badges · ne redescend jamais</div></div>
-          <div class="mnode cash"><div class="mt">Cash Bounty</div><div class="ms">← snapshot mérite · rounds</div></div>
-        </div>
-      </div>
-
-      <div class="banner banner-verify" style="margin-top:18px">
-        <span class="ic">↔</span>
-        <div><b>Boucles latérales :</b> <b style="color:var(--violet)">Referral</b> (SourceRegistry) alimente à la fois l'axe <b>Connector</b> du XP <i>et</i> la <b>commission</b> (cash, rail séparé) ; <b style="color:var(--gold)">Learn &amp; Earn</b> nourrit le XP (axe Verifier/Historian) ; l'<b style="color:var(--cyan)">Activity</b> et le <b>Chronicle</b> lisent le même atome que le <b>Receipt</b> et la <b>Share card</b>. Un seul fait, cinq surfaces — jamais deux vérités parallèles.</div>
-      </div>
-
-      <div class="maplegend">
-        <span><i class="sw-dot" style="background:var(--cyan)"></i> on-chain / vérifiable</span>
-        <span><i class="sw-dot" style="background:var(--muted)"></i> app / attesté</span>
-        <span><i class="sw-dot" style="background:var(--gold)"></i> recognition / founder-gated</span>
-        <span><i class="sw-dot" style="background:var(--emerald)"></i> cash (discrétionnaire)</span>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- ===================== INCOME / FLUX DE VALEUR ===================== -->
-  <section class="rail-cash" data-rail="value">
-    <div class="railhead">
-      <span class="railno">INCOME</span><h2>Flux de valeur — ce qui rentre</h2>
-      <span class="pill p-verify">acte / service ✅ · jamais rendement ❌</span>
-    </div>
-    <div class="railsub">On a bien plus que 3 atomes. Voici tous les income streams — leur maturité réelle, où l'argent va, et ce qu'on peut ajouter. La plupart sont <b>déjà déployés ou designés</b>, juste pas encore allumés.</div>
-    <div class="railbar"></div>
-
-    <!-- inflows tier -->
-    <div class="card">
-      <h3>Les entrées de valeur <span style="color:var(--muted);font-weight:400;font-size:12px">(statut vérifié dans le repo)</span></h3>
-      <div class="lead">Le siège est le seul revenu pleinement câblé. Le reste est déployé-mais-off, designé, ou futur.</div>
-      <div class="tier" style="justify-content:flex-start;gap:10px">
-        <div class="mnode cash"><div class="mt">Vente de siège</div><div class="ms"><span class="pill p-live" style="padding:1px 6px">LIVE</span> → 70/20/10</div></div>
-        <div class="mnode reco"><div class="mt">Commission referral</div><div class="ms"><span class="pill p-decision" style="padding:1px 6px">LIVE · dormant</span></div></div>
-        <div class="mnode cash"><div class="mt">Patronage Archive1155</div><div class="ms"><span class="pill p-decision" style="padding:1px 6px">DÉPLOYÉ · mint OFF</span></div></div>
-        <div class="mnode appn"><div class="mt">Fee swap/bridge</div><div class="ms"><span class="pill p-app" style="padding:1px 6px">DESIGNÉ</span> LI.FI</div></div>
-        <div class="mnode appn"><div class="mt">Vente d'alias</div><div class="ms"><span class="pill p-app" style="padding:1px 6px">DESIGNÉ</span> lawyer-gated</div></div>
-        <div class="mnode appn"><div class="mt">Labeling d'adresse</div><div class="ms"><span class="pill p-app" style="padding:1px 6px">DESIGNÉ</span> « le + fort »</div></div>
-        <div class="mnode appn"><div class="mt">Guide premium</div><div class="ms"><span class="pill p-app" style="padding:1px 6px">DESIGNÉ</span></div></div>
-        <div class="mnode"><div class="mt" style="color:var(--faint)">Marketplace fee</div><div class="ms"><span class="pill p-future" style="padding:1px 6px">FUTUR · Ph.12</span></div></div>
-        <div class="mnode"><div class="mt" style="color:var(--faint)">x402 API metered</div><div class="ms"><span class="pill p-future" style="padding:1px 6px">FUTUR · Ph.11</span></div></div>
-      </div>
-      <div class="banner banner-legal"><span class="ic">⚖</span><div><b>Deux poches d'argent, jamais mélangées :</b> le <b>70/20/10</b> (Vault/Liquidity/Operations) est <b>verrouillé au siège</b> ; tous les fees/services sont de l'<b>argent société</b> (discrétionnaire) — jamais mêlés au routing. Aucun stream n'est un rendement sur détention.</div></div>
-    </div>
-
-    <!-- inventory table -->
-    <div class="card" style="margin-top:16px">
-      <h3>Inventaire — existant</h3>
-      <table>
-        <thead><tr><th>Stream</th><th>Statut</th><th>Va où</th><th>Doctrine</th></tr></thead>
-        <tbody>
-          <tr><td><div class="src">Vente de siège</div><div class="sub">MembershipSaleV3</div></td><td><span class="pill p-live">LIVE · paie</span></td><td>→ 70/20/10 (Vault/Liq/Ops)</td><td>Achat d'accès ✅</td></tr>
-          <tr><td><div class="src">Commission referral</div><div class="sub">SourceRegistry V1</div></td><td><span class="pill p-decision">LIVE · dormant</span></td><td>dans la tx acheteur → payoutWallet</td><td>Payer un ACTE (intro) ✅</td></tr>
-          <tr><td><div class="src">Patronage Archive</div><div class="sub">Archive1155 (0.50 / 5 USDC)</div></td><td><span class="pill p-decision">DÉPLOYÉ · mint OFF</span></td><td>mint → treasury()</td><td>Coût de mint, jamais « gains » ✅</td></tr>
-          <tr><td><div class="src">Fee swap / bridge</div><div class="sub">LI.FI integrator fee</div></td><td><span class="pill p-app">DESIGNÉ</span></td><td>fee wallet (Option A)</td><td>Service ✅ · argent société</td></tr>
-          <tr><td><div class="src">Vente d'alias</div><div class="sub">ENS-like, non-tradeable</div></td><td><span class="pill p-app">DESIGNÉ</span></td><td>ops · lawyer-gated</td><td>Service identité ✅</td></tr>
-          <tr><td><div class="src">Labeling d'adresse</div><div class="sub">modèle Etherscan/Arkham</div></td><td><span class="pill p-app">DESIGNÉ</span></td><td>ops · récurrent</td><td>Service identité ✅</td></tr>
-          <tr><td><div class="src">Guide premium</div><div class="sub">profondeur / convenience</div></td><td><span class="pill p-app">DESIGNÉ</span></td><td>ops</td><td>Service ✅</td></tr>
-          <tr><td><div class="src">Marketplace fee · x402 API</div><div class="sub">Ph.12 / Ph.11</div></td><td><span class="pill p-future">FUTUR</span></td><td>plateforme / ops</td><td>Frais de service ✅ si réel</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- could add -->
-    <div class="grid g2" style="margin-top:16px">
-      <div class="card">
-        <h3>Ce qu'on peut ajouter <span class="pill p-auto" style="margin-left:6px">doctrine-safe</span></h3>
-        <div class="lead">Chaque flux = un ACTE ou un SERVICE (commerce), jamais un rendement.</div>
-        <div class="kv"><span class="lab">⚡ Allumer le mint patronage</span><span class="val" style="color:var(--auto)">déjà déployé — quick win</span></div>
-        <div class="kv"><span class="lab">Royalties EIP-2981</span><span class="val">collectibles / season badges (secondaire récurrent)</span></div>
-        <div class="kv"><span class="lab">Drops premium</span><span class="val">season badges · seat-record collectibles</span></div>
-        <div class="kv"><span class="lab">Services / tiers premium</span><span class="val">analytics · API x402 · support · certifs Learn</span></div>
-        <div class="kv"><span class="lab">Merch / mémorabilia</span><span class="val">physique (catalogue reconnaissance)</span></div>
-        <div class="kv"><span class="lab">Off-ramp fee</span><span class="val">marge fiat (crypto → €)</span></div>
-        <div class="kv"><span class="lab">BD / partenariats</span><span class="val">classe PARTNER · revenue-share</span></div>
-      </div>
-      <div class="card">
-        <h3>Sorties de valeur <span style="color:var(--muted);font-weight:400;font-size:12px">(argent société, pas income)</span></h3>
-        <div class="kv"><span class="lab">Season bounty</span><span class="val"><span class="pill p-app" style="padding:2px 7px">DESIGNÉ</span> marketing → membres (mérite)</span></div>
-        <div class="kv"><span class="lab">Commission referral</span><span class="val"><span class="pill p-live" style="padding:2px 7px">LIVE</span> croissance (dans la tx)</span></div>
-        <div class="banner banner-verify" style="margin-top:12px"><span class="ic">↔</span><div><b>Le cercle vertueux :</b> l'argent société sort (bounty, commission) pour faire <b>entrer</b> plus de sièges — jamais l'argent des membres redistribué par rang (ça, ce serait un titre financier).</div></div>
-      </div>
+      <div class="banner banner-legal"><span class="ic">⚖</span><div><b>Contrat MVP :</b> le <b>primitif de paiement au mérite</b> (nom final à S3) — un pot par season, quatre poches internes (réserve · engagé · réservé au round · carryover), financé en continu, plusieurs distributions ; rejeu inter-round impossible par construction.</div></div>
     </div>
   </section>
 
