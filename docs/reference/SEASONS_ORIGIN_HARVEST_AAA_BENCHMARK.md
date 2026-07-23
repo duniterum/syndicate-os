@@ -67,7 +67,8 @@ cards stay FREE forever (Strava's 2025 paywall = named anti-pattern).
 ### 0.5 The ranking page: full ladder visible, zones drawn, money shown
 Battle-pass law: the ENTIRE ladder is visible up front. Zealy's 2026 tiered payouts are
 the model: **rank bands, identical reward within a band, the zones drawn ON the
-leaderboard** — predictable and contestable. Per ruling ② the per-member merit share
+leaderboard** *(the amounts themselves became the Option A geometric curve,
+§0.17-④ — the ZONES remain the visual grouping)* — predictable and contestable. Per ruling ② the per-member merit share
 renders on the public ranking. Dual time-scope (Zealy): season rank AND all-time
 standing shown together. **AMENDED by §0.17-② (one-truth): the MONEY board is the
 CURRENT delta-window standings — the reward zones and per-member shares draw THERE;
@@ -155,7 +156,9 @@ fake social proof / simulated payouts (the origin wrote fake txHashes marked
 - **S1 (data foundation)** now specifies: `season` projection (derived, no status
   column of authority) · `season_xp_event` single ledger · quest registry with
   guard-pinned metric feeders + the four quest classes (§0.11) · rank/axes/crown
-  projections · Protocol-Time resets.
+  projections · Protocol-Time resets. *(S1 as BUILT: ZERO new tables — the engine
+  shipped as a pure rebuildable projection over the existing raw lanes; the primary
+  tables join WITH their feeder slices, e.g. quiz_attempt with Learn & Earn)*
 - **S2 (surfaces)** inherits: full-ladder ranking with drawn reward zones + dual
   time-scope + YOU row · member Season card + Quests strip (recognition) + separated
   effort-reward card · admin 2-rail console with next-step engine + dry-run.
@@ -269,7 +272,10 @@ Every finding resolved below AMENDS §0.1–§0.13 where they conflict. Grouped:
   live in their own tables (chain events in the raw lanes they already have;
   `quiz_attempt` UNIQUE(wallet, lessonId); recurrent credits UNIQUE(wallet, questId,
   periodKey)); `season_xp_event` derives from them. Chain rows key
-  UNIQUE(sourceKind, chainId, txHash, logIndex) — reorg/rescan idempotent.
+  UNIQUE(sourceKind, chainId, txHash, logIndex) — reorg/rescan idempotent. *(S1 as
+  BUILT: ZERO new tables — the engine shipped as a pure rebuildable projection over
+  the existing raw lanes; the primary tables join WITH their feeder slices, e.g.
+  quiz_attempt with Learn & Earn)*
 - **XP account = the WALLET** (SIWE + merkle leaves are wallet-keyed); seats render as
   attributes (the #7+#11 double resolves to one rank row).
 - **Retro-credit from genesis:** Season 1 = era 1 whole; the projection replays the
@@ -329,12 +335,15 @@ own-row via session, never an offset scan.
   "un pool par season" (advisor §4.3) is SUPERSEDED by sequential rounds +
   `(kind, seasonId, uri)` metadata.
 **D — IDENTITY & VISIBILITY (settled law applied, no re-ask):** the ranking API
-serves SEAT-KEYED rows with NO address field — the client joins seat→short-address
+serves SEAT-KEYED rows with NO address field *(amended by §0.18: no-seat players
+serve the feed's SHORT FORM as their display — never a full address)* — the client
+joins seat→short-address
 from the chain events it already reads; own proof via a SIWE own-row endpoint (proof
 array only). NO full-address reward file is ever served or published: public root
 verification = the on-chain root + `verifyClaim` + the addresses the claim/push txs
-themselves emit on-chain. The /season own-row highlight is recorded in
-CANON_ACCESS_MODEL as the ruled own-row exception (S2 slice).
+themselves emit on-chain. The /season own-row highlight is the ruled own-row
+exception (recorded in CANON_ACCESS_MODEL — entry added at the final audit; the
+YOU-row wiring is an S2c deliverable with the auth zone).
 **E — SURFACES (front-end lens):**
 - `featureStatus` SPLITS: `seasonRanking` · `seasonQuests` · `seasonBounty` (the
   single `seasonEngine` key cannot express S1→S3 progressive shipping); the
@@ -354,12 +363,13 @@ CANON_ACCESS_MODEL as the ruled own-row exception (S2 slice).
   past-seasons archive INLINE v1 (no param route until built) · "Season 0" does not
   exist — the Starter Track completes as an onboarding mark, never a season.
 - **The 4 mockups are re-issued CORRECTED before any wireframe gate** (band-identical
-  zones not per-rank amounts · funded-vs-planned pot honesty · no blanket "live chain
+  zones not per-rank amounts *(then superseded same day by the Option A curve,
+  §0.17-④ — zones stayed as visual groupings)* · funded-vs-planned pot honesty · no blanket "live chain
   read" claim · "Pendant ton absence" REMOVED — the retired slot stays retired, recap
   lives in the notification center, missed recurrent windows RESTORED Fortnite-style,
   never sold) — the PRE-HANDOFF GATE then diffs against the corrected files.
 **F — PRODUCT RULES:**
-- **A seat = a player** (the mockup's own words): XP accrues to seated members;
+- **(SUPERSEDED in part by §0.18-①: XP accrues at EVERY level; the SEAT gates the POT, not play.)** **A seat = a player** (the mockup's own words): XP accrues to seated members;
   connected-no-seat sees everything read-only + one join CTA. Sybil cost = a seat.
 - **Founder/operator wallets: hors-concours** — excluded from bounty bands, rendered
   with the gold Founder label, XP/milestones still accrue. Self-referral XP dead
@@ -370,7 +380,7 @@ CANON_ACCESS_MODEL as the ruled own-row exception (S2 slice).
   machinery; feedback-XP is OUT of V1 (not computable → does not exist).
 - **Era-1 content:** ~15 quests (5 starter one-shots · 3 weekly recurrents · 5
   personal ladders · 2 era-scoped) + the 5-lesson Learn & Earn starter pack pulled to
-  RIGHT AFTER S2 (week-2 must not be hollow); a quest metric enters the registry only
+  RIGHT AFTER S2 (week-2 must not be hollow) *(order harmonized at the final audit: the 5-lesson STARTER pack rides the S2c-era work; the FULL Learn & Earn engine keeps its post-S3 slot.)*; a quest metric enters the registry only
   in its feeder's slice.
 - **Crown mechanics:** one crown per axis + overall = live seasonal-XP leader; at
   SEAL each freezes into a permanent profile mark + Chronicle candidate; lifetime
@@ -381,13 +391,14 @@ CANON_ACCESS_MODEL as the ruled own-row exception (S2 slice).
 **G — ADMIN SCOPE:** the mockup's Interconnexion tab collapses into a rail-1
 expander; the Income tab dies (one authority: /economy — a link, not a copy); admin
 analytics (power-users class) = read-only rail-1 projections, deferred. S3 adds the
-step-up "Rounds & Deploy" panel (fund · openRound · activate/revoke · sealSeason ·
-pause · acceptOwnership — founder-signed, two-authorities model).
+step-up "Rounds & Deploy" panel (fund — « Engager au pot » / « Réserve » ·
+one-time acceptOwnership · OPTIONAL revoke/pause vetoes — founder-signed,
+two-authorities model; per §0.15 the executor runs openRound/activate/sealSeason
+automatically).
 **H — THE FOUNDER GATE BLOCK (decided at the S2/S3 screens, defaults proposed):**
 route name (default `/season`) · pot commitment amount + cadence · the band table
-**(SUPERSEDED by §0.17-④: PERCENTAGES — ranks 1–3: 10% each · 4–10: 5% · 11–25: 2%
-= 95%, 5% to carryover; on the $2,000 illustration that pays $1,900 with $100 to
-carryover — the earlier "$200 recycles" was a miscount, corrected)** · XP weight
+**(SUPERSEDED by §0.17-④ FINAL: the Option A poker-standard geometric curve —
+100% of the pot pays; on $2,000 exactly $2,000 pays)** · XP weight
 table (V1 default: introduction 500 · purchase 200, ONCE per wallet per season ·
 burn 150 · archive mint 100 · quiz 25 · weekly check-in ~0 for money windows) ·
 the eligibility floor PAIR (§0.17-⑤) · only the COMMITTED figure ever renders,
@@ -514,7 +525,7 @@ open, immutable for that season.
   re-enters the withdrawable bucket). Zero-pot seals still execute (freeze + XP
   root, budget 0). Copy law: "published for verification, then paid" — never a
   bare "automatic".
-- **⑦ THE RULE SHEET IS CHAIN-ANCHORED:** band percentages, weights, caps,
+- **⑦ THE RULE SHEET IS CHAIN-ANCHORED:** curve percentages, weights, caps,
   floors, interim policy, hors-concours list — hashed into the season-OPEN
   on-chain event (`rulesHash`); the seal root closes the season. Immutability
   becomes verifiable, not claimed. Mid-season changes are impossible to hide;
@@ -554,7 +565,7 @@ seat" → "OK ça me va" → the seal question, all one day)
 - **THE POT REQUIRES THE SEAT.** `potEligible` = seated AND not hors-concours.
   NUMBERED ranks on the money board = eligible members ONLY — a no-seat player
   consumes NO paid slot, so nobody's share ever depends on someone else's
-  choice (the §0.14-⑩ occupancy law extended).
+  choice (the §0.17-⑩ occupancy law extended).
 - **THE PENDING SHARE IS A PROJECTION, NEVER A RESERVATION.** The unnumbered
   AWAITING SEAT row shows what seating NOW would pay — the conversion machine
   (and the K4 lever: "tu as déjà X XP et une part en attente").
@@ -930,4 +941,4 @@ Sources: Rakerace 2024-10 (PokerStars lobby) · Pokerfuse · Tips.GG TI25 + dota
 | 11–25 | 11-15: $35 · 16-25: $25 | 11-15: $24 · 16-25: $10 | $62 each |
 | Total | $2,000 | $2,000 | $1,995 |
 
-Research verdict: for a MERIT ENGAGEMENT pot the consensus is (a) or a slightly flattened (a) — the poker shape is the proven compromise (real summit · real breadth · every rank distinct); (b) maximizes the headline FOMO but demoralizes mid-field; (c) maximizes participation but under-rewards the #1 grinder. **FOUNDER DECISION OPEN (BACKLOG season-bands-weights): the curve supersedes §0.17-④ identical-within-band amounts once he picks; zone TINTS stay as visual groupings.** Sources dated 2024–2026.
+Research verdict: for a MERIT ENGAGEMENT pot the consensus is (a) or a slightly flattened (a) — the poker shape is the proven compromise (real summit · real breadth · every rank distinct); (b) maximizes the headline FOMO but demoralizes mid-field; (c) maximizes participation but under-rewards the #1 grinder. **✅ DECIDED same day — OPTION A (the poker-standard curve), engraved §0.17-④ + BOUNTY_CURVE_BP_V1; zone TINTS stay as visual groupings.** Sources dated 2024–2026.

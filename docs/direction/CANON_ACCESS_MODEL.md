@@ -139,3 +139,11 @@ hero). Applies to EVERY member-account surface — general rule, not per-page.
   `MemberAppPage` (the one bespoke page left).** Each through the preview gate.
 - Authority companions: `CANON_VISIBILITY_LAW.md` · `ADR-003` · `CANON_PROTOCOL_LANGUAGE.md` ·
   `surfaceNaming.ts` · `DESIGN_ROADMAP.md` (S7-d). `OPEN_QUEUE.md` + `SESSION_STATE.md` track status.
+
+---
+
+## Amendement 2026-07-23 — /season (arc seasons S2b)
+/season est une surface PUBLIQUE (classement pseudonyme, lignes seat-keyed/short-form).
+EXCEPTION RÉGLÉE (dossier harvest §0.14-D, ruling §8-②): la ligne YOU (own-row
+highlight, session-derived) est permise sur cette surface publique — own-row
+uniquement, jamais un annuaire; le câblage arrive avec la tranche S2c/auth-zone.

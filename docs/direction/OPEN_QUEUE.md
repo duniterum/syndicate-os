@@ -15,13 +15,15 @@
 >   no validation queues) · ⑤ Season=Era binds on TODAY's chain (new sale/era contract
 >   NOT a prerequisite).
 > - **REPO-TRUTH CORRECTIONS (verified, never re-research):** the durable indexer
->   EXISTS (backbone → Postgres, cursors + reorg overlap) — seasons ADD tables on top ·
+>   EXISTS (backbone → Postgres, cursors + reorg overlap) — seasons ADD tables on top
+>   (as built: ZERO tables — pure projection) ·
 >   referral is LIVE_ACTION (commission inside the buyer's tx) · QuickNode is ALREADY
 >   the prod RPC (Replit env).
 > - **ARC ORDER:** S1 season data foundation → S2 recognition surfaces (/season · home
 >   section · member slots · admin rail 1 — wireframe + preview gate each) → S3 Foundry
->   workspace + SeasonBountyPool + cash rail (rounds by seat threshold · "Ajouter des
->   fonds" · activation lawyer-gated as planned) → patronage mint quick-win (with AW-5)
+>   workspace + SeasonBountyPool + cash rail (seal round + 48h interims + final round
+>   per §0.17 · « Engager au pot » vs « Réserve » · activation lawyer-gated as
+>   planned) → patronage mint quick-win (with AW-5)
 >   → Learn & Earn → SwapRail V1 → K4 → P. M-EVO-3 + A5 keep their engraved specs and
 >   slot where they serve the arc.
 > - **✅ THE HARVEST + WORLD BENCHMARK ENGRAVED (same day, founder order "on prend ça,

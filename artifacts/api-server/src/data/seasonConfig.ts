@@ -6,7 +6,7 @@
  * deep-check §0.14, the zero-click ruling §0.15, and the pot model §0.17).
  *
  * Doctrine pins this file carries:
- *   - ONE POLICY MODULE (§0.14-B): weights, axes, bands, floors live HERE and
+ *   - ONE POLICY MODULE (§0.14-B): weights, axes, the payout curve, floors live HERE and
  *     nowhere else — the public ranking, the member card, and the admin
  *     dry-run all read projections of this one sheet. The client NEVER
  *     computes shares.
@@ -180,6 +180,11 @@ export const MIN_PRIZE_USDC_DEFAULT = 20;
  * money rail REFUSES to open a round while either is null (fail-closed) —
  * recognition XP flows regardless.
  */
+/** §0.17-⑤ ANTI-FARM DEFERRAL (final audit 2026-07-23): the referral XP
+ *  per-wallet-per-window CAP and the floor-pair gate on the CREDIT path are
+ *  NOT implemented in the V1 recognition engine — both MUST land with the S3
+ *  money rail before any round pays (recognition-only until then; the S3
+ *  policy module refuses to open a round while this note stands). */
 export const ELIGIBILITY_FLOOR = {
   /** Minimum qualifying purchase (whole USDC) for a referred wallet to
    *  credit its introducer toward BOUNTY eligibility. */

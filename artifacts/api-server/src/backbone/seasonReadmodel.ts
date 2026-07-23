@@ -270,13 +270,15 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
   };
   const events: XpEvent[] = [];
   // Purchase + introduction credits (the sale lane's own fields, no joins).
-  const purchaseCredited = new Set<string>(); // `${wallet}|${season}` — once per season (§0.17-⑤)
+  // §0.17-⑤ (final-audit fix): the FIRST qualifying purchase per wallet per
+  // SEASON credits — a footprint purchase in a later season re-credits once
+  // (the firstSeat-only gate mis-paid every season after the seating one).
+  const purchaseCredited = new Set<string>(); // `${wallet}|${season}` — once per season
   let selfReferralsIgnored = 0;
-  let unseatedIntroducersIgnored = 0;
   for (const p of purchases) {
     const holder = p.memberAddress?.toLowerCase() ?? null;
     const season = seasonOf(p.blockNumber);
-    if (holder !== null && seatByWallet.has(holder) && p.firstSeat === true) {
+    if (holder !== null && seatByWallet.has(holder)) {
       const onceKey = `${holder}|${season}`;
       if (!purchaseCredited.has(onceKey)) {
         purchaseCredited.add(onceKey);

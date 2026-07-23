@@ -18,6 +18,15 @@
 //   · The seats gauge is deliberately absent in v1: the live seat count has
 //     ONE authority (the hero's served spine) and this page will read that
 //     same source when wired — never a second figure (the 12-vs-14 lesson).
+// RECORDED DEFERRALS (final audit 2026-07-23 — each has its owning slice):
+//   · YOU own-row highlight → S2c/auth-zone wiring (§0.14-D; the exception
+//     entry lives in CANON_ACCESS_MODEL).
+//   · All-time tab reads the current-season board — TRUE today (season 1 IS
+//     all-time, the caption says so); the served LIFETIME board must land
+//     BEFORE season 2 exists (the tab is honest until a second season).
+//   · Podium metal medallions + crown SVG (the approved mockup's treatment)
+//     → S2c polish WITH the silver/bronze token additions (no raw colors).
+//   · Disconnected-visitor join CTA + register cards → S2c home section.
 
 import { useEffect, useState } from "react";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
@@ -316,6 +325,18 @@ export default function SeasonRanking() {
                   </>
                 )}
               </p>
+
+              {/* Past seasons — inline archive v1 (§0.14-E; a param route joins when built). */}
+              <div className="mt-6">
+                <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground mb-2">
+                  Past seasons
+                </div>
+                <div className="rounded-xl border border-dashed border-border px-4 py-3 text-sm text-muted-foreground">
+                  Season 1 will be the first sealed season. A sealed season becomes a
+                  Chronicle entry and a permanent mark on each player&apos;s record —
+                  nothing is erased.
+                </div>
+              </div>
             </>
           )}
         </div>

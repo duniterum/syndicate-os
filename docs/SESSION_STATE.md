@@ -37,7 +37,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   genesis retro-credit · one policy module · sealSeason + funding invariant +
 >   closeAtSeat + pending-round delay + guardian · seat-keyed ranking rows, no
 >   address field · featureStatus split ranking/quests/bounty · corrected mockups
->   before any wireframe gate · a-seat-=-a-player · founder hors-concours · weekly
+>   before any wireframe gate · a-seat-=-a-player (later superseded by §0.18
+>   multi-level) · founder hors-concours · weekly
 >   recurrence floor · era-1 ~15 quests + L&E starter right after S2 · §0.14-H = the
 >   founder gate block with proposed defaults). **THEN THE ZERO-CLICK RULING [this
 >   commit] (founder: "j'ajoute SEULEMENT de l'argent") → §0.15: the ONLY recurring
@@ -65,7 +66,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   sheet: weights · axes · 5 chain-fed ladder quests under the feeder law ·
 >   §0.17 bands · the null-until-founder floor pair) +
 >   `src/backbone/seasonReadmodel.ts` (genesis retro-credit by replay ·
->   season-of-block by sealing boundaries §0.17-③ · a-seat-=-a-player ·
+>   season-of-block by sealing boundaries §0.17-③ · a-seat-=-a-player (later
+>   superseded by §0.18 multi-level) ·
 >   self-referral dead · purchase-once-per-season · hors-concours = the
 >   founder/organ set · seat-keyed address-free standings + SERVER-ONLY wallet
 >   index) + runner lane ③b6 w/ last-good + `getSeasonSource()` +
@@ -115,15 +117,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   its next prod cycle). Replit verifies: /season serves the LIVE board ·
 >   GET /api/season state LIVE with standings · the standard battery. The
 >   founder's online click is the living seal.**
->   → NEXT after the online seal: S2c the home season section (real shell + SEO registry +
->   surfaceClassification + nav/footer + prerender, same commit; seasonRanking
->   flips at its go-live; the bounty areas FUTURE-badged on seasonBounty; the
->   §9 catch recipe: hero pot odometer-ready, trophy podium, XP bars) → then
->   the home season section · member slots · admin rail 1 — each behind the
->   real-preview gate. Remaining S2 surfaces (/season public page · home season section ·
->   member Season+Quests slots · admin Seasons rail 1 — wireframe + preview gate EACH;
->   the split keys `seasonRanking`/`seasonQuests`/`seasonBounty` flip in their
->   go-live commits, §0.14-E) → S3 Foundry workspace + the merit primitive + the
+>   → NEXT after the online seal: S2c the HOME season section (+ register/season/
+>   your-standing cards, secondary CTA, disconnected join CTA) → the member
+>   Season+Quests slots (S2d; note: reconcile the member-mockup #14 figures with
+>   the ranking mockup at that gate) → the admin 2-rails console — wireframe +
+>   preview gate EACH; the remaining split keys `seasonQuests`/`seasonBounty`
+>   flip in their go-live commits, §0.14-E
+>   → S3 Foundry workspace + the merit primitive + the
 >   cash rail (seal round + 48h-pre-announced interims per §0.17 · « Engager au
 >   pot » vs « Réserve » · activation lawyer-gated as planned) → patronage mint
 >   quick-win (with AW-5) →
@@ -131,7 +131,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   M-EVO-3 + A5 keep their engraved specs and slot where they serve.
 > - **(e) FOUNDER-PENDING:** 🔴 AW-5 — name the archive payment wallet `0xe417…d56f`
 >   (unchanged) · SwapRail: developer fee % + fee pipe address + thirdweb account
->   (~$99/mo) + placement · pot size/cadence per season · /season route name + pot
+>   (~$99/mo) + placement · pot size/cadence per season · pot
 >   wording at the S2 gate (on screen).
 
 > **▶ 📌 THE 2026-07-22 EVENING HANDOFF — FINAL (DONE-IS-DONE §④ — the next

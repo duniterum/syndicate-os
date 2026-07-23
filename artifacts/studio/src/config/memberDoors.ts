@@ -112,8 +112,12 @@ export const MEMBER_DOOR_GROUPS: readonly MemberDoorGroup[] = [
 /** The §11 slots 3–5, reserved VISIBLY on Member Home (cards, not doors):
  * recognition speaks here later; nothing is faked today. */
 export const MEMBER_HOME_RESERVED_SLOTS: readonly MemberDoor[] = [
-  { label: "Season", lifecycle: "FUTURE", note: "The current season — your XP, your rank, the next quest. XP earns standing, not money; when the company funds a season reward it's real USDC for effort — paid openly, every amount shown." },
-  { label: "Quests", lifecycle: "FUTURE", note: "Daily and weekly recognition quests — Learn & Earn earns XP." },
+  // S2b truth (2026-07-23, DONE-IS-DONE): the SEASON itself is LIVE at /season
+  // (seasonRanking) — what stays future is THIS member card (your own standing
+  // served in place, S2d). The note says so; it never re-presents the live
+  // board as coming.
+  { label: "Season", lifecycle: "FUTURE", note: "The season is LIVE — the public board stands at /season. This card brings YOUR standing here (your XP, your rank, your next quest) with the member slice; when the company funds a season reward it's real USDC for effort — paid openly, every amount shown." },
+  { label: "Quests", lifecycle: "FUTURE", note: "Weekly recognition quests — Learn & Earn earns XP." },
   // NOTIF-1 (2026-07-18): "While you were away" RETIRED from the reserved
   // slots — its promise now lives in the notification center (the bell +
   // /notifications; protocol activity events feed it at the v2 generator).

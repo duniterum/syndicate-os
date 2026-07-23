@@ -45,6 +45,8 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   sourceReviewQueue: { status: "live", since: "2026-07-22", where: "/admin/sources (the founder's review queue: preflight + verdicts + bell)" },
   sourcePerformance: { status: "live", since: "2026-07-22", where: "/admin/sources Performance tab (per-source table + screen-exact CSV)" },
   consoleReferralKpis: { status: "live", since: "2026-07-22", where: "/admin Dashboard (the wired referral band + live waiting counts)" },
+  // S2b go-live (same commit as the page — DONE-IS-DONE): the board serves.
+  seasonRanking: { status: "live", since: "2026-07-23", where: "/season (the live recognition board)" },
 
   // ── FUTURE (the only keys a future-claim may cite) ──────────────────────
   avatarUpload: { status: "future", since: "2026-07-14", where: "Member Home arc (App Storage decided)" },
@@ -55,8 +57,7 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   // Seasons arc 2026-07-23 (harvest dossier §0.14-E): the single seasonEngine
   // key SPLIT into three — S1→S3 ship progressively and one key cannot
   // express it. Each flips LIVE in its own go-live commit, never before.
-  // S2b go-live (same commit as the page — DONE-IS-DONE): the board serves.
-  seasonRanking: { status: "live", since: "2026-07-23", where: "/season (the live recognition board)" },
+  // (seasonRanking flipped LIVE at S2b — it lives in the LIVE section above.)
   seasonQuests: { status: "future", since: "2026-07-23", where: "the seasons arc S2 (quest board + member Quests slot)" },
   seasonBounty: { status: "future", since: "2026-07-23", where: "the seasons arc S3 (the merit primitive + the effort-reward rail; lawyer pass at activation)" },
   rateRaiseHistory: { status: "future", since: "2026-07-19", where: "the SOURCE_LIFECYCLE rescan micro-slice" },

@@ -71,7 +71,8 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
     jusqu'à S3.
   - [ ] **Console admin — section Seasons 2 rails** (chunk opérateur lazy) : rail
     reconnaissance auto (next-step engine + dry-run harvestés de l'origine) · rail effort
-    founder-gated (« Ajouter des fonds » + rounds par palier + panneau Rounds & Deploy S3).
+    founder-gated (« Engager au pot » vs « Réserve » + rounds seal/interim-48h/final per
+    §0.17 + panneau S3: fund · acceptOwnership une fois · vetos optionnels).
   - [ ] featureStatus : `seasonRanking` / `seasonQuests` / `seasonBounty` (clés séparées,
     flips dans le commit qui livre chacune).
 - [x] **`/join` checkout (C1.1→C1.4)** — rend via le système (tokens only, 0 couleur brute),
