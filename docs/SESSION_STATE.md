@@ -87,6 +87,18 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   seals — forever" · pot badge no-figure · 3 medals + 1 crown home AND /season ·
 >   register band live rows · zero "players" · zero overflow · the 2 filled-gold
 >   buttons are the pre-existing hero + nav chrome (no new violation).
+> - **🏆 S2c-② SEALED IN PROD (Replit green 2026-07-24, founder-pasted):** the home
+>   serves the season band (gauge "14 / 333" live · "319 before Genesis Signal
+>   seals — forever" · secondary CTA · FUTURE pot frame no figure · metal top-3
+>   silver #4 / crowned gold #3 / bronze #5) + the register band (real chain rows
+>   Member #14/#13/#12 · Holder Index 14 + provenance · Your standing FUTURE) ·
+>   /season podium wears the medals + crown · desktop AND mobile slices verified ·
+>   byte-identity ×2 · engine advancing 6/6 · feed 86 intact · "Builders earning"
+>   in the served bundle, never "players". **DEPLOY BACKLOG: EMPTY.**
+> - **NEXT (the engraved order):** S2d the member Season+Quests slots (reconcile
+>   the member-mockup #14 figures at that gate; MEMBER_HOME_RESERVED_SLOTS flip
+>   same commit) → the admin Seasons 2-rails console → S3 (Foundry workspace +
+>   SeasonBountyPool + the cash rail per §0.17) — wireframe + preview gate EACH.
 > - **(e) FOUNDER-PENDING (re-trued):** 🔴 AW-5 wallet name (unchanged) · SwapRail
 >   decisions (fee % · fee pipe · thirdweb ~$99/mo · placement) · pot COMMITMENT
 >   amount + cadence (« Engager au pot ») · CONFIRM XP weights + $20 floor +
