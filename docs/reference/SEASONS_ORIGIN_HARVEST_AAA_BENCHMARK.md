@@ -133,13 +133,73 @@ fake social proof / simulated payouts (the origin wrote fake txHashes marked
 ### 0.10 What this changes in the slice plan (S1–S3 refined)
 - **S1 (data foundation)** now specifies: `season` projection (derived, no status
   column of authority) · `season_xp_event` single ledger · quest registry with
-  guard-pinned metric feeders · rank/axes/crown projections · Protocol-Time resets.
+  guard-pinned metric feeders + the four quest classes (§0.11) · rank/axes/crown
+  projections · Protocol-Time resets.
 - **S2 (surfaces)** inherits: full-ladder ranking with drawn reward zones + dual
   time-scope + YOU row · member Season card + Quests strip (recognition) + separated
   effort-reward card · admin 2-rail console with next-step engine + dry-run.
-- **S3 (contract + cash rail)** builds the §0.7 contract + `season-merkle` v2
-  (OZ StandardMerkleTree, domain-tagged) + the §0.6 rail (auto-credit via claimFor
-  batches, published-upfront escrow rules). Lawyer pass at activation, as planned.
+- **S3 (contract + cash rail)** builds the §0.7 contract AS THE GENERIC PRIMITIVE
+  (§0.12-②) + `season-merkle` v2 (OZ StandardMerkleTree, domain-tagged) + the §0.6
+  rail (auto-credit via claimFor batches, published-upfront escrow rules). Lawyer
+  pass at activation, as planned.
+
+### 0.11 THE ENDLESS-ENGAGEMENT ARCHITECTURE (founder question 2026-07-23:
+"si les quêtes finissent, après ils font quoi les membres — sur 9 ères?")
+A fixed quest list ALWAYS exhausts (the origin's 101-quest checklist; every dead Zealy
+board). The answer is structural: quests are never the engine — the engine is FOUR
+GENERATORS that cannot run dry, plus a starter track that is DESIGNED to finish:
+- **G1 — RECURRENTS (rhythm):** daily/weekly/monthly-class quests reset forever by
+  Protocol Time (Zealy recurrence; NRC's weekly-not-daily ethics). Never exhausts by
+  construction.
+- **G2 — LADDERS (depth):** cumulative tiered ladders with the milestone constitution's
+  density curve — dense early rungs, legendary far rungs (introductions 1→3→10→25→100→
+  300-Summit; verification acts; patronage rungs; burn acts; the seat ladder to the
+  1M FINAL SEAT). A ladder with a rare summit never finishes — it aspires (GitHub/NRC
+  model, already our engraved milestone law).
+- **G3 — ERA/SEASON RENEWAL (freshness):** every era transition auto-seals the season
+  and opens the next — new seasonal crown, fresh seasonal rank over the permanent base,
+  new bounty rounds at seat thresholds INSIDE each era. 9 eras = 9 built-in expansions;
+  after era 9 the infinite season clock continues on its own cadence (canon §3.5) —
+  and each era's quest set can derive from its chapter narrative.
+- **G4 — MODULE FAMILIES (growth):** THE FAMILY LAW, extended from milestones to
+  quests/XP: **every future module (Alias, SwapRail, Archive drops, Marketplace,
+  Learn&Earn packs, /staff…) ships WITH its quest + XP-metric + milestone family in
+  the same slice** — same invariant class as heartbeat completeness. New income
+  streams = new act classes = new XP sources = new quests, automatically. The catalog
+  is generative, not a list.
+Above all four: the SOCIAL layer (ranking vs others, bands, crowns, bounty rounds) and
+the CORE ACTS (introduce · verify · collect · burn — the business itself) are unbounded.
+The one-shot Starter Track is the ONLY part meant to complete — completion there IS the
+onboarding goal. S1 bakes the quest classes accordingly: `starter` (one-time) ·
+`recurrent` (Protocol-Time reset) · `ladder` (cumulative tiers) · `era-scoped`
+(auto-reopens per era).
+
+### 0.12 THE EVOLUTIVE CONTRACT DOCTRINE (founder question 2026-07-23: "plein
+d'income streams et XP possibles in future — comment tu résous ça?")
+**Evolution by ACCRETION, never by mutation.** Five pillars:
+- **① XP/recognition is OFF-CHAIN** (non-transferable, no cash value — settled): it
+  evolves infinitely with ZERO contract work. New XP sources are registry rows +
+  projections, never deploys. (Optional tamper-evidence: commit a merkle root of the
+  sealed season state — one tx, reuses the same tree tooling.)
+- **② ONE GENERIC MERIT-PAYMENT PRIMITIVE:** the S3 contract is designed as a
+  general distributor, not a season-only pool — a round is `(roundId, root, budget)`
+  with a metadata event (kind + published reward-file URI, Merkl transparency
+  pattern). Season bounty rounds, future recognition campaigns, press bounties —
+  ALL ride the same audited primitive forever. New programs = new rounds, never new
+  contracts. (Name at build; "season bounty pool" remains the human label for the
+  season rail.)
+- **③ INBOUND INCOME STREAMS NEED NO CONTRACT:** fees/patronage/services route to
+  NAMED pipe addresses (Visibility Law; the AW-5 pattern) — each new stream joins
+  the address book + heartbeat scan targets in its introducing slice (engraved
+  invariant). The evolutive machinery for income is the REGISTRY, not Solidity.
+- **④ NEW CAPABILITIES = NEW SMALL IMMUTABLE MODULES,** registered in the contract
+  registry with two-step wiring — the deployed Sale V3 already exposes exactly this
+  attachment point (`commissionRouter()` + pending/accept two-step): the base was
+  BUILT for accretion. Old modules stay immutable and readable forever (Uniswap
+  V2/V3 coexistence model). Audit per module at the pro-firm horizon, as engraved.
+- **⑤ NO UPGRADEABLE PROXIES ON MONEY PATHS — permanent.** A mutable money contract
+  contradicts the protocol's core promise ("written on-chain, forever") and re-opens
+  the rug-vector class the 0.7 hardening just closed. Immutability is the product.
 
 ---
 
