@@ -25,6 +25,26 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   — the full-day-audit fixes (purchase XP once-per-SEASON credit fix · memberDoors
 >   Season-door truth · /season past-seasons block · doc re-trues). The per-season
 >   bug only bites at season 2; the NEXT 🚀 cycle (S2c) carries them.
+>   **🔴 THE FOUNDER'S CLOSING NOTES (2026-07-23, on the LIVE board screenshots —
+>   FIRST WORK OF THE NEXT SESSION, in his words "on regarde tout ça après"):**
+>   ① **"C'est cassé — les adresses EVM des autres, ils sont où?"** — the SEATED
+>   rows render "#N" alone; the approved mockup (and the pride-of-the-register
+>   amendment) show seat + SHORT address together ("#3 · 0x03e…c6d0"). FIX S2c:
+>   the server standings add the chain-emitted short form for seated rows too
+>   (settled visibility law — short form, never full), the page renders both.
+>   ② **THE #7/#11 DOUBLE ON THE BOARD** — founder from memory ("c'est de tête"):
+>   seat #7 "ne sera plus jamais là", its holder "était devenu membre 11". The
+>   engraved canon knows the double (#7+#11, one wallet — the future Chronicle
+>   "first duplicate was a gift"). The live board shows #7 at rank 5 and NO #11:
+>   the wallet-identity law keys one row per wallet and the builder takes the
+>   FIRST seat (#7). VERIFY next session against the chain/continuity data which
+>   ordinal that wallet should DISPLAY (likely #11 per the founder, or both as
+>   attributes) — never from memory, his or mine.
+>   ③ **VOCABULARY QUESTION: is "player" the right word?** — the built surfaces
+>   say "Players earning" / players; the founder doubts it fits the institution's
+>   register (members · seats). Candidates to put ON SCREEN at the next gate:
+>   "Members earning" / "participants" / axis-neutral wording. Public copy =
+>   founder decision; sweep §0.18/the page/the API notes when ruled.
 >   **NEW FOUNDER QUESTION OPEN (2026-07-23 post-seal): FOOTPRINT purchases** — his
 >   instinct: footprint buys must count too. PROPOSED (awaiting his OK): footprint
 >   credits XP at CAPITAL-RUNG CROSSINGS (+100 XP per rung of the existing 12-rung
