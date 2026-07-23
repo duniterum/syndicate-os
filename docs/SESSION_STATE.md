@@ -62,9 +62,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   (season/XP/quest tables on the existing backbone + deterministic Season=Era read;
 >   server-only) → S2 recognition surfaces (/season public page · home season section ·
 >   member Season+Quests slots · admin Seasons rail 1 — wireframe + preview gate EACH;
->   `seasonEngine` flips in the go-live commit) → S3 Foundry workspace +
->   SeasonBountyPool + the cash rail (rounds by seat threshold · "Ajouter des fonds" ·
->   activation lawyer-gated as planned) → patronage mint quick-win (with AW-5) →
+>   the split keys `seasonRanking`/`seasonQuests`/`seasonBounty` flip in their
+>   go-live commits, §0.14-E) → S3 Foundry workspace + the merit primitive + the
+>   cash rail (seal round + 48h-pre-announced interims per §0.17 · « Engager au
+>   pot » vs « Réserve » · activation lawyer-gated as planned) → patronage mint
+>   quick-win (with AW-5) →
 >   Learn & Earn → SwapRail V1 (AssetRouter + thirdweb adapter) → K4 → P.
 >   M-EVO-3 + A5 keep their engraved specs and slot where they serve.
 > - **(e) FOUNDER-PENDING:** 🔴 AW-5 — name the archive payment wallet `0xe417…d56f`

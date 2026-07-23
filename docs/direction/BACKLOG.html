@@ -1231,9 +1231,9 @@ footer b{color:var(--ink-soft);}
   </li>
 <li class="row" data-status="deferred">
     <div class="row-main">
-      <div class="row-head"><span class="pid">season-era-binding</span><span class="ptitle">Season = Era binding (new sale/era contract)</span></div>
-      <p class="psum">Season boundaries = deterministic on-chain era milestones; built WITH the new sale/era contract (never a standalone season contract); also fixes the per-wallet cap defect.</p>
-      <div class="metas"><span class="meta gate">⚑ chain — new contract, lawyer+audit</span><span class="meta dep">↳ dépend de season-era-contract</span></div>
+      <div class="row-head"><span class="pid">season-era-binding</span><span class="ptitle">Season = Era binding — ⚑ SUPERSEDED 23-07 (ruling §8-⑤)</span></div>
+      <p class="psum">RE-TRUED : Season=Ère se lit sur la chaîne d'AUJOURD'HUI (l'avancement d'ère est déjà indexé) — le nouveau contrat sale/era n'est PLUS un prérequis ; il garde son propre horizon (audit) pour le défaut de cap par wallet. Le moteur season arrive par l'arc S1→S3.</p>
+      <div class="metas"><span class="meta gate">⚑ arc seasons S1 (données)</span><span class="meta dep">↳ SETTLED_RULES §8-⑤ · dossier harvest §0.2</span></div>
     </div>
     <span class="chip s-defer">Plus tard · horizon</span>
   </li>
@@ -1255,9 +1255,9 @@ footer b{color:var(--ink-soft);}
   </li>
 <li class="row" data-status="deferred">
     <div class="row-main">
-      <div class="row-head"><span class="pid">season-card-slot</span><span class="ptitle">Season card + Quests strip on Member Home</span></div>
-      <p class="psum">Reserved FUTURE slots: season card (name/countdown/own XP/rank/next-quest, no pool figure) + 2–3 daily/weekly quest chips. Depends on season=era binding + event backbone.</p>
-      <div class="metas"><span class="meta gate">⚑ go-live (Phase 5)</span><span class="meta dep">↳ dépend de season-engine; quest-engine</span></div>
+      <div class="row-head"><span class="pid">season-card-slot</span><span class="ptitle">Season card + Quests strip on Member Home — ⚑ SUPERSEDED 23-07 (arc S2)</span></div>
+      <p class="psum">RE-TRUED par l'arc du 23 juillet (§0.17 + rulings §8) : la carte AFFICHE l'argent (pot engagé + ta part — ruling ②), jauge en SIÈGES jamais un countdown, récurrences HEBDO jamais daily ; livrée par S2 sur les clés seasonRanking/seasonQuests. L'ancienne ligne « no pool figure » est morte.</p>
+      <div class="metas"><span class="meta gate">⚑ S2 de l'arc seasons (preview gate)</span><span class="meta dep">↳ §0 du dossier harvest</span></div>
     </div>
     <span class="chip s-defer">Plus tard · horizon</span>
   </li>
@@ -1860,7 +1860,7 @@ footer b{color:var(--ink-soft);}
 <li class="row" data-status="deferred">
     <div class="row-main">
       <div class="row-head"><span class="pid">sale-era-contract</span><span class="ptitle">New sale/era contract (Phase 5)</span></div>
-      <p class="psum">Fresh 9-era-schedule contract; #5 enforcement, #8 'money never buys a tier', and Season=Era binding all depend on it. Also fixes the per-wallet cap defect. Lawyer + audit gated. Do NOT build a standalone season contract.</p>
+      <p class="psum">Fresh 9-era-schedule contract; fixes the per-wallet cap defect. Lawyer + audit gated. ⚑ RE-TRUED 23-07 : Season=Era n'en dépend PLUS (ruling §8-⑤ — la V1 lit la chaîne d'aujourd'hui) ; et le pool de mérite du 23-07 n'est pas « un contrat season standalone » — c'est le primitif de paiement générique, exempté du gel par ruling §8-①.</p>
       <div class="metas"><span class="meta gate">⚑ chain + money + legal</span></div>
     </div>
     <span class="chip s-defer">Plus tard · horizon</span>

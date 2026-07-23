@@ -32,11 +32,14 @@ plus a separate funding status — two parallel state fields, cron payouts readi
 DIFFERENT leaderboard than the preview. **Ours:** season state is DERIVED from the chain
 (era advancement = the WITNESS-CONFIRMED transition the era read-model already defines —
 never a raw seat-count race) — no admin status field, no dates anywhere (Zealy
-sprints/our own law: seat thresholds only). One state machine: `PLANNED → LIVE → SEALED
-→ ROOT_COMMITTED → PUBLISHED`, transitions machine-derived; **the ONLY recurring human
-act in the whole engine: THE FUNDING DECISION** (§0.15 — the seal and the rounds run
-themselves; Chronicle-promote stays optional editorial; vetoes are rights, never
-duties).
+sprints/our own law: seat thresholds only). One SEASON state machine: `PLANNED → LIVE
+→ SEALED → ROOT_COMMITTED → PUBLISHED` (ROOT_COMMITTED = the season's XP seal-root tx;
+PAYMENT rounds — seal or interim — carry their own per-round PENDING → ACTIVE →
+EXPIRED lifecycle, any number of them during LIVE), transitions machine-derived;
+**the ONLY recurring human act in the whole engine: THE COMMITMENT DECISION**
+(§0.15/§0.17 — the seal and its round run themselves; interims and the final round
+are founder OPTIONS; Chronicle-promote stays optional editorial; vetoes are rights,
+never duties).
 
 ### 0.3 Quests: chain-first, feeder-guaranteed (kills the orphan-quest class)
 The origin seeded 101 quests over 60 metric keys — with 5 metrics unregistered and 4
@@ -66,7 +69,10 @@ Battle-pass law: the ENTIRE ladder is visible up front. Zealy's 2026 tiered payo
 the model: **rank bands, identical reward within a band, the zones drawn ON the
 leaderboard** — predictable and contestable. Per ruling ② the per-member merit share
 renders on the public ranking. Dual time-scope (Zealy): season rank AND all-time
-standing shown together. Own-row pinned ("YOU"). Pseudonymous (seat + short address →
+standing shown together. **AMENDED by §0.17-② (one-truth): the MONEY board is the
+CURRENT delta-window standings — the reward zones and per-member shares draw THERE;
+the cumulative season/all-time boards are recognition (rank never drops) and carry
+no dollar column.** Own-row pinned ("YOU"). Pseudonymous (seat + short address →
 opt-in alias). The origin's fake-social-proof class (hardcoded "Recent Referral
 Activity" mock, arithmetic-hack stats) is the exact class our guards already kill.
 
@@ -166,7 +172,8 @@ GENERATORS that cannot run dry, plus a starter track that is DESIGNED to finish:
   split by whose act they count.
 - **G3 — ERA/SEASON RENEWAL (freshness):** every era transition auto-seals the season
   and opens the next — new seasonal crown, fresh seasonal rank over the permanent base,
-  new bounty rounds at seat thresholds INSIDE each era. 9 eras = 9 built-in expansions;
+  the seal payday plus any founder-announced interim windows inside the era
+  (§0.17-⑧). 9 eras = 9 built-in expansions;
   after era 9 the infinite season clock continues on its own cadence (canon §3.5) —
   and each era's quest set can derive from its chapter narrative.
 - **G4 — MODULE FAMILIES (growth):** THE FAMILY LAW, extended from milestones to
@@ -260,8 +267,10 @@ Every finding resolved below AMENDS §0.1–§0.13 where they conflict. Grouped:
   separate "retro" class.
 - **The protocol clock:** an automated backbone lane reads the chain-head block
   timestamp (the manual enrichment script is NOT a clock); app-attested rows stamp it.
-  Era-boundary attribution: chain rows carry the era field their own event carries;
-  app rows stamp the live era at attestation, final once written.
+  Era-boundary attribution: chain rows carry the era field their own event carries —
+  with ONE published exception: the SEALING act itself credits the NEXT season
+  (§0.17-③, the snipe-proof rule is authoritative); app rows stamp the live era at
+  attestation, final once written.
 - New tables join `guards:db` conventions (SERVER-ONLY jsdoc, drizzle-zod,
   rebuildability note) in S1. The auth-zone contract gains the quiz write path as a
   recorded zone amendment (member-self precedent) + DB-backed sessions before scale.
@@ -281,12 +290,17 @@ own-row via session, never an offset scan.
   documented retroactive-seal.
 - **Funding invariant ON-CHAIN:** store roundBudget/roundPaid; `openRound` reverts
   unless escrow ≥ Σ(open rounds' remaining budgets) + newBudget; tooling asserts
-  Σleaves == budget + fork-dry-runs every leaf. Conservation invariant (corrected):
-  escrow + Σpaid + Σswept == Σfunded.
-- **Round close in SEATS, on-chain:** per-round immutable `closeAtSeat` (0 = never);
-  sweep gated by the sale contract's member count; sweep destination = the pool
-  escrow itself (residue RECYCLES to future rounds — no forfeiture, published
-  upfront; doctrine-aligned: thresholds never dates).
+  Σleaves == budget + fork-dry-runs every leaf. Conservation in BUCKET terms, never
+  balanceOf (§0.17-①): reserve + committed + roundReserved + carryover + Σpaid ==
+  Σfunded.
+- **Round close (SUPERSEDED by §0.17-⑥):** rounds are emptied by push at
+  activation; failed/unclaimed shares stay pull-claimable until the published
+  expiry (1 year), then move to CARRYOVER — non-withdrawable, spendable only by
+  future rounds or the final-round act (§0.17-⑨). No `closeAtSeat`.
+- **Role rotation (the executor-death case):** SEALER and executor are
+  owner-rotatable addresses (a founder console act, two-authorities model) — a
+  lost hot key never freezes the engine; anyone-can-activate-after-timeout covers
+  already-PENDING rounds meanwhile.
 - **Right-sized control, no TimelockController ceremony:** in-primitive pending round
   (`PendingRound` event + public reward data) → anyone may activate after the delay
   (Merkl dispute-window model), owner may revoke during it; delay never bypassed by
@@ -358,13 +372,15 @@ analytics (power-users class) = read-only rail-1 projections, deferred. S3 adds 
 step-up "Rounds & Deploy" panel (fund · openRound · activate/revoke · sealSeason ·
 pause · acceptOwnership — founder-signed, two-authorities model).
 **H — THE FOUNDER GATE BLOCK (decided at the S2/S3 screens, defaults proposed):**
-route name (default `/season`) · pot funding amount + cadence + band table (V1
-default on $2,000: ranks 1–3 $200 · 4–10 $100 · 11–25 $40, $200 recycles; only the
-ESCROWED figure ever renders, with its proof link — pre-funding shows the
-approaching posture, never a naked number) · XP weight table (V1 default:
-introduction 500 · purchase 200 · burn 150 · archive mint 100 · quiz 25 · weekly
-check-in 10) · bounty min-XP floor · the complete EN public copy, full-text on
-screen at each gate.
+route name (default `/season`) · pot commitment amount + cadence · the band table
+**(SUPERSEDED by §0.17-④: PERCENTAGES — ranks 1–3: 10% each · 4–10: 5% · 11–25: 2%
+= 95%, 5% to carryover; on the $2,000 illustration that pays $1,900 with $100 to
+carryover — the earlier "$200 recycles" was a miscount, corrected)** · XP weight
+table (V1 default: introduction 500 · purchase 200, ONCE per wallet per season ·
+burn 150 · archive mint 100 · quiz 25 · weekly check-in ~0 for money windows) ·
+the eligibility floor PAIR (§0.17-⑤) · only the COMMITTED figure ever renders,
+with its proof link — pre-commitment shows the approaching posture, never a naked
+number · the complete EN public copy, full-text on screen at each gate.
 
 ### 0.15 THE ZERO-CLICK RULING (founder, 2026-07-23 — "une fois le contrat en place,
 depuis l'admin J'AJOUTE SEULEMENT DE L'ARGENT")
@@ -373,10 +389,12 @@ automatically, mapped on the eras:
 - **Automatic, no founder:** era advances → season SEALS (machine state) → the
   executor key commits the seal fingerprint via the narrow **SEALER role** (moves NO
   money) → snapshot + distribution computed deterministically by the ONE policy
-  module → the round opens as PENDING at the configured seat threshold (executor) →
+  module → the SEAL ROUND opens as PENDING with the season's remaining committed pot
+  (executor; founder interims are the separate 48h-pre-announced option, §0.17-⑧) →
   the public window passes → auto-activates → `claimFor` batches PUSH the USDC
-  (executor pays gas) → the round closes at its seat threshold → residue recycles to
-  the escrow. Zero founder clicks, forever.
+  (executor pays gas) → unclaimed/failed shares stay pull-claimable until the
+  published expiry, then land in CARRYOVER (non-withdrawable, §0.17-⑥). Zero founder
+  clicks, forever.
 - **The founder's acts:** ① "Ajouter des fonds" — a wallet signature, whenever HE
   wants, any amount (necessarily manual: it is HIS money leaving HIS wallet; no
   robot ever holds that power). ② ONE-TIME at deploy: accept ownership from the
@@ -396,13 +414,13 @@ longer rides a founder signature).
 peuvent être très longues · devenir un L1 Avalanche · retirer 100k USDC du contrat
 vers un nouveau contrat sur la nouvelle chaîne — tu as prévu ça?")
 Designed NOW because the primitive is immutable forever — three mechanisms:
-- **① THE ETERNAL ERA (a season that takes years to seal).** Already alive by
-  design: bounty rounds ride the FOUNDER'S FUNDING ACTS during the era — his
-  funding tx is the deterministic trigger (an act, never a date), rounds pay the
-  current merit standings and close at their own thresholds (or immediately via
-  full push); recurrents, ladders, and the live crown keep the game running; the
-  era seal is the SEASON boundary, never the payment gate. A 3-year era = a long
-  season with N paid rounds inside it, not frozen money.
+- **① THE ETERNAL ERA (a season that takes years to seal) — SUPERSEDED IN PART by
+  §0.17:** the DEFAULT is seal-pays. A long era stays alive through the
+  recurrents, ladders, and live crown (free, automatic) and through the founder's
+  OPTIONS: 48h-pre-announced INTERIM rounds paying the current delta window
+  (§0.17-⑧), and the FINAL-ROUND act (§0.17-⑨) when a season must conclude early.
+  A 3-year era = a long season the founder can punctuate with paid windows —
+  never frozen money, and a funding tx is NEVER a trigger.
 - **② `withdrawUnallocated(to, amount)` — treasury recovery, RE-SCOPED by §0.17
   (the adversarial pass caught the last-block-drain and bait patterns):** it
   operates ONLY on the RESERVE bucket (never the committed pot), behind an
@@ -425,9 +443,11 @@ Designed NOW because the primitive is immutable forever — three mechanisms:
   mutation of the old one.
 
 ### 0.17 THE POT MODEL — FINAL (founder-defined 2026-07-23, hardened by the 3-lens
-adversarial pass wf_baa17693-b90: 32 findings, 15 high, ALL integrated. SUPERSEDES:
-§0.16-① default trigger (seal pays, interim = the option) · §0.16-② withdraw scope ·
-§0.14-H dollar bands (now percentages) and the single floor (now the floor pair).)
+adversarial pass wf_baa17693-b90: 32 findings, 15 high, ALL integrated. SUPERSEDES —
+each also amended IN PLACE per the final audit wf_f1fe78e4-1fc: §0.16-① trigger ·
+§0.16-② withdraw scope · §0.15 pipeline wording · §0.14-C round-close (closeAtSeat
+dead) + conservation · §0.14-A sealing-act exception · §0.14-H dollar bands + single
+floor · §0.11-G3 and §0.5 money-board wording · §0.2 per-round lifecycles.)
 
 **THE FOUNDER'S MODEL (the core, unchanged):** the pot fills progressively and
 VISIBLY during the era; it unlocks when the era SEALS — filling the era is the
@@ -484,6 +504,22 @@ open, immutable for that season.
 - **⑧ INTERIM ROUNDS ARE RULE-SHAPED:** a founder right, pre-announced 48h with
   the amount, paying the current delta window through the same PENDING pipeline.
   Pre-announcement + delta + published standings close the favoritism channel.
+- **⑨ THE FINAL ROUND (the exit valve — the final audit's fix for migration and
+  stranded carryover):** a founder right: ONE pre-announced act that pays 100% of
+  the remaining committed pot + the carryover bucket on the current delta
+  standings and closes the season's MONEY early (recognition still waits for the
+  true era seal). This is the defined mechanism behind §0.16-③'s "commitments
+  are PAID, then the chain moves" — nothing is ever strandable, carryover
+  included, on any chain we leave behind.
+- **⑩ FOUR SMALL LAWS (final audit):** after an interim, the public pot figure =
+  REMAINING committed, with "already distributed" shown beside it separately ·
+  season N+1 opens automatically carrying season N's rule sheet unless the
+  founder updates config BEFORE the seal (the executor emits the open event +
+  rulesHash) · bands are computed over ELIGIBLE wallets only — a hors-concours
+  wallet never consumes a band slot (hors-concours = operator status at the
+  snapshot; the open-event list is declarative) · delta windows are contiguous
+  by snapshot block: (previous snapshot block, current snapshot block] — XP
+  earned during a PENDING window belongs to the next window.
 **Legal posture (unchanged, sharpened):** the pot is the company's discretionary
 marketing budget paying for WORK (introductions are a service); copy never says
 earn-income/yield; purchase XP once-per-season is the anti-"money buys money"

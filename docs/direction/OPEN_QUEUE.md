@@ -56,9 +56,9 @@
 > - **🔴 STILL FOUNDER-PENDING (now BACKLOG rows season-route · season-pot ·
 >   season-bands-weights · season-floor):** AW-5 wallet name (unchanged) · SwapRail
 >   decisions (developer fee % · fee pipe address · thirdweb account ~$99/mo ·
->   placement) · pot amount/cadence · bands + XP weights (defaults proposed §0.14-H) ·
->   min-XP floor · /season route name + the full EN copy (at the S2/S3 gates, on
->   screen).
+>   placement) · pot commitment amount/cadence · % bands + XP weights (defaults
+>   §0.17-④/⑤) · the eligibility floor PAIR · /season route name + the full EN copy
+>   (at the S2/S3 gates, on screen).
 
 > **▶ 2026-07-22 (evening) — THE WALLET-TRACKING + ACTIVITY-NEWSROOM ARC OPENED (founder
 > orders: "on refait toute la page activity… rationaliser design pagination composition…
