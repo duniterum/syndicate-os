@@ -75,8 +75,20 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
     (season + all-time) · rang YOU épinglé · filtres d'axes ALIMENTÉS seulement · archive
     inline v1 · SEO/OG/nav dans le même commit · matrice d'états vides · mobile scroll
     container + a11y (§0.14-E).
-  - [ ] **Section Season de la home visiteur** — 2 colonnes, jauge sièges (jamais de date),
-    CTA en style SECONDAIRE (loi un-seul-CTA-or du héros).
+  - [x] **Section Season de la home visiteur — LIVRÉE (S2c-②, 2026-07-24, GO-and-GO-LIVE
+    fondateur ; mesurée sur données prod LIVE au rig studio-prod-data avant remise)** :
+    bande plein écran (S7-d, wrap clamp) · 2 colonnes 1.4fr/.9fr · jauge sièges sur LA
+    source unique du héros + MembersProvenance (loi guard-freshness) · « 319 before
+    Genesis Signal seals — forever », jamais de date · CTA SECONDAIRE contour or ·
+    carte pot = CADRE badgé FUTURE sur seasonBounty (zéro chiffre sans preuve) · teaser
+    podium top-3 médailles métal + couronne (atome SeasonMedal partagé, jetons
+    --silver*/--bronze*/--gold-hi/-deep — zéro couleur brute) · bande REGISTRE PUBLIC
+    (« Nothing to hide — the register is the flex » + registre vivant réel du feed + 3
+    cartes : Holder Index/provenance · Season ranking→/season · Your standing badgée
+    FUTURE sur seasonOwnRow, nouvelle clé) · le mot « builders » partout · SEO même
+    commit (description « / » + index.html synchronisé, 532 checks). Le polissage
+    podium /season (report S2c) livré même commit. **+8 jetons métal, 0 site couleur
+    brute.**
   - [ ] **Member Home — slots Season + Quests remplis** (`MEMBER_HOME_RESERVED_SLOTS` flip
     même commit) + carte « récompense d'effort » séparée, badgée FUTURE sur `seasonBounty`
     jusqu'à S3.

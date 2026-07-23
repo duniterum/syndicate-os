@@ -27,6 +27,8 @@ import { HeroLedger } from "@/components/hero/HeroLedger";
 import { HeroStatusChips } from "@/components/hero/HeroStatusChips";
 import { HeroSeatLine } from "@/components/hero/HeroSeatLine";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
+import { HomeSeasonSection } from "@/components/season/HomeSeasonSection";
+import { HomeRegisterBand } from "@/components/season/HomeRegisterBand";
 import {
   RegistryPostureChip,
   realityGroupSummary,
@@ -351,6 +353,11 @@ export default function PublicHome() {
 
       <TrustStatusStrip />
 
+      {/* S2c: the season band — the era's live conversion surface (gauge on
+          the ONE seat spine · secondary join CTA · FUTURE pot frame · top-3
+          teaser to /season). Approved mockup: season-visitor-home. */}
+      <HomeSeasonSection />
+
       <PromotedStrip />
 
       <section className="border-t border-border/50 bg-muted/20 py-16 text-foreground">
@@ -426,6 +433,10 @@ export default function PublicHome() {
           </div>
         </div>
       </section>
+
+      {/* S2c: the public-register close — the pride band (live register rows
+          + Holder Index / Season ranking / Your standing cards). */}
+      <HomeRegisterBand />
 
       {/* The former "Studio OS Console" teaser was REMOVED from the public
           home (founder decision, 2026-07-13 — locked-vs-hidden law: operator

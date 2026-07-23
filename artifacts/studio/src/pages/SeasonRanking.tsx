@@ -27,12 +27,13 @@
 //   · All-time tab reads the current-season board — TRUE today (season 1 IS
 //     all-time, the caption says so); the served LIFETIME board must land
 //     BEFORE season 2 exists (the tab is honest until a second season).
-//   · Podium metal medallions + crown SVG (the approved mockup's treatment)
-//     → S2c polish WITH the silver/bronze token additions (no raw colors).
-//   · Disconnected-visitor join CTA + register cards → S2c home section.
+//   · Podium metals + crown: DONE at S2c (SeasonMedal atom, metal tokens).
+//   · Join CTA + register cards: DONE at S2c (the home season + register
+//     bands — HomeSeasonSection / HomeRegisterBand).
 
 import { useEffect, useState } from "react";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
+import { SeasonMedal } from "@/components/season/SeasonMedal";
 import { CHAPTERS } from "@/lib/chapters";
 import { ERA_CANON } from "@/config/eraCanon";
 
@@ -214,20 +215,15 @@ export default function SeasonRanking() {
                         key={r.display}
                         className={`relative rounded-xl border bg-card p-4 text-center ${
                           first
-                            ? "border-gold/50 shadow-[0_0_42px_-8px] shadow-gold/20 sm:pb-6 sm:pt-7"
-                            : "border-border"
+                            ? "border-gold/55 shadow-[0_0_42px_-8px] shadow-gold/20 sm:pb-6 sm:pt-7"
+                            : r.rank === 2
+                              ? "border-[hsl(var(--silver)/0.35)]"
+                              : "border-[hsl(var(--bronze)/0.4)]"
                         }`}
                       >
-                        <div
-                          className={`mx-auto mb-2 grid place-items-center rounded-full font-serif ${
-                            first
-                              ? "h-14 w-14 bg-gold text-background text-2xl shadow-[0_0_26px_-4px] shadow-gold/50"
-                              : "h-11 w-11 border border-border bg-muted text-foreground text-lg"
-                          }`}
-                          aria-label={`Rank ${r.rank}`}
-                        >
-                          {r.rank}
-                        </div>
+                        {/* S2c polish (the recorded deferral): struck-metal
+                            medallions + the ONE crown — the shared atom. */}
+                        <SeasonMedal rank={r.rank as 1 | 2 | 3} size={first ? "lg" : "md"} />
                         <div className={`font-serif ${first ? "text-xl" : "text-lg"}`}>
                           {r.display}
                           {r.seat !== null && r.shortForm && (

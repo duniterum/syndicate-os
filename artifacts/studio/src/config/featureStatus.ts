@@ -60,6 +60,7 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   // (seasonRanking flipped LIVE at S2b — it lives in the LIVE section above.)
   seasonQuests: { status: "future", since: "2026-07-23", where: "the seasons arc S2 (quest board + member Quests slot)" },
   seasonBounty: { status: "future", since: "2026-07-23", where: "the seasons arc S3 (the merit primitive + the effort-reward rail; lawyer pass at activation)" },
+  seasonOwnRow: { status: "future", since: "2026-07-24", where: "the /season YOU own-row highlight (auth-zone wiring; CANON_ACCESS_MODEL own-row exception)" },
   rateRaiseHistory: { status: "future", since: "2026-07-19", where: "the SOURCE_LIFECYCLE rescan micro-slice" },
   secondGeneration: { status: "future", since: "2026-07-19", where: "the 2nd-generation own-row view" },
 };

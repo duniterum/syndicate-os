@@ -97,6 +97,16 @@
   --identity: var(--gold-500);
   --live: var(--cyan-500);
   --proof: var(--cyan-500);
+  /* S2c podium metals (§9 craft, approved seasons mockups — struck-metal
+     medallions; theme-independent, same values both themes). */
+  --gold-hi: 45 95% 74%;
+  --gold-deep: 38 80% 42%;
+  --silver-hi: 220 15% 90%;
+  --silver: 220 8% 70%;
+  --silver-deep: 220 8% 50%;
+  --bronze-hi: 30 68% 70%;
+  --bronze: 28 55% 52%;
+  --bronze-deep: 26 50% 36%;
   /* Caution/attention — amber, deliberately hue-shifted off gold so a "caution"
      status pill never reads as an "identity" (gold) one. */
   --warning: 32 90% 42%;
@@ -252,6 +262,39 @@
     background-size: 48px 48px;
     mask-image: radial-gradient(circle at 50% 22%, black 0%, transparent 72%);
   }
+}
+
+/* S2c podium metals — struck-metal medallions (§9 craft: medals + ONE crown;
+   soft glow is the ceiling — no animation). Values from the approved seasons
+   mockups, expressed through the metal tokens (no raw colors). */
+.syn-medal-gold {
+  background: radial-gradient(circle at 32% 28%, hsl(var(--gold-hi)), hsl(var(--gold)) 55%, hsl(var(--gold-deep)));
+  box-shadow: 0 0 26px hsl(var(--gold) / 0.5), inset 0 -3px 5px hsl(var(--gold-deep) / 0.55);
+}
+.syn-medal-silver {
+  background: radial-gradient(circle at 32% 28%, hsl(var(--silver-hi)), hsl(var(--silver)) 55%, hsl(var(--silver-deep)));
+  box-shadow: 0 0 14px hsl(var(--silver) / 0.3), inset 0 -3px 5px hsl(var(--silver-deep) / 0.55);
+}
+.syn-medal-bronze {
+  background: radial-gradient(circle at 32% 28%, hsl(var(--bronze-hi)), hsl(var(--bronze)) 55%, hsl(var(--bronze-deep)));
+  box-shadow: 0 0 14px hsl(var(--bronze) / 0.3), inset 0 -3px 5px hsl(var(--bronze-deep) / 0.55);
+}
+/* The season band's gold breath (approved mockup: radial ellipse, top-left). */
+.syn-season-band {
+  background:
+    radial-gradient(ellipse 60% 130% at 18% -10%, hsl(var(--gold) / 0.07), transparent 60%),
+    hsl(var(--background));
+}
+/* The pot frame's gold radiance (approved mockup .moneycard, no figure until S3). */
+.syn-pot-card {
+  background:
+    radial-gradient(ellipse 95% 85% at 82% 8%, hsl(var(--gold) / 0.16), transparent 60%),
+    hsl(var(--card));
+  box-shadow: 0 0 48px hsl(var(--gold) / 0.10), inset 0 1px 0 hsl(var(--gold) / 0.25);
+}
+/* The podium's floor glow (mockup .podium:before). */
+.syn-podium-glow {
+  background: radial-gradient(ellipse 60% 100% at 50% 100%, hsl(var(--gold) / 0.10), transparent 70%);
 }
 
 /* V6 two-mode public hero: same cockpit anatomy, readable in both .light and .dark. */

@@ -120,7 +120,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "The Syndicate — Proof-First Membership Protocol",
     description:
-      "A members club that lives on-chain. Your seat is permanent, numbered, and verifiable — and it's open today. Every figure on this site is read live from the chain. Check it yourself.",
+      "A members club that lives on-chain. Your seat is permanent, numbered, and verifiable — and it's open today. Season 1 is live: every chain-proven act earns recognition on the public board. Check it yourself.",
     canonicalPath: "/",
     changefreq: "weekly",
     priority: 1.0,
@@ -129,7 +129,8 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "brand",
     primaryCTA: "Take your seat",
     proofRoute: "/status",
-    notes: "Public front door (PublicLayout).",
+    notes:
+      "Public front door (PublicLayout). S2c 2026-07-24: the season band (era gauge + FUTURE pot frame + top-3 teaser) and the public-register band ride the page.",
   },
   {
     path: "/status",

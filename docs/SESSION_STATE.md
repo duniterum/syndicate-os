@@ -63,6 +63,30 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   /api/season LIVE 15 rows shortForm on all · engine ok=2, headBlock
 >   advancing, 6/6 units · byte-identity ×2. **DEPLOY BACKLOG: EMPTY. The
 >   3 closing notes are fully alive in production.**
+> - **✅ S2c-② BUILT [this commit] — THE HOME SEASON + REGISTER BANDS (founder "GO
+>   and GO-Live S2c"; the approved visitor-home mockup §0.14-E, truth-amended):**
+>   `HomeSeasonSection` (full-bleed S7-d band between trust strip and promoted:
+>   2-col 1.4fr/.9fr · era gauge on THE ONE seat spine (useHeroReality) +
+>   MembersProvenance — the guard-freshness law caught the missing provenance,
+>   fixed from the law · "N before Genesis Signal seals — forever", never a date ·
+>   SECONDARY gold-outline join CTA (the hero keeps the page's one filled-gold) ·
+>   pot FRAME LifecycleBadge-FUTURE on seasonBounty, NO figure · top-3 teaser with
+>   the metal medallions + crown) + `HomeRegisterBand` (the pride band: real feed
+>   lines republished via sentenceForServedLine · Holder Index card on the spine +
+>   provenance · Season-ranking door · Your-standing card FUTURE on the NEW
+>   `seasonOwnRow` key) + `SeasonMedal` shared atom + the /season podium metals
+>   polish (the recorded deferral — same commit) + 8 metal tokens (index.css,
+>   0 raw-color sites). Mockup copy truth-amended at build (recorded): "Members
+>   earning"→"Builders earning" · "A seat = the season" dropped (§0.18) · alias
+>   clause dropped (aliasLayer future) · $2,000 card → the FUTURE frame ·
+>   "en plus du registre public" (mockup slip) → English. Registered same commit:
+>   featureStatus `seasonOwnRow` future · guard-feature-truth pins ×2 (579
+>   checks) · SEO "/" description + index.html synced (seo 532). GATES: typecheck
+>   · 19 guards · build · seo — ALL GREEN; MEASURED on LIVE prod data
+>   (studio-prod-data): gauge "14 / 333 seats" · "319 before Genesis Signal
+>   seals — forever" · pot badge no-figure · 3 medals + 1 crown home AND /season ·
+>   register band live rows · zero "players" · zero overflow · the 2 filled-gold
+>   buttons are the pre-existing hero + nav chrome (no new violation).
 > - **(e) FOUNDER-PENDING (re-trued):** 🔴 AW-5 wallet name (unchanged) · SwapRail
 >   decisions (fee % · fee pipe · thirdweb ~$99/mo · placement) · pot COMMITMENT
 >   amount + cadence (« Engager au pot ») · CONFIRM XP weights + $20 floor +

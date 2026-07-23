@@ -81,6 +81,16 @@
 >   render "#N + short address" mockup-exact (server `shortForm` on every
 >   row) · bonus: no AWAITING chip on hors-concours rows. One commit; the
 >   deploy cycle carries fc92a31 + 8c1506d — backlog empties.
+> - **✅ S2c-② THE HOME SEASON + REGISTER BANDS SHIPPED (2026-07-24, founder
+>   "GO and GO-Live S2c"):** the visitor home gains the full-bleed season band
+>   (era gauge on the one seat spine + provenance · never-a-date clock ·
+>   SECONDARY join CTA · pot FRAME future-badged, no figure · top-3 metal
+>   podium) + the public-register pride band (live feed rows + Holder Index /
+>   Season-ranking / Your-standing cards; new `seasonOwnRow` future key) + the
+>   /season podium metals+crown polish (the recorded deferral) + 8 metal
+>   tokens, 0 raw-color sites. Measured on LIVE prod data at the
+>   studio-prod-data rig before handoff. DESIGN_ROADMAP box ticked same
+>   commit.
 > - **🔴 STILL FOUNDER-PENDING (re-trued after the day's decisions):** AW-5
 >   wallet name (unchanged) · SwapRail decisions (developer fee % · fee pipe
 >   address · thirdweb account ~$99/mo · placement) · pot COMMITMENT amount +

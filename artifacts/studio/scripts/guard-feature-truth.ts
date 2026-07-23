@@ -38,6 +38,11 @@ const PINNED_CLAIM_SITES: Record<string, readonly string[]> = {
   // S2b (2026-07-23): the /season page's pot card — the effort rail's frame,
   // FUTURE-badged until S3 funds it (no figure without its escrow proof).
   "pages/SeasonRanking.tsx": ["seasonBounty"],
+  // S2c (2026-07-24): the home season band's pot frame (same law, same key)
+  // and the register band's "Your standing" card (own-row highlight arrives
+  // with the auth-zone wiring — nothing is promised live before it is).
+  "components/season/HomeSeasonSection.tsx": ["seasonBounty"],
+  "components/season/HomeRegisterBand.tsx": ["seasonOwnRow"],
   "components/referral/ReferralLadderPanel.tsx": [
     "rateRaiseHistory",
     // Seasons arc 2026-07-23: the single seasonEngine key split into
