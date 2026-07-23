@@ -858,3 +858,23 @@ Sources: kraken.com/legal (fetched 2026-07-23) · robinhood.com/eu support T&Cs 
 
 **Dark-pattern filter**: nothing here manufactures scarcity — claim deadlines are legitimate treasury hygiene *only if* the deadline and sweep destination are published upfront; silent sweeps or retroactive deadline shortening are the named dark pattern to reject. Dispute windows and published reward files are the craft to harvest.
 
+
+---
+
+## §9 — BENCHMARK: PRIZE-DISPLAY CRAFT (agent synthesis, verbatim — fetched 2026-07-23, the VISUAL-FIRST catch ruling's research)
+
+**1) Typographic hierarchy.** The universal move: the figure is an order of magnitude bigger than everything around it (lottery signage extreme: 36–114-inch digits, everything else microscopic — Pro-Lite/Sunshine). Design-system practice: a "display" role for glanceable hero metrics, labels/units in micro-text. PokerStars 2024 lobby made ONE color move: the prize column gold while all else stays neutral — SCARCITY of gold IS the treatment (Rakerace 2024-10). Craft detail: TABULAR LINING FIGURES for any value that changes/animates so digits never jitter (our IBM Plex Mono satisfies it). Premium = huge figure + one restrained accent + dark negative space; cheap = outlined/beveled/multi-color text.
+
+**2) Motion.** The premium standard is the ODOMETER: per-digit slots rolling up and LOCKING into place — a mechanical, earned landing (Bally reel-meter lineage; Framer Odometer FX). Plain linear count-ups feel spreadsheet-y; CountUp.js documents the fix — ease-out deceleration into the final digits so the landing feels weighty. Premium: ONE count-up on page entry (~1.5–2.5s ease-out), then STILLNESS; a quiet single-digit roll when the real value changes. Cheap: perpetual flicker, "Vegas Flashing"/"Chasing" modes (Pro-Lite's literal product names — the casino-cheap register, named).
+
+**3) Framing.** Premium: a thin border/badge naming the COMMITMENT (poker's "$X GTD" guarantee framing — maps DIRECTLY to our committed-on-chain badge) · a single trophy/laurel mark · contained cards with terms inside (DraftKings/FanDuel: flat, clean, card-bounded). Casino-cheap: light rays, starbursts, coin showers, glowing multipliers. A soft gold glow behind the figure is the acceptable CEILING; radiating beams are past it.
+
+**4) Position.** Center-stage hero when the pool IS the story (lottery signs, TI trackers); gold-accented row inside a table when it is one fact among many (PokerStars). Never corner-floating persistent tickers.
+
+**5) Progressive growth (the TI/Dota pattern — the gold standard for PROVABLE growth):** current figure hero · BASE COMMITMENT vs COMMUNITY GROWTH split out · a growth-over-time chart · milestone markers passed/ahead (prizetrac.kr; Compendium stretch goals). Show growth as HISTORY + DELTA ("+$X since era open"), never twitching digits. Maps perfectly to our fund() event history.
+
+**6) REJECT (named dark patterns — Newall et al., Addiction 2025 + UX Magazine):** losses disguised as wins · near-miss framing ("so close!") · fake urgency countdowns · anchored suggested amounts · coin rain / spinning coins / slot reels / pulsing CTAs · raffle/draw framing (Revolut's cash raffle: take the leaderboard VISIBILITY, reject the raffle). Truth-first bar: every displayed figure traces to the chain; a count-up animates TO a verifiable number, never simulates activity that is not happening.
+
+**THE S2 RECIPE (distilled for our stack):** Instrument Serif hero figure at 5–8× body size · gold hsl(42 92% 60%) reserved for the FIGURE alone · Plex Mono for delta/base/milestone data lines · one ease-out odometer on entry then stillness · "committed on-chain · verify" badge as the frame (our GTD) · the fund() history as the TI-style growth strip.
+
+Sources: Rakerace 2024-10 (PokerStars lobby) · Pokerfuse · Tips.GG TI25 + dota2.prizetrac.kr · OneEsports · CDC Gaming (progressive meters) · Pro-Lite LED · Washington Post 2023-07 (billboard digits) · Newall et al. Addiction 2025 (PMC12426356) · UX Magazine (Dark UX of video gambling) · CountUp.js · Framer Odometer FX · StriveCloud (Revolut) · dayscottdesign (DraftKings widget) · Valiotti (fonts for data).
