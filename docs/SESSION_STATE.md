@@ -30,7 +30,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   inventory + 9 traps + world benchmark + §0 synthesis: one-truth XP ledger ·
 >   derived season state · feeder-guaranteed quests · never-drop levels · full-ladder
 >   ranking with drawn zones · auto-credit via claimFor · hardened SeasonBountyPool
->   spec superseding the advisor's single-hash leaf). S1/S2/S3 build BY §0.
+>   spec superseding the advisor's single-hash leaf). §0.11–0.13 answer the founder's
+>   three design questions (endless engagement · evolutive contracts · web2 acts).
+>   **THE DEEP-CHECK RAN [this commit]: 6 adversarial lenses, 90 findings (29 high),
+>   ALL resolved in §0.14** (rebuildable-projection ledger · wallet identity ·
+>   genesis retro-credit · one policy module · sealSeason + funding invariant +
+>   closeAtSeat + pending-round delay + guardian · seat-keyed ranking rows, no
+>   address field · featureStatus split ranking/quests/bounty · corrected mockups
+>   before any wireframe gate · a-seat-=-a-player · founder hors-concours · weekly
+>   recurrence floor · era-1 ~15 quests + L&E starter right after S2 · §0.14-H = the
+>   founder gate block with proposed defaults). S1/S2/S3 build BY §0 as amended.
 > - **(d) NEXT, in order (season-first, founder-corrected):** S1 season data foundation
 >   (season/XP/quest tables on the existing backbone + deterministic Season=Era read;
 >   server-only) → S2 recognition surfaces (/season public page · home season section ·

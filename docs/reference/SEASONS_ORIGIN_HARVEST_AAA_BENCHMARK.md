@@ -30,10 +30,12 @@ Duolingo's league-demotion anxiety engine is REJECTED.
 The origin gates "active season" on a MANUAL admin `status` field + wall-clock windows,
 plus a separate funding status — two parallel state fields, cron payouts reading a
 DIFFERENT leaderboard than the preview. **Ours:** season state is DERIVED from the chain
-(era advancement = `memberCount` crossing `endSeat`, already indexed) — no admin status
-field, no dates anywhere (Zealy sprints/our own law: seat thresholds only). One state
-machine: `PLANNED → LIVE → SEALED → PUBLISHED`, transitions machine-derived; the ONLY
-human clicks in the whole engine: Chronicle-promote (optional) and the funding decision.
+(era advancement = the WITNESS-CONFIRMED transition the era read-model already defines —
+never a raw seat-count race) — no admin status field, no dates anywhere (Zealy
+sprints/our own law: seat thresholds only). One state machine: `PLANNED → LIVE → SEALED
+→ ROOT_COMMITTED → PUBLISHED`, transitions machine-derived; the ONLY human clicks in the
+whole engine — THREE, named (deep-check amendment): Chronicle-promote (optional) · the
+funding decision · the seal signature (one tx per era transition, §0.13-④).
 
 ### 0.3 Quests: chain-first, feeder-guaranteed (kills the orphan-quest class)
 The origin seeded 101 quests over 60 metric keys — with 5 metrics unregistered and 4
@@ -151,11 +153,16 @@ GENERATORS that cannot run dry, plus a starter track that is DESIGNED to finish:
 - **G1 — RECURRENTS (rhythm):** daily/weekly/monthly-class quests reset forever by
   Protocol Time (Zealy recurrence; NRC's weekly-not-daily ethics). Never exhausts by
   construction.
-- **G2 — LADDERS (depth):** cumulative tiered ladders with the milestone constitution's
-  density curve — dense early rungs, legendary far rungs (introductions 1→3→10→25→100→
-  300-Summit; verification acts; patronage rungs; burn acts; the seat ladder to the
-  1M FINAL SEAT). A ladder with a rare summit never finishes — it aspires (GitHub/NRC
-  model, already our engraved milestone law).
+- **G2 — LADDERS (depth):** cumulative tiered PERSONAL ladders with the milestone
+  constitution's density curve — dense early rungs, legendary far rungs (introductions
+  1→3→10→25→100→300-Summit; verification acts; patronage rungs; burn acts). A ladder
+  with a rare summit never finishes — it aspires (GitHub/NRC model). **THE ONE-FAMILY
+  LAW (deep-check):** milestone families = the PROTOCOL's collective rungs (the seat
+  ladder to the 1M FINAL SEAT lives THERE, never as a member quest); quest ladders =
+  the MEMBER's personal rungs; badges do NOT form a third registry — permanent profile
+  marks are minted from Awards (frozen seasonal crowns, summit rungs) inside these two
+  systems. Three overlapping registries was the origin's disease; we keep two, cleanly
+  split by whose act they count.
 - **G3 — ERA/SEASON RENEWAL (freshness):** every era transition auto-seals the season
   and opens the next — new seasonal crown, fresh seasonal rank over the permanent base,
   new bounty rounds at seat thresholds INSIDE each era. 9 eras = 9 built-in expansions;
@@ -232,6 +239,128 @@ every era boundary**:
   truth lives in the server answer key either way (Coinbase/Binance grade
   server-side too). Our beat over them is ①+④: labeled provenance + the sealed root
   they don't have.
+
+### 0.14 THE DEEP-CHECK (2026-07-23 — 6 adversarial lenses, 90 findings, 29 high;
+run wf_c625dab7-f06, per the founder's "check si tout est bien pensé" order).
+Every finding resolved below AMENDS §0.1–§0.13 where they conflict. Grouped:
+
+**A — DATA SPINE (server lens):**
+- The ledger is a **100% rebuildable PROJECTION**, per repo doctrine: primary facts
+  live in their own tables (chain events in the raw lanes they already have;
+  `quiz_attempt` UNIQUE(wallet, lessonId); recurrent credits UNIQUE(wallet, questId,
+  periodKey)); `season_xp_event` derives from them. Chain rows key
+  UNIQUE(sourceKind, chainId, txHash, logIndex) — reorg/rescan idempotent.
+- **XP account = the WALLET** (SIWE + merkle leaves are wallet-keyed); seats render as
+  attributes (the #7+#11 double resolves to one rank row).
+- **Retro-credit from genesis:** Season 1 = era 1 whole; the projection replays the
+  gapless indexed history (the launch board is ALIVE — "your first acts already
+  count"); historical seats #1–#2 backfill via the partB continuity lane (fail-closed,
+  short-address render only). One XP truth — rounds pay on the snapshot rank; no
+  separate "retro" class.
+- **The protocol clock:** an automated backbone lane reads the chain-head block
+  timestamp (the manual enrichment script is NOT a clock); app-attested rows stamp it.
+  Era-boundary attribution: chain rows carry the era field their own event carries;
+  app rows stamp the live era at attestation, final once written.
+- New tables join `guards:db` conventions (SERVER-ONLY jsdoc, drizzle-zod,
+  rebuildability note) in S1. The auth-zone contract gains the quiz write path as a
+  recorded zone amendment (member-self precedent) + DB-backed sessions before scale.
+**B — ONE POLICY MODULE:** band config, merit shares, estimates — ONE server
+projection feeds the public ranking, the member card, AND the admin dry-run (the
+origin's two-truth bug class, dead). "Members earning" = count(seasonXp > 0). The
+client NEVER computes shares. Deterministic tie-break: XP desc → earliest attaining
+block → seat number. Materialized rank per backbone cycle, paginated, throttled;
+own-row via session, never an offset scan.
+**C — CONTRACT SPEC DELTAS (the primitive, final shape):**
+- `sealSeason(seasonId, xpRoot, uri)` + `SeasonSealed` event — the XP seal root is
+  NEVER a payment root (kind-byte in the domain tag makes a seal root structurally
+  unclaimable). Cash-less seasons seal with the same one signature. Seasons sealed
+  before the contract deploys get a documented retroactive-seal.
+- **Funding invariant ON-CHAIN:** store roundBudget/roundPaid; `openRound` reverts
+  unless escrow ≥ Σ(open rounds' remaining budgets) + newBudget; tooling asserts
+  Σleaves == budget + fork-dry-runs every leaf. Conservation invariant (corrected):
+  escrow + Σpaid + Σswept == Σfunded.
+- **Round close in SEATS, on-chain:** per-round immutable `closeAtSeat` (0 = never);
+  sweep gated by the sale contract's member count; sweep destination = the pool
+  escrow itself (residue RECYCLES to future rounds — no forfeiture, published
+  upfront; doctrine-aligned: thresholds never dates).
+- **Right-sized control, no TimelockController ceremony:** in-primitive pending round
+  (`PendingRound` event + public reward data) → anyone may activate after the delay
+  (Merkl dispute-window model), owner may revoke during it; delay never bypassed by
+  pause. Pause = claim-only; a pause-only GUARDIAN address covers founder-offline
+  (unpause stays owner). Ownership: Ownable2Step — deployer key deploys, the founder
+  ACCEPTS from the console (a console act, two-authorities model).
+- `claimFor` batches: per-leaf isolation (one USDC-blacklisted or already-claimed
+  leaf never bricks the batch); executor hot wallet + the pool join the heartbeat
+  inventory (scan targets · read-model · address book · /activity) IN the S3 slice.
+- SafeERC20 · constructor asserts `decimals()==6` · `fund()` credits balance-delta.
+  Fuji rehearsal on Circle's testnet USDC (`0x5425…Bc65`) covering sealSeason, a
+  batch with one failing leaf, revoke-pending, seat-gated sweep. Foundry workspace:
+  in-repo `contracts/`, toolchain spike before S3. ONE deployment forever —
+  "un pool par season" (advisor §4.3) is SUPERSEDED by sequential rounds +
+  `(kind, seasonId, uri)` metadata.
+**D — IDENTITY & VISIBILITY (settled law applied, no re-ask):** the ranking API
+serves SEAT-KEYED rows with NO address field — the client joins seat→short-address
+from the chain events it already reads; own proof via a SIWE own-row endpoint (proof
+array only). NO full-address reward file is ever served or published: public root
+verification = the on-chain root + `verifyClaim` + the addresses the claim/push txs
+themselves emit on-chain. The /season own-row highlight is recorded in
+CANON_ACCESS_MODEL as the ruled own-row exception (S2 slice).
+**E — SURFACES (front-end lens):**
+- `featureStatus` SPLITS: `seasonRanking` · `seasonQuests` · `seasonBounty` (the
+  single `seasonEngine` key cannot express S1→S3 progressive shipping); the
+  MEMBER_HOME_RESERVED_SLOTS Season+Quests doors flip in the S2 commit; the bounty
+  card ships in S2 FUTURE-badged on `seasonBounty`, activates in S3.
+- /season SEO layer rides S2 same-commit: registry entry (PUBLIC/INDEX, sitemap,
+  self-canonical, OG, JSON-LD) · surfaceClassification · nav+footer · prerendered
+  shell — plus the visitor-home season section (explicitly IN S2) whose CTA renders
+  SECONDARY (one-gold-CTA hero law).
+- Empty-state matrix in the S2 wireframes (disconnected visitor → join CTA · 0-XP
+  member · pre-first-XP board "Be the first" class) · wide table in its own
+  overflow-x container, sticky rank/YOU cells, ≥12px floor · a11y (caption, scope,
+  aria-live polite, reduced-motion, text equivalents for ⛓/▢) · only FED axis
+  filters render (Verifier/Historian join with Learn & Earn — family law) · the
+  admin Seasons section lives in the lazy operator chunk (neutral wall) · notification
+  kinds enumerated in S2 (Awards prominent; Personal-Records digested — no flood) ·
+  past-seasons archive INLINE v1 (no param route until built) · "Season 0" does not
+  exist — the Starter Track completes as an onboarding mark, never a season.
+- **The 4 mockups are re-issued CORRECTED before any wireframe gate** (band-identical
+  zones not per-rank amounts · funded-vs-planned pot honesty · no blanket "live chain
+  read" claim · "Pendant ton absence" REMOVED — the retired slot stays retired, recap
+  lives in the notification center, missed recurrent windows RESTORED Fortnite-style,
+  never sold) — the PRE-HANDOFF GATE then diffs against the corrected files.
+**F — PRODUCT RULES:**
+- **A seat = a player** (the mockup's own words): XP accrues to seated members;
+  connected-no-seat sees everything read-only + one join CTA. Sybil cost = a seat.
+- **Founder/operator wallets: hors-concours** — excluded from bounty bands, rendered
+  with the gold Founder label, XP/milestones still accrue. Self-referral XP dead
+  structurally (buyer wallet ≠ introducer wallet). Bounty eligibility floor:
+  minimum-XP threshold (config, founder-visible). LP-act metric carries a
+  holding-period condition (flash-borrow proof).
+- **Recurrence floor = WEEKLY** (NRC ethics) — no daily class, no streak-anxiety
+  machinery; feedback-XP is OUT of V1 (not computable → does not exist).
+- **Era-1 content:** ~15 quests (5 starter one-shots · 3 weekly recurrents · 5
+  personal ladders · 2 era-scoped) + the 5-lesson Learn & Earn starter pack pulled to
+  RIGHT AFTER S2 (week-2 must not be hollow); a quest metric enters the registry only
+  in its feeder's slice.
+- **Crown mechanics:** one crown per axis + overall = live seasonal-XP leader; at
+  SEAL each freezes into a permanent profile mark + Chronicle candidate; lifetime
+  levels/milestones never move.
+- **The three differentiators, now in the slice quality gate:** ① every figure
+  chain-anchored or ▢-labeled + the sealed root; ② the seat-threshold clock, never
+  dates; ③ bounty history = public on-chain receipts.
+**G — ADMIN SCOPE:** the mockup's Interconnexion tab collapses into a rail-1
+expander; the Income tab dies (one authority: /economy — a link, not a copy); admin
+analytics (power-users class) = read-only rail-1 projections, deferred. S3 adds the
+step-up "Rounds & Deploy" panel (fund · openRound · activate/revoke · sealSeason ·
+pause · acceptOwnership — founder-signed, two-authorities model).
+**H — THE FOUNDER GATE BLOCK (decided at the S2/S3 screens, defaults proposed):**
+route name (default `/season`) · pot funding amount + cadence + band table (V1
+default on $2,000: ranks 1–3 $200 · 4–10 $100 · 11–25 $40, $200 recycles; only the
+ESCROWED figure ever renders, with its proof link — pre-funding shows the
+approaching posture, never a naked number) · XP weight table (V1 default:
+introduction 500 · purchase 200 · burn 150 · archive mint 100 · quiz 25 · weekly
+check-in 10) · bounty min-XP floor · the complete EN public copy, full-text on
+screen at each gate.
 
 ---
 
