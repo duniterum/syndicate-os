@@ -39,7 +39,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   address field · featureStatus split ranking/quests/bounty · corrected mockups
 >   before any wireframe gate · a-seat-=-a-player · founder hors-concours · weekly
 >   recurrence floor · era-1 ~15 quests + L&E starter right after S2 · §0.14-H = the
->   founder gate block with proposed defaults). S1/S2/S3 build BY §0 as amended.
+>   founder gate block with proposed defaults). **THEN THE ZERO-CLICK RULING [this
+>   commit] (founder: "j'ajoute SEULEMENT de l'argent") → §0.15: the ONLY recurring
+>   human act = funding; seal + rounds transit automatically (narrow SEALER/executor
+>   roles, bounded blast radius, public windows); vetoes are rights never duties —
+>   §0.2 and §0.13-④ amended in place. Truth files synced same commit: BACKLOG
+>   23-juil callout + 4 decision rows (30→34: season-route · season-pot ·
+>   season-bands-weights · season-floor) + DESIGN_ROADMAP Phase-5 seasons block.**
+>   S1/S2/S3 build BY §0 as amended.
 > - **(d) NEXT, in order (season-first, founder-corrected):** S1 season data foundation
 >   (season/XP/quest tables on the existing backbone + deterministic Season=Era read;
 >   server-only) → S2 recognition surfaces (/season public page · home season section ·

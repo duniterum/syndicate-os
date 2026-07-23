@@ -36,9 +36,21 @@
 >   with drawn reward zones · auto-credit bounty via claimFor · the hardened
 >   SeasonBountyPool spec (domain-tagged OZ double-hash leaves, per-round immutable
 >   roots, scoped rescue, Foundry invariants). Never re-search any of it.
-> - **🔴 STILL FOUNDER-PENDING:** AW-5 wallet name (unchanged) · SwapRail decisions
->   (developer fee % · fee pipe address · thirdweb account ~$99/mo · placement) · pot
->   size/cadence per season · /season route name + pot wording (at the S2 gate, on
+> - **✅ THE DEEP-CHECK + THE ZERO-CLICK RULING (same day):** 6 adversarial lenses,
+>   90 findings (29 high), ALL resolved in the harvest dossier §0.14 (data spine ·
+>   one policy module · contract deltas · seat-keyed ranking rows · featureStatus
+>   split · corrected mockups before any wireframe gate · a-seat-=-a-player · founder
+>   hors-concours · weekly recurrence floor). Then the founder's automation order
+>   ("j'ajoute SEULEMENT de l'argent") → §0.15 ZERO-CLICK: the ONLY recurring human
+>   act = funding; seal + rounds transit automatically (narrow SEALER/executor roles,
+>   bounded blast radius); vetoes are rights, never duties. BACKLOG callout 23-juil +
+>   4 decision rows (30→34) + DESIGN_ROADMAP Phase-5 seasons block ride the same
+>   commit.
+> - **🔴 STILL FOUNDER-PENDING (now BACKLOG rows season-route · season-pot ·
+>   season-bands-weights · season-floor):** AW-5 wallet name (unchanged) · SwapRail
+>   decisions (developer fee % · fee pipe address · thirdweb account ~$99/mo ·
+>   placement) · pot amount/cadence · bands + XP weights (defaults proposed §0.14-H) ·
+>   min-XP floor · /season route name + the full EN copy (at the S2/S3 gates, on
 >   screen).
 
 > **▶ 2026-07-22 (evening) — THE WALLET-TRACKING + ACTIVITY-NEWSROOM ARC OPENED (founder

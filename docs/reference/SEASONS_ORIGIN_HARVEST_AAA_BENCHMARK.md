@@ -33,9 +33,10 @@ DIFFERENT leaderboard than the preview. **Ours:** season state is DERIVED from t
 (era advancement = the WITNESS-CONFIRMED transition the era read-model already defines —
 never a raw seat-count race) — no admin status field, no dates anywhere (Zealy
 sprints/our own law: seat thresholds only). One state machine: `PLANNED → LIVE → SEALED
-→ ROOT_COMMITTED → PUBLISHED`, transitions machine-derived; the ONLY human clicks in the
-whole engine — THREE, named (deep-check amendment): Chronicle-promote (optional) · the
-funding decision · the seal signature (one tx per era transition, §0.13-④).
+→ ROOT_COMMITTED → PUBLISHED`, transitions machine-derived; **the ONLY recurring human
+act in the whole engine: THE FUNDING DECISION** (§0.15 — the seal and the rounds run
+themselves; Chronicle-promote stays optional editorial; vetoes are rights, never
+duties).
 
 ### 0.3 Quests: chain-first, feeder-guaranteed (kills the orphan-quest class)
 The origin seeded 101 quests over 60 metric keys — with 5 metrics unregistered and 4
@@ -228,9 +229,9 @@ every era boundary**:
   screenshot review, no submission queues — if we cannot compute it, the quest does
   not exist. That IS the zero-operator law applied to web2.
 - **④ THE SEAL ROOT — decided STANDARD, no longer post-MVP:** at every season SEAL,
-  the frozen XP state's merkle root is committed on-chain, riding an act the founder
-  already signs (the bounty round opening, or one dedicated seal click when a season
-  has no cash round — era transitions are rare, ×9 then the infinite cadence). From
+  the frozen XP state's merkle root is committed on-chain **AUTOMATICALLY by the
+  protocol's own executor key through the narrow SEALER role (§0.15) — a seal moves
+  no money; the founder signs nothing.** From
   that moment the ENTIRE off-chain season — quizzes included — is tamper-evident:
   anyone can recompute the published season file against the on-chain root; a
   rewritten history becomes publicly detectable. Off-chain during the season
@@ -273,8 +274,11 @@ own-row via session, never an offset scan.
 **C — CONTRACT SPEC DELTAS (the primitive, final shape):**
 - `sealSeason(seasonId, xpRoot, uri)` + `SeasonSealed` event — the XP seal root is
   NEVER a payment root (kind-byte in the domain tag makes a seal root structurally
-  unclaimable). Cash-less seasons seal with the same one signature. Seasons sealed
-  before the contract deploys get a documented retroactive-seal.
+  unclaimable). **Callable by the narrow SEALER role (the automated executor — a seal
+  moves NO money); one write per seasonId; a wrong root is owner-correctable once,
+  event-trailed (`SealCorrected`), inside a published window.** Cash-less seasons
+  seal the same automated way. Seasons sealed before the contract deploys get a
+  documented retroactive-seal.
 - **Funding invariant ON-CHAIN:** store roundBudget/roundPaid; `openRound` reverts
   unless escrow ≥ Σ(open rounds' remaining budgets) + newBudget; tooling asserts
   Σleaves == budget + fork-dry-runs every leaf. Conservation invariant (corrected):
@@ -361,6 +365,32 @@ approaching posture, never a naked number) · XP weight table (V1 default:
 introduction 500 · purchase 200 · burn 150 · archive mint 100 · quiz 25 · weekly
 check-in 10) · bounty min-XP floor · the complete EN public copy, full-text on
 screen at each gate.
+
+### 0.15 THE ZERO-CLICK RULING (founder, 2026-07-23 — "une fois le contrat en place,
+depuis l'admin J'AJOUTE SEULEMENT DE L'ARGENT")
+**The founder's ONLY recurring act is funding.** Everything else transits
+automatically, mapped on the eras:
+- **Automatic, no founder:** era advances → season SEALS (machine state) → the
+  executor key commits the seal fingerprint via the narrow **SEALER role** (moves NO
+  money) → snapshot + distribution computed deterministically by the ONE policy
+  module → the round opens as PENDING at the configured seat threshold (executor) →
+  the public window passes → auto-activates → `claimFor` batches PUSH the USDC
+  (executor pays gas) → the round closes at its seat threshold → residue recycles to
+  the escrow. Zero founder clicks, forever.
+- **The founder's acts:** ① "Ajouter des fonds" — a wallet signature, whenever HE
+  wants, any amount (necessarily manual: it is HIS money leaving HIS wallet; no
+  robot ever holds that power). ② ONE-TIME at deploy: accept ownership from the
+  console. ③ OPTIONAL rights, never duties: revoke a pending round during its public
+  window · pause · promote a sealed season to the Chronicle (editorial).
+- **Security honesty (bounded blast radius):** the executor is a hot key with NARROW
+  powers — seal fingerprints + proposing rounds + executing claims; it can never
+  exceed the escrowed pot (funding invariant), never rotate an active root, never
+  withdraw; a malicious pending round is publicly recomputable and founder-revocable
+  during the window; the pot itself is capped by what the founder chose to fund.
+  The executor wallet needs small AVAX gas top-ups — the console shows its balance
+  and the notification center alerts when low.
+This ruling AMENDS §0.2 (three clicks → funding only) and §0.13-④ (the seal no
+longer rides a founder signature).
 
 ---
 

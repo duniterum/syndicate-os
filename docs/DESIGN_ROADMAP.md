@@ -49,6 +49,25 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
 ### Phase 5 — Surfaces (adoption)
 - [ ] Public · [ ] Dashboards (connecté / membre) · [x] Console admin (arc K3 + composition console, 2026-07-22)
 - [ ] Contenu (Docs / Whitepaper / FAQ)
+- [ ] **ARC SEASONS (ouvert 2026-07-23 — la loi du dossier : `docs/reference/`
+  `SEASONS_ORIGIN_HARVEST_AAA_BENCHMARK.md` §0 ; maquettes sources : `docs/design/seasons/`,
+  à RE-ÉMETTRE corrigées avant tout wireframe gate — §0.14-E).** Surfaces à livrer, chacune
+  derrière son preview gate fondateur :
+  - [ ] `/season` — page publique du classement : pot (chiffre ESCROWÉ uniquement + preuve) ·
+    zones de récompense dessinées sur le tableau (identiques par bande) · double horloge
+    (season + all-time) · rang YOU épinglé · filtres d'axes ALIMENTÉS seulement · archive
+    inline v1 · SEO/OG/nav dans le même commit · matrice d'états vides · mobile scroll
+    container + a11y (§0.14-E).
+  - [ ] **Section Season de la home visiteur** — 2 colonnes, jauge sièges (jamais de date),
+    CTA en style SECONDAIRE (loi un-seul-CTA-or du héros).
+  - [ ] **Member Home — slots Season + Quests remplis** (`MEMBER_HOME_RESERVED_SLOTS` flip
+    même commit) + carte « récompense d'effort » séparée, badgée FUTURE sur `seasonBounty`
+    jusqu'à S3.
+  - [ ] **Console admin — section Seasons 2 rails** (chunk opérateur lazy) : rail
+    reconnaissance auto (next-step engine + dry-run harvestés de l'origine) · rail effort
+    founder-gated (« Ajouter des fonds » + rounds par palier + panneau Rounds & Deploy S3).
+  - [ ] featureStatus : `seasonRanking` / `seasonQuests` / `seasonBounty` (clés séparées,
+    flips dans le commit qui livre chacune).
 - [x] **`/join` checkout (C1.1→C1.4)** — rend via le système (tokens only, 0 couleur brute),
   motion tokens (`animate-in fade-in`), 2 modes vérifiés sur la surface ; quote · money path ·
   gate historique · économie honnête. *(Les cases globales Mouvement/2 modes/Adoption restent
