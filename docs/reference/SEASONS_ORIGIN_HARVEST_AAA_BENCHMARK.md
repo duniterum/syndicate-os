@@ -543,6 +543,29 @@ marketing budget paying for WORK (introductions are a service); copy never says
 earn-income/yield; purchase XP once-per-season is the anti-"money buys money"
 spine; lawyer pass at activation as planned.
 
+### 0.18 THE MULTI-LEVEL PLAYERS LAW (founder, 2026-07-23 — "plusieurs niveaux
+d'utilisateurs, referral possible avec du SYN sans seat, swap/marketplace sans
+seat" → "OK ça me va" → the seal question, all one day)
+- **XP accrues at EVERY user level.** The chain itself pays commissions to
+  no-seat SYN referrers (ReferrerNotSeated checks the BALANCE, never the seat —
+  the engraved .sol lesson); future modules (swap · bridge · marketplace) join
+  as XP sources WITH their families (§0.11-G4). The engine credits every acting
+  wallet (seasonReadmodel, multi-level).
+- **THE POT REQUIRES THE SEAT.** `potEligible` = seated AND not hors-concours.
+  NUMBERED ranks on the money board = eligible members ONLY — a no-seat player
+  consumes NO paid slot, so nobody's share ever depends on someone else's
+  choice (the §0.14-⑩ occupancy law extended).
+- **THE PENDING SHARE IS A PROJECTION, NEVER A RESERVATION.** The unnumbered
+  AWAITING SEAT row shows what seating NOW would pay — the conversion machine
+  (and the K4 lever: "tu as déjà X XP et une part en attente").
+- **THE SEAL IS THE DEADLINE.** Unseated at the seal = skipped. No forfeiture
+  exists because nothing was ever reserved; the XP, rank history, and
+  recognition stay theirs FOREVER; the next season opens the same day and they
+  play on. Honest copy engraved on the board caption.
+- **Public identity:** seat ordinal for the seated · the chain-emitted SHORT
+  FORM for no-seat players (the feed projection's own pattern) — never a full
+  address, never a directory.
+
 ---
 
 ## §1 — ORIGIN: THE SERVER ENGINE (agent synthesis, verbatim)

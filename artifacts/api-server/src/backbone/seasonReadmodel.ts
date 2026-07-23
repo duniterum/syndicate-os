@@ -18,10 +18,19 @@
  *     purchase's block belongs to the NEXT season (§0.17-③ snipe-proof —
  *     standings freeze at the block BEFORE the sealing act; nobody times the
  *     last seat to rig the frozen board).
- *   - A SEAT = A PLAYER (§0.14-F): XP credits SEATED wallets only (the sybil
- *     cost is a seat). Self-referral credits nothing (buyer == introducer).
- *     Hors-concours wallets stay LISTED and flagged — excluded from paid
- *     bands at S3, never erased from the record.
+ *   - THE MULTI-LEVEL LAW (founder ruling 2026-07-23 "OK ça me va" — supersedes
+ *     the earlier seat-gate): XP accrues at EVERY user level. The chain itself
+ *     pays commissions to no-seat SYN referrers (ReferrerNotSeated checks the
+ *     BALANCE, never the seat), so their acts are real and COUNT — and future
+ *     modules (swap · marketplace) join as XP sources with their families.
+ *     THE POT requires the seat: `potEligible` = seated AND not hors-concours;
+ *     a no-seat player's standing shows the share their rank WOULD pay —
+ *     PENDING, activated the day they seat (the conversion machine, the K4
+ *     lever). Self-referral credits nothing (buyer == introducer).
+ *     Hors-concours wallets stay LISTED and flagged — never erased, never paid.
+ *     Public identity: seat ordinal for the seated; the chain-emitted SHORT
+ *     FORM (the feed projection's own pattern) for no-seat players — never a
+ *     full address.
  *   - IDENTITY = THE WALLET (§0.14-A): one rank row per wallet (the #7+#11
  *     double resolves to one player); seats render as attributes. Wallet keys
  *     are SERVER-ONLY (the D3 own-purchase precedent): the PUBLIC standings
@@ -102,9 +111,15 @@ interface XpEvent {
   readonly transactionHash: string;
 }
 
-/** Address-free public standing row (seat-keyed — §0.14-D). */
+/** Address-safe public standing row (§0.14-D + the multi-level law): the
+ *  seated carry their seat ordinal; no-seat players carry the chain-emitted
+ *  SHORT FORM only (the feed projection's own pattern) — never a full address. */
 export interface SeasonStandingPublic {
-  readonly seat: number;
+  /** "#14" for the seated · "0x3f2…0a91" for no-seat players. */
+  readonly display: string;
+  readonly seat: number | null;
+  /** Seated AND not hors-concours — the ONLY wallets the pot may pay (S3). */
+  readonly potEligible: boolean;
   readonly rank: number;
   readonly xp: number;
   readonly axes: Readonly<Record<SeasonAxis, number>>;
@@ -126,7 +141,8 @@ export interface SeasonModelPublic {
 /** SERVER-ONLY per-wallet view (future auth-zone own-row serving; never a
  *  public payload — the D3 precedent). */
 export interface WalletSeasonView {
-  readonly seat: number;
+  /** null = a no-seat player (multi-level law) — XP counts, the pot waits. */
+  readonly seat: number | null;
   readonly lifetimeXp: number;
   readonly level: number;
   readonly metrics: Readonly<Record<SeasonMetricKey, number>>;
@@ -184,7 +200,8 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
         : a.logIndex - b.logIndex,
     );
 
-  // --- A SEAT = A PLAYER: the seated-wallet roster (lowercase → seat) ---
+  // --- The seated roster (lowercase → seat) — decides POT eligibility and
+  //     the public display form, never who may EARN (multi-level law) ---
   // Genesis roster (frozen, seats #1–#8) + every first-seat purchase whose
   // event names its holder. V1 rows without an address are covered by the
   // genesis roster; anything else stays honestly unattributed.
@@ -277,9 +294,9 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
     if (introducer !== null) {
       if (holder !== null && introducer === holder) {
         selfReferralsIgnored += 1;
-      } else if (!seatByWallet.has(introducer)) {
-        unseatedIntroducersIgnored += 1;
       } else {
+        // MULTI-LEVEL LAW: a no-seat SYN referrer's conversion is a real
+        // chain-paid act — it credits XP; only the POT requires the seat.
         const d = src("introduction-converted");
         events.push({
           wallet: introducer,
@@ -294,17 +311,11 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
     }
   }
   if (selfReferralsIgnored > 0) {
-    notes.push(`${selfReferralsIgnored} self-referral row(s) credited nothing (§0.14-F — structural).`);
+    notes.push(`${selfReferralsIgnored} self-referral row(s) credited nothing (structural).`);
   }
-  if (unseatedIntroducersIgnored > 0) {
-    notes.push(
-      `${unseatedIntroducersIgnored} introduction(s) by not-yet-seated sources credited nothing (a seat = a player).`,
-    );
-  }
-  // Burn acts (the fire lane's own actor).
+  // Burn acts (the fire lane's own actor — every level plays, multi-level law).
   for (const b of burnItems) {
     const w = b.actorAddress.toLowerCase();
-    if (!seatByWallet.has(w)) continue;
     const d = src("burn-act");
     events.push({
       wallet: w,
@@ -324,7 +335,6 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
       unknownMinters += 1;
       continue;
     }
-    if (!seatByWallet.has(w)) continue;
     const d = src("archive-mint");
     events.push({
       wallet: w,
@@ -412,25 +422,29 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
     lifetime.set(e.wallet, (lifetime.get(e.wallet) ?? 0) + e.xp);
   }
 
+  // The feed projection's own short form — the ONLY address shape that may
+  // leave the server (multi-level law: no-seat players render short-form).
+  const shortForm = (w: string): string => `${w.slice(0, 5)}…${w.slice(-4)}`;
   const seasons: SeasonModelPublic[] = [];
   for (let s = 1; s <= currentSeasonNumber; s += 1) {
     const walletMap = bySeason.get(s) ?? new Map<string, Acc>();
     const rows = [...walletMap.entries()]
       .map(([wallet, acc]) => ({
         wallet,
-        seat: seatByWallet.get(wallet),
+        seat: seatByWallet.get(wallet) ?? null,
         acc,
       }))
-      .filter((r): r is { wallet: string; seat: number; acc: Acc } => r.seat !== undefined)
       .sort((a, b) => {
         if (a.acc.xp !== b.acc.xp) return b.acc.xp - a.acc.xp;
         if (a.acc.lastActBlock !== b.acc.lastActBlock) {
           return a.acc.lastActBlock - b.acc.lastActBlock;
         }
-        return a.seat - b.seat;
+        return (a.seat ?? Number.MAX_SAFE_INTEGER) - (b.seat ?? Number.MAX_SAFE_INTEGER);
       });
     const standings: SeasonStandingPublic[] = rows.map((r, i) => ({
+      display: r.seat !== null ? `#${r.seat}` : shortForm(r.wallet),
       seat: r.seat,
+      potEligible: r.seat !== null && !horsConcoursWallets.has(r.wallet),
       rank: i + 1,
       xp: r.acc.xp,
       axes: { ...r.acc.axes },
@@ -450,11 +464,14 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
   }
 
   // --- SERVER-ONLY wallet index (future own-row serving; never public) ---
+  // Multi-level law: EVERY acting wallet gets a view (seated or not), plus
+  // seated wallets that have not acted yet (their zero state still exists).
   const walletIndex = new Map<string, WalletSeasonView>();
-  for (const [wallet, seat] of seatByWallet) {
+  const allWallets = new Set<string>([...lifetime.keys(), ...seatByWallet.keys()]);
+  for (const wallet of allWallets) {
     const xp = lifetime.get(wallet) ?? 0;
     walletIndex.set(wallet, {
-      seat,
+      seat: seatByWallet.get(wallet) ?? null,
       lifetimeXp: xp,
       level: Math.floor(xp / LEVEL_XP_STEP) + 1,
       metrics:
