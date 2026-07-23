@@ -57,7 +57,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   lines single-line · header "Builder" 218px (mockup 220) · "Builders earning:
 >   15" · zero visible "players" · zero page overflow. Studio gates re-run green.
 >   Season visual slices now REQUIRE a studio-prod-data measurement pass before
->   any handoff.
+>   any handoff. **🏆 SEALED IN PROD (Replit green 2026-07-24 + founder
+>   screenshot):** header BUILDER live · 15/15 identity lines single-line
+>   (w-56 ×1 + nowrap ×6 confirmed in the served bundle) · mobile 402 clean ·
+>   /api/season LIVE 15 rows shortForm on all · engine ok=2, headBlock
+>   advancing, 6/6 units · byte-identity ×2. **DEPLOY BACKLOG: EMPTY. The
+>   3 closing notes are fully alive in production.**
 > - **(e) FOUNDER-PENDING (re-trued):** 🔴 AW-5 wallet name (unchanged) · SwapRail
 >   decisions (fee % · fee pipe · thirdweb ~$99/mo · placement) · pot COMMITMENT
 >   amount + cadence (« Engager au pot ») · CONFIRM XP weights + $20 floor +
