@@ -392,6 +392,43 @@ automatically, mapped on the eras:
 This ruling AMENDS §0.2 (three clicks → funding only) and §0.13-④ (the seal no
 longer rides a founder signature).
 
+### 0.16 THE EXTREME-CASES DOCTRINE (founder question 2026-07-23: "les ères 7-8-9
+peuvent être très longues · devenir un L1 Avalanche · retirer 100k USDC du contrat
+vers un nouveau contrat sur la nouvelle chaîne — tu as prévu ça?")
+Designed NOW because the primitive is immutable forever — three mechanisms:
+- **① THE ETERNAL ERA (a season that takes years to seal).** Already alive by
+  design: bounty rounds ride the FOUNDER'S FUNDING ACTS during the era — his
+  funding tx is the deterministic trigger (an act, never a date), rounds pay the
+  current merit standings and close at their own thresholds (or immediately via
+  full push); recurrents, ladders, and the live crown keep the game running; the
+  era seal is the SEASON boundary, never the payment gate. A 3-year era = a long
+  season with N paid rounds inside it, not frozen money.
+- **② `withdrawUnallocated(to, amount)` — the treasury-recovery function the V1
+  contract MUST carry (this question found the gap).** onlyOwner, capped
+  structurally: `escrow − amount ≥ Σ(open rounds' remaining budgets)` — the owner
+  can recover COMPANY money that was funded but never committed to a published
+  round, and can NEVER touch a cent already promised to members (the funding
+  invariant protects claimants mathematically). Event-trailed
+  (`UnallocatedWithdrawn(to, amount, uri)`) with a published reason; the /season
+  pot figure reads live escrow, so the public surface tells the truth
+  automatically the moment money moves. No forfeiture is possible: published
+  rounds are untouchable, and push-at-activation empties them within days anyway.
+  This refines §0.14-C's scoped-rescue: uncommitted company money is recoverable
+  in the open; committed merit money never is.
+- **③ THE CHAIN-MIGRATION PLAYBOOK (the Avalanche-L1 day).** Evolution by
+  accretion (§0.12) extends across CHAINS: the old primitive lives forever on
+  C-Chain (immutable history; residual claims stay claimable there) · unallocated
+  funds exit via ② and fund a FRESH deployment of the same audited primitive on
+  the new chain · any unclaimed leaves are replicable into a new round from the
+  published season files (the tooling rebuilds the subset in minutes) ·
+  **cross-chain replay is impossible BY CONSTRUCTION** — every leaf carries
+  `(chainId, contract address)` in its domain tag (§0.7 was designed for exactly
+  this migration) · the XP/season layer is chain-agnostic (off-chain ledger +
+  viem adapters re-pointed at the new chain's RPC) · the old chain's seal roots
+  remain permanent history, referenced — never rewritten — by the new chain's
+  first season file. Becoming an L1 is a NEW module on a NEW chain, never a
+  mutation of the old one.
+
 ---
 
 ## §1 — ORIGIN: THE SERVER ENGINE (agent synthesis, verbatim)
