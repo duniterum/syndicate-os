@@ -91,7 +91,19 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   depth scales with the field ~10% + min-cash floor $20 — never a fixed 25) —
 >   engraved in seasonConfig BOUNTY_CURVE_BP_V1 (Σ=10,000bp) + §0.17-④ + the
 >   BACKLOG row.**
->   → NEXT: S2 recognition surfaces (/season public page · home season section ·
+>   **MOCKUP GATE PASSED (founder "OK" on the corrected set) → S2 BUILD OPEN.
+>   ✅ S2a SEALED (`a83f7cd`): GET /api/season — the address-safe public season
+>   read (display #seat-or-shortform · potEligible · DARK-fail-closed · the
+>   feed's output gate · pinned deliberately in both route-surface guards; api
+>   chain exit 0). Decisions landed same day: Option-A poker curve
+>   (BOUNTY_CURVE_BP_V1) + depth law + §0.18 multi-level players (XP every
+>   level · pot seated · pending=projection · seal=deadline).**
+>   → NEXT: S2b the /season page itself (real shell + SEO registry +
+>   surfaceClassification + nav/footer + prerender, same commit; seasonRanking
+>   flips at its go-live; the bounty areas FUTURE-badged on seasonBounty; the
+>   §9 catch recipe: hero pot odometer-ready, trophy podium, XP bars) → then
+>   the home season section · member slots · admin rail 1 — each behind the
+>   real-preview gate. Remaining S2 surfaces (/season public page · home season section ·
 >   member Season+Quests slots · admin Seasons rail 1 — wireframe + preview gate EACH;
 >   the split keys `seasonRanking`/`seasonQuests`/`seasonBounty` flip in their
 >   go-live commits, §0.14-E) → S3 Foundry workspace + the merit primitive + the
