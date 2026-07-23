@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Syndicate — Public Home (fidèle au design réel)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ==== VRAIS TOKENS (artifacts/studio/src/index.css, mode dark) ==== */
+  :root{
+    --background:224 71% 4%; --foreground:213 31% 91%;
+    --card:222 47% 7%; --border:216 34% 17%;
+    --muted-fg:215 16% 57%; --faint:215 14% 40%;
+    --gold:42 92% 60%; --gold-fg:240 30% 8%;
+    --cyan:190 90% 50%;              /* primary / live / proof */
+    --warning:36 95% 60%;            /* amber / caution */
+    --success:158 64% 46%;
+    --danger:0 63% 31%;
+    --command:220 36% 5%;
+    --radius:.5rem;
+    --serif:'Instrument Serif',Georgia,'Times New Roman',serif;
+    --sans:'Work Sans','Inter',system-ui,-apple-system,sans-serif;
+    --mono:'IBM Plex Mono',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:hsl(var(--background));color:hsl(var(--foreground));font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:.2px;line-height:1.08}
+  .mono{font-family:var(--mono)}
+  a{color:inherit;text-decoration:none}
+  .ribbon{position:fixed;top:15px;right:-46px;transform:rotate(45deg);background:hsl(var(--gold));color:hsl(var(--gold-fg));font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1.5px;padding:6px 60px;z-index:60}
+
+  /* eyebrow / labels (syn-eyebrow: mono, uppercase, wide tracking) */
+  .eyebrow{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:hsl(var(--muted-fg))}
+  .caption{font-family:var(--mono);font-size:11.5px;color:hsl(var(--muted-fg))}
+
+  /* header */
+  header{position:sticky;top:0;z-index:40;background:hsl(var(--background)/.82);backdrop-filter:blur(10px);border-bottom:1px solid hsl(var(--border))}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:62px;gap:18px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .mark{width:28px;height:28px;border-radius:7px;background:radial-gradient(circle at 32% 30%,hsl(var(--gold)),hsl(42 80% 42%));box-shadow:0 0 16px hsl(var(--gold)/.35)}
+  .brand b{font-family:var(--serif);font-size:18px;font-weight:400}
+  .navlinks{display:flex;gap:26px;font-size:14px;color:hsl(var(--muted-fg))}
+  .navlinks a:hover{color:hsl(var(--foreground))}
+  .navcta{border:1px solid hsl(var(--gold)/.5);color:hsl(var(--gold));border-radius:var(--radius);padding:8px 15px;font-size:13px;font-weight:500}
+  @media(max-width:760px){.navlinks{display:none}}
+
+  /* command grid backdrop */
+  .command{position:relative;background:hsl(var(--command))}
+  .command:before{content:"";position:absolute;inset:0;
+    background-image:linear-gradient(hsl(var(--gold)/.06) 1px,transparent 1px),linear-gradient(90deg,hsl(var(--gold)/.06) 1px,transparent 1px);
+    background-size:44px 44px;
+    -webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000 40%,transparent 78%);
+    mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000 40%,transparent 78%);pointer-events:none}
+
+  /* hero cockpit */
+  .hero{position:relative;padding:56px 0 60px}
+  .cockpit{border:1px solid hsl(var(--border));border-radius:16px;background:linear-gradient(180deg,hsl(222 47% 8%),hsl(var(--card)));
+    box-shadow:inset 0 1px 0 hsl(0 0% 100%/.03),0 30px 80px -40px hsl(var(--gold)/.25);padding:30px}
+  .hgrid{display:grid;grid-template-columns:1.35fr .95fr .9fr;gap:26px}
+  @media(max-width:960px){.hgrid{grid-template-columns:1fr}}
+  .chiprow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;border-radius:999px;padding:4px 10px;border:1px solid transparent}
+  .t-proof{color:hsl(var(--cyan));background:hsl(var(--cyan)/.10);border-color:hsl(var(--cyan)/.30)}
+  .t-identity{color:hsl(var(--gold));background:hsl(var(--gold)/.10);border-color:hsl(var(--gold)/.30)}
+  .t-caution{color:hsl(var(--warning));background:hsl(var(--warning)/.10);border-color:hsl(var(--warning)/.30)}
+  .t-neutral{color:hsl(var(--muted-fg));background:hsl(0 0% 100%/.03);border-color:hsl(var(--border))}
+  .dot{width:7px;height:7px;border-radius:50%}
+  h1.hero-h1{font-size:clamp(2.4rem,1.6rem+3vw,3.4rem);margin:6px 0 4px}
+  h1.hero-h1 em{font-style:italic;color:hsl(var(--gold))}
+  .verify{font-family:var(--mono);font-size:11.5px;color:hsl(var(--cyan));border-bottom:1px dashed hsl(var(--cyan)/.5);padding-bottom:1px}
+  .explain{color:hsl(var(--muted-fg));font-size:14.5px;max-width:52ch;margin:14px 0 16px}
+  .seatline{font-family:var(--mono);font-size:12.5px;color:hsl(var(--foreground));background:hsl(0 0% 100%/.02);border:1px solid hsl(var(--border));border-radius:8px;padding:9px 12px;margin-bottom:18px}
+  .seatline b{color:hsl(var(--gold))}
+  .cta{display:inline-flex;align-items:center;gap:8px;background:hsl(var(--gold));color:hsl(var(--gold-fg));font-weight:600;font-size:15px;border-radius:9px;padding:12px 22px;box-shadow:0 0 30px hsl(var(--gold)/.28)}
+  .inspect{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;font-family:var(--mono);font-size:11.5px;color:hsl(var(--muted-fg))}
+  .inspect a{border-bottom:1px solid hsl(var(--border))}
+
+  /* seat flow (70/20/10) */
+  .flowcard{border:1px solid hsl(var(--border));border-radius:12px;background:hsl(0 0% 100%/.015);padding:18px;display:flex;flex-direction:column;justify-content:center}
+  .flownode{text-align:center;font-family:var(--serif);font-size:15px;padding:9px;border:1px solid hsl(var(--gold)/.3);border-radius:9px;color:hsl(var(--gold));margin:0 auto 12px;max-width:180px}
+  .flowbranch{display:flex;gap:8px;justify-content:center}
+  .fb{flex:1;text-align:center;border:1px solid hsl(var(--border));border-radius:8px;padding:8px 6px}
+  .fb .p{font-family:var(--serif);font-size:18px} .fb .l{font-size:10px;color:hsl(var(--muted-fg));font-family:var(--mono)}
+  .fb.v .p{color:hsl(var(--cyan))} .fb.l2 .p{color:hsl(var(--gold))} .fb.o .p{color:hsl(var(--foreground))}
+  .flowfoot{text-align:center;font-family:var(--mono);font-size:10.5px;color:hsl(var(--faint));margin-top:12px}
+
+  /* overview panel */
+  .ovcard{border:1px solid hsl(var(--border));border-radius:12px;background:hsl(0 0% 100%/.015);padding:18px}
+  .ovrow{display:flex;justify-content:space-between;font-size:13px;padding:9px 0;border-top:1px solid hsl(var(--border))}
+  .ovrow:first-of-type{border-top:none}
+  .ovrow .l{color:hsl(var(--muted-fg))} .ovrow .v{font-family:var(--mono)}
+  .ovrow .v.c{color:hsl(var(--cyan))} .ovrow .v.g{color:hsl(var(--gold))}
+
+  section.band{padding:46px 0;border-top:1px solid hsl(var(--border))}
+  .h2{font-size:clamp(1.7rem,1.3rem+1.6vw,2.3rem);margin-bottom:6px}
+  .sublead{color:hsl(var(--muted-fg));font-size:14.5px;margin-bottom:24px;max-width:60ch}
+
+  /* trust strip */
+  .trust{border:1px solid hsl(var(--cyan)/.25);background:hsl(var(--cyan)/.04);border-radius:12px;padding:18px 20px}
+  .trust .top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .lbadge{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:hsl(var(--cyan));border:1px solid hsl(var(--cyan)/.4);border-radius:6px;padding:3px 8px}
+  .trustgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:700px){.trustgrid{grid-template-columns:1fr}}
+  .tcell .k{font-size:12px;color:hsl(var(--muted-fg))}
+  .tcell .v{font-family:var(--serif);font-size:20px;margin-top:3px}
+  .tcell .v small{font-family:var(--mono);font-size:11px;color:hsl(var(--success))}
+
+  /* promoted cards */
+  .cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media(max-width:900px){.cards4{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.cards4{grid-template-columns:1fr}}
+  .pcard{border:1px solid hsl(var(--border));border-radius:12px;background:hsl(var(--card));padding:18px;min-height:150px;display:flex;flex-direction:column}
+  .picon{width:34px;height:34px;border-radius:9px;background:hsl(var(--gold)/.12);border:1px solid hsl(var(--gold)/.3);display:grid;place-items:center;color:hsl(var(--gold));font-family:var(--serif);margin-bottom:12px}
+  .pcard h3{font-size:16px}
+  .pcard p{color:hsl(var(--muted-fg));font-size:12.5px;margin-top:5px;flex:1}
+  .pcard .foot{margin-top:12px;display:flex;align-items:center;justify-content:space-between}
+  .plink{font-family:var(--mono);font-size:11.5px;color:hsl(var(--cyan))}
+
+  /* how it works */
+  .steps5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  @media(max-width:820px){.steps5{grid-template-columns:repeat(2,1fr)}}
+  .stp{border-top:2px solid hsl(var(--gold)/.4);padding-top:12px}
+  .stp .n{font-family:var(--mono);font-size:11px;color:hsl(var(--gold))}
+  .stp .t{font-family:var(--serif);font-size:19px;margin:4px 0 4px}
+  .stp .d{font-size:12px;color:hsl(var(--muted-fg))}
+
+  /* radical honesty */
+  .honest{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.honest{grid-template-columns:1fr}}
+  .hcard{border:1px solid hsl(var(--border));border-radius:12px;background:hsl(var(--card));padding:20px}
+  .hcard .hd{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-size:17px;margin-bottom:12px}
+  .hitem{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;padding:8px 0;border-top:1px solid hsl(var(--border))}
+  .hitem:first-of-type{border-top:none}
+  .hitem .badge{font-family:var(--mono);font-size:10px;letter-spacing:.05em;border-radius:5px;padding:2px 7px}
+  .b-future{color:hsl(var(--warning));border:1px solid hsl(var(--warning)/.4)}
+
+  /* record surfaces (le "ranking" honnête) */
+  .note{border:1px solid hsl(var(--gold)/.28);background:hsl(var(--gold)/.05);border-radius:12px;padding:16px 18px;font-size:13.5px;color:hsl(var(--foreground));margin-bottom:22px}
+  .note b{color:hsl(var(--gold))}
+  .rec3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:760px){.rec3{grid-template-columns:1fr}}
+
+  /* season full-width hero */
+  .season-hero{position:relative;padding:58px 0;border-top:1px solid hsl(var(--border));border-bottom:1px solid hsl(var(--border));
+    background:radial-gradient(ellipse 60% 130% at 18% -10%,hsl(var(--gold)/.07),transparent 60%),hsl(var(--command))}
+  .season-gauge{height:12px;border-radius:8px;background:hsl(0 0% 100%/.04);border:1px solid hsl(var(--border));overflow:hidden}
+  .season-gauge>i{display:block;height:100%;width:4.2%;background:linear-gradient(90deg,hsl(42 80% 45%),hsl(var(--gold)))}
+  .podium3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:end}
+  @media(max-width:700px){.podium3{grid-template-columns:1fr}}
+  .pod3{border:1px solid hsl(var(--border));border-radius:12px;background:hsl(var(--card));padding:16px;text-align:center}
+  .pod3.p1{border-color:hsl(var(--gold)/.4);padding-top:22px;padding-bottom:22px}
+  .pod3 .rk{width:30px;height:30px;border-radius:50%;margin:0 auto 8px;display:grid;place-items:center;font-family:var(--serif);color:hsl(var(--gold-fg));font-weight:600}
+  .pod3.p1 .rk{background:hsl(var(--gold))} .pod3.p2 .rk{background:hsl(220 8% 74%)} .pod3.p3 .rk{background:hsl(28 55% 55%)}
+  .pod3 .who{font-family:var(--serif);font-size:15px}
+  .pod3 .ax{font-size:10.5px;color:hsl(var(--violet));margin-top:5px}
+  .pod3 .xp{color:hsl(var(--cyan));font-family:var(--mono);font-size:13px;margin-top:6px}
+  .faint{color:hsl(var(--faint))}
+  .season-top{display:grid;grid-template-columns:1.4fr .9fr;gap:30px;align-items:stretch}
+  @media(max-width:860px){.season-top{grid-template-columns:1fr}}
+  .moneycard{border:1px solid hsl(var(--gold)/.4);border-radius:16px;padding:26px;display:flex;flex-direction:column;justify-content:center;
+    background:radial-gradient(ellipse 95% 85% at 82% 8%,hsl(var(--gold)/.11),transparent 60%),hsl(var(--card))}
+  .moneycard .lab{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:hsl(var(--muted-fg))}
+  .bigmoney{font-family:var(--serif);font-size:clamp(2.6rem,2rem+3.4vw,3.9rem);color:hsl(var(--gold));line-height:1;margin:6px 0 4px}
+  .bigmoney .u{font-size:.4em;color:hsl(var(--foreground));font-family:var(--mono);letter-spacing:.04em}
+  .moneysub{font-size:12.5px;color:hsl(var(--muted-fg));margin-top:6px}
+  .moneyline{font-size:12.5px;color:hsl(var(--foreground));margin-top:8px}
+  .moneymeta{display:flex;gap:26px;margin-top:16px;border-top:1px solid hsl(var(--border));padding-top:14px}
+  .moneymeta .k{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:hsl(var(--faint))}
+  .moneymeta .v{font-family:var(--serif);font-size:16px;margin-top:2px}
+
+  footer{border-top:1px solid hsl(var(--border));padding:30px 0 44px;color:hsl(var(--faint));font-size:12.5px}
+  footer .fl{font-family:var(--mono);color:hsl(var(--muted-fg))}
+</style>
+</head>
+<body>
+<div class="ribbon">DESIGN PREVIEW · FIDÈLE AU RÉEL</div>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand"><div class="mark"></div><b>The Syndicate</b></div>
+    <nav class="navlinks">
+      <a href="#">Protocol</a><a href="#">Economy</a><a href="#">Membership</a><a href="#">More ▾</a>
+    </nav>
+    <a class="navcta" href="#">Take your seat</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="command">
+  <div class="wrap hero">
+    <div class="cockpit">
+      <div class="hgrid">
+        <!-- left -->
+        <div>
+          <div class="chiprow">
+            <span class="pill t-proof"><span class="dot" style="background:hsl(var(--cyan))"></span> On-chain</span>
+            <span class="pill t-identity">Numbered seat</span>
+            <span class="pill t-neutral">Avalanche</span>
+          </div>
+          <div class="eyebrow">The seat is the center</div>
+          <h1 class="hero-h1">A permanent, numbered seat, <em>written on-chain.</em></h1>
+          <div style="margin-top:8px"><a class="verify" href="#">Verify on-chain →</a></div>
+          <p class="explain">One wallet, one seat. Buying more SYN grows your footprint and your recognition — never a second seat, never a better price. In crypto, lying is free; on-chain it is impossible.</p>
+          <div class="seatline">14 seats on-chain · the next seat is <b>#15</b> — open now <span style="color:hsl(var(--faint))">· design preview</span></div>
+          <a class="cta" href="#">Take your seat →</a>
+          <div class="inspect">
+            <a href="#">Verify</a><a href="#">Registry</a><a href="#">Token</a><a href="#">Liquidity</a>
+          </div>
+        </div>
+        <!-- center : seat flow 70/20/10 -->
+        <div class="flowcard">
+          <div class="eyebrow" style="text-align:center;margin-bottom:14px">Where a seat's USDC goes</div>
+          <div class="flownode">Seat purchase</div>
+          <div class="flowbranch">
+            <div class="fb v"><div class="p">70</div><div class="l">Vault</div></div>
+            <div class="fb l2"><div class="p">20</div><div class="l">Liquidity</div></div>
+            <div class="fb o"><div class="p">10</div><div class="l">Operations</div></div>
+          </div>
+          <div class="flowfoot">Split inside the contract · append-only · tx-anchored</div>
+        </div>
+        <!-- right : overview -->
+        <div class="ovcard">
+          <div class="eyebrow" style="margin-bottom:12px">Protocol overview</div>
+          <div class="ovrow"><span class="l">Era</span><span class="v g">I · Genesis</span></div>
+          <div class="ovrow"><span class="l">Price</span><span class="v">100 SYN / $</span></div>
+          <div class="ovrow"><span class="l">Seats on-chain</span><span class="v c">14</span></div>
+          <div class="ovrow"><span class="l">SYN</span><span class="v">fixed supply</span></div>
+          <div class="ovrow"><span class="l">Chain</span><span class="v">Avalanche C-Chain</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRUST STATUS STRIP -->
+<section class="band"><div class="wrap">
+  <div class="trust">
+    <div class="top">
+      <span class="lbadge">Verified on-chain</span>
+      <span class="eyebrow">Protocol reality</span>
+    </div>
+    <div class="trustgrid">
+      <div class="tcell"><div class="k">Chain identity</div><div class="v">Reconciled <small>✓ canon</small></div></div>
+      <div class="tcell"><div class="k">Membership sale</div><div class="v">Reconciled <small>✓ canon</small></div></div>
+      <div class="tcell"><div class="k">Source registry</div><div class="v">Reconciled <small>✓ canon</small></div></div>
+    </div>
+    <div class="caption" style="margin-top:12px">Fail-closed — if a figure can't be read, we say so, we never assume. <span style="color:hsl(var(--faint))">“Live posture unavailable — nothing is assumed.”</span></div>
+  </div>
+</div></section>
+
+<!-- SEASON — section PLEIN ÉCRAN + teaser top-3 → page dédiée -->
+<section class="season-hero">
+  <div class="wrap">
+    <div class="season-top">
+      <!-- pitch -->
+      <div>
+        <div class="eyebrow" style="color:hsl(var(--cyan))">Live now · Era I</div>
+        <h2 style="font-size:clamp(2.2rem,1.6rem+2.6vw,3.3rem);margin:8px 0 8px">Season 1 · <span style="color:hsl(var(--gold))">Genesis Signal</span></h2>
+        <div class="sublead" style="max-width:52ch">Bound to Era I — it seals, forever, when the era fills. Get in before Genesis seals.</div>
+        <div style="margin:22px 0 6px">
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:12.5px;margin-bottom:9px">
+            <span style="color:hsl(var(--muted-fg))">14 / 333 seats</span>
+            <span style="color:hsl(var(--gold))">319 before Genesis seals — forever</span>
+          </div>
+          <div class="season-gauge"><i></i></div>
+        </div>
+        <a class="cta" href="#" style="margin-top:18px;font-size:16px;padding:14px 26px">Take your seat — enter Season 1 →</a>
+        <div class="caption" style="margin-top:12px">A seat = the season. You earn by what you do, shown on-chain.</div>
+      </div>
+      <!-- the money -->
+      <div class="moneycard">
+        <div class="lab">Season 1 · earn a share of</div>
+        <div class="bigmoney">$2,000 <span class="u">USDC</span></div>
+        <div class="moneysub">Put up by the company — shared with the season's most active.</div>
+        <div class="moneyline"><b>By merit, never chance. For what you do, never for what you hold.</b></div>
+        <div class="moneymeta">
+          <div><div class="k">Runs until</div><div class="v" style="color:hsl(var(--gold))">Genesis seals</div></div>
+          <div><div class="k">Seats left</div><div class="v">319</div></div>
+          <div><div class="k">Members earning</div><div class="v">12</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ranking teaser + link to dedicated page -->
+    <div style="margin-top:36px;border-top:1px solid hsl(var(--border));padding-top:22px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+        <div class="eyebrow">Season 1 ranking · the leaders</div>
+        <a class="plink" href="#" style="border-bottom:1px solid hsl(var(--cyan)/.4);padding-bottom:1px">See full ranking →</a>
+      </div>
+      <div class="podium3">
+        <div class="pod3 p2"><div class="rk">2</div><div class="who">#7 <span class="mono faint">0x573…c2cd</span></div><div class="ax">Builder</div><div class="xp">1 910 XP</div></div>
+        <div class="pod3 p1"><div class="rk">1</div><div class="who">#3 <span class="mono faint">0x03e…c6d0</span></div><div class="ax">Connector · Verifier</div><div class="xp">2 480 XP</div></div>
+        <div class="pod3 p3"><div class="rk">3</div><div class="who">#12 <span class="mono faint">0x3b1…ec6a</span></div><div class="ax">Historian</div><div class="xp">1 640 XP</div></div>
+      </div>
+      <div class="caption" style="margin-top:14px">Public, pseudonymous · your rank never drops · your alias replaces your address · <span style="color:hsl(var(--foreground))">sign in to see yours</span>. Full ranking on its own page.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMOTED SURFACES -->
+<section class="band"><div class="wrap">
+  <div class="eyebrow">Act on the protocol</div>
+  <h2 class="h2">Real surfaces, live and verifiable</h2>
+  <div class="sublead">Everything a visitor sees is a live chain read — the register, the activity, the record. We show what the chain already publishes; we refuse only to fabricate what it doesn't.</div>
+  <div class="cards4">
+    <div class="pcard"><div class="picon">◈</div><h3>Protocol Map</h3><p>The live seat count and raw sale figures, read straight from the chain.</p><div class="foot"><span class="plink">Inspect →</span></div></div>
+    <div class="pcard"><div class="picon">≋</div><h3>Activity</h3><p>The heartbeat — every seat, burn and source event as it happens.</p><div class="foot"><span class="plink">Inspect →</span></div></div>
+    <div class="pcard"><div class="picon">§</div><h3>Chronicle</h3><p>The institution telling its own story — firsts and moments, proof-backed.</p><div class="foot"><span class="plink">Read →</span></div></div>
+    <div class="pcard"><div class="picon">▲</div><h3>Fire Ledger</h3><p>Numbered SYN burns — Proof of Fire, gapless and verifiable.</p><div class="foot"><span class="plink">Inspect →</span></div></div>
+  </div>
+</div></section>
+
+<!-- HOW IT WORKS -->
+<section class="band"><div class="wrap">
+  <div class="eyebrow">The path</div>
+  <h2 class="h2">The Mechanics of Truth</h2>
+  <div class="sublead">Five steps, each one verifiable.</div>
+  <div class="steps5">
+    <div class="stp"><div class="n">01</div><div class="t">Join</div><div class="d">Take a numbered seat on-chain.</div></div>
+    <div class="stp"><div class="n">02</div><div class="t">Prove</div><div class="d">Your receipt is the proof — verify it.</div></div>
+    <div class="stp"><div class="n">03</div><div class="t">Remember</div><div class="d">The Archive keeps the memory.</div></div>
+    <div class="stp"><div class="n">04</div><div class="t">Return</div><div class="d">Come back to what moved.</div></div>
+    <div class="stp"><div class="n">05</div><div class="t">Evolve</div><div class="d">Recognition grows with your acts.</div></div>
+  </div>
+</div></section>
+
+<!-- RADICAL HONESTY -->
+<section class="band"><div class="wrap">
+  <div class="eyebrow">What is live, what is not</div>
+  <h2 class="h2">Radical Honesty</h2>
+  <div class="sublead">We show what's wired, and we name what isn't. A live surface carries no badge; only what's coming does.</div>
+  <div class="honest">
+    <div class="hcard">
+      <div class="hd"><span class="dot" style="background:hsl(var(--success))"></span> Operational Reality</div>
+      <div class="hitem"><span>Seat Checkout</span></div>
+      <div class="hitem"><span>Event Backbone</span></div>
+      <div class="hitem"><span>Referral Direct Payment</span></div>
+      <div class="hitem"><span>Member notifications</span></div>
+    </div>
+    <div class="hcard">
+      <div class="hd"><span class="dot" style="background:hsl(var(--warning))"></span> Awaiting Wiring</div>
+      <div class="hitem"><span>Identity Alias</span><span class="badge b-future">Coming later</span></div>
+      <div class="caption" style="margin-top:14px">That's the whole list. Nothing else here is simulated.</div>
+    </div>
+  </div>
+  <div style="margin-top:20px"><a class="navcta" href="#" style="border-color:hsl(var(--border));color:hsl(var(--foreground))">View Full Status Hub →</a></div>
+</div></section>
+
+<!-- LE REGISTRE PUBLIC + STANDING (répond à "ranking visiteur", doctrine-correct) -->
+<section class="band"><div class="wrap">
+  <div class="eyebrow">The public register</div>
+  <h2 class="h2">Nothing to hide — the register is the flex</h2>
+  <div class="sublead">On a chain, hiding does not exist — only making legible or making tedious. We show what the chain already publishes: seat number, short address, who brought whom. Pseudonymous by default; a member can opt in to an alias. We're a business, not a charity — the register sells.</div>
+
+  <div class="note">⚖ <b>La seule ligne rouge</b> (Visibility Law · ADR-003) : l'interdit n'est PAS l'adresse — c'est le <b>lien wallet ↔ personne réelle</b>, un <b>annuaire cherchable / reverse-lookup</b>, et exposer une <b>identité réelle</b> non consentie. La donnée on-chain pseudonyme est publique, et fière.</div>
+
+  <!-- live register flow (forme réelle, amendement 2026-07-15) -->
+  <div class="ovcard" style="margin-bottom:16px">
+    <div class="eyebrow" style="margin-bottom:12px">Live register</div>
+    <div class="ovrow"><span class="l mono">Member #14 · 0xea8…5881</span><span class="v">entered the register — brought by <span class="g">0x3f2…0a91</span></span></div>
+    <div class="ovrow"><span class="l mono">Member #13 · 0x03e…c6d0</span><span class="v">entered the register</span></div>
+    <div class="ovrow"><span class="l mono">Member #12 · 0x573…c2cd</span><span class="v">archived First Signal</span></div>
+    <div class="caption" style="margin-top:10px">Each line = one chain event, republished as-is — no directory, no lookup, no cross-event join. When aliases ship, “brought by CryptoKemal” replaces the address (la vitrine).</div>
+  </div>
+
+  <div class="rec3">
+    <div class="ovcard"><div class="eyebrow" style="margin-bottom:8px">Holder Index</div><div style="font-family:var(--serif);font-size:30px;color:hsl(var(--gold))">14</div><div class="caption">seats on-chain · aggregate you can verify</div></div>
+    <div class="ovcard"><div class="eyebrow" style="margin-bottom:8px">Season ranking</div>
+      <div style="font-family:var(--serif);font-size:19px">Ranked by merit</div>
+      <div class="caption" style="margin-top:6px">the full ranking has its own page</div>
+      <div style="margin-top:14px"><a class="plink" href="#" style="border-bottom:1px solid hsl(var(--cyan)/.4);padding-bottom:1px">Open the full ranking →</a></div>
+    </div>
+    <div class="ovcard"><div class="eyebrow" style="margin-bottom:8px">Your standing</div><div style="font-family:var(--serif);font-size:19px">Sign in to see yours</div><div class="caption" style="margin-top:6px">own-row · en plus du registre public</div></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="fl">Every public figure is a live chain read — don't trust, verify.</div>
+  <div style="margin-top:8px">market-buy ≠ member · the seat comes from the purchase receipt, never a swap. This preview reproduces the real <span class="mono">PublicHome</span> anatomy &amp; tokens — figures are illustrative.</div>
+</div></footer>
+</body>
+</html>

@@ -123,6 +123,34 @@ anti-blocking disease — CANON_LOI_ANTIBLOCAGE applies. Prior narrower pins (th
 H2-⑫ era-meter line-on-crossing rule) were founder-overridden dated 2026-07-22;
 the crypto-lawyer pass at Phase 5 confirms the money-adjacent items as planned.
 
+### 8. THE SEASONS-ARC RULINGS → **SETTLED** (founder, 2026-07-23 — answered ON the
+advisor-dossier study; none may be re-opened, re-flagged, or re-explained):
+
+- **① The season bounty pool contract WILL be deployed.** The founder amends his own
+  contract freeze (`CONNECTOR_LADDER_POLICY.md` §5) for THIS contract only. The condition
+  is the CARE PROTOCOL: full Foundry suite (unit + fuzz + invariants) · the merkle build's
+  offline self-test + on-chain `verifyClaim()` acceptance before any root is set · a
+  full-round Fuji testnet rehearsal · static analysis · the founder's own signed mainnet
+  deploy. Built to run for years unattended.
+- **② The money is SHOWN — including the per-member merit share on the public ranking.**
+  §7 BUSINESS-FIRST governs; older "rung without amount" lines (e.g. in
+  `GAMIFICATION_LEGAL_DOCTRINE.md`) are SUPERSEDED for the season surfaces. The pot, the
+  rounds, the per-member amounts: true + chain-verifiable = displayed and SELLING.
+- **③ Vocabulary adapts to the system — never blocks it.** Where a season surface must
+  speak its real mechanism (the company-funded pot figure, the merit share, the
+  receive/claim flow of a real payment), the words are permitted WITH the honest mechanism
+  stated beside them — THE TEST above decides, never the word list.
+  `CANON_PROTOCOL_LANGUAGE.md` §5 + `guard-forbidden-copy` are amended in the same slice
+  that introduces each season surface's copy: the guard follows the system.
+- **④ Zero-operator autonomy (the 100-year rule).** XP derives ONLY from provable or
+  self-verifying facts (purchase receipt · converted introduction · burn · passed quiz
+  grid · read-model metric). NO manual validation queue exists on any XP path; feedback-XP
+  ships only fully automated with caps, or not at all.
+- **⑤ Season = Era binds on TODAY's chain.** The recognition rail reads the deployed sale
+  contract's era advancement (seat count crossing `endSeat`) — deterministic, no admin
+  dates, no new contract needed. The future sale/era contract keeps its own horizon; it is
+  NOT a season prerequisite.
+
 ## For Claude (advisor) and Claude Code — behavioral rule
 
 **Do NOT re-flag** "earn / referral / commission / reward / season / cagnotte / XP" as doctrine

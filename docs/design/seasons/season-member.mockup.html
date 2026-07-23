@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Syndicate OS — Member Home & Classement (aperçu)</title>
+<style>
+  :root{
+    --bg:#09090c;--panel:#131318;--panel2:#181820;--panel3:#1e1e28;
+    --border:#26262f;--border2:#33333f;--txt:#e9e9ee;--muted:#9596a2;--faint:#6a6b76;
+    --gold:#e6c15a;--gold2:#c9a227;--cyan:#38d9f0;--emerald:#46e0a8;--amber:#f2b441;--rose:#f26d8b;--auto:#5fe08a;--violet:#b79cf0;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.2px}
+  .mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  .ribbon{position:fixed;top:14px;right:-46px;transform:rotate(45deg);background:linear-gradient(90deg,var(--gold2),var(--gold));color:#1a1408;font-size:11px;font-weight:800;letter-spacing:1px;padding:6px 60px;z-index:50;box-shadow:0 3px 14px rgba(0,0,0,.5)}
+
+  .shell{display:flex;min-height:100vh}
+  /* sidebar */
+  .side{width:236px;flex:0 0 236px;border-right:1px solid var(--border);background:linear-gradient(180deg,#0d0d12,#0a0a0e);padding:20px 16px;position:sticky;top:0;height:100vh}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+  .sigil{width:30px;height:30px;border-radius:8px;background:radial-gradient(circle at 30% 30%,var(--gold),var(--gold2));box-shadow:0 0 18px rgba(230,193,90,.35)}
+  .brand b{font-family:var(--serif);font-size:15px}
+  .mecard{background:var(--panel2);border:1px solid var(--border2);border-radius:11px;padding:11px;margin-bottom:16px}
+  .mecard .mn{font-family:var(--serif);font-size:15px}
+  .mecard .me{font-size:11px;color:var(--muted);margin-top:2px}
+  .erab{font-size:10px;color:var(--gold);border:1px solid rgba(230,193,90,.4);border-radius:6px;padding:1px 6px}
+  nav a{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:9px;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:2px}
+  nav a.on{background:var(--panel3);color:var(--txt)}
+  nav a:hover{background:var(--panel2)}
+  .soon{font-size:9.5px;color:var(--faint);border:1px solid var(--border2);border-radius:5px;padding:1px 5px}
+  .livep{font-size:9.5px;color:var(--cyan);border:1px solid rgba(56,217,240,.4);border-radius:5px;padding:1px 5px}
+
+  /* main */
+  main{flex:1;padding:22px 26px 60px;max-width:1000px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+  .switch{display:flex;gap:6px;background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:4px}
+  .switch button{border:none;background:transparent;color:var(--muted);font-size:12.5px;font-weight:600;padding:6px 14px;border-radius:999px;cursor:pointer}
+  .switch button.on{background:var(--panel3);color:var(--txt)}
+
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;letter-spacing:.4px;border-radius:999px;padding:3px 9px;border:1px solid transparent;white-space:nowrap}
+  .p-live{color:var(--cyan);background:rgba(56,217,240,.10);border-color:rgba(56,217,240,.4)}
+  .p-soon{color:var(--faint);background:rgba(120,120,130,.08);border-color:var(--border2)}
+  .p-preview{color:var(--cyan);background:transparent;border-color:rgba(56,217,240,.35)}
+  .p-gold{color:var(--gold);background:rgba(230,193,90,.10);border-color:rgba(230,193,90,.4)}
+
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px}
+  .card.hero{background:linear-gradient(120deg,var(--panel2),var(--panel))}
+  .grid{display:grid;gap:16px}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:1fr 1fr}
+  @media(max-width:760px){.g3,.g2{grid-template-columns:1fr}.side{display:none}}
+
+  /* your seat */
+  .seat{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .seatsigil{width:52px;height:52px;border-radius:12px;background:radial-gradient(circle at 30% 30%,var(--gold),var(--gold2));box-shadow:0 0 26px rgba(230,193,90,.4);flex:0 0 auto}
+  .seat .who{font-family:var(--serif);font-size:22px}
+  .seat .sub{font-size:12px;color:var(--muted)}
+  .seat .right{margin-left:auto;text-align:right}
+  .btn{border-radius:9px;padding:8px 14px;font-size:12px;font-weight:700;border:1px solid var(--border2);background:var(--panel3);color:var(--txt);cursor:pointer}
+  .btn.gold{background:linear-gradient(90deg,var(--gold2),var(--gold));color:#1a1408;border:none}
+  .btn.cyan{border-color:rgba(56,217,240,.4);color:var(--cyan);background:transparent}
+
+  .stat{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px}
+  .stat .k{font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--faint);display:flex;justify-content:space-between;gap:6px}
+  .stat .v{font-family:var(--serif);font-size:24px;margin-top:6px}
+  .stat .v.c{color:var(--cyan)} .stat .v.g{color:var(--gold)}
+  .stat .d{font-size:11px;color:var(--muted);margin-top:2px}
+
+  .reflink{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px dashed var(--border2);border-radius:9px;padding:9px 12px;font-size:12.5px;flex-wrap:wrap}
+  .reflink .mono{color:var(--cyan)}
+
+  /* season card */
+  .seasonrow{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .ring{--p:62;width:78px;height:78px;border-radius:50%;flex:0 0 auto;
+    background:conic-gradient(var(--gold) calc(var(--p)*1%),#1c1c24 0);display:grid;place-items:center}
+  .ring i{width:60px;height:60px;border-radius:50%;background:var(--panel);display:grid;place-items:center;font-family:var(--serif);font-size:13px;color:var(--gold)}
+  .seasonmeta{flex:1;min-width:200px}
+  .seasonmeta .t{font-family:var(--serif);font-size:19px}
+  .seasonmeta .s{font-size:12px;color:var(--muted);margin-top:2px}
+  .minirow{display:flex;gap:22px;margin-top:12px;flex-wrap:wrap}
+  .minirow .m .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--faint)}
+  .minirow .m .v{font-family:var(--serif);font-size:17px;margin-top:2px}
+  .minirow .m .v.c{color:var(--cyan)} .minirow .m .v.g{color:var(--gold)} .minirow .m .v.v{color:var(--violet)}
+
+  .quests{display:flex;gap:10px;flex-wrap:wrap}
+  .quest{flex:1;min-width:180px;background:var(--panel2);border:1px solid var(--border);border-radius:11px;padding:12px}
+  .quest .q{font-size:13px;font-weight:600}
+  .quest .qb{height:6px;border-radius:5px;background:#0d0d12;border:1px solid var(--border);overflow:hidden;margin:8px 0 6px}
+  .quest .qb>i{display:block;height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold))}
+  .qtag{font-size:10px;color:var(--violet);border:1px solid rgba(183,156,240,.35);border-radius:5px;padding:1px 6px}
+  .qxp{font-size:11px;color:var(--cyan);float:right}
+
+  /* bounty member card */
+  .bounty{border:1px solid rgba(70,224,168,.35);background:linear-gradient(120deg,rgba(70,224,168,.06),var(--panel))}
+  .bounty .tag{color:var(--emerald);font-size:10.5px;font-weight:700;letter-spacing:.5px}
+
+  .note{font-size:11.5px;color:var(--faint);margin-top:10px}
+
+  /* leaderboard */
+  .lbhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .axisfilter{display:flex;gap:6px;flex-wrap:wrap}
+  .axisfilter span{font-size:11.5px;color:var(--muted);border:1px solid var(--border2);border-radius:999px;padding:4px 11px;cursor:pointer}
+  .axisfilter span.on{background:var(--panel3);color:var(--txt);border-color:var(--border2)}
+  .podium{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+  @media(max-width:620px){.podium{grid-template-columns:1fr}}
+  .pod{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center}
+  .pod .medal{width:34px;height:34px;border-radius:50%;margin:0 auto 8px;display:grid;place-items:center;font-family:var(--serif);font-weight:700;color:#1a1408}
+  .pod.g1 .medal{background:linear-gradient(135deg,#f4d774,var(--gold2))} .pod.g1{border-color:rgba(230,193,90,.45)}
+  .pod.g2 .medal{background:linear-gradient(135deg,#d8dade,#9aa0a8)}
+  .pod.g3 .medal{background:linear-gradient(135deg,#e0a878,#b9773f)}
+  .pod .who{font-family:var(--serif);font-size:15px}
+  .pod .ax{margin-top:6px}
+  .pod .xp{color:var(--cyan);font-size:13px;margin-top:6px;font-variant-numeric:tabular-nums}
+
+  .lbrow{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;font-size:13px;border:1px solid transparent}
+  .lbrow+.lbrow{margin-top:2px}
+  .lbrow:hover{background:rgba(255,255,255,.015)}
+  .lbrow.you{background:rgba(230,193,90,.06);border-color:rgba(230,193,90,.35)}
+  .lbrow .rk{font-family:var(--serif);width:30px;color:var(--muted)}
+  .lbrow .nm{min-width:120px}
+  .axis{font-size:10px;color:var(--violet);border:1px solid rgba(183,156,240,.35);border-radius:5px;padding:1px 6px}
+  .lbrow .xp{margin-left:auto;color:var(--cyan);font-variant-numeric:tabular-nums}
+  .youtag{font-size:10px;color:var(--gold);border:1px solid rgba(230,193,90,.4);border-radius:5px;padding:1px 6px}
+
+  .banner{border-radius:11px;padding:12px 14px;font-size:12.5px;display:flex;gap:10px;margin-top:14px;background:rgba(56,217,240,.05);border:1px solid rgba(56,217,240,.25)}
+  .foot{color:var(--faint);font-size:11.5px;margin-top:26px;border-top:1px solid var(--border);padding-top:14px}
+  .hidden{display:none}
+  .sec-title{display:flex;align-items:center;gap:10px;margin:2px 0 12px}
+  .sec-title h3{font-size:16px}
+</style>
+</head>
+<body>
+<div class="ribbon">DESIGN PREVIEW</div>
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="side">
+    <div class="brand"><div class="sigil"></div><b>The Syndicate</b></div>
+    <div class="mecard">
+      <div class="mn">Membre #14</div>
+      <div class="me"><span class="erab">Ère I · Genesis</span> &nbsp; <span class="mono">0x7a…3f9</span></div>
+    </div>
+    <nav id="nav">
+      <a class="on" data-go="home">Member Home <span class="livep">LIVE</span></a>
+      <a data-go="rank">Classement <span class="p-preview" style="font-size:9.5px;padding:1px 5px">preview</span></a>
+      <a>Referral <span class="livep">LIVE</span></a>
+      <a>Wallet <span class="livep">LIVE</span></a>
+      <a>Activity <span class="soon">soon</span></a>
+      <a>Chronicle <span class="soon">soon</span></a>
+      <a>Recognition <span class="soon">soon</span></a>
+      <a>Archive <span class="soon">soon</span></a>
+    </nav>
+    <div style="margin-top:16px;font-size:10.5px;color:var(--faint);line-height:1.5">Chaque porte porte sa posture honnête — <b style="color:var(--muted)">LIVE</b> ou <b style="color:var(--muted)">soon</b>. Jamais une porte qui ment.</div>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+    <div class="topbar">
+      <div><h1 style="font-size:20px" id="ptitle">Bonjour, Membre #14</h1><div style="color:var(--muted);font-size:12.5px" id="psub">Ta place dans Le Syndicate.</div></div>
+      <div class="switch" id="sw">
+        <button data-go="home" class="on">Member Home</button>
+        <button data-go="rank">Classement</button>
+      </div>
+    </div>
+
+    <!-- ===== HOME ===== -->
+    <div data-view="home">
+      <!-- Your Seat -->
+      <div class="card hero">
+        <div class="seat">
+          <div class="seatsigil"></div>
+          <div>
+            <div class="who">Membre #14 · <span style="color:var(--gold)">Siège tenu</span></div>
+            <div class="sub">Ère I — Genesis Signal &nbsp;·&nbsp; <span class="mono">0x7a4b…3f9</span> &nbsp;·&nbsp; entré Season 1</div>
+          </div>
+          <div class="right">
+            <span class="pill p-live">LIVE · vérifiable</span>
+            <div style="margin-top:8px"><button class="btn cyan">Partager ma preuve →</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- live figures -->
+      <div class="grid g3">
+        <div class="stat"><div class="k">Solde SYN <span class="pill p-live">LIVE</span></div><div class="v c">12 500</div><div class="d">lu on-chain · ton empreinte</div></div>
+        <div class="stat"><div class="k">Standing referral <span class="pill p-live">LIVE</span></div><div class="v g">Emerging</div><div class="d">Connector · 5% · 3 introductions</div></div>
+        <div class="stat"><div class="k">USDC routé <span class="pill p-soon">soon</span></div><div class="v" style="color:var(--faint)">—</div><div class="d">arrive avec l'adaptateur reçu</div></div>
+      </div>
+
+      <!-- referral link -->
+      <div class="card">
+        <div class="sec-title"><h3>Mon lien d'introduction</h3><span class="pill p-live">LIVE · permanent</span></div>
+        <div class="reflink"><span class="mono">/join?source=0x8338e9ff…1cf620</span><button class="btn" style="padding:6px 12px">Copier</button></div>
+        <div class="note">Ton lien ne change jamais (dérivé de ton wallet). La commission est payée <b>dans la transaction de l'acheteur</b> — 5%, vers ton wallet. Gagner pour un <b>acte</b> (présenter), jamais pour détenir.</div>
+      </div>
+
+      <!-- SEASON card (recognition only) -->
+      <div class="card">
+        <div class="sec-title"><h3>Season 1 · Genesis Signal</h3><span class="pill p-gold">RECONNAISSANCE</span><span class="pill p-preview">design preview</span></div>
+        <div class="seasonrow">
+          <div class="ring" style="--p:62"><i>#3</i></div>
+          <div class="seasonmeta">
+            <div class="t">Ta place cette season</div>
+            <div class="s">Scelle quand l'Ère I se remplit — <span class="mono">14 / 333 sièges</span>. Pas de date : c'est la chaîne qui décide.</div>
+            <div class="minirow">
+              <div class="m"><div class="k">Ton XP</div><div class="v c">2 480</div></div>
+              <div class="m"><div class="k">Ton rang</div><div class="v g">#3</div></div>
+              <div class="m"><div class="k">Tes axes</div><div class="v v">Connector · Verifier</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="note">La season donne du <b>statut</b> : un rang, un badge, une place au Chronicle. <b>Aucun pool, aucun USDC, aucun claim ici</b> — la reconnaissance ne se monnaie pas. Le rang, une fois acquis, ne redescend jamais.</div>
+      </div>
+
+      <!-- quests -->
+      <div class="card">
+        <div class="sec-title"><h3>Tes quêtes</h3><span class="pill p-preview">design preview · Phase 5</span></div>
+        <div class="quests">
+          <div class="quest"><span class="qxp">+120 XP</span><div class="q">Vérifier une transaction</div><div class="qb"><i style="width:100%"></i></div><span class="qtag">Verifier</span> <span style="font-size:11px;color:var(--auto)">terminé</span></div>
+          <div class="quest"><span class="qxp">+80 XP</span><div class="q">Lire 2 leçons (Learn &amp; Earn)</div><div class="qb"><i style="width:50%"></i></div><span class="qtag">Historian</span> <span style="font-size:11px;color:var(--muted)">1/2</span></div>
+          <div class="quest"><span class="qxp">+200 XP</span><div class="q">Une introduction qui reste</div><div class="qb"><i style="width:33%"></i></div><span class="qtag">Connector</span> <span style="font-size:11px;color:var(--muted)">1/3</span></div>
+        </div>
+        <div class="note">Le XP tombe tout seul quand l'acte est prouvé (chaîne) ou le quiz réussi. Rien à réclamer à un opérateur.</div>
+      </div>
+
+      <!-- BOUNTY (cash rail, clearly separate) -->
+      <div class="card bounty">
+        <div class="sec-title"><h3>Récompense d'effort</h3><span class="tag">USDC · RAIL SÉPARÉ</span><span class="pill p-preview">design preview</span></div>
+        <div class="seat">
+          <div>
+            <div style="font-family:var(--serif);font-size:18px;color:var(--emerald)">Tu es éligible : $40 USDC</div>
+            <div class="sub">Round 2 · mérite (top-N de la season) · ouvert jusqu'au prochain palier de sièges · argent société, pas un rendement.</div>
+          </div>
+          <div class="right"><button class="btn gold">Réclamer $40 →</button><div class="note" style="margin-top:6px">ou poussé direct dans ton wallet</div></div>
+        </div>
+        <div class="note">Séparé de la reconnaissance exprès : ça, c'est un <b>paiement pour un effort mesuré</b> (jamais du hasard, jamais un rendement sur ce que tu détiens). <span class="pill p-preview" style="margin-left:4px">verify on-chain</span></div>
+      </div>
+
+      <div class="card" style="opacity:.7">
+        <div class="sec-title"><h3>Pendant ton absence</h3><span class="pill p-soon">soon · indexeur</span></div>
+        <div style="color:var(--muted);font-size:12.5px">Ce qui a bougé depuis ta dernière visite apparaîtra ici — nouveaux sièges, tes introductions, milestones franchis.</div>
+      </div>
+
+      <div class="foot">Aucune figure de cette page n'est définitive — <b>design preview</b>. market-buy ≠ member : le siège vient du reçu d'achat, jamais d'un swap. La reconnaissance décrit ce que tu as fait, elle ne confère aucun droit.</div>
+    </div>
+
+    <!-- ===== RANK ===== -->
+    <div data-view="rank" class="hidden">
+      <div class="card">
+        <div class="lbhead">
+          <h3 style="font-size:17px">Classement — Season 1 · Genesis Signal</h3>
+          <span class="pill p-preview">design preview</span>
+          <div style="margin-left:auto" class="axisfilter">
+            <span class="on">Global</span><span>Connector</span><span>Verifier</span><span>Builder</span><span>Historian</span><span>Capital</span>
+          </div>
+        </div>
+
+        <div class="podium">
+          <div class="pod g2"><div class="medal">2</div><div class="who">Membre #7</div><div class="ax"><span class="axis">Builder</span></div><div class="xp">1 910 XP</div></div>
+          <div class="pod g1"><div class="medal">1</div><div class="who">Membre #3</div><div class="ax"><span class="axis">Connector</span> <span class="axis">Verifier</span></div><div class="xp">2 480 XP</div></div>
+          <div class="pod g3"><div class="medal">3</div><div class="who">Membre #12</div><div class="ax"><span class="axis">Historian</span></div><div class="xp">1 640 XP</div></div>
+        </div>
+
+        <div class="lbrow you"><span class="rk">3</span><span class="nm">Toi · Membre #14 <span class="youtag">TOI</span></span><span class="axis">Connector</span><span class="axis">Verifier</span><span class="xp">2 480 XP</span></div>
+        <div class="lbrow"><span class="rk">4</span><span class="nm">Membre #9</span><span class="axis">Capital</span><span class="xp">1 205 XP</span></div>
+        <div class="lbrow"><span class="rk">5</span><span class="nm">Membre #2</span><span class="axis">Steward</span><span class="xp">980 XP</span></div>
+        <div class="lbrow"><span class="rk">6</span><span class="nm">Membre #11</span><span class="axis">Connector</span><span class="xp">760 XP</span></div>
+        <div class="lbrow"><span class="rk">7</span><span class="nm">Membre #5</span><span class="axis">Historian</span><span class="xp">640 XP</span></div>
+
+        <div class="banner"><span>⛓</span><div>Le classement dérive d'<b>actes prouvables</b> (reçus, introductions) + d'actes app attestés (quiz). <b>Le rang ne redescend jamais</b> — c'est GitHub : ton graphe de la season bouge, tes acquis restent. Reconnaissance, <b>sans valeur cash</b>.</div></div>
+      </div>
+
+      <div class="card" style="opacity:.85">
+        <div class="sec-title"><h3>Saisons passées</h3><span class="pill p-soon">archive</span></div>
+        <div class="lbrow"><span class="rk">—</span><span class="nm">Season 0 · Starter Track</span><span class="pill p-gold" style="margin-left:auto">SCELLÉE → Chronicle</span></div>
+        <div class="note">Une season scellée devient une entrée du Chronicle + une marque permanente sur ton profil. Rien ne s'efface.</div>
+      </div>
+
+      <div class="foot">Design preview — figures illustratives. Reconnaissance multi-axes : le capital est un axe parmi d'autres, jamais le trône.</div>
+    </div>
+  </main>
+</div>
+
+<script>
+  function go(v){
+    document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('hidden',x.dataset.view!==v));
+    document.querySelectorAll('#sw button').forEach(b=>b.classList.toggle('on',b.dataset.go===v));
+    document.querySelectorAll('#nav a[data-go]').forEach(a=>a.classList.toggle('on',a.dataset.go===v));
+    const t=document.getElementById('ptitle'), s=document.getElementById('psub');
+    if(v==='home'){t.textContent='Bonjour, Membre #14';s.textContent='Ta place dans Le Syndicate.';}
+    else{t.textContent='Classement';s.textContent='Où tu te situes cette season — reconnaissance, pas argent.';}
+  }
+  document.querySelectorAll('#sw button,#nav a[data-go]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();go(el.dataset.go)}));
+</script>
+</body>
+</html>

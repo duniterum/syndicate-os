@@ -127,6 +127,16 @@ raised* / fundraising · downline* · distributed / pooled (claim-sense) · "you
 "your vault" / "the community's funds" / "shared funds" / "common pot" · trust-us
 framing (a claim with no verify path) · fake-live (a static figure dressed as live).
 
+**AMENDMENT (founder, 2026-07-23 — `SETTLED_RULES` §8-③, the seasons arc):** this list
+NEVER blocks the season system's own honest mechanism copy. Where a season surface must
+speak its real money (the company-funded pot figure, the per-member merit share, the
+receive/claim flow of a real payment), the words are permitted WITH the mechanism stated
+beside them ("company money · by merit, never chance · for what you do, never for what
+you hold"). `guard-forbidden-copy` is amended in the same slice that introduces each
+season surface's copy — the guard follows the system, the system never bends to the
+guard. The two red lines stand untouched: no financial-GAIN promise, no chain-refutable
+claim.
+
 **Banned surface names** (per `surfaceNaming.ts`): "my syndicate" (possessive-network =
 downline connotation — founder-killed) · cockpit · member os · member access (as prose) ·
 lobby / user lobby / connected lobby · control tower (as a NAME — the §3 voice metaphor

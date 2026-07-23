@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Season 1 · Ranking — The Syndicate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --background:224 71% 4%;--foreground:213 31% 91%;--card:222 47% 7%;--border:216 34% 17%;
+    --muted-fg:215 16% 57%;--faint:215 14% 40%;--gold:42 92% 60%;--gold-fg:240 30% 8%;
+    --cyan:190 90% 50%;--warning:36 95% 60%;--violet:265 60% 74%;--command:220 36% 5%;--radius:.5rem;
+    --serif:'Instrument Serif',Georgia,serif;--sans:'Work Sans','Inter',system-ui,sans-serif;--mono:'IBM Plex Mono',Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:hsl(var(--background));color:hsl(var(--foreground));font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:var(--serif);font-weight:400;line-height:1.08}
+  .mono{font-family:var(--mono)} a{color:inherit;text-decoration:none}
+  .ribbon{position:fixed;top:15px;right:-46px;transform:rotate(45deg);background:hsl(var(--gold));color:hsl(var(--gold-fg));font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1.5px;padding:6px 60px;z-index:60}
+  .eyebrow{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:hsl(var(--muted-fg))}
+  .caption{font-family:var(--mono);font-size:11.5px;color:hsl(var(--muted-fg))}
+
+  header{position:sticky;top:0;z-index:40;background:hsl(var(--background)/.82);backdrop-filter:blur(10px);border-bottom:1px solid hsl(var(--border))}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .mark{width:28px;height:28px;border-radius:7px;background:radial-gradient(circle at 32% 30%,hsl(var(--gold)),hsl(42 80% 42%));box-shadow:0 0 16px hsl(var(--gold)/.35)}
+  .brand b{font-family:var(--serif);font-size:18px}
+  .back{font-family:var(--mono);font-size:12px;color:hsl(var(--cyan))}
+
+  .head{padding:34px 0 8px}
+  .head .eyebrow{color:hsl(var(--cyan))}
+  h1{font-size:clamp(2rem,1.5rem+2.4vw,3rem);margin:6px 0 4px}
+  h1 em{font-style:normal;color:hsl(var(--gold))}
+
+  /* money + status band */
+  .band{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin:20px 0 26px}
+  @media(max-width:820px){.band{grid-template-columns:1fr}}
+  .card{border:1px solid hsl(var(--border));border-radius:14px;background:hsl(var(--card));padding:20px}
+  .moneycard{border-color:hsl(var(--gold)/.4);background:radial-gradient(ellipse 95% 85% at 82% 8%,hsl(var(--gold)/.11),transparent 60%),hsl(var(--card));display:flex;flex-direction:column;justify-content:center}
+  .lab{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:hsl(var(--muted-fg))}
+  .bigmoney{font-family:var(--serif);font-size:clamp(2.4rem,1.9rem+3vw,3.4rem);color:hsl(var(--gold));line-height:1;margin:4px 0}
+  .bigmoney .u{font-size:.42em;color:hsl(var(--foreground));font-family:var(--mono)}
+  .moneyline{font-size:12.5px;color:hsl(var(--foreground));margin-top:6px}
+  .metarow{display:flex;gap:26px;margin-top:14px;border-top:1px solid hsl(var(--border));padding-top:12px}
+  .metarow .k{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:hsl(var(--faint))}
+  .metarow .v{font-family:var(--serif);font-size:16px;margin-top:2px}
+  .statusrow{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;margin-bottom:8px}
+  .gauge{height:10px;border-radius:7px;background:hsl(0 0% 100%/.04);border:1px solid hsl(var(--border));overflow:hidden}
+  .gauge>i{display:block;height:100%;width:4.2%;background:linear-gradient(90deg,hsl(42 80% 45%),hsl(var(--gold)))}
+
+  /* axis filter */
+  .axisfilter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .axisfilter span{font-family:var(--mono);font-size:11.5px;color:hsl(var(--muted-fg));border:1px solid hsl(var(--border));border-radius:999px;padding:5px 13px;cursor:pointer}
+  .axisfilter span.on{background:hsl(0 0% 100%/.04);color:hsl(var(--foreground))}
+
+  /* podium */
+  .podium{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:end;margin-bottom:18px}
+  @media(max-width:640px){.podium{grid-template-columns:1fr}}
+  .pod{border:1px solid hsl(var(--border));border-radius:12px;background:hsl(var(--card));padding:16px;text-align:center}
+  .pod.p1{border-color:hsl(var(--gold)/.4);padding:22px 16px}
+  .pod .rk{width:30px;height:30px;border-radius:50%;margin:0 auto 8px;display:grid;place-items:center;font-family:var(--serif);color:hsl(var(--gold-fg));font-weight:600}
+  .pod.p1 .rk{background:hsl(var(--gold))}.pod.p2 .rk{background:hsl(220 8% 74%)}.pod.p3 .rk{background:hsl(28 55% 55%)}
+  .pod .who{font-family:var(--serif);font-size:15px}.faint{color:hsl(var(--faint))}
+  .pod .ax{font-size:10.5px;color:hsl(var(--violet));margin-top:5px}
+  .pod .xp{color:hsl(var(--cyan));font-family:var(--mono);font-size:13px;margin-top:6px}
+
+  /* table */
+  .rank{border:1px solid hsl(var(--border));border-radius:14px;overflow:hidden}
+  .row{display:flex;align-items:center;gap:14px;padding:12px 16px;font-size:13.5px;border-top:1px solid hsl(var(--border))}
+  .row.h{border-top:none;color:hsl(var(--faint));font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em}
+  .row:hover:not(.h){background:hsl(0 0% 100%/.012)}
+  .row.you{background:hsl(var(--gold)/.06);border-left:2px solid hsl(var(--gold))}
+  .rkn{width:34px;font-family:var(--serif);color:hsl(var(--muted-fg))}
+  .row.you .rkn{color:hsl(var(--gold))}
+  .nm{width:210px;min-width:150px}
+  .axz{flex:1;display:flex;gap:6px;flex-wrap:wrap}
+  .axis{font-size:10px;color:hsl(var(--violet));border:1px solid hsl(var(--violet)/.35);border-radius:5px;padding:1px 6px}
+  .xp{margin-left:auto;color:hsl(var(--cyan));font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .youtag{font-family:var(--mono);font-size:9.5px;color:hsl(var(--gold));border:1px solid hsl(var(--gold)/.4);border-radius:5px;padding:1px 6px;margin-left:6px}
+  .share{margin-left:auto;color:hsl(var(--muted-fg));font-family:var(--mono);font-size:11px;width:64px;text-align:right}
+
+  .foot{color:hsl(var(--faint));font-size:12px;margin:26px 0 44px;border-top:1px solid hsl(var(--border));padding-top:16px}
+  .arch{margin-top:24px}
+  .archrow{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border:1px solid hsl(var(--border));border-radius:12px;font-size:13.5px}
+  .goldpill{font-family:var(--mono);font-size:10.5px;color:hsl(var(--gold));border:1px solid hsl(var(--gold)/.4);border-radius:6px;padding:3px 9px}
+</style>
+</head>
+<body>
+<div class="ribbon">DESIGN PREVIEW · /season</div>
+<header><div class="wrap nav">
+  <div class="brand"><div class="mark"></div><b>The Syndicate</b></div>
+  <a class="back" href="#">← Back to home</a>
+</div></header>
+
+<div class="wrap">
+  <div class="head">
+    <div class="eyebrow">Live now · Era I</div>
+    <h1>Season 1 · <em>Genesis Signal</em> — Ranking</h1>
+    <div class="caption" style="margin-top:6px">Public, pseudonymous · your rank never drops · your alias replaces your address. Everything here is a live chain read.</div>
+  </div>
+
+  <!-- money + status -->
+  <div class="band">
+    <div class="card moneycard">
+      <div class="lab">Season 1 · earn a share of</div>
+      <div class="bigmoney">$2,000 <span class="u">USDC</span></div>
+      <div class="moneyline"><b>By merit, never chance. For what you do, never for what you hold.</b> Put up by the company.</div>
+      <div class="metarow">
+        <div><div class="k">Runs until</div><div class="v" style="color:hsl(var(--gold))">Genesis seals</div></div>
+        <div><div class="k">Seats left</div><div class="v">319</div></div>
+        <div><div class="k">Members earning</div><div class="v">12</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="lab" style="margin-bottom:10px">The season · bound to Era I</div>
+      <div class="statusrow"><span style="color:hsl(var(--muted-fg))">14 / 333 seats</span><span style="color:hsl(var(--gold))">319 before Genesis seals — forever</span></div>
+      <div class="gauge"><i></i></div>
+      <div class="caption" style="margin-top:12px">It seals when the era fills. No date; the chain decides. Recognition is permanent — your rank never drops, even after the season ends.</div>
+    </div>
+  </div>
+
+  <!-- axis filter -->
+  <div class="axisfilter">
+    <span class="on">Overall</span><span>Connector</span><span>Verifier</span><span>Builder</span><span>Historian</span><span>Capital</span><span>Steward</span>
+  </div>
+
+  <!-- podium -->
+  <div class="podium">
+    <div class="pod p2"><div class="rk">2</div><div class="who">#7 <span class="mono faint">0x573…c2cd</span></div><div class="ax">Builder</div><div class="xp">1 910 XP</div></div>
+    <div class="pod p1"><div class="rk">1</div><div class="who">#3 <span class="mono faint">0x03e…c6d0</span></div><div class="ax">Connector · Verifier</div><div class="xp">2 480 XP</div></div>
+    <div class="pod p3"><div class="rk">3</div><div class="who">#12 <span class="mono faint">0x3b1…ec6a</span></div><div class="ax">Historian</div><div class="xp">1 640 XP</div></div>
+  </div>
+
+  <!-- full table -->
+  <div class="rank">
+    <div class="row h"><span class="rkn">#</span><span class="nm">Member</span><span class="axz">Axes</span><span class="xp" style="margin-left:auto">XP</span><span class="share">Share</span></div>
+    <div class="row"><span class="rkn">4</span><span class="nm">#9 <span class="mono faint">0xab8…e081</span></span><span class="axz"><span class="axis">Capital</span></span><span class="xp">1 205</span><span class="share">$110</span></div>
+    <div class="row you"><span class="rkn">5</span><span class="nm">#14 <span class="mono faint">0xea8…5881</span><span class="youtag">YOU</span></span><span class="axz"><span class="axis">Connector</span><span class="axis">Verifier</span></span><span class="xp">1 040</span><span class="share">$95</span></div>
+    <div class="row"><span class="rkn">6</span><span class="nm">#2 <span class="mono faint">0x244…c721</span></span><span class="axz"><span class="axis">Steward</span></span><span class="xp">980</span><span class="share">$88</span></div>
+    <div class="row"><span class="rkn">7</span><span class="nm">#11 <span class="mono faint">0x1f0…7a3c</span></span><span class="axz"><span class="axis">Connector</span></span><span class="xp">760</span><span class="share">$70</span></div>
+    <div class="row"><span class="rkn">8</span><span class="nm">#5 <span class="mono faint">0x9c4…d21e</span></span><span class="axz"><span class="axis">Historian</span></span><span class="xp">640</span><span class="share">$58</span></div>
+    <div class="row"><span class="rkn">9</span><span class="nm">#8 <span class="mono faint">0x3aa…9b70</span></span><span class="axz"><span class="axis">Builder</span></span><span class="xp">515</span><span class="share">$47</span></div>
+    <div class="row"><span class="rkn">10</span><span class="nm">#6 <span class="mono faint">0x77e…14cd</span></span><span class="axz"><span class="axis">Verifier</span></span><span class="xp">430</span><span class="share">$39</span></div>
+    <div class="row"><span class="rkn">11</span><span class="nm">#10 <span class="mono faint">0xb52…c0a8</span></span><span class="axz"><span class="axis">Capital</span></span><span class="xp">300</span><span class="share">$27</span></div>
+    <div class="row"><span class="rkn">12</span><span class="nm">#4 <span class="mono faint">0x08d…ff31</span></span><span class="axz"><span class="axis">Connector</span></span><span class="xp">180</span><span class="share">$16</span></div>
+  </div>
+  <div class="caption" style="margin-top:10px">Share = illustrative split of the $2,000 by merit (top-N). Pseudonymous · no member search · the chain publishes the seat and address; the alias is opt-in.</div>
+
+  <!-- past seasons -->
+  <div class="arch">
+    <div class="eyebrow" style="margin-bottom:10px">Past seasons</div>
+    <div class="archrow"><span>Season 0 · Starter Track</span><span class="goldpill">SEALED → Chronicle</span></div>
+    <div class="caption" style="margin-top:8px">A sealed season becomes a Chronicle entry and a permanent mark on each member's profile. Nothing is erased.</div>
+  </div>
+
+  <div class="foot">Every public figure is a live chain read — don't trust, verify. Recognition describes what you did; it grants no rights. This preview reproduces the real design tokens — figures are illustrative.</div>
+</div>
+</body>
+</html>

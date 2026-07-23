@@ -74,6 +74,13 @@ audit each**:
 
 The registry is **Ownable2Step**, so that future handover is a clean two-step transfer.
 
+**AMENDMENT (founder, 2026-07-23 — `SETTLED_RULES` §8-①):** the **season bounty pool**
+contract is EXEMPTED from this freeze and will be deployed on the care protocol (full
+Foundry suite · offline + on-chain proof acceptance before any root · Fuji full-round
+rehearsal · static analysis · the founder's own signed deploy). Everything else on the
+horizon list stays frozen as written (zero-touch promotion contract · self-service
+issuer · Router V4 · the new sale/era contract — each mandatory-audit-gated).
+
 ## 6. UI spec notes (for the promotion screen slice — depends on R5)
 
 - The progress bar is **never empty** (a member at 0 sees the road, not a void).

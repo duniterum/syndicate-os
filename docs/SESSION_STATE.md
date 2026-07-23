@@ -2,6 +2,43 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> **▶ 📌 2026-07-23 — THE SEASONS + SWAPRAIL ARC OPENED (the resume point; the 22-07
+> block below keeps its seal facts — prod sealed through `f98798f`, deploy backlog
+> EMPTY).**
+> - **(a) THE STUDY:** the founder's advisor mega-dossier verified against the repo
+>   (6-reader workflow). Facts established, never re-research: the durable indexer
+>   ALREADY EXISTS (backbone persists to Postgres — `protocol_event_raw`/`sale_event_raw`
+>   + cursors, 50-block reorg overlap; 10 streams + 4 sale contracts) · referral is
+>   LIVE_ACTION (commission paid inside the buyer's own tx) · QuickNode is ALREADY the
+>   prod RPC (Replit env; code defaults ≠ prod truth) · Member Home reserves the
+>   Season + Quests slots (`memberDoors.ts`) · `featureStatus.seasonEngine` awaits its
+>   flip · no Solidity in-repo yet (S3 creates the Foundry workspace).
+> - **(b) THE FIVE RULINGS (founder — `SETTLED_RULES` §8 + amendments in
+>   `CONNECTOR_LADDER_POLICY` §5 · `CANON_PROTOCOL_LANGUAGE` §5 · `SEASONS_ENGINE`
+>   addendum, all [this commit]):** ① the season bounty pool contract DEPLOYS (freeze
+>   exempted; care protocol: full Foundry suite · `verifyClaim()` acceptance before any
+>   root · Fuji full-round rehearsal · founder-signed deploy) · ② money SHOWN incl.
+>   per-member merit share on the public ranking · ③ vocabulary adapts to the system
+>   (guards amended in each surface's slice) · ④ zero-operator autonomy (XP =
+>   provable/auto facts only, NO validation queues) · ⑤ Season=Era on TODAY's chain.
+> - **(c) THE PACK ENGRAVED [this commit]:**
+>   `docs/reference/SEASONS_SWAPRAIL_INTEGRATION_STUDY.md` ·
+>   `docs/reference/SWAPRAIL_ASSET_ROUTER_MVP_DECISION.md` ·
+>   `docs/reference/season-merkle.reference.ts` · `docs/design/seasons/` (4 mockups).
+> - **(d) NEXT, in order (season-first, founder-corrected):** S1 season data foundation
+>   (season/XP/quest tables on the existing backbone + deterministic Season=Era read;
+>   server-only) → S2 recognition surfaces (/season public page · home season section ·
+>   member Season+Quests slots · admin Seasons rail 1 — wireframe + preview gate EACH;
+>   `seasonEngine` flips in the go-live commit) → S3 Foundry workspace +
+>   SeasonBountyPool + the cash rail (rounds by seat threshold · "Ajouter des fonds" ·
+>   activation lawyer-gated as planned) → patronage mint quick-win (with AW-5) →
+>   Learn & Earn → SwapRail V1 (AssetRouter + thirdweb adapter) → K4 → P.
+>   M-EVO-3 + A5 keep their engraved specs and slot where they serve.
+> - **(e) FOUNDER-PENDING:** 🔴 AW-5 — name the archive payment wallet `0xe417…d56f`
+>   (unchanged) · SwapRail: developer fee % + fee pipe address + thirdweb account
+>   (~$99/mo) + placement · pot size/cadence per season · /season route name + pot
+>   wording at the S2 gate (on screen).
+
 > **▶ 📌 THE 2026-07-22 EVENING HANDOFF — FINAL (DONE-IS-DONE §④ — the next
 > session resumes HERE in one read; supersedes the earlier same-evening block).**
 > - **(a) LIVE / SEALED IN PROD — through cycle `f3e5fb8` (Replit green,

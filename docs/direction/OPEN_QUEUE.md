@@ -1,5 +1,34 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-23 — THE SEASONS + SWAPRAIL ARC OPENED (founder: "on va faire tout ça
+> comme il faut" — season-first; the advisor mega-dossier verified against the repo,
+> then FIVE RULINGS engraved).**
+> - **THE PACK ENGRAVED:** `docs/reference/SEASONS_SWAPRAIL_INTEGRATION_STUDY.md`
+>   (dossier verbatim + repo-truth corrections) · `SWAPRAIL_ASSET_ROUTER_MVP_DECISION.md` ·
+>   `season-merkle.reference.ts` · `docs/design/seasons/` (4 mockups: visitor-home ·
+>   ranking · member · admin-2rails).
+> - **THE FIVE RULINGS → `SETTLED_RULES` §8** (+ amendments `CONNECTOR_LADDER_POLICY` §5,
+>   `CANON_PROTOCOL_LANGUAGE` §5, `SEASONS_ENGINE` addendum): ① the season bounty pool
+>   contract DEPLOYS under the care protocol (freeze exempted for it) · ② money SHOWN
+>   incl. per-member merit share on the public ranking · ③ vocabulary adapts to the
+>   system, never blocks it · ④ zero-operator autonomy (XP = provable/auto facts only,
+>   no validation queues) · ⑤ Season=Era binds on TODAY's chain (new sale/era contract
+>   NOT a prerequisite).
+> - **REPO-TRUTH CORRECTIONS (verified, never re-research):** the durable indexer
+>   EXISTS (backbone → Postgres, cursors + reorg overlap) — seasons ADD tables on top ·
+>   referral is LIVE_ACTION (commission inside the buyer's tx) · QuickNode is ALREADY
+>   the prod RPC (Replit env).
+> - **ARC ORDER:** S1 season data foundation → S2 recognition surfaces (/season · home
+>   section · member slots · admin rail 1 — wireframe + preview gate each) → S3 Foundry
+>   workspace + SeasonBountyPool + cash rail (rounds by seat threshold · "Ajouter des
+>   fonds" · activation lawyer-gated as planned) → patronage mint quick-win (with AW-5)
+>   → Learn & Earn → SwapRail V1 → K4 → P. M-EVO-3 + A5 keep their engraved specs and
+>   slot where they serve the arc.
+> - **🔴 STILL FOUNDER-PENDING:** AW-5 wallet name (unchanged) · SwapRail decisions
+>   (developer fee % · fee pipe address · thirdweb account ~$99/mo · placement) · pot
+>   size/cadence per season · /season route name + pot wording (at the S2 gate, on
+>   screen).
+
 > **▶ 2026-07-22 (evening) — THE WALLET-TRACKING + ACTIVITY-NEWSROOM ARC OPENED (founder
 > orders: "on refait toute la page activity… rationaliser design pagination composition…
 > update all files… pas qu'on revienne rechercher"). THE DOSSIER IS ENGRAVED:

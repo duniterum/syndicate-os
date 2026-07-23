@@ -7,6 +7,19 @@ built yet. Founder is the authority; only **LEGAL + SECURITY + TRUTH-FIRST** bin
 validates the money-touching items + the new contract before launch. Written 2026-07-11 after a
 full read of the Supa engine (server + admin + contract).*
 
+> **⚖️ ADDENDUM 2026-07-23 — THE FIVE RULINGS (founder; `SETTLED_RULES` §8 is the
+> authority; this doc reads THROUGH them wherever older lines differ):** the arc is
+> OPENED NOW (season-first — no longer waiting behind the K-arc) · ① the season bounty
+> pool contract deploys under the care protocol (freeze exempted for it —
+> `CONNECTOR_LADDER_POLICY` §5 amendment) · ② the money is SHOWN, including the
+> per-member merit share on the public ranking (BUSINESS-FIRST supersedes this doc's
+> older "no pool figure" lines) · ③ vocabulary adapts to the system (guards amended in
+> each surface's slice) · ④ zero-operator autonomy — XP from provable/self-verifying
+> facts only, NO validation queues · ⑤ Season=Era binds on TODAY's deployed chain —
+> the future sale/era contract is NOT a prerequisite. Study + verified repo facts:
+> `docs/reference/SEASONS_SWAPRAIL_INTEGRATION_STUDY.md`; mockups:
+> `docs/design/seasons/`.
+
 ---
 
 ## 0. One line
@@ -435,10 +448,12 @@ header bell slot is already reserved in the Member Home shell wireframe.
    posture badge · a small preview explicitly labeled "design preview" (never a fake figure) ·
    what unlocks it · a return hook ("it will appear here"). Applies to Activity · Chronicle ·
    Archive · My Syndicate; existing real pages (Recognition, Protocol graph) stay open doors.
-3. **Season card slot** (Coming soon — Phase 5, needs the event backbone) — the reframed
-   SeasonHighlightBubble: season name (=era binding) · countdown · own XP · own rank · next
-   quest chip. NO pool figure, NO USDC, NO claim on Member Home — the cash rail (§8) is
-   operator-side and lawyer-gated; recognition is the ONLY thing this card speaks.
+3. **Season card slot** — the reframed SeasonHighlightBubble: season name (=era binding) ·
+   seats-to-seal gauge (never a countdown date) · own XP · own rank · next quest chip.
+   **AMENDED 2026-07-23 (rulings ②③):** the pot figure and the member's own merit amount
+   MAY render — the money is shown; the effort-reward (cash) card renders as its own
+   VISUALLY SEPARATED rail beside the recognition card, and cash-rail ACTIVATION keeps
+   its lawyer pass (Phase-5, as planned).
 4. **Quests strip slot** (Coming soon — Phase 5) — 2–3 quest chips (daily/weekly) with XP +
    axis tag; Learn & Earn = earn **XP** quests ride here (SETTLED).
 5. **"While you were away"** (Coming soon — event indexer) — the return-visit engine from the
