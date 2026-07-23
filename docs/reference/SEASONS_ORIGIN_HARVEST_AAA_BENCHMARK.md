@@ -72,7 +72,19 @@ renders on the public ranking. Dual time-scope (Zealy): season rank AND all-time
 standing shown together. **AMENDED by §0.17-② (one-truth): the MONEY board is the
 CURRENT delta-window standings — the reward zones and per-member shares draw THERE;
 the cumulative season/all-time boards are recognition (rank never drops) and carry
-no dollar column.** Own-row pinned ("YOU"). Pseudonymous (seat + short address →
+no dollar column.** Own-row pinned ("YOU"). **THE VISUAL-FIRST CATCH RULING
+(founder, 2026-07-23, twice: "le $2,000 tout petit — on s'inspire des sites de
+poker/gamification, visuellement grade AAA" then "POUR TOUT le ranking et TOUTE
+la gamification, XP, quiz, Learn & Earn — attirer le regard D'ABORD; une image
+vaut mille mots"): the ENTIRE gamification layer leads with the VISUAL — the
+pot figure at HERO scale with a premium gold glow (the small eyebrow's size
+CONTRAST is the catch) · the rank/XP as big display figures · progress as
+rings/bars/zones you READ AT A GLANCE before any sentence · badges/podium as
+imagery · quiz and Learn & Earn open on the visual state (progress ring, next
+reward), words support. Never casino-cheap (no slot aesthetics; the banned
+vocabulary never enters — the craft, not the words). The poker/esports
+prize-display benchmark feeds the S2 build; this ruling governs EVERY season,
+XP, quest, and Learn & Earn surface by default.** Pseudonymous (seat + short address →
 opt-in alias). The origin's fake-social-proof class (hardcoded "Recent Referral
 Activity" mock, arithmetic-hack stats) is the exact class our guards already kill.
 

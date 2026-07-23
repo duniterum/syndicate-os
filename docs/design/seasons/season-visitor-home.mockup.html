@@ -163,11 +163,13 @@
   .faint{color:hsl(var(--faint))}
   .season-top{display:grid;grid-template-columns:1.4fr .9fr;gap:30px;align-items:stretch}
   @media(max-width:860px){.season-top{grid-template-columns:1fr}}
-  .moneycard{border:1px solid hsl(var(--gold)/.4);border-radius:16px;padding:26px;display:flex;flex-direction:column;justify-content:center;
-    background:radial-gradient(ellipse 95% 85% at 82% 8%,hsl(var(--gold)/.11),transparent 60%),hsl(var(--card))}
+  .moneycard{border:1px solid hsl(var(--gold)/.5);border-radius:16px;padding:30px 26px;display:flex;flex-direction:column;justify-content:center;
+    background:radial-gradient(ellipse 95% 85% at 82% 8%,hsl(var(--gold)/.16),transparent 60%),hsl(var(--card));
+    box-shadow:0 0 48px hsl(var(--gold)/.10),inset 0 1px 0 hsl(var(--gold)/.25)}
   .moneycard .lab{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:hsl(var(--muted-fg))}
-  .bigmoney{font-family:var(--serif);font-size:clamp(2.6rem,2rem+3.4vw,3.9rem);color:hsl(var(--gold));line-height:1;margin:6px 0 4px}
-  .bigmoney .u{font-size:.4em;color:hsl(var(--foreground));font-family:var(--mono);letter-spacing:.04em}
+  .bigmoney{font-family:var(--serif);font-size:clamp(4.4rem,3rem+6vw,8rem);color:hsl(var(--gold));line-height:.95;margin:10px 0 8px;
+    text-shadow:0 0 24px hsl(var(--gold)/.38),0 0 90px hsl(var(--gold)/.16)}
+  .bigmoney .u{font-size:.3em;color:hsl(var(--foreground));font-family:var(--mono);letter-spacing:.06em;vertical-align:.5em}
   .moneysub{font-size:12.5px;color:hsl(var(--muted-fg));margin-top:6px}
   .moneyline{font-size:12.5px;color:hsl(var(--foreground));margin-top:8px}
   .moneymeta{display:flex;gap:26px;margin-top:16px;border-top:1px solid hsl(var(--border));padding-top:14px}
