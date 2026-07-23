@@ -31,16 +31,16 @@
 
   .head{padding:34px 0 8px}
   .head .eyebrow{color:hsl(var(--cyan))}
-  h1{font-size:clamp(2rem,1.5rem+2.4vw,3rem);margin:6px 0 4px}
+  h1{font-size:clamp(2rem,1.5rem + 2.4vw,3rem);margin:6px 0 4px}
   h1 em{font-style:normal;color:hsl(var(--gold))}
 
   /* wide-screen layout: board column + money rail */
   .layout{display:flex;flex-direction:column}
   @media(min-width:1440px){
-    .layout{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:30px;align-items:start}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:30px;align-items:start}
     .main{grid-column:1;grid-row:1}
     .rail{grid-column:2;grid-row:1;position:sticky;top:86px}
-    .band{grid-template-columns:1fr}
+    .rail .band{grid-template-columns:1fr !important}
   }
 
   /* money + status band */
@@ -50,7 +50,7 @@
   .moneycard{border-color:hsl(var(--gold)/.5);background:radial-gradient(ellipse 95% 85% at 82% 8%,hsl(var(--gold)/.16),transparent 60%),hsl(var(--card));display:flex;flex-direction:column;justify-content:center;
     box-shadow:0 0 48px hsl(var(--gold)/.10),inset 0 1px 0 hsl(var(--gold)/.25)}
   .lab{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:hsl(var(--muted-fg))}
-  .bigmoney{font-family:var(--serif);font-size:clamp(4rem,2.8rem+5vw,7rem);color:hsl(var(--gold));line-height:.95;margin:8px 0 6px;
+  .bigmoney{font-family:var(--serif);font-size:clamp(4rem, 2.8rem + 5vw, 7rem);color:hsl(var(--gold));line-height:.95;margin:8px 0 6px;
     text-shadow:0 0 24px hsl(var(--gold)/.38),0 0 90px hsl(var(--gold)/.16)}
   .bigmoney .u{font-size:.42em;color:hsl(var(--foreground));font-family:var(--mono)}
   .commitrow{display:flex;align-items:center;gap:10px;margin:2px 0 8px;flex-wrap:wrap}
@@ -209,21 +209,21 @@
       <!-- ALL-TIME BOARD — recognition only -->
       <div id="board-alltime" hidden>
         <div class="rank">
-          <div class="row h"><span class="rkn">#</span><span class="nm">Member</span><span class="axz">Axes</span><span class="xp" style="margin-left:auto">Lifetime XP</span></div>
-          <div class="row"><span class="rkn">1</span><span class="nm">#3 <span class="mono faint">0x03e…c6d0</span></span><span class="axz"><span class="axis">Connector</span><span class="axis">Capital</span></span><span class="xp">2 480</span></div>
-          <div class="row"><span class="rkn">2</span><span class="nm">#7 <span class="mono faint">0x573…c2cd</span></span><span class="axz"><span class="axis">Steward</span></span><span class="xp">1 910</span></div>
-          <div class="row"><span class="rkn">3</span><span class="nm">#12 <span class="mono faint">0x3b1…ec6a</span></span><span class="axz"><span class="axis">Historian</span></span><span class="xp">1 640</span></div>
-          <div class="row"><span class="rkn">4</span><span class="nm">#9 <span class="mono faint">0xab8…e081</span></span><span class="axz"><span class="axis">Capital</span></span><span class="xp">1 205</span></div>
-          <div class="row you"><span class="rkn">5</span><span class="nm">#14 <span class="mono faint">0xea8…5881</span><span class="youtag">YOU</span></span><span class="axz"><span class="axis">Connector</span><span class="axis">Historian</span></span><span class="xp">1 040</span></div>
-          <div class="row"><span class="rkn">6</span><span class="nm">#2 <span class="mono faint">0x244…c721</span></span><span class="axz"><span class="axis">Steward</span></span><span class="xp">980</span></div>
-          <div class="row"><span class="rkn">7</span><span class="nm">#11 <span class="mono faint">0x1f0…7a3c</span></span><span class="axz"><span class="axis">Connector</span></span><span class="xp">760</span></div>
-          <div class="row"><span class="rkn">8</span><span class="nm">#5 <span class="mono faint">0x9c4…d21e</span></span><span class="axz"><span class="axis">Historian</span></span><span class="xp">640</span></div>
-          <div class="row"><span class="rkn">9</span><span class="nm">#8 <span class="mono faint">0x3aa…9b70</span></span><span class="axz"><span class="axis">Capital</span></span><span class="xp">515</span></div>
-          <div class="row"><span class="rkn">10</span><span class="nm">#6 <span class="mono faint">0x77e…14cd</span></span><span class="axz"><span class="axis">Steward</span></span><span class="xp">430</span></div>
-          <div class="row"><span class="rkn">11</span><span class="nm">#10 <span class="mono faint">0xb52…c0a8</span></span><span class="axz"><span class="axis">Capital</span></span><span class="xp">300</span></div>
-          <div class="row"><span class="rkn">12</span><span class="nm">#4 <span class="mono faint">0x08d…ff31</span></span><span class="axz"><span class="axis">Connector</span></span><span class="xp">180</span></div>
+          <div class="row h"><span class="rkn">#</span><span class="nm">Member</span><span class="axz">Axes</span><span class="xp" style="margin-left:auto">Lifetime XP</span><span class="share">Current share</span></div>
+          <div class="row"><span class="rkn">1</span><span class="nm">#3 <span class="mono faint">0x03e…c6d0</span></span><span class="axz"><span class="axis">Connector</span><span class="axis">Capital</span></span><span class="xp">2 480</span><span class="share z1amt">$200</span></div>
+          <div class="row"><span class="rkn">2</span><span class="nm">#7 <span class="mono faint">0x573…c2cd</span></span><span class="axz"><span class="axis">Steward</span></span><span class="xp">1 910</span><span class="share z1amt">$200</span></div>
+          <div class="row"><span class="rkn">3</span><span class="nm">#12 <span class="mono faint">0x3b1…ec6a</span></span><span class="axz"><span class="axis">Historian</span></span><span class="xp">1 640</span><span class="share z1amt">$200</span></div>
+          <div class="row"><span class="rkn">4</span><span class="nm">#9 <span class="mono faint">0xab8…e081</span></span><span class="axz"><span class="axis">Capital</span></span><span class="xp">1 205</span><span class="share z2amt">$100</span></div>
+          <div class="row you"><span class="rkn">5</span><span class="nm">#14 <span class="mono faint">0xea8…5881</span><span class="youtag">YOU</span></span><span class="axz"><span class="axis">Connector</span><span class="axis">Historian</span></span><span class="xp">1 040</span><span class="share z2amt">$100</span></div>
+          <div class="row"><span class="rkn">6</span><span class="nm">#2 <span class="mono faint">0x244…c721</span></span><span class="axz"><span class="axis">Steward</span></span><span class="xp">980</span><span class="share z2amt">$100</span></div>
+          <div class="row"><span class="rkn">7</span><span class="nm">#11 <span class="mono faint">0x1f0…7a3c</span></span><span class="axz"><span class="axis">Connector</span></span><span class="xp">760</span><span class="share z2amt">$100</span></div>
+          <div class="row"><span class="rkn">8</span><span class="nm">#5 <span class="mono faint">0x9c4…d21e</span></span><span class="axz"><span class="axis">Historian</span></span><span class="xp">640</span><span class="share z2amt">$100</span></div>
+          <div class="row"><span class="rkn">9</span><span class="nm">#8 <span class="mono faint">0x3aa…9b70</span></span><span class="axz"><span class="axis">Capital</span></span><span class="xp">515</span><span class="share z2amt">$100</span></div>
+          <div class="row"><span class="rkn">10</span><span class="nm">#6 <span class="mono faint">0x77e…14cd</span></span><span class="axz"><span class="axis">Steward</span></span><span class="xp">430</span><span class="share z2amt">$100</span></div>
+          <div class="row"><span class="rkn">11</span><span class="nm">#10 <span class="mono faint">0xb52…c0a8</span></span><span class="axz"><span class="axis">Capital</span></span><span class="xp">300</span><span class="share z3amt">$40</span></div>
+          <div class="row"><span class="rkn">12</span><span class="nm">#4 <span class="mono faint">0x08d…ff31</span></span><span class="axz"><span class="axis">Connector</span></span><span class="xp">180</span><span class="share z3amt">$40</span></div>
         </div>
-        <div class="caption" style="margin-top:10px">All-time recognition — cumulative across every season · <b style="color:hsl(var(--foreground))">rank never drops</b> · no money on this board. Season 1 is the first season, so today all-time matches the season board.</div>
+        <div class="caption" style="margin-top:10px">All-time recognition — cumulative across every season · <b style="color:hsl(var(--foreground))">rank never drops</b> · the $ column is today's projected share (the season board is the paying window; both read the same source). Season 1 is the first season, so today all-time matches the season board.</div>
       </div>
 
       <!-- past seasons -->
