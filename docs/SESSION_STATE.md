@@ -46,7 +46,18 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   §0.2 and §0.13-④ amended in place. Truth files synced same commit: BACKLOG
 >   23-juil callout + 4 decision rows (30→34: season-route · season-pot ·
 >   season-bands-weights · season-floor) + DESIGN_ROADMAP Phase-5 seasons block.**
->   S1/S2/S3 build BY §0 as amended.
+>   **THEN THE POT MODEL FINAL [this commit] — founder defined it ("je remplis le
+>   pot au fur et à mesure · il se débloque à 333 · ça incite le referral · option
+>   donner plus vite · on ne change plus après"), a 3-lens adversarial pass
+>   (wf_baa17693-b90: 32 findings, 15 high) hardened it, §0.17 engraves it:
+>   two buckets (committed = irrevocable public figure · reserve = 72h-timelock
+>   withdrawable) · every round pays the DELTA window · snipe-proof seal snapshot ·
+>   percentage bands · anti-farm laws (purchase XP once/wallet/season · referral
+>   credits only on qualifying referred wallets · holding periods · free acts ~0
+>   for money) · the window has teeth (guardian veto · anyone-activate · pull
+>   fallback · 1y expiry → carryover) · rulesHash chain-anchored at season open ·
+>   interim rounds pre-announced 48h. §0.16-①/② re-scoped; BACKLOG pot/bands/floor
+>   rows re-trued.** S1/S2/S3 build BY §0 as amended.
 > - **(d) NEXT, in order (season-first, founder-corrected):** S1 season data foundation
 >   (season/XP/quest tables on the existing backbone + deterministic Season=Era read;
 >   server-only) → S2 recognition surfaces (/season public page · home season section ·

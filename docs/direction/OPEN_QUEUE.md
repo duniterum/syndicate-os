@@ -46,6 +46,13 @@
 >   bounded blast radius); vetoes are rights, never duties. BACKLOG callout 23-juil +
 >   4 decision rows (30→34) + DESIGN_ROADMAP Phase-5 seasons block ride the same
 >   commit.
+> - **✅ THE POT MODEL FINAL (same day, §0.17):** founder-defined (pot fills
+>   progressively · unlocks at the era seal · referral = everyone's payday lever ·
+>   "donner plus vite" option · rules never change mid-season), then hardened by a
+>   3-lens adversarial pass (32 findings, 15 high, all integrated): committed vs
+>   reserve buckets · delta-window rounds · snipe-proof snapshot · % bands ·
+>   anti-farm laws · toothed verification window · chain-anchored rulesHash ·
+>   48h-pre-announced interims.
 > - **🔴 STILL FOUNDER-PENDING (now BACKLOG rows season-route · season-pot ·
 >   season-bands-weights · season-floor):** AW-5 wallet name (unchanged) · SwapRail
 >   decisions (developer fee % · fee pipe address · thirdweb account ~$99/mo ·

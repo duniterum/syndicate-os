@@ -403,18 +403,13 @@ Designed NOW because the primitive is immutable forever — three mechanisms:
   full push); recurrents, ladders, and the live crown keep the game running; the
   era seal is the SEASON boundary, never the payment gate. A 3-year era = a long
   season with N paid rounds inside it, not frozen money.
-- **② `withdrawUnallocated(to, amount)` — the treasury-recovery function the V1
-  contract MUST carry (this question found the gap).** onlyOwner, capped
-  structurally: `escrow − amount ≥ Σ(open rounds' remaining budgets)` — the owner
-  can recover COMPANY money that was funded but never committed to a published
-  round, and can NEVER touch a cent already promised to members (the funding
-  invariant protects claimants mathematically). Event-trailed
-  (`UnallocatedWithdrawn(to, amount, uri)`) with a published reason; the /season
-  pot figure reads live escrow, so the public surface tells the truth
-  automatically the moment money moves. No forfeiture is possible: published
-  rounds are untouchable, and push-at-activation empties them within days anyway.
-  This refines §0.14-C's scoped-rescue: uncommitted company money is recoverable
-  in the open; committed merit money never is.
+- **② `withdrawUnallocated(to, amount)` — treasury recovery, RE-SCOPED by §0.17
+  (the adversarial pass caught the last-block-drain and bait patterns):** it
+  operates ONLY on the RESERVE bucket (never the committed pot), behind an
+  announced 72h public timelock. Money COMMITTED to a season is irrevocable by
+  construction — the displayed pot figure is enforced truth, not a revocable
+  display. Migration recovers the reserve freely; a live season's commitments are
+  PAID (seal or final round), then the chain moves. Event-trailed always.
 - **③ THE CHAIN-MIGRATION PLAYBOOK (the Avalanche-L1 day).** Evolution by
   accretion (§0.12) extends across CHAINS: the old primitive lives forever on
   C-Chain (immutable history; residual claims stay claimable there) · unallocated
@@ -428,6 +423,71 @@ Designed NOW because the primitive is immutable forever — three mechanisms:
   remain permanent history, referenced — never rewritten — by the new chain's
   first season file. Becoming an L1 is a NEW module on a NEW chain, never a
   mutation of the old one.
+
+### 0.17 THE POT MODEL — FINAL (founder-defined 2026-07-23, hardened by the 3-lens
+adversarial pass wf_baa17693-b90: 32 findings, 15 high, ALL integrated. SUPERSEDES:
+§0.16-① default trigger (seal pays, interim = the option) · §0.16-② withdraw scope ·
+§0.14-H dollar bands (now percentages) and the single floor (now the floor pair).)
+
+**THE FOUNDER'S MODEL (the core, unchanged):** the pot fills progressively and
+VISIBLY during the era; it unlocks when the era SEALS — filling the era is the
+collective goal (referral = bringing everyone's payday closer); rank decides each
+share; if the era drags, the founder may pay faster. Rules published at season
+open, immutable for that season.
+
+**THE EIGHT HARDENING RULES (what the breakers forced):**
+- **① TWO BUCKETS, TWO TRUTHS:** admin has two money actions — **« Engager au
+  pot »** (irrevocable for this season; ratchet-only; THE public pot figure shows
+  ONLY this) and **« Réserve »** (company staging, withdrawable via 72h announced
+  public timelock — the L1/migration flexibility lives here). Kills the
+  fund-then-withdraw bait and the last-block drain: the number members work
+  toward is ENFORCED, not displayed. The contract keeps an internal 4-bucket
+  ledger (reserve / committed / roundReserved / carryover) and NEVER reads
+  balanceOf; stray direct transfers are swept to reserve by event.
+- **② EVERY ROUND PAYS THE DELTA:** each distribution (interim AND seal) pays XP
+  earned SINCE THE PREVIOUS round, on a lagged snapshot. One primitive kills four
+  attacks: double-pay (same acts paid twice), early-leader coasting, late-joiner
+  hopelessness (newcomers compete on the current window), and drip-farming
+  dilution. No interim rounds = the seal pays the whole season — the founder's
+  simple model intact. LIFETIME XP stays cumulative for recognition (levels,
+  ladders, crown — rank never drops); the MONEY binds to windows.
+- **③ THE SEAL SNAPSHOT IS SNIPE-PROOF:** standings freeze at the block BEFORE
+  the sealing purchase; the sealing act's XP belongs to the NEXT season
+  (published rule). Nobody times the last seat to rig the frozen board.
+- **④ BANDS ARE PERCENTAGES** of the round budget (identical within band;
+  deterministic tie-break published: earlier attaining block, then seat number).
+  V1 default: ranks 1–3 → 10% each · 4–10 → 5% each · 11–25 → 2% each (95%; the
+  5% remainder → carryover). Fixed dollars cannot match an any-amount pot; the
+  $2,000 examples remain as illustrations.
+- **⑤ ANTI-FARM LAWS:** purchase XP credits ONCE per wallet per season (kills
+  receipt-splitting; a bigger purchase never buys a bigger share — the legal
+  spine). Referral XP credits ONLY when the referred wallet independently clears
+  the eligibility floor pair (min qualifying purchase + min-XP — the founder's
+  two numbers), capped per wallet per window. Burn/mint XP require a published
+  holding period (wash-loop dead). Free acts (check-in) count toward eligibility
+  but weigh near-zero in money windows (drip-farming dead). Hors-concours
+  wallets listed in the season-open rule sheet.
+- **⑥ THE WINDOW HAS TEETH:** every round (interim and seal) publishes its full
+  standings + root during the PENDING window; the guardian can veto (cancel +
+  repost); after the timeout ANYONE can activate (executor stall impossible);
+  push (claimFor) with per-recipient isolation; pull-claim always available as
+  fallback; failed/blacklisted shares stay pull-claimable until a published
+  expiry (1 year), then → carryover (non-withdrawable — recycled money never
+  re-enters the withdrawable bucket). Zero-pot seals still execute (freeze + XP
+  root, budget 0). Copy law: "published for verification, then paid" — never a
+  bare "automatic".
+- **⑦ THE RULE SHEET IS CHAIN-ANCHORED:** band percentages, weights, caps,
+  floors, interim policy, hors-concours list — hashed into the season-OPEN
+  on-chain event (`rulesHash`); the seal root closes the season. Immutability
+  becomes verifiable, not claimed. Mid-season changes are impossible to hide;
+  giving more/earlier is always allowed, taking/delaying never.
+- **⑧ INTERIM ROUNDS ARE RULE-SHAPED:** a founder right, pre-announced 48h with
+  the amount, paying the current delta window through the same PENDING pipeline.
+  Pre-announcement + delta + published standings close the favoritism channel.
+**Legal posture (unchanged, sharpened):** the pot is the company's discretionary
+marketing budget paying for WORK (introductions are a service); copy never says
+earn-income/yield; purchase XP once-per-season is the anti-"money buys money"
+spine; lawyer pass at activation as planned.
 
 ---
 
