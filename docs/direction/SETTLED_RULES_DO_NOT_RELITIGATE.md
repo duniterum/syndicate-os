@@ -186,7 +186,8 @@ advisor-dossier study; none may be re-opened, re-flagged, or re-explained):
   réellement au bon moment »).** THE LAWYER GATE IS REMOVED FROM EVERYWHERE — every
   activation path, pending list, doc clause, and chat line. Legal review is the
   founder's OWN business matter, on his own time — never a system gate, never a
-  session's concern, never a blocker. The moment SeasonBountyPool is LIVE on mainnet
+  session's concern, never a blocker. The moment MeritDistributor (the season bounty
+  pool — the contract's name since the 2026-07-24 freeze) is LIVE on mainnet
   and funded, the rail pays REALLY and AUTONOMOUSLY at its engraved moments (§0.15
   zero-click: the seal round automatic · interims/final = founder rights · claimFor
   pushes, members pay no gas). What stands before mainnet is ENGINEERING ONLY (§8-①

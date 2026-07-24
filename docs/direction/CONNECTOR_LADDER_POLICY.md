@@ -76,7 +76,9 @@ The registry is **Ownable2Step**, so that future handover is a clean two-step tr
 
 **AMENDMENT (founder, 2026-07-23 — `SETTLED_RULES` §8-①):** the **season bounty pool**
 contract is EXEMPTED from this freeze and will be deployed on the care protocol (full
-Foundry suite · offline + on-chain proof acceptance before any root · Fuji full-round
+Foundry suite · offline + on-chain proof acceptance before any root · the MAINNET-FORK
+full-round rehearsal + the mainnet canary *(venue amended 2026-07-24, SETTLED_RULES 8-① —
+the founder: no testnet, ever)* — formerly "Fuji full-round"
 rehearsal · static analysis · the founder's own signed deploy). Everything else on the
 horizon list stays frozen as written (zero-touch promotion contract · self-service
 issuer · Router V4 · the new sale/era contract — each mandatory-audit-gated).

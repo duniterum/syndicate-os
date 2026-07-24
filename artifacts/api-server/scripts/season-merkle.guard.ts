@@ -243,6 +243,10 @@ const POOL = "0x00000000000000000000000000000000000A11cE" as `0x${string}`;
   ok(h1 === h2, "hash is canonical (key order irrelevant)");
   const amended = { ...sealed, minXpForBounty: 101 };
   ok(hashRuleSheet(amended) !== h1, "any value change changes the hash");
+  // The no-cap ruling: an EMPTY caps object is a legitimate sheet (refusing it
+  // would force the founder to invent a cap against his own 2026-07-24 ruling).
+  const noCaps = { ...sealed, perSourceCaps: {} };
+  ok(typeof hashRuleSheet(noCaps) === "string", "empty per-source caps hash fine (no-cap posture)");
   refuses(
     () => hashRuleSheet({ ...sealed, curveBp: [{ fromRank: 1, toRank: 1, bpEach: 9999 }] }),
     "curve not summing to 10,000 bp refused",

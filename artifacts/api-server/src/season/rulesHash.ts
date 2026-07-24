@@ -28,7 +28,11 @@ export interface SeasonRuleSheet {
   readonly curveBp: readonly { fromRank: number; toRank: number; bpEach: number }[];
   /** XP weights per source (the founder confirms at S3-9). */
   readonly xpWeights: Readonly<Record<string, number>>;
-  /** Per-source caps (per wallet per window); the founder's figures. */
+  /** Per-source caps — the founder's figures for FUTURE app-attested sources
+   *  (check-in-class "weigh near-zero in money windows"). EMPTY IS LEGITIMATE:
+   *  the 2026-07-24 no-cap ruling («pas de plafond») makes zero caps the V1
+   *  truth — introductions are UNCAPPED forever, purchases are once/season
+   *  structurally, burn/mint are holding-gated. An empty object hashes fine. */
   readonly perSourceCaps: Readonly<Record<string, number>>;
   /** The floor pair — null REFUSED at hash time. */
   readonly minQualifyingPurchaseUsdc: number | null;
@@ -92,9 +96,9 @@ export function hashRuleSheet(sheet: SeasonRuleSheet): `0x${string}` {
       'REFUSED: the interim policy sentence is empty — even "no interims planned" must be written (the sheet is hashed)',
     );
   }
-  if (Object.keys(sheet.perSourceCaps).length === 0) {
-    throw new Error("REFUSED: per-source caps unset — the founder seals them at S3-9");
-  }
+  // NOTE: perSourceCaps may be EMPTY — the founder's no-cap ruling (2026-07-24)
+  // makes zero caps the legitimate V1 posture; refusing empty here would have
+  // forced him to invent a cap at S3-9 against his own ruling.
   const curveSum = sheet.curveBp.reduce(
     (a, s) => a + s.bpEach * (s.toRank - s.fromRank + 1),
     0,
