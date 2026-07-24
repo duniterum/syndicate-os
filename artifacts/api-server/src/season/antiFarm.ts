@@ -8,7 +8,7 @@
  * (unknown acquisition time, unknown referred purchase) EXCLUDES the event from
  * money — an honest gap never pays.
  *
- * THE THREE LAWS:
+ * THE TWO LAWS:
  *   ① HOLDING PERIOD (wash-loop dead): a burn/mint act counts toward money only
  *     if the wallet's most recent SYN acquisition is ≥ the published holding
  *     period BEFORE the act. Buy→burn→rebuy cycles the same capital for zero
@@ -16,32 +16,36 @@
  *   ② REFERRAL FLOOR-GATE (the founder's two numbers): an introduction counts
  *     toward money only when the REFERRED wallet independently clears the
  *     eligibility floor pair — min qualifying purchase AND min XP.
- *   ③ REFERRAL WINDOW CAP: at most N introduction credits per introducer per
- *     money window (earliest by block/logIndex kept — deterministic); the rest
- *     are recognition-only.
  * (Purchase XP is already ONCE per wallet per season upstream in the
  * readmodel — receipt-splitting buys nothing; it passes through here.)
  *
- * Values: `ANTI_FARM_PROPOSED` are ENGINEERING DEFAULTS the founder confirms or
- * amends at the S3-9 money-sheet seal (they enter the hashed rule sheet as
- * per-source caps). The floor pair stays null until HE sets it — and potPolicy
- * separately REFUSES any round while it is null.
+ * ⛔ NO REFERRAL CAP — FOUNDER RULING 2026-07-24 ("pas de plafond — laisser
+ * travailler les gens; on n'est pas cons de refuser de l'argent, on est un
+ * business"), superseding the harvest §0.17-⑤ "capped per wallet per window"
+ * clause IN PLACE: every introduction credit is backed by a REAL qualifying
+ * purchase — company REVENUE — so "farming" referrals IS the business working.
+ * The floor-gate + self-referral-dead + once-per-season purchase laws already
+ * kill every fake vector; the admin intelligence layer (source performance —
+ * la crème de la crème) is what identifies the best workers, and it needs the
+ * UNCAPPED data. No agent re-adds a cap in any form.
+ *
+ * Values: `ANTI_FARM_PROPOSED` is the ENGINEERING DEFAULT the founder confirms
+ * or amends at the S3-9 money-sheet seal (it enters the hashed rule sheet).
+ * The floor pair stays null until HE sets it — and potPolicy separately
+ * REFUSES any round while it is null.
  */
 
 import type { XpSourceKey } from "../data/seasonConfig.js";
 
-/** Proposed V1 knobs — the founder's to confirm at S3-9 (hashed into the sheet). */
+/** Proposed V1 knob — the founder's to confirm at S3-9 (hashed into the sheet). */
 export const ANTI_FARM_PROPOSED = {
   /** ① Min holding time (seconds) between the wallet's last SYN acquisition and
    *  a burn/mint act for that act to count toward money. Default: 7 days. */
   holdingPeriodSeconds: 7 * 24 * 3600,
-  /** ③ Max introduction credits per introducer per money window. Default: 10. */
-  referralWindowCap: 10,
 } as const;
 
 export interface AntiFarmKnobs {
   readonly holdingPeriodSeconds: number;
-  readonly referralWindowCap: number;
   readonly floorPair: {
     readonly minQualifyingPurchaseUsdc: number | null;
     readonly minXpForBounty: number | null;
@@ -73,8 +77,7 @@ export type MoneyExclusionReason =
   | "referral-floor-purchase"
   | "referral-floor-xp"
   | "referral-floor-unset"
-  | "referral-context-unknown"
-  | "referral-window-cap";
+  | "referral-context-unknown";
 
 export interface MoneyWindowResult {
   readonly included: readonly MoneyWindowEventInput[];
@@ -83,7 +86,7 @@ export interface MoneyWindowResult {
   readonly perWalletMoneyXp: ReadonlyMap<string, number>;
 }
 
-/** Apply the three laws to ONE money window's events. Pure, deterministic. */
+/** Apply the two laws to ONE money window's events. Pure, deterministic. */
 export function filterForMoneyWindow(
   events: readonly MoneyWindowEventInput[],
   knobs: AntiFarmKnobs,
@@ -91,12 +94,11 @@ export function filterForMoneyWindow(
   const included: MoneyWindowEventInput[] = [];
   const excluded: { event: MoneyWindowEventInput; reason: MoneyExclusionReason }[] = [];
 
-  // Deterministic order first — the cap keeps the EARLIEST credits.
+  // Deterministic order (block, then logIndex) — stable outputs forever.
   const ordered = [...events].sort(
     (a, b) => a.blockNumber - b.blockNumber || a.logIndex - b.logIndex,
   );
 
-  const referralCount = new Map<string, number>();
   for (const e of ordered) {
     if (e.sourceKey === "burn-act" || e.sourceKey === "archive-mint") {
       // ① the holding period — fail-closed on unknown acquisition.
@@ -135,14 +137,9 @@ export function filterForMoneyWindow(
         excluded.push({ event: e, reason: "referral-floor-xp" });
         continue;
       }
-      // ③ the per-introducer window cap — earliest kept.
-      const key = e.wallet.toLowerCase();
-      const n = referralCount.get(key) ?? 0;
-      if (n >= knobs.referralWindowCap) {
-        excluded.push({ event: e, reason: "referral-window-cap" });
-        continue;
-      }
-      referralCount.set(key, n + 1);
+      // NO CAP (founder ruling 2026-07-24): every floor-clearing conversion is
+      // real company revenue — let people work; the intelligence layer reads
+      // the uncapped truth to see la crème de la crème.
       included.push(e);
       continue;
     }

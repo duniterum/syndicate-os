@@ -265,7 +265,6 @@ const POOL = "0x00000000000000000000000000000000000A11cE" as `0x${string}`;
 {
   const knobs = {
     holdingPeriodSeconds: ANTI_FARM_PROPOSED.holdingPeriodSeconds,
-    referralWindowCap: ANTI_FARM_PROPOSED.referralWindowCap,
     floorPair: { minQualifyingPurchaseUsdc: 50, minXpForBounty: 100 },
   };
   const T0 = 1_700_000_000;
@@ -293,11 +292,13 @@ const POOL = "0x00000000000000000000000000000000000A11cE" as `0x${string}`;
   ok(wash.excluded[1].reason === "holding-unknown", "unknown acquisition excluded fail-closed");
   ok(wash.perWalletMoneyXp.get(A(500).toLowerCase()) === 150, "money XP = the held burn only");
 
-  // ATTACK 2 — THE REFERRAL FARM: 15 conversions in one window → the cap keeps
-  // the EARLIEST 10; below-floor referrals credit nothing toward money.
-  const farm: MoneyWindowEventInput[] = [];
+  // NO CAP — FOUNDER RULING 2026-07-24 ("pas de plafond — on est un business"):
+  // 15 floor-clearing conversions = 15 real qualifying purchases = revenue.
+  // ALL of them count toward money; the intelligence layer reads the uncapped
+  // truth. This test PINS the ruling: a re-added cap goes RED here.
+  const work: MoneyWindowEventInput[] = [];
   for (let i = 0; i < 15; i++) {
-    farm.push(
+    work.push(
       ev({
         sourceKey: "introduction-converted",
         xp: 500,
@@ -307,12 +308,14 @@ const POOL = "0x00000000000000000000000000000000000A11cE" as `0x${string}`;
       }),
     );
   }
-  const farmed = filterForMoneyWindow(farm, knobs);
-  ok(farmed.included.length === 10, "referral farm capped at the window cap (10)");
+  const worked = filterForMoneyWindow(work, knobs);
   ok(
-    farmed.included.every((e) => e.blockNumber <= 209) &&
-      farmed.excluded.every((x) => x.reason === "referral-window-cap" && x.event.blockNumber >= 210),
-    "the cap keeps the EARLIEST credits (deterministic)",
+    worked.included.length === 15 && worked.excluded.length === 0,
+    "NO CAP: all 15 floor-clearing conversions count (founder ruling — a cap here is RED)",
+  );
+  ok(
+    worked.perWalletMoneyXp.get(A(500).toLowerCase()) === 15 * 500,
+    "the worker keeps every earned credit",
   );
 
   // ATTACK 3 — THE FLOOR GATES: under-floor purchase · under-floor XP · unknown

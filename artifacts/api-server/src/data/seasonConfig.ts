@@ -180,12 +180,13 @@ export const MIN_PRIZE_USDC_DEFAULT = 20;
  * money rail REFUSES to open a round while either is null (fail-closed) —
  * recognition XP flows regardless.
  */
-/** §0.17-⑤ STATUS (retrued S3-4, 2026-07-24): the referral CAP and the
- *  floor-pair gate are BUILT in src/season/antiFarm.ts and enforced on the
- *  MONEY window (per-attack tested in the blocking guard). The V1 recognition
- *  engine stays deliberately ungated (rank never drops). The FIGURES below are
- *  the founder's alone (S3-9): while either is null, potPolicy refuses any
- *  paid round — fail-closed. */
+/** §0.17-⑤ STATUS (retrued S3-4, 2026-07-24): the floor-pair gate + the
+ *  holding period are BUILT in src/season/antiFarm.ts and enforced on the
+ *  MONEY window (per-attack tested in the blocking guard). NO referral cap —
+ *  founder ruling same day (every floor-clearing conversion is real revenue).
+ *  The V1 recognition engine stays deliberately ungated (rank never drops).
+ *  The FIGURES below are the founder's alone (S3-9): while either is null,
+ *  potPolicy refuses any paid round — fail-closed. */
 export const ELIGIBILITY_FLOOR = {
   /** Minimum qualifying purchase (whole USDC) for a referred wallet to
    *  credit its introducer toward BOUNTY eligibility. */
@@ -196,11 +197,14 @@ export const ELIGIBILITY_FLOOR = {
 
 /**
  * THE ANTI-FARM GATE (§0.17-⑤ · S3-4 — BUILT + attack-tested 2026-07-24):
- * the three laws live in `src/season/antiFarm.ts` and gate the MONEY WINDOW only
+ * the laws live in `src/season/antiFarm.ts` and gate the MONEY WINDOW only
  * (recognition XP never drops — money binds to windows, §0.17-②): ① burn/mint
  * holding period (wash-loop dead, fail-closed on unknown acquisition) ·
- * ② referral floor-gate (the referred wallet clears the founder's floor pair) ·
- * ③ referral per-introducer-per-window cap (earliest kept). Per-attack tests
+ * ② referral floor-gate (the referred wallet clears the founder's floor pair).
+ * ⛔ NO REFERRAL CAP — founder ruling 2026-07-24 ("pas de plafond — on est un
+ * business; chaque conversion est du chiffre d'affaires"); supersedes the
+ * harvest §0.17-⑤ cap clause; the guard PINS it (a re-added cap = RED).
+ * Per-attack tests
  * (receipt-split · wash-loop · referral farm) run in the BLOCKING
  * season-merkle guard. The knob VALUES (`ANTI_FARM_PROPOSED`) and the floor
  * pair remain the FOUNDER's at S3-9 — and `potPolicy` still refuses any round

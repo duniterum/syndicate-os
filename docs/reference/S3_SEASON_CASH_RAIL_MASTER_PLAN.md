@@ -41,10 +41,13 @@ rebuilds the tree and verifies the root permissionlessly**; the file's own kecca
 `PendingRound.uri` — the two-artifact hash model) · the `season-merkle` CLI
 (build/verify/fixture, runnable by anyone) · `season-files/` committed history ·
 `season-merkle.guard.ts` joins the blocking api chain.
-⑤ **THE ANTI-FARM LAWS (§0.17-⑤) — now an OWNED slice (critic HIGH: it was ownerless):** burn/mint
-holding period (the seasonReadmodel line-378 engraved promise) · referral-XP per-wallet-per-window
-cap · floor-gated referral credit. Hard prerequisite of ANY round; `ANTI_FARM_IMPLEMENTED` flips
-only when built + attack-tested (receipt-split, wash-loop, referral farm).
+⑤ **THE ANTI-FARM LAWS (§0.17-⑤) — BUILT S3-4:** burn/mint holding period (wash-loop dead,
+fail-closed on unknown acquisition) · floor-gated referral credit. **⛔ NO REFERRAL CAP —
+founder ruling 2026-07-24** ("pas de plafond — on est un business"; every floor-clearing
+conversion is real revenue; the intelligence layer reads the uncapped truth), superseding the
+harvest cap clause in place; the blocking guard PINS no-cap (a re-added cap = RED).
+`ANTI_FARM_IMPLEMENTED` = true (laws exist + attack-tested); potPolicy still refuses rounds
+while the floor pair is null.
 ⑥ The EXECUTOR/SEALER runner — a dark-by-default backboneRunner step (NO second scheduler):
 `EXECUTOR_PK` (openSeason · announcement-gated interim + season-close postRound · activate ·
 claimForBatch in empirical chunks, ClaimSkipped left pull-claimable · sweepExpired · **skips the

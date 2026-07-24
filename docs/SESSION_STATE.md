@@ -162,15 +162,19 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > diff · Foundry re-verify). **`season-merkle:guard` (1,239 checks) joined the BLOCKING api
 > chain — the full chain re-ran GREEN end-to-end.** ✅ NO DEPLOY (nothing routed yet).
 > ✅ **SEVENTH ACT — S3-4 THE ANTI-FARM LAWS BUILT + ATTACK-TESTED (commit `1629ce6`):**
-> `src/season/antiFarm.ts` — the three §0.17-⑤ laws as a PURE money-window filter
+> `src/season/antiFarm.ts` — the §0.17-⑤ laws as a PURE money-window filter
 > (recognition NEVER gated, rank never drops): ① burn/mint HOLDING PERIOD (wash-loop dead;
 > unknown acquisition = excluded fail-closed) · ② referral FLOOR-GATE (the referred wallet
-> clears the founder's pair; unknown context = excluded) · ③ referral WINDOW CAP (earliest
-> kept, deterministic). `ANTI_FARM_IMPLEMENTED` = TRUE (= the laws exist + are enforced;
-> potPolicy STILL refuses rounds while the floor pair is null — the founder's S3-9 gate).
-> Knob values = `ANTI_FARM_PROPOSED` (7-day holding · cap 10/window), his to confirm at
-> S3-9. Per-attack bench in the blocking guard (now 1,255 checks; full chain green):
-> wash-loop · referral-farm-of-15→earliest-10 · floor gates · end-to-end antiFarm→potPolicy
+> clears the founder's pair; unknown context = excluded). **⛔ NO REFERRAL CAP — FOUNDER
+> RULING 2026-07-24 ("pas de plafond — laisser travailler les gens; on n'est pas cons de
+> refuser de l'argent, on est un business"): every floor-clearing conversion is a REAL
+> qualifying purchase = revenue; the admin intelligence layer (la crème de la crème) reads
+> the UNCAPPED data. Harvest §0.17-⑤ cap clause superseded in place; the guard PINS no-cap
+> (15 clean conversions ALL count — a re-added cap goes RED). Never re-propose one.**
+> `ANTI_FARM_IMPLEMENTED` = TRUE (= the laws exist + are enforced; potPolicy STILL refuses
+> rounds while the floor pair is null — the founder's S3-9 gate). Knob = `ANTI_FARM_PROPOSED`
+> (7-day holding), his to confirm at S3-9. Per-attack bench in the blocking guard (full
+> chain green): wash-loop · no-cap pin · floor gates · end-to-end antiFarm→potPolicy
 > exact-sum. Engraved notes retrued (readmodel line-378 + both seasonConfig deferrals).
 > ✅ NO DEPLOY (filter consumed by nothing routed yet).
 > **NEXT ACT — S3-5 (server dark-wiring):** delta-window standings (through antiFarm) ·

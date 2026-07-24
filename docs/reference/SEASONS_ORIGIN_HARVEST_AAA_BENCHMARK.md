@@ -526,7 +526,13 @@ open, immutable for that season.
   receipt-splitting; a bigger purchase never buys a bigger share — the legal
   spine). Referral XP credits ONLY when the referred wallet independently clears
   the eligibility floor pair (min qualifying purchase + min-XP — the founder's
-  two numbers), capped per wallet per window. Burn/mint XP require a published
+  two numbers) *(the "capped per wallet per window" clause is ⛔ SUPERSEDED IN
+  PLACE — FOUNDER RULING 2026-07-24: "pas de plafond — laisser travailler les
+  gens; on n'est pas cons de refuser de l'argent, on est un business." Every
+  floor-clearing conversion is a REAL qualifying purchase = company revenue;
+  the admin intelligence layer identifies la crème de la crème from the
+  UNCAPPED data. The blocking guard PINS no-cap — a re-added cap goes RED; no
+  agent re-proposes one in any form)*. Burn/mint XP require a published
   holding period (wash-loop dead). Free acts (check-in) count toward eligibility
   but weigh near-zero in money windows (drip-farming dead). Hors-concours
   wallets listed in the season-open rule sheet.
