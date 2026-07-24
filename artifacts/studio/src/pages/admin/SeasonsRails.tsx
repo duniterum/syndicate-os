@@ -396,7 +396,8 @@ export function SeasonsRailsPanel() {
                 <span className="text-[13px] font-semibold text-foreground">Seal round</span>{" "}
                 <span className={`${chip} border-success/40 text-success`}>auto at the seal</span>
                 <p className="text-xs leading-snug text-muted-foreground">
-                  automatic when the era seals — pays the season&apos;s remaining committed pot.
+                  automatic when the era seals — pays the season&apos;s remaining committed pot
+                  plus the recycled carryover.
                 </p>
               </li>
               <li>
@@ -405,8 +406,9 @@ export function SeasonsRailsPanel() {
                 </span>{" "}
                 <span className={`${chip} border-gold/40 text-gold`}>pre-announced 48h</span>
                 <p className="text-xs leading-snug text-muted-foreground">
-                  a founder right — announced 48 hours ahead with the amount; each pays the
-                  delta window since the previous round.
+                  a founder right — announced 48 hours ahead with the amount; once posted,
+                  the round still stands its full public verification window before it pays
+                  the delta since the previous round (two clocks, added together).
                 </p>
               </li>
               <li>
@@ -422,7 +424,7 @@ export function SeasonsRailsPanel() {
               Published for verification, then paid — never a bare “automatic”. Every round
               publishes its standings + root during the pending window (you may revoke it —
               a right, never a duty; a pause-only guardian covers founder-offline); after
-              the delay anyone can activate; unclaimed shares stay pull-claimable one year,
+              the delay anyone can activate; unclaimed shares stay pull-claimable two years,
               then join the carryover.
             </p>
           </div>
@@ -435,13 +437,17 @@ export function SeasonsRailsPanel() {
           </h3>
           <ol className="list-decimal space-y-1 pl-5 text-xs leading-relaxed text-muted-foreground">
             <li>
-              The SeasonBountyPool contract deploys under the care protocol — full Foundry
-              suite, Fuji rehearsal, your signed mainnet deploy (SETTLED_RULES §8-①).
+              The MeritDistributor contract (the season bounty pool) deploys under the care
+              protocol — full Foundry suite, the mainnet-fork rehearsal, your signed mainnet
+              deploy, then a tiny canary round watched end-to-end (SETTLED_RULES §8-①).
             </li>
-            <li>One-time: accept ownership from this console.</li>
             <li>
-              Then your ONLY recurring act: fund — « Engager au pot » or « Réserve ». Seal
-              and rounds transit automatically (§0.15).
+              One-time: accept ownership from this console — then transfer it to your 2-of-3
+              Safe, early.
+            </li>
+            <li>
+              Then your TWO recurring acts: fund — « Engager au pot » or « Réserve » — and
+              one rules signature per season. Seal and rounds transit automatically (§0.15).
             </li>
             <li>
               Optional rights, never duties: revoke a pending round in its public window ·
