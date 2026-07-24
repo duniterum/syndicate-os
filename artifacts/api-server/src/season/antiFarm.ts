@@ -61,10 +61,10 @@ export interface MoneyWindowEventInput {
   readonly blockNumber: number;
   readonly logIndex: number;
   /** Act time (enriched block timestamp, seconds). */
-  readonly blockTimestamp: number;
+  readonly actAtSec: number;
   /** ① burn-act/archive-mint context: the wallet's most recent SYN acquisition
    *  time BEFORE this act (seconds), or null if unknown → excluded fail-closed. */
-  readonly lastAcquisitionTimestamp?: number | null;
+  readonly lastAcquiredAtSec?: number | null;
   /** ② introduction context: the referred wallet's qualifying purchase (whole
    *  USDC) and its own XP — null/absent → excluded fail-closed. */
   readonly referredPurchaseUsdc?: number | null;
@@ -102,11 +102,11 @@ export function filterForMoneyWindow(
   for (const e of ordered) {
     if (e.sourceKey === "burn-act" || e.sourceKey === "archive-mint") {
       // ① the holding period — fail-closed on unknown acquisition.
-      if (e.lastAcquisitionTimestamp === null || e.lastAcquisitionTimestamp === undefined) {
+      if (e.lastAcquiredAtSec === null || e.lastAcquiredAtSec === undefined) {
         excluded.push({ event: e, reason: "holding-unknown" });
         continue;
       }
-      if (e.blockTimestamp - e.lastAcquisitionTimestamp < knobs.holdingPeriodSeconds) {
+      if (e.actAtSec - e.lastAcquiredAtSec < knobs.holdingPeriodSeconds) {
         excluded.push({ event: e, reason: "holding-period" });
         continue;
       }

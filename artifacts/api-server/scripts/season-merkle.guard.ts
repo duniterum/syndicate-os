@@ -22,6 +22,12 @@ import {
   filterForMoneyWindow,
   type MoneyWindowEventInput,
 } from "../src/season/antiFarm.js";
+import { buildMoneyWindowStandings, nextWindow } from "../src/season/deltaWindows.js";
+import {
+  buildSeasonPotModel,
+  publicPotRaw,
+  type PotEventInput,
+} from "../src/season/seasonPotReadmodel.js";
 import { generateFixtureJson } from "./season-merkle-fixture.js";
 
 let checks = 0;
@@ -273,7 +279,7 @@ const POOL = "0x00000000000000000000000000000000000A11cE" as `0x${string}`;
     xp: 150,
     blockNumber: 100,
     logIndex: 0,
-    blockTimestamp: T0,
+    actAtSec: T0,
     ...over,
   });
 
@@ -281,9 +287,9 @@ const POOL = "0x00000000000000000000000000000000000A11cE" as `0x${string}`;
   // holder (≥ the period) counts. Unknown acquisition = fail-closed excluded.
   const wash = filterForMoneyWindow(
     [
-      ev({ sourceKey: "burn-act", lastAcquisitionTimestamp: T0 - 3600, logIndex: 0 }),
-      ev({ sourceKey: "burn-act", lastAcquisitionTimestamp: T0 - 8 * 24 * 3600, logIndex: 1 }),
-      ev({ sourceKey: "archive-mint", lastAcquisitionTimestamp: null, xp: 100, logIndex: 2 }),
+      ev({ sourceKey: "burn-act", lastAcquiredAtSec: T0 - 3600, logIndex: 0 }),
+      ev({ sourceKey: "burn-act", lastAcquiredAtSec: T0 - 8 * 24 * 3600, logIndex: 1 }),
+      ev({ sourceKey: "archive-mint", lastAcquiredAtSec: null, xp: 100, logIndex: 2 }),
     ],
     knobs,
   );
@@ -352,8 +358,8 @@ const POOL = "0x00000000000000000000000000000000000A11cE" as `0x${string}`;
   const e2e = filterForMoneyWindow(
     [
       ev({ sourceKey: "introduction-converted", wallet: A(601), xp: 500, blockNumber: 300, referredPurchaseUsdc: 80, referredWalletXp: 250 }),
-      ev({ sourceKey: "burn-act", wallet: A(602), xp: 150, blockNumber: 301, lastAcquisitionTimestamp: T0 - 30 * 24 * 3600 }),
-      ev({ sourceKey: "burn-act", wallet: A(603), xp: 150, blockNumber: 302, lastAcquisitionTimestamp: T0 - 60 }), // wash — dies
+      ev({ sourceKey: "burn-act", wallet: A(602), xp: 150, blockNumber: 301, lastAcquiredAtSec: T0 - 30 * 24 * 3600 }),
+      ev({ sourceKey: "burn-act", wallet: A(603), xp: 150, blockNumber: 302, lastAcquiredAtSec: T0 - 60 }), // wash — dies
     ],
     knobs,
   );
@@ -376,6 +382,162 @@ const POOL = "0x00000000000000000000000000000000000A11cE" as `0x${string}`;
     ok(paid.paidSlots[0].account === A(601).toLowerCase(), "the clean introducer ranks first");
     ok(!paid.paidSlots.some((s) => s.account === A(603).toLowerCase() && s.windowXp > 0), "the washer earned no money-XP rank");
   }
+}
+
+// ═══ 6c. DELTA WINDOWS (S3-5a) — the no-double-pay spine ═══
+{
+  const w = (n: number) => A(700 + n);
+  const mkEvent = (over: Record<string, unknown>) => ({
+    wallet: w(1),
+    sourceKey: "introduction-converted" as const,
+    xp: 500,
+    blockNumber: 100,
+    logIndex: 0,
+    referredWallet: w(9),
+    referredPurchaseUsdc: 80,
+    ...over,
+  });
+  const moneyContext = {
+    xpEvents: [
+      mkEvent({ blockNumber: 50 }), //   before the window — the PREVIOUS round paid it
+      mkEvent({ blockNumber: 120 }), //  in-window
+      mkEvent({ wallet: w(2), sourceKey: "burn-act" as const, xp: 150, blockNumber: 130, referredWallet: null, referredPurchaseUsdc: null }),
+      mkEvent({ blockNumber: 220 }), //  after the window — the NEXT round's money
+    ],
+    purchaseBlocksByWallet: new Map([[w(2), [10]]]), // burn holder bought at block 10
+    sealBlocks: [],
+    seatByWallet: new Map([
+      [w(1), 4],
+      [w(2), 7],
+    ]),
+  };
+  const T = 1_700_000_000;
+  const timeByBlock = new Map<number, number>([
+    [10, T],
+    [120, T + 30 * 24 * 3600],
+    [130, T + 30 * 24 * 3600],
+  ]);
+  const knobs = {
+    holdingPeriodSeconds: ANTI_FARM_PROPOSED.holdingPeriodSeconds,
+    floorPair: { minQualifyingPurchaseUsdc: 50, minXpForBounty: 0 },
+  };
+  const win = buildMoneyWindowStandings({
+    moneyContext,
+    timeByBlock,
+    horsConcoursWallets: new Set(),
+    windowStartBlock: 100, // (100, 200] — the half-open engraved law
+    windowEndBlock: 200,
+    knobs,
+  });
+  ok(win.rows.length === 2, "delta window keeps ONLY in-window wallets");
+  const r1 = win.rows.find((r) => r.account === w(1))!;
+  const r2 = win.rows.find((r) => r.account === w(2))!;
+  ok(r1.windowXp === 500 && r1.attainingBlock === 120, "block-50 XP stays in the PREVIOUS window (no double-pay); attaining block recorded");
+  ok(r2.windowXp === 150, "the 30-day-held burn counts in the window");
+  // Contiguity: two consecutive windows never share an event.
+  const winB = buildMoneyWindowStandings({
+    moneyContext, timeByBlock, horsConcoursWallets: new Set(),
+    windowStartBlock: 200, windowEndBlock: 300, knobs,
+  });
+  ok(
+    winB.rows.length === 1 && winB.rows[0].account === w(1) && winB.rows[0].windowXp === 500,
+    "the NEXT window pays ONLY the block-220 act — contiguous, zero overlap",
+  );
+  const chain = nextWindow(200, 300, 1);
+  ok(chain.windowStartBlock === 200 && chain.windowEndBlock === 300, "nextWindow chains (lastPaid, current]");
+  // Fail-closed enrichment: a burn with NO known acquisition never pays.
+  const winC = buildMoneyWindowStandings({
+    moneyContext: { ...moneyContext, purchaseBlocksByWallet: new Map() },
+    timeByBlock, horsConcoursWallets: new Set(),
+    windowStartBlock: 100, windowEndBlock: 200, knobs,
+  });
+  ok(
+    !winC.rows.some((r) => r.account === w(2)),
+    "unknown acquisition → the burn is excluded fail-closed at the window level",
+  );
+  refuses(
+    () => buildMoneyWindowStandings({ moneyContext, timeByBlock, horsConcoursWallets: new Set(), windowStartBlock: 200, windowEndBlock: 200, knobs }),
+    "an empty window (end <= start) refused",
+  );
+}
+
+// ═══ 6d. THE POT FOLD (S3-5a) — the contract's server twin ═══
+{
+  const base = { blockNumber: 0, logIndex: 0, transactionHash: "0xt" };
+  const seq: PotEventInput[] = [
+    { kind: "SeasonOpened", seasonId: 1, rulesHash: "0xr1", ...base, blockNumber: 1 },
+    { kind: "Funded", from: A(801), amountRaw: "500000000", bucket: 0, seasonId: 0, ...base, blockNumber: 2 },
+    { kind: "Funded", from: A(801), amountRaw: "1000000000", bucket: 1, seasonId: 1, ...base, blockNumber: 3 },
+    { kind: "CommittedFromReserve", seasonId: 1, amountRaw: "200000000", ...base, blockNumber: 4 },
+    { kind: "PendingRound", roundId: 1001, seasonId: 1, root: "0xa", budgetRaw: "400000000", uri: "u", rulesHash: "0xr1", roundClass: 0, activateAfter: 1000, ...base, blockNumber: 5 },
+    { kind: "RoundActivated", roundId: 1001, expiresAt: 5000, ...base, blockNumber: 6 },
+    { kind: "Claimed", roundId: 1001, account: A(802), amountRaw: "250000000", ...base, blockNumber: 7 },
+    { kind: "CarryoverMoved", roundId: 1001, amountRaw: "150000000", ...base, blockNumber: 8 },
+    { kind: "SweptToReserve", amountRaw: "7000000", ...base, blockNumber: 9 },
+    { kind: "TimelockAnnounced", to: A(801), amountRaw: "100000000", readyAt: 2000, ...base, blockNumber: 10 },
+    { kind: "Withdrawal", to: A(801), amountRaw: "100000000", ...base, blockNumber: 11 },
+    { kind: "SeasonSealed", seasonId: 1, xpRoot: "0xseal", uri: "s", ...base, blockNumber: 12, transactionHash: "0xsealtx" },
+  ];
+  const ctx = { nowSeconds: 500, liveEra: 1, seasonApproachingSeal: false };
+  const m = buildSeasonPotModel(seq, ctx);
+  ok(m.state === "FUNDED", "FUNDED after the first committed credit");
+  ok(m.reserveRaw === 207_000_000n, "reserve = 500 - 200 promoted + 7 stray - 100 withdrawn");
+  ok(m.committedBySeason.get(1) === 800_000_000n, "committed[1] = 1000 + 200 - 400 round");
+  ok(m.roundReservedRaw === 0n, "round fully drained (paid + swept)");
+  ok(m.carryoverRaw === 150_000_000n, "unclaimed remainder recycled to carryover");
+  ok(m.totalPaidRaw === 250_000_000n && m.totalWithdrawnRaw === 100_000_000n, "ends tracked");
+  ok(m.conservationHolds, "the fold's conservation identity balances");
+  ok(publicPotRaw(m, 1) === 950_000_000n, "publicPot = committed[1] + open reserved + carryover (spec §2)");
+  ok(m.sealAnchorTxBySeason.get(1) === "0xsealtx", "the SeasonSealed tx is the verify anchor");
+  ok(m.pendingWithdrawal === null, "the withdrawal announcement was consumed");
+
+  // DARK before any committed credit (money-dark law: zero figures served).
+  const dark = buildSeasonPotModel(
+    [{ kind: "Funded", from: A(801), amountRaw: "500000000", bucket: 0, seasonId: 0, ...base, blockNumber: 2 }],
+    ctx,
+  );
+  ok(dark.state === "DARK", "reserve-only funding stays money-DARK");
+
+  // ALARMS: a stalled pending round · an unswept expiry · the missing next-season rules.
+  const stalled = buildSeasonPotModel(
+    [
+      { kind: "SeasonOpened", seasonId: 1, rulesHash: "0xr1", ...base, blockNumber: 1 },
+      { kind: "Funded", from: A(801), amountRaw: "1000000000", bucket: 1, seasonId: 1, ...base, blockNumber: 2 },
+      { kind: "PendingRound", roundId: 1001, seasonId: 1, root: "0xa", budgetRaw: "400000000", uri: "u", rulesHash: "0xr1", roundClass: 0, activateAfter: 100, ...base, blockNumber: 3 },
+    ],
+    { nowSeconds: 5_000, liveEra: 1, seasonApproachingSeal: true },
+  );
+  ok(stalled.alarms.some((a) => a.code === "pending-activatable"), "stalled PENDING round alarms");
+  ok(stalled.alarms.some((a) => a.code === "next-season-rules-missing"), "the silent-stall rules alarm arms near the seal");
+
+  // FAIL-CLOSED: impossible transitions throw (the runner falls back to lastGood).
+  refuses(
+    () => buildSeasonPotModel([{ kind: "Claimed", roundId: 9, account: A(1), amountRaw: "1", ...base }], ctx),
+    "claim on an unknown round throws",
+  );
+  refuses(
+    () =>
+      buildSeasonPotModel(
+        [
+          { kind: "SeasonOpened", seasonId: 1, rulesHash: "0xr1", ...base, blockNumber: 1 },
+          { kind: "PendingRound", roundId: 1001, seasonId: 1, root: "0xa", budgetRaw: "1", uri: "u", rulesHash: "0xr1", roundClass: 0, activateAfter: 1, ...base, blockNumber: 2 },
+        ],
+        ctx,
+      ),
+    "a round drawing more than committed[s] throws (underflow fail-closed)",
+  );
+  refuses(
+    () =>
+      buildSeasonPotModel(
+        [
+          { kind: "SeasonOpened", seasonId: 1, rulesHash: "0xr1", ...base, blockNumber: 1 },
+          { kind: "Funded", from: A(801), amountRaw: "1000", bucket: 1, seasonId: 1, ...base, blockNumber: 2 },
+          { kind: "PendingRound", roundId: 1001, seasonId: 1, root: "0xa", budgetRaw: "999", uri: "u", rulesHash: "0xr1", roundClass: 1, activateAfter: 1, ...base, blockNumber: 3 },
+        ],
+        ctx,
+      ),
+    "a CLOSE round whose budget != committed[s]+carryover throws (the distinct accounting mirrored)",
+  );
 }
 
 // ═══ 7. THE DIFFERENTIAL FIXTURE — drift check against the committed file ═══

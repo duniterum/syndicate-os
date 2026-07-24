@@ -110,6 +110,30 @@ interface XpEvent {
   readonly blockNumber: number;
   readonly logIndex: number;
   readonly transactionHash: string;
+  /** introduction-converted only (S3-5a money context): the referred purchase. */
+  readonly referredWallet?: string | null;
+  readonly referredPurchaseUsdc?: number | null;
+}
+
+/** SERVER-ONLY (S3-5a): the money-window builder's inputs — the chain-ordered
+ *  XP trail (with referral context) + acquisition history + boundaries. Feeds
+ *  `src/season/deltaWindows.ts` ONLY; never serialized publicly. */
+export interface SeasonMoneyContext {
+  readonly xpEvents: readonly {
+    readonly wallet: string;
+    readonly sourceKey: XpSourceKey | "quest-bonus";
+    readonly xp: number;
+    readonly blockNumber: number;
+    readonly logIndex: number;
+    readonly referredWallet: string | null;
+    readonly referredPurchaseUsdc: number | null;
+  }[];
+  /** wallet (lowercase) → its purchase blocks ASC (the SYN-acquisition proxy
+   *  for the §0.17-⑤ holding period; no purchase before an act = fail-closed). */
+  readonly purchaseBlocksByWallet: ReadonlyMap<string, readonly number[]>;
+  /** Season boundaries: sealBlocks[i] = the sealing block ending season i+1. */
+  readonly sealBlocks: readonly { era: number; blockNumber: number }[];
+  readonly seatByWallet: ReadonlyMap<string, number>;
 }
 
 /** Address-safe public standing row (§0.14-D + the multi-level law): every
@@ -162,6 +186,8 @@ export interface SeasonBuildResult {
   readonly currentSeasonNumber: number;
   /** SERVER-ONLY wallet index (lowercase keys). Never serialized publicly. */
   readonly walletIndex: ReadonlyMap<string, WalletSeasonView>;
+  /** SERVER-ONLY money context (S3-5a) — the delta-window builder's input. */
+  readonly moneyContext: SeasonMoneyContext;
   readonly notes: readonly string[];
 }
 
@@ -321,7 +347,13 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
       } else {
         // MULTI-LEVEL LAW: a no-seat SYN referrer's conversion is a real
         // chain-paid act — it credits XP; only the POT requires the seat.
+        // S3-5a: the referred purchase rides as MONEY context (§0.17-⑤
+        // floor-gate input — null-safe, fail-closed downstream).
         const d = src("introduction-converted");
+        const grossUsdc =
+          p.usdcGrossRaw !== null && p.usdcGrossRaw !== undefined
+            ? Number(p.usdcGrossRaw) / 1e6
+            : null;
         events.push({
           wallet: introducer,
           sourceKey: "introduction-converted",
@@ -330,6 +362,8 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
           blockNumber: p.blockNumber,
           logIndex: p.logIndex,
           transactionHash: p.transactionHash,
+          referredWallet: holder,
+          referredPurchaseUsdc: Number.isFinite(grossUsdc) ? grossUsdc : null,
         });
       }
     }
@@ -518,10 +552,36 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
     `retro-credit: the whole indexed history replayed (${allEvents.length} XP credit(s) across ${currentSeasonNumber} season(s)) — idempotent by construction.`,
   );
 
+  // --- SERVER-ONLY money context (S3-5a): the delta-window builder's input ---
+  const purchaseBlocksByWallet = new Map<string, number[]>();
+  for (const p of purchases) {
+    const holder = p.memberAddress?.toLowerCase() ?? null;
+    if (holder === null) continue;
+    const list = purchaseBlocksByWallet.get(holder) ?? [];
+    list.push(p.blockNumber);
+    purchaseBlocksByWallet.set(holder, list);
+  }
+  for (const list of purchaseBlocksByWallet.values()) list.sort((a, b) => a - b);
+  const moneyContext: SeasonMoneyContext = {
+    xpEvents: allEvents.map((e) => ({
+      wallet: e.wallet,
+      sourceKey: e.sourceKey,
+      xp: e.xp,
+      blockNumber: e.blockNumber,
+      logIndex: e.logIndex,
+      referredWallet: e.referredWallet ?? null,
+      referredPurchaseUsdc: e.referredPurchaseUsdc ?? null,
+    })),
+    purchaseBlocksByWallet,
+    sealBlocks: sealBlocks.map((b) => ({ era: b.era, blockNumber: b.blockNumber })),
+    seatByWallet,
+  };
+
   return {
     seasons,
     currentSeasonNumber,
     walletIndex,
+    moneyContext,
     notes,
   };
 }
