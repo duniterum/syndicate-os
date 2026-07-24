@@ -1,29 +1,36 @@
-# `contracts/` — Syndicate OS on-chain merit rail (S3+)
+# `contracts/` — Syndicate OS on-chain merit rail (S3)
 
-The Foundry project for the Syndicate OS smart contracts. First contract: **`SeasonBountyPool`**
-(the autonomous season-cagnotte payout rail).
+The Foundry project for **`MeritDistributor`** (product label: **« Season Bounty Pool »**) —
+ONE immutable, generic merit-payment distributor. Season bounty rounds are the first program;
+future campaigns ride the SAME contract as new rounds. No proxy, no upgradeability, ever.
 
-This directory is **self-contained** and lives OUTSIDE the pnpm workspace (`artifacts/*`,
-`lib/*`, `scripts`) on purpose — the Solidity toolchain does not touch the JS/TS build or
-guards, and vice-versa.
+> **THE SPEC IS LAW:** `docs/reference/MERITDISTRIBUTOR_CONTRACT_SPEC.md` (FROZEN v4 —
+> supersedes the harvest §0.7/§0.17 for the contract; the harvest stays the WHY).
+> **The execution plan:** `docs/reference/S3_SEASON_CASH_RAIL_MASTER_PLAN.md`.
+> *Names lie — read the `.sol`.*
 
-> **Names lie — read the `.sol`.** Field/function names are convenience; the authority is
-> the compiled source + its tests. (Founder guardrail, S3.)
+This directory is **self-contained** and lives OUTSIDE the pnpm workspace on purpose — the
+Solidity toolchain never touches the JS/TS build or guards, and vice-versa.
 
 ---
 
-## What is here now (the toolchain spike — 2026-07-24)
+## Layout
 
-S3's engraved first act was a **Foundry toolchain spike**: prove the atelier compiles +
-tests on this Windows box *before* any contract code. Status: **GREEN**.
-
-- `foundry.toml` — pinned to **solc 0.8.28**, deterministic builds (`bytecode_hash = "none"`,
-  `cbor_metadata = false`).
-- `src/HelloSyndicate.sol` + `test/HelloSyndicate.t.sol` — a **zero-dependency** sentinel
-  proving compiler + test runner. **Deleted when the real `SeasonBountyPool` lands.**
-- `forge-std` + a fuzz test were also verified working on this box (256 runs, green) —
-  see "Reinstall forge-std" below. Not committed (see `.gitignore`); the
-  dependency-vendoring strategy is a deliberate real-build decision.
+- `src/MeritDistributor.sol` — the contract (pragma 0.8.28). Its header carries the S3-1
+  realization notes (the `RoundClass {INTERIM, CLOSE, FINAL}` arbitration, pause-overlap
+  expiry, fund/season guards).
+- `test/MeritDistributor.t.sol` — the S3-1 core suite (36 tests: money paths, access matrix,
+  the named regression classes). The S3-2 adversarial stack adds the 15 stateful invariants
+  (≥50k runs, ghost ledger), Halmos symbolic proofs, Murky proof-forgery fuzzing, mutation
+  testing, and real-USDC mainnet-fork tests.
+- `test/mocks/MockUSDC.sol` — 6-decimal USDC stand-in with a Circle-style blocklist.
+- `lib/` — **vendored, COMMITTED, pinned** (an immutable money contract's audit target must
+  be reproducible offline): `forge-std` `6e8c4a9` · `openzeppelin-contracts` **v5.6.1** ·
+  `murky` `991e371` — all plain files (no submodules — OneDrive-safe), slimmed to the
+  compile-needed trees (`contracts/` / `src/`).
+- `foundry.toml` — solc 0.8.28 pinned, `evm_version=cancun`, deterministic builds
+  (`bytecode_hash=none`, `cbor_metadata=false`), the `green` profile (invariants at
+  50k/depth 25) for the spec §9 GREEN gate.
 
 Run the tests:
 
@@ -36,62 +43,56 @@ cd contracts && forge test -vv
 
 ## Toolchain install recipe (verified on THIS Windows box — reproduce exactly)
 
-**Foundry: v1.7.1** (forge/cast/anvil/chisel), attestation-verified.
+**Foundry: v1.7.1** (forge/cast/anvil/chisel), attestation-verified. Solc 0.8.28 auto-installs.
 
-### The box's TLS gotcha (why the plain install fails)
+### The box's TLS gotcha (why plain installs fail)
 
 This machine's `curl` uses the **Schannel** backend, which cannot do certificate-revocation
-checks → every fetch dies with `CRYPT_E_NO_REVOCATION_CHECK (0x80092012)`. Two scoped
-workarounds (neither writes a persistent config):
+checks → fetches die with `CRYPT_E_NO_REVOCATION_CHECK (0x80092012)`. Two scoped,
+non-persistent workarounds:
 
-- **curl**: point `CURL_HOME` at a dir containing a `.curlrc` with one line `ssl-no-revoke`,
-  then export `CURL_HOME` for the install commands. (Or add `--ssl-no-revoke` per call.)
-- **git**: prefix the clone with `-c http.schannelCheckRevoke=false` (scoped to that command).
+- **curl**: point `CURL_HOME` at a dir containing a `.curlrc` with one line `ssl-no-revoke`.
+- **git**: prefix clones with `-c http.schannelCheckRevoke=false`.
 
-> `forge`'s own downloader (svm for solc, release fetch) uses a Rust HTTP client — it does
-> **not** hit the Schannel revocation wall. Only `curl`/`git` do.
+`forge`'s own downloader (Rust HTTP) is unaffected.
 
 ### Install Foundry
 
 ```bash
-# .curlrc with `ssl-no-revoke`, then:
-export CURL_HOME=/path/to/dir/with/.curlrc
+export CURL_HOME=/path/to/dir/with/.curlrc     # .curlrc contains: ssl-no-revoke
 mkdir -p "$HOME/.foundry/bin"
 curl -sSf -L "https://raw.githubusercontent.com/foundry-rs/foundry/HEAD/foundryup/foundryup" \
   -o "$HOME/.foundry/bin/foundryup"
 chmod +x "$HOME/.foundry/bin/foundryup"
-"$HOME/.foundry/bin/foundryup"          # downloads + attestation-verifies the toolchain
-export PATH="$HOME/.foundry/bin:$PATH"   # forge is NOT auto-added to the running shell
-forge --version                          # forge 1.7.1
+"$HOME/.foundry/bin/foundryup"
+export PATH="$HOME/.foundry/bin:$PATH"
+forge --version
 ```
 
-### Reinstall forge-std (test infra; needed for the real fuzz + invariant suite)
+### Dependencies
 
-Vendored as **plain files** (no submodule — keeps the parent repo's git structure clean and
-avoids OneDrive submodule flakiness). Pinned commit: **`6e8c4a92c9a8b31c1b0f0c39296d1fa4695c7df8`**.
+Already vendored + committed in `lib/` — nothing to install. To re-vendor from scratch
+(new pins go through the spec change process first):
 
 ```bash
-cd contracts
-git clone -c http.schannelCheckRevoke=false --depth 1 \
-  https://github.com/foundry-rs/forge-std lib/forge-std
-rm -rf lib/forge-std/.git         # vendored as plain files
-forge remappings                  # auto: forge-std/=lib/forge-std/src/
+git -c http.schannelCheckRevoke=false clone --depth 1 --branch v5.6.1 \
+  https://github.com/OpenZeppelin/openzeppelin-contracts lib/openzeppelin-contracts
+git -c http.schannelCheckRevoke=false clone --depth 1 https://github.com/dmfxyz/murky lib/murky
+# then: rm -rf <lib>/.git, slim to contracts// src/, keep LICENSE+README
 ```
 
 ---
 
-## The real build (next): `SeasonBountyPool`
+## The road to mainnet (spec §9 — engineering only, NO legal gate, 8-8)
 
-Spec source of truth: `docs/reference/SEASONS_ORIGIN_HARVEST_AAA_BENCHMARK.md`
-— **§0.7** (domain-tagged Merkle leaf: `(kind, chainId, address(this), roundId, account, amount)`;
-a seal root is structurally unclaimable as a payout root), **§0.14-C** (Ownable2Step,
-pause-only guardian, `claimFor` batches), **§0.17** (two buckets, seat-tier rounds — **never
-dates**, snipe-proof seal, `rulesHash` anchored at deploy), **§8-1** (care protocol: full
-Foundry suite → Fuji rehearsal → founder's signed mainnet deploy).
+S3-2 adversarial stack → S3-3 `season-merkle` v2 tooling + the differential fixture →
+(server/admin/front slices per the master plan) → the founder's money-sheet seal →
+**the MAINNET-FORK rehearsal** (anvil fork of Avalanche C-Chain — the REAL USDC + chain
+state; the founder's acts on the real console screens; founder ruling 2026-07-24: no
+testnet detour) → the founder's signed **mainnet deploy** → post-deploy verification →
+`acceptOwnership` → early 2-of-3 Safe transfer → **the MAINNET CANARY** (tiny « Engager »,
+one real round end-to-end on Snowtrace) → Season-1 scale funding. The rail is then
+autonomous (SETTLED_RULES 8-8).
 
-> **SUPERSEDED — do not use:** `docs/reference/season-merkle.reference.ts` is the ORIGIN leaf
-> format (carries a stop banner). The S3 leaf is the domain-tagged §0.7 tuple.
-
-Guardrails: merit never chance · USDC never SYN · company money never mixed with the 70/20/10 ·
-rounds by seat-tier not dates · fail-closed · autonomous payment at mainnet, no legal gate
-(SETTLED_RULES 8-8).
+Deploy params (the founder confirms in one plain line): `PENDING_DELAY=72h` ·
+`RESERVE_TIMELOCK=72h` · `CORRECTION_WINDOW=7d` · `MAX_PAUSE=14d` · `CLAIM_EXPIRY=2y`.

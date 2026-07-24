@@ -5,9 +5,10 @@ cache/
 # Deploy broadcasts — kept local, re-derivable
 broadcast/
 
-# Vendored dependencies — NOT committed by the spike; reinstall via the README recipe
-# (pinned commits). The dependency strategy is decided at the real SeasonBountyPool build.
-lib/
+# NOTE: lib/ IS COMMITTED (S3-1 decision): the vendored dependency sources are pinned
+# in-repo — an immutable money contract's audit target must be reproducible offline,
+# with zero network drift. Pins: forge-std 6e8c4a9 · openzeppelin-contracts v5.6.1 ·
+# murky 991e371 (slimmed to compile-needed files; recipe in README.md).
 
 # forge doc generation
 docs/

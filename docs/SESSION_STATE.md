@@ -109,8 +109,28 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > deploy (tiny « Engager », one real round end-to-end on Snowtrace, phone-veto drill) → then
 > Season-1 scale funding. All other precautions stay maximal (invariants · Halmos · mutation ·
 > static analysis · post-deploy verification before acceptOwnership).
-> **NEXT ACT — S3-0 (truth floor + toolchain close-out)** per the master plan, then S3-1 (the
-> `.sol`) onward. The plan is the execution law; the frozen spec stays supreme on the contract.
+> ✅ **FOURTH ACT DONE — THE `.sol` EXISTS AND IS GREEN (S3-0 partial + S3-1).**
+> `contracts/src/MeritDistributor.sol` written byte-exact from the frozen spec (pragma 0.8.28,
+> OZ v5.6.1); **36/36 core tests PASS first-run** (`test/MeritDistributor.t.sol`): budget fence
+> bounds an inflated root · seal root structurally unclaimable · no global lockout · batch
+> skips a blacklisted leaf + pays the rest, pull intact · veto/activate windows never overlap ·
+> close round pays committed+carryover, terminal at activation, revocable while pending ·
+> withdraw can never touch committed, one-announcement-one-withdraw · stray→reserve never the
+> pot · pause extends expiry + permissionless unpause after MAX_PAUSE · conservation asserted
+> throughout. **S3-1 realization notes in the .sol header** (arbiter calls): `RoundClass
+> {INTERIM, CLOSE, FINAL}` realizes the unified postRound + adopted auto-close WITHOUT the
+> interim false-positive (INTERIM draws committed-only, never carryover, never the phase;
+> CLOSE/FINAL pay committed+carryover entirely and end the season) · pausedSnapshot at
+> ACTIVATION · fund(RESERVE) requires seasonId==0 · openSeason does NOT require prev-CLOSED
+> (per-season committed already quarantines; zero-pot seasons stay honestly OPEN). Deps
+> VENDORED + COMMITTED in-repo (forge-std 6e8c4a9 · OZ v5.6.1 · murky 991e371, slimmed —
+> an immutable money contract's audit target reproducible offline). ✅ NO DEPLOY.
+> **NEXT ACT — S3-2 (the adversarial stack):** 15 stateful invariants ≥50k/depth25
+> ghost-ledger · Halmos symbolic · Murky proof-forgery fuzz · mutation ≥90% · slither+aderyn ·
+> real-USDC mainnet-fork tests (incl. Circle-blacklist-on-pool) · gas + empirical chunk. Then
+> S3-3 tooling onward per the master plan. S3-0 remainder: the 3 founder-visible FR sentences
+> (Rail 02) await the founder's on-screen validation; the analysis-tool availability probe
+> (Halmos/slither/aderyn/mutation on this box, WSL fallback) rides S3-2's opening.
 > **DESIGN DISCIPLINE (founder mandate 2026-07-24, STANDING for all S3 contracts):** several
 > INDEPENDENT senior AAA lenses + an ADVERSARIAL pass BEFORE any `.sol` is frozen; Claude arbitrates
 > scope/slicing/ship. Guardrails every time: merit≠chance · USDC≠SYN · company money≠70/20/10 ·

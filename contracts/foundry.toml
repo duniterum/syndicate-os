@@ -1,6 +1,7 @@
-# Foundry project for the Syndicate OS on-chain merit rail (S3+).
-# Spike scaffold — proves the toolchain compiles + tests on this Windows box.
-# The real SeasonBountyPool is built from docs/reference/SEASONS_ORIGIN_HARVEST_AAA_BENCHMARK.md.
+# Foundry project for the Syndicate OS on-chain merit rail (S3).
+# The contract: MeritDistributor (product label « Season Bounty Pool »).
+# Spec = docs/reference/MERITDISTRIBUTOR_CONTRACT_SPEC.md (FROZEN — the LAW).
+# Plan = docs/reference/S3_SEASON_CASH_RAIL_MASTER_PLAN.md.
 
 [profile.default]
 src = "src"
@@ -8,11 +9,42 @@ out = "out"
 test = "test"
 libs = ["lib"]
 solc = "0.8.28"
+# Avalanche C-Chain supports Cancun-class EVM (mainnet-fork-validated per the master plan;
+# paris is the documented fallback if a fork test ever disagrees).
+evm_version = "cancun"
 optimizer = true
 optimizer_runs = 200
 # Deterministic, reproducible builds — no bytecode metadata hash drift between machines.
 bytecode_hash = "none"
 cbor_metadata = false
+
+remappings = [
+    "forge-std/=lib/forge-std/src/",
+    "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+    "murky/=lib/murky/src/",
+]
+
+[profile.default.invariant]
+runs = 1000
+depth = 25
+fail_on_revert = false
+
+# The GREEN-gate profile (spec §9): invariants at full depth.
+[profile.green]
+solc = "0.8.28"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 200
+bytecode_hash = "none"
+cbor_metadata = false
+
+[profile.green.invariant]
+runs = 50000
+depth = 25
+fail_on_revert = false
+
+[profile.green.fuzz]
+runs = 10000
 
 [fmt]
 line_length = 100
