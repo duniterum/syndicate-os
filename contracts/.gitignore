@@ -1,0 +1,13 @@
+# Foundry build outputs (re-derivable by `forge build`)
+out/
+cache/
+
+# Deploy broadcasts — kept local, re-derivable
+broadcast/
+
+# Vendored dependencies — NOT committed by the spike; reinstall via the README recipe
+# (pinned commits). The dependency strategy is decided at the real SeasonBountyPool build.
+lib/
+
+# forge doc generation
+docs/

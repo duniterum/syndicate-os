@@ -1,0 +1,20 @@
+# Foundry project for the Syndicate OS on-chain merit rail (S3+).
+# Spike scaffold — proves the toolchain compiles + tests on this Windows box.
+# The real SeasonBountyPool is built from docs/reference/SEASONS_ORIGIN_HARVEST_AAA_BENCHMARK.md.
+
+[profile.default]
+src = "src"
+out = "out"
+test = "test"
+libs = ["lib"]
+solc = "0.8.28"
+optimizer = true
+optimizer_runs = 200
+# Deterministic, reproducible builds — no bytecode metadata hash drift between machines.
+bytecode_hash = "none"
+cbor_metadata = false
+
+[fmt]
+line_length = 100
+tab_width = 4
+bracket_spacing = false

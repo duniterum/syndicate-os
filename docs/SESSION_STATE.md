@@ -41,22 +41,35 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   earning (standings rows with XP, seat or not — §0.18 multi-level) · **14** =
 >   seats (the era spine feeding the gauge + Holder Index). Different quantities,
 >   different authorities; a session that "reconciles" them breaks a law.
-> - **DEPLOY BACKLOG:** `2e3b6a3` (the §8-⑧ sweep) + `0be9308` + this commit —
->   **docs, comments and BACKLOG.html only; NOTHING user-visible changes**
->   (`FEATURE_STATUS` is imported by no component, verified). ✅ **NO DEPLOY
->   needed**; they ride whatever cycle S3 ships.
+> - **DEPLOY BACKLOG:** `2e3b6a3` (the §8-⑧ sweep) + `0be9308` + the resume-block
+>   commit (docs/comments/BACKLOG.html only) + the **S3 Foundry-spike commit** (new
+>   top-level `contracts/` — NOT served, NOT built by studio/api, no workspace
+>   package). **NOTHING user-visible changes** (`FEATURE_STATUS` imported by no
+>   component, verified). ✅ **NO DEPLOY needed**; they ride whatever cycle S3 ships.
 >
 > ## (b) IN FLIGHT — S3, the contract (the S2 arc is closed; nothing else is open)
-> **FIRST ACT, engraved:** the Foundry toolchain spike on this Windows box
-> (`forge --version` + a hello-world test that compiles) — no spike has ever run
-> here, and this box has a documented native-binary history.
-> **THEN:** build `SeasonBountyPool` from `docs/reference/SEASONS_ORIGIN_HARVEST_AAA_BENCHMARK.md`
+> ✅ **FIRST ACT DONE — the Foundry toolchain spike is GREEN on this box** (S3
+> spike commit, new top-level `contracts/`): Foundry **v1.7.1** installed +
+> attestation-verified · `forge --version` runs · solc 0.8.28 compiles · a
+> zero-dep hello-world test PASSES · forge-std + a **fuzz test** also verified
+> green (256 runs). The box's Schannel cert-revocation quirk is documented +
+> solved in `contracts/README.md` (curl `CURL_HOME`+`.curlrc ssl-no-revoke` · git
+> `-c http.schannelCheckRevoke=false`; forge's own downloader is unaffected).
+> `contracts/` is outside the pnpm workspace; `lib/`+`out/`+`cache/` gitignored.
+> **NEXT ACT — build `SeasonBountyPool`** from `docs/reference/SEASONS_ORIGIN_HARVEST_AAA_BENCHMARK.md`
 > §0.7 (leaf = OZ StandardMerkleTree, domain-tagged **`(kind, chainId,
 > address(this), roundId, account, amount)`**) + §0.14-C (contract deltas,
 > Ownable2Step, pause-only guardian, claimFor batches) + §0.17 (two buckets ·
-> delta-window rounds · snipe-proof seal · 48h interims · rulesHash — Season 1's
-> anchors AT DEPLOY) + §8-① (the care protocol: full Foundry suite · Fuji
-> rehearsal · the founder's own signed mainnet deploy).
+> seat-tier rounds — NEVER dates · snipe-proof seal · 48h interims · rulesHash —
+> Season 1's anchors AT DEPLOY) + §8-① (the care protocol: full Foundry suite ·
+> Fuji rehearsal · the founder's own signed mainnet deploy).
+> **DESIGN DISCIPLINE (founder mandate 2026-07-24):** the contract design passes
+> through several INDEPENDENT senior AAA lenses + an ADVERSARIAL self-attack pass
+> BEFORE the `.sol` is frozen (CTO/Tech-Lead · Solidity architect · contract
+> engineer · adversarial auditor · QA fuzz+invariants · protocol integration).
+> Claude arbitrates scope/slicing/ship. Guardrails carried every time: merit≠chance ·
+> USDC≠SYN · company money≠70/20/10 · seat-tier rounds not dates · fail-closed ·
+> "names lie, read the `.sol`".
 > ⚠ **`docs/reference/season-merkle.reference.ts` is the ORIGIN format and is
 > SUPERSEDED** — it carries a ⛔ banner; never copy its leaf into S3.
 > **§8-⑧: the rail is AUTONOMOUS — it pays really, on its own, the moment the
@@ -74,6 +87,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > 🔴 **AW-5**: name the archive payment wallet `0xe417…d56f` · 🔴 **SwapRail**:
 > developer fee % · fee pipe address · thirdweb account (~$99/mo) · placement ·
 > 🔴 **EN public copy** at each remaining surface gate.
+>
+> ---
+>
+> **▶ 📌 THE RECORD — 2026-07-24 (S3 FIRST ACT · Foundry toolchain spike): GREEN.**
+> The engraved S3 opener ran on this Windows box. Foundry **v1.7.1**
+> (forge/cast/anvil/chisel) installed via `foundryup`, attestation-verified.
+> Proven: `forge --version` runs · solc 0.8.28 auto-downloads + compiles · a
+> zero-dependency hello-world test PASSES · forge-std vendored (commit `6e8c4a9`,
+> plain files, not a submodule) + a **fuzz test PASSES at 256 runs**. The box's
+> Schannel cert-revocation wall (`CRYPT_E_NO_REVOCATION_CHECK 0x80092012`) killed
+> the plain installer; solved with SCOPED, NON-PERSISTENT workarounds — curl via
+> `CURL_HOME`+`.curlrc ssl-no-revoke`, git via `-c http.schannelCheckRevoke=false`
+> (forge's own Rust downloader is unaffected). Full recipe in `contracts/README.md`.
+> The commit leaves a green-out-of-the-box zero-dep scaffold; the ephemeral fuzz
+> file was removed (proof captured), `lib/`+`out/`+`cache/` gitignored — the
+> dependency-vendoring strategy is deferred to the real build. ✅ NO DEPLOY
+> (`contracts/` is not served/built). NEXT: `SeasonBountyPool` design via the
+> multi-lens + adversarial pass (founder mandate).
 >
 > ---
 >

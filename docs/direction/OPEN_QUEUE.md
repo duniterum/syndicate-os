@@ -4,6 +4,16 @@
 > all shipped and sealed in prod on 2026-07-24; only S3 — the contract — remains).
 > The live state is always `docs/SESSION_STATE.md`'s resume block.**
 >
+> **▶ 2026-07-24 — S3 STARTED · THE FOUNDRY SPIKE IS GREEN.** The engraved S3 first
+> act ran: Foundry **v1.7.1** installed + attestation-verified on this Windows box ·
+> `forge --version` runs · solc 0.8.28 compiles · a zero-dep test + a forge-std
+> **fuzz test** pass (256 runs). The box's Schannel cert-revocation quirk is
+> documented + solved in `contracts/README.md`. Scaffold at top-level `contracts/`
+> (✅ NO DEPLOY — not served/built). **NEXT: `SeasonBountyPool` design via the
+> multi-lens + adversarial pass** (founder mandate 2026-07-24). The S3-gate money
+> decisions (« Engager au pot » · the XP weight table + footprint-rung XP · the
+> floor pair) stay the founder's, and do NOT block the contract engineering.
+>
 > **▶ 2026-07-23 — THE SEASONS + SWAPRAIL ARC OPENED (founder: "on va faire tout ça
 > comme il faut" — season-first; the advisor mega-dossier verified against the repo,
 > then FIVE RULINGS engraved).**
