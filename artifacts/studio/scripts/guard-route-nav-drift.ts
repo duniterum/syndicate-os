@@ -158,9 +158,9 @@ const adminRegistryPaths = new Set(
   [...registryPaths].filter((p) => p === "/admin" || p.startsWith("/admin/")),
 );
 check(
-  adminNavPaths.size === 10,
-  `AdminShell declares 10 admin sections`,
-  `expected exactly 10 ADMIN_SECTIONS entries (/admin + 9 sub-routes), found ${adminNavPaths.size} — update this guard deliberately if the section model changed`,
+  adminNavPaths.size === 11,
+  `AdminShell declares 11 admin sections`,
+  `expected exactly 11 ADMIN_SECTIONS entries (/admin + 10 sub-routes; /admin/seasons joined at S2-final 2026-07-24), found ${adminNavPaths.size} — update this guard deliberately if the section model changed`,
 );
 for (const p of adminNavPaths) {
   check(

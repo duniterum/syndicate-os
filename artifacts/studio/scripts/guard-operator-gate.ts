@@ -89,9 +89,9 @@ const internalPaths = seoRouteRegistry
   .map((r) => r.path);
 
 check(
-  internalPaths.length === 15,
-  `registry declares 15 INTERNAL routes (${internalPaths.join(", ")})`,
-  `expected exactly 15 INTERNAL registry routes (6 console + 9 admin sections), found ${internalPaths.length} — update this guard deliberately if that changed`,
+  internalPaths.length === 16,
+  `registry declares 16 INTERNAL routes (${internalPaths.join(", ")})`,
+  `expected exactly 16 INTERNAL registry routes (6 console + 10 admin sections; /admin/seasons joined at S2-final 2026-07-24), found ${internalPaths.length} — update this guard deliberately if that changed`,
 );
 
 // The nine sectioned admin sub-routes (Phase 2 slice 1) must ALL be present
@@ -99,6 +99,7 @@ check(
 const ADMIN_SECTION_PATHS = [
   "/admin/members",
   "/admin/sources",
+  "/admin/seasons",
   "/admin/operators",
   "/admin/content",
   "/admin/modules",
@@ -268,6 +269,9 @@ const adminGraph: Record<string, string[]> = {
   // modules may never be reachable from a public surface.
   '"@/pages/admin/ReferralKpiBand"': [path.join("pages", "admin", "sections.tsx")],
   '"@/pages/admin/SourcePerformancePanel"': [path.join("pages", "admin", "sections.tsx")],
+  // S2-final (2026-07-24): the Seasons 2-rails panel joins the strict chain
+  // (sections.tsx only) — admin modules never reachable from a public surface.
+  '"@/pages/admin/SeasonsRails"': [path.join("pages", "admin", "sections.tsx")],
 };
 for (const [spec, allowedImporters] of Object.entries(adminGraph)) {
   let importedByAllowed = false;

@@ -894,6 +894,19 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "operator",
     notes: NEUTRAL_WALL_NOTE,
   },
+  // /admin/seasons — the Seasons 2 rails (S2-final 2026-07-24).
+  {
+    path: "/admin/seasons",
+    routeType: "INTERNAL",
+    indexStatus: "INTERNAL",
+    sitemap: false,
+    title: NEUTRAL_WALL_TITLE,
+    description: NEUTRAL_WALL_DESCRIPTION,
+    canonicalPath: null,
+    ownerSurface: "operator",
+    primaryIntent: "operator",
+    notes: NEUTRAL_WALL_NOTE,
+  },
   // /admin/broadcast — the live broadcast composer (send + icon/deep-link pickers + audited delete; NOTIF-1/2/2b sealed 2026-07-18).
   {
     path: "/admin/broadcast",

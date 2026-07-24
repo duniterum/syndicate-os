@@ -12,6 +12,7 @@ Disallow: /os-map
 Disallow: /admin
 Disallow: /admin/members
 Disallow: /admin/sources
+Disallow: /admin/seasons
 Disallow: /admin/operators
 Disallow: /admin/content
 Disallow: /admin/modules

@@ -48,6 +48,9 @@ import {
 import { MemberLedgerPanel } from "@/pages/admin/memberLedger";
 import { ReferralKpiBand } from "@/pages/admin/ReferralKpiBand";
 import { SourcePerformancePanel } from "@/pages/admin/SourcePerformancePanel";
+// S2-final (2026-07-24): the Seasons 2-rails section (strict chain: this file
+// is the module's ONLY importer — guard-operator-gate adminGraph).
+import { SeasonsRailsPanel } from "@/pages/admin/SeasonsRails";
 import { consumeRequestedSourcesTab } from "@/lib/adminPrefill";
 import { AdminReferralPanel } from "@/components/referral/AdminReferralPanel";
 import { AdminModulesConsole } from "@/components/referral/AdminModulesConsole";
@@ -274,6 +277,17 @@ export function AdminSourcesSection() {
         ) : null}
         {tab === "performance" ? <SourcePerformancePanel /> : null}
       </div>
+    </div>
+  );
+}
+
+export function AdminSeasonsSection() {
+  // S2-final — the two rails, never conflated: Recognition (autonomous,
+  // observation only — §0.15/§8-④) · The season pot (founder-gated frame
+  // until S3 funds it).
+  return (
+    <div className="space-y-6">
+      <SeasonsRailsPanel />
     </div>
   );
 }

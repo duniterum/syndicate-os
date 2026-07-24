@@ -296,6 +296,9 @@ function Router() {
       <Route path="/admin/sources">
         <OperatorRoute page="admin" />
       </Route>
+      <Route path="/admin/seasons">
+        <OperatorRoute page="admin" />
+      </Route>
       <Route path="/admin/operators">
         <OperatorRoute page="admin" />
       </Route>

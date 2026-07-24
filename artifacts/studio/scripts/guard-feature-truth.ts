@@ -48,6 +48,9 @@ const PINNED_CLAIM_SITES: Record<string, readonly string[]> = {
   "wallet/SeasonStandingCard.tsx": ["seasonBounty"],
   // S2d: the separate cash rail's frame on Member Home (two-layer law).
   "components/season/EffortRewardCard.tsx": ["seasonBounty"],
+  // S2-final (2026-07-24): the admin Seasons rail-2 head — the pot frame's
+  // one badge (the funding panel arrives WITH the contract at S3).
+  "pages/admin/SeasonsRails.tsx": ["seasonBounty"],
   "components/referral/ReferralLadderPanel.tsx": [
     "rateRaiseHistory",
     // Seasons arc 2026-07-23: the single seasonEngine key split into

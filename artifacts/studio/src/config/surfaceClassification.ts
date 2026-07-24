@@ -555,6 +555,15 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     enforcement: "PREVIEW_LABELLED",
   },
   {
+    routePath: "/admin/seasons",
+    audience: "OPERATOR_PREVIEW",
+    surface: "PRIVATE_OPERATOR_ADMIN",
+    layout: "console",
+    summary: "Admin section: the Seasons 2 rails — recognition observation (autonomous) + the season pot frame (founder-gated, S3).",
+    requiredState: "S11",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
     routePath: "/admin/broadcast",
     audience: "OPERATOR_PREVIEW",
     surface: "PRIVATE_OPERATOR_ADMIN",

@@ -138,9 +138,44 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   **THE LAST CENTIMETER = THE FOUNDER'S SIGNED CLICK:** the three cards
 >   render only for a real SIWE session — his own dashboard look seals S2d
 >   fully (as the commit planned).
-> - **NEXT (the engraved order):** the admin Seasons 2-rails console → S3
->   (Foundry workspace + SeasonBountyPool + the cash rail per §0.17) —
->   wireframe + preview gate EACH.
+> - **✅ S2-FINAL BUILT [this commit] — THE ADMIN SEASONS 2-RAILS CONSOLE (founder
+>   "GO and GO-Live"; the approved admin-2rails mockup §0.14-E, truth-amended) —
+>   THE S2 ARC CLOSES:** /admin/seasons (Trophy, after Sources — the growth
+>   cluster), the strict-chain module `pages/admin/SeasonsRails.tsx` (sections.tsx
+>   its only importer; the OperatorConsole chunk stays ONE — admin-dist 102).
+>   **RAIL 01 Recognition — AUTONOMOUS, pure observation, zero buttons BY
+>   DESIGN (§0.15 + §8-④):** state card on the ONE spine (season/era/chapter ·
+>   gauge + MembersProvenance · end trigger memberCount≥endSeat · next step
+>   (engine) · Builders earning · backbone heartbeat — all EXISTING public
+>   routes, ZERO new endpoints, zero guard-auth-zone edits) · the 5-node
+>   lifecycle (4 AUTO + Published = ONE optional editorial click) · the FED XP
+>   sources table (5 rows, "0 operator interventions"; unfed classes arrive
+>   WITH their feeders — no future rows, no future claims) · top-3 glance +
+>   the /season door · model notes in a closed expander (WORK-FIRST).
+>   **RAIL 02 The season pot — the §0.17 frame, founder-gated, ONE FUTURE
+>   badge (seasonBounty), ZERO figure, ZERO fake control:** the two buckets
+>   (« Engager au pot » irrevocable ratchet-only THE public figure ·
+>   « Réserve » 72h public timelock) · the 3 rounds (seal-auto · interim
+>   pre-announced 48h paying the delta window · final = early-closure right +
+>   carryover) · "published for verification, then paid — never a bare
+>   automatic" + guardian veto a right + anyone-activates + 1y pull → carryover
+>   + rulesHash anchored at open · the S3 activation list (deploy under the
+>   care protocol → acceptOwnership once → fund = the only recurring act →
+>   optional rights) · the bounded-executor note.
+>   **SAME-COMMIT REGISTRATIONS:** App route + ADMIN_SECTIONS entry ·
+>   seo-route-registry INTERNAL (neutral wall fields) + robots Disallow +
+>   surfaceClassification · pins bumped DELIBERATELY: guard-operator-gate
+>   15→16 INTERNAL + ADMIN_SECTION_PATHS + adminGraph · guard-route-nav-drift
+>   10→11 · guard-feature-truth 590. GATES ALL GREEN (typecheck · 19 guards ·
+>   build · seo 539). **MEASURED ON LIVE PROD DATA (dev-reveal rig):** both
+>   rails render — "Season 1 — Era 1 · Genesis Signal" · 14/333 · engine ok 17
+>   · 5 fed rows · 1 badge · 0 dollar figures · 0 "player" · 0 inputs/forms ·
+>   0 overflow; and the neutral wall RETOOK the page when the server
+>   operator-context answered false — the gate enforces server truth even in
+>   dev. The founder's signed operator session seals the visual online.
+> - **NEXT:** S3 — the Foundry workspace + SeasonBountyPool + the cash rail per
+>   §0.17 (the founder's money decisions gate it: « Engager au pot » amount +
+>   cadence · XP weights · the floor pair · lawyer pass at activation).
 > - **(e) FOUNDER-PENDING (re-trued):** 🔴 AW-5 wallet name (unchanged) · SwapRail
 >   decisions (fee % · fee pipe · thirdweb ~$99/mo · placement) · pot COMMITMENT
 >   amount + cadence (« Engager au pot ») · CONFIRM XP weights + $20 floor +

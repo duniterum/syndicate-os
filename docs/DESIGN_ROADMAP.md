@@ -103,10 +103,20 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
     checks au test squelette d'auth (S4+quêtes · scan de fuite · paramètre inerte ·
     anonyme S1 — tous verts sur le rig). La note #14 réconciliée par la loi : les chiffres
     de maquette sont de la géométrie, jamais des données. **+0 couleur brute.**
-  - [ ] **Console admin — section Seasons 2 rails** (chunk opérateur lazy) : rail
-    reconnaissance auto (next-step engine + dry-run harvestés de l'origine) · rail effort
-    founder-gated (« Engager au pot » vs « Réserve » + rounds seal/interim-48h/final per
-    §0.17 + panneau S3: fund · acceptOwnership une fois · vetos optionnels).
+  - [x] **Console admin — section Seasons 2 rails — LIVRÉE (S2-final, 2026-07-24,
+    GO-and-GO-LIVE fondateur ; mesurée sur données prod LIVE au rig)** : /admin/seasons
+    (chaîne stricte sections.tsx → chunk OperatorConsole intact, admin-dist 102) —
+    RAIL 01 Reconnaissance AUTONOME en pure OBSERVATION (zéro bouton par CONCEPTION,
+    §0.15/§8-④ : état season+ère sur la source unique · trigger memberCount≥endSeat ·
+    prochaine étape moteur · heartbeat backbone · cycle de vie 5 nœuds AUTO + 1 clic
+    éditorial · table des 5 sources XP ALIMENTÉES « 0 intervention opérateur » · top-3 +
+    porte /season · notes du modèle en expandeur fermé) — RAIL 02 Le pot (cadre §0.17
+    founder-gated : deux poches Engager/Réserve · rounds seal-auto/intérim-48h/final ·
+    fenêtre publiée-vérifiée-payée + veto droit + 1an carryover + rulesHash · liste
+    d'activation S3 fund/acceptOwnership/droits optionnels · executor borné) — UN badge
+    FUTURE (seasonBounty), ZÉRO chiffre, ZÉRO faux contrôle. Pins bumpés délibérément :
+    operator-gate 15→16 + chemin + adminGraph · route-nav-drift 10→11 · feature-truth
+    590 · robots/SEO/classification même commit (539 checks). **+0 couleur brute.**
   - [ ] featureStatus : `seasonRanking` / `seasonQuests` / `seasonBounty` (clés séparées,
     flips dans le commit qui livre chacune).
 - [x] **`/join` checkout (C1.1→C1.4)** — rend via le système (tokens only, 0 couleur brute),
