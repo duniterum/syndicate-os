@@ -69,6 +69,24 @@ export PATH="$HOME/.foundry/bin:$PATH"
 forge --version
 ```
 
+### Static-analysis toolchain (state on THIS box, 2026-07-24)
+
+No native Python/cargo here. **`uv` 0.11.32** installed (single binary, manages its own
+Python); this box's TLS interception rejects Rust's default roots → **always pass
+`--system-certs`** (the Windows cert store). **slither 0.11.5 installed and green**
+(`0 high / 0 medium` — triage in `analysis/slither-triage.md`):
+
+```bash
+uv tool install --system-certs --python 3.12 slither-analyzer
+slither src/MeritDistributor.sol --solc-remaps "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/" \
+  --exclude-informational --exclude-low --exclude-optimization
+```
+
+**halmos: BLOCKED on this box** — `safe-pysha3` has no py3.12 wheel and the source build
+fails (no C toolchain). Recorded paths: `uv tool install --system-certs --python 3.11 halmos`
+(3.11 wheels exist) or run the symbolic pass in WSL/CI. **aderyn + mutation testing**: not
+yet installed — they ride the same later GREEN-gate pass.
+
 ### Dependencies
 
 Already vendored + committed in `lib/` — nothing to install. To re-vendor from scratch

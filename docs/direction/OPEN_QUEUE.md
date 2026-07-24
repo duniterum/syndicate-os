@@ -55,6 +55,21 @@
 > **⚡ RULING RE-CONFIRMED, FINAL (stated twice): MAINNET-DIRECT, NO FUJI, no testnet step ever**
 > (8-① venue text now quotes the founder verbatim — ANSWERED FOREVER).
 >
+> **▶ 2026-07-24 (session close) — S3 ACTS ①→⑧ ALL SHIPPED TO `main` (`cd60b8f`→`4eaac2f`,
+> tree clean, local==origin).** The contract born green (36/36 → 56/56 with the byte-agreed
+> differential fixture) · invariants at the OFFICIAL 50k level (1.25M calls each, zero
+> failures) · REAL-USDC mainnet-fork green · slither 0 high/med · prod-purity + no-cap +
+> no-Fuji all guard-PINNED · the tooling (potPolicy/merkle/rulesHash/publishedFile) + the
+> anti-farm laws + the money-window spine (deltaWindows + the pot server twin) all in the
+> BLOCKING api chain (season-merkle:guard 1,278 checks; full chain green end-to-end).
+> **Three founder rulings engraved this session:** MAINNET-DIRECT no-Fuji (8-①, verbatim
+> ×2) · ON MONTRE full addresses (§0.14-D superseded) · NO REFERRAL CAP (§0.17-⑤ clause
+> superseded; guard-pinned). **NEXT SESSION BOOTS ON:** SESSION_STATE's handoff dashboard
+> → S3-5b (the served wiring; gate = the FR bell sentences on the founder's screen +
+> guard-forbidden-copy same-commit §8-③). The law files: MERITDISTRIBUTOR_CONTRACT_SPEC
+> (FROZEN) + S3_SEASON_CASH_RAIL_MASTER_PLAN (execution). ✅ NO DEPLOY pending (the one
+> user-visible commit `de4c8b7` is BATCHABLE; the batch rides S3-8).
+>
 > **▶ 2026-07-23 — THE SEASONS + SWAPRAIL ARC OPENED (founder: "on va faire tout ça
 > comme il faut" — season-first; the advisor mega-dossier verified against the repo,
 > then FIVE RULINGS engraved).**

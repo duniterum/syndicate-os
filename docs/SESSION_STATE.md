@@ -47,180 +47,111 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   user-visible changes** (`FEATURE_STATUS` imported by no component; `contracts/` not served/built).
 >   ✅ **NO DEPLOY needed**; they ride whatever cycle S3 ships.
 >
-> ## (b) IN FLIGHT — S3, the contract (the S2 arc is closed; nothing else is open)
-> ✅ **FIRST ACT DONE — the Foundry toolchain spike is GREEN on this box** (S3
-> spike commit, new top-level `contracts/`): Foundry **v1.7.1** installed +
-> attestation-verified · `forge --version` runs · solc 0.8.28 compiles · a
-> zero-dep hello-world test PASSES · forge-std + a **fuzz test** also verified
-> green (256 runs). The box's Schannel cert-revocation quirk is documented +
-> solved in `contracts/README.md` (curl `CURL_HOME`+`.curlrc ssl-no-revoke` · git
-> `-c http.schannelCheckRevoke=false`; forge's own downloader is unaffected).
-> `contracts/` is outside the pnpm workspace; `lib/`+`out/`+`cache/` gitignored.
-> ✅ **SECOND ACT DONE — THE CONTRACT DESIGN IS FROZEN**
-> (`docs/reference/MERITDISTRIBUTOR_CONTRACT_SPEC.md`, v4). Contract **`MeritDistributor`**
-> (product label « Season Bounty Pool »): ONE immutable generic merit-payment distributor
-> (§0.12-② — season rounds ride it, future campaigns ride the SAME contract). Forged through
-> **6 senior lenses + 5 adversarial rounds + an all-hats world-class consolidation + a
-> money-safety hunt** (wf_5b03773b · 11b4204f · 382f53b6 · ef219bba · 48fdf029 · 888afcd6 ·
-> a8c9c21c); final verdict **0 blocking items, world-class, ahead of the audited benchmarks**.
-> The passes caught + fixed ~30 defects incl. contract-breaking ones (leaf encoded 3 ways · a
-> front-runnable owner veto · a batch that would pay nobody · a pot that collapsed at seal · a
-> **carryover-never-recycled logic bug**) BEFORE a line of `.sol`.
-> **FOUNDER DECISIONS (this session):** owner = **2-of-3 Gnosis Safe** (single-key NOW → Safe
-> EARLY; the on-chain `emergencyClaim` was REJECTED as over-complex — the multisig handles
-> abandonment at ZERO contract cost) · claim window **2 years** · **per-season `committed[]`** ·
-> **commit-progressively doctrine + Goal-vs-Committed** display (the founder's 1M-pot-but-10-people
-> concern) · the full §0.17-⑦ rulesHash set.
-> ✅ **THIRD ACT DONE — THE FULL-SYSTEM MASTER PLAN IS ARBITRATED**
-> (`docs/reference/S3_SEASON_CASH_RAIL_MASTER_PLAN.md` — founder order 2026-07-24: "code admin et
-> front end aussi", all hats + agents + deep-read from the beginning). The all-hats consolidation
-> (wf_5fd58a55: 4 repo/canon deep-readers → 7 senior lenses incl. NEW admin-console + front-end +
-> read-model + tooling hats → completeness critic → arbiter, 13 agents) produced the SYSTEM-FIRST
-> inventory (27 pieces: contract · vendored deps · AAA test stack · potPolicy/merkle/rulesHash
-> tooling · THE ANTI-FARM LAWS as an owned slice · executor/sealer runner · pot read-model ·
-> delta windows · pot API · own-row claimStatus · operator dispute route · alarms · MEMBER+founder
-> bell kinds · heartbeat · admin Rail 02 with next-step engine + approve→fund flow · wallet-act
-> modules · GOAL config · /season HERO + money board + PUBLIC pending-round state · home+member ·
-> ONE featureStatus flip · deploy params · interim authority · governance · truth floor · scope
-> fence · docs discipline) + **the 14-slice plan (S3-0…S3-12 + a WATCH item): exactly TWO deploys
-> (the dark batch S3-8 + the activation S3-11), exactly ONE flip (`seasonBounty`, in the activation
-> commit), TWO wireframe gates (A: admin Rail 02 · B: front pot-live in 4 temporal states), the
-> founder's money-sheet seal at S3-9 before the rehearsal.** The critic caught 4 HIGH gaps now owned as
-> slices (member bell — a member could be paid and never told · the anti-farm laws were ownerless ·
-> the public pending-round verification state · the AWAITING SEAT projected share §0.18) + the
-> season-rules rollover alarm (the rail would have stalled silently at every era boundary). Four
-> polish rulings recorded IN the spec: the admin one-glance recompute verdict (the PUBLIC recomputes
-> fully from the FULL-ADDRESS published file — see the ruling below) ·
-> auto-close-on-drain ADOPTED · honest TWO recurring founder acts (funding + one rules signature
-> per season) · timer getters + the deploy-param sheet (72h/72h/7d/14d/2y — a 48h proposal REFUSED
-> as a frozen-spec breach).
-> **⚡ TWO FOUNDER RULINGS (2026-07-24, same evening — both swept through spec + plan + harvest
-> §0.14-D + SETTLED_RULES 8-①, ANSWERED FOREVER):**
-> **① "ON MONTRE — sur la blockchain tout est visible."** The "address-free published file"
-> reflex the lenses re-invented is DEAD (it had resurfaced from harvest §0.14-D — now
-> superseded in place). Wallet addresses are PUBLIC chain data; the round's published file
-> carries FULL `(rank, address, XP, amount)` rows → ANYONE rebuilds the Merkle tree and
-> verifies the root permissionlessly (Merkl-grade — a STRONGER trust model). Short form stays a
-> RENDERING convention (readability, never concealment); the red line is name/alias/email ONLY.
-> No agent ever re-invents an address-hiding requirement on chain data.
-> **② "ON DÉPLOIE DIRECTEMENT SUR MAINNET."** The Fuji testnet detour is DROPPED (8-① venue
-> amended in place). Rehearsal = the MAINNET-FORK rehearsal (anvil fork, real USDC + chain
-> state, founder's acts on the real console screens via the rig) + the MAINNET CANARY after
-> deploy (tiny « Engager », one real round end-to-end on Snowtrace, phone-veto drill) → then
-> Season-1 scale funding. All other precautions stay maximal (invariants · Halmos · mutation ·
-> static analysis · post-deploy verification before acceptOwnership).
-> ✅ **FOURTH ACT DONE — THE `.sol` EXISTS AND IS GREEN (S3-0 partial + S3-1).**
-> `contracts/src/MeritDistributor.sol` written byte-exact from the frozen spec (pragma 0.8.28,
-> OZ v5.6.1); **36/36 core tests PASS first-run** (`test/MeritDistributor.t.sol`): budget fence
-> bounds an inflated root · seal root structurally unclaimable · no global lockout · batch
-> skips a blacklisted leaf + pays the rest, pull intact · veto/activate windows never overlap ·
-> close round pays committed+carryover, terminal at activation, revocable while pending ·
-> withdraw can never touch committed, one-announcement-one-withdraw · stray→reserve never the
-> pot · pause extends expiry + permissionless unpause after MAX_PAUSE · conservation asserted
-> throughout. **S3-1 realization notes in the .sol header** (arbiter calls): `RoundClass
-> {INTERIM, CLOSE, FINAL}` realizes the unified postRound + adopted auto-close WITHOUT the
-> interim false-positive (INTERIM draws committed-only, never carryover, never the phase;
-> CLOSE/FINAL pay committed+carryover entirely and end the season) · pausedSnapshot at
-> ACTIVATION · fund(RESERVE) requires seasonId==0 · openSeason does NOT require prev-CLOSED
-> (per-season committed already quarantines; zero-pot seasons stay honestly OPEN). Deps
-> VENDORED + COMMITTED in-repo (forge-std 6e8c4a9 · OZ v5.6.1 · murky 991e371, slimmed —
-> an immutable money contract's audit target reproducible offline). ✅ NO DEPLOY.
-> ✅ **FIFTH ACT — S3-2 THE ADVERSARIAL NET LANDS GREEN (54/54, commit `4b9a856`):**
-> **stateful invariants** (bounded BountyHandler + INDEPENDENT ghost ledger, 25k calls each;
-> green profile = 50k): conservation+ghost cross-check · balance ground truth · Σcommitted[s]
-> ==totalCommitted · the carryover-inclusive ratchet never falls · per-round fence · roots
-> immutable · CLOSED stays terminal — ALL HOLD under arbitrary sequences. **Murky
-> proof-forgery fuzz**: valid proofs pay exactly once; wrong-amount · stolen-proof ·
-> cross-round replay · SEAL-tree · single-hash · encodePacked · wrong-chainId ALL REJECTED.
-> **MAINNET-FORK (the venue ruling — no testnet): GREEN against the LIVE Avalanche RPC** —
-> the real Circle USDC accepted the deploy, a full cycle moved real-USDC state, batch
-> isolation held vs a reverting real-token call (pull fallback intact). **Chunk authority
-> measured: claimForBatch(50) = 5,058,834 gas (~101k/leaf)** — 50 confirmed the executor
-> default. Rail-02 copy re-trued same session (`de4c8b7`, guards 590 green; the corrected
-> sentences shown to the founder on screen).
-> ✅ **S3-2 GREEN-GATE MILESTONES BANKED:** the OFFICIAL §9[b] invariant run passed —
-> **8/8 invariants × 50,000 runs × depth 25 = 1,250,000 calls each, ZERO failures** (298s;
-> conservation · aggregate · never-falls ratchet · per-round fence · root immutability ·
-> terminality · balance ground truth all held under 1.25M randomized sequences). **Slither
-> 0.11.5: 0 high / 0 medium** — 3 benign findings triaged in writing
-> (`contracts/analysis/slither-triage.md`). **guard-prod-purity BLOCKING + green** (founder
-> ruling: test code structurally impossible to confuse with production; 6 bench files
-> bannered ⛔ TEST-ONLY; src/ imports OZ only — commit `4f0d82a`). Halmos: Windows wheel gap
-> under py3.12, retry path recorded (py3.11/WSL); aderyn + mutation ride the same later pass.
-> ✅ **SIXTH ACT — S3-3 THE TOOLING LANDS (commit `7fe6cd7`):** `src/season/` —
-> **potPolicy** (the ONE share authority; hashed algorithm text: rank
-> XP→attaining-block→SEAT · depth max(1,⌊eligible/10⌋) floor-trimmed · Option-A stretch
-> renormalized by bigint largest-remainder, **Σ==budget EXACT**; typed refusals: floor pair
-> unset · `ANTI_FARM_IMPLEMENTED` false (new seasonConfig gate, flips only in S3-4) ·
-> no-seat pays nothing) · **season-merkle v2** on the canonical OZ StandardMerkleTree lib
-> (new dep; refuses Σ>budget AND Σ<budget, dupes, >uint128) · **rulesHash** (canonical
-> keccak; refuses any null founder field — every hashed input is a MAINNET blocker) ·
-> **publishedFile** (FULL-ADDRESS public artifact, "on montre"; its keccak rides
-> PendingRound.uri). **THE DIFFERENTIAL FIXTURE IS GREEN BOTH SIDES**: the production JS
-> builder's proofs claim byte-for-byte on the REAL contract deployed at the pinned address
-> (56/56 forge suite incl. `MerkleFixture.t.sol`); drift double-guarded (server regenerate+
-> diff · Foundry re-verify). **`season-merkle:guard` (1,239 checks) joined the BLOCKING api
-> chain — the full chain re-ran GREEN end-to-end.** ✅ NO DEPLOY (nothing routed yet).
-> ✅ **SEVENTH ACT — S3-4 THE ANTI-FARM LAWS BUILT + ATTACK-TESTED (commit `1629ce6`):**
-> `src/season/antiFarm.ts` — the §0.17-⑤ laws as a PURE money-window filter
-> (recognition NEVER gated, rank never drops): ① burn/mint HOLDING PERIOD (wash-loop dead;
-> unknown acquisition = excluded fail-closed) · ② referral FLOOR-GATE (the referred wallet
-> clears the founder's pair; unknown context = excluded). **⛔ NO REFERRAL CAP — FOUNDER
-> RULING 2026-07-24 ("pas de plafond — laisser travailler les gens; on n'est pas cons de
-> refuser de l'argent, on est un business"): every floor-clearing conversion is a REAL
-> qualifying purchase = revenue; the admin intelligence layer (la crème de la crème) reads
-> the UNCAPPED data. Harvest §0.17-⑤ cap clause superseded in place; the guard PINS no-cap
-> (15 clean conversions ALL count — a re-added cap goes RED). Never re-propose one.**
-> `ANTI_FARM_IMPLEMENTED` = TRUE (= the laws exist + are enforced; potPolicy STILL refuses
-> rounds while the floor pair is null — the founder's S3-9 gate). Knob = `ANTI_FARM_PROPOSED`
-> (7-day holding), his to confirm at S3-9. Per-attack bench in the blocking guard (full
-> chain green): wash-loop · no-cap pin · floor gates · end-to-end antiFarm→potPolicy
-> exact-sum. Engraved notes retrued (readmodel line-378 + both seasonConfig deferrals).
-> ✅ NO DEPLOY (filter consumed by nothing routed yet).
-> ✅ **EIGHTH ACT — S3-5a THE MONEY-WINDOW SPINE (commit `3e08eb4`):**
-> `deltaWindows.ts` — the half-open (prevSnapshot, currentSnapshot] window over the XP
-> trail, contiguous by construction (PROVEN: consecutive windows never share an event —
-> the double-pay class dead BEFORE any payout root exists); enrichment fail-closed
-> (acquisition history for the holding period · referred purchase + XP-at-snapshot for the
-> floor-gate); season-close = sealingBlock−1 (snipe-proof; the trailing-XP exception with
-> zero special-casing); `nextWindow()` = the ONE window definition executor+dry-run share.
-> `seasonPotReadmodel.ts` — the contract's PURE event-only server twin (never balanceOf;
-> mirrors the CLOSE/FINAL distinct draw + revoke carryover-merge + withdrawal-consumes-
-> announcement EXACTLY; impossible transitions throw → lastGood); publicPot(s)=committed[s]
-> +open-reserved+carryover; DARK until the first committed credit; THE ALARMS: conservation
-> · pending-activatable · unswept-past-expiry · round-below-era · next-season-rules-missing
-> (the silent-stall fix). `buildSeasonReadModel` gains the SERVER-ONLY `moneyContext`
-> (additive — nothing public moves). Vocabulary compliance: the protocol-time guard went
-> RED on my draft (the block-time cache vocabulary is BANNED outside backbone) → season
-> domain renamed actAtSec/lastAcquiredAtSec/timeByBlock (the receiptLookup precedent) —
-> the FULL api chain is GREEN end-to-end. Guard now **1,278 checks**. ✅ NO DEPLOY.
-> **NEXT ACT — S3-5b (the served wiring):** /api/season pot object (DARK) + shared
-> PotFragment type · own-row claimStatus enum · operator dispute route (server recompute
-> verdict) · interim-announcement registry (founder_root) · GOAL config (non-hashed +
-> the GOAL-not-in-rulesHash tests) · member+founder bell kinds — gate: the FR bell
-> sentences FULL TEXT on the founder's screen + guard-forbidden-copy amended same commit
-> (§8-③). Then: mockup re-emission → WIREFRAME A → the money sheet at S3-9.
-> **DESIGN DISCIPLINE (founder mandate 2026-07-24, STANDING for all S3 contracts):** several
-> INDEPENDENT senior AAA lenses + an ADVERSARIAL pass BEFORE any `.sol` is frozen; Claude arbitrates
-> scope/slicing/ship. Guardrails every time: merit≠chance · USDC≠SYN · company money≠70/20/10 ·
-> seat-tier not dates · fail-closed · "names lie, read the `.sol`".
-> ⚠ **`docs/reference/season-merkle.reference.ts` is the ORIGIN format and is
-> SUPERSEDED** — it carries a ⛔ banner; never copy its leaf into S3.
-> **§8-⑧: the rail is AUTONOMOUS — it pays really, on its own, the moment the
-> contract is live on mainnet and funded. There is NO legal gate anywhere.**
+> ## (b) IN FLIGHT — S3 (the S2 arc is closed; nothing else is open)
+> **THE HANDOFF DASHBOARD (2026-07-24 end-of-session · GitHub = the source of truth —
+> every line below is IN `main` at `4eaac2f`, tree clean, local==origin verified):**
 >
-> ## (c) FOUNDER-PENDING — the S3-GATE SUBSET
-> *(the full open set is `docs/direction/BACKLOG.html` → « Les décisions qui
-> n'appartiennent qu'à toi » — this is only what S3 needs.)*
-> 🔴 **« Engager au pot » amount + cadence** (his one recurring act) ·
-> 🔴 **the XP weight table** to confirm (introduction 500 · purchase 200
-> once/season · burn 150 · mint 100 · quiz 25) · 🔴 **FOOTPRINT XP at
-> capital-rung crossings** (+100/rung proposed 2026-07-23, unfarmable — decide
-> WITH the weight table) · 🔴 **the floor pair** (min qualifying purchase for a
-> referral to credit · min XP to enter the paid bands) + the $20 min-cash floor ·
-> 🔴 **AW-5**: name the archive payment wallet `0xe417…d56f` · 🔴 **SwapRail**:
-> developer fee % · fee pipe address · thirdweb account (~$99/mo) · placement ·
-> 🔴 **EN public copy** at each remaining surface gate.
+> **EIGHT ACTS DONE, all commits in `git log` (the detail lives THERE, not here):**
+> ① Foundry toolchain spike GREEN (`cd60b8f`) · ② the CONTRACT DESIGN FROZEN —
+> `docs/reference/MERITDISTRIBUTOR_CONTRACT_SPEC.md` v4, 6 lenses + 5 adversarial rounds +
+> money-safety hunt, 0 blocking (`625c6fa`) · ③ the FULL-SYSTEM MASTER PLAN arbitrated —
+> `docs/reference/S3_SEASON_CASH_RAIL_MASTER_PLAN.md`, 27-piece inventory, 14 slices, TWO
+> deploys, ONE featureStatus flip, TWO wireframe gates (`625c6fa`, gaps folded `0c03272`) ·
+> ④ `contracts/src/MeritDistributor.sol` BORN GREEN 36/36 first-run, deps vendored+committed
+> (`f036419`) · ⑤ the ADVERSARIAL NET — stateful invariants (OFFICIAL §9[b] run: 8/8 ×
+> 50,000 runs × depth 25 = 1.25M calls each, ZERO failures) + Murky proof-forgery fuzz +
+> REAL-USDC MAINNET-FORK green vs the live RPC + chunk authority measured (50 leaves =
+> 5,058,834 gas) (`4b9a856`,`ffc2ccf`) + slither 0.11.5: 0 high/0 med, triaged in
+> `contracts/analysis/slither-triage.md`, + guard-prod-purity BLOCKING (`4f0d82a`,`6090bb7`) ·
+> ⑥ the TOOLING — potPolicy (THE share authority) · season-merkle v2 · rulesHash ·
+> publishedFile (FULL addresses) · THE DIFFERENTIAL FIXTURE GREEN BOTH SIDES (JS proofs
+> claim byte-for-byte on the real contract at the pinned address) (`7fe6cd7`) · ⑦ the
+> ANTI-FARM LAWS built + attack-tested, `ANTI_FARM_IMPLEMENTED`=true (`1629ce6`; the no-cap
+> ruling swept `94b03d9`+`a7fc66a`) · ⑧ the MONEY-WINDOW SPINE — deltaWindows (contiguity
+> PROVEN, no-double-pay) + seasonPotReadmodel (the contract's event-only server twin +
+> the 5 alarms) + the readmodel's server-only `moneyContext` (`3e08eb4`).
+>
+> **⚡ THE 2026-07-24 FOUNDER RULINGS (ANSWERED FOREVER — never re-open, never re-propose):**
+> 🔒 **MAINNET-DIRECT, NO FUJI** — stated TWICE verbatim in SETTLED_RULES 8-① («on déploie
+> directement sur mainnet» · «je ne veux pas Fuji»); rehearsal = anvil MAINNET-FORK +
+> the MAINNET CANARY (tiny « Engager », one real round end-to-end, phone-veto drill) ·
+> 🔒 **ON MONTRE** — full addresses in published files (chain data is public; short-form =
+> readability only; red line = name/alias/email; harvest §0.14-D superseded in place) ·
+> 🔒 **NO REFERRAL CAP** («pas de plafond — on est un business»; harvest §0.17-⑤ cap clause
+> superseded; the guard PINS it — a re-added cap = RED) · 🔒 claim window **2 YEARS** ·
+> 🔒 owner = **single founder key NOW → 2-of-3 Safe EARLY** (his call; on-chain
+> emergencyClaim REJECTED unanimously) · 🔒 per-season `committed[]` · 🔒 the name
+> **MeritDistributor** (label « Season Bounty Pool ») · deploy params proposed
+> 72h/72h/7d/14d/2y (he confirms in ONE line at mainnet).
+>
+> **THE LAW FILES (a fresh session reads these BEFORE any S3 work):**
+> `MERITDISTRIBUTOR_CONTRACT_SPEC.md` (FROZEN — supreme on the contract; §7 = the
+> resolution ledger) · `S3_SEASON_CASH_RAIL_MASTER_PLAN.md` (the execution law — slices,
+> gates, deploy verdicts, founder moments) · the harvest stays the WHY only.
+> ⚠ `docs/reference/season-merkle.reference.ts` = ⛔ SUPERSEDED origin format, never S3.
+> **§8-⑧ stands: the rail is AUTONOMOUS at mainnet+funded — NO legal gate anywhere.**
+>
+> **GATES AT HANDOFF (all verified this session):** forge 56/56 · invariants 8×50k zero-fail
+> · mainnet-fork vs live RPC green · slither 0 high/med · guard-prod-purity PASS · api chain
+> GREEN end-to-end incl. season-merkle:guard **1,278 checks** (potPolicy exact-sum ×200 ·
+> anti-farm per-attack · window contiguity · pot-fold lifecycle · fixture drift) · studio
+> guards green at `de4c8b7` (feature-truth 590) · typechecks clean.
+> **GREEN-GATE ITEMS STILL OPEN:** halmos (blocked on this box — safe-pysha3 wheel fails
+> under managed py3.12; path recorded: `uv tool install --system-certs --python 3.11 halmos`
+> or WSL; **uv 0.11.32 + slither 0.11.5 ARE installed** via `--system-certs` — this box's
+> TLS interception, recipes in `contracts/README.md`) · aderyn · mutation ≥90% · the
+> MAINNET-FORK rehearsal (2 season lifecycles) · phase-2 fixture re-verify vs the LIVE
+> address · the founder's signed deploy + canary.
+>
+> **➡ THE NEXT ACT — S3-5b (the served wiring):** the `/api/season` pot object (DARK,
+> `publicPotRaw` headline + `announcedRound` + `servedClaimExpiry` + `sealAnchorTx` masked)
+> + ONE shared PotFragment type (ends the 4-way interface re-declaration) · the own-row
+> `claimStatus` enum `none|round-pending|paid|skipped|expired-recycled` (NEVER a
+> "claimable" button-state — zero-click law) + the hoisted single /member fetch · the
+> operator dispute route (SERVER recompute MATCH/MISMATCH verdict) · the
+> interim-announcement registry (founder_root; executor posts ONLY off an announcement
+> ≥48h old) · the GOAL config (non-hashed founder_root; tests assert GOAL absent from the
+> ABI AND the rulesHash input set) · member + founder BELL KINDS.
+> **S3-5b's GATE:** the FR bell sentences FULL TEXT on the founder's screen (content rule)
+> + guard-forbidden-copy + CANON_PROTOCOL_LANGUAGE §5 amended in the SAME commit (§8-③
+> "the guard follows the system") + typecheck ×2 + api guards + the fail-closed proof
+> (a payload without pot renders today's surfaces byte-identically).
+> **THEN:** S3-6 (PREREQUISITE: the docs/design/seasons/ mockups RE-EMITTED corrected —
+> §0.14-E incl. the «Pendant ton absence» fix — THEN Wireframe Gate A → the admin Rail 02
+> build) → S3-7 (Wireframe Gate B, 4 temporal states) → S3-8 DEPLOY #1 (the dark batch) →
+> S3-9 the founder's MONEY-SHEET SEAL → S3-10 fork rehearsal → S3-11 MAINNET + the
+> activation commit (the ONLY `seasonBounty` flip) → S3-12 the canary + first funding.
+>
+> **DEPLOY BACKLOG (recounted at handoff):** the pre-S3 docs commits (`2e3b6a3`,`0be9308`,
+> `b72ee9e`) + EVERY S3 commit `cd60b8f`→`4eaac2f`. **ONE commit is user-visible:
+> `de4c8b7`** (Rail-02 admin copy retrue — BATCHABLE, fail-closed). Everything else =
+> contracts/ (not served) + server modules routed by NOTHING yet + docs. ✅ **NO DEPLOY
+> pending**; the whole batch rides S3-8 (DEPLOY #1), per the master plan.
+> **⏰ THE STANDING WATCH:** the served LIFETIME board + past-seasons archive ship BEFORE
+> seats approach 333 (else the /season All-time tab lies at season 2) — OPEN_QUEUE carries
+> it; only the founder closes it.
+>
+> ## (c) FOUNDER-PENDING — the S3-GATE SUBSET, placed at their moments
+> *(the full open set is `docs/direction/BACKLOG.html`; the master plan §3 places each.)*
+> **AT THE WIREFRAME GATES (before any visual code):** 🔴 approve WIREFRAME A (admin Rail
+> 02 — after the corrected mockup re-emission) · 🔴 approve WIREFRAME B (front pot-live in
+> its 4 temporal states) + 2 look calls (band labels visible vs tint-only · GOAL public
+> day-one vs admin-first) · 🔴 the S3-5b FR bell sentences (full text on screen).
+> **AT S3-9 — THE MONEY-SHEET SEAL (everything hashes into `season1RulesHash`; a null
+> blocks MAINNET, never the build):** 🔴 « Engager au pot » S1 amount + cadence ·
+> 🔴 the GOAL figure · 🔴 the XP weight table confirm (introduction 500 · purchase 200
+> once/season · burn 150 · mint 100 · quiz 25) · 🔴 FOOTPRINT XP at capital-rung crossings
+> (+100/rung proposed, decide WITH the table) · 🔴 the floor pair + the $20 min-cash
+> confirm · 🔴 the 7-day burn/mint HOLDING PERIOD confirm (`ANTI_FARM_PROPOSED`) ·
+> 🔴 per-source caps · 🔴 the interim-policy SENTENCE (even "none planned" must be
+> written) · 🔴 the hors-concours list confirm.
+> **BEFORE S3-10/11 (mainnet):** 🔴 name the 2 co-signers of the 2-of-3 Safe + create it ·
+> 🔴 approve the EXECUTOR/SEALER hot keys as Replit secrets + fund their AVAX ·
+> 🔴 confirm the timer line 72h/72h/7d/14d/2y · then HIS signatures: the deploy ·
+> acceptOwnership · the Safe transfer · the canary + first funding (S3-12).
+> **STANDING (not S3-gating):** 🔴 AW-5: name the archive payment wallet `0xe417…d56f` ·
+> 🔴 SwapRail (fee % · pipe address · thirdweb ~$99/mo · placement) · 🔴 EN public copy
+> at each remaining surface gate.
 >
 > ---
 >
