@@ -128,7 +128,7 @@ export function applyCurve(
       ok: false,
       refusal: "anti-farm-unbuilt",
       reason:
-        "§0.17-⑤ anti-farm laws (holding period · referral window cap · floor-gated credit) are not built — S3-4 flips the flag",
+        "§0.17-⑤ anti-farm laws (holding period · floor-gated credit; NO referral cap — founder ruling 2026-07-24) are not built — S3-4 flips the flag",
     };
   }
   if (budgetRaw <= 0n) {
