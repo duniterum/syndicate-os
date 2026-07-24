@@ -230,6 +230,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   verbatim-equal to the registry "/" (the S2c-② miss, closed structurally) ·
 >   the MemberAccess lifecycle exemption now PAID by a chassis check (the
 >   wallet cards' own labels) · stale guard comments re-trued.
+> - **🏆 THE PRE-S3 AUDIT SEALED IN PROD (cycle `6097324`, Replit green
+>   2026-07-24, founder-pasted):** /api/auth/season-standing anonymous → S1 all
+>   fields null + honest reason, zero leak · the no-seat own-row fix serves
+>   (the code is in the prod build, skeleton checks 4/4; the SIGNED no-seat
+>   render = the founder's own click — Replit stated that limit plainly) ·
+>   og:description AND twitter:description carry the Season-1 text verbatim,
+>   identical to each other and to the registry (the S2c-② miss closed
+>   structurally, seo 541) · byte-identity ×2 · routes 200 · /studio 404 ·
+>   season LIVE 15 · feed 86 · engine ok=2 (2 partials self-repaired via the
+>   persisted cursor), block advancing, 6/6 units.
 > - **⚖ THE AUTONOMOUS PAYMENT RULING [this commit] (founder, 2026-07-24 —
 >   SETTLED_RULES §8-⑧):** THE LEGAL GATE IS REMOVED FROM EVERYWHERE — legal
 >   review is the founder's own business matter, never a system gate, never a
@@ -237,6 +247,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   contract is live on mainnet and funded (§0.15). Swept from every living
 >   doc/list/config; frozen archives superseded by §8-⑧. NO agent ever
 >   re-inserts a legal gate — answered forever.
+>   **✅ NO DEPLOY (verified, not assumed):** commit `2e3b6a3` touches docs,
+>   code COMMENTS, BACKLOG.html (a repo doc, never served) and the
+>   featureStatus `where` string — and `FEATURE_STATUS` is imported by NO
+>   component (only the build-time guard reads it), so nothing user-visible
+>   changes. It rides whatever cycle S3 ships. **DEPLOY BACKLOG: `2e3b6a3`
+>   only, harmless undeployed.**
 > - **NEXT:** S3 — the Foundry workspace + SeasonBountyPool + the cash rail per
 >   §0.17 (the founder's money decisions gate it: « Engager au pot » amount +
 >   cadence · XP weights + footprint-rung XP · the floor pair). S3 OPENS WITH:
