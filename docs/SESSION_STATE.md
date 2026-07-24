@@ -161,12 +161,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > (56/56 forge suite incl. `MerkleFixture.t.sol`); drift double-guarded (server regenerate+
 > diff · Foundry re-verify). **`season-merkle:guard` (1,239 checks) joined the BLOCKING api
 > chain — the full chain re-ran GREEN end-to-end.** ✅ NO DEPLOY (nothing routed yet).
-> **NEXT ACT — S3-4 (the anti-farm laws — the hard prerequisite of ANY paid round):**
-> burn/mint holding period (the seasonReadmodel engraved promise) · referral per-wallet-
-> per-window cap · floor-gated referral credit · per-attack tests (receipt-split, wash-loop,
-> referral farm) · `ANTI_FARM_IMPLEMENTED` flips true ONLY there. Then S3-5 (server dark-
-> wiring). The founder-visible moments unchanged: mockup re-emission → WIREFRAME A → the
-> money sheet at S3-9.
+> ✅ **SEVENTH ACT — S3-4 THE ANTI-FARM LAWS BUILT + ATTACK-TESTED (commit `1629ce6`):**
+> `src/season/antiFarm.ts` — the three §0.17-⑤ laws as a PURE money-window filter
+> (recognition NEVER gated, rank never drops): ① burn/mint HOLDING PERIOD (wash-loop dead;
+> unknown acquisition = excluded fail-closed) · ② referral FLOOR-GATE (the referred wallet
+> clears the founder's pair; unknown context = excluded) · ③ referral WINDOW CAP (earliest
+> kept, deterministic). `ANTI_FARM_IMPLEMENTED` = TRUE (= the laws exist + are enforced;
+> potPolicy STILL refuses rounds while the floor pair is null — the founder's S3-9 gate).
+> Knob values = `ANTI_FARM_PROPOSED` (7-day holding · cap 10/window), his to confirm at
+> S3-9. Per-attack bench in the blocking guard (now 1,255 checks; full chain green):
+> wash-loop · referral-farm-of-15→earliest-10 · floor gates · end-to-end antiFarm→potPolicy
+> exact-sum. Engraved notes retrued (readmodel line-378 + both seasonConfig deferrals).
+> ✅ NO DEPLOY (filter consumed by nothing routed yet).
+> **NEXT ACT — S3-5 (server dark-wiring):** delta-window standings (through antiFarm) ·
+> seasonPotReadmodel (③b6a, event-only) + the alarm set · /api/season pot object (DARK) ·
+> own-row claimStatus · operator dispute route (server recompute) · interim-announcement
+> registry · GOAL config (non-hashed) · member+founder bell kinds — gate: FR bell sentences
+> FULL TEXT on the founder's screen + guard-forbidden-copy amended same commit (§8-③).
+> Then the founder-visible moments: mockup re-emission → WIREFRAME A → the money sheet.
 > **DESIGN DISCIPLINE (founder mandate 2026-07-24, STANDING for all S3 contracts):** several
 > INDEPENDENT senior AAA lenses + an ADVERSARIAL pass BEFORE any `.sol` is frozen; Claude arbitrates
 > scope/slicing/ship. Guardrails every time: merit≠chance · USDC≠SYN · company money≠70/20/10 ·
