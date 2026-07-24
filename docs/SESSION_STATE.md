@@ -138,11 +138,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > measured: claimForBatch(50) = 5,058,834 gas (~101k/leaf)** — 50 confirmed the executor
 > default. Rail-02 copy re-trued same session (`de4c8b7`, guards 590 green; the corrected
 > sentences shown to the founder on screen).
-> **NEXT ACT — S3-2 close-out + S3-3:** slither+halmos via uv --system-certs (managed
-> Python 3.12; this box's TLS interception documented — install in progress) · mutation
-> testing · the 50k green-profile invariant run · then S3-3 (season-merkle v2 tooling +
-> potPolicy + the differential fixture) per the master plan. The founder-visible next
-> moments: WIREFRAME A (admin) after the mockup re-emission, the money sheet at S3-9.
+> ✅ **S3-2 GREEN-GATE MILESTONES BANKED:** the OFFICIAL §9[b] invariant run passed —
+> **8/8 invariants × 50,000 runs × depth 25 = 1,250,000 calls each, ZERO failures** (298s;
+> conservation · aggregate · never-falls ratchet · per-round fence · root immutability ·
+> terminality · balance ground truth all held under 1.25M randomized sequences). **Slither
+> 0.11.5: 0 high / 0 medium** — 3 benign findings triaged in writing
+> (`contracts/analysis/slither-triage.md`). **guard-prod-purity BLOCKING + green** (founder
+> ruling: test code structurally impossible to confuse with production; 6 bench files
+> bannered ⛔ TEST-ONLY; src/ imports OZ only — commit `4f0d82a`). Halmos: Windows wheel gap
+> under py3.12, retry path recorded (py3.11/WSL); aderyn + mutation ride the same later pass.
+> **NEXT ACT — S3-3 (the tooling):** season-merkle v2 (buildSealRoot/buildPayoutRoot on the
+> frozen leaf) · potPolicy (the ONE share authority: Option A curve · depth law · the
+> XP→attaining-block→seat-number tie-break hashed AS TEXT · typed refusals) · the two-phase
+> differential fixture (Σ>budget AND Σ<budget negatives) · verify CLI · season-merkle.guard.
+> Then the founder-visible moments: mockup re-emission → WIREFRAME A (admin) → the money
+> sheet at S3-9.
 > **DESIGN DISCIPLINE (founder mandate 2026-07-24, STANDING for all S3 contracts):** several
 > INDEPENDENT senior AAA lenses + an ADVERSARIAL pass BEFORE any `.sol` is frozen; Claude arbitrates
 > scope/slicing/ship. Guardrails every time: merit≠chance · USDC≠SYN · company money≠70/20/10 ·
