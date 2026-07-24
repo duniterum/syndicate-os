@@ -1,10 +1,15 @@
 // SPDX-License-Identifier: MIT
+// ⛔ TEST-ONLY — the crash-test dummy, NEVER deployed, NEVER referenced by src/.
+// Production is src/MeritDistributor.sol alone; at the real deploy it binds the REAL
+// Circle USDC (Avalanche C-Chain 0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E) and the
+// Snowtrace-verified source will contain ZERO test files. guard-prod-purity.sh enforces
+// this separation as a RED BUILD, forever.
 pragma solidity 0.8.28;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-/// @notice 6-decimal USDC stand-in with a Circle-style blocklist for unit tests.
-///         (Fork tests against the REAL mainnet USDC come with the S3-2 stack.)
+/// @notice 6-decimal USDC stand-in with a Circle-style blocklist, used ONLY on the test
+///         bench (the fork suite exercises the REAL mainnet USDC).
 contract MockUSDC is ERC20 {
     mapping(address => bool) public blocked;
 

@@ -322,7 +322,10 @@ is impossible by construction.
 `seasonTerminal` · `pauseNeverBurnsWindow` · `balanceGeUnclaimed` (fork, real USDC:
 `balanceOf ≥ reserve+totalCommitted+roundReserved+carryover`) · `callDistribution` meta-invariant.
 
-**GREEN gate (engineering only — §8-1):** all tests green · invariants pass, zero failing corpus ·
+**GREEN gate (engineering only — §8-1):** **`guard-prod-purity` green** (founder ruling
+2026-07-24: test code impossible to confuse with production — `src/` imports OZ ONLY, zero test
+vocabulary; every bench file bannered ⛔ TEST-ONLY; the Snowtrace-verified source will contain
+zero test files) · all tests green · invariants pass, zero failing corpus ·
 branch 100% money+access, line ≥95% · **Halmos symbolic proof** of conservation/ratchet/aggregate ·
 **Murky in-Solidity proof-forgery fuzzing** + the checked-in JS differential fixture (with the
 Σ>budget AND Σ<budget negative cases) · **mutation testing ≥90% killed** on money+access · every

@@ -391,8 +391,8 @@ contract MeritDistributor is Ownable2Step, Pausable, ReentrancyGuard {
         if (seasonPhase[seasonId] != SeasonPhase.OPEN) revert PhaseWrong();
         if (rounds[roundId].root != bytes32(0)) revert RoundExists();
 
-        uint128 fromCommitted;
-        uint128 fromCarry;
+        uint128 fromCommitted = 0;
+        uint128 fromCarry = 0; // INTERIM never draws carryover — stays 0 by design
         if (class == RoundClass.INTERIM) {
             if (budget > committed[seasonId]) revert InsufficientAvailable();
             fromCommitted = budget;

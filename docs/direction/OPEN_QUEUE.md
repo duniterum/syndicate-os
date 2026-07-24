@@ -44,10 +44,14 @@
 > master plan same day** (mockup re-emission prerequisite before gates A/B · the §0.18-④
 > seal-is-the-deadline board caption · the §8-③ guard-amendment lines on S3-5/7 · the §0.6 TAX
 > line · podium $ cells · the seat-number third tie-break key · the §0.8 anti-stress copy).
-> **⏰ STANDING WATCH TRIGGER (track EVERY session until it fires):** the served LIFETIME board
-> + past-seasons archive MUST ship BEFORE seats approach 333 (the era-1 seal) — otherwise the
-> live /season All-time tab starts lying at season 2. Lives in the master plan §1-㉖ + the WATCH
-> row; only the founder closes it.
+> **⏰ STANDING WATCH TRIGGER (track EVERY session until it fires — founder-clarified wording
+> 2026-07-24):** Season 1 runs from the first member to seat 333 inclusive; season 2 opens at
+> the era seal. TODAY the /season "All-time" tab equals "This season" (season 1 IS all of
+> history). The day season 2 opens, "All-time" must show the CROSS-SEASON CUMULATIVE (S1+S2
+> XP added per builder) — and that server-side aggregation + the past-seasons archive are NOT
+> built yet. So: **build them BEFORE the seat count reaches 333**, or the All-time tab shows a
+> false figure from season 2's first day. Lives in the master plan §1-㉖ + the WATCH row; only
+> the founder closes it.
 > **⚡ RULING RE-CONFIRMED, FINAL (stated twice): MAINNET-DIRECT, NO FUJI, no testnet step ever**
 > (8-① venue text now quotes the founder verbatim — ANSWERED FOREVER).
 >

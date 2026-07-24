@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+// ⛔ TEST-ONLY — the bench, never deployed. Production = src/MeritDistributor.sol (binds the REAL Circle USDC at deploy). guard-prod-purity.sh enforces the separation.
 pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
