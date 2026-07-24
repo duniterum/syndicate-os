@@ -376,7 +376,7 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
     );
   }
   notes.push(
-    "burn-act holding-period condition (§0.17-⑤) arrives with the bounty slice — recognition-only until then.",
+    "burn-act recognition credits unconditionally by design; the §0.17-⑤ holding-period law gates the MONEY window in src/season/antiFarm.ts (S3-4).",
   );
 
   // --- QUEST LADDERS (feeder-law metrics; bonus XP at the crossing act) ---

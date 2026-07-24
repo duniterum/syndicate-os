@@ -71,7 +71,7 @@ export const XP_SOURCES: readonly XpSourceDef[] = [
     axis: "steward",
     proofClass: "chain",
     xp: 150,
-    law: "per Proof of Burn act; the §0.17-⑤ holding-period condition arrives with the bounty slice (recognition-only until then, honest note in the model).",
+    law: "per Proof of Burn act; recognition credits unconditionally — the §0.17-⑤ holding-period law gates the MONEY window in src/season/antiFarm.ts (S3-4; wash-loop dead).",
   },
   {
     key: "archive-mint",
@@ -180,11 +180,12 @@ export const MIN_PRIZE_USDC_DEFAULT = 20;
  * money rail REFUSES to open a round while either is null (fail-closed) —
  * recognition XP flows regardless.
  */
-/** §0.17-⑤ ANTI-FARM DEFERRAL (final audit 2026-07-23): the referral XP
- *  per-wallet-per-window CAP and the floor-pair gate on the CREDIT path are
- *  NOT implemented in the V1 recognition engine — both MUST land with the S3
- *  money rail before any round pays (recognition-only until then; the S3
- *  policy module refuses to open a round while this note stands). */
+/** §0.17-⑤ STATUS (retrued S3-4, 2026-07-24): the referral CAP and the
+ *  floor-pair gate are BUILT in src/season/antiFarm.ts and enforced on the
+ *  MONEY window (per-attack tested in the blocking guard). The V1 recognition
+ *  engine stays deliberately ungated (rank never drops). The FIGURES below are
+ *  the founder's alone (S3-9): while either is null, potPolicy refuses any
+ *  paid round — fail-closed. */
 export const ELIGIBILITY_FLOOR = {
   /** Minimum qualifying purchase (whole USDC) for a referred wallet to
    *  credit its introducer toward BOUNTY eligibility. */
@@ -194,10 +195,16 @@ export const ELIGIBILITY_FLOOR = {
 } as const;
 
 /**
- * THE ANTI-FARM GATE (§0.17-⑤ · master plan S3-4): burn/mint holding period ·
- * referral per-wallet-per-window cap · floor-gated referral credit. This flag flips
- * true ONLY in the S3-4 slice that BUILDS them (with per-attack tests). While false,
- * `potPolicy` REFUSES to compute any payout round — structurally, not by memory.
- * Recognition XP flows regardless.
+ * THE ANTI-FARM GATE (§0.17-⑤ · S3-4 — BUILT + attack-tested 2026-07-24):
+ * the three laws live in `src/season/antiFarm.ts` and gate the MONEY WINDOW only
+ * (recognition XP never drops — money binds to windows, §0.17-②): ① burn/mint
+ * holding period (wash-loop dead, fail-closed on unknown acquisition) ·
+ * ② referral floor-gate (the referred wallet clears the founder's floor pair) ·
+ * ③ referral per-introducer-per-window cap (earliest kept). Per-attack tests
+ * (receipt-split · wash-loop · referral farm) run in the BLOCKING
+ * season-merkle guard. The knob VALUES (`ANTI_FARM_PROPOSED`) and the floor
+ * pair remain the FOUNDER's at S3-9 — and `potPolicy` still refuses any round
+ * while the floor pair is null. True = the LAWS exist and are enforced on every
+ * money computation; it does not mean a round can open.
  */
-export const ANTI_FARM_IMPLEMENTED: boolean = false;
+export const ANTI_FARM_IMPLEMENTED: boolean = true;

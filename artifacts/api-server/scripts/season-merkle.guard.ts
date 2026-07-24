@@ -17,6 +17,11 @@ import {
   hashRuleSheet,
 } from "../src/season/rulesHash.js";
 import { buildPublishedFile } from "../src/season/publishedFile.js";
+import {
+  ANTI_FARM_PROPOSED,
+  filterForMoneyWindow,
+  type MoneyWindowEventInput,
+} from "../src/season/antiFarm.js";
 import { generateFixtureJson } from "./season-merkle-fixture.js";
 
 let checks = 0;
@@ -65,9 +70,10 @@ const rows3: PotInputRow[] = [
   ok(!r0.ok && r0.refusal === "floor-pair-unset", "config floors are null → refusal (production today)");
   const r = applyCurve(rows3, 1_000_000_000n, {
     isProjection: false,
+    antiFarmImplemented: false, // the refusal BRANCH stays enforced (config is true since S3-4)
     floorPair: { minQualifyingPurchaseUsdc: 50, minXpForBounty: 100 },
   });
-  ok(!r.ok && r.refusal === "anti-farm-unbuilt", "refuses while ANTI_FARM_IMPLEMENTED is false");
+  ok(!r.ok && r.refusal === "anti-farm-unbuilt", "the anti-farm refusal branch holds");
   const r2 = applyCurve(rows3, 1_000_000_000n, {
     isProjection: false,
     antiFarmImplemented: true,
@@ -253,6 +259,120 @@ const POOL = "0x00000000000000000000000000000000000A11cE" as `0x${string}`;
     budgetRaw: 1_000_000_000n, root: "0x" + "ab".repeat(32) as `0x${string}`, paidSlots: rowsIn,
   });
   ok(p1.fileKeccak === p2.fileKeccak, "file keccak is deterministic");
+}
+
+// ═══ 6b. ANTI-FARM (§0.17-⑤) — the PER-ATTACK bench (S3-4) ═══
+{
+  const knobs = {
+    holdingPeriodSeconds: ANTI_FARM_PROPOSED.holdingPeriodSeconds,
+    referralWindowCap: ANTI_FARM_PROPOSED.referralWindowCap,
+    floorPair: { minQualifyingPurchaseUsdc: 50, minXpForBounty: 100 },
+  };
+  const T0 = 1_700_000_000;
+  const ev = (over: Partial<MoneyWindowEventInput> & { sourceKey: MoneyWindowEventInput["sourceKey"] }): MoneyWindowEventInput => ({
+    wallet: A(500),
+    xp: 150,
+    blockNumber: 100,
+    logIndex: 0,
+    blockTimestamp: T0,
+    ...over,
+  });
+
+  // ATTACK 1 — THE WASH LOOP: buy → burn an hour later farms NOTHING; a real
+  // holder (≥ the period) counts. Unknown acquisition = fail-closed excluded.
+  const wash = filterForMoneyWindow(
+    [
+      ev({ sourceKey: "burn-act", lastAcquisitionTimestamp: T0 - 3600, logIndex: 0 }),
+      ev({ sourceKey: "burn-act", lastAcquisitionTimestamp: T0 - 8 * 24 * 3600, logIndex: 1 }),
+      ev({ sourceKey: "archive-mint", lastAcquisitionTimestamp: null, xp: 100, logIndex: 2 }),
+    ],
+    knobs,
+  );
+  ok(wash.included.length === 1 && wash.excluded.length === 2, "wash-loop: only the held burn counts");
+  ok(wash.excluded[0].reason === "holding-period", "fresh-buy burn excluded: holding-period");
+  ok(wash.excluded[1].reason === "holding-unknown", "unknown acquisition excluded fail-closed");
+  ok(wash.perWalletMoneyXp.get(A(500).toLowerCase()) === 150, "money XP = the held burn only");
+
+  // ATTACK 2 — THE REFERRAL FARM: 15 conversions in one window → the cap keeps
+  // the EARLIEST 10; below-floor referrals credit nothing toward money.
+  const farm: MoneyWindowEventInput[] = [];
+  for (let i = 0; i < 15; i++) {
+    farm.push(
+      ev({
+        sourceKey: "introduction-converted",
+        xp: 500,
+        blockNumber: 200 + i,
+        referredPurchaseUsdc: 80,
+        referredWalletXp: 250,
+      }),
+    );
+  }
+  const farmed = filterForMoneyWindow(farm, knobs);
+  ok(farmed.included.length === 10, "referral farm capped at the window cap (10)");
+  ok(
+    farmed.included.every((e) => e.blockNumber <= 209) &&
+      farmed.excluded.every((x) => x.reason === "referral-window-cap" && x.event.blockNumber >= 210),
+    "the cap keeps the EARLIEST credits (deterministic)",
+  );
+
+  // ATTACK 3 — THE FLOOR GATES: under-floor purchase · under-floor XP · unknown
+  // context · unset pair — none pays; a clean referral passes.
+  const floors = filterForMoneyWindow(
+    [
+      ev({ sourceKey: "introduction-converted", referredPurchaseUsdc: 30, referredWalletXp: 250, logIndex: 0 }),
+      ev({ sourceKey: "introduction-converted", referredPurchaseUsdc: 80, referredWalletXp: 40, logIndex: 1 }),
+      ev({ sourceKey: "introduction-converted", referredPurchaseUsdc: null, referredWalletXp: 250, logIndex: 2 }),
+      ev({ sourceKey: "introduction-converted", referredPurchaseUsdc: 80, referredWalletXp: 250, logIndex: 3 }),
+    ],
+    knobs,
+  );
+  ok(floors.included.length === 1 && floors.included[0].logIndex === 3, "only the floor-clearing referral pays");
+  ok(floors.excluded[0].reason === "referral-floor-purchase", "under-floor purchase excluded");
+  ok(floors.excluded[1].reason === "referral-floor-xp", "under-floor referred XP excluded");
+  ok(floors.excluded[2].reason === "referral-context-unknown", "unknown referred context excluded fail-closed");
+  const unset = filterForMoneyWindow(
+    [ev({ sourceKey: "introduction-converted", referredPurchaseUsdc: 9999, referredWalletXp: 9999 })],
+    { ...knobs, floorPair: { minQualifyingPurchaseUsdc: null, minXpForBounty: 100 } },
+  );
+  ok(
+    unset.included.length === 0 && unset.excluded[0].reason === "referral-floor-unset",
+    "null floor pair → NO referral pays (the founder's figures gate everything)",
+  );
+
+  // RECEIPT-SPLIT note: purchase XP is ONCE per wallet per season UPSTREAM (the
+  // readmodel's purchaseCredited set, live since S1); here a single purchase
+  // event passes through exactly once.
+  const pass = filterForMoneyWindow([ev({ sourceKey: "purchase-receipt", xp: 200 })], knobs);
+  ok(pass.included.length === 1 && pass.excluded.length === 0, "purchase passes through once");
+
+  // END-TO-END: window events → anti-farm filter → potPolicy → EXACT slots.
+  const e2e = filterForMoneyWindow(
+    [
+      ev({ sourceKey: "introduction-converted", wallet: A(601), xp: 500, blockNumber: 300, referredPurchaseUsdc: 80, referredWalletXp: 250 }),
+      ev({ sourceKey: "burn-act", wallet: A(602), xp: 150, blockNumber: 301, lastAcquisitionTimestamp: T0 - 30 * 24 * 3600 }),
+      ev({ sourceKey: "burn-act", wallet: A(603), xp: 150, blockNumber: 302, lastAcquisitionTimestamp: T0 - 60 }), // wash — dies
+    ],
+    knobs,
+  );
+  const potRows: PotInputRow[] = [...e2e.perWalletMoneyXp.entries()].map(([w, xp], i) => ({
+    account: w as `0x${string}`,
+    seat: i + 1,
+    windowXp: xp,
+    attainingBlock: 300 + i,
+    horsConcours: false,
+  }));
+  const paid = applyCurve(potRows, 500_000_000n, {
+    isProjection: false,
+    antiFarmImplemented: true,
+    floorPair: { minQualifyingPurchaseUsdc: 50, minXpForBounty: 100 },
+  });
+  ok(paid.ok, "end-to-end: filtered window computes");
+  if (paid.ok) {
+    const sum = paid.paidSlots.reduce((a, s) => a + s.amountRaw, 0n);
+    ok(sum === 500_000_000n, "end-to-end exact sum");
+    ok(paid.paidSlots[0].account === A(601).toLowerCase(), "the clean introducer ranks first");
+    ok(!paid.paidSlots.some((s) => s.account === A(603).toLowerCase() && s.windowXp > 0), "the washer earned no money-XP rank");
+  }
 }
 
 // ═══ 7. THE DIFFERENTIAL FIXTURE — drift check against the committed file ═══
