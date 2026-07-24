@@ -125,12 +125,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > (per-season committed already quarantines; zero-pot seasons stay honestly OPEN). Deps
 > VENDORED + COMMITTED in-repo (forge-std 6e8c4a9 · OZ v5.6.1 · murky 991e371, slimmed —
 > an immutable money contract's audit target reproducible offline). ✅ NO DEPLOY.
-> **NEXT ACT — S3-2 (the adversarial stack):** 15 stateful invariants ≥50k/depth25
-> ghost-ledger · Halmos symbolic · Murky proof-forgery fuzz · mutation ≥90% · slither+aderyn ·
-> real-USDC mainnet-fork tests (incl. Circle-blacklist-on-pool) · gas + empirical chunk. Then
-> S3-3 tooling onward per the master plan. S3-0 remainder: the 3 founder-visible FR sentences
-> (Rail 02) await the founder's on-screen validation; the analysis-tool availability probe
-> (Halmos/slither/aderyn/mutation on this box, WSL fallback) rides S3-2's opening.
+> ✅ **FIFTH ACT — S3-2 THE ADVERSARIAL NET LANDS GREEN (54/54, commit `4b9a856`):**
+> **stateful invariants** (bounded BountyHandler + INDEPENDENT ghost ledger, 25k calls each;
+> green profile = 50k): conservation+ghost cross-check · balance ground truth · Σcommitted[s]
+> ==totalCommitted · the carryover-inclusive ratchet never falls · per-round fence · roots
+> immutable · CLOSED stays terminal — ALL HOLD under arbitrary sequences. **Murky
+> proof-forgery fuzz**: valid proofs pay exactly once; wrong-amount · stolen-proof ·
+> cross-round replay · SEAL-tree · single-hash · encodePacked · wrong-chainId ALL REJECTED.
+> **MAINNET-FORK (the venue ruling — no testnet): GREEN against the LIVE Avalanche RPC** —
+> the real Circle USDC accepted the deploy, a full cycle moved real-USDC state, batch
+> isolation held vs a reverting real-token call (pull fallback intact). **Chunk authority
+> measured: claimForBatch(50) = 5,058,834 gas (~101k/leaf)** — 50 confirmed the executor
+> default. Rail-02 copy re-trued same session (`de4c8b7`, guards 590 green; the corrected
+> sentences shown to the founder on screen).
+> **NEXT ACT — S3-2 close-out + S3-3:** slither+halmos via uv --system-certs (managed
+> Python 3.12; this box's TLS interception documented — install in progress) · mutation
+> testing · the 50k green-profile invariant run · then S3-3 (season-merkle v2 tooling +
+> potPolicy + the differential fixture) per the master plan. The founder-visible next
+> moments: WIREFRAME A (admin) after the mockup re-emission, the money sheet at S3-9.
 > **DESIGN DISCIPLINE (founder mandate 2026-07-24, STANDING for all S3 contracts):** several
 > INDEPENDENT senior AAA lenses + an ADVERSARIAL pass BEFORE any `.sol` is frozen; Claude arbitrates
 > scope/slicing/ship. Guardrails every time: merit≠chance · USDC≠SYN · company money≠70/20/10 ·
