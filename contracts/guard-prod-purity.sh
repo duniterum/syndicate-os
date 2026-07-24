@@ -29,6 +29,18 @@ if [ -n "$impure" ]; then
   fail=1
 fi
 
+# ④ deploy scripts (script/, when it exists) must NEVER reference a Mock identifier —
+#   the exact "deploy a mock by accident" class the founder banned. The real deploy pins
+#   the REAL Circle USDC address.
+if [ -d script ]; then
+  script_mocks=$(grep -rniE "mock" script/ --include="*.sol" || true)
+  if [ -n "$script_mocks" ]; then
+    echo "[guard:prod-purity] RED — deploy script(s) reference a Mock:"
+    echo "$script_mocks"
+    fail=1
+  fi
+fi
+
 # ③ every test file carries the TEST-ONLY banner.
 missing_banner=""
 while IFS= read -r f; do

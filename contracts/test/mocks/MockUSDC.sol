@@ -33,7 +33,11 @@ contract MockUSDC is ERC20 {
     }
 }
 
-/// @notice A wrong-decimals token for the constructor assert test.
+/// @notice ⛔ TEST-ONLY — a DELIBERATELY WRONG token (18 decimals), never deployed. It
+///         exists to prove a PROTECTION: the production constructor must REFUSE any token
+///         that is not 6-decimal USDC (test_constructor_rejectsWrongDecimals), and it plays
+///         the stray "foreign token" in the rescueForeignToken test. If this mock ever
+///         stopped being rejected, that test would go RED.
 contract Mock18Decimals is ERC20 {
     constructor() ERC20("Wrong", "W18") {}
 
