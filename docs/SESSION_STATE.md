@@ -147,12 +147,26 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ruling: test code structurally impossible to confuse with production; 6 bench files
 > bannered ⛔ TEST-ONLY; src/ imports OZ only — commit `4f0d82a`). Halmos: Windows wheel gap
 > under py3.12, retry path recorded (py3.11/WSL); aderyn + mutation ride the same later pass.
-> **NEXT ACT — S3-3 (the tooling):** season-merkle v2 (buildSealRoot/buildPayoutRoot on the
-> frozen leaf) · potPolicy (the ONE share authority: Option A curve · depth law · the
-> XP→attaining-block→seat-number tie-break hashed AS TEXT · typed refusals) · the two-phase
-> differential fixture (Σ>budget AND Σ<budget negatives) · verify CLI · season-merkle.guard.
-> Then the founder-visible moments: mockup re-emission → WIREFRAME A (admin) → the money
-> sheet at S3-9.
+> ✅ **SIXTH ACT — S3-3 THE TOOLING LANDS (commit `7fe6cd7`):** `src/season/` —
+> **potPolicy** (the ONE share authority; hashed algorithm text: rank
+> XP→attaining-block→SEAT · depth max(1,⌊eligible/10⌋) floor-trimmed · Option-A stretch
+> renormalized by bigint largest-remainder, **Σ==budget EXACT**; typed refusals: floor pair
+> unset · `ANTI_FARM_IMPLEMENTED` false (new seasonConfig gate, flips only in S3-4) ·
+> no-seat pays nothing) · **season-merkle v2** on the canonical OZ StandardMerkleTree lib
+> (new dep; refuses Σ>budget AND Σ<budget, dupes, >uint128) · **rulesHash** (canonical
+> keccak; refuses any null founder field — every hashed input is a MAINNET blocker) ·
+> **publishedFile** (FULL-ADDRESS public artifact, "on montre"; its keccak rides
+> PendingRound.uri). **THE DIFFERENTIAL FIXTURE IS GREEN BOTH SIDES**: the production JS
+> builder's proofs claim byte-for-byte on the REAL contract deployed at the pinned address
+> (56/56 forge suite incl. `MerkleFixture.t.sol`); drift double-guarded (server regenerate+
+> diff · Foundry re-verify). **`season-merkle:guard` (1,239 checks) joined the BLOCKING api
+> chain — the full chain re-ran GREEN end-to-end.** ✅ NO DEPLOY (nothing routed yet).
+> **NEXT ACT — S3-4 (the anti-farm laws — the hard prerequisite of ANY paid round):**
+> burn/mint holding period (the seasonReadmodel engraved promise) · referral per-wallet-
+> per-window cap · floor-gated referral credit · per-attack tests (receipt-split, wash-loop,
+> referral farm) · `ANTI_FARM_IMPLEMENTED` flips true ONLY there. Then S3-5 (server dark-
+> wiring). The founder-visible moments unchanged: mockup re-emission → WIREFRAME A → the
+> money sheet at S3-9.
 > **DESIGN DISCIPLINE (founder mandate 2026-07-24, STANDING for all S3 contracts):** several
 > INDEPENDENT senior AAA lenses + an ADVERSARIAL pass BEFORE any `.sol` is frozen; Claude arbitrates
 > scope/slicing/ship. Guardrails every time: merit≠chance · USDC≠SYN · company money≠70/20/10 ·
