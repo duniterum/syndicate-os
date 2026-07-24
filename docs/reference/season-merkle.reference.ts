@@ -1,4 +1,13 @@
 /**
+ * ⛔ ORIGIN FORMAT — SUPERSEDED FOR S3 (banner added 2026-07-24, pre-S3 audit).
+ * This file documents the ORIGIN's SeasonRewardsPool v1 leaf format
+ * (single-hash `abi.encodePacked(msg.sender, amount)`, one global root, no
+ * domain tag) — the EXACT replay-vulnerable class the dossier §0.7 KILLS.
+ * The S3 leaf spec is season-merkle v2: OZ StandardMerkleTree, double-hash
+ * `abi.encode`, domain-tagged `(kind, chainId, address(this), roundId,
+ * account, amount)`, per-round immutable roots (dossier §0.7 + §0.14-C).
+ * This file is a QUARRY RECORD only — never copy its leafFor into S3.
+ *
  * season-merkle.ts — générateur + vérificateur Merkle au FORMAT EXACT de
  * `Supa-Exchange/contracts/SeasonRewardsPool.sol`.
  *

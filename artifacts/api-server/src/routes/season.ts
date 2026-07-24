@@ -8,8 +8,9 @@
  * SHORT FORM for no-seat builders), `shortForm` (the chain-emitted short form,
  * every row — S2c: the board renders seat + short form together), rank, XP,
  * axes, potEligible, horsConcours — never a full address, never a wallet key
- * (the SERVER-ONLY wallet index stays in memory; own-row serving arrives with
- * the auth-zone wiring). Seal anchors
+ * (the SERVER-ONLY wallet index stays in memory; own-row serving is LIVE at
+ * GET /api/auth/season-standing since S2d 2026-07-24 — only the /season
+ * page's YOU-row highlight stays future, key seasonOwnRow). Seal anchors
  * serve the BLOCK NUMBER only in this v1 — the tx-hash verify anchor joins
  * with the feed's exact-shape masking pattern when the first seal exists
  * (today: zero sealed seasons; nothing is invented).

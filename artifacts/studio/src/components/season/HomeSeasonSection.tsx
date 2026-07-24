@@ -33,7 +33,8 @@ import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { MembersProvenance } from "@/components/living/MembersProvenance";
 import { SeasonMedal } from "./SeasonMedal";
 import { useHeroReality } from "@/components/hero/useHeroReality";
-import { chapterForSeat, CHAPTERS } from "@/lib/chapters";
+import { chapterForSeat } from "@/lib/chapters";
+import { eraForSeatCount } from "@/config/eraCanon";
 
 type SeasonAxis = "connector" | "capital" | "steward" | "historian";
 
@@ -86,9 +87,15 @@ export function HomeSeasonSection() {
     };
   }, []);
 
-  const chapter = seats !== null ? chapterForSeat(seats) : null;
-  const seasonNumber = chapter !== null ? CHAPTERS.indexOf(chapter) + 1 : null;
-  const endSeat = chapter?.endSeat ?? null;
+  // ONE AUTHORITY for the era/season number + end seat: the chain's own era
+  // schedule (ERA_CANON — the same boundaries the server's season model
+  // follows; the audit's catch: the 5-chapter narrative table diverges from
+  // era 5 on). chapterForSeat keeps the NARRATIVE name only, anchored at the
+  // era's end seat.
+  const era = seats !== null ? eraForSeatCount(seats) : null;
+  const seasonNumber = era?.era ?? null;
+  const endSeat = era?.endSeat ?? null;
+  const chapter = era !== null ? chapterForSeat(era.endSeat) : null;
   const seatsLeft = seats !== null && endSeat !== null ? Math.max(0, endSeat - seats) : null;
   const gaugePct =
     seats !== null && endSeat !== null && endSeat > 0

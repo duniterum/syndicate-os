@@ -196,14 +196,64 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   note: the first post-boot cycle FAILED CLOSED (~5 min season DARK, feed 0,
 >   zero invented data — the designed behavior) then self-repaired via the
 >   cursor; ok=2, season LIVE 15, feed 86, block advancing.
+> - **🔎 THE PRE-S3 FULL-SESSION AUDIT [this commit] (founder order: "deep read
+>   from the beginning, senior AAA agents, zero problems before the smart
+>   contract") — wf_34c178ff, 5 adversarial lenses over 4322661..fd61acc; ALL
+>   figures survived recount (guard counts re-executed per commit · the curve
+>   re-summed digit by digit = exactly 10,000bp · 12 snowtrace verified in code
+>   AND prod); the real findings ALL FIXED [this commit]:**
+>   ① CODE: the own-row rail ignored NO-SEAT builders (seat-only join → the
+>   member card showed 0 XP while the public board showed real XP — the
+>   one-authority violation): the route now matches the no-seat row by the
+>   chain-emitted short form, server-side · the Season card coalesced a DARK
+>   model into an invented "Your XP 0": S4+failureReason now renders the honest
+>   unavailable line (the QuestsCard already did) · the era/season number on 3
+>   surfaces derived from the 5-chapter NARRATIVE table (diverges from the
+>   9-era chain schedule at seat 10,001+): all three now read ERA_CANON
+>   (eraForSeatCount), chapters keep the name only · the admin XP table said
+>   self-referral "reverts" (false — it credits nothing): re-worded to the
+>   model's own truth.
+>   ② THE S3 CONTRACT SPEC HARDENED (the audit's best catch class): §0.7 leaf
+>   tuple gains the `kind` byte IN PLACE (a seal root structurally unclaimable)
+>   · season-merkle.reference.ts wears the ⛔ ORIGIN-FORMAT-SUPERSEDED banner
+>   (never copy its leafFor into S3) · the GUARDIAN contradiction harmonized
+>   (§0.17-⑥ = the OWNER revokes, the pause-only GUARDIAN covers
+>   founder-offline — §0.14-C and the admin rail-2 copy now agree) · Season-1
+>   rulesHash anchors at CONTRACT DEPLOY (§0.17-⑦ accommodation) · the Foundry
+>   toolchain spike re-trued as S3'S FIRST ACT (none ran).
+>   ③ TRUTH/DOCS: §0.14-D superseded in place (shortForm on every row
+>   server-side) · §0.17-④ "players"→"builders" · 4 own-row-future comments
+>   re-trued to the S2d reality · DESIGN_ROADMAP featureStatus box re-trued ·
+>   the missing 8d471ee prod-seal record engraved · FOUNDER-PENDING completed
+>   (+footprint XP proposal, +lawyer pass).
+>   ④ GUARD NETS TIGHTENED: og:/twitter:description now sync + GUARDED
+>   verbatim-equal to the registry "/" (the S2c-② miss, closed structurally) ·
+>   the MemberAccess lifecycle exemption now PAID by a chassis check (the
+>   wallet cards' own labels) · stale guard comments re-trued.
 > - **NEXT:** S3 — the Foundry workspace + SeasonBountyPool + the cash rail per
 >   §0.17 (the founder's money decisions gate it: « Engager au pot » amount +
->   cadence · XP weights · the floor pair · lawyer pass at activation).
-> - **(e) FOUNDER-PENDING (re-trued):** 🔴 AW-5 wallet name (unchanged) · SwapRail
->   decisions (fee % · fee pipe · thirdweb ~$99/mo · placement) · pot COMMITMENT
->   amount + cadence (« Engager au pot ») · CONFIRM XP weights + $20 floor +
->   eligibility floor pair (S3 gate) · EN copy at each remaining surface gate.
->   The 3 closing notes are CLOSED — nothing of them remains pending.
+>   cadence · XP weights + footprint-rung XP · the floor pair · lawyer pass at
+>   activation). S3 OPENS WITH: the forge toolchain spike, then the contract
+>   from §0.7/§0.14-C/§0.17 as amended — the dossier is now
+>   contradiction-free for it.
+> - **🏆 S2-FINAL SEALED IN PROD (Replit green 2026-07-24, founder-pasted — the
+>   record the pre-S3 audit found missing, now engraved):** the 8d471ee cycle
+>   deployed and verified — /admin/seasons anonymous = the neutral 404 wall
+>   (noindex from the shell, zero rail traces) · entry + every shell admin-clean
+>   (SeasonsRails/AdminShell = 0 occurrences in the served entry; 113 chunks,
+>   exactly ONE OperatorConsole) · robots Disallow live · season-standing
+>   anonymous S1 · byte-identity ×2 · engine advancing. The rails' visual =
+>   the founder's operator session.
+> - **(e) FOUNDER-PENDING (re-trued at the pre-S3 audit — the COMPLETE list the
+>   S3 gate presents):** 🔴 AW-5 wallet name (unchanged) · SwapRail decisions
+>   (fee % · fee pipe · thirdweb ~$99/mo · placement) · pot COMMITMENT amount +
+>   cadence (« Engager au pot ») · CONFIRM XP weights + $20 min-cash floor +
+>   the eligibility floor pair (S3 gate) · FOOTPRINT XP at capital-rung
+>   crossings (+100/rung proposed 2026-07-23, unfarmable — awaiting his OK,
+>   decide WITH the weight table) · the LAWYER PASS at bounty activation
+>   (§0.6/§8-① — before any real payment) · EN copy at each remaining surface
+>   gate. The 3 closing notes are CLOSED — nothing of them remains pending.
+>   **DEPLOY BACKLOG: EMPTY (every session commit sealed in prod).**
 
 > **▶ 📌 2026-07-23 — THE SEASONS + SWAPRAIL ARC OPENED (the resume point; the 22-07
 > block below keeps its seal facts).**

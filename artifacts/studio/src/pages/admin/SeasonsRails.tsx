@@ -28,7 +28,8 @@ import { ChevronDown } from "lucide-react";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { MembersProvenance } from "@/components/living/MembersProvenance";
 import { useHeroReality } from "@/components/hero/useHeroReality";
-import { chapterForSeat, CHAPTERS } from "@/lib/chapters";
+import { chapterForSeat } from "@/lib/chapters";
+import { eraForSeatCount } from "@/config/eraCanon";
 
 interface BoardRow {
   display: string;
@@ -68,7 +69,7 @@ const FED_SOURCES: readonly {
   antiSpam: string;
 }[] = [
   { source: "Purchase receipt", proof: "Sale V3 event · on-chain", credit: "auto (indexer)", antiSpam: "unforgeable" },
-  { source: "Converted introduction", proof: "SourceRegistry · on-chain", credit: "auto at the receipt", antiSpam: "self-referral reverts" },
+  { source: "Converted introduction", proof: "SourceRegistry · on-chain", credit: "auto at the receipt", antiSpam: "self-referral credits nothing" },
   { source: "Burn (Proof of Fire)", proof: "on-chain", credit: "auto", antiSpam: "unforgeable" },
   { source: "Archive mint", proof: "on-chain", credit: "auto", antiSpam: "unforgeable" },
   { source: "Quest bonuses (ladder + firsts)", proof: "derived metric", credit: "auto at the threshold", antiSpam: "canon thresholds" },
@@ -99,9 +100,12 @@ export function SeasonsRailsPanel() {
     };
   }, []);
 
-  const chapter = seats !== null ? chapterForSeat(seats) : null;
-  const seasonNumber = chapter !== null ? CHAPTERS.indexOf(chapter) + 1 : null;
-  const endSeat = chapter?.endSeat ?? null;
+  // ONE AUTHORITY for the era/season number + end seat: ERA_CANON (the
+  // chain's schedule, the server's own boundaries); chapters = the name only.
+  const era = seats !== null ? eraForSeatCount(seats) : null;
+  const seasonNumber = era?.era ?? null;
+  const endSeat = era?.endSeat ?? null;
+  const chapter = era !== null ? chapterForSeat(era.endSeat) : null;
   const fillPct =
     seats !== null && endSeat !== null && endSeat > 0
       ? Math.min(100, Math.max(1.5, Math.round((seats / endSeat) * 1000) / 10))
@@ -416,9 +420,10 @@ export function SeasonsRailsPanel() {
             </ol>
             <p className="mt-3 border-t border-border/40 pt-2.5 font-mono text-[11px] leading-relaxed text-muted-foreground">
               Published for verification, then paid — never a bare “automatic”. Every round
-              publishes its standings + root during the pending window (guardian veto = a
-              right); after the delay anyone can activate; unclaimed shares stay
-              pull-claimable one year, then join the carryover.
+              publishes its standings + root during the pending window (you may revoke it —
+              a right, never a duty; a pause-only guardian covers founder-offline); after
+              the delay anyone can activate; unclaimed shares stay pull-claimable one year,
+              then join the carryover.
             </p>
           </div>
         </div>

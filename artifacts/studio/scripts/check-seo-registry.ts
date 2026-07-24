@@ -307,6 +307,20 @@ if (!existsSync(indexHtmlPath)) {
     `index.html base description mirrors the registry "/" entry verbatim`,
     `index.html's <meta name="description"> must equal the registry "/" description verbatim (the dev-served template must never drift from the canon head)`,
   );
+  // Pre-S3 audit (2026-07-24): the S2c-② sync missed og:/twitter: — the same
+  // one-source law covers ALL THREE description metas, guarded here.
+  check(
+    homeEntry !== undefined &&
+      indexSrc.includes(`property="og:description" content="${homeEntry.description}"`),
+    `index.html og:description mirrors the registry "/" entry verbatim`,
+    `index.html's <meta property="og:description"> must equal the registry "/" description verbatim`,
+  );
+  check(
+    homeEntry !== undefined &&
+      indexSrc.includes(`name="twitter:description" content="${homeEntry.description}"`),
+    `index.html twitter:description mirrors the registry "/" entry verbatim`,
+    `index.html's <meta name="twitter:description"> must equal the registry "/" description verbatim`,
+  );
 }
 
 // --- resolveRouteHead contract (the 2.18C runtime metadata guarantees). --------

@@ -107,9 +107,11 @@ rotate the root anytime · `emergencyWithdraw` drains 100% anytime (rug vector) 
 pausability · deadline only in the DB. **Upgrades decided (AAA, from the audited state
 of the art):**
 - **Leaf = OZ standard double-hash `abi.encode`, domain-tagged:**
-  `(chainId, address(this), roundId, account, amount)` — second-preimage safety BY
-  CONSTRUCTION (not by accidental leaf width) + cross-round AND cross-deployment replay
-  killed structurally. This SUPERSEDES the advisor's single-hash packed spec — the
+  `(kind, chainId, address(this), roundId, account, amount)` *(amended 2026-07-24,
+  pre-S3 audit: the `kind` byte was stated only in §0.14-C — it belongs IN the leaf
+  tuple so a seal/XP root is STRUCTURALLY unclaimable as a payout root)* —
+  second-preimage safety BY CONSTRUCTION (not by accidental leaf width) + cross-round
+  AND cross-deployment replay killed structurally. This SUPERSEDES the advisor's single-hash packed spec — the
   tooling (`season-merkle` v2) moves to OZ `StandardMerkleTree` with a **differential
   fixture checked into the repo** (a JSON tree the contract test must verify — the
   origin's tooling/contract-mismatch bug class dead forever).
@@ -331,14 +333,18 @@ own-row via session, never an offset scan.
 - SafeERC20 · constructor asserts `decimals()==6` · `fund()` credits balance-delta.
   Fuji rehearsal on Circle's testnet USDC (`0x5425…Bc65`) covering sealSeason, a
   batch with one failing leaf, revoke-pending, seat-gated sweep. Foundry workspace:
-  in-repo `contracts/`, toolchain spike before S3. ONE deployment forever —
+  in-repo `contracts/`, toolchain spike AS S3'S FIRST ACT *(re-trued 2026-07-24,
+  pre-S3 audit: no spike has run — S3 opens with `forge --version` + a hello-world
+  test compiling on this Windows box before any contract line)*. ONE deployment
+  forever —
   "un pool par season" (advisor §4.3) is SUPERSEDED by sequential rounds +
   `(kind, seasonId, uri)` metadata.
-**D — IDENTITY & VISIBILITY (settled law applied, no re-ask):** the ranking API
-serves SEAT-KEYED rows with NO address field *(amended by §0.18: no-seat players
-serve the feed's SHORT FORM as their display — never a full address)* — the client
-joins seat→short-address
-from the chain events it already reads; own proof via a SIWE own-row endpoint (proof
+**D — IDENTITY & VISIBILITY (settled law applied, no re-ask):** *(SUPERSEDED
+IN PLACE 2026-07-24, pre-S3 audit — the SHIPPED S2c/S2d reality:)* the ranking
+API serves seat-keyed rows carrying the chain-emitted SHORT FORM on EVERY row
+SERVER-SIDE (`shortForm`, the feed projection's own 3+4 pattern — never a full
+address, never a client-side join); no-seat builders display the short form
+alone, the seated display seat + short form together; own proof via a SIWE own-row endpoint (proof
 array only). NO full-address reward file is ever served or published: public root
 verification = the on-chain root + `verifyClaim` + the addresses the claim/push txs
 themselves emit on-chain. The /season own-row highlight is the ruled own-row
@@ -504,7 +510,7 @@ open, immutable for that season.
   6% · 5% · 4.25% · 3.5% · 3% · 2.5% · 1.75%×5 · 1.25%×10 = 100% — the WHOLE
   pot pays. On $2,000: $450/$290/$200/$150→$50/$35/$25. **THE DEPTH LAW
   (founder follow-up: "à 100k ça s'arrête au 25e?" — NO):** paid depth =
-  min(~10% of eligible players, deepest rank clearing the min-cash floor,
+  min(~10% of eligible builders, deepest rank clearing the min-cash floor,
   default $20) — a bigger pot pays DEEPER and BIGGER (poker scaling law). Zone
   TINTS remain as visual groupings on the board; deterministic tie-break
   published: earlier attaining block, then seat number.
@@ -517,8 +523,12 @@ open, immutable for that season.
   but weigh near-zero in money windows (drip-farming dead). Hors-concours
   wallets listed in the season-open rule sheet.
 - **⑥ THE WINDOW HAS TEETH:** every round (interim and seal) publishes its full
-  standings + root during the PENDING window; the guardian can veto (cancel +
-  repost); after the timeout ANYONE can activate (executor stall impossible);
+  standings + root during the PENDING window; the OWNER (the founder) can veto
+  (cancel + repost — §0.15: a right, never a duty), and the pause-only GUARDIAN
+  can freeze claims if the founder is offline *(harmonized 2026-07-24, pre-S3
+  audit: §0.14-C defines GUARDIAN as pause-only and revoke as an OWNER act —
+  this bullet's earlier "guardian can veto" meant the owner; one law, both
+  texts)*; after the timeout ANYONE can activate (executor stall impossible);
   push (claimFor) with per-recipient isolation; pull-claim always available as
   fallback; failed/blacklisted shares stay pull-claimable until a published
   expiry (1 year), then → carryover (non-withdrawable — recycled money never
@@ -528,7 +538,10 @@ open, immutable for that season.
 - **⑦ THE RULE SHEET IS CHAIN-ANCHORED:** curve percentages, weights, caps,
   floors, interim policy, hors-concours list — hashed into the season-OPEN
   on-chain event (`rulesHash`); the seal root closes the season. Immutability
-  becomes verifiable, not claimed. Mid-season changes are impossible to hide;
+  becomes verifiable, not claimed. *(Season-1 accommodation, 2026-07-24 pre-S3
+  audit: Season 1 opened BEFORE any contract exists — its rulesHash anchors at
+  CONTRACT DEPLOY, before the season's first paying round; every later season
+  anchors at its open event as written.)* Mid-season changes are impossible to hide;
   giving more/earlier is always allowed, taking/delaying never.
 - **⑧ INTERIM ROUNDS ARE RULE-SHAPED:** a founder right, pre-announced 48h with
   the amount, paying the current delta window through the same PENDING pipeline.

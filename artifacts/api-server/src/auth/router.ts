@@ -970,14 +970,21 @@ router.get("/season-standing", (req: Request, res: Response) => {
           completed: done.includes(q.id) || current >= q.target,
         };
       });
-      // The OWN current-season row — the SAME row the public board serves,
-      // picked by the session's own seat (numbers only; a seated wallet with
-      // no acts yet has no row: an honest zero, never an invention).
-      if (seat !== null) {
-        const currentSeason =
-          source.seasons.find((s) => s.seasonNumber === source.currentSeasonNumber) ?? null;
+      // The OWN current-season row — the SAME row the public board serves
+      // (one authority). Seated: picked by the session's own seat. NO-SEAT
+      // (multi-level law — XP accrues at EVERY level, the audit's own catch):
+      // matched by the chain-emitted short form, the model's own served
+      // shape; the full key never leaves this scope. A wallet with no acts
+      // yet has no row: an honest zero, never an invention.
+      const currentSeason =
+        source.seasons.find((s) => s.seasonNumber === source.currentSeasonNumber) ?? null;
+      if (currentSeason !== null) {
+        const w = boundAccount.toLowerCase();
+        const ownShortForm = `${w.slice(0, 5)}…${w.slice(-4)}`;
         const row =
-          currentSeason?.standings.find((r) => r.seat === seat) ?? null;
+          currentSeason.standings.find((r) =>
+            seat !== null ? r.seat === seat : r.seat === null && r.shortForm === ownShortForm,
+          ) ?? null;
         if (row !== null) {
           seasonXp = row.xp;
           seasonRank = row.rank;

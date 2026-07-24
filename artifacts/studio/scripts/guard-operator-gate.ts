@@ -94,7 +94,8 @@ check(
   `expected exactly 16 INTERNAL registry routes (6 console + 10 admin sections; /admin/seasons joined at S2-final 2026-07-24), found ${internalPaths.length} — update this guard deliberately if that changed`,
 );
 
-// The nine sectioned admin sub-routes (Phase 2 slice 1) must ALL be present
+// The ten sectioned admin sub-routes (Phase 2 slice 1 + /admin/seasons at
+// S2-final 2026-07-24) must ALL be present
 // as INTERNAL registry routes — removing one silently would un-gate it.
 const ADMIN_SECTION_PATHS = [
   "/admin/members",

@@ -128,6 +128,34 @@ const EXEMPT = new Set([
     process.exit(1);
   }
 }
+// The chassis check that pays for the MemberAccess.tsx exemption (S2d +
+// pre-S3 audit 2026-07-24): the page shell renders no lifecycle claim of its
+// own — the page's ONE future claim (the pot frame) lives in
+// SeasonStandingCard's LifecycleBadge, and the seat figures carry their
+// verify path in MemberYourSeat. If either loses its mechanism, this guard
+// goes red even though MemberAccess is exempt.
+{
+  const seasonCard = readFileSync(
+    path.resolve(here, "..", "src", "wallet", "SeasonStandingCard.tsx"),
+    "utf8",
+  );
+  if (!/\b(LifecycleBadge|TruthLabel|StatusPill|PostureBadge)\b/.test(seasonCard)) {
+    console.error(
+      "[guard:lifecycle] FAIL — wallet/SeasonStandingCard.tsx no longer renders an honesty label; the MemberAccess.tsx exemption is void.",
+    );
+    process.exit(1);
+  }
+  const yourSeat = readFileSync(
+    path.resolve(here, "..", "src", "wallet", "MemberYourSeat.tsx"),
+    "utf8",
+  );
+  if (!/\bVerifyOnChain\b/.test(yourSeat)) {
+    console.error(
+      "[guard:lifecycle] FAIL — wallet/MemberYourSeat.tsx no longer renders its VerifyOnChain path; the MemberAccess.tsx exemption is void.",
+    );
+    process.exit(1);
+  }
+}
 // StatusPill is the canonical status atom since the Phase-1 consolidation:
 // TruthLabel is a thin wrapper over it, and it replaced the older
 // LifecycleBadge/PostureBadge sprawl. A page rendering any of these carries an

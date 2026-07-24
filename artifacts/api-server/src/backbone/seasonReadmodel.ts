@@ -35,7 +35,8 @@
  *     double resolves to one builder); seats render as attributes. Wallet keys
  *     are SERVER-ONLY (the D3 own-purchase precedent): the PUBLIC standings
  *     are seat-keyed and address-free; the wallet index exists for the auth
- *     zone's future own-row serving and never enters any public payload.
+ *     zone's own-row serving (LIVE at GET /api/auth/season-standing since
+ *     S2d 2026-07-24) and never enters any public payload.
  *   - MONEY IS NOT HERE: pot/rounds/bands are S3 (the merit primitive). This
  *     model is recognition standings + the season clock, nothing else — no
  *     approaching/progress scarcity shape exists in its output.
@@ -144,7 +145,8 @@ export interface SeasonModelPublic {
   readonly standings: readonly SeasonStandingPublic[];
 }
 
-/** SERVER-ONLY per-wallet view (future auth-zone own-row serving; never a
+/** SERVER-ONLY per-wallet view (serves the auth zone's own-row endpoint
+ *  GET /api/auth/season-standing — S2d 2026-07-24; never a
  *  public payload — the D3 precedent). */
 export interface WalletSeasonView {
   /** null = a no-seat builder (multi-level law) — XP counts, the pot waits. */
@@ -493,7 +495,8 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
     });
   }
 
-  // --- SERVER-ONLY wallet index (future own-row serving; never public) ---
+  // --- SERVER-ONLY wallet index (own-row serving LIVE via the auth zone
+  //     since S2d; never public) ---
   // Multi-level law: EVERY acting wallet gets a view (seated or not), plus
   // seated wallets that have not acted yet (their zero state still exists).
   const walletIndex = new Map<string, WalletSeasonView>();

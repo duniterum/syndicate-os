@@ -22,7 +22,8 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { MembersProvenance } from "@/components/living/MembersProvenance";
-import { chapterForSeat, CHAPTERS } from "@/lib/chapters";
+import { chapterForSeat } from "@/lib/chapters";
+import { eraForSeatCount } from "@/config/eraCanon";
 import { useHeroReality } from "@/components/hero/useHeroReality";
 
 type SeasonAxis = "connector" | "capital" | "steward" | "historian";
@@ -60,7 +61,9 @@ export default function SeasonStandingCard() {
         if (!res.ok) throw new Error(String(res.status));
         const body = (await res.json()) as OwnSeasonView;
         if (cancelled) return;
-        if (body.state !== "S4") {
+        // Fail-closed (the audit's catch): S4 + a failureReason = the model
+        // is dark — an honest line, NEVER a zero coalesced from null.
+        if (body.state !== "S4" || body.failureReason !== null) {
           setOwn({ status: "failed" });
           return;
         }
@@ -74,9 +77,12 @@ export default function SeasonStandingCard() {
     };
   }, []);
 
-  const chapter = seats !== null ? chapterForSeat(seats) : null;
-  const seasonNumber = chapter !== null ? CHAPTERS.indexOf(chapter) + 1 : null;
-  const endSeat = chapter?.endSeat ?? null;
+  // ONE AUTHORITY for the era/season number + end seat: ERA_CANON (the
+  // chain's schedule, the server's own boundaries); chapters = the name only.
+  const era = seats !== null ? eraForSeatCount(seats) : null;
+  const seasonNumber = era?.era ?? null;
+  const endSeat = era?.endSeat ?? null;
+  const chapter = era !== null ? chapterForSeat(era.endSeat) : null;
   const fillPct =
     seats !== null && endSeat !== null && endSeat > 0
       ? Math.min(100, Math.max(1.5, Math.round((seats / endSeat) * 1000) / 10))
