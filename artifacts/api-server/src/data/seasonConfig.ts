@@ -192,3 +192,12 @@ export const ELIGIBILITY_FLOOR = {
   /** Minimum XP for a wallet to enter a paid band. */
   minXpForBounty: null as number | null,
 } as const;
+
+/**
+ * THE ANTI-FARM GATE (§0.17-⑤ · master plan S3-4): burn/mint holding period ·
+ * referral per-wallet-per-window cap · floor-gated referral credit. This flag flips
+ * true ONLY in the S3-4 slice that BUILDS them (with per-attack tests). While false,
+ * `potPolicy` REFUSES to compute any payout round — structurally, not by memory.
+ * Recognition XP flows regardless.
+ */
+export const ANTI_FARM_IMPLEMENTED: boolean = false;
