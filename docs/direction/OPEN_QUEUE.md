@@ -14,6 +14,28 @@
 > decisions (« Engager au pot » · the XP weight table + footprint-rung XP · the
 > floor pair) stay the founder's, and do NOT block the contract engineering.
 >
+> **▶ 2026-07-24 — S3 SECOND ACT · THE CONTRACT DESIGN IS FROZEN (world-class).**
+> `docs/reference/MERITDISTRIBUTOR_CONTRACT_SPEC.md` v4 — contract **`MeritDistributor`**
+> (product label « Season Bounty Pool »), forged through **6 senior lenses + 5 adversarial
+> rounds + an all-hats consolidation + a money-safety hunt**; final verdict **0 blocking items**.
+> **Founder rulings engraved this session (never re-open):** owner = **2-of-3 Gnosis Safe**
+> (single-key now → Safe EARLY; on-chain `emergencyClaim` REJECTED — multisig handles abandonment
+> at zero contract cost) · claim window **2 years** · **per-season `committed[]`** ·
+> **commit-progressively + Goal-vs-Committed** (the founder's 1M-pot/10-people concern) · the ère-9
+> /L1-migration answers written into the spec (§8, §0.16 exit valve). **NEXT: write the `.sol`** to
+> the frozen spec → GREEN gate → founder's signed deploy. ✅ NO DEPLOY (docs).
+>
+> **▶ 2026-07-24 — S3 THIRD ACT · THE FULL-SYSTEM MASTER PLAN (contract + admin + front + read-model
+> + tooling) IS ARBITRATED.** Founder order: "code admin et front end aussi — deep analyse depuis le
+> début". `docs/reference/S3_SEASON_CASH_RAIL_MASTER_PLAN.md`: the 27-piece SYSTEM-FIRST inventory +
+> **14 slices, TWO deploys, ONE featureStatus flip, TWO wireframe gates (A admin · B front), the
+> money-sheet seal at S3-9**. Critic-caught HIGH gaps now owned: member payment bell · the anti-farm
+> laws (§0.17-⑤) as a named slice gating any round · the PUBLIC pending-round verification state ·
+> the AWAITING SEAT projected share (§0.18) · the season-N+1 rules alarm (silent-stall fix). Four
+> polish rulings recorded in the frozen spec (server-side recompute · auto-close-on-drain ADOPTED ·
+> honest two founder acts · deploy params 72h/72h/7d/14d/2y). **NEXT: S3-0 truth floor.** ✅ NO
+> DEPLOY (docs).
+>
 > **▶ 2026-07-23 — THE SEASONS + SWAPRAIL ARC OPENED (founder: "on va faire tout ça
 > comme il faut" — season-first; the advisor mega-dossier verified against the repo,
 > then FIVE RULINGS engraved).**

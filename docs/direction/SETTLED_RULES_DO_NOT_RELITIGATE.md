@@ -135,8 +135,16 @@ advisor-dossier study; none may be re-opened, re-flagged, or re-explained):
   contract freeze (`CONNECTOR_LADDER_POLICY.md` §5) for THIS contract only. The condition
   is the CARE PROTOCOL: full Foundry suite (unit + fuzz + invariants) · the merkle build's
   offline self-test + on-chain `verifyClaim()` acceptance before any root is set · a
-  full-round Fuji testnet rehearsal · static analysis · the founder's own signed mainnet
+  full-round rehearsal · static analysis · the founder's own signed mainnet
   deploy. Built to run for years unattended.
+  *(REHEARSAL VENUE AMENDED IN PLACE — founder ruling 2026-07-24: "on déploie directement
+  sur mainnet". The Fuji testnet detour is DROPPED. The rehearsal = ① a MAINNET-FORK
+  rehearsal (anvil fork of Avalanche C-Chain — the REAL USDC contract and chain state,
+  stronger than any testnet; two full season lifecycles, the founder's acts on the real
+  console screens via the rig) + ② a MAINNET CANARY after the real deploy (a tiny
+  « Engager » amount, ONE real round end-to-end verified on Snowtrace, then the
+  Season-1 scale funding). The care-protocol INTENT — engineering-only rigor before real
+  money at scale — is unchanged and strengthened.)*
 - **② The money is SHOWN — including the per-member merit share on the public ranking.**
   §7 BUSINESS-FIRST governs; older "rung without amount" lines (e.g. in
   `GAMIFICATION_LEGAL_DOCTRINE.md`) are SUPERSEDED for the season surfaces. The pot, the
@@ -179,7 +187,8 @@ advisor-dossier study; none may be re-opened, re-flagged, or re-explained):
   and funded, the rail pays REALLY and AUTONOMOUSLY at its engraved moments (§0.15
   zero-click: the seal round automatic · interims/final = founder rights · claimFor
   pushes, members pay no gas). What stands before mainnet is ENGINEERING ONLY (§8-①
-  care protocol: Foundry suite · Fuji rehearsal · the founder's signed deploy) —
+  care protocol: Foundry suite · the mainnet-fork rehearsal + mainnet canary, per the
+  8-① 2026-07-24 venue amendment · the founder's signed deploy) —
   never a legal-review step. NO agent re-raises, re-suggests, or re-inserts a legal
   gate on ANY surface, doc, or report — ANSWERED FOREVER; any residual "lawyer"
   wording in frozen archives is superseded by this ruling.

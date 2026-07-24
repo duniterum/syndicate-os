@@ -347,9 +347,15 @@ API serves seat-keyed rows carrying the chain-emitted SHORT FORM on EVERY row
 SERVER-SIDE (`shortForm`, the feed projection's own 3+4 pattern — never a full
 address, never a client-side join); no-seat builders display the short form
 alone, the seated display seat + short form together; own proof via a SIWE own-row endpoint (proof
-array only). NO full-address reward file is ever served or published: public root
-verification = the on-chain root + `verifyClaim` + the addresses the claim/push txs
-themselves emit on-chain. The /season own-row highlight is the ruled own-row
+array only). **⛔ SUPERSEDED IN PLACE (FOUNDER RULING 2026-07-24 — "on montre : sur la blockchain
+tout est visible"):** the earlier "no full-address reward file" sentence is DEAD — it was the
+hiding reflex the settled law already forbids. Wallet addresses are PUBLIC chain data (every
+claim/push tx emits them on Snowtrace anyway); **the round's published reward file carries the
+FULL addresses + amounts**, so ANYONE can rebuild the Merkle tree and verify the on-chain root
+permissionlessly during the pending window — a STRONGER trust model, not a weaker one. Short form
+stays OUR surfaces' rendering convention (readability, never concealment); the red line remains
+name/alias/email (off-chain identity), NEVER wallet addresses. No agent re-invents an
+address-hiding requirement on any chain-data surface, ever. The /season own-row highlight is the ruled own-row
 exception (recorded in CANON_ACCESS_MODEL — entry added at the final audit; the
 YOU-row wiring is an S2c deliverable with the auth zone).
 **E — SURFACES (front-end lens):**
