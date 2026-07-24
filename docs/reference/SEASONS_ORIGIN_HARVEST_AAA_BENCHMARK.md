@@ -99,7 +99,7 @@ REJECTED. Eligibility/discretion/tax lines stated in plain words on the bounty s
 reward history is a custodial "trust-me" tab; every bounty of ours is an on-chain USDC
 transfer with tx anchor, amount, round, and reason — permanent, refutable, public.
 
-### 0.7 The contract: SeasonBountyPool, hardened PAST the advisor spec
+### 0.7 The contract — hardened PAST the advisor spec *(CONTRACT OF RECORD: **MeritDistributor** — frozen spec v4, `docs/reference/MERITDISTRIBUTOR_CONTRACT_SPEC.md`; « Season Bounty Pool » is the product LABEL. §0.7 remains the WHY — superseded for the contract itself.)*
 The origin contract's good bones are kept (CEI, nonReentrant, custom errors,
 permissionless `fund()`, `verifyClaim` dry-run view). Its faults are named and fixed:
 global `hasClaimed` lockout (a Season-1 claimant is locked out forever) · owner can
@@ -127,7 +127,7 @@ of the art):**
 - **Foundry care protocol (ruling ①):** Murky-built trees inside fuzz tests ·
   invariants (conservation: escrow + Σpaid == Σfunded; paid ≤ tree amounts; claimed
   monotone) · proof-forgery fuzzing · the differential fixture · fork dry-run of every
-  leaf via `verifyClaim` before any root · full Fuji round (fund → root → claim →
+  leaf via `verifyClaim` before any root · full MAINNET-FORK (anvil) rehearsal + a mainnet CANARY round — ⛔ NO Fuji/testnet ever (SETTLED_RULES §8-①, venue ruling 2026-07-24) — (fund → root → claim →
   sweep) → founder-signed mainnet deploy.
 
 ### 0.8 Admin: the origin's best patterns on our 2-rail console
@@ -168,7 +168,7 @@ fake social proof / simulated payouts (the origin wrote fake txHashes marked
   (§0.12-②) + `season-merkle` v2 (OZ StandardMerkleTree, domain-tagged) + the §0.6
   rail (auto-credit via claimFor batches, published-upfront escrow rules). The rail
   is AUTONOMOUS the moment the contract is live on mainnet and funded (§8-⑧ — no
-  legal gate; what stands before mainnet is ENGINEERING only: suite · Fuji · the
+  legal gate; what stands before mainnet is ENGINEERING only: suite · the mainnet-fork rehearsal + canary (no testnet — §8-①, 2026-07-24) · the
   founder's signed deploy).
 
 ### 0.11 THE ENDLESS-ENGAGEMENT ARCHITECTURE (founder question 2026-07-23:
@@ -333,7 +333,7 @@ own-row via session, never an offset scan.
   leaf never bricks the batch); executor hot wallet + the pool join the heartbeat
   inventory (scan targets · read-model · address book · /activity) IN the S3 slice.
 - SafeERC20 · constructor asserts `decimals()==6` · `fund()` credits balance-delta.
-  Fuji rehearsal on Circle's testnet USDC (`0x5425…Bc65`) covering sealSeason, a
+  rehearsal on an anvil MAINNET-FORK of Avalanche C-Chain (real USDC) — ⛔ NOT Fuji/testnet (§8-①, 2026-07-24) — covering sealSeason, a
   batch with one failing leaf, revoke-pending, seat-gated sweep. Foundry workspace:
   in-repo `contracts/`, toolchain spike AS S3'S FIRST ACT *(re-trued 2026-07-24,
   pre-S3 audit: no spike has run — S3 opens with `forge --version` + a hello-world
@@ -545,7 +545,7 @@ open, immutable for that season.
   texts)*; after the timeout ANYONE can activate (executor stall impossible);
   push (claimFor) with per-recipient isolation; pull-claim always available as
   fallback; failed/blacklisted shares stay pull-claimable until a published
-  expiry (1 year), then → carryover (non-withdrawable — recycled money never
+  expiry (2 YEARS — retrued 2026-07-24 per the frozen CLAIM_EXPIRY; was "1 year"), then → carryover (non-withdrawable — recycled money never
   re-enters the withdrawable bucket). Zero-pot seals still execute (freeze + XP
   root, budget 0). Copy law: "published for verification, then paid" — never a
   bare "automatic".
@@ -697,6 +697,8 @@ Funded-vs-planned pool honesty + proof link; anti-stress copy "You can close thi
 ## §3 — ORIGIN: CONTRACT + DISTRIBUTION (agent synthesis, verbatim)
 
 # CONTRACT + DISTRIBUTION — origin inventory (Supa-Exchange)
+
+> **⛔ APPENDIX NOTE (2026-07-24):** the benchmark/origin appendices below predate the freeze — the contract of record is **MeritDistributor** (label « Season Bounty Pool »), spec `MERITDISTRIBUTOR_CONTRACT_SPEC.md`; **NO Fuji/testnet ever** (§8-①). Dated background only.
 
 ## 1) THE CONTRACT — `contracts/SeasonRewardsPool.sol` (221 lines, ^0.8.20, OZ Ownable+ReentrancyGuard+MerkleProof)
 **Storage (3):** `address public immutable usdc` (L42) · `bytes32 public merkleRoot` (L45) · `mapping(address=>bool) public hasClaimed` (L48).

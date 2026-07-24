@@ -120,8 +120,11 @@ after this file. Snapshot at 2026-07-24:**
   `artifacts/studio/src/config/featureStatus.ts` (guard-enforced — DONE-IS-DONE law).
   Two season keys remain future: `seasonBounty` (S3) and `seasonOwnRow`.
 - **NEXT (in flight): S3 — the `MeritDistributor` contract (label « Season Bounty Pool ») + the cash rail.** Acts ①→⑧ DONE (the contract is BUILT and green — see SESSION_STATE's handoff dashboard); next = S3-5b. Original first act:
-  the Foundry toolchain spike. Spec: `docs/reference/SEASONS_ORIGIN_HARVEST_AAA_BENCHMARK.md`
-  §0.7 · §0.14-C · §0.17, and `docs/direction/SETTLED_RULES_DO_NOT_RELITIGATE.md` §8.
+  the Foundry toolchain spike. **THE LAW FILES for S3 (read these FIRST):**
+  `docs/reference/MERITDISTRIBUTOR_CONTRACT_SPEC.md` (FROZEN — supreme on the contract) ·
+  `docs/reference/S3_SEASON_CASH_RAIL_MASTER_PLAN.md` (the execution map). The WHY:
+  `docs/reference/SEASONS_ORIGIN_HARVEST_AAA_BENCHMARK.md` §0.7 · §0.14-C · §0.17, and
+  `docs/direction/SETTLED_RULES_DO_NOT_RELITIGATE.md` §8.
 - **§8-⑧ (founder, 2026-07-24): there is NO legal gate anywhere in this system.** The
   merit rail pays autonomously the moment the contract is live on mainnet. Never
   re-insert a legal step, in any doc or report.

@@ -122,6 +122,18 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
     S2c-② — le surlignage YOU de /season) · `seasonBounty` future. **DEUX clés restent
     à flipper** : `seasonBounty` (dans le commit S3 qui active le rail d'argent) et
     `seasonOwnRow` (avec la tranche auth-zone du surlignage YOU).
+- [ ] **S3 — RAIL D'ARGENT (progrès ingénierie 24-07 ; aucune surface design livrée, +0
+  couleur brute).** Le contrat est GELÉ et CONSTRUIT : **MeritDistributor** (nom CODE ;
+  le LABEL produit reste « Season Bounty Pool ») — spec v4
+  `docs/reference/MERITDISTRIBUTOR_CONTRACT_SPEC.md` · `.sol` vert 56/56 + filet
+  adversarial (invariants 8×50k zéro-échec · fork mainnet vert · slither 0 haute/moy) ·
+  outillage + anti-farm + fenêtres d'argent construits. **LA CARTE des surfaces season
+  restantes = le MASTER PLAN 14 tranches** (`docs/reference/S3_SEASON_CASH_RAIL_MASTER_PLAN.md`)
+  — NEXT = S3-5b, puis les 2 GATES WIREFRAME fondateur (A : admin Rail 02 · B : front
+  pot-live en 4 états temporels, PRÉ-REQUIS : les maquettes docs/design/seasons/ RE-ÉMISES
+  corrigées §0.14-E). La clé `seasonBounty` reste FUTURE jusqu'au commit d'activation
+  S3-11 (ne JAMAIS flipper tôt) ; mainnet-direct, aucun testnet (§8-①) — le badge FUTURE
+  tient jusqu'à la mise en ligne mainnet.
 - [x] **`/join` checkout (C1.1→C1.4)** — rend via le système (tokens only, 0 couleur brute),
   motion tokens (`animate-in fade-in`), 2 modes vérifiés sur la surface ; quote · money path ·
   gate historique · économie honnête. *(Les cases globales Mouvement/2 modes/Adoption restent
