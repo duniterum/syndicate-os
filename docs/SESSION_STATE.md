@@ -177,12 +177,29 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > chain green): wash-loop · no-cap pin · floor gates · end-to-end antiFarm→potPolicy
 > exact-sum. Engraved notes retrued (readmodel line-378 + both seasonConfig deferrals).
 > ✅ NO DEPLOY (filter consumed by nothing routed yet).
-> **NEXT ACT — S3-5 (server dark-wiring):** delta-window standings (through antiFarm) ·
-> seasonPotReadmodel (③b6a, event-only) + the alarm set · /api/season pot object (DARK) ·
-> own-row claimStatus · operator dispute route (server recompute) · interim-announcement
-> registry · GOAL config (non-hashed) · member+founder bell kinds — gate: FR bell sentences
-> FULL TEXT on the founder's screen + guard-forbidden-copy amended same commit (§8-③).
-> Then the founder-visible moments: mockup re-emission → WIREFRAME A → the money sheet.
+> ✅ **EIGHTH ACT — S3-5a THE MONEY-WINDOW SPINE (commit `3e08eb4`):**
+> `deltaWindows.ts` — the half-open (prevSnapshot, currentSnapshot] window over the XP
+> trail, contiguous by construction (PROVEN: consecutive windows never share an event —
+> the double-pay class dead BEFORE any payout root exists); enrichment fail-closed
+> (acquisition history for the holding period · referred purchase + XP-at-snapshot for the
+> floor-gate); season-close = sealingBlock−1 (snipe-proof; the trailing-XP exception with
+> zero special-casing); `nextWindow()` = the ONE window definition executor+dry-run share.
+> `seasonPotReadmodel.ts` — the contract's PURE event-only server twin (never balanceOf;
+> mirrors the CLOSE/FINAL distinct draw + revoke carryover-merge + withdrawal-consumes-
+> announcement EXACTLY; impossible transitions throw → lastGood); publicPot(s)=committed[s]
+> +open-reserved+carryover; DARK until the first committed credit; THE ALARMS: conservation
+> · pending-activatable · unswept-past-expiry · round-below-era · next-season-rules-missing
+> (the silent-stall fix). `buildSeasonReadModel` gains the SERVER-ONLY `moneyContext`
+> (additive — nothing public moves). Vocabulary compliance: the protocol-time guard went
+> RED on my draft (the block-time cache vocabulary is BANNED outside backbone) → season
+> domain renamed actAtSec/lastAcquiredAtSec/timeByBlock (the receiptLookup precedent) —
+> the FULL api chain is GREEN end-to-end. Guard now **1,278 checks**. ✅ NO DEPLOY.
+> **NEXT ACT — S3-5b (the served wiring):** /api/season pot object (DARK) + shared
+> PotFragment type · own-row claimStatus enum · operator dispute route (server recompute
+> verdict) · interim-announcement registry (founder_root) · GOAL config (non-hashed +
+> the GOAL-not-in-rulesHash tests) · member+founder bell kinds — gate: the FR bell
+> sentences FULL TEXT on the founder's screen + guard-forbidden-copy amended same commit
+> (§8-③). Then: mockup re-emission → WIREFRAME A → the money sheet at S3-9.
 > **DESIGN DISCIPLINE (founder mandate 2026-07-24, STANDING for all S3 contracts):** several
 > INDEPENDENT senior AAA lenses + an ADVERSARIAL pass BEFORE any `.sol` is frozen; Claude arbitrates
 > scope/slicing/ship. Guardrails every time: merit≠chance · USDC≠SYN · company money≠70/20/10 ·
