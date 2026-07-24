@@ -2,9 +2,10 @@
 *Harvest of Supa-Exchange's gamification, reframed to doctrine, aligned to the 9 eras.*
 
 *DIRECTION doc. **Phase-5 (gamification), post-MVP** — captured now so nothing is lost; not
-built yet. Founder is the authority; only **LEGAL + SECURITY + TRUTH-FIRST** bind. Governed by
-`SETTLED_RULES_DO_NOT_RELITIGATE.md` + `GAMIFICATION_LEGAL_DOCTRINE.md`. A crypto lawyer
-validates the money-touching items + the new contract before launch. Written 2026-07-11 after a
+built yet. Founder is the authority; only **SECURITY + TRUTH-FIRST** bind. Governed by
+`SETTLED_RULES_DO_NOT_RELITIGATE.md`. **§8-⑧ (founder 2026-07-24): NO legal gate anywhere —
+the rail is autonomous the moment the contract is live on mainnet; every "lawyer-gated" line
+below is superseded by that ruling.** Written 2026-07-11 after a
 full read of the Supa engine (server + admin + contract).*
 
 > **⚖️ ADDENDUM 2026-07-23 — THE FIVE RULINGS (founder; `SETTLED_RULES` §8 is the
@@ -288,7 +289,7 @@ Structured this way (company money · discretionary · effort-based · USDC not 
 not the silence. The harvested **Merkle distribution** (`seasonDistributionService` + pool
 pattern) is legitimately reused for these discretionary bounties and for the **introduction
 commission** (CommissionRouter) — payment for defined work, never a conversion of recognition
-into cash. Lawyer-gated at launch.
+into cash. Autonomous at mainnet (§8-⑧).
 
 ---
 
@@ -300,18 +301,18 @@ into cash. Lawyer-gated at launch.
   sale/era contract** (the 9-era schedule the seasons align to).
 - Order inside Phase 5: (1) recognition XP + quests + badges (off-chain-safe, no money) → (2)
   season=era binding + admin lifecycle in the shell → (3) recognition catalog → (4) *optional*
-  cash bounty rail + the aligned on-chain contract (lawyer-gated).
+  cash bounty rail + the aligned on-chain contract (autonomous at mainnet, §8-⑧).
 
 Do **not** pull this ahead of the content suite / auth / RBAC; it depends on them. Capture-now,
 build-at-phase.
 
 ---
 
-## 10. Open decisions / lawyer gates
+## 10. Open decisions (founder's money calls — §8-⑧: no legal gate exists)
 
 - **New sale/era contract design** — the 9-era schedule + the recognition/season binding, built
-  together (fixes the per-wallet cap defect too). Lawyer + audit.
-- **Any USDC to members** (bounty rail / commission) — lawyer-gated (structure per §8 + SETTLED_RULES).
+  together (fixes the per-wallet cap defect too). Audit-gated (engineering only).
+- **Any USDC to members** (bounty rail / commission) — structure per §8 + SETTLED_RULES; autonomous at mainnet (§8-⑧).
 - **On-chain vs off-chain recognition** — keep non-transferable either way; decide storage at
   build (off-chain DB is simplest and safe; on-chain SeatRecord/1155 for durable collectibles).
 - **Which on-chain actions feed XP** — receipts, introductions, contributions (derive from the
@@ -381,7 +382,7 @@ the profile surface).
   only; Visibility Law opt-in self-publish.
 - **Alias** — opt-in display name, DEFAULT = the seat number (honour-roll canon: a member who
   wants no name stays a number). Free alias field lands with the Standing slice (Phase 5);
-  SOLD aliases stay lawyer-gated (LIVING_ORGANISM §5). Never required.
+  SOLD aliases are a separate future slice (LIVING_ORGANISM §5). Never required.
 - **Email — NOT harvested.** Supa stores email + verification; storing an email is identity
   data and cuts against the anti-doxx minimal posture (ADR-003). Notifications stay ON-SITE;
   any email channel is a separate founder decision, never a silent add.
@@ -453,7 +454,7 @@ header bell slot is already reserved in the Member Home shell wireframe.
    **AMENDED 2026-07-23 (rulings ②③):** the pot figure and the member's own merit amount
    MAY render — the money is shown; the effort-reward (cash) card renders as its own
    VISUALLY SEPARATED rail beside the recognition card, and cash-rail ACTIVATION keeps
-   its lawyer pass (Phase-5, as planned).
+   its own separated rail (autonomous at mainnet, §8-⑧ — no legal gate).
 4. **Quests strip slot** (Coming soon — Phase 5) — 2–3 quest chips (daily/weekly) with XP +
    axis tag; Learn & Earn = earn **XP** quests ride here (SETTLED).
 5. **"While you were away"** (Coming soon — event indexer) — the return-visit engine from the

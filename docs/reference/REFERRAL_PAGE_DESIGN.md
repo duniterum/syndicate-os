@@ -54,7 +54,7 @@ ladder + link, the system justifies:
 3. **Ladder & recognition as a sub-system** — the full 7 rungs, a dated history of rate raises
    (SourceTermsUpdated), promotion-due detail, the member's OWN recognition rank (`goodRankings` +
    `rankingDoctrine` exist; own-row, NEVER a board of others).
-4. **The season / competition axis** — XP, recognition rankings, the lawyer-gated merit pot
+4. **The season / competition axis** — XP, recognition rankings, the merit pot (autonomous at mainnet, §8-⑧)
    (Phase-5; the Supa gamification engine is the quarry). Recognition, never a cash promise.
 5. **The flagship conversion copy (REFERRAL-SHOWCASE)** — the unique-claim lines ("the payout is
    part of the purchase" · "can never break a sale — and can never be lost" · "nothing to claim") —

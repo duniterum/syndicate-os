@@ -104,8 +104,9 @@ Founder-gated (decision/wireframe/content): 2, 3, 4, 6, 8, 9, 11, 12, 14, 15, 16
 - **Learn & Earn = XP = recognition, never cash** (XP→USDC conversion is the ONE banned mechanism).
   SETTLED_RULES §2. Not a defect — do not add a "never a payment" negation.
 - **The season cagnotte = REAL USDC** — the COMPANY's money, merit/effort-based, discretionary per
-  season, USDC-not-SYN, never touches 70/20/10, no random draw, lawyer-gated = a legal marketing
-  gift. SETTLED_RULES §2+§8; SEASONS §8. The build (Merkle/params) = `gam-payout`, Phase-5, deferred.
+  season, USDC-not-SYN, never touches 70/20/10, no random draw, founder-gated (money decision
+  only — §8-⑧: no legal gate) = a marketing gift from the company. SETTLED_RULES §2+§8 (incl.
+  §8-⑧); SEASONS §8. The build (Merkle/params) = `gam-payout`, Phase-5, deferred.
 - **WE SHOW THE MONEY** — `CANON_VISIBILITY_LAW.md` (TIER-0): "on a chain, hiding does not exist";
   the pot, payouts, treasury are SHOWN and verifiable, never hidden. **"We're a company, not a
   charity" (founder).** The only forbidden thing: a member directory / wallet↔person link /

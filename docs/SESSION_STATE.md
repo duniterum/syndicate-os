@@ -225,17 +225,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   server-side) · §0.17-④ "players"→"builders" · 4 own-row-future comments
 >   re-trued to the S2d reality · DESIGN_ROADMAP featureStatus box re-trued ·
 >   the missing 8d471ee prod-seal record engraved · FOUNDER-PENDING completed
->   (+footprint XP proposal, +lawyer pass).
+>   (+footprint XP proposal).
 >   ④ GUARD NETS TIGHTENED: og:/twitter:description now sync + GUARDED
 >   verbatim-equal to the registry "/" (the S2c-② miss, closed structurally) ·
 >   the MemberAccess lifecycle exemption now PAID by a chassis check (the
 >   wallet cards' own labels) · stale guard comments re-trued.
+> - **⚖ THE AUTONOMOUS PAYMENT RULING [this commit] (founder, 2026-07-24 —
+>   SETTLED_RULES §8-⑧):** THE LEGAL GATE IS REMOVED FROM EVERYWHERE — legal
+>   review is the founder's own business matter, never a system gate, never a
+>   session's concern. The rail pays REALLY and AUTONOMOUSLY the moment the
+>   contract is live on mainnet and funded (§0.15). Swept from every living
+>   doc/list/config; frozen archives superseded by §8-⑧. NO agent ever
+>   re-inserts a legal gate — answered forever.
 > - **NEXT:** S3 — the Foundry workspace + SeasonBountyPool + the cash rail per
 >   §0.17 (the founder's money decisions gate it: « Engager au pot » amount +
->   cadence · XP weights + footprint-rung XP · the floor pair · lawyer pass at
->   activation). S3 OPENS WITH: the forge toolchain spike, then the contract
->   from §0.7/§0.14-C/§0.17 as amended — the dossier is now
->   contradiction-free for it.
+>   cadence · XP weights + footprint-rung XP · the floor pair). S3 OPENS WITH:
+>   the forge toolchain spike, then the contract from §0.7/§0.14-C/§0.17 as
+>   amended — the dossier is now contradiction-free for it, and the rail is
+>   AUTONOMOUS at mainnet (§8-⑧).
 > - **🏆 S2-FINAL SEALED IN PROD (Replit green 2026-07-24, founder-pasted — the
 >   record the pre-S3 audit found missing, now engraved):** the 8d471ee cycle
 >   deployed and verified — /admin/seasons anonymous = the neutral 404 wall
@@ -250,9 +257,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   cadence (« Engager au pot ») · CONFIRM XP weights + $20 min-cash floor +
 >   the eligibility floor pair (S3 gate) · FOOTPRINT XP at capital-rung
 >   crossings (+100/rung proposed 2026-07-23, unfarmable — awaiting his OK,
->   decide WITH the weight table) · the LAWYER PASS at bounty activation
->   (§0.6/§8-① — before any real payment) · EN copy at each remaining surface
->   gate. The 3 closing notes are CLOSED — nothing of them remains pending.
+>   decide WITH the weight table) · EN copy at each remaining surface
+>   gate. (The former legal-pass item was REMOVED by §8-⑧ — never re-listed.) The 3 closing notes are CLOSED — nothing of them remains pending.
 >   **DEPLOY BACKLOG: EMPTY (every session commit sealed in prod).**
 
 > **▶ 📌 2026-07-23 — THE SEASONS + SWAPRAIL ARC OPENED (the resume point; the 22-07
@@ -424,7 +430,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   flip in their go-live commits, §0.14-E
 >   → S3 Foundry workspace + the merit primitive + the
 >   cash rail (seal round + 48h-pre-announced interims per §0.17 · « Engager au
->   pot » vs « Réserve » · activation lawyer-gated as planned) → patronage mint
+>   pot » vs « Réserve » · autonomous at mainnet per §8-⑧) → patronage mint
 >   quick-win (with AW-5) →
 >   Learn & Earn → SwapRail V1 (AssetRouter + thirdweb adapter) → K4 → P.
 >   M-EVO-3 + A5 keep their engraved specs and slot where they serve.
@@ -895,7 +901,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > - **THE ARC'S GATE — ALL THREE CLOSED (founder, 2026-07-22):** AW-1 YES —
 >   `0x244531C571966F90F4849E03a507543D90f9C721` joins the founder set as
 >   **"Founder Private Wallet"** (7 mints flip) · AW-2 YES — the era-price
->   meter ships ("informatif"; H2-⑫ pin overridden dated, lawyer at Phase 5)
+>   meter ships ("informatif"; H2-⑫ pin overridden dated — former legal-pass
+>   clause: removed, §8-⑧)
 >   · AW-3 GO + the CADENCE ORDER: **ONE Replit cycle carries A1+A2+A3+A4**
 >   (no migration; A5 alone keeps its migration cycle). FOUNDER-PENDING:
 >   nothing on this arc. Parked as recorded: Q35 legal set · Q39/Q40/Q42
@@ -1572,8 +1579,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   session/seat/membership; the `Sx` access-state codes are internal (S7 ≠ Seat 7).
 > - **WE SHOW THE MONEY** (Visibility Law TIER-0 — "company, not charity"; hiding
 >   an on-chain amount is theatre). XP/Learn&Earn = recognition, never cash; the
->   season cagnotte = REAL company USDC (merit, lawyer-gated = `gam-payout`,
->   Phase-5 deferred). "never a cash figure" copy was itself a defect.
+>   season cagnotte = REAL company USDC (merit, autonomous at mainnet (§8-⑧) =
+>   `gam-payout`, Phase-5 deferred). "never a cash figure" copy was itself a defect.
 > - A member surface: connected = the WORK (no explanatory hero); not-signed =
 >   the teaser/hero. Own-row only, never a directory (ADR-003).
 > - Prod manual acts leave NO repo trace — never recite a stale "founder to-do";
@@ -4942,7 +4949,7 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   force (no KYC, no directory, own-row/aggregate, `memberNumber→wallet` server-only — never
   built into a served payload), and the build-time envelope leak scans still run — so nothing
   is doxxed today; only the automated runtime catch was lifted. Financial-framing net expected
-  back at the Phase-5 crypto-lawyer pass. This ALSO resolved the member-standing **500** (the
+  back at Phase 5 (former legal-pass clause: removed, §8-⑧). This ALSO resolved the member-standing **500** (the
   net was false-positiving a member's own 64-hex receipt tx as a 40-hex address).
 
 - **DECIDED — the whole PROTOCOL is LIVING (`docs/direction/WHITEPAPER_LIVING_DOCTRINE.md`).** Not a
@@ -5144,8 +5151,8 @@ markers update. New session work lives BELOW in "Phase 3–6 / later", never wov
 
 *A holding area for work decided/researched this session. It does NOT reorder the frozen Phase-2 list; each
 item slots into Phases 3–6 at build time, after its prerequisites. Format: name · status · source doc.
-Status: ⬜ PENDING · 🔒 DEFERRED (lawyer-gated). All money-touching items governed by
-`SETTLED_RULES_DO_NOT_RELITIGATE.md` + a crypto-lawyer pass at Phase 5.*
+Status: ⬜ PENDING · 🔒 DEFERRED (founder's call — §8-⑧: no legal gate). All money-touching items governed by
+`SETTLED_RULES_DO_NOT_RELITIGATE.md` (former legal-pass clause: removed, §8-⑧).*
 
 **Phase 3 — the Guide's brain (deterministic Guide already SEALED; these extend it)**
 - Guide **security spine** — isolated endpoint · token rate-limit · budget cap + circuit-breaker →
@@ -5184,7 +5191,7 @@ Status: ⬜ PENDING · 🔒 DEFERRED (lawyer-gated). All money-touching items go
 - Season/recognition **admin lifecycle** in the RBAC admin shell (state machine · next-step engine · audit ·
   archive) · ⬜ PENDING · src `SEASONS_ENGINE_ON_SYNDICATE_OS.md` §6.
 - **Funding = company money, discretionary, effort-based, USDC-not-SYN, never touches 70/20/10** (the cash
-  rail; reuse the Merkle infra) · 🔒 DEFERRED (lawyer-gated) · src `SEASONS_ENGINE_ON_SYNDICATE_OS.md` §8 + `SETTLED_RULES`.
+  rail; reuse the Merkle infra) · 🔒 DEFERRED (founder's call — §8-⑧: no legal gate) · src `SEASONS_ENGINE_ON_SYNDICATE_OS.md` §8 + `SETTLED_RULES`.
 
 **Phase 5–6 — identity & income economy**
 - **`/staff` — PUBLIC OPERATOR REGISTRY (anti-impersonation)** · ⬜ PENDING (record, do not build; own slice, CAN
@@ -5206,9 +5213,9 @@ Status: ⬜ PENDING · 🔒 DEFERRED (lawyer-gated). All money-touching items go
   src `LIVING_ORGANISM_MASTER_PLAN.md` §9.
 - Shareable cards / OG (consent-gated identity; viral) · ⬜ PENDING (non-financial) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
 - Verifiable reputation (multi-axis; never wealth-ranking) · ⬜ PENDING (non-financial) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
-- Address labeling **service** (verified, pay-to-label, never impersonate) · 🔒 DEFERRED (lawyer-gated) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
-- Aliases (ENS-style, sold; tied to seat; non-tradeable) · 🔒 DEFERRED (lawyer-gated) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
-- Guide premium tier (bundle into a recognition tier; free Guide stays fully truthful) · 🔒 DEFERRED (lawyer-gated) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
+- Address labeling **service** (verified, pay-to-label, never impersonate) · 🔒 DEFERRED (founder's call — §8-⑧: no legal gate) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
+- Aliases (ENS-style, sold; tied to seat; non-tradeable) · 🔒 DEFERRED (founder's call — §8-⑧: no legal gate) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
+- Guide premium tier (bundle into a recognition tier; free Guide stays fully truthful) · 🔒 DEFERRED (founder's call — §8-⑧: no legal gate) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
 - White-label truth-first Guide / verification kit (post-MVP, separate business) · 🔒 DEFERRED · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
 
 **Transparency signature moves (cheap, high-differentiation; interleave)**
@@ -5227,9 +5234,10 @@ there — this block ADDS to it, never replaces it.
 
 **Conflicts with existing canon — NONE found this session.** `SEASONS_ENGINE` reconciles the old `/learning`
 "no reward" comment as "no **cash** reward" (consistent with earning **XP** = recognition), and the "new
-sale/era contract" is a future lawyer+audit-gated design, not an override of a locked decision. No
+sale/era contract" is a future audit-gated (engineering only — §8-⑧) design, not an override of a locked decision. No
 genuine RED-LINE mechanism to flag: the seasons doc itself drops the banned mechanisms (XP→USDC,
-SYN-as-reward, boost/multiplier, cash-convertible discount) and lawyer-gates the cash rail. Per
+SYN-as-reward, boost/multiplier, cash-convertible discount) and keeps the cash rail founder-gated
+(money decisions only — §8-⑧: no legal gate). Per
 `SETTLED_RULES`, earn/referral/season/pot/Learn&Earn=XP are settled and NOT re-flagged.
 
 ## Slice protocol (every step)

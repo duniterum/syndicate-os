@@ -1,8 +1,9 @@
 # SETTLED RULES — DO NOT RE-LITIGATE
 *DIRECTION doc. **Purpose: kill the recurring "is X allowed?" questions at the root** so no
 session — founder, Claude (advisor), or Claude Code — ever wastes time re-deciding them. The
-founder is the authority; only **LEGAL + SECURITY + TRUTH-FIRST** bind. Not legal advice — a
-crypto lawyer validates the money-touching items before any launch (Phase-5 / post-MVP).*
+founder is the authority; only **SECURITY + TRUTH-FIRST** bind. (The former lawyer-gate
+clause was REMOVED by §8-⑧, founder 2026-07-24 — legal review is the founder's own business
+matter, never a system gate and never an agent's concern.)*
 
 *Written 2026-07-11. Companion to `GAMIFICATION_LEGAL_DOCTRINE.md` (full recognition-points
 structure) and `src/config/sourceAttributionTerminology.ts` (referral/introduction copy).
@@ -120,8 +121,8 @@ marketing. The ONLY red lines an agent may raise (each flagged ONCE, then procee
 ② a chain-refutable claim (no invented promos — no list price exists; the FIRST
 purchase decides the seat). Agent caution presented as "our laws" is the
 anti-blocking disease — CANON_LOI_ANTIBLOCAGE applies. Prior narrower pins (the
-H2-⑫ era-meter line-on-crossing rule) were founder-overridden dated 2026-07-22;
-the crypto-lawyer pass at Phase 5 confirms the money-adjacent items as planned.
+H2-⑫ era-meter line-on-crossing rule) were founder-overridden dated 2026-07-22.
+(The former Phase-5 lawyer-pass clause here was removed by §8-⑧, 2026-07-24.)
 
 ### 8. THE SEASONS-ARC RULINGS → **SETTLED** (founder, 2026-07-23 — answered ON the
 advisor-dossier study; none may be re-opened, re-flagged, or re-explained):
@@ -156,6 +157,19 @@ advisor-dossier study; none may be re-opened, re-flagged, or re-explained):
   stay **seated members** (the Delta two-level model). "Players/participants/users"
   never on a surface; code identifiers (e.g. the `playersEarning` wire key) stay
   code-register. Never re-open, never re-benchmark.
+- **⑧ THE AUTONOMOUS PAYMENT RULING (founder, 2026-07-24 — « je veux un système
+  autonome qui marche dès que le smart contract est en ligne on mainnet et qui paie
+  réellement au bon moment »).** THE LAWYER GATE IS REMOVED FROM EVERYWHERE — every
+  activation path, pending list, doc clause, and chat line. Legal review is the
+  founder's OWN business matter, on his own time — never a system gate, never a
+  session's concern, never a blocker. The moment SeasonBountyPool is LIVE on mainnet
+  and funded, the rail pays REALLY and AUTONOMOUSLY at its engraved moments (§0.15
+  zero-click: the seal round automatic · interims/final = founder rights · claimFor
+  pushes, members pay no gas). What stands before mainnet is ENGINEERING ONLY (§8-①
+  care protocol: Foundry suite · Fuji rehearsal · the founder's signed deploy) —
+  never a legal-review step. NO agent re-raises, re-suggests, or re-inserts a legal
+  gate on ANY surface, doc, or report — ANSWERED FOREVER; any residual "lawyer"
+  wording in frozen archives is superseded by this ruling.
 - **⑦ THE DISPLAYED SEAT ORDINAL = THE LIVE ENGINE'S ANSWER (founder, 2026-07-23
   evening — chain-verified live: `memberNumberOf(0x3ff…894f)` = 11, `memberByNumber(7)`
   = empty forever).** A V3-minted seat overrides the frozen genesis roster and
@@ -171,5 +185,5 @@ advisor-dossier study; none may be re-opened, re-flagged, or re-explained):
 risks — the founder has settled them here. **Flag ONLY a genuine RED-LINE mechanism** (yield on
 capital · SYN-as-reward · gambling · cash-convertible recognition), and flag it **once**, then
 proceed. When a new case appears, apply **THE TEST** above and resolve it yourself — do not send
-the founder into a repeat explanation. This doc is authoritative; the money-touching items still
-get a crypto-lawyer pass at Phase-5 before launch.
+the founder into a repeat explanation. This doc is authoritative. (The former "lawyer pass
+before launch" close was removed by §8-⑧, founder 2026-07-24 — never re-insert it.)

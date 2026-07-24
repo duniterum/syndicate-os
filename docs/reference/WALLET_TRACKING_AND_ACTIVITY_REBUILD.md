@@ -138,7 +138,7 @@ BTC.b `0x152b9d0FdC40C096757F570A51E494bd4b943E50`, WETH.e `0x49D5c2BdFfac6CE2BF
 2. ✅ **AW-2 CLOSED — YES, the era-price meter ships** ("oui car c'est informatif"): factual
    bytecode disclosure ("Era 1: 100 SYN/$ — N seats before era 2 turns the page"). This
    OVERRIDES the H2-⑫ line-on-crossing pin by founder decision (dated); the guard pin is
-   amended in the A3 slice; crypto-lawyer confirms at Phase 5 as planned.
+   amended in the A3 slice. (Former legal-pass clause: removed, SETTLED_RULES §8-⑧.)
 3. ✅ **AW-3 CLOSED — GO** on the arc. **FOUNDER CADENCE ORDER: ONE Replit cycle for the
    whole arc** (each cycle costs him hours) — A1+A2+A3+A4 are built and gated separately
    but ride ONE deploy (all additive/fail-closed, no migration). Only A5 keeps its own

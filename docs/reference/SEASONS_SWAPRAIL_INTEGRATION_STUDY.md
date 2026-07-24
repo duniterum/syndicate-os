@@ -236,7 +236,8 @@ self-test + `verifyClaim`). ⚠️ **Tension à arbitrer par le founder :** le r
 « pas de nouveau smart contract ~6 mois » (`MVP_FINAL_MASTER_BRIEF`). Fallback propre si le gel
 tient : démarrer le rail cash avec le `SeasonRewardsPool` **existant en 1 pool par round**
 (déployé à chaque round — zéro nouveau code), et basculer sur `SeasonBountyPool` au dégel.
-Lawyer-gate au moment d'activer le rail cash (déjà cadré par le dossier légal).
+*(SUPERSÉDÉ 2026-07-24 — SETTLED_RULES §8-⑧ : AUCUNE barrière légale nulle part ; le rail
+est AUTONOME dès que le contrat est en ligne sur mainnet.)*
 *(RÉSOLU 2026-07-23 : ruling founder ① — le gel est amendé, `SeasonBountyPool` se construit
 et se déploie sur le protocole de soin. Voir l'en-tête d'engraving.)*
 
@@ -310,7 +311,7 @@ Filtre pour tout ajout : **un ACTE ou un SERVICE ✅, jamais un rendement ❌.**
 | Commission referral (SourceRegistry) | LIVE (paiement direct V3 dans la tx acheteur) | growth per `SPEC_REFERRAL_SYSTEM` (R-slices) |
 | **Patronage Archive1155** (0,50/5 USDC → `treasury()`) | contrat DÉPLOYÉ, **mint UI OFF** (« do not enable mint UI ») | **QUICK WIN #1 : la surface de mint** (founder-gated) |
 | Fee SwapRail (developer fee thirdweb) | designé (§3) | V1 avec l'Asset Router |
-| Vente d'alias (ENS-like, non-tradeable) | designé, lawyer-gated | post-MVP |
+| Vente d'alias (ENS-like, non-tradeable) | designé (tranche future, décision fondateur) | post-MVP |
 | Labeling d'adresse (modèle Etherscan/Arkham — « le plus fort » per canon) | designé | post-MVP |
 | Guide premium · marketplace fee (Ph.12, thirdweb Marketplace V3 le jour venu) · x402 API (Ph.11) | futur | — |
 | Ajouts doctrine-safe possibles | royalties EIP-2981 (collectibles season), drops premium, merch, off-ramp fee, BD/PARTNER | backlog |
@@ -342,7 +343,8 @@ Filtre pour tout ajout : **un ACTE ou un SERVICE ✅, jamais un rendement ❌.**
    courbe de mérite — toujours déterministe).
 4. ~~Gel contrats 6 mois~~ — *(RÉSOLU 2026-07-23, ruling ① : `SeasonBountyPool` se construit.)*
 5. **Nom de la route ranking** (`/season` proposé) + wording final de la cagnotte.
-6. Lawyer-gate à l'activation du rail cash (dossier légal déjà constitué — Phase-5 pass, comme prévu).
+6. *(Point supprimé 2026-07-24 — SETTLED_RULES §8-⑧ : aucune barrière légale ; le rail paie
+   réellement, tout seul, dès que le contrat est vivant sur mainnet et financé.)*
 
 ---
 
@@ -354,7 +356,7 @@ Filtre pour tout ajout : **un ACTE ou un SERVICE ✅, jamais un rendement ❌.**
    Home (Season + Quêtes) + section admin Seasons (rail 1) — wireframe + preview gate chacune.
 3. **S3 — Le contrat + rail Cash** : Foundry workspace + `SeasonBountyPool` (protocole de soin,
    ruling ①) + `season-merkle` round-aware + pipeline rounds par palier + « Ajouter des fonds » +
-   carte membre « Récompense d'effort ». Activation lawyer-gated (Phase-5 pass).
+   carte membre « Récompense d'effort ». Activation AUTONOME au mainnet (§8-⑧).
 4. **Quick win income** : surface de mint patronage Archive1155 (founder-gated; lié AW-5).
 5. **Learn & Earn** : moteur quiz→XP (contenu à nous), axes Verifier/Historian.
 6. **SwapRail V1** : AssetRouter + ThirdwebBridgeAdapter (décisions §8-2 requises) + funding du

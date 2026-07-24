@@ -19,7 +19,8 @@
  * ton bug. Ce script produit un arbre qui matche le contrat à 100 %, et le PROUVE
  * (offline + on-chain via verifyClaim) AVANT tout mainnet.
  *
- * ⚠️ DOCTRINE : ceci est le RAIL CASH DISCRÉTIONNAIRE (bounty d'effort, USDC, lawyer-gated).
+ * ⚠️ DOCTRINE : ceci est le RAIL CASH DISCRÉTIONNAIRE (bounty d'effort, USDC — autonome
+ * dès que le contrat est en ligne sur mainnet, SETTLED_RULES §8-⑧ : aucune barrière légale).
  * Ce n'est PAS le reward par défaut d'une season (qui est la RECONNAISSANCE, sans claim).
  * Merit jamais chance ; USDC jamais SYN.
  *

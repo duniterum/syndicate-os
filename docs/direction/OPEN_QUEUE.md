@@ -22,8 +22,8 @@
 > - **ARC ORDER:** S1 season data foundation → S2 recognition surfaces (/season · home
 >   section · member slots · admin rail 1 — wireframe + preview gate each) → S3 Foundry
 >   workspace + SeasonBountyPool + cash rail (seal round + 48h interims + final round
->   per §0.17 · « Engager au pot » vs « Réserve » · activation lawyer-gated as
->   planned) → patronage mint quick-win (with AW-5)
+>   per §0.17 · « Engager au pot » vs « Réserve » · autonomous at mainnet,
+>   §8-⑧) → patronage mint quick-win (with AW-5)
 >   → Learn & Earn → SwapRail V1 → K4 → P. M-EVO-3 + A5 keep their engraved specs and
 >   slot where they serve the arc.
 > - **✅ THE HARVEST + WORLD BENCHMARK ENGRAVED (same day, founder order "on prend ça,
@@ -111,7 +111,8 @@
 >   (operator-gate 16 · nav-drift 11 · feature-truth 590); measured on LIVE
 >   prod data; the neutral wall verified retaking the page on the server's
 >   false answer. REMAINING IN THE ARC: S3 only (contract + cash rail —
->   gated on the founder's money decisions + the lawyer pass).
+>   gated on the founder's money decisions ONLY; §8-⑧ removed every legal
+>   gate: the rail is autonomous the moment the contract is live on mainnet).
 > - **🔴 STILL FOUNDER-PENDING (re-trued after the day's decisions):** AW-5
 >   wallet name (unchanged) · SwapRail decisions (developer fee % · fee pipe
 >   address · thirdweb account ~$99/mo · placement) · pot COMMITMENT amount +
@@ -146,7 +147,7 @@
 >   set, **label "Founder Private Wallet"** (his naming). The 7 mints flip to Founder.
 > - ✅ **AW-2 CLOSED (founder, 2026-07-22): YES — the era-price meter ships** ("oui car
 >   c'est informatif"). Founder override of the H2-⑫ line-on-crossing pin, dated; the
->   guard pin is amended in A3; crypto-lawyer confirms at Phase 5 as planned.
+>   guard pin is amended in A3. (Former legal-pass clause: removed, §8-⑧.)
 > - ✅ **AW-3 CLOSED (founder, 2026-07-22): GO** — and the CADENCE ORDER: **ONE Replit
 >   cycle carries the whole A1+A2+A3+A4 arc** (no migration, all additive/fail-closed;
 >   each cycle costs the founder hours). Only A5 keeps its own cycle (real migration —

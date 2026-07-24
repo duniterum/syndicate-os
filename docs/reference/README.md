@@ -22,7 +22,8 @@ Do NOT load these at boot; open the relevant one when its slice is on the table.
   gain-promise imagery (rocket/moon/chart-up/diamond-pump/raining-money/dice),
   not honest function symbols (vault, gift, trophy, receipt, treasury).
 - **Season-pot payouts are allowed** (merit never chance) — do not re-raise as a
-  doctrinal impossibility, and do not deflect the legal question to "ask a
-  lawyer": the research is here; counsel confirms mechanics, it is not a blocker.
+  doctrinal impossibility, and NEVER deflect to a legal gate: SETTLED_RULES §8-⑧
+  (2026-07-24) removed it everywhere — the rail is autonomous at mainnet, and any
+  legal review is the founder's own business matter, never ours.
 - **never-message-first = external channels only**; in-app is a consented reading
   space, governed by preferences/quiet-hours/rate-limits, never a first-message ban.

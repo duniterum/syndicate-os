@@ -14,8 +14,8 @@
  * The founder judged this runtime net not necessary for now and authorized
  * removing it (see the ADR-003 amendment of the same date). Enforcement is gated
  * behind DISCIPLINE_ENFORCED so re-enabling is a ONE-LINE flip when it becomes
- * necessary again (the financial-framing net is expected back at the Phase-5
- * crypto-lawyer pass). The check LOGIC is deliberately kept intact (and already
+ * necessary again (a founder call, whenever HE wants it — never a legal gate:
+ * SETTLED_RULES §8-⑧). The check LOGIC is deliberately kept intact (and already
  * bug-fixed: the address pattern is boundary-aware so a member's own 64-hex
  * receipt tx no longer false-positives), so a future re-enable is safe and free.
  *

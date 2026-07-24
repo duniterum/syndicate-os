@@ -63,7 +63,7 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   // key SPLIT into three — S1→S3 ship progressively and one key cannot
   // express it. Each flips LIVE in its own go-live commit, never before.
   // (seasonRanking flipped LIVE at S2b — it lives in the LIVE section above.)
-  seasonBounty: { status: "future", since: "2026-07-23", where: "the seasons arc S3 (the merit primitive + the effort-reward rail; lawyer pass at activation)" },
+  seasonBounty: { status: "future", since: "2026-07-23", where: "the seasons arc S3 (the merit primitive + the effort-reward rail — autonomous the moment the contract is live on mainnet, §8-⑧)" },
   seasonOwnRow: { status: "future", since: "2026-07-24", where: "the /season YOU own-row highlight (auth-zone wiring; CANON_ACCESS_MODEL own-row exception)" },
   rateRaiseHistory: { status: "future", since: "2026-07-19", where: "the SOURCE_LIFECYCLE rescan micro-slice" },
   secondGeneration: { status: "future", since: "2026-07-19", where: "the 2nd-generation own-row view" },

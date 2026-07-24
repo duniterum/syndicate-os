@@ -111,8 +111,8 @@ regulation). Instead: **sell WHO YOU ARE, PROVEN.** Identity / reputation / labe
   to other honest projects.
 
 **Guardrails:** labels verified not impersonable · consent for identity display · never tied
-to a financial return. Lawyer gate before any paid identity service and before any non-custodial
-"you-sign" action.
+to a financial return. Any paid identity service and any non-custodial "you-sign" action is
+founder-gated (money decision only — §8-⑧: no legal gate).
 
 ## 6. The Guide (support + assistant) — see GUIDE_SUPPORT_ASSISTANT_DOCTRINE.md for detail
 
@@ -244,8 +244,8 @@ pipeline above at the SIGNAL→CANDIDATE stage. This subsection is the design B1
 
 Process per slice: Claude Code reads the real repo → posts a 4-line gate (build / reuse /
 harvest / what stays PENDING & why) → founder GO → diff → approve → commit → publish. Engagement
-psychology (§4) is a **design principle applied to every surface**, not a slice. Lawyer gate
-before D2/D3 and any non-custodial action.
+psychology (§4) is a **design principle applied to every surface**, not a slice. D2/D3 and any
+non-custodial action are founder-gated (money decision only — §8-⑧: no legal gate).
 
 **Track A — finish the content suite (near-done; unblocks SEO/content):**
 - **A1 · 2.3 FAQ** — deterministic content page; harvest structure (Supa chrome) + content

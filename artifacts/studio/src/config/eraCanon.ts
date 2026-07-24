@@ -14,9 +14,10 @@
 // THE DISPLAY LAW (founder override AW-2, dated 2026-07-22, dossier §6):
 // showing the CURRENT era's terms and the seat where the rate table turns is
 // FACTUAL BYTECODE DISCLOSURE — informative, chain-verifiable, published in
-// our own whitepaper. It overrides the earlier line-on-crossing-only pin;
-// the crypto-lawyer confirms at the Phase-5 pass as planned. What remains
-// out: invented urgency (no deadline exists) and any non-bytecode claim.
+// our own whitepaper. It overrides the earlier line-on-crossing-only pin.
+// What remains out: invented urgency (no deadline exists) and any
+// non-bytecode claim. (SETTLED_RULES §8-⑧, 2026-07-24: no legal gate lives
+// in this system — that is the founder's own business matter, never ours.)
 
 export interface EraDef {
   /** 1-based era number. */

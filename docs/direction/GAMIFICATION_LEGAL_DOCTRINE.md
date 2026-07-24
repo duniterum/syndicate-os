@@ -1,6 +1,10 @@
 # GAMIFICATION / RECOGNITION POINTS — LEGAL STRUCTURE DOCTRINE
-*DIRECTION doc. Not legal advice — a crypto lawyer validates before any launch (this is
-Phase-5 / post-MVP). The founder is the authority; only legal + security + truth-first bind.*
+*DIRECTION doc — the STRUCTURE doctrine (how recognition and the merit rail are shaped).
+**SETTLED_RULES §8-⑧ (founder, 2026-07-24): there is NO legal gate in this system.** Any
+legal review is the founder's own business matter, on his own time — never a system gate,
+never a session's concern, never a blocker; the merit rail is autonomous the moment the
+contract is live on mainnet. Every "lawyer" line below is superseded by that ruling.
+The founder is the authority; only security + truth-first bind.*
 
 Researched 2026-07-10 from the actual terms of dozens of major loyalty programs (Marriott,
 JCPenney, P&G, Sephora, Bumble, L'Oréal, etc.) + crypto quest platforms (Zealy/Galxe).

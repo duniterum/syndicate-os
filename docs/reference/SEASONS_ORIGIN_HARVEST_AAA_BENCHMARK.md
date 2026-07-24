@@ -95,7 +95,7 @@ rituals — merit lands in the wallet; Binance's expiring-voucher breakage engin
 REJECTED (no manufactured forfeiture; any escrow deadline + sweep destination published
 UPFRONT or not at all). Robinhood's deposit-gate-before-earning = purchase-proportional =
 REJECTED. Eligibility/discretion/tax lines stated in plain words on the bounty surface
-(the lawyer pass at activation, as planned). **Our beat over every exchange:** their
+(§8-⑧: no legal gate — the rail is autonomous at mainnet). **Our beat over every exchange:** their
 reward history is a custodial "trust-me" tab; every bounty of ours is an on-chain USDC
 transfer with tx anchor, amount, round, and reason — permanent, refutable, public.
 
@@ -166,8 +166,10 @@ fake social proof / simulated payouts (the origin wrote fake txHashes marked
   effort-reward card · admin 2-rail console with next-step engine + dry-run.
 - **S3 (contract + cash rail)** builds the §0.7 contract AS THE GENERIC PRIMITIVE
   (§0.12-②) + `season-merkle` v2 (OZ StandardMerkleTree, domain-tagged) + the §0.6
-  rail (auto-credit via claimFor batches, published-upfront escrow rules). Lawyer
-  pass at activation, as planned.
+  rail (auto-credit via claimFor batches, published-upfront escrow rules). The rail
+  is AUTONOMOUS the moment the contract is live on mainnet and funded (§8-⑧ — no
+  legal gate; what stands before mainnet is ENGINEERING only: suite · Fuji · the
+  founder's signed deploy).
 
 ### 0.11 THE ENDLESS-ENGAGEMENT ARCHITECTURE (founder question 2026-07-23:
 "si les quêtes finissent, après ils font quoi les membres — sur 9 ères?")
@@ -565,7 +567,7 @@ open, immutable for that season.
 **Legal posture (unchanged, sharpened):** the pot is the company's discretionary
 marketing budget paying for WORK (introductions are a service); copy never says
 earn-income/yield; purchase XP once-per-season is the anti-"money buys money"
-spine; lawyer pass at activation as planned.
+spine; autonomous payment at mainnet (§8-⑧ — no legal gate anywhere).
 
 ### 0.18 THE MULTI-LEVEL BUILDERS LAW (founder, 2026-07-23 — "plusieurs niveaux
 d'utilisateurs, referral possible avec du SYN sans seat, swap/marketplace sans
@@ -879,7 +881,7 @@ Sources: trophy.so (Duolingo/NRC/GitHub case studies, 2026) · nike.com/help NRC
 | Expiring vouchers / claim deadlines (Binance) | **REJECT** — manufactured forfeiture |
 | Points that expire (Binance 1y, RevPoints 3y) | **REJECT** — our XP never expires, never cashes |
 | Geo/KYC eligibility stated up front | **ADAPT** — plain-words eligibility on the bounty page |
-| Tax-responsibility + discretionary-award clauses | **ADOPT** — matches our lawyer-gated discretionary rail |
+| Tax-responsibility + discretionary-award clauses | **ADOPT** — matches our discretionary merit rail (autonomous at mainnet, §8-⑧) |
 | "May increase/decrease in value" risk line | **ADAPT** — USDC sidesteps it; keep a no-gain-promise line |
 | Deposit-gate before earning (Robinhood €20) | **REJECT** — purchase-proportionality |
 | Rewards into locked products (Binance) | **REJECT** — forced hold |
