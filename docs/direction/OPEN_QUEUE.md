@@ -1,5 +1,9 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-23 → 2026-07-24 — THE SEASONS ARC: OPENED, BUILT, CLOSED (S1→S2-final
+> all shipped and sealed in prod on 2026-07-24; only S3 — the contract — remains).
+> The live state is always `docs/SESSION_STATE.md`'s resume block.**
+>
 > **▶ 2026-07-23 — THE SEASONS + SWAPRAIL ARC OPENED (founder: "on va faire tout ça
 > comme il faut" — season-first; the advisor mega-dossier verified against the repo,
 > then FIVE RULINGS engraved).**
@@ -113,13 +117,32 @@
 >   false answer. REMAINING IN THE ARC: S3 only (contract + cash rail —
 >   gated on the founder's money decisions ONLY; §8-⑧ removed every legal
 >   gate: the rail is autonomous the moment the contract is live on mainnet).
+> - **✅ THE CANONICAL EXPLORER IS SNOWTRACE (2026-07-24, `407b022`, sealed
+>   `fd61acc`):** the founder caught dead verify-on-chain ADDRESS links —
+>   diagnosed BY LIVE TEST: the addresses and our URL scheme were correct,
+>   **Avascan's own address pages hang on "Searching…" forever**. One central
+>   flip (`EXPLORER_BASE_URL` = Snowtrace) now governs every address/token
+>   URL; Avascan stays a per-brand fan-out option, never the default. Prod
+>   verified: 12 snowtrace URLs / 0 avascan, and Snowtrace's pages answer and
+>   NAME our contracts. Never re-default to Avascan.
+> - **✅ THE S2c-①b HOTFIX + ITS STANDING LAW (2026-07-24, `367bf3c`):** the
+>   founder caught, on the LIVE board, a "Member" column header over no-seat
+>   rows and identity cells folding mid-address. Fixed FROM the laws (Member=
+>   Seat → the header is "Builder"; the mockup width law → w-56 + nowrap).
+>   **NEW STANDING RULE:** a season visual slice is NEVER handed over without a
+>   measurement pass at the `studio-prod-data` rig (launch.json, port 5175 —
+>   the local page rendering the LIVE prod rows). "No DB locally" is no longer
+>   an excuse for shipping row-rendering blind.
 > - **🔴 STILL FOUNDER-PENDING (re-trued after the day's decisions):** AW-5
 >   wallet name (unchanged) · SwapRail decisions (developer fee % · fee pipe
 >   address · thirdweb account ~$99/mo · placement) · pot COMMITMENT amount +
 >   cadence (« Engager au pot » — his one recurring act) · CONFIRM the XP
 >   weight table + the $20 min-cash floor + the eligibility floor pair (S3
->   gate) · the full EN public copy at each remaining surface gate (bands/
->   curve DECIDED ✅ Option A · route name /season SHIPPED ✅).
+>   gate) · **FOOTPRINT XP at capital-rung crossings (+100 XP per rung of the
+>   12-rung capital register, proposed 2026-07-23 — unfarmable by construction;
+>   decide WITH the weight table at the S3 gate)** · the full EN public copy at
+>   each remaining surface gate (bands/curve DECIDED ✅ Option A · route name
+>   /season SHIPPED ✅).
 
 > **▶ 2026-07-22 (evening) — THE WALLET-TRACKING + ACTIVITY-NEWSROOM ARC OPENED (founder
 > orders: "on refait toute la page activity… rationaliser design pagination composition…

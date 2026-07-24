@@ -105,9 +105,32 @@ It is a **business**, not a charity — it sells access, recognition, and servic
 5. **Living protocol** — event backbone (indexer → activity → notifications), Economy/GDP page.
 6. **Harden & seal** — accessibility / responsive / performance audits + security. *Grade-AAA.*
 
-**Where we are:** Phase 1 — Foundation ✅, atoms 5/8 (Amount, StatusPill, Button+Tag, StatCard,
-Table). Phase 2 content next. Auth dark (Phase 3). Referral pending (Phase 3, read-only).
-*(Phases 1 & 2 overlap: the Prose atom bridges them.)*
+**⚠ WHERE WE ARE — RE-TRUED 2026-07-24 (the paragraph that stood here described a
+pre-auth, pre-activity, pre-referral, pre-seasons world; it was a dead map).
+THE CURRENT STATE IS ALWAYS `docs/SESSION_STATE.md`'s resume block — read it right
+after this file. Snapshot at 2026-07-24:**
+- **LIVE in production** (thesyndicate.money): wallet auth + SIWE sessions · the join
+  checkout · the referral program (`/referral`, commissions paid inside the buyer's own
+  tx) · receipts + painted receipt cards · the notification centre (bell +
+  `/notifications`) · the event backbone (indexer → `/activity` newsroom → milestones)
+  · the Chronicle · **the whole S2 SEASONS ARC**: `/season` (the public recognition
+  board), the home season + public-register bands, the member Season/Quests/Effort
+  cards + the own-row rail, and the operator console's `/admin/seasons` 2 rails.
+- **The live-vs-future truth is in CODE**, never in prose:
+  `artifacts/studio/src/config/featureStatus.ts` (guard-enforced — DONE-IS-DONE law).
+  Two season keys remain future: `seasonBounty` (S3) and `seasonOwnRow`.
+- **NEXT (in flight): S3 — the `SeasonBountyPool` contract + the cash rail.** First act:
+  the Foundry toolchain spike. Spec: `docs/reference/SEASONS_ORIGIN_HARVEST_AAA_BENCHMARK.md`
+  §0.7 · §0.14-C · §0.17, and `docs/direction/SETTLED_RULES_DO_NOT_RELITIGATE.md` §8.
+- **§8-⑧ (founder, 2026-07-24): there is NO legal gate anywhere in this system.** The
+  merit rail pays autonomously the moment the contract is live on mainnet. Never
+  re-insert a legal step, in any doc or report.
+- The ORDER above (§4) is the historical build sequence — phases 1–5 are substantially
+  DONE; only step 6 (harden & seal) and the season contract remain of that list.
+
+**BOOT READING ORDER for any session:** this file → `docs/00_CANON_INDEX.md` →
+**`docs/SESSION_STATE.md` (the resume block)** → `docs/direction/SETTLED_RULES_DO_NOT_RELITIGATE.md`
+→ `docs/direction/OPEN_QUEUE.md` → the slice's own canon.
 
 ## 5. How we work — roles (nobody goes off on their own)
 - **Founder** = directs, approves diffs, flips switches, makes product calls.

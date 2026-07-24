@@ -25,6 +25,9 @@ gagne en cas de conflit*. Vit dans le repo : `docs/00_CANON_INDEX.md`.
 |---|---|
 | `docs/00_START_HERE.md` | **À LIRE EN PREMIER — le point d'entrée du protocole entier** (ce qu'est l'OS, doctrine verrouillée, les couches, l'ORDRE vers grade-AAA, les rôles). Oriente sur TOUT ; le reste est référence. |
 | `CANON_INDEX.md` (ce doc) | La carte des cartes — point d'entrée. |
+| **`docs/SESSION_STATE.md`** | **L'ÉTAT RÉEL — « read FIRST, every session ».** Le bloc de reprise en tête donne (a) ce qui est LIVE en prod, (b) ce qui est en vol + la prochaine action exacte, (c) les décisions du fondateur en attente. Le repo réel gagne toujours sur toute spec ; ce fichier gagne sur tout récit. |
+| `docs/direction/SETTLED_RULES_DO_NOT_RELITIGATE.md` | **Les décisions TRANCHÉES — ne jamais rouvrir** (§8 = les rulings seasons : le pool se déploie · l'argent s'affiche · autonomie zéro-opérateur · Season=Ère · le mot « builders » · l'ordinal = la réponse du moteur vivant · **§8-⑧ AUCUNE barrière légale**). |
+| `docs/direction/OPEN_QUEUE.md` | La file des décisions EN VOL (anti-entropie) — relue à chaque boot, complétée avant chaque fin de session ; seul le fondateur ferme un item. |
 | `THE_SYNDICATE_OS_COMPASS.md` | Constitution + règle de conflit + doctrine (proof-first, no-fake-live, recognition≠yield, source≠commission). |
 | `WORKFLOW.md` | Comment on travaille (Astronaute ↔ Claude ↔ Replit). |
 | `ADR-001-design-system-et-methodologie.md` | Le design system system-wide (tokens→primitives→patterns→templates, brand board). |
@@ -55,6 +58,8 @@ construire la slice correspondante, jamais au boot.
 
 | Fichier | Ce que c'est | Slice concernée |
 |---|---|---|
+| **`docs/reference/SEASONS_ORIGIN_HARVEST_AAA_BENCHMARK.md`** | **LA LOI DE L'ARC SEASONS (§0.1→§0.18 + §1→§10).** Inventaire complet du moteur origine + benchmark mondial + LA SYNTHÈSE : registre XP unique · état de season dérivé · quêtes garanties par leur alimenteur · rangs qui ne redescendent jamais · **§0.7 la spec merkle v2 (feuille domain-tagged `(kind, chainId, address(this), roundId, account, amount)`)** · **§0.14-C les deltas du contrat** · §0.15 zéro-clic · **§0.17 le modèle de pot final** (deux poches · rounds à fenêtre delta · seal anti-snipe · intérimaires 48h · rulesHash) · §0.18 la loi multi-niveaux (le mot = **builders**) · §10 la courbe Option A (Σ=10 000 bp). ⚠ `docs/reference/season-merkle.reference.ts` est le FORMAT ORIGINE, **SUPERSÉDÉ** (bannière ⛔) — jamais la spec S3. | **S3 — le contrat `SeasonBountyPool` + le rail cash** (et toute reprise de l'arc seasons) |
+| `docs/reference/SEASONS_SWAPRAIL_INTEGRATION_STUDY.md` | L'étude d'intégration seasons ↔ SwapRail (dossier conseiller vérifié contre le repo ; corrections de vérité-repo incluses). | S3 · SwapRail V1 |
 | `docs/reference/SWAP_BRIDGE_RAMP.md` | Le ramp swap/bridge (moteur LI.FI, porte-pas-marché, jamais d'approbation infinie, câblage admin↔backend↔frontend, le fee comme choix fondateur). | Le ramp swap/bridge (future) |
 | `docs/reference/SWAP_GAMIFICATION_LEGAL_DOSSIER.md` | Le benchmark swap + l'inventaire gamification Supa + **la recherche légale US/Suisse/monde** et le CHANGEMENT DE DOCTRINE du pot de saison (paiement au mérite autorisé, jamais chance). | Le moteur saison/gamification (future) |
 | `docs/reference/CHRONICLE_LIVING_NEWSROOM.md` | Le Chronicle comme newsroom AAA (on-chain + off-chain document-backed, preuve durable hash+doc+lien officiel, intelligence de détection). | Le newsroom Chronicle (B1/future) |

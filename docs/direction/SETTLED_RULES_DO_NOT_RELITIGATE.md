@@ -124,8 +124,12 @@ anti-blocking disease — CANON_LOI_ANTIBLOCAGE applies. Prior narrower pins (th
 H2-⑫ era-meter line-on-crossing rule) were founder-overridden dated 2026-07-22.
 (The former Phase-5 lawyer-pass clause here was removed by §8-⑧, 2026-07-24.)
 
-### 8. THE SEASONS-ARC RULINGS → **SETTLED** (founder, 2026-07-23 — answered ON the
+### 8. THE SEASONS-ARC RULINGS → **SETTLED** (founder, 2026-07-23/24 — answered ON the
 advisor-dossier study; none may be re-opened, re-flagged, or re-explained):
+
+> **Reading key:** every `§0.x` reference in this section points at
+> **`docs/reference/SEASONS_ORIGIN_HARVEST_AAA_BENCHMARK.md`** (the seasons dossier —
+> the law of the arc). `§8-①…⑧` = the sub-rulings of this very section.
 
 - **① The season bounty pool contract WILL be deployed.** The founder amends his own
   contract freeze (`CONNECTOR_LADDER_POLICY.md` §5) for THIS contract only. The condition
@@ -157,6 +161,15 @@ advisor-dossier study; none may be re-opened, re-flagged, or re-explained):
   stay **seated members** (the Delta two-level model). "Players/participants/users"
   never on a surface; code identifiers (e.g. the `playersEarning` wire key) stay
   code-register. Never re-open, never re-benchmark.
+- **⑦ THE DISPLAYED SEAT ORDINAL = THE LIVE ENGINE'S ANSWER (founder, 2026-07-23
+  evening — chain-verified live: `memberNumberOf(0x3ff…894f)` = 11, `memberByNumber(7)`
+  = empty forever).** A V3-minted seat overrides the frozen genesis roster and
+  sealed-era numbers for display; one wallet still keys ONE row (§0.14-A). The board,
+  the feed, and the receipts therefore all speak the same chain-emitted ordinal. The
+  #7+#11 double stays celebrated at the Chronicle (Entry 1). Companion display rule,
+  same ruling: a hors-concours row never wears the AWAITING SEAT chip (it never
+  competes for the pot — the Founder chip alone tells the truth).
+
 - **⑧ THE AUTONOMOUS PAYMENT RULING (founder, 2026-07-24 — « je veux un système
   autonome qui marche dès que le smart contract est en ligne on mainnet et qui paie
   réellement au bon moment »).** THE LAWYER GATE IS REMOVED FROM EVERYWHERE — every
@@ -170,15 +183,12 @@ advisor-dossier study; none may be re-opened, re-flagged, or re-explained):
   never a legal-review step. NO agent re-raises, re-suggests, or re-inserts a legal
   gate on ANY surface, doc, or report — ANSWERED FOREVER; any residual "lawyer"
   wording in frozen archives is superseded by this ruling.
-- **⑦ THE DISPLAYED SEAT ORDINAL = THE LIVE ENGINE'S ANSWER (founder, 2026-07-23
-  evening — chain-verified live: `memberNumberOf(0x3ff…894f)` = 11, `memberByNumber(7)`
-  = empty forever).** A V3-minted seat overrides the frozen genesis roster and
-  sealed-era numbers for display; one wallet still keys ONE row (§0.14-A). The board,
-  the feed, and the receipts therefore all speak the same chain-emitted ordinal. The
-  #7+#11 double stays celebrated at the Chronicle (Entry 1). Companion display rule,
-  same ruling: a hors-concours row never wears the AWAITING SEAT chip (it never
-  competes for the pot — the Founder chip alone tells the truth).
-
+  **SCOPE (so the ruling is unambiguous):** it governs THE SYSTEM — activation
+  paths, the merit/cash rail, build order, pending lists, gates, reports. It does
+  NOT touch the public legal PAGES themselves (`/terms` `/privacy` `/risk`), which
+  honestly wear a Version-1 draft label: whether and when the founder has counsel
+  review that COPY is his own product/business call, tracked as his decision — it
+  has never been, and must never become, a gate on building or paying.
 ## For Claude (advisor) and Claude Code — behavioral rule
 
 **Do NOT re-flag** "earn / referral / commission / reward / season / cagnotte / XP" as doctrine

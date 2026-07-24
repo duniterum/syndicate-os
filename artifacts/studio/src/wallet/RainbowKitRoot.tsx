@@ -31,6 +31,23 @@ import { useAuthAvailability } from "@/lib/authAvailability";
 
 const SESSION_QUERY_KEY = ["auth", "session-state"] as const;
 
+// KNOWN DEV-ONLY CONSOLE WARNING (investigated 2026-07-17 — don't re-open):
+// fresh /wallet loads on the rig print (twice) "Cannot update a component
+// (ConnectModal) while rendering a different component (Hydrate)". Hydrate is
+// wagmi's own hydration wrapper (rendered by the WagmiProvider below); with
+// ssr:false wagmi calls onMount() → reconnect() DURING render, and reconnect's
+// synchronous setState prelude makes the wagmi store emit mid-render —
+// RainbowKit's modal state updates in response and React's dev build flags
+// the render-phase update. Upstream wagmi design, reported since 2024
+// (wevm/wagmi#3611, #3794), still present in the installed wagmi 2.19.5; the
+// provider chain here is RainbowKit's documented composition and guard-pinned
+// (guard-access-state rule 15) — not the cause. PROD-SAFE by construction:
+// the warning text exists only in react-dom's development bundle (0 hits in
+// react-dom-client.production.js), so it cannot appear on thesyndicate.money.
+// The only known suppression, ssr:true in wagmiConfig, defers store
+// rehydration past first paint and would flash a disconnected wallet at
+// returning members on every load — a visual regression traded for a
+// dev-only warning. Leave it.
 export function WalletWagmiProvider({ children }: { children: ReactNode }) {
   return <WagmiProvider config={wagmiConfig}>{children}</WagmiProvider>;
 }

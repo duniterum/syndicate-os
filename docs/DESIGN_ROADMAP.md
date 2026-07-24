@@ -119,8 +119,9 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
     590 · robots/SEO/classification même commit (539 checks). **+0 couleur brute.**
   - [x] featureStatus (re-trué à l'audit pré-S3 2026-07-24) : `seasonRanking` LIVE
     (S2b 23-07) · `seasonQuests` LIVE (S2d 24-07) · `seasonOwnRow` future (clé créée à
-    S2c-② — le surlignage YOU de /season) · `seasonBounty` = LE seul flip restant, dans
-    le commit S3 qui active le rail d'argent.
+    S2c-② — le surlignage YOU de /season) · `seasonBounty` future. **DEUX clés restent
+    à flipper** : `seasonBounty` (dans le commit S3 qui active le rail d'argent) et
+    `seasonOwnRow` (avec la tranche auth-zone du surlignage YOU).
 - [x] **`/join` checkout (C1.1→C1.4)** — rend via le système (tokens only, 0 couleur brute),
   motion tokens (`animate-in fade-in`), 2 modes vérifiés sur la surface ; quote · money path ·
   gate historique · économie honnête. *(Les cases globales Mouvement/2 modes/Adoption restent

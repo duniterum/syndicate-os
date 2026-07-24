@@ -2,7 +2,82 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> **▶ 📌 2026-07-23 EVENING — S2c-① SEALED [this commit]: THE FOUNDER'S 3 CLOSING
+> # ▶ 📌 2026-07-24 — THE RESUME BLOCK (DONE-IS-DONE §④: read THIS, resume in one pass)
+> *The S2 seasons arc CLOSED and is fully live in prod. Next session = S3, the
+> contract. Everything below this block is the dated RECORD of how it got here —
+> read it only if you need the why.*
+>
+> ## (a) LIVE IN PROD RIGHT NOW — last sealed cycle `6097324` (Replit green, founder-pasted)
+> - **`/season`** — the public recognition board: trophy podium with struck-metal
+>   medallions + crown · proportional XP bars · seated rows render **`#N ·
+>   0x03e…c6d0`** (seat + chain-emitted short form) · the double-seat wallet
+>   displays **#11** (the live engine's answer, §8-⑦) · the people-word is
+>   **builders** (§8-⑥) · the pot card is a FUTURE frame with **no figure**.
+>   Shipped S2b `1b77b66` → fixed S2c-① `c85d784` + S2c-①b `367bf3c`.
+> - **The visitor home** — the full-bleed season band (era gauge on the ONE seat
+>   spine + provenance · "N before Genesis Signal seals — forever", never a date ·
+>   SECONDARY gold-outline join CTA · FUTURE pot frame · metal top-3 teaser) AND
+>   the public-register band (real chain rows · Holder Index · the /season door ·
+>   "Your standing" FUTURE-badged). Shipped S2c-② `0159f7e`.
+> - **`/member`** — the Season card (era ring · Your XP/rank/axes served by the
+>   own-row rail · FUTURE pot column), the Quests card (FED quests only: the
+>   Connector ladder VERBATIM + the 3 first-acts · auto-credit voice) and the
+>   SEPARATE emerald Effort-reward frame. The reserved dashed cards are DEAD on
+>   both branches. Shipped S2d `72d9cb7`.
+> - **`GET /api/auth/season-standing`** — the own-row season rail (session cookie
+>   the only input · the row picked SERVER-side, seated by seat, no-seat by the
+>   chain short form · numbers + quest ids only · fail-closed S1/dark).
+> - **`/admin/seasons`** — the operator console's 2 rails: RECOGNITION autonomous
+>   (pure observation, ZERO buttons by design) + THE SEASON POT (the §0.17 frame,
+>   founder-gated, one FUTURE badge, zero figure, zero fake control). Shipped
+>   S2-final `8d471ee`.
+> - **Every verify-on-chain link opens Snowtrace** (Avascan address pages hang
+>   forever — fixed `407b022`, prod-verified 12 URLs / 0 avascan).
+> - **REGISTRY (`artifacts/studio/src/config/featureStatus.ts`) — the live-vs-future
+>   truth:** `seasonRanking` LIVE (2026-07-23) · `seasonQuests` LIVE (2026-07-24) ·
+>   `seasonBounty` FUTURE (flips in the S3 commit) · `seasonOwnRow` FUTURE (flips
+>   with the /season YOU-row auth-zone slice). **Two season keys remain unflipped.**
+> - **THE TWO LIVE FIGURES ARE BOTH TRUE — never merge them:** **15** = builders
+>   earning (standings rows with XP, seat or not — §0.18 multi-level) · **14** =
+>   seats (the era spine feeding the gauge + Holder Index). Different quantities,
+>   different authorities; a session that "reconciles" them breaks a law.
+> - **DEPLOY BACKLOG:** `2e3b6a3` (the §8-⑧ sweep) + `0be9308` + this commit —
+>   **docs, comments and BACKLOG.html only; NOTHING user-visible changes**
+>   (`FEATURE_STATUS` is imported by no component, verified). ✅ **NO DEPLOY
+>   needed**; they ride whatever cycle S3 ships.
+>
+> ## (b) IN FLIGHT — S3, the contract (the S2 arc is closed; nothing else is open)
+> **FIRST ACT, engraved:** the Foundry toolchain spike on this Windows box
+> (`forge --version` + a hello-world test that compiles) — no spike has ever run
+> here, and this box has a documented native-binary history.
+> **THEN:** build `SeasonBountyPool` from `docs/reference/SEASONS_ORIGIN_HARVEST_AAA_BENCHMARK.md`
+> §0.7 (leaf = OZ StandardMerkleTree, domain-tagged **`(kind, chainId,
+> address(this), roundId, account, amount)`**) + §0.14-C (contract deltas,
+> Ownable2Step, pause-only guardian, claimFor batches) + §0.17 (two buckets ·
+> delta-window rounds · snipe-proof seal · 48h interims · rulesHash — Season 1's
+> anchors AT DEPLOY) + §8-① (the care protocol: full Foundry suite · Fuji
+> rehearsal · the founder's own signed mainnet deploy).
+> ⚠ **`docs/reference/season-merkle.reference.ts` is the ORIGIN format and is
+> SUPERSEDED** — it carries a ⛔ banner; never copy its leaf into S3.
+> **§8-⑧: the rail is AUTONOMOUS — it pays really, on its own, the moment the
+> contract is live on mainnet and funded. There is NO legal gate anywhere.**
+>
+> ## (c) FOUNDER-PENDING — the S3-GATE SUBSET
+> *(the full open set is `docs/direction/BACKLOG.html` → « Les décisions qui
+> n'appartiennent qu'à toi » — this is only what S3 needs.)*
+> 🔴 **« Engager au pot » amount + cadence** (his one recurring act) ·
+> 🔴 **the XP weight table** to confirm (introduction 500 · purchase 200
+> once/season · burn 150 · mint 100 · quiz 25) · 🔴 **FOOTPRINT XP at
+> capital-rung crossings** (+100/rung proposed 2026-07-23, unfarmable — decide
+> WITH the weight table) · 🔴 **the floor pair** (min qualifying purchase for a
+> referral to credit · min XP to enter the paid bands) + the $20 min-cash floor ·
+> 🔴 **AW-5**: name the archive payment wallet `0xe417…d56f` · 🔴 **SwapRail**:
+> developer fee % · fee pipe address · thirdweb account (~$99/mo) · placement ·
+> 🔴 **EN public copy** at each remaining surface gate.
+>
+> ---
+>
+> **▶ 📌 THE RECORD — 2026-07-24 (S2c-① `c85d784`): THE FOUNDER'S 3 CLOSING
 > NOTES ALL RESOLVED (order "on y va 3-2-1"; this supersedes the closing-notes
 > section of the block below).**
 > - **③ THE WORD IS "BUILDERS"** — the founder rejected the quick pick and ordered a
@@ -32,14 +107,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   no-raw-color 0) · build + 36 shells + twins + admin-dist — ALL GREEN; rig: /season
 >   DARK honest card + console clean (no DB here — the founder's S2b rule: the living
 >   seal is the online check after deploy).
-> - **🚀 DEPLOY ORDER OUT [this commit]:** ONE Replit cycle = this commit + the two
+> - **🚀 DEPLOY ORDER OUT (`c85d784`):** ONE Replit cycle = this commit + the two
 >   batched fixes `fc92a31` + `8c1506d` (per-season purchase XP · member Season-door
 >   truth). No migration, no new env. Verify: /season seated rows show "#N + short
 >   address" · the double wallet shows **#11** (not #7) · "Builders earning" · no
 >   AWAITING chip on the Founder line · standard battery. **DEPLOY BACKLOG after
 >   this cycle: EMPTY.** ✅ Replit sealed the cycle same evening (all green,
 >   15 rows, #11 live, shortForm 15/15).
-> - **⚠ S2c-①b HOTFIX [this commit] — FOUNDER-CAUGHT on the live board, fixed FROM
+> - **⚠ S2c-①b HOTFIX (`367bf3c`) — FOUNDER-CAUGHT on the live board, fixed FROM
 >   the laws (pre-handoff gate ②):** ① the table column header said "Member" over
 >   rows that include no-seat builders — Member=Seat law + the §8-⑥ word: the header
 >   is now **"Builder"** (captions keep "seated members" for numbered ranks). The
@@ -63,7 +138,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   /api/season LIVE 15 rows shortForm on all · engine ok=2, headBlock
 >   advancing, 6/6 units · byte-identity ×2. **DEPLOY BACKLOG: EMPTY. The
 >   3 closing notes are fully alive in production.**
-> - **✅ S2c-② BUILT [this commit] — THE HOME SEASON + REGISTER BANDS (founder "GO
+> - **✅ S2c-② BUILT (`0159f7e`) — THE HOME SEASON + REGISTER BANDS (founder "GO
 >   and GO-Live S2c"; the approved visitor-home mockup §0.14-E, truth-amended):**
 >   `HomeSeasonSection` (full-bleed S7-d band between trust strip and promoted:
 >   2-col 1.4fr/.9fr · era gauge on THE ONE seat spine (useHeroReality) +
@@ -95,7 +170,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   /season podium wears the medals + crown · desktop AND mobile slices verified ·
 >   byte-identity ×2 · engine advancing 6/6 · feed 86 intact · "Builders earning"
 >   in the served bundle, never "players". **DEPLOY BACKLOG: EMPTY.**
-> - **✅ S2d BUILT [this commit] — THE MEMBER SEASON + QUESTS SLOTS FILLED (founder
+> - **✅ S2d BUILT (`72d9cb7`) — THE MEMBER SEASON + QUESTS SLOTS FILLED (founder
 >   "GO and GO-Live"; the corrected member mockup, truth-amended):**
 >   ① `GET /api/auth/season-standing` — the own-row season rail (the
 >   member-purchases discipline VERBATIM: session cookie only · walletIndex own
@@ -138,7 +213,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   **THE LAST CENTIMETER = THE FOUNDER'S SIGNED CLICK:** the three cards
 >   render only for a real SIWE session — his own dashboard look seals S2d
 >   fully (as the commit planned).
-> - **✅ S2-FINAL BUILT [this commit] — THE ADMIN SEASONS 2-RAILS CONSOLE (founder
+> - **✅ S2-FINAL BUILT (`8d471ee`) — THE ADMIN SEASONS 2-RAILS CONSOLE (founder
 >   "GO and GO-Live"; the approved admin-2rails mockup §0.14-E, truth-amended) —
 >   THE S2 ARC CLOSES:** /admin/seasons (Trophy, after Sources — the growth
 >   cluster), the strict-chain module `pages/admin/SeasonsRails.tsx` (sections.tsx
@@ -173,7 +248,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   0 overflow; and the neutral wall RETOOK the page when the server
 >   operator-context answered false — the gate enforces server truth even in
 >   dev. The founder's signed operator session seals the visual online.
-> - **⚠ EXPLORER HOTFIX [this commit] — FOUNDER-CAUGHT: the verify-on-chain
+> - **⚠ EXPLORER HOTFIX (`407b022`) — FOUNDER-CAUGHT: the verify-on-chain
 >   ADDRESS links opened dead pages.** Diagnosis BY LIVE TEST (never assumed):
 >   the address `0x205DdC…f464` is CORRECT (the Vault Reserve, canon) and our
 >   URL followed Avascan's own scheme — **AVASCAN ITSELF is broken**: its
@@ -196,12 +271,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   note: the first post-boot cycle FAILED CLOSED (~5 min season DARK, feed 0,
 >   zero invented data — the designed behavior) then self-repaired via the
 >   cursor; ok=2, season LIVE 15, feed 86, block advancing.
-> - **🔎 THE PRE-S3 FULL-SESSION AUDIT [this commit] (founder order: "deep read
+> - **🔎 THE PRE-S3 FULL-SESSION AUDIT (`6097324`) (founder order: "deep read
 >   from the beginning, senior AAA agents, zero problems before the smart
->   contract") — wf_34c178ff, 5 adversarial lenses over 4322661..fd61acc; ALL
+>   contract") — wf_34c178ff, 5 adversarial lenses over 4322261..fd61acc; ALL
 >   figures survived recount (guard counts re-executed per commit · the curve
 >   re-summed digit by digit = exactly 10,000bp · 12 snowtrace verified in code
->   AND prod); the real findings ALL FIXED [this commit]:**
+>   AND prod); the real findings ALL FIXED (`6097324`):**
 >   ① CODE: the own-row rail ignored NO-SEAT builders (seat-only join → the
 >   member card showed 0 XP while the public board showed real XP — the
 >   one-authority violation): the route now matches the no-seat row by the
@@ -240,7 +315,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   structurally, seo 541) · byte-identity ×2 · routes 200 · /studio 404 ·
 >   season LIVE 15 · feed 86 · engine ok=2 (2 partials self-repaired via the
 >   persisted cursor), block advancing, 6/6 units.
-> - **⚖ THE AUTONOMOUS PAYMENT RULING [this commit] (founder, 2026-07-24 —
+> - **⚖ THE AUTONOMOUS PAYMENT RULING (`2e3b6a3`) (founder, 2026-07-24 —
 >   SETTLED_RULES §8-⑧):** THE LEGAL GATE IS REMOVED FROM EVERYWHERE — legal
 >   review is the founder's own business matter, never a system gate, never a
 >   session's concern. The rail pays REALLY and AUTONOMOUSLY the moment the
@@ -267,15 +342,17 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   exactly ONE OperatorConsole) · robots Disallow live · season-standing
 >   anonymous S1 · byte-identity ×2 · engine advancing. The rails' visual =
 >   the founder's operator session.
-> - **(e) FOUNDER-PENDING (re-trued at the pre-S3 audit — the COMPLETE list the
->   S3 gate presents):** 🔴 AW-5 wallet name (unchanged) · SwapRail decisions
+> - **(e) FOUNDER-PENDING (re-trued at the pre-S3 audit — the S3-GATE SUBSET;
+>   the FULL open set is `docs/direction/BACKLOG.html` « Les décisions qui
+>   n'appartiennent qu'à toi »):** 🔴 AW-5 wallet name (unchanged) · SwapRail decisions
 >   (fee % · fee pipe · thirdweb ~$99/mo · placement) · pot COMMITMENT amount +
 >   cadence (« Engager au pot ») · CONFIRM XP weights + $20 min-cash floor +
 >   the eligibility floor pair (S3 gate) · FOOTPRINT XP at capital-rung
 >   crossings (+100/rung proposed 2026-07-23, unfarmable — awaiting his OK,
 >   decide WITH the weight table) · EN copy at each remaining surface
 >   gate. (The former legal-pass item was REMOVED by §8-⑧ — never re-listed.) The 3 closing notes are CLOSED — nothing of them remains pending.
->   **DEPLOY BACKLOG: EMPTY (every session commit sealed in prod).**
+>   (DEPLOY BACKLOG: the resume block at the TOP of this file is the ONE
+>   authority for what is undeployed — do not restate it here.)
 
 > **▶ 📌 2026-07-23 — THE SEASONS + SWAPRAIL ARC OPENED (the resume point; the 22-07
 > block below keeps its seal facts).**
@@ -438,12 +515,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   its next prod cycle). Replit verifies: /season serves the LIVE board ·
 >   GET /api/season state LIVE with standings · the standard battery. The
 >   founder's online click is the living seal.**
->   → NEXT after the online seal: S2c the HOME season section (+ register/season/
->   your-standing cards, secondary CTA, disconnected join CTA) → the member
->   Season+Quests slots (S2d; note: reconcile the member-mockup #14 figures with
->   the ranking mockup at that gate) → the admin 2-rails console — wireframe +
->   preview gate EACH; the remaining split keys `seasonQuests`/`seasonBounty`
->   flip in their go-live commits, §0.14-E
+>   → *(SUPERSEDED 2026-07-24 — S2c `0159f7e`, S2d `72d9cb7` and the admin
+>   2-rails console `8d471ee` ALL SHIPPED and sealed in prod the same day;
+>   `seasonQuests` flipped LIVE at S2d. The live state is the resume block at
+>   the TOP of this file — this arrow list is history.)*
 >   → S3 Foundry workspace + the merit primitive + the
 >   cash rail (seal round + 48h-pre-announced interims per §0.17 · « Engager au
 >   pot » vs « Réserve » · autonomous at mainnet per §8-⑧) → patronage mint

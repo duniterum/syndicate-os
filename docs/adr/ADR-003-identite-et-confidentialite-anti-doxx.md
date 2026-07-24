@@ -107,8 +107,10 @@ own-row). En cas de conflit, la Boussole gagne ; corriger le pointeur.*
 l'exige — jamais un changement silencieux), de **lever l'enforcement runtime** du filet
 « discipline » sur le payload servi (`assertProtocolRealityDiscipline`) : le **net anti-fuite
 d'adresse** (0x-40hex) **et** le **net anti-cadrage financier** (ROI/yield/profit/casino…).
-Motif : jugé **non nécessaire pour l'instant**. À **revoir quand ce sera nécessaire** (le net
-de cadrage financier est attendu de retour au **passage avocat-crypto Phase 5**).
+Motif : jugé **non nécessaire pour l'instant**. À **revoir quand ce sera nécessaire** —
+c'est un appel du **fondateur**, quand LUI le veut *(amendé 2026-07-24, SETTLED_RULES
+§8-⑧ : il n'existe AUCUNE barrière légale dans ce système ; la clause « passage
+avocat-crypto Phase 5 » qui figurait ici est supprimée et ne doit jamais être réinsérée)*.
 
 **Réversible en 1 ligne :** l'implémentation garde la logique intacte derrière le drapeau
 `DISCIPLINE_ENFORCED` (`payloadDiscipline.ts`) — la repasser à `true` ré-arme les deux nets.

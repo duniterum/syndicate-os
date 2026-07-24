@@ -14,5 +14,9 @@ export const wagmiConfig = getDefaultConfig({
   appName: "The Syndicate",
   projectId,
   chains: [avalanche],
+  // ssr:false makes wagmi's Hydrate run reconnect() during render — the source
+  // of the known dev-only ConnectModal/Hydrate console warning. Read the note
+  // in RainbowKitRoot.tsx before flipping this: ssr:true trades a dev warning
+  // for a disconnected-wallet flash at first paint.
   ssr: false,
 });
