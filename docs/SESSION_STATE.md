@@ -188,7 +188,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   OPTION only. Zero studio changes (no client hardcodes existed). VERIFIED
 >   ON THE SERVED PAYLOAD: /api/protocol/verify-links = 12 snowtrace URLs ·
 >   0 avascan (V1/V2A/V2B/V3 engines, Vault, LP, all chips). Gates: api
->   typecheck + full guards chain green.
+>   typecheck + full guards chain green. **🏆 SEALED IN PROD (Replit green
+>   2026-07-24, founder-pasted):** prod verify-links 12 snowtrace · 0 avascan ·
+>   the six flagged targets verified one by one · SNOWTRACE LIVENESS TESTED
+>   (V1/Vault/LP/SYN pages answer 200 and NAME our contracts — "The Syndicate
+>   (SYN) — ERC-20") · client byte-identical (server-only confirmed) · honest
+>   note: the first post-boot cycle FAILED CLOSED (~5 min season DARK, feed 0,
+>   zero invented data — the designed behavior) then self-repaired via the
+>   cursor; ok=2, season LIVE 15, feed 86, block advancing.
 > - **NEXT:** S3 — the Foundry workspace + SeasonBountyPool + the cash rail per
 >   §0.17 (the founder's money decisions gate it: « Engager au pot » amount +
 >   cadence · XP weights · the floor pair · lawyer pass at activation).
