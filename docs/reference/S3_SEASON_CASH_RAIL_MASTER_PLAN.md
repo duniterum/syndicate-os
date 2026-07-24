@@ -29,7 +29,8 @@ negatives), **two-phase address strategy** (CTO ruling; CREATE2 documented, not 
 
 **OFF-CHAIN TOOLING (3):**
 ④ `artifacts/api-server/src/season/`: `potPolicy.ts` = **the ONE share authority** (eligibility ·
-delta-window money-ranks with attaining-block tie-break · depth law `d=max(1,floor(eligible/10))`
+delta-window money-ranks with the FULL §0.14-B tie-break — XP desc → earliest attaining block →
+**seat number** (the third key, hashed AS TEXT in the rule sheet) · depth law `d=max(1,floor(eligible/10))`
 with floor-trim · percentile curve stretch renormalized to 10 000 bp · bigint largest-remainder
 `Σ==budget` EXACT · the roundId allocator `seasonId*1000+n` · **typed REFUSAL while the floor pair
 is null OR `ANTI_FARM_IMPLEMENTED` is false** · projection base = `committed[s]+carryover`, served
@@ -105,7 +106,8 @@ from potPolicy BEFORE any post. Dispute panel (server verdict; veto = the one de
 consequence dialog naming the fromCommitted/fromCarry one-way merge). 4-figure ledger strip +
 GOAL-vs-COMMITTED + conservation chip · withdrawal two-act timeline · health strip · sidebar badge
 (null→absent, never fake zero). **Safe-aware pre-encoded-calldata flow ships BEFORE the Safe
-transfer.** Reference in collapsed bottom expanders.
+transfer.** Reference in collapsed bottom expanders. The §0.8 anti-stress copy adopted on
+admin/claim-adjacent surfaces ("You can close this page — your status is saved on-chain").
 ⑯ Wallet zone: lazy `src/wallet/SeasonPoolActs.tsx` + `SeasonRoundActs.tsx` — the
 ProposeSourceCreate pattern verbatim (server-sourced address · hand-transcribed ABI with .sol line
 refs · signingReady one gate · explainError from the §5 catalog · preflight probes).
@@ -121,12 +123,17 @@ served shares · band tints both themes · **unnumbered AWAITING SEAT rows SHOW 
 "si tu prenais ton seat maintenant" — §0.18 engraved conversion law, critic HIGH: the first design
 had dropped it) + the **PUBLIC pending-round verification state** (standings + root + published-file
 link + countdown + "published for verification, then paid" — critic HIGH: the window's teeth are
-PUBLIC teeth) + the rule-sheet verify link (collapsed reference) + SeasonSealed anchors. The
+PUBLIC teeth) + the rule-sheet verify link (collapsed reference) + SeasonSealed anchors + the
+**podium $ cells** (each top-3 medallion carries its $ amount once the vault exists — the engraved
+mockup canon) + the **§0.18-④ seal-is-the-deadline caption on the money board** (unseated at the
+seal = skipped; nothing was reserved so nothing is forfeited; XP/rank/recognition stay yours
+forever; the next season opens the same day — the honest-deadline member promise). The
 This-season/All-time XP tabs keep ZERO dollar columns.
 ⑲ Home + /member: home 3-stat strip leads with the pot + GOAL (hero keeps the ONE filled gold CTA) ·
 SeasonStandingCard pot cell live-branch (one authority figure, no per-member dollars) ·
 EffortRewardCard keeps its emerald identity, gains its FIRST fetch (hoisted), push voice, the
-`skipped` honest state, and **the §0.6 UPFRONT lines** (2-year deadline from `servedClaimExpiry` ·
+`skipped` honest state, and **the §0.6 UPFRONT triad** (2-year deadline from `servedClaimExpiry` ·
+the plain-words **eligibility / discretion / TAX** lines ·
 carryover sweep destination · discretion/eligibility in plain words — an engraved either/or that
 was in no copy pack).
 ⑳ featureStatus: **EXACTLY ONE flip in all of S3** — `seasonBounty`→live in the activation commit;
@@ -178,9 +185,9 @@ consolidated update per slice, every figure recounted.
 | **S3-2** | The adversarial stack: 15 invariants · Halmos · Murky fuzz · mutation ≥90% · slither+aderyn · fork tests · gas + empirical chunk | every §9 GREEN item except fixture+rehearsal | ✅ NO DEPLOY |
 | **S3-3** | Tooling: potPolicy · merkle · rulesHash · publishedFile · fixture (two-phase) · verify CLI · guard | golden leaf vectors byte-verified vs independent viem · differential test green | ✅ NO DEPLOY |
 | **S3-4** | **THE ANTI-FARM LAWS** (§0.17-⑤): holding period · referral window cap · floor-gated credit | per-attack unit tests · potPolicy refusal lifts only here | 🚀 BATCHABLE |
-| **S3-5** | Server dark-wiring: delta windows · seasonPotReadmodel (③b6a) + alarms · pot object DARK · own-row claimStatus · operator dispute route (server recompute) · interim-announcement registry · GOAL config · **member + founder bell kinds** | typecheck ×2 · api guards · fail-closed proof (payload without pot renders today's surfaces) · FR bell sentences on screen | 🚀 BATCHABLE |
-| **S3-6** | **WIREFRAME GATE A** → admin Rail 02 build (next-step engine · funding approve→fund flow · rounds + dry-run · dispute panel · ledger · health · Safe-aware calldata) | **founder wireframe approval** · preview both widths/themes · S2c-1b measurement · guards | 🚀 BATCHABLE |
-| **S3-7** | **WIREFRAME GATE B** → front pot-LIVE build behind intact FUTURE badges (/season HERO + money board + public pending state · home strip · StandingCard branch · EffortRewardCard live) | **founder wireframe approval (4 temporal states)** · preview · measurement · full FR copy on screen | 🚀 BATCHABLE |
+| **S3-5** | Server dark-wiring: delta windows · seasonPotReadmodel (③b6a) + alarms · pot object DARK · own-row claimStatus · operator dispute route (server recompute) · interim-announcement registry · GOAL config · **member + founder bell kinds** | typecheck ×2 · api guards · fail-closed proof (payload without pot renders today's surfaces) · FR bell sentences on screen · guard-forbidden-copy + CANON_PROTOCOL_LANGUAGE §5 amended SAME commit for the new money words (§8-③, "the guard follows the system") | 🚀 BATCHABLE |
+| **S3-6** | **WIREFRAME GATE A** → admin Rail 02 build (next-step engine · funding approve→fund flow · rounds + dry-run · dispute panel · ledger · health · Safe-aware calldata) | **PREREQUISITE: the docs/design/seasons/ source mockups RE-EMITTED corrected first** (harvest §0.14-E, incl. the "Pendant ton absence" Fortnite-restore correction) · **founder wireframe approval** · preview both widths/themes · S2c-1b measurement · guards | 🚀 BATCHABLE |
+| **S3-7** | **WIREFRAME GATE B** → front pot-LIVE build behind intact FUTURE badges (/season HERO + money board + public pending state · home strip · StandingCard branch · EffortRewardCard live) | **PREREQUISITE: corrected mockup re-emission** (§0.14-E) · **founder wireframe approval (4 temporal states)** · preview · measurement · full FR copy on screen (incl. the seal-is-the-deadline caption + the §0.6 triad + « Fenêtre de récompense »/GOAL wording — new copy is NOT settled until this gate) · guard-forbidden-copy amended same commit (§8-③) | 🚀 BATCHABLE |
 | **S3-8** | **DEPLOY #1 — the dark batch** (carries the 5-commit backlog + S3-0/4/5/6/7; prod visibly unchanged) | Replit report pasted back · /api/season shape verified | 🚀 DEPLOY |
 | **S3-9** | **THE MONEY-SHEET SEAL** (founder decision gate, zero code): the FULL sheet inline on screen → `seasonConfig` filled → `season1RulesHash` computed (NO null in the hashed sheet — every hashed input is a MAINNET blocker, never a build blocker) | decisions recorded · hash recounted | ✅ NO DEPLOY |
 | **S3-10** | **MAINNET-FORK REHEARSAL** (closes GREEN — mainnet-direct ruling): anvil fork of Avalanche C-Chain (REAL USDC contract + chain state, time-warped) · 2 full lifecycles event-asserted · founder clicks acceptOwnership/fund/revoke on the REAL console screens (rig → fork) · Safe created + 1 Safe-signed act on the fork · fixture re-verified | §9 rehearsal checklist 100% event-asserted on the fork · report committed | ✅ NO DEPLOY |

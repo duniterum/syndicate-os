@@ -36,6 +36,21 @@
 > honest two founder acts · deploy params 72h/72h/7d/14d/2y). **NEXT: S3-0 truth floor.** ✅ NO
 > DEPLOY (docs).
 >
+> **▶ 2026-07-24 — THE FOUNDER-ORDERED RECONCILIATION (wf_7cbed965): FAITHFUL.** Every engraved
+> seasons discussion reconciled against the plan+spec ("on n'oublie rien, on n'invente rien si
+> ce n'est pas à notre avantage"): 26 groups VERIFIED (incl. the founder's own test — the §0.18
+> AWAITING SEAT projected share IS in Wireframe B) · 8 alterations ALL ruled+recorded, none
+> against us · 8 inventions all advantageous or founder-gated · **7 gaps folded back into the
+> master plan same day** (mockup re-emission prerequisite before gates A/B · the §0.18-④
+> seal-is-the-deadline board caption · the §8-③ guard-amendment lines on S3-5/7 · the §0.6 TAX
+> line · podium $ cells · the seat-number third tie-break key · the §0.8 anti-stress copy).
+> **⏰ STANDING WATCH TRIGGER (track EVERY session until it fires):** the served LIFETIME board
+> + past-seasons archive MUST ship BEFORE seats approach 333 (the era-1 seal) — otherwise the
+> live /season All-time tab starts lying at season 2. Lives in the master plan §1-㉖ + the WATCH
+> row; only the founder closes it.
+> **⚡ RULING RE-CONFIRMED, FINAL (stated twice): MAINNET-DIRECT, NO FUJI, no testnet step ever**
+> (8-① venue text now quotes the founder verbatim — ANSWERED FOREVER).
+>
 > **▶ 2026-07-23 — THE SEASONS + SWAPRAIL ARC OPENED (founder: "on va faire tout ça
 > comme il faut" — season-first; the advisor mega-dossier verified against the repo,
 > then FIVE RULINGS engraved).**
