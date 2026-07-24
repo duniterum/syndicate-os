@@ -34,8 +34,10 @@ const MODE = "READ_ONLY_VERIFY_LINKS" as const;
 const NOTE =
   "Explorer links for protocol infrastructure only (contracts, treasury wallets, LP pair, burn address). Never member wallets. Don't trust — verify.";
 
-/** Avascan C-Chain explorer base (mirrors canon EXPLORER_BASE_URL). */
-const EXPLORER_BASE = "https://avascan.info/blockchain/c";
+/** Snowtrace explorer base (mirrors canon EXPLORER_BASE_URL — the canonical
+ *  explorer since 2026-07-24: Avascan address pages hang on "Searching…",
+ *  and a verify link that opens a dead page is a broken proof). */
+const EXPLORER_BASE = "https://snowtrace.io";
 
 const isLiveAddress = (v: string) => /^0x[a-fA-F0-9]{40}$/.test(v);
 

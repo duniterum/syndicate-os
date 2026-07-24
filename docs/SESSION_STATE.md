@@ -173,6 +173,22 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   0 overflow; and the neutral wall RETOOK the page when the server
 >   operator-context answered false — the gate enforces server truth even in
 >   dev. The founder's signed operator session seals the visual online.
+> - **⚠ EXPLORER HOTFIX [this commit] — FOUNDER-CAUGHT: the verify-on-chain
+>   ADDRESS links opened dead pages.** Diagnosis BY LIVE TEST (never assumed):
+>   the address `0x205DdC…f464` is CORRECT (the Vault Reserve, canon) and our
+>   URL followed Avascan's own scheme — **AVASCAN ITSELF is broken**: its
+>   address pages hang on "Searching…" forever (reproduced live; balances
+>   never render — that is also the "missing amounts" symptom). Snowtrace
+>   works (the founder's own test). FIX FROM THE LAW ("Don't trust — verify":
+>   a verify link that opens a dead page is a broken proof; tx pages already
+>   standardized on Snowtrace for reliability): **the canonical explorer for
+>   ADDRESS/token pages is now SNOWTRACE** — one central flip
+>   (syndicate-config EXPLORER_BASE_URL + SYN/archive hrefs + verifyLinks
+>   route base + chain-registry comment); Avascan stays a per-brand fan-out
+>   OPTION only. Zero studio changes (no client hardcodes existed). VERIFIED
+>   ON THE SERVED PAYLOAD: /api/protocol/verify-links = 12 snowtrace URLs ·
+>   0 avascan (V1/V2A/V2B/V3 engines, Vault, LP, all chips). Gates: api
+>   typecheck + full guards chain green.
 > - **NEXT:** S3 — the Foundry workspace + SeasonBountyPool + the cash rail per
 >   §0.17 (the founder's money decisions gate it: « Engager au pot » amount +
 >   cadence · XP weights · the floor pair · lawyer pass at activation).

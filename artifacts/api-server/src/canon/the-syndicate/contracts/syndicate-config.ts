@@ -28,8 +28,9 @@ export const SYNDICATE_CONFIG = {
   NFT_CONTRACT_ADDRESS: "PENDING",
   LP_POOL_ADDRESS: "PENDING",
 
-  // External links — SYN token on Avascan (primary explorer).
-  EXPLORER_LINK: "https://avascan.info/blockchain/c/token/0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170",
+  // External links — SYN token on Snowtrace (the canonical explorer,
+  // 2026-07-24: Avascan address/token pages hang — see EXPLORER_BASE_URL).
+  EXPLORER_LINK: "https://snowtrace.io/token/0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170",
   // Both pending; null = render "Pending" instead of a dead link.
   DEX_LINK: null as string | null,
   SNAPSHOT_LINK: null as string | null,
@@ -43,7 +44,7 @@ export const SYNDICATE_CONFIG = {
   CURRENT_EPISODE: "001",
 } as const;
 
-// Helper to build "Verify onchain" links — points at SYN on Avascan by default.
+// Helper to build "Verify onchain" links — points at SYN on Snowtrace by default.
 export const verifyOnchain = (_kind: string) => SYNDICATE_CONFIG.EXPLORER_LINK;
 
 // ─── Canonical "Member" definition (single source of truth) ───────────
@@ -306,12 +307,15 @@ export const SYN_EXPLORERS = {
 } as const;
 
 // Explorer bases.
-// Address pages use Avascan C-Chain; transaction pages use Routescan because
-// its tx hash route is stable across Avalanche C-Chain transaction types.
+// THE CANONICAL EXPLORER IS SNOWTRACE — for ADDRESS pages too (founder-caught
+// 2026-07-24: Avascan address pages hang on "Searching…" forever — a verify
+// link that opens a dead page is a broken proof; tx pages already
+// standardized on Snowtrace for the same reliability reason). Avascan stays
+// available as a per-brand fan-out OPTION, never the canonical default.
 export const AVASCAN_C_CHAIN_BASE_URL = "https://avascan.info/blockchain/c";
 export const ROUTESCAN_BASE_URL = "https://routescan.io";
 export const SNOWTRACE_BASE_URL = "https://snowtrace.io";
-export const EXPLORER_BASE_URL = AVASCAN_C_CHAIN_BASE_URL;
+export const EXPLORER_BASE_URL = SNOWTRACE_BASE_URL;
 
 export type ContractKey = keyof typeof CONTRACTS;
 
@@ -396,7 +400,7 @@ export const ACTIVE_MEMBERSHIP_SALE_CONTRACT_ADDRESS =
 export function explorerUrlFor(key: ContractKey): string | null {
   const addr = CONTRACTS[key];
   if (!isLiveAddress(addr)) return null;
-  if (key === "SYN_CONTRACT_ADDRESS") return SYN_EXPLORERS.avascan;
+  if (key === "SYN_CONTRACT_ADDRESS") return SYN_EXPLORERS.snowtrace;
   return `${EXPLORER_BASE_URL}/${EXPLORER_KIND[key]}/${addr}`;
 }
 
@@ -581,7 +585,7 @@ export type TransparencyItem = {
 };
 
 export const TRANSPARENCY_ITEMS: TransparencyItem[] = [
-  { label: "SYN Token",            status: "live",    detail: "ERC20 deployed on Avalanche C-Chain · fixed 1,000,000,000 supply", href: SYN_EXPLORERS.avascan },
+  { label: "SYN Token",            status: "live",    detail: "ERC20 deployed on Avalanche C-Chain · fixed 1,000,000,000 supply", href: SYN_EXPLORERS.snowtrace },
   { label: "Allocation Integrity", status: "live",    detail: "7 public allocation wallets · initial mint confirmed",            href: "/registry" },
   { label: "Source Verification",  status: "live",    detail: "Source verified on Sourcify and Routescan",                       href: SYN_EXPLORERS.sourcify },
   { label: "Membership Sale V3",  status: "live",    detail: "Current live buy target. Accepts USDC, delivers SYN, and routes net USDC 70/20/10. Source records remain inactive.", href: explorerUrlForAddress(MEMBERSHIP_SALE_V3_CONTRACT_ADDRESS ?? "") ?? undefined },
@@ -593,7 +597,7 @@ export const TRANSPARENCY_ITEMS: TransparencyItem[] = [
   { label: "Member Number / Founder Recognition", status: "partial", detail: "Derived from holder index purchase order; no separate contract exists for this recognition layer.", href: "/members" },
   { label: "Member Registry",      status: "partial", detail: "Derived from indexed purchase events; registry coverage is partial until indexing is complete.", href: "/members" },
   { label: "Vault Contract",       status: "pending", detail: "Programmatic Vault contract not deployed — Vault is currently a public wallet." },
-  { label: "Archive Contract (SyndicateArchive1155)", status: "live",    detail: "Deployed on Avalanche · The First Signal (ID 1) public mint OPEN at 0.50 USDC, wallet limit 5. Patron Seal (ID 3) is active but wallet/read-gated. Other IDs are sealed, reserved, or future-contract surfaces.", href: ARCHIVE_NFT_EXPLORERS.avascan },
+  { label: "Archive Contract (SyndicateArchive1155)", status: "live",    detail: "Deployed on Avalanche · The First Signal (ID 1) public mint OPEN at 0.50 USDC, wallet limit 5. Patron Seal (ID 3) is active but wallet/read-gated. Other IDs are sealed, reserved, or future-contract surfaces.", href: ARCHIVE_NFT_EXPLORERS.snowtrace },
   { label: "SeatRecord721 (future ERC-721)", status: "pending", detail: "Future identity contract — not deployed. Separate from the live Archive1155 memory contract." },
   { label: "Governance",           status: "pending", detail: "No governance rights are live or promised." },
   { label: "AI Layer",             status: "pending", detail: "No AI module is live." },

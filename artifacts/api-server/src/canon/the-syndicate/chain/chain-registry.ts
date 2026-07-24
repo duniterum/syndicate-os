@@ -149,7 +149,9 @@ export function txUrls(hash: string | undefined | null, preference?: ExplorerId)
   return applyPreferenceOrder(canonicalTxUrls(hash), preference ?? readExplorerPreference());
 }
 
-/** Canonical EOA / wallet / contract address page (Avascan C-Chain). */
+/** Canonical EOA / wallet / contract address page (Snowtrace — the reliable
+ *  default since 2026-07-24; Avascan address pages hang and stay a per-brand
+ *  fan-out option only). */
 export function addressUrl(address: string | undefined | null): string | null {
   if (!address || !isLiveAddress(address)) return null;
   return explorerUrlForAddress(address);
