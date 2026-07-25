@@ -11,8 +11,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > Founder-driven full-screen sweep (footer → whole site). Ruling (QuickNode benchmark): bord-à-bord,
 > **no fixed-px page cap**, fill by **multiplying columns** (auto-fit), readability in **`ch`** — this
 > **supersedes `CANON_ACCESS_MODEL` §C/§4** where they named a px cap. **COMMITTED + GO'd:** `38623f1`
-> (the whole-site harmonization) is the last DEPLOYED build; the home follow-ons `224dd9a→a6b5294` are
-> PUSHED, awaiting the next Replit deploy (🚀 DEPLOY — BATCHABLE: client-only, additive, fail-closed).
+> (the whole-site harmonization) is the last DEPLOYED build; the home follow-ons + the senior-review
+> cleanup `224dd9a→498f498` are PUSHED, awaiting the next Replit deploy (🚀 DEPLOY — BATCHABLE:
+> client-only, additive, fail-closed; prod safely stays on `38623f1` until then).
 > Shipped: the shell + **20 surfaces** + primitives `.auto-grid` / `.measure` (68ch) +
 > the BLOCKING `guard-fluid-surface` (page-cap debt = **0**). **PLUS the FONT harmonization**
 > (founder's /season "patchwork" complaint): benchmarked font law (serif=display · Work Sans=body/
@@ -76,9 +77,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   **🚀 DEPLOY — BATCHABLE (client-visible, PUSHED not deployed):** the whole-site harmonization
 >   `38623f1` **is now the DEPLOYED build**; on top of it the home follow-ons `224dd9a` + `293fad2` +
 >   `c19923c` + `a6b5294` (framed section cards on ONE background · hero simplified · header type scale ·
->   Prose fill · More-menu Whitepaper-over-Join · Season align · dead-code/CSS cleanup) are pushed and
->   await the next Replit `pull main + deploy` (client-only, additive, fail-closed — prod safely stays
->   on `38623f1` until then).
+>   Prose fill · More-menu Whitepaper-over-Join · Season align) **+ the senior-review cleanup `498f498`**
+>   (dead code/CSS killed · Tokenomics bounded · docs synced) are pushed and await the next Replit
+>   `pull main + deploy` (client-only, additive, fail-closed — prod safely stays on `38623f1` until then).
 >
 > ## (b) IN FLIGHT — S3 (the S2 arc is closed; nothing else is open)
 > **THE HANDOFF DASHBOARD (2026-07-24 end-of-session · GitHub = the source of truth —
