@@ -279,14 +279,10 @@ export default function PublicHome() {
         Dark mode keeps the black/gold command-center reference.
         Light mode renders the same layout anatomy in a readable institutional light treatment.
       */}
-      <section className="syn-command-island relative isolate overflow-hidden border-b border-border bg-[radial-gradient(70%_48%_at_50%_0%,hsl(var(--gold)/0.18),transparent_68%),linear-gradient(180deg,hsl(var(--background)),hsl(var(--muted)))] text-foreground dark:border-gold/18 dark:bg-surface-command dark:text-white">
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute inset-0 bg-[radial-gradient(42%_46%_at_48%_44%,hsl(var(--success)/0.08),transparent_63%)] dark:bg-[radial-gradient(42%_46%_at_48%_44%,hsl(var(--success)/0.06),transparent_63%)]" />
-          <div className="absolute inset-0 syn-command-grid opacity-35" />
-        </div>
+      <section className="relative isolate overflow-hidden text-foreground dark:text-white">
 
         <div className="relative z-10 w-full px-4 pb-3 pt-2 sm:px-6 md:pb-4 md:pt-2.5 lg:px-8">
-          <div className="syn-cockpit-card overflow-hidden rounded-[1.25rem] border border-gold/30 bg-card/82 shadow-xl backdrop-blur-xl dark:bg-black/54">
+          <div className="overflow-hidden rounded-2xl border border-border bg-card/40 shadow-sm">
             <div className="grid grid-cols-1 gap-2.5 p-3 md:p-3.5 xl:grid-cols-[0.74fr_1.28fr_0.84fr] xl:grid-rows-[minmax(440px,auto)_auto] xl:gap-2.5 2xl:grid-cols-[0.72fr_1.34fr_0.82fr]">
               {/* M1-a — the hero's first act, in the origin's design language,
                   LIVE-PRODUCTION posture: ① honest posture chips · ② editorial
