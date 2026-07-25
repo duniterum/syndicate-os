@@ -1,0 +1,7 @@
+Coin logos in this folder come from spothq/cryptocurrency-icons
+(https://github.com/spothq/cryptocurrency-icons), released under the MIT
+License. Vendored LOCALLY on purpose: the site never calls an external host
+for an image, so the page works offline and no third party learns who visits
+us. A symbol with no file here falls back to a lettered disc — never a broken
+image. Coin logos remain the trademarks of their respective projects and are
+used here only to identify the assets the protocol actually holds.

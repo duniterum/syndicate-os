@@ -26,6 +26,7 @@ import { HeroStatusChips } from "@/components/hero/HeroStatusChips";
 import { HeroSeatLine } from "@/components/hero/HeroSeatLine";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { HomeSeasonSection } from "@/components/season/HomeSeasonSection";
+import { ProtocolReservesBand } from "@/components/ProtocolReservesBand";
 import { HomeRegisterBand } from "@/components/season/HomeRegisterBand";
 import {
   RegistryPostureChip,
@@ -285,6 +286,13 @@ export default function PublicHome() {
           the ONE seat spine · secondary join CTA · FUTURE pot frame · top-3
           teaser to /season). Approved mockup: season-visitor-home. */}
       <HomeSeasonSection />
+
+      {/* Protocol Reserves (founder-approved mockup 2026-07-25 — name, look and
+          composition bar all validated). Placed right after the season band: the
+          visitor meets the protocol's ambition, then immediately sees what it
+          actually owns, every row verifiable on Snowtrace. Registry-driven —
+          config/trackedAssets.ts decides the rows. */}
+      <ProtocolReservesBand />
 
       <PromotedStrip />
 

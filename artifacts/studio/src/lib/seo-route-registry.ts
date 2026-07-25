@@ -120,7 +120,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "The Syndicate — Proof-First Membership Protocol",
     description:
-      "A members club that lives on-chain. Your seat is permanent, numbered, and verifiable — and it's open today. Season 1 is live: every chain-proven act earns recognition on the public board. Check it yourself.",
+      "A members club that lives on-chain. Your seat is permanent, numbered, and verifiable — and it's open today. Season 1 is live, and the protocol shows what it owns: reserves read live from Avalanche, every figure checkable yourself.",
     canonicalPath: "/",
     changefreq: "weekly",
     priority: 1.0,
