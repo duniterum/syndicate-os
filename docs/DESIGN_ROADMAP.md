@@ -56,8 +56,8 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   encadrées uniformes sur UN fond (hero simplifié · strip vérif retiré · CSS/composant morts nettoyés) ·
   **header typo** relevé (nav 11→13px, micro-labels 10-11px) · **Prose** remplit (texte 68ch, cartes/tables
   pleine largeur) · **More-menu** Whitepaper-over-Join. **+0 couleur brute** (compteur reste 0).
-  **SCELLÉ LIVE `a6b5294`** (Replit vert, 2026-07-25 — identité octet ×2, bascule atomique sans indispo) ;
-  nettoyage revue senior `498f498` poussé, batchable (prochain deploy). Dossier : `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md`.
+  **SCELLÉ LIVE `e21a036`** (Replit vert ×2, 2026-07-25 — identité octet ×2, bascule atomique sans indispo,
+  nettoyage revue senior inclus) ; **backlog deploy VIDE, `main` == prod**. Dossier : `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md`.
 
 ### Phase 5 — Surfaces (adoption)
 - [ ] Public · [ ] Dashboards (connecté / membre) · [x] Console admin (arc K3 + composition console, 2026-07-22)
