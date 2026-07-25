@@ -14,7 +14,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > identity ×2 on entry + console chunks, atomic swap with no visitor downtime, 20/20 api guards, live
 > battery green (13 routes 200 · /studio 404 · sitemap 28 URLs with /recognition · engine ok=2 headBlock
 > advancing · **/contracts serving "Value of the priced holdings $236.79"**). No migration, no new env.
-> **DEPLOY BACKLOG — 4 commits above prod `f7f9e57`, recounted from `git log f7f9e57..HEAD`:**
+> **▶ PROD = `35d60fa` — ✅ SEALED LIVE 2026-07-25 (Replit report, founder-pasted). DEPLOY BACKLOG: EMPTY
+> of deployable work** — the only commit above prod is `66d5737` (documentation only, NO DEPLOY).
+> The grouped cycle carried `352a904` · `6953972` · `35c5083` · `add5bb8` · `35d60fa`. Byte identity ×2 on
+> the entry + console chunks; 7 public routes 200; /studio 404; season LIVE 15 standings; **the 4 new
+> treasury lanes resumed from their SAVED CURSORS after the redeploy — no rewind, nothing lost** (the
+> founder asked precisely this before authorising it, and the run proved it); engine ok=2, failed=0,
+> backfill advancing ~400k blocks/cycle with ~2-3 cycles left, autonomous.
+> **THE FIX IS PROVEN ON SCREEN, not merely deployed:** `/activity` now publicly shows
+> *"0.026551 WETH.e entered the vault — recorded on-chain"* (block 90,460,622, with its VERIFY anchor) —
+> the exact line the client validator was silently rejecting before `35d60fa`. The API had been serving it;
+> it was invisible. Treasury counter: 6 movements (1 WETH.e · 3 USDC · 2 SYN).
+> **HONEST OPEN NOTE:** no BTC.b line yet. The pipeline is PROVEN (the WETH.e line passes end to end), but
+> no BTC.b movement has been found in the blocks scanned so far. The vault HOLDS BTC.b, so an inbound
+> transfer necessarily exists — the question is only its block. If it sits BELOW the lanes' current
+> position once the backfill completes, that is a real defect to chase; above it, it appears on its own.
+> Check: the vault's token transfers on Snowtrace.
+>
+> **DEPLOY BACKLOG (historical record — this grouped cycle is now SEALED, see the line above):**
 > `352a904` season DTO, wallet + explorerUrl on every board row (**SERVER**) · `6953972` the public-home
 > Protocol Reserves band + 44 vendored coin SVGs (client) · `35c5083` one merged USDC card, the composition
 > bar filling 100%, every season row clickable (client) · `add5bb8` the BTC.b/WETH.e treasury lanes + the NFT

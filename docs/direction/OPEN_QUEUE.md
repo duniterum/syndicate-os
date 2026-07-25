@@ -1,5 +1,24 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-25 (PM-5) — THE WHOLE ARC IS SEALED LIVE. PROD = `35d60fa`. DEPLOY BACKLOG EMPTY** (only the
+> documentation commit `66d5737` sits above it). One grouped cycle carried `352a904` · `6953972` ·
+> `35c5083` · `add5bb8` · `35d60fa`: byte identity ×2, 7 public routes 200, /studio 404, season LIVE 15
+> standings, engine ok=2 / failed=0.
+> **THE BLOCKING FIX IS PROVEN ON SCREEN, not merely shipped:** `/activity` publicly shows
+> *"0.026551 WETH.e entered the vault — recorded on-chain"* (block 90,460,622, VERIFY anchor) — the exact
+> line the client validator silently rejected in `add5bb8`. The API served it; nobody could see it. That is
+> the value of the pre-handoff review in one sentence.
+> **THE CURSOR QUESTION THE FOUNDER ASKED BEFORE AUTHORISING THE REDEPLOY — ANSWERED BY THE RUN:** the 4
+> new lanes resumed from their SAVED cursors, no rewind, nothing re-scanned; the convergence law (cursor
+> persisted after EVERY 2,000-block chunk) held exactly as the code promised. Backfill continues
+> autonomously, ~2-3 cycles from the head.
+> **ONE HONEST OPEN NOTE:** no BTC.b line in the feed yet. The pipeline is proven (WETH.e passes end to
+> end) but no BTC.b movement has appeared in the blocks scanned so far. The vault HOLDS BTC.b, so its
+> inbound transfer necessarily exists — only its block is unknown, and the local tooling caps log queries
+> at 10 blocks so it cannot be hunted from here. VERDICT RULE, so nobody has to re-derive it: if the
+> transfer's block sits BELOW the lanes' position once backfill completes, that is a REAL defect to chase;
+> above it, the line appears on its own. Fastest check: the vault's token transfers on Snowtrace.
+
 > **▶ 2026-07-25 (PM-4) — THE HANDOFF REVIEW: 9 agents, 78 findings, 76 confirmed adversarially.**
 > The founder ordered a full senior re-read before handoff, GitHub as the source of truth. It caught a
 > **BLOCKING defect I had shipped hours earlier and TypeScript could not see**: `add5bb8` widened the
