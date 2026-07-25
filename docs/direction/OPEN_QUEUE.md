@@ -1,5 +1,57 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-25 (PM-3) — THE TRUTH SWEEP + THE NFT SALE MONEY (founder's own eye on the live page).**
+> He pointed at one /contracts card — *"Attribution Router … No commission or financial benefit is implied
+> or paid"* — and said it is false. **It was**, and a repo audit had CONFIRMED it nine days earlier without
+> anyone fixing it: commissions ARE paid on-chain inside the buyer's own transaction. Card **DELETED** (it
+> also published an internal never-announced plan as a public promise — his engraved rule). The sweep that
+> followed found the fossils travel in packs: **RECOGNITION was still called "a future concept" on FIVE
+> public surfaces** although the season board shipped 2026-07-23, and /status still called the public
+> receipt page "the remaining future layer" although it is live. All corrected; `/recognition` flipped
+> PENDING/noindex → **PUBLIC/INDEX + sitemap** with an honest served head (INDEX shells 27 → 28); the armed
+> doctrine string that would re-inject the commission lie on the next build regeneration is rewritten.
+> **NFT SALE MONEY NOW VISIBLE** (his second catch): 25.50 USDC of real artifact-sale money sat in a wallet
+> no figure read. Two items added (35 total; balanceOf 13 → 15) + a "NFT sales USDC" row in the total, with
+> the destination **RECONCILED** — the contract's own `treasury()` must match the canon-pinned wallet or the
+> figure fails closed (diverted-destination case guard-pinned). **AW-5 CLOSED: the founder NAMED it "NFT
+> Sale Wallet"**, and ruled the vocabulary: **NFT is the word everyone knows — "archive" was AI-chosen
+> jargon that created confusion** (→ ⑩). **THE TWO NFT FIGURES BOTH TRUE, NEVER MERGED:** 35.50 = all-time
+> contributed (price × minted) · 25.50 = held today; the home tile now says "all-time" in words.
+> Gates green whole: api tsc + build + chain (reality **173** · targets **225** · source-status 211) ·
+> studio tsc + guards + build (36 shells · 360 byte-identical twins · admin-dist 102).
+
+> **▶ 2026-07-25 (PM-2) — THE VAULT'S FULL HOLDINGS SERVE LIVE, VALUED (③ CLOSED). 🚀 THIS TRIGGERS THE
+> GROUPED DEPLOY.** Six new reality items (financial group 25 → 31): vault BTC.b + WETH.e `balanceOf`,
+> native AVAX via `eth_getBalance`, and AVAX/BTC/ETH Chainlink `latestRoundData` — each fail-closed on a
+> non-positive answer, a round older than 24h, or a future-dated round beyond 1h of clock skew.
+> `ProtocolAssetsCard` rewritten to 8 rows + a **"Value of the priced holdings"** headline that fails
+> closed if any priced component is missing; placed in the /admin home WORK zone under `BusinessBand`,
+> never collapsed. **THE VALUATION LAW (founder ruling, hardened by the senior review that caught the first
+> implementation breaking it):** only DIRECTLY-held assets with a DEEP market are valued and summed — USDC
+> at $1, AVAX/BTC.b/WETH.e at live Chainlink prices; **SYN is never priced**; **the pool counts at our REAL
+> share, USDC leg only** — never by doubling its USDC reserve (that silently marks the pool's SYN half to
+> the thin pool price). The founder challenged the exclusion — "on peut toujours savoir qui a mis quoi dans
+> le pool" — and he was right: LP tokens are an ERC-20, so ownership is a public balance. Two live reads
+> added (`financial.lp.totalSupply` + `financial.lp.protocolBalance`); chain-verified 2026-07-25 the
+> protocol's liquidity wallet holds **76.612%** of the pair, the founder's PERSONAL wallet 23.386% (his own
+> money — NOT protocol-owned), a third party 0.002%. Financial group 31 → 33; balanceOf 12 → 13.
+> **SENIOR REVIEW (6 independent lenses + adversarial refutation of every finding, 2026-07-25):** the
+> LP-doubling defect was caught by all six lenses and confirmed by five verifiers BEFORE any commit;
+> fixed at the law, not at the symptom. Also fixed in the same commit: served provenance no longer cites a
+> `contract-registry` key that does not exist · the one-sided staleness gate · a non-zero dust balance can
+> no longer print a false zero · the live tag now speaks about the READS, not the valuation · the guard
+> recount (28 → 31 items, 3 → 12 balanceOf reads) · new guard coverage (native-AVAX read failure,
+> non-positive price, `eth_getBalance` added to the unreachable/wrong-chain no-read pins, and a pin that
+> the VAULT_RESERVE allocation wallet IS the vault wallet — the served "Vault SYN" row depends on it).
+> **PLUS A FOUNDER-LAW FOSSIL KILLED:** the bare word the founder banned from every read surface was being
+> RENDERED on the public /status posture table (served by the api, so it escaped the studio-only copy
+> guard) — the note is now human words, and `source-status-truth.guard` gained a word-law check so a served
+> note can never re-introduce it. Gates green whole: api tsc + build + full chain (reality **162** ·
+> targets **221** · source-status **211** · auth-zone 1267 · backbone 165 · season-merkle 1279) · studio
+> tsc + full chain (feature-truth 592 · no-raw-color 0). `vaultHoldings` LIVE in featureStatus; the
+> `/contracts` SEO entry retitled to the new reality. **NEW OPEN ITEMS: ⑧ the BTC.b/WETH.e heartbeat lanes
+> (declared gap) · ⑨ the pool's real share read.**
+
 > **▶ 2026-07-25 (PM) — /ADMIN HARMONIZED + THE PII/ADDRESS LAW (IN FLIGHT — committed, BATCHABLE, NOT
 > deployed).** Prod = `e21a036`; every commit above it (`f2642aa` · `3b32f2c` · `29f8559` · `469882d` ·
 > docs) awaits ONE grouped deploy. Admin cards reskinned to the framed standard · Dashboard recomposed
@@ -8,12 +60,21 @@
 > fixes. **ADDRESS LAW SETTLED (legal-backed):** addresses PUBLIC, short-form + Snowtrace everywhere;
 > guards protect name/email NOT addresses; **masking an address = a BUG** (EDPB 02/2025 · CJEU *EDPS v SRB*
 > C-413/23 P · CCPA). Engraved in CLAUDE.md ① + ADR-003 + CANON_VISIBILITY_LAW amendments.
-> **THE COMPLETE OPEN-WORK LIST (7 workstreams):** ① address Tier-2 rescope (stage 1 done `469882d`; DIFF
-> shown before the guards) · ② `/registry` « The Register » public members page · ③ Protocol Assets
-> multi-token on admin home (Vault holds AVAX/BTC.b/WETH.e, verified on-chain) · ④ admin design polish ·
-> ⑤ docs sweep · ⑥ pre-existing full-screen-audit outstanding · ⑦ Q42 admin-controllability wiring (the
-> reskinned stubs: Audit-log/Support/Feature-flags/Content/Activity). Full detail: `docs/SESSION_STATE.md`
-> top block. **Note:** the « backlog deploy VIDE » in the edge-to-edge block below was true at the `e21a036`
+> **THE COMPLETE OPEN-WORK LIST (numbering NEVER renumbered — SESSION_STATE + BACKLOG.html mirror it):**
+> ① address Tier-2 rescope (stage 1 done `469882d`; the api chain sealed green in the holdings commit —
+> two sibling guard self-tests had stayed RED; DIFF shown before the remaining guards) · ② `/registry`
+> « The Register » public members page · ③ **✅ SHIPPED** Protocol Assets — the vault's full holdings +
+> the priced-holdings total (see the PM-2 block above) · ④ admin design polish · ⑤ **✅ DONE `1a9a0fe`**
+> docs sweep · ⑥ pre-existing full-screen-audit outstanding · ⑦ Q42 admin-controllability wiring (the
+> reskinned stubs: Audit-log/Support/Feature-flags/Content/Activity) · ⑧ **NEW** the BTC.b/WETH.e treasury
+> LANES in the heartbeat (holdings shown, movements have no feed line yet — a declared gap; **AW-5 is now
+> NAMED: "NFT Sale Wallet"**, so the lane is unblocked — only the founder's rider ruling on the 2 artifacts
+> that wallet itself minted remains) · ⑩ **NEW** the "archive" → **NFT** vocabulary sweep (founder ruling:
+> NFT is the word everyone knows, zero mental load; "archive" only for NFTs kept as a historical record —
+> its own slice, with his eye on the final public words) · ⑨ **✅ SHIPPED
+> same commit** the pool's real SHARE read (76.612% protocol-owned, chain-verified; only our USDC leg is
+> counted, and only the LIQUIDITY wallet counts as the protocol's — never the founder's personal share).
+> Full detail: `docs/SESSION_STATE.md` top block. **Note:** the « backlog deploy VIDE » in the edge-to-edge block below was true at the `e21a036`
 > seal — since then the commits above are BATCHABLE (they ride the next grouped deploy).
 
 > **▶ 2026-07-25 — THE EDGE-TO-EDGE HARMONIZATION ARC (full-screen).** Founder ruling (QuickNode

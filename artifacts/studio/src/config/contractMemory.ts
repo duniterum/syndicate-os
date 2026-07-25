@@ -126,15 +126,15 @@ export const contractMemory: ContractMemoryEntry[] = [
     lifecycle: "READ_ONLY_PROOF",
     note: "The deployed source-policy registry behind the live referral program: founder-signed sources are checked here at purchase time, and an eligible attributed purchase pays its bounded commission inside the buyer's own transaction.",
   },
-  {
-    id: "commission-router-candidate",
-    label: "Attribution Router (candidate)",
-    role: "Future attribution routing",
-    category: "source",
-    domain: "SOURCE_VERIFIED_INTRODUCTION",
-    lifecycle: "FUTURE",
-    note: "A future candidate for routing verified introductions. Not deployed or wired. No commission or financial benefit is implied or paid.",
-  },
+  // DELETED 2026-07-25 (founder caught it on the live page). This card carried
+  // TWO falsehoods side by side with the Source Registry card above: it denied
+  // that any commission is paid — while eligible referrers ARE paid, on-chain,
+  // inside the buyer's own purchase transaction (proven: seat #13) — and it
+  // published an INTERNAL, never-announced plan as a public promise, which the
+  // founder's engraved rule forbids ("an internal plan never becomes a public
+  // promise"). The identical denial had already been killed once on /status and
+  // once on the home page; it survived here. The live truth is fully carried by
+  // the Source Registry V1 card directly above — no replacement is needed.
   // --- Archive -------------------------------------------------------------
   {
     id: "archive-1155",

@@ -1,9 +1,24 @@
-// Protocol assets amorce — the first pier of the economy page. A single
-// honest card answering "what does the protocol hold?" with LIVE read-only
-// chain reads (fail-closed: unavailable reads say so, nothing is invented).
-// AVAX is a declared "coming" placeholder — the treasury acquisition strategy
-// shows a real figure only once assets are actually acquired on-chain.
-import { Coins, Droplet, Shield, Sparkles } from "lucide-react";
+// Protocol assets — a single honest card answering "what does the protocol
+// hold?" with LIVE read-only chain reads (fail-closed: unavailable reads say
+// so, nothing is invented).
+//
+// THE VALUATION RULE (founder ruling 2026-07-25, and the senior review of the
+// same day that caught its first implementation breaking it):
+//   · Only assets the protocol holds DIRECTLY in a protocol wallet, and whose
+//     price comes from a DEEP market, are given a USD value and summed:
+//     USDC at $1, plus AVAX / BTC.b / WETH.e at live Chainlink prices.
+//   · SYN is NEVER assigned a USD value — its only on-chain price is a thin
+//     pool, so a mark-to-market would be unrealizable and chain-refutable.
+//   · THE POOL IS NOT VALUED AND NOT SUMMED. Doubling its USDC reserve (the
+//     usual AMM shortcut) silently marks the pool's SYN half to that same thin
+//     price — the exact thing the rule forbids — AND the pair's reserves belong
+//     to every liquidity provider, not to the protocol alone: no read here
+//     establishes the protocol's share. So the pool is shown as reserves, in
+//     tokens, plainly labelled, and left out of the total. Valuing our real
+//     share needs a pool-share read (balanceOf(pair)/totalSupply(pair)) — a
+//     named follow-up, never a guess.
+// Every row links to Snowtrace — the wallet page proves each balance.
+import { Bitcoin, Coins, Droplet, Hexagon, Shield, Ticket, Triangle, Wallet } from "lucide-react";
 import { useGetProtocolReality, type VerifyLinkId } from "@workspace/api-client-react";
 import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
 import { formatBaseUnits } from "@/components/hero/useHeroReality";
@@ -13,8 +28,14 @@ import { VerifyOnChain, VERIFY_SLOGAN } from "@/components/VerifyOnChain";
 // infrastructure ONLY — links come from the read-only endpoint, fail-closed).
 const assetVerifyIds: Record<string, readonly VerifyLinkId[]> = {
   vault: ["vaultWallet"],
-  lp: ["lpPair"],
-  "syn-reserve": ["membershipSaleV3"],
+  ops: ["operationsWallet"],
+  "vault-avax": ["vaultWallet"],
+  "vault-btcb": ["vaultWallet"],
+  "vault-weth": ["vaultWallet"],
+  "vault-syn": ["vaultWallet"],
+  "nft-sales": ["nftArchive"],
+  pool: ["lpPair"],
+  "seat-reserve": ["membershipSaleV3"],
 };
 
 function findValue(
@@ -26,22 +47,126 @@ function findValue(
   return typeof item.value === "string" ? item.value : null;
 }
 
+// Raw base-unit string → JS number, for the USD valuation ONLY (display math on
+// figures whose magnitude is far below the precision limit; the exact base-unit
+// string always remains the authority for the token amount itself).
+function toNum(raw: string | null, decimals: number): number | null {
+  if (raw === null) return null;
+  try {
+    const n = Number(BigInt(raw)) / 10 ** decimals;
+    return Number.isFinite(n) ? n : null;
+  } catch {
+    return null;
+  }
+}
+
+/** A USD figure. A non-zero holding never renders as a flat $0.00 (honest dust). */
+function fmtUsd(n: number): string {
+  if (n > 0 && n < 0.01) return "< $0.01";
+  return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+/**
+ * A token amount at its display precision. If a NON-ZERO balance would round to
+ * all zeros at that precision, say "< 0.0…1" instead of printing a false zero.
+ */
+function fmtAmount(raw: string | null, decimals: number, dp: number): string | null {
+  const shown = formatBaseUnits(raw, decimals, dp);
+  if (shown === null) return null;
+  const isZeroShown = /^0(\.0*)?$/.test(shown.replace(/,/g, ""));
+  if (isZeroShown && raw !== null && raw !== "0") {
+    return dp > 0 ? `< 0.${"0".repeat(dp - 1)}1` : "< 1";
+  }
+  return shown;
+}
+
 export function ProtocolAssetsCard() {
   const reality = useGetProtocolReality();
   const financial = reality.data?.groups.financial;
   const sale = reality.data?.groups.sale;
 
-  const vaultUsdc = formatBaseUnits(findValue(financial, "financial.vault.usdcBalance"), 6, 2);
-  const lpUsdc = formatBaseUnits(findValue(financial, "financial.lp.reserveUsdc"), 6, 2);
-  const lpSyn = formatBaseUnits(findValue(financial, "financial.lp.reserveSyn"), 18, 2);
-  const synReserve = formatBaseUnits(
-    findValue(sale, "sale.MEMBERSHIP_SALE_V3.availableSyn"),
-    18,
-    0,
-  );
+  // ── Raw reads ───────────────────────────────────────────────────────────────
+  const rawVaultUsdc = findValue(financial, "financial.vault.usdcBalance");
+  const rawOpsUsdc = findValue(financial, "financial.ops.usdcBalance");
+  const rawAvax = findValue(financial, "financial.vault.avaxBalance");
+  const rawBtcb = findValue(financial, "financial.vault.btcbBalance");
+  const rawWeth = findValue(financial, "financial.vault.wethBalance");
+  // The vault's SYN balance IS the VAULT_RESERVE allocation (the same wallet,
+  // pinned by the targets-reconcile guard) — reuse that live read, never a twin.
+  const rawVaultSyn = findValue(financial, "financial.distribution.VAULT_RESERVE.balance");
+  const rawPoolSyn = findValue(financial, "financial.lp.reserveSyn");
+  const rawPoolUsdc = findValue(financial, "financial.lp.reserveUsdc");
+  const rawLpSupply = findValue(financial, "financial.lp.totalSupply");
+  const rawLpOwned = findValue(financial, "financial.lp.protocolBalance");
+  const rawNftWallet = findValue(financial, "financial.nftSale.walletUsdcBalance");
+  const rawNftContract = findValue(financial, "financial.nftSale.contractUsdcBalance");
+  const rawSeatReserve = findValue(sale, "sale.MEMBERSHIP_SALE_V3.availableSyn");
 
-  const anyLive = vaultUsdc !== null || lpUsdc !== null || synReserve !== null;
-  const tagState = anyLive ? "live" : reality.isLoading ? "checking" : "unavailable";
+  // ── Token amounts (display strings) ─────────────────────────────────────────
+  const vaultUsdc = fmtAmount(rawVaultUsdc, 6, 2);
+  const opsUsdc = fmtAmount(rawOpsUsdc, 6, 2);
+  const vaultAvax = fmtAmount(rawAvax, 18, 4);
+  const vaultBtcb = fmtAmount(rawBtcb, 8, 8);
+  const vaultWeth = fmtAmount(rawWeth, 18, 6);
+  const vaultSyn = fmtAmount(rawVaultSyn, 18, 0);
+  const poolSyn = fmtAmount(rawPoolSyn, 18, 2);
+  const poolUsdc = fmtAmount(rawPoolUsdc, 6, 2);
+  const seatReserve = fmtAmount(rawSeatReserve, 18, 0);
+
+  // ── USD valuation — directly-held, deep-market assets ONLY ──────────────────
+  const avaxPx = toNum(findValue(financial, "financial.price.avaxUsd"), 8);
+  const btcPx = toNum(findValue(financial, "financial.price.btcUsd"), 8);
+  const ethPx = toNum(findValue(financial, "financial.price.ethUsd"), 8);
+
+  const usdcUsd = toNum(rawVaultUsdc, 6); // a dollar stablecoin at $1
+  const opsUsd = toNum(rawOpsUsdc, 6);
+  const avaxAmt = toNum(rawAvax, 18);
+  const btcbAmt = toNum(rawBtcb, 8);
+  const wethAmt = toNum(rawWeth, 18);
+
+  const avaxUsd = avaxAmt !== null && avaxPx !== null ? avaxAmt * avaxPx : null;
+  const btcbUsd = btcbAmt !== null && btcPx !== null ? btcbAmt * btcPx : null;
+  const wethUsd = wethAmt !== null && ethPx !== null ? wethAmt * ethPx : null;
+
+  // THE POOL, HONESTLY: the pair's reserves belong to every liquidity provider,
+  // so we attribute only the protocol's own SHARE — its LP tokens over the total
+  // supply, both read live. And only of the USDC leg: pricing the SYN leg would
+  // mark SYN to the thin pool price, which the valuation law forbids.
+  const lpUsdcNum = toNum(rawPoolUsdc, 6);
+  const lpSupplyNum = toNum(rawLpSupply, 18);
+  const lpOwnedNum = toNum(rawLpOwned, 18);
+  const poolShare =
+    lpSupplyNum !== null && lpOwnedNum !== null && lpSupplyNum > 0 ? lpOwnedNum / lpSupplyNum : null;
+  const poolUsd = poolShare !== null && lpUsdcNum !== null ? lpUsdcNum * poolShare : null;
+
+  // NFT sale money: what the mints paid in and where it sits TODAY — the wallet
+  // the sale contract itself names as its destination, plus anything still
+  // resting inside the contract. NOT the same figure as all-time NFT
+  // contributions (that one is mint price x minted count, served elsewhere).
+  const nftWalletUsd = toNum(rawNftWallet, 6);
+  const nftContractUsd = toNum(rawNftContract, 6);
+  const nftUsd =
+    nftWalletUsd !== null && nftContractUsd !== null ? nftWalletUsd + nftContractUsd : null;
+  const nftAmount = nftUsd !== null ? nftUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : null;
+
+  // The total fails closed: if ANY priced component is unavailable the headline
+  // says so rather than publishing a partial (and therefore misleading) sum.
+  const priced = [usdcUsd, opsUsd, avaxUsd, btcbUsd, wethUsd, poolUsd, nftUsd];
+  const totalUsd = priced.every((c) => c !== null)
+    ? (priced as number[]).reduce((a, c) => a + c, 0)
+    : null;
+
+  // The live tag speaks about the READS, not about the valuation: token amounts
+  // can serve perfectly while a price feed is down, and vice versa.
+  const anyAmountLive =
+    vaultUsdc !== null ||
+    opsUsdc !== null ||
+    vaultAvax !== null ||
+    vaultBtcb !== null ||
+    vaultWeth !== null ||
+    vaultSyn !== null ||
+    seatReserve !== null;
+  const tagState = anyAmountLive ? "live" : reality.isLoading ? "checking" : "unavailable";
 
   const rows: Array<{
     id: string;
@@ -49,8 +174,8 @@ export function ProtocolAssetsCard() {
     icon: typeof Shield;
     tone: string;
     value: string | null;
+    usd: string | null;
     meta: string;
-    coming?: boolean;
   }> = [
     {
       id: "vault",
@@ -58,32 +183,83 @@ export function ProtocolAssetsCard() {
       icon: Shield,
       tone: "text-viz-1",
       value: vaultUsdc !== null ? `${vaultUsdc} USDC` : null,
-      meta: "70% routing destination · live balance",
+      usd: usdcUsd !== null ? fmtUsd(usdcUsd) : null,
+      meta: "70% routing destination",
     },
     {
-      id: "lp",
-      label: "LP position",
-      icon: Droplet,
-      tone: "text-viz-6",
-      value: lpSyn !== null && lpUsdc !== null ? `${lpSyn} SYN + ${lpUsdc} USDC` : null,
-      meta: "Protocol-owned liquidity · live reserves",
+      id: "ops",
+      label: "Operations USDC",
+      icon: Wallet,
+      tone: "text-viz-1",
+      value: opsUsdc !== null ? `${opsUsdc} USDC` : null,
+      usd: opsUsd !== null ? fmtUsd(opsUsd) : null,
+      meta: "10% routing destination",
     },
     {
-      id: "syn-reserve",
-      label: "SYN reserve",
+      id: "nft-sales",
+      label: "NFT sales USDC",
+      icon: Ticket,
+      tone: "text-viz-1",
+      value: nftAmount !== null ? `${nftAmount} USDC` : null,
+      usd: nftUsd !== null ? fmtUsd(nftUsd) : null,
+      meta: "Held now from NFT mints · not the all-time total",
+    },
+    {
+      id: "vault-avax",
+      label: "Vault AVAX",
+      icon: Triangle,
+      tone: "text-viz-5",
+      value: vaultAvax !== null ? `${vaultAvax} AVAX` : null,
+      usd: avaxUsd !== null ? fmtUsd(avaxUsd) : null,
+      meta: "Native holding · Chainlink price",
+    },
+    {
+      id: "vault-btcb",
+      label: "Vault BTC.b",
+      icon: Bitcoin,
+      tone: "text-viz-2",
+      value: vaultBtcb !== null ? `${vaultBtcb} BTC.b` : null,
+      usd: btcbUsd !== null ? fmtUsd(btcbUsd) : null,
+      meta: "Bridged bitcoin · Chainlink price",
+    },
+    {
+      id: "vault-weth",
+      label: "Vault WETH.e",
+      icon: Hexagon,
+      tone: "text-viz-3",
+      value: vaultWeth !== null ? `${vaultWeth} WETH.e` : null,
+      usd: wethUsd !== null ? fmtUsd(wethUsd) : null,
+      meta: "Bridged ether · Chainlink price",
+    },
+    {
+      id: "vault-syn",
+      label: "Vault SYN",
       icon: Coins,
       tone: "text-gold",
-      value: synReserve !== null ? `${synReserve} SYN` : null,
-      meta: "V3 sale engine · available for membership",
+      value: vaultSyn !== null ? `${vaultSyn} SYN` : null,
+      usd: null,
+      meta: "Protocol token · amount only, never priced",
     },
     {
-      id: "avax",
-      label: "AVAX",
-      icon: Sparkles,
-      tone: "text-muted-foreground",
-      value: null,
-      meta: "Treasury acquisition strategy — shows real once acquired",
-      coming: true,
+      id: "pool",
+      label: "SYN/USDC pool",
+      icon: Droplet,
+      tone: "text-viz-6",
+      value: poolSyn !== null && poolUsdc !== null ? `${poolSyn} SYN + ${poolUsdc} USDC` : null,
+      usd: poolUsd !== null ? fmtUsd(poolUsd) : null,
+      meta:
+        poolShare !== null
+          ? `Protocol share ${(poolShare * 100).toFixed(1)}% · only our USDC side is counted`
+          : "Whole-pool reserves · the protocol's share could not be read",
+    },
+    {
+      id: "seat-reserve",
+      label: "Seat-sale reserve",
+      icon: Ticket,
+      tone: "text-viz-4",
+      value: seatReserve !== null ? `${seatReserve} SYN` : null,
+      usd: null,
+      meta: "Still available to seat members",
     },
   ];
 
@@ -93,10 +269,32 @@ export function ProtocolAssetsCard() {
         <h2 className="type-h2 text-foreground">Protocol assets</h2>
         <LiveReadTag state={tagState} />
       </div>
-      <p className="mb-5 text-sm text-muted-foreground">
+      <p className="mb-4 text-sm text-muted-foreground">
         What the protocol holds — on-chain verifiable.{" "}
         <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground/70">{VERIFY_SLOGAN}</span>
       </p>
+      {/* The headline figure. Scope is stated, never implied: only directly-held
+          assets with a deep market are valued and summed. */}
+      <div className="mb-5 rounded-xl border border-gold/25 bg-background/58 p-4 dark:border-white/10 dark:bg-white/[0.035]">
+        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          Value of the priced holdings
+        </div>
+        <div className="mt-1 font-mono text-2xl font-black text-foreground">
+          {totalUsd !== null ? (
+            fmtUsd(totalUsd)
+          ) : (
+            <span className="text-base font-semibold text-muted-foreground">
+              {liveFigure(null, reality.isLoading)}
+            </span>
+          )}
+        </div>
+        <div className="mt-1.5 text-[11px] leading-snug text-muted-foreground">
+          USDC counted at one dollar; AVAX, BTC.b and WETH.e at live Chainlink prices. From the pool, only the
+          protocol's own share of the USDC side — its LP tokens over the total supply, both read live; liquidity
+          provided from any other wallet is not ours and is not counted. SYN is shown as an amount and never priced:
+          its only on-chain price is that same thin pool. If one figure cannot be read, this total says so.
+        </div>
+      </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {rows.map((row) => {
           const Icon = row.icon;
@@ -111,17 +309,16 @@ export function ProtocolAssetsCard() {
                   {row.label}
                 </span>
               </div>
-              {row.coming ? (
-                <div className="font-mono text-sm font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                  Coming
-                </div>
-              ) : row.value !== null ? (
+              {row.value !== null ? (
                 <div className="font-mono text-base font-black text-foreground">{row.value}</div>
               ) : (
                 <div className="font-mono text-sm font-semibold text-muted-foreground">
                   {liveFigure(null, reality.isLoading)}
                 </div>
               )}
+              {row.usd !== null ? (
+                <div className="mt-0.5 font-mono text-[11px] font-semibold text-muted-foreground">≈ {row.usd}</div>
+              ) : null}
               <div className="mt-2 text-[11px] leading-snug text-muted-foreground">{row.meta}</div>
               {assetVerifyIds[row.id] ? (
                 <VerifyOnChain ids={assetVerifyIds[row.id]} className="mt-1.5 block" />

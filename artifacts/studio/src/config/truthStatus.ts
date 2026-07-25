@@ -64,7 +64,7 @@ export const surfaceStatus: Record<SurfaceId, TruthStatus> = {
   proofOfFire: "EVENT_ADAPTER_NOT_WIRED", // RETIRED FROM RENDER — heartbeat live
   sourceAttribution: "SOURCE_INDEXER_NOT_WIRED", // RETIRED FROM RENDER — R5 live
   archive: "ARCHIVE_READS_NOT_WIRED", // RETIRED FROM RENDER — minting open, mints ride the indexed record
-  recognition: "FUTURE_MODULE",
+  recognition: "FUTURE_MODULE", // RETIRED FROM RENDER — the season board is live (2026-07-23)
   proofEventParser: "EVENT_ADAPTER_NOT_WIRED",
   founderControls: "DESIGN_PREVIEW", // founder auth LIVE; the dedicated surface is the preview
   publicDashboard: "DESIGN_PREVIEW", // RETIRED FROM RENDER — the public surfaces are live production

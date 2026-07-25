@@ -6,6 +6,8 @@
  *   2. readCodePresent — eth_getCode (deployment existence) — caller decides
  *      to call this ONLY after probeChain reports chainIdOk.
  *   3. ethCall — a single eth_call (used for ERC-20 / archive view selectors).
+ *   4. ethGetBalance — a single eth_getBalance (the NATIVE coin balance of an
+ *      address; a native holding has no contract, so no eth_getCode gate).
  *
  * No private key, no wallet, no transaction, no write. eth_* method names are
  * used only because Avalanche C-Chain is EVM-compatible.
@@ -54,6 +56,16 @@ export async function ethCall(
   data: string,
 ): Promise<unknown> {
   return transport("eth_call", [{ to, data }, "latest"]);
+}
+
+/**
+ * Read-only native-coin (AVAX) balance of an address via eth_getBalance. Returns
+ * the raw JSON-RPC result verbatim (a hex QUANTITY string, decoded by the caller
+ * with decodeHexQuantity). No contract, no code — an EOA holds native AVAX
+ * directly. Read-only; no key, no wallet, no transaction, no write.
+ */
+export async function ethGetBalance(transport: RpcTransport, address: string): Promise<unknown> {
+  return transport("eth_getBalance", [address, "latest"]);
 }
 
 /** Current chain head block number. Throws on RPC/parse failure (fail closed). */

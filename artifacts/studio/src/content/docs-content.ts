@@ -132,7 +132,7 @@ export const DOCS_GROUPS: DocGroup[] = [
       {
         routePath: "/recognition",
         purpose:
-          "The recognition model, explained as a future concept — recognition of participation, never a financial reward.",
+          "Recognition is live — the season board ranks contribution in public from chain-proven acts and quests credit real acts: recognition of participation, never a financial reward.",
         audience: ["Member"],
       },
     ],

@@ -319,9 +319,25 @@ check(
   "report meta binds the M4-b posture (aggregate + receipt-line feed, no persistence)",
   "report meta drifted from the declared M4-b posture",
 );
-expectThrow("leak scan trips on planted hex address", () =>
+// Address law (2026-07-25, CLAUDE.md rule ①): a full 40-hex wallet address is
+// PUBLIC — the scanner ALLOWS it (short-form display + Snowtrace link) and must
+// NOT throw. Over-long hex (0x + 41+) and bare 32-byte hashes still fail closed;
+// name/alias/email (never hex) are the red line. Mirrors the backbone guard's
+// re-authored self-test (Tier-2 stage 1, 469882d).
+let addrAllowed = true;
+try {
+  assertAddressSafeJson(JSON.stringify({ note: "0x" + "ab".repeat(20) }));
+} catch {
+  addrAllowed = false;
+}
+check(
+  addrAllowed,
+  "leak scan ALLOWS a public 40-hex address (address law 2026-07-25)",
+  "leak scan wrongly tripped on a public 40-hex address",
+);
+expectThrow("leak scan trips on over-long hex (0x + 41+)", () =>
   assertAddressSafeJson(
-    JSON.stringify({ note: "0x" + "ab".repeat(20) }),
+    JSON.stringify({ note: "0x" + "ab".repeat(21) }),
   ),
 );
 

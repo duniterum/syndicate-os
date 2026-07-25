@@ -26,6 +26,8 @@ export const SELECTOR_CURRENT_ERA = "0x973628f6" as const; // currentEra() — H
 export const SELECTOR_GENESIS_OFFSET = "0xc2b8c053" as const; // GENESIS_OFFSET()
 export const SELECTOR_NEXT_SEAT_NUMBER = "0x24605a13" as const; // nextSeatNumber()
 export const SELECTOR_TOTAL_SUPPLY = "0x18160ddd" as const; // totalSupply()
+export const SELECTOR_LATEST_ROUND_DATA = "0xfeaf968c" as const; // latestRoundData() — Chainlink aggregator
+export const SELECTOR_TREASURY = "0x61d027b3" as const; // treasury() — the NFT sale contract's payout destination
 
 const ADDRESS_RE = /^0x[0-9a-fA-F]{40}$/;
 
@@ -74,4 +76,44 @@ export function sumDecimalStrings(components: readonly (string | null)[]): strin
     total += BigInt(c);
   }
   return total.toString(10);
+}
+
+/**
+ * Decode a JSON-RPC hex QUANTITY (variable-width — e.g. eth_getBalance's native
+ * coin balance) to an EXACT base-10 string, or null on ANY malformation. Unlike
+ * decodeUint256Decimal (which requires a zero-padded 32-byte ABI word), a native
+ * balance is returned as a COMPACT quantity like "0x41bb7e…", so it needs its own
+ * decoder. BigInt-parsed — never a JS number, never humanized (fail closed).
+ */
+export function decodeHexQuantity(hex: unknown): string | null {
+  if (typeof hex !== "string" || !/^0x[0-9a-fA-F]+$/.test(hex)) return null;
+  try {
+    return BigInt(hex).toString(10);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Decode a Chainlink aggregator latestRoundData() result: exactly 5 ABI words
+ * (roundId, int256 answer, startedAt, updatedAt, answeredInRound). Returns the
+ * answer as an EXACT base-10 string plus updatedAt (unix seconds) so the caller
+ * can fail closed on a stale round. Returns null on ANY malformation or a
+ * non-positive answer (a bad / negative price is never surfaced).
+ */
+export function decodeLatestRoundData(
+  hex: unknown,
+): { answer: string; updatedAt: number } | null {
+  if (typeof hex !== "string" || !/^0x[0-9a-fA-F]+$/.test(hex)) return null;
+  const data = hex.slice(2);
+  if (data.length !== 320) return null; // exactly 5 ABI words
+  try {
+    const answer = BigInt("0x" + data.slice(64, 128)); // int256 answer (word 1)
+    const updatedAt = BigInt("0x" + data.slice(192, 256)); // uint256 updatedAt (word 3)
+    // Positive-range int256 only (top bit clear); non-positive / negative → null.
+    if (answer <= 0n || answer >= 1n << 255n) return null;
+    return { answer: answer.toString(10), updatedAt: Number(updatedAt) };
+  } catch {
+    return null;
+  }
 }

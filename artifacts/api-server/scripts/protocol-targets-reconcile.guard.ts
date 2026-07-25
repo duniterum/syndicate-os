@@ -79,6 +79,8 @@ import {
   SELECTOR_GENESIS_OFFSET,
   SELECTOR_NEXT_SEAT_NUMBER,
   SELECTOR_TOTAL_SUPPLY,
+  SELECTOR_LATEST_ROUND_DATA,
+  SELECTOR_TREASURY,
   encodeAddressArg,
   decodeReservesPair,
   sumDecimalStrings,
@@ -308,6 +310,8 @@ function main(): void {
     check("fin selector: token0() derived", SELECTOR_TOKEN0 === functionSelector("token0()"), SELECTOR_TOKEN0);
     check("fin selector: memberCount() derived", SELECTOR_MEMBER_COUNT === functionSelector("memberCount()"), SELECTOR_MEMBER_COUNT);
     check("fin selector: totalSupply() derived", SELECTOR_TOTAL_SUPPLY === functionSelector("totalSupply()"), SELECTOR_TOTAL_SUPPLY);
+    check("fin selector: latestRoundData() derived (Chainlink price feed)", SELECTOR_LATEST_ROUND_DATA === functionSelector("latestRoundData()"), SELECTOR_LATEST_ROUND_DATA);
+    check("fin selector: treasury() derived (the NFT sale contract's declared payout destination)", SELECTOR_TREASURY === functionSelector("treasury()"), SELECTOR_TREASURY);
 
     // 8b) Inflow cardinality + order + per-engine canon authority.
     const F = FINANCIAL_TARGETS;
@@ -356,10 +360,37 @@ function main(): void {
     check("fin canon: synBurnAddress == SYN_BURN_ADDRESS (canonical 0x…dEaD)", eqAddr(F.synBurnAddress, SYN_BURN_ADDRESS) && F.synBurnAddress.toLowerCase().endsWith("dead"));
     check("fin canon: usdcTokenAddress matches contract registry USDC", eqAddr(F.usdcTokenAddress, contractByKey("USDC")?.address ?? null));
     check("fin canon: synTokenAddress matches contract registry SYN_TOKEN", eqAddr(F.synTokenAddress, contractByKey("SYN_TOKEN")?.address ?? null));
+    // BTC.b + WETH.e are EXTERNAL Avalanche bridge tokens (not protocol contracts)
+    // so they have no internal canon authority — the authority is each token's OWN
+    // on-chain identity, chain-verified 2026-07-25 (BTC.b: symbol "BTC.b" / 8
+    // decimals; WETH.e: "WETH.e" / 18 decimals). Pin the literal canon address so
+    // the served balanceOf target can never drift silently.
+    check("fin canon: btcbTokenAddress is the canon BTC.b bridge token (chain-verified 2026-07-25)", eqAddr(F.btcbTokenAddress, "0x152b9d0FdC40C096757F570A51E494bd4b943E50"));
+    check("fin canon: wethTokenAddress is the canon WETH.e bridge token (chain-verified 2026-07-25)", eqAddr(F.wethTokenAddress, "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB"));
+    // Chainlink USD price feeds (Avalanche mainnet aggregators). No internal canon
+    // authority — the authority is each feed's own on-chain identity, chain-verified
+    // 2026-07-25 (latestRoundData returns a fresh 8-decimal USD answer). Pin literal.
+    check("fin canon: priceFeeds.avaxUsd is the canon Chainlink AVAX/USD feed", eqAddr(F.priceFeeds.avaxUsd, "0x0A77230d17318075983913bC2145DB16C7366156"));
+    check("fin canon: priceFeeds.btcUsd is the canon Chainlink BTC/USD feed", eqAddr(F.priceFeeds.btcUsd, "0x2779D32d5166BAaa2B2b658333bA7e6Ec0C65743"));
+    check("fin canon: priceFeeds.ethUsd is the canon Chainlink ETH/USD feed", eqAddr(F.priceFeeds.ethUsd, "0x976B3D034E162d8bD72D6b9C989d545b839003b0"));
+    // The NFT sale contract must BE the canon archive contract, and its payout
+    // wallet is the founder-named "NFT Sale Wallet" (chain-confirmed 2026-07-25
+    // by the contract's own treasury() view answering exactly this address).
+    check("fin canon: nftSaleContract matches the canon archive contract", eqAddr(F.nftSaleContract, ARCHIVE_TARGET.address));
+    check("fin canon: nftSaleWallet is the NFT Sale Wallet the contract's treasury() declares", eqAddr(F.nftSaleWallet, "0xe4178521946d2c54e2a2c5b154aae07319bbd56f"));
+    check("fin canon: the NFT sale wallet is NOT one of the routing organs (it is its own destination)", !eqAddr(F.nftSaleWallet, F.vaultWallet) && !eqAddr(F.nftSaleWallet, F.operationsWallet) && !eqAddr(F.nftSaleWallet, F.liquidityWallet));
+    // The served "Vault SYN" row reuses the VAULT_RESERVE allocation item rather
+    // than a duplicate balanceOf — which is only truthful while that allocation
+    // wallet IS the vault wallet. Pin the equality so a future canon edit can
+    // never silently mislabel another wallet's SYN as the vault's holdings.
+    check(
+      "fin canon: the VAULT_RESERVE allocation wallet IS vaultWallet (the served Vault-SYN row depends on it)",
+      eqAddr(F.allocationWallets.find((w) => w.key === "VAULT_RESERVE")?.address ?? "", F.vaultWallet),
+    );
     check("fin canon: lpPair matches LP_POOL.pairAddress", eqAddr(F.lpPair, LP_POOL.pairAddress));
     check("fin canon: lpPair matches contract registry LP_PAIR", eqAddr(F.lpPair, contractByKey("LP_PAIR")?.address ?? null));
     check("fin canon: memberCountEngine is the active V3 engine", F.memberCountEngine.key === "MEMBERSHIP_SALE_V3" && eqAddr(F.memberCountEngine.address, contractByKey("MEMBERSHIP_SALE_V3")?.address ?? null));
-    for (const [label, addr] of [["vaultWallet", F.vaultWallet], ["liquidityWallet", F.liquidityWallet], ["operationsWallet", F.operationsWallet], ["synBurnAddress", F.synBurnAddress], ["usdcTokenAddress", F.usdcTokenAddress], ["synTokenAddress", F.synTokenAddress], ["lpPair", F.lpPair], ["memberCountEngine", F.memberCountEngine.address]] as const) {
+    for (const [label, addr] of [["vaultWallet", F.vaultWallet], ["liquidityWallet", F.liquidityWallet], ["operationsWallet", F.operationsWallet], ["synBurnAddress", F.synBurnAddress], ["usdcTokenAddress", F.usdcTokenAddress], ["synTokenAddress", F.synTokenAddress], ["btcbTokenAddress", F.btcbTokenAddress], ["wethTokenAddress", F.wethTokenAddress], ["priceFeeds.avaxUsd", F.priceFeeds.avaxUsd], ["priceFeeds.btcUsd", F.priceFeeds.btcUsd], ["priceFeeds.ethUsd", F.priceFeeds.ethUsd], ["lpPair", F.lpPair], ["memberCountEngine", F.memberCountEngine.address]] as const) {
       check(`fin addr-shape: ${label} is a full address`, FULL_ADDRESS_RE.test(addr), addr.slice(0, 6));
     }
 

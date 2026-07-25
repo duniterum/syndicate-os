@@ -57,6 +57,8 @@ import {
   SELECTOR_GENESIS_OFFSET,
   SELECTOR_NEXT_SEAT_NUMBER,
   SELECTOR_TOTAL_SUPPLY,
+  SELECTOR_LATEST_ROUND_DATA,
+  SELECTOR_TREASURY,
   encodeAddressArg,
 } from "../src/lib/protocol/financialDecoders";
 import {
@@ -104,6 +106,7 @@ type MockOpts = {
   chainId?: string | "__unreachable__";
   code?: (addr: string) => string;
   call?: CallFn;
+  getBalance?: (addr: string) => string;
 };
 function makeMock(o: MockOpts): { transport: RpcTransport; methods: string[] } {
   const methods: string[] = [];
@@ -123,6 +126,10 @@ function makeMock(o: MockOpts): { transport: RpcTransport; methods: string[] } {
       const r = o.call ? o.call(p.to, selector, p.data) : goodCall(p.to, selector, p.data);
       if (r === "__throw__") throw new Error("revert");
       return r;
+    }
+    if (method === "eth_getBalance") {
+      const addr = (params[0] as string).toLowerCase();
+      return o.getBalance ? o.getBalance(addr) : goodGetBalance(addr);
     }
     throw new Error("unexpected method " + method);
   };
@@ -158,6 +165,28 @@ const OPS_USDC_BAL = 10000000456n; //  operations wallet USDC balance fixture
 // the encoded calldata argument distinguishes them, so goodCall needs `data`.
 const VAULT_BAL_DATA = encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.vaultWallet);
 const OPS_BAL_DATA = encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.operationsWallet);
+// Vault multi-token holdings (Protocol Assets slice): BTC.b + WETH.e balanceOf
+// reads on their bridge-token contracts (vault-wallet calldata), plus native AVAX
+// via eth_getBalance. Fixtures are distinct and, where magnitude allows, ABOVE
+// Number.MAX_SAFE_INTEGER so the guard proves each exact decimal STRING survives.
+const BTCB_ADDR = FINANCIAL_TARGETS.btcbTokenAddress.toLowerCase();
+const WETH_ADDR = FINANCIAL_TARGETS.wethTokenAddress.toLowerCase();
+const VAULT_ADDR = FINANCIAL_TARGETS.vaultWallet.toLowerCase();
+const VAULT_BTCB_BAL = 77818n; //               0.00077818 BTC.b @ 8 decimals
+const VAULT_WETH_BAL = 26551703798238159n; //    ~0.026552 WETH.e @ 18 decimals (> MAX_SAFE_INTEGER)
+const VAULT_AVAX_BAL = 4736518497102072786n; //  ~4.7365 native AVAX (wei) @ 18 decimals (> MAX_SAFE_INTEGER)
+// The protocol's POOL SHARE: the pair's LP total supply and the liquidity
+// wallet's LP balance. Distinct, non-round values so the guard proves each exact
+// string survives AND that the two reads are disambiguated (both hit the pair).
+// NFT sale money: the declared payout wallet's USDC and anything resting in the
+// sale contract. Distinct, non-round so the guard proves each exact string.
+const NFT_CONTRACT_ADDR = FINANCIAL_TARGETS.nftSaleContract.toLowerCase();
+const NFT_WALLET_BAL_DATA = encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.nftSaleWallet);
+const NFT_CONTRACT_BAL_DATA = encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.nftSaleContract);
+const NFT_WALLET_USDC = 25500000n; //  25.50 USDC @ 6 decimals (the live figure 2026-07-25)
+const NFT_CONTRACT_USDC = 1234567n; //  1.234567 USDC in transit — non-round, distinct
+const LP_TOTAL_SUPPLY_FIX = 386394614171674n; //   LP token total supply @ 18 decimals
+const LP_PROTOCOL_BAL_FIX = 296023740620949n; //   held by the liquidity wallet (~76.6%)
 // Burned SYN fixture: 16,000 SYN @ 18 decimals — ABOVE Number.MAX_SAFE_INTEGER
 // and DIFFERENT from any recorded canon ceremony figure: the guard proves the
 // served value comes from the TRANSPORT, never a stored constant.
@@ -186,6 +215,28 @@ const DISTINCT_WALLETS_FIX = MEMBER_COUNT_FIX - SEAT_OVERLAP_FIX;
 /** Uniswap-V2 getReserves(): exactly 3 words (uint112, uint112, uint32 ts). */
 const encReserves = (r0: bigint, r1: bigint): string =>
   "0x" + word(r0.toString(16)) + word(r1.toString(16)) + word("64");
+
+// Chainlink USD price-feed fixtures (Protocol Assets USD valuation). 8-decimal
+// USD answers; updatedAt is set FRESH relative to the guard's fixed clock
+// (baseOpts now = 2026-06-30) so the 24h staleness gate passes. Distinct values.
+const PRICE_NOW_S = Math.floor(Date.parse("2026-06-30T00:00:00.000Z") / 1000);
+const PRICE_UPDATED_AT = BigInt(PRICE_NOW_S - 3600); // 1h old — within the 24h window
+const AVAX_USD_FIX = 645_000_000n; //      $6.45 @ 8 decimals
+const BTC_USD_FIX = 64_167_000_000_000n; // $64,167 @ 8 decimals
+const ETH_USD_FIX = 186_583_000_000n; //   $1,865.83 @ 8 decimals
+const PRICE_FEED_FIX = new Map<string, bigint>([
+  [FINANCIAL_TARGETS.priceFeeds.avaxUsd.toLowerCase(), AVAX_USD_FIX],
+  [FINANCIAL_TARGETS.priceFeeds.btcUsd.toLowerCase(), BTC_USD_FIX],
+  [FINANCIAL_TARGETS.priceFeeds.ethUsd.toLowerCase(), ETH_USD_FIX],
+]);
+/** Chainlink latestRoundData(): 5 words (roundId, answer, startedAt, updatedAt, answeredInRound). */
+const encRoundData = (answer: bigint, updatedAt: bigint): string =>
+  "0x" +
+  word("1") +
+  word(answer.toString(16)) +
+  word(updatedAt.toString(16)) +
+  word(updatedAt.toString(16)) +
+  word("1");
 
 // ── tokenomics live reads (Slice 2.2) fixtures ───────────────────────────────
 // SYN totalSupply + per-allocation SYN balances. Values are distinct and ABOVE
@@ -236,24 +287,45 @@ function goodCall(to: string, selector: string, data = ""): string {
     if (addr === V1_FIN_ADDR) return encUint256(V1_INFLOW);
     return encUint256(addr === V2A_FIN_ADDR ? V2A_INFLOW : V2B_INFLOW);
   }
+  if (selector === SELECTOR_TREASURY)
+    return "0x" + word(FINANCIAL_TARGETS.nftSaleWallet.slice(2).toLowerCase());
   if (selector === SELECTOR_BALANCE_OF) {
-    if (addr === USDC_ADDR)
-      return encUint256(data === OPS_BAL_DATA ? OPS_USDC_BAL : VAULT_USDC_BAL);
+    if (addr === USDC_ADDR) {
+      if (data === OPS_BAL_DATA) return encUint256(OPS_USDC_BAL);
+      if (data === NFT_WALLET_BAL_DATA) return encUint256(NFT_WALLET_USDC);
+      if (data === NFT_CONTRACT_BAL_DATA) return encUint256(NFT_CONTRACT_USDC);
+      return encUint256(VAULT_USDC_BAL);
+    }
+    if (addr === BTCB_ADDR) return encUint256(VAULT_BTCB_BAL);
+    if (addr === WETH_ADDR) return encUint256(VAULT_WETH_BAL);
+    if (addr === LP_ADDR) return encUint256(LP_PROTOCOL_BAL_FIX);
     // SYN balanceOf: an allocation wallet (by calldata) or the burn address.
     const alloc = ALLOC_BAL_BY_DATA.get(data);
     if (alloc !== undefined) return encUint256(alloc);
     return encUint256(BURNED_SYN);
   }
-  if (selector === SELECTOR_TOTAL_SUPPLY) return encUint256(SYN_TOTAL_SUPPLY_FIX);
+  if (selector === SELECTOR_TOTAL_SUPPLY)
+    return encUint256(addr === LP_ADDR ? LP_TOTAL_SUPPLY_FIX : SYN_TOTAL_SUPPLY_FIX);
   if (selector === SELECTOR_TOKEN0) return "0x" + word(SYN_ADDR.slice(2));
   if (selector === SELECTOR_GET_RESERVES) return encReserves(LP_RESERVE0, LP_RESERVE1);
   if (selector === SELECTOR_MEMBER_COUNT) return encUint256(MEMBER_COUNT_FIX);
   if (selector === SELECTOR_GENESIS_OFFSET) return encUint256(GENESIS_OFFSET_FIX);
   if (selector === SELECTOR_NEXT_SEAT_NUMBER)
     return encUint256(MEMBER_COUNT_FIX + 1n);
+  if (selector === SELECTOR_LATEST_ROUND_DATA) {
+    const price = PRICE_FEED_FIX.get(addr);
+    if (price !== undefined) return encRoundData(price, PRICE_UPDATED_AT);
+    return "0x"; // unknown feed → decode fails → fail closed
+  }
   if (selector === SELECTOR_MEMBER_NUMBER_OF)
     return encUint256(MEMBER_NUMBER_OF_FIX.get(data) ?? 0n);
   return "0x";
+}
+
+/** Native AVAX balance mock — the vault wallet holds the fixture, everyone else 0. */
+function goodGetBalance(addr: string): string {
+  if (addr === VAULT_ADDR) return "0x" + VAULT_AVAX_BAL.toString(16);
+  return "0x0";
 }
 
 const baseOpts = (transport: RpcTransport): BuildOpts => ({
@@ -344,12 +416,14 @@ async function main(): Promise<void> {
     check("happy: source registryLinkage true (CANON_RECONCILED_RPC, HIGH, READ_ONLY_PROOF)", linkage?.value === true && linkage?.sourceType === "CANON_RECONCILED_RPC" && linkage?.confidence === "HIGH" && linkage?.lifecycle === "READ_ONLY_PROOF");
     check("happy: source creationPolicy OWNER_ONLY (SERVER_SIDE_CANON, FOUNDER_GATED)", byId(e, "source.creationPolicy")?.value === "OWNER_ONLY" && byId(e, "source.creationPolicy")?.sourceType === "SERVER_SIDE_CANON" && byId(e, "source.creationPolicy")?.lifecycle === "FOUNDER_GATED");
     check("happy: source zeroSourceJoin true (SERVER_SIDE_CANON, READ_ONLY_PROOF)", byId(e, "source.zeroSourceJoin")?.value === true && byId(e, "source.zeroSourceJoin")?.sourceType === "SERVER_SIDE_CANON" && byId(e, "source.zeroSourceJoin")?.lifecycle === "READ_ONLY_PROOF");
-    // Financial group (Slice N1 + Reconciliation): 13 items, values LIVE from
-    // the transport except the attribution count (static hash-pinned snapshot).
-    check("fin: financial group has exactly 25 items", e.groups.financial.length === 25, String(e.groups.financial.length));
+    // Financial group (Slice N1 + Reconciliation + vault crypto holdings): 31
+    // items — the 25 before this slice + vault BTC.b / WETH.e / native AVAX +
+    // the 3 Chainlink USD feeds. Values LIVE from the transport except the two
+    // snapshot-backed referral figures (static hash-pinned).
+    check("fin: financial group has exactly 35 items", e.groups.financial.length === 35, String(e.groups.financial.length));
     const finIds = e.groups.financial.map((i) => i.id).sort().join(",");
     check(
-      "fin: exact id set (16 base [incl. genesisOffset + distinctWallets + seatOverlap] + SYN totalSupply + 7 allocation balances + paidToReferrersTotal = 25)",
+      "fin: exact id set (16 base + 3 vault crypto holdings [AVAX + BTC.b + WETH.e] + 3 Chainlink USD price feeds + 2 LP-share reads + 2 NFT-sale USDC reads + SYN totalSupply + 7 allocation balances + paidToReferrersTotal = 35)",
       finIds ===
         [
           "financial.burn.synBalance",
@@ -365,18 +439,28 @@ async function main(): Promise<void> {
           "financial.inflow.MEMBERSHIP_SALE_V2A",
           "financial.inflow.MEMBERSHIP_SALE_V3",
           "financial.inflow.aggregate",
+          "financial.lp.protocolBalance",
           "financial.lp.reserveSyn",
           "financial.lp.reserveUsdc",
+          "financial.lp.totalSupply",
           "financial.members.distinctWallets",
           "financial.members.genesisOffset",
           "financial.members.memberCount",
           "financial.members.seatOverlap",
+          "financial.nftSale.contractUsdcBalance",
+          "financial.nftSale.walletUsdcBalance",
           "financial.ops.usdcBalance",
+          "financial.price.avaxUsd",
+          "financial.price.btcUsd",
+          "financial.price.ethUsd",
           "financial.referral.attributionActivity",
           "financial.referral.paidToReferrersTotal",
           "financial.referral.registryLive",
           "financial.token.synTotalSupply",
+          "financial.vault.avaxBalance",
+          "financial.vault.btcbBalance",
           "financial.vault.usdcBalance",
+          "financial.vault.wethBalance",
         ].join(","),
       finIds,
     );
@@ -390,12 +474,32 @@ async function main(): Promise<void> {
     check("fin: aggregate note pins four-engine scope + founder-test provenance (never external customer revenue)", (agg?.note ?? "").includes("V1 + V2a + V2b + V3") && (agg?.note ?? "").includes("founder test transactions") && (agg?.note ?? "").includes("never external customer revenue"));
     check("fin: vault USDC balance EXACT decimal string (stablecoin role)", byId(e, "financial.vault.usdcBalance")?.value === VAULT_USDC_BAL.toString() && byId(e, "financial.vault.usdcBalance")?.contractRole === "stablecoin");
     check("fin: vault note pins 70/20/10 routed split + current-balance ≠ cumulative-inflow honesty", (byId(e, "financial.vault.usdcBalance")?.note ?? "").includes("70/20/10") && (byId(e, "financial.vault.usdcBalance")?.note ?? "").includes("not cumulative inflow"));
+    // Vault crypto holdings (Protocol Assets slice): BTC.b + WETH.e via balanceOf,
+    // native AVAX via eth_getBalance — every figure LIVE from the transport.
+    check("fin: vault BTC.b balance EXACT decimal string (token role, LIVE_CHAIN_RPC)", byId(e, "financial.vault.btcbBalance")?.value === VAULT_BTCB_BAL.toString() && byId(e, "financial.vault.btcbBalance")?.contractRole === "token" && byId(e, "financial.vault.btcbBalance")?.sourceType === "LIVE_CHAIN_RPC");
+    check("fin: vault WETH.e balance EXACT decimal string ABOVE MAX_SAFE_INTEGER (token role, LIVE_CHAIN_RPC)", byId(e, "financial.vault.wethBalance")?.value === VAULT_WETH_BAL.toString() && byId(e, "financial.vault.wethBalance")?.valueType === "string" && byId(e, "financial.vault.wethBalance")?.contractRole === "token" && byId(e, "financial.vault.wethBalance")?.sourceType === "LIVE_CHAIN_RPC");
+    check("fin: vault native AVAX balance EXACT decimal string ABOVE MAX_SAFE_INTEGER (null role, eth_getBalance not balanceOf)", byId(e, "financial.vault.avaxBalance")?.value === VAULT_AVAX_BAL.toString() && byId(e, "financial.vault.avaxBalance")?.valueType === "string" && byId(e, "financial.vault.avaxBalance")?.contractRole === null && byId(e, "financial.vault.avaxBalance")?.sourceType === "LIVE_CHAIN_RPC" && (byId(e, "financial.vault.avaxBalance")?.sourceRef ?? "").includes("eth_getBalance") && !(byId(e, "financial.vault.avaxBalance")?.sourceRef ?? "").includes("balanceOf"));
+    // Chainlink USD price feeds (Protocol Assets USD valuation) — live 8-decimal
+    // answers, fail-closed on stale/non-positive; SYN is never priced.
+    check("fin: AVAX/USD Chainlink price EXACT 8-dec string (LIVE_CHAIN_RPC, null role)", byId(e, "financial.price.avaxUsd")?.value === AVAX_USD_FIX.toString() && byId(e, "financial.price.avaxUsd")?.contractRole === null && byId(e, "financial.price.avaxUsd")?.sourceType === "LIVE_CHAIN_RPC");
+    check("fin: BTC/USD Chainlink price EXACT 8-dec string", byId(e, "financial.price.btcUsd")?.value === BTC_USD_FIX.toString() && byId(e, "financial.price.btcUsd")?.valueType === "string");
+    check("fin: ETH/USD Chainlink price EXACT 8-dec string", byId(e, "financial.price.ethUsd")?.value === ETH_USD_FIX.toString());
+    check("fin: price feeds sourced from Chainlink latestRoundData (never balanceOf), SYN never priced", (byId(e, "financial.price.avaxUsd")?.sourceRef ?? "").includes("latestRoundData") && (byId(e, "financial.price.btcUsd")?.sourceRef ?? "").includes("chainlink") && (byId(e, "financial.price.ethUsd")?.note ?? "").includes("never priced"));
     check("fin: ops wallet USDC balance EXACT decimal string (stablecoin role, distinct from vault)", byId(e, "financial.ops.usdcBalance")?.value === OPS_USDC_BAL.toString() && byId(e, "financial.ops.usdcBalance")?.contractRole === "stablecoin" && OPS_USDC_BAL !== VAULT_USDC_BAL);
     check("fin: ops note pins the 70/20/10 routed-split reconciliation purpose", (byId(e, "financial.ops.usdcBalance")?.note ?? "").includes("70/20/10"));
     const burned = byId(e, "financial.burn.synBalance");
     check("fin: burned SYN EXACT decimal string ABOVE MAX_SAFE_INTEGER (token role)", burned?.value === BURNED_SYN.toString() && burned?.valueType === "string" && burned?.contractRole === "token");
     check("fin: burned SYN is the TRANSPORT figure, never a stored ceremony constant", burned?.value !== STALE_CANON_BURN.toString() && !JSON.stringify(e).includes(STALE_CANON_BURN.toString()));
     check("fin: LP reserves oriented via token0 (SYN=reserve0, USDC=reserve1, lp-pair role)", byId(e, "financial.lp.reserveSyn")?.value === LP_RESERVE0.toString() && byId(e, "financial.lp.reserveUsdc")?.value === LP_RESERVE1.toString() && byId(e, "financial.lp.reserveSyn")?.contractRole === "lp-pair");
+    // The pool SHARE pair: the reserves alone belong to EVERY provider, so the
+    // served figures must let the client attribute only the protocol's own part.
+    check("fin: LP total supply EXACT decimal string (lp-pair role, LIVE_CHAIN_RPC)", byId(e, "financial.lp.totalSupply")?.value === LP_TOTAL_SUPPLY_FIX.toString() && byId(e, "financial.lp.totalSupply")?.contractRole === "lp-pair" && byId(e, "financial.lp.totalSupply")?.sourceType === "LIVE_CHAIN_RPC");
+    check("fin: LP protocol-held balance EXACT decimal string, DISTINCT from the supply (the two pair reads are disambiguated)", byId(e, "financial.lp.protocolBalance")?.value === LP_PROTOCOL_BAL_FIX.toString() && LP_PROTOCOL_BAL_FIX !== LP_TOTAL_SUPPLY_FIX);
+    check("fin: the LP-share note states that other providers' liquidity is NOT protocol-owned", (byId(e, "financial.lp.protocolBalance")?.note ?? "").includes("NOT protocol-owned"));
+    // NFT sale money: the declared payout wallet + anything resting in the contract.
+    check("fin: NFT sale wallet USDC EXACT decimal string (stablecoin role, LIVE_CHAIN_RPC)", byId(e, "financial.nftSale.walletUsdcBalance")?.value === NFT_WALLET_USDC.toString() && byId(e, "financial.nftSale.walletUsdcBalance")?.contractRole === "stablecoin" && byId(e, "financial.nftSale.walletUsdcBalance")?.sourceType === "LIVE_CHAIN_RPC");
+    check("fin: NFT sale CONTRACT USDC EXACT decimal string, distinct from the wallet's", byId(e, "financial.nftSale.contractUsdcBalance")?.value === NFT_CONTRACT_USDC.toString());
+    check("fin: the NFT-sale note separates CURRENT balance from ALL-TIME sales (the two figures never merge)", (byId(e, "financial.nftSale.walletUsdcBalance")?.note ?? "").includes("not all-time NFT sales"));
     check("fin: memberCount EXACT count string (sale role, count only)", byId(e, "financial.members.memberCount")?.value === MEMBER_COUNT_FIX.toString() && byId(e, "financial.members.memberCount")?.contractRole === "sale");
     check("fin: genesisOffset EXACT count string (sale role, reconciled freeze base = FREEZE_ROOT_COUNT)", byId(e, "financial.members.genesisOffset")?.value === GENESIS_OFFSET_FIX.toString() && byId(e, "financial.members.genesisOffset")?.contractRole === "sale");
     // 5b — the honest distinct-wallet readback (12/11 doctrine): DERIVED from
@@ -440,15 +544,26 @@ async function main(): Promise<void> {
     check("fin: paidToReferrersTotal note pins the model's asOfBlock (honest freshness)", (paid?.note ?? "").includes(`as of block ${INTRODUCTION_SNAPSHOT.model.asOfBlock}`));
     check("fin: paidToReferrersTotal sourceRef declares its provenance (committed snapshot in this rig)", (paid?.sourceRef ?? "").includes("committed snapshot") && (paid?.sourceRef ?? "").includes(`asOfBlock ${INTRODUCTION_SNAPSHOT.model.asOfBlock}`));
     check("fin: introduction snapshot internal consistency (gate + chain 43114 + numeric aggregate)", INTRODUCTION_SNAPSHOT.model.gate === "INTRODUCTION_READMODEL_V1" && INTRODUCTION_SNAPSHOT.model.chainId === 43114 && /^[0-9]+$/.test(INTRODUCTION_SNAPSHOT.model.totals.commissionPaidRaw));
-    // balanceOf calldata discipline: exactly 3 reads, each addressed to the
-    // right token AND encoding the right wallet argument.
+    // balanceOf calldata discipline: exactly 13 reads (vault + ops USDC; vault
+    // BTC.b + WETH.e; the pair's LP tokens held by the liquidity wallet; the
+    // burn address + the 7 allocation wallets on SYN), each addressed to the
+    // right contract AND encoding the right wallet argument.
     const vaultCall = balanceOfCalls.find((c) => c.to === USDC_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.vaultWallet));
     const opsCall = balanceOfCalls.find((c) => c.to === USDC_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.operationsWallet));
+    const btcbCall = balanceOfCalls.find((c) => c.to === BTCB_ADDR && c.data === VAULT_BAL_DATA);
+    const wethCall = balanceOfCalls.find((c) => c.to === WETH_ADDR && c.data === VAULT_BAL_DATA);
     const burnCall = balanceOfCalls.find((c) => c.to === SYN_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.synBurnAddress));
     const allocCalls = FINANCIAL_TARGETS.allocationWallets.map((w) =>
       balanceOfCalls.find((c) => c.to === SYN_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, w.address)),
     );
-    check("fin: exactly 10 balanceOf reads (vault + ops on USDC; burn + 7 allocations on SYN)", balanceOfCalls.length === 10 && Boolean(vaultCall) && Boolean(opsCall) && Boolean(burnCall) && allocCalls.every(Boolean));
+    const lpShareCall = balanceOfCalls.find((c) => c.to === LP_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.liquidityWallet));
+    const nftWalletCall = balanceOfCalls.find((c) => c.to === USDC_ADDR && c.data === NFT_WALLET_BAL_DATA);
+    const nftContractCall = balanceOfCalls.find((c) => c.to === USDC_ADDR && c.data === NFT_CONTRACT_BAL_DATA);
+    check("fin: exactly 15 balanceOf reads (vault + ops + 2 NFT-sale USDC; vault BTC.b + WETH.e; the pair's LP share; burn + 7 allocations SYN)", balanceOfCalls.length === 15 && Boolean(vaultCall) && Boolean(opsCall) && Boolean(btcbCall) && Boolean(wethCall) && Boolean(lpShareCall) && Boolean(nftWalletCall) && Boolean(nftContractCall) && Boolean(burnCall) && allocCalls.every(Boolean));
+    check("fin: NFT sale money read on BOTH the declared wallet and the sale contract (no sale money sits unseen)", Boolean(nftWalletCall) && Boolean(nftContractCall) && NFT_WALLET_USDC !== NFT_CONTRACT_USDC);
+    check("fin: the LP-share balanceOf targets the PAIR and encodes the LIQUIDITY wallet (never the founder's own)", lpShareCall?.to === LP_ADDR && lpShareCall?.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.liquidityWallet));
+    check("fin: vault BTC.b + WETH.e balanceOf calldata both encode the vault wallet", btcbCall?.data === VAULT_BAL_DATA && wethCall?.data === VAULT_BAL_DATA);
+    check("fin: exactly one eth_getBalance call (native AVAX — the vault wallet)", methods.filter((m) => m === "eth_getBalance").length === 1);
     check("fin: vault balanceOf calldata encodes the vault wallet", vaultCall?.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.vaultWallet));
     check("fin: ops balanceOf calldata encodes the operations wallet", opsCall?.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.operationsWallet));
     check("fin: burn balanceOf calldata encodes the canonical burn address", burnCall?.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.synBurnAddress));
@@ -463,7 +578,7 @@ async function main(): Promise<void> {
   {
     const { transport, methods } = makeMock({ chainId: "__unreachable__" });
     const e = await buildProtocolReality(baseOpts(transport));
-    check("unreachable: NO eth_getCode / NO eth_call", !methods.includes("eth_getCode") && !methods.includes("eth_call"));
+    check("unreachable: NO eth_getCode / NO eth_call / NO eth_getBalance (nothing is read before the chain verifies)", !methods.includes("eth_getCode") && !methods.includes("eth_call") && !methods.includes("eth_getBalance"));
     check("unreachable: rpcReachable false / PAUSED_BY_PRECAUTION", byId(e, "chain.rpcReachable")?.value === false && byId(e, "chain.rpcReachable")?.lifecycle === "PAUSED_BY_PRECAUTION");
     check("unreachable: identityVerified null + failureReason", byId(e, "chain.identityVerified")?.value === null && byId(e, "chain.identityVerified")?.failureReason !== null);
     check("unreachable: every contract value null + failureReason", e.groups.contracts.every((i) => i.value === null && i.failureReason !== null));
@@ -486,7 +601,7 @@ async function main(): Promise<void> {
   {
     const { transport, methods } = makeMock({ chainId: "0x1" });
     const e = await buildProtocolReality(baseOpts(transport));
-    check("wrong-chain: NO eth_getCode / NO eth_call", !methods.includes("eth_getCode") && !methods.includes("eth_call"));
+    check("wrong-chain: NO eth_getCode / NO eth_call / NO eth_getBalance", !methods.includes("eth_getCode") && !methods.includes("eth_call") && !methods.includes("eth_getBalance"));
     check("wrong-chain: rpcReachable true", byId(e, "chain.rpcReachable")?.value === true);
     check("wrong-chain: identityVerified null + LOW + failureReason mentions chain id", byId(e, "chain.identityVerified")?.value === null && byId(e, "chain.identityVerified")?.confidence === "LOW" && (byId(e, "chain.identityVerified")?.failureReason ?? "").includes("chain id"));
     check("wrong-chain: contracts/sale/tokens/archive/financial all null (snapshot-backed items exempt — their chain identity is pinned inside their snapshots)", [...e.groups.contracts, ...e.groups.sale, ...e.groups.tokens, ...e.groups.archive, ...e.groups.financial].every((i) => i.id === "financial.referral.attributionActivity" || i.id === "financial.referral.paidToReferrersTotal" || i.value === null));
@@ -592,6 +707,70 @@ async function main(): Promise<void> {
     check("fin-component-fail: sibling inflows still exact", byId(e, "financial.inflow.MEMBERSHIP_SALE_V2")?.value === V2B_INFLOW.toString() && byId(e, "financial.inflow.MEMBERSHIP_SALE_V3")?.value === V3_TOTAL_GROSS_USDC.toString());
     check("fin-component-fail: vault/burn/lp/members unaffected", byId(e, "financial.vault.usdcBalance")?.value === VAULT_USDC_BAL.toString() && byId(e, "financial.burn.synBalance")?.value === BURNED_SYN.toString() && byId(e, "financial.lp.reserveSyn")?.value === LP_RESERVE0.toString() && byId(e, "financial.members.memberCount")?.value === MEMBER_COUNT_FIX.toString());
     check("fin-component-fail: NO address leak + discipline passes", noAddressLeak(e) && disciplinePasses(e));
+  }
+
+  // 7j) STALE PRICE FEED: a Chainlink round older than 24h → that price fails
+  //     closed (never a stale valuation); the sibling feeds survive exact.
+  {
+    const STALE_AT = BigInt(PRICE_NOW_S - 90_000); // 25h old — beyond the 24h gate
+    const { transport } = makeMock({
+      call: (to, s, d) =>
+        s === SELECTOR_LATEST_ROUND_DATA &&
+        to.toLowerCase() === FINANCIAL_TARGETS.priceFeeds.avaxUsd.toLowerCase()
+          ? encRoundData(AVAX_USD_FIX, STALE_AT)
+          : goodCall(to, s, d),
+    });
+    const e = await buildProtocolReality(baseOpts(transport));
+    check("price-stale: AVAX/USD null + failureReason (round older than 24h fails closed, never a stale price)", byId(e, "financial.price.avaxUsd")?.value === null && byId(e, "financial.price.avaxUsd")?.failureReason !== null);
+    check("price-stale: BTC/USD + ETH/USD siblings still exact", byId(e, "financial.price.btcUsd")?.value === BTC_USD_FIX.toString() && byId(e, "financial.price.ethUsd")?.value === ETH_USD_FIX.toString());
+    check("price-stale: NO address leak + discipline passes", noAddressLeak(e) && disciplinePasses(e));
+  }
+
+  // 7k) NON-POSITIVE PRICE ANSWER: a Chainlink round reporting 0 (or a negative
+  //     int256) is never surfaced — decodeLatestRoundData rejects it and the
+  //     item fails closed. A zero price would otherwise value a holding at $0.
+  {
+    const { transport } = makeMock({
+      call: (to, s, d) =>
+        s === SELECTOR_LATEST_ROUND_DATA &&
+        to.toLowerCase() === FINANCIAL_TARGETS.priceFeeds.btcUsd.toLowerCase()
+          ? encRoundData(0n, PRICE_UPDATED_AT)
+          : goodCall(to, s, d),
+    });
+    const e = await buildProtocolReality(baseOpts(transport));
+    check("price-nonpositive: BTC/USD null + failureReason (a zero answer is never a price)", byId(e, "financial.price.btcUsd")?.value === null && byId(e, "financial.price.btcUsd")?.failureReason !== null);
+    check("price-nonpositive: the other two feeds still read exact", byId(e, "financial.price.avaxUsd")?.value === AVAX_USD_FIX.toString() && byId(e, "financial.price.ethUsd")?.value === ETH_USD_FIX.toString());
+  }
+
+  // 7m) NFT PAYOUT DESTINATION DIVERTED: the sale contract's treasury() answers
+  //     an address that is NOT the canon-pinned NFT Sale Wallet (a setTreasury
+  //     we did not authorise). The wallet balance must FAIL CLOSED rather than
+  //     silently follow the money — reconcile-never-infer. The contract's own
+  //     balance still reads (it is not addressed by the diverted destination).
+  {
+    const { transport } = makeMock({
+      call: (to, s, d) =>
+        s === SELECTOR_TREASURY
+          ? "0x" + word("00000000000000000000000000000000000000ff")
+          : goodCall(to, s, d),
+    });
+    const e = await buildProtocolReality(baseOpts(transport));
+    const w = byId(e, "financial.nftSale.walletUsdcBalance");
+    check("nft-divert: NFT sale wallet USDC null + failureReason (a diverted payout destination never serves a balance)", w?.value === null && w?.failureReason !== null);
+    check("nft-divert: the sale CONTRACT balance still reads exact", byId(e, "financial.nftSale.contractUsdcBalance")?.value === NFT_CONTRACT_USDC.toString());
+    check("nft-divert: failureReason never echoes the diverted address + no leak", !FULL_ADDRESS_RE.test(w?.failureReason ?? "") && noAddressLeak(e) && disciplinePasses(e));
+  }
+
+  // 7l) NATIVE AVAX READ FAILURE: eth_getBalance returns an unparseable result →
+  //     the AVAX item fails closed on its own, and every ERC-20 sibling (which
+  //     travels a different primitive) still reads its exact figure.
+  {
+    const { transport } = makeMock({ getBalance: () => "not-a-quantity" });
+    const e = await buildProtocolReality(baseOpts(transport));
+    const avax = byId(e, "financial.vault.avaxBalance");
+    check("avax-read-fail: native AVAX null + PENDING_ADAPTER + LOW + failureReason", avax?.value === null && avax?.lifecycle === "PENDING_ADAPTER" && avax?.confidence === "LOW" && avax?.failureReason !== null);
+    check("avax-read-fail: the balanceOf siblings are unaffected (BTC.b + WETH.e + vault USDC exact)", byId(e, "financial.vault.btcbBalance")?.value === VAULT_BTCB_BAL.toString() && byId(e, "financial.vault.wethBalance")?.value === VAULT_WETH_BAL.toString() && byId(e, "financial.vault.usdcBalance")?.value === VAULT_USDC_BAL.toString());
+    check("avax-read-fail: NO address leak + discipline passes", noAddressLeak(e) && disciplinePasses(e));
   }
 
   // 7i) 5b READBACK COMPONENT FAILURE: ONE memberNumberOf read reverts → BOTH

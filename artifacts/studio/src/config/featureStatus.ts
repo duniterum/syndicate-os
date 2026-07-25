@@ -53,6 +53,15 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   // future keys, never this one.
   seasonQuests: { status: "live", since: "2026-07-24", where: "/member (the Quests card — the fed ladder + first-act quests, auto-credit)" },
 
+  // The vault's holdings go-live (same commit as the card — DONE-IS-DONE). The
+  // AVAX row was a hardcoded "Coming" placeholder with NO registry key, so no
+  // guard could have caught it: the capability is registered here now, and the
+  // placeholder is gone. A USD figure is served for the directly-held
+  // deep-market assets only; SYN is never priced and the pool is not summed
+  // (valuing the protocol's real pool SHARE needs its own read — a future key
+  // when that slice comes, never a claim on this one).
+  vaultHoldings: { status: "live", since: "2026-07-25", where: "/contracts + /admin (the vault's multi-token holdings + the priced-holdings total)" },
+
   // ── FUTURE (the only keys a future-claim may cite) ──────────────────────
   avatarUpload: { status: "future", since: "2026-07-14", where: "Member Home arc (App Storage decided)" },
   aliasLayer: { status: "future", since: "2026-07-13", where: "IDENTITY-ALIAS (queued, founder-approved)" },

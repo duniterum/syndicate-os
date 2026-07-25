@@ -153,7 +153,7 @@ function buildSnapshotObject(r: ScanResult) {
     byEvent: r.byEvent,
     otherEventCount: r.otherEventCount,
     doctrine:
-      "Attribution ACTIVITY COUNT only (registry lifecycle events) — never a USDC or commission figure. No commission has ever been paid on-chain; CommissionRouterV1 is not deployed.",
+      "Attribution ACTIVITY COUNT only (registry lifecycle events) — never a USDC or commission figure. Commissions ARE paid: an eligible attributed purchase pays its bounded commission inside the buyer's own transaction, and the cumulative figure is served separately as financial.referral.paidToReferrersTotal.",
     provenance: {
       builtAt: new Date().toISOString(),
       builderVersion: BUILDER_VERSION,

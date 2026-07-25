@@ -222,10 +222,13 @@ export const protocolOsMap: OsMapDomain[] = [
       {
         id: "recognition",
         label: "Recognition",
-        binding: { kind: "surface", surfaceId: "recognition" },
+        // RETIRED FROM THE NOT-LIVE RENDER 2026-07-25 (the same rebind the four
+        // earlier surfaces got): the season board shipped 2026-07-23, so a live
+        // surface must render no "Coming later" badge.
+        binding: { kind: "lifecycle", lifecycle: "READ_ONLY_PROOF" },
         notPublic: false,
-        summary: "The recognition model as a future concept.",
-        reality: "Genuine future module; no dedicated canon is vendored.",
+        summary: "Recognition — live in public.",
+        reality: "LIVE — /season ranks contribution from chain-proven acts and member quests credit real acts own-row. A single long-term standing figure across seasons is the remaining future layer.",
       },
       {
         id: "founder-controls",

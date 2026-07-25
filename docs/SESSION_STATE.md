@@ -8,11 +8,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > read it only if you need the why.*
 >
 > ## ▶ OPEN WORK — THE COMPLETE LIST (2026-07-25, founder: "la liste complète, qu'on n'oublie rien")
-> The single index of everything OPEN. Prod = `e21a036`; **every commit after it is BATCHABLE**, awaiting
-> ONE grouped deploy. A fresh session resumes from here. Detail for each item is in the dated blocks below.
+> The single index of everything OPEN. Prod = `e21a036`. **THE HOLDINGS COMMIT TRIGGERS THE DEPLOY** — it
+> changes SERVER reads (two new RPC methods on the served path: `eth_getBalance` + `latestRoundData`; 2 new
+> token targets + 3 Chainlink feed targets; financial group 25 → 31), so it is 🚀 DEPLOY, never batchable.
+> ONE grouped deploy carries the DEPLOYABLE set `f2642aa` · `3b32f2c` · `29f8559` · `469882d` · the holdings
+> commit; the NO-DEPLOY docs commits `6d8ed87` · `1a9a0fe` ride along. Replit: pull main, deploy, run
+> migrations, report. **This block is the ONE deploy-backlog authority in this file.**
+> A fresh session resumes from here. Detail for each item is in the dated blocks below.
 >
-> **① ADDRESS RESCOPE (Tier-2) — IN FLIGHT. Stage 1 ✅ DONE+committed `469882d`** (the filet relaxed
-> `{40,}`→`{41,}` in both byte-identical copies; backbone guard 165/165 green; INERT — no output changed).
+> **① ADDRESS RESCOPE (Tier-2) — IN FLIGHT. Stage 1 ✅ DONE+committed `469882d`; the api guard chain SEALED
+> GREEN in the holdings commit.** (The filet relaxed `{40,}`→`{41,}` in both byte-identical copies;
+> `backbone.guard.ts` was re-authored in `469882d` — but TWO SIBLING self-tests still asserted the OLD rule
+> and left the api chain RED: `member-continuity.guard.ts` + `activity-heartbeat.guard.ts`. Both re-authored
+> in the holdings commit: a 40-hex address PASSES, while `0x`+41+ hex and a bare 64-hex hash still fail
+> closed. **LESSON (engraved): a shared-scanner change must sweep EVERY guard that self-tests it — grep the
+> pattern, never patch one caller.** INERT — no served output changed.)
 > Remaining, in order, each verified before the next:
 >   - **1b.** Inline scanners — same `{40,}`→`{41,}` relaxation: `operator/router.ts` (:314,:488,:525,:660),
 >     the auth self-readback throws (`auth/router.ts` :547,:613,:661,:769,:881,:1016,:1076,:1208),
@@ -38,21 +48,67 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > register band gets a "view all" → this page. Depends on ①. The season board STAYS the MERIT board (a
 > distinct list — never fuse merit and membership).
 >
-> **③ PROTOCOL ASSETS on admin home (founder chose FULL multi-token).** Server: add BTC.b
-> (`0x152b9d0FdC40C096757F570A51E494bd4b943E50`) + WETH.e (`0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB`)
-> `balanceOf` on the Vault (`0x205DdC8921A4C60106930eE35e1F395c8D13f464`) + native AVAX (`eth_getBalance`)
-> to `protocolTargets` + `realityService.buildFinancialGroup` → new `financial.vault.*` items. VERIFIED
-> on-chain 2026-07-25: the Vault holds **~4.74 AVAX · 0.00078 BTC.b · 0.0266 WETH.e** (+ USDC/SYN already).
-> Client: the Protocol Assets card on admin home (reuse `ProtocolAssetsCard` from ContractMemory). No USD
-> price source exists — a valued total is a separate decision.
+> **③ PROTOCOL ASSETS — ✅ SHIPPED (the holdings commit). The vault's FULL holdings serve live, valued.**
+> Server: `FINANCIAL_TARGETS` gained BTC.b + WETH.e + three Chainlink USD feeds (AVAX/BTC/ETH);
+> `buildFinancialGroup` serves **6 new items (financial group 25 → 31)**: `financial.vault.btcbBalance` ·
+> `financial.vault.wethBalance` · `financial.vault.avaxBalance` (`eth_getBalance` — a native coin has no
+> contract, so the code-presence gate is N/A) · `financial.price.avaxUsd/btcUsd/ethUsd` (`latestRoundData`,
+> fail-closed on a non-positive answer, a round older than 24h, or a round dated in the future beyond 1h of
+> clock skew). Client: `ProtocolAssetsCard` rewritten — 8 rows (Vault USDC · Operations USDC · Vault AVAX ·
+> BTC.b · WETH.e · Vault SYN · the SYN/USDC pool · the renamed **"Seat-sale reserve"**), a per-row USD
+> figure, and a **"Value of the priced holdings"** headline that fails closed if ANY priced component is
+> unavailable; placed in the /admin home WORK zone under `BusinessBand`, never collapsed (WORK-FIRST §①).
+> **THE VALUATION LAW (founder ruling + the senior review that caught its first implementation breaking
+> it):** only assets held DIRECTLY in a protocol wallet with a DEEP market are valued and summed — USDC at
+> $1, AVAX/BTC.b/WETH.e at live Chainlink prices. **SYN is never priced** (thin pool → unrealizable,
+> chain-refutable). **THE POOL IS COUNTED AT OUR REAL SHARE, USDC LEG ONLY** — never by doubling its USDC
+> reserve (the usual AMM shortcut, and this slice's first implementation): doubling silently marks the
+> pool's SYN half to that same thin price. Two live reads settle ownership instead of assuming it —
+> `financial.lp.totalSupply` + `financial.lp.protocolBalance` (`balanceOf(pair, LIQUIDITY_WALLET)`): LP
+> tokens are an ERC-20, so who-put-what is a public balance, not an estimate. **Chain-verified 2026-07-25:
+> the protocol's liquidity wallet holds 76.612% of the pair; the founder's PERSONAL wallet holds 23.386%
+> (his own money, deliberately NOT counted as protocol-owned); a third party holds 0.002%.** Verified
+> live 2026-07-25: 16.475 USDC · 4.7365 AVAX · 0.00077818 BTC.b · 0.026552 WETH.e · 261,987,500 vault SYN ·
+> 6,994,000 seat reserve; prices AVAX ~$6.46 · BTC ~$64,167 · ETH ~$1,866. Same commit: `vaultHoldings`
+> LIVE in featureStatus · the `/contracts` SEO entry retitled to the new reality (SEO-rides-the-slice) ·
+> the treasury source-status note extended · a **word-law check added to `source-status-truth.guard`** so a
+> served note can never again render the bare word the founder banned from every read surface.
+>
+> **③-bis THE TRUTH SWEEP + THE NFT SALE MONEY (founder eye on the live page, 2026-07-25).** He pointed at
+> the /contracts card *"Attribution Router (candidate) — No commission or financial benefit is implied or
+> paid"* and said it is not true. **He was right, and a repo audit had already CONFIRMED it nine days
+> earlier without it being fixed** — commissions ARE paid, on-chain, inside the buyer's own transaction
+> (seat #13 proof), and the Source Registry card three lines above says exactly that. The entry is
+> **DELETED** (it also published an internal, never-announced plan as a public promise — his engraved rule).
+> A full sweep of every public future-claim then found **the fossils travel in packs**: the site still
+> called RECOGNITION "a future concept" on FIVE surfaces (`sourceStatus` recognition row + posture ·
+> `docs-content` · the `/recognition` served head · `moduleRegistry` · `protocolOsMap` + `truthStatus`)
+> although the season board went live 2026-07-23, and /status still called the public receipt page "the
+> remaining future layer" although it is live. ALL corrected; `/recognition` flipped PENDING/noindex →
+> **PUBLIC/INDEX + sitemap** with an honest head (prerendered INDEX shells 27 → 28). The armed doctrine
+> string in `referral-attribution-build.ts` ("No commission has ever been paid on-chain") — which would
+> re-inject the lie on the next regeneration — is rewritten too.
+> **THE NFT SALE MONEY IS NOW VISIBLE (his second catch: "what about NFT sales?").** 25.50 USDC of real
+> artifact-sale money sat in a wallet no figure read. Two new items —
+> `financial.nftSale.walletUsdcBalance` + `financial.nftSale.contractUsdcBalance` (35 items; balanceOf
+> 13 → 15) — and a **"NFT sales USDC"** row in the total. **The destination is RECONCILED, never assumed:**
+> the sale contract's own `treasury()` view is read live and must MATCH the canon-pinned wallet, so a
+> `setTreasury` we did not authorise fails the figure closed instead of following the money (guard-pinned
+> with a diverted-destination case). Chain-confirmed 2026-07-25: `treasury()` answers exactly the pinned
+> wallet. **THE TWO NFT FIGURES ARE BOTH TRUE AND MUST NEVER MERGE** (founder): **35.50 USDC = all-time
+> contributed** (mint price × minted, served from the archive group) · **25.50 USDC = held today** (the live
+> wallet read). The home tile now says **"all-time"** in words — without it the figure read as money held.
 >
 > **④ ADMIN DESIGN POLISH (review follow-ons, MEDIUM).** One shared admin card-HEADER atom (3 idioms
 > coexist); route ALL admin KPI tiles through the `StatCard` atom (3 treatments coexist); the `.type-h2`
 > serif DECISION (Seasons serif vs the rest sans — decide once, record it); even out the WORK-FIRST
 > collapse discipline (Members / Modules / Content / Settings sections).
 >
-> **⑤ DOCS SWEEP (owed).** BACKLOG.html + DESIGN_ROADMAP + OPEN_QUEUE + CANON: sync the admin redesign +
-> PII purge + the address law + these in-flight items. (SESSION_STATE itself is current.)
+> **⑤ DOCS SWEEP — ✅ DONE `1a9a0fe`** (ADR-003 + CANON_VISIBILITY_LAW amended to the address law;
+> BACKLOG.html 25-juillet callout + register row; OPEN_QUEUE PM block; DESIGN_ROADMAP admin-arc record;
+> SEASONS_ORIGIN_HARVEST fossil superseded). No longer a workstream: the per-slice docs obligation now
+> rides EVERY slice under the standing rules (design roadmap · SEO-rides-the-slice · DONE-IS-DONE · the
+> deploy backlog). Numbering ①-⑦ is deliberately NOT renumbered — OPEN_QUEUE and BACKLOG.html mirror it.
 >
 > **⑥ PRE-EXISTING OUTSTANDING (the full-screen audit — still owed).** Sub-12px readability-floor sweep
 > (~50 files carry `text-[9/10/11px]`); developer-speak humanize (~11 pages: read-only/not wired/RPC/null/
@@ -68,6 +124,41 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > preview — needs a ticket backend) · Feature-flag real step-up writes (:282, local-state only — SERVER_SEED) ·
 > Content/homepage editing (`panels.tsx`:569-596, "editing controls do not exist") · Activity/Chronicle
 > moderation queue (`panels.tsx`:600-632, "script-only and unwired"). ④ is DESIGN polish only; this is WIRING.
+>
+> **⑧ THE TREASURY LANES FOR THE NEW HOLDINGS (opened by ③ — a DECLARED gap, never a silence).** The vault
+> HOLDS BTC.b and WETH.e and their balances are now shown, but their MOVEMENTS have no heartbeat lane:
+> `protocolTargets` carries `TREASURY_USDC_IN/OUT` + `TREASURY_SYN_IN/OUT` only, and `backboneDb.ts`
+> branches USDC-or-SYN. Both tokens emit Transfer logs, so both are laneable — needed: the two lane pairs +
+> the token label + a founder-approved §8 sentence + the /activity line. (Native AVAX emits no event and
+> honestly cannot have a lane.) The completeness invariant's LETTER did not trigger — no new protocol
+> wallet or contract was introduced (the vault is already inventoried; BTC.b/WETH.e/Chainlink are EXTERNAL
+> contracts we only read) — so this is named work, not a breach.
+>
+> **⑨ THE POOL'S REAL SHARE — ✅ SHIPPED in the same commit (founder challenge, 2026-07-25: "on peut
+> toujours savoir qui a mis quoi dans le pool — l'intelligence artificielle la plus avancée !?").** He was
+> right, and it is now read, not assumed: `financial.lp.totalSupply` + `financial.lp.protocolBalance` are
+> two fail-closed live reads on the pair, and the client counts ONLY the protocol's share of the USDC leg
+> (never the SYN leg — the no-SYN-valuation law holds). Financial group 31 → 33; balanceOf reads 12 → 13.
+> **THE OWNERSHIP RULE ENGRAVED:** only the protocol's LIQUIDITY WALLET counts as protocol-owned; the
+> founder's personal liquidity is HIS, never the protocol's treasury — the guard pins that the LP-share
+> read encodes the liquidity wallet and never the founder's own.
+>
+> **⑩ THE "ARCHIVE" → "NFT" VOCABULARY SWEEP (founder ruling, 2026-07-25 — NEW).** His words: *"NFT tout le
+> monde le connaît, pas de charge mentale"* — the AI-chosen word "archive" as the UMBRELLA term created
+> confusion everywhere, made worse because SOME NFTs are genuinely meant to serve as an archive. **THE
+> RULING: on every surface a human reads, the primary word is NFT; "archive" is reserved for the specific
+> idea of NFTs kept as a historical record, never as the name of the collection, the contract or the
+> money.** Applied already where this slice wrote new copy (the wallet is the **"NFT Sale Wallet"**, the row
+> is **"NFT sales USDC"**, the reality ids are `financial.nftSale.*`). NOT swept blind: "archive" is
+> load-bearing in code and canon (`ARCHIVE_1155`, `archive.artifact.*`, the archive group, milestone
+> families, /archive copy). The sweep is its own slice WITH the founder's eye on the final words — a
+> vocabulary change on ~10 public surfaces is a founder-visible copy decision, never a silent rename.
+>
+> **AW-5 — ✅ NAMED BY THE FOUNDER 2026-07-25: "NFT Sale Wallet".** The wallet that receives artifact-mint
+> money is pinned in `FINANCIAL_TARGETS.nftSaleWallet`, reconciled live against the contract's own
+> `treasury()` view, and its balance now serves in the holdings total. STILL OPEN under ⑧: its indexer lane
+> (so the patronage rungs gain transaction anchors and can SEAL) and the founder's rider ruling on the 2
+> artifacts this wallet itself minted (relabel as a protocol mint, or leave them as Community).
 >
 > ## ▶ 2026-07-25 (PM) — THE /ADMIN HARMONIZATION + PII/ADDRESS LAW (IN FLIGHT — committed, NOT deployed)
 > The founder turned the harmonization onto **/admin** (operator console, 11 sections). System-first
@@ -185,10 +276,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   scale · Prose fill · More-menu Whitepaper-over-Join · Season align] → `498f498` + `f62c54e` + `e21a036`
 >   [senior-review cleanup · dead code/CSS killed · Tokenomics bounded · docs synced]). TWO Replit seals
 >   2026-07-25, both byte-identity ×2, atomic swap no downtime, full green battery, no DB migration (no
->   schema in the diff). **DEPLOY BACKLOG: EMPTY** — no deployable change pending; any commits above prod
->   `e21a036` are NO-DEPLOY docs (this seal record itself). *(Seal record 2026-07-25 AM — SUPERSEDED PM: the
->   /admin harmonization + address commits now sit above prod as BATCHABLE; the OPEN-WORK block at the top of
->   this file is authoritative.)*
+>   schema in the diff). **DEPLOY BACKLOG: see the OPEN-WORK block at the top of this file — it is the ONE
+>   authority.** *(This seal record was written at the `e21a036` AM seal, when the backlog was genuinely
+>   empty. SUPERSEDED the same day: the /admin harmonization + address commits sat above prod as BATCHABLE,
+>   and the holdings commit — a SERVER change — now triggers the one grouped deploy that carries them all.)*
 >
 > ## (b) IN FLIGHT — S3 (the S2 arc is closed; nothing else is open)
 > **THE HANDOFF DASHBOARD (2026-07-24 end-of-session · GitHub = the source of truth —

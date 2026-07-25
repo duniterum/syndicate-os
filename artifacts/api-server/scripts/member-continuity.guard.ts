@@ -216,13 +216,25 @@ check(
   `rootShort=${report.freeze.rootShort}`,
 );
 check("address-safe report exposes no records field", !("records" in report));
-let scanThrew = false;
+// Address law (2026-07-25, CLAUDE.md rule ①): a full 40-hex wallet address is
+// PUBLIC — the scanner ALLOWS it (short-form display + Snowtrace link) and must
+// NOT throw. Over-long hex (0x + 41+) and bare 32-byte hashes still fail closed;
+// name/alias/email (never hex) are the red line, guarded elsewhere. Mirrors the
+// backbone guard's re-authored self-test (Tier-2 stage 1, 469882d).
+let scanAllowed = true;
 try {
   assertAddressSafeJson(`{"x":"${synWallet(9)}"}`);
 } catch {
+  scanAllowed = false;
+}
+check("leak scanner ALLOWS a public 40-hex address (address law 2026-07-25)", scanAllowed);
+let scanThrew = false;
+try {
+  assertAddressSafeJson(`{"x":"${synWallet(9)}ab"}`);
+} catch {
   scanThrew = true;
 }
-check("leak scanner fail-closes on a 40-hex address", scanThrew);
+check("leak scanner fail-closes on over-long hex (0x + 41 or more)", scanThrew);
 scanThrew = false;
 try {
   assertAddressSafeJson(`{"x":"${"cd".repeat(32)}"}`);

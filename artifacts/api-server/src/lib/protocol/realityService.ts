@@ -39,7 +39,7 @@ import {
   resolveEndpoints,
   type RpcTransport,
 } from "./rpcTransport";
-import { ethCall, probeChain, readCodePresent, type ChainProbe } from "./evmRead";
+import { ethCall, ethGetBalance, probeChain, readCodePresent, type ChainProbe } from "./evmRead";
 import { SELECTOR_DECIMALS, SELECTOR_SYMBOL, decodeAbiString, decodeUint8 } from "./erc20Decoders";
 import {
   SELECTOR_GET_ARTIFACT_CORE,
@@ -74,8 +74,12 @@ import {
   SELECTOR_GENESIS_OFFSET,
   SELECTOR_NEXT_SEAT_NUMBER,
   SELECTOR_TOTAL_SUPPLY,
+  SELECTOR_LATEST_ROUND_DATA,
+  SELECTOR_TREASURY,
   encodeAddressArg,
   decodeReservesPair,
+  decodeHexQuantity,
+  decodeLatestRoundData,
   sumDecimalStrings,
 } from "./financialDecoders";
 import { HOLDER_INDEX_SNAPSHOT } from "./holderIndexSnapshot";
@@ -1354,6 +1358,60 @@ async function buildFinancialGroup(
     }
   }
 
+  // 3b) THE PROTOCOL'S SHARE OF THAT POOL — the pair's LP-token total supply and
+  //     the amount held by the protocol's liquidity wallet. Without these two
+  //     reads the reserves above are the WHOLE pool's and belong to every
+  //     provider; with them the client attributes only OUR share — and only of
+  //     the USDC leg, because the SYN leg is never priced. (Founder, 2026-07-25:
+  //     "on peut toujours savoir qui a mis quoi dans le pool" — yes: LP tokens
+  //     are an ERC-20, so ownership is a public balance, not an estimate.)
+  //     The founder's PERSONAL wallet also provides liquidity; that share is
+  //     deliberately NOT counted as protocol-owned.
+  {
+    const hasCode = await hasCodeAt(targets.lpPair);
+    const ownedData = encodeAddressArg(SELECTOR_BALANCE_OF, targets.liquidityWallet);
+    let supplyRaw: string | null = null;
+    let ownedRaw: string | null = null;
+    let supplyThrew = false;
+    let ownedThrew = false;
+    if (probe.chainIdOk && hasCode) {
+      ({ raw: supplyRaw, threw: supplyThrew } = await readUint(targets.lpPair, SELECTOR_TOTAL_SUPPLY));
+      if (ownedData !== null) {
+        ({ raw: ownedRaw, threw: ownedThrew } = await readUint(targets.lpPair, ownedData));
+      } else {
+        ownedThrew = true;
+      }
+    }
+    items.push(
+      buildFinancialNumeric({
+        probe,
+        hasCode,
+        rawValue: supplyRaw,
+        decodeThrew: supplyThrew,
+        id: "financial.lp.totalSupply",
+        label: "SYN/USDC pair — LP token total supply (raw base units)",
+        contractRole: "lp-pair",
+        note: "Live totalSupply() read on the canon SYN/USDC pair; exact 18-decimal LP base units. The denominator of the protocol's pool share — a public ERC-20 supply, never an estimate.",
+        sourceRef: "contract-registry.ts:LP_PAIR (eth_call totalSupply)",
+        chainId,
+        asOf,
+      }),
+      buildFinancialNumeric({
+        probe,
+        hasCode,
+        rawValue: ownedRaw,
+        decodeThrew: ownedThrew,
+        id: "financial.lp.protocolBalance",
+        label: "SYN/USDC pair — LP tokens held by the protocol liquidity wallet (raw base units)",
+        contractRole: "lp-pair",
+        note: "Live balanceOf() read on the canon SYN/USDC pair for the protocol liquidity wallet; exact 18-decimal LP base units. Over the total supply this gives the protocol's exact pool share, so only OUR part of the pool's USDC leg is ever counted as a holding. Liquidity provided from any other wallet — including the founder's personal one — is NOT protocol-owned and is not counted.",
+        sourceRef: "contract-registry.ts:LP_PAIR (eth_call balanceOf LIQUIDITY_WALLET)",
+        chainId,
+        asOf,
+      }),
+    );
+  }
+
   // 4) Burned SYN — live balanceOf() of the canonical burn address.
   {
     const data = encodeAddressArg(SELECTOR_BALANCE_OF, targets.synBurnAddress);
@@ -1380,6 +1438,238 @@ async function buildFinancialGroup(
         asOf,
       }),
     );
+  }
+
+  // 4b) Vault BTC.b balance — live balanceOf() on the BTC.b bridge-token contract.
+  {
+    const data = encodeAddressArg(SELECTOR_BALANCE_OF, targets.vaultWallet);
+    const hasCode = await hasCodeAt(targets.btcbTokenAddress);
+    let raw: string | null = null;
+    let threw = false;
+    if (probe.chainIdOk && hasCode && data !== null) {
+      ({ raw, threw } = await readUint(targets.btcbTokenAddress, data));
+    } else if (probe.chainIdOk && hasCode && data === null) {
+      threw = true;
+    }
+    items.push(
+      buildFinancialNumeric({
+        probe,
+        hasCode,
+        rawValue: raw,
+        decodeThrew: threw,
+        id: "financial.vault.btcbBalance",
+        label: "Vault reserve wallet BTC.b balance (raw base units)",
+        contractRole: "token",
+        note: "Live balanceOf() read on the BTC.b bridge-token contract for the protocol vault reserve wallet; exact 8-decimal base units. Aggregate balance only — the wallet address stays server-side.",
+        sourceRef: "protocolTargets.ts:FINANCIAL_TARGETS.btcbTokenAddress (eth_call balanceOf VAULT_WALLET)",
+        chainId,
+        asOf,
+      }),
+    );
+  }
+
+  // 4c) Vault WETH.e balance — live balanceOf() on the WETH.e bridge-token contract.
+  {
+    const data = encodeAddressArg(SELECTOR_BALANCE_OF, targets.vaultWallet);
+    const hasCode = await hasCodeAt(targets.wethTokenAddress);
+    let raw: string | null = null;
+    let threw = false;
+    if (probe.chainIdOk && hasCode && data !== null) {
+      ({ raw, threw } = await readUint(targets.wethTokenAddress, data));
+    } else if (probe.chainIdOk && hasCode && data === null) {
+      threw = true;
+    }
+    items.push(
+      buildFinancialNumeric({
+        probe,
+        hasCode,
+        rawValue: raw,
+        decodeThrew: threw,
+        id: "financial.vault.wethBalance",
+        label: "Vault reserve wallet WETH.e balance (raw base units)",
+        contractRole: "token",
+        note: "Live balanceOf() read on the WETH.e bridge-token contract for the protocol vault reserve wallet; exact 18-decimal base units. Aggregate balance only — the wallet address stays server-side.",
+        sourceRef: "protocolTargets.ts:FINANCIAL_TARGETS.wethTokenAddress (eth_call balanceOf VAULT_WALLET)",
+        chainId,
+        asOf,
+      }),
+    );
+  }
+
+  // 4d) Vault native AVAX balance — eth_getBalance (native coin: no contract, so
+  //     the code-presence gate does not apply; an EOA holds native AVAX directly).
+  {
+    let raw: string | null = null;
+    let threw = false;
+    if (probe.chainIdOk) {
+      try {
+        raw = decodeHexQuantity(await ethGetBalance(transport, targets.vaultWallet));
+        threw = raw === null;
+      } catch {
+        threw = true;
+      }
+    }
+    items.push(
+      buildFinancialNumeric({
+        probe,
+        hasCode: true, // native coin has no contract code; the no-code gate is N/A
+        rawValue: raw,
+        decodeThrew: threw,
+        id: "financial.vault.avaxBalance",
+        label: "Vault reserve wallet native AVAX balance (raw base units)",
+        contractRole: null,
+        note: "Live eth_getBalance read for the protocol vault reserve wallet; exact 18-decimal native AVAX base units (wei). Aggregate balance only — the wallet address stays server-side.",
+        sourceRef: "eth_getBalance VAULT_WALLET (native AVAX)",
+        chainId,
+        asOf,
+      }),
+    );
+  }
+
+  // 4d-bis) NFT SALE MONEY — what artifact mints actually paid in, and where it
+  //     sits today. Two USDC balances: the sale contract itself (money in
+  //     transit between mint and withdraw) and the payout wallet the contract
+  //     DECLARES via its own treasury() view. The destination is RECONCILED,
+  //     never assumed: we read treasury() live and serve the wallet balance ONLY
+  //     if it matches the canon-pinned NFT Sale Wallet — a setTreasury we did
+  //     not authorise makes the figure fail closed rather than quietly following
+  //     the money somewhere else (reconcile-never-infer).
+  //     NOTE (founder, 2026-07-25): this is the CURRENT balance, not all-time
+  //     sales — the all-time contributed figure is price x minted, served
+  //     separately from the archive group. Both are true and must never merge.
+  {
+    const hasCode = await hasCodeAt(targets.nftSaleContract);
+    const usdcHasCode = await hasCodeAt(targets.usdcTokenAddress);
+    let declaredOk = false;
+    let treasuryThrew = false;
+    if (probe.chainIdOk && hasCode) {
+      try {
+        const declared = decodeAddressWord(
+          await ethCall(transport, targets.nftSaleContract, SELECTOR_TREASURY),
+        );
+        if (declared === null) treasuryThrew = true;
+        else declaredOk = declared === targets.nftSaleWallet.toLowerCase();
+      } catch {
+        treasuryThrew = true;
+      }
+    }
+
+    // (i) The declared payout wallet's USDC — the money the sales produced.
+    {
+      const data = encodeAddressArg(SELECTOR_BALANCE_OF, targets.nftSaleWallet);
+      let raw: string | null = null;
+      let threw = treasuryThrew || (probe.chainIdOk && hasCode && !declaredOk);
+      if (probe.chainIdOk && usdcHasCode && declaredOk && data !== null) {
+        ({ raw, threw } = await readUint(targets.usdcTokenAddress, data));
+      } else if (probe.chainIdOk && usdcHasCode && declaredOk && data === null) {
+        threw = true;
+      }
+      items.push(
+        buildFinancialNumeric({
+          probe,
+          hasCode: usdcHasCode,
+          rawValue: raw,
+          decodeThrew: threw,
+          id: "financial.nftSale.walletUsdcBalance",
+          label: "NFT sale wallet USDC balance (raw base units)",
+          contractRole: "stablecoin",
+          note: "Live balanceOf() read on the canon USDC contract for the wallet the NFT sale contract itself declares as its payout destination (its treasury() view, reconciled against canon before the figure is served); exact 6-decimal base units. Aggregate balance only — the wallet address stays server-side. This is the wallet's CURRENT balance, not all-time NFT sales: the all-time contributed figure is mint price x minted count and is served separately.",
+          sourceRef: "protocolTargets.ts:FINANCIAL_TARGETS.nftSaleWallet (eth_call treasury + balanceOf USDC)",
+          chainId,
+          asOf,
+        }),
+      );
+    }
+
+    // (ii) USDC still held by the sale contract itself (in transit).
+    {
+      const data = encodeAddressArg(SELECTOR_BALANCE_OF, targets.nftSaleContract);
+      let raw: string | null = null;
+      let threw = false;
+      if (probe.chainIdOk && usdcHasCode && data !== null) {
+        ({ raw, threw } = await readUint(targets.usdcTokenAddress, data));
+      } else if (probe.chainIdOk && usdcHasCode && data === null) {
+        threw = true;
+      }
+      items.push(
+        buildFinancialNumeric({
+          probe,
+          hasCode: usdcHasCode,
+          rawValue: raw,
+          decodeThrew: threw,
+          id: "financial.nftSale.contractUsdcBalance",
+          label: "NFT sale contract USDC balance (raw base units)",
+          contractRole: "stablecoin",
+          note: "Live balanceOf() read on the canon USDC contract for the NFT sale contract itself; exact 6-decimal base units. Mint payments rest here until they are withdrawn to the declared payout wallet, so this is normally zero — it is read so no sale money can sit anywhere unseen.",
+          sourceRef: "protocolTargets.ts:FINANCIAL_TARGETS.nftSaleContract (eth_call balanceOf USDC)",
+          chainId,
+          asOf,
+        }),
+      );
+    }
+  }
+
+  // 4e) Chainlink USD price feeds for the deep-market treasury holdings — live
+  //     latestRoundData() reads (8-decimal USD answers). Fail-closed on a
+  //     non-positive answer OR a round older than 24h (never a stale price). SYN
+  //     is deliberately absent: it has no deep market, only the thin LP pool
+  //     (the vault's SYN amount is the existing VAULT_RESERVE allocation item).
+  {
+    const STALENESS_MAX_S = 86_400; // 24h — beyond the feeds' heartbeat → fail closed
+    // A round dated in the FUTURE is not fresh, it is unusable: a one-sided age
+    // check would let it pass (senior review 2026-07-25). Allow only a small
+    // server/chain clock skew, then fail closed like any other bad round.
+    const CLOCK_SKEW_MAX_S = 3_600;
+    const nowS = Math.floor(Date.parse(asOf) / 1000);
+    const readPrice = async (
+      feed: string,
+    ): Promise<{ raw: string | null; threw: boolean }> => {
+      try {
+        const decoded = decodeLatestRoundData(
+          await ethCall(transport, feed, SELECTOR_LATEST_ROUND_DATA),
+        );
+        if (decoded === null) return { raw: null, threw: true };
+        const ageS = nowS - decoded.updatedAt;
+        if (
+          !Number.isFinite(nowS) ||
+          decoded.updatedAt <= 0 ||
+          ageS > STALENESS_MAX_S ||
+          ageS < -CLOCK_SKEW_MAX_S
+        ) {
+          return { raw: null, threw: true }; // stale / future-dated / unusable → fail closed
+        }
+        return { raw: decoded.answer, threw: false };
+      } catch {
+        return { raw: null, threw: true };
+      }
+    };
+    for (const feed of [
+      { id: "financial.price.avaxUsd", sym: "AVAX", addr: targets.priceFeeds.avaxUsd },
+      { id: "financial.price.btcUsd", sym: "BTC", addr: targets.priceFeeds.btcUsd },
+      { id: "financial.price.ethUsd", sym: "ETH", addr: targets.priceFeeds.ethUsd },
+    ]) {
+      const hasCode = await hasCodeAt(feed.addr);
+      let raw: string | null = null;
+      let threw = false;
+      if (probe.chainIdOk && hasCode) {
+        ({ raw, threw } = await readPrice(feed.addr));
+      }
+      items.push(
+        buildFinancialNumeric({
+          probe,
+          hasCode,
+          rawValue: raw,
+          decodeThrew: threw,
+          id: feed.id,
+          label: `${feed.sym}/USD Chainlink price (8-decimal USD)`,
+          contractRole: null,
+          note: `Live Chainlink ${feed.sym}/USD price feed via latestRoundData(); exact 8-decimal USD answer, fail-closed if the round is non-positive or older than 24h. Used to value the deep-market treasury holdings; SYN is never priced here.`,
+          sourceRef: `chainlink:${feed.sym}_USD (eth_call latestRoundData)`,
+          chainId,
+          asOf,
+        }),
+      );
+    }
   }
 
   // 5) Live member tally + dual-authority base — memberCount()/GENESIS_OFFSET()

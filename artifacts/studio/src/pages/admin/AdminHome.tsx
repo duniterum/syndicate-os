@@ -56,6 +56,11 @@ interface AdminHomeProps {
   /** THE BUSINESS — the live KPI band (BusinessBand) that LEADS the page,
    * right under the work grid. Renders its own honest fail-closed states. */
   referralBand?: ReactNode;
+  /** TREASURY — the live Protocol Assets card (what the protocol holds: the
+   * vault's USDC / AVAX / BTC.b / WETH.e, the LP position, the SYN reserve).
+   * Work-zone, right under the business band, never collapsed; renders its own
+   * fail-closed per-asset states. */
+  assetsSlot?: ReactNode;
   /** The collapsed "System & registry" slot at the very bottom (module counts,
    * posture ledger, health) — reference material, never the work. */
   systemSlot?: ReactNode;
@@ -104,6 +109,7 @@ export default function AdminHome({
   realitySlot,
   reviewCount = null,
   referralBand,
+  assetsSlot,
   systemSlot,
 }: AdminHomeProps) {
   return (
@@ -188,6 +194,11 @@ export default function AdminHome({
           "un dashboard ouvre sur ses chiffres, il ne les cache pas"). Plain
           dated numbers, each a door to its ledger; never a collapsible. */}
       {referralBand ?? null}
+
+      {/* TREASURY — what the protocol HOLDS. The financial figures the operator
+          came for → work-zone, right under the business band, never collapsed
+          (WORK-FIRST §1). Fail-closed per asset. */}
+      {assetsSlot ?? null}
 
       {/* Reference layer — collapsed by default (the work-first law). The data
           stays one click away, never in the way. */}

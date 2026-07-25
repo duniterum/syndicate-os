@@ -281,7 +281,7 @@ const specs: readonly RegistrySpec[] = [
     riskClass: "CONTENT_ONLY",
     forbiddenClaims: ["WEALTH_RANKING", "FINANCIAL_UPSIDE", "UNPAID_LABOR_FRAMING"],
     notes:
-      "Recognition = member-status logic (Member Standing / Syndicate Rank vocabulary). Genuine future module; no recognition canon is vendored.",
+      "Recognition = member-status logic (Member Standing / Syndicate Rank vocabulary). LIVE: the season board ranks contribution from chain-proven acts and member quests credit real acts own-row; the long-term cross-season standing figure is the remaining future layer.",
   },
   {
     registryId: "protocol-map",

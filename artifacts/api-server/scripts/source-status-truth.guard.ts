@@ -83,6 +83,25 @@ check("note[archive] states artifacts are minted on-chain today", /minted on-cha
 check("note[routing] states the 70/20/10 figures are served live", /70\/20\/10/.test(cats.routing?.note ?? "") && /live/i.test(cats.routing?.note ?? ""));
 check("note[source] states own standing + the public paid aggregate are served", /own standing/i.test(cats.source?.note ?? "") && /paid-to-referrers/i.test(cats.source?.note ?? ""));
 
+// 5) THE WORD LAW (founder ruling 2026-07-25, CLAUDE.md rule ①): the word "PII"
+//    NEVER appears on any surface a user or the founder READS. These notes are
+//    rendered verbatim in the public /status posture table, so a bare "PII" here
+//    escapes the studio-only copy guard — that is exactly how one survived until
+//    the 2026-07-25 senior review. The human words are "personal data" /
+//    "account"; if the note serves nobody on that surface, it is not shown at
+//    all (WORK-FIRST §3). Word-boundary matched, so the internal
+//    SERVER_ONLY_PII risk-class TOKEN in code is untouched.
+for (const [key, item] of Object.entries(cats)) {
+  for (const field of ["label", "note"] as const) {
+    const text = String(item?.[field] ?? "");
+    check(
+      `word law: ${field}[${key}] never renders the word "PII"`,
+      !/\bpii\b/i.test(text),
+      text.slice(0, 80),
+    );
+  }
+}
+
 if (failures > 0) {
   console.error(`source-status truth guard: ${failures} FAILURE(S) (${passes} passed)`);
   process.exit(1);

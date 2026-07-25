@@ -158,7 +158,7 @@ const CANON: CanonEntry[] = [
     publicClass: "PUBLIC_MEMORY_SAFE",
     sourceRef: "canon:source-attributed-receipts",
     confidence: "high",
-    note: "Receipts are live: every confirmed purchase prints its protocol ticket at checkout and reopens from the member's own binder at /receipts; commission rows carry their receipt anatomy. The public per-transaction receipt page is the remaining future layer.",
+    note: "Receipts are live: every confirmed purchase prints its protocol ticket at checkout and reopens from the member's own binder at /receipts; commission rows carry their receipt anatomy. The public per-transaction receipt page is live too — every receipt has a permanent shareable page anyone can verify on-chain.",
     surface: "/receipts",
   },
   {
@@ -174,11 +174,11 @@ const CANON: CanonEntry[] = [
   {
     key: "recognition",
     label: "Recognition",
-    posture: "FUTURE",
+    posture: "READ_ONLY_PROOF",
     publicClass: "PUBLIC_MEMORY_SAFE",
-    sourceRef: "canon:recognition-candidates",
-    confidence: "low",
-    note: "Standing model reserved; recognition formula pending founder decision.",
+    sourceRef: "canon:season-recognition",
+    confidence: "high",
+    note: "Recognition is live: the season board ranks contribution in public from chain-proven acts, and member quests credit real acts own-row. A single long-term standing figure across seasons is the remaining future layer.",
     surface: "/recognition",
   },
   {
@@ -188,7 +188,7 @@ const CANON: CanonEntry[] = [
     publicClass: "FOUNDER_DECISION",
     sourceRef: "canon:institutional-register-registry",
     confidence: "high",
-    note: "No public member directory, index, or PII is served — ever, by design. What IS live: each signed wallet's own self-readback, the aggregate holder index, and the complete address-free seat history served by the event backbone.",
+    note: "No public member directory or index is served — ever, by design; a member's account details never leave the server. What IS live: each signed wallet's own self-readback, the aggregate holder index, and the complete seat history served by the event backbone.",
     surface: "/member",
   },
   {
@@ -220,7 +220,7 @@ const CANON: CanonEntry[] = [
     publicClass: "ECONOMIC_DASHBOARD_SAFE",
     sourceRef: "internal:reality-spine-financial",
     confidence: "high",
-    note: "Live treasury balances are served by the reality spine (vault and operations USDC, LP reserves, the seven allocation wallets). A per-transaction anchored treasury ledger is the remaining future layer.",
+    note: "Live treasury balances are served by the reality spine (the vault's USDC plus its native AVAX, BTC.b and WETH.e holdings, operations USDC, LP reserves, the seven allocation wallets), with the deep-market holdings valued in USD via live Chainlink price feeds and summed into a treasury total. SYN is shown as a token amount only (its sole on-chain price is the thin LP pool). A per-transaction anchored treasury ledger is the remaining future layer.",
     surface: "/treasury",
   },
   {

@@ -66,6 +66,7 @@ import {
   SupportQueuePanel,
 } from "@/components/referral/AdminOperatorSurfaces";
 import { ProtocolRealityPanel } from "@/components/ProtocolReality";
+import { ProtocolAssetsCard } from "@/components/ProtocolAssetsCard";
 import { ChroniclePrepare } from "@/components/admin/ChroniclePrepare";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
 
@@ -133,6 +134,7 @@ export function AdminDashboardSection() {
         realitySlot={<ProtocolRealityPanel groups={["chain", "contracts", "sale", "financial"]} />}
         reviewCount={reviewCount}
         referralBand={<BusinessBand onNavigate={onNavigate} />}
+        assetsSlot={<ProtocolAssetsCard />}
         systemSlot={<AdminOverviewPanel />}
       />
     </div>

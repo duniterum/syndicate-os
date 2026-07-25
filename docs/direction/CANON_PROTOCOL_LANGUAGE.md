@@ -288,6 +288,17 @@ second line. Scope: the three routing organs (the vault · the liquidity wallet 
 operations wallet), USDC + SYN. Organs render as LABELS; external counterparties are
 never named; native AVAX movements emit no event and honestly cannot have a line.
 
+**DECLARED GAP (2026-07-25, the holdings slice) — named, never an unstated silence.** The
+vault also HOLDS **BTC.b and WETH.e**: their balances are read live and shown (on /contracts
+and the /admin home), but their MOVEMENTS have no lane yet — `protocolTargets` carries
+`TREASURY_USDC_IN/OUT` + `TREASURY_SYN_IN/OUT` only, and `backboneDb.ts` branches
+USDC-or-SYN. Both tokens DO emit Transfer logs, so both are laneable; the work is the two
+lane pairs + the token label + a founder-approved sentence in the table below + the
+/activity line. Tracked as **⑧** in the open-work list. The completeness invariant's LETTER
+did not trigger here — no new protocol wallet or contract was introduced (the vault is
+already inventoried; BTC.b, WETH.e and the Chainlink aggregators are EXTERNAL contracts the
+spine only reads) — so this is named work, not a breach of the invariant.
+
 | Event | The canonical sentence | Variants |
 |---|---|---|
 | Treasury outflow | "{amount} {token} moved out of {organ} — a founder-signed treasury act; there are no silent moves." | — |

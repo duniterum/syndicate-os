@@ -298,6 +298,36 @@ export type FinancialTargets = {
   /** SERVER-ONLY token contract addresses (the balanceOf() call targets). */
   usdcTokenAddress: string;
   synTokenAddress: string;
+  /**
+   * SERVER-ONLY external Avalanche bridge-token contracts — the vault's
+   * diversified crypto holdings (balanceOf() call targets). These are NOT
+   * protocol contracts, so they have no internal canon authority; each address
+   * is pinned to its own on-chain identity, chain-verified 2026-07-25 (BTC.b:
+   * symbol "BTC.b", 8 decimals; WETH.e: symbol "WETH.e", 18 decimals).
+   */
+  btcbTokenAddress: string;
+  wethTokenAddress: string;
+  /**
+   * SERVER-ONLY — the NFT sale contract and the wallet its own `treasury()`
+   * view declares as the payout destination for artifact mints (founder-named
+   * "NFT Sale Wallet", 2026-07-25). The destination is RECONCILED, never
+   * assumed: the served balance is read only when the live `treasury()` answer
+   * matches this pinned address, so a `setTreasury` we did not authorise makes
+   * the figure fail closed instead of silently following the money elsewhere.
+   */
+  nftSaleContract: string;
+  nftSaleWallet: string;
+  /**
+   * SERVER-ONLY Chainlink USD price feeds (Avalanche mainnet) for valuing the
+   * deep-market treasury holdings — latestRoundData() call targets returning an
+   * 8-decimal USD answer. SYN has NO deep-market feed (its only price is the thin
+   * LP pool) and is therefore NEVER assigned a USD value anywhere.
+   */
+  priceFeeds: {
+    avaxUsd: string;
+    btcUsd: string;
+    ethUsd: string;
+  };
   /** SERVER-ONLY AMM pair address (getReserves/token0 call target). */
   lpPair: string;
   /** The pair's IMMUTABLE token0 (canon pin, chain-verified 2026-07-15). */
@@ -361,6 +391,23 @@ export const FINANCIAL_TARGETS: FinancialTargets = {
   synBurnAddress: "0x000000000000000000000000000000000000dEaD",
   usdcTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
   synTokenAddress: "0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170",
+  // External Avalanche bridge tokens the vault holds. Chain-verified 2026-07-25:
+  // BTC.b (symbol "BTC.b", 8 decimals) and WETH.e ("WETH.e", 18 decimals). Pinned
+  // by the targets-reconcile guard against their own on-chain identity.
+  btcbTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+  wethTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+  // The NFT (artifact) sale contract and its declared payout wallet. The wallet
+  // was chain-discovered 2026-07-22 and confirmed 2026-07-25 by reading the
+  // contract's own treasury() view, which answers exactly this address.
+  nftSaleContract: "0xB2AE1eb7aAf7577182e616DA497E0BC822E7D54d",
+  nftSaleWallet: "0xe4178521946d2c54e2a2c5b154aae07319bbd56f",
+  // Chainlink USD price feeds on Avalanche C-Chain (8-decimal USD answers),
+  // chain-verified 2026-07-25. Deep-market assets only — SYN is never priced.
+  priceFeeds: {
+    avaxUsd: "0x0A77230d17318075983913bC2145DB16C7366156",
+    btcUsd: "0x2779D32d5166BAaa2B2b658333bA7e6Ec0C65743",
+    ethUsd: "0x976B3D034E162d8bD72D6b9C989d545b839003b0",
+  },
   lpPair: "0xe12491b79c9cfc6a07db8cd7fc8b3da0bb019389",
   /**
    * The pair's IMMUTABLE token0 (H1a-fix, chain-verified 2026-07-15): token0

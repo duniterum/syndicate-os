@@ -61,8 +61,18 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   « System & registry » replié · identité humanisée) · jargon « PII » purgé (guard bannit « pii ») + LA
   LOI D'ADRESSE gravée** (adresses publiques, forme courte + Snowtrace ; gardes protègent nom/e-mail PAS
   les adresses ; masquer = BUG ; base légale EDPB/CJEU/CCPA — ADR-003 + CANON_VISIBILITY_LAW amendés).
-  **DEPLOY BACKLOG : BATCHABLE** (`f2642aa` · `3b32f2c` · `29f8559` · `469882d`, au-dessus de prod
-  `e21a036`, un seul deploy groupé). **+0 couleur brute** (tokens). Dossier :
+  **PUIS (25-07 PM-2) : LES AVOIRS DU VAULT — carte trésorerie recomposée + posée sur l'accueil /admin.**
+  `ProtocolAssetsCard` : **8 lignes** (Vault USDC · USDC opérations · AVAX · BTC.b · WETH.e · SYN du vault ·
+  le pool SYN/USDC · la réserve de sièges), sous-valeur USD par ligne pour les avoirs valorisables, et un
+  bloc d'en-tête **« Value of the priced holdings »** qui tombe en « indisponible » si un composant manque.
+  Le placeholder « Coming » de l'AVAX est MORT (capacité enregistrée : `vaultHoldings` LIVE). Posée dans la
+  **ZONE DE TRAVAIL** de l'accueil /admin sous `BusinessBand`, **jamais repliée** (WORK-FIRST §① : la page
+  ouvre sur le travail). Tokens uniquement — **+0 couleur brute** (`viz-1/2/3/4/5/6`, `gold`) ; teintes
+  d'icônes redistribuées pour lever une collision ambre/or en thème sombre. Pas de plafond px (S7-d :
+  la grille reste `grid-cols-1 sm:grid-cols-2 xl:grid-cols-4`).
+  **DEPLOY : 🚀 GROUPÉ MAINTENANT** — le commit des avoirs change des lectures SERVEUR, donc il n'est pas
+  batchable : il emporte `f2642aa` · `3b32f2c` · `29f8559` · `469882d` au-dessus de prod `e21a036` en un
+  seul déploiement. **+0 couleur brute** (tokens). Dossier :
   `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md` + la LISTE COMPLÈTE = bloc en tête de `SESSION_STATE.md`.
 
 ### Phase 5 — Surfaces (adoption)

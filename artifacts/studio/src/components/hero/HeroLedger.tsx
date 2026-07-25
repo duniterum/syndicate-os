@@ -93,9 +93,14 @@ export function HeroLedger() {
                 : item.bind === "nftMintedTotal"
                   ? reality.nftMintedTotal
                   : null;
+            // The NFT figure is mint price x minted count — everything ever
+            // contributed through mints, NOT the balance held today (that one is
+            // a separate live wallet read on /contracts). The "all-time" word is
+            // not decoration: without it the tile reads as money we are holding,
+            // which is a different and smaller number (founder, 2026-07-25).
             const noteText =
               item.bind === "nftRevenueUsdc" && reality.nftMintedTotal !== null
-                ? `${reality.nftMintedTotal} minted${
+                ? `all-time · ${reality.nftMintedTotal} minted${
                     reality.nftFirstSignalMinted !== null && reality.nftPatronSealMinted !== null
                       ? ` (${reality.nftFirstSignalMinted} First Signal · ${reality.nftPatronSealMinted} Patron Seal)`
                       : ""
