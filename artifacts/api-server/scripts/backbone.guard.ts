@@ -453,8 +453,12 @@ check(
   "status route reads memory only (no DB, no network)",
   "status route grew a DB/network dependency",
 );
-expectThrow("scanner trips on a planted 20-byte address", () =>
-  assertAddressSafeJson(JSON.stringify({ note: "0x" + "ab".repeat(20) })),
+// Address law (2026-07-25): a full 40-hex address PASSES (public + linkable);
+// the scanner trips only on OVER-LONG hex (0x + 41+) and bare 32-byte hashes.
+assertAddressSafeJson(JSON.stringify({ note: "0x" + "ab".repeat(20) }));
+ok.push("scanner PASSES a full 40-hex address (address law — public)");
+expectThrow("scanner trips on over-long hex (0x + 41+)", () =>
+  assertAddressSafeJson(JSON.stringify({ note: "0x" + "ab".repeat(21) })),
 );
 expectThrow("scanner trips on a planted bare 32-byte hash", () =>
   assertAddressSafeJson(JSON.stringify({ note: "cd".repeat(32) })),
@@ -468,10 +472,10 @@ ok.push("scanner passes plain block numbers / counters (no false positive)");
 {
   const servedPatterns = stripComments(
     read("src/lib/protocol/addressSafety.ts"),
-  ).match(/\/0x\[0-9a-fA-F\]\{40,\}\/|\/\\b\[0-9a-fA-F\]\{64\}\\b\//g);
+  ).match(/\/0x\[0-9a-fA-F\]\{41,\}\/|\/\\b\[0-9a-fA-F\]\{64\}\\b\//g);
   const scriptPatterns = stripComments(
     read("scripts/member-continuity-readmodel.ts"),
-  ).match(/\/0x\[0-9a-fA-F\]\{40,\}\/|\/\\b\[0-9a-fA-F\]\{64\}\\b\//g);
+  ).match(/\/0x\[0-9a-fA-F\]\{41,\}\/|\/\\b\[0-9a-fA-F\]\{64\}\\b\//g);
   check(
     servedPatterns !== null &&
       scriptPatterns !== null &&
@@ -1511,7 +1515,7 @@ check(
   "the feed serves the Milestones panel block (6 sealed + the 8 family lanes, honest flags)",
   "the milestones block broke",
 );
-expectThrow("feed gate trips on a planted address in a milestone label", () =>
+expectThrow("feed gate trips on a planted bare 64-hex in a milestone label", () =>
   assertFeedSafeJson(
     JSON.stringify(
       buildPublicFeed({
@@ -1522,7 +1526,7 @@ expectThrow("feed gate trips on a planted address in a milestone label", () =>
           approaching: [
             {
               id: "seats-100",
-              label: "0x" + "ee".repeat(20),
+              label: "ee".repeat(32),
               kind: "seats",
               target: 100,
               currentSeats: 2,
@@ -1615,8 +1619,8 @@ check(
   "feed carries the verify anchors (public chain data — the point of the line)",
   "feed lost its verify anchors",
 );
-expectThrow("feed gate trips on a planted 20-byte address", () =>
-  assertFeedSafeJson(feedJson.replace(txA, "0x" + "ee".repeat(20))),
+expectThrow("feed gate trips on planted over-long hex (0x + 41+)", () =>
+  assertFeedSafeJson(feedJson.replace(txA, "0x" + "ee".repeat(21))),
 );
 expectThrow("feed gate trips on planted bare 32-byte hex", () =>
   assertFeedSafeJson(feedJson + JSON.stringify({ x: "ff".repeat(32) })),

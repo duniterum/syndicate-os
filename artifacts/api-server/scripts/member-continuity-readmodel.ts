@@ -994,9 +994,10 @@ export function buildMemberContinuityReadModel(input: BuildInput): BuildResult {
 // Address-safe reporting (the ONLY serialization path out of the read-model).
 // ---------------------------------------------------------------------------
 
-/** 0x-prefixed 40+ hex (addresses, tx hashes) or bare 64-hex (leaves/roots). */
+/** Over-long hex (0x + 41+) or bare 64-hex (leaves/roots). A full 40-hex address
+ *  is PUBLIC (address law 2026-07-25) and passes; name/email guarded elsewhere. */
 const HEX_IDENTITY_PATTERNS: readonly RegExp[] = [
-  /0x[0-9a-fA-F]{40,}/,
+  /0x[0-9a-fA-F]{41,}/,
   /\b[0-9a-fA-F]{64}\b/,
 ];
 
