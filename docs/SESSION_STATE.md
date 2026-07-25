@@ -2,20 +2,30 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 📌 2026-07-24 — THE RESUME BLOCK (DONE-IS-DONE §④: read THIS, resume in one pass)
-> *The S2 seasons arc CLOSED and is fully live in prod. Next session = S3, the
-> contract. Everything below this block is the dated RECORD of how it got here —
-> read it only if you need the why.*
+> # ▶ 📌 2026-07-25 — THE RESUME BLOCK (DONE-IS-DONE §④: read THIS, resume in one pass)
+> *Everything below this block is the dated RECORD of how it got here — read it only if you need the why.*
+>
+> ## ▶ WHERE WE ARE, IN ONE READ
+> **PROD = `35d60fa`, sealed live 2026-07-25. DEPLOY BACKLOG: EMPTY of deployable work** — only
+> documentation commits sit above prod. Tree clean, local == origin.
+> **WHAT WENT LIVE TODAY (one grouped cycle: `352a904` · `6953972` · `35c5083` · `add5bb8` · `35d60fa`):**
+> the vault's full holdings serve live and VALUED on `/contracts` + the /admin home · the public home gained
+> the **"Protocol Reserves"** band (4 cards, registry-driven, 44 vendored coin logos) · every `/season` board
+> row links to Snowtrace · the BTC.b/WETH.e treasury lanes + the NFT sale wallet as a 4th organ · a truth
+> sweep that deleted a FALSE public claim and 5 "recognition is future" fossils.
+> **WHAT IS IN FLIGHT:** the lane backfill runs autonomously (~2-3 cycles from the head, cursors persisted,
+> no action needed). **NEXT SLICE is the founder's pick** — the open list below is the menu; nothing is
+> half-built and nothing is waiting on code.
+> **THE FOUNDER'S PENDING DECISIONS:** the 2 artifacts the NFT sale wallet itself minted (relabel as a
+> protocol mint, or leave Community) · ⑩ the "archive" → NFT vocabulary sweep (his words, public copy) ·
+> the patronage rungs' sealing now that their transaction source exists · plus the older standing ones
+> (SwapRail decisions · the pot commitment amount + cadence · the XP weight table + floors at the S3 gate).
+> **THE DEBT IS WRITTEN DOWN, NOT REMEMBERED:** `docs/audits/HANDOFF_REVIEW_2026-07-25.md` — 58 open
+> MEDIUM/LOW findings from the pre-handoff review, by theme, each with file:line and its fix. None blocks.
 >
 > ## ▶ OPEN WORK — THE COMPLETE LIST (2026-07-25, founder: "la liste complète, qu'on n'oublie rien")
-> The single index of everything OPEN. **PROD = `f7f9e57` — ✅ SEALED LIVE 2026-07-25** (Replit report,
-> founder-pasted): the holdings + truth-sweep cycle `d1b6e75` + the sitemap fix `f7f9e57` carried the whole
-> batched set (`f2642aa` · `3b32f2c` · `29f8559` · `469882d`) — 10 commits, 54+1 blob-verified files, byte
-> identity ×2 on entry + console chunks, atomic swap with no visitor downtime, 20/20 api guards, live
-> battery green (13 routes 200 · /studio 404 · sitemap 28 URLs with /recognition · engine ok=2 headBlock
-> advancing · **/contracts serving "Value of the priced holdings $236.79"**). No migration, no new env.
-> **▶ PROD = `35d60fa` — ✅ SEALED LIVE 2026-07-25 (Replit report, founder-pasted). DEPLOY BACKLOG: EMPTY
-> of deployable work** — the only commit above prod is `66d5737` (documentation only, NO DEPLOY).
+> The single index of everything OPEN. **This block is the ONE authority for prod + the deploy backlog** —
+> any older PROD line further down this file is a dated historical record, never the current truth.
 > The grouped cycle carried `352a904` · `6953972` · `35c5083` · `add5bb8` · `35d60fa`. Byte identity ×2 on
 > the entry + console chunks; 7 public routes 200; /studio 404; season LIVE 15 standings; **the 4 new
 > treasury lanes resumed from their SAVED CURSORS after the redeploy — no rewind, nothing lost** (the
@@ -188,13 +198,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > founder's personal liquidity is HIS, never the protocol's treasury — the guard pins that the LP-share
 > read encodes the liquidity wallet and never the founder's own.
 >
-> **⑫ THE HANDOFF-REVIEW REMAINDER — 58 open MEDIUM/LOW findings, ALL WRITTEN DOWN.** The 2026-07-25
-> pre-handoff review (9 agents, 78 findings, 76 adversarially confirmed) fixed every BLOCKING and HIGH item
-> in `35d60fa`. The rest lives in **`docs/audits/HANDOFF_REVIEW_2026-07-25.md`**, grouped by theme with
-> file:line + the fix for each: money & chain truth (3) · server/indexer (4) · client & design system (8) ·
-> guards & coverage (8) · docs & ledgers (10) · truth fossils on public claims (14) · scope (11). The file
-> also records the 18 fixed items and the 2 findings the verifier REFUTED — do not act on those. NOTHING
-> here blocks the handoff; work each one in when its surface is next touched.
+> **⑩ THE "ARCHIVE" → "NFT" VOCABULARY SWEEP (founder ruling, 2026-07-25 — NEW).** His words: *"NFT tout le
+> monde le connaît, pas de charge mentale"* — the AI-chosen word "archive" as the UMBRELLA term created
+> confusion everywhere, made worse because SOME NFTs are genuinely meant to serve as an archive. **THE
+> RULING: on every surface a human reads, the primary word is NFT; "archive" is reserved for the specific
+> idea of NFTs kept as a historical record, never as the name of the collection, the contract or the
+> money.** Applied already where this slice wrote new copy (the wallet is the **"NFT Sale Wallet"**, the row
+> is **"NFT sales USDC"**, the reality ids are `financial.nftSale.*`). NOT swept blind: "archive" is
+> load-bearing in code and canon (`ARCHIVE_1155`, `archive.artifact.*`, the archive group, milestone
+> families, /archive copy). The sweep is its own slice WITH the founder's eye on the final words — a
+> vocabulary change on ~10 public surfaces is a founder-visible copy decision, never a silent rename.
 >
 > **⑪ "PROTOCOL RESERVES" — THE PUBLIC HOME SECTION — ✅ SHIPPED (`6953972`, refined `35c5083` + `add5bb8`;
 > committed, NOT yet deployed).** The founder's aparté, built from an approved mockup
@@ -211,16 +224,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > itself:** adding an asset is one entry HERE **plus** a server read pair — NOT one line total; unifying
 > both sides behind one registry is the named next step.
 >
-> **⑩ THE "ARCHIVE" → "NFT" VOCABULARY SWEEP (founder ruling, 2026-07-25 — NEW).** His words: *"NFT tout le
-> monde le connaît, pas de charge mentale"* — the AI-chosen word "archive" as the UMBRELLA term created
-> confusion everywhere, made worse because SOME NFTs are genuinely meant to serve as an archive. **THE
-> RULING: on every surface a human reads, the primary word is NFT; "archive" is reserved for the specific
-> idea of NFTs kept as a historical record, never as the name of the collection, the contract or the
-> money.** Applied already where this slice wrote new copy (the wallet is the **"NFT Sale Wallet"**, the row
-> is **"NFT sales USDC"**, the reality ids are `financial.nftSale.*`). NOT swept blind: "archive" is
-> load-bearing in code and canon (`ARCHIVE_1155`, `archive.artifact.*`, the archive group, milestone
-> families, /archive copy). The sweep is its own slice WITH the founder's eye on the final words — a
-> vocabulary change on ~10 public surfaces is a founder-visible copy decision, never a silent rename.
+> **⑫ THE HANDOFF-REVIEW REMAINDER — 58 open MEDIUM/LOW findings, ALL WRITTEN DOWN.** The 2026-07-25
+> pre-handoff review (9 agents, 78 findings, 76 adversarially confirmed) fixed every BLOCKING and HIGH item
+> in `35d60fa`. The rest lives in **`docs/audits/HANDOFF_REVIEW_2026-07-25.md`**, grouped by theme with
+> file:line + the fix for each: money & chain truth (3) · server/indexer (4) · client & design system (8) ·
+> guards & coverage (8) · docs & ledgers (10) · truth fossils on public claims (14) · scope (11). The file
+> also records the 18 fixed items and the 2 findings the verifier REFUTED — do not act on those. NOTHING
+> here blocks the handoff; work each one in when its surface is next touched.
 >
 > **AW-5 — ✅ NAMED BY THE FOUNDER 2026-07-25: "NFT Sale Wallet".** The wallet that receives artifact-mint
 > money is pinned in `FINANCIAL_TARGETS.nftSaleWallet`, reconciled live against the contract's own
