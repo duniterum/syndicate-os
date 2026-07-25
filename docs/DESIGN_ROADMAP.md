@@ -46,13 +46,17 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
 ### Phase 4 — Harmonisation totale (le "rien à moitié")
 - [x] Finir migration couleur (108 → 0) → guard **BLOQUANT** · [x] Adopter `.type-*` partout (titres, ~17 pages, serif)
 - [ ] Mouvement · [x] États complets sur tous les composants · [ ] Vérifier les 2 modes
-- [~] **Arc BORD-À-BORD / full-screen (2026-07-25, ruling QuickNode)** — shell (header/main/footer
+- [x] **Arc BORD-À-BORD / full-screen (2026-07-25, ruling QuickNode) — COMMITTÉ** — shell (header/main/footer
   `w-full` + `px-4 sm:px-6 lg:px-8` ; footer accordéon mobile ≥44px) + primitives `.auto-grid`
   (auto-fit) & `.measure` (68ch) + **20 surfaces** passées bord-à-bord (grilles → `auto-grid`,
   texte → `.measure`, **0 plafond fixe px**) + guard **BLOQUANT** `guard-fluid-surface`.
-  **Compteur "page-cap sprawl" : 0** (le shell prose de `PublicPage` élargi en cadre pleine largeur
-  + `.measure` ; les 6 pages texte/rail traitées — dette ZÉRO). Appliqué + vérifié local (typecheck · guards · rig 390/1920, 0 overflow), **en
-  attente du preview GO fondateur**. Dossier : `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md`.
+  **Compteur "page-cap sprawl" : 0.** **PLUS (follow-ons poussés `224dd9a`→`a6b5294`) :** discipline
+  des **polices** (mono = données/labels courts, jamais une phrase ; garde `guard-font-discipline`) ·
+  **"read only" retiré** (51 textes) + 4 **fossiles vérité** · la **HOME recomposée** en cartes
+  encadrées uniformes sur UN fond (hero simplifié · strip vérif retiré · CSS/composant morts nettoyés) ·
+  **header typo** relevé (nav 11→13px, micro-labels 10-11px) · **Prose** remplit (texte 68ch, cartes/tables
+  pleine largeur) · **More-menu** Whitepaper-over-Join. **+0 couleur brute** (compteur reste 0).
+  `38623f1` déployé ; follow-ons poussés, en attente du prochain deploy. Dossier : `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md`.
 
 ### Phase 5 — Surfaces (adoption)
 - [ ] Public · [ ] Dashboards (connecté / membre) · [x] Console admin (arc K3 + composition console, 2026-07-22)

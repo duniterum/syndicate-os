@@ -1,8 +1,7 @@
 // ① The hero's honest LIVE posture row — the origin's design language
 // harvested (a labelled row on desktop, one compact summary pill on mobile),
 // rebuilt on our tokens. Static posture DECLARATIONS (no figures, nothing
-// fake-live); the live reconciliation behind them is the TrustStatusStrip
-// and /status.
+// fake-live); the live reconciliation behind them lives on /status.
 //
 // S3 (founder law, engraved): the PENDING chips DIED on the hero — PENDING is
 // reserved for surfaces publicly promised on the site (doors/teasers keep

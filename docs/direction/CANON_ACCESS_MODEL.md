@@ -92,7 +92,7 @@ Four states: (1) **Not connected** → teaser; (2) **Connected-not-signed** → 
 ### C. Full-screen law (S7-d sharpened + guarded)
 Every page is exactly ONE mode, by FUNCTION:
 - **App / data / console** (hosts `MemberShell` or a data grid) = **fluid full-width**: `w-full` + gutters `px-4 sm:px-6 lg:px-8` only, **no page-level max-width**; readability bounded **PER CARD** (`container-type: inline-size`). Fill wide screens by **multiplying columns** (`grid repeat(auto-fit, minmax(280–360px, 1fr))`), never stretching one. Prime top band = a 4–6 tile KPI strip (Work-First).
-- **Prose** (hero · whitepaper · terms · docs) = cap the running **text measure** ~65–70ch (`max-w-2xl` body / `max-w-3xl` headline), optionally in a 1200–1440 band. The cap is the MEASURE, never the page.
+- **Prose** (hero · whitepaper · terms · docs) = full-width FRAME; the running **text measure** is bound PER TEXT ELEMENT to ~68ch (`.measure` / `[&_p]:max-w-[68ch]`) while cards/figures/tables span the full region — never a container/page cap. *(SUPERSEDES the earlier `max-w-2xl`/`max-w-3xl` px wording — 2026-07-25 ruling; see `FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md`.)*
 - Breakpoints **add panes** (single-col → sidebar+main ~905px). Ultra-wide (>1600): app caps card count, gutters absorb slack; prose margins grow. 320→2560 · `svh/dvh` · `viewport-fit=cover` + safe-areas · targets ≥44px · never `maximum-scale=1`.
 
 ### D. The diagnosed LEAK (founder-found) + fixes

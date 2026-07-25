@@ -7,14 +7,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > contract. Everything below this block is the dated RECORD of how it got here —
 > read it only if you need the why.*
 >
-> ## ▶ 2026-07-25 — IN FLIGHT (UNCOMMITTED): THE EDGE-TO-EDGE HARMONIZATION ARC
+> ## ▶ 2026-07-25 — THE EDGE-TO-EDGE HARMONIZATION ARC — COMMITTED (38623f1 deployed · home follow-ons pushed)
 > Founder-driven full-screen sweep (footer → whole site). Ruling (QuickNode benchmark): bord-à-bord,
 > **no fixed-px page cap**, fill by **multiplying columns** (auto-fit), readability in **`ch`** — this
-> **supersedes `CANON_ACCESS_MODEL` §C/§4** where they named a px cap. APPLIED in working tree +
-> verified local (typecheck · full guards · rig 390/1920, **0 horizontal overflow**) — **PENDING the
-> founder's preview GO → commit → deploy** (🚀 DEPLOY — BATCHABLE: client-only, additive, fail-closed).
-> Shipped this slice: the shell + **20 surfaces** + primitives `.auto-grid` / `.measure` (68ch) +
-> the BLOCKING `guard-fluid-surface` (page-cap debt counter = 1). **PLUS the FONT harmonization**
+> **supersedes `CANON_ACCESS_MODEL` §C/§4** where they named a px cap. **COMMITTED + GO'd:** `38623f1`
+> (the whole-site harmonization) is the last DEPLOYED build; the home follow-ons `224dd9a→a6b5294` are
+> PUSHED, awaiting the next Replit deploy (🚀 DEPLOY — BATCHABLE: client-only, additive, fail-closed).
+> Shipped: the shell + **20 surfaces** + primitives `.auto-grid` / `.measure` (68ch) +
+> the BLOCKING `guard-fluid-surface` (page-cap debt = **0**). **PLUS the FONT harmonization**
 > (founder's /season "patchwork" complaint): benchmarked font law (serif=display · Work Sans=body/
 > labels/stats · mono=data/addresses/code/UPPERCASE-eyebrows only, NEVER prose); 11-agent audit
 > (610 usages/115 files → 54 fixed, ~51 elements); BLOCKING `guard-font-discipline`. Two new guards
@@ -24,12 +24,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **"read only" removed** from 51 user-facing strings (comments left); **4 truth fossils fixed**
 > (fire-ledger pagination · whitepaper "seasons"→VERIFIED · **Recognition reframed LIVE** ·
 > Support humanized); **prose pages full-screen** (PublicPage prose shell → full-width frame +
-> `.measure`; Terms/Privacy/Risk bounded) → **page-cap debt = 0**. **OPEN (next):** the home page
-> **SECTION RHYTHM** (bespoke PublicHome bands built FROM the section template) · sub-12px floor
-> sweep · MemberNotifications shell-gating. The retired original OPEN item — `PublicPage` prose shell
-> (6 text/rail pages + TeaserSurface) · `MemberNotifications` shell-gating · slice 2 (truth fossils) ·
-> slice 3 (sub-12px floor + humanize copy) · the `.type-h2` serif decision. So "Next = S3 only" above
-> is no longer the whole truth — **this arc runs alongside S3.** Dossier:
+> `.measure`; Terms/Privacy/Risk bounded) → **page-cap debt = 0**. **PLUS the HOME RECOMPOSITION
+> (DONE, pushed 224dd9a→a6b5294):** the home is now **uniform bordered/rounded section cards
+> (border-border · bg-card/40 · rounded-2xl · shadow-sm) on ONE background** — the hero SIMPLIFIED (its
+> command-island gold band + decorations + gold cockpit card removed → standard card; dead CSS + dead
+> `TrustStatusStrip` cleaned); **header type scale lifted** (nav 11→13px, chips/descriptor/path 10-11px);
+> **Prose fills the region** (text 68ch per element; cards/figures/tables full-width; Faq/Whitepaper rail
+> 240px; Tokenomics bounded); **More-menu** Whitepaper-over-Join; the redundant **verification strip
+> removed** from the home. **OPEN (next):** sub-12px floor sweep · MemberNotifications shell-gating ·
+> the `.type-h2` serif decision. So "Next = S3 only" above is no longer the whole truth — **this arc
+> runs alongside S3.** Dossier:
 > `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md`.
 >
 > ## (a) LIVE IN PROD RIGHT NOW — last sealed cycle `6097324` (Replit green, founder-pasted)
@@ -68,9 +72,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   different authorities; a session that "reconciles" them breaks a law.
 > - **DEPLOY BACKLOG:** `2e3b6a3` (the §8-⑧ sweep) + `0be9308` + the resume-block commit +
 >   the **S3 Foundry-spike commit** (`cd60b8f`, top-level `contracts/`) + the **contract-design-freeze
->   commit** (docs/reference + SESSION_STATE/OPEN_QUEUE/CANON_INDEX — pure docs). **NOTHING
->   user-visible changes** (`FEATURE_STATUS` imported by no component; `contracts/` not served/built).
->   ✅ **NO DEPLOY needed**; they ride whatever cycle S3 ships.
+>   commit** (docs/reference + SESSION_STATE/OPEN_QUEUE/CANON_INDEX — pure docs). Those were NO-DEPLOY.
+>   **🚀 DEPLOY — BATCHABLE (client-visible, PUSHED not deployed):** the whole-site harmonization
+>   `38623f1` **is now the DEPLOYED build**; on top of it the home follow-ons `224dd9a` + `293fad2` +
+>   `c19923c` + `a6b5294` (framed section cards on ONE background · hero simplified · header type scale ·
+>   Prose fill · More-menu Whitepaper-over-Join · Season align · dead-code/CSS cleanup) are pushed and
+>   await the next Replit `pull main + deploy` (client-only, additive, fail-closed — prod safely stays
+>   on `38623f1` until then).
 >
 > ## (b) IN FLIGHT — S3 (the S2 arc is closed; nothing else is open)
 > **THE HANDOFF DASHBOARD (2026-07-24 end-of-session · GitHub = the source of truth —

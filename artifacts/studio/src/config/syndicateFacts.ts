@@ -150,22 +150,6 @@ export const operationalReality = {
 // below live here — keyed by registryId so drift is impossible to hide.
 // ---------------------------------------------------------------------------
 
-/** Slim live trust strip under the hero — bound to GET /api/protocol/reality. */
-export const trustStrip = {
-  eyebrow: "Protocol reality",
-  groups: [
-    { key: "chain", label: "Chain identity" },
-    { key: "sale", label: "Membership sale" },
-    { key: "source", label: "Source registry" },
-  ] as { key: "chain" | "sale" | "source"; label: string }[],
-  reconciledNote: "live signals verified",
-  failText: "Live posture unavailable — nothing is assumed.",
-  links: [
-    { label: "Status hub", href: "/status" },
-    { label: "Public proof", href: "/proof" },
-  ],
-};
-
 /** Marketing blurbs for PROMOTED_STRIP registry entries, keyed by registryId. */
 export const homepagePromotedStrip = {
   eyebrow: "Act on the protocol",
@@ -332,8 +316,8 @@ export const heroSystem = {
   primaryCta: seatCta,
 
   // ① Honest LIVE/PENDING protocol posture chips. Static DECLARATIONS of
-  // posture (no figures — the live reconciliation is the TrustStatusStrip and
-  // /status). PENDING lists ONLY what is genuinely not deployed/wired today.
+  // posture (no figures — the live reconciliation lives on /status).
+  // PENDING lists ONLY what is genuinely not deployed/wired today.
   statusChips: {
     live: [
       "SYN Token",

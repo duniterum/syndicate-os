@@ -218,7 +218,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                       and off mouse clicks. Pinned by guard-nav-link-display. */}
                   <Link
                     href={item.path}
-                    className={`group relative inline-flex items-center rounded-lg px-2.5 py-1.5 text-[13px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45 2xl:px-3 2xl:text-[13px] ${
+                    className={`group relative inline-flex items-center rounded-lg px-2.5 py-1.5 text-[13px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45 2xl:px-3 ${
                       location === item.path ? "text-foreground" : "text-muted-foreground"
                     }`}
                   >
@@ -240,7 +240,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               >
                 <DropdownMenu>
                   <DropdownMenuTrigger
-                    className={`group relative inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[13px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45 data-[state=open]:bg-gold/8 data-[state=open]:text-gold 2xl:px-3 2xl:text-[13px] ${
+                    className={`group relative inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[13px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45 data-[state=open]:bg-gold/8 data-[state=open]:text-gold 2xl:px-3 ${
                       headerNavMore.some((item) => item.path === location)
                         ? "text-foreground"
                         : "text-muted-foreground"

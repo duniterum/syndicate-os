@@ -17,10 +17,8 @@ import {
 } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Spinner } from "@/components/ui/spinner";
 import { TruthLabel } from "@/components/TruthLabel";
 import { SampleTag } from "@/components/SampleTag";
-import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { SeatFlowSurface } from "@/components/hero/SeatFlowDiagram";
 import { ProtocolOverviewPanel } from "@/components/hero/ProtocolOverviewPanel";
 import { HeroLedger } from "@/components/hero/HeroLedger";
@@ -31,7 +29,6 @@ import { HomeSeasonSection } from "@/components/season/HomeSeasonSection";
 import { HomeRegisterBand } from "@/components/season/HomeRegisterBand";
 import {
   RegistryPostureChip,
-  realityGroupSummary,
   type RegistryPostureQueries,
 } from "@/components/registry/registryPosture";
 import { moduleRegistry } from "@/config/moduleRegistry";
@@ -41,7 +38,6 @@ import {
   howItWorks,
   operationalReality,
   awaitingWiring,
-  trustStrip,
   homepagePromotedStrip,
   homepageModuleStrip,
 } from "@/config/syndicateFacts";
@@ -98,68 +94,6 @@ function InspectRail({ className = "" }: { className?: string }) {
         </Link>
       ))}
     </nav>
-  );
-}
-
-/**
- * Slim live trust strip — the only live-bound band on `/`. Reads the
- * read-only Protocol Reality Spine and reports per-group reconciliation
- * counts. Any fetch failure or missing group fails closed to an explicit
- * "unavailable" line; nothing is assumed or invented.
- */
-function TrustStatusStrip() {
-  const { data, isLoading, isError } = useGetProtocolReality();
-
-  return (
-    <section className="w-full px-4 py-3 sm:px-6 lg:px-8">
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-2xl border border-border bg-card/40 px-5 py-3.5 shadow-sm md:px-6">
-        <span className="inline-flex items-center gap-2.5">
-          <LifecycleBadge lifecycle="READ_ONLY_PROOF" />
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            {trustStrip.eyebrow}
-          </span>
-        </span>
-        {isLoading ? (
-          <span className="inline-flex items-center gap-2 text-[11px] text-muted-foreground">
-            <Spinner className="h-3.5 w-3.5" />
-            Reading protocol reality…
-          </span>
-        ) : isError || !data ? (
-          <span className="font-mono text-[11px] text-destructive">
-            {trustStrip.failText}
-          </span>
-        ) : (
-          trustStrip.groups.map((group) => {
-            const summary = realityGroupSummary(data, group.key);
-            return (
-              <span key={group.key} className="inline-flex items-baseline gap-1.5 text-[11px]">
-                <span className="text-muted-foreground">{group.label}</span>
-                {summary ? (
-                  <span className="font-mono font-semibold text-primary">
-                    {summary.readable}/{summary.total} {trustStrip.reconciledNote}
-                  </span>
-                ) : (
-                  <span className="font-mono text-destructive">
-                    unavailable (fail-closed)
-                  </span>
-                )}
-              </span>
-            );
-          })
-        )}
-        <span className="ml-auto flex items-center gap-4">
-          {trustStrip.links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-[11px] font-medium text-primary underline-offset-4 hover:underline"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </span>
-      </div>
-    </section>
   );
 }
 
@@ -275,13 +209,13 @@ export default function PublicHome() {
   return (
     <div className="w-full bg-background text-foreground">
       {/*
-        V6: the public vitrine follows the app's real .light/.dark theme.
-        Dark mode keeps the black/gold command-center reference.
-        Light mode renders the same layout anatomy in a readable institutional light treatment.
+        The public vitrine follows the app's real .light/.dark theme — one
+        uniform treatment in both modes: a single background with the hero
+        composed in the standard framed card (no separate command-center surface).
       */}
-      <section className="relative isolate overflow-hidden text-foreground dark:text-white">
+      <section className="relative text-foreground dark:text-white">
 
-        <div className="relative z-10 w-full px-4 pb-3 pt-2 sm:px-6 md:pb-4 md:pt-2.5 lg:px-8">
+        <div className="relative w-full px-4 pb-3 pt-2 sm:px-6 md:pb-4 md:pt-2.5 lg:px-8">
           <div className="overflow-hidden rounded-2xl border border-border bg-card/40 shadow-sm">
             <div className="grid grid-cols-1 gap-2.5 p-3 md:p-3.5 xl:grid-cols-[0.74fr_1.28fr_0.84fr] xl:grid-rows-[minmax(440px,auto)_auto] xl:gap-2.5 2xl:grid-cols-[0.72fr_1.34fr_0.82fr]">
               {/* M1-a — the hero's first act, in the origin's design language,
@@ -346,10 +280,6 @@ export default function PublicHome() {
           </div>
         </div>
       </section>
-
-      {/* TrustStatusStrip removed from the home (founder, 2026-07-25 — "do we
-          need this line?": redundant with the hero proof + /status + /proof).
-          Restore by re-adding <TrustStatusStrip /> here. */}
 
       {/* S2c: the season band — the era's live conversion surface (gauge on
           the ONE seat spine · secondary join CTA · FUTURE pot frame · top-3

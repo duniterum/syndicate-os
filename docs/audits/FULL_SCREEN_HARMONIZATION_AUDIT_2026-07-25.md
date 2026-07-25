@@ -1,8 +1,10 @@
 # FULL-SCREEN HARMONIZATION AUDIT — 2026-07-25
 
-**Status: applied in working tree + locally verified (typecheck · full guard chain · rig
-measurements at 390/1920px). PENDING the founder's preview GO → commit → deploy. NOT yet
-sealed in prod.** This doc is the single record so these surfaces are never re-audited.
+**Status: SEALED as `38623f1` (the deployed prod build). The home follow-ons — every home section
+recomposed as a uniform framed card on ONE background, the hero simplified, the header type scale
+lifted, Prose caps PER TEXT ELEMENT (cards/figures/tables full-width), the Faq/Whitepaper rail 240px,
+More-menu Whitepaper-over-Join, TrustStatusStrip removed, dead CSS/component cleaned (`224dd9a`→`a6b5294`)
+— are PUSHED, awaiting the next deploy.** This doc is the single record so these surfaces are never re-audited.
 
 ---
 
@@ -42,7 +44,13 @@ Tailwind px/rem cap; the true rule is the ch MEASURE, and the frame is always fu
   SourceLinkBuilder, Support, Learning, Docs, **SourceAttribution** (fixes /source-attribution AND
   the anon face of /referral). `/status` (SystemStatus) dropped its own `max-w-6xl`.
 - **PublicHome** — 5 bands (`container mx-auto`/`max-w-6xl`) + the hero `max-w-[1840px]` → `w-full`
-  + gutters; heading wrapper → `.measure`.
+  + gutters; heading wrapper → `.measure`. **FOLLOW-ON (`224dd9a`→`a6b5294`):** every home section
+  then recomposed as a uniform framed card (`border-border · bg-card/40 · rounded-2xl · shadow-sm`) on
+  ONE background; the hero SIMPLIFIED (command-island gold band + decorations + gold cockpit card
+  removed → standard card; dead CSS `syn-command-*` / `syn-season-band` + the dead `TrustStatusStrip`
+  component cleaned); the redundant live-verification strip removed from the home; header type scale
+  lifted (nav 11→13px, chips/descriptor/path 10-11px); Prose now caps text PER ELEMENT (cards/figures/
+  tables span full-width); Faq/Whitepaper rail 240px; Tokenomics bounded; More-menu Whitepaper-over-Join.
 - **MemberAppPage** — connected-branch lead `max-w-3xl` → `.measure` (systemic: fixes Recognition,
   Archive, ChronicleTeaser, Liquidity, Activity, FireLedger heads).
 - **MemberAccess** — signed-out door `container mx-auto max-w-5xl` → `w-full` + gutters; h1 → `max-w-[34ch]`; leads → `.measure`.

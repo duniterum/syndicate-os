@@ -250,29 +250,6 @@
 .syn-label   { font-family: var(--app-font-mono); font-size: 12px; line-height: 1.15; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; }
 .syn-caption { font-family: var(--app-font-mono); font-size: 12px; line-height: 1.2; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; }
 
-/* Reference-fidelity public hero cockpit utilities. */
-.syn-command-grid {
-  background-image:
-    linear-gradient(rgba(245, 183, 71, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(245, 183, 71, 0.035) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(circle at 50% 28%, black 0%, transparent 76%);
-}
-
-/* V3 reference-fidelity polish: real raster seat, cockpit density, and viewport fit. */
-.syn-cockpit-card {
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.05),
-    0 24px 80px -62px hsl(var(--gold) / 0.9);
-}
-
-@media (max-width: 1279px) {
-  .syn-command-grid {
-    background-size: 48px 48px;
-    mask-image: radial-gradient(circle at 50% 22%, black 0%, transparent 72%);
-  }
-}
-
 /* S2c podium metals — struck-metal medallions (§9 craft: medals + ONE crown;
    soft glow is the ceiling — no animation). Values from the approved seasons
    mockups, expressed through the metal tokens (no raw colors). */
@@ -288,12 +265,6 @@
   background: radial-gradient(circle at 32% 28%, hsl(var(--bronze-hi)), hsl(var(--bronze)) 55%, hsl(var(--bronze-deep)));
   box-shadow: 0 0 14px hsl(var(--bronze) / 0.3), inset 0 -3px 5px hsl(var(--bronze-deep) / 0.55);
 }
-/* The season band's gold breath (approved mockup: radial ellipse, top-left). */
-.syn-season-band {
-  background:
-    radial-gradient(ellipse 60% 130% at 18% -10%, hsl(var(--gold) / 0.07), transparent 60%),
-    hsl(var(--background));
-}
 /* The pot frame's gold radiance (approved mockup .moneycard, no figure until S3). */
 .syn-pot-card {
   background:
@@ -304,47 +275,6 @@
 /* The podium's floor glow (mockup .podium:before). */
 .syn-podium-glow {
   background: radial-gradient(ellipse 60% 100% at 50% 100%, hsl(var(--gold) / 0.10), transparent 70%);
-}
-
-/* V6 two-mode public hero: same cockpit anatomy, readable in both .light and .dark. */
-.syn-command-island {
-  --syn-cockpit-border: hsl(var(--gold) / 0.32);
-  --syn-cockpit-glow: hsl(var(--gold) / 0.24);
-}
-.dark .syn-command-island {
-  --syn-cockpit-border: hsl(var(--gold) / 0.24);
-  --syn-cockpit-glow: hsl(var(--gold) / 0.36);
-}
-
-.syn-cockpit-card {
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.32),
-    0 24px 80px -62px var(--syn-cockpit-glow);
-}
-.dark .syn-cockpit-card {
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 24px 80px -62px var(--syn-cockpit-glow);
-}
-
-.syn-command-grid {
-  background-image:
-    linear-gradient(hsl(var(--gold) / 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(var(--gold) / 0.045) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(circle at 50% 28%, black 0%, transparent 76%);
-}
-.dark .syn-command-grid {
-  background-image:
-    linear-gradient(rgba(245, 183, 71, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(245, 183, 71, 0.035) 1px, transparent 1px);
-}
-
-@media (max-width: 1279px) {
-  .syn-command-grid {
-    background-size: 48px 48px;
-    mask-image: radial-gradient(circle at 50% 22%, black 0%, transparent 72%);
-  }
 }
 
 
