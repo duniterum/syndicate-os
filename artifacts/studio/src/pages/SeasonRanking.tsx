@@ -231,7 +231,7 @@ export default function SeasonRanking() {
                         <SeasonMedal rank={r.rank as 1 | 2 | 3} size={first ? "lg" : "md"} />
                         <div className={`font-serif ${first ? "text-xl" : "text-lg"}`}>
                           {r.display}
-                          {r.seat !== null && r.shortForm && (
+                          {r.shortForm && r.shortForm !== r.display && (
                             r.explorerUrl ? (
                               <a
                                 href={r.explorerUrl}
@@ -297,10 +297,27 @@ export default function SeasonRanking() {
                             the flexible Progress column absorbs the slack (the
                             mockup's single-line row law). */}
                         <td className="px-2 py-3 whitespace-nowrap">
-                          <span className={r.seat !== null ? "font-medium" : "font-mono text-muted-foreground"}>
-                            {r.display}
-                          </span>
-                          {r.seat !== null && r.shortForm && (
+                          {/* A no-seat row's `display` IS its address, so IT carries
+                              the link — otherwise those rows stayed dead while the
+                              seated ones were clickable (founder caught it live,
+                              2026-07-25). Keyed on the LINK, never on the seat, so
+                              any future row is verifiable the day it appears. */}
+                          {r.seat === null && r.explorerUrl ? (
+                            <a
+                              href={r.explorerUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title="Verify this builder on Snowtrace"
+                              className="font-mono text-muted-foreground hover:text-foreground hover:underline"
+                            >
+                              {r.display} ↗
+                            </a>
+                          ) : (
+                            <span className={r.seat !== null ? "font-medium" : "font-mono text-muted-foreground"}>
+                              {r.display}
+                            </span>
+                          )}
+                          {r.shortForm && r.shortForm !== r.display && (
                             r.explorerUrl ? (
                               <a
                                 href={r.explorerUrl}

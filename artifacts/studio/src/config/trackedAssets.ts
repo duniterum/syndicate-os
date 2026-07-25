@@ -25,9 +25,16 @@ export interface TrackedAsset {
   readonly name: string;
   /** Local logo slug → public/coins/<logo>.svg. */
   readonly logo: string;
-  /** The reality item id carrying the raw balance. */
-  readonly balanceId: string;
-  /** Base-unit decimals for that balance. */
+  /**
+   * The reality item id(s) carrying the raw balance. ONE ASSET = ONE CARD, even
+   * when the protocol holds it across several wallets: the amounts are summed
+   * (founder, 2026-07-25 — the approved mockup showed a single USDC card and the
+   * first implementation wrongly split it into three). Splitting also broke the
+   * composition bar, which then summed to 80% and left a black gap.
+   * A missing component makes the whole row unavailable — never a partial sum.
+   */
+  readonly balanceIds: readonly string[];
+  /** Base-unit decimals for those balances. */
   readonly decimals: number;
   /** Display precision for the token amount. */
   readonly dp: number;
@@ -38,8 +45,11 @@ export interface TrackedAsset {
   readonly priceId: string | "PEGGED_USD";
   /** Token colour for the share bar + composition band (design token name). */
   readonly tone: string;
-  /** Explorer link id served by /api/protocol/verify-links. */
-  readonly verify: string;
+  /** Explorer link id(s) served by /api/protocol/verify-links — one per wallet
+   *  the amount was summed from, so a merged row stays fully checkable. */
+  readonly verify: readonly string[];
+  /** Optional line naming where the amount lives, when it spans wallets. */
+  readonly held?: string;
 }
 
 export const TRACKED_ASSETS: readonly TrackedAsset[] = [
@@ -47,87 +57,66 @@ export const TRACKED_ASSETS: readonly TrackedAsset[] = [
     symbol: "AVAX",
     name: "Avalanche",
     logo: "avax",
-    balanceId: "financial.vault.avaxBalance",
+    balanceIds: ["financial.vault.avaxBalance"],
     decimals: 18,
     dp: 4,
     priceId: "financial.price.avaxUsd",
     tone: "viz-5",
-    verify: "vaultWallet",
+    verify: ["vaultWallet"],
   },
   {
     symbol: "BTC",
     name: "Bitcoin · bridged",
     logo: "btc",
-    balanceId: "financial.vault.btcbBalance",
+    balanceIds: ["financial.vault.btcbBalance"],
     decimals: 8,
     dp: 8,
     priceId: "financial.price.btcUsd",
     tone: "viz-2",
-    verify: "vaultWallet",
+    verify: ["vaultWallet"],
   },
   {
     symbol: "ETH",
     name: "Ether · bridged",
     logo: "eth",
-    balanceId: "financial.vault.wethBalance",
+    balanceIds: ["financial.vault.wethBalance"],
     decimals: 18,
     dp: 6,
     priceId: "financial.price.ethUsd",
     tone: "viz-3",
-    verify: "vaultWallet",
+    verify: ["vaultWallet"],
   },
   {
+    // ONE USDC ROW. The protocol holds dollars in three places — the vault, the
+    // operations wallet, and the wallet NFT sales pay into — and a visitor does
+    // not care which drawer it sits in: he cares how many dollars we own. The
+    // three are summed here and every one of them stays checkable below.
     symbol: "USDC",
     name: "Dollar stablecoin",
     logo: "usdc",
-    balanceId: "financial.vault.usdcBalance",
+    balanceIds: [
+      "financial.vault.usdcBalance",
+      "financial.ops.usdcBalance",
+      "financial.nftSale.walletUsdcBalance",
+    ],
     decimals: 6,
     dp: 2,
     priceId: "PEGGED_USD",
     tone: "viz-1",
-    verify: "vaultWallet",
+    verify: ["vaultWallet", "operationsWallet", "nftArchive"],
+    held: "Vault · operations · NFT sales",
   },
 
   // ── The day the founder buys LINK, uncomment this and add the server pair. ──
   // {
   //   symbol: "LINK",
   //   name: "Chainlink",
-  //   logo: "link",                                   // already vendored
-  //   balanceId: "financial.vault.linkBalance",       // server: balanceOf(LINK.e)
+  //   logo: "link",                                     // already vendored
+  //   balanceIds: ["financial.vault.linkBalance"],      // server: balanceOf(LINK.e)
   //   decimals: 18,
   //   dp: 4,
-  //   priceId: "financial.price.linkUsd",             // server: the Chainlink LINK/USD feed
+  //   priceId: "financial.price.linkUsd",               // server: the Chainlink LINK/USD feed
   //   tone: "viz-6",
-  //   verify: "vaultWallet",
+  //   verify: ["vaultWallet"],
   // },
-];
-
-/** The stablecoins the protocol holds outside the vault, counted at one dollar. */
-export const RESERVE_EXTRAS: readonly {
-  readonly symbol: string;
-  readonly name: string;
-  readonly logo: string;
-  readonly balanceId: string;
-  readonly decimals: number;
-  readonly tone: string;
-  readonly verify: string;
-}[] = [
-  {
-    symbol: "USDC",
-    name: "Operations",
-    logo: "usdc",
-    balanceId: "financial.ops.usdcBalance",
-    decimals: 6,
-    tone: "viz-1",
-    verify: "operationsWallet",
-  },
-  {
-    symbol: "USDC",
-    name: "From NFT sales",
-    logo: "usdc",
-    balanceId: "financial.nftSale.walletUsdcBalance",
-    decimals: 6,
-    tone: "viz-1",
-    verify: "nftArchive",
-  },
 ];

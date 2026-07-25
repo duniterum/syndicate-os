@@ -271,7 +271,7 @@ export function HomeSeasonSection() {
                     <SeasonMedal rank={r.rank as 1 | 2 | 3} size={first ? "lg" : "md"} />
                     <div className={`font-serif ${first ? "text-[21px]" : "text-lg"}`}>
                       {r.display}
-                      {r.seat !== null && r.shortForm && (
+                      {r.shortForm && r.shortForm !== r.display && (
                         r.explorerUrl ? (
                           <a
                             href={r.explorerUrl}

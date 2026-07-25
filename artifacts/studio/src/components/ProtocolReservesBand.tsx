@@ -15,7 +15,7 @@ import { useState } from "react";
 import { useGetProtocolReality, type VerifyLinkId } from "@workspace/api-client-react";
 import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
-import { TRACKED_ASSETS, RESERVE_EXTRAS } from "@/config/trackedAssets";
+import { TRACKED_ASSETS } from "@/config/trackedAssets";
 
 /**
  * LITERAL class names on purpose. Tailwind scans source text, so a class built
@@ -87,18 +87,15 @@ export function ProtocolReservesBand() {
   const reality = useGetProtocolReality();
   const fin = reality.data?.groups.financial;
 
-  // ── Rows from the registry ────────────────────────────────────────────────
+  // ── Rows from the registry. ONE ASSET = ONE ROW: an asset held across several
+  //    wallets is SUMMED here, never split into look-alike cards. A missing
+  //    component makes the whole row unavailable rather than a partial sum.
   const rows = TRACKED_ASSETS.map((a) => {
-    const amt = toNum(raw(fin, a.balanceId), a.decimals);
+    const legs = a.balanceIds.map((id) => toNum(raw(fin, id), a.decimals));
+    const amt = legs.every((l) => l !== null) ? (legs as number[]).reduce((x, y) => x + y, 0) : null;
     const px = a.priceId === "PEGGED_USD" ? 1 : toNum(raw(fin, a.priceId), 8);
     const value = amt !== null && px !== null ? amt * px : null;
     return { ...a, amt, px, value };
-  });
-
-  // Stablecoin holdings outside the vault — same dollar, different wallet.
-  const extras = RESERVE_EXTRAS.map((e) => {
-    const amt = toNum(raw(fin, e.balanceId), e.decimals);
-    return { ...e, amt, value: amt };
   });
 
   // The protocol's own share of the pool, USDC leg only (the SYN leg is never
@@ -109,7 +106,15 @@ export function ProtocolReservesBand() {
   const poolShare = lpSupply !== null && lpOwned !== null && lpSupply > 0 ? lpOwned / lpSupply : null;
   const poolValue = poolShare !== null && poolUsdc !== null ? poolUsdc * poolShare : null;
 
-  const parts = [...rows.map((r) => r.value), ...extras.map((e) => e.value), poolValue];
+  // THE ONE LIST. The total and the composition bar are computed from the SAME
+  // array — that is what makes the bar fill exactly 100%. When they were built
+  // from different lists the bar summed to 80% and left a black gap at the end
+  // (founder caught it on the live site, 2026-07-25). Never split them again.
+  const segments = [
+    ...rows.map((r) => ({ key: r.symbol, tone: r.tone, value: r.value })),
+    { key: "Pool", tone: "viz-6", value: poolValue },
+  ];
+  const parts = segments.map((s) => s.value);
   const total = parts.every((p) => p !== null) ? (parts as number[]).reduce((a, b) => a + b, 0) : null;
 
   const anyLive = parts.some((p) => p !== null);
@@ -117,10 +122,7 @@ export function ProtocolReservesBand() {
 
   // Composition — only meaningful once the whole total is known.
   const pct = (v: number | null): number => (total !== null && total > 0 && v !== null ? (v / total) * 100 : 0);
-  const mix = [
-    ...rows.map((r) => ({ key: r.symbol, tone: r.tone, p: pct(r.value) })),
-    { key: "Pool", tone: "viz-6", p: pct(poolValue) },
-  ].filter((m) => m.p > 0);
+  const mix = segments.map((s) => ({ ...s, p: pct(s.value) })).filter((m) => m.p > 0);
 
   return (
     <section className="w-full px-4 py-3 text-foreground sm:px-6 lg:px-8">
@@ -212,35 +214,10 @@ export function ProtocolReservesBand() {
                     ? `${usd(r.px)} / ${r.symbol} · Chainlink`
                     : "price unavailable"}
               </div>
-              <VerifyOnChain ids={[r.verify as VerifyLinkId]} className="mt-2 block" />
-            </div>
-          ))}
-
-          {extras.map((e) => (
-            <div
-              key={`${e.symbol}-${e.name}`}
-              className="rounded-xl border border-border bg-background/58 p-4 transition-colors hover:border-gold/40 dark:border-white/10 dark:bg-white/[0.035]"
-            >
-              <div className="mb-3 flex items-center gap-3">
-                <span className="grid h-9 w-9 flex-none place-items-center overflow-hidden rounded-full border border-border bg-background/70">
-                  <CoinMark logo={e.logo} symbol={e.symbol} />
-                </span>
-                <span>
-                  <span className="block font-mono text-xs font-bold uppercase tracking-[0.1em]">{e.symbol}</span>
-                  <span className="block text-[11px] text-muted-foreground">{e.name}</span>
-                </span>
-              </div>
-              <div className="font-mono text-lg font-black">
-                {e.amt !== null ? amount(e.amt, 2) : liveFigure(null, reality.isLoading)}
-              </div>
-              {e.value !== null ? (
-                <div className="mt-0.5 font-mono text-[13px] font-semibold text-proof">{usd(e.value)}</div>
+              {r.held ? (
+                <div className="mt-1 text-[10.5px] leading-snug text-muted-foreground">{r.held}</div>
               ) : null}
-              <div className="mt-3 h-[3px] overflow-hidden rounded-sm bg-border/70">
-                <i className={`block h-full ${toneBg(e.tone)}`} style={{ width: `${pct(e.value)}%` }} />
-              </div>
-              <div className="mt-2 font-mono text-[10.5px] text-muted-foreground">$1.00 · stablecoin</div>
-              <VerifyOnChain ids={[e.verify as VerifyLinkId]} className="mt-2 block" />
+              <VerifyOnChain ids={r.verify as readonly VerifyLinkId[]} className="mt-2 block" />
             </div>
           ))}
 
