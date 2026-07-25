@@ -49,8 +49,14 @@ export function BusinessBand({
     void fetch("/api/season")
       .then((res) => (res.ok ? res.json() : null))
       .then((d) => {
-        if (!active || !d) return;
-        const n = d.playersEarning;
+        if (!active || !d || !Array.isArray(d.seasons)) return;
+        // playersEarning is nested PER SEASON (mirror HomeSeasonSection) — read
+        // it off the current season's element, never a top-level key.
+        const current = d.seasons.find(
+          (s: { seasonNumber: number; playersEarning?: number }) =>
+            s.seasonNumber === d.currentSeasonNumber,
+        );
+        const n = current?.playersEarning;
         setBuildersEarning(typeof n === "number" && n >= 0 ? n : null);
       })
       .catch(() => {});
@@ -173,7 +179,7 @@ export function BusinessBand({
         </StatCard>
       </div>
 
-      {signals !== null && totals === null ? (
+      {signals !== null && signals.ledger.status === "unavailable" ? (
         <p className="mt-3 text-xs text-muted-foreground">
           The referral/seat reads didn&apos;t answer just now — those tiles show
           &ldquo;—&rdquo;; nothing is assumed, nothing is invented.

@@ -26,6 +26,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > `protocolTargets` + `realityService`, then the assets card on admin home; reuse the public
 > `ProtocolAssetsCard`). (b) **Address code-rescope** — stop the 40-hex scanner/guard blocking addresses +
 > add explorer links; **founder wants the DIFF SHOWN before applying**. Both (a)+(b) = server → deploy.
+> **SENIOR DEEP-REVIEW DONE (2026-07-25, 9-agent + adversarial verify):** the redesign is structurally
+> sound; **3 confirmed defects FIXED** — the "Builders earning" tile read `playersEarning` at the wrong
+> nesting (blank forever → now reads the current `seasons[]` element); the shared console-signals cache
+> wasn't keyed on the principal (a lesser operator role could flash founder-only aggregate counts in the
+> same tab within the 60s TTL → now cleared on `SESSION_CHANGED_EVENT` in operatorClient.ts); the Modules
+> registry table still printed the raw `SERVER_ONLY_PII` token → humanized via a RISK_LABEL map. Design
+> polish (unify card-header / KPI-tile / heading idioms across sections) noted as a follow-on. **Auth
+> reality:** the 8 roles resolve to founder_root = everything, protocol_admin = operators-list + terms,
+> the other 6 reach the console shell but every founder-gated figure fail-closes to "—" (correct).
+> **THE ADDRESS RESCOPE IS FULLY MAPPED (~40 sites: admin + member/user + public + server guards):**
+> Tier-1 client `/address/` Snowtrace links (own address, signing screens — client already holds the full
+> address) + Tier-2 server DTOs emit the full address / explorerUrl (member ledger, roster, queue,
+> performance, notifications, season board, feed) + a **NARROW scanner relaxation** (allow an exactly-40-hex
+> address; KEEP 0x+64-hex anchors and any over-long hex fail-closed — the adversarial correction to the
+> "retire both patterns" plan) + guard updates (guard-auth-zone drops "address" from the banned word set,
+> adds email/alias; backbone.guard.ts self-tests re-authored). SENSITIVE (the privacy-scan core) → **the
+> DIFF is shown before applying**; the full docs sweep (BACKLOG.html, DESIGN_ROADMAP, OPEN_QUEUE, CANON)
+> rides the rescope slice.
 > **DEPLOY: 🚀 BATCHABLE** — this commit is client-only/additive/fail-closed; it rides the next deploy with (a)+(b).
 >
 > ## ▶ 2026-07-25 — THE EDGE-TO-EDGE HARMONIZATION ARC — SEALED LIVE (e21a036 deployed · deploy backlog EMPTY)

@@ -66,6 +66,17 @@ type SourceStatusData = SourceStatusResponse | undefined;
 const Unavailable = PostureUnavailable;
 const EntryPostureCell = RegistryPostureChip;
 
+// Human risk-class labels for the modules registry table — the config stores
+// snake_case tokens; the operator never reads a raw token like SERVER_ONLY_PII
+// (human-labels law + the settled privacy-word ban). Mirrors AdminModulesConsole.
+const RISK_LABEL: Record<string, string> = {
+  READ_ONLY_PUBLIC: "Public · no writes",
+  SESSION_SELF_READBACK: "Session self-readback",
+  SERVER_ONLY_PII: "Founder-only",
+  OWNER_SIDE_ONCHAIN_ACTION: "Owner on-chain action",
+  CONTENT_ONLY: "Content only",
+};
+
 interface PanelDef {
   id: string;
   title: string;
@@ -384,8 +395,8 @@ export function AdminModulesRegistryPanel() {
                 <TableCell className="font-mono text-[10px] text-muted-foreground">
                   {entry.surface}
                 </TableCell>
-                <TableCell className="font-mono text-[10px] text-muted-foreground">
-                  {entry.riskClass}
+                <TableCell className="text-[10px] text-muted-foreground">
+                  {RISK_LABEL[entry.riskClass] ?? entry.riskClass}
                 </TableCell>
                 <TableCell className="font-mono text-[10px] text-muted-foreground">
                   {entry.homepageZone}

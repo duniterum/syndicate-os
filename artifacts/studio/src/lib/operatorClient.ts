@@ -11,6 +11,8 @@
 // (audited server-side per read; used only to build the createSource
 // signature; never rendered as a list).
 
+import { SESSION_CHANGED_EVENT } from "@/lib/sessionEvents";
+
 export interface WriteResult {
   ok: boolean;
   reason: string | null;
@@ -619,6 +621,14 @@ export function invalidateConsoleSignals(): void {
   consoleSignalsValue = null;
   consoleSignalsAt = 0;
   consoleSignalsInFlight = null;
+}
+
+// Cross-principal safety (auth-levels review 2026-07-25): the cache holds the
+// founder-only ledger payload; ANY session/principal change (logout OR a new
+// sign-in in the same tab) MUST drop it, or a lesser operator role could read a
+// still-warm founder cache within the 60s TTL. Fires via the shared session seam.
+if (typeof window !== "undefined") {
+  window.addEventListener(SESSION_CHANGED_EVENT, () => invalidateConsoleSignals());
 }
 
 export async function fetchConsoleSignals(force = false): Promise<ConsoleSignals> {
