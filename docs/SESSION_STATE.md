@@ -7,6 +7,58 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > contract. Everything below this block is the dated RECORD of how it got here —
 > read it only if you need the why.*
 >
+> ## ▶ OPEN WORK — THE COMPLETE LIST (2026-07-25, founder: "la liste complète, qu'on n'oublie rien")
+> The single index of everything OPEN. Prod = `e21a036`; **every commit after it is BATCHABLE**, awaiting
+> ONE grouped deploy. A fresh session resumes from here. Detail for each item is in the dated blocks below.
+>
+> **① ADDRESS RESCOPE (Tier-2) — IN FLIGHT. Stage 1 ✅ DONE+committed `469882d`** (the filet relaxed
+> `{40,}`→`{41,}` in both byte-identical copies; backbone guard 165/165 green; INERT — no output changed).
+> Remaining, in order, each verified before the next:
+>   - **1b.** Inline scanners — same `{40,}`→`{41,}` relaxation: `operator/router.ts` (:314,:488,:525,:660),
+>     the auth self-readback throws (`auth/router.ts` :547,:613,:661,:769,:881,:1016,:1076,:1208),
+>     `receiptLookup.ts`:99.
+>   - **2.** 7 services emit the FULL address + an `explorerUrl` (built from `EXPLORER_BASE_URL`):
+>     memberLedgerService · operatorRegistryService · activationQueueService · sourcePerformanceService ·
+>     notificationService · seasonReadmodel (board row) · feedProjection.
+>   - **3.** `guard-auth-zone.ts` — drop "address" from the banned res.json word set, add "email"/"alias";
+>     drop the "must run the 40-hex scan" route pins (:681, :1203).
+>   - **4.** Feed actor-address — `/activity` carries actor addresses (a SUB-PROJECT: feedProjection
+>     validations + `backboneFeedClient` toShort validator + new actorAddress/actorUrl fields).
+>   - **5.** ~30 client `/address/` links via the shared `useAddressExplorerUrl` hook / the emitted
+>     explorerUrl (admin + member + public), incl. the SIGNING screens (ProposeSourceCreate/Promotion — the
+>     rest of Niveau 1). *(Member own-address MemberYourSeat + MemberHeaderAffordance ✅ DONE `29f8559`.)*
+>   - **6.** Copy fossils reworded — "wallets pre-masked / never a full address" / "registry addresses stay
+>     server-side" → "short-form for readability; each links to Snowtrace — addresses are public".
+>
+> **② THE `/registry` PUBLIC MEMBERS PAGE — "The Register" (founder-named).** Wireframe FIRST (visual law)
+> → build: per-seat rows `#N · 0x…↗ · chapter · rung · joined`, sortable; nav "Register"; the home
+> register band gets a "view all" → this page. Depends on ①. The season board STAYS the MERIT board (a
+> distinct list — never fuse merit and membership).
+>
+> **③ PROTOCOL ASSETS on admin home (founder chose FULL multi-token).** Server: add BTC.b
+> (`0x152b9d0FdC40C096757F570A51E494bd4b943E50`) + WETH.e (`0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB`)
+> `balanceOf` on the Vault (`0x205DdC8921A4C60106930eE35e1F395c8D13f464`) + native AVAX (`eth_getBalance`)
+> to `protocolTargets` + `realityService.buildFinancialGroup` → new `financial.vault.*` items. VERIFIED
+> on-chain 2026-07-25: the Vault holds **~4.74 AVAX · 0.00078 BTC.b · 0.0266 WETH.e** (+ USDC/SYN already).
+> Client: the Protocol Assets card on admin home (reuse `ProtocolAssetsCard` from ContractMemory). No USD
+> price source exists — a valued total is a separate decision.
+>
+> **④ ADMIN DESIGN POLISH (review follow-ons, MEDIUM).** One shared admin card-HEADER atom (3 idioms
+> coexist); route ALL admin KPI tiles through the `StatCard` atom (3 treatments coexist); the `.type-h2`
+> serif DECISION (Seasons serif vs the rest sans — decide once, record it); even out the WORK-FIRST
+> collapse discipline (Members / Modules / Content / Settings sections).
+>
+> **⑤ DOCS SWEEP (owed).** BACKLOG.html + DESIGN_ROADMAP + OPEN_QUEUE + CANON: sync the admin redesign +
+> PII purge + the address law + these in-flight items. (SESSION_STATE itself is current.)
+>
+> **⑥ PRE-EXISTING OUTSTANDING (the full-screen audit — still owed).** Sub-12px readability-floor sweep
+> (~50 files carry `text-[9/10/11px]`); developer-speak humanize (~11 pages: read-only/not wired/RPC/null/
+> bytes32); MemberNotifications renders `<MemberShell>` unconditionally → an anon sees the member sidebar
+> (shell-gating fix); PublicReceipt `mx-auto max-w-3xl` → `w-full` + `.measure`; a11y polish (focus rings,
+> footer duplicate-DOM, header CLS); SLICE-2 truth fossils (`/fire-ledger` pagination-coming line,
+> `/whitepaper` lists "seasons" as future — they are LIVE). Detail:
+> `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md`.
+>
 > ## ▶ 2026-07-25 (PM) — THE /ADMIN HARMONIZATION + PII/ADDRESS LAW (IN FLIGHT — committed, NOT deployed)
 > The founder turned the harmonization onto **/admin** (operator console, 11 sections). System-first
 > inventory done (12 surfaces classified). **DONE + COMMITTED (client-only, batchable — NOT deployed):**
