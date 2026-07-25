@@ -171,6 +171,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > founder's personal liquidity is HIS, never the protocol's treasury — the guard pins that the LP-share
 > read encodes the liquidity wallet and never the founder's own.
 >
+> **⑫ THE HANDOFF-REVIEW REMAINDER — 58 open MEDIUM/LOW findings, ALL WRITTEN DOWN.** The 2026-07-25
+> pre-handoff review (9 agents, 78 findings, 76 adversarially confirmed) fixed every BLOCKING and HIGH item
+> in `35d60fa`. The rest lives in **`docs/audits/HANDOFF_REVIEW_2026-07-25.md`**, grouped by theme with
+> file:line + the fix for each: money & chain truth (3) · server/indexer (4) · client & design system (8) ·
+> guards & coverage (8) · docs & ledgers (10) · truth fossils on public claims (14) · scope (11). The file
+> also records the 18 fixed items and the 2 findings the verifier REFUTED — do not act on those. NOTHING
+> here blocks the handoff; work each one in when its surface is next touched.
+>
 > **⑪ "PROTOCOL RESERVES" — THE PUBLIC HOME SECTION — ✅ SHIPPED (`6953972`, refined `35c5083` + `add5bb8`;
 > committed, NOT yet deployed).** The founder's aparté, built from an approved mockup
 > (`docs/design/protocol-owned-assets-mockup.html` — he validated the NAME, the look and the composition

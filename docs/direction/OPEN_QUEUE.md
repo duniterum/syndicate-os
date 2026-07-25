@@ -21,6 +21,12 @@
 > THREE design slices; SESSION_STATE's deploy backlog named 1 commit when FOUR await deploy; the Reserves
 > band was recorded in no ledger at all; BACKLOG.html still showed ⑧ as open. All corrected in this pass.
 > **LESSON ENGRAVED: widening a type is never the whole change — find the RUNTIME gate.**
+> **📁 THE REMAINDER IS IN THE REPO, NOT IN A CHAT WINDOW (founder: "tu vas les mettre sur github on les
+> perd pas"):** `docs/audits/HANDOFF_REVIEW_2026-07-25.md` carries all **58 open MEDIUM/LOW findings**,
+> grouped by theme (money · server · client · guards · docs · truth fossils · scope), each with its file:line,
+> what is wrong and the fix — plus the 18 fixed items and the 2 the adversarial pass REFUTED (do not act on
+> those). None blocks the handoff. Work them in when their surface is next touched, the way the standing
+> rules already work; the file is the durable list, so nothing depends on anyone remembering.
 
 > **▶ 2026-07-25 (PM-3) — THE TRUTH SWEEP + THE NFT SALE MONEY (founder's own eye on the live page).**
 > He pointed at one /contracts card — *"Attribution Router … No commission or financial benefit is implied
