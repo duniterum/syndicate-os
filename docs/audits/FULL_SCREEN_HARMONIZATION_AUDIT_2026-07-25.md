@@ -1,7 +1,8 @@
 # FULL-SCREEN HARMONIZATION AUDIT — 2026-07-25
 
 **Status: SEALED LIVE as `e21a036` (Replit green ×2, founder-pasted 2026-07-25 — the DEPLOYED prod build
-on thesyndicate.money; deploy backlog EMPTY, GitHub `main` == prod HEAD). The whole harmonization + home
+on thesyndicate.money; deploy backlog EMPTY — no deployable change pending, only NO-DEPLOY doc commits sit
+above prod). The whole harmonization + home
 recomposition + senior-review cleanup (`38623f1`→`a6b5294`→`e21a036`: every home section a uniform framed
 card on ONE background, the hero simplified, the header type scale lifted, Prose caps PER TEXT ELEMENT,
 the Faq/Whitepaper rail 240px, More-menu Whitepaper-over-Join, TrustStatusStrip removed, dead CSS/component

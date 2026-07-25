@@ -13,7 +13,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **supersedes `CANON_ACCESS_MODEL` §C/§4** where they named a px cap. **SEALED LIVE — TWO Replit
 > seals 2026-07-25 (founder-pasted):** ① `a6b5294` (whole-site harmonization + home recomposition),
 > then ② `e21a036` (the senior-review cleanup + doc sync — 12 files). **`e21a036` is the DEPLOYED build
-> on thesyndicate.money; deploy backlog EMPTY, tree == prod HEAD.** Both seals: files blob-verified,
+> on thesyndicate.money; deploy backlog EMPTY (no deployable change pending — only NO-DEPLOY doc commits
+> sit above prod).** Both seals: files blob-verified,
 > byte-identity ×2, atomic swap no visitor downtime, full green battery (routes 200×11 · `/season` 15
 > standings · feed 86 receipts · backbone `ok=2/failed=0` head 91,184,869 advancing · `/tokenomics`
 > bounded confirmed live). **Independently re-confirmed on-chain** (Avalanche C-Chain tip `91,186,112` >
@@ -83,7 +84,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   scale · Prose fill · More-menu Whitepaper-over-Join · Season align] → `498f498` + `f62c54e` + `e21a036`
 >   [senior-review cleanup · dead code/CSS killed · Tokenomics bounded · docs synced]). TWO Replit seals
 >   2026-07-25, both byte-identity ×2, atomic swap no downtime, full green battery, no DB migration (no
->   schema in the diff). **DEPLOY BACKLOG: EMPTY — GitHub `main` == prod HEAD.**
+>   schema in the diff). **DEPLOY BACKLOG: EMPTY** — no deployable change pending; any commits above prod
+>   `e21a036` are NO-DEPLOY docs (this seal record itself).
 >
 > ## (b) IN FLIGHT — S3 (the S2 arc is closed; nothing else is open)
 > **THE HANDOFF DASHBOARD (2026-07-24 end-of-session · GitHub = the source of truth —
