@@ -91,8 +91,13 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://thesyndicate.money/recognition</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://thesyndicate.money/contracts</loc>
-    <changefreq>monthly</changefreq>
+    <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
