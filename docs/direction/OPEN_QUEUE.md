@@ -3,9 +3,9 @@
 > **▶ 2026-07-25 — THE EDGE-TO-EDGE HARMONIZATION ARC (full-screen).** Founder ruling (QuickNode
 > benchmark): bord-à-bord, **AUCUN plafond de page fixe en px** ; remplir en **multipliant les
 > colonnes** (auto-fit) ; lisibilité en **`ch`**. **Cet amendement SUPERSEDE §C/§4 du
-> `CANON_ACCESS_MODEL`** (cap px → mesure ch). **COMMITTÉ** (`38623f1` déployé ; follow-ons home
-> `224dd9a→a6b5294` poussés, en attente du prochain deploy Replit ; 🚀 DEPLOY — BATCHABLE, client-only
-> additif fail-closed) : le shell + **20 surfaces** + primitives `.auto-grid`/`.measure` + guard BLOQUANT
+> `CANON_ACCESS_MODEL`** (cap px → mesure ch). **SCELLÉ LIVE `a6b5294`** (Replit vert 2026-07-25 —
+> identité octet ×2, bascule atomique sans indispo, batterie verte ; nettoyage revue senior `498f498`
+> poussé, batchable) : le shell + **20 surfaces** + primitives `.auto-grid`/`.measure` + guard BLOQUANT
 > `guard-fluid-surface`. **PLUS l'harmonisation des POLICES** (plainte /season « patchwork ») : loi
 > benchmarkée (serif=titres · Work Sans=corps/labels/stats · mono=données/adresses/code/eyebrows
 > MAJ courts, jamais une phrase) ; audit 11-agents (609 usages/115 fichiers → 51 corrigées) ; garde

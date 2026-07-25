@@ -7,13 +7,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > contract. Everything below this block is the dated RECORD of how it got here —
 > read it only if you need the why.*
 >
-> ## ▶ 2026-07-25 — THE EDGE-TO-EDGE HARMONIZATION ARC — COMMITTED (38623f1 deployed · home follow-ons pushed)
+> ## ▶ 2026-07-25 — THE EDGE-TO-EDGE HARMONIZATION ARC — SEALED LIVE (a6b5294 deployed · review cleanup 498f498 batchable)
 > Founder-driven full-screen sweep (footer → whole site). Ruling (QuickNode benchmark): bord-à-bord,
 > **no fixed-px page cap**, fill by **multiplying columns** (auto-fit), readability in **`ch`** — this
-> **supersedes `CANON_ACCESS_MODEL` §C/§4** where they named a px cap. **COMMITTED + GO'd:** `38623f1`
-> (the whole-site harmonization) is the last DEPLOYED build; the home follow-ons + the senior-review
-> cleanup `224dd9a→498f498` are PUSHED, awaiting the next Replit deploy (🚀 DEPLOY — BATCHABLE:
-> client-only, additive, fail-closed; prod safely stays on `38623f1` until then).
+> **supersedes `CANON_ACCESS_MODEL` §C/§4** where they named a px cap. **SEALED LIVE (Replit,
+> founder-pasted 2026-07-25):** `a6b5294` (whole-site harmonization + home recomposition) is the
+> DEPLOYED build on thesyndicate.money — 8/8 files blob-verified, byte-identity ×2, atomic swap with
+> no visitor downtime, full green battery (routes 200×10 · `/season` 15 standings · feed 86 receipts ·
+> backbone head 91,182,274 advancing, **independently re-confirmed on-chain** — tip `91,183,680`).
+> The senior-review cleanup `498f498` (dead code/CSS, Tokenomics bound, docs) is PUSHED, batchable —
+> rides the next deploy (🚀 client-only, additive, fail-closed; prod safely on `a6b5294` until then).
 > Shipped: the shell + **20 surfaces** + primitives `.auto-grid` / `.measure` (68ch) +
 > the BLOCKING `guard-fluid-surface` (page-cap debt = **0**). **PLUS the FONT harmonization**
 > (founder's /season "patchwork" complaint): benchmarked font law (serif=display · Work Sans=body/
@@ -37,7 +40,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > runs alongside S3.** Dossier:
 > `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md`.
 >
-> ## (a) LIVE IN PROD RIGHT NOW — last sealed cycle `6097324` (Replit green, founder-pasted)
+> ## (a) LIVE IN PROD RIGHT NOW — last sealed cycle `a6b5294` (edge-to-edge design harmonization + home recomposition, Replit green, founder-pasted 2026-07-25; engine last sealed `6097324`)
 > - **`/season`** — the public recognition board: trophy podium with struck-metal
 >   medallions + crown · proportional XP bars · seated rows render **`#N ·
 >   0x03e…c6d0`** (seat + chain-emitted short form) · the double-seat wallet
@@ -74,12 +77,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > - **DEPLOY BACKLOG:** `2e3b6a3` (the §8-⑧ sweep) + `0be9308` + the resume-block commit +
 >   the **S3 Foundry-spike commit** (`cd60b8f`, top-level `contracts/`) + the **contract-design-freeze
 >   commit** (docs/reference + SESSION_STATE/OPEN_QUEUE/CANON_INDEX — pure docs). Those were NO-DEPLOY.
->   **🚀 DEPLOY — BATCHABLE (client-visible, PUSHED not deployed):** the whole-site harmonization
->   `38623f1` **is now the DEPLOYED build**; on top of it the home follow-ons `224dd9a` + `293fad2` +
->   `c19923c` + `a6b5294` (framed section cards on ONE background · hero simplified · header type scale ·
->   Prose fill · More-menu Whitepaper-over-Join · Season align) **+ the senior-review cleanup `498f498`**
->   (dead code/CSS killed · Tokenomics bounded · docs synced) are pushed and await the next Replit
->   `pull main + deploy` (client-only, additive, fail-closed — prod safely stays on `38623f1` until then).
+>   **✅ SEALED LIVE:** the whole-site harmonization + home recomposition `38623f1` → `224dd9a` +
+>   `293fad2` + `c19923c` + `a6b5294` (framed section cards on ONE background · hero simplified · header
+>   type scale · Prose fill · More-menu Whitepaper-over-Join · Season align) is **DEPLOYED at `a6b5294`**
+>   (Replit green 2026-07-25, byte-identity ×2, atomic swap no downtime). **🚀 DEPLOY BACKLOG (batchable):
+>   the senior-review cleanup `498f498`** (dead code/CSS killed · Tokenomics bounded · docs synced) —
+>   client-only, additive, fail-closed; rides the next Replit `pull main + deploy`, prod safely on `a6b5294`.
 >
 > ## (b) IN FLIGHT — S3 (the S2 arc is closed; nothing else is open)
 > **THE HANDOFF DASHBOARD (2026-07-24 end-of-session · GitHub = the source of truth —
