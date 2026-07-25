@@ -111,7 +111,7 @@ export function HomeSeasonSection() {
 
   return (
     <section className="syn-season-band border-y border-border py-[58px] text-foreground">
-      <div className="w-full px-[clamp(24px,5vw,72px)]">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         {/* The two columns: pitch + gauge | the pot frame (mockup 1.4fr/.9fr). */}
         <div className="grid items-stretch gap-[30px] min-[860px]:grid-cols-[1.4fr_0.9fr]">
           <div>
