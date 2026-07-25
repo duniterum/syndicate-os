@@ -141,14 +141,19 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > Content/homepage editing (`panels.tsx`:569-596, "editing controls do not exist") · Activity/Chronicle
 > moderation queue (`panels.tsx`:600-632, "script-only and unwired"). ④ is DESIGN polish only; this is WIRING.
 >
-> **⑧ THE TREASURY LANES FOR THE NEW HOLDINGS (opened by ③ — a DECLARED gap, never a silence).** The vault
-> HOLDS BTC.b and WETH.e and their balances are now shown, but their MOVEMENTS have no heartbeat lane:
-> `protocolTargets` carries `TREASURY_USDC_IN/OUT` + `TREASURY_SYN_IN/OUT` only, and `backboneDb.ts`
-> branches USDC-or-SYN. Both tokens emit Transfer logs, so both are laneable — needed: the two lane pairs +
-> the token label + a founder-approved §8 sentence + the /activity line. (Native AVAX emits no event and
-> honestly cannot have a lane.) The completeness invariant's LETTER did not trigger — no new protocol
-> wallet or contract was introduced (the vault is already inventoried; BTC.b/WETH.e/Chainlink are EXTERNAL
-> contracts we only read) — so this is named work, not a breach.
+> **⑧ THE TREASURY LANES — ✅ SHIPPED (declared as a gap in the holdings slice, closed the same day).**
+> `TREASURY_BTCB_IN/OUT` + `TREASURY_WETH_IN/OUT` scan the two token contracts through the SAME
+> `decodeTreasuryLog` as USDC/SYN — the scanned CONTRACT identifies the token, so no new decoder exists.
+> **The NFT SALE WALLET joins the organ set** (4 organs now: vault · liquidity · operations · NFT sales),
+> which is what unblocks the patronage rungs — their money used to arrive unseen, so no rung could ever
+> seal against a transaction. **TWO REAL DEFECTS KILLED IN THE SAME PASS:** the token label was a binary
+> `startsWith("TREASURY_USDC") ? "USDC" : "SYN"` — a third token would have been silently labelled SYN;
+> it is now an explicit map that THROWS on an unknown lane. And the feed's amount formatter was the same
+> binary — a BTC.b amount would have printed at 6 decimals, **wrong by a factor of 100, in public**; the
+> decimals now come from the token (USDC 6 · SYN 18 · BTC.b 8 · WETH.e 18) and an unknown token yields the
+> line WITHOUT a figure rather than a wrong one. Native AVAX still emits no event and honestly has no lane.
+> STILL OPEN under this number: the patronage rungs' actual SEALING (the milestone anchoring now has its
+> transaction source) and the founder's rider ruling on the 2 artifacts the NFT sale wallet itself minted.
 >
 > **⑨ THE POOL'S REAL SHARE — ✅ SHIPPED in the same commit (founder challenge, 2026-07-25: "on peut
 > toujours savoir qui a mis quoi dans le pool — l'intelligence artificielle la plus avancée !?").** He was

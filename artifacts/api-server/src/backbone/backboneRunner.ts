@@ -396,6 +396,9 @@ async function runCycle(): Promise<string | null> {
     [FINANCIAL_TARGETS.vaultWallet.toLowerCase(), "the vault"],
     [FINANCIAL_TARGETS.liquidityWallet.toLowerCase(), "the liquidity wallet"],
     [FINANCIAL_TARGETS.operationsWallet.toLowerCase(), "the operations wallet"],
+    // Founder-named 2026-07-25. Artifact mints pay into it, so a member seeing
+    // "moved into the NFT sale wallet" is reading real, checkable income.
+    [FINANCIAL_TARGETS.nftSaleWallet.toLowerCase(), "the NFT sale wallet"],
   ]);
   const saleTransactionHashes = new Set(
     model.items.map((i) => i.transactionHash.toLowerCase()),

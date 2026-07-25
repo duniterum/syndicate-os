@@ -50,6 +50,16 @@ export interface TrackedAsset {
   readonly verify: readonly string[];
   /** Optional line naming where the amount lives, when it spans wallets. */
   readonly held?: string;
+  /**
+   * Fold the protocol's OWN SHARE of the SYN/USDC pool's USDC leg into this row
+   * (founder, 2026-07-25 — "on ajoute aussi le pool dans USDC ainsi on a 4
+   * cards"). It is genuinely our money: our LP tokens over the pair's total
+   * supply, applied to the pool's USDC reserve, both read live. Only the USDC
+   * leg is ever counted — the pool's SYN half stays unpriced, as the valuation
+   * law requires. The share is a computed fraction rather than a flat balance,
+   * so the component does that arithmetic; the registry just declares it.
+   */
+  readonly includesPoolShare?: boolean;
 }
 
 export const TRACKED_ASSETS: readonly TrackedAsset[] = [
@@ -103,8 +113,9 @@ export const TRACKED_ASSETS: readonly TrackedAsset[] = [
     dp: 2,
     priceId: "PEGGED_USD",
     tone: "viz-1",
-    verify: ["vaultWallet", "operationsWallet", "nftArchive"],
-    held: "Vault · operations · NFT sales",
+    verify: ["vaultWallet", "operationsWallet", "nftArchive", "lpPair"],
+    held: "Vault · operations · NFT sales · our pool share",
+    includesPoolShare: true,
   },
 
   // ── The day the founder buys LINK, uncomment this and add the server pair. ──

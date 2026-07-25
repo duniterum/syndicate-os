@@ -132,7 +132,7 @@ export interface ArchivePauseItem {
 // ── H2-⑦ — treasury movements (organ LABELS only; addresses never leave) ────
 export interface TreasuryMoveItem {
   readonly kind: "treasury-move";
-  readonly token: "USDC" | "SYN";
+  readonly token: "USDC" | "SYN" | "BTC.b" | "WETH.e";
   /** Exact raw base units (USDC 6-dec / SYN 18-dec), decimal string. */
   readonly amountRaw: string;
   readonly movement: "in" | "out" | "internal";

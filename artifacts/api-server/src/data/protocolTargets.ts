@@ -549,7 +549,16 @@ export type ProtocolEventScanTarget = {
     | "TREASURY_USDC_IN"
     | "TREASURY_USDC_OUT"
     | "TREASURY_SYN_IN"
-    | "TREASURY_SYN_OUT";
+    | "TREASURY_SYN_OUT"
+    // The vault's crypto reserves. Their BALANCES have been shown since the
+    // holdings slice; these lanes make their MOVEMENTS visible too, closing the
+    // gap that slice declared. Both are ordinary ERC-20s emitting Transfer, so
+    // they ride the exact same decoder as USDC/SYN — only the scanned contract
+    // differs. (Native AVAX emits no event and honestly cannot have a lane.)
+    | "TREASURY_BTCB_IN"
+    | "TREASURY_BTCB_OUT"
+    | "TREASURY_WETH_IN"
+    | "TREASURY_WETH_OUT";
   /** Human label for status surfaces (never an address). */
   label: string;
   /** SERVER-ONLY address; never emitted. */
@@ -670,6 +679,38 @@ export const PROTOCOL_EVENT_SCAN_TARGETS: readonly ProtocolEventScanTarget[] = [
     streamKey: "TREASURY_SYN_OUT",
     label: "Treasury SYN outflows (from ∈ routing organs)",
     address: FINANCIAL_TARGETS.synTokenAddress,
+    fromBlock: 87_157_852,
+    events: ["Transfer"],
+    scanOnly: true,
+  },
+  {
+    streamKey: "TREASURY_BTCB_IN",
+    label: "Treasury BTC.b inflows (to ∈ routing organs)",
+    address: FINANCIAL_TARGETS.btcbTokenAddress,
+    fromBlock: 87_157_852,
+    events: ["Transfer"],
+    scanOnly: true,
+  },
+  {
+    streamKey: "TREASURY_BTCB_OUT",
+    label: "Treasury BTC.b outflows (from ∈ routing organs)",
+    address: FINANCIAL_TARGETS.btcbTokenAddress,
+    fromBlock: 87_157_852,
+    events: ["Transfer"],
+    scanOnly: true,
+  },
+  {
+    streamKey: "TREASURY_WETH_IN",
+    label: "Treasury WETH.e inflows (to ∈ routing organs)",
+    address: FINANCIAL_TARGETS.wethTokenAddress,
+    fromBlock: 87_157_852,
+    events: ["Transfer"],
+    scanOnly: true,
+  },
+  {
+    streamKey: "TREASURY_WETH_OUT",
+    label: "Treasury WETH.e outflows (from ∈ routing organs)",
+    address: FINANCIAL_TARGETS.wethTokenAddress,
     fromBlock: 87_157_852,
     events: ["Transfer"],
     scanOnly: true,

@@ -48,6 +48,26 @@ import type {
 /** Avalanche C-Chain — same expected chain the reality spine reconciles. */
 export const BACKBONE_EXPECTED_CHAIN_ID = 43114;
 
+/**
+ * Treasury lane → the token it moved. The lane's scanned CONTRACT is the
+ * authority; this map only names what that contract is. Fail-closed: an
+ * unrecognised treasury lane throws rather than defaulting to a token, so a
+ * future lane can never quietly mislabel someone's money.
+ */
+const TREASURY_TOKEN_BY_PREFIX: readonly (readonly [string, "USDC" | "SYN" | "BTC.b" | "WETH.e"])[] = [
+  ["TREASURY_USDC", "USDC"],
+  ["TREASURY_SYN", "SYN"],
+  ["TREASURY_BTCB", "BTC.b"],
+  ["TREASURY_WETH", "WETH.e"],
+];
+
+function treasuryTokenForStream(streamKey: string): "USDC" | "SYN" | "BTC.b" | "WETH.e" {
+  for (const [prefix, token] of TREASURY_TOKEN_BY_PREFIX) {
+    if (streamKey.startsWith(prefix)) return token;
+  }
+  throw new Error(`unknown treasury stream "${streamKey}" — refusing to label its token`);
+}
+
 function requireDatabaseUrl(): void {
   if (
     process.env["DATABASE_URL"] == null ||
@@ -477,7 +497,11 @@ export async function loadProtocolEventRows(): Promise<ProtocolEventLoad> {
         throw new Error("treasury row decoded shape invalid — refusing to derive");
       }
       treasury.push({
-        token: r.streamKey.startsWith("TREASURY_USDC") ? "USDC" : "SYN",
+        // The token is decided by WHICH CONTRACT the lane scanned — never
+        // guessed. A binary ternary held while only USDC and SYN had lanes;
+        // it silently mislabels the moment a third token exists, so the map
+        // is explicit and an unknown lane refuses rather than defaults.
+        token: treasuryTokenForStream(r.streamKey),
         blockNumber: r.blockNumber,
         logIndex: r.logIndex,
         transactionHash: r.transactionHash,

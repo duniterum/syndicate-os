@@ -99,7 +99,7 @@ export interface ServedArchivePauseLine extends ServedLineCommon {
 // inside an already-narrated transaction is routing detail, never a line) ───
 export interface ServedTreasuryLine extends ServedLineCommon {
   kind: "treasury-move";
-  token: "USDC" | "SYN";
+  token: "USDC" | "SYN" | "BTC.b" | "WETH.e";
   /** Exact raw base units — public per the Visibility Rule. */
   amountRaw: string;
   movement: "in" | "out" | "internal";
@@ -691,6 +691,41 @@ export function formatUsdcRaw(amountUsdcRaw: string): string {
   return `${whole.toLocaleString("en-US")}.${cents.toString().padStart(2, "0")}`;
 }
 
+/**
+ * A treasury amount, at ITS OWN token's precision.
+ * ---------------------------------------------------------------------------
+ * This used to be a binary "SYN or else USDC". The moment a third token got a
+ * lane that shortcut would have printed a BTC.b amount at 6 decimals — a figure
+ * wrong by a factor of 100, on a public feed. Decimals now come from the token,
+ * and an unknown token yields NO sentence rather than a wrong number.
+ */
+const TREASURY_TOKEN_DECIMALS: Record<string, { decimals: number; dp: number }> = {
+  USDC: { decimals: 6, dp: 2 },
+  SYN: { decimals: 18, dp: 2 },
+  "BTC.b": { decimals: 8, dp: 8 },
+  "WETH.e": { decimals: 18, dp: 6 },
+};
+
+export function formatTreasuryRaw(amountRaw: string, token: string): string | null {
+  const spec = TREASURY_TOKEN_DECIMALS[token];
+  if (!spec) return null; // unknown token → the caller withholds the line
+  let units: bigint;
+  try {
+    units = BigInt(amountRaw);
+  } catch {
+    return null;
+  }
+  const base = 10n ** BigInt(spec.decimals);
+  const whole = units / base;
+  const frac = (units % base).toString().padStart(spec.decimals, "0").slice(0, spec.dp);
+  const shown = spec.dp > 0 ? `${whole.toLocaleString("en-US")}.${frac}` : whole.toLocaleString("en-US");
+  // A non-zero movement must never read as a flat zero.
+  if (units > 0n && /^0(\.0*)?$/.test(shown.replace(/,/g, ""))) {
+    return `< 0.${"0".repeat(Math.max(spec.dp - 1, 0))}1`;
+  }
+  return shown;
+}
+
 // The §8 event lexicon — one event kind, ONE canonical sentence. Never
 // reinvented; the served lines carry facts, these lines carry the words.
 // (One mapping, shared by the hero's live mini-feed and /activity.)
@@ -767,8 +802,15 @@ export function sentenceForServedLine(line: ServedFeedLine): string {
     // Organ LABELS only; external counterparties never named; a transfer in
     // an already-narrated transaction never reaches here (the Fold Law).
     case "treasury-move": {
-      const amount =
-        line.token === "SYN" ? formatSynRaw(line.amountRaw) : formatUsdcRaw(line.amountRaw);
+      const amount = formatTreasuryRaw(line.amountRaw, line.token);
+      // Fail-closed: an unrecognised token still gets its line — the movement
+      // is real and its transaction anchor proves it — but WITHOUT a figure we
+      // cannot scale correctly. A missing number beats a wrong one.
+      if (amount === null) {
+        return line.movement === "out"
+          ? `A treasury movement left ${line.organLabel} — recorded on-chain; open the transaction for the exact amount.`
+          : `A treasury movement entered ${line.organLabel} — recorded on-chain; open the transaction for the exact amount.`;
+      }
       // A1 (founder funding doctrine, 2026-07-22): a founder-wallet
       // counterparty is SAID — money in from the Founder is the Founder
       // advancing money to the protocol; money out to the Founder is a

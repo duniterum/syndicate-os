@@ -288,16 +288,26 @@ second line. Scope: the three routing organs (the vault · the liquidity wallet 
 operations wallet), USDC + SYN. Organs render as LABELS; external counterparties are
 never named; native AVAX movements emit no event and honestly cannot have a line.
 
-**DECLARED GAP (2026-07-25, the holdings slice) — named, never an unstated silence.** The
-vault also HOLDS **BTC.b and WETH.e**: their balances are read live and shown (on /contracts
-and the /admin home), but their MOVEMENTS have no lane yet — `protocolTargets` carries
-`TREASURY_USDC_IN/OUT` + `TREASURY_SYN_IN/OUT` only, and `backboneDb.ts` branches
-USDC-or-SYN. Both tokens DO emit Transfer logs, so both are laneable; the work is the two
-lane pairs + the token label + a founder-approved sentence in the table below + the
-/activity line. Tracked as **⑧** in the open-work list. The completeness invariant's LETTER
-did not trigger here — no new protocol wallet or contract was introduced (the vault is
-already inventoried; BTC.b, WETH.e and the Chainlink aggregators are EXTERNAL contracts the
-spine only reads) — so this is named work, not a breach of the invariant.
+**GAP CLOSED (2026-07-25, the reserves-lanes slice — it was declared here the same day and
+is now built).** The vault's **BTC.b and WETH.e** movements have their lanes:
+`TREASURY_BTCB_IN/OUT` + `TREASURY_WETH_IN/OUT` scan the two token contracts through the
+SAME `decodeTreasuryLog` as USDC/SYN — the scanned CONTRACT is what identifies the token, so
+no new decoder was invented. The token label is now an explicit map that THROWS on an
+unrecognised lane instead of defaulting (the old binary ternary would have silently labelled
+a third token "SYN"). Native AVAX still emits no event and honestly cannot have a lane —
+that remains true and stated.
+
+**Scope now: four organs.** The **NFT SALE WALLET** (founder-named 2026-07-25) joins the vault,
+the liquidity wallet and the operations wallet in the organ set: artifact mints pay into it,
+so its inflows are real income and belong in the heartbeat. Its label is "the NFT sale
+wallet". This is what unblocks the patronage rungs, which could never seal while their money
+arrived unseen.
+
+**The amount is scaled by ITS OWN token** (USDC 6 · SYN 18 · BTC.b 8 · WETH.e 18). The feed's
+formatter used to be a binary "SYN or else USDC"; on a third token that would have printed a
+BTC.b figure at 6 decimals — wrong by a factor of 100, in public. An unknown token now yields
+the line WITHOUT a figure ("open the transaction for the exact amount") rather than a wrong
+number: a missing number beats a false one.
 
 | Event | The canonical sentence | Variants |
 |---|---|---|

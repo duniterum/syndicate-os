@@ -87,33 +87,34 @@ export function ProtocolReservesBand() {
   const reality = useGetProtocolReality();
   const fin = reality.data?.groups.financial;
 
+  // The protocol's OWN SHARE of the pool, USDC leg only (the SYN leg is never
+  // priced — pricing it would mark SYN to the thin pool price). Computed BEFORE
+  // the rows, because the USDC row folds it in.
+  const poolUsdc = toNum(raw(fin, "financial.lp.reserveUsdc"), 6);
+  const lpSupply = toNum(raw(fin, "financial.lp.totalSupply"), 18);
+  const lpOwned = toNum(raw(fin, "financial.lp.protocolBalance"), 18);
+  const poolShare = lpSupply !== null && lpOwned !== null && lpSupply > 0 ? lpOwned / lpSupply : null;
+  const poolUsdcOwned = poolShare !== null && poolUsdc !== null ? poolUsdc * poolShare : null;
+
   // ── Rows from the registry. ONE ASSET = ONE ROW: an asset held across several
-  //    wallets is SUMMED here, never split into look-alike cards. A missing
-  //    component makes the whole row unavailable rather than a partial sum.
+  //    wallets — and for USDC across the pool as well (founder, 2026-07-25:
+  //    "on ajoute aussi le pool dans USDC ainsi on a 4 cards") — is SUMMED here,
+  //    never split into look-alike cards. A missing component makes the whole
+  //    row unavailable rather than a partial sum.
   const rows = TRACKED_ASSETS.map((a) => {
     const legs = a.balanceIds.map((id) => toNum(raw(fin, id), a.decimals));
+    if (a.includesPoolShare) legs.push(poolUsdcOwned);
     const amt = legs.every((l) => l !== null) ? (legs as number[]).reduce((x, y) => x + y, 0) : null;
     const px = a.priceId === "PEGGED_USD" ? 1 : toNum(raw(fin, a.priceId), 8);
     const value = amt !== null && px !== null ? amt * px : null;
     return { ...a, amt, px, value };
   });
 
-  // The protocol's own share of the pool, USDC leg only (the SYN leg is never
-  // priced — pricing it would mark SYN to the thin pool price).
-  const poolUsdc = toNum(raw(fin, "financial.lp.reserveUsdc"), 6);
-  const lpSupply = toNum(raw(fin, "financial.lp.totalSupply"), 18);
-  const lpOwned = toNum(raw(fin, "financial.lp.protocolBalance"), 18);
-  const poolShare = lpSupply !== null && lpOwned !== null && lpSupply > 0 ? lpOwned / lpSupply : null;
-  const poolValue = poolShare !== null && poolUsdc !== null ? poolUsdc * poolShare : null;
-
   // THE ONE LIST. The total and the composition bar are computed from the SAME
   // array — that is what makes the bar fill exactly 100%. When they were built
   // from different lists the bar summed to 80% and left a black gap at the end
   // (founder caught it on the live site, 2026-07-25). Never split them again.
-  const segments = [
-    ...rows.map((r) => ({ key: r.symbol, tone: r.tone, value: r.value })),
-    { key: "Pool", tone: "viz-6", value: poolValue },
-  ];
+  const segments = rows.map((r) => ({ key: r.symbol, tone: r.tone, value: r.value }));
   const parts = segments.map((s) => s.value);
   const total = parts.every((p) => p !== null) ? (parts as number[]).reduce((a, b) => a + b, 0) : null;
 
@@ -183,7 +184,10 @@ export function ProtocolReservesBand() {
           ) : null}
         </div>
 
-        <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        {/* Four assets, four columns from lg — the approved mockup shows them in
+            ONE row, not 3+1 (a 3-column grid left the fourth card orphaned on a
+            1280px screen). Two columns on tablet, one on phone. */}
+        <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
           {rows.map((r) => (
             <div
               key={r.symbol}
@@ -221,28 +225,6 @@ export function ProtocolReservesBand() {
             </div>
           ))}
 
-          <div className="rounded-xl border border-border bg-background/58 p-4 transition-colors hover:border-gold/40 dark:border-white/10 dark:bg-white/[0.035]">
-            <div className="mb-3 flex items-center gap-3">
-              <span className="grid h-9 w-9 flex-none place-items-center rounded-full border border-border bg-background/70 font-mono text-[10px] font-bold text-viz-6">
-                LP
-              </span>
-              <span>
-                <span className="block font-mono text-xs font-bold uppercase tracking-[0.1em]">Pool</span>
-                <span className="block text-[11px] text-muted-foreground">Our share of liquidity</span>
-              </span>
-            </div>
-            <div className="font-mono text-lg font-black">
-              {poolShare !== null ? `${(poolShare * 100).toFixed(1)}%` : liveFigure(null, reality.isLoading)}
-            </div>
-            {poolValue !== null ? (
-              <div className="mt-0.5 font-mono text-[13px] font-semibold text-proof">{usd(poolValue)}</div>
-            ) : null}
-            <div className="mt-3 h-[3px] overflow-hidden rounded-sm bg-border/70">
-              <i className="block h-full bg-viz-6" style={{ width: `${pct(poolValue)}%` }} />
-            </div>
-            <div className="mt-2 font-mono text-[10.5px] text-muted-foreground">Our USDC side only</div>
-            <VerifyOnChain ids={["lpPair" as VerifyLinkId]} className="mt-2 block" />
-          </div>
         </div>
 
         <p className="measure mt-6 border-t border-border pt-5 text-[12.5px] text-muted-foreground">

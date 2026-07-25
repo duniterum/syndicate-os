@@ -203,7 +203,7 @@ export interface RawArchivePauseRowInput {
 // ── H2-⑦ — treasury-movement row (loader → read-model) ──────────────────────
 export interface RawTreasuryRowInput {
   /** Which token contract emitted the Transfer (derived from the streamKey). */
-  token: "USDC" | "SYN";
+  token: "USDC" | "SYN" | "BTC.b" | "WETH.e";
   blockNumber: number;
   logIndex: number;
   transactionHash: string;
@@ -545,10 +545,16 @@ export async function runProtocolEventScan(
     // the two-stream ternary; every stream stays a single getLogs pass).
     // H2-⑦: the three routing organs as topic-filter values (OR within one
     // topic position — eth_getLogs array semantics; server-only addresses).
+    // The NFT Sale Wallet (founder-named 2026-07-25) joins the organ set: it is
+    // a protocol wallet that receives real money — artifact mints pay into it —
+    // so its movements belong in the heartbeat exactly like the routing organs'.
+    // Until now its inflows were invisible, which is why the patronage rungs
+    // could never seal against a transaction.
     const organTopics = [
       addressToTopic(FINANCIAL_TARGETS.vaultWallet),
       addressToTopic(FINANCIAL_TARGETS.liquidityWallet),
       addressToTopic(FINANCIAL_TARGETS.operationsWallet),
+      addressToTopic(FINANCIAL_TARGETS.nftSaleWallet),
     ];
     const STREAM_CONFIG: Record<
       string,
@@ -604,6 +610,28 @@ export async function runProtocolEventScan(
         topics: [TRANSFER_TOPIC0, organTopics],
         decode: (log: RawLogEntry) =>
           decodeTreasuryLog(log, "TREASURY_SYN_OUT", burnAddress),
+      },
+      // The vault's crypto reserves — same decoder, same shape; only the
+      // scanned contract differs, which is what identifies the token.
+      TREASURY_BTCB_IN: {
+        topics: [TRANSFER_TOPIC0, null, organTopics],
+        decode: (log: RawLogEntry) =>
+          decodeTreasuryLog(log, "TREASURY_BTCB_IN", burnAddress),
+      },
+      TREASURY_BTCB_OUT: {
+        topics: [TRANSFER_TOPIC0, organTopics],
+        decode: (log: RawLogEntry) =>
+          decodeTreasuryLog(log, "TREASURY_BTCB_OUT", burnAddress),
+      },
+      TREASURY_WETH_IN: {
+        topics: [TRANSFER_TOPIC0, null, organTopics],
+        decode: (log: RawLogEntry) =>
+          decodeTreasuryLog(log, "TREASURY_WETH_IN", burnAddress),
+      },
+      TREASURY_WETH_OUT: {
+        topics: [TRANSFER_TOPIC0, organTopics],
+        decode: (log: RawLogEntry) =>
+          decodeTreasuryLog(log, "TREASURY_WETH_OUT", burnAddress),
       },
     };
     const config = STREAM_CONFIG[target.streamKey];
