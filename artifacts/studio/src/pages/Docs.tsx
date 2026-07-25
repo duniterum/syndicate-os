@@ -36,6 +36,7 @@ export default function Docs() {
       eyebrow="Docs · the protocol operating manual"
       title="Read the protocol in the order a member lives it."
       lead="Docs aren't a separate pile of pages — they're the map. Understand the system, take a seat, verify the receipt, and watch the memory form. Every card carries a status and who it's for, and links to the real surface — where every figure is read live from Avalanche."
+      variant="app"
     >
       <div className="space-y-12">
         <TransparencyPosture />
@@ -79,9 +80,9 @@ export default function Docs() {
               <section key={group.id} id={group.id} aria-labelledby={`${group.id}-title`} className="scroll-mt-24">
                 <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">{group.eyebrow}</p>
                 <h2 id={`${group.id}-title`} className="type-h2 mt-1 text-foreground">{group.title}</h2>
-                <p className="mt-2 max-w-2xl type-body text-muted-foreground">{group.description}</p>
+                <p className="mt-2 measure type-body text-muted-foreground">{group.description}</p>
 
-                <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-6 auto-grid gap-4">
                   {group.cards.map((card) => {
                     const entry = getRouteSeoByPath(card.routePath);
                     const st = docStatus(card.routePath);

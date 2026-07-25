@@ -35,7 +35,7 @@ export function guideGreeting(pathname: string): string {
   if (p.startsWith("/faq")) return "Looking for a specific answer? I can help you find it.";
   if (p.startsWith("/whitepaper")) return "Reading the whitepaper? I can point you to the proof behind any claim.";
   if (p.startsWith("/tokenomics")) return "Every figure here is read live on-chain — want to see where to verify it?";
-  if (p.startsWith("/join")) return "Considering a seat? I can walk you to an exact read-only quote.";
+  if (p.startsWith("/join")) return "Considering a seat? I can walk you to an exact quote — nothing is signed.";
   if (p.startsWith("/status")) return "This is the ledger of what's live vs pending. Questions? I'm here.";
   if (p.startsWith("/map") || p.startsWith("/contracts")) return "Want to check a contract yourself? I'll point the way.";
   if (p === "/" || p === "") return "New here? I can help you observe the protocol — no signup, nothing asked.";

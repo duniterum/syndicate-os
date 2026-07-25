@@ -110,7 +110,7 @@ function V3FiguresBand() {
       <Card className="p-6">
         <p className="text-sm text-muted-foreground">
           Protocol reality unavailable — nothing is assumed, nothing is invented. The figures
-          return when the read-only spine answers again.
+          return when the spine answers again.
         </p>
       </Card>
     );
@@ -121,7 +121,7 @@ function V3FiguresBand() {
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
           <h2 className="text-base font-medium text-foreground">Membership engine — public figures</h2>
-          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
+          <p className="text-sm text-muted-foreground mt-1 measure">
             Read directly from the deployed V3 sale engine. Raw base-unit strings are the source
             of truth; the derived display uses token decimals read live from chain, and falls
             back to raw-only if decimals are unreadable.
@@ -155,8 +155,9 @@ export default function ProtocolMap() {
     <PublicPage
       eyebrow="Public proof organism"
       title="Protocol Map"
-      lead="Every signal the protocol serves publicly, in one place: chain identity, contract code presence, token metadata, membership-sale lifecycle, and source registry posture — read by a server-side, read-only spine and reconciled against vendored canon. A failed read renders as unavailable; nothing is estimated or invented."
+      lead="Every signal the protocol serves publicly, in one place: chain identity, contract code presence, token metadata, membership-sale lifecycle, and source registry posture — read by a server-side spine and reconciled against vendored canon. A failed read renders as unavailable; nothing is estimated or invented."
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
+      variant="app"
     >
       <div className="space-y-10">
         <V3FiguresBand />

@@ -122,7 +122,7 @@ export default function SeasonRanking() {
   const maxXp = standings.reduce((m, r) => Math.max(m, r.xp), 0);
 
   return (
-    <div className="mx-auto w-full px-5 sm:px-8 xl:px-16 py-10">
+    <div className="w-full px-4 sm:px-6 lg:px-8 py-10">
       {/* Head */}
       <div className="mb-6">
         <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-primary">
@@ -144,7 +144,7 @@ export default function SeasonRanking() {
             "Season — Ranking"
           )}
         </h1>
-        <p className="font-mono text-[11.5px] text-muted-foreground mt-2 max-w-4xl">
+        <p className="text-xs text-muted-foreground mt-2 measure">
           Public, pseudonymous · your rank never drops. Chain-proven acts carry their
           transaction · the sealed season state anchors on-chain.
         </p>
@@ -193,7 +193,7 @@ export default function SeasonRanking() {
             </div>
           ) : payload === null ? (
             <div className="rounded-xl border border-border bg-card p-6">
-              <div className="font-mono text-xs text-muted-foreground">Reading the board…</div>
+              <div className="text-xs text-muted-foreground">Reading the board…</div>
             </div>
           ) : standings.length === 0 ? (
             <div className="rounded-xl border border-dashed border-border bg-card p-6">
@@ -272,7 +272,7 @@ export default function SeasonRanking() {
                         key={r.display}
                         className="border-t border-border"
                       >
-                        <td className="px-4 py-3 font-serif text-lg text-muted-foreground">
+                        <td className="px-4 py-3 text-lg text-muted-foreground">
                           {r.rank ?? "—"}
                         </td>
                         {/* whitespace-nowrap: the identity line NEVER folds — the
@@ -331,7 +331,7 @@ export default function SeasonRanking() {
                   </tbody>
                 </table>
               </div>
-              <p className="font-mono text-[11px] text-muted-foreground mt-3 max-w-4xl">
+              <p className="text-xs text-muted-foreground mt-3 measure">
                 {scope === "season" ? (
                   <>
                     Numbered ranks are seated members — an AWAITING SEAT row holds no
@@ -377,7 +377,7 @@ export default function SeasonRanking() {
               <b>By merit, never chance. For what you do, never for what you hold.</b>{" "}
               Put up by the company.
             </p>
-            <p className="font-mono text-[11px] text-muted-foreground mt-2">
+            <p className="text-xs text-muted-foreground mt-2">
               The effort rail arrives with its own slice — the committed figure will
               stand here, on-chain and verifiable, the day it exists. Never a number
               without its proof.

@@ -13,7 +13,7 @@ function S({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-8">
       <h2 className="type-h2 text-foreground mb-2">{title}</h2>
-      <div className="text-sm text-muted-foreground leading-relaxed space-y-3">{children}</div>
+      <div className="text-sm text-muted-foreground leading-relaxed space-y-3 measure">{children}</div>
     </section>
   );
 }
@@ -26,7 +26,7 @@ export default function Risk() {
       lead="Joining means signing two transactions from your own wallet on Avalanche C-Chain: an exact-amount USDC approval, then a purchase. Before you sign anything, read this page slowly. Joining can result in total loss."
       badge={<StatusPill tone="caution">Version 1 — draft of 2026-07-16</StatusPill>}
     >
-      <Card className="bg-muted/20 border-border/50 p-4 text-sm text-muted-foreground leading-relaxed mb-10">
+      <Card className="bg-muted/20 border-border/50 p-4 text-sm text-muted-foreground leading-relaxed measure mb-10">
         This draft awaits review by qualified counsel before it is legal
         protection. Nothing on this page is legal, tax, or financial advice.
       </Card>

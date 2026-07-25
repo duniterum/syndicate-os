@@ -92,7 +92,7 @@ export const routeMemory: RouteMemoryEntry[] = [
     description: "Token allocation, treasury routing, and economy transparency.",
     classification: "CONTRACT_MEMORY",
     disposition:
-      "Recorded as read-only economy memory (roles + routing structure). No live values are read.",
+      "Recorded as economy memory (roles + routing structure). No live values are read.",
     mappedRoute: "/contracts",
   },
   {

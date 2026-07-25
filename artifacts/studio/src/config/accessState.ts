@@ -121,14 +121,14 @@ export const accessStates: Record<AccessStateId, AccessStateMeta> = {
     track: "USER",
     chipLabel: "S7 · VERIFIED MEMBER",
     honestNote:
-      "Membership verified server-side against membership truth. Own-record reads only.",
+      "Membership verified server-side against membership truth. Own record only.",
   },
   S8: {
     name: "Member, recovery pending",
     track: "USER",
     chipLabel: "S8 · RECOVERY PENDING",
     honestNote:
-      "Restricted read-only while a recovery case is open; identity-mutating actions frozen.",
+      "While a recovery case is open, you can still read your own record but identity-mutating actions are frozen.",
   },
   S9: {
     name: "Restricted user",
@@ -159,10 +159,10 @@ export const accessStates: Record<AccessStateId, AccessStateMeta> = {
       "Apex scope with extra friction. No online root-replacement workflow exists.",
   },
   S13: {
-    name: "Auditor (read-only)",
+    name: "Auditor (reads, never changes)",
     track: "PRIVILEGED",
     chipLabel: "S13 · AUDITOR",
-    honestNote: "Read-only shell skin. Zero mutations, evidence redacted.",
+    honestNote: "An auditor shell — nothing can be changed from it. Evidence redacted.",
   },
   S14: {
     name: "Worker / agent identity",

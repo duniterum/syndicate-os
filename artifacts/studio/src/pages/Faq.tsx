@@ -104,7 +104,7 @@ export default function Faq() {
           <p className="mt-4 type-body text-muted-foreground">
             The full live picture — supply, distribution, the two prices, burn, and treasury routing —
             is on <Link href="/tokenomics" className={linkCls}>Tokenomics</Link> and the{" "}
-            <Link href="/status" className={linkCls}>Status</Link> ledger. Preview an exact read-only
+            <Link href="/status" className={linkCls}>Status</Link> ledger. Preview an exact
             entry quote on <Link href="/join" className={linkCls}>Join</Link>.
           </p>
         </Card>

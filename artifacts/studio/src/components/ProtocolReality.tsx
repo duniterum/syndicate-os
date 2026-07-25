@@ -21,18 +21,18 @@ export type RealityGroupKey = keyof ProtocolRealityResponse["groups"];
 const groupTitle: Record<RealityGroupKey, string> = {
   chain: "Chain identity",
   contracts: "Contract code (on-chain)",
-  sale: "Sale engine (read-only)",
-  source: "Source registry (read-only)",
+  sale: "Sale engine",
+  source: "Source registry",
   tokens: "Token metadata",
   archive: "Archive artifacts",
-  financial: "Financial reality (read-only)",
+  financial: "Financial reality",
 };
 
 const groupBlurb: Record<RealityGroupKey, string> = {
   chain: "Which chain answered and whether it is the expected Avalanche C-Chain.",
   contracts: "Whether each known contract has deployed code at its server-resolved address.",
-  sale: "Live read-only state from the deployed membership-sale engines. V3 is the active engine — its public figures are shown as exact raw base units. This app reads only; no wallet, transaction, or referral surface is enabled.",
-  source: "Read-only source-registry posture: registry linkage on the active engine and the registry's creation policy. No source ids are shown; validation happens per-link on request.",
+  sale: "Live state from the deployed membership-sale engines. V3 is the active engine — its public figures are shown as exact raw base units. No wallet, transaction, or referral surface is enabled.",
+  source: "Source-registry posture: registry linkage on the active engine and the registry's creation policy. No source ids are shown; validation happens per-link on request.",
   tokens: "Public ERC-20 metadata only — symbol and decimals. No balances or supply.",
   archive: "Whether each artifact id is configured on-chain, and the contract pause flag.",
   financial:
@@ -135,7 +135,7 @@ function ErrorCard() {
         <div>
           <h4 className="text-sm font-medium text-foreground">Protocol reality unavailable</h4>
           <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-            The read-only reality feed could not be reached. No fallback or placeholder values are
+            The reality feed could not be reached. No fallback or placeholder values are
             shown — this surface only renders verified reads from the protocol-reality endpoint.
           </p>
         </div>

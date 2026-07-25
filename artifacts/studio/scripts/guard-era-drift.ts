@@ -73,12 +73,8 @@ const ERA_PATTERNS: { re: RegExp; name: string }[] = [
 // labels, "read-only self-readback" — is NOT matched by the patterns at all;
 // only claim-shaped era phrases need this list.)
 const ALLOWLIST: { path: string; patterns: string[]; reason: string }[] = [
-  {
-    path: `config${sep}supportIntake.ts`,
-    patterns: ["not wired"],
-    reason:
-      "TRUE today (verified S2, 2026-07-14): the ticket intake genuinely stores/sends nothing; the Guide + official channels are the live help paths",
-  },
+  // supportIntake.ts entry retired 2026-07-25: the /support copy was humanised
+  // ("not wired" → "isn't open yet"), so the file no longer carries the phrase.
   {
     path: `pages${sep}admin${sep}`,
     patterns: ["not wired"],

@@ -182,14 +182,17 @@ export default function FireLedger() {
       <h2 className="text-base font-medium text-foreground mb-3">The Proof of Burn record</h2>
       <ProofOfBurnRecord />
 
+      {/* DONE-IS-DONE (2026-07-25): pagination SHIPPED — the served backbone
+          feed is paginated (Load more), and /activity already deleted the
+          identical "adds next: pagination" claim. The one honest future left
+          here is the identity layer (opt-in names for burners). */}
       <Card className="bg-card/20 border-dashed border-border/60 p-5 mt-10">
         <h2 className="text-base font-medium text-foreground mb-1.5">What the event indexer adds next</h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
           The record serves every burn since the first block, numbered from
           #1 — and always states exactly what it covers. What arrives next:
-          who chose the fire, by their own opt-in name (the identity layer),
-          and pagination as the record grows. The total above is already
-          whole either way.
+          who chose the fire, by their own opt-in name (the identity layer).
+          The total above is already whole either way.
         </p>
       </Card>
     </MemberAppPage>

@@ -135,7 +135,7 @@ export function MemberQuickActions() {
   const own = useOwnState();
   const { address } = useAccount();
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <div className="auto-grid gap-3">
       {MEMBER_ACTIONS.map((a) => (
         <ActionCard key={a.id} action={a} own={own} address={address} />
       ))}

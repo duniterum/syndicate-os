@@ -22,7 +22,7 @@ export default function Archive() {
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
       <h2 className="type-h2 text-foreground mb-5">The archive</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-14">
+      <div className="auto-grid gap-5 mb-14">
         {archiveEntries.map((e) => (
           <Card key={e.id} className="bg-card/40 border-border/50 p-5">
             <div className="flex items-start justify-between gap-3 mb-2">
@@ -69,7 +69,7 @@ export default function Archive() {
           (the page already carries the honest paragraph, badges, and real
           contract-memory content, so nothing was gutted to add them). */}
       <h2 className="text-base font-medium text-foreground mb-1.5">What&apos;s here today, what&apos;s still building</h2>
-      <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-8">
+      <p className="text-sm text-muted-foreground leading-relaxed measure mb-8">
         Every artifact mint is already on the public record with its transaction,
         and a signed-in member&apos;s own holdings show live on their wallet door.
         What&apos;s still building is the museum surface itself — the full gallery

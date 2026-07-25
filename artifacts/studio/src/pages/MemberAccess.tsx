@@ -250,7 +250,7 @@ export default function MemberAccess() {
                 </section>
               ) : null}
 
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl pt-6 border-t border-border/50">
+              <p className="text-sm text-muted-foreground leading-relaxed measure pt-6 border-t border-border/50">
                 {expectations.body}
               </p>
             </MemberShell>
@@ -269,7 +269,7 @@ export default function MemberAccess() {
           silently fall back to the mobile height). */}
       <section className="relative overflow-hidden border-b border-border/50 bg-background flex items-center min-h-[65svh] md:min-h-[calc(100svh_-_3.75rem)] py-12 md:py-16">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background pointer-events-none" />
-        <div className="container mx-auto px-4 max-w-5xl relative z-10 w-full">
+        <div className="w-full px-4 sm:px-6 lg:px-8 relative z-10">
           <div
             className="flex flex-col items-center text-center"
             data-testid="member-door-band"
@@ -277,10 +277,10 @@ export default function MemberAccess() {
             <p className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-5">
               {memberHome.eyebrow}
             </p>
-            <h1 className="type-h1 text-foreground max-w-3xl">
+            <h1 className="type-h1 text-foreground max-w-[34ch]">
               {memberHome.door.title}
             </h1>
-            <p className="type-body text-muted-foreground max-w-2xl mt-5">
+            <p className="type-body text-muted-foreground measure mt-5">
               {memberHome.door.lead}
             </p>
             {/* THE one connect CTA (RainbowKit: connect + SIWE sign-in in a
@@ -294,10 +294,10 @@ export default function MemberAccess() {
                 <WalletAuthComingSoon />
               )}
             </div>
-            <p className="mt-6 text-sm text-muted-foreground max-w-2xl leading-relaxed">
+            <p className="mt-6 text-sm text-muted-foreground measure leading-relaxed">
               {memberHome.door.honestyControl}
             </p>
-            <p className="mt-1 text-sm text-muted-foreground max-w-2xl leading-relaxed">
+            <p className="mt-1 text-sm text-muted-foreground measure leading-relaxed">
               {memberHome.door.honestySafety}
             </p>
           </div>
@@ -312,7 +312,7 @@ export default function MemberAccess() {
               <h2 className="type-h2 text-foreground mb-4">
                 {memberHome.stepsHeading}
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="auto-grid gap-4">
                 {memberHome.steps.map((step, i) => (
                   <Card
                     key={step.title}
@@ -349,7 +349,7 @@ export default function MemberAccess() {
 
             <VerifyFoundationRow />
 
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl pt-6 border-t border-border/50">
+            <p className="text-sm text-muted-foreground leading-relaxed measure pt-6 border-t border-border/50">
               {expectations.body}
             </p>
           </MemberShell>

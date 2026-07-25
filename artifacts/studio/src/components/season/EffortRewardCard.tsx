@@ -34,7 +34,7 @@ export function EffortRewardCard() {
       <p className="mt-2 text-[13px] font-semibold text-success">
         The USDC lands directly in your wallet — nothing to claim.
       </p>
-      <p className="mt-3 border-t border-border/40 pt-2.5 font-mono text-[11px] leading-relaxed text-muted-foreground">
+      <p className="mt-3 border-t border-border/40 pt-2.5 text-xs leading-relaxed text-muted-foreground">
         Separate from recognition on purpose: this is payment for a measured effort — never
         chance, never a yield on what you hold. The committed figures stand here, with their
         proof, the day the rail activates.

@@ -207,14 +207,15 @@ export default function Whitepaper() {
               <VerifyOnChain ids={["nftArchive"]} />
             </ProseSection>
 
-            <ProseSection id="recognition" title="Recognition & the future" eyebrow={<Eyebrow n={9} status="FUTURE" />}>
+            <ProseSection id="recognition" title="Recognition & the future" eyebrow={<Eyebrow n={9} status="VERIFIED" />}>
               <p>
                 A rank is <strong>recognition</strong>, like a loyalty program (Cumulus, airline miles) —
                 never a better price, never a financial right. There is{" "}
                 <strong>no token-weighted voting and no vote that functions as a security</strong>. The
-                gamification layer — standing, badges, a contribution leaderboard, seasons with
-                protocol-funded prizes — is a <strong>future</strong> capability, recognition only, and
-                will render live from the status registry once it activates.
+                seasons recognition board and member quests are <strong>live today</strong>. What is
+                still ahead is the long-term <strong>standing model</strong> and a protocol-funded{" "}
+                <strong>season reward pot</strong> — recognition only, each rendering live from the
+                status registry once it activates.
               </p>
             </ProseSection>
 
@@ -223,8 +224,9 @@ export default function Whitepaper() {
                 The Syndicate OS grows by <strong>activating modules</strong> — like installing plugins.
                 Each carries a public status (active or future), read from the protocol's registry, so a
                 new module flips from future to active <strong>by itself</strong> here — nothing is
-                rewritten. Already active this way: the referral program and the live activity
-                record. Known future modules: later eras · marketplace · gamification &amp; seasons.
+                rewritten. Already active this way: the referral program, the live activity record,
+                and the seasons recognition board. Known future modules: later eras · marketplace ·
+                the season reward pot.
               </p>
             </ProseSection>
 
@@ -240,7 +242,7 @@ export default function Whitepaper() {
                 ]}
               />
               <p>
-                A fuller read-only map lives on <Link href="/contracts">Contracts</Link>,{" "}
+                A fuller map lives on <Link href="/contracts">Contracts</Link>,{" "}
                 <Link href="/map">Protocol Map</Link>, and the <Link href="/status">Status</Link> ledger.
               </p>
             </ProseSection>

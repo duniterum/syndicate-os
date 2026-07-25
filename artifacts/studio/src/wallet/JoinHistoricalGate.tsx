@@ -111,10 +111,10 @@ export default function JoinHistoricalGate({
               It has happened once already. So the buy path stays blocked for
               this wallet until the seat is claimed on the sale contract
               (claimHistoricalMembership). The claim itself is an on-chain act
-              from your own wallet; it is not wired into this page yet.
+              from your own wallet; it isn&apos;t available from this page yet.
             </p>
           ) : (
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
+            <p className="text-sm text-muted-foreground leading-relaxed measure">
               This wallet is recorded as historical member #{verdict.memberNumber},
               but its live claim state could not be verified right now — the chain
               read or the on-chain proof check did not succeed. Nothing is guessed:
@@ -122,10 +122,10 @@ export default function JoinHistoricalGate({
               succeeds. Reload to retry.
             </p>
           )}
-          <p className="font-mono text-[10px] text-muted-foreground mt-3">
+          <p className="text-xs text-muted-foreground mt-3">
             {blocked
-              ? "Live read: knownMember = false · membership proof verified against the engine's on-chain historical root"
-              : "Fail-closed: no live verification, no assumption"}
+              ? <>Live read: <span className="font-mono">knownMember = false</span> · membership proof verified against the engine&apos;s on-chain historical root</>
+              : "We couldn't confirm your seat's live state right now, so nothing is assumed — the buy path stays closed until the read succeeds."}
             {saleUrl ? (
               <>
                 {" · "}

@@ -147,3 +147,35 @@ hero). Applies to EVERY member-account surface — general rule, not per-page.
 EXCEPTION RÉGLÉE (dossier harvest §0.14-D, ruling §8-②): la ligne YOU (own-row
 highlight, session-derived) est permise sur cette surface publique — own-row
 uniquement, jamais un annuaire; le câblage arrive avec la tranche S2c/auth-zone.
+
+---
+
+## Amendement 2026-07-25 — THE EDGE-TO-EDGE SHARPENING (S7-d final; **supersede §C/§4 where they conflict**)
+**Founder ruling (the QuickNode benchmark).** Un plafond FIXE est un défaut (marges vides sur
+grand écran). Grade-AAA = **bord-à-bord, AUCUN plafond de page fixe en pixels**. On remplit en
+**multipliant les colonnes** (auto-fit), jamais en étirant. La lisibilité est bornée par une
+**MESURE relative en `ch`**, jamais px/rem.
+- Cet amendement **REMPLACE** la formulation de §C (« cap the measure ~65-70ch (`max-w-2xl` body /
+  `max-w-3xl` headline), optionally in a 1200-1440 band ») et de §4 (« prose = capped (1200-1440) »)
+  **partout où elles nomment un cap px/rem** : le cadre est TOUJOURS pleine largeur ; seul le TEXTE
+  est borné, et en `ch`.
+- **Le contrat (obligatoire sur toute surface app/data/chrome)** : `w-full` + gouttières
+  `px-4 sm:px-6 lg:px-8` (header · `<main>` · footer alignés) — jamais `container mx-auto`, jamais
+  un `max-w-{2xl..7xl}` de page.
+- **Les primitives** (`src/index.css`) : `.auto-grid`
+  (`repeat(auto-fit, minmax(min(100%, var(--auto-grid-col,18rem)), 1fr))`) · `.measure`
+  (`--measure: 68ch`) · titres = `max-w-[34ch]`.
+- **§E enfin livré (en partie)** : le guard promis existe désormais —
+  `scripts/guard-fluid-surface.ts` (BLOQUANT, dans la chaîne `guards`) rougit tout nouveau
+  `container mx-auto` ; allowlist = 0 (le shell prose élargi en cadre pleine largeur + `.measure` — dette « page-cap » à ZÉRO).
+  `guard-seat-vocab` reste NON livré.
+- **LOI DES POLICES (benchmarkée, même session)** : serif = titres display SEULEMENT · Work Sans =
+  tout le corps/descriptions/labels/stats · IBM Plex Mono = valeurs on-chain/adresses/code/eyebrows
+  MAJUSCULES courts UNIQUEMENT — **jamais une phrase**. Garde **BLOQUANT** `guard-font-discipline.ts`
+  (rougit le mono/serif sur une phrase prose ; passe eyebrows majuscules + endpoints code). Le
+  patchwork /season (mono sur des phrases) est mort comme CLASSE.
+- **Statut** : le shell + 20 surfaces SCELLÉS cette tranche (appliqués + vérifiés localement, en
+  attente du preview GO fondateur → commit → deploy). Prose shell **DONE** (cadre pleine largeur +
+  `.measure`, dette 0) ; "read only" retiré + 4 fossiles vérité corrigés. Reste OUVERT : le rythme
+  des sections de la home + le plancher sub-12px résiduel. **Le dossier complet + l'inventaire
+  par surface : `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md`** (ne pas ré-auditer).

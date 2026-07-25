@@ -20,7 +20,7 @@ import { TruthLabel } from "@/components/TruthLabel";
 import { moduleRegistry } from "@/config/moduleRegistry";
 
 const RISK_LABEL: Record<string, string> = {
-  READ_ONLY_PUBLIC: "Public · read-only",
+  READ_ONLY_PUBLIC: "Public · no writes",
   SESSION_SELF_READBACK: "Session self-readback",
   SERVER_ONLY_PII: "Server-only · PII",
   OWNER_SIDE_ONCHAIN_ACTION: "Owner on-chain action",

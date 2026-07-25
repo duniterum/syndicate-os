@@ -127,7 +127,7 @@ export default function MemberSettings() {
       >
         <Link
           href="/notifications"
-          className="inline-flex items-center rounded-md border border-border px-2.5 py-1.5 font-mono text-xs text-proof/80 transition-colors hover:border-gold/40 hover:text-proof"
+          className="inline-flex items-center rounded-md border border-border px-2.5 py-1.5 text-xs text-proof/80 transition-colors hover:border-gold/40 hover:text-proof"
           data-testid="link-settings-notifications"
         >
           Open inbox

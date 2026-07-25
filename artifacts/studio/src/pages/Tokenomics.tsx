@@ -73,7 +73,7 @@ export default function Tokenomics() {
       lead="How much SYN exists, who holds what right now, the two independent prices, the on-chain routing, and what is burned — every figure read live from Avalanche, never hardcoded. SYN is a membership token: the protocol promises no gain."
       badge={<LivingSignature />}
     >
-      <Prose className="max-w-none">
+      <Prose>
         <ProseSection id="supply" title="Fixed supply" eyebrow={<Eyebrow n={1} status="VERIFIED" />}>
           <p>
             SYN is a minimal, fixed-supply ERC-20 — no mint function, no admin powers, no transfer

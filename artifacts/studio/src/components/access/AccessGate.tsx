@@ -31,7 +31,7 @@ function AccessBlockedPanel({
   return (
     <div className="max-w-2xl mx-auto px-6 py-24 text-center" data-testid="panel-access-blocked">
       <p className="font-mono text-xs tracking-widest text-muted-foreground mb-4">
-        ACCESS STATE NOT WIRED
+        RESERVED SURFACE
       </p>
       <div className="flex justify-center mb-6">
         <AccessStateChip stateId={current} />

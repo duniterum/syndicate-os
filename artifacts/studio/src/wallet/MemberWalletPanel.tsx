@@ -203,7 +203,7 @@ function WalletPanelBody() {
             data-testid="wallet-artifact-holdings"
           >
             —{" "}
-            <span className="text-xs text-muted-foreground">
+            <span className="font-sans text-xs text-muted-foreground">
               holdings unreadable right now (nothing is assumed)
             </span>
           </p>
@@ -224,12 +224,12 @@ function WalletPanelBody() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-sm text-foreground">USDC → Membership Sale V3</p>
-              <p className="font-mono text-xs text-muted-foreground mt-0.5" data-testid="wallet-usdc-allowance">
+              <p className="text-xs text-muted-foreground mt-0.5" data-testid="wallet-usdc-allowance">
                 {allowance === null
                   ? "allowance unreadable right now (nothing is assumed)"
                   : allowance === 0n
                     ? "no standing approval — clean"
-                    : `approved: ${formatRawUnits(allowance.toString(), 6)} USDC`}
+                    : <span className="font-mono">{`approved: ${formatRawUnits(allowance.toString(), 6)} USDC`}</span>}
               </p>
             </div>
             {allowance !== null && allowance > 0n ? (

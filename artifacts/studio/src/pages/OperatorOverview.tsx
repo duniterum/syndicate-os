@@ -21,7 +21,7 @@ export default function OperatorOverview() {
   const publics = publicSurfaces();
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
+    <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
         <h1 className="type-h1 text-foreground flex items-center gap-3">
           <TerminalSquare className="h-8 w-8 text-primary" />

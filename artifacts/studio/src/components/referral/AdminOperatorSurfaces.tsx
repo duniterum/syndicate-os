@@ -304,7 +304,7 @@ export function AuditLogPanel() {
     <Card id="audit" className="p-6 scroll-mt-24">
       <Head icon={ScrollText} title="Audit log" sample />
       <p className="text-sm text-muted-foreground max-w-3xl mb-4 leading-relaxed">
-        Every privileged action is recorded — who did what, to what, and when. Read-only. Sample rows today — the
+        Every privileged action is recorded — who did what, to what, and when. Sample rows today — the
         real audit trail is already recording every privileged act server-side; the live read view lands with its own slice.
       </p>
       <table className="w-full text-sm">

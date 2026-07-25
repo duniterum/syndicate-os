@@ -51,7 +51,7 @@ export const protocolOsMap: OsMapDomain[] = [
     id: "reality-spine",
     label: "Chain Reality Spine",
     description:
-      "Server-side, read-only reconciliation against Avalanche C-Chain. Reads only; fails closed to null on any canon mismatch.",
+      "Server-side reconciliation against Avalanche C-Chain; fails closed to null on any canon mismatch.",
     nodes: [
       {
         id: "chain-identity",
@@ -60,7 +60,7 @@ export const protocolOsMap: OsMapDomain[] = [
         notPublic: false,
         summary: "eth_chainId reconciled against the expected chain (43114).",
         reality:
-          "Wired read-only via the protocol reality endpoint. Wrong chain means every dependent signal reports null.",
+          "Wired via the protocol reality endpoint. Wrong chain means every dependent signal reports null.",
       },
       {
         id: "contract-code",
@@ -69,7 +69,7 @@ export const protocolOsMap: OsMapDomain[] = [
         notPublic: false,
         summary: "Bytecode presence checks for the vendored contract set.",
         reality:
-          "Wired read-only. Addresses stay server-side; the client sees presence booleans and labels only.",
+          "Wired via the reality endpoint. Addresses stay server-side; the client sees presence booleans and labels only.",
       },
       {
         id: "erc20-metadata",
@@ -77,7 +77,7 @@ export const protocolOsMap: OsMapDomain[] = [
         binding: { kind: "lifecycle", lifecycle: "READ_ONLY_PROOF" },
         notPublic: false,
         summary: "ERC-20 name/symbol/decimals reconciled against vendored canon.",
-        reality: "Wired read-only. Canon mismatch reports null, never a normalized value.",
+        reality: "Wired via the reality endpoint. Canon mismatch reports null, never a normalized value.",
       },
       {
         id: "sale-engines",
@@ -87,7 +87,7 @@ export const protocolOsMap: OsMapDomain[] = [
         summary:
           "Lifecycle flags for all three engines; public figures for the active V3 engine as exact raw base-unit strings.",
         reality:
-          "Wired read-only. The join purchase signs from the visitor's own wallet on /join; this spine only reads.",
+          "Wired via the reality endpoint. The join purchase signs from the visitor's own wallet on /join; this spine only reads.",
       },
     ],
   },
@@ -262,7 +262,7 @@ export const protocolOsMap: OsMapDomain[] = [
         binding: { kind: "lifecycle", lifecycle: "FUTURE" },
         notPublic: false,
         summary:
-          "A guided learn, verify, and inspect map over the public read-only surfaces.",
+          "A guided learn, verify, and inspect map over the public surfaces.",
         reality:
           "A first Knowledge OS map is present on the public /learning page today; deeper guided tooling is a future concept.",
       },
@@ -271,7 +271,7 @@ export const protocolOsMap: OsMapDomain[] = [
         label: "Acknowledgement & recognition moments",
         binding: { kind: "lifecycle", lifecycle: "FUTURE" },
         notPublic: false,
-        summary: "Read-only acknowledgement of verified member milestones.",
+        summary: "Acknowledgement of verified member milestones.",
         reality:
           "Concept only. Recognition is structural, never a financial benefit; nothing is wired.",
       },

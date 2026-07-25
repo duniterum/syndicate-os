@@ -144,8 +144,8 @@ export function HomeSeasonSection() {
                   <span className="text-muted-foreground">
                     {seats.toLocaleString("en-US")} / {endSeat.toLocaleString("en-US")} seats
                   </span>
-                  <span className="text-gold">
-                    {seatsLeft?.toLocaleString("en-US")} before {chapter?.name ?? "the era"} seals
+                  <span className="font-sans text-gold">
+                    <span className="font-mono">{seatsLeft?.toLocaleString("en-US")}</span> before {chapter?.name ?? "the era"} seals
                     — forever
                   </span>
                 </div>
@@ -181,7 +181,7 @@ export function HomeSeasonSection() {
                 Take your seat{seasonNumber !== null ? ` — enter Season ${seasonNumber}` : ""} →
               </Button>
             </Link>
-            <p className="mt-3 font-mono text-[11.5px] text-muted-foreground">
+            <p className="mt-3 text-xs text-muted-foreground">
               You earn by what you do, shown on-chain.
             </p>
           </div>
@@ -198,7 +198,7 @@ export function HomeSeasonSection() {
               <b>By merit, never chance. For what you do, never for what you hold.</b> Put up by
               the company.
             </p>
-            <p className="mt-2 font-mono text-[11px] text-muted-foreground">
+            <p className="mt-2 text-xs text-muted-foreground">
               The committed figure will stand here — on-chain and verifiable — the day it
               exists. Never a number without its proof.
             </p>
@@ -216,7 +216,7 @@ export function HomeSeasonSection() {
                   <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground/70">
                     Seats left
                   </div>
-                  <div className="mt-0.5 font-serif text-base">
+                  <div className="mt-0.5 text-base">
                     {seatsLeft.toLocaleString("en-US")}
                   </div>
                 </div>
@@ -226,7 +226,7 @@ export function HomeSeasonSection() {
                   <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground/70">
                     Builders earning
                   </div>
-                  <div className="mt-0.5 font-serif text-base">{buildersEarning}</div>
+                  <div className="mt-0.5 text-base">{buildersEarning}</div>
                 </div>
               )}
             </div>
@@ -289,7 +289,7 @@ export function HomeSeasonSection() {
             </div>
           )}
 
-          <p className="mt-3.5 font-mono text-[11.5px] text-muted-foreground">
+          <p className="mt-3.5 text-xs text-muted-foreground">
             Public, pseudonymous · your rank never drops. Full ranking on its own page.
           </p>
         </div>

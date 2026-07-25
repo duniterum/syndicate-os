@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 
 export default function ProofStudio() {
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-start justify-between mb-8">
         <div>
           <h1 className="type-h1 text-foreground flex items-center gap-3">
@@ -22,7 +22,7 @@ export default function ProofStudio() {
         <TruthLabel variant="DESIGN_PREVIEW" />
       </div>
 
-      <DataStatusNote description="Proof Studio is in a read-only draft state. Do not add transaction parsing or call any RPCs. Form elements are disabled until the live proof adapters and sources are wired." />
+      <DataStatusNote description="Proof Studio is in a draft state. Do not add transaction parsing or call any RPCs. Form elements are disabled until the live proof adapters and sources are wired." />
 
       <Card className="bg-card/40 border-border/50 p-6 md:p-8">
         <div className="flex items-center justify-between mb-6 pb-6 border-b border-border/30">

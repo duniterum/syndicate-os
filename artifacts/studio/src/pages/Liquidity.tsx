@@ -47,7 +47,7 @@ function ActionRail() {
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
           Liquidity actions
         </p>
-        <p className="mt-1 text-xs text-muted-foreground max-w-2xl leading-relaxed">
+        <p className="mt-1 text-xs text-muted-foreground measure leading-relaxed">
           Trade, deposit, or look up the live SYN/USDC pair on Avalanche. These
           are LP-side actions only — membership (USDC → SYN via the sale) is a
           separate flow and deliberately not on this rail.
@@ -137,7 +137,7 @@ export default function Liquidity() {
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
       {/* Why LP matters — the origin's three cards, framing kept. */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+      <div className="auto-grid gap-4 mb-12">
         {WHY_LP_CARDS.map((c) => (
           <Card key={c.title} className="bg-card/40 border-border/50 p-5">
             <h3 className="text-sm font-semibold text-foreground">{c.title}</h3>
@@ -152,14 +152,14 @@ export default function Liquidity() {
       {/* Become an LP — the anchor target: how it works + the Risk Notice. */}
       <section id="provide-liquidity" className="scroll-mt-24">
         <h2 className="type-h2 text-foreground mb-2">Become an LP</h2>
-        <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-6">
+        <p className="text-sm text-muted-foreground leading-relaxed measure mb-6">
           Providing liquidity means depositing SYN and USDC together into the
           pair on Trader Joe, from your own wallet, on the DEX itself. The
           Syndicate runs no liquidity interface and holds no position for you —
           the "Add Liquidity" action above leaves this site.
         </p>
         <h3 className="text-base font-medium text-foreground mb-3">The LP Risk Notice</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div className="auto-grid gap-4 mb-6">
           {LP_RISKS.map((r) => (
             <Card key={r.title} className="bg-card/20 border-border/50 p-4">
               <h4 className="text-sm font-medium text-foreground mb-1">{r.title}</h4>

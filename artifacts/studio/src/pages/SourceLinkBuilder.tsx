@@ -132,8 +132,9 @@ export default function SourceLinkBuilder() {
     <PublicPage
       eyebrow="Referral"
       title="Build your referral link"
-      lead="Validate your referral code against the on-chain registry and build a shareable join link — read-only. Nothing is created, activated, or written from this page."
+      lead="Validate your referral code against the on-chain registry and build a shareable join link. Nothing is created, activated, or written from this page."
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
+      variant="app"
     >
       {/* How referrals work — honest framing (program ACTIVE since 2026-07-13) */}
       <Card className="bg-primary/5 border-primary/20 p-6 mb-12">
@@ -145,7 +146,7 @@ export default function SourceLinkBuilder() {
             <h2 className="text-base font-medium text-foreground mb-2">
               A referral is an on-chain fact
             </h2>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
+            <p className="text-sm text-muted-foreground leading-relaxed measure">
               Referral codes (the protocol calls them sources) live in the
               on-chain registry. Only the protocol owner can register one, and
               only the owner can activate it. Under the active terms, an
@@ -155,12 +156,12 @@ export default function SourceLinkBuilder() {
               paste your code below to check it and, if it is active, build
               your link.
             </p>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mt-2">
+            <p className="text-sm text-muted-foreground leading-relaxed measure mt-2">
               New here?{" "}
               <Link href={ctas.exploreSource.href} className="text-primary hover:underline">
                 How the referral program works
               </Link>{" "}
-              explains it in full — this page is the read-only tool.
+              explains it in full — this page is the validation tool.
             </p>
           </div>
         </div>
@@ -176,7 +177,7 @@ export default function SourceLinkBuilder() {
             <h2 className="text-base font-medium text-foreground">
               Check your referral code
             </h2>
-            <p className="text-sm text-muted-foreground leading-relaxed mt-1 max-w-2xl">
+            <p className="text-sm text-muted-foreground leading-relaxed mt-1 measure">
               The code is validated server-side against the live registry and is
               never echoed back. The link you build carries the code you
               pasted — share it only if it is yours to share. If you add a
@@ -202,7 +203,7 @@ export default function SourceLinkBuilder() {
           data-testid="input-source-id"
         />
         <Button onClick={validate} data-testid="button-validate-source">
-          Validate read-only
+          Validate
         </Button>
 
         {submitted !== null ? (
@@ -216,8 +217,8 @@ export default function SourceLinkBuilder() {
       <h2 className="type-h2 text-foreground mb-2">
         The registry behind this page
       </h2>
-      <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-6">
-        Live read-only linkage between the active engine and the on-chain
+      <p className="text-sm text-muted-foreground leading-relaxed measure mb-6">
+        Live linkage between the active engine and the on-chain
         referral registry. Identical to the read on{" "}
         <Link href="/status" className="text-primary hover:underline">
           /status

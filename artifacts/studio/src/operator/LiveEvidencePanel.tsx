@@ -29,7 +29,7 @@ function Unavailable() {
       data-testid="osmap-live-unavailable"
     >
       <AlertTriangle className="h-3.5 w-3.5 text-warning shrink-0 mt-0.5" />
-      <p className="font-mono text-[10px] tracking-wide text-warning leading-relaxed">
+      <p className="text-xs tracking-wide text-warning leading-relaxed">
         {UNAVAILABLE_COPY}
       </p>
     </div>

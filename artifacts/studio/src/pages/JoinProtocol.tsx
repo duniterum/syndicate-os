@@ -242,8 +242,8 @@ function IntroductionStatus({ sourceId }: { sourceId: string }) {
               ? "The introduction is recorded on-chain inside your own purchase — you always see it before signing, and it never changes your price."
               : line}
           </p>
-          <p className="font-mono text-[10px] text-muted-foreground mt-2">
-            Read-only registry validation · the server never echoes the id back
+          <p className="text-xs text-muted-foreground mt-2">
+            Registry validation · the server never echoes the id back
           </p>
         </div>
       </div>
@@ -434,7 +434,7 @@ function MoneyPath({
           {formatRawUnits(netProtocolRaw, usdcDecimals)} USDC
         </div>
       </div>
-      <p className="text-[11px] text-muted-foreground mt-0.5 mb-2.5 max-w-md">
+      <p className="text-sm text-muted-foreground mt-0.5 mb-2.5 max-w-md">
         The membership money is the company's. It is split on-chain to three wallets, each
         verifiable. No member has a claim on it.
       </p>
@@ -575,7 +575,7 @@ function QuotePanel({
           <div>synPerUsdcRaw {q.synPerUsdcRaw}</div>
           <div>era {q.era}</div>
           {floorRaw !== null ? <div>minSynOut · 0.5% tolerance {floorRaw}</div> : null}
-          <div className="pt-1 text-muted-foreground/70">
+          <div className="pt-1 font-sans text-muted-foreground/70">
             Exact strings from the engine's public quote view · formatted values
             are client-side projections of the raw string · as of{" "}
             {new Date(data.asOf).toISOString().slice(0, 19).replace("T", " ")} UTC
@@ -633,7 +633,7 @@ function JoinEconomics() {
               </div>
             </div>
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl" data-testid="econ-relation">
+          <p className="text-sm text-muted-foreground leading-relaxed measure" data-testid="econ-relation">
             {relation}
           </p>
         </div>
@@ -644,7 +644,7 @@ function JoinEconomics() {
             : "The two prices could not both be read right now — no comparison is shown. Nothing is assumed."}
         </p>
       )}
-      <div className="mt-4 border-t border-border/40 pt-4 space-y-1.5 text-sm text-muted-foreground max-w-2xl">
+      <div className="mt-4 border-t border-border/40 pt-4 space-y-1.5 text-sm text-muted-foreground measure">
         <p>The market is free. It may decide otherwise.</p>
         <p>The pool is a courtesy, not a promise. Liquidity can be thin.</p>
         <p>Your SYN is sent to your wallet at the rate shown — sent, not sold back.</p>
@@ -710,6 +710,7 @@ export default function JoinProtocol() {
       title="Take your seat"
       lead="Choose an amount, or enter your own. Every seat is equal — $5 and $10,000 buy the same seat. The join is two signatures from your own wallet: an exact USDC approval, then the join itself. This app never holds or moves your funds."
       badge={<LifecycleBadge lifecycle="LIVE_ACTION" />}
+      variant="app"
     >
       {/* C1.3 historical gate — blocks the (future) buy path for an unclaimed
           historical wallet; renders nothing for everyone else. */}
@@ -799,7 +800,7 @@ export default function JoinProtocol() {
             <h2 className="text-base font-medium text-foreground mb-2">
               Not enabled here: sending the join transaction
             </h2>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
+            <p className="text-sm text-muted-foreground leading-relaxed measure">
               This app never initiates, signs, or submits a transaction, and
               never asks you to send funds. The join itself is an on-chain USDC
               transaction from your own wallet, and that path is enabled only
@@ -815,8 +816,8 @@ export default function JoinProtocol() {
       <h2 className="type-h2 text-foreground mb-2">
         The engine you would be joining
       </h2>
-      <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-6">
-        Live read-only membership-sale state from the Avalanche C-Chain —
+      <p className="text-sm text-muted-foreground leading-relaxed measure mb-6">
+        Live membership-sale state from the Avalanche C-Chain —
         lifecycle flags for every engine generation and the active engine's
         public figures as exact raw base units. Identical to the read on{" "}
         <Link href="/status" className="text-primary hover:underline">

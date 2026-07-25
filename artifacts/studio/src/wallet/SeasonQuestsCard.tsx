@@ -113,7 +113,7 @@ export default function SeasonQuestsCard() {
                   </span>
                   <span className="font-mono text-[11px] text-primary">+{q.bonusXp} XP</span>
                 </div>
-                <div className="mt-0.5 font-mono text-[10.5px] text-muted-foreground">
+                <div className="mt-0.5 text-xs text-muted-foreground">
                   {words.sub}
                 </div>
                 <div className="mt-2 h-1.5 overflow-hidden rounded border border-border/60 bg-background/60">
@@ -136,7 +136,7 @@ export default function SeasonQuestsCard() {
         </div>
       )}
 
-      <p className="mt-3 border-t border-border/40 pt-2.5 font-mono text-[11px] leading-relaxed text-muted-foreground">
+      <p className="mt-3 border-t border-border/40 pt-2.5 text-xs leading-relaxed text-muted-foreground">
         XP falls on its own when the act is proven on-chain — nothing to claim from an
         operator.
       </p>

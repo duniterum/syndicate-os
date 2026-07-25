@@ -22,8 +22,9 @@ export default function SourceAttribution() {
       title={sourceAttribution.heading}
       lead={sourceAttribution.intro}
       badge={<LifecycleBadge lifecycle={sourceAttributionLifecycle} />}
+      variant="app"
     >
-      <p className="text-lg text-foreground/90 font-light max-w-2xl mb-12">{sourceAttribution.tagline}</p>
+      <p className="text-lg text-foreground/90 font-light measure mb-12">{sourceAttribution.tagline}</p>
 
       {/* ── The program terms (public "Referral" layer over the protocol's
              "Source" vocabulary — ACTIVE since 2026-07-13) ────────────────── */}
@@ -32,7 +33,7 @@ export default function SourceAttribution() {
         <LifecycleBadge lifecycle={referralProgram.lifecycle} />
       </div>
       <p className="font-mono text-xs text-primary mb-4">{referralProgram.poweredBy}</p>
-      <p className="text-base text-muted-foreground leading-relaxed max-w-2xl mb-6">{referralProgram.subheading}</p>
+      <p className="text-base text-muted-foreground leading-relaxed measure mb-6">{referralProgram.subheading}</p>
 
       <Card className="bg-primary/5 border-primary/30 p-5 mb-12">
         <div className="flex items-start gap-3">
@@ -47,7 +48,7 @@ export default function SourceAttribution() {
       </Card>
 
       <h3 className="type-h3 text-foreground mb-4">How it works</h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+      <div className="auto-grid gap-4 mb-12">
         {referralProgram.howItWorks.map((step, i) => (
           <Card key={step} className="bg-card/40 border-border/50 p-4">
             <span className="font-mono text-xs text-primary">{String(i + 1).padStart(2, "0")}</span>
@@ -56,7 +57,7 @@ export default function SourceAttribution() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+      <div className="auto-grid [--auto-grid-col:22rem] gap-8 mb-12">
         <div>
           <h3 className="type-h3 text-foreground mb-4">What counts as eligible</h3>
           <ul className="space-y-2">
@@ -103,7 +104,7 @@ export default function SourceAttribution() {
       <div className="h-px bg-border/50 mb-14" />
 
       <h2 className="type-h2 text-foreground mb-5">The model</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-14">
+      <div className="auto-grid gap-5 mb-14">
         {sourceAttribution.model.map((step, i) => (
           <Card key={step.title} className="bg-card/40 border-border/50 p-5">
             <span className="font-mono text-xs text-primary">{String(i + 1).padStart(2, "0")}</span>
@@ -114,7 +115,7 @@ export default function SourceAttribution() {
       </div>
 
       <h2 className="type-h2 text-foreground mb-5">What's live today</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-14">
+      <div className="auto-grid gap-5 mb-14">
         {sourceAttribution.currentState.map((item) => (
           <Card key={item.title} className="bg-primary/5 border-primary/20 p-5">
             <h3 className="text-base font-medium text-foreground mb-1.5">{item.title}</h3>

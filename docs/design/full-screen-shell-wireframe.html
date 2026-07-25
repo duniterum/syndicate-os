@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Full-screen shell — wireframe for approval</title>
+<style>
+  :root{
+    --bg:#0a0b0d; --panel:#101319; --panel2:#151922; --line:rgba(255,255,255,.08);
+    --line2:rgba(255,255,255,.14); --ink:#e9eaed; --muted:#878d99; --faint:#5b616e;
+    --gold:#d8b45a; --gold-ink:#1a1406; --cyan:#5cd0df;
+    --serif:'Instrument Serif',Georgia,'Times New Roman',serif;
+    --sans:'Work Sans','Inter',system-ui,-apple-system,sans-serif;
+    --mono:'IBM Plex Mono',Menlo,ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#050608;color:var(--ink);font-family:var(--sans);line-height:1.5;
+    -webkit-font-smoothing:antialiased;padding:0 0 80px}
+  .doc{max-width:1500px;margin:0 auto;padding:28px 20px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+  h1.title{font-family:var(--serif);font-size:38px;line-height:1.05;margin:8px 0 6px;font-weight:400}
+  .sub{color:var(--muted);max-width:70ch;margin:0 0 22px}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin:0 0 26px;font-size:12.5px;color:var(--muted)}
+  .legend b{color:var(--ink);font-weight:600}
+  .swatch{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
+  .sectlabel{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--gold);margin:34px 0 12px;display:flex;align-items:center;gap:10px}
+  .sectlabel::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* ── shared shell chrome ── */
+  .frame{background:var(--bg);border:1px solid var(--line2);border-radius:14px;overflow:hidden}
+  .full{width:100%;padding-inline:clamp(16px,3.4vw,40px)} /* the unified full-width gutter contract */
+  .guide{position:relative}
+  .guide::before{content:attr(data-edge);position:absolute;top:6px;left:8px;font-family:var(--mono);
+    font-size:9px;letter-spacing:.12em;color:var(--faint);text-transform:uppercase}
+
+  /* header */
+  .hd{display:flex;align-items:center;gap:18px;height:56px;border-bottom:1px solid var(--line);
+    background:rgba(12,14,18,.9)}
+  .mark{font-family:var(--serif);font-size:19px;letter-spacing:.02em;white-space:nowrap}
+  .mark .d{color:var(--gold)}
+  .nav{display:flex;gap:20px;font-size:13.5px;color:var(--muted);flex:1}
+  .nav span:first-child{color:var(--ink)}
+  .chip{font-family:var(--mono);font-size:11px;color:var(--cyan);border:1px solid rgba(92,208,223,.3);
+    border-radius:999px;padding:4px 10px;display:flex;align-items:center;gap:6px;white-space:nowrap}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+  .cta{background:var(--gold);color:var(--gold-ink);font-weight:600;font-size:13px;border-radius:9px;
+    padding:8px 16px;white-space:nowrap}
+
+  /* app-data body */
+  .hero{padding-block:34px 22px;border-bottom:1px solid var(--line)}
+  .hero .eyebrow{margin-bottom:8px}
+  .hero h2{font-family:var(--serif);font-weight:400;font-size:30px;line-height:1.08;margin:0;max-width:22ch}
+  .hero p{color:var(--muted);max-width:60ch;margin:10px 0 0;font-size:14px}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;padding-block:20px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+  .kpi .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .kpi .v{font-size:26px;font-weight:600;margin-top:6px;font-variant-numeric:tabular-nums}
+  .kpi .v small{font-size:12px;color:var(--muted);font-weight:400}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;padding-block:4px 26px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;min-height:96px}
+  .card h4{margin:0 0 6px;font-size:14.5px}
+  .card p{margin:0;color:var(--muted);font-size:12.5px}
+
+  /* prose body — full-width frame, capped MEASURE */
+  .prose-wrap{padding-block:26px 30px;border-top:1px solid var(--line);position:relative}
+  .measure{max-width:66ch;margin-inline:auto;position:relative}
+  .measure::before,.measure::after{content:"";position:absolute;top:-10px;bottom:-10px;width:1px;
+    background:repeating-linear-gradient(var(--gold) 0 4px,transparent 4px 9px);opacity:.5}
+  .measure::before{left:-22px}.measure::after{right:-22px}
+  .measure h3{font-family:var(--serif);font-weight:400;font-size:23px;margin:0 0 12px}
+  .measure p{color:var(--muted);font-size:14px;margin:0 0 12px}
+  .m-tag{position:absolute;top:-2px;left:50%;transform:translateX(-50%);font-family:var(--mono);
+    font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);opacity:.85}
+
+  /* footer */
+  .ft{border-top:1px solid var(--line);background:rgba(10,12,15,.7);padding-block:30px 20px}
+  .ftgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
+  .ftgrid h5{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 14px;font-weight:500}
+  .ftgrid a{display:block;color:var(--ink);text-decoration:none;font-size:13.5px;margin-bottom:11px;opacity:.92}
+  .ftsoc{display:flex;gap:22px;justify-content:center;border-top:1px solid var(--line);
+    margin-top:24px;padding-top:20px;color:var(--muted);font-size:13px}
+  .ftbase{display:flex;justify-content:space-between;border-top:1px solid var(--line);
+    margin-top:20px;padding-top:18px;color:var(--faint);font-size:11.5px;gap:16px;flex-wrap:wrap}
+
+  .note{font-size:12.5px;color:var(--muted);margin:10px 2px 0;display:flex;gap:8px}
+  .note b{color:var(--gold);font-weight:600}
+
+  /* mobile mock */
+  .phones{display:flex;gap:30px;flex-wrap:wrap;align-items:flex-start}
+  .phone{width:330px;flex:0 0 auto;border:9px solid #1a1d24;border-radius:34px;overflow:hidden;
+    background:var(--bg);box-shadow:0 20px 50px -30px #000}
+  .phone .notch{height:22px;background:#1a1d24}
+  .m-hd{display:flex;align-items:center;justify-content:space-between;height:50px;padding:0 16px;
+    border-bottom:1px solid var(--line);background:rgba(12,14,18,.9)}
+  .m-hd .burger{width:22px;height:16px;display:flex;flex-direction:column;justify-content:space-between}
+  .m-hd .burger i{height:2px;background:var(--muted);border-radius:2px}
+  .m-body{padding:16px}
+  .m-body .eyebrow{font-size:10px;margin-bottom:6px}
+  .m-body h2{font-family:var(--serif);font-weight:400;font-size:24px;line-height:1.1;margin:0 0 8px}
+  .m-body p{color:var(--muted);font-size:13px;margin:0 0 14px}
+  .m-kpi{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+  .m-kpi div{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:11px}
+  .m-kpi .k{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .m-kpi .v{font-size:20px;font-weight:600;margin-top:4px}
+  .m-card{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:13px;margin-bottom:9px}
+  .m-card h4{margin:0 0 4px;font-size:14px}.m-card p{margin:0;font-size:12px}
+  .m-cta{display:block;text-align:center;background:var(--gold);color:var(--gold-ink);font-weight:600;
+    border-radius:9px;padding:13px;font-size:14px;margin:6px 0 4px} /* ≥44px tap target */
+  .m-ft{border-top:1px solid var(--line);margin-top:8px}
+  .m-acc{display:flex;justify-content:space-between;align-items:center;padding:15px 16px;
+    border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted)}
+  .m-acc .chev{color:var(--faint)}
+  .badge-live{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--cyan);border:1px solid rgba(92,208,223,.35);border-radius:5px;
+    padding:2px 6px;vertical-align:1px;margin-left:7px}
+  .callout{background:linear-gradient(180deg,rgba(216,180,90,.08),transparent);
+    border:1px solid rgba(216,180,90,.22);border-radius:12px;padding:16px 18px;margin:14px 0 0}
+  .callout h4{margin:0 0 6px;font-size:14px;color:var(--gold)}
+  .callout ul{margin:6px 0 0;padding-left:18px;color:var(--muted);font-size:13px}
+  .callout li{margin-bottom:5px}
+  @media(max-width:820px){.ftgrid{grid-template-columns:1fr 1fr}h1.title{font-size:30px}}
+</style>
+</head>
+<body>
+<div class="doc">
+  <p class="eyebrow">Syndicate OS · wireframe for founder approval</p>
+  <h1 class="title">Full-screen shell — header · body · footer, one aligned width</h1>
+  <p class="sub">The goal: one full-width frame shared by the header, the page body, and the footer — no more
+    narrow columns with empty margins. Text on long-form pages keeps a comfortable reading width <em>inside</em>
+    that full frame (the AAA readability rule). Shown desktop first, then mobile.</p>
+
+  <div class="legend">
+    <span><span class="swatch" style="background:var(--gold)"></span><b>Gold</b> — seat / identity / action</span>
+    <span><span class="swatch" style="background:var(--cyan)"></span><b>Cyan</b> — live / verified</span>
+    <span><span class="swatch" style="background:repeating-linear-gradient(90deg,var(--gold) 0 4px,transparent 4px 9px)"></span>dashed guides = reading-width limit on prose</span>
+  </div>
+
+  <!-- ============ DESKTOP ============ -->
+  <div class="sectlabel">Desktop — the full-width frame (edge-to-edge with breathing gutters)</div>
+  <div class="frame guide" data-edge="full-width frame · same left/right edges top to bottom">
+
+    <!-- header -->
+    <div class="hd full">
+      <div class="mark">◆ THE <span class="d">SYNDICATE</span></div>
+      <div class="nav"><span>Protocol</span><span>Economy</span><span>Membership</span><span>Chronicle</span><span>Docs</span></div>
+      <div class="chip"><span class="dot"></span>Avalanche · Live</div>
+      <div class="cta">Join</div>
+    </div>
+
+    <!-- app-data body -->
+    <div class="full">
+      <div class="hero">
+        <p class="eyebrow">Protocol · live chain read</p>
+        <h2>Verify the protocol, end to end.</h2>
+        <p>Receipts, routing, numbered burns and referral payments — each read live, each with its verify link.</p>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><div class="k">Members</div><div class="v">14</div></div>
+        <div class="kpi"><div class="k">SYN burned</div><div class="v">16,540 <small>SYN</small></div></div>
+        <div class="kpi"><div class="k">Treasury</div><div class="v">$—</div></div>
+        <div class="kpi"><div class="k">Introductions</div><div class="v">7</div></div>
+        <div class="kpi"><div class="k">Season</div><div class="v">S2</div></div>
+        <div class="kpi"><div class="k">Chain</div><div class="v">43114</div></div>
+      </div>
+      <div class="cards">
+        <div class="card"><h4>Membership receipts</h4><p>Every join, on the indexed record.</p></div>
+        <div class="card"><h4>Source attribution</h4><p>Live and paying, inside the buyer's tx.</p></div>
+        <div class="card"><h4>Proof of Fire</h4><p>Every burn, numbered.</p></div>
+        <div class="card"><h4>Archive memory</h4><p>Artifacts minted on-chain.</p></div>
+      </div>
+    </div>
+
+    <!-- prose body -->
+    <div class="full prose-wrap">
+      <div class="measure">
+        <span class="m-tag">↔ reading width (~66ch) — centered in the full frame</span>
+        <h3>A long-form page (Whitepaper · Terms · Risk)</h3>
+        <p>The frame still fills the screen — the background, the header above and the footer below all reach
+          the same edges. But the running text holds a comfortable measure so lines never stretch across the
+          whole monitor and become tiring to read.</p>
+        <p>This is the one place "full screen" means "full frame, readable column" rather than "stretch the
+          text." It is the grade-AAA standard, and it is a law we already keep.</p>
+      </div>
+    </div>
+
+    <!-- footer -->
+    <div class="full ft">
+      <div class="ftgrid">
+        <div><h5>Protocol</h5><a>Proof</a><a>Protocol Map</a><a>Status</a><a>Contracts</a><a>Activity</a><a>Fire Ledger</a><a>Liquidity</a><a>Referral Program</a></div>
+        <div><h5>Learn</h5><a>Whitepaper</a><a>Tokenomics</a><a>FAQ</a><a>Docs</a><a>Learn</a><a>Recognition</a><a>Archive</a><a>Chronicle</a></div>
+        <div><h5>Membership</h5><a>Membership</a><a>Join</a><a>Wallet</a><a>Toolkit</a><a>Referral Link</a><a>Support</a></div>
+        <div><h5>Legal</h5><a>Terms of Use</a><a>Privacy Policy</a><a>Risk Disclosure</a></div>
+      </div>
+      <div class="ftsoc"><span>𝕏 X (Twitter)</span><span>◇ Telegram — Announcements</span><span>◇ Telegram — Community</span></div>
+      <div class="ftbase"><span>© 2026 The Syndicate. All rights reserved.</span><span>Every public figure is a live chain read — don't trust, verify.</span></div>
+    </div>
+  </div>
+  <p class="note"><b>▲</b><span>Header, body and footer now share the exact same left/right edges — the footer no longer sits narrower than the header (today's defect).</span></p>
+
+  <!-- ============ MOBILE ============ -->
+  <div class="sectlabel">Mobile — grade-AAA (≥44px targets · stacked columns · footer accordion · safe-areas)</div>
+  <div class="phones">
+
+    <!-- phone 1: app body -->
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="m-hd">
+        <div class="mark" style="font-size:15px">◆ <span class="d">SYNDICATE</span></div>
+        <div class="burger"><i></i><i></i><i></i></div>
+      </div>
+      <div class="m-body">
+        <p class="eyebrow">Protocol · live chain read</p>
+        <h2>Verify the protocol, end to end.</h2>
+        <p>Each figure read live, with its verify link.</p>
+        <div class="m-kpi">
+          <div><div class="k">Members</div><div class="v">14</div></div>
+          <div><div class="k">Burned</div><div class="v">16,540</div></div>
+        </div>
+        <div class="m-card"><h4>Source attribution</h4><p>Live and paying.</p></div>
+        <div class="m-card"><h4>Proof of Fire</h4><p>Every burn, numbered.</p></div>
+        <a class="m-cta">Join</a>
+      </div>
+    </div>
+
+    <!-- phone 2: footer accordion -->
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="m-hd">
+        <div class="mark" style="font-size:15px">◆ <span class="d">SYNDICATE</span></div>
+        <div class="burger"><i></i><i></i><i></i></div>
+      </div>
+      <div class="m-body" style="padding-bottom:6px">
+        <div class="measure" style="max-width:none">
+          <h3 style="font-size:20px">Reading width on phone</h3>
+          <p style="font-size:13px;color:var(--muted)">On a phone the column already is the screen — full gutters,
+            no side-scroll, comfortable line length by default.</p>
+        </div>
+      </div>
+      <div class="m-ft">
+        <div class="m-acc">Protocol <span class="chev">⌄</span></div>
+        <div class="m-acc">Learn <span class="chev">⌄</span></div>
+        <div class="m-acc">Membership <span class="chev">⌄</span></div>
+        <div class="m-acc">Legal <span class="chev">⌄</span></div>
+        <div style="padding:16px;color:var(--faint);font-size:11px">© 2026 The Syndicate.<br>Don't trust, verify.</div>
+      </div>
+    </div>
+  </div>
+  <p class="note"><b>▲</b><span>Footer columns collapse into tap-to-open sections so the phone never shows four cramped columns; every tap target is ≥44px; no horizontal scroll at any width from 320px up.</span></p>
+
+  <!-- what changes -->
+  <div class="callout">
+    <h4>What this wireframe locks (before any code)</h4>
+    <ul>
+      <li><b>One width contract</b> for header + body + footer — the footer stops being narrower than the header.</li>
+      <li><b>App / data pages</b> (Proof, Activity, Wallet, Referral…) fill the width; columns multiply, no empty margins.</li>
+      <li><b>Long-text pages</b> (Whitepaper, Terms, Privacy, Risk) keep a readable column centered in the full frame.</li>
+      <li><b>Mobile</b> handled to AAA at every breakpoint 320→2560: stacked columns, footer accordion, ≥44px targets, safe-areas.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

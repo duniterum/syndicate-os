@@ -119,7 +119,7 @@ export default function SeasonStandingCard() {
           }}
           aria-hidden="true"
         >
-          <div className="grid h-[60px] w-[60px] place-items-center rounded-full bg-card font-serif text-[13px] text-gold">
+          <div className="grid h-[60px] w-[60px] place-items-center rounded-full bg-card text-[13px] text-gold">
             {rankLabel}
           </div>
         </div>
@@ -165,7 +165,7 @@ export default function SeasonStandingCard() {
             <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground/70">
               Your XP
             </div>
-            <div className="mt-0.5 font-serif text-[17px] text-primary tabular-nums">
+            <div className="mt-0.5 text-[17px] text-primary tabular-nums">
               {(view?.seasonXp ?? 0).toLocaleString("en-US")}
             </div>
           </div>
@@ -173,14 +173,14 @@ export default function SeasonStandingCard() {
             <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground/70">
               Your rank
             </div>
-            <div className="mt-0.5 font-serif text-[17px] text-gold">{rankLabel}</div>
+            <div className="mt-0.5 text-[17px] text-gold">{rankLabel}</div>
           </div>
           {axisNames !== "" && (
             <div>
               <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground/70">
                 Your axes
               </div>
-              <div className="mt-0.5 font-serif text-[15px] text-foreground">{axisNames}</div>
+              <div className="mt-0.5 text-[15px] text-foreground">{axisNames}</div>
             </div>
           )}
           <div>
@@ -190,7 +190,7 @@ export default function SeasonStandingCard() {
               </span>
               <LifecycleBadge lifecycle="FUTURE" />
             </div>
-            <div className="mt-0.5 font-mono text-[11px] text-muted-foreground">
+            <div className="mt-0.5 text-xs text-muted-foreground">
               the committed figure stands here the day it exists
             </div>
           </div>
@@ -203,7 +203,7 @@ export default function SeasonStandingCard() {
         </p>
       )}
 
-      <p className="mt-3 border-t border-border/40 pt-2.5 font-mono text-[11px] leading-relaxed text-muted-foreground">
+      <p className="mt-3 border-t border-border/40 pt-2.5 text-xs leading-relaxed text-muted-foreground">
         The season gives status — a rank, a badge, a place in the Chronicle. When the company
         funds a season reward it&apos;s real USDC for effort — paid openly, every amount shown.
         A rank, once earned, never drops.

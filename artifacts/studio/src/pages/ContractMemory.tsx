@@ -21,6 +21,7 @@ export default function ContractMemory() {
       title="The protocol economy — live holdings, plus contract memory."
       lead={contractMemoryIntro}
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
+      variant="app"
     >
       <div className="mb-12">
         <ProtocolAssetsCard />
@@ -46,7 +47,7 @@ export default function ContractMemory() {
               <h2 className="type-h2 text-foreground mb-5">
                 {contractMemoryCategoryText[cat]}
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="auto-grid gap-5">
                 {entries.map((e) => (
                   <Card key={e.id} className="bg-card/40 border-border/50 p-5">
                     <div className="flex items-start justify-between gap-3 mb-2">
@@ -67,10 +68,10 @@ export default function ContractMemory() {
 
       <section className="mt-16">
         <h2 className="type-h2 text-foreground mb-1">
-          Live read-only reality
+          Live reality
         </h2>
-        <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-6">
-          Beyond memory: strictly read-only public reads of contract code presence, membership-sale
+        <p className="text-sm text-muted-foreground leading-relaxed measure mb-6">
+          Beyond memory: public reads of contract code presence, membership-sale
           lifecycle, and archive configuration on Avalanche C-Chain. The active V3 sale engine&apos;s
           public figures are surfaced as exact raw base units. The panel below only reads — joining
           and referral payments happen in transactions you sign from your own wallet on the Join

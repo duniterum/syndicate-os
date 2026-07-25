@@ -65,7 +65,7 @@ export function MemberAppPage({ eyebrow, title, lead, badge, children, kind = "c
               {badge ? <div className="mb-3">{badge}</div> : null}
               <h1 className="type-h2 text-foreground">{title}</h1>
               {lead ? (
-                <p className="type-body text-muted-foreground max-w-3xl mt-3">{lead}</p>
+                <p className="type-body text-muted-foreground measure mt-3">{lead}</p>
               ) : null}
             </header>
           ) : null}

@@ -199,7 +199,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/92 shadow-[0_1px_0_rgba(255,255,255,0.45)_inset,0_24px_60px_-52px_hsl(var(--gold)/0.65)] backdrop-blur-xl dark:border-gold/20 dark:bg-surface-command/94 dark:shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_28px_70px_-58px_hsl(var(--gold)/0.85)]"
       >
-        <div className="mx-auto flex h-[58px] w-full max-w-[1840px] items-center justify-between gap-2 px-4 md:px-5 2xl:px-7">
+        <div className="flex h-[58px] w-full items-center justify-between gap-2 px-4 sm:px-6 lg:px-8">
           <div className="flex min-w-0 items-center gap-4 2xl:gap-6">
             <Wordmark />
 
@@ -368,8 +368,34 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <main className="flex flex-1 flex-col bg-background">{children}</main>
 
       <footer className="border-t border-border/50 bg-muted/20 py-12 md:py-16">
-        <div className="container mx-auto px-4">
-          <div className="mb-12 grid grid-cols-2 gap-8 md:grid-cols-4">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          {/* Mobile (<sm): tap-to-open accordion so 25 links stay tidy; targets ≥44px. */}
+          <div className="mb-8 sm:hidden">
+            {footerGroups.map((group) => (
+              <details key={group.heading} className="group border-b border-border/50">
+                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45">
+                  <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                    {group.heading}
+                  </span>
+                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-open:rotate-180" />
+                </summary>
+                <ul className="space-y-3 pb-4 pt-1">
+                  {group.items.map((item) => (
+                    <li key={item.id}>
+                      <Link
+                        href={item.path}
+                        className="inline-flex min-h-11 items-center rounded text-sm text-foreground transition-colors hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45"
+                      >
+                        {navLabel(item, "footer")}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ))}
+          </div>
+          {/* Desktop (sm+): full-width column grid, aligned to the header edges. */}
+          <div className="mb-12 hidden gap-8 sm:grid sm:grid-cols-2 lg:grid-cols-4">
             {footerGroups.map((group) => (
               <div key={group.heading}>
                 <h3 className="mb-4 font-mono text-xs uppercase tracking-widest text-muted-foreground">

@@ -188,7 +188,7 @@ export default function MemberYourSeat() {
             <button
               type="button"
               onClick={() => copyProof(status.receipt!.explorerUrl)}
-              className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1.5 font-mono text-xs text-muted-foreground transition-colors hover:border-gold/40 hover:text-foreground"
+              className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs text-muted-foreground transition-colors hover:border-gold/40 hover:text-foreground"
               data-testid="button-standing-receipt-share"
             >
               {copied ? (
@@ -201,7 +201,7 @@ export default function MemberYourSeat() {
             {/* R-BIND: the founding purchase reopens as its full ticket. */}
             <Link
               href="/receipts"
-              className="inline-flex items-center rounded-md border border-border px-2.5 py-1.5 font-mono text-xs text-proof/80 transition-colors hover:border-gold/40 hover:text-proof"
+              className="inline-flex items-center rounded-md border border-border px-2.5 py-1.5 text-xs text-proof/80 transition-colors hover:border-gold/40 hover:text-proof"
               data-testid="link-standing-open-binder"
             >
               Open ticket

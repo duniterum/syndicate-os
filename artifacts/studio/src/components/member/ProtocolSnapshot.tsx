@@ -74,7 +74,7 @@ export function ProtocolSnapshot() {
       />
       <Link
         href="/proof"
-        className="mt-3 inline-flex font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground"
+        className="mt-3 inline-flex text-xs text-muted-foreground hover:text-foreground"
       >
         Every figure is a live chain read — verify →
       </Link>

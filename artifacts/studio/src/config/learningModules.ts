@@ -34,7 +34,7 @@ export const learningModules: LearningModule[] = [
     title: "How to read this foundation",
     summary: "Every unwired value is truth-labelled, never faked.",
     topics: [
-      "Lifecycle labels tell you the honest status of each surface (read-only proof, paused, pending, future).",
+      "Lifecycle labels tell you the honest status of each surface (proof, paused, pending, future).",
       "Nothing invents numbers, members, or balances — if something can't be read, the site says so.",
       "The Status page is the authoritative ledger of what is live versus pending.",
     ],
@@ -106,7 +106,7 @@ export interface KnowledgeOsStep {
 export const knowledgeOsMap = {
   heading: "The Knowledge OS map",
   intro:
-    "How to move from reading to verifying. Each step points at a real, read-only surface that exists today — this is understanding and inspection, not a task you complete to unlock anything.",
+    "How to move from reading to verifying. Each step points at a real surface that exists today — this is understanding and inspection, not a task you complete to unlock anything.",
   steps: [
     {
       id: "learn",
@@ -134,9 +134,9 @@ export const knowledgeOsMap = {
     {
       id: "inspect",
       verb: "Inspect",
-      title: "Validate a referral link, read-only",
+      title: "Validate a referral link",
       detail:
-        "Validate a referral code against the on-chain registry, or build a shareable referral link — read-only, no transaction.",
+        "Validate a referral code against the on-chain registry, or build a shareable referral link — no transaction.",
       href: "/source",
     },
     {

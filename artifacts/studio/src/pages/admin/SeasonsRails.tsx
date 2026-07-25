@@ -150,7 +150,7 @@ export function SeasonsRailsPanel() {
                   <>The season</>
                 )}
               </h3>
-              <span className="font-mono text-[11px] text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 bounded by the chain — seals when the era fills
               </span>
             </div>
@@ -192,7 +192,7 @@ export function SeasonsRailsPanel() {
               </div>
               <div className="flex items-baseline justify-between gap-3">
                 <dt className={kvLabel}>Next step (engine)</dt>
-                <dd className="text-right font-mono text-xs text-foreground">
+                <dd className="text-right text-xs text-foreground">
                   the era fills → auto-seal → seal round
                 </dd>
               </div>
@@ -239,7 +239,7 @@ export function SeasonsRailsPanel() {
                 </li>
               ))}
             </ol>
-            <p className="mt-3 border-t border-border/40 pt-2.5 font-mono text-[11px] leading-relaxed text-muted-foreground">
+            <p className="mt-3 border-t border-border/40 pt-2.5 text-xs leading-relaxed text-muted-foreground">
               Snapshot, seal, on-chain fingerprint and the seal round: automatic. The
               operator only promotes the Chronicle entry.
             </p>
@@ -280,7 +280,7 @@ export function SeasonsRailsPanel() {
               </tbody>
             </table>
           </div>
-          <p className="mt-2 font-mono text-[11px] text-muted-foreground">
+          <p className="mt-2 text-xs text-muted-foreground">
             Verify, not trust — on-chain XP links to its proof; further quest classes join
             WITH their feeders, never before. One identity (seat · SIWE); XP is
             non-transferable and carries no cash value.
@@ -291,7 +291,7 @@ export function SeasonsRailsPanel() {
         <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2">
           {top3.map((r) => (
             <span key={r.display} className="font-mono text-xs text-muted-foreground">
-              <span className="font-serif text-sm text-gold">{r.rank}</span>{" "}
+              <span className="text-sm text-gold">{r.rank}</span>{" "}
               <span className="text-foreground">{r.display}</span>{" "}
               <span className="text-primary tabular-nums">
                 {r.xp.toLocaleString("en-US")} XP
@@ -319,7 +319,7 @@ export function SeasonsRailsPanel() {
               <CollapsibleContent>
                 <ul className="space-y-1.5 px-4 pb-4">
                   {season.notes.map((n) => (
-                    <li key={n} className="font-mono text-[11px] leading-relaxed text-muted-foreground">
+                    <li key={n} className="text-xs leading-relaxed text-muted-foreground">
                       {n}
                     </li>
                   ))}
@@ -379,7 +379,7 @@ export function SeasonsRailsPanel() {
                 </dd>
               </div>
             </dl>
-            <p className="mt-3 border-t border-border/40 pt-2.5 font-mono text-[11px] leading-relaxed text-muted-foreground">
+            <p className="mt-3 border-t border-border/40 pt-2.5 text-xs leading-relaxed text-muted-foreground">
               Rules are anchored at season open (rulesHash on-chain): curve, weights, caps,
               floors, interim policy. Giving more or earlier is always allowed — taking or
               delaying, never.
@@ -420,7 +420,7 @@ export function SeasonsRailsPanel() {
                 </p>
               </li>
             </ol>
-            <p className="mt-3 border-t border-border/40 pt-2.5 font-mono text-[11px] leading-relaxed text-muted-foreground">
+            <p className="mt-3 border-t border-border/40 pt-2.5 text-xs leading-relaxed text-muted-foreground">
               Published for verification, then paid — never a bare “automatic”. Every round
               publishes its standings + root during the pending window (you may revoke it —
               a right, never a duty; a pause-only guardian covers founder-offline); after
@@ -454,7 +454,7 @@ export function SeasonsRailsPanel() {
               pause · promote the sealed season to the Chronicle.
             </li>
           </ol>
-          <p className="mt-3 border-t border-border/40 pt-2.5 font-mono text-[11px] leading-relaxed text-muted-foreground">
+          <p className="mt-3 border-t border-border/40 pt-2.5 text-xs leading-relaxed text-muted-foreground">
             The executor is a narrow hot key — seal fingerprints, rounds, claims; it can
             never exceed the escrowed pot, never rotate an active root, never withdraw. The
             console will show its gas balance; the bell alerts when low.

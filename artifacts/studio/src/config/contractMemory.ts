@@ -50,7 +50,7 @@ export interface ContractMemoryEntry {
 
 /** Page-level honesty preamble for the contract memory surface. */
 export const contractMemoryIntro =
-  "The protocol economy in two honest layers: a live, read-only view of what the protocol holds today, and canon memory of the contracts behind it — roles and structure only, with no addresses or member records ever shown.";
+  "The protocol economy in two honest layers: a live view of what the protocol holds today, and canon memory of the contracts behind it — roles and structure only, with no addresses or member records ever shown.";
 
 export const contractMemory: ContractMemoryEntry[] = [
   // --- Tokens --------------------------------------------------------------
@@ -112,7 +112,7 @@ export const contractMemory: ContractMemoryEntry[] = [
     category: "membership",
     domain: "MEMBERSHIP_SEAT_RECEIPT",
     lifecycle: "READ_ONLY_PROOF",
-    note: "The active membership-sale engine in canon. Its lifecycle flags and public figures — available SYN, gross USDC received, and receipt count — are surfaced read-only on /status; no purchase, wallet, or transaction surface exists here.",
+    note: "The active membership-sale engine in canon. Its lifecycle flags and public figures — available SYN, gross USDC received, and receipt count — are surfaced on /status; no purchase, wallet, or transaction surface exists here.",
   },
   // --- Source attribution --------------------------------------------------
   {

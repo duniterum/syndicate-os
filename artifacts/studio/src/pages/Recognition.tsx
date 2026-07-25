@@ -1,10 +1,9 @@
 import { Link } from "wouter";
 import { MemberAppPage } from "@/components/member/MemberAppPage";
-import { TruthLabel } from "@/components/TruthLabel";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { surfaceStatus, type DisplayLifecycle } from "@/config/truthStatus";
+import { type DisplayLifecycle } from "@/config/truthStatus";
 import { ctas } from "@/config/sharedCopy";
 
 interface Dimension {
@@ -13,29 +12,31 @@ interface Dimension {
   lifecycle: DisplayLifecycle;
 }
 
+// TRUTH REFRAME (founder, 2026-07-25 — DONE-IS-DONE): recognition is LIVE.
+// The /season board ranks contribution in public and member quests credit
+// real acts today; only the long-term STANDING model is still to come. The
+// three live dimensions read live; "coming later" is scoped strictly to the
+// standing figure (its FUTURE badge is the ONLY future badge on this page).
 const dimensions: Dimension[] = [
   {
-    title: "Verified participation",
-    body: "Recognition begins with participation that can be verified against source — not self-claimed.",
-    lifecycle: "FUTURE",
+    title: "The season board",
+    body: "Contribution is ranked in public on the live season board — each standing read from verified on-chain acts, never self-claimed.",
+    lifecycle: "READ_ONLY_PROOF",
+  },
+  {
+    title: "Member quests",
+    body: "Quests credit real acts as they happen, own-row on your member dashboard — recognition you can see today.",
+    lifecycle: "READ_ONLY_PROOF",
   },
   {
     title: "Source attribution",
-    body: "Who opened the door is acknowledged as a growth contribution. The referral registry is live and paying today; its recognition dimension arrives with the recognition model.",
-    lifecycle: "FUTURE",
-  },
-  {
-    title: "Archive memory",
-    // AUD-TRUTH-2 (founder prod walk, 2026-07-16): "Not live yet" DIED — the
-    // archive mints and the chronicle publishes TODAY; what remains future is
-    // this recognition DIMENSION (same honest split as the source card).
-    body: "Contributions that endure become part of the protocol's archive and chronicle — both open and publishing today; this recognition dimension arrives with the recognition model.",
-    lifecycle: "FUTURE",
+    body: "Who opened the door is acknowledged as a growth contribution — the referral registry is live and paying today.",
+    lifecycle: "READ_ONLY_PROOF",
   },
   {
     title: "Standing over time",
-    body: "Recognition accrues structurally as a record of contribution — a design concept today.",
-    lifecycle: "DESIGN_CONCEPT",
+    body: "A single long-term standing figure — recognition accrued structurally across seasons — is not computed yet. It stays a design concept until its model is built.",
+    lifecycle: "FUTURE",
   },
 ];
 
@@ -44,10 +45,9 @@ export default function Recognition() {
     <MemberAppPage
       eyebrow="Recognition"
       title="Recognition, not a financial benefit."
-      lead="Recognition is structural: it acknowledges verified participation and contribution to The Syndicate. It is never a financial benefit, a security, or a promise of gain — and it is a future concept: no standing figure is computed today."
-      badge={<TruthLabel variant={surfaceStatus.recognition} />}
+      lead="Recognition is structural: it acknowledges verified participation and contribution to The Syndicate — never a financial benefit, a security, or a promise of gain. It is live today: the season board ranks contribution in public and member quests credit real acts. What is still to come is the long-term standing figure — a single record of contribution over time, not computed yet."
     >
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-14">
+      <div className="auto-grid gap-5 mb-14">
         {dimensions.map((d) => (
           <Card key={d.title} className="bg-card/40 border-border/50 p-5">
             <div className="flex items-start justify-between gap-3 mb-2">
@@ -60,8 +60,11 @@ export default function Recognition() {
       </div>
 
       <div className="flex flex-wrap gap-3">
+        <Link href="/season">
+          <Button>See the season board</Button>
+        </Link>
         <Link href={ctas.exploreSource.href}>
-          <Button>{ctas.exploreSource.label}</Button>
+          <Button variant="outline">{ctas.exploreSource.label}</Button>
         </Link>
         <Link href={ctas.learn.href}>
           <Button variant="outline">{ctas.learn.label}</Button>

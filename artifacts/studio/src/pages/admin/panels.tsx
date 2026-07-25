@@ -182,7 +182,7 @@ const sourcesDef: PanelDef = {
   title: "Sources & Introductions",
   icon: Link2,
   tooltip:
-    "Source-registry and link-generation postures from GET /api/source-status, plus the live reality spine's read-only source group.",
+    "Source-registry and link-generation postures from GET /api/source-status, plus the live reality spine's source group.",
 };
 const packagesDef: PanelDef = {
   id: "packages",
@@ -217,7 +217,7 @@ const flagsDef: PanelDef = {
   title: "Feature Flags",
   icon: ToggleLeft,
   tooltip:
-    "Read-only view of this bundle's own build constants plus the server-side exposure flag (not readable here — shown fail-closed). These gates are visibility, not authentication.",
+    "Shows this bundle's own build constants plus the server-side exposure flag (not readable here — shown fail-closed). These gates are visibility, not authentication.",
 };
 const healthDef: PanelDef = {
   id: "health",
@@ -522,7 +522,7 @@ export function AdminSourcesPanel() {
         </div>
       </div>
       <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-        Source ids validate read-only on{" "}
+        Source ids validate on{" "}
         <Link href="/source" className="text-proof hover:underline">
           /source
         </Link>
@@ -643,7 +643,7 @@ export function AdminFlagsPanel() {
             <TableRow>
               <TableHead>Flag</TableHead>
               <TableHead>Scope</TableHead>
-              <TableHead className="text-right">State (read-only)</TableHead>
+              <TableHead className="text-right">State</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -690,7 +690,7 @@ export function AdminFlagsPanel() {
               <TableCell className="text-xs text-muted-foreground">
                 Server-side environment
               </TableCell>
-              <TableCell className="text-right font-mono text-[11px] text-muted-foreground">
+              <TableCell className="text-right text-xs text-muted-foreground">
                 server-side — not readable here (fail-closed)
               </TableCell>
             </TableRow>

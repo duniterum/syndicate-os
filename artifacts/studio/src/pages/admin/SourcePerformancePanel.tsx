@@ -249,9 +249,10 @@ export function SourcePerformancePanel() {
               </table>
             </div>
           )}
-          <p className="mt-3 font-mono text-xs text-muted-foreground">
-            As of block {state.asOfBlock.toLocaleString("en-US")} — the
-            read-model&apos;s own clock, stated, never assumed.
+          <p className="mt-3 text-xs text-muted-foreground">
+            As of block{" "}
+            <span className="font-mono">{state.asOfBlock.toLocaleString("en-US")}</span>{" "}
+            — the read-model&apos;s own clock, stated, never assumed.
           </p>
         </>
       )}

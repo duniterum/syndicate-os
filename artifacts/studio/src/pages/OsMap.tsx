@@ -44,9 +44,9 @@ export default function OsMap() {
   const surface = getSurfaceByRoute("/os-map");
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
+    <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
       <div
-        className="mb-6 rounded-md border border-warning/40 bg-warning/10 px-4 py-3 font-mono text-[11px] sm:text-xs tracking-wide text-warning"
+        className="mb-6 rounded-md border border-warning/40 bg-warning/10 px-4 py-3 text-xs sm:text-xs tracking-wide text-warning"
         data-testid="banner-os-map-internal"
       >
         {OS_MAP_PAGE.banner}

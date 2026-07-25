@@ -191,8 +191,8 @@ export function MemberReferralDashboard({ tab = "overview" }: { tab?: ReferralTa
             </p>
           </div>
           {s ? (
-            <span className="ml-auto shrink-0 self-center font-mono text-xs text-muted-foreground whitespace-nowrap hidden sm:block">
-              recorded up to block {s.asOfBlock.toLocaleString("en-US")}
+            <span className="ml-auto shrink-0 self-center text-xs text-muted-foreground whitespace-nowrap hidden sm:block">
+              recorded up to block <span className="font-mono">{s.asOfBlock.toLocaleString("en-US")}</span>
             </span>
           ) : null}
         </div>

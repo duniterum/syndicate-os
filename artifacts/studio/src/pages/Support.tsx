@@ -10,7 +10,8 @@ export default function Support() {
       eyebrow="Help & review"
       title={supportIntake.heading}
       lead={supportIntake.intro}
-      badge={<LifecycleBadge lifecycle="NOT_ACTIVE" />}
+      badge={<LifecycleBadge lifecycle="PREVIEW" />}
+      variant="app"
     >
       <div className="rounded-lg border border-border/50 bg-muted/20 p-4 flex items-start gap-3 mb-12">
         <div className="p-1.5 rounded-md bg-primary/10 text-primary shrink-0 mt-0.5">
@@ -20,7 +21,7 @@ export default function Support() {
       </div>
 
       <h2 className="type-h2 text-foreground mb-5">What you'll be able to raise</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-14">
+      <div className="auto-grid gap-5 mb-14">
         {supportIntake.channels.map((c) => (
           <Card key={c.id} className="bg-card/40 border-border/50 p-5">
             <div className="flex items-start justify-between gap-3 mb-2">

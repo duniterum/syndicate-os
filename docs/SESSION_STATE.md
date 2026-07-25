@@ -7,6 +7,31 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > contract. Everything below this block is the dated RECORD of how it got here —
 > read it only if you need the why.*
 >
+> ## ▶ 2026-07-25 — IN FLIGHT (UNCOMMITTED): THE EDGE-TO-EDGE HARMONIZATION ARC
+> Founder-driven full-screen sweep (footer → whole site). Ruling (QuickNode benchmark): bord-à-bord,
+> **no fixed-px page cap**, fill by **multiplying columns** (auto-fit), readability in **`ch`** — this
+> **supersedes `CANON_ACCESS_MODEL` §C/§4** where they named a px cap. APPLIED in working tree +
+> verified local (typecheck · full guards · rig 390/1920, **0 horizontal overflow**) — **PENDING the
+> founder's preview GO → commit → deploy** (🚀 DEPLOY — BATCHABLE: client-only, additive, fail-closed).
+> Shipped this slice: the shell + **20 surfaces** + primitives `.auto-grid` / `.measure` (68ch) +
+> the BLOCKING `guard-fluid-surface` (page-cap debt counter = 1). **PLUS the FONT harmonization**
+> (founder's /season "patchwork" complaint): benchmarked font law (serif=display · Work Sans=body/
+> labels/stats · mono=data/addresses/code/UPPERCASE-eyebrows only, NEVER prose); 11-agent audit
+> (610 usages/115 files → 54 fixed, ~51 elements); BLOCKING `guard-font-discipline`. Two new guards
+> in the chain. **PLUS finished from the design system (2026-07-25):** the founder-approved
+> **1-file design system** (`docs/design/THE_SYNDICATE_DESIGN_SYSTEM.html` — benchmarked
+> Stripe/Linear/Revolut/Kraken/Binance; type/spacing/section-rhythm/components/color/copy law);
+> **"read only" removed** from 51 user-facing strings (comments left); **4 truth fossils fixed**
+> (fire-ledger pagination · whitepaper "seasons"→VERIFIED · **Recognition reframed LIVE** ·
+> Support humanized); **prose pages full-screen** (PublicPage prose shell → full-width frame +
+> `.measure`; Terms/Privacy/Risk bounded) → **page-cap debt = 0**. **OPEN (next):** the home page
+> **SECTION RHYTHM** (bespoke PublicHome bands built FROM the section template) · sub-12px floor
+> sweep · MemberNotifications shell-gating. The retired original OPEN item — `PublicPage` prose shell
+> (6 text/rail pages + TeaserSurface) · `MemberNotifications` shell-gating · slice 2 (truth fossils) ·
+> slice 3 (sub-12px floor + humanize copy) · the `.type-h2` serif decision. So "Next = S3 only" above
+> is no longer the whole truth — **this arc runs alongside S3.** Dossier:
+> `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md`.
+>
 > ## (a) LIVE IN PROD RIGHT NOW — last sealed cycle `6097324` (Replit green, founder-pasted)
 > - **`/season`** — the public recognition board: trophy podium with struck-metal
 >   medallions + crown · proportional XP bars · seated rows render **`#N ·

@@ -31,7 +31,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { TruthStatus } from "./truthStatus";
-import { surfaceStatus } from "./truthStatus";
 import type { FeatureFlag } from "./featureFlags";
 
 export type ModuleZone = "public" | "studio" | "member" | "founder" | "system";
@@ -220,7 +219,7 @@ export const modules = [
     live: false,
     phase: "live",
     description:
-      "Validate a referral code against the on-chain registry and build a shareable referral link — read-only; nothing is created or activated here.",
+      "Validate a referral code against the on-chain registry and build a shareable referral link — nothing is created or activated here.",
     dependencies: [],
     nav: { header: false, sidebar: false, footer: true },
     icon: Link2,
@@ -240,7 +239,7 @@ export const modules = [
     // honest state (a preview), never the live-and-paying referral program.
     truthStatus: "DESIGN_PREVIEW",
     description:
-      "Operator source console. Read-only; source creation and activation remain owner-side on-chain acts.",
+      "Operator source console. Source creation and activation remain owner-side on-chain acts.",
     dependencies: ["chainIndex"],
     nav: { header: false, sidebar: true, footer: false },
     icon: Network,
@@ -272,9 +271,8 @@ export const modules = [
     visible: true,
     enabled: true,
     live: false,
-    phase: "future",
-    truthStatus: surfaceStatus.recognition,
-    description: "The recognition model, explained as a future concept — never a financial reward.",
+    phase: "live",
+    description: "Recognition is live today: the season board ranks contribution in public and member quests credit real acts. Only the long-term standing figure is still to come — never a financial reward.",
     dependencies: [],
     nav: { header: true, sidebar: false, footer: true },
     icon: Award,
@@ -430,7 +428,7 @@ export const modules = [
     phase: "live",
     // AUD-TRUTH (2026-07-16): the "Not live yet" badge DIED — the page renders
     // the live read-only reality panel; a live surface renders NO TruthLabel.
-    description: "Read-only contract & economy memory — roles, structure, and the live read-only reality panel.",
+    description: "Contract & economy memory — roles, structure, and the live reality panel.",
     dependencies: [],
     nav: { header: true, sidebar: false, footer: true },
     icon: FileText,
@@ -445,7 +443,7 @@ export const modules = [
     live: false,
     phase: "live",
     description:
-      "The public proof organism — every reconciled chain, contract, token, sale, and source signal in one read-only map.",
+      "The public proof organism — every reconciled chain, contract, token, sale, and source signal in one map.",
     dependencies: [],
     nav: { header: false, sidebar: false, footer: true },
     icon: MapIcon,

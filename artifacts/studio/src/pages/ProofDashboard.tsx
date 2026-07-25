@@ -83,6 +83,7 @@ export default function ProofDashboard() {
       title="Proof, live from the chain."
       lead="Public, auditable proof is the point of The Syndicate. Every figure on this site is a live chain read or a line of the indexed public record, each with its verify anchor — this page says what the proof layer covers and where to check it yourself."
       badge={<StatusPill tone="proof">Served from the public record</StatusPill>}
+      variant="app"
     >
       <div className="rounded-lg border border-border/50 bg-muted/20 p-4 text-sm text-muted-foreground leading-relaxed mb-10">
         The protocol sells seats on-chain today, and every event — joins, burns,
@@ -91,7 +92,7 @@ export default function ProofDashboard() {
       </div>
 
       <h2 className="type-h2 text-foreground mb-5">What proof covers</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-14">
+      <div className="auto-grid gap-5 mb-14">
         {facets.map((f) => {
           const Icon = f.icon;
           return (
@@ -115,7 +116,7 @@ export default function ProofDashboard() {
       </div>
 
       <h2 className="type-h2 text-foreground mb-5">How verification works</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
+      <div className="auto-grid gap-5 mb-12">
         {steps.map((s) => (
           <Card key={s.n} className="bg-card/40 border-border/50 p-5">
             <span className="font-mono text-xs text-primary">{s.n}</span>

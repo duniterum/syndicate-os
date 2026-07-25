@@ -17,8 +17,9 @@ export default function Learning() {
       eyebrow="Learn"
       title="How The Syndicate works."
       lead={learningIntro}
+      variant="app"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-14">
+      <div className="auto-grid [--auto-grid-col:22rem] gap-5 mb-14">
         {learningModules.map((m) => (
           <Card key={m.id} className="bg-card/40 border-border/50 p-6">
             <h3 className="text-base font-medium text-foreground mb-1">{m.title}</h3>
@@ -39,10 +40,10 @@ export default function Learning() {
         <h2 className="text-lg font-medium text-foreground mb-1.5">
           {knowledgeOsMap.heading}
         </h2>
-        <p className="text-sm text-muted-foreground mb-6 max-w-2xl leading-relaxed">
+        <p className="text-sm text-muted-foreground mb-6 measure leading-relaxed">
           {knowledgeOsMap.intro}
         </p>
-        <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <ol className="auto-grid gap-3">
           {knowledgeOsMap.steps.map((step, i) => {
             const body = (
               <Card className="h-full bg-card/40 border-border/50 p-5 transition-colors hover:border-primary/40">

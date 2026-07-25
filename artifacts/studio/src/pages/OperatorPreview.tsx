@@ -38,7 +38,7 @@ export default function OperatorPreview({ moduleId }: { moduleId: string }) {
     detailById[moduleId] ?? ["This operator surface is a preview. Nothing here is wired or acts."];
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-6">
         <h1 className="type-h1 text-foreground flex items-center gap-3">
           <Icon className="h-8 w-8 text-primary" />

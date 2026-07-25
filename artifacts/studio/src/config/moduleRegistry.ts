@@ -179,7 +179,7 @@ const specs: readonly RegistrySpec[] = [
     riskClass: "OWNER_SIDE_ONCHAIN_ACTION",
     forbiddenClaims: ["UNPAID_LABOR_FRAMING", "INCOME_PROMISE", "FINANCIAL_UPSIDE"],
     notes:
-      "Read-only source-id validation and link building. Source creation/activation remain owner-side on-chain acts; introduction = recognition, never a paid role.",
+      "Source-id validation and link building. Source creation/activation remain owner-side on-chain acts; introduction = recognition, never a paid role.",
   },
   {
     registryId: "protocol-reality",
@@ -196,7 +196,7 @@ const specs: readonly RegistrySpec[] = [
     riskClass: "READ_ONLY_PUBLIC",
     forbiddenClaims: [],
     notes:
-      "Server-side read-only reconciliation spine (live chain reads vs vendored canon). Fail-closed: canon mismatch → null, never a normalized value. Addresses stay server-side.",
+      "Server-side reconciliation spine (live chain reads vs vendored canon). Fail-closed: canon mismatch → null, never a normalized value. Addresses stay server-side.",
   },
   {
     registryId: "member-continuity",
@@ -313,7 +313,7 @@ const specs: readonly RegistrySpec[] = [
     riskClass: "READ_ONLY_PUBLIC",
     forbiddenClaims: [],
     notes:
-      "Public proof organism at /map — read-only composition of GET /api/protocol/reality (chain, contracts, tokens, sale, source; archive deliberately unbound). Raw base-unit strings are the source of truth; derived displays are labelled and use decimals read from the live tokens group, failing closed to raw-only.",
+      "Public proof organism at /map — a composition of GET /api/protocol/reality (chain, contracts, tokens, sale, source; archive deliberately unbound). Raw base-unit strings are the source of truth; derived displays are labelled and use decimals read from the live tokens group, failing closed to raw-only.",
   },
 ];
 

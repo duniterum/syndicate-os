@@ -49,7 +49,7 @@ export function HomeRegisterBand() {
 
   return (
     <section className="border-t border-border/50 bg-background py-16 text-foreground">
-      <div className="container mx-auto max-w-6xl px-4">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="mb-10">
           <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-gold">
             The public register
@@ -57,7 +57,7 @@ export function HomeRegisterBand() {
           <h2 className="type-h2 mb-4 text-foreground">
             Nothing to hide — the register is the flex
           </h2>
-          <p className="max-w-3xl text-muted-foreground">
+          <p className="measure text-muted-foreground">
             On a chain, hiding does not exist — only making legible or making tedious. We show
             what the chain already publishes: seat number, short address, who brought whom.
             Pseudonymous by default. We&apos;re a business, not a charity — the register sells.
@@ -75,13 +75,13 @@ export function HomeRegisterBand() {
                 {lines.map((line) => (
                   <li
                     key={`${line.transactionHash}-${line.logIndex}`}
-                    className="border-t border-border/60 pt-3 font-mono text-[12.5px] leading-relaxed text-foreground first:border-t-0 first:pt-0"
+                    className="border-t border-border/60 pt-3 text-[12.5px] leading-relaxed text-foreground first:border-t-0 first:pt-0"
                   >
                     {sentenceForServedLine(line)}
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 font-mono text-[11px] text-muted-foreground">
+              <p className="mt-4 text-xs text-muted-foreground">
                 Each line = one chain event, republished as-is — no directory, no lookup, no
                 cross-event join.
               </p>
@@ -98,10 +98,10 @@ export function HomeRegisterBand() {
               <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
                 Holder Index
               </div>
-              <div className="mt-2 font-serif text-3xl text-gold">
+              <div className="mt-2 font-mono tabular-nums text-3xl text-gold">
                 {seats !== null ? seats.toLocaleString("en-US") : "—"}
               </div>
-              <p className="mt-1 font-mono text-[11.5px] text-muted-foreground">
+              <p className="mt-1 text-xs text-muted-foreground">
                 seats on-chain · aggregate you can verify
               </p>
               {/* guard-freshness law: a live member figure carries its
@@ -124,7 +124,7 @@ export function HomeRegisterBand() {
                 Season ranking
               </div>
               <div className="mt-2 font-serif text-[19px]">Ranked by merit</div>
-              <p className="mt-1 font-mono text-[11.5px] text-muted-foreground">
+              <p className="mt-1 text-xs text-muted-foreground">
                 the full ranking has its own page
               </p>
               <Link href="/season">
@@ -142,7 +142,7 @@ export function HomeRegisterBand() {
                 <LifecycleBadge lifecycle="FUTURE" />
               </div>
               <div className="mt-2 font-serif text-[19px]">Your own row, highlighted</div>
-              <p className="mt-1 font-mono text-[11.5px] text-muted-foreground">
+              <p className="mt-1 text-xs text-muted-foreground">
                 arrives with the sign-in wiring — every builder already stands on the public
                 board, pseudonymous.
               </p>

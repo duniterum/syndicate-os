@@ -301,7 +301,7 @@ export const operatorRoles: { id: string; role: string; scope: string }[] = [
   { id: "source_reviewer", role: "Source / referral reviewer", scope: "Reviews source attributions; approves within policy." },
   { id: "member_support", role: "Member support", scope: "Member queue with least-data context; respond and escalate." },
   { id: "content_docs", role: "Content / docs operator", scope: "Public copy and docs surfaces; no member data." },
-  { id: "auditor", role: "Auditor / read-only", scope: "Reads audit log, redacted registry, reports. Zero mutations." },
+  { id: "auditor", role: "Auditor (reads, never changes)", scope: "Reads audit log, redacted registry, reports. Zero mutations." },
   { id: "worker_agent", role: "Worker / agent", scope: "Scoped non-human identity; proposal-only by default." },
 ];
 
@@ -316,7 +316,7 @@ export const operatorsSample: OperatorRow[] = [
   { label: "Ops lead", wallet: "0x3A2…145A", role: "Protocol admin", status: "Active" },
   { label: "Support 1", wallet: "0x9F4…22B1", role: "Member support", status: "Active" },
   { label: "Source reviewer", wallet: "0xC08…7E30", role: "Source / referral reviewer", status: "Invited" },
-  { label: "Auditor", wallet: "0x5D1…88A0", role: "Auditor / read-only", status: "Suspended" },
+  { label: "Auditor", wallet: "0x5D1…88A0", role: "Auditor (reads, never changes)", status: "Suspended" },
 ];
 
 // K3.a (2026-07-22): sourceReviewSample DELETED — the Source review queue is

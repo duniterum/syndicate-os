@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Syndicate — Design System (source of truth)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+  :root{
+    --bg:#050810; --surface:#0a0e18; --card:#0d1220; --card2:#111726;
+    --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+    --ink:#e7eaf0; --muted:#8b93a4; --faint:#5a6172;
+    --gold:#d8b45a; --gold-deep:#b8902f; --cyan:#3fd0e6; --green:#3ecf8e; --amber:#e0952f; --avax:#e84142;
+    --serif:'Instrument Serif',Georgia,serif;
+    --sans:'Work Sans','Inter',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',Menlo,ui-monospace,monospace;
+    /* real token type scale (index.css) */
+    --text-display:clamp(2.4rem,1.7rem + 3.2vw,4.25rem);
+    --text-h1:clamp(1.9rem,1.5rem + 1.9vw,3rem);
+    --text-h2:clamp(1.45rem,1.25rem + 1vw,2.15rem);
+    --text-h3:clamp(1.2rem,1.1rem + 0.5vw,1.55rem);
+    --text-body:clamp(1rem,0.96rem + 0.18vw,1.1rem);
+    --text-label:0.8125rem; --text-caption:0.75rem;
+    --measure:68ch;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;
+    -webkit-font-smoothing:antialiased;padding-bottom:96px}
+  .wrap{width:100%;padding-inline:clamp(16px,3vw,40px)}
+  /* type primitives (mirror index.css .type-*) */
+  .t-display{font-family:var(--serif);font-size:var(--text-display);line-height:1.04;letter-spacing:-.02em}
+  .t-h1{font-family:var(--serif);font-size:var(--text-h1);line-height:1.1;letter-spacing:-.015em}
+  .t-h2{font-family:var(--serif);font-size:var(--text-h2);line-height:1.15}
+  .t-h3{font-family:var(--sans);font-size:var(--text-h3);font-weight:600;line-height:1.25}
+  .t-body{font-family:var(--sans);font-size:var(--text-body);line-height:1.55}
+  .t-label{font-family:var(--sans);font-size:var(--text-label);font-weight:500}
+  .t-caption{font-family:var(--mono);font-size:var(--text-caption);letter-spacing:.02em}
+  .eyebrow{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+  .measure{max-width:var(--measure)}
+  .mono{font-family:var(--mono)}
+  /* top bar */
+  header.bar{position:sticky;top:0;z-index:10;background:rgba(5,8,16,.9);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line)}
+  .bar .wrap{display:flex;align-items:center;gap:20px;height:60px}
+  .bar .mark{font-family:var(--serif);font-size:22px}.bar .mark b{color:var(--gold)}
+  .bar nav{display:flex;gap:18px;flex:1;flex-wrap:wrap;font-size:13px}
+  .bar nav a{color:var(--muted);text-decoration:none}.bar nav a:hover{color:var(--ink)}
+  .bar .tag{font-family:var(--mono);font-size:11px;color:var(--cyan);border:1px solid rgba(63,208,230,.3);border-radius:99px;padding:4px 10px}
+  /* section rhythm — THE canonical section */
+  section.doc{border-top:1px solid var(--line);padding-block:clamp(40px,5vw,72px)}
+  .sec-eyebrow{margin-bottom:14px}
+  section.doc h2.title{font-family:var(--serif);font-weight:400;font-size:clamp(28px,3vw,40px);line-height:1.08;margin-bottom:14px}
+  section.doc p.lead{color:var(--muted);max-width:68ch;font-size:16px;margin-bottom:32px}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+  .card h4{font-family:var(--sans);font-size:15px;font-weight:600;margin-bottom:8px}
+  .card p{color:var(--muted);font-size:13.5px}
+  .rule{color:var(--green)}.anti{color:var(--avax)}
+  .kb{font-family:var(--mono);font-size:12px;background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:2px 7px;color:var(--gold)}
+  .swatch{height:56px;border-radius:8px;border:1px solid var(--line2)}
+  .row{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--line)}
+  .row .spec{font-family:var(--mono);font-size:12px;color:var(--faint);white-space:nowrap}
+  .do-dont{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));margin-top:16px}
+  .box{border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--card)}
+  .box.good{border-color:rgba(62,207,142,.35)}.box.bad{border-color:rgba(232,65,66,.35)}
+  .box h5{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+  .box.good h5{color:var(--green)}.box.bad h5{color:var(--avax)}
+  .box ul{margin:0;padding-left:18px;color:var(--muted);font-size:13.5px}.box li{margin-bottom:6px}
+  /* buttons */
+  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border-radius:9px;
+    font-family:var(--sans);font-weight:600;font-size:14px;cursor:pointer;border:1px solid transparent;text-decoration:none}
+  .btn-primary{background:var(--gold);color:#1a1406}
+  .btn-secondary{background:transparent;border-color:var(--gold);color:var(--gold)}
+  .btn-ghost{background:transparent;color:var(--muted);border-color:var(--line2)}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+    text-transform:uppercase;border-radius:6px;padding:3px 8px;border:1px solid}
+  .badge.live{color:var(--cyan);border-color:rgba(63,208,230,.35)}
+  .badge.future{color:var(--muted);border-color:var(--line2)}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .stat .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .stat .v{font-family:var(--sans);font-weight:600;font-size:28px;margin-top:6px;font-variant-numeric:tabular-nums}
+  .stat .v small{font-size:13px;color:var(--muted);font-weight:400}
+  .note{font-size:13px;color:var(--faint);margin-top:10px}
+  .cta{color:var(--cyan);font-weight:600;font-size:14px;text-decoration:none;border-bottom:1px solid rgba(63,208,230,.4);padding-bottom:2px}
+  @media(max-width:640px){ .bar nav{display:none} }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <div class="mark">◆ THE <b>SYNDICATE</b></div>
+    <nav>
+      <a href="#fonts">Fonts</a><a href="#type">Type scale</a><a href="#space">Spacing</a>
+      <a href="#color">Color</a><a href="#layout">Layout</a><a href="#section">Sections</a>
+      <a href="#components">Components</a><a href="#mobile">Mobile</a><a href="#copy">Copy</a>
+    </nav>
+    <span class="tag">source of truth</span>
+  </div>
+</header>
+
+<section class="doc wrap" style="border-top:none">
+  <p class="eyebrow sec-eyebrow">The Syndicate · design system</p>
+  <h1 class="t-display" style="max-width:20ch">One language, every surface.</h1>
+  <p class="lead" style="margin-top:16px">This is the single source of truth for how The Syndicate looks — desktop and mobile.
+    Every page is built FROM this, never patched into it. Benchmarked against world-class fintech/crypto and product
+    systems (Stripe, Linear, Revolut/Kraken/Binance patterns) and grounded in the real tokens in
+    <span class="kb">index.css</span>. If a surface disagrees with this file, the surface is wrong.</p>
+</section>
+
+<!-- FONTS -->
+<section class="doc wrap" id="fonts">
+  <p class="eyebrow sec-eyebrow">01 · Fonts &amp; roles</p>
+  <h2 class="title">Three voices, one job each.</h2>
+  <p class="lead">The single most-broken rule was font mixing (mono on prose). Locked here, and guard-enforced.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="t-h2" style="font-size:34px">Instrument Serif</div>
+      <h4 style="margin-top:10px">Display &amp; headings — <span class="rule">only</span></h4>
+      <p>Page titles and section headings. The expressive, editorial voice. <b class="anti">Never</b> on body text, labels, or numbers.</p>
+    </div>
+    <div class="card">
+      <div class="t-h3" style="font-size:30px;font-weight:600">Work Sans</div>
+      <h4 style="margin-top:10px">All body, labels &amp; stats</h4>
+      <p>Every sentence, description, UI label, button, and <b>stat number</b>. The default. If unsure, it's Work Sans.</p>
+    </div>
+    <div class="card">
+      <div class="mono" style="font-size:26px;font-weight:600">IBM Plex Mono</div>
+      <h4 style="margin-top:10px">Data &amp; code — sparingly</h4>
+      <p>On-chain values, addresses/hashes, code, and short UPPERCASE eyebrow labels. <b class="anti">Never</b> a sentence.</p>
+    </div>
+  </div>
+  <div class="do-dont">
+    <div class="box good"><h5>✓ Do</h5><ul>
+      <li><span class="mono">0x03e…c6d0</span>, <span class="mono">600 XP</span>, <span class="mono">14 seats</span> → mono (data)</li>
+      <li><span class="eyebrow" style="color:var(--gold)">THE SEASON POT</span> → mono (uppercase eyebrow)</li>
+      <li>"Public, pseudonymous — your rank never drops." → Work Sans (prose)</li>
+    </ul></div>
+    <div class="box bad"><h5>✕ Don't</h5><ul>
+      <li><span class="mono">"Public, pseudonymous — your rank never drops."</span> in mono (the /season patchwork)</li>
+      <li><span class="t-h2" style="font-size:15px">600</span> a stat number in serif</li>
+      <li>Mono for any multi-word mixed-case sentence, at any size</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- TYPE SCALE -->
+<section class="doc wrap" id="type">
+  <p class="eyebrow sec-eyebrow">02 · Type scale (fluid, desktop → mobile)</p>
+  <h2 class="title">One modular scale, it flexes itself.</h2>
+  <p class="lead">Every size is a <span class="kb">clamp()</span> token — it scales smoothly from mobile to desktop, preserves
+    zoom (WCAG 1.4.4), and never drops below the 12px readability floor. Use the token, never an arbitrary <span class="kb">text-[13px]</span>.</p>
+  <div style="margin-top:8px">
+    <div class="row"><span class="t-display" style="line-height:1">Display</span><span class="spec">--text-display · 38→68px · hero only</span></div>
+    <div class="row"><span class="t-h1" style="line-height:1">Heading 1</span><span class="spec">--text-h1 · 30→48px · page title (serif)</span></div>
+    <div class="row"><span class="t-h2" style="line-height:1">Heading 2</span><span class="spec">--text-h2 · 23→34px · section head (serif)</span></div>
+    <div class="row"><span class="t-h3" style="line-height:1">Heading 3</span><span class="spec">--text-h3 · 19→25px · card title (Work Sans 600)</span></div>
+    <div class="row"><span class="t-body">Body — the reading voice, 1.55 line-height, capped at 68ch.</span><span class="spec">--text-body · 16→18px</span></div>
+    <div class="row"><span class="t-label">Label — form &amp; UI labels.</span><span class="spec">--text-label · 13px</span></div>
+    <div class="row"><span class="t-caption">CAPTION · EYEBROW · DATA</span><span class="spec">--text-caption · 12px FLOOR — never smaller</span></div>
+  </div>
+  <p class="note">Line-height: headings 1.04–1.25 · body 1.55–1.6. Stat figures use Work Sans 600 + <span class="kb">tabular-nums</span>, size by importance (big = the figure you came for, small/muted = secondary).</p>
+</section>
+
+<!-- SPACING -->
+<section class="doc wrap" id="space">
+  <p class="eyebrow sec-eyebrow">03 · Spacing — the 8pt grid</p>
+  <h2 class="title">Everything lands on 4/8.</h2>
+  <p class="lead">Every margin, padding, gap, and height is a multiple of 4 (mostly 8): 4·8·12·16·24·32·48·64·96. This is what
+    makes unrelated sections feel like one system. Section vertical padding is its own fluid token.</p>
+  <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-top:8px">
+    <div style="text-align:center"><div style="height:4px;width:44px;background:var(--gold)"></div><div class="spec" style="margin-top:6px">4</div></div>
+    <div style="text-align:center"><div style="height:8px;width:44px;background:var(--gold)"></div><div class="spec" style="margin-top:6px">8</div></div>
+    <div style="text-align:center"><div style="height:12px;width:44px;background:var(--gold)"></div><div class="spec" style="margin-top:6px">12</div></div>
+    <div style="text-align:center"><div style="height:16px;width:44px;background:var(--gold)"></div><div class="spec" style="margin-top:6px">16</div></div>
+    <div style="text-align:center"><div style="height:24px;width:44px;background:var(--gold)"></div><div class="spec" style="margin-top:6px">24</div></div>
+    <div style="text-align:center"><div style="height:32px;width:44px;background:var(--gold)"></div><div class="spec" style="margin-top:6px">32</div></div>
+    <div style="text-align:center"><div style="height:48px;width:44px;background:var(--gold)"></div><div class="spec" style="margin-top:6px">48</div></div>
+    <div style="text-align:center"><div style="height:64px;width:44px;background:var(--gold)"></div><div class="spec" style="margin-top:6px">64</div></div>
+  </div>
+  <p class="note">Section padding = <span class="kb">--space-section</span> = clamp(48px, …, 112px). Gutters = <span class="kb">px-4 sm:px-6 lg:px-8</span> (16/24/32). Card padding = 20–24. Card gap = 16.</p>
+</section>
+
+<!-- COLOR -->
+<section class="doc wrap" id="color">
+  <p class="eyebrow sec-eyebrow">04 · Color roles (meaning, not decoration)</p>
+  <h2 class="title">Each color means one thing.</h2>
+  <p class="lead">A color is a signal. Gold is never "live"; cyan is never "identity". Consistency of meaning is the point.</p>
+  <div class="grid">
+    <div class="card"><div class="swatch" style="background:var(--gold)"></div><h4 style="margin-top:12px">Gold — identity</h4><p>Seat · membership · the ONE primary action. Scarce by design.</p></div>
+    <div class="card"><div class="swatch" style="background:var(--cyan)"></div><h4 style="margin-top:12px">Cyan — live / verified</h4><p>Live reads, "verified on-chain", proof links, the heartbeat.</p></div>
+    <div class="card"><div class="swatch" style="background:var(--green)"></div><h4 style="margin-top:12px">Green — success</h4><p>OK · gross grows · positive confirmation.</p></div>
+    <div class="card"><div class="swatch" style="background:var(--amber)"></div><h4 style="margin-top:12px">Amber — caution</h4><p>Attention / paused. Hue-shifted off gold so it never reads as identity.</p></div>
+    <div class="card"><div class="swatch" style="background:var(--avax)"></div><h4 style="margin-top:12px">Avalanche red</h4><p>The AVAX chain indicator ONLY. Never a generic accent.</p></div>
+    <div class="card"><div class="swatch" style="background:var(--card2)"></div><h4 style="margin-top:12px">Neutrals</h4><p>Command-room near-black surfaces · muted text for the secondary layer.</p></div>
+  </div>
+</section>
+
+<!-- LAYOUT -->
+<section class="doc wrap" id="layout">
+  <p class="eyebrow sec-eyebrow">05 · Layout — edge-to-edge, no fixed cap</p>
+  <h2 class="title">Fill the screen. Read at a measure.</h2>
+  <div class="do-dont">
+    <div class="box good"><h5>✓ The law</h5><ul>
+      <li><b>Frame</b> = <span class="kb">w-full</span> + <span class="kb">px-4 sm:px-6 lg:px-8</span> — header, body, footer share the same edges. No <span class="kb">container mx-auto</span>, no fixed <span class="kb">max-w-5xl</span> page cap.</li>
+      <li><b>App/data</b> fills width by <b>multiplying columns</b> — <span class="kb">.auto-grid</span> = auto-fit minmax(300px,1fr).</li>
+      <li><b>Text</b> is bounded by a relative measure — <span class="kb">.measure</span> = 68ch. The cap is the line length, never the page.</li>
+    </ul></div>
+    <div class="box bad"><h5>✕ The bug</h5><ul>
+      <li>A narrow centered column with big empty margins on a wide screen.</li>
+      <li>2 cards stretched super-wide instead of multiplying to 4–6.</li>
+      <li>A fixed pixel/rem width cap on any page or chrome.</li>
+    </ul></div>
+  </div>
+  <p class="note">Guarded: <span class="kb">guard-fluid-surface</span> reds any new <span class="kb">container mx-auto</span>.</p>
+</section>
+
+<!-- SECTION RHYTHM -->
+<section class="doc wrap" id="section">
+  <p class="eyebrow sec-eyebrow">06 · Section rhythm — THE fix for "sections don't match"</p>
+  <h2 class="title">Every section is built the same way.</h2>
+  <p class="lead">The home page felt like a patchwork because each band invented its own structure. One section template, everywhere:
+    <b>eyebrow → serif heading → one-line lead (measure) → content</b>, with <span class="kb">--space-section</span> top/bottom padding and the shared gutters.
+    This box you're reading IS the template.</p>
+  <div class="card" style="padding:24px">
+    <p class="eyebrow" style="margin-bottom:12px">Eyebrow · mono uppercase</p>
+    <h3 class="t-h2" style="font-size:26px;margin-bottom:10px">The section heading, in serif</h3>
+    <p class="t-body measure" style="color:var(--muted);margin-bottom:20px">One calm sentence of lead, in Work Sans, bounded to a comfortable measure. Then the content — a card grid, a stat strip, or a table.</p>
+    <div class="grid">
+      <div class="stat"><div class="k">Members</div><div class="v">14</div></div>
+      <div class="stat"><div class="k">SYN burned</div><div class="v">16,540 <small>SYN</small></div></div>
+      <div class="stat"><div class="k">Season</div><div class="v">S1</div></div>
+    </div>
+  </div>
+  <p class="note">Consequence: any two sections, any two pages, share vertical rhythm, heading voice, and measure — they read as one product. This is what "speak the same language" means, made mechanical.</p>
+</section>
+
+<!-- COMPONENTS -->
+<section class="doc wrap" id="components">
+  <p class="eyebrow sec-eyebrow">07 · Components — one canonical each</p>
+  <h2 class="title">Build from these, don't re-style.</h2>
+  <div class="grid">
+    <div class="card"><h4>Buttons</h4>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <span class="btn btn-primary">Take your seat</span>
+        <span class="btn btn-secondary">Learn more</span>
+        <span class="btn btn-ghost">Cancel</span>
+      </div>
+      <p style="margin-top:12px">One primary (gold) per view. Secondary = gold outline. Ghost = quiet. All ≥44px tall.</p>
+    </div>
+    <div class="card"><h4>Badges / lifecycle</h4>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <span class="badge live">● Verified on-chain</span>
+        <span class="badge future">Coming later</span>
+      </div>
+      <p style="margin-top:12px">Human words only. A live surface shows no badge; "coming later" only cites a real future feature.</p>
+    </div>
+    <div class="card"><h4>Stat tile (KPI)</h4>
+      <div class="stat" style="margin-top:12px"><div class="k">Treasury</div><div class="v">$—</div><div class="note" style="margin-top:4px">live · verify on-chain</div></div>
+      <p style="margin-top:12px">Label (mono caption) · big figure (Work Sans 600, tabular) · optional proof line.</p>
+    </div>
+    <div class="card"><h4>Link / CTA</h4>
+      <p style="margin-top:12px"><a href="#" class="cta">Read the live join quote →</a></p>
+      <p style="margin-top:16px">Cyan, arrow, underline. The verb the user wants. Mixed-case (never mono).</p>
+    </div>
+  </div>
+</section>
+
+<!-- MOBILE -->
+<section class="doc wrap" id="mobile">
+  <p class="eyebrow sec-eyebrow">08 · Mobile — grade-AAA at every width</p>
+  <h2 class="title">320 → 2560, one system.</h2>
+  <div class="do-dont">
+    <div class="box good"><h5>✓ Rules</h5><ul>
+      <li>Body ≥16px on mobile; the fluid scale handles the rest. Lines 35–45 chars on phone.</li>
+      <li>Tap targets ≥44×44px (WCAG 2.5.5 AAA) — buttons, links, footer rows.</li>
+      <li>Columns stack; multi-column footers become tap-to-open accordions.</li>
+      <li>Safe-area padding (<span class="kb">env()</span>); never <span class="kb">maximum-scale=1</span>; no horizontal scroll — ever.</li>
+    </ul></div>
+    <div class="box bad"><h5>✕ Never</h5><ul>
+      <li>Sub-16px body on mobile; sub-12px anything readable.</li>
+      <li>4 cramped footer columns on a phone.</li>
+      <li>A row that forces sideways scrolling.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- COPY -->
+<section class="doc wrap" id="copy">
+  <p class="eyebrow sec-eyebrow">09 · Copy — human words only</p>
+  <h2 class="title">If a human wouldn't say it, don't write it.</h2>
+  <div class="do-dont">
+    <div class="box bad"><h5>✕ Kill these (developer-speak)</h5><ul>
+      <li><b>"read only"</b> — meaningless to a human. <b>If there's no action, it's read-only by definition — so don't say it.</b></li>
+      <li>"not wired" · "fail-closed" · "RPC" · "null" · "bytes32" · "adapter" · "slice"</li>
+    </ul></div>
+    <div class="box good"><h5>✓ Say instead</h5><ul>
+      <li>Nothing (drop it) — or "Verify on-chain" / "Checking…" / "Not available right now".</li>
+      <li>Plain outcomes: "every figure is a live chain read", "sign from your own wallet".</li>
+    </ul></div>
+  </div>
+  <p class="note">Also settled: no gain-promise words (ROI/yield/guaranteed); no ABI field names in user copy; addresses render short-form; mono only on data, never a sentence.</p>
+</section>
+
+<section class="doc wrap" style="text-align:center;color:var(--faint)">
+  <p class="t-caption">The Syndicate — Design System · source of truth · every surface derives from this file, never the reverse.</p>
+</section>
+</body>
+</html>

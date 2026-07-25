@@ -435,7 +435,7 @@ function BinderBody() {
                             href={r.explorerUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 font-mono text-xs text-proof/80 hover:text-proof underline underline-offset-2 mt-2"
+                            className="inline-flex items-center gap-1 text-xs text-proof/80 hover:text-proof underline underline-offset-2 mt-2"
                           >
                             Verify on the explorer
                             <ExternalLink className="h-3 w-3" aria-hidden="true" />

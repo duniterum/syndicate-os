@@ -99,13 +99,13 @@ export const DOCS_GROUPS: DocGroup[] = [
       {
         routePath: "/contracts",
         purpose:
-          "A read-only map of the protocol's contracts and treasury-routing structure — canon reference.",
+          "A map of the protocol's contracts and treasury-routing structure — canon reference.",
         audience: ["Member", "Verifier"],
       },
       {
         routePath: "/map",
         purpose:
-          "The public proof organism: chain identity, contract-code presence, and sale lifecycle — reconciled read-only, fail-closed.",
+          "The public proof organism: chain identity, contract-code presence, and sale lifecycle — reconciled from the chain, fail-closed.",
         audience: ["Builder", "Verifier"],
       },
     ],
@@ -157,7 +157,7 @@ export const DOCS_GROUPS: DocGroup[] = [
       {
         routePath: "/source",
         purpose:
-          "Validate your referral code against the on-chain registry and build a shareable join link — read-only.",
+          "Validate your referral code against the on-chain registry and build a shareable join link — nothing is created, signed, or sent.",
         audience: ["Builder", "Verifier"],
       },
     ],

@@ -733,8 +733,8 @@ function StateAndAction({
     <AlertDialog open={revokeOpen} onOpenChange={setRevokeOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle className="font-mono text-sm">
-            Revoke {shortId} — permanent
+          <AlertDialogTitle className="text-sm">
+            Revoke <span className="font-mono">{shortId}</span> — permanent
           </AlertDialogTitle>
           <AlertDialogDescription className="space-y-2">
             <span className="block">

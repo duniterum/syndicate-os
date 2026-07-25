@@ -37,7 +37,7 @@ export default function MemberNotifications() {
           <h1 className="text-2xl md:text-3xl font-semibold text-foreground">
             Your inbox
           </h1>
-          <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
+          <p className="text-sm text-muted-foreground mt-2 measure">
             Messages to you and announcements to all members. The protocol
             never emails — real messages from the Syndicate appear only here.
           </p>

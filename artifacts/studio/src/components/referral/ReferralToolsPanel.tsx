@@ -620,7 +620,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
           <p className="text-xs text-muted-foreground leading-relaxed mt-1.5 mb-2">
             The description block, ready to paste under a video:
           </p>
-          <p className="font-mono text-xs bg-background border border-border rounded-lg p-2.5 break-all mb-2">
+          <p className="text-xs bg-background border border-border rounded-lg p-2.5 break-all mb-2">
             The Syndicate — on-chain membership protocol on Avalanche. Every
             purchase is a verifiable receipt. My introduction link:{" "}
             {withVia(joinLink, "youtube")}
@@ -667,7 +667,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
           <p className="text-xs text-muted-foreground leading-relaxed mt-1.5 mb-2">
             The story format above, plus the ready line:
           </p>
-          <p className="font-mono text-xs bg-background border border-border rounded-lg p-2.5 break-all mb-2">
+          <p className="text-xs bg-background border border-border rounded-lg p-2.5 break-all mb-2">
             {seatLine !== null ? `I hold ${seatLine.split(" · ")[0]} of The Syndicate — proof on-chain, not promises.` : "The Syndicate — proof on-chain, not promises."}{" "}
             See how membership works: {withVia(joinLink, "whatsapp")}
           </p>

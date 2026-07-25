@@ -1,5 +1,20 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-25 — THE EDGE-TO-EDGE HARMONIZATION ARC (full-screen).** Founder ruling (QuickNode
+> benchmark): bord-à-bord, **AUCUN plafond de page fixe en px** ; remplir en **multipliant les
+> colonnes** (auto-fit) ; lisibilité en **`ch`**. **Cet amendement SUPERSEDE §C/§4 du
+> `CANON_ACCESS_MODEL`** (cap px → mesure ch). SCELLÉ cette tranche (appliqué + vérifié local, **EN
+> ATTENTE du preview GO fondateur → commit → deploy** ; 🚀 DEPLOY — BATCHABLE, client-only additif
+> fail-closed) : le shell + **20 surfaces** + primitives `.auto-grid`/`.measure` + guard BLOQUANT
+> `guard-fluid-surface`. **PLUS l'harmonisation des POLICES** (plainte /season « patchwork ») : loi
+> benchmarkée (serif=titres · Work Sans=corps/labels/stats · mono=données/adresses/code/eyebrows
+> MAJ courts, jamais une phrase) ; audit 11-agents (609 usages/115 fichiers → 51 corrigées) ; garde
+> BLOQUANT `guard-font-discipline`. **DONE aussi (2026-07-25) :** "read only" retiré (51 textes) · 4
+> fossiles vérité (Recognition recadré LIVE inclus) · pages texte plein écran (dette page-cap = 0).
+> **OUTSTANDING (seul le fondateur ferme) :** le rythme des sections de la home · `MemberNotifications`
+> shell-gating (accès) · plancher 12px résiduel · **décision `.type-h2` serif**.
+> Dossier complet : `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md`.
+
 > **▶ 2026-07-23 → 2026-07-24 — THE SEASONS ARC: OPENED, BUILT, CLOSED (S1→S2-final
 > all shipped and sealed in prod on 2026-07-24; only S3 — the contract — remains).
 > The live state is always `docs/SESSION_STATE.md`'s resume block.**

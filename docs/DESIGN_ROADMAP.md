@@ -13,6 +13,7 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
 - [ ] **Adoption** — chaque surface rend via le système (aucun composant orphelin).
 - [x] **Couleur** — 0 couleur brute → guard `no-raw-color` **BLOQUANT** dans la gate.
 - [x] **Typo** — l'échelle fluide `.type-*` adoptée partout (titres display/h1/h2/h3 sur toutes les surfaces, en Instrument Serif ; corps via `.type-body`).
+- [x] **Discipline des polices (2026-07-25, benchmarkée Butterick/NN-g/EightShapes)** — serif = titres display SEULEMENT · Work Sans = tout le corps/descriptions/labels/stats · IBM Plex Mono = valeurs on-chain/adresses/code/eyebrows MAJUSCULES courts UNIQUEMENT, **jamais une phrase**. Audit 11-agents (610 usages / 115 fichiers → 54 violations mono-sur-prose corrigées, ~51 éléments) + garde **BLOQUANT** `guard-font-discipline`. (Fin du patchwork /season.)
 - [x] **États** — chaque composant a survol / focus / désactivé / vide / erreur + a11y (atomes : Field default/focus/error/disabled ; DataTable vide/loading/hover + tri clavier ; Button/Input focus/disabled ; l'audit a11y profond WCAG/APCA = Phase 6).
 - [ ] **Mouvement** — tokens de motion appliqués (jamais "plus tard").
 - [ ] **2 modes** — clair "editorial museum" + sombre "command-room" vérifiés sur chaque surface.
@@ -45,6 +46,13 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
 ### Phase 4 — Harmonisation totale (le "rien à moitié")
 - [x] Finir migration couleur (108 → 0) → guard **BLOQUANT** · [x] Adopter `.type-*` partout (titres, ~17 pages, serif)
 - [ ] Mouvement · [x] États complets sur tous les composants · [ ] Vérifier les 2 modes
+- [~] **Arc BORD-À-BORD / full-screen (2026-07-25, ruling QuickNode)** — shell (header/main/footer
+  `w-full` + `px-4 sm:px-6 lg:px-8` ; footer accordéon mobile ≥44px) + primitives `.auto-grid`
+  (auto-fit) & `.measure` (68ch) + **20 surfaces** passées bord-à-bord (grilles → `auto-grid`,
+  texte → `.measure`, **0 plafond fixe px**) + guard **BLOQUANT** `guard-fluid-surface`.
+  **Compteur "page-cap sprawl" : 0** (le shell prose de `PublicPage` élargi en cadre pleine largeur
+  + `.measure` ; les 6 pages texte/rail traitées — dette ZÉRO). Appliqué + vérifié local (typecheck · guards · rig 390/1920, 0 overflow), **en
+  attente du preview GO fondateur**. Dossier : `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md`.
 
 ### Phase 5 — Surfaces (adoption)
 - [ ] Public · [ ] Dashboards (connecté / membre) · [x] Console admin (arc K3 + composition console, 2026-07-22)

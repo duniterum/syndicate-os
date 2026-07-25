@@ -31,7 +31,7 @@ export function ChronicleLatest() {
           <p className="text-base text-foreground/90" data-testid="chronicle-latest-title">
             “{latest.title}”
           </p>
-          <p className="mt-0.5 font-mono text-xs text-muted-foreground">
+          <p className="mt-0.5 text-xs text-muted-foreground">
             {latest.dateUtc} · promoted by the founder
           </p>
           <Link

@@ -18,7 +18,7 @@ function S({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-8">
       <h2 className="type-h2 text-foreground mb-2">{title}</h2>
-      <div className="text-sm text-muted-foreground leading-relaxed space-y-3">{children}</div>
+      <div className="text-sm text-muted-foreground leading-relaxed space-y-3 measure">{children}</div>
     </section>
   );
 }
@@ -31,7 +31,7 @@ export default function Privacy() {
       lead="The Syndicate is built to know almost nothing about you. This page says plainly what little exists — and what never does."
       badge={<StatusPill tone="caution">Version 2 — draft of 2026-07-19</StatusPill>}
     >
-      <Card className="bg-muted/20 border-border/50 p-4 text-sm text-muted-foreground leading-relaxed mb-10">
+      <Card className="bg-muted/20 border-border/50 p-4 text-sm text-muted-foreground leading-relaxed measure mb-10">
         This is a draft. It awaits review by qualified counsel before it counts
         as legal protection. A change to this policy is never silent: a new
         version is published here with a new version number and date.

@@ -249,7 +249,7 @@ function AccountMenu() {
           {OperatorBadge ? (
             <React.Suspense
               fallback={
-                <span className="text-xs font-mono text-muted-foreground">
+                <span className="text-xs text-muted-foreground">
                   Checking operator status…
                 </span>
               }
@@ -257,7 +257,7 @@ function AccountMenu() {
               <OperatorBadge />
             </React.Suspense>
           ) : (
-            <span className="text-xs font-mono text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               Wallet session UI excluded from this build
             </span>
           )}

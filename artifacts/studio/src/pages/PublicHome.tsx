@@ -112,7 +112,7 @@ function TrustStatusStrip() {
 
   return (
     <section className="border-b border-border/60 bg-muted/30">
-      <div className="container mx-auto flex flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
+      <div className="w-full flex flex-wrap items-center gap-x-6 gap-y-2 px-4 sm:px-6 lg:px-8 py-3">
         <span className="inline-flex items-center gap-2.5">
           <LifecycleBadge lifecycle="READ_ONLY_PROOF" />
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
@@ -193,8 +193,8 @@ function PromotedStrip() {
 
   return (
     <section className="bg-background py-14 text-foreground">
-      <div className="container mx-auto px-4">
-        <div className="mb-10 max-w-2xl">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 measure">
           <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-gold">
             {homepagePromotedStrip.eyebrow}
           </div>
@@ -242,7 +242,7 @@ function ModuleStrip() {
 
   return (
     <section className="border-t border-border/50 bg-background py-6 text-foreground">
-      <div className="container mx-auto flex flex-wrap items-center gap-x-3 gap-y-2 px-4">
+      <div className="w-full flex flex-wrap items-center gap-x-3 gap-y-2 px-4 sm:px-6 lg:px-8">
         <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
           {homepageModuleStrip.lead}
         </span>
@@ -285,7 +285,7 @@ export default function PublicHome() {
           <div className="absolute inset-0 syn-command-grid opacity-35" />
         </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-[1840px] px-3 pb-3 pt-2 md:px-5 md:pb-4 md:pt-2.5">
+        <div className="relative z-10 w-full px-4 pb-3 pt-2 sm:px-6 md:pb-4 md:pt-2.5 lg:px-8">
           <div className="syn-cockpit-card overflow-hidden rounded-[1.25rem] border border-gold/30 bg-card/82 shadow-xl backdrop-blur-xl dark:bg-black/54">
             <div className="grid grid-cols-1 gap-2.5 p-3 md:p-3.5 xl:grid-cols-[0.74fr_1.28fr_0.84fr] xl:grid-rows-[minmax(440px,auto)_auto] xl:gap-2.5 2xl:grid-cols-[0.72fr_1.34fr_0.82fr]">
               {/* M1-a — the hero's first act, in the origin's design language,
@@ -345,7 +345,7 @@ export default function PublicHome() {
 
             <div className="mx-4 mb-3 flex flex-wrap items-center justify-center gap-2 border-t border-border/70 pt-3 text-center md:mx-5 dark:border-white/10">
               <SampleTag kind="illustrative" />
-              <span className="font-mono text-[11px] leading-tight text-muted-foreground">{heroSystem.disclaimer}</span>
+              <span className="text-xs leading-tight text-muted-foreground">{heroSystem.disclaimer}</span>
             </div>
           </div>
         </div>
@@ -361,12 +361,12 @@ export default function PublicHome() {
       <PromotedStrip />
 
       <section className="border-t border-border/50 bg-muted/20 py-16 text-foreground">
-        <div className="container mx-auto max-w-6xl px-4">
-          <div className="mb-16 text-center">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="mb-16 text-center measure mx-auto">
             <h2 className="type-h2 mb-4 text-foreground">{howItWorks.title}</h2>
             <p className="text-muted-foreground">{howItWorks.subtitle}</p>
           </div>
-          <div className="relative grid grid-cols-1 gap-8 md:grid-cols-5 md:gap-6">
+          <div className="relative mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-5 md:gap-6">
             <div className="absolute left-[10%] right-[10%] top-6 z-0 hidden h-px bg-border md:block" />
             {howItWorks.steps.map((step) => (
               <div key={step.step} className="relative z-10 flex flex-col items-center text-center">
@@ -382,9 +382,9 @@ export default function PublicHome() {
       <ModuleStrip />
 
       <section className="border-t border-border/50 bg-background py-16 text-foreground">
-        <div className="container mx-auto max-w-6xl px-4">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <div>
+            <div className="measure">
               <h2 className="type-h2 mb-4 text-foreground">{operationalReality.title}</h2>
               <p className="text-muted-foreground">{operationalReality.subtitle}</p>
             </div>

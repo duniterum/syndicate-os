@@ -493,7 +493,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Contracts — Contract & Economy Memory",
     description:
-      "Read-only memory of The Syndicate's contracts and economy: roles, lifecycle, and the live read-only reality panel — addresses stay server-side; no balances of yours, ever.",
+      "Memory of The Syndicate's contracts and economy: roles, lifecycle, and the live reality panel — addresses stay server-side; no balances of yours, ever.",
     canonicalPath: "/contracts",
     changefreq: "monthly",
     priority: 0.6,

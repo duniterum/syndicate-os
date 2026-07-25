@@ -77,7 +77,7 @@ export const sourceAttribution = {
       body: "Referral records live in the protocol's on-chain registry (the protocol calls them sources). It is real and readable today — no placeholder stands in for it.",
     },
     {
-      title: "/source reads it, read-only",
+      title: "/source reads it, never writes",
       body: "The public /source page validates a referral code against the live registry and, when it is active, builds a shareable join link. It never creates, activates, or writes anything.",
     },
     {
@@ -90,7 +90,7 @@ export const sourceAttribution = {
     // by the advisor 2026-07-13): the flow is Gross purchase → referrer/source
     // payment, if eligible → net protocol contribution → 70/20/10.
     "The referrer is not paid from Syndicate revenue after the fact. The referrer is paid from the purchase transaction before the net protocol contribution is routed.",
-    "The on-chain referral registry is live and readable; the public /source surface validates a referral code and builds a shareable join link — strictly read-only.",
+    "The on-chain referral registry is live and readable; the public /source surface validates a referral code and builds a shareable join link.",
     "Registering or activating a referral code is a founder-signed, on-chain act. Nothing is created, activated, or written from any public page.",
     "Who referred whom is only ever read from the on-chain record — no public page writes it; the purchase contract records it when a buyer joins through a valid link.",
     "The commission is a bounded, one-time payment under the current terms; any recognition tied to referrals remains a future, gated concept.",
