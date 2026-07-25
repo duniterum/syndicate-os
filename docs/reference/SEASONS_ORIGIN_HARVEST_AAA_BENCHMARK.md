@@ -611,8 +611,11 @@ seat" → "OK ça me va" → the seal question, all one day)
   exists because nothing was ever reserved; the XP, rank history, and
   recognition stay theirs FOREVER; the next season opens the same day and they
   play on. Honest copy engraved on the board caption.
-- **Public identity:** the chain-emitted SHORT FORM on every row (the feed
-  projection's own pattern — never a full address, never a directory), plus
+- **Public identity:** the chain-emitted SHORT FORM on every row (**SUPERSEDED
+  2026-07-25 by the ADDRESS LAW** — each short-form row now LINKS to Snowtrace
+  `/address/`; the server emits the full member address + `explorerUrl` in the
+  board-row DTO; a public per-seat address register « The Register » is permitted;
+  the only red line stays name/e-mail, never a name↔address directory), plus
   the seat ordinal for the seated (S2c fix, founder 2026-07-23: the board
   renders BOTH, per the approved ranking mockup).
 - **THE DISPLAYED ORDINAL = THE LIVE ENGINE'S ANSWER (founder ruling

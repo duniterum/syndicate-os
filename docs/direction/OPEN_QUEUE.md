@@ -1,5 +1,21 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-25 (PM) — /ADMIN HARMONIZED + THE PII/ADDRESS LAW (IN FLIGHT — committed, BATCHABLE, NOT
+> deployed).** Prod = `e21a036`; every commit above it (`f2642aa` · `3b32f2c` · `29f8559` · `469882d` ·
+> docs) awaits ONE grouped deploy. Admin cards reskinned to the framed standard · Dashboard recomposed
+> (BusinessBand live KPIs LEAD; ReferralKpiBand deleted; « System & registry » collapsed; identity
+> humanized) · « PII » jargon purged from the UI + `guard-forbidden-copy` bans « pii » · senior review + 3
+> fixes. **ADDRESS LAW SETTLED (legal-backed):** addresses PUBLIC, short-form + Snowtrace everywhere;
+> guards protect name/email NOT addresses; **masking an address = a BUG** (EDPB 02/2025 · CJEU *EDPS v SRB*
+> C-413/23 P · CCPA). Engraved in CLAUDE.md ① + ADR-003 + CANON_VISIBILITY_LAW amendments.
+> **THE COMPLETE OPEN-WORK LIST (7 workstreams):** ① address Tier-2 rescope (stage 1 done `469882d`; DIFF
+> shown before the guards) · ② `/registry` « The Register » public members page · ③ Protocol Assets
+> multi-token on admin home (Vault holds AVAX/BTC.b/WETH.e, verified on-chain) · ④ admin design polish ·
+> ⑤ docs sweep · ⑥ pre-existing full-screen-audit outstanding · ⑦ Q42 admin-controllability wiring (the
+> reskinned stubs: Audit-log/Support/Feature-flags/Content/Activity). Full detail: `docs/SESSION_STATE.md`
+> top block. **Note:** the « backlog deploy VIDE » in the edge-to-edge block below was true at the `e21a036`
+> seal — since then the commits above are BATCHABLE (they ride the next grouped deploy).
+
 > **▶ 2026-07-25 — THE EDGE-TO-EDGE HARMONIZATION ARC (full-screen).** Founder ruling (QuickNode
 > benchmark): bord-à-bord, **AUCUN plafond de page fixe en px** ; remplir en **multipliant les
 > colonnes** (auto-fit) ; lisibilité en **`ch`**. **Cet amendement SUPERSEDE §C/§4 du

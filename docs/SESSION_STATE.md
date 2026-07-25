@@ -27,8 +27,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   - **5.** ~30 client `/address/` links via the shared `useAddressExplorerUrl` hook / the emitted
 >     explorerUrl (admin + member + public), incl. the SIGNING screens (ProposeSourceCreate/Promotion — the
 >     rest of Niveau 1). *(Member own-address MemberYourSeat + MemberHeaderAffordance ✅ DONE `29f8559`.)*
->   - **6.** Copy fossils reworded — "wallets pre-masked / never a full address" / "registry addresses stay
->     server-side" → "short-form for readability; each links to Snowtrace — addresses are public".
+>   - **6.** Copy fossils reworded (THREE phrasings across ~6 sites, incl. SERVED SEO/meta — the
+>     SEO-rides-the-slice rule): `seo-route-registry.ts`:496,504 · `ProtocolMap.tsx`:172 ·
+>     `protocolOsMap.ts`:72 · `moduleRegistry.ts`:199 · `panels.tsx`:209,559-561. "wallets pre-masked / stay
+>     server-side / never reach a client / never a full address" → "short-form for readability; each links
+>     to Snowtrace — addresses are public".
 >
 > **② THE `/registry` PUBLIC MEMBERS PAGE — "The Register" (founder-named).** Wireframe FIRST (visual law)
 > → build: per-seat rows `#N · 0x…↗ · chapter · rung · joined`, sortable; nav "Register"; the home
@@ -58,6 +61,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > footer duplicate-DOM, header CLS); SLICE-2 truth fossils (`/fire-ledger` pagination-coming line,
 > `/whitepaper` lists "seasons" as future — they are LIVE). Detail:
 > `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md`.
+>
+> **⑦ Q42 ADMIN-CONTROLLABILITY WIRING (the reskinned stubs — DESIGN done, WIRING owed).** 5 admin surfaces
+> got the framed reskin but stay functional STUBS: Audit-log LIVE read (`AdminOperatorSurfaces.tsx`:302,
+> sample rows — câblable NOW, gate NONE, records already written server-side) · Support-queue live (:334,
+> preview — needs a ticket backend) · Feature-flag real step-up writes (:282, local-state only — SERVER_SEED) ·
+> Content/homepage editing (`panels.tsx`:569-596, "editing controls do not exist") · Activity/Chronicle
+> moderation queue (`panels.tsx`:600-632, "script-only and unwired"). ④ is DESIGN polish only; this is WIRING.
 >
 > ## ▶ 2026-07-25 (PM) — THE /ADMIN HARMONIZATION + PII/ADDRESS LAW (IN FLIGHT — committed, NOT deployed)
 > The founder turned the harmonization onto **/admin** (operator console, 11 sections). System-first
@@ -176,7 +186,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   [senior-review cleanup · dead code/CSS killed · Tokenomics bounded · docs synced]). TWO Replit seals
 >   2026-07-25, both byte-identity ×2, atomic swap no downtime, full green battery, no DB migration (no
 >   schema in the diff). **DEPLOY BACKLOG: EMPTY** — no deployable change pending; any commits above prod
->   `e21a036` are NO-DEPLOY docs (this seal record itself).
+>   `e21a036` are NO-DEPLOY docs (this seal record itself). *(Seal record 2026-07-25 AM — SUPERSEDED PM: the
+>   /admin harmonization + address commits now sit above prod as BATCHABLE; the OPEN-WORK block at the top of
+>   this file is authoritative.)*
 >
 > ## (b) IN FLIGHT — S3 (the S2 arc is closed; nothing else is open)
 > **THE HANDOFF DASHBOARD (2026-07-24 end-of-session · GitHub = the source of truth —

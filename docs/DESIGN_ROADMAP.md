@@ -56,9 +56,14 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   encadrées uniformes sur UN fond (hero simplifié · strip vérif retiré · CSS/composant morts nettoyés) ·
   **header typo** relevé (nav 11→13px, micro-labels 10-11px) · **Prose** remplit (texte 68ch, cartes/tables
   pleine largeur) · **More-menu** Whitepaper-over-Join. **+0 couleur brute** (compteur reste 0).
-  **SCELLÉ LIVE `e21a036`** (Replit vert ×2, 2026-07-25 — identité octet ×2, bascule atomique sans indispo,
-  nettoyage revue senior inclus) ; **backlog deploy VIDE** (rien de déployable en attente ; seuls des commits
-  docs NO-DEPLOY sont au-dessus de prod). Dossier : `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md`.
+  **SCELLÉ LIVE `e21a036`** (Replit vert ×2, 2026-07-25). **PUIS (25-07 PM, batchable, PAS déployé) :
+  /ADMIN harmonisé + Dashboard recomposé (BusinessBand KPI live MÈNE · ReferralKpiBand supprimée ·
+  « System & registry » replié · identité humanisée) · jargon « PII » purgé (guard bannit « pii ») + LA
+  LOI D'ADRESSE gravée** (adresses publiques, forme courte + Snowtrace ; gardes protègent nom/e-mail PAS
+  les adresses ; masquer = BUG ; base légale EDPB/CJEU/CCPA — ADR-003 + CANON_VISIBILITY_LAW amendés).
+  **DEPLOY BACKLOG : BATCHABLE** (`f2642aa` · `3b32f2c` · `29f8559` · `469882d`, au-dessus de prod
+  `e21a036`, un seul deploy groupé). **+0 couleur brute** (tokens). Dossier :
+  `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md` + la LISTE COMPLÈTE = bloc en tête de `SESSION_STATE.md`.
 
 ### Phase 5 — Surfaces (adoption)
 - [ ] Public · [ ] Dashboards (connecté / membre) · [x] Console admin (arc K3 + composition console, 2026-07-22)

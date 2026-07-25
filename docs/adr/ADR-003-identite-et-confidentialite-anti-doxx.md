@@ -175,3 +175,19 @@ vérification reste le chemin de la vérité complète. **Exception d'écriture 
 script founder-gated `archive:minter-backfill` restaure, UNE fois, le minter des 17 mints
 historiques depuis les logs de la chaîne elle-même (update de `decoded_json` seul,
 cross-check fail-closed avant toute écriture).
+
+## Amendement 2026-07-25 — LA LOI D'ADRESSE (ON MONTRE) + LE REGISTRE PAR SIÈGE
+Fondateur + recherche en ligne 2026-07-25. **Une adresse de wallet est PUBLIQUE partout** — affichée
+en forme courte `0x205D…f464` + un lien Snowtrace `/address/` sur CHAQUE ligne (surfaces publiques ET
+l'admin fondateur). **Ceci SUPERSEDE, dans ce doc, §4 « émission d'adresses bornée … jamais un wallet
+membre » ET la clause ci-dessus « une adresse COMPLÈTE de membre ne se sérialise nulle part » (≈l.170-172) :**
+le rescope Tier-2 (2026-07-25) fait émettre par 7 services l'adresse membre complète + un `explorerUrl`,
+et le scanner strict est assoupli (`{40,}`→`{41,}` : une adresse de 40 hex PASSE ; le 64-hex et le 41+
+restent bloqués). **Les gardes/scanners protègent la SEULE ligne rouge — nom/alias/e-mail — et
+interdisent un annuaire nom↔adresse ; ils ne bloquent JAMAIS une adresse ni un lien explorateur. Tout
+code qui masque ou fail-close sur une adresse comme un secret est un BUG contre cette loi.** **« The
+Register » (`/registry`)** est un registre PAR SIÈGE adresse-seulement (`#N · 0x…↗ · chapitre · rung`),
+sans identité — donc PAS l'annuaire interdit de §1.2 (qui reste l'annuaire nom↔adresse). **Base légale**
+(info, pas un avis) : une adresse nue est pseudonyme, personnelle SEULEMENT si liée à une identité réelle
+— EDPB Guidelines 02/2025 blockchain · CJEU *EDPS v SRB* (C-413/23 P, 2025) · CCPA « reasonably linked » ;
+Etherscan/OFAC publient des adresses. Gravé aussi dans CLAUDE.md règle ①.

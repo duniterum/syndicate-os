@@ -50,3 +50,17 @@ A member becomes visible BY HIS OWN CHOICE. Never by default. Never without cons
 3. Is this a PERSON's address, or a PIPE's? → A pipe is always published.
 4. Does the user need it to VERIFY before acting? → SHOW IT.
 5. Am I exposing someone who did not consent? → FORBIDDEN.
+
+## AMENDEMENT 2026-07-25 — LA NORME D'AFFICHAGE + LA BASE LÉGALE (fondateur + recherche)
+- **Affichage** : toute adresse rendue en FORME COURTE `0x205D…f464` + un lien Snowtrace `/address/` sur
+  chaque ligne (public ET admin). La forme courte = LISIBILITÉ, jamais du secret.
+- **Précision sur « A REVERSE INDEX (seat → wallet) » (ligne 16) :** l'index interdit est **siège → PERSONNE**
+  (identité réelle). **Siège → ADRESSE n'est PAS interdit** — la chaîne l'émet déjà, et le board de saison
+  LIVE rend déjà `#N · 0x…`. **« The Register » (`/registry`)** — registre public par siège
+  `#N · 0x…↗ · chapitre · rung · joined` — est PERMIS (adresse-seulement, zéro identité).
+- **Précision sur « THE SERVER emits no MEMBER address » (ligne 28) :** SUPERSEDE — le serveur émet
+  désormais l'adresse membre + `explorerUrl` (rescope Tier-2 2026-07-25). L'interdit qui reste : l'annuaire
+  **nom↔adresse**, jamais l'adresse elle-même.
+- **Règle opérationnelle :** masquer ou fail-close sur une ADRESSE comme un secret = un **BUG**.
+- **Base légale** (info, pas un avis) : EDPB Guidelines 02/2025 blockchain · CJEU *EDPS v SRB*
+  (C-413/23 P, 2025) · CCPA « reasonably linked ». Gravé aussi dans CLAUDE.md règle ①.

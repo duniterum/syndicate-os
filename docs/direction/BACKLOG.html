@@ -162,7 +162,7 @@ footer b{color:var(--ink-soft);}
   <div class="eyebrow">The Syndicate OS · état reconstruit depuis les fichiers</div>
   <h1 class="serif">Tout ce qu'il reste à faire</h1>
   <p class="sub">La liste maîtresse complète, reconstruite depuis ~20 docs de direction par 11 agents en parallèle, dédupliquée, et croisée contre ce qui est déjà scellé en prod — pour ne jamais te présenter du fait comme à-faire.</p>
-  <div class="asof">Reconstruit le <b>18 juillet 2026</b> · <b>recompté le 24 juillet 2026 : 183 lignes</b> (les 6 statuts, tuiles et légende comprises) · <b>14</b> catégories · snapshot initial prod <b>6a834fb</b> · autorité = <b>OPEN_QUEUE.md</b> + <b>SESSION_STATE.md</b> + <b>CANON_ACCESS_MODEL.md</b></div>
+  <div class="asof">Reconstruit le <b>18 juillet 2026</b> · <b>recompté le 24 juillet 2026 : 183 lignes</b> · <b>maj 25 juil. 2026</b> (arc /admin + loi d'adresse ; la liste ouverte est le bloc « 25 juillet » ci-dessous) (les 6 statuts, tuiles et légende comprises) · <b>14</b> catégories · snapshot initial prod <b>6a834fb</b> · autorité = <b>OPEN_QUEUE.md</b> + <b>SESSION_STATE.md</b> + <b>CANON_ACCESS_MODEL.md</b></div>
 
   <div style="margin:22px 0 4px;border-left:4px solid var(--gold);background:var(--gold-bg);border-radius:0 10px 10px 0;padding:16px 20px">
     <div class="mono" style="font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600">Mise à jour · 19 juil. 2026 (après ce snapshot)</div>
@@ -192,6 +192,12 @@ footer b{color:var(--ink-soft);}
     <div class="sec-eyebrow" style="color:var(--s-verify)">24 juillet — le contrat est né</div>
     <h2 class="serif">S3 : L'INGÉNIERIE DU RAIL D'ARGENT EST SUBSTANTIELLEMENT FAITE — le contrat existe, vert, adversarialement vérifié</h2>
     <p class="sec-desc">Huit actes dans main (cd60b8f→c307582). ① Le spike Foundry VERT sur ta machine. ② Le contrat <strong>MeritDistributor</strong> (le nom code ; le label produit reste « Season Bounty Pool ») : design GELÉ — spec v4 (docs/reference/MERITDISTRIBUTOR_CONTRACT_SPEC.md), forgée par 6 casquettes + 5 rounds adversariaux + un hunt argent, 0 bloquant. ③ Le PLAN MAÎTRE système-entier (docs/reference/S3_SEASON_CASH_RAIL_MASTER_PLAN.md — 14 tranches, 2 déploiements, 1 seule bascule featureStatus, 2 gates wireframe qui t'attendent). ④ Le .sol construit et VERT 56/56 (bibliothèques d'audit figées dans le repo). ⑤ Le filet adversarial : invariants 8×50 000 runs = 1,25M d'appels chacun ZÉRO échec · fork du VRAI mainnet vert · slither 0 haute/0 moyenne · la taille de lot MESURÉE (50). ⑥ L'outillage merkle + la fixture différentielle (le JS et le contrat d'accord au byte près, gardés des deux côtés). ⑦ Les lois anti-farm construites + testées par attaque. ⑧ La colonne vertébrale des fenêtres d'argent (zéro double-paiement, prouvé). PROCHAINE TRANCHE : S3-5b (le câblage servi — tes phrases de cloches FR à l'écran au gate). <strong>Tes rulings du 24-07, gravés ANSWERED-FOREVER :</strong> mainnet-direct, JAMAIS de testnet · AUCUN plafond referral (chaque conversion = du chiffre d'affaires) · réclamation 2 ANS · owner mono-clé → Safe 2-sur-3 tôt (l'emergencyClaim on-chain REJETÉ) · pot engagé PAR SAISON · params 72h/72h/7j/14j/2a. <strong>Et pour être limpide : RIEN n'est en prod</strong> — le contrat n'est pas sur mainnet, la clé seasonBounty reste FUTURE jusqu'au commit d'activation S3-11 ; l'ingénierie-faite n'est pas du live.</p>
+  </section>
+
+  <section class="block-callout callout-done">
+    <div class="sec-eyebrow" style="color:var(--s-verify)">25 juillet — l'harmonisation /admin + la loi d'adresse</div>
+    <h2 class="serif">LA CONSOLE OPÉRATEUR HARMONISÉE + LE DASHBOARD RECOMPOSÉ + LA LOI D'ADRESSE GRAVÉE (committé, pas encore déployé)</h2>
+    <p class="sec-desc">Prod = <span class="mono">e21a036</span> ; tout commit au-dessus est BATCHABLE (un seul déploiement groupé). ① chaque carte /admin au standard encadré · Dashboard recomposé (la bande KPI live <b>BusinessBand</b> MÈNE ; ReferralKpiBand supprimée ; « System &amp; registry » replié ; identité humanisée). ② jargon « PII » PURGÉ de l'UI + guard-forbidden-copy bannit « pii ». ③ <b>LA LOI D'ADRESSE</b> gravée : adresses PUBLIQUES, forme courte + lien Snowtrace partout ; base légale (EDPB 02/2025 · CJEU EDPS v SRB · CCPA) ; les gardes protègent nom/e-mail PAS les adresses ; masquer une adresse = un BUG. ④ revue senior + 3 correctifs ; Tier-1 (adresse membre → Snowtrace) + Tier-2 stage 1 (le filet assoupli, vert) faits. <b>LISTE COMPLÈTE DU TRAVAIL OUVERT (7 chantiers) :</b> ① rescope adresse Tier-2 · ② page publique /registry « The Register » (#N · 0x…↗ · chapitre · rung · joined) · ③ Protocol Assets multi-token accueil admin (BTC.b + WETH.e + AVAX — le Vault les détient, vérifié on-chain) · ④ polish design admin · ⑤ balayage docs · ⑥ audit plein-écran restant · ⑦ câblage Q42 des onglets admin (Audit/Support/Flags/Contenu/Activité). Détail : SESSION_STATE.md.</p>
   </section>
 
   <section class="block-callout">
@@ -552,9 +558,9 @@ footer b{color:var(--ink-soft);}
   </li>
 <li class="row" data-status="open">
     <div class="row-main">
-      <div class="row-head"><span class="pid">register-census</span><span class="ptitle">Register / census / seat roster</span></div>
-      <p class="psum">Public institutional-memory seat census; no /register route exists. Aggregate/address-safe per doctrine.</p>
-      <div class="metas"><span class="meta gate">⚑ wireframe + privacy</span></div>
+      <div class="row-head"><span class="pid">register-census</span><span class="ptitle">The Register (/registry) — public members page</span></div>
+      <p class="psum">Founder-named « The Register » at /registry (2026-07-25) — per-seat rows #N · 0x…↗ (short-form linking to Snowtrace) · chapter · rung · joined, sortable. Addresses PUBLIC, no identity (the address law). The home register band gets a « view all » here. Depends on the Tier-2 address rescope; the season board stays the MERIT board (never fuse merit and membership).</p>
+      <div class="metas"><span class="meta gate">⚑ wireframe (visual law)</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
