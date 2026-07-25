@@ -119,7 +119,7 @@ export function SeasonsRailsPanel() {
   return (
     <div className="space-y-6">
       {/* ── RAIL 1 · RECOGNITION — the engine that runs itself ─────────── */}
-      <Card className="p-6 border-l-2 border-l-primary/60">
+      <Card className="p-6 rounded-2xl border-border bg-card/40 shadow-sm border-l-2 border-l-primary/60">
         <div className="mb-1 flex flex-wrap items-center gap-2">
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-primary">
             Rail 01
@@ -309,7 +309,7 @@ export function SeasonsRailsPanel() {
         {/* Reference layer — collapsed, bottom (WORK-FIRST). */}
         {season?.notes && season.notes.length > 0 && (
           <Collapsible className="mt-4">
-            <Card className="p-0">
+            <Card className="p-0 rounded-2xl border-border bg-card/40 shadow-sm">
               <CollapsibleTrigger className="group flex w-full items-center gap-2 p-4 text-left">
                 <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
                 <span className="text-sm font-medium text-foreground">
@@ -331,7 +331,7 @@ export function SeasonsRailsPanel() {
       </Card>
 
       {/* ── RAIL 2 · THE SEASON POT — the money rail (frame until S3) ───── */}
-      <Card className="p-6 border-l-2 border-l-success/60">
+      <Card className="p-6 rounded-2xl border-border bg-card/40 shadow-sm border-l-2 border-l-success/60">
         <div className="mb-1 flex flex-wrap items-center gap-2">
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-success">
             Rail 02

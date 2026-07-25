@@ -25,16 +25,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
   ChevronDown,
-  Info,
-  TrendingUp,
-  Package,
-  Image as ImageIcon,
   UserPlus,
   SlidersHorizontal,
   Megaphone,
@@ -48,7 +39,8 @@ export type AdminSectionId =
   | "sources-referrals"
   | "members"
   | "broadcast"
-  | "support";
+  | "support"
+  | "seasons";
 
 interface AdminHomeProps {
   /** Operator role label (e.g. "founder_root"), or null when not signed in. */
@@ -61,46 +53,17 @@ interface AdminHomeProps {
    * figure, shell-wired), or null when unknown/denied (no badge, never a
    * fake zero). */
   reviewCount?: number | null;
-  /** CONSOLE ① — the wired referral KPI band (shell-wired data; renders its
-   * own honest states). Sits under the work grid, above the collapsed
-   * reference layer. */
+  /** THE BUSINESS — the live KPI band (BusinessBand) that LEADS the page,
+   * right under the work grid. Renders its own honest fail-closed states. */
   referralBand?: ReactNode;
+  /** The collapsed "System & registry" slot at the very bottom (module counts,
+   * posture ledger, health) — reference material, never the work. */
+  systemSlot?: ReactNode;
 }
 
-interface PreviewKpi {
-  key: string;
-  label: string;
-  icon: typeof Package;
-  tooltip: string;
-}
-
-// Business KPIs — NOT wired yet. Rendered as honest preview cards (no numbers).
-const PREVIEW_KPIS: PreviewKpi[] = [
-  {
-    key: "revenue",
-    label: "Total revenue",
-    icon: TrendingUp,
-    tooltip:
-      "Protocol sales inflows in the period (membership, packages, artifacts), read live on-chain. Referral payouts are shown separately as an outflow. Not wired yet — will read live.",
-  },
-  {
-    key: "packages",
-    label: "Packages sold",
-    icon: Package,
-    tooltip:
-      "Count of membership package purchases in the period, read from on-chain sale events. Not wired yet — will read live.",
-  },
-  {
-    key: "artifacts",
-    label: "Artifacts / NFTs",
-    icon: ImageIcon,
-    tooltip:
-      "Count of archive artifacts minted in the period, read on-chain. Not wired yet — will read live.",
-  },
-  // CONSOLE ① (2026-07-22): the "Members" placeholder DIED — the wired
-  // "Members seated" tile lives in the referral band above (DONE-IS-DONE:
-  // a wired figure never keeps a "not wired" twin on the same page).
-];
+// Business KPIs are no longer a stub — the live figures lead the page in
+// BusinessBand (founder 2026-07-25: "un dashboard ouvre sur ses chiffres").
+// No preview cards remain (DONE-IS-DONE: a wired figure keeps no unwired twin).
 
 const QUICK_ACTIONS: {
   key: string;
@@ -122,24 +85,18 @@ const ATTENTION: { key: string; label: string; icon: typeof Flag; section: Admin
   { key: "flags", label: "Abuse flags", icon: Flag, section: "sources-referrals" },
 ];
 
-function KpiTooltip({ text }: { text: string }) {
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <button
-          type="button"
-          aria-label="What is this?"
-          className="text-muted-foreground/70 hover:text-muted-foreground"
-        >
-          <Info className="h-3.5 w-3.5" />
-        </button>
-      </TooltipTrigger>
-      <TooltipContent className="max-w-xs text-xs leading-relaxed">
-        {text}
-      </TooltipContent>
-    </Tooltip>
-  );
-}
+// Human role labels for the identity line — the registry stores snake_case
+// tokens; the operator never reads `founder_root` (human-labels law).
+const ROLE_LABEL: Record<string, string> = {
+  founder_root: "Founder",
+  protocol_admin: "Protocol admin",
+  operator: "Operator",
+  source_reviewer: "Source reviewer",
+  member_support: "Member support",
+  content_docs: "Content & docs",
+  auditor: "Auditor",
+  worker_agent: "Worker agent",
+};
 
 export default function AdminHome({
   role,
@@ -147,6 +104,7 @@ export default function AdminHome({
   realitySlot,
   reviewCount = null,
   referralBand,
+  systemSlot,
 }: AdminHomeProps) {
   return (
     <div className="space-y-6">
@@ -156,7 +114,7 @@ export default function AdminHome({
           <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
           <p className="text-sm text-muted-foreground">
             {role
-              ? `Signed in as an operator · ${role}`
+              ? `Signed in as ${ROLE_LABEL[role] ?? role}`
               : "Not signed in as an operator"}
           </p>
         </div>
@@ -168,7 +126,7 @@ export default function AdminHome({
           never scrolls past diagnostics to reach a button. */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Needs attention */}
-        <Card>
+        <Card className="rounded-2xl border-border bg-card/40 shadow-sm">
           <CardHeader>
             <CardTitle className="text-sm">Needs attention</CardTitle>
           </CardHeader>
@@ -203,7 +161,7 @@ export default function AdminHome({
         </Card>
 
         {/* Quick actions */}
-        <Card>
+        <Card className="rounded-2xl border-border bg-card/40 shadow-sm">
           <CardHeader>
             <CardTitle className="text-sm">Quick actions</CardTitle>
           </CardHeader>
@@ -226,16 +184,16 @@ export default function AdminHome({
         </Card>
       </div>
 
-      {/* CONSOLE ① — the referral module's wired figures (mockup v2 approved):
-          plain dated numbers, doors to their ledgers, zero trend charts at
-          this scale (the honesty law). */}
+      {/* THE BUSINESS — the live figures LEAD the page (founder 2026-07-25:
+          "un dashboard ouvre sur ses chiffres, il ne les cache pas"). Plain
+          dated numbers, each a door to its ledger; never a collapsible. */}
       {referralBand ?? null}
 
       {/* Reference layer — collapsed by default (the work-first law). The data
           stays one click away, never in the way. */}
       {realitySlot ? (
         <Collapsible>
-          <Card className="p-0">
+          <Card className="p-0 rounded-2xl border-border bg-card/40 shadow-sm">
             <CollapsibleTrigger className="flex w-full items-center gap-2 p-4 text-left group">
               <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
               <CardTitle className="text-sm">Protocol reality</CardTitle>
@@ -253,40 +211,22 @@ export default function AdminHome({
         </Collapsible>
       ) : null}
 
-      <Collapsible>
-        <Card className="p-0">
-          <CollapsibleTrigger className="flex w-full items-center gap-2 p-4 text-left group">
-            <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
-            <CardTitle className="text-sm">Business KPIs</CardTitle>
-            <Badge variant="outline" className="text-[10px]">
-              Live reads coming
-            </Badge>
-            <span className="ml-auto text-xs text-muted-foreground">
-              planned figures — nothing wired yet, nothing invented
-            </span>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="px-4 pb-4">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              {PREVIEW_KPIS.map((k) => {
-                const Icon = k.icon;
-                return (
-                  <Card key={k.key} className="p-4">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                      <Icon className="h-4 w-4" />
-                      <span>{k.label}</span>
-                      <KpiTooltip text={k.tooltip} />
-                    </div>
-                    <div className="text-2xl font-medium text-muted-foreground/50">—</div>
-                    <Badge variant="outline" className="mt-2 text-[10px]">
-                      Live reads coming
-                    </Badge>
-                  </Card>
-                );
-              })}
-            </div>
-          </CollapsibleContent>
-        </Card>
-      </Collapsible>
+      {systemSlot ? (
+        <Collapsible>
+          <Card className="p-0 rounded-2xl border-border bg-card/40 shadow-sm">
+            <CollapsibleTrigger className="flex w-full items-center gap-2 p-4 text-left group">
+              <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+              <CardTitle className="text-sm">System &amp; registry</CardTitle>
+              <span className="ml-auto text-xs text-muted-foreground">
+                modules, posture &amp; health — expand to inspect
+              </span>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="px-4 pb-4">
+              {systemSlot}
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
+      ) : null}
     </div>
   );
 }

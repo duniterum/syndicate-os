@@ -54,7 +54,7 @@ export function ChroniclePrepare() {
     "w-full rounded-md border border-border/50 bg-background/60 px-3 py-2 text-xs text-foreground outline-none focus:border-primary/60";
 
   return (
-    <Card className="p-5 border-border/50 bg-card/40 space-y-3">
+    <Card className="p-5 rounded-2xl border-border bg-card/40 shadow-sm space-y-3">
       <div className="flex items-center gap-2">
         <ScrollText className="h-4 w-4 text-primary" aria-hidden="true" />
         <h3 className="text-base font-medium text-foreground">

@@ -1,7 +1,7 @@
 // components/member/MemberSigil.tsx
 //
 // A member's SIGIL — a deterministic seal derived ENTIRELY from the wallet
-// address. Zero data, no network, no PII beyond the client's own address: the
+// address. Zero data, no network, no personal data beyond the client's own address: the
 // SAME wallet always yields the SAME mark, so a member recognizes their own
 // seal at a glance (Member Home §4, "the sigil is derived from the wallet,
 // free"). Pure SVG in brand tokens — it hardcodes NO color (strokes/fills use

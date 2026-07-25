@@ -251,7 +251,7 @@ export function MemberLedgerPanel() {
   }, []);
 
   return (
-    <Card className="p-6">
+    <Card className="p-6 rounded-2xl border-border bg-card/40 shadow-sm">
       <div className="flex items-center gap-3 flex-wrap mb-1">
         <BookUser className="h-5 w-5 text-muted-foreground" />
         <h2 className="text-base font-semibold text-foreground">Member ledger</h2>

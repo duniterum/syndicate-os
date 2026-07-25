@@ -7,6 +7,27 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > contract. Everything below this block is the dated RECORD of how it got here —
 > read it only if you need the why.*
 >
+> ## ▶ 2026-07-25 (PM) — THE /ADMIN HARMONIZATION + PII/ADDRESS LAW (IN FLIGHT — committed, NOT deployed)
+> The founder turned the harmonization onto **/admin** (operator console, 11 sections). System-first
+> inventory done (12 surfaces classified). **DONE + COMMITTED (client-only, batchable — NOT deployed):**
+> ① every admin card reskinned to the shipped framed standard (`rounded-2xl border-border bg-card/40
+> shadow-sm`); ② the **Dashboard recomposed** — the live KPI band **`BusinessBand`** now LEADS the page
+> (revenue / paid-to-referrers / burned / reserve + members / artifacts / sources / promotions / builders,
+> all live reads via `useHeroReality` + console signals; the collapsed "Live reads coming" stub DELETED),
+> Protocol reality + a humanized "System & registry" collapsed at the bottom, identity humanized
+> (`ReferralKpiBand` deleted → `BusinessBand`; `guard-operator-gate` updated); ③ **PII jargon purged** from
+> the UI (the red "SERVER-ONLY PII BOUNDARY" badge + every "PII" string) + `guard-forbidden-copy` now BANS
+> the word "pii". **LAW ENGRAVED (CLAUDE.md rule ① + memories):** the ADDRESS MODEL — addresses PUBLIC,
+> short-form + Snowtrace link everywhere (AAA), legal basis cited (EDPB 02/2025 · CJEU *EDPS v SRB* · CCPA);
+> guards protect name/email NOT addresses; **masking an address = a BUG**.
+> **IN FLIGHT (next steps, founder-decided):** (a) **Protocol Assets on admin home** — founder chose FULL
+> multi-token; the Vault really holds **4.74 AVAX · 0.00078 BTC.b · 0.0266 WETH.e** (+ USDC/SYN, verified
+> on-chain 2026-07-25) → needs NEW SERVER READS (BTC.b/WETH.e `balanceOf` + native AVAX added to
+> `protocolTargets` + `realityService`, then the assets card on admin home; reuse the public
+> `ProtocolAssetsCard`). (b) **Address code-rescope** — stop the 40-hex scanner/guard blocking addresses +
+> add explorer links; **founder wants the DIFF SHOWN before applying**. Both (a)+(b) = server → deploy.
+> **DEPLOY: 🚀 BATCHABLE** — this commit is client-only/additive/fail-closed; it rides the next deploy with (a)+(b).
+>
 > ## ▶ 2026-07-25 — THE EDGE-TO-EDGE HARMONIZATION ARC — SEALED LIVE (e21a036 deployed · deploy backlog EMPTY)
 > Founder-driven full-screen sweep (footer → whole site). Ruling (QuickNode benchmark): bord-à-bord,
 > **no fixed-px page cap**, fill by **multiplying columns** (auto-fit), readability in **`ch`** — this

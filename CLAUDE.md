@@ -117,6 +117,30 @@ name/alias/email; own-row, no directory. The GUARDS enforce it (boundary-aware s
 auth-zone, forbidden-copy). Claude Code verifies through the guards SILENTLY and NEVER
 shows the founder "leak/PII" as an open question, a review headline, a lens name, or a
 risk to re-decide. Green guard = nothing to say; red guard = a bug report in human words.
+**AND the word "PII" NEVER appears on any SURFACE a user or the founder READS** (founder
+ruling 2026-07-25 — the red "SERVER-ONLY PII BOUNDARY" badge that resurfaced for weeks and
+"m'a posé plus de problèmes que de services"): never a badge, label, tooltip, chip, or line
+of copy — the human words are "personal data" / "account", and if the note serves nobody on
+that surface it is not shown at all (WORK-FIRST §3). `guard-forbidden-copy` now BANS the word
+"pii" (the internal `SERVER_ONLY_PII` risk-class TOKEN is word-boundary-safe and survives in
+code; only a rendered or commented bare "PII" turns the build RED). The PII architecture is
+stated ONCE in code/docs, never preached on a screen. No session re-introduces PII jargon on
+any surface — ANSWERED FOREVER.
+**THE ADDRESS MODEL — settled with legal backing (founder + deep online research 2026-07-25).**
+A wallet ADDRESS is PUBLIC: shown, ranked, celebrated (the season board is the pride/vanity
+feature). Display everywhere (public AND the founder admin) = SHORT-FORM `0x205D…f464` + an
+explorer (Snowtrace) link on every row — the grade-AAA pattern (Hyperliquid · Etherscan ·
+DeBank · Blast · Optimism gov): readability + independent verifiability. An address is NEVER
+hidden or masked-as-security. Legal basis (general info, not legal advice; sources cited in the
+2026-07-25 research task): a bare address is PSEUDONYMOUS, not "personal data" UNLESS linked to a
+real identity — EDPB Guidelines 02/2025 on blockchain, CJEU *EDPS v SRB* (C-413/23 P, 2025), the
+CCPA "reasonably linked" test; even OFAC and Etherscan publish addresses openly. The only
+regulated artifact is the internal name↔address MAPPING — kept server-side, never queryable in
+either direction (that IS the "never leaves the server" rule) — NOT the address. So the guards/
+scanners protect the RED LINE (name/alias/email) + forbid a PUBLIC name↔address directory; they
+must NOT block addresses or explorer links. **Any code that masks or fail-closes on an address as
+if it were a secret is a BUG against this law** (the friend.tech lesson: the harm was a scraped
+name↔identity directory, never the public addresses).
 ② **The word law extends to CHAT.** Everything the founder READS — reports, gates,
 previews, review verdicts — speaks HUMAN words only. Bytecode/ABI vocabulary
 ("acquisitionCost"/"acquisition cost" — ruling 2026-07-13, the word is "commission" —

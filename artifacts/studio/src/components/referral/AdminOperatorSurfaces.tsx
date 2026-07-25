@@ -144,7 +144,7 @@ export function BroadcastPanel() {
   }
 
   return (
-    <Card id="broadcast" className="p-6 scroll-mt-24">
+    <Card id="broadcast" className="p-6 scroll-mt-24 rounded-2xl border-border bg-card/40 shadow-sm">
       <div className="flex items-center gap-3 flex-wrap mb-3">
         <Megaphone className="h-5 w-5 text-muted-foreground" />
         <h2 className="text-base font-semibold text-foreground">Broadcast</h2>
@@ -281,7 +281,7 @@ export function BroadcastPanel() {
 
 export function FeatureFlagsPanel() {
   return (
-    <Card id="flags-preview" className="p-6 scroll-mt-24">
+    <Card id="flags-preview" className="p-6 scroll-mt-24 rounded-2xl border-border bg-card/40 shadow-sm">
       <Head icon={ToggleLeft} title="Feature flags" />
       <p className="text-sm text-muted-foreground max-w-3xl mb-4 leading-relaxed">
         Staged rollout and kill switches. Preview: toggles change local state only; flipping a real flag is a
@@ -301,7 +301,7 @@ export function FeatureFlagsPanel() {
 
 export function AuditLogPanel() {
   return (
-    <Card id="audit" className="p-6 scroll-mt-24">
+    <Card id="audit" className="p-6 scroll-mt-24 rounded-2xl border-border bg-card/40 shadow-sm">
       <Head icon={ScrollText} title="Audit log" sample />
       <p className="text-sm text-muted-foreground max-w-3xl mb-4 leading-relaxed">
         Every privileged action is recorded — who did what, to what, and when. Sample rows today — the
@@ -333,7 +333,7 @@ export function AuditLogPanel() {
 
 export function SupportQueuePanel() {
   return (
-    <Card id="support" className="p-6 scroll-mt-24">
+    <Card id="support" className="p-6 scroll-mt-24 rounded-2xl border-border bg-card/40 shadow-sm">
       <Head icon={LifeBuoy} title="Support queue" sample />
       <p className="text-sm text-muted-foreground max-w-3xl mb-4 leading-relaxed">
         Member questions routed to operators. Preview: replies and status changes are writes in the operator

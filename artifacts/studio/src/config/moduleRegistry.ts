@@ -22,7 +22,7 @@
 //     this field records WHICH claim families each module must never make.
 //
 // Read-only: nothing here executes, writes, sends transactions, or exposes
-// addresses/PII. This registry exists so a later founder-approved slice can
+// addresses/personal data. This registry exists so a later founder-approved slice can
 // drive homepage recomposition, /map, /member, /source and /join alignment
 // from ONE governed list instead of scattered config.
 
@@ -213,7 +213,7 @@ const specs: readonly RegistrySpec[] = [
     riskClass: "SERVER_ONLY_PII",
     forbiddenClaims: ["WEALTH_RANKING"],
     notes:
-      "Verified historical-member freeze is server-only (wallet PII). No PUBLIC projection is served; the two lawful views are each wallet's own signed readback and the founder-only, audit-logged ledger.",
+      "Verified historical-member freeze is server-only. No PUBLIC projection is served; the two lawful views are each wallet's own signed readback and the founder-only, audit-logged ledger.",
   },
   {
     registryId: "address-labels",

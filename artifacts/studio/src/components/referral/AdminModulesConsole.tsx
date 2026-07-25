@@ -22,7 +22,7 @@ import { moduleRegistry } from "@/config/moduleRegistry";
 const RISK_LABEL: Record<string, string> = {
   READ_ONLY_PUBLIC: "Public · no writes",
   SESSION_SELF_READBACK: "Session self-readback",
-  SERVER_ONLY_PII: "Server-only · PII",
+  SERVER_ONLY_PII: "Founder-only",
   OWNER_SIDE_ONCHAIN_ACTION: "Owner on-chain action",
   CONTENT_ONLY: "Content only",
 };
@@ -40,7 +40,7 @@ export function AdminModulesConsole() {
   }
 
   return (
-    <Card id="modules" className="p-6 scroll-mt-24">
+    <Card id="modules" className="p-6 scroll-mt-24 rounded-2xl border-border bg-card/40 shadow-sm">
       <div className="flex items-center gap-3 flex-wrap mb-1">
         <Puzzle className="h-5 w-5 text-muted-foreground" />
         <h2 className="text-base font-semibold text-foreground">Modules</h2>

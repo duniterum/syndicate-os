@@ -84,6 +84,17 @@ const WORDS = [
   "distributed", "pooled",
   // NOT added (repo wins, flagged): "moon" (the lucide <Moon/> theme icon) and
   // "raised" ("Raised class" = a referral tier name) are legitimate existing copy.
+  //
+  // Settled-law jargon ban (founder: the 2026-07-19 SILENCE RULE + the 2026-07-25
+  // ruling "règle-moi ce PII une bonne fois pour toutes"). The word "PII" NEVER
+  // appears in anything the founder or a user reads — the human words are
+  // "personal data" / "account". The PII architecture (member data server-side,
+  // own-row only, nothing hidden on-chain) is SETTLED and enforced by the
+  // boundary-aware / auth-zone guards; it is stated ONCE in code/docs, never
+  // printed on a surface as a badge or label. The internal riskClass token
+  // SERVER_ONLY_PII is boundary-safe (no \bpii\b match inside it), so the code
+  // identifier survives; only a rendered or commented bare "PII" fails the build.
+  "pii",
 ];
 
 function escapeRe(s: string): string {

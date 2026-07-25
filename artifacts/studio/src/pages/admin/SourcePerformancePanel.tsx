@@ -124,7 +124,7 @@ export function SourcePerformancePanel() {
   }
 
   return (
-    <Card className="p-6 scroll-mt-24" id="source-performance">
+    <Card className="p-6 scroll-mt-24 rounded-2xl border-border bg-card/40 shadow-sm" id="source-performance">
       <div className="flex items-center gap-3 flex-wrap mb-1">
         <h2 className="text-base font-semibold text-foreground">Per-source performance</h2>
         <span className="font-mono text-[10px] uppercase tracking-wider text-primary">

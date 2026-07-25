@@ -55,7 +55,7 @@ export function AdminReferralCrud() {
   }
 
   return (
-    <Card id="referral-settings" className="p-6 scroll-mt-24">
+    <Card id="referral-settings" className="p-6 scroll-mt-24 rounded-2xl border-border bg-card/40 shadow-sm">
       <div className="flex items-center gap-3 flex-wrap mb-1">
         <SlidersHorizontal className="h-5 w-5 text-muted-foreground" />
         <h2 className="text-base font-semibold text-foreground">Referral program settings</h2>

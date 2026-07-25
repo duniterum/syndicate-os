@@ -46,7 +46,7 @@ import {
   AdminHealthPanel,
 } from "@/pages/admin/panels";
 import { MemberLedgerPanel } from "@/pages/admin/memberLedger";
-import { ReferralKpiBand } from "@/pages/admin/ReferralKpiBand";
+import { BusinessBand } from "@/pages/admin/BusinessBand";
 import { SourcePerformancePanel } from "@/pages/admin/SourcePerformancePanel";
 // S2-final (2026-07-24): the Seasons 2-rails section (strict chain: this file
 // is the module's ONLY importer — guard-operator-gate adminGraph).
@@ -76,6 +76,7 @@ const SECTION_ROUTE: Record<AdminSectionId, string> = {
   members: "/admin/members",
   broadcast: "/admin/broadcast",
   support: "/admin/support",
+  seasons: "/admin/seasons",
 };
 
 /**
@@ -131,9 +132,9 @@ export function AdminDashboardSection() {
         onNavigate={onNavigate}
         realitySlot={<ProtocolRealityPanel groups={["chain", "contracts", "sale", "financial"]} />}
         reviewCount={reviewCount}
-        referralBand={<ReferralKpiBand onNavigate={onNavigate} />}
+        referralBand={<BusinessBand onNavigate={onNavigate} />}
+        systemSlot={<AdminOverviewPanel />}
       />
-      <AdminOverviewPanel />
     </div>
   );
 }
@@ -143,7 +144,7 @@ export function AdminMembersSection() {
     <div className="space-y-6">
       {/* M-INT-1: the member ledger — the section's centerpiece (founder-only
           read; masked wallets; audit-logged). The posture panel keeps the
-          server-only PII boundary statement below it. */}
+          server-side data note below it. */}
       <MemberLedgerPanel />
       <AdminMembersPanel />
     </div>

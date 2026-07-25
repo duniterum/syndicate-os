@@ -268,7 +268,7 @@ const adminGraph: Record<string, string[]> = {
   // CONSOLE ①/③ (2026-07-22): the referral KPI band + the per-source
   // performance panel join the strict chain (sections.tsx only) — admin
   // modules may never be reachable from a public surface.
-  '"@/pages/admin/ReferralKpiBand"': [path.join("pages", "admin", "sections.tsx")],
+  '"@/pages/admin/BusinessBand"': [path.join("pages", "admin", "sections.tsx")],
   '"@/pages/admin/SourcePerformancePanel"': [path.join("pages", "admin", "sections.tsx")],
   // S2-final (2026-07-24): the Seasons 2-rails panel joins the strict chain
   // (sections.tsx only) — admin modules never reachable from a public surface.

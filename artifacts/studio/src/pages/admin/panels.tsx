@@ -58,7 +58,6 @@ import {
   ScrollText,
   ToggleLeft,
   HeartPulse,
-  ShieldAlert,
   Info,
 } from "lucide-react";
 
@@ -121,7 +120,7 @@ function PanelCard({
 }) {
   const Icon = def.icon;
   return (
-    <Card id={def.id} className="p-6 scroll-mt-24">
+    <Card id={def.id} className="p-6 scroll-mt-24 rounded-2xl border-border bg-card/40 shadow-sm">
       <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
         <div className="flex items-center gap-2.5">
           <Icon className="h-4.5 w-4.5 text-muted-foreground" />
@@ -175,7 +174,7 @@ const membersDef: PanelDef = {
   title: "Members & Continuity",
   icon: Users,
   tooltip:
-    "Continuity/membership/wallet-session postures from GET /api/source-status. Member PII is server-only; no directory or lookup of other wallets exists anywhere.",
+    "Continuity/membership/wallet-session postures from GET /api/source-status. Members' personal data stays server-side; there is no directory or lookup of other members.",
 };
 const sourcesDef: PanelDef = {
   id: "sources",
@@ -258,7 +257,7 @@ export function AdminOverviewPanel() {
             {moduleRegistry.length}
           </div>
           <div className="text-xs text-muted-foreground">
-            Registry modules (v0)
+            Registry modules
           </div>
         </div>
         <div className="rounded-lg border border-border p-3">
@@ -270,7 +269,7 @@ export function AdminOverviewPanel() {
             </span>
           </div>
           <div className="text-xs text-muted-foreground">
-            Modules with a mounted route
+            Live with a page
           </div>
         </div>
         <div className="rounded-lg border border-border p-3">
@@ -278,7 +277,7 @@ export function AdminOverviewPanel() {
             {sourceLoading ? "…" : sourceError ? "—" : ledgerItems.length}
           </div>
           <div className="text-xs text-muted-foreground">
-            Posture ledger categories
+            Tracked systems
           </div>
         </div>
         <div className="rounded-lg border border-border p-3">
@@ -293,7 +292,7 @@ export function AdminOverviewPanel() {
                   )}
           </div>
           <div className="text-xs text-muted-foreground">
-            Reality spine signals
+            On-chain signals
           </div>
         </div>
       </div>
@@ -301,7 +300,7 @@ export function AdminOverviewPanel() {
         {sourceLoading ? (
           <Spinner className="h-3.5 w-3.5" />
         ) : sourceError ? (
-          <Unavailable text="Posture ledger unavailable (fail-closed)" />
+          <Unavailable text="Systems status unavailable" />
         ) : (
           Object.entries(postureCounts).map(([posture, count]) => (
             <span
@@ -418,15 +417,7 @@ export function AdminMembersPanel() {
   } = useGetSourceStatus();
 
   return (
-    <PanelCard
-      def={membersDef}
-      chip={
-        <span className="inline-flex items-center gap-1.5 rounded-md border border-destructive/30 bg-destructive/10 px-2 py-0.5 font-mono text-[10px] text-destructive">
-          <ShieldAlert className="h-3 w-3" />
-          SERVER-ONLY PII BOUNDARY
-        </span>
-      }
-    >
+    <PanelCard def={membersDef}>
       <CategoryPostureRow
         label="Member continuity (freeze & root)"
         category="continuity"
@@ -449,15 +440,12 @@ export function AdminMembersPanel() {
         isError={sourceError}
       />
       <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
-        Historical member data (wallets, first transactions, proofs) is
-        server-only. This console never displays wallet PII, a member
-        directory, or any lookup of another wallet — a signed wallet may
-        read only its own standing, on{" "}
+        The ledger above is the founder-only management view. Each member reads
+        only their own standing, on{" "}
         <Link href="/member" className="text-proof hover:underline">
           /member
         </Link>
-        . The member ledger above is the founder-gated management view
-        (M-INT-1); the full users-registry tab is M-INT-2.
+        .
       </p>
     </PanelCard>
   );
