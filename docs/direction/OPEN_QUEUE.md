@@ -1,5 +1,27 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-25 (PM-4) — THE HANDOFF REVIEW: 9 agents, 78 findings, 76 confirmed adversarially.**
+> The founder ordered a full senior re-read before handoff, GitHub as the source of truth. It caught a
+> **BLOCKING defect I had shipped hours earlier and TypeScript could not see**: `add5bb8` widened the
+> treasury token union in five places and the formatter, but NOT the runtime validator in
+> `backboneFeedClient.parseLine` — every BTC.b/WETH.e line would have been REJECTED, slice ⑧ would have
+> rendered nothing, and `/activity` would have publicly announced *"N served line(s) failed validation"*,
+> the protocol accusing its own honest data of being malformed. (tsc is blind here: inside `parseLine` the
+> row is `Record<string, unknown>`, so the narrower union stays assignable to the wider one.) **FIXED
+> STRUCTURALLY:** the decimals map is hoisted above the parser and both narrow through ONE typed predicate
+> `isTreasuryToken` — parser and formatter can no longer drift.
+> **ALSO FIXED FROM THE SAME REVIEW:** the ONE-AUTHORITY break (the home band omitted
+> `financial.nftSale.contractUsdcBalance` that `/contracts` summed — two different totals for the same
+> money) · the banned word still RENDERED three times on public `/status`, because the word-law check I
+> added scanned only the source-status registry — it now scans the WHOLE served reality envelope ·
+> `backbone.guard` pinned neither the scan-target set nor the organ set (4 new lanes + a 4th organ moved it
+> by ZERO checks) — four completeness pins added, 165 → **169** · the member header's trophy still
+> tooltipped "coming with the season engine" two days after `/season` went live, so it is now a door to the
+> board. **DOCS (the founder asked specifically):** the DESIGN_ROADMAP standing rule had been violated by
+> THREE design slices; SESSION_STATE's deploy backlog named 1 commit when FOUR await deploy; the Reserves
+> band was recorded in no ledger at all; BACKLOG.html still showed ⑧ as open. All corrected in this pass.
+> **LESSON ENGRAVED: widening a type is never the whole change — find the RUNTIME gate.**
+
 > **▶ 2026-07-25 (PM-3) — THE TRUTH SWEEP + THE NFT SALE MONEY (founder's own eye on the live page).**
 > He pointed at one /contracts card — *"Attribution Router … No commission or financial benefit is implied
 > or paid"* — and said it is false. **It was**, and a repo audit had CONFIRMED it nine days earlier without

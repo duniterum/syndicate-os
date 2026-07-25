@@ -59,6 +59,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { assertAddressSafeJson } from "../src/lib/protocol/addressSafety";
 import {
+  PROTOCOL_EVENT_SCAN_TARGETS,
+  FINANCIAL_TARGETS,
+} from "../src/data/protocolTargets";
+import {
   BACKBONE_EXPOSURE_FLAG,
   MIN_INTERVAL_SEC,
   MAX_INTERVAL_SEC,
@@ -1796,6 +1800,76 @@ check(
   "feed route reads memory only (no DB, no network)",
   "feed route grew a DB/network dependency",
 );
+
+// ---------------------------------------------------------------------------
+// THE LANE/ORGAN COMPLETENESS PINS (senior review, 2026-07-25).
+// Four new treasury lanes and a fourth organ were added and this guard's total
+// did not move by a single check — it pinned neither the scan-target set nor
+// the organ set, so a lane could be declared and never wired (or wired and
+// never declared) in silence. These pins close that.
+// ---------------------------------------------------------------------------
+{
+  const scanSrc = stripComments(read("src/backbone/protocolEventScan.ts"));
+  const declared = PROTOCOL_EVENT_SCAN_TARGETS.map((t) => t.streamKey);
+
+  // ① Every declared stream has a STREAM_CONFIG entry (declared ⇒ wired).
+  const unwired = declared.filter((k) => !new RegExp(`\\b${k}:\\s*\\{`).test(scanSrc));
+  check(
+    unwired.length === 0,
+    `every declared scan target is wired in STREAM_CONFIG (${declared.length} streams)`,
+    `declared scan target(s) with no STREAM_CONFIG entry: ${unwired.join(", ")}`,
+  );
+
+  // ② Every treasury lane's scanned contract is one of the canon token
+  //    addresses — the CONTRACT is what identifies the token downstream, so a
+  //    lane pointed at the wrong contract would mislabel real money.
+  const treasuryTargets = PROTOCOL_EVENT_SCAN_TARGETS.filter((t) =>
+    t.streamKey.startsWith("TREASURY_"),
+  );
+  const tokenAddrs = new Set(
+    [
+      FINANCIAL_TARGETS.usdcTokenAddress,
+      FINANCIAL_TARGETS.synTokenAddress,
+      FINANCIAL_TARGETS.btcbTokenAddress,
+      FINANCIAL_TARGETS.wethTokenAddress,
+    ].map((a) => a.toLowerCase()),
+  );
+  check(
+    treasuryTargets.length === 8 &&
+      treasuryTargets.every((t) => tokenAddrs.has(t.address.toLowerCase())),
+    `all 8 treasury lanes scan a canon token contract (USDC · SYN · BTC.b · WETH.e, IN+OUT each)`,
+    `a treasury lane scans a non-canon contract, or the lane count moved (${treasuryTargets.length})`,
+  );
+
+  // ③ Every treasury lane pairs IN with OUT — a one-directional lane would
+  //    show money arriving and never leaving (or the reverse).
+  const bases = [...new Set(treasuryTargets.map((t) => t.streamKey.replace(/_(IN|OUT)$/, "")))];
+  const unpaired = bases.filter(
+    (b) => !declared.includes(`${b}_IN`) || !declared.includes(`${b}_OUT`),
+  );
+  check(
+    unpaired.length === 0,
+    `every treasury lane declares BOTH directions (${bases.length} token lanes)`,
+    `treasury lane(s) missing a direction: ${unpaired.join(", ")}`,
+  );
+
+  // ④ The organ set the SCANNER filters on and the organ set the RUNNER labels
+  //    must be the same four wallets. If a wallet were filtered but unlabelled
+  //    its moves would be dropped; if labelled but unfiltered, never seen.
+  const runnerSrc = stripComments(read("src/backbone/backboneRunner.ts"));
+  const organFields = ["vaultWallet", "liquidityWallet", "operationsWallet", "nftSaleWallet"];
+  const filtered = organFields.filter((f) =>
+    new RegExp(`addressToTopic\\(FINANCIAL_TARGETS\\.${f}\\)`).test(scanSrc),
+  );
+  const labelled = organFields.filter((f) =>
+    new RegExp(`FINANCIAL_TARGETS\\.${f}\\.toLowerCase\\(\\)`).test(runnerSrc),
+  );
+  check(
+    filtered.length === organFields.length && labelled.length === organFields.length,
+    `the scanner's organ filter and the runner's organ labels cover the same 4 organs`,
+    `organ set mismatch — filtered: [${filtered.join(", ")}] labelled: [${labelled.join(", ")}]`,
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Report.

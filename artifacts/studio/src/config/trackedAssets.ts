@@ -108,6 +108,12 @@ export const TRACKED_ASSETS: readonly TrackedAsset[] = [
       "financial.vault.usdcBalance",
       "financial.ops.usdcBalance",
       "financial.nftSale.walletUsdcBalance",
+      // Money resting INSIDE the sale contract between a mint and its withdraw.
+      // Normally zero — but omitting it made the home total differ from the
+      // /contracts total for the same claim, which is exactly the
+      // one-authority break the mockup promised could never happen
+      // (senior review, 2026-07-25).
+      "financial.nftSale.contractUsdcBalance",
     ],
     decimals: 6,
     dp: 2,

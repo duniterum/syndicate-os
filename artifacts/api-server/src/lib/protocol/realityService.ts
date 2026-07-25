@@ -1721,7 +1721,7 @@ async function buildFinancialGroup(
         label: "Members — active engine memberCount() (continuous total)",
         contractRole: "sale",
         note:
-          "Live CONTINUOUS member tally read from the active V3 engine (seats #1..memberCount; next = memberCount+1), reconciled against the verified snapshot. A count only — no wallet or wallet↔member-number mapping (PII boundary holds)." +
+          "Live CONTINUOUS member tally read from the active V3 engine (seats #1..memberCount; next = memberCount+1), reconciled against the verified snapshot. A count only — the server never links a wallet to a member number, in either direction." +
           failNote,
         sourceRef: `contract-registry.ts:${engine.key} (eth_call memberCount, reconciled vs verified snapshot)`,
         chainId,
@@ -1738,7 +1738,7 @@ async function buildFinancialGroup(
         label: "Members — GENESIS_OFFSET() (historical freeze base #1–#8)",
         contractRole: "sale",
         note:
-          "Live GENESIS_OFFSET() on the active V3 engine — the historical freeze/root base (#1–#8; authority = verified freeze + on-chain V1_MEMBER_ROOT). V3-emitted seats = memberCount − GENESIS_OFFSET. A count only; PII boundary holds." +
+          "Live GENESIS_OFFSET() on the active V3 engine — the historical freeze/root base (#1–#8; authority = verified freeze + on-chain V1_MEMBER_ROOT). V3-emitted seats = memberCount − GENESIS_OFFSET. A count only; no account material is served." +
           failNote,
         sourceRef: `contract-registry.ts:${engine.key} (eth_call GENESIS_OFFSET, reconciled vs verified snapshot)`,
         chainId,
@@ -1805,7 +1805,7 @@ async function buildFinancialGroup(
           label: "Members — distinct wallets (memberCount − seat overlap)",
           contractRole: "sale",
           note:
-            "DERIVED live, never typed: memberCount() counts seats; this is the count of distinct wallets holding them. Overlap = historical freeze wallets whose live memberNumberOf() exceeds GENESIS_OFFSET (bought a V3 seat before claiming — a pre-gate duplicate). A count only; no wallet is emitted (PII boundary holds)." +
+            "DERIVED live, never typed: memberCount() counts seats; this is the count of distinct wallets holding them. Overlap = historical freeze wallets whose live memberNumberOf() exceeds GENESIS_OFFSET (bought a V3 seat before claiming — a pre-gate duplicate). A count only; no wallet is emitted." +
             derivationFailNote,
           sourceRef: `contract-registry.ts:${engine.key} (eth_call memberNumberOf × historical freeze set, derived count)`,
           chainId,

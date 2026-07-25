@@ -70,6 +70,23 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   ouvre sur le travail). Tokens uniquement — **+0 couleur brute** (`viz-1/2/3/4/5/6`, `gold`) ; teintes
   d'icônes redistribuées pour lever une collision ambre/or en thème sombre. Pas de plafond px (S7-d :
   la grille reste `grid-cols-1 sm:grid-cols-2 xl:grid-cols-4`).
+  **PUIS (25-07 PM-3) : « PROTOCOL RESERVES » — LA SECTION D'ACCUEIL PUBLIQUE** (maquette approuvée par le
+  fondateur : nom, look et barre de composition validés ; `docs/design/protocol-owned-assets-mockup.html`).
+  Bande pleine largeur posée sous le bandeau saison (`6953972`), **pilotée par un REGISTRE**
+  (`config/trackedAssets.ts`) : une entrée décide l'ordre, le logo, les décimales, la source du solde et
+  celle du prix — le total, la barre et les jauges en découlent. **44 logos de coins vendus en local**
+  (`public/coins/`, licence MIT + note) : aucun hôte externe appelé, repli sur pastille lettrée, jamais
+  d'image cassée. **Puis affiné (`35c5083` + `add5bb8`, sur retours du fondateur sur le site LIVE) :** UNE
+  seule carte USDC agrégeant les quatre poches (vault · opérations · ventes NFT · notre part du pool) au
+  lieu de trois cartes jumelles ; la barre de composition **remplit exactement 100 %** parce qu'elle et le
+  total sortent désormais de LA MÊME liste (elles en avaient deux, d'où 80 % et une zone noire à droite) ;
+  grille à **4 colonnes dès `lg`** pour que les 4 cartes tiennent sur UNE ligne (une grille à 3 laissait la
+  4ᵉ orpheline en 1280 px). **+0 couleur brute** — les teintes passent par une table de classes LITTÉRALES
+  (`TONE_BG`, `ProtocolReservesBand.tsx`) : une classe construite `bg-${tone}` n'est jamais générée par
+  Tailwind et les barres auraient été invisibles. Tokens `viz-1..viz-6` + `gold` uniquement, aucun plafond
+  px (S7-d respecté). **Aussi (`352a904`) :** les lignes du board /season rendent l'identité **cliquable**
+  vers Snowtrace — condition portée sur l'existence du lien, jamais sur « a un siège », donc toute ligne
+  future l'est d'office.
   **DEPLOY : 🚀 GROUPÉ MAINTENANT** — le commit des avoirs change des lectures SERVEUR, donc il n'est pas
   batchable : il emporte `f2642aa` · `3b32f2c` · `29f8559` · `469882d` au-dessus de prod `e21a036` en un
   seul déploiement. **+0 couleur brute** (tokens). Dossier :

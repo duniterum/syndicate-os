@@ -321,6 +321,31 @@ function parseCommon(r: Record<string, unknown>): ServedLineCommon | null {
   };
 }
 
+/**
+ * A treasury amount, at ITS OWN token's precision.
+ * ---------------------------------------------------------------------------
+ * This used to be a binary "SYN or else USDC". The moment a third token got a
+ * lane that shortcut would have printed a BTC.b amount at 6 decimals — a figure
+ * wrong by a factor of 100, on a public feed. Decimals now come from the token,
+ * and an unknown token yields NO sentence rather than a wrong number.
+ */
+export type TreasuryToken = "USDC" | "SYN" | "BTC.b" | "WETH.e";
+const TREASURY_TOKEN_DECIMALS: Record<TreasuryToken, { decimals: number; dp: number }> = {
+  USDC: { decimals: 6, dp: 2 },
+  SYN: { decimals: 18, dp: 2 },
+  "BTC.b": { decimals: 8, dp: 8 },
+  "WETH.e": { decimals: 18, dp: 6 },
+};
+
+/** THE ONE AUTHORITY for which tokens the client may render. The runtime
+ *  parser and the formatter both narrow through THIS — a token that has no
+ *  decimals here can never reach a sentence, and a token added here is
+ *  accepted by both at once. The parser and the formatter drifting apart is
+ *  exactly what made slice 8 render nothing (senior review, 2026-07-25). */
+function isTreasuryToken(v: unknown): v is TreasuryToken {
+  return typeof v === "string" && Object.prototype.hasOwnProperty.call(TREASURY_TOKEN_DECIMALS, v);
+}
+
 function parseLine(raw: unknown): ServedFeedLine | null {
   if (typeof raw !== "object" || raw === null) return null;
   const r = raw as Record<string, unknown>;
@@ -433,7 +458,7 @@ function parseLine(raw: unknown): ServedFeedLine | null {
   }
   if (r.kind === "treasury-move") {
     if (
-      (r.token !== "USDC" && r.token !== "SYN") ||
+      !isTreasuryToken(r.token) ||
       typeof r.amountRaw !== "string" ||
       !/^[0-9]+$/.test(r.amountRaw) ||
       (r.movement !== "in" && r.movement !== "out" && r.movement !== "internal") ||
@@ -691,23 +716,9 @@ export function formatUsdcRaw(amountUsdcRaw: string): string {
   return `${whole.toLocaleString("en-US")}.${cents.toString().padStart(2, "0")}`;
 }
 
-/**
- * A treasury amount, at ITS OWN token's precision.
- * ---------------------------------------------------------------------------
- * This used to be a binary "SYN or else USDC". The moment a third token got a
- * lane that shortcut would have printed a BTC.b amount at 6 decimals — a figure
- * wrong by a factor of 100, on a public feed. Decimals now come from the token,
- * and an unknown token yields NO sentence rather than a wrong number.
- */
-const TREASURY_TOKEN_DECIMALS: Record<string, { decimals: number; dp: number }> = {
-  USDC: { decimals: 6, dp: 2 },
-  SYN: { decimals: 18, dp: 2 },
-  "BTC.b": { decimals: 8, dp: 8 },
-  "WETH.e": { decimals: 18, dp: 6 },
-};
 
 export function formatTreasuryRaw(amountRaw: string, token: string): string | null {
-  const spec = TREASURY_TOKEN_DECIMALS[token];
+  const spec = isTreasuryToken(token) ? TREASURY_TOKEN_DECIMALS[token] : undefined;
   if (!spec) return null; // unknown token → the caller withholds the line
   let units: bigint;
   try {

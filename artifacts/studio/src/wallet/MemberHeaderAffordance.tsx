@@ -283,20 +283,22 @@ export default function MemberHeaderAffordance({
           seats — the world-class pattern: signed in = bell): the notification
           bell is LIVE in its reserved slot (NOTIF-1 — badge = own unseen
           count, tabs All/Protocol/Mine, View all → /notifications; the
-          component itself hides without S4). The season TROPHY stays reserved
-          exactly as harvested (locked ≠ hidden; it lights up with the seasons
-          engine — never before). */}
+          component itself hides without S4). The season TROPHY went LIVE with
+          the board (2026-07-23) — it was still tooltipped "coming with the
+          season engine" two days later, the exact DONE-IS-DONE fossil the
+          registry exists to kill (senior review, 2026-07-25). It is now a door,
+          like the bell beside it. */}
       {!mobile ? (
         <>
           <MemberNotificationsBell />
-          <span
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/50 text-muted-foreground/60"
-            title="Seasons & recognition — coming with the season engine. XP earns standing; funded season rewards are real USDC, paid openly."
-            aria-disabled="true"
-            data-testid="header-trophy-reserved"
+          <Link
+            href="/season"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/50 text-muted-foreground transition-colors hover:border-gold/40 hover:text-gold"
+            title="Season board — see where you stand"
+            data-testid="header-trophy"
           >
             <Trophy className="h-3.5 w-3.5" aria-hidden="true" />
-          </span>
+          </Link>
         </>
       ) : null}
     <DropdownMenu>

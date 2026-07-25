@@ -570,6 +570,13 @@ async function main(): Promise<void> {
     check("fin: each of the 7 allocation balanceOf reads targets SYN with its wallet calldata", allocCalls.every((c) => c?.to === SYN_ADDR));
     check("happy: every present value has null failureReason", allItems(e).every((i) => (i.value === null) === (i.failureReason !== null) || i.id === "chain.network"));
     check("happy: NO address leak", noAddressLeak(e));
+    // THE WORD LAW (CLAUDE.md rule ①) over the WHOLE served envelope — note,
+    // label, sourceRef and failureReason at once. The first attempt at this law
+    // only scanned the source-status registry, and three notes kept rendering
+    // the banned word on public surfaces (senior review, 2026-07-25). The
+    // internal SERVER_ONLY_PII risk TOKEN survives: this is word-boundary
+    // matched, so only a bare rendered word turns the build red.
+    check("word law: the served reality envelope never renders the banned word", !/\bpii\b/i.test(JSON.stringify(e)));
     check("happy: discipline passes", disciplinePasses(e));
     check("happy: every item publicSafe + valueType consistent", allItems(e).every((i) => i.publicSafe === true && i.valueType === (i.value === null ? "null" : typeof i.value)));
   }

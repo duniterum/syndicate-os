@@ -14,7 +14,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > identity ×2 on entry + console chunks, atomic swap with no visitor downtime, 20/20 api guards, live
 > battery green (13 routes 200 · /studio 404 · sitemap 28 URLs with /recognition · engine ok=2 headBlock
 > advancing · **/contracts serving "Value of the priced holdings $236.79"**). No migration, no new env.
-> **DEPLOY BACKLOG: the season address-link commit (server DTO change → 🚀 DEPLOY, next cycle).**
+> **DEPLOY BACKLOG — 4 commits above prod `f7f9e57`, recounted from `git log f7f9e57..HEAD`:**
+> `352a904` season DTO, wallet + explorerUrl on every board row (**SERVER**) · `6953972` the public-home
+> Protocol Reserves band + 44 vendored coin SVGs (client) · `35c5083` one merged USDC card, the composition
+> bar filling 100%, every season row clickable (client) · `add5bb8` the BTC.b/WETH.e treasury lanes + the NFT
+> sale wallet as a 4th organ + the pool folded into USDC (**SERVER — new indexer lanes**). **ONE grouped
+> 🚀 DEPLOY carries all four.** Replit: pull main, deploy, report. No migration, no new env — the lanes use
+> the existing protocol-event table and cursors, and backfill from block 87,157,852 over several cycles
+> (normal cursor behaviour, not an error).
 > **THE SITEMAP LESSON (engraved):** the first cycle was REFUSED because `/recognition` flipped to INDEX
 > without `seo:generate` being re-run — `sitemap.xml` is a COMMITTED file the build does not write, and
 > `seo:check` + `surface:audit` are NOT part of `guards` or `build`. Any slice touching
@@ -163,6 +170,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **THE OWNERSHIP RULE ENGRAVED:** only the protocol's LIQUIDITY WALLET counts as protocol-owned; the
 > founder's personal liquidity is HIS, never the protocol's treasury — the guard pins that the LP-share
 > read encodes the liquidity wallet and never the founder's own.
+>
+> **⑪ "PROTOCOL RESERVES" — THE PUBLIC HOME SECTION — ✅ SHIPPED (`6953972`, refined `35c5083` + `add5bb8`;
+> committed, NOT yet deployed).** The founder's aparté, built from an approved mockup
+> (`docs/design/protocol-owned-assets-mockup.html` — he validated the NAME, the look and the composition
+> bar). A full-bleed band under the season section showing what the protocol OWNS, every row verifiable on
+> Snowtrace. **NAME: "Protocol Reserves"** — chosen over "Treasury" (crowded; implies a body that spends it)
+> and over "Backing", which was rejected outright: it implies the token is redeemable against these assets,
+> a promise we never make and one the chain could refute. **REGISTRY-DRIVEN:** `config/trackedAssets.ts` —
+> one entry decides a row's order, logo, decimals, balance source, price source and tone; the total, the
+> composition bar and the share bars all derive from it. FOUR cards (AVAX · BTC · ETH · USDC), USDC
+> aggregating four pockets (vault · operations · NFT sales · our share of the pool's USDC leg). **44 coin
+> logos vendored locally** (`public/coins/`, MIT + LICENSE note): no external host is ever called, a missing
+> symbol falls back to a lettered disc, never a broken image. **HONEST ABOUT EXTENSIBILITY, in the file
+> itself:** adding an asset is one entry HERE **plus** a server read pair — NOT one line total; unifying
+> both sides behind one registry is the named next step.
 >
 > **⑩ THE "ARCHIVE" → "NFT" VOCABULARY SWEEP (founder ruling, 2026-07-25 — NEW).** His words: *"NFT tout le
 > monde le connaît, pas de charge mentale"* — the AI-chosen word "archive" as the UMBRELLA term created
