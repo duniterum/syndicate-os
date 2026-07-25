@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { MemberSigil } from "@/components/member/MemberSigil";
 import { chapterForSeat } from "@/lib/chapters";
+import { useAddressExplorerUrl } from "@/lib/useAddressExplorerUrl";
 import { useOwnCapitalRung } from "./ownReads";
 import {
   fetchMemberStanding,
@@ -57,6 +58,7 @@ export default function MemberYourSeat() {
   const [readNonce, setReadNonce] = useState(0);
   const [copied, setCopied] = useState(false);
   const { address } = useAccount();
+  const addrUrl = useAddressExplorerUrl(address);
   const rung = useOwnCapitalRung(status.kind === "member" ? status.seat : null);
 
   useEffect(() => {
@@ -146,7 +148,20 @@ export default function MemberYourSeat() {
               ) : null}
             </div>
             <div className="mt-1 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
-              {address ? <span className="font-mono">{shortAddress(address)}</span> : null}
+              {address ? (
+                addrUrl ? (
+                  <a
+                    href={addrUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-proof/80 hover:text-proof underline underline-offset-2"
+                  >
+                    {shortAddress(address)} ↗
+                  </a>
+                ) : (
+                  <span className="font-mono">{shortAddress(address)}</span>
+                )
+              ) : null}
               {seated && eraLabel(status.era) ? (
                 <>
                   <span aria-hidden="true">·</span>

@@ -21,6 +21,7 @@ import { Link } from "wouter";
 import { navigate } from "wouter/use-browser-location";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
+import { useAddressExplorerUrl } from "@/lib/useAddressExplorerUrl";
 import {
   Wallet,
   LogOut,
@@ -111,6 +112,7 @@ export default function MemberHeaderAffordance({
   const [signError, setSignError] = useState(false);
   const { openConnectModal } = useConnectModal();
   const { address, connector } = useAccount();
+  const addrUrl = useAddressExplorerUrl(address);
 
   useEffect(() => {
     let active = true;
@@ -354,8 +356,19 @@ export default function MemberHeaderAffordance({
                 {seated ? `Member #${status.seat}` : "Signed in"}
               </div>
               {address ? (
-                <div className="font-mono text-xs text-muted-foreground">
-                  {shortAddress(address)}
+                <div className="text-xs text-muted-foreground">
+                  {addrUrl ? (
+                    <a
+                      href={addrUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-mono text-proof/80 hover:text-proof underline underline-offset-2"
+                    >
+                      {shortAddress(address)} ↗
+                    </a>
+                  ) : (
+                    <span className="font-mono">{shortAddress(address)}</span>
+                  )}
                 </div>
               ) : null}
             </div>
