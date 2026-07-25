@@ -111,8 +111,8 @@ function TrustStatusStrip() {
   const { data, isLoading, isError } = useGetProtocolReality();
 
   return (
-    <section className="border-b border-border/60 bg-muted/30">
-      <div className="w-full flex flex-wrap items-center gap-x-6 gap-y-2 px-4 sm:px-6 lg:px-8 py-3">
+    <section className="w-full px-4 py-3 sm:px-6 lg:px-8">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-2xl border border-border bg-card/40 px-5 py-3.5 shadow-sm md:px-6">
         <span className="inline-flex items-center gap-2.5">
           <LifecycleBadge lifecycle="READ_ONLY_PROOF" />
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
@@ -192,8 +192,8 @@ function PromotedStrip() {
   );
 
   return (
-    <section className="bg-background py-14 text-foreground">
-      <div className="w-full px-4 sm:px-6 lg:px-8">
+    <section className="w-full px-4 py-3 sm:px-6 lg:px-8 text-foreground">
+      <div className="rounded-2xl border border-border bg-card/40 p-6 shadow-sm md:p-8">
         <div className="mb-10 measure">
           <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-gold">
             {homepagePromotedStrip.eyebrow}
@@ -241,8 +241,8 @@ function ModuleStrip() {
   );
 
   return (
-    <section className="border-t border-border/50 bg-background py-6 text-foreground">
-      <div className="w-full flex flex-wrap items-center gap-x-3 gap-y-2 px-4 sm:px-6 lg:px-8">
+    <section className="w-full px-4 py-3 sm:px-6 lg:px-8 text-foreground">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-2xl border border-border bg-card/40 px-5 py-3.5 shadow-sm md:px-6">
         <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
           {homepageModuleStrip.lead}
         </span>
@@ -351,7 +351,9 @@ export default function PublicHome() {
         </div>
       </section>
 
-      <TrustStatusStrip />
+      {/* TrustStatusStrip removed from the home (founder, 2026-07-25 — "do we
+          need this line?": redundant with the hero proof + /status + /proof).
+          Restore by re-adding <TrustStatusStrip /> here. */}
 
       {/* S2c: the season band — the era's live conversion surface (gauge on
           the ONE seat spine · secondary join CTA · FUTURE pot frame · top-3
@@ -360,8 +362,8 @@ export default function PublicHome() {
 
       <PromotedStrip />
 
-      <section className="border-t border-border/50 bg-muted/20 py-16 text-foreground">
-        <div className="w-full px-4 sm:px-6 lg:px-8">
+      <section className="w-full px-4 py-3 sm:px-6 lg:px-8 text-foreground">
+        <div className="rounded-2xl border border-border bg-card/40 p-6 shadow-sm md:p-8">
           <div className="mb-16 text-center measure mx-auto">
             <h2 className="type-h2 mb-4 text-foreground">{howItWorks.title}</h2>
             <p className="text-muted-foreground">{howItWorks.subtitle}</p>
@@ -381,8 +383,8 @@ export default function PublicHome() {
 
       <ModuleStrip />
 
-      <section className="border-t border-border/50 bg-background py-16 text-foreground">
-        <div className="w-full px-4 sm:px-6 lg:px-8">
+      <section className="w-full px-4 py-3 sm:px-6 lg:px-8 text-foreground">
+        <div className="rounded-2xl border border-border bg-card/40 p-6 shadow-sm md:p-8">
           <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div className="measure">
               <h2 className="type-h2 mb-4 text-foreground">{operationalReality.title}</h2>

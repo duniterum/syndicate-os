@@ -48,8 +48,8 @@ export function HomeRegisterBand() {
   }, []);
 
   return (
-    <section className="border-t border-border/50 bg-background py-16 text-foreground">
-      <div className="w-full px-4 sm:px-6 lg:px-8">
+    <section className="w-full px-4 py-3 sm:px-6 lg:px-8 text-foreground">
+      <div className="rounded-2xl border border-border bg-card/40 p-6 shadow-sm md:p-8">
         <div className="mb-10">
           <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-gold">
             The public register
