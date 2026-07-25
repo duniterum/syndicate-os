@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Protocol-Owned Assets — home section mockup</title>
+<style>
+  :root{
+    --bg:#07090d; --card:#0d1117; --command:#0b0f16; --border:#1c232e;
+    --fg:#e9edf3; --muted:#8b97a8; --muted2:#6b7686;
+    --gold:#e3a92b; --proof:#3ddc97;
+    --viz1:hsl(190 85% 56%); --viz2:hsl(42 92% 62%); --viz3:hsl(265 78% 72%);
+    --viz4:hsl(158 62% 52%); --viz5:hsl(12 85% 66%); --viz6:hsl(220 82% 68%);
+    --serif:'Instrument Serif',Georgia,serif;
+    --sans:'Work Sans',system-ui,-apple-system,sans-serif;
+    --mono:ui-monospace,'SFMono-Regular',Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);line-height:1.5}
+  .wrap{padding:32px clamp(16px,4vw,56px);max-width:1600px;margin:0 auto}
+  .eyebrow{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.2em;color:var(--muted)}
+  .display{font-family:var(--serif);font-size:clamp(30px,4.2vw,52px);line-height:1.04;letter-spacing:-.02em;margin:.28em 0}
+  h2.sec{font-family:var(--serif);font-size:clamp(22px,2.4vw,30px);margin:0}
+  .note{color:var(--muted);font-size:14px;max-width:74ch}
+  .divider{height:1px;background:var(--border);margin:56px 0}
+  .tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;font-weight:700;
+       text-transform:uppercase;letter-spacing:.14em;padding:4px 9px;border-radius:999px;
+       border:1px solid color-mix(in srgb,var(--viz1) 40%,transparent);color:var(--viz1);
+       background:color-mix(in srgb,var(--viz1) 10%,transparent)}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--viz1);box-shadow:0 0 0 0 currentColor;animation:p 2.4s infinite}
+  @keyframes p{0%{opacity:.45}50%{opacity:1}100%{opacity:.45}}
+
+  /* ── THE SECTION ─────────────────────────────────────────────── */
+  .band{border:1px solid var(--border);border-radius:20px;background:linear-gradient(180deg,#0e131b 0%,#0a0e14 100%);
+        padding:clamp(20px,2.6vw,34px);position:relative;overflow:hidden}
+  .band::before{content:"";position:absolute;inset:-1px -1px auto -1px;height:1px;
+        background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--gold) 55%,transparent),transparent)}
+  .bandhead{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:26px}
+
+  .totalrow{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(20px,3vw,44px);align-items:center;margin-bottom:30px}
+  @media(max-width:900px){.totalrow{grid-template-columns:1fr}}
+  .totalfig{font-family:var(--mono);font-size:clamp(38px,6.4vw,68px);font-weight:800;letter-spacing:-.03em;line-height:1;
+            background:linear-gradient(180deg,#fff 30%,#c9a color-mix(in srgb,var(--gold) 90%,#fff));
+            -webkit-background-clip:text;background-clip:text;color:transparent}
+  .totalfig .cents{font-size:.52em;color:var(--muted);-webkit-text-fill-color:var(--muted)}
+
+  /* share bar */
+  .mix{display:flex;height:10px;border-radius:999px;overflow:hidden;border:1px solid var(--border);background:#0a0d12}
+  .mix span{display:block;height:100%}
+  .mixkey{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px}
+  .mixkey b{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--muted)}
+  .swatch{width:9px;height:9px;border-radius:2px}
+
+  /* asset grid */
+  .assets{display:grid;grid-template-columns:repeat(auto-fit,minmax(228px,1fr));gap:14px}
+  .asset{border:1px solid var(--border);border-radius:15px;background:#0b0f15;padding:16px;position:relative;
+         transition:border-color .18s,transform .18s}
+  .asset:hover{border-color:color-mix(in srgb,var(--gold) 42%,var(--border));transform:translateY(-2px)}
+  .aleft{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+  .disc{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;flex:0 0 36px;
+        background:#12171f;border:1px solid var(--border);overflow:hidden}
+  .disc svg{width:36px;height:36px;display:block}
+  .sym{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+  .name{font-size:11px;color:var(--muted2)}
+  .amt{font-family:var(--mono);font-size:19px;font-weight:800;letter-spacing:-.01em}
+  .usd{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--proof);margin-top:2px}
+  .px{font-family:var(--mono);font-size:10.5px;color:var(--muted2);margin-top:8px;letter-spacing:.02em}
+  .verify{display:inline-flex;align-items:center;gap:5px;margin-top:11px;font-family:var(--mono);font-size:10px;
+          font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--viz1);text-decoration:none;opacity:.85}
+  .verify:hover{opacity:1;text-decoration:underline}
+  .sharebar{height:3px;border-radius:2px;background:#151b24;margin-top:12px;overflow:hidden}
+  .sharebar i{display:block;height:100%}
+
+  .foot{margin-top:22px;padding-top:18px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:18px;
+        align-items:center;justify-content:space-between}
+  .asof{font-family:var(--mono);font-size:11px;color:var(--muted2)}
+
+  /* option cards */
+  .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:20px}
+  .opt{border:1px solid var(--border);border-radius:14px;padding:18px;background:var(--card)}
+  .opt.pick{border-color:color-mix(in srgb,var(--gold) 55%,var(--border));background:#12100a}
+  .opt h4{margin:0 0 4px;font-family:var(--serif);font-size:23px}
+  .opt .why{font-size:13px;color:var(--muted);margin:8px 0 0}
+  .pill{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+        padding:3px 8px;border-radius:999px;border:1px solid var(--border);color:var(--muted)}
+  .pill.rec{border-color:var(--gold);color:var(--gold)}
+
+  code{font-family:var(--mono);font-size:12.5px;background:#0e1218;border:1px solid var(--border);
+       padding:2px 6px;border-radius:5px;color:var(--viz2)}
+  pre{font-family:var(--mono);font-size:12.5px;background:#0a0e14;border:1px solid var(--border);
+      border-radius:12px;padding:16px;overflow:auto;color:#cdd6e2;line-height:1.6}
+  pre .k{color:var(--viz3)} pre .s{color:var(--proof)} pre .c{color:var(--muted2)} pre .n{color:var(--viz2)}
+  .phone{max-width:390px;border:1px solid var(--border);border-radius:26px;padding:14px;background:#070a0f}
+  table{border-collapse:collapse;width:100%;font-size:13.5px;margin-top:14px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Mockup · for founder approval · 2026-07-25</div>
+  <h1 class="display">The protocol's own assets — on the home page.</h1>
+  <p class="note">Everything below is a <b>drawing</b>, not built code. Figures are today's real live reads so you judge
+  real proportions. Approve the name + the look, and I build it exactly.</p>
+
+  <div class="divider"></div>
+
+  <!-- ── 1 · THE NAME ─────────────────────────────────────── -->
+  <div class="eyebrow">① Decide first</div>
+  <h2 class="sec">What do we call it?</h2>
+  <p class="note">I looked at how serious protocols name this. Three real patterns, one recommendation.</p>
+
+  <div class="opts">
+    <div class="opt pick">
+      <span class="pill rec">My recommendation</span>
+      <h4>Protocol Reserves</h4>
+      <p class="why"><b>Says what it is with zero jargon.</b> "Reserves" reads as strength and prudence — money set aside,
+      not money at play. It's the word central banks and serious treasuries use, and it carries no promise of return.
+      Used by Frax, Sky/MakerDAO, Reserve. Pairs naturally with the honest caveat underneath.</p>
+    </div>
+    <div class="opt">
+      <span class="pill">Runner-up</span>
+      <h4>What the Protocol Owns</h4>
+      <p class="why">Plain English, impossible to misread, very "proof-first". Slightly long as a section title, and it
+      repeats the wording already used on /contracts — which is fine if you want one voice everywhere.</p>
+    </div>
+    <div class="opt">
+      <span class="pill">Runner-up</span>
+      <h4>Treasury</h4>
+      <p class="why">The crypto-native default (Optimism, ENS, Nouns, karpatkey all use it). Instantly understood — but
+      it's also the most crowded word, and it slightly implies a governance body that spends it.</p>
+    </div>
+  </div>
+  <p class="note" style="margin-top:16px"><b>Rejected on purpose:</b> "Holdings" (sounds like a portfolio you trade),
+  "Backing" (implies the token is redeemable against these assets — chain-refutable and a promise we never make),
+  "Assets Under Management" (implies we manage other people's money — the exact wrong signal).</p>
+
+  <div class="divider"></div>
+
+  <!-- ── 2 · THE SECTION ──────────────────────────────────── -->
+  <div class="eyebrow">② The section, desktop</div>
+  <h2 class="sec">Protocol Reserves</h2>
+  <p class="note" style="margin-bottom:22px">Full-bleed band on the home page. Order is yours: AVAX · BTC · ETH · USDC.</p>
+
+  <div class="band">
+    <div class="bandhead">
+      <div>
+        <div class="eyebrow" style="color:var(--gold)">Protocol Reserves</div>
+        <h2 class="sec" style="margin-top:6px">What the protocol owns, right now.</h2>
+      </div>
+      <span class="tag"><span class="dot"></span> Live chain read</span>
+    </div>
+
+    <div class="totalrow">
+      <div>
+        <div class="eyebrow" style="margin-bottom:8px">Total value</div>
+        <div class="totalfig">$236<span class="cents">.79</span></div>
+        <p class="note" style="font-size:13px;margin-top:12px">
+          Priced from live Chainlink feeds. Every figure below is read from Avalanche when this page loads —
+          if one can't be read, it says so instead of guessing.
+        </p>
+      </div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:10px">Composition</div>
+        <div class="mix">
+          <span style="width:13.2%;background:var(--viz5)"></span>
+          <span style="width:21.1%;background:var(--viz2)"></span>
+          <span style="width:20.9%;background:var(--viz3)"></span>
+          <span style="width:26.8%;background:var(--viz1)"></span>
+          <span style="width:18.0%;background:var(--viz6)"></span>
+        </div>
+        <div class="mixkey">
+          <b><i class="swatch" style="background:var(--viz5)"></i> AVAX 13%</b>
+          <b><i class="swatch" style="background:var(--viz2)"></i> BTC 21%</b>
+          <b><i class="swatch" style="background:var(--viz3)"></i> ETH 21%</b>
+          <b><i class="swatch" style="background:var(--viz1)"></i> USDC 27%</b>
+          <b><i class="swatch" style="background:var(--viz6)"></i> Pool 18%</b>
+        </div>
+      </div>
+    </div>
+
+    <div class="assets">
+      <!-- AVAX -->
+      <div class="asset">
+        <div class="aleft">
+          <div class="disc"><svg viewBox="0 0 1503 1504" aria-hidden="true"><rect x="287" y="258" width="928" height="844" fill="#fff"/><path fill="#e84142" d="M1502.5 752c0 415.1-336.4 751.5-751.5 751.5S-.5 1167.1-.5 752 335.9.5 751 .5 1502.5 336.9 1502.5 752zM537.7 1050.9h-145.8c-30.6 0-45.8 0-55-5.9-9.9-6.5-16-17.1-16.7-28.9-.6-10.9 7-24.2 22.1-50.8L702 209.3c15.3-26.9 23.1-40.4 32.9-45.4 10.5-5.3 23.1-5.3 33.6 0 9.8 5 17.5 18.5 32.9 45.4l74 129.2.4.7c16.6 29 25 43.7 28.7 59.1 4.1 16.8 4.1 34.5 0 51.3-3.7 15.5-12 30.3-28.9 59.7l-189.5 335-.5.9c-16.7 29.2-25.2 44-36.9 55.2-12.8 12.2-28.2 21.1-45 26.1-15.3 4.4-32.5 4.4-66.9 4.4zm365.9 0h208.9c30.8 0 46.3 0 55.5-6.1 9.9-6.5 16.1-17.3 16.7-29.1.6-10.6-6.8-23.5-21.3-48.7l-.7-1.3-104.6-179-1.2-2c-14.7-24.9-22.1-37.4-31.6-42.3-10.5-5.3-23-5.3-33.4 0-9.6 5-17.4 18.1-32.7 44.5L854.2 966l-.4.6c-15.2 26.4-22.8 39.6-22.2 50.4.7 11.8 6.8 22.6 16.7 29.1 9 5.8 24.5 5.8 55.3 5.8z"/></svg></div>
+          <div><div class="sym">AVAX</div><div class="name">Avalanche</div></div>
+        </div>
+        <div class="amt">4.7365</div>
+        <div class="usd">$31.42</div>
+        <div class="sharebar"><i style="width:13.2%;background:var(--viz5)"></i></div>
+        <div class="px">$6.63 / AVAX · Chainlink</div>
+        <a class="verify" href="#">Verify on-chain ↗</a>
+      </div>
+      <!-- BTC -->
+      <div class="asset">
+        <div class="aleft">
+          <div class="disc"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="#f7931a"/><path fill="#fff" d="M46.1 27.4c.6-4.2-2.6-6.4-7-7.9l1.4-5.7-3.5-.9-1.4 5.6c-.9-.2-1.9-.4-2.8-.7l1.4-5.6-3.5-.9-1.4 5.7c-.8-.2-1.5-.3-2.2-.5v0l-4.8-1.2-.9 3.7s2.6.6 2.5.6c1.4.4 1.7 1.3 1.6 2.1l-1.6 6.5c.1 0 .2.1.4.1l-.4-.1-2.3 9.1c-.2.4-.6 1.1-1.6.8 0 .1-2.5-.6-2.5-.6l-1.7 4 4.5 1.1c.8.2 1.7.4 2.5.6l-1.4 5.8 3.5.9 1.4-5.7c1 .3 1.9.5 2.8.7l-1.4 5.7 3.5.9 1.4-5.8c6 1.1 10.4.7 12.3-4.7 1.5-4.4-.1-6.9-3.2-8.6 2.3-.5 4-2 4.5-5.1zm-8.1 11.3c-1.1 4.4-8.5 2-10.9 1.4l1.9-7.6c2.4.6 10.1 1.8 9 6.2zm1.1-11.4c-1 4-7.2 2-9.2 1.5l1.7-6.9c2 .5 8.5 1.4 7.5 5.4z"/></svg></div>
+          <div><div class="sym">BTC</div><div class="name">Bitcoin · bridged</div></div>
+        </div>
+        <div class="amt">0.00077818</div>
+        <div class="usd">$49.88</div>
+        <div class="sharebar"><i style="width:21.1%;background:var(--viz2)"></i></div>
+        <div class="px">$64,167 / BTC · Chainlink</div>
+        <a class="verify" href="#">Verify on-chain ↗</a>
+      </div>
+      <!-- ETH -->
+      <div class="asset">
+        <div class="aleft">
+          <div class="disc"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="#627eea"/><path fill="#fff" fill-opacity=".6" d="M32 10v16.3l13.7 6.1z"/><path fill="#fff" d="M32 10 18.3 32.4 32 26.3z"/><path fill="#fff" fill-opacity=".6" d="M32 43.1V54l13.8-19z"/><path fill="#fff" d="M32 54V43.1L18.3 35z"/><path fill="#fff" fill-opacity=".2" d="m32 40.5 13.7-8.1L32 26.3z"/><path fill="#fff" fill-opacity=".6" d="m18.3 32.4 13.7 8.1V26.3z"/></svg></div>
+          <div><div class="sym">ETH</div><div class="name">Ether · bridged</div></div>
+        </div>
+        <div class="amt">0.026552</div>
+        <div class="usd">$49.55</div>
+        <div class="sharebar"><i style="width:20.9%;background:var(--viz3)"></i></div>
+        <div class="px">$1,866 / ETH · Chainlink</div>
+        <a class="verify" href="#">Verify on-chain ↗</a>
+      </div>
+      <!-- USDC -->
+      <div class="asset">
+        <div class="aleft">
+          <div class="disc"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="#2775ca"/><path fill="#fff" d="M40.9 37.1c0-4.7-2.8-6.3-8.5-7-4-.5-4.8-1.6-4.8-3.5s1.3-3.1 4-3.1c2.4 0 3.7.8 4.3 2.8.1.4.5.6.9.6h2.1c.5 0 .9-.4.9-.9v-.1c-.6-3-3-5.3-6.1-5.6v-3.2c0-.5-.4-.9-1-1h-2c-.5 0-.9.4-1 1v3.1c-4 .5-6.5 3.2-6.5 6.6 0 4.5 2.7 6.2 8.4 6.9 3.8.7 5 1.5 5 3.7s-1.9 3.7-4.5 3.7c-3.5 0-4.7-1.5-5.1-3.5-.1-.5-.5-.7-.9-.7h-2.2c-.5 0-.9.4-.9.9v.1c.5 3.4 2.7 5.8 7.1 6.5v3.2c0 .5.4.9 1 1h2c.5 0 .9-.4 1-1v-3.2c4-.7 6.6-3.5 6.6-7.2z"/><path fill="#fff" d="M26.7 51.1c-10.4-3.7-15.8-15.3-12-25.6 2-5.5 6.3-9.7 11.9-11.7.5-.3.8-.6.8-1.2v-1.9c0-.5-.3-.9-.8-1-.1 0-.3 0-.4.1-12.7 4-19.6 17.5-15.6 30.2 2.4 7.4 8.1 13.1 15.6 15.5.5.3 1-.1 1.1-.6.1-.1.1-.3.1-.4v-1.9c0-.4-.4-.9-.7-1.1zM38.1 9.8c-.5-.3-1 .1-1.1.6-.1.1-.1.3-.1.4v1.9c0 .5.4 1 .8 1.2 10.4 3.7 15.8 15.3 12 25.6-2 5.5-6.3 9.7-11.9 11.7-.5.3-.8.6-.8 1.2v1.9c0 .5.3.9.8 1 .1 0 .3 0 .4-.1 12.7-4 19.6-17.5 15.6-30.2-2.4-7.5-8.2-13.2-15.7-15.6z"/></svg></div>
+          <div><div class="sym">USDC</div><div class="name">Dollar stablecoin</div></div>
+        </div>
+        <div class="amt">62.91</div>
+        <div class="usd">$62.91</div>
+        <div class="sharebar"><i style="width:26.8%;background:var(--viz1)"></i></div>
+        <div class="px">$1.00 · stablecoin</div>
+        <a class="verify" href="#">Verify on-chain ↗</a>
+      </div>
+      <!-- POOL -->
+      <div class="asset">
+        <div class="aleft">
+          <div class="disc" style="background:#101822"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="#6ea8ff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M12 2.7s5.4 5.6 5.4 9.4a5.4 5.4 0 1 1-10.8 0C6.6 8.3 12 2.7 12 2.7z"/></svg></div>
+          <div><div class="sym">POOL</div><div class="name">Our share of liquidity</div></div>
+        </div>
+        <div class="amt">76.6%</div>
+        <div class="usd">$42.74</div>
+        <div class="sharebar"><i style="width:18%;background:var(--viz6)"></i></div>
+        <div class="px">Our USDC side only</div>
+        <a class="verify" href="#">Verify on-chain ↗</a>
+      </div>
+    </div>
+
+    <div class="foot">
+      <p class="note" style="font-size:12.5px;margin:0;max-width:82ch">
+        These are assets the protocol owns outright. They are <b>not</b> a claim, a dividend or a promise to any member —
+        they're shown because you should be able to check us. SYN, our own token, is never given a dollar value here.
+      </p>
+      <span class="asof">As of block 91,209,340 · updates live</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── 3 · MOBILE ───────────────────────────────────────── -->
+  <div class="eyebrow">③ Mobile</div>
+  <h2 class="sec">Same truth, one column</h2>
+  <div class="phone" style="margin-top:18px">
+    <div class="band" style="border-radius:16px;padding:16px">
+      <div class="eyebrow" style="color:var(--gold)">Protocol Reserves</div>
+      <div class="totalfig" style="font-size:40px;margin:12px 0 6px">$236<span class="cents">.79</span></div>
+      <div class="mix" style="margin:12px 0 6px">
+        <span style="width:13.2%;background:var(--viz5)"></span><span style="width:21.1%;background:var(--viz2)"></span>
+        <span style="width:20.9%;background:var(--viz3)"></span><span style="width:26.8%;background:var(--viz1)"></span>
+        <span style="width:18%;background:var(--viz6)"></span>
+      </div>
+      <div class="assets" style="grid-template-columns:1fr;margin-top:14px">
+        <div class="asset" style="padding:13px">
+          <div class="aleft" style="margin-bottom:9px">
+            <div class="disc" style="width:30px;height:30px;flex:0 0 30px"><svg viewBox="0 0 1503 1504"><rect x="287" y="258" width="928" height="844" fill="#fff"/><path fill="#e84142" d="M1502.5 752c0 415.1-336.4 751.5-751.5 751.5S-.5 1167.1-.5 752 335.9.5 751 .5 1502.5 336.9 1502.5 752zM537.7 1050.9h-145.8c-30.6 0-45.8 0-55-5.9-9.9-6.5-16-17.1-16.7-28.9-.6-10.9 7-24.2 22.1-50.8L702 209.3c15.3-26.9 23.1-40.4 32.9-45.4 10.5-5.3 23.1-5.3 33.6 0 9.8 5 17.5 18.5 32.9 45.4l74 129.2.4.7c16.6 29 25 43.7 28.7 59.1 4.1 16.8 4.1 34.5 0 51.3-3.7 15.5-12 30.3-28.9 59.7l-189.5 335-.5.9c-16.7 29.2-25.2 44-36.9 55.2-12.8 12.2-28.2 21.1-45 26.1-15.3 4.4-32.5 4.4-66.9 4.4zm365.9 0h208.9c30.8 0 46.3 0 55.5-6.1 9.9-6.5 16.1-17.3 16.7-29.1.6-10.6-6.8-23.5-21.3-48.7l-.7-1.3-104.6-179-1.2-2c-14.7-24.9-22.1-37.4-31.6-42.3-10.5-5.3-23-5.3-33.4 0-9.6 5-17.4 18.1-32.7 44.5L854.2 966l-.4.6c-15.2 26.4-22.8 39.6-22.2 50.4.7 11.8 6.8 22.6 16.7 29.1 9 5.8 24.5 5.8 55.3 5.8z"/></svg></div>
+            <div><div class="sym">AVAX</div><div class="name">4.7365</div></div>
+            <div style="margin-left:auto;text-align:right"><div class="usd" style="margin:0">$31.42</div></div>
+          </div>
+        </div>
+        <div class="asset" style="padding:13px">
+          <div class="aleft" style="margin-bottom:9px">
+            <div class="disc" style="width:30px;height:30px;flex:0 0 30px"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="#f7931a"/><path fill="#fff" d="M46.1 27.4c.6-4.2-2.6-6.4-7-7.9l1.4-5.7-3.5-.9-1.4 5.6c-.9-.2-1.9-.4-2.8-.7l1.4-5.6-3.5-.9-1.4 5.7c-.8-.2-1.5-.3-2.2-.5v0l-4.8-1.2-.9 3.7s2.6.6 2.5.6c1.4.4 1.7 1.3 1.6 2.1l-1.6 6.5c.1 0 .2.1.4.1l-.4-.1-2.3 9.1c-.2.4-.6 1.1-1.6.8 0 .1-2.5-.6-2.5-.6l-1.7 4 4.5 1.1c.8.2 1.7.4 2.5.6l-1.4 5.8 3.5.9 1.4-5.7c1 .3 1.9.5 2.8.7l-1.4 5.7 3.5.9 1.4-5.8c6 1.1 10.4.7 12.3-4.7 1.5-4.4-.1-6.9-3.2-8.6 2.3-.5 4-2 4.5-5.1zm-8.1 11.3c-1.1 4.4-8.5 2-10.9 1.4l1.9-7.6c2.4.6 10.1 1.8 9 6.2zm1.1-11.4c-1 4-7.2 2-9.2 1.5l1.7-6.9c2 .5 8.5 1.4 7.5 5.4z"/></svg></div>
+            <div><div class="sym">BTC</div><div class="name">0.00077818</div></div>
+            <div style="margin-left:auto;text-align:right"><div class="usd" style="margin:0">$49.88</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── 4 · EXTENSIBILITY ────────────────────────────────── -->
+  <div class="eyebrow">④ The intelligence you asked for</div>
+  <h2 class="sec">You buy Chainlink tomorrow → one line</h2>
+  <p class="note">The table is driven by a <b>registry</b>, not hand-written per coin. Adding an asset is one entry;
+  the logo, the price feed, the row, the share bar and the total all follow automatically. I verified on-chain that a
+  Chainlink price feed already exists on Avalanche — so this really is one line.</p>
+
+<pre><span class="c">// artifacts/api-server/src/data/trackedAssets.ts</span>
+<span class="k">export const</span> TRACKED_ASSETS = [
+  { key: <span class="s">"AVAX"</span>,  kind: <span class="s">"native"</span>, decimals: <span class="n">18</span>, feed: FEEDS.avaxUsd, logo: <span class="s">"avax"</span>, order: <span class="n">1</span> },
+  { key: <span class="s">"BTC"</span>,   kind: <span class="s">"erc20"</span>,  decimals: <span class="n">8</span>,  token: BTCB, feed: FEEDS.btcUsd, logo: <span class="s">"btc"</span>,  order: <span class="n">2</span> },
+  { key: <span class="s">"ETH"</span>,   kind: <span class="s">"erc20"</span>,  decimals: <span class="n">18</span>, token: WETHE, feed: FEEDS.ethUsd, logo: <span class="s">"eth"</span>, order: <span class="n">3</span> },
+  { key: <span class="s">"USDC"</span>,  kind: <span class="s">"erc20"</span>,  decimals: <span class="n">6</span>,  token: USDC, feed: <span class="s">"PEGGED_USD"</span>, logo: <span class="s">"usdc"</span>, order: <span class="n">4</span> },
+
+  <span class="c">// ↓ the ONLY thing you add the day you buy LINK. Everything else is automatic.</span>
+  { key: <span class="s">"LINK"</span>,  kind: <span class="s">"erc20"</span>,  decimals: <span class="n">18</span>, token: LINKE, feed: FEEDS.linkUsd, logo: <span class="s">"link"</span>, order: <span class="n">5</span> },
+];</pre>
+
+  <p class="note" style="margin-top:16px"><b>The logo library ships ahead of you.</b> I vendor the <b>top 50 by
+  CoinMarketCap rank</b> as local SVG files (<code>public/coins/&lt;symbol&gt;.svg</code>) — no external server is ever
+  called, the page keeps working offline, and nothing leaks who visits us. A coin with no logo falls back to a lettered
+  disc rather than a broken image. So the day you buy anything in the top 50, the logo is already there.</p>
+
+  <div class="divider"></div>
+
+  <!-- ── 5 · INTERCONNECT ─────────────────────────────────── -->
+  <div class="eyebrow">⑤ Interconnectivity</div>
+  <h2 class="sec">What lights up elsewhere when reserves move</h2>
+  <p class="note">You asked me not to forget this. A new asset shouldn't just appear in a table — it should ripple
+  through everything that tells the protocol's story.</p>
+
+  <table>
+    <tr><th>Surface</th><th>What happens</th><th>Slice</th></tr>
+    <tr><td><b>Activity feed</b></td>
+        <td>Every reserve movement becomes a dated, verifiable line: <i>"The protocol acquired 0.0008 BTC."</i> Needs one
+        indexer lane per token — BTC.b and WETH.e emit standard transfer events, so both are readable.</td>
+        <td>⑧ (open)</td></tr>
+    <tr><td><b>Chronicle</b></td>
+        <td>A first acquisition of a new asset is a <i>moment</i> — it becomes a chronicle candidate you approve, like
+        the first seat or the first burn.</td><td>New</td></tr>
+    <tr><td><b>Milestones</b></td>
+        <td>A reserves family: first $100 · $1,000 · $10,000 owned. Each seals against a real transaction, never a
+        drifting live figure.</td><td>New</td></tr>
+    <tr><td><b>Notifications</b></td>
+        <td>Members get the bell on a reserves milestone — recognition of the protocol getting stronger, never a
+        financial claim.</td><td>New</td></tr>
+    <tr><td><b>Share cards</b></td>
+        <td>The reserves band renders as a shareable painted card — the same machinery as receipts. Real proof is the
+        best marketing we have.</td><td>New</td></tr>
+    <tr><td><b>/contracts</b></td>
+        <td>Already live and stays the deep view; the home band is the headline. <b>One source of truth</b> — both read
+        the same server figures, so they can never disagree.</td><td>✅ live</td></tr>
+  </table>
+
+  <div class="divider"></div>
+  <p class="note"><b>What I need from you:</b> ① the name (my pick: <b>Protocol Reserves</b>) · ② does this look right ·
+  ③ do you want the composition bar, or just the assets. Then I build it.</p>
+
+</div>
+</body>
+</html>

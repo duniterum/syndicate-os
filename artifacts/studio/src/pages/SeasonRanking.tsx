@@ -44,6 +44,11 @@ interface StandingRow {
   /** Chain-emitted short form, every row (S2c). Optional: a last-good model
    *  built before the field existed renders exactly as before — fail-closed. */
   shortForm?: string;
+  /** The row's Snowtrace page, built server-side (2026-07-25 address law: an
+   *  address is public and every row must be verifiable). Optional on purpose —
+   *  a last-good model built before the field existed renders as plain text
+   *  instead of a dead link. */
+  explorerUrl?: string;
   seat: number | null;
   potEligible: boolean;
   rank: number | null;
@@ -227,9 +232,21 @@ export default function SeasonRanking() {
                         <div className={`font-serif ${first ? "text-xl" : "text-lg"}`}>
                           {r.display}
                           {r.seat !== null && r.shortForm && (
-                            <span className="block font-mono text-[10.5px] text-muted-foreground mt-0.5">
-                              {r.shortForm}
-                            </span>
+                            r.explorerUrl ? (
+                              <a
+                                href={r.explorerUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Verify this builder on Snowtrace"
+                                className="block font-mono text-[10.5px] text-muted-foreground mt-0.5 hover:text-foreground hover:underline"
+                              >
+                                {r.shortForm} ↗
+                              </a>
+                            ) : (
+                              <span className="block font-mono text-[10.5px] text-muted-foreground mt-0.5">
+                                {r.shortForm}
+                              </span>
+                            )
                           )}
                         </div>
                         <div className="text-[10.5px] text-muted-foreground mt-1">
@@ -284,9 +301,21 @@ export default function SeasonRanking() {
                             {r.display}
                           </span>
                           {r.seat !== null && r.shortForm && (
-                            <span className="ml-1.5 font-mono text-muted-foreground align-middle">
-                              {r.shortForm}
-                            </span>
+                            r.explorerUrl ? (
+                              <a
+                                href={r.explorerUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Verify this builder on Snowtrace"
+                                className="ml-1.5 font-mono text-muted-foreground align-middle hover:text-foreground hover:underline"
+                              >
+                                {r.shortForm} ↗
+                              </a>
+                            ) : (
+                              <span className="ml-1.5 font-mono text-muted-foreground align-middle">
+                                {r.shortForm}
+                              </span>
+                            )
                           )}
                           {r.horsConcours && (
                             <span className="ml-2 rounded border border-gold/40 px-1.5 py-0.5 font-mono text-[9.5px] text-gold align-middle">

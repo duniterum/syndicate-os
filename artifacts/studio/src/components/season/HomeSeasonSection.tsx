@@ -48,6 +48,9 @@ const AXIS_LABEL: Record<SeasonAxis, string> = {
 interface TeaserRow {
   display: string;
   shortForm?: string;
+  /** Snowtrace page for the row, server-built (2026-07-25 address law).
+   *  Optional — an older last-good model renders plain text, never a dead link. */
+  explorerUrl?: string;
   seat: number | null;
   rank: number | null;
   xp: number;
@@ -269,9 +272,21 @@ export function HomeSeasonSection() {
                     <div className={`font-serif ${first ? "text-[21px]" : "text-lg"}`}>
                       {r.display}
                       {r.seat !== null && r.shortForm && (
-                        <span className="mt-0.5 block font-mono text-[10.5px] text-muted-foreground">
-                          {r.shortForm}
-                        </span>
+                        r.explorerUrl ? (
+                          <a
+                            href={r.explorerUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="Verify this builder on Snowtrace"
+                            className="mt-0.5 block font-mono text-[10.5px] text-muted-foreground hover:text-foreground hover:underline"
+                          >
+                            {r.shortForm} ↗
+                          </a>
+                        ) : (
+                          <span className="mt-0.5 block font-mono text-[10.5px] text-muted-foreground">
+                            {r.shortForm}
+                          </span>
+                        )
                       )}
                     </div>
                     <div className="mt-1.5 text-[10.5px] text-muted-foreground">

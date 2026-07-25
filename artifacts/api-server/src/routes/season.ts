@@ -7,7 +7,10 @@
  * standings rows carry `display` ("#14" for the seated · the feed projection's
  * SHORT FORM for no-seat builders), `shortForm` (the chain-emitted short form,
  * every row — S2c: the board renders seat + short form together), rank, XP,
- * axes, potEligible, horsConcours — never a full address, never a wallet key
+ * axes, potEligible, horsConcours, plus the full chain-emitted address and its
+ * Snowtrace link (2026-07-25 address law: an address is PUBLIC and every row
+ * must be verifiable; the short form remains what we DISPLAY) — never a name,
+ * alias or email, and never a wallet key
  * (the SERVER-ONLY wallet index stays in memory; own-row serving is LIVE at
  * GET /api/auth/season-standing since S2d 2026-07-24 — only the /season
  * page's YOU-row highlight stays future, key seasonOwnRow). Seal anchors

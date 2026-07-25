@@ -29,7 +29,8 @@
  *     lever). Self-referral credits nothing (buyer == introducer).
  *     Hors-concours wallets stay LISTED and flagged — never erased, never paid.
  *     Public identity: the chain-emitted SHORT FORM for every row (the feed
- *     projection's own pattern — never a full address), plus the seat
+ *     projection's own pattern for DISPLAY), plus the full address and its
+ *     explorer link so every row is verifiable (2026-07-25 address law), plus the seat
  *     ordinal for the seated (S2c: the board renders both, per the mockup).
  *   - IDENTITY = THE WALLET (§0.14-A): one rank row per wallet (the #7+#11
  *     double resolves to one builder); seats render as attributes. Wallet keys
@@ -54,6 +55,7 @@ import type {
   BurnLedgerItem,
 } from "./protocolEventReadmodel";
 import type { EraTransitionItem } from "./eraReadmodel";
+import { EXPLORER_BASE_URL } from "../canon/the-syndicate/contracts/syndicate-config";
 import {
   LEVEL_XP_STEP,
   SEASON_QUESTS,
@@ -138,7 +140,8 @@ export interface SeasonMoneyContext {
 
 /** Address-safe public standing row (§0.14-D + the multi-level law): every
  *  row carries the chain-emitted SHORT FORM (the feed projection's own
- *  pattern — never a full address); the seated carry their seat ordinal
+ *  pattern for DISPLAY, with the full address beside it for the link);
+ *  the seated carry their seat ordinal
  *  on top (S2c, founder 2026-07-23: the board shows both, per the approved
  *  ranking mockup's "#3 0x03e…c6d0" identity). */
 export interface SeasonStandingPublic {
@@ -146,6 +149,17 @@ export interface SeasonStandingPublic {
   readonly display: string;
   /** The chain-emitted short form ("0x3f2…0a91") — every row, seated too. */
   readonly shortForm: string;
+  /**
+   * THE FULL chain-emitted address (2026-07-25 address law). The short form is
+   * DERIVED from it — the server has always held it, and withholding it was the
+   * old masking reflex the founder's ruling now calls a bug: an address is
+   * PUBLIC, and a board row nobody can verify is worth less than one they can.
+   * Short form is what we DISPLAY; this is what makes the row clickable.
+   */
+  readonly wallet: string;
+  /** The row's explorer page (Snowtrace), built server-side from the ONE
+   *  canon EXPLORER_BASE_URL so no client ever guesses a URL scheme. */
+  readonly explorerUrl: string;
   readonly seat: number | null;
   /** Seated AND not hors-concours — the ONLY wallets the pot may pay (S3). */
   readonly potEligible: boolean;
@@ -508,6 +522,8 @@ export function buildSeasonReadModel(input: SeasonBuildInput): SeasonBuildResult
       return {
         display: r.seat !== null ? `#${r.seat}` : shortForm(r.wallet),
         shortForm: shortForm(r.wallet),
+        wallet: r.wallet,
+        explorerUrl: `${EXPLORER_BASE_URL}/address/${r.wallet}`,
         seat: r.seat,
         potEligible,
         rank: potEligible ? eligibleRank : null,
