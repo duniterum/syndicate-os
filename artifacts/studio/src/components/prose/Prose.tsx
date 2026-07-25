@@ -15,29 +15,33 @@ import { cn } from "@/lib/utils";
 // container does not double-style an <h2>; the container styles h3/h4 for
 // sub-headings inside a section.
 
+// The container FILLS its region (never a lonely 68ch column with dead space —
+// founder 2026-07-25). Readability is bound PER TEXT ELEMENT: paragraphs, lists,
+// headings and pull-quotes cap at the 68ch measure, while cards, figures, tables
+// and live-figure panels span the full region so a rich page fills the width.
 const proseContainer = cn(
-  "max-w-[68ch] text-pretty",
-  // body copy
-  "[&_p]:type-body [&_p]:text-foreground/90 [&_p]:my-4",
+  "text-pretty",
+  // body copy — measured
+  "[&_p]:type-body [&_p]:text-foreground/90 [&_p]:my-4 [&_p]:max-w-[68ch]",
   "[&_strong]:font-semibold [&_strong]:text-foreground",
   "[&_em]:italic",
-  // sub-headings within a section
-  "[&_h3]:type-h3 [&_h3]:text-foreground [&_h3]:mt-8 [&_h3]:mb-3",
-  "[&_h4]:font-sans [&_h4]:font-semibold [&_h4]:text-foreground [&_h4]:mt-6 [&_h4]:mb-2",
+  // sub-headings within a section — measured
+  "[&_h3]:type-h3 [&_h3]:text-foreground [&_h3]:mt-8 [&_h3]:mb-3 [&_h3]:max-w-[68ch]",
+  "[&_h4]:font-sans [&_h4]:font-semibold [&_h4]:text-foreground [&_h4]:mt-6 [&_h4]:mb-2 [&_h4]:max-w-[68ch]",
   // links — proof/cyan axis + visible focus ring
   "[&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2 [&_a]:decoration-primary/40",
   "hover:[&_a]:decoration-primary",
   "[&_a:focus-visible]:outline-none [&_a:focus-visible]:ring-2 [&_a:focus-visible]:ring-ring [&_a:focus-visible]:ring-offset-2 [&_a:focus-visible]:ring-offset-background [&_a:focus-visible]:rounded-sm",
-  // lists
-  "[&_ul]:my-4 [&_ul]:pl-5 [&_ul]:list-disc [&_ul]:marker:text-muted-foreground",
-  "[&_ol]:my-4 [&_ol]:pl-5 [&_ol]:list-decimal [&_ol]:marker:text-muted-foreground",
+  // lists — measured
+  "[&_ul]:my-4 [&_ul]:pl-5 [&_ul]:list-disc [&_ul]:marker:text-muted-foreground [&_ul]:max-w-[68ch]",
+  "[&_ol]:my-4 [&_ol]:pl-5 [&_ol]:list-decimal [&_ol]:marker:text-muted-foreground [&_ol]:max-w-[68ch]",
   "[&_li]:type-body [&_li]:text-foreground/90 [&_li]:my-1.5 [&_li]:pl-1",
   "[&_li>ul]:my-1.5 [&_li>ol]:my-1.5",
   // inline code + horizontal rule
   "[&_code]:font-mono [&_code]:text-[0.9em] [&_code]:text-foreground [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded",
-  "[&_hr]:my-10 [&_hr]:border-border",
-  // pull-quote
-  "[&_blockquote]:my-6 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground",
+  "[&_hr]:my-10 [&_hr]:border-border [&_hr]:max-w-[68ch]",
+  // pull-quote — measured
+  "[&_blockquote]:my-6 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_blockquote]:max-w-[68ch]",
 );
 
 /** Long-form reading container. Wrap a page's content once; compose sections inside. */

@@ -366,7 +366,7 @@ export default function PublicHome() {
             <h2 className="type-h2 mb-4 text-foreground">{howItWorks.title}</h2>
             <p className="text-muted-foreground">{howItWorks.subtitle}</p>
           </div>
-          <div className="relative mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-5 md:gap-6">
+          <div className="relative grid grid-cols-1 gap-8 md:grid-cols-5 md:gap-6">
             <div className="absolute left-[10%] right-[10%] top-6 z-0 hidden h-px bg-border md:block" />
             {howItWorks.steps.map((step) => (
               <div key={step.step} className="relative z-10 flex flex-col items-center text-center">

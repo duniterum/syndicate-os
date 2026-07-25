@@ -100,7 +100,7 @@ function ChainPill({ state }: { state: HeaderChipState }) {
   return (
     <span
       title="Avalanche C-Chain — every public figure is a live chain read, fail-closed"
-      className={`hidden items-center gap-2 whitespace-nowrap rounded-xl border px-2.5 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] shadow-sm 2xl:inline-flex ${chipStateTone[state]}`}
+      className={`hidden items-center gap-2 whitespace-nowrap rounded-xl border px-2.5 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] shadow-sm 2xl:inline-flex ${chipStateTone[state]}`}
     >
       <span className="grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-avax shadow-[0_0_18px_-8px_hsl(var(--avax)/0.9)]">
         <img src="/brand/avalanche-avax-token.png" alt="Avalanche" className="h-full w-full object-cover" />
@@ -116,7 +116,7 @@ function LiveChip({ state }: { state: HeaderChipState }) {
   return (
     <span
       title="Live on-chain reads — fail-closed, never invented"
-      className={`hidden items-center gap-1.5 rounded-xl border px-2.5 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.1em] lg:inline-flex ${chipStateTone[state]}`}
+      className={`hidden items-center gap-1.5 rounded-xl border px-2.5 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] lg:inline-flex ${chipStateTone[state]}`}
     >
       <Activity className="h-3.5 w-3.5" />
       {headerChips.states[state]}
@@ -169,7 +169,7 @@ function Wordmark() {
         <span className="whitespace-nowrap text-[1.02rem] font-semibold uppercase tracking-[0.18em] text-foreground sm:text-[1.14rem] 2xl:text-[1.26rem]">
           {brand.name}
         </span>
-        <span className="mt-1 whitespace-nowrap font-mono text-[8px] uppercase tracking-[0.3em] text-gold/90 sm:text-[9px]">
+        <span className="mt-1 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.3em] text-gold/90 sm:text-[11px]">
           {brand.descriptor}
         </span>
       </span>
@@ -177,7 +177,7 @@ function Wordmark() {
           with the hero's overview panel) — never a hardcoded literal here. */}
       <span
         title={`${heroSystem.overview.chapter.label} — ${heroSystem.overview.chapter.value}`}
-        className="ml-1 hidden rounded-full border border-gold/35 bg-gold/10 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider text-gold sm:inline-flex"
+        className="ml-1 hidden rounded-full border border-gold/35 bg-gold/10 px-1.5 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-gold sm:inline-flex"
       >
         {heroSystem.overview.chapter.badge}
       </span>
@@ -218,7 +218,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                       and off mouse clicks. Pinned by guard-nav-link-display. */}
                   <Link
                     href={item.path}
-                    className={`group relative inline-flex items-center rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45 2xl:px-3 2xl:text-[12px] ${
+                    className={`group relative inline-flex items-center rounded-lg px-2.5 py-1.5 text-[13px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45 2xl:px-3 2xl:text-[13px] ${
                       location === item.path ? "text-foreground" : "text-muted-foreground"
                     }`}
                   >
@@ -240,7 +240,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               >
                 <DropdownMenu>
                   <DropdownMenuTrigger
-                    className={`group relative inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45 data-[state=open]:bg-gold/8 data-[state=open]:text-gold 2xl:px-3 2xl:text-[12px] ${
+                    className={`group relative inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[13px] font-semibold transition-colors hover:bg-gold/8 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45 data-[state=open]:bg-gold/8 data-[state=open]:text-gold 2xl:px-3 2xl:text-[13px] ${
                       headerNavMore.some((item) => item.path === location)
                         ? "text-foreground"
                         : "text-muted-foreground"
@@ -265,12 +265,12 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                       <DropdownMenuItem key={item.id} asChild>
                         <Link
                           href={item.path}
-                          className={`flex w-full cursor-pointer items-center justify-between gap-4 rounded-lg px-2.5 py-2 text-[12px] font-medium transition-colors focus:bg-gold/8 focus:text-gold ${
+                          className={`flex w-full cursor-pointer items-center justify-between gap-4 rounded-lg px-2.5 py-2 text-[13px] font-medium transition-colors focus:bg-gold/8 focus:text-gold ${
                             location === item.path ? "text-foreground" : "text-muted-foreground"
                           }`}
                         >
                           <span>{item.label}</span>
-                          <span className="font-mono text-[10px] text-muted-foreground/60">{item.path}</span>
+                          <span className="font-mono text-[11px] text-muted-foreground/60">{item.path}</span>
                         </Link>
                       </DropdownMenuItem>
                     ))}

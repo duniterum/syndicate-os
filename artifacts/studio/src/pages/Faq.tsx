@@ -109,7 +109,7 @@ export default function Faq() {
           </p>
         </Card>
 
-        <div className="lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-10">
+        <div className="lg:grid lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-12">
           <SectionIndex
             entries={TOC_ENTRIES}
             heading="Topics"

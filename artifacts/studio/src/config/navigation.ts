@@ -27,9 +27,9 @@ const headerSpec: { id: string; label: string; zone: "primary" | "more" }[] = [
   { id: "proof", label: "Protocol", zone: "primary" },
   { id: "contracts", label: "Economy", zone: "primary" },
   { id: "member", label: "Membership", zone: "primary" },
-  { id: "chronicle", label: "Chronicle", zone: "more" },
+  { id: "whitepaper", label: "Whitepaper", zone: "more" },
   { id: "recognition", label: "Recognition", zone: "more" },
-  { id: "join", label: "Join", zone: "more" },
+  { id: "chronicle", label: "Chronicle", zone: "more" },
   { id: "docs", label: "Docs", zone: "more" },
   { id: "status", label: "Status", zone: "more" },
 ];

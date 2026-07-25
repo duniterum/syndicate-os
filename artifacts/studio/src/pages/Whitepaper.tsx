@@ -89,7 +89,7 @@ export default function Whitepaper() {
       <div className="space-y-12">
         <TransparencyPosture />
 
-        <div className="lg:grid lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-10">
+        <div className="lg:grid lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-12">
           <SectionIndex entries={SECTIONS} className="mb-10 lg:mb-0" />
 
           <Prose className="min-w-0">
