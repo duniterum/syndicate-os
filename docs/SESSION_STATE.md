@@ -8,6 +8,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > 4 lanes caught up, BTC.b + WETH.e lines publicly visible). Every PROD line further down this file that
 > names `35d60fa` is now a dated historical record.
 >
+> **COMMITTED, tree clean — FOURTEEN slices now, not six.** The six below were the first cut; eight more
+> landed after (`4c7ddf1` shas · `21e4b6d` readability · `8d95255` fire-ledger type-only · `f94d165` the
+> chrome type floor · `4ca6b4d` the Founder rulings · `89f6f92` the first-seat guard · plus this docs pass).
+> Read the live list with `git log --oneline 2ce49a3..HEAD` — never from a list typed in a document, which
+> is exactly how the four stale PROD lines corrected today were born.
 > **COMMITTED, tree clean.** The Founder ruled mid-session that a commit is a SAVE POINT, not a
 > publication — nothing reaches thesyndicate.money until he triggers the deploy — so the arc was cut into
 > six readable commits instead of one 1,230-line blob. Each is independently revertable if he rejects a
@@ -115,19 +120,32 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > history that is largely already here. Work smart: our repo first, the origin only for what is genuinely
 > missing.
 >
-> ## ▶ (a) THE ONE THING TO DO FIRST, with its exact shape
-> **`Seats 14` / `Footprint 12` — derive "first seat" from the SEAT NUMBER, never from the wallet.**
-> Both chips currently show NO number, deliberately: the server counts by KIND, so `purchase` = 26 (first
-> seats AND expansions in one figure), and printing 26 on either lane would be false. Measured reality:
-> **26 purchases = 12 "entered" + 5 unknown-flag + 9 expansions**, while the live engine says **14 seats** —
-> the flag and the seat count disagree by 3, because 5 old V1/V2 rows never emitted `firstSeat`.
-> **THE AUTHORITY IS THE SEAT NUMBER** (confirmed by the Chronicle's "The duplicate seat"): a purchase that
-> takes a NEW seat number is an acquisition; a repeat on an existing number is an expansion. The 5 flagless
-> rows resolve through **`GENESIS_SEAT_BY_WALLET`** — the frozen #1–#8 roster `ownPurchaseReadmodel` already
-> uses. **DO NOT count "first purchase per wallet"**: that would erase historical seat #7, which is exactly
-> the rounding-away the Chronicle forbids (one wallet legitimately holds #7 AND #11, permanently).
-> Deliverable: derived per-line bucket + `firstSeatCount`/`expansionCount` in the served `kindCounts`, then
-> both chips carry their real number and each lane's row count matches it.
+> ## ▶ (a) SHIPPED — AND THE ONE THING TO WATCH ON THE FIRST DEPLOY
+> **This section used to say "both chips show NO number, deliberately". That is FALSE at HEAD** and was the
+> most dangerous line in the file: it told the next session to build something already built. Rewritten from
+> the code, 2026-07-26.
+>
+> **WHAT SHIPPED.** The first-seat derivation is in `feedProjection.ts` (`seatKeyOf` / `derivedBucket`): a
+> purchase that takes a seat NUMBER not yet issued is an acquisition, a repeat on an existing number is an
+> expansion, and an explicit `firstSeat: false` from the engine is NEVER overruled (`89f6f92`). Both chips
+> carry a number: `Seats` = the live engine's `memberCount()`, `Footprint` = purchases − seats + rung rises
+> (`LiveActivityFeed.tsx`, `chipCount`). **DO NOT count "first purchase per wallet"** — it erases historical
+> seat #7, the rounding-away the Chronicle forbids (one wallet holds #7 AND #11, permanently).
+>
+> **THE ONE THING TO WATCH, and it is why the chips and the lanes must be checked TOGETHER on the first
+> deploy.** In the LOCAL rig the chips disagree with their own lanes by exactly 3, in opposite directions —
+> Seats reads 14 over a 17-row lane, Footprint reads 17 over a 9-row lane. That is not a defect in either
+> one: the rig serves a NEW studio against the OLD production API, which still sends the pre-derivation
+> buckets (12 true / 5 unknown / 9 false). Replit pulls `main` and deploys BOTH, so the derivation and the
+> chips move together: the served buckets become 14 / 12, the Seats lane renders 14 rows against a chip of
+> 14, and Footprint renders 12 + 5 = 17 against a chip of 17. **Verify exactly that on the deploy report —
+> if the two ever disagree in production, the chips are the thing to blank, not the lanes.**
+>
+> **STILL OWED, and it is the complete fix.** The key space is still heterogeneous: `n:<memberNumber>` for
+> numbered rows, `w:<wallet>` for the pre-numbering V1 rows. The specified join through
+> **`GENESIS_SEAT_BY_WALLET`** (`backboneRunner.ts:229`, already passed to three other read-models) was NOT
+> written — so historical members #1 and #2 sit in a different namespace from their own seat numbers. The
+> `firstSeat: false` guard closes the one reachable trigger; the namespace join removes the class.
 >
 > ## ▶ (b) THEN, in order
 > **①** Harvest the Chronicle from `github.com/duniterum/TheSyndicate` — the register holds 4 entries and the
@@ -157,6 +175,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > `protocolEventReadmodel`, `backboneRunner`). *"pull main, deploy, report"* — **no migration, no new env**
 > (no schema file moved).
 
+> # ⛔ SUPERSEDED — 2026-07-26 (PM) — THE FORMER RESUME BLOCK. ARCHIVE ONLY.
+>
+> **Its `PROD = 35d60fa` and its four-commit deploy backlog were true when written and are FALSE now.**
+> The Founder deployed `2ce49a3` later the same day, and thirteen commits have landed above it. The live
+> resume block is at the TOP of this file. Nothing below this line is a current instruction — it is kept
+> because it records how the arc got here, which is the same reason the Chronicle keeps its own mistakes.
+>
+> *(original heading follows)*
 > # ▶ 📌 2026-07-26 (PM) — THE RESUME BLOCK (DONE-IS-DONE §④: read THIS, resume in one pass)
 > *Everything below this block is the dated RECORD of how it got here — read it only if you need the why.*
 >

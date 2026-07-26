@@ -2,14 +2,20 @@
 
 > **▶ 2026-07-26 (PM) — THE HANDOFF PASS. Five commits landed, FOUR were invisible to every doc, and the
 > six-lens sweep found the docs are not sloppy — they are ONE COMMIT BEHIND, always at the same boundary.**
-> **PROD = `35d60fa`. DEPLOY BACKLOG = `11384f5` · `05f16bc` · `2cd7d65` · `57c5fdf` — 🚀 ONE GROUPED
-> DEPLOY, not batchable. `2132663` = ✅ NO DEPLOY (docs).** The ONE authority for prod + the backlog is the
-> SESSION_STATE resume block; **every dated block below this one — including the 2026-07-25 (PM-5) line
-> reading "DEPLOY BACKLOG EMPTY" — is a historical record, never the current truth.** Measured: 8 commits
-> above prod, 5 unpushed, **0 api-server files in the batch** (`git diff --name-only 35d60fa..HEAD |
-> grep -c api-server` = 0) — so Replit gets *"pull main, deploy, report"*, no migration, no new env. It does
-> not batch because `05f16bc` deletes a **chain-refutable promise from the SERVED `/activity` head** (red
-> line ②, live right now) and closes a public page that can hang with its only escape disabled.
+> **PROD = `2ce49a3`** (the Founder deployed it 2026-07-26; Replit's seal report is in that session's
+> transcript — four lanes caught up to the chain head, the BTC.b and WETH.e treasury lines publicly visible
+> and verifiable). **The ONE authority for prod + the deploy backlog is the SESSION_STATE resume block;**
+> every dated block below this one is a historical record, never the current truth — and this header used
+> to be one of them: it read `PROD = 35d60fa` with a four-commit backlog that had already shipped, which is
+> the recurrence this line now exists to stop. **This header carries the sha and nothing else; the backlog
+> lives in SESSION_STATE, so there is only ONE place for it to go stale.**
+>
+> **DEPLOY BACKLOG = the commits above `2ce49a3` on main** — read them with
+> `git log --oneline 2ce49a3..HEAD`, never from a list typed here. **This batch INCLUDES api-server files**
+> (`feedProjection.ts` · `protocolEventReadmodel.ts` · `backboneRunner.ts`), unlike every batch before it,
+> because the server now publishes the full public address beside every short form and derives first-seat
+> from the seat number. Replit's instruction is *"pull main, deploy, report"* — **no migration, no new env**
+> (no schema file moved).
 > **THE DEFECT THAT MATTERS MOST IS NOT ANY ONE STALE LINE — IT IS THE MECHANISM.** The docs pass ran
 > MID-session; `2cd7d65`, `57c5fdf` and `2132663` shipped after it and nothing went back. Four of five
 > commits appear in zero documents (`grep -rl <sha> docs/`: 11384f5 = 3 files, the other four = 0 each);
