@@ -17,6 +17,7 @@
 
 import { decodeEventLog, toEventSelector, parseAbi } from "viem";
 import { publicClient } from "./chainReads";
+import { formatAmount } from "./amountFormat.ts";
 
 // ── Event pins (verbatim from the repo; self-checked below) ─────────────────
 // MembershipPurchasedV3 — signature + topic0 + param order transcribed from
@@ -142,9 +143,11 @@ const CHUNK = 2000;
 /** ~24h of Avalanche blocks (≈2s) — the default recent window. */
 export const DEFAULT_WINDOW_BLOCKS = 43_200;
 
+/** Whole SYN, through THE ONE TRUNCATION — with the floor, so a burn under
+ *  1 SYN can no longer publish "0 SYN was retired … gone for everyone, forever"
+ *  on a public money line (fixed 2026-07-26; the served twin was identical). */
 function fmtSyn(raw: bigint): string {
-  const whole = raw / 10n ** 18n;
-  return whole.toLocaleString("en-US");
+  return formatAmount(raw.toString(), 18, 0) ?? "0";
 }
 
 export interface FeedAddresses {

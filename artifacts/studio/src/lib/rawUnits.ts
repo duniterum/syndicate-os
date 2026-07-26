@@ -1,3 +1,9 @@
+// Explicit .ts extension (allowed by tsconfig `allowImportingTsExtensions`) so
+// `guard-one-figure` can import this module directly and PROVE its behaviour,
+// instead of only text-matching it. A guard that cannot execute the code it
+// protects is decoration — that is the lesson this whole slice is built on.
+import { truncateToDisplayUnits, clampDisplay, dustFloorText } from "./amountFormat.ts";
+
 // rawUnits.ts — exact raw base-unit helpers (display-side only).
 // ---------------------------------------------------------------------------
 // The wire truth is ALWAYS the raw base-10 string from the server (never
@@ -48,6 +54,16 @@ export function formatRawUnits(raw: string, decimals: number): string {
  * purpose: a money display must never overstate what the wallet holds
  * (2.998916 USDC renders "2.99", never "3"). The raw string remains the wire
  * truth for verifiers. Pure bigint math — no floats, ever.
+ *
+ * THE TRUNCATION ITSELF NOW LIVES IN ONE PLACE (2026-07-26). This function's
+ * rule was always right — it was written here first, and the rest of the site
+ * had drifted away from it. It keeps its own PRESENTATION (trailing fractional
+ * zeros trimmed, which is what the wallet and checkout surfaces read today) and
+ * borrows the shared projection, so the site can no longer hold two truncations.
+ *
+ * THE FALSE ZERO IS FIXED IN THE SAME PASS: a member holding 0.004 SYN or
+ * 0.004 USDC read a flat "0" on their own wallet panel. A real holding now
+ * reads "< 0.01". Honest dust, never nothing.
  */
 export function formatRawUnitsDisplay(
   raw: string,
@@ -56,7 +72,8 @@ export function formatRawUnitsDisplay(
 ): string {
   if (!/^\d+$/.test(raw)) return raw;
   if (display >= decimals) return formatRawUnits(raw, decimals);
-  const scale = 10n ** BigInt(decimals - display);
-  const floored = BigInt(raw) / scale;
-  return formatRawUnits(floored.toString(), display);
+  const units = truncateToDisplayUnits(raw, decimals, display);
+  if (units === null) return raw;
+  if (units === 0n && BigInt(raw) > 0n) return dustFloorText(clampDisplay(decimals, display));
+  return formatRawUnits(units.toString(), display);
 }

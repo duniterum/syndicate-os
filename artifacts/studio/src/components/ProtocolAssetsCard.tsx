@@ -21,7 +21,10 @@
 import { Bitcoin, Coins, Droplet, Hexagon, Shield, Ticket, Triangle, Wallet } from "lucide-react";
 import { useGetProtocolReality, type VerifyLinkId } from "@workspace/api-client-react";
 import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
-import { formatBaseUnits } from "@/components/hero/useHeroReality";
+// THE ONE FIGURE: this card and /activity now render a holding through the SAME
+// truncating formatter. They used to disagree — the vault's untouched WETH.e read
+// `0.026552` here and `0.026551` on /activity. See lib/amountFormat.ts.
+import { formatAmount as fmtAmount } from "@/lib/amountFormat";
 import { VerifyOnChain, VERIFY_SLOGAN } from "@/components/VerifyOnChain";
 
 // "Don't trust — verify" explorer targets per asset row (protocol
@@ -64,20 +67,6 @@ function toNum(raw: string | null, decimals: number): number | null {
 function fmtUsd(n: number): string {
   if (n > 0 && n < 0.01) return "< $0.01";
   return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
-
-/**
- * A token amount at its display precision. If a NON-ZERO balance would round to
- * all zeros at that precision, say "< 0.0…1" instead of printing a false zero.
- */
-function fmtAmount(raw: string | null, decimals: number, dp: number): string | null {
-  const shown = formatBaseUnits(raw, decimals, dp);
-  if (shown === null) return null;
-  const isZeroShown = /^0(\.0*)?$/.test(shown.replace(/,/g, ""));
-  if (isZeroShown && raw !== null && raw !== "0") {
-    return dp > 0 ? `< 0.${"0".repeat(dp - 1)}1` : "< 1";
-  }
-  return shown;
 }
 
 export function ProtocolAssetsCard() {

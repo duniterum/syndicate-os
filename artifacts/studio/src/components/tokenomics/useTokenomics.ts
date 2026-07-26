@@ -13,7 +13,7 @@ import {
   useGetJoinQuote,
   getGetJoinQuoteQueryKey,
 } from "@workspace/api-client-react";
-import { formatBaseUnits } from "@/components/hero/useHeroReality";
+import { formatBaseUnits } from "@/lib/amountFormat";
 import { TOKENOMICS_DESIGN } from "@/config/tokenomics";
 
 const USDC_DECIMALS = 6;

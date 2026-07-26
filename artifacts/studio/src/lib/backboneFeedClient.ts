@@ -15,6 +15,12 @@
 // A malformed line is skipped and COUNTED (mirrors the client scan: an
 // undecodable log is never guessed into a sentence).
 
+// THE ONE FIGURE: every amount below is rendered by the shared truncating
+// formatter, the same one /contracts and the public home now call. The two
+// families used to disagree — see lib/amountFormat.ts for the rule and the
+// live defect it closed.
+import { formatAmount, formatBaseUnits } from "./amountFormat.ts";
+
 const TX_ANCHOR_RE = /^0x[0-9a-fA-F]{64}$/;
 const BUCKETS = new Set(["true", "false", "unknown"]);
 const LIFECYCLE_KINDS = new Set([
@@ -702,39 +708,34 @@ export async function fetchServedFeed(
   }
 }
 
-/** Format a raw 18-decimal SYN amount for a sentence (whole SYN, localized). */
+/** Format a raw 18-decimal SYN amount for a sentence (whole SYN, localized).
+ *  WITH the false-zero floor: a burn under 1 SYN used to publish "0 SYN was
+ *  retired to the burn address — gone for everyone, forever" on a public money
+ *  line. A real burn now reads "< 1 SYN". (The window-scanned twin in
+ *  activityFeed.ts carried the identical defect and is fixed in the same pass.) */
 export function formatSynRaw(amountSynRaw: string): string {
-  const whole = BigInt(amountSynRaw) / 10n ** 18n;
-  return whole.toLocaleString("en-US");
+  const shown = formatAmount(amountSynRaw, 18, 0);
+  // Unreachable in practice — the parser validates the raw upstream. Throwing
+  // preserves this function's pre-existing non-null contract for its callers.
+  if (shown === null) throw new TypeError(`malformed SYN base-unit string: ${amountSynRaw}`);
+  return shown;
 }
 
 /** Format a raw 6-decimal USDC amount for a sentence (2 decimals, localized). */
 export function formatUsdcRaw(amountUsdcRaw: string): string {
-  const units = BigInt(amountUsdcRaw);
-  const whole = units / 1_000_000n;
-  const cents = (units % 1_000_000n) / 10_000n;
-  return `${whole.toLocaleString("en-US")}.${cents.toString().padStart(2, "0")}`;
+  const shown = formatBaseUnits(amountUsdcRaw, 6, 2);
+  if (shown === null) throw new TypeError(`malformed USDC base-unit string: ${amountUsdcRaw}`);
+  return shown;
 }
 
 
+/** A treasury movement at the token's display precision — truncated, with the
+ *  false-zero floor. The token's decimals come from THE ONE map below, so a
+ *  token the client cannot render can never reach a sentence. */
 export function formatTreasuryRaw(amountRaw: string, token: string): string | null {
   const spec = isTreasuryToken(token) ? TREASURY_TOKEN_DECIMALS[token] : undefined;
   if (!spec) return null; // unknown token → the caller withholds the line
-  let units: bigint;
-  try {
-    units = BigInt(amountRaw);
-  } catch {
-    return null;
-  }
-  const base = 10n ** BigInt(spec.decimals);
-  const whole = units / base;
-  const frac = (units % base).toString().padStart(spec.decimals, "0").slice(0, spec.dp);
-  const shown = spec.dp > 0 ? `${whole.toLocaleString("en-US")}.${frac}` : whole.toLocaleString("en-US");
-  // A non-zero movement must never read as a flat zero.
-  if (units > 0n && /^0(\.0*)?$/.test(shown.replace(/,/g, ""))) {
-    return `< 0.${"0".repeat(Math.max(spec.dp - 1, 0))}1`;
-  }
-  return shown;
+  return formatAmount(amountRaw, spec.decimals, spec.dp);
 }
 
 // The §8 event lexicon — one event kind, ONE canonical sentence. Never

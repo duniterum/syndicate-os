@@ -2,20 +2,89 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 📌 2026-07-25 — THE RESUME BLOCK (DONE-IS-DONE §④: read THIS, resume in one pass)
+> # ▶ 📌 2026-07-26 — THE RESUME BLOCK (DONE-IS-DONE §④: read THIS, resume in one pass)
 > *Everything below this block is the dated RECORD of how it got here — read it only if you need the why.*
 >
 > ## ▶ WHERE WE ARE, IN ONE READ
-> **PROD = `35d60fa`, sealed live 2026-07-25. DEPLOY BACKLOG: EMPTY of deployable work** — only
-> documentation commits sit above prod. Tree clean, local == origin.
-> **WHAT WENT LIVE TODAY (one grouped cycle: `352a904` · `6953972` · `35c5083` · `add5bb8` · `35d60fa`):**
+> **PROD = `35d60fa` (sealed 2026-07-25). DEPLOY BACKLOG: the ONE-FIGURE slice (2026-07-26), client-only.**
+> **THE 2026-07-26 ARC — THE SWAP-TRUTH INVESTIGATION.** The founder pointed at `/activity` and asked why one
+> swap reads as two disconnected lines, and — the best question of the session — *"pourquoi scanner toute la
+> chaîne quand on connaît les transactions ?"*. Both were right, and the dig found FOUR defects:
+>   - **① ONE ACT, TWO HALF-TRUTHS.** The three 2026-07-16 vault swaps (all `swapExactIn` on the LFJ
+>     aggregator router `0x45a62b09…`, signed by the vault itself) publish as five disconnected lines:
+>     30 USDC → 4.5399 AVAX (block 90,460,319 · tx `0x7accfd17b4…`) · 50 USDC → 0.00077818 BTC.b
+>     (90,460,591 · `0x4270498c77…`) · 50 USDC → 0.0265517 WETH.e (90,460,622 · `0x60ea668e74…`).
+>     Nothing left the vault; 130 USDC changed form. The outbound line reads as money leaving.
+>   - **② THE AVAX PURCHASE IS INVISIBLE.** Native AVAX arrives as an INTERNAL transfer and emits no log,
+>     so `eth_getLogs` can never see it. The public reads "30.00 USDC moved out of the vault" with NO
+>     counterpart — on the line that claims *"there are no silent moves"*.
+>   - **③ A FALSE ATTESTATION, LIVE.** `"— a founder-signed treasury act"` (backboneFeedClient.ts:834) is
+>     published on EVERY outbound move, but the code never checks a signer — only `counterpartFounder`,
+>     the RECIPIENT (protocolEventReadmodel.ts:463-470).
+>   - **④ THE FIGURE HAD FORKED, LIVE — and WIDER than first written.** FOUR independent projections of the
+>     same money coexisted: `/activity` truncated · the `/contracts` assets card rounded HALF-UP · the
+>     **public home Protocol Reserves band** rounded half-up by a different route (`Number()` + `Intl`,
+>     whose default mode is halfExpand) · and `lib/rawUnits.ts` truncated with **no floor**, so a member
+>     holding 0.004 SYN read a flat **"0" on their own wallet panel**. The vault's untouched WETH.e read
+>     `0.026551` and `0.026552` on two public pages at the same instant.
+>     **MY FIRST FIX WAS WRONG AND SAID SO IN THREE PLACES.** It touched two of the four paths, left the
+>     public home on the old rule — MOVING the fork rather than closing it — and asserted "closed" in the
+>     module header, in the guard header and in both truth docs. The six-lens re-read caught it before commit.
+>     **LESSON ENGRAVED: an inventory is not what you remember, it is what you enumerate.** `lib/rawUnits.ts`
+>     had already written this exact law down years-of-sessions earlier ("a money display must never
+>     overstate what the wallet holds") — I re-invented a settled rule instead of finding it.
+> **THE SCAN ANSWER, CHIFFRÉE (his question).** We do NOT scan the whole chain — every call is `eth_getLogs`
+> narrowed to one contract + topic. But all **14 lanes hardcode the same start block 87,157,852**
+> (protocolTargets.ts:585-714), the V1 sale deploy block, unrelated to BTC.b/WETH.e (~90.46M): **1,651
+> provably-empty round-trips per lane; 6,604 of 8,184 across the four new lanes = 80.7% waste; 9 cycles
+> (~45 min) before money is visible.** The per-target `fromBlock` field ALREADY exists and the SALE lanes
+> already use it. **PROVEN 2026-07-26: one free unauthenticated Routescan call returns the vault's COMPLETE
+> history (35 transfers / 33 tx) in under a second** — and `action=txlistinternal` returns the native-AVAX
+> legs logs can never see. Recipe: [[routescan-api-beats-log-scanning]] / see OPEN_QUEUE.
+> **SEPARATE CORRECTNESS GAP:** adding the NFT sale wallet as a 4th organ did NOT rewind the treasury
+> cursors (protocolEventScan.ts:529-534) — its history below the cursor will never be scanned.
+> **THE FOUNDER'S TWO RULINGS (2026-07-26, ANSWERED FOREVER):**
+>   - **THE VERB IS "converted", GATED ON THE PROOF.** `Le coffre a converti 50,00 USDC en 0,026551 WETH.e —
+>     une seule transaction, inscrite sur la chaîne.` Written ONLY when every treasury lane has covered that
+>     block; otherwise it degrades to the ledger voice, then to separate honest lines. Never over-state.
+>   - **THE ORDER: 0 → 1 → 2 → 3 → 4** — one figure · the scan · the honest words alone · the merge · AVAX.
+>     Slices 2 and 3 are deliberately SEPARATE deploys: merging server-side while a cached page still runs
+>     the old bundle would show the outbound leg ALONE — worse than today.
+> **THE ADVERSARIAL PASS EARNED ITS KEEP AGAIN (3 lenses, 3 refutations).** It killed, before any code: a
+> merge that would publish a conversion that never happened (lanes sit at different cursor heights → a
+> 3-leg act looks like a clean 2-leg swap; needs a COVERAGE condition); an AVAX lane that would ingest
+> REVERTED transactions (there is one at block 90,460,289, `isError=1` — the guard must be receipt
+> `status==1`, not "the transaction exists"); and my backwards deploy-skew reasoning. Full detail in OPEN_QUEUE.
+> **WHAT WENT LIVE 2026-07-25 (one grouped cycle: `352a904` · `6953972` · `35c5083` · `add5bb8` · `35d60fa`):**
 > the vault's full holdings serve live and VALUED on `/contracts` + the /admin home · the public home gained
 > the **"Protocol Reserves"** band (4 cards, registry-driven, 44 vendored coin logos) · every `/season` board
 > row links to Snowtrace · the BTC.b/WETH.e treasury lanes + the NFT sale wallet as a 4th organ · a truth
 > sweep that deleted a FALSE public claim and 5 "recognition is future" fossils.
-> **WHAT IS IN FLIGHT:** the lane backfill runs autonomously (~2-3 cycles from the head, cursors persisted,
-> no action needed). **NEXT SLICE is the founder's pick** — the open list below is the menu; nothing is
-> half-built and nothing is waiting on code.
+> **WHAT IS IN FLIGHT:** the 5-slice swap-truth arc above. **Slice 0 (THE ONE TRUNCATION) is BUILT + GREEN,
+> awaiting the founder's commit approval.** `src/lib/amountFormat.ts` holds the ONE primitive —
+> `truncateToDisplayUnits` — plus `formatBaseUnits` / `formatAmount` (with the `< 0.0…1` floor),
+> `sumRawUnits` and `rawShare` (exact integer pool share). Every money surface now calls it:
+> `useHeroReality`'s half-up copy DELETED · `ProtocolAssetsCard` aliases it · **`ProtocolReservesBand`
+> rewritten off floats+Intl onto raw base units** (this is the one my first attempt missed) ·
+> `lib/rawUnits.ts` borrows the truncation and gains the floor · `backboneFeedClient` and `activityFeed`
+> both delegate. **Boundaries stated in the module, not guessed:** EXACT rendering (`formatRawUnits`,
+> `formatAmountExact` + its api twin, pinned by `guard-receipt-ticket`), USD valuation floats, and
+> percentages/bps/SVG are all deliberately outside.
+> **`guard-one-figure` (BLOCKING, in the chain) pins FIVE things:** ① one definition of the truncation,
+> in the canon module ② no unlisted second projection anywhere in src (9-file allowlist, each with a
+> written reason — the live "second-authority debt" counter) ③ **17 BEHAVIOUR cases executed against the
+> real modules**, including the member-money floor ④ (decimals, dp) agreed across `/activity`,
+> `/contracts` AND the home band ⑤ **8 positive pins proving each surface actually CALLS the authority**
+> — because ②'s allowlist necessarily opens a door in the four files that hold legitimate float maths.
+> **Proven RED twice:** on a reintroduced half-up rule, and on the home band regressing to floats+Intl.
+> Gates: tsc 0 · guards ALL green · build 36 shells / 374 byte-identical twins / admin-dist 102.
+> **RECOUNTED AGAINST LIVE PROD: 5 rendered figures move, every one DOWN, never up** — home band ETH
+> 0.026552→0.026551 and USDC 105.64→105.63 · /contracts Vault USDC 16.48→16.47, Operations USDC
+> 20.93→20.92, WETH.e 0.026552→0.026551. The three public surfaces now print the SAME WETH.e. And on the
+> member's own wallet panel a real 0.004 SYN holding stops reading "0" and reads "< 0.01".
+> **NEXT, in this session:** the /activity page-killer (an unguarded chain read can hang the page on
+> "Reading the chain…" with the Re-read button disabled in exactly that state) · the seat #333-vs-#334
+> self-contradiction · the "Showing 2 of 2" vs a chip reading 7 · then the capital-F sweep and its guard.
 > **THE FOUNDER'S PENDING DECISIONS:** the 2 artifacts the NFT sale wallet itself minted (relabel as a
 > protocol mint, or leave Community) · ⑩ the "archive" → NFT vocabulary sweep (his words, public copy) ·
 > the patronage rungs' sealing now that their transaction source exists · plus the older standing ones

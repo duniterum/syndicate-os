@@ -8,36 +8,11 @@
 // read is unavailable and the UI must show an honest "unavailable / checking"
 // state. NOTHING here ever falls back to a simulated figure.
 import { useGetProtocolReality, useGetHolderIndex } from "@workspace/api-client-react";
-
-/**
- * Raw base-unit string → fixed-decimal display string, BigInt-safe and
- * half-up ROUNDED (never truncated) at `displayDecimals`. Null on any
- * malformed input — fail-closed, nothing invented.
- */
-export function formatBaseUnits(
-  raw: string | null | undefined,
-  decimals: number,
-  displayDecimals: number,
-): string | null {
-  if (typeof raw !== "string" || !/^[0-9]+$/.test(raw)) return null;
-  let value: bigint;
-  try {
-    value = BigInt(raw);
-  } catch {
-    return null;
-  }
-  const display = displayDecimals <= 0 ? 0 : Math.min(displayDecimals, decimals);
-  // Scale down to display units with half-up rounding.
-  const dropDigits = BigInt(decimals - display);
-  const scale = 10n ** dropDigits;
-  const rounded = (value + scale / 2n) / scale; // integer count of 10^-display units
-  const displayBase = 10n ** BigInt(display);
-  const whole = rounded / displayBase;
-  const frac = rounded % displayBase;
-  const wholeText = whole.toLocaleString("en-US");
-  if (display <= 0) return wholeText;
-  return `${wholeText}.${frac.toString().padStart(display, "0")}`;
-}
+// THE ONE FIGURE: base-unit → display lives in exactly one module, and it
+// TRUNCATES. This hook used to carry its own half-up-rounding copy, which made
+// the same WETH.e holding read `0.026552` here and `0.026551` on /activity.
+// See lib/amountFormat.ts for the rule; guard-one-figure keeps it single.
+import { formatBaseUnits } from "@/lib/amountFormat";
 
 /** 70/20/10 routed share of a raw USDC base-unit aggregate (exact bigint math). */
 function routedShare(rawAggregate: string | null, bps: bigint): string | null {

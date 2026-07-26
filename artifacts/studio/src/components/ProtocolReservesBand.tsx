@@ -16,6 +16,7 @@ import { useGetProtocolReality, type VerifyLinkId } from "@workspace/api-client-
 import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { TRACKED_ASSETS } from "@/config/trackedAssets";
+import { formatAmount, sumRawUnits, rawShare } from "@/lib/amountFormat";
 
 /**
  * LITERAL class names on purpose. Tailwind scans source text, so a class built
@@ -54,12 +55,12 @@ function usd(n: number): string {
   return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-/** A token amount that never prints a false zero for a non-zero holding. */
-function amount(n: number, dp: number): string {
-  const s = n.toLocaleString("en-US", { minimumFractionDigits: dp, maximumFractionDigits: dp });
-  if (n > 0 && /^0(\.0*)?$/.test(s.replace(/,/g, ""))) return `< 0.${"0".repeat(Math.max(dp - 1, 0))}1`;
-  return s;
-}
+// A token amount is rendered by THE ONE TRUNCATION (lib/amountFormat), never
+// here. This band used to run Number() + Intl, whose default rounding mode is
+// halfExpand — half-up — so the vault's untouched WETH.e read 0.026552 on this
+// public page and 0.026551 on /contracts and /activity at the same instant.
+// Floats survive below for the USD VALUATION only, which is a derived fiat
+// figure and not a projection of base units.
 
 /** Local vendored logo, falling back to a lettered disc — never a broken image. */
 function CoinMark({ logo, symbol }: { logo: string; symbol: string }) {
@@ -90,11 +91,16 @@ export function ProtocolReservesBand() {
   // The protocol's OWN SHARE of the pool, USDC leg only (the SYN leg is never
   // priced — pricing it would mark SYN to the thin pool price). Computed BEFORE
   // the rows, because the USDC row folds it in.
-  const poolUsdc = toNum(raw(fin, "financial.lp.reserveUsdc"), 6);
-  const lpSupply = toNum(raw(fin, "financial.lp.totalSupply"), 18);
-  const lpOwned = toNum(raw(fin, "financial.lp.protocolBalance"), 18);
+  // Taken with EXACT integer maths — amount × ourLP ÷ totalLP on the three raw
+  // reads — so our share of the pool's USDC leg is derived the same way the
+  // wallet balances are. `poolShare` stays a float for the caption only.
+  const poolUsdcRaw = raw(fin, "financial.lp.reserveUsdc");
+  const lpSupplyRaw = raw(fin, "financial.lp.totalSupply");
+  const lpOwnedRaw = raw(fin, "financial.lp.protocolBalance");
+  const poolUsdcOwnedRaw = rawShare(poolUsdcRaw, lpOwnedRaw, lpSupplyRaw);
+  const lpSupply = toNum(lpSupplyRaw, 18);
+  const lpOwned = toNum(lpOwnedRaw, 18);
   const poolShare = lpSupply !== null && lpOwned !== null && lpSupply > 0 ? lpOwned / lpSupply : null;
-  const poolUsdcOwned = poolShare !== null && poolUsdc !== null ? poolUsdc * poolShare : null;
 
   // ── Rows from the registry. ONE ASSET = ONE ROW: an asset held across several
   //    wallets — and for USDC across the pool as well (founder, 2026-07-25:
@@ -102,12 +108,16 @@ export function ProtocolReservesBand() {
   //    never split into look-alike cards. A missing component makes the whole
   //    row unavailable rather than a partial sum.
   const rows = TRACKED_ASSETS.map((a) => {
-    const legs = a.balanceIds.map((id) => toNum(raw(fin, id), a.decimals));
-    if (a.includesPoolShare) legs.push(poolUsdcOwned);
-    const amt = legs.every((l) => l !== null) ? (legs as number[]).reduce((x, y) => x + y, 0) : null;
+    const legs = a.balanceIds.map((id) => raw(fin, id));
+    if (a.includesPoolShare) legs.push(poolUsdcOwnedRaw);
+    // Summed in RAW base units: a missing leg makes the whole row unavailable
+    // rather than a partial sum, and the shown figure is the same projection
+    // /contracts and /activity use.
+    const amtRaw = sumRawUnits(legs);
+    const amt = toNum(amtRaw, a.decimals); // float — for the USD valuation only
     const px = a.priceId === "PEGGED_USD" ? 1 : toNum(raw(fin, a.priceId), 8);
     const value = amt !== null && px !== null ? amt * px : null;
-    return { ...a, amt, px, value };
+    return { ...a, amtRaw, amt, px, value };
   });
 
   // THE ONE LIST. The total and the composition bar are computed from the SAME
@@ -176,7 +186,9 @@ export function ProtocolReservesBand() {
                     className="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold text-muted-foreground"
                   >
                     <i className={`h-2 w-2 rounded-[2px] ${toneBg(m.tone)}`} />
-                    {m.key} {Math.round(m.p)}%
+                    {/* A real, non-zero holding never reads as "0%" — the same
+                        false-zero law the amounts follow. */}
+                    {m.key} {m.p > 0 && m.p < 0.5 ? "< 1" : Math.round(m.p)}%
                   </span>
                 ))}
               </div>
@@ -203,7 +215,7 @@ export function ProtocolReservesBand() {
                 </span>
               </div>
               <div className="font-mono text-lg font-black">
-                {r.amt !== null ? amount(r.amt, r.dp) : liveFigure(null, reality.isLoading)}
+                {formatAmount(r.amtRaw, r.decimals, r.dp) ?? liveFigure(null, reality.isLoading)}
               </div>
               {r.value !== null ? (
                 <div className="mt-0.5 font-mono text-[13px] font-semibold text-proof">{usd(r.value)}</div>
