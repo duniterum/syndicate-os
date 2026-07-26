@@ -4,9 +4,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 
 > # ▶ 2026-07-26 (LATE) — THE /activity REBUILD IS BUILT AND **COMMITTED IN SIX SLICES**. READ THIS FIRST.
 >
-> **PROD = `2ce49a3`** (the Founder deployed it this session; Replit's seal report is in the transcript —
-> 4 lanes caught up, BTC.b + WETH.e lines publicly visible). Every PROD line further down this file that
-> names `35d60fa` is now a dated historical record.
+> **PROD IS THIS ARC — IT SHIPPED. Measured on the live surfaces 2026-07-26 (not read from a report):**
+> `https://thesyndicate.money/api/backbone/feed` serves **`actorOrganLabel`** (a field that does not exist
+> anywhere in the repo at `2ce49a3`), **`actorClass`**, and a **full 40-hex `memberAddress`** beside every
+> short form. The served stylesheet carries `--text-body: clamp(1rem, .92rem + .28vw, 1.25rem)` — this arc's
+> token — and the served bundle carries `PublicLayout`'s `text-xs … tracking-[0.08em]`, which exists only
+> after `f94d165`.
+> **THE EXACT SHA IS IN REPLIT'S REPORT, NOT HERE.** What the served surfaces PROVE is a floor: the client
+> contains at least `f94d165` and the api arc at least `52dfd76`. The commits above those are docs-only or
+> test-side, so no served artifact can distinguish them — writing a precise sha here would be an inference
+> dressed as a measurement, which is the exact sin this line keeps having to fix.
+> **HOW TO CHECK A PROD CLAIM, ever again:** pick a symbol that exists at HEAD and NOT at the sha you doubt
+> (`git grep -c <symbol> <sha>`), then look for it in the SERVED payload or bundle. A document is never the
+> evidence.
+> Every PROD line further down this file — and any naming `35d60fa` or `2ce49a3` as current — is a dated
+> historical record.
 >
 > **COMMITTED, tree clean — FOURTEEN slices now, not six.** The six below were the first cut; eight more
 > landed after (`4c7ddf1` shas · `21e4b6d` readability · `8d95255` fire-ledger type-only · `f94d165` the
@@ -24,8 +36,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   · `1fa59db` the three other surfaces that share the sentence builder + the FAQ inversion
 >   · `0ffc7cd` guard-feature-truth §⑥ prose claims + §⑦ orphan keys (616 checks) + the focus ratchet
 >   · `532af4d` this handoff
-> **THE PREVIEW GATE IS STILL OPEN**: the Founder had not yet approved the built page when the session
-> ended. Commits are safe; the DEPLOY is what waits on his screen.
+> **THE PREVIEW GATE IS CLOSED — the Founder said “GO and GO-Live” and the deploy has landed.** This line
+> used to read “STILL OPEN” and stayed there after the approval was written 60 lines below it: the commit
+> that recorded the GO was a pure insertion and reconciled nothing. A reader going top-down stopped here and
+> concluded the work was blocked on his eyes. One statement of gate status, at the top, dated.
 >
 > **ALL GATES GREEN at session end:** studio typecheck · 29 studio guards · api typecheck · full api guards
 > chain (backbone **177** checks, +6 new) · build (374 twins, admin-dist 102). Verified by measurement in the
@@ -83,7 +97,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   all three new checks proven RED). It had been GREEN while the /activity prose promise it was supposed to
 >   govern sat outside the mechanism entirely.
 >
-> ## ▶ 🚀 DEPLOY VERDICT — APPROVED BY THE FOUNDER 2026-07-26 (“GO and GO-Live”)
+> ## ▶ ✅ DEPLOYED 2026-07-26 — AND THE PREDICTION BELOW VERIFIED ITSELF ON PRODUCTION
+> **The one falsifiable claim this block made is GREEN, measured on the live payload:** 26 purchases split
+> **{first seat: 14, expansion: 12}** with **5** capital-rise rows — so the Seats chip’s 14 matches a 14-row
+> lane, and Footprint’s 17 matches 12 + 5. The chips and their lanes agree in production, which is exactly
+> what the local rig could not show.
+> *Everything below is the verdict AS ISSUED, kept as the dated record of what was promised and checked.*
+>
+> ## ▶ 🚀 DEPLOY VERDICT AS ISSUED — APPROVED BY THE FOUNDER 2026-07-26 (“GO and GO-Live”)
 > **REPLIT'S INSTRUCTION, VERBATIM: “pull main, deploy, report.”**
 > **NO migration. NO new env var.** No schema file moved in this batch.
 >
@@ -195,6 +216,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > 4th block on a page whose whole job is finding your question.
 > **③** `guard-capital-f` + the CODE sweep (≥93 lowercase `founder` string literals remain: 67 studio, 26 api).
 >
+> ## ▶ (c) ⛔ SUPERSEDED — WHAT WAS FOUNDER-PENDING, AND IS NOT ANY MORE
+> **The whole block below described a preview gate that has since CLOSED and a deploy that has since
+> LANDED.** He said “GO and GO-Live”, the arc is on thesyndicate.money (measured: the served API publishes
+> `actorOrganLabel`, absent from the repo at `2ce49a3`), and the blue clickable addresses it says “cannot be
+> seen before the deploy” are now the live rendering. Kept as the dated record of what was owed; **nothing
+> in it is an instruction.**
+> **WHAT IS ACTUALLY PENDING NOW** is one item, and it is his READING, not a build: the **11 verified
+> Chronicle candidates** in `docs/chronicle/candidates/` (backlog row `CHR-11`). He reads them on screen, he
+> picks, they are written into `chronicleRegister.ts` — which holds 4 today.
+
 > ## ▶ (c) FOUNDER-PENDING
 > **The preview gate on /activity** — the rig is `studio-prod-data` (port 5175, proxied to the live API);
 > `http://localhost:5175/activity`. He had approved the wireframe and was iterating on the built page.

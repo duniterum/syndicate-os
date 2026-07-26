@@ -786,7 +786,7 @@ recommandation de couvrir 3-4 pages tient toujours. 15 constats ergonomiques con
 attendent (3 traités). Et 11 entrées de Chronique sont vérifiées mais **candidates**, pas promues.
 
 ---
-**DEPLOY — ⛔ CE VERDICT EST DÉPASSÉ (26 juil. 2026).** Le lot ci-dessous A ÉTÉ DÉPLOYÉ : prod = `2ce49a3`.
+**DEPLOY — ⛔ CE VERDICT EST DÉPASSÉ (26 juil. 2026).** Le lot ci-dessous A ÉTÉ DÉPLOYÉ : prod = l'arc du 26 juillet, DÉPLOYÉ (sha exact : rapport Replit).
 Le verdict courant est dans le bloc de reprise de `SESSION_STATE.md`, et il diffère sur un point qui compte :
 **le prochain cycle INCLUT des fichiers api-server** (`feedProjection` · `protocolEventReadmodel` ·
 `backboneRunner`), donc la phrase « zéro fichier api-server » ci-dessous ne vaut que pour le lot du 25 juillet.

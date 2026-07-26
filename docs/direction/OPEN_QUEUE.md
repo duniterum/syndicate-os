@@ -2,7 +2,7 @@
 
 > **▶ 2026-07-26 (PM) — THE HANDOFF PASS. Five commits landed, FOUR were invisible to every doc, and the
 > six-lens sweep found the docs are not sloppy — they are ONE COMMIT BEHIND, always at the same boundary.**
-> **PROD = `2ce49a3`** (the Founder deployed it 2026-07-26; Replit's seal report is in that session's
+> **PROD = l'arc du 26 juillet, DÉPLOYÉ** *(l'arc du 26 juillet EST DÉPLOYÉ — mesuré sur les surfaces servies (l'API publie `actorOrganLabel`, absent du dépôt à `2ce49a3`) ; le sha exact est dans le rapport Replit, jamais ici)*. ~~`2ce49a3`~~ (the Founder deployed it 2026-07-26; Replit's seal report is in that session's
 > transcript — four lanes caught up to the chain head, the BTC.b and WETH.e treasury lines publicly visible
 > and verifiable). **The ONE authority for prod + the deploy backlog is the SESSION_STATE resume block;**
 > every dated block below this one is a historical record, never the current truth — and this header used
