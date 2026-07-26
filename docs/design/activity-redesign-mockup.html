@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>/activity — maquette de refonte · 2026-07-26</title>
+<style>
+/* ════════════════════════════════════════════════════════════════════════════
+   THE REAL TOKENS. Copied verbatim from artifacts/studio/src/index.css as it
+   stands after today's contrast work — so every colour below is the colour that
+   will ship, not an approximation.
+   ════════════════════════════════════════════════════════════════════════════ */
+:root[data-theme="light"]{
+  --bg:hsl(210 40% 98%); --card:hsl(0 0% 100%); --fg:hsl(222 47% 11%);
+  --muted-fg:hsl(215 16% 35%); --border:hsl(214 32% 91%);
+  --gold:hsl(38 74% 32%); --proof:hsl(190 90% 29%); --proof-hover:hsl(190 90% 22%);
+  --row:hsl(0 0% 100%); --chip:hsl(190 90% 29% / .10); --gold-chip:hsl(38 74% 32% / .12);
+  --track:hsl(214 32% 91%);
+}
+:root[data-theme="dark"]{
+  --bg:hsl(222 47% 8%); --card:hsl(222 47% 11%); --fg:hsl(210 40% 98%);
+  --muted-fg:hsl(215 16% 57%); --border:hsl(216 34% 20%);
+  --gold:hsl(38 74% 52%); --proof:hsl(190 90% 50%); --proof-hover:hsl(190 90% 62%);
+  --row:hsl(222 47% 11%); --chip:hsl(190 90% 50% / .15); --gold-chip:hsl(38 74% 52% / .15);
+  --track:hsl(216 34% 20%);
+}
+/* THE TYPE SCALE. --text-body today CAPS at 1315px, which is why a 27-inch
+   screen is served the same size as a 13-inch laptop. The "after" column raises
+   the ceiling so type keeps growing past the laptop point. */
+:root{
+  --body-now:  clamp(1rem, .96rem + .18vw, 1.1rem);   /* caps 17.6px @1315 */
+  --body-next: clamp(1rem, .92rem + .42vw, 1.375rem); /* reaches 22px @2560 */
+  --measure:68ch;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --serif:ui-serif,Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+     -webkit-font-smoothing:antialiased}
+.wrap{padding:clamp(16px,3vw,48px)}
+h1{font-family:var(--serif);font-weight:700;letter-spacing:-.02em;
+   font-size:clamp(1.9rem,1.2rem+2vw,3rem);margin:0 0 .35em}
+h2{font-family:var(--serif);font-weight:700;font-size:clamp(1.35rem,1rem+1vw,2rem);
+   margin:2.5em 0 .2em;letter-spacing:-.01em}
+.lede{color:var(--muted-fg);max-width:var(--measure);font-size:var(--body-next);
+      line-height:1.55;margin:0 0 1.2em}
+.eyebrow{font-family:var(--mono);font-size:.75rem;font-weight:700;text-transform:uppercase;
+         letter-spacing:.2em;color:var(--gold);margin:0 0 .5em}
+.note{color:var(--muted-fg);font-size:.9375rem;line-height:1.6;max-width:var(--measure);margin:.6em 0 1.4em}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:14px;
+       padding:clamp(14px,1.6vw,26px);margin:0 0 18px}
+.split{display:grid;gap:18px;grid-template-columns:1fr}
+@media(min-width:1100px){.split{grid-template-columns:1fr 1fr}}
+.tag{display:inline-block;font-family:var(--mono);font-size:.6875rem;font-weight:700;
+     text-transform:uppercase;letter-spacing:.14em;padding:5px 9px;border-radius:6px;
+     border:1px solid var(--border)}
+.tag.bad{color:#d9534f;border-color:#d9534f66;background:#d9534f14}
+.tag.good{color:var(--proof);border-color:var(--proof);background:var(--chip)}
+/* ── controls ── */
+.bar{position:sticky;top:0;z-index:9;display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+     background:var(--bg);border-bottom:1px solid var(--border);
+     padding:12px clamp(16px,3vw,48px)}
+button{font:inherit;font-size:.875rem;min-height:44px;padding:0 16px;border-radius:10px;
+        border:1px solid var(--border);background:var(--card);color:var(--fg);cursor:pointer}
+button[aria-pressed="true"]{border-color:var(--gold);background:var(--gold-chip);color:var(--gold);font-weight:600}
+button:focus-visible{outline:none;box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--gold)}
+/* ════════════════════════ THE FEED ROW ════════════════════════ */
+.feed{margin:0;padding:0;list-style:none}
+/* ---- BEFORE: one flex-wrap line, 10px apart, amount inside the prose ---- */
+.before .r{display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+           background:var(--row);border:1px solid var(--border);border-radius:12px;
+           padding:11px 13px;margin-bottom:10px}
+.before .s{flex:1;min-width:12rem;font-size:.875rem;line-height:1.625;opacity:.9}
+.before .m{font-family:var(--mono);font-size:.75rem;color:var(--muted-fg)}
+.before .v{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;
+           letter-spacing:.08em;color:var(--proof);opacity:.8;text-decoration:none}
+.before .b{font-family:var(--mono);font-size:.625rem;text-transform:uppercase;letter-spacing:.1em;
+           padding:1px 6px;border-radius:6px;border:1px solid var(--border);color:var(--proof)}
+/* ---- AFTER: a grid. Fixed tracks → the proof link lands at the SAME x on
+       every row, and the prose is bounded by ch, never by the viewport. ---- */
+.after .r{display:grid;gap:6px 22px;align-items:baseline;
+          grid-template-columns:1fr auto;
+          border-bottom:1px solid var(--border);padding:18px 4px}
+.after .r:last-child{border-bottom:0}
+@media(min-width:900px){
+  .after .r{grid-template-columns:106px minmax(0,var(--measure)) 1fr auto;padding:20px 6px}
+}
+.after .s{font-size:var(--body-next);line-height:1.55;max-width:var(--measure)}
+.after .amt{font-family:var(--mono);font-variant-numeric:tabular-nums lining-nums;
+            font-size:1.0625rem;font-weight:600;color:var(--gold);text-align:right;white-space:nowrap}
+.after .meta{font-family:var(--mono);font-size:.8125rem;color:var(--muted-fg);
+             font-variant-numeric:tabular-nums;white-space:nowrap}
+.after .v{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+          min-height:44px;min-width:112px;padding:0 14px;border-radius:10px;
+          border:1px solid var(--proof);background:var(--chip);color:var(--proof);
+          font-family:var(--mono);font-size:.8125rem;font-weight:700;text-transform:uppercase;
+          letter-spacing:.08em;text-decoration:none;transition:color .12s,border-color .12s}
+.after .v:hover{color:var(--proof-hover);border-color:var(--proof-hover)}
+.after .v:focus-visible{outline:none;box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--gold)}
+.after .b{display:inline-flex;align-items:center;font-family:var(--mono);font-size:.75rem;
+          font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:3px 8px;
+          border-radius:6px;border:1px solid var(--border);color:var(--proof);background:var(--chip)}
+.after .b.gold{color:var(--gold);border-color:var(--gold);background:var(--gold-chip)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+/* date groups — real separation, gated on the first, not on :first-child */
+.dg{font-family:var(--mono);font-size:.8125rem;font-weight:600;text-transform:uppercase;
+    letter-spacing:.14em;color:var(--muted-fg);margin:34px 0 10px}
+.dg.first{margin-top:0}
+.before .dg{margin:10px 0 10px}   /* the bug: every group collapses to the row gap */
+/* ════════════════════════ MILESTONES ════════════════════════ */
+.ms-before .lane{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.ms-before .lb{flex:1;min-width:10rem;font-size:.875rem}
+.ms-before .fig{font-family:var(--mono);font-size:.6875rem;color:var(--muted-fg);text-align:right}
+/* display:block is LOAD-BEARING — a <span> is inline and ignores height, which
+   is how the first draft of this mockup rendered every bar as a giant blob. */
+.ms-before .tr{display:block;flex-basis:100%;width:100%;height:3px;border-radius:2px;
+               background:var(--track);overflow:hidden;order:9}
+.ms-before .fl{display:block;height:3px;background:var(--gold);opacity:.5}
+.ms-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr))}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.card .fam{font-family:var(--mono);font-size:.75rem;font-weight:700;text-transform:uppercase;
+           letter-spacing:.14em;color:var(--gold);margin:0 0 10px;display:flex;
+           justify-content:space-between;gap:8px}
+.card .fam span{color:var(--muted-fg);font-weight:500;letter-spacing:.08em}
+.card .row2{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 6px}
+.card .name{font-size:1rem;line-height:1.4}
+.card .num{font-family:var(--mono);font-size:.9375rem;font-weight:600;
+           font-variant-numeric:tabular-nums;white-space:nowrap}
+.card .tr{display:block;width:100%;height:6px;border-radius:99px;background:var(--track);
+          overflow:hidden;box-shadow:inset 0 0 0 1px var(--border);margin:0 0 18px}
+.card .tr:last-child{margin-bottom:0}
+.card .fl{display:block;height:6px;background:var(--gold);border-radius:99px}
+/* Cards hold 1 or 2 milestones; a uniform row keeps the grid honest. */
+.ms-grid{align-items:start}
+.card{display:flex;flex-direction:column}
+.sealed{color:var(--gold)}
+/* ════════════════════════ scale demo ════════════════════════ */
+.scale{display:grid;gap:10px}
+.scale div{display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;
+           border-bottom:1px dashed var(--border);padding-bottom:8px}
+.scale b{font-family:var(--mono);font-size:.75rem;color:var(--muted-fg);min-width:9rem;font-weight:600}
+/* A wide table SCROLLS INSIDE ITS OWN BOX — the page body never scrolls
+   sideways. Caught by the geometry probe: the burn table ran 741px inside a
+   485px panel and pushed the whole document horizontally. */
+.panel table{width:100%;border-collapse:collapse;font-size:.9375rem;min-width:34rem}
+.panel{overflow-x:auto}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;
+   color:var(--muted-fg);font-weight:700}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* THE FLOOR APPLIES TO THIS DOCUMENT'S OWN CHROME. The first draft preached a
+   12px minimum while its own labels sat at 11px. Fixed. */
+.tag{font-size:.75rem}
+.ms-before .fig{font-size:.75rem}
+.scale b{font-size:.75rem}
+/* ⚠ DELIBERATE EXCEPTION — DO NOT "FIX". The 10px strings inside `.before .b`
+   and the "étiquette · aujourd'hui" row ARE the defect being demonstrated: that
+   is today's badge, at today's size. Raising them would delete the very thing
+   this mockup exists to show. A geometry probe flagged them as floor breaches
+   and I almost corrected them — which is why the scope of a check has to be
+   pinned before its result is read (CLAUDE.md, the verification protocol ③). */
+.win{border:1px solid var(--border);border-radius:12px;overflow:hidden;resize:horizontal;
+     min-width:340px;max-width:100%;width:100%;background:var(--card);padding:14px}
+.hint{font-size:.8125rem;color:var(--muted-fg);font-family:var(--mono);margin:.4em 0 1em}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <button id="theme" aria-pressed="false">◐ Thème clair / sombre</button>
+  <button id="wide" aria-pressed="false">↔ Simuler 27 pouces (2560px)</button>
+  <span class="hint" id="w" style="margin:0"></span>
+</div>
+
+<div class="wrap" id="root">
+
+<p class="eyebrow">Maquette · 26 juillet 2026 · à valider avant tout code</p>
+<h1>/activity — pourquoi ça se lit petit, et ce que ça devient</h1>
+<p class="lede">Toutes les données ci-dessous sont les <strong>vraies</strong>, lues sur la production
+il y a quelques minutes. Toutes les couleurs sont les <strong>vrais jetons</strong> du site, après la
+correction de contraste d'aujourd'hui. Rien n'est illustratif.</p>
+
+<!-- ═══════════════════ ① LE DIAGNOSTIC ═══════════════════ -->
+<h2>① Le diagnostic — c'est de l'arithmétique, pas du goût</h2>
+<p class="note">Ton jeton de corps de texte grandit avec l'écran… <strong>mais il plafonne à
+1315&nbsp;px de large.</strong> Au-delà, plus rien ne bouge. Ton 27 pouces reçoit donc exactement la
+même taille qu'un portable 13 pouces, sur une toile deux fois plus large. Et le feed n'utilisait
+même pas ce jeton : il était figé à 14&nbsp;px.</p>
+
+<div class="panel">
+<table>
+  <tr><th>Largeur d'écran</th><th>Aujourd'hui</th><th>Après</th><th>Écart</th></tr>
+  <tr><td>375 px — téléphone</td><td class="n">14,0 px</td><td class="n">16,0 px</td><td class="n">+14 %</td></tr>
+  <tr><td>1280 px — portable</td><td class="n">14,0 px</td><td class="n">18,7 px</td><td class="n">+34 %</td></tr>
+  <tr><td><strong>2560 px — ton écran</strong></td><td class="n">14,0 px</td><td class="n"><strong>22,0 px</strong></td><td class="n"><strong>+57 %</strong></td></tr>
+</table>
+</div>
+
+<div class="panel scale">
+  <div><b>corps · aujourd'hui</b><span style="font-size:.875rem">50.00 USDC est sorti du coffre</span></div>
+  <div><b>corps · après</b><span style="font-size:var(--body-next)">50.00 USDC est sorti du coffre</span></div>
+  <div><b>étiquette · aujourd'hui</b><span style="font-family:var(--mono);font-size:.625rem;text-transform:uppercase;letter-spacing:.1em">treasury</span></div>
+  <div><b>étiquette · après</b><span style="font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.1em">treasury</span></div>
+  <div><b>chiffre · aujourd'hui</b><span style="font-size:.875rem;opacity:.9">0.026551 WETH.e</span></div>
+  <div><b>chiffre · après</b><span style="font-family:var(--mono);font-size:1.0625rem;font-weight:600;color:var(--gold);font-variant-numeric:tabular-nums">0.026551 WETH.e</span></div>
+</div>
+
+<!-- ═══════════════════ ② LA LIGNE ═══════════════════ -->
+<h2>② La ligne du feed — l'objet le plus répété du site</h2>
+<p class="note"><strong>Tire la poignée en bas à droite de chaque cadre</strong> pour élargir, et regarde
+où part le lien de vérification. À gauche il fuit vers le bord ; à droite il reste au même endroit,
+ligne après ligne.</p>
+
+<div class="split">
+  <div>
+    <p><span class="tag bad">Aujourd'hui</span></p>
+    <div class="win before">
+      <p class="dg first">Juillet 2026</p>
+      <ul class="feed">
+        <li class="r"><span class="b">Treasury</span><span class="b" style="color:var(--gold);border-color:var(--gold)">Founder</span>
+          <span class="s">0.026551 WETH.e est entré dans le coffre — inscrit sur la chaîne.</span>
+          <span class="m">2026-07-16 · bloc 90 460 622</span><a class="v" href="#">verify ↗</a></li>
+        <li class="r"><span class="b">Treasury</span><span class="b" style="color:var(--gold);border-color:var(--gold)">Founder</span>
+          <span class="s">50.00 USDC est sorti du coffre — un acte de trésorerie signé par le Founder ; il n'y a pas de mouvements silencieux.</span>
+          <span class="m">2026-07-16 · bloc 90 460 622</span><a class="v" href="#">verify ↗</a></li>
+        <li class="r"><span class="b">Treasury</span><span class="b" style="color:var(--gold);border-color:var(--gold)">Founder</span>
+          <span class="s">0.00077818 BTC.b est entré dans le coffre — inscrit sur la chaîne.</span>
+          <span class="m">2026-07-16 · bloc 90 460 591</span><a class="v" href="#">verify ↗</a></li>
+      </ul>
+      <p class="dg">Juillet 2026 <span style="opacity:.6">← le groupe suivant, écrasé au même écart que les lignes</span></p>
+      <ul class="feed">
+        <li class="r"><span class="b">Treasury</span><span class="b" style="color:var(--gold);border-color:var(--gold)">Founder</span>
+          <span class="s">4 998 500.00 SYN est entré dans le coffre — inscrit sur la chaîne.</span>
+          <span class="m">2026-07-10 · bloc 89 948 243</span><a class="v" href="#">verify ↗</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div>
+    <p><span class="tag good">Proposé</span></p>
+    <div class="win after">
+      <p class="dg first">Juillet 2026</p>
+      <ul class="feed">
+        <li class="r">
+          <span class="chips"><span class="b">Treasury</span><span class="b gold">Founder</span></span>
+          <span class="s">0.026551 WETH.e est entré dans le coffre — inscrit sur la chaîne.</span>
+          <span class="meta">2026-07-16 · bloc 90 460 622</span>
+          <a class="v" href="#">Vérifier ↗</a>
+        </li>
+        <li class="r">
+          <span class="chips"><span class="b">Treasury</span><span class="b gold">Founder</span></span>
+          <span class="s">50.00 USDC est sorti du coffre — un acte de trésorerie signé par le Founder ; il n'y a pas de mouvements silencieux.</span>
+          <span class="meta">2026-07-16 · bloc 90 460 622</span>
+          <a class="v" href="#">Vérifier ↗</a>
+        </li>
+        <li class="r">
+          <span class="chips"><span class="b">Treasury</span><span class="b gold">Founder</span></span>
+          <span class="s">0.00077818 BTC.b est entré dans le coffre — inscrit sur la chaîne.</span>
+          <span class="meta">2026-07-16 · bloc 90 460 591</span>
+          <a class="v" href="#">Vérifier ↗</a>
+        </li>
+      </ul>
+      <p class="dg">Juillet 2026</p>
+      <ul class="feed">
+        <li class="r">
+          <span class="chips"><span class="b">Treasury</span><span class="b gold">Founder</span></span>
+          <span class="s">4 998 500.00 SYN est entré dans le coffre — inscrit sur la chaîne.</span>
+          <span class="meta">2026-07-10 · bloc 89 948 243</span>
+          <a class="v" href="#">Vérifier ↗</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+<table>
+  <tr><th></th><th>Aujourd'hui</th><th>Proposé</th></tr>
+  <tr><td>Longueur de ligne à 2560 px</td><td class="n">≈ 200 caractères</td>
+      <td class="n">≈ 79<br><span style="font-size:.8125rem;color:var(--muted-fg);white-space:normal">
+      Le repère de 80 caractères est <strong>WCAG 2.2 · 1.4.8</strong> — niveau <strong>AAA</strong>,
+      donc une recommandation, <strong>pas une obligation légale</strong> (les lois exigent AA, qui ne
+      dit rien sur la longueur de ligne). J'avais écrit « légal » : c'était faux, corrigé le 26/07.
+      Ce qui reste solide : la recherche de lisibilité place le confort entre 45 et 75 caractères.</span></td></tr>
+  <tr><td>Distance phrase → lien de preuve</td><td class="n">≈ 1 500 px</td><td class="n">position fixe, identique à chaque ligne</td></tr>
+  <tr><td>Zone cliquable du lien</td><td class="n">59 × 16 px</td><td class="n"><strong>112 × 44 px</strong></td></tr>
+  <tr><td>Anneau de focus au clavier</td><td class="n">aucun</td><td class="n">présent — essaie la touche Tab</td></tr>
+  <tr><td>Séparation entre groupes de dates</td><td class="n">écrasée (bug CSS)</td><td class="n">34 px</td></tr>
+  <tr><td>Le montant</td><td class="n">noyé dans la prose à 90 % d'opacité</td><td class="n">colonne propre, chiffres alignés</td></tr>
+</table>
+</div>
+
+<!-- ═══════════════════ ③ LA DÉCISION QUI N'EST PAS À MOI ═══════════════════ -->
+<h2>③ Les phrases — décidé le 26/07 : le montant va dans la colonne</h2>
+<p class="note">Le montant quitte la prose et prend sa propre colonne, alignée sur toutes les lignes.
+Chaque clause de doctrine survit <strong>mot pour mot</strong> ; seul le chiffre se déplace.</p>
+
+<p class="eyebrow" style="margin-top:1.6em">Les brûlages — définis pour tous les cas, pas seulement le nôtre</p>
+<p class="note"><strong>Vérifié sur la chaîne le 26/07 :</strong> 9 brûlages de SYN, <strong>un seul
+expéditeur</strong> — le wallet d'allocation du Founder — pour 31 272 SYN. Autrement dit
+<strong>100 % des brûlages sont le Founder détruisant sa propre part</strong>, pas celle du protocole
+ni celle d'un membre. C'est le signal, il est prouvable, et la phrase doit le dire. L'origine est le
+<code>from</code> du transfert : elle est dans le log, donc lisible <em>aujourd'hui</em>.</p>
+<div class="panel">
+<table>
+  <tr><th style="width:34%">Cas</th><th>La phrase</th><th class="n">Colonne</th></tr>
+  <tr><td><strong>Le Founder, sa propre allocation</strong><br>
+          <span style="color:var(--muted-fg);font-size:.875rem">les 9 cas d'aujourd'hui</span></td>
+      <td>From the Founder's own allocation, retired to the burn address — gone for everyone, forever.</td>
+      <td class="n" style="color:var(--gold);font-weight:600">6,666 SYN</td></tr>
+  <tr><td><strong>Un membre</strong><br>
+          <span style="color:var(--muted-fg);font-size:.875rem">le cas à venir</span></td>
+      <td>From <span class="n" style="color:var(--proof)">0x1234…abcd</span>, retired to the burn address — gone for everyone, forever.</td>
+      <td class="n" style="color:var(--gold);font-weight:600">1,000 SYN</td></tr>
+  <tr><td><strong>Un organe du protocole</strong></td>
+      <td>From the vault, retired to the burn address — gone for everyone, forever.</td>
+      <td class="n" style="color:var(--gold);font-weight:600">1,000 SYN</td></tr>
+  <tr><td><strong>Origine illisible</strong><br>
+          <span style="color:var(--muted-fg);font-size:.875rem">le repli honnête</span></td>
+      <td>Retired to the burn address — gone for everyone, forever.</td>
+      <td class="n" style="color:var(--gold);font-weight:600">1,000 SYN</td></tr>
+</table>
+</div>
+<p class="note">Aujourd'hui la ligne ne dit <strong>jamais à qui</strong> étaient les jetons — or c'est
+exactement l'information qui fait la force du geste.</p>
+
+<p class="eyebrow" style="margin-top:1.6em">La trésorerie — même règle</p>
+<div class="panel">
+<table>
+  <tr><th style="width:34%">Aujourd'hui</th><th>Décidé</th><th class="n">Colonne</th></tr>
+  <tr><td>« <strong>50.00 USDC</strong> est sorti du coffre — un acte de trésorerie signé par le Founder ; il n'y a pas de mouvements silencieux. »</td>
+      <td>Sorti du coffre — un acte de trésorerie signé par le Founder ; il n'y a pas de mouvements silencieux.</td>
+      <td class="n" style="color:var(--gold);font-weight:600">50.00 USDC</td></tr>
+</table>
+</div>
+<p class="note">Toutes les autres phrases (sièges, parrainage, liquidité, NFT, jalons, ères, empreinte)
+sont <strong>inchangées</strong>.</p>
+
+<!-- ═══════════════════ ④ LES JALONS ═══════════════════ -->
+<h2>④ Les jalons — le pire écran de la page</h2>
+<p class="note">Aujourd'hui l'étiquette est à gauche, son chiffre à <strong>l'autre bout de l'écran</strong>
+(≈ 1 900 px sur ton moniteur), avec un filet de 3 px entre les deux. L'œil ne peut pas les relier.</p>
+
+<p><span class="tag bad">Aujourd'hui</span></p>
+<div class="panel ms-before">
+  <div class="lane"><span class="lb">25 sièges scellés</span><span class="fig">14 / 25 sièges</span><span class="tr"><i class="fl" style="width:56%"></i></span></div>
+  <div class="lane"><span class="lb">1 000 $ routés</span><span class="fig">210.00 / 1 000 USDC</span><span class="tr"><i class="fl" style="width:21%"></i></span></div>
+  <div class="lane"><span class="lb">Dix Preuves de Brûlage</span><span class="fig">9 / 10</span><span class="tr"><i class="fl" style="width:90%"></i></span></div>
+  <div class="lane"><span class="lb">50 000 SYN brûlés</span><span class="fig">31 272 / 50 000 SYN</span><span class="tr"><i class="fl" style="width:63%"></i></span></div>
+</div>
+
+<p><span class="tag good">Proposé — chaque famille sa carte, six de front sur ton écran</span></p>
+<div class="ms-grid">
+  <div class="card">
+    <p class="fam">Membership <span class="sealed">2 scellés</span></p>
+    <div class="row2"><span class="name">25 sièges scellés</span><span class="num">14 / 25</span></div>
+    <span class="tr"><i class="fl" style="width:56%"></i></span>
+  </div>
+  <div class="card">
+    <p class="fam">Economy <span class="sealed">1 scellé</span></p>
+    <div class="row2"><span class="name">1 000 $ routés</span><span class="num">210.00 / 1 000</span></div>
+    <span class="tr"><i class="fl" style="width:21%"></i></span>
+  </div>
+  <div class="card">
+    <p class="fam">Fire <span class="sealed">2 scellés</span></p>
+    <div class="row2"><span class="name">Dix Preuves de Brûlage</span><span class="num">9 / 10</span></div>
+    <span class="tr"><i class="fl" style="width:90%"></i></span>
+    <div class="row2"><span class="name">50 000 SYN brûlés</span><span class="num">31 272 / 50 000</span></div>
+    <span class="tr"><i class="fl" style="width:63%"></i></span>
+  </div>
+  <div class="card">
+    <p class="fam">Referral <span class="sealed">1 scellé</span></p>
+    <div class="row2"><span class="name">Cinq sources créées</span><span class="num">3 / 5</span></div>
+    <span class="tr"><i class="fl" style="width:60%"></i></span>
+  </div>
+  <div class="card">
+    <p class="fam">Liquidity <span class="sealed">1 scellé</span></p>
+    <div class="row2"><span class="name">Dix apports de liquidité</span><span class="num">4 / 10</span></div>
+    <span class="tr"><i class="fl" style="width:40%"></i></span>
+  </div>
+  <div class="card">
+    <p class="fam">Archive <span class="sealed">2 scellés</span></p>
+    <div class="row2"><span class="name">25 objets archivés</span><span class="num">17 / 25</span></div>
+    <span class="tr"><i class="fl" style="width:68%"></i></span>
+    <div class="row2"><span class="name">100 $ de mécénat</span><span class="num">35.50 / 100</span></div>
+    <span class="tr"><i class="fl" style="width:35%"></i></span>
+  </div>
+</div>
+<p class="note" style="margin-top:1.2em"><strong>Et une correction de vérité dans la même passe :</strong>
+le code force la barre à <strong>1 % minimum</strong> — donc une valeur à <em>zéro</em> peignait quand
+même ~22 px de doré. Une progression qui n'a pas eu lieu, affirmée en pixels. Une barre à zéro reste
+vide, et la carte le dit en mots.</p>
+
+<!-- ═══════════════════ ⑤ CE QUI NE CHANGE PAS ═══════════════════ -->
+<h2>⑤ Ce qui ne change pas — et pourquoi</h2>
+<div class="panel">
+  <p class="note" style="margin-top:0"><strong>Aucun plafond de largeur sur la page.</strong> La loi plein
+  écran tient : la largeur en plus est dépensée en <em>colonnes de contenu</em>, jamais en marges vides.
+  Seule la <em>phrase</em> est bornée, en caractères — donc elle survit au zoom et à la traduction.</p>
+  <p class="note"><strong>Le rail collant est refusé.</strong> Une des cinq analyses l'a proposé ; il a été
+  rejeté parce qu'il enfreint ta décision de placement du 22 juillet. Les jalons restent
+  <strong>sous</strong> le feed, pleine largeur, comme tu l'as ordonné.</p>
+  <p class="note"><strong>Les deux colonnes d'événements sont refusées</strong> aussi : le plus récent
+  serait en haut à gauche et le suivant en haut à droite. On ne lit pas un registre chronologique en
+  zigzag.</p>
+  <p class="note" style="margin-bottom:0"><strong>Rien de ce qui ressemble à du trading.</strong> Pas de
+  vert-qui-monte, pas de flèches, pas de courbes, pas de confettis, pas de compte à rebours inventé.
+  L'urgence affichée reste celle que la chaîne prouve : « 14 sur 333 sièges pris ».</p>
+</div>
+
+<h2>⑥ Ce que je te demande</h2>
+<div class="panel">
+  <p class="note" style="margin-top:0"><strong>1.</strong> La taille du texte — elle bouge
+  <em>tout le site</em>, pas cette page. 37 titres, 15 corps de texte, 16 autres consommateurs.</p>
+  <p class="note"><strong>2.</strong> Le montant sort-il de la phrase ? (les mots exacts sont en ③)</p>
+  <p class="note"><strong>3.</strong> Le rythme te va-t-il, ou tu le veux plus serré ? Le levier est
+  l'écart entre lignes, jamais la taille du texte.</p>
+  <p class="note" style="margin-bottom:0"><strong>4.</strong> Le siège #333 est annoncé <em>deux fois</em>
+  sur la page, à ≈ 2 400 px d'écart, en deux vocabulaires. Quelle surface le porte : la bande d'ère en
+  haut, ou les jalons en bas ?</p>
+</div>
+
+<p class="note" style="margin-top:2em;font-family:var(--mono);font-size:.8125rem">
+docs/design/activity-redesign-mockup.html · données lues sur thesyndicate.money le 2026-07-26 ·
+jetons copiés de src/index.css après la correction de contraste · polices approchées par la pile
+système (le site utilise Work Sans + un serif + un mono)
+</p>
+
+</div>
+
+<script>
+const root=document.documentElement, wrap=document.getElementById('root');
+const t=document.getElementById('theme'), w=document.getElementById('wide'), lbl=document.getElementById('w');
+function size(){ lbl.textContent='cadre de lecture : '+wrap.getBoundingClientRect().width.toFixed(0)+' px'; }
+t.onclick=()=>{const d=root.getAttribute('data-theme')==='dark';root.setAttribute('data-theme',d?'light':'dark');t.setAttribute('aria-pressed',String(d));};
+w.onclick=()=>{const on=w.getAttribute('aria-pressed')==='true';
+  if(on){wrap.style.width='';wrap.style.transform='';wrap.style.transformOrigin='';}
+  else{wrap.style.width='2560px';const s=Math.min(1,(window.innerWidth-24)/2560);
+       wrap.style.transform='scale('+s+')';wrap.style.transformOrigin='top left';}
+  w.setAttribute('aria-pressed',String(!on)); requestAnimationFrame(size);};
+addEventListener('resize',size); size();
+</script>
+</body>
+</html>

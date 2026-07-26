@@ -181,6 +181,29 @@ to subagents that return synthesis; targeted reads over whole-file reads; ONE
 consolidated docs update per slice; aim right the first time — a correction cycle
 costs real dollars and the weekly quota.
 
+⑤ **THE VERIFICATION PROTOCOL — measure the THING, never a proxy** (founder, 2026-07-26:
+*"apprends de tes erreurs car ça nous coûte cher, des omissions qui sont simplement
+évitables"*). Three sloppy verifications in ONE day, same shape each time — a proxy measured
+and reported as the thing, or a category invented on top of a fact that was itself correct:
+counted HTML **tags** and called a **visual** mockup "structure perfect" (its bars rendered
+as giant blobs); quoted WCAG 1.4.8's 80-character line as a **legal** ceiling when it is
+level **AAA**, a recommendation (legal baselines are AA, silent on line length); queried
+`0x…dEaD` — Avalanche's **universal** burn address — and read the result as **our** burns
+(200 rows of SPORE/BAMBOO from 2021; filtered on our token: **9 burns, one sender**).
+**THE THREE CHECKS, before any claim reaches the founder:**
+① **The thing, not a proxy.** A VISUAL claim needs pixels/geometry (`getBoundingClientRect`,
+overlap + escape checks, `img.decode()` then `naturalWidth` — a fixed sleep is not a decode).
+Never DOM-text presence, never tag counts.
+② **Never upgrade a fact's category.** State the level with the fact: AAA ≠ AA ≠ law;
+recommendation ≠ obligation. The number can be right while the frame is invented — and the
+frame is what he acts on.
+③ **Pin a query's SCOPE before reading its result.** A shared address, symbol or name means
+the answer is probably someone else's. Ask "what would this return if my filter were
+missing?" BEFORE looking, not after.
+**AND THE REPORT SHAPE that prevents it:** say WHAT was measured, AT WHAT SCOPE, and WHAT IT
+DOES NOT COVER — the discipline every guard header already carries. A clean-looking result is
+exactly the moment to ask whether the question was well posed.
+
 ④ **A preview handed to the founder must be VISUALLY COMPLETE** (founder, 2026-07-14):
 every asset loading (DOM-level check — each visible `img` has `naturalWidth > 0`), both
 themes, desktop AND mobile — verified by Claude Code BEFORE handing the URL. A broken
