@@ -10,7 +10,23 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > short form. The served stylesheet carries `--text-body: clamp(1rem, .92rem + .28vw, 1.25rem)` — this arc's
 > token — and the served bundle carries `PublicLayout`'s `text-xs … tracking-[0.08em]`, which exists only
 > after `f94d165`.
-> **THE EXACT SHA IS IN REPLIT'S REPORT, NOT HERE.** What the served surfaces PROVE is a floor: the client
+> **PROD = `27924e5` — AND IT IS A MEASUREMENT, NOT AN INFERENCE.** Replit's seal report closes the gap the
+> served surfaces could not: byte-identity proven TWICE on the live domain — entry `index-CcDTw3m_.js` =
+> local SHA `ad2100cb…`, console `OperatorConsole-B_3htv1Q.js` = `bc84f793…`. 18 commits, 29 files,
+> **29/29 blobs verified byte by byte** at the pull. That is why this line waited for the report instead of
+> naming a sha the served payload could only bracket: client ≥ `f94d165`, api ≥ `52dfd76` was the honest
+> floor, and `27924e5` is the fact.
+> **NOT DEPLOYED, and it does not matter:** the commits above `27924e5` (`8339f4f`, `6d10155`) are docs only
+> — the 11 Chronicle candidates, the CHR-11 backlog row, and this correction. No code is waiting.
+> **REPLIT'S LIVE BATTERY:** 8 public routes 200 · `/studio` 404 · healthz ok · season LIVE 15 standings ·
+> backbone **ok = 2, zero partial, zero failed — a clean first cycle straight from boot, a first** · all 4
+> BTC.b/WETH.e lanes `caughtUp: true` at the head cursor · feed 88 events, 7 treasury moves, server counters
+> equal to items. On screen: the BTC.b and WETH.e vault lines with their VERIFY anchors, and the era band's
+> corrected sentence.
+> **ITS OWN HONEST NOTE, worth keeping:** a capture taken DURING the switch showed the old counters
+> (Treasury 6 / All 99) because the previous instance was still draining. Everything converged after the
+> second engine cycle. Lesson recorded on their side: on-screen proof is taken only after `ok = 2`.
+> **HOW TO CHECK A PROD CLAIM, ever again:** What the served surfaces PROVE is a floor: the client
 > contains at least `f94d165` and the api arc at least `52dfd76`. The commits above those are docs-only or
 > test-side, so no served artifact can distinguish them — writing a precise sha here would be an inference
 > dressed as a measurement, which is the exact sin this line keeps having to fix.
