@@ -318,7 +318,7 @@ export default function MemberAccess() {
                     key={step.title}
                     className="bg-card/40 border-border/50 p-5"
                   >
-                    <p className="font-mono text-xs text-primary/70 mb-2">
+                    <p className="font-mono text-xs text-primary mb-2">
                       {String(i + 1).padStart(2, "0")}
                     </p>
                     <h3 className="text-base font-medium text-foreground mb-1.5">

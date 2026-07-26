@@ -246,7 +246,7 @@ export function SeatFlowDiagram() {
         className="absolute left-1/2 top-[55%] z-30 grid h-[200px] w-[200px] max-w-[66vw] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-gold/32 bg-card/92 px-5 py-5 text-center shadow-[0_0_48px_-30px_hsl(var(--gold)/0.7)] backdrop-blur-md dark:bg-black/78 sm:h-[214px] sm:w-[214px] xl:h-[222px] xl:w-[222px]"
       >
         <div className="max-w-[210px]">
-          <div className="font-mono text-[9px] font-semibold uppercase tracking-[0.22em] text-gold/90 sm:text-[10px]">
+          <div className="font-mono text-[9px] font-semibold uppercase tracking-[0.22em] text-gold sm:text-[10px]">
             {heroSystem.seat.coreLabel}
           </div>
           {displayValue !== null ? (

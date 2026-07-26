@@ -55,7 +55,7 @@ export function LiveEvidencePanel({ nodeId }: { nodeId: string }) {
   return (
     <div className="mt-3" data-testid={`osmap-live-evidence-${nodeId}`}>
       <RealityTable items={items} />
-      <p className="font-mono text-[10px] text-muted-foreground/80 mt-2">
+      <p className="font-mono text-[10px] text-muted-foreground mt-2">
         GET /api/protocol/reality · fetched at page load {fetchedAtText(dataUpdatedAt)}
       </p>
     </div>

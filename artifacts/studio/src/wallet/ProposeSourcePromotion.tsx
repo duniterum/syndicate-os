@@ -351,7 +351,7 @@ export default function ProposeSourcePromotion() {
             href={`${registryUrl.split("/address/")[0]}/tx/${lastTx}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-proof/80 hover:text-proof"
+            className="inline-flex items-center gap-1 text-proof hover:text-proof-hover"
           >
             View the public event <ExternalLink className="h-3 w-3" />
           </a>

@@ -84,7 +84,7 @@ function InspectRail({ className = "" }: { className?: string }) {
       aria-label="Protocol inspect actions"
       className={`flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] ${className}`}
     >
-      <span className="mr-1 text-muted-foreground/80">{heroSystem.inspectRail.lead}</span>
+      <span className="mr-1 text-muted-foreground">{heroSystem.inspectRail.lead}</span>
       {heroSystem.inspectRail.items.map((item) => (
         <Link
           key={item.href}

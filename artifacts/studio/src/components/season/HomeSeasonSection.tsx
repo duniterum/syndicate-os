@@ -208,7 +208,7 @@ export function HomeSeasonSection() {
             <div className="mt-4 flex flex-wrap gap-[26px] border-t border-border pt-[14px]">
               {chapter !== null && (
                 <div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground/70">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                     Runs until
                   </div>
                   <div className="mt-0.5 font-serif text-base text-gold">{chapter.name} seals</div>
@@ -216,7 +216,7 @@ export function HomeSeasonSection() {
               )}
               {seatsLeft !== null && (
                 <div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground/70">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                     Seats left
                   </div>
                   <div className="mt-0.5 text-base">
@@ -226,7 +226,7 @@ export function HomeSeasonSection() {
               )}
               {buildersEarning !== null && (
                 <div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground/70">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                     Builders earning
                   </div>
                   <div className="mt-0.5 text-base">{buildersEarning}</div>

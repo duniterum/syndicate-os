@@ -249,7 +249,7 @@ export default function SystemStatus() {
                   </TableCell>
                   <TableCell className="text-muted-foreground text-sm">
                     <div className="leading-relaxed">{item.note}</div>
-                    <div className="font-mono text-[10px] text-muted-foreground/70 mt-1">
+                    <div className="font-mono text-[10px] text-muted-foreground mt-1">
                       Surface · {item.surface}
                     </div>
                   </TableCell>
@@ -261,7 +261,7 @@ export default function SystemStatus() {
                   </TableCell>
                   <TableCell>
                     <div className="font-mono text-[11px] text-muted-foreground">null</div>
-                    <div className="text-[10px] text-muted-foreground/70 mt-0.5">posture-only</div>
+                    <div className="text-[10px] text-muted-foreground mt-0.5">posture-only</div>
                   </TableCell>
                   <TableCell className="text-right">
                     <PostureBadge posture={item.posture} />

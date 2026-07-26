@@ -271,7 +271,7 @@ function HeroLiveActivity() {
                     href={`${explorerBase}/tx/${line.transactionHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-0.5 text-proof/80 hover:text-proof"
+                    className="inline-flex items-center gap-0.5 text-proof hover:text-proof-hover"
                   >
                     Verify
                     <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />

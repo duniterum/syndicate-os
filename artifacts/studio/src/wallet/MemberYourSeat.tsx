@@ -154,7 +154,7 @@ export default function MemberYourSeat() {
                     href={addrUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-mono text-proof/80 hover:text-proof underline underline-offset-2"
+                    className="font-mono text-proof hover:text-proof-hover underline underline-offset-2"
                   >
                     {shortAddress(address)} ↗
                   </a>
@@ -216,7 +216,7 @@ export default function MemberYourSeat() {
             {/* R-BIND: the founding purchase reopens as its full ticket. */}
             <Link
               href="/receipts"
-              className="inline-flex items-center rounded-md border border-border px-2.5 py-1.5 text-xs text-proof/80 transition-colors hover:border-gold/40 hover:text-proof"
+              className="inline-flex items-center rounded-md border border-border px-2.5 py-1.5 text-xs text-proof transition-colors hover:border-gold/40 hover:text-proof-hover"
               data-testid="link-standing-open-binder"
             >
               Open ticket

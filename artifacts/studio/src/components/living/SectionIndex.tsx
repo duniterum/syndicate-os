@@ -61,7 +61,7 @@ export function SectionIndex({
                   <span
                     className={cn(
                       "font-mono text-[10px] group-hover:text-primary",
-                      isActive ? "text-primary" : "text-muted-foreground/70",
+                      isActive ? "text-primary" : "text-muted-foreground",
                     )}
                   >
                     {String(i + 1).padStart(2, "0")}

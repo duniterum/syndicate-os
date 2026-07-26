@@ -133,7 +133,7 @@ export default function JoinHistoricalGate({
                   href={saleUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-proof/80 transition-colors hover:text-proof"
+                  className="inline-flex items-center gap-1 text-proof transition-colors hover:text-proof-hover"
                 >
                   verify the sale contract
                   <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />

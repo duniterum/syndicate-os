@@ -50,7 +50,7 @@ export function ReferralOverviewPanel({ readback }: { readback: StandingReadback
         )}
         <Link
           href="/referral/ladder"
-          className="inline-flex items-center mt-2 text-sm text-proof hover:text-proof/80 underline underline-offset-2"
+          className="inline-flex items-center mt-2 text-sm text-proof hover:text-proof-hover underline underline-offset-2"
         >
           Full ladder &amp; recognition →
         </Link>

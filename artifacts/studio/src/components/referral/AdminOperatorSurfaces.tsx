@@ -233,7 +233,7 @@ export function BroadcastPanel() {
                   </div>
                   <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{n.body}</p>
                   {dest !== null && (
-                    <p className="text-[11px] text-muted-foreground/80 mt-1">↳ opens {dest}</p>
+                    <p className="text-[11px] text-muted-foreground mt-1">↳ opens {dest}</p>
                   )}
                 </div>
               );

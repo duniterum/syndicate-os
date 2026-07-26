@@ -23,7 +23,7 @@ export default function Learning() {
         {learningModules.map((m) => (
           <Card key={m.id} className="bg-card/40 border-border/50 p-6">
             <h3 className="text-base font-medium text-foreground mb-1">{m.title}</h3>
-            <p className="text-sm text-primary/90 mb-4">{m.summary}</p>
+            <p className="text-sm text-primary mb-4">{m.summary}</p>
             <ul className="space-y-2.5">
               {m.topics.map((t) => (
                 <li key={t} className="flex items-start gap-3 text-sm text-muted-foreground leading-relaxed">
@@ -51,7 +51,7 @@ export default function Learning() {
                   <span className="grid h-6 w-6 place-items-center rounded-full border border-border font-mono text-[11px] text-primary shrink-0">
                     {i + 1}
                   </span>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary/80">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">
                     {step.verb}
                   </span>
                 </div>

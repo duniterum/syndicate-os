@@ -24,9 +24,26 @@ const TONE: Record<StatusTone, string> = {
   neutral: "bg-muted text-muted-foreground border-border",
 };
 
+// THE READABILITY FLOOR (ADR-001 amendment 2026-07-16 §4 — "RIEN d'utilisateur-visible
+// sous 12px", which bans the arbitrary 9px / 10px / 11px font sizes outright; applied
+// to this atom 2026-07-26). The literals are spelled out in words here on purpose: the
+// guard §4 promises must strip comments, and a rule should never be undocumentable.
+// The defect: both sizes CAPPED below the floor. "xs" rendered 9px, widening only to
+// 10px at the sm breakpoint; "sm" rendered 10px under 640px. Because the sub-floor value
+// was the MAX of a responsive pair — not a mobile-only compromise widened later — a
+// 2560px monitor was still served 10px, forever. This atom carries the /activity feed's
+// kind badge, once per row, which makes 9px the most repeated string on the site.
+// The fix is a real scale step, not another arbitrary size: both variants now sit ON the
+// 12px floor (text-xs, which also owns a 1rem line box) and separate by SHAPE instead of
+// by an illegal type step — "sm" keeps the roomier gutters, "xs" stays the compact
+// uppercase chip (tighter gutters, wider tracking, its 16px line box pinned so the
+// bordered pill still reads as a chip and not as a button).
+// Geometry moved (measured, borders included): "sm" is unchanged at >=640px (22px box —
+// text-xs was already its desktop value) and grows 18px -> 22px under 640px, which IS the
+// fix; "xs" grows 18px -> 20px at every width.
 const SIZE: Record<StatusSize, string> = {
-  sm: "text-[10px] sm:text-xs px-2 py-0.5",
-  xs: "text-[9px] sm:text-[10px] uppercase tracking-wider px-1.5 py-0 leading-4",
+  sm: "text-xs px-2 py-0.5",
+  xs: "text-xs uppercase tracking-wider px-1.5 py-px leading-4",
 };
 
 interface StatusPillProps {

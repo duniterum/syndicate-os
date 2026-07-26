@@ -527,7 +527,7 @@ export default function ProposeSourceCreate() {
               href={TERMS_CANONICAL_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-xs text-proof/80 hover:text-proof transition-colors"
+              className="inline-flex items-center gap-1 text-xs text-proof hover:text-proof-hover transition-colors"
             >
               {TERMS_CANONICAL_URL} <ExternalLink className="h-3 w-3" />
             </a>
@@ -646,7 +646,7 @@ export default function ProposeSourceCreate() {
           href={`${explorerBase}/tx/${lastTx}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-xs text-proof/80 hover:text-proof transition-colors"
+          className="inline-flex items-center gap-1 text-xs text-proof hover:text-proof-hover transition-colors"
         >
           Last signed transaction: {shortHash(lastTx)} <ExternalLink className="h-3 w-3" />
         </a>
@@ -856,7 +856,7 @@ function StateAndAction({
             type="button"
             onClick={() => setRevokeOpen(true)}
             disabled={busy !== null || !signingReady}
-            className="text-xs text-destructive/80 hover:text-destructive underline underline-offset-2 disabled:opacity-50"
+            className="text-xs text-destructive hover:decoration-2 underline underline-offset-2 disabled:opacity-50"
             data-testid="button-open-revoke-paused"
           >
             Revoke this source — permanent
@@ -884,7 +884,7 @@ function StateAndAction({
             href={`${explorerBase}/address/${registryAddr}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs text-proof/80 hover:text-proof transition-colors"
+            className="inline-flex items-center gap-1 text-xs text-proof hover:text-proof-hover transition-colors"
           >
             Verify on the registry <ExternalLink className="h-3 w-3" />
           </a>
@@ -934,7 +934,7 @@ function StateAndAction({
               type="button"
               onClick={() => setRevokeOpen(true)}
               disabled={busy !== null || !signingReady}
-              className="text-xs text-destructive/80 hover:text-destructive underline underline-offset-2 disabled:opacity-50"
+              className="text-xs text-destructive hover:decoration-2 underline underline-offset-2 disabled:opacity-50"
               data-testid="button-open-revoke"
             >
               Revoke this source — permanent

@@ -75,7 +75,7 @@ function IntroductionRowsCard() {
                       href={r.explorerUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex font-mono text-xs text-proof/80 hover:text-proof underline underline-offset-2"
+                      className="inline-flex font-mono text-xs text-proof hover:text-proof-hover underline underline-offset-2"
                     >
                       verify ↗
                     </a>

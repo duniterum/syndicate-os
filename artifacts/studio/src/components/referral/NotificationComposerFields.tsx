@@ -40,7 +40,7 @@ export function NotificationComposerFields({
     <div className="space-y-3">
       <div>
         <div className="mb-1.5 text-xs text-muted-foreground">
-          Icon <span className="text-muted-foreground/70">(optional)</span>
+          Icon <span className="text-muted-foreground">(optional)</span>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {NOTIFICATION_ICON_PALETTE.map((key) => {
@@ -81,7 +81,7 @@ export function NotificationComposerFields({
 
       <div>
         <div className="mb-1.5 text-xs text-muted-foreground">
-          Opens <span className="text-muted-foreground/70">(optional)</span>
+          Opens <span className="text-muted-foreground">(optional)</span>
         </div>
         <Select
           value={value.link ?? NO_DEST}

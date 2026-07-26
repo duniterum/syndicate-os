@@ -105,7 +105,7 @@ function SealedRow({
           href={`${explorerBase}/tx/${m.transactionHash}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-proof/80 hover:text-proof"
+          className="inline-flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-proof hover:text-proof-hover"
         >
           verify <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
         </a>

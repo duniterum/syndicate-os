@@ -78,7 +78,7 @@ export function MemberPulse() {
                     href={`${explorerBase}/tx/${line.transactionHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-0.5 text-proof/80 hover:text-proof"
+                    className="inline-flex items-center gap-0.5 text-proof hover:text-proof-hover"
                     title="Open the transaction on the block explorer"
                   >
                     verify

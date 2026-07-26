@@ -101,7 +101,7 @@ export function RealityTable({ items }: { items: ProtocolRealityItem[] }) {
                 <div className="text-[11px] text-muted-foreground mt-1">
                   Confidence · {confidenceText[item.confidence] ?? item.confidence}
                 </div>
-                <div className="text-[11px] text-muted-foreground/80 mt-1 leading-snug">{item.note}</div>
+                <div className="text-[11px] text-muted-foreground mt-1 leading-snug">{item.note}</div>
               </TableCell>
               <TableCell className="text-right">
                 <LifecycleBadge lifecycle={item.lifecycle} />

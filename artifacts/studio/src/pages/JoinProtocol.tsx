@@ -299,7 +299,7 @@ function AddressProof({ url }: { url: string }) {
       target="_blank"
       rel="noopener noreferrer"
       title={`${addr} — open in block explorer`}
-      className="inline-flex items-center gap-1 font-mono text-[10px] text-proof/80 transition-colors hover:text-proof"
+      className="inline-flex items-center gap-1 font-mono text-[10px] text-proof transition-colors hover:text-proof-hover"
     >
       {short}
       <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
@@ -364,7 +364,7 @@ function SourcePaymentLine({
     return (
       <div className="flex items-baseline justify-between gap-3 text-sm pb-3 mb-3 border-b border-border/40">
         <span className="text-muted-foreground">
-          Paid to your referrer <span className="text-[11px] text-muted-foreground/70">{pct}</span>
+          Paid to your referrer <span className="text-[11px] text-muted-foreground">{pct}</span>
         </span>
         <span className="flex items-baseline gap-3">
           <span className="tabular-nums text-foreground" data-testid="source-amount">
@@ -447,7 +447,7 @@ function MoneyPath({
           ].map((r) => (
             <div key={r.label} className="flex items-baseline justify-between gap-3 text-sm">
               <span className="text-muted-foreground">
-                {r.label} <span className="text-[11px] text-muted-foreground/70">{r.pct}</span>
+                {r.label} <span className="text-[11px] text-muted-foreground">{r.pct}</span>
               </span>
               <span className="flex items-baseline gap-3">
                 <span className="tabular-nums text-foreground">
@@ -575,7 +575,7 @@ function QuotePanel({
           <div>synPerUsdcRaw {q.synPerUsdcRaw}</div>
           <div>era {q.era}</div>
           {floorRaw !== null ? <div>minSynOut · 0.5% tolerance {floorRaw}</div> : null}
-          <div className="pt-1 font-sans text-muted-foreground/70">
+          <div className="pt-1 font-sans text-muted-foreground">
             Exact strings from the engine's public quote view · formatted values
             are client-side projections of the raw string · as of{" "}
             {new Date(data.asOf).toISOString().slice(0, 19).replace("T", " ")} UTC

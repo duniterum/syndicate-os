@@ -92,7 +92,7 @@ export default function MemberRecentActivity() {
                   the ticket". */}
               <Link
                 href={`/receipts?tx=${r.transaction}`}
-                className="text-proof/80 hover:text-proof underline underline-offset-2 text-xs"
+                className="text-proof hover:text-proof-hover underline underline-offset-2 text-xs"
               >
                 receipt
               </Link>
@@ -125,7 +125,7 @@ export default function MemberRecentActivity() {
       )}
       <p className="mt-3 text-xs text-muted-foreground leading-snug border-t border-border/40 pt-2">
         Every purchase reopens as its full ticket in{" "}
-        <Link href="/receipts" className="text-proof/80 hover:text-proof underline underline-offset-2">
+        <Link href="/receipts" className="text-proof hover:text-proof-hover underline underline-offset-2">
           your binder
         </Link>
         .

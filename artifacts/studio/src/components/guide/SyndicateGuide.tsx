@@ -276,7 +276,7 @@ export function SyndicateGuide() {
                   }}
                   placeholder="Ask about seats, routing, risk…"
                   aria-label="Search the FAQ"
-                  className="w-full flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/60"
+                  className="w-full flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
                 />
               </label>
             </div>

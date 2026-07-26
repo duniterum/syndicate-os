@@ -169,7 +169,7 @@ function Wordmark() {
         <span className="whitespace-nowrap text-[1.02rem] font-semibold uppercase tracking-[0.18em] text-foreground sm:text-[1.14rem] 2xl:text-[1.26rem]">
           {brand.name}
         </span>
-        <span className="mt-1 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.3em] text-gold/90 sm:text-[11px]">
+        <span className="mt-1 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.3em] text-gold sm:text-[11px]">
           {brand.descriptor}
         </span>
       </span>
@@ -270,7 +270,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                           }`}
                         >
                           <span>{item.label}</span>
-                          <span className="font-mono text-[11px] text-muted-foreground/60">{item.path}</span>
+                          <span className="font-mono text-[11px] text-muted-foreground">{item.path}</span>
                         </Link>
                       </DropdownMenuItem>
                     ))}

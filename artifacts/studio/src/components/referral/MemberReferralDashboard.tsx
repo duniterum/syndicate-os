@@ -120,9 +120,22 @@ function ReferralFigures({ readback }: { readback: StandingReadback | null }) {
       href={ownAddressUrl}
       target="_blank"
       rel="noopener noreferrer"
-      // The one verify idiom (harmony rule #6): rest text-proof/80, hover
-      // text-proof — brighten on approach, same polarity as every register.
-      className="font-mono text-xs text-proof/80 hover:text-proof underline underline-offset-2"
+      // THE ONE VERIFY IDIOM (harmony rule #6, RATIONALISED 2026-07-26 on the
+      // founder's order — "ce n'est pas une loi figée"): rest `text-proof`,
+      // hover `text-proof-hover`.
+      // The rule's INTENT was always right — "more present on approach, same
+      // polarity as every register". Its MECHANISM was a workaround: the cyan
+      // ramp had exactly ONE step, so the only way to create a hover delta was
+      // to WEAKEN the rest state with `/80` — which left the state a reader must
+      // READ at 3.55:1, under the 4.5:1 minimum, while the state they were
+      // already pointing at was fine. Backwards, and only because the token did
+      // not exist. Now it does (index.css `--proof-hover`, per theme).
+      // THE RULE, generalised: A STATE CHANGE ADDS CONTRAST — it never subtracts
+      // legibility, because an opacity modifier can only ever subtract. In the
+      // light theme "more present" means DARKER (brightening a cyan on a
+      // near-white card measures 2.99:1 and is illegal); in the dark theme it
+      // means BRIGHTER. Measured: rest 5.27 light / 9.31 dark, hover 7.83 / 10.56.
+      className="font-mono text-xs text-proof hover:text-proof-hover underline underline-offset-2"
     >
       verify ↗
     </a>

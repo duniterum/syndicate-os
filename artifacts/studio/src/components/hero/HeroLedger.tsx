@@ -149,7 +149,7 @@ export function HeroLedger() {
         </div>
         <div className="mt-3 text-center text-xs text-muted-foreground">
           Gross inflows are cumulative and <span className="font-semibold text-viz-4">never decrease.</span>
-          <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70">{VERIFY_SLOGAN}</span>
+          <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{VERIFY_SLOGAN}</span>
         </div>
       </motion.section>
 
@@ -215,7 +215,7 @@ export function HeroLedger() {
           {heroSystem.routing.allocation.map((a) => (
             <div key={a.id} className="rounded-lg border border-border bg-background/45 px-3 py-1.5 text-[10px] leading-snug text-muted-foreground dark:border-white/10 dark:bg-white/[0.02]">
               <span className="font-semibold uppercase tracking-[0.08em] text-foreground/80">{a.label}</span>
-              <span className="mx-1.5 text-muted-foreground/60">→</span>
+              <span className="mx-1.5 text-muted-foreground">→</span>
               {a.text}
             </div>
           ))}

@@ -162,7 +162,7 @@ export default function SeasonStandingCard() {
       ) : (
         <div className="mt-3 flex flex-wrap gap-x-[22px] gap-y-2">
           <div>
-            <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground/70">
+            <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground">
               Your XP
             </div>
             <div className="mt-0.5 text-[17px] text-primary tabular-nums">
@@ -170,14 +170,14 @@ export default function SeasonStandingCard() {
             </div>
           </div>
           <div>
-            <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground/70">
+            <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground">
               Your rank
             </div>
             <div className="mt-0.5 text-[17px] text-gold">{rankLabel}</div>
           </div>
           {axisNames !== "" && (
             <div>
-              <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground/70">
+              <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground">
                 Your axes
               </div>
               <div className="mt-0.5 text-[15px] text-foreground">{axisNames}</div>
@@ -185,7 +185,7 @@ export default function SeasonStandingCard() {
           )}
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground/70">
+              <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted-foreground">
                 Season pot
               </span>
               <LifecycleBadge lifecycle="FUTURE" />

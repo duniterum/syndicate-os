@@ -96,7 +96,7 @@ export function BusinessBand({
         href={saleVerifyUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="font-mono text-proof/80 hover:text-proof underline underline-offset-2"
+        className="font-mono text-proof hover:text-proof-hover underline underline-offset-2"
       >
         verify ↗
       </a>

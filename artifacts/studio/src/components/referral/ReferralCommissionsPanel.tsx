@@ -233,7 +233,7 @@ function MoneyRow({
     >
       <span className="text-muted-foreground">
         {label}
-        {calc ? <span className="text-xs text-muted-foreground/75"> {calc}</span> : null}
+        {calc ? <span className="text-xs text-muted-foreground"> {calc}</span> : null}
       </span>
       <span className={valueClass}>{value}</span>
     </div>
@@ -364,7 +364,7 @@ function CommissionReceipt({ row }: { row: OwnIntroductionRowReadback }) {
               href={row.explorerUrl}
               target="_blank"
               rel="noreferrer"
-              className="ml-auto font-mono text-xs text-proof/80 hover:text-proof underline underline-offset-2"
+              className="ml-auto font-mono text-xs text-proof hover:text-proof-hover underline underline-offset-2"
               data-testid={`link-commission-verify-${row.transaction.slice(2, 10)}`}
             >
               Verify on Snowtrace ↗

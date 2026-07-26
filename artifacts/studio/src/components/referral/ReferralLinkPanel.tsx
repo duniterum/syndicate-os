@@ -378,7 +378,7 @@ export function ReferralLinkPanel({ readback }: { readback: StandingReadback | n
             href="/referral-program-terms-v1.txt"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-proof/80 hover:text-proof underline underline-offset-2"
+            className="text-proof hover:text-proof-hover underline underline-offset-2"
           >
             Member Referral Program Terms (v1)
           </a>

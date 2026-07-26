@@ -59,7 +59,7 @@ export default function Docs() {
                       {i + 1}
                     </span>
                     <span className="text-sm font-medium text-foreground">{step.label}</span>
-                    <span className="hidden font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70 sm:inline">
+                    <span className="hidden font-mono text-[10px] uppercase tracking-widest text-muted-foreground sm:inline">
                       {getRouteLabel(entry)}
                     </span>
                   </Link>

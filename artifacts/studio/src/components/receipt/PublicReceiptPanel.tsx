@@ -173,7 +173,7 @@ export function PublicReceiptPanel({ txHash }: { txHash: string }) {
             href={explorerTxUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 font-mono text-xs text-proof/80 hover:text-proof underline underline-offset-2 mt-3"
+            className="inline-flex items-center gap-1 font-mono text-xs text-proof hover:text-proof-hover underline underline-offset-2 mt-3"
             data-testid="link-unknown-verify"
           >
             Verify on the explorer

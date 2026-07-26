@@ -47,6 +47,18 @@
   --color-identity-foreground: hsl(var(--gold-foreground));
   --color-live: hsl(var(--live));
   --color-proof: hsl(var(--proof));
+  /* THE MISSING RAMP STEP (2026-07-26). The verify idiom was written as
+     "rest text-proof/80, hover text-proof — brighten on approach" because the
+     cyan ramp had exactly ONE step, so the only way to create a hover delta was
+     to WEAKEN the rest state — which put the state a user must READ at 3.55:1,
+     under the 4.5:1 minimum, while the state they were already pointing at was
+     fine. The intent was right; the mechanism was a workaround for this token
+     not existing. Now it does: rest carries the full token, and approach ADDS
+     contrast against the ground — DARKER in light, BRIGHTER in dark. Both read
+     "more present"; measured 7.83:1 light and 10.56:1 dark, i.e. AAA on both.
+     THE RULE THIS ENCODES: a state change ADDS contrast. It never subtracts
+     legibility — an opacity modifier can only ever subtract. */
+  --color-proof-hover: hsl(var(--proof-hover));
   --color-warning: hsl(var(--warning));
   --color-success: hsl(var(--success));
   --color-avax: hsl(var(--avax));
@@ -80,23 +92,85 @@
   --popover: 0 0% 100%;
   --popover-foreground: 222 47% 11%;
   --popover-border: 214 32% 91%;
-  --cyan-500: 190 90% 40%;
+  /* CONTRAST — WCAG AA on the LIGHT theme, which ADR-001 §2 names as the DEFAULT.
+     Measured 2026-07-26 (sRGB relative luminance, WCAG 2.x): the old 190 90% 40%
+     put every text-primary / text-proof / text-live string — the "verify" link, the
+     feed's proof badge — at 2.98:1 on --card and 2.85:1 on --background, and at
+     2.68:1 inside a StatusPill, whose text sits on a 10%-alpha tint of ITSELF over
+     the card. AA needs 4.5:1 at the 12px these carry. Hue and saturation are held
+     EXACTLY (190 / 90%) — only LIGHTNESS moves, so the brand cyan stays the brand
+     cyan and simply reads as a deeper teal in light mode. 29% measures 5.25:1 on
+     --card, 5.02:1 on --background, 4.58:1 on the tinted pill. It also repairs the
+     primary button, where white (--primary-foreground) on the cyan fill was itself
+     failing at 2.98:1 and is now 5.25:1. The .dark ramp is deliberately NOT touched:
+     its 190 90% 50% already measures 10.01:1 on the dark card. */
+  --cyan-500: 190 90% 29%;
   --primary: var(--cyan-500);
   --primary-foreground: 0 0% 100%;
   --secondary: 210 40% 96%;
   --secondary-foreground: 222 47% 11%;
   --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
+  /* CONTRAST (2026-07-26, second pass) — the site's most-used text colour (959 sites).
+     At 47% it measured 4.72:1 on --card and 4.51:1 on --background but only 4.30:1 on
+     --muted itself (StatusPill tone=neutral + every bg-muted panel): full strength on a
+     tinted ground, 0.2 short. 45% is the SMALLEST nudge that clears it — 46% measures
+     4.45:1 on --muted and still fails. Measured at 45%: 5.07:1 on --card · 4.84:1 on
+     --background · 4.62:1 on --muted. Hue 215 and saturation 16% held exactly.
+     THE FOREGROUND IS THE RIGHT LEVER, not the ground: lifting --muted (96% → 98%)
+     would also clear the pair, but --background is already 98%, so muted panels would
+     stop reading as panels at all. The .dark ramp defines its own --muted-foreground
+     (56.9%, measuring 5.38:1 on dark --muted) and is untouched. */
+  --muted-foreground: 215 16% 45%;
   --accent: 210 40% 96%;
   --accent-foreground: 222 47% 11%;
-  --destructive: 0 84% 60%;
+  /* CONTRAST (2026-07-26, second pass) — the status-role ramps below never got the
+     lightness pass that cyan and gold got that morning; same defect, one slice behind.
+     --destructive is the widest (58 sites of error copy). At 0 84% 60% it measured
+     3.78:1 on --card, 3.32:1 on the StatusPill tone=danger chip, and — worst — white
+     (--destructive-foreground) on the destructive BUTTON's own fill at 3.61:1, so the
+     control failed at its most decisive moment. 45% is the MINIMUM that clears the
+     tinted chip (46% measures 4.42:1 there and still fails). Hue 0 and saturation 84%
+     held exactly; only LIGHTNESS moves. Measured at 45%: 5.42:1 on --card · 4.57:1 on
+     chip-danger · 5.18:1 for white-on-fill. (text-destructive/80 rises 3.00 → 4.29:1;
+     that last 0.2 is the opacity MODIFIER's debt, not the ramp's — it clears the moment
+     the markup drops the /80.) The .dark ramp needed the opposite move: see .dark. */
+  --destructive: 0 84% 45%;
   --destructive-foreground: 210 40% 98%;
-  --gold-500: 38 74% 44%;
+  /* CONTRAST — same 2026-07-26 measurement, same discipline (hue 38 and saturation
+     74% held exactly; only LIGHTNESS moves). The old 38 74% 44% put every text-gold /
+     text-identity string at 3.10:1 on --card and 2.96:1 on --background, 2.81:1 as a
+     tinted StatusPill, and white (--gold-foreground) on a bg-gold fill at 3.10:1 —
+     all short of the 4.5:1 AA needs at 12px. In light mode the accent reads bronzer
+     than before; that is the price of AA at 12px on a near-white card.
+     REFINED 32% → 30% (2026-07-26, second pass): 32% cleared --card but left the TWO
+     THREE-LAYER surfaces short — the /activity Founder chip (gold/15 inside a card/40
+     row) at 4.29:1 and text-gold/90 at 4.39:1. 30% is the MINIMUM that clears the
+     founder chip: 31% measures 4.49:1 there, which still fails. Measured at 30%:
+     5.96:1 on --card · 5.69:1 on --background · 5.18:1 on the tinted pill · 4.70:1 on
+     the founder chip · 4.79:1 for text-gold/90 · 5.96:1 white-on-fill.
+     The .dark ramp is deliberately NOT touched: its 42 92% 60% already measures
+     11.37:1 on the dark card and 9.02:1 on the founder chip. */
+  --gold-500: 38 74% 30%;
   --gold: var(--gold-500);
   --gold-foreground: 0 0% 100%;
   --identity: var(--gold-500);
   --live: var(--cyan-500);
   --proof: var(--cyan-500);
+  /* Approach = MORE contrast against the ground. In the light theme that means
+     DARKER: on a near-white card, brightening a cyan makes it recede (29% → 40%
+     measures 2.99:1 and is illegal), which is exactly the trap the old
+     opacity idiom fell into. Measured 7.83:1 here. */
+  --proof-hover: 190 90% 22%;
+  /* --gold-metal — the DECORATIVE gold, split off from --gold-500 on 2026-07-26 when
+     that token was retuned for TEXT contrast (above). The S2c medallions, the pot
+     frame and the podium glow use gold as a gradient mid-stop and as a glow, never as
+     ink, so they must NOT ride the darkening: at the text-tuned lightness (32% on the
+     first pass, 30% since the second) the mid-stop would have sat DARKER than the
+     --gold-deep 42% rim, inverting the struck-metal shading in light mode, and the
+     outer "glow" would have read as a shadow on a light surface. This
+     token carries each theme's PREVIOUS --gold-500 value, so the approved medal/pot
+     craft renders exactly as it did before. Decorative only — never put text on it. */
+  --gold-metal: 38 74% 44%;
   /* S2c podium metals (§9 craft, approved seasons mockups — struck-metal
      medallions; theme-independent, same values both themes). */
   --gold-hi: 45 95% 74%;
@@ -108,10 +182,20 @@
   --bronze: 28 55% 52%;
   --bronze-deep: 26 50% 36%;
   /* Caution/attention — amber, deliberately hue-shifted off gold so a "caution"
-     status pill never reads as an "identity" (gold) one. */
-  --warning: 32 90% 42%;
-  /* Success/positive — green (live / ok / gross grows), a distinct status role. */
-  --success: 158 64% 40%;
+     status pill never reads as an "identity" (gold) one.
+     CONTRAST (2026-07-26, second pass): 42% measured 3.53:1 on --card and 3.16:1 on the
+     /activity burn badge (warning/10 over the card). 33% is the MINIMUM that clears the
+     tinted badge — 34% measures 4.45:1 there and still fails. Hue 32 and saturation 90%
+     held exactly. Measured at 33%: 5.34:1 on --card · 4.66:1 on chip-warning.
+     .dark defines its own 36 95% 60% (10.11:1 / 7.82:1) and is untouched. */
+  --warning: 32 90% 33%;
+  /* Success/positive — green (live / ok / gross grows), a distinct status role.
+     CONTRAST (2026-07-26, second pass): 40% measured 3.05:1 on --card and 2.75:1 on the
+     hero + admin status chips (success/10 over the card, no dark override). 29% is the
+     MINIMUM that clears the chip — 30% measures 4.43:1 there and still fails. Hue 158
+     and saturation 64% held exactly. Measured at 29%: 5.34:1 on --card · 4.66:1 on
+     chip-success. .dark defines its own 158 64% 46% (8.27:1 / 7.21:1) and is untouched. */
+  --success: 158 64% 29%;
   /* Avalanche network brand color (was #e84142) — the AVAX chain indicator ONLY. */
   --avax: 0 79% 58%;
   /* Command-room near-black surface (was #080b11 / #05070b / #030609). */
@@ -149,9 +233,45 @@
   --ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
   /* Density. */
   --density-row: 2.75rem; --density-row-compact: 2.25rem;
-  /* Data-viz palette (categorical, distinct hues; refine for contrast/colorblind later). */
-  --viz-1: 190 85% 45%; --viz-2: 42 90% 55%; --viz-3: 265 70% 62%;
-  --viz-4: 158 64% 45%; --viz-5: 12 78% 60%; --viz-6: 220 70% 58%;
+  /* Data-viz palette — CATEGORICAL (six distinguishable hues, one per asset/route).
+     CONTRAST (2026-07-26, second pass). The "refine for contrast later" note that used
+     to sit here is now done, and it was NOT a single sweep to 4.5:1: these six are not
+     all text, and the palette's whole job is to stay six DISTINGUISHABLE hues. Forcing
+     every one to 4.5:1 on a near-white card collapses them toward each other and toward
+     --primary/--gold — so each token was classified by reading its call sites and given
+     the threshold WCAG actually asks of it. Hue and saturation held exactly throughout;
+     only LIGHTNESS moves.
+       viz-1  45% → 40%  NEEDS 3:1 (SC 1.4.11 / large text). Largest rendered use is the
+              routed-ratio figure at text-2xl font-black = 24px (HeroLedger.tsx:180) and
+              the stat figure at text-xl font-black = 20px/900 (ProtocolOverviewPanel
+              .tsx:121) — both LARGE text; the rest are 16px icons (ProtocolAssetsCard
+              .tsx:302) and donut/bar geometry. 2.47:1 failed even that bar. Now 3.10:1.
+              NOT taken to 4.5:1 on purpose: that needs 32%, which lands on --primary
+              (190 90% 29%) and destroys the categorical read.
+       viz-2  55% UNCHANGED at 1.82:1. It is NEVER rendered as text — its only uses are a
+              16px row icon that sits beside its own text label ("Vault BTC.b", so the
+              icon is redundant and exempt) and donut/band FILLS, whose 3:1 is owed
+              against ADJACENT SERIES, not against the card. Darkening a yellow 15 points
+              to satisfy a threshold that does not apply would wreck the palette for no
+              legal gain. Left measured rather than "fixed".
+       viz-3  62% → 61%  NEEDS 4.5:1: the route ratio "10%" renders at text-sm (14px)
+              font-black inheriting this colour (SeatFlowDiagram.tsx:318) — normal text.
+              4.37:1 → 4.56:1. One point.
+       viz-4  45% → 32%  NEEDS 4.5:1 and is the only one that is unambiguously PROSE:
+              "never decrease." at 12px semibold inside a text-xs sentence
+              (HeroLedger.tsx:151) plus a 14px/900 count (:133). 2.43:1 → 4.54:1.
+       viz-5  60% UNCHANGED at 3.19:1 — NEEDS 3:1 (the burn figure is 20px/900 large text;
+              the rest are icons and a band fill). Already passes; no change owed.
+       viz-6  58% → 55%  NEEDS 4.5:1: the LP-reserves figure renders at text-sm (14px)
+              — the one stat the panel drops to normal size (ProtocolOverviewPanel
+              .tsx:121) — plus the "20%" route ratio. 4.06:1 → 4.55:1.
+     KNOWN, PRE-EXISTING: --viz-4 and --success share hue 158 AND saturation 64%, so the
+     white-card constraint pushes both into the same corner (32% vs 29%). They were 5
+     points apart before this pass and are 3 apart after; separating them needs a HUE
+     move, which this pass is not authorised to make.
+     .dark defines its own brighter six (6.53:1–11.66:1) and is untouched. */
+  --viz-1: 190 85% 40%; --viz-2: 42 90% 55%; --viz-3: 265 70% 61%;
+  --viz-4: 158 64% 32%; --viz-5: 12 78% 60%; --viz-6: 220 70% 55%;
 }
 
 .dark {
@@ -167,6 +287,11 @@
   --popover-foreground: 215 20.2% 65.1%;
   --popover-border: 216 34% 17%;
   --cyan-500: 190 90% 50%;
+  /* Same rule, opposite direction: against a very dark card, approach means
+     BRIGHTER. Measured 10.56:1. The perceived polarity ("more present") is
+     identical in both themes; only the lightness direction flips, which is
+     precisely why this token is declared per theme. */
+  --proof-hover: 190 90% 62%;
   --primary: var(--cyan-500);
   --primary-foreground: 222 47% 11%;
   --secondary: 222 47% 11%;
@@ -175,11 +300,32 @@
   --muted-foreground: 215.4 16.3% 56.9%;
   --accent: 216 34% 17%;
   --accent-foreground: 210 40% 98%;
-  --destructive: 0 63% 31%;
-  --destructive-foreground: 210 40% 98%;
+  /* CONTRAST (2026-07-26, second pass) — THE WORST PAIR IN THE FILE, and the light-theme
+     defect inverted: 0 63% 31% is a dark red sitting on a DARKER card, so error copy
+     measured 1.95:1 on --card and 1.86:1 on the danger chip — unreadable in the very
+     theme the site was built in. Hue 0 and saturation 63% held exactly; only LIGHTNESS
+     moves, 31% → 62%. Measured: 5.40:1 on --card · 4.62:1 on chip-danger. (61% is the
+     bare minimum at 4.50:1 on the chip; 62% buys margin without leaving the 4.5–5.5 band.)
+     WHY --destructive-foreground FLIPS TO NEAR-BLACK. This token is used BOTH as readable
+     text AND as the destructive button's fill, and in DARK those two pull opposite ways:
+     the red must be LIGHT to read as text on a dark card, but a light red cannot carry a
+     near-white label. Measured on the 62% fill: near-white (210 40% 98%) = 3.40:1, FAIL.
+     The text threshold wins — that is the rule — so the FILL's label becomes near-black,
+     which is exactly the pattern this file already uses for the same reason one ramp up:
+     dark --gold-500 is 42 92% 60% and dark --gold-foreground is 240 30% 8%. Reusing that
+     identical value here introduces no new colour and measures 5.37:1.
+     WHAT CHANGES ON SCREEN (dark theme only): error text goes from near-invisible maroon
+     to a legible red, and the destructive BUTTON goes from dark-maroon-with-white-label
+     to bright-red-with-near-black-label. The light theme's button keeps its white label. */
+  --destructive: 0 63% 62%;
+  --destructive-foreground: 240 30% 8%;
   --gold-500: 42 92% 60%;
   --gold: var(--gold-500);
   --gold-foreground: 240 30% 8%;
+  /* The dark theme's decorative gold — its own --gold-500 value, unchanged. Only the
+     LIGHT ramp was retuned for contrast on 2026-07-26; pinning the metals here keeps
+     the medallions identical in both themes (see the :root note). */
+  --gold-metal: 42 92% 60%;
   --warning: 36 95% 60%;
   --success: 158 64% 46%;
   /* Data-viz — brightened for the dark "command-room" surface (restores the
@@ -252,10 +398,13 @@
 
 /* S2c podium metals — struck-metal medallions (§9 craft: medals + ONE crown;
    soft glow is the ceiling — no animation). Values from the approved seasons
-   mockups, expressed through the metal tokens (no raw colors). */
+   mockups, expressed through the metal tokens (no raw colors).
+   The gold mid-stop and glow read --gold-metal, NOT --gold: since 2026-07-26 the
+   brand gold is tuned for text contrast and is too dark to sit between --gold-hi
+   and --gold-deep. --gold-metal holds the value this gradient was approved with. */
 .syn-medal-gold {
-  background: radial-gradient(circle at 32% 28%, hsl(var(--gold-hi)), hsl(var(--gold)) 55%, hsl(var(--gold-deep)));
-  box-shadow: 0 0 26px hsl(var(--gold) / 0.5), inset 0 -3px 5px hsl(var(--gold-deep) / 0.55);
+  background: radial-gradient(circle at 32% 28%, hsl(var(--gold-hi)), hsl(var(--gold-metal)) 55%, hsl(var(--gold-deep)));
+  box-shadow: 0 0 26px hsl(var(--gold-metal) / 0.5), inset 0 -3px 5px hsl(var(--gold-deep) / 0.55);
 }
 .syn-medal-silver {
   background: radial-gradient(circle at 32% 28%, hsl(var(--silver-hi)), hsl(var(--silver)) 55%, hsl(var(--silver-deep)));
@@ -265,16 +414,18 @@
   background: radial-gradient(circle at 32% 28%, hsl(var(--bronze-hi)), hsl(var(--bronze)) 55%, hsl(var(--bronze-deep)));
   box-shadow: 0 0 14px hsl(var(--bronze) / 0.3), inset 0 -3px 5px hsl(var(--bronze-deep) / 0.55);
 }
-/* The pot frame's gold radiance (approved mockup .moneycard, no figure until S3). */
+/* The pot frame's gold radiance (approved mockup .moneycard, no figure until S3).
+   --gold-metal, not --gold: a low-alpha wash of the text-contrast gold reads as a
+   grey-brown haze on a light card instead of the warm gold the mockup approved. */
 .syn-pot-card {
   background:
-    radial-gradient(ellipse 95% 85% at 82% 8%, hsl(var(--gold) / 0.16), transparent 60%),
+    radial-gradient(ellipse 95% 85% at 82% 8%, hsl(var(--gold-metal) / 0.16), transparent 60%),
     hsl(var(--card));
-  box-shadow: 0 0 48px hsl(var(--gold) / 0.10), inset 0 1px 0 hsl(var(--gold) / 0.25);
+  box-shadow: 0 0 48px hsl(var(--gold-metal) / 0.10), inset 0 1px 0 hsl(var(--gold-metal) / 0.25);
 }
-/* The podium's floor glow (mockup .podium:before). */
+/* The podium's floor glow (mockup .podium:before) — --gold-metal, same reason. */
 .syn-podium-glow {
-  background: radial-gradient(ellipse 60% 100% at 50% 100%, hsl(var(--gold) / 0.10), transparent 70%);
+  background: radial-gradient(ellipse 60% 100% at 50% 100%, hsl(var(--gold-metal) / 0.10), transparent 70%);
 }
 
 

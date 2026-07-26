@@ -104,7 +104,7 @@ export default function OsMap() {
                     </p>
                     <p className="text-xs text-muted-foreground leading-relaxed">{node.reality}</p>
                     {node.asOf && (
-                      <p className="font-mono text-[10px] text-muted-foreground/80 mt-2">
+                      <p className="font-mono text-[10px] text-muted-foreground mt-2">
                         As of: {node.asOf}
                       </p>
                     )}

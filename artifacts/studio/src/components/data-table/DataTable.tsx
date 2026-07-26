@@ -130,7 +130,7 @@ export function DataTable<Row>({
                       aria-hidden
                       className={cn(
                         "font-mono text-[9px]",
-                        active ? "text-foreground" : "text-muted-foreground/50",
+                        active ? "text-foreground" : "text-muted-foreground",
                       )}
                     >
                       {active ? SORT_GLYPH[sort!.dir] : "↕"}

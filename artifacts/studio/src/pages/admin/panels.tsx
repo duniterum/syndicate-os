@@ -141,7 +141,7 @@ function PanelCard({
               <button
                 type="button"
                 aria-label={`What is “${def.title}”?`}
-                className="text-muted-foreground/70 hover:text-muted-foreground"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <Info className="h-3.5 w-3.5" />
               </button>

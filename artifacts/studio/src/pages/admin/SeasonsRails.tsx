@@ -57,7 +57,7 @@ interface EngineStatus {
 }
 
 const kvLabel =
-  "font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground/70";
+  "font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground";
 const chip =
   "rounded border px-1.5 py-0.5 font-mono text-[9.5px] uppercase tracking-[0.06em]";
 
