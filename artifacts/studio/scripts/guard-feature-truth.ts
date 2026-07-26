@@ -63,6 +63,50 @@ const PINNED_CLAIM_SITES: Record<string, readonly string[]> = {
   "components/referral/ReferralLinkPanel.tsx": ["aliasLayer"],
 };
 
+// ── §⑥ THE PROSE CLAIM SITES — the hole this guard shipped with ──────────────
+// Sections 2-3 above can only see a `lifecycle="FUTURE"` BADGE. A future promise
+// written as an ENGLISH SENTENCE was invisible to them, and the most public one
+// we have proved it: /activity's methodology note told the world "what the
+// indexer adds next" in prose. On 2026-07-26 two keys were registered for that
+// sentence — and pinned to NOTHING, because no map like this existed; the guard
+// stayed green at 598 checks while the sentence it was supposed to govern sat
+// outside the mechanism entirely. A registry entry is not enforcement.
+//
+// Each entry pins a FILE to (a) the keys its prose cites and (b) a verbatim
+// FRAGMENT of that prose. Both directions are checked: the key must be "future"
+// (a live capability described as coming = the fossil), and the fragment must
+// still be present (a stale pin outlives the copy it guarded = RED, clean it,
+// dated). The fragment is what stops this from being a comment.
+const PROSE_CLAIM_SITES: Record<
+  string,
+  { readonly keys: readonly string[]; readonly fragment: string }
+> = {
+  // /activity Z5 methodology note. It USED to open with "per-seat feeds" — a
+  // capability that already SHIPS (`/member` serves a seat's own rows, each with
+  // its verify anchor and its door into the live receipts binder), i.e. the exact
+  // fossil the DONE-IS-DONE law exists to kill, standing on our most public feed.
+  // Corrected 2026-07-26; the two survivors are genuinely unbuilt rails.
+  "components/activity/LiveActivityFeed.tsx": {
+    keys: ["eventDerivedNotifications", "chronicleCandidatePipeline"],
+    fragment: "What the indexer adds next",
+  },
+  // /fire-ledger's closing card — the opt-in name layer for burners.
+  "pages/FireLedger.tsx": {
+    keys: ["aliasLayer"],
+    fragment: "What arrives next",
+  },
+};
+
+// ── §⑦ REGISTERED BUT CLAIMED NOWHERE ───────────────────────────────────────
+// A future key that no surface cites is dead weight that reads as coverage: the
+// next session finds it in the registry and assumes something guards it. Every
+// future key must be cited by a badge pin or a prose pin — or be listed here,
+// dated, with the reason it exists without a claim site.
+const REGISTERED_WITHOUT_CLAIM: Record<string, string> = {
+  notificationPreferences:
+    "2026-07-19 · per-category preferences (v2). Registered when notifications sealed live; no surface promises it yet, so there is no copy to pin. Delete this entry the day a claim site appears — or the day the capability ships.",
+};
+
 function stripComments(code: string): string {
   return code
     .replace(/\/\*[\s\S]*?\*\//g, "")
@@ -132,6 +176,50 @@ for (const [rel, keys] of Object.entries(PINNED_CLAIM_SITES)) {
     pin(
       n === 0,
       `${path.relative(srcDir, f)}: ${n} UNPINNED lifecycle="FUTURE" claim(s) — a "coming" promise must be registered here with its feature key`,
+    );
+  }
+}
+
+// ── §⑥ · Every PROSE claim cites a future key, and its copy still exists ────
+for (const [rel, { keys, fragment }] of Object.entries(PROSE_CLAIM_SITES)) {
+  const raw = readFileSync(path.join(srcDir, rel), "utf8");
+  const code = stripComments(raw);
+  pin(
+    code.includes(fragment),
+    `${rel}: the pinned prose "${fragment}" is GONE — the copy moved and this pin is now guarding nothing. Delete or re-point it, dated, in this commit.`,
+  );
+  for (const key of keys) {
+    const status = statusByKey.get(key);
+    pin(
+      status === "future",
+      `${rel}: its prose promises "${key}", but the registry says "${status}" — A LIVING FEATURE IS TOLD AS FUTURE IN PROSE (the fossil class the badge scan cannot see; rewrite the sentence in this commit)`,
+    );
+  }
+}
+
+// ── §⑦ · No future key is registered without a claim site ───────────────────
+{
+  const cited = new Set<string>([
+    ...Object.values(PINNED_CLAIM_SITES).flat(),
+    ...Object.values(PROSE_CLAIM_SITES).flatMap((s) => s.keys),
+  ]);
+  for (const [key, status] of statusByKey) {
+    if (status !== "future") continue;
+    pin(
+      cited.has(key) || key in REGISTERED_WITHOUT_CLAIM,
+      `featureStatus.ts: "${key}" is registered FUTURE but no surface cites it — an orphan key reads as coverage and guards nothing. Pin its claim site, or record it in REGISTERED_WITHOUT_CLAIM with a dated reason.`,
+    );
+  }
+  // The allowlist is a debt list, so it must not outlive its debt.
+  for (const key of Object.keys(REGISTERED_WITHOUT_CLAIM)) {
+    const status = statusByKey.get(key);
+    pin(
+      status === "future",
+      `REGISTERED_WITHOUT_CLAIM holds "${key}", but the registry says "${status}" — delete the entry in the commit that flips the key.`,
+    );
+    pin(
+      !cited.has(key),
+      `REGISTERED_WITHOUT_CLAIM holds "${key}", but a claim site now cites it — delete the entry; it is no longer claimless.`,
     );
   }
 }

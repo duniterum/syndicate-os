@@ -120,9 +120,22 @@ const UI = "components/ui/"; // the vendored primitive layer — see limit ⑥
 // the Link (or `asChild`), not a second ring on the Button.
 const ALLOWLIST: Record<string, string> = {
   // ── PUBLIC surfaces — a visitor's keyboard. Highest priority of the sweep. ──
+  // RATCHETED DOWN 5 → 3 (2026-07-26, the /activity rebuild): the feed row's
+  // proof anchor became a real 112×44px button WITH the gold ring, in both the
+  // internal-record <Link> and the explorer <a> variants — so the two row-level
+  // stops the ledger was forgiving are PAID, not deferred. What remains is the
+  // page chrome: the mapped facet-chip <button> (all 13 chips), the More/Less
+  // toggle, and the methodology <summary>. The guard itself caught the stale
+  // count, which is the whole point of a counter that must be recounted.
+  // RATCHETED 3 → 2 (2026-07-26): the methodology <summary> became the
+  // Disclosure atom, which declares its own gold focus ring. What remains is
+  // the mapped facet-chip <button> (all 13 chips) and the More/Less toggle.
   "components/activity/LiveActivityFeed.tsx":
-    "5 · THE surface the 2026-07-26 review named: the mapped facet-chip <button> (all 13 chips), the More/Less toggle, the methodology <summary>, the seat-history <Link> and a verify <a>. First target of the sweep",
-  "components/activity/MilestonesPanel.tsx": "2 · the sealed-milestones <summary> + a milestone verify <a> — same /activity slice",
+    "2 · the mapped facet-chip <button> (all 13 chips) and the More/Less toggle. The methodology summary and the row proof anchors were fixed 2026-07-26",
+  // MilestonesPanel.tsx entry DELETED 2026-07-26: both activators it forgave
+  // are now covered atoms — the sealed-record <summary> is the Disclosure and the
+  // milestone verify <a> is the ProofAnchor, each declaring its own ring. The
+  // ledger must describe the tree, so a debt that no longer exists is removed.
   "components/faq/FaqAccordion.tsx": "1 · the clear-search <button> inside the search box (the box itself rings via focus-within)",
   "components/guide/SyndicateGuide.tsx": "5 · the greeting bubble <button> (also the one OUTLINE-KILL below) + 4 guide <Link>s",
   "components/hero/HeroLedger.tsx": "1 · a ledger toggle <button> on the public home hero",
