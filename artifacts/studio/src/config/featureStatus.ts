@@ -1,6 +1,6 @@
-// config/featureStatus.ts — THE DONE-IS-DONE REGISTRY (founder law, 2026-07-19).
+// config/featureStatus.ts — THE DONE-IS-DONE REGISTRY (Founder law, 2026-07-19).
 // ---------------------------------------------------------------------------
-// Born from the founder's order after the Settings "Notifications — Coming
+// Born from the Founder's order after the Settings "Notifications — Coming
 // later" fossil (notifications had been LIVE since 2026-07-18; the copy stood
 // still): "on avance de quelques pas et tu nous fais reculer d'un pas — plus
 // jamais." The named failure mode: copy written while a capability was future
@@ -42,7 +42,7 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   referrerKit: { status: "live", since: "2026-07-20", where: "/referral/tools" },
   joinInviteeCard: { status: "live", since: "2026-07-20", where: "/join?source= unfurl + the introduced-by strip" },
   activationIntake: { status: "live", since: "2026-07-22", where: "/referral (the Ask-for-activation door + live eligibility card)" },
-  sourceReviewQueue: { status: "live", since: "2026-07-22", where: "/admin/sources (the founder's review queue: preflight + verdicts + bell)" },
+  sourceReviewQueue: { status: "live", since: "2026-07-22", where: "/admin/sources (the Founder's review queue: preflight + verdicts + bell)" },
   sourcePerformance: { status: "live", since: "2026-07-22", where: "/admin/sources Performance tab (per-source table + screen-exact CSV)" },
   consoleReferralKpis: { status: "live", since: "2026-07-22", where: "/admin Dashboard (the wired referral band + live waiting counts)" },
   // S2b go-live (same commit as the page — DONE-IS-DONE): the board serves.
@@ -56,16 +56,40 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   // The vault's holdings go-live (same commit as the card — DONE-IS-DONE). The
   // AVAX row was a hardcoded "Coming" placeholder with NO registry key, so no
   // guard could have caught it: the capability is registered here now, and the
-  // placeholder is gone. A USD figure is served for the directly-held
-  // deep-market assets only; SYN is never priced and the pool is not summed
-  // (valuing the protocol's real pool SHARE needs its own read — a future key
-  // when that slice comes, never a claim on this one).
-  vaultHoldings: { status: "live", since: "2026-07-25", where: "/contracts + /admin (the vault's multi-token holdings + the priced-holdings total)" },
+  // placeholder is gone.
+  //
+  // WHAT IS VALUED AND SUMMED, stated from the code and not from memory: USDC
+  // at one dollar, AVAX / BTC.b / WETH.e at live Chainlink prices, the USDC the
+  // NFT sale holds (wallet + anything still resting in the contract), AND the
+  // protocol's OWN SHARE of the SYN/USDC pool's USDC leg — our LP tokens over
+  // the pair's total supply, both read live. SYN is never given a dollar value:
+  // its only on-chain price is that same thin pool. Any unreadable component
+  // makes the total say so rather than publish a partial sum.
+  //
+  // THIS ENTRY USED TO SAY "the pool is not summed ... a future key when that
+  // slice comes". THAT WAS FALSE ON THE DAY IT WAS WRITTEN: the pool-share read
+  // shipped in the very slice this key marks live (`d1b6e75`) — it is right
+  // there in ProtocolAssetsCard (poolShare = LP owned / LP supply, folded into
+  // the summed `priced` array) and in the home band (the same share taken in
+  // exact integer maths). Corrected 2026-07-26 by reading the components. This
+  // is the registry's own defect class: every session reads this file first,
+  // so a wrong line here propagates into every slice that trusts it.
+  //
+  // AND THE `where` OMITTED THE PUBLIC HOME — the largest audience of the
+  // three. ProtocolReservesBand renders these same holdings, the same summed
+  // components and the same fail-closed total on `/`. The one-figure sweep of
+  // 2026-07-26 hit the same shape of omission in the code: its first attempt
+  // counted two projections and left the public home on the old half-up rule.
+  // In prod right now the home and /contracts both print the vault's untouched
+  // WETH.e as 0.026552 while /activity prints 0.026551; `11384f5` (committed,
+  // awaiting its deploy) is what makes all three truncate alike. An inventory
+  // of surfaces is what you enumerate, never what you remember.
+  vaultHoldings: { status: "live", since: "2026-07-25", where: "/ (the Protocol Reserves band) + /contracts + /admin (the protocol's multi-token holdings — the vault, the operations wallet, the NFT-sale wallet and our pool share — plus the priced-holdings total)" },
 
   // ── FUTURE (the only keys a future-claim may cite) ──────────────────────
   avatarUpload: { status: "future", since: "2026-07-14", where: "Member Home arc (App Storage decided)" },
-  aliasLayer: { status: "future", since: "2026-07-13", where: "IDENTITY-ALIAS (queued, founder-approved)" },
-  languageChoice: { status: "future", since: "2026-07-14", where: "i18n deferred (founder decision)" },
+  aliasLayer: { status: "future", since: "2026-07-13", where: "IDENTITY-ALIAS (queued, Founder-approved)" },
+  languageChoice: { status: "future", since: "2026-07-14", where: "i18n deferred (Founder decision)" },
   resetProfile: { status: "future", since: "2026-07-17", where: "profile settings (none exist yet)" },
   notificationPreferences: { status: "future", since: "2026-07-19", where: "per-category preferences (v2)" },
   // Seasons arc 2026-07-23 (harvest dossier §0.14-E): the single seasonEngine
@@ -76,4 +100,23 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   seasonOwnRow: { status: "future", since: "2026-07-24", where: "the /season YOU own-row highlight (auth-zone wiring; CANON_ACCESS_MODEL own-row exception)" },
   rateRaiseHistory: { status: "future", since: "2026-07-19", where: "the SOURCE_LIFECYCLE rescan micro-slice" },
   secondGeneration: { status: "future", since: "2026-07-19", where: "the 2nd-generation own-row view" },
+
+  // THE PUBLIC PROMISE NO KEY COVERED (registered 2026-07-26). The /activity
+  // methodology note tells the world, in prose, "what the indexer adds next" —
+  // and not one of those capabilities had a registry key, so guard-feature-truth
+  // could not pin the sentence to anything: a future claim on the most public
+  // feed we have, standing outside the mechanism that exists precisely to stop
+  // a claim from outliving its slice. The two keys below are the ones the
+  // Founder's 2026-07-26 ruling puts on the build path — a vault asset purchase
+  // must reach members through the bell and the notification centre, and must
+  // enter the Chronicle.
+  //
+  // NEITHER KEY RE-OPENS A LIVE ONE (DONE-IS-DONE, read it before citing them):
+  // the notification centre itself is LIVE (`notifications`, 2026-07-18) and
+  // the Chronicle register is LIVE and public. What is future is the RAIL — an
+  // indexed chain event GENERATING a notification, and indexed events proposing
+  // Chronicle candidates. A surface must cite these keys, never the live ones,
+  // and must speak about the rail, never about the centre or the register.
+  eventDerivedNotifications: { status: "future", since: "2026-07-26", where: "the indexer→bell rail: today a notification row is written by the Founder-gated operator zone (notify one seat / broadcast) or by a server-side verdict (a source decision) — nothing generates one from an indexed chain event the public feed already shows" },
+  chronicleCandidatePipeline: { status: "future", since: "2026-07-26", where: "the events→candidates rail: today a candidate is hand-written into docs/chronicle/candidates/ and promoted by a Founder-signed commit (the console's Chronicle panel formats one and writes nothing) — nothing proposes candidates from indexed events" },
 };

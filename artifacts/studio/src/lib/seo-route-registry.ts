@@ -185,7 +185,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "education",
     proofRoute: "/proof",
     notes:
-      "AUD-T (2026-07-16, founder GO on the full text): Version 1 draft, honestly labeled as awaiting qualified counsel; governing law + entity + contact = pending lines, never invented. Doctrine-verified: zero banned vocabulary; negated disclaimers live in the BODY only.",
+      "AUD-T (2026-07-16, Founder GO on the full text): Version 1 draft, honestly labeled as awaiting qualified counsel; governing law + entity + contact = pending lines, never invented. Doctrine-verified: zero banned vocabulary; negated disclaimers live in the BODY only.",
   },
   {
     path: "/privacy",
@@ -239,7 +239,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "join",
     proofRoute: "/status",
     notes:
-      "S7/S7-b: full-screen door (one connect CTA) for visitors; the member DASHBOARD (identity band, live KPI tiles, pulse, referral, capital/protocol/chronicle cards) for signed members. View-only; no transaction path. D-TRUTH (2026-07-16): genesis seats' early-era footprints join the capital walk (standing-only — the public feed unchanged); founder-signed source standing resolves via the wallet-of-record fallback; the capital card lists the member's own purchase record with verify anchors; a definitive zero renders 0, never a dash. Ruling ① (2026-07-16): every share surface (link card, share card, quick action) advertises the PAYING source's link — server-resolved own-row sourceIdHex first, canonical derivation fallback.",
+      "S7/S7-b: full-screen door (one connect CTA) for visitors; the member DASHBOARD (identity band, live KPI tiles, pulse, referral, capital/protocol/chronicle cards) for signed members. View-only; no transaction path. D-TRUTH (2026-07-16): genesis seats' early-era footprints join the capital walk (standing-only — the public feed unchanged); Founder-signed source standing resolves via the wallet-of-record fallback; the capital card lists the member's own purchase record with verify anchors; a definitive zero renders 0, never a dash. Ruling ① (2026-07-16): every share surface (link card, share card, quick action) advertises the PAYING source's link — server-resolved own-row sourceIdHex first, canonical derivation fallback.",
   },
   // ARC SLICE D — member doors (FLAT routes: a /member/* path would emit a
   // member/ directory and resurrect the 2.0 trailing-slash redirect on /member).
@@ -486,7 +486,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     ownerSurface: "recognition",
     primaryIntent: "recognition",
     proofRoute: "/status",
-    notes: "Recognition is LIVE (season board 2026-07-23, quests 2026-07-24) — the page and its served head were retitled 2026-07-25 when the founder caught the sibling 'future concept' fossils. The two axes (capital rungs + connector ladder) are live elsewhere; the long-term cross-season standing figure is the remaining future layer.",
+    notes: "Recognition is LIVE (season board 2026-07-23, quests 2026-07-24) — the page and its served head were retitled 2026-07-25 when the Founder caught the sibling 'future concept' fossils. The two axes (capital rungs + connector ladder) are live elsewhere; the long-term cross-season standing figure is the remaining future layer.",
   },
   {
     path: "/contracts",
@@ -503,7 +503,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     ownerSurface: "transparency",
     primaryIntent: "transparency",
     proofRoute: "/status",
-    notes: "The live ProtocolAssetsCard (the vault's multi-token holdings, a per-row USD figure from Chainlink feeds, and a priced-holdings total that fails closed on any missing read; SYN is shown as an amount only and the pool's reserves are excluded from the total) + the live ProtocolRealityPanel (chain/contracts/sale/archive groups). Addresses render short-form with a Snowtrace link per the 2026-07-25 address law; the name-to-address mapping is what never leaves the server.",
+    notes: "The live ProtocolAssetsCard (the vault's multi-token holdings, a per-row USD figure from Chainlink feeds, and a priced-holdings total that fails closed on any missing read; SYN is shown as an amount only, and the pool counts at the protocol's REAL share of its USDC leg — read live from the pair's LP supply and our liquidity wallet's balance, never by doubling a reserve; corrected 2026-07-26, this field said the pool was excluded while the card had summed it since 2026-07-25) + the live ProtocolRealityPanel (chain/contracts/sale/archive groups). Addresses render short-form with a Snowtrace link per the 2026-07-25 address law; the name-to-address mapping is what never leaves the server.",
   },
   {
     path: "/map",
@@ -718,8 +718,34 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     title: "Activity — the public heartbeat",
     // A3 (2026-07-22): the newsroom rebuild — the reality moved (news-first
     // composition, live feed, paged history), the served head moves with it.
+    // TRUTH FIX 2026-07-26 (six-lens review of the live /activity). The head
+    // read "every on-chain act as a verifiable line … each with its verify
+    // link" — a chain-refutable claim (business red line #2) served THREE
+    // times per page: description + og:description + twitter:description.
+    // Both halves were refuted by the page itself:
+    //   · COMPLETENESS. A movement no lane reads cannot reach the feed — the
+    //     vault's USDC→AVAX swap is the proven case. (The aggregator router
+    //     does emit one whole-swap log; the lane that will read it is being
+    //     designed in its own workflow. Until it lands the head must not
+    //     promise it, and "every" is disproved by one explorer tab.)
+    //   · "EACH WITH ITS VERIFY LINK". LiveActivityFeed pushes Chronicle
+    //     lines from the committed register with blockNumber 0 and a
+    //     synthetic hash (LiveActivityFeed.tsx:408-417) — Founder promotions,
+    //     not chain acts — and renderLine gives them "read the record", never
+    //     a verify anchor. "Each" was false on the page's own lines.
+    // The replacement promises only what the page DEFENDS: the lanes it
+    // really serves — named, so the head stops hiding six of them (liquidity,
+    // archive, eras, footprint, deployments, Chronicle) — and verification
+    // SCOPED to chain lines, which every anchored line does carry (explorerBase
+    // resolves from the same verify-links read that gates the feed, so a
+    // rendered chain line always has its anchor).
+    // It is 159 chars against the 160 it replaces — a TRADE inside Google's
+    // truncation edge, never an append. The Founder facet did not fit the
+    // budget; it is named on the sibling public surface instead (the /activity
+    // entry in config/surfaceClassification.ts), which states nothing this
+    // head contradicts.
     description:
-      "The protocol's live newsroom: every on-chain act as a verifiable line, newest first — seats, burns, referrals, treasury, milestones — each with its verify link.",
+      "The protocol's live record: seats, burns, treasury, liquidity, archive, referrals, milestones, eras, footprint, deployments, Chronicle — verify any chain line.",
     canonicalPath: "/activity",
     changefreq: "daily",
     priority: 0.6,
@@ -728,7 +754,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "proof",
     proofRoute: "/status",
     notes:
-      "Complete served history (indexer) + recent-window freshness layer. H2-⑬: the Milestones panel — canonical crossings anchored to their exact transactions. H2-⑦: treasury movements (post-Fold-Law — routing detail never duplicates a purchase). H2-⑫: era turns (witnessed page turns; line-on-crossing only, never a countdown). H2-P: THE PRIDE OF THE PUBLIC RECORD — lines speak the origin voice (member number + short-form signature; a full address never serializes; ADR-003 amendment). H2-⑭: Chronicle promotions join from the committed register (no invented anchors; 'read the record' links) + chip decision A ('Referral registry'). H2-⑰: capital-axis footprint rises (12 founder-named rungs; recognition only — the red line guard-pinned; base rung silent). H2-⑩: deployments from the chain-verified canon registry (real creation-tx anchors) — the heartbeat's founding inventory COMPLETE.",
+      "TWO sources, each labelled with its own coverage: the served indexed history (seats, burns, referral-registry lifecycle, liquidity, archive, treasury movements, milestone crossings, era turns, footprint rises — every lane complete from its OWN first block, per the server's lane flags) + the ~24h client window for freshness. It is NOT every on-chain act, and no surface says 'complete' any more (2026-07-26): a movement no lane reads cannot reach the feed — the vault's USDC→AVAX swap is the proven case, its aggregator log awaiting the lane a separate workflow is designing. H2-⑬: the Milestones panel — canonical crossings anchored to their exact transactions. H2-⑦: treasury movements (post-Fold-Law — routing detail never duplicates a purchase). H2-⑫ + AW-2 (Founder override 2026-07-22, config/eraCanon.ts:14-17): the era band STANDS on the page — the current era's bytecode terms (rate, minimum entry, the seat the rate holds through, seats left at it) as factual disclosure; the old line-on-crossing-only pin is dead, no deadline is invented, and the band hides itself the moment any era transition is indexed. H2-P: lines speak the origin voice — member number + the actor's SHORT-FORM address, which is READABILITY and never masking: an address is public (the address law, Founder 2026-07-24), the verify link opens the whole transaction on the explorer, and the red line is name/alias/email only. H2-⑭: Chronicle promotions join from the committed register — Founder commits, not chain events: no anchor is invented and the line links into the record ('read the record') — plus chip decision A ('Referral registry'). H2-⑰: capital-axis footprint rises (12 Founder-named rungs; recognition only — the red line guard-pinned; base rung silent). H2-⑩: deployments from the chain-verified canon registry (real creation-tx anchors). The Founder facet filters exactly the acts the served labels PROVE are his.",
   },
   {
     path: "/chronicle",
@@ -736,8 +762,13 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     indexStatus: "INDEX",
     sitemap: true,
     title: "Chronicle — the institutional story",
+    // CAPITAL F (Founder ruling 2026-07-26), including the compound
+    // "Founder-signed". This description is SERVED — description +
+    // og:description + twitter:description on every crawl and every share
+    // unfurl — so the lowercase form was the ruling's defect class on the
+    // most-read surface class there is.
     description:
-      "The protocol's solemn record — founder-promoted turning points, each verifiable on-chain. The register is public and grows only by founder-signed commits — no silent edits.",
+      "The protocol's solemn record — Founder-promoted turning points, each verifiable on-chain. The register is public and grows only by Founder-signed commits — no silent edits.",
     canonicalPath: "/chronicle",
     changefreq: "monthly",
     priority: 0.5,
@@ -745,7 +776,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     ownerSurface: "chronicle",
     primaryIntent: "archive",
     proofRoute: "/status",
-    notes: "CHR-1 + first promotion (founder, 2026-07-14). Entries land ONLY by founder-approved commits.",
+    notes: "CHR-1 + first promotion (Founder, 2026-07-14). Entries land ONLY by Founder-approved commits.",
   },
   {
     path: "/fire-ledger",

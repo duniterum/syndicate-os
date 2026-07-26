@@ -162,7 +162,7 @@ footer b{color:var(--ink-soft);}
   <div class="eyebrow">The Syndicate OS · état reconstruit depuis les fichiers</div>
   <h1 class="serif">Tout ce qu'il reste à faire</h1>
   <p class="sub">La liste maîtresse complète, reconstruite depuis ~20 docs de direction par 11 agents en parallèle, dédupliquée, et croisée contre ce qui est déjà scellé en prod — pour ne jamais te présenter du fait comme à-faire.</p>
-  <div class="asof">Reconstruit le <b>18 juillet 2026</b> · <b>recompté le 24 juillet 2026 : 183 lignes</b> · <b>maj 25 juil. 2026</b> (arc /admin + loi d'adresse ; la liste ouverte est le bloc « 25 juillet » ci-dessous) (les 6 statuts, tuiles et légende comprises) · <b>14</b> catégories · snapshot initial prod <b>6a834fb</b> · autorité = <b>OPEN_QUEUE.md</b> + <b>SESSION_STATE.md</b> + <b>CANON_ACCESS_MODEL.md</b></div>
+  <div class="asof">Reconstruit le <b>18 juillet 2026</b> · <b>recompté le 24 juillet 2026 : 183 lignes</b> · <b>maj 26 juil. 2026</b> (arc vérité-du-swap ; les six rulings ⓐ-ⓕ ; la liste ouverte est le bloc « 25 juillet » ci-dessous) (les 6 statuts, tuiles et légende comprises) · <b>14</b> catégories · snapshot initial prod <b>6a834fb</b> · <b>PROD = 35d60fa</b> (scellé le 25 juil. 2026) · autorité = <b>OPEN_QUEUE.md</b> + <b>SESSION_STATE.md</b> + <b>CANON_ACCESS_MODEL.md</b></div>
 
   <div style="margin:22px 0 4px;border-left:4px solid var(--gold);background:var(--gold-bg);border-radius:0 10px 10px 0;padding:16px 20px">
     <div class="mono" style="font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600">Mise à jour · 19 juil. 2026 (après ce snapshot)</div>
@@ -196,11 +196,20 @@ footer b{color:var(--ink-soft);}
 
   <section class="block-callout callout-done">
     <div class="sec-eyebrow" style="color:var(--s-verify)">25 juillet — l'harmonisation /admin + la loi d'adresse</div>
-    <h2 class="serif">LA CONSOLE OPÉRATEUR HARMONISÉE + LE DASHBOARD RECOMPOSÉ + LA LOI D'ADRESSE GRAVÉE + LES AVOIRS DU VAULT EN DIRECT (committé, déploiement groupé en attente)</h2>
-    <p class="sec-desc">Prod = <span class="mono">e21a036</span> ; <b>le commit des avoirs DÉCLENCHE le déploiement groupé</b> (il change des lectures SERVEUR — il n'est pas batchable ; il emporte avec lui tous les commits en attente). ① chaque carte /admin au standard encadré · Dashboard recomposé (la bande KPI live <b>BusinessBand</b> MÈNE ; ReferralKpiBand supprimée ; « System &amp; registry » replié ; identité humanisée). ② le jargon technique PURGÉ de l'UI + le guard de copie le bannit. ③ <b>LA LOI D'ADRESSE</b> gravée : adresses PUBLIQUES, forme courte + lien Snowtrace partout ; base légale (EDPB 02/2025 · CJEU EDPS v SRB · CCPA) ; les gardes protègent nom/e-mail PAS les adresses ; masquer une adresse = un BUG. ④ revue senior + 3 correctifs ; Tier-1 (adresse membre → Snowtrace) + Tier-2 stage 1 faits — et la chaîne de gardes api SCELLÉE VERTE dans le commit des avoirs (deux auto-tests frères étaient restés ROUGES).
+    <h2 class="serif">LA CONSOLE OPÉRATEUR HARMONISÉE + LE DASHBOARD RECOMPOSÉ + LA LOI D'ADRESSE GRAVÉE + LES AVOIRS DU VAULT EN DIRECT (✅ SCELLÉ EN PROD le 25 juillet)</h2>
+    <p class="sec-desc"><b>Prod = <span class="mono">35d60fa</span></b> (scellé le 25 juillet 2026 ; un seul cycle groupé a porté <span class="mono">352a904</span> · <span class="mono">6953972</span> · <span class="mono">35c5083</span> · <span class="mono">add5bb8</span> · <span class="mono">35d60fa</span> — identité octet ×2, 7 routes publiques en 200, /season 15 classements, moteur ok=2/échec=0). <i>Cette ligne a annoncé « Prod = e21a036 · déploiement en attente » pendant deux sceaux — corrigé le 26 juillet 2026 ; l'autorité du commit en prod est le bloc de reprise de SESSION_STATE.md, jamais un bloc daté plus bas.</i> Le commit des avoirs, décrit ci-dessous comme « à venir », est <b>parti dans ce cycle</b>. ① chaque carte /admin au standard encadré · Dashboard recomposé (la bande KPI live <b>BusinessBand</b> MÈNE ; ReferralKpiBand supprimée ; « System &amp; registry » replié ; identité humanisée). ② le jargon technique PURGÉ de l'UI + le guard de copie le bannit. ③ <b>LA LOI D'ADRESSE</b> gravée : adresses PUBLIQUES, forme courte + lien Snowtrace partout ; base légale (EDPB 02/2025 · CJEU EDPS v SRB · CCPA) ; les gardes protègent nom/e-mail PAS les adresses ; masquer une adresse = un BUG. ④ revue senior + 3 correctifs ; Tier-1 (adresse membre → Snowtrace) + Tier-2 stage 1 faits — et la chaîne de gardes api SCELLÉE VERTE dans le commit des avoirs (deux auto-tests frères étaient restés ROUGES).
     ⑤ <b>LES AVOIRS DU VAULT SERVENT EN DIRECT, VALORISÉS</b> : USDC · AVAX · BTC.b · WETH.e · SYN du vault, plus l'USDC des opérations, les réserves du pool et la <b>« réserve de sièges »</b> (renommée) — chaque ligne vérifiable sur Snowtrace. Les avoirs de marché profond sont valorisés par les <b>flux de prix Chainlink</b> et sommés en un total qui affiche « indisponible » si un seul composant manque. <b>LA LOI DE VALORISATION</b> (décision fondateur, durcie par la revue senior qui a rattrapé la première implémentation) : on ne valorise QUE ce qui est détenu EN DIRECT dans un portefeuille du protocole ET a un marché profond ; <b>le SYN n'est JAMAIS valorisé</b> (pool trop mince → non réalisable, réfutable on-chain) ; <b>le pool est compté à NOTRE part réelle, jambe USDC seulement</b> — jamais en doublant sa réserve USDC (le raccourci AMM habituel), ce qui reviendrait à valoriser en douce la moitié SYN au même prix mince. Le fondateur a contesté l'exclusion (« on peut toujours savoir qui a mis quoi dans le pool ») et il avait raison : les jetons LP sont un ERC-20, donc la propriété est un solde public. Deux lectures live ajoutées ; <b>vérifié on-chain le 25-07 : le portefeuille Liquidité du protocole détient 76,612 % de la paire</b>, le portefeuille PERSONNEL du fondateur 23,386 % (son argent — PAS la trésorerie du protocole), un tiers 0,002 %. <b>REVUE SENIOR</b> : 6 lentilles indépendantes + réfutation adversariale de chaque constat, AVANT tout commit — le défaut du doublement a été trouvé par les six et confirmé par cinq vérificateurs. Corrigé aussi : provenance servie honnête, fraîcheur des prix à double sens, plus jamais un faux zéro sur un solde non nul, l'étiquette « en direct » parle des LECTURES et non de la valorisation, recomptage des gardes (28 → 31 items, 3 → 12 lectures) et nouvelle couverture (échec de lecture AVAX natif, prix non positif, épinglage du portefeuille du vault).
     ⑥ <b>LE BALAYAGE DE VÉRITÉ + L'ARGENT DES NFT</b> (l'œil du fondateur sur la page live) : il a pointé une carte de /contracts — « aucune commission n'est payée » — et elle était <b>FAUSSE</b> (les commissions SONT payées, dans la transaction de l'acheteur ; un audit interne l'avait déjà confirmé 9 jours plus tôt sans que ce soit corrigé). Carte <b>SUPPRIMÉE</b>. Le balayage a montré que les fossiles vont par paquets : <b>la RECONNAISSANCE était encore annoncée « concept futur » sur CINQ surfaces publiques</b> alors que le tableau de saison est live depuis le 23-07, et /status annonçait encore la page de reçu publique comme « couche future » alors qu'elle est live. Tout corrigé ; <b>/recognition passe de non-indexée à PUBLIQUE + indexée</b> (27 → 28 pages). <b>L'ARGENT DES NFT EST VISIBLE</b> : 25,50 USDC dormaient dans un portefeuille qu'aucun chiffre ne lisait → ligne « NFT sales USDC » dans le total, avec la destination <b>RÉCONCILIÉE</b> (le contrat déclare lui-même sa destination via <span class="mono">treasury()</span> ; si elle était détournée, le chiffre se ferme au lieu de suivre l'argent). <b>AW-5 NOMMÉ par le fondateur : « NFT Sale Wallet »</b>, et sa règle de vocabulaire gravée : <b>NFT est le mot que tout le monde connaît — « archive » était du jargon choisi par l'IA qui a créé la confusion</b> (→ ⑩). <b>LES DEUX CHIFFRES NFT SONT VRAIS, JAMAIS FUSIONNÉS</b> : 35,50 = contribué depuis toujours (prix × mintés) · 25,50 = détenu aujourd'hui ; la tuile d'accueil dit désormais « all-time » en toutes lettres.
     <b>LISTE COMPLÈTE DU TRAVAIL OUVERT (numérotation JAMAIS renumérotée) :</b> ① rescope adresse Tier-2 · ② page publique /registry « The Register » (#N · 0x…↗ · chapitre · rung · joined) · ③ <b>✅ LIVRÉ</b> Protocol Assets · ④ polish design admin · ⑤ <b>✅ FAIT <span class="mono">1a9a0fe</span></b> balayage docs · ⑥ audit plein-écran restant · ⑦ câblage Q42 des onglets admin (Audit/Support/Flags/Contenu/Activité) · ⑧ <b>✅ LIVRÉ</b> (<span class="mono">add5bb8</span>) les voies BTC.b/WETH.e dans le battement de cœur + <b>le NFT Sale Wallet devient le 4ᵉ organe</b> (ce qui débloque le scellement des paliers de mécénat : leur argent arrivait sans être vu). <b>Deux défauts tués au passage</b>, même forme — un binaire qui ne tenait que tant qu'il y avait deux tokens : l'étiquette du token (un 3ᵉ token aurait été silencieusement appelé « SYN ») et le formatage du montant (BTC.b se serait affiché avec 6 décimales au lieu de 8 — <b>faux d'un facteur 100, en public</b>). Reste sous ⑧ : le scellement effectif des paliers (la source de transaction existe maintenant) et ta décision sur les 2 artefacts mintés par ce portefeuille · ⑪ <b>✅ LIVRÉ</b> la section publique <b>« Protocol Reserves »</b> sur l'accueil (maquette approuvée ; registre <span class="mono">trackedAssets.ts</span> ; 44 logos vendus en local) · ⑨ <b>✅ LIVRÉ dans le même commit</b> la lecture de NOTRE part du pool (76,612 % au protocole, vérifié on-chain) · ⑩ <b>NOUVEAU</b> le balayage de vocabulaire « archive » → <b>NFT</b> (règle du fondateur ; sa propre slice, avec son œil sur les mots publics finaux). Détail : SESSION_STATE.md.</p>
+  </section>
+
+  <section class="block-callout callout-done">
+    <div class="sec-eyebrow" style="color:var(--s-verify)">26 juillet — l'arc vérité-du-swap</div>
+    <h2 class="serif">UN SEUL CHIFFRE, SIX RULINGS, ET UNE PHRASE FAUSSE QUI SE DISAIT CANON DEPUIS LE 22 JUILLET</h2>
+    <p class="sec-desc">Tu as pointé <span class="mono">/activity</span> (« mieux expliquer l'acte ») et posé la meilleure question de la session : « pourquoi scanner toute la chaîne quand on connaît les transactions ? ». Les deux étaient justes. <b>QUATRE DÉFAUTS TROUVÉS.</b> ① <b>Un seul acte publié en deux demi-vérités</b> : les trois échanges du coffre du 16 juillet sortent en cinq lignes déconnectées, et la ligne sortante se lit comme de l'argent qui PART — alors que rien n'est parti, 130 USDC ont changé de forme. ② <b>L'achat d'AVAX est invisible</b> : le public voit 30 USDC sortir et rien revenir, sur la ligne même qui promet « aucun mouvement silencieux ». ③ <b>Une attestation FAUSSE, en direct</b> : la phrase publique dit « un acte de trésorerie signé par le fondateur » alors que le code ne vérifie AUCUNE signature — il ne lit que le DESTINATAIRE. ④ <b>Le chiffre avait FORQUÉ en prod</b> : quatre projections du même argent coexistaient, et le même WETH.e du coffre s'affichait <span class="mono">0.026551</span> sur une page publique et <span class="mono">0.026552</span> sur une autre, au même instant. <b>✅ TRANCHE 0 LIVRÉE (<span class="mono">11384f5</span>) — UNE seule troncature</b> : un module fait autorité pour tout passage d'unités-chaîne à un montant affiché, il TRONQUE toujours (arrondir au-dessus annonce plus d'argent qu'on n'en détient — réfutable en un clic) et porte un plancher « &lt; 0,01 » pour qu'un vrai solde ne s'affiche jamais « 0 ». Un garde BLOQUANT l'épingle. Cinq chiffres bougent en prod, <b>tous vers le BAS, jamais vers le haut</b>, et un membre détenant 0,004 SYN cesse de lire « 0 » sur son propre panneau.
+    <b>TES SIX RULINGS DU JOUR, gravés avec des LETTRES STABLES ⓐ-ⓕ</b> (texte complet dans OPEN_QUEUE.md — jusqu'ici les docs n'en portaient que deux, sous les lettres ⓐ/ⓑ, titrées « les deux rulings » : le fossile est corrigé) : <b>ⓐ l'acteur est le SIGNATAIRE</b> (<span class="mono">tx.from</span>), jamais l'adresse touchée — tout organe du protocole est un EOA, une adresse sans code : un portefeuille n'« agit » jamais, celui qui signe agit · <b>ⓑ la voix est l'option B</b> : l'acte d'abord, la signature ensuite comme attribution · <b>ⓒ « Founder », F MAJUSCULE, partout</b>, y compris le composé « Founder-signed », avec DEUX exemptions permanentes : le fichier de conditions de parrainage dont les octets sont hachés sur la chaîne (changer un octet casse le hash) et « founder number » (en minuscule ici exprès : c'est le terme exempté lui-même), qui ne parle pas de toi mais d'un numéro de membre précoce — il est renommé « member number » · <b>ⓓ le verbe « converti » seulement sur preuve COMPLÈTE</b>, sinon on dégrade vers des phrases séparées honnêtes : on peut sous-dire, jamais sur-dire · <b>ⓔ l'ordre 0 → 1 → 2 → 3 → 4</b> (les tranches 2 et 3 sont deux déploiements SÉPARÉS exprès : fusionner côté serveur pendant qu'une page en cache tourne encore sur l'ancien bundle afficherait la jambe sortante SEULE — pire qu'aujourd'hui) · <b>ⓕ un achat d'actif pour le coffre PRÉVIENT LES MEMBRES</b> : la cloche + le centre de notifications, ET l'acte entre à la Chronique ; par l'invariant de complétude, la notification et la candidature Chronique voyagent dans la MÊME tranche que la ligne — jamais un backlog.
+    <b>⚠ ⓐ REND CADUQUES DEUX FERMETURES DATÉES QUI SE LISENT ENCORE COMME DU CANON</b> — nommées ici pour qu'aucune session ne les restaure : <span class="mono">CANON_PROTOCOL_LANGUAGE.md:314</span> (la phrase canonique de sortie de trésorerie) et <span class="mono">WALLET_TRACKING_AND_ACTIVITY_REBUILD.md:157</span> (la « faille 5 », fermée le 22 juillet en s'appuyant sur le fait EOA — le fait même qui la réfute). <b>🔴 ET IL Y A UNE DÉCISION QUI N'APPARTIENT QU'À TOI : ⓐ N'EST PAS CONSTRUCTIBLE AUJOURD'HUI.</b> Rien ne conserve l'expéditeur d'une transaction : l'écriture en base enregistre NEUF champs et l'expéditeur n'en fait pas partie ; l'appel que fait le scanner ne le renvoie même pas. Deux options, ton choix, rien n'est décidé : <b>(1)</b> une tranche d'enrichissement qui va CHERCHER et conserve le signataire avant la tranche de vocabulaire, ou <b>(2)</b> reformuler ⓐ — retirer la mention de signature de la phrase tant qu'aucun signataire n'est stocké (la lecture fail-closed : une phrase honnête plus simple vaut mieux qu'une attestation que rien ne vérifie). En attendant, le seul geste sûr est de RETIRER l'attestation fausse.
+    <b>UNE CORRECTION DE VÉRITÉ AU PASSAGE :</b> « l'AVAX natif ne peut honnêtement pas avoir de voie » était <b>FAUX</b>, et deux docs de vérité le disaient. Le transfert natif n'émet pas de log, mais le routeur d'agrégation émet UN log qui porte TOUT l'échange (adresse zéro = AVAX natif) : une voie est donc possible. Un workflow séparé la conçoit — <b>aucune session ne la construit depuis cette note.</b></p>
   </section>
 
   <section class="block-callout">
@@ -269,7 +278,7 @@ footer b{color:var(--ink-soft);}
 </li>
 <li class="step">
   <span class="snum">16</span>
-  <div class="sbody"><div class="stitle">Phase-6 audits + MVP-final checklist + domain-transfer infra</div><div class="swhy">a11y/responsive/performance seal, then Q32+llms.txt on the founder's 'MVP final' word, and CDN/301/HSTS at the ~Sept 2026 domain transfer.</div></div>
+  <div class="sbody"><div class="stitle">Phase-6 audits + MVP-final checklist + domain-transfer infra</div><div class="swhy">a11y/responsive/performance seal, then Q32+llms.txt on the Founder's 'MVP final' word, and CDN/301/HSTS at the ~Sept 2026 domain transfer.</div></div>
 </li></ol>
   </section>
 
@@ -278,8 +287,8 @@ footer b{color:var(--ink-soft);}
     <h2 class="serif">Les décisions qui n'appartiennent qu'à toi <span style="color:var(--s-block)">(33 ouvertes · 2 tranchées — la route /season le 23 juil. · la revue légale retirée le 24 juil.)</span></h2>
     <p class="sec-desc">Gates fondateur : sécurité/autorité · vérité chaîne · argent · légal/copie publique · go-live. Je ne peux pas les débloquer seul.</p>
     <ul class="ny-list"><li class="ny">
-  <div class="ny-head"><span class="pid">AW-5</span><span class="ptitle">Nommer le wallet de paiement d'archive (0xe417…d56f)</span></div>
-  <p class="psum">Le wallet découvert sur chaîne reçoit l'USDC de mécénat des artefacts et ne figure dans AUCUN registre. Ton NOM d'abord ; ensuite sa lane s'indexe (invariant de complétude du heartbeat), les échelons de mécénat gagnent leurs ancrages de transaction pour SCELLER, et il entre au carnet d'adresses. Ajouté 22 juil. (f98798f).</p>
+  <div class="ny-head"><span class="pid">AW-5</span><span class="ptitle">Les 2 artefacts mintés par le NFT Sale Wallet — « mint du protocole » ou « Community » ?</span></div>
+  <p class="psum"><b>✅ LE NOM EST TRANCHÉ (25 juil.) : « NFT Sale Wallet »</b> — le portefeuille <span class="mono">0xe417…d56f</span> est pinné, réconcilié en direct contre le <span class="mono">treasury()</span> du contrat, et sa voie d'indexation est LIVRÉE (<span class="mono">add5bb8</span>, 4ᵉ organe du battement de cœur). <b>CE QUI RESTE ET N'APPARTIENT QU'À TOI :</b> ce portefeuille a lui-même minté 2 des 17 artefacts, aujourd'hui étiquetés « Community ». Tu décides s'ils basculent en mint du protocole ou restent Community. Reste aussi sous ⑧ : le SCELLEMENT effectif des échelons de mécénat, désormais possible puisque leur source de transaction existe. Ajouté 22 juil. (f98798f) · nom clos 25 juil. · ligne recadrée le 26 juil. (elle demandait encore un nom déjà donné).</p>
 </li>
 <li class="ny">
   <div class="ny-head"><span class="pid">season-route</span><span class="ptitle">Nommer la route publique — ✅ TRANCHÉ &amp; LIVRÉ (/season, S2b 1b77b66)</span></div>
@@ -311,7 +320,7 @@ footer b{color:var(--ink-soft);}
 </li>
 <li class="ny">
   <div class="ny-head"><span class="pid">notif-prefs</span><span class="ptitle">Per-category member preference center</span></div>
-  <p class="psum">Sections A/B/C/D, mandatory uncuttable essentials, granular consent, marketing opt-OUT by default. Final category set + mandatory set are open founder decisions.</p>
+  <p class="psum">Sections A/B/C/D, mandatory uncuttable essentials, granular consent, marketing opt-OUT by default. Final category set + mandatory set are open Founder decisions.</p>
 </li>
 <li class="ny">
   <div class="ny-head"><span class="pid">notif-order-slot</span><span class="ptitle">Slot the prefs+auto-events enrichment in the order</span></div>
@@ -322,12 +331,12 @@ footer b{color:var(--ink-soft);}
   <p class="psum">Commit a filing's hash on-chain so a reader verifies the exact document; durability hash &gt; stored-doc &gt; external link. Ties to AUD-T legal-doc set timing.</p>
 </li>
 <li class="ny">
-  <div class="ny-head"><span class="pid">chr-images</span><span class="ptitle">Per-article image (generated house-style + founder override)</span></div>
-  <p class="psum">On promotion, generate a locked-house-style candidate image (gold-on-dark); founder accepts or overrides; static asset, 1200×630, never live external fetch. Approach is founder decision #2.</p>
+  <div class="ny-head"><span class="pid">chr-images</span><span class="ptitle">Per-article image (generated house-style + Founder override)</span></div>
+  <p class="psum">On promotion, generate a locked-house-style candidate image (gold-on-dark); Founder accepts or overrides; static asset, 1200×630, never live external fetch. Approach is Founder decision #2.</p>
 </li>
 <li class="ny">
   <div class="ny-head"><span class="pid">seven-signatures</span><span class="ptitle">Seven-signatures Chronicle story</span></div>
-  <p class="psum">Chapter awaiting the founder's act; raw material committed (seven historical seats claimed 01:58–02:27 GMT); resolve partial tx anchors before writing the candidate.</p>
+  <p class="psum">Chapter awaiting the Founder's act; raw material committed (seven historical seats claimed 01:58–02:27 GMT); resolve partial tx anchors before writing the candidate.</p>
 </li>
 <li class="ny">
   <div class="ny-head"><span class="pid">gam-payout</span><span class="ptitle">Season-pot payout wiring (Merkle) + pot params</span></div>
@@ -359,11 +368,11 @@ footer b{color:var(--ink-soft);}
 </li>
 <li class="ny">
   <div class="ny-head"><span class="pid">Q6</span><span class="ptitle">Permanence: declared vs derived</span></div>
-  <p class="psum">status-as-derived ratified; permanence-as-declared not yet confirmed by founder.</p>
+  <p class="psum">status-as-derived ratified; permanence-as-declared not yet confirmed by Founder.</p>
 </li>
 <li class="ny">
   <div class="ny-head"><span class="pid">Q9</span><span class="ptitle">SERVER-ONLY HOMES wording (Option A)</span></div>
-  <p class="psum">Exact server-only-homes copy (system level, zero counts/dates/addresses); provenance unsure — founder confirms provenance.</p>
+  <p class="psum">Exact server-only-homes copy (system level, zero counts/dates/addresses); provenance unsure — Founder confirms provenance.</p>
 </li>
 <li class="ny">
   <div class="ny-head"><span class="pid">Q32</span><span class="ptitle">23 over-budget meta descriptions + guard ceiling</span></div>
@@ -395,7 +404,7 @@ footer b{color:var(--ink-soft);}
 </li>
 <li class="ny">
   <div class="ny-head"><span class="pid">S5-soul-document</span><span class="ptitle">Soul Document import</span></div>
-  <p class="psum">Import the founder's doctrine/soul paper as TIER-1 with a SUPERSEDED-TERMS banner; awaits the founder's paste.</p>
+  <p class="psum">Import the Founder's doctrine/soul paper as TIER-1 with a SUPERSEDED-TERMS banner; awaits the Founder's paste.</p>
 </li>
 <li class="ny">
   <div class="ny-head"><span class="pid">reserved-vm</span><span class="ptitle">Reserved-VM / durable session</span></div>
@@ -407,15 +416,15 @@ footer b{color:var(--ink-soft);}
 </li>
 <li class="ny">
   <div class="ny-head"><span class="pid">antiblocage-commit</span><span class="ptitle">Commit AUDIT_TRIAGE_ET_LOI_ANTIBLOCAGE.md into docs/direction</span></div>
-  <p class="psum">The founder's anti-blocking audit-triage file is OUT-OF-REPO on the founder's disk; the hard rule wants it committed at the founder's GO.</p>
+  <p class="psum">The Founder's anti-blocking audit-triage file is OUT-OF-REPO on the Founder's disk; the hard rule wants it committed at the Founder's GO.</p>
 </li>
 <li class="ny">
   <div class="ny-head"><span class="pid">Q13</span><span class="ptitle">2.11 flow 5-step → 2-step + checkout ordering</span></div>
-  <p class="psum">Compress the flow to 2 steps; whether checkout jumps ahead of 2.6–2.10 is a founder ordering call.</p>
+  <p class="psum">Compress the flow to 2 steps; whether checkout jumps ahead of 2.6–2.10 is a Founder ordering call.</p>
 </li>
 <li class="ny">
-  <div class="ny-head"><span class="pid">mvp-final-pick</span><span class="ptitle">MVP-final master brief — founder picks slice 1</span></div>
-  <p class="psum">Complete final MVP scope + ordered M0–M10 map is canon; the founder picks slice 1, nothing opens before that pick. Governs whether the M-arc proceeds. Also the MVP_FINAL_CHECKLIST fires ONLY on 'MVP final, run the checklist'.</p>
+  <div class="ny-head"><span class="pid">mvp-final-pick</span><span class="ptitle">MVP-final master brief — Founder picks slice 1</span></div>
+  <p class="psum">Complete final MVP scope + ordered M0–M10 map is canon; the Founder picks slice 1, nothing opens before that pick. Governs whether the M-arc proceeds. Also the MVP_FINAL_CHECKLIST fires ONLY on 'MVP final, run the checklist'.</p>
 </li></ul>
   </section>
 
@@ -425,15 +434,15 @@ footer b{color:var(--ink-soft);}
     <p class="sec-desc">Détecté comme probablement scellé en prod mais avec une ligne de doc contradictoire ou une clôture fondateur en attente. À confirmer, pas à reconstruire (la leçon Q43, appliquée à l'échelle).</p>
     <ul class="pd-list"><li class="pd">
   <div class="pd-head"><span class="pid">Q36</span><span class="ptitle">Q36 — founder_root seed ceremony</span></div>
-  <p class="psum">Opened 🔴 but SESSION_STATE SEAL-Q36-Q37 confirms founder_root 0x88EC…Dd73 ACTIVE/audited since 19:57Z and founder verified 'Operator · founder_root' live — awaiting only formal founder close, not work.</p>
+  <p class="psum">Opened 🔴 but SESSION_STATE SEAL-Q36-Q37 confirms founder_root 0x88EC…Dd73 ACTIVE/audited since 19:57Z and Founder verified 'Operator · founder_root' live — awaiting only formal Founder close, not work.</p>
 </li>
 <li class="pd">
   <div class="pd-head"><span class="pid">Q37</span><span class="ptitle">Q37 — Replit prod-DB operator/audit tables</span></div>
-  <p class="psum">Opened 🔵 but tables present in prod (constraints dev==prod, Publish schema sync) per SEAL-Q36-Q37 — done, founder-close pending.</p>
+  <p class="psum">Opened 🔵 but tables present in prod (constraints dev==prod, Publish schema sync) per SEAL-Q36-Q37 — done, Founder-close pending.</p>
 </li>
 <li class="pd">
-  <div class="pd-head"><span class="pid">Q41</span><span class="ptitle">Q41 — 2nd/3rd founder wallets (recovery)</span></div>
-  <p class="psum">SEAL-Q41 records TWO ACTIVE founder_root rows (0x88ec…dd73 + 0x2445…c721) executed by the founder; the recovery property is armed — founder-close pending.</p>
+  <div class="pd-head"><span class="pid">Q41</span><span class="ptitle">Q41 — 2nd/3rd Founder wallets (recovery)</span></div>
+  <p class="psum">SEAL-Q41 records TWO ACTIVE founder_root rows (0x88ec…dd73 + 0x2445…c721) executed by the Founder; the recovery property is armed — Founder-close pending.</p>
 </li>
 <li class="pd">
   <div class="pd-head"><span class="pid">Q40</span><span class="ptitle">Q40 — admin dashboard reorder</span></div>
@@ -456,8 +465,8 @@ footer b{color:var(--ink-soft);}
   <p class="psum">MASTER_BRIEF lists M0/M1/M4/M5/M6 as queued, but SEAL-m-map + SEAL-h2-heartbeat + SEAL-double-deploy confirm all sealed in prod ('THE MACHINERY HALF OF THE M-MAP IS DONE'); only M2/M3/M7–M10 remain — the biggest reconciliation in this synthesis.</p>
 </li>
 <li class="pd">
-  <div class="pd-head"><span class="pid">NOTIF-first-broadcast / NOTIF-broadcast-test</span><span class="ptitle">First founder broadcast + throwaway test</span></div>
-  <p class="psum">Listed blocked-on-founder/queued in LIVING_NOTIFICATION_LAYER, but Q42-broadcast SEAL says the founder already sent the first broadcast 'This message opens the record.' — the channel is proven and used.</p>
+  <div class="pd-head"><span class="pid">NOTIF-first-broadcast / NOTIF-broadcast-test</span><span class="ptitle">First Founder broadcast + throwaway test</span></div>
+  <p class="psum">Listed blocked-on-founder/queued in LIVING_NOTIFICATION_LAYER, but Q42-broadcast SEAL says the Founder already sent the first broadcast 'This message opens the record.' — the channel is proven and used.</p>
 </li>
 <li class="pd">
   <div class="pd-head"><span class="pid">c1-2b-4-checkout-remaining</span><span class="ptitle">C1.2b/C1.3/C1.4 checkout (source line, historical gate, economic proof)</span></div>
@@ -469,7 +478,7 @@ footer b{color:var(--ink-soft);}
 </li>
 <li class="pd">
   <div class="pd-head"><span class="pid">2.5-knowledge / 2.9-protocol-facts / member-link-card / console-propose-form / P3-auth-toggle / wp-page / chassis / prose-atom / guard-banned-word / support-page / floating-guide-robot</span><span class="ptitle">Content pages, chassis atoms, guides and admin bits marked 'likely-done-verify'</span></div>
-  <p class="psum">Registry/route evidence shows these built (Whitepaper/Tokenomics/FAQ/Docs/Risk pages, living/ chassis, Prose atom, SyndicateGuide, Support), but doc checkboxes stayed unticked or the /knowledge-vs-/docs-vs-/learning path is ambiguous; the auto-derived member link card is built but carries the founder-standing defect (kept open in referral).</p>
+  <p class="psum">Registry/route evidence shows these built (Whitepaper/Tokenomics/FAQ/Docs/Risk pages, living/ chassis, Prose atom, SyndicateGuide, Support), but doc checkboxes stayed unticked or the /knowledge-vs-/docs-vs-/learning path is ambiguous; the auto-derived member link card is built but carries the Founder-standing defect (kept open in referral).</p>
 </li></ul>
   </section>
 
@@ -491,7 +500,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">A1</span><span class="ptitle">My Activity — reste la lentille Mine|Protocol</span></div>
       <p class="psum">RESTE : la lentille Mine|Protocol sur le pouls. Le classeur own-row (S0), les placements, les liens view-receipt et la porte Receipts sont SCELLÉS via R-BIND 1-3 (2026-07-19) ; le cœur S2 via l'arc referral slice ④. (Le sceau R-BIND n'est jamais « A1 done » ; l'ordre « engraved next » a été supersédé par le pivot page-par-page du fondateur, 2026-07-19.)</p>
-      <div class="metas"><span class="meta gate">⚑ wireframe + preview (founder)</span></div>
+      <div class="metas"><span class="meta gate">⚑ wireframe + preview (Founder)</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
@@ -530,8 +539,8 @@ footer b{color:var(--ink-soft);}
 <li class="row" data-status="queued">
     <div class="row-main">
       <div class="row-head"><span class="pid">M8</span><span class="ptitle">Identity-Alias (the voice)</span></div>
-      <p class="psum">Opt-in alias above the hex: default invisible, own-row, founder-curated via existing operator write zone; duniter.eth first entry; 'bought as gift' from receipt truth. Alias resolver server (alias↔wallet↔sourceId) is its backend.</p>
-      <div class="metas"><span class="meta gate">⚑ chain truth + founder curation</span><span class="meta dep">↳ dépend de existing operator write zone; feeds M5/M6 names</span></div>
+      <p class="psum">Opt-in alias above the hex: default invisible, own-row, Founder-curated via existing operator write zone; duniter.eth first entry; 'bought as gift' from receipt truth. Alias resolver server (alias↔wallet↔sourceId) is its backend.</p>
+      <div class="metas"><span class="meta gate">⚑ chain truth + Founder curation</span><span class="meta dep">↳ dépend de existing operator write zone; feeds M5/M6 names</span></div>
     </div>
     <span class="chip s-queue">En file</span>
   </li>
@@ -539,14 +548,14 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">M9</span><span class="ptitle">Gift-a-Seat</span></div>
       <p class="psum">Recipient field on checkout; ALL recipient-side guards (knownMember, historical gate, era caps) move to the recipient; honest gift copy; referral applies; receipt records buyer≠recipient.</p>
-      <div class="metas"><span class="meta gate">⚑ money/chain + founder timing</span><span class="meta dep">↳ dépend de C5 checkout (live); label path ties M8</span></div>
+      <div class="metas"><span class="meta gate">⚑ money/chain + Founder timing</span><span class="meta dep">↳ dépend de C5 checkout (live); label path ties M8</span></div>
     </div>
     <span class="chip s-queue">En file</span>
   </li>
 <li class="row" data-status="verify">
     <div class="row-main">
       <div class="row-head"><span class="pid">M10</span><span class="ptitle">Per-receipt row histories</span></div>
-      <p class="psum">CŒUR LIVRÉ (arc referral slice ④, founder GO 2026-07-19, commit f5250f8) : lignes par-introduction own-row verify-linked (date · wallet forme-courte ADR-003 · durable · commission · ancre tx) + le record daté des commissions + les propres achats (D3, déjà scellé). RESTE : l'historique des hausses de taux (SourceTermsUpdated indexé SANS sourceId — micro-slice backbone, raison au dossier).</p>
+      <p class="psum">CŒUR LIVRÉ (arc referral slice ④, Founder GO 2026-07-19, commit f5250f8) : lignes par-introduction own-row verify-linked (date · wallet forme-courte ADR-003 · durable · commission · ancre tx) + le record daté des commissions + les propres achats (D3, déjà scellé). RESTE : l'historique des hausses de taux (SourceTermsUpdated indexé SANS sourceId — micro-slice backbone, raison au dossier).</p>
       <div class="metas"><span class="meta dep">↳ dépend de M4 (done); R5 (done); slice ④ scellé en prod (f5250f8 + f436c42, 2026-07-19)</span></div>
     </div>
     <span class="chip s-verify">Cœur scellé en prod</span>
@@ -594,7 +603,7 @@ footer b{color:var(--ink-soft);}
 <li class="row" data-status="open">
     <div class="row-main">
       <div class="row-head"><span class="pid">toolkit-registry</span><span class="ptitle">full action registry (conversion engine)</span></div>
-      <p class="psum">/toolkit renders 5 actions vs the designed ~23-action registry with locks-visible-with-reasons; owes a SYSTEM-FIRST inventory pass to the founder.</p>
+      <p class="psum">/toolkit renders 5 actions vs the designed ~23-action registry with locks-visible-with-reasons; owes a SYSTEM-FIRST inventory pass to the Founder.</p>
       
     </div>
     <span class="chip s-open">À faire</span>
@@ -653,7 +662,7 @@ footer b{color:var(--ink-soft);}
       <div>
         <div class="cat-eyebrow">Admin controllability (Q42 wave)</div>
         <h3>Contrôle admin — vague Q42</h3>
-        <p class="cat-blurb">The gap list of things the founder can't yet control from admin; one slice each on the proven write-zone+audit pattern. M-INT-2 leads (engraved #4).</p>
+        <p class="cat-blurb">The gap list of things the Founder can't yet control from admin; one slice each on the proven write-zone+audit pattern. M-INT-2 leads (engraved #4).</p>
       </div>
       <div class="cat-count"><b>15</b><span>éléments</span></div>
     </header>
@@ -677,7 +686,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">q42-flag-writes</span><span class="ptitle">real feature-flag writes + referral kill-switch</span></div>
       <p class="psum">Operator write controls incl. the referral kill-switch (setSourceStatus / feature flags). Kill-switch touches on-chain source status.</p>
-      <div class="metas"><span class="meta gate">⚑ chain/money — founder-signed act</span><span class="meta dep">↳ dépend de q42-audit-read</span></div>
+      <div class="metas"><span class="meta gate">⚑ chain/money — Founder-signed act</span><span class="meta dep">↳ dépend de q42-audit-read</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -693,7 +702,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">q42-content-mgmt</span><span class="ptitle">content management from admin</span></div>
       <p class="psum">In-admin editing of docs/pages without code; content is code-based today (faq-content.ts etc.); /admin/content is address-label reservations, not a CMS.</p>
-      <div class="metas"><span class="meta gate">⚑ public-copy — founder-gated content</span><span class="meta dep">↳ dépend de q42-audit-read; P4-crud</span></div>
+      <div class="metas"><span class="meta gate">⚑ public-copy — Founder-gated content</span><span class="meta dep">↳ dépend de q42-audit-read; P4-crud</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
@@ -717,7 +726,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">q42-chronicle-promote</span><span class="ptitle">chronicle-promote pathway (CHR-1)</span></div>
       <p class="psum">Operator promotion console that closes the manifesto's Chronicle loop; CHR-1 canon question = which event classes auto-promote. Public /chronicle already live with first promotion.</p>
-      <div class="metas"><span class="meta gate">⚑ public-copy/canon — founder decides class list</span><span class="meta dep">↳ dépend de CHR detect pipeline; P5-backbone (done)</span></div>
+      <div class="metas"><span class="meta gate">⚑ public-copy/canon — Founder decides class list</span><span class="meta dep">↳ dépend de CHR detect pipeline; P5-backbone (done)</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -748,8 +757,8 @@ footer b{color:var(--ink-soft);}
 <li class="row" data-status="deferred">
     <div class="row-main">
       <div class="row-head"><span class="pid">Q38</span><span class="ptitle">operator step-up signatures</span></div>
-      <p class="psum">Re-sign step-up for founder-root/sensitive acts; design-only, founder-optional; its own slice (writes are founder-only + audited meanwhile).</p>
-      <div class="metas"><span class="meta gate">⚑ security — founder confirms set or defers</span><span class="meta dep">↳ dépend de Q42 wave</span></div>
+      <p class="psum">Re-sign step-up for Founder-root/sensitive acts; design-only, Founder-optional; its own slice (writes are Founder-only + audited meanwhile).</p>
+      <div class="metas"><span class="meta gate">⚑ security — Founder confirms set or defers</span><span class="meta dep">↳ dépend de Q42 wave</span></div>
     </div>
     <span class="chip s-defer">Plus tard · horizon</span>
   </li>
@@ -789,7 +798,7 @@ footer b{color:var(--ink-soft);}
     </header>
     <ul class="rows"><li class="row" data-status="verify">
     <div class="row-main">
-      <div class="row-head"><span class="pid">founder-standing-derivation</span><span class="ptitle">Match indexed sources by payoutWallet (founder's BUILDER_SOURCE)</span></div>
+      <div class="row-head"><span class="pid">founder-standing-derivation</span><span class="ptitle">Match indexed sources by payoutWallet (Founder's BUILDER_SOURCE)</span></div>
       <p class="psum">Scellé 235205c (fallback payoutWallet) ; confirmé par la capture prod du fondateur 2026-07-18 (« 2 durable · 2 total » + « $70.00 · Patron » rendus live).</p>
       <div class="metas"><span class="meta dep">↳ dépend de R5 (done)</span></div>
     </div>
@@ -814,7 +823,7 @@ footer b{color:var(--ink-soft);}
 <li class="row" data-status="verify">
     <div class="row-main">
       <div class="row-head"><span class="pid">R3-via</span><span class="ptitle">&amp;via= channel (off-chain attribution)</span></div>
-      <p class="psum">SCELLÉ EN PROD (a65df77, cycle migration Replit vert 2026-07-19; arc referral slice ③, founder wording + GO-Live) : la 3ᵉ zone d'écriture sanctionnée src/channel/ — compteurs agrégés par (code, canal, jour), JAMAIS l'identité du visiteur; conversions vérifiées contre le reçu on-chain par le serveur; breakdown own-row vivant dans l'onglet Link &amp; channels; Privacy V2 + Terms §7 même commit; tables neondb + index uniques confirmés.</p>
+      <p class="psum">SCELLÉ EN PROD (a65df77, cycle migration Replit vert 2026-07-19; arc referral slice ③, Founder wording + GO-Live) : la 3ᵉ zone d'écriture sanctionnée src/channel/ — compteurs agrégés par (code, canal, jour), JAMAIS l'identité du visiteur; conversions vérifiées contre le reçu on-chain par le serveur; breakdown own-row vivant dans l'onglet Link &amp; channels; Privacy V2 + Terms §7 même commit; tables neondb + index uniques confirmés.</p>
 
     </div>
     <span class="chip s-verify">Scellé en prod</span>
@@ -830,7 +839,7 @@ footer b{color:var(--ink-soft);}
 <li class="row" data-status="open">
     <div class="row-main">
       <div class="row-head"><span class="pid">snapshot-automation</span><span class="ptitle">Referral standing snapshot-refresh automation (M0)</span></div>
-      <p class="psum">Cadence closed (weekly + re-run before any promotion); the refresh run stays founder-gated until full automation lands with M0.</p>
+      <p class="psum">Cadence closed (weekly + re-run before any promotion); the refresh run stays Founder-gated until full automation lands with M0.</p>
       <div class="metas"><span class="meta dep">↳ dépend de R5 (done)</span></div>
     </div>
     <span class="chip s-open">À faire</span>
@@ -937,23 +946,23 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">notif-autogen</span><span class="ptitle">AUTO protocol-event notification generator</span></div>
       <p class="psum">Backend that turns real reality-spine events into categorized notifications (born from events, never mock/arithmetic — Mirror discipline). The central v2 build; taxonomy scaffold already sealed.</p>
-      <div class="metas"><span class="meta gate">⚑ chain/founder — operator turns each class on deliberately</span><span class="meta dep">↳ dépend de NOTIF v2 taxonomy (done)</span></div>
+      <div class="metas"><span class="meta gate">⚑ chain/Founder — operator turns each class on deliberately</span><span class="meta dep">↳ dépend de NOTIF v2 taxonomy (done)</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
 <li class="row" data-status="open">
     <div class="row-main">
       <div class="row-head"><span class="pid">notif-event-classes</span><span class="ptitle">Auto event classes (6)</span></div>
-      <p class="psum">first-of-class→founder (CHR-1 tie), referral succeeded/commission paid (amount shown), rung rose/footprint milestone, season closed recognition ready, ramp-to-seat completed, institutional (burn/treasury/chapter crossing).</p>
-      <div class="metas"><span class="meta gate">⚑ founder slots each class LIVE</span><span class="meta dep">↳ dépend de notif-autogen</span></div>
+      <p class="psum">first-of-class→Founder (CHR-1 tie), referral succeeded/commission paid (amount shown), rung rose/footprint milestone, season closed recognition ready, ramp-to-seat completed, institutional (burn/treasury/chapter crossing).</p>
+      <div class="metas"><span class="meta gate">⚑ Founder slots each class LIVE</span><span class="meta dep">↳ dépend de notif-autogen</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
 <li class="row" data-status="blocked-on-founder">
     <div class="row-main">
       <div class="row-head"><span class="pid">notif-prefs</span><span class="ptitle">Per-category member preference center</span></div>
-      <p class="psum">Sections A/B/C/D, mandatory uncuttable essentials, granular consent, marketing opt-OUT by default. Final category set + mandatory set are open founder decisions.</p>
-      <div class="metas"><span class="meta gate">⚑ founder — final category set + mandatory set</span><span class="meta dep">↳ dépend de NOTIF v2 taxonomy (done)</span></div>
+      <p class="psum">Sections A/B/C/D, mandatory uncuttable essentials, granular consent, marketing opt-OUT by default. Final category set + mandatory set are open Founder decisions.</p>
+      <div class="metas"><span class="meta gate">⚑ Founder — final category set + mandatory set</span><span class="meta dep">↳ dépend de NOTIF v2 taxonomy (done)</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -961,7 +970,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">notif-engine</span><span class="ptitle">Preference + evaluation engine (backend)</span></div>
       <p class="psum">Per-member store (subscriptions, quiet-hours+tz, rate limits) + pre-dispatch engine: mandatory-override → muted-skip → quiet-hours-queue → rate-limit-batch.</p>
-      <div class="metas"><span class="meta gate">⚑ founder — quiet-hours/rate-limit defaults</span><span class="meta dep">↳ dépend de notif-prefs</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder — quiet-hours/rate-limit defaults</span><span class="meta dep">↳ dépend de notif-prefs</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
@@ -1009,7 +1018,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">notif-admin-governance</span><span class="ptitle">Admin: govern which auto classes are LIVE vs held</span></div>
       <p class="psum">Operator enables each automatic class deliberately (PENDING until wired), sets rate-limit/quiet-hours defaults, member-overridable.</p>
-      <div class="metas"><span class="meta gate">⚑ founder — which classes go live</span><span class="meta dep">↳ dépend de notif-autogen</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder — which classes go live</span><span class="meta dep">↳ dépend de notif-autogen</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
@@ -1017,7 +1026,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">notif-order-slot</span><span class="ptitle">Slot the prefs+auto-events enrichment in the order</span></div>
       <p class="psum">Where NOTIF-1's growth sits in the build order; shell in prod, this is its next slot.</p>
-      <div class="metas"><span class="meta gate">⚑ founder — scheduling</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder — scheduling</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li></ul>
@@ -1034,7 +1043,7 @@ footer b{color:var(--ink-soft);}
     <ul class="rows"><li class="row" data-status="open">
     <div class="row-main">
       <div class="row-head"><span class="pid">B1</span><span class="ptitle">THE FIRSTS engine (Chronicle-candidates queue)</span></div>
-      <p class="psum">Derived firsts-per-class detection (first burn/community-LP/referred-purchase/rung-rise) as an OPEN registry feeding a Chronicle-candidates queue; machine proposes, founder promotes. ENGRAVED #2 (after A1).</p>
+      <p class="psum">Derived firsts-per-class detection (first burn/community-LP/referred-purchase/rung-rise) as an OPEN registry feeding a Chronicle-candidates queue; machine proposes, Founder promotes. ENGRAVED #2 (after A1).</p>
       <div class="metas"><span class="meta dep">↳ dépend de A1</span></div>
     </div>
     <span class="chip s-open">À faire</span>
@@ -1050,8 +1059,8 @@ footer b{color:var(--ink-soft);}
 <li class="row" data-status="open">
     <div class="row-main">
       <div class="row-head"><span class="pid">chr-newsroom-home</span><span class="ptitle">Chronicle home teaser redesign</span></div>
-      <p class="psum">Featured hero + (N-1) cards, adaptive 3→6, never invent an entry to fill a slot. Home count 3-vs-6 is founder decision #1.</p>
-      <div class="metas"><span class="meta gate">⚑ wireframe — founder count decision</span></div>
+      <p class="psum">Featured hero + (N-1) cards, adaptive 3→6, never invent an entry to fill a slot. Home count 3-vs-6 is Founder decision #1.</p>
+      <div class="metas"><span class="meta gate">⚑ wireframe — Founder count decision</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
@@ -1059,7 +1068,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">chr-newsroom-page</span><span class="ptitle">Dedicated /chronicle newsroom page</span></div>
       <p class="psum">Header + filter chips (All/On-chain/Off-chain/Chapter), featured lead, responsive card grid, show-more/pagination.</p>
-      <div class="metas"><span class="meta gate">⚑ wireframe — founder-approved</span></div>
+      <div class="metas"><span class="meta gate">⚑ wireframe — Founder-approved</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
@@ -1067,15 +1076,15 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">chr-entry-page</span><span class="ptitle">Single entry page /chronicle/{slug} + stable permalink</span></div>
       <p class="psum">Editorial article: hero image, kind chip+chapter, title, dek, date, prose, proof block, prev/next, share card; linkable/citable slug never renumbered.</p>
-      <div class="metas"><span class="meta gate">⚑ wireframe — founder-approved</span><span class="meta dep">↳ dépend de chr-proof-model</span></div>
+      <div class="metas"><span class="meta gate">⚑ wireframe — Founder-approved</span><span class="meta dep">↳ dépend de chr-proof-model</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
 <li class="row" data-status="open">
     <div class="row-main">
       <div class="row-head"><span class="pid">chr-proof-model</span><span class="ptitle">Backing-proof model + proof kinds + reader legend</span></div>
-      <p class="psum">Every entry carries a proof kind (on-chain / document-backed / source-backed / founder-attested); on-chain→tx+block+Verify; off-chain→artifact+'what backs this'; honest absence; reader legend. No unbacked entries. Off-chain proof floor is founder decision #3.</p>
-      <div class="metas"><span class="meta gate">⚑ founder — off-chain proof floor</span></div>
+      <p class="psum">Every entry carries a proof kind (on-chain / document-backed / source-backed / Founder-attested); on-chain→tx+block+Verify; off-chain→artifact+'what backs this'; honest absence; reader legend. No unbacked entries. Off-chain proof floor is Founder decision #3.</p>
+      <div class="metas"><span class="meta gate">⚑ Founder — off-chain proof floor</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
@@ -1091,7 +1100,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">chr-doc-hash</span><span class="ptitle">On-chain document-hash commitment</span></div>
       <p class="psum">Commit a filing's hash on-chain so a reader verifies the exact document; durability hash &gt; stored-doc &gt; external link. Ties to AUD-T legal-doc set timing.</p>
-      <div class="metas"><span class="meta gate">⚑ chain/founder — timing (now vs after legal set)</span><span class="meta dep">↳ dépend de chr-proof-model</span></div>
+      <div class="metas"><span class="meta gate">⚑ chain/Founder — timing (now vs after legal set)</span><span class="meta dep">↳ dépend de chr-proof-model</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -1129,9 +1138,9 @@ footer b{color:var(--ink-soft);}
   </li>
 <li class="row" data-status="blocked-on-founder">
     <div class="row-main">
-      <div class="row-head"><span class="pid">chr-images</span><span class="ptitle">Per-article image (generated house-style + founder override)</span></div>
-      <p class="psum">On promotion, generate a locked-house-style candidate image (gold-on-dark); founder accepts or overrides; static asset, 1200×630, never live external fetch. Approach is founder decision #2.</p>
-      <div class="metas"><span class="meta gate">⚑ founder — image approach</span><span class="meta dep">↳ dépend de chr-detect-pipeline</span></div>
+      <div class="row-head"><span class="pid">chr-images</span><span class="ptitle">Per-article image (generated house-style + Founder override)</span></div>
+      <p class="psum">On promotion, generate a locked-house-style candidate image (gold-on-dark); Founder accepts or overrides; static asset, 1200×630, never live external fetch. Approach is Founder decision #2.</p>
+      <div class="metas"><span class="meta gate">⚑ Founder — image approach</span><span class="meta dep">↳ dépend de chr-detect-pipeline</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -1139,7 +1148,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">chr-visual-lang</span><span class="ptitle">Chronicle visual language</span></div>
       <p class="psum">Reuse studio tokens (gold accent, serif titles, mono data lines), readability laws; feel like the same institution as the receipt.</p>
-      <div class="metas"><span class="meta gate">⚑ wireframe — founder-approved</span></div>
+      <div class="metas"><span class="meta gate">⚑ wireframe — Founder-approved</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
@@ -1154,23 +1163,23 @@ footer b{color:var(--ink-soft);}
 <li class="row" data-status="deferred">
     <div class="row-main">
       <div class="row-head"><span class="pid">chr-intelligence</span><span class="ptitle">Chronicle intelligence upgrades (10)</span></div>
-      <p class="psum">Significance scoring, machine-drafted dek/title, first-of-class awareness, compound-moment detection, chapter/era placement, image pre-gen, dedupe guard, confidence flags, off-chain intelligence, opt-in learning loop. Founder picks which/when (#6); learning loop is a deliberate founder opt-in.</p>
-      <div class="metas"><span class="meta gate">⚑ founder — which upgrades, when</span><span class="meta dep">↳ dépend de chr-detect-pipeline</span></div>
+      <p class="psum">Significance scoring, machine-drafted dek/title, first-of-class awareness, compound-moment detection, chapter/era placement, image pre-gen, dedupe guard, confidence flags, off-chain intelligence, opt-in learning loop. Founder picks which/when (#6); learning loop is a deliberate Founder opt-in.</p>
+      <div class="metas"><span class="meta gate">⚑ Founder — which upgrades, when</span><span class="meta dep">↳ dépend de chr-detect-pipeline</span></div>
     </div>
     <span class="chip s-defer">Plus tard · horizon</span>
   </li>
 <li class="row" data-status="blocked-on-founder">
     <div class="row-main">
       <div class="row-head"><span class="pid">seven-signatures</span><span class="ptitle">Seven-signatures Chronicle story</span></div>
-      <p class="psum">Chapter awaiting the founder's act; raw material committed (seven historical seats claimed 01:58–02:27 GMT); resolve partial tx anchors before writing the candidate.</p>
-      <div class="metas"><span class="meta gate">⚑ founder promotes (CHR-1)</span><span class="meta dep">↳ dépend de resolve partial anchors</span></div>
+      <p class="psum">Chapter awaiting the Founder's act; raw material committed (seven historical seats claimed 01:58–02:27 GMT); resolve partial tx anchors before writing the candidate.</p>
+      <div class="metas"><span class="meta gate">⚑ Founder promotes (CHR-1)</span><span class="meta dep">↳ dépend de resolve partial anchors</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
 <li class="row" data-status="deferred">
     <div class="row-main">
       <div class="row-head"><span class="pid">chronicle-teaser-rename</span><span class="ptitle">ChronicleTeaser.tsx rename</span></div>
-      <p class="psum">Deliberately kept (register-empty future teaser state); renames the day the founder promotes the first Chronicle entry.</p>
+      <p class="psum">Deliberately kept (register-empty future teaser state); renames the day the Founder promotes the first Chronicle entry.</p>
       <div class="metas"><span class="meta dep">↳ dépend de first Chronicle promotion</span></div>
     </div>
     <span class="chip s-defer">Plus tard · horizon</span>
@@ -1181,7 +1190,7 @@ footer b{color:var(--ink-soft);}
       <div>
         <div class="cat-eyebrow">Seasons / gamification</div>
         <h3>Saisons / gamification</h3>
-        <p class="cat-blurb">Phase-5 recognition engine harvested from Supa, recognition-only (never XP→cash). Money-touching pieces are founder-gated (money decision only — §8-⑧: no legal gate); the season pot MAY pay real merit value (doctrine engraved 2026-07-18).</p>
+        <p class="cat-blurb">Phase-5 recognition engine harvested from Supa, recognition-only (never XP→cash). Money-touching pieces are Founder-gated (money decision only — §8-⑧: no legal gate); the season pot MAY pay real merit value (doctrine engraved 2026-07-18).</p>
       </div>
       <div class="cat-count"><b>21</b><span>éléments</span></div>
     </header>
@@ -1237,7 +1246,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">gam-harvest-shell</span><span class="ptitle">Harvest tiers/rarities/badges/quests shell + interconnection</span></div>
       <p class="psum">tiers.ts (explorer→legend, bronze→diamond, common→mythic), badge/quest services, seed/exports; wire the badges↔ranking↔activity↔chronicle↔XP↔season interconnection to reality-spine reads not Supa DB.</p>
-      <div class="metas"><span class="meta gate">⚑ founder — when harvest enters the order</span><span class="meta dep">↳ dépend de season-engine</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder — when harvest enters the order</span><span class="meta dep">↳ dépend de season-engine</span></div>
     </div>
     <span class="chip s-queue">En file</span>
   </li>
@@ -1245,7 +1254,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">gam-payout</span><span class="ptitle">Season-pot payout wiring (Merkle) + pot params</span></div>
       <p class="psum">Payout par MeritDistributor — le contrat est GELÉ (spec v4, docs/reference/MERITDISTRIBUTOR_CONTRACT_SPEC.md) et le .sol est VERT 56/56 avec son filet adversarial (24-07). Distribution déterministe-par-contribution d'argent marketing entreprise (jamais SYN, jamais proportionnel-achat, jamais 70/20/10). SEUL ouvert : taille/cadence/courbe — ta décision d'argent (§8-⑧ : aucune barrière légale).</p>
-      <div class="metas"><span class="meta gate">⚑ money/founder</span><span class="meta dep">↳ dépend de season-engine</span></div>
+      <div class="metas"><span class="meta gate">⚑ money/Founder</span><span class="meta dep">↳ dépend de season-engine</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -1316,8 +1325,8 @@ footer b{color:var(--ink-soft);}
 <li class="row" data-status="deferred">
     <div class="row-main">
       <div class="row-head"><span class="pid">verifiable-reputation</span><span class="ptitle">Verifiable reputation (multi-axis, D5)</span></div>
-      <p class="psum">Unfakeable on-chain multi-axis standing (tenure+receipts+contributions+introductions), never a wealth ranking. /recognition is a PENDING concept only; axes framing is founder decision #3.</p>
-      <div class="metas"><span class="meta gate">⚑ founder — axes shown, never richest-payer</span></div>
+      <p class="psum">Unfakeable on-chain multi-axis standing (tenure+receipts+contributions+introductions), never a wealth ranking. /recognition is a PENDING concept only; axes framing is Founder decision #3.</p>
+      <div class="metas"><span class="meta gate">⚑ Founder — axes shown, never richest-payer</span></div>
     </div>
     <span class="chip s-defer">Plus tard · horizon</span>
   </li>
@@ -1341,7 +1350,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">swap-season-tie</span><span class="ptitle">Ramp ↔ season-pot tie</span></div>
       <p class="psum">Is 'used the ramp' ever a season-recognized activity (merit, never chance)?</p>
-      <div class="metas"><span class="meta gate">⚑ founder — merit-activity decision</span><span class="meta dep">↳ dépend de gam-payout</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder — merit-activity decision</span><span class="meta dep">↳ dépend de gam-payout</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -1359,7 +1368,7 @@ footer b{color:var(--ink-soft);}
       <div>
         <div class="cat-eyebrow">Swap / bridge ramp</div>
         <h3>Rampe swap / bridge</h3>
-        <p class="cat-blurb">A ramp-to-seat via thirdweb derrière l'AssetRouter (V1 — étape 15 : supersède LI.FI ; LI.FI/0x = adaptateurs fallback) (door, not market), destination-locked to Avalanche USDC — nothing exists in the repo yet. Framing/fee/scope/placement are open founder decisions; the no-raw-color guard exception must be pre-planned.</p>
+        <p class="cat-blurb">A ramp-to-seat via thirdweb derrière l'AssetRouter (V1 — étape 15 : supersède LI.FI ; LI.FI/0x = adaptateurs fallback) (door, not market), destination-locked to Avalanche USDC — nothing exists in the repo yet. Framing/fee/scope/placement are open Founder decisions; the no-raw-color guard exception must be pre-planned.</p>
       </div>
       <div class="cat-count"><b>11</b><span>éléments</span></div>
     </header>
@@ -1367,7 +1376,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">swap-ramp-build</span><span class="ptitle">Build the thirdweb-behind-AssetRouter ramp (V1) + harvest 7 patterns</span></div>
       <p class="psum">Install @lifi/widget, mount our bodywork; 7 patterns: wallet hook (our SIWE, one identity), destination lock (toChain=Avalanche/toToken=USDC), client-only mount+skeleton, theme injection, referrer capture → sourceId, routeExecutionCompleted → /join handoff.</p>
-      <div class="metas"><span class="meta gate">⚑ founder framing/scope + wireframe</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder framing/scope + wireframe</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
@@ -1399,7 +1408,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">swap-admin</span><span class="ptitle">Admin governs the ramp</span></div>
       <p class="psum">Operator levers: on/off + placement, service-fee param, allowed chains/bridges/tokens, fee-wallet address — from config/registry, one home per kind.</p>
-      <div class="metas"><span class="meta gate">⚑ founder — admin control set</span><span class="meta dep">↳ dépend de swap-ramp-build</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder — admin control set</span><span class="meta dep">↳ dépend de swap-ramp-build</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -1415,7 +1424,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">swap-fee</span><span class="ptitle">The ramp fee: Option A vs B</span></div>
       <p class="psum">Option A announced service fee (admin-set %, company revenue) vs Option B free ramp (the company absorbs it as a cost of acquiring the member). Fee is company money, banned-vocab applies. Option C (tip) is banned-word risk.</p>
-      <div class="metas"><span class="meta gate">⚑ money/founder — fee option + %</span><span class="meta dep">↳ dépend de swap-ramp-build</span></div>
+      <div class="metas"><span class="meta gate">⚑ money/Founder — fee option + %</span><span class="meta dep">↳ dépend de swap-ramp-build</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -1423,7 +1432,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">swap-scope-placement</span><span class="ptitle">Chains/tokens scope + framing/placement + order slot</span></div>
       <p class="psum">How wide the 'from' side opens (all 30+ chains vs curated), ramp-to-seat on /join only vs wider, and where the ramp sits in the acted order.</p>
-      <div class="metas"><span class="meta gate">⚑ founder — scope/framing + wireframe</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder — scope/framing + wireframe</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -1431,7 +1440,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">address-labeling-service</span><span class="ptitle">Address labeling service (D2, verified pay-to-label)</span></div>
       <p class="psum">Paid, proof-of-control-VERIFIED address labels in the explorer; never pay-to-impersonate. The strongest income stream; blocked on the labeling verification model (OD4).</p>
-      <div class="metas"><span class="meta gate">⚑ money/founder</span><span class="meta dep">↳ dépend de internal-explorer</span></div>
+      <div class="metas"><span class="meta gate">⚑ money/Founder</span><span class="meta dep">↳ dépend de internal-explorer</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -1439,7 +1448,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">sold-aliases</span><span class="ptitle">Sold / ENS-style aliases (D3)</span></div>
       <p class="psum">Purchasable named aliases tied to the seat, non-tradeable; separate from the free alias field.</p>
-      <div class="metas"><span class="meta gate">⚑ money/founder</span><span class="meta dep">↳ dépend de alias-resolver</span></div>
+      <div class="metas"><span class="meta gate">⚑ money/Founder</span><span class="meta dep">↳ dépend de alias-resolver</span></div>
     </div>
     <span class="chip s-defer">Plus tard · horizon</span>
   </li>
@@ -1489,14 +1498,14 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">Q5</span><span class="ptitle">/knowledge route name + title</span></div>
       <p class="psum">/knowledge vs /knowledge-map name and title — asked, never answered.</p>
-      <div class="metas"><span class="meta gate">⚑ founder decides (naming/route)</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder decides (naming/route)</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
 <li class="row" data-status="blocked-on-founder">
     <div class="row-main">
       <div class="row-head"><span class="pid">Q6</span><span class="ptitle">Permanence: declared vs derived</span></div>
-      <p class="psum">status-as-derived ratified; permanence-as-declared not yet confirmed by founder.</p>
+      <p class="psum">status-as-derived ratified; permanence-as-declared not yet confirmed by Founder.</p>
       <div class="metas"><span class="meta gate">⚑ chain-truth/data-model semantics</span><span class="meta dep">↳ dépend de knowledge-page</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
@@ -1504,8 +1513,8 @@ footer b{color:var(--ink-soft);}
 <li class="row" data-status="blocked-on-founder">
     <div class="row-main">
       <div class="row-head"><span class="pid">Q9</span><span class="ptitle">SERVER-ONLY HOMES wording (Option A)</span></div>
-      <p class="psum">Exact server-only-homes copy (system level, zero counts/dates/addresses); provenance unsure — founder confirms provenance.</p>
-      <div class="metas"><span class="meta gate">⚑ legal/public-copy — founder confirms provenance</span><span class="meta dep">↳ dépend de knowledge-page</span></div>
+      <p class="psum">Exact server-only-homes copy (system level, zero counts/dates/addresses); provenance unsure — Founder confirms provenance.</p>
+      <div class="metas"><span class="meta gate">⚑ legal/public-copy — Founder confirms provenance</span><span class="meta dep">↳ dépend de knowledge-page</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -1521,15 +1530,15 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">glossary-page</span><span class="ptitle">Glossary page (/glossary, 2.7)</span></div>
       <p class="psum">Approved vocabulary defined (seat, receipt, readback, vault, chronicle, register, archive, chapter, era, recognition…). No Glossary.tsx / route exists.</p>
-      <div class="metas"><span class="meta gate">⚑ founder content approval (full text on screen)</span><span class="meta dep">↳ dépend de shared chassis (built)</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder content approval (full text on screen)</span><span class="meta dep">↳ dépend de shared chassis (built)</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
 <li class="row" data-status="open">
     <div class="row-main">
       <div class="row-head"><span class="pid">roadmap-page</span><span class="ptitle">Roadmap page (/roadmap, 2.8, registry-driven)</span></div>
-      <p class="psum">Public roadmap with status labels from the status registry; home for the removed Studio-OS teaser intent (founder's 9-node raod_map.jpg). No /roadmap route exists.</p>
-      <div class="metas"><span class="meta gate">⚑ founder content approval</span><span class="meta dep">↳ dépend de module status registry</span></div>
+      <p class="psum">Public roadmap with status labels from the status registry; home for the removed Studio-OS teaser intent (Founder's 9-node raod_map.jpg). No /roadmap route exists.</p>
+      <div class="metas"><span class="meta gate">⚑ Founder content approval</span><span class="meta dep">↳ dépend de module status registry</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
@@ -1537,7 +1546,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">protocol-facts-page</span><span class="ptitle">Protocol-facts page (/protocol-facts, 2.9)</span></div>
       <p class="psum">Dry factual page for AI/search/verifiers: official name, chain, contracts, module statuses, routing model, verify links. syndicateFacts.ts config exists; no dedicated route.</p>
-      <div class="metas"><span class="meta gate">⚑ founder content approval</span><span class="meta dep">↳ dépend de shared chassis (built)</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder content approval</span><span class="meta dep">↳ dépend de shared chassis (built)</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
@@ -1545,7 +1554,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">brand-facts-page</span><span class="ptitle">Brand-facts page (/brand-facts, 2.10)</span></div>
       <p class="psum">Approved one-liner + descriptions, approved/forbidden vocabulary, official links, visual tone. No route exists.</p>
-      <div class="metas"><span class="meta gate">⚑ founder content approval</span><span class="meta dep">↳ dépend de shared chassis (built)</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder content approval</span><span class="meta dep">↳ dépend de shared chassis (built)</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
@@ -1576,8 +1585,8 @@ footer b{color:var(--ink-soft);}
 <li class="row" data-status="deferred">
     <div class="row-main">
       <div class="row-head"><span class="pid">goal-3-ssr</span><span class="ptitle">goal-3 full-body SSR prerender</span></div>
-      <p class="psum">Making seat/verify BODY prose visible to a non-executing crawler needs real SSR/static body prerender; NO_ACTION for now (head meta already reaches crawlers; wagmi ssr:false is deliberate). Its own slice only if the founder ever wants it.</p>
-      <div class="metas"><span class="meta gate">⚑ founder decision to pursue SSR</span></div>
+      <p class="psum">Making seat/verify BODY prose visible to a non-executing crawler needs real SSR/static body prerender; NO_ACTION for now (head meta already reaches crawlers; wagmi ssr:false is deliberate). Its own slice only if the Founder ever wants it.</p>
+      <div class="metas"><span class="meta gate">⚑ Founder decision to pursue SSR</span></div>
     </div>
     <span class="chip s-defer">Plus tard · horizon</span>
   </li>
@@ -1609,7 +1618,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">E2-living-faq</span><span class="ptitle">Living FAQ</span></div>
       <p class="psum">FAQ grows from real anonymized Guide questions.</p>
-      <div class="metas"><span class="meta gate">⚑ privacy (anonymization) + founder</span><span class="meta dep">↳ dépend de guide corpus / B2</span></div>
+      <div class="metas"><span class="meta gate">⚑ privacy (anonymization) + Founder</span><span class="meta dep">↳ dépend de guide corpus / B2</span></div>
     </div>
     <span class="chip s-defer">Plus tard · horizon</span>
   </li>
@@ -1625,7 +1634,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">E4-honesty-register</span><span class="ptitle">Honesty register</span></div>
       <p class="psum">Public log of corrections the protocol has made.</p>
-      <div class="metas"><span class="meta gate">⚑ founder content approval</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder content approval</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
@@ -1633,7 +1642,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">E5-never-will</span><span class="ptitle">'Never will' charter</span></div>
       <p class="psum">Public charter of things the protocol will never do (scattered copy exists, no dedicated surface).</p>
-      <div class="metas"><span class="meta gate">⚑ founder content approval</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder content approval</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li>
@@ -1641,14 +1650,14 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">gsc-submit</span><span class="ptitle">Submit sitemap to Google Search Console + Bing</span></div>
       <p class="psum">Founder-only indexability action; optional llms.txt, AEO answer-first structure.</p>
-      <div class="metas"><span class="meta gate">⚑ go-live — founder submits</span><span class="meta dep">↳ dépend de footer-ia</span></div>
+      <div class="metas"><span class="meta gate">⚑ go-live — Founder submits</span><span class="meta dep">↳ dépend de footer-ia</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
 <li class="row" data-status="deferred">
     <div class="row-main">
       <div class="row-head"><span class="pid">era-facts-tokenomics</span><span class="ptitle">Era-facts table on /tokenomics</span></div>
-      <p class="psum">Marketing era-facts table, doctrinally clean; founder interest logged, not opened.</p>
+      <p class="psum">Marketing era-facts table, doctrinally clean; Founder interest logged, not opened.</p>
       
     </div>
     <span class="chip s-defer">Plus tard · horizon</span>
@@ -1659,7 +1668,7 @@ footer b{color:var(--ink-soft);}
       <div>
         <div class="cat-eyebrow">Legal</div>
         <h3>Légal</h3>
-        <p class="cat-blurb">Founder decisions on public legal copy. Legal pages are LIVE as Version-1 drafts; a review pass lifts the draft label — the founder's own business, on his own time. §8-⑧ (24-07-2026): legal review is NEVER a system gate; money-touching gamification and the new contract are founder-gated (money decision only).</p>
+        <p class="cat-blurb">Founder decisions on public legal copy. Legal pages are LIVE as Version-1 drafts; a review pass lifts the draft label — the Founder's own business, on his own time. §8-⑧ (24-07-2026): legal review is NEVER a system gate; money-touching gamification and the new contract are Founder-gated (money decision only).</p>
       </div>
       <div class="cat-count"><b>3</b><span>éléments</span></div>
     </header>
@@ -1667,7 +1676,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">aud-t-legal-set</span><span class="ptitle">AUD-T legal decision set</span></div>
       <p class="psum">entity + governing law/jurisdiction, durable contact channel, log-retention window, eligibility floor, checkout acceptance mechanics (own slice if adopted), on-chain hash of legal docs, never-message-first policy. Rendered as honest pending lines today.</p>
-      <div class="metas"><span class="meta gate">⚑ legal/public-copy — founder + counsel</span></div>
+      <div class="metas"><span class="meta gate">⚑ legal/public-copy — Founder + counsel</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -1681,7 +1690,7 @@ footer b{color:var(--ink-soft);}
   </li>
 <li class="row" data-status="deferred">
     <div class="row-main">
-      <div class="row-head"><span class="pid">legal-review</span><span class="ptitle">Legal review — the founder's own business (NOT a system gate)</span></div>
+      <div class="row-head"><span class="pid">legal-review</span><span class="ptitle">Legal review — the Founder's own business (NOT a system gate)</span></div>
       <p class="psum">TRANCHÉ / RETIRÉ (2026-07-24, SETTLED_RULES §8-⑧) : plus AUCUNE barrière légale dans le système. La revue légale est l'affaire du fondateur, sur son temps — jamais un gate, jamais un bloqueur, jamais une ligne d'attente. Le rail de mérite est AUTONOME et paie réellement dès que le contrat est vivant sur mainnet et financé. Avant le mainnet : de l'INGÉNIERIE uniquement (suite de tests, répétition sur FORK MAINNET + le canari, deploy signé par le fondateur (ruling 24-07 : jamais de testnet)).</p>
     </div>
     <span class="chip s-defer">Tranché · retiré</span>
@@ -1755,7 +1764,7 @@ footer b{color:var(--ink-soft);}
 <li class="row" data-status="in-progress">
     <div class="row-main">
       <div class="row-head"><span class="pid">Q34</span><span class="ptitle">/wallet ConnectModal setState-in-render dev warning</span></div>
-      <p class="psum">Pre-existing dev-only ConnectModal/Hydrate console warning (proven absent in prod builds); spun off as its own session by the founder.</p>
+      <p class="psum">Pre-existing dev-only ConnectModal/Hydrate console warning (proven absent in prod builds); spun off as its own session by the Founder.</p>
       
     </div>
     <span class="chip s-prog">En cours</span>
@@ -1772,15 +1781,15 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">archive-nft-naming</span><span class="ptitle">Archive→NFT naming decision</span></div>
       <p class="psum">Founder decision on Archive vs NFT naming (audit lens 12 options).</p>
-      <div class="metas"><span class="meta gate">⚑ founder decision</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder decision</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
 <li class="row" data-status="blocked-on-founder">
     <div class="row-main">
       <div class="row-head"><span class="pid">S5-soul-document</span><span class="ptitle">Soul Document import</span></div>
-      <p class="psum">Import the founder's doctrine/soul paper as TIER-1 with a SUPERSEDED-TERMS banner; awaits the founder's paste.</p>
-      <div class="metas"><span class="meta gate">⚑ founder paste</span></div>
+      <p class="psum">Import the Founder's doctrine/soul paper as TIER-1 with a SUPERSEDED-TERMS banner; awaits the Founder's paste.</p>
+      <div class="metas"><span class="meta gate">⚑ Founder paste</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -1812,7 +1821,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">p6-performance</span><span class="ptitle">Phase 6 — Performance audit (self-host fonts, CWV, AVIF/WebP)</span></div>
       <p class="psum">Self-hosted fonts (woff2/swap/preload), Core Web Vitals (LCP≤2.5s/INP≤200ms/CLS&lt;0.1), AVIF/WebP images with dims + LCP preload, lean JS.</p>
-      <div class="metas"><span class="meta gate">⚑ founder (CDN choice) else autonomous</span><span class="meta dep">↳ dépend de all surfaces adopted</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder (CDN choice) else autonomous</span><span class="meta dep">↳ dépend de all surfaces adopted</span></div>
     </div>
     <span class="chip s-open">À faire</span>
   </li></ul>
@@ -1902,9 +1911,9 @@ footer b{color:var(--ink-soft);}
   </li>
 <li class="row" data-status="blocked-on-founder">
     <div class="row-main">
-      <div class="row-head"><span class="pid">AW-5</span><span class="ptitle">La lane de paiement d'archive — le wallet 0xe417…d56f attend son NOM</span></div>
-      <p class="psum">Ajouté 22 juil. : le wallet découvert sur chaîne 0xe417…d56f reçoit l'USDC de mécénat des artefacts et ne figure dans AUCUN registre. D'abord le fondateur le NOMME ; ensuite, même tranche : indexer sa lane (invariant de complétude du heartbeat), donner aux échelons de mécénat ($100→$10k) leurs ancrages de transaction pour qu'ils SCELLENT, et l'ajouter au carnet d'adresses.</p>
-      <div class="metas"><span class="meta gate">⚑ fondateur — nommer le wallet</span><span class="meta dep">↳ dépend de l'échelle mécénat v1 en approche seulement (f98798f)</span></div>
+      <div class="row-head"><span class="pid">AW-5</span><span class="ptitle">Les 2 artefacts mintés par le « NFT Sale Wallet » — mint du protocole ou Community ?</span></div>
+      <p class="psum">Ajouté 22 juil. · <b>nom TRANCHÉ le 25 juil. : « NFT Sale Wallet »</b> · ligne recadrée le 26 juil. (elle réclamait encore un nom déjà donné — fossile corrigé). Le wallet <span class="mono">0xe417…d56f</span> est pinné, réconcilié en direct contre le <span class="mono">treasury()</span> du contrat, et sa lane est INDEXÉE (<span class="mono">add5bb8</span>, 4ᵉ organe) : les échelons de mécénat ($100→$10k) ont donc désormais leur source d'ancrage de transaction. <b>CE QUI T'ATTEND ENCORE :</b> ce wallet a lui-même minté 2 des 17 artefacts, aujourd'hui étiquetés « Community » — tu décides s'ils basculent en mint du protocole ou restent Community ; et le SCELLEMENT effectif des échelons suit ta réponse.</p>
+      <div class="metas"><span class="meta gate">⚑ fondateur — l'étiquette des 2 mints</span><span class="meta dep">↳ lane livrée (add5bb8) ; échelle mécénat v1 en approche seulement (f98798f)</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -1912,7 +1921,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">sale-era-contract</span><span class="ptitle">New sale/era contract (Phase 5)</span></div>
       <p class="psum">Fresh 9-era-schedule contract; fixes the per-wallet cap defect. Audit-gated (engineering only — §8-⑧). ⚑ RE-TRUED 23-07 : Season=Era n'en dépend PLUS (ruling §8-⑤ — la V1 lit la chaîne d'aujourd'hui) ; et le pool de mérite du 23-07 n'est pas « un contrat season standalone » — c'est le primitif de paiement générique, exempté du gel par ruling §8-①.</p>
-      <div class="metas"><span class="meta gate">⚑ chain + money/founder</span></div>
+      <div class="metas"><span class="meta gate">⚑ chain + money/Founder</span></div>
     </div>
     <span class="chip s-defer">Plus tard · horizon</span>
   </li>
@@ -1946,7 +1955,7 @@ footer b{color:var(--ink-soft);}
       <div>
         <div class="cat-eyebrow">Infra / deferred</div>
         <h3>Infra / différé</h3>
-        <p class="cat-blurb">Ops and Phase-6 hardening, most parked for the ~Sept 2026 domain transfer or founder infra choices. Nothing blocks the active arc.</p>
+        <p class="cat-blurb">Ops and Phase-6 hardening, most parked for the ~Sept 2026 domain transfer or Founder infra choices. Nothing blocks the active arc.</p>
       </div>
       <div class="cat-count"><b>10</b><span>éléments</span></div>
     </header>
@@ -1954,7 +1963,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">reserved-vm</span><span class="ptitle">Reserved-VM / durable session</span></div>
       <p class="psum">Autoscale pinned to max-1 closed the immediate SIWE single-instance risk; a Reserved VM (or externalized sessions) remains the durable option. Does NOT block checkout (purchase is wallet→contract).</p>
-      <div class="metas"><span class="meta gate">⚑ infra — founder/Replit</span></div>
+      <div class="metas"><span class="meta gate">⚑ infra — Founder/Replit</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
@@ -1978,7 +1987,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">cdn</span><span class="ptitle">CDN (Cloudflare) in front of the domain</span></div>
       <p class="psum">Edge CDN (Brotli + edge cache + www→apex 301 + HTTP/3), parked for 'the end'.</p>
-      <div class="metas"><span class="meta gate">⚑ founder/ops — at the end</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder/ops — at the end</span></div>
     </div>
     <span class="chip s-defer">Plus tard · horizon</span>
   </li>
@@ -2002,7 +2011,7 @@ footer b{color:var(--ink-soft);}
     <div class="row-main">
       <div class="row-head"><span class="pid">monitoring</span><span class="ptitle">Monitoring (web-vitals RUM · Lighthouse CI · analytics)</span></div>
       <p class="psum">Web-vitals RUM, Lighthouse CI blocking CWV regressions, privacy-respecting analytics (Plausible/Umami).</p>
-      <div class="metas"><span class="meta gate">⚑ founder (analytics account) else autonomous</span></div>
+      <div class="metas"><span class="meta gate">⚑ Founder (analytics account) else autonomous</span></div>
     </div>
     <span class="chip s-defer">Plus tard · horizon</span>
   </li>
@@ -2036,14 +2045,14 @@ footer b{color:var(--ink-soft);}
       <div>
         <div class="cat-eyebrow">Doc-drift chores</div>
         <h3>Corrections de doc</h3>
-        <p class="cat-blurb">Small truth/documentation fixes and the founder-word gates that arm larger waves. Several sibling items already landed in SEAL-mechanical-batch (see possiblyAlreadyDone).</p>
+        <p class="cat-blurb">Small truth/documentation fixes and the Founder-word gates that arm larger waves. Several sibling items already landed in SEAL-mechanical-batch (see possiblyAlreadyDone).</p>
       </div>
       <div class="cat-count"><b>5</b><span>éléments</span></div>
     </header>
     <ul class="rows"><li class="row" data-status="open">
     <div class="row-main">
       <div class="row-head"><span class="pid">Q20</span><span class="ptitle">/join stale authorization-gate note</span></div>
-      <p class="psum">'transaction sending deliberately not enabled' fossil; truthed in the receipt slice and checkout is LIVE, but SESSION_STATE still lists the note. Verify/clean; formal closing stays a founder confirm.</p>
+      <p class="psum">'transaction sending deliberately not enabled' fossil; truthed in the receipt slice and checkout is LIVE, but SESSION_STATE still lists the note. Verify/clean; formal closing stays a Founder confirm.</p>
       
     </div>
     <span class="chip s-open">À faire</span>
@@ -2059,24 +2068,24 @@ footer b{color:var(--ink-soft);}
 <li class="row" data-status="blocked-on-founder">
     <div class="row-main">
       <div class="row-head"><span class="pid">antiblocage-commit</span><span class="ptitle">Commit AUDIT_TRIAGE_ET_LOI_ANTIBLOCAGE.md into docs/direction</span></div>
-      <p class="psum">The founder's anti-blocking audit-triage file is OUT-OF-REPO on the founder's disk; the hard rule wants it committed at the founder's GO.</p>
-      <div class="metas"><span class="meta gate">⚑ founder GO</span></div>
+      <p class="psum">The Founder's anti-blocking audit-triage file is OUT-OF-REPO on the Founder's disk; the hard rule wants it committed at the Founder's GO.</p>
+      <div class="metas"><span class="meta gate">⚑ Founder GO</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
 <li class="row" data-status="blocked-on-founder">
     <div class="row-main">
       <div class="row-head"><span class="pid">Q13</span><span class="ptitle">2.11 flow 5-step → 2-step + checkout ordering</span></div>
-      <p class="psum">Compress the flow to 2 steps; whether checkout jumps ahead of 2.6–2.10 is a founder ordering call.</p>
-      <div class="metas"><span class="meta gate">⚑ sequencing — founder decides</span></div>
+      <p class="psum">Compress the flow to 2 steps; whether checkout jumps ahead of 2.6–2.10 is a Founder ordering call.</p>
+      <div class="metas"><span class="meta gate">⚑ sequencing — Founder decides</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li>
 <li class="row" data-status="blocked-on-founder">
     <div class="row-main">
-      <div class="row-head"><span class="pid">mvp-final-pick</span><span class="ptitle">MVP-final master brief — founder picks slice 1</span></div>
-      <p class="psum">Complete final MVP scope + ordered M0–M10 map is canon; the founder picks slice 1, nothing opens before that pick. Governs whether the M-arc proceeds. Also the MVP_FINAL_CHECKLIST fires ONLY on 'MVP final, run the checklist'.</p>
-      <div class="metas"><span class="meta gate">⚑ go-live/sequencing — founder word</span></div>
+      <div class="row-head"><span class="pid">mvp-final-pick</span><span class="ptitle">MVP-final master brief — Founder picks slice 1</span></div>
+      <p class="psum">Complete final MVP scope + ordered M0–M10 map is canon; the Founder picks slice 1, nothing opens before that pick. Governs whether the M-arc proceeds. Also the MVP_FINAL_CHECKLIST fires ONLY on 'MVP final, run the checklist'.</p>
+      <div class="metas"><span class="meta gate">⚑ go-live/sequencing — Founder word</span></div>
     </div>
     <span class="chip s-block">Ta décision</span>
   </li></ul>
@@ -2085,21 +2094,21 @@ footer b{color:var(--ink-soft);}
   <section class="notes">
     <div class="sec-eyebrow">Notes de synthèse (agent)</div>
     <h2 class="serif">Ce que tu dois savoir</h2>
-    <p>DEDUPE &amp; SEAL DISCIPLINE: ~250 input records collapsed to 188 distinct OPEN items across 14 categories. The single load-bearing reconciliation: the M-map machinery half (M0, M1, M4, M5, M6) and the Notification Center (incl. broadcast + first founder broadcast) are SEALED per the most-recent SESSION_STATE seals — I did NOT carry MASTER_BRIEF's queued M0/M1/M4/M5/M6 or LIVING_NOTIFICATION_LAYER's NOTIF-1/broadcast as to-dos. Remaining MVP milestones = M2, M3, M7, M8, M9, M10.
+    <p>DEDUPE &amp; SEAL DISCIPLINE: ~250 input records collapsed to 188 distinct OPEN items across 14 categories. The single load-bearing reconciliation: the M-map machinery half (M0, M1, M4, M5, M6) and the Notification Center (incl. broadcast + first Founder broadcast) are SEALED per the most-recent SESSION_STATE seals — I did NOT carry MASTER_BRIEF's queued M0/M1/M4/M5/M6 or LIVING_NOTIFICATION_LAYER's NOTIF-1/broadcast as to-dos. Remaining MVP milestones = M2, M3, M7, M8, M9, M10.
 
 ENGRAVED NEXT ORDER (honored at the front of recommendedSequence): A1 My Activity → B1 THE FIRSTS → A2 My Chronicle → M-INT-2 → the Q42 admin-controllability wave (audit READ → flag writes/kill-switch → modules → support intake → content mgmt → operator edit → chronicle-promote → prospects lane → /staff) → Q39.
 
 BLOCKED-ON-FOUNDER GATES (nothing Claude Code can unblock alone): the AUD-T legal decision set + counsel review (draft label); the /knowledge route name (Q5) + permanence semantics (Q6) + server-only-homes provenance (Q9); the swap ramp fee/scope/framing decisions; the notification category + mandatory set; the Chronicle image approach + off-chain proof floor + doc-hash timing; the labeling verification model (OD4); and the MVP-final master-brief slice-1 pick.
 
-FIRE-ONLY-ON-COMMAND: the MVP_FINAL_CHECKLIST does NOT auto-fire — Q32 (23 meta descriptions + guard ceiling) and llms.txt run only when the founder says 'MVP final, run the checklist', each rewrite read on screen.
+FIRE-ONLY-ON-COMMAND: the MVP_FINAL_CHECKLIST does NOT auto-fire — Q32 (23 meta descriptions + guard ceiling) and llms.txt run only when the Founder says 'MVP final, run the checklist', each rewrite read on screen.
 
-DEFECTS-NOW — SUPERSEDED (2026-07-19): the two pulled-forward defects (founder-standing-derivation, genesis-footprint-derivation) were BOTH sealed at 235205c (payoutWallet fallback; D-TRUTH genesis standing) and confirmed on the founder's prod screenshot 2026-07-18. Kept only as a dated record.
+DEFECTS-NOW — SUPERSEDED (2026-07-19): the two pulled-forward defects (founder-standing-derivation, genesis-footprint-derivation) were BOTH sealed at 235205c (payoutWallet fallback; D-TRUTH genesis standing) and confirmed on the Founder's prod screenshot 2026-07-18. Kept only as a dated record.
 
 HORIZON (~6 months / post-traction, no build now): all new smart contracts — zero-touch promotion contract, self-service issuer (R7), Router V4, the new sale/era contract — each mandatory-audit-gated; plus the white-label referral-rail SaaS and i18n. Domain-transfer infra (CDN, www→apex 301, HSTS, SEO-301) parks to ~Sept 2026.
 
-VISUAL CHANGE LAW: every layout/composition item (Q16 KPI grid, M2/M3/M7 surfaces, Chronicle newsroom pages, swap ramp) needs a founder-approved wireframe THEN a preview gate before commit; copy-only pages (glossary/roadmap/protocol-facts/brand-facts, E4/E5) need the full final text on screen. HEARTBEAT COMPLETENESS INVARIANT: any new contract/wallet joins scan targets + read-model + §8 + /activity in the SAME slice; the swap ramp must add its Activity/FIRSTS event in-slice.
+VISUAL CHANGE LAW: every layout/composition item (Q16 KPI grid, M2/M3/M7 surfaces, Chronicle newsroom pages, swap ramp) needs a Founder-approved wireframe THEN a preview gate before commit; copy-only pages (glossary/roadmap/protocol-facts/brand-facts, E4/E5) need the full final text on screen. HEARTBEAT COMPLETENESS INVARIANT: any new contract/wallet joins scan targets + read-model + §8 + /activity in the SAME slice; the swap ramp must add its Activity/FIRSTS event in-slice.
 
-CORRECTION (2026-07-18, founder): 'learn-earn-copy-flag' was first mis-flagged (add a 'never a payment' negation) then wrongly deleted. REINSTATED + reframed as the SETTLED two-layer model kept unconfused: XP/Learn &amp; Earn = recognition (never cash) vs the season cagnotte = REAL company USDC (merit, discretionary, founder-gated — money decision only, §8-⑧: no legal gate). Do not deny the season cash rail; do not convert XP to cash. <b>CLOS le 24 juil.</b> — la copie visée (memberDoors.ts) n'existe plus, et les trois vérités sont rendues par les cartes livrées au S2d (voir la ligne <b>learn-earn-copy-flag</b>).</p>
+CORRECTION (2026-07-18, Founder): 'learn-earn-copy-flag' was first mis-flagged (add a 'never a payment' negation) then wrongly deleted. REINSTATED + reframed as the SETTLED two-layer model kept unconfused: XP/Learn &amp; Earn = recognition (never cash) vs the season cagnotte = REAL company USDC (merit, discretionary, Founder-gated — money decision only, §8-⑧: no legal gate). Do not deny the season cash rail; do not convert XP to cash. <b>CLOS le 24 juil.</b> — la copie visée (memberDoors.ts) n'existe plus, et les trois vérités sont rendues par les cartes livrées au S2d (voir la ligne <b>learn-earn-copy-flag</b>).</p>
   </section>
 
   <footer>

@@ -7,17 +7,30 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >
 > ## ▶ WHERE WE ARE, IN ONE READ
 > **PROD = `35d60fa` (sealed 2026-07-25). DEPLOY BACKLOG: the ONE-FIGURE slice (2026-07-26), client-only.**
-> **THE 2026-07-26 ARC — THE SWAP-TRUTH INVESTIGATION.** The founder pointed at `/activity` and asked why one
+> **THE 2026-07-26 ARC — THE SWAP-TRUTH INVESTIGATION.** The Founder pointed at `/activity` and asked why one
 > swap reads as two disconnected lines, and — the best question of the session — *"pourquoi scanner toute la
 > chaîne quand on connaît les transactions ?"*. Both were right, and the dig found FOUR defects:
 >   - **① ONE ACT, TWO HALF-TRUTHS.** The three 2026-07-16 vault swaps (all `swapExactIn` on the LFJ
 >     aggregator router `0x45a62b09…`, signed by the vault itself) publish as five disconnected lines:
->     30 USDC → 4.5399 AVAX (block 90,460,319 · tx `0x7accfd17b4…`) · 50 USDC → 0.00077818 BTC.b
->     (90,460,591 · `0x4270498c77…`) · 50 USDC → 0.0265517 WETH.e (90,460,622 · `0x60ea668e74…`).
+>     30 USDC → 4.5398 AVAX (block 90,460,319 · tx `0x7accfd17b4…`) · 50 USDC → 0.00077818 BTC.b
+>     (90,460,591 · `0x4270498c77…`) · 50 USDC → 0.026551 WETH.e (90,460,622 · `0x60ea668e74…`).
 >     Nothing left the vault; 130 USDC changed form. The outbound line reads as money leaving.
->   - **② THE AVAX PURCHASE IS INVISIBLE.** Native AVAX arrives as an INTERNAL transfer and emits no log,
->     so `eth_getLogs` can never see it. The public reads "30.00 USDC moved out of the vault" with NO
->     counterpart — on the line that claims *"there are no silent moves"*.
+>     **RECOUNTED 2026-07-26 — these three figures are the DISPLAY answer of the one authority**
+>     (`formatBaseUnits`, truncating at the token's own dp), never a hand-typed number. This block said
+>     **`4.5399`** until now: that is the HALF-UP answer commit `11384f5` abolished, and
+>     `guard-one-figure.ts`:125 pins the exact base units `4539867625602041000` at (18,4) to **`4.5398`**.
+>     The WETH.e leg said `0.0265517` here and `0,026551` four lines down in OPEN_QUEUE's own ruling
+>     quote — one quantity, two renderings, in the two truth docs that describe defect ④. Both now read
+>     the authority's answer. **The lesson is the defect itself: a doc is a money surface too.**
+>   - **② THE AVAX PURCHASE IS INVISIBLE.** Native AVAX arrives as an INTERNAL transfer, which emits no
+>     ERC-20 `Transfer` log, so the token lanes can never see it. The public reads "30.00 USDC moved out
+>     of the vault" with NO counterpart — on the line that claims *"there are no silent moves"*.
+>     **CORRECTED 2026-07-26 — "AVAX honestly cannot have a lane" was WRONG, and this file said it twice.**
+>     The LFJ aggregator router emits **ONE log carrying the WHOLE swap**: topic0
+>     `0xd9a8cfa901e597f6bbb7ea94478cf9ad6f38d0dc3fd24d493e99cb40692e39f1`, recipient indexed, data
+>     `[recipient, tokenIn, tokenOut, amountIn, amountOut]`, with the **zero address meaning native AVAX**.
+>     The native leg is invisible; the SWAP is not. A lane is therefore possible — **a separate workflow is
+>     designing it, and no session builds it from this note.**
 >   - **③ A FALSE ATTESTATION, LIVE.** `"— a founder-signed treasury act"` (backboneFeedClient.ts:834) is
 >     published on EVERY outbound move, but the code never checks a signer — only `counterpartFounder`,
 >     the RECIPIENT (protocolEventReadmodel.ts:463-470).
@@ -36,20 +49,56 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **THE SCAN ANSWER, CHIFFRÉE (his question).** We do NOT scan the whole chain — every call is `eth_getLogs`
 > narrowed to one contract + topic. But all **14 lanes hardcode the same start block 87,157,852**
 > (protocolTargets.ts:585-714), the V1 sale deploy block, unrelated to BTC.b/WETH.e (~90.46M): **1,651
-> provably-empty round-trips per lane; 6,604 of 8,184 across the four new lanes = 80.7% waste; 9 cycles
+> provably-empty round-trips per lane (⌊3,302,739÷2,000⌋); a lane's chunks-to-head are
+> ⌈(91,249,000−87,157,852)÷2,000⌉ = 2,046, so the four new lanes run 4×2,046 = **8,184** chunks of which
+> 4×1,651 = **6,604** are provably empty = **80.69% waste**; 9 cycles
 > (~45 min) before money is visible.** The per-target `fromBlock` field ALREADY exists and the SALE lanes
 > already use it. **PROVEN 2026-07-26: one free unauthenticated Routescan call returns the vault's COMPLETE
 > history (35 transfers / 33 tx) in under a second** — and `action=txlistinternal` returns the native-AVAX
 > legs logs can never see. Recipe: [[routescan-api-beats-log-scanning]] / see OPEN_QUEUE.
 > **SEPARATE CORRECTNESS GAP:** adding the NFT sale wallet as a 4th organ did NOT rewind the treasury
 > cursors (protocolEventScan.ts:529-534) — its history below the cursor will never be scanned.
-> **THE FOUNDER'S TWO RULINGS (2026-07-26, ANSWERED FOREVER):**
->   - **THE VERB IS "converted", GATED ON THE PROOF.** `Le coffre a converti 50,00 USDC en 0,026551 WETH.e —
->     une seule transaction, inscrite sur la chaîne.` Written ONLY when every treasury lane has covered that
->     block; otherwise it degrades to the ledger voice, then to separate honest lines. Never over-state.
->   - **THE ORDER: 0 → 1 → 2 → 3 → 4** — one figure · the scan · the honest words alone · the merge · AVAX.
->     Slices 2 and 3 are deliberately SEPARATE deploys: merging server-side while a cached page still runs
->     the old bundle would show the outbound leg ALONE — worse than today.
+> **THE FOUNDER'S SIX RULINGS (2026-07-26, ANSWERED FOREVER). THE LETTERS ⓐ-ⓕ ARE STABLE — quote them.**
+> Full text, the supersessions and the open decision live in ONE numbered block:
+> `docs/direction/OPEN_QUEUE.md`, the ▶ 2026-07-26 entry. (This file recorded only ⓓ and ⓔ until now, and
+> mislabelled them "the Founder's TWO rulings" — corrected 2026-07-26.)
+>   - **ⓐ THE ACTOR IS THE SIGNER** — `tx.from`, never the address a transfer happened to touch. Every
+>     protocol organ is an EOA (no code), so a wallet never "acts": the signer does. **NOT BUILDABLE
+>     TODAY — see the open decision below.**
+>   - **ⓑ THE VOICE IS OPTION B** — the act first, the signature as attribution afterwards.
+>   - **ⓒ "Founder", CAPITAL F, EVERYWHERE** — including the compound **"Founder-signed"**. TWO permanent
+>     exemptions: the referral-terms file whose bytes are hashed on-chain (changing a byte breaks the
+>     hash), and "founder number" — deliberately lowercase HERE, because the exemption IS the term —
+>     which means an early-member number and is being renamed
+>     **"member number"**.
+>   - **ⓓ THE VERB IS "converted", GATED ON COMPLETE PROOF.** `Le coffre a converti 50,00 USDC en
+>     0,026551 WETH.e — une seule transaction, inscrite sur la chaîne.` Written ONLY when every treasury
+>     lane has covered that block; otherwise it degrades to the ledger voice, then to separate honest
+>     lines. May under-state, never over-state.
+>   - **ⓔ THE ORDER: 0 → 1 → 2 → 3 → 4** — one figure · the scan floors · the honest words alone · the
+>     merge · the AVAX lane. Slices 2 and 3 are deliberately SEPARATE deploys: merging server-side while a
+>     cached page still runs the old bundle would show the outbound leg ALONE — worse than today.
+>   - **ⓕ A VAULT ASSET PURCHASE REACHES THE MEMBERS** — it notifies them through the bell + the
+>     notification centre, AND it enters the Chronicle. Under the heartbeat-completeness invariant the
+>     notification and the Chronicle candidate ride the slice that publishes the act; never a backlog.
+> **ⓐ SUPERSEDES TWO DATED CLOSURES THAT STILL READ AS CANON — named here so no session restores them:**
+> `docs/direction/CANON_PROTOCOL_LANGUAGE.md`:314 (the treasury-outflow canonical sentence *"{amount}
+> {token} moved out of {organ} — a founder-signed treasury act; there are no silent moves."*) and
+> `docs/reference/WALLET_TRACKING_AND_ACTIVITY_REBUILD.md`:157 (gap 5, closed 2026-07-22 as *"out/internal
+> ARE founder-signed acts — organs are founder-controlled EOAs"*). Both are SUPERSEDED by ⓐ: EOA-ness is
+> exactly why the claim fails — a wallet with no code cannot act, and nothing in the system today records
+> who signed. **Neither file is edited by this pass** (not owned by it); the supersession is recorded here
+> and in OPEN_QUEUE so the old wording can never be restored as canon.
+> **🔴 OPEN FOUNDER DECISION — ⓐ IS NOT BUILDABLE TODAY, and that is not a solved thing.** Nothing
+> persists a transaction sender. `insertProtocolEvents` (`backboneDb.ts`:319-349) writes NINE fields —
+> chainId · streamKey · eventName · blockNumber · blockHash · transactionHash · logIndex · topic0 ·
+> decodedJson — and `from` is not among them. (The `from` whitelisted inside `decodedJson` is the BURN
+> log's OWN parameter, the token holder — not the transaction's signer. `eth_getLogs` never returns a
+> sender at all.) **TWO OPTIONS, his call, nothing decided:** **(1) a SIGNER-ENRICHMENT slice BEFORE the
+> wording slice** — resolve and persist `tx.from` per transaction (`eth_getTransactionByHash`, or the
+> free Routescan `txlist` proven this session), then let the sentence name the signer it can prove; or
+> **(2) RESTATE ⓐ** — drop the signature claim from the sentence until a signer is stored, which is the
+> FAIL-CLOSED reading: one simpler honest statement rather than an attestation nothing checks.
 > **THE ADVERSARIAL PASS EARNED ITS KEEP AGAIN (3 lenses, 3 refutations).** It killed, before any code: a
 > merge that would publish a conversion that never happened (lanes sit at different cursor heights → a
 > 3-leg act looks like a clean 2-leg swap; needs a COVERAGE condition); an AVAX lane that would ingest
@@ -61,7 +110,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > row links to Snowtrace · the BTC.b/WETH.e treasury lanes + the NFT sale wallet as a 4th organ · a truth
 > sweep that deleted a FALSE public claim and 5 "recognition is future" fossils.
 > **WHAT IS IN FLIGHT:** the 5-slice swap-truth arc above. **Slice 0 (THE ONE TRUNCATION) is BUILT + GREEN,
-> awaiting the founder's commit approval.** `src/lib/amountFormat.ts` holds the ONE primitive —
+> awaiting the Founder's commit approval.** `src/lib/amountFormat.ts` holds the ONE primitive —
 > `truncateToDisplayUnits` — plus `formatBaseUnits` / `formatAmount` (with the `< 0.0…1` floor),
 > `sumRawUnits` and `rawShare` (exact integer pool share). Every money surface now calls it:
 > `useHeroReality`'s half-up copy DELETED · `ProtocolAssetsCard` aliases it · **`ProtocolReservesBand`
@@ -85,20 +134,37 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **NEXT, in this session:** the /activity page-killer (an unguarded chain read can hang the page on
 > "Reading the chain…" with the Re-read button disabled in exactly that state) · the seat #333-vs-#334
 > self-contradiction · the "Showing 2 of 2" vs a chip reading 7 · then the capital-F sweep and its guard.
-> **THE FOUNDER'S PENDING DECISIONS:** the 2 artifacts the NFT sale wallet itself minted (relabel as a
+> **CAPITAL-F, WHERE IT ACTUALLY STANDS (2026-07-26, so nobody re-derives it):** the THREE truth docs are
+> SWEPT. The mechanical pass capitalised **947** (`SESSION_STATE.md` 567 · `OPEN_QUEUE.md` 249 ·
+> `BACKLOG.html` 131); **8 were then REVERTED by hand** (5 · 2 · 1) → **939 net**. What stays lowercase,
+> and why — because a doc that quotes code must quote it VERBATIM, and a capital inside an identifier is
+> a broken reference, not a style: ① the quoted live string `"— a founder-signed treasury act"` ② the
+> quoted gap-5 closure ③ the quoted served line `"This is your founder-signed source's link"` ④ the code
+> value `"founder-signed"` ⑤ `blocked-on-founder` in BACKLOG.html — the `data-status`/`data-filter`
+> values that drive the 33-row "your decision" filter; capitalising them would BREAK the filter ⑥ the row
+> id `founder-standing-derivation` ⑦ the exempted term **"founder number"** itself (ⓒ's exemption ②) ⑧ the
+> memory slug `local-rig-no-db-founder-verifies-in-prod` ⑨ the route `/founder` ⑩ the audit-entry id
+> `operator.seed-founder-root`. **The sweep found its own defect class: a blind regex capitalised the very
+> term ⓒ exempts, in all three files.** Caught before handoff; the reverts are the list above.
+> **STILL OWED, and NOT done by the docs sweep: the CODE + SURFACES sweep and `guard-capital-f`.** At
+> least two live strings carry the lowercase word today (`backboneFeedClient.ts`:834 and the served
+> provenance line above) — the docs quote them verbatim, which is why they still read lowercase HERE.
+> **THE FOUNDER'S PENDING DECISIONS:** ⓐ's blocker — **a signer-enrichment slice, or restating ⓐ** (the
+> two options are written out above and in OPEN_QUEUE; nothing is decided) · the 2 artifacts the NFT sale
+> wallet itself minted (relabel as a
 > protocol mint, or leave Community) · ⑩ the "archive" → NFT vocabulary sweep (his words, public copy) ·
 > the patronage rungs' sealing now that their transaction source exists · plus the older standing ones
 > (SwapRail decisions · the pot commitment amount + cadence · the XP weight table + floors at the S3 gate).
 > **THE DEBT IS WRITTEN DOWN, NOT REMEMBERED:** `docs/audits/HANDOFF_REVIEW_2026-07-25.md` — 58 open
 > MEDIUM/LOW findings from the pre-handoff review, by theme, each with file:line and its fix. None blocks.
 >
-> ## ▶ OPEN WORK — THE COMPLETE LIST (2026-07-25, founder: "la liste complète, qu'on n'oublie rien")
+> ## ▶ OPEN WORK — THE COMPLETE LIST (2026-07-25, Founder: "la liste complète, qu'on n'oublie rien")
 > The single index of everything OPEN. **This block is the ONE authority for prod + the deploy backlog** —
 > any older PROD line further down this file is a dated historical record, never the current truth.
 > The grouped cycle carried `352a904` · `6953972` · `35c5083` · `add5bb8` · `35d60fa`. Byte identity ×2 on
 > the entry + console chunks; 7 public routes 200; /studio 404; season LIVE 15 standings; **the 4 new
 > treasury lanes resumed from their SAVED CURSORS after the redeploy — no rewind, nothing lost** (the
-> founder asked precisely this before authorising it, and the run proved it); engine ok=2, failed=0,
+> Founder asked precisely this before authorising it, and the run proved it); engine ok=2, failed=0,
 > backfill advancing ~400k blocks/cycle with ~2-3 cycles left, autonomous.
 > **THE FIX IS PROVEN ON SCREEN, not merely deployed:** `/activity` now publicly shows
 > *"0.026551 WETH.e entered the vault — recorded on-chain"* (block 90,460,622, with its VERIFY anchor) —
@@ -142,7 +208,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >     drop the "must run the 40-hex scan" route pins (:681, :1203).
 >   - **4.** Feed actor-address — `/activity` carries actor addresses (a SUB-PROJECT: feedProjection
 >     validations + `backboneFeedClient` toShort validator + new actorAddress/actorUrl fields).
->   - **2a. ✅ DONE — the SEASON BOARD rows are verifiable (founder caught it, 2026-07-25, rightly angry at
+>   - **2a. ✅ DONE — the SEASON BOARD rows are verifiable (Founder caught it, 2026-07-25, rightly angry at
 >     my framing).** I had told him the addresses were clickable; they were plain text. Worse, I explained
 >     it as a technical constraint — "the server only sends the short form". **That was wrong and he called
 >     it: the full address is obviously on the server, since the short form is DERIVED from it**
@@ -162,7 +228,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >     server-side / never reach a client / never a full address" → "short-form for readability; each links
 >     to Snowtrace — addresses are public".
 >
-> **② THE `/registry` PUBLIC MEMBERS PAGE — "The Register" (founder-named).** Wireframe FIRST (visual law)
+> **② THE `/registry` PUBLIC MEMBERS PAGE — "The Register" (Founder-named).** Wireframe FIRST (visual law)
 > → build: per-seat rows `#N · 0x…↗ · chapter · rung · joined`, sortable; nav "Register"; the home
 > register band gets a "view all" → this page. Depends on ①. The season board STAYS the MERIT board (a
 > distinct list — never fuse merit and membership).
@@ -177,7 +243,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > BTC.b · WETH.e · Vault SYN · the SYN/USDC pool · the renamed **"Seat-sale reserve"**), a per-row USD
 > figure, and a **"Value of the priced holdings"** headline that fails closed if ANY priced component is
 > unavailable; placed in the /admin home WORK zone under `BusinessBand`, never collapsed (WORK-FIRST §①).
-> **THE VALUATION LAW (founder ruling + the senior review that caught its first implementation breaking
+> **THE VALUATION LAW (Founder ruling + the senior review that caught its first implementation breaking
 > it):** only assets held DIRECTLY in a protocol wallet with a DEEP market are valued and summed — USDC at
 > $1, AVAX/BTC.b/WETH.e at live Chainlink prices. **SYN is never priced** (thin pool → unrealizable,
 > chain-refutable). **THE POOL IS COUNTED AT OUR REAL SHARE, USDC LEG ONLY** — never by doubling its USDC
@@ -185,15 +251,15 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > pool's SYN half to that same thin price. Two live reads settle ownership instead of assuming it —
 > `financial.lp.totalSupply` + `financial.lp.protocolBalance` (`balanceOf(pair, LIQUIDITY_WALLET)`): LP
 > tokens are an ERC-20, so who-put-what is a public balance, not an estimate. **Chain-verified 2026-07-25:
-> the protocol's liquidity wallet holds 76.612% of the pair; the founder's PERSONAL wallet holds 23.386%
+> the protocol's liquidity wallet holds 76.612% of the pair; the Founder's PERSONAL wallet holds 23.386%
 > (his own money, deliberately NOT counted as protocol-owned); a third party holds 0.002%.** Verified
 > live 2026-07-25: 16.475 USDC · 4.7365 AVAX · 0.00077818 BTC.b · 0.026552 WETH.e · 261,987,500 vault SYN ·
 > 6,994,000 seat reserve; prices AVAX ~$6.46 · BTC ~$64,167 · ETH ~$1,866. Same commit: `vaultHoldings`
 > LIVE in featureStatus · the `/contracts` SEO entry retitled to the new reality (SEO-rides-the-slice) ·
 > the treasury source-status note extended · a **word-law check added to `source-status-truth.guard`** so a
-> served note can never again render the bare word the founder banned from every read surface.
+> served note can never again render the bare word the Founder banned from every read surface.
 >
-> **③-bis THE TRUTH SWEEP + THE NFT SALE MONEY (founder eye on the live page, 2026-07-25).** He pointed at
+> **③-bis THE TRUTH SWEEP + THE NFT SALE MONEY (Founder eye on the live page, 2026-07-25).** He pointed at
 > the /contracts card *"Attribution Router (candidate) — No commission or financial benefit is implied or
 > paid"* and said it is not true. **He was right, and a repo audit had already CONFIRMED it nine days
 > earlier without it being fixed** — commissions ARE paid, on-chain, inside the buyer's own transaction
@@ -214,7 +280,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > the sale contract's own `treasury()` view is read live and must MATCH the canon-pinned wallet, so a
 > `setTreasury` we did not authorise fails the figure closed instead of following the money (guard-pinned
 > with a diverted-destination case). Chain-confirmed 2026-07-25: `treasury()` answers exactly the pinned
-> wallet. **THE TWO NFT FIGURES ARE BOTH TRUE AND MUST NEVER MERGE** (founder): **35.50 USDC = all-time
+> wallet. **THE TWO NFT FIGURES ARE BOTH TRUE AND MUST NEVER MERGE** (Founder): **35.50 USDC = all-time
 > contributed** (mint price × minted, served from the archive group) · **25.50 USDC = held today** (the live
 > wallet read). The home tile now says **"all-time"** in words — without it the figure read as money held.
 >
@@ -254,20 +320,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > it is now an explicit map that THROWS on an unknown lane. And the feed's amount formatter was the same
 > binary — a BTC.b amount would have printed at 6 decimals, **wrong by a factor of 100, in public**; the
 > decimals now come from the token (USDC 6 · SYN 18 · BTC.b 8 · WETH.e 18) and an unknown token yields the
-> line WITHOUT a figure rather than a wrong one. Native AVAX still emits no event and honestly has no lane.
+> line WITHOUT a figure rather than a wrong one. ~~Native AVAX still emits no event and honestly has no
+> lane.~~ **FALSE — struck 2026-07-26.** The native TRANSFER emits no log, but the LFJ aggregator router
+> emits one log carrying the whole swap (topic0 `0xd9a8cfa9…39f1`; data `[recipient, tokenIn, tokenOut,
+> amountIn, amountOut]`, zero address = native AVAX), so an AVAX lane IS possible. See the resume block's
+> defect ② for the full correction; a separate workflow designs the lane.
 > STILL OPEN under this number: the patronage rungs' actual SEALING (the milestone anchoring now has its
-> transaction source) and the founder's rider ruling on the 2 artifacts the NFT sale wallet itself minted.
+> transaction source) and the Founder's rider ruling on the 2 artifacts the NFT sale wallet itself minted.
 >
-> **⑨ THE POOL'S REAL SHARE — ✅ SHIPPED in the same commit (founder challenge, 2026-07-25: "on peut
+> **⑨ THE POOL'S REAL SHARE — ✅ SHIPPED in the same commit (Founder challenge, 2026-07-25: "on peut
 > toujours savoir qui a mis quoi dans le pool — l'intelligence artificielle la plus avancée !?").** He was
 > right, and it is now read, not assumed: `financial.lp.totalSupply` + `financial.lp.protocolBalance` are
 > two fail-closed live reads on the pair, and the client counts ONLY the protocol's share of the USDC leg
 > (never the SYN leg — the no-SYN-valuation law holds). Financial group 31 → 33; balanceOf reads 12 → 13.
 > **THE OWNERSHIP RULE ENGRAVED:** only the protocol's LIQUIDITY WALLET counts as protocol-owned; the
-> founder's personal liquidity is HIS, never the protocol's treasury — the guard pins that the LP-share
-> read encodes the liquidity wallet and never the founder's own.
+> Founder's personal liquidity is HIS, never the protocol's treasury — the guard pins that the LP-share
+> read encodes the liquidity wallet and never the Founder's own.
 >
-> **⑩ THE "ARCHIVE" → "NFT" VOCABULARY SWEEP (founder ruling, 2026-07-25 — NEW).** His words: *"NFT tout le
+> **⑩ THE "ARCHIVE" → "NFT" VOCABULARY SWEEP (Founder ruling, 2026-07-25 — NEW).** His words: *"NFT tout le
 > monde le connaît, pas de charge mentale"* — the AI-chosen word "archive" as the UMBRELLA term created
 > confusion everywhere, made worse because SOME NFTs are genuinely meant to serve as an archive. **THE
 > RULING: on every surface a human reads, the primary word is NFT; "archive" is reserved for the specific
@@ -275,11 +345,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > money.** Applied already where this slice wrote new copy (the wallet is the **"NFT Sale Wallet"**, the row
 > is **"NFT sales USDC"**, the reality ids are `financial.nftSale.*`). NOT swept blind: "archive" is
 > load-bearing in code and canon (`ARCHIVE_1155`, `archive.artifact.*`, the archive group, milestone
-> families, /archive copy). The sweep is its own slice WITH the founder's eye on the final words — a
-> vocabulary change on ~10 public surfaces is a founder-visible copy decision, never a silent rename.
+> families, /archive copy). The sweep is its own slice WITH the Founder's eye on the final words — a
+> vocabulary change on ~10 public surfaces is a Founder-visible copy decision, never a silent rename.
 >
 > **⑪ "PROTOCOL RESERVES" — THE PUBLIC HOME SECTION — ✅ SHIPPED (`6953972`, refined `35c5083` + `add5bb8`;
-> committed, NOT yet deployed).** The founder's aparté, built from an approved mockup
+> committed, NOT yet deployed).** The Founder's aparté, built from an approved mockup
 > (`docs/design/protocol-owned-assets-mockup.html` — he validated the NAME, the look and the composition
 > bar). A full-bleed band under the season section showing what the protocol OWNS, every row verifiable on
 > Snowtrace. **NAME: "Protocol Reserves"** — chosen over "Treasury" (crowded; implies a body that spends it)
@@ -304,11 +374,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **AW-5 — ✅ NAMED BY THE FOUNDER 2026-07-25: "NFT Sale Wallet".** The wallet that receives artifact-mint
 > money is pinned in `FINANCIAL_TARGETS.nftSaleWallet`, reconciled live against the contract's own
 > `treasury()` view, and its balance now serves in the holdings total. STILL OPEN under ⑧: its indexer lane
-> (so the patronage rungs gain transaction anchors and can SEAL) and the founder's rider ruling on the 2
+> (so the patronage rungs gain transaction anchors and can SEAL) and the Founder's rider ruling on the 2
 > artifacts this wallet itself minted (relabel as a protocol mint, or leave them as Community).
 >
 > ## ▶ 2026-07-25 (PM) — THE /ADMIN HARMONIZATION + PII/ADDRESS LAW (IN FLIGHT — committed, NOT deployed)
-> The founder turned the harmonization onto **/admin** (operator console, 11 sections). System-first
+> The Founder turned the harmonization onto **/admin** (operator console, 11 sections). System-first
 > inventory done (12 surfaces classified). **DONE + COMMITTED (client-only, batchable — NOT deployed):**
 > ① every admin card reskinned to the shipped framed standard (`rounded-2xl border-border bg-card/40
 > shadow-sm`); ② the **Dashboard recomposed** — the live KPI band **`BusinessBand`** now LEADS the page
@@ -320,21 +390,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > the word "pii". **LAW ENGRAVED (CLAUDE.md rule ① + memories):** the ADDRESS MODEL — addresses PUBLIC,
 > short-form + Snowtrace link everywhere (AAA), legal basis cited (EDPB 02/2025 · CJEU *EDPS v SRB* · CCPA);
 > guards protect name/email NOT addresses; **masking an address = a BUG**.
-> **IN FLIGHT (next steps, founder-decided):** (a) **Protocol Assets on admin home** — founder chose FULL
+> **IN FLIGHT (next steps, Founder-decided):** (a) **Protocol Assets on admin home** — Founder chose FULL
 > multi-token; the Vault really holds **4.74 AVAX · 0.00078 BTC.b · 0.0266 WETH.e** (+ USDC/SYN, verified
 > on-chain 2026-07-25) → needs NEW SERVER READS (BTC.b/WETH.e `balanceOf` + native AVAX added to
 > `protocolTargets` + `realityService`, then the assets card on admin home; reuse the public
 > `ProtocolAssetsCard`). (b) **Address code-rescope** — stop the 40-hex scanner/guard blocking addresses +
-> add explorer links; **founder wants the DIFF SHOWN before applying**. Both (a)+(b) = server → deploy.
+> add explorer links; **Founder wants the DIFF SHOWN before applying**. Both (a)+(b) = server → deploy.
 > **SENIOR DEEP-REVIEW DONE (2026-07-25, 9-agent + adversarial verify):** the redesign is structurally
 > sound; **3 confirmed defects FIXED** — the "Builders earning" tile read `playersEarning` at the wrong
 > nesting (blank forever → now reads the current `seasons[]` element); the shared console-signals cache
-> wasn't keyed on the principal (a lesser operator role could flash founder-only aggregate counts in the
+> wasn't keyed on the principal (a lesser operator role could flash Founder-only aggregate counts in the
 > same tab within the 60s TTL → now cleared on `SESSION_CHANGED_EVENT` in operatorClient.ts); the Modules
 > registry table still printed the raw `SERVER_ONLY_PII` token → humanized via a RISK_LABEL map. Design
 > polish (unify card-header / KPI-tile / heading idioms across sections) noted as a follow-on. **Auth
 > reality:** the 8 roles resolve to founder_root = everything, protocol_admin = operators-list + terms,
-> the other 6 reach the console shell but every founder-gated figure fail-closes to "—" (correct).
+> the other 6 reach the console shell but every Founder-gated figure fail-closes to "—" (correct).
 > **THE ADDRESS RESCOPE IS FULLY MAPPED (~40 sites: admin + member/user + public + server guards):**
 > Tier-1 client `/address/` Snowtrace links (own address, signing screens — client already holds the full
 > address) + Tier-2 server DTOs emit the full address / explorerUrl (member ledger, roster, queue,
@@ -350,7 +420,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > Founder-driven full-screen sweep (footer → whole site). Ruling (QuickNode benchmark): bord-à-bord,
 > **no fixed-px page cap**, fill by **multiplying columns** (auto-fit), readability in **`ch`** — this
 > **supersedes `CANON_ACCESS_MODEL` §C/§4** where they named a px cap. **SEALED LIVE — TWO Replit
-> seals 2026-07-25 (founder-pasted):** ① `a6b5294` (whole-site harmonization + home recomposition),
+> seals 2026-07-25 (Founder-pasted):** ① `a6b5294` (whole-site harmonization + home recomposition),
 > then ② `e21a036` (the senior-review cleanup + doc sync — 12 files). **`e21a036` is the DEPLOYED build
 > on thesyndicate.money; deploy backlog EMPTY (no deployable change pending — only NO-DEPLOY doc commits
 > sit above prod).** Both seals: files blob-verified,
@@ -360,10 +430,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > the sealed head) — the seal reflects live reality, not a stale report.
 > Shipped: the shell + **20 surfaces** + primitives `.auto-grid` / `.measure` (68ch) +
 > the BLOCKING `guard-fluid-surface` (page-cap debt = **0**). **PLUS the FONT harmonization**
-> (founder's /season "patchwork" complaint): benchmarked font law (serif=display · Work Sans=body/
+> (Founder's /season "patchwork" complaint): benchmarked font law (serif=display · Work Sans=body/
 > labels/stats · mono=data/addresses/code/UPPERCASE-eyebrows only, NEVER prose); 11-agent audit
 > (610 usages/115 files → 54 fixed, ~51 elements); BLOCKING `guard-font-discipline`. Two new guards
-> in the chain. **PLUS finished from the design system (2026-07-25):** the founder-approved
+> in the chain. **PLUS finished from the design system (2026-07-25):** the Founder-approved
 > **1-file design system** (`docs/design/THE_SYNDICATE_DESIGN_SYSTEM.html` — benchmarked
 > Stripe/Linear/Revolut/Kraken/Binance; type/spacing/section-rhythm/components/color/copy law);
 > **"read only" removed** from 51 user-facing strings (comments left); **4 truth fossils fixed**
@@ -381,7 +451,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > runs alongside S3.** Dossier:
 > `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md`.
 >
-> ## (a) LIVE IN PROD RIGHT NOW — last sealed cycle `e21a036` (edge-to-edge design harmonization + home recomposition + senior-review cleanup, Replit green ×2, founder-pasted 2026-07-25; engine last sealed `6097324`)
+> ## (a) LIVE IN PROD RIGHT NOW — last sealed cycle `e21a036` (edge-to-edge design harmonization + home recomposition + senior-review cleanup, Replit green ×2, Founder-pasted 2026-07-25; engine last sealed `6097324`)
 > - **`/season`** — the public recognition board: trophy podium with struck-metal
 >   medallions + crown · proportional XP bars · seated rows render **`#N ·
 >   0x03e…c6d0`** (seat + chain-emitted short form) · the double-seat wallet
@@ -403,7 +473,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   chain short form · numbers + quest ids only · fail-closed S1/dark).
 > - **`/admin/seasons`** — the operator console's 2 rails: RECOGNITION autonomous
 >   (pure observation, ZERO buttons by design) + THE SEASON POT (the §0.17 frame,
->   founder-gated, one FUTURE badge, zero figure, zero fake control). Shipped
+>   Founder-gated, one FUTURE badge, zero figure, zero fake control). Shipped
 >   S2-final `8d471ee`.
 > - **Every verify-on-chain link opens Snowtrace** (Avascan address pages hang
 >   forever — fixed `407b022`, prod-verified 12 URLs / 0 avascan).
@@ -460,7 +530,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > readability only; red line = name/alias/email; harvest §0.14-D superseded in place) ·
 > 🔒 **NO REFERRAL CAP** («pas de plafond — on est un business»; harvest §0.17-⑤ cap clause
 > superseded; the guard PINS it — a re-added cap = RED) · 🔒 claim window **2 YEARS** ·
-> 🔒 owner = **single founder key NOW → 2-of-3 Safe EARLY** (his call; on-chain
+> 🔒 owner = **single Founder key NOW → 2-of-3 Safe EARLY** (his call; on-chain
 > emergencyClaim REJECTED unanimously) · 🔒 per-season `committed[]` · 🔒 the name
 > **MeritDistributor** (label « Season Bounty Pool ») · deploy params proposed
 > 72h/72h/7d/14d/2y (he confirms in ONE line at mainnet).
@@ -468,7 +538,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **THE LAW FILES (a fresh session reads these BEFORE any S3 work):**
 > `MERITDISTRIBUTOR_CONTRACT_SPEC.md` (FROZEN — supreme on the contract; §7 = the
 > resolution ledger) · `S3_SEASON_CASH_RAIL_MASTER_PLAN.md` (the execution law — slices,
-> gates, deploy verdicts, founder moments) · the harvest stays the WHY only.
+> gates, deploy verdicts, Founder moments) · the harvest stays the WHY only.
 > ⚠ `docs/reference/season-merkle.reference.ts` = ⛔ SUPERSEDED origin format, never S3.
 > **§8-⑧ stands: the rail is AUTONOMOUS at mainnet+funded — NO legal gate anywhere.**
 >
@@ -482,7 +552,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > or WSL; **uv 0.11.32 + slither 0.11.5 ARE installed** via `--system-certs` — this box's
 > TLS interception, recipes in `contracts/README.md`) · aderyn · mutation ≥90% · the
 > MAINNET-FORK rehearsal (2 season lifecycles) · phase-2 fixture re-verify vs the LIVE
-> address · the founder's signed deploy + canary.
+> address · the Founder's signed deploy + canary.
 >
 > **➡ THE NEXT ACT — S3-5b (the served wiring):** the `/api/season` pot object (DARK,
 > `publicPotRaw` headline + `announcedRound` + `servedClaimExpiry` + `sealAnchorTx` masked)
@@ -492,15 +562,15 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > operator dispute route (SERVER recompute MATCH/MISMATCH verdict) · the
 > interim-announcement registry (founder_root; executor posts ONLY off an announcement
 > ≥48h old) · the GOAL config (non-hashed founder_root; tests assert GOAL absent from the
-> ABI AND the rulesHash input set) · member + founder BELL KINDS.
-> **S3-5b's GATE:** the FR bell sentences FULL TEXT on the founder's screen (content rule)
+> ABI AND the rulesHash input set) · member + Founder BELL KINDS.
+> **S3-5b's GATE:** the FR bell sentences FULL TEXT on the Founder's screen (content rule)
 > + guard-forbidden-copy + CANON_PROTOCOL_LANGUAGE §5 amended in the SAME commit (§8-③
 > "the guard follows the system") + typecheck ×2 + api guards + the fail-closed proof
 > (a payload without pot renders today's surfaces byte-identically).
 > **THEN:** S3-6 (PREREQUISITE: the docs/design/seasons/ mockups RE-EMITTED corrected —
 > §0.14-E incl. the «Pendant ton absence» fix — THEN Wireframe Gate A → the admin Rail 02
 > build) → S3-7 (Wireframe Gate B, 4 temporal states) → S3-8 DEPLOY #1 (the dark batch) →
-> S3-9 the founder's MONEY-SHEET SEAL → S3-10 fork rehearsal → S3-11 MAINNET + the
+> S3-9 the Founder's MONEY-SHEET SEAL → S3-10 fork rehearsal → S3-11 MAINNET + the
 > activation commit (the ONLY `seasonBounty` flip) → S3-12 the canary + first funding.
 >
 > **DEPLOY BACKLOG (recounted at handoff):** the pre-S3 docs commits (`2e3b6a3`,`0be9308`,
@@ -510,7 +580,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > pending**; the whole batch rides S3-8 (DEPLOY #1), per the master plan.
 > **⏰ THE STANDING WATCH:** the served LIFETIME board + past-seasons archive ship BEFORE
 > seats approach 333 (else the /season All-time tab lies at season 2) — OPEN_QUEUE carries
-> it; only the founder closes it.
+> it; only the Founder closes it.
 >
 > ## (c) FOUNDER-PENDING — the S3-GATE SUBSET, placed at their moments
 > *(the full open set is `docs/direction/BACKLOG.html`; the master plan §3 places each.)*
@@ -537,7 +607,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ---
 >
 > **▶ 📌 THE RECORD — 2026-07-24 (S3 SECOND ACT · MeritDistributor contract DESIGN): FROZEN,
-> WORLD-CLASS.** The founder ordered the design to pass several independent senior AAA lenses +
+> WORLD-CLASS.** The Founder ordered the design to pass several independent senior AAA lenses +
 > an adversarial pass before figer, then (after stress-testing it himself: the ère-9-never-completes
 > case, the 1M-pot-but-10-people case, the L1-migration case, the 2-wallet key question) a full
 > all-hats deep-read-from-source consolidation. Result: `docs/reference/MERITDISTRIBUTOR_CONTRACT_SPEC.md`
@@ -567,14 +637,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > file was removed (proof captured), `lib/`+`out/`+`cache/` gitignored — the
 > dependency-vendoring strategy is deferred to the real build. ✅ NO DEPLOY
 > (`contracts/` is not served/built). NEXT: `SeasonBountyPool` design via the
-> multi-lens + adversarial pass (founder mandate).
+> multi-lens + adversarial pass (Founder mandate).
 >
 > ---
 >
 > **▶ 📌 THE RECORD — 2026-07-24 (S2c-① `c85d784`): THE FOUNDER'S 3 CLOSING
 > NOTES ALL RESOLVED (order "on y va 3-2-1"; this supersedes the closing-notes
 > section of the block below).**
-> - **③ THE WORD IS "BUILDERS"** — the founder rejected the quick pick and ordered a
+> - **③ THE WORD IS "BUILDERS"** — the Founder rejected the quick pick and ordered a
 >   WORLD BENCHMARK first ("cherche online best practices grade AAA"): 3-lens sweep
 >   (wf_f14915d1), ~30 products — "players" exists ONLY where the product IS a game;
 >   non-game AAA names people by identity-in-the-institution (Strava athletes ·
@@ -585,7 +655,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   wire key stays code-register. **SETTLED_RULES §8-⑥ — never re-benchmark.**
 > - **② THE ORDINAL IS #11 — CHAIN-VERIFIED LIVE** (4 eth_calls on V3 that evening:
 >   `memberNumberOf(0x3ff…894f)` = 11 · `memberByNumber(7)` = 0x0 empty forever ·
->   `memberByNumber(11)` = that wallet · `knownMember` = true; the founder's memory
+>   `memberByNumber(11)` = that wallet · `knownMember` = true; the Founder's memory
 >   was exact). RULING: a V3-minted seat OVERRIDES the genesis roster for DISPLAY
 >   (seasonReadmodel seat map: V3 first-seat purchases overwrite; sealed-era/roster
 >   numbers stay the fallback) — board/feed/receipts now speak ONE chain ordinal.
@@ -599,7 +669,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   (the Founder chip alone; the 0x88e…dd73 polish from the seal notes — done).
 > - **GATES:** typecheck ×2 · api guards chain · studio 19 guards (feature-truth 571,
 >   no-raw-color 0) · build + 36 shells + twins + admin-dist — ALL GREEN; rig: /season
->   DARK honest card + console clean (no DB here — the founder's S2b rule: the living
+>   DARK honest card + console clean (no DB here — the Founder's S2b rule: the living
 >   seal is the online check after deploy).
 > - **🚀 DEPLOY ORDER OUT (`c85d784`):** ONE Replit cycle = this commit + the two
 >   batched fixes `fc92a31` + `8c1506d` (per-season purchase XP · member Season-door
@@ -626,13 +696,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   lines single-line · header "Builder" 218px (mockup 220) · "Builders earning:
 >   15" · zero visible "players" · zero page overflow. Studio gates re-run green.
 >   Season visual slices now REQUIRE a studio-prod-data measurement pass before
->   any handoff. **🏆 SEALED IN PROD (Replit green 2026-07-24 + founder
+>   any handoff. **🏆 SEALED IN PROD (Replit green 2026-07-24 + Founder
 >   screenshot):** header BUILDER live · 15/15 identity lines single-line
 >   (w-56 ×1 + nowrap ×6 confirmed in the served bundle) · mobile 402 clean ·
 >   /api/season LIVE 15 rows shortForm on all · engine ok=2, headBlock
 >   advancing, 6/6 units · byte-identity ×2. **DEPLOY BACKLOG: EMPTY. The
 >   3 closing notes are fully alive in production.**
-> - **✅ S2c-② BUILT (`0159f7e`) — THE HOME SEASON + REGISTER BANDS (founder "GO
+> - **✅ S2c-② BUILT (`0159f7e`) — THE HOME SEASON + REGISTER BANDS (Founder "GO
 >   and GO-Live S2c"; the approved visitor-home mockup §0.14-E, truth-amended):**
 >   `HomeSeasonSection` (full-bleed S7-d band between trust strip and promoted:
 >   2-col 1.4fr/.9fr · era gauge on THE ONE seat spine (useHeroReality) +
@@ -656,7 +726,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   seals — forever" · pot badge no-figure · 3 medals + 1 crown home AND /season ·
 >   register band live rows · zero "players" · zero overflow · the 2 filled-gold
 >   buttons are the pre-existing hero + nav chrome (no new violation).
-> - **🏆 S2c-② SEALED IN PROD (Replit green 2026-07-24, founder-pasted):** the home
+> - **🏆 S2c-② SEALED IN PROD (Replit green 2026-07-24, Founder-pasted):** the home
 >   serves the season band (gauge "14 / 333" live · "319 before Genesis Signal
 >   seals — forever" · secondary CTA · FUTURE pot frame no figure · metal top-3
 >   silver #4 / crowned gold #3 / bronze #5) + the register band (real chain rows
@@ -664,7 +734,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   /season podium wears the medals + crown · desktop AND mobile slices verified ·
 >   byte-identity ×2 · engine advancing 6/6 · feed 86 intact · "Builders earning"
 >   in the served bundle, never "players". **DEPLOY BACKLOG: EMPTY.**
-> - **✅ S2d BUILT (`72d9cb7`) — THE MEMBER SEASON + QUESTS SLOTS FILLED (founder
+> - **✅ S2d BUILT (`72d9cb7`) — THE MEMBER SEASON + QUESTS SLOTS FILLED (Founder
 >   "GO and GO-Live"; the corrected member mockup, truth-amended):**
 >   ① `GET /api/auth/season-standing` — the own-row season rail (the
 >   member-purchases discipline VERBATIM: session cookie only · walletIndex own
@@ -695,9 +765,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   chain green · studio 19 guards · build — ALL GREEN; rig: endpoint
 >   anonymous S1 verified live · visitor /member clean (reserved grid gone,
 >   zero overflow). The signed dashboard renders for a REAL session only —
->   Replit's battery + the founder's own click seal it online.
+>   Replit's battery + the Founder's own click seal it online.
 > - **🏆 S2d SEALED IN PROD on everything verifiable without a wallet (Replit
->   green 2026-07-24, founder-pasted):** /api/auth/season-standing anonymous →
+>   green 2026-07-24, Founder-pasted):** /api/auth/season-standing anonymous →
 >   S1 all-null + honest reason, zero leak · "Coming to your seat" = 0
 >   occurrences across the ENTIRE served JS (entry + console + 112 chunks
 >   searched) — the dashed cards cannot rebirth · the three cards' strings in
@@ -707,7 +777,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   **THE LAST CENTIMETER = THE FOUNDER'S SIGNED CLICK:** the three cards
 >   render only for a real SIWE session — his own dashboard look seals S2d
 >   fully (as the commit planned).
-> - **✅ S2-FINAL BUILT (`8d471ee`) — THE ADMIN SEASONS 2-RAILS CONSOLE (founder
+> - **✅ S2-FINAL BUILT (`8d471ee`) — THE ADMIN SEASONS 2-RAILS CONSOLE (Founder
 >   "GO and GO-Live"; the approved admin-2rails mockup §0.14-E, truth-amended) —
 >   THE S2 ARC CLOSES:** /admin/seasons (Trophy, after Sources — the growth
 >   cluster), the strict-chain module `pages/admin/SeasonsRails.tsx` (sections.tsx
@@ -721,7 +791,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   sources table (5 rows, "0 operator interventions"; unfed classes arrive
 >   WITH their feeders — no future rows, no future claims) · top-3 glance +
 >   the /season door · model notes in a closed expander (WORK-FIRST).
->   **RAIL 02 The season pot — the §0.17 frame, founder-gated, ONE FUTURE
+>   **RAIL 02 The season pot — the §0.17 frame, Founder-gated, ONE FUTURE
 >   badge (seasonBounty), ZERO figure, ZERO fake control:** the two buckets
 >   (« Engager au pot » irrevocable ratchet-only THE public figure ·
 >   « Réserve » 72h public timelock) · the 3 rounds (seal-auto · interim
@@ -741,14 +811,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   · 5 fed rows · 1 badge · 0 dollar figures · 0 "player" · 0 inputs/forms ·
 >   0 overflow; and the neutral wall RETOOK the page when the server
 >   operator-context answered false — the gate enforces server truth even in
->   dev. The founder's signed operator session seals the visual online.
+>   dev. The Founder's signed operator session seals the visual online.
 > - **⚠ EXPLORER HOTFIX (`407b022`) — FOUNDER-CAUGHT: the verify-on-chain
 >   ADDRESS links opened dead pages.** Diagnosis BY LIVE TEST (never assumed):
 >   the address `0x205DdC…f464` is CORRECT (the Vault Reserve, canon) and our
 >   URL followed Avascan's own scheme — **AVASCAN ITSELF is broken**: its
 >   address pages hang on "Searching…" forever (reproduced live; balances
 >   never render — that is also the "missing amounts" symptom). Snowtrace
->   works (the founder's own test). FIX FROM THE LAW ("Don't trust — verify":
+>   works (the Founder's own test). FIX FROM THE LAW ("Don't trust — verify":
 >   a verify link that opens a dead page is a broken proof; tx pages already
 >   standardized on Snowtrace for reliability): **the canonical explorer for
 >   ADDRESS/token pages is now SNOWTRACE** — one central flip
@@ -758,14 +828,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   ON THE SERVED PAYLOAD: /api/protocol/verify-links = 12 snowtrace URLs ·
 >   0 avascan (V1/V2A/V2B/V3 engines, Vault, LP, all chips). Gates: api
 >   typecheck + full guards chain green. **🏆 SEALED IN PROD (Replit green
->   2026-07-24, founder-pasted):** prod verify-links 12 snowtrace · 0 avascan ·
+>   2026-07-24, Founder-pasted):** prod verify-links 12 snowtrace · 0 avascan ·
 >   the six flagged targets verified one by one · SNOWTRACE LIVENESS TESTED
 >   (V1/Vault/LP/SYN pages answer 200 and NAME our contracts — "The Syndicate
 >   (SYN) — ERC-20") · client byte-identical (server-only confirmed) · honest
 >   note: the first post-boot cycle FAILED CLOSED (~5 min season DARK, feed 0,
 >   zero invented data — the designed behavior) then self-repaired via the
 >   cursor; ok=2, season LIVE 15, feed 86, block advancing.
-> - **🔎 THE PRE-S3 FULL-SESSION AUDIT (`6097324`) (founder order: "deep read
+> - **🔎 THE PRE-S3 FULL-SESSION AUDIT (`6097324`) (Founder order: "deep read
 >   from the beginning, senior AAA agents, zero problems before the smart
 >   contract") — wf_34c178ff, 5 adversarial lenses over 4322261..fd61acc; ALL
 >   figures survived recount (guard counts re-executed per commit · the curve
@@ -787,7 +857,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   · season-merkle.reference.ts wears the ⛔ ORIGIN-FORMAT-SUPERSEDED banner
 >   (never copy its leafFor into S3) · the GUARDIAN contradiction harmonized
 >   (§0.17-⑥ = the OWNER revokes, the pause-only GUARDIAN covers
->   founder-offline — §0.14-C and the admin rail-2 copy now agree) · Season-1
+>   Founder-offline — §0.14-C and the admin rail-2 copy now agree) · Season-1
 >   rulesHash anchors at CONTRACT DEPLOY (§0.17-⑦ accommodation) · the Foundry
 >   toolchain spike re-trued as S3'S FIRST ACT (none ran).
 >   ③ TRUTH/DOCS: §0.14-D superseded in place (shortForm on every row
@@ -800,18 +870,18 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   the MemberAccess lifecycle exemption now PAID by a chassis check (the
 >   wallet cards' own labels) · stale guard comments re-trued.
 > - **🏆 THE PRE-S3 AUDIT SEALED IN PROD (cycle `6097324`, Replit green
->   2026-07-24, founder-pasted):** /api/auth/season-standing anonymous → S1 all
+>   2026-07-24, Founder-pasted):** /api/auth/season-standing anonymous → S1 all
 >   fields null + honest reason, zero leak · the no-seat own-row fix serves
 >   (the code is in the prod build, skeleton checks 4/4; the SIGNED no-seat
->   render = the founder's own click — Replit stated that limit plainly) ·
+>   render = the Founder's own click — Replit stated that limit plainly) ·
 >   og:description AND twitter:description carry the Season-1 text verbatim,
 >   identical to each other and to the registry (the S2c-② miss closed
 >   structurally, seo 541) · byte-identity ×2 · routes 200 · /studio 404 ·
 >   season LIVE 15 · feed 86 · engine ok=2 (2 partials self-repaired via the
 >   persisted cursor), block advancing, 6/6 units.
-> - **⚖ THE AUTONOMOUS PAYMENT RULING (`2e3b6a3`) (founder, 2026-07-24 —
+> - **⚖ THE AUTONOMOUS PAYMENT RULING (`2e3b6a3`) (Founder, 2026-07-24 —
 >   SETTLED_RULES §8-⑧):** THE LEGAL GATE IS REMOVED FROM EVERYWHERE — legal
->   review is the founder's own business matter, never a system gate, never a
+>   review is the Founder's own business matter, never a system gate, never a
 >   session's concern. The rail pays REALLY and AUTONOMOUSLY the moment the
 >   contract is live on mainnet and funded (§0.15). Swept from every living
 >   doc/list/config; frozen archives superseded by §8-⑧. NO agent ever
@@ -823,19 +893,19 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   changes. It rides whatever cycle S3 ships. **DEPLOY BACKLOG: `2e3b6a3`
 >   only, harmless undeployed.**
 > - **NEXT:** S3 — the Foundry workspace + SeasonBountyPool + the cash rail per
->   §0.17 (the founder's money decisions gate it: « Engager au pot » amount +
+>   §0.17 (the Founder's money decisions gate it: « Engager au pot » amount +
 >   cadence · XP weights + footprint-rung XP · the floor pair). S3 OPENS WITH:
 >   the forge toolchain spike, then the contract from §0.7/§0.14-C/§0.17 as
 >   amended — the dossier is now contradiction-free for it, and the rail is
 >   AUTONOMOUS at mainnet (§8-⑧).
-> - **🏆 S2-FINAL SEALED IN PROD (Replit green 2026-07-24, founder-pasted — the
+> - **🏆 S2-FINAL SEALED IN PROD (Replit green 2026-07-24, Founder-pasted — the
 >   record the pre-S3 audit found missing, now engraved):** the 8d471ee cycle
 >   deployed and verified — /admin/seasons anonymous = the neutral 404 wall
 >   (noindex from the shell, zero rail traces) · entry + every shell admin-clean
 >   (SeasonsRails/AdminShell = 0 occurrences in the served entry; 113 chunks,
 >   exactly ONE OperatorConsole) · robots Disallow live · season-standing
 >   anonymous S1 · byte-identity ×2 · engine advancing. The rails' visual =
->   the founder's operator session.
+>   the Founder's operator session.
 > - **(e) FOUNDER-PENDING (re-trued at the pre-S3 audit — the S3-GATE SUBSET;
 >   the FULL open set is `docs/direction/BACKLOG.html` « Les décisions qui
 >   n'appartiennent qu'à toi »):** 🔴 AW-5 wallet name (unchanged) · SwapRail decisions
@@ -862,9 +932,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   podium ring, cyan XP bars, Founder/AWAITING SEAT chips, the pot card FUTURE
 >   "Coming later" with NO figure — as designed).
 >   **PROD-TRUTH NOTES:** ① the AW-5 wallet `0xe41…d56f` PLAYS the season (300 XP
->   Historian, AWAITING SEAT, pseudonymous — still awaiting the founder's name; once
+>   Historian, AWAITING SEAT, pseudonymous — still awaiting the Founder's name; once
 >   named, decide hors-concours) · ② 0x88e…dd73 wears Founder + AWAITING SEAT
->   together (both true — a founder-side no-seat source wallet; display-polish
+>   together (both true — a Founder-side no-seat source wallet; display-polish
 >   candidate at S2c) · ③ the FUTURE badge renders "Coming later" (the atom's
 >   standard wording).
 >   **DEPLOY BACKLOG (batchable, nothing broken in prod):** `fc92a31` + `8c1506d`
@@ -878,26 +948,26 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   amendment) show seat + SHORT address together ("#3 · 0x03e…c6d0"). FIX S2c:
 >   the server standings add the chain-emitted short form for seated rows too
 >   (settled visibility law — short form, never full), the page renders both.
->   ② **THE #7/#11 DOUBLE ON THE BOARD** — founder from memory ("c'est de tête"):
+>   ② **THE #7/#11 DOUBLE ON THE BOARD** — Founder from memory ("c'est de tête"):
 >   seat #7 "ne sera plus jamais là", its holder "était devenu membre 11". The
 >   engraved canon knows the double (#7+#11, one wallet — the future Chronicle
 >   "first duplicate was a gift"). The live board shows #7 at rank 5 and NO #11:
 >   the wallet-identity law keys one row per wallet and the builder takes the
 >   FIRST seat (#7). VERIFY next session against the chain/continuity data which
->   ordinal that wallet should DISPLAY (likely #11 per the founder, or both as
+>   ordinal that wallet should DISPLAY (likely #11 per the Founder, or both as
 >   attributes) — never from memory, his or mine.
 >   ③ **VOCABULARY QUESTION: is "player" the right word?** — the built surfaces
->   say "Players earning" / players; the founder doubts it fits the institution's
+>   say "Players earning" / players; the Founder doubts it fits the institution's
 >   register (members · seats). Candidates to put ON SCREEN at the next gate:
 >   "Members earning" / "participants" / axis-neutral wording. Public copy =
->   founder decision; sweep §0.18/the page/the API notes when ruled.
+>   Founder decision; sweep §0.18/the page/the API notes when ruled.
 >   **NEW FOUNDER QUESTION OPEN (2026-07-23 post-seal): FOOTPRINT purchases** — his
 >   instinct: footprint buys must count too. PROPOSED (awaiting his OK): footprint
 >   credits XP at CAPITAL-RUNG CROSSINGS (+100 XP per rung of the existing 12-rung
 >   capital register — unfarmable: splitting receipts crosses no extra rungs);
 >   first purchase per season keeps its 200. Confirm with the weight table at the
 >   S3 gate.
-> - **(a) THE STUDY:** the founder's advisor mega-dossier verified against the repo
+> - **(a) THE STUDY:** the Founder's advisor mega-dossier verified against the repo
 >   (6-reader workflow). Facts established, never re-research: the durable indexer
 >   ALREADY EXISTS (backbone persists to Postgres — `protocol_event_raw`/`sale_event_raw`
 >   + cursors, 50-block reorg overlap; 10 streams + 4 sale contracts) · referral is
@@ -905,11 +975,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   prod RPC (Replit env; code defaults ≠ prod truth) · Member Home reserves the
 >   Season + Quests slots (`memberDoors.ts`) · `featureStatus.seasonEngine` awaits its
 >   flip · no Solidity in-repo yet (S3 creates the Foundry workspace).
-> - **(b) THE FIVE RULINGS (founder — `SETTLED_RULES` §8 + amendments in
+> - **(b) THE FIVE RULINGS (Founder — `SETTLED_RULES` §8 + amendments in
 >   `CONNECTOR_LADDER_POLICY` §5 · `CANON_PROTOCOL_LANGUAGE` §5 · `SEASONS_ENGINE`
 >   addendum, all [this commit]):** ① the season bounty pool contract DEPLOYS (freeze
 >   exempted; care protocol: full Foundry suite · `verifyClaim()` acceptance before any
->   root · Fuji full-round rehearsal · founder-signed deploy) · ② money SHOWN incl.
+>   root · Fuji full-round rehearsal · Founder-signed deploy) · ② money SHOWN incl.
 >   per-member merit share on the public ranking · ③ vocabulary adapts to the system
 >   (guards amended in each surface's slice) · ④ zero-operator autonomy (XP =
 >   provable/auto facts only, NO validation queues) · ⑤ Season=Era on TODAY's chain.
@@ -922,7 +992,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   inventory + 9 traps + world benchmark + §0 synthesis: one-truth XP ledger ·
 >   derived season state · feeder-guaranteed quests · never-drop levels · full-ladder
 >   ranking with drawn zones · auto-credit via claimFor · hardened SeasonBountyPool
->   spec superseding the advisor's single-hash leaf). §0.11–0.13 answer the founder's
+>   spec superseding the advisor's single-hash leaf). §0.11–0.13 answer the Founder's
 >   three design questions (endless engagement · evolutive contracts · web2 acts).
 >   **THE DEEP-CHECK RAN [this commit]: 6 adversarial lenses, 90 findings (29 high),
 >   ALL resolved in §0.14** (rebuildable-projection ledger · wallet identity ·
@@ -930,16 +1000,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   closeAtSeat + pending-round delay + guardian · seat-keyed ranking rows, no
 >   address field · featureStatus split ranking/quests/bounty · corrected mockups
 >   before any wireframe gate · a-seat-=-a-player (later superseded by §0.18
->   multi-level) · founder hors-concours · weekly
+>   multi-level) · Founder hors-concours · weekly
 >   recurrence floor · era-1 ~15 quests + L&E starter right after S2 · §0.14-H = the
->   founder gate block with proposed defaults). **THEN THE ZERO-CLICK RULING [this
->   commit] (founder: "j'ajoute SEULEMENT de l'argent") → §0.15: the ONLY recurring
+>   Founder gate block with proposed defaults). **THEN THE ZERO-CLICK RULING [this
+>   commit] (Founder: "j'ajoute SEULEMENT de l'argent") → §0.15: the ONLY recurring
 >   human act = funding; seal + rounds transit automatically (narrow SEALER/executor
 >   roles, bounded blast radius, public windows); vetoes are rights never duties —
 >   §0.2 and §0.13-④ amended in place. Truth files synced same commit: BACKLOG
 >   23-juil callout + 4 decision rows (30→34: season-route · season-pot ·
 >   season-bands-weights · season-floor) + DESIGN_ROADMAP Phase-5 seasons block.**
->   **THEN THE POT MODEL FINAL [this commit] — founder defined it ("je remplis le
+>   **THEN THE POT MODEL FINAL [this commit] — Founder defined it ("je remplis le
 >   pot au fur et à mesure · il se débloque à 333 · ça incite le referral · option
 >   donner plus vite · on ne change plus après"), a 3-lens adversarial pass
 >   (wf_baa17693-b90: 32 findings, 15 high) hardened it, §0.17 engraves it:
@@ -951,22 +1021,22 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   fallback · 1y expiry → carryover) · rulesHash chain-anchored at season open ·
 >   interim rounds pre-announced 48h. §0.16-①/② re-scoped; BACKLOG pot/bands/floor
 >   rows re-trued.** S1/S2/S3 build BY §0 as amended.
-> - **(d) NEXT, in order (season-first, founder-corrected):** ✅ **S1 BUILT [this
->   commit] (founder GO-and-GO-LIVE):** the season engine's data core as a PURE
+> - **(d) NEXT, in order (season-first, Founder-corrected):** ✅ **S1 BUILT [this
+>   commit] (Founder GO-and-GO-LIVE):** the season engine's data core as a PURE
 >   PROJECTION — zero new tables, zero migration (the repo's own derived-lane
 >   doctrine beat the tables plan): `src/data/seasonConfig.ts` (the ONE rule
 >   sheet: weights · axes · 5 chain-fed ladder quests under the feeder law ·
->   §0.17 bands · the null-until-founder floor pair) +
+>   §0.17 bands · the null-until-Founder floor pair) +
 >   `src/backbone/seasonReadmodel.ts` (genesis retro-credit by replay ·
 >   season-of-block by sealing boundaries §0.17-③ · a-seat-=-a-player (later
 >   superseded by §0.18 multi-level) ·
 >   self-referral dead · purchase-once-per-season · hors-concours = the
->   founder/organ set · seat-keyed address-free standings + SERVER-ONLY wallet
+>   Founder/organ set · seat-keyed address-free standings + SERVER-ONLY wallet
 >   index) + runner lane ③b6 w/ last-good + `getSeasonSource()` +
 >   featureStatus SPLIT (seasonRanking/seasonQuests/seasonBounty; the ladder
 >   panel's claim repointed). Gates: api typecheck + full api guards (backbone
 >   incl.) + studio typecheck + 19 studio guards + feature-truth 568 — ALL
->   GREEN. **S2 OPENED (founder "OK GO"): the 4 mockups RE-ISSUED CORRECTED
+>   GREEN. **S2 OPENED (Founder "OK GO"): the 4 mockups RE-ISSUED CORRECTED
 >   [this commit] per §0.14-E (4-agent pass wf_b465c7d9-472 + independent
 >   killed-pattern sweep: band zones w/ identical amounts · dual time-scope ·
 >   committed-pot honesty + verify · two-proof-classes line · Season-0 dead ·
@@ -975,7 +1045,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   on OUR tokens · Income tab dead · zero-click autobar · two buckets ·
 >   seal/interim/final rounds · §0.15 pipeline) — NOW AT THE FOUNDER
 >   WIREFRAME GATE (his approval of what he SEES unlocks each surface).**
->   **THE VISUAL GATE ROUND (founder live, 2026-07-23): member card APPROVED
+>   **THE VISUAL GATE ROUND (Founder live, 2026-07-23): member card APPROVED
 >   ("ça c'est bien") · the hero-pot CSS bug HE caught (invalid clamp operators
 >   — silently dropped declarations; fixed repo-wide, verified by MY OWN
 >   computed-style measurement: 112px/128px) · trophy podium (crown + metal
@@ -985,14 +1055,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   depth scales with the field ~10% + min-cash floor $20 — never a fixed 25) —
 >   engraved in seasonConfig BOUNTY_CURVE_BP_V1 (Σ=10,000bp) + §0.17-④ + the
 >   BACKLOG row.**
->   **MOCKUP GATE PASSED (founder "OK" on the corrected set) → S2 BUILD OPEN.
+>   **MOCKUP GATE PASSED (Founder "OK" on the corrected set) → S2 BUILD OPEN.
 >   ✅ S2a SEALED (`a83f7cd`): GET /api/season — the address-safe public season
 >   read (display #seat-or-shortform · potEligible · DARK-fail-closed · the
 >   feed's output gate · pinned deliberately in both route-surface guards; api
 >   chain exit 0). Decisions landed same day: Option-A poker curve
 >   (BOUNTY_CURVE_BP_V1) + depth law + §0.18 multi-level players (XP every
 >   level · pot seated · pending=projection · seal=deadline).**
->   **✅ S2b SEALED [this commit] (founder preview-gate OK — "obligé, pas de
+>   **✅ S2b SEALED [this commit] (Founder preview-gate OK — "obligé, pas de
 >   base ici; donnons à Replit et on check en ligne"): the REAL /season page
 >   (real shell · fail-closed DARK/empty states · trophy podium + XP bars ·
 >   the pot card FUTURE-badged on seasonBounty, pinned in guard-feature-truth ·
@@ -1008,7 +1078,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   (zero new tables), NO new env (the backbone computes the season model on
 >   its next prod cycle). Replit verifies: /season serves the LIVE board ·
 >   GET /api/season state LIVE with standings · the standard battery. The
->   founder's online click is the living seal.**
+>   Founder's online click is the living seal.**
 >   → *(SUPERSEDED 2026-07-24 — S2c `0159f7e`, S2d `72d9cb7` and the admin
 >   2-rails console `8d471ee` ALL SHIPPED and sealed in prod the same day;
 >   `seasonQuests` flipped LIVE at S2d. The live state is the resume block at
@@ -1027,15 +1097,15 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **▶ 📌 THE 2026-07-22 EVENING HANDOFF — FINAL (DONE-IS-DONE §④ — the next
 > session resumes HERE in one read; supersedes the earlier same-evening block).**
 > - **(a) LIVE / SEALED IN PROD — through cycle `f3e5fb8` (Replit green,
->   founder-pasted report):** the /activity NEWSROOM (type harmony · full
+>   Founder-pasted report):** the /activity NEWSROOM (type harmony · full
 >   screen · Founder chip immediate on the fresh burn · milestones family
 >   lanes retro-sealed · pagination over the WHOLE history proven 86/86 via
 >   7 cursor pages · 17 mints = 6 Founder + 11 Community) + everything
 >   earlier: cycle `1bce58e` (A-arc: newsroom v1 + A2 pagination + the
->   Founder Private Wallet in the founder set + founder-funding treasury
+>   Founder Private Wallet in the Founder set + Founder-funding treasury
 >   attribution) · the K3 arc + console composition · `ede59aa`.
 > - **(b) ✅ SEALED IN PROD `f98798f` (Replit green 2026-07-22 evening,
->   founder-pasted report — the WHOLE backlog in one cycle):** 11/11 blobs ·
+>   Founder-pasted report — the WHOLE backlog in one cycle):** 11/11 blobs ·
 >   byte-identity (entry `index-DEbYBoD7.js` d8b432a1… · console 8155bb67…) ·
 >   backbone 160 + auth-zone 1191 + studio chain green in prod context ·
 >   milestones FULL WIDTH BELOW the feed (zero grid-rail class in the served
@@ -1056,7 +1126,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   lane indexes in its own slice → the patronage rungs gain anchors and
 >   can SEAL + heartbeat completeness + the address book). Parked ledger
 >   unchanged (Q35 legal set · Q38-Q40 · Q42 remnants · Q32/MVP-final).
-> - **(d) NEXT, in order:** the ONE deploy paste + founder's living seal on
+> - **(d) NEXT, in order:** the ONE deploy paste + Founder's living seal on
 >   /activity → M-EVO-3 (the milestone celebration layer: painted card +
 >   share + notification-on-seal — own cycle) → A5 (the off-chain purpose
 >   ledger — ⚠ MIGRATION, own cycle) → AW-5's lane slice (once named) →
@@ -1065,8 +1135,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   dossiers first).
 > - **(e) THE SESSION'S ENGRAVED LESSONS — now LAW in CLAUDE.md (THE
 >   PRE-HANDOFF GATE, 2026-07-22):** diff built vs approved mockup element
->   by element + run the law list before EVERY founder-visible handoff,
->   hotfixes included · fix founder-caught defects FROM the quoted law,
+>   by element + run the law list before EVERY Founder-visible handoff,
+>   hotfixes included · fix Founder-caught defects FROM the quoted law,
 >   never the symptom · recount every doc figure · context economy
 >   (subagent reads, one consolidated docs pass per slice). Agent-memory
 >   twins: `pre-handoff-gate-and-fix-altitude` · `wireframe-geometry-binds`
@@ -1075,7 +1145,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   `WALLET_TRACKING_AND_ACTIVITY_REBUILD.md` ·
 >   `MILESTONE_SYSTEM_EVOLUTION.md` (never re-search either).
 
-> **▶ ⚖️ THE DONE-IS-DONE TRUTH WAVE (founder order 2026-07-19 — the Settings
+> **▶ ⚖️ THE DONE-IS-DONE TRUTH WAVE (Founder order 2026-07-19 — the Settings
 > "Notifications Coming later" fossil, a day after notifications sealed live:
 > "on avance et tu nous fais reculer — insoutenable"). COMMITTED [this commit].**
 > - **THE MECHANISM (permanent, guard-enforced):** `src/config/featureStatus.ts`
@@ -1084,7 +1154,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   claimed-future feature live turns the build RED naming every lying
 >   surface). THE DONE-IS-DONE LAW engraved in CLAUDE.md (+ agent memory):
 >   ships → flip the key SAME commit; live keys answered forever; session-end
->   boot block = live / in-flight+next / founder-pending.
+>   boot block = live / in-flight+next / Founder-pending.
 > - **THE SWEEP (3-agent audit `wf_4ed95ae5-471` + executor): 29 files
 >   re-trued** — member: Settings notifications row LIVE + Open-inbox door ·
 >   homepage awaitingWiring purged · Whitepaper future-modules · trophy
@@ -1102,7 +1172,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   api guards (source-status-truth 163) · seo 503 · audit 328 · build 348
 >   twins + admin-dist 96. **🚀 DEPLOY — ONE cycle carries `c6859f4` (the
 >   R-BIND-3 bug fixes, not yet published) + this truth wave.**
-> - **✅ SEALED IN PROD (`da1bd5c`, Replit green 2026-07-19, founder-pasted
+> - **✅ SEALED IN PROD (`da1bd5c`, Replit green 2026-07-19, Founder-pasted
 >   report):** 38/38 blob-verified (4 commits: R-BIND-3 fixes + the truth wave
 >   + 2 docs; Replit rightly pulled full main incl. the Q44 docs commit —
 >   mirror fidelity) · entry `index-RiWbDWex.js` + console byte-identical ·
@@ -1128,9 +1198,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   page (verdict bar "Sealed on-chain" + THE ticket born in the wallet
 >   module + provenance + 4 honest states + the visitor door "Seats are
 >   open") · THE RETARGET (Copy link + 6 network intents → the page;
->   Verify/QR stay the explorer) — wireframe founder-approved ("ok for
+>   Verify/QR stay the explorer) — wireframe Founder-approved ("ok for
 >   mee"), noindex,follow per Q44-①.**
-> - **✅ SEALED IN PROD (`e002aa5`, Replit green 2026-07-20, founder-pasted
+> - **✅ SEALED IN PROD (`e002aa5`, Replit green 2026-07-20, Founder-pasted
 >   report):** 29/29 blob-verified · paramRoutes.generated.json in the boot ·
 >   prod serving probes 200/404 matrix exact · receipt head exact (title ·
 >   noindex,follow · canonical ×0 · og:url ×0, per Q44-①) · **the REAL-HASH
@@ -1145,7 +1215,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   127 · feature-truth 552 · operator-gate 2840 · access-state 1113 ·
 >   auth-zone 1022 · source-status 163 · admin-dist 99. **DEPLOY BACKLOG:
 >   EMPTY. Tree clean.**
-> - **▶ R-CARDS BUILT [this commit] (2026-07-20, the founder's "approved" on
+> - **▶ R-CARDS BUILT [this commit] (2026-07-20, the Founder's "approved" on
 >   the 4-face mockup): THE PAINTED PREVIEW CARDS + THE LINK ROTATION.** The
 >   api paints each receipt its own 1200×630 (<300KB; Work Sans + IBM Plex
 >   Mono embedded, OFL; 4 faces, real figures visible, QR to the explorer;
@@ -1166,7 +1236,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   (server + client, NO migration; needs `pnpm install` on the deploy —
 >   3 new packages: satori · @resvg/resvg-js · qrcode).**
 > - **✅ R-CARDS SEALED IN PROD (`2f2a6b7`, Replit green 2026-07-20,
->   founder-pasted report):** the bundle boots with embedded fonts · the 4
+>   Founder-pasted report):** the bundle boots with embedded fonts · the 4
 >   faces painted with the REAL hash (200/PNG/<300Ko, 4 distinct, figures
 >   eye-verified) · fallbacks + per-URL prod heads exact · engine perfect
 >   first cycle.
@@ -1174,14 +1244,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   and GO-Live"): "OPEN RECEIPTS" ON THE MEMBER LEDGER — the A21 amendment
 >   the service had reserved.** The Purchases cell = THE DOOR (in-place
 >   receipt lines, binder grammar; each line → its permanent public address
->   + Explorer; one rendering path). Server: lines join the founder-only
+>   + Explorer; one rendering path). Server: lines join the Founder-only
 >   payload (zero lookup params); the route's leak scan → boundary-aware;
 >   the two reserving auth-zone pins amended dated. Gate green (auth-zone
 >   re-pinned · admin-dist 99) · rig honest-state clean · 3-seam adversarial
 >   verify = 0 real findings. **✅ SEALED IN PROD `0619818` (Replit green
->   2026-07-20: the boundary-aware scan proven by the founder's own
+>   2026-07-20: the boundary-aware scan proven by the Founder's own
 >   post-boot ledger read — audit member-ledger.read 01:38:47Z; the X draft
->   carries the link once in the served bundle; battery clean; the founder's
+>   carries the link once in the served bundle; battery clean; the Founder's
 >   living-seal click: "les tickets sont là, parfait").**
 > - **✅ R-ADMIN v2 SEALED IN PROD (`43e84bf`, Replit green 2026-07-20):
 >   THE FOUNDER'S CHAPTER CORRECTION** — the CHAPTER column from the
@@ -1194,7 +1264,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   DEPLOY BACKLOG (batchable): this one-string rider — rides the 5.1
 >   cycle, or one paste.**
 > - **▶ R-5.1 BUILT + COMMITTED [this commit] (2026-07-20, mockup
->   founder-approved 2026-07-19; preview "GO and GO-Live" on the rig
+>   Founder-approved 2026-07-19; preview "GO and GO-Live" on the rig
 >   2026-07-20): THE COMMISSION RECEIPTS REGISTER — /referral/commissions
 >   rebuilt as the register of till receipts.** Month-grouped ticket rows
 >   (perforation chrome, binder grammar) expanding IN PLACE into the 7-zone
@@ -1221,15 +1291,15 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   admin-dist 99) · build + prerender 34 + twins 352 · seo 509 · rewrites
 >   · surface audit 333 · rig 4-combo DOM-verified with the REAL component
 >   + REAL client parser (throwaway page-world harness, deleted before
->   commit; founder reviewed the live rig page and gave GO). **✅ SEALED IN
->   PROD `e2911be` (Replit green 2026-07-20, founder-pasted report): 9/9
+>   commit; Founder reviewed the live rig page and gave GO). **✅ SEALED IN
+>   PROD `e2911be` (Replit green 2026-07-20, Founder-pasted report): 9/9
 >   blobs · byte-identity entry `index-ONifdE63.js` + console EXACT · gates
 >   at the sealed counts (operator-gate 2840 · access-state 1113 · receipt
 >   127 · feature-truth 552 · admin-dist 99 · 352 twins) · /receipt matrix
 >   exact · "acquisition commission" ×0 · engine ok:2 after the usual
 >   self-healed boot partial (head 90,757,345→90,757,971) · zero rendered
 >   "genesis" (the rider RODE — Replit proved ×0 in the served console
->   chunk) · THE LIVING SEAL: the founder's own screenshot — his real
+>   chunk) · THE LIVING SEAL: the Founder's own screenshot — his real
 >   register at /referral/commissions, the July receipt open, every figure
 >   exact. DEPLOY BACKLOG: EMPTY. + THE SHARE-PROOF (probed from here,
 >   prod): the shared link's served head carries the painted face
@@ -1241,10 +1311,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   API (`Uint8Array.fromBase64`) — the rig caught a whole-api prod-boot
 >   failure BEFORE deploy; target node20 pinned in build.mjs. ② the
 >   shareTargets CONTRACT: `text` never contains the link — each intent
->   places the url itself (the double-link class, founder screenshot).
+>   places the url itself (the double-link class, Founder screenshot).
 >   ③ the VOCABULARY-COLLISION class: the authority tag's word ("genesis")
 >   impersonated Chapter I ("Genesis Signal") — never let two concepts share
->   a word on one screen; the founder's read is the test. ④ a PARAM shell
+>   a word on one screen; the Founder's read is the test. ④ a PARAM shell
 >   must never bake a pattern URL into og:url (crawlers canonicalize onto a
 >   404) — strip at prerender, substitute per URL at serve. ⑤ the
 >   boundary-aware 40-hex scan is the STANDARD on any anchor-carrying
@@ -1253,10 +1323,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   multi-purchase rows would share a React key on the binder AND the ledger
 >   expansion (theoretical class — no engine mints it; fix jointly by
 >   appending logIndex to both keys in one pass when touched). (b) flagged
->   to the founder 2026-07-20, copy kept as approved: the public page's
+>   to the Founder 2026-07-20, copy kept as approved: the public page's
 >   visitor door "Seats are open — see how membership works." is a standing
 >   claim on permanent links — revisit only if seat sales ever pause.
-> - **▶ THE REFERRER KIT ARC (founder orders 2026-07-20, post-5.1-seal;
+> - **▶ THE REFERRER KIT ARC (Founder orders 2026-07-20, post-5.1-seal;
 >   the full record lives in OPEN_QUEUE — read it whole):** inventory
 >   engraved (docs/reference/REFERRER_KIT_SYSTEM_INVENTORY.md) → the K1
 >   "Tools" wireframe approved ("ÇA ME CONVIENT… GO AND GO-LIVE") → the
@@ -1268,7 +1338,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   (Replit green 2026-07-20: 15/15 blobs · API prudence rebuild for the
 >   whitelist line · /referral/tools 200 + badge 200 · byte-identity ·
 >   cleanest cycle yet) → **THE K1 HARDENING LADDER, ALL SEALED IN PROD
->   (Replit green 2026-07-20, three founder live-reads honored):**
+>   (Replit green 2026-07-20, three Founder live-reads honored):**
 >   K1-FIX `d4958a8`→`38a987f` (the real interlock emblem SynMark ·
 >   worst-case-fit layouts · FIT+PIXEL probes born · Replit's red gate on
 >   a comment hex honored — the gate-discipline corollary engraved:
@@ -1292,12 +1362,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   serve.mjs 3c substitution + the introduced-by strip on /join +
 >   `joinInviteeCard` live. PAINTED PROOF eye-verified; substitution +
 >   fail-closed matrices proven; gates ALL EXIT 0 both sides. 🚀 DEPLOY
->   IN FLIGHT — the founder handed Replit the cycle as this session
+>   IN FLIGHT — the Founder handed Replit the cycle as this session
 >   closed. → ✅ K2 SEALED IN PROD `0134cc6` (Replit green 2026-07-21,
->   founder-pasted report: 15/15 blobs · first server+client cycle ·
+>   Founder-pasted report: 15/15 blobs · first server+client cycle ·
 >   join-card 25/25 · byte-identity exact · the fail-closed matrix proven
 >   IN PROD · "l'arc K1→K2 est en prod de bout en bout") → K2.1 `87f47df`
->   (the founder's recheck honored: the status gate — no attribution
+>   (the Founder's recheck honored: the status gate — no attribution
 >   unfurl for a PAUSED/REVOKED source — + the mutable-fact cache law)
 >   → ✅ K2.1 SEALED IN PROD `7c174cc` (Replit green 2026-07-22, the
 >   server-only cycle PROVEN: studio SHAs reproduced bit-for-bit ·
@@ -1316,7 +1386,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   true exit code; ③ NO fixed seat price exists — the FIRST purchase at
 >   the buyer's chosen amount establishes the seat
 >   (`seat-price-first-purchase-decides`); ④ the local rig has no DB —
->   the founder verifies online, never a blocker
+>   the Founder verifies online, never a blocker
 >   (`local-rig-no-db-founder-verifies-in-prod`); ⑤ referrer surfaces:
 >   visual-first, think 300, the living system feeds the referrer
 >   (`referrer-surfaces-visual-first-scale-living`); ⑥ tsx cannot load
@@ -1327,7 +1397,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   address material; ⑧ hex colors in COMMENT PROSE trip no-raw-color —
 >   name colors in prose without the hex.
 > - **▶ K3.a BUILT + COMMITTED [this commit] (2026-07-22 — mockup v3
->   founder-approved "GO and GO-Live"; his own two pushes engraved: the
+>   Founder-approved "GO and GO-Live"; his own two pushes engraved: the
 >   live eligibility card + the quick-link remedies): THE MEMBER INTAKE +
 >   THE LIVE REVIEW QUEUE.** Schema: `activation_request` (⚠ REAL
 >   MIGRATION — its own cycle). Member: the 5th auth bridge + eligibility
@@ -1353,7 +1423,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   also rings the founder_root wallets' own bells (server-resolved
 >   recipients, link-less by Q39; auth-zone → 1172).
 >   **✅ K3.a SEALED IN PROD `89057bb` (Replit green 2026-07-22,
->   founder-pasted report): 27/27 blobs · the migration proven BOTH sides
+>   Founder-pasted report): 27/27 blobs · the migration proven BOTH sides
 >   (activation_request additive, 10 cols, CHECK, 3 indexes — dev's known
 >   drizzle false-drift hand-applied + re-verified; prod's publish applied
 >   whole) · gates in prod (feature-truth 560 · api 2408) · byte-identity
@@ -1365,7 +1435,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   self-healed ok=2, headBlock 90,919,346→90,919,661). Every new ask now
 >   rings the founder_root bells in the ask's own transaction. DEPLOY
 >   BACKLOG: EMPTY. — AND THE FIRST REAL ASK COMPLETED THE WHOLE ARC:
->   Seat #3 asked → checks green → the founder's Approve prefilled the
+>   Seat #3 asked → checks green → the Founder's Approve prefilled the
 >   form (seam + audited read proven in prod) → he SIGNED BOTH ACTS
 >   (createSource 0x36b2…61c7 block 90,919,905 · activation 0x645b…17ea
 >   block 90,919,914 — receipts re-verified from here via public RPC,
@@ -1373,7 +1443,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   registry) → "Source ACTIVE — the referral link is live." THE FIRST
 >   MEMBER-REQUESTED ACTIVATION IN PROTOCOL HISTORY — and the LOOP CLOSED
 >   WHOLE: "Record it" clicked, Seat #3's bell rang with the exact
->   sealed copy (founder screenshots, 2026-07-22). K3.a is CLOSED end to
+>   sealed copy (Founder screenshots, 2026-07-22). K3.a is CLOSED end to
 >   end on its first real use. His own bell rings from the NEXT new ask.**
 > - **▶ K3.b BUILT + COMMITTED [this commit] (2026-07-22, "GO and
 >   GO-Live", Faces 3-4 of the approved mockup): THE STACKED SESSION + THE
@@ -1407,7 +1477,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   tile a door with tab preselection; the dead Members placeholder
 >   killed) → ② the FIVE sub-tabs on /admin/sources (the /referral
 >   grammar; queue default with badges; Approve switches to Signing) →
->   ③ K3.c: GET /api/operator/source-performance (founder-only, audited,
+>   ③ K3.c: GET /api/operator/source-performance (Founder-only, audited,
 >   D2-grain merge of edges + CLOSED asks incl. canonical ids, live
 >   status+bps words, budget-bounded, no silent caps, warming said) + the
 >   Face 5 panel with the screen-exact client-side CSV. Guards: auth-zone
@@ -1416,7 +1486,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   findings, 11 fixed + 1 recorded (decline draft dies on tab switch —
 >   accepted dated). Gates all EXIT 0 full runs both sides. Full record:
 >   OPEN_QUEUE's console-slice entry. **🚀 DEPLOY — server + client, NO
->   migration, NO pnpm install. The founder's living seal: /admin opens
+>   migration, NO pnpm install. The Founder's living seal: /admin opens
 >   wired; /admin/sources opens on the queue tab; Performance shows his
 >   real sources; the CSV downloads the screen.**
 > - **✅ THE CONSOLE SLICE SEALED IN PROD `c08bbc8` (Replit green
@@ -1425,7 +1495,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   the cleanest boot ok=2/0/0 · feed 80). Full record: OPEN_QUEUE.**
 > - **▶ THE 2026-07-22 EVENING RIDERS, COMMITTED (deploy backlog — ONE
 >   client-only cycle carries both, batchable, prod safe meanwhile):**
->   ① `225f64d` — THE SEAT-LAW SUMMARY FIX (founder-caught in prod:
+>   ① `225f64d` — THE SEAT-LAW SUMMARY FIX (Founder-caught in prod:
 >   "26 seat(s)" counted 26 PURCHASE EVENTS; the /activity summary now
 >   counts seats sealed · footprint expansions · early purchase records
 >   from the events' OWN firstSeat flags; the sweep proved milestones
@@ -1451,7 +1521,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   ceremonial acts) + his LP adds/removes (actorLabel) + his archive
 >   mints (minterLabel NEW in the readmodel/projection from the same
 >   founderAddresses set — null pre-backfill, never guessed). Also the
->   founder-ordered final-check agent sweep re-trued 6 stale docs
+>   Founder-ordered final-check agent sweep re-trued 6 stale docs
 >   (`dbe81d2`: BACKLOG source-request-queue → Scellé · finish-order
 >   step 19 ✅ · SPEC §⑩ · inventory #18-#21 · DESIGN_ROADMAP entry+tick+
 >   sprawl · AdminHome comment). 🚀 DEPLOY next cycle: `cdddf4a`
@@ -1470,21 +1540,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   on-chain yet, honestly nothing to label) · engine ok=2/0/0 · feed 80.
 >   DEPLOY BACKLOG: EMPTY.**
 > - **IN FLIGHT (2026-07-22 evening — THE WALLET-TRACKING + ACTIVITY-NEWSROOM
->   ARC, opened before K4):** the founder ordered the full /activity rebuild
+>   ARC, opened before K4):** the Founder ordered the full /activity rebuild
 >   (rationalized design · pagination · composition · business version) on the
 >   good base (the address registry). THE DOSSIER (durable, never re-search):
 >   `docs/reference/WALLET_TRACKING_AND_ACTIVITY_REBUILD.md` — origin 3-layer
->   harvest · verified address book · the 17 mints RESOLVED (7 = the founder's
+>   harvest · verified address book · the 17 mints RESOLVED (7 = the Founder's
 >   private wallet, mislabeled Community; 10 = real members, correct) · the
->   6,666 SYN founder burn verified indexed "Founder" · 6 gaps · THE ORDER:
+>   6,666 SYN Founder burn verified indexed "Founder" · 6 gaps · THE ORDER:
 >   A0 wireframe → A1 address registry + Founder-funded lines (server) →
 >   A2 pagination (server) → A3 the newsroom page (client) → A4 docs rider →
 >   A5 off-chain purpose ledger (⚠ migration, own cycle). 2 deploy cycles;
 >   then K4 → P → season. RULINGS ENGRAVED: business-first (2 red lines
 >   only: gain promise · chain-refutable claim) · "Founder" capital-F GOLD
->   per line · founder→wallet money = the Founder advancing to the protocol.
-> - **THE ARC'S GATE — ALL THREE CLOSED (founder, 2026-07-22):** AW-1 YES —
->   `0x244531C571966F90F4849E03a507543D90f9C721` joins the founder set as
+>   per line · Founder→wallet money = the Founder advancing to the protocol.
+> - **THE ARC'S GATE — ALL THREE CLOSED (Founder, 2026-07-22):** AW-1 YES —
+>   `0x244531C571966F90F4849E03a507543D90f9C721` joins the Founder set as
 >   **"Founder Private Wallet"** (7 mints flip) · AW-2 YES — the era-price
 >   meter ships ("informatif"; H2-⑫ pin overridden dated — former legal-pass
 >   clause: removed, §8-⑧)
@@ -1494,7 +1564,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   admin waves · Q32/MVP-final items · the deferred list.
 > - **▶ A1+A2+A3+A4 BUILT + COMMITTED [this commit] (2026-07-22, the whole
 >   arc in one cycle per the cadence order):** A1 — `founderPrivateWallet`
->   in protocolTargets (chain-recovered, AW-1) + the pure founder-wallet
+>   in protocolTargets (chain-recovered, AW-1) + the pure Founder-wallet
 >   subset drives `counterpartFounder` on treasury moves ("advanced by the
 >   Founder" in / "returned to the Founder" out — the funding doctrine) —
 >   backbone guard **156** (fold law 2 folded/3 genuine · the A1 attribution
@@ -1558,9 +1628,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   six-lens research, never re-search) · ARTIFACT_TYPOGRAPHY_FLOORS.md
 >   (type floors + banner canon) · the mockups in docs/design/
 >   (commissions-receipts · referral-tools · join-invitee — all
->   founder-approved). The K-arc order: K3 → K4 → P → season.
+>   Founder-approved). The K-arc order: K3 → K4 → P → season.
 
-> **▶ ⏭️ READ-FIRST BOOT (2026-07-18, the founder's standing order — "stop making
+> **▶ ⏭️ READ-FIRST BOOT (2026-07-18, the Founder's standing order — "stop making
 > me re-explain; make the canonical files the thing you read before any work").
 > BEFORE touching anything, READ these, in order, and do NOT re-derive or re-ask
 > what they already answer:**
@@ -1606,7 +1676,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   engine healthy (a documented partial-reboot "2 streams faulted" self-healed via
 >   the persisted cursor — 2 clean cycles, headBlock advancing 90.647M→90.648M). No
 >   anomalies. **DEPLOY BACKLOG: EMPTY. Tree clean at `4998f72`.**
-> - **NEXT — FINISH MEMBER HOME FIRST (founder direction 2026-07-18, "va dans le
+> - **NEXT — FINISH MEMBER HOME FIRST (Founder direction 2026-07-18, "va dans le
 >   meilleur ordre logique"; the newsroom/pagination is a SEPARATE arc — it waits).
 >   PHASE A RECONCILED against the real code (5-agent map `wf_aa4aa0ab` + Claude-Code
 >   direct verify) — the finish-order doc was STALE; 2 of 4 defects already sealed:**
@@ -1617,9 +1687,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >     for ALL 8 genesis seats (seat 1 → Patron $70 · seats 2–5/7/8 → Citizen $5).
 >     The "—" was the PRE-D-TRUTH state; the boot block carried the pre-seal audit
 >     A1 forward = documentation drift. `GENESIS_JOIN_EMITS_RISES=false`
->     (`capitalAxisReadmodel.ts:82`) is the founder's settled no-retro-lines call.
->   - **Step 3** (founder BUILDER_SOURCE resolves everywhere) — ✅ CONFIRMED WORKING in
->     prod (founder's own /member screenshot 2026-07-18: "Introductions **2 durable · 2
+>     (`capitalAxisReadmodel.ts:82`) is the Founder's settled no-retro-lines call.
+>   - **Step 3** (Founder BUILDER_SOURCE resolves everywhere) — ✅ CONFIRMED WORKING in
+>     prod (Founder's own /member screenshot 2026-07-18: "Introductions **2 durable · 2
 >     total**" resolves + footprint "**$70.00 · Patron**" renders — he signs in with his
 >     payout wallet `0x2445…C721`). The D2 payoutWallet fallback (`sourceStandingRead.ts:127-167`,
 >     index keyed on `payoutWallet`, `introductionRefresh.ts:311-318`) was already sealed;
@@ -1633,10 +1703,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >     race-guarded `useSettledOwnCapitalStanding` consumed by `CapitalAxisCard`
 >     (never vanishes: loading/failed+Retry/honest-no-rung) + the KPI footprint tile;
 >     happy path byte-identical; adversarial review clean; all guards + tsc green.
->   - **PHASE A COMPLETE** (2026-07-18) — all 5 truth defects on the founder's own
+>   - **PHASE A COMPLETE** (2026-07-18) — all 5 truth defects on the Founder's own
 >     page resolved (1/3/4 already sealed D2/D-TRUTH; 2/5 sealed `e42c20f`).
 >     **DEPLOY BACKLOG: EMPTY. Tree clean.**
->   - THEN — ⚠️ **NOW REORDERED by the founder's 2026-07-19 pivot (see the
+>   - THEN — ⚠️ **NOW REORDERED by the Founder's 2026-07-19 pivot (see the
 >     PAGE-BY-PAGE GRADE-AAA REBUILD block just below): REFERRAL is the FIRST page,
 >     not the migration.** These stay valid but sequence AFTER / within the page-by-page
 >     rebuild: ② `/member` migration to `MemberAppPage` (wireframe); ③ the newsroom
@@ -1644,16 +1714,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >     ④ **DOORS-DEDUP — ✅ SEALED IN PROD (`41c5f7d`, Replit green 2026-07-18).** The
 >     dashboard's right-column `MemberDoorsGrid` (Z8) was a verified duplicate of the
 >     `MemberShell` sidebar (both rendered the SAME `MEMBER_DOOR_GROUPS`; only the
->     one-line descriptions differed). REMOVED (founder, WORK-FIRST): `MemberDoorsGrid.tsx`
+>     one-line descriptions differed). REMOVED (Founder, WORK-FIRST): `MemberDoorsGrid.tsx`
 >     deleted, `MemberAccess` unmounts it, descriptions dropped (labels suffice); the
 >     4 `guard-member-home` Z8 grid pins → 1 anti-regression pin ("do not re-mount the
 >     duplicate"; member-home 26/26). Doors now live ONCE (sidebar). The RIGHT COLUMN
 >     IS FREED for the next real work zone (A1 "My Activity"). Prod: MemberDoorsGrid
 >     absent from the served bundle. **DEPLOY BACKLOG: EMPTY. Tree clean.**
-> - **DO NOT build member-facing layout/composition without the founder** (VISUAL
+> - **DO NOT build member-facing layout/composition without the Founder** (VISUAL
 >   CHANGE LAW: wireframe → preview gate). Copy = full text on screen first.
 >
-> **▶ 🧾 R-BIND — THE RECEIPTS BINDER + TICKET-EVERYWHERE (founder aparté order
+> **▶ 🧾 R-BIND — THE RECEIPTS BINDER + TICKET-EVERYWHERE (Founder aparté order
 > 2026-07-19: "fais apparaître Receipts au menu, tous les reçus, puis le ticket
 > partout — admin et front"; GO and GO-Live given after the CREATION-DISCUSSION
 > AUDIT `wf_657b9cb4-673` returned its ledger: 20 decisions HONORED · 5
@@ -1687,7 +1757,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   (never a second seat — the one-seat law said on the register, not only in
 >   the doctrine line); (b) home-row link deep-opens its own ticket; (c) the
 >   door carries no live count — the count lives on the tile-door (accepted
->   as-built; one founder word reopens).
+>   as-built; one Founder word reopens).
 > - **ENGRAVED (audit GAP-2b): this slice = the binder + placements ②③ ONLY —
 >   A1's [Mine|Protocol] lens + per-row histories REMAIN OPEN on the A1 line
 >   (MEMBER_HOME_FINISH_ORDER); the R-BIND seal is never "A1 done".**
@@ -1705,7 +1775,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   white chip both themes · exact sums incl. the $10.00 stress render ·
 >   footprint tag on repeat only · deep-open lands right · 375px no h-scroll ·
 >   zero console errors) · route S1-shape + decimals exact on the rig.
-> - **✅ SEALED IN PROD (`b79a5ed`, Replit green 2026-07-19, founder-pasted
+> - **✅ SEALED IN PROD (`b79a5ed`, Replit green 2026-07-19, Founder-pasted
 >   report):** 29/29 blob-verified (4 commits incl. the 5.1-gate docs) ·
 >   typecheck + build (entry `index-Cl8K_YTb.js` `a1d46c35…` + console
 >   `caa9ce98…` byte-identical prod==local, 348 twins, 30 shells — /receipts
@@ -1715,7 +1785,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   S1 · the banned phrase ×0 · feed 78 · engine: the usual first-cycle
 >   partial self-healed by cursor, then ok:2 clean, headBlock 90,697,527→
 >   90,698,130. **THE MEMBERS' BINDER IS LIVE. DEPLOY BACKLOG: EMPTY.**
-> - **▶ R-BIND-2 OPENED (founder orders on the live binder, 2026-07-19):**
+> - **▶ R-BIND-2 OPENED (Founder orders on the live binder, 2026-07-19):**
 >   ① SCALE — think 300+ tickets: AAA pagination/layout/sorting (his
 >   indicatives: by type · month · year) + his floated idea: the first 4-5
 >   tickets OPEN side-by-side as an always-visible hero so a new member
@@ -1725,7 +1795,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   engraved next slice anyway); ③ SHARE — keep the mechanism, but the
 >   ticket's Share becomes the referral-style network menu
 >   (X/FB/WhatsApp/Telegram/LinkedIn/Email/Copy), and the share TITLE/text
->   changes — founder must approve the words on screen. **Founder answered in
+>   changes — Founder must approve the words on screen. **Founder answered in
 >   his own words (2026-07-19): HIS hero — 4-5 OPEN tickets side-by-side,
 >   designed for the FUTURE ("c'est normal, pas d'utilisateurs — pense plus
 >   loin"; mobile-adapted, explicitly allowed) · KEEP the native sheet (he
@@ -1776,11 +1846,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   no migration — exactly as announced) · entry `index-v8vYVvRc.js`
 >   byte-identical · gates green at the counts · /receipts serves the shelf +
 >   dual share in prod · wall/healthz/feed 78 · headBlock 90,701,519→90,701,811.
-> - **▶ R-BIND-3 OPENED (founder on the LIVE shelf, 2026-07-19):**
+> - **▶ R-BIND-3 OPENED (Founder on the LIVE shelf, 2026-07-19):**
 >   ① WIDE-SCREEN BUG — on 27"/37" the shelf renders edge-to-edge with the
 >   FIRST ticket clipped unreachable (the justify-center-on-overflow CSS
 >   class of bug; his screenshot = evidence); intelligent wide adaptation
->   ordered. ② COPY-LINK CONFUSION (founder deep-think order, "don't say yes
+>   ordered. ② COPY-LINK CONFUSION (Founder deep-think order, "don't say yes
 >   because it's easy"): Copy link hands a raw Snowtrace URL — nonsense for
 >   new members; the ROOT fix is the engraved /receipt/{txHash} page (Copy
 >   link then copies the member's OWN receipt page; the network intents gain
@@ -1826,10 +1896,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   capitalStanding discipline · pin-10's own dated amendment instruction ·
 >   prerender ":"-crash special-case · the RETARGET of Copy link + the six
 >   network intents to the receipt's own page in the SAME deploy). Its gate
->   carries the founder decisions: indexing posture (recommend noindex,follow)
+>   carries the Founder decisions: indexing posture (recommend noindex,follow)
 >   · OG static-now/painted-later · PDF engine defer · 5.1-vs-page ordering.
 >
-> **▶ 🗂️ THE PAGE-BY-PAGE GRADE-AAA REBUILD (founder pivot 2026-07-19, emphatic:
+> **▶ 🗂️ THE PAGE-BY-PAGE GRADE-AAA REBUILD (Founder pivot 2026-07-19, emphatic:
 > "each LEFT-MENU link presents CLEAN, crème-de-crème; deep-search online + our
 > system; company not charity — SHOW things, legally").** Method engraved (agent
 > memory `benchmark-external-not-origin-ceiling`): for EACH member page, benchmark
@@ -1843,7 +1913,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > referral canon `docs/reference/REFERRAL_PAGE_DESIGN.md`. (Also published to claude.ai for viewing;
 > the REPO is the source of truth.)
 >
-> **▷ REFERRAL PAGE = the FIRST page (founder GO: 5 tabs · do it ALL in the right
+> **▷ REFERRAL PAGE = the FIRST page (Founder GO: 5 tabs · do it ALL in the right
 > order · elevate now · GO-LIVE). THE ORDERED ARC:**
 > - ✅ **SLICE 1 — THE ELEVATION, SEALED IN PROD (`d29765d`, Replit green 2026-07-19).**
 >   `/referral` is now the member referral SURFACE (`ReferralSurface` fork: connected →
@@ -1852,7 +1922,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   Z-order + guard-lifecycle-labels (exemption + chassis check) updated. Reuses the
 >   proven MemberReferralDashboard as-is (no new content code = no new bug). **DEPLOY
 >   BACKLOG: EMPTY. Tree clean.**
-> - ✅ **SLICE 2 — THE 5 TABS, BUILT + COMMITTED [this commit] (founder preview-approved
+> - ✅ **SLICE 2 — THE 5 TABS, BUILT + COMMITTED [this commit] (Founder preview-approved
 >   2026-07-19 on the rig; "Go and GO-Live" ordered).** Real deep-linkable sub-routes
 >   `/referral/{introductions,commissions,ladder,link}` — 4 registries in lockstep
 >   (App.tsx · surfaceClassification · seo-route-registry REDIRECT-class canonical→
@@ -1870,7 +1940,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   prerender 32 shells (nested referral/*.html emitted) + precompress byte-identical +
 >   admin-dist 93. Browser-verified: 5 tabs traversed connected(sim)+anon, both themes,
 >   375px+desktop no page h-scroll, imgs naturalWidth>0, zero console errors.
->   **✅ SEALED IN PROD (`5d9cb58`, Replit 7/7 green 2026-07-19, founder-pasted report):**
+>   **✅ SEALED IN PROD (`5d9cb58`, Replit 7/7 green 2026-07-19, Founder-pasted report):**
 >   26/26 files blob-hash verified, anchor advanced, typecheck ✓; gates green at the new
 >   counts (operator-gate 2750 · access-state 1060 · admin-dist 93 — rises = 8 new files
 >   scanned, expected); static server 54 → 62 rules; IN PROD: /referral 200 index,follow ·
@@ -1881,7 +1951,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   byte-identity remote==local (entry `index-DTokzzg6.js` + `OperatorConsole-CYNhk8LL.js`
 >   both IDENTICAL). No anomalies. **DEPLOY BACKLOG: EMPTY. Tree clean.**
 > - ✅ **SLICE 3 — THE `&via` CHANNELS ANALYTICS (SPEC R3 WHOLE), BUILT + COMMITTED
->   [this commit] (founder approved the LEGAL WORDING + "Approved GO and GO-Live"
+>   [this commit] (Founder approved the LEGAL WORDING + "Approved GO and GO-Live"
 >   2026-07-19).** The THIRD sanctioned write zone `src/channel/` stood up through the
 >   constitutional mechanism (CONSTITUTION_AUTORITE §③ N2 names "le log des canaux" as a
 >   permitted server write; guard-auth-zone section 10 pins the shape — 1002/1002):
@@ -1910,7 +1980,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   shells + byte-identical compression + admin-dist 93 · rig-verified (beacon 204 once,
 >   garbage conversion silently dropped, honest card states, Privacy v2 renders, zero
 >   console errors). **✅ SEALED IN PROD (`a65df77`, Replit MIGRATION CYCLE green
->   2026-07-19, founder-pasted report):** neondb confirmed — both tables + unique
+>   2026-07-19, Founder-pasted report):** neondb confirmed — both tables + unique
 >   indexes (`…triple_unique`, `…tx_unique`) present, 0 rows · dev push replayed
 >   drift-free (the known member_continuity churn false-positive interrupted the batch
 >   once; the 4 missing indexes were applied additively in one tx per the sealed
@@ -1919,7 +1989,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   exact · /privacy serves V2 + "no third-party analytics" ×3, /terms "makes no
 >   database writes" = 0 hits · wall holds · byte-identity prod==local (entry
 >   `index-CvDbFGOJ.js`) · engine self-healed the known partial-boot, headBlock
->   advancing · founder's own screenshot: the 5 tabs + the live Channels card render
+>   advancing · Founder's own screenshot: the 5 tabs + the live Channels card render
 >   on thesyndicate.money/referral/link. **RECORDED NUANCES (no action needed):**
 >   ① Replit's test click was correctly DROPPED — the instruction's test sourceId was
 >   a SYNTHETIC 64-hex (only the short form is on record), so registry
@@ -1927,24 +1997,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   sources count normally. ② Malformed (non-JSON) bodies → 400 from the scoped
 >   Express parser BEFORE the handler — transport layer, generic body in prod (no
 >   echo), same pre-existing class as the auth zone; candidate one-line polish
->   (swallow parse errors to 204), never urgent. ③ The founder's screenshot caught a
+>   (swallow parse errors to 204), never urgent. ③ The Founder's screenshot caught a
 >   moment where BOTH the standing read and the channel read said honest-unavailable
 >   — a public-RPC blip, fail-closed working as designed; retry resolves.
 >   **DEPLOY BACKLOG: EMPTY. Tree clean.**
 > - ✅ **SLICE 3.1 — THE FOUNDER'S GRADE-AAA POLISH PASS (4 prod-caught corrections +
 >   the CHANNEL COMPOSER), BUILT + COMMITTED [this commit] ("GO and GO-Live"
->   2026-07-19).** ① Overview re-ordered WORK-FIRST (founder: "not dumping the
+>   2026-07-19).** ① Overview re-ordered WORK-FIRST (Founder: "not dumping the
 >   sections"): the LINK/share block opens the tab — ALWAYS (honest fallback with
 >   link+Copy+QR+Share when the standing read misses; never an empty opening) →
 >   Where-you-stand → the §7 claim LAST (engraved in memory: the mockup gives the
 >   pieces, never the order). ② The active-tab "rectangle" KILLED — root cause PROVEN
->   in-browser: click-focus + any keypress (the founder's screenshot shortcut) lights
+>   in-browser: click-focus + any keypress (the Founder's screenshot shortcut) lights
 >   :focus-visible → the offset ring boxed the tab; tab focus is now a rounded gold
 >   TINT, never a ring; plus the stray mini-scrollbar fixed (the -mb-px underline
 >   overflowed 1px → absolute baseline + hidden scrollbars, still swipeable).
 >   ③ The bare "TITLE" rail chip → "recognition title" (Human-First). ④ The four
 >   figure tiles CENTERED (label+digit+verify; scoped className — the shared StatCard
->   atom untouched). ⑤ THE CHANNEL COMPOSER (founder ask "user enters the channel, we
+>   atom untouched). ⑤ THE CHANNEL COMPOSER (Founder ask "user enters the channel, we
 >   generate the link" + web benchmark `wf_b01f310a`: GA URL Builder live-assembling
 >   URL · Bitly channel-as-chip · FirstPromoter copy-per-row): 7 chips (X/Telegram/
 >   WhatsApp/Discord/YouTube/Instagram/Custom…), custom input normalized LIVE
@@ -1956,16 +2026,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   counted; no fake "within a day" latency claim). Verified in-browser: chip →
 >   &via=telegram live, toggle-off → bare, normalization live, per-row copy, chips
 >   ≥44px, no h-scroll, zero console errors; tsc + 18 guards + build + admin-dist 93
->   green. **✅ SEALED IN PROD (`2893611`, Replit green 2026-07-19, founder-pasted
+>   green. **✅ SEALED IN PROD (`2893611`, Replit green 2026-07-19, Founder-pasted
 >   report: 8/8 blob-verified · the 3 new member strings ×1 in the served entry ·
 >   SEO intact · wall holds · byte-identity prod==local).**
-> - ✅ **SLICE 3.2 — THE PAGE STRUCTURE (founder order, twice-corrected, now CANON +
+> - ✅ **SLICE 3.2 — THE PAGE STRUCTURE (Founder order, twice-corrected, now CANON +
 >   benchmark-confirmed `wf_317c67c8`: Binance/Bybit/OKX/Kraken/Coinbase + 4 SaaS
 >   portals — "nothing scrolls between a new member and the link"), BUILT + COMMITTED
 >   [this commit] ("GO and GO-Live").** The vertical order is now: heading → banner →
 >   **THE LINK HERO** (`ReferralLinkHero.tsx` — the ONE canonical link block: URL +
 >   Copy + QR + Share + two-state honesty, ABOVE the tabs, on every tab, exactly ONCE
->   on the page) → the 4 centered figures → tabs. THE DUPLICATION KILLED (the founder's
+>   on the page) → the 4 centered figures → tabs. THE DUPLICATION KILLED (the Founder's
 >   "mixed": the link had spread to Overview + the Link-tab card + the composer):
 >   Overview = standing + §7 claim only; the tab renamed **Channels** (route
 >   /referral/link stays); the composer shows ONLY the tagged variant (no tag → hint,
@@ -1973,11 +2043,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   (ReferralSurface + MemberAppPage — every member door) + the dashboard's relic mt-8
 >   dropped (header→title gap 76→44px). Registry summaries truth-updated. Structure
 >   canon engraved in REFERRAL_PAGE_DESIGN. **✅ SEALED IN PROD (`1aff636`, Replit
->   green 2026-07-19, founder-pasted report: 11/11 blob-verified · "Pick a channel"
+>   green 2026-07-19, Founder-pasted report: 11/11 blob-verified · "Pick a channel"
 >   ×1 + "Channels" ×2 + hero "Your referral link" ×1 in the served entry · SEO
 >   intact · wall holds · byte-identity prod==local, fingerprints kept in double).**
 > - ✅ **SLICE 3.3 — THE VOCABULARY + RAIL FIXES, COMMITTED [this commit] — 🚀
->   BATCHABLE (founder cadence call 2026-07-19: "petites corrections, prochaine
+>   BATCHABLE (Founder cadence call 2026-07-19: "petites corrections, prochaine
 >   commit" — the 2026-07-14 batching rule applied; prod stays functional and
 >   figure-honest meanwhile).** ① "acquisition commission" KILLED on the Commissions
 >   tab (the recorded 2026-07-13 ruling FOUND and cited: SESSION_STATE:3930 —
@@ -1987,12 +2057,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   immediately caught + fixed a pre-existing chainReads.ts comment fossil).
 >   ② The ladder rail EDGE-TO-EDGE (0px dead space both sides — was a half-column
 >   each; first rung flush left, Summit flush right). ③ The "recognition title"
->   chip REMOVED from the rail (twice founder-flagged; the Next-sentence carries
+>   chip REMOVED from the rail (twice Founder-flagged; the Next-sentence carries
 >   the explanation in human words). Verified in-browser + tsc + 18 guards + build
 >   green.
 > - **🚀 DEPLOY BACKLOG (rides the NEXT deploy): slice 3.3 [this commit] —
 >   client-only, fail-closed, additive; prod meanwhile serves 1aff636.**
-> - ✅ **SLICE 4 — THE PER-INTRODUCTION ROWS (founder GO 2026-07-19), BUILT +
+> - ✅ **SLICE 4 — THE PER-INTRODUCTION ROWS (Founder GO 2026-07-19), BUILT +
 >   COMMITTED [this commit] — 🚀 REAL DEPLOY CYCLE (server + client, NO migration;
 >   carries the 3.3 batch).** SYSTEM-FIRST map `wf_21cebd15` proved: ALL row data
 >   already in `sale_event_raw` (24 fields + tx-hash COLUMN) + `block_timestamp`
@@ -2038,7 +2108,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   scans are for address-AND-anchor-free aggregates ONLY; and an empty dev table is a
 >   blind spot: a server model needs a real-data or fixture smoke before deploy.**
 >   Gate: api tsc 0 · introductions 45/45 · auth-zone green.
->   **✅ SEALED IN PROD (`f436c42`, Replit green 2026-07-19, founder-pasted report):
+>   **✅ SEALED IN PROD (`f436c42`, Replit green 2026-07-19, Founder-pasted report):
 >   cycles ok:2/partial:0, ZERO "introduction refresh faulted" (counters AND logs),
 >   headBlock advancing, the rows model PUBLISHES every cycle; endpoint S1-shape
 >   exact; wall/healthz/feed green; entry byte-identical to f5250f8's build (server-
@@ -2048,14 +2118,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   38add66 audit sweep + this seal commit ride the next cycle, docs-only). OPS
 >   NANO-NOTE (recorded, no action): the engine status lastError field is STICKY —
 >   judge health by counters + logs, never that field. **LIVING SEAL DONE (the
->   founder's own screenshot, 2026-07-19): thesyndicate.money/referral/introductions
+>   Founder's own screenshot, 2026-07-19): thesyndicate.money/referral/introductions
 >   renders his 2 REAL rows live — 2026-07-12 · 0x0dd…4d20 · DURABLE · $0.25 ·
 >   verify↗ and 2026-06-25 · 0x620…c75f · DURABLE · $0.25 · verify↗ (as of block
 >   90,685,795). Note: the 2026-06-25 row is the CHAIN's own record of an attributed
 >   purchase predating the website checkout — the record serves what the chain
 >   published, not what memory expected; its verify link is the answer. That is the
 >   product.**
-> - ✅ **SLICE 5 — THE RECEIPT-BACKED COMMISSION ANATOMY (founder "go" 2026-07-19 =
+> - ✅ **SLICE 5 — THE RECEIPT-BACKED COMMISSION ANATOMY (Founder "go" 2026-07-19 =
 >   the arc GO; preview-approved on the rig + "GO and GO-Live"), COMMITTED
 >   [this commit] — 🚀 DEPLOY (server + client, NO migration).** The Commissions
 >   tab's static anatomy example is replaced by the member's LATEST REAL RECEIPT —
@@ -2091,16 +2161,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   figure, never $0.325 vs $0.32 one card apart; the by-state TOTALS stay
 >   floored by the S7-e display law); ④ backbone.guard.ts now PINS the rows-model
 >   discipline (boundary-aware scan BEFORE hold + sole-setter — the f436c42
->   lesson made durable; guard 151→153). **RIG NOTE (founder-confirmed):**
+>   lesson made durable; guard 151→153). **RIG NOTE (Founder-confirmed):**
 >   localhost has no Replit DB → the rig shows the honest fallback; the LIVING
 >   receipt card appears in prod (the slice-4 pattern).
->   **⚖️ ENGRAVED THIS COMMIT (founder order, emphatic): THE SETTLED-LAW SILENCE
+>   **⚖️ ENGRAVED THIS COMMIT (Founder order, emphatic): THE SETTLED-LAW SILENCE
 >   RULE (CLAUDE.md + agent memory)** — settled law never resurfaces in
->   founder-visible text: the PII/address posture is guard-enforced settled law
->   (verify silently; never a founder-facing question/lens/headline), and chat
+>   Founder-visible text: the PII/address posture is guard-enforced settled law
+>   (verify silently; never a Founder-facing question/lens/headline), and chat
 >   speaks HUMAN words only (the 2026-07-13 word ruling extends to reports:
 >   "commission", never the bytecode word).
->   **✅ SEALED IN PROD (`854bca7`, Replit green 2026-07-19, founder-pasted report —
+>   **✅ SEALED IN PROD (`854bca7`, Replit green 2026-07-19, Founder-pasted report —
 >   "le cycle le plus propre à ce jour"):** 11/11 blob-verified · typecheck + build ·
 >   gates at the new counts (backbone 153 with the slice-5 pins · auth-zone 1015 ·
 >   operator-gate 2770 · access-state 1064 · admin-dist 93) · byte-identity
@@ -2108,12 +2178,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   BoMEEHxZ.js` `00337701…`) · endpoint no-session → 200 S1-shape exact · the
 >   banned phrase ×0 in the served entry · ENGINE OK ON THE FIRST POST-BOOT CYCLE
 >   (unprecedented; then ok:2/partial:0/failed:0, headBlock 90,689,912→90,690,207)
->   · wall holds · healthz ok · feed 78. **LIVING SEAL DONE (the founder's own
+>   · wall holds · healthz ok · feed 78. **LIVING SEAL DONE (the Founder's own
 >   screenshot): the receipt card renders his REAL latest receipt on
 >   thesyndicate.money/referral/commissions — $5.00 → $0.25 (5%) → $4.75 →
 >   $3.325/$0.95/$0.475, dated 2026-07-12, verify↗; Paid $0.50 · Escrow $0.00 up
 >   to block 90,689,912. DEPLOY BACKLOG: EMPTY.**
-> - **▶ SLICE 5.1 OPENED (founder order 2026-07-19, emphatic — the simplified-card
+> - **▶ SLICE 5.1 OPENED (Founder order 2026-07-19, emphatic — the simplified-card
 >   rejection): "check à quoi ressemble notre RECEIPT — deep understand what we
 >   have, how it works, design, SHAREABILITY — pourquoi on montre un truc
 >   simplifié ?! IT WAS RICH AND WELL DESIGNED. Search our OG CARDS too."** The
@@ -2131,7 +2201,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   biggest leak" and built live per-wallet/per-milestone preview generation —
 >   the harvest); origin also holds the member-card family + 5 proof cards + the
 >   ~30-field commission receipt doctrine ("the receipt must explain itself").
->   SCOPE MENU presented; the founder's ANSWER (2026-07-19, emphatic) refined the
+>   SCOPE MENU presented; the Founder's ANSWER (2026-07-19, emphatic) refined the
 >   scope: ALL receipts PAST + FUTURE first-class (never only the latest) · deep
 >   EXTERNAL AAA benchmark ("our base is not the ceiling") · HARMONIZE — no
 >   patchwork of eras, one clean system. → **✅ THE BENCHMARK + DIRECTION DONE
@@ -2168,7 +2238,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   `gam-payout`, Phase-5 deferred). "never a cash figure" copy was itself a defect.
 > - A member surface: connected = the WORK (no explanatory hero); not-signed =
 >   the teaser/hero. Own-row only, never a directory (ADR-003).
-> - Prod manual acts leave NO repo trace — never recite a stale "founder to-do";
+> - Prod manual acts leave NO repo trace — never recite a stale "Founder to-do";
 >   grep the transcripts for evidence, not memory (the Q43 lesson).
 
 > **▶ 🧭 CLEAN HANDOFF — THE NOTIFICATION CENTER IS COMPLETE & LIVE (2026-07-18,
@@ -2176,7 +2246,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > studio/UX PASS, doctrine grade-AAA, no forgotten wiring). Q43 NOTIF-1 → NOTIF-2
 > → NOTIF-2b → the icon fix → the read-path hardening → the Select dropdown fix
 > ALL SEALED IN PROD through `51e68de` (Replit verified EACH cycle 5/5–6/6;
-> founder-pasted seal reports on record — not from memory). **DEPLOY BACKLOG:
+> Founder-pasted seal reports on record — not from memory). **DEPLOY BACKLOG:
 > EMPTY. Tree clean.** THE NOTIFICATION CENTER IS 100% COMPLETE AND LIVE.**
 >
 > **WHAT'S LIVE (the whole channel — no email, ever; in-app is THE channel):**
@@ -2197,7 +2267,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > gift/trophy/receipt kept, gain-promise glyphs banned). Icon + destination
 > pickers in BOTH composers (broadcast + ledger message).
 > ③ NOTIF-2b (`f100640`, NO migration) — NO DEAD CLICKS (every popover row is a
-> link: with a destination → the subject; without → the full page) · founder-gated
+> link: with a destination → the subject; without → the full page) · Founder-gated
 > AUDITED DELETE (`POST /api/operator/notifications/delete`, cascade receipts +
 > `notification.delete` audit row) with a Trash button + confirm on each Sent row.
 > ④ ICON FIX (`ac3f30c`, client-only) — consistent GOLD type-icon decoupled from
@@ -2221,7 +2291,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > notifications were deleted from /admin/broadcast → "Sent"; only **"This message
 > opens the record."** (the real first Founder broadcast) remains. Q43 THE
 > NOTIFICATION CENTER is CLOSED. **PROOF (not memory):** in the prior "Admin and
-> Membership" session the founder posted his OWN SCREENSHOT of the Sent list
+> Membership" session the Founder posted his OWN SCREENSHOT of the Sent list
 > showing ONLY that one line — the 3 tests were already gone (he saw "nothing to
 > click" because there was nothing left to delete). **NEVER re-raise this.** A prod
 > manual act leaves NO repo trace, so this ledger's earlier "remaining manual act"
@@ -2239,7 +2309,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > `1923d30`; also: the swap/bridge ramp, the season/gamification engine + legal
 > line, the Chronicle newsroom). Also recorded v2: severity/pinned tiers, the
 > external verify-link (infra-only), per-category preferences, dismiss.
-> **NEXT per the engraved order (on the founder's word):** A1 "My Activity" → B1
+> **NEXT per the engraved order (on the Founder's word):** A1 "My Activity" → B1
 > THE FIRSTS → A2 → M-INT-2 → the Q42 wave (incl. chronicle-promote, which closes
 > the manifesto's Chronicle loop) → Q39. Next session boots on "hi".
 >
@@ -2253,28 +2323,28 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **▶ ✅ NOTIF-2 SEALED IN PROD (2026-07-18, Replit 6/6 at HEAD `8905df9`; prod
 > schema confirmed — the 3 columns + 2 indexes live on neondb, idempotent push
 > proven) + 🔨 NOTIF-2b FOLLOW-UP ON MAIN (client + API, NO migration).** The
-> founder's live test: icons render on the bell/page, and a broadcast WITH a
+> Founder's live test: icons render on the bell/page, and a broadcast WITH a
 > destination is clickable (chevron → navigates). TWO gaps fixed this slice:
 > ① NO DEAD CLICKS — a notification WITHOUT a destination was inert in the
 > popover (truncated body unreadable); now EVERY popover row is a link (with a
 > destination → the subject; without → the full /notifications page), always
-> marks read + closes. ② DELETE CONTROL (founder ask "keep only the real first
-> broadcast, erase the tests") — a founder-gated, AUDITED `POST
+> marks read + closes. ② DELETE CONTROL (Founder ask "keep only the real first
+> broadcast, erase the tests") — a Founder-gated, AUDITED `POST
 > /api/operator/notifications/delete` (removes the row + its receipts in one tx,
 > action notification.delete) + a Trash button with a confirm dialog on each
-> Broadcast "Sent" row. Doctrine: a founder-decided delete is an audited admin
+> Broadcast "Sent" row. Doctrine: a Founder-decided delete is an audited admin
 > act (the origin had it), DISTINCT from the "nothing unread auto-expires"
 > covenant. GREEN: api typecheck · auth-zone 920 (+ delete route/service pins) ·
 > studio typecheck + all guards (notif-vocab 62/62, operator-gate 2650) · build
 > 332 twins + admin-dist 93, "Delete this notification" ×1 console / 0 public.
 > **🚀 DEPLOY — NO MIGRATION** (delete uses existing tables): Replit pulls main,
-> deploys, reports. THEN the founder deletes the 3 test notifications from
+> deploys, reports. THEN the Founder deletes the 3 test notifications from
 > /admin/broadcast → Sent (Trash → confirm), keeping only "This message opens
 > the record." (the real first Founder broadcast).
 
-> **▶ 🔨 NOTIF-2 CLICKABLE + ICONS BUILT + ON MAIN (2026-07-18, founder GO — the
+> **▶ 🔨 NOTIF-2 CLICKABLE + ICONS BUILT + ON MAIN (2026-07-18, Founder GO — the
 > "finish it perfect, don't come back" pass; 2 design workflows adversarially
-> verified + 2 founder icon corrections applied).** Notifications now carry an
+> verified + 2 Founder icon corrections applied).** Notifications now carry an
 > optional ICON (curated lucide key) + an optional internal DEEP-LINK, both
 > operator-chosen in the console composers, both rendered on the member bell +
 > /notifications page (whole-row clickable when the destination is set).
@@ -2282,7 +2352,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > (23 keys), the internal link whitelist ({path,label}), the forbidden-icon set,
 > and the (v2) category taxonomy — imported by the API validator, the studio
 > renderer/pickers, and the guard, so server ↔ studio can NEVER drift.
-> **DOCTRINE (founder, corrected):** "mechanism decides, not the symbol" — the
+> **DOCTRINE (Founder, corrected):** "mechanism decides, not the symbol" — the
 > palette carries honest FUNCTION glyphs (vault, gift, trophy, receipt) and bans
 > only GAIN-PROMISE ones (rocket/moon/chart-up/diamond-pump/raining-money/dice);
 > Chronicle got its icon (book-open) after the empty-slot catch. **ANTI-PHISHING
@@ -2301,11 +2371,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > severity tiers. The 4 roadmap dossiers are in `docs/reference/` (`1923d30`).
 > **🚀 DEPLOY — OWN CYCLE:** Replit pulls main, runs `pnpm --filter @workspace/db
 > push` (3 additive columns — MUST re-push with zero drift), deploys, reports.
-> Post-deploy seal = the founder sends a broadcast WITH an icon + a destination
+> Post-deploy seal = the Founder sends a broadcast WITH an icon + a destination
 > and it appears iconized + clickable on their own bell/page.
 
 > **▶ ✅ Q43 NOTIF-1 SEALED IN PROD (2026-07-18, Replit 6/6 at HEAD `881b166`) +
-> THE WORK-FIRST RECOMPOSITION (founder AAA rejection of the hero cut → fixed
+> THE WORK-FIRST RECOMPOSITION (Founder AAA rejection of the hero cut → fixed
 > same session).** Replit: 2 tables migrated (`notification` +
 > `notification_receipt`, dev DB; the known Drizzle truncate false-positive
 > refused safely — continuity intact 1 run/12 records) · gates green at the
@@ -2329,7 +2399,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > NEXT after this seal: A1 "My Activity" → B1 → A2 → M-INT-2 · the Q42 wave
 > (incl. chronicle-promote, which closes the broadcast's Chronicle loop) · Q39.
 
-> **▶ 🔨 Q43 NOTIF-1 BUILT + ON MAIN (2026-07-18, founder GO ×3: slice → revised
+> **▶ 🔨 Q43 NOTIF-1 BUILT + ON MAIN (2026-07-18, Founder GO ×3: slice → revised
 > wireframe → commit; preview gate passed on the rig). THE NOTIFICATION CENTER —
 > the no-email canon made real (in-app is the protocol's ONLY channel, ever):**
 > ① SCHEMA (⚠ REAL MIGRATION, this slice's OWN deploy cycle, never batched):
@@ -2346,9 +2416,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > Broadcast Send LIVE + sent history · the admin bell honest-live. ④ MEMBER:
 > the HEADER BELL went live IN its §11 reserved slot (badge, tabs All/Protocol/
 > Mine, View all) for EVERY signed session; the TROPHY stays reserved beside it
-> (founder: both belong to all members, not only resolved seats) · /notifications
+> (Founder: both belong to all members, not only resolved seats) · /notifications
 > dedicated page (FLAT route — the /member/* trap avoided) · menu door
-> Notifications ABOVE Settings in the renamed **"Account"** group (founder:
+> Notifications ABOVE Settings in the renamed **"Account"** group (Founder:
 > human words, never jargon — "Off-chain comfort" died everywhere member-visible)
 > · "While you were away" reserved slot retired (its promise lives in the
 > center; v2 = the protocol-event generator, recorded). Guards amended
@@ -2361,7 +2431,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > world-class synthesis (Binance/Kraken/Revolut/Coinbase/GitHub/Linear, cited)
 > — both in the transcript, the taxonomy is the v2 generator's seed. **🚀
 > DEPLOY — OWN CYCLE: Replit pulls main, runs `pnpm --filter @workspace/db
-> push` (2 new tables), deploys, reports.** Post-deploy seal = the founder
+> push` (2 new tables), deploys, reports.** Post-deploy seal = the Founder
 > sends the first broadcast from /admin/broadcast on his live session and it
 > lights his own header bell.
 
@@ -2384,7 +2454,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ruling: the FULL-WIDTH law targets DENSE WORK TABLES; a card-grid launcher has
 > none, the centered column is correct composition there. No action. (PublicHome
 > + SystemStatus uses are public pages, out of scope.) Final prod visual = the
-> founder's session at /admin. NEXT: **Q43 NOTIF-1 on the founder's GO** (own
+> Founder's session at /admin. NEXT: **Q43 NOTIF-1 on the Founder's GO** (own
 > deploy cycle — real migration, never batched).
 
 > **▶ 🧭 FINAL HANDOFF (2026-07-18, session end — supersedes the earlier handoff
@@ -2393,12 +2463,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >
 > **IN FLIGHT: the CONSOLE-POLISH batch cycle** (handed to Replit at session end;
 > all console-chunk client-side, NO migration): `d02af1e` (blanket [Preview]
-> section chip dead + "Live · founder-gated writes" chip + ROOT_RECOVERY_CEREMONY
+> section chip dead + "Live · Founder-gated writes" chip + ROOT_RECOVERY_CEREMONY
 > one-pager) · `c087829` (THE WORK-FIRST PAGE LAW — permanent, in CLAUDE.md — +
 > Dashboard opens on Quick actions/Needs attention with Protocol reality + KPI
 > placeholders in collapsed expanders + Operators leads with the registry, role
 > hierarchy collapsed) · `39a010e` (FULL-WIDTH work surfaces — the max-w-6xl
-> centered column dead). Post-publish visual = the founder's session: Dashboard
+> centered column dead). Post-publish visual = the Founder's session: Dashboard
 > opens on the buttons, sections full-width, no blanket Preview chips.
 >
 > **NEXT SLICE ON THE FOUNDER'S GO: Q43 NOTIF-1** (queue `9bf8de7` carries the
@@ -2424,29 +2494,29 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > · gates 100% green at the exact announced counts (the two formerly-red guards:
 > member-continuity-schema 30/30 · holder-index 67) · feed 78/78 · engine 6/6
 > head advancing · healthz ok. Q40 (live-reality-first dashboard) rode the same
-> build. The founder had ALREADY validated the composition visually (the 14-row
-> screenshot); the final prod visual = the founder's session at /admin →
+> build. The Founder had ALREADY validated the composition visually (the 14-row
+> screenshot); the final prod visual = the Founder's session at /admin →
 > Members. **DEPLOY BACKLOG: `d02af1e`** (the completeness-audit catches: the
 > blanket [Preview] section chip dies + the Operators panel "Live ·
-> founder-gated writes" chip + ROOT_RECOVERY_CEREMONY.md) — 🚀 BATCHABLE, rides
+> Founder-gated writes" chip + ROOT_RECOVERY_CEREMONY.md) — 🚀 BATCHABLE, rides
 > the next cycle. NEXT per the engraved order: **A1 "My Activity"** (own-row
-> receipt binder) → B1 → A2 → M-INT-2 · the Q42 wave · Q39 — on the founder's
+> receipt binder) → B1 → A2 → M-INT-2 · the Q42 wave · Q39 — on the Founder's
 > word.
 
-> **▶ 🧭 THE CLEAN HANDOFF (2026-07-18 — the founder's order: "the cleanest handoff
+> **▶ 🧭 THE CLEAN HANDOFF (2026-07-18 — the Founder's order: "the cleanest handoff
 > possible, read back deeply, do not forget anything"). THE SESSION IN FULL:**
 >
-> **SEALED IN PROD (each triple-verified — Replit battery + founder eyes + independent curl):**
+> **SEALED IN PROD (each triple-verified — Replit battery + Founder eyes + independent curl):**
 > ① the mechanical batch (Q33 *Teaser renames · Q22 compass repoint · Q8 spec
 > reconcile · `assertAddressSafeAggregate` rename) · ② Q31 the gold favicon ·
 > ③ SEO-TRANSPORT (serve.mjs: Brotli+gzip twins byte-verified, immutable/ETag
 > caching — ~4× lighter, Pingdom A-95; CDN + www→apex PARKED for "the end") ·
 > ④ /ADMIN-IN-PROD (the neutral wall: world → 404 neutral; Q36 founder_root
-> ceremony `0x88ec…dd73` audited + Q37 tables; founder verified "Operator ·
+> ceremony `0x88ec…dd73` audited + Q37 tables; Founder verified "Operator ·
 > founder_root" live) · ⑤ THE TWO TRUTH SWEEPS (console + public: the read-only
 > era vocabulary at 0 in the served bundles; the fabricated /admin/sources
 > figures DELETED; "Entry Calculator" points at Join; /wallet + /toolkit wear
-> LIVE_ACTION) · ⑥ Q41 founder-executed (TWO ACTIVE founder_root rows —
+> LIVE_ACTION) · ⑥ Q41 Founder-executed (TWO ACTIVE founder_root rows —
 > `0x88ec…dd73` + `0x2445…c721`; the recovery property armed; quiet-root
 > discipline noted).
 >
@@ -2456,21 +2526,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > missing from member-continuity-schema LAZY_DB_ALLOW + holder-index
 > DB_LAZY_ALLOW — guard sync, not a perimeter violation); the fix is pushed and
 > locally green (30/30 · 67 · auth-zone 828). LESSON ENGRAVED in the fix commit:
-> a new zone lazy-DB file joins THREE guard lists. **The founder has ALREADY SEEN
+> a new zone lazy-DB file joins THREE guard lists. **The Founder has ALREADY SEEN
 > the ledger rendering the real 14 rows** (screenshot on record: seat #1 Patron
 > $70 · 2 intro/2 durable/$0.50 paid · 13 active/1 settled — the dev preview);
-> prod confirmation = the founder's session after the green cycle.
+> prod confirmation = the Founder's session after the green cycle.
 >
 > **ENGRAVED THIS SESSION (survives every future session):** the STANDING RULE
 > (gates ONLY security · chain-truth · money · legal/public copy · go-live; never
 > re-block an answered question) — in the queue AND agent memory; the live-truth-
 > ledger lesson (consult source-status/SESSION_STATE before re-research); the
-> founder-describes-by-function lesson; the two-authorities model;
-> MVP_FINAL_CHECKLIST (fires ONLY on the founder's words "MVP final, run the
+> Founder-describes-by-function lesson; the two-authorities model;
+> MVP_FINAL_CHECKLIST (fires ONLY on the Founder's words "MVP final, run the
 > checklist").
 >
 > **THE FORWARD LIST (the engraved order):** ⓪ Replit re-runs the M-INT-1 cycle
-> (HEAD `be0aace`) → founder confirms the ledger in prod → seal. ① A1 "My
+> (HEAD `be0aace`) → Founder confirms the ledger in prod → seal. ① A1 "My
 > Activity" (own-row receipt binder) → ② B1 THE FIRSTS (Chronicle-candidates
 > queue) → ③ A2 "My Chronicle" → ④ M-INT-2 (§D users-registry/audit tab).
 > ⑤ THE Q42 WAVE (admin controllability, one slice each): audit READ → real
@@ -2500,7 +2570,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > Protocol reality, placeholders demoted. guard-auth-zone 828 (route+service
 > pins) · opgate adminGraph grew · all gates green · ledger strings isolated in
 > the console chunk (entry clean). DEPLOY BACKLOG: M-INT-1 (`cadcb17`) — 🚀
-> BATCHABLE, one cycle; the founder sees REAL rows on their live session
+> BATCHABLE, one cycle; the Founder sees REAL rows on their live session
 > post-deploy (the admin-go-live pattern). NEXT after the seal: A1 → B1 → A2 →
 > M-INT-2 · the Q42 wave · Q39.
 
@@ -2510,39 +2580,39 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > served — Entry Calculator 1 · live signals verified 2 · Verified on-chain 3;
 > console chunk clean of the fake figures, "Program status … LIVE on-chain" present;
 > the wall holds (4 routes → 404 neutral); byte-identity `c928a289…85bab8`; feed
-> 78/78, engine 6/6 head advancing). The founder's "GO LIVE EVERYWHERE" order is
+> 78/78, engine 6/6 head advancing). The Founder's "GO LIVE EVERYWHERE" order is
 > DONE: the site speaks living-production language everywhere, honesty intact.
 > DEPLOY BACKLOG: EMPTY.**
 >
 > **▶ ✅ Q41 EXECUTED BY THE FOUNDER (2026-07-18, screenshot on record): TWO ACTIVE
 > founder_root rows** — "Founder" `0x88ec…dd73` + "Founder Second Wallet"
-> `0x2445…c721` (the founder's own 9-year wallet, historical seat #1 — canon-known,
-> his choice per Q41's founder-decides). The canon recovery property is ARMED: lose
+> `0x2445…c721` (the Founder's own 9-year wallet, historical seat #1 — canon-known,
+> his choice per Q41's Founder-decides). The canon recovery property is ARMED: lose
 > either wallet → sign in with the other → suspend the lost row → invite a
-> replacement; the last-ACTIVE-founder guard prevents zero-root. Both invites rode
+> replacement; the last-ACTIVE-Founder guard prevents zero-root. Both invites rode
 > the live audited write path. AAA note (recorded, not a blocker): the second root
 > is a daily-use wallet — the quiet-root discipline (root wallets do root acts only)
-> stays the recommendation; the founder decided. Founder closes Q41.
-> NEXT: **M-INT-1** (recon DONE — builds straight to the founder preview; the real
+> stays the recommendation; the Founder decided. Founder closes Q41.
+> NEXT: **M-INT-1** (recon DONE — builds straight to the Founder preview; the real
 > R5 figures replace the deleted fakes) → the acted order → the Q42 wave.
 
 > **▶ 2026-07-17 (night) — THE TWO TRUTH SWEEPS ON MAIN, deploy backlog = BOTH
 > (🚀 BATCHABLE, one cycle):** ① CONSOLE sweep `89e43c4` (preview-gated/read-only-era
 > fossils dead across /studio /os-map /admin; the FABRICATED /admin/sources sample
 > figures DELETED; "Program status Paused" lie → LIVE on-chain truth; feature-flag
-> states truthed; founder-controls "not switched on yet" dead). ② PUBLIC sweep
-> `6fb2d2e` (founder GO copy): "read-only signals reconciled"→"live signals
+> states truthed; Founder-controls "not switched on yet" dead). ② PUBLIC sweep
+> `6fb2d2e` (Founder GO copy): "read-only signals reconciled"→"live signals
 > verified" · "Read-only proof"/"Verified — view only"→"Verified on-chain" ·
 > Entry Preview→Entry Calculator pointing at Join · /wallet + /toolkit →
 > LIVE_ACTION badges · the three sign-in tooltips humanized. Dead class proven
 > absent from every built chunk. STANDING RULE engraved (queue + memory): gates
 > ONLY for security/chain-truth/money/legal/go-live — never re-block on answered
 > questions. Q42 (admin-controllability wave) queued with the full gap table.
-> NEXT: deploy the sweeps (founder paste) → M-INT-1 (recon done, builds to
+> NEXT: deploy the sweeps (Founder paste) → M-INT-1 (recon done, builds to
 > preview) → the acted order → the Q42 wave.
 
 > **▶ ✅ /ADMIN-IN-PROD SEALED — THE CONSOLE IS LIVE BEHIND THE WALL (2026-07-17,
-> Replit full cycle + founder-verified in prod + independently curl-verified).**
+> Replit full cycle + Founder-verified in prod + independently curl-verified).**
 > THE COMPLETE PROOF, all three sides: ① REPLIT: HEAD `5d30ab6` 16/16 blobs, gates
 > green (studio 3,588 · admin-dist 90 · API 802/151/140/161 · DB 42/42), publish,
 > wall battery (4 admin routes → 404 "Page Not Found", zero admin vocab, zero
@@ -2557,16 +2627,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > The header pill honestly said "no seat yet" — seat ≠ operator, the designed
 > separation. ③ CLAUDE, independent curl: /admin no-session → 404 neutral zero
 > vocab; operator-context no-session → fail-closed. **THE BOOTSTRAP TIMING QUIRK
-> (founder question, answered):** the founder's first signed-in visit hit the wall
+> (Founder question, answered):** the Founder's first signed-in visit hit the wall
 > because it happened in the window between the publish (wall live) and the
 > ceremony (seed at 19:57Z) — the row didn't exist yet, the wall answered
 > correctly. The MetaMask SYN-token add was UNRELATED (a local display list; the
 > session is a server cookie, the role a DB row) — its only effect was causing the
 > RELOAD, which re-read the role after the seed had landed. Steady-state has no
 > such window (sign-in fires the re-read in place); the role-granted-while-page-
-> open case was bootstrap-only. Q36+Q37 = done (founder closes). NEXT: M-INT-1
+> open case was bootstrap-only. Q36+Q37 = done (Founder closes). NEXT: M-INT-1
 > (the member ledger, in /admin/members) · Q39 (config-label relocation) · NEW Q40
-> (founder: reorder the admin dashboard — "what I need is at the bottom": demote
+> (Founder: reorder the admin dashboard — "what I need is at the bottom": demote
 > the dead KPI placeholder cards, lead with the live content).
 
 > **▶ 2026-07-17 (final) — Q36 PHASE 0 ON MAIN (`cb30915`): the founder_root SEED
@@ -2579,12 +2649,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > post-write readback. Fail-closed proven live (no DATABASE_URL → refuses at the Q37
 > gate). THE GO-LIVE CYCLE (one Replit session): deploy the wall → Q37 (drizzle push,
 > tables, verify empty) → Q36 ceremony (dry-run → armed run → disarm → verify 1 ACTIVE
-> founder_root) → founder phase-4 verification on thesyndicate.money (sign-in 0x88EC →
+> founder_root) → Founder phase-4 verification on thesyndicate.money (sign-in 0x88EC →
 > /admin reveals → badge founder_root → Operators list loads → incognito /admin = 404).
-> Q38 step-up deferred (own slice; writes are founder-only + audited meanwhile).
-> LESSONS ENGRAVED in memory: founder describes screens by FUNCTION (match behavior,
+> Q38 step-up deferred (own slice; writes are Founder-only + audited meanwhile).
+> LESSONS ENGRAVED in memory: Founder describes screens by FUNCTION (match behavior,
 > never literal labels; verify on the dev server before contradicting) + the TWO
-> AUTHORITIES model (wallet-signed chain acts — the founder already signed the first
+> AUTHORITIES model (wallet-signed chain acts — the Founder already signed the first
 > referral source from /admin/sources, R2 2026-07-13 — vs server registry writes,
 > which are what Q36+Q37 unlock).
 
@@ -2607,7 +2677,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > /os-map /admin/operators ALL → HTTP 404, `<title>Page Not Found</title>`, zero
 > admin vocab, no console chunk in the served HTML.
 > **GO-LIVE for operators needs (not this commit): Q36 the founder_root seed
-> (founder act — which wallet) + Q37 Replit provisions DATABASE_URL + migrates the
+> (Founder act — which wallet) + Q37 Replit provisions DATABASE_URL + migrates the
 > operator/audit tables. Until then NO operator can reveal — everyone gets the 404,
 > so the wall is safe to ship now.** Deferred, tracked: Q39 — the SHARED-config
 > operator labels (modules.ts, ride the entry via /status's import) relocate to a
@@ -2620,10 +2690,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > 13 commits `1514bf6`→`1155e34`, ALL pushed (HEAD == origin/main), tree clean, every
 > shipped slice PROD-SEALED by Replit (mechanical batch · favicon · SEO-TRANSPORT/Brotli)
 > and independently curl-verified. MVP_FINAL_CHECKLIST engraved (`b0e1f45`), fires only
-> on the founder's explicit word.
+> on the Founder's explicit word.
 >
 > **THE CORRECTED /ADMIN-IN-PROD FACTS (supersede the earlier gate's overstatement —
-> "check what we already did," founder order; each verified first-hand):**
+> "check what we already did," Founder order; each verified first-hand):**
 > - **Operator auth is ALREADY LIVE in prod** (probed 2026-07-17): `GET
 >   /api/auth/operator-context` no-session → 200 `{isOperator:false,role:null}` (zone
 >   EXPOSED, fail-closed — `SYNDICATE_AUTH_ENABLED` is set) · `GET /api/operator/operators`
@@ -2646,7 +2716,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   stricter never weaker) + registry fossils truthed. ③ Replit: confirm DATABASE_URL +
 >   operator/audit tables migrated in prod (DB exists — partB guards green; table status
 >   unconfirmed). ④ 🔴 FOUNDER: the founder_root wallet + one-time seed (offline act; no
->   self-service by design). ⑤ step-up signatures = design-only, founder-optional.
+>   self-service by design). ⑤ step-up signatures = design-only, Founder-optional.
 > - Dev keeps the OPERATOR_PREVIEW build-flag as a DEV-ONLY bypass; prod reveal = server
 >   role, period.
 
@@ -2665,11 +2735,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > shared/intermediary caches excluded; (b) Pingdom's legacy "Compress with gzip"
 > still reads D — a tooling artifact (it doesn't credit Brotli, which is superior,
 > and the site serves the gzip fallback too); real-world compression is live and
-> optimal. **DEPLOY BACKLOG: EMPTY. Compression dossier CLOSED** (founder confirms).
+> optimal. **DEPLOY BACKLOG: EMPTY. Compression dossier CLOSED** (Founder confirms).
 > Next order (unchanged): **/admin-in-prod → M-INT-1 → A1 → B1.**
 
 > **▶ 2026-07-17 (later) — SEO-TRANSPORT ACTIVATED ON MAIN (`b62c3c3`), NOT YET
-> LIVE — awaiting the founder's Replit publish click.** Replit confirmed the deploy
+> LIVE — awaiting the Founder's Replit publish click.** Replit confirmed the deploy
 > reads the COMMITTED artifact.toml (repo = single source of truth; no divergent
 > override) and validated the exact content. Committed the switch: artifact.toml
 > static→`[services.production.run] node serve.mjs` + health "/", `BASE_PATH="/"`
@@ -2679,10 +2749,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > green on the table). VERIFIED on the real prod port 18425: health /→200 index.html,
 > clean URLs→200, entry JS→402KB Brotli, real 404; full gate + 316 byte-verified
 > twins. serve.mjs resolves dist/public from import.meta.url (cwd-independent —
-> Replit's vigilance note, already satisfied). **GO-LIVE = the founder's Replit
-> publish click:** founder tells Replit "c'est sur main" → Replit pulls (blob-verifies
+> Replit's vigilance note, already satisfied). **GO-LIVE = the Founder's Replit
+> publish click:** Founder tells Replit "c'est sur main" → Replit pulls (blob-verifies
 > serve.mjs + precompress + toml byte-for-byte vs its validated local) + full gates +
-> local smoke → publish card → founder clicks → post-publish battery (27 shells +
+> local smoke → publish card → Founder clicks → post-publish battery (27 shells +
 > real 404 · Content-Encoding: br + Vary on / and the entry JS · immutable on
 > /assets/* · byte-identity via Accept-Encoding: identity). Prod stays on the current
 > static build until that click.
@@ -2731,25 +2801,25 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > host compresses NOTHING (no `Content-Encoding`/`Vary` on `/` or the entry JS;
 > 1.62MB raw over the wire; the API too), serves NO pre-compressed `.br`/`.gz`
 > siblings (both 404), and exposes NO host compression setting. So build-time
-> precompression = DEAD WEIGHT — **NOT added** (per the founder's (c) rule).
+> precompression = DEAD WEIGHT — **NOT added** (per the Founder's (c) rule).
 > Pingdom also flags `cache-control: private` + no Expires (assets un-cacheable)
 > — the SAME host-layer limit. **Both are DEFERRED to a new slice SEO-TRANSPORT:
 > RECOMMENDED = a CDN in front of the domain (Cloudflare free = Brotli + edge
 > cache + the www→apex 301, all at once, ZERO code, pure edge transport — it
 > also subsumes the deferred www→apex item); alternative = fronting the static
 > build with the Express server + compression/cache middleware (code, sensitive,
-> touches asset delivery — the founder's explicit out-of-scope area).** Founder
+> touches asset delivery — the Founder's explicit out-of-scope area).** Founder
 > decides; nothing built. NEXT per the acted order (unchanged): **/admin-in-prod
 > → M-INT-1 → A1 → B1.**
 
-> **▶ 2026-07-17 — MECHANICAL / DECISION-LIGHT BATCH (founder "go in the right
-> order"; 4 slices, committed + pushed to main `bcb686f`→`1746d2e`, no founder
+> **▶ 2026-07-17 — MECHANICAL / DECISION-LIGHT BATCH (Founder "go in the right
+> order"; 4 slices, committed + pushed to main `bcb686f`→`1746d2e`, no Founder
 > content/visual gate needed — renames + doc-truth only).**
 > - **Q33 — *Teaser filename fossils truthed** (`1514bf6`): `ActivityTeaser`→
 >   `Activity`, `FireLedgerTeaser`→`FireLedger` (both LIVE surfaces; git-mv
 >   history kept). **ChronicleTeaser DELIBERATELY KEPT** — its register is empty
 >   so its dominant state renders the FUTURE teaser; the name is accurate today
->   and renames only when the founder promotes the first Chronicle entry.
+>   and renames only when the Founder promotes the first Chronicle entry.
 >   Studio gate green (tsc · all guards · seo 435 · surface 296 · rewrites 52 ·
 >   build 27 shells). Founder closes the queue item.
 > - **Q22 — Compass repoint** (`014238b`): §2/§4/§6 "current state / current
@@ -2769,7 +2839,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **DEPLOY BACKLOG (was EMPTY after AUD-ROUTE):** now **Q33 studio rename (client)
 > + the api leak-guard rename (server)** — BOTH 🚀 BATCHABLE, behavior/output-
 > identical; prod runs the current build unchanged until the next cycle carries
-> them. Q22 + Q8 = ✅ NO DEPLOY (internal docs). STILL OPEN (founder): Q31 icon
+> them. Q22 + Q8 = ✅ NO DEPLOY (internal docs). STILL OPEN (Founder): Q31 icon
 > artwork · Q32 the 23-descriptions meta wave · Q34 ConnectModal warning (own
 > session) · Q35 the AUD-T legal set · older Q5/Q6/Q9/Q13/Q16/Q20. NEXT per the
 > acted order UNCHANGED: **/admin-in-prod → M-INT-1 → A1 → B1**.
@@ -2859,7 +2929,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > sharedCopy (→/join — the money path from the 404 can never drift);
 > OperatorConsole's source console classifies against /os-source (the
 > naming trap's FIRST VICTIM, caught by the reconcile fleet); Home.tsx →
-> OperatorOverview.tsx (the founder-named Home-vs-PublicHome hazard dead;
+> OperatorOverview.tsx (the Founder-named Home-vs-PublicHome hazard dead;
 > guard literals + replit.md updated — the adversarial pass caught the
 > third literal at guard-operator-gate:123); routeMemory's two stale
 > mappings truthed (dormant config). THE PRE-COMMIT ADVERSARIAL PASS: 11
@@ -2867,9 +2937,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > INCOMPLETE (the /proof + /status renders survived it) and my slice
 > summary CLAIMED an App.tsx edit never made; both corrected, the lesson
 > recorded. DEFERRED (named, not silent): the 23-descriptions >160-char
-> meta wave + guard ceiling (founder reads every rewrite on screen — its
+> meta wave + guard ceiling (Founder reads every rewrite on screen — its
 > own copy slice) · the icon-asset micro-slice (apple-touch/PNG/manifest —
-> BLOCKED on a founder artwork decision: today's favicon.svg is an
+> BLOCKED on a Founder artwork decision: today's favicon.svg is an
 > OFF-BRAND cyan shield, not the gold mark; no local rasterizer exists —
 > its own micro-slice) · the *Teaser filename renames. Gate: repo tsc 0 ·
 > ALL studio guards exit 0 (drift 210 w/ reverse check · member-menu 34 ·
@@ -2881,7 +2951,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > 404 CTA →/join · /proof + /status honest lines · API header live ·
 > theme-color hsl token). **DEPLOY: 🚀 BATCHABLE (client + prerendered
 > shells + ONE additive api header — fail-closed; prod keeps the old
-> chrome until the next cycle). NEXT after founder GO: /admin-in-prod →
+> chrome until the next cycle). NEXT after Founder GO: /admin-in-prod →
 > M-INT-1 → A1 → B1.**
 
 > **▶ ✅ ② MENU + ③ HOME SEALED IN PROD (2026-07-17, ONE Replit cycle as
@@ -2916,9 +2986,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > rows.length — a served [] is a REAL 0, null is a dash) + Artifacts (own
 > Archive ERC-1155 balances summed). Z3 `MemberAttention` (NEW): 0–2 cards
 > from REAL state only — ① promotion due (own-row `promotionDue`, the
-> founder-signature truth in calm words) · ② standing USDC approval open
+> Founder-signature truth in calm words) · ② standing USDC approval open
 > (live allowance read; ≥$1B renders "an effectively unlimited amount",
-> never a 72-digit figure) — the founder's Z3 verdict honored (session-
+> never a 72-digit figure) — the Founder's Z3 verdict honored (session-
 > expiring dead; milestone-witnessed NOT readable today → honestly absent);
 > empty = the approved quiet line VERBATIM, and the quiet line renders ONLY
 > when EVERY class gave a definitive answer (an unreadable class gets the
@@ -3005,7 +3075,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > comment can no longer satisfy them; bans widened to any px/rem sub-12 and
 > any muted-foreground alpha). `guard-member-menu` **34 pins**, wired into
 > the guards chain. THE WORDING RIDER (the queued P2 human-tongue checkout
-> strings; full texts shown on screen at the gate; founder reply "GO menu /
+> strings; full texts shown on screen at the gate; Founder reply "GO menu /
 > GO menu + wording" read as the fuller GO — recorded verbatim; ③ then
 > CORRECTED by the adversarial pass, truth-first over the approved draft):
 > ① "(claim gate · allowance · balance)" → "your eligibility, your spending
@@ -3044,7 +3114,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > anchor `cd2958f`, 14/14 blob-verified, no migration, html-to-image installed
 > frozen-lockfile; pulled UNDER a GitHub REST outage via direct git smart-HTTP
 > — pack-object cryptographic verification, an even stronger integrity proof):
-> both commits live in ONE cycle as the founder ordered — `2f1ed57` THE
+> both commits live in ONE cycle as the Founder ordered — `2f1ed57` THE
 > RECEIPT SLICE + `cd2958f` THE SHARE-CARD RIDER. PROD PROOF: ① byte-identical
 > bundles; ② /join 200 with the four living strings served ("Membership
 > receipt — proof of purchase" · "WHERE YOUR MONEY WENT" · "TOTAL PAID" ·
@@ -3071,7 +3141,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > (`wallet/ReceiptShareCard.tsx`): 1.91:1 share standard, text inside the
 > 90px central safe zone, ~130KB (300KB WhatsApp ceiling with quality
 > step-down, pinned), **TOTAL PAID + the full proof line VISIBLE** — the
-> founder caught my "recognition, never money" amount-hiding as a VISIBILITY
+> Founder caught my "recognition, never money" amount-hiding as a VISIBILITY
 > LAW violation (the amount is already public in the tx the card's QR
 > links to; hiding it is theatre). THE ORDERED ENGRAVING landed:
 > `SETTLED_RULES_DO_NOT_RELITIGATE.md` **§6 RECEIPT & OUTWARD-ARTIFACT
@@ -3081,16 +3151,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > class dead; ④ readability before decoration) — ENFORCED by guard pins
 > (amounts-visible: the card MUST render commerce.total; canon-presence: the
 > guard breaks if §6 leaves the doc; buyer's-tongue + red-line grew payout/
-> net-routed; a violation is a RED BUILD, never a founder explanation). The
+> net-routed; a violation is a RED BUILD, never a Founder explanation). The
 > card's QR = the member's OWN introduction link (prop from the ticket's ONE
 > resolver site, pinned); Share = card file + proof text (native file-share
 > when supported; fallback download + clipboard); print/PDF still carry the
 > paper alone. Rig catch: the off-viewport clone rasterized BLANK — caught
 > by LOOKING at the pixel artifact, fixed with the static-position clone
 > override, pinned. **ALSO ENGRAVED: THE FIRSTS ENGINE
-> (LIVING_ORGANISM_MASTER_PLAN §7b, founder-designed)** — firsts-per-class
+> (LIVING_ORGANISM_MASTER_PLAN §7b, Founder-designed)** — firsts-per-class
 > as an OPEN registry (never a hardcoded list; a new module's firsts join
-> the watch structurally), the founder-reviewed seed inventory (B1 verifies
+> the watch structurally), the Founder-reviewed seed inventory (B1 verifies
 > EACH against the indexed chain — the record outranks the list), the
 > receipt-witness tie (a FIRST is a milestone class; its ticket carries the
 > gold witness; the Chronicle entry points back — verifiable museum pieces;
@@ -3101,17 +3171,17 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > went green at the injection revert, as designed) · seo 431 · surface 278 ·
 > rewrites 52 · api guards green (2001 PASS). **DEPLOY: 🚀 THE ONE-SHOT —
 > this rider + the sealed receipt slice (2f1ed57) ride ONE Replit cycle
-> (founder order); the paste block handed at the session's part ③.**
+> (Founder order); the paste block handed at the session's part ③.**
 
 > **▶ 🎫 SLICE RECEIPT ✅ BUILT + FOUNDER GO AT THE PREVIEW GATE (2026-07-16/17,
-> FOUR live correction rounds ①–⑫ on the founder's screen — the approved
+> FOUR live correction rounds ①–⑫ on the Founder's screen — the approved
 > wireframe realized, then corrected on sight): THE PROTOCOL RECEIPT — the
 > post-purchase dead end is DEAD.** THE SPINE (`lib/protocolCommerceReceipt.ts`,
 > kind-extensible): born ONLY from confirmed events (THE MIRROR FILTER — the
 > type cannot express PARTIAL/PREVIEW), every figure the event's OWN field
 > (NO-RECOMPUTE), TICKET-AMOUNTS-ARE-EXACT (full precision, lines sum),
 > ORDINAL HONESTY (witness = caller-proven data or absent), ONE-DOOR-MAX.
-> **⑫ FOUR-ENGINES HISTORY** (the founder's catch, twice — a bare "V2" tried
+> **⑫ FOUR-ENGINES HISTORY** (the Founder's catch, twice — a bare "V2" tried
 > to live in the spine comments and the new pin killed all three instances):
 > V1 `TokensPurchased` (splits, no seat/era/rate) · V2a 0x0b883F…/V2b
 > 0x507E9c… `Purchased`+paired `Routed` (a Purchased-alone ticket prints NO
@@ -3122,23 +3192,23 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > 88,105,075 — era/rate present, NO proof block) · 2 stress tickets from the
 > REAL registries (Monolith $10,000 → 1,000,000 SYN · $9,999.99 cent-fractions
 > $6,649.99335 summing exact). THE SURFACE (`wallet/ReceiptTicket.tsx`, zones
-> A–G): the GOLD SYNDICATE MARK heads the paper (the issuer's seal — founder
+> A–G): the GOLD SYNDICATE MARK heads the paper (the issuer's seal — Founder
 > ⑤) · commerce block first ("Membership — Seat #N" from RECEIPT_PRODUCT_NAMES
 > [kind] + **TOTAL PAID**) · proof block second ("WHERE YOUR MONEY WENT — in
 > your own transaction" · "Referral · paid first" · "The remaining $X:" from
 > the event's protocolContribution · Vault/Liquidity/Operations exact) ·
-> doctrine line UPRIGHT full-contrast with gold accent (founder ⑩ — italic +
+> doctrine line UPRIGHT full-contrast with gold accent (Founder ⑩ — italic +
 > font-serif now BANNED on the ticket by pin) · QR verify · ONE door from the
 > wallet's REAL state (live First Signal read; both variants rig-proven) ·
-> graceful degrade (founder ⑨: wide values wrap to their own right-aligned
+> graceful degrade (Founder ⑨: wide values wrap to their own right-aligned
 > line; truncate/nowrap/ellipsis banned by pin; zero overflow at 375 through
-> the stress maxima). EXPORTS PURE (founder ⑥): Save-image rasterizes the
+> the stress maxima). EXPORTS PURE (Founder ⑥): Save-image rasterizes the
 > paper alone (toSvg + the house SVG→canvas path — toPng's decode() hangs,
 > rig-proven), print-clean Save-as-PDF (print CSS + light-ink beforeprint
 > hook), actions print-hidden outside the raster node. THE SHARE ARTIFACT
-> (founder ⑪): share text = sealed proof + the member's OWN link via THE one
+> (Founder ⑪): share text = sealed proof + the member's OWN link via THE one
 > resolver (payingSourceId, Ruling ① — pinned: reuse mandatory, ONE
-> construction site, link NEVER in the paper region). BUYER'S TONGUE (founder
+> construction site, link NEVER in the paper region). BUYER'S TONGUE (Founder
 > ②③ + the ultracode 3-lens adversarial verify): "proof of purchase" (routing
 > proof dead + pinned dead) · routed/routing + contribution banned from
 > buyer-facing strings · "Avalanche C-Chain (43114)" · doors speak buyer
@@ -3146,7 +3216,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > FIXED IN PASSING: fonts `crossorigin` in index.html (Save-image would have
 > failed IN PROD — CORS-unreadable stylesheet) · /join SEO note pre-C5 fossil
 > ("transaction sending deliberately not enabled") truthed. **guard-receipt-
-> ticket: 63/63 pins** incl. THE REAL-ROW CLASS PIN (founder ⑧ — no $-figure/
+> ticket: 63/63 pins** incl. THE REAL-ROW CLASS PIN (Founder ⑧ — no $-figure/
 > hex literals in the module; NO page may ever mount the ticket/builder: the
 > #14-mock class is structurally dead — the pin held the rig preview RED until
 > its revert, exactly as designed) + the FOUR-ENGINES precision pin (bare "V2"
@@ -3175,7 +3245,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > `2fcf348`, 72/72 blob-verified, no migration): the two pending truths are LIVE —
 > ① the Holder Index serves memberTotal **14** (8 historical-freeze #1–#8 + 6
 > V3-emitted #9–#14, timestamp coverage 14/14, run #5, snapshot hash 65acf2f1…
-> exactly the founder-armed regeneration committed at 768c3c1) — the stale
+> exactly the Founder-armed regeneration committed at 768c3c1) — the stale
 > 2026-07-03 count of 10 is dead; ② /contracts serves ALL FOUR sale engines
 > ("Membership Sale V2a" ×2 · "V2b" ×2 · "seats #3 to #5 were born here" in the
 > served bundle; the bare "Membership Sale V2" label at 0 occurrences — the
@@ -3198,20 +3268,20 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > stand: #1 Patron $70 · #6 Patron $50 · rest Citizen; feed byte-identical; D2
 > ownership index warm; member-purchases route live; own Archive holdings on
 > /wallet) · **BUILDER-LINK** (`index-DSnsVSxD.js` — every share surface advertises
-> the PAYING source via ONE resolver; founder's end-to-end referral test unblocked)
+> the PAYING source via ONE resolver; Founder's end-to-end referral test unblocked)
 > · **AUD-P0** (`index-D3GZLiNl.js` — /proof truth rewrite, the 3 converging P0s
 > dead) · **AUD-T** (`index-ClCsdU33.js` — THE LEGAL LAYER: /terms /privacy /risk
 > live, footer Legal group site-wide, the 4th P0 dead) · **AUD-TRUTH**
 > (`index-Cw5BCIY1.js` — the lens-1/2/3 P1 era-drift sweep dead across 6 pages +
 > FAQ JSON-LD + whitepaper + served API note; the checkout-ripping redirect fixed;
 > pg pool crash-proofed; feed grew 75→78 with 3 GENUINE treasury moves) ·
-> **AUD-TRUTH-2** (`index-DvclxgU9.js` — the founder's prod-walk fixes: admin map
+> **AUD-TRUTH-2** (`index-DvclxgU9.js` — the Founder's prod-walk fixes: admin map
 > MOVED to /os-map via shared SurfaceMapSection, footer Console dead,
 > PUBLIC-SEES-ADMIN-NEVER real; /recognition + /docs + Member Continuity promotion)
 > — **plus the DATA STEP executed one-writer style: member-continuity run #5 (14
 > records, on-chain match true) + holder-index snapshot REGENERATED (memberTotal
 > 14, hash 65acf2f1…, reconciled 66/66) — committed here, prod says 14 at the next
-> deploy.** ALSO TODAY: THE WIREFRAME ROUND (5 founder GOs: ticket incl. LIVING
+> deploy.** ALSO TODAY: THE WIREFRAME ROUND (5 Founder GOs: ticket incl. LIVING
 > TICKET doctrine + real receipt #13 verbatim · menu 13 rows + icons · home zones ·
 > THE RESEARCH-GROUNDED DESIGN METHOD LAW in ADR-001 with REAL-ROW + TICKET-
 > AMOUNTS-ARE-EXACT · /admin neutral wall) at
@@ -3220,7 +3290,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > verified findings — ALL FOUR P0s NOW DEAD IN PROD; ~24 distinct P1s: lenses
 > 1/2/3 killed today, lens-4 P1s ride /admin, a11y P1s ride menu/home slices) ·
 > AUD-T's legal drafts archived at docs/legal/drafts/. **THE PLATEAU FOR THE NEXT
-> SESSION (the founder-approved plan, in order): ① THE RECEIPT SLICE — wireframe
+> SESSION (the Founder-approved plan, in order): ① THE RECEIPT SLICE — wireframe
 > approved: zones A–G + identity head + living zone + next door, OUR skin, both
 > themes; kind-extensible ProtocolCommerceReceipt spine harvested from TheSyndicate
 > quarry (protocol-commerce-receipt.ts + SuccessReceipt.tsx + source-attributed-
@@ -3241,7 +3311,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ledger's home) → ⑥ M-INT-1 → A1(binder) → B1 → A2 → M-INT-2 → S8 perf ·
 > Archive→NFT naming decision (audit lens 12 options) · P2/P3 waves (incl. the
 > API decimals field for raw figures · the 215 sub-12px sweep + guard).
-> **AUD-TRUTH-3 (the founder's four-engines catch, sealed at handoff):** the founder
+> **AUD-TRUTH-3 (the Founder's four-engines catch, sealed at handoff):** the Founder
 > asked "V1 V2 V2a V2b V3??" — chain truth: FOUR engines (V1 0x0020Df… · V2a
 > 0x0b883F… · V2b 0x507E9c… · V3 0x2A6cFc…), no bare "V2" exists; but the public
 > /contracts inventory listed THREE cards and its "V2" card was really V2b, and
@@ -3265,7 +3335,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > session boots on "hi" → THE RECEIPT SLICE.**
 
 > **▶ 📷 SLICE AUD-TRUTH-2 ✅ BUILT + FOUNDER GO — COMMITTED, AWAITING DEPLOY
-> (2026-07-16, the founder's own prod walk — 8 screenshots): ① /recognition
+> (2026-07-16, the Founder's own prod walk — 8 screenshots): ① /recognition
 > "Archive memory: Not live yet" DIED → the honest dimension split (archive+
 > chronicle live today; the recognition DIMENSION arrives with the model; badge
 > FUTURE). ② /docs badge conflation DIED — docStatus labels say what the registry
@@ -3279,7 +3349,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > live behind sign-in; note carries the sign-in truth; 161 pins green; postures
 > never regress). ⑤ the raw-base-units figure on /status → rides the P2
 > human-readable wave (needs an API decimals field, never string-sniffing).
-> ⑥ Holder Index 10 vs 14 seats = the 2026-07-03 founder-gated snapshot is
+> ⑥ Holder Index 10 vs 14 seats = the 2026-07-03 Founder-gated snapshot is
 > STALE — the rebuild rides THIS deploy's Replit instruction (Replit runs the
 > gated builder, PASTES the regenerated snapshot, Claude Code commits — the
 > one-writer choreography). Guard lesson: PostureBadge joined the lifecycle-label
@@ -3315,7 +3385,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > status token note (dead "nothing wired" + phantom /token surface → /tokenomics
 > truth; 161 pins green). RIDERS: #40 the checkout-ripping redirect FIXED
 > (FLOW_SURFACES list — sign-in inside /join /source /wallet /toolkit /liquidity
-> resolves IN PLACE; out-of-flow still lands /member per the founder order) ·
+> resolves IN PLACE; out-of-flow still lands /member per the Founder order) ·
 > #41 pg pool "error" handler (an idle-connection error can no longer crash the
 > api-server process). THE GUARD LEARNED 8 PHRASINGS (no-chronicle-entries ·
 > reads-not-yet-wired · when-the-reads-are-wired · does-not-read-the-chain-yet ·
@@ -3334,13 +3404,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > all 200 with titles + the draft pill, the footer Legal group site-wide, sitemap 24
 > INDEX incl. the three, the three key lines in the served bundle, feed byte-identical
 > 75=75, engine healthy (10 protocol streams caughtUp). The audit's fourth P0 is dead:
-> the protocol sells seats under published terms. Build + founder-GO record follows.**
+> the protocol sells seats under published terms. Build + Founder-GO record follows.**
 > /terms + /privacy + /risk routed (PublicPage chassis, StatusPill "Version 1 —
 > draft of 2026-07-16" — honestly awaiting qualified counsel per the doctrine's own
 > header), footer-linked SITE-WIDE (new "Legal" group, registry-driven), SEO-registered
 > (banned-word-free meta EVEN NEGATED per the truncation law), sitemap 21→24 INDEX,
 > shells 24→27, surfaceClassification + modules entries added. The texts = the
-> founder-approved drafts VERBATIM (7-agent fleet: canon+code harvest → draft →
+> Founder-approved drafts VERBATIM (7-agent fleet: canon+code harvest → draft →
 > adversarial doctrine pass; 12 fact-corrections applied; drafts archived at
 > docs/legal/drafts/). Founder-decision placeholders render as honest pending lines
 > (entity/governing law/contact/retention — "arrives with the next version"), never
@@ -3362,7 +3432,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > /proof serves the truth (title/pill/CTA/4 facet doors all in the served bundle),
 > the 4 dead-era phrases at 0 occurrences in the whole served dist, feed
 > byte-identical 75=75, engine healthy (known self-repairing boot cycle only).
-> Build + founder-GO record follows: THE /PROOF TRUTH KILL.**
+> Build + Founder-GO record follows: THE /PROOF TRUTH KILL.**
 > ProofDashboard rewritten whole to today's truth (title "Proof, live from the chain." ·
 > live lead/banner · 4 facets rewritten with doors to their living surfaces replacing
 > dead badges · verification steps in present tense · honest StatusPill "Served from
@@ -3375,12 +3445,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > rode. Gate: tsc · build 24 shells · ALL studio guards (era stricter) · ALL 17 api
 > guards · seo 395 · rig-verified (lies absent, doors present, zero overflow).
 > DEPLOY: 🚀 its own deploy per the GO'd slicing plan. NEXT: AUD-T (Terms/Privacy/Risk
-> drafts — founder reads full text on screen) → AUD-TRUTH era-drift sweep (~15 P1
+> drafts — Founder reads full text on screen) → AUD-TRUTH era-drift sweep (~15 P1
 > defects) → receipt slice (approved wireframe) → the plan's order.
 
 > **▶ ✅ THE WIREFRAME ROUND — ALL FIVE FOUNDER VERDICTS IN (2026-07-16; wireframes at
 > artifacts/mockup-sandbox/public/wireframes-2026-07-16.html, committed as the approved
-> record): ① TICKET GO** — with the founder's five figure-doubts ALL CONFIRMED against
+> record): ① TICKET GO** — with the Founder's five figure-doubts ALL CONFIRMED against
 > the chain (real receipt member #13 · block 90,160,483 · tx 0x353bf2…2178 decoded
 > 2026-07-16: gross $5.00 → acquisitionCost $0.25 PAID FIRST → protocolContribution
 > $4.75 → vault $3.325 / liquidity $0.95 / operations $0.475 — ALL the event's own
@@ -3390,7 +3460,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > accepted (print-clean V1, engine at /receipt/{txHash}). **② MENU GO** (grouping+icons;
 > GROWTH keeps its name — navigation, not a member promise; count corrected 12 doors +
 > Receipts-at-its-slice = 13 rows). **③ HOME GO** (all zones; "session expiring"
-> dropped from Z3 — founder instinct upheld: a system event, not a decision; replaced
+> dropped from Z3 — Founder instinct upheld: a system event, not a decision; replaced
 > by standing-approval-revoke). **④ LAW GO verbatim** — in ADR-001. **⑤ /ADMIN: the
 > neutral wall** (zero admin vocabulary at the bare URL; console reveals only after the
 > server confirms the operator role); build after the audit. **THE TOTAL SITE AUDIT
@@ -3401,16 +3471,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > "view-only: no payments, no live chain reads" + "none of it is wired yet" while the
 > protocol SELLS SEATS LIVE (ProofDashboard.tsx:23-99 + sharedCopy.ts:34-35) — and
 > the fourth is the MISSING TERMS OF USE during live sales (lens 7). SLICING PLAN
-> (in the doc §Slicing plan, awaiting founder GO): ① AUD-P0 /proof truth kill →
-> ② AUD-T terms/legal drafts (founder reads full text on screen; pairs with S5) →
+> (in the doc §Slicing plan, awaiting Founder GO): ① AUD-P0 /proof truth kill →
+> ② AUD-T terms/legal drafts (Founder reads full text on screen; pairs with S5) →
 > ③ AUD-TRUTH site-wide era-drift sweep → ④ receipt slice → ⑤ menu → ⑥ home →
 > ⑦ AUD-ROUTE routing/SEO → ⑧ /admin-in-prod (before M-INT-1 — the ledger's home) →
 > ⑨ M-INT-1 → A1(binder) → B1 → A2 → M-INT-2 → ⑩ S8 · Archive→NFT decision ·
-> P2/P3 waves. Next meeting point: the founder reads the audit + GOes the plan.**
+> P2/P3 waves. Next meeting point: the Founder reads the audit + GOes the plan.**
 
 > **▶ 🔗 MICRO-SLICE BUILDER-LINK ✅ SEALED IN PROD (2026-07-16, Replit-verified 4/4
 > on thesyndicate.money, prod bundle `index-DSnsVSxD.js` — byte-identical SHA-256 to
-> the local build — anchor `a8a43c6`, 9/9 blob-verified, no migration): founder
+> the local build — anchor `a8a43c6`, 9/9 blob-verified, no migration): Founder
 > Ruling ① LIVE — every share surface (link card · share card · quick-action copy)
 > advertises the source that PAYS the wallet via ONE resolver (payingSourceId:
 > server-resolved own-row sourceIdHex first, canonical derivation fallback; the two
@@ -3420,7 +3490,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ③ feed byte-identical 75=75, zero wallet addresses (87 raw matches = 64-hex tx-hash
 > prefixes, boundary semantics hold); ④ engine 2/2 cycles, 6/6 units, head advancing.
 > THE FOUNDER'S END-TO-END PRODUCTION REFERRAL TEST IS UNBLOCKED. NEXT (the approved
-> ①→④ sequence): the WIREFRAME ROUND on the founder's screen (enriched receipt ticket
+> ①→④ sequence): the WIREFRAME ROUND on the Founder's screen (enriched receipt ticket
 > incl. THE LIVING TICKET doctrine — identity head · living zone · next door · V1
 > print-clean-PDF stance · phased roadmap + hard filters engraved at its build ·
 > member-menu door→icon map + active state · post-login home named zones ·
@@ -3434,21 +3504,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > seat 6 → Patron $50 · seats 2–5/7/8 → Citizen $5 · correct nextRung each · ?seat=abc
 > still 400) — the V1×frozen-roster join LIVE; ② the feed BYTE-IDENTICAL 75=75 lines
 > vs the pre-deploy reference (capital-rise 14=14, zero new lines, zero 40-hex) — the
-> founder's no-retroactive-lines decision held exactly as the guard proved; ③
+> Founder's no-retroactive-lines decision held exactly as the guard proved; ③
 > member-purchases honest S1 shape signed-out; ④ D2 ownership index WARM
 > (introductionRefresh refreshed:true · 3 attributed rows · 2 distinct sources ·
 > asOfBlock tracking head) both clean cycles; ⑤ both new strings in the served bundle,
 > member chunks zero-address, dropdown ≥12px; ⑥ /member + /wallet clean, engine 2/2 ok
 > cycles, head advancing, only the known self-repairing boot cycle in the historical
-> lastError register (verified by design, never cleared by success). Build+founder-GO
-> record follows (2026-07-16, founder "GO D-TRUTH" + sequence ①→④ approved as argued):
+> lastError register (verified by design, never cleared by success). Build+Founder-GO
+> record follows (2026-07-16, Founder "GO D-TRUTH" + sequence ①→④ approved as argued):
 > THE OLD DATA ENTERS THE DASHBOARD.** D1 GENESIS FOOTPRINTS: the capital walk joins
 > every early-era row (V1 + V2B pairing sentinels) to its frozen genesis seat via
 > HISTORICAL_FREEZE_WALLETS as an OPTIONAL builder input (runner supplies it; the pure
 > builder stays DB-free) — **STANDING ONLY: the rise record is byte-identical with and
 > without the join, guard-proven (backbone.guard builds the walk both ways and demands
-> identical rises); `GENESIS_JOIN_EMITS_RISES = false` source-pinned — the founder's
-> no-retroactive-lines decision, reversible only at a founder gate.** The three false
+> identical rises); `GENESIS_JOIN_EMITS_RISES = false` source-pinned — the Founder's
+> no-retroactive-lines decision, reversible only at a Founder gate.** The three false
 > copy sites died (KPI tooltip "early-era not derivable" · CapitalAxisCard "joins soon"
 > · capital-standing route note). D2 FOUNDER-SIGNED SOURCE FALLBACK: sourceOwnershipIndex
 > (lib/protocol, server-only in-memory) holds payoutWallet→sourceId edges captured from
@@ -3479,11 +3549,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > report. D2 warm-up nuance: after each restart, standing says "warming" until the first
 > introduction-refresh cycle (honest, minutes).**
 > **THE FOUNDER PACKAGE + RULINGS (2026-07-16, verbatim decisions — the acted plan):**
-> sequence ①→④ APPROVED: ① this seal → ② WIREFRAME ROUND on the founder's screen (no
+> sequence ①→④ APPROVED: ① this seal → ② WIREFRAME ROUND on the Founder's screen (no
 > code before approval): (a) THE PROTOCOL RECEIPT "ticket" — kind-extensible commerce
 > receipt spine harvested from TheSyndicate quarry (protocol-commerce-receipt.ts +
 > source-attributed-receipts.ts + SuccessReceipt.tsx — CONFIRMED present; react-qr-code
-> already a dep); founder wireframe contract zones A–G (header/meta/seat/money/total/
+> already a dep); Founder wireframe contract zones A–G (header/meta/seat/money/total/
 > QR-verify/action-bar incl. Save-image); OUR skin (command-room ink + gold), both
 > themes; born ONLY from indexed/confirmed events (Mirror Rule: PARTIAL/PREVIEW die);
 > figures from the event's own fields, floored, never recomputed; placements: checkout
@@ -3493,25 +3563,25 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > research-grounded (Linear/Stripe/Vercel-class study) — named zones: identity band ·
 > 4–6 decision KPIs · attention · recent activity (feeds on D3) · doors; EXTENDS S7-b,
 > sealed stays sealed; (d) PIECE 4 LAW engraving text inline (ADR-001: THE
-> RESEARCH-GROUNDED DESIGN METHOD: research → named-zone wireframe → founder approves →
+> RESEARCH-GROUNDED DESIGN METHOD: research → named-zone wireframe → Founder approves →
 > build on tokens+laws → preview gate). → ③ TOTAL SITE AUDIT (ultracode, 15 lenses,
 > ONE sweep, audit-only, docs/audits/ dated canon doc; brief recorded in the 2026-07-16
-> founder message) launches right after the wireframes are handed — its lenses then
+> Founder message) launches right after the wireframes are handed — its lenses then
 > check the approved wireframes before build. → ④ build order: Receipt slice (checkout
 > success — kills the post-purchase dead end) → menu → home recomposition → re-confirmed
 > M-INT-1 → A1-as-receipt-binder → B1 → A2 → M-INT-2; S8 + S5 queued.
 > **RULING ① BUILDER LINK: YES** — micro-slice: the link card serves the source that
-> PAYS the wallet (founder-signed BUILDER first when canonical differs; generalized
+> PAYS the wallet (Founder-signed BUILDER first when canonical differs; generalized
 > paying-source-first; own-row sourceIdHex served; the two doctrine pins
 > (sourceStandingRead header "sourceId never leaves" + introductionReadmodel ADR-003
 > no-raw-sourceId posture) amended DATED; 64-hex passes the gates) — SLOT: first build
 > slice right after this deploy's Replit verification (no wireframe needed — Visual
-> Change Law ③ copy/truth class; unblocks the founder's end-to-end production referral
+> Change Law ③ copy/truth class; unblocks the Founder's end-to-end production referral
 > test). **RULING ② /ADMIN IN PRODUCTION: GATE IT** — the control room ships in prod
-> reachable ONLY by direct URL + real server-side operator/founder session (fail-closed,
+> reachable ONLY by direct URL + real server-side operator/Founder session (fail-closed,
 > never client-only hiding), ZERO public trace (no link/nav/sitemap/SEO/feed/bundle
 > strings on public+member surfaces — public-sees-admin-never joins admin-sees-public-
-> never); read ADMIN_SHELL_SPEC + RBAC canon before proposing auth (step-up for founder
+> never); read ADMIN_SHELL_SPEC + RBAC canon before proposing auth (step-up for Founder
 > root if canon defines); full blast radius: build flags, guards, deploy. Historical
 > scar (5 prior iterations): admin LEAKED into public frontend — the failure was leaks,
 > not admin-in-prod. SLOT: gate presented WITH the wireframe round; build lands after
@@ -3549,14 +3619,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > `docs/audits/MEMBER_HOME_TOTAL_AUDIT_2026-07-16.md`** — the complete backlog:
 > confirmed defects (all fixed in S7-e), data-slices, 21 design gaps, 20 polish, the
 > 86-item ledger (incl.: avatar storage decision CLOSED = Replit App Storage; old
-> founder questions Q5/Q6/Q9/Q13/Q20 still unanswered; 219 sub-12px sites mapped for
+> Founder questions Q5/Q6/Q9/Q13/Q20 still unanswered; 219 sub-12px sites mapped for
 > the general sweep + future no-sub-12px-text guard). DOCTRINE RECORDED: admin-sees-
 > public-never is SETTLED (§D operator design; no ADR-003 amendment needed — the
-> over-call pattern memory-pinned). **THE PLATEAU FOR THE NEXT SESSION (founder-GO'd
+> over-call pattern memory-pinned). **THE PLATEAU FOR THE NEXT SESSION (Founder-GO'd
 > order): ① D-TRUTH — the old data enters the dashboard: D1 genesis footprints
 > (V1 purchases × frozen roster join — buyer+amount already indexed, memberRoster
 > maps wallet→seats #1-8; serve per-seat cumulative; VERIFIED derivable) · D2 the
-> founder's referral standing (source-standing derives ONLY canonical keccak
+> Founder's referral standing (source-standing derives ONLY canonical keccak
 > sourceId — add own-row fallback: any indexed source whose payoutWallet == bound
 > account; VERIFIED BY HASH: BUILDER_SOURCE = snapshot row src_36101e67… with $0.50
 > paid) · D3 own purchase history rows (all indexed) · D6 zero ≠ unavailable in KPI
@@ -3566,7 +3636,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > at their slices (audit §C): member has NO expand/Join action on own dashboard ·
 > post-purchase dead end (no door to Member Home) · silent session-expiry demotion ·
 > em-dash conflates loading/error/absence · CapitalAxisCard vanishes on 500 ·
-> via= channel (R3) never built · door mini-stat badges. S8 perf + S5 (founder
+> via= channel (R3) never built · door mini-stat badges. S8 perf + S5 (Founder
 > paste) queued. Next session boots on "hi".**
 
 > **▶ 🎛 SLICE S7-b/c/d ✅ SEALED IN PROD (2026-07-16, Replit-verified 6/6 on
@@ -3581,9 +3651,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > zero console errors · engine 2/2 cycles healthy. FOUNDER FOLLOW-UP OPENED AT THE SEAL
 > (prod screenshot, S7-e + data-truth): 18-decimal SYN balance must format human ·
 > the memberNumberOf teaching line reads as jargon · header sign-in must LAND on
-> /member · genesis footprints + the founder's own referral standing show "—" while THE
+> /member · genesis footprints + the Founder's own referral standing show "—" while THE
 > REAL OLD ON-CHAIN DATA EXISTS (V1 purchases × frozen roster; BUILDER_SOURCE payout =
-> the founder's wallet) — must be derived, never dashed · plus the full design-research
+> the Founder's wallet) — must be derived, never dashed · plus the full design-research
 > inventory audit (all repo specs vs the built page). Original build record follows:**
 > BUILT + FOUNDER GO AT THE PREVIEW GATE (2026-07-16, four live
 > art-direction rounds): THE MEMBER DASHBOARD AT THE WORLD
@@ -3598,13 +3668,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > rungs + "Next: X at $Y" + exact progress bar + THE SHIELD LINE guard-pinned ·
 > **ProtocolSnapshot**: 5 live spine facts incl. seats WITH MembersProvenance
 > (guard-freshness enforced) · **ChronicleLatest**: the register's newest entry ·
-> reserved slots) + Settings DOOR added to the left menu (founder catch). THE
-> OWN-ACCOUNT DISPLAY RULE engraved in GAMIFICATION_LEGAL_DOCTRINE (founder: "recognizes
+> reserved slots) + Settings DOOR added to the left menu (Founder catch). THE
+> OWN-ACCOUNT DISPLAY RULE engraved in GAMIFICATION_LEGAL_DOCTRINE (Founder: "recognizes
 > capital without reducing identity to capital"; Sephora account pattern — own amounts/
 > ladder/next legal because a rung unlocks recognition ONLY; the public feed's no-amount
 > voice UNTOUCHED; my third public-vs-own-row over-call retracted, memory pinned).
 > capital-standing route EXTENDED {cumulativeUsdcRaw, ladder, nextRung} (backbone pin
-> amended, dated). TWO founder-screenshot defects killed: "Sign in required" lied to a
+> amended, dated). TWO Founder-screenshot defects killed: "Sign in required" lied to a
 > signed-in no-source member (3 distinct states now) · Notifications badge overlapped
 > its text (Row flex-wrap; badge FUTURE — the record is live, the surface isn't).
 > **S7-c THE READABILITY FLOOR** (ADR-001; WCAG/A11Y-researched): reading copy ≥14px ·
@@ -3632,15 +3702,15 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > AND mobile viewport), `capital-standing?seat=14` answers 200 with the REAL walk's rung
 > (`"rung":"Citizen"` — seat #14's honest $5 footprint) and 400 on `?seat=abc`, the hero
 > structure ships (seat/receipt/chapter/rung pill; connected state validated by the
-> founder at the preview gate), ZERO sample figures in the bundle ("$120"/"SAMPLE-CODE"
+> Founder at the preview gate), ZERO sample figures in the bundle ("$120"/"SAMPLE-CODE"
 > absent), /activity intact (75 lines incl. 5 capital rises, zero 40-hex), zero console
 > errors; engine 2/2 cycles, zero partial, lastError null. FOLLOW-UP OPENED AT THE SEAL
-> (founder, video + QuickNode reference): the CONNECTED member state must become a true
+> (Founder, video + QuickNode reference): the CONNECTED member state must become a true
 > full-width dashboard — S7-b wireframe first (Visual Change Law), research-grounded
 > (Binance/Coinbase/Kraken/Revolut/QuickNode class); the acted order flexes: S7-b
 > wireframe → M-INT-1 → A1 → B1 → A2 → M-INT-2. Original build record follows:**
 > BUILT + FOUNDER-APPROVED AT THE PREVIEW GATE (2026-07-16, two live
-> art-direction rounds on the rig; founder "go in the right order, grade AAA for all"):
+> art-direction rounds on the rig; Founder "go in the right order, grade AAA for all"):
 > MEMBER HOME — THE APPROVED WIREFRAME REALIZED + THE LIVE-vs-NOT TRUTH SWEEP.
 > THE PAGE (two states, ONE connect CTA): visitor = the FULL-SCREEN CENTERED door band
 > ("Your seat lives here." · one RainbowKit connect+SIWE CTA, locale pinned en-US ·
@@ -3657,9 +3727,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > dist probes updated). FOUNDER ART-DIRECTION AT THE GATE (both fixed same-day):
 > ① FULL SCREEN — the band fills the first viewport (65svh mobile / 100svh−header
 > desktop, `calc(100svh_-_3.75rem)` underscore form — the space-less calc DROPPED as
-> invalid CSS on the founder's browser and silently fell back to mobile height, caught
+> invalid CSS on the Founder's browser and silently fell back to mobile height, caught
 > from his screenshot); ② CENTERED SCENE — the left-anchored block read "boxed" on wide
-> screens; both axes centered now. **THE TRUTH SWEEP (founder order: live-vs-not from
+> screens; both axes centered now. **THE TRUTH SWEEP (Founder order: live-vs-not from
 > PROTOCOL REALITY, never page text):** referral dashboard REAL-ONLY (the "no figure
 > here is live yet" banner lie DIED — R5 is live; the 3 SAMPLE blocks with fake dollars
 > DELETED from config; ShareCard became REAL — own indexed figures + real derived link,
@@ -3682,24 +3752,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > adapted) · ALL 17 api guards (backbone 143 · member-continuity 92 · protocol-time 38
 > — route-surface pins extended for capitalStanding.ts · auth-zone 782 with the new
 > dist probes) · seo 395 · surface 254 · build 24 shells · +0 raw color. DEPLOY: 🚀
-> (server route + visible member home — the founder art-directed it live; backlog
+> (server route + visible member home — the Founder art-directed it live; backlog
 > empty, nothing batched). **DOCTRINE CLARIFICATION RECORDED (never re-raise): admin
 > member-intelligence needs NO ADR-003 amendment** — the operator track already designs
 > the users/member-registry tab, audit log, exports (WALLET_FIRST…USER_REGISTRY_DESIGN
 > §D); ADR-003 forbids the PUBLIC directory + the wallet↔person link, not the gated
 > business console; S1/S3 stay untracked by design; my red-line over-call retracted
 > (second occurrence of the partial-read failure mode — memory pinned). **THE ACTED
-> ORDER (founder work order 2026-07-16, "go in the right order, grade AAA for all"):
+> ORDER (Founder work order 2026-07-16, "go in the right order, grade AAA for all"):
 > ① M-INT-1 the member ledger — operator-side per-seat dossier + RFM/at-risk segments
 > + internal rankings (durable ambassadors · footprints · active/dormant), from
-> ALREADY-INDEXED data (capital walk + R5 + roster + heartbeat lanes), founder-gated
+> ALREADY-INDEXED data (capital walk + R5 + roster + heartbeat lanes), Founder-gated
 > S11+, zero new collection, zero public-surface change → ② A1 "My Activity" — the
 > member's own-row lens on the indexed record (bridge design decided at ITS gate) →
 > ③ B1 THE FIRSTS — derived firsts-per-class detection (first burn/community-LP/
 > referred-purchase/rung-rise…) feeding a Chronicle-candidates queue in the console
-> (CHR-1 intact: the machine PROPOSES, the founder PROMOTES) → ④ A2 "My Chronicle"
+> (CHR-1 intact: the machine PROPOSES, the Founder PROMOTES) → ④ A2 "My Chronicle"
 > (own milestones + register presence) → ⑤ M-INT-2 the §D users-registry/audit
-> surfaces. S8 perf + S5 (founder paste) stay queued behind. On-chain prospect views
+> surfaces. S8 perf + S5 (Founder paste) stay queued behind. On-chain prospect views
 > (SYN-holders-without-seats) ride M-INT; session-logging of unsigned connects stays
 > OUT (S3 invisible by design).** Next session boots on "hi".
 
@@ -3709,22 +3779,22 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > deploys, zero regressions, all Replit-verified): **⑬ MILESTONES** (11 canon defs,
 > 4 sealed + anchored — the protocol's own dates entered the record: first seat Jun 4 ·
 > First Signal Jun 6 · Patron Seal Jun 7 · $100 routed Jun 17; approaching honest;
-> + the /activity Re-read repair) · **⑦ TREASURY under THE FOLD LAW** (the founder's
+> + the /activity Re-read repair) · **⑦ TREASURY under THE FOLD LAW** (the Founder's
 > anti-duplicate requirement as structure — 17 movements ALL folded as routing detail,
 > then the catch-up surfaced TWO genuine vault SYN inflows nobody typed; burn
 > sovereignty pinned) · **⑫ ERAS** (witness pattern; all three engines era 1 — armed
 > honestly empty; ANTI-SCARCITY engraved as structure: no countdown/approaching shape
-> can exist) · **H2-P THE PRIDE OF THE PUBLIC RECORD** (founder doctrine amendment,
+> can exist) · **H2-P THE PRIDE OF THE PUBLIC RECORD** (Founder doctrine amendment,
 > ADR-003 2026-07-15: member masking repealed on the feed — the origin voice restored;
 > THE SHORT-FORM LAW: only 0x123…abcd ever serializes, the 40-hex scanners stay armed —
 > proven in prod: 28→48 short forms, ZERO leaks, the veiled degrade never fired; the
 > 17 archive mints backfilled from the chain's own logs 17/17, one transaction) ·
-> **H2-P-a THE NAMED REFERRER** (founder override B→A same day: "brought by
+> **H2-P-a THE NAMED REFERRER** (Founder override B→A same day: "brought by
 > 0x3f2…0a91" — the 3 referred purchases name their bringers; the same referrer twice
 > on the record — the growth engine visible; alias layer M2/M3 will replace the address
 > on this line) · **⑭ CHRONICLE** (register-derived, promotedUtc structural, no
 > invented anchors, "read the record →"; chip decision A: "Referral registry") ·
-> **⑰ CAPITAL AXIS** (12 founder-named rungs Citizen→Monolith; 5 genuine footprint
+> **⑰ CAPITAL AXIS** (12 Founder-named rungs Citizen→Monolith; 5 genuine footprint
 > rises found in history — Seat #6 →Advocate→Patron · #9 →Resident · #12
 > →Resident→Advocate; rung + ordinal only, NEVER the amount; the RED LINE guard-pinned;
 > rungs never descend) · **⑩ DEPLOYMENTS** (8 births chain-verified at the gate —
@@ -3736,32 +3806,32 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **DEPLOY BACKLOG: EMPTY.** LAWS/DOCTRINE ENGRAVED TODAY: THE FOLD LAW (a transfer in
 > a narrated tx is routing detail — folds every future class automatically) · THE
 > SHORT-FORM LAW + the pride amendment (ADR-003, recorded, core intact: no KYC, no
-> directory, no lookup, no enrichment beyond one event; the founder-voice rule stands) ·
+> directory, no lookup, no enrichment beyond one event; the Founder-voice rule stands) ·
 > ANTI-SCARCITY extended to eras + capital (structural, guard-pinned) · THE WITNESS
 > PATTERN as the house pattern (milestones/eras/capital) · BURN SOVEREIGNTY · the
 > capital RED LINE (recognition only, never a financial edge) · CHR-1 honored (no
 > invented anchors, ever). NOTED FOR LATER (not opened): the era-facts table on
-> /tokenomics (marketing, doctrinally clean — founder interest logged) · treasury
-> external counterparties stay unnamed (extensible by founder call) · the DEX-trader
+> /tokenomics (marketing, doctrinally clean — Founder interest logged) · treasury
+> external counterparties stay unnamed (extensible by Founder call) · the DEX-trader
 > class stays OUT unless its own gate · S7 reads capitalAxisReadmodel's ladder for the
 > seat's standing rung. **THE PLATEAU FOR THE NEXT SESSION: ① S7 MEMBER HOME first —
-> wireframe ALREADY founder-approved (two states: door band / your-seat hero; ONE
+> wireframe ALREADY Founder-approved (two states: door band / your-seat hero; ONE
 > connect CTA; dead band dies; jargon falls), code NOT started, THE PREVIEW GATE + the
 > visually-complete rule apply (rig with MSYS2_ENV_CONV_EXCL="BASE_PATH", image check,
-> both themes, desktop AND mobile, founder's own browser before ANY commit); ② S8
+> both themes, desktop AND mobile, Founder's own browser before ANY commit); ② S8
 > PERFORMANCE (throne webp fine; header logo PNG 284KB + avax mark 195KB = the cheap
-> wins); ③ S5 THE SOUL DOCUMENT — awaits the founder's paste (SUPERSEDED-TERMS banner
+> wins); ③ S5 THE SOUL DOCUMENT — awaits the Founder's paste (SUPERSEDED-TERMS banner
 > spec recorded).** Next session boots on "hi" per the standard boot sequence.
 
 > **▶ 🏛️ SLICE H2-⑩ ✅ SEALED IN PROD — AND H2 IS CLOSED (2026-07-15, Replit-verified on
 > thesyndicate.money, prod bundle `index-CZSNZlO5.js`, 7/7 blob-verified, no migration —
-> client-only; founder GO — sentence 1 + the pool line): DEPLOYMENTS — the protocol's
+> client-only; Founder GO — sentence 1 + the pool line): DEPLOYMENTS — the protocol's
 > births, chain-verified, and THE HEARTBEAT'S FOUNDING INVENTORY IS COMPLETE.** PROD
 > PROOF (Replit): the pool line ships VERBATIM ("The SYN/USDC pool was created — the
 > public market opened."), the Deployments chip live (13 chips), the 8 chain-verified
 > creation-tx anchors in the shipped bundle; ADDRESS DISCIPLINE PROVEN AT DEPTH — Replit
 > REFUSED TO SEAL until it traced 3 non-library 40-hex constants: all three = the LP
-> pool's public infra links (DexScreener/Trader Joe URLs, founder-verified canon from a
+> pool's public infra links (DexScreener/Trader Joe URLs, Founder-verified canon from a
 > prior sealed slice, identical in the previous bundle; THIS slice adds zero addresses);
 > the served feed: zero 40-hex across 75 lines; vocabulary conform (the doctrine speaks
 > by refusing); zero regression; THE CLEANEST STARTUP OBSERVED YET — 2/2 cycles, zero
@@ -3775,7 +3845,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > against the chain (both records proven). DESIGN: `deploymentRegistry.ts` (studio
 > canon, provenance-noted, the ⑭ pattern WITH real anchors — every line's verify link
 > opens a real creation tx; client-derived, server untouched, zero persistence);
-> sentence 1 founder-voiced ("Membership Sale V3 was deployed — a founder act,
+> sentence 1 Founder-voiced ("Membership Sale V3 was deployed — a Founder act,
 > permanent on Avalanche.") + the pool's own line ("The SYN/USDC pool was created —
 > the public market opened."); "Deployments" chip (13 chips); the ⑫ note closes (an
 > engine's era-1 birth is ⑩'s line); a future deployment joins the registry in its
@@ -3785,13 +3855,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > build 24 shells (api suite untouched — client-only). DEPLOY: 🚀 BATCHABLE
 > (client-only, fail-closed). **THE H2 ARC IS COMPLETE: ⑬ milestones · ⑦ treasury +
 > Fold Law · ⑫ eras · P pride + P-a named referrer · ⑭ Chronicle · ⑰ capital axis ·
-> ⑩ deployments — the founder-ticked inventory of 2026-07-15, all built in ONE day,
+> ⑩ deployments — the Founder-ticked inventory of 2026-07-15, all built in ONE day,
 > every prior slice already SEALED IN PROD.** NEXT PLATEAU: S7 member home (wireframe
-> approved, preview gate) · S8 performance · S5 on the founder's paste.
+> approved, preview gate) · S8 performance · S5 on the Founder's paste.
 
 > **▶ 🪨 SLICE H2-⑰ ✅ SEALED IN PROD together with ⑭ (2026-07-15, Replit-verified on
 > thesyndicate.money, prod bundle `index-rz_RHitB.js`, 14/14 blob-verified, no migration
-> — 142/142 columns dev==prod; founder GO — names as the gate table, sentence 1, chip
+> — 142/142 columns dev==prod; Founder GO — names as the gate table, sentence 1, chip
 > yes): THE CAPITAL AXIS — per-seat footprint recognition under the witness pattern's
 > third application.** PROD PROOF (Replit): **THE AXIS CAME ALIVE — the feed grew 70 →
 > 75 lines with FIVE genuine footprint rises, each anchored to its exact crossing
@@ -3808,7 +3878,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > source-status 161). **DEPLOY BACKLOG: EMPTY.** THE FOUNDER-NAMED REGISTER (canon,
 > `capitalAxisReadmodel.ts`, guard-pinned verbatim): Citizen $5 (BASE — the seat's birth
 > state, never a line) · Resident $10 · Advocate $25 · Patron $50 (deliberate harmony
-> with the Patron Seal, founder call) · Strategist $75 · Vanguard $100 · Architect $250 ·
+> with the Patron Seal, Founder call) · Strategist $75 · Vanguard $100 · Architect $250 ·
 > Benefactor $500 · Guardian $1,000 · Keystone $2,500 · Inner Circle $5,000 · Monolith
 > $10,000 — six origin names renamed per SPEC_REFERRAL §⑨ (role/axis/class collisions).
 > THE SETTLED DOCTRINE AS STRUCTURE: the RED LINE guard-pinned (no financial-benefit
@@ -3816,7 +3886,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > never descends; one purchase crossing several rungs = ONE line (the highest); V1 rows
 > excluded with an honest note (no ordinal, never guessed); NO approaching/progress
 > shape (the anti-scarcity pin's third extension); the line carries rung TITLE + seat
-> ordinal, NEVER the amount (seat lines never carry money). SENTENCE (founder pick 1):
+> ordinal, NEVER the amount (seat lines never carry money). SENTENCE (Founder pick 1):
 > "Seat #14 rose to Vanguard — a footprint recognized on the capital axis, never
 > revoked." DERIVATION: per-seat cumulative gross USDC over the SAME gapless lane
 > (memberNumber + amounts, already whitelisted — zero new persistence, zero live reads
@@ -3834,9 +3904,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **▶ 📜 SLICE H2-⑭ ✅ SEALED IN PROD together with ⑰ (2026-07-15, Replit-verified,
 > same deploy `index-rz_RHitB.js`; prod proof: the promotion voice in the shipped
 > bundle, the register-derived lines with "read the record →" and NO invented anchors,
-> "Referral registry" chip live; founder GO + chip decision A on the gate): CHRONICLE
+> "Referral registry" chip live; Founder GO + chip decision A on the gate): CHRONICLE
 > PROMOTIONS JOIN THE HEARTBEAT — register-derived, client-only, honest about what a
-> promotion IS.** CHR-1 respected structurally: a promotion is a founder COMMIT,
+> promotion IS.** CHR-1 respected structurally: a promotion is a Founder COMMIT,
 > not a chain event — so the line derives CLIENT-SIDE from the committed register (the
 > one truth; the server/scans/DB untouched — no parallel copy); the register interface
 > gained `promotedUtc` (structural field, the 4 entries stamped 2026-07-14 per their
@@ -3844,10 +3914,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ANCHORS — the line wears the PROMOTION date alone (never "block 0") and links INTO the
 > record ("read the record →" /chronicle#id) where the entry's own verifyNote teaches
 > chain verification. SENTENCE (§8 RESERVED graduated TITLED): "“The duplicate seat”
-> entered the Chronicle — promoted by the founder, recorded forever." (untitled reserved
+> entered the Chronicle — promoted by the Founder, recorded forever." (untitled reserved
 > form = the degrade). ORDERING: chain lines keep exact block order among themselves; a
 > register line slots by its promotion DAY and reads as the day's headline. CHIP
-> DECISION A (founder): the lifecycle chip renamed "Referral events" → **"Referral
+> DECISION A (Founder): the lifecycle chip renamed "Referral events" → **"Referral
 > registry"** (it filters the registry's own admin acts; member referrals live inside
 > seat lines "brought by 0x…") + new "Chronicle" chip (11 chips). RIG-VERIFIED WITH
 > REAL DATA (no fixture — the register ships in the client): all 4 promotion lines
@@ -3861,18 +3931,18 @@ Authoritative resume point. **The real repo always wins over any spec.**
 
 > **▶ 🤝 SLICE H2-P-a ✅ SEALED IN PROD (2026-07-15, Replit-verified on thesyndicate.money,
 > prod bundle `index-ByNwYhu1.js`, 82/82 blob-verified; FOUNDER OVERRIDE — item 5 revised
-> B → A the same day, on the advisor's argument the founder confirmed): THE REFERRER IS
+> B → A the same day, on the advisor's argument the Founder confirmed): THE REFERRER IS
 > NAMED.** PROD PROOF (Replit): **the 3 referred purchases in history now name their
 > referrer short-form in the public feed — Member #14 (0xea8…5881) brought by
-> 0x88e…dd73 (the founder's own source, Jul 13) · Member #13 (0x0dd…4d20) brought by
+> 0x88e…dd73 (the Founder's own source, Jul 13) · Member #13 (0x0dd…4d20) brought by
 > 0x244…c721 (Jul 12) · Member #10 (0x620…c75f) brought by 0x244…c721 (Jun 25). THE SAME
-> REFERRER APPEARS TWICE — the growth engine made visible, exactly as the founder
+> REFERRER APPEARS TWICE — the growth engine made visible, exactly as the Founder
 > argued.** The short-form law held again: 48 short forms served (15 distinct), ZERO
 > full 40-hex anywhere (the 70 tx hashes are 64-hex, excluded by the bound), zero
 > malformed — the veiled degrade never had to fire. Zero regression (70 lines: 26
 > purchases · 17 mints ALL with minter · 8 burns · 4 milestones · 2 treasury · LP/source
 > intact). Engine 2/2 cycles, first post-boot cycle partial then self-resolved (designed).
-> **DEPLOY BACKLOG: EMPTY.** WHY (founder engraved): the referrer is the proud party — referrer
+> **DEPLOY BACKLOG: EMPTY.** WHY (Founder engraved): the referrer is the proud party — referrer
 > pride is the growth engine (SPEC_REFERRAL §⑨ honour-roll; paid referral kits later —
 > a veiled referrer defeats the product). STRUCTURALLY CLEAN BY THE GATE'S OWN LOGIC:
 > sourceWallet lives in the SAME V3 purchase log — one event republished, no relationship
@@ -3882,7 +3952,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > form) on seat lines; sourceId still boolean-only (the id never leaves); MALFORMED-
 > WALLET DEGRADE: the veiled wording ("brought by a verified referral") survives ONLY
 > as the honest gap, never a guess; alias-layer note recorded (M2/M3: the alias replaces
-> the address on this same line). FLAG NOTED FOR THE ⑭ GATE (advisor, founder decides
+> the address on this same line). FLAG NOTED FOR THE ⑭ GATE (advisor, Founder decides
 > there): the "Referral events" chip labels registry ADMIN lifecycle — propose a clearer
 > label. RIG-VERIFIED: the A line + the degrade rendered verbatim, zero console errors.
 > Green: workspace tsc · ALL api guards (activity 137 · backbone 130 with the named-
@@ -3919,8 +3989,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > registry." (repeat → "expanded their footprint"; V1/pre-amendment rows keep the H1a
 > voice — honest gap, never a guess) · archive "0x123…abcd archived First Signal · token
 > ID 1." · burns/LP: Community short form joins the FACTS row; THE FOUNDER VOICE RULE
-> STANDS (founder acts say the founder, no short form) · the client WINDOW speaks the
-> same registry voice (one lexicon). WHO-BROUGHT-WHOM = B VEILED (founder decision):
+> STANDS (Founder acts say the Founder, no short form) · the client WINDOW speaks the
+> same registry voice (one lexicon). WHO-BROUGHT-WHOM = B VEILED (Founder decision):
 > "— brought by a verified referral" — a BOOLEAN reduced from the event's own sourceId
 > in the loader (the id never leaves, guard-pinned); form A (the nominative edge) is
 > RESERVED for the Referrer Kit arc, never a silent extension. MACHINERY: loader
@@ -3929,12 +3999,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > memberNumber/memberAddress/referred ride ActivityItem server-only → projection emits
 > {memberNumber, memberShort, referred} on seats, {actorShort} on burns/LP (Community
 > only), {artifactId, minterShort} on archive mints; the ARCHIVE_MINT decoder now stores
-> the minter + `archive:minter-backfill` (founder-gated, DRY-RUN default, --write to
+> the minter + `archive:minter-backfill` (Founder-gated, DRY-RUN default, --write to
 > apply) restores the 17 historical mints FROM THE CHAIN'S OWN LOGS — one transaction,
 > cross-checked fail-closed per row, decoded_json only: THE named write-discipline
 > exception, recorded in ADR-003. CHRONICLE REGISTER HOLDS (my read, stated at the gate:
 > its identity-blind line is the register's own literary discipline; promotion is a
-> human act — the founder writes future chapters as he wishes). Aggregate status report
+> human act — the Founder writes future chapters as he wishes). Aggregate status report
 > stays blind (forbidden-fields extended: memberAddress/memberShort/referredBySource).
 > SEO/copy ride: /activity lead (the "address-safe" claim → the pride truth), §8 render
 > rules, sourceStatus notes, protocolOsMap reality (its stale "no route no UI" claim
@@ -3943,17 +4013,17 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > repeat · V1 fallback · archive origin-verbatim · burn facts short form; zero console
 > errors. Green: workspace tsc · seo 395 · rewrites · surface:audit 254 · ALL studio
 > guards · ALL 17 api guards (activity 137 · backbone 130 — the identity-blind family
-> REWRITTEN into pride pins: full-address absence + short-form presence + founder-voice
+> REWRITTEN into pride pins: full-address absence + short-form presence + Founder-voice
 > split + non-lowercase-actor throw · member-continuity emitter pins hold untouched —
 > short forms can never be 40-hex) · build 24 shells. DEPLOY: 🚀 recommended (server +
-> client + the founder-gated backfill step: after publish, Replit runs
+> client + the Founder-gated backfill step: after publish, Replit runs
 > `archive:minter-backfill -- --write` ONCE and reports; forward mints carry the minter
 > from the first cycle). NEXT: ⑭ Chronicle lines on the settled voice → ⑰ → ⑩ → S7 ·
 > S8 · S5. (⑫'s Replit seal remains pending its deploy report — separate thread.)
 
 > **▶ 📖 SLICE H2-⑫ ✅ SEALED IN PROD (2026-07-15, Replit-verified on thesyndicate.money,
 > prod bundle `index-BnljnxgH.js`, 17/17 blob-verified, no migration — 13 tables / 142
-> columns dev==prod; founder GO after the marketing-vs-guardrail exchange — the
+> columns dev==prod; Founder GO after the marketing-vs-guardrail exchange — the
 > anti-scarcity doctrine explained and CONFIRMED, the era-facts-table idea noted as a
 > possible future /tokenomics slice): ERA TRANSITIONS ARM THE HEARTBEAT UNDER THE
 > WITNESS PATTERN.** PROD PROOF (Replit): the eras lane is ACTIVE with **zero era
@@ -3970,7 +4040,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > transaction, organ labels only. The feed grew 68 → 70 lines — the lane's first
 > genuine lines, discovered by the machinery, not typed by anyone.**
 > **DEPLOY BACKLOG: H2-P (`89646ba`, the pride amendment) — NOT YET DEPLOYED; its
-> deploy carries the founder-gated backfill step (`archive:minter-backfill -- --write`,
+> deploy carries the Founder-gated backfill step (`archive:minter-backfill -- --write`,
 > once, report the row count).** THE CHAIN'S TRUTH READ AT THE GATE (public RPC, live):
 > all three engines (V2A · V2B · V3) answer currentEra()/activeEra() = 1 — ZERO era
 > transitions have ever occurred; every purchase in history was era-1. NO EraAdvanced
@@ -4007,8 +4077,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 
 > **▶ 🏦 SLICE H2-⑦ ✅ SEALED IN PROD (2026-07-15, Replit-verified on thesyndicate.money,
 > prod bundle `index-tJ-y8ufg.js`, 15/15 blob-verified, no migration — 13 tables / 142
-> columns dev==prod; founder GO A on the gate — the three routing organs, USDC + SYN):
-> TREASURY MOVEMENTS JOIN THE HEARTBEAT UNDER THE FOLD LAW — the founder's
+> columns dev==prod; Founder GO A on the gate — the three routing organs, USDC + SYN):
+> TREASURY MOVEMENTS JOIN THE HEARTBEAT UNDER THE FOLD LAW — the Founder's
 > anti-duplicate requirement, engraved as structure.** PROD PROOF (Replit): **THE FOLD
 > LAW HELD ITS FIRST REAL-WORLD TEST** — 17 treasury movements indexed at verification
 > time, ALL routing detail of already-narrated transactions (purchases · liquidity),
@@ -4041,7 +4111,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > operations wallet"); external counterparties never named; native AVAX honestly out of
 > scope (no event, no receipt). Feed: kind "treasury-move" + lanes.treasury + label
 > discipline gate (an address-shaped organ label fails closed). Client: parse + the 3
-> founder-approved §8 sentences (out: "a founder-signed treasury act; there are no
+> Founder-approved §8 sentences (out: "a founder-signed treasury act; there are no
 > silent moves" · in: "recorded on-chain" · internal: "an internal treasury rebalance,
 > publicly recorded") + Treasury filter chip. §8 canon: H2-⑦ table. SEO-rides-the-slice:
 > /activity lead+banner+next-card, meta description+notes, sourceStatus proof+indexer
@@ -4056,7 +4126,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > S8 perf · S5 on the paste.
 >
 > **▶ 🏆 SLICE H2-⑬ ✅ SEALED IN PROD (2026-07-15, Replit-verified on thesyndicate.money,
-> bundle `index-D3ZO3sKj.js`, 76/76 blob-verified, founder GO on the full 11-row inventory
+> bundle `index-D3ZO3sKj.js`, 76/76 blob-verified, Founder GO on the full 11-row inventory
 > + the 4 sentences on screen; order locked H2 → S7 → S8): THE MILESTONE LAYER — the
 > protocol's canonical account of itself, derived GAPLESSLY from the indexed history, no
 > new persistence.** PROD PROOF (Replit): the milestone model built on the FIRST cycle as
@@ -4101,7 +4171,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ALL studio guards · ALL 17 api guards (activity 134→136 · backbone 95→110 ·
 > source-status-truth 161) · build 24 shells. DEPLOY: 🚀 BATCHABLE (additive + fail-closed;
 > prod keeps the current heartbeat until deployed; on deploy the milestone model builds on
-> the FIRST cycle — no catch-up, no re-index). NEXT IN H2 (founder-ticked order): ⑦
+> the FIRST cycle — no catch-up, no re-index). NEXT IN H2 (Founder-ticked order): ⑦
 > treasury (routing-dedup design first) → ⑫ eras → ⑭ Chronicle lines → ⑰ capital axis →
 > ⑩ deployments; then S7 member home (wireframe approved) · S8 perf · S5 on the paste.
 >
@@ -4112,10 +4182,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > root-cause + guard-nav-link-display) · **W1** Conversion Doctrine TIER-0 · **W2** SEO
 > truth texts + THE HUMAN-FIRST LAW (amended verbatim) + the identity paragraph rewritten
 > human · **S1** Visual Change Law + the W-HOME rejection verdict (the four-scene
-> restaging = founder-rejected at the preview gate; the CURRENT home composition is his
+> restaging = Founder-rejected at the preview gate; the CURRENT home composition is his
 > choice and STANDS; any future home layout starts from a fresh approved wireframe) ·
 > **S2+S3** the truth batch + surgical fixes (era DNA at zero across served heads;
-> /contracts = the one founder-validated exception; hero chips LIVE-only; throne majesty)
+> /contracts = the one Founder-validated exception; hero chips LIVE-only; throne majesty)
 > · **S4** structural cure (source-status fossil reconciled · guard-era-drift ·
 > source-status-truth 161 · SEO-rides-the-slice law) · **S6** internal-plan leakage
 > extinct + guard-pinned · **H1a + fix** (six new heartbeat classes; the LP orientation
@@ -4126,21 +4196,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > SEO-same-commit · Heartbeat Completeness Invariant · Founder Voice · Visibility.
 > The advisor's lessons file committed deliberately (`f99220f`, TIER-3 index).
 > **DEPLOY BACKLOG: EMPTY** (everything sealed through `d9b4275`). **THE PLATEAU FOR THE
-> NEXT SESSION (H2 opens on founder GO, fresh session):** ① **H2 in the proposed order:
+> NEXT SESSION (H2 opens on Founder GO, fresh session):** ① **H2 in the proposed order:
 > ⑬ the 11 origin milestones FIRST (the biggest narrative win — derivable gaplessly from
 > the indexed history, no new persistence) → ⑦ treasury (anti-duplicate routing design
 > first: per-purchase routing transfers must never duplicate purchase lines) → ⑫ eras →
 > ⑭ Chronicle lines → ⑰ capital axis (settled-yes, SPEC_REFERRAL §⑨) → ⑩ deployments**;
-> ② **S7 member home** — wireframe ALREADY founder-approved (two states: the door band /
+> ② **S7 member home** — wireframe ALREADY Founder-approved (two states: the door band /
 > your-seat hero; ONE connect CTA; dead band dies; jargon falls), code NOT started,
 > preview gate applies; ③ **S8 performance** (throne webp fine; header PNGs 284KB+195KB
-> = the cheap wins); ④ **S5 the soul document** — awaits the founder's paste
+> = the cheap wins); ④ **S5 the soul document** — awaits the Founder's paste
 > (SUPERSEDED-TERMS banner spec recorded in the order). Next session boots on "hi" per
 > the standard boot sequence.
 >
 > **▶ Prior: 💗 THE H1a ARC ✅ SEALED IN PROD (2026-07-15, Replit-verified 3/3 post-fix on
 > thesyndicate.money): THE COMPLETE HEARTBEAT'S FIRST SIX CLASSES ARE LIVE.** The
-> founder's LP add renders TRUE: "1,913.6 SYN + 39.85 USDC · Founder" with its anchor
+> Founder's LP add renders TRUE: "1,913.6 SYN + 39.85 USDC · Founder" with its anchor
 > (block 90,319,681) — and the fix revealed THREE MORE historical LP adds now correctly
 > told (356.8 SYN + 5 USDC · 463.4 SYN + 5 USDC · 200 SYN + 2 USDC): the pool's whole
 > story, narrated. Reserves coherence sane (feed sum ~2,933.8 SYN / ~51.85 USDC vs live
@@ -4151,12 +4221,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > a PUBLISH — detection method = a fix-keyed observable flipping on the first cycle.
 >
 > **▶ Prior: 🩹 H1a-FIX ✅ BUILT (2026-07-15, on Replit's prod diagnosis — H1a otherwise SEALED
-> 5/5 IN PROD: all 6 streams caughtUp in ~1h, TODAY'S founder LP add indexed at block
+> 5/5 IN PROD: all 6 streams caughtUp in ~1h, TODAY'S Founder LP add indexed at block
 > 90,319,681 with its verify anchor, 17 archive mints (11 First Signal + 6 Patron Seal),
 > burns #1→#8 gapless, /activity chips live, zero member addresses): THE LP AMOUNT
 > INVERSION dead at the root.** Cause: the read-model mapped amount0→SYN STATICALLY while
 > the real pair's IMMUTABLE token0 is USDC (prod proof: spine-oriented reserves ~2,678
-> SYN / ~55 USDC + the founder's add ≈ 39.85 USDC / 1,913.6 SYN — the spine itself always
+> SYN / ~55 USDC + the Founder's add ≈ 39.85 USDC / 1,913.6 SYN — the spine itself always
 > displayed correctly because it orients DYNAMICALLY via token0() each read). FIX:
 > persisted rows were already NEUTRAL (amount0Raw/amount1Raw) — **NO RE-INDEX NEEDED**,
 > Replit's ask #2 falls away; the orientation is now a PINNED CANON FACT
@@ -4165,14 +4235,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > token0=USDC the model must map amount1→SYN — the inversion class can never return.
 > Green: tsc both · backbone 95 · targets 208 · api 17.
 >
-> **▶ Prior: 💗 SLICE H1a ✅ BUILT (2026-07-15, founder GO on the COMPLETE table + 3 corrections):
+> **▶ Prior: 💗 SLICE H1a ✅ BUILT (2026-07-15, Founder GO on the COMPLETE table + 3 corrections):
 > THE COMPLETE HEARTBEAT ARC OPENED — six new event classes end-to-end on the M4-c
 > machinery.** THE SYSTEM-FIRST LAW + THE HEARTBEAT COMPLETENESS INVARIANT engraved in
 > CLAUDE.md; the full 17-class inventory was presented ON SCREEN (both quarries swept:
-> origin = 14 kinds + 11 canonical milestones; disk = every ABI event) and the founder
+> origin = 14 kinds + 11 canonical milestones; disk = every ABI event) and the Founder
 > ticked ⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑯⑰ YES · ⑮+third-party NO, with 3 DOCTRINE corrections:
 > ⑰ IS yes (SPEC_REFERRAL §⑨ settled — Sephora/Marriott precedent, never re-litigate) ·
-> THE FOUNDER VOICE RULE (founder acts SAY the founder — skin in the game is the trust
+> THE FOUNDER VOICE RULE (Founder acts SAY the Founder — skin in the game is the trust
 > engine; identity-blindness protects MEMBERS only) · THE VISIBILITY RULE (lines carry
 > what the chain publishes, amounts included; the one discipline: never a MEMBER wallet).
 > H1a DELIVERS: ② repeat-purchase sentence upgraded ("A member expanded their footprint")
@@ -4191,9 +4261,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ceremonial actions, 11-item ordering, new lane flags; planted addresses still trip) ·
 > api 17 · studio 14 · build. Runtime: /activity fail-closed path verified (6 filter
 > chips, honest fallback, live window). DEPLOY: 🚀 recommended NOW — the new lanes start
-> their paced cold catch-up (~8 cycles) and TODAY'S founder LP add renders once caught
+> their paced cold catch-up (~8 cycles) and TODAY'S Founder LP add renders once caught
 > up (within pinned range by construction); carries the backlog (S6 + /recognition fix).
-> REMAINING IN THE ARC (H2/H3, founder-ticked, next slices): ⑦ treasury moves (needs the
+> REMAINING IN THE ARC (H2/H3, Founder-ticked, next slices): ⑦ treasury moves (needs the
 > routing-dedup design — per-purchase routing transfers must not duplicate purchase
 > lines) · ⑩ deployments (registry-derived) · ⑫ era transitions · ⑬ MILESTONES (origin
 > activity-milestones.ts harvested whole — 11 canon defs; crossings derivable GAPLESSLY
@@ -4201,13 +4271,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ⑰ capital-axis rungs (needs HOME_RANK_LADDER harvest from origin + per-seat cumulative
 > spend from purchase events; seat numbers public, wallets never).
 >
-> **▶ Prior: 🕳 SLICE S6 ✅ BUILT (2026-07-15, founder GO on the on-screen report): THE INTERNAL-PLAN
+> **▶ Prior: 🕳 SLICE S6 ✅ BUILT (2026-07-15, Founder GO on the on-screen report): THE INTERNAL-PLAN
 > LEAKAGE SWEEP — the class is extinct and guard-pinned.** Three findings, three kills:
 > ① /status's financial-group description carried a LIE + a LEAK in one phrase ("no
 > commission is paid — CommissionRouterV1 is not deployed" — referrers ARE paid, and the
 > internal contract name showed to every visitor) → rewritten to the paid-inside-the-
 > buyer's-transaction truth; ② the home "Awaiting Wiring" card's Commission Router row
-> DIED (founder decision per his engraved rule: an internal plan never announced is never
+> DIED (Founder decision per his engraved rule: an internal plan never announced is never
 > a public promise; the direct-payment fact lives in the LIVE column beside it) — Identity
 > Alias + Notifications legitimately stay (both publicly promised on the site: the SOON
 > slot in member settings, the reserved header bell); ③ the dead `statusChips.pending`
@@ -4216,8 +4286,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > SeatRecord721 / pro-firm / white-label / SaaS: zero public hits. Verified rendered on the
 > rig (home clean, card keeps its two rows, LIVE column intact). Green: tsc · era guard ·
 > all 14 studio guards · build. DEPLOY: 🚀 BATCHABLE (client-only; joins the /recognition
-> micro-fix in the backlog). NEXT: S7 member-home wireframe (founder review) · S8 perf ·
-> S5 on the founder's paste.
+> micro-fix in the backlog). NEXT: S7 member-home wireframe (Founder review) · S8 perf ·
+> S5 on the Founder's paste.
 >
 > **▶ Prior: 🧬 S4 ✅ SEALED IN PROD (2026-07-15, Replit-verified 5/5 on thesyndicate.money, bundle
 > `index-cWnrNV-i.js`): THE STRUCTURAL CURE IS LIVE — /api/source-status serves today's
@@ -4225,12 +4295,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > "not wired" at ZERO case-insensitive), /status header + /archive lead + /member facets
 > honest in prod, zero console errors. The era-drift class is now structurally blocked on
 > BOTH sides before any deploy. + MICRO-FIX on Replit's sharp observation: /recognition's
-> "The registry is paused today" was yesterday's truth (registryLive=true, founder source
+> "The registry is paused today" was yesterday's truth (registryLive=true, Founder source
 > ACTIVE, referrers paid) → rewritten to the live truth, verified rendered on the rig;
 > rides the next deploy (BATCHABLE — client-only, /recognition noindex). DEPLOY BACKLOG:
 > the /recognition micro-fix only.
 >
-> **▶ Prior: 🧬 SLICE S4 ✅ BUILT (2026-07-15, founder GO): THE STRUCTURAL CURE — the era-drift
+> **▶ Prior: 🧬 SLICE S4 ✅ BUILT (2026-07-15, Founder GO): THE STRUCTURAL CURE — the era-drift
 > class can never return silently.** ① The server's source-status registry (the 2026-07-03
 > fossil) reconciled to today: NINE entries promoted/rewritten (proof · membership ·
 > treasury · routing · chronicle · learning · indexer · archive · source — the backbone,
@@ -4259,7 +4329,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > LIVING PROTOCOL.** Prod proof: ① / meta+og serve the human-first identity ("A members
 > club that lives on-chain…") — the read-only era line at ZERO; ② /proof no longer
 > denies the proof; ③ /map titled "The Live Protocol, Reconciled"; ④ "read-only" at
-> zero across all 24 served heads EXCEPT /contracts (3× — the founder-validated
+> zero across all 24 served heads EXCEPT /contracts (3× — the Founder-validated
 > DELIBERATE KEEP: static canon-memory page; future scans whitelist that route; NOTE
 > for S4: the era guard must be CASE-INSENSITIVE — my local sweep missed capital
 > "Read-only", Replit's caught it); ⑤ hero chips LIVE-only in prod + throne visibly
@@ -4270,7 +4340,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > verified, 254+395 studio, 16 api + 2 DB guards). DEPLOY BACKLOG: EMPTY. NEXT (S-map):
 > S4 structural cure (/status derived · case-insensitive era-vocabulary guard with the
 > explicit /contracts whitelist · meta-rides-the-slice law) · S5 soul import (awaits
-> founder paste) · S6 leakage sweep · S7 member home (wireframe first) · S8 performance.
+> Founder paste) · S6 leakage sweep · S7 member home (wireframe first) · S8 performance.
 >
 > **▶ Prior: 👑 SLICE S3 ✅ BUILT + FOUNDER-APPROVED AT THE PREVIEW GATE (2026-07-14): THE TWO
 > SURGICAL HOME FIXES — nothing else moved.** ① The hero's PENDING chips DIED (LIVE-only
@@ -4283,21 +4353,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > `BASE_PATH=/` silently MSYS-converted to `C:/Program Files/Git/` — a phantom base that
 > 404'd every absolute-src image (throne, brand marks) on the rig only (prod never
 > affected). Rig relaunched with `MSYS2_ENV_CONV_EXCL="BASE_PATH"`; **RULE ④ ENGRAVED in
-> CLAUDE.md's Visual Change Law: a preview handed to the founder must be VISUALLY
+> CLAUDE.md's Visual Change Law: a preview handed to the Founder must be VISUALLY
 > COMPLETE — DOM-level image check (every visible img naturalWidth>0), both themes,
 > desktop AND mobile, verified BEFORE handing the URL.** Founder approved the flawless
 > re-show on his own browser. Green: tsc · all guards · build 24 shells. DEPLOY: 🚀 —
 > ONE deploy carries the truth batch W2+S2 + S3.
 >
-> **▶ Prior: 🔍 SLICE S2 ✅ BUILT (2026-07-14, founder GO on the full table read on screen): THE
+> **▶ Prior: 🔍 SLICE S2 ✅ BUILT (2026-07-14, Founder GO on the full table read on screen): THE
 > FULL-SITE TRUTH AUDIT — the read-only-era DNA is DEAD across the entire served public
-> layer.** The audit verified every founder finding against chain+repo and found MORE:
-> ① SEO layer (10 rewrites, all founder-approved per line): /proof (the proof page denied
+> layer.** The audit verified every Founder finding against chain+repo and found MORE:
+> ① SEO layer (10 rewrites, all Founder-approved per line): /proof (the proof page denied
 > the proof — "none is wired yet" DIED) · /archive ("nothing is minted" vs 17 minted
 > live) · /status ("most surfaces awaiting" → the live-vs-pending truth) · /map (title
 > "Read-Only Protocol Reality" → "The Live Protocol, Reconciled" + desc modernized) ·
 > /fire-ledger ("complete ledger ARRIVES" — it's been SERVED since M4-c; beyond the
-> founder's list) · /activity ("recent window" — complete history served since M5; beyond
+> Founder's list) · /activity ("recent window" — complete history served since M5; beyond
 > the list) · /chronicle (frozen "Entry one" → the growing-register truth, no frozen
 > count) · /source (the true nuance: checking writes nothing, the link PAYS inside the
 > referral's own transaction) · /support (the Guide answers NOW; the ticket intake
@@ -4318,49 +4388,49 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **▶ Prior: ⚖️ SLICE S1 ✅ BUILT (2026-07-14, the FINAL "SETTLE EVERYTHING" work order opened —
 > supersedes all prior orders): THE VISUAL CHANGE LAW ENGRAVED + THE W-HOME VERDICT
 > RECORDED.** ① VERDICT (permanent record): the W-HOME four-scene home restaging was
-> **founder-REJECTED at the preview gate 2026-07-14** — never committed, reverted clean
+> **Founder-REJECTED at the preview gate 2026-07-14** — never committed, reverted clean
 > (main stayed at W2 `ed03ebc`, prod never moved; the gate worked exactly as designed).
-> The CURRENT home composition is the founder's choice and STAYS. Any future home layout
-> change starts from a FRESH founder-approved wireframe — never from the rejected layout.
+> The CURRENT home composition is the Founder's choice and STAYS. Any future home layout
+> change starts from a FRESH Founder-approved wireframe — never from the rejected layout.
 > ② THE VISUAL CHANGE LAW engraved in CLAUDE.md (permanent): layout/composition changes
-> start from a founder-approved WIREFRAME before any code · every looks-changing slice
-> ends at the PREVIEW GATE (real rendered page, founder's own browser, desktop AND mobile)
+> start from a Founder-approved WIREFRAME before any code · every looks-changing slice
+> ends at the PREVIEW GATE (real rendered page, Founder's own browser, desktop AND mobile)
 > before any commit · copy/truth-only changes need the full final text on screen.
 > ③ RECONCILIATION of the superseded orders: W1 canon = DONE (`fc0c76d`) · W2 SEO texts =
 > SEALED (`ed03ebc`) · W-HOME = REJECTED (surgical survivors — LIVE-only hero chips +
 > throne majesty — become their own slice S3, preview-gated) · W-SOUL/W-LEAK/W5/W6 fold
-> into the new S-map. **THE S-MAP (founder GO per slice): S2 full-site truth audit
+> into the new S-map. **THE S-MAP (Founder GO per slice): S2 full-site truth audit
 > (HIGHEST — the served meta still tells the read-only era on /proof /archive /status
-> /map /contracts /source /support; full table on screen, founder decides per line) ·
+> /map /contracts /source /support; full table on screen, Founder decides per line) ·
 > S3 surgical home fixes (chips LIVE-only + throne, NOTHING else moves, preview gate) ·
 > S4 structural cure (/status derived · era-drift vocabulary guard · meta-updates-ride-
-> the-slice law) · S5 soul import (awaits the founder's paste) · S6 internal-plan leakage
+> the-slice law) · S5 soul import (awaits the Founder's paste) · S6 internal-plan leakage
 > sweep · S7 member home finish (wireframe FIRST) · S8 performance audit.**
 >
-> **▶ Prior: 🗣 SLICE W2 ✅ BUILT (2026-07-14, founder GO + the MASTER work order's Part-0 closure):
+> **▶ Prior: 🗣 SLICE W2 ✅ BUILT (2026-07-14, Founder GO + the MASTER work order's Part-0 closure):
 > THE SEO TRUTH SWEEP + THE HUMAN-FIRST LAW (amended verbatim) + THE IDENTITY PARAGRAPH
-> REWRITTEN HUMAN.** ① CANON_PROTOCOL_LANGUAGE §1 AMENDED (founder on screen): the
+> REWRITTEN HUMAN.** ① CANON_PROTOCOL_LANGUAGE §1 AMENDED (Founder on screen): the
 > identity paragraph is now the human-first, live-production text ("The Syndicate is a
 > members club that lives on-chain — on Avalanche — and it is open today…"); the dead
 > "read-only, fail-closed, never invented" era claim survives only in git history — no
-> surface may quote it; ② NEW §3-bis THE HUMAN-FIRST LAW engraved in the founder's
+> surface may quote it; ② NEW §3-bis THE HUMAN-FIRST LAW engraved in the Founder's
 > AMENDED verbatim (both audiences at once: newcomer understands first read · native
 > never talked down to · crypto-standard vocab stays natural · INTERNAL machinery jargon
 > never user-facing except after the human words) + the standing note: /learning is THE
 > one education page, never a /learn route, Learn & Earn lands ON it (SEASONS §7.5);
-> ③ SEO registry: home + /member + /learning descriptions rewritten (founder-approved on
+> ③ SEO registry: home + /member + /learning descriptions rewritten (Founder-approved on
 > screen, four texts re-passed under the amended law — already compliant); meta +
 > og:description VERIFIED in the built shells; the era phrase at 0 occurrences across
 > all 24 shells; the one residual "read-only" (map.html) is the DELIBERATE KEEP class
 > (the proof organism's mechanism truth, page-level honest). Green: seo 395 · studio
 > guards · build 24 shells (21 INDEX). DEPLOY: 🚀 BATCHABLE (rides the W-HOME deploy).
-> NEXT (master work order): W-SOUL (founder pastes the doctrine paper; import TIER-1
+> NEXT (master work order): W-SOUL (Founder pastes the doctrine paper; import TIER-1
 > with the SUPERSEDED-TERMS banner) · W-HOME (home as a story, the 4-scene wireframe
-> CONTRACT — mandatory PREVIEW GATE: founder approves the rendered localhost page in his
+> CONTRACT — mandatory PREVIEW GATE: Founder approves the rendered localhost page in his
 > own browser before ANY commit) · W-LEAK (internal-plan leakage sweep — the Commission
 > Router class: an internal plan never announced must never be a public chip/promise).
 >
-> **▶ Prior: 📐 SLICE W1 ✅ BUILT (2026-07-14, founder GO — the CONVERSION-DOCTRINE work order opened,
+> **▶ Prior: 📐 SLICE W1 ✅ BUILT (2026-07-14, Founder GO — the CONVERSION-DOCTRINE work order opened,
 > six slices W1–W6 cut and accepted): `docs/direction/CANON_CONVERSION_SURFACE.md` IS
 > TIER-0 CANON** (registered in 00_CANON_INDEX beside its sibling the Language
 > Constitution — words vs stage: language wins on wording, this doc wins on placement/
@@ -4371,16 +4441,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ~1200–1440px — the boxed frame dies) · §6 performance budgets (LCP < 2.5s mobile ·
 > images WebP/AVIF < 500KB) · §7 mobile AAA (≥44px, thumb CTA, block order) · §8 trust =
 > verify links inside the claim's visual group · §9 THE REVIEW GRID (9 questions at every
-> public-page slice gate; a "no" is fixed in-slice or a founder-visible deviation).
+> public-page slice gate; a "no" is fixed in-slice or a Founder-visible deviation).
 > Enforcement = the grid at the gate (minimal guards until MVP per CANON_LOI_ANTIBLOCAGE;
 > measurable rules graduate to guards when their slices land). QUEUE (work order W2–W6,
-> founder GO per slice): W2 SEO truth sweep (⚠ requires a founder-approved amendment of
+> Founder GO per slice): W2 SEO truth sweep (⚠ requires a Founder-approved amendment of
 > CANON_PROTOCOL_LANGUAGE §1 — the identity paragraph carries the dead "read-only" era
 > claim; old/new pasted ON SCREEN at the W2 gate) · W3 map semantic truth (in-left/
 > out-right · Future Streams to sources · Chronicle to a memory orbit · referral drawn as
 > paid-inside-the-buyer's-tx · burn as SYN outflow · icon-above/label-below evaluated ·
 > collisions at EVERY breakpoint) · W4 wide-screen home + throne majesty · W5 member home
-> finish (founder's 4 flags + 2 WORSE findings: /member still says referral "paused
+> finish (Founder's 4 flags + 2 WORSE findings: /member still says referral "paused
 > today" and "the event adapter is not wired" — both false in prod) · W6 performance
 > (throne webp fine at 68KB; the header logo PNG is 284KB and avax mark 195KB — cheap
 > wins queued).
@@ -4402,11 +4472,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > by guard-nav-link-display passing on the exact deployed code; ⑤ zero console errors.
 > Full gate green at Replit including the repaired protocol-reality guard (145/145) and the
 > class fix (full api suite now in release:gate — the local-green ≠ Replit-green hole is
-> closed). DEPLOY BACKLOG: EMPTY. Two record-only founder-eye checks remain (not blockers,
+> closed). DEPLOY BACKLOG: EMPTY. Two record-only Founder-eye checks remain (not blockers,
 > unphotographable by the capture tooling): nav hover shows no vertical bar · the overall
 > look of the new hero. THE PLATEAU NOW: M2 sharebility/Referrer Kit · M3 seat majesty
 > (CONVERSION register + REFERRAL-SHOWCASE stage there) · M7 Economy · PIPELINE-CHRONICLE ·
-> the seven-signatures Chronicle story (partial anchors to resolve first). The founder picks.
+> the seven-signatures Chronicle story (partial anchors to resolve first). The Founder picks.
 >
 > **▶ Prior: 🩹 M1 GATE FIX ✅ BUILT (2026-07-14, on Replit's prod-gate diagnosis — deploy STOPPED
 > correctly at a red gate): `protocol-reality-check.guard.ts` had not followed M1-b.**
@@ -4427,9 +4497,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > best-effort rule). All 16 verified green locally before push. The deploy cycle resumes:
 > Replit re-pulls, replays the full suite, publishes, then the 5-point prod verification.
 >
-> **▶ Prior: 🔧 SLICE M1-c ✅ BUILT (2026-07-14, founder work order + GO after the gate): HEADER +
+> **▶ Prior: 🔧 SLICE M1-c ✅ BUILT (2026-07-14, Founder work order + GO after the gate): HEADER +
 > FOOTER FINISH — THE RECURRING BAR IS DEAD AT THE ROOT, AS A CLASS.** ① ROOT CAUSE FOUND
-> AND PROVEN (the founder's screenshot bug, "fixed" repeatedly, always returned): wouter's
+> AND PROVEN (the Founder's screenshot bug, "fixed" repeatedly, always returned): wouter's
 > `<Link>` renders a bare `<a>` = `display:inline`; an INLINE box with padding + a block
 > child has FRAGMENTED paint geometry — its hover background (`hover:bg-gold/8`) and focus
 > ring painted as broken slivers, the "vertical gold line" under each nav link (CYAN before
@@ -4439,7 +4509,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > above the header vs the More BUTTON's sane 24px; `inline-flex` heals to 23px. FIX =
 > explicit display at the source (header nav links; the same latent class found + fixed in
 > the M1-a Inspect rail and /liquidity's action rail) + `focus:` → `focus-visible:` (no ring
-> smear on mouse clicks — the founder's "active state" sighting). PINNED FOREVER: NEW
+> smear on mouse clicks — the Founder's "active state" sighting). PINNED FOREVER: NEW
 > `guard-nav-link-display.ts` in the guards chain — any padded `<Link>`/`<a>` without an
 > explicit display class FAILS the build, repo-wide (9 box-styled links conform today); the
 > bug class cannot return under any color. ② HEADER HARMONIZED to live-production: the
@@ -4461,8 +4531,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > 24 shells (21 INDEX, unchanged). +0 raw color. DEPLOY: 🚀 BATCHABLE — one deploy carries
 > M1-a + M1-b + M1-c.
 >
-> **▶ Prior: 🗺 SLICE M1-b ✅ BUILT (2026-07-14, founder work order + GO after the truth-sweep gate):
-> THE LIVING MAP TELLS TODAY'S TRUTH — the throne/flame/orbital design the founder loves
+> **▶ Prior: 🗺 SLICE M1-b ✅ BUILT (2026-07-14, Founder work order + GO after the truth-sweep gate):
+> THE LIVING MAP TELLS TODAY'S TRUTH — the throne/flame/orbital design the Founder loves
 > stays; every claim on it is now derived, doored, and live.** TRUTH SWEEP EXECUTED (chain +
 > repo win): ① "LIVE · READ-ONLY" KILLED everywhere — the `LiveReadTag` literal is now "Live
 > chain read" (state-driven live/checking/unavailable machinery untouched); ② REFERRAL MONEY
@@ -4508,10 +4578,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > (21 INDEX, unchanged). +0 raw color. DEPLOY: 🚀 BATCHABLE — one deploy carries M1-a + M1-b
 > (server payload change is additive + fail-closed; prod keeps the old hero until then).
 >
-> **▶ Prior: 🎭 SLICE M1-a ✅ BUILT (2026-07-14, founder GO — the M1 hero arc OPENED, the founder's
+> **▶ Prior: 🎭 SLICE M1-a ✅ BUILT (2026-07-14, Founder GO — the M1 hero arc OPENED, the Founder's
 > plateau pick): THE HERO'S FIRST ACT — the origin's design LANGUAGE harvested, never its
 > constraints (the origin was read-only; this is LIVE PRODUCTION — seats bought with real
-> money, in-page, today).** The left column rebuilt to the founder's six-block order, all
+> money, in-page, today).** The left column rebuilt to the Founder's six-block order, all
 > reads LIVE and fail-closed: ① honest LIVE/PENDING posture chips (`hero/HeroStatusChips.tsx`
 > — static posture declarations, no figures; PENDING = only the genuinely-not-deployed:
 > Commission Router · Identity Alias · Notifications; origin's mobile variant harvested:
@@ -4553,16 +4623,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > — hero `e3e32b9` + header `f274e85`; Q-B by-design pattern-2, silent-resume repo-verified);
 > ⑥ **M0** living introduction refresh (`c53d9f7` + cursor-literal fix `6d143f0`, sealed
 > `9d224d1`). **STANDING RULES ADDED (CLAUDE.md):** content decisions pasted FULL inline ·
-> DEPLOY-BATCHABLE verdict (deploy backlog: EMPTY tonight). **QUEUE TODAY:** four founder
+> DEPLOY-BATCHABLE verdict (deploy backlog: EMPTY tonight). **QUEUE TODAY:** four Founder
 > decisions CLOSED (avatar=App Storage · no DEX deep-link · weekly cadence · optional RPC) ·
 > PIPELINE-CHRONICLE + REFERRAL-SHOWCASE + i18n horizon recorded. **ZERO PENDING THREADS:**
 > main == prod-verified HEAD, deploy backlog empty, no unanswered confirms from today;
 > record-only notes stand (chronicle dead empty-state string · rowsInserted counter ·
-> partial tx anchors in the seven-signatures raw material). **THE PLATEAU (founder picks,
+> partial tx anchors in the seven-signatures raw material). **THE PLATEAU (Founder picks,
 > nothing opens before):** M1 hero · M2 sharebility/Referrer Kit · M3 seat majesty (the
 > momentum face — CONVERSION register + REFERRAL-SHOWCASE take their stage there) · M7
 > Economy · PIPELINE-CHRONICLE · **the seven-signatures Chronicle story awaiting the
-> founder's act** (raw material committed 2026-07-14: all seven historical seats claimed,
+> Founder's act** (raw material committed 2026-07-14: all seven historical seats claimed,
 > 01:58–02:27 GMT; resolve the partial anchors before writing the candidate). Next session
 > boots on "hi" per the standard boot sequence.
 >
@@ -4579,7 +4649,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > guard pin (backbone 89) → two consecutive proven cycles. **THE MACHINERY HALF OF THE M-MAP
 > IS DONE: M0 ✅ M4 ✅ M5 ✅ M6 ✅.** Remaining: the FACE (M1 hero · M2 sharebility · M3
 > collectible — where CONVERSION + REFERRAL-SHOWCASE get their stage) · M7 Economy · M8+
-> tail · the seven-signatures Chronicle chapter awaiting the founder's act (raw material
+> tail · the seven-signatures Chronicle chapter awaiting the Founder's act (raw material
 > committed, partial anchors to resolve first).
 >
 > **▶ Prior: 🩹 M0 CURSOR-LITERAL FIX ✅ BUILT (2026-07-14, on Replit's prod diagnosis — the refresh
@@ -4595,7 +4665,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > batched). Everything else in the c53d9f7 deploy verified sane by Replit: header CTA in the
 > bundle bit-exact · protocol lanes caughtUp at head · burns 7 / lifecycle 9 · zero regression.
 >
-> **▶ Prior: ♻️ SLICE M0 ✅ BUILT (2026-07-14, founder GO): THE INTRODUCTION READ-MODEL REFRESHES
+> **▶ Prior: ♻️ SLICE M0 ✅ BUILT (2026-07-14, Founder GO): THE INTRODUCTION READ-MODEL REFRESHES
 > ITSELF — and the member link card was found ALREADY BUILT (REUSED, not rebuilt).**
 > **Part 2 first (the honest finding):** `MyReferralLinkCard` (§11 slot 2b) already ships in
 > MemberReferralDashboard — derive (`SYN.SOURCE.V1`) + live registry read + copy + QR + share
@@ -4615,37 +4685,37 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > (and last) lazy-DB file — guard-pinned: decodedJson whitelist exactly {sourceId, recipient,
 > acquisitionCost} (gated fields legitimate ONLY here server-side), leak-scan-before-hold,
 > setter callable only by the refresh; allowlists updated (holder-index 66 ·
-> member-continuity-schema 29). The founder-gated `introductions:build` script + weekly
+> member-continuity-schema 29). The Founder-gated `introductions:build` script + weekly
 > cadence + before-promotion re-run stay LAW for the COMMITTED snapshot; the in-process
 > refresh is the automation M0 promised on top (Q18's refresh half now automated in serving).
 > Green: full tsc 0 · backbone:guard 88 · activity 134 · introductions guard · auth-zone 754 ·
 > all suites · build 24 shells (unchanged). DEPLOY: 🚀 (server runtime; carries the batched
 > header CTA — the deploy backlog empties with this deploy).
 >
-> **▶ Prior: 🎯 A1 HEADER EXTENSION ✅ BUILT (2026-07-14, founder order on prod screenshot — the
+> **▶ Prior: 🎯 A1 HEADER EXTENSION ✅ BUILT (2026-07-14, Founder order on prod screenshot — the
 > header's "Take your seat" survived next to the seated pill while the hero already said
 > "Expand your footprint"):** the HEADER seat CTA (desktop + mobile sheet) now rides the SAME
 > session-aware module — `HeroSeatCta` gained size/onNavigate props; PublicLayout's
 > `SeatCtaSlot` mirrors the MemberHeaderSlot discipline (lazy, auth-gated, Suspense fallback
 > = the generic; fail-closed everywhere). One module, three mounts (hero · header · mobile),
-> zero duplicated truth. **DEPLOY BACKLOG (batchable rule, founder 2026-07-14): this slice
+> zero duplicated truth. **DEPLOY BACKLOG (batchable rule, Founder 2026-07-14): this slice
 > is COMMITTED, NOT YET DEPLOYED — it rides the next deploy (client-only, fail-closed;
-> prod header still shows the generic until then).** ALSO RECORDED (founder question
+> prod header still shows the generic until then).** ALSO RECORDED (Founder question
 > answered): the MIRRORED Q-B
 > direction — a site-session end (deploy wipes in-memory sessions) does NOT and must not
 > revoke the MetaMask link (the link is the user's grant, managed in the wallet; it powers
 > the one-click re-sign) — appended to the Q-B closure in OPEN_QUEUE. A1 PROD-VERIFIED by
-> the founder's own screenshots meanwhile: hero "Expand your footprint" with the seated
+> the Founder's own screenshots meanwhile: hero "Expand your footprint" with the seated
 > Genesis session · generic in the signed-out window; Replit verified the bundle bit-exact.
 >
-> **▶ Prior: 🎯 Q-A/Q-B TRIAGE ✅ BUILT — BOTH CLOSED (2026-07-14, founder decisions A1 + B2-plus;
-> the briefly-built B1 sentence REVERTED same slice on founder override):**
+> **▶ Prior: 🎯 Q-A/Q-B TRIAGE ✅ BUILT — BOTH CLOSED (2026-07-14, Founder decisions A1 + B2-plus;
+> the briefly-built B1 sentence REVERTED same slice on Founder override):**
 > **Q-A (A1):** the home-hero primary CTA is session-aware via the lazy wallet module
 > `wallet/HeroSeatCta.tsx` (the JoinSeatLine/MemberHeaderSlot pattern): SEATED → "Expand your
 > footprint" → /join (title: "You hold your seat — a further purchase adds SYN to it, never a
 > second seat."); everyone else + checking + dark auth + any failure → "Take your seat"
 > (fail-closed generic). Scope: home hero only. **Q-B (B2-plus):** BY-DESIGN, documented, NO
-> copy — founder research: grade-AAA dapps don't explain the divergence, they choose a
+> copy — Founder research: grade-AAA dapps don't explain the divergence, they choose a
 > pattern; we are PATTERN 2 (session survives wallet disconnect — the official wagmi SIWE
 > posture); the pill is the SEAT (institutional standing), rendered while the server session
 > lives; no signOutOnDisconnect (MetaMask locks on its own schedule; the seat must not
@@ -4655,7 +4725,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > (the re-sign path renders only in the signedOut branch); RainbowKit's auth status derives
 > from the server session. Nuance recorded: an explicit MetaMask per-site revoke may
 > (version-dependent, inside RainbowKit) end the session — a deliberate act, clean
-> signed-out, not a flicker; the founder's own screenshot proves extension LOCK does not.
+> signed-out, not a flicker; the Founder's own screenshot proves extension LOCK does not.
 > Full mechanics in OPEN_QUEUE's Q-B closure. Green: studio tsc 0 · guards · build 24
 > shells (unchanged); local rig renders the fail-closed generic hero, 0 console errors.
 >
@@ -4704,7 +4774,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ~400k/cycle; seats serve again from the FIRST cycle; burns/lifecycle lanes complete in
 > ~8 cycles (~40 min), then all cycles OK.
 >
-> **▶ Prior: 🔥 SLICE M4-c ✅ BUILT (2026-07-14, founder GO): ACTIVITY COMPLETE HISTORY — burns +
+> **▶ Prior: 🔥 SLICE M4-c ✅ BUILT (2026-07-14, Founder GO): ACTIVITY COMPLETE HISTORY — burns +
 > referral lifecycle join the seats; /fire-ledger becomes the NUMBERED Proof of Burn record;
 > the home burn total gains its history door.** MODE B built as gated: the backbone's SECOND
 > scan lane (`protocolEventScan.ts` — origin doctrine ported server-side: incremental cursor
@@ -4724,7 +4794,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > per-history summary; /fire-ledger = live total (REUSED untouched) + the numbered record
 > ("Proof of Burn #N" pills + amount rendered — the amount IS the record — + Founder/Community
 > pill + verify anchor; honest fallback to the window when the served record is unavailable);
-> the RENDERED "Proof of Fire" lead reconciled to "Proof of Burn" (founder's origin doctrine;
+> the RENDERED "Proof of Fire" lead reconciled to "Proof of Burn" (Founder's origin doctrine;
 > the PAGE stays Fire Ledger); home hero burn tile gains the door "every burn, numbered →"
 > → /fire-ledger (CREATED — the tile had only the explorer verify link); /activity lead +
 > vision + member-door notes updated honestly. RUNTIME-VERIFIED (local rig, backbone dark):
@@ -4750,46 +4820,46 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > gone from the rendered page and served HTML (the string survives as DEAD CODE — renders
 > only on an empty register; Replit's cosmetic note recorded: purging it is optional, not
 > urgent); the end-of-page honesty note serves ("An entry enters this register by a
-> founder-approved commit — no database, no automation, no silent edits."). M6 THIN-V1 IS
-> ALIVE ON THE DOMAIN. NEXT: the founder picks — M7 Economy thin / M1-M3 momentum face / M0 /
+> Founder-approved commit — no database, no automation, no silent edits."). M6 THIN-V1 IS
+> ALIVE ON THE DOMAIN. NEXT: the Founder picks — M7 Economy thin / M1-M3 momentum face / M0 /
 > REFERRAL-SHOWCASE / Q-A/Q-B.
 >
-> **▶ Prior: 🏛 SLICE M6 ✅ COMPLETE — ALL THREE PROMOTIONS DONE (2026-07-14, founder GO "promote all
+> **▶ Prior: 🏛 SLICE M6 ✅ COMPLETE — ALL THREE PROMOTIONS DONE (2026-07-14, Founder GO "promote all
 > three"; full texts were read ON SCREEN per the new standing rule): /chronicle carries FOUR
 > true chapters.** One commit per promotion, exactly the doctrine: Entry 2 "The first
 > real-money seat" (`94a40a9`) · Entry 3 "The first referral source" (`f3135a7`) · Entry 4
 > "The ladder decision" (`eafe78a`); each candidate file marked ✅ PROMOTED
-> (candidate-of-record kept). NEW STANDING RULE landed in CLAUDE.md (`5629e2f`, founder,
-> permanent): content awaiting a founder decision is pasted FULL inline — he decides on
+> (candidate-of-record kept). NEW STANDING RULE landed in CLAUDE.md (`5629e2f`, Founder,
+> permanent): content awaiting a Founder decision is pasted FULL inline — he decides on
 > screen, never opens repo files; file paths alone are not a report. RUNTIME-VERIFIED on the
 > local rig: /chronicle renders all four entries oldest-first, each with its VERIFY card,
 > zero console errors. Green: studio tsc 0 · studio guards · build 24 shells (21 INDEX,
 > unchanged — /chronicle was already INDEX since Entry 1). M6 THIN-V1 COMPLETE (the register
 > holds the duplicate seat · the first real-money seat · the first referral source · the
 > ladder decision; the future "the first duplicate was a gift" chapter waits for its
-> adoption/opt-in moment per MVP brief §7). NEXT: the founder picks — M7 Economy thin /
+> adoption/opt-in moment per MVP brief §7). NEXT: the Founder picks — M7 Economy thin /
 > M0-M3 / Q-A/Q-B.
 >
-> **▶ Prior: 🕯 SLICE M6 ✅ CANDIDATES WRITTEN (2026-07-14, founder GO "promotion stays my act"):
+> **▶ Prior: 🕯 SLICE M6 ✅ CANDIDATES WRITTEN (2026-07-14, Founder GO "promotion stays my act"):
 > THREE CHRONICLE CHAPTER CANDIDATES in `docs/chronicle/candidates/`, in the register
 > discipline + CANON_PROTOCOL_LANGUAGE §8 solemn-alive voice — NOT promoted (CHR-1: promotion
-> = a founder-approved commit into chronicleRegister.ts, one GO per entry):**
+> = a Founder-approved commit into chronicleRegister.ts, one GO per entry):**
 > ① `2026-07-12-the-first-real-money-seat.md` — five dollars through the referral link, one
-> tx, two recipients, 70/20/10 to the cent, seat #13; the founder's own money ("the protocol
-> does not ask a stranger to trust a rail its own founder has not walked"); amounts INCLUDED
+> tx, two recipients, 70/20/10 to the cent, seat #13; the Founder's own money ("the protocol
+> does not ask a stranger to trust a rail its own Founder has not walked"); amounts INCLUDED
 > as-lived (the split IS the record); the seat honestly noted metric-excluded + set aside as
 > a gift. ② `2026-07-13-the-first-referral-source.md` — the convention's first on-chain
 > instance: derived sourceId, fingerprinted terms (served bytes ↔ metadataHash), born-PAUSED →
-> ACTIVATED as two founder-signed public acts; "the words and the chain now hold each other."
+> ACTIVATED as two Founder-signed public acts; "the words and the chain now hold each other."
 > ③ `2026-07-13-the-ladder-decision.md` — a DECISION entry: two decoupled ladders, upward-only
 > rates, threshold-decides-signature-executes, Summit = the bytecode ceiling; verify = the
 > policy doc's commit history + the on-chain cap + future SourceTermsUpdated events. All three
 > identity-blind (roles + seat numbers only, zero hex), verify-first, banned-vocabulary clean.
-> NEXT: the founder reads each candidate and says GO per entry — each promotion is its own
+> NEXT: the Founder reads each candidate and says GO per entry — each promotion is its own
 > commit (entry into chronicleRegister.ts, /chronicle renders it, sitemap unchanged); after
 > promotions, /chronicle carries 4 true chapters (M6 THIN-V1 complete).
 >
-> **▶ Prior: 📜 THE PROTOCOL LANGUAGE CONSTITUTION ✅ BUILT (2026-07-14, founder-briefed slice,
+> **▶ Prior: 📜 THE PROTOCOL LANGUAGE CONSTITUTION ✅ BUILT (2026-07-14, Founder-briefed slice,
 > docs-only): `docs/direction/CANON_PROTOCOL_LANGUAGE.md` IS TIER-0 CANON** (registered in
 > 00_CANON_INDEX). INVARIANTS ONLY — eight blocks: §1 identity paragraph (from the live
 > site's own words) · §2 the six-beat page sequence (the review grid for every future page) ·
@@ -4805,12 +4875,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > flag · MEMBER) · §8 the event lexicon (six LIVE sentences captured from M5 baseline + five
 > RESERVED authored: source activated/paused · ladder promotion "A source rose to {rung} —
 > recorded on-chain." · era advance · Chronicle promotion). Application of CONVERSION rides
-> M1/M2/M3 (stated in the doc). FOUR DECISIONS CLOSED in OPEN_QUEUE (founder order): avatar
+> M1/M2/M3 (stated in the doc). FOUR DECISIONS CLOSED in OPEN_QUEUE (Founder order): avatar
 > = Replit App Storage · /wallet DEX deep-link = NO (flow-separation law) · snapshot cadence
 > = weekly + before any promotion signing (automation rides M0) · prod RPC = YES
-> founder-optional (`AVALANCHE_RPC_URL`, ops act). Horizon note added: white-label
-> referral-rail SaaS at the pro-firm ~6-month horizon. The former "pending founder
-> decisions" list is now EMPTY. NEXT: the founder picks — M6 / M0-M3 / Q-A/Q-B.
+> Founder-optional (`AVALANCHE_RPC_URL`, ops act). Horizon note added: white-label
+> referral-rail SaaS at the pro-firm ~6-month horizon. The former "pending Founder
+> decisions" list is now EMPTY. NEXT: the Founder picks — M6 / M0-M3 / Q-A/Q-B.
 >
 > **▶ Prior: 💓 SLICE M5 ✅ SEALED IN PROD (2026-07-13, Replit-verified 20:38 UTC on
 > thesyndicate.money/activity): THE HEARTBEAT SHOWS ITS WHOLE HISTORY.** Replit report: pull
@@ -4826,11 +4896,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > guarded against Avascan's 200-to-anything). Method note: a first stale screenshot was the
 > capture service's ~3.7h cache, NOT a deploy defect — cache-busted capture confirmed M5 on
 > screen. THE M4→M5 CHAIN IS CLOSED IN PROD: unattended indexer → two projections → the
-> public page. NEXT: the founder picks — M6 (Chronicle chapters) / M0-M3 / Q-A/Q-B triage /
+> public page. NEXT: the Founder picks — M6 (Chronicle chapters) / M0-M3 / Q-A/Q-B triage /
 > pending decisions (avatar storage · DEX deep-link · refresh cadence · optional
 > AVALANCHE_RPC_URL).
 >
-> **▶ Prior: 💓 SLICE M5 ✅ BUILT (2026-07-13, founder GO): /activity REPOINTED ONTO THE SERVED FEED —
+> **▶ Prior: 💓 SLICE M5 ✅ BUILT (2026-07-13, Founder GO): /activity REPOINTED ONTO THE SERVED FEED —
 > the heartbeat gains its complete seat history.** TWO honest sources now compose on the page,
 > each labeled with its OWN coverage in the HealthBanner: ① SEATS from `/api/backbone/feed`
 > (complete indexed record V1→V3, newest-first, server-capped; identity-blind aggregate voice
@@ -4849,8 +4919,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > console errors; ② the studio parser run against the REAL PROD payload — 26/26 served lines
 > parsed, 0 skipped, newest = the real V3 first seat (anchor shape OK). Green: studio tsc 0 ·
 > studio guards · build 24 shells (21 INDEX, unchanged — no new route). NEXT per the order:
-> M6 Chronicle thin (more true chapters) / M0/M1… — the founder picks; Q-A/Q-B triage still
-> queued; pending founder decisions unchanged (avatar storage · DEX deep-link · refresh
+> M6 Chronicle thin (more true chapters) / M0/M1… — the Founder picks; Q-A/Q-B triage still
+> queued; pending Founder decisions unchanged (avatar storage · DEX deep-link · refresh
 > cadence · optional AVALANCHE_RPC_URL for cold catch-ups).
 >
 > **▶ Prior: 🧾 SLICE M4-b ✅ SEALED IN PROD (2026-07-13, Replit-verified 20:10 UTC on
@@ -4867,7 +4937,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > /activity (and the fire-ledger spine stays client-RPC for burns — burns are NOT indexed by
 > the backbone yet) onto the served feed: full history replaces the 24h client window.
 >
-> **▶ Prior: 📡 SLICE M4-b ✅ BUILT (2026-07-13, founder GO): THE PUBLIC RECEIPT-LINE FEED —
+> **▶ Prior: 📡 SLICE M4-b ✅ BUILT (2026-07-13, Founder GO): THE PUBLIC RECEIPT-LINE FEED —
 > `/api/backbone/feed`.** The read-model's SECOND (and last) sanctioned projection:
 > newest-first receipt lines, hard cap 100 (pagination/filters deliberately wait, M5+), each
 > line = kind · generation · block N · chain-verified time (blockTimestampSec + isoDayUtc) ·
@@ -4885,7 +4955,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > identity-blindness, anchor shape, mask-then-scan trips, cap, route gate) · activity 133 ·
 > route allowlists += backboneFeed (protocol-time 38 · member-continuity 92). Green: tsc 0
 > (full workspace) · all suites · build 24 shells (21 INDEX, unchanged — API route, zero SEO
-> impact). NEXT: M5 (/activity page repoint onto the feed) when the founder opens it.
+> impact). NEXT: M5 (/activity page repoint onto the feed) when the Founder opens it.
 >
 > **▶ Prior: 🏭 SLICE M4-a ✅ SEALED IN PROD (2026-07-13, Replit-verified on thesyndicate.money):
 > THE UNATTENDED LOOP LIVES.** Replit report: pull 24/24 hash-verified · NO real migration
@@ -4898,17 +4968,17 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ② 19:42 UTC cycle 2 SELF-HEALED via the cursor: 6/6 units ok to head 90,229,777, 2 events
 > indexed, 26 block timestamps verified-enriched; ③ 19:48 UTC cycle 3 exactly 300s later,
 > incremental in ~6s, head 90,230,350, 0 new events (a quiet five minutes — honest, not
-> invented). Reality spine 57 signals green in prod. OPS NOTE (founder-optional, nothing
+> invented). Reality spine 57 signals green in prod. OPS NOTE (Founder-optional, nothing
 > requires it today): provisioning AVALANCHE_RPC_URL (QuickNode) in prod would speed up cold
 > catch-ups; cruise cadence is fine on the public RPC.
 >
-> **▶ Prior: ⚙️ M-MAP ARC OPENED — SLICE M4-a ✅ BUILT (2026-07-13, founder pick: M4 first): THE EVENT
-> BACKBONE RUNS UNATTENDED.** The founder chose M4 (critical path) over M0 on screen. The
+> **▶ Prior: ⚙️ M-MAP ARC OPENED — SLICE M4-a ✅ BUILT (2026-07-13, Founder pick: M4 first): THE EVENT
+> BACKBONE RUNS UNATTENDED.** The Founder chose M4 (critical path) over M0 on screen. The
 > existing indexer machinery now runs by itself inside the served process — REUSED end to end,
 > nothing parallel: `src/backbone/` = backboneRunner (boot + interval cycles: ① incremental
 > sale-event scan via the SAME `runSaleEventScan` engine + ONE shared Drizzle adapter, cursor-
 > resumed; ② incremental Protocol Time enrichment — never-verified blocks ONLY, witness-checked,
-> the full re-verification replay stays the founder-gated script; ③ in-memory activity read-model
+> the full re-verification replay stays the Founder-gated script; ③ in-memory activity read-model
 > rebuild) + backboneDb (THE one lazy-DB file of the zone — scan persistence + block-timestamp
 > inserts + the SHARED activity loader now used by `activity:derive` too — one loader, one
 > decodedJson whitelist, one divergence cross-check) + backboneConfig (DARK BY DEFAULT in EVERY
@@ -4934,9 +5004,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > /activity page repoint (M5). Green: api-server tsc 0 · backbone 44 · activity 131 ·
 > protocol-time 38 · member-continuity 92 · schema 28 · holder-index 65 · sale-index 64 ·
 > sale-scan 81 · auth-zone 712 · studio suite green · build 24 shells (21 INDEX). **DEPLOY: the
-> slice is server-runtime; the backbone stays DARK on prod until the founder sets
+> slice is server-runtime; the backbone stays DARK on prod until the Founder sets
 > SYNDICATE_BACKBONE_ENABLED=true on Replit (his switch, his moment).** NEXT, IN ORDER: ① M4-b
-> (the served per-item feed endpoint — needs its own gate); ② Q-A/Q-B triage; ③ pending founder
+> (the served per-item feed endpoint — needs its own gate); ② Q-A/Q-B triage; ③ pending Founder
 > decisions (avatar object-storage · DEX deep-link · refresh cadence — note M0's refresh work
 > now partly rides the backbone pattern).
 >
@@ -4950,18 +5020,18 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > link; burn total 21,273 SYN live; sitemap exactly 21 INDEX; the three killed/console strings
 > at 0 occurrences in 19 served chunks; introductions:check OK.
 > **LOCKED DECISIONS (this session, do not re-litigate):** the "My Syndicate" door/name is
-> DEAD (banned, guard-enforced) · avatar = THREE sources (founder §11: sigil default LIVE ·
+> DEAD (banned, guard-enforced) · avatar = THREE sources (Founder §11: sigil default LIVE ·
 > uploaded = future object-storage decision · NFT = chain-verified ownerOf + badge + verify
 > tooltip) · the FLOW-SEPARATION LAW (LP links never leave /liquidity's context/Risk Notice) ·
 > client-RPC feeds = HONEST RECENT WINDOW (never proof of absence; the indexer upgrades to
 > complete history later) · Chronicle promotion = a FOUNDER ACT via commit, no DB, no
 > automation · REUSE-BEFORE-CREATE is standing (every report ends REUSED vs CREATED).
-> **NEXT, IN ORDER:** ① the founder picks M-map slice 1 ON SCREEN — M0 (refresh automation)
+> **NEXT, IN ORDER:** ① the Founder picks M-map slice 1 ON SCREEN — M0 (refresh automation)
 > vs M4 (event backbone) — nothing opens before the pick; ② Q-A/Q-B triage (OPEN_QUEUE — the
-> two screenshot-sourced header observations); ③ pending founder decisions: avatar
+> two screenshot-sourced header observations); ③ pending Founder decisions: avatar
 > object-storage · the DEX deep-link URL if wanted · the snapshot-refresh cadence.
 >
-> **▶ Prior: 🏛️ THE FIRST CHRONICLE PROMOTION (founder GO, 2026-07-14): "The duplicate seat" is
+> **▶ Prior: 🏛️ THE FIRST CHRONICLE PROMOTION (Founder GO, 2026-07-14): "The duplicate seat" is
 > ENTRY 1 of the public register.** The candidate's text carried faithfully into
 > `chronicleRegister.ts` (the counts stated as N/M with the as-lived 12/11 narrative — the
 > entry records the day, the live pages record the present); the candidate file marked
@@ -4975,15 +5045,15 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > (typed entries: id · dateUtc · title · sections · verifyNote; register discipline pinned in
 > the header: protocol-institutional · identity-blind · amount-blind · verify-first; EMPTY at
 > ship). /chronicle = TWO honest states: register empty → the designed teaser + "the first
-> entry awaits the founder's promotion" (no invented history); register speaks → the solemn
+> entry awaits the Founder's promotion" (no invented history); register speaks → the solemn
 > oldest-first record with per-entry verify cards + the no-silent-edits footer ("the
 > register's own history is public in the repository"). The origin labs promotion screens
 > ADAPTED into `components/admin/ChroniclePrepare.tsx` (Content section of the console,
 > VERIFIED absent from the public bundle): formats a candidate into the exact entry shape for
-> the founder's commit — writes NOTHING, no DB, no auto-promotion ever. /chronicle SEO stays
+> the Founder's commit — writes NOTHING, no DB, no auto-promotion ever. /chronicle SEO stays
 > PENDING/noindex per the rule (flips to INDEX only when the first entry is promoted). The
-> 2026-07-12 duplicate-seat candidate is PRESENTED to the founder at the END of this order —
-> the founder decides. Green: tsc 0 · 12 guards · seo 40 · rewrites 23/46 · surface 24 ·
+> 2026-07-12 duplicate-seat candidate is PRESENTED to the Founder at the END of this order —
+> the Founder decides. Green: tsc 0 · 12 guards · seo 40 · rewrites 23/46 · surface 24 ·
 > build 24 shells.
 >
 > **▶ Prior: ORIGIN-HARVEST ARC — SLICE ACT-1 ✅ BUILT (2026-07-14): ACTIVITY V1 + FIRE LEDGER
@@ -5041,7 +5111,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > approves EXACT amounts, stated) · REVOKE = approve(spender, 0), the member's OWN signed
 > wallet act, SIMULATE-FIRST + honest revert translation, NEVER a server write · the SYN/USDC
 > pool as an EXTERNAL-posture link to the ON-CHAIN PAIR (verify-links lpPair; a DEX deep-link
-> was deliberately NOT invented — the founder supplies the exact canonical URL if wanted;
+> was deliberately NOT invented — the Founder supplies the exact canonical URL if wanted;
 > "pool is a courtesy" doctrine lines carried). **/toolkit** = the Slice-A action registry as
 > the public conversion surface (visitor-verified live: 3 locked-visible actions with
 > reasons + the open /join action + the 10-door shell). RUNTIME-VERIFIED on the local rig:
@@ -5080,9 +5150,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > (wallet + VerifyOnChain + Disconnect via the EXISTING logoutSession) · Reset profile SOON
 > with "THE SEAT IS PERMANENT" stated · NO email field ever (ADR-003). Chrome learned from
 > Supa AvatarUploader/Settings, copied nothing. AVATAR-STORAGE INFRA QUESTION → flagged for
-> the founder report. Green: tsc 0 · 12 guards · build 18 shells.
+> the Founder report. Green: tsc 0 · 12 guards · build 18 shells.
 >
-> **▶ Prior: MEMBER HOME ARC — SLICE A ✅ BUILT (2026-07-14, autonomous work order, founder GO):**
+> **▶ Prior: MEMBER HOME ARC — SLICE A ✅ BUILT (2026-07-14, autonomous work order, Founder GO):**
 > ① `config/memberActions.ts` — THE action registry (origin actions.ts harvested for shape,
 > adapted): copy-my-referral-link (lock: session) · share-my-proof (lock: seat) ·
 > expand-footprint→/join (open) · verify-my-seat-on-chain (lock: seat, real VerifyOnChain
@@ -5102,11 +5172,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > "Active" pill → "Source active" (the guard working). Green: tsc 0 · 12 guards · seo 323 ·
 > build 18 shells.
 >
-> **▶ Prior: MEMBER SHELL — Member Home slice 2, BUILT (founder GO; awaiting diff approval → deploy):**
+> **▶ Prior: MEMBER SHELL — Member Home slice 2, BUILT (Founder GO; awaiting diff approval → deploy):**
 > the two-shells rule realized — `components/member/MemberShell.tsx` (left sidebar of member
 > doors, chosen BY THE PAGE inside the public chrome; public pages + prerender untouched) +
 > `config/memberDoors.ts` — RECONCILED at staging time to SEASONS_ENGINE **§11 wireframe v2**
-> (advisor harvest "agreed with the founder", discovered on disk during this slice; repo wins):
+> (advisor harvest "agreed with the Founder", discovered on disk during this slice; repo wins):
 > the SHORT door list (every Coming-soon is a public promise) — Open today: Member Home ·
 > Referral dashboard (anchor; LIVE day one) · Recognition · Protocol graph (/map) · Coming soon
 > (existing LifecycleBadge, locked-visible): Activity PENDING_ADAPTER · Chronicle FUTURE ·
@@ -5132,14 +5202,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >
 > **▶ Prior: LADDER-PROMOTION-SCREEN → ✅ SEALED IN PROD (`28ccbaa`, Replit-verified 4/4, 2026-07-13:
 > source-standing fail-closed unchanged · intro guard 45/45 on their side · data-drift check OK
-> with the head 1,466 blocks ahead · member banner IN the served bundle, founder panel ABSENT
+> with the head 1,466 blocks ahead · member banner IN the served bundle, Founder panel ABSENT
 > from it). R5 was sealed the same day (`93a69dd` + `56a7f4b` drift-fix, verified 4/4). The
-> WHOLE REFERRAL ARC IS LIVE END-TO-END: terms (hash-committed) → first member source (founder-
+> WHOLE REFERRAL ARC IS LIVE END-TO-END: terms (hash-committed) → first member source (Founder-
 > signed) → introduction indexer → ladder → promotion loop.** Original build state:
 > the ladder's promotion loop end-to-end, on the R5 spine. **FOUNDER RULE ENGRAVED (2026-07-13,
 > "simple + transparency"): NO compensation for the waiting gap between threshold crossing and
 > signature — the rate applies at on-chain recording (never retroactive); the waiting is VISIBLE
-> and DATED** (member screen: "Promotion due — awaiting founder signature" + the crossing date;
+> and DATED** (member screen: "Promotion due — awaiting Founder signature" + the crossing date;
 > the public `SourceTermsUpdated` event dates the raise — that IS the answer to "scam" criers).
 > ① Read-model: per-source ladder facts — `currentBps` (live registry read at build),
 > `entitledBps/Title` (from `connectorLadderCanon.ts`, guard-reconciled literal-for-literal
@@ -5150,9 +5220,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > guard-asserted equal; address-free by construction so the twin can sit in the client repo; it
 > is imported ONLY by the operator-gated panel, verified absent from the public bundle).
 > ③ `/api/auth/source-standing` serves the due fields own-row; `walletSession` parses them.
-> ④ Member banner in the standing section renders the founder rule verbatim. ⑤ Founder console:
+> ④ Member banner in the standing section renders the Founder rule verbatim. ⑤ Founder console:
 > `wallet/ProposeSourcePromotion.tsx` in /admin/sources — the PERSISTENT REMINDER (renders the
-> due count until every promotion is signed), identity-free due rows, wallet-bind (founder
+> due count until every promotion is signed), identity-free due rows, wallet-bind (Founder
 > enters the member wallet → derive sourceId → browser sha256 sourceKey must MATCH a due row →
 > live record read → live-vs-indexed rate consistency assert, fail closed) → `updateSourceTerms`
 > with ONLY `commissionBps` changed, all terms VERBATIM from the live record (contract reverts
@@ -5164,15 +5234,15 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > reality 138/138. Snapshot regenerated with ladder facts (asOfBlock 90184731, still 2/1/2,
 > nothing due today — the BUILDER_SOURCE sits below Trusted).
 >
-> **▶ Prior: R5 — THE INTRODUCTION INDEXER, BUILT (2026-07-13, founder GO; awaiting diff approval →
+> **▶ Prior: R5 — THE INTRODUCTION INDEXER, BUILT (2026-07-13, Founder GO; awaiting diff approval →
 > deploy):** the "one brick, five surfaces" read-model exists on the proven pattern (pure builder
-> · founder-gated build script · guard suite), REUSING the existing scan engine (adaptive chunked
+> · Founder-gated build script · guard suite), REUSING the existing scan engine (adaptive chunked
 > zero-gap eth_getLogs over the V3 MembershipPurchasedV3 unit, in memory, no DB) — a snapshot is
 > NEVER emitted from a scan with holes (the 2026-07-12 standing rule, enforced in code).
 > **R5a:** `introductionReadmodel.ts` (pure, deterministic, fail-closed) + `introduction-index-build.ts`
 > (+ `--check` drift mode) + `introduction-index.guard.ts` (27 checks) + the GENERATED served
 > snapshot (committed): asOfBlock 90180944 · 2 attributed purchases · 1 source (BUILDER_SOURCE;
-> the founder's member source has no referred buys yet) · 2 durable. **THE DURABLE TEST (founder
+> the Founder's member source has no referred buys yet) · 2 durable. **THE DURABLE TEST (Founder
 > GO, recommendation adopted — seats are bytecode-permanent so seat-held has no anti-fraud
 > teeth): durable = the introduced member's wallet still holds SYN at index time**
 > (`DURABLE_TEST = "SYN_BALANCE_HELD"`, one constant to change if re-ruled). The count may dip;
@@ -5186,7 +5256,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > summit stays rare); memberCards honestly flipped (introductions/pending/paid → READ_ONLY_PROOF;
 > per-receipt rows stay PENDING_ADAPTER). **RIDER:** `commissionTiers` = the canon ladder preview
 > (Emerging→Summit + Partner-as-class; Trusted 6%). REFRESH RULE: the snapshot is an honest
-> SERVED SNAPSHOT (as-of labeled); re-run `introductions:build` (founder-gated) to advance it;
+> SERVED SNAPSHOT (as-of labeled); re-run `introductions:build` (Founder-gated) to advance it;
 > `introductions:check` fails on drift. All green: studio tsc 0 + 12 guards + seo 323 + rewrites
 > + surface 218 + build 18 shells · api tsc 0 + canon + reality 138/138 + auth-zone 649 + intro
 > guard 27. LADDER-PROMOTION-SCREEN is now UNBLOCKED (consumes durableIntroductions directly).
@@ -5199,17 +5269,17 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > protocol's first indexed truth stands at 2 attributed / 1 source / 2 durable.
 >
 > **▶ Prior: 🏆 R2 IS DONE — THE FIRST CONVENTION-DERIVED MEMBER SOURCE IS LIVE ON-CHAIN (2026-07-13,
-> both founder signatures):** sourceId `0x804e80f1…ae974` = keccak256("SYN.SOURCE.V1",
+> both Founder signatures):** sourceId `0x804e80f1…ae974` = keccak256("SYN.SOURCE.V1",
 > `0x88EC79AF…Dd73`) — the FIRST source following the SPEC §③ convention. Chain-verified:
 > class MEMBER_INTRODUCTION · 500 bps · LIFETIME · no caps · repeat=true · sourceWallet ==
-> payoutWallet == the founder wallet · metadataHash EXACTLY `0xc8480867…1e6e48` (== the served
+> payoutWallet == the Founder wallet · metadataHash EXACTLY `0xc8480867…1e6e48` (== the served
 > terms document, verified on three planes) · created PAUSED 04:19:22Z → ACTIVATED 04:20:36Z
-> (block ~90177188). The founder signed both acts in his own wallet through the PROPOSE screen
+> (block ~90177188). The Founder signed both acts in his own wallet through the PROPOSE screen
 > (Form 2's first real use). LIVE PROOF: the prod quote
 > `/api/join/quote?grossUsdc=5000000&sourceId=0x804e…` returns `sourceValid:true`,
 > `acquisitionCostRaw:250000` (5% = $0.25 on $5), net 4.75 → the member referral link
 > `https://thesyndicate.money/join?source=0x804e80f1…ae974` pays live. NOTE (process, honest):
-> the founder signed create+activate back-to-back, so the planned PAUSED fail-closed spot-check
+> the Founder signed create+activate back-to-back, so the planned PAUSED fail-closed spot-check
 > between signatures was skipped — the born-PAUSED sequence itself is contract-enforced and both
 > states were read back on-chain after the fact. UNLOCKED NEXT: the auto-derived member link
 > card (the convention now has a real on-chain instance) · R5 the introduction indexer.
@@ -5219,7 +5289,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > recovered from the prod bundle) · vite dev /api proxy + the fail-closed verify-links read
 > shipped in `8c4843c`.
 >
-> **▶ Prior: R1+R2 — THE FIRST MEMBER SOURCE, BUILT (2026-07-13, founder GO; signing = a founder act,
+> **▶ Prior: R1+R2 — THE FIRST MEMBER SOURCE, BUILT (2026-07-13, Founder GO; signing = a Founder act,
 > pending):** ① **R1 the program terms document** exists and is PUBLIC:
 > `artifacts/studio/public/referral-program-terms-v1.txt` served at
 > `/referral-program-terms-v1.txt` (flat filename ON PURPOSE — a `referral/` directory would
@@ -5237,13 +5307,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > contract-enforced) then `setSourceStatus(ACTIVE)` as TWO separate signed acts with the
 > fail-closed /join?source= check stated between them; blocks activation on a metadataHash
 > mismatch vs the served document. ABIs transcribed from `SourceRegistryV1.sol` read line-by-line;
-> writes via wagmi in the founder's wallet ONLY. New reads: `readRegistryOwner` +
+> writes via wagmi in the Founder's wallet ONLY. New reads: `readRegistryOwner` +
 > `readSourceRecord` (chainReads). guard-access-state respected (raw I/O in lib, not wallet).
 > All green: typecheck 0 · 12 guards + no-raw-color 0 · seo:check 323 · rewrites OK ·
 > surface:audit 218 · build 18 shells; terms file byte-identical in dist
 > (keccak256 `0xc8480867…1e6e48` as written — recomputed live at signing; the /referral display
 > and the PROPOSE screen both hash the SERVED file, so they follow the bytes automatically).
-> **HUMAN-READABLE PASS APPLIED (founder, 2026-07-13 — the §8 pattern everywhere: human words
+> **HUMAN-READABLE PASS APPLIED (Founder, 2026-07-13 — the §8 pattern everywhere: human words
 > first, contract term in parentheses for verifiers):** scope line "member referral sources (the
 > contract's MEMBER_INTRODUCTION class)"; header + §9 "the source's terms fingerprint (the
 > contract's metadataHash field)"; header keccak256 introduced as "its digital fingerprint"
@@ -5252,7 +5322,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > the v1 document is SCOPED to the member program — title "MEMBER REFERRAL PROGRAM TERMS", id
 > `SYN.REFERRAL.MEMBER.TERMS.V1`, scope line "MEMBER_INTRODUCTION sources only; other classes
 > (partner, builder, affiliate) get their own versioned terms documents, one class · one doc ·
-> one hash". **FINAL PRE-HASH REVIEW APPLIED (advisor-consolidated, founder-approved,
+> one hash". **FINAL PRE-HASH REVIEW APPLIED (advisor-consolidated, Founder-approved,
 > 2026-07-13):** ⓐ escrow truth-fix VERIFIED against MembershipSaleV3.sol:296 —
 > `claimSourceEscrow` reverts `SourceEscrowLocked` unless the source is ACTIVE; §8 now says
 > escrow is claimable "whenever the source is ACTIVE", locked while paused/revoked (the old
@@ -5263,7 +5333,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > the config comment fixed; checkout UI verified to contain no such control (none existed).
 > ⓒ three standard clauses added as §6 THE REFERRER'S STANDING (independent participant ·
 > link/source personal, not transferable · legal age + jurisdiction responsibility).
-> ⓓ §1 "may be granted" (founder-signed creation, not an automatic right). ⓔ hash practicality:
+> ⓓ §1 "may be granted" (Founder-signed creation, not an automatic right). ⓔ hash practicality:
 > header declares UTF-8/LF; `.gitattributes` pins the file `text eol=lf` (the hash is an
 > on-chain commitment — bytes must never be rewritten by autocrlf); /referral now renders the
 > LIVE-computed keccak256 next to the terms link (fetched+hashed in-browser, fail-closed,
@@ -5271,8 +5341,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > assert served-bytes == repo-bytes. LOCAL-ENV NOTE
 > (Windows): the api-server dev script is bash-only → the local dev app renders blank on clean
 > main too (A/B verified with git stash); NOT a slice regression — Replit is runtime truth.
-> NEXT: founder approves the terms WORDING + the diff → push → deploy (the terms URL must be
-> public before signing) → the founder signs create (PAUSED) → fail-closed check → signs ACTIVE
+> NEXT: Founder approves the terms WORDING + the diff → push → deploy (the terms URL must be
+> public before signing) → the Founder signs create (PAUSED) → fail-closed check → signs ACTIVE
 > → the first convention-following member source exists (unlocks the auto-derived member link
 > card, a follow-up slice).
 Direction specs now live IN this repo: `docs/direction/MASTER_BUILD_SPEC.md` ·
@@ -5283,24 +5353,24 @@ Direction specs now live IN this repo: `docs/direction/MASTER_BUILD_SPEC.md` ·
 Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md`.
 
 > **▶ 🏆 THE FIRST REAL PURCHASE HAPPENED (2026-07-12 23:32 UTC, sealed 2026-07-13).** C5 published by
-> the founder; the $5 test THROUGH the referral link succeeded on the first attempt:
+> the Founder; the $5 test THROUGH the referral link succeeded on the first attempt:
 > tx `0x353bf2c0…c42178` — 5 USDC in → **0.25 USDC paid to the referrer's payoutWallet IN the same tx**
 > (the referral rail works with real money) → net 4.75 split EXACTLY 3.325/0.95/0.475 (70/20/10) →
 > 500 SYN delivered → **SEAT #13** (chain-verified: `memberCount=13`, `memberNumberOf(buyer)=13`,
 > `memberByNumber(13)=buyer`). The living protocol did the rest BY ITSELF: the public headline reads 13
 > everywhere and the honest readback recomputed to **"13 seats / 12 distinct wallets (1 holds two)"** —
 > zero human edits, zero console errors, CSP clean. **The Syndicate OS sells seats in production.**
-> **Post-C5 polish → ✅ SEALED in prod (founder-screenshot-verified):** member-aware seat line
+> **Post-C5 polish → ✅ SEALED in prod (Founder-screenshot-verified):** member-aware seat line
 > (`f950354` — a seated wallet reads "You hold seat #N … never a second seat", own-row live
 > `memberNumberOf`; generic always-true line for everyone else) + the multichain-USDC trap named in
-> the balance-short message (`a852da1` — founder-discovered on the first cross-device test: wallets
+> the balance-short message (`a852da1` — Founder-discovered on the first cross-device test: wallets
 > aggregate balances across networks; the message now says on-Avalanche-native-USDC-only + what to do).
-> **REFERRAL PUBLIC ACTIVATION → ✅ BUILT (this commit, founder GO):** `programLifecycle` +
+> **REFERRAL PUBLIC ACTIVATION → ✅ BUILT (this commit, Founder GO):** `programLifecycle` +
 > `sourceAttributionLifecycle` → **LIVE_ACTION** (the badge text is exactly true: the commission is
 > paid inside the buyer's own signed tx — proven, seat #13); `activeCopy` (prepared since 2026-07-07)
 > now renders via the lifecycle-selected `currentProgramCopy` on /source-attribution, the member
 > referral dashboard and the admin panel; intro/model/boundaries rewritten to the active truth (new
-> sources = founder-signed on-chain acts, R2; never "earn now"); memberCards honestly relabelled
+> sources = Founder-signed on-chain acts, R2; never "earn now"); memberCards honestly relabelled
 > (link = usable via the /source builder · introductions/receipts/commissions = PENDING_ADAPTER, the
 > R5 indexer is the gap · standing = FUTURE); `guard-safe-source` ADAPTED IN the slice per
 > CANON_LOI_ANTIBLOCAGE and RE-LOCKED (pins now assert LIVE_ACTION; the protective disclaimers stay
@@ -5308,7 +5378,7 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > was corrected, working as designed). NOTE: the auto-derived member link card is NOT in this slice —
 > the existing BUILDER_SOURCE id predates the `SYN.SOURCE.V1` derivation (verified: no variant
 > matches); it lands with the first convention-following member source (R2).
-> **REFERRAL-FIRST NAMING (founder order, 2026-07-13, same arc):** "Referral" is the USER word on
+> **REFERRAL-FIRST NAMING (Founder order, 2026-07-13, same arc):** "Referral" is the USER word on
 > every public surface — human-readable, no mental load; "Source" stays the PROTOCOL word in
 > proof/registry/operator contexts ("powered by Source Attribution"). Renamed: footer/nav labels
 > ("Source Attribution"→"Referral Program", "Verified Introduction"→"Referral Link"), page titles
@@ -5317,10 +5387,10 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > id"→"referral code"). This pass ALSO killed two claims the activation had made false ("never a
 > payment/commission" on the builder card + the /source-attribution SEO description). The old
 > language lock ("verified introduction — NOT referral", LIVING_ORGANISM §8) is SUPERSEDED by the
-> founder's 2026-07-07-corrected word roles + this order. NEXT = R2 (the founder creates the first
-> member source) or the R5 indexer, at the founder's signal.
+> Founder's 2026-07-07-corrected word roles + this order. NEXT = R2 (the Founder creates the first
+> member source) or the R5 indexer, at the Founder's signal.
 >
-> **▶ Prior: 🔴🚀 C5 GO-LIVE (founder GO, 2026-07-13) — THE FLIP IS IN THIS COMMIT.** `CHECKOUT_ENABLED = true`:
+> **▶ Prior: 🔴🚀 C5 GO-LIVE (Founder GO, 2026-07-13) — THE FLIP IS IN THIS COMMIT.** `CHECKOUT_ENABLED = true`:
 > the two-signature approve→buy is PUBLISHED on `/join` (checkout chunk verified PRESENT in the bundle;
 > the boundary card verified GONE). The COMPLETE MUST-CHANGE sweep executed in the same commit: /join
 > lead + badge (new lifecycle **LIVE_ACTION** — "Live — signed from your wallet", gold identity axis;
@@ -5331,13 +5401,13 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > LIVE_ACTION** (openapi enum + orval regen; the ONE live action, asserted by `verify-canon-integrity`
 > in lockstep: LIVE_ACTION count === 1 === buyReadiness) · protocolTargets unitNotes ×3. All green:
 > studio typecheck 0 + 12 guards + seo:check + rewrites:check · api-server typecheck 0 + verify:canon
-> 35/35 + reality 138/138 + auth-zone 622. NEXT: Replit publish → **the founder's $5 test THROUGH the
+> 35/35 + reality 138/138 + auth-zone 622. NEXT: Replit publish → **the Founder's $5 test THROUGH the
 > referral link** (protocol + the 3 wallet conditions in the C5 handoff) → expected seat #13, readback
 > recomputes 13/12 → then the REFERRAL PUBLIC ACTIVATION slice (OPEN_QUEUE). Rollback = flip the
 > literal back, one commit, one deploy.
 >
 > **▶ Prior: 🔴 AUDIT SESSION (2026-07-13) — full pre-flip audit DONE; verdict was "NOT BEFORE …"; the
-> founder triaged it:** **GROUP A → ✅ SEALED in prod (`ed9af22`, Replit all-gates + live-verified:
+> Founder triaged it:** **GROUP A → ✅ SEALED in prod (`ed9af22`, Replit all-gates + live-verified:
 > zero CSP violations on home//join//faq, quote intact under CSP, permanent disclaimer renders, new
 > FAQ in the served JSON-LD, all 5 API headers measured on the live domain):** real wallet-chain check (`useAccount().chainId`)
 > + ChainMismatch copy · sourceId passed to `buy()` ONLY when the fresh quote says `sourceValid===true`
@@ -5348,33 +5418,33 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > x-powered-by off) and PAGES (CSP meta baked by the prerender — script-src 'self', connect-src
 > deliberately scheme-wide so wallet connect can't silently break; frame-ancestors for pages = Replit
 > serving layer, see the C5 handoff infra notes) · C5 handoff checklist REPLACED by the complete
-> ~20-item MUST-CHANGE table. **GROUP B (founder decision): ALL new guard machinery (audit 7.1–7.5, 3.1)
-> → Phase 6 HARDEN & SEAL — per the anti-blocking law (founder file
-> `GitHub/_research/AUDIT_TRIAGE_ET_LOI_ANTIBLOCAGE.md` — ⚠️ OUT-OF-REPO on the founder's disk; the HARD
-> RULE wants it committed into docs/direction/ at the founder's GO).** **GROUP C → ✅ DECIDED + EXECUTED
-> (founder, 2026-07-13, this commit): C1 DISCIPLINE_ENFORCED = LATER (founder decision — DO NOT RE-RAISE;
+> ~20-item MUST-CHANGE table. **GROUP B (Founder decision): ALL new guard machinery (audit 7.1–7.5, 3.1)
+> → Phase 6 HARDEN & SEAL — per the anti-blocking law (Founder file
+> `GitHub/_research/AUDIT_TRIAGE_ET_LOI_ANTIBLOCAGE.md` — ⚠️ OUT-OF-REPO on the Founder's disk; the HARD
+> RULE wants it committed into docs/direction/ at the Founder's GO).** **GROUP C → ✅ DECIDED + EXECUTED
+> (Founder, 2026-07-13, this commit): C1 DISCIPLINE_ENFORCED = LATER (Founder decision — DO NOT RE-RAISE;
 > returns at its own time, Phase 6 at the latest) · C2 Studio-OS teaser REMOVED from the public home (its
 > intent → the future public Roadmap page, slice 2.8; config kept + annotated for that harvest — origin:
-> protocol-evolution episodes/modules + the founder's raod_map.jpg 9-node design) · C3 "Raised class" note
+> protocol-evolution episodes/modules + the Founder's raod_map.jpg 9-node design) · C3 "Raised class" note
 > → "Higher commission rate for consistent, high-retention sources." (tier name "Trusted" kept) · C4
-> whitepaper §05 rewritten with the founder-approved verbatim (same single seat · standing on the Capital
+> whitepaper §05 rewritten with the Founder-approved verbatim (same single seat · standing on the Capital
 > axis · never a price/financial advantage).** **THE ANTI-BLOCKING LAW IS NOW IN-REPO CANON:
 > `docs/direction/CANON_LOI_ANTIBLOCAGE.md` (TIER-0, indexed) — audits are proposals, never law; guards
-> minimal until MVP; only legal/funds/truth-first are non-negotiable.** **Instance pinning → ✅ DONE (founder, 2026-07-13, Replit dashboard): autoscale
+> minimal until MVP; only legal/funds/truth-first are non-negotiable.** **Instance pinning → ✅ DONE (Founder, 2026-07-13, Replit dashboard): autoscale
 > max machines = 1** (4 vCPU / 8 GiB) — in-memory SIWE sessions/nonces are now single-instance-safe.
 > Q21's Reserved-VM remains the durable option later; this closes the immediate risk.
 >
 > **▶ Prior: `docs/handoff/new-session-handoff-2026-07-13-c5-go-live-flip.md`** —
-> **C5 = the GO-LIVE flip; the founder's GO is GIVEN (2026-07-13).** C2 approve→buy is BUILT + pushed
+> **C5 = the GO-LIVE flip; the Founder's GO is GIVEN (2026-07-13).** C2 approve→buy is BUILT + pushed
 > OFF (`c7ad5c7`, proven folded out of the bundle). The flip was deliberately NOT rushed at
 > end-of-context (the C1.3 lesson). The handoff carries the COMPLETE checklist: flip the literal +
 > a new transactional DisplayLifecycle + the sitewide read-only-claims sweep (8 spots) + SEO title +
-> registry STATE rewrites — ONE atomic commit, then Replit publish, then the founder's $5 real test
+> registry STATE rewrites — ONE atomic commit, then Replit publish, then the Founder's $5 real test
 > (expected seat #13; the 12/11 readback recomputes to 13/12 by itself).
 >
 > **▶ Prior: `docs/handoff/new-session-handoff-2026-07-12-duplicate-seat-and-historical-gate.md`** —
 > a PRODUCTION DUPLICATE SEAT exists on-chain (historical #7 `0x3FF01A0c` = also V3 seat #11, verified
-> live), 7 historical wallets still ARMED (incl. the founder), 11 distinct wallets vs `memberCount()`=12.
+> live), 7 historical wallets still ARMED (incl. the Founder), 11 distinct wallets vs `memberCount()`=12.
 > The V3 historical artifact is `TheSyndicate/src/lib/v3-historical-members.ts` (root MATCHES live V3);
 > `v1-proof.ts` is POISON (V2b, wrong root + address-only leaf). **C1.3 the historical gate → ✅ SEALED
 > in prod (`a019152`, Replit-verified 33/33 gates + live-domain checked: quote flow intact, zero console
@@ -5394,7 +5464,7 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > one wallet holds two seats" + verify link on home hero, `/whitepaper`, `/faq` (renders only when
 > overlap > 0 and both figures live). Reality guard 138/138, targets 208/208. **Chronicle candidate
 > → ✅ WRITTEN: `docs/chronicle/candidates/2026-07-12-the-duplicate-seat.md`** (protocol-institutional
-> register, identity/amount-blind; PROMOTION IS A HUMAN ACT — it waits for the founder and for the
+> register, identity/amount-blind; PROMOTION IS A HUMAN ACT — it waits for the Founder and for the
 > Phase-5 `/chronicle` surface; it confers nothing by existing). **The 4-item duplicate-seat build
 > order is COMPLETE.** **C1.4 economic proof → ✅ SEALED in prod (`f8bdec2`, live-domain verified:
 > both prices live, the market-above-entry relation variant renders, all 5 doctrine lines verbatim):** `/join` "Two prices, read
@@ -5410,9 +5480,9 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > twice) · fresh re-quote at the buy click → `computeMinSynOutRaw` · seat from the
 > `MembershipPurchasedV3` event ONLY. Plus: chain-43114 assert + switch · USDC token read from the
 > sale's own `USDC()` immutable (never hardcoded) · C1.3 gate RE-CONSULTED (blocks the flow) ·
-> balance pre-check · honest revert translation (Q11 names). **GO-LIVE = a founder act:** flip the
+> balance pre-check · honest revert translation (Q11 names). **GO-LIVE = a Founder act:** flip the
 > literal + the C5 lead/badge/boundary-card rewrite in the same commit (the page must never say
-> read-only above a live buy button) + Q21 auth. Next = C5 + Q21 at the founder's signal.
+> read-only above a live buy button) + Q21 auth. Next = C5 + Q21 at the Founder's signal.
 > Founder decision: SHOW BOTH (12 seats / 11 wallets / one overlap), never fix silently.
 >
 > **▶ Prior (still valid): `docs/handoff/new-session-handoff-2026-07-12-checkout-proven-and-chain-truth.md`** —
@@ -5420,7 +5490,7 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > prod (C1.0→C1.2b, the referrer line validated on a REAL active source). Carries: the CHAIN TRUTH
 > (9 contracts ever, CommissionRouter never deployed, ONE active BUILDER_SOURCE 5% LIFETIME), the two
 > STANDING RULES (a public-RPC log scan is NOT proof of absence; a creation event is a STATE — read
-> `sourceConfig()` live), the founder decisions (~~referral not-active-in-MVP~~ **← OVERRIDDEN
+> `sourceConfig()` live), the Founder decisions (~~referral not-active-in-MVP~~ **← OVERRIDDEN
 > 2026-07-13: active referral IS MVP — see the DECIDED block**, money is the company's,
 > buyer pays two recipients in one tx, tiers-by-spend legal, rank never demotes, V4=router model), and
 > the CONSOLIDATED SLICE LIST (A MVP / B after / C V4-contracts / D done). Prior C1-groundwork handoff
@@ -5430,7 +5500,7 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 > the full recap: the member-recognition arc is **LIVE in prod** (auth on · SIWE signs canonical domain ·
 > member identity menu · EVERY member recognized: genesis #1–#8 frozen roster + V3 #9–#12 live · own-receipt
 > "Share my proof" · prod DB roster populated+verified 12=8+4, prod-write barrier restored). **ADR-003
-> (anti-doxx) is canon.** That doc carries ALL settled founder decisions (naming canon · two shells · no twin
+> (anti-doxx) is canon.** That doc carries ALL settled Founder decisions (naming canon · two shells · no twin
 > pages · the authorized S7/S11 wire widening · Member Home spec · harvest source · APPROVE≠PAYMENT).
 > **EXACT NEXT STEP (strict order):** (1) green main = 7 stale-guard fixes [this commit] → (2)
 > `config/surfaceNaming.ts` + `guard-surface-naming` (BLOCKING) → (3) widen the wire S7/S11 → (4) Member Home →
@@ -5451,7 +5521,7 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 - **🔴 FOUNDER OVERRIDE, PERMANENT (2026-07-13) — "Referral not active in the MVP" is DEAD.**
   **Active referral IS part of the MVP** and lights up as soon as possible: C5 flip → the $5 test
   THROUGH the referral link (two proofs in one tx: checkout + the on-chain introduction payment) →
-  then the PUBLIC referral-layer activation as its own founder-gated slice (programLifecycle switch +
+  then the PUBLIC referral-layer activation as its own Founder-gated slice (programLifecycle switch +
   copy + member cards + the guard-safe-source adaptation proposed IN that slice, per the anti-blocking
   law). **No agent re-raises the old rule.** Everything else in the 2026-07-12 referral decisions
   STANDS: the buyer pays two recipients in ONE tx; the Syndicate pays nobody (no KYC/1099/float; copy
@@ -5459,10 +5529,10 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   CAPITAL AXIS; the red line = never a better SYN price; rank never demotes; V4 target =
   CommissionRouterV1's model. *(Superseded that day: the "final economics = V4, ship dark" clause —
   the 2026-07-12 handoff lines saying "does NOT ship active in the MVP" are HISTORY, not law.)*
-- **CANON (founder, 2026-07-12) — two authoritative specs are now IN-REPO (were on the founder's
+- **CANON (Founder, 2026-07-12) — two authoritative specs are now IN-REPO (were on the Founder's
   desktop): `docs/direction/CONSTITUTION_AUTORITE.md`** (the 4-level authority hierarchy — N0 immutable
-  bytecode / N1 founder-on-chain / N2 server / N3 presentation; a lower level never contradicts a higher;
-  the 3 admin control forms READ / PROPOSE(build-tx-founder-signs) / WRITE must look different) **and
+  bytecode / N1 Founder-on-chain / N2 server / N3 presentation; a lower level never contradicts a higher;
+  the 3 admin control forms READ / PROPOSE(build-tx-Founder-signs) / WRITE must look different) **and
   `docs/direction/SPEC_REFERRAL_SYSTEM.md`** (the full referral/source system, all decided). Both TIER-0
   in the canon index.
 - **REFERRAL STATE (verified on-chain 2026-07-12, matches SPEC §①) + BUILD ORDER.** Sale V3 `0x2A6c…`
@@ -5474,13 +5544,13 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   shows. CommissionRouterV1 is NOT deployed (confirmed on-chain — a V4 design, not an asset). V3 pays
   `payoutWallet` **directly** (`_payAcquisition`); it does NOT use a CommissionRouter. Order (SPEC §⑪):
   **R1** referral-program conditions doc (hashed → `metadataHash`; BLOCKING — `createSource(LIFETIME)`
-  reverts `MissingMetadata` without it) → **R2** first source (founder signs `createSource(…PAUSED)`, test
+  reverts `MissingMetadata` without it) → **R2** first source (Founder signs `createSource(…PAUSED)`, test
   fail-closed, then `setSourceStatus(ACTIVE)`) → **R3** `&via=` channel (off-chain, no deps) → **R4**
   `/source` surface (`NOT_ACTIVE`, never "earn now") → **R5** event indexer → **R6** Connector staircase →
   **R7** the emitter contract (self-service). C1.2b already implements the SPEC §⑧ two-bug-corrected source
   line (rate=quote, address=`payoutWallet`, consistency fail-closed).
 
-- **TIER-0 LAW (founder, 2026-07-12) — `docs/direction/CANON_VISIBILITY_LAW.md`.** On a chain, "hiding"
+- **TIER-0 LAW (Founder, 2026-07-12) — `docs/direction/CANON_VISIBILITY_LAW.md`.** On a chain, "hiding"
   does not exist — only making legible vs tedious; everything is already public. We hide nothing; we refuse
   to FABRICATE what the chain lacks. FORBIDDEN: a directory / search / reverse index (seat→wallet) / forced
   wallet↔person link / exposing a non-consenting member. ALLOWED (the chain already publishes it): INFRA
@@ -5495,14 +5565,14 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   infra addresses still ride verifyLinks, client still out of scope — doctrine unchanged, only the name).
   Renamed across all 28 occurrences / 14 api-server code files, incl. backbone.guard's code-as-string check
   (`assertAddressSafeAggregate(JSON.stringify(model))`); api typecheck + guards green.
-- **TIER-0 LAW (founder, 2026-07-12) — `docs/direction/CANON_INVARIANT_VS_STATE.md`.** The
+- **TIER-0 LAW (Founder, 2026-07-12) — `docs/direction/CANON_INVARIANT_VS_STATE.md`.** The
   anti-drift law that ends the 6-rebuild loop: every repo statement is an **INVARIANT** (a rule
-  about *how* — only the founder authors it; agents cite/obey, never invent) or a **STATE** (a
+  about *how* — only the Founder authors it; agents cite/obey, never invent) or a **STATE** (a
   photograph of today — any slice may make it obsolete; the slice that changes reality updates
   the STATE line in the SAME commit; a STATE is NEVER a permission gate or a reason not to build).
-  Also fixes the `enabled` (founder decision, literal OK) vs `posture` (chain-derived, literal
+  Also fixes the `enabled` (Founder decision, literal OK) vs `posture` (chain-derived, literal
   NEVER) collapse. Loaded at every boot (TIER-0 in `00_CANON_INDEX.md`).
-- **CORRECTED (founder SPEC_REFERRAL_SYSTEM §⑨, 2026-07-12) — `HOME_RANK_LADDER` is the CAPITAL AXIS,
+- **CORRECTED (Founder SPEC_REFERRAL_SYSTEM §⑨, 2026-07-12) — `HOME_RANK_LADDER` is the CAPITAL AXIS,
   NOT poison.** My earlier "poisoned canon" flag OVER-CALLED it. Per the spec: paliers-by-spend are
   universal + legal (Sephora/Ulta/Marriott/Uber/AA/Starbucks); `HOME_RANK_LADDER` unlocks NOTHING today
   (`{Citizen, $5, 500 SYN}` = just 100 SYN/$ = the era-1 rate everyone gets — a label, no bonus). It is
@@ -5516,7 +5586,7 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   `syndicate-config.ts:687` (tsconfig-excluded, NOT served) — no live-app fix needed; label it honestly
   if that canon is ever reused. `RANKS_V2` named tiers are still not used on the checkout (numbers only).
 
-- **DECIDED (founder, 2026-07-12) — narrative "Chapter" label pulled FORWARD from Phase 5
+- **DECIDED (Founder, 2026-07-12) — narrative "Chapter" label pulled FORWARD from Phase 5
   (recognition only).** A small pure-function display: `artifacts/studio/src/lib/chapters.ts`
   (`chapterForSeat`, deterministic by seat number — I Genesis Signal #1–333 · II First Thousand
   #334–1000 · III The Expansion #1001–3333 · IV First Ten Thousand #3334–10000 · V Open Era
@@ -5527,10 +5597,10 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   NOTE: header's existing "Genesis" pill badge = the ERA-provenance label (#1–8 freeze-root), a
   DIFFERENT thing from chapter "I Genesis Signal" (#1–333) — do not conflate.
 
-- **DECIDED (founder, 2026-07-11) — the runtime served-payload discipline NET is LIFTED
+- **DECIDED (Founder, 2026-07-11) — the runtime served-payload discipline NET is LIFTED
   (reversible).** `assertProtocolRealityDiscipline` no longer throws on an address-leak /
   financial-framing payload; gated behind `DISCIPLINE_ENFORCED` (flip to re-arm). Recorded as
-  an explicit founder amendment in `docs/adr/ADR-003-…-anti-doxx.md`. ADR-003's CORE stays in
+  an explicit Founder amendment in `docs/adr/ADR-003-…-anti-doxx.md`. ADR-003's CORE stays in
   force (no KYC, no directory, own-row/aggregate, `memberNumber→wallet` server-only — never
   built into a served payload), and the build-time envelope leak scans still run — so nothing
   is doxxed today; only the automated runtime catch was lifted. Financial-framing net expected
@@ -5597,9 +5667,9 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   **standing implementation authorization for Phases 1–10** — it LIFTS report-first, per-slice approval,
   "no implementation authorized", and the read-only-foundation gate; a phase defers only if its **input**
   is missing. It KEEPS every truth/safety invariant (no fake-live, no PII, no yield framing, single canon,
-  read-only spine never gains write endpoints, **BUILD ≠ GO-LIVE**: real-money/auth-flip stays a founder
-  act needing founder inputs). **Implication:** the tight show-diff→approve→push cadence we run is the
-  founder's *choice*, tighter than canon requires — not a canon requirement; canon permits building
+  read-only spine never gains write endpoints, **BUILD ≠ GO-LIVE**: real-money/auth-flip stays a Founder
+  act needing Founder inputs). **Implication:** the tight show-diff→approve→push cadence we run is the
+  Founder's *choice*, tighter than canon requires — not a canon requirement; canon permits building
   Phases 1–10 without per-slice approval. (Repoints applied: Compass §5/§8; `/join` note = stale
   authorization gate, OPEN_QUEUE Q20.)
 - **DECIDED — keep the newer OG image (`opengraph.jpg`), do NOT revert.** Replit regenerated the
@@ -5622,7 +5692,7 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
 - **Live chain figures stay client-hydrated, never hardcoded.** Static copy is prerendered; every number
   reads live from chain/config, labeled VERIFIED / PENDING / FUTURE / PAUSED / FOUNDER-GATED.
 - **Replit coordination point:** serving per-route prerendered HTML (one file per path, not a single SPA
-  fallback) needs a **Replit serving change** — founder/Replit handoff at end of the 2.0 slice.
+  fallback) needs a **Replit serving change** — Founder/Replit handoff at end of the 2.0 slice.
 - **Repo wins over spec.** Read the repo, adapt, flag any disagreement.
 - **"package" is BANNED publicly** → use **"entry amount" / "entry tier"**; extend the forbidden-copy guard
   (`scripts/guard-forbidden-copy.ts`) to also ban: invest, raised, donation, contribution, package,
@@ -5736,7 +5806,7 @@ markers update. New session work lives BELOW in "Phase 3–6 / later", never wov
 
 *A holding area for work decided/researched this session. It does NOT reorder the frozen Phase-2 list; each
 item slots into Phases 3–6 at build time, after its prerequisites. Format: name · status · source doc.
-Status: ⬜ PENDING · 🔒 DEFERRED (founder's call — §8-⑧: no legal gate). All money-touching items governed by
+Status: ⬜ PENDING · 🔒 DEFERRED (Founder's call — §8-⑧: no legal gate). All money-touching items governed by
 `SETTLED_RULES_DO_NOT_RELITIGATE.md` (former legal-pass clause: removed, §8-⑧).*
 
 **Phase 3 — the Guide's brain (deterministic Guide already SEALED; these extend it)**
@@ -5776,11 +5846,11 @@ Status: ⬜ PENDING · 🔒 DEFERRED (founder's call — §8-⑧: no legal gate)
 - Season/recognition **admin lifecycle** in the RBAC admin shell (state machine · next-step engine · audit ·
   archive) · ⬜ PENDING · src `SEASONS_ENGINE_ON_SYNDICATE_OS.md` §6.
 - **Funding = company money, discretionary, effort-based, USDC-not-SYN, never touches 70/20/10** (the cash
-  rail; reuse the Merkle infra) · 🔒 DEFERRED (founder's call — §8-⑧: no legal gate) · src `SEASONS_ENGINE_ON_SYNDICATE_OS.md` §8 + `SETTLED_RULES`.
+  rail; reuse the Merkle infra) · 🔒 DEFERRED (Founder's call — §8-⑧: no legal gate) · src `SEASONS_ENGINE_ON_SYNDICATE_OS.md` §8 + `SETTLED_RULES`.
 
 **Phase 5–6 — identity & income economy**
 - **`/staff` — PUBLIC OPERATOR REGISTRY (anti-impersonation)** · ⬜ PENDING (record, do not build; own slice, CAN
-  ship EARLY) · founder 2026-07-12. The #1 crypto fraud is "I'm Syndicate support" draining a wallet; the answer
+  ship EARLY) · Founder 2026-07-12. The #1 crypto fraud is "I'm Syndicate support" draining a wallet; the answer
   is MECHANICAL — every operator signs in with their EVM address, and that address is PUBLIC on the site with its
   STATUS (`Seat #3 · Member support · 0x9F4A…22B1 · ● ACTIVE` / `Content operator · 0x5D18…88A0 · ○ SUSPENDED`).
   An impostor can COPY an address but CANNOT SIGN with it ("ask them to sign this message with that address —
@@ -5789,7 +5859,7 @@ Status: ⬜ PENDING · 🔒 DEFERRED (founder's call — §8-⑧: no legal gate)
   A SUSPENDED operator MUST show SUSPENDED. Under the Visibility Law this is INFRASTRUCTURE identity — publishing
   it is REQUIRED, not merely permitted.
 - **Public leaderboard — HONOUR ROLL, not a directory** · ⬜ PENDING (record; lands WITH the Standing slice, not
-  before) · founder 2026-07-12. Public by default (it IS the engagement engine — Zealy/GitHub/Strava). The exact
+  before) · Founder 2026-07-12. Public by default (it IS the engagement engine — Zealy/GitHub/Strava). The exact
   application of the Visibility Law: ❌ a directory (wallet→who, fabricated) — never; ✅ a RANKING (top-N
   Connectors, the chain already publishes it). Shows a SEAT + a STANDING ("Seat #12 · Foundational Connector · 47
   introductions"), an honour roll, NEVER a money ranking (retention/duration/quality). Alias stays opt-in: by
@@ -5798,9 +5868,9 @@ Status: ⬜ PENDING · 🔒 DEFERRED (founder's call — §8-⑧: no legal gate)
   src `LIVING_ORGANISM_MASTER_PLAN.md` §9.
 - Shareable cards / OG (consent-gated identity; viral) · ⬜ PENDING (non-financial) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
 - Verifiable reputation (multi-axis; never wealth-ranking) · ⬜ PENDING (non-financial) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
-- Address labeling **service** (verified, pay-to-label, never impersonate) · 🔒 DEFERRED (founder's call — §8-⑧: no legal gate) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
-- Aliases (ENS-style, sold; tied to seat; non-tradeable) · 🔒 DEFERRED (founder's call — §8-⑧: no legal gate) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
-- Guide premium tier (bundle into a recognition tier; free Guide stays fully truthful) · 🔒 DEFERRED (founder's call — §8-⑧: no legal gate) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
+- Address labeling **service** (verified, pay-to-label, never impersonate) · 🔒 DEFERRED (Founder's call — §8-⑧: no legal gate) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
+- Aliases (ENS-style, sold; tied to seat; non-tradeable) · 🔒 DEFERRED (Founder's call — §8-⑧: no legal gate) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
+- Guide premium tier (bundle into a recognition tier; free Guide stays fully truthful) · 🔒 DEFERRED (Founder's call — §8-⑧: no legal gate) · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
 - White-label truth-first Guide / verification kit (post-MVP, separate business) · 🔒 DEFERRED · src `LIVING_ORGANISM_MASTER_PLAN.md` §5.
 
 **Transparency signature moves (cheap, high-differentiation; interleave)**
@@ -5813,7 +5883,7 @@ Status: ⬜ PENDING · 🔒 DEFERRED (founder's call — §8-⑧: no legal gate)
 **Cross-cutting (design principles, not slices):** engagement psychology (`LIVING_ORGANISM_MASTER_PLAN.md`
 §4 — honest levers only, **recency-truth**) applies to every surface. **Governance is banned** — reframe any
 DAO/member-memory track as **permanently non-promoting recognition**. The remaining Phase 3–6 infra from
-`MASTER_BUILD_SPEC.md` (single-instance/Reserved-VM, operator DB + founder seed, auth + admin ON/OFF toggle,
+`MASTER_BUILD_SPEC.md` (single-instance/Reserved-VM, operator DB + Founder seed, auth + admin ON/OFF toggle,
 live checkout, referral read, RBAC + admin shell, perf/a11y/responsive/security audits) stays as specified
 there — this block ADDS to it, never replaces it.
 
@@ -5821,23 +5891,23 @@ there — this block ADDS to it, never replaces it.
 "no reward" comment as "no **cash** reward" (consistent with earning **XP** = recognition), and the "new
 sale/era contract" is a future audit-gated (engineering only — §8-⑧) design, not an override of a locked decision. No
 genuine RED-LINE mechanism to flag: the seasons doc itself drops the banned mechanisms (XP→USDC,
-SYN-as-reward, boost/multiplier, cash-convertible discount) and keeps the cash rail founder-gated
+SYN-as-reward, boost/multiplier, cash-convertible discount) and keeps the cash rail Founder-gated
 (money decisions only — §8-⑧: no legal gate). Per
 `SETTLED_RULES`, earn/referral/season/pot/Learn&Earn=XP are settled and NOT re-flagged.
 
 ## Slice protocol (every step)
 
-Read the real repo → 4-line gate → **wait for founder GO** → build + guards (Replit is the build gate) →
-show diff → founder approves → commit + push `main` → tick `DESIGN_ROADMAP` → deploy verdict (🚀 / ✅).
+Read the real repo → 4-line gate → **wait for Founder GO** → build + guards (Replit is the build gate) →
+show diff → Founder approves → commit + push `main` → tick `DESIGN_ROADMAP` → deploy verdict (🚀 / ✅).
 
 
-> **▶ REFERRAL-FIRST, FOR REAL — ✅ BOTH PARTS BUILT (2026-07-13, founder GO ×2, awaiting push GO):**
+> **▶ REFERRAL-FIRST, FOR REAL — ✅ BOTH PARTS BUILT (2026-07-13, Founder GO ×2, awaiting push GO):**
 > ① THE DEEP SWEEP shipped (`6ac9977`): every rendered sentence referral-first; the builder success
 > message's stale "not active yet" killed. ② HUMAN URL: **/referral is the canonical program URL**
 > (App route + INDEX/sitemap entry + module/nav/CTA/docs repointed); /source-attribution stays a
 > serving ALIAS (200, `REDIRECT` status → noindex,follow; canonical consolidation — no 301 exists at
 > the static layer until the domain transfer); artifact.toml regenerated 17 routes/34 rules; sitemap
-> regenerated (15 INDEX). ③ MONEY-FLOW VOCABULARY (founder decision, re-engraved by the advisor
+> regenerated (15 INDEX). ③ MONEY-FLOW VOCABULARY (Founder decision, re-engraved by the advisor
 > 2026-07-13 — FLOW-BASED, not a blanket word): `acquisitionCost` = bytecode/ABI word ONLY, banned
 > from every public surface ("acquisition cost" is RESERVED for real future marketing costs — ads,
 > CPA — never the referrer payment). BUYER-side money lines say "Paid to referrer" / referrer

@@ -19,6 +19,17 @@
 //     walls are server-side. GATED remains reserved for a future slice with a
 //     wired client state machine; guard-access-state forbids it until then.
 // Frontend gating is visibility/UX only — never permission control.
+//
+// THE WORD IS "FOUNDER", CAPITAL F (Founder ruling 2026-07-26) — including the
+// compound "Founder-signed". Every `summary` below is RENDERED TEXT, not a
+// code note: SurfaceMapSection prints it under the surface's name on the
+// public /status map (PUBLIC + MEMBER rows) and on /os-map (all three
+// audiences, the Founder's own read). The lowercase "founder-approved /
+// founder-promoted / founder-gated" that had accumulated across these strings
+// was therefore the ruling's exact defect class, on surfaces he reads — swept
+// 2026-07-26. The two permanent exemptions (the referral-terms file whose
+// bytes are hashed on-chain, and "founder number", being renamed "member
+// number") live elsewhere; nothing in this file is exempt.
 
 import type {
   AccessEnforcement,
@@ -136,7 +147,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PUBLIC_VISITOR",
     layout: "public",
     summary:
-      "Terms of Use — founder-approved text: what a seat is and is not, purchase finality, the referral program's rules, no custody, the public record.",
+      "Terms of Use — Founder-approved text: what a seat is and is not, purchase finality, the referral program's rules, no custody, the public record.",
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },
@@ -377,7 +388,17 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     audience: "PUBLIC",
     surface: "PUBLIC_VISITOR",
     layout: "public",
-    summary: "The public heartbeat, live — receipt-backed events, complete served history.",
+    // TRUTH FIX 2026-07-26 (six-lens review). This summary RENDERS on the
+    // public /status surface map, so it carried the SAME overclaim the served
+    // head did — "complete served history" — while a movement no lane reads
+    // (the vault's USDC→AVAX swap) never reaches the feed; and "receipt-backed
+    // events" was wrong for the lines that are not receipts at all
+    // (deployments, milestone crossings, era turns, Chronicle promotions).
+    // Two public surfaces must never state two things: this now says exactly
+    // what the /activity head says, and spends its extra room on the one lane
+    // the 160-char head could not fit — the Founder facet.
+    summary:
+      "The public heartbeat, live — seats, burns, treasury, liquidity, archive, referrals, milestones, eras, footprint, deployments and Chronicle entries; the Founder's own acts carry their own lane, and every chain line links to the public explorer.",
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },
@@ -388,7 +409,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PUBLIC_VISITOR",
     layout: "public",
     // AUD-ROUTE: "teaser" DIED — the register is open and serves its entries.
-    summary: "The solemn record, open — founder-promoted entries; promotion is a human act.",
+    summary: "The solemn record, open — Founder-promoted entries; promotion is a human act.",
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },
@@ -430,7 +451,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PUBLIC_VISITOR",
     layout: "public",
     summary:
-      "Public joining surface: live engine read + exact quote + the two-signature join signed from the visitor's own wallet (C5 go-live, founder 2026-07-13).",
+      "Public joining surface: live engine read + exact quote + the two-signature join signed from the visitor's own wallet (C5 go-live, Founder 2026-07-13).",
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },
@@ -492,7 +513,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
     summary:
-      "Internal founder preview: the full protocol organism, honestly labelled.",
+      "Internal Founder preview: the full protocol organism, honestly labelled.",
     requiredState: "S11",
     enforcement: "PREVIEW_LABELLED",
   },
@@ -503,7 +524,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
     summary:
-      "Admin console dashboard (sectioned shell): the founder's live console — founder-gated, audited writes plus posture reference.",
+      "Admin console dashboard (sectioned shell): the Founder's live console — Founder-gated, audited writes plus posture reference.",
     requiredState: "S11",
     enforcement: "PREVIEW_LABELLED",
   },
@@ -512,7 +533,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     audience: "OPERATOR_PREVIEW",
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
-    summary: "Admin section: members & continuity — live founder-gated controls (audited), plus postures.",
+    summary: "Admin section: members & continuity — live Founder-gated controls (audited), plus postures.",
     requiredState: "S11",
     enforcement: "PREVIEW_LABELLED",
   },
@@ -522,7 +543,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
     summary:
-      "Admin section in FIVE sub-tabs (CONSOLE ② 2026-07-22): the LIVE Source review queue (default face) · Signing (create/manage + promotions) · Program terms · Registry · Performance (per-source table + CSV, K3.c) — live founder-gated controls (audited).",
+      "Admin section in FIVE sub-tabs (CONSOLE ② 2026-07-22): the LIVE Source review queue (default face) · Signing (create/manage + promotions) · Program terms · Registry · Performance (per-source table + CSV, K3.c) — live Founder-gated controls (audited).",
     requiredState: "S11",
     enforcement: "PREVIEW_LABELLED",
   },
@@ -531,7 +552,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     audience: "OPERATOR_PREVIEW",
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
-    summary: "Admin section: operator roles and registry — live founder-gated controls (audited); edit stays a labelled preview.",
+    summary: "Admin section: operator roles and registry — live Founder-gated controls (audited); edit stays a labelled preview.",
     requiredState: "S11",
     enforcement: "PREVIEW_LABELLED",
   },
@@ -559,7 +580,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     audience: "OPERATOR_PREVIEW",
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
-    summary: "Admin section: the Seasons 2 rails — recognition observation (autonomous) + the season pot frame (founder-gated, S3).",
+    summary: "Admin section: the Seasons 2 rails — recognition observation (autonomous) + the season pot frame (Founder-gated, S3).",
     requiredState: "S11",
     enforcement: "PREVIEW_LABELLED",
   },
@@ -568,7 +589,7 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     audience: "OPERATOR_PREVIEW",
     surface: "PRIVATE_OPERATOR_ADMIN",
     layout: "console",
-    summary: "Admin section: the live broadcast composer and sent history (founder-gated, audited).",
+    summary: "Admin section: the live broadcast composer and sent history (Founder-gated, audited).",
     requiredState: "S11",
     enforcement: "PREVIEW_LABELLED",
   },

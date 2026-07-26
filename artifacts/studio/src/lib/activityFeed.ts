@@ -137,6 +137,10 @@ export interface ActivityScan {
   toBlock: number;
   /** Chunks that failed (coverage shrinks honestly; never silently). */
   chunksFailed: number;
+  /** False when the chain HEAD itself could not be read, so no window was ever
+   *  opened and NOTHING is covered. Distinct from `chunksFailed`, which shrinks
+   *  a window that WAS opened. The caller must not print a block range. */
+  windowRead: boolean;
 }
 
 const CHUNK = 2000;
@@ -166,7 +170,20 @@ export async function scanRecentActivity(
   addrs: FeedAddresses,
   windowBlocks: number = DEFAULT_WINDOW_BLOCKS,
 ): Promise<ActivityScan> {
-  const head = Number(await publicClient.getBlockNumber());
+  // THE PAGE-KILLER, fixed 2026-07-26. This read was UNGUARDED while every chunk
+  // below sits in a try/catch — so one RPC hiccup rejected the caller's
+  // Promise.all, its .then never ran, `loading` stayed true forever, the served
+  // history that had loaded PERFECTLY was discarded, and the Re-read button is
+  // disabled in exactly that state. The visitor had no way out of "Reading the
+  // chain…". A window we could not open is honestly ZERO coverage — never a
+  // thrown page. (Fail-soft per chunk was always the doctrine here; the head
+  // read had simply been left outside it.)
+  let head: number;
+  try {
+    head = Number(await publicClient.getBlockNumber());
+  } catch {
+    return { items: [], fromBlock: 0, toBlock: 0, chunksFailed: 0, windowRead: false };
+  }
   const from = Math.max(0, head - windowBlocks);
   const items: ActivityItem[] = [];
   let chunksFailed = 0;
@@ -281,5 +298,5 @@ export async function scanRecentActivity(
   for (const i of items) i.dateUtc = dates.get(i.blockNumber) ?? "";
 
   items.sort((a, b) => b.blockNumber - a.blockNumber);
-  return { items, fromBlock: from, toBlock: head, chunksFailed };
+  return { items, fromBlock: from, toBlock: head, chunksFailed, windowRead: true };
 }

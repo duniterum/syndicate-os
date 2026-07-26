@@ -9,14 +9,20 @@
 //     USDC at $1, plus AVAX / BTC.b / WETH.e at live Chainlink prices.
 //   · SYN is NEVER assigned a USD value — its only on-chain price is a thin
 //     pool, so a mark-to-market would be unrealizable and chain-refutable.
-//   · THE POOL IS NOT VALUED AND NOT SUMMED. Doubling its USDC reserve (the
-//     usual AMM shortcut) silently marks the pool's SYN half to that same thin
-//     price — the exact thing the rule forbids — AND the pair's reserves belong
-//     to every liquidity provider, not to the protocol alone: no read here
-//     establishes the protocol's share. So the pool is shown as reserves, in
-//     tokens, plainly labelled, and left out of the total. Valuing our real
-//     share needs a pool-share read (balanceOf(pair)/totalSupply(pair)) — a
-//     named follow-up, never a guess.
+//   · THE POOL IS COUNTED AT OUR REAL SHARE, USDC LEG ONLY. It is NEVER counted
+//     by doubling the USDC reserve (the usual AMM shortcut), because that
+//     silently marks the pool's SYN half to the same thin price the rule above
+//     forbids. And the pair's reserves belong to every liquidity provider, so
+//     ownership is READ, never assumed: `financial.lp.totalSupply` +
+//     `financial.lp.protocolBalance` (balanceOf(pair, LIQUIDITY_WALLET)) — LP
+//     tokens are an ERC-20, so who-put-what is a public balance. Only the
+//     protocol's liquidity wallet counts; the Founder's personal liquidity is
+//     HIS, never the protocol's treasury.
+//     CORRECTED 2026-07-26: this header still described the pool as "not valued
+//     and not summed … a named follow-up", a hundred lines above the body that
+//     performs exactly that read and sums it. The follow-up SHIPPED on
+//     2026-07-25 and nobody moved the header — which is how featureStatus came
+//     to carry the same false line, and how the /contracts served head did too.
 // Every row links to Snowtrace — the wallet page proves each balance.
 import { Bitcoin, Coins, Droplet, Hexagon, Shield, Ticket, Triangle, Wallet } from "lucide-react";
 import { useGetProtocolReality, type VerifyLinkId } from "@workspace/api-client-react";
@@ -260,7 +266,7 @@ export function ProtocolAssetsCard() {
       </div>
       <p className="mb-4 text-sm text-muted-foreground">
         What the protocol holds — on-chain verifiable.{" "}
-        <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground/70">{VERIFY_SLOGAN}</span>
+        <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">{VERIFY_SLOGAN}</span>
       </p>
       {/* The headline figure. Scope is stated, never implied: only directly-held
           assets with a deep market are valued and summed. */}

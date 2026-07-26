@@ -278,23 +278,56 @@ export function LiveActivityFeed({
   // on "Reading the chain…" forever; found at the H2-⑬ rig verification).
   const [readNonce, setReadNonce] = useState(0);
 
+  // ── THE SERVED HISTORY — never gated on the chain directory ────────────────
+  // THE SECOND BLANK-PAGE PATH, fixed 2026-07-26. Both served-history reads used
+  // to sit inside an effect whose first line was `if (!addrs || …) return`.
+  // `addrs` is null whenever ANY of the four verify-link ids fails to resolve
+  // (see the memo above) — and the served history needs NO chain address at all.
+  // So a directory outage blanked a public record that would have rendered
+  // perfectly: `loading` stayed false, `scan` stayed null, the page sat on
+  // "Reading the chain…" forever, and the only escape was greyed out because the
+  // Re-read button was disabled on `!addrs`. Same dead end as the first path,
+  // through a different door. These are two independent truths; they now live in
+  // two independent effects and neither can hide the other.
+  useEffect(() => {
+    if (servedTried) return;
+    let cancelled = false;
+    void Promise.allSettled([
+      fetchServedFeed(),
+      onlyKinds ? Promise.resolve(null) : fetchServedFeed({ limit: 1 }),
+    ]).then(([f, head]) => {
+      if (cancelled) return;
+      setServed(f.status === "fulfilled" ? f.value : null);
+      setPageInfo(head.status === "fulfilled" ? (head.value?.pagination ?? null) : null);
+      setServedTried(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [readNonce]);
+
+  // ── THE LIVE WINDOW — the only read that genuinely needs the directory ─────
+  // A null `addrs` means the directory has not resolved: no window is read,
+  // `scan` stays null, and the page states that plainly instead of hiding the
+  // served history behind it.
   useEffect(() => {
     if (!addrs || loading || scan) return;
     setLoading(true);
-    // Three sources in parallel: the served history (fail-soft to null), the
-    // A2 head page (whole-history counts for the chips — fail-soft), and the
-    // client recent window. Each renders only what it truly covers.
-    void Promise.all([
-      scanRecentActivity(addrs),
-      fetchServedFeed(),
-      onlyKinds ? Promise.resolve(null) : fetchServedFeed({ limit: 1 }),
-    ]).then(([s, f, head]) => {
-      setScan(s);
-      setServed(f);
-      setPageInfo(head?.pagination ?? null);
-      setServedTried(true);
-      setLoading(false);
-    });
+    let cancelled = false;
+    // scanRecentActivity fails soft on its own (its head read and every 2,000-
+    // block chunk are caught inside), but a rejection here must still never
+    // leave `loading` true — that state disables the only escape control.
+    void scanRecentActivity(addrs)
+      .catch(() => ({ items: [], fromBlock: 0, toBlock: 0, chunksFailed: 0, windowRead: false }))
+      .then((s) => {
+        if (cancelled) return;
+        setScan(s);
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addrs, readNonce]);
 
@@ -394,7 +427,7 @@ export function LiveActivityFeed({
     // the PROMOTION date).
     const chronicleLines: ActivityItem[] = CHRONICLE_REGISTER.map((e, idx) => ({
       kind: "chronicle-entry" as const,
-      sentence: `“${e.title}” entered the Chronicle — promoted by the founder, recorded forever.`,
+      sentence: `“${e.title}” entered the Chronicle — promoted by the Founder, recorded forever.`,
       blockNumber: 0,
       txHash: `0x${e.id}` as `0x${string}`,
       logIndex: idx,
@@ -415,7 +448,7 @@ export function LiveActivityFeed({
       kind: "deployment" as const,
       sentence: d.isPoolCreation
         ? "The SYN/USDC pool was created — the public market opened."
-        : `${d.label} was deployed — a founder act, permanent on Avalanche.`,
+        : `${d.label} was deployed — a Founder act, permanent on Avalanche.`,
       blockNumber: d.blockNumber,
       txHash: d.transactionHash,
       logIndex: 0,
@@ -629,6 +662,9 @@ export function LiveActivityFeed({
   if (servedTried && !servedComplete) {
     degraded.push("the served history is unavailable right now — the recent window stands alone");
   }
+  if (scan && !scan.windowRead) {
+    degraded.push("the live window could not be read just now, so no recent-window lines are included");
+  }
   if (scan && scan.chunksFailed > 0) {
     degraded.push(`${scan.chunksFailed} live-window range(s) could not be read and are NOT covered`);
   }
@@ -696,7 +732,7 @@ export function LiveActivityFeed({
         {i.readHref ? (
           <Link
             href={i.readHref}
-            className="inline-flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-proof/80 hover:text-proof"
+            className="inline-flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-proof hover:text-proof-hover"
           >
             read the record <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
           </Link>
@@ -705,7 +741,7 @@ export function LiveActivityFeed({
             href={`${explorerBase}/tx/${i.txHash}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-proof/80 hover:text-proof"
+            className="inline-flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-proof hover:text-proof-hover"
           >
             verify <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
           </a>
@@ -741,15 +777,19 @@ export function LiveActivityFeed({
                 ? "The live window: a recent chain read, refreshing between indexer cycles."
                 : "A recent window, read live from the chain."}
             </span>{" "}
-            {scan
+            {scan && scan.windowRead
               ? `Blocks ${scan.fromBlock.toLocaleString("en-US")} → ${scan.toBlock.toLocaleString("en-US")} (~24h)${scan.chunksFailed > 0 ? ` · ${scan.chunksFailed} range(s) could not be read and are NOT covered` : ""}.`
-              : `The last ~${Math.round(DEFAULT_WINDOW_BLOCKS / 1800)} hours of blocks.`}{" "}
+              : scan
+                ? "The live window could not be read just now, so nothing below comes from it."
+                : `The last ~${Math.round(DEFAULT_WINDOW_BLOCKS / 1800)} hours of blocks — not read yet.`}{" "}
             What appears here happened and is verifiable; what does not appear
             is simply outside the stated coverage — never evidence of absence.
           </p>
         </Card>
-        {loading || scan === null ? (
-          <p className="text-sm text-muted-foreground py-6">Reading the chain…</p>
+        {/* Same rule as the main feed: the wait ends when the SERVED attempt
+            settles, never when the chain window does. */}
+        {!servedTried ? (
+          <p className="text-sm text-muted-foreground py-6">Reading the record…</p>
         ) : items.length === 0 ? (
           <Card className="bg-card/20 border-dashed border-border/60 p-5">
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -821,11 +861,19 @@ export function LiveActivityFeed({
               {eraBand.era.synPerUsd.toLocaleString("en-US")} SYN per $ · minimum entry $
               {eraBand.era.minEntryUsd.toLocaleString("en-US")}
             </span>
+            {/* TRUTH FIX 2026-07-26. This read "the rate table turns a page at
+                seat #333" while eraCanon runs era 1 THROUGH #333 inclusive
+                (eraCanon.ts:34) — so the turn is #334, and the same page's own
+                chapter line says #333 SEALS Genesis. It contradicted itself on
+                one screen and the chain refutes it. `seatsAway` is
+                `endSeat − liveSeatCount` = seats REMAINING at this rate, so the
+                sentence now says exactly what the number counts. */}
             <span className="text-sm text-muted-foreground">
-              the rate table turns a page at seat #
+              this rate holds through seat #
               {eraBand.era.endSeat.toLocaleString("en-US")} —{" "}
               <span className="font-medium text-gold">
-                {eraBand.seatsAway.toLocaleString("en-US")} seats away
+                {eraBand.seatsAway.toLocaleString("en-US")}{" "}
+                {eraBand.seatsAway === 1 ? "seat left at it" : "seats left at it"}
               </span>
             </span>
           </div>
@@ -876,11 +924,14 @@ export function LiveActivityFeed({
           >
             {moreChipsOpen ? "Less ▴" : "More ▾"}
           </button>
+          {/* Disabled on `loading` ONLY — never on `!addrs`. An unresolved chain
+              directory used to disable the single escape from the very state it
+              caused, which is how a visitor got stranded (fixed 2026-07-26). */}
           <Button
             size="sm"
             variant="ghost"
             className="ml-auto h-7 px-2"
-            disabled={loading || !addrs}
+            disabled={loading}
             onClick={() => {
               setScan(null);
               setServed(null);
@@ -902,8 +953,12 @@ export function LiveActivityFeed({
           then the methodology. Fluid, no page cap (S7-d). */}
       <div>
       {/* Z3 — THE FEED FIRST: newest → oldest, date-grouped, paged. */}
-      {loading || scan === null ? (
-        <p className="text-sm text-muted-foreground py-6">Reading the chain…</p>
+      {/* Gated on the SERVED attempt, never on `scan === null` (fixed
+          2026-07-26). The served history is the page's substance and needs no
+          chain read; keying the wait on the chain window meant a directory that
+          never resolved held a complete record hostage forever. */}
+      {!servedTried ? (
+        <p className="text-sm text-muted-foreground py-6">Reading the record…</p>
       ) : visible.length === 0 ? (
         <Card className="bg-card/20 border-dashed border-border/60 p-5">
           <p className="text-sm text-muted-foreground leading-relaxed">
@@ -921,8 +976,19 @@ export function LiveActivityFeed({
                 : null;
             return (
               <div key={lineKey(i)}>
+                {/* `first:mt-0` used to sit here and it silently killed the
+                    grouping: this <p> is ALWAYS the first child of its wrapper
+                    <div>, so :first-child matched on EVERY heading — and the
+                    pseudo-class outranks mt-7, so every group collapsed to the
+                    same 10px as the gap between two rows. The feed was
+                    date-grouped in code and flat on screen. Gate on the index
+                    instead, which is what "the first group" actually means. */}
                 {label !== prevLabel ? (
-                  <p className="mt-7 mb-2.5 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground first:mt-0">
+                  <p
+                    className={`mb-2.5 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground${
+                      idx === 0 ? "" : " mt-7"
+                    }`}
+                  >
                     {label}
                   </p>
                 ) : null}
@@ -943,15 +1009,25 @@ export function LiveActivityFeed({
           >
             {loadingMore ? "Loading…" : "Load more"}
           </Button>
+          {/* ONE-AUTHORITY FIX 2026-07-26. On a selected facet the denominator
+              used to be `items.length` — the lines LOADED so far — while the
+              chip 200px above showed the server's whole-history count. The page
+              said "Showing 2 of 2 events" beside a chip reading 7, with a Load
+              more button underneath proving it wrong. The denominator now comes
+              from `chipCount(filter)`, the SAME source the chip reads, floored
+              at what is actually on screen so it can never claim fewer. When
+              that total is genuinely unknown the chip shows no number, and this
+              line drops the "of N" rather than inventing one. */}
           <p className="mt-2 text-xs text-muted-foreground">
-            Showing {Math.min(visibleCount, items.length)} of{" "}
-            {filter === "all" && pageInfo !== null
-              ? Math.max(
-                  items.length,
-                  pageInfo.totalCount + CHRONICLE_REGISTER.length + DEPLOYMENT_REGISTRY.length,
-                ).toLocaleString("en-US")
-              : items.length.toLocaleString("en-US")}{" "}
-            events — the full history stays one click at a time.
+            {(() => {
+              const known = chipCount(filter);
+              const shown = Math.min(visibleCount, items.length);
+              if (known === null) {
+                return `Showing ${shown.toLocaleString("en-US")} events`;
+              }
+              return `Showing ${shown.toLocaleString("en-US")} of ${Math.max(items.length, known).toLocaleString("en-US")} events`;
+            })()}{" "}
+            — the full history stays one click at a time.
           </p>
         </div>
       ) : null}
@@ -999,9 +1075,11 @@ export function LiveActivityFeed({
                 ? "The live window: a recent chain read, refreshing between indexer cycles."
                 : "A recent window, read live from the chain."}
             </span>{" "}
-            {scan
+            {scan && scan.windowRead
               ? `Blocks ${scan.fromBlock.toLocaleString("en-US")} → ${scan.toBlock.toLocaleString("en-US")} (~24h)${scan.chunksFailed > 0 ? ` · ${scan.chunksFailed} range(s) could not be read and are NOT covered` : ""}.`
-              : `The last ~${Math.round(DEFAULT_WINDOW_BLOCKS / 1800)} hours of blocks.`}{" "}
+              : scan
+                ? "The live window could not be read just now, so nothing below comes from it."
+                : `The last ~${Math.round(DEFAULT_WINDOW_BLOCKS / 1800)} hours of blocks — not read yet.`}{" "}
             The feed refreshes itself as the indexer advances — a new line
             slides in at the top. What appears here happened and is
             verifiable; what does not appear is simply outside the stated
