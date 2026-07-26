@@ -2,20 +2,25 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ⚠️ 2026-07-26 (LATE) — THE /activity REBUILD IS BUILT AND **UNCOMMITTED**. READ THIS BEFORE ANYTHING.
+> # ▶ 2026-07-26 (LATE) — THE /activity REBUILD IS BUILT AND **COMMITTED IN SIX SLICES**. READ THIS FIRST.
 >
 > **PROD = `2ce49a3`** (the Founder deployed it this session; Replit's seal report is in the transcript —
 > 4 lanes caught up, BTC.b + WETH.e lines publicly visible). Every PROD line further down this file that
 > names `35d60fa` is now a dated historical record.
 >
-> **THE WORKING TREE HOLDS 17 MODIFIED FILES + 3 NEW COMPONENT DIRS, ~1,230 insertions, NOT COMMITTED.**
-> Nothing was committed because the VISUAL CHANGE LAW's preview gate needs the Founder's screen approval and
-> he was still iterating when the session ended. **Do not "clean" the tree. Do not re-derive this work.**
-> `git status --short` at session end: backbone.guard.ts · backboneRunner.ts · feedProjection.ts ·
-> protocolEventReadmodel.ts · guard-feature-truth.ts · guard-focus-visible.ts · LiveActivityFeed.tsx ·
-> MilestonesPanel.tsx · FaqAccordion.tsx · ProtocolOverviewPanel.tsx · MemberPulse.tsx · HomeRegisterBand.tsx ·
-> index.css · activityFeed.ts · backboneFeedClient.ts · DESIGN_ROADMAP.md · activity-redesign-mockup.html ·
-> NEW: components/address/ · components/disclosure/ · components/proof/
+> **COMMITTED, tree clean.** The Founder ruled mid-session that a commit is a SAVE POINT, not a
+> publication — nothing reaches thesyndicate.money until he triggers the deploy — so the arc was cut into
+> six readable commits instead of one 1,230-line blob. Each is independently revertable if he rejects a
+> decision at the preview:
+>   ·  server — the public full address beside every short form + the four actor classes + two
+>     obsolete guard checks CORRECTED (not bypassed) + first-seat derived from the seat number
+>   ·  the three atoms — AddressText · Disclosure · ProofAnchor
+>   ·  the /activity rebuild off the approved wireframe + four truth defects
+>   ·  the three other surfaces that share the sentence builder + the FAQ inversion
+>   ·  guard-feature-truth §⑥ prose claims + §⑦ orphan keys (616 checks) + the focus ratchet
+>   ·  this handoff
+> **THE PREVIEW GATE IS STILL OPEN**: the Founder had not yet approved the built page when the session
+> ended. Commits are safe; the DEPLOY is what waits on his screen.
 >
 > **ALL GATES GREEN at session end:** studio typecheck · 29 studio guards · api typecheck · full api guards
 > chain (backbone **177** checks, +6 new) · build (374 twins, admin-dist 102). Verified by measurement in the
