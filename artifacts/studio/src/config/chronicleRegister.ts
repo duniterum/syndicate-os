@@ -8,7 +8,11 @@
 //
 // Register discipline (matches the first candidate): protocol-institutional
 // voice · identity-blind (seat numbers only, never a wallet or a person) ·
-// amount-blind unless the amount IS the record · oldest-first on the page ·
+// amount-blind unless the amount IS the record · NEWEST-FIRST on the page
+// (Founder doctrine change 2026-07-26: it was oldest-first, which made a reader
+// open on June and scroll the whole history to reach the present once the
+// register grew from 4 entries to 15; every other record here — /activity, the
+// burn ledger, the notification centre — is newest-first) ·
 // every entry says how to VERIFY itself.
 
 export interface ChronicleSection {
@@ -34,7 +38,7 @@ export interface ChronicleEntry {
 }
 
 /**
- * The public register. Oldest-first when rendered. Every entry below entered
+ * The public register. NEWEST-first when rendered (doctrine 2026-07-26). Every entry below entered
  * by a founder-approved commit — the promotion IS the commit.
  */
 export const CHRONICLE_REGISTER: readonly ChronicleEntry[] = [

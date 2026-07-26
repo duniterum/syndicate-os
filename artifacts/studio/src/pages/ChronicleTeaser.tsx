@@ -36,9 +36,17 @@ export default function ChronicleTeaser() {
     return <TeaserSurface spec={spec} />;
   }
 
-  // The register speaks → the solemn record, oldest-first.
+  // THE REGISTER SPEAKS NEWEST FIRST (Founder doctrine change, 2026-07-26).
+  // It rendered oldest-first until the register grew from 4 entries to 15: a
+  // reader then opens the page on June and has to scroll a whole institutional
+  // history to reach what just happened. Newest-first matches every other record
+  // on this protocol — /activity, the burn ledger, the notification centre — so
+  // the Chronicle stops being the one surface that reads backwards.
+  // Sorted by the EVENT date, never by array position: the Founder promotes out
+  // of order (eleven entries dated June landed in one commit in July), so array
+  // order carries no meaning and must never be trusted for chronology.
   const entries = [...CHRONICLE_REGISTER].sort((a, b) =>
-    a.dateUtc.localeCompare(b.dateUtc),
+    b.dateUtc.localeCompare(a.dateUtc),
   );
   return (
     <MemberAppPage
