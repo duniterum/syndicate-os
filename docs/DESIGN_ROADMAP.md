@@ -738,7 +738,8 @@ dont 223 PUBLIQUES dans 48, cinq à 8px.** Sur les six règles de type d'ADR-001
 - [x] **`guard-contrast-aa` a refusé son propre auteur** dans l'heure : `--proof-hover` ajouté ⇒ rouge,
       *« une couleur sémantique ne doit jamais partir non mesurée »*.
 - [x] **Maquette `/activity` approuvée** (`2132663`) — `docs/design/activity-redesign-mockup.html`, vraies
-      données de prod, vrais jetons. Diagnostic arithmétique : `--text-body` **plafonne à 1315px**, donc un
+      données de prod, vrais jetons. Diagnostic arithmétique : `--text-body` **plafonnait à 1244px** (le
+      chiffre « 1315px » de la première maquette ne se recalculait pas — corrigé 2026-07-26), donc un
       27 pouces reçoit la même taille qu'un 13 pouces sur deux fois la toile — et le feed n'utilisait même
       pas ce jeton (14px fixe pendant que 54 fichiers utilisent le sien).
 - [x] **+0 couleur brute** (vérifié : `no-raw-color: 0 raw-color sites`).

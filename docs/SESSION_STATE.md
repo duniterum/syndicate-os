@@ -2,6 +2,119 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> # ⚠️ 2026-07-26 (LATE) — THE /activity REBUILD IS BUILT AND **UNCOMMITTED**. READ THIS BEFORE ANYTHING.
+>
+> **PROD = `2ce49a3`** (the Founder deployed it this session; Replit's seal report is in the transcript —
+> 4 lanes caught up, BTC.b + WETH.e lines publicly visible). Every PROD line further down this file that
+> names `35d60fa` is now a dated historical record.
+>
+> **THE WORKING TREE HOLDS 17 MODIFIED FILES + 3 NEW COMPONENT DIRS, ~1,230 insertions, NOT COMMITTED.**
+> Nothing was committed because the VISUAL CHANGE LAW's preview gate needs the Founder's screen approval and
+> he was still iterating when the session ended. **Do not "clean" the tree. Do not re-derive this work.**
+> `git status --short` at session end: backbone.guard.ts · backboneRunner.ts · feedProjection.ts ·
+> protocolEventReadmodel.ts · guard-feature-truth.ts · guard-focus-visible.ts · LiveActivityFeed.tsx ·
+> MilestonesPanel.tsx · FaqAccordion.tsx · ProtocolOverviewPanel.tsx · MemberPulse.tsx · HomeRegisterBand.tsx ·
+> index.css · activityFeed.ts · backboneFeedClient.ts · DESIGN_ROADMAP.md · activity-redesign-mockup.html ·
+> NEW: components/address/ · components/disclosure/ · components/proof/
+>
+> **ALL GATES GREEN at session end:** studio typecheck · 29 studio guards · api typecheck · full api guards
+> chain (backbone **177** checks, +6 new) · build (374 twins, admin-dist 102). Verified by measurement in the
+> browser at 1920 and 375, both themes.
+>
+> ## ▶ WHAT WAS BUILT (the approved /activity wireframe, finally coded — it had been a document only)
+> · **The feed row is a GRID** — proof anchor at ONE x on every row (measured: 1755px), exactly 112×44px,
+>   sentence bounded at 68ch, amount in its own right-aligned tabular gold column (one right edge: 1037px).
+> · **The amount left the prose** (`amountForServedLine`) — and it was re-added explicitly to the THREE other
+>   surfaces that share the sentence builder (hero mini-feed, MemberPulse, HomeRegisterBand), or the figure
+>   would have silently vanished from the public home.
+> · **`--text-body` ceiling raised then TUNED DOWN to 20px** at the Founder's request: `clamp(1rem, 0.92rem +
+>   0.28vw, 1.25rem)` — 16px at 375, 18.3px at 1280, 20px at 1886. The SLOPE moved with the ceiling on
+>   purpose; lowering the ceiling alone would have re-capped at 1257px, the original bug.
+> · **Milestones = 2 columns × 3 rows**, families PAIRED BY WEIGHT (`FAMILY_DISPLAY_ORDER`: membership·economy /
+>   fire·archive / referral·liquidity) so every row has equal-height cards — measured (102,102) (152,152)
+>   (102,102). Third layout tried; the first two were rejected on screen.
+> · **The 1% bar floor is GONE** — a 0% milestone painted ~22px of gold. A zero bar is empty and says so.
+> · **Capital F on SIX rendered public strings** (`Founder`-signed …). The Founder-attribution was KEPT, not
+>   deleted: I had proposed removing it and he corrected me — the organ is an EOA whose key he holds, so the
+>   claim is true; my "the code never checks a signer" was true of the code and irrelevant to the claim.
+> · **Burn origin**: 4 cases from `actorClass` (founder/organ/member/visitor) — see below.
+> · **TWO NEW ATOMS**: `components/disclosure/Disclosure.tsx` (the designed collapsible — 44px control,
+>   rotating chevron, gold focus ring, native `<details>`, bounded body) and `components/proof/ProofAnchor.tsx`
+>   (the ONE proof anchor, 112×44 / compact 95×44). Both extracted because the first-visit review said "do not
+>   copy those classes a second time".
+> · **`components/address/AddressText.tsx`** — every address blue + clickable to the explorer.
+> · **The header's rhythm**: 8/16/32 on the 4px scale; the history line moved 12px → 14px (reading floor).
+> · **Expander prose flows in 2 columns** at ≥lg (it was a narrow column inside a full-width box).
+> · **SEAT and FOOTPRINT split back apart** (the Founder reversed an earlier session's merge): `seat` = first
+>   seats + honest-unknowns, `capital-rise` = repeat purchases + rung recognitions, chip placed BESIDE Seats.
+> · **"Eras 0" → words**: the chip drops a proven zero; the lane says "the first turn lands at seat #334",
+>   DERIVED as `endSeat + 1`, never typed.
+> · **THE SEAT-OVERLAP DOOR**: the Seats lane states "14 seats, 13 distinct wallets — one wallet holds two"
+>   from the LIVE read and links to `/chronicle#2026-07-12-the-duplicate-seat`. Renders only on that lane,
+>   only while the live overlap is non-zero, and only if the register still holds that entry.
+>
+> ## ▶ SERVER WORK (this is why the next deploy MUST include the api)
+> · `feedProjection` now emits the **FULL public address** beside every short form (`memberAddress`,
+>   `referredByAddress`, `actorAddress` ×2, `minterAddress`) via a new `fullForm()` helper that shares
+>   `shortForm`'s fail-closed validation. **This is the recorded actor-address sub-project, done.**
+> · `protocolEventReadmodel` gains **`ActorClass = founder|organ|member|visitor`** + `actorOrganLabel`, decided
+>   from the chain's own sets with deliberate precedence (**founder > organ > member > visitor** — the Founder
+>   holds seats, so founder MUST outrank member or his own burns would read as an ordinary member's).
+>   `seatHolderAddresses` is a new input, derived in `backboneRunner` from `model.items` (the sale lane) —
+>   the same lane the ticketing read-model indexes by wallet, read one step upstream to avoid a cycle.
+> · **TWO OBSOLETE GUARD CHECKS CORRECTED, not bypassed**: `backbone.guard.ts` forbade a full address in the
+>   feed (the pre-2026-07-24 hiding reflex; the sibling scan already allowed it at
+>   `activity-heartbeat.guard.ts:335`) → replaced by a boundary check on server-only FIELD NAMES + a positive
+>   check that the public address ships beside its short form + a check that the Founder voice rule holds.
+>   And the treasury label check scanned the WHOLE payload for an address a purchase line now legitimately
+>   publishes → **scope pinned** to the treasury lines. 6 new actor-class checks, **proven RED** by inverting
+>   the precedence.
+> · `guard-feature-truth` gained **§⑥ prose claim sites** and **§⑦ no orphan future key** (598 → 616 checks,
+>   all three new checks proven RED). It had been GREEN while the /activity prose promise it was supposed to
+>   govern sat outside the mechanism entirely.
+>
+> ## ▶ (a) THE ONE THING TO DO FIRST, with its exact shape
+> **`Seats 14` / `Footprint 12` — derive "first seat" from the SEAT NUMBER, never from the wallet.**
+> Both chips currently show NO number, deliberately: the server counts by KIND, so `purchase` = 26 (first
+> seats AND expansions in one figure), and printing 26 on either lane would be false. Measured reality:
+> **26 purchases = 12 "entered" + 5 unknown-flag + 9 expansions**, while the live engine says **14 seats** —
+> the flag and the seat count disagree by 3, because 5 old V1/V2 rows never emitted `firstSeat`.
+> **THE AUTHORITY IS THE SEAT NUMBER** (confirmed by the Chronicle's "The duplicate seat"): a purchase that
+> takes a NEW seat number is an acquisition; a repeat on an existing number is an expansion. The 5 flagless
+> rows resolve through **`GENESIS_SEAT_BY_WALLET`** — the frozen #1–#8 roster `ownPurchaseReadmodel` already
+> uses. **DO NOT count "first purchase per wallet"**: that would erase historical seat #7, which is exactly
+> the rounding-away the Chronicle forbids (one wallet legitimately holds #7 AND #11, permanently).
+> Deliverable: derived per-line bucket + `firstSeatCount`/`expansionCount` in the served `kindCounts`, then
+> both chips carry their real number and each lane's row count matches it.
+>
+> ## ▶ (b) THEN, in order
+> **①** Harvest the Chronicle from `github.com/duniterum/TheSyndicate` — the register holds 4 entries and the
+> Founder confirmed there are many more in the origin's earlier versions. His framing, and it is the point of
+> the whole register: *"je voulais tout montrer comment j'ai dû trimer avec plusieurs AI pour construire ce
+> site et ce protocole"* — the errors are the asset, not an embarrassment.
+> **②** The 15 CONFIRMED-HIGH first-visit ergonomics findings (a 4-lens adversarially-verified review of every
+> public surface; 70 findings, 15 survived refutation). Highest value first: the public home's only
+> plain-language explainer renders at **12.8px**; an internal audit string ("8 historical · 6 live V3 ·
+> snapshot 14…") sits directly above the ONE gold CTA and renders **4×** on the home; `/status` prints the
+> literal word `null` down a whole column; Terms/Risk/Privacy are one step SMALLER than every other reading
+> surface; `/join` shows up to FOUR equally-loud filled buttons and every button on the join path is under
+> 44px on a phone; `/tokenomics` breaks the full-screen law with `max-w-5xl` while its two sibling pages fill
+> the screen; `/faq` category headings are smaller than the questions inside them AND the search box is the
+> 4th block on a page whose whole job is finding your question.
+> **③** `guard-capital-f` + the CODE sweep (≥93 lowercase `founder` string literals remain: 67 studio, 26 api).
+>
+> ## ▶ (c) FOUNDER-PENDING
+> **The preview gate on /activity** — the rig is `studio-prod-data` (port 5175, proxied to the live API);
+> `http://localhost:5175/activity`. He had approved the wireframe and was iterating on the built page.
+> **The blue clickable addresses CANNOT be seen locally** and this is proven, not assumed: the local api has
+> no DB (`/api/backbone/feed` → `"state":"disabled"`, 0 items), so the rig reads PROD, which runs the previous
+> build and sends no full address. Measured: 15 short forms rendered, 0 anchors — the fail-closed path working.
+> **They light up only after the api deploys.** The change is additive and fail-closed, so deploying cannot
+> break the line: absent field → exactly today's rendering.
+> **DEPLOY VERDICT when he approves: 🚀 DEPLOY — and it MUST include the api-server** (`feedProjection`,
+> `protocolEventReadmodel`, `backboneRunner`). *"pull main, deploy, report"* — **no migration, no new env**
+> (no schema file moved).
+
 > # ▶ 📌 2026-07-26 (PM) — THE RESUME BLOCK (DONE-IS-DONE §④: read THIS, resume in one pass)
 > *Everything below this block is the dated RECORD of how it got here — read it only if you need the why.*
 >
