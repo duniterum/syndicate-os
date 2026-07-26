@@ -246,7 +246,18 @@ export default function PublicHome() {
                 </h1>
                 <VerifyOnChain ids={HEADLINE_VERIFY_IDS} className="mt-1.5 block" />
 
-                <div className="mt-3 max-w-[420px] space-y-2 text-[0.8rem] leading-5 text-muted-foreground xl:text-[0.88rem]">
+                {/* THE ONLY PLAIN-LANGUAGE ANSWER TO "WHAT IS THIS?" — and it
+                    rendered at 0.8rem = 12.8px on every phone, tablet and laptop
+                    under 1280px, widening to 14.08px only at xl. Smaller than the
+                    footer's own copyright line, on the first screen a stranger
+                    sees, for the three sentences the whole page depends on.
+                    ADR-001 rule ① puts READING COPY at ≥14px with relaxed
+                    leading; 12px is the absolute floor for one-line mono labels,
+                    which this is not. `guard-type-scale` cannot see it — its own
+                    test asserts that a rem value above the floor is not a floor
+                    violation, so the guard enforces rule ④ and never rule ①.
+                    Found by the first-visit review, 2026-07-26. */}
+                <div className="mt-3 max-w-[420px] space-y-2 text-sm leading-relaxed text-muted-foreground md:text-base">
                   {heroSystem.explainer.map((sentence) => (
                     <p key={sentence}>{sentence}</p>
                   ))}

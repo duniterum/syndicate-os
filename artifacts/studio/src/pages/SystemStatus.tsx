@@ -167,8 +167,9 @@ export default function SystemStatus() {
             sale engine's public figures (available SYN, gross USDC received, receipt count) are
             surfaced as exact raw base units. This payload itself carries no member data and no
             wallet addresses — reading it writes nothing; joining happens on /join, signed from
-            your own wallet. Every read is truth-labelled, and any value that cannot be verified
-            renders as null with a reason.
+            your own wallet. Every read is truth-labelled, and any value that cannot be verified is
+            shown as unavailable, with the reason — never guessed, never rounded into something
+            that looks like an answer.
           </p>
         </div>
         <ProtocolRealityPanel showMeta />
@@ -177,7 +178,14 @@ export default function SystemStatus() {
       <HolderIndexSection />
 
       <h2 className="type-h2 text-foreground mb-2">Source-status registry</h2>
-      <DataStatusNote description="Source-status registry — separate from the live protocol reality read above. Posture-only: this registry performs no chain reads and holds no balances, member data, or RPC; every value here is null by design. Verified static canon reference, not a live RPC read." />
+      {/* THE SENTENCE DESCRIBED A COLUMN THAT NO LONGER EXISTS (2026-07-26).
+          Removing the all-`null` Value column left this note explaining why
+          "every value here is null by design" — a description of an absence the
+          reader can no longer see, which is worse than the column was. It now
+          says what the table IS rather than what it lacks.
+          And `null` left the copy: it is developer vocabulary on a public page,
+          and the human words say the same thing better. */}
+      <DataStatusNote description="Source-status registry — separate from the live protocol reality read above. It records the POSTURE of each source: what it is, where it comes from, and how far it may be trusted. It performs no chain reads and holds no balances, no member data and no RPC, so it carries no figures at all — a verified static canon reference, never a live read." />
 
       {data && (
         <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs text-muted-foreground">
@@ -236,7 +244,6 @@ export default function SystemStatus() {
                 <TableHead className="w-[230px] font-medium text-foreground">Category</TableHead>
                 <TableHead className="font-medium text-foreground">Note</TableHead>
                 <TableHead className="w-[200px] font-medium text-foreground">Class</TableHead>
-                <TableHead className="w-[120px] font-medium text-foreground">Value</TableHead>
                 <TableHead className="text-right font-medium text-foreground">Posture</TableHead>
               </TableRow>
             </TableHeader>
@@ -259,10 +266,17 @@ export default function SystemStatus() {
                       Confidence · {item.confidence}
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <div className="font-mono text-[11px] text-muted-foreground">null</div>
-                    <div className="text-[10px] text-muted-foreground mt-0.5">posture-only</div>
-                  </TableCell>
+                  {/* THE "VALUE" COLUMN IS GONE (first-visit review, 2026-07-26).
+                      It printed the literal string `null` on EVERY row, with
+                      "posture-only" underneath — a whole column whose only content
+                      was the announcement that it has no content. To a visitor who
+                      does not read code, `null` down a public status page reads as
+                      something broken; to one who does, it reads as a debug view
+                      shipped by accident. Either way it costs trust on the page
+                      whose entire job is being trustworthy.
+                      WORK-FIRST §3 is explicit: if information serves nobody on
+                      that page, it is not shown at all. The posture badge already
+                      says everything this column was standing in for. */}
                   <TableCell className="text-right">
                     <PostureBadge posture={item.posture} />
                   </TableCell>

@@ -8,12 +8,13 @@
 // Naming (founder, final): the PAGE is Fire Ledger (the place); the ACT and
 // its numbered receipts are "Proof of Burn" — every rendered token says burn.
 
-import { Flame, ExternalLink } from "lucide-react";
+import { Flame } from "lucide-react";
 import { useEffect, useState } from "react";
 import { MemberAppPage } from "@/components/member/MemberAppPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { StatusPill } from "@/components/status-pill/StatusPill";
+import { ProofAnchor } from "@/components/proof/ProofAnchor";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { useHeroReality } from "@/components/hero/useHeroReality";
@@ -147,18 +148,24 @@ function ProofOfBurnRecord() {
                 <StatusPill tone={b.senderLabel === "Founder" ? "proof" : "neutral"} size="xs">
                   {b.senderLabel}
                 </StatusPill>
-                <span className="font-mono text-[10px] text-muted-foreground">
+                {/* THE PROOF ANCHOR ON THE PAGE THAT IS ABOUT PROOF (first-visit
+                    review, 2026-07-26). On the one surface whose entire purpose is
+                    "check this yourself", the per-burn verify link was the SMALLEST
+                    text in the row — 10px uppercase mono, no padding, no box, no
+                    focus ring, far under the 44px touch floor. The record it proves
+                    was set in bigger type than the proof of it.
+                    Now the shared atom, so this row can never drift back: one
+                    definition, one geometry, and the block meta rises from 10px to
+                    the 12px floor beside it. */}
+                <span className="font-mono text-xs tabular-nums text-muted-foreground">
                   {b.isoDayUtc} · block {b.blockNumber.toLocaleString("en-US")}
                 </span>
                 {explorerBase ? (
-                  <a
+                  <ProofAnchor
                     href={`${explorerBase}/tx/${b.transactionHash}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-proof hover:text-proof-hover"
-                  >
-                    verify <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
-                  </a>
+                    compact
+                    title={`Proof of Burn #${b.proofOfBurnNumber} — open the transaction`}
+                  />
                 ) : null}
               </div>
             </Card>
