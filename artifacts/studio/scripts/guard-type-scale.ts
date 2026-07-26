@@ -170,7 +170,7 @@ const ALLOWLIST: Record<string, string> = {
   "components/data-table/DataTable.tsx": "1 · ATOM (tables) — a single 9px occurrence; deferred to the sweep",
 
   // — public chrome and truth surfaces
-  "components/layout/PublicLayout.tsx": "6 · PUBLIC site chrome (header/footer, every page) — one is a `sm:` step at 11px. Deferred to the type-scale slice",
+  "components/layout/PublicLayout.tsx": "6 · PUBLIC site chrome (header/footer, every page). RECOUNTED 2026-07-26: the brand tagline paid off its pair (a `text-[10px]` widening to a `sm:` step that capped at 11px, i.e. below the floor at EVERY width) and is now the `text-xs` token. Six sub-floor sizes remain in the chrome, deferred to the type-scale slice",
   "components/ProtocolReality.tsx": "8 · PUBLIC reality band — deferred to the general sweep",
   "components/ProtocolReservesBand.tsx": "8 · PUBLIC home reserves band — deferred to the general sweep",
   "components/ProtocolAssetsCard.tsx": "6 · PUBLIC /contracts assets card — deferred to the general sweep",

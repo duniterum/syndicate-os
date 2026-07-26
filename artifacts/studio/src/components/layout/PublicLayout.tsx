@@ -100,7 +100,7 @@ function ChainPill({ state }: { state: HeaderChipState }) {
   return (
     <span
       title="Avalanche C-Chain — every public figure is a live chain read, fail-closed"
-      className={`hidden items-center gap-2 whitespace-nowrap rounded-xl border px-2.5 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] shadow-sm 2xl:inline-flex ${chipStateTone[state]}`}
+      className={`hidden items-center gap-2 whitespace-nowrap rounded-xl border px-2.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-[0.08em] shadow-sm 2xl:inline-flex ${chipStateTone[state]}`}
     >
       <span className="grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-avax shadow-[0_0_18px_-8px_hsl(var(--avax)/0.9)]">
         <img src="/brand/avalanche-avax-token.png" alt="Avalanche" className="h-full w-full object-cover" />
@@ -116,7 +116,7 @@ function LiveChip({ state }: { state: HeaderChipState }) {
   return (
     <span
       title="Live on-chain reads — fail-closed, never invented"
-      className={`hidden items-center gap-1.5 rounded-xl border px-2.5 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] lg:inline-flex ${chipStateTone[state]}`}
+      className={`hidden items-center gap-1.5 rounded-xl border px-2.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-[0.1em] lg:inline-flex ${chipStateTone[state]}`}
     >
       <Activity className="h-3.5 w-3.5" />
       {headerChips.states[state]}
@@ -169,7 +169,14 @@ function Wordmark() {
         <span className="whitespace-nowrap text-[1.02rem] font-semibold uppercase tracking-[0.18em] text-foreground sm:text-[1.14rem] 2xl:text-[1.26rem]">
           {brand.name}
         </span>
-        <span className="mt-1 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.3em] text-gold sm:text-[11px]">
+        {/* TYPE SIZE ONLY (2026-07-26). This tagline was `text-[10px]` widening
+            to `sm:text-[11px]` — a responsive step that CAPPED BELOW the 12px
+            floor, so it never reached it at any width, on every page of the site.
+            It measured as the smallest text on /activity: 5 rendered instances at
+            11px. Now the `text-xs` token, which IS the floor. Nothing else about
+            this element changes — same face, same tracking, same colour, same
+            place. */}
+        <span className="mt-1 whitespace-nowrap font-mono text-xs uppercase tracking-[0.3em] text-gold">
           {brand.descriptor}
         </span>
       </span>
@@ -177,7 +184,10 @@ function Wordmark() {
           with the hero's overview panel) — never a hardcoded literal here. */}
       <span
         title={`${heroSystem.overview.chapter.label} — ${heroSystem.overview.chapter.value}`}
-        className="ml-1 hidden rounded-full border border-gold/35 bg-gold/10 px-1.5 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-gold sm:inline-flex"
+        // TYPE SIZE ONLY: 11px → the `text-xs` token, which IS the 12px floor.
+        // The last sub-floor text rendered on /activity, and it sits in the
+        // chrome, so it was the last one on every page. Nothing else changes.
+        className="ml-1 hidden rounded-full border border-gold/35 bg-gold/10 px-1.5 py-0.5 font-mono text-xs font-semibold uppercase tracking-wider text-gold sm:inline-flex"
       >
         {heroSystem.overview.chapter.badge}
       </span>
