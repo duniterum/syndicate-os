@@ -11,9 +11,12 @@ import { Link } from "wouter";
 import { ExternalLink } from "lucide-react";
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { Card } from "@/components/ui/card";
+import { SentenceWithAddresses } from "@/components/address/AddressText";
 import {
   fetchServedFeed,
   sentenceForServedLine,
+  amountForServedLine,
+  addressBookForServedLine,
   factsForServedLine,
   type ServedFeedLine,
 } from "@/lib/backboneFeedClient";
@@ -65,8 +68,19 @@ export function MemberPulse() {
               key={`${line.transactionHash}:${line.logIndex}`}
               className="rounded-lg border border-border/70 bg-card/50 px-3 py-2"
             >
+              {/* The amount rides back in explicitly — §③ took it out of the
+                  shared sentence, and this surface has no amount column. */}
               <p className="text-sm leading-snug text-foreground/90">
-                {sentenceForServedLine(line)}
+                {amountForServedLine(line) ? (
+                  <span className="mr-1.5 font-mono font-semibold tabular-nums text-gold">
+                    {amountForServedLine(line)}
+                  </span>
+                ) : null}
+                <SentenceWithAddresses
+                  sentence={sentenceForServedLine(line)}
+                  book={addressBookForServedLine(line)}
+                  explorerBase={explorerBase}
+                />
               </p>
               <p className="mt-0.5 flex flex-wrap items-center gap-2 font-mono text-xs uppercase tracking-[0.1em] text-muted-foreground">
                 {factsForServedLine(line) ? (

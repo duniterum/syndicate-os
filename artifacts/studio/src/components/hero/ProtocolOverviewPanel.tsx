@@ -8,10 +8,13 @@ import { heroRouteIcons } from "@/components/hero/heroIconLanguage";
 import { MembersProvenance } from "@/components/living/MembersProvenance";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { Icon } from "@/components/icon/Icon";
+import { SentenceWithAddresses } from "@/components/address/AddressText";
 import { heroSystem, type HeroStat } from "@/config/syndicateFacts";
 import {
   fetchServedFeed,
   sentenceForServedLine,
+  amountForServedLine,
+  addressBookForServedLine,
   factsForServedLine,
   type ServedFeedLine,
 } from "@/lib/backboneFeedClient";
@@ -262,7 +265,24 @@ function HeroLiveActivity() {
               key={`${line.transactionHash}:${line.logIndex}`}
               className="rounded-lg border border-border/70 bg-card/50 px-2.5 py-2 dark:border-white/10"
             >
-              <p className="text-xs leading-snug text-foreground/90">{sentenceForServedLine(line)}</p>
+              {/* THE AMOUNT SURVIVES THE MOVE (2026-07-26). §③ of the approved
+                  /activity mockup took the figure OUT of the sentence, and this
+                  mini-feed shares that sentence builder — so without an explicit
+                  amount here the number would have silently DISAPPEARED from the
+                  public home. Enumerate by behaviour, not by name: four surfaces
+                  render these sentences, and all four had to move. */}
+              <p className="text-xs leading-snug text-foreground/90">
+                {amountForServedLine(line) ? (
+                  <span className="mr-1.5 font-mono font-semibold tabular-nums text-gold">
+                    {amountForServedLine(line)}
+                  </span>
+                ) : null}
+                <SentenceWithAddresses
+                  sentence={sentenceForServedLine(line)}
+                  book={addressBookForServedLine(line)}
+                  explorerBase={explorerBase}
+                />
+              </p>
               <p className="mt-0.5 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground">
                 {factsForServedLine(line) ? <span className="text-foreground/70">{factsForServedLine(line)}</span> : null}
                 {line.isoDayUtc} · block {line.blockNumber.toLocaleString("en-US")}

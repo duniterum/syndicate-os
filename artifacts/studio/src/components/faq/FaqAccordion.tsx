@@ -156,7 +156,14 @@ export function FaqAccordion({ categories, activeCat, onActiveCatChange }: FaqAc
                           aria-controls={panelId}
                           className="flex w-full items-start justify-between gap-3 px-4 py-3.5 text-left transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
                         >
-                          <span className="text-sm font-medium text-foreground">{e.q}</span>
+                          {/* THE QUESTION IS A HEADING — it must never be smaller
+                              than the answer it heads. It was a fixed 14px while
+                              the answer panel below uses `type-body`, whose ceiling
+                              rose to 22px on 2026-07-26: the answer would have
+                              rendered 57% larger than the question, inverting the
+                              hierarchy on a public page. Same token now; the
+                              medium weight carries the heading role instead. */}
+                          <span className="type-body font-medium text-foreground">{e.q}</span>
                           <Plus
                             aria-hidden
                             className={cn(

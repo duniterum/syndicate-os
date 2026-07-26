@@ -17,18 +17,30 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
+import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { Card } from "@/components/ui/card";
+import { SentenceWithAddresses } from "@/components/address/AddressText";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { MembersProvenance } from "@/components/living/MembersProvenance";
 import { useHeroReality } from "@/components/hero/useHeroReality";
 import {
   fetchServedFeed,
   sentenceForServedLine,
+  amountForServedLine,
+  addressBookForServedLine,
   type ServedFeedLine,
 } from "@/lib/backboneFeedClient";
 
 export function HomeRegisterBand() {
   const reality = useHeroReality();
+  // The explorer base for the address anchors — read from the fail-closed
+  // verify-links endpoint, exactly as MemberPulse and the feed do. Null simply
+  // means the addresses render unlinked; nothing is invented.
+  const { data: verifyLinks } = useGetProtocolVerifyLinks();
+  const explorerBase = (() => {
+    const u = verifyLinks?.links?.find((l) => l.id === "membershipSaleV3")?.url;
+    return u ? (u.match(/^(.*)\/address\//)?.[1] ?? null) : null;
+  })();
   const seats = reality.membersTotalNumber;
   const [lines, setLines] = useState<ServedFeedLine[] | null>(null);
 
@@ -77,7 +89,19 @@ export function HomeRegisterBand() {
                     key={`${line.transactionHash}-${line.logIndex}`}
                     className="border-t border-border/60 pt-3 text-[12.5px] leading-relaxed text-foreground first:border-t-0 first:pt-0"
                   >
-                    {sentenceForServedLine(line)}
+                    {/* §③ moved the figure out of the shared sentence; this band
+                        has no amount column, so it carries it explicitly rather
+                        than letting a public money line lose its number. */}
+                    {amountForServedLine(line) ? (
+                      <span className="mr-1.5 font-mono font-semibold tabular-nums text-gold">
+                        {amountForServedLine(line)}
+                      </span>
+                    ) : null}
+                    <SentenceWithAddresses
+                      sentence={sentenceForServedLine(line)}
+                      book={addressBookForServedLine(line)}
+                      explorerBase={explorerBase}
+                    />
                   </li>
                 ))}
               </ul>
