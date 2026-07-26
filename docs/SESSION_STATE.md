@@ -2,6 +2,34 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> # ▶ 2026-07-26 — RESUME HERE. THE ARC IS LIVE; ONE SMALL BATCH WAITS TO SHIP.
+>
+> ## ▶ THE FOUR LINES THAT DECIDE WHAT YOU DO
+> **① PROD = `27924e5`, SEALED AND VERIFIED.** The /activity rebuild, the four actor classes, the public
+> full addresses and the readability floor are ON thesyndicate.money. Evidence, not a report: the served API
+> publishes `actorOrganLabel` — a field absent from the whole repo at `2ce49a3` — and Replit proved
+> byte-identity twice (entry `index-CcDTw3m_.js` = `ad2100cb…`).
+>
+> **② DEPLOY BACKLOG = 5 commits, of which only TWO touch code, and they are CLIENT-ONLY** (verified:
+> `git diff --name-only 27924e5..HEAD | grep -c api-server` = **0**). `4d49853` promotes 11 Chronicle
+> entries (4 → 15); `b74dfdb` flips the register to NEWEST-FIRST. The other three are docs.
+> **🚀 DEPLOY — BATCHABLE.** Nothing is broken while it waits: prod simply keeps serving 4 Chronicle entries
+> oldest-first. It breaks no promise and fails closed, so it rides the next deploy rather than forcing its own
+> (the founder rule: each deploy costs ~10 min and $3-5).
+>
+> **③ NOTHING IS PENDING ON THE FOUNDER.** No build waits, no decision waits, no preview waits. He approved
+> the page (“GO and GO-Live”), he approved the law change on screen, and he answered “oui” to promoting all
+> eleven Chronicle entries. The register is written.
+>
+> **④ THE ONE THING THAT IS OWED, and it is code:** the first-seat derivation still uses TWO key spaces —
+> `n:<memberNumber>` for numbered rows, `w:<wallet>` for the pre-numbering V1 rows. `SESSION_STATE` §(a)
+> specified the join through **`GENESIS_SEAT_BY_WALLET`** (`backboneRunner.ts:229`, already passed to three
+> other read-models) and the code skipped it. A one-line guard closes the only reachable trigger — an
+> explicit `firstSeat: false` is never overruled, proven RED in `backbone.guard.ts` — but the namespace join
+> is what removes the CLASS. **Start there.**
+>
+> *(the block below is this session's detailed record — read it for the why, not for the what)*
+
 > # ▶ 2026-07-26 (LATE) — THE /activity REBUILD IS BUILT AND **COMMITTED IN SIX SLICES**. READ THIS FIRST.
 >
 > **PROD IS THIS ARC — IT SHIPPED. Measured on the live surfaces 2026-07-26 (not read from a report):**
@@ -216,6 +244,25 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > written — so historical members #1 and #2 sit in a different namespace from their own seat numbers. The
 > `firstSeat: false` guard closes the one reachable trigger; the namespace join removes the class.
 >
+> ## ▶ (b) THE QUEUE, in the order it should be attacked
+> **① THE SEAT-KEY NAMESPACE JOIN** — see line ④ at the top. Code, bounded, and it removes a defect class
+> rather than a symptom. Add a `backbone.guard.ts` fixture with a numberless V1 row followed by a numbered
+> `firstSeat:false` row for the same wallet, and prove it RED before leaving it green.
+> **② THE 12 REMAINING ERGONOMICS FINDINGS** (15 confirmed by a 4-lens adversarial review; 3 fixed). The ones
+> that follow engraved law need no wireframe — Terms/Risk/Privacy set one step SMALLER than every other
+> reading surface · /chronicle prose at 14px under 34px headings · ProtocolAssetsCard's 10px labels · every
+> button on the /join path under 44px on a phone. The ones that need a WIREFRAME first: /join shows up to FOUR
+> equally-loud filled buttons · /faq's search box is the 4th block on a page whose whole job is finding your
+> question · the home's audit string sits directly above the ONE gold CTA and renders 4× on that page ·
+> /tokenomics breaks the full-screen law with `max-w-5xl` while its two sibling pages fill the screen.
+> **③ THE PREVIEW SHOULD COVER 3-4 PAGES, NOT ONE.** DESIGN_ROADMAP asked for this and this session gave him
+> /activity only. The type token moved SITE-WIDE, so the next preview owes him the pages it touched.
+> **④ THE LIVE-REGISTER CONTRADICTION, his call to make:** entry `2026-07-12-the-first-real-money-seat` says
+> a referral-payment sentence “was architecture” until that night. The chain shows the same mechanic on
+> 2026-06-25 — which HE has explained is the first commission ever paid, a TEST that was then stopped. The
+> honest fix is a NARROWING to the public checkout, never a deletion, and editing a promoted entry is his act.
+> **⑤ `guard-capital-f` + the CODE sweep** — ≥93 lowercase `founder` string literals remain (67 studio, 26 api).
+
 > ## ▶ (b) THEN, in order
 > **①** Harvest the Chronicle from `github.com/duniterum/TheSyndicate` — the register holds 4 entries and the
 > Founder confirmed there are many more in the origin's earlier versions. His framing, and it is the point of
