@@ -454,6 +454,28 @@ export function buildPublicFeedWithLines(source: FeedSource): {
     logIndex: number;
     firstSeatBucket: FirstSeatBucket;
   }): FirstSeatBucket => {
+    // AN EXPLICIT NEGATIVE IS NEVER OVERRIDDEN (closing-review catch, 2026-07-26,
+    // confirmed by replaying the live payload and then injecting the trigger).
+    //
+    // THE DEFECT THIS CLOSES, and it is the mirror image of the one this very
+    // derivation was written to fix. The key space is heterogeneous by necessity:
+    // a row with a member number keys `n:<number>`, a pre-numbering V1 row keys
+    // `w:<wallet>`. Historical members #1 and #2 are the only wallets whose every
+    // row is numberless, so they live in the `w:` space today. The claim gate is
+    // LIVE on /join and tells them to claim their seat — and once one does, their
+    // next purchase emits their REAL number with `firstSeat: false`. That row
+    // keys `n:1`, a key never seen before, so the earliest-per-key rule would
+    // have declared it a first seat and the feed would have published
+    // "Member #1 … entered the public registry" for a wallet that entered at
+    // block 87,158,947. A chain-refutable claim (business red line ②), and the
+    // Seats lane would read 15 rows against a chip showing the engine's 14.
+    //
+    // The sale event's own negative flag is the strongest signal that exists — it
+    // comes from the contract that issued the seat. Deriving is for rows the old
+    // engines left SILENT, never for overruling one that spoke. Measured on
+    // today's 26 live rows this guard is zero-diff (14 true / 12 false either
+    // way), so it costs nothing now and prevents the claim later.
+    if (item.firstSeatBucket === "false") return "false";
     const key = seatKeyOf(item);
     if (key === null) return item.firstSeatBucket;
     return earliestBySeatKey.get(key) === `${item.blockNumber}:${item.logIndex}`

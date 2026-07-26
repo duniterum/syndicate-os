@@ -75,6 +75,7 @@ import {
 } from "../src/backbone/protocolEventScan";
 import {
   buildPublicFeed,
+  buildPublicFeedWithLines,
   assertFeedSafeJson,
   FEED_MAX_ITEMS,
   TX_HASH_SHAPE_RE,
@@ -771,6 +772,78 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
     }).burnLedger[0]?.actorClass === "visitor",
     "actor class fails closed: a missing seat set yields visitor, never a crash",
     "a missing seat set crashed the projection or invented a member",
+  );
+}
+
+// ── THE DERIVATION NEVER OVERRULES THE EVENT (closing review, 2026-07-26) ────
+// The first-seat derivation exists for rows the OLD engines left silent. It must
+// never overrule a row that spoke. The trigger is one claim away and live: the
+// two historical members whose rows carry no member number are told by the /join
+// gate to claim their seat; the purchase that follows emits their REAL number
+// with firstSeat=false, under a seat key never seen before. Without the guard the
+// feed publishes "Member #1 … entered the public registry" for a wallet that
+// entered at block 87,158,947 — chain-refutable, on the page whose job is proof.
+{
+  const seatBucketsFor = (
+    rows: readonly { blockNumber: number; logIndex: number; memberNumber: number | null; memberAddress: string | null; firstSeatBucket: "true" | "false" | "unknown" }[],
+  ): Record<number, string> => {
+    const model = {
+      items: rows.map((r) => ({
+        kind: "purchase" as const,
+        category: "membership-sale" as const,
+        generation: "V3",
+        blockNumber: r.blockNumber,
+        blockTimestampSec: T0,
+        isoDayUtc: "2026-06-21",
+        transactionHash: txD,
+        logIndex: r.logIndex,
+        firstSeatBucket: r.firstSeatBucket,
+        routedFolded: false,
+        memberNumber: r.memberNumber,
+        memberAddress: r.memberAddress,
+        referredBySource: false,
+        referrerAddress: null,
+      })),
+    };
+    return buildPublicFeedWithLines({
+      model,
+      protocolModel: null,
+      milestoneModel: null,
+      eraModel: null,
+      capitalModel: null,
+    } as unknown as Parameters<typeof buildPublicFeedWithLines>[0])
+      // Keyed by block, never positional: the feed is sorted newest-first, so an
+      // assertion on array order would be testing the SORT, not the derivation.
+      // (It caught me once — my first version of these checks failed for that
+      // reason while the derivation under test was already correct.)
+      .allLines.filter((l) => l.kind === "purchase")
+      .reduce<Record<number, string>>((acc, l) => {
+        acc[l.blockNumber] = (l as unknown as { firstSeatBucket: string }).firstSeatBucket;
+        return acc;
+      }, {});
+  };
+  const wallet1 = "0x" + "11".repeat(20);
+  // A pre-numbering V1 row (no member number) then, after the seat is CLAIMED,
+  // a numbered purchase the engine itself marks as NOT a first seat.
+  const buckets = seatBucketsFor([
+    { blockNumber: 100, logIndex: 0, memberNumber: null, memberAddress: wallet1, firstSeatBucket: "unknown" },
+    { blockNumber: 200, logIndex: 1, memberNumber: 1, memberAddress: wallet1, firstSeatBucket: "false" },
+  ]);
+  check(
+    buckets[200] === "false" && buckets[100] === "true",
+    "the derivation never overrules an explicit firstSeat=false (a claimed historical seat cannot re-enter the registry)",
+    "the derivation invented a first seat from a row the engine marked as a repeat",
+  );
+  // And it still DOES its job where the engine was silent: the earliest row of a
+  // seat key is the acquisition, later ones are expansions.
+  const silent = seatBucketsFor([
+    { blockNumber: 100, logIndex: 0, memberNumber: 5, memberAddress: wallet1, firstSeatBucket: "unknown" },
+    { blockNumber: 300, logIndex: 1, memberNumber: 5, memberAddress: wallet1, firstSeatBucket: "unknown" },
+  ]);
+  check(
+    silent[100] === "true" && silent[300] === "false",
+    "the derivation still resolves rows the old engines left silent (earliest per seat number is the acquisition)",
+    "the derivation stopped resolving silent rows",
   );
 }
 
