@@ -170,7 +170,7 @@ const ALLOWLIST: Record<string, string> = {
   "components/data-table/DataTable.tsx": "1 · ATOM (tables) — a single 9px occurrence; deferred to the sweep",
 
   // — public chrome and truth surfaces
-  "components/layout/PublicLayout.tsx": "6 · PUBLIC site chrome (header/footer, every page). RECOUNTED 2026-07-26: the brand tagline paid off its pair (a `text-[10px]` widening to a `sm:` step that capped at 11px, i.e. below the floor at EVERY width) and is now the `text-xs` token. Six sub-floor sizes remain in the chrome, deferred to the type-scale slice",
+  "components/layout/PublicLayout.tsx": "3 · PUBLIC site chrome (header/footer, every page). RECOUNTED 2026-07-26: the brand tagline paid off its pair (a `text-[10px]` widening to a `sm:` step that capped at 11px, i.e. below the floor at EVERY width) and is now the `text-xs` token. Six sub-floor sizes remain in the chrome, deferred to the type-scale slice",
   "components/ProtocolReality.tsx": "8 · PUBLIC reality band — deferred to the general sweep",
   "components/ProtocolReservesBand.tsx": "8 · PUBLIC home reserves band — deferred to the general sweep",
   "components/ProtocolAssetsCard.tsx": "6 · PUBLIC /contracts assets card — deferred to the general sweep",
@@ -182,10 +182,13 @@ const ALLOWLIST: Record<string, string> = {
   "components/registry/registryPosture.tsx": "2 · PUBLIC posture labels — deferred to the general sweep",
 
   // — public pages
-  "pages/SystemStatus.tsx": "11 · PUBLIC status page — deferred to the general sweep",
+  "pages/SystemStatus.tsx": "9 · PUBLIC status page — deferred to the general sweep",
   "pages/Liquidity.tsx": "8 · PUBLIC liquidity page — deferred to the general sweep",
   "pages/Docs.tsx": "5 · PUBLIC docs — a PROSE page; ADR-001 §3 (body 16px+) is NOT checked by this guard, so read this one by eye at the sweep",
-  "pages/FireLedger.tsx": "5 · PUBLIC burn ledger — deferred to the general sweep",
+  // pages/FireLedger.tsx entry DELETED 2026-07-26: CLEARED, zero sub-12px left —
+  // its 11px banners and 10px row meta moved onto the named steps. The guard asked
+  // for the deletion itself; a ledger that forgives a debt that no longer exists
+  // stops describing the tree.
   "pages/JoinProtocol.tsx": "5 · PUBLIC join page (the conversion surface) — deferred to the general sweep",
   "pages/OsMap.tsx": "4 · PUBLIC OS map — deferred to the general sweep",
   "pages/ProtocolMap.tsx": "4 · PUBLIC protocol map — deferred to the general sweep",

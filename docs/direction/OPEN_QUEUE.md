@@ -60,7 +60,7 @@
 > (`USES.length` = 10; ProtocolReservesBand carries 3 and rawUnits.ts 2). The guard's own PASS line prints
 > *"10 surfaces"* — a count of assertions reported as a count of surfaces, in the PASS line of the guard
 > written to stop exactly that. Cite the case's string key, *"the swap's AVAX (18,4) truncates"*, not a line.
-> ④ **THE DESIGN DEBT IS 675 AT HEAD, NOT 690** (277 type-scale / 57 files · 46 spacing / 11 · 26 contrast ·
+> ④ **THE DESIGN DEBT IS 675 AT HEAD, NOT 690** *(SUPERSEDED — **RECOUNTED 2026-07-26 (end of session) FROM THE SIX GUARDS THEMSELVES — 658 at HEAD**: 267 type-scale in 56 files (213 public) · 46 spacing in 11 · 26 contrast · 36 theme-parity · 193 focus-visible + 1 outline-kill · 89 touch-target. 267+46+26+36+193+1+89 = 658, recounted from its own list. The earlier 675 was true when written and drifted as debts were PAID — the /activity rebuild cleared the chrome type floor, three focus ratchets and the FireLedger entry. Read the live figure by running the guards, never from a number typed in a document.)* (277 type-scale / 57 files · 46 spacing / 11 · 26 contrast ·
 > 36 theme-parity · 198 focus-visible + 1 outline-kill · 92 touch-target). 690 was true at `2cd7d65`; the
 > contrast commit paid 15 down the same day. **And the ratchet's honest scope: THREE of the six guards carry
 > a numeric ceiling** — `contrast-aa`, `theme-parity` and `touch-target` forgive by binary membership, so an

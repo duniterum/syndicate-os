@@ -247,7 +247,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   - **`2cd7d65` — THE DESIGN LAW BECOMES STRUCTURAL.** Six BLOCKING guards in the chain (now 30 links —
 >     the six PLUS `check-seo-registry` and `check-public-surface-audit`, two pre-existing checks folded in
 >     by the same diff): type-scale · spacing-scale · contrast-aa · theme-parity · focus-visible ·
->     touch-target. **Counted debt at HEAD = 675** (277 type-scale in 57 files, 223 public in 48 · 46
+>     touch-target. **Counted debt at HEAD = 675** *(SUPERSEDED — **RECOUNTED 2026-07-26 (end of session) FROM THE SIX GUARDS THEMSELVES — 658 at HEAD**: 267 type-scale in 56 files (213 public) · 46 spacing in 11 · 26 contrast · 36 theme-parity · 193 focus-visible + 1 outline-kill · 89 touch-target. 267+46+26+36+193+1+89 = 658, recounted from its own list. The earlier 675 was true when written and drifted as debts were PAID — the /activity rebuild cleared the chrome type floor, three focus ratchets and the FireLedger entry. Read the live figure by running the guards, never from a number typed in a document.)* (277 type-scale in 57 files, 223 public in 48 · 46
 >     spacing in 11 · 26 contrast · 36 theme-parity · 198 focus-visible + 1 outline-kill · 92 touch-target,
 >     36 public). It was **690 at `2cd7d65`; the contrast commit paid 15 down the same day — that is the
 >     ratchet working, not a restatement.** **THE RATCHET'S HONEST SCOPE: THREE of the six carry a numeric
