@@ -62,7 +62,7 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   LOI D'ADRESSE gravée** (adresses publiques, forme courte + Snowtrace ; gardes protègent nom/e-mail PAS
   les adresses ; masquer = BUG ; base légale EDPB/CJEU/CCPA — ADR-003 + CANON_VISIBILITY_LAW amendés).
   **PUIS (25-07 PM-2) : LES AVOIRS DU VAULT — carte trésorerie recomposée + posée sur l'accueil /admin.**
-  `ProtocolAssetsCard` : **8 lignes** (Vault USDC · USDC opérations · AVAX · BTC.b · WETH.e · SYN du vault ·
+  `ProtocolAssetsCard` : **9 lignes** (Vault USDC · USDC opérations · AVAX · BTC.b · WETH.e · SYN du vault ·
   le pool SYN/USDC · la réserve de sièges), sous-valeur USD par ligne pour les avoirs valorisables, et un
   bloc d'en-tête **« Value of the priced holdings »** qui tombe en « indisponible » si un composant manque.
   Le placeholder « Coming » de l'AVAX est MORT (capacité enregistrée : `vaultHoldings` LIVE). Posée dans la
@@ -88,7 +88,7 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   vers Snowtrace — condition portée sur l'existence du lien, jamais sur « a un siège », donc toute ligne
   future l'est d'office.
   **DEPLOY : 🚀 GROUPÉ MAINTENANT** — le commit des avoirs change des lectures SERVEUR, donc il n'est pas
-  batchable : il emporte `f2642aa` · `3b32f2c` · `29f8559` · `469882d` au-dessus de prod `e21a036` en un
+  batchable : il emporte `f2642aa` · `3b32f2c` · `29f8559` · `469882d` au-dessus de prod `e21a036` *(PÉRIMÉ 26-07 : ce lot est SCELLÉ, prod = `35d60fa` depuis le 25-07 ; l autorité pour prod + le backlog est le bloc de reprise de SESSION_STATE, jamais un bloc daté plus bas)* en un
   seul déploiement. **+0 couleur brute** (tokens). Dossier :
   `docs/audits/FULL_SCREEN_HARMONIZATION_AUDIT_2026-07-25.md` + la LISTE COMPLÈTE = bloc en tête de `SESSION_STATE.md`.
 
@@ -315,7 +315,7 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   .syn-caption` 11/10/9px → 12px · `--text-caption` 11px → 12px · VerifyOnChain
   9px → 12px · MembersProvenance 10px → 12px — les atomes partagés montent partout
   (home 1440 + 375 vérifiées : zéro débordement, images OK). RESTE (tranche sweep
-  générale, notée ADR-001) : ~121 micro-classes arbitraires sur la home + autres
+  générale, notée ADR-001) : 277 occurrences sous 12px dans 57 fichiers, 223 publiques dans 48 (recompté le 26-07 par guard-type-scale) arbitraires sur la home + autres
   pages + le futur guard `no-sub-12px-text`.
 - [x] **LA RÈGLE DE LA SURFACE FLUIDE — S7-d (fondateur, 2026-07-16 ; gravée ADR-001
   bis ; recherchée UXPin/Polypane/MDN/HIG-Material)** : surfaces applicatives =
@@ -699,3 +699,56 @@ taguée `no-raw-color-allow`. Le token layer (`index.css`) reste la seule source
 - Ce doc est la **source unique** du workstream design.
 - **Claude Code met à jour ce fichier (coche les cases) à la fin de chaque slice**, dans le même commit — pas d'état "dans la tête".
 - Référencé dans `CANON_INDEX` (Tier 1) + `CLAUDE.md` → **chaque session boote dessus.**
+
+---
+
+## 26 juillet 2026 — LA LOI DE DESIGN DEVIENT STRUCTURELLE (Phase 4 + Phase 6)
+
+**Le constat du fondateur, mot pour mot :** *« et c'est quoi nos règles de design maintenant ??!! »* —
+devant `/activity` sur un 27 pouces : *« à peine lisible … les espacements trop condensés … pas vraiment sexy »*.
+
+**Le diagnostic, en une phrase :** la page respectait **toutes** les lois de design qui ont un garde
+derrière elles, et échouait sur **la plupart de celles qui n'en ont pas**. ADR-001 (amendement 16-07)
+interdisait déjà tout texte utilisateur sous 12px **et promettait un guard `no-sub-12px-text` « qui rendra
+le plancher structurel »** — jamais écrit. Compté le 26-07 : **277 occurrences sous 12px dans 57 fichiers,
+dont 223 PUBLIQUES dans 48, cinq à 8px.** Sur les six règles de type d'ADR-001, **zéro** avait un garde.
+
+- [x] **Six gardes BLOQUANTS écrits et câblés** (`2cd7d65`, chaîne 24 → **30 maillons**) : `guard-type-scale`
+      (plancher 12px résolu sur **toute** la chaîne de variantes — un palier `sm:` qui plafonne sous le
+      seuil est le défaut de StatusPill) · `guard-spacing-scale` · `guard-contrast-aa` (**ratios WCAG
+      CALCULÉS depuis les jetons, dans les DEUX thèmes**, arithmétique auto-vérifiée contre trois valeurs
+      publiées de WebAIM) · `guard-theme-parity` · `guard-focus-visible` · `guard-touch-target`.
+- [x] **Le cliquet** — chaque ligne de dette porte un plafond chiffré : une occurrence de plus ⇒ **build
+      rouge**. *Portée réelle, dite honnêtement : 3 gardes sur 6 portent un plafond numérique ; les trois
+      autres pardonnent par appartenance binaire. À généraliser.*
+- [x] **Chaque garde prouvé ROUGE** sur une infraction injectée, temporaire supprimé, garde re-diffé
+      identique. *Un garde jamais passé au rouge est une décoration.*
+- [x] **Chaque garde déclare ce qu'il NE voit PAS.** `guard-type-scale` ne juge qu'**1 des 6 règles** de
+      type d'ADR-001 — les cinq autres exigent de savoir *ce qu'un élément EST*.
+- [x] **Contraste : le thème par DÉFAUT (clair) échouait à AA sur toute la palette d'accent** (`57c5fdf`).
+      Lien « verify » 2,4:1, or 3,1:1 contre 4,5 requis ; le sombre était bon — le site ne se lisait que
+      dans **un** thème, et c'était le mauvais. Un commentaire affirmait « AAA dans les deux thèmes »
+      (AAA = 7:1 ; mesuré 3,10). **43 corrections alpha dans 28 fichiers**, rampes corrigées **par thème**
+      (`destructive` était à **1,95:1 en SOMBRE**, pire que le clair).
+- [x] **L'idiome « verify » rationalisé sur ordre du fondateur** (*« ce n'est pas une loi figée »*) : il
+      bâtissait son écart de survol en **affaiblissant l'état de repos**, faute d'un second palier cyan.
+      Nouveau jeton **`--proof-hover` par thème** — repos 5,27 clair / 9,31 sombre, survol **7,86 / 11,38,
+      donc AAA**. **35 sites** basculés d'un coup. **Règle gravée : un changement d'état AJOUTE du
+      contraste, il n'en retire jamais.**
+- [x] **`guard-contrast-aa` a refusé son propre auteur** dans l'heure : `--proof-hover` ajouté ⇒ rouge,
+      *« une couleur sémantique ne doit jamais partir non mesurée »*.
+- [x] **Maquette `/activity` approuvée** (`2132663`) — `docs/design/activity-redesign-mockup.html`, vraies
+      données de prod, vrais jetons. Diagnostic arithmétique : `--text-body` **plafonne à 1315px**, donc un
+      27 pouces reçoit la même taille qu'un 13 pouces sur deux fois la toile — et le feed n'utilisait même
+      pas ce jeton (14px fixe pendant que 54 fichiers utilisent le sien).
+- [x] **+0 couleur brute** (vérifié : `no-raw-color: 0 raw-color sites`).
+- [ ] **Phase 6 — Accessibilité : INSTRUMENTÉE, pas faite.** La dette est comptée (focus-visible **198**
+      activateurs nus + 1 « outline-kill » nommé · touch-target **92** contrôles sous 44px dont **36
+      publics** · type-scale **277**). Le déblayage est un chantier à part.
+- [ ] **La refonte elle-même** — échelle de type (elle bouge **tout le site** : 37 `type-h2`, 15
+      `type-body`, 8 `type-h1`, 8 `type-h3`), ligne en grille, montant en colonne, cartes de jalons, 44px,
+      anneaux de focus. **L'aperçu devra couvrir 3-4 pages, pas `/activity` seule.**
+
+**DEPLOY :** ce lot (`11384f5` · `05f16bc` · `2cd7d65` · `57c5fdf`) est **client uniquement, zéro fichier
+api-server** — 🚀 **UN SEUL CYCLE GROUPÉ**, non batchable parce que `05f16bc` retire une **promesse
+réfutable par la chaîne** de l'en-tête servi et ferme une page publique qui pouvait figer sans issue.
