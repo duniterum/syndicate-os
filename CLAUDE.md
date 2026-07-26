@@ -58,10 +58,16 @@ The founder is visual.
 ① Any change to a page's LAYOUT or COMPOSITION starts from a **founder-approved
 wireframe** — before any code.
 ② Every slice that changes what a page looks like ends at the **PREVIEW GATE** before any
-commit: local rig running (studio + api against the real chain), the exact localhost URL
-handed to the founder, he reviews the REAL rendered page in his own browser, desktop AND
-mobile width. **Only approval of what he SEES unlocks commit.** A rejection costs nothing —
-revert clean, record the verdict, prod never moved.
+**DEPLOY**: local rig running (studio + api against the real chain), the exact localhost URL
+handed to the Founder, he reviews the REAL rendered page in his own browser, desktop AND
+mobile width. **Only approval of what he SEES unlocks the deploy.**
+**A COMMIT IS A SAVE POINT, NOT A PUBLICATION** (founder ruling 2026-07-26): work ships to
+`main` in readable slices as it goes green — typecheck, guards, build — because nothing
+reaches thesyndicate.money until he triggers the deploy. Committing early is what makes a
+rejection CHEAP: `git revert` on one slice instead of untangling it from seventeen others.
+(The rule was set after one session let 1,230 lines accumulate uncommitted across 18 files
+while waiting for a screen it never needed to wait for.)
+A rejection still costs nothing — revert the slice, record the verdict, **prod never moved.**
 ③ Copy/truth-only changes need no wireframe but the full final text on screen (the
 standing rule above).
 **THE SYSTEM-FIRST LAW (founder, 2026-07-14, permanent — the gold-mine lesson).**
