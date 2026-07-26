@@ -311,7 +311,7 @@ number: a missing number beats a false one.
 
 | Event | The canonical sentence | Variants |
 |---|---|---|
-| Treasury outflow | "{amount} {token} moved out of {organ} — a founder-signed treasury act; there are no silent moves." | — |
+| Treasury outflow | ⚠️ **SUPERSEDED 2026-07-26 — DO NOT SHIP THIS SENTENCE.** ~~"{amount} {token} moved out of {organ} — a founder-signed treasury act; there are no silent moves."~~ **Two defects:** (1) "founder-signed" is an attestation the code NEVER checks — `protocolEventReadmodel.ts` reads `counterpartFounder`, i.e. who RECEIVED, never who signed; (2) "there are no silent moves" is a completeness promise the vault's 30.00 USDC→AVAX swap refutes, because native AVAX emits no log. Superseded by **ruling ⓐ** (the actor is the SIGNER, `tx.from`) and **ruling ⓑ** (Option B: the act first, the signature as attribution) — Founder, 2026-07-26. The replacement family is in `docs/direction/OPEN_QUEUE.md` (2026-07-26 block) and `docs/design/activity-redesign-mockup.html` §③. | — |
 | Treasury inflow (non-purchase) | "{amount} {token} entered {organ} — recorded on-chain." | — |
 | Internal rebalance | "{amount} {token} moved from {organ} to {organ} — an internal treasury rebalance, publicly recorded." | one line per transfer (the two direction scans dedupe at the raw key) |
 

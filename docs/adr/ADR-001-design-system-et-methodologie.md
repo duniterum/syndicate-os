@@ -128,8 +128,14 @@ sans perte. **LA RÈGLE (design général, toutes surfaces à venir) :**
 **Appliqué (2026-07-16) : toute la composition /member** (shell/portes, settings, bandeau,
 KPI, cartes capital/protocole/chronicle, pouls, referral, porte visiteur). **RESTE (tranche
 sweep générale, notée) :** le reste du site (header affordance, checkout, admin console,
-`syn-label`/`syn-caption` 9–10px, MembersProvenance compact) + un guard `no-sub-12px-text`
-qui rendra le plancher structurel.
+`syn-label`/`syn-caption` 9–10px, MembersProvenance compact).
+**✅ LE GUARD EST LIVRÉ — 26-07-2026 : `artifacts/studio/scripts/guard-type-scale.ts`,
+BLOQUANT et dans la chaîne (30 maillons).** Il rend le plancher structurel et mesure la dette :
+**277 occurrences sous 12px dans 57 fichiers, dont 223 PUBLIQUES dans 48**, cinq à 8px — avec un
+cliquet qui interdit d'en ajouter une seule de plus. *(Cette ligne promettait « un guard
+`no-sub-12px-text` qui rendra le plancher structurel » depuis le 16-07 ; il n'a jamais été écrit,
+et c'est exactement pourquoi la dette a atteint 277. Fossile DONE-IS-DONE corrigé le 26-07.)*
+**Le déblayage des 277, lui, reste dû** — le guard le compte, il ne le fait pas.
 
 ## Amendement 2026-07-16 (bis) — LA RÈGLE DE LA SURFACE FLUIDE (fondateur ; recherché)
 

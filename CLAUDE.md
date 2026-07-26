@@ -204,7 +204,7 @@ missing?" BEFORE looking, not after.
 DOES NOT COVER — the discipline every guard header already carries. A clean-looking result is
 exactly the moment to ask whether the question was well posed.
 
-④ **A preview handed to the founder must be VISUALLY COMPLETE** (founder, 2026-07-14):
+⑥ **A preview handed to the founder must be VISUALLY COMPLETE** (founder, 2026-07-14):
 every asset loading (DOM-level check — each visible `img` has `naturalWidth > 0`), both
 themes, desktop AND mobile — verified by Claude Code BEFORE handing the URL. A broken
 preview costs founder trust and money. (Origin of the rule: the S3 preview shipped with

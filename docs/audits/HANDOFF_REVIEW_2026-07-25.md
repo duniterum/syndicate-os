@@ -419,3 +419,30 @@ cheaper than a dedicated cleanup pass, and it is how the repo’s standing rules
 
 - **SEO verified in sync — no defect, recorded so the handoff can assert it** — Verified as a genuine PASS, and the finding says so itself. sitemap.xml has exactly 28 <loc> entries and includes /recognition at :94, matching seo-route-registry.ts's PUBLIC/INDEX/sitemap:true flip. Correctly filed as not a defect.
 - **/activity tells the public notifications are still coming from the indexer** — REFUTED on its own text. LiveActivityFeed.tsx:1008 reads 'What the indexer adds next: per-seat feeds, notifications generated FROM THESE EVENTS, and the candidate pipeline that feeds the Chronicle.' The subject is event-DERIVED notification generation, which is genuinely unbuilt — not the notification centre, which the sentence never claims is coming. The finding itself concedes the distinction. T
+
+---
+
+## ⚠️ MISE À JOUR 2026-07-26 — SIX CONSTATS SONT FERMÉS, ENCORE LISTÉS OUVERTS CI-DESSOUS
+
+Ce fichier publie « 58 ouverts (37 MEDIUM / 21 LOW) ». **Ce chiffre est périmé.** Six défauts distincts
+ont été fermés le 26-07 par les commits `11384f5` · `05f16bc` · `2cd7d65` · `57c5fdf`, et ils apparaissent
+sous **quatorze entrées** réparties dans les thèmes ci-dessous. Ne les retravaillez pas :
+
+1. **L en-tête de `ProtocolAssetsCard` décrivait le pool comme « non valorisé, non sommé »** alors que le
+   corps le somme depuis le 25-07 — la même ligne fausse s était propagée dans `featureStatus` et dans
+   l en-tête servi de `/contracts`. Fermé par `05f16bc`.
+2. **La description servie de `/activity` promettait « every on-chain act … each with its verify link »** —
+   réfutée deux fois (l achat d AVAX n apparaît pas ; les lignes Chronicle n ont aucun ancrage). Fermé
+   par `05f16bc`, avec la même sur-promesse retirée de `/status`.
+3. **Le plancher de lisibilité 12px n avait aucun garde** (ADR-001 en promettait un depuis le 16-07).
+   Fermé par `2cd7d65` : `guard-type-scale`, BLOQUANT, dette mesurée à 277 dans 57 fichiers.
+4. **Le thème clair — le thème par DÉFAUT — échouait à AA sur toute la palette d accent.** Fermé par
+   `57c5fdf` : 43 corrections alpha dans 28 fichiers, rampes corrigées par thème, `--proof-hover` ajouté.
+5. **`guard-one-figure` affichait une couverture qu il n avait pas** — deux projections rendues lui
+   échappaient, dont une sur cinq surfaces de l argent des membres. Fermé par `2cd7d65`.
+6. **Le groupement par date de `/activity` était invisible** (`first:mt-0` s appliquait à TOUS les
+   groupes). Fermé par `05f16bc`.
+
+**Le vrai reste ouvert n a pas été recompté entrée par entrée** — le faire proprement demande de relire
+les 58, ce qui est un travail à part. **Traitez donc « 58 » comme un majorant, jamais comme un compte.**
+L autorité pour l état courant est le bloc de reprise de `docs/SESSION_STATE.md`.

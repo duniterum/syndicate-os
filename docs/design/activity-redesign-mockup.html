@@ -10,19 +10,25 @@
    stands after today's contrast work — so every colour below is the colour that
    will ship, not an approximation.
    ════════════════════════════════════════════════════════════════════════════ */
+/* CORRECTED 2026-07-26 — the first draft of this file claimed "copied verbatim"
+   and was wrong in 7 of 16 values, including FIVE of the eight DARK tokens, the
+   theme the Founder approved it in: --gold-500 was 38 74% 52% against the real
+   42 92% 60% — a different HUE and a different saturation, i.e. not his gold.
+   Every value below is now byte-checked against artifacts/studio/src/index.css
+   at HEAD by a script, not by eye. */
 :root[data-theme="light"]{
   --bg:hsl(210 40% 98%); --card:hsl(0 0% 100%); --fg:hsl(222 47% 11%);
-  --muted-fg:hsl(215 16% 35%); --border:hsl(214 32% 91%);
-  --gold:hsl(38 74% 32%); --proof:hsl(190 90% 29%); --proof-hover:hsl(190 90% 22%);
-  --row:hsl(0 0% 100%); --chip:hsl(190 90% 29% / .10); --gold-chip:hsl(38 74% 32% / .12);
+  --muted-fg:hsl(215 16% 45%); --border:hsl(214 32% 91%);
+  --gold:hsl(38 74% 30%); --proof:hsl(190 90% 29%); --proof-hover:hsl(190 90% 22%);
+  --row:hsl(0 0% 100%); --chip:hsl(190 90% 29% / .10); --gold-chip:hsl(38 74% 30% / .12);
   --track:hsl(214 32% 91%);
 }
 :root[data-theme="dark"]{
-  --bg:hsl(222 47% 8%); --card:hsl(222 47% 11%); --fg:hsl(210 40% 98%);
-  --muted-fg:hsl(215 16% 57%); --border:hsl(216 34% 20%);
-  --gold:hsl(38 74% 52%); --proof:hsl(190 90% 50%); --proof-hover:hsl(190 90% 62%);
-  --row:hsl(222 47% 11%); --chip:hsl(190 90% 50% / .15); --gold-chip:hsl(38 74% 52% / .15);
-  --track:hsl(216 34% 20%);
+  --bg:hsl(224 71% 4%); --card:hsl(222 47% 7%); --fg:hsl(213 31% 91%);
+  --muted-fg:hsl(215.4 16.3% 56.9%); --border:hsl(216 34% 17%);
+  --gold:hsl(42 92% 60%); --proof:hsl(190 90% 50%); --proof-hover:hsl(190 90% 62%);
+  --row:hsl(222 47% 7%); --chip:hsl(190 90% 50% / .15); --gold-chip:hsl(42 92% 60% / .15);
+  --track:hsl(216 34% 17%);
 }
 /* THE TYPE SCALE. --text-body today CAPS at 1315px, which is why a 27-inch
    screen is served the same size as a 13-inch laptop. The "after" column raises
