@@ -99,7 +99,12 @@ function WalletPanelBody() {
       usdcAddr && saleAddr ? readAllowance(usdcAddr, address, saleAddr) : Promise.resolve(null),
     ]);
     setReads({
-      // Human display (S7-e, readability floor): 2 decimals, exact half-up.
+      // Human display (S7-e, readability floor): 2 decimals, TRUNCATED. This
+      // line said "exact half-up" until 2026-07-26, naming a rule abolished
+      // that day — rounding up states more money than the member holds, which
+      // one explorer click refutes. formatRawUnitsDisplay borrows the one
+      // truncation in lib/amountFormat.ts and carries its "< 0.01" floor, so
+      // the 0.004 SYN that used to read a flat "0" here now reads as dust.
       syn: syn !== null ? formatRawUnitsDisplay(syn.toString(), 18, 2) : null,
       usdc: usdc !== null ? formatRawUnitsDisplay(usdc.toString(), 6, 2) : null,
       usdcAllowanceToSale: allowance,

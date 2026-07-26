@@ -48,6 +48,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
+import { formatAmount } from "@/lib/amountFormat";
 import {
   NotificationComposerFields,
   type NotificationComposerValue,
@@ -73,14 +74,30 @@ type State =
   | { kind: "denied" }
   | { kind: "unavailable" };
 
-/** Raw 6-dec USDC base units → exact human dollars (no rounding invented). */
+/**
+ * Raw 6-dec USDC base units → human dollars, projected by THE ONE TRUNCATION.
+ *
+ * 2026-07-26 (the second pass over the one truncation). This helper used to do
+ * its own base-unit maths in pure string slicing — `padStart(7, "0")`, then
+ * `slice` for the dollars and `slice` for the cents. No bigint, no Intl, no
+ * float: an idiom NO rule in `guard-one-figure` §② can see. So the guard
+ * cleared this page while six rendered money figures came from here (the
+ * footprint cell, both purchases branches, the commission line, every receipt
+ * line, and the Footprints ranking), and the file's allowlist reason — "a sort
+ * comparator — never rendered", written for the comparator further down, which
+ * genuinely is never rendered — read as a claim about the whole page and was
+ * false of it. A false reason in an allowlist is the defect that guard exists
+ * to kill, so the reason has been corrected and this projection removed.
+ *
+ * The figure now comes from `formatAmount`; only the currency mark is placed
+ * here, INSIDE the comparison, so a real sub-cent amount reads "< $0.01"
+ * instead of the "$0.00" the slicing printed. A figure that cannot be projected
+ * degrades to the dash — never a guess.
+ */
 function usd(raw: string | null): string {
-  if (raw === null) return "—";
-  const neg = raw.startsWith("-");
-  const digits = (neg ? raw.slice(1) : raw).padStart(7, "0");
-  const whole = digits.slice(0, -6).replace(/^0+(?=\d)/, "");
-  const frac = digits.slice(-6, -4); // cents precision for display
-  return `${neg ? "-" : ""}$${whole}.${frac}`;
+  const shown = formatAmount(raw, 6, 2);
+  if (shown === null) return "—";
+  return shown.startsWith("< ") ? `< $${shown.slice(2)}` : `$${shown}`;
 }
 
 const SEGMENT_TONE: Record<LedgerRow["segment"], string> = {
@@ -412,7 +429,7 @@ export function MemberLedgerPanel() {
                     </TableCell>
                     <TableCell className="font-mono text-xs text-muted-foreground">
                       {r.walletShort}
-                      <span className="ml-1.5 text-[9px] uppercase tracking-wider text-muted-foreground/70">
+                      <span className="ml-1.5 text-[9px] uppercase tracking-wider text-muted-foreground">
                         {r.authority === "PART_B_FREEZE_ROOT" ? "roster" : "v3"}
                       </span>
                     </TableCell>
@@ -523,7 +540,7 @@ export function MemberLedgerPanel() {
                                   href={`/receipt/${line.transaction}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-proof/85 hover:text-proof"
+                                  className="text-proof hover:text-proof-hover"
                                   data-testid={`link-ledger-receipt-${line.transaction.slice(2, 10)}`}
                                 >
                                   Open receipt ↗
@@ -532,7 +549,7 @@ export function MemberLedgerPanel() {
                                   href={line.explorerUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 font-mono text-[11px] text-proof/70 hover:text-proof"
+                                  className="inline-flex items-center gap-1 font-mono text-[11px] text-proof hover:text-proof-hover"
                                 >
                                   Explorer
                                   <ExternalLink className="h-3 w-3" aria-hidden="true" />
@@ -617,7 +634,7 @@ export function MemberLedgerPanel() {
                 </li>
               ))}
             </ul>
-            <p className="mt-2 text-[11px] text-muted-foreground/80 leading-relaxed">
+            <p className="mt-2 text-[11px] text-muted-foreground leading-relaxed">
               {state.payload.honesty}
             </p>
           </div>

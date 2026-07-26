@@ -12,6 +12,7 @@ import {
   readSaleUsdcToken,
   readTokenBalance,
 } from "@/lib/chainReads";
+import { formatAmount } from "@/lib/amountFormat";
 import { formatRawUnitsDisplay } from "@/lib/rawUnits";
 import {
   fetchCapitalRung,
@@ -46,7 +47,12 @@ export function useOwnSynBalance(wallet: string | undefined): string | null {
     setBalance(null);
     if (!wallet || !tokenAddr) return;
     void readTokenBalance(tokenAddr, wallet).then((raw) => {
-      // Human display (S7-e): 2 decimals, exact half-up — never the 18-digit tail.
+      // Human display (S7-e): 2 decimals, TRUNCATED — never the 18-digit tail.
+      // This comment said "exact half-up" until 2026-07-26; the rule it named
+      // was abolished that day (rounding up states more SYN than the wallet
+      // holds). formatRawUnitsDisplay now borrows the one truncation in
+      // lib/amountFormat.ts and carries its "< 0.01" floor, so a real holding
+      // under a hundredth reads as dust instead of a flat "0".
       if (active && raw !== null)
         setBalance(formatRawUnitsDisplay(raw.toString(), 18, 2));
     });
@@ -287,10 +293,31 @@ export function useOwnArchiveHoldings(
   return holdings;
 }
 
-/** Whole-USDC display from 6-decimal base units, e.g. "$0.50". */
-export function usdFromRaw(raw: string): string {
-  const n = BigInt(raw);
-  const whole = n / 1_000_000n;
-  const cents = ((n % 1_000_000n) / 10_000n).toString().padStart(2, "0");
-  return `$${whole}.${cents}`;
+/**
+ * USDC display from 6-decimal base units, e.g. "$0.50".
+ *
+ * THE PROJECTION IS NOT DONE HERE — not any more (2026-07-26, the second pass
+ * over the one truncation). This helper used to do its own base-unit maths:
+ * `n / 1_000_000n` for the dollars, `(n % 1_000_000n) / 10_000n` for the cents.
+ * That made it a FIFTH projection of the same money, rendered on five member
+ * surfaces (CapitalAxisCard's headline figure and its purchase record,
+ * MemberAttention's approval line, MemberKpiRow's footprint tile,
+ * MemberRecentActivity's rows) — and `guard-one-figure` never saw it, because a
+ * DECIMAL bigint literal is not the `10n ** …` idiom its rules were written
+ * against. Two real defects rode along:
+ *   · NO FLOOR — a real holding under one cent printed a flat "$0.00", the
+ *     false zero the canon module exists to prevent.
+ *   · NO FAIL-CLOSED — `BigInt(raw)` THROWS on a malformed string, so one bad
+ *     field took the whole member dashboard down instead of degrading a single
+ *     figure to an honest dash.
+ * The figure now comes from `formatAmount` and nowhere else. Only the currency
+ * mark is placed here, and it is placed INSIDE the comparison — "< $0.01",
+ * never "$< 0.01".
+ */
+export function usdFromRaw(raw: string | null | undefined): string {
+  const shown = formatAmount(raw, 6, 2);
+  // Fail closed: an unreadable figure degrades to the dash the member surfaces
+  // already use for a gap. Never a throw, never an invented number.
+  if (shown === null) return "—";
+  return shown.startsWith("< ") ? `< $${shown.slice(2)}` : `$${shown}`;
 }

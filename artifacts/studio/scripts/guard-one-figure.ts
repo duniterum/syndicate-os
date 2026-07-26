@@ -24,6 +24,30 @@
 // regex can ever see. A guard that cannot fail on the defect in front of it is
 // decoration. This one pins BEHAVIOUR first, and the allowlist second.
 //
+// WHY IT WAS AMENDED THE SAME DAY (2026-07-26, second pass). A senior review
+// read the files this guard had just cleared and found TWO rendered projections
+// it had never seen:
+//   · wallet/ownReads.ts `usdFromRaw` — `n / 1_000_000n` plus a manual cents
+//     padStart, rendered on FIVE member surfaces, with no floor (a real
+//     sub-cent holding printed "$0.00") and no fail-closed (BigInt() threw, so
+//     one malformed field took the member dashboard down). A DECIMAL bigint
+//     literal is simply not the `10n ** …` idiom rule ① matches. Rule ⑥ below
+//     closes that class.
+//   · pages/admin/memberLedger.tsx `usd` — pure string slicing (padStart +
+//     slice), no bigint, no float, no Intl. Rendered SIX times on the founder's
+//     register. NO regex here could have seen it; it was found by reading.
+// Both now project through the canon module.
+//
+// THE HONEST LIMIT OF §② (stated so no session mistakes it for a proof). Its
+// rules match KNOWN projection idioms. A projection written in an idiom nobody
+// has thought of is invisible to it — the memberLedger slicing is the proof,
+// not the exception. And a file's presence in the ALLOWLIST says only that the
+// sites §② MATCHED there were judged legitimate; it never says the file holds
+// no OTHER projection. That is exactly how the memberLedger entry came to carry
+// a reason ("a sort comparator — never rendered") that was true of the one line
+// §② matched and false of the page. §⑤ is where a surface is PROVEN to call the
+// one authority: grow §⑤, and never read a §② pass as completeness.
+//
 // WHAT THIS GUARD DELIBERATELY DOES NOT POLICE (stated so it is never guessed):
 //   · EXACT rendering (rawUnits.formatRawUnits, protocolCommerceReceipt
 //     .formatAmountExact and its api-server twin) — a different job, and the
@@ -51,7 +75,15 @@ const ALLOWLIST: Record<string, string> = {
   "components/activity/MilestonesPanel.tsx": "progress-bar percentages (not a rendered money figure)",
   "components/hero/SeatFlowDiagram.tsx": "USD figures in a diagram, derived from a computed total",
   "components/tokenomics/useTokenomics.ts": "an exact bigint price ratio + a basis-points percentage",
-  "pages/admin/memberLedger.tsx": "a sort comparator — never rendered",
+  // Corrected 2026-07-26: the old reason ("a sort comparator — never rendered")
+  // was true of the ONE line §② matches here — the Footprints ranking's
+  // comparator, which narrows a bigint DIFFERENCE to a Number for its SIGN only
+  // — but it read as a claim about the page, under which a string-slicing
+  // projection rendered six money figures. That projection is gone (the page
+  // calls the canon module), and §⑤ now PINS the call rather than trusting this
+  // sentence.
+  "pages/admin/memberLedger.tsx":
+    "the Footprints ranking's sort comparator narrows a bigint DIFFERENCE to a Number for its sign only, and is never rendered; every rendered figure on the register goes through the canon module — pinned in ⑤",
 };
 
 // The shape of a base-unit projection: a scale derived from a token's decimals,
@@ -62,6 +94,15 @@ const PROJECTION = [
   [/10\s*\*\*\s*\w*[dD]ecimals/, "10 ** decimals — a float base-unit scale"],
   [/(maximum|minimum)FractionDigits/, "Intl fraction digits — rounds HALF-UP by default"],
   [/padStart\s*\(\s*\w*(ecimals|isplay)/, "a manual decimal-point insertion"],
+  // ⑥ added 2026-07-26 — a DECIMAL bigint literal scale, the idiom `usdFromRaw`
+  // hid in for months (`raw / 1_000_000n`). Deliberately bounded to 10^6 and
+  // ABOVE, which is the token-decimals range this protocol renders (USDC 6 ·
+  // BTC.b 8 · SYN/WETH.e 18). That bound is what keeps the rule honest: the
+  // raw→raw arithmetic that legitimately divides by 10_000n (checkoutVocabulary's
+  // slippage floor, useHeroReality's basis-point share) or by 100n (the 70/20/10
+  // split) is excluded BY CONSTRUCTION — not by three more allowlist entries
+  // whose reasons a reader would have to take on trust.
+  [/[\/%]\s*1(?:_?0){6,}n\b/, "a decimal bigint scale (÷ 10^6 or larger) — a base-unit projection"],
   // NOT `.toFixed(` on its own: it is overwhelmingly percentages, basis points and
   // SVG coordinates. Reaching a token amount with toFixed requires narrowing base
   // units to a float FIRST, which the rules above already catch at the narrowing.
@@ -193,6 +234,12 @@ const USES: [string, RegExp, string][] = [
   ["lib/rawUnits.ts", /truncateToDisplayUnits\(raw, decimals, display\)/, "the member wallet / checkout renderer must borrow the canon truncation"],
   ["lib/rawUnits.ts", /dustFloorText\(clampDisplay\(decimals, display\)\)/, "the member wallet renderer must carry the false-zero floor"],
   ["lib/activityFeed.ts", /formatAmount\(raw\.toString\(\), 18, 0\)/, "the window-scanned burn line must carry the floor too"],
+  // Added 2026-07-26 with the second pass: the two dollar helpers the review
+  // caught. Each renders many figures through ONE local helper, so pinning the
+  // helper's call pins every figure it prints — and turns each file's allowlist
+  // sentence from something to believe into something CHECKED.
+  ["wallet/ownReads.ts", /const shown = formatAmount\(raw, 6, 2\);/, "the member surfaces' dollar helper (capital card, KPI footprint tile, attention lane, recent activity) must project with the canon formatter, never its own bigint scale"],
+  ["pages/admin/memberLedger.tsx", /const shown = formatAmount\(raw, 6, 2\);/, "the founder's register renders six money figures through one helper; that helper must project with the canon formatter, never its own string slicing"],
 ];
 for (const [file, re, why] of USES) {
   if (!re.test(readFileSync(join(SRC, file), "utf8"))) {
@@ -204,9 +251,18 @@ if (failures > 0) {
   console.error(`[guard:one-figure] ${failures} FAILURE(S). One truncation, one figure, never rounded up.`);
   process.exit(1);
 }
+// The PASS line states ONLY what ran. It used to say "N projection site(s) …
+// all inside the allowlist", which reads as "src holds N projections" — a
+// completeness §② does not have and cannot have (see THE HONEST LIMIT above).
+// A guard that overstates its own coverage teaches the next session to trust it
+// past its edge; that is how two rendered projections lived inside a green
+// build on the morning of 2026-07-26.
 console.log(
-  `[guard:one-figure] PASS — one truncation in ${CANON}; ${projectionSites} projection site(s) across ${files.length} files, ` +
-    `all inside the ${Object.keys(ALLOWLIST).length}-file allowlist; ${CASES.length} behaviour cases green; ` +
+  `[guard:one-figure] PASS — one truncation in ${CANON}; ` +
+    `${projectionSites} site(s) MATCHED by the ${PROJECTION.length} projection rules across ${files.length} files, ` +
+    `each in a file the ${Object.keys(ALLOWLIST).length}-entry allowlist covers with a written reason ` +
+    `(these rules match known idioms — a pass is not proof that no other projection exists); ` +
+    `${CASES.length} behaviour cases green; ` +
     `${PINS.length} token precisions agreed across /activity, /contracts and the public home band; ` +
-    `${USES.length} surfaces proven to call the one authority.`,
+    `${USES.length} surfaces PROVEN to call the one authority.`,
 );
