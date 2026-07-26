@@ -49,10 +49,31 @@ export interface ServedSeatLine extends ServedLineCommon {
   memberNumber: number | null;
   /** H2-P: the actor's SHORT FORM only — a full address never parses. */
   memberShort: string | null;
+  /** The public full address — what makes the short form clickable. */
+  memberAddress: string | null;
   /** H2-P: the referred flag (the event's own source-id test). */
   referred: boolean;
   /** H2-P override A: the referrer's SHORT FORM (same event, no join). */
   referredByShort: string | null;
+  referredByAddress: string | null;
+}
+
+/**
+ * THE ACTOR CLASSES (Founder ruling 2026-07-26). Decided SERVER-SIDE from the
+ * chain’s own sets, never in the client: the allocation registry (founder), the
+ * protocol wallets (organ), and the sale lane’s seat record (member). Everyone
+ * else is a visitor — the fail-closed default, because MEMBERSHIP is the claim
+ * that would have to be proven.
+ */
+export type ActorClass = "founder" | "organ" | "member" | "visitor";
+const ACTOR_CLASSES = new Set<string>(["founder", "organ", "member", "visitor"]);
+
+/** Fail-closed, and BACKWARD-COMPATIBLE with a payload from before the ruling:
+ *  a server that sends no class can only ever have expressed two of them, so
+ *  the old senderLabel is honoured and nothing is promoted to "member". */
+function toActorClass(v: unknown, senderLabel: "Founder" | "Community"): ActorClass {
+  if (typeof v === "string" && ACTOR_CLASSES.has(v)) return v as ActorClass;
+  return senderLabel === "Founder" ? "founder" : "visitor";
 }
 
 export interface ServedBurnLine extends ServedLineCommon {
@@ -62,8 +83,14 @@ export interface ServedBurnLine extends ServedLineCommon {
   /** Exact raw 18-decimal base units, decimal string. */
   amountSynRaw: string;
   senderLabel: "Founder" | "Community";
+  /** The four-class actor (2026-07-26) — what the CHIP renders. The sentence
+   *  only ever names an ORIGIN, so no public copy says "not a member". */
+  actorClass: ActorClass;
+  /** The organ's public label when actorClass is "organ"; null otherwise. */
+  actorOrganLabel: string | null;
   /** H2-P: Community sender's short form (null on Founder — the voice rule). */
   actorShort: string | null;
+  actorAddress: string | null;
 }
 
 export interface ServedLifecycleLine extends ServedLineCommon {
@@ -82,6 +109,7 @@ export interface ServedLpLine extends ServedLineCommon {
   actorLabel: "Founder" | "Community";
   /** H2-P: Community actor's short form (null on Founder — the voice rule). */
   actorShort: string | null;
+  actorAddress: string | null;
 }
 
 export interface ServedArchiveMintLine extends ServedLineCommon {
@@ -92,6 +120,7 @@ export interface ServedArchiveMintLine extends ServedLineCommon {
   quantityRaw: string;
   /** H2-P: the minter's short form (null on pre-backfill rows). */
   minterShort: string | null;
+  minterAddress: string | null;
   /** The founder facet: Founder/Community per the served label, or null. */
   minterLabel: "Founder" | "Community" | null;
 }
@@ -304,6 +333,17 @@ function toShort(v: unknown): string | null | undefined {
   return undefined;
 }
 
+/** The full 40-hex public address (address law 2026-07-24/25) — the value that
+ *  makes a rendered short form CLICKABLE, since a short form cannot rebuild it.
+ *  Fail-closed on the same terms as toShort: a malformed value rejects the whole
+ *  line rather than rendering a link that could point at the wrong wallet. */
+const FULL_FORM_RE = /^0x[0-9a-f]{40}$/;
+function toFull(v: unknown): string | null | undefined {
+  if (v === null || v === undefined) return null;
+  if (typeof v === "string" && FULL_FORM_RE.test(v)) return v;
+  return undefined;
+}
+
 function parseCommon(r: Record<string, unknown>): ServedLineCommon | null {
   const blockNumber = toInt(r.blockNumber);
   const blockTimestampSec = toInt(r.blockTimestampSec);
@@ -361,13 +401,17 @@ function parseLine(raw: unknown): ServedFeedLine | null {
   if (r.kind === "purchase") {
     const memberShort = toShort(r.memberShort);
     const referredByShort = toShort(r.referredByShort);
+    const memberAddress = toFull(r.memberAddress);
+    const referredByAddress = toFull(r.referredByAddress);
     if (
       typeof r.generation !== "string" ||
       typeof r.firstSeatBucket !== "string" ||
       !BUCKETS.has(r.firstSeatBucket) ||
       typeof r.routedFolded !== "boolean" ||
       memberShort === undefined ||
-      referredByShort === undefined
+      referredByShort === undefined ||
+      memberAddress === undefined ||
+      referredByAddress === undefined
     ) {
       return null;
     }
@@ -380,20 +424,24 @@ function parseLine(raw: unknown): ServedFeedLine | null {
       routedFolded: r.routedFolded,
       memberNumber: memberNumber !== null && memberNumber > 0 ? memberNumber : null,
       memberShort,
+      memberAddress,
       referred: r.referred === true,
       referredByShort,
+      referredByAddress,
     };
   }
   if (r.kind === "burn") {
     const n = toInt(r.proofOfBurnNumber);
     const actorShort = toShort(r.actorShort);
+    const actorAddress = toFull(r.actorAddress);
     if (
       n === null ||
       n < 1 ||
       typeof r.amountSynRaw !== "string" ||
       !/^[0-9]+$/.test(r.amountSynRaw) ||
       (r.senderLabel !== "Founder" && r.senderLabel !== "Community") ||
-      actorShort === undefined
+      actorShort === undefined ||
+      actorAddress === undefined
     ) {
       return null;
     }
@@ -403,7 +451,11 @@ function parseLine(raw: unknown): ServedFeedLine | null {
       proofOfBurnNumber: n,
       amountSynRaw: r.amountSynRaw,
       senderLabel: r.senderLabel,
+      actorClass: toActorClass(r.actorClass, r.senderLabel),
+      actorOrganLabel:
+        typeof r.actorOrganLabel === "string" ? r.actorOrganLabel : null,
       actorShort,
+      actorAddress,
     };
   }
   if (typeof r.kind === "string" && LIFECYCLE_KINDS.has(r.kind)) {
@@ -415,13 +467,15 @@ function parseLine(raw: unknown): ServedFeedLine | null {
   }
   if (r.kind === "lp-add" || r.kind === "lp-remove") {
     const actorShort = toShort(r.actorShort);
+    const actorAddress = toFull(r.actorAddress);
     if (
       typeof r.amountSynRaw !== "string" ||
       !/^[0-9]+$/.test(r.amountSynRaw) ||
       typeof r.amountUsdcRaw !== "string" ||
       !/^[0-9]+$/.test(r.amountUsdcRaw) ||
       (r.actorLabel !== "Founder" && r.actorLabel !== "Community") ||
-      actorShort === undefined
+      actorShort === undefined ||
+      actorAddress === undefined
     ) {
       return null;
     }
@@ -432,16 +486,19 @@ function parseLine(raw: unknown): ServedFeedLine | null {
       amountUsdcRaw: r.amountUsdcRaw,
       actorLabel: r.actorLabel,
       actorShort,
+      actorAddress,
     };
   }
   if (r.kind === "archive-mint") {
     const minterShort = toShort(r.minterShort);
+    const minterAddress = toFull(r.minterAddress);
     if (
       typeof r.artifactLabel !== "string" ||
       r.artifactLabel.length === 0 ||
       typeof r.quantityRaw !== "string" ||
       !/^[0-9]+$/.test(r.quantityRaw) ||
-      minterShort === undefined
+      minterShort === undefined ||
+      minterAddress === undefined
     ) {
       return null;
     }
@@ -452,6 +509,7 @@ function parseLine(raw: unknown): ServedFeedLine | null {
       artifactId: toInt(r.artifactId),
       quantityRaw: r.quantityRaw,
       minterShort,
+      minterAddress,
       minterLabel:
         r.minterLabel === "Founder" || r.minterLabel === "Community"
           ? r.minterLabel
@@ -777,14 +835,54 @@ export function sentenceForServedLine(line: ServedFeedLine): string {
           ? ` — brought by ${line.referredByShort}`
           : " — brought by a verified referral"
         : "";
+      // THE UNKNOWN BUCKET MUST NOT SPEAK AS A FIRST SEAT (Founder-caught
+      // 2026-07-26: "on va lire tout le seat, il y a des erreurs").
+      //
+      // THE DEFECT, visible on the live page: `0x244…c721 entered the public
+      // registry` rendered TWICE, at blocks 87,215,307 and 87,215,283. Entering
+      // the registry happens ONCE per wallet, so the page asserted something the
+      // chain refutes. The cause was this ternary: it tested only for "false"
+      // and let BOTH "true" and "unknown" fall into the entry sentence — so every
+      // early V1/V2 row, whose event never emitted the first-seat flag, was
+      // published as a first seat. A repeat purchase read as an entry.
+      //
+      // Three buckets, three sentences, and the unknown one claims NEITHER:
+      // it states the act (a seat purchase, recorded) without ranking it first or
+      // repeat, which is exactly what we know. An honest gap beats a wrong claim.
       return line.firstSeatBucket === "false"
         ? `${who} expanded their footprint — recorded on-chain.`
-        : `${who} entered the public registry${referred}.`;
+        : line.firstSeatBucket === "true"
+          ? `${who} entered the public registry${referred}.`
+          : `${who} — a seat purchase recorded on-chain${referred}.`;
     }
+    // THE ORIGIN OF THE FIRE (approved mockup §③, 2026-07-26). The line used
+    // to say WHAT was destroyed and never WHOSE it was — while the payload
+    // carried the answer all along (`senderLabel` is derived server-side by
+    // matching the transfer's own `from` against the known Founder wallets,
+    // protocolEventReadmodel.ts:302). Whose stake burned IS the signal: on
+    // 2026-07-26 all 9 burns came from ONE sender, the Founder's allocation —
+    // i.e. every burn to date is the Founder destroying his OWN share, never
+    // the protocol's and never a member's. The amount leaves the prose for its
+    // own column (`amountForServedLine`); only the number moved.
+    // THE HONEST GAP: a burn from a protocol organ would label as "Community"
+    // today, because the organ address set is not part of this payload — the
+    // fourth case in the approved table needs the server and is NOT invented
+    // here. No such burn exists yet.
+    // FOUR ORIGINS, ONE GRAMMAR (Founder ruling 2026-07-26). The sentence names
+    // WHOSE stake burned; the CHIP names the actor's class. That split is the
+    // whole design: a member's burn and a stranger's burn are different facts and
+    // must be distinguishable, but no public line has to read "not a member" —
+    // which would be a reproach, not a record.
     case "burn":
-      return `${formatSynRaw(line.amountSynRaw)} SYN was retired to the burn address — gone for everyone, forever.`;
+      return line.actorClass === "founder"
+        ? "From the Founder's own allocation, retired to the burn address — gone for everyone, forever."
+        : line.actorClass === "organ" && line.actorOrganLabel !== null
+          ? `From ${line.actorOrganLabel}, retired to the burn address — gone for everyone, forever.`
+          : line.actorShort !== null
+            ? `From ${line.actorShort}, retired to the burn address — gone for everyone, forever.`
+            : "Retired to the burn address — gone for everyone, forever.";
     case "source-created":
-      return "A referral source was created — a founder-signed on-chain act.";
+      return "A referral source was created — a Founder-signed on-chain act.";
     case "source-terms":
       return line.risenToTitle !== null
         ? `A source rose to ${line.risenToTitle} — recorded on-chain.`
@@ -795,11 +893,11 @@ export function sentenceForServedLine(line: ServedFeedLine): string {
       return "A source's payment wallet was rotated — a public act; there are no silent edits.";
     case "lp-add":
       return line.actorLabel === "Founder"
-        ? "Liquidity was added to the public pool — the founder deepened the market."
+        ? "Liquidity was added to the public pool — the Founder deepened the market."
         : "Liquidity was added to the public pool — the market deepened.";
     case "lp-remove":
       return line.actorLabel === "Founder"
-        ? "Liquidity was withdrawn from the public pool — a founder-signed public act."
+        ? "Liquidity was withdrawn from the public pool — a Founder-signed public act."
         : "Liquidity was withdrawn from the public pool — a public act.";
     case "archive-mint":
       // H2-P origin voice: "0x123…abcd archived First Signal · token ID 1."
@@ -808,8 +906,8 @@ export function sentenceForServedLine(line: ServedFeedLine): string {
         : `A ${line.artifactLabel} was minted — protocol memory, written to the chain.`;
     case "archive-pause":
       return line.action === "paused"
-        ? "The archive was paused — a founder-signed public act."
-        : "The archive resumed — a founder-signed public act.";
+        ? "The archive was paused — a Founder-signed public act."
+        : "The archive resumed — a Founder-signed public act.";
     // H2-⑦ — TREASURY MOVEMENTS (founder-approved sentences, 2026-07-15).
     // Organ LABELS only; external counterparties never named; a transfer in
     // an already-narrated transaction never reaches here (the Fold Law).
@@ -827,15 +925,26 @@ export function sentenceForServedLine(line: ServedFeedLine): string {
       // counterparty is SAID — money in from the Founder is the Founder
       // advancing money to the protocol; money out to the Founder is a
       // return to him. The generic sentences stay for every other party.
+      //
+      // THE ATTRIBUTION HOLDS, AND IT IS NOT A GUESS (Founder ruling
+      // 2026-07-26, correcting my own bad reasoning). I had proposed deleting
+      // "Founder-signed" on the grounds that "the code never checks a signer".
+      // That was true about the code and WRONG about the claim: every organ is
+      // an EOA (rule ⓐ — a wallet never acts, the actor is the transaction's
+      // signer), and the Founder holds the vault's key, so a movement OUT of
+      // an organ was necessarily signed by him. The known-wallet set that
+      // proves it is the same one `protocolEventReadmodel` already uses to
+      // label a burn's sender. Capital F per the sweep. The amount leaves the
+      // prose for its own column — only the number moved.
       return line.movement === "internal"
-        ? `${amount} ${line.token} moved from ${line.organLabel} to ${line.toOrganLabel ?? "another organ"} — an internal treasury rebalance, publicly recorded.`
+        ? `Moved from ${line.organLabel} to ${line.toOrganLabel ?? "another organ"} — an internal treasury rebalance, publicly recorded.`
         : line.movement === "out"
           ? line.counterpartFounder
-            ? `${amount} ${line.token} moved out of ${line.organLabel} — returned to the Founder, a founder-signed treasury act; there are no silent moves.`
-            : `${amount} ${line.token} moved out of ${line.organLabel} — a founder-signed treasury act; there are no silent moves.`
+            ? `Moved out of ${line.organLabel} — returned to the Founder, a Founder-signed treasury act; there are no silent moves.`
+            : `Moved out of ${line.organLabel} — a Founder-signed treasury act; there are no silent moves.`
           : line.counterpartFounder
-            ? `${amount} ${line.token} entered ${line.organLabel} — advanced by the Founder, recorded on-chain.`
-            : `${amount} ${line.token} entered ${line.organLabel} — recorded on-chain.`;
+            ? `Entered ${line.organLabel} — advanced by the Founder, recorded on-chain.`
+            : `Entered ${line.organLabel} — recorded on-chain.`;
     }
     // H2-⑬ — MILESTONE CROSSINGS (founder-approved sentences, 2026-07-15).
     // Vocabulary law: always "routed", never "raised"; always SEATS.
@@ -867,6 +976,74 @@ export function sentenceForServedLine(line: ServedFeedLine): string {
 }
 
 /**
+ * THE AMOUNT, AS ITS OWN VALUE (approved mockup §③, 2026-07-26 — "le montant
+ * quitte la prose et prend sa propre colonne").
+ *
+ * Why a separate function and not a slice of the sentence: the figure is the
+ * most scanned thing on the page and it was living at 90% opacity inside prose,
+ * at a different x on every row. It now renders in a right-aligned tabular mono
+ * column, so twelve rows of numbers line up on their digits.
+ *
+ * TRUTH DISCIPLINE, unchanged from the sentence path: the value comes from the
+ * SAME shared truncating formatter every surface uses (`amountFormat.ts`, the
+ * one-figure rule), at the token's OWN precision, and a token whose precision
+ * this client does not know yields NULL — never a wrongly-scaled number. A null
+ * here means the sentence carries the fail-closed wording instead.
+ *
+ * Deliberately null for every lane the approved mockup left alone: liquidity
+ * keeps its two-token pair in the facts row, purchases and milestones carry no
+ * figure, and "toutes les autres phrases sont inchangées".
+ */
+export function amountForServedLine(line: ServedFeedLine): string | null {
+  switch (line.kind) {
+    case "burn":
+      return `${formatSynRaw(line.amountSynRaw)} SYN`;
+    case "treasury-move": {
+      const amount = formatTreasuryRaw(line.amountRaw, line.token);
+      return amount === null ? null : `${amount} ${line.token}`;
+    }
+    default:
+      return null;
+  }
+}
+
+/**
+ * THE LINE'S ADDRESS BOOK — every short form the sentence may contain, mapped to
+ * its full public address so the renderer can anchor it to the explorer
+ * (Founder ruling 2026-07-26; the settled address law 2026-07-24/25).
+ *
+ * Built from the SAME payload fields the sentence itself reads, so a rendered
+ * short form and its link can never point at different wallets. A short form
+ * whose full value did not survive validation is simply absent — the address
+ * still renders, unlinked, which is an honest gap rather than a guessed anchor.
+ */
+export function addressBookForServedLine(
+  line: ServedFeedLine,
+): Readonly<Record<string, string>> {
+  const book: Record<string, string> = {};
+  const add = (short: string | null, full: string | null): void => {
+    if (short !== null && full !== null) book[short] = full;
+  };
+  switch (line.kind) {
+    case "purchase":
+      add(line.memberShort, line.memberAddress);
+      add(line.referredByShort, line.referredByAddress);
+      break;
+    case "burn":
+    case "lp-add":
+    case "lp-remove":
+      add(line.actorShort, line.actorAddress);
+      break;
+    case "archive-mint":
+      add(line.minterShort, line.minterAddress);
+      break;
+    default:
+      break;
+  }
+  return book;
+}
+
+/**
  * The line's public FACTS beyond the sentence (the Visibility rule: amounts
  * included, rendered in the line's meta row beside block/date/verify).
  */
@@ -876,8 +1053,10 @@ export function factsForServedLine(line: ServedFeedLine): string | null {
     case "lp-remove":
       // H2-P: Community pride rides the facts row; the founder voice stands.
       return `${formatSynRaw(line.amountSynRaw)} SYN + ${formatUsdcRaw(line.amountUsdcRaw)} USDC${line.actorShort !== null ? ` · ${line.actorShort}` : ""}`;
+    // The origin moved INTO the sentence (approved mockup §③) — repeating the
+    // actor here would print the same address twice on one row.
     case "burn":
-      return `Proof of Burn #${line.proofOfBurnNumber} · ${line.actorShort ?? line.senderLabel}`;
+      return `Proof of Burn #${line.proofOfBurnNumber}`;
     case "archive-mint":
       return BigInt(line.quantityRaw) > 1n ? `× ${line.quantityRaw}` : null;
     case "milestone":

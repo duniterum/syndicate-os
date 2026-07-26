@@ -91,6 +91,30 @@ export interface ActivityItem {
   kind: ActivityKind;
   /** The receipt-backed sentence (H2-P: the chain's own voice, short form). */
   sentence: string;
+  /**
+   * §③ of the approved /activity mockup (2026-07-26): the line's figure, as its
+   * OWN value, so the row aligns it in a right-aligned tabular column instead of
+   * burying it at 90% opacity inside the prose at a different x on every row.
+   * null on every lane the mockup left alone (liquidity keeps its pair in the
+   * facts row; purchases, milestones and eras carry no figure) AND whenever the
+   * amount is unreadable — the sentence then carries the fail-closed wording,
+   * because a missing number beats a wrong one.
+   */
+  amount?: string | null;
+  /**
+   * Short form → full public address, for every address the sentence contains
+   * (Founder ruling 2026-07-26: every address is blue and clickable). Absent or
+   * empty = nothing to anchor, and the sentence renders as plain text.
+   */
+  addresses?: Readonly<Record<string, string>>;
+  /**
+   * The actor CLASS behind this line (Founder ruling 2026-07-26) — what the row
+   * renders as a chip. "member" means the wallet holds a seat on-chain; the
+   * window path cannot know that (the server owns the seat record), so a
+   * window-scanned line carries no class and shows no class chip rather than a
+   * guessed one.
+   */
+  actorClass?: "founder" | "organ" | "member" | "visitor";
   /** 0 on register-derived lines (no chain anchor exists — see readHref). */
   blockNumber: number;
   txHash: `0x${string}`;
@@ -152,6 +176,18 @@ export const DEFAULT_WINDOW_BLOCKS = 43_200;
  *  on a public money line (fixed 2026-07-26; the served twin was identical). */
 function fmtSyn(raw: bigint): string {
   return formatAmount(raw.toString(), 18, 0) ?? "0";
+}
+
+/**
+ * THE ONE SHORT FORM, byte-identical to the served one. The served payload's
+ * validator pins the shape `0x` + 3 hex + `…` + 4 hex (backboneFeedClient.ts:294,
+ * produced by `slice(0, 5)` server-side) — so a window-scanned address and a
+ * served one render the SAME way and a reader never sees two conventions for one
+ * kind of fact. Readability only: an address is public by the settled address
+ * law, and every row carries its explorer anchor for the full value.
+ */
+function shortFormAddress(address: string): string {
+  return `${address.slice(0, 5).toLowerCase()}…${address.slice(-4).toLowerCase()}`;
 }
 
 export interface FeedAddresses {
@@ -230,9 +266,25 @@ export async function scanRecentActivity(
           } else if (t0 === TOPICS.transfer && log.address.toLowerCase() === addrs.synToken.toLowerCase()) {
             const d = decodeEventLog({ abi: FEED_ABI, eventName: "Transfer", data: log.data, topics: log.topics });
             if (d.args.to.toLowerCase() !== burn) continue; // only burns speak here
+            // THE ORIGIN OF THE FIRE, on the live-window path too (approved
+            // mockup §③). This path is a SECOND authority for the same
+            // sentences as the served record — the exact shape that let five
+            // formatters disagree about one figure — so it moves with it.
+            //
+            // THE ASYMMETRY, STATED RATHER THAN HIDDEN: the served record says
+            // "the Founder's own allocation" because the SERVER owns the known-
+            // wallet set that proves it; this client has no such set, so it
+            // names the sender by its address — true whoever it is, and an
+            // address is public by the settled address law (short form for
+            // readability, never masking). The same burn reads the richer
+            // sentence the moment the indexer serves it.
             items.push({
               kind: "burn",
-              sentence: `${fmtSyn(d.args.value)} SYN was retired to the burn address — gone for everyone, forever.`,
+              sentence: `From ${shortFormAddress(d.args.from)}, retired to the burn address — gone for everyone, forever.`,
+              amount: `${fmtSyn(d.args.value)} SYN`,
+              addresses: {
+                [shortFormAddress(d.args.from)]: d.args.from.toLowerCase(),
+              },
               blockNumber: Number(log.blockNumber),
               txHash: log.transactionHash,
               logIndex: log.logIndex ?? 0,
@@ -243,7 +295,7 @@ export async function scanRecentActivity(
             if (t0 === TOPICS.sourceCreated) {
               items.push({
                 kind: "source-created",
-                sentence: "A referral source was created — a founder-signed on-chain act.",
+                sentence: "A referral source was created — a Founder-signed on-chain act.",
                 blockNumber: Number(log.blockNumber),
                 txHash: log.transactionHash,
                 logIndex: log.logIndex ?? 0,

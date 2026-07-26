@@ -27,6 +27,8 @@ import {
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusPill } from "@/components/status-pill/StatusPill";
+import { SentenceWithAddresses } from "@/components/address/AddressText";
+import { Disclosure } from "@/components/disclosure/Disclosure";
 import {
   scanRecentActivity,
   DEFAULT_WINDOW_BLOCKS,
@@ -37,7 +39,9 @@ import {
 import {
   fetchServedFeed,
   sentenceForServedLine,
+  amountForServedLine,
   factsForServedLine,
+  addressBookForServedLine,
   type ServedFeed,
   type ServedFeedLine,
   type ServedFeedPagination,
@@ -122,11 +126,18 @@ const FILTERS: { id: FilterId; label: string; primary: boolean }[] = [
   // this chip: the whole-history per-ACTOR total is not a served figure, and
   // a guessed count would be a lie.
   { id: "founder", label: "Founder", primary: true },
-  // "Membership" (the seat-law sweep 2026-07-22): this lane holds FIRST
-  // seats AND footprint expansions — the honest name for its whole content
-  // ("Seats" undercounted-in-word; the separate Footprint chip keeps the
-  // capital-rise recognitions).
-  { id: "seat", label: "Membership", primary: true },
+  // SPLIT BACK APART 2026-07-26 (Founder ruling — see `matches` below). From
+  // 2026-07-22 this chip was "Membership" and deliberately held first seats AND
+  // repeat purchases in one lane. That merge is reversed: "Seats" means taking a
+  // seat, and the expansions moved to "Footprint", which is what they are.
+  // Neither chip carries a number — the server still counts both as one kind.
+  { id: "seat", label: "Seats", primary: true },
+  // FOOTPRINT SITS BESIDE SEATS (Founder ruling 2026-07-26: "Footprint va à
+  // côté de Membership"). It was stranded at the far right, past Chronicle,
+  // eleven chips away from the lane it is the counterpart of. Taking a seat
+  // and growing a footprint are one story read in two steps, so the eye must
+  // find them together.
+  { id: "capital-rise", label: "Footprint", primary: true },
   { id: "burn", label: "Burns", primary: true },
   { id: "treasury-move", label: "Treasury", primary: true },
   { id: "liquidity", label: "Liquidity", primary: true },
@@ -138,18 +149,52 @@ const FILTERS: { id: FilterId; label: string; primary: boolean }[] = [
   { id: "milestone", label: "Milestones", primary: false },
   { id: "era-transition", label: "Eras", primary: false },
   { id: "chronicle-entry", label: "Chronicle", primary: false },
-  { id: "capital-rise", label: "Footprint", primary: false },
   { id: "deployment", label: "Deployments", primary: false },
 ];
 const FILTER_IDS = new Set<string>(FILTERS.map((f) => f.id));
 const PAGE_SIZE = 12;
 
+/**
+ * The Chronicle record that explains the seat overlap ("The duplicate seat",
+ * promoted 2026-07-14). Named here once so the Seats lane can hand a reader the
+ * door instead of leaving a doubled registry entry unexplained. The id is checked
+ * against CHRONICLE_REGISTER before the door renders — a renamed entry hides the
+ * door rather than shipping a link into nothing.
+ */
+const DUPLICATE_SEAT_ENTRY_ID = "2026-07-12-the-duplicate-seat";
+
+// ── SEAT AND FOOTPRINT ARE TWO DIFFERENT FACTS (Founder ruling 2026-07-26:
+// "Claude toi dans une autre session a mixé footprint avec seat et ce n'est pas
+// vraiment une bonne idée, on va séparer les 2 choses").
+//
+// WHAT AN EARLIER SESSION DID, and why it was wrong: it widened the "seat" lane
+// to hold BOTH first seats and repeat purchases, and renamed the chip
+// "Membership" to make that honest. But naming a merge honestly is not the same
+// as the merge being right: TAKING a seat and EXPANDING a footprint are separate
+// acts with separate meanings in this protocol — the first admits you, the second
+// grows your stake. A reader filtering for seats was shown expansions, and the
+// milestone ladders count them apart, so the page contradicted its own arithmetic.
+//
+// SEPARATED HERE, using the flag the event itself emits:
+//   seat        → first seats (and rows whose flag was never emitted, which are
+//                 NOT claimed as expansions — the honest unknown stays with the
+//                 seats rather than being demoted)
+//   footprint   → repeat purchases, joined by the capital-axis rung recognitions,
+//                 which are the SAME story: what a member built after the first
+//                 seat.
 function matches(item: ActivityItem, f: FilterId): boolean {
   if (f === "all") return true;
   if (f === "founder") return isFounderLine(item);
   if (f === "referral") return item.kind.startsWith("source-");
   if (f === "liquidity") return item.kind === "lp-add" || item.kind === "lp-remove";
   if (f === "archive") return item.kind === "archive-mint" || item.kind === "archive-pause";
+  if (f === "seat") return item.kind === "seat" && item.firstSeat !== false;
+  if (f === "capital-rise") {
+    return (
+      item.kind === "capital-rise" ||
+      (item.kind === "seat" && item.firstSeat === false)
+    );
+  }
   return item.kind === f;
 }
 
@@ -208,6 +253,35 @@ export function LiveActivityFeed({
   // headlines (financial.members.memberCount, the reconciled live engine
   // read). The two surfaces can never diverge again. Fail-closed to null.
   const { data: realityData } = useGetProtocolReality();
+  /**
+   * THE SEAT OVERLAP, READ LIVE (Founder go 2026-07-26: "on est ici pour
+   * construire le protocole le plus transparent et honnête… ce n'est pas gênant,
+   * je voulais tout montrer").
+   *
+   * WHY THIS EXISTS. The Seats lane shows one wallet entering the public registry
+   * TWICE, and until now it said nothing about why — a visitor met an apparent
+   * contradiction with no way to resolve it. It is not a contradiction: the
+   * Chronicle records it as "The duplicate seat" — historical seat #7 went
+   * unclaimed, bought through the active engine, and was issued seat #11. One
+   * member, two seat numbers, permanent, and seat #7 stands empty forever because
+   * the engine refuses a claim from a member it already knows.
+   *
+   * DRIVEN BY THE CHAIN, NEVER BY A TYPED NUMBER: the note renders only while the
+   * live engine read still reports an overlap, and it prints the figures it is
+   * given. The day the overlap is zero, the note disappears on its own. That is
+   * the same discipline the Chronicle entry itself demands — "derived live from
+   * the chain on every read, never typed, never frozen into a document".
+   */
+  const financialCount = (id: string): number | null => {
+    const item =
+      realityData?.groups?.financial?.find((i) => i.id === id) ?? null;
+    if (item === null || typeof item.value !== "string" || !/^[0-9]+$/.test(item.value)) {
+      return null;
+    }
+    return Number(item.value);
+  };
+  const seatOverlap = financialCount("financial.members.seatOverlap");
+  const distinctWallets = financialCount("financial.members.distinctWallets");
   const liveSeatCount = (() => {
     const item =
       realityData?.groups?.financial?.find(
@@ -388,6 +462,14 @@ export function LiveActivityFeed({
       return {
         kind: SERVED_KIND_TO_WINDOW_KIND[l.kind],
         sentence: sentenceForServedLine(l),
+        // §③ of the approved mockup: the figure travels as its OWN value so the
+        // row can align it in a tabular column instead of burying it in prose.
+        amount: amountForServedLine(l),
+        // Every address in the sentence, mapped to its full public value so the
+        // row can anchor it to the explorer (Founder ruling 2026-07-26).
+        addresses: addressBookForServedLine(l),
+        // The actor class rides the item so the row can chip it (2026-07-26).
+        actorClass: l.kind === "burn" ? l.actorClass : undefined,
         facts,
         blockNumber: l.blockNumber,
         txHash: l.transactionHash,
@@ -574,8 +656,23 @@ export function LiveActivityFeed({
         );
       case "founder":
         return null;
+      // THE NUMBER ALREADY EXISTS — STOP RECOMPUTING IT (Founder, 2026-07-26:
+      // "plein d'endroits… tu cherches quoi, refaire recalculer sans arrêt").
+      //
+      // He is right, and this is the correction. Seats = the live engine's
+      // `memberCount()`, the SAME one-authority figure this page already prints in
+      // its own header and the public home prints in its Protocol overview: 14.
+      // I had set this to null and planned a server derivation to recount what the
+      // engine answers directly — the definition of redundant work, and a second
+      // authority waiting to disagree with the first.
+      //
+      // Footprint is then pure reconciliation between two figures the page ALREADY
+      // publishes side by side: 26 purchases (served whole-history) − 14 seats
+      // (live engine) = 12 expansions, plus the served rung recognitions. It adds
+      // back to 26 exactly, which is the test that it is not invented arithmetic.
+      // Fail-closed: no live seat read → no number, never a guess.
       case "seat":
-        return n("purchase");
+        return liveSeatCount;
       case "burn":
         return n("burn");
       case "referral":
@@ -588,10 +685,23 @@ export function LiveActivityFeed({
         return n("treasury-move");
       case "milestone":
         return n("milestone");
+      // A PROVEN ZERO IS TRUE BUT IT IS NOT WORTH A CHIP (Founder ruling
+       // 2026-07-26). "Eras 0" beside Burns 9 and Archive 17 read as a dead lane;
+      // the fact underneath is the opposite of dead — the rate table has NEVER
+      // turned yet, and the seat where it first will is a genuine reason to act.
+      // So the zero is dropped here and the lane says it in WORDS instead (see
+      // the empty state below). The count returns the moment an era really turns,
+      // because "Eras 1" is then a real fact worth counting.
       case "era-transition":
-        return n("era-transition");
+        return n("era-transition") > 0 ? n("era-transition") : null;
+      // Expansions (purchases − seats) + the served rung recognitions. Both
+      // inputs are whole-history authorities the page already shows; the sum
+      // reconciles to the served purchase total, so it is a reading of published
+      // figures, not a new derivation.
       case "capital-rise":
-        return n("capital-rise");
+        return liveSeatCount === null
+          ? null
+          : Math.max(0, n("purchase") - liveSeatCount) + n("capital-rise");
       case "chronicle-entry":
         return CHRONICLE_REGISTER.length;
       case "deployment":
@@ -676,18 +786,32 @@ export function LiveActivityFeed({
   const todayUtc = new Date().toISOString().slice(0, 10);
   const yesterdayUtc = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
 
+  // ── THE FEED ROW — A GRID (approved mockup §②, 2026-07-26) ───────────────
+  // THE DEFECT IT REPLACES, measured on the Founder's 27-inch screen: the row
+  // was ONE flex-wrap line, so the sentence stretched to ~200 characters and the
+  // verify link floated to a different x on every row — ~1,500px from the words
+  // it proves. The amount lived inside the prose at 90% opacity, and the whole
+  // line was pinned at 14px because it never used the body token at all.
+  //
+  // THE FIX IS GEOMETRY, NOT TASTE: fixed tracks mean the proof anchor lands at
+  // the SAME x on every row, and the sentence is bounded in `ch` — so it survives
+  // zoom and translation, which a px cap does not. Only `meta` takes 1fr, so all
+  // slack goes there and the button column never moves.
+  //
+  // THE FULL-SCREEN LAW HOLDS (S7-d): there is no page-level max-width here. The
+  // extra width of a wide screen is spent on CONTENT COLUMNS — the sentence
+  // reaches its comfortable measure and the amount/meta/proof columns take the
+  // rest — never on empty margins. Only the SENTENCE is bounded, and in characters.
   const renderLine = (i: ActivityItem) => (
-    // DENSITY (founder catch 2026-07-22, ADR-001 FastPay discipline —
-    // "respiration"): roomier card, facts in the muted data voice.
-    <Card
+    <div
       key={lineKey(i)}
-      className={`bg-card/40 border-border/50 p-4 ${
+      className={`grid items-baseline gap-x-5 gap-y-1.5 border-b border-border/50 px-1 py-4 last:border-b-0 grid-cols-[1fr_auto] md:grid-cols-[106px_minmax(0,68ch)_11rem_1fr_auto] md:px-1.5 md:py-5 ${
         freshKeys.has(lineKey(i))
-          ? "animate-in fade-in slide-in-from-top-2 border-gold/50"
+          ? "animate-in fade-in slide-in-from-top-2 bg-gold/5"
           : ""
       }`}
     >
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+      <div className="flex flex-wrap items-center gap-1.5">
         <StatusPill tone={i.kind === "burn" ? "caution" : "proof"} size="xs">
           {KIND_LABEL[i.kind]}
         </StatusPill>
@@ -706,48 +830,98 @@ export function LiveActivityFeed({
             Founder
           </span>
         ) : null}
-        <p className="text-sm leading-relaxed text-foreground/90 flex-1 min-w-48">
-          {i.sentence}
-          {i.facts ? (
-            <span className="ml-2 whitespace-nowrap font-mono text-xs text-muted-foreground">
-              {i.facts}
-            </span>
-          ) : null}
-        </p>
+        {/* THE ACTOR CLASS (Founder ruling 2026-07-26: "il faut quand même les
+            distinguer, car dans notre système c'est un qui a acheté un seat, les
+            autres sont différents"). The SENTENCE names whose stake burned; this
+            chip names WHO they are to the protocol — the same division of labour
+            the gold Founder chip above already uses.
+            Only "member" and "organ" get a chip: a seat holder is a materially
+            different fact from a stranger, and an organ is the protocol acting on
+            itself. A visitor gets NOTHING — the absence is the distinction, and
+            printing "not a member" on a public line would be a reproach rather
+            than a record. Never guessed: the class is decided server-side from
+            the chain's own seat record, and a window-scanned line carries none. */}
+        {i.actorClass === "member" ? (
+          <span
+            className="rounded border border-proof/50 bg-proof/10 px-1.5 py-0.5 text-xs font-semibold leading-none text-proof"
+            title="This wallet holds a seat on-chain"
+            data-testid="actor-chip-member"
+          >
+            Member
+          </span>
+        ) : i.actorClass === "organ" ? (
+          <span
+            className="rounded border border-border bg-muted/40 px-1.5 py-0.5 text-xs font-semibold leading-none text-muted-foreground"
+            title="A protocol wallet — the protocol acting on itself"
+            data-testid="actor-chip-organ"
+          >
+            Protocol
+          </span>
+        ) : null}
+      </div>
+
+      {/* THE SENTENCE — the body token at last (it was hardcoded at 14px, which
+          is why a 27-inch screen read like a phone), bounded in ch so the line
+          length stays comfortable however wide the screen gets. */}
+      <p className="type-body col-span-2 max-w-[68ch] text-foreground/90 md:col-span-1">
+        <SentenceWithAddresses
+          sentence={i.sentence}
+          book={i.addresses}
+          explorerBase={explorerBase}
+        />
+        {i.facts ? (
+          <span className="ml-2 whitespace-nowrap font-mono text-sm text-muted-foreground">
+            {i.facts}
+          </span>
+        ) : null}
         {i.memory ? (
           <span
-            className="inline-flex items-center gap-1 text-xs text-gold"
+            className="ml-2 inline-flex items-center gap-1 align-middle text-sm text-gold"
             title="Anchored to protocol memory — a Chronicle-grade event."
           >
             <Anchor className="h-3 w-3" aria-hidden="true" /> memory
           </span>
         ) : null}
-        <span className="font-mono text-xs text-muted-foreground">
-          {/* Register-derived lines have no chain anchor — the date
-              alone is honest; "block 0" would be a lie. */}
-          {i.readHref
-            ? i.dateUtc || "—"
-            : `${i.dateUtc || "—"} · block ${i.blockNumber.toLocaleString("en-US")}`}
-        </span>
-        {i.readHref ? (
-          <Link
-            href={i.readHref}
-            className="inline-flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-proof hover:text-proof-hover"
-          >
-            read the record <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
-          </Link>
-        ) : explorerBase ? (
-          <a
-            href={`${explorerBase}/tx/${i.txHash}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-proof hover:text-proof-hover"
-          >
-            verify <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
-          </a>
-        ) : null}
-      </div>
-    </Card>
+      </p>
+
+      {/* THE AMOUNT — its own right-aligned tabular column (approved mockup §③).
+          Tabular lining figures mean twelve rows of numbers align on their
+          digits; the gold marks it as the row's one quantity. A line with no
+          figure renders nothing here and the track simply stays empty — never a
+          zero, never a dash pretending to be a value. */}
+      <span className="col-span-2 font-mono text-lg font-semibold tabular-nums text-gold md:col-span-1 md:text-right">
+        {i.amount ?? ""}
+      </span>
+
+      <span className="font-mono text-sm tabular-nums text-muted-foreground">
+        {/* Register-derived lines have no chain anchor — the date
+            alone is honest; "block 0" would be a lie. */}
+        {i.readHref
+          ? i.dateUtc || "—"
+          : `${i.dateUtc || "—"} · block ${i.blockNumber.toLocaleString("en-US")}`}
+      </span>
+
+      {/* THE PROOF ANCHOR — a real target, not a 59×16px string. 112×44px is the
+          approved geometry and clears the 44px touch floor; the focus ring makes
+          it reachable by keyboard, which it was not. */}
+      {i.readHref ? (
+        <Link
+          href={i.readHref}
+          className="inline-flex min-h-11 min-w-28 items-center justify-center gap-1.5 rounded-[10px] border border-proof bg-proof/10 px-3.5 font-mono text-sm font-bold uppercase tracking-wider text-proof transition-colors hover:border-proof-hover hover:text-proof-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+        >
+          Record <ExternalLink className="h-3 w-3" aria-hidden="true" />
+        </Link>
+      ) : explorerBase ? (
+        <a
+          href={`${explorerBase}/tx/${i.txHash}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex min-h-11 min-w-28 items-center justify-center gap-1.5 rounded-[10px] border border-proof bg-proof/10 px-3.5 font-mono text-sm font-bold uppercase tracking-wider text-proof transition-colors hover:border-proof-hover hover:text-proof-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+        >
+          Verify <ExternalLink className="h-3 w-3" aria-hidden="true" />
+        </a>
+      ) : null}
+    </div>
   );
 
   // ── RESTRICTED MODE (the Fire Ledger et al.): the single-purpose record
@@ -821,7 +995,20 @@ export function LiveActivityFeed({
           counts render SUBORDINATE and named as history (different grain,
           never beside the seat figure at equal rank). Fail-closed: no live
           read → no seat claim, never an invented figure. */}
-      <div className="mb-5" data-testid="activity-header-band">
+      {/* THE HEADER'S RHYTHM (Founder ruling 2026-07-26: "tu vois qu'il n'est pas
+          grade AAA par rapport au reste, les espacements ??!!").
+          WHAT WAS WRONG, measured: a 30px headline, then FOUR pixels, then a 12px
+          grey sentence, then 12px, then the era band — three different type sizes
+          stacked with almost no air, so the block read as one crushed paragraph
+          instead of a headline with its supporting facts. And the history line was
+          12px: that is the ABSOLUTE floor, meant for one-line mono labels, not for
+          a full sentence a visitor is expected to read (ADR-001 rule ① puts
+          reading copy at 14px+).
+          The fix is rhythm from the 4px scale, not eyeballing: headline → 8px →
+          the sentence at the reading floor → 16px → the era band, which now has
+          its own padding so it reads as a distinct object, and 32px of air before
+          the facet bar so the header stops colliding with the controls. */}
+      <div className="mb-8" data-testid="activity-header-band">
         {liveSeatCount !== null ? (
           // TYPE HARMONY (founder catch 2026-07-22): the page has ONE serif
           // display — the hero h1. This figure is a STAT and speaks the
@@ -837,12 +1024,12 @@ export function LiveActivityFeed({
           </p>
         ) : null}
         {historyCounts !== null ? (
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-2 max-w-[80ch] text-sm leading-relaxed text-muted-foreground">
             {`Indexed history: ${historyCounts.purchases} purchases · ${historyCounts.burns} burns · ${historyCounts.refs} referral acts — complete since each stream's first block.`}
           </p>
         ) : null}
         {degraded.length > 0 ? (
-          <p className="mt-2 text-xs text-muted-foreground" data-testid="activity-degraded">
+          <p className="mt-3 max-w-[80ch] text-sm leading-relaxed text-muted-foreground" data-testid="activity-degraded">
             <span className="font-medium text-foreground">Coverage notice:</span>{" "}
             {degraded.join(" · ")}. Details below.
           </p>
@@ -851,7 +1038,7 @@ export function LiveActivityFeed({
           // TYPE HARMONY: ONE size (text-sm), ONE face (Work Sans) across
           // the band — gold carries emphasis, never a font change mid-line.
           <div
-            className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 rounded-md border border-border/50 border-l-2 border-l-gold bg-card/30 px-3.5 py-2.5"
+            className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 rounded-lg border border-border/50 border-l-[3px] border-l-gold bg-card/40 px-4 py-3"
             data-testid="activity-era-band"
           >
             <span className="text-sm font-medium text-gold">
@@ -961,13 +1148,83 @@ export function LiveActivityFeed({
         <p className="text-sm text-muted-foreground py-6">Reading the record…</p>
       ) : visible.length === 0 ? (
         <Card className="bg-card/20 border-dashed border-border/60 p-5">
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            No events within the stated coverage. That is an honest read — not
-            a claim about anything outside it.
-          </p>
+          {/* THE ERA LANE SPEAKS INSTEAD OF SHOWING A ZERO (Founder ruling
+              2026-07-26: "pour la seconde"). The generic empty note is right for
+              a lane that happens to be quiet, but wrong for this one: the era
+              record is empty because the rate table has NEVER turned — the
+              protocol is still in its first era — and the seat where it first
+              turns is a fact that SELLS. Business-first: it is TRUE, chain-
+              derived, and refutable by anyone (the bounds are bytecode), so it
+              is said out loud. Never a countdown, never a date — the crossing is
+              a seat ordinal, exactly as the era canon defines it.
+              The seat number is DERIVED from the same era band above (endSeat
+              + 1), never typed: era 1 runs THROUGH its endSeat inclusive, so the
+              turn lands on the next one. A hardcoded 334 would rot the day the
+              canon moves. */}
+          {filter === "era-transition" && eraBand !== null ? (
+            <p className="max-w-[80ch] text-sm leading-relaxed text-muted-foreground">
+              <span className="font-medium text-foreground">
+                No era has turned yet — the protocol is still in its first.
+              </span>{" "}
+              Era {eraBand.era.era.toLocaleString("en-US")} holds{" "}
+              {eraBand.era.synPerUsd.toLocaleString("en-US")} SYN per $ through
+              seat #{eraBand.era.endSeat.toLocaleString("en-US")}, so the first
+              turn of the rate table lands at{" "}
+              <span className="font-medium text-gold">
+                seat #{(eraBand.era.endSeat + 1).toLocaleString("en-US")}
+              </span>
+              . When it happens, the crossing is written here with its own
+              transaction — the same as every other line on this page.
+            </p>
+          ) : (
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              No events within the stated coverage. That is an honest read — not
+              a claim about anything outside it.
+            </p>
+          )}
         </Card>
       ) : (
-        <div className="space-y-2.5" data-testid="activity-feed-list">
+        // The rows now carry their own border-bottom separators (approved mockup
+        // §②), so the old 10px stack gap would double the rhythm and detach each
+        // rule from the row above it. Contiguous rows, separated by their rules.
+        <div data-testid="activity-feed-list">
+          {/* THE OVERLAP CARRIES ITS OWN DOOR (Founder go 2026-07-26). The Seats
+              lane legitimately shows one wallet entering the registry twice —
+              the documented duplicate seat. Showing it and NOT explaining it was
+              transparency left unfinished: the record exists, it is promoted, and
+              it sits four lines away in the Chronicle lane of this same page. So
+              the lane states the two figures and hands the reader the door.
+              Rendered only while the live read still reports an overlap, and only
+              on the lane where the doubled rows appear. The door resolves through
+              CHRONICLE_REGISTER, so a renamed entry breaks the build here instead
+              of shipping a dead link. */}
+          {filter === "seat" &&
+          seatOverlap !== null &&
+          seatOverlap > 0 &&
+          liveSeatCount !== null &&
+          distinctWallets !== null &&
+          CHRONICLE_REGISTER.some((e) => e.id === DUPLICATE_SEAT_ENTRY_ID) ? (
+            <Card className="mb-5 border-l-2 border-l-gold bg-card/30 p-4">
+              <p className="max-w-[80ch] text-sm leading-relaxed text-muted-foreground">
+                <span className="font-medium text-foreground">
+                  {liveSeatCount.toLocaleString("en-US")} seats,{" "}
+                  {distinctWallets.toLocaleString("en-US")} distinct wallets — one
+                  wallet holds two of them.
+                </span>{" "}
+                So one address enters the register twice below, and that is the
+                chain's own record, not a mistake in this page. It happened
+                because a historical seat bought through the active engine before
+                claiming, and was issued a second number. The protocol did not
+                round it away.{" "}
+                <Link
+                  href={`/chronicle#${DUPLICATE_SEAT_ENTRY_ID}`}
+                  className="font-medium text-proof underline decoration-proof/30 underline-offset-2 hover:text-proof-hover focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                >
+                  Read the full record →
+                </Link>
+              </p>
+            </Card>
+          ) : null}
           {visible.map((i, idx) => {
             const label = dateGroupLabel(i.dateUtc || "", todayUtc, yesterdayUtc);
             const prevLabel =
@@ -985,8 +1242,8 @@ export function LiveActivityFeed({
                     instead, which is what "the first group" actually means. */}
                 {label !== prevLabel ? (
                   <p
-                    className={`mb-2.5 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground${
-                      idx === 0 ? "" : " mt-7"
+                    className={`mb-2.5 font-mono text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground${
+                      idx === 0 ? "" : " mt-8.5"
                     }`}
                   >
                     {label}
@@ -1049,12 +1306,20 @@ export function LiveActivityFeed({
       {/* Z5 — the whole methodology, one click away (WORK-FIRST: reference
           material lives in a collapsed expander at the bottom — the honesty
           is intact, it is no longer the front hall). */}
-      <details className="mt-6" data-testid="activity-methodology">
-        <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors">
-          How this feed works — coverage, live window, verification
-        </summary>
-        <Card className="bg-card/30 border-border/50 p-3.5 mt-3">
-          <p className="text-xs text-muted-foreground leading-relaxed" data-testid="activity-health-banner">
+      <Disclosure
+        className="mt-6"
+        title="How this feed works"
+        hint="coverage, live window, verification"
+        testId="activity-methodology"
+      >
+          {/* READING COPY, BOUNDED (2026-07-26). This was 12px prose at the FULL
+              width of the page: on a 27-inch screen roughly 200 characters a
+              line, which is not read, it is skipped — on the one block whose
+              whole job is disclosing what the feed does and does not cover.
+              The "measure" utility bounds it in characters, so it survives zoom
+              and translation, and the size is now the READING floor (14px+)
+              rather than the absolute 12px floor. */}
+          <p className="max-w-[112ch] text-sm leading-relaxed text-muted-foreground lg:columns-2 lg:gap-12" data-testid="activity-health-banner">
             {servedComplete && served ? (
               <>
                 <span className="text-foreground font-medium">
@@ -1083,12 +1348,12 @@ export function LiveActivityFeed({
             The feed refreshes itself as the indexer advances — a new line
             slides in at the top. What appears here happened and is
             verifiable; what does not appear is simply outside the stated
-            coverage — never evidence of absence. What the indexer adds next:
-            per-seat feeds, notifications generated from these events, and
-            the candidate pipeline that feeds the Chronicle.
+            coverage — never evidence of absence. A seat's own activity already
+            has its own view. What the indexer adds next: notifications
+            generated from these events, and the candidate pipeline that feeds
+            the Chronicle.
           </p>
-        </Card>
-      </details>
+      </Disclosure>
       </div>
     </div>
   );

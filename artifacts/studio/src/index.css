@@ -211,7 +211,25 @@
   --text-h1: clamp(1.9rem, 1.5rem + 1.9vw, 3rem);
   --text-h2: clamp(1.45rem, 1.25rem + 1vw, 2.15rem);
   --text-h3: clamp(1.2rem, 1.1rem + 0.5vw, 1.55rem);
-  --text-body: clamp(1rem, 0.96rem + 0.18vw, 1.1rem);
+  /* THE CEILING RAISE (approved mockup §①, 2026-07-26 — "à peine lisible sur un
+     écran de 27 pouces"). The old value `clamp(1rem, 0.96rem + 0.18vw, 1.1rem)`
+     hit its 17.6px maximum at a viewport of 1244px (0.96rem + 0.18vw = 1.1rem
+     → 15.36px + 0.0018w = 17.6px → w = 1244px), so EVERY screen wider than a
+     laptop was served a laptop's size on twice the canvas. The new curve keeps
+     the same 16px phone floor — the min argument is untouched, so nothing gets
+     smaller anywhere — and keeps growing across the whole desktop range.
+     Measured, not estimated; rem+vw preserves zoom (WCAG 1.4.4). The feed rows
+     now consume this token at last: they were hardcoded at 14px and never grew
+     at all, which is what he was actually seeing.
+
+     TUNED DOWN at the 2026-07-26 preview (Founder: "on peut faire l'écriture
+     légèrement plus petit ?"). The first pass ceilinged at 22px; this one at
+     20px. The SLOPE was lowered with it (0.42vw → 0.28vw) rather than only the
+     ceiling — dropping the ceiling alone would have parked the maximum at
+     1257px and re-created the exact bug this token exists to fix, a 27-inch
+     screen served a laptop's size. Now: 16px at 375px · 18.3px at 1280px ·
+     20px reached at 1886px. Still +43% over the feed's old fixed 14px. */
+  --text-body: clamp(1rem, 0.92rem + 0.28vw, 1.25rem);
   --text-label: 0.8125rem;
   --text-caption: 0.75rem; /* READABILITY FLOOR (ADR-001 2026-07-16): nothing readable under 12px */
   /* Fluid spacing (base 4/8pt) + section rhythm. */
