@@ -78,6 +78,43 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   all three new checks proven RED). It had been GREEN while the /activity prose promise it was supposed to
 >   govern sat outside the mechanism entirely.
 >
+> ## ▶ (0) FOUNDER RULINGS OF 2026-07-26 — FACTS, NOT DISCOVERIES
+> A session that "discovers" one of these and reports it as news is repeating work he has already paid for
+> and explained more than once. Read them before touching the referral, the Chronicle or the treasury.
+>
+> **① THE REFERRAL'S REAL HISTORY.** The commission paid inside the buyer's transaction on **2026-06-25**
+> was the **FIRST commission ever paid** — and it was a **TEST**, run to create the referral through the
+> smart contract. It was then **STOPPED**. The referral was only built properly much later (this arc), and
+> it now works as intended: **the referrer is paid FIRST**, inside the buyer's own transaction.
+> CONSEQUENCE, and it is a live defect: `chronicleRegister.ts` entry `2026-07-12-the-first-real-money-seat`
+> says of the referral-payment sentence *"Until this night, that sentence was architecture. After it, it is
+> a fact with a block number."* The chain shows the same mechanic 17 days earlier (2026-06-25: 5.000000
+> USDC in; 0.250000 out to the source wallet as the FIRST outbound leg; then 3.325 / 0.950 / 0.475, summing
+> to 5.000000 exactly). The sentence needs the honest narrowing — first through the PUBLIC CHECKOUT, the
+> 2026-06-25 act being the stopped test — NOT deletion. Editing a promoted entry is the Founder's call.
+>
+> **② THE FOURTEEN-DAY LOCK IS RESOLVED, NOT PENDING.** SYN were locked in the sale contract for fourteen
+> days by a timelock compiled into the bytecode; the Founder withdrew them the day they were released. Both
+> movements are on /activity right now: **6,989,000 SYN** at block **89,947,738** and **4,998,500 SYN** at
+> block **89,948,243**, on **2026-07-10**, both into the vault. Any doc or entry that frames the recovery as
+> awaiting a ceremony is describing a state that has passed.
+>
+> **③ SEAT #7 / #11 — never "fix" it.** One wallet legitimately holds two seat numbers; seat #7 stands empty
+> forever. Counting seats per WALLET erases it, which is the rounding-away the Chronicle forbids. Count by
+> SEAT NUMBER.
+>
+> **④ A COMMIT IS A SAVE POINT, NOT A PUBLICATION.** Nothing reaches thesyndicate.money until the Founder
+> triggers the deploy. So commits ship as work goes green, in readable slices; the **DEPLOY** is what waits
+> on his screen. He set this rule after one session accumulated 1,230 uncommitted lines across 18 files.
+>
+> **⑤ TYPE SIZE IS NOT COMPOSITION.** When he asks for a font size, change the SIZE and nothing else.
+> Recognising a pattern is not permission to act on it — a card was restructured on a complaint that was
+> only about 11px text, and had to be reverted from git.
+>
+> **⑥ READ OUR OWN REPO BEFORE THE ORIGIN.** The Chronicle harvest sent agents to the origin GitHub for
+> history that is largely already here. Work smart: our repo first, the origin only for what is genuinely
+> missing.
+>
 > ## ▶ (a) THE ONE THING TO DO FIRST, with its exact shape
 > **`Seats 14` / `Footprint 12` — derive "first seat" from the SEAT NUMBER, never from the wallet.**
 > Both chips currently show NO number, deliberately: the server counts by KIND, so `purchase` = 26 (first
