@@ -12,13 +12,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > publication — nothing reaches thesyndicate.money until he triggers the deploy — so the arc was cut into
 > six readable commits instead of one 1,230-line blob. Each is independently revertable if he rejects a
 > decision at the preview:
->   ·  server — the public full address beside every short form + the four actor classes + two
+>   · `52dfd76` server — the public full address beside every short form + the four actor classes + two
 >     obsolete guard checks CORRECTED (not bypassed) + first-seat derived from the seat number
->   ·  the three atoms — AddressText · Disclosure · ProofAnchor
->   ·  the /activity rebuild off the approved wireframe + four truth defects
->   ·  the three other surfaces that share the sentence builder + the FAQ inversion
->   ·  guard-feature-truth §⑥ prose claims + §⑦ orphan keys (616 checks) + the focus ratchet
->   ·  this handoff
+>   · `182e43c` the three atoms — AddressText · Disclosure · ProofAnchor
+>   · `f7b9a7a` the /activity rebuild off the approved wireframe + four truth defects
+>   · `1fa59db` the three other surfaces that share the sentence builder + the FAQ inversion
+>   · `0ffc7cd` guard-feature-truth §⑥ prose claims + §⑦ orphan keys (616 checks) + the focus ratchet
+>   · `532af4d` this handoff
 > **THE PREVIEW GATE IS STILL OPEN**: the Founder had not yet approved the built page when the session
 > ended. Commits are safe; the DEPLOY is what waits on his screen.
 >
