@@ -35,6 +35,31 @@ import { LADDER_RUNGS_CANON } from "../lib/protocol/connectorLadderCanon";
 
 export type SenderLabel = "Founder" | "Community";
 
+/**
+ * THE ACTOR CLASSES (Founder ruling 2026-07-26: "il faut quand même les
+ * distinguer, car dans notre système c'est un qui a acheté un seat, les autres
+ * sont différents").
+ *
+ * `SenderLabel` above only ever answered "the Founder, or not" — two classes for
+ * a cast of four, so a member's burn and a stranger's burn read identically on
+ * the public feed. Each class below is decided by a set the CHAIN populates, in
+ * this precedence order, and none of them is a label anyone types:
+ *   founder  — the address is in the allocation registry (his own stake)
+ *   organ    — the address IS a protocol wallet (vault / operations / liquidity
+ *              / NFT sale): the protocol acting on itself, never a person
+ *   member   — the address holds a SEAT (it appears in the sale lane's record)
+ *   visitor  — none of the above: a real act by someone with no seat, which is
+ *              welcome and shown, just not the same fact as a member's act
+ *
+ * `visitor` is the fail-closed default ON PURPOSE: membership is the claim that
+ * would have to be proven, so an actor we cannot place is never promoted to it.
+ * The word stays internal — the surface renders a chip, and the SENTENCE only
+ * ever names an origin (the Founder's allocation, an organ, or an address). No
+ * public copy says "not a member": the distinction is carried by the chip, the
+ * way the gold Founder chip already works.
+ */
+export type ActorClass = "founder" | "organ" | "member" | "visitor";
+
 export interface BurnLedgerItem {
   /** 1-based Proof of Burn number, oldest first (#1 = the first burn ever). */
   readonly proofOfBurnNumber: number;
@@ -42,6 +67,10 @@ export interface BurnLedgerItem {
   readonly amountSynRaw: string;
   /** Founder or Community — the label the sentence speaks. */
   readonly senderLabel: SenderLabel;
+  /** The four-class actor (2026-07-26) — what the CHIP renders. */
+  readonly actorClass: ActorClass;
+  /** The organ's public label when actorClass is "organ"; null otherwise. */
+  readonly actorOrganLabel: string | null;
   /**
    * H2-P: SERVER-ONLY full sender address — the pride voice emits its SHORT
    * FORM only (Community acts; Founder lines keep the founder voice).
@@ -183,6 +212,15 @@ export interface ProtocolEventBuildInput {
    */
   readonly organLabelByAddress: ReadonlyMap<string, string>;
   /**
+   * WHO HOLDS A SEAT (Founder ruling 2026-07-26): lowercased wallets that own a
+   * seat on-chain, derived from the sale lane's own purchase record — the same
+   * lane the ticketing read-model indexes by wallet. Drives `actorClass` below:
+   * in this protocol a seat holder is a MEMBER and everyone else is not, and the
+   * feed must say which. Empty set = nothing is claimed as a member (fail-closed:
+   * membership is the thing we would have to prove).
+   */
+  readonly seatHolderAddresses: ReadonlySet<string>;
+  /**
    * H2-⑦ THE FOLD LAW input: the sale lane's purchase transaction hashes
    * (lowercased). A treasury transfer whose transaction already carries a
    * first-class heartbeat line — a purchase (this set) or any of THIS
@@ -284,6 +322,28 @@ export function buildProtocolEventReadModel(
     return ts;
   };
 
+  /**
+   * Place an actor in the cast, from the sets the chain populates. Precedence is
+   * deliberate and not alphabetical: an address can be BOTH a founder wallet and
+   * a seat holder (the Founder holds seats), and in that case the act is his own
+   * — the founder voice outranks membership. An ORGAN outranks membership too,
+   * because a protocol wallet is the protocol acting, never a person, even if
+   * that wallet has bought seats.
+   */
+  function classifyActor(address: string, i: typeof input): ActorClass {
+    const a = address.toLowerCase();
+    if (i.founderAddresses.has(a)) return "founder";
+    if (i.organLabelByAddress.has(a)) return "organ";
+    // DEFENSIVE, and the guard is why: a caller that omits the seat set threw
+    // here on first run, and this function sits inside the burn-ledger map — so
+    // one missing input would have taken down the ENTIRE heartbeat projection,
+    // feed included, to decide a chip. A missing set means "no membership can be
+    // proven", which is exactly the fail-closed answer: everyone unplaced is a
+    // visitor. Never crash a public feed over an adornment.
+    if (i.seatHolderAddresses?.has(a) === true) return "member";
+    return "visitor";
+  }
+
   // ── Burn ledger: oldest first, numbered #1..N (gapless by construction) ──
   const orderedBurns = [...burns].sort((a, b) =>
     a.blockNumber !== b.blockNumber
@@ -302,6 +362,15 @@ export function buildProtocolEventReadModel(
       senderLabel: founderAddresses.has(b.fromAddress.toLowerCase())
         ? "Founder"
         : "Community",
+      // The four-class actor (2026-07-26). `senderLabel` above is KEPT as-is:
+      // the Founder facet, the voice rule and three guards read it, and widening
+      // it in place would have rewritten all of them in one commit. This is the
+      // finer fact, carried beside it — additive, so nothing that trusts the old
+      // label can break.
+      actorClass: classifyActor(b.fromAddress, input),
+      /** The organ's public label when actorClass is "organ" — else null. */
+      actorOrganLabel:
+        input.organLabelByAddress.get(b.fromAddress.toLowerCase()) ?? null,
       // H2-P: SERVER-ONLY; the projection emits the short form (Community).
       actorAddress: b.fromAddress.toLowerCase(),
       blockNumber: b.blockNumber,

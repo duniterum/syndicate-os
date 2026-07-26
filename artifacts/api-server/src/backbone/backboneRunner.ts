@@ -403,6 +403,31 @@ async function runCycle(): Promise<string | null> {
   const saleTransactionHashes = new Set(
     model.items.map((i) => i.transactionHash.toLowerCase()),
   );
+  // ── WHO HOLDS A SEAT (Founder ruling 2026-07-26) ────────────────────────────
+  // "dans notre système c'est un qui a acheté un seat, les autres sont
+  // différents" — so an act by a seat holder must be distinguishable from an act
+  // by anyone else, and the answer has to come from the chain, never from a
+  // label we type.
+  //
+  // WHERE IT COMES FROM, and why not a new derivation: the Founder pointed at the
+  // ticketing system, and he was right that the answer already lives there —
+  // `ownPurchaseReadmodel.rowsByWallet` is exactly "lowercase wallet → its own
+  // purchases". But that model is built LATER in this same pass (see ③, below),
+  // so reading it here would be a cycle. Both it and this set descend from the
+  // SAME sale lane — `model.items`, the gapless purchase record — so this reads
+  // that lane one step upstream instead of inventing a second notion of
+  // membership. One lane, one truth about who holds a seat.
+  //
+  // A null memberAddress is an early/undecodable row: it yields NO membership
+  // claim rather than a guessed one, so an unclassifiable actor degrades to
+  // "not a seat holder" — the honest default, since holding a seat is the thing
+  // we would have to PROVE.
+  const seatHolderAddresses = new Set(
+    model.items
+      .map((i) => i.memberAddress)
+      .filter((a): a is string => a !== null)
+      .map((a) => a.toLowerCase()),
+  );
   const protocolModel = buildProtocolEventReadModel({
     expectedChainId: BACKBONE_EXPECTED_CHAIN_ID,
     burns: protocolRows.burns,
@@ -416,6 +441,7 @@ async function runCycle(): Promise<string | null> {
     founderAddresses,
     founderWalletAddresses,
     organLabelByAddress,
+    seatHolderAddresses,
     saleTransactionHashes,
     // H1a-fix: the pair's immutable token0 orientation (canon pin, chain-
     // verified 2026-07-15 — token0 is USDC). Never assumed in the read-model.

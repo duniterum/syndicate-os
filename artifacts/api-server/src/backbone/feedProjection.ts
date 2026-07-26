@@ -34,6 +34,7 @@ import type {
   FirstSeatBucket,
 } from "./activityHeartbeatReadmodel";
 import type {
+  ActorClass,
   ProtocolEventBuildResult,
   SenderLabel,
   TreasuryMoveItem,
@@ -73,6 +74,14 @@ export interface PublicSeatLine extends LineCommon {
   readonly memberNumber: number | null;
   /** H2-P: the actor's SHORT FORM (never a full address). */
   readonly memberShort: string | null;
+  /**
+   * THE FULL ADDRESS, PUBLIC (address law 2026-07-24/25: an address is
+   * pseudonymous, never hidden; the short form is READABILITY only, and every
+   * row owes an independently verifiable explorer anchor). The leak scan
+   * already ALLOWS a public 40-hex value — activity-heartbeat.guard.ts:335.
+   * Same nullability as its short form, so the Founder voice rule is untouched.
+   */
+  readonly memberAddress: string | null;
   /** H2-P: the referred flag (the event's own source-id test). */
   readonly referred: boolean;
   /**
@@ -82,6 +91,14 @@ export interface PublicSeatLine extends LineCommon {
    * veiled wording).
    */
   readonly referredByShort: string | null;
+  /**
+   * THE FULL ADDRESS, PUBLIC (address law 2026-07-24/25: an address is
+   * pseudonymous, never hidden; the short form is READABILITY only, and every
+   * row owes an independently verifiable explorer anchor). The leak scan
+   * already ALLOWS a public 40-hex value — activity-heartbeat.guard.ts:335.
+   * Same nullability as its short form, so the Founder voice rule is untouched.
+   */
+  readonly referredByAddress: string | null;
 }
 
 export interface PublicBurnLine extends LineCommon {
@@ -92,8 +109,28 @@ export interface PublicBurnLine extends LineCommon {
   readonly amountSynRaw: string;
   /** Founder or Community — the label the sentence speaks. */
   readonly senderLabel: SenderLabel;
+  /**
+   * THE FOUR-CLASS ACTOR (Founder ruling 2026-07-26). The public feed must
+   * distinguish a seat holder’s act from a stranger’s: in this protocol one
+   * has bought a seat and the others have not. Decided server-side from the
+   * chain’s own sets — allocation registry, organ wallets, the sale lane’s
+   * seat record — never from a typed label. The SURFACE renders it as a chip;
+   * the sentence only ever names an origin, so no public copy says
+   * “not a member”.
+   */
+  readonly actorClass: ActorClass;
+  /** The organ’s public label when actorClass is "organ"; null otherwise. */
+  readonly actorOrganLabel: string | null;
   /** H2-P: Community sender's SHORT FORM (null on Founder — the voice rule). */
   readonly actorShort: string | null;
+  /**
+   * THE FULL ADDRESS, PUBLIC (address law 2026-07-24/25: an address is
+   * pseudonymous, never hidden; the short form is READABILITY only, and every
+   * row owes an independently verifiable explorer anchor). The leak scan
+   * already ALLOWS a public 40-hex value — activity-heartbeat.guard.ts:335.
+   * Same nullability as its short form, so the Founder voice rule is untouched.
+   */
+  readonly actorAddress: string | null;
 }
 
 export interface PublicLifecycleLine extends LineCommon {
@@ -112,6 +149,14 @@ export interface PublicLpLine extends LineCommon {
   readonly actorLabel: SenderLabel;
   /** H2-P: Community actor's SHORT FORM (null on Founder — the voice rule). */
   readonly actorShort: string | null;
+  /**
+   * THE FULL ADDRESS, PUBLIC (address law 2026-07-24/25: an address is
+   * pseudonymous, never hidden; the short form is READABILITY only, and every
+   * row owes an independently verifiable explorer anchor). The leak scan
+   * already ALLOWS a public 40-hex value — activity-heartbeat.guard.ts:335.
+   * Same nullability as its short form, so the Founder voice rule is untouched.
+   */
+  readonly actorAddress: string | null;
 }
 
 export interface PublicArchiveMintLine extends LineCommon {
@@ -122,6 +167,14 @@ export interface PublicArchiveMintLine extends LineCommon {
   readonly quantityRaw: string;
   /** H2-P: the minter's SHORT FORM (null on pre-backfill rows — honest gap). */
   readonly minterShort: string | null;
+  /**
+   * THE FULL ADDRESS, PUBLIC (address law 2026-07-24/25: an address is
+   * pseudonymous, never hidden; the short form is READABILITY only, and every
+   * row owes an independently verifiable explorer anchor). The leak scan
+   * already ALLOWS a public 40-hex value — activity-heartbeat.guard.ts:335.
+   * Same nullability as its short form, so the Founder voice rule is untouched.
+   */
+  readonly minterAddress: string | null;
   /** The founder facet: Founder/Community per the readmodel's own set. */
   readonly minterLabel: "Founder" | "Community" | null;
 }
@@ -311,6 +364,23 @@ function shortForm(address: string | null): string | null {
 }
 
 /**
+ * The SAME value, unshortened — the public full address (address law
+ * 2026-07-24/25). Deliberately shares shortForm’s fail-closed validation so
+ * the two can never disagree about what an address is: one malformed value
+ * throws for both rather than serializing a half-truth. Lowercased, because
+ * the client compares it to the short form it renders beside.
+ */
+function fullForm(address: string | null): string | null {
+  if (address === null) return null;
+  if (!/^0x[0-9a-f]{40}$/.test(address)) {
+    throw new Error(
+      "feed projection failed closed: an actor is not a lowercased full address (value withheld)",
+    );
+  }
+  return address;
+}
+
+/**
  * Build the public feed from the backbone's last-good models. Fail-closed:
  * any malformed anchor, amount, or label throws. Null models (dark / parked /
  * no successful cycle yet) serve an honest empty feed — never an invented one.
@@ -333,6 +403,64 @@ export function buildPublicFeedWithLines(source: FeedSource): {
   const { model, protocolModel, milestoneModel, eraModel, capitalModel } =
     source;
 
+  // ── FIRST SEAT IS DECIDED BY THE SEAT NUMBER, NOT BY THE EVENT FLAG ────────
+  // (Founder ruling 2026-07-26, and the Chronicle's "The duplicate seat" is the
+  // authority behind it.)
+  //
+  // THE DEFECT: `item.firstSeatBucket` is whatever the SALE EVENT emitted, and
+  // the old V1/V2 engines emitted nothing — so 5 of 26 purchases carried
+  // "unknown". Downstream that made the Seats lane hold 17 rows while the live
+  // engine reports 14 seats: the page disagreed with itself by 3.
+  //
+  // THE AUTHORITY: a purchase that takes a seat NUMBER not yet seen is an
+  // acquisition; a repeat on a number already issued is a footprint expansion.
+  // The seat key is the member number, and for the pre-numbering rows the wallet
+  // itself — which is enough, because those rows predate seat numbering entirely.
+  //
+  // WHY NOT "the first purchase per WALLET", which is the tempting shortcut: it
+  // would have ERASED historical seat #7. One wallet legitimately holds #7 AND
+  // #11 — the unclaimed historical seat bought through the active engine and was
+  // issued a second number, permanently, and #7 now stands empty forever. Keying
+  // on the seat NUMBER counts both, which is exactly the rounding-away the
+  // Chronicle record forbids: "it did not edit the number, it did not quietly
+  // reconcile the count".
+  //
+  // Ordered by (block, logIndex) so "earliest" is chain order, never array order.
+  // A row whose seat key cannot be resolved KEEPS its served bucket — an honest
+  // unknown is never promoted to a claim.
+  const seatKeyOf = (item: {
+    memberNumber: number | null;
+    memberAddress: string | null;
+  }): string | null =>
+    item.memberNumber !== null && item.memberNumber > 0
+      ? `n:${item.memberNumber}`
+      : item.memberAddress !== null
+        ? `w:${item.memberAddress.toLowerCase()}`
+        : null;
+  const earliestBySeatKey = new Map<string, string>();
+  for (const item of [...(model?.items ?? [])].sort((a, b) =>
+    a.blockNumber !== b.blockNumber
+      ? a.blockNumber - b.blockNumber
+      : a.logIndex - b.logIndex,
+  )) {
+    const key = seatKeyOf(item);
+    if (key === null || earliestBySeatKey.has(key)) continue;
+    earliestBySeatKey.set(key, `${item.blockNumber}:${item.logIndex}`);
+  }
+  const derivedBucket = (item: {
+    memberNumber: number | null;
+    memberAddress: string | null;
+    blockNumber: number;
+    logIndex: number;
+    firstSeatBucket: FirstSeatBucket;
+  }): FirstSeatBucket => {
+    const key = seatKeyOf(item);
+    if (key === null) return item.firstSeatBucket;
+    return earliestBySeatKey.get(key) === `${item.blockNumber}:${item.logIndex}`
+      ? "true"
+      : "false";
+  };
+
   const seatLines: PublicSeatLine[] = (model?.items ?? []).map((item) => {
     assertAnchor(item.transactionHash);
     return {
@@ -344,14 +472,17 @@ export function buildPublicFeedWithLines(source: FeedSource): {
       isoDayUtc: item.isoDayUtc,
       transactionHash: item.transactionHash,
       logIndex: item.logIndex,
-      firstSeatBucket: item.firstSeatBucket,
+      // DERIVED from the seat number (see above), not the event flag.
+      firstSeatBucket: derivedBucket(item),
       routedFolded: item.routedFolded,
       // H2-P: the event's own public identity facts, short form only.
       memberNumber: item.memberNumber,
       memberShort: shortForm(item.memberAddress),
+      memberAddress: fullForm(item.memberAddress),
       referred: item.referredBySource,
       // Override A: the referrer is the proud party — same event, no join.
       referredByShort: shortForm(item.referrerAddress),
+      referredByAddress: fullForm(item.referrerAddress),
     };
   });
 
@@ -369,10 +500,14 @@ export function buildPublicFeedWithLines(source: FeedSource): {
         proofOfBurnNumber: b.proofOfBurnNumber,
         amountSynRaw: b.amountSynRaw,
         senderLabel: b.senderLabel,
+        actorClass: b.actorClass,
+        actorOrganLabel: b.actorOrganLabel,
         // H2-P + the founder voice rule: the founder's acts say the founder;
         // Community pride carries the short form.
         actorShort:
           b.senderLabel === "Community" ? shortForm(b.actorAddress) : null,
+        actorAddress:
+          b.senderLabel === "Community" ? fullForm(b.actorAddress) : null,
         blockNumber: b.blockNumber,
         blockTimestampSec: b.blockTimestampSec,
         isoDayUtc: b.isoDayUtc,
@@ -414,6 +549,8 @@ export function buildPublicFeedWithLines(source: FeedSource): {
       // H2-P + the founder voice rule (Community pride only).
       actorShort:
         p.actorLabel === "Community" ? shortForm(p.actorAddress) : null,
+      actorAddress:
+        p.actorLabel === "Community" ? fullForm(p.actorAddress) : null,
       blockNumber: p.blockNumber,
       blockTimestampSec: p.blockTimestampSec,
       isoDayUtc: p.isoDayUtc,
@@ -438,6 +575,7 @@ export function buildPublicFeedWithLines(source: FeedSource): {
       // H2-P: the origin voice ("0x123…abcd archived First Signal"); null
       // on pre-backfill rows — an honest gap, never an invented actor.
       minterShort: shortForm(a.minterAddress),
+      minterAddress: fullForm(a.minterAddress),
       minterLabel: a.minterLabel,
       blockNumber: a.blockNumber,
       blockTimestampSec: a.blockTimestampSec,

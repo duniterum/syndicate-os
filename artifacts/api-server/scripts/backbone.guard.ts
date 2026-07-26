@@ -692,8 +692,88 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
     [opsAddr, "the operations wallet"],
   ]),
   saleTransactionHashes: new Set([txB]),
+  // WHO HOLDS A SEAT (2026-07-26). `communityAddr` burns in this fixture and is
+  // deliberately IN this set, so the member class is exercised by a real row
+  // rather than asserted in a comment. `externalAddr` is deliberately OUT.
+  seatHolderAddresses: new Set([communityAddr.toLowerCase()]),
   lpToken0IsSyn: false,
 });
+
+// ── THE FOUR ACTOR CLASSES (Founder ruling 2026-07-26) ──────────────────────
+// "il faut quand même les distinguer, car dans notre système c'est un qui a
+// acheté un seat, les autres sont différents." Each class below is decided by a
+// set the CHAIN populates, so each one gets a row that proves it — a chip nobody
+// tests is a chip that silently mislabels a member as a stranger.
+{
+  const classOf = (from: string): string | undefined =>
+    buildProtocolEventReadModel({
+      expectedChainId: CHAIN,
+      burns: [
+        {
+          blockNumber: 100,
+          logIndex: 1,
+          transactionHash: txD,
+          fromAddress: from,
+          valueRaw: "1" + "0".repeat(18),
+        },
+      ],
+      lifecycle: [],
+      lpLiquidity: [],
+      lpTokenMints: [],
+      archiveMints: [],
+      archivePauses: [],
+      treasury: [],
+      blockTimestamps: [{ chainId: CHAIN, blockNumber: 100, blockTimestampSec: T0 }],
+      founderAddresses: new Set([founderAddr]),
+      founderWalletAddresses: new Set([founderAddr]),
+      organLabelByAddress: new Map([[vaultAddr, "the vault"]]),
+      seatHolderAddresses: new Set([communityAddr.toLowerCase()]),
+      saleTransactionHashes: new Set(),
+      lpToken0IsSyn: false,
+    }).burnLedger[0]?.actorClass;
+
+  check(classOf(founderAddr) === "founder", "actor class: an allocation-registry address is the Founder", "the founder class broke");
+  check(classOf(vaultAddr) === "organ", "actor class: a protocol wallet is an organ, never a person", "the organ class broke");
+  check(classOf(communityAddr) === "member", "actor class: a wallet that HOLDS A SEAT is a member", "the member class broke");
+  check(classOf(externalAddr) === "visitor", "actor class: a wallet with no seat is a visitor (the fail-closed default)", "the visitor class broke");
+  // PRECEDENCE, and it is not cosmetic: the Founder holds seats, so founder must
+  // outrank member or his own burns would read as an ordinary member's.
+  check(
+    buildProtocolEventReadModel({
+      expectedChainId: CHAIN,
+      burns: [{ blockNumber: 100, logIndex: 1, transactionHash: txD, fromAddress: founderAddr, valueRaw: "1" + "0".repeat(18) }],
+      lifecycle: [], lpLiquidity: [], lpTokenMints: [], archiveMints: [], archivePauses: [], treasury: [],
+      blockTimestamps: [{ chainId: CHAIN, blockNumber: 100, blockTimestampSec: T0 }],
+      founderAddresses: new Set([founderAddr]),
+      founderWalletAddresses: new Set([founderAddr]),
+      organLabelByAddress: new Map(),
+      // the Founder ALSO holds a seat here — the ambiguous case, made explicit
+      seatHolderAddresses: new Set([founderAddr.toLowerCase()]),
+      saleTransactionHashes: new Set(),
+      lpToken0IsSyn: false,
+    }).burnLedger[0]?.actorClass === "founder",
+    "actor class precedence: a Founder who also holds a seat is still the Founder",
+    "the founder/member precedence broke",
+  );
+  // A missing set must never take the heartbeat down over a chip (it did, once).
+  check(
+    buildProtocolEventReadModel({
+      expectedChainId: CHAIN,
+      burns: [{ blockNumber: 100, logIndex: 1, transactionHash: txD, fromAddress: externalAddr, valueRaw: "1" + "0".repeat(18) }],
+      lifecycle: [], lpLiquidity: [], lpTokenMints: [], archiveMints: [], archivePauses: [], treasury: [],
+      blockTimestamps: [{ chainId: CHAIN, blockNumber: 100, blockTimestampSec: T0 }],
+      founderAddresses: new Set([founderAddr]),
+      founderWalletAddresses: new Set([founderAddr]),
+      organLabelByAddress: new Map(),
+      seatHolderAddresses: undefined as unknown as ReadonlySet<string>,
+      saleTransactionHashes: new Set(),
+      lpToken0IsSyn: false,
+    }).burnLedger[0]?.actorClass === "visitor",
+    "actor class fails closed: a missing seat set yields visitor, never a crash",
+    "a missing seat set crashed the projection or invented a member",
+  );
+}
+
 // H2-⑦ pins: THE FOLD LAW + classification + label discipline.
 check(
   fixtureProtocolModel.treasuryItems.length === 3 &&
@@ -1426,18 +1506,29 @@ check(
   "the capital lane serves its witnessed rise (seat ordinal + rung title as public facts)",
   "the capital lane broke",
 );
-// H2-⑦: the treasury lines ride the feed with LABELS only — the planted
-// organ + external addresses must never appear anywhere in the payload.
+// H2-⑦: the treasury lines ride the feed with LABELS only — an organ or
+// counterparty address must never appear ON A TREASURY LINE.
+//
+// SCOPE CORRECTED 2026-07-26, and the correction is the point: this check used to
+// scan the WHOLE payload for those addresses. Once the address law put public
+// full addresses on the purchase/burn/liquidity lanes, a Founder address
+// published legitimately on a SEAT line tripped a check about TREASURY lines —
+// the assertion was answering a different question than the one it asked. Pin the
+// scope to the lines the rule is about (CLAUDE.md verification protocol ③: ask
+// what a query would return if the filter were missing, BEFORE reading it).
+const treasuryJson = JSON.stringify(
+  feed.items.filter((i) => i.kind === "treasury-move"),
+);
 check(
   // A1 (2026-07-22): 2 → 3 treasury lines (the founder-funding inflow).
   feed.lanes.treasury === true &&
     feed.items.filter((i) => i.kind === "treasury-move").length === 3 &&
-    !feedJson.includes(vaultAddr) &&
-    !feedJson.includes(opsAddr) &&
-    !feedJson.includes(externalAddr) &&
-    !feedJson.includes(founderAddr) &&
-    feedJson.includes('"organLabel":"the vault"'),
-  "treasury lines serve organ LABELS only — no organ or counterparty address in the payload",
+    !treasuryJson.includes(vaultAddr) &&
+    !treasuryJson.includes(opsAddr) &&
+    !treasuryJson.includes(externalAddr) &&
+    !treasuryJson.includes(founderAddr) &&
+    treasuryJson.includes('"organLabel":"the vault"'),
+  "treasury lines serve organ LABELS only — no organ or counterparty address on a treasury line",
   "the treasury label discipline broke",
 );
 // A1 pin (2026-07-22): the founder-funding flag SERVES as a boolean label —
@@ -1556,21 +1647,56 @@ check(
   "burn ledger serving broke",
 );
 // H2-P — THE PRIDE OF THE PUBLIC RECORD (founder amendment, ADR-003
-// 2026-07-15): the feed speaks the origin voice. FULL addresses and their
-// server-side field names still never serialize; the SHORT FORM is all
-// that ever leaves.
+// 2026-07-15), AMENDED 2026-07-26 BY THE SETTLED ADDRESS LAW (2026-07-24/25).
+//
+// WHAT CHANGED AND WHY. This check used to assert that a full 40-hex address
+// NEVER serialized — including under the very field names the feed now publishes
+// on purpose. That was the address-HIDING reflex, and the Founder's ruling with
+// its legal research killed it: a bare address is PSEUDONYMOUS, not personal
+// data (EDPB Guidelines 02/2025 · CJEU C-413/23 P · the CCPA "reasonably linked"
+// test); the short form is READABILITY, never masking; and "any code that masks
+// or fail-closes on an address as if it were a secret is a BUG against this law."
+// The sibling leak scan already agreed — activity-heartbeat.guard.ts:335 reads
+// "leak scan ALLOWS a public 40-hex address (address law 2026-07-25)". This
+// guard was the last holdout, and it is why /activity rendered dead grey text
+// where every comparable surface (Etherscan · Hyperliquid · DeBank) renders a
+// verifiable anchor.
+//
+// WHAT DID NOT CHANGE — the actual red line. The regulated artifact is the
+// name↔address MAPPING, never the address; and the readmodel's SERVER-SIDE input
+// field names must still never appear in a public payload, because their presence
+// means an internal shape escaped rather than a projection being published.
 check(
-  !feedJson.includes(founderAddr) &&
-    !feedJson.includes(communityAddr) &&
-    !feedJson.includes("0x" + "cc".repeat(20)) &&
-    !feedJson.includes("fromAddress") &&
+  !feedJson.includes("fromAddress") &&
     !feedJson.includes("senderAddress") &&
-    !feedJson.includes("memberAddress") &&
-    !feedJson.includes("minterAddress") &&
-    !feedJson.includes("actorAddress") &&
-    !feedJson.includes("referrerAddress"),
-  "pride discipline: full actor/referrer addresses and their server-only field names never serialize",
-  "the feed leaked a full address or a server-only address field",
+    !feedJson.includes("referrerAddress") &&
+    !feedJson.includes("decodedJson") &&
+    !feedJson.includes("rawJson") &&
+    !feedJson.includes("walletIndex"),
+  "boundary discipline: server-side input field names and server-only payloads never serialize",
+  "the feed leaked a server-only field name or payload",
+);
+// The PUBLIC address fields are published deliberately, and each one must arrive
+// beside the short form it makes clickable — a short form with no full value is
+// the dead-end this amendment exists to remove.
+check(
+  feedJson.includes('"memberAddress"') &&
+    feedJson.includes('"referredByAddress"') &&
+    feedJson.includes(communityAddr) &&
+    feedJson.includes('"memberShort"'),
+  "address law: the public full address ships beside its short form, so every rendered address is verifiable",
+  "the public address fields stopped shipping — a rendered short form would become a dead end",
+);
+// THE FOUNDER VOICE RULE SURVIVES THE AMENDMENT: on the lanes where the sentence
+// speaks his NAME instead of an address (burns, liquidity), the projection nulls
+// both forms — so his address must not appear through THOSE fields. This is an
+// editorial rule about whose voice the line carries, NOT address hiding: the
+// same address is public everywhere else, including on the explorer.
+check(
+  !feedJson.includes(`"actorShort":"${founderAddr}"`) &&
+    !feedJson.includes(`"actorAddress":"${founderAddr}"`),
+  "the Founder voice rule holds: his acts say the Founder, never an address, on the burn and liquidity lanes",
+  "the Founder voice rule broke on a burn or liquidity line",
 );
 check(
   feedJson.includes('"memberNumber":424242') &&
