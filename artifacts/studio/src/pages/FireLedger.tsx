@@ -8,13 +8,12 @@
 // Naming (founder, final): the PAGE is Fire Ledger (the place); the ACT and
 // its numbered receipts are "Proof of Burn" — every rendered token says burn.
 
-import { Flame } from "lucide-react";
+import { Flame, ExternalLink } from "lucide-react";
 import { useEffect, useState } from "react";
 import { MemberAppPage } from "@/components/member/MemberAppPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { StatusPill } from "@/components/status-pill/StatusPill";
-import { ProofAnchor } from "@/components/proof/ProofAnchor";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { useHeroReality } from "@/components/hero/useHeroReality";
@@ -37,7 +36,7 @@ function LiveTotalBurn() {
           </span>
           <div>
             <p className="text-sm font-medium text-foreground">Total SYN retired — read live</p>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               The burn address balance, read from the chain on every load. It
               only ever grows.
             </p>
@@ -93,7 +92,7 @@ function ProofOfBurnRecord() {
     return (
       <>
         <Card className="bg-card/20 border-dashed border-border/60 p-4 mb-4">
-          <p className="text-[11px] text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             <span className="text-foreground font-medium">
               The served Proof of Burn record is unavailable right now
             </span>{" "}
@@ -110,7 +109,7 @@ function ProofOfBurnRecord() {
   return (
     <div>
       <Card className="bg-card/30 border-border/50 p-3.5 mb-4">
-        <p className="text-[11px] text-muted-foreground leading-relaxed" data-testid="burn-record-banner">
+        <p className="text-sm text-muted-foreground leading-relaxed" data-testid="burn-record-banner">
           <span className="text-foreground font-medium">
             The Proof of Burn record, served by the event indexer.
           </span>{" "}
@@ -148,24 +147,18 @@ function ProofOfBurnRecord() {
                 <StatusPill tone={b.senderLabel === "Founder" ? "proof" : "neutral"} size="xs">
                   {b.senderLabel}
                 </StatusPill>
-                {/* THE PROOF ANCHOR ON THE PAGE THAT IS ABOUT PROOF (first-visit
-                    review, 2026-07-26). On the one surface whose entire purpose is
-                    "check this yourself", the per-burn verify link was the SMALLEST
-                    text in the row — 10px uppercase mono, no padding, no box, no
-                    focus ring, far under the 44px touch floor. The record it proves
-                    was set in bigger type than the proof of it.
-                    Now the shared atom, so this row can never drift back: one
-                    definition, one geometry, and the block meta rises from 10px to
-                    the 12px floor beside it. */}
-                <span className="font-mono text-xs tabular-nums text-muted-foreground">
+                <span className="font-mono text-xs text-muted-foreground">
                   {b.isoDayUtc} · block {b.blockNumber.toLocaleString("en-US")}
                 </span>
                 {explorerBase ? (
-                  <ProofAnchor
+                  <a
                     href={`${explorerBase}/tx/${b.transactionHash}`}
-                    compact
-                    title={`Proof of Burn #${b.proofOfBurnNumber} — open the transaction`}
-                  />
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-proof hover:text-proof-hover"
+                  >
+                    verify <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
+                  </a>
                 ) : null}
               </div>
             </Card>

@@ -155,9 +155,10 @@ const ALLOWLIST: Record<string, string> = {
   "pages/Archive.tsx": "5 · 5 archive navigation <Link>s",
   "pages/ContractMemory.tsx": "2 · 2 contract-memory <Link>s",
   "pages/Docs.tsx": "3 · 3 docs <Link>s outside the <Prose> subtree (the in-prose links already ring via Prose's descendant selector)",
-  // pages/FireLedger.tsx entry DELETED 2026-07-26: its per-burn verify link
-  // became the ProofAnchor atom, which declares its own gold ring — so the file
-  // has zero bare activators and the ledger must say so.
+  // RESTORED 2026-07-26: the Founder reverted the ProofAnchor swap on this page
+  // (the complaint was type size, not composition), so the bare verify <a> is back
+  // and the ledger must describe the tree as it IS, not as I preferred it.
+  "pages/FireLedger.tsx": "1 · the per-burn verify <a> on the Proof of Burn record",
   "pages/JoinProtocol.tsx": "7 · the checkout door — 1 <a>, 1 <summary>, 1 <button>, 4 <Link>. A money surface: high priority",
   "pages/Learning.tsx": "3 · 3 Learn & Earn <Link>s",
   "pages/Liquidity.tsx": "1 · the pool's explorer <a>",
