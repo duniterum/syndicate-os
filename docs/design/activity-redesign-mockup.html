@@ -35,7 +35,12 @@
    the ceiling so type keeps growing past the laptop point. */
 :root{
   --body-now:  clamp(1rem, .96rem + .18vw, 1.1rem);   /* caps 17.6px @1244 — MEASURED, corrected 2026-07-26 */
-  --body-next: clamp(1rem, .92rem + .42vw, 1.375rem); /* reaches its 22px ceiling at 1733px, holds it to 2560 */
+  /* AMENDED 2026-07-26 to the SHIPPED token. The Founder judged the first pass
+     too large at the preview (“on peut faire l'écriture légèrement plus petit ?”), so
+     the ceiling AND the slope came down together — dropping the ceiling alone would
+     have re-capped at 1257px, the very bug this token exists to fix. The values
+     below are recomputed from the shipped clamp, not from the first proposal. */
+  --body-next: clamp(1rem, .92rem + .28vw, 1.25rem); /* 20px ceiling, reached at 1886px */
   --measure:68ch;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -197,9 +202,9 @@ même pas ce jeton : il était figé à 14&nbsp;px.</p>
 <div class="panel">
 <table>
   <tr><th>Largeur d'écran</th><th>Aujourd'hui</th><th>Après</th><th>Écart</th></tr>
-  <tr><td>375 px — téléphone</td><td class="n">14,0 px</td><td class="n">16,3 px</td><td class="n">+14 %</td></tr>
-  <tr><td>1280 px — portable</td><td class="n">14,0 px</td><td class="n">20,1 px</td><td class="n">+34 %</td></tr>
-  <tr><td><strong>2560 px — ton écran</strong></td><td class="n">14,0 px</td><td class="n"><strong>22,0 px</strong></td><td class="n"><strong>+57 %</strong></td></tr>
+  <tr><td>375 px — téléphone</td><td class="n">14,0 px</td><td class="n">16,0 px</td><td class="n">+14 %</td></tr>
+  <tr><td>1280 px — portable</td><td class="n">14,0 px</td><td class="n">18,3 px</td><td class="n">+31 %</td></tr>
+  <tr><td><strong>2560 px — ton écran</strong></td><td class="n">14,0 px</td><td class="n"><strong>20,0 px</strong></td><td class="n"><strong>+43 %</strong></td></tr>
 </table>
 </div>
 

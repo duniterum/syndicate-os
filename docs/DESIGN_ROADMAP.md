@@ -750,6 +750,48 @@ dont 223 PUBLIQUES dans 48, cinq à 8px.** Sur les six règles de type d'ADR-001
       `type-body`, 8 `type-h1`, 8 `type-h3`), ligne en grille, montant en colonne, cartes de jalons, 44px,
       anneaux de focus. **L'aperçu devra couvrir 3-4 pages, pas `/activity` seule.**
 
+## ▶ 2026-07-26 (fin de session) — /activity CONSTRUITE, et la loi ② déplacée
+
+**La maquette approuvée était restée un DOCUMENT.** `git log <maquette>..HEAD` sur la page et ses
+composants ne renvoyait rien : deux commits de documentation avaient suivi l'approbation au lieu du code.
+Cette session l'a construite, mesurée dans un navigateur à 1920 et 375, dans les deux thèmes.
+
+**Ce qui a atterri, avec les mesures et non des adjectifs :**
+- **La ligne du feed est une grille** — l'ancre de preuve à UN seul x sur les 12 lignes (1755 px), exactement
+  112×44 px ; le montant dans sa colonne mono tabulaire, un seul bord droit (1037 px) ; la phrase bornée en
+  `ch`, jamais en px, donc elle survit au zoom et à la traduction.
+- **Le plafond de type** : `clamp(1rem, 0.92rem + 0.28vw, 1.25rem)` — 16 px à 375 · 18,3 px à 1280 · **20 px
+  atteints à 1886 px**. La PENTE est descendue avec le plafond : baisser le plafond seul aurait replafonné à
+  1257 px, le bug même que ce jeton existe pour corriger. (La maquette annonçait 22 px ; amendée au jeton livré.)
+- **Jalons : 2 colonnes × 3 rangées**, familles appariées par poids (fire·archive ensemble) — chaque rangée
+  mesurée à hauteur égale (102/102, 152/152, 102/102), zéro trou. Deux dispositions précédentes rejetées à l'écran.
+- **Le plancher de 1 % des barres est mort** : une valeur à zéro peignait ~22 px de doré. Une barre à zéro est
+  vide et la carte le dit en mots.
+- **Trois atomes extraits** — `AddressText` (adresse bleue + cliquable), `Disclosure` (le repliable enfin
+  dessiné : contrôle 44 px, chevron pivotant, anneau doré, prose bornée), `ProofAnchor` (112×44 / 95×44).
+  L'ancre de preuve mesurait **59×16 px** avant, sur la page dont le métier est la preuve.
+- **Plancher de lisibilité** : l'explication de l'accueil passe de **12,8 px à 16 px** ; `/status` ne publie plus
+  le mot `null` sur 24 lignes ; le chrome partagé n'a plus aucun texte sous 12 px (5 instances à 11 px → 0).
+
+**LOI ② AMENDÉE (Founder, à l'écran) :** la PREVIEW GATE passe du **commit** au **DÉPLOIEMENT**. Un commit est
+un point de sauvegarde, pas une publication. Le wireframe et l'aperçu restent obligatoires ; **prod ne bouge
+jamais sans ses yeux**.
+
+**DETTE RECOMPTÉE depuis les six gardes = 658** (267 type-scale / 56 fichiers, 213 publics · 46 espacement / 11
+· 26 contraste · 36 parité · 193 focus + 1 outline-kill · 89 cibles). Trois plafonds baissés à la demande du
+garde lui-même, une entrée supprimée (FireLedger, à zéro).
+
+**⚠ RESTE OUVERT, écrit pour ne pas être pris pour fait :** l'aperçu n'a couvert que `/activity` — la
+recommandation de couvrir 3-4 pages tient toujours. 15 constats ergonomiques confirmés sur les autres surfaces
+attendent (3 traités). Et 11 entrées de Chronique sont vérifiées mais **candidates**, pas promues.
+
+---
+**DEPLOY — ⛔ CE VERDICT EST DÉPASSÉ (26 juil. 2026).** Le lot ci-dessous A ÉTÉ DÉPLOYÉ : prod = `2ce49a3`.
+Le verdict courant est dans le bloc de reprise de `SESSION_STATE.md`, et il diffère sur un point qui compte :
+**le prochain cycle INCLUT des fichiers api-server** (`feedProjection` · `protocolEventReadmodel` ·
+`backboneRunner`), donc la phrase « zéro fichier api-server » ci-dessous ne vaut que pour le lot du 25 juillet.
+*(texte d'origine conservé comme archive datée)*
+
 **DEPLOY :** ce lot (`11384f5` · `05f16bc` · `2cd7d65` · `57c5fdf`) est **client uniquement, zéro fichier
 api-server** — 🚀 **UN SEUL CYCLE GROUPÉ**, non batchable parce que `05f16bc` retire une **promesse
 réfutable par la chaîne** de l'en-tête servi et ferme une page publique qui pouvait figer sans issue.
