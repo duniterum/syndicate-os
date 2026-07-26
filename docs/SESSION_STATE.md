@@ -83,6 +83,38 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   all three new checks proven RED). It had been GREEN while the /activity prose promise it was supposed to
 >   govern sat outside the mechanism entirely.
 >
+> ## ▶ 🚀 DEPLOY VERDICT — APPROVED BY THE FOUNDER 2026-07-26 (“GO and GO-Live”)
+> **REPLIT'S INSTRUCTION, VERBATIM: “pull main, deploy, report.”**
+> **NO migration. NO new env var.** No schema file moved in this batch.
+>
+> **THIS CYCLE INCLUDES api-server FILES — the first one that does in this arc.** `feedProjection.ts` ·
+> `protocolEventReadmodel.ts` · `backboneRunner.ts`. Every previous batch was client-only, and three canon
+> docs still said so until today; do not carry that assumption into the verification.
+>
+> ### THE ONE THING TO VERIFY ON THE REPORT, and why it is the only one that can lie
+> **The Seats and Footprint chips must each match their own lane's row count.** In the LOCAL rig they
+> disagree by exactly 3 in opposite directions (Seats 14 over a 17-row lane; Footprint 17 over a 9-row lane)
+> — that is NOT a defect: the rig serves a NEW studio against the OLD production API, which still sends
+> pre-derivation buckets. Replit pulls `main` and deploys BOTH, so they move together: the served buckets
+> become **14 first seats / 12 expansions**, the Seats lane renders **14** rows against a chip of **14**, and
+> Footprint renders **12 + 5 rung rises = 17** against a chip of **17**.
+> **If they disagree in production, blank the CHIPS, never the lanes** (`chipCount` in `LiveActivityFeed.tsx`
+> — return null for `seat` and `capital-rise`). The lanes are the record; the chips are a convenience.
+>
+> ### WHAT A VISITOR SEES CHANGE
+> · `/activity` rebuilt off the approved wireframe — the row is a grid, the amount has its own column, the
+>   proof anchor is 112×44 at one x, milestones are 2×3, the expanders are designed.
+> · **Addresses become blue and clickable** everywhere they render — this is what the api-server half
+>   unlocks, and it CANNOT be seen before the deploy (a short form cannot rebuild the full address).
+> · Burn lines name their origin (“From the Founder’s own allocation, retired to the burn address…”).
+> · Body type grows again past the laptop point: 16px @375 · 18.3px @1280 · 20px from 1886px.
+> · The home explainer 12.8px → 16px · `/status` no longer prints `null` down a column · zero sub-12px text
+>   in the shared chrome.
+>
+> ### ROLLBACK
+> Every slice is an independent commit above `2ce49a3` — `git revert <sha>` on one, or Replit's previous
+> checkpoint for the whole cycle. Nothing here is destructive: the server change is ADDITIVE (a new field
+> beside each short form) and fail-closed (absent field → exactly the previous rendering).
 > ## ▶ (0) FOUNDER RULINGS OF 2026-07-26 — FACTS, NOT DISCOVERIES
 > A session that "discovers" one of these and reports it as news is repeating work he has already paid for
 > and explained more than once. Read them before touching the referral, the Chronicle or the treasury.
