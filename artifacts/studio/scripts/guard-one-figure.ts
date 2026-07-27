@@ -199,6 +199,11 @@ const PINS = [
   { token: "USDC", feedKey: "USDC", cardVar: "vaultUsdc", regSymbol: "USDC", decimals: 6, dp: 2 },
   { token: "BTC.b", feedKey: '"BTC.b"', cardVar: "vaultBtcb", regSymbol: "BTC", decimals: 8, dp: 8 },
   { token: "WETH.e", feedKey: '"WETH.e"', cardVar: "vaultWeth", regSymbol: "ETH", decimals: 18, dp: 6 },
+  // AVAX joined the feed's token map when the native-movement lane was opened
+  // (2026-07-27). Its holding was ALREADY rendered on the two other surfaces at
+  // (18,4), so the feed adopted their precision rather than inventing a fourth
+  // — and this pin is what makes that agreement a rule instead of a coincidence.
+  { token: "AVAX", feedKey: "AVAX", cardVar: "vaultAvax", regSymbol: "AVAX", decimals: 18, dp: 4 },
 ];
 for (const p of PINS) {
   const want = `${p.decimals},${p.dp}`;

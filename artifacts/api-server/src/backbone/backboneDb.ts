@@ -43,6 +43,7 @@ import type {
   RawArchiveMintRowInput,
   RawArchivePauseRowInput,
   RawTreasuryRowInput,
+  TreasuryAsset,
 } from "./protocolEventScan";
 
 /** Avalanche C-Chain — same expected chain the reality spine reconciles. */
@@ -54,14 +55,18 @@ export const BACKBONE_EXPECTED_CHAIN_ID = 43114;
  * unrecognised treasury lane throws rather than defaulting to a token, so a
  * future lane can never quietly mislabel someone's money.
  */
-const TREASURY_TOKEN_BY_PREFIX: readonly (readonly [string, "USDC" | "SYN" | "BTC.b" | "WETH.e"])[] = [
+const TREASURY_TOKEN_BY_PREFIX: readonly (readonly [string, TreasuryAsset])[] = [
   ["TREASURY_USDC", "USDC"],
   ["TREASURY_SYN", "SYN"],
   ["TREASURY_BTCB", "BTC.b"],
   ["TREASURY_WETH", "WETH.e"],
+  // The native coin: no contract emitted these rows, the native-movement
+  // producer did. Same lane shape, same prefix rule, so the loader below and
+  // every read-model downstream need no special case.
+  ["TREASURY_AVAX", "AVAX"],
 ];
 
-function treasuryTokenForStream(streamKey: string): "USDC" | "SYN" | "BTC.b" | "WETH.e" {
+function treasuryTokenForStream(streamKey: string): TreasuryAsset {
   for (const [prefix, token] of TREASURY_TOKEN_BY_PREFIX) {
     if (streamKey.startsWith(prefix)) return token;
   }

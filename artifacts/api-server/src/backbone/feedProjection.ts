@@ -47,6 +47,7 @@ import type {
 } from "./milestoneReadmodel";
 import type { EraBuildResult } from "./eraReadmodel";
 import type { CapitalBuildResult } from "./capitalAxisReadmodel";
+import type { TreasuryAsset } from "./protocolEventScan";
 
 /** Hard cap on served mixed-feed lines (newest first). Pagination waits. */
 export const FEED_MAX_ITEMS = 100;
@@ -188,7 +189,7 @@ export interface PublicArchivePauseLine extends LineCommon {
 // ── H2-⑦ — treasury movements (organ LABELS only; post-Fold-Law) ────────────
 export interface PublicTreasuryLine extends LineCommon {
   readonly kind: "treasury-move";
-  readonly token: "USDC" | "SYN" | "BTC.b" | "WETH.e";
+  readonly token: TreasuryAsset;
   /** Exact raw base units — public per the Visibility Rule. */
   readonly amountRaw: string;
   readonly movement: "in" | "out" | "internal";

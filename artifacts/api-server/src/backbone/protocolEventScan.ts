@@ -200,10 +200,26 @@ export interface RawArchivePauseRowInput {
   transactionHash: string;
 }
 
+/**
+ * THE ONE AUTHORITY for which assets a treasury lane may move, server-side.
+ * ---------------------------------------------------------------------------
+ * It was the same four-name literal copied into five files. `add5bb8` widened
+ * four of them and left the fifth — the RUNTIME validator — narrow, and every
+ * BTC.b/WETH.e line would have been rejected in the browser while the server
+ * served it happily (tsc cannot see it: the validator reads
+ * `Record<string, unknown>`). One exported name, imported everywhere, so a new
+ * asset is added ONCE.
+ *
+ * AVAX is the chain's NATIVE coin and the odd one out on purpose: it has no
+ * token contract and emits NO log, so it can never arrive through a
+ * `Transfer`-topic lane. Its rows come from the native-movement producer.
+ */
+export type TreasuryAsset = "USDC" | "SYN" | "BTC.b" | "WETH.e" | "AVAX";
+
 // ── H2-⑦ — treasury-movement row (loader → read-model) ──────────────────────
 export interface RawTreasuryRowInput {
-  /** Which token contract emitted the Transfer (derived from the streamKey). */
-  token: "USDC" | "SYN" | "BTC.b" | "WETH.e";
+  /** Which asset moved (derived from the streamKey — the lane is the authority). */
+  token: TreasuryAsset;
   blockNumber: number;
   logIndex: number;
   transactionHash: string;

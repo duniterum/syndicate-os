@@ -29,6 +29,7 @@ import type {
   RawArchiveMintRowInput,
   RawArchivePauseRowInput,
   RawTreasuryRowInput,
+  TreasuryAsset,
 } from "./protocolEventScan";
 import type { BlockTimestampInput } from "./activityHeartbeatReadmodel";
 import { LADDER_RUNGS_CANON } from "../lib/protocol/connectorLadderCanon";
@@ -161,7 +162,7 @@ export interface ArchivePauseItem {
 // ── H2-⑦ — treasury movements (organ LABELS only; addresses never leave) ────
 export interface TreasuryMoveItem {
   readonly kind: "treasury-move";
-  readonly token: "USDC" | "SYN" | "BTC.b" | "WETH.e";
+  readonly token: TreasuryAsset;
   /** Exact raw base units (USDC 6-dec / SYN 18-dec), decimal string. */
   readonly amountRaw: string;
   readonly movement: "in" | "out" | "internal";

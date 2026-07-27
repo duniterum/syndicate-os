@@ -134,7 +134,7 @@ export interface ServedArchivePauseLine extends ServedLineCommon {
 // inside an already-narrated transaction is routing detail, never a line) ───
 export interface ServedTreasuryLine extends ServedLineCommon {
   kind: "treasury-move";
-  token: "USDC" | "SYN" | "BTC.b" | "WETH.e";
+  token: TreasuryToken;
   /** Exact raw base units — public per the Visibility Rule. */
   amountRaw: string;
   movement: "in" | "out" | "internal";
@@ -375,12 +375,20 @@ function parseCommon(r: Record<string, unknown>): ServedLineCommon | null {
  * wrong by a factor of 100, on a public feed. Decimals now come from the token,
  * and an unknown token yields NO sentence rather than a wrong number.
  */
-export type TreasuryToken = "USDC" | "SYN" | "BTC.b" | "WETH.e";
+export type TreasuryToken = "USDC" | "SYN" | "BTC.b" | "WETH.e" | "AVAX";
 const TREASURY_TOKEN_DECIMALS: Record<TreasuryToken, { decimals: number; dp: number }> = {
   USDC: { decimals: 6, dp: 2 },
   SYN: { decimals: 18, dp: 2 },
   "BTC.b": { decimals: 8, dp: 8 },
   "WETH.e": { decimals: 18, dp: 6 },
+  // AVAX is the chain's NATIVE coin, not a token contract — 18 decimals, and 4
+  // shown because a treasury AVAX move is units, not dust (4.5399, never
+  // 4.539868). It is accepted HERE, ahead of the server lane that will emit it:
+  // the client must be forward-compatible with a shape BEFORE the server sends
+  // it, or `parseLine` returns null, the row counts into `linesSkipped`, and
+  // /activity publicly announces that its own honest data failed validation
+  // (the add5bb8 defect class, 2026-07-25).
+  AVAX: { decimals: 18, dp: 4 },
 };
 
 /** THE ONE AUTHORITY for which tokens the client may render. The runtime
