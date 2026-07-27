@@ -1,5 +1,36 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-27 (PM) — THE TREASURY NOW SEES EVERY ASSET THE PROTOCOL BUYS. Deploy triggered; Replit's
+> report is the next session's first read.** Two lanes were built after the founder asked why /activity
+> still showed no AVAX purchase: the **native-AVAX lane** (AVAX emits no log — `eth_getLogs` is
+> structurally blind, so it reads the explorer's account API, fail-closed) and the **token discovery
+> lane** (pins OUR wallets, leaves the CONTRACT open, keeps only what OUR OWN KEY SIGNED).
+> **THE FOUNDER'S RULE IS THE WHOLE ARCHITECTURE:** *"c'est signé par le Founder ou notre vault wallet"* —
+> an asset we bought arrives in a transaction we signed, nobody can forge that, so a new token displays
+> with NO human approval step. It replaced an admin approval queue I had proposed; the protocol's own
+> doctrine (the actor is the SIGNER) already answered the question I was gating.
+> **THE PLANNED DESIGN WOULD HAVE SHIPPED AND SHOWN NOTHING** — the books said to read LFJ's whole-swap
+> `SwapExactIn` log, and the vault's actual AVAX purchase carries no LFJ log at all (Uniswap-V3-style
+> pools, ending in a WAVAX unwrap). Measured before writing code, not after deploying it.
+> **NEVER RE-DERIVE THESE (measured 2026-07-27, complete histories, nothing truncated):** the four organ
+> wallets' entire ERC-20 history is 37 + 33 + 26 + 17 rows; the only non-curated assets are the LP pair
+> (JLP, excluded — it has its own two lanes), an address-poisoning counterfeit "AVAX", and LINK.e. The
+> discovery floor is therefore **90,000,000**, guard-pinned to stay at or below the earliest real event.
+> **THE COUNTERFEIT IS THE ARC'S BEST EVIDENCE:** sender `0x2445ff20…c721` against the Founder's real
+> `0x244531c5…c721` (same four first and last), carrying **0.2** — the exact amount of his real advance —
+> sent **107 blocks after it** so it sits beside the real row. Signed by a stranger, so the signer rule
+> drops it with nothing configured.
+> **THREE ADVERSARIAL REVIEWS, 36 AGENTS, 14 CONFIRMED DEFECTS — all mine, all under a GREEN guard chain.**
+> One of my own fixes re-opened the freeze it was written against. **The mechanism behind every one of
+> them: the guards drove ONE of two rendering paths, or only the pure builders and never the scan loop.**
+> New pins now drive `sentenceForServedLine` and the real scan loop through a fake transport.
+> **STILL OWED (declared, deliberately not patched in a hurry):** the signer rule authorises a TRANSACTION,
+> not each log inside it (a spoofed `Transfer` in a tx we sign — the obvious `balanceOf > 0` gate would
+> drop a legitimate full-exit sale, so it gets designed) · the native lane never pages or sub-divides
+> (a full 10,000-row page is a permanent trap; measured headroom ~900×) · LINK.e is a published MOVEMENT
+> but has no reserves-registry entry, so /contracts and the home band exclude it — the founder's
+> price-feed call, already put to him.
+
 > **▶ 2026-07-27 — THE SEAT-KEY NAMESPACE JOIN IS WRITTEN. The one thing the 2026-07-26 handoff left owed
 > is closed, and it closed a CLASS, not a case.** `seatKeyOf` (`feedProjection.ts`) resolves a numberless
 > row through `GENESIS_SEAT_BY_WALLET`, so a genesis wallet's pre-numbering row and its numbered row share

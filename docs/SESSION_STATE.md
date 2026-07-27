@@ -2,32 +2,66 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-07-27 — RESUME HERE. THE ARC IS LIVE; THE SEAT-KEY JOIN IS WRITTEN; A BATCH WAITS TO SHIP.
+> # ▶ 2026-07-27 — RESUME HERE. THE TREASURY SEES EVERY ASSET NOW; THE DEPLOY IS OUT WITH REPLIT.
 >
-> ## ▶ THE FOUR LINES THAT DECIDE WHAT YOU DO
-> **① PROD = `27924e5`, SEALED AND VERIFIED.** The /activity rebuild, the four actor classes, the public
-> full addresses and the readability floor are ON thesyndicate.money. Evidence, not a report: the served API
-> publishes `actorOrganLabel` — a field absent from the whole repo at `2ce49a3` — and Replit proved
-> byte-identity twice (entry `index-CcDTw3m_.js` = `ad2100cb…`).
+> ## ▶ THE LINES THAT DECIDE WHAT YOU DO
+> **① PROD = `27924e5` UNTIL REPLIT'S REPORT LANDS.** The founder triggered the deploy at the end of this
+> session and Replit was still running when it closed. **The next session's FIRST act is to read his pasted
+> report and seal the new sha here** — measured, never inferred (pick a symbol that exists at HEAD and not
+> at `27924e5`, e.g. `TREASURY_DISCOVERED`, and look for it in the served payload).
+> **WHAT THE REPORT MUST CONFIRM, and it was asked for explicitly:** treasury-move count **7 → 12** with the
+> five new rows (4.5398 AVAX in · 0.2 AVAX advanced by the Founder · 1.0042 LINK.e in · 2 further native
+> movements), each with its verify anchor; and the engine status carrying **TWO NEW LANES**, `TREASURY_AVAX`
+> and `TREASURY_DISCOVERED`, with their status and cursor. **A lane in `error` is not an outage:** both fail
+> closed, everything else keeps serving — paste the message and fix from it.
 >
-> **② DEPLOY BACKLOG — DERIVE IT, NEVER READ A COUNT TYPED HERE:** `git log --oneline 27924e5..HEAD`.
-> A count written into this line is stale the moment the commit carrying it lands — the previous block said
-> "5 commits" and was 6 before it was pushed, which is the one-commit-behind mechanism this file keeps
-> catching. **What the batch CONTAINS, which is what actually decides the verdict:** the Chronicle promotion
-> (4 → 15 entries) + NEWEST-FIRST ordering, both client-only, **and now this slice's api-server change** —
-> so the batch is no longer client-only, and the "no API this time" note in the 2026-07-26 handoff is
-> superseded. **Replit's instruction is unchanged: *pull main, deploy, report* — NO migration, NO new env**
-> (no schema file moved; the change is `src/` + `scripts/` only).
-> **🚀 DEPLOY — BATCHABLE.** Nothing is broken while it waits: prod keeps serving 4 Chronicle entries
-> oldest-first, and the seat-key join is **zero-diff on today's rows by construction** (see ④), so an
-> undeployed prod publishes exactly what a deployed one would. It rides the next deploy rather than forcing
-> its own (the founder rule: each deploy costs ~10 min and $3-5).
+> **② DEPLOY BACKLOG — DERIVE IT, NEVER READ A COUNT TYPED HERE:** `git log --oneline <prod>..HEAD`.
+> A count written into this line is stale the moment the commit carrying it lands. NO migration, NO new env
+> in this batch (no schema file moved). It contains server AND client.
 >
-> **③ NOTHING IS PENDING ON THE FOUNDER.** No build waits, no decision waits, no preview waits. He approved
-> the page (“GO and GO-Live”), he approved the law change on screen, and he answered “oui” to promoting all
-> eleven Chronicle entries. The register is written.
+> **③ THE DAY'S ARC, in one paragraph.** The founder asked why /activity still showed no AVAX purchase.
+> Measured: prod served 7 treasury moves and the repo had no native or swap lane at all — nothing was
+> broken, nothing had ever been written. What HAD been settled was the QUESTION, recorded as a slice-order
+> decision, which reads as done. Built in sequence: the seat-key namespace join (④) · AVAX accepted as an
+> asset everywhere before anything emitted it · the **native-AVAX lane** (`nativeAvaxScan.ts` — native AVAX
+> emits no log, so it reads the explorer's account API, fail-closed) · the client made able to render an
+> asset nobody registered · the **token discovery lane** (`tokenDiscoveryScan.ts` — scans OUR wallets with
+> the contract left OPEN, and keeps only what OUR OWN KEY SIGNED). **THE FOUNDER'S RULE IS THE ARCHITECTURE:**
+> an asset the protocol buys arrives in a transaction we signed; nobody can forge that; so a new token
+> displays with NO human approval step. Proven on both real purchases (`tx.from` = the vault) and on the
+> real attack — an address-poisoning counterfeit "AVAX" sits in the vault's history from a look-alike of the
+> Founder's wallet (`0x2445ff20…c721` vs `0x244531c5…c721`, same 4 first and last, same 0.2 amount, sent 107
+> blocks after his real advance) and the signer rule drops it with nothing configured.
 >
-> **④ THE THING THAT WAS OWED IS DONE (2026-07-27) — THE SEAT-KEY NAMESPACE JOIN.** The first-seat
+> **④ THREE ADVERSARIAL REVIEWS RAN, AND THEY ARE THE REASON THIS SHIPPED.** 36 agents total. Round 1: 49
+> findings → 9 confirmed defects, every one of them mine, with the gates GREEN throughout. Round 2 (a
+> confirmation pass over the fixes) found that ONE OF MY FIXES HAD RE-OPENED THE FREEZE IT WAS WRITTEN
+> AGAINST. Round 3 (full re-read, 8 lenses + a go-live judge) confirmed 5 more; the judge's verdict was
+> DEPLOY, measured: the deploy publishes exactly five new rows and two of the three HIGHs were already live
+> in prod, so holding made them worse. **THE PATTERN WORTH KEEPING: every defect was invisible to a green
+> guard chain, because the guards drove one of two rendering paths, or only the pure builders and never the
+> scan loop.** A guard that checks half a surface certifies half a page.
+>
+> **⑤ STILL OWED — DECLARED, NOT HIDDEN, and deliberately not patched in a hurry:**
+> · **The signer rule authorises a TRANSACTION, not each log inside it** (MEDIUM). A contract we route
+>   through can emit `Transfer(vault, attacker, huge)` for a token the vault never held. The obvious gate
+>   (require `balanceOf > 0`) would silently drop a legitimate full-exit sale — one MEDIUM traded for
+>   another. Design it; do not patch it. Today's exposure: one discovered row, signer verified.
+> · **The native lane never pages or sub-divides** (MEDIUM). A full 10,000-row explorer page throws and the
+>   cursor holds, so the window only grows — a permanent trap once entered. Measured: the busiest wallet
+>   returns 11 rows, ~900× headroom. Fix with the siblings' pattern (chunk, or bisect on a full page).
+> · **LINK.e is published as a MOVEMENT but the reserves registry has no LINK entry**, so /contracts and the
+>   home composition bar exclude it. Needs the founder's price-feed decision — his call, already put to him.
+> · **The doctrine lens of round 3 died on a connection error** — that coverage is missing and is not claimed.
+>
+> **⑥ THE FOUNDER'S NEW ENGRAVED LAW — THE REFACTORING LAW** (`CLAUDE.md`, `f2f93d1`): only what the
+> blockchain physically does and what the law requires are fixed. Every comment, canon doc, ADR line and
+> earlier-session spec is a DATED ENGINEERING CHOICE and gets refactored the moment it blocks the right
+> build — in the same commit, with the correction STATED. Born from *"Native AVAX emits no event and
+> honestly cannot have a lane"*, half physics and half a false conclusion from `eth_getLogs`'s limit, quoted
+> as canon for weeks. **A limit of a TOOL is never a limit of REALITY.**
+>
+> **⑦ THE THING THAT WAS OWED IS DONE (2026-07-27) — THE SEAT-KEY NAMESPACE JOIN.** The first-seat
 > derivation no longer keeps two key spaces. `seatKeyOf` (`feedProjection.ts`) now resolves a numberless row
 > through **`GENESIS_SEAT_BY_WALLET`**, so a genesis wallet's pre-numbering V1 row and its numbered row share
 > ONE key (`n:<seat>`); `w:<wallet>` survives only as the honest fallback for a wallet outside the frozen
@@ -44,7 +78,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **GATES:** api typecheck 0 · full api guards chain green (backbone **182**, auth-zone 1267, source-status
 > 211, season-merkle 1279, protocol-reality 174) · api build 0. Studio untouched.
 >
-> **⑤ THE NATIVE-AVAX TREASURY LANE IS BUILT (2026-07-27) — the founder asked why /activity still shows no
+> **⑧ THE NATIVE-AVAX TREASURY LANE IS BUILT (2026-07-27) — the founder asked why /activity still shows no
 > AVAX purchase, and the answer was that nothing had ever been written.** What had been settled was the
 > QUESTION (native AVAX IS findable, against a session that said otherwise); no code followed, and the item
 > sat in OPEN_QUEUE as a slice-ORDER decision, which reads as done and is not. Recorded as the gap it was.
@@ -84,7 +118,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > is unreachable from the host — the lane fails closed, everything else keeps serving, and that is a
 > configuration finding, not a data one.
 >
-> **⑥ WHERE THE NEXT SESSION STARTS:** queue §(b)① is closed. Next is **§(b)② the 12 ergonomics findings**,
+> **⑨ WHERE THE NEXT SESSION STARTS:** queue §(b)① is closed. Next is **§(b)② the 12 ergonomics findings**,
 > and they are already split by what they COST: the ones that follow engraved law (reading floors, 44px
 > touch targets) need no wireframe — fix them; the four that change a COMPOSITION (/join's four equally-loud
 > gold buttons · /faq's search placed 4th · the home audit string above the one gold CTA · /tokenomics'
