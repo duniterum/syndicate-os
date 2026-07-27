@@ -218,6 +218,32 @@ a broken throne image — a Git Bash `BASE_PATH=/` → `C:/Program Files/Git/` e
 conversion had silently rebased the dev rig; launch the rig with
 `MSYS2_ENV_CONV_EXCL="BASE_PATH"` and always run the image check.)
 
+**THE CHAIN-READING LAW — HISTORY IS ASKED, THE TAIL IS WATCHED (founder, permanent, 2026-07-27:
+*"pourquoi il ne lit pas … pour le bloc exacte et met en cache … pourquoi sans arrêt chercher ?
+nous ne sommes pas un RPC service"*).**
+He was right, and the answer is an architecture rule, not a preference. **Reading a chain has TWO
+modes, and using the wrong one is the mistake this law exists to stop:**
+① **HISTORY IS IMMUTABLE — SO YOU ASK FOR IT, ONCE.** An index (explorer account API) answers
+"everything this address ever touched" in ONE call, because someone already walked the chain.
+NEVER walk millions of blocks to rediscover what an index already holds.
+② **THE TAIL CAN STILL CHANGE — SO YOU WATCH IT, FROM OUR OWN NODE.** The last blocks can reorg;
+read them with `eth_getLogs` on our RPC, staying a margin behind the head. **No third party in
+the live path.**
+③ **THE INDEX SAYS WHERE TO LOOK; OUR NODE SAYS WHAT IS THERE.** This is the clause that keeps
+the honesty contract: use the index only to learn WHICH transactions matter, then read those few
+from our own node for the authoritative detail (log index, signer, amounts). Nothing about a
+published figure is ever taken on a third party's word — and a handful of receipts is nothing
+next to a million-block walk.
+④ **READ ONCE, STORE FOREVER.** A persisted cursor + idempotent writes; a block read is never
+read again except a small reorg overlap. Backfill needs no reorg handling at all (finalized
+history cannot change) — only the tail does.
+⑤ **EVERY LANE DECLARES ITS MODE IN CODE**, and `backbone.guard` pins that it did. A lane that
+walks deep history must carry a WRITTEN REASON for why no index could answer it.
+**Why this is engraved and not merely remembered:** the same session shipped one lane using the
+index (native AVAX, one call, complete) and another walking 1.34M blocks for the same kind of
+question, and did not notice. The founder did. Full pattern + sources:
+`docs/architecture/CHAIN_READING_DOCTRINE.md`.
+
 **THE REFACTORING LAW — ONLY TWO THINGS ARE FIXED (founder, permanent, 2026-07-27:
 *"ce n'est pas une loi figée sur la pierre, on fait du refactoring ; tant que ce n'est pas une
 loi de blockchain ou légale, on le change pour que ça ne nous bloque pas"*).**

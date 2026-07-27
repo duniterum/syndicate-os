@@ -32,6 +32,7 @@
 
 import type { ProtocolEventRecord } from "./protocolEventScan";
 import type { RpcTransport } from "../lib/protocol/rpcTransport";
+import { EXPLORER_ACCOUNT_API, EXPLORER_PAGE_SIZE } from "./explorerIndex";
 
 const EXPECTED_CHAIN_ID = 43114;
 
@@ -272,6 +273,116 @@ export function buildDiscoveredRecords(
   return out;
 }
 
+/**
+ * ── THE BACKFILL, ASKED RATHER THAN WALKED ──────────────────────────────────
+ * THE CHAIN-READING LAW (`CLAUDE.md`; full doctrine in
+ * `docs/architecture/CHAIN_READING_DOCTRINE.md`), from the founder's question:
+ * *"pourquoi il ne lit pas … pour le bloc exact et met en cache … pourquoi sans
+ * arrêt chercher ? nous ne sommes pas un RPC service."*
+ *
+ * A node stores BLOCKS, not answers: it has no index by wallet, so the only
+ * question it can answer is "events of this shape between A and B" — it filters
+ * as it walks. For a lane whose CONTRACT IS UNKNOWN BY DEFINITION, that walk is
+ * every contract on the chain, one 2,000-block window at a time. This lane was
+ * doing exactly that: 1.34M blocks, ~670 calls, to rediscover what an index
+ * already holds and answers in ONE call per wallet.
+ *
+ * AND THE CLAUSE THAT KEEPS THE HONESTY CONTRACT — the index says WHERE to
+ * look, OUR NODE says WHAT IS THERE. The explorer is asked only which
+ * TRANSACTIONS involve our wallets; every published detail (the real log index,
+ * the signer, the amounts) is then read from our own node's receipts. So no
+ * figure rests on a third party's word, and the cost is a handful of receipts
+ * instead of a million-block walk.
+ */
+/**
+ * Where "history" ends and "the tail" begins. Below this distance from the head
+ * the lane watches with our own node (the tail can still reorg); above it, the
+ * history is finalized and is ASKED. 50,000 blocks ≈ 28 h on the C-Chain — far
+ * wider than the 50-block reorg overlap, so the tail's overlap can never reach
+ * back into a range the index already settled.
+ */
+const DISCOVERY_TAIL_WINDOW = 50_000;
+
+/**
+ * Ask the index which TRANSACTIONS touched our wallets with a non-curated
+ * token. Returns hashes only — deliberately: nothing this function returns is
+ * ever published, so the explorer cannot put a figure on a public page.
+ */
+export async function fetchIndexedTransactionHashes(args: {
+  readonly organWallets: readonly string[];
+  readonly pinnedContracts: readonly string[];
+  readonly fromBlock: number;
+  readonly toBlock: number;
+  readonly timeoutMs?: number;
+}): Promise<string[]> {
+  const pinned = new Set(args.pinnedContracts.map((c) => c.toLowerCase()));
+  const hashes = new Set<string>();
+  for (const wallet of args.organWallets) {
+    const url =
+      `${EXPLORER_ACCOUNT_API}?module=account&action=tokentx&address=${wallet}` +
+      `&startblock=${args.fromBlock}&endblock=${args.toBlock}&sort=asc` +
+      `&page=1&offset=${EXPLORER_PAGE_SIZE}`;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), args.timeoutMs ?? 20_000);
+    try {
+      const res = await fetch(url, { headers: { accept: "application/json" }, signal: controller.signal });
+      if (!res.ok) throw new Error(`discovery index: HTTP ${res.status}`);
+      const body = (await res.json()) as { status?: unknown; result?: unknown };
+      // "No transactions found" answers status "0" with an empty result — a
+      // legitimately empty window, not a fault.
+      if (body.status === "0" && Array.isArray(body.result) && body.result.length === 0) continue;
+      if (body.status !== "1" || !Array.isArray(body.result)) {
+        throw new Error(`discovery index: explorer status ${String(body.status)}`);
+      }
+      if (body.result.length >= EXPLORER_PAGE_SIZE) {
+        throw new Error("discovery index: answer fills the page — may be truncated, refusing to advance");
+      }
+      for (const row of body.result as { hash?: unknown; contractAddress?: unknown }[]) {
+        const contract = typeof row.contractAddress === "string" ? row.contractAddress.toLowerCase() : "";
+        const hash = typeof row.hash === "string" ? row.hash.toLowerCase() : "";
+        if (!/^0x[0-9a-f]{64}$/.test(hash)) continue;
+        if (contract === "" || pinned.has(contract)) continue; // curated lanes own those
+        hashes.add(hash);
+      }
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+  return [...hashes];
+}
+
+/**
+ * Read those transactions from OUR OWN NODE and decode their real Transfer
+ * logs. This is where every published detail comes from — real log indices
+ * included, so an index-sourced row and a tail-walked row are the SAME row and
+ * de-duplicate on the same key.
+ */
+export async function fetchCandidatesFromReceipts(
+  transport: RpcTransport,
+  txHashes: readonly string[],
+  organWallets: readonly string[],
+): Promise<DiscoveredTransferCandidate[]> {
+  const organs = new Set(organWallets.map((w) => w.toLowerCase()));
+  const out: DiscoveredTransferCandidate[] = [];
+  for (const hash of txHashes) {
+    const receipt = await transport("eth_getTransactionReceipt", [hash]);
+    if (typeof receipt !== "object" || receipt === null) continue;
+    const logs = (receipt as { logs?: unknown }).logs;
+    if (!Array.isArray(logs)) continue;
+    for (const log of logs) {
+      let c: DiscoveredTransferCandidate;
+      try {
+        c = decodeDiscoveredTransferLog(log as Record<string, unknown>);
+      } catch {
+        continue; // not an ERC-20 Transfer — the receipt holds every kind
+      }
+      if (!organs.has(c.to) && !organs.has(c.from)) continue;
+      out.push(c);
+    }
+  }
+  return out;
+}
+
 /** address → a 32-byte topic, for the recipient/sender filter positions. */
 function addressToTopic(address: string): string {
   return `0x${"0".repeat(24)}${address.replace(/^0x/, "").toLowerCase()}`;
@@ -455,13 +566,70 @@ export async function runTokenDiscoveryScan(args: {
             DISCOVERY_FROM_BLOCK,
             cursor.lastScannedBlock + 1 - DISCOVERY_REORG_OVERLAP,
           );
-    const budgetEnd = Math.min(args.head, resumeFrom + DISCOVERY_MAX_BLOCKS_PER_CYCLE - 1);
-    summary.scannedTo = Math.max(resumeFrom - 1, DISCOVERY_FROM_BLOCK);
-    for (let from = resumeFrom; from <= budgetEnd; from += DISCOVERY_CHUNK) {
+    // ── PHASE 1 — HISTORY IS ASKED, NOT WALKED (THE CHAIN-READING LAW) ──────
+    // Everything further than the tail window behind the head is FINALIZED, so
+    // it cannot reorg and there is nothing to watch for: one index call per
+    // wallet names the transactions, our own node supplies every published
+    // detail, and the cursor jumps the whole range in a single cycle instead of
+    // walking it 2,000 blocks at a time across seven.
+    const indexEnd = args.head - DISCOVERY_TAIL_WINDOW;
+    let tailFrom = resumeFrom;
+    if (resumeFrom <= indexEnd) {
+      const txHashes = await fetchIndexedTransactionHashes({
+        organWallets: args.organWallets,
+        pinnedContracts: args.pinnedContracts,
+        fromBlock: resumeFrom,
+        toBlock: indexEnd,
+      });
+      const candidates = await fetchCandidatesFromReceipts(
+        args.transport,
+        txHashes,
+        args.organWallets,
+      );
+      if (candidates.length > 0) {
+        const signerByTx = await fetchSigners(
+          args.transport,
+          [...new Set(candidates.map((c) => c.transactionHash))],
+        );
+        const pinnedSet = new Set(args.pinnedContracts.map((c) => c.toLowerCase()));
+        const metaByContract = await fetchTokenMeta(
+          args.transport,
+          [...new Set(candidates.map((c) => c.contract))].filter((c) => !pinnedSet.has(c)),
+        );
+        const records = buildDiscoveredRecords({
+          candidates,
+          organWallets: args.organWallets,
+          signerWallets: args.signerWallets,
+          pinnedContracts: args.pinnedContracts,
+          signerByTx,
+          metaByContract,
+        });
+        if (records.length > 0) {
+          summary.rowsInserted += await args.deps.insert(records);
+        }
+      }
+      await args.deps.upsertCursor({
+        streamKey,
+        fromBlock: DISCOVERY_FROM_BLOCK,
+        lastScannedBlock: indexEnd,
+        status: "ok",
+        lastError: null,
+      });
+      summary.scannedTo = indexEnd;
+      // No reorg overlap crossing back: the tail window is 1,000× the overlap,
+      // and finalized history does not move.
+      tailFrom = indexEnd + 1;
+    }
+
+    // ── PHASE 2 — THE TAIL IS WATCHED, FROM OUR OWN NODE ────────────────────
+    const budgetEnd = Math.min(args.head, tailFrom + DISCOVERY_MAX_BLOCKS_PER_CYCLE - 1);
+    summary.scannedTo = Math.max(summary.scannedTo, Math.max(tailFrom - 1, DISCOVERY_FROM_BLOCK));
+    const resumeFromTail = tailFrom;
+    for (let from = resumeFromTail; from <= budgetEnd; from += DISCOVERY_CHUNK) {
       const to = Math.min(from + DISCOVERY_CHUNK - 1, budgetEnd);
       // PACING, like every other lane: back-to-back getLogs is what earned a
       // measured 403 from the provider once already.
-      if (from > resumeFrom) await sleep(DISCOVERY_CHUNK_DELAY_MS);
+      if (from > resumeFromTail) await sleep(DISCOVERY_CHUNK_DELAY_MS);
       const { candidates } = await fetchDiscoveryCandidates(
         args.transport,
         args.organWallets,
@@ -567,3 +735,8 @@ export async function fetchTokenMeta(
   }
   return byContract;
 }
+
+/** Exposed for backbone.guard: the two constants whose RATIO keeps the asked
+ *  history and the watched tail from ever covering the same block. */
+export const DISCOVERY_TAIL_WINDOW_FOR_GUARD = DISCOVERY_TAIL_WINDOW;
+export const DISCOVERY_REORG_OVERLAP_FOR_GUARD = DISCOVERY_REORG_OVERLAP;

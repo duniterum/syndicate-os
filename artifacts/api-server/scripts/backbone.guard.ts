@@ -71,6 +71,9 @@ import {
   DISCOVERY_FROM_BLOCK,
   EARLIEST_KNOWN_DISCOVERY_BLOCK,
   runTokenDiscoveryScan,
+  fetchCandidatesFromReceipts,
+  DISCOVERY_TAIL_WINDOW_FOR_GUARD,
+  DISCOVERY_REORG_OVERLAP_FOR_GUARD,
 } from "../src/backbone/tokenDiscoveryScan";
 import {
   PROTOCOL_EVENT_SCAN_TARGETS,
@@ -1196,6 +1199,53 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
     signerByTx: OURS,
     metaByContract: new Map([[lpPair, { symbol: "JLP", decimals: 18 }]]),
   });
+  // ── THE CHAIN-READING LAW, PINNED (2026-07-27) ────────────────────────────
+  // History is ASKED (one index call per wallet), the tail is WATCHED (our own
+  // node). Two properties make that split safe, and both are pinned here.
+  {
+    // ① THE PHASES CANNOT OVERLAP. The tail's reorg overlap must never reach
+    // back into a range the index already settled — otherwise one movement
+    // would be written twice under two different provenances.
+    check(
+      DISCOVERY_TAIL_WINDOW_FOR_GUARD >= DISCOVERY_REORG_OVERLAP_FOR_GUARD * 100,
+      `the discovery tail window (${DISCOVERY_TAIL_WINDOW_FOR_GUARD.toLocaleString("en-US")}) is at least 100× the reorg overlap (${DISCOVERY_REORG_OVERLAP_FOR_GUARD}) — the walked tail can never re-enter the indexed history`,
+      "the discovery tail window shrank toward the reorg overlap — the two phases could cover the same block and double a movement",
+    );
+    // ② THE INDEX NEVER SUPPLIES A PUBLISHED DETAIL. Rows found through the
+    // index are re-read from OUR NODE's receipts, so they carry the REAL log
+    // index — which is what lets an indexed row and a walked row be the SAME
+    // row and de-duplicate on the same key. A synthetic index here would make
+    // the two phases produce two records for one movement.
+    const RECEIPT_TX = "0x" + "e2".repeat(32);
+    const fakeNode = (async (method: string) => {
+      if (method !== "eth_getTransactionReceipt") return null;
+      return {
+        logs: [
+          {
+            address: "0x" + "cc".repeat(20),
+            topics: [
+              "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+              "0x" + "0".repeat(24) + STRANGER.slice(2),
+              "0x" + "0".repeat(24) + VAULT.slice(2),
+            ],
+            data: "0x" + (1000n).toString(16).padStart(64, "0"),
+            blockNumber: "0x5654321",
+            logIndex: "0x2a", // 42 — a REAL receipt index, far below the synthetic space
+            transactionHash: RECEIPT_TX,
+          },
+        ],
+      };
+    }) as unknown as Parameters<typeof fetchCandidatesFromReceipts>[0];
+    const fromReceipts = await fetchCandidatesFromReceipts(fakeNode, [RECEIPT_TX], [VAULT]);
+    check(
+      fromReceipts.length === 1 &&
+        fromReceipts[0]!.logIndex === 42 &&
+        fromReceipts[0]!.logIndex < NATIVE_AVAX_INTERNALS_FOR_GUARD.NATIVE_INDEX_BASE,
+      "an index-discovered row carries the REAL log index read from our own node's receipt (never a synthetic one) — so the asked history and the watched tail de-duplicate as one row",
+      `an index-discovered row did not carry its receipt's real log index (got ${fromReceipts[0]?.logIndex ?? "none"})`,
+    );
+  }
+
   // ── THE TWO FREEZE CLASSES, DRIVEN THROUGH THE REAL SCAN LOOP ─────────────
   // The confirmation review found fixes ④ and ⑦ guarded by NOTHING — the guard
   // exercised only the pure builders, so the two ways a stranger can HALT a

@@ -40,6 +40,7 @@
  */
 
 import type { ProtocolEventRecord } from "./protocolEventScan";
+import { EXPLORER_ACCOUNT_API, EXPLORER_PAGE_SIZE } from "./explorerIndex";
 
 /** Chain 43114 — the C-Chain, the only chain this protocol reads. */
 const EXPECTED_CHAIN_ID = 43114;
@@ -248,9 +249,6 @@ export function buildNativeAvaxRecords(
   return out;
 }
 
-/** The explorer's account API, chain-pinned. Read-only, unauthenticated. */
-const EXPLORER_ACCOUNT_API =
-  "https://api.routescan.io/v2/network/mainnet/evm/43114/etherscan/api";
 
 async function fetchAccountRows(
   action: "txlist" | "txlistinternal",
@@ -266,11 +264,10 @@ async function fetchAccountRows(
   // advance its cursor to head, and declare the rest covered: a permanent,
   // invisible hole in a money record. The explicit size plus the check below
   // turn a silent truncation into a loud one.
-  const PAGE_SIZE = 10_000;
   const url =
     `${EXPLORER_ACCOUNT_API}?module=account&action=${action}` +
     `&address=${address}&startblock=${fromBlock}&endblock=${toBlock}&sort=asc` +
-    `&page=1&offset=${PAGE_SIZE}`;
+    `&page=1&offset=${EXPLORER_PAGE_SIZE}`;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -303,7 +300,7 @@ async function fetchAccountRows(
     // A full page means there may be a SECOND one, and this lane does not page.
     // Failing loudly is the only honest answer: the cursor then stays put and
     // the window is retried, rather than advancing over rows never read.
-    if (envelope.result.length >= PAGE_SIZE) {
+    if (envelope.result.length >= EXPLORER_PAGE_SIZE) {
       throw new Error(
         `native-avax ${action}: ${envelope.result.length} rows fills the page — the window may be truncated, refusing to advance`,
       );
