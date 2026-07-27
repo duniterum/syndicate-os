@@ -660,12 +660,19 @@ export function parseLine(raw: unknown): ServedFeedLine | null {
     // A CONTRACT PRESENT MEANS DISCOVERED — the symbol never decides which path
     // a row takes. A discovered row must bring its own decimals; a curated one
     // must bear a curated name. Nothing may satisfy both.
+    // A BAD SYMBOL IS NOT A BAD ROW (senior review, 2026-07-27). The first
+    // version refused the whole line when the symbol was longer than 12
+    // characters — so a legitimately bought token with a long name had its
+    // MONEY ROW DELETED, and /activity publicly announced "N served line(s)
+    // failed validation", the exact defect class add5bb8 taught. The movement
+    // is real and its transaction proves it; only its NAME is untrusted. So
+    // admission depends on what makes the row RENDERABLE — decimals to scale
+    // it and a contract to identify it — and the symbol is judged separately,
+    // by `treasuryAssetLabel`, which falls back to the address that cannot lie.
     const assetAdmitted =
       symbol !== null &&
       (discoveredContract !== null
-        ? discoveredDecimals !== null &&
-          symbol.length > 0 &&
-          symbol.length <= MAX_DISCOVERED_SYMBOL
+        ? discoveredDecimals !== null
         : isTreasuryToken(symbol));
     if (
       symbol === null ||
@@ -1068,14 +1075,31 @@ export function sentenceForServedLine(line: ServedFeedLine): string {
     // Organ LABELS only; external counterparties never named; a transfer in
     // an already-narrated transaction never reaches here (the Fold Law).
     case "treasury-move": {
-      const amount = formatTreasuryRaw(line.amountRaw, line.token);
+      // THE DECIMALS MUST TRAVEL (senior review, 2026-07-27 — six independent
+      // lenses caught the same line). Without `line.assetDecimals` this call
+      // fell past the discovered branch, asked `isTreasuryToken("LINK.e")`,
+      // got false, and returned null — so EVERY discovered asset published
+      // "open the transaction for the exact amount" while the amount column
+      // beside it rendered the exact amount. On the public home band the two
+      // are concatenated into ONE line of prose, so the row contradicted
+      // itself in a single sentence. The polarity was inverted too: an
+      // IMPOSTOR claiming "USDC" resolved through the curated table and got
+      // the CONFIDENT wording, while the honest LINK.e row got the degraded
+      // one — the opposite of what the impersonation gate is for.
+      const amount = formatTreasuryRaw(line.amountRaw, line.token, line.assetDecimals);
       // Fail-closed: an unrecognised token still gets its line — the movement
       // is real and its transaction anchor proves it — but WITHOUT a figure we
       // cannot scale correctly. A missing number beats a wrong one.
       if (amount === null) {
-        return line.movement === "out"
-          ? `A treasury movement left ${line.organLabel} — recorded on-chain; open the transaction for the exact amount.`
-          : `A treasury movement entered ${line.organLabel} — recorded on-chain; open the transaction for the exact amount.`;
+        // "internal" is a THIRD case and it was folded into "entered": an
+        // organ→organ rebalance was announced as money ENTERING the organ it
+        // had just left. The confident path below has always had three
+        // branches; this one had two.
+        return line.movement === "internal"
+          ? `A treasury movement moved from ${line.organLabel} to ${line.toOrganLabel ?? "another organ"} — recorded on-chain; open the transaction for the exact amount.`
+          : line.movement === "out"
+            ? `A treasury movement left ${line.organLabel} — recorded on-chain; open the transaction for the exact amount.`
+            : `A treasury movement entered ${line.organLabel} — recorded on-chain; open the transaction for the exact amount.`;
       }
       // A1 (founder funding doctrine, 2026-07-22): a founder-wallet
       // counterparty is SAID — money in from the Founder is the Founder

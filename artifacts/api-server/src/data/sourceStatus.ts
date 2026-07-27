@@ -220,7 +220,7 @@ const CANON: CanonEntry[] = [
     publicClass: "ECONOMIC_DASHBOARD_SAFE",
     sourceRef: "internal:reality-spine-financial",
     confidence: "high",
-    note: "Live treasury balances are served by the reality spine (the vault's USDC plus its native AVAX, BTC.b and WETH.e holdings, operations USDC, LP reserves, the seven allocation wallets), with the deep-market holdings valued in USD via live Chainlink price feeds and summed into a treasury total. SYN is shown as a token amount only (its sole on-chain price is the thin LP pool). A per-transaction anchored treasury ledger is the remaining future layer.",
+    note: "Live treasury balances are served by the reality spine (the vault's USDC plus its native AVAX, BTC.b and WETH.e holdings, operations USDC, LP reserves, the seven allocation wallets), with the deep-market holdings valued in USD via live Chainlink price feeds and summed into a treasury total. SYN is shown as a token amount only (its sole on-chain price is the thin LP pool). Treasury MOVEMENTS are now published per transaction on the activity record, each anchored to its own transaction on Avalanche — including native AVAX, which emits no token event, and any asset the protocol buys, recognised by the signature on the purchase rather than by a list of names.",
     surface: "/treasury",
   },
   {

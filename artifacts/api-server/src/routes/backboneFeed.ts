@@ -36,7 +36,22 @@ import {
 const router: IRouter = Router();
 
 const LIMIT_RE = /^[0-9]{1,2}$/;
-const CURSOR_RE = /^[0-9]{1,12}:[0-9]{1,6}$/;
+/**
+ * THE LOG-INDEX HALF MUST COVER THE SYNTHETIC SPACE (senior review,
+ * 2026-07-27). It was `{1,6}` — six digits — while the native-AVAX lane emits
+ * SEVEN-digit indices by construction: `NATIVE_INDEX_BASE = 1_000_000`, chosen
+ * deliberately to sit above any reachable real log index so it can never
+ * silently drop a money row. The two constants contradicted each other, and the
+ * failure was invisible from both ends: `sliceFeedPage` BUILDS `nextCursor` as
+ * `${blockNumber}:${logIndex}`, so THE SERVER ITSELF emitted a cursor this
+ * route answered with 400 `bad_cursor`; the client's own validator has no
+ * length cap, so it sent it back happily; `fetchServedFeed` returns null on a
+ * non-ok response and "Load more" then appends nothing and clears its spinner —
+ * a dead button under a page still promising older lines.
+ * Nine digits leaves room above the synthetic base; `backbone.guard` now pins
+ * this regex AGAINST that base so they can never drift apart again.
+ */
+const CURSOR_RE = /^[0-9]{1,12}:[0-9]{1,9}$/;
 
 router.get("/backbone/feed", (req, res) => {
   try {

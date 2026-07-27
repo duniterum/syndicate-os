@@ -239,6 +239,34 @@ for (const [sym, decimals, amountRaw, want] of DISCOVERED_CASES) {
   }
 }
 
+// ①b THE SENTENCE MUST AGREE WITH THE AMOUNT COLUMN. The senior review of
+// 2026-07-27 found every discovered row publishing "open the transaction for
+// the exact amount" BESIDE the exact amount — on /activity, and concatenated
+// into one line of prose on the public home band. The gates were green because
+// the discovery pins drove parseLine and amountForServedLine and never touched
+// sentenceForServedLine. A guard that checks one of two rendering paths is a
+// guard that certifies half a page.
+{
+  const priced = feedMod.parseLine!(
+    treasuryRow({ token: "LINK.e", assetDecimals: 18, assetContract: LINK_CONTRACT }),
+  );
+  const sentence = priced === null ? "" : String(feedMod.sentenceForServedLine!(priced));
+  const shown = priced === null ? null : feedMod.amountForServedLine!(priced);
+  if (shown !== null && /open the transaction for the exact amount/i.test(sentence)) {
+    fail(`discovery — the sentence says the amount is unavailable (${JSON.stringify(sentence)}) while the amount column renders ${JSON.stringify(shown)}. The row contradicts itself.`);
+  }
+  // An INTERNAL move must never be announced as money ENTERING the organ it left.
+  const internal = feedMod.parseLine!(
+    treasuryRow({ token: "MYSTERY-X", movement: "internal", organLabel: "the vault", toOrganLabel: "the liquidity wallet" }),
+  );
+  if (internal !== null) {
+    const s = String(feedMod.sentenceForServedLine!(internal));
+    if (/entered/i.test(s)) {
+      fail(`discovery — an INTERNAL treasury move is announced as ENTERING the organ it left: ${JSON.stringify(s)}.`);
+    }
+  }
+}
+
 // ② THE IMPERSONATION GATE. The signature proves WE bought it; it does not make
 // the token's self-declared symbol true. A contract returning "USDC" must never
 // be rendered as USDC — it falls back to the address, which cannot be chosen.

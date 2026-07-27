@@ -262,7 +262,9 @@ export function buildDiscoveredRecords(
         to: c.to,
         valueRaw: c.valueRaw,
         contract: c.contract,
-        symbol: meta.symbol,
+        // Bounded HERE, where the payload is built — never trusting a contract
+        // to be reasonable about how much text it puts on our public feed.
+        symbol: meta.symbol.slice(0, MAX_STORED_SYMBOL),
         decimals: meta.decimals,
       },
     });
@@ -285,7 +287,7 @@ export async function fetchDiscoveryCandidates(
   organWallets: readonly string[],
   fromBlock: number,
   toBlock: number,
-): Promise<DiscoveredTransferCandidate[]> {
+): Promise<{ candidates: DiscoveredTransferCandidate[]; skipped: number }> {
   const organTopics = organWallets.map(addressToTopic);
   const passes: unknown[][] = [
     [TRANSFER_TOPIC0, null, organTopics], // money IN
@@ -293,6 +295,7 @@ export async function fetchDiscoveryCandidates(
   ];
   const seen = new Set<string>();
   const out: DiscoveredTransferCandidate[] = [];
+  let skipped = 0;
   for (const topics of passes) {
     const logs = await transport("eth_getLogs", [
       {
@@ -305,7 +308,22 @@ export async function fetchDiscoveryCandidates(
       throw new Error("discovery: eth_getLogs did not return an array");
     }
     for (const log of logs) {
-      const c = decodeDiscoveredTransferLog(log as Record<string, unknown>);
+      // A LOG WE CANNOT DECODE IS SKIPPED, NEVER FATAL (senior review,
+      // 2026-07-27). This lane has NO contract filter, so it necessarily meets
+      // logs the pinned lanes never see: ERC-721 transfers (same topic0, a
+      // fourth topic), ERC-1155, and every non-standard contract on the chain.
+      // The decoder REFUSES those on purpose — but throwing here aborted the
+      // whole window, and the cursor never advanced past it. One spam NFT sent
+      // to a PUBLISHED organ wallet would have frozen the lane permanently, for
+      // the price of dust. Refusing a log and refusing to continue are two
+      // different decisions; only the first one was intended.
+      let c: DiscoveredTransferCandidate;
+      try {
+        c = decodeDiscoveredTransferLog(log as Record<string, unknown>);
+      } catch {
+        skipped += 1;
+        continue;
+      }
       // An organ→organ transfer matches BOTH passes; keyed dedupe, here, where
       // a duplicate is still visible rather than swallowed by the insert.
       const key = `${c.transactionHash}:${c.logIndex}`;
@@ -314,7 +332,7 @@ export async function fetchDiscoveryCandidates(
       out.push(c);
     }
   }
-  return out;
+  return { candidates: out, skipped };
 }
 
 /** `tx.from` for each transaction — the signature the whole rule rests on. */
@@ -369,6 +387,26 @@ export const EARLIEST_KNOWN_DISCOVERY_BLOCK = 90_460_152;
 const DISCOVERY_CHUNK = 2_000;
 const DISCOVERY_MAX_BLOCKS_PER_CYCLE = 200_000;
 const DISCOVERY_REORG_OVERLAP = 50;
+/** Paced like the curated lanes: 100 back-to-back getLogs is what earned a
+ *  measured 403 from the provider once already. */
+const DISCOVERY_CHUNK_DELAY_MS = 120;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    const t = setTimeout(resolve, ms);
+    if (typeof t.unref === "function") t.unref();
+  });
+}
+
+/**
+ * A HARD BOUND ON THE SYMBOL, server-side (senior review, 2026-07-27 — the
+ * one-authority break: the browser bounded it and the server did not, so the
+ * two sides of one figure disagreed by construction). A symbol is text an
+ * arbitrary contract returns; it enters a public payload, so its size is ours
+ * to bound, not its author's. Long or hostile symbols do not lose the row —
+ * the client renders the CONTRACT instead, which cannot be chosen twice.
+ */
+const MAX_STORED_SYMBOL = 32;
 
 /**
  * The lane's cycle: resume from its cursor, walk the window in chunks, persist
@@ -421,7 +459,10 @@ export async function runTokenDiscoveryScan(args: {
     summary.scannedTo = Math.max(resumeFrom - 1, DISCOVERY_FROM_BLOCK);
     for (let from = resumeFrom; from <= budgetEnd; from += DISCOVERY_CHUNK) {
       const to = Math.min(from + DISCOVERY_CHUNK - 1, budgetEnd);
-      const candidates = await fetchDiscoveryCandidates(
+      // PACING, like every other lane: back-to-back getLogs is what earned a
+      // measured 403 from the provider once already.
+      if (from > resumeFrom) await sleep(DISCOVERY_CHUNK_DELAY_MS);
+      const { candidates } = await fetchDiscoveryCandidates(
         args.transport,
         args.organWallets,
         from,
@@ -439,6 +480,28 @@ export async function runTokenDiscoveryScan(args: {
           args.transport,
           [...new Set(candidates.map((c) => c.contract))].filter((c) => !pinned.has(c)),
         );
+        // A ROW WE COULD NOT DESCRIBE MUST NOT BE LEFT BEHIND (senior review,
+        // 2026-07-27). `buildDiscoveredRecords` silently skips a candidate
+        // whose contract would not answer symbol()/decimals(), and the cursor
+        // then advanced past it — so a transient RPC failure on ONE eth_call
+        // deleted a bought asset from the record permanently. The 50-block
+        // overlap does not save it: the chunk is 2,000 blocks wide. So the
+        // cursor STOPS at the previous chunk and the next cycle retries this
+        // one. Converging slowly beats converging with a hole.
+        const owed = candidates.filter(
+          (c) =>
+            !pinned.has(c.contract) &&
+            c.valueRaw !== "0" &&
+            signerByTx.has(c.transactionHash) &&
+            !metaByContract.has(c.contract),
+        );
+        if (owed.length > 0) {
+          summary.status = "error";
+          summary.error =
+            `${owed.length} discovered row(s) in blocks ${from}-${to} could not be described ` +
+            `(symbol()/decimals() unreadable) — cursor held so the next cycle retries`;
+          return summary;
+        }
         const records = buildDiscoveredRecords({
           candidates,
           organWallets: args.organWallets,

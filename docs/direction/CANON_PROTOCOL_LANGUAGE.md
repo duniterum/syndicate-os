@@ -294,8 +294,15 @@ is now built).** The vault's **BTC.b and WETH.e** movements have their lanes:
 SAME `decodeTreasuryLog` as USDC/SYN — the scanned CONTRACT is what identifies the token, so
 no new decoder was invented. The token label is now an explicit map that THROWS on an
 unrecognised lane instead of defaulting (the old binary ternary would have silently labelled
-a third token "SYN"). Native AVAX still emits no event and honestly cannot have a lane —
-that remains true and stated.
+a third token "SYN"). ~~Native AVAX still emits no event and honestly cannot have a lane —
+that remains true and stated.~~ **SUPERSEDED 2026-07-27.** Native AVAX emits no event — that
+half is physics and still holds. "Cannot have a lane" was a conclusion drawn from it, and it
+was false: `eth_getLogs` is blind to a native movement, the explorer's account API is not, and
+the transaction hash it returns keeps the line as receipt-backed as any other. The lane exists
+(`nativeAvaxScan.ts`) and publishes the vault's 4.5399 AVAX purchase at block 90,460,319.
+**The lesson, engraved:** a limit of ONE TOOL had been written down as a limit of REALITY, and
+then quoted as canon for weeks. A sentence beginning "honestly cannot" is a dated assumption
+until it is tested against today's chain.
 
 **Scope now: four organs.** The **NFT SALE WALLET** (founder-named 2026-07-25) joins the vault,
 the liquidity wallet and the operations wallet in the organ set: artifact mints pay into it,

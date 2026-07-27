@@ -1036,6 +1036,25 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
   );
   // A zero-value call is a contract call, not treasury history; a reverted one
   // moved nothing. Neither is a line, and neither is an error.
+  // THE CURSOR MUST SURVIVE THE SYNTHETIC INDEX (senior review, 2026-07-27).
+  // The route's CURSOR_RE capped the logIndex half at SIX digits while this lane
+  // emits seven by construction — so `sliceFeedPage` produced a cursor the route
+  // answered with 400 `bad_cursor`, and "Load more" died in silence under a page
+  // still promising older lines. Pinned AGAINST the base, never a copied number.
+  {
+    const routeSrc = readFileSync(
+      path.join(apiDir, "src", "routes", "backboneFeed.ts"),
+      "utf8",
+    );
+    const m = /const CURSOR_RE = \/\^(.+?)\$\//.exec(routeSrc);
+    const highestNativeIndex = base + 1 + 999; // base + plain slot + ordinals
+    const sample = `91336828:${highestNativeIndex}`;
+    check(
+      m !== null && new RegExp(`^${m[1]}$`).test(sample),
+      `the feed route's cursor shape accepts a native-lane index (${sample}) — the server can never emit a cursor its own route rejects`,
+      `the cursor regex rejects the native lane's synthetic index (${sample}) — "Load more" would 400 in silence`,
+    );
+  }
   check(
     build([{ ...advanceRow, value: "0" }], []).length === 0 &&
       build([{ ...advanceRow, isError: "1" }], []).length === 0,

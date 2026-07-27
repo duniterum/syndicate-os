@@ -723,11 +723,15 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     // link" — a chain-refutable claim (business red line #2) served THREE
     // times per page: description + og:description + twitter:description.
     // Both halves were refuted by the page itself:
-    //   · COMPLETENESS. A movement no lane reads cannot reach the feed — the
-    //     vault's USDC→AVAX swap is the proven case. (The aggregator router
-    //     does emit one whole-swap log; the lane that will read it is being
-    //     designed in its own workflow. Until it lands the head must not
-    //     promise it, and "every" is disproved by one explorer tab.)
+    //   · COMPLETENESS. A movement no lane reads cannot reach the feed, and
+    //     the vault's USDC→AVAX swap was the proven case. IT IS READ NOW
+    //     (2026-07-27) — but not the way this note predicted, which is worth
+    //     keeping: the plan was to read "the aggregator router's whole-swap
+    //     log", and that purchase's receipt carries NO such log (it routes
+    //     through Uniswap-V3-style pools and ends in a WAVAX unwrap). Native
+    //     AVAX rides its own lane instead, and any bought asset is recognised
+    //     by the SIGNATURE on its purchase. The head still must not say
+    //     "every": these lanes cover far more, not all.
     //   · "EACH WITH ITS VERIFY LINK". LiveActivityFeed pushes Chronicle
     //     lines from the committed register with blockNumber 0 and a
     //     synthetic hash (LiveActivityFeed.tsx:408-417) — Founder promotions,
@@ -754,7 +758,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "proof",
     proofRoute: "/status",
     notes:
-      "TWO sources, each labelled with its own coverage: the served indexed history (seats, burns, referral-registry lifecycle, liquidity, archive, treasury movements, milestone crossings, era turns, footprint rises — every lane complete from its OWN first block, per the server's lane flags) + the ~24h client window for freshness. It is NOT every on-chain act, and no surface says 'complete' any more (2026-07-26): a movement no lane reads cannot reach the feed — the vault's USDC→AVAX swap is the proven case, its aggregator log awaiting the lane a separate workflow is designing. H2-⑬: the Milestones panel — canonical crossings anchored to their exact transactions. H2-⑦: treasury movements (post-Fold-Law — routing detail never duplicates a purchase). H2-⑫ + AW-2 (Founder override 2026-07-22, config/eraCanon.ts:14-17): the era band STANDS on the page — the current era's bytecode terms (rate, minimum entry, the seat the rate holds through, seats left at it) as factual disclosure; the old line-on-crossing-only pin is dead, no deadline is invented, and the band hides itself the moment any era transition is indexed. H2-P: lines speak the origin voice — member number + the actor's SHORT-FORM address, which is READABILITY and never masking: an address is public (the address law, Founder 2026-07-24), the verify link opens the whole transaction on the explorer, and the red line is name/alias/email only. H2-⑭: Chronicle promotions join from the committed register — Founder commits, not chain events: no anchor is invented and the line links into the record ('read the record') — plus chip decision A ('Referral registry'). H2-⑰: capital-axis footprint rises (12 Founder-named rungs; recognition only — the red line guard-pinned; base rung silent). H2-⑩: deployments from the chain-verified canon registry (real creation-tx anchors). The Founder facet filters exactly the acts the served labels PROVE are his.",
+      "TWO sources, each labelled with its own coverage: the served indexed history (seats, burns, referral-registry lifecycle, liquidity, archive, treasury movements, milestone crossings, era turns, footprint rises — every lane complete from its OWN first block, per the server's lane flags) + the ~24h client window for freshness. It is NOT every on-chain act, and no surface says 'complete' any more (2026-07-26): a movement no lane reads cannot reach the feed — but the vault's USDC→AVAX swap, which was that gap's proven case, is now READ: native AVAX rides its own lane (it emits no token event, so logs alone are blind to it), and any asset the protocol buys is recognised by the signature on the purchase rather than by a list of names. H2-⑬: the Milestones panel — canonical crossings anchored to their exact transactions. H2-⑦: treasury movements (post-Fold-Law — routing detail never duplicates a purchase). H2-⑫ + AW-2 (Founder override 2026-07-22, config/eraCanon.ts:14-17): the era band STANDS on the page — the current era's bytecode terms (rate, minimum entry, the seat the rate holds through, seats left at it) as factual disclosure; the old line-on-crossing-only pin is dead, no deadline is invented, and the band hides itself the moment any era transition is indexed. H2-P: lines speak the origin voice — member number + the actor's SHORT-FORM address, which is READABILITY and never masking: an address is public (the address law, Founder 2026-07-24), the verify link opens the whole transaction on the explorer, and the red line is name/alias/email only. H2-⑭: Chronicle promotions join from the committed register — Founder commits, not chain events: no anchor is invented and the line links into the record ('read the record') — plus chip decision A ('Referral registry'). H2-⑰: capital-axis footprint rises (12 Founder-named rungs; recognition only — the red line guard-pinned; base rung silent). H2-⑩: deployments from the chain-verified canon registry (real creation-tx anchors). The Founder facet filters exactly the acts the served labels PROVE are his.",
   },
   {
     path: "/chronicle",

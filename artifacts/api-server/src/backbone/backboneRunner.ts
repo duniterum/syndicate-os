@@ -748,13 +748,27 @@ async function runCycle(): Promise<string | null> {
     protocolEventsInserted,
     timestampsInserted: enrich.inserted,
     units: summarizeUnits(summary),
-    protocolStreams: protocolStreams.map((s) => ({
-      streamKey: s.streamKey,
-      status: s.status,
-      cursorBlock: s.cursorBlock,
-      caughtUp: s.caughtUp,
-      rowsInserted: s.rowsInserted,
-    })),
+    // THE TWO NEW MONEY LANES REPORT HERE TOO (senior review, 2026-07-27).
+    // They were folded into `streamFaults` for the cycle's verdict but never
+    // reached the operator's status payload, so a lane stuck for days would
+    // have been invisible on the one screen built to show exactly that. A lane
+    // nobody can see stalling is a lane nobody fixes.
+    protocolStreams: [
+      ...protocolStreams.map((s) => ({
+        streamKey: s.streamKey,
+        status: s.status,
+        cursorBlock: s.cursorBlock,
+        caughtUp: s.caughtUp,
+        rowsInserted: s.rowsInserted,
+      })),
+      ...[nativeAvax, discovery].map((s) => ({
+        streamKey: s.streamKey,
+        status: s.status,
+        cursorBlock: s.scannedTo,
+        caughtUp: s.status === "ok" && s.scannedTo >= (summary.head ?? 0),
+        rowsInserted: s.rowsInserted,
+      })),
+    ],
     burnLedgerTotal: protocolModel.totals.burns,
     lifecycleTotal: protocolModel.totals.lifecycle,
     introductionRefresh: introRefresh

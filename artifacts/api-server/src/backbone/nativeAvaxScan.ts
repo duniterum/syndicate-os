@@ -259,9 +259,18 @@ async function fetchAccountRows(
   toBlock: number,
   timeoutMs: number,
 ): Promise<ExplorerAccountRow[]> {
+  // THE DEFAULT PAGE IS 25 ROWS, AND IT IS SILENT (senior review, 2026-07-27;
+  // measured live the same day — a bare query for a wallet with 37 rows
+  // returned exactly 25, with status "1" and no indication of truncation).
+  // Without an explicit page size the lane would read a prefix of the window,
+  // advance its cursor to head, and declare the rest covered: a permanent,
+  // invisible hole in a money record. The explicit size plus the check below
+  // turn a silent truncation into a loud one.
+  const PAGE_SIZE = 10_000;
   const url =
     `${EXPLORER_ACCOUNT_API}?module=account&action=${action}` +
-    `&address=${address}&startblock=${fromBlock}&endblock=${toBlock}&sort=asc`;
+    `&address=${address}&startblock=${fromBlock}&endblock=${toBlock}&sort=asc` +
+    `&page=1&offset=${PAGE_SIZE}`;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -291,6 +300,14 @@ async function fetchAccountRows(
     if (!Array.isArray(envelope.result)) {
       throw new Error(`native-avax ${action}: result is not an array`);
     }
+    // A full page means there may be a SECOND one, and this lane does not page.
+    // Failing loudly is the only honest answer: the cursor then stays put and
+    // the window is retried, rather than advancing over rows never read.
+    if (envelope.result.length >= PAGE_SIZE) {
+      throw new Error(
+        `native-avax ${action}: ${envelope.result.length} rows fills the page — the window may be truncated, refusing to advance`,
+      );
+    }
     return envelope.result as ExplorerAccountRow[];
   } finally {
     clearTimeout(timer);
@@ -312,13 +329,32 @@ export async function fetchNativeAvaxRecords(args: {
   const timeoutMs = args.timeoutMs ?? 15_000;
   const plainRows: ExplorerAccountRow[] = [];
   const internalRows: ExplorerAccountRow[] = [];
+  // AN ORGAN→ORGAN MOVEMENT ANSWERS BOTH WALLETS' QUERIES (senior review,
+  // 2026-07-27) — once as the sender's row, once as the recipient's. Left
+  // unmerged, the internal-call ordinal (a position within the fetched set)
+  // gave the two copies DIFFERENT synthetic indices, so the final
+  // `${hash}:${logIndex}` de-duplication could never collapse them and the
+  // movement was written TWICE — a doubled figure on a public feed. Merging on
+  // the movement's OWN identity, here, is what makes the ordinal deterministic.
+  const identity = (r: ExplorerAccountRow): string =>
+    [r.hash, r.traceId ?? "", r.from ?? "", r.to ?? "", r.value ?? ""]
+      .map((v) => String(v).toLowerCase())
+      .join("|");
+  const seenPlain = new Set<string>();
+  const seenInternal = new Set<string>();
   for (const wallet of args.organWallets) {
-    plainRows.push(
-      ...(await fetchAccountRows("txlist", wallet, args.fromBlock, args.toBlock, timeoutMs)),
-    );
-    internalRows.push(
-      ...(await fetchAccountRows("txlistinternal", wallet, args.fromBlock, args.toBlock, timeoutMs)),
-    );
+    for (const row of await fetchAccountRows("txlist", wallet, args.fromBlock, args.toBlock, timeoutMs)) {
+      const k = identity(row);
+      if (seenPlain.has(k)) continue;
+      seenPlain.add(k);
+      plainRows.push(row);
+    }
+    for (const row of await fetchAccountRows("txlistinternal", wallet, args.fromBlock, args.toBlock, timeoutMs)) {
+      const k = identity(row);
+      if (seenInternal.has(k)) continue;
+      seenInternal.add(k);
+      internalRows.push(row);
+    }
   }
   // Two organ wallets on both sides of one movement would yield it twice, once
   // per wallet's query. The record set is de-duplicated on the same key the
