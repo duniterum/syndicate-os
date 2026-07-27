@@ -33,7 +33,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > Founder's wallet (`0x2445ff20…c721` vs `0x244531c5…c721`, same 4 first and last, same 0.2 amount, sent 107
 > blocks after his real advance) and the signer rule drops it with nothing configured.
 >
-> **④ THREE ADVERSARIAL REVIEWS RAN, AND THEY ARE THE REASON THIS SHIPPED.** 36 agents total. Round 1: 49
+> **④ FOUR ADVERSARIAL REVIEWS RAN, AND THEY ARE THE REASON THIS SHIPPED.** 56 agents total. Round 1: 49
 > findings → 9 confirmed defects, every one of them mine, with the gates GREEN throughout. Round 2 (a
 > confirmation pass over the fixes) found that ONE OF MY FIXES HAD RE-OPENED THE FREEZE IT WAS WRITTEN
 > AGAINST. Round 3 (full re-read, 8 lenses + a go-live judge) confirmed 5 more; the judge's verdict was
@@ -54,14 +54,42 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   home composition bar exclude it. Needs the founder's price-feed decision — his call, already put to him.
 > · **The doctrine lens of round 3 died on a connection error** — that coverage is missing and is not claimed.
 >
-> **⑥ THE FOUNDER'S NEW ENGRAVED LAW — THE REFACTORING LAW** (`CLAUDE.md`, `f2f93d1`): only what the
+> **⑥ THE ARC CONTINUED AFTER THE DEPLOY WAS TRIGGERED — four more slices, all BATCHABLE:**
+> · **THE CHAIN-READING LAW** (`CLAUDE.md` + `docs/architecture/CHAIN_READING_DOCTRINE.md`) and the
+>   discovery backfill rewritten to match it: history is ASKED from an index in ONE call, the tail is
+>   WATCHED from our own node, and **the index says WHERE to look while our node says WHAT IS THERE**.
+>   Measured: the whole 1.34M-block history answers in **4.2 seconds** and names exactly two
+>   transactions, against ~670 `eth_getLogs` calls across 7 cycles.
+> · **THE SEAT NUMBER IS SHOWN, not only counted** — seven served lines rendered a bare address,
+>   including the protocol's FIRST member, while his signed-in view said "seat number 1" from the same
+>   frozen roster. One resolution (`seatNumberOf`) now answers both the grouping key and the number.
+> · **THE HOME MILESTONES BAND** (`HomeMilestonesBand.tsx`) — the founder's call, from an approved
+>   wireframe (`docs/design/home-milestones-band-mockup.html` v3), in the HOUSE SHELL. `/activity`
+>   keeps the RECORD; the home carries the MOMENTUM; `lib/milestoneProgress.ts` is the one derivation.
+> · **THE FOURTH ADVERSARIAL REVIEW** (20 agents, 9 lenses incl. one reading the WRITTEN record
+>   against the code): 69 findings, 8 confirmed, verdict **HOLD** — all fixed here. The worst was
+>   mine again and of the same shape: the discovery lane's PHASE 1 advanced its cursor past rows it
+>   had silently dropped, over a ~1.34M-block window that runs ONCE and is never revisited. The
+>   founder's own LINK.e purchase was the row at risk. **The reason it survived three earlier
+>   reviews: every fixture passed a `head` so small that phase 1 never executed.** A branch no
+>   fixture can reach is a branch nobody checks — the index read is now injectable and both phases
+>   are driven and proven RED.
+> **ALSO CORRECTED BY THAT REVIEW, all truth defects:** `/chronicle` publicly said "Oldest first" over
+> a list `b74dfdb` had flipped to newest-first · six files wrote the AVAX purchase as **4.5399** when
+> the feed prints **4.5398** (it truncates, never rounds up — writing the rounded figure overstates a
+> holding) · `CHAIN_READING_DOCTRINE` promised no published figure rests on the explorer's word while
+> the native lane publishes its numbers (the exception is now NAMED in §2 and owed as a slice) ·
+> `CLAUDE.md` and the doctrine both claimed a guard that did not exist (it does now: every lane
+> declares its BACKFILL MODE, and a lane that WALKS carries a written reason).
+>
+> **⑦ THE FOUNDER'S NEW ENGRAVED LAW — THE REFACTORING LAW** (`CLAUDE.md`, `f2f93d1`): only what the
 > blockchain physically does and what the law requires are fixed. Every comment, canon doc, ADR line and
 > earlier-session spec is a DATED ENGINEERING CHOICE and gets refactored the moment it blocks the right
 > build — in the same commit, with the correction STATED. Born from *"Native AVAX emits no event and
 > honestly cannot have a lane"*, half physics and half a false conclusion from `eth_getLogs`'s limit, quoted
 > as canon for weeks. **A limit of a TOOL is never a limit of REALITY.**
 >
-> **⑦ THE THING THAT WAS OWED IS DONE (2026-07-27) — THE SEAT-KEY NAMESPACE JOIN.** The first-seat
+> **⑧ THE THING THAT WAS OWED IS DONE (2026-07-27) — THE SEAT-KEY NAMESPACE JOIN.** The first-seat
 > derivation no longer keeps two key spaces. `seatKeyOf` (`feedProjection.ts`) now resolves a numberless row
 > through **`GENESIS_SEAT_BY_WALLET`**, so a genesis wallet's pre-numbering V1 row and its numbered row share
 > ONE key (`n:<seat>`); `w:<wallet>` survives only as the honest fallback for a wallet outside the frozen
@@ -78,7 +106,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **GATES:** api typecheck 0 · full api guards chain green (backbone **182**, auth-zone 1267, source-status
 > 211, season-merkle 1279, protocol-reality 174) · api build 0. Studio untouched.
 >
-> **⑧ THE NATIVE-AVAX TREASURY LANE IS BUILT (2026-07-27) — the founder asked why /activity still shows no
+> **⑨ THE NATIVE-AVAX TREASURY LANE IS BUILT (2026-07-27) — the founder asked why /activity still shows no
 > AVAX purchase, and the answer was that nothing had ever been written.** What had been settled was the
 > QUESTION (native AVAX IS findable, against a session that said otherwise); no code followed, and the item
 > sat in OPEN_QUEUE as a slice-ORDER decision, which reads as done and is not. Recorded as the gap it was.
@@ -87,7 +115,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > purchase (tx `0x7accfd17…`, block 90,460,319): that receipt carries **no LFJ log at all** — it routes
 > through Uniswap-V3-style pools and ends in a WAVAX unwrap. The lane would have shipped and shown nothing.
 > A design verified against one venue is not a design.
-> **WHAT IS ON CHAIN, measured (Routescan account API, vault-scoped):** the purchase — **4.5399 AVAX**, an
+> **WHAT IS ON CHAIN, measured (Routescan account API, vault-scoped):** the purchase — 4.539867625602041394 wei, which the feed PRINTS as **4.5398 AVAX** (it truncates, never rounds up; 4.5399 was written here first and overstated a holding) — an
 > INTERNAL call, block 90,460,319 — and, found only because the scope check asked for the other path,
 > **0.2 AVAX the Founder advanced** from his private wallet, a PLAIN transfer at block 90,460,045.
 > **THE SLICE, in two commits.** `f1e0162` widened the asset union to accept AVAX EVERYWHERE and emit
@@ -118,7 +146,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > is unreachable from the host — the lane fails closed, everything else keeps serving, and that is a
 > configuration finding, not a data one.
 >
-> **⑨ WHERE THE NEXT SESSION STARTS:** queue §(b)① is closed. Next is **§(b)② the 12 ergonomics findings**,
+> **⑩ WHERE THE NEXT SESSION STARTS:** the review verdict is acted on and the tree is green. Next is **§(b)② the 12 ergonomics findings**,
 > and they are already split by what they COST: the ones that follow engraved law (reading floors, 44px
 > touch targets) need no wireframe — fix them; the four that change a COMPOSITION (/join's four equally-loud
 > gold buttons · /faq's search placed 4th · the home audit string above the one gold CTA · /tokenomics'

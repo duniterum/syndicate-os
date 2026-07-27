@@ -28,6 +28,11 @@
  * name; but a symbol is TEXT ITS AUTHOR CHOSE, so it travels BESIDE the
  * contract address rather than replacing it, and the browser refuses to render
  * a symbol that claims a name already ours.
+ *
+ * BACKFILL MODE: index → node — the contract is unknown by definition, so a
+ * walk would mean every contract on the chain; the index names the
+ * transactions and our own node supplies every published detail.
+ * (CHAIN_READING_DOCTRINE §4.)
  */
 
 import type { ProtocolEventRecord } from "./protocolEventScan";
@@ -383,6 +388,46 @@ export async function fetchCandidatesFromReceipts(
   return out;
 }
 
+/**
+ * THE ROWS WE OWE THE RECORD — one predicate, used by BOTH phases.
+ * ---------------------------------------------------------------------------
+ * A candidate we WOULD have published (ours by signature, not curated, non-zero)
+ * whose contract would not describe itself. It cannot be rendered honestly yet,
+ * so the cursor must NOT move past it — the next cycle retries.
+ *
+ * WHY THIS IS A FUNCTION AND NOT TWO COPIES (senior review, 2026-07-27, found by
+ * two independent lenses): the hold existed only in the TAIL phase. The INDEX
+ * phase — the arc's headline path, one shot over ~1.34M blocks, never revisited
+ * because the 50-block overlap cannot reach back — advanced its cursor
+ * unconditionally. One transient `eth_call` failure there would have erased a
+ * bought asset from the public record PERMANENTLY, with the lane reporting
+ * status "ok". The named row at risk was the founder's own LINK.e purchase.
+ * The arc's own doctrine forbids it in one line (CHAIN_READING_DOCTRINE §3: the
+ * cursor advances "only past rows actually persisted — never past rows that were
+ * dropped, skipped or unresolved"), and the code contradicted it.
+ *
+ * It is the FOURTH time in one day that one decision written in two places
+ * diverged. Hence: one function, imported by both callers, and a guard that
+ * drives each phase.
+ */
+export function undescribedOwedRows(input: {
+  readonly candidates: readonly DiscoveredTransferCandidate[];
+  readonly pinnedContracts: readonly string[];
+  readonly signerWallets: readonly string[];
+  readonly signerByTx: ReadonlyMap<string, string>;
+  readonly metaByContract: ReadonlyMap<string, TokenMeta>;
+}): DiscoveredTransferCandidate[] {
+  const pinned = new Set(input.pinnedContracts.map((c) => c.toLowerCase()));
+  const signers = new Set(input.signerWallets.map((w) => w.toLowerCase()));
+  return input.candidates.filter((c) => {
+    if (pinned.has(c.contract)) return false;
+    if (c.valueRaw === "0") return false;
+    const signer = input.signerByTx.get(c.transactionHash);
+    if (signer === undefined || !signers.has(signer.toLowerCase())) return false;
+    return !input.metaByContract.has(c.contract);
+  });
+}
+
 /** address → a 32-byte topic, for the recipient/sender filter positions. */
 function addressToTopic(address: string): string {
   return `0x${"0".repeat(24)}${address.replace(/^0x/, "").toLowerCase()}`;
@@ -503,9 +548,14 @@ const DISCOVERY_REORG_OVERLAP = 50;
 const DISCOVERY_CHUNK_DELAY_MS = 120;
 
 function sleep(ms: number): Promise<void> {
+  // DELIBERATELY NOT unref()ed. The sibling lanes unref so a shutdown is not
+  // delayed by a pace timer — but an unref'd timer lets Node EXIT while the
+  // loop is sleeping, which means no fixture can drive this function to
+  // completion. That is exactly why the phase-1 cursor defect survived three
+  // reviews: the branch existed and nothing could reach it. A 120 ms delay on
+  // shutdown is a smaller price than a money lane no guard can execute.
   return new Promise((resolve) => {
-    const t = setTimeout(resolve, ms);
-    if (typeof t.unref === "function") t.unref();
+    setTimeout(resolve, ms);
   });
 }
 
@@ -541,6 +591,13 @@ export async function runTokenDiscoveryScan(args: {
       lastError: string | null;
     }) => Promise<unknown>;
     insert: (recs: readonly ProtocolEventRecord[]) => Promise<number>;
+    /**
+     * The index read, injectable ONLY so a guard can drive the asked-history
+     * phase without a network. Production leaves it undefined and gets the real
+     * explorer call. It exists because the phase-1 cursor defect survived three
+     * reviews for exactly one reason: no fixture could reach that branch.
+     */
+    fetchIndexHashes?: typeof fetchIndexedTransactionHashes;
   };
 }): Promise<{
   streamKey: string;
@@ -575,7 +632,8 @@ export async function runTokenDiscoveryScan(args: {
     const indexEnd = args.head - DISCOVERY_TAIL_WINDOW;
     let tailFrom = resumeFrom;
     if (resumeFrom <= indexEnd) {
-      const txHashes = await fetchIndexedTransactionHashes({
+      const askIndex = args.deps.fetchIndexHashes ?? fetchIndexedTransactionHashes;
+      const txHashes = await askIndex({
         organWallets: args.organWallets,
         pinnedContracts: args.pinnedContracts,
         fromBlock: resumeFrom,
@@ -606,6 +664,25 @@ export async function runTokenDiscoveryScan(args: {
         });
         if (records.length > 0) {
           summary.rowsInserted += await args.deps.insert(records);
+        }
+        // THE SAME HOLD AS THE TAIL, AND IT MATTERS MORE HERE. This phase runs
+        // ONCE over ~1.34M blocks and is never revisited, so a row dropped here
+        // is dropped forever. Hold the cursor and let the next cycle retry.
+        const owedHere = undescribedOwedRows({
+          candidates,
+          pinnedContracts: args.pinnedContracts,
+          signerWallets: args.signerWallets,
+          signerByTx,
+          metaByContract,
+        });
+        if (owedHere.length > 0) {
+          const contracts = [...new Set(owedHere.map((c) => c.contract))].join(", ");
+          summary.status = "error";
+          summary.error =
+            `asked history ${resumeFrom}-${indexEnd}: ${owedHere.length} asset(s) WE SIGNED FOR ` +
+            `cannot be described (symbol()/decimals() unreadable on ${contracts}) — cursor held, ` +
+            `the next cycle re-asks this window`;
+          return summary;
         }
       }
       await args.deps.upsertCursor({
@@ -665,12 +742,12 @@ export async function runTokenDiscoveryScan(args: {
         // price of gas, to a wallet we publish. Only a row we would actually
         // have PUBLISHED is worth waiting for.
         const ourSigners = new Set(args.signerWallets.map((w) => w.toLowerCase()));
-        const owed = candidates.filter((c) => {
-          if (pinned.has(c.contract)) return false;
-          if (c.valueRaw === "0") return false;
-          const signer = signerByTx.get(c.transactionHash);
-          if (signer === undefined || !ourSigners.has(signer.toLowerCase())) return false;
-          return !metaByContract.has(c.contract);
+        const owed = undescribedOwedRows({
+          candidates,
+          pinnedContracts: args.pinnedContracts,
+          signerWallets: args.signerWallets,
+          signerByTx,
+          metaByContract,
         });
         if (owed.length > 0) {
           // Named, not counted: this halts a money lane, so the operator screen

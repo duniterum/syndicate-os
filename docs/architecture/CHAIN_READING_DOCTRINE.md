@@ -56,6 +56,16 @@ The cost is nothing — the transactions that matter are a handful — and it re
 transfer entirely. A hundred receipts from our node beat a million-block walk *and* beat trusting
 an explorer's numbers.
 
+**THE ONE EXCEPTION, NAMED RATHER THAN GLOSSED (senior review, 2026-07-27).** The
+native-AVAX lane does NOT yet satisfy this clause: a native movement has no log, so its
+amounts come from the explorer's own rows rather than from a receipt we re-read. That is a
+real gap between this doctrine and that lane, not a subtlety — it is written here because a
+doctrine that quietly exempts its hardest case is worth nothing. What limits the damage:
+every such line still carries its TRANSACTION HASH, so any reader can check the figure on
+Snowtrace in one click, and the discovery lane (the newer one) does honour the clause in
+full. Closing it means reading each named transaction's trace from our own node — a real
+slice, listed as owed in SESSION_STATE, not a comment.
+
 ---
 
 ## §3 — READ ONCE, STORE FOREVER

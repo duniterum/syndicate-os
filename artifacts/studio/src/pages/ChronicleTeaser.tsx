@@ -52,7 +52,13 @@ export default function ChronicleTeaser() {
     <MemberAppPage
       eyebrow="Chronicle"
       title="The institutional story."
-      lead="Turning points only — each entry promoted by a human decision, written in the protocol's own voice, and verifiable by anyone. Oldest first: the story in the order it was lived."
+      // THE COPY MUST MATCH THE SORT (senior review, 2026-07-27). `b74dfdb`
+      // flipped the register to NEWEST-FIRST — the founder's ruling: the
+      // doctrine that fit four entries broke at fifteen — and left this
+      // sentence saying "Oldest first". A public page describing its own list
+      // backwards is a chain-refutable claim about the cheapest thing to check:
+      // what the reader is looking at.
+      lead="Turning points only — each entry promoted by a human decision, written in the protocol's own voice, and verifiable by anyone. Newest first — the record opens on what happened last."
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
       <div className="space-y-10">

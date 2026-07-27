@@ -971,7 +971,7 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
 
 // ── THE NATIVE-AVAX LANE (2026-07-27) ───────────────────────────────────────
 // Fixtures are the PROTOCOL'S OWN two AVAX movements, copied from the explorer
-// answer verbatim — not invented rows. The purchase (4.5399 AVAX, an internal
+// answer verbatim — not invented rows. The purchase (4.5398 AVAX as PUBLISHED — the feed truncates, it never rounds up; an internal
 // call, in a transaction carrying 23 real logs) and the Founder's 0.2 AVAX
 // advance (a plain transfer). If this lane ever stops producing these two, the
 // build goes red before anyone opens /activity.
@@ -981,7 +981,7 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
   const AGGREGATOR = "0x45a62b090df48243f12a21897e7ed91863e2c86b";
   const PURCHASE_TX = "0x7accfd17b40f057906e8db7057d29e07cd1e306445d5540f8b4bb6883eac23cd";
   const ADVANCE_TX = "0x31c18cb6c86c193d37f1eaa2f128a5c46279bf6e6e502676123d2fc827e3dc76";
-  const PURCHASE_WEI = "4539867625602041394"; // 4.5399 AVAX
+  const PURCHASE_WEI = "4539867625602041394"; // renders 4.5398 (truncated, never rounded up)
   const ADVANCE_WEI = "200000000000000000"; //   0.2    AVAX
 
   const purchaseRow = {
@@ -1013,7 +1013,7 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
       advance?.decodedJson["valueRaw"] === ADVANCE_WEI &&
       purchase?.streamKey === "TREASURY_AVAX" &&
       advance?.streamKey === "TREASURY_AVAX",
-    "the native-AVAX lane produces the protocol's two real movements: the 4.5399 AVAX purchase (an internal call) and the Founder's 0.2 AVAX advance (a plain transfer)",
+    "the native-AVAX lane produces the protocol's two real movements: the 4.5398 AVAX purchase (an internal call) and the Founder's 0.2 AVAX advance (a plain transfer)",
     "the native-AVAX lane stopped producing the protocol's own AVAX movements",
   );
   // THE COLLISION PIN, and it is the one that protects money. The insert
@@ -1232,6 +1232,27 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
     signerByTx: OURS,
     metaByContract: new Map([[lpPair, { symbol: "JLP", decimals: 18 }]]),
   });
+  // ── EVERY LANE DECLARES ITS BACKFILL MODE (CHAIN-READING LAW §5) ──────────
+  // CLAUDE.md and CHAIN_READING_DOCTRINE §4 both asserted "backbone.guard pins
+  // that the declaration exists" — and it did not. A doc claiming a guard that
+  // does not exist is worse than no rule: it makes a reader stop checking.
+  // Found by the review that read the WRITTEN record against the code.
+  {
+    const laneFiles = ["protocolEventScan.ts", "nativeAvaxScan.ts", "tokenDiscoveryScan.ts"];
+    const missing = laneFiles.filter((f) => {
+      const src = readFileSync(path.join(apiDir, "src", "backbone", f), "utf8");
+      const m = /BACKFILL MODE:\s*(index → node|index|walk)\b/.exec(src);
+      if (m === null) return true;
+      // A lane that WALKS deep history must say why no index could answer it.
+      return m[1] === "walk" && !/BACKFILL MODE:\s*walk\s*—\s*REASON:/.test(src);
+    });
+    check(
+      missing.length === 0,
+      `every scan lane declares its BACKFILL MODE in code (${laneFiles.length} lanes), and a lane that WALKS carries a written reason why no index could answer it`,
+      `lane(s) with no backfill-mode declaration, or a walk with no reason: ${missing.join(", ")}`,
+    );
+  }
+
   // ── THE CHAIN-READING LAW, PINNED (2026-07-27) ────────────────────────────
   // History is ASKED (one index call per wallet), the tail is WATCHED (our own
   // node). Two properties make that split safe, and both are pinned here.
@@ -1329,6 +1350,63 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
       });
       return { s, inserted, cursorWrites };
     };
+
+    // ⓪ THE ASKED-HISTORY PHASE, DRIVEN AT LAST. Three reviews missed the
+    // phase-1 cursor defect for ONE reason: every fixture passed a `head` so
+    // small that `indexEnd < resumeFrom`, so phase 1 never ran. A branch no
+    // fixture can reach is a branch nobody checks. `head` is now well above the
+    // floor and the index read is injected, so the asked history executes with
+    // no network — and its cursor discipline is pinned.
+    const runPhase1 = async (opts: { describable: boolean }) => {
+      const inserted: unknown[] = [];
+      const cursorWrites: number[] = [];
+      // A transport that answers ONLY what phase 1 asks: the receipt of the
+      // transaction the index named, its signer, and the token's self-
+      // description. `eth_getLogs` returns nothing so the tail phase stays
+      // silent and every assertion below is about the asked history alone.
+      const phase1Transport = (async (method: string, params: unknown[]): Promise<unknown> => {
+        if (method === "eth_getLogs") return [];
+        if (method === "eth_getTransactionReceipt") {
+          return { logs: [erc20Log(GOOD_TX, MUTE_TOKEN, 3)] };
+        }
+        if (method === "eth_getTransactionByHash") return { from: VAULT };
+        if (method === "eth_call") {
+          if (!opts.describable) throw new Error("token will not describe itself");
+          const d = (params[0] as { data: string }).data;
+          if (d === "0x313ce567") return word(18n);
+          return "0x" + (32).toString(16).padStart(64, "0") + (3).toString(16).padStart(64, "0") + Buffer.from("ABC").toString("hex").padEnd(64, "0");
+        }
+        return null;
+      }) as unknown as Parameters<typeof fetchCandidatesFromReceipts>[0];
+      const s = await runTokenDiscoveryScan({
+        transport: phase1Transport,
+        organWallets: [VAULT], signerWallets: [VAULT], pinnedContracts: curated,
+        head: DISCOVERY_FROM_BLOCK + 100_000, // → indexEnd is 50,000 above the floor
+        deps: {
+          getCursor: async () => null,
+          upsertCursor: async (i) => { cursorWrites.push(i.lastScannedBlock); },
+          insert: async (r) => { inserted.push(...r); return r.length; },
+          fetchIndexHashes: async () => [GOOD_TX],
+        },
+      });
+      return { s, inserted, cursorWrites };
+    };
+    const askedOk = await runPhase1({ describable: true });
+    check(
+      askedOk.inserted.length === 1 && askedOk.s.status === "ok",
+      "the ASKED-HISTORY phase actually executes and produces its row (the branch every earlier fixture skipped by passing too small a head)",
+      `phase 1 did not run or produced nothing (status=${askedOk.s.status}, rows=${askedOk.inserted.length})`,
+    );
+    // THE DEFECT ITSELF: an asset we signed for that cannot describe itself must
+    // HOLD the cursor here too. Phase 1 runs ONCE over ~1.34M blocks and is
+    // never revisited, so a row dropped here is dropped forever.
+    const askedMute = await runPhase1({ describable: false });
+    check(
+      askedMute.s.status === "error" &&
+        !askedMute.cursorWrites.includes(DISCOVERY_FROM_BLOCK + 50_000),
+      "the ASKED-HISTORY phase HOLDS its cursor when an asset we signed for cannot be described — a one-shot backfill must never advance past a row it dropped (CHAIN_READING_DOCTRINE §3)",
+      `phase 1 advanced its cursor past an undescribable asset (status=${askedMute.s.status}, writes=${JSON.stringify(askedMute.cursorWrites)}) — the row is lost permanently`,
+    );
 
     // ④ A spam ERC-721 in the SAME window must not abort it — the good row survives.
     const ours = await runLane({ signer: VAULT, describable: true });

@@ -299,7 +299,9 @@ that remains true and stated.~~ **SUPERSEDED 2026-07-27.** Native AVAX emits no 
 half is physics and still holds. "Cannot have a lane" was a conclusion drawn from it, and it
 was false: `eth_getLogs` is blind to a native movement, the explorer's account API is not, and
 the transaction hash it returns keeps the line as receipt-backed as any other. The lane exists
-(`nativeAvaxScan.ts`) and publishes the vault's 4.5399 AVAX purchase at block 90,460,319.
+(`nativeAvaxScan.ts`) and publishes the vault's **4.5398** AVAX purchase at block 90,460,319 (the feed TRUNCATES and never
+rounds up — 4.5399 was written here first and was an overstatement of a holding, the exact defect
+the truncation law exists to prevent).
 **The lesson, engraved:** a limit of ONE TOOL had been written down as a limit of REALITY, and
 then quoted as canon for weeks. A sentence beginning "honestly cannot" is a dated assumption
 until it is tested against today's chain.

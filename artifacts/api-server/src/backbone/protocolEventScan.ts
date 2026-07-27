@@ -34,6 +34,10 @@
  * Signatures transcribed VERBATIM from today's repo (the studio feed spine,
  * itself transcribed from the deployed .sol) and SELF-CHECKED at module load:
  * toEventSelector(signature) must equal the pinned topic0 or the module throws.
+ *
+ * BACKFILL MODE: walk — REASON: each stream pins ONE contract and a narrow
+ * topic filter, and every floor already sits close to its data, so no index
+ * could answer it more cheaply. (CHAIN_READING_DOCTRINE §4.)
  */
 
 import { toEventSelector } from "viem";

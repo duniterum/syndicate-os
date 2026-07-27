@@ -401,7 +401,7 @@ const TREASURY_TOKEN_DECIMALS: Record<TreasuryToken, { decimals: number; dp: num
   "BTC.b": { decimals: 8, dp: 8 },
   "WETH.e": { decimals: 18, dp: 6 },
   // AVAX is the chain's NATIVE coin, not a token contract — 18 decimals, and 4
-  // shown because a treasury AVAX move is units, not dust (4.5399, never
+  // shown because a treasury AVAX move is units, not dust (4.5398, never
   // 4.539868). It is accepted HERE, ahead of the server lane that will emit it:
   // the client must be forward-compatible with a shape BEFORE the server sends
   // it, or `parseLine` returns null, the row counts into `linesSkipped`, and

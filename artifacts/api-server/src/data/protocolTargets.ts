@@ -562,7 +562,7 @@ export type ProtocolEventScanTarget = {
     // false — `eth_getLogs` cannot see the movement, but the explorer's account
     // API can, and the transaction hash it returns keeps the line as
     // receipt-backed as every other. `nativeAvaxScan.ts` is that lane, and the
-    // vault's 4.5399 AVAX purchase (block 90,460,319) is what it publishes.
+    // vault's 4.5398 AVAX purchase (block 90,460,319 — truncated, never rounded up) is what it publishes.
     // A constraint on ONE TOOL was written down as a constraint on REALITY —
     // the exact class of comment this codebase now tests before repeating.
     | "TREASURY_BTCB_IN"

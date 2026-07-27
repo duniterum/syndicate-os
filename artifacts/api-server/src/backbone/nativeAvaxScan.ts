@@ -37,6 +37,10 @@
  * unparseable amount all THROW. The runner isolates the lane, its cursor stays
  * where it was, and the feed serves what it already had. A lane that cannot
  * read invents nothing.
+ *
+ * BACKFILL MODE: index — native AVAX emits no log at all, so eth_getLogs is
+ * structurally blind to it and only an account API can see internal value
+ * transfers. (CHAIN_READING_DOCTRINE §4.)
  */
 
 import type { ProtocolEventRecord } from "./protocolEventScan";
