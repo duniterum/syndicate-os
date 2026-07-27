@@ -11,6 +11,7 @@
 // block = the panel simply does not render (the feed's own methodology says
 // the served history is dark).
 
+import { clampPct, progressFor } from "@/lib/milestoneProgress";
 import { CheckCircle2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Disclosure } from "@/components/disclosure/Disclosure";
@@ -62,59 +63,9 @@ const FAMILY_DISPLAY_ORDER: readonly ServedMilestoneFamily[] = [
   "liquidity",
 ];
 
-// Defense in depth (adversarial verify, 2026-07-22): a non-finite ratio can
-// never reach the bar — NaN width renders as a full gold bar in CSS.
-function clampPct(ratio: number): number | null {
-  return Number.isFinite(ratio) ? Math.max(0, Math.min(1, ratio)) : null;
-}
-
-function progressFor(a: ServedMilestones["approaching"][number]): {
-  text: string;
-  pct: number;
-} | null {
-  if (a.kind === "seats" && a.currentSeats !== null) {
-    const pct = clampPct(a.currentSeats / a.target);
-    if (pct === null) return null;
-    return {
-      text: `${a.currentSeats.toLocaleString("en-US")} / ${a.target.toLocaleString("en-US")} seats`,
-      pct,
-    };
-  }
-  if ((a.kind === "usdc" || a.kind === "archive-usdc") && a.currentUsdcRaw !== null) {
-    const current = Number(BigInt(a.currentUsdcRaw) / 1_000_000n);
-    // The two money ladders speak their own register: routed (the sale,
-    // 70/20/10) vs patronage (the archive — founder "prix ok" 2026-07-22).
-    const unit = a.kind === "usdc" ? "USDC routed" : "USDC of patronage";
-    return {
-      text: `${formatUsdcRaw(a.currentUsdcRaw)} / ${a.target.toLocaleString("en-US")} ${unit}`,
-      pct: clampPct(current / a.target) ?? 0,
-    };
-  }
-  // M-EVO-2: the cumulative-SYN ladder (18-dec raw → whole SYN).
-  if (a.kind === "burn-syn" && a.currentSynRaw !== null) {
-    const current = Number(BigInt(a.currentSynRaw) / 10n ** 18n);
-    return {
-      text: `${formatSynRaw(a.currentSynRaw)} / ${a.target.toLocaleString("en-US")} SYN burned`,
-      pct: clampPct(current / a.target) ?? 0,
-    };
-  }
-  // M-EVO-2: the act ladders (burns · source creations · pool adds ·
-  // artifacts) — a plain honest count toward the rung.
-  if (
-    (a.kind === "burn-acts" ||
-      a.kind === "sources-created" ||
-      a.kind === "lp-acts" ||
-      a.kind === "archive-count") &&
-    a.currentCount !== null
-  ) {
-    return {
-      text: `${a.currentCount.toLocaleString("en-US")} / ${a.target.toLocaleString("en-US")}`,
-      pct: clampPct(a.currentCount / a.target) ?? 0,
-    };
-  }
-  // first-mint (or a missing figure): no meaningful bar — honest text only.
-  return null;
-}
+// clampPct + progressFor MOVED to lib/milestoneProgress.ts (2026-07-27):
+// the home band draws the same ladders, and two derivations of one percentage
+// is the one-authority rule broken on a figure whose job is to be checkable.
 
 function SealedRow({
   m,

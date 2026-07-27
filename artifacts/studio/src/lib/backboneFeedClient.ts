@@ -829,9 +829,40 @@ function parseMilestones(raw: unknown): ServedMilestones | null {
  * Fetch the served receipt-line histories. Returns null on ANY transport/
  * shape failure — the consumer renders the honest fallback, never a guess.
  */
+/**
+ * IN-FLIGHT DEDUPE FOR THE BARE REQUEST (2026-07-27).
+ * ---------------------------------------------------------------------------
+ * Two components on ONE page ask for the whole feed at mount — the hero panel
+ * and, from this slice, the home milestones band. Left alone that is two
+ * network calls whose answers can differ by a cycle, so the same figure could
+ * render two ways on one screen: the one-authority rule broken by plumbing
+ * rather than by logic. Concurrent bare callers now share ONE response.
+ *
+ * DELIBERATELY NOT A CACHE: the promise is dropped as soon as it settles, so a
+ * later call — the /activity "Re-read" button, a poll — always fetches fresh.
+ * Only the simultaneous duplicate is collapsed. A TTL here would silently make
+ * "Re-read" stop re-reading, which is a worse defect than the one being fixed.
+ */
+let bareFeedInFlight: Promise<ServedFeed | null> | null = null;
+
 export async function fetchServedFeed(
   // A2 (2026-07-22): optional paging — absent = the whole-feed request the
   // pre-A2 consumers always made (byte-identical server behavior).
+  opts?: { limit?: number; cursor?: string },
+): Promise<ServedFeed | null> {
+  const isBare = opts?.limit === undefined && opts?.cursor === undefined;
+  if (isBare && bareFeedInFlight !== null) return bareFeedInFlight;
+  const run = fetchServedFeedUncached(opts);
+  if (isBare) {
+    bareFeedInFlight = run;
+    void run.finally(() => {
+      bareFeedInFlight = null;
+    });
+  }
+  return run;
+}
+
+async function fetchServedFeedUncached(
   opts?: { limit?: number; cursor?: string },
 ): Promise<ServedFeed | null> {
   try {

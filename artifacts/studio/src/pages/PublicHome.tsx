@@ -27,6 +27,7 @@ import { HeroSeatLine } from "@/components/hero/HeroSeatLine";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { HomeSeasonSection } from "@/components/season/HomeSeasonSection";
 import { ProtocolReservesBand } from "@/components/ProtocolReservesBand";
+import { HomeMilestonesBand } from "@/components/home/HomeMilestonesBand";
 import { HomeRegisterBand } from "@/components/season/HomeRegisterBand";
 import {
   RegistryPostureChip,
@@ -304,6 +305,11 @@ export default function PublicHome() {
           actually owns, every row verifiable on Snowtrace. Registry-driven —
           config/trackedAssets.ts decides the rows. */}
       <ProtocolReservesBand />
+
+      {/* Founder placement, 2026-07-27 (his arrow on the home screenshot):
+          straight after the treasury cards, before "Act on the protocol". The
+          momentum lives here; the RECORD stays on /activity. */}
+      <HomeMilestonesBand />
 
       <PromotedStrip />
 

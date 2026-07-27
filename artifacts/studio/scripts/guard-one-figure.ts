@@ -72,7 +72,12 @@ const ALLOWLIST: Record<string, string> = {
   "lib/protocolCommerceReceipt.ts": "EXACT receipt rendering; twinned with the api-server copy and pinned by guard-receipt-ticket",
   "components/ProtocolReservesBand.tsx": "USD valuation floats + the pool-share caption; token amounts go through the canon module",
   "components/ProtocolAssetsCard.tsx": "USD valuation floats; token amounts go through the canon module",
-  "components/activity/MilestonesPanel.tsx": "progress-bar percentages (not a rendered money figure)",
+  // MOVED 2026-07-27 — the derivation left MilestonesPanel for lib/milestoneProgress.ts
+  // so the home band and the activity record share ONE percentage. The allowance
+  // travels with the code, and its reason is unchanged and still narrow: the float
+  // narrowing here produces a BAR WIDTH only. Every money figure this module emits
+  // is a string from formatUsdcRaw / formatSynRaw — the canon formatters.
+  "lib/milestoneProgress.ts": "progress-bar percentages only (bar width); every displayed amount comes from the canon formatters",
   "components/hero/SeatFlowDiagram.tsx": "USD figures in a diagram, derived from a computed total",
   "components/tokenomics/useTokenomics.ts": "an exact bigint price ratio + a basis-points percentage",
   // Corrected 2026-07-26: the old reason ("a sort comparator — never rendered")

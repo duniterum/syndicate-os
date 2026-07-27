@@ -1,0 +1,259 @@
+<title>Home — Milestones band (wireframe v3, 2026-07-27)</title>
+
+<style>
+  /* ── TOKENS + SHAPE — copied from the studio, not invented ────────────────
+     tokens  artifacts/studio/src/index.css
+     shape   the treasury asset cards: rounded-xl (12px) · p-6 (24px) ·
+             border-border · rounded-full icon discs — matched here so the two
+             bands read as one family rather than two components.             */
+
+  :root {
+    --bg: hsl(210 40% 98%); --card: hsl(0 0% 100%); --border: hsl(214 32% 91%);
+    --fg: hsl(222 47% 11%); --muted: hsl(215 16% 45%);
+    --gold: hsl(38 74% 30%); --cyan: hsl(190 90% 29%); --track: hsl(214 32% 91%);
+    --note-bg: hsl(45 90% 96%); --note-br: hsl(38 74% 44%);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: hsl(224 71% 4%); --card: hsl(222 47% 7%); --border: hsl(216 34% 17%);
+      --fg: hsl(213 31% 91%); --muted: hsl(215 20% 65%);
+      --gold: hsl(42 92% 60%); --cyan: hsl(190 90% 50%); --track: hsl(216 34% 17%);
+      --note-bg: hsl(222 47% 9%); --note-br: hsl(42 92% 60%);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: hsl(224 71% 4%); --card: hsl(222 47% 7%); --border: hsl(216 34% 17%);
+    --fg: hsl(213 31% 91%); --muted: hsl(215 20% 65%);
+    --gold: hsl(42 92% 60%); --cyan: hsl(190 90% 50%); --track: hsl(216 34% 17%);
+    --note-bg: hsl(222 47% 9%); --note-br: hsl(42 92% 60%);
+  }
+  :root[data-theme="light"] {
+    --bg: hsl(210 40% 98%); --card: hsl(0 0% 100%); --border: hsl(214 32% 91%);
+    --fg: hsl(222 47% 11%); --muted: hsl(215 16% 45%);
+    --gold: hsl(38 74% 30%); --cyan: hsl(190 90% 29%); --track: hsl(214 32% 91%);
+    --note-bg: hsl(45 90% 96%); --note-br: hsl(38 74% 44%);
+  }
+
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font-family: 'Work Sans', system-ui, sans-serif;
+    font-size: clamp(1rem, .92rem + .28vw, 1.25rem); line-height: 1.55;
+  }
+  .wrap { padding: 0 clamp(16px, 4vw, 56px); }
+  .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+  .ctx {
+    border: 1px dashed var(--border); border-radius: 12px; color: var(--muted);
+    padding: 14px 18px; margin: 0; font-size: 14px;
+  }
+  .ctx b { color: var(--fg); font-weight: 600; }
+  hr.sep { border: 0; border-top: 1px solid var(--border); margin: 0; }
+
+  /* ── THE BAND ──────────────────────────────────────────────────────────── */
+  .band { padding: clamp(40px, 6vw, 72px) 0; }
+
+  /* The eyebrow IS the heading — mono, quiet, and semantically an <h2> so the
+     section is not an unlabelled region. No serif display: the hero owns that
+     voice on this page, and a second one competed with it. */
+  h2.eyebrow {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 12px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .2em; color: var(--muted); margin: 0;
+  }
+
+  .grid {
+    display: grid; gap: clamp(12px, 1.4vw, 20px); margin-top: clamp(20px, 2.6vw, 32px);
+    grid-template-columns: repeat(auto-fit, minmax(288px, 1fr));
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; display: flex; flex-direction: column; gap: 18px;
+  }
+  .card-top { display: flex; align-items: center; gap: 12px; }
+  .ico {
+    width: 40px; height: 40px; flex: 0 0 40px; border-radius: 999px;
+    border: 1px solid var(--border); display: grid; place-items: center; color: var(--gold);
+  }
+  .ico svg { width: 19px; height: 19px; }
+  .fam { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .fam .name {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px;
+    font-weight: 600; text-transform: uppercase; letter-spacing: .16em; color: var(--muted);
+  }
+  .sealed { color: var(--cyan); font-size: 13px; font-weight: 500; }
+
+  .rung { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
+  .rung .label { font-size: 15px; color: var(--fg); }
+  .bar { height: 6px; border-radius: 999px; background: var(--track); overflow: hidden; }
+  .bar > i { display: block; height: 100%; background: var(--gold); border-radius: 999px; }
+  .rung .figures {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px;
+    font-variant-numeric: tabular-nums; color: var(--muted);
+  }
+  .rung .figures b { color: var(--gold); font-weight: 600; }
+
+  .foot {
+    margin-top: clamp(20px, 2.6vw, 32px); display: flex; gap: 16px 28px;
+    flex-wrap: wrap; align-items: baseline;
+  }
+  .link { color: var(--cyan); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+  .link:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+  .foot .why { color: var(--muted); font-size: 15px; max-width: 62ch; margin: 0; }
+
+  .note {
+    background: var(--note-bg); border-left: 3px solid var(--note-br);
+    padding: 16px 20px; margin: 40px 0; border-radius: 0 12px 12px 0;
+  }
+  .note h4 { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
+  .note ul { margin: 0; padding-left: 20px; }
+  .note li { margin: 6px 0; font-size: 15px; color: var(--muted); }
+  .note li b { color: var(--fg); font-weight: 600; }
+</style>
+
+<div class="wrap">
+
+  <p class="ctx" style="margin-top:28px"><b>↑ ABOVE (unchanged)</b> — the treasury cards: AVAX · BTC · ETH · USDC, the composition
+    bar, and “These are assets the protocol owns outright…”.</p>
+
+  <section class="band" aria-labelledby="ms-h">
+    <h2 class="eyebrow" id="ms-h">The protocol’s canonical account</h2>
+
+    <div class="grid">
+      <!-- MEMBERSHIP — a seat. -->
+      <article class="card">
+        <div class="card-top">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"/><path d="M4 10h16v5H4z"/><path d="M6 15v4M18 15v4"/></svg></span>
+          <span class="fam"><span class="name">Membership</span><span class="sealed">2 sealed</span></span>
+        </div>
+        <div class="rung">
+          <span class="label">Next milestone — 25 seats</span>
+          <div class="bar" role="img" aria-label="14 of 25 seats"><i style="width:56%"></i></div>
+          <span class="figures"><span><b>14</b> seats</span><span>25</span></span>
+        </div>
+      </article>
+
+      <!-- ECONOMY — money ENTERING and being SPLIT onward. Arrows, no nodes:
+           the referral card owns the network language, this one owns flow. -->
+      <article class="card">
+        <div class="card-top">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h7"/><path d="M9 12c3.5 0 3.5-6 7-6h4"/><path d="M9 12h11"/><path d="M9 12c3.5 0 3.5 6 7 6h4"/><path d="M18 4l2 2-2 2"/><path d="M18 10l2 2-2 2"/><path d="M18 16l2 2-2 2"/></svg></span>
+          <span class="fam"><span class="name">Economy</span><span class="sealed">1 sealed</span></span>
+        </div>
+        <div class="rung">
+          <span class="label">Next milestone — $1,000 routed</span>
+          <div class="bar" role="img" aria-label="210 of 1000 USDC routed"><i style="width:21%"></i></div>
+          <span class="figures"><span><b>210.00</b> USDC</span><span>1,000</span></span>
+        </div>
+      </article>
+
+      <!-- FIRE — a flame. -->
+      <article class="card">
+        <div class="card-top">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3 3.6 5 6.2 5 9a5 5 0 0 1-10 0c0-1.6.7-3 2-4.4.4 1.3 1.1 2 2 2.2-.6-2.4-.2-4.4 1-6.8z"/></svg></span>
+          <span class="fam"><span class="name">Fire</span><span class="sealed">2 sealed</span></span>
+        </div>
+        <div class="rung">
+          <span class="label">Next milestone — 50,000 SYN burned</span>
+          <div class="bar" role="img" aria-label="31272 of 50000 SYN burned"><i style="width:62%"></i></div>
+          <span class="figures"><span><b>31,272</b> SYN</span><span>50,000</span></span>
+        </div>
+      </article>
+
+      <!-- LIQUIDITY — depth in the pool. -->
+      <article class="card">
+        <div class="card-top">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5s5.5 5.9 5.5 9.5a5.5 5.5 0 0 1-11 0C6.5 9.4 12 3.5 12 3.5z"/><path d="M6.9 14.5c1.6 0 1.6 1.4 3.2 1.4s1.6-1.4 3.2-1.4 1.6 1.4 3.2 1.4"/></svg></span>
+          <span class="fam"><span class="name">Liquidity</span><span class="sealed">1 sealed</span></span>
+        </div>
+        <div class="rung">
+          <span class="label">Next milestone — ten liquidity additions</span>
+          <div class="bar" role="img" aria-label="4 of 10 additions"><i style="width:40%"></i></div>
+          <span class="figures"><span><b>4</b> additions</span><span>10</span></span>
+        </div>
+      </article>
+      <!-- REFERRAL — one person bringing others: linked nodes. -->
+      <article class="card">
+        <div class="card-top">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M8.1 10.9 15.9 7.1"/><path d="M8.1 13.1 15.9 16.9"/></svg></span>
+          <span class="fam"><span class="name">Referral</span><span class="sealed">1 sealed</span></span>
+        </div>
+        <div class="rung">
+          <span class="label">Next milestone — five referral sources</span>
+          <div class="bar" role="img" aria-label="3 of 5 sources"><i style="width:60%"></i></div>
+          <span class="figures"><span><b>3</b> sources</span><span>5</span></span>
+        </div>
+      </article>
+
+      <!-- ARCHIVE — a stamped record drawer. -->
+      <article class="card">
+        <div class="card-top">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18v3H3z"/><path d="M5 10v9h14v-9"/><path d="M10 14h4"/></svg></span>
+          <span class="fam"><span class="name">Archive</span><span class="sealed">2 sealed</span></span>
+        </div>
+        <div class="rung">
+          <span class="label">Next milestone — 25 artifacts archived</span>
+          <div class="bar" role="img" aria-label="17 of 25 artifacts"><i style="width:68%"></i></div>
+          <span class="figures"><span><b>17</b> artifacts</span><span>25</span></span>
+        </div>
+      </article>
+
+
+    </div>
+
+    <div class="foot">
+      <!-- PUBLIC COPY — human words only. "crossing" and "verify anchor" were
+           internal vocabulary a first-time reader cannot parse; and the line
+           never said WHY the anchoring matters, which is the entire point. -->
+      <a class="link" href="#">See every milestone and the transaction behind it →</a>
+      <p class="why"><strong style="color:var(--fg);font-weight:600">Nine milestones sealed so far.</strong>
+        Each one links to the exact transaction on Avalanche that made it happen — so you can check any
+        of them yourself, in one click.</p>
+    </div>
+  </section>
+
+  <hr class="sep" />
+
+  <p class="ctx" style="margin-top:24px"><b>↓ BELOW (unchanged)</b> — “ACT ON THE PROTOCOL · Real surfaces, live and verifiable”.</p>
+
+  <div class="note">
+    <h4>The decisions this wireframe makes, and why</h4>
+    <ul>
+      <li><b>THE ORDER IS THE PROTOCOL’S OWN CHAIN, and it answers a visitor’s questions in the order
+        they ask them.</b> Top row — <i>people join</i> (Membership) → <i>money routes through</i>
+        (Economy) → <i>supply is destroyed</i> (Fire): that is literally how the mechanism works, learned
+        left to right without a paragraph. Bottom row — <i>the market has depth</i> (Liquidity) →
+        <i>members bring members</i> (Referral) → <i>the record accumulates</i> (Archive). At three
+        columns the pairs stack meaningfully too: Membership over Liquidity (people, then the market),
+        Economy over Referral (money in, money shared), Fire over Archive (what is burned, what is kept).
+        <b>Deliberately NOT ordered by progress</b> — that would re-sort itself every time a figure moved
+        and would read as arranged rather than true.</li>
+      <li><b>“Milestone” is the thing, “sealed” is what happens to it.</b> A first-time reader meets a
+        word they know (milestone) and learns the house word from context (2 sealed · nine sealed so
+        far). “Seal” is not accidental jargon — it carries what no synonym does: it is permanent and does
+        not replay. It stays, and the plain sentence underneath teaches it in one read.</li>
+      <li><b>The chapter lead is gone.</b> It said “14 of 333” — which the hero and the era band
+        already say. Cutting it removes the fourth framing of one number at the source instead of
+        wording around it. Each card owns a “Next milestone”, which is a target, not a rival
+        denominator.</li>
+      <li><b>No serif heading.</b> The hero owns the serif voice on this page; a second display line
+        competed with it. The eyebrow now IS the heading — quiet, and still a real
+        <span class="mono">&lt;h2&gt;</span> so the section is not an unlabelled region.</li>
+      <li><b>Shape matched to the treasury cards above:</b> 12px radius, 24px padding, round icon
+        discs — the same shapes as the AVAX / BTC / ETH / USDC cards, so the two bands read as one
+        family instead of two components.</li>
+      <li><b>New Economy icon.</b> The old one was three linked nodes — nearly the referral icon.
+        Economy is now money entering and being SPLIT onward: one line in, three arrows out. Referral
+        keeps the network language; Economy owns flow. No glyph in this set promises a gain.</li>
+      <li><b>Figures are today’s live values</b> (14 seats · 210.00 USDC routed · 31,272 SYN burned ·
+        17 artifacts · 3 sources · 4 additions · 9 sealed). In the build they come from the milestone
+        read-model — never typed.</li>
+    </ul>
+    <p style="margin:12px 0 0;font-size:14px;color:var(--muted)">
+      Type note: this wireframe requests <span class="mono">Instrument Serif / Work Sans / IBM Plex Mono</span>
+      exactly as the site does, but a preview cannot load external fonts — some text may fall back.
+      The built page uses the real faces; geometry, sizes and spacing are the binding part.
+    </p>
+  </div>
+
+</div>
