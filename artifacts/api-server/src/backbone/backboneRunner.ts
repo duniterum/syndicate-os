@@ -95,7 +95,7 @@ import {
   buildOwnPurchaseReadModel,
   type OwnPurchaseBuildResult,
 } from "./ownPurchaseReadmodel";
-import { HISTORICAL_FREEZE_WALLETS } from "../lib/protocol/historicalFreezeWallets";
+import { GENESIS_SEAT_BY_WALLET } from "../lib/protocol/historicalFreezeWallets";
 import {
   buildSeasonReadModel,
   type SeasonBuildResult,
@@ -224,11 +224,11 @@ let lastGoodOwnPurchaseModel: OwnPurchaseBuildResult | null = null;
  * public standings are seat-keyed and address-free). */
 let lastGoodSeasonModel: SeasonBuildResult | null = null;
 
-/** D-TRUTH D1: the Merkle-frozen genesis roster as the capital walk's
- * SERVER-ONLY join input (lowercase wallet → seat #1–#8; never emitted). */
-const GENESIS_SEAT_BY_WALLET: ReadonlyMap<string, number> = new Map(
-  HISTORICAL_FREEZE_WALLETS.map((w) => [w.wallet.toLowerCase(), w.memberNumber]),
-);
+// D-TRUTH D1: the Merkle-frozen genesis roster join input (lowercase wallet →
+// seat #1–#8; SERVER-ONLY, never emitted) now lives beside the roster itself —
+// `GENESIS_SEAT_BY_WALLET`, imported above. It was built locally here, and the
+// public feed projection later grew a SECOND first-seat key space instead of
+// joining on it. One map, one authority, both subsystems.
 /** The protocol lane's honest coverage bounds (its cursors), for projections. */
 let burnsAsOfBlock: number | null = null;
 let lifecycleAsOfBlock: number | null = null;

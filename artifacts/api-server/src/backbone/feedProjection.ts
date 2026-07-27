@@ -29,6 +29,7 @@
  */
 
 import { assertAddressSafeJson } from "../lib/protocol/addressSafety";
+import { GENESIS_SEAT_BY_WALLET } from "../lib/protocol/historicalFreezeWallets";
 import type {
   ActivityBuildResult,
   FirstSeatBucket,
@@ -428,15 +429,40 @@ export function buildPublicFeedWithLines(source: FeedSource): {
   // Ordered by (block, logIndex) so "earliest" is chain order, never array order.
   // A row whose seat key cannot be resolved KEEPS its served bucket — an honest
   // unknown is never promoted to a claim.
+  //
+  // THE NAMESPACE JOIN (2026-07-27) — why a numberless row still keys `n:`.
+  // The seat key USED to fall straight through to `w:<wallet>` whenever the row
+  // carried no member number, which put the pre-numbering V1 rows of historical
+  // members #1 and #2 in a namespace of their own — separate from the very seat
+  // numbers they hold. Two key spaces for one seat is a defect CLASS, not a
+  // case: any row that later arrives carrying the real number keys `n:1`, a key
+  // never seen before, and the earliest-per-key rule declares a first seat for a
+  // wallet that entered at block 87,158,947.
+  //
+  // `GENESIS_SEAT_BY_WALLET` is the Merkle-frozen roster the runner already
+  // joins on in three other read-models; resolving through it collapses the two
+  // spaces into one. The `w:` branch survives for a numberless row whose wallet
+  // is NOT in the frozen roster — it is the honest fallback, never a merge.
+  //
+  // SERVER-ONLY, and it stays that way: the map is read to RESOLVE a key, and
+  // what leaves is a seat number the chain already published. No wallet from the
+  // roster enters a served payload (ADR-003 + the envelope's own checks).
+  //
+  // ZERO-DIFF on today's rows and that is the point: every genesis wallet's rows
+  // are numberless today, so `w:<wallet>` and `n:<seat>` group them identically.
+  // The join changes nothing now and removes the class before it can fire.
   const seatKeyOf = (item: {
     memberNumber: number | null;
     memberAddress: string | null;
-  }): string | null =>
-    item.memberNumber !== null && item.memberNumber > 0
-      ? `n:${item.memberNumber}`
-      : item.memberAddress !== null
-        ? `w:${item.memberAddress.toLowerCase()}`
-        : null;
+  }): string | null => {
+    if (item.memberNumber !== null && item.memberNumber > 0) {
+      return `n:${item.memberNumber}`;
+    }
+    if (item.memberAddress === null) return null;
+    const wallet = item.memberAddress.toLowerCase();
+    const genesisSeat = GENESIS_SEAT_BY_WALLET.get(wallet);
+    return genesisSeat !== undefined ? `n:${genesisSeat}` : `w:${wallet}`;
+  };
   const earliestBySeatKey = new Map<string, string>();
   for (const item of [...(model?.items ?? [])].sort((a, b) =>
     a.blockNumber !== b.blockNumber
@@ -458,17 +484,21 @@ export function buildPublicFeedWithLines(source: FeedSource): {
     // confirmed by replaying the live payload and then injecting the trigger).
     //
     // THE DEFECT THIS CLOSES, and it is the mirror image of the one this very
-    // derivation was written to fix. The key space is heterogeneous by necessity:
-    // a row with a member number keys `n:<number>`, a pre-numbering V1 row keys
-    // `w:<wallet>`. Historical members #1 and #2 are the only wallets whose every
-    // row is numberless, so they live in the `w:` space today. The claim gate is
-    // LIVE on /join and tells them to claim their seat — and once one does, their
-    // next purchase emits their REAL number with `firstSeat: false`. That row
-    // keys `n:1`, a key never seen before, so the earliest-per-key rule would
-    // have declared it a first seat and the feed would have published
-    // "Member #1 … entered the public registry" for a wallet that entered at
-    // block 87,158,947. A chain-refutable claim (business red line ②), and the
+    // derivation was written to fix. The claim gate is LIVE on /join and tells
+    // the two historical members whose rows carry no number to claim their seat
+    // — and the purchase that follows emits their REAL number. If that row were
+    // read as a new seat, the feed would publish "Member #1 … entered the public
+    // registry" for a wallet that entered at block 87,158,947: a chain-refutable
+    // claim (business red line ②), on the page whose whole job is proof, and the
     // Seats lane would read 15 rows against a chip showing the engine's 14.
+    //
+    // TWO INDEPENDENT DEFENCES, deliberately (2026-07-27). `seatKeyOf` now joins
+    // the frozen roster, so that row keys `n:1` — the same key its own V1 rows
+    // key — and is a repeat by arithmetic, even if the engine says nothing. This
+    // rule is the second: an engine that SPEAKS is never overruled, whatever the
+    // key resolves to. The join removes the class; this keeps the contract's own
+    // word final. Neither is redundant — the join cannot help a wallet outside
+    // the roster, and this rule cannot help a row the engine left silent.
     //
     // The sale event's own negative flag is the strongest signal that exists — it
     // comes from the contract that issued the seat. Deriving is for rows the old

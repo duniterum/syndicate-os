@@ -1,5 +1,17 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-27 — THE SEAT-KEY NAMESPACE JOIN IS WRITTEN. The one thing the 2026-07-26 handoff left owed
+> is closed, and it closed a CLASS, not a case.** `seatKeyOf` (`feedProjection.ts`) resolves a numberless
+> row through `GENESIS_SEAT_BY_WALLET`, so a genesis wallet's pre-numbering row and its numbered row share
+> one key; the map is now derived ONCE in `historicalFreezeWallets.ts` (the runner had a local copy — two
+> derivations of one fact is how the two spaces drifted). `backbone.guard.ts` **179 → 182**, proven RED
+> first: without the join the fixture reports *"one seat entered the registry twice"*.
+> **THE FIXTURE LESSON WORTH KEEPING:** the specified fixture used a `firstSeat:false` row — which the
+> explicit-negative rule already answers, so it would have passed WITHOUT the join and proven nothing. The
+> decisive row is the one the engine leaves **silent**. A fixture that cannot fail is not a pin.
+> **ZERO-DIFF on today's rows by construction** (every genesis row is numberless, so both key shapes group
+> identically) — the batch stays BATCHABLE, and prod undeployed publishes what deployed would.
+
 > **▶ 2026-07-26 (PM) — THE HANDOFF PASS. Five commits landed, FOUR were invisible to every doc, and the
 > six-lens sweep found the docs are not sloppy — they are ONE COMMIT BEHIND, always at the same boundary.**
 > **PROD = `27924e5`** (scellé 26 juil. 2026 — identité byte-à-byte ×2 dans le rapport Replit ; les commits au-dessus sont doc uniquement) *(l'arc du 26 juillet EST DÉPLOYÉ — mesuré sur les surfaces servies (l'API publie `actorOrganLabel`, absent du dépôt à `2ce49a3`) ; le sha exact est dans le rapport Replit, jamais ici)*. ~~`2ce49a3`~~ (the Founder deployed it 2026-07-26; Replit's seal report is in that session's
@@ -10,12 +22,12 @@
 > the recurrence this line now exists to stop. **This header carries the sha and nothing else; the backlog
 > lives in SESSION_STATE, so there is only ONE place for it to go stale.**
 >
-> **DEPLOY BACKLOG = the commits above `2ce49a3` on main** — read them with
-> `git log --oneline 2ce49a3..HEAD`, never from a list typed here. **This batch INCLUDES api-server files**
-> (`feedProjection.ts` · `protocolEventReadmodel.ts` · `backboneRunner.ts`), unlike every batch before it,
-> because the server now publishes the full public address beside every short form and derives first-seat
-> from the seat number. Replit's instruction is *"pull main, deploy, report"* — **no migration, no new env**
-> (no schema file moved).
+> **DEPLOY BACKLOG = the commits above `27924e5`** — read them with `git log --oneline 27924e5..HEAD`, never
+> from a list typed here. *(This line itself said "above `2ce49a3`" while the header two lines up already
+> read `27924e5`: the sha was corrected in the one place the rule pointed at, and the backlog sentence
+> underneath it was not. A second sha in the same block is a second authority — corrected 2026-07-27.)*
+> Replit's instruction is *"pull main, deploy, report"* — **no migration, no new env** (no schema file
+> moved).
 > **THE DEFECT THAT MATTERS MOST IS NOT ANY ONE STALE LINE — IT IS THE MECHANISM.** The docs pass ran
 > MID-session; `2cd7d65`, `57c5fdf` and `2132663` shipped after it and nothing went back. Four of five
 > commits appear in zero documents (`grep -rl <sha> docs/`: 11384f5 = 3 files, the other four = 0 each);

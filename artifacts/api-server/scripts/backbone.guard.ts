@@ -58,6 +58,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { assertAddressSafeJson } from "../src/lib/protocol/addressSafety";
+import { HISTORICAL_FREEZE_WALLETS } from "../src/lib/protocol/historicalFreezeWallets";
 import {
   PROTOCOL_EVENT_SCAN_TARGETS,
   FINANCIAL_TARGETS,
@@ -844,6 +845,69 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
     silent[100] === "true" && silent[300] === "false",
     "the derivation still resolves rows the old engines left silent (earliest per seat number is the acquisition)",
     "the derivation stopped resolving silent rows",
+  );
+
+  // ── THE SEAT-KEY NAMESPACE JOIN (2026-07-27) ──────────────────────────────
+  // The check above closes the trigger the LIVE claim path fires: the engine
+  // emits firstSeat=false and is obeyed. It does NOT close the CLASS, and the
+  // difference is the whole point of this fixture. A numberless V1 row used to
+  // key `w:<wallet>` while the same member's numbered row keys `n:<seat>` — two
+  // key spaces for ONE seat. Let the engine fall silent on that second row (a
+  // null flag, an engine version that does not emit it, any future path that
+  // does not go through the claim gate) and the explicit-negative rule has
+  // nothing to obey: `n:1` is a key never seen, so the earliest-per-key rule
+  // declares a first seat, and the feed publishes a chain-refutable claim.
+  //
+  // Proven RED before it was written green: without the join in `seatKeyOf`,
+  // the two rows below come back "true" and "true" — one seat entering the
+  // registry twice.
+  // Lowercased, because that is the only shape the read-model ever hands the
+  // projection — `shortForm` fails closed on anything else (it caught this
+  // fixture when it was first written from the checksummed roster literal).
+  const genesisWallet = HISTORICAL_FREEZE_WALLETS[0]!.wallet.toLowerCase();
+  const genesisSeat = HISTORICAL_FREEZE_WALLETS[0]!.memberNumber;
+  const joined = seatBucketsFor([
+    // The pre-numbering V1 row: the wallet is on the frozen roster, the row
+    // carries no member number (this is every historical row today).
+    { blockNumber: 100, logIndex: 0, memberNumber: null, memberAddress: genesisWallet, firstSeatBucket: "unknown" },
+    // The same member, later, carrying the REAL seat number — and the engine
+    // says NOTHING. Only the namespace join can answer this row.
+    { blockNumber: 200, logIndex: 1, memberNumber: genesisSeat, memberAddress: genesisWallet, firstSeatBucket: "unknown" },
+  ]);
+  check(
+    joined[100] === "true" && joined[200] === "false",
+    "the seat key JOINS the frozen roster: a genesis wallet's numberless row and its numbered row share one key, so the seat enters the registry ONCE even when the engine is silent",
+    `the two key spaces are still separate — one seat entered the registry twice (100=${joined[100]}, 200=${joined[200]})`,
+  );
+  // And the join is a JOIN, never a merge: a numberless row whose wallet is NOT
+  // on the frozen roster keeps its own key. Two such wallets are two seats.
+  const outsideA = "0x" + "22".repeat(20);
+  const outsideB = "0x" + "33".repeat(20);
+  const outside = seatBucketsFor([
+    { blockNumber: 100, logIndex: 0, memberNumber: null, memberAddress: outsideA, firstSeatBucket: "unknown" },
+    { blockNumber: 200, logIndex: 1, memberNumber: null, memberAddress: outsideB, firstSeatBucket: "unknown" },
+  ]);
+  check(
+    outside[100] === "true" && outside[200] === "true",
+    "the roster join never collapses wallets outside it: two numberless non-genesis wallets remain two distinct seats",
+    "the join swallowed wallets that are not on the frozen roster",
+  );
+  // THE CHRONICLE'S OWN CASE, pinned so no future session "simplifies" the key
+  // back to the wallet: historical #7 bought on V3 without claiming and was
+  // issued seat #11. Its numberless row joins to n:7, its numbered row keys
+  // n:11 — TWO seats, both true. Keying on the wallet would round one away,
+  // which is exactly what "The duplicate seat" forbids.
+  const overlapWallet = HISTORICAL_FREEZE_WALLETS[6]!.wallet.toLowerCase(); // #7
+  const overlap = seatBucketsFor([
+    { blockNumber: 100, logIndex: 0, memberNumber: null, memberAddress: overlapWallet, firstSeatBucket: "unknown" },
+    { blockNumber: 200, logIndex: 1, memberNumber: 11, memberAddress: overlapWallet, firstSeatBucket: "unknown" },
+  ]);
+  check(
+    HISTORICAL_FREEZE_WALLETS[6]!.memberNumber === 7 &&
+      overlap[100] === "true" &&
+      overlap[200] === "true",
+    "the duplicate seat survives the join: one wallet holding #7 and #11 counts TWICE, never rounded to one",
+    "the join erased a seat — the wallet holding #7 and #11 now counts once",
   );
 }
 

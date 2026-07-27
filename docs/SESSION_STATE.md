@@ -2,7 +2,7 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-07-26 — RESUME HERE. THE ARC IS LIVE; ONE SMALL BATCH WAITS TO SHIP.
+> # ▶ 2026-07-27 — RESUME HERE. THE ARC IS LIVE; THE SEAT-KEY JOIN IS WRITTEN; A BATCH WAITS TO SHIP.
 >
 > ## ▶ THE FOUR LINES THAT DECIDE WHAT YOU DO
 > **① PROD = `27924e5`, SEALED AND VERIFIED.** The /activity rebuild, the four actor classes, the public
@@ -10,23 +10,47 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > publishes `actorOrganLabel` — a field absent from the whole repo at `2ce49a3` — and Replit proved
 > byte-identity twice (entry `index-CcDTw3m_.js` = `ad2100cb…`).
 >
-> **② DEPLOY BACKLOG = 5 commits, of which only TWO touch code, and they are CLIENT-ONLY** (verified:
-> `git diff --name-only 27924e5..HEAD | grep -c api-server` = **0**). `4d49853` promotes 11 Chronicle
-> entries (4 → 15); `b74dfdb` flips the register to NEWEST-FIRST. The other three are docs.
-> **🚀 DEPLOY — BATCHABLE.** Nothing is broken while it waits: prod simply keeps serving 4 Chronicle entries
-> oldest-first. It breaks no promise and fails closed, so it rides the next deploy rather than forcing its own
-> (the founder rule: each deploy costs ~10 min and $3-5).
+> **② DEPLOY BACKLOG — DERIVE IT, NEVER READ A COUNT TYPED HERE:** `git log --oneline 27924e5..HEAD`.
+> A count written into this line is stale the moment the commit carrying it lands — the previous block said
+> "5 commits" and was 6 before it was pushed, which is the one-commit-behind mechanism this file keeps
+> catching. **What the batch CONTAINS, which is what actually decides the verdict:** the Chronicle promotion
+> (4 → 15 entries) + NEWEST-FIRST ordering, both client-only, **and now this slice's api-server change** —
+> so the batch is no longer client-only, and the "no API this time" note in the 2026-07-26 handoff is
+> superseded. **Replit's instruction is unchanged: *pull main, deploy, report* — NO migration, NO new env**
+> (no schema file moved; the change is `src/` + `scripts/` only).
+> **🚀 DEPLOY — BATCHABLE.** Nothing is broken while it waits: prod keeps serving 4 Chronicle entries
+> oldest-first, and the seat-key join is **zero-diff on today's rows by construction** (see ④), so an
+> undeployed prod publishes exactly what a deployed one would. It rides the next deploy rather than forcing
+> its own (the founder rule: each deploy costs ~10 min and $3-5).
 >
 > **③ NOTHING IS PENDING ON THE FOUNDER.** No build waits, no decision waits, no preview waits. He approved
 > the page (“GO and GO-Live”), he approved the law change on screen, and he answered “oui” to promoting all
 > eleven Chronicle entries. The register is written.
 >
-> **④ THE ONE THING THAT IS OWED, and it is code:** the first-seat derivation still uses TWO key spaces —
-> `n:<memberNumber>` for numbered rows, `w:<wallet>` for the pre-numbering V1 rows. `SESSION_STATE` §(a)
-> specified the join through **`GENESIS_SEAT_BY_WALLET`** (`backboneRunner.ts:229`, already passed to three
-> other read-models) and the code skipped it. A one-line guard closes the only reachable trigger — an
-> explicit `firstSeat: false` is never overruled, proven RED in `backbone.guard.ts` — but the namespace join
-> is what removes the CLASS. **Start there.**
+> **④ THE THING THAT WAS OWED IS DONE (2026-07-27) — THE SEAT-KEY NAMESPACE JOIN.** The first-seat
+> derivation no longer keeps two key spaces. `seatKeyOf` (`feedProjection.ts`) now resolves a numberless row
+> through **`GENESIS_SEAT_BY_WALLET`**, so a genesis wallet's pre-numbering V1 row and its numbered row share
+> ONE key (`n:<seat>`); `w:<wallet>` survives only as the honest fallback for a wallet outside the frozen
+> roster. The map moved to `historicalFreezeWallets.ts` and is now **derived once** — the runner had built a
+> local copy, and two derivations of one fact is how the spaces drifted apart.
+> **PROVEN, not asserted:** `backbone.guard.ts` **179 → 182 checks**, and the new fixture was proven RED
+> before it was green — without the join it reports *"one seat entered the registry twice (100=true,
+> 200=true)"*. The three pins: the join itself (engine SILENT — the case the `firstSeat:false` rule cannot
+> reach) · wallets outside the roster stay distinct · **the Chronicle's duplicate seat survives** (one wallet
+> holding #7 AND #11 still counts twice, never rounded to one).
+> **ZERO-DIFF TODAY, and that is the point:** every genesis wallet's historical rows are numberless, so
+> `w:<wallet>` and `n:<seat>` group them identically. The join changes no served figure now; it removes the
+> class before the live /join claim path can fire it.
+> **GATES:** api typecheck 0 · full api guards chain green (backbone **182**, auth-zone 1267, source-status
+> 211, season-merkle 1279, protocol-reality 174) · api build 0. Studio untouched.
+>
+> **⑤ WHERE THE NEXT SESSION STARTS:** queue §(b)① is closed. Next is **§(b)② the 12 ergonomics findings**,
+> and they are already split by what they COST: the ones that follow engraved law (reading floors, 44px
+> touch targets) need no wireframe — fix them; the four that change a COMPOSITION (/join's four equally-loud
+> gold buttons · /faq's search placed 4th · the home audit string above the one gold CTA · /tokenomics'
+> `max-w-5xl` against the full-screen law) need the founder's wireframe FIRST. Then **§(b)③ the preview
+> debt**: the type token moved SITE-WIDE and the last preview covered /activity only — the next one owes him
+> 3-4 pages.
 >
 > *(the block below is this session's detailed record — read it for the why, not for the what)*
 
@@ -238,16 +262,22 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > 14, and Footprint renders 12 + 5 = 17 against a chip of 17. **Verify exactly that on the deploy report —
 > if the two ever disagree in production, the chips are the thing to blank, not the lanes.**
 >
-> **STILL OWED, and it is the complete fix.** The key space is still heterogeneous: `n:<memberNumber>` for
-> numbered rows, `w:<wallet>` for the pre-numbering V1 rows. The specified join through
-> **`GENESIS_SEAT_BY_WALLET`** (`backboneRunner.ts:229`, already passed to three other read-models) was NOT
-> written — so historical members #1 and #2 sit in a different namespace from their own seat numbers. The
-> `firstSeat: false` guard closes the one reachable trigger; the namespace join removes the class.
+> **~~STILL OWED~~ — ✅ DONE 2026-07-27, and it is the complete fix.** The key space was heterogeneous:
+> `n:<memberNumber>` for numbered rows, `w:<wallet>` for the pre-numbering V1 rows, so historical members #1
+> and #2 sat in a different namespace from their own seat numbers. The specified join through
+> **`GENESIS_SEAT_BY_WALLET`** is now written in `seatKeyOf` (`feedProjection.ts`), the map derived ONCE in
+> `historicalFreezeWallets.ts` and imported by both the runner and the projection. The `firstSeat: false`
+> rule stays as the second, independent defence — it answers a row the engine SPOKE for, the join answers a
+> row it left silent, and neither covers the other's case. Guard 179 → 182, the join pin proven RED first.
+> Details in the resume block ④ at the top of this file.
 >
 > ## ▶ (b) THE QUEUE, in the order it should be attacked
-> **① THE SEAT-KEY NAMESPACE JOIN** — see line ④ at the top. Code, bounded, and it removes a defect class
-> rather than a symptom. Add a `backbone.guard.ts` fixture with a numberless V1 row followed by a numbered
-> `firstSeat:false` row for the same wallet, and prove it RED before leaving it green.
+> **① THE SEAT-KEY NAMESPACE JOIN — ✅ SHIPPED 2026-07-27.** Done exactly as specified, with one correction
+> the build taught: the fixture's decisive row carries `firstSeat:"unknown"`, not `"false"`. A `false` row is
+> already answered by the explicit-negative rule, so a fixture built on it would have passed WITHOUT the
+> join and proven nothing. The engine's SILENCE is the case only the join can answer — that is the row that
+> went RED. (Also caught by the guard itself: the first fixture used the roster's checksummed literal and
+> `shortForm` failed closed, because the read-model only ever hands the projection lowercase addresses.)
 > **② THE 12 REMAINING ERGONOMICS FINDINGS** (15 confirmed by a 4-lens adversarial review; 3 fixed). The ones
 > that follow engraved law need no wireframe — Terms/Risk/Privacy set one step SMALLER than every other
 > reading surface · /chronicle prose at 14px under 34px headings · ProtocolAssetsCard's 10px labels · every

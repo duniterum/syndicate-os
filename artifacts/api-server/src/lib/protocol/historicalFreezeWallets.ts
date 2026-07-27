@@ -50,3 +50,19 @@ export const HISTORICAL_FREEZE_WALLETS: readonly HistoricalFreezeWallet[] = [
   { memberNumber: 7, wallet: "0x3FF01A0c3e70101bFb1dBb3742e135E7eD9e894F" },
   { memberNumber: 8, wallet: "0xAb87e74Ff69Ee0B6C1A73B884a80b737988DE081" },
 ] as const;
+
+/**
+ * D-TRUTH D1: the frozen roster as a SERVER-ONLY join key — lowercase wallet →
+ * seat #1–#8. NEVER EMITTED; only what it RESOLVES (a seat number already
+ * public on chain) may travel.
+ *
+ * WHY IT LIVES HERE AND NOT AT EACH CALL SITE (one-authority rule): two
+ * subsystems join on it — the runner (capital walk, own-purchase, season) and
+ * the public feed projection's first-seat derivation. Each rebuilding its own
+ * `new Map(...)` is two derivations of one fact, and the second one was written
+ * a month after the first, from a document, which is exactly how the namespaces
+ * drifted apart. One map, imported.
+ */
+export const GENESIS_SEAT_BY_WALLET: ReadonlyMap<string, number> = new Map(
+  HISTORICAL_FREEZE_WALLETS.map((w) => [w.wallet.toLowerCase(), w.memberNumber]),
+);
