@@ -189,7 +189,21 @@ export interface PublicArchivePauseLine extends LineCommon {
 // ── H2-⑦ — treasury movements (organ LABELS only; post-Fold-Law) ────────────
 export interface PublicTreasuryLine extends LineCommon {
   readonly kind: "treasury-move";
-  readonly token: TreasuryAsset;
+  /** A curated name, or a discovered token's own symbol. */
+  readonly token: string;
+  /**
+   * DISCOVERED ASSETS ONLY (the discovery lane, 2026-07-27) — the token's
+   * contract and its own decimals, both read off the chain. They are the only
+   * reason a browser can render an asset nobody registered: the decimals scale
+   * the figure, and the address is what the row is CALLED whenever the symbol
+   * claims a name that is already ours. null on curated and native rows.
+   *
+   * ADDRESS-EMISSION: this is a TOKEN CONTRACT, not a person — public by
+   * definition, exactly like the contract addresses already published on
+   * /contracts. No wallet is involved.
+   */
+  readonly assetContract: string | null;
+  readonly assetDecimals: number | null;
   /** Exact raw base units — public per the Visibility Rule. */
   readonly amountRaw: string;
   readonly movement: "in" | "out" | "internal";
@@ -672,6 +686,8 @@ export function buildPublicFeedWithLines(source: FeedSource): {
     return {
       kind: t.kind,
       token: t.token,
+      assetContract: t.assetContract,
+      assetDecimals: t.assetDecimals,
       amountRaw: t.amountRaw,
       movement: t.movement,
       organLabel: t.organLabel,

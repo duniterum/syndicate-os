@@ -64,6 +64,11 @@ import {
   NATIVE_AVAX_INTERNALS_FOR_GUARD,
 } from "../src/backbone/nativeAvaxScan";
 import {
+  buildDiscoveredRecords,
+  decodeDiscoveredTransferLog,
+  decodeSymbolReturn,
+} from "../src/backbone/tokenDiscoveryScan";
+import {
   PROTOCOL_EVENT_SCAN_TARGETS,
   FINANCIAL_TARGETS,
 } from "../src/data/protocolTargets";
@@ -263,6 +268,7 @@ for (const f of zoneFiles) {
   if (f.endsWith(`${path.sep}activityHeartbeatReadmodel.ts`)) continue;
   if (f.endsWith(`${path.sep}protocolEventScan.ts`)) continue;
   if (f.endsWith(`${path.sep}nativeAvaxScan.ts`)) continue; // the log-less lane
+  if (f.endsWith(`${path.sep}tokenDiscoveryScan.ts`)) continue; // the open-contract lane
   if (f.endsWith(`${path.sep}introductionRefresh.ts`)) continue; // own whitelist below
   const src = stripComments(readFileSync(f, "utf8"));
   check(
@@ -1032,6 +1038,114 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
       build([{ ...advanceRow, isError: "1" }], []).length === 0,
     "a zero-value call and a reverted call produce no native-AVAX line (silently — they are not defects)",
     "the native-AVAX lane turned a zero-value or reverted call into a treasury line",
+  );
+}
+
+// ── THE TOKEN DISCOVERY LANE (2026-07-27) ───────────────────────────────────
+// Founder rule: an asset the protocol BOUGHT arrives in a transaction signed by
+// one of its own keys, and nobody can forge that signature — so a new token
+// displays with NO human approval step, and an airdrop never can. The fixture
+// is the protocol's REAL LINK.e purchase (tx 0xe2d63403…, block 91,336,828:
+// 9.00 USDC out, 1.0042 LINK.e in, signed by the vault).
+{
+  const VAULT = "0x205ddc8921a4c60106930ee35e1f395c8d13f464";
+  const LINK_E = "0x5947bb275c521040051d82396192181b413227a3";
+  const USDC = "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e";
+  const ROUTER_POOL = "0xf780668669c193b5d2cf22b8420473fa1e3ee3d1";
+  const LINK_TX = "0xe2d63403145460ca55398055aabc98b367fd9b816dd22c318500896fc5597d4c";
+  const LINK_WEI = "1004221438348408136"; // 1.0042 LINK.e
+  const STRANGER = "0x" + "99".repeat(20);
+
+  const candidate = (over: Record<string, unknown> = {}) => ({
+    contract: LINK_E, from: ROUTER_POOL, to: VAULT, valueRaw: LINK_WEI,
+    blockNumber: 91_336_828, logIndex: 7, transactionHash: LINK_TX, ...over,
+  });
+  const run = (
+    candidates: readonly Record<string, unknown>[],
+    signerByTx: ReadonlyMap<string, string>,
+    metaByContract: ReadonlyMap<string, { symbol: string; decimals: number }>,
+  ) =>
+    buildDiscoveredRecords({
+      candidates: candidates as never,
+      organWallets: [VAULT],
+      signerWallets: [VAULT],
+      pinnedContracts: [USDC],
+      signerByTx,
+      metaByContract,
+    });
+  const OURS = new Map([[LINK_TX, VAULT]]);
+  const META = new Map([[LINK_E, { symbol: "LINK.e", decimals: 18 }]]);
+
+  const bought = run([candidate()], OURS, META);
+  check(
+    bought.length === 1 &&
+      bought[0]!.decodedJson["symbol"] === "LINK.e" &&
+      bought[0]!.decodedJson["decimals"] === 18 &&
+      bought[0]!.decodedJson["contract"] === LINK_E &&
+      bought[0]!.decodedJson["valueRaw"] === LINK_WEI &&
+      bought[0]!.logIndex === 7,
+    "the discovery lane produces the protocol's REAL LINK.e purchase, with the symbol and decimals read off the contract — no token name registered anywhere",
+    "the discovery lane stopped producing a token the protocol actually bought",
+  );
+  // THE SIGNER RULE — the whole reason no human approval is needed. The SAME
+  // transfer, into the SAME wallet, signed by someone else, is an airdrop.
+  check(
+    run([candidate()], new Map([[LINK_TX, STRANGER]]), META).length === 0 &&
+      run([candidate()], new Map(), META).length === 0,
+    "a token that arrives WITHOUT our signature is never published — a poisoning airdrop, and an unreadable signer, both fail closed (unknown is not consent)",
+    "the discovery lane published a token the protocol never signed for",
+  );
+  // A curated asset must not be discovered a SECOND time — it has its own lane.
+  check(
+    run([candidate({ contract: USDC })], OURS, new Map([[USDC, { symbol: "USDC", decimals: 6 }]])).length === 0,
+    "a curated token (its own pinned lane) is never re-produced by the discovery lane — no doubled row",
+    "the discovery lane duplicated a curated asset that already has a lane",
+  );
+  // Unrenderable or not ours → no row, silently (neither is a defect).
+  check(
+    run([candidate()], OURS, new Map()).length === 0 &&
+      run([candidate({ valueRaw: "0" })], OURS, META).length === 0 &&
+      run([candidate({ to: STRANGER, from: STRANGER })], OURS, META).length === 0,
+    "no row without symbol+decimals, none for a zero-value transfer, none for a movement touching no organ wallet",
+    "the discovery lane produced a row it could not render honestly, or one that is not the protocol's",
+  );
+  // AN NFT IS NOT A TREASURY AMOUNT. ERC-721 shares Transfer's topic0 but
+  // indexes the tokenId as a FOURTH topic — its "value" is an identifier, and
+  // summing it would be nonsense on a money surface.
+  const erc721 = (() => {
+    try {
+      decodeDiscoveredTransferLog({
+        address: LINK_E,
+        topics: [
+          "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+          "0x" + "0".repeat(24) + ROUTER_POOL.slice(2),
+          "0x" + "0".repeat(24) + VAULT.slice(2),
+          "0x" + "0".repeat(63) + "1",
+        ],
+        data: "0x",
+        blockNumber: "0x1",
+        logIndex: "0x0",
+        transactionHash: LINK_TX,
+      });
+      return false;
+    } catch {
+      return true;
+    }
+  })();
+  check(
+    erc721,
+    "an ERC-721 Transfer (same topic0, tokenId as a 4th topic) is REFUSED — an NFT id can never enter a treasury figure",
+    "the discovery decoder accepted an ERC-721 transfer as a token amount",
+  );
+  // Both symbol() encodings, because real tokens use both.
+  const abiString =
+    "0x" + (32).toString(16).padStart(64, "0") + (6).toString(16).padStart(64, "0") +
+    Buffer.from("LINK.e").toString("hex").padEnd(64, "0");
+  const legacyBytes32 = "0x" + Buffer.from("LINK.e").toString("hex").padEnd(64, "0");
+  check(
+    decodeSymbolReturn(abiString) === "LINK.e" && decodeSymbolReturn(legacyBytes32) === "LINK.e",
+    "symbol() decodes both the ABI-string and the legacy bytes32 encodings (real tokens use both)",
+    "the symbol decoder broke on one of the two real-world encodings",
   );
 }
 

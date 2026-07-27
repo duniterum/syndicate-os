@@ -162,7 +162,14 @@ export interface ArchivePauseItem {
 // ── H2-⑦ — treasury movements (organ LABELS only; addresses never leave) ────
 export interface TreasuryMoveItem {
   readonly kind: "treasury-move";
-  readonly token: TreasuryAsset;
+  /** Curated name, or a discovered token's own symbol (see the two below). */
+  readonly token: string;
+  /** DISCOVERED ONLY: the contract that IS the asset, and its own decimals.
+   *  They carry through to the served line so the browser can scale a token
+   *  it has never heard of — and name it by address if its symbol claims one
+   *  of ours. */
+  readonly assetContract: string | null;
+  readonly assetDecimals: number | null;
   /** Exact raw base units (USDC 6-dec / SYN 18-dec), decimal string. */
   readonly amountRaw: string;
   readonly movement: "in" | "out" | "internal";
@@ -526,6 +533,8 @@ export function buildProtocolEventReadModel(
     treasuryItems.push({
       kind: "treasury-move",
       token: t.token,
+      assetContract: t.assetContract,
+      assetDecimals: t.assetDecimals,
       amountRaw: t.valueRaw,
       movement,
       organLabel: fromOrgan ?? (toOrgan as string),

@@ -63,6 +63,7 @@ import {
   upsertProtocolCursor,
 } from "./backboneDb";
 import { runNativeAvaxScan } from "./nativeAvaxScan";
+import { runTokenDiscoveryScan } from "./tokenDiscoveryScan";
 import {
   runProtocolEventScan,
   type ProtocolScanStreamSummary,
@@ -373,13 +374,65 @@ async function runCycle(): Promise<string | null> {
     },
   });
 
+  // ①d THE TOKEN DISCOVERY LANE (2026-07-27, founder rule). Every other lane
+  // pins ONE contract; this one pins OUR WALLETS and leaves the contract open,
+  // so an asset nobody registered still produces a row. What makes it safe
+  // without a human step is the SIGNATURE: a token the protocol bought arrives
+  // in a transaction signed by one of its own keys, and nobody can forge that.
+  const ORGAN_WALLETS = [
+    FINANCIAL_TARGETS.vaultWallet,
+    FINANCIAL_TARGETS.liquidityWallet,
+    FINANCIAL_TARGETS.operationsWallet,
+    FINANCIAL_TARGETS.nftSaleWallet,
+  ];
+  // The Founder's own keys (allocation + private wallet). Declared here rather
+  // than at its old site further down, so the ONE derivation serves both the
+  // signer rule below and the founder-attribution labels later in the cycle.
+  const founderWalletAddresses = new Set([
+    ...FINANCIAL_TARGETS.allocationWallets
+      .filter((w) => w.key === "FOUNDER")
+      .map((w) => w.address.toLowerCase()),
+    FINANCIAL_TARGETS.founderPrivateWallet.toLowerCase(),
+  ]);
+  const discovery = await runTokenDiscoveryScan({
+    transport,
+    organWallets: ORGAN_WALLETS,
+    // An organ OR the Founder may sign for an acquisition — both are keys we
+    // hold. Nothing else counts, so an airdrop can never enter.
+    signerWallets: [...ORGAN_WALLETS, ...founderWalletAddresses],
+    // The curated assets keep their own lanes, with curated names and
+    // precision; discovering them again would double every row.
+    pinnedContracts: [
+      FINANCIAL_TARGETS.usdcTokenAddress,
+      FINANCIAL_TARGETS.synTokenAddress,
+      FINANCIAL_TARGETS.btcbTokenAddress,
+      FINANCIAL_TARGETS.wethTokenAddress,
+    ],
+    head: summary.head,
+    deps: {
+      getCursor: (streamKey) =>
+        getProtocolCursor(BACKBONE_EXPECTED_CHAIN_ID, streamKey, "*"),
+      upsertCursor: (input) =>
+        upsertProtocolCursor({
+          chainId: BACKBONE_EXPECTED_CHAIN_ID,
+          eventName: "*",
+          ...input,
+        }),
+      insert: insertProtocolEvents,
+    },
+  });
+
   const protocolEventsInserted =
     protocolStreams.reduce((acc, s) => acc + s.rowsInserted, 0) +
-    nativeAvax.rowsInserted;
+    nativeAvax.rowsInserted +
+    discovery.rowsInserted;
   const streamFaults = [
     ...protocolStreams.filter((s) => s.status === "error"),
     ...(nativeAvax.status === "error"
       ? [nativeAvax as unknown as ProtocolScanStreamSummary]
+      : []),
+    ...(discovery.status === "error"
+      ? [discovery as unknown as ProtocolScanStreamSummary]
       : []),
   ];
 
@@ -410,12 +463,8 @@ async function runCycle(): Promise<string | null> {
   // treasury counterpart attribution: money entering an organ FROM a founder
   // wallet is the Founder advancing money to the protocol, and the line says
   // so (the founder's funding doctrine, dossier §5).
-  const founderWalletAddresses = new Set([
-    ...FINANCIAL_TARGETS.allocationWallets
-      .filter((w) => w.key === "FOUNDER")
-      .map((w) => w.address.toLowerCase()),
-    FINANCIAL_TARGETS.founderPrivateWallet.toLowerCase(),
-  ]);
+  // (Declared ABOVE, before the discovery lane: the same set answers "whose
+  // signature authorises an acquisition". One derivation, two uses.)
   const founderAddresses = new Set([
     ...founderWalletAddresses,
     FINANCIAL_TARGETS.vaultWallet.toLowerCase(),

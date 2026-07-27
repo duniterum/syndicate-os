@@ -218,8 +218,21 @@ export type TreasuryAsset = "USDC" | "SYN" | "BTC.b" | "WETH.e" | "AVAX";
 
 // ── H2-⑦ — treasury-movement row (loader → read-model) ──────────────────────
 export interface RawTreasuryRowInput {
-  /** Which asset moved (derived from the streamKey — the lane is the authority). */
-  token: TreasuryAsset;
+  /**
+   * The asset's symbol. A CURATED lane derives it from its stream key (the lane
+   * scanned one pinned contract, so the name cannot be wrong). A DISCOVERED row
+   * carries the symbol read off the token's own contract — text its author
+   * chose, which is why it travels beside the address rather than replacing it.
+   */
+  token: string;
+  /**
+   * DISCOVERED ROWS ONLY — the token contract, which is the asset's real
+   * identity, and the decimals read from it. null on curated and native rows.
+   * They travel together: a symbol without decimals cannot be scaled, and a
+   * symbol without an address cannot be told apart from an impostor.
+   */
+  assetContract: string | null;
+  assetDecimals: number | null;
   blockNumber: number;
   logIndex: number;
   transactionHash: string;

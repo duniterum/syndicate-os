@@ -501,12 +501,38 @@ export async function loadProtocolEventRows(): Promise<ProtocolEventLoad> {
       ) {
         throw new Error("treasury row decoded shape invalid — refusing to derive");
       }
+      // A DISCOVERED row (the discovery lane, 2026-07-27) names its own asset,
+      // because no pinned contract stands behind it: the scan found a token the
+      // protocol BOUGHT — proven by the transaction's own signature — and read
+      // the symbol and decimals off that contract. Both must be present and
+      // well-formed or the row is refused; a symbol without decimals cannot be
+      // scaled, and inventing either is how a public figure goes wrong by a
+      // factor of a million.
+      const discovered = r.streamKey === "TREASURY_DISCOVERED";
+      if (discovered) {
+        if (
+          typeof tr.contract !== "string" ||
+          !/^0x[0-9a-f]{40}$/.test(tr.contract) ||
+          typeof tr.symbol !== "string" ||
+          tr.symbol.length === 0 ||
+          typeof tr.decimals !== "number" ||
+          !Number.isInteger(tr.decimals) ||
+          tr.decimals < 0 ||
+          tr.decimals > 36
+        ) {
+          throw new Error("discovered treasury row shape invalid — refusing to derive");
+        }
+      }
       treasury.push({
         // The token is decided by WHICH CONTRACT the lane scanned — never
         // guessed. A binary ternary held while only USDC and SYN had lanes;
         // it silently mislabels the moment a third token exists, so the map
         // is explicit and an unknown lane refuses rather than defaults.
-        token: treasuryTokenForStream(r.streamKey),
+        token: discovered
+          ? (tr.symbol as string)
+          : treasuryTokenForStream(r.streamKey),
+        assetContract: discovered ? (tr.contract as string) : null,
+        assetDecimals: discovered ? (tr.decimals as number) : null,
         blockNumber: r.blockNumber,
         logIndex: r.logIndex,
         transactionHash: r.transactionHash,
