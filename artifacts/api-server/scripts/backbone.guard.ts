@@ -872,6 +872,39 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
     "the derivation stopped resolving silent rows",
   );
 
+  // ── THE SEAT NUMBER IS SHOWN, NOT ONLY COUNTED (founder, 2026-07-27) ──────
+  // Seven served lines rendered a bare address — including the protocol's FIRST
+  // member — while the signed-in view told him "seat number 1" from the same
+  // frozen roster this projection already joined on for KEYING. Counting a seat
+  // and showing it must be ONE resolution.
+  {
+    const numberedFor = (wallet: string, memberNumber: number | null) =>
+      buildPublicFeedWithLines({
+        model: {
+          items: [{
+            kind: "purchase" as const, category: "membership-sale" as const, generation: "V1",
+            blockNumber: 87_158_947, blockTimestampSec: T0, isoDayUtc: "2026-06-04",
+            transactionHash: txD, logIndex: 0, firstSeatBucket: "unknown" as const,
+            routedFolded: false, memberNumber, memberAddress: wallet,
+            referredBySource: false, referrerAddress: null,
+          }],
+        },
+        protocolModel: null, milestoneModel: null, eraModel: null, capitalModel: null,
+      } as unknown as Parameters<typeof buildPublicFeedWithLines>[0])
+        .allLines.filter((l) => l.kind === "purchase")
+        .map((l) => (l as unknown as { memberNumber: number | null }).memberNumber)[0];
+
+    const g1 = HISTORICAL_FREEZE_WALLETS[0]!;
+    const outside = "0x" + "77".repeat(20);
+    check(
+      numberedFor(g1.wallet.toLowerCase(), null) === g1.memberNumber &&
+        numberedFor(outside, null) === null &&
+        numberedFor(outside, 42) === 42,
+      `a pre-numbering row of a frozen-roster wallet SHOWS its seat number (#${g1.memberNumber}) instead of a bare address; a wallet outside the roster still shows none, and an event's own number is never overridden`,
+      "the seat number is counted but not shown — the protocol's first member renders as an anonymous address",
+    );
+  }
+
   // ── THE SEAT-KEY NAMESPACE JOIN (2026-07-27) ──────────────────────────────
   // The check above closes the trigger the LIVE claim path fires: the engine
   // emits firstSeat=false and is obeyed. It does NOT close the CLASS, and the

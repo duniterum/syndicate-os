@@ -466,17 +466,29 @@ export function buildPublicFeedWithLines(source: FeedSource): {
   // ZERO-DIFF on today's rows and that is the point: every genesis wallet's rows
   // are numberless today, so `w:<wallet>` and `n:<seat>` group them identically.
   // The join changes nothing now and removes the class before it can fire.
+  // ONE RESOLUTION, TWO USES (2026-07-27). This answers "which seat is this
+  // row?" and it is the ONLY place that answers it: the key that groups a
+  // wallet's rows and the NUMBER the public line prints must never be two
+  // derivations, or a row can be counted as seat #1 while rendering a bare
+  // address — which is exactly what shipped this morning.
+  const seatNumberOf = (item: {
+    memberNumber: number | null;
+    memberAddress: string | null;
+  }): number | null => {
+    if (item.memberNumber !== null && item.memberNumber > 0) return item.memberNumber;
+    if (item.memberAddress === null) return null;
+    return GENESIS_SEAT_BY_WALLET.get(item.memberAddress.toLowerCase()) ?? null;
+  };
   const seatKeyOf = (item: {
     memberNumber: number | null;
     memberAddress: string | null;
   }): string | null => {
-    if (item.memberNumber !== null && item.memberNumber > 0) {
-      return `n:${item.memberNumber}`;
-    }
+    const seat = seatNumberOf(item);
+    if (seat !== null) return `n:${seat}`;
     if (item.memberAddress === null) return null;
-    const wallet = item.memberAddress.toLowerCase();
-    const genesisSeat = GENESIS_SEAT_BY_WALLET.get(wallet);
-    return genesisSeat !== undefined ? `n:${genesisSeat}` : `w:${wallet}`;
+    // The honest fallback: a numberless row whose wallet is NOT on the frozen
+    // roster keys by wallet. It is a fallback, never a merge.
+    return `w:${item.memberAddress.toLowerCase()}`;
   };
   const earliestBySeatKey = new Map<string, string>();
   for (const item of [...(model?.items ?? [])].sort((a, b) =>
@@ -543,7 +555,21 @@ export function buildPublicFeedWithLines(source: FeedSource): {
       firstSeatBucket: derivedBucket(item),
       routedFolded: item.routedFolded,
       // H2-P: the event's own public identity facts, short form only.
-      memberNumber: item.memberNumber,
+      // THE SEAT NUMBER IS RESOLVED, NOT LEFT BLANK (founder, 2026-07-27:
+      // *"quand je me logue le système me dit clairement seat number 1 — donc
+      // tu as tout sous la main"*). The pre-numbering V1 rows carry no member
+      // number, so seven lines rendered a bare address while the protocol's
+      // FIRST member sat behind one of them. The same frozen roster this file
+      // already joins on for KEYING answers it — it was used to COUNT the seat
+      // and never to SHOW it, which is the whole defect in one sentence.
+      //
+      // It is a chain-committed fact, not a lookup we invented: the roster is
+      // the set behind the on-chain `V1_MEMBER_ROOT`, and the member-signed-in
+      // view has been saying "#1" from the same truth all along. Publishing it
+      // breaks no rule — a seat number beside a short address is the shape the
+      // season board and every numbered row already use; the red line is a
+      // name, never a number.
+      memberNumber: seatNumberOf(item),
       memberShort: shortForm(item.memberAddress),
       memberAddress: fullForm(item.memberAddress),
       referred: item.referredBySource,
