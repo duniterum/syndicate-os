@@ -63,7 +63,7 @@ import {
   upsertProtocolCursor,
 } from "./backboneDb";
 import { runNativeAvaxScan } from "./nativeAvaxScan";
-import { runTokenDiscoveryScan } from "./tokenDiscoveryScan";
+import { curatedContractsFor, runTokenDiscoveryScan } from "./tokenDiscoveryScan";
 import {
   runProtocolEventScan,
   type ProtocolScanStreamSummary,
@@ -400,14 +400,10 @@ async function runCycle(): Promise<string | null> {
     // An organ OR the Founder may sign for an acquisition — both are keys we
     // hold. Nothing else counts, so an airdrop can never enter.
     signerWallets: [...ORGAN_WALLETS, ...founderWalletAddresses],
-    // The curated assets keep their own lanes, with curated names and
-    // precision; discovering them again would double every row.
-    pinnedContracts: [
-      FINANCIAL_TARGETS.usdcTokenAddress,
-      FINANCIAL_TARGETS.synTokenAddress,
-      FINANCIAL_TARGETS.btcbTokenAddress,
-      FINANCIAL_TARGETS.wethTokenAddress,
-    ],
+    // What already has a lane, from the ONE authority beside the lane itself —
+    // assembling this list here privately is exactly what let the LP pair go
+    // missing until the founder's question forced the measurement.
+    pinnedContracts: curatedContractsFor(FINANCIAL_TARGETS),
     head: summary.head,
     deps: {
       getCursor: (streamKey) =>

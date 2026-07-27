@@ -65,8 +65,11 @@ import {
 } from "../src/backbone/nativeAvaxScan";
 import {
   buildDiscoveredRecords,
+  curatedContractsFor,
   decodeDiscoveredTransferLog,
   decodeSymbolReturn,
+  DISCOVERY_FROM_BLOCK,
+  EARLIEST_KNOWN_DISCOVERY_BLOCK,
 } from "../src/backbone/tokenDiscoveryScan";
 import {
   PROTOCOL_EVENT_SCAN_TARGETS,
@@ -1146,6 +1149,37 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
     decodeSymbolReturn(abiString) === "LINK.e" && decodeSymbolReturn(legacyBytes32) === "LINK.e",
     "symbol() decodes both the ABI-string and the legacy bytes32 encodings (real tokens use both)",
     "the symbol decoder broke on one of the two real-world encodings",
+  );
+  // THE FLOOR IS MEASURED, AND MUST STAY BELOW REAL HISTORY. The lane starts at
+  // 90,000,000 instead of the protocol floor because the COMPLETE ERC-20 history
+  // of all four organ wallets was enumerated (2026-07-27) and its earliest
+  // non-curated event is 90,460,152. Raising the floor past that would silently
+  // drop real history — the saving is only legitimate while this holds.
+  check(
+    DISCOVERY_FROM_BLOCK <= EARLIEST_KNOWN_DISCOVERY_BLOCK &&
+      DISCOVERY_FROM_BLOCK > 0,
+    `the discovery floor (${DISCOVERY_FROM_BLOCK.toLocaleString("en-US")}) sits at or below the earliest measured non-curated token event (${EARLIEST_KNOWN_DISCOVERY_BLOCK.toLocaleString("en-US")}) — the backfill shortcut cannot hide real history`,
+    "the discovery floor was raised above known non-curated history — real movements would be skipped",
+  );
+  // THE LP PAIR MUST BE EXCLUDED, and the check uses the SAME list the runner
+  // passes — not a copy. Pool acts already run through LP_LIQUIDITY +
+  // LP_TOKEN_MINT; discovering the pair token again narrates one act twice on a
+  // public feed. The liquidity wallet has held JLP since block 87,163,331, so
+  // this is a live case, not a hypothetical.
+  const curated = curatedContractsFor(FINANCIAL_TARGETS);
+  const lpPair = FINANCIAL_TARGETS.lpPair.toLowerCase();
+  const lpRows = buildDiscoveredRecords({
+    candidates: [candidate({ contract: lpPair })] as never,
+    organWallets: [VAULT],
+    signerWallets: [VAULT],
+    pinnedContracts: curated,
+    signerByTx: OURS,
+    metaByContract: new Map([[lpPair, { symbol: "JLP", decimals: 18 }]]),
+  });
+  check(
+    curated.includes(lpPair) && lpRows.length === 0 && curated.length === 5,
+    "the LP pair is in the ONE exclusion list the runner uses, and a JLP transfer produces NO discovery row (pool acts already have their own two lanes — narrating one act twice is a truth defect)",
+    "the LP pair would be discovered a second time and the same pool act narrated twice",
   );
 }
 

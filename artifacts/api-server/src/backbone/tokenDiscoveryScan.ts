@@ -46,6 +46,33 @@ const SELECTOR_DECIMALS = "0x313ce567";
 
 export const TOKEN_DISCOVERY_STREAM_KEY = "TREASURY_DISCOVERED";
 
+/**
+ * THE ONE AUTHORITY for what this lane must NOT re-narrate. Every contract here
+ * is already covered by a dedicated lane, so discovering it a second time would
+ * put the SAME act on the public feed twice — a truth defect, not a cosmetic
+ * one. Kept beside the lane and imported by the runner, because a list the
+ * runner assembles privately is a list a guard cannot check.
+ *
+ * The LP pair earned its place the hard way (founder catch, 2026-07-27): the
+ * liquidity wallet has held JLP since block 87,163,331, and pool acts already
+ * run through LP_LIQUIDITY + LP_TOKEN_MINT.
+ */
+export function curatedContractsFor(targets: {
+  usdcTokenAddress: string;
+  synTokenAddress: string;
+  btcbTokenAddress: string;
+  wethTokenAddress: string;
+  lpPair: string;
+}): string[] {
+  return [
+    targets.usdcTokenAddress,
+    targets.synTokenAddress,
+    targets.btcbTokenAddress,
+    targets.wethTokenAddress,
+    targets.lpPair,
+  ].map((a) => a.toLowerCase());
+}
+
 export interface DiscoveredTransferCandidate {
   readonly contract: string;
   readonly from: string;
@@ -307,9 +334,38 @@ export async function fetchSigners(
   return byTx;
 }
 
-/** The lane's floor and pacing — the SAME pinned block and chunk size the
- *  curated lanes use, so "what the treasury feed covers" stays one answer. */
-export const DISCOVERY_FROM_BLOCK = 87_157_852;
+/**
+ * THE LANE'S FLOOR — MEASURED, not copied from the other lanes (founder,
+ * 2026-07-27: *"on sait quand les transactions sont faites, pourquoi scanner
+ * comme des cons 4,2 millions de blocs ?"*).
+ * ---------------------------------------------------------------------------
+ * The first version started at the protocol floor 87,157,852 like every curated
+ * lane, which meant ~4.18M blocks of backfill — ~4,180 `eth_getLogs` calls — to
+ * find, provably, nothing. THE COMPLETE ERC-20 HISTORY OF ALL FOUR ORGAN
+ * WALLETS WAS THEN MEASURED (explorer account API, 2026-07-27; 37 + 33 + 26 + 17
+ * rows, so nothing was truncated):
+ *
+ *   vault      87,149,157 SYN · 87,158,947 USDC · 90,460,152 counterfeit "AVAX"
+ *              · 90,460,591 BTC.b · 90,460,622 WETH.e · 91,336,828 LINK.e
+ *   liquidity  87,163,331 JLP (the SYN/USDC pair token — EXCLUDED, see below)
+ *   operations USDC only
+ *   NFT sale   USDC only
+ *
+ * So the earliest event this lane can legitimately see is 90,460,152, and every
+ * block below it is provably empty FOR THIS LANE. The floor sits at 90,000,000 —
+ * a 460,000-block margin under the earliest known event — and cuts the backfill
+ * by 68% (4.18M → 1.34M blocks). `backbone.guard` pins the floor BELOW that
+ * earliest event, so raising it past real history turns the build red.
+ *
+ * WHY A FLOOR IS SAFE HERE and would not be on a curated lane: the curated
+ * assets are covered from the true protocol floor by their own lanes. This lane
+ * exists only for what they do not cover, and what they do not cover has been
+ * enumerated above rather than assumed.
+ */
+export const DISCOVERY_FROM_BLOCK = 90_000_000;
+/** The earliest non-curated token event across all organ wallets, measured
+ *  2026-07-27. The floor must stay at or below it — guard-pinned. */
+export const EARLIEST_KNOWN_DISCOVERY_BLOCK = 90_460_152;
 const DISCOVERY_CHUNK = 2_000;
 const DISCOVERY_MAX_BLOCKS_PER_CYCLE = 200_000;
 const DISCOVERY_REORG_OVERLAP = 50;
