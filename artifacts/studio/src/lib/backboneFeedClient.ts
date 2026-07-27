@@ -134,7 +134,26 @@ export interface ServedArchivePauseLine extends ServedLineCommon {
 // inside an already-narrated transaction is routing detail, never a line) ───
 export interface ServedTreasuryLine extends ServedLineCommon {
   kind: "treasury-move";
-  token: TreasuryToken;
+  /**
+   * The asset's symbol. One of the CURATED names, or — since the discovery lane
+   * (2026-07-27) — a symbol read from a token contract the protocol bought
+   * itself. A curated name carries curated precision; a discovered one carries
+   * its own, sent by the server beside it.
+   */
+  token: string;
+  /**
+   * DISCOVERED ASSETS ONLY: the decimals read from the token's own contract.
+   * null for a curated asset, whose precision is the client's to decide.
+   * Without it a discovered amount cannot be scaled, and the line renders with
+   * no figure rather than a wrong one.
+   */
+  assetDecimals: number | null;
+  /**
+   * DISCOVERED ASSETS ONLY: the contract address, which IS the asset's
+   * identity. A symbol is text its author chose; the address is not. It is
+   * what the row falls back to whenever the symbol cannot be trusted.
+   */
+  assetContract: string | null;
   /** Exact raw base units — public per the Visibility Rule. */
   amountRaw: string;
   movement: "in" | "out" | "internal";
@@ -400,7 +419,98 @@ function isTreasuryToken(v: unknown): v is TreasuryToken {
   return typeof v === "string" && Object.prototype.hasOwnProperty.call(TREASURY_TOKEN_DECIMALS, v);
 }
 
-function parseLine(raw: unknown): ServedFeedLine | null {
+/**
+ * DISCOVERED ASSETS — what the client will accept from a token it has never
+ * heard of (the discovery lane, 2026-07-27).
+ * ---------------------------------------------------------------------------
+ * THE FOUNDER'S RULE, and it is the right one: an asset the protocol BOUGHT
+ * arrives in a transaction signed by one of its own wallets, and nobody can
+ * forge that signature. So the server admits a new asset with no human step,
+ * and this side simply has to render it safely.
+ *
+ * ONE THING THE SIGNATURE DOES NOT ANSWER, and it is handled here: a token's
+ * `symbol()` is TEXT ITS AUTHOR CHOSE. A contract may return "USDC". Buying it
+ * by mistake is possible in a way that FORGING OUR SIGNATURE is not — so a
+ * discovered symbol that collides with a curated one is never rendered as that
+ * name. The address, which cannot be chosen twice, is what the row falls back
+ * to. Beyond that, a symbol is bounded and character-restricted: it lands in a
+ * public sentence, and unbounded attacker-chosen text does not belong there.
+ */
+const MAX_DISCOVERED_SYMBOL = 12;
+const SAFE_DISCOVERED_SYMBOL = /^[A-Za-z0-9._-]{1,12}$/;
+/** 36 is far above any real token (18 is the norm, 24 the rarest seen). */
+const MAX_DISCOVERED_DECIMALS = 36;
+
+const CURATED_SYMBOLS_LOWER: ReadonlySet<string> = new Set(
+  Object.keys(TREASURY_TOKEN_DECIMALS).map((s) => s.toLowerCase()),
+);
+
+function isSafeDiscoveredSymbol(v: unknown): v is string {
+  if (typeof v !== "string" || v.length === 0 || v.length > MAX_DISCOVERED_SYMBOL) return false;
+  if (!SAFE_DISCOVERED_SYMBOL.test(v)) return false;
+  // The impersonation gate: a discovered asset may not wear a curated name.
+  return !CURATED_SYMBOLS_LOWER.has(v.toLowerCase());
+}
+
+/** Short form for an address used AS A NAME when a symbol cannot be trusted. */
+function shortContract(address: string): string {
+  return `${address.slice(0, 6)}…${address.slice(-4)}`;
+}
+
+/**
+ * THE ONE PLACE that decides how a treasury amount is scaled, for both kinds of
+ * asset. A curated token uses the curated table; a discovered one uses the
+ * decimals the server read from its contract, shown at 4 places (a treasury
+ * position is units, not dust) and never more than the token actually has.
+ */
+export function treasuryPrecisionFor(line: {
+  token: string;
+  assetDecimals?: number | null;
+}): { decimals: number; dp: number } | null {
+  // THE DISCOVERED PATH IS CHECKED FIRST, and that order is the whole fix. The
+  // first version asked `isTreasuryToken(token)` first, so a discovered token
+  // declaring itself "USDC" was scaled at USDC's SIX decimals — its own
+  // eighteen ignored — and 1 unit of it printed as 1,000,000,000,000.00 USDC.
+  // Caught by the impersonation pin before it existed anywhere but in a test.
+  // A row that carries its OWN decimals is by definition not a curated one.
+  const d = line.assetDecimals;
+  if (typeof d === "number" && Number.isInteger(d) && d >= 0 && d <= MAX_DISCOVERED_DECIMALS) {
+    return { decimals: d, dp: Math.min(d, 4) };
+  }
+  if (isTreasuryToken(line.token)) return TREASURY_TOKEN_DECIMALS[line.token];
+  return null;
+}
+
+/** What the amount column CALLS the asset: its symbol when that can be
+ *  trusted, otherwise the contract that cannot lie about being itself. */
+export function treasuryAssetLabel(line: {
+  token: string;
+  assetContract?: string | null;
+}): string {
+  // Same ordering law as the precision resolver: an address present means the
+  // row came from the discovery lane, so its symbol is UNVERIFIED text and must
+  // clear the impersonation gate before it can be shown. Asking
+  // `isTreasuryToken` first would hand a curated name to whoever claimed it.
+  const contract =
+    typeof line.assetContract === "string" && line.assetContract.length > 0
+      ? line.assetContract
+      : null;
+  if (contract !== null) {
+    return isSafeDiscoveredSymbol(line.token) ? line.token : shortContract(contract);
+  }
+  if (isTreasuryToken(line.token)) return line.token;
+  return "the asset";
+}
+
+/**
+ * THE RUNTIME GATE. Exported for one reason: `add5bb8` widened the served type
+ * in five places and left THIS function narrow, and tsc could not see it —
+ * inside here the row is `Record<string, unknown>`, so a narrower union stays
+ * assignable to a wider one. Every treasury line would have been rejected in
+ * the browser while the server served them happily. A gate that no test can
+ * reach is a gate nobody checks; `guard-one-figure` now drives it directly.
+ */
+export function parseLine(raw: unknown): ServedFeedLine | null {
   if (typeof raw !== "object" || raw === null) return null;
   const r = raw as Record<string, unknown>;
   const common = parseCommon(r);
@@ -529,8 +639,37 @@ function parseLine(raw: unknown): ServedFeedLine | null {
     return { kind: "archive-pause", ...common, action: r.action };
   }
   if (r.kind === "treasury-move") {
+    // A curated asset is admitted by NAME; a discovered one by its own
+    // decimals + contract, which the server read from the chain. Anything that
+    // is neither is refused — the old behaviour, unchanged.
+    const discoveredDecimals =
+      typeof r.assetDecimals === "number" &&
+      Number.isInteger(r.assetDecimals) &&
+      r.assetDecimals >= 0 &&
+      r.assetDecimals <= MAX_DISCOVERED_DECIMALS
+        ? r.assetDecimals
+        : null;
+    const discoveredContract =
+      typeof r.assetContract === "string" && /^0x[0-9a-fA-F]{40}$/.test(r.assetContract)
+        ? r.assetContract.toLowerCase()
+        : null;
+    // Narrowed to a string HERE, deliberately: a boolean `admitted` flag would
+    // leave `r.token` as `unknown` and the assignment below would need a cast —
+    // which is precisely the blind spot that let add5bb8 through.
+    const symbol = typeof r.token === "string" ? r.token : null;
+    // A CONTRACT PRESENT MEANS DISCOVERED — the symbol never decides which path
+    // a row takes. A discovered row must bring its own decimals; a curated one
+    // must bear a curated name. Nothing may satisfy both.
+    const assetAdmitted =
+      symbol !== null &&
+      (discoveredContract !== null
+        ? discoveredDecimals !== null &&
+          symbol.length > 0 &&
+          symbol.length <= MAX_DISCOVERED_SYMBOL
+        : isTreasuryToken(symbol));
     if (
-      !isTreasuryToken(r.token) ||
+      symbol === null ||
+      !assetAdmitted ||
       typeof r.amountRaw !== "string" ||
       !/^[0-9]+$/.test(r.amountRaw) ||
       (r.movement !== "in" && r.movement !== "out" && r.movement !== "internal") ||
@@ -546,7 +685,12 @@ function parseLine(raw: unknown): ServedFeedLine | null {
     return {
       kind: "treasury-move",
       ...common,
-      token: r.token,
+      token: symbol,
+      // Curated assets carry neither: their precision is the client's, and
+      // their identity is a canon name rather than an address. The CONTRACT —
+      // not the symbol — is what says which kind this row is.
+      assetDecimals: discoveredContract === null ? null : discoveredDecimals,
+      assetContract: discoveredContract,
       amountRaw: r.amountRaw,
       movement: r.movement,
       organLabel: r.organLabel,
@@ -798,9 +942,13 @@ export function formatUsdcRaw(amountUsdcRaw: string): string {
 /** A treasury movement at the token's display precision — truncated, with the
  *  false-zero floor. The token's decimals come from THE ONE map below, so a
  *  token the client cannot render can never reach a sentence. */
-export function formatTreasuryRaw(amountRaw: string, token: string): string | null {
-  const spec = isTreasuryToken(token) ? TREASURY_TOKEN_DECIMALS[token] : undefined;
-  if (!spec) return null; // unknown token → the caller withholds the line
+export function formatTreasuryRaw(
+  amountRaw: string,
+  token: string,
+  assetDecimals?: number | null,
+): string | null {
+  const spec = treasuryPrecisionFor({ token, assetDecimals });
+  if (!spec) return null; // unscalable asset → the caller withholds the FIGURE
   return formatAmount(amountRaw, spec.decimals, spec.dp);
 }
 
@@ -1007,8 +1155,11 @@ export function amountForServedLine(line: ServedFeedLine): string | null {
     case "burn":
       return `${formatSynRaw(line.amountSynRaw)} SYN`;
     case "treasury-move": {
-      const amount = formatTreasuryRaw(line.amountRaw, line.token);
-      return amount === null ? null : `${amount} ${line.token}`;
+      const amount = formatTreasuryRaw(line.amountRaw, line.token, line.assetDecimals);
+      // The LABEL is decided separately from the FIGURE: a discovered asset
+      // whose symbol wears a curated name is shown by its address instead, and
+      // the amount is still correct because decimals came from the contract.
+      return amount === null ? null : `${amount} ${treasuryAssetLabel(line)}`;
     }
     default:
       return null;

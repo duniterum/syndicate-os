@@ -187,6 +187,82 @@ for (const [label, got, want] of CASES) {
   if (got !== want) fail(`behaviour — ${label}: expected ${JSON.stringify(want)}, got ${JSON.stringify(got)}.`);
 }
 
+// ── ③b THE DISCOVERY LANE — the RUNTIME gate, driven directly ───────────────
+// Founder rule (2026-07-27): an asset the protocol BOUGHT arrives in a
+// transaction signed by one of its own wallets, so it displays with no human
+// step. These pins drive `parseLine` itself — the function add5bb8 left narrow
+// while five type sites were widened, which tsc structurally cannot catch.
+const feedMod = (await import(pathToFileURL(join(SRC, "lib", "backboneFeedClient.ts")).href)) as Record<string, Function>;
+const LINK_CONTRACT = "0x5947BB275c521040051D82396192181b413227A3"; // Chainlink on Avalanche
+const treasuryRow = (over: Record<string, unknown>) => ({
+  kind: "treasury-move",
+  blockNumber: 90460319,
+  blockTimestampSec: 1784209625,
+  isoDayUtc: "2026-07-14",
+  transactionHash: "0x" + "ab".repeat(32),
+  logIndex: 3,
+  amountRaw: "4539867625602041394",
+  movement: "in",
+  organLabel: "the vault",
+  toOrganLabel: null,
+  counterpartFounder: false,
+  ...over,
+});
+
+// ① ANY token the client has never heard of is accepted — with ITS OWN
+// decimals. THERE IS NO LIST OF TOKEN NAMES ANYWHERE IN THE CODE, and these
+// cases exist to make that impossible to misread: the symbols below are
+// arbitrary, they are not registered anywhere, and the mechanism cannot tell
+// them apart. Buying BNB, LINK, or a token invented tomorrow is the same path.
+// The last case carries 9 decimals rather than 18 to prove the scale comes from
+// the CONTRACT and is never assumed.
+const DISCOVERED_CASES: [string, number, string, string][] = [
+  ["BNB", 18, "4539867625602041394", "4.5398 BNB"],
+  ["LINK", 18, "4539867625602041394", "4.5398 LINK"],
+  ["SHIB", 18, "4539867625602041394", "4.5398 SHIB"],
+  ["A-BRAND-NEW", 9, "1500000000", "1.5000 A-BRAND-NEW"],
+];
+for (const [sym, decimals, amountRaw, want] of DISCOVERED_CASES) {
+  const line = feedMod.parseLine!(
+    treasuryRow({ token: sym, assetDecimals: decimals, assetContract: LINK_CONTRACT, amountRaw }),
+  );
+  if (line === null) {
+    fail(`discovery — a newly bought token (${sym}, decimals + contract sent) was REJECTED by parseLine; /activity would announce that its own honest data failed validation.`);
+    continue;
+  }
+  const got = feedMod.amountForServedLine!(line);
+  // TRUNCATED, never rounded up — the same law the AVAX case above pins. The
+  // first version of this pin expected 4.5399 and was wrong: overstating a
+  // holding by a ten-thousandth is still overstating it.
+  if (got !== want) {
+    fail(`discovery — ${sym} rendered ${JSON.stringify(got)}, expected ${JSON.stringify(want)} (truncated, never rounded up).`);
+  }
+}
+
+// ② THE IMPERSONATION GATE. The signature proves WE bought it; it does not make
+// the token's self-declared symbol true. A contract returning "USDC" must never
+// be rendered as USDC — it falls back to the address, which cannot be chosen.
+const impostor = feedMod.parseLine!(
+  treasuryRow({ token: "USDC", assetDecimals: 18, assetContract: LINK_CONTRACT, amountRaw: "1000000000000000000" }),
+);
+const impostorText = impostor === null ? null : feedMod.amountForServedLine!(impostor);
+if (impostorText !== null && String(impostorText).includes("USDC")) {
+  fail(`discovery — a discovered token declaring itself "USDC" rendered AS USDC (${JSON.stringify(impostorText)}); a symbol is text its author chose.`);
+}
+
+// ③ A discovered asset with NO decimals cannot be scaled — no figure, ever.
+const unscalable = feedMod.parseLine!(treasuryRow({ token: "MYSTERY" }));
+if (unscalable !== null) {
+  fail("discovery — a discovered asset with neither decimals nor contract was accepted; its amount could only be rendered at a guessed scale.");
+}
+
+// ④ REGRESSION: the curated assets still parse and still use CURATED precision
+// (BTC.b at 8 places, not the discovered default of 4).
+const btcb = feedMod.parseLine!(treasuryRow({ token: "BTC.b", amountRaw: "77818" }));
+if (btcb === null || feedMod.amountForServedLine!(btcb) !== "0.00077818 BTC.b") {
+  fail(`discovery — the curated BTC.b path regressed: ${JSON.stringify(btcb === null ? null : feedMod.amountForServedLine!(btcb))}.`);
+}
+
 // ── ④ the three money surfaces agree on (decimals, dp) per token ────────────
 // The feed's token map, the /contracts assets card and the public home's tracked-asset
 // registry all render the SAME vault holdings. A precision fork between them is the
@@ -268,6 +344,8 @@ console.log(
     `each in a file the ${Object.keys(ALLOWLIST).length}-entry allowlist covers with a written reason ` +
     `(these rules match known idioms — a pass is not proof that no other projection exists); ` +
     `${CASES.length} behaviour cases green; ` +
+    `${DISCOVERED_CASES.length + 3} discovery pins driving parseLine itself — ${DISCOVERED_CASES.map(([s]) => s).join(" · ")} all accepted with NO name registered anywhere, ` +
+    `plus: an impersonated symbol never renders as the curated name, an unscalable asset is refused, curated precision unchanged; ` +
     `${PINS.length} token precisions agreed across /activity, /contracts and the public home band; ` +
     `${USES.length} surfaces PROVEN to call the one authority.`,
 );
