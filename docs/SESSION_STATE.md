@@ -44,7 +44,47 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **GATES:** api typecheck 0 · full api guards chain green (backbone **182**, auth-zone 1267, source-status
 > 211, season-merkle 1279, protocol-reality 174) · api build 0. Studio untouched.
 >
-> **⑤ WHERE THE NEXT SESSION STARTS:** queue §(b)① is closed. Next is **§(b)② the 12 ergonomics findings**,
+> **⑤ THE NATIVE-AVAX TREASURY LANE IS BUILT (2026-07-27) — the founder asked why /activity still shows no
+> AVAX purchase, and the answer was that nothing had ever been written.** What had been settled was the
+> QUESTION (native AVAX IS findable, against a session that said otherwise); no code followed, and the item
+> sat in OPEN_QUEUE as a slice-ORDER decision, which reads as done and is not. Recorded as the gap it was.
+> **THE PLANNED DESIGN WOULD NOT HAVE WORKED, and this is the finding worth keeping.** The books said to read
+> LFJ's `SwapExactIn` log, which carries a whole swap in one record. Measured against the protocol's ACTUAL
+> purchase (tx `0x7accfd17…`, block 90,460,319): that receipt carries **no LFJ log at all** — it routes
+> through Uniswap-V3-style pools and ends in a WAVAX unwrap. The lane would have shipped and shown nothing.
+> A design verified against one venue is not a design.
+> **WHAT IS ON CHAIN, measured (Routescan account API, vault-scoped):** the purchase — **4.5399 AVAX**, an
+> INTERNAL call, block 90,460,319 — and, found only because the scope check asked for the other path,
+> **0.2 AVAX the Founder advanced** from his private wallet, a PLAIN transfer at block 90,460,045.
+> **THE SLICE, in two commits.** `f1e0162` widened the asset union to accept AVAX EVERYWHERE and emit
+> nothing — the client must know a shape BEFORE the server sends it, or `parseLine` nulls the row and
+> /activity announces that its own honest data failed validation (the `add5bb8` class). Five copies of one
+> union became ONE exported name per side. The second commit adds `nativeAvaxScan.ts` + its wiring.
+> **THE DEFECT CAUGHT IN DESIGN, and it protects money:** `insertProtocolEvents` de-duplicates on
+> `(chainId, transactionHash, logIndex)` — **the stream key is NOT in that key.** A native movement has no
+> log index, so the lane synthesises one; a naive ordinal would land on a REAL log of the same transaction
+> and `onConflictDoNothing` would drop one **in silence**. The purchase transaction carries **23 real logs**.
+> The synthetic space therefore starts at **1,000,000** — ~25× what an Avalanche block can physically hold
+> (375 gas per LOG against a 15M-gas block) — and the guard pins it.
+> **PROVEN:** `backbone.guard.ts` **182 → 192** (7 explicit native-AVAX pins + 3 zone checks the new file
+> adds — counted from the output, not inferred), fixtures copied VERBATIM from the explorer's real answer:
+> the two real movements · the collision floor · plain-and-internal in ONE tx stay distinct · the ordinal is
+> a function of the trace path, not arrival order (a reordered answer cannot double a movement) · non-organ
+> movements produce nothing · fail-closed on a non-integer amount, an out-of-window block, a malformed
+> address · zero-value and reverted calls are silently not lines. Guards chain green (auth-zone 1267 → 1274).
+> **NO NEW COPY:** the treasury sentence builder is token-agnostic, so AVAX inherits the approved sentences —
+> *"Entered the vault — recorded on-chain."* and *"Entered the vault — advanced by the Founder, recorded
+> on-chain."* Precision (18,4) was TAKEN from the two surfaces already rendering the AVAX holding, and
+> `guard-one-figure` now pins all four tokens instead of three.
+> **THE HONEST LIMIT — what none of this covers.** There is no DB locally, so the PERSISTENCE path (insert →
+> cursor → loader → read-model) is proven only by types and by the pure fixtures. The derivation is pinned,
+> the HTTP read was executed live against the real endpoint, but the first end-to-end proof is the deploy.
+> **WHAT TO VERIFY ON THE DEPLOY REPORT:** the feed's treasury count moves 7 → 9, and both AVAX lines appear
+> with their VERIFY anchors. If the engine reports a `TREASURY_AVAX` stream fault instead, the explorer API
+> is unreachable from the host — the lane fails closed, everything else keeps serving, and that is a
+> configuration finding, not a data one.
+>
+> **⑥ WHERE THE NEXT SESSION STARTS:** queue §(b)① is closed. Next is **§(b)② the 12 ergonomics findings**,
 > and they are already split by what they COST: the ones that follow engraved law (reading floors, 44px
 > touch targets) need no wireframe — fix them; the four that change a COMPOSITION (/join's four equally-loud
 > gold buttons · /faq's search placed 4th · the home audit string above the one gold CTA · /tokenomics'

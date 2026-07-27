@@ -60,6 +60,10 @@ import { fileURLToPath } from "node:url";
 import { assertAddressSafeJson } from "../src/lib/protocol/addressSafety";
 import { HISTORICAL_FREEZE_WALLETS } from "../src/lib/protocol/historicalFreezeWallets";
 import {
+  buildNativeAvaxRecords,
+  NATIVE_AVAX_INTERNALS_FOR_GUARD,
+} from "../src/backbone/nativeAvaxScan";
+import {
   PROTOCOL_EVENT_SCAN_TARGETS,
   FINANCIAL_TARGETS,
 } from "../src/data/protocolTargets";
@@ -243,14 +247,22 @@ for (const [label, src] of [
 }
 
 // The zone reads decodedJson ONLY in backboneDb (whitelists pinned below and
-// by activity-heartbeat.guard.ts); protocolEventScan.ts WRITES decodedJson
-// (it decodes logs into rows — the lane's job); the pure builder carries the
-// WORDS in its doctrine strings but can perform no access. Everything else
+// by activity-heartbeat.guard.ts); a SCAN LANE WRITES decodedJson (turning a
+// chain answer into rows is precisely a lane's job); the pure builder carries
+// the WORDS in its doctrine strings but can perform no access. Everything else
 // in the zone stays clean.
+//
+// The exemption is stated by ROLE, not by a filename that happens to be there:
+// a lane may write the whitelisted keys the loader validates, and nothing else
+// in the zone may touch them at all. `nativeAvaxScan.ts` joined 2026-07-27 —
+// same job as `protocolEventScan.ts` for the one asset that emits no log, so it
+// cannot decode from logs and writes {from, to, valueRaw} from the explorer's
+// account rows instead. The loader validates it identically.
 for (const f of zoneFiles) {
   if (f.endsWith(`${path.sep}backboneDb.ts`)) continue;
   if (f.endsWith(`${path.sep}activityHeartbeatReadmodel.ts`)) continue;
   if (f.endsWith(`${path.sep}protocolEventScan.ts`)) continue;
+  if (f.endsWith(`${path.sep}nativeAvaxScan.ts`)) continue; // the log-less lane
   if (f.endsWith(`${path.sep}introductionRefresh.ts`)) continue; // own whitelist below
   const src = stripComments(readFileSync(f, "utf8"));
   check(
@@ -908,6 +920,118 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
       overlap[200] === "true",
     "the duplicate seat survives the join: one wallet holding #7 and #11 counts TWICE, never rounded to one",
     "the join erased a seat — the wallet holding #7 and #11 now counts once",
+  );
+}
+
+// ── THE NATIVE-AVAX LANE (2026-07-27) ───────────────────────────────────────
+// Fixtures are the PROTOCOL'S OWN two AVAX movements, copied from the explorer
+// answer verbatim — not invented rows. The purchase (4.5399 AVAX, an internal
+// call, in a transaction carrying 23 real logs) and the Founder's 0.2 AVAX
+// advance (a plain transfer). If this lane ever stops producing these two, the
+// build goes red before anyone opens /activity.
+{
+  const VAULT = "0x205DdC8921A4C60106930eE35e1F395c8D13f464";
+  const FOUNDER_PRIVATE = "0x244531c571966f90f4849e03a507543d90f9c721";
+  const AGGREGATOR = "0x45a62b090df48243f12a21897e7ed91863e2c86b";
+  const PURCHASE_TX = "0x7accfd17b40f057906e8db7057d29e07cd1e306445d5540f8b4bb6883eac23cd";
+  const ADVANCE_TX = "0x31c18cb6c86c193d37f1eaa2f128a5c46279bf6e6e502676123d2fc827e3dc76";
+  const PURCHASE_WEI = "4539867625602041394"; // 4.5399 AVAX
+  const ADVANCE_WEI = "200000000000000000"; //   0.2    AVAX
+
+  const purchaseRow = {
+    blockNumber: "90460319", hash: PURCHASE_TX, from: AGGREGATOR, to: VAULT,
+    value: PURCHASE_WEI, isError: "0", traceId: "78",
+  };
+  const advanceRow = {
+    blockNumber: "90460045", hash: ADVANCE_TX, from: FOUNDER_PRIVATE, to: VAULT,
+    value: ADVANCE_WEI, isError: "0",
+  };
+  const build = (
+    plainRows: readonly Record<string, unknown>[],
+    internalRows: readonly Record<string, unknown>[],
+  ) =>
+    buildNativeAvaxRecords({
+      organWallets: [VAULT],
+      plainRows,
+      internalRows,
+      fromBlock: 90_000_000,
+      toBlock: 91_000_000,
+    });
+
+  const both = build([advanceRow], [purchaseRow]);
+  const purchase = both.find((r) => r.transactionHash === PURCHASE_TX);
+  const advance = both.find((r) => r.transactionHash === ADVANCE_TX);
+  check(
+    both.length === 2 &&
+      purchase?.decodedJson["valueRaw"] === PURCHASE_WEI &&
+      advance?.decodedJson["valueRaw"] === ADVANCE_WEI &&
+      purchase?.streamKey === "TREASURY_AVAX" &&
+      advance?.streamKey === "TREASURY_AVAX",
+    "the native-AVAX lane produces the protocol's two real movements: the 4.5399 AVAX purchase (an internal call) and the Founder's 0.2 AVAX advance (a plain transfer)",
+    "the native-AVAX lane stopped producing the protocol's own AVAX movements",
+  );
+  // THE COLLISION PIN, and it is the one that protects money. The insert
+  // de-duplicates on (chainId, transactionHash, logIndex) WITHOUT the stream
+  // key, so a synthetic index that can reach a real log index silently drops a
+  // row. The purchase transaction carries 23 real logs; a naive ordinal would
+  // have put this record at index 0, straight onto a real one.
+  const base = NATIVE_AVAX_INTERNALS_FOR_GUARD.NATIVE_INDEX_BASE;
+  check(
+    base >= 1_000_000 &&
+      (purchase?.logIndex ?? 0) >= base &&
+      (advance?.logIndex ?? 0) >= base,
+    `native-AVAX synthetic log indices sit ABOVE every reachable real log index (base ${base.toLocaleString("en-US")}, ~25× an Avalanche block's 375-gas-per-LOG ceiling) — the insert's (tx, index) key can never silently drop a money row`,
+    "the native-AVAX synthetic index fell into the range a real log index can occupy",
+  );
+  // A plain transfer and an internal call IN THE SAME TRANSACTION must not
+  // collide with each other either — the plain row keeps slot 0 of the space.
+  const sameTx = build(
+    [{ ...advanceRow, hash: PURCHASE_TX, blockNumber: "90460319" }],
+    [purchaseRow],
+  );
+  check(
+    sameTx.length === 2 && sameTx[0]!.logIndex !== sameTx[1]!.logIndex,
+    "a plain transfer and an internal call in ONE transaction get distinct synthetic indices (neither is dropped)",
+    "a transaction carrying both a plain and an internal native movement lost one of them",
+  );
+  // ORDINAL STABILITY: the explorer may return internal rows in any order. The
+  // index is derived from the SORTED trace path, so a reordered answer produces
+  // the SAME indices — otherwise a re-scan writes a second row for a movement
+  // already recorded, and the feed doubles a figure.
+  const second = { ...purchaseRow, traceId: "12" };
+  const forward = build([], [purchaseRow, second]).map((r) => r.logIndex);
+  const reversed = build([], [second, purchaseRow]).map((r) => r.logIndex);
+  check(
+    forward.length === 2 && JSON.stringify(forward) === JSON.stringify(reversed),
+    "the internal-call ordinal is a function of the trace path, not of arrival order (a reordered explorer answer cannot duplicate a recorded movement)",
+    "the native-AVAX ordinal depends on array order — a re-scan could double a movement",
+  );
+  // NOT OURS, NOT A LINE: a movement between two strangers is dropped. Scope is
+  // pinned by ADDRESS only — never by a symbol or name from an API response
+  // (an address-poisoning counterfeit already sits in this vault's history).
+  check(
+    build([{ ...advanceRow, to: AGGREGATOR }], []).length === 0,
+    "a native movement touching no organ wallet produces no line (the lane is scoped by address, never by a name the answer carries)",
+    "the native-AVAX lane published a movement that is not the protocol's",
+  );
+  // FAIL-CLOSED, three ways. A lane that guesses is worse than a lane that stops.
+  const throws = (fn: () => unknown): boolean => {
+    try { fn(); return false; } catch { return true; }
+  };
+  check(
+    throws(() => build([{ ...advanceRow, value: "0.2" }], [])) &&
+      throws(() => build([{ ...advanceRow, blockNumber: "80000000" }], [])) &&
+      throws(() => build([{ ...advanceRow, from: "not-an-address" }], [])),
+    "the native-AVAX lane fails closed on a non-integer amount, a block outside the requested window, and a malformed address",
+    "the native-AVAX lane accepted a malformed explorer row instead of refusing it",
+  );
+  // A zero-value call is a contract call, not treasury history; a reverted one
+  // moved nothing. Neither is a line, and neither is an error.
+  check(
+    build([{ ...advanceRow, value: "0" }], []).length === 0 &&
+      build([{ ...advanceRow, isError: "1" }], []).length === 0,
+    "a zero-value call and a reverted call produce no native-AVAX line (silently — they are not defects)",
+    "the native-AVAX lane turned a zero-value or reverted call into a treasury line",
   );
 }
 

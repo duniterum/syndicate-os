@@ -55,10 +55,14 @@ import {
 import { enrichMissingBlockTimestamps } from "./blockTimeEnrich";
 import {
   BACKBONE_EXPECTED_CHAIN_ID,
+  getProtocolCursor,
+  insertProtocolEvents,
   loadActivityHeartbeatInput,
   loadProtocolEventRows,
   makeSaleEventPersistence,
+  upsertProtocolCursor,
 } from "./backboneDb";
+import { runNativeAvaxScan } from "./nativeAvaxScan";
 import {
   runProtocolEventScan,
   type ProtocolScanStreamSummary,
@@ -343,11 +347,41 @@ async function runCycle(): Promise<string | null> {
   }
   const protocolStreams: ProtocolScanStreamSummary[] =
     await runProtocolEventScan(transport, summary.head);
-  const protocolEventsInserted = protocolStreams.reduce(
-    (acc, s) => acc + s.rowsInserted,
-    0,
-  );
-  const streamFaults = protocolStreams.filter((s) => s.status === "error");
+
+  // ①c THE NATIVE-AVAX LANE (2026-07-27). AVAX emits no log, so it cannot ride
+  // the pass above — it reads the organ wallets' native movements from the
+  // explorer's account API instead. Same convergence law, same isolation: a
+  // fault lands in this summary and leaves the cursor where it was.
+  const nativeAvax = await runNativeAvaxScan({
+    organWallets: [
+      FINANCIAL_TARGETS.vaultWallet,
+      FINANCIAL_TARGETS.liquidityWallet,
+      FINANCIAL_TARGETS.operationsWallet,
+      FINANCIAL_TARGETS.nftSaleWallet,
+    ],
+    head: summary.head,
+    deps: {
+      getCursor: (streamKey) =>
+        getProtocolCursor(BACKBONE_EXPECTED_CHAIN_ID, streamKey, "*"),
+      upsertCursor: (input) =>
+        upsertProtocolCursor({
+          chainId: BACKBONE_EXPECTED_CHAIN_ID,
+          eventName: "*",
+          ...input,
+        }),
+      insert: insertProtocolEvents,
+    },
+  });
+
+  const protocolEventsInserted =
+    protocolStreams.reduce((acc, s) => acc + s.rowsInserted, 0) +
+    nativeAvax.rowsInserted;
+  const streamFaults = [
+    ...protocolStreams.filter((s) => s.status === "error"),
+    ...(nativeAvax.status === "error"
+      ? [nativeAvax as unknown as ProtocolScanStreamSummary]
+      : []),
+  ];
 
   // ② Incremental Protocol Time enrichment (new blocks only, witness-checked;
   // covers BOTH raw lanes).
