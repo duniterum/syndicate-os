@@ -764,7 +764,12 @@ async function runCycle(): Promise<string | null> {
       ...[nativeAvax, discovery].map((s) => ({
         streamKey: s.streamKey,
         status: s.status,
-        cursorBlock: s.scannedTo,
+        // NULL ON FAULT, never a number (confirmation review, 2026-07-27).
+        // `scannedTo` starts at the lane's FLOOR and only advances as chunks
+        // persist, so publishing it after an early fault reported a lane as
+        // sitting millions of blocks behind when its stored cursor was fine —
+        // an operator screen inventing an outage. Unknown is stated as unknown.
+        cursorBlock: s.status === "ok" ? s.scannedTo : null,
         caughtUp: s.status === "ok" && s.scannedTo >= (summary.head ?? 0),
         rowsInserted: s.rowsInserted,
       })),

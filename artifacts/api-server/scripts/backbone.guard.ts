@@ -70,6 +70,7 @@ import {
   decodeSymbolReturn,
   DISCOVERY_FROM_BLOCK,
   EARLIEST_KNOWN_DISCOVERY_BLOCK,
+  runTokenDiscoveryScan,
 } from "../src/backbone/tokenDiscoveryScan";
 import {
   PROTOCOL_EVENT_SCAN_TARGETS,
@@ -1195,6 +1196,81 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
     signerByTx: OURS,
     metaByContract: new Map([[lpPair, { symbol: "JLP", decimals: 18 }]]),
   });
+  // ── THE TWO FREEZE CLASSES, DRIVEN THROUGH THE REAL SCAN LOOP ─────────────
+  // The confirmation review found fixes ④ and ⑦ guarded by NOTHING — the guard
+  // exercised only the pure builders, so the two ways a stranger can HALT a
+  // money lane were invisible to it. A fake transport drives the actual loop.
+  {
+    const T0 = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+    const topicOf = (a: string) => "0x" + "0".repeat(24) + a.replace(/^0x/, "").toLowerCase();
+    const word = (n: bigint) => "0x" + n.toString(16).padStart(64, "0");
+    const GOOD_TX = "0x" + "a1".repeat(32);
+    const SPAM_TX = "0x" + "b2".repeat(32);
+    const MUTE_TOKEN = "0x" + "cc".repeat(20);
+    const erc20Log = (tx: string, contract: string, idx: number) => ({
+      address: contract, topics: [T0, topicOf(STRANGER), topicOf(VAULT)],
+      data: word(1000000000000000000n), blockNumber: "0x5654321", logIndex: "0x" + idx.toString(16),
+      transactionHash: tx,
+    });
+    // Same topic0, a FOURTH topic: the ERC-721 shape the decoder must refuse.
+    const erc721Log = { address: "0x" + "dd".repeat(20), topics: [T0, topicOf(STRANGER), topicOf(VAULT), word(7n)], data: "0x", blockNumber: "0x5654321", logIndex: "0x9", transactionHash: SPAM_TX };
+
+    const makeTransport = (opts: { signer: string; describable: boolean }) =>
+      (async (method: string, params: unknown[]): Promise<unknown> => {
+        if (method === "eth_getLogs") {
+          const t = (params[0] as { topics: unknown[] }).topics;
+          // Only the recipient-position pass matches this fixture.
+          return Array.isArray(t[2]) ? [erc721Log, erc20Log(GOOD_TX, MUTE_TOKEN, 3)] : [];
+        }
+        if (method === "eth_getTransactionByHash") return { from: opts.signer };
+        if (method === "eth_call") {
+          if (!opts.describable) throw new Error("token will not describe itself");
+          const d = (params[0] as { data: string }).data;
+          if (d === "0x313ce567") return word(18n);
+          return "0x" + (32).toString(16).padStart(64, "0") + (3).toString(16).padStart(64, "0") + Buffer.from("ABC").toString("hex").padEnd(64, "0");
+        }
+        return null;
+      });
+    const runLane = async (opts: { signer: string; describable: boolean }) => {
+      const inserted: unknown[] = [];
+      let cursorWrites = 0;
+      const s = await runTokenDiscoveryScan({
+        transport: makeTransport(opts),
+        organWallets: [VAULT], signerWallets: [VAULT], pinnedContracts: curated,
+        head: DISCOVERY_FROM_BLOCK + 10,
+        deps: {
+          getCursor: async () => null,
+          upsertCursor: async () => { cursorWrites += 1; },
+          insert: async (r) => { inserted.push(...r); return r.length; },
+        },
+      });
+      return { s, inserted, cursorWrites };
+    };
+
+    // ④ A spam ERC-721 in the SAME window must not abort it — the good row survives.
+    const ours = await runLane({ signer: VAULT, describable: true });
+    check(
+      ours.s.status === "ok" && ours.inserted.length === 1 && ours.cursorWrites > 0,
+      "a spam ERC-721 sent to a published organ wallet does NOT abort the discovery window — the legitimate row in the same batch is still produced and the cursor still advances",
+      `one non-ERC-20 log froze the discovery lane (status=${ours.s.status}, rows=${ours.inserted.length}, cursorWrites=${ours.cursorWrites})`,
+    );
+    // ⑦ A STRANGER's undescribable token must NOT hold the cursor…
+    const stranger = await runLane({ signer: STRANGER, describable: false });
+    check(
+      stranger.s.status === "ok" && stranger.cursorWrites > 0,
+      "an undescribable token from a STRANGER never holds the cursor — an airdrop cannot freeze the lane for the price of gas",
+      `a stranger's airdrop halted the discovery lane (status=${stranger.s.status}, error=${stranger.s.error ?? ""})`,
+    );
+    // …while an asset WE SIGNED FOR that cannot describe itself DOES hold it,
+    // loudly, naming the contract — that one is worth waiting for.
+    const oursMute = await runLane({ signer: VAULT, describable: false });
+    check(
+      oursMute.s.status === "error" && (oursMute.s.error ?? "").includes(MUTE_TOKEN),
+      "an asset WE signed for that cannot be described HOLDS the cursor and NAMES the contract blocking it (a row we would have published is never skipped in silence)",
+      `an undescribable asset of ours was skipped instead of held (status=${oursMute.s.status})`,
+    );
+  }
+
   check(
     curated.includes(lpPair) && lpRows.length === 0 && curated.length === 5,
     "the LP pair is in the ONE exclusion list the runner uses, and a JLP transfer produces NO discovery row (pool acts already have their own two lanes — narrating one act twice is a truth defect)",

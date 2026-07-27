@@ -256,13 +256,35 @@ for (const [sym, decimals, amountRaw, want] of DISCOVERED_CASES) {
     fail(`discovery — the sentence says the amount is unavailable (${JSON.stringify(sentence)}) while the amount column renders ${JSON.stringify(shown)}. The row contradicts itself.`);
   }
   // An INTERNAL move must never be announced as money ENTERING the organ it left.
+  //
+  // THIS PIN WAS DEAD TWICE, and the second death is the more interesting one.
+  // First: its row carried no decimals, so `parseLine` refused it and the
+  // guard's own `if (internal !== null)` skipped the assertion silently — a pin
+  // behind a null-guard it can fail is not a pin. Fixed by giving the row what
+  // the parser needs, and by treating a rejection as a FAILURE to report.
+  // Then, measured rather than assumed (2026-07-27): removing the internal
+  // branch from the FAIL-CLOSED sentence path — the branch the review flagged —
+  // still left this guard green, because that path is only reached when the
+  // amount cannot be scaled, and a row `parseLine` admits ALWAYS carries either
+  // a curated name or its own decimals. So the defect was real in the code and
+  // practically unreachable in production; the fix stays as defence, and the
+  // pin below asserts what IS reachable: the confident path must name BOTH
+  // organs. Saying which of the two a check actually covers is the whole point.
   const internal = feedMod.parseLine!(
-    treasuryRow({ token: "MYSTERY-X", movement: "internal", organLabel: "the vault", toOrganLabel: "the liquidity wallet" }),
+    treasuryRow({
+      token: "MYSTERY-X", assetDecimals: 18, assetContract: LINK_CONTRACT,
+      movement: "internal", organLabel: "the vault", toOrganLabel: "the liquidity wallet",
+    }),
   );
-  if (internal !== null) {
+  if (internal === null) {
+    fail("discovery — the INTERNAL-move pin could not run: parseLine rejected its row, so the assertion below never executes.");
+  } else {
     const s = String(feedMod.sentenceForServedLine!(internal));
     if (/entered/i.test(s)) {
       fail(`discovery — an INTERNAL treasury move is announced as ENTERING the organ it left: ${JSON.stringify(s)}.`);
+    }
+    if (!/moved from/i.test(s)) {
+      fail(`discovery — an INTERNAL treasury move does not name both organs: ${JSON.stringify(s)}.`);
     }
   }
 }

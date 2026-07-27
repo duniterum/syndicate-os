@@ -488,18 +488,30 @@ export async function runTokenDiscoveryScan(args: {
         // overlap does not save it: the chunk is 2,000 blocks wide. So the
         // cursor STOPS at the previous chunk and the next cycle retries this
         // one. Converging slowly beats converging with a hole.
-        const owed = candidates.filter(
-          (c) =>
-            !pinned.has(c.contract) &&
-            c.valueRaw !== "0" &&
-            signerByTx.has(c.transactionHash) &&
-            !metaByContract.has(c.contract),
-        );
+        // THE HOLD MUST USE THE SAME ADMISSION TEST AS THE BUILDER (confirmation
+        // review, 2026-07-27 — this fix had re-created, one layer up, the exact
+        // freeze it was written beside). The first version asked only whether a
+        // signer was READABLE; the builder admits only when the signer is OURS.
+        // So a stranger could airdrop an ERC-20 that refuses to describe itself
+        // and hold the cursor FOREVER — a permanent freeze of the lane, for the
+        // price of gas, to a wallet we publish. Only a row we would actually
+        // have PUBLISHED is worth waiting for.
+        const ourSigners = new Set(args.signerWallets.map((w) => w.toLowerCase()));
+        const owed = candidates.filter((c) => {
+          if (pinned.has(c.contract)) return false;
+          if (c.valueRaw === "0") return false;
+          const signer = signerByTx.get(c.transactionHash);
+          if (signer === undefined || !ourSigners.has(signer.toLowerCase())) return false;
+          return !metaByContract.has(c.contract);
+        });
         if (owed.length > 0) {
+          // Named, not counted: this halts a money lane, so the operator screen
+          // must say WHICH contract is blocking it rather than "1 row".
+          const contracts = [...new Set(owed.map((c) => c.contract))].join(", ");
           summary.status = "error";
           summary.error =
-            `${owed.length} discovered row(s) in blocks ${from}-${to} could not be described ` +
-            `(symbol()/decimals() unreadable) — cursor held so the next cycle retries`;
+            `blocks ${from}-${to}: ${owed.length} asset(s) WE SIGNED FOR cannot be described ` +
+            `(symbol()/decimals() unreadable on ${contracts}) — cursor held so the next cycle retries`;
           return summary;
         }
         const records = buildDiscoveredRecords({
