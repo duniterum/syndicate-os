@@ -1,5 +1,50 @@
 # CLAUDE.md — how we work (read first, every session)
 
+---
+
+## ⛔ THE FOUR CHECKS — RUN THEM BEFORE EVERY COMMIT. NOTHING BELOW MATTERS IF THESE FAIL.
+
+*(Founder, 2026-07-27, after five review rounds confirmed 32 defects in one day's work —
+nearly all of them ONE disease. His verdict on a proposed written law: «**même en faisant ainsi
+tu fais encore des erreurs car tu ne les relis pas quand tu travailles**». So this block is FIRST,
+it is FOUR lines, and three of the four are executable. His time is finite capital; a correction
+cycle costs him money he is not earning while he spends it on me.)*
+
+**① THE TWIN SEARCH — grep the PATTERN, not the instance.** Before committing a fix, search for
+every other place that decision is made, and PASTE the search + its result in the commit. If a fact
+or rule lives in 2+ places, the fix is to make it ONE place and import it — never to patch both.
+▸ **RUNS:** `pnpm run duplicate-facts:guard` (in the blocking chain). A new duplicated address,
+endpoint or pinned literal is a RED BUILD. *Named cases, all 2026-07-27: two seat-key spaces · the
+LP-pair list assembled privately in the runner · a hold whose admission test disagreed with its
+builder's · a hold on the tail phase and not the asked phase · that hold then covering ONE of the
+three drop paths its own commit message named · the explorer URL declared twice · one AVAX figure
+written six times and wrong in all six.*
+
+**② RED FIRST, FIX SECOND.** Write the failing check BEFORE the fix and watch it fail. A guard
+written afterwards can pass without ever executing the branch it claims to protect — which is
+exactly how the phase-1 cursor defect survived FOUR reviews (every fixture passed a `head` so small
+the branch never ran) and how an assertion sat behind a null-check its own fixture could not
+satisfy. **If reverting the fix does not turn the check RED, the check does not exist.**
+
+**③ NO FIGURE HE HAS NOT SEEN MEASURED.** Every number in a founder-facing message comes from a
+command in that same message — never from memory, a doc, or reading code. *Named: a `console.log`
+taken twice as proof a file changed · "4.5399" written into six files without once running the
+formatter (it prints 4.5398 — the feed truncates) · and the worst, telling him prod published a
+contradiction it never published, as an argument to deploy. **Inventing a cost of waiting is
+pushing.***
+
+**④ IMPORT, NEVER RE-DERIVE.** Before writing any constant, map, list or resolution: search for it.
+The shortcut — re-reading a file and retyping something similar — is faster in the moment and cost
+an entire day. *Named: the seat-number resolution written beside the map that already answered it ·
+a `text-[10px]` copied from an existing component instead of the token, under the 12px floor.*
+
+**⑤ AND THE SHAPE OF THE WORK ITSELF.** The worst defect is always in the LAST thing written,
+because it is the least reviewed. **A slice is: one defect closed + its RED proof + the twin search
++ commit.** Not eight hours then a review at the end — that is how six occurrences of one disease
+accumulate before anyone looks.
+
+---
+
 **Read `docs/00_START_HERE.md` first** — the whole-protocol entry point (what the OS is,
 locked doctrine, the layers, the ORDER to grade-AAA, roles). Then this file for how we work.
 

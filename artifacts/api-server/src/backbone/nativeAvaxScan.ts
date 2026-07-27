@@ -45,6 +45,7 @@
 
 import type { ProtocolEventRecord } from "./protocolEventScan";
 import { EXPLORER_ACCOUNT_API, EXPLORER_PAGE_SIZE } from "./explorerIndex";
+import { PROTOCOL_SCAN_FLOOR_BLOCK } from "../data/protocolTargets";
 
 /** Chain 43114 — the C-Chain, the only chain this protocol reads. */
 const EXPECTED_CHAIN_ID = 43114;
@@ -470,7 +471,7 @@ export async function runNativeAvaxScan(args: {
  * The lane's floor — the SAME pinned block every other treasury lane starts
  * from, so "what the treasury feed covers" is one answer and not five.
  */
-export const NATIVE_AVAX_FROM_BLOCK = 87_157_852;
+export const NATIVE_AVAX_FROM_BLOCK = PROTOCOL_SCAN_FLOOR_BLOCK;
 const NATIVE_AVAX_REORG_OVERLAP = 50;
 
 /**

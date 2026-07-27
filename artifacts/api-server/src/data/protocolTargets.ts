@@ -468,6 +468,13 @@ export type ReferralAttributionScanTarget = {
   scanOnly: true;
 };
 
+/**
+ * THE PROTOCOL SCAN FLOOR — the block every lane starts from, declared ONCE.
+ * It was typed in several places; a floor that exists twice is a floor that can
+ * disagree with itself, which is the whole reason guard-duplicate-facts exists.
+ */
+export const PROTOCOL_SCAN_FLOOR_BLOCK = 87_157_852;
+
 export const REFERRAL_ATTRIBUTION_SCAN_TARGET: ReferralAttributionScanTarget = {
   key: "SOURCE_REGISTRY_V1",
   label: "Source Registry V1 — attribution activity scan",
