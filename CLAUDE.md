@@ -217,3 +217,25 @@ preview costs founder trust and money. (Origin of the rule: the S3 preview shipp
 a broken throne image — a Git Bash `BASE_PATH=/` → `C:/Program Files/Git/` env
 conversion had silently rebased the dev rig; launch the rig with
 `MSYS2_ENV_CONV_EXCL="BASE_PATH"` and always run the image check.)
+
+**THE REFACTORING LAW — ONLY TWO THINGS ARE FIXED (founder, permanent, 2026-07-27:
+*"ce n'est pas une loi figée sur la pierre, on fait du refactoring ; tant que ce n'est pas une
+loi de blockchain ou légale, on le change pour que ça ne nous bloque pas"*).**
+Exactly **two** classes of constraint are immovable: **what the blockchain physically does**,
+and **what the law requires**. EVERYTHING ELSE — a comment, a canon doc, an ADR line, a schema
+shape, a naming rule, a spec written by an earlier session, a decision recorded in this very
+file — is a DATED ENGINEERING CHOICE, and it is refactored the moment it blocks the right build.
+① **A document is never a reason not to build.** When a written rule conflicts with the correct
+build, the DOCUMENT is what changes — in the SAME commit, with the correction STATED (strike the
+old line, date the new one), so the record shows a decision and never a silent overwrite.
+② **"Honestly cannot", "by design", "not supported", "impossible" are dated assumptions, not
+physics.** Test them against today's chain before repeating them. The named failure: *"Native
+AVAX emits no event and honestly cannot have a lane"* — the first half is physics, the second was
+a conclusion drawn from ONE TOOL's limit (`eth_getLogs`), false in fact, written into canon, and
+quoted for weeks until the founder pushed back and the lane was built in a day.
+③ **Never let a limit of a TOOL masquerade as a limit of REALITY.** Say which one you are
+stating.
+④ **The exceptions are narrow and real:** chain facts (what a contract emits, what a signature
+proves, what a block contains) and legal obligations are VERIFIED, never refactored for
+convenience. And this law frees the ARCHITECTURE only — every founder ruling marked ANSWERED
+FOREVER by the SETTLED-LAW rules stays answered.
