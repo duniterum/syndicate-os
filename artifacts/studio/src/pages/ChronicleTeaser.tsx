@@ -3,14 +3,15 @@
 // Two honest states:
 //   · register EMPTY → the designed teaser + "the first entry awaits the
 //     founder's promotion" (no invented history);
-//   · register CARRIES ENTRIES → the solemn public record, oldest-first,
+//   · register CARRIES ENTRIES → the solemn public record, NEWEST-first (the
+//     entry NUMBER stays chronological — Entry 1 is the first thing that happened),
 //     protocol-institutional voice, identity/amount-blind, verify-first.
 
 import { MemberAppPage } from "@/components/member/MemberAppPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { TeaserSurface, type TeaserSpec } from "@/components/TeaserSurface";
-import { CHRONICLE_REGISTER } from "@/config/chronicleRegister";
+import { CHRONICLE_REGISTER, type ChronicleEntry } from "@/config/chronicleRegister";
 
 const spec: TeaserSpec = {
   eyebrow: "Chronicle",
@@ -45,9 +46,23 @@ export default function ChronicleTeaser() {
   // Sorted by the EVENT date, never by array position: the Founder promotes out
   // of order (eleven entries dated June landed in one commit in July), so array
   // order carries no meaning and must never be trusted for chronology.
-  const entries = [...CHRONICLE_REGISTER].sort((a, b) =>
-    b.dateUtc.localeCompare(a.dateUtc),
-  );
+  // THE ENTRY NUMBER IS CHRONOLOGICAL; THE ORDER IS NEWEST-FIRST. Two different
+  // things, and conflating them was a defect (senior review, 2026-07-27).
+  // `Entry N` was rendered from the RENDER index, so after `b74dfdb` flipped the
+  // list to newest-first the ordinals ran BACKWARDS against the dates printed
+  // beside them — Entry 1 dated 2026-07-13, Entry 15 dated 2026-06-06. To a
+  // reader, "Entry 1" means the FIRST thing that happened; it cannot mean "the
+  // most recent" just because the list opens there. The previous commit fixed
+  // the sentence and left the number three lines below it untouched.
+  //
+  // Ties are broken by id so both orderings are deterministic mirrors of each
+  // other: eleven entries share a promotion date, and a stable sort alone would
+  // let a tie group read ascending inside a descending list.
+  const byDateThenId = (a: ChronicleEntry, b: ChronicleEntry) =>
+    a.dateUtc.localeCompare(b.dateUtc) || a.id.localeCompare(b.id);
+  const chronological = [...CHRONICLE_REGISTER].sort(byDateThenId);
+  const entryNumberById = new Map(chronological.map((e, i) => [e.id, i + 1]));
+  const entries = [...chronological].reverse();
   return (
     <MemberAppPage
       eyebrow="Chronicle"
@@ -62,10 +77,10 @@ export default function ChronicleTeaser() {
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
       <div className="space-y-10">
-        {entries.map((e, idx) => (
+        {entries.map((e) => (
           <article key={e.id} id={e.id} className="scroll-mt-24">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-3">
-              <span className="font-mono text-xs text-gold">{`Entry ${idx + 1}`}</span>
+              <span className="font-mono text-xs text-gold">{`Entry ${entryNumberById.get(e.id)}`}</span>
               <h2 className="type-h2 text-foreground">{e.title}</h2>
               <span className="font-mono text-xs text-muted-foreground">{e.dateUtc}</span>
             </div>

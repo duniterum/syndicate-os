@@ -9,11 +9,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > session and Replit was still running when it closed. **The next session's FIRST act is to read his pasted
 > report and seal the new sha here** — measured, never inferred (pick a symbol that exists at HEAD and not
 > at `27924e5`, e.g. `TREASURY_DISCOVERED`, and look for it in the served payload).
-> **WHAT THE REPORT MUST CONFIRM, and it was asked for explicitly:** treasury-move count **7 → 12** with the
-> five new rows (4.5398 AVAX in · 0.2 AVAX advanced by the Founder · 1.0042 LINK.e in · 2 further native
-> movements), each with its verify anchor; and the engine status carrying **TWO NEW LANES**, `TREASURY_AVAX`
-> and `TREASURY_DISCOVERED`, with their status and cursor. **A lane in `error` is not an outage:** both fail
-> closed, everything else keeps serving — paste the message and fix from it.
+> **WHAT THE REPORT MUST CONTAIN — ASK FOR THE COUNT, NEVER CONFIRM ONE.** No figure typed here can be
+> derived from the repo: the measured native history is VAULT-SCOPED and names exactly TWO movements, and
+> the guard fixture pins exactly those two. Earlier drafts of this block asked Replit to confirm 12, then 9,
+> while a commit message said 10 — three different targets for one check, so a SUCCESSFUL deploy could be
+> read as a failure. **Replit REPORTS the treasury-move count and LISTS the rows; the next session compares
+> that list against the chain.** What must be PRESENT (each with its verify anchor): the AVAX purchase
+> (block 90,460,319), the Founder's 0.2 AVAX advance (block 90,460,045), and LINK.e (block 91,336,828).
+> And the engine status must carry **TWO NEW LANES**, `TREASURY_AVAX` and `TREASURY_DISCOVERED`, with
+> their status and cursor. **A lane in `error` is not an outage:** both fail closed, everything else keeps
+> serving — paste the message and fix from it.
 >
 > **② DEPLOY BACKLOG — DERIVE IT, NEVER READ A COUNT TYPED HERE:** `git log --oneline <prod>..HEAD`.
 > A count written into this line is stale the moment the commit carrying it lands. NO migration, NO new env
@@ -141,7 +146,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > **THE HONEST LIMIT — what none of this covers.** There is no DB locally, so the PERSISTENCE path (insert →
 > cursor → loader → read-model) is proven only by types and by the pure fixtures. The derivation is pinned,
 > the HTTP read was executed live against the real endpoint, but the first end-to-end proof is the deploy.
-> **WHAT TO VERIFY ON THE DEPLOY REPORT:** the feed's treasury count moves 7 → 9, and both AVAX lines appear
+> **WHAT TO VERIFY ON THE DEPLOY REPORT:** Replit REPORTS the treasury count (never confirms a typed one — see §① ) and both AVAX lines appear
 > with their VERIFY anchors. If the engine reports a `TREASURY_AVAX` stream fault instead, the explorer API
 > is unreachable from the host — the lane fails closed, everything else keeps serving, and that is a
 > configuration finding, not a data one.

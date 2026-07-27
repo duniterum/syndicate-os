@@ -366,14 +366,27 @@ export async function fetchCandidatesFromReceipts(
   transport: RpcTransport,
   txHashes: readonly string[],
   organWallets: readonly string[],
-): Promise<DiscoveredTransferCandidate[]> {
+): Promise<{ candidates: DiscoveredTransferCandidate[]; unread: string[] }> {
   const organs = new Set(organWallets.map((w) => w.toLowerCase()));
   const out: DiscoveredTransferCandidate[] = [];
+  // A hash the index NAMED and our node did not answer is UNRESOLVED, not
+  // absent — and the two must never be confused by a cursor. The transport
+  // throws on HTTP and JSON-RPC errors, so those are already safe; what is NOT
+  // is a backend that simply does not hold the transaction and answers
+  // `{"result": null}`. The first version dropped that silently, so a window
+  // could end with ZERO candidates and still be certified covered.
+  const unread: string[] = [];
   for (const hash of txHashes) {
     const receipt = await transport("eth_getTransactionReceipt", [hash]);
-    if (typeof receipt !== "object" || receipt === null) continue;
+    if (typeof receipt !== "object" || receipt === null) {
+      unread.push(hash);
+      continue;
+    }
     const logs = (receipt as { logs?: unknown }).logs;
-    if (!Array.isArray(logs)) continue;
+    if (!Array.isArray(logs)) {
+      unread.push(hash);
+      continue;
+    }
     for (const log of logs) {
       let c: DiscoveredTransferCandidate;
       try {
@@ -385,7 +398,7 @@ export async function fetchCandidatesFromReceipts(
       out.push(c);
     }
   }
-  return out;
+  return { candidates: out, unread };
 }
 
 /**
@@ -495,17 +508,30 @@ export async function fetchDiscoveryCandidates(
 export async function fetchSigners(
   transport: RpcTransport,
   txHashes: readonly string[],
-): Promise<Map<string, string>> {
+): Promise<{ signerByTx: Map<string, string>; unread: string[] }> {
   const byTx = new Map<string, string>();
+  // "NOT OURS" AND "COULD NOT READ" ARE DIFFERENT ANSWERS, and only one of them
+  // is safe to move a cursor past. Collapsing them is right for the PUBLISH
+  // decision — unknown is not consent — and wrong for the CURSOR decision: a
+  // stranger's transaction is resolved-and-rejected, an unanswered one is not
+  // resolved at all. This read is a SECOND round trip after the receipt, over a
+  // load-balanced multi-provider transport, which is exactly where the two can
+  // disagree.
+  const unread: string[] = [];
   for (const hash of txHashes) {
     const tx = await transport("eth_getTransactionByHash", [hash]);
-    if (typeof tx !== "object" || tx === null) continue; // unknown ≠ ours
+    if (typeof tx !== "object" || tx === null) {
+      unread.push(hash.toLowerCase());
+      continue;
+    }
     const from = (tx as { from?: unknown }).from;
     if (typeof from === "string" && /^0x[0-9a-fA-F]{40}$/.test(from)) {
       byTx.set(hash.toLowerCase(), from.toLowerCase());
+    } else {
+      unread.push(hash.toLowerCase());
     }
   }
-  return byTx;
+  return { signerByTx: byTx, unread };
 }
 
 /**
@@ -639,21 +665,30 @@ export async function runTokenDiscoveryScan(args: {
         fromBlock: resumeFrom,
         toBlock: indexEnd,
       });
-      const candidates = await fetchCandidatesFromReceipts(
+      // EVERY UNRESOLVED THING HOLDS THIS CURSOR — and the check lives OUTSIDE
+      // the "did we get candidates" branch, because ZERO CANDIDATES IS THE
+      // DANGEROUS CASE (senior review #5, 2026-07-27, measured by driving this
+      // function). The previous version nested the hold inside
+      // `if (candidates.length > 0)`, so a node answering `{"result": null}`
+      // for the one transaction the index named produced no candidates, skipped
+      // the hold entirely, and advanced the cursor across ~1.34M blocks with
+      // status "ok". The commit that added the hold named THREE drop paths in
+      // its own message and covered ONE of them.
+      const { candidates, unread: unreadReceipts } = await fetchCandidatesFromReceipts(
         args.transport,
         txHashes,
         args.organWallets,
       );
+      const { signerByTx, unread: unreadSigners } = await fetchSigners(
+        args.transport,
+        [...new Set(candidates.map((c) => c.transactionHash))],
+      );
+      const pinnedSet = new Set(args.pinnedContracts.map((c) => c.toLowerCase()));
+      const metaByContract = await fetchTokenMeta(
+        args.transport,
+        [...new Set(candidates.map((c) => c.contract))].filter((c) => !pinnedSet.has(c)),
+      );
       if (candidates.length > 0) {
-        const signerByTx = await fetchSigners(
-          args.transport,
-          [...new Set(candidates.map((c) => c.transactionHash))],
-        );
-        const pinnedSet = new Set(args.pinnedContracts.map((c) => c.toLowerCase()));
-        const metaByContract = await fetchTokenMeta(
-          args.transport,
-          [...new Set(candidates.map((c) => c.contract))].filter((c) => !pinnedSet.has(c)),
-        );
         const records = buildDiscoveredRecords({
           candidates,
           organWallets: args.organWallets,
@@ -665,25 +700,26 @@ export async function runTokenDiscoveryScan(args: {
         if (records.length > 0) {
           summary.rowsInserted += await args.deps.insert(records);
         }
-        // THE SAME HOLD AS THE TAIL, AND IT MATTERS MORE HERE. This phase runs
-        // ONCE over ~1.34M blocks and is never revisited, so a row dropped here
-        // is dropped forever. Hold the cursor and let the next cycle retry.
-        const owedHere = undescribedOwedRows({
-          candidates,
-          pinnedContracts: args.pinnedContracts,
-          signerWallets: args.signerWallets,
-          signerByTx,
-          metaByContract,
-        });
-        if (owedHere.length > 0) {
-          const contracts = [...new Set(owedHere.map((c) => c.contract))].join(", ");
-          summary.status = "error";
-          summary.error =
-            `asked history ${resumeFrom}-${indexEnd}: ${owedHere.length} asset(s) WE SIGNED FOR ` +
-            `cannot be described (symbol()/decimals() unreadable on ${contracts}) — cursor held, ` +
-            `the next cycle re-asks this window`;
-          return summary;
-        }
+      }
+      const owedHere = undescribedOwedRows({
+        candidates,
+        pinnedContracts: args.pinnedContracts,
+        signerWallets: args.signerWallets,
+        signerByTx,
+        metaByContract,
+      });
+      const unresolved = [
+        ...unreadReceipts.map((h) => `receipt unread ${h}`),
+        ...unreadSigners.map((h) => `signer unread ${h}`),
+        ...[...new Set(owedHere.map((c) => c.contract))].map((c) => `undescribed ${c}`),
+      ];
+      if (unresolved.length > 0) {
+        summary.status = "error";
+        summary.error =
+          `asked history ${resumeFrom}-${indexEnd}: ${unresolved.length} unresolved item(s) — ` +
+          `${unresolved.join(" · ")} — cursor HELD, the next cycle re-asks this window ` +
+          `(this phase runs once over the whole history; advancing here loses the row forever)`;
+        return summary;
       }
       await args.deps.upsertCursor({
         streamKey,
@@ -716,7 +752,7 @@ export async function runTokenDiscoveryScan(args: {
       if (candidates.length > 0) {
         // The two extra reads happen ONLY for what survived the cheap filters,
         // so a quiet window costs exactly the two getLogs passes.
-        const signerByTx = await fetchSigners(
+        const { signerByTx, unread: unreadSignersTail } = await fetchSigners(
           args.transport,
           [...new Set(candidates.map((c) => c.transactionHash))],
         );
@@ -741,7 +777,6 @@ export async function runTokenDiscoveryScan(args: {
         // and hold the cursor FOREVER — a permanent freeze of the lane, for the
         // price of gas, to a wallet we publish. Only a row we would actually
         // have PUBLISHED is worth waiting for.
-        const ourSigners = new Set(args.signerWallets.map((w) => w.toLowerCase()));
         const owed = undescribedOwedRows({
           candidates,
           pinnedContracts: args.pinnedContracts,
@@ -749,14 +784,21 @@ export async function runTokenDiscoveryScan(args: {
           signerByTx,
           metaByContract,
         });
-        if (owed.length > 0) {
+        // The tail holds for the SAME two reasons as the asked history: an
+        // asset we signed for that will not describe itself, and a transaction
+        // whose signer our node did not answer. The second costs one cycle here
+        // (this chunk is simply re-read) and would cost a row forever in phase 1.
+        const unresolvedTail = [
+          ...unreadSignersTail.map((h) => `signer unread ${h}`),
+          ...[...new Set(owed.map((c) => c.contract))].map((c) => `undescribed ${c}`),
+        ];
+        if (unresolvedTail.length > 0) {
           // Named, not counted: this halts a money lane, so the operator screen
-          // must say WHICH contract is blocking it rather than "1 row".
-          const contracts = [...new Set(owed.map((c) => c.contract))].join(", ");
+          // must say WHAT is blocking it rather than "1 row".
           summary.status = "error";
           summary.error =
-            `blocks ${from}-${to}: ${owed.length} asset(s) WE SIGNED FOR cannot be described ` +
-            `(symbol()/decimals() unreadable on ${contracts}) — cursor held so the next cycle retries`;
+            `blocks ${from}-${to}: ${unresolvedTail.length} unresolved item(s) — ` +
+            `${unresolvedTail.join(" · ")} — cursor held so the next cycle retries`;
           return summary;
         }
         const records = buildDiscoveredRecords({

@@ -1290,7 +1290,7 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
         ],
       };
     }) as unknown as Parameters<typeof fetchCandidatesFromReceipts>[0];
-    const fromReceipts = await fetchCandidatesFromReceipts(fakeNode, [RECEIPT_TX], [VAULT]);
+    const { candidates: fromReceipts } = await fetchCandidatesFromReceipts(fakeNode, [RECEIPT_TX], [VAULT]);
     check(
       fromReceipts.length === 1 &&
         fromReceipts[0]!.logIndex === 42 &&
@@ -1406,6 +1406,50 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
         !askedMute.cursorWrites.includes(DISCOVERY_FROM_BLOCK + 50_000),
       "the ASKED-HISTORY phase HOLDS its cursor when an asset we signed for cannot be described — a one-shot backfill must never advance past a row it dropped (CHAIN_READING_DOCTRINE §3)",
       `phase 1 advanced its cursor past an undescribable asset (status=${askedMute.s.status}, writes=${JSON.stringify(askedMute.cursorWrites)}) — the row is lost permanently`,
+    );
+
+    // ⓪b THE TWO DROP PATHS THAT WERE NAKED (senior review #5, 2026-07-27).
+    // The previous hold sat INSIDE `if (candidates.length > 0)`, so the two
+    // cases that produce ZERO candidates — a node answering `{"result": null}`
+    // for the receipt, and an unreadable signer — skipped it entirely and the
+    // cursor jumped the whole asked history with status "ok". The commit that
+    // added the hold named three drop paths and covered one. Both are driven
+    // here, because a hold no fixture reaches is not a hold.
+    const runPhase1Broken = async (mode: "null-receipt" | "null-signer") => {
+      const cursorWrites: number[] = [];
+      const t = (async (method: string): Promise<unknown> => {
+        if (method === "eth_getLogs") return [];
+        if (method === "eth_getTransactionReceipt") {
+          return mode === "null-receipt" ? null : { logs: [erc20Log(GOOD_TX, MUTE_TOKEN, 3)] };
+        }
+        if (method === "eth_getTransactionByHash") return mode === "null-signer" ? null : { from: VAULT };
+        if (method === "eth_call") return word(18n);
+        return null;
+      }) as unknown as Parameters<typeof fetchCandidatesFromReceipts>[0];
+      const s = await runTokenDiscoveryScan({
+        transport: t,
+        organWallets: [VAULT], signerWallets: [VAULT], pinnedContracts: curated,
+        head: DISCOVERY_FROM_BLOCK + 100_000,
+        deps: {
+          getCursor: async () => null,
+          upsertCursor: async (i) => { cursorWrites.push(i.lastScannedBlock); },
+          insert: async (r) => r.length,
+          fetchIndexHashes: async () => [GOOD_TX],
+        },
+      });
+      return { s, cursorWrites };
+    };
+    const nullReceipt = await runPhase1Broken("null-receipt");
+    check(
+      nullReceipt.s.status === "error" && nullReceipt.cursorWrites.length === 0,
+      "a transaction the INDEX named that our node did not answer HOLDS the asked-history cursor — unresolved is not absent, and this phase never re-asks",
+      `an unread receipt let the cursor jump the whole asked history (status=${nullReceipt.s.status}, writes=${JSON.stringify(nullReceipt.cursorWrites)})`,
+    );
+    const nullSigner = await runPhase1Broken("null-signer");
+    check(
+      nullSigner.s.status === "error" && nullSigner.cursorWrites.length === 0,
+      "a transaction whose SIGNER our node did not answer HOLDS the asked-history cursor — \"could not read\" and \"not ours\" are different answers and only one may move a cursor",
+      `an unread signer let the cursor jump the whole asked history (status=${nullSigner.s.status}, writes=${JSON.stringify(nullSigner.cursorWrites)})`,
     );
 
     // ④ A spam ERC-721 in the SAME window must not abort it — the good row survives.
