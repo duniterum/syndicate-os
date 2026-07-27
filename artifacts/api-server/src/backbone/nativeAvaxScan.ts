@@ -423,24 +423,36 @@ export async function runNativeAvaxScan(args: {
       cursor === null
         ? NATIVE_AVAX_FROM_BLOCK
         : Math.max(NATIVE_AVAX_FROM_BLOCK, cursor.lastScannedBlock + 1 - NATIVE_AVAX_REORG_OVERLAP);
-    if (resumeFrom > args.head) {
-      summary.scannedTo = args.head;
+    // THE CURSOR MAY NOT CERTIFY WHAT THE EXPLORER HAS NOT INDEXED (senior
+    // review, 2026-07-27). `head` is the NODE's latest block, but these rows
+    // come from an INDEX — a different system with its own lag. Advancing the
+    // cursor to the node's head declares covered a range the explorer may not
+    // have read yet, and the 50-block overlap (~100 s) is the only thing that
+    // ever looks back. Anything the index was still missing beyond that window
+    // is never queried again: an AVAX movement lost forever, in silence.
+    // So the lane stops short of the head by a margin larger than any observed
+    // indexer lag, and simply picks the rest up next cycle. Being a few blocks
+    // behind is a stated coverage bound; a hole is a lie.
+    const safeHead = args.head - EXPLORER_LAG_MARGIN_BLOCKS;
+    if (resumeFrom > safeHead) {
+      // Nothing safely readable yet — keep the cursor where it is rather than
+      // moving it over blocks nobody has confirmed are indexed.
       return summary;
     }
     const fetchRecords = args.deps.fetchRecords ?? fetchNativeAvaxRecords;
     const records = await fetchRecords({
       organWallets: args.organWallets,
       fromBlock: resumeFrom,
-      toBlock: args.head,
+      toBlock: safeHead,
     });
     if (records.length > 0) {
       summary.rowsInserted = await args.deps.insert(records);
     }
-    summary.scannedTo = args.head;
+    summary.scannedTo = safeHead;
     await args.deps.upsertCursor({
       streamKey,
       fromBlock: NATIVE_AVAX_FROM_BLOCK,
-      lastScannedBlock: args.head,
+      lastScannedBlock: safeHead,
       status: "ok",
       lastError: null,
     });
@@ -459,6 +471,20 @@ export async function runNativeAvaxScan(args: {
  */
 export const NATIVE_AVAX_FROM_BLOCK = 87_157_852;
 const NATIVE_AVAX_REORG_OVERLAP = 50;
+
+/**
+ * HOW FAR BEHIND THE NODE'S HEAD THIS LANE IS WILLING TO CERTIFY (senior review,
+ * 2026-07-27). The rows come from an INDEX, the head comes from the NODE, and
+ * the two are different systems: advancing the cursor to the node's head
+ * declares covered a range the explorer may not have read yet, and only the
+ * 50-block overlap (~100 s) ever looks back. A movement the index was still
+ * missing beyond that is never queried again — lost, silently, on a money
+ * record. Measured indexer lag on this endpoint was ~6 blocks; 200 (~7 minutes
+ * on the C-Chain) is a wide margin, and the engine's own cycle is 300 s, so the
+ * newest movements simply arrive on the next pass. A stated coverage bound is
+ * honest; a hole is not.
+ */
+const EXPLORER_LAG_MARGIN_BLOCKS = 200;
 
 export const NATIVE_AVAX_INTERNALS_FOR_GUARD = {
   NATIVE_INDEX_BASE,

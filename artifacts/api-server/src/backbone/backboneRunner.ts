@@ -770,7 +770,12 @@ async function runCycle(): Promise<string | null> {
         // sitting millions of blocks behind when its stored cursor was fine —
         // an operator screen inventing an outage. Unknown is stated as unknown.
         cursorBlock: s.status === "ok" ? s.scannedTo : null,
-        caughtUp: s.status === "ok" && s.scannedTo >= (summary.head ?? 0),
+        // "Caught up" means AT ITS OWN HONEST BOUND, not at the node's head:
+        // the native lane deliberately stops short of the head by the explorer's
+        // indexing margin, so demanding equality would report a healthy lane as
+        // permanently behind. 1,000 blocks (~33 min) is well beyond both lanes'
+        // margins and well inside anything worth calling a stall.
+        caughtUp: s.status === "ok" && s.scannedTo >= (summary.head ?? 0) - 1_000,
         rowsInserted: s.rowsInserted,
       })),
     ],

@@ -210,7 +210,11 @@ function isFounderLine(item: ActivityItem): boolean {
   return (
     item.kind === "deployment" ||
     item.kind === "chronicle-entry" ||
-    item.kind === "treasury-move" ||
+    // NOT `kind === "treasury-move"` any more (senior review, 2026-07-27): a
+    // treasury row is a Founder act when the SERVER says so, per line, through
+    // `founderAct` below — an outbound or inter-organ move, or an inbound one
+    // whose counterparty is a founder wallet. Money arriving from a stranger
+    // wore the gold chip under the old blanket rule.
     item.kind === "archive-pause" ||
     item.kind.startsWith("source-") ||
     item.founderAct === true
@@ -500,7 +504,25 @@ export function LiveActivityFeed({
               ? l.actorLabel === "Founder"
               : l.kind === "archive-mint"
                 ? l.minterLabel === "Founder"
-                : undefined,
+                : // A TREASURY ROW IS NOT A FOUNDER ACT BY BEING A TREASURY ROW
+                  // (senior review, 2026-07-27). `isFounderLine` used to return
+                  // true for the KIND, so the gold Founder chip was stamped on
+                  // every treasury line — including money ARRIVING from a
+                  // stranger, which no protocol key signed. The chip then
+                  // contradicted the sentence beside it, which correctly said
+                  // only "Entered the vault — recorded on-chain". Measured zero
+                  // occurrences today, but the vault address is published and
+                  // native AVAX needs no approval, so the cheapest possible
+                  // false Founder claim was one dust transfer away.
+                  //
+                  // The server already knows the answer: a move OUT of an organ
+                  // (or BETWEEN organs) was necessarily signed by the key the
+                  // Founder holds — every organ is an EOA — and an INBOUND move
+                  // is his only when the counterparty is a founder wallet, which
+                  // `counterpartFounder` states. Nothing is guessed here.
+                  l.kind === "treasury-move"
+                  ? l.movement !== "in" || l.counterpartFounder === true
+                  : undefined,
       };
     });
     // H2-⑭ — Chronicle promotions join from the committed register (CHR-1:

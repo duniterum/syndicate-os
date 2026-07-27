@@ -289,6 +289,29 @@ for (const [sym, decimals, amountRaw, want] of DISCOVERED_CASES) {
   }
 }
 
+// ①c THE GOLD "Founder" CHIP IS A CLAIM, AND IT MUST BE EARNED PER LINE.
+// `isFounderLine` used to return true for the treasury KIND, so every treasury
+// row wore the chip — including money ARRIVING from a stranger, which no
+// protocol key signed. The chip then contradicted the sentence beside it. Source
+// pin rather than a runtime one: the predicate lives inside a .tsx component
+// that cannot be imported here — stated plainly so nobody reads this as stronger
+// coverage than it is (it catches the exact regression, not every variant).
+{
+  const feedTsx = readFileSync(join(SRC, "components", "activity", "LiveActivityFeed.tsx"), "utf8");
+  const predicate = /function isFounderLine\([^)]*\)[^{]*\{([\s\S]*?)\n\}/.exec(feedTsx);
+  if (!predicate) {
+    fail("founder-chip — isFounderLine could not be located in LiveActivityFeed.tsx; the pin cannot be checked.");
+  } else {
+    const body = predicate[1]!.split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join("\n");
+    if (/kind === "treasury-move"/.test(body)) {
+      fail('founder-chip — isFounderLine claims EVERY treasury row is a Founder act. Inbound money from a stranger would wear the gold chip beside a sentence that correctly does not claim him. The per-line truth is `founderAct` (movement !== "in" || counterpartFounder).');
+    }
+    if (!/founderAct === true/.test(body)) {
+      fail("founder-chip — isFounderLine no longer consults the server's per-line founderAct, so no treasury row can earn the chip at all.");
+    }
+  }
+}
+
 // ② THE IMPERSONATION GATE. The signature proves WE bought it; it does not make
 // the token's self-declared symbol true. A contract returning "USDC" must never
 // be rendered as USDC — it falls back to the address, which cannot be chosen.
