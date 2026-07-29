@@ -97,30 +97,39 @@ const chipStateTone: Record<HeaderChipState, string> = {
   unavailable: "border-destructive/35 bg-destructive/10 text-destructive",
 };
 
+// ONE LIVE BADGE, NOT TWO (founder, 2026-07-28, from a screenshot of his own
+// header: « 2 LIVE pour rien, on peut merge live in the Avalanche box »).
+//
+// There were two pills reading the SAME `chipState`: this one — "Avalanche ·
+// LIVE" from `2xl:` — and a `LiveChip` showing a bare "LIVE" from `lg:`. Above
+// 1536px both rendered, so the header said LIVE twice, side by side, about one
+// fact. Below that only the bare one showed, which is the weaker of the two: it
+// names the state without naming what is live.
+//
+// So the chain pill now carries it alone, from `lg:` — the breakpoint the bare
+// chip used, so nothing LOSES its live signal — and the `Activity` pulse glyph
+// is folded in beside the state word, keeping the motion cue that pill had.
+//
+// AND THE WORD SHRINKS BEFORE THE BADGE DOES, which was MEASURED, not guessed.
+// Showing the full pill from `lg:` overlapped the wordmark by 125px and the
+// chapter badge by 69px at 1024px — the `2xl:` it used to sit at was not
+// arbitrary, it was the width the FULL pill needs. But the box already carries
+// the Avalanche LOGO, so between `lg:` and `2xl:` the redundant part is the
+// WORD: the mark names the chain, and the badge says LIVE. That is exactly the
+// founder's instruction — merge LIVE into the Avalanche box.
 function ChainPill({ state }: { state: HeaderChipState }) {
   return (
     <span
       title="Avalanche C-Chain — every public figure is a live chain read, fail-closed"
-      className={`hidden items-center gap-2 whitespace-nowrap rounded-xl border px-2.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-[0.08em] shadow-sm 2xl:inline-flex ${chipStateTone[state]}`}
+      className={`hidden items-center gap-2 whitespace-nowrap rounded-xl border px-2.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-[0.08em] shadow-sm lg:inline-flex ${chipStateTone[state]}`}
     >
       <span className="grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-avax shadow-[0_0_18px_-8px_hsl(var(--avax)/0.9)]">
         <img src="/brand/avalanche-avax-token.png" alt="Avalanche" className="h-full w-full object-cover" />
       </span>
-      <span className="text-foreground/85">{headerChips.chainName}</span>
-      <span className="text-muted-foreground">·</span>
+      <span className="hidden text-foreground/85 2xl:inline">{headerChips.chainName}</span>
+      <span className="hidden text-muted-foreground 2xl:inline">·</span>
+      <Activity className="h-3.5 w-3.5" aria-hidden="true" />
       <span>{headerChips.states[state]}</span>
-    </span>
-  );
-}
-
-function LiveChip({ state }: { state: HeaderChipState }) {
-  return (
-    <span
-      title="Live on-chain reads — fail-closed, never invented"
-      className={`hidden items-center gap-1.5 rounded-xl border px-2.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-[0.1em] lg:inline-flex ${chipStateTone[state]}`}
-    >
-      <Activity className="h-3.5 w-3.5" />
-      {headerChips.states[state]}
     </span>
   );
 }
@@ -192,9 +201,29 @@ function Wordmark() {
             THE FIX IS NOT A SMALLER SIZE — ADR-001's floor forbids that, and 10px
             overlapped anyway. It is WORK-FIRST §3: on a 375px header this line
             serves nobody, so it is not shown. Mark + name carry the brand, which
-            is the pattern every AAA header uses on a phone. It returns at `sm:`,
-            where it was measured with room to spare. */}
-        <span className="mt-1 hidden whitespace-nowrap font-mono text-xs uppercase tracking-[0.3em] text-gold sm:block">
+            is the pattern every AAA header uses on a phone.
+
+            AND IT RETURNS AT 1700px, NOT `sm:` AND NOT `2xl:` — corrected twice
+            the same day, each time by measuring instead of guessing. The founder
+            asked for the header to be checked; the sweep found the collision is
+            not a phone problem, it is THIS LINE'S problem at every width. At HEAD,
+            1280px: SIX overlapping pairs in the header row. This 302px
+            `whitespace-nowrap` line inside a `shrink-0` wordmark is the single
+            biggest consumer of the left side, so the left block cannot yield and
+            runs UNDER the right cluster — which is also exactly where the nav
+            switches on (`xl:`).
+            THE ARITHMETIC, measured at 1920px where the row is clean:
+              left block 809 + right block 731 .... 1540px of content
+              row padding ........................... 64px
+              so the full header needs ≥ 1604px, and at the `2xl:` cliff (1536)
+              only 1472px is available — 68px short, which is exactly the three
+              overlaps that appeared there when the tagline, the social icons and
+              the word AVALANCHE all switched on at the SAME breakpoint.
+            The other two stay at `2xl:` (without this line the row needs 1238px
+            and has 1472). This one waits for 1700px, where the measured slack is
+            ~96px. A breakpoint cliff is what you get when everything returns at
+            once; these are staggered on purpose. */}
+        <span className="mt-1 hidden whitespace-nowrap font-mono text-xs uppercase tracking-[0.3em] text-gold min-[1700px]:block">
           {brand.descriptor}
         </span>
       </span>
@@ -309,9 +338,19 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            <SocialIconRow className="hidden items-center gap-1.5 lg:flex" iconClass="h-3.5 w-3.5" />
+            {/* THE HEADER WAS OVERFLOWING ONTO ITSELF, and this row is the third
+                copy of the same links (the mobile drawer and the footer carry the
+                other two — nothing is lost by holding it back).
+                MEASURED at HEAD, 1280px, before any change today: SIX overlapping
+                pairs in this one row — the nav links running under the social
+                icons and under the live chip by up to 49px. The cause is a row of
+                `shrink-0` items that together need more than the viewport, so they
+                overlap instead of yielding. WORK-FIRST: at a laptop width the
+                header owes the nav, sign-in, the one gold CTA and the live proof —
+                not a third route to X and Telegram. They return at `2xl:`, where
+                the row was measured with room. */}
+            <SocialIconRow className="hidden items-center gap-1.5 2xl:flex" iconClass="h-3.5 w-3.5" />
             <ChainPill state={chipState} />
-            <LiveChip state={chipState} />
             <ThemeToggle />
             <Link
               href="/proof"
