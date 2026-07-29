@@ -242,6 +242,30 @@ if (UNIT === null || !(UNIT > 0)) {
 }
 const unit = UNIT ?? 4;
 
+// THE TOUCH FLOOR CLASS — parsed out of index.css's real `@media (pointer:
+// coarse)` block, never typed here. Added 2026-07-27 after the Tailwind
+// `pointer-coarse:` variant was found to emit NOTHING in this build (the served
+// stylesheet carried zero `pointer:` media rules) while this guard reported 15
+// controls fixed. A pin that cannot be READ is a FAILURE, never a silent pass.
+const coarseBlock = /@media\s*\(\s*pointer\s*:\s*coarse\s*\)\s*\{([\s\S]*?)\n\}/.exec(css)?.[1] ?? null;
+const TOUCH_CLASS_PX: number | null = (() => {
+  if (coarseBlock === null) return null;
+  const m = /\.touch-target\s*\{[^}]*min-height:\s*([\d.]+)(rem|px)/.exec(coarseBlock);
+  if (!m) return null;
+  return m[2] === "rem" ? parseFloat(m[1]!) * remPx : parseFloat(m[1]!);
+})();
+if (coarseBlock === null) {
+  fail(
+    "index.css has no `@media (pointer: coarse)` block, so `.touch-target` renders NOTHING and every Button " +
+      "carrying it is back at its base height. This is the exact failure the class exists to prevent: the " +
+      "Tailwind `pointer-coarse:` variant produced no CSS while this guard read it as 44px.",
+  );
+} else if (TOUCH_CLASS_PX === null) {
+  fail("index.css's `@media (pointer: coarse)` block defines no `.touch-target { min-height: … }` — the touch floor cannot be read.");
+} else if (TOUCH_CLASS_PX < FLOOR) {
+  fail(`index.css's \`.touch-target\` is ${TOUCH_CLASS_PX}px, under the ${FLOOR}px floor it exists to enforce.`);
+}
+
 // Font size → [font-size, line box]. Tailwind v4 defaults; an `--text-<name>`
 // declaration in index.css WINS, with its paired `--text-<name>--line-height`
 // if present and the ADR's 1.5 leading floor otherwise.
@@ -319,7 +343,27 @@ type Measured = { px: number; how: string } | null;
 function measure(classes: string[]): Measured {
   // Only the MOBILE-FIRST BASE. A `sm:`/`md:`/`lg:` variant is a desktop
   // refinement; the 44px floor is a touch floor (limit ② in the header).
+  //
+  // ONE EXCEPTION, and it is the header's own reasoning turned around (added
+  // 2026-07-27). Limit ② reads touch at the base BECAUSE "no static scan can
+  // know the input modality" — a `sm:` breakpoint is a WIDTH, and a touch-capable
+  // laptop at ≥640px would wrongly receive the compaction. `.touch-target` is not
+  // a width: it is `@media (pointer: coarse)` in index.css, the modality itself,
+  // applying to exactly the finger this floor exists for. So it is read AS the
+  // touch regime. It can only ever RAISE — it is a `min-height`, so a control
+  // already taller keeps its own height.
+  //
+  // AND IT IS READ OUT OF THE CSS, never typed here. The first version of this
+  // rule used Tailwind's `pointer-coarse:` variant, which produces NO CSS in this
+  // build: the served stylesheet carried zero `pointer:` media rules while this
+  // guard reported 15 controls fixed. TOUCH_FLOOR_PX below is parsed from the
+  // real block, and its absence is a FAILURE, so that lie cannot be told twice.
   const base = classes.filter((c) => !/^[a-z0-9-]+:/.test(c));
+  if (TOUCH_CLASS_PX !== null && base.some((c) => c === "touch-target" || c === "touch-target-square")) {
+    const bare = measure(base.filter((c) => c !== "touch-target" && c !== "touch-target-square"));
+    if (!bare || TOUCH_CLASS_PX > bare.px) return { px: TOUCH_CLASS_PX, how: `.touch-target (@media pointer:coarse) = ${TOUCH_CLASS_PX}px` };
+    return bare;
+  }
 
   // ① an explicit height. min-height outranks height when larger (CSS), so max().
   let explicit: number | null = null;
@@ -564,6 +608,14 @@ const CASES: [string, number | null, number | null][] = [
   ["a house caption class is known", measure(["syn-label"])?.px ?? null, 14],
   ["no size and no height is NOT computable", measure("inline-flex items-center gap-2".split(" ")), null],
   ["a padding box beats a smaller explicit height", measure("h-4 py-4 text-sm".split(" "))?.px ?? null, 52],
+  // Added 2026-07-27 with the rule below it, and proven RED first (it returned 38).
+  // Limit ② in this file's header says touch is read at the mobile-first base
+  // BECAUSE "no static scan can know the input modality". `pointer-coarse:` is
+  // the input modality, declared. So it is not an exception to that reasoning —
+  // it is the one case where the reasoning's own premise no longer holds.
+  ["the touch class IS the touch regime", measure("min-h-9 touch-target".split(" "))?.px ?? null, 44],
+  ["the touch class never LOWERS a taller control", measure("min-h-14 touch-target".split(" "))?.px ?? null, 56],
+  ["sm: is still a desktop refinement and still ignored", measure("min-h-9 sm:min-h-11".split(" "))?.px ?? null, 36],
 ];
 for (const [label, got, want] of CASES) {
   if (got !== want) fail(`the measure — ${label}: expected ${JSON.stringify(want)}, got ${JSON.stringify(got)}.`);

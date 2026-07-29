@@ -32,10 +32,32 @@ const buttonVariants = cva(
       },
       size: {
         // @replit changed sizes
-        default: "min-h-9 px-4 py-2",
-        sm: "min-h-8 rounded-md px-3 text-xs",
-        lg: "min-h-10 rounded-md px-8",
-        icon: "h-9 w-9",
+        //
+        // THE 44px TOUCH FLOOR, applied where it is a floor and nowhere else
+        // (2026-07-27, the founder's §(b)② finding "every button on the /join
+        // path is under 44px on a phone" — measured on /join at 375px: 49 visible
+        // controls, 13 short, and SEVEN of those were this atom at 38px).
+        //
+        // The floor is a TOUCH rule — Apple HIG 44 / Material 48 are finger
+        // guidelines, and WCAG 2.5.5 (44×44) is level AAA, while the AA
+        // requirement, 2.5.8, is 24×24. So it is applied under
+        // `pointer-coarse:`, the modality itself: a finger gets 44px, a mouse
+        // keeps the density the founder already approved on desktop. Raising
+        // the base instead would have made every button on every page 6px
+        // taller — a composition change nobody asked for, to satisfy a rule
+        // that was never about the mouse.
+        //
+        // `.touch-target` is a HAND-WRITTEN `@media (pointer: coarse)` block in
+        // index.css, not a Tailwind variant — because the variant is a ghost
+        // here. `pointer-coarse:min-h-11` was tried first and the served
+        // stylesheet came back with ZERO `pointer:` media rules: the class
+        // produced no CSS, while the guard happily reported 15 controls fixed.
+        // guard-touch-target now reads the 44px out of that CSS block and fails
+        // if the block is deleted.
+        default: "min-h-9 touch-target px-4 py-2",
+        sm: "min-h-8 touch-target rounded-md px-3 text-xs",
+        lg: "min-h-10 touch-target rounded-md px-8",
+        icon: "h-9 w-9 touch-target-square",
       },
     },
     defaultVariants: {
