@@ -55,6 +55,20 @@ export type WiredAccessStateId = (typeof WIRABLE_ACCESS_STATES)[number];
 
 const WIRABLE_SET: ReadonlySet<string> = new Set(WIRABLE_ACCESS_STATES);
 
+/**
+ * Is this value one of the FOUR wirable states? (added 2026-07-29, founder-caught.)
+ * Seven readbacks in wallet/walletSession.ts each hardcoded `state !== "S1" && state !== "S4"`
+ * — two of the four — and returned null for anything else. A member whose session resolves
+ * to S7 (recognized member) or S11 (operator) therefore had the WHOLE readback dropped, and
+ * the referral surface rendered "The standing read is unavailable" over a perfectly good
+ * server answer. Use this, never a hand-written pair.
+ * NOTE the difference from resolveWiredState: that one COERCES an unknown value to S1, which
+ * is right for a wire default and wrong for a readback — coercing would claim "not signed in".
+ */
+export function isWiredAccessState(value: unknown): value is WiredAccessStateId {
+  return typeof value === "string" && WIRABLE_SET.has(value);
+}
+
 /** Fail-closed wire resolver: only a wirable state passes; everything else → S1. */
 export function resolveWiredState(value: unknown): WiredAccessStateId {
   return typeof value === "string" && WIRABLE_SET.has(value)

@@ -16,7 +16,7 @@
 
 import { createSiweMessage } from "viem/siwe";
 import { getAddress } from "viem";
-import { resolveWiredState, type WiredAccessStateId } from "@/config/accessState";
+import { isWiredAccessState, resolveWiredState, type WiredAccessStateId } from "@/config/accessState";
 import { announceSessionChanged } from "./sessionEvents";
 
 // ── EIP-1193 injected provider (browser wallet) ─────────────────────────────
@@ -257,7 +257,7 @@ export function shortAddress(address: string): string {
 // the bound account is never echoed and no tx hash is returned.
 
 export interface MemberStandingReadback {
-  state: "S1" | "S4";
+  state: WiredAccessStateId;
   chainVerified: boolean;
   recognized: boolean | null;
   memberNumber: string | null;
@@ -283,7 +283,7 @@ export async function fetchMemberStanding(): Promise<MemberStandingReadback | nu
     const body: unknown = await res.json();
     if (typeof body !== "object" || body === null) return null;
     const o = body as Record<string, unknown>;
-    if (o.state !== "S1" && o.state !== "S4") return null;
+    if (!isWiredAccessState(o.state)) return null;
 
     let proofPosture: MemberStandingReadback["proofPosture"] = null;
     if (typeof o.proofPosture === "object" && o.proofPosture !== null) {
@@ -312,7 +312,7 @@ export async function fetchMemberStanding(): Promise<MemberStandingReadback | nu
     }
 
     return {
-      state: o.state,
+      state: o.state as WiredAccessStateId,
       chainVerified: o.chainVerified === true,
       recognized: typeof o.recognized === "boolean" ? o.recognized : null,
       memberNumber:
@@ -335,7 +335,7 @@ export async function fetchMemberStanding(): Promise<MemberStandingReadback | nu
 
 // ── R5: own-row referral-source standing (the introduction indexer) ─────────
 export interface SourceStandingReadback {
-  state: "S1" | "S4";
+  state: WiredAccessStateId;
   chainVerified: boolean;
   sourceOnChain: boolean | null;
   sourceActive: boolean | null;
@@ -378,7 +378,7 @@ export async function fetchSourceStanding(): Promise<SourceStandingReadback | nu
     const body: unknown = await res.json();
     if (typeof body !== "object" || body === null) return null;
     const o = body as Record<string, unknown>;
-    if (o.state !== "S1" && o.state !== "S4") return null;
+    if (!isWiredAccessState(o.state)) return null;
 
     let standing: SourceStandingReadback["standing"] = null;
     if (typeof o.standing === "object" && o.standing !== null) {
@@ -417,7 +417,7 @@ export async function fetchSourceStanding(): Promise<SourceStandingReadback | nu
     }
 
     return {
-      state: o.state,
+      state: o.state as WiredAccessStateId,
       chainVerified: o.chainVerified === true,
       sourceOnChain: typeof o.sourceOnChain === "boolean" ? o.sourceOnChain : null,
       sourceActive: typeof o.sourceActive === "boolean" ? o.sourceActive : null,
@@ -444,7 +444,7 @@ export async function fetchSourceStanding(): Promise<SourceStandingReadback | nu
 // request. Booleans are three-state: null = the read did not run (rendered
 // honestly, never as a verdict).
 export interface ActivationStateReadback {
-  state: "S1" | "S4";
+  state: WiredAccessStateId;
   chainVerified: boolean;
   seatHeld: boolean | null;
   /** K3.b — the member's own seat figure (exact decimal string) when held. */
@@ -474,7 +474,7 @@ export async function fetchActivationState(): Promise<ActivationStateReadback | 
     const body: unknown = await res.json();
     if (typeof body !== "object" || body === null) return null;
     const o = body as Record<string, unknown>;
-    if (o.state !== "S1" && o.state !== "S4") return null;
+    if (!isWiredAccessState(o.state)) return null;
     let request: ActivationStateReadback["request"] = null;
     if (typeof o.request === "object" && o.request !== null) {
       const r = o.request as Record<string, unknown>;
@@ -490,7 +490,7 @@ export async function fetchActivationState(): Promise<ActivationStateReadback | 
       }
     }
     return {
-      state: o.state,
+      state: o.state as WiredAccessStateId,
       chainVerified: o.chainVerified === true,
       seatHeld: typeof o.seatHeld === "boolean" ? o.seatHeld : null,
       seatFigure:
@@ -536,7 +536,7 @@ export async function askForActivation(): Promise<boolean> {
 
 // ── SPEC R3: own-row channel breakdown (`&via=` — the channel log's read) ───
 export interface ChannelBreakdownReadback {
-  state: "S1" | "S4";
+  state: WiredAccessStateId;
   /** false = the read/gate/resolution missed — honest unavailable, never an
    * invented empty; true + [] = genuinely no channels tracked yet. */
   available: boolean;
@@ -555,7 +555,7 @@ export async function fetchChannelBreakdown(): Promise<ChannelBreakdownReadback 
     const body: unknown = await res.json();
     if (typeof body !== "object" || body === null) return null;
     const o = body as Record<string, unknown>;
-    if (o.state !== "S1" && o.state !== "S4") return null;
+    if (!isWiredAccessState(o.state)) return null;
     const rows: ChannelBreakdownReadback["rows"] = [];
     if (Array.isArray(o.rows)) {
       for (const r of o.rows) {
@@ -606,7 +606,7 @@ export interface OwnIntroductionRowReadback {
 }
 
 export interface OwnIntroductionsReadback {
-  state: "S1" | "S4";
+  state: WiredAccessStateId;
   rows: OwnIntroductionRowReadback[] | null;
   asOfBlock: number | null;
   failureReason: string | null;
@@ -654,7 +654,7 @@ export async function fetchOwnIntroductions(): Promise<OwnIntroductionsReadback 
     const body: unknown = await res.json();
     if (typeof body !== "object" || body === null) return null;
     const o = body as Record<string, unknown>;
-    if (o.state !== "S1" && o.state !== "S4") return null;
+    if (!isWiredAccessState(o.state)) return null;
     let rows: OwnIntroductionRowReadback[] | null = null;
     if (Array.isArray(o.rows)) {
       rows = [];
@@ -685,7 +685,7 @@ export async function fetchOwnIntroductions(): Promise<OwnIntroductionsReadback 
       }
     }
     return {
-      state: o.state,
+      state: o.state as WiredAccessStateId,
       rows,
       asOfBlock: typeof o.asOfBlock === "number" ? o.asOfBlock : null,
       failureReason: typeof o.failureReason === "string" ? o.failureReason : null,
@@ -734,7 +734,7 @@ export interface OwnPurchaseRowReadback {
 }
 
 export interface OwnPurchasesReadback {
-  state: "S1" | "S4";
+  state: WiredAccessStateId;
   /** null = the record model is unavailable (honest gap, never guessed). */
   rows: OwnPurchaseRowReadback[] | null;
   /** R-BIND: the server's chain-verified token decimals, or null (a ticket
@@ -828,7 +828,7 @@ export async function fetchOwnPurchases(): Promise<OwnPurchasesReadback | null> 
     const body: unknown = await res.json();
     if (typeof body !== "object" || body === null) return null;
     const o = body as Record<string, unknown>;
-    if (o.state !== "S1" && o.state !== "S4") return null;
+    if (!isWiredAccessState(o.state)) return null;
 
     let rows: OwnPurchaseRowReadback[] | null = null;
     if (Array.isArray(o.rows)) {
@@ -856,7 +856,7 @@ export async function fetchOwnPurchases(): Promise<OwnPurchasesReadback | null> 
     }
 
     return {
-      state: o.state,
+      state: o.state as WiredAccessStateId,
       rows,
       decimals,
       failureReason:
@@ -884,7 +884,7 @@ export interface OwnInboxRow {
 }
 
 export interface OwnInboxReadback {
-  state: "S1" | "S4";
+  state: WiredAccessStateId;
   /** null = the inbox is unavailable (honest gap, never guessed). */
   rows: OwnInboxRow[] | null;
   /** The bell badge: rows never marked seen. null when unavailable. */
@@ -904,7 +904,7 @@ export async function fetchOwnInbox(): Promise<OwnInboxReadback | null> {
     const body: unknown = await res.json();
     if (typeof body !== "object" || body === null) return null;
     const o = body as Record<string, unknown>;
-    if (o.state !== "S1" && o.state !== "S4") return null;
+    if (!isWiredAccessState(o.state)) return null;
 
     let rows: OwnInboxRow[] | null = null;
     if (Array.isArray(o.rows)) {
@@ -935,7 +935,7 @@ export async function fetchOwnInbox(): Promise<OwnInboxReadback | null> {
     }
 
     return {
-      state: o.state,
+      state: o.state as WiredAccessStateId,
       rows,
       unseenCount: typeof o.unseenCount === "number" ? o.unseenCount : null,
       failureReason:

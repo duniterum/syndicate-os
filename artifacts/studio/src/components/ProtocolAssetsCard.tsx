@@ -305,7 +305,12 @@ export function ProtocolAssetsCard() {
                     and already rendered by the home page's reserves band. Same
                     component now, both surfaces. */}
                 <CoinMark logo={row.logo} symbol={row.label} size={18} />
-                <span className="type-eyebrow text-muted-foreground">
+                {/* NOT the eyebrow class: it uppercases, and the bridged tickers carry their
+                    bridge marker IN THEIR CASE — BTC.b and WETH.e are the canonical Avalanche
+                    symbols. Uppercased, this row printed "VAULT BTC.B" beside a value reading
+                    "0.00077818 BTC.b": the same row naming the token two contradictory ways,
+                    one of which does not exist. Same face and size, no transform. */}
+                <span className="font-mono text-xs font-semibold tracking-[0.14em] text-muted-foreground">
                   {row.label}
                 </span>
               </div>
