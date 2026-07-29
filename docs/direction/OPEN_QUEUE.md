@@ -1,5 +1,13 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-29 (HANDOFF) — PROD = `853f8bd` scellé ; LA BASE LOCALE EXISTE (ruling fondateur).**
+> L'autorité du présent est le bloc de reprise de SESSION_STATE. OUVERT ICI, avec preuve :
+> ① Confirmer avec Replit si le dump = base DEV (protocol_event_raw vide, 13 Ko) et obtenir le dump de la base de
+> DÉPLOIEMENT si oui — jamais l'URL live (le runner local ÉCRIT). ② Dette gardes (2e passe adversariale) : cliquet
+> Button-atom absent · regex duplicate-facts étroite + DEBT sans cliquet · ~38 eyebrows hors-0.14em dont 1 héro public 8px.
+> ③ Les 4 croquis de composition attendent le fondateur. ④ LINK.e · CHR-11 · entrée du 12-07 : inchangés, à lui seul.
+> Les leçons gravées (dev≠prod CSS · vérifier l'état signé · twin-search sur son propre registre) : SESSION_STATE + mémoire.
+
 > **▶ 2026-07-28 — THE FOUR "NO WIREFRAME NEEDED" ERGONOMICS FINDINGS ARE CLOSED, each at CLASS
 > altitude.** `c9f17c0` the eyebrow (25 hand-typed copies, 18 files, six different sizes → one class +
 > a RED-BUILD guard) · `24131e7` the reading pages (Terms/Risk/Privacy//chronicle at 14px against the

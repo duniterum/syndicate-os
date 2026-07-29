@@ -2,6 +2,42 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> # ▶ 2026-07-29 (HANDOFF) — RESUME HERE. PROD = `853f8bd`, SEALED. THE LOCAL RIG HAS THE REAL DATABASE.
+>
+> ## (a) WHAT WENT LIVE (two deploys this session, both sealed by measurement)
+> · **`6c94ace`** then **`853f8bd`** (Replit byte-identity ×2 each; my own measure: live HTML serves `index-ClHrhDJL.js`).
+>   On thesyndicate.money NOW: the eyebrow class (13 sub-floor labels killed) · Terms/Risk/Privacy//chronicle at type-body
+>   · 44px touch floor (coarse-pointer, guard PARSES the CSS) · header: ONE live pill, tagline staggered ≥1700px, socials ≥2xl,
+>   signed-in row aligned (bell/trophy 36px) · the PUBLIC BREADCRUMB (3 levels, Option A·M1·Q2-oui; JSON-LD = same trail;
+>   invalid receipt tail → catch-all, never a lying trail) · real token logos on /contracts (+ BTC.b/WETH.e case fixed)
+>   · /join raw engine read removed · referral standing: 3 states (undefined=reading), no false « unavailable » · S7/S11 accepted
+>   (defensive; server only ever emits S1/S4 — PROVEN by enumerating all 15 emission sites; the 20 `=== "S4"` tests are CORRECT).
+>
+> ## (b) IN FLIGHT — the exact next steps, in order
+> **① THE LOCAL DB IS NEW AND MUST BE EXERCISED FIRST.** Founder ruling (2026-07-29, angry, right): « pas de base locale »
+>   is DEAD as an excuse. PostgreSQL 17 on THIS machine, port 5433, db `syndicate`, password `syndicate_local`, 18 tables
+>   restored 0 errors. `.claude/launch.json` api-server now carries DATABASE_URL + SYNDICATE_BACKBONE_ENABLED=true.
+>   NEXT: boot the rig (preview_start api-server), wait for the first full scan (protocol_event_raw arrived EMPTY — the runner
+>   repopulates by scanning), then verify feed/receipts/standing LOCALLY before ever handing the founder a check again.
+>   ⚠ ASK REPLIT: is the dump the DEV db or the DEPLOYMENT db? (13KB, protocol_event_raw empty, sale_event_raw=33 — smells dev.)
+>   If dev → request the deployment-db dump the same way. NEVER point the local rig at the LIVE DATABASE_URL (the runner WRITES).
+> **② Guard debt, declared with evidence (2nd adversarial pass):** Button-atom has NO ratchet (reverting the whole 44px fix
+>   stays green) · guard-duplicate-facts regex misses 7 literal shapes + DEBT has no ratchet · ~38 eyebrow-shaped labels on
+>   OTHER trackings incl. a PUBLIC 8px hero label (allowlisted debt).
+> **③ The 4 composition findings need his WIREFRAME first** (/join 4 gold buttons · /faq search 4th · home audit string · /tokenomics max-w).
+>
+> ## (c) FOUNDER-PENDING (unchanged, never re-ask)
+> LINK.e price-feed call · the 11 Chronicle candidates (CHR-11, read on screen) · the 2026-07-12 register entry narrowing (his act)
+> · the 4 wireframes above. Replit deleted the dump files from the project on his order (done).
+>
+> ## THE SESSION'S ENGRAVED LESSONS (memory updated: verify-the-thing ⑤ + local-rig ruling)
+> · Dev server ≠ prod build: Tailwind CSS-escapes selectors + dev NESTS media rules — I engraved a false claim in 6 files off a
+>   dev CSSOM walk; 3 adjudicators disproved me on the real `vite build`. The comment DENYING the variant is what shipped the dead rule.
+> · Verify the state the founder USES (signed-in, not my signed-out browser). · Twin-search your OWN record: one false line lived in
+>   2 docs; a blind 631→628 replace corrupted a Replit seal hash. · Before rewriting 20 call sites, READ the resolver.
+>
+> *(the dated blocks below are this session's detailed record and the prior history — read for the why)*
+
 > # ▶ 2026-07-29 — THE ADVERSARIAL REVIEW LANDED, AND ITS FIXES ARE IN. START HERE.
 >
 > The founder asked for a full senior re-read of the whole range. **215 agents, 9 lenses, 3
