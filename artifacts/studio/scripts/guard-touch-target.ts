@@ -257,12 +257,22 @@ const unit = UNIT ?? 4;
 // rule 2.5.8 is 24×24 — so it applies to the coarse pointer only.
 // A pin that cannot be READ is a FAILURE, never a silent pass.
 const coarseBlock = /@media\s*\(\s*pointer\s*:\s*coarse\s*\)\s*\{([\s\S]*?)\n\}/.exec(css)?.[1] ?? null;
-const TOUCH_CLASS_PX: number | null = (() => {
+/** Parse ONE class's min-height out of the coarse block. `\b` stops
+ *  `.touch-target` from matching `.touch-target-square {`. */
+function coarseFloorOf(cls: string): number | null {
   if (coarseBlock === null) return null;
-  const m = /\.touch-target\s*\{[^}]*min-height:\s*([\d.]+)(rem|px)/.exec(coarseBlock);
+  const m = new RegExp(`\\.${cls}\\s*\\{[^}]*min-height:\\s*([\\d.]+)(rem|px)`).exec(coarseBlock);
   if (!m) return null;
   return m[2] === "rem" ? parseFloat(m[1]!) * remPx : parseFloat(m[1]!);
-})();
+}
+const TOUCH_CLASS_PX: number | null = coarseFloorOf("touch-target");
+// THE SQUARE VARIANT WAS NEVER PARSED (2026-07-29 review, confirmed and worse than
+// declared). The measure CREDITED `.touch-target-square` with `.touch-target`'s
+// value while nothing ever read the square rule — so deleting that rule from
+// index.css was SILENT, and its only carriers are the header's theme toggle and
+// menu button. A pin that cannot be READ is a FAILURE, never a silent pass — this
+// file's own words, three sections above, unapplied to its own second class.
+const TOUCH_SQUARE_PX: number | null = coarseFloorOf("touch-target-square");
 if (coarseBlock === null) {
   fail(
     "index.css has no `@media (pointer: coarse)` block, so `.touch-target` renders NOTHING and every Button " +
@@ -274,6 +284,17 @@ if (coarseBlock === null) {
   fail("index.css's `@media (pointer: coarse)` block defines no `.touch-target { min-height: … }` — the touch floor cannot be read.");
 } else if (TOUCH_CLASS_PX < FLOOR) {
   fail(`index.css's \`.touch-target\` is ${TOUCH_CLASS_PX}px, under the ${FLOOR}px floor it exists to enforce.`);
+}
+// The square variant carries the header's icon pair. It is now READ, not assumed.
+if (coarseBlock !== null && TOUCH_SQUARE_PX === null) {
+  fail(
+    "index.css's `@media (pointer: coarse)` block defines no `.touch-target-square { min-height: … }`. " +
+      "The header's theme toggle and menu button carry that class and nothing else gives them a floor — " +
+      "this guard used to CREDIT them `.touch-target`'s value without ever reading the square rule, so " +
+      "deleting it was silent.",
+  );
+} else if (TOUCH_SQUARE_PX !== null && TOUCH_SQUARE_PX < FLOOR) {
+  fail(`index.css's \`.touch-target-square\` is ${TOUCH_SQUARE_PX}px, under the ${FLOOR}px floor.`);
 }
 
 // Font size → [font-size, line box]. Tailwind v4 defaults; an `--text-<name>`

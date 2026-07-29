@@ -473,7 +473,17 @@ for (const route of seoRouteRegistry) {
       path.resolve(here, "..", "src", "components", "referral", "MemberReferralDashboard.tsx"),
       "utf8",
     );
-    const block = /const TABS[^=]*=\s*\[([\s\S]*?)\n\];/.exec(dash)?.[1] ?? null;
+    // COMMENTED-OUT CODE IS NOT LIVE DATA (2026-07-29 review). This reader scraped
+    // label/href pairs out of the raw block, so a commented-out tab was read as a
+    // real one. It could BOTH mask the drift this pin exists to catch and turn a
+    // correct build RED — and because a later `set` overwrites an earlier one, the
+    // outcome depended on whether the comment sat above or below the real line.
+    // Comments are stripped before the pairs are read.
+    const rawTabsBlock = /const TABS[^=]*=\s*\[([\s\S]*?)\n\];/.exec(dash)?.[1] ?? null;
+    const block =
+      rawTabsBlock === null
+        ? null
+        : rawTabsBlock.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^[^\n]*\/\/.*$/gm, "");
     check(
       block !== null,
       `MemberReferralDashboard's TABS block is readable (the crumb labels are pinned to it)`,
