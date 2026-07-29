@@ -175,8 +175,25 @@ function Wordmark() {
             It measured as the smallest text on /activity: 5 rendered instances at
             11px. Now the `text-xs` token, which IS the floor. Nothing else about
             this element changes — same face, same tracking, same colour, same
-            place. */}
-        <span className="mt-1 whitespace-nowrap font-mono text-xs uppercase tracking-[0.3em] text-gold">
+            place.
+
+            AND THE COLLISION THAT WAS NEVER MEASURED (founder-caught 2026-07-28,
+            from a screenshot of /join — it is LIVE on thesyndicate.money, on the
+            header of every public page). At 375px this line RAN UNDERNEATH the
+            theme and menu buttons. Measured, and the numbers matter because they
+            correct the obvious assumption:
+              room between the wordmark and the first button ... 209px
+              intrinsic width at 10px 269 · at 11px 286 · at 12px 302
+            It NEVER FIT — not at the size the 2026-07-26 raise replaced, and not
+            before it. The raise widened the overlap from ~60px to 93px; it did
+            not create it. The tagline has been colliding at phone width for as
+            long as it has had this tracking.
+            THE FIX IS NOT A SMALLER SIZE — ADR-001's floor forbids that, and 10px
+            overlapped anyway. It is WORK-FIRST §3: on a 375px header this line
+            serves nobody, so it is not shown. Mark + name carry the brand, which
+            is the pattern every AAA header uses on a phone. It returns at `sm:`,
+            where it was measured with room to spare. */}
+        <span className="mt-1 hidden whitespace-nowrap font-mono text-xs uppercase tracking-[0.3em] text-gold sm:block">
           {brand.descriptor}
         </span>
       </span>
