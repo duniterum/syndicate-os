@@ -418,6 +418,23 @@ for (const route of seoRouteRegistry) {
     `the /referral/* pages must not share a final crumb — got ${JSON.stringify(lastCrumbs)}`,
   );
 
+  // THE NEUTRAL WALL OUTRANKS THE TRAIL (found by sweeping every route's trail
+  // after the parent level landed, 2026-07-28 — my own regression, not a
+  // pre-existing one). INTERNAL routes deliberately carry NEUTRAL_WALL_TITLE so
+  // view-source at an admin path reads exactly like the catch-all 404 (Ruling ②);
+  // `getRouteLabel` therefore returns "Page Not Found" for BOTH the parent and the
+  // child, and adding a parent level turned the console's breadcrumb into
+  // "Home > Page Not Found > Page Not Found" on all ten admin screens. An internal
+  // route gets NO parent crumb: the registry cannot name it without leaking the
+  // admin vocabulary the wall exists to keep out of the public bundle.
+  for (const loc of ["/admin/members", "/admin/settings", "/admin/audit"]) {
+    check(
+      labelsOf(loc).length === 2,
+      `internal route "${loc}" gets no parent crumb (the neutral wall has no label to give)`,
+      `internal route "${loc}" must stay two levels — got ${JSON.stringify(labelsOf(loc))}; the neutral wall makes every crumb read "Page Not Found"`,
+    );
+  }
+
   // Fail-closed: never a crumb pointing at a path the registry does not serve.
   const registryPaths = new Set(seoRouteRegistry.map((r) => r.path));
   for (const loc of ["/receipt/0xabc", "/referral/link", "/join", "/"]) {
@@ -429,10 +446,19 @@ for (const route of seoRouteRegistry) {
       `"${loc}" links crumb(s) the registry does not serve: ${JSON.stringify(bad)} — a breadcrumb may never point at a 404`,
     );
   }
+  // FOUNDER-CORRECTED 2026-07-28: "receipt existe dans le menu gauche des membres
+  // donc il doit avoir son /receipt link?!" — and he is right. My rule derived the
+  // parent from the first PATH SEGMENT, so it looked for "/receipt" (singular),
+  // which is indeed not a route, and concluded a single receipt has no parent. The
+  // parent exists and is spelled differently: "/receipts" — the member's receipts
+  // binder, live, INDEX, and the "Receipts" door in config/memberDoors.ts. A
+  // derivation that only knows how to spell is not a derivation; the entry now
+  // DECLARES its parent, and the fail-closed check below still proves that parent
+  // is a route the registry really serves.
   check(
-    labelsOf("/receipt/0xabc").length === 2,
-    `"/receipt/:txHash" gets NO parent crumb (/receipt is not a route)`,
-    `"/receipt/:txHash" must stay two levels — /receipt is not in the registry, so a parent crumb would 404`,
+    JSON.stringify(labelsOf("/receipt/0xabc")) === JSON.stringify(["Home", "Receipts", "Membership Receipt"]),
+    `"/receipt/:txHash" sits under its real parent, the /receipts binder`,
+    `"/receipt/:txHash" must read Home › Receipts › Membership Receipt, got ${JSON.stringify(labelsOf("/receipt/0xabc"))}`,
   );
 }
 

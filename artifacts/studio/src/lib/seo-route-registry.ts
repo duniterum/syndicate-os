@@ -71,6 +71,24 @@ export interface SeoRouteEntry {
    * search-visible act.)
    */
   crumbLabel?: string;
+  /**
+   * The breadcrumb parent, when it cannot be derived from the path (founder,
+   * 2026-07-28: « receipt existe dans le menu gauche des membres donc il doit
+   * avoir son /receipt link?! » — and he was right).
+   *
+   * The default derivation takes the first path segment: /referral/link → the
+   * "/referral" entry. That works when the parent is spelled like the child's
+   * prefix, and it silently fails when it is not. `/receipt/:txHash`'s parent is
+   * the RECEIPTS BINDER at "/receipts" — a live INDEX route and the "Receipts"
+   * door in config/memberDoors.ts — but the derivation looked for "/receipt",
+   * found nothing, and reported that a single receipt has no parent. A rule that
+   * can only follow spelling is not a rule about structure.
+   *
+   * Still FAIL-CLOSED: a declared parent is used only if the registry actually
+   * serves it, and `check-seo-registry` proves every LINKED crumb is a real
+   * route. A breadcrumb may never point at a 404.
+   */
+  parentPath?: string;
   description: string;
   /** Self-canonical path for indexable routes (must start with "/"); null when not indexable. */
   canonicalPath: string | null;
@@ -330,6 +348,11 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     path: "/receipt/:txHash",
     routeType: "PUBLIC",
     indexStatus: "NOINDEX",
+    // The binder this receipt belongs to. Declared because the parent is spelled
+    // "/receipts" while the child's prefix is "/receipt" — the derivation cannot
+    // bridge that, and without this line a single receipt showed "Home ›
+    // Membership Receipt" as if it belonged to nothing (founder-caught).
+    parentPath: "/receipts",
     sitemap: false,
     // ONE shell serves the whole class — including junk hashes that carry no
     // purchase — so the baked title names the DOCUMENT TYPE (the ticket's own
@@ -1340,10 +1363,20 @@ export function getRouteBreadcrumb(location: string): RouteBreadcrumb {
   const trail: RouteCrumb[] = [{ label: "Home", path: "/" }];
 
   if (!isHome) {
-    // The parent, when the registry actually serves it.
+    // The parent: DECLARED if the entry says so, otherwise derived from the first
+    // path segment. Either way it is used only when the registry really serves it
+    // — a breadcrumb may never point at a 404.
     const firstSegment = entry.path.split("/")[1];
-    const parentPath = firstSegment ? `/${firstSegment}` : "";
-    if (parentPath && parentPath !== entry.path && !isNotFound) {
+    const parentPath = entry.parentPath ?? (firstSegment ? `/${firstSegment}` : "");
+    // THE NEUTRAL WALL OUTRANKS THE TRAIL. An INTERNAL route carries
+    // NEUTRAL_WALL_TITLE by design, so both its own crumb and its parent's read
+    // "Page Not Found" — a parent level would make the console's breadcrumb say
+    // it twice. The registry cannot name these without leaking the admin
+    // vocabulary the wall exists to keep out of the public bundle, so it does not
+    // try: internal routes stay two levels. (Caught by sweeping all 52 trails
+    // after the parent level landed — it was my own regression, on ten screens.)
+    const wallsOffTheParent = entry.indexStatus === "INTERNAL";
+    if (parentPath && parentPath !== entry.path && !isNotFound && !wallsOffTheParent) {
       const parent = seoRouteRegistry.find((r) => r.path === parentPath);
       if (parent) trail.push({ label: parent.crumbLabel ?? getRouteLabel(parent), path: parent.path });
     }
