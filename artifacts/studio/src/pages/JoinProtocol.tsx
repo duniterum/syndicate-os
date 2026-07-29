@@ -6,8 +6,10 @@
 // app never holds or moves funds.
 // Everything else here is a live READ of the active membership engine or an
 // exact read-only computation:
-//   - the live sale group renders through the shared ProtocolRealityPanel
-//     (same truth-labelling as /status — nothing bespoke, nothing invented);
+//   - the raw sale-group READ used to render here through the shared
+//     ProtocolRealityPanel; the founder removed it 2026-07-28 (a conversion page
+//     is not the place for lifecycle flags and raw base units). It lives on
+//     /status, which shows every group, and "View status" sits in Next steps;
 //   - the quote is the engine's own public quote view, surfaced as EXACT raw
 //     base-unit strings; formatted values are client-side projections and the
 //     raw string is always shown alongside;
@@ -27,7 +29,6 @@ import {
 } from "@workspace/api-client-react";
 import { PublicPage } from "@/components/PublicPage";
 import { parseViaTag, pingChannelClick } from "@/lib/channelPing";
-import { ProtocolRealityPanel } from "@/components/ProtocolReality";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -812,22 +813,22 @@ export default function JoinProtocol() {
       </Card>
       )}
 
-      {/* The live engine itself — same truth-labelled read as /status */}
-      <h2 className="type-h2 text-foreground mb-2">
-        The engine you would be joining
-      </h2>
-      <p className="text-sm text-muted-foreground leading-relaxed measure mb-6">
-        Live membership-sale state from the Avalanche C-Chain —
-        lifecycle flags for every engine generation and the active engine's
-        public figures as exact raw base units. Identical to the read on{" "}
-        <Link href="/status" className="text-primary hover:underline">
-          /status
-        </Link>
-        ; any value that cannot be verified renders as null with a reason.
-      </p>
-      <div className="mb-12">
-        <ProtocolRealityPanel groups={["sale"]} />
-      </div>
+      {/* REMOVED 2026-07-28 (founder, on a screenshot of this page): « on enlève
+          cette partie, ça ne fait pas propre et un visiteur lambda n'a pas besoin
+          de voir ça ». It was a raw engineering read on a CONVERSION page —
+          pause/concluded lifecycle flags per engine generation, values as exact
+          raw base units (`6994000000000000000000000`), `contract-registry.ts`
+          symbol paths, `eth_call` method names and "Confidence · Medium" rows.
+
+          AND IT WAS DUPLICATION, verified rather than assumed: this block's own
+          copy said "Identical to the read on /status", and /status renders
+          `<ProtocolRealityPanel showMeta />` with NO `groups` prop — every group,
+          including this `sale` one. Nothing is lost by removing it here.
+
+          WORK-FIRST §2/§3 is the governing law: diagnostic material belongs at the
+          bottom behind a disclosure, or nowhere. The proof is not weakened —
+          CANON_CONVERSION_SURFACE §8 asks for the verify LINK beside the claim,
+          and "View status" remains one of the next steps directly below. */}
 
       <h2 className="text-base font-medium text-foreground mb-4">Next steps</h2>
       <div className="flex flex-wrap gap-3 mb-12">
