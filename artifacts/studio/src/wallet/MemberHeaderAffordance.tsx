@@ -17,6 +17,7 @@
 // to it would be a dead end — members see member things only.
 
 import { useEffect, useState } from "react";
+import { HEADER_ICON_QUIET } from "@/components/layout/headerControls";
 import { Link } from "wouter";
 import { navigate } from "wouter/use-browser-location";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -293,7 +294,13 @@ export default function MemberHeaderAffordance({
           <MemberNotificationsBell />
           <Link
             href="/season"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border/50 text-muted-foreground transition-colors hover:border-gold/40 hover:text-gold"
+            // ONE ROW, ONE GEOMETRY (founder-caught 2026-07-29, on his SIGNED-IN header —
+            // the state I had never rendered, because this rig has no session).
+            // This sat at h-8 (32px) with an 8px radius between neighbours that are
+            // all 36px with a 12px radius. Same defect as the theme/menu pair fixed
+            // on the signed-out side: the shared geometry existed and this file did
+            // not import it.
+            className={`inline-flex items-center justify-center border-border/50 text-muted-foreground transition-colors hover:border-gold/40 hover:text-gold ${HEADER_ICON_QUIET} h-9 w-9`}
             title="Season board — see where you stand"
             data-testid="header-trophy"
           >

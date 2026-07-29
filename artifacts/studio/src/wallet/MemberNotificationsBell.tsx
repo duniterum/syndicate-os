@@ -15,6 +15,7 @@
 // badge, honest line in the popover), never a guessed count.
 
 import { useCallback, useEffect, useState } from "react";
+import { HEADER_ICON_QUIET } from "@/components/layout/headerControls";
 import { Link } from "wouter";
 import { Bell, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -142,7 +143,9 @@ export default function MemberNotificationsBell() {
         <Button
           variant="ghost"
           size="icon"
-          className="relative h-8 w-8 rounded-lg border border-border/50"
+          // ONE ROW, ONE GEOMETRY (2026-07-29) — h-8/rounded-lg (32px, 8px) between
+          // neighbours that are 36px with a 12px radius. Shared source, imported.
+          className={`relative h-9 w-9 border-border/50 ${HEADER_ICON_QUIET}`}
           aria-label={
             unseen > 0 ? `Notifications — ${unseen} new` : "Notifications"
           }

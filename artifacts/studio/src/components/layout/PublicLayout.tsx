@@ -123,7 +123,13 @@ function ChainPill({ state }: { state: HeaderChipState }) {
   return (
     <span
       title="Avalanche C-Chain — every public figure is a live chain read, fail-closed"
-      className={`hidden items-center gap-2 whitespace-nowrap rounded-xl border px-2.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-[0.08em] shadow-sm lg:inline-flex ${chipStateTone[state]}`}
+      // ONE ROW, ONE HEIGHT (founder-caught 2026-07-29, on the live header).
+      // Measured at 1900px: every control in this right-hand cluster renders
+      // 36px — the three social icons, the theme toggle, the proof icon, Member
+      // sign-in, Take your seat — and this pill rendered 34px. Two pixels short,
+      // between 36px neighbours, reads as a row that does not line up. Its own
+      // `py-1.5` decided its height; `min-h-9` makes it inherit the row's.
+      className={`hidden min-h-9 items-center gap-2 whitespace-nowrap rounded-xl border px-2.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-[0.08em] shadow-sm lg:inline-flex ${chipStateTone[state]}`}
     >
       <span className="grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-avax shadow-[0_0_18px_-8px_hsl(var(--avax)/0.9)]">
         <img src="/brand/avalanche-avax-token.png" alt="Avalanche" className="h-full w-full object-cover" />
