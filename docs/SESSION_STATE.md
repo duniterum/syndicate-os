@@ -9,7 +9,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > blocking item is now fixed. **The gates were GREEN throughout — every defect below was one no
 > guard could see.**
 >
-> **① WHAT PROD IS AND WHAT IS OWED.** PROD is `227347e`. Derive the backlog with
+> **① WHAT PROD IS AND WHAT IS OWED — UPDATED 2026-07-29 AFTER THE DEPLOY.** **PROD = `6c94ace`**, sealed twice: Replit byte-identity ×2 (entry `index-Du6BLrK3.js` = `705810cc…`, console `OperatorConsole-CtnG8V5g.js` = `6086b4c8…`, 49/49 blobs at the pull) AND measured independently on the served stylesheet (`.type-eyebrow` · `.touch-target` · exactly ONE `pointer:coarse` block — the dead rule my own comment emitted is GONE from the bundle). Live battery: 8×200 · /studio 404 · backbone ok=2, 6 lanes caught up · 13 treasury moves. Derive the backlog with
 > `git log --oneline 227347e..HEAD` — never a count typed here. **IT TOUCHES FOUR api-server FILES**
 > (`package.json` · `scripts/guard-duplicate-facts.ts` · `src/backbone/nativeAvaxScan.ts` ·
 > `src/data/protocolTargets.ts`), two of them runtime `src/`. *(An earlier block here said "NO

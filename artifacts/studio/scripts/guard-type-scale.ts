@@ -259,8 +259,12 @@ const NO_ARBITRARY: Record<string, string> = {
 // IS a per-site decision. Size, family, weight, case and tracking are not.
 //
 // WHAT THIS SECTION CANNOT SEE: an eyebrow built with a different tracking value
-// (`0.12em`, `0.15em`) is a different shape and is not caught here — the sweep
-// found none, and the class is what makes writing one pointless. It also cannot
+// (`0.12em`, `0.15em`) is a different shape and is not caught here. ⛔ CORRECTED
+// 2026-07-29: this line used to claim "the sweep found none" — FALSE. A
+// by-BEHAVIOUR sweep found ~38 mono+uppercase labels on OTHER tracking values,
+// including a public hero label at 8px/0.12em (dated debt in the ALLOWLIST).
+// Widening §⑥ to every tracking value is its own slice; until then this section
+// covers the 0.14em family ONLY, and says so. It also cannot
 // see an eyebrow assembled at runtime.
 const EYEBROW_SHAPE = /tracking-\[0\.14em\]/;
 
