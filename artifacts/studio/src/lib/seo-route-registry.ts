@@ -1169,12 +1169,9 @@ export function normalizeLocation(location: string): string {
 }
 
 /**
- * Segment-wise param match ("/receipt/:txHash" ↔ "/receipt/0xabc…"): same
- * segment count, literal segments equal, a ":" segment accepts any non-empty
- * value. Pure + dependency-free (the Node scripts load this file directly).
- */
-/**
  * Does this location belong to a PARAM route?
+ *
+ * Pure + dependency-free (the Node scripts load this file directly).
  *
  * THE SHAPE IS THE ENTRY'S OWN `paramTailPattern`, not "any non-empty segment"
  * (founder review, 2026-07-28). Until then this accepted any tail, so
@@ -1222,6 +1219,25 @@ function matchesParamPath(
  * own entry's head instead of the 404 head); anything unmatched falls back to
  * the catch-all "*" entry so unknown routes get noindex metadata.
  */
+/**
+ * Is `tail` a shape-valid parameter for this PARAM route?
+ *
+ * THE ONE ANSWER, exported so consumers stop re-declaring it (2026-07-29). The
+ * shape lives on the entry as `paramTailPattern`; the SERVING layer already reads
+ * that field, `matchesParamPath` reads it, and the receipt SURFACES now read it
+ * too. Before this, `/^0x[0-9a-fA-F]{64}$/` was hand-written in
+ * `pages/PublicReceipt.tsx` and `components/receipt/PublicReceiptPanel.tsx` as
+ * well — a docstring in this file claimed "now the registry's pattern is the one
+ * answer" while three copies stood. A claim is not a refactor (CLAUDE.md ①/④).
+ *
+ * FAIL-CLOSED: unknown route, or a param route with no declared pattern → false.
+ */
+export function matchesParamTail(routePath: string, tail: string): boolean {
+  const entry = seoRouteRegistry.find((r) => r.path === routePath);
+  if (!entry?.paramTailPattern) return false;
+  return new RegExp(entry.paramTailPattern).test(tail);
+}
+
 export function matchRoute(
   location: string,
   registry: SeoRouteEntry[] = seoRouteRegistry,

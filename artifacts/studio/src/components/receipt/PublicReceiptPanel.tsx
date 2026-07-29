@@ -15,6 +15,7 @@
 // (one fact shape, one validation).
 
 import { lazy, Suspense, useEffect, useState } from "react";
+import { matchesParamTail } from "@/lib/seo-route-registry";
 import { ExternalLink } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
@@ -24,7 +25,10 @@ const TicketMount = WALLET_SESSION_PREVIEW_ENABLED
   : null;
 
 /** The serving layer admits only this shape; the belt stays on client-side. */
-const TX_SHAPE_RE = /^0x[0-9a-fA-F]{64}$/;
+// THE SHAPE COMES FROM THE REGISTRY (2026-07-29). It was hand-written here AND
+// in the sibling receipt file AND in the registry — three declarations of one
+// fact, while a docstring claimed there was one. Now there is one.
+const isReceiptTail = (tail: string) => matchesParamTail("/receipt/:txHash", tail);
 
 interface ReceiptLookup {
   /** The served row, unparsed (object) — or null (no receipt / model dark). */
@@ -46,7 +50,7 @@ function useReceiptLookup(txHash: string): ReceiptLookup | null | undefined {
   useEffect(() => {
     let active = true;
     setReadback(undefined);
-    if (!TX_SHAPE_RE.test(txHash)) {
+    if (!isReceiptTail(txHash)) {
       // A malformed tail can only be reached client-side (the serving layer
       // 404s it) — the truthful state is "no receipt on this transaction",
       // never a transport-failure claim.

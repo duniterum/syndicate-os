@@ -452,7 +452,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           `landmark-unique` — a best-practice rule, not a WCAG criterion). This
           element only ever carried the border and the padding. */}
       {!crumb.isHome && (
-        <div className="border-b border-border/60 bg-background px-4 py-2.5 sm:px-6 lg:px-8">
+        <div className="border-b border-border/60 bg-background px-4 py-1 sm:px-6 lg:px-8">
           <RouteBreadcrumbTrail trail={crumb.trail} />
         </div>
       )}

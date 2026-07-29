@@ -172,11 +172,10 @@ const ALLOWLIST: Record<string, string> = {
   // — public chrome and truth surfaces
   "components/layout/PublicLayout.tsx": "3 · PUBLIC site chrome (header/footer, every page). RECOUNTED 2026-07-26: the brand tagline paid off its pair (a `text-[10px]` widening to a `sm:` step that capped at 11px, i.e. below the floor at EVERY width) and is now the `text-xs` token. Six sub-floor sizes remain in the chrome, deferred to the type-scale slice",
   "components/ProtocolReality.tsx": "8 · PUBLIC reality band — deferred to the general sweep",
-  "components/ProtocolReservesBand.tsx": "6 · PUBLIC home reserves band — 2 eyebrow paid 2026-07-27 (§⑥); the rest deferred to the general sweep",
+  "components/ProtocolReservesBand.tsx": "5 · PUBLIC home reserves band — 2 eyebrow paid 2026-07-27 (§⑥), 1 more paid since; the rest deferred to the general sweep. (The ceiling said 6 and the guard printed a lower-me NOTE on every green run from 2026-07-27 to 2026-07-29 — an unactioned instruction riding a green build is the ratchet not ratcheting.)",
   "components/ProtocolAssetsCard.tsx": "4 · PUBLIC /contracts assets card — 2 eyebrow paid 2026-07-27 (§⑥), which ARE the founder's §(b)② finding \"ProtocolAssetsCard's 10px labels\"; the 4 left are 11px meta lines, deferred to the general sweep",
   "components/guide/SyndicateGuide.tsx": "6 · PUBLIC guide — deferred to the general sweep",
   "components/TeaserSurface.tsx": "2 · PUBLIC teaser surface — 1 eyebrow paid 2026-07-27 (§⑥); the rest deferred to the general sweep",
-  "components/faq/FaqAccordion.tsx": "3 · PUBLIC FAQ accordion — deferred to the general sweep",
   "components/living/SectionIndex.tsx": "2 · PUBLIC section index — deferred to the general sweep",
   "components/living/LivingSignature.tsx": "1 · PUBLIC page signature — deferred to the general sweep",
   "components/registry/registryPosture.tsx": "2 · PUBLIC posture labels — deferred to the general sweep",
@@ -195,7 +194,6 @@ const ALLOWLIST: Record<string, string> = {
   "pages/Learning.tsx": "2 · PUBLIC learning page — deferred to the general sweep",
   "pages/Tokenomics.tsx": "2 · PUBLIC tokenomics — deferred to the general sweep",
   "pages/Whitepaper.tsx": "2 · PUBLIC whitepaper — a PROSE page; see the Docs note",
-  "pages/Faq.tsx": "1 · PUBLIC FAQ page — deferred to the general sweep",
 
   // — member surfaces: behind the sign-in wall, but a MEMBER is a user and the
   //   floor is a user law, not a visitor law. Counted PUBLIC.

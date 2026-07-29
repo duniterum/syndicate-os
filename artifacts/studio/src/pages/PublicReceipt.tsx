@@ -8,11 +8,15 @@
 // never accumulates a browsable corpus of purchase pages.
 
 import { useLocation, useParams } from "wouter";
+import { matchesParamTail } from "@/lib/seo-route-registry";
 import NotFound from "@/pages/not-found";
 import { PublicReceiptPanel } from "@/components/receipt/PublicReceiptPanel";
 
 /** The serving layer's exact admission shape — mirrored here (see below). */
-const TX_SHAPE_RE = /^0x[0-9a-fA-F]{64}$/;
+// THE SHAPE COMES FROM THE REGISTRY (2026-07-29). It was hand-written here AND
+// in the sibling receipt file AND in the registry — three declarations of one
+// fact, while a docstring claimed there was one. Now there is one.
+const isReceiptTail = (tail: string) => matchesParamTail("/receipt/:txHash", tail);
 
 export default function PublicReceipt() {
   const params = useParams<{ txHash: string }>();
@@ -26,7 +30,7 @@ export default function PublicReceipt() {
   // non-empty tail), so without this mirror a hydrated 404 would dress
   // itself as a receipt surface. Anything the server would 404 renders the
   // same not-found composition here — client and server agree on every URL.
-  if (!TX_SHAPE_RE.test(txHash) || !location.startsWith("/receipt/")) {
+  if (!isReceiptTail(txHash) || !location.startsWith("/receipt/")) {
     return <NotFound />;
   }
 

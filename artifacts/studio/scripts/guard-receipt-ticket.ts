@@ -84,7 +84,20 @@ function stripStrings(code: string): string {
 
 /** Every string/template literal in comment-stripped code. */
 function literalsOf(code: string): string[] {
-  return code.match(/`[^`]*`|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g) ?? [];
+  // MODULE SPECIFIERS ARE NOT COPY (2026-07-29). This guard reads string literals
+  // to judge what a BUYER can read on a money document. An `import … from "…"`
+  // specifier is never rendered — it is a file path — so it is stripped before the
+  // vocabulary rules run. Found when importing `@/lib/seo-route-registry` (to make
+  // the receipt-hash shape ONE answer instead of three) turned the build red on the
+  // word "registry": a true positive for the RULE, a false positive for the SURFACE.
+  // Deliberately narrow: only the specifier of a real import/export-from statement
+  // is removed. Every other literal in the module is still judged, including
+  // template strings and anything passed to a component.
+  const withoutSpecifiers = code.replace(
+    /(^|\n)\s*(?:import|export)\s[^;\n]*?\sfrom\s*(['"])(?:[^'"\\]|\\.)*\2/g,
+    "$1",
+  );
+  return withoutSpecifiers.match(/`[^`]*`|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g) ?? [];
 }
 
 function* walk(dir: string): Generator<string> {

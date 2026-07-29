@@ -59,15 +59,28 @@ export function RouteBreadcrumbTrail({ trail }: { trail: RouteCrumb[] }) {
                         a crumb a keyboard user cannot see themselves land on is
                         a navigation control that only works with a mouse
                         (WCAG 2.4.7, AA).
-                        AND THE TOUCH BOX (2026-07-28): this link shipped with no
-                        height at all — a ~17px standalone control on every public
-                        page, which `rounded-*` pushed out of the guard's
-                        inline-link exception and into its blind spot, so it was
-                        neither counted nor forgiven. It carries the house touch
-                        floor now: 44px on a finger, unchanged density on a mouse. */}
+                        AND THE TOUCH BOX, at the level that actually applies
+                        (corrected 2026-07-29). This link first shipped with NO
+                        height — a ~17px standalone control on every public page,
+                        which `rounded-*` pushed out of the guard's inline-link
+                        exception and into its blind spot. The first fix reached
+                        for the house 44px class, and that was an OVER-application:
+                        it grew this strip from ~38px to ~65px on every phone and
+                        every console screen, i.e. a composition change to a
+                        surface the founder approved as M1 — and the wireframe he
+                        chose drew this bar WITHOUT a 44px target (that was M2, the
+                        option he did not pick).
+                        THE LEVELS, stated: WCAG 2.5.5 (44×44) is level AAA and is
+                        what the house floor encodes for PRIMARY controls. WCAG
+                        2.5.8, the AA requirement, is 24×24 — and that is the right
+                        bar for a secondary wayfinding link. `py-1.5` gives a 29px
+                        tap box (17px line + 12px), clearing AA with room, while
+                        the strip's own padding drops to `py-1` so the bar stays
+                        the height he approved. Bigger is not better when it
+                        silently redesigns a page. */}
                     <Link
                       href={crumb.path}
-                      className="inline-flex items-center rounded-sm px-1 touch-target text-muted-foreground hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="inline-flex items-center rounded-sm px-1 py-1.5 text-muted-foreground hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       {crumb.label}
                     </Link>
