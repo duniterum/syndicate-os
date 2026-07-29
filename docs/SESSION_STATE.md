@@ -2,6 +2,50 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> # ▶ 2026-07-28 (LATEST) — THE FOUNDER'S FIVE-POINT SCREENSHOT PASS. READ THIS FIRST.
+>
+> Three screenshots and five asks. All built; **one is a REPORT, not a build, and needs his call.**
+>
+> **① `f794a7a` ONE LIVE, NOT TWO** — and checking the header found something bigger. Two pills read
+> the same state; above 1536px both rendered. Merged into the Avalanche pill (below `2xl:` it drops
+> the WORD, not the badge — the box already carries the mark). **BUT the header had been overlapping
+> ITSELF since before today:** measured at HEAD, 1280px, **SIX overlapping pairs** — nav links running
+> under the social icons by up to 49px. Arithmetic at 1920px where it is clean: left 809 + right 731 =
+> **1540px of content + 64px padding → needs ≥1604px**, and the `2xl:` cliff offers 1472. The header's
+> social icons are the THIRD copy of those links (drawer + footer carry the others) so they hold to
+> `2xl:`; the 302px tagline returns at **1700px**, staggered ABOVE the cliff on purpose. Swept clean at
+> 375 · 1024 · 1280 · 1536 · 1700 · 1920. Sign-in and the gold CTA asserted present at every width.
+>
+> **② `7890bcb` THE REAL TOKEN LOGOS.** /contracts drew its nine asset rows with GENERIC lucide glyphs
+> (a shield for USDC, a triangle for AVAX, a hexagon for ETH) while the real logos were already
+> vendored in `public/coins/` AND already rendered by the home band — which kept the renderer PRIVATE.
+> `components/coin/CoinMark.tsx` now serves both. SYN is a deliberate branch: no third-party set has
+> it, so it wears the brand mark. 9/9 measured `complete=true` with a real naturalWidth.
+>
+> **③ `5686bfb` THE RAW ENGINE READ LEFT /join.** Lifecycle flags, raw base units,
+> `contract-registry.ts` paths, `eth_call` names and "Confidence · Medium" on a CONVERSION page. Its
+> own copy claimed "identical to /status" — checked rather than trusted: /status renders the panel
+> with NO `groups` prop, so it carries this group and more. WORK-FIRST §2/§3; the verify link survives
+> as the "View status" next step.
+>
+> **④ `464caf1` MY OWN PROCESS FAILURE, recorded.** I ran the guards and the commit in ONE command, so
+> the chain's exit code (RED on `guard-focus-visible`) arrived AFTER the commit. `5686bfb`'s "chain
+> green" line was false. **Run the gate, READ it, then commit — never in one command.**
+>
+> **⑤ BREADCRUMBS — A REPORT, AND IT NEEDS THE FOUNDER'S CALL. Nothing was changed.**
+> Measured: the machine sees a breadcrumb the human never does. `/join` and `/contracts` both emit a
+> `BreadcrumbList` JSON-LD ("Home › Join The Syndicate", "Home › Contracts & Holdings") while
+> `[aria-label="breadcrumb"]` is **absent from the rendered page**. The cause is structural:
+> `RouteContextBar` (the only thing that renders `ui/breadcrumb`) is mounted **only in `Shell`**, which
+> the OPERATOR CONSOLE and `JoinCheckout` use — the public pages go through `PublicPage` →
+> `PublicLayout`, and neither mounts it. So the atom, the `getRouteBreadcrumb` resolver and the
+> registry all work and reach no public surface.
+> **THE LEVEL, stated:** Google asks that BreadcrumbList markup describe a breadcrumb the page
+> actually shows — that is a RICH-RESULT ELIGIBILITY GUIDELINE, not a legal or WCAG requirement.
+> **The two honest options, his call:** show a breadcrumb on public pages (a composition change on
+> EVERY page → wireframe first, VISUAL CHANGE LAW), or stop emitting the JSON-LD (one registry
+> change, no visual change). Do NOT pick one without him.
+
 > # ▶ 2026-07-28 (LATER) — TWO FOUNDER-CAUGHT HEADER DEFECTS, BOTH ON EVERY PUBLIC PAGE.
 > *(appended after the docs pass rather than left one commit behind — that gap is the named
 > recurrence the 2026-07-26 pass wrote its structural fix for.)*
