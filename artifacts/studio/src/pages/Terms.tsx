@@ -17,7 +17,7 @@ function S({ n, title, children }: { n: string; title: string; children: React.R
         <span className="font-mono text-sm text-primary mr-2">{n}</span>
         {title}
       </h2>
-      <div className="text-sm text-muted-foreground leading-relaxed space-y-3 measure">{children}</div>
+      <div className="type-body text-muted-foreground space-y-3 measure">{children}</div>
     </section>
   );
 }
@@ -30,7 +30,7 @@ export default function Terms() {
       lead="The terms that govern thesyndicate.money and your interaction with the Syndicate protocol on Avalanche C-Chain."
       badge={<StatusPill tone="caution">Version 1 — draft of 2026-07-16</StatusPill>}
     >
-      <Card className="bg-muted/20 border-border/50 p-4 text-sm text-muted-foreground leading-relaxed measure mb-10">
+      <Card className="bg-muted/20 border-border/50 p-4 type-body text-muted-foreground measure mb-10">
         This is a draft. It awaits review by qualified legal counsel before it can
         be relied on as legal protection. Not legal advice. A change of terms is
         never silent: a new version is published with a new date, and prior

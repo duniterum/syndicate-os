@@ -266,6 +266,42 @@ const NO_ARBITRARY: Record<string, string> = {
 // see an eyebrow assembled at runtime.
 const EYEBROW_SHAPE = /tracking-\[0\.14em\]/;
 
+// §⑦ — A READING PAGE READS AT THE PROSE SIZE. BLOCKING.
+//
+// ADR-001 rule ③ ("prose page body 16px+") is one of the five this guard's header
+// says it does NOT judge — because judging it needs to know what an element IS.
+// This section answers that for the one case where the answer is unambiguous: a
+// page whose JOB is reading, and an element carrying `.measure`, the 68ch class
+// that exists for nothing but a reading column.
+//
+// THE FOUNDER'S FINDINGS (§(b)②, both of them, measured 2026-07-27):
+//   · "Terms/Risk/Privacy are one step SMALLER than every other reading surface"
+//     — all three render their body at `text-sm` (14px) while `type-body` runs
+//     16px→20px fluid. Six call sites.
+//   · "/chronicle prose at 14px under 34px headings" — `text-sm` body under a
+//     `type-h2` that caps at 2.15rem = 34.4px. His measurement was exact.
+// The TWIN SEARCH found the shape is site-wide: 45 `.measure` columns exist and
+// they render at type-body, text-sm, text-xs, text-[12.5px], text-base and
+// text-lg. This section gates the READING PAGES — where a small body is
+// unambiguously wrong — and REPORTS the rest, which is the same two-severity
+// split §① and §② already use. Widening the gate is a later slice, not a
+// silent one.
+//
+// WHY A POSITIVE RULE AND NOT A SIZE COMPARISON: requiring `type-body` needs no
+// named-step table and no rem arithmetic, so it cannot drift when the scale
+// moves — `type-body` reads `--text-body`, wherever that lands.
+const READING_COLUMN = /\bmeasure\b/;
+const PROSE_SIZE = /\btype-body\b/;
+
+// Pages whose job is reading. Adding one here is a promise that every reading
+// column on it carries the prose size.
+const READING_SURFACES: Record<string, string> = {
+  "pages/Terms.tsx": "the terms a member is asked to rely on",
+  "pages/Risk.tsx": "the risk disclosure — the page it is least acceptable to make small",
+  "pages/Privacy.tsx": "the personal-data page",
+  "pages/ChronicleTeaser.tsx": "/chronicle — the protocol's written record, read end to end",
+};
+
 // Call sites where the eyebrow shape is DELIBERATELY not the eyebrow class, each
 // with the reason. Convention matches ALLOWLIST: "<ceiling> · <written reason>".
 // The integer is a CEILING — one more occurrence in that file reds the build, so
@@ -520,6 +556,34 @@ for (const [r, why] of Object.entries(EYEBROW_EXEMPT)) {
   }
 }
 
+// ─── ⑦ READING PAGES READ AT THE PROSE SIZE ─────────────────────────────────
+let readingColumnsElsewhere = 0;
+const readingFilesElsewhere = new Set<string>();
+for (const file of files.filter((f) => /\.tsx$/.test(f))) {
+  const r = rel(file);
+  const pinned = r in READING_SURFACES;
+  readFileSync(file, "utf8")
+    .split("\n")
+    .forEach((ln, i) => {
+      if (isComment(ln) || !READING_COLUMN.test(ln) || !/className/.test(ln)) return;
+      if (PROSE_SIZE.test(ln)) return;
+      if (!pinned) {
+        readingColumnsElsewhere += 1;
+        readingFilesElsewhere.add(r);
+        return;
+      }
+      fail(
+        `${r}:${i + 1} — a reading column (\`measure\`) on a READING PAGE that does not carry \`type-body\`. ` +
+          `ADR-001 rule ③: prose page body is 16px+. ${READING_SURFACES[r]!} may not be set smaller than ` +
+          `every other reading surface on the site — that is the founder's §(b)② finding, and \`type-body\` ` +
+          `is where the site's other reading surfaces already are.`,
+      );
+    });
+}
+if (!existsSync(join(SRC, "components/prose/Prose.tsx"))) {
+  fail("components/prose/Prose.tsx is gone — §⑦ compares reading pages against the prose treatment it defines.");
+}
+
 // ─── ③ CSS TOKENS — one decision each, counted apart from the 277 classes ───
 // A token below the floor is worse than a class below it: it puts the violation
 // one `@apply` away from every surface at once. Reported separately so the founder
@@ -637,6 +701,10 @@ console.log(
     `${offScale.length} arbitrary size(s) at/above the floor listed but NOT gated (flip FAIL_ON_OFF_SCALE when the new scale lands). ` +
     `${unresolvable} size(s) unresolvable statically (em/%/var — a real hole, see the header). ` +
     `${CASES.length} matcher behaviour cases green; ${Object.keys(NO_ARBITRARY).length} atom(s) pinned scale-only. ` +
+    `EYEBROW (§⑥): one class, ${Object.keys(EYEBROW_EXEMPT).length} written exemption(s). ` +
+    `PROSE (§⑦): ${Object.keys(READING_SURFACES).length} reading page(s) pinned to type-body; ` +
+    `${readingColumnsElsewhere} reading column(s) across ${readingFilesElsewhere.size} OTHER file(s) render ` +
+    `below it and are REPORTED, not gated — widening that gate is its own slice. ` +
     `NOT CHECKED: reading copy ≥14px, prose body 16px+, KPI ≥18px, card titles ≥16px, link affordance ` +
     `(ADR-001 rules ①③⑤⑥ — they need to know what an element IS), named steps like text-xs (trusted by name), ` +
     `inline style fontSize, and any size assembled at runtime.`,

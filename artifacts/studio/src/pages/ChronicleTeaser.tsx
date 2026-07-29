@@ -87,7 +87,7 @@ export default function ChronicleTeaser() {
             {e.sections.map((s) => (
               <div key={s.heading} className="mb-4">
                 <h3 className="text-base font-medium text-foreground mb-1.5">{s.heading}</h3>
-                <p className="text-sm text-foreground/90 leading-relaxed measure whitespace-pre-line">
+                <p className="type-body text-foreground/90 measure whitespace-pre-line">
                   {s.body}
                 </p>
               </div>
