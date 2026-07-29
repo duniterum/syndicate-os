@@ -240,11 +240,22 @@ if (UNIT === null || !(UNIT > 0)) {
 }
 const unit = UNIT ?? 4;
 
-// THE TOUCH FLOOR CLASS — parsed out of index.css's real `@media (pointer:
-// coarse)` block, never typed here. Added 2026-07-27 after the Tailwind
-// `pointer-coarse:` variant was found to emit NOTHING in this build (the served
-// stylesheet carried zero `pointer:` media rules) while this guard reported 15
-// controls fixed. A pin that cannot be READ is a FAILURE, never a silent pass.
+// THE TOUCH FLOOR CLASS — parsed out of index.css's real coarse-pointer block, never
+// typed here.
+// ⛔ CORRECTED 2026-07-29 — THE 2026-07-27 CLAIM ON THIS LINE WAS A MEASUREMENT ERROR.
+// Tailwind's coarse-pointer variant DOES compile normally in this build: verified against
+// the project's own `vite build`, whose emitted stylesheet carries the variant's rule
+// inside a real coarse-pointer media block. Two compounding traps produced the false
+// negative: Tailwind CSS-ESCAPES the colon in the selector, so a search for the class as
+// AUTHORED can never match the CSS as EMITTED; and the DEV SERVER serves the rule NESTED
+// inside its class rule rather than as a top-level media rule, so a CSSOM walk over
+// top-level rules counts none. The dev server is not what ships.
+// THE BLOCK BELOW IS KEPT, on the correct reason: a NAMED class lets this guard PARSE the
+// 44px out of the CSS that actually ships, instead of trusting a class string it can only
+// assume compiles — and deleting the block turns the build RED. ADR-001 amendment
+// 2026-07-16 bis §4 (Apple HIG 44 / Material 48); WCAG 2.5.5 44×44 is level AAA, the AA
+// rule 2.5.8 is 24×24 — so it applies to the coarse pointer only.
+// A pin that cannot be READ is a FAILURE, never a silent pass.
 const coarseBlock = /@media\s*\(\s*pointer\s*:\s*coarse\s*\)\s*\{([\s\S]*?)\n\}/.exec(css)?.[1] ?? null;
 const TOUCH_CLASS_PX: number | null = (() => {
   if (coarseBlock === null) return null;
@@ -255,8 +266,9 @@ const TOUCH_CLASS_PX: number | null = (() => {
 if (coarseBlock === null) {
   fail(
     "index.css has no `@media (pointer: coarse)` block, so `.touch-target` renders NOTHING and every Button " +
-      "carrying it is back at its base height. This is the exact failure the class exists to prevent: the " +
-      "Tailwind `pointer-coarse:` variant produced no CSS while this guard read it as 44px.",
+      "carrying it is back at its base height. The named class exists so this guard can PARSE the floor out " +
+      "of the CSS that ships instead of assuming a class string compiles — restore the block or this guard " +
+      "is certifying a height no browser applies.",
   );
 } else if (TOUCH_CLASS_PX === null) {
   fail("index.css's `@media (pointer: coarse)` block defines no `.touch-target { min-height: … }` — the touch floor cannot be read.");
@@ -352,7 +364,7 @@ function measure(classes: string[]): Measured {
   // already taller keeps its own height.
   //
   // AND IT IS READ OUT OF THE CSS, never typed here. The first version of this
-  // rule used Tailwind's `pointer-coarse:` variant, which produces NO CSS in this
+  // rule was justified by a claim that the variant produces no CSS in this
   // build: the served stylesheet carried zero `pointer:` media rules while this
   // guard reported 15 controls fixed. TOUCH_FLOOR_PX below is parsed from the
   // real block, and its absence is a FAILURE, so that lie cannot be told twice.

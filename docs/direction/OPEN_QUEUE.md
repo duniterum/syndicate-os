@@ -4,9 +4,10 @@
 > altitude.** `c9f17c0` the eyebrow (25 hand-typed copies, 18 files, six different sizes → one class +
 > a RED-BUILD guard) · `24131e7` the reading pages (Terms/Risk/Privacy//chronicle at 14px against the
 > site's 16→20px prose) · `077889d` the touch floor (the Button atom, 106 call sites, touch-only).
-> PROD unchanged at `227347e`; the batch is client-only, additive, fail-closed. ✅ **BATCHABLE.**
+> PROD unchanged at `227347e`; the batch is additive and fail-closed. ✅ **BATCHABLE.** ⛔ *"client-only" was struck 2026-07-29: it touches FOUR api-server files (package.json · guard-duplicate-facts.ts · nativeAvaxScan.ts · protocolTargets.ts). The same false sentence stood in TWO documents and the first correction fixed only one — the twin search I did not run on my own record.*
 > **THE TWO THINGS WORTH CARRYING FORWARD, both caught by measuring rather than by a guard:**
-> ① **A GHOST FIX nearly shipped.** Tailwind's `pointer-coarse:` variant emits NO CSS in this build —
+> > ⛔ **CORRIGÉ le 29-07 : ce paragraphe affirmait que le variant Tailwind n'émettait aucun CSS. C'ÉTAIT UNE ERREUR DE MESURE**, réfutée par trois arbitres indépendants sur le *vrai build de production*. Deux pièges cumulés : Tailwind échappe le deux-points dans le sélecteur émis (chercher la classe telle qu'ÉCRITE ne peut jamais trouver le CSS tel qu'ÉMIS), et le serveur de dev imbrique la règle dans sa règle de classe au lieu d'une media query de premier niveau (un parcours du CSSOM n'en compte donc aucune). **Le bloc écrit à la main est GARDÉ**, pour la bonne raison : le garde y LIT le 44px du CSS réellement livré, au lieu de faire confiance à un nom de classe.*
+> ① **⛔ THE "GHOST FIX" DIAGNOSIS WAS WRONG — corrected 2026-07-29 by three independent adjudicators on the real production build: the variant DOES compile and its rule ships. I had measured the DEV server and missed that Tailwind escapes the colon in the emitted selector. The named class is kept because the guard can PARSE it, not because the variant is broken.** Tailwind's `pointer-coarse:` variant emits NO CSS in this build —
 > the served stylesheet had zero `pointer:` media rules — while the guard, taught to read it, reported
 > 15 controls fixed. The rule is now hand-written CSS the guard PARSES, and deleting it reds the build.
 > ② **A DEBT COUNTER nearly reported HIDING as PAYING.** A new house CSS class made

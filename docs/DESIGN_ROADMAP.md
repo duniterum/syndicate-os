@@ -823,7 +823,8 @@ TOUCH (cibles 89 → 74). Les quatre autres gardes n'ont pas bougé.
   §(b)② (« tous les boutons du parcours /join sous 44px sur un téléphone ») n'était pas un défaut de
   /join : c'était **l'atome Button**, hérité par 106 endroits, dont aucune des quatre tailles
   n'atteignait le plancher (36 · 32 · 40 · 36). Premier correctif écrit avec la variante Tailwind
-  `pointer-coarse:` → le garde a annoncé 15 contrôles réparés ; **la feuille de style servie contenait
+  le variant Tailwind → le garde a annoncé 15 contrôles réparés ; ⛔ **CORRIGÉ le 29-07 : ce paragraphe affirmait que le variant Tailwind n'émettait aucun CSS. C'ÉTAIT UNE ERREUR DE MESURE**, réfutée par trois arbitres indépendants sur le *vrai build de production*. Deux pièges cumulés : Tailwind échappe le deux-points dans le sélecteur émis (chercher la classe telle qu'ÉCRITE ne peut jamais trouver le CSS tel qu'ÉMIS), et le serveur de dev imbrique la règle dans sa règle de classe au lieu d'une media query de premier niveau (un parcours du CSSOM n'en compte donc aucune). **Le bloc écrit à la main est GARDÉ**, pour la bonne raison : le garde y LIT le 44px du CSS réellement livré, au lieu de faire confiance à un nom de classe.*
+**la feuille de style servie contenait
   ZÉRO règle `pointer:`** — la classe ne produisait aucun CSS et le garde certifiait une règle
   qu'aucun navigateur ne recevait. Remplacé par un vrai bloc `@media (pointer: coarse)` écrit à la
   main dans `index.css`, dont le garde **lit** le 44 au lieu de faire confiance à un nom de classe ;

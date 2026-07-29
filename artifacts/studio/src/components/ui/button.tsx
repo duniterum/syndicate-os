@@ -40,20 +40,28 @@ const buttonVariants = cva(
         //
         // The floor is a TOUCH rule — Apple HIG 44 / Material 48 are finger
         // guidelines, and WCAG 2.5.5 (44×44) is level AAA, while the AA
-        // requirement, 2.5.8, is 24×24. So it is applied under
-        // `pointer-coarse:`, the modality itself: a finger gets 44px, a mouse
-        // keeps the density the founder already approved on desktop. Raising
-        // the base instead would have made every button on every page 6px
-        // taller — a composition change nobody asked for, to satisfy a rule
-        // that was never about the mouse.
+        // requirement, 2.5.8, is 24×24. So it applies to the coarse pointer
+        // only: a finger gets 44px, a mouse keeps the density the founder
+        // already approved on desktop. Raising the base instead would have made
+        // every button on every page 6px taller — a composition change nobody
+        // asked for, to satisfy a rule that was never about the mouse.
         //
-        // `.touch-target` is a HAND-WRITTEN `@media (pointer: coarse)` block in
-        // index.css, not a Tailwind variant — because the variant is a ghost
-        // here. `pointer-coarse:min-h-11` was tried first and the served
-        // stylesheet came back with ZERO `pointer:` media rules: the class
-        // produced no CSS, while the guard happily reported 15 controls fixed.
-        // guard-touch-target now reads the 44px out of that CSS block and fails
-        // if the block is deleted.
+        // ⛔ CORRECTED 2026-07-29. This comment used to say Tailwind's
+        // coarse-pointer variant "is a ghost here" and produced no CSS. THAT WAS
+        // A MEASUREMENT ERROR, and three independent adjudicators disproved it
+        // against the project's own `vite build`: the variant compiles normally
+        // and its rule ships. Two compounding traps made the false negative look
+        // proven — Tailwind CSS-ESCAPES the colon in the emitted selector, so a
+        // search for the class as AUTHORED never matches the CSS as EMITTED; and
+        // the DEV SERVER nests the rule inside its class rule instead of hoisting
+        // a top-level media rule, so a CSSOM walk over top-level rules counts
+        // none. The dev server is not what ships.
+        //
+        // `.touch-target` is KEPT, on the correct reason rather than the old one:
+        // a NAMED class in index.css lets guard-touch-target PARSE the 44px out
+        // of the CSS that actually ships, instead of trusting a class string it
+        // can only assume compiles — and deleting the block turns the build RED.
+        // One 44px number, in one place (rule ④).
         default: "min-h-9 touch-target px-4 py-2",
         sm: "min-h-8 touch-target rounded-md px-3 text-xs",
         lg: "min-h-10 touch-target rounded-md px-8",

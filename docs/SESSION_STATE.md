@@ -31,13 +31,22 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   under `type-body`'s 18.75px). The slice that raised the paragraph never touched the heading one
 >   line above it, and its verification measured the ARTICLE title instead.
 >
-> **③ THE ONE REVIEW CLAIM I REFUTED, measured rather than accepted.** The panel said
-> "`pointer-coarse:` emits no CSS in this build" was false and engraved in six places. Retested on
-> the REAL pipeline with a control class: `min-[1234px]:block` emitted (so the rebuild happened) and
-> `pointer-coarse:min-h-11` emitted **nothing**. The panel had compiled a synthetic Tailwind, which
-> is not this project's build. **The six places stand.** The variant NAME exists in tailwindcss
-> 4.3.1; the utility does not reach the served stylesheet here.
->
+> **③ ⛔ THE CLAIM I THOUGHT I HAD REFUTED — I WAS WRONG, AND IT IS THE LESSON OF THE WHOLE RANGE.**
+> I said the panel was wrong to call "the coarse-pointer variant emits no CSS" false, and I said my
+> dev-server measurement settled it. **Three independent adjudicators then disproved ME**, each
+> running the project OWN production build with a control, a distinct probe utility, and an inverse
+> build proving the rule vanishes when its source is deleted. Unanimous: the variant compiles
+> normally and its rule ships. **Two compounding traps made my false negative look proven:**
+> Tailwind CSS-ESCAPES the colon in the emitted selector, so searching for the class as AUTHORED can
+> never match the CSS as EMITTED; and the DEV SERVER nests the rule inside its class rule instead of
+> hoisting a top-level media rule, so a CSSOM walk over top-level rules counts none. **I measured the
+> dev server; Replit ships the production build.** The nine statements are corrected at all nine
+> sites. The hand-written block is KEPT — on the correct reason: the guard PARSES the 44px out of
+> the CSS that ships, and deleting the block reds the build.
+> **AND THE DETAIL WORTH KEEPING:** the comment denying the variant worked is what made Tailwind
+> emit the dead rule — its extractor harvests candidates from PROSE, comments included. The claim
+> was its own counter-example.
+
 > **④ THE WRITTEN RECORD WAS THE REAL DAMAGE, and that is what he asked about.** The code was close
 > to right; the record had 15 false statements. Fixed: the api-server line (①), the design-debt
 > total (**628**, recounted by running the six: 254+46+26+36+191+1+74), the route count (**52 routes
@@ -131,9 +140,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > # ▶ 2026-07-28 — THE FOUR NO-WIREFRAME ERGONOMICS FINDINGS ARE CLOSED. READ THIS FIRST.
 >
 > **① WHAT PROD IS, AND WHAT IS OWED IT.** PROD is still `227347e`. The deploy backlog is what
-> `git log --oneline 227347e..HEAD` prints — never a count typed here. It is **client-only** (studio
-> `src/` + two guard scripts + docs): NO api-server file, NO schema, NO env. Every change is additive
-> and fail-closed, so prod undeployed simply keeps the previous rendering.
+> `git log --oneline 227347e..HEAD` prints — never a count typed here. ⛔ **CORRECTED 2026-07-29: the line that stood here said "client-only … NO api-server file". FALSE — the batch touches FOUR api-server files, two of them runtime `src/`. Derive it with `git diff --name-only 227347e..HEAD -- artifacts/api-server`, never recite it.** No schema, no new env. Every change is additive and fail-closed, so prod undeployed simply keeps the previous rendering.
 > ✅ **BATCHABLE — no deploy owed.** It rides the next 🚀.
 >
 > **② THE FOUR FINDINGS §(b)② LISTED AS "NEEDS NO WIREFRAME" ARE DONE, each as a CLASS, never as the
@@ -152,7 +159,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >
 > **③ THE TWO FINDINGS THAT MATTER MORE THAN THE FIXES — both are the same disease, and both were
 > caught by MEASURING and would have shipped otherwise:**
-> · **A GHOST FIX.** The touch floor was first written with Tailwind's `pointer-coarse:` variant. The
+> · **THE "GHOST FIX" — ⛔ THE DIAGNOSIS WAS WRONG (corrected 2026-07-29, see ③ at the top: the variant DOES compile; I had measured the dev server and missed a CSS-escaped selector).** The touch floor was first written with Tailwind's `pointer-coarse:` variant. The
 >   guard read it, went green, and reported **15 controls fixed**. The served stylesheet carried **ZERO
 >   `pointer:` media rules** — the variant emits nothing in this build. A correct-looking diff and a
 >   green guard agreed with each other and were both wrong. The rule is now a hand-written CSS block
@@ -164,9 +171,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   **THE RULE THIS LEAVES:** after any change that moves a debt counter, read the guard's BLIND-SPOT
 >   number in the same breath. A debt that falls while the blind spot rises was not paid.
 >
-> **④ DESIGN DEBT = 628**, recounted by running all six guards, never copied: 255 type-scale (201
+> **④ DESIGN DEBT — see the 2026-07-29 block above for the CURRENT figure.** *(This line read 631 with the components 255/193 when it was written on 2026-07-28; the total was later corrected by a blind string replace that did NOT touch the components, leaving arithmetic that did not add up. Superseded rather than re-patched — a figure is recounted from the guards, never edited in place.)* Original 2026-07-28 count: 255 type-scale (201
 > public) · 46 spacing · 26 contrast · 36 theme-parity · 193 focus + 1 outline-kill · 74 touch.
-> 255+46+26+36+193+1+74 = 628. The 27 paid off 658 is exactly 12 (eyebrow) + 15 (touch).
+> 255+46+26+36+193+1+74 = **631**, which is what this block correctly said on 2026-07-28. The live figure is **628** (254+46+26+36+191+1+74), recounted 2026-07-29 — see the block at the top.
 >
 > **⑤ WHERE THE NEXT SESSION STARTS.** §(b)②'s remaining work is **the four findings that need the
 > founder's WIREFRAME first** — /join's four equally-loud gold buttons · /faq's search placed 4th ·
@@ -3283,7 +3290,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > THE COMPLETE PROOF, all three sides: ① REPLIT: HEAD `5d30ab6` 16/16 blobs, gates
 > green (studio 3,588 · admin-dist 90 · API 802/151/140/161 · DB 42/42), publish,
 > wall battery (4 admin routes → 404 "Page Not Found", zero admin vocab, zero
-> console-chunk ref, byte-identity `3e54628b…9458af`), Q37 (tables existed via
+> console-chunk ref, byte-identity `3e54631b…9458af`), Q37 (tables existed via
 > Publish schema sync, contraints dev==prod, 0 rows, verify NOT SEEDED — the db push
 > TRUNCATE false-positive on member_continuity_verification_run was REFUSED, right
 > call), Q36 CEREMONY (dry-run → ✅ SEEDED founder_root `0x88ec…dd73` ACTIVE, audit
