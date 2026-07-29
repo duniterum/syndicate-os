@@ -150,7 +150,7 @@ export function ProtocolReservesBand() {
 
         <div className="mb-7 grid items-center gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-11">
           <div>
-            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+            <div className="type-eyebrow text-muted-foreground">
               Total value
             </div>
             <div className="mt-1 font-mono text-4xl font-black tracking-tight text-foreground sm:text-5xl">
@@ -171,7 +171,7 @@ export function ProtocolReservesBand() {
 
           {mix.length > 0 ? (
             <div>
-              <div className="mb-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              <div className="mb-2.5 type-eyebrow text-muted-foreground">
                 Composition
               </div>
               <div className="flex h-2.5 overflow-hidden rounded-full border border-border bg-background/60">

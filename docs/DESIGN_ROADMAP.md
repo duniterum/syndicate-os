@@ -777,9 +777,25 @@ Cette session l'a construite, mesurée dans un navigateur à 1920 et 375, dans l
 un point de sauvegarde, pas une publication. Le wireframe et l'aperçu restent obligatoires ; **prod ne bouge
 jamais sans ses yeux**.
 
-**DETTE RECOMPTÉE depuis les six gardes = 658** (267 type-scale / 56 fichiers, 213 publics · 46 espacement / 11
-· 26 contraste · 36 parité · 193 focus + 1 outline-kill · 89 cibles). Trois plafonds baissés à la demande du
-garde lui-même, une entrée supprimée (FireLedger, à zéro).
+**DETTE RECOMPTÉE depuis les six gardes = 646** *(recomptée le 27-07 en faisant tourner les six, jamais
+recopiée : 255 type-scale / 56 fichiers, 201 publics · 46 espacement / 11 · 26 contraste · 36 parité · 193
+focus + 1 outline-kill · 89 cibles ; 255+46+26+36+193+1+89 = 646)*. L'écart de 12 avec le 658 du 26-07 est
+**exactement** ce que la tranche EYEBROW a payé — les cinq autres gardes n'ont pas bougé.
+*(état antérieur, 26-07 : 658 — 267 type-scale, 213 publics.)*
+
+- [x] **L'EYEBROW DEVIENT UNE SEULE DÉCISION** (27-07). Le libellé de section — mono + majuscules + le
+  crénage 0.14em — était **tapé à la main sur 25 endroits dans 18 fichiers** et répondait SIX fois
+  différemment à la même question (9px×2 · 10px×8 · 11px×3 · 12px×10 · 14px · 16px) : **13 sous le
+  plancher de lisibilité**, sur des surfaces publiques. Le constat §(b)② du fondateur (« les libellés
+  10px de ProtocolAssetsCard ») en était **deux**. Désormais `.type-eyebrow` dans `index.css`, qui lit
+  `--text-caption` : c'est le PLANCHER qui le déplace, plus un typiste. La couleur reste au point
+  d'appel (20 muted · 4 foreground · 3 gold — ça, c'est une vraie décision par endroit).
+  **Garde : `guard-type-scale` §⑥** — un eyebrow tapé à la main = BUILD ROUGE, prouvé ROUGE avant le
+  correctif (23 échecs + l'absence de la classe). Deux exemptions écrites et mesurées : l'en-tête de
+  groupe de dates de `/activity` (14px, vérifié à l'écran) et la carte peinte par satori.
+  **Une conversion a été ANNULÉE après mesure au pixel** : dans le ledger de la home, MEMBERSHIP à 12px
+  réclame 89px dans une boîte de 80px et débordait de sa carte en desktop — élargir les cartes est une
+  recomposition que le fondateur n'a pas vue, donc la dette reste datée.
 
 **⚠ RESTE OUVERT, écrit pour ne pas être pris pour fait :** l'aperçu n'a couvert que `/activity` — la
 recommandation de couvrir 3-4 pages tient toujours. 15 constats ergonomiques confirmés sur les autres surfaces

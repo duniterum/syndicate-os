@@ -37,7 +37,7 @@ function StatusRow({
       {items.map((item) => (
         <span
           key={item}
-          className="rounded border border-border/60 bg-background/40 px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground dark:border-white/10 dark:bg-white/[0.03]"
+          className="rounded border border-border/60 bg-background/40 px-2 py-0.5 type-eyebrow text-muted-foreground dark:border-white/10 dark:bg-white/[0.03]"
         >
           {item}
         </span>

@@ -242,7 +242,7 @@ function HeroLiveActivity() {
         </div>
         <Link
           href={heroSystem.activity.doorHref}
-          className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground"
+          className="type-eyebrow text-muted-foreground hover:text-foreground"
           data-testid="link-hero-activity-history"
         >
           {heroSystem.activity.doorLabel}

@@ -116,6 +116,16 @@ export function HeroLedger() {
                 className="min-h-[90px] rounded-xl border border-border bg-background/58 p-3 dark:border-white/10 dark:bg-white/[0.035]"
               >
                 <Icon className="mb-2 h-4 w-4 text-gold" />
+                {/* NOT the eyebrow class, and MEASURED, not assumed (2026-07-27).
+                    At the 12px floor the longest label word — MEMBERSHIP — needs
+                    89px inside this card's 80px content box and spills 9px past
+                    it at `sm:grid-cols-3` (desktop only; mobile's 2-column grid
+                    is clean). Raising this label therefore requires WIDER CARDS,
+                    which is a composition change the founder has not seen — and
+                    it is exactly what this guard's allowlist already reserved for
+                    the type-scale slice that recomposes this ledger. Held as
+                    dated debt (guard-type-scale ALLOWLIST + §⑥ EYEBROW_EXEMPT)
+                    rather than shipped as a label hanging out of its card. */}
                 <div className="min-h-[26px] font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground sm:text-[10px]">{item.label}</div>
                 {item.bind ? (
                   isMoneyBind ? (
@@ -149,7 +159,7 @@ export function HeroLedger() {
         </div>
         <div className="mt-3 text-center text-xs text-muted-foreground">
           Gross inflows are cumulative and <span className="font-semibold text-viz-4">never decrease.</span>
-          <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{VERIFY_SLOGAN}</span>
+          <span className="mt-0.5 block type-eyebrow text-muted-foreground">{VERIFY_SLOGAN}</span>
         </div>
       </motion.section>
 
@@ -161,7 +171,7 @@ export function HeroLedger() {
       >
         <div className="mb-3 flex items-center justify-between gap-3">
           <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">{heroSystem.routing.title}</h3>
-          <span className="rounded-full border border-proof/25 bg-proof/8 px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-proof">Canonical 70 / 20 / 10</span>
+          <span className="rounded-full border border-proof/25 bg-proof/8 px-2.5 py-1 type-eyebrow text-proof">Canonical 70 / 20 / 10</span>
         </div>
         <div className="grid grid-cols-3 gap-2">
           {heroSystem.routing.routes.map((route, index) => {

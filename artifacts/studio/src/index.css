@@ -459,6 +459,14 @@
 .type-body { font-family: var(--app-font-sans); font-size: var(--text-body); line-height: 1.55; }
 .type-label { font-family: var(--app-font-sans); font-size: var(--text-label); line-height: 1.3; font-weight: 500; }
 .type-caption { font-family: var(--app-font-mono); font-size: var(--text-caption); line-height: 1.3; letter-spacing: 0.02em; }
+/* THE EYEBROW — the section label above a heading, a card title or a data group.
+   ONE decision, imported; it was hand-typed at 25 call sites across 18 files and
+   answered its own question SIX ways (9px×2 · 10px×8 · 11px×3 · 12px×10 · 14px ·
+   16px), putting thirteen of them under the readability floor — measured
+   2026-07-27, pinned by guard-type-scale §⑥. Size reads --text-caption, so the
+   FLOOR moves this, never a typist. COLOUR is deliberately NOT here: 20 sites are
+   muted, 4 foreground, 3 gold, and that is a real per-site decision. */
+.type-eyebrow { font-family: var(--app-font-mono); font-size: var(--text-caption); line-height: 1.3; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; }
 .measure { max-width: var(--measure); }
 
 /* Fill wide screens by MULTIPLYING columns (CANON_ACCESS_MODEL §C, S7-d): card

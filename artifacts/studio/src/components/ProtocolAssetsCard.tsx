@@ -271,7 +271,7 @@ export function ProtocolAssetsCard() {
       {/* The headline figure. Scope is stated, never implied: only directly-held
           assets with a deep market are valued and summed. */}
       <div className="mb-5 rounded-xl border border-gold/25 bg-background/58 p-4 dark:border-white/10 dark:bg-white/[0.035]">
-        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+        <div className="type-eyebrow text-muted-foreground">
           Value of the priced holdings
         </div>
         <div className="mt-1 font-mono text-2xl font-black text-foreground">
@@ -300,7 +300,7 @@ export function ProtocolAssetsCard() {
             >
               <div className="mb-2 flex items-center gap-2">
                 <Icon className={`h-4 w-4 ${row.tone}`} />
-                <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                <span className="type-eyebrow text-muted-foreground">
                   {row.label}
                 </span>
               </div>

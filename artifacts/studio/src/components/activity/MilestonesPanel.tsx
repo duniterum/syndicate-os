@@ -236,7 +236,7 @@ export function MilestonesPanel({
                 full-width line, `justify-between` would throw "2 sealed" a
                 screen away from the family it counts. */}
             <div className="mb-2.5 flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
-              <h3 className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-gold">
+              <h3 className="type-eyebrow text-gold">
                 {lane.label}
               </h3>
               <span className="whitespace-nowrap font-mono text-xs tracking-[0.08em] text-muted-foreground">

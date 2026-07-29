@@ -36,7 +36,7 @@ export function ChronicleLatest() {
           </p>
           <Link
             href={`/chronicle#${latest.id}`}
-            className="mt-2 inline-flex font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground"
+            className="mt-2 inline-flex type-eyebrow text-muted-foreground hover:text-foreground"
           >
             Read the record →
           </Link>

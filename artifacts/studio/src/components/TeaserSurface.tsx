@@ -44,7 +44,7 @@ export function TeaserSurface({ spec, liveSlot }: { spec: TeaserSpec; liveSlot?:
       {liveSlot ? <div className="mb-10">{liveSlot}</div> : null}
 
       <div className="mb-2 flex items-center gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+        <span className="type-eyebrow text-muted-foreground">
           Design preview — the shape, not data
         </span>
       </div>

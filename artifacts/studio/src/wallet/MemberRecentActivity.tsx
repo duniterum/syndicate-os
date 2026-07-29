@@ -65,7 +65,7 @@ export default function MemberRecentActivity() {
         <h2 className="text-base font-medium text-foreground">
           Your recent activity
         </h2>
-        <span className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
+        <span className="type-eyebrow text-muted-foreground">
           Own record
         </span>
       </div>

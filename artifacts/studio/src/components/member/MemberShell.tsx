@@ -205,7 +205,7 @@ export function MemberShell({ children }: { children: ReactNode }) {
         >
           <div className="flex items-center gap-2 px-1">
             <DoorOpen className="h-4 w-4 text-gold" aria-hidden="true" />
-            <span className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
+            <span className="type-eyebrow text-muted-foreground">
               Your doors
             </span>
           </div>

@@ -192,7 +192,7 @@ export function HomeSeasonSection() {
           {/* The pot frame — seasonBounty FUTURE: the badge speaks, no figure. */}
           <aside className="syn-pot-card flex flex-col justify-center rounded-2xl border border-gold/50 px-[26px] py-[30px]">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="type-eyebrow text-muted-foreground">
                 The season pot
               </span>
               <LifecycleBadge lifecycle="FUTURE" />

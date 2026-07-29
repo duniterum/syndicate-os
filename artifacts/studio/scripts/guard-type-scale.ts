@@ -146,18 +146,18 @@ const ALLOWLIST: Record<string, string> = {
   //   thing anyone sees. Owned by the type-scale slice, which rebuilds this
   //   composition's rhythm wholesale; patching sizes here before the new scale
   //   exists would be work done twice.
-  "components/hero/HeroLedger.tsx": "21 · PUBLIC home hero — the worst single file; two of them are `sm:` steps that cap at 10px (the StatusPill shape). Deferred to the type-scale slice, which recomposes this ledger",
+  "components/hero/HeroLedger.tsx": "19 · PUBLIC home hero. 2 eyebrow paid 2026-07-27 (§⑥). A THIRD was attempted and REVERTED after measuring it in the browser: the item label at the 12px floor needs 89px for the word MEMBERSHIP inside this card's 80px content box and spills 9px past it at `sm:grid-cols-3` (desktop only — mobile's 2-column grid was clean). Raising it needs WIDER CARDS, i.e. the recomposition this entry always reserved for the type-scale slice. The 2 held occurrences are that one label's 9px base and its `sm:` 10px step",
   "components/hero/SeatFlowDiagram.tsx": "11 · PUBLIC home hero — holds the five 8px occurrences, the smallest text on the site. Deferred to the type-scale slice; these five are its first target",
-  "components/hero/ProtocolOverviewPanel.tsx": "9 · PUBLIC home hero panel — deferred to the type-scale slice",
-  "components/hero/HeroStatusChips.tsx": "3 · PUBLIC home hero chips — deferred to the type-scale slice",
+  "components/hero/ProtocolOverviewPanel.tsx": "8 · PUBLIC home hero panel — 1 eyebrow paid 2026-07-27 (§⑥); the rest deferred to the type-scale slice",
+  "components/hero/HeroStatusChips.tsx": "2 · PUBLIC home hero chips — 1 eyebrow paid 2026-07-27 (§⑥); the rest deferred to the type-scale slice",
   "components/hero/HeroSeatLine.tsx": "2 · PUBLIC home hero seat line — deferred to the type-scale slice",
   "pages/PublicHome.tsx": "5 · PUBLIC home page shell — deferred to the type-scale slice",
 
   // — the season surfaces: designed 2026-07-23 against the season dossier, whose
   //   §0 rulings govern their composition. The sizes ride the type-scale slice so
   //   the dossier's geometry is re-read once, not twice.
-  "pages/SeasonRanking.tsx": "12 · PUBLIC season board (the pride/vanity surface) — deferred to the type-scale slice, read against the season dossier §0",
-  "components/season/HomeSeasonSection.tsx": "10 · PUBLIC home season band — deferred to the type-scale slice",
+  "pages/SeasonRanking.tsx": "10 · PUBLIC season board (the pride/vanity surface) — 2 eyebrow paid 2026-07-27 (§⑥); the rest deferred to the type-scale slice, read against the season dossier §0",
+  "components/season/HomeSeasonSection.tsx": "9 · PUBLIC home season band — 1 eyebrow paid 2026-07-27 (§⑥); the rest deferred to the type-scale slice",
   "components/season/HomeRegisterBand.tsx": "6 · PUBLIC home register band — deferred to the type-scale slice",
   "components/season/EffortRewardCard.tsx": "1 · PUBLIC season card — deferred to the type-scale slice",
 
@@ -172,10 +172,10 @@ const ALLOWLIST: Record<string, string> = {
   // — public chrome and truth surfaces
   "components/layout/PublicLayout.tsx": "3 · PUBLIC site chrome (header/footer, every page). RECOUNTED 2026-07-26: the brand tagline paid off its pair (a `text-[10px]` widening to a `sm:` step that capped at 11px, i.e. below the floor at EVERY width) and is now the `text-xs` token. Six sub-floor sizes remain in the chrome, deferred to the type-scale slice",
   "components/ProtocolReality.tsx": "8 · PUBLIC reality band — deferred to the general sweep",
-  "components/ProtocolReservesBand.tsx": "8 · PUBLIC home reserves band — deferred to the general sweep",
-  "components/ProtocolAssetsCard.tsx": "6 · PUBLIC /contracts assets card — deferred to the general sweep",
+  "components/ProtocolReservesBand.tsx": "6 · PUBLIC home reserves band — 2 eyebrow paid 2026-07-27 (§⑥); the rest deferred to the general sweep",
+  "components/ProtocolAssetsCard.tsx": "4 · PUBLIC /contracts assets card — 2 eyebrow paid 2026-07-27 (§⑥), which ARE the founder's §(b)② finding \"ProtocolAssetsCard's 10px labels\"; the 4 left are 11px meta lines, deferred to the general sweep",
   "components/guide/SyndicateGuide.tsx": "6 · PUBLIC guide — deferred to the general sweep",
-  "components/TeaserSurface.tsx": "3 · PUBLIC teaser surface — deferred to the general sweep",
+  "components/TeaserSurface.tsx": "2 · PUBLIC teaser surface — 1 eyebrow paid 2026-07-27 (§⑥); the rest deferred to the general sweep",
   "components/faq/FaqAccordion.tsx": "3 · PUBLIC FAQ accordion — deferred to the general sweep",
   "components/living/SectionIndex.tsx": "2 · PUBLIC section index — deferred to the general sweep",
   "components/living/LivingSignature.tsx": "1 · PUBLIC page signature — deferred to the general sweep",
@@ -240,6 +240,43 @@ const ALLOWLIST: Record<string, string> = {
 const NO_ARBITRARY: Record<string, string> = {
   "components/status-pill/StatusPill.tsx":
     "the named defect's home: `xs` rendered 9px and widened only to 10px at `sm:` — a responsive step that capped BELOW the floor. Fixed to a real scale step on 2026-07-26 (both variants on the 12px floor, separated by SHAPE not size). It may never carry an arbitrary size again, at any value.",
+};
+
+// §⑥ — THE EYEBROW IS ONE DECISION, NOT TWENTY-FIVE. BLOCKING.
+//
+// THE DEFECT (measured 2026-07-27, by this guard's own scan before this section
+// was written). The site's section-label treatment — mono + uppercase + the
+// 0.14em tracking that makes it read as an eyebrow — was hand-typed at 25 call
+// sites across 18 files, and answered the SAME question SIX different ways:
+//   9px×2 · 10px×8 · 11px×3 · 12px(text-xs)×10 · 14px(text-sm)×1 · 16px×1
+// Thirteen of those 25 render BELOW the 12px floor, on public surfaces. Nobody
+// decided that; it is what copy-paste produces. The founder's §(b)② finding
+// "ProtocolAssetsCard's 10px labels" is two of the thirteen — and patching those
+// two would have left eleven identical defects and the mechanism that makes more.
+//
+// THE RULE (CLAUDE.md ①, the TWIN SEARCH): a rule that lives in 2+ places is made
+// ONE place and imported. The eyebrow now lives at `.type-eyebrow` in index.css,
+// which reads `--text-caption` — so the floor moves it, not a typist. COLOUR stays
+// a utility at the call site: 20 sites are muted, 4 foreground, 3 gold, and that
+// IS a per-site decision. Size, family, weight, case and tracking are not.
+//
+// WHAT THIS SECTION CANNOT SEE: an eyebrow built with a different tracking value
+// (`0.12em`, `0.15em`) is a different shape and is not caught here — the sweep
+// found none, and the class is what makes writing one pointless. It also cannot
+// see an eyebrow assembled at runtime.
+const EYEBROW_SHAPE = /tracking-\[0\.14em\]/;
+
+// Call sites where the eyebrow shape is DELIBERATELY not the eyebrow class, each
+// with the reason. Convention matches ALLOWLIST: "<ceiling> · <written reason>".
+// The integer is a CEILING — one more occurrence in that file reds the build, so
+// an exemption cannot quietly grow.
+const EYEBROW_EXEMPT: Record<string, string> = {
+  "components/activity/LiveActivityFeed.tsx":
+    "1 · NOT an eyebrow — it is the feed's DATE-GROUP HEADING (`text-sm`, 14px), a structural divider between days, and the comment above it records the defect that sized it: at 10px it read as the same 10px as the gap between two rows and the grouping vanished on screen. Shrinking it to the 12px eyebrow would restore that defect.",
+  "wallet/ReceiptShareCard.tsx":
+    "1 · NOT a surface — it is the satori-PAINTED share card, whose geometry is fixed pixel arithmetic against a 34px figure beside it (`TOTAL PAID` at 16px). Satori renders this to a bitmap; a fluid rem token would resolve against a root font size that does not exist inside the painter.",
+  "components/hero/HeroLedger.tsx":
+    "1 · the hero ledger's ITEM LABEL, and the only exemption here that was earned by MEASUREMENT rather than reasoning. It was converted to the class, rendered, and probed: at the 12px floor the word MEMBERSHIP needs 89px inside an 80px content box and hangs 9px out of its card at `sm:grid-cols-3`. Mobile was clean — the defect is desktop-only. Raising it needs wider cards, which is a COMPOSITION change the founder has not seen, and which the ALLOWLIST entry above has always reserved for the type-scale slice. Its other two eyebrows (the verify slogan, the 70/20/10 pill) DID convert and are not counted here.",
 };
 
 // ─── the scan ───────────────────────────────────────────────────────────────
@@ -428,6 +465,59 @@ for (const [r, why] of Object.entries(NO_ARBITRARY)) {
         );
       }
     });
+}
+
+// ─── ⑥ THE EYEBROW — hand-typed anywhere but the class is RED ───────────────
+// The class must exist before the pin can mean anything: if `.type-eyebrow` is
+// ever deleted from the CSS, every call site silently loses its size and this
+// guard would go green on a site-wide regression. So the class is checked first.
+const eyebrowClassDefined = files
+  .filter((f) => f.endsWith(".css"))
+  .some((f) => /^\s*\.type-eyebrow\s*\{/m.test(readFileSync(f, "utf8")));
+if (!eyebrowClassDefined) {
+  fail(
+    "`.type-eyebrow` is not defined in any CSS file under src. It is the ONE place the site's " +
+      "section-label treatment lives (mono · uppercase · 0.14em · the --text-caption floor); without it " +
+      "every call site below renders unstyled and the §⑥ pin certifies nothing.",
+  );
+}
+
+let eyebrowExempted = 0;
+const eyebrowByFile = new Map<string, number>();
+for (const file of files.filter((f) => /\.tsx$/.test(f))) {
+  const r = rel(file);
+  readFileSync(file, "utf8")
+    .split("\n")
+    .forEach((ln, i) => {
+      if (isComment(ln) || !EYEBROW_SHAPE.test(ln)) return;
+      eyebrowByFile.set(r, (eyebrowByFile.get(r) ?? 0) + 1);
+      if (r in EYEBROW_EXEMPT) {
+        eyebrowExempted += 1;
+        return;
+      }
+      fail(
+        `${r}:${i + 1} — the eyebrow treatment is hand-typed here (\`tracking-[0.14em]\`). It is ONE ` +
+          `decision and it lives at \`.type-eyebrow\`: use the class and keep only the colour utility. ` +
+          `Hand-typed, this shape answered one question six different ways across 18 files — 9px, 10px, ` +
+          `11px, 12px, 14px and 16px — and put thirteen of them under the ${FLOOR_PX}px floor.`,
+      );
+    });
+}
+for (const [r, why] of Object.entries(EYEBROW_EXEMPT)) {
+  if (!existsSync(join(SRC, r))) {
+    fail(`EYEBROW_EXEMPT names "${r}", which does not exist under src — move or remove its entry in the same commit.`);
+    continue;
+  }
+  const ceiling = Number.parseInt(why, 10);
+  const actual = eyebrowByFile.get(r) ?? 0;
+  if (actual > ceiling) {
+    fail(
+      `${r} — ${actual} hand-typed eyebrow(s), above its ceiling of ${ceiling}. An exemption is for the ` +
+        `case it names, never a licence for the file: ${why}`,
+    );
+  } else if (actual < ceiling) {
+    notes.push(`${r} — ${actual} hand-typed eyebrow(s) against a ceiling of ${ceiling}. Lower the ceiling (or delete the entry at zero).`);
+  }
 }
 
 // ─── ③ CSS TOKENS — one decision each, counted apart from the 277 classes ───

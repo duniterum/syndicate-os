@@ -439,7 +439,7 @@ export default function ReceiptTicket({
             </span>
           </div>
           <div className="flex flex-wrap justify-between items-baseline gap-x-3 mt-1.5">
-            <span className="font-mono text-xs font-semibold tracking-[0.14em] text-muted-foreground">
+            <span className="type-eyebrow text-muted-foreground">
               {model.commerce.total.label}
             </span>
             <span
@@ -532,7 +532,7 @@ export default function ReceiptTicket({
               </div>
             ) : null}
             <div className="text-xs leading-normal text-muted-foreground">
-              <div className="font-mono text-xs font-semibold tracking-[0.14em] text-foreground">
+              <div className="type-eyebrow text-foreground">
                 SCAN TO VERIFY
               </div>
               {txUrl

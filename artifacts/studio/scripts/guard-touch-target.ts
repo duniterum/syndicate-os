@@ -271,6 +271,15 @@ const HOUSE_TEXT: Record<string, [number, number]> = {};
 for (const [cls, sizeVar, lead] of [
   ["type-label", "--text-label", 1.3],
   ["type-caption", "--text-caption", 1.3],
+  // Added 2026-07-27 WITH the class it names, and the reason is worth keeping:
+  // `.type-eyebrow` replaced 23 hand-typed `text-xs`/`text-[10px]` labels, and 3
+  // of them were anchors this guard had MEASURED as short. Without this line the
+  // guard stopped being able to resolve their font size, so they silently left
+  // "measured SHORT" (84 → 81) and joined "NOT statically knowable" (40 → 43) —
+  // the debt counter would have printed −3 as if something had been fixed. A
+  // house type class must land here in the same commit that creates it, or this
+  // guard grades a smaller site than it reports.
+  ["type-eyebrow", "--text-caption", 1.3],
 ] as const) {
   const decl = new RegExp(`${sizeVar}:\\s*([^;]+);`).exec(css);
   const px = decl ? toPx(decl[1]!) : null;

@@ -48,7 +48,7 @@ export function MemberPulse() {
         <h2 className="text-base font-medium text-foreground">The protocol pulse</h2>
         <Link
           href="/activity"
-          className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground"
+          className="type-eyebrow text-muted-foreground hover:text-foreground"
           data-testid="link-pulse-full-record"
         >
           Open the full record →

@@ -142,7 +142,7 @@ export default function MemberAttention() {
         </p>
         <Link
           href="/referral"
-          className="mt-2 inline-flex items-center font-mono text-xs uppercase tracking-[0.14em] text-gold hover:underline"
+          className="mt-2 inline-flex items-center type-eyebrow text-gold hover:underline"
           data-testid="attention-promotion-door"
         >
           See your ladder →
@@ -176,7 +176,7 @@ export default function MemberAttention() {
         </p>
         <Link
           href="/wallet"
-          className="mt-2 inline-flex items-center font-mono text-xs uppercase tracking-[0.14em] text-gold hover:underline"
+          className="mt-2 inline-flex items-center type-eyebrow text-gold hover:underline"
           data-testid="attention-approval-door"
         >
           Review in Wallet →

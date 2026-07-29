@@ -217,7 +217,7 @@ export default function MemberNotificationsPanel() {
   const group = (title: string, groupRows: OwnInboxRow[]) =>
     groupRows.length === 0 ? null : (
       <div key={title} className="mb-4">
-        <p className="mb-1.5 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
+        <p className="mb-1.5 type-eyebrow text-muted-foreground">
           {title}
         </p>
         <div className="divide-y divide-border/50 rounded-lg border border-border/50">

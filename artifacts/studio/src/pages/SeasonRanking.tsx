@@ -414,7 +414,7 @@ export default function SeasonRanking() {
         <aside className="grid gap-4">
           <div className="rounded-xl border border-gold/40 bg-card p-5">
             <div className="flex items-center gap-2 mb-2">
-              <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="type-eyebrow text-muted-foreground">
                 The season pot
               </span>
               <LifecycleBadge lifecycle="FUTURE" />
@@ -430,7 +430,7 @@ export default function SeasonRanking() {
             </p>
           </div>
           <div className="rounded-xl border border-border bg-card p-5">
-            <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground mb-2">
+            <div className="type-eyebrow text-muted-foreground mb-2">
               The season · bound to Era {current?.era ?? "I"}
             </div>
             <p className="text-sm text-muted-foreground">
