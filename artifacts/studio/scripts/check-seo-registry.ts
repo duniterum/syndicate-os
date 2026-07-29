@@ -14,6 +14,7 @@ import {
   getSitemapRoutes,
   getRobotsDisallowRoutes,
   getRobotsDirective,
+  getRouteBreadcrumb,
   resolveRouteHead,
   CANONICAL_ORIGIN,
 } from "../src/lib/seo-route-registry.ts";
@@ -372,6 +373,67 @@ for (const route of seoRouteRegistry) {
       `non-INDEX route "${route.path}" must resolve canonical=null (got ${String(head.canonical)})`,
     );
   }
+}
+
+// --- THE BREADCRUMB TRAIL (founder: Option A + "oui Q2 pour tout", 2026-07-28).
+// The trail is what BOTH the visible breadcrumb and the BreadcrumbList JSON-LD
+// read, so one resolver has to be right for two consumers. Pinned here, written
+// BEFORE the resolver changed and watched fail.
+//
+// THE DEFECT IT ENCODES: the trail used to be two levels by construction, so the
+// FIVE /referral/* pages all resolved to "Home › Referral Program" — the same
+// answer on five different pages, from the one component whose only job is to say
+// where you are.
+//
+// AND THE FAIL-CLOSED RULE: a parent crumb appears ONLY when that parent is a real
+// registry route. /referral and /admin exist; /receipt does NOT, so
+// /receipt/:txHash must never grow a crumb that links to a 404.
+{
+  const labelsOf = (loc: string) => getRouteBreadcrumb(loc).trail.map((c) => c.label);
+  const pathsOf = (loc: string) => getRouteBreadcrumb(loc).trail.map((c) => c.path);
+
+  const trailCases: Array<[string, string[], string]> = [
+    ["/", ["Home"], "the front door is one crumb and links nowhere"],
+    ["/join", ["Home", "Join The Syndicate"], "a flat route stays two levels"],
+    ["/contracts", ["Home", "Contracts & Holdings"], "a flat route stays two levels"],
+    ["/referral", ["Home", "Referral Program"], "the parent itself is two levels"],
+    ["/referral/link", ["Home", "Referral Program", "Channels"], "a nested route gains its parent"],
+    ["/referral/commissions", ["Home", "Referral Program", "Commissions"], "and each child keeps its OWN name"],
+  ];
+  for (const [loc, want, why] of trailCases) {
+    const got = labelsOf(loc);
+    check(
+      JSON.stringify(got) === JSON.stringify(want),
+      `breadcrumb trail for "${loc}" is ${JSON.stringify(got)} — ${why}`,
+      `breadcrumb trail for "${loc}" must be ${JSON.stringify(want)}, got ${JSON.stringify(got)}`,
+    );
+  }
+
+  // The five referral children must no longer share one answer.
+  const referralChildren = ["/referral/link", "/referral/introductions", "/referral/commissions", "/referral/ladder", "/referral/tools"];
+  const lastCrumbs = referralChildren.map((p) => labelsOf(p).at(-1));
+  check(
+    new Set(lastCrumbs).size === referralChildren.length,
+    `the ${referralChildren.length} /referral/* pages each end on their own crumb`,
+    `the /referral/* pages must not share a final crumb — got ${JSON.stringify(lastCrumbs)}`,
+  );
+
+  // Fail-closed: never a crumb pointing at a path the registry does not serve.
+  const registryPaths = new Set(seoRouteRegistry.map((r) => r.path));
+  for (const loc of ["/receipt/0xabc", "/referral/link", "/join", "/"]) {
+    const linked = pathsOf(loc).slice(0, -1); // every crumb except the current page
+    const bad = linked.filter((p) => !registryPaths.has(p));
+    check(
+      bad.length === 0,
+      `every linked crumb for "${loc}" is a real registry route`,
+      `"${loc}" links crumb(s) the registry does not serve: ${JSON.stringify(bad)} — a breadcrumb may never point at a 404`,
+    );
+  }
+  check(
+    labelsOf("/receipt/0xabc").length === 2,
+    `"/receipt/:txHash" gets NO parent crumb (/receipt is not a route)`,
+    `"/receipt/:txHash" must stay two levels — /receipt is not in the registry, so a parent crumb would 404`,
+  );
 }
 
 // --- SeoHeadManager must actually be mounted (the whole slice is inert otherwise).

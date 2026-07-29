@@ -145,7 +145,6 @@ const ALLOWLIST: Record<string, string> = {
     "4 · the last 4 bare stops in the public chrome (3 <Link> + 1 <a>) — the header nav, mobile doors and footer sections already carry the gold ring, so this file is nearly clean and should finish first",
   "components/layout/Shell.tsx": "2 · 2 shell <Link>s",
   "components/receipt/PublicReceiptPanel.tsx": "1 · the public receipt's explorer <a>",
-  "components/RouteContextBar.tsx": "1 · the context bar's route <Link>",
   "components/season/HomeRegisterBand.tsx": "2 · 2 season-register <Link>s on the public home",
   "components/season/HomeSeasonSection.tsx": "3 · 2 season <Link>s + 1 explorer <a>",
   "components/SurfaceMapSection.tsx": "1 · a surface-map <Link>",

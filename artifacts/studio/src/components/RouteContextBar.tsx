@@ -1,12 +1,5 @@
-import { Link, useLocation } from "wouter";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { useLocation } from "wouter";
+import { RouteBreadcrumbTrail } from "@/components/layout/RouteBreadcrumbTrail";
 import { StatusPill, type StatusTone } from "@/components/status-pill/StatusPill";
 import { Tag } from "@/components/tag/Tag";
 import {
@@ -41,29 +34,10 @@ export function RouteContextBar() {
   return (
     <div className="relative z-10 shrink-0 border-b border-border/60 bg-card/30 backdrop-blur-sm">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-6 md:px-8 py-2.5">
-        <Breadcrumb>
-          <BreadcrumbList className="text-xs">
-            <BreadcrumbItem>
-              {crumb.isHome ? (
-                <BreadcrumbPage>{crumb.home.label}</BreadcrumbPage>
-              ) : (
-                <BreadcrumbLink asChild>
-                  <Link href={crumb.home.path}>{crumb.home.label}</Link>
-                </BreadcrumbLink>
-              )}
-            </BreadcrumbItem>
-            {crumb.current && (
-              <>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage className="font-medium">
-                    {crumb.current.label}
-                  </BreadcrumbPage>
-                </BreadcrumbItem>
-              </>
-            )}
-          </BreadcrumbList>
-        </Breadcrumb>
+        {/* The trail moved to RouteBreadcrumbTrail (2026-07-28) so the console
+            and the public chrome render ONE breadcrumb, not two that drift. The
+            chips below stay here: they are operator vocabulary. */}
+        <RouteBreadcrumbTrail trail={crumb.trail} />
 
         <div className="flex items-center gap-2">
           <StatusPill tone={POSTURE_TONE[crumb.posture]}>

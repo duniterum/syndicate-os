@@ -51,6 +51,26 @@ export interface SeoRouteEntry {
   sitemap: boolean;
   /** Document title. Emitted per route by SeoHeadManager (incl. noindex routes — title is not a ranking signal and improves UX). */
   title: string;
+  /**
+   * Breadcrumb crumb for THIS page, when the title cannot supply one (founder:
+   * Option A + "oui Q2 pour tout", 2026-07-28).
+   *
+   * `getRouteLabel` derives a crumb from the title, which works everywhere the
+   * title is per-page. It is NOT per-page for the referral group: all six of
+   * /referral and its five children carry the byte-identical title
+   * "Referral Program — The Syndicate", so the derived crumb said "Referral
+   * Program" on five different pages — the one component whose only job is to
+   * say where you are, giving the same answer five times.
+   *
+   * The names are NOT invented here: they are the tab labels the surface already
+   * uses (MemberReferralDashboard's TABS), and `check-seo-registry` pins the two
+   * lists to each other so they cannot drift apart.
+   *
+   * (Recorded, not fixed here: those five identical <title> tags are also five
+   * indexed URLs sharing one title. Its own slice — changing a served title is a
+   * search-visible act.)
+   */
+  crumbLabel?: string;
   description: string;
   /** Self-canonical path for indexable routes (must start with "/"); null when not indexable. */
   canonicalPath: string | null;
@@ -556,6 +576,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     indexStatus: "REDIRECT",
     sitemap: false,
     title: "Referral Program — The Syndicate",
+    crumbLabel: "Introductions",
     description:
       "How The Syndicate's referral program works: an eligible completed introduction pays a bounded commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Membership is not an investment.",
     canonicalPath: "/referral",
@@ -573,6 +594,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     indexStatus: "REDIRECT",
     sitemap: false,
     title: "Referral Program — The Syndicate",
+    crumbLabel: "Commissions",
     description:
       "How The Syndicate's referral program works: an eligible completed introduction pays a bounded commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Membership is not an investment.",
     canonicalPath: "/referral",
@@ -590,6 +612,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     indexStatus: "REDIRECT",
     sitemap: false,
     title: "Referral Program — The Syndicate",
+    crumbLabel: "Ladder & recognition",
     description:
       "How The Syndicate's referral program works: an eligible completed introduction pays a bounded commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Membership is not an investment.",
     canonicalPath: "/referral",
@@ -607,6 +630,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     indexStatus: "REDIRECT",
     sitemap: false,
     title: "Referral Program — The Syndicate",
+    crumbLabel: "Channels",
     description:
       "How The Syndicate's referral program works: an eligible completed introduction pays a bounded commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Membership is not an investment.",
     canonicalPath: "/referral",
@@ -624,6 +648,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     indexStatus: "REDIRECT",
     sitemap: false,
     title: "Referral Program — The Syndicate",
+    crumbLabel: "Tools",
     description:
       "How The Syndicate's referral program works: an eligible completed introduction pays a bounded commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Membership is not an investment.",
     canonicalPath: "/referral",
@@ -1277,10 +1302,15 @@ export interface RouteCrumb {
 
 /** Resolved breadcrumb + posture context for the current location. */
 export interface RouteBreadcrumb {
-  /** Root crumb — always points at the public front door. */
-  home: RouteCrumb;
-  /** Current-page crumb, or null when the location IS the home route. */
-  current: RouteCrumb | null;
+  /**
+   * The full trail, root first, CURRENT PAGE LAST. Never empty: on the front
+   * door it is exactly `[Home]`.
+   *
+   * ONE array, because there are two consumers — the visible breadcrumb and the
+   * BreadcrumbList JSON-LD — and when they read two different shapes the machine
+   * and the human stop agreeing. `check-seo-registry` pins it.
+   */
+  trail: RouteCrumb[];
   posture: RoutePosture;
   indexLabel: RouteIndexLabel;
   isHome: boolean;
@@ -1289,23 +1319,45 @@ export interface RouteBreadcrumb {
 
 /**
  * Resolve breadcrumb + posture/index context for a location in one call.
- * The trail is intentionally shallow (Home → current): the route table is flat
- * except the PARAM class (/receipt/{txHash}), whose crumb links the REAL
- * location — a ":param" pattern is never a navigable href.
+ *
+ * DEPTH (founder, 2026-07-28 — "oui Q2 pour tout"). The trail was two levels by
+ * construction, which is right for a flat table and wrong the moment a route
+ * nests: the five /referral/* pages all resolved to "Home › Referral Program",
+ * i.e. the same answer on five different pages.
+ *
+ * THE PARENT IS FAIL-CLOSED: it appears only when the first path segment is
+ * ITSELF a real registry route. /referral and /admin are; /receipt is NOT, so
+ * /receipt/{txHash} deliberately stays two levels rather than growing a crumb
+ * that links to a 404. A breadcrumb that lies about where you can go is worse
+ * than a shallow one.
  */
 export function getRouteBreadcrumb(location: string): RouteBreadcrumb {
   const normalized = normalizeLocation(location);
   const entry = matchRoute(normalized);
   const isHome = entry.path === "/";
   const isNotFound = entry.path === "*";
+
+  const trail: RouteCrumb[] = [{ label: "Home", path: "/" }];
+
+  if (!isHome) {
+    // The parent, when the registry actually serves it.
+    const firstSegment = entry.path.split("/")[1];
+    const parentPath = firstSegment ? `/${firstSegment}` : "";
+    if (parentPath && parentPath !== entry.path && !isNotFound) {
+      const parent = seoRouteRegistry.find((r) => r.path === parentPath);
+      if (parent) trail.push({ label: parent.crumbLabel ?? getRouteLabel(parent), path: parent.path });
+    }
+    trail.push({
+      // `crumbLabel` wins where a shared title cannot name the page (the
+      // referral group); everywhere else the title still supplies the crumb.
+      label: entry.crumbLabel ?? getRouteLabel(entry),
+      // A ":param" pattern is never a navigable href — the REAL location is.
+      path: isNotFound || entry.path.includes("/:") ? normalized : entry.path,
+    });
+  }
+
   return {
-    home: { label: "Home", path: "/" },
-    current: isHome
-      ? null
-      : {
-          label: getRouteLabel(entry),
-          path: isNotFound || entry.path.includes("/:") ? normalized : entry.path,
-        },
+    trail,
     posture: getRoutePostureLabel(entry),
     indexLabel: getRouteIndexLabel(entry),
     isHome,

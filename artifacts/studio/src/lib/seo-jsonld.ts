@@ -77,24 +77,20 @@ export function buildBreadcrumbJsonLd(
   const entry = getRouteSeoByPath(location);
   if (entry.indexStatus !== "INDEX") return null;
   const crumb = getRouteBreadcrumb(location);
-  if (crumb.isHome || crumb.isNotFound || crumb.current === null) return null;
+  if (crumb.isHome || crumb.isNotFound || crumb.trail.length < 2) return null;
+  // The SAME trail the page renders (2026-07-28). Emitting a hand-built pair here
+  // while the page renders something else is how the machine and the human end up
+  // disagreeing — and until today the page rendered NOTHING at all, so this block
+  // described a breadcrumb no visitor could see.
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: crumb.home.label,
-        item: toAbsoluteUrl(crumb.home.path),
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: crumb.current.label,
-        item: toAbsoluteUrl(crumb.current.path),
-      },
-    ],
+    itemListElement: crumb.trail.map((c, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: c.label,
+      item: toAbsoluteUrl(c.path),
+    })),
   };
 }
 

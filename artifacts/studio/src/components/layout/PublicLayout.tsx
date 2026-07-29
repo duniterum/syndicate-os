@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { HEADER_ICON_PRIMARY } from "@/components/layout/headerControls";
+import { RouteBreadcrumbTrail } from "@/components/layout/RouteBreadcrumbTrail";
+import { getRouteBreadcrumb } from "@/lib/seo-route-registry";
 import { headerNav, headerNavPrimary, headerNavMore, footerGroups, navLabel } from "@/config/navigation";
 import { brand, brandAssets, headerChips, socialLinks, type HeaderChipState, type SocialLink } from "@/config/brand";
 import { useGetProtocolReality } from "@workspace/api-client-react";
@@ -247,6 +249,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const reduceMotion = useReducedMotion();
   const chipState = useHeaderChipState();
+  // ONE resolver for the rendered trail and the BreadcrumbList JSON-LD.
+  const crumb = getRouteBreadcrumb(location);
 
   return (
     <div className="flex min-h-[100dvh] flex-col bg-background text-foreground selection:bg-gold/30">
@@ -431,6 +435,24 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </motion.header>
+
+      {/* THE PUBLIC BREADCRUMB (founder: Option A, M1, "oui Q2 pour tout" —
+          2026-07-28, from an approved wireframe: docs/design/breadcrumb-public-wireframe.html).
+          Until today the BreadcrumbList JSON-LD was emitted to search engines
+          while NO breadcrumb was rendered — the machine saw a trail the human
+          never did, because the only thing that rendered one was mounted in
+          `Shell`, which the operator console uses and the public pages do not.
+          PublicRoute wraps every public route in this layout, so this is the ONE
+          mounting point. The front door is skipped: a "Home › Home" trail says
+          nothing. */}
+      {!crumb.isHome && (
+        <nav
+          aria-label="breadcrumb"
+          className="border-b border-border/60 bg-background px-4 py-2.5 sm:px-6 lg:px-8"
+        >
+          <RouteBreadcrumbTrail trail={crumb.trail} />
+        </nav>
+      )}
 
       <main className="flex flex-1 flex-col bg-background">{children}</main>
 
