@@ -4,7 +4,12 @@
     {
       "name": "studio",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "artifacts/studio"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "artifacts/studio"
+      ],
       "port": 5173,
       "env": {
         "PORT": "5173",
@@ -14,7 +19,12 @@
     {
       "name": "studio-prod-data",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "artifacts/studio"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "artifacts/studio"
+      ],
       "port": 5175,
       "env": {
         "PORT": "5175",
@@ -26,17 +36,29 @@
     {
       "name": "api-server",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev:rig", "--prefix", "artifacts/api-server"],
+      "runtimeArgs": [
+        "run",
+        "dev:rig",
+        "--prefix",
+        "artifacts/api-server"
+      ],
       "port": 5000,
       "env": {
         "PORT": "5000",
-        "NODE_ENV": "development"
+        "NODE_ENV": "development",
+        "DATABASE_URL": "postgresql://postgres:syndicate_local@localhost:5433/syndicate",
+        "SYNDICATE_BACKBONE_ENABLED": "true"
       }
     },
     {
       "name": "mockup-sandbox",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "artifacts/mockup-sandbox"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "artifacts/mockup-sandbox"
+      ],
       "port": 5174,
       "env": {
         "PORT": "5174",
