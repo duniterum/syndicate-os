@@ -11,8 +11,8 @@
 // market are valued and summed. USDC counts at one dollar; AVAX/BTC/ETH take
 // live Chainlink prices. SYN is NEVER priced here. If ANY component cannot be
 // read, the headline says so instead of publishing a partial sum.
-import { useState } from "react";
 import { useGetProtocolReality, type VerifyLinkId } from "@workspace/api-client-react";
+import { CoinMark } from "@/components/coin/CoinMark";
 import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { TRACKED_ASSETS } from "@/config/trackedAssets";
@@ -62,27 +62,10 @@ function usd(n: number): string {
 // Floats survive below for the USD VALUATION only, which is a derived fiat
 // figure and not a projection of base units.
 
-/** Local vendored logo, falling back to a lettered disc — never a broken image. */
-function CoinMark({ logo, symbol }: { logo: string; symbol: string }) {
-  const [broken, setBroken] = useState(false);
-  if (broken) {
-    return (
-      <span className="font-mono text-[11px] font-bold text-muted-foreground">{symbol.slice(0, 3)}</span>
-    );
-  }
-  return (
-    <img
-      src={`/coins/${logo}.svg`}
-      alt=""
-      aria-hidden="true"
-      width={34}
-      height={34}
-      loading="lazy"
-      className="h-[34px] w-[34px]"
-      onError={() => setBroken(true)}
-    />
-  );
-}
+// The logo renderer moved to components/coin/CoinMark (2026-07-28). It lived
+// here privately while /contracts drew the SAME assets with generic lucide
+// glyphs — one decision in one file, re-invented worse in another. Same
+// component, both surfaces, so a token looks like itself everywhere.
 
 export function ProtocolReservesBand() {
   const reality = useGetProtocolReality();

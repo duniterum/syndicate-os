@@ -24,7 +24,7 @@
 //     2026-07-25 and nobody moved the header — which is how featureStatus came
 //     to carry the same false line, and how the /contracts served head did too.
 // Every row links to Snowtrace — the wallet page proves each balance.
-import { Bitcoin, Coins, Droplet, Hexagon, Shield, Ticket, Triangle, Wallet } from "lucide-react";
+import { CoinMark, SYN_LOGO } from "@/components/coin/CoinMark";
 import { useGetProtocolReality, type VerifyLinkId } from "@workspace/api-client-react";
 import { LiveReadTag, liveFigure } from "@/components/hero/LiveReadTag";
 // THE ONE FIGURE: this card and /activity now render a holding through the SAME
@@ -166,7 +166,7 @@ export function ProtocolAssetsCard() {
   const rows: Array<{
     id: string;
     label: string;
-    icon: typeof Shield;
+    logo: string;
     tone: string;
     value: string | null;
     usd: string | null;
@@ -175,7 +175,7 @@ export function ProtocolAssetsCard() {
     {
       id: "vault",
       label: "Vault USDC",
-      icon: Shield,
+      logo: "usdc",
       tone: "text-viz-1",
       value: vaultUsdc !== null ? `${vaultUsdc} USDC` : null,
       usd: usdcUsd !== null ? fmtUsd(usdcUsd) : null,
@@ -184,7 +184,7 @@ export function ProtocolAssetsCard() {
     {
       id: "ops",
       label: "Operations USDC",
-      icon: Wallet,
+      logo: "usdc",
       tone: "text-viz-1",
       value: opsUsdc !== null ? `${opsUsdc} USDC` : null,
       usd: opsUsd !== null ? fmtUsd(opsUsd) : null,
@@ -193,7 +193,7 @@ export function ProtocolAssetsCard() {
     {
       id: "nft-sales",
       label: "NFT sales USDC",
-      icon: Ticket,
+      logo: "usdc",
       tone: "text-viz-1",
       value: nftAmount !== null ? `${nftAmount} USDC` : null,
       usd: nftUsd !== null ? fmtUsd(nftUsd) : null,
@@ -202,7 +202,7 @@ export function ProtocolAssetsCard() {
     {
       id: "vault-avax",
       label: "Vault AVAX",
-      icon: Triangle,
+      logo: "avax",
       tone: "text-viz-5",
       value: vaultAvax !== null ? `${vaultAvax} AVAX` : null,
       usd: avaxUsd !== null ? fmtUsd(avaxUsd) : null,
@@ -211,7 +211,7 @@ export function ProtocolAssetsCard() {
     {
       id: "vault-btcb",
       label: "Vault BTC.b",
-      icon: Bitcoin,
+      logo: "btc",
       tone: "text-viz-2",
       value: vaultBtcb !== null ? `${vaultBtcb} BTC.b` : null,
       usd: btcbUsd !== null ? fmtUsd(btcbUsd) : null,
@@ -220,7 +220,7 @@ export function ProtocolAssetsCard() {
     {
       id: "vault-weth",
       label: "Vault WETH.e",
-      icon: Hexagon,
+      logo: "eth",
       tone: "text-viz-3",
       value: vaultWeth !== null ? `${vaultWeth} WETH.e` : null,
       usd: wethUsd !== null ? fmtUsd(wethUsd) : null,
@@ -229,7 +229,7 @@ export function ProtocolAssetsCard() {
     {
       id: "vault-syn",
       label: "Vault SYN",
-      icon: Coins,
+      logo: SYN_LOGO,
       tone: "text-gold",
       value: vaultSyn !== null ? `${vaultSyn} SYN` : null,
       usd: null,
@@ -238,7 +238,7 @@ export function ProtocolAssetsCard() {
     {
       id: "pool",
       label: "SYN/USDC pool",
-      icon: Droplet,
+      logo: SYN_LOGO,
       tone: "text-viz-6",
       value: poolSyn !== null && poolUsdc !== null ? `${poolSyn} SYN + ${poolUsdc} USDC` : null,
       usd: poolUsd !== null ? fmtUsd(poolUsd) : null,
@@ -250,7 +250,7 @@ export function ProtocolAssetsCard() {
     {
       id: "seat-reserve",
       label: "Seat-sale reserve",
-      icon: Ticket,
+      logo: SYN_LOGO,
       tone: "text-viz-4",
       value: seatReserve !== null ? `${seatReserve} SYN` : null,
       usd: null,
@@ -292,14 +292,19 @@ export function ProtocolAssetsCard() {
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {rows.map((row) => {
-          const Icon = row.icon;
           return (
             <div
               key={row.id}
               className="min-h-[104px] rounded-xl border border-border bg-background/58 p-3.5 dark:border-white/10 dark:bg-white/[0.035]"
             >
               <div className="mb-2 flex items-center gap-2">
-                <Icon className={`h-4 w-4 ${row.tone}`} />
+                {/* THE REAL LOGO (founder, 2026-07-28: « utilise les vrais logos
+                    de tokens / coins »). These nine rows drew generic lucide
+                    glyphs — a shield for USDC, a triangle for AVAX, a hexagon for
+                    ETH — while the actual logos were vendored in public/coins/
+                    and already rendered by the home page's reserves band. Same
+                    component now, both surfaces. */}
+                <CoinMark logo={row.logo} symbol={row.label} size={18} />
                 <span className="type-eyebrow text-muted-foreground">
                   {row.label}
                 </span>
