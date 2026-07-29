@@ -2,6 +2,39 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> # ▶ 2026-07-28 (LATER) — TWO FOUNDER-CAUGHT HEADER DEFECTS, BOTH ON EVERY PUBLIC PAGE.
+> *(appended after the docs pass rather than left one commit behind — that gap is the named
+> recurrence the 2026-07-26 pass wrote its structural fix for.)*
+>
+> He sent a screenshot of `/join` and, later, one word: **regarde**. Two defects, both live, both
+> pre-existing, neither from this session's work (`git diff --name-only fc8cdae..HEAD` named no
+> layout file before either fix).
+>
+> **① `8e721ae` — THE BRAND TAGLINE RAN UNDERNEATH THE HEADER BUTTONS AT 375px** (93px of overlap).
+> **The numbers correct the obvious story:** room between the wordmark and the first button is
+> **209px**, and the tagline's intrinsic width is **269px at 10px · 286 at 11px · 302 at 12px**. It
+> NEVER FIT. The 2026-07-26 readability raise widened the overlap from ~60px to 93px; it did not
+> create it. `git merge-base --is-ancestor f94d165 227347e` → **this is live on thesyndicate.money**.
+> Fixed from the law, not the symptom: shrinking is forbidden (ADR-001 floor) and would not have
+> worked, so WORK-FIRST §3 governs — on a 375px header the line serves nobody and is not shown; it
+> returns at `sm:` with **152px of clearance**, measured.
+>
+> **② `ec86205` — THE TWO ICON BUTTONS BESIDE EACH OTHER WERE TWO FILES, NOT ONE DECISION.** The
+> gold frame he was looking at is permanent, not a click halo. Theme toggle: 36×36, 6px radius, no
+> border, in `ThemeToggle.tsx`. Menu: 44×44, 12px radius, gold border + tint, in `PublicLayout.tsx`.
+> Same rank, same header, two answers — because two files answered. Shape now comes from
+> `components/layout/headerControls.ts`; the menu KEEPS its emphasis (the hamburger is the primary
+> mobile nav affordance) and it is carried by COLOUR alone.
+> **AND THE SECOND DEFECT WAS MINE, CAUGHT BY MEASURING MY OWN FIX:** pinning 44px unconditionally
+> made the theme toggle the only 44px control in a 1440px header row of 36px chips — 8px taller than
+> every neighbour. **44px is a TOUCH floor, not a desktop size.** Size now comes from the atom's
+> `.touch-target-square` (coarse-pointer only). Measured: 375px fine → both 36, 375px coarse → both
+> 44, 1440px → the toggle back in the 36px row.
+>
+> **THE HABIT THIS SESSION IS THREE-FOR-THREE ON:** every one of the three defects that nearly
+> shipped was found by MEASURING THE RENDERED BOX after the fix, never by the guard chain, which was
+> green throughout. A guard chain proves what it can read; the browser proves what he sees.
+
 > # ▶ 2026-07-28 — THE FOUR NO-WIREFRAME ERGONOMICS FINDINGS ARE CLOSED. READ THIS FIRST.
 >
 > **① WHAT PROD IS, AND WHAT IS OWED IT.** PROD is still `227347e`. The deploy backlog is what
