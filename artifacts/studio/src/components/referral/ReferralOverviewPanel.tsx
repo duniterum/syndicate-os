@@ -12,7 +12,7 @@ import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { ladderProgress } from "@/config/connectorLadder";
 import type { StandingReadback } from "@/components/referral/referralStanding";
 
-export function ReferralOverviewPanel({ readback }: { readback: StandingReadback | null }) {
+export function ReferralOverviewPanel({ readback }: { readback: StandingReadback | null | undefined }) {
   const s = readback?.standing ?? null;
   const p = s ? ladderProgress(s.durableIntroductions) : null;
 

@@ -17,8 +17,18 @@ import { formatRawUnits } from "@/lib/rawUnits";
 // sign-in state; a figure only ever comes from the readback.
 export type StandingReadback = import("@/wallet/walletSession").SourceStandingReadback;
 
-export function useOwnSourceStanding(): StandingReadback | null {
-  const [standing, setStanding] = useState<StandingReadback | null>(null);
+// THREE STATES, NOT TWO (founder-caught 2026-07-29 — he was signed in, the server
+// returned a perfect S4 payload, and the page still said the read was UNAVAILABLE).
+// This hook returned `null` for BOTH "not read yet" and "read failed", and the
+// dashboard renders a definitive failure sentence for `null` — so during the load
+// window the surface ASSERTED that the read was unavailable while it was simply
+// still reading. That is a truth defect, not a spinner nit: the page states a
+// negative it does not know. It also explains « ça marchait avant » — it is a race,
+// so the same page tells the truth or lies depending on when you look.
+// `undefined` = still reading · `null` = read failed · object = read. The pattern is
+// not invented here: components/receipt/PublicReceiptPanel.tsx:46 already uses it.
+export function useOwnSourceStanding(): StandingReadback | null | undefined {
+  const [standing, setStanding] = useState<StandingReadback | null | undefined>(undefined);
   useEffect(() => {
     let active = true;
     let cleanup: (() => void) | null = null;

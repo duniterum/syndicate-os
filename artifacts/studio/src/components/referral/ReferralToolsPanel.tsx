@@ -312,7 +312,7 @@ const spec = (id: string): KitArtifactSpec => {
 };
 
 // ── the tab ─────────────────────────────────────────────────────────────────
-export function ReferralToolsPanel({ readback }: { readback: StandingReadback | null }) {
+export function ReferralToolsPanel({ readback }: { readback: StandingReadback | null | undefined }) {
   const { address } = useAccount();
   const s = readback?.standing ?? null;
   const seatLine = useOwnSeatLine();

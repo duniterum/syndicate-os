@@ -11,7 +11,7 @@ import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { LADDER_RUNGS, ladderProgress } from "@/config/connectorLadder";
 import type { StandingReadback } from "@/components/referral/referralStanding";
 
-export function ReferralLadderPanel({ readback }: { readback: StandingReadback | null }) {
+export function ReferralLadderPanel({ readback }: { readback: StandingReadback | null | undefined }) {
   const s = readback?.standing ?? null;
   const p = s ? ladderProgress(s.durableIntroductions) : null;
   const currentIdx = p ? LADDER_RUNGS.indexOf(p.current) : -1;

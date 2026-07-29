@@ -87,7 +87,7 @@ function normalizeChannelTag(raw: string): string {
     .slice(0, 24);
 }
 
-function ChannelsCard({ readback }: { readback: StandingReadback | null }) {
+function ChannelsCard({ readback }: { readback: StandingReadback | null | undefined }) {
   const { address } = useAccount();
   const breakdown = useOwnChannelBreakdown();
   const served = breakdown !== null && breakdown.available;
@@ -318,7 +318,7 @@ function ReferenceSection({ title, children }: { title: string; children: React.
   );
 }
 
-export function ReferralLinkPanel({ readback }: { readback: StandingReadback | null }) {
+export function ReferralLinkPanel({ readback }: { readback: StandingReadback | null | undefined }) {
   return (
     <div>
       {/* SPEC R3 — the channels composer + breakdown, LIVE (slice ③ + the

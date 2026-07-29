@@ -449,7 +449,7 @@ function ReferenceExpander({ rateBps }: { rateBps: number }) {
 }
 
 // ── The tab ─────────────────────────────────────────────────────────────────
-export function ReferralCommissionsPanel({ readback }: { readback: StandingReadback | null }) {
+export function ReferralCommissionsPanel({ readback }: { readback: StandingReadback | null | undefined }) {
   const s = readback?.standing ?? null;
   const rateBps = s ? ladderProgress(s.durableIntroductions).current.bps : 500;
   // One read for the whole tab — the register renders from the SAME rows the

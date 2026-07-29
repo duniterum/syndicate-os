@@ -76,10 +76,26 @@ const TAB_FOCUS_STYLE =
 //   · signed in, no source/standing → no badge; the failureReason says it
 //   · signed out (S1)               → "Sign in required"
 //   · read failed / not loaded      → honest unavailable, nothing assumed
-function ReferralFigures({ readback }: { readback: StandingReadback | null }) {
+function ReferralFigures({ readback }: { readback: StandingReadback | null | undefined }) {
   const { address } = useAccount();
   const { data: verifyData } = useGetProtocolVerifyLinks();
   const s = readback?.standing ?? null;
+  // STILL READING IS NOT A FAILURE (founder-caught 2026-07-29). While the read is
+  // in flight this component used to render "The standing read is unavailable
+  // right now" — a definitive negative asserted about something it did not know
+  // yet, on a member's own money surface. The read is not instant: two dynamic
+  // imports, then a server call that does chain reads. `undefined` now means
+  // reading, and it says so.
+  if (readback === undefined) {
+    return (
+      <Card className="bg-card/40 border-border/50 p-5 mt-6">
+        <span className="text-sm font-medium text-foreground">Your introduction standing</span>
+        <p className="text-sm text-muted-foreground leading-relaxed mt-1">
+          Reading your standing from the chain…
+        </p>
+      </Card>
+    );
+  }
   if (readback === null || s === null) {
     const signedIn = readback?.state === "S4";
     return (

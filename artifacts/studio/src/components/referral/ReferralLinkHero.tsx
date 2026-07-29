@@ -23,7 +23,7 @@ import { payingSourceId } from "@/lib/sourceIdentity";
 import { readSourceConfig } from "@/lib/chainReads";
 import type { StandingReadback } from "@/components/referral/referralStanding";
 
-export function ReferralLinkHero({ readback }: { readback: StandingReadback | null }) {
+export function ReferralLinkHero({ readback }: { readback: StandingReadback | null | undefined }) {
   const { address } = useAccount();
   const [copied, setCopied] = useState(false);
   const [showQr, setShowQr] = useState(false);

@@ -96,7 +96,7 @@ function IntroductionRowsCard() {
   );
 }
 
-export function ReferralIntroductionsPanel({ readback }: { readback: StandingReadback | null }) {
+export function ReferralIntroductionsPanel({ readback }: { readback: StandingReadback | null | undefined }) {
   const s = readback?.standing ?? null;
 
   return (
