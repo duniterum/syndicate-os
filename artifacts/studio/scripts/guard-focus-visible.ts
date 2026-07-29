@@ -159,7 +159,7 @@ const ALLOWLIST: Record<string, string> = {
   // (the complaint was type size, not composition), so the bare verify <a> is back
   // and the ledger must describe the tree as it IS, not as I preferred it.
   "pages/FireLedger.tsx": "1 · the per-burn verify <a> on the Proof of Burn record",
-  "pages/JoinProtocol.tsx": "7 · the checkout door — 1 <a>, 1 <summary>, 1 <button>, 4 <Link>. A money surface: high priority",
+  "pages/JoinProtocol.tsx": "6 · the checkout door — 1 <a>, 1 <summary>, 1 <button>, 3 <Link>. A money surface: high priority. (7 → 6 on 2026-07-28: the inline /status link went with the raw engine read the founder removed — debt paid by deletion, not by a fix.)",
   "pages/Learning.tsx": "3 · 3 Learn & Earn <Link>s",
   "pages/Liquidity.tsx": "1 · the pool's explorer <a>",
   "pages/not-found.tsx": "1 · the 404's way-home <Link>",
