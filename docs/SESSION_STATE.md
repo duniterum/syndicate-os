@@ -2,6 +2,60 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> # ▶ 2026-07-28 — THE FOUR NO-WIREFRAME ERGONOMICS FINDINGS ARE CLOSED. READ THIS FIRST.
+>
+> **① WHAT PROD IS, AND WHAT IS OWED IT.** PROD is still `227347e`. The deploy backlog is what
+> `git log --oneline 227347e..HEAD` prints — never a count typed here. It is **client-only** (studio
+> `src/` + two guard scripts + docs): NO api-server file, NO schema, NO env. Every change is additive
+> and fail-closed, so prod undeployed simply keeps the previous rendering.
+> ✅ **BATCHABLE — no deploy owed.** It rides the next 🚀.
+>
+> **② THE FOUR FINDINGS §(b)② LISTED AS "NEEDS NO WIREFRAME" ARE DONE, each as a CLASS, never as the
+> instance he named.** Three commits, each with its RED proof written before the fix:
+> · `c9f17c0` **the eyebrow** — "ProtocolAssetsCard's 10px labels" was 2 of **25 hand-typed copies
+>   across 18 files answering one question SIX ways** (9px×2 · 10px×8 · 11px×3 · 12px×10 · 14px · 16px),
+>   13 of them under the floor. Now `.type-eyebrow` reading `--text-caption`; `guard-type-scale` §⑥
+>   makes a hand-typed one a RED BUILD. type-scale debt **267 → 255** (public 213 → 201).
+> · `24131e7` **the reading pages** — Terms · Risk · Privacy · /chronicle all set their body at
+>   `text-sm` (14px) while every other reading surface runs `type-body` (16→20px). Both of his findings,
+>   one defect. §⑦ pins the reading pages; the site has **45 `.measure` reading columns** and the other
+>   34 are COUNTED IN THE GUARD'S PASS LINE, ungated — widening that gate is its own slice.
+> · `077889d` **the touch floor** — "/join buttons under 44px on a phone" was the **Button atom**
+>   (106 call sites; sizes 36 · 32 · 40 · 36, none at the floor). Touch-only via a hand-written
+>   `@media (pointer: coarse)`; desktop geometry PROVEN unchanged. touch debt **89 → 74**.
+>
+> **③ THE TWO FINDINGS THAT MATTER MORE THAN THE FIXES — both are the same disease, and both were
+> caught by MEASURING and would have shipped otherwise:**
+> · **A GHOST FIX.** The touch floor was first written with Tailwind's `pointer-coarse:` variant. The
+>   guard read it, went green, and reported **15 controls fixed**. The served stylesheet carried **ZERO
+>   `pointer:` media rules** — the variant emits nothing in this build. A correct-looking diff and a
+>   green guard agreed with each other and were both wrong. The rule is now a hand-written CSS block
+>   the guard PARSES; deleting it turns the build RED (proven).
+> · **DEBT HIDDEN, NOT PAID.** `.type-eyebrow` is not a Tailwind token, so `guard-touch-target` could
+>   no longer resolve three anchors' font size: they silently left "measured SHORT" (84 → 81) and
+>   joined "NOT statically knowable" (40 → 43). **The counter would have printed −3 as progress.** The
+>   guard already had a house-type-class table; `type-eyebrow` is in it now.
+>   **THE RULE THIS LEAVES:** after any change that moves a debt counter, read the guard's BLIND-SPOT
+>   number in the same breath. A debt that falls while the blind spot rises was not paid.
+>
+> **④ DESIGN DEBT = 631**, recounted by running all six guards, never copied: 255 type-scale (201
+> public) · 46 spacing · 26 contrast · 36 theme-parity · 193 focus + 1 outline-kill · 74 touch.
+> 255+46+26+36+193+1+74 = 631. The 27 paid off 658 is exactly 12 (eyebrow) + 15 (touch).
+>
+> **⑤ WHERE THE NEXT SESSION STARTS.** §(b)②'s remaining work is **the four findings that need the
+> founder's WIREFRAME first** — /join's four equally-loud gold buttons · /faq's search placed 4th ·
+> the home's audit string above the one gold CTA · /tokenomics' `max-w-5xl` against the full-screen
+> law. Nothing builds there until he has seen a wireframe. Then **§(b)③ the preview debt**: the type
+> token moved SITE-WIDE and the last preview covered /activity only; this session added the eyebrow
+> and the reading pages on top, so the next preview owes him 3-4 pages.
+>
+> **⑥ NOT PROVEN, DECLARED.** Eight of the twelve eyebrow files render behind the sign-in wall and the
+> local rig has no DB, so their eyebrows are proven by the class and the guard, not by pixels. The
+> browser pane reports `pointer: fine` / `maxTouchPoints: 0`, so the 44px TOUCH path was measured by
+> applying the rule's own declarations to the six live carriers (36/38px → 44px, icons 44×44) — no
+> touch device was rendered. The one HeroLedger label that could not take the floor without wider
+> cards is held as dated debt, with the pixel measurement written into the allowlist entry.
+
 > # ▶ 2026-07-27 — RESUME HERE. THE ARC IS LIVE AND SEALED AT 227347e; NOTHING IS OWED TO PROD.
 >
 > ## ▶ THE LINES THAT DECIDE WHAT YOU DO

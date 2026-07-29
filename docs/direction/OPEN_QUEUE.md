@@ -1,5 +1,21 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-28 — THE FOUR "NO WIREFRAME NEEDED" ERGONOMICS FINDINGS ARE CLOSED, each at CLASS
+> altitude.** `c9f17c0` the eyebrow (25 hand-typed copies, 18 files, six different sizes → one class +
+> a RED-BUILD guard) · `24131e7` the reading pages (Terms/Risk/Privacy//chronicle at 14px against the
+> site's 16→20px prose) · `077889d` the touch floor (the Button atom, 106 call sites, touch-only).
+> PROD unchanged at `227347e`; the batch is client-only, additive, fail-closed. ✅ **BATCHABLE.**
+> **THE TWO THINGS WORTH CARRYING FORWARD, both caught by measuring rather than by a guard:**
+> ① **A GHOST FIX nearly shipped.** Tailwind's `pointer-coarse:` variant emits NO CSS in this build —
+> the served stylesheet had zero `pointer:` media rules — while the guard, taught to read it, reported
+> 15 controls fixed. The rule is now hand-written CSS the guard PARSES, and deleting it reds the build.
+> ② **A DEBT COUNTER nearly reported HIDING as PAYING.** A new house CSS class made
+> `guard-touch-target` unable to resolve three anchors: SHORT 84 → 81 while its blind spot went 40 →
+> 43. **After any change that moves a debt counter, read the blind-spot number in the same breath.**
+> **STILL OPEN FOR THE FOUNDER, unchanged and not re-asked:** the LINK.e price-feed call · the 11
+> Chronicle candidates to read on screen · the 2026-07-12 register entry's narrowing (his act). And
+> §(b)②'s four remaining findings need his WIREFRAME before any code.
+
 > **▶ 2026-07-27 (PM) — THE TREASURY NOW SEES EVERY ASSET THE PROTOCOL BUYS. Deploy triggered; Replit's
 > report is the next session's first read.** Two lanes were built after the founder asked why /activity
 > still showed no AVAX purchase: the **native-AVAX lane** (AVAX emits no log — `eth_getLogs` is

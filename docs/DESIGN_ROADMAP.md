@@ -777,11 +777,12 @@ Cette session l'a construite, mesurée dans un navigateur à 1920 et 375, dans l
 un point de sauvegarde, pas une publication. Le wireframe et l'aperçu restent obligatoires ; **prod ne bouge
 jamais sans ses yeux**.
 
-**DETTE RECOMPTÉE depuis les six gardes = 646** *(recomptée le 27-07 en faisant tourner les six, jamais
+**DETTE RECOMPTÉE depuis les six gardes = 631** *(recomptée le 27-07 en faisant tourner les six, jamais
 recopiée : 255 type-scale / 56 fichiers, 201 publics · 46 espacement / 11 · 26 contraste · 36 parité · 193
-focus + 1 outline-kill · 89 cibles ; 255+46+26+36+193+1+89 = 646)*. L'écart de 12 avec le 658 du 26-07 est
-**exactement** ce que la tranche EYEBROW a payé — les cinq autres gardes n'ont pas bougé.
-*(état antérieur, 26-07 : 658 — 267 type-scale, 213 publics.)*
+focus + 1 outline-kill · 74 cibles ; 255+46+26+36+193+1+74 = 631)*. L'écart de 27 avec le 658 du 26-07 se
+décompose **exactement** : 12 payés par la tranche EYEBROW (type-scale 267 → 255) et 15 par la tranche
+TOUCH (cibles 89 → 74). Les quatre autres gardes n'ont pas bougé.
+*(états antérieurs : 646 plus tôt le 27-07 · 658 le 26-07 — 267 type-scale, 213 publics.)*
 
 - [x] **L'EYEBROW DEVIENT UNE SEULE DÉCISION** (27-07). Le libellé de section — mono + majuscules + le
   crénage 0.14em — était **tapé à la main sur 25 endroits dans 18 fichiers** et répondait SIX fois
@@ -796,6 +797,30 @@ focus + 1 outline-kill · 89 cibles ; 255+46+26+36+193+1+89 = 646)*. L'écart de
   **Une conversion a été ANNULÉE après mesure au pixel** : dans le ledger de la home, MEMBERSHIP à 12px
   réclame 89px dans une boîte de 80px et débordait de sa carte en desktop — élargir les cartes est une
   recomposition que le fondateur n'a pas vue, donc la dette reste datée.
+
+- [x] **LES PAGES DONT LE MÉTIER EST DE SE LIRE ÉTAIENT LES PLUS PETITES** (27-07). Terms · Risk ·
+  Privacy · /chronicle rendaient leur corps de texte en `text-sm` (14px) quand toutes les autres
+  surfaces de lecture sont en `type-body` (16→20px fluide) — les deux constats §(b)② du fondateur, et
+  un seul défaut. Mesuré au navigateur : **17,41px en desktop · 16px en mobile**, 15 + 14 + 11 + 46
+  colonnes de lecture, zéro débordement, zéro scroll latéral. La paire qu'il citait (/chronicle) passe
+  de 34px/14px à 29,6px/17,4px. **Garde : `guard-type-scale` §⑦**, prouvé ROUGE sur exactement les 7
+  endroits nommés. Le repère est `.measure` (la colonne de lecture 68ch) : il en existe **45** sur le
+  site, les 34 restantes hors pages de lecture sont **COMPTÉES dans la ligne PASS du garde**, pas
+  bloquantes — les élargir est une tranche à part, désormais visible à chaque build.
+
+- [x] **LE PLANCHER TACTILE DE 44px, ET LE PREMIER CORRECTIF ÉTAIT UN FANTÔME** (27-07). Le constat
+  §(b)② (« tous les boutons du parcours /join sous 44px sur un téléphone ») n'était pas un défaut de
+  /join : c'était **l'atome Button**, hérité par 106 endroits, dont aucune des quatre tailles
+  n'atteignait le plancher (36 · 32 · 40 · 36). Premier correctif écrit avec la variante Tailwind
+  `pointer-coarse:` → le garde a annoncé 15 contrôles réparés ; **la feuille de style servie contenait
+  ZÉRO règle `pointer:`** — la classe ne produisait aucun CSS et le garde certifiait une règle
+  qu'aucun navigateur ne recevait. Remplacé par un vrai bloc `@media (pointer: coarse)` écrit à la
+  main dans `index.css`, dont le garde **lit** le 44 au lieu de faire confiance à un nom de classe ;
+  supprimer le bloc rend le build ROUGE (prouvé). Tactile uniquement : Apple HIG 44 / Material 48 sont
+  des règles pour le DOIGT, et WCAG 2.5.5 (44×44) est de niveau **AAA** — le niveau AA, 2.5.8, est
+  24×24. Le desktop ne bouge pas : hauteurs de boutons {36:1, 38:4, 44:10, 64:1} identiques avant et
+  après. Cibles **89 → 74**, et le point aveugle du garde vérifié inchangé (40) pour qu'aucune dette
+  ne soit *cachée* au lieu d'être *payée*.
 
 **⚠ RESTE OUVERT, écrit pour ne pas être pris pour fait :** l'aperçu n'a couvert que `/activity` — la
 recommandation de couvrir 3-4 pages tient toujours. 15 constats ergonomiques confirmés sur les autres surfaces
