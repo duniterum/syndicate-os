@@ -162,8 +162,6 @@ const PUBLIC_DEBT: Record<string, string> = {
     "(1) a `text-[10.5px]` explorer anchor at 16px. The section's CTA reaches the floor and is counted compliant (2026-07-26).",
   "components/referral/ShareMenu.tsx":
     "(2) the share menu rows at 36px — a menu list, the class Material sizes at 48 (2026-07-26).",
-  "components/ThemeToggle.tsx":
-    "(1) the theme icon button, `h-9 w-9` = 36px, in the header of every public page (2026-07-26).",
   "pages/FireLedger.tsx": "(1) a `text-[10px]` explorer anchor, 15px (2026-07-26).",
   "pages/JoinProtocol.tsx":
     "(1) a `text-[10px]` explorer anchor, 15px, on the conversion page. Its amount keypad is at min-h-11 and passes (2026-07-26).",

@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { HEADER_ICON_PRIMARY } from "@/components/layout/headerControls";
 import { headerNav, headerNavPrimary, headerNavMore, footerGroups, navLabel } from "@/config/navigation";
 import { brand, brandAssets, headerChips, socialLinks, type HeaderChipState, type SocialLink } from "@/config/brand";
 import { useGetProtocolReality } from "@workspace/api-client-react";
@@ -335,7 +336,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="min-h-11 min-w-11 rounded-xl border border-gold/30 bg-gold/8 text-gold xl:hidden">
+                <Button variant="ghost" size="icon" className={`${HEADER_ICON_PRIMARY} xl:hidden`}>
                   {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                   <span className="sr-only">Toggle menu</span>
                 </Button>
