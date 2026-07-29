@@ -17,6 +17,7 @@
 // and a breadcrumb whose whole job is to say where you are should not hide the
 // name of where you are.
 
+import { Fragment } from "react";
 import { Link } from "wouter";
 import {
   Breadcrumb,
@@ -36,32 +37,45 @@ export function RouteBreadcrumbTrail({ trail }: { trail: RouteCrumb[] }) {
         {trail.map((crumb, i) => {
           const isLast = i === trail.length - 1;
           return (
-            <BreadcrumbItem key={`${crumb.path}-${i}`}>
-              {isLast ? (
-                // The page you are ON is never a link (aria-current="page" comes
-                // from BreadcrumbPage) — the one rule every breadcrumb spec agrees on.
-                <BreadcrumbPage className="font-medium text-foreground">
-                  {crumb.label}
-                </BreadcrumbPage>
-              ) : (
-                <>
+            // The separator is a SIBLING of the item, never a child. Both render
+            // <li> (ui/breadcrumb.tsx:34 and :80), so nesting it produced <li>
+            // inside <li> on every public page and every console screen — invalid
+            // list markup, and a regression against what PROD renders. Found by
+            // the 2026-07-28 review; the first probe of this component had already
+            // reported "2 rows, separators 1px lower" and I read that as a
+            // measurement artefact instead of the symptom it was.
+            <Fragment key={`${crumb.path}-${i}`}>
+              <BreadcrumbItem>
+                {isLast ? (
+                  // The page you are ON is never a link (aria-current="page" comes
+                  // from BreadcrumbPage) — the one rule every breadcrumb spec agrees on.
+                  <BreadcrumbPage className="font-medium text-foreground">
+                    {crumb.label}
+                  </BreadcrumbPage>
+                ) : (
                   <BreadcrumbLink asChild>
                     {/* The house focus ring — caught by guard-focus-visible on the
                         first run of this file, which is the point of having it:
                         a crumb a keyboard user cannot see themselves land on is
                         a navigation control that only works with a mouse
-                        (WCAG 2.4.7, AA). */}
+                        (WCAG 2.4.7, AA).
+                        AND THE TOUCH BOX (2026-07-28): this link shipped with no
+                        height at all — a ~17px standalone control on every public
+                        page, which `rounded-*` pushed out of the guard's
+                        inline-link exception and into its blind spot, so it was
+                        neither counted nor forgiven. It carries the house touch
+                        floor now: 44px on a finger, unchanged density on a mouse. */}
                     <Link
                       href={crumb.path}
-                      className="rounded-sm text-muted-foreground hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="inline-flex items-center rounded-sm px-1 touch-target text-muted-foreground hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       {crumb.label}
                     </Link>
                   </BreadcrumbLink>
-                  <BreadcrumbSeparator />
-                </>
-              )}
-            </BreadcrumbItem>
+                )}
+              </BreadcrumbItem>
+              {!isLast && <BreadcrumbSeparator />}
+            </Fragment>
           );
         })}
       </BreadcrumbList>

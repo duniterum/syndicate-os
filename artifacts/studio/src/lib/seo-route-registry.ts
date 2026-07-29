@@ -1173,14 +1173,41 @@ export function normalizeLocation(location: string): string {
  * segment count, literal segments equal, a ":" segment accepts any non-empty
  * value. Pure + dependency-free (the Node scripts load this file directly).
  */
-function matchesParamPath(pattern: string, normalized: string): boolean {
-  const pat = pattern.split("/");
+/**
+ * Does this location belong to a PARAM route?
+ *
+ * THE SHAPE IS THE ENTRY'S OWN `paramTailPattern`, not "any non-empty segment"
+ * (founder review, 2026-07-28). Until then this accepted any tail, so
+ * `/receipt/junk` resolved to the receipt entry — and the public breadcrumb
+ * rendered "Home › Receipts › Membership Receipt" ON TOP OF the not-found body
+ * that `PublicReceipt.tsx` correctly renders for a bad hash. The one component
+ * whose only job is to say where you are, saying you are on a receipt that does
+ * not exist.
+ *
+ * "What is a valid receipt tail" had THREE answers in this repo — the registry's
+ * `paramTailPattern`, `PublicReceipt`'s `TX_SHAPE_RE`, and this function's
+ * "non-empty" — and the breadcrumb read the laxest. Now the registry's pattern is
+ * the one answer, and the serving layer (generate-serving-rewrites) already reads
+ * that same field, so the SPA and the server agree on what a receipt URL is.
+ *
+ * FAIL-CLOSED: a param entry with NO pattern matches nothing. The generator
+ * already refuses a shapeless param entry, so this can only bite a hand-edited
+ * registry — and refusing is the safe direction.
+ */
+function matchesParamPath(
+  entry: Pick<SeoRouteEntry, "path" | "paramTailPattern">,
+  normalized: string,
+): boolean {
+  const pat = entry.path.split("/");
   const loc = normalized.split("/");
   if (pat.length !== loc.length) return false;
   for (let i = 0; i < pat.length; i++) {
     const seg = pat[i] ?? "";
     if (seg.startsWith(":")) {
-      if ((loc[i] ?? "").length === 0) return false;
+      const tail = loc[i] ?? "";
+      if (tail.length === 0) return false;
+      if (!entry.paramTailPattern) return false;
+      if (!new RegExp(entry.paramTailPattern).test(tail)) return false;
     } else if (seg !== loc[i]) {
       return false;
     }
@@ -1203,7 +1230,7 @@ export function matchRoute(
   const exact = registry.find((r) => r.path === normalized);
   if (exact) return exact;
   const param = registry.find(
-    (r) => r.path.includes("/:") && matchesParamPath(r.path, normalized),
+    (r) => r.path.includes("/:") && matchesParamPath(r, normalized),
   );
   if (param) return param;
   const catchAll = registry.find((r) => r.path === "*");
@@ -1348,11 +1375,20 @@ export interface RouteBreadcrumb {
  * nests: the five /referral/* pages all resolved to "Home › Referral Program",
  * i.e. the same answer on five different pages.
  *
- * THE PARENT IS FAIL-CLOSED: it appears only when the first path segment is
- * ITSELF a real registry route. /referral and /admin are; /receipt is NOT, so
- * /receipt/{txHash} deliberately stays two levels rather than growing a crumb
- * that links to a 404. A breadcrumb that lies about where you can go is worse
- * than a shallow one.
+ * THE PARENT, in the order it is resolved (corrected 2026-07-28 — this block used
+ * to describe only the first rule, which the same day's commits had already
+ * replaced; a docstring that teaches the superseded rule is how the next session
+ * inherits a bug):
+ *   ① `entry.parentPath` if the entry DECLARES one. Needed when the parent is not
+ *      spelled like the child's prefix — /receipt/{txHash} belongs to the
+ *      receipts binder at "/receipts", which no path-segment rule can find.
+ *   ② otherwise the first path segment (/referral/link → "/referral").
+ *   ③ EXCEPT for INTERNAL routes, which get no parent at all: the neutral wall
+ *      gives them all the same 404 title, so a parent level would render
+ *      "Page Not Found › Page Not Found".
+ * Either way it is FAIL-CLOSED — used only when the registry really serves that
+ * path. A breadcrumb that lies about where you can go is worse than a shallow one,
+ * and `check-seo-registry` proves every LINKED crumb resolves.
  */
 export function getRouteBreadcrumb(location: string): RouteBreadcrumb {
   const normalized = normalizeLocation(location);

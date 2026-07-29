@@ -98,7 +98,7 @@ extraits du registre de routes, pas inventés. Rien n'est encore construit.</p>
   Trois corrections que la construction a imposées au croquis. Elles sont écrites ici plutôt que
   corrigées en silence, pour que le document montre une décision et jamais une réécriture :
   <ul style="margin:8px 0 0;padding-left:20px;line-height:1.6">
-    <li><s>33 routes</s> → <b>54 routes</b>. Mon extraction avait raté 21 entrées, dont
+    <li><s>33 routes</s> → <s>54 routes</s> → <b>52 routes + le fourre-tout (53 entrées)</b>. Compté depuis le registre lui-même : <code>seoRouteRegistry.length = 53</code>, dont l'entrée <code>*</code>. Le 54 était encore une extraction par expression régulière, pas un comptage — corrigé le 28-07 après la revue. Mon extraction avait raté
         <code>/referral</code> lui-même. Le compte est recompté depuis le registre.</li>
     <li><s>/referral/link → « Build your link »</s> → <b>« Channels »</b>. Le vrai nom existait déjà
         dans les onglets de la page (renommé le 19 juillet). Les cinq noms sont pris VERBATIM de là,
@@ -201,7 +201,7 @@ il donne donc exactement la même chose — il ne dit pas où tu es.</p>
   <tr><td><code>/referral/link</code></td><td>Home › Referral Program</td><td>Home › Referral Program › <b>Build your link</b></td></tr>
   <tr><td><code>/referral/introductions</code></td><td>Home › Referral Program</td><td>Home › Referral Program › <b>Introductions</b></td></tr>
   <tr><td><code>/referral/commissions</code></td><td>Home › Referral Program</td><td>Home › Referral Program › <b>Commissions</b></td></tr>
-  <tr><td><code>/referral/ladder</code></td><td>Home › Referral Program</td><td>Home › Referral Program › <b>Ladder</b></td></tr>
+  <tr><td><code>/referral/ladder</code></td><td>Home › Referral Program</td><td>Home › Referral Program › <b>Ladder &amp; recognition</b></td></tr>
   <tr><td><code>/referral/tools</code></td><td>Home › Referral Program</td><td>Home › Referral Program › <b>Tools</b></td></tr>
 </table>
 
@@ -244,7 +244,7 @@ il donne donc exactement la même chose — il ne dit pas où tu es.</p>
 <div class="note" style="background:#eef6ff;border-color:#a8c8e8">
   <b>Ce que le croquis ne montre pas, et je le dis :</b> c'est un croquis, pas la page réelle —
   l'en-tête et le corps sont approximés, seul le fil d'Ariane est dessiné aux vraies tailles et avec
-  les vraies couleurs (reprises de <code>index.css</code>). Les libellés viennent des 33 routes du
+  les vraies couleurs (reprises de <code>index.css</code>). Les libellés viennent des 52 routes du
   registre. Une anomalie repérée en passant, à part : <code>/os-source</code> résout vers
   « Page Not Found » — à regarder dans une autre tranche.
 </div>

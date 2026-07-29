@@ -777,9 +777,9 @@ Cette session l'a construite, mesurée dans un navigateur à 1920 et 375, dans l
 un point de sauvegarde, pas une publication. Le wireframe et l'aperçu restent obligatoires ; **prod ne bouge
 jamais sans ses yeux**.
 
-**DETTE RECOMPTÉE depuis les six gardes = 631** *(recomptée le 27-07 en faisant tourner les six, jamais
-recopiée : 255 type-scale / 56 fichiers, 201 publics · 46 espacement / 11 · 26 contraste · 36 parité · 193
-focus + 1 outline-kill · 74 cibles ; 255+46+26+36+193+1+74 = 631)*. L'écart de 27 avec le 658 du 26-07 se
+**DETTE RECOMPTÉE depuis les six gardes = 628** *(recomptée le 27-07 en faisant tourner les six, jamais
+recopiée : 254 type-scale / 56 fichiers, 200 publics · 46 espacement / 11 · 26 contraste · 36 parité · 193
+focus + 1 outline-kill · 74 cibles ; 254+46+26+36+191+1+74 = 628)*. L'écart de 27 avec le 658 du 26-07 se
 décompose **exactement** : 12 payés par la tranche EYEBROW (type-scale 267 → 255) et 15 par la tranche
 TOUCH (cibles 89 → 74). Les quatre autres gardes n'ont pas bougé.
 *(états antérieurs : 646 plus tôt le 27-07 · 658 le 26-07 — 267 type-scale, 213 publics.)*
@@ -807,6 +807,17 @@ TOUCH (cibles 89 → 74). Les quatre autres gardes n'ont pas bougé.
   endroits nommés. Le repère est `.measure` (la colonne de lecture 68ch) : il en existe **45** sur le
   site, les 34 restantes hors pages de lecture sont **COMPTÉES dans la ligne PASS du garde**, pas
   bloquantes — les élargir est une tranche à part, désormais visible à chaque build.
+
+- [x] **LE FIL D'ARIANE PUBLIC** (28-07, Option A · M1 · 3e niveau — croquis approuvé :
+  `docs/design/breadcrumb-public-wireframe.html`). Avant : les moteurs de recherche recevaient un
+  `BreadcrumbList` que **personne ne voyait sur la page** — le seul composant qui en rendait un
+  était monté dans la coque de la CONSOLE. Désormais `RouteBreadcrumbTrail` sert les deux, et le
+  JSON-LD lit **le même tableau** que l'écran. Le 3e niveau règle le vrai défaut : les cinq pages
+  `/referral/*` répondaient toutes « Home › Referral Program ». Les noms sont ceux des ONGLETS,
+  pris verbatim, et `check-seo-registry` épingle les deux listes (prouvé ROUGE sur une dérive).
+  **Corrigé après la revue du 28-07 :** l'URL de reçu invalide affichait un fil de reçu au-dessus
+  d'un corps 404 · deux repères `nav` imbriqués · un `<li>` dans un `<li>` · le lien du fil sans
+  boîte (~17px, dans l'angle mort du garde).
 
 - [x] **LE PLANCHER TACTILE DE 44px, ET LE PREMIER CORRECTIF ÉTAIT UN FANTÔME** (27-07). Le constat
   §(b)② (« tous les boutons du parcours /join sous 44px sur un téléphone ») n'était pas un défaut de

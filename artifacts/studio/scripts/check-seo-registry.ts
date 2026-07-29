@@ -389,6 +389,9 @@ for (const route of seoRouteRegistry) {
 // registry route. /referral and /admin exist; /receipt does NOT, so
 // /receipt/:txHash must never grow a crumb that links to a 404.
 {
+  // A shape-VALID sample: the matcher now enforces paramTailPattern, so a short
+  // fake hash is (correctly) not a receipt at all.
+  const VALID_RECEIPT = "/receipt/0x" + "a".repeat(64);
   const labelsOf = (loc: string) => getRouteBreadcrumb(loc).trail.map((c) => c.label);
   const pathsOf = (loc: string) => getRouteBreadcrumb(loc).trail.map((c) => c.path);
 
@@ -435,9 +438,78 @@ for (const route of seoRouteRegistry) {
     );
   }
 
+  // A SHAPE-INVALID PARAM TAIL IS NOT THAT ROUTE (founder review, 2026-07-28).
+  // matchesParamPath accepted ANY non-empty tail, so /receipt/junk resolved to the
+  // receipt entry and the new public breadcrumb rendered "Home > Receipts >
+  // Membership Receipt" ON TOP OF the not-found body PublicReceipt deliberately
+  // renders for a bad hash. The authoritative shape already existed twice — the
+  // registry's own `paramTailPattern` and PublicReceipt's TX_SHAPE_RE — and the
+  // matcher read neither: three answers to "what is a valid receipt tail", and the
+  // breadcrumb picked the laxest.
+  {
+    const good = "/receipt/0x" + "a".repeat(64);
+    check(
+      JSON.stringify(labelsOf(good)) === JSON.stringify(["Home", "Receipts", "Membership Receipt"]),
+      `a shape-VALID receipt tail still resolves to the receipt trail`,
+      `a valid receipt tail must read Home > Receipts > Membership Receipt, got ${JSON.stringify(labelsOf(good))}`,
+    );
+    for (const bad of ["/receipt/junk", "/receipt/0xabc", "/receipt/" + "0x" + "a".repeat(63), "/receipt/0xZZ" + "a".repeat(62)]) {
+      check(
+        getRouteBreadcrumb(bad).isNotFound === true,
+        `shape-invalid tail "${bad}" resolves to the catch-all, not to the receipt route`,
+        `"${bad}" must resolve to the catch-all — the breadcrumb otherwise claims a receipt the page renders as not found; got ${JSON.stringify(labelsOf(bad))}`,
+      );
+    }
+  }
+
+  // THE CRUMB LABELS ARE PINNED TO THE TAB LABELS — the guard the registry's own
+  // comment promised and nobody had written (2026-07-28 review: "no script
+  // anywhere references MemberReferralDashboard's TABS"). Only two of the five
+  // values were asserted; a typo in the other three shipped green. The tab list is
+  // the SOURCE — the surface a member actually reads — so the registry must agree
+  // with it, verbatim, or this build is red.
+  {
+    const dash = readFileSync(
+      path.resolve(here, "..", "src", "components", "referral", "MemberReferralDashboard.tsx"),
+      "utf8",
+    );
+    const block = /const TABS[^=]*=\s*\[([\s\S]*?)\n\];/.exec(dash)?.[1] ?? null;
+    check(
+      block !== null,
+      `MemberReferralDashboard's TABS block is readable (the crumb labels are pinned to it)`,
+      `MemberReferralDashboard's TABS block could not be parsed — the crumbLabel pin cannot be checked. Keep the block shape or update this reader in the SAME commit.`,
+    );
+    if (block !== null) {
+      const tabLabel = new Map();
+      for (const m of block.matchAll(/label:\s*"([^"]+)",\s*href:\s*"([^"]+)"/g)) tabLabel.set(m[2], m[1]);
+      let pinned = 0;
+      for (const entry of seoRouteRegistry) {
+        if (!entry.path.startsWith("/referral/")) continue;
+        const want = tabLabel.get(entry.path);
+        check(
+          want !== undefined,
+          `"${entry.path}" has a tab in MemberReferralDashboard`,
+          `"${entry.path}" carries a crumbLabel but no TAB names it — the two lists have drifted`,
+        );
+        if (want === undefined) continue;
+        pinned += 1;
+        check(
+          entry.crumbLabel === want,
+          `crumbLabel for "${entry.path}" is the tab's own label ("${want}")`,
+          `crumbLabel for "${entry.path}" is ${JSON.stringify(entry.crumbLabel)} but its TAB reads ${JSON.stringify(want)} — the breadcrumb and the page would name the same screen differently`,
+        );
+      }
+      check(
+        pinned === 5,
+        `all 5 /referral/* crumb labels are pinned to their tab`,
+        `expected 5 pinned /referral/* crumb labels, checked ${pinned}`,
+      );
+    }
+  }
+
   // Fail-closed: never a crumb pointing at a path the registry does not serve.
   const registryPaths = new Set(seoRouteRegistry.map((r) => r.path));
-  for (const loc of ["/receipt/0xabc", "/referral/link", "/join", "/"]) {
+  for (const loc of [VALID_RECEIPT, "/referral/link", "/join", "/"]) {
     const linked = pathsOf(loc).slice(0, -1); // every crumb except the current page
     const bad = linked.filter((p) => !registryPaths.has(p));
     check(
@@ -456,9 +528,9 @@ for (const route of seoRouteRegistry) {
   // DECLARES its parent, and the fail-closed check below still proves that parent
   // is a route the registry really serves.
   check(
-    JSON.stringify(labelsOf("/receipt/0xabc")) === JSON.stringify(["Home", "Receipts", "Membership Receipt"]),
+    JSON.stringify(labelsOf(VALID_RECEIPT)) === JSON.stringify(["Home", "Receipts", "Membership Receipt"]),
     `"/receipt/:txHash" sits under its real parent, the /receipts binder`,
-    `"/receipt/:txHash" must read Home › Receipts › Membership Receipt, got ${JSON.stringify(labelsOf("/receipt/0xabc"))}`,
+    `"/receipt/:txHash" must read Home › Receipts › Membership Receipt, got ${JSON.stringify(labelsOf(VALID_RECEIPT))}`,
   );
 }
 

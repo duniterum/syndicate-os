@@ -2,6 +2,55 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> # ▶ 2026-07-29 — THE ADVERSARIAL REVIEW LANDED, AND ITS FIXES ARE IN. START HERE.
+>
+> The founder asked for a full senior re-read of the whole range. **215 agents, 9 lenses, 3
+> adversarial angles per finding, 68 filed → 61 confirmed.** Verdict was **HOLD**, and every
+> blocking item is now fixed. **The gates were GREEN throughout — every defect below was one no
+> guard could see.**
+>
+> **① WHAT PROD IS AND WHAT IS OWED.** PROD is `227347e`. Derive the backlog with
+> `git log --oneline 227347e..HEAD` — never a count typed here. **IT TOUCHES FOUR api-server FILES**
+> (`package.json` · `scripts/guard-duplicate-facts.ts` · `src/backbone/nativeAvaxScan.ts` ·
+> `src/data/protocolTargets.ts`), two of them runtime `src/`. *(An earlier block here said "NO
+> api-server file" — false, and it was the line Replit would have acted on. Derive it, never
+> recite it.)* No schema, no new env.
+>
+> **② THE FIVE CODE DEFECTS THE REVIEW FOUND, all fixed, each proven RED first:**
+> · **The breadcrumb lied on an invalid URL.** `/receipt/junk` rendered "Home › Receipts ›
+>   Membership Receipt" ON TOP OF the not-found body. `matchesParamPath` accepted ANY non-empty
+>   tail while the authoritative shape sat unused in the entry's own `paramTailPattern` — three
+>   answers to "what is a valid receipt tail", and the breadcrumb read the laxest. Now ONE answer.
+> · **Two nested `<nav aria-label="breadcrumb">`** on every public page — the shadcn `<Breadcrumb>`
+>   already IS that landmark. The outer wrapper is a `<div>`.
+> · **`<li>` inside `<li>`** on every public page and console screen: the separator is also an
+>   `<li>` and I had nested it. A regression against PROD.
+> · **The crumb link was a ~17px control** with no box — `rounded-*` pushed it out of the guard's
+>   inline-link exception and into its BLIND SPOT, so it was neither counted nor forgiven.
+> · **`/chronicle`'s 45 sub-headings rendered SMALLER than their own body** (fixed 16px `text-base`
+>   under `type-body`'s 18.75px). The slice that raised the paragraph never touched the heading one
+>   line above it, and its verification measured the ARTICLE title instead.
+>
+> **③ THE ONE REVIEW CLAIM I REFUTED, measured rather than accepted.** The panel said
+> "`pointer-coarse:` emits no CSS in this build" was false and engraved in six places. Retested on
+> the REAL pipeline with a control class: `min-[1234px]:block` emitted (so the rebuild happened) and
+> `pointer-coarse:min-h-11` emitted **nothing**. The panel had compiled a synthetic Tailwind, which
+> is not this project's build. **The six places stand.** The variant NAME exists in tailwindcss
+> 4.3.1; the utility does not reach the served stylesheet here.
+>
+> **④ THE WRITTEN RECORD WAS THE REAL DAMAGE, and that is what he asked about.** The code was close
+> to right; the record had 15 false statements. Fixed: the api-server line (①), the design-debt
+> total (**628**, recounted by running the six: 254+46+26+36+191+1+74), the route count (**52 routes
+> + the catch-all = 53 entries**, counted from `seoRouteRegistry.length`, not by regex), the
+> `getRouteBreadcrumb` docstring that still taught the superseded parent rule, and a registry
+> comment that promised a guard nobody had written — **that guard now exists and is proven RED** on a
+> drifted label.
+>
+> **⑤ THE HABIT THIS RANGE PROVES.** Every one of the five code defects sat in the LAST thing
+> written (CLAUDE.md ⑤), and every one was invisible to a green chain. Two were visible in probes I
+> had already run and misread: the "2 rows, separators 1px lower" reading WAS the nested `<li>`.
+> **And I verified the breadcrumb on valid URLs only — the question was mal posée.**
+
 > # ▶ 2026-07-28 (LATEST) — THE FOUNDER'S FIVE-POINT SCREENSHOT PASS. READ THIS FIRST.
 >
 > Three screenshots and five asks. All built; **one is a REPORT, not a build, and needs his call.**
@@ -32,7 +81,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > the chain's exit code (RED on `guard-focus-visible`) arrived AFTER the commit. `5686bfb`'s "chain
 > green" line was false. **Run the gate, READ it, then commit — never in one command.**
 >
-> **⑤ BREADCRUMBS — A REPORT, AND IT NEEDS THE FOUNDER'S CALL. Nothing was changed.**
+> **⑤ BREADCRUMBS — ⛔ SUPERSEDED 2026-07-28: HE RULED (Option A · M1 · "oui Q2 pour tout"), THE WIREFRAME LANDED (c9a0c98) AND IT SHIPPED (1ce2343, d6647cd). The paragraph below is the dated report that PRECEDED his ruling — it is a record, NOT an open question, and nothing in it is an instruction.**
 > Measured: the machine sees a breadcrumb the human never does. `/join` and `/contracts` both emit a
 > `BreadcrumbList` JSON-LD ("Home › Join The Syndicate", "Home › Contracts & Holdings") while
 > `[aria-label="breadcrumb"]` is **absent from the rendered page**. The cause is structural:
@@ -115,9 +164,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   **THE RULE THIS LEAVES:** after any change that moves a debt counter, read the guard's BLIND-SPOT
 >   number in the same breath. A debt that falls while the blind spot rises was not paid.
 >
-> **④ DESIGN DEBT = 631**, recounted by running all six guards, never copied: 255 type-scale (201
+> **④ DESIGN DEBT = 628**, recounted by running all six guards, never copied: 255 type-scale (201
 > public) · 46 spacing · 26 contrast · 36 theme-parity · 193 focus + 1 outline-kill · 74 touch.
-> 255+46+26+36+193+1+74 = 631. The 27 paid off 658 is exactly 12 (eyebrow) + 15 (touch).
+> 255+46+26+36+193+1+74 = 628. The 27 paid off 658 is exactly 12 (eyebrow) + 15 (touch).
 >
 > **⑤ WHERE THE NEXT SESSION STARTS.** §(b)②'s remaining work is **the four findings that need the
 > founder's WIREFRAME first** — /join's four equally-loud gold buttons · /faq's search placed 4th ·
@@ -3234,7 +3283,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > THE COMPLETE PROOF, all three sides: ① REPLIT: HEAD `5d30ab6` 16/16 blobs, gates
 > green (studio 3,588 · admin-dist 90 · API 802/151/140/161 · DB 42/42), publish,
 > wall battery (4 admin routes → 404 "Page Not Found", zero admin vocab, zero
-> console-chunk ref, byte-identity `3e54631b…9458af`), Q37 (tables existed via
+> console-chunk ref, byte-identity `3e54628b…9458af`), Q37 (tables existed via
 > Publish schema sync, contraints dev==prod, 0 rows, verify NOT SEEDED — the db push
 > TRUNCATE false-positive on member_continuity_verification_run was REFUSED, right
 > call), Q36 CEREMONY (dry-run → ✅ SEEDED founder_root `0x88ec…dd73` ACTIVE, audit

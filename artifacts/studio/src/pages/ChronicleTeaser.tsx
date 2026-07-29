@@ -86,7 +86,15 @@ export default function ChronicleTeaser() {
             </div>
             {e.sections.map((s) => (
               <div key={s.heading} className="mb-4">
-                <h3 className="text-base font-medium text-foreground mb-1.5">{s.heading}</h3>
+                {/* A HEADING MUST OUTRANK ITS OWN BODY (2026-07-28 review).
+                    24131e7 raised the <p> below from `text-sm` to `type-body`
+                    (16→20px fluid) and never touched this line, which is a fixed
+                    16px `text-base` — so at 1440px the prose rendered 18.75px
+                    UNDER a 16px heading, on 45 sections. The verification that
+                    slice ran measured the ARTICLE title (`type-h2`, 29.6px), not
+                    the heading that actually governs the paragraph.
+                    `type-h3` is the site's own step above body. */}
+                <h3 className="type-h3 text-foreground mb-1.5">{s.heading}</h3>
                 <p className="type-body text-foreground/90 measure whitespace-pre-line">
                   {s.body}
                 </p>
