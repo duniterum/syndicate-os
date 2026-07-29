@@ -2,13 +2,26 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-07-27 — RESUME HERE. THE TREASURY SEES EVERY ASSET NOW; THE DEPLOY IS OUT WITH REPLIT.
+> # ▶ 2026-07-27 — RESUME HERE. THE ARC IS LIVE AND SEALED AT 227347e; NOTHING IS OWED TO PROD.
 >
 > ## ▶ THE LINES THAT DECIDE WHAT YOU DO
-> **① PROD = `27924e5` UNTIL REPLIT'S REPORT LANDS.** The founder triggered the deploy at the end of this
-> session and Replit was still running when it closed. **The next session's FIRST act is to read his pasted
-> report and seal the new sha here** — measured, never inferred (pick a symbol that exists at HEAD and not
-> at `27924e5`, e.g. `TREASURY_DISCOVERED`, and look for it in the served payload).
+> **① PROD = `227347e`, SEALED AND MEASURED (2026-07-27).** Replit reported byte-identity twice (entry
+> `index-BlfwsDf8.js` · console `OperatorConsole-hK6eEoMT.js`, 20/20 blobs at the pull) — and the seal here
+> does not rest on that report. **Measured on the served surfaces:** the feed publishes `assetContract` and
+> `assetDecimals`, a field set that exists NOWHERE in the repo at `27924e5`; treasury-move is **13 lines**
+> (4 AVAX · 4 USDC · 2 SYN · 1 BTC.b · 1 WETH.e · **1 LINK.e**); the LINK.e row carries
+> `1004221438348408136` at block 91,336,828 on contract `0x5947bb27…`; `/chronicle` reads "Newest first"
+> with **Entry 15 = 2026-07-13 at the top and Entry 1 = 2026-06-06 at the bottom**; and the home band
+> renders framed at 16px with six families in the decided order and 6/6 icons painted.
+> **BOTH NEW LANES REPORT `ok` AND `caughtUp: true`** — `TREASURY_AVAX` at 91,356,114 and
+> `TREASURY_DISCOVERED` at the chain head **on its first cycle**, because history is asked in one call
+> instead of walked. The first post-boot cycle failed CLOSED (`5/6 scan unit(s) errored`) and self-repaired
+> on the next — the doctrine working, not an outage.
+>
+> **DEPLOY BACKLOG = ONE commit (`f1addfe`), and it changes no behaviour.** It carries the four-checks
+> discipline block, the new `guard-duplicate-facts`, and one refactor whose diff is literally
+> `87_157_852` → `PROTOCOL_SCAN_FLOOR_BLOCK` (the same number, imported instead of retyped). ✅ **NO
+> DEPLOY OWED** — it rides whenever the next slice ships.
 > **WHAT THE REPORT MUST CONTAIN — ASK FOR THE COUNT, NEVER CONFIRM ONE.** No figure typed here can be
 > derived from the repo: the measured native history is VAULT-SCOPED and names exactly TWO movements, and
 > the guard fixture pins exactly those two. Earlier drafts of this block asked Replit to confirm 12, then 9,
