@@ -267,10 +267,20 @@ const NO_ARBITRARY: Record<string, string> = {
 // WHAT THIS SECTION STILL CANNOT SEE: an eyebrow assembled at runtime, and a
 // line whose `font-mono`/`uppercase` arrives from a PARENT element — the test
 // is per-line, stated so a PASS is never read as more than it is.
+// CLASS-CARRIED TWINS (2026-07-30 adversarial review): `.syn-eyebrow` was a
+// LIVE second eyebrow class (0.2em) whose one call site rode invisibly under
+// this section — behaviour carried by a class name defeats a utility scan. It
+// is deleted; the detector now REDs the NAME, and the class-definition check
+// below REDs its CSS coming back. `.syn-label` (0.16em, 5 sites) and
+// `.syn-caption` (0.12em, 3 sites) are the remaining class-carried twins —
+// at the 12px floor, so no readability violation, but still second answers to
+// the tracking question; folding them is the type-scale slice's work, and
+// they are named here so this PASS is never read as "one class everywhere".
 const EYEBROW_SHAPE = /tracking-\[0\.14em\]/;
 const TRACKING_ARBITRARY = /tracking-\[(0\.\d+)em\]/;
 function isEyebrowShaped(ln: string): boolean {
   if (EYEBROW_SHAPE.test(ln)) return true;
+  if (/\bsyn-eyebrow\b/.test(ln)) return true;
   if (!/\bfont-mono\b/.test(ln) || !/\buppercase\b/.test(ln)) return false;
   if (/\btracking-widest\b/.test(ln)) return true;
   const m = TRACKING_ARBITRARY.exec(ln);
@@ -552,6 +562,19 @@ if (!eyebrowClassDefined) {
       "every call site below renders unstyled and the §⑥ pin certifies nothing.",
   );
 }
+// The dead twin stays dead: a second eyebrow CLASS is the one shape a utility
+// scan cannot see at the call site (2026-07-30 review — .syn-eyebrow rode a
+// whole conversion arc invisibly).
+const synEyebrowDefined = files
+  .filter((f) => f.endsWith(".css"))
+  .some((f) => /^\s*\.syn-eyebrow\s*\{/m.test(readFileSync(f, "utf8")));
+if (synEyebrowDefined) {
+  fail(
+    "`.syn-eyebrow` is defined again in CSS. It was a live TWIN of `.type-eyebrow` (deleted " +
+      "2026-07-30) and a class-carried eyebrow is invisible to the call-site scan — the eyebrow has " +
+      "ONE class; extend `.type-eyebrow` instead of resurrecting the twin.",
+  );
+}
 
 let eyebrowExempted = 0;
 let eyebrowDebtForgiven = 0;
@@ -593,7 +616,14 @@ for (const [r, why] of Object.entries(EYEBROW_EXEMPT)) {
         `case it names, never a licence for the file: ${why}`,
     );
   } else if (actual < ceiling) {
-    notes.push(`${r} — ${actual} hand-typed eyebrow(s) against a ceiling of ${ceiling}. Lower the ceiling (or delete the entry at zero).`);
+    // RED, not a note (2026-07-30 review): a notes-only paydown left the freed
+    // slots pre-armed for the next hand-typed eyebrow — the same fossil class
+    // the DEBT arm already fails on. Both ledgers now ratchet identically.
+    fail(
+      `${r} — ${actual} hand-typed eyebrow(s) against an exemption ceiling of ${ceiling}. ` +
+        `Lower the ceiling (or delete the entry at zero) in this same commit — a spare exemption slot ` +
+        `silently forgives the next hand-typed eyebrow in that file.`,
+    );
   }
 }
 // The debt ratchet — both directions RED, staleness RED (the touch guard's

@@ -182,7 +182,7 @@ export function HomeMilestonesBand() {
       <div className="rounded-2xl border border-border bg-card/40 p-6 shadow-sm md:p-8">
         <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div className="measure">
-            <div className="syn-eyebrow mb-3 text-gold">
+            <div className="type-eyebrow mb-3 text-gold">
               The protocol&rsquo;s canonical account
             </div>
             <h2 id="home-milestones-heading" className="type-h2 mb-3 text-foreground">

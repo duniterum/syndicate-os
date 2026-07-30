@@ -138,9 +138,10 @@ export function FaqAccordion({ categories, activeCat, onActiveCatChange }: FaqAc
               <h2
                 id={`${cat.id}-heading`}
                 // 11px on a PUBLIC page, under the 12px readability floor — the exact class
-                // the founder complained about. Raised to the caption token (12px), the
-                // floor itself. The eyebrow class is not used here: its 0.14em tracking
-                // is a different treatment from this heading's 0.2em.
+                // the founder complained about; raised to the floor. ⛔ An earlier line here
+                // kept a distinct 0.2em tracking "as a different treatment" — that distinction
+                // was WITHDRAWN 2026-07-30 by the eyebrow batch-3 conversion (one class, one
+                // tracking), and the comment is corrected with it, not silently overwritten.
                 className="type-eyebrow mb-3 text-muted-foreground"
               >
                 {cat.name}

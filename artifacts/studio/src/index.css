@@ -410,7 +410,12 @@
    cockpit chrome stops drifting into many one-off font sizes. Color and
    spacing stay as Tailwind utilities; these only own family/size/weight/case.
    --------------------------------------------------------------------------- */
-.syn-eyebrow { font-family: var(--app-font-mono); font-size: 12px; line-height: 1.1; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2em; }
+/* .syn-eyebrow DELETED 2026-07-30 (adversarial review): it was a live TWIN of
+   .type-eyebrow (0.2em vs 0.14em — two answers to one question) whose single
+   call site rode invisibly under the §⑥ ratchet because the behaviour was
+   carried by a CLASS, not utilities. guard-type-scale now REDs both the class
+   definition and any use of the name. syn-label / syn-caption (below) are the
+   remaining class-carried twins — 8 call sites, declared in §⑥'s header. */
 .syn-label   { font-family: var(--app-font-mono); font-size: 12px; line-height: 1.15; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; }
 .syn-caption { font-family: var(--app-font-mono); font-size: 12px; line-height: 1.2; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; }
 
