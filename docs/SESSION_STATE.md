@@ -2,7 +2,30 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-07-30 (HARMONIZATION ARC) — RESUME HERE. PROD = `448645d` (sealed, untouched). main = `3d79f24`, CLEAN TREE, ALL PUSHED. **56 of the footer audit's 71 open findings CLOSED in 6 slices — 15 remain (9 important compositional/legal · 6 minor), all needing the FOUNDER'S input.**
+> # ▶ 2026-07-30 (ARC COMPLETE) — RESUME HERE. PROD = `448645d`; main = `ace25ba`, CLEAN TREE, ALL PUSHED. **THE FOOTER AUDIT'S LEDGER IS CLOSED AT ZERO — all 78 findings resolved the day it was filed.** The founder ordered "construis 1-5, et oui global, et on donne tout en même temps à Replit" — the deploy instruction is in the 2026-07-30 chat; HE pastes it.
+>
+> ## THE FINAL TWO SLICES (after the arc's six — full record in the ledger + OPEN_QUEUE)
+> · **F (`ace25ba`) — composition, founder GO:** WORK-FIRST on /faq /liquidity /source /support
+>   /status-meta · /status joined the PublicPage shell · the /map–/status ONE-JOB split (the
+>   reality tables left /status; /map is the one live read) · /tokenomics got the sibling chassis
+>   (rail + posture, max-w-5xl deleted) · /join eyebrow "Join" · MemberAppPage comment truth.
+>   Rig-measured (DOM order, 44px links, 375px clean) + PROD BUILD green (37 shells · 376 twins ·
+>   admin-dist 105).
+> · **G (`9684325`) — legal, founder "oui global":** Terms V3 + Privacy V4 engraved with version
+>   bumps (identity-directory precision · wallet-stack storage inventory · activation-request
+>   record class · named Telegram channels) — badges rig-verified.
+>
+> ## (b) NEXT + FOUNDER-PENDING
+> · **The deploy** — 🚀 DEPLOY, his trigger: the batch `448645d..ace25ba` (client + guards + the
+>   /status asOf served date + legal V3/V4). The exact Replit instruction with its verification
+>   list is in the 2026-07-30 chat; re-derive if lost: pull ace25ba, no migration/env, verify
+>   /status (shell + no reality tables + As of 2026-07-30) · /map (archive group + serif sections)
+>   · /terms "Version 3" + /privacy "Version 4" · /support (Reach us today, 3 channels) ·
+>   /liquidity+/faq+/source (tool first) · /tokenomics rail · /fire-ledger (44px Verify) · /join
+>   eyebrow "Join" · backbone cycle ok.
+> · His eyes on the preview (rig http://localhost:5173) before pasting — the /map archive binding
+>   rides under his seal. · Still pending elsewhere: the 3 reserves-wireframe decisions · the 4
+>   composition wireframes · telling Replit "downloaded" for dump.sql.gz.
 >
 > ## (a) WHAT CLOSED (derive: `git log --oneline 6363ae8..3d79f24` — 6 slices, each RED-first + twin search + ledger tick)
 > · **A — DONE-IS-DONE pins:** object-literal FUTURE claims now visible to guard-feature-truth;

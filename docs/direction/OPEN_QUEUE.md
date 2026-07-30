@@ -1,5 +1,20 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-30 (ARC COMPLET — LE CARNET FOOTER EST À ZÉRO.)** Sur l'ordre du fondateur
+> (« construis 1-5, et oui global ») les 15 dernières trouvailles sont fermées le jour même du
+> dépôt du carnet : **F** (`ace25ba`) — WORK-FIRST sur /faq · /liquidity · /source · /support ·
+> /status ; /status rejoint la coquille commune ; le partage des rôles /map–/status (les tableaux
+> de réalité quittent /status, /map est LA lecture vivante) ; le châssis /tokenomics (rail +
+> posture, plafond supprimé) ; l'eyebrow /join dit « Join ». **G** (`9684325`) — Terms V3 +
+> Privacy V4 gravés avec bump de badge (annuaire d'identité précisé · l'inventaire honnête du
+> stockage navigateur · la classe activation-request · les canaux Telegram NOMMÉS). Vérifié au
+> rig par MESURE (ordre DOM outil-avant-référence · liens 44px · badges V3/V4 rendus · 375px sans
+> débordement) + build de production vert. Les 78 trouvailles de l'audit sont résolues.
+> **EN ATTENTE DU FONDATEUR : le déploiement** — 🚀 DEPLOY, lot `448645d..ace25ba`, l'instruction
+> Replit exacte au chat du 30-07 ; ses yeux sur le rig (http://localhost:5173) avant de la coller
+> (la liaison archive sur /map roule sous son sceau). Toujours pendants : les 3 décisions du
+> croquis réserves · les 4 croquis composition · « téléchargé » à Replit pour dump.sql.gz.
+
 > **▶ 2026-07-30 (ARC D'HARMONISATION) — 56 des 71 trouvailles ouvertes du carnet footer FERMÉES
 > en 6 tranches** (`6363ae8..3d79f24`, chacune ROUGE-d'abord + recherche de jumeaux + carnet coché ;
 > revue adversariale de l'arc : 40 agents, 15 confirmées, 15 corrigées la même session, 0 fausse
