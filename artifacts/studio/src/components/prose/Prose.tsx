@@ -102,7 +102,7 @@ export function ProseSection({
 /** Monospace section index label ("§ 01"), for the eyebrow slot of <ProseSection>. */
 export function ProseIndex({ n }: { n: number }) {
   return (
-    <span className="font-mono text-xs tracking-widest uppercase text-muted-foreground">
+    <span className="type-eyebrow text-muted-foreground">
       § {String(n).padStart(2, "0")}
     </span>
   );
@@ -154,7 +154,7 @@ export function ProseCallout({
       {title ? (
         <p
           className={cn(
-            "mb-1.5 font-mono text-xs font-semibold uppercase tracking-widest",
+            "type-eyebrow mb-1.5",
             CALLOUT_LABEL_TONE[tone],
           )}
         >

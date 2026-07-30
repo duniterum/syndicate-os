@@ -130,7 +130,7 @@ export default function SeasonRanking() {
     <div className="w-full px-4 sm:px-6 lg:px-8 py-10">
       {/* Head */}
       <div className="mb-6">
-        <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-primary">
+        <div className="type-eyebrow text-primary">
           {current ? `Live now · Era ${current.era}` : "The season board"}
         </div>
         <h1 className="font-serif text-3xl sm:text-4xl mt-1">
@@ -397,7 +397,7 @@ export default function SeasonRanking() {
 
               {/* Past seasons — inline archive v1 (§0.14-E; a param route joins when built). */}
               <div className="mt-6">
-                <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground mb-2">
+                <div className="type-eyebrow text-muted-foreground mb-2">
                   Past seasons
                 </div>
                 <div className="rounded-xl border border-dashed border-border px-4 py-3 text-sm text-muted-foreground">

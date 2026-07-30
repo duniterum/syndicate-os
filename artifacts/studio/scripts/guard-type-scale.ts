@@ -151,14 +151,14 @@ const ALLOWLIST: Record<string, string> = {
   "components/hero/ProtocolOverviewPanel.tsx": "8 · PUBLIC home hero panel — 1 eyebrow paid 2026-07-27 (§⑥); the rest deferred to the type-scale slice",
   "components/hero/HeroStatusChips.tsx": "2 · PUBLIC home hero chips — 1 eyebrow paid 2026-07-27 (§⑥); the rest deferred to the type-scale slice",
   "components/hero/HeroSeatLine.tsx": "2 · PUBLIC home hero seat line — deferred to the type-scale slice",
-  "pages/PublicHome.tsx": "5 · PUBLIC home page shell — deferred to the type-scale slice",
+  "pages/PublicHome.tsx": "1 · PUBLIC home page shell — deferred to the type-scale slice (4 paid by the 2026-07-30 eyebrow conversion)",
 
   // — the season surfaces: designed 2026-07-23 against the season dossier, whose
   //   §0 rulings govern their composition. The sizes ride the type-scale slice so
   //   the dossier's geometry is re-read once, not twice.
-  "pages/SeasonRanking.tsx": "10 · PUBLIC season board (the pride/vanity surface) — 2 eyebrow paid 2026-07-27 (§⑥); the rest deferred to the type-scale slice, read against the season dossier §0",
-  "components/season/HomeSeasonSection.tsx": "9 · PUBLIC home season band — 1 eyebrow paid 2026-07-27 (§⑥); the rest deferred to the type-scale slice",
-  "components/season/HomeRegisterBand.tsx": "6 · PUBLIC home register band — deferred to the type-scale slice",
+  "pages/SeasonRanking.tsx": "8 · PUBLIC season board (the pride/vanity surface) — 2 eyebrow paid 2026-07-27 (§⑥) + 2 by the 2026-07-30 conversion; the rest deferred to the type-scale slice, read against the season dossier §0",
+  "components/season/HomeSeasonSection.tsx": "7 · PUBLIC home season band — 1 eyebrow paid 2026-07-27 (§⑥) + 2 by the 2026-07-30 conversion; the rest deferred to the type-scale slice",
+  "components/season/HomeRegisterBand.tsx": "2 · PUBLIC home register band — deferred to the type-scale slice (4 paid by the 2026-07-30 eyebrow conversion)",
   "components/season/EffortRewardCard.tsx": "1 · PUBLIC season card — deferred to the type-scale slice",
 
   // — the ATOMS. One fix in each clears many surfaces at once, which makes them
@@ -172,11 +172,11 @@ const ALLOWLIST: Record<string, string> = {
   // — public chrome and truth surfaces
   "components/layout/PublicLayout.tsx": "3 · PUBLIC site chrome (header/footer, every page). RECOUNTED 2026-07-26: the brand tagline paid off its pair (a `text-[10px]` widening to a `sm:` step that capped at 11px, i.e. below the floor at EVERY width) and is now the `text-xs` token. Six sub-floor sizes remain in the chrome, deferred to the type-scale slice",
   "components/ProtocolReality.tsx": "8 · PUBLIC reality band — deferred to the general sweep",
-  "components/ProtocolReservesBand.tsx": "5 · PUBLIC home reserves band — 2 eyebrow paid 2026-07-27 (§⑥), 1 more paid since; the rest deferred to the general sweep. (The ceiling said 6 and the guard printed a lower-me NOTE on every green run from 2026-07-27 to 2026-07-29 — an unactioned instruction riding a green build is the ratchet not ratcheting.)",
+  "components/ProtocolReservesBand.tsx": "4 · PUBLIC home reserves band — 2 eyebrow paid 2026-07-27 (§⑥), 1 more paid since, 1 by the 2026-07-30 conversion; the rest deferred to the general sweep.",
   "components/ProtocolAssetsCard.tsx": "4 · PUBLIC /contracts assets card — 2 eyebrow paid 2026-07-27 (§⑥), which ARE the founder's §(b)② finding \"ProtocolAssetsCard's 10px labels\"; the 4 left are 11px meta lines, deferred to the general sweep",
   "components/guide/SyndicateGuide.tsx": "6 · PUBLIC guide — deferred to the general sweep",
   "components/TeaserSurface.tsx": "2 · PUBLIC teaser surface — 1 eyebrow paid 2026-07-27 (§⑥); the rest deferred to the general sweep",
-  "components/living/SectionIndex.tsx": "2 · PUBLIC section index — deferred to the general sweep",
+  "components/living/SectionIndex.tsx": "1 · PUBLIC section index — deferred to the general sweep (1 paid by the 2026-07-30 eyebrow conversion)",
   "components/living/LivingSignature.tsx": "1 · PUBLIC page signature — deferred to the general sweep",
   "components/registry/registryPosture.tsx": "2 · PUBLIC posture labels — deferred to the general sweep",
 
@@ -324,6 +324,10 @@ const EYEBROW_EXEMPT: Record<string, string> = {
     "1 · NOT a surface — it is the satori-PAINTED share card, whose geometry is fixed pixel arithmetic against a 34px figure beside it (`TOTAL PAID` at 16px). Satori renders this to a bitmap; a fluid rem token would resolve against a root font size that does not exist inside the painter.",
   "components/ProtocolAssetsCard.tsx":
     "2 · ONE permanent + ONE convertible. Permanent: the asset ROW LABEL carries a bridged TICKER whose case is meaning — BTC.b and WETH.e are the canonical Avalanche-bridged symbols and the lowercase suffix IS the bridge marker; uppercased by the class, this row printed VAULT BTC.B beside a value reading 0.00077818 BTC.b (founder-caught 2026-07-29). Convertible: the 11px/0.1em section header the 2026-07-30 widening surfaced — pay it by converting to the class and lowering this ceiling back to 1 in the same commit.",
+  "components/layout/PublicLayout.tsx":
+    "1 · NOT an eyebrow — the header's BRAND TAGLINE (0.3em display tracking, gold, whitespace-nowrap), part of the header composition MEASURED at the 2026-07-28 slice: it returns at exactly 1700px, staggered above the 2xl cliff, at a measured 302px width. Re-tracking it to 0.14em moves that measured geometry. The file's two footer group titles DID convert (2026-07-30).",
+  "components/layout/Shell.tsx":
+    "1 · NOT an eyebrow — the operator console shell's BRAND WORDMARK (an h1 at text-sm). A wordmark is identity, not a section label; shrinking it to the caption size demotes the console's masthead.",
   "components/hero/HeroLedger.tsx":
     "7 · ONE permanent + SIX awaiting the founder's type-scale wireframe. Permanent: the hero ledger's ITEM LABEL, the only exemption here earned by MEASUREMENT — converted to the class, rendered, probed: at the 12px floor the word MEMBERSHIP needs 89px inside an 80px content box and hangs 9px out of its card at `sm:grid-cols-3` (desktop-only; mobile clean). Raising it needs wider cards — a COMPOSITION change the founder has not seen. The six others are the file's other-tracking family labels the 2026-07-30 widening surfaced, in the SAME geometry-bound composition, deferred with it; the wireframe slice pays all seven together.",
 };
@@ -340,23 +344,15 @@ const EYEBROW_EXEMPT: Record<string, string> = {
 // are geometry-bound (fixed medallions, chip rows, 80px content boxes — the
 // HeroLedger lesson) and wait for the founder's type-scale wireframe.
 const EYEBROW_DEBT: Record<string, number> = {
-  "pages/PublicHome.tsx": 6,
-  "components/season/HomeRegisterBand.tsx": 5,
   "components/guide/SyndicateGuide.tsx": 4,
-  "components/layout/PublicLayout.tsx": 3,
   "components/faq/FaqAccordion.tsx": 3,
   "pages/admin/SeasonsRails.tsx": 2,
-  "pages/SeasonRanking.tsx": 2,
   "pages/MemberAccess.tsx": 2,
-  "components/season/HomeSeasonSection.tsx": 2,
   "components/referral/ReferralOverviewPanel.tsx": 2,
-  "components/prose/Prose.tsx": 2,
   "components/hero/SeatFlowDiagram.tsx": 2,
   "components/hero/ProtocolOverviewPanel.tsx": 2,
   "components/hero/HeroStatusChips.tsx": 2,
   "components/hero/HeroSeatLine.tsx": 2,
-  "components/VerifyOnChain.tsx": 2,
-  "components/ProtocolReservesBand.tsx": 2,
   "wallet/MemberHeaderAffordance.tsx": 1,
   "wallet/JoinCheckout.tsx": 1,
   "pages/MemberNotifications.tsx": 1,
@@ -366,10 +362,6 @@ const EYEBROW_DEBT: Record<string, number> = {
   "components/member/MemberShell.tsx": 1,
   "components/member/MemberPulse.tsx": 1,
   "components/member/MemberAppPage.tsx": 1,
-  "components/living/SectionIndex.tsx": 1,
-  "components/layout/Shell.tsx": 1,
-  "components/SurfaceMapSection.tsx": 1,
-  "components/PublicPage.tsx": 1,
 };
 
 // ─── the scan ───────────────────────────────────────────────────────────────

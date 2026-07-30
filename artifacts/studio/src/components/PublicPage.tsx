@@ -32,7 +32,7 @@ export function PublicPage({ eyebrow, title, lead, badge, children, variant = "p
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background pointer-events-none" />
         <div className={`${shell} relative z-10`}>
           {eyebrow && (
-            <p className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-4">
+            <p className="type-eyebrow text-muted-foreground mb-4">
               {eyebrow}
             </p>
           )}

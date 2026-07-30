@@ -83,7 +83,7 @@ function InspectRail({ className = "" }: { className?: string }) {
   return (
     <nav
       aria-label="Protocol inspect actions"
-      className={`flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] ${className}`}
+      className={`type-eyebrow flex flex-wrap items-center gap-2 ${className}`}
     >
       <span className="mr-1 text-muted-foreground">{heroSystem.inspectRail.lead}</span>
       {heroSystem.inspectRail.items.map((item) => (
@@ -131,7 +131,7 @@ function PromotedStrip() {
     <section className="w-full px-4 py-3 sm:px-6 lg:px-8 text-foreground">
       <div className="rounded-2xl border border-border bg-card/40 p-6 shadow-sm md:p-8">
         <div className="mb-10 measure">
-          <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-gold">
+          <div className="type-eyebrow mb-3 text-gold">
             {homepagePromotedStrip.eyebrow}
           </div>
           <h2 className="type-h2 mb-3 text-foreground">
@@ -179,7 +179,7 @@ function ModuleStrip() {
   return (
     <section className="w-full px-4 py-3 sm:px-6 lg:px-8 text-foreground">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-2xl border border-border bg-card/40 px-5 py-3.5 shadow-sm md:px-6">
-        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+        <span className="type-eyebrow text-muted-foreground">
           {homepageModuleStrip.lead}
         </span>
         {entries.map((entry) => {
@@ -236,7 +236,7 @@ export default function PublicHome() {
 
                 <div className="mb-3 inline-flex items-center gap-2">
                   <span className="h-1 w-8 rounded-full bg-gold shadow-[0_0_18px_hsl(var(--gold)/0.65)]" />
-                  <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-gold">
+                  <span className="type-eyebrow text-gold">
                     {heroSystem.eyebrow}
                   </span>
                 </div>
@@ -347,7 +347,7 @@ export default function PublicHome() {
           </div>
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <Card className="border-card-border bg-card p-8 shadow-sm">
-              <h3 className="mb-6 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-foreground">
+              <h3 className="type-eyebrow mb-6 flex items-center gap-2 text-foreground">
                 <span className="h-2 w-2 rounded-full bg-success" />
                 {operationalReality.liveHeading}
               </h3>
@@ -367,7 +367,7 @@ export default function PublicHome() {
               </ul>
             </Card>
             <Card className="border-card-border bg-card/70 p-8 shadow-sm">
-              <h3 className="mb-6 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted-foreground">
+              <h3 className="type-eyebrow mb-6 flex items-center gap-2 text-muted-foreground">
                 <span className="h-2 w-2 rounded-full bg-warning/80" />
                 {operationalReality.pendingHeading}
               </h3>

@@ -63,7 +63,7 @@ export function HomeRegisterBand() {
     <section className="w-full px-4 py-3 sm:px-6 lg:px-8 text-foreground">
       <div className="rounded-2xl border border-border bg-card/40 p-6 shadow-sm md:p-8">
         <div className="mb-10">
-          <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-gold">
+          <div className="type-eyebrow mb-3 text-gold">
             The public register
           </div>
           <h2 className="type-h2 mb-4 text-foreground">
@@ -79,7 +79,7 @@ export function HomeRegisterBand() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {lines !== null && lines.length > 0 && (
             <Card className="border-card-border bg-card p-6 shadow-sm">
-              <h3 className="mb-4 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-foreground">
+              <h3 className="type-eyebrow mb-4 flex items-center gap-2 text-foreground">
                 <span className="h-2 w-2 rounded-full bg-success" />
                 Live register
               </h3>
@@ -119,7 +119,7 @@ export function HomeRegisterBand() {
 
           <div className="grid content-start gap-4">
             <Card className="border-card-border bg-card p-[18px] shadow-sm">
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+              <div className="type-eyebrow text-muted-foreground">
                 Holder Index
               </div>
               <div className="mt-2 font-mono tabular-nums text-3xl text-gold">
@@ -144,7 +144,7 @@ export function HomeRegisterBand() {
             </Card>
 
             <Card className="border-card-border bg-card p-[18px] shadow-sm">
-              <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+              <div className="type-eyebrow text-muted-foreground">
                 Season ranking
               </div>
               <div className="mt-2 font-serif text-[19px]">Ranked by merit</div>
@@ -160,7 +160,7 @@ export function HomeRegisterBand() {
 
             <Card className="border-card-border bg-card p-[18px] shadow-sm">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+                <span className="type-eyebrow text-muted-foreground">
                   Your standing
                 </span>
                 <LifecycleBadge lifecycle="FUTURE" />

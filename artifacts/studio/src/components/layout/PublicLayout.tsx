@@ -472,7 +472,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             {footerGroups.map((group) => (
               <details key={group.heading} className="group border-b border-border/50">
                 <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45">
-                  <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                  <span className="type-eyebrow text-muted-foreground">
                     {group.heading}
                   </span>
                   <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-open:rotate-180" />
@@ -496,7 +496,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           <div className="mb-12 hidden gap-8 sm:grid sm:grid-cols-2 lg:grid-cols-4">
             {footerGroups.map((group) => (
               <div key={group.heading}>
-                <h3 className="mb-4 font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                <h3 className="type-eyebrow mb-4 text-muted-foreground">
                   {group.heading}
                 </h3>
                 <ul className="space-y-3">

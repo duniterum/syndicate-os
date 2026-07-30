@@ -34,7 +34,7 @@ export function SectionIndex({
       className={cn("lg:sticky lg:top-6", className)}
     >
       <div className="rounded-lg border border-border/60 bg-card/40 p-4">
-        <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+        <p className="type-eyebrow mb-3 text-muted-foreground">
           {heading}
         </p>
         <ol className="space-y-0.5">

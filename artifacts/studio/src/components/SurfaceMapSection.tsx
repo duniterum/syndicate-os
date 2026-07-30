@@ -27,7 +27,7 @@ export function SurfaceMapSection({
         if (rows.length === 0) return null;
         return (
           <div key={aud}>
-            <h3 className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-3">
+            <h3 className="type-eyebrow text-muted-foreground mb-3">
               {surfaceAudienceText[aud]}
             </h3>
             <Card className="bg-card/30 border-border/50 divide-y divide-border/40">

@@ -123,7 +123,7 @@ export function ProtocolReservesBand() {
       <div className="rounded-2xl border border-border bg-card/40 p-6 shadow-sm md:p-8">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-gold">
+            <div className="type-eyebrow text-gold">
               Protocol Reserves
             </div>
             <h2 className="type-h2 mt-1.5 text-foreground">What the protocol owns, right now.</h2>
@@ -193,7 +193,7 @@ export function ProtocolReservesBand() {
                   <CoinMark logo={r.logo} symbol={r.symbol} />
                 </span>
                 <span>
-                  <span className="block font-mono text-xs font-bold uppercase tracking-[0.1em]">{r.symbol}</span>
+                  <span className="type-eyebrow block">{r.symbol}</span>
                   <span className="block text-[11px] text-muted-foreground">{r.name}</span>
                 </span>
               </div>

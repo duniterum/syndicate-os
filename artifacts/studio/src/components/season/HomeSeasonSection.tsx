@@ -118,7 +118,7 @@ export function HomeSeasonSection() {
         {/* The two columns: pitch + gauge | the pot frame (mockup 1.4fr/.9fr). */}
         <div className="grid items-stretch gap-[30px] min-[860px]:grid-cols-[1.4fr_0.9fr]">
           <div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-primary">
+            <div className="type-eyebrow text-primary">
               {seasonNumber !== null ? `Live now · Era ${seasonNumber}` : "The season"}
             </div>
             <h2 className="mt-2 font-serif text-[clamp(2.2rem,1.6rem+2.6vw,3.3rem)] leading-[1.08]">
@@ -239,7 +239,7 @@ export function HomeSeasonSection() {
         {/* The ranking teaser: top-3 podium + the door to the full board. */}
         <div className="mt-9 border-t border-border pt-[22px]">
           <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
-            <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-gold">
+            <span className="type-eyebrow text-gold">
               {seasonNumber !== null ? `Season ${seasonNumber} ranking · the leaders` : "The season ranking"}
             </span>
             <Link href="/season">
