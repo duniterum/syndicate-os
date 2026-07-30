@@ -31,7 +31,7 @@ const groupTitle: Record<RealityGroupKey, string> = {
 const groupBlurb: Record<RealityGroupKey, string> = {
   chain: "Which chain answered and whether it is the expected Avalanche C-Chain.",
   contracts: "Whether each known contract has deployed code at its server-resolved address.",
-  sale: "Live state from the deployed membership-sale engines. V3 is the active engine — its public figures are shown as exact raw base units. No wallet, transaction, or referral surface is enabled.",
+  sale: "Live state from the deployed membership-sale engines. V3 is the active engine — its public figures are shown as exact raw base units. This panel only reads; the join transaction itself is signed from the visitor's own wallet on /join.",
   source: "Source-registry posture: registry linkage on the active engine and the registry's creation policy. No source ids are shown; validation happens per-link on request.",
   tokens: "Public ERC-20 metadata only — symbol and decimals. No balances or supply.",
   archive: "Whether each artifact id is configured on-chain, and the contract pause flag.",

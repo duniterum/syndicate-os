@@ -66,6 +66,12 @@ const ERA_PATTERNS: { re: RegExp; name: string }[] = [
   // promise — the Commission Router is a V4 internal discussion, never
   // announced anywhere; its name in a user-facing string is a leak.
   { re: /commission ?router/i, name: "internal-plan leak (Commission Router)" },
+  // FOOTER AUDIT (2026-07-30, blocking): "No wallet, transaction, or referral
+  // surface is enabled" stood on /map AND /status while /join and the referral
+  // program were LIVE — the API itself served 12 V3 receipts and paid referrer
+  // commissions. The CLAIM SHAPE dies, not the instance: any "no … surface is
+  // enabled" denial is era DNA.
+  { re: /no [^."]{0,60}surface (is|are) enabled/i, name: "surface-denial (footer audit 2026-07-30)" },
 ];
 
 // path substring → allowed pattern names with the reason they are honest TODAY.
