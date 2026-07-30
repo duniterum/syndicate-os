@@ -180,7 +180,7 @@ const MEMBER_ADMIN_DEBT: Record<string, string> = {
   "components/referral/ReferralToolsPanel.tsx": "(5) five h-9 = 36px tool buttons (2026-07-26).",
   "pages/admin/AdminHome.tsx": "(2) two console actions at 32/34px (2026-07-26).",
   "pages/admin/memberLedger.tsx":
-    "(3) on the founder's register: a min-h-7 = 28px row control, a 36px icon button, and a `text-[11px]` explorer anchor at 17px (2026-07-26).",
+    "(2) on the founder's register — remeasured 2026-07-30 by this guard's own count ratchet (the 2026-07-26 entry said 3; one control has since been fixed without the entry moving).",
   "pages/admin/sections.tsx": "(1) the admin tab strip at 40px — 4px short (2026-07-26).",
   "pages/admin/SourcePerformancePanel.tsx":
     "(1) a 22px filter chip (py-0.5) — the shortest control in the tree after the bare line-box anchors (2026-07-26).",
@@ -190,12 +190,12 @@ const MEMBER_ADMIN_DEBT: Record<string, string> = {
   "wallet/MemberHeaderAffordance.tsx":
     "(2) a 32px icon button and a 16px meta anchor in the member header (2026-07-26).",
   "wallet/MemberNotificationsBell.tsx":
-    "(2) the bell trigger at 36px (h-9) and a 26px filter chip in its panel (2026-07-26).",
+    "(1) the bell's panel filter chip — remeasured 2026-07-30 by the count ratchet (the 2026-07-26 entry said 2; the 36px trigger has since been fixed without the entry moving).",
   "wallet/MemberNotificationsPanel.tsx": "(1) a 26px filter chip (2026-07-26).",
   "wallet/MemberSettings.tsx": "(1) a 30px pill link (2026-07-26).",
   "wallet/MemberYourSeat.tsx": "(3) three pill links at 30px on the seat card (2026-07-26).",
   "wallet/ProposeSourceCreate.tsx":
-    "(10) the largest single entry — the operator's source-proposal flow: 6 explorer anchors at a 16px line box, 3 size=\"sm\" copy buttons at 32px, and a 34px address field (2026-07-26).",
+    "(7) the largest single entry — the operator's source-proposal flow; remeasured 2026-07-30 by the count ratchet (the 2026-07-26 entry said 10; three controls have since been fixed without the entry moving).",
   "wallet/ProposeSourcePromotion.tsx": "(1) a 34px address field (2026-07-26).",
   "wallet/ReceiptsBinderPanel.tsx": "(3) two 36px binder controls and a 16px explorer anchor (2026-07-26).",
   "wallet/ReceiptTicket.tsx":
@@ -691,11 +691,13 @@ const ATOM_PINS: AtomPin[] = [
 // is the real total — an atom variant and a call site are both one short control.
 let forgivenOccurrences = 0;
 const forgivenFiles = new Set<string>();
+const forgivenByFile = new Map<string, number>();
 let forgivenPublic = 0;
 let forgivenMemberAdmin = 0;
 function forgive(file: string) {
   forgivenOccurrences += 1;
   forgivenFiles.add(file);
+  forgivenByFile.set(file, (forgivenByFile.get(file) ?? 0) + 1);
   if (file in PUBLIC_DEBT) forgivenPublic += 1;
   else forgivenMemberAdmin += 1;
 }
@@ -898,12 +900,40 @@ for (const atomFile of new Set(ATOM_PINS.map((p) => p.file))) {
 //   escape hatch for the NEXT regression in that file. The sibling
 //   guard-focus-visible has enforced this since 2026-07-27; unported here, it
 //   let five fossils accumulate.
-for (const listed of Object.keys(ALLOWLIST)) {
+// ③ (2026-07-30 adversarial review) The entry's written "(N)" count is a
+//   two-way RATCHETED CEILING, not prose: existence-only checking let a listed
+//   file forgive UNLIMITED new short controls, and three entries' counts had
+//   already drifted stale by 5 occurrences without a single red. Over the
+//   ceiling = a NEW short control rode a debt entry; under = debt was paid —
+//   lower the number in the same commit. An entry with no "(N)" is unpinned
+//   and fails.
+for (const [listed, reason] of Object.entries(ALLOWLIST)) {
   if (!forgivenFiles.has(listed)) {
     fail(
       `${listed} — this allowlist entry forgives NOTHING: every control in that file now reaches the ` +
         `floor. DELETE the entry in this same commit — a fossil entry silently forgives the next ` +
         `regression in that file instead of failing on it.`,
+    );
+    continue;
+  }
+  const ceilingMatch = /\((\d+)\)/.exec(reason);
+  if (ceilingMatch === null) {
+    fail(`${listed} — its allowlist entry declares no "(N)" occurrence count, so its debt is unpinned. Add the measured count to the entry text.`);
+    continue;
+  }
+  const ceiling = Number.parseInt(ceilingMatch[1]!, 10);
+  const actual = forgivenByFile.get(listed) ?? 0;
+  if (actual > ceiling) {
+    fail(
+      `${listed} — ${actual} short control(s) forgiven against its written ceiling of (${ceiling}). ` +
+        `A NEW short control was added under a debt entry's cover. Fix the control — never raise the ` +
+        `count without a written reason.`,
+    );
+  } else if (actual < ceiling) {
+    fail(
+      `${listed} — ${actual} short control(s) left against its written ceiling of (${ceiling}). ` +
+        `Debt was paid: lower the count in the entry text (same commit) so the payment cannot be ` +
+        `silently undone.`,
     );
   }
 }
