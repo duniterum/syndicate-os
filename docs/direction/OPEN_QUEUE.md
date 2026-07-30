@@ -1,5 +1,17 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-30 (PM) — LA DETTE GARDES ② EST FERMÉE, avec preuve (7 commits, `60281db..dcd7a58`).**
+> Cliquet Button-atom : un atome ou un fossile dans l'allowlist = build ROUGE (le revert complet du fix
+> 44px passait VERT — plus maintenant, prouvé dans les deux sens ; 5 fossiles supprimés, Input au
+> plancher). Duplicate-facts : chaque entrée DEBT épingle son compte exact de fichiers + 4 formes de
+> littéraux en plus (60 → 117 faits vus) ; ce qui a été attrapé est payé par IMPORT, jamais listé sans
+> raison écrite. Les eyebrows : le détecteur voit le COMPORTEMENT (74 comptés, pas « ~38 » en prose),
+> 66 convertis en 3 lots vérifiés sur le rig — il ne reste QUE le héros (8 + 7 HeroLedger), verrouillé
+> derrière les croquis ③. Dette sous-12px : 250 → 217 occurrences. **Verdict : 🚀 DEPLOY — BATCHABLE**
+> (rien ne casse en attendant ; le prochain déploiement emporte le lot).
+> RESTE OUVERT : la question du dump à Replit (DEV ou DÉPLOIEMENT) · les 4 croquis ③ · LINK.e · CHR-11
+> · l'entrée du 12-07.
+
 > **▶ 2026-07-30 — L'ÉTAPE ① DU HANDOFF EST FERMÉE, avec preuve.** Le rig local vit de bout en bout :
 > premier cycle backbone OK (tête 91 567 198, 6/6 lanes de vente, 44 événements protocole insérés,
 > read-model cohérent 4/4) ; feed (52 lignes) · standing (siège 1 = Patron, 70 USDC) · saison (LIVE,

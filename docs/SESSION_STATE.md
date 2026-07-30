@@ -2,6 +2,37 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> # ▶ 2026-07-30 (PM) — THE GUARD DEBT IS PAID. Handoff ② closed in 7 commits; only the hero awaits the wireframe. PROD = `853f8bd`, untouched.
+>
+> ## WHAT CLOSED (each RED-first, each with the twin search in its commit — derive with `git log --oneline 60281db..HEAD`)
+> · **The touch allowlist polices itself** (`ffad169` + `4b6ca36`): Input reaches the 44px coarse floor
+>   (the entry that promised it, honoured and deleted) · an ATOM in the allowlist = RED · a fossil
+>   entry = RED (five deleted, incl. the Button escape hatch that let a FULL revert of the 44px fix
+>   print PASS — proven both directions). Allowlist 44 → 38 entries, reconciles exactly.
+> · **duplicate-facts ratcheted + widened** (`49b43e0` + `0f9fc86`): every DEBT entry pins its exact
+>   file count (spread/shrink/stale all RED, each arm proven live) · 4 new literal shapes (1-digit
+>   underscore numerics, BigInt `n`, 4-byte selectors, 32-byte topics, wss://) — distinct facts seen
+>   60 → 117 · what it caught was PAID BY IMPORT (selectors → decoders modules · Transfer topic → its
+>   self-checking home · USDC base → ONE declaration per artifact · protocolTargets' 16 retypes of its
+>   OWN floor constant), 4 reviewed cross-artifact twins entered DEBT with written reasons. Still-open
+>   shapes declared in the guard header with live instances (43114 ×~25 = its own import-sweep slice).
+> · **The eyebrow family is ONE class in code, not prose** (`1c0426a` + `f4c0457` + `13beaf7` + `dcd7a58`):
+>   §⑥ widened to the BEHAVIOUR (mono+uppercase+tracking ≥0.1em) — the RED run counted **74** hand-typed
+>   labels in 38 files (the "~38" prose had counted only sub-floor ones) — then THREE conversion batches
+>   paid **66** of them: content pages · home + season + shared bands (VerifyOnChain = the sitewide proof
+>   affordance) · FAQ/guide/referral/member/admin. Two judged NOT eyebrows, exempted with reasons (the
+>   header TAGLINE, geometry measured 2026-07-28 · the console BRAND WORDMARK). Sub-12px floor debt
+>   250 → 217 occurrences (196 → ~163 public), every ceiling moved by the guard's own output.
+>   **REMAINS, gated on the founder's wireframe (③):** the hero's 8 (SeatFlowDiagram incl. THE public
+>   8px medallion label · ProtocolOverviewPanel · HeroStatusChips · HeroSeatLine) + HeroLedger's 7 in
+>   its measured exemption. Rig-verified per batch: eyebrows at computed 12px, zero parent-escape at
+>   desktop AND 375px, zero console errors (/docs 54 · home 68 · /faq 30).
+>
+> ## DEPLOY VERDICT: 🚀 DEPLOY — BATCHABLE (client+guards only, fail-closed, additive; prod safely
+> stays on `853f8bd` until the next deploy carries the batch: `60281db..dcd7a58`).
+>
+> ## STILL OPEN (unchanged): the Replit dump question (below) · the 4 wireframes ③ · LINK.e · CHR-11 · the 12-07 entry.
+
 > # ▶ 2026-07-30 — THE LOCAL RIG IS ALIVE END-TO-END. First backbone cycle OK on the real DB. PROD = `853f8bd`, untouched (✅ NO DEPLOY — local rig + docs only).
 >
 > ## (a) WHAT WENT GREEN (the 2026-07-29 handoff's step ①, DONE and measured)
