@@ -82,7 +82,13 @@ export const sourceAttribution = {
     },
     {
       title: "Creating a referral code stays founder-gated",
-      body: "Registering and activating a referral code are founder-signed, on-chain acts. A valid active referral is applied at purchase and the commission is paid inside the buyer's own transaction; any recognition tied to referrals remains a future, gated concept.",
+      // ⛔ CORRECTED 2026-07-30 (footer audit, BLOCKING): this sentence ended
+      // "any recognition tied to referrals remains a future, gated concept" —
+      // false since 2026-07-23/24: converted introductions credit Connector XP
+      // and ladder titles on the PUBLIC season board (featureStatus
+      // seasonRanking + seasonQuests, both live; a stranger could refute the
+      // old sentence by opening /season).
+      body: "Registering and activating a referral code are founder-signed, on-chain acts. A valid active referral is applied at purchase and the commission is paid inside the buyer's own transaction — and a converted introduction earns Connector recognition on the live season board.",
     },
   ] as SourceModelStep[],
   boundaries: [
@@ -93,7 +99,8 @@ export const sourceAttribution = {
     "The on-chain referral registry is live and readable; the public /source surface validates a referral code and builds a shareable join link.",
     "Registering or activating a referral code is a founder-signed, on-chain act. Nothing is created, activated, or written from any public page.",
     "Who referred whom is only ever read from the on-chain record — no public page writes it; the purchase contract records it when a buyer joins through a valid link.",
-    "The commission is a bounded, one-time payment under the current terms; any recognition tied to referrals remains a future, gated concept.",
+    // ⛔ Same correction, same date: the second copy of the false denial.
+    "The commission is a bounded, one-time payment under the current terms; a converted introduction also earns Connector recognition — season XP and ladder standing — on the public season board.",
     "Membership is not an investment. A referral commission is a bounded, one-time payment — not passive income, not token yield, not equity, and not a profit promise.",
   ],
 };
