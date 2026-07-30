@@ -130,20 +130,14 @@ const FLOOR = 44; // CSS px. Apple HIG 44 / Material 48 → ADR-001 amendment 20
 // ── THE DEBT ────────────────────────────────────────────────────────────────
 // Counted 2026-07-26 against the tree at that commit: 92 short controls in 45
 // files. Every count below was READ off the guard's own audit output, never
-// estimated. The two atom entries are first because they are the cheapest and
-// the largest: raising Button + Input takes 5 of these entries' worth of
-// geometry off every call site in the product at once.
+// estimated. Since 2026-07-30 the atoms (Button, Input, Textarea) are all AT
+// the floor and may never re-enter this list — §⑤ makes an atom entry, or any
+// entry that forgives nothing, a RED build.
 //
-// PUBLIC surfaces — what a visitor who has never signed in taps. 19 files, 36
-// occurrences. These are the ones that matter first: a control a thumb misses
-// on a public page is a conversion lost before anyone is a member.
+// PUBLIC surfaces — what a visitor who has never signed in taps. These are the
+// ones that matter first: a control a thumb misses on a public page is a
+// conversion lost before anyone is a member.
 const PUBLIC_DEBT: Record<string, string> = {
-  "components/ui/button.tsx":
-    "THE ATOM (4): size default 36px · sm 32px · lg 40px · icon 36px — every Button on the site inherits one of them. The type+spacing scale workstream re-bases them; this entry deletes then and takes most of the call-site debt with it (2026-07-26).",
-  "components/activity/LiveActivityFeed.tsx":
-    "THE NAMED DEFECT (3): the per-row `verify` and `read the record` anchors are a bare 16px line box — the most-clicked control on the public record — and `Re-read` is 32px (size=\"sm\" min-h-8, with `h-7` on top). The facet chips 200px away are at 46px, pinned in §④. Fixed in the /activity readability slice (2026-07-26).",
-  "components/activity/MilestonesPanel.tsx":
-    "(1) the milestone `verify` anchor, the same 16px meta-rail control as the feed's; fixed with it (2026-07-26).",
   "components/layout/PublicLayout.tsx":
     "(6) the site header and footer, on EVERY public page: the brand/social icon anchors at 36px (h-9), the desktop nav pills at 32px, the mobile drawer rows at 36px, two footer links at a bare 20px line box. Part of the header-affordance sweep ADR-001 already owed at its 2026-07-16 note. The mobile drawer's own trigger and rows were separately brought to min-h-11 and pass (2026-07-26).",
   "components/faq/FaqAccordion.tsx":
@@ -173,12 +167,8 @@ const PUBLIC_DEBT: Record<string, string> = {
 // files, 56 occurrences. Later in the queue than the public set, never exempt:
 // the founder runs the admin console on a phone.
 const MEMBER_ADMIN_DEBT: Record<string, string> = {
-  "components/admin/AdminShell.tsx":
-    "(3) chrome controls at 32-36px in the operator console shell (2026-07-26).",
   "components/member/ChronicleLatest.tsx": "(1) a 16px 'read' link on the member card (2026-07-26).",
   "components/member/ProtocolSnapshot.tsx": "(1) a 16px 'see all' link on the member card (2026-07-26).",
-  "components/referral/AdminOperatorSurfaces.tsx":
-    "(1) a 36px icon button (row delete) in the operator table (2026-07-26).",
   "components/referral/MemberReferralDashboard.tsx":
     "(1) the dashboard tab strip at 40px — 4px short (2026-07-26).",
   "components/referral/NotificationComposerFields.tsx":
@@ -883,6 +873,38 @@ for (const [f, re, why] of PROVEN) {
   }
   if (!re.test(src)) {
     fail(`${f} — expected touch-floor pattern NOT FOUND: ${why}. Either the control lost its 44px, or this pin needs updating in the same commit as the refactor.`);
+  }
+}
+
+// ── ⑤ THE ALLOWLIST POLICES ITSELF ──────────────────────────────────────────
+// Two rules, both learned from the same 2026-07-30 finding: with the Button
+// atom's 2026-07-26 debt entry still in place two days after the atom was
+// FIXED, reverting the whole 44px fix kept the build green — the entry forgave
+// the regression it was written to count down.
+//
+// ① An ATOM is never debt. Forgiving an atom forgives every call site that
+//   inherits it (108 today), so an atom under the floor is always a defect to
+//   fix AT the atom — never an entry to write.
+for (const atomFile of new Set(ATOM_PINS.map((p) => p.file))) {
+  if (atomFile in ALLOWLIST) {
+    fail(
+      `${atomFile} — an ATOM sits in this guard's allowlist. An atom's shortness multiplies through ` +
+        `every call site that inherits it; it is never debt. Delete the entry and raise the atom ` +
+        `in the same commit (the Button escape-hatch lesson, 2026-07-30).`,
+    );
+  }
+}
+// ② A debt entry with nothing left to forgive is a FOSSIL — and a pre-armed
+//   escape hatch for the NEXT regression in that file. The sibling
+//   guard-focus-visible has enforced this since 2026-07-27; unported here, it
+//   let five fossils accumulate.
+for (const listed of Object.keys(ALLOWLIST)) {
+  if (!forgivenFiles.has(listed)) {
+    fail(
+      `${listed} — this allowlist entry forgives NOTHING: every control in that file now reaches the ` +
+        `floor. DELETE the entry in this same commit — a fossil entry silently forgives the next ` +
+        `regression in that file instead of failing on it.`,
+    );
   }
 }
 
