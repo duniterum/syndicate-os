@@ -1,0 +1,14 @@
+Self-hosted web fonts (vendored 2026-07-30, woff2, latin + latin-ext subsets,
+fetched once from the Google Fonts API and committed — no visitor request ever
+reaches Google):
+
+- Work Sans (variable, wght 400-700) — Copyright 2020 The Work Sans Project
+  Authors (https://github.com/weiweihuanghuang/Work-Sans)
+- IBM Plex Mono (400 / 500 / 600) — Copyright 2017 IBM Corp.
+  (https://github.com/IBM/plex)
+- Instrument Serif (400 normal + italic) — Copyright 2022 The Instrument
+  Serif Project Authors (https://github.com/Instrument/instrument-serif)
+
+All three families are licensed under the SIL Open Font License, Version 1.1
+(https://openfontlicense.org). The OFL permits bundling, redistribution and
+self-hosting; the fonts are not sold by themselves.

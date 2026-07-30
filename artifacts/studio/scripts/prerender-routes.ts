@@ -114,10 +114,13 @@ function setRouteJsonLd(html: string, location: string): string {
 //   script-src 'self'            — all JS is same-origin Vite chunks (JSON-LD
 //                                  <script type="application/ld+json"> blocks
 //                                  are data, exempt from script-src);
-//   style-src  self + inline +   — compiled Tailwind (self), runtime-injected
-//              fonts.googleapis    <style> tags from UI libs (inline), Google
-//                                  Fonts CSS (the one external stylesheet);
-//   font-src   fonts.gstatic     — the Google Fonts files (+ data: for any
+//   style-src  self + inline     — compiled Tailwind (self) + runtime-injected
+//                                  <style> tags from UI libs (inline). Google
+//                                  Fonts LEFT the policy 2026-07-30: fonts are
+//                                  self-hosted (public/fonts/), so no external
+//                                  stylesheet exists and no visitor IP reaches
+//                                  Google (the footer audit's privacy finding);
+//   font-src   'self' data:      — the vendored woff2 files (+ data: for any
 //                                  lib-embedded font);
 //   img-src    self data: https: — local brand assets + wallet-connector icons
 //                                  served from wallet-provider CDNs;
@@ -131,7 +134,7 @@ function setRouteJsonLd(html: string, location: string): string {
 // PAGES must be set at the Replit serving layer (handoff note); the API
 // already sends X-Frame-Options: DENY server-side.
 const SECURITY_META = [
-  `<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https: wss:; object-src 'none'; base-uri 'self'; form-action 'self'" />`,
+  `<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https:; connect-src 'self' https: wss:; object-src 'none'; base-uri 'self'; form-action 'self'" />`,
   `<meta name="referrer" content="strict-origin-when-cross-origin" />`,
 ].join("\n    ");
 
