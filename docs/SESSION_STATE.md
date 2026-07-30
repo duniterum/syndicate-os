@@ -2,6 +2,41 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> # ▶ 2026-07-30 — THE LOCAL RIG IS ALIVE END-TO-END. First backbone cycle OK on the real DB. PROD = `853f8bd`, untouched (✅ NO DEPLOY — local rig + docs only).
+>
+> ## (a) WHAT WENT GREEN (the 2026-07-29 handoff's step ①, DONE and measured)
+> · **Backbone cycle 1 = ok** at head 91,567,198: 6/6 sale units ok · 44 protocol events + 41 block
+>   timestamps inserted · 2 new sale events (dump had 33, chain has 35) · read-model consistent, 4/4
+>   checks passed. Endpoints serve REAL rows locally: `/api/backbone/feed` 52 items · `capital-standing?seat=1`
+>   → Patron, 70 USDC cumulative · `/api/season` LIVE, 15 players · `/api/receipt/<real tx>` full ticket,
+>   junk tail → 400. Studio verified in the pane: **/activity renders 75 events** (incl. the LINK.e treasury
+>   entry, block 91,336,828) and **/receipt/0xa30f…fb50 renders the full ticket** — zero console errors.
+>   Honest gap that REMAINS his: signed-in member surfaces need the Founder's own wallet signature (SIWE).
+>
+> ## (b) WHY 157 CYCLES FAILED YESTERDAY — solved by measurement, and the recipe that replaces the old one
+> · **A dev server spawned through the harness preview tool has NO NETWORK EGRESS on this box** (sandbox):
+>   localhost works (DB, HTTP serving), the chain RPC never does — every cycle died at the chain probe,
+>   from the very first. The SAME bundle run outside the sandbox: 100% of RPC calls OK. Earlier sessions
+>   never saw it because chain reads happened in the BROWSER, never in the server process.
+> · **THE RIG RECIPE (supersedes "preview_start api-server" whenever the backbone or any server-side chain
+>   read must run):** studio stays on preview_start (its `/api` proxy → localhost:5000 is local traffic);
+>   the api-server runs DETACHED from PowerShell:
+>   `$env:PORT="5000"; $env:NODE_ENV="development"; $env:DATABASE_URL="postgresql://postgres:syndicate_local@localhost:5433/syndicate"; $env:SYNDICATE_BACKBONE_ENABLED="true"; Start-Process "C:\Program Files\nodejs\node.exe" -ArgumentList '--enable-source-maps','<repo>\artifacts\api-server\dist\index.mjs' -WorkingDirectory '<repo>\artifacts\api-server' -WindowStyle Hidden`
+>   (build first if the tree moved: `npm run dev:rig` builds then runs — or `node ./build.mjs` alone).
+>   Check `/api/backbone/status` after boot: a cycle counter that only ever fails means the sandbox again.
+>   NEVER two instances (port 5000), NEVER the live DATABASE_URL (the runner WRITES).
+>
+> ## (c) IN FLIGHT + FOUNDER-PENDING
+> · Lanes catch up autonomously every 5 min: 14 eth_getLogs lanes at cursor 87,557,851 → head; the 2
+>   index-based lanes (TREASURY_AVAX, TREASURY_DISCOVERED) already caught up. Local burns read 0 until
+>   their lane passes the burn blocks (~90.1M) — expected, not a bug.
+> · **ASK REPLIT — is the dump the DEV db or the DEPLOYMENT db?** Evidence it's dev: 13KB ·
+>   `protocol_event_raw` empty · `notification`=0 and `operator_session`=0 and `activation_request`=0 while
+>   prod demonstrably has notifications/operator acts · `audit_log`=2 only. If dev → request the
+>   deployment-db dump the same way (`pg_dump "$DATABASE_URL" --no-owner --no-privileges`).
+> · Guard debt ② and the 4 composition wireframes ③: unchanged from the 2026-07-29 block below.
+> · LINK.e price-feed call · CHR-11 · the 2026-07-12 register entry: unchanged, his alone.
+
 > # ▶ 2026-07-29 (HANDOFF) — RESUME HERE. PROD = `853f8bd`, SEALED. THE LOCAL RIG HAS THE REAL DATABASE.
 >
 > ## (a) WHAT WENT LIVE (two deploys this session, both sealed by measurement)

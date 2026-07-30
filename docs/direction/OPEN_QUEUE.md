@@ -1,5 +1,16 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-30 — L'ÉTAPE ① DU HANDOFF EST FERMÉE, avec preuve.** Le rig local vit de bout en bout :
+> premier cycle backbone OK (tête 91 567 198, 6/6 lanes de vente, 44 événements protocole insérés,
+> read-model cohérent 4/4) ; feed (52 lignes) · standing (siège 1 = Patron, 70 USDC) · saison (LIVE,
+> 15 joueurs) · reçu (ticket complet sur hash réel, 400 sur hash invalide) servis depuis la base locale ;
+> /activity et /receipt rendus dans le studio, zéro erreur console. **La cause des 157 cycles morts du
+> 29-07 : le bac à sable de l'outil d'aperçu coupe la sortie réseau du processus serveur** — la recette
+> corrigée (api détachée hors aperçu, studio inchangé) est dans le bloc de reprise de SESSION_STATE.
+> RESTE OUVERT : ① la question à Replit — dump = base DEV ou DÉPLOIEMENT ? (indices dev : 13 Ko,
+> protocol_event_raw vide, notification=0, operator_session=0, audit_log=2 ; si dev → demander le dump
+> de la base de déploiement, jamais l'URL live). ② Dette gardes et ③ les 4 croquis : inchangés (29-07).
+
 > **▶ 2026-07-29 (HANDOFF) — PROD = `853f8bd` scellé ; LA BASE LOCALE EXISTE (ruling fondateur).**
 > L'autorité du présent est le bloc de reprise de SESSION_STATE. OUVERT ICI, avec preuve :
 > ① Confirmer avec Replit si le dump = base DEV (protocol_event_raw vide, 13 Ko) et obtenir le dump de la base de
