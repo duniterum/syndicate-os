@@ -140,8 +140,6 @@ const FLOOR = 44; // CSS px. Apple HIG 44 / Material 48 → ADR-001 amendment 20
 const PUBLIC_DEBT: Record<string, string> = {
   "components/ui/button.tsx":
     "THE ATOM (4): size default 36px · sm 32px · lg 40px · icon 36px — every Button on the site inherits one of them. The type+spacing scale workstream re-bases them; this entry deletes then and takes most of the call-site debt with it (2026-07-26).",
-  "components/ui/input.tsx":
-    "THE ATOM (1): `h-9` = 36px on every text field. Same workstream, same commit as the Button re-base (2026-07-26).",
   "components/activity/LiveActivityFeed.tsx":
     "THE NAMED DEFECT (3): the per-row `verify` and `read the record` anchors are a bare 16px line box — the most-clicked control on the public record — and `Re-read` is 32px (size=\"sm\" min-h-8, with `h-7` on top). The facet chips 200px away are at 46px, pinned in §④. Fixed in the /activity readability slice (2026-07-26).",
   "components/activity/MilestonesPanel.tsx":
