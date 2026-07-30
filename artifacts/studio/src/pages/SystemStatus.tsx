@@ -165,8 +165,8 @@ export default function SystemStatus() {
             Live reads of public Avalanche C-Chain facts — chain identity, contract code presence,
             ERC-20 symbol/decimals, archive configuration, and membership-sale state. The active V3
             sale engine's public figures (available SYN, gross USDC received, receipt count) are
-            surfaced as exact raw base units. This payload itself carries no member data and no
-            wallet addresses — reading it writes nothing; joining happens on /join, signed from
+            surfaced as exact raw base units. This payload itself carries no member-identifying data
+            and no wallet addresses — reading it writes nothing; joining happens on /join, signed from
             your own wallet. Every read is truth-labelled, and any value that cannot be verified is
             shown as unavailable, with the reason — never guessed, never rounded into something
             that looks like an answer.

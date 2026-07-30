@@ -162,8 +162,14 @@ check(
 
 // ---------------------------------------------------------------------------
 // Public Protocol Map exposure rules (/map):
-//   - the page renders an explicit group list that must NOT include "archive"
-//     (archive binding is founder-deferred on the public map);
+//   - the page renders an explicit group list that MUST include "archive".
+//     (STRUCK 2026-07-30, footer audit — the old pin said the OPPOSITE:
+//     "archive binding is founder-deferred". That deferral had become an
+//     unpinned future claim on the page while /status rendered the identical
+//     group publicly one footer link away — the exposure is audited: the API
+//     serves the archive group publicSafe and it is already public on
+//     /status. The pin now points the other way so the group can never
+//     silently drop back out.)
 //   - the page filters publicSafe on the V3 figures it extracts;
 //   - the shared ProtocolRealityPanel filters publicSafe defense-in-depth;
 //   - the public-map registry entry links moduleId "map", and the internal
@@ -182,14 +188,9 @@ const protocolMapSrc = stripComments(
     "/map (ProtocolMap.tsx) no longer declares MAP_GROUPS — the archive-omission audit has nothing to bind to",
   );
   check(
-    groupsMatch !== null && !/["']archive["']/.test(groupsMatch[1]),
-    "/map omits the archive group (founder-deferred)",
-    '/map renders the "archive" group — archive binding on the public map is founder-deferred',
-  );
-  check(
-    !/["']archive["']/.test(protocolMapSrc),
-    '/map source contains no "archive" group reference at all',
-    '/map (ProtocolMap.tsx) references "archive" outside MAP_GROUPS — audit the exposure before shipping',
+    groupsMatch !== null && /["']archive["']/.test(groupsMatch[1]),
+    "/map renders the archive group (bound 2026-07-30 — completeness over deferral)",
+    '/map dropped the "archive" group — the 2026-07-30 footer-audit binding regressed; /status renders it publicly, so omission here is a silent completeness hole',
   );
   check(
     /\.publicSafe\b/.test(protocolMapSrc),

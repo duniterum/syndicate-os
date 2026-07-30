@@ -44,13 +44,14 @@ export interface ContractMemoryEntry {
   category: ContractMemoryCategory;
   domain: SyndicateProofDomain;
   lifecycle: DisplayLifecycle;
-  /** Honest, non-sensitive note. No addresses, balances, or live claims. */
+  /** Honest, non-sensitive note. No addresses or balances IN the note —
+   *  pointing at the live layer that shows them is the norm (2026-07-30). */
   note: string;
 }
 
 /** Page-level honesty preamble for the contract memory surface. */
 export const contractMemoryIntro =
-  "The protocol economy in two honest layers: a live view of what the protocol holds today, and canon memory of the contracts behind it — roles and structure only, with no addresses or member records ever shown.";
+  "The protocol economy in two honest layers: a live view of what the protocol holds today — balances with their explorer verify-links — and canon memory of the contracts behind it: roles and structure, never a member record.";
 
 export const contractMemory: ContractMemoryEntry[] = [
   // --- Tokens --------------------------------------------------------------
@@ -175,7 +176,11 @@ export const contractMemory: ContractMemoryEntry[] = [
     category: "treasury",
     domain: "TRANSPARENCY_ECONOMY_ROUTING",
     lifecycle: "READ_ONLY_PROOF",
-    note: "The treasury wallet role in canon. No address or balance is shown.",
+    // Footer audit 2026-07-30: the "No address or balance is shown" family
+    // DIED on this page — ProtocolAssetsCard prints the live balances with
+    // explorer links two scrolls up. The memory card points at the live
+    // layer instead of denying it (the 2026-07-25 address model).
+    note: "The treasury wallet role in canon. Its live balances and explorer link are shown in Protocol assets above.",
   },
   {
     id: "liquidity-wallet",
@@ -184,7 +189,7 @@ export const contractMemory: ContractMemoryEntry[] = [
     category: "treasury",
     domain: "TRANSPARENCY_ECONOMY_ROUTING",
     lifecycle: "READ_ONLY_PROOF",
-    note: "Wallet role for protocol liquidity. Structure only — no address, balance, or price.",
+    note: "Wallet role for protocol liquidity. The pool's live reserves and the protocol's own LP share are read in Protocol assets above.",
   },
   {
     id: "operations-wallet",
@@ -193,7 +198,7 @@ export const contractMemory: ContractMemoryEntry[] = [
     category: "treasury",
     domain: "TRANSPARENCY_ECONOMY_ROUTING",
     lifecycle: "READ_ONLY_PROOF",
-    note: "Wallet role funding protocol operations. No address or balance is shown.",
+    note: "Wallet role funding protocol operations. Its live USDC balance and explorer link are shown in Protocol assets above.",
   },
   {
     id: "founder-wallet",
@@ -202,7 +207,7 @@ export const contractMemory: ContractMemoryEntry[] = [
     category: "treasury",
     domain: "TRANSPARENCY_ECONOMY_ROUTING",
     lifecycle: "READ_ONLY_PROOF",
-    note: "The vested founder allocation role in canon. No address, schedule figure, or balance is shown.",
+    note: "The vested founder allocation role in canon. The wallet is public — its live SYN balance is read on Tokenomics, beside the published vesting commitment.",
   },
   {
     id: "liquidity-pair",
@@ -211,7 +216,7 @@ export const contractMemory: ContractMemoryEntry[] = [
     category: "treasury",
     domain: "TRANSPARENCY_ECONOMY_ROUTING",
     lifecycle: "READ_ONLY_PROOF",
-    note: "A liquidity pair named in canon. No live price, reserve, or quote is read in this foundation.",
+    note: "The SYN/USDC pair in canon. Its live reserves and the protocol's LP share are read in Protocol assets above; this memory card carries role and structure only.",
   },
   // --- Chain ---------------------------------------------------------------
   {

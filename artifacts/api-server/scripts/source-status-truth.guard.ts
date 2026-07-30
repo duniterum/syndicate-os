@@ -69,9 +69,14 @@ for (const [key, posture] of Object.entries(PROMOTED)) {
 }
 
 // 3) The canon-lock date can never fall behind the promotions it carries.
+// RATCHET LAW (footer audit 2026-07-30): the floor below is bumped IN THE SAME
+// COMMIT as any note/content edit in sourceStatus.ts, together with
+// CANON_AS_OF — the /status hub was caught serving "As of 2026-07-19" under
+// notes describing the 2026-07-25 season board and the 2026-07-27 AVAX lane
+// (edits d1b6e75 + 44b24cd moved the content and left the date standing).
 check(
-  "asOf is at or after the S4 reconciliation (2026-07-14)",
-  Date.parse(sourceStatusResponse.asOf) >= Date.parse("2026-07-14T00:00:00.000Z"),
+  "asOf is at or after the newest content reconciliation (2026-07-30)",
+  Date.parse(sourceStatusResponse.asOf) >= Date.parse("2026-07-30T00:00:00.000Z"),
   sourceStatusResponse.asOf,
 );
 

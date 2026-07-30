@@ -27,12 +27,17 @@ export const LP_PAIR_ADDRESS = "0xe12491b79c9cfc6a07db8cd7fc8b3da0bb019389";
 export const LIQUIDITY_LINKS = {
   /** Founder-verified in browser 2026-07-14 (chart loads). */
   dexscreenerUrl: `https://dexscreener.com/avalanche/${LP_PAIR_ADDRESS}`,
-  /** Origin LP_POOL.traderJoeUrl — HTTP 200 verified 2026-07-14. */
+  // REBRANDED 2026-07-30 (footer audit): traderjoexyz.com now 303-redirects to
+  // lfj.gg — measured this session: the OLD URL's redirect target is byte-for-
+  // byte the URL below (+utm params we drop); /add answers 200 directly; the
+  // bare pool GET answers 403 to curl (bot filtering, same class as the
+  // DexScreener note above — the page loads in a real browser). Pointing at
+  // lfj.gg drops the redirect hop and stops naming a brand the destination
+  // site no longer carries.
   tradeUrl:
-    "https://traderjoexyz.com/avalanche/pool/v1/0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170/0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-  /** Origin LP_POOL.addLiquidityUrl — HTTP 200 verified 2026-07-14. */
+    "https://lfj.gg/avalanche/pool/v1/0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170/0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
   addLiquidityUrl:
-    "https://traderjoexyz.com/avalanche/pool/v1/0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170/0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E/add",
+    "https://lfj.gg/avalanche/pool/v1/0xC1Cf19a52603c1F71C057BDE71d723CFa2fB0170/0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E/add",
 } as const;
 
 /** WhyLpMatters — the origin's three cards, framing KEPT ("small on purpose ·

@@ -62,7 +62,7 @@ const steps = [
   {
     n: "01",
     title: "Read from source",
-    body: "Every figure is read live from a contract or the indexed event record — never typed in by hand.",
+    body: "Every figure is read live from a contract or served from the verified indexed record — never typed in by hand.",
   },
   {
     n: "02",

@@ -24,6 +24,26 @@ This file is the WORK LEDGER for the harmonization arc — tick findings as slic
 > (minor) · /chronicle dead branch (minor). **68 remain open: 34 important · 33 minor + the tick
 > discipline** (recounted: 36−2 · 35−2).
 
+> **✅ CLOSED 2026-07-30 — HARMONIZATION ARC, SLICE B (truth/copy, non-legal):**
+> IMPORTANT ×11 — /activity hero clause (Chronicle lane scoped) · /contracts 3 treasury denials +
+> founder-wallet twin (the notes now POINT at the live layer) · /contracts LP-pair "no reserve is
+> read" · /faq Support CTA (→ the live Guide; stale next-slice comment deleted) · /map completeness
+> lead (honest scope; ARCHIVE GROUP BOUND — the coverage guard's opposite pin struck, dated) · /map
+> "addresses stay server-side" · /map unpinned future claim (sentence deleted with the binding) ·
+> /toolkit stale-complete registry (+ask-activation +wallet-approvals) · /status CANON_AS_OF
+> 2026-07-19→30 (guard floor RATCHETED, red-proven: "1 FAILURE (210 passed)" before the bump) ·
+> /whitepaper §9-§10 self-updating claim (softened + PINNED to standingModel/seasonBounty — the
+> "guarded" sentence is now true) · /tokenomics "watch it vest" (commitment, not chain mechanism).
+> MINOR ×9 — /docs "eight topics" (+ the guide-content TWIN the audit had not named) · /faq "twelve
+> rungs" · /learning category upgrade (the honest triple) · /learning dead-era header comment ·
+> Trader Joe→LFJ (audit named 3 sites; the twin search found 5 MORE: faq×3 · Tokenomics:108 ·
+> MemberWalletPanel:277; URLs repointed to lfj.gg — measured: old URL 303-redirects byte-identical,
+> /add answers 200) · /proof "read live" · /status "member-identifying data" · /toolkit LIVE_ACTION
+> badge → READ_ONLY_PROOF · /toolkit permanent-link note. The /fire-ledger BANNER clause is also
+> rewritten (chip classifies, chain names) but its finding stays OPEN until the row grammar shows
+> the sender (slice E). Studio guards EXIT 0 · api 21/21 · typecheck 0.
+> **48 remain open: 23 important · 24 minor + the tick discipline** (recounted: 34−11 · 33−9).
+
 
 ## BLOCKING (6)
 

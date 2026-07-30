@@ -16,7 +16,11 @@ export default function MemberToolkit() {
       eyebrow="Toolkit"
       title="What a seat can do."
       lead="Every member action, in one place — real acts only. What your wallet unlocks is shown unlocked; what a seat unlocks stays visible with the plain reason, so you can see exactly what joining opens."
-      badge={<LifecycleBadge lifecycle="LIVE_ACTION" />}
+      // Footer audit 2026-07-30: LIVE_ACTION died here — truthStatus reserves
+      // it for a real gated WRITE signed from the member's wallet (the /join
+      // checkout; /wallet's revoke carries its own founder GO). This page's
+      // actions are copies, routes and a public engine read — proof, no write.
+      badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
       <MemberQuickActions />
     </MemberAppPage>

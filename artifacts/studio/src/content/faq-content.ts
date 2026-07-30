@@ -47,7 +47,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       },
       {
         q: "What can I verify today?",
-        a: "The SYN token, the membership sale, the Reserve / Liquidity / Operations wallets, every USDC entry, every routing transfer, each allocation wallet, and the SYN/USDC pool on Trader Joe — all live on Avalanche and openable in any block explorer. The live figures sit on Tokenomics and the Status ledger; open any contract from the Contracts map.",
+        a: "The SYN token, the membership sale, the Reserve / Liquidity / Operations wallets, every USDC entry, every routing transfer, each allocation wallet, and the SYN/USDC pool on LFJ (formerly Trader Joe) — all live on Avalanche and openable in any block explorer. The live figures sit on Tokenomics and the Status ledger; open any contract from the Contracts map.",
       },
       {
         q: "What does LIVE vs PENDING mean?",
@@ -155,7 +155,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
     entries: [
       {
         q: "Where can I trade SYN?",
-        a: "In the live SYN/USDC pool on Trader Joe on Avalanche C-Chain — a classic AMM pool. Open the pair from the Contracts map; the live reserves are on Tokenomics.",
+        a: "In the live SYN/USDC pool on LFJ on Avalanche C-Chain — a classic AMM pool. Open the pair from the Contracts map; the live reserves are on Tokenomics.",
       },
       {
         q: "Why is liquidity small right now?",
@@ -175,7 +175,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       },
       {
         q: "Is the entry rate the same as the market price?",
-        a: "No — they are independent. The entry rate is the protocol's own rate for taking a seat. Once you hold SYN it may also trade on Trader Joe at a separate, market-set price. Neither values the other, and the protocol promises nothing about the market price. Both live figures are on Tokenomics.",
+        a: "No — they are independent. The entry rate is the protocol's own rate for taking a seat. Once you hold SYN it may also trade on LFJ at a separate, market-set price. Neither values the other, and the protocol promises nothing about the market price. Both live figures are on Tokenomics.",
       },
     ],
   },
@@ -192,7 +192,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
         // AUD-TRUTH (2026-07-16): the repealed SYN-balance Citizen→Cornerstone
         // system DIED (it was serving in the FAQPage JSON-LD). Today's truth:
         // two public-record ladders — the capital axis and the Connector ladder.
-        a: "Recognition runs on the public record, on two ladders. The capital axis names a seat's cumulative purchase footprint across twelve rungs, from Citizen to Monolith. The Connector ladder recognises durable introductions, from Emerging to Summit. Recognition only — never a wealth leaderboard, never bonus tokens, and never a better rate.",
+        a: "Recognition runs on the public record, on two ladders. The capital axis names a seat's cumulative purchase footprint across its rungs, from Citizen to Monolith. The Connector ladder recognises durable introductions, from Emerging to Summit. Recognition only — never a wealth leaderboard, never bonus tokens, and never a better rate.",
       },
       {
         q: "What is institutional trust capital?",

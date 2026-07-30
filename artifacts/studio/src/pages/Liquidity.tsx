@@ -28,7 +28,7 @@ type RailAction = {
 };
 
 const RAIL: RailAction[] = [
-  { label: "Trade SYN", hint: "Swap on Trader Joe", href: LIQUIDITY_LINKS.tradeUrl, variant: "primary" },
+  { label: "Trade SYN", hint: "Swap on LFJ", href: LIQUIDITY_LINKS.tradeUrl, variant: "primary" },
   { label: "Add Liquidity", hint: "Deposit SYN + USDC", href: LIQUIDITY_LINKS.addLiquidityUrl, variant: "secondary" },
   { label: "Become an LP", hint: "How it works · risks", anchor: "#provide-liquidity", variant: "secondary" },
   { label: "View Pool", hint: "DexScreener chart", href: LIQUIDITY_LINKS.dexscreenerUrl, variant: "ghost" },
@@ -154,9 +154,9 @@ export default function Liquidity() {
         <h2 className="type-h2 text-foreground mb-2">Become an LP</h2>
         <p className="text-sm text-muted-foreground leading-relaxed measure mb-6">
           Providing liquidity means depositing SYN and USDC together into the
-          pair on Trader Joe, from your own wallet, on the DEX itself. The
-          Syndicate runs no liquidity interface and holds no position for you —
-          the "Add Liquidity" action above leaves this site.
+          pair on LFJ (formerly Trader Joe), from your own wallet, on the DEX
+          itself. The Syndicate runs no liquidity interface and holds no
+          position for you — the "Add Liquidity" action above leaves this site.
         </p>
         <h3 className="text-base font-medium text-foreground mb-3">The LP Risk Notice</h3>
         <div className="auto-grid gap-4 mb-6">

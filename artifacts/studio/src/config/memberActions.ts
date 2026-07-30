@@ -32,7 +32,10 @@ export const MEMBER_ACTIONS: readonly MemberAction[] = [
   {
     id: "copy-referral-link",
     label: "Copy my referral link",
-    note: "Your permanent link, derived from your wallet — the same link forever.",
+    // Footer audit 2026-07-30: "derived from your wallet — the same link
+    // forever" died — the handler copies the PAYING source id, which can be
+    // founder-signed and can change with the paying source. Say what it IS.
+    note: "The link that pays you — resolved from your seat's paying source.",
     kind: "copy-referral-link",
     lock: "session",
     lockReason: "Sign in with your wallet to use this.",
@@ -68,5 +71,27 @@ export const MEMBER_ACTIONS: readonly MemberAction[] = [
     kind: "verify-seat",
     lock: "seat",
     lockReason: "Requires a seat — the engine answers for seated wallets.",
+  },
+  // Footer audit 2026-07-30: the registry's completeness claim ("every member
+  // action, in one place") had gone stale-complete — two member acts shipped
+  // after it and were absent. The registry is the one source; it grows in the
+  // same slice as the act, never later.
+  {
+    id: "ask-activation",
+    label: "Ask for referral activation",
+    note: "The activation door on your referral page — you ask from your own seat, the Founder decides, you see the verdict.",
+    kind: "route",
+    href: "/referral",
+    lock: "seat",
+    lockReason: "Requires a seat — activation is asked from your own seat.",
+  },
+  {
+    id: "wallet-approvals",
+    label: "Review wallet approvals",
+    note: "See your USDC approval toward the sale engine and revoke it — a real signed act, from your wallet page.",
+    kind: "route",
+    href: "/wallet",
+    lock: "session",
+    lockReason: "Sign in with your wallet to review.",
   },
 ];

@@ -18,7 +18,7 @@ export default function Activity() {
     <MemberAppPage
       eyebrow="Activity"
       title="The public heartbeat."
-      lead="The protocol speaks through verified receipts — every line below is an on-chain event, newest first, with its own verify link. Never a claim, never more than the chain itself publishes."
+      lead="The protocol speaks through verified receipts — every chain line below is an on-chain event, newest first, with its own verify link; Chronicle promotions link into the permanent record. Never a claim, never more than the chain itself publishes."
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
       <LiveActivityFeed />

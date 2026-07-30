@@ -143,6 +143,14 @@ const PROSE_CLAIM_SITES: Record<
     keys: ["supportIntake"],
     fragment: "until intake is wired",
   },
+  // /whitepaper §9-§10: "what is still ahead" names the standing model and
+  // the season reward pot, and §10 tells the reader the module lists are
+  // GUARDED — this pin is what makes that sentence true. The day either key
+  // flips live, both sections must be rewritten in the same commit.
+  "pages/Whitepaper.tsx": {
+    keys: ["standingModel", "seasonBounty"],
+    fragment: "the season reward pot",
+  },
 };
 
 // ── §⑦ REGISTERED BUT CLAIMED NOWHERE ───────────────────────────────────────

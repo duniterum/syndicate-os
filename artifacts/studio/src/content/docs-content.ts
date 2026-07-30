@@ -68,7 +68,7 @@ export const DOCS_GROUPS: DocGroup[] = [
       {
         routePath: "/faq",
         purpose:
-          "Honest answers across the eight topics — search, filter by topic, and expand any question.",
+          "Honest answers across every topic — search, filter by topic, and expand any question.",
         audience: ["New here", "Member"],
       },
       {

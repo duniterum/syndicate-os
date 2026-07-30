@@ -2,8 +2,10 @@
 //
 // Plain-language education for the public /learning surface. This content is
 // REAL and present today — it explains the protocol and how to read this
-// foundation honestly. It describes systems that are mostly not wired yet, so
-// the page links to /status for the authoritative wiring ledger.
+// foundation honestly. The page links to /status for the authoritative wiring
+// ledger. (Footer audit 2026-07-30: "mostly not wired yet" STRUCK — the
+// protocol is live, seats sell on-chain today; the dead-era sentence sat two
+// paragraphs above the live intro that refutes it.)
 //
 // Dependency-free (data only) → Node-loadable.
 
@@ -26,7 +28,7 @@ export const learningModules: LearningModule[] = [
     topics: [
       "The Syndicate records verifiable membership, attribution, and recognition.",
       "Membership is not a security or financial instrument and promises no financial gain.",
-      "The protocol is live: seats are bought on-chain, and every figure on this site is read from the chain, honestly labelled.",
+      "The protocol is live: seats are bought on-chain, and every figure on this site is a live read, an indexed record line, or recorded canon — honestly labelled.",
     ],
   },
   {
@@ -56,7 +58,7 @@ export const learningModules: LearningModule[] = [
     topics: [
       "Public claims do not outrank code, canon, or live proof — source wins.",
       "Proof means anyone can independently verify a fact against the chain.",
-      "Every figure on this site is a live chain read or a line of the indexed public record — each with its verify path.",
+      "Every figure on this site is a live chain read, a line of the indexed public record, or recorded canon the chain enforces — each labelled, each with its verify path.",
     ],
   },
   {

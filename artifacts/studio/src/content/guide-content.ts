@@ -21,7 +21,7 @@ export const GUIDE_QUICK_ROUTES: GuideQuickRoute[] = [
   { label: "Status", href: "/status", blurb: "The authoritative ledger — what's live vs pending." },
   { label: "Tokenomics", href: "/tokenomics", blurb: "Supply, distribution, the two prices, burn — all live." },
   { label: "Whitepaper", href: "/whitepaper", blurb: "What the protocol is — every claim verifiable." },
-  { label: "FAQ", href: "/faq", blurb: "Honest answers across eight topics." },
+  { label: "FAQ", href: "/faq", blurb: "Honest answers across every topic." },
   { label: "Join", href: "/join", blurb: "Your exact live quote — and the join itself, two signatures from your own wallet." },
   { label: "Contracts", href: "/contracts", blurb: "Open every contract in the block explorer." },
 ];

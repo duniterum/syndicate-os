@@ -10,18 +10,22 @@ import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { formatRawUnits } from "@/lib/rawUnits";
 
-// The public proof organism. Zero new endpoints: everything on this page is a
-// read-only composition of GET /api/protocol/reality. The archive group is
-// deliberately NOT rendered here (founder-deferred); raw base-unit strings are
+// The public proof map. Zero new endpoints: everything on this page is a
+// read-only composition of GET /api/protocol/reality. Raw base-unit strings are
 // the source of truth and derived displays are labelled, with decimals taken
 // from the live tokens group — if decimals are unreadable, we fail closed to
 // raw-only. V3 is a deployed, readable contract: a failed figure read renders
 // as "unreadable (fail-closed)", never as pending/inactive.
+// (Footer audit 2026-07-30: the archive group is BOUND — the old "deliberately
+// NOT rendered here" deferral had become an unpinned future claim while the
+// same group already rendered on /status one footer link away. The financial
+// group stays unrendered here, so the lead scopes itself honestly and claims
+// no completeness.)
 
 type RealityData = ProtocolRealityResponse;
 type RealityItem = ProtocolRealityItem;
 
-const MAP_GROUPS = ["chain", "contracts", "tokens", "sale", "source"] as const;
+const MAP_GROUPS = ["chain", "contracts", "tokens", "sale", "source", "archive"] as const;
 
 const V3_FIGURES: readonly {
   id: string;
@@ -153,9 +157,9 @@ function V3FiguresBand() {
 export default function ProtocolMap() {
   return (
     <PublicPage
-      eyebrow="Public proof organism"
+      eyebrow="Public proof"
       title="Protocol Map"
-      lead="Every signal the protocol serves publicly, in one place: chain identity, contract code presence, token metadata, membership-sale lifecycle, and source registry posture — read by a server-side spine and reconciled against vendored canon. A failed read renders as unavailable; nothing is estimated or invented."
+      lead="The protocol's identity, contract, token, sale, source and archive signals in one place — read live by our own server and checked against the pinned contract records. A failed read renders as unavailable; nothing is estimated or invented. The live treasury and reserve figures have their own homes on the front page and /contracts."
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
       variant="app"
     >
@@ -168,8 +172,8 @@ export default function ProtocolMap() {
 
         <section className="text-sm text-muted-foreground space-y-2">
           <p>
-            Archive artifacts are deliberately not bound on this page yet — that wiring is a
-            future founder-approved slice. Contract addresses stay server-side; this page never
+            This page renders figures, not addresses — every contract behind them carries its
+            explorer verify-link on the status hub. Reading this page writes nothing: it never
             connects a wallet and never sends a transaction.
           </p>
           <p>

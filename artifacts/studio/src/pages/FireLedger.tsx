@@ -3,7 +3,8 @@
 // backbone). The live TOTAL burn stays a direct chain read (unchanged); below
 // it, the full record from the first burn — oldest = #1, every line
 // receipt-backed, amounts rendered (the amount IS the record), senders as
-// Founder/Community labels only, never an address. If the served record is
+// Founder/Community chips classify; the verify link names the sender (the
+// 2026-07-25 address model — the chip is a label, never a mask). If the served record is
 // unavailable, the honest ~24h window stands in and SAYS so.
 // Naming (founder, final): the PAGE is Fire Ledger (the place); the ACT and
 // its numbered receipts are "Proof of Burn" — every rendered token says burn.
@@ -119,9 +120,10 @@ function ProofOfBurnRecord() {
           {catchingUp
             ? " — the indexer is catching up toward the chain head; newer burns appear as it advances"
             : ""}
-          . A number is assigned only on the gapless record; the sender is
-          named as Founder or Community, never an address. Between indexer
-          cycles this is a snapshot — never evidence of absence.
+          . A number is assigned only on the gapless record; the sender chip
+          classifies each burn as Founder or Community, and the verify link
+          opens the transaction — the chain itself names the sender. Between
+          indexer cycles this is a snapshot — never evidence of absence.
         </p>
       </Card>
 

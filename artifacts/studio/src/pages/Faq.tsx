@@ -125,15 +125,20 @@ export default function Faq() {
           />
         </div>
 
-        {/* Closing CTA — honest help routing (the floating support assistant is the next slice). */}
+        {/* Closing CTA — honest help routing. (Footer audit 2026-07-30: the
+            "reach out through Support" CTA DIED — /support's own config says
+            "Support isn't open yet — nothing here sends or stores anything",
+            so the FAQ instructed an action the linked surface denies. The
+            floating Guide IS live on every page; the stale "next slice"
+            comment above this card died with it.) */}
         <Card className="border-border/60 bg-card/40 p-6">
           <h2 className="type-h3 text-foreground">Still have a question?</h2>
           <p className="mt-2 type-body text-muted-foreground">
             Every contract, wallet, and balance is public — the surest answer is always the chain itself.
             Verify anything on the <Link href="/status" className={linkCls}>Status</Link> ledger or the{" "}
             <Link href="/map" className={linkCls}>Protocol Map</Link>, read the full{" "}
-            <Link href="/whitepaper" className={linkCls}>Whitepaper</Link>, or reach out through{" "}
-            <Link href="/support" className={linkCls}>Support</Link>. When you're ready,{" "}
+            <Link href="/whitepaper" className={linkCls}>Whitepaper</Link>, or ask the Guide — the
+            floating help assistant in the corner of every page. When you're ready,{" "}
             <Link href="/join" className={linkCls}>Take a seat</Link> — observe first, join if it suits you.
           </p>
         </Card>

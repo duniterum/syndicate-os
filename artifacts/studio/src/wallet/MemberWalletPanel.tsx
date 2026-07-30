@@ -274,7 +274,7 @@ function WalletPanelBody() {
       <Card className="p-4 border-border/50 bg-card/20">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-sm text-foreground">SYN/USDC pool (Trader Joe)</p>
+            <p className="text-sm text-foreground">SYN/USDC pool (LFJ)</p>
             <p className="text-[11px] text-muted-foreground mt-0.5">
               Why the pool exists, its live reserves, and the LP-side actions —
               with the Risk Notice they belong with. The pool is a courtesy, not

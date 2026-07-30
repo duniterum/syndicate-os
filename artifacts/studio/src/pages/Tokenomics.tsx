@@ -105,7 +105,7 @@ export default function Tokenomics() {
             Two <strong>independent prices</strong>, neither valuing the other: the{" "}
             <strong>entry rate</strong> set by the protocol (
             <Live value={t.entrySynPerUsdc} unit="SYN per 1 USDC" />), and the{" "}
-            <strong>market price</strong> from the live Trader Joe pool (
+            <strong>market price</strong> from the live LFJ pool (
             <Live value={t.marketPriceUsdcPerSyn} unit="USDC per SYN" />).
           </p>
           <Card className="my-5 bg-card/40 border-border/60 p-5">
@@ -173,9 +173,15 @@ export default function Tokenomics() {
                 <Amount segments={syn(founder?.currentSyn ?? null)} variant="stat" loading={t.loading} />
               </div>
             </div>
+            {/* Footer audit 2026-07-30: "watch it vest on-chain" DIED — no
+                vesting contract exists (prod contracts group: 8 contracts,
+                none vesting); the cliff/schedule is a published commitment,
+                not a mechanism the chain enforces. Say what the chain proves. */}
             <p className="mt-3 text-sm text-muted-foreground">
               {founder?.note ?? "Public wallet, no hidden unlocks."} The wallet is public and its
-              balance is read live above — you can watch it vest on-chain.
+              balance is read live above — every movement is visible on-chain. The cliff and
+              monthly schedule are a published commitment of the protocol, not a contract the
+              chain enforces.
             </p>
           </Card>
         </ProseSection>

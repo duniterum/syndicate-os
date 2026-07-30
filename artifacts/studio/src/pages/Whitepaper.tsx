@@ -189,7 +189,7 @@ export default function Whitepaper() {
                 There are <strong>two independent prices</strong>, and neither values the other: the{" "}
                 <strong>entry rate</strong> set by the protocol (
                 <LiveNum value={tk.entrySynPerUsdc} unit="SYN per 1 USDC" />), and the{" "}
-                <strong>market price</strong> from the live Trader Joe pool (
+                <strong>market price</strong> from the live LFJ pool (
                 <LiveNum value={tk.marketPriceUsdcPerSyn} unit="USDC per SYN" />). Live pool reserves:{" "}
                 <strong>{live(usdc(r.lpUsdc))}</strong> and <strong>{live(syn(r.lpSyn))}</strong>. Like
                 any token, the market price can rise or fall — the protocol promises nothing about it.
@@ -214,19 +214,19 @@ export default function Whitepaper() {
                 <strong>no token-weighted voting and no vote that functions as a security</strong>. The
                 seasons recognition board and member quests are <strong>live today</strong>. What is
                 still ahead is the long-term <strong>standing model</strong> and a protocol-funded{" "}
-                <strong>season reward pot</strong> — recognition only, each rendering live from the
-                status registry once it activates.
+                <strong>season reward pot</strong> — recognition only, and this page says so until
+                the day each ships.
               </p>
             </ProseSection>
 
             <ProseSection id="modules" title="The module system" eyebrow={<Eyebrow n={10} status="VERIFIED" />}>
               <p>
                 The Syndicate OS grows by <strong>activating modules</strong> — like installing plugins.
-                Each carries a public status (active or future), read from the protocol's registry, so a
-                new module flips from future to active <strong>by itself</strong> here — nothing is
-                rewritten. Already active this way: the referral program, the live activity record,
-                and the seasons recognition board. Known future modules: later eras · marketplace ·
-                the season reward pot.
+                Each carries a public status (active or future) in the protocol's registry — the
+                codebase's one live-vs-future truth, guarded so a shipped module can never keep
+                reading as "future" on this page. Already active: the referral program, the live
+                activity record, and the seasons recognition board. Known future modules: later
+                eras · marketplace · the season reward pot.
               </p>
             </ProseSection>
 

@@ -94,7 +94,12 @@ const STATUS_BADGE: Record<Posture, string> = {
  */
 // H2-⑬ (2026-07-15): the milestone layer joined the served heartbeat.
 // Fossil sweep (2026-07-19): receipt + operator promoted to today's reality.
-const CANON_AS_OF = "2026-07-19T00:00:00.000Z";
+// Footer audit (2026-07-30): the date had fallen 8+ days behind its own
+// content — d1b6e75 (2026-07-25, season board) and 44b24cd (2026-07-27, the
+// native-AVAX lane) edited notes without bumping it. RATCHET LAW: any note
+// edit bumps this date AND the guard's floor in the same commit
+// (source-status-truth.guard §3).
+const CANON_AS_OF = "2026-07-30T00:00:00.000Z";
 
 type CanonEntry = {
   key: string;
