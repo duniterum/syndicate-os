@@ -105,6 +105,19 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   rateRaiseHistory: { status: "future", since: "2026-07-19", where: "the SOURCE_LIFECYCLE rescan micro-slice" },
   secondGeneration: { status: "future", since: "2026-07-19", where: "the 2nd-generation own-row view" },
 
+  // Footer audit 2026-07-30: SEVEN public future claims stood entirely outside
+  // this registry — FAQ modules, the Recognition standing figure, the /support
+  // preview, and three protocolOsMap concept nodes. Registered here so the
+  // widened guard-feature-truth (object-literal + prose pins) can force each
+  // surviving "planned/future" sentence clean the day its capability ships.
+  standingModel: { status: "future", since: "2026-07-30", where: "/recognition (the single long-term standing figure — cross-season contribution record; a design concept until its model is built)" },
+  supportIntake: { status: "future", since: "2026-07-30", where: "/support (the intake channels + triage flow — a labelled preview today; the live doors are X and the official Telegram channels, from brand.ts)" },
+  signalChamber: { status: "future", since: "2026-07-30", where: "the FAQ-named Signal Chamber concept (advisory member signals derived from public on-chain activity — no contract, no route)" },
+  seatRecord: { status: "future", since: "2026-07-30", where: "the optional Seat Record identity candidate (a separate future ERC-721 — named in contract memory + FAQ; not deployed)" },
+  trustCapital: { status: "future", since: "2026-07-30", where: "institutional trust capital (FAQ-named future recognition records — only when real gates exist)" },
+  knowledgeOsGuided: { status: "future", since: "2026-07-30", where: "deeper guided Knowledge-OS tooling beyond the /learning map (protocolOsMap concept node)" },
+  linkRegistry: { status: "future", since: "2026-07-30", where: "a governed runtime registry of outbound links/CTAs (protocolOsMap concept node — the forbidden-copy guard governs CTA copy today)" },
+
   // THE PUBLIC PROMISE NO KEY COVERED (registered 2026-07-26). The /activity
   // methodology note tells the world, in prose, "what the indexer adds next" —
   // and not one of those capabilities had a registry key, so guard-feature-truth

@@ -13,6 +13,17 @@ This file is the WORK LEDGER for the harmonization arc — tick findings as slic
 > (important) now pinned via featureStatus `archiveGallery`. **72 findings remain open: 36 important ·
 > 35 minor + this ledger's own tick discipline.** Every figure above recounted at close.
 
+> **✅ CLOSED 2026-07-30 — HARMONIZATION ARC, SLICE A (DONE-IS-DONE pins):** guard-feature-truth's
+> FUTURE_MARK widened to the object-literal form (RED run: 4 unpinned files, exactly the twin-search
+> inventory) · 7 future keys registered (standingModel · supportIntake · signalChamber · seatRecord ·
+> trustCapital · knowledgeOsGuided · linkRegistry; the acknowledgement node cites the EXISTING
+> eventDerivedNotifications rail, never a twin key) · prose pins on faq-content/Support/supportIntake/
+> docs-content · /chronicle's unreachable FUTURE teaser branch DELETED · protocolOsMap's
+> "nothing is wired" acknowledgement fossil corrected. Guard PASS 660 checks; full chain EXIT 0.
+> Closes: /faq four-claims (important) · /recognition standing (important) · /support unpinned
+> (minor) · /chronicle dead branch (minor). **68 remain open: 34 important · 33 minor + the tick
+> discipline** (recounted: 36−2 · 35−2).
+
 
 ## BLOCKING (6)
 

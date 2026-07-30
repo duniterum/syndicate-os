@@ -1,42 +1,23 @@
 // pages/ChronicleTeaser.tsx — /chronicle (CHR-1: the register is real, the
 // data source is a COMMITTED FILE, and promotion is a FOUNDER ACT).
-// Two honest states:
-//   · register EMPTY → the designed teaser + "the first entry awaits the
-//     founder's promotion" (no invented history);
-//   · register CARRIES ENTRIES → the solemn public record, NEWEST-first (the
-//     entry NUMBER stays chronological — Entry 1 is the first thing that happened),
-//     protocol-institutional voice, identity/amount-blind, verify-first.
+// The solemn public record, NEWEST-first (the entry NUMBER stays
+// chronological — Entry 1 is the first thing that happened),
+// protocol-institutional voice, identity/amount-blind, verify-first.
+//
+// STRUCK 2026-07-30 (footer audit): the empty-register teaser branch. The
+// register is append-only via founder commits and carries 15 entries — the
+// empty state is unreachable by construction, and its TeaserSpec still said
+// "The first entry awaits the founder's promotion" with lifecycle FUTURE
+// while the Chronicle is LIVE and public: the exact Settings-Notifications
+// fossil class, waiting. A dead branch that can only ever render a falsehood
+// is deleted, not maintained.
 
 import { MemberAppPage } from "@/components/member/MemberAppPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
-import { TeaserSurface, type TeaserSpec } from "@/components/TeaserSurface";
 import { CHRONICLE_REGISTER, type ChronicleEntry } from "@/config/chronicleRegister";
 
-const spec: TeaserSpec = {
-  eyebrow: "Chronicle",
-  title: "The institutional story.",
-  what:
-    "The Chronicle is the protocol's solemn record — not a feed, a memory. Turning points only, each promoted by a human decision and anchored to its on-chain proof. The first chapters are already lived and waiting to be written: the duplicate seat that was owned in public instead of hidden, the first seat bought with real money, the first member source signed under the convention, the day the ladder was decided.",
-  lifecycle: "FUTURE",
-  previewRows: [
-    { label: "The duplicate seat", hint: "owned, never hidden · tx-linked" },
-    { label: "The first real seat", hint: "a purchase, not a promise · tx-linked" },
-    { label: "The first member source", hint: "founder-signed · tx-linked" },
-    { label: "The ladder decision", hint: "the day rates got rules" },
-  ],
-  unlocks:
-    "A founder act, page by page: an entry enters this register by a commit the founder approves — no database, no automation, no exceptions. The first entry awaits the founder's promotion.",
-  returnHook:
-    "Anyone can claim transparency when everything is clean. The Chronicle exists to prove it when it isn't — and the seats that witness these chapters are part of the story they tell.",
-};
-
 export default function ChronicleTeaser() {
-  // The register empty → the honest teaser (nothing invented, nothing implied).
-  if (CHRONICLE_REGISTER.length === 0) {
-    return <TeaserSurface spec={spec} />;
-  }
-
   // THE REGISTER SPEAKS NEWEST FIRST (Founder doctrine change, 2026-07-26).
   // It rendered oldest-first until the register grew from 4 entries to 15: a
   // reader then opens the page on June and has to scroll a whole institutional

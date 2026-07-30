@@ -61,6 +61,21 @@ const PINNED_CLAIM_SITES: Record<string, readonly string[]> = {
   ],
   "components/referral/ReferralIntroductionsPanel.tsx": ["secondGeneration"],
   "components/referral/ReferralLinkPanel.tsx": ["aliasLayer"],
+  // Footer audit 2026-07-30 — the OBJECT-LITERAL claim sites the widened
+  // FUTURE_MARK now sees (they rendered through badge components and were
+  // invisible to the attribute-only scan):
+  // /recognition's "Standing over time" card — the one future badge on the page.
+  "pages/Recognition.tsx": ["standingModel"],
+  // /contracts memory: the Seat Record ERC-721 candidate row.
+  "config/contractMemory.ts": ["seatRecord"],
+  // /status surface map: three concept nodes. The acknowledgement-moments node
+  // cites the indexer→bell rail key (an indexed milestone generating its own
+  // notice IS that rail) — never a new twin key for the same capability.
+  "config/protocolOsMap.ts": [
+    "knowledgeOsGuided",
+    "eventDerivedNotifications",
+    "linkRegistry",
+  ],
 };
 
 // ── §⑥ THE PROSE CLAIM SITES — the hole this guard shipped with ──────────────
@@ -103,6 +118,30 @@ const PROSE_CLAIM_SITES: Record<
   "pages/Archive.tsx": {
     keys: ["archiveGallery"],
     fragment: "the full gallery",
+  },
+  // Footer audit 2026-07-30 — the PROSE claims that stood outside the
+  // mechanism on four more files:
+  // /faq's corpus: the Signal Chamber, the Seat Record, institutional trust
+  // capital, and "future identity and verification modules" (the seat-record +
+  // alias identity layer).
+  "content/faq-content.ts": {
+    keys: ["signalChamber", "seatRecord", "trustCapital", "aliasLayer"],
+    fragment: "A planned future module",
+  },
+  // /support: the page's own future heading…
+  "pages/Support.tsx": {
+    keys: ["supportIntake"],
+    fragment: "What you'll be able to raise",
+  },
+  // …and the config file that carries all its preview copy.
+  "config/supportIntake.ts": {
+    keys: ["supportIntake"],
+    fragment: "once support opens",
+  },
+  // /docs' Support card ("nothing is stored until intake is wired").
+  "content/docs-content.ts": {
+    keys: ["supportIntake"],
+    fragment: "until intake is wired",
   },
 };
 
@@ -155,7 +194,12 @@ pin(
 );
 
 // ── 2 · Every pinned site's key is FUTURE; counts match exactly ─────────────
-const FUTURE_MARK = /lifecycle="FUTURE"/g;
+// WIDENED 2026-07-30 (footer audit): the JSX-attribute form alone let every
+// OBJECT-LITERAL claim (`lifecycle: "FUTURE"` in a data/config file, rendered
+// through a badge component) stand invisible — Recognition's standing card,
+// contractMemory's seat-record row and three protocolOsMap nodes all carried
+// FUTURE claims the badge scan could not see. Both forms are one claim class.
+const FUTURE_MARK = /lifecycle(?:="FUTURE"|:\s*"FUTURE")/g;
 for (const [rel, keys] of Object.entries(PINNED_CLAIM_SITES)) {
   const abs = path.join(srcDir, rel);
   const code = stripComments(readFileSync(abs, "utf8"));

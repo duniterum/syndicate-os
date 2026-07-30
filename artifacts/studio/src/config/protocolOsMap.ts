@@ -275,8 +275,12 @@ export const protocolOsMap: OsMapDomain[] = [
         binding: { kind: "lifecycle", lifecycle: "FUTURE" },
         notPublic: false,
         summary: "Acknowledgement of verified member milestones.",
+        // Footer audit 2026-07-30: "nothing is wired" DIED here — recognition
+        // ranking is LIVE (/season since 2026-07-23, member quests since
+        // 2026-07-24). What stays future is the MOMENT: an indexed milestone
+        // generating its own notice (the indexer→bell rail).
         reality:
-          "Concept only. Recognition is structural, never a financial benefit; nothing is wired.",
+          "Recognition itself is live — the season board ranks contribution in public and member quests credit real acts. The acknowledgement MOMENT stays a concept: an indexed milestone generating its own notice arrives with the indexer-to-bell rail. Never a financial benefit.",
       },
       {
         id: "admin-audit",
