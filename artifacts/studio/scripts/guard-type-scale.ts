@@ -174,7 +174,7 @@ const ALLOWLIST: Record<string, string> = {
   "components/ProtocolReality.tsx": "8 · PUBLIC reality band — deferred to the general sweep",
   "components/ProtocolReservesBand.tsx": "4 · PUBLIC home reserves band — 2 eyebrow paid 2026-07-27 (§⑥), 1 more paid since, 1 by the 2026-07-30 conversion; the rest deferred to the general sweep.",
   "components/ProtocolAssetsCard.tsx": "4 · PUBLIC /contracts assets card — 2 eyebrow paid 2026-07-27 (§⑥), which ARE the founder's §(b)② finding \"ProtocolAssetsCard's 10px labels\"; the 4 left are 11px meta lines, deferred to the general sweep",
-  "components/guide/SyndicateGuide.tsx": "6 · PUBLIC guide — deferred to the general sweep",
+  "components/guide/SyndicateGuide.tsx": "2 · PUBLIC guide — deferred to the general sweep (4 paid by the 2026-07-30 eyebrow conversion)",
   "components/TeaserSurface.tsx": "2 · PUBLIC teaser surface — 1 eyebrow paid 2026-07-27 (§⑥); the rest deferred to the general sweep",
   "components/living/SectionIndex.tsx": "1 · PUBLIC section index — deferred to the general sweep (1 paid by the 2026-07-30 eyebrow conversion)",
   "components/living/LivingSignature.tsx": "1 · PUBLIC page signature — deferred to the general sweep",
@@ -196,7 +196,7 @@ const ALLOWLIST: Record<string, string> = {
   // — member surfaces: behind the sign-in wall, but a MEMBER is a user and the
   //   floor is a user law, not a visitor law. Counted PUBLIC.
   "wallet/SeasonStandingCard.tsx": "5 · MEMBER season standing card — deferred to the type-scale slice",
-  "wallet/JoinCheckout.tsx": "3 · MEMBER checkout — money surface; ADR-001 line 131 named checkout in the owed sweep. Deferred",
+  "wallet/JoinCheckout.tsx": "2 · MEMBER checkout — money surface; ADR-001 line 131 named checkout in the owed sweep. Deferred (1 paid by the 2026-07-30 eyebrow conversion)",
   "wallet/SeasonQuestsCard.tsx": "2 · MEMBER quests card — deferred to the type-scale slice",
   "wallet/MemberWalletPanel.tsx": "1 · MEMBER wallet panel — a single 11px occurrence; deferred to the sweep",
 
@@ -218,7 +218,7 @@ const ALLOWLIST: Record<string, string> = {
   // is one reader on known hardware, so it is sequenced AFTER the public sweep.
   "pages/admin/panels.tsx": "18 · ADMIN console panels — the worst admin file; deferred to the admin sweep",
   "pages/admin/memberLedger.tsx": "12 · ADMIN member register — deferred to the admin sweep",
-  "pages/admin/SeasonsRails.tsx": "8 · ADMIN season rails — deferred to the admin sweep",
+  "pages/admin/SeasonsRails.tsx": "6 · ADMIN season rails — deferred to the admin sweep (2 paid by the 2026-07-30 eyebrow conversion)",
   "components/admin/AdminShell.tsx": "7 · ADMIN shell chrome (every admin page) — deferred to the admin sweep",
   "pages/admin/AdminHome.tsx": "3 · ADMIN home — deferred to the admin sweep",
   "pages/admin/BusinessBand.tsx": "2 · ADMIN business band — deferred to the admin sweep",
@@ -344,24 +344,10 @@ const EYEBROW_EXEMPT: Record<string, string> = {
 // are geometry-bound (fixed medallions, chip rows, 80px content boxes — the
 // HeroLedger lesson) and wait for the founder's type-scale wireframe.
 const EYEBROW_DEBT: Record<string, number> = {
-  "components/guide/SyndicateGuide.tsx": 4,
-  "components/faq/FaqAccordion.tsx": 3,
-  "pages/admin/SeasonsRails.tsx": 2,
-  "pages/MemberAccess.tsx": 2,
-  "components/referral/ReferralOverviewPanel.tsx": 2,
   "components/hero/SeatFlowDiagram.tsx": 2,
   "components/hero/ProtocolOverviewPanel.tsx": 2,
   "components/hero/HeroStatusChips.tsx": 2,
   "components/hero/HeroSeatLine.tsx": 2,
-  "wallet/MemberHeaderAffordance.tsx": 1,
-  "wallet/JoinCheckout.tsx": 1,
-  "pages/MemberNotifications.tsx": 1,
-  "components/referral/ReferralLinkPanel.tsx": 1,
-  "components/referral/ReferralLadderPanel.tsx": 1,
-  "components/referral/ReferralIntroductionsPanel.tsx": 1,
-  "components/member/MemberShell.tsx": 1,
-  "components/member/MemberPulse.tsx": 1,
-  "components/member/MemberAppPage.tsx": 1,
 };
 
 // ─── the scan ───────────────────────────────────────────────────────────────

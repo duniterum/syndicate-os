@@ -423,7 +423,7 @@ export default function MemberHeaderAffordance({
                   target="_blank"
                   rel="noopener noreferrer"
                   title={`Your entry transaction ${status.receipt.transaction.slice(0, 10)}…${status.receipt.transaction.slice(-6)} — the on-chain purchase that established seat #${status.seat}`}
-                  className="inline-flex items-center gap-1 font-mono text-xs font-semibold uppercase tracking-[0.1em] text-proof transition-colors hover:text-proof-hover"
+                  className="type-eyebrow inline-flex items-center gap-1 text-proof transition-colors hover:text-proof-hover"
                 >
                   Verify my seat on-chain
                   <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />

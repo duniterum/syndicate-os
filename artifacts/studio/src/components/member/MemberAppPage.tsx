@@ -58,7 +58,7 @@ export function MemberAppPage({ eyebrow, title, lead, badge, children, kind = "c
           {!account ? (
             <header className="mb-8">
               {eyebrow ? (
-                <p className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-2">
+                <p className="type-eyebrow text-muted-foreground mb-2">
                   {eyebrow}
                 </p>
               ) : null}

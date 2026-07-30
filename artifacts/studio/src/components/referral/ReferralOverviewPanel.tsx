@@ -21,7 +21,7 @@ export function ReferralOverviewPanel({ readback }: { readback: StandingReadback
       {/* ① Where you stand — the standing summary; the full road lives on
           the Ladder & recognition tab. */}
       <Card className="bg-card/40 border-border/50 p-5 mb-6">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">
+        <p className="type-eyebrow text-muted-foreground mb-2">
           Where you stand
         </p>
         {s && p ? (
@@ -60,7 +60,7 @@ export function ReferralOverviewPanel({ readback }: { readback: StandingReadback
           the claim's proof path (the one CONVERSION law). These are the words
           a member uses when sharing — the link itself lives above the tabs. */}
       <Card className="bg-gold/5 border-gold/30 p-5 mb-6">
-        <p className="font-mono text-xs uppercase tracking-widest text-gold mb-2">
+        <p className="type-eyebrow text-gold mb-2">
           Your unique claim
         </p>
         <h3 className="type-h3 text-foreground leading-snug">

@@ -150,7 +150,7 @@ export default function MemberAccess() {
         <section className="relative overflow-hidden border-b border-border/50 bg-background py-8">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background pointer-events-none" />
           <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <p className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-4">
+            <p className="type-eyebrow text-muted-foreground mb-4">
               {memberHome.eyebrow}
             </p>
             <Suspense fallback={null}>
@@ -274,7 +274,7 @@ export default function MemberAccess() {
             className="flex flex-col items-center text-center"
             data-testid="member-door-band"
           >
-            <p className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-5">
+            <p className="type-eyebrow text-muted-foreground mb-5">
               {memberHome.eyebrow}
             </p>
             <h1 className="type-h1 text-foreground max-w-[34ch]">

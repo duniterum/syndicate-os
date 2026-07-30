@@ -82,7 +82,7 @@ export function MemberPulse() {
                   explorerBase={explorerBase}
                 />
               </p>
-              <p className="mt-0.5 flex flex-wrap items-center gap-2 font-mono text-xs uppercase tracking-[0.1em] text-muted-foreground">
+              <p className="type-eyebrow mt-0.5 flex flex-wrap items-center gap-2 text-muted-foreground">
                 {factsForServedLine(line) ? (
                   <span className="text-foreground/70">{factsForServedLine(line)}</span>
                 ) : null}

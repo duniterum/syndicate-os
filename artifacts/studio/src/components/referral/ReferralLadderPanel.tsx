@@ -19,7 +19,7 @@ export function ReferralLadderPanel({ readback }: { readback: StandingReadback |
   return (
     <div>
       <Card className="bg-card/40 border-border/50 p-5 mb-6">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-4">
+        <p className="type-eyebrow text-muted-foreground mb-4">
           The Connector ladder — your road
         </p>
         {/* EDGE-TO-EDGE rail (founder-caught 2026-07-19: half-column dead

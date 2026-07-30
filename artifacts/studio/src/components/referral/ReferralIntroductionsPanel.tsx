@@ -102,7 +102,7 @@ export function ReferralIntroductionsPanel({ readback }: { readback: StandingRea
   return (
     <div>
       <Card className="bg-card/40 border-border/50 p-5 mb-6">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">
+        <p className="type-eyebrow text-muted-foreground mb-2">
           Your introductions — your own record
         </p>
         {s ? (

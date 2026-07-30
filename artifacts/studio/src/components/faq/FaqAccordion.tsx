@@ -88,7 +88,7 @@ export function FaqAccordion({ categories, activeCat, onActiveCatChange }: FaqAc
           <button
             type="button"
             onClick={() => setQuery("")}
-            className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
+            className="type-eyebrow text-muted-foreground hover:text-foreground"
           >
             Clear
           </button>
@@ -106,7 +106,7 @@ export function FaqAccordion({ categories, activeCat, onActiveCatChange }: FaqAc
               onClick={() => onActiveCatChange(chip.id)}
               aria-pressed={selected}
               className={cn(
-                "rounded-md border px-2.5 py-1.5 font-mono text-xs uppercase tracking-[0.16em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                "type-eyebrow rounded-md border px-2.5 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 selected
                   ? "border-identity/40 bg-identity/10 text-identity"
                   : "border-border/60 text-muted-foreground hover:border-identity/30 hover:text-foreground",
@@ -141,7 +141,7 @@ export function FaqAccordion({ categories, activeCat, onActiveCatChange }: FaqAc
                 // the founder complained about. Raised to the caption token (12px), the
                 // floor itself. The eyebrow class is not used here: its 0.14em tracking
                 // is a different treatment from this heading's 0.2em.
-                className="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground"
+                className="type-eyebrow mb-3 text-muted-foreground"
               >
                 {cat.name}
               </h2>

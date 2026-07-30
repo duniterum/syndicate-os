@@ -327,7 +327,7 @@ export function ReferralLinkPanel({ readback }: { readback: StandingReadback | n
       <ChannelsCard readback={readback} />
 
       {/* Reference — always available, never leading (WORK-FIRST). */}
-      <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">
+      <p className="type-eyebrow text-muted-foreground mb-2">
         Reference
       </p>
       <ReferenceSection title="How the commission works">

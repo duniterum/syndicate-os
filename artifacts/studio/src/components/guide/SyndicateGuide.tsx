@@ -188,7 +188,7 @@ export function SyndicateGuide() {
                 className="block pr-4 text-left focus-visible:outline-none"
               >
                 <p className="text-sm font-medium text-foreground">{greeting}</p>
-                <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-primary">
+                <p className="type-eyebrow mt-1 text-primary">
                   Open the Guide →
                 </p>
               </button>
@@ -311,7 +311,7 @@ export function SyndicateGuide() {
                               <Link
                                 href="/faq"
                                 onClick={close}
-                                className="mt-2 inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-widest text-primary underline decoration-primary/40 underline-offset-2 hover:decoration-primary"
+                                className="type-eyebrow mt-2 inline-flex items-center gap-1 text-primary underline decoration-primary/40 underline-offset-2 hover:decoration-primary"
                               >
                                 Open in FAQ <ArrowUpRight className="h-3 w-3" />
                               </Link>
@@ -337,7 +337,7 @@ export function SyndicateGuide() {
               ) : (
                 <div className="space-y-5">
                   <div>
-                    <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                    <p className="type-eyebrow mb-2 text-muted-foreground">
                       Popular questions
                     </p>
                     <div className="flex flex-col gap-1.5">
@@ -359,7 +359,7 @@ export function SyndicateGuide() {
                   </div>
 
                   <div>
-                    <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                    <p className="type-eyebrow mb-2 text-muted-foreground">
                       Jump to the proof page
                     </p>
                     <div className="grid grid-cols-1 gap-1.5">

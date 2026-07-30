@@ -216,7 +216,7 @@ export function MemberShell({ children }: { children: ReactNode }) {
             >
               {/* text-xs, not the wireframe's 11px — ADR-001 readability floor
                   (nothing user-visible under 12px) outranks a mockup token. */}
-              <p className="px-2.5 mb-1 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
+              <p className="type-eyebrow px-2.5 mb-1 text-muted-foreground">
                 {group.title}
               </p>
               <div className="space-y-0.5">

@@ -550,7 +550,7 @@ export default function JoinCheckout({
                 href={txUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2 inline-flex items-center gap-1 font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-proof transition-colors hover:text-proof-hover"
+                className="type-eyebrow mt-2 inline-flex items-center gap-1 text-proof transition-colors hover:text-proof-hover"
                 data-testid="link-checkout-receipt-tx"
               >
                 Your receipt transaction

@@ -26,7 +26,7 @@ export default function MemberNotifications() {
       <section className="relative overflow-hidden border-b border-border/50 bg-background py-8">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background pointer-events-none" />
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <p className="font-mono text-xs tracking-widest uppercase text-muted-foreground mb-2">
+          <p className="type-eyebrow text-muted-foreground mb-2">
             Notifications
           </p>
           {/* No static lifecycle badge here BY DECISION: every candidate lied

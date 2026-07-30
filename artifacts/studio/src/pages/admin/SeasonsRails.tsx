@@ -121,7 +121,7 @@ export function SeasonsRailsPanel() {
       {/* ── RAIL 1 · RECOGNITION — the engine that runs itself ─────────── */}
       <Card className="p-6 rounded-2xl border-border bg-card/40 shadow-sm border-l-2 border-l-primary/60">
         <div className="mb-1 flex flex-wrap items-center gap-2">
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-primary">
+          <span className="type-eyebrow text-primary">
             Rail 01
           </span>
           <h2 className="font-serif text-xl text-foreground">Recognition</h2>
@@ -333,7 +333,7 @@ export function SeasonsRailsPanel() {
       {/* ── RAIL 2 · THE SEASON POT — the money rail (frame until S3) ───── */}
       <Card className="p-6 rounded-2xl border-border bg-card/40 shadow-sm border-l-2 border-l-success/60">
         <div className="mb-1 flex flex-wrap items-center gap-2">
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-success">
+          <span className="type-eyebrow text-success">
             Rail 02
           </span>
           <h2 className="font-serif text-xl text-foreground">The season pot</h2>
