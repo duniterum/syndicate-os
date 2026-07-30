@@ -30,8 +30,11 @@ export interface SupportChannel {
 
 export const supportIntake = {
   heading: "Support",
+  // Reordered 2026-07-30 (founder "construis 1-5"): the page now OPENS on the
+  // live channels, so the lead names them first and the preview claim stays
+  // scoped to the intake system below them.
   intro:
-    "This is where help and review requests will live. It is an honest preview today — nothing you see here is stored, sent, or saved anywhere. The states below describe how requests would be triaged once support opens.",
+    "Real people answer on the live channels below. The intake system on this page is an honest preview today — nothing here is stored, sent, or saved anywhere; the states describe how requests would be triaged once support opens.",
   note: "Support isn't open yet — nothing here sends or stores anything.",
   channels: [
     {

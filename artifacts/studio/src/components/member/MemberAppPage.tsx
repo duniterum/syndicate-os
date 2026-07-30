@@ -20,10 +20,14 @@
 //     title/lead). When a signed member views it, it renders in the shell with a
 //     LIGHT header (title + lead + badge kept — that framing is real content,
 //     useful to everyone), never the giant hero.
-//   · "account" — a PRIVATE account/dashboard surface (/wallet, /toolkit): not an
-//     SEO page, so it resolves to the WORK layout (a signed member never flashes
-//     the hero) and, connected, opens STRAIGHT on the work — NO header at all
-//     ("aucun texte au dessus").
+//   · "account" — an account/dashboard surface (/wallet, /toolkit). ⛔ This line
+//     said "a PRIVATE … not an SEO page" — corrected 2026-07-30 (footer audit):
+//     the SEO registry, the one posture authority, lists BOTH doors as INDEX +
+//     sitemap — they are public CONVERSION surfaces (a visitor sees what a seat
+//     unlocks; own-row DATA stays gated, the DOOR is public). What "account"
+//     selects here is only the RESOLVE: the WORK layout (a signed member never
+//     flashes the hero) and, connected, opens STRAIGHT on the work — NO header
+//     at all ("aucun texte au dessus").
 //
 // Session read is entry-safe (useSignedIn dynamically imports the wallet modules
 // — rule 15). Body-level gating (e.g. the /wallet sign-in wall) lives in `children`.

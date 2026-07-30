@@ -12,6 +12,23 @@ import { LivingSignature } from "@/components/living/LivingSignature";
 import { AllocationDonut } from "@/components/living/AllocationDonut";
 import { ReconciliationTable } from "@/components/living/ReconciliationTable";
 import { RoutingBar } from "@/components/living/RoutingBar";
+import { TransparencyPosture } from "@/components/living/TransparencyPosture";
+import { SectionIndex, type IndexEntry } from "@/components/living/SectionIndex";
+
+// THE SIBLING CHASSIS (founder "construis 1-5", 2026-07-30): /tokenomics was
+// the one living-chassis sibling with a fixed max-w-5xl page cap, no rail and
+// no posture block — Whitepaper, FAQ and Docs all carry the 240px SectionIndex
+// grid and the TransparencyPosture. The cap is gone (Prose fills its region,
+// per its own law) and the rail drives the 7 anchored sections.
+const SECTIONS: readonly IndexEntry[] = [
+  { id: "supply", label: "Fixed supply" },
+  { id: "distribution", label: "Distribution" },
+  { id: "prices", label: "Two prices & the pool" },
+  { id: "routing", label: "Revenue routing" },
+  { id: "burn", label: "Burn" },
+  { id: "vesting", label: "Founder vesting" },
+  { id: "no-yield", label: "No yield, by design" },
+];
 
 // Tokenomics — the deeper VISUAL view of the same live spine the whitepaper reads:
 // supply, the live distribution (donut + design-vs-live table), the two prices +
@@ -71,7 +88,13 @@ export default function Tokenomics() {
       lead="How much SYN exists, who holds what right now, the two independent prices, the on-chain routing, and what is burned — every figure read live from Avalanche, never hardcoded. SYN is a membership token: the protocol promises no gain."
       badge={<LivingSignature />}
     >
-      <Prose className="max-w-5xl">
+      <div className="space-y-12">
+        <TransparencyPosture />
+
+        <div className="lg:grid lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-12">
+          <SectionIndex entries={SECTIONS} className="mb-10 lg:mb-0" />
+
+          <Prose className="min-w-0">
         <ProseSection id="supply" title="Fixed supply" eyebrow={<SectionEyebrow n={1} state={eyebrowState} />}>
           <p>
             SYN is a minimal, fixed-supply ERC-20 — no mint function, no admin powers, no transfer
@@ -201,7 +224,9 @@ export default function Tokenomics() {
           <Link href="/whitepaper">Whitepaper</Link> reads. Check the{" "}
           <Link href="/status">Status</Link> ledger or explore the <Link href="/map">Protocol Map</Link>.
         </p>
-      </Prose>
+          </Prose>
+        </div>
+      </div>
     </PublicPage>
   );
 }

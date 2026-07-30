@@ -13,7 +13,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { buildJoinLink } from "@/lib/joinLink";
-import { Check, Copy, Link2, Network } from "lucide-react";
+import { Check, Copy, Link2 } from "lucide-react";
 import {
   getGetSourceValidateQueryKey,
   useGetSourceValidate,
@@ -139,38 +139,10 @@ export default function SourceLinkBuilder() {
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
       variant="app"
     >
-      {/* How referrals work — honest framing (program ACTIVE since 2026-07-13) */}
-      <Card className="bg-primary/5 border-primary/20 p-6 mb-12">
-        <div className="flex items-start gap-4">
-          <div className="p-2.5 rounded-md bg-primary/10 text-primary shrink-0">
-            <Network className="h-5 w-5" />
-          </div>
-          <div>
-            <h2 className="text-base font-medium text-foreground mb-2">
-              A referral is an on-chain fact
-            </h2>
-            <p className="text-sm text-muted-foreground leading-relaxed measure">
-              Referral codes (the protocol calls them sources) live in the
-              on-chain registry. Only the protocol owner can register one, and
-              only the owner can activate it. Under the active terms, an
-              eligible completed introduction pays a bounded commission to the
-              introducer's wallet inside the buyer's own transaction — shown by
-              receipt, never a promise. This page can only read the registry:
-              paste your code below to check it and, if it is active, build
-              your link.
-            </p>
-            <p className="text-sm text-muted-foreground leading-relaxed measure mt-2">
-              New here?{" "}
-              <Link href={ctas.exploreSource.href} className="text-primary hover:underline">
-                How the referral program works
-              </Link>{" "}
-              explains it in full — this page is the validation tool.
-            </p>
-          </div>
-        </div>
-      </Card>
-
-      {/* Validate + build */}
+      {/* Validate + build — FIRST (WORK-FIRST, founder "construis 1-5"
+          2026-07-30): the page's own copy says "this page is the validation
+          tool", yet the tool sat below the fold behind a pitch card at every
+          measured viewport. Link first, pitch last. */}
       <Card className="bg-card/40 border-border/50 p-6 mb-12" data-testid="panel-link-builder">
         <div className="flex items-start gap-4 mb-5">
           <div className="p-2.5 rounded-md bg-primary/10 text-primary shrink-0">
@@ -214,6 +186,22 @@ export default function SourceLinkBuilder() {
             <ValidationResult sourceId={submitted} />
           </div>
         ) : null}
+      </Card>
+
+      {/* The frame, demoted BELOW the tool — one paragraph; the full program
+          story lives on /referral, which this links (never duplicated here). */}
+      <Card className="bg-primary/5 border-primary/20 p-5 mb-12">
+        <p className="text-sm text-muted-foreground leading-relaxed measure">
+          A referral is an on-chain fact: codes (the protocol calls them
+          sources) live in the on-chain registry — only the protocol owner
+          registers and activates one, and an eligible completed introduction
+          pays a bounded commission to the introducer&apos;s wallet inside the
+          buyer&apos;s own transaction, shown by receipt, never a promise.{" "}
+          <Link href={ctas.exploreSource.href} className="text-primary hover:underline">
+            How the referral program works
+          </Link>{" "}
+          explains it in full.
+        </p>
       </Card>
 
       {/* Live registry linkage — same truth-labelled read as /status */}

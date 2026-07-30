@@ -85,12 +85,15 @@ function ActionRail() {
             className={`group block rounded-md border px-3 py-3 text-left transition-colors ${railClass(a.variant)}`}
             data-testid={`liquidity-action-${a.label.toLowerCase().replace(/[^a-z]+/g, "-")}`}
           >
-            <span className="type-eyebrow flex items-center gap-1 text-foreground">
+            {/* The ACTION label speaks at action weight, never caption scale
+                (footer audit minor, founder "construis 1-5" 2026-07-30): the
+                page's primary CTA was dressed in the section-label class. */}
+            <span className="flex items-center gap-1 text-sm font-semibold text-foreground">
               {a.label}
               {a.href ? (
-                <ExternalLink className="h-3 w-3 text-muted-foreground group-hover:text-gold" aria-hidden="true" />
+                <ExternalLink className="h-3.5 w-3.5 text-muted-foreground group-hover:text-gold" aria-hidden="true" />
               ) : (
-                <ArrowDown className="h-3 w-3 text-muted-foreground group-hover:text-gold" aria-hidden="true" />
+                <ArrowDown className="h-3.5 w-3.5 text-muted-foreground group-hover:text-gold" aria-hidden="true" />
               )}
             </span>
             <span className="mt-1 block text-xs text-muted-foreground leading-snug">{a.hint}</span>
@@ -99,7 +102,7 @@ function ActionRail() {
         {/* Verify Pair — the on-chain pair via the server's verify-links (never
             a hardcoded client address); fail-closed: absent link, absent tile. */}
         <div className="rounded-md border border-dashed border-border/60 px-3 py-3">
-          <span className="type-eyebrow text-foreground">
+          <span className="text-sm font-semibold text-foreground">
             Verify Pair
           </span>
           <span className="mt-1 block text-xs text-muted-foreground leading-snug">
@@ -155,10 +158,19 @@ export default function Liquidity() {
     <MemberAppPage
       eyebrow="Liquidity"
       title="LP is what makes SYN tradable."
-      lead="Before any chart or reserve number — understand why a liquidity pool exists at all. The pool below is small on purpose: every early LP shapes how SYN trades for everyone who comes after."
+      // WORK-FIRST (founder "construis 1-5", 2026-07-30): the page opened on
+      // three explainer cards and its OLD lead announced the inversion
+      // ("Before any chart or reserve number…"). It now opens on the actions
+      // and the live pool; the why-cards moved below with their own heading.
+      lead="Trade, deposit, or verify the SYN/USDC pair — and read the pool live. The pool is small on purpose: every early LP shapes how SYN trades for everyone who comes after. Why it exists at all is explained below; nothing here is a promise."
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
     >
-      {/* Why LP matters — the origin's three cards, framing kept. */}
+      <ActionRail />
+      <LpStatus />
+
+      {/* Why LP matters — the origin's three cards, framing kept; BELOW the
+          work since 2026-07-30 (WORK-FIRST §2: reference never in the way). */}
+      <h2 className="type-h2 text-foreground mb-4">Why the pool exists</h2>
       <div className="auto-grid gap-4 mb-12">
         {WHY_LP_CARDS.map((c) => (
           <Card key={c.title} className="bg-card/40 border-border/50 p-5">
@@ -167,9 +179,6 @@ export default function Liquidity() {
           </Card>
         ))}
       </div>
-
-      <ActionRail />
-      <LpStatus />
 
       {/* Become an LP — the anchor target: how it works + the Risk Notice. */}
       <section id="provide-liquidity" className="scroll-mt-24">

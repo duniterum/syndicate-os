@@ -73,7 +73,25 @@ export default function Faq() {
       <FaqJsonLd />
 
       <div className="space-y-12">
-        <TransparencyPosture />
+        {/* WORK-FIRST (founder "construis 1-5", 2026-07-30): the page opens on
+            THE WORK — search + questions. The manifesto block and the live-stat
+            card moved BELOW the corpus (on mobile the search input sat roughly
+            two screens down behind them). */}
+        <div className="lg:grid lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-12">
+          <SectionIndex
+            entries={TOC_ENTRIES}
+            heading="Topics"
+            activeId={activeCat}
+            onSelect={setActiveCat}
+            className="mb-8 lg:mb-0"
+          />
+
+          <FaqAccordion
+            categories={FAQ_CATEGORIES}
+            activeCat={activeCat}
+            onActiveCatChange={setActiveCat}
+          />
+        </div>
 
         {/* Live hero-answer card — two figures read live from the chain, fail-closed. */}
         <Card className="border-border/60 bg-card/40 p-5">
@@ -107,21 +125,7 @@ export default function Faq() {
           </p>
         </Card>
 
-        <div className="lg:grid lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-12">
-          <SectionIndex
-            entries={TOC_ENTRIES}
-            heading="Topics"
-            activeId={activeCat}
-            onSelect={setActiveCat}
-            className="mb-8 lg:mb-0"
-          />
-
-          <FaqAccordion
-            categories={FAQ_CATEGORIES}
-            activeCat={activeCat}
-            onActiveCatChange={setActiveCat}
-          />
-        </div>
+        <TransparencyPosture />
 
         {/* Closing CTA — honest help routing. (Footer audit 2026-07-30: the
             "reach out through Support" CTA DIED — /support's own config says

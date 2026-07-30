@@ -707,7 +707,11 @@ export default function JoinProtocol() {
 
   return (
     <PublicPage
-      eyebrow="Membership"
+      // One word per door (footer audit, founder "construis 1-5" 2026-07-30):
+      // the footer/header link into this page says "Join"; the eyebrow said
+      // "Membership" while the "Membership" nav label opens /member — three
+      // names rotating across two doors. The door now wears its own name.
+      eyebrow="Join"
       title="Take your seat"
       lead="Choose an amount, or enter your own. Every seat is equal — $5 and $10,000 buy the same seat. The join is two signatures from your own wallet: an exact USDC approval, then the join itself. This app never holds or moves your funds."
       badge={<LifecycleBadge lifecycle="LIVE_ACTION" />}

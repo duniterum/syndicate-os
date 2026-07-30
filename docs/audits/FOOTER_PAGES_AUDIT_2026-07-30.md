@@ -1,5 +1,30 @@
 # FOOTER PAGES — HARMONY + TRUTH AUDIT (2026-07-30)
 
+> # ✅ THE LEDGER IS CLOSED — ZERO FINDINGS OPEN (2026-07-30, the same day it was filed).
+> All 78 findings are closed: 6 blocking + the museum pin the same evening, 56 by the
+> harmonization arc (slices A–E + its adversarial review), and the final 15 by the founder's
+> "construis 1-5, et oui global" order — slices F (composition) and G (legal):
+> **F (9 important + 4 minor):** WORK-FIRST reorders on /faq (search first; manifesto + stat card
+> below the corpus) · /liquidity (actions + live pool first; why-cards below under their own
+> type-h2; the rail labels leave caption scale) · /source (the validate tool first, the pitch
+> demoted to one paragraph) · /support (the page opens on "Reach us today" — X + the two official
+> Telegram channels from brand.ts, the ONE channel source, each link at the 44px floor) · /status
+> (the 90-word meta paragraph died with its section). /status joined the PublicPage shell (eyebrow
+> "Public proof", no icon) AND the /map–/status one-job split landed: the full reality tables LEFT
+> /status (posture ledger + holder index + surface map + one pointer line), /map is the one live
+> reality read. /tokenomics got the sibling chassis (TransparencyPosture + 240px SectionIndex rail
+> over its 7 sections; the max-w-5xl cap deleted). /join's eyebrow says "Join" (one word per door).
+> The MemberAppPage "not an SEO page" comment corrected to the registry's truth (INDEX, public
+> conversion doors).
+> **G (2 important + 2 minor, founder "oui global"):** Terms V3 + Privacy V4 engraved with version
+> bumps — identity-directory precision · the honest local-storage inventory (the wallet stack's
+> keys named) · the activation-request record class · both Telegram channels NAMED on the legal
+> contact lines.
+> Rig-verified page by page (DOM order measured: tool/actions above reference on every reordered
+> page · channel links 44px · the V3/V4 badges + all four passages rendered · 375px zero escape) ·
+> typecheck 0 · full guards chain EXIT 0. **This file stays as the RECORD; nothing here remains
+> to build.**
+
 Ordered by the founder (« ce n'est pas harmonisé !!!! et check the truth »), run before any fix: 10 agents,
 25 footer-linked pages, both dimensions per page. **78 findings: 6 blocking · 37 important · 35 minor.**
 Every finding carries measured evidence (quoted line + the API/chain figure that refutes or the system rule it breaks).

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "wouter";
 import {
   useGetSourceStatus,
   useGetHolderIndex,
@@ -6,11 +7,12 @@ import {
 } from "@workspace/api-client-react";
 import { DataStatusNote } from "@/components/DataStatusNote";
 import { PostureBadge } from "@/components/PostureBadge";
-import { ProtocolRealityPanel } from "@/components/ProtocolReality";
+import { PublicPage } from "@/components/PublicPage";
 import { SurfaceMapSection } from "@/components/SurfaceMapSection";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
-import { Activity, AlertTriangle } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
+import { CONTENT_LINK_CLS } from "@/lib/contentLink";
 import {
   Table,
   TableBody,
@@ -146,37 +148,22 @@ export default function SystemStatus() {
 
   const items: SourceStatusItem[] = data ? Object.values(data.categories) : [];
 
+  // THE ONE-JOB SPLIT + THE SHELL (founder "construis 1-5", 2026-07-30).
+  // ① /status was the one footer door off the PublicPage shell — raw div, a
+  //    decorative icon glued to the h1. It now opens like every sibling.
+  // ② The full Protocol-reality tables LEFT this page: /map is the live
+  //    reality read, /status is the POSTURE ledger + holder index + surface
+  //    map — two doors, one job each, never five duplicate tables (the audit's
+  //    twin-tables finding). One pointer line keeps the path.
+  // ③ WORK-FIRST: the ~90-word section intro died with the section; the page
+  //    opens directly on the ledger its title promises.
   return (
-    <div className="w-full min-w-0 px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8 flex items-center gap-3">
-        <Activity className="h-8 w-8 text-primary" />
-        <div>
-          <h1 className="type-h1 text-foreground">System Status</h1>
-          <p className="text-muted-foreground mt-2">
-            Honesty hub detailing exactly what is live versus pending.
-          </p>
-        </div>
-      </div>
-
-      <section className="mb-12">
-        <div className="mb-4">
-          <h2 className="type-h2 text-foreground">Protocol reality</h2>
-          <p className="text-muted-foreground text-sm mt-1 measure">
-            Live reads of public Avalanche C-Chain facts — chain identity, contract code presence,
-            ERC-20 symbol/decimals, archive configuration, and membership-sale state. The active V3
-            sale engine's public figures (available SYN, gross USDC received, receipt count) are
-            surfaced as exact raw base units. This payload itself carries no member-identifying data
-            and no wallet addresses — reading it writes nothing; joining happens on /join, signed from
-            your own wallet. Every read is truth-labelled, and any value that cannot be verified is
-            shown as unavailable, with the reason — never guessed, never rounded into something
-            that looks like an answer.
-          </p>
-        </div>
-        <ProtocolRealityPanel showMeta />
-      </section>
-
-      <HolderIndexSection />
-
+    <PublicPage
+      eyebrow="Public proof"
+      title="System Status"
+      lead="The honesty hub: what is live versus pending — the posture of every source, the holder index, and the surface map. The live figures themselves are read on the Protocol Map."
+      variant="app"
+    >
       <h2 className="type-h2 text-foreground mb-2">Source-status registry</h2>
       {/* THE SENTENCE DESCRIBED A COLUMN THAT NO LONGER EXISTS (2026-07-26).
           Removing the all-`null` Value column left this note explaining why
@@ -288,6 +275,10 @@ export default function SystemStatus() {
       )}
 
       <div className="mt-12">
+        <HolderIndexSection />
+      </div>
+
+      <div className="mt-12">
         <h2 className="type-h2 text-foreground mb-2">Surface map</h2>
         <p className="text-muted-foreground text-sm mb-6 measure">
           Every surface in the foundation, its audience, and its honest lifecycle — projected
@@ -299,6 +290,12 @@ export default function SystemStatus() {
             shared component — the map can never fork into two truths. */}
         <SurfaceMapSection audiences={["PUBLIC", "MEMBER_PREVIEW"]} />
       </div>
-    </div>
+
+      <p className="mt-12 text-sm text-muted-foreground border-t border-border/40 pt-4">
+        Looking for the live chain reads themselves — contract presence, token
+        metadata, the sale engine's figures, the archive state? They have one
+        home: the <Link href="/map" className={CONTENT_LINK_CLS}>Protocol Map</Link>.
+      </p>
+    </PublicPage>
   );
 }
