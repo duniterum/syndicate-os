@@ -2,7 +2,22 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-07-31 — THE REGISTER IS BUILT AND REVIEW-SEALED; GO-LIVE AWAITS THE FOUNDER'S WORD. PROD = `3adbc19`.
+> # ▶ 2026-07-31 (HANDOFF) — RESUME HERE. PROD = `3adbc19`; main = `448645d`, CLEAN TREE, ALL PUSHED. THE REGISTER IS BUILT AND REVIEW-SEALED; THE DEPLOY AWAITS THE FOUNDER'S GO.
+>
+> ## THE DEPLOY BACKLOG (one deploy carries it all): `3adbc19..448645d` — the causal swap order +
+> ## pagination-cursor fix · 4 footer-audit blockers · self-hosted fonts + CSP · Terms V2/Privacy V3
+> ## (founder-approved) · THE REGISTER (/registry + /api/registry) · the 19 review fixes. The exact
+> ## Replit instruction with its 7-point verification list is in the 2026-07-31 chat GO message —
+> ## re-derive it from this block if lost: pull 448645d, no migration/env, verify /registry (14 rows,
+> ## #7+#11 same wallet 0x3ff…894f, joined from #1=2026-06-04), /api/registry seatsTotal 14 after the
+> ## first cycle (DARK before — honest), /activity block 91,571,070 gold ABOVE the AVAX out + Load
+> ## more works, /terms "Version 2 — 2026-07-30" + /privacy "Version 3", zero Google-font requests,
+> ## /map+/status without the dead denial, backbone cycle ok.
+>
+> ## THE LOCAL RIG (this machine): PostgreSQL 17 port 5433 db `syndicate` = the PRODUCTION dump of
+> ## 2026-07-30 (dev-era backup kept as `syndicate_dev_backup`); api DETACHED (never preview_start —
+> ## its sandbox has NO egress; the recipe is in the 2026-07-30 block below), studio via
+> ## preview_start. After any api src change: node ./build.mjs, kill port 5000, restart detached.
 >
 > ## (a) WHAT IS READY TO SHIP (derive the batch: `git log --oneline 3adbc19..HEAD`)
 > · **THE REGISTER** (`/registry` + `/api/registry`, founder order + approved wording): 14 per-seat
