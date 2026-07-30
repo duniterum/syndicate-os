@@ -15,6 +15,10 @@ import { truncateToDisplayUnits, clampDisplay, dustFloorText } from "./amountFor
 /** bytes32 hex id format (0x + 64 hex). Client-side format check only. */
 export const SOURCE_ID_RE = /^0x[0-9a-fA-F]{64}$/;
 
+/** 6-decimal base units per whole USDC — the ONE client-side declaration
+ *  (it was retyped in three surfaces; guard-duplicate-facts, 2026-07-30). */
+export const USDC_BASE_UNITS = 1_000_000n;
+
 export function isSourceIdFormat(value: string): boolean {
   return SOURCE_ID_RE.test(value);
 }

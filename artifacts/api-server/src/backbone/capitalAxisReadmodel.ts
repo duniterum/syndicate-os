@@ -42,6 +42,7 @@ import {
   type RawSaleEventInput,
   type SaleGeneration,
 } from "./activityHeartbeatReadmodel";
+import { USDC_BASE_UNITS as USDC_BASE } from "../lib/protocol/financialDecoders";
 
 // ---------------------------------------------------------------------------
 // The capital register (canon; founder-named at the H2-⑰ gate, 2026-07-15).
@@ -69,8 +70,6 @@ export const CAPITAL_AXIS_LADDER: readonly CapitalRung[] = [
   { title: "Inner Circle", usdc: 5_000 },
   { title: "Monolith", usdc: 10_000 },
 ];
-
-const USDC_BASE = 1_000_000n; // 6-decimal base units per whole USDC
 
 /**
  * D-TRUTH D1 — THE FOUNDER'S NO-RETROACTIVE-LINES DECISION (2026-07-16,

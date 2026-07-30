@@ -36,19 +36,17 @@
  */
 
 import type { ProtocolEventRecord } from "./protocolEventScan";
+// The Transfer topic is IMPORTED from the curated lanes' home, which
+// self-checks it against the signature string — one pin, one proof
+// (guard-duplicate-facts, 2026-07-30; it used to be retyped here).
+import { TRANSFER_TOPIC0 } from "./protocolEventScan";
 import type { RpcTransport } from "../lib/protocol/rpcTransport";
 import { EXPLORER_ACCOUNT_API, EXPLORER_PAGE_SIZE } from "./explorerIndex";
+// `symbol()` and `decimals()` — the two reads that make a row renderable.
+// Imported from the ERC-20 decoders module that already owned them.
+import { SELECTOR_SYMBOL, SELECTOR_DECIMALS } from "../lib/protocol/erc20Decoders";
 
 const EXPECTED_CHAIN_ID = 43114;
-
-/** keccak256("Transfer(address,address,uint256)") — the same pin the curated
- *  lanes use; self-checked there against the signature string. */
-const TRANSFER_TOPIC0 =
-  "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
-
-/** `symbol()` and `decimals()` — the two reads that make a row renderable. */
-const SELECTOR_SYMBOL = "0x95d89b41";
-const SELECTOR_DECIMALS = "0x313ce567";
 
 export const TOKEN_DISCOVERY_STREAM_KEY = "TREASURY_DISCOVERED";
 

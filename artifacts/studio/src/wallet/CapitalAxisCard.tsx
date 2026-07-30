@@ -18,6 +18,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
+import { USDC_BASE_UNITS } from "@/lib/rawUnits.ts";
 import {
   usdFromRaw,
   useOwnPurchases,
@@ -48,7 +49,7 @@ export default function CapitalAxisCard() {
   // share of the next threshold already covered by the cumulative footprint.
   const progress =
     walked && next !== null
-      ? Math.min(1, Number((cum * 1000n) / (BigInt(next.usdc) * 1_000_000n)) / 1000)
+      ? Math.min(1, Number((cum * 1000n) / (BigInt(next.usdc) * USDC_BASE_UNITS)) / 1000)
       : null;
 
   return (

@@ -65,6 +65,10 @@ import {
 } from "../lib/protocol/sourceOwnershipIndex";
 import { SALE_SCAN_TARGETS, FINANCIAL_TARGETS } from "../data/protocolTargets";
 import { BACKBONE_EXPECTED_CHAIN_ID } from "./backboneDb";
+// memberCount() — imported from the decoders module that owns the selector
+// (it was retyped here beside a comment naming its own twin; guard-duplicate-
+// facts, 2026-07-30).
+import { SELECTOR_MEMBER_COUNT } from "../lib/protocol/financialDecoders";
 
 const ZERO_BYTES32 = `0x${"0".repeat(64)}`;
 // Selectors recomputed from their signatures (never hand-typed) — the exact
@@ -75,7 +79,6 @@ const SELECTOR_SOURCE_ESCROW_OWED = keccak256(
 const SELECTOR_SOURCE_CONFIG = keccak256(
   encodePacked(["string"], ["sourceConfig(bytes32)"]),
 ).slice(0, 10);
-const SELECTOR_MEMBER_COUNT = "0x11aee380"; // memberCount() — financialDecoders
 
 // SourceRecord tuple layout — SourceRegistryV1.sol struct, field order exact
 // (transcribed in the R2 slice; kept in lockstep with the script).

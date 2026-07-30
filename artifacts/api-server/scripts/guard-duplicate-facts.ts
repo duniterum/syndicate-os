@@ -27,6 +27,22 @@
  * duplicated LOGIC (two functions computing one answer), a fact re-expressed in
  * a different form (a decimal beside a hex), or anything inside the allowlist.
  * It closes the cheapest and most common door, not every door.
+ *
+ * SHAPES STILL OPEN after the 2026-07-30 widening — declared with their live
+ * instances so the next slice starts from evidence, not a re-survey:
+ *   · plain-digit numerics: chain id 43114 sits in ~25 non-allowlisted files;
+ *     the freeze block 88496414 in 3. Closing this = import the constant at
+ *     every site — a mass refactor, its own slice, not a regex tweak.
+ *   · decimal figures ("4.5398", "3.325" — the named check-③ family).
+ *   · template-literal URLs: the match truncates at `${`, so a template site
+ *     and a literal site of the SAME URL never collide.
+ *   · one fact in two FORMATS: `87157852` (plain, inside the frozen referral
+ *     snapshot — correct there: a sealed measurement pins its values) vs
+ *     `87_157_852` (the live constant). The key is the raw text.
+ *   · INTRA-file repeats (files.size < 2 never flags — the "six times in one
+ *     file" shape; protocolTargets' 17 were paid by import on 2026-07-30).
+ *   · the allowlist asymmetry: a canon fact copied into exactly ONE non-canon
+ *     file stays invisible (canon files are dropped before counting).
  */
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
@@ -52,11 +68,29 @@ const ALLOWED_DIRS: readonly { frag: string; why: string }[] = [
   { frag: `${path.sep}config${path.sep}`, why: "client-side canon registries (tracked assets, deployment registry, chronicle)" },
 ];
 
-/** A fact worth pinning, and the shape that identifies it. */
+/**
+ * A fact worth pinning, and the shape that identifies it.
+ *
+ * WIDENED 2026-07-30 (the 2nd adversarial pass: "the regex misses literal
+ * shapes", each proven with a live instance before widening):
+ *   · numerics: `\d{2,3}` required TWO leading digits, so `1_000_000` escaped
+ *     (live in 3 files across BOTH artifacts); a BigInt `n` suffix defeated the
+ *     trailing `\b`, so `87_703_847n` escaped. Now `\d{1,3}` + optional `n`.
+ *   · 4-byte selectors (`0x` + 8 hex): no pattern at all — `0x95d89b41` and
+ *     `0x313ce567` each lived in tokenDiscoveryScan AND erc20Decoders, and
+ *     `0x11aee380`'s own trailing comment NAMED its twin in financialDecoders.
+ *   · 32-byte topics/hashes (`0x` + 64 hex): no pattern — the ERC-20 Transfer
+ *     topic lived in protocolEventScan AND tokenDiscoveryScan.
+ *   · wss:// endpoints: the scheme was hardcoded `https?`.
+ * The hex lengths are exact (8 · 40 · 64) and `\b` keeps them disjoint: a
+ * 40-hex address can never half-match the 8-hex or 64-hex shape.
+ */
 const FACT_PATTERNS: readonly { name: string; re: RegExp; minLen: number }[] = [
   { name: "contract/wallet address", re: /0x[0-9a-fA-F]{40}\b/g, minLen: 42 },
-  { name: "http endpoint", re: /https?:\/\/[a-zA-Z0-9._~:/?#@!$&'()*+,;=%-]{12,}/g, minLen: 20 },
-  { name: "pinned numeric literal", re: /\b\d{2,3}(?:_\d{3}){2,}\b/g, minLen: 9 },
+  { name: "4-byte selector", re: /0x[0-9a-fA-F]{8}\b/g, minLen: 10 },
+  { name: "32-byte topic/hash", re: /0x[0-9a-fA-F]{64}\b/g, minLen: 66 },
+  { name: "http endpoint", re: /(?:https?|wss):\/\/[a-zA-Z0-9._~:/?#@!$&'()*+,;=%-]{12,}/g, minLen: 20 },
+  { name: "pinned numeric literal", re: /\b\d{1,3}(?:_\d{3}){2,}n?\b/g, minLen: 9 },
 ];
 
 function sourceFiles(dir: string): string[] {
@@ -147,6 +181,22 @@ const DEBT: Readonly<Record<string, number>> = {
   "http endpoint::https://thesyndicate.money/receipt/$": 3,
   "http endpoint::http://www.w3.org/2000/svg": 2,
   "pinned numeric literal::86_400_000": 2,
+  // The four below entered with the 2026-07-30 pattern widening — each REVIEWED,
+  // not merely counted:
+  // · V3 historical-member root: the server's expectation AND the client's own
+  //   verification pin. The client cannot import the server, and the whole point
+  //   of the client pin is INDEPENDENT verification of the same chain fact.
+  "32-byte topic/hash::0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329": 2,
+  // · MembershipPurchasedV3 topic0: server decoder + the client decoding the
+  //   same public log independently (an explorer does not import the server).
+  "32-byte topic/hash::0x4ae1104be21836909353b0af3cd82a339d2ac380eda00ad26313d8fce198c1bf": 2,
+  // · USDC base units: ONE declaration per artifact (financialDecoders ·
+  //   rawUnits) — client and server cannot import each other.
+  "pinned numeric literal::1_000_000n": 2,
+  // · Same NUMERAL, unrelated facts: three milestone TARGETS (1M seats · $1M ·
+  //   1M SYN, intra-file) · the explorer index page base · a millions display
+  //   divisor. Not one fact — one import would COUPLE unrelated decisions.
+  "pinned numeric literal::1_000_000": 3,
 };
 
 let duplicated = 0;

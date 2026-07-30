@@ -24,6 +24,7 @@ import { useAccount } from "wagmi";
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { Card } from "@/components/ui/card";
 import { readAllowance, readSaleUsdcToken } from "@/lib/chainReads";
+import { USDC_BASE_UNITS } from "@/lib/rawUnits.ts";
 import { fetchSourceStanding, type SourceStandingReadback } from "./walletSession";
 import { SESSION_CHANGED_EVENT } from "./sessionEvents";
 import { usdFromRaw } from "./ownReads";
@@ -34,7 +35,7 @@ const QUIET_LINE = "Nothing needs you — the record is quiet.";
 // Above this raw-USDC allowance (one billion dollars) the exact figure stops
 // meaning "an amount you granted" and starts meaning "no effective cap" (the
 // wallet's max-approval pattern) — saying so is more honest than 72 digits.
-const EFFECTIVELY_UNLIMITED_RAW = 1_000_000_000n * 1_000_000n;
+const EFFECTIVELY_UNLIMITED_RAW = 1_000_000_000n * USDC_BASE_UNITS;
 
 function addressFromUrl(url: string): string | null {
   return url.match(/\/(?:token|address)\/(0x[0-9a-fA-F]{40})\b/)?.[1] ?? null;

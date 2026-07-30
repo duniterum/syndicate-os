@@ -46,6 +46,7 @@ import type {
   LifecycleItem,
   LpLiquidityItem,
 } from "./protocolEventReadmodel";
+import { USDC_BASE_UNITS as USDC_BASE } from "../lib/protocol/financialDecoders";
 
 // ---------------------------------------------------------------------------
 // The canon definitions (origin harvest, adapted vocabulary — founder GO
@@ -275,7 +276,6 @@ function isoDayUtcFromSeconds(sec: number): string {
 }
 
 const DEC_RE = /^[0-9]+$/;
-const USDC_BASE = 1_000_000n; // 6-decimal base units per whole USDC
 
 // ---------------------------------------------------------------------------
 // Builder.

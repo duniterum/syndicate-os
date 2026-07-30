@@ -17,6 +17,7 @@ import {
   formatUsdcRaw,
   type ServedMilestones,
 } from "@/lib/backboneFeedClient";
+import { USDC_BASE_UNITS } from "@/lib/rawUnits.ts";
 
 export type MilestoneApproaching = ServedMilestones["approaching"][number];
 
@@ -42,7 +43,7 @@ export function progressFor(a: MilestoneApproaching): {
     };
   }
   if ((a.kind === "usdc" || a.kind === "archive-usdc") && a.currentUsdcRaw !== null) {
-    const current = Number(BigInt(a.currentUsdcRaw) / 1_000_000n);
+    const current = Number(BigInt(a.currentUsdcRaw) / USDC_BASE_UNITS);
     // The two money ladders speak their own register: routed (the sale,
     // 70/20/10) vs patronage (the archive — founder "prix ok" 2026-07-22).
     const unit = a.kind === "usdc" ? "USDC routed" : "USDC of patronage";

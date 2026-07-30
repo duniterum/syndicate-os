@@ -29,6 +29,10 @@ export const SELECTOR_TOTAL_SUPPLY = "0x18160ddd" as const; // totalSupply()
 export const SELECTOR_LATEST_ROUND_DATA = "0xfeaf968c" as const; // latestRoundData() — Chainlink aggregator
 export const SELECTOR_TREASURY = "0x61d027b3" as const; // treasury() — the NFT sale contract's payout destination
 
+/** 6-decimal base units per whole USDC — the ONE server-side declaration
+ *  (it was retyped in two readmodels; guard-duplicate-facts, 2026-07-30). */
+export const USDC_BASE_UNITS = 1_000_000n;
+
 const ADDRESS_RE = /^0x[0-9a-fA-F]{40}$/;
 
 /**

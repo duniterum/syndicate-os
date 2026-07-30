@@ -56,7 +56,9 @@ import {
 
 // ── Event pins (verbatim; self-checked below) ────────────────────────────────
 const TRANSFER_SIGNATURE = "Transfer(address,address,uint256)";
-const TRANSFER_TOPIC0 =
+// Exported: this file self-checks the pin against the signature, so it is the
+// topic's ONE home — the discovery lane imports it (guard-duplicate-facts).
+export const TRANSFER_TOPIC0 =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
 
 const LIFECYCLE_SIGNATURES: Record<string, string> = {
