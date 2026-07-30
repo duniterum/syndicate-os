@@ -258,15 +258,26 @@ const NO_ARBITRARY: Record<string, string> = {
 // a utility at the call site: 20 sites are muted, 4 foreground, 3 gold, and that
 // IS a per-site decision. Size, family, weight, case and tracking are not.
 //
-// WHAT THIS SECTION CANNOT SEE: an eyebrow built with a different tracking value
-// (`0.12em`, `0.15em`) is a different shape and is not caught here. ⛔ CORRECTED
-// 2026-07-29: this line used to claim "the sweep found none" — FALSE. A
-// by-BEHAVIOUR sweep found ~38 mono+uppercase labels on OTHER tracking values,
-// including a public hero label at 8px/0.12em (dated debt in the ALLOWLIST).
-// Widening §⑥ to every tracking value is its own slice; until then this section
-// covers the 0.14em family ONLY, and says so. It also cannot
-// see an eyebrow assembled at runtime.
+// WIDENED 2026-07-30 — §⑥ now covers the by-BEHAVIOUR family, not one tracking
+// value. The 2026-07-29 correction on this spot recorded the debt honestly (~38
+// mono+uppercase labels on OTHER tracking values, including a public hero label
+// at 8px/0.12em); this widening is the slice that closes it. An eyebrow is a
+// BEHAVIOUR: mono + uppercase + wide tracking. The entry bar is 0.1em because
+// Tailwind's own `tracking-widest` is exactly 0.1em — the named narrower steps
+// (`wider` = 0.05em) and the 0.06–0.08em data-figure ring are letter-spaced
+// FIGURES, not eyebrows, and stay out on purpose.
+// WHAT THIS SECTION STILL CANNOT SEE: an eyebrow assembled at runtime, and a
+// line whose `font-mono`/`uppercase` arrives from a PARENT element — the test
+// is per-line, stated so a PASS is never read as more than it is.
 const EYEBROW_SHAPE = /tracking-\[0\.14em\]/;
+const TRACKING_ARBITRARY = /tracking-\[(0\.\d+)em\]/;
+function isEyebrowShaped(ln: string): boolean {
+  if (EYEBROW_SHAPE.test(ln)) return true;
+  if (!/\bfont-mono\b/.test(ln) || !/\buppercase\b/.test(ln)) return false;
+  if (/\btracking-widest\b/.test(ln)) return true;
+  const m = TRACKING_ARBITRARY.exec(ln);
+  return m !== null && Number.parseFloat(m[1]!) >= 0.1;
+}
 
 // §⑦ — A READING PAGE READS AT THE PROSE SIZE. BLOCKING.
 //
@@ -314,9 +325,61 @@ const EYEBROW_EXEMPT: Record<string, string> = {
   "wallet/ReceiptShareCard.tsx":
     "1 · NOT a surface — it is the satori-PAINTED share card, whose geometry is fixed pixel arithmetic against a 34px figure beside it (`TOTAL PAID` at 16px). Satori renders this to a bitmap; a fluid rem token would resolve against a root font size that does not exist inside the painter.",
   "components/ProtocolAssetsCard.tsx":
-    "1 · NOT an eyebrow — the asset ROW LABEL carries a bridged TICKER whose case is meaning: BTC.b and WETH.e are the canonical Avalanche-bridged symbols and the lowercase suffix IS the bridge marker. Uppercased by the class, this row printed VAULT BTC.B beside a value reading 0.00077818 BTC.b — the same row naming one token two contradictory ways, one of which does not exist. Same face, same size, no transform (founder-caught 2026-07-29).",
+    "2 · ONE permanent + ONE convertible. Permanent: the asset ROW LABEL carries a bridged TICKER whose case is meaning — BTC.b and WETH.e are the canonical Avalanche-bridged symbols and the lowercase suffix IS the bridge marker; uppercased by the class, this row printed VAULT BTC.B beside a value reading 0.00077818 BTC.b (founder-caught 2026-07-29). Convertible: the 11px/0.1em section header the 2026-07-30 widening surfaced — pay it by converting to the class and lowering this ceiling back to 1 in the same commit.",
   "components/hero/HeroLedger.tsx":
-    "1 · the hero ledger's ITEM LABEL, and the only exemption here that was earned by MEASUREMENT rather than reasoning. It was converted to the class, rendered, and probed: at the 12px floor the word MEMBERSHIP needs 89px inside an 80px content box and hangs 9px out of its card at `sm:grid-cols-3`. Mobile was clean — the defect is desktop-only. Raising it needs wider cards, which is a COMPOSITION change the founder has not seen, and which the ALLOWLIST entry above has always reserved for the type-scale slice. Its other two eyebrows (the verify slogan, the 70/20/10 pill) DID convert and are not counted here.",
+    "7 · ONE permanent + SIX awaiting the founder's type-scale wireframe. Permanent: the hero ledger's ITEM LABEL, the only exemption here earned by MEASUREMENT — converted to the class, rendered, probed: at the 12px floor the word MEMBERSHIP needs 89px inside an 80px content box and hangs 9px out of its card at `sm:grid-cols-3` (desktop-only; mobile clean). Raising it needs wider cards — a COMPOSITION change the founder has not seen. The six others are the file's other-tracking family labels the 2026-07-30 widening surfaced, in the SAME geometry-bound composition, deferred with it; the wireframe slice pays all seven together.",
+};
+
+// THE EYEBROW-FAMILY DEBT — every hand-typed occurrence the WIDENED detector
+// found on 2026-07-30, counted by its own RED run (74 across 38 files), never
+// estimated. This is the "~38 labels on other trackings" prose note turned
+// into ratcheted code — the prose said 38 because it counted only the
+// sub-floor ones; the behaviour is hand-typed at every size and every copy is
+// the same duplicated decision. Pay an entry by converting its file to
+// `.type-eyebrow` (colour utility stays) and lowering the ceiling in the SAME
+// commit; both directions and staleness are RED. The four hero files
+// (SeatFlowDiagram · HeroSeatLine · HeroStatusChips · ProtocolOverviewPanel)
+// are geometry-bound (fixed medallions, chip rows, 80px content boxes — the
+// HeroLedger lesson) and wait for the founder's type-scale wireframe.
+const EYEBROW_DEBT: Record<string, number> = {
+  "pages/PublicHome.tsx": 6,
+  "pages/Docs.tsx": 5,
+  "components/season/HomeRegisterBand.tsx": 5,
+  "components/guide/SyndicateGuide.tsx": 4,
+  "pages/Liquidity.tsx": 3,
+  "components/layout/PublicLayout.tsx": 3,
+  "components/faq/FaqAccordion.tsx": 3,
+  "pages/admin/SeasonsRails.tsx": 2,
+  "pages/Whitepaper.tsx": 2,
+  "pages/Tokenomics.tsx": 2,
+  "pages/SeasonRanking.tsx": 2,
+  "pages/MemberAccess.tsx": 2,
+  "components/season/HomeSeasonSection.tsx": 2,
+  "components/referral/ReferralOverviewPanel.tsx": 2,
+  "components/prose/Prose.tsx": 2,
+  "components/hero/SeatFlowDiagram.tsx": 2,
+  "components/hero/ProtocolOverviewPanel.tsx": 2,
+  "components/hero/HeroStatusChips.tsx": 2,
+  "components/hero/HeroSeatLine.tsx": 2,
+  "components/VerifyOnChain.tsx": 2,
+  "components/ProtocolReservesBand.tsx": 2,
+  "wallet/MemberHeaderAffordance.tsx": 1,
+  "wallet/JoinCheckout.tsx": 1,
+  "pages/not-found.tsx": 1,
+  "pages/SystemStatus.tsx": 1,
+  "pages/MemberNotifications.tsx": 1,
+  "pages/Learning.tsx": 1,
+  "pages/Faq.tsx": 1,
+  "components/referral/ReferralLinkPanel.tsx": 1,
+  "components/referral/ReferralLadderPanel.tsx": 1,
+  "components/referral/ReferralIntroductionsPanel.tsx": 1,
+  "components/member/MemberShell.tsx": 1,
+  "components/member/MemberPulse.tsx": 1,
+  "components/member/MemberAppPage.tsx": 1,
+  "components/living/SectionIndex.tsx": 1,
+  "components/layout/Shell.tsx": 1,
+  "components/SurfaceMapSection.tsx": 1,
+  "components/PublicPage.tsx": 1,
 };
 
 // ─── the scan ───────────────────────────────────────────────────────────────
@@ -523,23 +586,29 @@ if (!eyebrowClassDefined) {
 }
 
 let eyebrowExempted = 0;
+let eyebrowDebtForgiven = 0;
 const eyebrowByFile = new Map<string, number>();
 for (const file of files.filter((f) => /\.tsx$/.test(f))) {
   const r = rel(file);
   readFileSync(file, "utf8")
     .split("\n")
     .forEach((ln, i) => {
-      if (isComment(ln) || !EYEBROW_SHAPE.test(ln)) return;
+      if (isComment(ln) || !isEyebrowShaped(ln)) return;
       eyebrowByFile.set(r, (eyebrowByFile.get(r) ?? 0) + 1);
       if (r in EYEBROW_EXEMPT) {
         eyebrowExempted += 1;
         return;
       }
+      if (r in EYEBROW_DEBT) {
+        eyebrowDebtForgiven += 1;
+        return;
+      }
       fail(
-        `${r}:${i + 1} — the eyebrow treatment is hand-typed here (\`tracking-[0.14em]\`). It is ONE ` +
-          `decision and it lives at \`.type-eyebrow\`: use the class and keep only the colour utility. ` +
-          `Hand-typed, this shape answered one question six different ways across 18 files — 9px, 10px, ` +
-          `11px, 12px, 14px and 16px — and put thirteen of them under the ${FLOOR_PX}px floor.`,
+        `${r}:${i + 1} — the eyebrow treatment is hand-typed here (mono + uppercase + wide tracking, ` +
+          `or the class's own 0.14em). It is ONE decision and it lives at \`.type-eyebrow\`: use the ` +
+          `class and keep only the colour utility. Hand-typed, this shape answered one question six ` +
+          `different ways across 18 files and put thirteen labels under the ${FLOOR_PX}px floor; the ` +
+          `by-behaviour sweep then found ~38 more on other trackings, one of them 8px on the public hero.`,
       );
     });
 }
@@ -557,6 +626,29 @@ for (const [r, why] of Object.entries(EYEBROW_EXEMPT)) {
     );
   } else if (actual < ceiling) {
     notes.push(`${r} — ${actual} hand-typed eyebrow(s) against a ceiling of ${ceiling}. Lower the ceiling (or delete the entry at zero).`);
+  }
+}
+// The debt ratchet — both directions RED, staleness RED (the touch guard's
+// fossil lesson, 2026-07-30): a paid file must lower its ceiling in the same
+// commit, and an entry at zero must be deleted, or it silently forgives the
+// next hand-typed eyebrow in that file.
+for (const [r, ceiling] of Object.entries(EYEBROW_DEBT)) {
+  if (!existsSync(join(SRC, r))) {
+    fail(`EYEBROW_DEBT names "${r}", which does not exist under src — move or remove its entry in the same commit.`);
+    continue;
+  }
+  const actual = eyebrowByFile.get(r) ?? 0;
+  if (actual > ceiling) {
+    fail(
+      `${r} — ${actual} hand-typed eyebrow-family label(s), above its debt ceiling of ${ceiling}. ` +
+        `The debt only shrinks: convert to \`.type-eyebrow\` — never add a copy.`,
+    );
+  } else if (actual < ceiling) {
+    fail(
+      `${r} — ${actual} hand-typed eyebrow-family label(s) against a debt ceiling of ${ceiling}. ` +
+        `Good — lower the ceiling to ${actual} (delete the entry at zero) in this same commit so the ` +
+        `payment cannot be silently undone.`,
+    );
   }
 }
 
@@ -705,7 +797,9 @@ console.log(
     `${offScale.length} arbitrary size(s) at/above the floor listed but NOT gated (flip FAIL_ON_OFF_SCALE when the new scale lands). ` +
     `${unresolvable} size(s) unresolvable statically (em/%/var — a real hole, see the header). ` +
     `${CASES.length} matcher behaviour cases green; ${Object.keys(NO_ARBITRARY).length} atom(s) pinned scale-only. ` +
-    `EYEBROW (§⑥): one class, ${Object.keys(EYEBROW_EXEMPT).length} written exemption(s). ` +
+    `EYEBROW (§⑥): one class, ${Object.keys(EYEBROW_EXEMPT).length} written exemption(s); the widened ` +
+    `by-behaviour detector counts ${eyebrowDebtForgiven} hand-typed family label(s) as ratcheted debt across ` +
+    `${Object.keys(EYEBROW_DEBT).length} file(s) (pay by converting to the class; ceilings two-way). ` +
     `PROSE (§⑦): ${Object.keys(READING_SURFACES).length} reading page(s) pinned to type-body; ` +
     `${readingColumnsElsewhere} reading column(s) across ${readingFilesElsewhere.size} OTHER file(s) render ` +
     `below it and are REPORTED, not gated — widening that gate is its own slice. ` +
