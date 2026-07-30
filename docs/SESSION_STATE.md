@@ -2,7 +2,32 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-07-31 (HANDOFF) — RESUME HERE. PROD = `3adbc19`; main = `448645d`, CLEAN TREE, ALL PUSHED. THE REGISTER IS BUILT AND REVIEW-SEALED; THE DEPLOY AWAITS THE FOUNDER'S GO.
+> # ▶ 2026-07-30 (GO-LIVE SEAL) — RESUME HERE. THE GO WAS GIVEN AND THE CYCLE IS SEALED: PROD = `448645d`, thesyndicate.money carries THE REGISTER. **THE DEPLOY BACKLOG IS EMPTY.**
+>
+> ## THE SEAL (Replit's report, pasted in the 2026-07-30 chat — measured there, recorded here)
+> · **7/7 checks green + byte identity ×2** (entry `aa4fe7a3…` · console `523c4b45…`): /registry
+>   renders the 14 seats with a Snowtrace link on every row (#7/#11 same wallet proven byte-for-byte,
+>   #1 joined 2026-06-04) · /api/registry `"state":"LIVE","seatsTotal":14` from the FIRST post-boot
+>   cycle · /activity at block 91,571,070 serves the gold ABOVE the AVAX out and Load-more walks
+>   96/96 events to the genesis purchase (block 87,158,947) · Terms "Version 2" + Privacy "Version 3"
+>   badges live · 0 Google-font references, 12 self-hosted woff2 · the dead "No wallet… enabled" gone
+>   from /map+/status · backbone ok:2 · partial:1 · failed:1 (the usual first post-boot cycle,
+>   self-repaired via cursor, stable over 4 consecutive readings), head advanced
+>   91,613,871 → 91,614,754, 6/6 lanes ok.
+> · featureStatus: `theRegister` rode its shipping commit — nothing owed here (DONE-IS-DONE §①).
+> · **The prod dump is SAFE on this machine — measured 2026-07-30 before advising deletion:**
+>   `C:\Users\kemal\Downloads\dump.sql.gz` (32,854 bytes, 2026-07-30 08:30) AND restored in the rig
+>   DB (18 tables · protocol_event_raw 146 · sale_event_raw 35 · historical_member 8). The founder
+>   may tell Replit "downloaded" so the project-root copy is deleted.
+>
+> ## (b) NEXT + FOUNDER-PENDING (unchanged by the deploy)
+> · Founder: tell Replit "downloaded" (dump.sql.gz leaves the project root) · the 3
+>   reserves-wireframe decisions (3×2 grid · gold logo · weekend freshness) · the 4 composition
+>   wireframes · LINK.e/XAUt0 reserves build follows his wireframe call.
+> · The audit ledger holds 72 open findings (36 important · 35 minor) — the harmonization arc
+>   resumes slice by slice.
+
+> # ▶ 2026-07-31 (HANDOFF) — ⛔ superseded the same evening: the GO landed and the cycle sealed (see the SEAL block above). PROD was `3adbc19`; main = `448645d`, CLEAN TREE, ALL PUSHED. THE REGISTER IS BUILT AND REVIEW-SEALED; THE DEPLOY AWAITS THE FOUNDER'S GO.
 >
 > ## THE DEPLOY BACKLOG (one deploy carries it all): `3adbc19..448645d` — the causal swap order +
 > ## pagination-cursor fix · 4 footer-audit blockers · self-hosted fonts + CSP · Terms V2/Privacy V3

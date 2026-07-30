@@ -1,5 +1,21 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-30 (SCELLÉ) — LE GO EST DONNÉ, LE CYCLE `448645d` EST SCELLÉ : thesyndicate.money porte
+> LE REGISTRE.** Rapport Replit collé au chat du 30-07 : **7/7 contrôles verts + identité d'octets
+> ×2** — /registry rend les 14 sièges (lien Snowtrace sur chaque ligne, #7/#11 même wallet prouvé
+> octet à octet, #1 daté 2026-06-04) · /api/registry `LIVE, seatsTotal 14` dès le premier cycle ·
+> /activity sert l'ordre causal (l'or au-dessus de la sortie AVAX) et la pagination parcourt 96/96
+> événements jusqu'à l'achat genesis (bloc 87 158 947) · Terms V2 / Privacy V3 en ligne · 0 requête
+> Google Fonts (12 woff2 auto-hébergées) · le déni mort disparu de /map+/status · backbone
+> ok:2/partial:1/failed:1 (1ᵉʳ cycle post-boot habituel, auto-réparé, stable ×4 relevés). **L'item
+> GO-LIVE du 31-07 est CLOS par le fondateur** (le GO donné + le rapport de scellé collé font
+> preuve). Le backlog de déploiement est VIDE.
+> **EN ATTENTE DU FONDATEUR :** ① dire « téléchargé » à Replit pour qu'il supprime `dump.sql.gz` de
+> la racine du projet (vérifié en local le 30-07 : le fichier est dans Downloads — 32 854 octets —
+> ET la base est restaurée, 18 tables) ; ② les 3 décisions du croquis réserves (grille 3×2 · logo
+> or · fraîcheur week-end) ; ③ les 4 croquis composition de l'audit ; ④ LINK.e affichage · CHR-11 ·
+> l'entrée du 12-07. Le carnet d'audit : 72 trouvailles restantes (36 importantes · 35 mineures).
+
 > **▶ 2026-07-31 — LE REGISTER EST CONSTRUIT, LA REVUE PRÉ-GO-LIVE EST PASSÉE (19/19 corrigées), GO-LIVE PRÊT.**
 > Sur ordre + textes approuvés du fondateur : **THE REGISTER (`/registry`)** — le registre public par
 > siège (14 lignes, `#N · 0x…↗ · chapitre · échelon · entrée`, adresse-seulement) avec sa route
