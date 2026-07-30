@@ -1,5 +1,23 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-30 (ARC D'HARMONISATION) — 56 des 71 trouvailles ouvertes du carnet footer FERMÉES
+> en 6 tranches** (`6363ae8..3d79f24`, chacune ROUGE-d'abord + recherche de jumeaux + carnet coché ;
+> revue adversariale de l'arc : 40 agents, 15 confirmées, 15 corrigées la même session, 0 fausse
+> fermeture sur 30+ vérifications). Vérité des textes · plancher 12px payé (dette 216→177, publique
+> 164→125, mesuré par le garde) · un système de titres par page · les faits jumeaux à UNE maison
+> (buildJoinLink structurel, ProofAnchor sur /fire-ledger, approbations wallet sur les 4 moteurs,
+> fail-closed) · épingles DONE-IS-DONE complètes. Build prod vert · rig vérifié (10 pages sondées,
+> 375px sans débordement, 0 erreur console). PROD = `448645d`, intouchée.
+> **EN ATTENTE DU FONDATEUR :** ① la PORTE D'APERÇU (rig http://localhost:5173) — ses yeux scellent
+> aussi la liaison archive sur /map (l'ancienne épingle invoquait un report fondateur ; flip daté,
+> motivé, prod immobile) ; ② les 9 importantes COMPOSITIONNELLES (réordonnancements WORK-FIRST ·
+> coquille /status · châssis /tokenomics · partage des rôles /map–/status · eyebrow /join) — ses
+> décisions, tranche F ; ③ les passages légaux Terms V3 / Privacy V4 proposés au chat du 30-07
+> (JAMAIS commités sans son oui) ; ④ le verdict : 🚀 DEPLOY — BATCHABLE (`448645d..3d79f24` — rien
+> ne casse en attendant ; le prochain déploiement emporte le lot). Toujours pendants par ailleurs :
+> les 3 décisions du croquis réserves · les 4 croquis composition · dire « téléchargé » à Replit
+> pour dump.sql.gz.
+
 > **▶ 2026-07-30 (SCELLÉ) — LE GO EST DONNÉ, LE CYCLE `448645d` EST SCELLÉ : thesyndicate.money porte
 > LE REGISTRE.** Rapport Replit collé au chat du 30-07 : **7/7 contrôles verts + identité d'octets
 > ×2** — /registry rend les 14 sièges (lien Snowtrace sur chaque ligne, #7/#11 même wallet prouvé

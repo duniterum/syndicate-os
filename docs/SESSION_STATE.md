@@ -2,7 +2,43 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-07-30 (GO-LIVE SEAL) — RESUME HERE. THE GO WAS GIVEN AND THE CYCLE IS SEALED: PROD = `448645d`, thesyndicate.money carries THE REGISTER. **THE DEPLOY BACKLOG IS EMPTY.**
+> # ▶ 2026-07-30 (HARMONIZATION ARC) — RESUME HERE. PROD = `448645d` (sealed, untouched). main = `3d79f24`, CLEAN TREE, ALL PUSHED. **56 of the footer audit's 71 open findings CLOSED in 6 slices — 15 remain (9 important compositional/legal · 6 minor), all needing the FOUNDER'S input.**
+>
+> ## (a) WHAT CLOSED (derive: `git log --oneline 6363ae8..3d79f24` — 6 slices, each RED-first + twin search + ledger tick)
+> · **A — DONE-IS-DONE pins:** object-literal FUTURE claims now visible to guard-feature-truth;
+>   9 future keys registered (incl. laterEras/marketplace from the review); /chronicle's dead
+>   teaser deleted. **B — 21 truth/copy fixes:** /map bound the archive group (coverage pin flipped,
+>   dated — awaits the founder's eyes at the preview), /contracts denials now point at the live
+>   layer, Trader Joe→LFJ everywhere (URLs measured), /status asOf ratcheted with its guard,
+>   /toolkit registry complete + honest badge. **C — the sub-12px floor sweep PAID:** 37
+>   occurrences, 9 allowlist entries burned; guard-measured debt 216→177 (public 164→125).
+>   **D — one heading system per page** (10 findings). **E — twins→one home:** buildJoinLink (7
+>   copies died, protection now STRUCTURAL in guard-surface-coverage), ProofAnchor on /fire-ledger
+>   + sender short-form (address model), /wallet approvals read ALL 4 sale engines fail-closed,
+>   SectionEyebrow atom with EARNED status, /support joined the reading system (§⑦-pinned).
+>   **Review — 40 agents, 18 filed, 15 confirmed, 15 fixed same session** (two ratchets made
+>   two-way blocking; stripper string-aware; wallet fail-open + stale-write race killed).
+> · featureStatus flips: none live→future or future→live except NEW future keys — no DONE-IS-DONE
+>   debt. Build green (37 shells · 376 twins · admin-dist 105). Rig-verified: 10 changed pages
+>   probed (computed sizes, archive group, ProofAnchor 44px, LFJ links, derived DexScreener URL,
+>   asOf 2026-07-30 served live), 375px zero escape, zero console errors.
+>
+> ## (b) NEXT + FOUNDER-PENDING
+> · **The preview gate:** rig at http://localhost:5173 (studio) + api on 5000 — the founder reviews
+>   the changed pages desktop AND mobile; his eyes also seal the /map archive binding (the old
+>   guard pin claimed founder deferral; the audit + /status precedent justified the flip — recorded
+>   for his ruling, prod unmoved).
+> · **Slice F (9 important, compositional — his decisions):** WORK-FIRST reorders (/faq /liquidity
+>   /source /support /status-meta) · /status PublicPage shell · /tokenomics chassis · /map-vs-/status
+>   one-job split · /join eyebrow wayfinding + 5 small minors (rail CTA label, wire-ids question,
+>   /wallet INDEX-vs-account posture).
+> · **Slice G (legal):** proposed Terms V3 / Privacy V4 passages pasted in the 2026-07-30 chat
+>   (localStorage seven keys · activation-request record class · "identity directory" precision ·
+>   named Telegram channels) — NEVER committed before his yes.
+> · Deploy backlog: `448645d..3d79f24` — 🚀 DEPLOY — BATCHABLE (client + guards + one api served
+>   date; nothing breaks undeployed; next deploy carries it).
+
+> # ▶ 2026-07-30 (GO-LIVE SEAL) — superseded by the arc above; the seal facts stand. THE GO WAS GIVEN AND THE CYCLE IS SEALED: PROD = `448645d`, thesyndicate.money carries THE REGISTER. **THE DEPLOY BACKLOG IS EMPTY.**
 >
 > ## THE SEAL (Replit's report, pasted in the 2026-07-30 chat — measured there, recorded here)
 > · **7/7 checks green + byte identity ×2** (entry `aa4fe7a3…` · console `523c4b45…`): /registry
