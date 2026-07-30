@@ -142,13 +142,23 @@ export default function Terms() {
       </S>
 
       <S n="8" title="The public record">
+        {/* ⛔ CORRECTED 2026-07-30 (footer audit, BLOCKING; founder-approved
+            wording): this section ended "we never publish a link between a
+            member number and a wallet" — refuted by our own season board and
+            receipts, which proudly show the pairing. The 2026-07-25 address
+            model (CANON_VISIBILITY_LAW · ADR-003 rescope) is the law: the
+            pairing is PUBLIC; the only forbidden artifact is a name↔address
+            directory. */}
         <p>
           The protocol&apos;s events are public and permanent by chain design.
           Purchases, referral payments, and contract activity are visible to
-          anyone, forever. Your wallet address appears in that record; your legal
-          identity does not — we collect no name, no email, no identity document
-          (the Privacy Policy states exactly what technical traces exist), and we
-          never publish a link between a member number and a wallet.
+          anyone, forever. Which wallet holds which seat is part of that public
+          record — we show it ourselves, on receipts and the season board,
+          because a transparent business hides nothing the chain already proves.
+          What never exists here is a link to your real-world identity: we
+          collect no name, no email, no identity document (the Privacy Policy
+          states exactly what technical traces exist), and a name-to-wallet
+          directory will never exist.
         </p>
       </S>
 

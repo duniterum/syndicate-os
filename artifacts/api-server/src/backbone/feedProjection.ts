@@ -369,7 +369,7 @@ export const SHORT_FORM_RE = /^0x[0-9a-f]{3}…[0-9a-f]{4}$/;
  * short form ("0x123…abcd"). Input must be a full 40-hex address (fail-closed);
  * the output can never be mistaken for one and can never trip the gate.
  */
-function shortForm(address: string | null): string | null {
+export function shortForm(address: string | null): string | null {
   if (address === null) return null;
   if (!/^0x[0-9a-f]{40}$/.test(address)) {
     throw new Error(

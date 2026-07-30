@@ -59,6 +59,8 @@
   "/archive/": "/archive.html",
   "/season": "/season.html",
   "/season/": "/season.html",
+  "/registry": "/registry.html",
+  "/registry/": "/registry.html",
   "/activity": "/activity.html",
   "/activity/": "/activity.html",
   "/chronicle": "/chronicle.html",

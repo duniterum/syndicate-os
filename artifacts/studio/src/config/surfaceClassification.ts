@@ -382,6 +382,18 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     requiredState: "S1",
     enforcement: "PREVIEW_LABELLED",
   },
+  // THE REGISTER (founder order 2026-07-30) — the public per-seat register the
+  // 2026-07-25 address model permits; address-only, zero identity.
+  {
+    routePath: "/registry",
+    moduleId: "registry",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary: "The public per-seat register — each seat's wallet, chapter, standing and joining day, chain-written and explorer-verifiable.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
   {
     routePath: "/activity",
     moduleId: "activity",

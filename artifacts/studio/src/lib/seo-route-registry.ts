@@ -758,6 +758,28 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     proofRoute: "/status",
     notes: "S2b seasons arc — seasonRanking LIVE; the bounty areas are FUTURE-badged on seasonBounty until S3.",
   },
+  // THE REGISTER (founder order 2026-07-30) — the public per-seat register the
+  // 2026-07-25 address-model rescope explicitly permits: #N · 0x…↗ · chapter ·
+  // rung · joined. Address-only, zero identity; the transparent-business proof
+  // surface.
+  {
+    path: "/registry",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "The Register — every seat, on the record",
+    description:
+      "The public per-seat register: each seat's wallet, chapter, standing and joining day — written by the chain, verifiable on the explorer, address-only by design.",
+    canonicalPath: "/registry",
+    changefreq: "daily",
+    priority: 0.6,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "season",
+    primaryIntent: "proof",
+    proofRoute: "/status",
+    notes:
+      "Built 2026-07-30 (featureStatus theRegister). Serves /api/registry — season standings (wallet↔seat) + capital rungs + earliest indexed purchase day; genesis absences render as honest dashes.",
+  },
   {
     path: "/activity",
     routeType: "PUBLIC",

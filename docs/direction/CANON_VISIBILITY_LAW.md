@@ -57,7 +57,9 @@ A member becomes visible BY HIS OWN CHOICE. Never by default. Never without cons
 - **Précision sur « A REVERSE INDEX (seat → wallet) » (ligne 16) :** l'index interdit est **siège → PERSONNE**
   (identité réelle). **Siège → ADRESSE n'est PAS interdit** — la chaîne l'émet déjà, et le board de saison
   LIVE rend déjà `#N · 0x…`. **« The Register » (`/registry`)** — registre public par siège
-  `#N · 0x…↗ · chapitre · rung · joined` — est PERMIS (adresse-seulement, zéro identité).
+  `#N · 0x…↗ · chapitre · rung · joined` — est PERMIS (adresse-seulement, zéro identité)
+  **et CONSTRUIT le 2026-07-30** (ordre du fondateur ; `featureStatus.theRegister` live ;
+  sièges = achats indexés ∪ roster genesis gelé — jamais le board une-ligne-par-wallet).
 - **Précision sur « THE SERVER emits no MEMBER address » (ligne 28) :** SUPERSEDE — le serveur émet
   désormais l'adresse membre + `explorerUrl` (rescope Tier-2 2026-07-25). L'interdit qui reste : l'annuaire
   **nom↔adresse**, jamais l'adresse elle-même.

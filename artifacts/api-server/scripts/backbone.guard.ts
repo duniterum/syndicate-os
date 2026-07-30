@@ -86,6 +86,7 @@ import {
 } from "../src/backbone/backboneConfig";
 import { buildActivityHeartbeatReadModel } from "../src/backbone/activityHeartbeatReadmodel";
 import { buildProtocolEventReadModel } from "../src/backbone/protocolEventReadmodel";
+import { buildPublicRegister } from "../src/backbone/registerProjection";
 import {
   PROTOCOL_SCAN_MAX_BLOCKS_PER_CYCLE,
   PROTOCOL_SCAN_CHUNK_DELAY_MS,
@@ -1512,6 +1513,64 @@ check(
   "founder funding attribution: in-from-founder carries counterpartFounder; external/internal never do (A1, 2026-07-22)",
   "the founder-funding attribution broke",
 );
+// THE REGISTER PINS (founder order 2026-07-30 — the public per-seat register
+// the 2026-07-25 address-model rescope permits: #N · 0x…↗ · chapter · rung ·
+// joined; address-only, zero identity). Four behaviours pinned: no-seat rows
+// are EXCLUDED (they live on /season) · joined = the EARLIEST indexed
+// purchase (chain order, never array order) with genesis absence honest ·
+// the rung joins from the capital walk · a dark backbone serves a DARK
+// envelope, never invented rows.
+{
+  const w14 = "0x" + "14".repeat(20);
+  const wOverlap = "0x" + "77".repeat(20); // genesis seat #7 AND buys seat #11
+  const wG3 = "0x" + "03".repeat(20); // genesis-only seat #3 (no indexed rows)
+  const reg = buildPublicRegister({
+    capital: { standingBySeat: [{ seatNumber: 14, rung: "Patron" }] },
+    activity: {
+      items: [
+        // seat 14 bought TWICE — the register's joined day must be the
+        // EARLIEST by (block, logIndex), not the array's first or last.
+        { memberNumber: 14, memberAddress: w14, blockNumber: 900, logIndex: 2, isoDayUtc: "2026-07-20" },
+        { memberNumber: 14, memberAddress: w14, blockNumber: 800, logIndex: 5, isoDayUtc: "2026-07-13" },
+        // THE OVERLAP (the prod #7/#11 shape that cost the first build a
+        // seat): the genesis wallet ALSO buys a V3 seat — TWO rows, one per
+        // seat, never collapsed to one row per wallet.
+        { memberNumber: 11, memberAddress: wOverlap, blockNumber: 850, logIndex: 3, isoDayUtc: "2026-07-10" },
+        { memberNumber: null, memberAddress: null, blockNumber: 700, logIndex: 1, isoDayUtc: "2026-07-01" },
+      ],
+    },
+    genesisSeatByWallet: new Map([
+      [wOverlap, 7],
+      [wG3, 3],
+    ]),
+  });
+  check(
+    reg.state === "LIVE" &&
+      reg.rows.length === 4 &&
+      reg.seatsTotal === 4 &&
+      reg.rows.map((r) => r.seat).join(",") === "3,7,11,14" &&
+      reg.rows[0]!.wallet === wG3 &&
+      reg.rows[0]!.joinedIsoDay === null &&
+      reg.rows[0]!.rung === null &&
+      reg.rows[1]!.wallet === wOverlap &&
+      reg.rows[1]!.joinedIsoDay === null &&
+      reg.rows[2]!.wallet === wOverlap &&
+      reg.rows[2]!.joinedIsoDay === "2026-07-10" &&
+      reg.rows[3]!.joinedIsoDay === "2026-07-13" &&
+      reg.rows[3]!.rung === "Patron" &&
+      reg.rows.every((r) => r.chapter === "Chapter I · Genesis Signal") &&
+      reg.rows.every((r) => r.explorerUrl.includes("/address/") && r.shortForm.includes("…")),
+    "THE REGISTER is BY SEAT: purchases ∪ the frozen genesis roster, the #7/#11 overlap wallet holds TWO rows, joined = the EARLIEST indexed purchase (chain order), rung from the capital walk, honest genesis nulls, every row explorer-verifiable",
+    "the register projection broke: a seat lost to per-wallet collapse, wrong join order, or invented data",
+  );
+  const dark = buildPublicRegister({ capital: null, activity: null, genesisSeatByWallet: new Map() });
+  check(
+    dark.state === "DARK" && dark.rows.length === 0,
+    "a dark backbone serves a DARK register envelope — never invented rows",
+    "the register invents rows while the backbone is dark",
+  );
+}
+
 // THE SWAP-ORDER PIN (founder-caught 2026-07-30 on prod: his 2 AVAX → XAUt0
 // gold swap rendered "gold entered, then AVAX left"). Every organ is an EOA,
 // so a native OUTFLOW is the transaction's own msg.value — chain physics puts

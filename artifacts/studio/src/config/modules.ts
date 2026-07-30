@@ -25,6 +25,7 @@ import {
   Droplets,
   Flame,
   Receipt,
+  ScrollText,
   Trophy,
   Wallet,
   Wrench,
@@ -552,6 +553,22 @@ export const modules = [
     dependencies: [],
     nav: { header: false, sidebar: false, footer: true },
     icon: Activity,
+  },
+  // THE REGISTER (founder order 2026-07-30) — the public per-seat register the
+  // 2026-07-25 address model permits: #N · 0x…↗ · chapter · rung · joined.
+  {
+    id: "registry",
+    label: "The Register",
+    path: "/registry",
+    zone: "public",
+    visible: true,
+    enabled: true,
+    live: false,
+    phase: "live",
+    description: "Every seat on the record — its wallet, chapter, standing and joining day, chain-written and explorer-verifiable.",
+    dependencies: [],
+    nav: { header: false, sidebar: false, footer: true },
+    icon: ScrollText,
   },
   {
     id: "fire-ledger",

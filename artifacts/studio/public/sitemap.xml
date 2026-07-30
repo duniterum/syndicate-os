@@ -121,6 +121,11 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://thesyndicate.money/registry</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://thesyndicate.money/activity</loc>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>

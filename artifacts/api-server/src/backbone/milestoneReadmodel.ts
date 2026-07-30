@@ -105,6 +105,12 @@ export interface MilestoneDef {
 // commissions-paid + second-generation ladders await the sale-lane input's
 // commission field (their own micro-slice); alias/ramp/nft families ride
 // their modules.
+/** Chapter I (Genesis Signal) seals forever at this seat — the ONE declaration
+ *  (the seats-333 milestone below and the public register's chapter column both
+ *  read it; 2026-07-30). Distinct from the OTHER 333s in this file — 333 burns
+ *  and 333 artifacts are unrelated facts sharing a numeral. */
+export const GENESIS_SIGNAL_SEAT_CEILING = 333;
+
 export const PROTOCOL_MILESTONES: readonly MilestoneDef[] = [
   // ── MEMBERSHIP — the master ladder; era ends are rungs (one ladder,
   //    double meaning: chapter sealed + the rate table's page turn) ──
@@ -114,7 +120,7 @@ export const PROTOCOL_MILESTONES: readonly MilestoneDef[] = [
   { id: "seats-50", label: "50 seats sealed", kind: "seats", family: "membership", target: 50 },
   { id: "seats-100", label: "100 seats sealed", kind: "seats", family: "membership", target: 100 },
   { id: "seats-250", label: "250 seats sealed", kind: "seats", family: "membership", target: 250 },
-  { id: "seats-333", label: "Genesis Signal sealed (#1–#333)", kind: "seats", family: "membership", target: 333 },
+  { id: "seats-333", label: "Genesis Signal sealed (#1–#333)", kind: "seats", family: "membership", target: GENESIS_SIGNAL_SEAT_CEILING },
   { id: "seats-500", label: "500 seats sealed", kind: "seats", family: "membership", target: 500 },
   { id: "seats-1000", label: "First Thousand sealed (#334–#1,000)", kind: "seats", family: "membership", target: 1_000 },
   { id: "seats-2000", label: "2,000 seats sealed", kind: "seats", family: "membership", target: 2_000 },

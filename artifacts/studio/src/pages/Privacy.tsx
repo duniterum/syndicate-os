@@ -68,12 +68,20 @@ export default function Privacy() {
         </p>
       </S>
 
+      {/* ⛔ CORRECTED 2026-07-30 (footer audit, BLOCKING; founder-approved
+          wording): this section claimed the wallet↔seat mapping "stays
+          server-side, by design" — refuted by our own public surfaces. The
+          2026-07-25 address model is the law: the pairing is public and
+          SHOWN; the red line is real-world identity only. */}
       <S title="Wallet addresses">
         <p>
-          A wallet address is public blockchain data. The site reads it from the
-          Avalanche C-Chain, where anyone can read it. We never link a wallet
-          address to a real-world identity, and we never publish which wallet
-          holds which member number — that mapping stays server-side, by design.
+          A wallet address is public blockchain data — pseudonymous by nature.
+          Which wallet holds which seat number is part of the same public
+          record: the purchase transaction writes it, and our own surfaces show
+          it — receipts, the season board — because everything this protocol
+          does is on-chain and shown. We never link a wallet address to a
+          real-world identity: we hold no name, no email, no identity document,
+          and a name-to-wallet directory will never exist here.
         </p>
       </S>
 

@@ -52,6 +52,7 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   // Learn & Earn arrive WITH their feeders — their claims cite their own
   // future keys, never this one.
   seasonQuests: { status: "live", since: "2026-07-24", where: "/member (the Quests card — the fed ladder + first-act quests, auto-credit)" },
+  theRegister: { status: "live", since: "2026-07-30", where: "/registry (the public per-seat register — #N · address↗ · chapter · rung · joined; the 2026-07-25 address-model surface, built on founder order)" },
 
   // The vault's holdings go-live (same commit as the card — DONE-IS-DONE). The
   // AVAX row was a hardcoded "Coming" placeholder with NO registry key, so no
