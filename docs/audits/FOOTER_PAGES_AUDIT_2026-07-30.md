@@ -58,6 +58,20 @@ This file is the WORK LEDGER for the harmonization arc — tick findings as slic
 > /docs numerals · /learning step chip + two-sizes · /wallet 11px.
 > **39 remain open: 19 important · 19 minor + the tick discipline** (recounted: 23−4 · 24−5).
 
+> **✅ CLOSED 2026-07-30 — HARMONIZATION ARC, SLICE D (heading/type-role harmonization):**
+> IMPORTANT ×5 — /archive's second h2 joins type-h2 · /learning's text-lg heading → type-h2 ·
+> /liquidity's two h2 answers → one (type-h2) + its two h3 treatments aligned (text-base
+> font-medium) · /map gains its section scale (Membership engine + Live reality reads, both
+> type-h2 — zero before) · /referral's off-system trio (font-light tagline → type-body ·
+> mono "Powered by" prose → type-eyebrow · drifting card h3 → type-h3).
+> MINOR ×5 — /referral's duplicate "How it works" (the h2 renamed "The program, live") · /terms
+> colophon → type-body + measure · /contracts role lines drop the mono voice (prose, not data) ·
+> /chronicle's hand-typed verify span → type-eyebrow · /activity's date-group heading closed AS
+> DOCUMENTED: the 14px choice already lives registered in guard-type-scale's EYEBROW_EXEMPT with
+> its measured reason (the 10px-grouping defect) — one home, no second copy to fix.
+> Typecheck 0 · full chain EXIT 0. **29 remain open: 14 important · 14 minor + the tick
+> discipline** (recounted: 19−5 · 19−5).
+
 
 ## BLOCKING (6)
 

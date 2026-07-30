@@ -83,7 +83,7 @@ export default function ChronicleTeaser() {
             ))}
             <Card className="bg-card/20 border-border/50 p-4">
               <p className="text-xs text-muted-foreground leading-relaxed">
-                <span className="font-mono uppercase tracking-wider text-proof">Verify · </span>
+                <span className="type-eyebrow text-proof">Verify · </span>
                 {e.verifyNote}
               </p>
             </Card>

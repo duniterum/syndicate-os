@@ -75,7 +75,7 @@ export default function Archive() {
       {/* §11 slot 2c teaser elements — what unlocks it + the return hook
           (the page already carries the honest paragraph, badges, and real
           contract-memory content, so nothing was gutted to add them). */}
-      <h2 className="text-base font-medium text-foreground mb-1.5">What&apos;s here today, what&apos;s still building</h2>
+      <h2 className="type-h2 text-foreground mb-1.5">What&apos;s here today, what&apos;s still building</h2>
       <p className="text-sm text-muted-foreground leading-relaxed measure mb-8">
         Every artifact mint is already on the public record with its transaction,
         and a signed-in member&apos;s own holdings show live on their wallet door.

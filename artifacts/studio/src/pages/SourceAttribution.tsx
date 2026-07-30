@@ -24,15 +24,15 @@ export default function SourceAttribution() {
       badge={<LifecycleBadge lifecycle={sourceAttributionLifecycle} />}
       variant="app"
     >
-      <p className="text-lg text-foreground/90 font-light measure mb-12">{sourceAttribution.tagline}</p>
+      <p className="type-body text-foreground/90 measure mb-12">{sourceAttribution.tagline}</p>
 
       {/* ── The program terms (public "Referral" layer over the protocol's
              "Source" vocabulary — ACTIVE since 2026-07-13) ────────────────── */}
       <div className="flex flex-wrap items-center gap-3 mb-1">
-        <h2 className="type-h2 text-foreground">How it works</h2>
+        <h2 className="type-h2 text-foreground">The program, live</h2>
         <LifecycleBadge lifecycle={referralProgram.lifecycle} />
       </div>
-      <p className="font-mono text-xs text-primary mb-4">{referralProgram.poweredBy}</p>
+      <p className="type-eyebrow text-primary mb-4">{referralProgram.poweredBy}</p>
       <p className="text-base text-muted-foreground leading-relaxed measure mb-6">{referralProgram.subheading}</p>
 
       <Card className="bg-primary/5 border-primary/30 p-5 mb-12">
@@ -96,7 +96,7 @@ export default function SourceAttribution() {
       </div>
 
       <Card className="bg-primary/5 border-primary/20 p-6 mb-14">
-        <h3 className="text-base font-medium text-foreground mb-2">What it is — and is not</h3>
+        <h3 className="type-h3 text-foreground mb-2">What it is — and is not</h3>
         <p className="text-sm text-foreground/90 leading-relaxed mb-2">{referralProgram.constitutionalLine}</p>
         <p className="text-sm text-muted-foreground leading-relaxed">{referralProgram.notCharityLine}</p>
       </Card>

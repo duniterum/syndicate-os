@@ -213,7 +213,7 @@ export default function Terms() {
         </p>
       </S>
 
-      <p className="text-sm text-muted-foreground border-t border-border/40 pt-4">
+      <p className="type-body text-muted-foreground measure border-t border-border/40 pt-4">
         Published by The Syndicate — thesyndicate.money. Operating-entity details
         arrive with the next version.
       </p>

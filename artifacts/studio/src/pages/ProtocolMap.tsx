@@ -124,7 +124,7 @@ function V3FiguresBand() {
     <Card className="p-6">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <h2 className="text-base font-medium text-foreground">Membership engine — public figures</h2>
+          <h2 className="type-h2 text-foreground">Membership engine</h2>
           <p className="text-sm text-muted-foreground mt-1 measure">
             Read directly from the deployed V3 sale engine. Raw base-unit strings are the source
             of truth; the derived display uses token decimals read live from chain, and falls
@@ -167,6 +167,7 @@ export default function ProtocolMap() {
         <V3FiguresBand />
 
         <section>
+          <h2 className="type-h2 text-foreground mb-4">Live reality reads</h2>
           <ProtocolRealityPanel groups={[...MAP_GROUPS]} showMeta />
         </section>
 

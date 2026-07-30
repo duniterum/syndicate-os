@@ -105,7 +105,7 @@ function LpStatus() {
   return (
     <Card className="bg-card/40 border-border/50 p-5 mb-12">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-        <h2 className="text-base font-medium text-foreground">The pool, read live</h2>
+        <h2 className="type-h2 text-foreground">The pool, read live</h2>
         <VerifyOnChain ids={["lpPair"]} />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -140,7 +140,7 @@ export default function Liquidity() {
       <div className="auto-grid gap-4 mb-12">
         {WHY_LP_CARDS.map((c) => (
           <Card key={c.title} className="bg-card/40 border-border/50 p-5">
-            <h3 className="text-sm font-semibold text-foreground">{c.title}</h3>
+            <h3 className="text-base font-medium text-foreground">{c.title}</h3>
             <p className="mt-2 text-xs text-muted-foreground leading-relaxed">{c.body}</p>
           </Card>
         ))}

@@ -53,7 +53,7 @@ export default function ContractMemory() {
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <div>
                         <h3 className="text-base font-medium text-foreground">{e.label}</h3>
-                        <p className="text-xs font-mono text-muted-foreground mt-0.5">{e.role}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{e.role}</p>
                       </div>
                       <LifecycleBadge lifecycle={e.lifecycle} />
                     </div>

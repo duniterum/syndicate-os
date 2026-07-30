@@ -37,7 +37,7 @@ export default function Learning() {
       </div>
 
       <div className="mb-14">
-        <h2 className="text-lg font-medium text-foreground mb-1.5">
+        <h2 className="type-h2 text-foreground mb-1.5">
           {knowledgeOsMap.heading}
         </h2>
         <p className="text-sm text-muted-foreground mb-6 measure leading-relaxed">
