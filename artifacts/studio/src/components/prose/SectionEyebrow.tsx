@@ -16,9 +16,15 @@ import { StatusPill } from "@/components/status-pill/StatusPill";
 
 export type SectionReadState = "VERIFIED" | "CHECKING" | "UNAVAILABLE" | "FUTURE";
 
-/** Derive the one state every section eyebrow on a page shares. */
-export function sectionReadState(loading: boolean, anyRead: boolean): SectionReadState {
-  if (anyRead) return "VERIFIED";
+/** Derive the one state every section eyebrow on a page shares.
+ *  `allRead` means ALL of the page's sampled reads resolved (adversarial
+ *  review 2026-07-30, confirmed 2/2: the first version took `.some()`, so a
+ *  partial backend failure — the quote endpoint down while reality answered —
+ *  still rendered VERIFIED eyebrows above a PENDING fail-closed pill, the
+ *  exact self-contradiction this atom exists to kill). VERIFIED is earned by
+ *  every sampled read, or not at all. */
+export function sectionReadState(loading: boolean, allRead: boolean): SectionReadState {
+  if (allRead) return "VERIFIED";
   return loading ? "CHECKING" : "UNAVAILABLE";
 }
 

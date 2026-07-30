@@ -189,7 +189,10 @@ export default function CapitalAxisCard() {
       {standing !== null ? (
         <details className="mt-3 group">
           <summary className="cursor-pointer text-xs font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground">
-            The capital axis — all 12 rungs
+            {/* DERIVED, never typed (adversarial review 2026-07-30): the digit
+                twin of the killed "twelve rungs" count — the list is served,
+                so the count comes from the list. */}
+            The capital axis — all {standing.ladder.length} rungs
           </summary>
           <ul className="mt-2 grid gap-0.5">
             {standing.ladder.map((r) => (

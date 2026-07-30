@@ -115,9 +115,16 @@ function WalletPanelBody() {
   const [error, setError] = useState<string | null>(null);
   const [lastTx, setLastTx] = useState<string | null>(null);
 
-  const refresh = useCallback(async () => {
+  // `isLive` is the staleness guard (adversarial review 2026-07-30, confirmed
+  // 2/2): on an account switch mid-flight, the OLD wallet's late-resolving
+  // read must never write into the NEW wallet's panel — balances, allowance,
+  // or the sealed-engine approval rows (each carrying a live Revoke button).
+  // The house pattern is ReceiptTicket's `let active`; every setState below
+  // is gated on it.
+  const refresh = useCallback(async (isLive: () => boolean = () => true) => {
     if (!address) return;
     const usdcAddr = saleAddr ? await readSaleUsdcToken(saleAddr) : null;
+    if (!isLive()) return;
     setUsdcToken(usdcAddr);
     const [syn, usdc, allowance] = await Promise.all([
       synAddr ? readTokenBalance(synAddr, address) : Promise.resolve(null),
@@ -139,13 +146,24 @@ function WalletPanelBody() {
           }
         }),
       );
+      if (!isLive()) return;
       const ok = rows.filter((r): r is RetiredAllowance => r !== null);
       setRetiredAllowances(ok);
-      setRetiredUnreadable(rows.length - ok.length);
+      // Engines whose verify-link never arrived are UNKNOWN too — counted
+      // with the failed reads, never silently dropped.
+      setRetiredUnreadable(rows.length - ok.length + (RETIRED_SALES.length - retiredSpenders.length));
     } else {
+      if (!isLive()) return;
       setRetiredAllowances(null);
-      setRetiredUnreadable(0);
+      // FAIL-CLOSED (adversarial review 2026-07-30, confirmed 2/2): landing
+      // here with no readable USDC token (or no served links) means EVERY
+      // sealed engine's state is unknown — and because a sealed row renders
+      // only on a nonzero allowance, silence here IS how "clean" displays.
+      // The old `setRetiredUnreadable(0)` made an RPC hiccup render exactly
+      // like "all sealed engines checked and clean". Unknown is counted.
+      setRetiredUnreadable(RETIRED_SALES.length);
     }
+    if (!isLive()) return;
     setReads({
       // Human display (S7-e, readability floor): 2 decimals, TRUNCATED. This
       // line said "exact half-up" until 2026-07-26, naming a rule abolished
@@ -162,7 +180,11 @@ function WalletPanelBody() {
   }, [address, saleAddr, synAddr, retiredKey]);
 
   useEffect(() => {
-    void refresh();
+    let alive = true;
+    void refresh(() => alive);
+    return () => {
+      alive = false;
+    };
   }, [refresh]);
 
   const onAvalanche = chainId === avalanche.id;

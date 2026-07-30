@@ -5,7 +5,7 @@
 //
 // Node-loadable (Node >= 22.6 / 24).
 
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { surfaceClassification } from "../src/config/surfaceClassification.ts";
@@ -196,6 +196,38 @@ const protocolMapSrc = stripComments(
     /\.publicSafe\b/.test(protocolMapSrc),
     "/map filters items on publicSafe",
     "/map (ProtocolMap.tsx) no longer checks publicSafe on extracted items",
+  );
+}
+
+// ---------------------------------------------------------------------------
+// THE JOIN-LINK ONE-HOME PIN (adversarial review 2026-07-30, confirmed 2/2).
+// When the five hand-assembled join links were paid by import (buildJoinLink),
+// the duplicate-facts DEBT entry died with them — correctly — but that left
+// the fact with NO structural protection: a future hand-rolled copy is a
+// single-occurrence fact the duplicate guard can never flag (it reds only on
+// 2+ files), and the same review found a sixth survivor the old entry never
+// covered (ProposeSourceCreate — a template split hid it from the fact regex).
+// This sweep is the transferred protection: the `/join?source=${...}` link is
+// CONSTRUCTED in exactly one file, lib/joinLink.ts; anywhere else = RED.
+{
+  const srcDir = path.resolve(here, "..", "src");
+  const walk = function* (dir: string): Generator<string> {
+    for (const name of readdirSync(dir)) {
+      const abs = path.join(dir, name);
+      if (statSync(abs).isDirectory()) yield* walk(abs);
+      else if (/\.(ts|tsx)$/.test(name)) yield abs;
+    }
+  };
+  const offenders: string[] = [];
+  for (const f of walk(srcDir)) {
+    const rel = path.relative(srcDir, f).replace(/\\/g, "/");
+    if (rel === "lib/joinLink.ts") continue;
+    if (readFileSync(f, "utf8").includes("join?source=${")) offenders.push(rel);
+  }
+  check(
+    offenders.length === 0,
+    "the join link is constructed only in lib/joinLink.ts (one fact, one home)",
+    `hand-assembled join link outside lib/joinLink.ts — import buildJoinLink instead: ${offenders.join(", ")}`,
   );
 }
 {

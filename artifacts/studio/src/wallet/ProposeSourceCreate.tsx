@@ -31,6 +31,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
+import { buildJoinLink } from "@/lib/joinLink";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isAddress } from "viem";
 import { avalanche } from "viem/chains";
@@ -720,8 +721,10 @@ function StateAndAction({
   registryAddr: string;
   termsHash: `0x${string}` | null;
 }) {
-  const joinPath = `/join?source=${sourceId}`;
-  const joinUrl = `https://thesyndicate.money${joinPath}`;
+  // The ONE builder (adversarial review 2026-07-30): this was the sixth
+  // hand-assembled join link — a template split that the duplicate-facts
+  // regex could never see. One fact, one home.
+  const joinUrl = buildJoinLink(sourceId);
   const [pauseOpen, setPauseOpen] = useState(false);
   const [revokeOpen, setRevokeOpen] = useState(false);
   const shortId = `${sourceId.slice(0, 10)}…${sourceId.slice(-6)}`;

@@ -117,6 +117,12 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   trustCapital: { status: "future", since: "2026-07-30", where: "institutional trust capital (FAQ-named future recognition records — only when real gates exist)" },
   knowledgeOsGuided: { status: "future", since: "2026-07-30", where: "deeper guided Knowledge-OS tooling beyond the /learning map (protocolOsMap concept node)" },
   linkRegistry: { status: "future", since: "2026-07-30", where: "a governed runtime registry of outbound links/CTAs (protocolOsMap concept node — the forbidden-copy guard governs CTA copy today)" },
+  // Adversarial review 2026-07-30 (confirmed 2/2 skeptics): /whitepaper §10
+  // names THREE future modules and claimed all carry a registry status — but
+  // only the season reward pot had a key. The other two are registered here so
+  // the page's "guarded" sentence is true for every module it names.
+  laterEras: { status: "future", since: "2026-07-30", where: "the later membership eras (named in /whitepaper §10; each era opens by founder decision, none is scheduled)" },
+  marketplace: { status: "future", since: "2026-07-30", where: "the marketplace concept (named in /whitepaper §10; no contract, no route, no design frozen)" },
 
   // THE PUBLIC PROMISE NO KEY COVERED (registered 2026-07-26). The /activity
   // methodology note tells the world, in prose, "what the indexer adds next" —

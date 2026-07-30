@@ -67,7 +67,7 @@ export default function Whitepaper() {
   // page's own live reads resolving — never typed as a literal (2026-07-30).
   const eyebrowState = sectionReadState(
     r.loading || tk.loading,
-    [tk.entrySynPerUsdc, tk.marketPriceUsdcPerSyn, r.burnedSyn].some((v) => v !== null),
+    [tk.entrySynPerUsdc, tk.marketPriceUsdcPerSyn, r.burnedSyn].every((v) => v !== null),
   );
   const live = (segments: { value: string; unit: "USDC" | "SYN" }[] | null): ReactNode => (
     <Amount segments={segments} variant="inline" loading={r.loading || tk.loading} />

@@ -170,7 +170,7 @@ const ALLOWLIST: Record<string, string> = {
   "components/data-table/DataTable.tsx": "1 · ATOM (tables) — a single 9px occurrence; deferred to the sweep",
 
   // — public chrome and truth surfaces
-  "components/layout/PublicLayout.tsx": "3 · PUBLIC site chrome (header/footer, every page). RECOUNTED 2026-07-26: the brand tagline paid off its pair (a `text-[10px]` widening to a `sm:` step that capped at 11px, i.e. below the floor at EVERY width) and is now the `text-xs` token. Six sub-floor sizes remain in the chrome, deferred to the type-scale slice",
+  "components/layout/PublicLayout.tsx": "1 · PUBLIC site chrome (header/footer, every page). ⛔ RECOUNTED 2026-07-30 (adversarial review): the old entry forgave 3 and its prose said SIX remained — measured truth: ONE real sub-floor occurrence renders (the mobile-menu 11px path); the other 2 counted hits were bracket tokens inside a JSX block comment the line-based detector cannot see (that comment now spells its sizes in words). Deferred to the type-scale slice",
   // components/ProtocolReality.tsx entry DELETED 2026-07-30: PAID by the floor
   // sweep (8 occurrences → type-caption/text-xs/text-sm; the note line rose to
   // text-sm as the audit ordered for multi-sentence reading copy).
@@ -508,9 +508,14 @@ for (const [r, hits] of [...floorByFile].sort((a, b) => b[1].length - a[1].lengt
         `ADR-001 amendment 2026-07-16 §4.`,
     );
   } else if (hits.length < ceiling) {
-    notes.push(
-      `${r} — debt PAID: ${hits.length} left, ceiling still says ${ceiling}. Lower the number in this guard's ` +
-        `ALLOWLIST (same commit), so it can never drift back up.`,
+    // RED, not a note (adversarial review 2026-07-30, same ruling as the
+    // eyebrow arm's 2026-07-30 review): a one-way ratchet let the PublicLayout
+    // entry's spare slots stand as pre-armed pardons and its prose rot to
+    // "Six ... remain" over 1 real occurrence. Every other ledger edited in
+    // this arc fails both directions; this one now does too.
+    fail(
+      `${r} — debt PAID: ${hits.length} left, but the ALLOWLIST ceiling still says ${ceiling}. Lower the ` +
+        `number in this same commit — a spare slot silently forgives the next sub-floor addition.`,
     );
   }
   forgiven += hits.length;
@@ -528,7 +533,9 @@ for (const r of Object.keys(ALLOWLIST)) {
         `entry IN THE SAME COMMIT — otherwise the debt counter counts a file nobody can read.`,
     );
   } else if (!floorByFile.has(r)) {
-    notes.push(`${r} — CLEARED (zero sub-${FLOOR_PX}px left). DELETE its ALLOWLIST entry; if it is an atom, move it into NO_ARBITRARY.`);
+    // RED, not a note (adversarial review 2026-07-30): a fossil entry is a
+    // pre-armed pardon for the next regression in that file.
+    fail(`${r} — CLEARED (zero sub-${FLOOR_PX}px left). DELETE its ALLOWLIST entry in this same commit; if it is an atom, move it into NO_ARBITRARY.`);
   }
 }
 

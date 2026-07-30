@@ -187,13 +187,17 @@ function Wordmark() {
         <span className="whitespace-nowrap text-[1.02rem] font-semibold uppercase tracking-[0.18em] text-foreground sm:text-[1.14rem] 2xl:text-[1.26rem]">
           {brand.name}
         </span>
-        {/* TYPE SIZE ONLY (2026-07-26). This tagline was `text-[10px]` widening
-            to `sm:text-[11px]` — a responsive step that CAPPED BELOW the 12px
-            floor, so it never reached it at any width, on every page of the site.
-            It measured as the smallest text on /activity: 5 rendered instances at
-            11px. Now the `text-xs` token, which IS the floor. Nothing else about
-            this element changes — same face, same tracking, same colour, same
-            place.
+        {/* TYPE SIZE ONLY (2026-07-26). This tagline was a 10px arbitrary size
+            widening to an 11px step at sm: — a responsive pair that CAPPED BELOW
+            the 12px floor, so it never reached it at any width, on every page of
+            the site. (Sizes spelled in words here on purpose — adversarial
+            review 2026-07-30: the guard's line-based comment detector cannot see
+            a JSX block comment's inner lines, so bracket tokens written in a
+            comment were COUNTED as debt and silently satisfied this file's
+            allowlist ceiling.) It measured as the smallest text on /activity:
+            5 rendered instances at 11px. Now the `text-xs` token, which IS the
+            floor. Nothing else about this element changes — same face, same
+            tracking, same colour, same place.
 
             AND THE COLLISION THAT WAS NEVER MEASURED (founder-caught 2026-07-28,
             from a screenshot of /join — it is LIVE on thesyndicate.money, on the

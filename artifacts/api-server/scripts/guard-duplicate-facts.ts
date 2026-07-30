@@ -254,10 +254,17 @@ const DEBT: Readonly<Record<string, readonly string[]>> = {
     "artifacts/api-server/src/routes/receiptCard.ts",
   ],
   // "join?source=" DEBT entry DELETED 2026-07-30 (footer audit): the five
-  // hand-assembled copies were PAID BY IMPORT — every share surface now calls
-  // buildJoinLink (studio lib/joinLink.ts, canonical origin from the SEO
-  // registry); /source's window.location.origin variant died with them. The
-  // guard itself demanded this deletion once the duplication was gone.
+  // hand-assembled copies in this entry were PAID BY IMPORT (buildJoinLink,
+  // studio lib/joinLink.ts, canonical origin from the SEO registry);
+  // /source's window.location.origin variant died with them. ⛔ The first
+  // version of this comment said "every share surface now calls buildJoinLink"
+  // — the adversarial review (confirmed 2/2) found a SIXTH survivor this
+  // entry never covered (ProposeSourceCreate — a template split invisible to
+  // the fact regex, this guard's own documented truncation gap). That one is
+  // paid too, and the fact's protection now lives STRUCTURALLY in the studio
+  // guard-surface-coverage join-link sweep: constructing `/join?source=${`
+  // anywhere but lib/joinLink.ts is a RED build — single-occurrence copies
+  // included, which this guard's 2+-files rule can never see.
   "http endpoint::https://thesyndicate.money/receipt/$": [
     "artifacts/studio/src/components/referral/ReferralCommissionsPanel.tsx",
     "artifacts/studio/src/components/referral/ReferralToolsPanel.tsx",

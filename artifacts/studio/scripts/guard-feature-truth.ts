@@ -145,10 +145,14 @@ const PROSE_CLAIM_SITES: Record<
   },
   // /whitepaper §9-§10: "what is still ahead" names the standing model and
   // the season reward pot, and §10 tells the reader the module lists are
-  // GUARDED — this pin is what makes that sentence true. The day either key
-  // flips live, both sections must be rewritten in the same commit.
+  // GUARDED — this pin is what makes that sentence true. WIDENED 2026-07-30
+  // (adversarial review, confirmed 2/2): §10 names THREE future modules —
+  // later eras · marketplace · the pot — and the first pin covered only the
+  // pot + the standing model, leaving two named modules outside the mechanism
+  // the sentence claims covers them. The day ANY key flips live, the section
+  // must be rewritten in the same commit.
   "pages/Whitepaper.tsx": {
-    keys: ["standingModel", "seasonBounty"],
+    keys: ["standingModel", "seasonBounty", "laterEras", "marketplace"],
     fragment: "the season reward pot",
   },
 };
@@ -163,11 +167,49 @@ const REGISTERED_WITHOUT_CLAIM: Record<string, string> = {
     "2026-07-19 · per-category preferences (v2). Registered when notifications sealed live; no surface promises it yet, so there is no copy to pin. Delete this entry the day a claim site appears — or the day the capability ships.",
 };
 
-function stripComments(code: string): string {
-  return code
-    .replace(/\/\*[\s\S]*?\*\//g, "")
-    .replace(/^[ \t]*\/\/.*$/gm, "")
-    .replace(/([^:"'])\/\/[^\n"']*$/gm, "$1");
+/* STRING-AWARE since 2026-07-30 (adversarial review — the same hole the same
+ * arc fixed in guard-duplicate-facts, whose header records the damage: an
+ * in-string slash-star opened a phantom comment that swallowed ~1,000 lines of
+ * REAL code from a BLOCKING guard's sight). The old regex stripper here ran on
+ * RAW source, so an in-string "/*" before a lifecycle claim could hide it from
+ * §2/§3 silently. Ported walker: string literals are traversed with escapes, so
+ * a slash-star inside a string never opens a range. Proven on the exact shape:
+ * source `const p = "receipt/*"; lifecycle="FUTURE"` — old stripper returns
+ * ZERO marks (the claim vanished), this one returns 1. Lenient soft spot as in
+ * the twin: a regex literal spelling // can over-strip — misses copy, never
+ * invents a claim. */
+function stripComments(src: string): string {
+  let out = "";
+  let i = 0;
+  while (i < src.length) {
+    const ch = src[i]!;
+    if (ch === '"' || ch === "'" || ch === "`") {
+      const start = i;
+      i += 1;
+      while (i < src.length) {
+        if (src[i] === "\\") i += 2;
+        else if (src[i] === ch) {
+          i += 1;
+          break;
+        } else i += 1;
+      }
+      out += src.slice(start, i);
+      continue;
+    }
+    if (ch === "/" && src[i + 1] === "/") {
+      const nl = src.indexOf("\n", i);
+      i = nl < 0 ? src.length : nl;
+      continue;
+    }
+    if (ch === "/" && src[i + 1] === "*") {
+      const close = src.indexOf("*/", i + 2);
+      i = close < 0 ? src.length : close + 2;
+      continue;
+    }
+    out += ch;
+    i += 1;
+  }
+  return out;
 }
 
 function* walk(dir: string): Generator<string> {

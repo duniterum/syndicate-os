@@ -54,7 +54,7 @@ export default function Tokenomics() {
   // page's own live reads resolving — never typed as a literal (2026-07-30).
   const eyebrowState = sectionReadState(
     t.loading || r.loading,
-    [t.entrySynPerUsdc, t.marketPriceUsdcPerSyn, r.burnedSyn].some((v) => v !== null),
+    [t.entrySynPerUsdc, t.marketPriceUsdcPerSyn, r.burnedSyn].every((v) => v !== null),
   );
 
   const donut = t.allocations.map((a) => ({

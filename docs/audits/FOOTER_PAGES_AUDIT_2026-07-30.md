@@ -54,9 +54,12 @@ This file is the WORK LEDGER for the harmonization arc — tick findings as slic
 > **debt 216 → 179 occurrences · public 164 → 127 · allowlisted files 52 → 43.** Learning's step
 > details also rose 12→14px (the same-page two-sizes finding). Typecheck 0 · full chain EXIT 0.
 > Closes IMPORTANT ×4: /join 5 sites · /liquidity 5 runs · /map+/status shared reality-table
-> sizes · /status 8 sites. Closes MINOR ×5: /map FigureRow 10px · /contracts sub-floor family ·
-> /docs numerals · /learning step chip + two-sizes · /wallet 11px.
-> **39 remain open: 19 important · 19 minor + the tick discipline** (recounted: 23−4 · 24−5).
+> sizes · /status 8 sites. Closes MINOR ⛔ ×6 (this line said ×5 — the /learning bullet bundles
+> TWO findings, the step chip AND the same-page two-sizes; caught 2026-07-30 by the adversarial
+> review): /map FigureRow 10px · /contracts sub-floor family · /docs numerals · /learning step
+> chip · /learning two-sizes · /wallet 11px.
+> **⛔ 38 remain open: 19 important · 18 minor + the tick discipline** (this line said 39/19·19;
+> recounted: 23−4 · 24−6).
 
 > **✅ CLOSED 2026-07-30 — HARMONIZATION ARC, SLICE D (heading/type-role harmonization):**
 > IMPORTANT ×5 — /archive's second h2 joins type-h2 · /learning's text-lg heading → type-h2 ·
@@ -69,8 +72,9 @@ This file is the WORK LEDGER for the harmonization arc — tick findings as slic
 > /chronicle's hand-typed verify span → type-eyebrow · /activity's date-group heading closed AS
 > DOCUMENTED: the 14px choice already lives registered in guard-type-scale's EYEBROW_EXEMPT with
 > its measured reason (the 10px-grouping defect) — one home, no second copy to fix.
-> Typecheck 0 · full chain EXIT 0. **29 remain open: 14 important · 14 minor + the tick
-> discipline** (recounted: 19−5 · 19−5).
+> Typecheck 0 · full chain EXIT 0. **⛔ 28 remain open: 14 important · 13 minor + the tick
+> discipline** (this line said 29/14·14 — it carried slice C's off-by-one; recounted 2026-07-30:
+> 19−5 · 18−5).
 
 > **✅ CLOSED 2026-07-30 — HARMONIZATION ARC, SLICE E (twins → one home; atoms adopted):**
 > IMPORTANT ×5 — /fire-ledger adopts ProofAnchor (the atom whose own header names this page; its
@@ -91,7 +95,35 @@ This file is the WORK LEDGER for the harmonization arc — tick findings as slic
 > Tokenomics/Whitepaper Eyebrow twin died — ONE SectionEyebrow atom whose status DERIVES from the
 > page's own read state (19 hardcoded VERIFIED literals gone; VERIFIED is earned, CHECKING/
 > UNAVAILABLE honest). Studio guards EXIT 0 · duplicate-facts 117 facts PASS · typecheck 0.
-> **18 remain open: 9 important · 8 minor + the tick discipline** (recounted: 14−5 · 14−6).
+> **⛔ 16 remain open: 9 important · 6 minor + the tick discipline** (this line said 18/9·8 —
+> slice C's off-by-one PLUS the "/map speaks infrastructure jargon" minor, which slice B's /map
+> rewrite fixed with the finding's own Fix wording verbatim and never ticked; both caught
+> 2026-07-30 by the adversarial review; recounted: 14−5 · 13−6−1).
+
+> **✅ CLOSED (rode slice B, ticked late — adversarial review 2026-07-30): the "/map speaks
+> infrastructure jargon" minor.** ProtocolMap's eyebrow is "Public proof" and its lead reads
+> "read live by our own server and checked against the pinned contract records" — the finding's
+> own Fix text, character for character.
+
+> **🔍 THE ARC'S OWN ADVERSARIAL REVIEW (2026-07-30 — 4 lenses, 2 skeptics per finding, 40
+> agents): 18 filed, 15 confirmed, 0 of 30+ spot-checked closes false.** All 15 fixed the same
+> session: the Whitepaper §10 pin widened to ALL THREE named future modules (laterEras +
+> marketplace keys registered) · the "all 12 rungs" DIGIT twin of the killed count now derives
+> from the served ladder · the SIXTH hand-assembled join link (ProposeSourceCreate, invisible to
+> the fact regex) paid by import AND the fact's protection made STRUCTURAL (a join-link
+> construction outside lib/joinLink.ts is now a RED build — guard-surface-coverage sweep, proven
+> RED on the survivor) · the sub-12px allowlist ratchet made TWO-WAY BLOCKING (underpaid/fossil
+> entries now fail; proven RED on PublicLayout, whose entry forgave 3 where ONE renders — 2 were
+> comment phantoms; entry corrected, public debt recounted 127 → 125 by the guard's own line) ·
+> guard-feature-truth's comment stripper made STRING-AWARE (the duplicate-facts phantom class;
+> proven: the old stripper returns 0 marks on the damage shape, the new one 1) · the wallet
+> sealed-engine read made FAIL-CLOSED (an unreadable USDC token now COUNTS every sealed engine
+> as unknown instead of rendering exactly like "clean") + a liveness guard kills the
+> account-switch stale-write race · SectionEyebrow's derivation moved .some→.every (VERIFIED is
+> earned by ALL sampled reads — no more VERIFIED header over a PENDING pill on partial failure).
+> Two review notes stay OPEN for the founder: the /map archive-binding pin flip awaits his eyes
+> at the preview gate (the old pin claimed founder authority), and finding #232's evidence lines
+> were refreshed below.
 
 
 ## BLOCKING (6)
@@ -230,6 +262,11 @@ This file is the WORK LEDGER for the harmonization arc — tick findings as slic
 - **Fix:** Put section headings on type-h2 ("Membership engine", "Live reality reads") so /map carries the same section rhythm as its siblings.
 
 ### [harmony] /map and /status — Two footer pages render near-identical reality tables with disagreeing self-descriptions
+> ⛔ EVIDENCE REFRESHED 2026-07-30 (the arc's /map edits made the lines below half-stale; the
+> STRUCTURAL defect stands): /map's lead is now honestly scoped (no "Every signal" universal) and
+> MAP_GROUPS includes "archive" — so the two pages now share FIVE near-identical tables, not four,
+> and /map still footnotes that the authoritative wiring ledger lives on the status hub. The
+> one-job split remains the open decision (slice F, founder scope).
 - **Where:** artifacts/studio/src/pages/ProtocolMap.tsx:24
 - **Evidence:** /status renders ProtocolRealityPanel groups [chain, contracts, sale, tokens, archive] (ProtocolReality.tsx:185 default); /map renders [chain, contracts, tokens, sale, source] (line 24) plus the V3 band — 4 of 5 tables are the same content behind two footer links. Their claims disagree: /map's lead says "Every signal … in one place" (line 158) while its own footnote says "The authoritative wiring ledger for every module lives on the status hub" (lines 176-180). Neither page is the one authority — the twin-search disease (CHECK ①) at page scale.
 - **Fix:** Give each page ONE job: /status = posture ledger + holder index + surface map (drop its full reality tables or collapse them), /map = the complete live reality read (all 7 groups).
