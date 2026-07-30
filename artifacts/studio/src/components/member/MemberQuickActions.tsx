@@ -12,6 +12,7 @@ import { useAccount } from "wagmi";
 import { ArrowRight, Check, Copy, Lock, Share2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { buildJoinLink } from "@/lib/joinLink";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { MEMBER_ACTIONS, type MemberAction } from "@/config/memberActions";
 import { payingSourceId } from "@/lib/sourceIdentity";
@@ -103,7 +104,7 @@ function ActionCard({ action, own, address }: { action: MemberAction; own: OwnSt
               .catch(() => null)
               .then((rb) => {
                 const id = payingSourceId(rb?.sourceIdHex, address);
-                if (id) copy(`https://thesyndicate.money/join?source=${id}`);
+                if (id) copy(buildJoinLink(id));
               });
           }}
         >

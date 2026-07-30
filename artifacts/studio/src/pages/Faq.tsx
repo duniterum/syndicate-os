@@ -12,6 +12,7 @@ import { FaqJsonLd } from "@/components/faq/FaqJsonLd";
 import { FAQ_CATEGORIES } from "@/content/faq-content";
 import { useHeroReality } from "@/components/hero/useHeroReality";
 import { useTokenomics } from "@/components/tokenomics/useTokenomics";
+import { CONTENT_LINK_CLS } from "@/lib/contentLink";
 
 // FAQ (slice 2.3) — composed from the shared living chassis, NOT rebuilt.
 // Reuses PublicPage + LivingSignature + TransparencyPosture + SectionIndex; the
@@ -20,12 +21,9 @@ import { useTokenomics } from "@/components/tokenomics/useTokenomics";
 // hero card) or a one-click link to the live surface — answers hold no numerals,
 // so the on-screen text, the FAQPage JSON-LD, and the crawler view are identical.
 
-// Inline link treatment for links that live in Cards (outside the <Prose>
-// container, so they don't inherit its `[&_a]` styling). Mirrors the Prose atom's
-// link axis exactly — cyan/primary, underlined, visible focus ring — so a link
-// reads as a link on every content surface, not as plain body text.
-const linkCls =
-  "text-primary underline underline-offset-2 decoration-primary/40 hover:decoration-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:rounded-sm";
+// The inline card-link treatment moved to its ONE home 2026-07-30 (footer
+// audit): lib/contentLink.ts — /docs hand-typed the same treatment without
+// the focus ring, which is exactly what a local constant cannot prevent.
 
 // TOC entries: an "All" reset plus every category. The SectionIndex drives the
 // active-category filter (onSelect), so the sticky rail and the chips stay in sync.
@@ -103,9 +101,9 @@ export default function Faq() {
           />
           <p className="mt-4 type-body text-muted-foreground">
             The full live picture — supply, distribution, the two prices, burn, and treasury routing —
-            is on <Link href="/tokenomics" className={linkCls}>Tokenomics</Link> and the{" "}
-            <Link href="/status" className={linkCls}>Status</Link> ledger. Preview an exact
-            entry quote on <Link href="/join" className={linkCls}>Join</Link>.
+            is on <Link href="/tokenomics" className={CONTENT_LINK_CLS}>Tokenomics</Link> and the{" "}
+            <Link href="/status" className={CONTENT_LINK_CLS}>Status</Link> ledger. Preview an exact
+            entry quote on <Link href="/join" className={CONTENT_LINK_CLS}>Join</Link>.
           </p>
         </Card>
 
@@ -135,11 +133,11 @@ export default function Faq() {
           <h2 className="type-h3 text-foreground">Still have a question?</h2>
           <p className="mt-2 type-body text-muted-foreground">
             Every contract, wallet, and balance is public — the surest answer is always the chain itself.
-            Verify anything on the <Link href="/status" className={linkCls}>Status</Link> ledger or the{" "}
-            <Link href="/map" className={linkCls}>Protocol Map</Link>, read the full{" "}
-            <Link href="/whitepaper" className={linkCls}>Whitepaper</Link>, or ask the Guide — the
+            Verify anything on the <Link href="/status" className={CONTENT_LINK_CLS}>Status</Link> ledger or the{" "}
+            <Link href="/map" className={CONTENT_LINK_CLS}>Protocol Map</Link>, read the full{" "}
+            <Link href="/whitepaper" className={CONTENT_LINK_CLS}>Whitepaper</Link>, or ask the Guide — the
             floating help assistant in the corner of every page. When you're ready,{" "}
-            <Link href="/join" className={linkCls}>Take a seat</Link> — observe first, join if it suits you.
+            <Link href="/join" className={CONTENT_LINK_CLS}>Take a seat</Link> — observe first, join if it suits you.
           </p>
         </Card>
       </div>

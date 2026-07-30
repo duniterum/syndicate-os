@@ -21,6 +21,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import QRCode from "react-qr-code";
+import { buildJoinLink } from "@/lib/joinLink";
 import {
   Check,
   Copy,
@@ -84,7 +85,7 @@ function useOwnReferralLink(wallet: string | undefined): string | null {
     if (!wallet) return;
     const resolve = (sourceIdHex: string | null) => {
       const id = payingSourceId(sourceIdHex, wallet);
-      if (active && id) setLink(`https://thesyndicate.money/join?source=${id}`);
+      if (active && id) setLink(buildJoinLink(id));
     };
     fetchSourceStanding()
       .then((r) => resolve(r?.sourceIdHex ?? null))

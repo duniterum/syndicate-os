@@ -22,11 +22,13 @@
 //
 // Dependency-free → Node-loadable for guards.
 
-export const LP_PAIR_ADDRESS = "0xe12491b79c9cfc6a07db8cd7fc8b3da0bb019389";
+// LP_PAIR_ADDRESS + dexscreenerUrl DELETED 2026-07-30 (footer audit): the pair
+// address was the file's own "never hardcoded client-side" law broken one
+// export below where it was stated. The DexScreener tile now derives its URL
+// AT RENDER from the server's verify-links lpPair entry (Liquidity.tsx
+// ActionRail) — one fact, one home, fail-closed like the Verify tile.
 
 export const LIQUIDITY_LINKS = {
-  /** Founder-verified in browser 2026-07-14 (chart loads). */
-  dexscreenerUrl: `https://dexscreener.com/avalanche/${LP_PAIR_ADDRESS}`,
   // REBRANDED 2026-07-30 (footer audit): traderjoexyz.com now 303-redirects to
   // lfj.gg — measured this session: the OLD URL's redirect target is byte-for-
   // byte the URL below (+utm params we drop); /add answers 200 directly; the

@@ -327,6 +327,10 @@ const READING_SURFACES: Record<string, string> = {
   "pages/Risk.tsx": "the risk disclosure — the page it is least acceptable to make small",
   "pages/Privacy.tsx": "the personal-data page",
   "pages/ChronicleTeaser.tsx": "/chronicle — the protocol's written record, read end to end",
+  // Footer audit 2026-07-30: /support ran its whole body at 14px — the exact
+  // founder-named class 24131e7 fixed on Terms/Risk/Privacy, left behind
+  // because only those four were pinned. Pinned so it can never regress.
+  "pages/Support.tsx": "/support — where a person in need reads how to get help",
 };
 
 // Call sites where the eyebrow shape is DELIBERATELY not the eyebrow class, each

@@ -72,6 +72,27 @@ This file is the WORK LEDGER for the harmonization arc — tick findings as slic
 > Typecheck 0 · full chain EXIT 0. **29 remain open: 14 important · 14 minor + the tick
 > discipline** (recounted: 19−5 · 19−5).
 
+> **✅ CLOSED 2026-07-30 — HARMONIZATION ARC, SLICE E (twins → one home; atoms adopted):**
+> IMPORTANT ×5 — /fire-ledger adopts ProofAnchor (the atom whose own header names this page; its
+> touch-allowlist entry burned, guard-demanded) + the record rows join the approved feed grammar
+> (type-body sentence · right-aligned gold amount · sender short-form + explorer link beside the
+> chip when Community — the banner finding closes WITH its rows) · /wallet approvals now read the
+> USDC allowance toward EVERY canon sale engine (V3 + the three sealed — a leftover approval on a
+> retired sale surfaces with its own revoke; unreadable states counted, never assumed clean) ·
+> /support body joins the reading system (type-body + measure, §⑦-pinned, red-proven).
+> MINOR ×6 — /docs card links carry the shared CONTENT_LINK_CLS ring (focus allowlist entry
+> burned) · /docs LivingSignature comment corrected (guard-freshness RULED the badge decorative on
+> a page with no live read — the comment was the drift, dated) · the LP pair address left the
+> client (DexScreener URL derived at render from verify-links; LP_PAIR_ADDRESS deleted) · the
+> join-link fact has ONE home (buildJoinLink — 5 hand-assembled copies + /source's
+> window.location.origin variant all paid by import; duplicate-facts' stale DEBT entry deleted on
+> the guard's own order; the receipt guard's pin follows the fact to its new home) · /wallet's
+> revoke hash is now an explorer link (the fossil ExternalLink import finally used) · the
+> Tokenomics/Whitepaper Eyebrow twin died — ONE SectionEyebrow atom whose status DERIVES from the
+> page's own read state (19 hardcoded VERIFIED literals gone; VERIFIED is earned, CHECKING/
+> UNAVAILABLE honest). Studio guards EXIT 0 · duplicate-facts 117 facts PASS · typecheck 0.
+> **18 remain open: 9 important · 8 minor + the tick discipline** (recounted: 14−5 · 14−6).
+
 
 ## BLOCKING (6)
 

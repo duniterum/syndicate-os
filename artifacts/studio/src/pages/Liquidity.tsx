@@ -12,6 +12,7 @@ import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { Card } from "@/components/ui/card";
 import { useTokenomics } from "@/components/tokenomics/useTokenomics";
+import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import {
   LIQUIDITY_LINKS,
   WHY_LP_CARDS,
@@ -31,7 +32,8 @@ const RAIL: RailAction[] = [
   { label: "Trade SYN", hint: "Swap on LFJ", href: LIQUIDITY_LINKS.tradeUrl, variant: "primary" },
   { label: "Add Liquidity", hint: "Deposit SYN + USDC", href: LIQUIDITY_LINKS.addLiquidityUrl, variant: "secondary" },
   { label: "Become an LP", hint: "How it works · risks", anchor: "#provide-liquidity", variant: "secondary" },
-  { label: "View Pool", hint: "DexScreener chart", href: LIQUIDITY_LINKS.dexscreenerUrl, variant: "ghost" },
+  // "View Pool" is appended AT RENDER from the served pair address — the
+  // client holds no second copy of the pair (footer audit 2026-07-30).
 ];
 
 function railClass(variant: RailAction["variant"]): string {
@@ -41,6 +43,26 @@ function railClass(variant: RailAction["variant"]): string {
 }
 
 function ActionRail() {
+  // The pair address reaches this page ONLY through the server's verify-links
+  // (footer audit 2026-07-30: the DexScreener URL used to break the file's own
+  // "never hardcoded client-side" law one export below it). Fail-closed: no
+  // served pair, no tile — the same rule as the Verify Pair tile below.
+  const { data } = useGetProtocolVerifyLinks();
+  const pairAddr =
+    (data?.links?.find((l) => l.id === "lpPair")?.url ?? "").match(
+      /\/address\/(0x[0-9a-fA-F]{40})\b/,
+    )?.[1] ?? null;
+  const actions: RailAction[] = pairAddr
+    ? [
+        ...RAIL,
+        {
+          label: "View Pool",
+          hint: "DexScreener chart",
+          href: `https://dexscreener.com/avalanche/${pairAddr}`,
+          variant: "ghost",
+        },
+      ]
+    : [...RAIL];
   return (
     <Card className="bg-card/40 border-border/50 p-5 mb-12">
       <div className="mb-3">
@@ -54,7 +76,7 @@ function ActionRail() {
         </p>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
-        {RAIL.map((a) => (
+        {actions.map((a) => (
           <a
             key={a.label}
             href={a.href ?? a.anchor}

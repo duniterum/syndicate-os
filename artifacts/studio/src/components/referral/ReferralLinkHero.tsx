@@ -12,6 +12,7 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
+import { buildJoinLink } from "@/lib/joinLink";
 import { Check, Copy, Link2, QrCode } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -41,7 +42,7 @@ export function ReferralLinkHero({ readback }: { readback: StandingReadback | nu
   // the server-resolved id first, canonical derivation as the fallback.
   const founderSigned = readback?.sourceOrigin === "founder-signed";
   const sourceId = payingSourceId(readback?.sourceIdHex, address);
-  const link = sourceId ? `https://thesyndicate.money/join?source=${sourceId}` : null;
+  const link = sourceId ? buildJoinLink(sourceId) : null;
 
   useEffect(() => {
     let alive = true;

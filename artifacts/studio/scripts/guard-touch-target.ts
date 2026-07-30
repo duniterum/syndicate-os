@@ -154,7 +154,9 @@ const PUBLIC_DEBT: Record<string, string> = {
     "(1) a `text-[10.5px]` explorer anchor at 16px. The section's CTA reaches the floor and is counted compliant (2026-07-26).",
   "components/referral/ShareMenu.tsx":
     "(2) the share menu rows at 36px — a menu list, the class Material sizes at 48 (2026-07-26).",
-  "pages/FireLedger.tsx": "(1) a `text-[10px]` explorer anchor, 15px (2026-07-26).",
+  // pages/FireLedger.tsx entry DELETED 2026-07-30: the record rows adopted
+  // ProofAnchor (44px) and the sender-address link carries min-h-11 — the
+  // guard itself demanded the deletion once every control reached the floor.
   "pages/JoinProtocol.tsx":
     "(1) a `text-[10px]` explorer anchor, 15px, on the conversion page. Its amount keypad is at min-h-11 and passes (2026-07-26).",
   "pages/PublicHome.tsx": "(1) one 30px pill link in the hero band (2026-07-26).",

@@ -12,6 +12,7 @@
 
 import { useState } from "react";
 import { Link } from "wouter";
+import { buildJoinLink } from "@/lib/joinLink";
 import { Check, Copy, Link2, Network } from "lucide-react";
 import {
   getGetSourceValidateQueryKey,
@@ -74,7 +75,9 @@ function ValidationResult({ sourceId }: { sourceId: string }) {
     );
   }
   if (data.exists === true && data.active === true) {
-    const link = `${window.location.origin}/join?source=${sourceId}`;
+    // The CANONICAL origin, never window.location.origin — an off-prod rig
+    // must never hand out a localhost share link (footer audit 2026-07-30).
+    const link = buildJoinLink(sourceId);
     const copy = async () => {
       try {
         await navigator.clipboard.writeText(link);

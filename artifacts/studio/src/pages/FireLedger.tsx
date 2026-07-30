@@ -15,6 +15,7 @@ import { MemberAppPage } from "@/components/member/MemberAppPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { StatusPill } from "@/components/status-pill/StatusPill";
+import { ProofAnchor } from "@/components/proof/ProofAnchor";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { useHeroReality } from "@/components/hero/useHeroReality";
@@ -136,31 +137,50 @@ function ProofOfBurnRecord() {
         </Card>
       ) : (
         <div className="space-y-2">
+          {/* THE APPROVED ROW GRAMMAR (footer audit 2026-07-30): the numbered
+              record now renders the same grammar as the live feed rows —
+              sentence on type-body, the figure in its own right-aligned gold
+              tabular-nums column, the 44px ProofAnchor (the atom whose own
+              header names this page as the surface that never adopted it),
+              and — the 2026-07-25 address model — a Community sender's
+              short-form address with its explorer link beside the chip (the
+              chip classifies, the address verifies; Founder rows keep the
+              voice rule: named, with the tx anchor as signature). */}
           {ledger.map((b) => (
             <Card key={`${b.transactionHash}-${b.logIndex}`} className="bg-card/40 border-border/50 p-3.5">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
                 <StatusPill tone="caution" size="xs">
                   Proof of Burn #{b.proofOfBurnNumber}
                 </StatusPill>
-                <p className="text-sm text-foreground/90 flex-1 min-w-48">
-                  {formatSynRaw(b.amountSynRaw)} SYN was retired to the burn
-                  address — gone for everyone, forever.
+                <p className="type-body text-foreground/90 flex-1 min-w-48">
+                  Retired to the burn address — gone for everyone, forever.
                 </p>
+                <span className="font-mono text-base font-semibold text-gold tabular-nums whitespace-nowrap">
+                  {formatSynRaw(b.amountSynRaw)} SYN
+                </span>
+              </div>
+              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
                 <StatusPill tone={b.senderLabel === "Founder" ? "proof" : "neutral"} size="xs">
                   {b.senderLabel}
                 </StatusPill>
+                {b.actorShort && b.actorAddress && explorerBase ? (
+                  <a
+                    href={`${explorerBase}/address/${b.actorAddress}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center gap-1 type-caption text-proof transition-colors hover:text-proof-hover"
+                  >
+                    {b.actorShort}
+                    <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
+                  </a>
+                ) : null}
                 <span className="font-mono text-xs text-muted-foreground">
                   {b.isoDayUtc} · block {b.blockNumber.toLocaleString("en-US")}
                 </span>
                 {explorerBase ? (
-                  <a
-                    href={`${explorerBase}/tx/${b.transactionHash}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-proof hover:text-proof-hover"
-                  >
-                    verify <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
-                  </a>
+                  <span className="ml-auto">
+                    <ProofAnchor compact href={`${explorerBase}/tx/${b.transactionHash}`} />
+                  </span>
                 ) : null}
               </div>
             </Card>

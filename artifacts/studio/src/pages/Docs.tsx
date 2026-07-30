@@ -8,11 +8,16 @@ import { TransparencyPosture } from "@/components/living/TransparencyPosture";
 import { SectionIndex, type IndexEntry } from "@/components/living/SectionIndex";
 import { getRouteSeoByPath, getRouteLabel } from "@/lib/seo-route-registry";
 import { DOCS_GROUPS, DOCS_JOURNEY } from "@/content/docs-content";
+import { CONTENT_LINK_CLS } from "@/lib/contentLink";
 
 // Docs (slice 2.4) — the protocol operating manual / knowledge hub. Composed from
-// the living chassis (PublicPage + LivingSignature + TransparencyPosture +
-// SectionIndex); the only new pieces are the curated corpus (docs-content.ts) and
-// this layout. Every card links to a REAL route; its STATUS is DERIVED from the
+// the living chassis (PublicPage + TransparencyPosture + SectionIndex); the only
+// new pieces are the curated corpus (docs-content.ts) and this layout.
+// NO LivingSignature — deliberate, ruled 2026-07-30 (footer audit): this page
+// reads no live figure, and guard-freshness rightly REDs a signature on a page
+// with nothing live to sign ("a decorative live signature"). The old comment
+// claimed the badge and never imported it; the comment was the drift.
+// Every card links to a REAL route; its STATUS is DERIVED from the
 // SEO route registry (never hardcoded) — so a surface flips its own pill when its
 // posture changes. Audience tags are editorial wayfinding, never access-gating.
 
@@ -128,11 +133,11 @@ export default function Docs() {
           <h2 className="type-h3 text-foreground">Where to next</h2>
           <p className="mt-2 type-body text-muted-foreground">
             New to it all? Start with the plain-language{" "}
-            <Link href="/learning" className="text-primary underline decoration-primary/40 underline-offset-2 hover:decoration-primary">Learn</Link>{" "}
+            <Link href="/learning" className={CONTENT_LINK_CLS}>Learn</Link>{" "}
             page. Want the proof? Open the{" "}
-            <Link href="/status" className="text-primary underline decoration-primary/40 underline-offset-2 hover:decoration-primary">Status</Link>{" "}
+            <Link href="/status" className={CONTENT_LINK_CLS}>Status</Link>{" "}
             ledger. Ready to observe from the inside?{" "}
-            <Link href="/join" className="text-primary underline decoration-primary/40 underline-offset-2 hover:decoration-primary">Take a seat</Link>{" "}
+            <Link href="/join" className={CONTENT_LINK_CLS}>Take a seat</Link>{" "}
             — observe first, join if it suits you.
           </p>
         </Card>

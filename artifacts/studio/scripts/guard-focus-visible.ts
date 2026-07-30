@@ -153,7 +153,9 @@ const ALLOWLIST: Record<string, string> = {
     "2 · both explorer anchors share the local `anchorClass` constant, which styles colour + hover but no focus state — one constant to fix, two call sites healed",
   "pages/Archive.tsx": "5 · 5 archive navigation <Link>s",
   "pages/ContractMemory.tsx": "2 · 2 contract-memory <Link>s",
-  "pages/Docs.tsx": "3 · 3 docs <Link>s outside the <Prose> subtree (the in-prose links already ring via Prose's descendant selector)",
+  // pages/Docs.tsx entry DELETED 2026-07-30 (footer audit): its 3 card links
+  // now carry the shared CONTENT_LINK_CLS ring constant (lib/contentLink.ts) —
+  // the same one /faq's cards use; the guard itself demanded the deletion.
   // RESTORED 2026-07-26: the Founder reverted the ProofAnchor swap on this page
   // (the complaint was type size, not composition), so the bare verify <a> is back
   // and the ledger must describe the tree as it IS, not as I preferred it.

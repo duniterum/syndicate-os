@@ -21,6 +21,7 @@
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { useAccount } from "wagmi";
 import { ChevronDown, Download, Share2 } from "lucide-react";
+import { buildJoinLink } from "@/lib/joinLink";
 import { toSvg } from "html-to-image";
 import { Card } from "@/components/ui/card";
 import { StatusPill } from "@/components/status-pill/StatusPill";
@@ -339,7 +340,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
   // The member's permanent link — same derivation as the hero above the tabs
   // (payingSourceId: the source that PAYS this wallet, canonical fallback).
   const sourceId = payingSourceId(readback?.sourceIdHex ?? null, address);
-  const joinLink = sourceId !== null ? `https://thesyndicate.money/join?source=${sourceId}` : null;
+  const joinLink = sourceId !== null ? buildJoinLink(sourceId) : null;
 
   if (joinLink === null || address === undefined) {
     return (

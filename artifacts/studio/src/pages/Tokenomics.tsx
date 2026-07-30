@@ -1,7 +1,7 @@
-import { type ReactNode } from "react";
+import { SectionEyebrow, sectionReadState } from "@/components/prose/SectionEyebrow";
 import { Link } from "wouter";
 import { PublicPage } from "@/components/PublicPage";
-import { Prose, ProseSection, ProseIndex, ProseCallout } from "@/components/prose/Prose";
+import { Prose, ProseSection, ProseCallout } from "@/components/prose/Prose";
 import { StatusPill } from "@/components/status-pill/StatusPill";
 import { Amount } from "@/components/amount/Amount";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
@@ -35,16 +35,8 @@ function Live({ value, unit }: { value: string | null; unit: string }) {
     </span>
   );
 }
-function Eyebrow({ n, status }: { n: number; status: string }): ReactNode {
-  return (
-    <>
-      <ProseIndex n={n} />
-      <StatusPill tone={status === "VERIFIED" ? "proof" : "caution"} size="xs">
-        {status}
-      </StatusPill>
-    </>
-  );
-}
+// The local Eyebrow twin died 2026-07-30 (footer audit): the ONE atom lives at
+// components/prose/SectionEyebrow.tsx, and its status is DERIVED, never typed.
 
 const usdc = (v: string | null) => (v ? [{ value: v, unit: "USDC" as const }] : null);
 const syn = (v: string | null) => (v ? [{ value: v, unit: "SYN" as const }] : null);
@@ -58,6 +50,12 @@ const weight = (v: string | null): number | null => {
 export default function Tokenomics() {
   const r = useHeroReality();
   const t = useTokenomics();
+  // ONE derived state for every section eyebrow: VERIFIED is EARNED by the
+  // page's own live reads resolving — never typed as a literal (2026-07-30).
+  const eyebrowState = sectionReadState(
+    t.loading || r.loading,
+    [t.entrySynPerUsdc, t.marketPriceUsdcPerSyn, r.burnedSyn].some((v) => v !== null),
+  );
 
   const donut = t.allocations.map((a) => ({
     key: a.key,
@@ -74,7 +72,7 @@ export default function Tokenomics() {
       badge={<LivingSignature />}
     >
       <Prose className="max-w-5xl">
-        <ProseSection id="supply" title="Fixed supply" eyebrow={<Eyebrow n={1} status="VERIFIED" />}>
+        <ProseSection id="supply" title="Fixed supply" eyebrow={<SectionEyebrow n={1} state={eyebrowState} />}>
           <p>
             SYN is a minimal, fixed-supply ERC-20 — no mint function, no admin powers, no transfer
             restrictions — so supply can only stay fixed or fall via burns. Read live:{" "}
@@ -89,7 +87,7 @@ export default function Tokenomics() {
           </ProseCallout>
         </ProseSection>
 
-        <ProseSection id="distribution" title="Distribution — design vs. on-chain now" eyebrow={<Eyebrow n={2} status="VERIFIED" />}>
+        <ProseSection id="distribution" title="Distribution — design vs. on-chain now" eyebrow={<SectionEyebrow n={2} state={eyebrowState} />}>
           <p>
             SYN was minted across seven public allocation wallets. Each allocation's{" "}
             <strong>mint-time design target</strong> sits beside its <strong>current live balance</strong>{" "}
@@ -100,7 +98,7 @@ export default function Tokenomics() {
           <div className="mt-4"><VerifyOnChain ids={["synToken"]} /></div>
         </ProseSection>
 
-        <ProseSection id="prices" title="Two prices & the pool" eyebrow={<Eyebrow n={3} status="VERIFIED" />}>
+        <ProseSection id="prices" title="Two prices & the pool" eyebrow={<SectionEyebrow n={3} state={eyebrowState} />}>
           <p>
             Two <strong>independent prices</strong>, neither valuing the other: the{" "}
             <strong>entry rate</strong> set by the protocol (
@@ -136,7 +134,7 @@ export default function Tokenomics() {
           </ProseCallout>
         </ProseSection>
 
-        <ProseSection id="routing" title="Revenue routing — live" eyebrow={<Eyebrow n={4} status="VERIFIED" />}>
+        <ProseSection id="routing" title="Revenue routing — live" eyebrow={<SectionEyebrow n={4} state={eyebrowState} />}>
           <p>
             SYN is acquired with USDC through the membership engine, which routes the net USDC on-chain
             across Reserve, Liquidity, and Operations. Members hold no claim — it is protocol revenue.
@@ -154,7 +152,7 @@ export default function Tokenomics() {
           <VerifyOnChain ids={["vaultWallet", "operationsWallet", "lpPair"]} />
         </ProseSection>
 
-        <ProseSection id="burn" title="Burn" eyebrow={<Eyebrow n={5} status="VERIFIED" />}>
+        <ProseSection id="burn" title="Burn" eyebrow={<SectionEyebrow n={5} state={eyebrowState} />}>
           <p>
             SYN sent to the burn address is removed permanently — no automated buyback, no scarcity
             promise. Burned to date, read live from the burn address:{" "}
@@ -163,7 +161,7 @@ export default function Tokenomics() {
           <VerifyOnChain ids={["burnAddress", "synToken"]} />
         </ProseSection>
 
-        <ProseSection id="vesting" title="Founder allocation — vested & public" eyebrow={<Eyebrow n={6} status="VERIFIED" />}>
+        <ProseSection id="vesting" title="Founder allocation — vested & public" eyebrow={<SectionEyebrow n={6} state={eyebrowState} />}>
           <Card className="my-2 bg-card/40 border-border/60 p-5">
             <div className="flex flex-wrap items-baseline justify-between gap-3">
               <div className="type-eyebrow text-muted-foreground">
@@ -186,7 +184,7 @@ export default function Tokenomics() {
           </Card>
         </ProseSection>
 
-        <ProseSection id="no-yield" title="No yield, by design" eyebrow={<Eyebrow n={7} status="VERIFIED" />}>
+        <ProseSection id="no-yield" title="No yield, by design" eyebrow={<SectionEyebrow n={7} state={eyebrowState} />}>
           <ProseCallout tone="risk" title="Read this">
             <p>
               SYN is an <strong>experimental utility membership token</strong>. It is{" "}

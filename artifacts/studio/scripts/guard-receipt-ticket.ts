@@ -430,14 +430,23 @@ check(
   "ticket: the referral link comes from the ONE resolver (payingSourceId)",
   "ticket: the share link must reuse payingSourceId from sourceIdentity — never a rebuilt derivation (founder ⑪)",
 );
+// 2026-07-30 (footer audit): the pin follows the fact to its ONE home — the
+// ticket now calls the shared buildJoinLink builder (lib/joinLink.ts, canonical
+// origin) instead of hand-assembling the literal. Same law, same directions:
+// exactly one construction site, and it stays OFF the paper.
 check(
-  (ticket.match(/join\?source=/g) ?? []).length === 1,
+  /from "@\/lib\/joinLink"/.test(ticketRaw),
+  "ticket: the share link comes from the ONE builder (lib/joinLink)",
+  "ticket: the share link must be built by buildJoinLink — never a hand-assembled origin (Check ①)",
+);
+check(
+  (ticket.match(/buildJoinLink\(/g) ?? []).length === 1,
   "ticket: exactly one share-link construction site",
   "ticket: the referral link must be built exactly once (the share artifact), never scattered",
 );
 {
   const paperStart = ticketRaw.indexOf("ref={paperRef}");
-  const linkIdx = ticketRaw.indexOf("join?source=");
+  const linkIdx = ticketRaw.indexOf("buildJoinLink(");
   const paperEnd = ticketRaw.indexOf("Zone G");
   check(
     paperStart !== -1 && linkIdx !== -1 && paperEnd !== -1 && (linkIdx < paperStart || linkIdx > paperEnd),

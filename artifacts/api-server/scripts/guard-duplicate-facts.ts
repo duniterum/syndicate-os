@@ -253,13 +253,11 @@ const DEBT: Readonly<Record<string, readonly string[]>> = {
     "artifacts/api-server/src/routes/joinCard.ts",
     "artifacts/api-server/src/routes/receiptCard.ts",
   ],
-  "http endpoint::https://thesyndicate.money/join?source=$": [
-    "artifacts/studio/src/components/member/MemberQuickActions.tsx",
-    "artifacts/studio/src/components/referral/ReferralLinkHero.tsx",
-    "artifacts/studio/src/components/referral/ReferralLinkPanel.tsx",
-    "artifacts/studio/src/components/referral/ReferralToolsPanel.tsx",
-    "artifacts/studio/src/wallet/ReceiptTicket.tsx",
-  ],
+  // "join?source=" DEBT entry DELETED 2026-07-30 (footer audit): the five
+  // hand-assembled copies were PAID BY IMPORT — every share surface now calls
+  // buildJoinLink (studio lib/joinLink.ts, canonical origin from the SEO
+  // registry); /source's window.location.origin variant died with them. The
+  // guard itself demanded this deletion once the duplication was gone.
   "http endpoint::https://thesyndicate.money/receipt/$": [
     "artifacts/studio/src/components/referral/ReferralCommissionsPanel.tsx",
     "artifacts/studio/src/components/referral/ReferralToolsPanel.tsx",

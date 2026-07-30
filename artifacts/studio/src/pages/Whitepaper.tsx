@@ -1,7 +1,8 @@
 import { type ReactNode } from "react";
 import { Link } from "wouter";
 import { PublicPage } from "@/components/PublicPage";
-import { Prose, ProseSection, ProseIndex, ProseCallout } from "@/components/prose/Prose";
+import { Prose, ProseSection, ProseCallout } from "@/components/prose/Prose";
+import { SectionEyebrow, sectionReadState } from "@/components/prose/SectionEyebrow";
 import { StatusPill } from "@/components/status-pill/StatusPill";
 import { Amount } from "@/components/amount/Amount";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
@@ -53,16 +54,8 @@ function LiveNum({ value, unit }: { value: string | null; unit: string }) {
     </span>
   );
 }
-function Eyebrow({ n, status }: { n: number; status: string }) {
-  return (
-    <>
-      <ProseIndex n={n} />
-      <StatusPill tone={status === "VERIFIED" ? "proof" : status === "FUTURE" ? "neutral" : "caution"} size="xs">
-        {status}
-      </StatusPill>
-    </>
-  );
-}
+// The local Eyebrow twin died 2026-07-30 (footer audit): the ONE atom lives at
+// components/prose/SectionEyebrow.tsx, and its status is DERIVED, never typed.
 
 const usdc = (v: string | null) => (v ? [{ value: v, unit: "USDC" as const }] : null);
 const syn = (v: string | null) => (v ? [{ value: v, unit: "SYN" as const }] : null);
@@ -70,6 +63,12 @@ const syn = (v: string | null) => (v ? [{ value: v, unit: "SYN" as const }] : nu
 export default function Whitepaper() {
   const r = useHeroReality();
   const tk = useTokenomics();
+  // ONE derived state for every section eyebrow: VERIFIED is EARNED by the
+  // page's own live reads resolving — never typed as a literal (2026-07-30).
+  const eyebrowState = sectionReadState(
+    r.loading || tk.loading,
+    [tk.entrySynPerUsdc, tk.marketPriceUsdcPerSyn, r.burnedSyn].some((v) => v !== null),
+  );
   const live = (segments: { value: string; unit: "USDC" | "SYN" }[] | null): ReactNode => (
     <Amount segments={segments} variant="inline" loading={r.loading || tk.loading} />
   );
@@ -93,7 +92,7 @@ export default function Whitepaper() {
           <SectionIndex entries={SECTIONS} className="mb-10 lg:mb-0" />
 
           <Prose className="min-w-0">
-            <ProseSection id="what" title="What The Syndicate is" eyebrow={<Eyebrow n={1} status="VERIFIED" />}>
+            <ProseSection id="what" title="What The Syndicate is" eyebrow={<SectionEyebrow n={1} state={eyebrowState} />}>
               <p>
                 The Syndicate is an on-chain <strong>membership protocol</strong> on Avalanche C-Chain.
                 You join by acquiring <strong>SYN</strong> with USDC and receive a permanent, numbered,
@@ -112,7 +111,7 @@ export default function Whitepaper() {
               />
             </ProseSection>
 
-            <ProseSection id="risk" title="Risk & legal" eyebrow={<Eyebrow n={2} status="VERIFIED" />}>
+            <ProseSection id="risk" title="Risk & legal" eyebrow={<SectionEyebrow n={2} state={eyebrowState} />}>
               <ProseCallout tone="risk" title="Read before participating">
                 <p>
                   SYN is an <strong>experimental utility membership token</strong>. It is{" "}
@@ -123,7 +122,7 @@ export default function Whitepaper() {
               </ProseCallout>
             </ProseSection>
 
-            <ProseSection id="syn" title="SYN — the token" eyebrow={<Eyebrow n={3} status="VERIFIED" />}>
+            <ProseSection id="syn" title="SYN — the token" eyebrow={<SectionEyebrow n={3} state={eyebrowState} />}>
               <p>
                 SYN is a minimal, fixed-supply ERC-20 — no mint function, no admin powers, no transfer
                 restrictions — so supply can only stay fixed or fall via burns.
@@ -143,7 +142,7 @@ export default function Whitepaper() {
               </Card>
             </ProseSection>
 
-            <ProseSection id="allocation" title="Allocation — design vs. live" eyebrow={<Eyebrow n={4} status="VERIFIED" />}>
+            <ProseSection id="allocation" title="Allocation — design vs. live" eyebrow={<SectionEyebrow n={4} state={eyebrowState} />}>
               <p>
                 SYN was minted across seven public allocation wallets. Each wallet's{" "}
                 <strong>current on-chain balance</strong> is read live below — it differs from the
@@ -155,7 +154,7 @@ export default function Whitepaper() {
               <ReconciliationTable rows={tk.allocations} loading={tk.loading} />
             </ProseSection>
 
-            <ProseSection id="seat" title="Your seat & how you join" eyebrow={<Eyebrow n={5} status="VERIFIED" />}>
+            <ProseSection id="seat" title="Your seat & how you join" eyebrow={<SectionEyebrow n={5} state={eyebrowState} />}>
               <p>
                 Your first acquisition creates your membership; your number, chapter, and entry date are
                 written by the network, not by us. You acquire SYN through your <strong>wallet</strong> —
@@ -170,7 +169,7 @@ export default function Whitepaper() {
               </p>
             </ProseSection>
 
-            <ProseSection id="money" title="Where the money goes" eyebrow={<Eyebrow n={6} status="VERIFIED" />}>
+            <ProseSection id="money" title="Where the money goes" eyebrow={<SectionEyebrow n={6} state={eyebrowState} />}>
               <p>
                 When you join, you acquire access — that money becomes <strong>protocol revenue</strong>;
                 the protocol owes you nothing in return (a business, not a pooled fund). Net USDC is
@@ -184,7 +183,7 @@ export default function Whitepaper() {
               <VerifyOnChain ids={["vaultWallet", "operationsWallet", "lpPair"]} />
             </ProseSection>
 
-            <ProseSection id="price" title="Liquidity & the two prices" eyebrow={<Eyebrow n={7} status="VERIFIED" />}>
+            <ProseSection id="price" title="Liquidity & the two prices" eyebrow={<SectionEyebrow n={7} state={eyebrowState} />}>
               <p>
                 There are <strong>two independent prices</strong>, and neither values the other: the{" "}
                 <strong>entry rate</strong> set by the protocol (
@@ -197,7 +196,7 @@ export default function Whitepaper() {
               <VerifyOnChain ids={["lpPair", "synToken"]} />
             </ProseSection>
 
-            <ProseSection id="archive" title="The Archive — SYN is the seat, NFTs are the memory" eyebrow={<Eyebrow n={8} status="VERIFIED" />}>
+            <ProseSection id="archive" title="The Archive — SYN is the seat, NFTs are the memory" eyebrow={<SectionEyebrow n={8} state={eyebrowState} />}>
               <p>
                 The NFTs are <strong>not</strong> a speculative collection — they are memory artifacts
                 (chapters, seals, proofs). Minted to date: <strong>{r.nftMintedTotal ?? <Pending />}</strong>.
@@ -207,7 +206,7 @@ export default function Whitepaper() {
               <VerifyOnChain ids={["nftArchive"]} />
             </ProseSection>
 
-            <ProseSection id="recognition" title="Recognition & the future" eyebrow={<Eyebrow n={9} status="VERIFIED" />}>
+            <ProseSection id="recognition" title="Recognition & the future" eyebrow={<SectionEyebrow n={9} state={eyebrowState} />}>
               <p>
                 A rank is <strong>recognition</strong>, like a loyalty program (Cumulus, airline miles) —
                 never a better price, never a financial right. There is{" "}
@@ -219,7 +218,7 @@ export default function Whitepaper() {
               </p>
             </ProseSection>
 
-            <ProseSection id="modules" title="The module system" eyebrow={<Eyebrow n={10} status="VERIFIED" />}>
+            <ProseSection id="modules" title="The module system" eyebrow={<SectionEyebrow n={10} state={eyebrowState} />}>
               <p>
                 The Syndicate OS grows by <strong>activating modules</strong> — like installing plugins.
                 Each carries a public status (active or future) in the protocol's registry — the
@@ -230,7 +229,7 @@ export default function Whitepaper() {
               </p>
             </ProseSection>
 
-            <ProseSection id="contracts" title="Contracts — verify everything yourself" eyebrow={<Eyebrow n={11} status="VERIFIED" />}>
+            <ProseSection id="contracts" title="Contracts — verify everything yourself" eyebrow={<SectionEyebrow n={11} state={eyebrowState} />}>
               <p>
                 Every address is public. Open any in the block explorer and check the protocol for
                 yourself — <em>don't trust, verify</em>.
@@ -247,7 +246,7 @@ export default function Whitepaper() {
               </p>
             </ProseSection>
 
-            <ProseSection id="observe" title="Observe, then decide" eyebrow={<Eyebrow n={12} status="VERIFIED" />}>
+            <ProseSection id="observe" title="Observe, then decide" eyebrow={<SectionEyebrow n={12} state={eyebrowState} />}>
               <p>
                 We ask for nothing — no email, no signup, no gate. Everything is already here, open and
                 verifiable. Watch a living protocol prove itself; <strong>if it suits you, take a

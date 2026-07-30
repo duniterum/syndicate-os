@@ -2,8 +2,11 @@
 //
 // ARC SLICE D — the WALLET DOOR's live panel (§11 point 7):
 //   · the wallet's OWN SYN + USDC balances, read live (fail-closed);
-//   · the APPROVALS PANEL: the member's own allowances toward KNOWN spenders
-//     (Sale V3 today — the list grows only with known protocol spenders);
+//   · the APPROVALS PANEL: the member's own allowances toward EVERY canon sale
+//     engine — the active V3 always, and each SEALED sale (V1 · V2a · V2b)
+//     the moment a standing approval is found on it (footer audit 2026-07-30:
+//     "Sale V3 today" left an abandoned checkout's approval on a retired sale
+//     invisible while the panel read "clean");
 //   · APPROVE ≠ PAYMENT in plain words (the law that cost six versions);
 //   · REVOKE via approve(spender, 0) — a transaction the MEMBER signs in
 //     THEIR OWN wallet (simulate-first, honest revert translation, NEVER a
@@ -59,6 +62,16 @@ function addressFromUrl(url: string): string | null {
   return url.match(/\/(?:token|address)\/(0x[0-9a-fA-F]{40})\b/)?.[1] ?? null;
 }
 
+// The SEALED sale engines (server verify-links ids + their served labels).
+// Addresses stay server-sourced — these are only the ids to ask the registry for.
+const RETIRED_SALES = [
+  { id: "membershipSaleV1", label: "Membership Sale V1 (sealed)" },
+  { id: "membershipSaleV2A", label: "Membership Sale V2a (sealed)" },
+  { id: "membershipSaleV2", label: "Membership Sale V2b (sealed)" },
+] as const;
+
+type RetiredAllowance = { id: string; label: string; addr: string; allowance: bigint };
+
 type Reads = {
   syn: string | null;
   usdc: string | null;
@@ -80,8 +93,21 @@ function WalletPanelBody() {
   const saleAddr = urlFor("membershipSaleV3") ? addressFromUrl(urlFor("membershipSaleV3")!) : null;
   const synAddr = urlFor("synToken") ? addressFromUrl(urlFor("synToken")!) : null;
   const poolUrl = urlFor("lpPair");
+  // The ONE explorer-origin derivation (mirrors useAddressExplorerUrl — the
+  // shared sourceRegistry link, never a hardcoded host).
+  const explorerOrigin =
+    urlFor("sourceRegistry")?.match(/^https?:\/\/[^/]+/)?.[0] ?? null;
+  const retiredSpenders: { id: string; label: string; addr: string }[] =
+    RETIRED_SALES.flatMap((s) => {
+      const u = urlFor(s.id);
+      const addr = u ? addressFromUrl(u) : null;
+      return addr ? [{ id: s.id as string, label: s.label as string, addr }] : [];
+    });
+  const retiredKey = retiredSpenders.map((s) => s.addr).join(",");
 
   const [reads, setReads] = useState<Reads>({ syn: null, usdc: null, usdcAllowanceToSale: null });
+  const [retiredAllowances, setRetiredAllowances] = useState<RetiredAllowance[] | null>(null);
+  const [retiredUnreadable, setRetiredUnreadable] = useState(0);
   // D-TRUTH D5: own Archive artifact holdings (live ERC-1155 reads).
   const artifacts = useOwnArchiveHoldings(address);
   const [usdcToken, setUsdcToken] = useState<string | null>(null);
@@ -98,6 +124,28 @@ function WalletPanelBody() {
       usdcAddr ? readTokenBalance(usdcAddr, address) : Promise.resolve(null),
       usdcAddr && saleAddr ? readAllowance(usdcAddr, address, saleAddr) : Promise.resolve(null),
     ]);
+    // The sealed engines: a standing approval left on a retired sale (an
+    // abandoned checkout step-1) must surface — the panel can never read
+    // "clean" while an old spender still holds one. Fail-closed: an
+    // unreadable state is COUNTED and said, never assumed clean.
+    if (usdcAddr && retiredSpenders.length > 0) {
+      const rows = await Promise.all(
+        retiredSpenders.map(async (s) => {
+          try {
+            const a = await readAllowance(usdcAddr, address, s.addr);
+            return a !== null ? { ...s, allowance: a } : null;
+          } catch {
+            return null;
+          }
+        }),
+      );
+      const ok = rows.filter((r): r is RetiredAllowance => r !== null);
+      setRetiredAllowances(ok);
+      setRetiredUnreadable(rows.length - ok.length);
+    } else {
+      setRetiredAllowances(null);
+      setRetiredUnreadable(0);
+    }
     setReads({
       // Human display (S7-e, readability floor): 2 decimals, TRUNCATED. This
       // line said "exact half-up" until 2026-07-26, naming a rule abolished
@@ -109,7 +157,9 @@ function WalletPanelBody() {
       usdc: usdc !== null ? formatRawUnitsDisplay(usdc.toString(), 6, 2) : null,
       usdcAllowanceToSale: allowance,
     });
-  }, [address, saleAddr, synAddr]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- retiredKey stands
+    // for retiredSpenders (a per-render array; the joined addresses are the fact)
+  }, [address, saleAddr, synAddr, retiredKey]);
 
   useEffect(() => {
     void refresh();
@@ -117,36 +167,41 @@ function WalletPanelBody() {
 
   const onAvalanche = chainId === avalanche.id;
 
-  // REVOKE = approve(sale, 0), the member's own wallet act. Simulate first —
-  // a transaction that would revert is never offered for signature.
-  const revoke = useCallback(async () => {
-    if (!address || !usdcToken || !saleAddr || busy) return;
-    setBusy(true);
-    setError(null);
-    try {
-      await publicClient.simulateContract({
-        address: getAddress(usdcToken),
-        abi: ERC20_APPROVE_ABI,
-        functionName: "approve",
-        args: [getAddress(saleAddr), 0n],
-        account: getAddress(address),
-      });
-      const hash = await writeContractAsync({
-        address: getAddress(usdcToken),
-        abi: ERC20_APPROVE_ABI,
-        functionName: "approve",
-        args: [getAddress(saleAddr), 0n],
-        chainId: avalanche.id,
-      });
-      await publicClient.waitForTransactionReceipt({ hash });
-      setLastTx(hash);
-      await refresh();
-    } catch (e) {
-      setError(explainError(e));
-    } finally {
-      setBusy(false);
-    }
-  }, [address, usdcToken, saleAddr, busy, writeContractAsync, refresh]);
+  // REVOKE = approve(spender, 0), the member's own wallet act — the SAME act
+  // for the active sale and a sealed one (generalized 2026-07-30 with the
+  // sealed-engine rows). Simulate first — a transaction that would revert is
+  // never offered for signature.
+  const revoke = useCallback(
+    async (spender: string) => {
+      if (!address || !usdcToken || busy) return;
+      setBusy(true);
+      setError(null);
+      try {
+        await publicClient.simulateContract({
+          address: getAddress(usdcToken),
+          abi: ERC20_APPROVE_ABI,
+          functionName: "approve",
+          args: [getAddress(spender), 0n],
+          account: getAddress(address),
+        });
+        const hash = await writeContractAsync({
+          address: getAddress(usdcToken),
+          abi: ERC20_APPROVE_ABI,
+          functionName: "approve",
+          args: [getAddress(spender), 0n],
+          chainId: avalanche.id,
+        });
+        await publicClient.waitForTransactionReceipt({ hash });
+        setLastTx(hash);
+        await refresh();
+      } catch (e) {
+        setError(explainError(e));
+      } finally {
+        setBusy(false);
+      }
+    },
+    [address, usdcToken, busy, writeContractAsync, refresh],
+  );
 
   // Signed (SignInWall let us through) but the wallet is disconnected (Q-B):
   // the session/membership is intact, but reading LIVE balances needs the
@@ -237,7 +292,7 @@ function WalletPanelBody() {
                     : <span className="font-mono">{`approved: ${formatRawUnits(allowance.toString(), 6)} USDC`}</span>}
               </p>
             </div>
-            {allowance !== null && allowance > 0n ? (
+            {allowance !== null && allowance > 0n && saleAddr ? (
               !onAvalanche ? (
                 <Button size="sm" variant="outline" disabled={switching} onClick={() => switchChain({ chainId: avalanche.id })}>
                   {switching ? "Switching…" : "Switch to Avalanche"}
@@ -247,7 +302,7 @@ function WalletPanelBody() {
                   size="sm"
                   variant="outline"
                   disabled={busy}
-                  onClick={() => void revoke()}
+                  onClick={() => void revoke(saleAddr)}
                   data-testid="button-revoke-usdc-sale"
                 >
                   {busy ? "Waiting for your wallet…" : "Revoke (approve 0) — you sign"}
@@ -256,6 +311,46 @@ function WalletPanelBody() {
             ) : null}
           </div>
         </div>
+        {/* Sealed engines — a row appears ONLY when a standing approval is
+            found on one (an abandoned checkout's leftover); revoking is the
+            same signed act. */}
+        {(retiredAllowances ?? [])
+          .filter((s) => s.allowance > 0n)
+          .map((s) => (
+            <div key={s.id} className="rounded-md border border-warning/40 bg-background/40 p-3 mt-2">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm text-foreground">USDC → {s.label}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5" data-testid={`wallet-usdc-allowance-${s.id}`}>
+                    <span className="font-mono">{`approved: ${formatRawUnits(s.allowance.toString(), 6)} USDC`}</span>{" "}
+                    — a standing approval on a sealed engine; it can only be
+                    revoked here, never used by a new purchase.
+                  </p>
+                </div>
+                {!onAvalanche ? (
+                  <Button size="sm" variant="outline" disabled={switching} onClick={() => switchChain({ chainId: avalanche.id })}>
+                    {switching ? "Switching…" : "Switch to Avalanche"}
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={busy}
+                    onClick={() => void revoke(s.addr)}
+                    data-testid={`button-revoke-usdc-${s.id}`}
+                  >
+                    {busy ? "Waiting for your wallet…" : "Revoke (approve 0) — you sign"}
+                  </Button>
+                )}
+              </div>
+            </div>
+          ))}
+        {retiredUnreadable > 0 ? (
+          <p className="text-xs text-muted-foreground mt-2">
+            {retiredUnreadable} sealed engine&apos;s approval state could not be
+            read right now — nothing is assumed clean.
+          </p>
+        ) : null}
         {error ? (
           <p className="flex items-start gap-2 text-xs text-destructive mt-3">
             <ShieldAlert className="h-3.5 w-3.5 mt-0.5 shrink-0" /> {error}
@@ -264,7 +359,19 @@ function WalletPanelBody() {
         {lastTx ? (
           <p className="text-xs text-muted-foreground mt-3">
             Revoked — your own signed transaction:{" "}
-            <span className="font-mono">{lastTx.slice(0, 10)}…{lastTx.slice(-6)}</span>
+            {explorerOrigin ? (
+              <a
+                href={`${explorerOrigin}/tx/${lastTx}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 font-mono text-proof transition-colors hover:text-proof-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-sm"
+              >
+                {lastTx.slice(0, 10)}…{lastTx.slice(-6)}
+                <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
+              </a>
+            ) : (
+              <span className="font-mono">{lastTx.slice(0, 10)}…{lastTx.slice(-6)}</span>
+            )}
           </p>
         ) : null}
       </Card>

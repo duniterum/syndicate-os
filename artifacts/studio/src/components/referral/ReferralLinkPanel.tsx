@@ -16,6 +16,7 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { Check, ChevronDown, Copy } from "lucide-react";
+import { buildJoinLink } from "@/lib/joinLink";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -94,7 +95,7 @@ function ChannelsCard({ readback }: { readback: StandingReadback | null | undefi
   // Ruling ① — the SAME paying-source resolver as the hero (zero drift).
   const sourceId = payingSourceId(readback?.sourceIdHex, address);
   const baseLink = sourceId
-    ? `https://thesyndicate.money/join?source=${sourceId}`
+    ? buildJoinLink(sourceId)
     : null;
 
   const [selected, setSelected] = useState<string | null>(null); // preset slug | "custom" | null

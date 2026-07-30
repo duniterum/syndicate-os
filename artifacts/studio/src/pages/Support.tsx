@@ -17,7 +17,7 @@ export default function Support() {
         <div className="p-1.5 rounded-md bg-primary/10 text-primary shrink-0 mt-0.5">
           <LifeBuoy className="h-4 w-4" />
         </div>
-        <p className="text-sm text-muted-foreground leading-relaxed">{supportIntake.note}</p>
+        <p className="type-body text-muted-foreground measure">{supportIntake.note}</p>
       </div>
 
       <h2 className="type-h2 text-foreground mb-5">What you'll be able to raise</h2>
@@ -28,7 +28,7 @@ export default function Support() {
               <h3 className="text-base font-medium text-foreground">{c.label}</h3>
               <LifecycleBadge lifecycle={c.lifecycle} />
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">{c.description}</p>
+            <p className="type-body text-muted-foreground measure">{c.description}</p>
           </Card>
         ))}
       </div>
@@ -42,8 +42,8 @@ export default function Support() {
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div>
-                <h4 className="text-sm font-medium text-foreground">{t.label}</h4>
-                <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">{t.description}</p>
+                <h4 className="text-base font-medium text-foreground">{t.label}</h4>
+                <p className="type-body text-muted-foreground measure mt-0.5">{t.description}</p>
               </div>
             </li>
           ))}
