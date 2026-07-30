@@ -111,9 +111,51 @@ function sourceFiles(dir: string): string[] {
 }
 
 /** Comments are documentation, not a second declaration — a fact explained in
- *  prose beside its import is exactly what this codebase should do more of. */
+ *  prose beside its import is exactly what this codebase should do more of.
+ *
+ *  STRING-AWARE since 2026-07-30 (adversarial review, confirmed 2/2): the old
+ *  regex stripper ran on RAW source, so an in-string slash-star (the literal
+ *  "/receipt/*" inside seo-route-registry.ts:373) opened a phantom comment
+ *  that swallowed ~1,000 lines of REAL code — a silent false-negative hole in
+ *  a BLOCKING guard. Ported from guard-touch-target's commentRanges: string
+ *  literals are walked with escapes, so a slash-star inside a string never
+ *  opens a range, and facts inside strings are preserved. Trailing `//`
+ *  comments are now stripped too (the old line-anchored regex kept them).
+ *  KNOWN SOFT SPOT, lenient direction: a regex literal spelling // or a
+ *  slash-star outside a string can open a phantom range — misses, never
+ *  invents. */
 function stripComments(src: string): string {
-  return src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+  let out = "";
+  let i = 0;
+  while (i < src.length) {
+    const ch = src[i]!;
+    if (ch === '"' || ch === "'" || ch === "`") {
+      const start = i;
+      i += 1;
+      while (i < src.length) {
+        if (src[i] === "\\") i += 2;
+        else if (src[i] === ch) {
+          i += 1;
+          break;
+        } else i += 1;
+      }
+      out += src.slice(start, i);
+      continue;
+    }
+    if (ch === "/" && src[i + 1] === "/") {
+      const nl = src.indexOf("\n", i);
+      i = nl < 0 ? src.length : nl;
+      continue;
+    }
+    if (ch === "/" && src[i + 1] === "*") {
+      const close = src.indexOf("*/", i + 2);
+      i = close < 0 ? src.length : close + 2;
+      continue;
+    }
+    out += ch;
+    i += 1;
+  }
+  return out;
 }
 
 let failures = 0;
@@ -152,51 +194,114 @@ for (const file of files) {
  * runs instead of waiting to be remembered.
  *
  * RATCHETED 2026-07-30 (the 2nd adversarial pass's finding: "DEBT has no
- * ratchet"). Each entry now pins the EXACT file count of its duplication, and
- * every direction of movement is a RED build: the fact spreading into one more
- * file · the duplication shrinking (lower the pin in the same commit) · the
- * entry going stale (delete it — a stale entry forgives the next
- * reintroduction; the touch guard's Button escape-hatch lesson, same day).
- * Before this, appending a 16th entry — or a DEBT fact spreading into ten more
- * files — was a green build.
+ * ratchet"), then HARDENED the same day (adversarial review, confirmed 2/2):
+ * a COUNT pin let a pinned fact MIGRATE — delete one copy, paste the fact
+ * into a brand-new file in the same commit, size stays equal, green. So each
+ * entry now pins the exact FILE SET of its duplication: ANY membership change
+ * (spread, shrink, migration) is a RED build, and a stale entry (no live
+ * duplication) is RED too — a stale entry forgives the next reintroduction;
+ * the touch guard's Button escape-hatch lesson, same day.
  *
  * The one duplication this arc itself introduced (the 87,157,852 scan floor)
  * was FIXED rather than listed: it is now `PROTOCOL_SCAN_FLOOR_BLOCK`, declared
  * once and imported.
  */
-// Counts measured 2026-07-30 by this guard's own RED run — never estimated.
-const DEBT: Readonly<Record<string, number>> = {
-  "contract/wallet address::0x244531c571966f90f4849e03a507543d90f9c721": 3,
-  "contract/wallet address::0x3488857b003104e2b08a1d198f8a23bff28b0045": 2,
-  "contract/wallet address::0x03e99f09f0fc8d04864466bc37fd73dd7ba3c6d0": 2,
-  "contract/wallet address::0x3b1396b1ff61b79c742751cfb6f0f04eac25ec6a": 2,
-  "contract/wallet address::0x5734c19d1907857d1e54f95d12300e2fc7b0c2cd": 2,
-  "contract/wallet address::0x8deb56b4db62f48a6e1bc226220e24845b592cb9": 2,
-  "contract/wallet address::0x3ff01a0c3e70101bfb1dbb3742e135e7ed9e894f": 2,
-  "contract/wallet address::0xab87e74ff69ee0b6c1a73b884a80b737988de081": 2,
-  "http endpoint::https://api.avax.network/ext/bc/c/rpc": 2,
-  "http endpoint::https://avalanche-c-chain-rpc.publicnode.com": 2,
-  "http endpoint::https://thesyndicate.money/opengraph.jpg": 2,
-  "http endpoint::https://thesyndicate.money/join?source=$": 5,
-  "http endpoint::https://thesyndicate.money/receipt/$": 3,
-  "http endpoint::http://www.w3.org/2000/svg": 2,
-  "pinned numeric literal::86_400_000": 2,
+// File sets measured 2026-07-30 by this guard's own RED run — never estimated.
+const DEBT: Readonly<Record<string, readonly string[]>> = {
+  "contract/wallet address::0x244531c571966f90f4849e03a507543d90f9c721": [
+    "artifacts/api-server/src/data/protocolTargets.ts",
+    "artifacts/api-server/src/lib/protocol/historicalFreezeWallets.ts",
+    "artifacts/studio/src/lib/historicalMembers.ts",
+  ],
+  "contract/wallet address::0x3488857b003104e2b08a1d198f8a23bff28b0045": [
+    "artifacts/api-server/src/lib/protocol/historicalFreezeWallets.ts",
+    "artifacts/studio/src/lib/historicalMembers.ts",
+  ],
+  "contract/wallet address::0x03e99f09f0fc8d04864466bc37fd73dd7ba3c6d0": [
+    "artifacts/api-server/src/lib/protocol/historicalFreezeWallets.ts",
+    "artifacts/studio/src/lib/historicalMembers.ts",
+  ],
+  "contract/wallet address::0x3b1396b1ff61b79c742751cfb6f0f04eac25ec6a": [
+    "artifacts/api-server/src/lib/protocol/historicalFreezeWallets.ts",
+    "artifacts/studio/src/lib/historicalMembers.ts",
+  ],
+  "contract/wallet address::0x5734c19d1907857d1e54f95d12300e2fc7b0c2cd": [
+    "artifacts/api-server/src/lib/protocol/historicalFreezeWallets.ts",
+    "artifacts/studio/src/lib/historicalMembers.ts",
+  ],
+  "contract/wallet address::0x8deb56b4db62f48a6e1bc226220e24845b592cb9": [
+    "artifacts/api-server/src/lib/protocol/historicalFreezeWallets.ts",
+    "artifacts/studio/src/lib/historicalMembers.ts",
+  ],
+  "contract/wallet address::0x3ff01a0c3e70101bfb1dbb3742e135e7ed9e894f": [
+    "artifacts/api-server/src/lib/protocol/historicalFreezeWallets.ts",
+    "artifacts/studio/src/lib/historicalMembers.ts",
+  ],
+  "contract/wallet address::0xab87e74ff69ee0b6c1a73b884a80b737988de081": [
+    "artifacts/api-server/src/lib/protocol/historicalFreezeWallets.ts",
+    "artifacts/studio/src/lib/historicalMembers.ts",
+  ],
+  "http endpoint::https://api.avax.network/ext/bc/c/rpc": [
+    "artifacts/api-server/src/lib/protocol/rpcTransport.ts",
+    "artifacts/studio/src/lib/chainReads.ts",
+  ],
+  "http endpoint::https://avalanche-c-chain-rpc.publicnode.com": [
+    "artifacts/api-server/src/lib/protocol/rpcTransport.ts",
+    "artifacts/studio/src/lib/chainReads.ts",
+  ],
+  "http endpoint::https://thesyndicate.money/opengraph.jpg": [
+    "artifacts/api-server/src/routes/joinCard.ts",
+    "artifacts/api-server/src/routes/receiptCard.ts",
+  ],
+  "http endpoint::https://thesyndicate.money/join?source=$": [
+    "artifacts/studio/src/components/member/MemberQuickActions.tsx",
+    "artifacts/studio/src/components/referral/ReferralLinkHero.tsx",
+    "artifacts/studio/src/components/referral/ReferralLinkPanel.tsx",
+    "artifacts/studio/src/components/referral/ReferralToolsPanel.tsx",
+    "artifacts/studio/src/wallet/ReceiptTicket.tsx",
+  ],
+  "http endpoint::https://thesyndicate.money/receipt/$": [
+    "artifacts/studio/src/components/referral/ReferralCommissionsPanel.tsx",
+    "artifacts/studio/src/components/referral/ReferralToolsPanel.tsx",
+    "artifacts/studio/src/wallet/ReceiptTicket.tsx",
+  ],
+  "http endpoint::http://www.w3.org/2000/svg": [
+    "artifacts/studio/src/components/referral/ReferralToolsPanel.tsx",
+    "artifacts/studio/src/components/referral/referrerKit.tsx",
+  ],
+  "pinned numeric literal::86_400_000": [
+    "artifacts/api-server/src/operator/memberLedgerService.ts",
+    "artifacts/studio/src/components/activity/LiveActivityFeed.tsx",
+  ],
   // The four below entered with the 2026-07-30 pattern widening — each REVIEWED,
   // not merely counted:
   // · V3 historical-member root: the server's expectation AND the client's own
   //   verification pin. The client cannot import the server, and the whole point
   //   of the client pin is INDEPENDENT verification of the same chain fact.
-  "32-byte topic/hash::0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329": 2,
+  "32-byte topic/hash::0x6d81a73621dc9e4fd328b56aef67f98a8e4dde8e2adb68d85b9b87b8685f3329": [
+    "artifacts/api-server/src/data/partBExpectations.ts",
+    "artifacts/studio/src/lib/historicalMembers.ts",
+  ],
   // · MembershipPurchasedV3 topic0: server decoder + the client decoding the
   //   same public log independently (an explorer does not import the server).
-  "32-byte topic/hash::0x4ae1104be21836909353b0af3cd82a339d2ac380eda00ad26313d8fce198c1bf": 2,
+  "32-byte topic/hash::0x4ae1104be21836909353b0af3cd82a339d2ac380eda00ad26313d8fce198c1bf": [
+    "artifacts/api-server/src/lib/protocol/saleEventDecoders.ts",
+    "artifacts/studio/src/lib/activityFeed.ts",
+  ],
   // · USDC base units: ONE declaration per artifact (financialDecoders ·
   //   rawUnits) — client and server cannot import each other.
-  "pinned numeric literal::1_000_000n": 2,
+  "pinned numeric literal::1_000_000n": [
+    "artifacts/api-server/src/lib/protocol/financialDecoders.ts",
+    "artifacts/studio/src/lib/rawUnits.ts",
+  ],
   // · Same NUMERAL, unrelated facts: three milestone TARGETS (1M seats · $1M ·
   //   1M SYN, intra-file) · the explorer index page base · a millions display
   //   divisor. Not one fact — one import would COUPLE unrelated decisions.
-  "pinned numeric literal::1_000_000": 3,
+  "pinned numeric literal::1_000_000": [
+    "artifacts/api-server/src/backbone/milestoneReadmodel.ts",
+    "artifacts/api-server/src/backbone/nativeAvaxScan.ts",
+    "artifacts/studio/src/components/hero/SeatFlowDiagram.tsx",
+  ],
 };
 
 let duplicated = 0;
@@ -204,21 +309,18 @@ let forgiven = 0;
 for (const [key, entry] of sites) {
   if (entry.files.size < 2) continue;
   duplicated += 1;
-  const ceiling = DEBT[key];
-  if (ceiling !== undefined) {
+  const pinnedSet = DEBT[key];
+  if (pinnedSet !== undefined) {
     forgiven += 1;
-    if (entry.files.size > ceiling) {
+    const actual = [...entry.files].sort();
+    const same =
+      actual.length === pinnedSet.length && actual.every((f, idx) => f === pinnedSet[idx]);
+    if (!same) {
       fail(
-        `${entry.kind} "${entry.fact}" SPREAD: its DEBT pin says ${ceiling} file(s), it is now in ` +
-          `${entry.files.size} — [${[...entry.files].join(", ")}]. A DEBT entry is a counted stain, ` +
-          `not a license to copy. Remove the new copy (import the fact) — raising the pin needs a ` +
-          `written reason.`,
-      );
-    } else if (entry.files.size < ceiling) {
-      fail(
-        `${entry.kind} "${entry.fact}" shrank: pinned at ${ceiling} file(s), now ${entry.files.size}. ` +
-          `Good — lower the pin to ${entry.files.size} in this same commit so the payment cannot be ` +
-          `silently undone.`,
+        `${entry.kind} "${entry.fact}" MOVED: its DEBT pin names [${pinnedSet.join(", ")}] but it now ` +
+          `lives in [${actual.join(", ")}]. A DEBT entry blesses ONE reviewed set of files — a new copy, ` +
+          `a migration into a different file, or a payment all change the set and must change the pin ` +
+          `IN THE SAME COMMIT, with the reason (spread is never re-blessed silently).`,
       );
     }
     continue;
@@ -255,7 +357,8 @@ if (failures > 0) {
 console.log(
   `[guard:duplicate-facts] PASS — ${sites.size} distinct fact(s) across ${files.length} source file(s); ` +
     `${duplicated} duplicated, all ${forgiven} inside the ${Object.keys(DEBT).length}-entry DEBT list, each ` +
-    `pinned to its exact file count (spread, shrink and staleness are all RED). A NEW duplication is a red build. ` +
+    `pinned to its exact FILE SET (any membership change — spread, shrink, migration — and staleness are all RED). ` +
+    `A NEW duplication is a red build. ` +
     `NOT CHECKED: duplicated LOGIC (two functions computing one answer), a fact re-expressed in another ` +
     `form (a decimal beside a hex), and the ${ALLOWED_DIRS.length} allowlisted canon directories.`,
 );
