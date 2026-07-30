@@ -51,7 +51,7 @@ export default function Learning() {
                   <span className="grid h-6 w-6 place-items-center rounded-full border border-border font-mono text-[11px] text-primary shrink-0">
                     {i + 1}
                   </span>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">
+                  <span className="type-eyebrow text-primary">
                     {step.verb}
                   </span>
                 </div>

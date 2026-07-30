@@ -181,9 +181,9 @@ const ALLOWLIST: Record<string, string> = {
   "components/registry/registryPosture.tsx": "2 · PUBLIC posture labels — deferred to the general sweep",
 
   // — public pages
-  "pages/SystemStatus.tsx": "9 · PUBLIC status page — deferred to the general sweep",
-  "pages/Liquidity.tsx": "8 · PUBLIC liquidity page — deferred to the general sweep",
-  "pages/Docs.tsx": "5 · PUBLIC docs — a PROSE page; ADR-001 §3 (body 16px+) is NOT checked by this guard, so read this one by eye at the sweep",
+  "pages/SystemStatus.tsx": "8 · PUBLIC status page — deferred to the general sweep (1 paid by the 2026-07-30 eyebrow conversion)",
+  "pages/Liquidity.tsx": "5 · PUBLIC liquidity page — deferred to the general sweep (3 paid by the 2026-07-30 eyebrow conversion)",
+  "pages/Docs.tsx": "1 · PUBLIC docs — a PROSE page; ADR-001 §3 (body 16px+) is NOT checked by this guard, so read this one by eye at the sweep (4 paid by the 2026-07-30 eyebrow conversion)",
   // pages/FireLedger.tsx entry DELETED 2026-07-26: CLEARED, zero sub-12px left —
   // its 11px banners and 10px row meta moved onto the named steps. The guard asked
   // for the deletion itself; a ledger that forgives a debt that no longer exists
@@ -191,9 +191,7 @@ const ALLOWLIST: Record<string, string> = {
   "pages/JoinProtocol.tsx": "5 · PUBLIC join page (the conversion surface) — deferred to the general sweep",
   "pages/OsMap.tsx": "4 · PUBLIC OS map — deferred to the general sweep",
   "pages/ProtocolMap.tsx": "4 · PUBLIC protocol map — deferred to the general sweep",
-  "pages/Learning.tsx": "2 · PUBLIC learning page — deferred to the general sweep",
-  "pages/Tokenomics.tsx": "2 · PUBLIC tokenomics — deferred to the general sweep",
-  "pages/Whitepaper.tsx": "2 · PUBLIC whitepaper — a PROSE page; see the Docs note",
+  "pages/Learning.tsx": "1 · PUBLIC learning page — deferred to the general sweep (1 paid by the 2026-07-30 eyebrow conversion)",
 
   // — member surfaces: behind the sign-in wall, but a MEMBER is a user and the
   //   floor is a user law, not a visitor law. Counted PUBLIC.
@@ -343,15 +341,11 @@ const EYEBROW_EXEMPT: Record<string, string> = {
 // HeroLedger lesson) and wait for the founder's type-scale wireframe.
 const EYEBROW_DEBT: Record<string, number> = {
   "pages/PublicHome.tsx": 6,
-  "pages/Docs.tsx": 5,
   "components/season/HomeRegisterBand.tsx": 5,
   "components/guide/SyndicateGuide.tsx": 4,
-  "pages/Liquidity.tsx": 3,
   "components/layout/PublicLayout.tsx": 3,
   "components/faq/FaqAccordion.tsx": 3,
   "pages/admin/SeasonsRails.tsx": 2,
-  "pages/Whitepaper.tsx": 2,
-  "pages/Tokenomics.tsx": 2,
   "pages/SeasonRanking.tsx": 2,
   "pages/MemberAccess.tsx": 2,
   "components/season/HomeSeasonSection.tsx": 2,
@@ -365,11 +359,7 @@ const EYEBROW_DEBT: Record<string, number> = {
   "components/ProtocolReservesBand.tsx": 2,
   "wallet/MemberHeaderAffordance.tsx": 1,
   "wallet/JoinCheckout.tsx": 1,
-  "pages/not-found.tsx": 1,
-  "pages/SystemStatus.tsx": 1,
   "pages/MemberNotifications.tsx": 1,
-  "pages/Learning.tsx": 1,
-  "pages/Faq.tsx": 1,
   "components/referral/ReferralLinkPanel.tsx": 1,
   "components/referral/ReferralLadderPanel.tsx": 1,
   "components/referral/ReferralIntroductionsPanel.tsx": 1,

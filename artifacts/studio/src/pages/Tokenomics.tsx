@@ -109,7 +109,7 @@ export default function Tokenomics() {
             <Live value={t.marketPriceUsdcPerSyn} unit="USDC per SYN" />).
           </p>
           <Card className="my-5 bg-card/40 border-border/60 p-5">
-            <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            <div className="type-eyebrow text-muted-foreground">
               SYN / USDC pool — live reserves
             </div>
             <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -166,7 +166,7 @@ export default function Tokenomics() {
         <ProseSection id="vesting" title="Founder allocation — vested & public" eyebrow={<Eyebrow n={6} status="VERIFIED" />}>
           <Card className="my-2 bg-card/40 border-border/60 p-5">
             <div className="flex flex-wrap items-baseline justify-between gap-3">
-              <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              <div className="type-eyebrow text-muted-foreground">
                 Founder wallet — current SYN balance
               </div>
               <div className="text-lg">

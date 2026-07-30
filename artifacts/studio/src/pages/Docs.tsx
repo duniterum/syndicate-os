@@ -43,7 +43,7 @@ export default function Docs() {
 
         {/* Journey spine — the order a member experiences the protocol (live surfaces). */}
         <Card className="border-border/60 bg-card/40 p-5">
-          <p className="mb-4 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          <p className="type-eyebrow mb-4 text-muted-foreground">
             The journey
           </p>
           <ol className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
@@ -59,7 +59,7 @@ export default function Docs() {
                       {i + 1}
                     </span>
                     <span className="text-sm font-medium text-foreground">{step.label}</span>
-                    <span className="hidden font-mono text-[10px] uppercase tracking-widest text-muted-foreground sm:inline">
+                    <span className="type-eyebrow hidden text-muted-foreground sm:inline">
                       {getRouteLabel(entry)}
                     </span>
                   </Link>
@@ -78,7 +78,7 @@ export default function Docs() {
           <div className="min-w-0 space-y-14">
             {DOCS_GROUPS.map((group) => (
               <section key={group.id} id={group.id} aria-labelledby={`${group.id}-title`} className="scroll-mt-24">
-                <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">{group.eyebrow}</p>
+                <p className="type-eyebrow text-muted-foreground">{group.eyebrow}</p>
                 <h2 id={`${group.id}-title`} className="type-h2 mt-1 text-foreground">{group.title}</h2>
                 <p className="mt-2 measure type-body text-muted-foreground">{group.description}</p>
 
@@ -104,13 +104,13 @@ export default function Docs() {
                             {card.audience.map((a) => (
                               <span
                                 key={a}
-                                className="rounded-full border border-border/60 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground"
+                                className="type-eyebrow rounded-full border border-border/60 px-2 py-0.5 text-muted-foreground"
                               >
                                 {a}
                               </span>
                             ))}
                           </div>
-                          <span className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-widest text-primary">
+                          <span className="type-eyebrow inline-flex items-center gap-1 text-primary">
                             Open <ArrowUpRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                           </span>
                         </Card>

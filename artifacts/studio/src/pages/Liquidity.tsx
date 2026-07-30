@@ -44,7 +44,7 @@ function ActionRail() {
   return (
     <Card className="bg-card/40 border-border/50 p-5 mb-12">
       <div className="mb-3">
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        <p className="type-eyebrow text-muted-foreground">
           Liquidity actions
         </p>
         <p className="mt-1 text-xs text-muted-foreground measure leading-relaxed">
@@ -63,7 +63,7 @@ function ActionRail() {
             className={`group block rounded-md border px-3 py-3 text-left transition-colors ${railClass(a.variant)}`}
             data-testid={`liquidity-action-${a.label.toLowerCase().replace(/[^a-z]+/g, "-")}`}
           >
-            <span className="flex items-center gap-1 font-mono text-[11px] uppercase tracking-[0.16em] font-semibold text-foreground">
+            <span className="type-eyebrow flex items-center gap-1 text-foreground">
               {a.label}
               {a.href ? (
                 <ExternalLink className="h-3 w-3 text-muted-foreground group-hover:text-gold" aria-hidden="true" />
@@ -77,7 +77,7 @@ function ActionRail() {
         {/* Verify Pair — the on-chain pair via the server's verify-links (never
             a hardcoded client address); fail-closed: absent link, absent tile. */}
         <div className="rounded-md border border-dashed border-border/60 px-3 py-3">
-          <span className="font-mono text-[11px] uppercase tracking-[0.16em] font-semibold text-foreground">
+          <span className="type-eyebrow text-foreground">
             Verify Pair
           </span>
           <span className="mt-1 block text-[11px] text-muted-foreground leading-snug">

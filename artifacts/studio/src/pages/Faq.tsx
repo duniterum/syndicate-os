@@ -43,7 +43,7 @@ function LiveStat({ label, value, unit, loading }: {
 }) {
   return (
     <div>
-      <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground">{label}</div>
+      <div className="type-eyebrow text-muted-foreground">{label}</div>
       <div className="mt-1 flex items-baseline gap-2">
         {loading ? (
           <span className="text-sm text-muted-foreground">Checking…</span>

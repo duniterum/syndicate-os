@@ -24,7 +24,7 @@ export default function NotFound() {
               <Compass className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
+              <p className="type-eyebrow text-muted-foreground">
                 Page not found
               </p>
               <h1 className="type-h2 text-foreground mt-0.5">

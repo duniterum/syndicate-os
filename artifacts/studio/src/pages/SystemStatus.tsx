@@ -72,7 +72,7 @@ function HolderIndexSection() {
         <Card className="bg-card/40 border-border/50 p-6">
           <div className="flex flex-wrap items-baseline justify-between gap-4">
             <div>
-              <div className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground">
+              <div className="type-eyebrow text-muted-foreground">
                 Recognized members
               </div>
               <div className="text-4xl font-light text-foreground mt-1">{data.memberTotal}</div>

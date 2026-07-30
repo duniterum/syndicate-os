@@ -131,11 +131,11 @@ export default function Whitepaper() {
               <Card className="my-5 bg-card/40 border-border/60 p-5">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Total supply</div>
+                    <div className="type-eyebrow text-muted-foreground">Total supply</div>
                     <div className="mt-1 text-lg"><Amount segments={syn(tk.totalSupply)} variant="stat" loading={tk.loading} /></div>
                   </div>
                   <div>
-                    <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Burned to date</div>
+                    <div className="type-eyebrow text-muted-foreground">Burned to date</div>
                     <div className="mt-1 text-lg"><Amount segments={syn(r.burnedSyn)} variant="stat" loading={r.loading} /></div>
                   </div>
                 </div>
