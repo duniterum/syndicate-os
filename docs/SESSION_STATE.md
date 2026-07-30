@@ -2,7 +2,50 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-07-30 (PM) — THE GUARD DEBT IS PAID. Handoff ② closed in 7 commits; only the hero awaits the wireframe. PROD = `853f8bd`, untouched.
+> # ▶ 2026-07-30 (EVE) — THE ADVERSARIAL REVIEW RAN BEFORE GO-LIVE, AND ITS FIXES ARE IN. PROD = `853f8bd` until the founder triggers the deploy.
+>
+> The founder ordered a 3-5-senior verification before go-live. **37 agents: 5 lenses, then 2
+> independent skeptics per finding — 16 filed, 15 confirmed, 0 refuted** (three lenses converged on
+> the worst one). Every confirmed defect is now FIXED (`2baa266` · `cd0ca91` · `b372c15` + this docs
+> pass); none changed runtime behavior — they were ratchet holes, a twin class, and false figures in
+> MY OWN record. The figures in the (PM) block below are corrected IN PLACE with ⛔ marks.
+>
+> ## WHAT THE REVIEW CAUGHT AND WHAT CLOSED IT
+> · **The deploy-verdict line said "client+guards only" — FALSE** (the 2026-07-29 disease, caught by
+>   3/5 lenses): the batch ships SEVEN api-server runtime files (the 0f9fc86 import refactor —
+>   verified behavior-identical by the reviewers: identical values, acyclic imports, no init hazard).
+>   The verdict below is rewritten; the deploy verification MUST cover the server, not only the client.
+> · **The touch guard counted entry EXISTENCE, not occurrences** — a listed file forgave unlimited
+>   NEW short controls, and 3 entries had silently drifted stale by 5. Now the written (N) is a
+>   two-way ratcheted ceiling (`2baa266`), stale counts corrected to the measured values.
+> · **duplicate-facts' comment stripper ate ~1,000 lines of real code** (an in-string `/*` opened a
+>   phantom comment) and **its count pin allowed silent MIGRATION** (delete a copy + paste elsewhere,
+>   same count, green). Now string-aware + each entry pins its exact FILE SET (`cd0ca91`).
+> · **A live TWIN eyebrow class (`.syn-eyebrow`, 0.2em) rode the whole conversion invisibly** — the
+>   home showed two gold band eyebrows at two trackings. Converted, class deleted, detector +
+>   CSS-definition check RED it forever; `syn-label`/`syn-caption` (8 sites, at the floor) declared
+>   as the remaining class twins for the type-scale slice (`b372c15`). The EXEMPT arm now ratchets
+>   both ways, and FaqAccordion's comment no longer denies the class above the line that uses it.
+> · **The record's figures were wrong**: 64 labels converted (not 66 — 64 + 2 exemptions = 66 ledger
+>   removals), sub-12px landed at **216 occurrences / 164 public** (not 217/~163 — the guard's own
+>   PASS line), and the range holds 8 commits (not 7). Corrected below with ⛔.
+> · **The post-change server had never RUN** (the rig on port 5000 predated the refactor; a rig
+>   render was offered as proxy proof). Fixed by measurement: the rig was RESTARTED on the
+>   post-change bundle (PID 38168) and its first backbone cycle completed **ok — 6/6 sale units at
+>   head 91,573,493, 15 protocol events + 6 timestamps inserted, 0 failed** (measured 05:22:29Z).
+> · **One judgment call surfaced for the founder, not silently absorbed:** the home reserves-band
+>   asset symbols (AVAX/BTC/ETH/USDC) now render at real weight 600 where they were browser-FAKED
+>   bold-700 (the mono font never shipped a 700 face), tracking 0.1→0.14em — adjudged acceptable
+>   normalization by the review; re-seal it with your eyes at the next home preview.
+>
+> ## DEPLOY VERDICT — REWRITTEN, TRUTHFUL: 🚀 DEPLOY — BATCHABLE.
+> The batch `60281db..HEAD` carries: studio typography/touch changes (client) · four guard scripts ·
+> **seven api-server runtime files** (`0f9fc86`: constants→imports, verified behavior-identical, no
+> schema, no env, no route change). Prod safely stays on `853f8bd` until the founder triggers the
+> deploy; when he does, Replit's verification must cover BOTH: the site renders AND the server boots
+> with a backbone cycle reaching ok.
+
+> # ▶ 2026-07-30 (PM) — THE GUARD DEBT IS PAID. Handoff ② closed in ⛔ 8 commits (this line said 7 — recounted 2026-07-30, `git rev-list --count`); only the hero awaits the wireframe. PROD = `853f8bd`, untouched.
 >
 > ## WHAT CLOSED (each RED-first, each with the twin search in its commit — derive with `git log --oneline 60281db..HEAD`)
 > · **The touch allowlist polices itself** (`ffad169` + `4b6ca36`): Input reaches the 44px coarse floor
@@ -22,14 +65,17 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   paid **66** of them: content pages · home + season + shared bands (VerifyOnChain = the sitewide proof
 >   affordance) · FAQ/guide/referral/member/admin. Two judged NOT eyebrows, exempted with reasons (the
 >   header TAGLINE, geometry measured 2026-07-28 · the console BRAND WORDMARK). Sub-12px floor debt
->   250 → 217 occurrences (196 → ~163 public), every ceiling moved by the guard's own output.
+>   250 → ⛔ 216 occurrences, 164 public (this line said 217/~163 — corrected 2026-07-30 by the
+>   adversarial review from the guard's own PASS line; and the "66 paid" above is 64 CONVERTED + 2
+>   exempted), every ceiling moved by the guard's own output.
 >   **REMAINS, gated on the founder's wireframe (③):** the hero's 8 (SeatFlowDiagram incl. THE public
 >   8px medallion label · ProtocolOverviewPanel · HeroStatusChips · HeroSeatLine) + HeroLedger's 7 in
 >   its measured exemption. Rig-verified per batch: eyebrows at computed 12px, zero parent-escape at
 >   desktop AND 375px, zero console errors (/docs 54 · home 68 · /faq 30).
 >
-> ## DEPLOY VERDICT: 🚀 DEPLOY — BATCHABLE (client+guards only, fail-closed, additive; prod safely
-> stays on `853f8bd` until the next deploy carries the batch: `60281db..dcd7a58`).
+> ## ⛔ DEPLOY VERDICT STRUCK 2026-07-30 — this line said "client+guards only", FALSE (seven
+> api-server runtime files ride the batch). The TRUTHFUL verdict lives in the (EVE) block above;
+> this strike stays so the correction is a decision on record, never a silent overwrite.
 >
 > ## STILL OPEN (unchanged): the Replit dump question (below) · the 4 wireframes ③ · LINK.e · CHR-11 · the 12-07 entry.
 

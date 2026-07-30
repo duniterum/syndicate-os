@@ -1,13 +1,28 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
-> **▶ 2026-07-30 (PM) — LA DETTE GARDES ② EST FERMÉE, avec preuve (7 commits, `60281db..dcd7a58`).**
+> **▶ 2026-07-30 (SOIR) — LA REVUE ADVERSARIALE PRÉ-GO-LIVE A TOURNÉ (37 agents, ordre du fondateur) :
+> 16 trouvailles, 15 confirmées, 0 réfutée — TOUTES corrigées** (`2baa266` · `cd0ca91` · `b372c15` +
+> la passe docs). Rien ne touchait le comportement : des cliquets percés (comptage d'existence,
+> migration silencieuse, un stripper qui avalait 1 000 lignes), une classe jumelle `.syn-eyebrow`
+> passée sous le radar (convertie, classe supprimée, garde armé), et des chiffres faux dans MON
+> registre — corrigés au mesuré : **64 convertis + 2 exemptés (pas « 66 convertis »), dette
+> sous-12px à 216 occurrences / 164 publiques (pas 217/163), 8 commits (pas 7)**. Le verdict
+> « client+guards only » était FAUX (7 fichiers runtime api dans le lot, refactor neutre vérifié) —
+> réécrit dans SESSION_STATE (EVE) : la vérification du déploiement couvre AUSSI le serveur. Le rig
+> a été REDÉMARRÉ sur le bundle post-refactor (la version d'avant n'avait jamais exécuté ce code).
+> À montrer au fondateur au prochain aperçu home : les symboles du bandeau réserves passent d'un
+> gras simulé (700 jamais fourni par la police) au vrai 600 — jugé sain par la revue, à re-sceller
+> à l'œil.
+
+> **▶ 2026-07-30 (PM) — LA DETTE GARDES ② EST FERMÉE, avec preuve (⛔ 8 commits — cette ligne disait 7, recompté ; `60281db..dcd7a58`).**
 > Cliquet Button-atom : un atome ou un fossile dans l'allowlist = build ROUGE (le revert complet du fix
 > 44px passait VERT — plus maintenant, prouvé dans les deux sens ; 5 fossiles supprimés, Input au
 > plancher). Duplicate-facts : chaque entrée DEBT épingle son compte exact de fichiers + 4 formes de
 > littéraux en plus (60 → 117 faits vus) ; ce qui a été attrapé est payé par IMPORT, jamais listé sans
 > raison écrite. Les eyebrows : le détecteur voit le COMPORTEMENT (74 comptés, pas « ~38 » en prose),
-> 66 convertis en 3 lots vérifiés sur le rig — il ne reste QUE le héros (8 + 7 HeroLedger), verrouillé
-> derrière les croquis ③. Dette sous-12px : 250 → 217 occurrences. **Verdict : 🚀 DEPLOY — BATCHABLE**
+> ⛔ 64 convertis + 2 exemptés (cette ligne disait 66 convertis — corrigé au soir) en 3 lots vérifiés
+> sur le rig — il ne reste QUE le héros (8 + 7 HeroLedger), verrouillé
+> derrière les croquis ③. Dette sous-12px : 250 → ⛔ 216 occurrences (disait 217). **Verdict : 🚀 DEPLOY — BATCHABLE**
 > (rien ne casse en attendant ; le prochain déploiement emporte le lot).
 > RESTE OUVERT : la question du dump à Replit (DEV ou DÉPLOIEMENT) · les 4 croquis ③ · LINK.e · CHR-11
 > · l'entrée du 12-07.
