@@ -105,9 +105,14 @@ export interface MilestoneDef {
 // commissions-paid + second-generation ladders await the sale-lane input's
 // commission field (their own micro-slice); alias/ramp/nft families ride
 // their modules.
-/** Chapter I (Genesis Signal) seals forever at this seat — the ONE declaration
- *  (the seats-333 milestone below and the public register's chapter column both
- *  read it; 2026-07-30). Distinct from the OTHER 333s in this file — 333 burns
+/** Chapter I (Genesis Signal) seals forever at this seat — the server-side
+ *  declaration (the seats-333 milestone below and the public register's
+ *  chapter column both read it; 2026-07-30). ⛔ HONESTY (go-live review): the
+ *  STUDIO carries its own copy — artifacts/studio/src/lib/chapters.ts
+ *  (endSeat: 333, feeds the receipts' chapter labels); client and server
+ *  cannot import each other, so the pair is a declared cross-artifact twin
+ *  (the USDC-base pattern). When Chapter II is defined, BOTH tables move in
+ *  the same commit. Distinct from the OTHER 333s in this file — 333 burns
  *  and 333 artifacts are unrelated facts sharing a numeral. */
 export const GENESIS_SIGNAL_SEAT_CEILING = 333;
 

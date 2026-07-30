@@ -479,7 +479,7 @@ check(
 
 const routeFiles = readdirSync("src/routes").sort();
 check(
-  "public route surface pinned (backboneFeed, backboneStatus, capitalStanding, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, receiptCard, receiptLookup, sourceStatus, sourceValidate, verifyLinks only)",
+  "public route surface pinned (backboneFeed, backboneStatus, capitalStanding, health, holderIndex, index, joinCard, joinQuote, protocolReality, publicReadThrottle, publicRegister, receiptCard, receiptLookup, season, sourceStatus, sourceValidate, verifyLinks only)",
   JSON.stringify(routeFiles) ===
     JSON.stringify([
       // Founder-approved backbone feed route (M4-b): receipt lines only —
@@ -505,6 +505,15 @@ check(
       "joinQuote.ts",
       "protocolReality.ts",
       "publicReadThrottle.ts",
+      // THE REGISTER (/api/registry, founder order 2026-07-30): the public
+      // per-seat register the 2026-07-25 address-model rescope explicitly
+      // permits — seat · FULL wallet · explorer link · chapter · rung ·
+      // joined, address-only, zero identity. It reads the backbone's
+      // in-memory models + the Merkle-frozen genesis roster, and its
+      // payload passes the feed's address-safety gate before it leaves.
+      // Its REAL invariants are positively pinned below (the verifyLinks
+      // pattern); backbone.guard pins the projection's behaviour.
+      "publicRegister.ts",
       // The painted preview cards (Q44 sealed order; founder-approved faces
       // 2026-07-20): one 64-hex hash + face in, that receipt's painted
       // 1200×630 PNG out — the same tx-keyed projection, painted in the
@@ -551,7 +560,11 @@ check(
   // joinCard.ts joined 2026-07-20 (K2): it emits the introducer's ADR-003
   // SHORT form only (public registry data); join-card:guard pins that no
   // full address ever surfaces in the route — the verifyLinks pattern.
-  const addressEmitApproved = new Set(["verifyLinks.ts", "joinCard.ts"]);
+  // publicRegister.ts joined 2026-07-30 (THE REGISTER, founder order): it
+  // lawfully emits FULL member addresses + explorer links — the 2026-07-25
+  // address model made the seat↔address pairing public and SHOWN. Its
+  // positive pin below holds it to its real invariants.
+  const addressEmitApproved = new Set(["verifyLinks.ts", "joinCard.ts", "publicRegister.ts"]);
   check(
     "no wallet/proof/continuity route code exists (comment-stripped; verifyLinks pinned separately)",
     routeFiles.every(
@@ -588,6 +601,23 @@ check(
         !/memberContinuity|historical_member|holderIndex|member-continuity|holder-index/.test(
           vl,
         ),
+    );
+  }
+  // Positive pin for THE REGISTER route (2026-07-30): it must build through
+  // the ONE projection, pass the feed's address-safety gate, hardcode NO
+  // 40-hex address, and never import the continuity read-model or the DB —
+  // the lawful full-address surface held to its real invariant, exactly the
+  // verifyLinks pattern.
+  {
+    const pr = stripRoute(
+      readFileSync(join("src/routes", "publicRegister.ts"), "utf8"),
+    );
+    check(
+      "publicRegister builds through buildPublicRegister + assertFeedSafeJson, no hardcoded 40-hex, no continuity/DB import",
+      /buildPublicRegister/.test(pr) &&
+        /assertFeedSafeJson/.test(pr) &&
+        !/0x[a-fA-F0-9]{40}/.test(pr) &&
+        !/memberContinuity|historical_member|member-continuity|backboneDb|drizzle/.test(pr),
     );
   }
 }

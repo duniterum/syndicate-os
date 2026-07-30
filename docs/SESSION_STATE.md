@@ -2,6 +2,35 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> # ▶ 2026-07-31 — THE REGISTER IS BUILT AND REVIEW-SEALED; GO-LIVE AWAITS THE FOUNDER'S WORD. PROD = `3adbc19`.
+>
+> ## (a) WHAT IS READY TO SHIP (derive the batch: `git log --oneline 3adbc19..HEAD`)
+> · **THE REGISTER** (`/registry` + `/api/registry`, founder order + approved wording): 14 per-seat
+>   rows on the prod-restored local DB — `#N · 0x…↗ · Chapter I · rung · joined` — seats = earliest
+>   indexed purchases ∪ the frozen genesis roster (⛔ never the one-row-per-wallet season board: the
+>   #7/#11 overlap wallet holds TWO rows, pinned). Legal pages carry the approved v2 texts UNDER
+>   BUMPED BADGES (Terms V2 · Privacy V3 — their own no-silent-change law). featureStatus
+>   `theRegister` live · SEO/sitemap/rewrites/footer/surfaceClassification all rode the slice.
+> · **The causal swap order** (payment leg before received asset — chain physics) + the pagination
+>   cursor accepting the `-1` sentinel (the review's BLOCKING catch: the server emitted a cursor its
+>   own route 400'd; live-proven fixed: `?cursor=91571070:-1` → 200).
+> · The four footer-audit blockers + fonts self-hosted (no visitor IP to Google) + the
+>   « no directory exists » family struck EVERYWHERE with dates (holder-index snapshot re-hashed by
+>   its own canonical function · home blurb · module notes · walletSession · CANON_ACCESS_MODEL ·
+>   the roster file's NEVER-EMITTED law) — the red line restated each time: name↔address, never the
+>   address.
+> · **The pre-go-live adversarial review: 43 agents, 19 filed, 19 confirmed, 0 refuted — all fixed
+>   the same evening.** Register verification list for Replit lives in the chat GO message.
+>
+> ## (b) NEXT + FOUNDER-PENDING
+> · Founder: the GO word for the deploy · the 3 reserves-wireframe decisions (3×2 grid · gold logo ·
+>   weekend freshness) · the 4 composition wireframes · LINK.e/XAUt0 reserves build follows his
+>   wireframe call (feeds verified on-chain: LINK/USD `0x49cc…de9a`, XAU/USD `0x1F41…515B`).
+> · The audit ledger holds 72 open findings (36 important · 35 minor) — the harmonization arc's
+>   work list, ticked as slices close.
+
+
+
 > # ▶ 2026-07-30 (EVE) — THE ADVERSARIAL REVIEW RAN BEFORE GO-LIVE, AND ITS FIXES ARE IN. PROD = `853f8bd` until the founder triggers the deploy.
 >
 > The founder ordered a 3-5-senior verification before go-live. **37 agents: 5 lenses, then 2

@@ -29,7 +29,12 @@ export default function Privacy() {
       eyebrow="Legal"
       title="Privacy Policy"
       lead="The Syndicate is built to know almost nothing about you. This page says plainly what little exists — and what never does."
-      badge={<StatusPill tone="caution">Version 2 — draft of 2026-07-19</StatusPill>}
+      badge={
+        // The page's own no-silent-change promise: the Wallet-addresses
+        // section was materially corrected 2026-07-30 (the pairing is public
+        // and shown), so the version moves with it.
+        <StatusPill tone="caution">Version 3 — draft of 2026-07-30</StatusPill>
+      }
     >
       <Card className="bg-muted/20 border-border/50 p-4 type-body text-muted-foreground measure mb-10">
         This is a draft. It awaits review by qualified counsel before it counts

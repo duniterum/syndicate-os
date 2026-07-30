@@ -28,7 +28,13 @@ export default function Terms() {
       eyebrow="Legal"
       title="Terms of Use"
       lead="The terms that govern thesyndicate.money and your interaction with the Syndicate protocol on Avalanche C-Chain."
-      badge={<StatusPill tone="caution">Version 1 — draft of 2026-07-16</StatusPill>}
+      badge={
+        // §11's own law: a change of terms is never silent. §8 was materially
+        // corrected 2026-07-30 (the wallet↔seat pairing is public and shown),
+        // so the version moves with it — the go-live review caught the new
+        // text shipping under the old badge.
+        <StatusPill tone="caution">Version 2 — draft of 2026-07-30</StatusPill>
+      }
     >
       <Card className="bg-muted/20 border-border/50 p-4 type-body text-muted-foreground measure mb-10">
         This is a draft. It awaits review by qualified legal counsel before it can

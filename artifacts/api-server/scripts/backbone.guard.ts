@@ -1092,6 +1092,17 @@ const fixtureProtocolModel = buildProtocolEventReadModel({
       `the feed route's cursor shape accepts a native-lane index (${sample}) — the server can never emit a cursor its own route rejects`,
       `the cursor regex rejects the native lane's synthetic index (${sample}) — "Load more" would 400 in silence`,
     );
+    // THE SAME DEFECT CLASS, SECOND FACE (go-live review 2026-07-30, found
+    // LIVE with limit=2 on the founder's gold swap): the causal swap order
+    // gives a native OUT-leg logIndex -1, and a page boundary landing on it
+    // makes sliceFeedPage emit `block:-1` — which the old digits-only regex
+    // rejected with 400. The cursor shape must accept the causal sentinel.
+    const causalSample = "91571070:-1";
+    check(
+      m !== null && new RegExp(`^${m[1]}$`).test(causalSample),
+      `the feed route's cursor shape accepts the causal native out-leg index (${causalSample})`,
+      `the cursor regex rejects the causal sentinel (${causalSample}) — "Load more" dies whenever a page boundary lands on a swap's payment leg`,
+    );
   }
   check(
     build([{ ...advanceRow, value: "0" }], []).length === 0 &&
@@ -1537,6 +1548,12 @@ check(
         // seat, never collapsed to one row per wallet.
         { memberNumber: 11, memberAddress: wOverlap, blockNumber: 850, logIndex: 3, isoDayUtc: "2026-07-10" },
         { memberNumber: null, memberAddress: null, blockNumber: 700, logIndex: 1, isoDayUtc: "2026-07-01" },
+        // THE NUMBERLESS GENESIS PURCHASE (the prod #1/#2 shape the go-live
+        // review caught serving joined=null): V1 events carry NO member
+        // number, but the wallet IS in the frozen roster — the row resolves
+        // to its genesis seat and its indexed day serves (the feed
+        // projection's own numberless-row rule, applied here too).
+        { memberNumber: null, memberAddress: wG3, blockNumber: 600, logIndex: 4, isoDayUtc: "2026-06-04" },
       ],
     },
     genesisSeatByWallet: new Map([
@@ -1550,7 +1567,7 @@ check(
       reg.seatsTotal === 4 &&
       reg.rows.map((r) => r.seat).join(",") === "3,7,11,14" &&
       reg.rows[0]!.wallet === wG3 &&
-      reg.rows[0]!.joinedIsoDay === null &&
+      reg.rows[0]!.joinedIsoDay === "2026-06-04" &&
       reg.rows[0]!.rung === null &&
       reg.rows[1]!.wallet === wOverlap &&
       reg.rows[1]!.joinedIsoDay === null &&
@@ -1564,10 +1581,19 @@ check(
     "the register projection broke: a seat lost to per-wallet collapse, wrong join order, or invented data",
   );
   const dark = buildPublicRegister({ capital: null, activity: null, genesisSeatByWallet: new Map() });
+  // The half-dark case (go-live review, confirmed): activity alive but the
+  // capital walk faulted. Serving LIVE here would print every rung as the
+  // DOCUMENTED "no walked standing yet" null — a faulted upstream wearing the
+  // honest-absence dash. Both authorities or DARK.
+  const halfDark = buildPublicRegister({
+    capital: null,
+    activity: { items: [{ memberNumber: 14, memberAddress: w14, blockNumber: 800, logIndex: 5, isoDayUtc: "2026-07-13" }] },
+    genesisSeatByWallet: new Map(),
+  });
   check(
-    dark.state === "DARK" && dark.rows.length === 0,
-    "a dark backbone serves a DARK register envelope — never invented rows",
-    "the register invents rows while the backbone is dark",
+    dark.state === "DARK" && dark.rows.length === 0 && halfDark.state === "DARK" && halfDark.rows.length === 0,
+    "a dark OR half-dark backbone serves a DARK register envelope — a faulted capital walk never masquerades as honest rung absence",
+    "the register serves rows without both walks published (the faulted-walk-as-honest-dash defect)",
   );
 }
 

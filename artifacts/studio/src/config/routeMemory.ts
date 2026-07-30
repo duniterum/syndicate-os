@@ -73,9 +73,14 @@ export const routeMemory: RouteMemoryEntry[] = [
     legacyName: "Institutional Register",
     description: "A public register of membership seats and standing.",
     classification: "CONTRACT_MEMORY",
+    // ⛔ RE-DISPOSITIONED 2026-07-30 (go-live review): the old line said "No
+    // member rows, balances, or seats are shown" — true in the posture era,
+    // refuted the day THE REGISTER shipped. The origin capability's live
+    // descendant is /registry (address-only per-seat rows under the
+    // 2026-07-25 address model), not the /contracts memory page.
     disposition:
-      "Represented as posture-only contract memory. No member rows, balances, or seats are shown.",
-    mappedRoute: "/contracts",
+      "GREW UP 2026-07-30: the live descendant is THE REGISTER (/registry) — address-only per-seat rows (seat · wallet↗ · chapter · standing · joined). Identity is never linked; the name-to-wallet directory stays forbidden.",
+    mappedRoute: "/registry",
   },
   {
     id: "my-syndicate",

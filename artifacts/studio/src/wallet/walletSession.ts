@@ -253,7 +253,9 @@ export function shortAddress(address: string): string {
 // ── Holder Index self-readback (founder Decision 5a) ────────────────────────
 // GET /api/auth/member-standing maps the session's SERVER-SIDE bound account
 // to its own Holder Index era standing via the static hash-pinned snapshot.
-// Own-row only: no directory, roster, or arbitrary lookup exists anywhere;
+// Own-row only on THIS endpoint (⛔ "no roster exists anywhere" struck
+// 2026-07-30 — THE REGISTER serves the address-only per-seat roster at
+// /registry; what never exists is an identity lookup);
 // the bound account is never echoed and no tx hash is returned.
 
 export interface MemberStandingReadback {

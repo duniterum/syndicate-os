@@ -1,6 +1,13 @@
 /**
- * The 8 historical-member freeze wallets — SERVER-ONLY input for the honest
- * distinct-wallet readback. NEVER EMITTED.
+ * The 8 historical-member freeze wallets — input for the honest
+ * distinct-wallet readback.
+ * ⛔ "NEVER EMITTED" STRUCK 2026-07-30 (go-live review; the REFACTORING LAW's
+ * dated correction): THE REGISTER (/api/registry, founder order) now lawfully
+ * emits these wallets as public per-seat rows under the 2026-07-25 address
+ * model — an address is public chain data; the forbidden artifact is the
+ * NAME↔address mapping, which this file never held. The old absolute below
+ * was the pre-rescope posture, kept struck so no future reader "fixes" the
+ * register back into the masking reflex.
  * ---------------------------------------------------------------------------
  * WHY THE SERVER HOLDS THIS: the public member figure must tell the WHOLE
  * truth — memberCount() counts SEATS, not people. One wallet already holds two
@@ -52,9 +59,10 @@ export const HISTORICAL_FREEZE_WALLETS: readonly HistoricalFreezeWallet[] = [
 ] as const;
 
 /**
- * D-TRUTH D1: the frozen roster as a SERVER-ONLY join key — lowercase wallet →
- * seat #1–#8. NEVER EMITTED; only what it RESOLVES (a seat number already
- * public on chain) may travel.
+ * D-TRUTH D1: the frozen roster join key — lowercase wallet → seat #1–#8.
+ * ⛔ "NEVER EMITTED" struck 2026-07-30: THE REGISTER emits these pairings as
+ * public per-seat rows (address-only, the 2026-07-25 law). The COUNT
+ * derivations below still emit only what they resolve.
  *
  * WHY IT LIVES HERE AND NOT AT EACH CALL SITE (one-authority rule): two
  * subsystems join on it — the runner (capital walk, own-purchase, season) and

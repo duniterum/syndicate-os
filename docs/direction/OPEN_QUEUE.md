@@ -1,5 +1,25 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-31 — LE REGISTER EST CONSTRUIT, LA REVUE PRÉ-GO-LIVE EST PASSÉE (19/19 corrigées), GO-LIVE PRÊT.**
+> Sur ordre + textes approuvés du fondateur : **THE REGISTER (`/registry`)** — le registre public par
+> siège (14 lignes, `#N · 0x…↗ · chapitre · échelon · entrée`, adresse-seulement) avec sa route
+> `/api/registry`, ses pins backbone (chevauchement #7/#11 = deux lignes ; achats V1 sans numéro
+> résolus par le roster ; enveloppe SOMBRE si l'une des deux marches manque), la clé
+> `featureStatus.theRegister`, SEO/sitemap/rewrites/footer, et les textes légaux v2 GRAVÉS avec
+> bump de version (Terms V2 · Privacy V3, la loi anti-changement-silencieux des pages elles-mêmes).
+> **La revue adversariale (5 loupes + 2 sceptiques/trouvaille, 43 agents) : 19 déposées, 19
+> confirmées, 0 réfutée — TOUTES corrigées le soir même**, dont la BLOQUANTE : l'index causal −1 du
+> swap cassait la grammaire du curseur de pagination (le serveur émettait un `nextCursor` que sa
+> propre route rejetait en 400 — pin RED, regex élargie d'exactement `-1`). Et la famille « aucun
+> annuaire n'existe » (holder-index, home, module notes, walletSession, CANON_ACCESS_MODEL, le
+> fichier roster « NEVER EMITTED ») : frappée partout avec la date — l'interdit qui reste est
+> l'annuaire nom↔adresse. ⛔ Correction de registre : `9d5848e` disait « 268KB » de polices — la
+> mesure `git ls-tree` donne 239 504 octets (≈234 KiB).
+> **EN ATTENTE DU FONDATEUR : le GO-LIVE** (l'instruction Replit exacte est au chat) · les 3
+> décisions du croquis réserves (grille 3×2 · logo or · fraîcheur week-end) · les 4 croquis
+> composition de l'audit · LINK.e affichage (le flux existe, vérifié on-chain) · CHR-11 · l'entrée
+> du 12-07. Le carnet d'audit : 72 trouvailles restantes (36 importantes · 35 mineures).
+
 > **▶ 2026-07-30 (NUIT) — L'ARC POST-DÉPLOIEMENT : le swap remis dans l'ordre causal, 4 des 6
 > bloquantes de l'audit footer fermées, la base PROD installée en local.** Commits `c88e70c` (ordre
 > causal du swap — physique de chaîne, pin RED, prouvé sur la vraie tx or) · `2aa7a60` (le déni

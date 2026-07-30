@@ -5,6 +5,14 @@ Ordered by the founder (« ce n'est pas harmonisé !!!! et check the truth »), 
 Every finding carries measured evidence (quoted line + the API/chain figure that refutes or the system rule it breaks).
 This file is the WORK LEDGER for the harmonization arc — tick findings as slices close, never re-audit from scratch.
 
+> **✅ CLOSED 2026-07-30 (the same evening, commits `2aa7a60`·`c162410`·`2c18004`·`9d5848e`·`ed2a6a7`+the review batch):**
+> ALL SIX BLOCKING — the /map+/status era denial (its CLASS entered guard-era-drift) · /referral's
+> recognition denial (both copies) · /archive's Entry-1 fossil (dynamic register count) · Terms §8 and
+> Privacy wallet-addresses (founder-approved v2 wording + version badges bumped V2/V3) · Google Fonts
+> (self-hosted, CSP tightened — the privacy inventory is true again). PLUS the /archive museum promises
+> (important) now pinned via featureStatus `archiveGallery`. **72 findings remain open: 36 important ·
+> 35 minor + this ledger's own tick discipline.** Every figure above recounted at close.
+
 
 ## BLOCKING (6)
 

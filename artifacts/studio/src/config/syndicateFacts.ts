@@ -161,8 +161,12 @@ export const homepagePromotedStrip = {
       "Read the live membership engine and compute an exact join quote — figures straight from the active engine, never estimated.",
     "verified-introduction":
       "Validate a referral code against the on-chain registry and build your referral link — a bounded commission per eligible completed introduction, never a paid role or salary.",
+    // ⛔ CORRECTED 2026-07-30 (go-live review): this blurb ended "no directory
+    // of other wallets exists" — refutable in one click since THE REGISTER
+    // (/registry) ships in the same deploy. The red line restated exactly:
+    // identity, never the address.
     "member-cockpit":
-      "Sign a wallet session and read your own standing straight from the active engine — a self-readback; no directory of other wallets exists.",
+      "Sign a wallet session and read your own standing straight from the active engine — your own row, on demand. Identity is never linked anywhere: the public register lists seats address-only.",
     "protocol-reality":
       "Every public figure reconciles live chain reads against vendored canon — a mismatch fails closed, never an invented value.",
   } as Record<string, string>,

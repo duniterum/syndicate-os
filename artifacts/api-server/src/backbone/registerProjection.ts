@@ -20,9 +20,12 @@
  *                       there — the first build lost a seat exactly that way
  *                       (13 rows for 14 seats, caught on the rig).
  *   · rung            — the capital axis walk's end state (standingBySeat).
- *   · joined          — the earliest indexed purchase day. A genesis seat
- *                       whose rows predate the indexed streams has NO
- *                       derivable day and serves null — an honest absence.
+ *   · joined          — the earliest indexed purchase day, with NUMBERLESS
+ *                       V1 rows resolved through the roster (the feed's own
+ *                       rule — ⛔ the first build skipped them and served
+ *                       null for seats #1/#2 whose days ARE indexed;
+ *                       go-live review 2026-07-30). Only a seat with no
+ *                       indexed row at all serves null — honest absence.
  *   · short form / explorer link — the feed projection's shortForm and the
  *                       canon addressUrl (never rebuilt here).
  *   · chapter         — derived from GENESIS_SIGNAL_SEAT_CEILING (the same
@@ -70,8 +73,9 @@ export interface PublicRegisterRow {
   readonly chapter: string;
   /** Capital-axis rung, or null when the seat has no walked standing yet. */
   readonly rung: string | null;
-  /** UTC day of the seat's earliest INDEXED purchase; null = the seat's
-   *  history predates the indexed streams (genesis) — honest absence. */
+  /** UTC day of the seat's earliest INDEXED purchase (numberless V1 rows
+   *  resolve through the frozen roster); null = no indexed row exists for
+   *  the seat at all — honest absence. */
   readonly joinedIsoDay: string | null;
 }
 
@@ -109,7 +113,12 @@ export function buildPublicRegister(input: {
   readonly genesisSeatByWallet: ReadonlyMap<string, number>;
 }): PublicRegisterModel {
   const { capital, activity, genesisSeatByWallet } = input;
-  if (activity === null) {
+  // BOTH authorities or DARK (go-live review, confirmed): with activity alive
+  // but the capital walk faulted, every rung would read null — and the rung
+  // null is DOCUMENTED as "no walked standing yet", so a faulted upstream
+  // would masquerade as honest absence. The register needs both walks; until
+  // both publish, it says so instead of half-guessing.
+  if (activity === null || capital === null) {
     return {
       module: "the-register",
       state: "DARK",
@@ -122,25 +131,35 @@ export function buildPublicRegister(input: {
 
   // rung by seat — the capital walk's end state, never recomputed here.
   const rungBySeat = new Map<number, string>();
-  for (const s of capital?.standingBySeat ?? []) {
+  for (const s of capital.standingBySeat) {
     rungBySeat.set(s.seatNumber, s.rung);
   }
 
   // seat → (wallet, joined day) from the EARLIEST indexed purchase — chain
-  // order via (block, logIndex), never array order.
+  // order via (block, logIndex), never array order. ⛔ CORRECTED 2026-07-30
+  // (go-live review): the first build skipped NUMBERLESS rows entirely —
+  // but V1 events carry no member number BY CONSTRUCTION, and the feed
+  // projection has always resolved them through the frozen roster (its
+  // numberless-row rule). Skipping them served joined=null for seats #1/#2
+  // whose earliest indexed purchases (2026-06-04/05) sit in the stream with
+  // timestamps. Same rule here now: seat = event ordinal, or the roster for
+  // a numberless row.
   const earliestBySeat = new Map<
     number,
     { wallet: string; day: string; block: number; logIndex: number }
   >();
   for (const item of activity.items) {
-    if (item.memberNumber === null || item.memberAddress === null) continue;
-    const prev = earliestBySeat.get(item.memberNumber);
+    if (item.memberAddress === null) continue;
+    const seat =
+      item.memberNumber ?? genesisSeatByWallet.get(item.memberAddress) ?? null;
+    if (seat === null) continue;
+    const prev = earliestBySeat.get(seat);
     if (
       prev === undefined ||
       item.blockNumber < prev.block ||
       (item.blockNumber === prev.block && item.logIndex < prev.logIndex)
     ) {
-      earliestBySeat.set(item.memberNumber, {
+      earliestBySeat.set(seat, {
         wallet: item.memberAddress,
         day: item.isoDayUtc,
         block: item.blockNumber,

@@ -778,7 +778,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     primaryIntent: "proof",
     proofRoute: "/status",
     notes:
-      "Built 2026-07-30 (featureStatus theRegister). Serves /api/registry — season standings (wallet↔seat) + capital rungs + earliest indexed purchase day; genesis absences render as honest dashes.",
+      "Built 2026-07-30 (featureStatus theRegister). Serves /api/registry — seats = earliest indexed purchases ∪ the Merkle-frozen genesis roster (⛔ NEVER the season board: one-row-per-wallet collapses the #7/#11 overlap — the first build lost a seat that way) + capital rungs; a seat with no indexed row renders an honest dash.",
   },
   {
     path: "/activity",

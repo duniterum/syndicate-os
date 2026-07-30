@@ -114,6 +114,15 @@ export function HomeRegisterBand() {
                   Open the full history →
                 </span>
               </Link>
+              {/* THE REGISTER went live 2026-07-30 (go-live review: the band
+                  named "The public register" pitched a page it never linked).
+                  text-xs, not the siblings' 11.5px — new text never adds
+                  sub-floor debt (the type guard's growth rule). */}
+              <Link href="/registry" className="inline-block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <span className="mt-3 ml-4 inline-block cursor-pointer border-b border-gold/40 font-mono text-xs text-gold">
+                  Open the full register →
+                </span>
+              </Link>
             </Card>
           )}
 

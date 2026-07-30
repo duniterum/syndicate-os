@@ -25,16 +25,25 @@ import { GENESIS_SEAT_BY_WALLET } from "../lib/protocol/historicalFreezeWallets"
 const router: IRouter = Router();
 
 router.get("/registry", (_req, res) => {
-  const feedSource = getBackboneFeedSource();
-  const model = buildPublicRegister({
-    capital: feedSource.capitalModel,
-    activity: feedSource.model,
-    genesisSeatByWallet: GENESIS_SEAT_BY_WALLET,
-  });
-  const serialized = JSON.stringify(model);
-  assertFeedSafeJson(serialized);
-  res.setHeader("content-type", "application/json; charset=utf-8");
-  res.send(serialized);
+  // The projection is DESIGNED to throw (chapter table exceeded, malformed
+  // wallet, address-safety) — a designed failure answers as the sibling
+  // routes' JSON envelope, never Express's default HTML 500 (go-live review
+  // 2026-07-30: the one public route without a catch leaked stack traces on
+  // non-production rigs).
+  try {
+    const feedSource = getBackboneFeedSource();
+    const model = buildPublicRegister({
+      capital: feedSource.capitalModel,
+      activity: feedSource.model,
+      genesisSeatByWallet: GENESIS_SEAT_BY_WALLET,
+    });
+    const serialized = JSON.stringify(model);
+    assertFeedSafeJson(serialized);
+    res.setHeader("content-type", "application/json; charset=utf-8");
+    res.send(serialized);
+  } catch {
+    res.status(500).json({ error: "register_unavailable" });
+  }
 });
 
 export default router;

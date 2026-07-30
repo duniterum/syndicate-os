@@ -51,7 +51,13 @@ const LIMIT_RE = /^[0-9]{1,2}$/;
  * Nine digits leaves room above the synthetic base; `backbone.guard` now pins
  * this regex AGAINST that base so they can never drift apart again.
  */
-const CURSOR_RE = /^[0-9]{1,12}:[0-9]{1,9}$/;
+// The logIndex half accepts ONE negative value: the causal sentinel -1 a
+// native OUT-leg carries since the 2026-07-30 swap-order fix (an EOA's
+// msg.value leaves at call entry, before every log). A page boundary landing
+// on a swap's payment leg emits `block:-1` — the go-live review caught the
+// old digits-only shape 400-ing the server's own cursor, the exact defect
+// class this route's header already records from 2026-07-27.
+const CURSOR_RE = /^[0-9]{1,12}:(?:-1|[0-9]{1,9})$/;
 
 router.get("/backbone/feed", (req, res) => {
   try {

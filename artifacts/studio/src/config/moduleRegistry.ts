@@ -163,7 +163,9 @@ const specs: readonly RegistrySpec[] = [
     riskClass: "SESSION_SELF_READBACK",
     forbiddenClaims: ["WEALTH_RANKING", "FINANCIAL_UPSIDE"],
     notes:
-      "A signed wallet may read ONLY its own standing (memberNumberOf self-readback). No directory or lookup of other wallets exists anywhere.",
+      // ⛔ CORRECTED 2026-07-30: "No directory or lookup … exists anywhere"
+      // predated THE REGISTER (/registry, address-only per-seat rows).
+      "A signed wallet may read ONLY its own standing (memberNumberOf self-readback). The public register lists seats address-only at /registry; a name-to-wallet directory or identity lookup never exists.",
   },
   {
     registryId: "verified-introduction",

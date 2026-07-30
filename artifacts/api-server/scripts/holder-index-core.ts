@@ -77,11 +77,18 @@ export interface HolderIndexSnapshotShape extends HolderIndexAggregates {
   readonly snapshotHash: string;
 }
 
+// ⛔ RESCOPED 2026-07-30 (go-live review, confirmed contradiction): lines ①
+// and ④ said "no per-seat public roster … no directory" while the SAME deploy
+// now serves THE REGISTER (/registry) — the address-only per-seat roster the
+// 2026-07-25 address model explicitly permits. Two live endpoints of one
+// deploy may never contradict each other. The red line restated exactly: the
+// forbidden artifact is the NAME-to-wallet directory — identity, never the
+// address.
 export const HOLDER_INDEX_BOUNDARIES: readonly string[] = [
-  "Aggregate counts only: no wallet addresses, no per-seat public roster, no memberNumber-to-wallet linkage, no directory.",
+  "Aggregate counts only in THIS payload: no wallet addresses here. The address-only per-seat register (seat · wallet · chapter · standing · joined) is public at /registry under the 2026-07-25 address model; what never exists is a name-to-wallet directory — identity is never linked.",
   "Served code imports this static snapshot and performs NO runtime database read (freezeGate pattern); the scripts-side reconciler re-derives it from the database and fails closed on any mismatch.",
   "Era provenance is always labelled: historical freeze / on-chain root (#1\u2013#8) vs V3 engine event (#9+). The two authorities are never collapsed into one undifferentiated sequence.",
-  "Membership recognition only — no financial framing, no economic projection. Member self-readback is session-bound OWN-ROW only (founder Decision 5a): a signed wallet may resolve its own standing against this snapshot; no public directory, roster, or arbitrary lookup exists.",
+  "Membership recognition only — no financial framing, no economic projection. Member self-readback is session-bound OWN-ROW only (founder Decision 5a): a signed wallet may resolve its own standing against this snapshot. The address-only per-seat register is public at /registry; a name-to-wallet directory or identity lookup never exists.",
 ];
 
 // ---------------------------------------------------------------------------

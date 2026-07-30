@@ -301,6 +301,11 @@ check(
     "joinQuote.ts",
     "protocolReality.ts",
     "publicReadThrottle.ts",
+    // THE REGISTER (/api/registry, 2026-07-30): serves the in-memory register
+    // projection — its joined day is the activity items' isoDayUtc (Protocol
+    // Time already resolved upstream by the backbone); it never touches the
+    // block_timestamp cache (the scan below covers it like every route).
+    "publicRegister.ts",
     // The painted preview cards (2026-07-20): one hash + face in, a painted
     // PNG out — relays the row's sealedAtSec like the reads do; never
     // touches the block_timestamp cache (the scan below covers it).
@@ -322,7 +327,7 @@ check(
     "verifyLinks.ts",
   ];
   check(
-    "public route surface pinned (backboneFeed, backboneStatus, capitalStanding, health, holderIndex, index, joinQuote, protocolReality, publicReadThrottle, receiptCard, receiptLookup, sourceStatus, sourceValidate, verifyLinks only)",
+    "public route surface pinned (backboneFeed, backboneStatus, capitalStanding, health, holderIndex, index, joinCard, joinQuote, protocolReality, publicReadThrottle, publicRegister, receiptCard, receiptLookup, season, sourceStatus, sourceValidate, verifyLinks only)",
     JSON.stringify(routeFiles) === JSON.stringify(allowed),
     `routes=${JSON.stringify(routeFiles)}`,
   );
