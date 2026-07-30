@@ -4,6 +4,7 @@ import { MemberAppPage } from "@/components/member/MemberAppPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { CHRONICLE_REGISTER } from "@/config/chronicleRegister";
 import { getContractsByCategory } from "@/config/contractMemory";
 import { ctas } from "@/config/sharedCopy";
 
@@ -45,10 +46,16 @@ export default function Archive() {
                 DIED — the register is open and its promotions ride the feed. */}
             <LifecycleBadge lifecycle="READ_ONLY_PROOF" />
           </div>
+          {/* ⛔ CORRECTED 2026-07-30 (footer audit, BLOCKING): this card said
+              "entry one: the duplicate seat" — a fossil of the 4-entry era.
+              /chronicle numbers entries CHRONOLOGICALLY, and since the eleven
+              origin-history promotions (2026-07-26) the duplicate seat is
+              Entry 12 — the card's own button disproved its sentence. The
+              count is now read from the register, so it can never fossilize. */}
           <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-            The solemn record is open: founder-promoted entries are published,
-            each anchored into the public record — entry one: the duplicate
-            seat.
+            The solemn record is open: {CHRONICLE_REGISTER.length} founder-promoted
+            entries are published, each anchored into the public record — from
+            the first recorded error to the latest ruling.
           </p>
           <Link href="/chronicle">
             <Button variant="outline" size="sm">Read the Chronicle</Button>

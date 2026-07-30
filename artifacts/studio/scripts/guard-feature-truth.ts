@@ -95,6 +95,15 @@ const PROSE_CLAIM_SITES: Record<
     keys: ["aliasLayer"],
     fragment: "What arrives next",
   },
+  // /archive's museum promise (footer audit 2026-07-30): THREE sentences on
+  // one page say the gallery surface is still building — previously standing
+  // entirely outside this mechanism, the exact hole this guard's own header
+  // names. The day the gallery ships, flipping the key forces all three
+  // sentences clean in the same commit.
+  "pages/Archive.tsx": {
+    keys: ["archiveGallery"],
+    fragment: "the full gallery",
+  },
 };
 
 // ── §⑦ REGISTERED BUT CLAIMED NOWHERE ───────────────────────────────────────
