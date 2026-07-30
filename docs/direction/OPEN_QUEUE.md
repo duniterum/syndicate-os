@@ -1,5 +1,19 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-30 (NUIT) — L'ARC POST-DÉPLOIEMENT : le swap remis dans l'ordre causal, 4 des 6
+> bloquantes de l'audit footer fermées, la base PROD installée en local.** Commits `c88e70c` (ordre
+> causal du swap — physique de chaîne, pin RED, prouvé sur la vraie tx or) · `2aa7a60` (le déni
+> d'ère morte meurt sur /map+/status ET sa classe entre dans guard-era-drift) · `c162410`
+> (/referral cesse de nier la reconnaissance Connector LIVE) · `2c18004` (/archive lit le compte
+> vivant du registre Chronicle + la promesse musée entre dans DONE-IS-DONE) · `9d5848e` (polices
+> AUTO-HÉBERGÉES — plus aucune IP de visiteur ne part chez Google ; CSP resserrée).
+> **EN ATTENTE DU FONDATEUR :** ① le GO de déploiement (tête `9d5848e` — un seul déploiement
+> emporte ordre du swap + 4 vérités + polices) ; ② les DEUX passages légaux Terms §8 / Privacy
+> (le lien siège↔wallet est PUBLIC sur nos propres surfaces — textes proposés au chat du 30-07
+> soir) ; ③ les 3 décisions du croquis réserves (grille 3×2 · logo or · fraîcheur week-end) ;
+> ④ le registre d'audit `docs/audits/FOOTER_PAGES_AUDIT_2026-07-30.md` reste le carnet de travail
+> (72 trouvailles restantes : 37 importantes · 35 mineures).
+
 > **▶ 2026-07-30 (SOIR) — LA REVUE ADVERSARIALE PRÉ-GO-LIVE A TOURNÉ (37 agents, ordre du fondateur) :
 > 16 trouvailles, 15 confirmées, 0 réfutée — TOUTES corrigées** (`2baa266` · `cd0ca91` · `b372c15` +
 > la passe docs). Rien ne touchait le comportement : des cliquets percés (comptage d'existence,
