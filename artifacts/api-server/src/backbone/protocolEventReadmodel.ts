@@ -33,6 +33,9 @@ import type {
 } from "./protocolEventScan";
 import type { BlockTimestampInput } from "./activityHeartbeatReadmodel";
 import { LADDER_RUNGS_CANON } from "../lib/protocol/connectorLadderCanon";
+// The native lane's storage sentinel — how a native row is recognised
+// STRUCTURALLY (never by its symbol) for the causal swap ordering below.
+import { NATIVE_INDEX_BASE } from "./nativeAvaxScan";
 
 export type SenderLabel = "Founder" | "Community";
 
@@ -530,6 +533,19 @@ export function buildProtocolEventReadModel(
     const ts = timeOf(t.blockNumber);
     const movement =
       fromOrgan !== null && toOrgan !== null ? "internal" : fromOrgan !== null ? "out" : "in";
+    // THE ORDER OF A NATIVE LEG IS CHAIN PHYSICS, NOT A PREFERENCE (founder-
+    // caught 2026-07-30: his 2 AVAX → XAUt0 swap rendered "gold in, then AVAX
+    // out"). Every organ is an EOA, so a native OUTFLOW is the transaction's
+    // own msg.value — it leaves at CALL ENTRY, before any log that same
+    // transaction emits. The scanner's stored sentinel (NATIVE_INDEX_BASE =
+    // "after every log", recognised STRUCTURALLY here — never by the symbol,
+    // which an impostor can claim) stays right for native INFLOWS (the
+    // unwrap-at-end pattern; the exact trace position is unknowable without a
+    // trace) but is backwards for outflows. Corrected AT THE PROJECTION: the
+    // stored row keeps the scanner's sentinel — it is the idempotency key and
+    // history is never rewritten.
+    const isNativeLeg = t.logIndex >= NATIVE_INDEX_BASE;
+    const causalLogIndex = isNativeLeg && movement === "out" ? -1 : t.logIndex;
     treasuryItems.push({
       kind: "treasury-move",
       token: t.token,
@@ -548,7 +564,7 @@ export function buildProtocolEventReadModel(
             ? input.founderWalletAddresses.has(t.toAddress.toLowerCase())
             : false,
       blockNumber: t.blockNumber,
-      logIndex: t.logIndex,
+      logIndex: causalLogIndex,
       transactionHash: t.transactionHash,
       blockTimestampSec: ts,
       isoDayUtc: isoDayUtcFromSeconds(ts),

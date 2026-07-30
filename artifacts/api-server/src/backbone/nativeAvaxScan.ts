@@ -67,7 +67,10 @@ const EXPECTED_CHAIN_ID = 43114;
  * the 375-gas floor per LOG opcode, a 15M-gas block tops out near 40,000. One
  * million leaves a 25× margin and stays far inside a 32-bit integer.
  */
-const NATIVE_INDEX_BASE = 1_000_000;
+// Exported: the read-model recognises a native row STRUCTURALLY by this
+// sentinel (never by its symbol, which an impostor token can claim) to give
+// same-transaction swap legs their causal order (2026-07-30).
+export const NATIVE_INDEX_BASE = 1_000_000;
 
 /** An etherscan-compatible account-API row, as it arrives (all fields strings). */
 interface ExplorerAccountRow {

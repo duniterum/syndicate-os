@@ -1512,6 +1512,54 @@ check(
   "founder funding attribution: in-from-founder carries counterpartFounder; external/internal never do (A1, 2026-07-22)",
   "the founder-funding attribution broke",
 );
+// THE SWAP-ORDER PIN (founder-caught 2026-07-30 on prod: his 2 AVAX → XAUt0
+// gold swap rendered "gold entered, then AVAX left"). Every organ is an EOA,
+// so a native OUTFLOW is the transaction's own msg.value — chain physics puts
+// it at CALL ENTRY, before every log that same transaction emits — while the
+// scanner stores it at the after-every-log sentinel (its idempotency key,
+// which must NOT change). The read-model must serve the CAUSAL order: the
+// payment leg strictly before the received asset. A native INFLOW keeps the
+// after-logs position (the unwrap-at-end pattern; its exact trace position is
+// unknowable without a trace).
+{
+  const swapTx = "0x" + "9a".repeat(32);
+  const goldAddr = "0x" + "ab".repeat(20);
+  const swapModel = buildProtocolEventReadModel({
+    expectedChainId: CHAIN,
+    burns: [],
+    lifecycle: [],
+    lpLiquidity: [],
+    lpTokenMints: [],
+    archiveMints: [],
+    archivePauses: [],
+    treasury: [
+      // the received token — a REAL log position (the gold swap's log 12)
+      { token: "XAUT", assetContract: goldAddr, assetDecimals: 6, blockNumber: 300, logIndex: 12, transactionHash: swapTx, fromAddress: externalAddr, toAddress: vaultAddr, valueRaw: "3144" },
+      // the native payment — stored at the scanner's sentinel (1_000_000
+      // retyped here on purpose: the guard recomputes the scanner's storage
+      // convention independently instead of importing the code under test)
+      { token: "AVAX", blockNumber: 300, logIndex: 1_000_000, transactionHash: swapTx, fromAddress: vaultAddr, toAddress: externalAddr, valueRaw: "2" + "0".repeat(18) },
+    ],
+    blockTimestamps: [{ chainId: CHAIN, blockNumber: 300, blockTimestampSec: T0 + 9_600 }],
+    founderAddresses: new Set([founderAddr]),
+    founderWalletAddresses: new Set([founderAddr]),
+    organLabelByAddress: new Map([[vaultAddr, "the vault"]]),
+    saleTransactionHashes: new Set<string>(),
+    seatHolderAddresses: new Set<string>(),
+    lpToken0IsSyn: false,
+  });
+  check(
+    swapModel.treasuryItems.length === 2 &&
+      swapModel.treasuryItems[0]!.token === "AVAX" &&
+      swapModel.treasuryItems[0]!.movement === "out" &&
+      swapModel.treasuryItems[1]!.token === "XAUT" &&
+      swapModel.treasuryItems[1]!.movement === "in" &&
+      swapModel.treasuryItems[0]!.logIndex < swapModel.treasuryItems[1]!.logIndex,
+    "a same-transaction swap serves the CAUSAL order — the native payment leg (an EOA's msg.value, at call entry by chain physics) sorts BEFORE the received asset's log; the stored sentinel stays untouched",
+    "the swap order is backwards: the received asset sorts before the native payment that bought it (the founder's gold-swap defect, 2026-07-30)",
+  );
+}
+
 // H1a-fix pin (the prod-caught inversion, dead forever): with token0 = USDC,
 // the read-model must map amount1 → SYN and amount0 → USDC.
 check(
