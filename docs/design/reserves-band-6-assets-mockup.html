@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reserves band — 6 assets, the 3×2 grid (founder wireframe, 2026-07-30)</title>
+<style>
+  /* House tokens, mirrored from artifacts/studio/src/index.css (dark theme) */
+  :root{
+    --bg:#0b0e14; --card:#11151f; --border:#1e2433; --fg:#e8ebf2; --muted:#8b93a7;
+    --gold:#d4a843; --viz1:#22c1dc; --viz2:#e8a33d; --viz3:#9b7ee8; --viz4:#2fa876;
+    --viz5:#e05c4b; --viz6:#4f7cf0; --proof:#22c1dc;
+    --mono:'IBM Plex Mono',ui-monospace,monospace; --sans:'Work Sans',system-ui,sans-serif;
+    --serif:'Source Serif 4',Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--fg);font-family:var(--sans);padding:48px 40px;line-height:1.5}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+  .note{background:#151a26;border:1px solid var(--border);border-left:3px solid var(--gold);padding:14px 18px;margin:26px 0;font-size:14.5px;color:var(--muted);max-width:900px}
+  .note b{color:var(--fg)}
+  h1{font-family:var(--serif);font-size:34px;font-weight:600;margin:6px 0 4px}
+  h2{font-family:var(--serif);font-size:22px;font-weight:600;margin:40px 0 10px}
+  .total{font-family:var(--mono);font-size:44px;font-weight:700;margin:14px 0 2px}
+  .bar{display:flex;height:10px;border-radius:5px;overflow:hidden;margin:18px 0 8px;max-width:880px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:26px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+  .grid{display:grid;gap:14px;max-width:1200px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr);max-width:1200px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px}
+  .coin{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;margin-bottom:10px}
+  .sym{font-weight:600;font-size:15px}
+  .sub{color:var(--muted);font-size:12.5px;margin-bottom:10px}
+  .amt{font-family:var(--mono);font-size:19px;font-weight:600}
+  .usd{font-family:var(--mono);font-size:14px;margin:2px 0 10px}
+  .share{height:3px;border-radius:2px;background:#1e2433;margin-bottom:10px;position:relative}
+  .share i{position:absolute;left:0;top:0;bottom:0;border-radius:2px}
+  .price{font-size:12.5px;color:var(--muted);border-top:1px solid var(--border);padding-top:9px}
+  .verify{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--proof);margin-top:9px}
+  .ghost{opacity:.28;border-style:dashed}
+  .badcol{outline:2px dashed #e05c4b;outline-offset:4px}
+  .cap{font-size:13px;color:var(--muted);margin-top:10px;max-width:1200px}
+</style>
+</head>
+<body>
+
+<p class="eyebrow" style="color:var(--gold)">Protocol reserves — founder wireframe · 2026-07-30</p>
+<h1>What the protocol owns, right now — <em>all of it.</em></h1>
+<p style="color:var(--muted);max-width:820px">Six priced assets (the two new purchases join the board). Figures below are the real holdings
+measured today; LINK and gold prices are the live Chainlink answers read on-chain this morning.</p>
+
+<h2>RECOMMENDED — 3 columns × 2 rows (scales to 3×3 when the vault grows)</h2>
+<p class="eyebrow" style="color:var(--muted)">Total value</p>
+<div class="total">$235.65</div>
+<div class="bar">
+  <span style="background:var(--viz5);width:3%"></span><span style="background:var(--viz2);width:21%"></span><span style="background:var(--viz3);width:21%"></span><span style="background:var(--viz1);width:41%"></span><span style="background:var(--viz6);width:4%"></span><span style="background:var(--gold);width:10%"></span>
+</div>
+<div class="legend">
+  <span><i class="dot" style="background:var(--viz5)"></i>AVAX 2%</span>
+  <span><i class="dot" style="background:var(--viz2)"></i>BTC 21%</span>
+  <span><i class="dot" style="background:var(--viz3)"></i>ETH 21%</span>
+  <span><i class="dot" style="background:var(--viz1)"></i>USDC 41%</span>
+  <span><i class="dot" style="background:var(--viz6)"></i>LINK 4%</span>
+  <span><i class="dot" style="background:var(--gold)"></i>GOLD 5%</span>
+</div>
+
+<div class="grid g3">
+  <div class="card">
+    <span class="coin" style="background:#2a1517;color:#e05c4b">AVX</span>
+    <div class="sym">AVAX</div><div class="sub">Avalanche</div>
+    <div class="amt">0.7344</div><div class="usd" style="color:var(--viz5)">$4.74</div>
+    <div class="share"><i style="background:var(--viz5);width:2%"></i></div>
+    <div class="price">$6.45 / AVAX · Chainlink</div>
+    <div class="verify">Verify on-chain ↗</div>
+  </div>
+  <div class="card">
+    <span class="coin" style="background:#2a2113;color:#e8a33d">BTC</span>
+    <div class="sym">BTC</div><div class="sub">Bitcoin · bridged</div>
+    <div class="amt">0.00077818</div><div class="usd" style="color:var(--viz2)">$49.82</div>
+    <div class="share"><i style="background:var(--viz2);width:21%"></i></div>
+    <div class="price">$64,019.34 / BTC · Chainlink</div>
+    <div class="verify">Verify on-chain ↗</div>
+  </div>
+  <div class="card">
+    <span class="coin" style="background:#1d1830;color:#9b7ee8">ETH</span>
+    <div class="sym">ETH</div><div class="sub">Ether · bridged</div>
+    <div class="amt">0.026551</div><div class="usd" style="color:var(--viz3)">$50.55</div>
+    <div class="share"><i style="background:var(--viz3);width:21%"></i></div>
+    <div class="price">$1,904.01 / ETH · Chainlink</div>
+    <div class="verify">Verify on-chain ↗</div>
+  </div>
+  <div class="card">
+    <span class="coin" style="background:#0f2530;color:#22c1dc">USD</span>
+    <div class="sym">USDC</div><div class="sub">Dollar stablecoin</div>
+    <div class="amt">96.63</div><div class="usd" style="color:var(--viz1)">$96.64</div>
+    <div class="share"><i style="background:var(--viz1);width:41%"></i></div>
+    <div class="price">$1.00 · stablecoin<br><span style="font-size:11.5px">Vault · operations · NFT sales · our pool share</span></div>
+    <div class="verify">Verify: 4 wallets ↗</div>
+  </div>
+  <div class="card">
+    <span class="coin" style="background:#131b33;color:#4f7cf0">LNK</span>
+    <div class="sym">LINK</div><div class="sub">Chainlink</div>
+    <div class="amt">1.0042</div><div class="usd" style="color:var(--viz6)">$8.31</div>
+    <div class="share"><i style="background:var(--viz6);width:4%"></i></div>
+    <div class="price">$8.28 / LINK · Chainlink</div>
+    <div class="verify">Verify on-chain ↗</div>
+  </div>
+  <div class="card" style="border-color:#3a3120">
+    <span class="coin" style="background:#2b2312;color:var(--gold)">Au</span>
+    <div class="sym">GOLD <span style="color:var(--muted);font-weight:400;font-size:12px">· XAUt0</span></div>
+    <div class="sub">Tether Gold · 1 token = 1 troy oz</div>
+    <div class="amt">0.003144 <span style="font-size:12px;color:var(--muted)">oz</span></div>
+    <div class="usd" style="color:var(--gold)">$12.68</div>
+    <div class="share"><i style="background:var(--gold);width:5%"></i></div>
+    <div class="price">$4,031.92 / oz · Chainlink XAU/USD</div>
+    <div class="verify">Verify on-chain ↗</div>
+  </div>
+</div>
+<p class="cap">Six segments on the composition bar, six legend chips. SYN never appears here (the valuation law —
+our own token is never given a dollar value); it keeps its rows on /contracts. When a 7th–9th asset arrives,
+the same grid becomes 3×3 with no redesign. Tablet: 2×3. Phone: one column.</p>
+
+<h2 style="color:var(--muted)">REJECTED for comparison — keeping 4 columns (2 orphans)</h2>
+<div class="grid g4">
+  <div class="card ghost"><div class="sym">AVAX</div></div>
+  <div class="card ghost"><div class="sym">BTC</div></div>
+  <div class="card ghost"><div class="sym">ETH</div></div>
+  <div class="card ghost"><div class="sym">USDC</div></div>
+  <div class="card ghost badcol"><div class="sym">LINK</div></div>
+  <div class="card ghost badcol"><div class="sym">GOLD</div></div>
+</div>
+<p class="cap" style="color:#e05c4b">The two newest purchases — the ones you want celebrated — land as orphans on a
+half-empty row. This is the same «3+1» defect the approved 4-asset mockup was built to avoid.</p>
+
+<div class="note"><b>Three decisions riding this wireframe:</b><br>
+① <b>The grid</b> — 3×2 recommended (above) vs 4+2 orphans (rejected view).<br>
+② <b>The gold card's face</b> — shown as a house-drawn gold «Au» disc; the official Tether Gold mark
+can be vendored instead if you prefer the brand logo (LINK's official logo is already vendored).<br>
+③ <b>Weekend honesty for gold</b> — the Chainlink XAU/USD feed sleeps when gold markets close
+(weekends/holidays). With our strict 24h freshness rule the gold card — and therefore the whole
+total — would read «unavailable» every Sunday. The engineering fix: commodity feeds get a
+market-hours freshness window (covers the weekend), stated on the card. Crypto feeds keep 24h.<br><br>
+Same additions ride to <b>/contracts</b> (two new rows: Vault LINK · Vault GOLD) and the
+<b>admin</b> reality panel (automatic). /activity already shows both purchases.</div>
+
+</body>
+</html>
