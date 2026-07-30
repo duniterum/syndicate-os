@@ -31,9 +31,12 @@ export default function Terms() {
       badge={
         // §11's own law: a change of terms is never silent. §8 was materially
         // corrected 2026-07-30 (the wallet↔seat pairing is public and shown),
-        // so the version moves with it — the go-live review caught the new
-        // text shipping under the old badge.
-        <StatusPill tone="caution">Version 2 — draft of 2026-07-30</StatusPill>
+        // so the version moved with it — the go-live review caught the new
+        // text shipping under the old badge. V3 the same day (founder "oui
+        // global", this session's chat): the contact channels NAMED — a legal
+        // contact line pointing at an unnamed singular Telegram was
+        // impersonation-friendly.
+        <StatusPill tone="caution">Version 3 — draft of 2026-07-30</StatusPill>
       }
     >
       <Card className="bg-muted/20 border-border/50 p-4 type-body text-muted-foreground measure mb-10">
@@ -207,9 +210,10 @@ export default function Terms() {
 
       <S n="13" title="Contact">
         <p>
-          Today&apos;s public channels are X (@TheSyndicateOne) and the official
-          Telegram. A durable written channel for legal notices arrives with the
-          next version.
+          Today&apos;s public channels are X (@TheSyndicateOne) and the two
+          official Telegram channels: Announcements (t.me/TheSyndicateOfficial)
+          and Community (t.me/TheSyndicateMoney). A durable written channel for
+          legal notices arrives with the next version.
         </p>
       </S>
 

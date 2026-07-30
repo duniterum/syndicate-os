@@ -32,8 +32,12 @@ export default function Privacy() {
       badge={
         // The page's own no-silent-change promise: the Wallet-addresses
         // section was materially corrected 2026-07-30 (the pairing is public
-        // and shown), so the version moves with it.
-        <StatusPill tone="caution">Version 3 — draft of 2026-07-30</StatusPill>
+        // and shown), so the version moved with it. V4 the same day (founder
+        // "oui global", this session's chat): the identity-directory
+        // precision, the honest local-storage inventory (measured: the wallet
+        // stack keeps 7 keys, not 2), the activation-request record class,
+        // and the NAMED Telegram channels.
+        <StatusPill tone="caution">Version 4 — draft of 2026-07-30</StatusPill>
       }
     >
       <Card className="bg-muted/20 border-border/50 p-4 type-body text-muted-foreground measure mb-10">
@@ -45,7 +49,10 @@ export default function Privacy() {
       <S title="The short version">
         <p>
           There are no accounts, no email addresses, no passwords, no identity
-          checks, and no member directory. You connect a wallet; the wallet —
+          checks, and no identity directory: member wallets and seat numbers
+          are public chain data — shown on the public boards — but no name,
+          email, or real-world identity is ever held or linked. You connect a
+          wallet; the wallet —
           and the ordinary technical traces any web server sees — is all we see.
           We run no third-party analytics and no advertising trackers. We sell
           no data. The one counting we do ourselves: when a referral link
@@ -104,10 +111,13 @@ export default function Privacy() {
 
       <S title="Your browser's local storage">
         <p>
-          The site stores two small preferences in your own browser: your
-          light/dark theme choice, and a flag noting the guide greeting was
-          already shown. Neither is personal data, and neither is ever sent
-          anywhere.
+          The site itself stores two small preferences in your own browser:
+          your light/dark theme choice, and a flag noting the guide greeting
+          was already shown. The wallet-connection libraries the site uses
+          (RainbowKit, wagmi, WalletConnect and wallet SDKs) also keep their
+          own working state in your browser — connection status, the network
+          last used — so reconnecting works. All of it stays in your browser:
+          none of it is personal data we collect, and none of it is sent to us.
         </p>
       </S>
 
@@ -138,6 +148,13 @@ export default function Privacy() {
           Messages the operator sends to members (the in-app notification
           center) are stored with each member&apos;s own read state — served
           only to that member&apos;s signed session, never published.
+        </p>
+        <p>
+          When a member asks for referral activation, that request is stored
+          as a row keyed to the member&apos;s wallet: the ask, its status
+          (waiting, on hold, declined, or closed), the dates, and — if
+          declined — the reason the member reads. It is served only to that
+          member&apos;s signed session and to the operator who decides.
         </p>
         <p>
           The referral channel counter: when a referral link carries a channel
@@ -191,9 +208,10 @@ export default function Privacy() {
 
       <S title="Contact">
         <p>
-          Today&apos;s public channels are X (@TheSyndicateOne) and the official
-          Telegram. A dedicated privacy-request channel arrives with the next
-          version of this policy.
+          Today&apos;s public channels are X (@TheSyndicateOne) and the two
+          official Telegram channels: Announcements (t.me/TheSyndicateOfficial)
+          and Community (t.me/TheSyndicateMoney). A dedicated privacy-request
+          channel arrives with the next version of this policy.
         </p>
       </S>
     </PublicPage>
