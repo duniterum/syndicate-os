@@ -58,15 +58,15 @@ function RealityValue({ item }: { item: ProtocolRealityItem }) {
   if (item.value === null) {
     return (
       <div>
-        <div className="font-mono text-[11px] text-muted-foreground">—</div>
-        <div className="text-[10px] text-warning mt-0.5 leading-snug">
+        <div className="type-caption text-muted-foreground">—</div>
+        <div className="text-xs text-warning mt-0.5 leading-snug">
           {item.failureReason ?? "not read"}
         </div>
       </div>
     );
   }
   const shown = typeof item.value === "boolean" ? String(item.value) : String(item.value);
-  return <div className="font-mono text-[12px] text-foreground/90">{shown}</div>;
+  return <div className="font-mono text-xs text-foreground/90">{shown}</div>;
 }
 
 export function RealityTable({ items }: { items: ProtocolRealityItem[] }) {
@@ -89,19 +89,19 @@ export function RealityTable({ items }: { items: ProtocolRealityItem[] }) {
             >
               <TableCell className="font-medium text-foreground/90">
                 <div>{item.label}</div>
-                <div className="font-mono text-[10px] text-muted-foreground mt-1">{item.sourceRef}</div>
+                <div className="type-caption text-muted-foreground mt-1">{item.sourceRef}</div>
               </TableCell>
               <TableCell>
                 <RealityValue item={item} />
               </TableCell>
               <TableCell className="text-sm">
-                <div className="font-mono text-[10px] text-foreground/70">
+                <div className="type-caption text-foreground/70">
                   {sourceTypeText[item.sourceType] ?? item.sourceType}
                 </div>
-                <div className="text-[11px] text-muted-foreground mt-1">
+                <div className="text-xs text-muted-foreground mt-1">
                   Confidence · {confidenceText[item.confidence] ?? item.confidence}
                 </div>
-                <div className="text-[11px] text-muted-foreground mt-1 leading-snug">{item.note}</div>
+                <div className="text-sm text-muted-foreground mt-1 leading-snug">{item.note}</div>
               </TableCell>
               <TableCell className="text-right">
                 <LifecycleBadge lifecycle={item.lifecycle} />
@@ -216,7 +216,7 @@ function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className="flex-1 min-w-[88px]">
       <div className="text-2xl font-light text-foreground tabular-nums">{value}</div>
-      <div className="text-[11px] text-muted-foreground mt-0.5">{label}</div>
+      <div className="text-xs text-muted-foreground mt-0.5">{label}</div>
     </div>
   );
 }
@@ -244,7 +244,7 @@ export function ProtocolRealitySummary() {
       <div className="flex items-start justify-between gap-3 mb-4">
         <div>
           <h3 className="text-base font-medium text-foreground">Protocol reality</h3>
-          <p className="font-mono text-[10px] text-muted-foreground mt-0.5">
+          <p className="type-caption text-muted-foreground mt-0.5">
             GET /api/protocol/reality · {data.mode}
           </p>
         </div>

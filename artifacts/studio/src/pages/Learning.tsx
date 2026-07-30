@@ -48,7 +48,7 @@ export default function Learning() {
             const body = (
               <Card className="h-full bg-card/40 border-border/50 p-5 transition-colors hover:border-primary/40">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="grid h-6 w-6 place-items-center rounded-full border border-border font-mono text-[11px] text-primary shrink-0">
+                  <span className="grid h-6 w-6 place-items-center rounded-full border border-border font-mono text-xs text-primary shrink-0">
                     {i + 1}
                   </span>
                   <span className="type-eyebrow text-primary">
@@ -58,7 +58,7 @@ export default function Learning() {
                 <h3 className="text-sm font-medium text-foreground mb-1">
                   {step.title}
                 </h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {step.detail}
                 </p>
                 {step.href ? (

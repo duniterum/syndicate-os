@@ -71,7 +71,7 @@ function ActionRail() {
                 <ArrowDown className="h-3 w-3 text-muted-foreground group-hover:text-gold" aria-hidden="true" />
               )}
             </span>
-            <span className="mt-1 block text-[11px] text-muted-foreground leading-snug">{a.hint}</span>
+            <span className="mt-1 block text-xs text-muted-foreground leading-snug">{a.hint}</span>
           </a>
         ))}
         {/* Verify Pair — the on-chain pair via the server's verify-links (never
@@ -80,7 +80,7 @@ function ActionRail() {
           <span className="type-eyebrow text-foreground">
             Verify Pair
           </span>
-          <span className="mt-1 block text-[11px] text-muted-foreground leading-snug">
+          <span className="mt-1 block text-xs text-muted-foreground leading-snug">
             The pair contract, on-chain
           </span>
           <span className="mt-1.5 block">
@@ -88,7 +88,7 @@ function ActionRail() {
           </span>
         </div>
       </div>
-      <p className="mt-3 text-[11px] text-muted-foreground leading-relaxed">{LP_NO_ENTITLEMENT_LINE}</p>
+      <p className="mt-3 text-xs text-muted-foreground leading-relaxed">{LP_NO_ENTITLEMENT_LINE}</p>
     </Card>
   );
 }
@@ -111,7 +111,7 @@ function LpStatus() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {rows.map((r) => (
           <div key={r.label} className="rounded-md border border-border/50 bg-background/40 p-3">
-            <p className="text-[11px] text-muted-foreground mb-1">{r.label}</p>
+            <p className="text-xs text-muted-foreground mb-1">{r.label}</p>
             <p className="font-mono text-lg text-foreground" data-testid={`lp-${r.label.toLowerCase().replace(/[^a-z]+/g, "-")}`}>
               {r.value ?? (loading ? "…" : "—")}{" "}
               <span className="text-xs text-muted-foreground">{r.unit}</span>
@@ -119,7 +119,7 @@ function LpStatus() {
           </div>
         ))}
       </div>
-      <p className="mt-3 text-[11px] text-muted-foreground leading-relaxed">
+      <p className="mt-3 text-xs text-muted-foreground leading-relaxed">
         Read from the pair's own reserves through the protocol's reality spine —
         the same source as every live figure on this site. The implied price is
         arithmetic on reserves, never a quote or a promise.

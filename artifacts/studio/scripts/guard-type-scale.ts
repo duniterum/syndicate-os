@@ -171,9 +171,12 @@ const ALLOWLIST: Record<string, string> = {
 
   // — public chrome and truth surfaces
   "components/layout/PublicLayout.tsx": "3 · PUBLIC site chrome (header/footer, every page). RECOUNTED 2026-07-26: the brand tagline paid off its pair (a `text-[10px]` widening to a `sm:` step that capped at 11px, i.e. below the floor at EVERY width) and is now the `text-xs` token. Six sub-floor sizes remain in the chrome, deferred to the type-scale slice",
-  "components/ProtocolReality.tsx": "8 · PUBLIC reality band — deferred to the general sweep",
+  // components/ProtocolReality.tsx entry DELETED 2026-07-30: PAID by the floor
+  // sweep (8 occurrences → type-caption/text-xs/text-sm; the note line rose to
+  // text-sm as the audit ordered for multi-sentence reading copy).
   "components/ProtocolReservesBand.tsx": "4 · PUBLIC home reserves band — 2 eyebrow paid 2026-07-27 (§⑥), 1 more paid since, 1 by the 2026-07-30 conversion; the rest deferred to the general sweep.",
-  "components/ProtocolAssetsCard.tsx": "4 · PUBLIC /contracts assets card — 2 eyebrow paid 2026-07-27 (§⑥), which ARE the founder's §(b)② finding \"ProtocolAssetsCard's 10px labels\"; the 4 left are 11px meta lines, deferred to the general sweep",
+  // components/ProtocolAssetsCard.tsx entry DELETED 2026-07-30: PAID by the
+  // floor sweep (4 × 11px meta → text-xs / .type-eyebrow).
   "components/guide/SyndicateGuide.tsx": "2 · PUBLIC guide — deferred to the general sweep (4 paid by the 2026-07-30 eyebrow conversion)",
   "components/TeaserSurface.tsx": "2 · PUBLIC teaser surface — 1 eyebrow paid 2026-07-27 (§⑥); the rest deferred to the general sweep",
   "components/living/SectionIndex.tsx": "1 · PUBLIC section index — deferred to the general sweep (1 paid by the 2026-07-30 eyebrow conversion)",
@@ -181,24 +184,27 @@ const ALLOWLIST: Record<string, string> = {
   "components/registry/registryPosture.tsx": "2 · PUBLIC posture labels — deferred to the general sweep",
 
   // — public pages
-  "pages/SystemStatus.tsx": "8 · PUBLIC status page — deferred to the general sweep (1 paid by the 2026-07-30 eyebrow conversion)",
-  "pages/Liquidity.tsx": "5 · PUBLIC liquidity page — deferred to the general sweep (3 paid by the 2026-07-30 eyebrow conversion)",
-  "pages/Docs.tsx": "1 · PUBLIC docs — a PROSE page; ADR-001 §3 (body 16px+) is NOT checked by this guard, so read this one by eye at the sweep (4 paid by the 2026-07-30 eyebrow conversion)",
+  // pages/SystemStatus.tsx · pages/Liquidity.tsx · pages/Docs.tsx entries
+  // DELETED 2026-07-30: PAID by the floor sweep (chips + provenance →
+  // type-caption; hints/labels/notes → text-xs; the docs numeral → text-xs).
   // pages/FireLedger.tsx entry DELETED 2026-07-26: CLEARED, zero sub-12px left —
   // its 11px banners and 10px row meta moved onto the named steps. The guard asked
   // for the deletion itself; a ledger that forgives a debt that no longer exists
   // stops describing the tree.
-  "pages/JoinProtocol.tsx": "5 · PUBLIC join page (the conversion surface) — deferred to the general sweep",
+  // pages/JoinProtocol.tsx entry DELETED 2026-07-30: PAID by the floor sweep —
+  // the money-path AddressProof + raw-units block → type-caption, the two pct
+  // labels → text-xs, the summary → .type-eyebrow (the audit's exact order).
   "pages/OsMap.tsx": "4 · PUBLIC OS map — deferred to the general sweep",
-  "pages/ProtocolMap.tsx": "4 · PUBLIC protocol map — deferred to the general sweep",
-  "pages/Learning.tsx": "1 · PUBLIC learning page — deferred to the general sweep (1 paid by the 2026-07-30 eyebrow conversion)",
+  // pages/ProtocolMap.tsx · pages/Learning.tsx entries DELETED 2026-07-30:
+  // PAID by the floor sweep (wire ids/raw meta → type-caption; numeral → text-xs).
 
   // — member surfaces: behind the sign-in wall, but a MEMBER is a user and the
   //   floor is a user law, not a visitor law. Counted PUBLIC.
   "wallet/SeasonStandingCard.tsx": "5 · MEMBER season standing card — deferred to the type-scale slice",
   "wallet/JoinCheckout.tsx": "2 · MEMBER checkout — money surface; ADR-001 line 131 named checkout in the owed sweep. Deferred (1 paid by the 2026-07-30 eyebrow conversion)",
   "wallet/SeasonQuestsCard.tsx": "2 · MEMBER quests card — deferred to the type-scale slice",
-  "wallet/MemberWalletPanel.tsx": "1 · MEMBER wallet panel — a single 11px occurrence; deferred to the sweep",
+  // wallet/MemberWalletPanel.tsx entry DELETED 2026-07-30: PAID by the floor
+  // sweep (the single 11px pool-pointer line → text-xs).
 
   // — OPERATOR-GATED, but outside the admin/ path, so the path heuristic counts
   //   them PUBLIC. Named honestly here: they are consoles, not visitor pages, and
@@ -333,7 +339,7 @@ const EYEBROW_EXEMPT: Record<string, string> = {
   "wallet/ReceiptShareCard.tsx":
     "1 · NOT a surface — it is the satori-PAINTED share card, whose geometry is fixed pixel arithmetic against a 34px figure beside it (`TOTAL PAID` at 16px). Satori renders this to a bitmap; a fluid rem token would resolve against a root font size that does not exist inside the painter.",
   "components/ProtocolAssetsCard.tsx":
-    "2 · ONE permanent + ONE convertible. Permanent: the asset ROW LABEL carries a bridged TICKER whose case is meaning — BTC.b and WETH.e are the canonical Avalanche-bridged symbols and the lowercase suffix IS the bridge marker; uppercased by the class, this row printed VAULT BTC.B beside a value reading 0.00077818 BTC.b (founder-caught 2026-07-29). Convertible: the 11px/0.1em section header the 2026-07-30 widening surfaced — pay it by converting to the class and lowering this ceiling back to 1 in the same commit.",
+    "1 · PERMANENT: the asset ROW LABEL carries a bridged TICKER whose case is meaning — BTC.b and WETH.e are the canonical Avalanche-bridged symbols and the lowercase suffix IS the bridge marker; uppercased by the class, this row printed VAULT BTC.B beside a value reading 0.00077818 BTC.b (founder-caught 2026-07-29). (The convertible 11px/0.1em VERIFY_SLOGAN header was PAID 2026-07-30 by the floor sweep — converted to .type-eyebrow, ceiling lowered 2→1 in the same commit, as this entry ordered.)",
   "components/layout/PublicLayout.tsx":
     "1 · NOT an eyebrow — the header's BRAND TAGLINE (0.3em display tracking, gold, whitespace-nowrap), part of the header composition MEASURED at the 2026-07-28 slice: it returns at exactly 1700px, staggered above the 2xl cliff, at a measured 302px width. Re-tracking it to 0.14em moves that measured geometry. The file's two footer group titles DID convert (2026-07-30).",
   "components/layout/Shell.tsx":

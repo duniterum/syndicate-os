@@ -300,7 +300,7 @@ function AddressProof({ url }: { url: string }) {
       target="_blank"
       rel="noopener noreferrer"
       title={`${addr} — open in block explorer`}
-      className="inline-flex items-center gap-1 font-mono text-[10px] text-proof transition-colors hover:text-proof-hover"
+      className="inline-flex items-center gap-1 type-caption text-proof transition-colors hover:text-proof-hover"
     >
       {short}
       <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
@@ -365,7 +365,7 @@ function SourcePaymentLine({
     return (
       <div className="flex items-baseline justify-between gap-3 text-sm pb-3 mb-3 border-b border-border/40">
         <span className="text-muted-foreground">
-          Paid to your referrer <span className="text-[11px] text-muted-foreground">{pct}</span>
+          Paid to your referrer <span className="text-xs text-muted-foreground">{pct}</span>
         </span>
         <span className="flex items-baseline gap-3">
           <span className="tabular-nums text-foreground" data-testid="source-amount">
@@ -448,7 +448,7 @@ function MoneyPath({
           ].map((r) => (
             <div key={r.label} className="flex items-baseline justify-between gap-3 text-sm">
               <span className="text-muted-foreground">
-                {r.label} <span className="text-[11px] text-muted-foreground">{r.pct}</span>
+                {r.label} <span className="text-xs text-muted-foreground">{r.pct}</span>
               </span>
               <span className="flex items-baseline gap-3">
                 <span className="tabular-nums text-foreground">
@@ -567,10 +567,10 @@ function QuotePanel({
       />
 
       <details className="mt-3">
-        <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground">
+        <summary className="cursor-pointer type-eyebrow text-muted-foreground transition-colors hover:text-foreground">
           Exact raw base units — verify
         </summary>
-        <div className="mt-2 space-y-1 font-mono text-[10px] text-muted-foreground break-all">
+        <div className="mt-2 space-y-1 type-caption text-muted-foreground break-all">
           <div>synOutRaw {q.synOutRaw}</div>
           <div>seatIfFirstRaw {q.seatIfFirstRaw}</div>
           <div>synPerUsdcRaw {q.synPerUsdcRaw}</div>

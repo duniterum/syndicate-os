@@ -44,6 +44,20 @@ This file is the WORK LEDGER for the harmonization arc — tick findings as slic
 > the sender (slice E). Studio guards EXIT 0 · api 21/21 · typecheck 0.
 > **48 remain open: 23 important · 24 minor + the tick discipline** (recounted: 34−11 · 33−9).
 
+> **✅ CLOSED 2026-07-30 — HARMONIZATION ARC, SLICE C (the deferred sub-12px floor sweep, now paid):**
+> 37 sub-floor occurrences converted across 9 files — mono metadata → `.type-caption` (12px mono),
+> prose/hints/labels → `text-xs`, the ProtocolReality note line → `text-sm` (multi-sentence reading
+> copy), two eyebrow-shaped labels → `.type-eyebrow` (JoinProtocol raw-units summary ·
+> ProtocolAssetsCard VERIFY_SLOGAN, whose exemption ceiling ratcheted 2→1 exactly as its own entry
+> ordered). RED proof: the two-way ratchet failed the build on the stale allowlist counts ("CLEARED
+> — DELETE its ALLOWLIST entry" ×9) before the 9 entries were deleted. Guard's own PASS line after:
+> **debt 216 → 179 occurrences · public 164 → 127 · allowlisted files 52 → 43.** Learning's step
+> details also rose 12→14px (the same-page two-sizes finding). Typecheck 0 · full chain EXIT 0.
+> Closes IMPORTANT ×4: /join 5 sites · /liquidity 5 runs · /map+/status shared reality-table
+> sizes · /status 8 sites. Closes MINOR ×5: /map FigureRow 10px · /contracts sub-floor family ·
+> /docs numerals · /learning step chip + two-sizes · /wallet 11px.
+> **39 remain open: 19 important · 19 minor + the tick discipline** (recounted: 23−4 · 24−5).
+
 
 ## BLOCKING (6)
 

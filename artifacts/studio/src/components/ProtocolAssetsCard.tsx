@@ -266,7 +266,7 @@ export function ProtocolAssetsCard() {
       </div>
       <p className="mb-4 text-sm text-muted-foreground">
         What the protocol holds — on-chain verifiable.{" "}
-        <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">{VERIFY_SLOGAN}</span>
+        <span className="type-eyebrow text-muted-foreground">{VERIFY_SLOGAN}</span>
       </p>
       {/* The headline figure. Scope is stated, never implied: only directly-held
           assets with a deep market are valued and summed. */}
@@ -283,7 +283,7 @@ export function ProtocolAssetsCard() {
             </span>
           )}
         </div>
-        <div className="mt-1.5 text-[11px] leading-snug text-muted-foreground">
+        <div className="mt-1.5 text-xs leading-snug text-muted-foreground">
           USDC counted at one dollar; AVAX, BTC.b and WETH.e at live Chainlink prices. From the pool, only the
           protocol's own share of the USDC side — its LP tokens over the total supply, both read live; liquidity
           provided from any other wallet is not ours and is not counted. SYN is shown as an amount and never priced:
@@ -322,9 +322,9 @@ export function ProtocolAssetsCard() {
                 </div>
               )}
               {row.usd !== null ? (
-                <div className="mt-0.5 font-mono text-[11px] font-semibold text-muted-foreground">≈ {row.usd}</div>
+                <div className="mt-0.5 font-mono text-xs font-semibold text-muted-foreground">≈ {row.usd}</div>
               ) : null}
-              <div className="mt-2 text-[11px] leading-snug text-muted-foreground">{row.meta}</div>
+              <div className="mt-2 text-xs leading-snug text-muted-foreground">{row.meta}</div>
               {assetVerifyIds[row.id] ? (
                 <VerifyOnChain ids={assetVerifyIds[row.id]} className="mt-1.5 block" />
               ) : null}

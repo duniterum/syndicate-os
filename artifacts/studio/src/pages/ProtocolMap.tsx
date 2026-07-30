@@ -68,14 +68,14 @@ function FigureRow({
     <div className="flex flex-col gap-1 py-3 border-b border-border/40 last:border-b-0 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
       <div className="min-w-0">
         <div className="text-sm text-foreground">{label}</div>
-        <div className="font-mono text-[10px] text-muted-foreground">{wireId}</div>
+        <div className="type-caption text-muted-foreground">{wireId}</div>
       </div>
       <div className="sm:text-right shrink-0 max-w-full">
         {raw === null ? (
           <div className="text-sm text-muted-foreground">
             unreadable (fail-closed)
             {failureReason ? (
-              <span className="font-mono text-[10px] block">{failureReason}</span>
+              <span className="type-caption block">{failureReason}</span>
             ) : null}
           </div>
         ) : (
@@ -83,12 +83,12 @@ function FigureRow({
             {decimals !== null ? (
               <div className="text-sm text-foreground tabular-nums">
                 {formatRawUnits(raw, decimals)}{" "}
-                <span className="font-mono text-[10px] text-muted-foreground uppercase">
+                <span className="type-caption text-muted-foreground uppercase">
                   derived · raw ÷ 10^{decimals}
                 </span>
               </div>
             ) : null}
-            <div className="font-mono text-[10px] text-muted-foreground break-all">
+            <div className="type-caption text-muted-foreground break-all">
               exact raw · {raw}
             </div>
           </>

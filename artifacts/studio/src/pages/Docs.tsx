@@ -55,7 +55,7 @@ export default function Docs() {
                     href={step.routePath}
                     className="group flex items-center gap-2 rounded-lg border border-border/60 bg-background/40 px-3 py-2 transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full border border-border font-mono text-[10px] text-primary">
+                    <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full border border-border font-mono text-xs text-primary">
                       {i + 1}
                     </span>
                     <span className="text-sm font-medium text-foreground">{step.label}</span>

@@ -275,7 +275,7 @@ function WalletPanelBody() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-sm text-foreground">SYN/USDC pool (LFJ)</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               Why the pool exists, its live reserves, and the LP-side actions —
               with the Risk Notice they belong with. The pool is a courtesy, not
               a promise; the market is free and may decide otherwise.

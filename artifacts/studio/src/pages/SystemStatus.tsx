@@ -78,10 +78,10 @@ function HolderIndexSection() {
               <div className="text-4xl font-light text-foreground mt-1">{data.memberTotal}</div>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-[10px] px-2 py-0.5 rounded border border-success/30 bg-success/10 text-success">
+              <span className="type-caption px-2 py-0.5 rounded border border-success/30 bg-success/10 text-success">
                 {data.status}
               </span>
-              <span className="font-mono text-[10px] px-2 py-0.5 rounded border border-border/60 bg-muted/30 text-muted-foreground">
+              <span className="type-caption px-2 py-0.5 rounded border border-border/60 bg-muted/30 text-muted-foreground">
                 {data.mode}
               </span>
             </div>
@@ -91,7 +91,7 @@ function HolderIndexSection() {
             {data.eras.map((era) => (
               <div key={era.era} className="rounded-lg border border-border/50 bg-background/40 p-4">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="font-mono text-[10px] px-2 py-0.5 rounded border border-primary/30 bg-primary/10 text-primary whitespace-nowrap">
+                  <span className="type-caption px-2 py-0.5 rounded border border-primary/30 bg-primary/10 text-primary whitespace-nowrap">
                     {era.label}
                   </span>
                   <span className="font-mono text-xs text-muted-foreground whitespace-nowrap">
@@ -104,7 +104,7 @@ function HolderIndexSection() {
             ))}
           </div>
 
-          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[10px] text-muted-foreground border-t border-border/40 pt-4">
+          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 type-caption text-muted-foreground border-t border-border/40 pt-4">
             <span>
               Chain <span className="text-foreground/80">{data.chainId}</span>
             </span>
@@ -252,17 +252,17 @@ export default function SystemStatus() {
                 <TableRow key={item.key} className="border-border/30 hover:bg-muted/10 transition-colors align-top">
                   <TableCell className="font-medium text-foreground/90">
                     <div>{item.label}</div>
-                    <div className="font-mono text-[10px] text-muted-foreground mt-1">{item.sourceRef}</div>
+                    <div className="type-caption text-muted-foreground mt-1">{item.sourceRef}</div>
                   </TableCell>
                   <TableCell className="text-muted-foreground text-sm">
                     <div className="leading-relaxed">{item.note}</div>
-                    <div className="font-mono text-[10px] text-muted-foreground mt-1">
+                    <div className="type-caption text-muted-foreground mt-1">
                       Surface · {item.surface}
                     </div>
                   </TableCell>
                   <TableCell className="text-sm">
-                    <div className="font-mono text-[10px] text-foreground/70">{item.publicClass}</div>
-                    <div className="text-[11px] text-muted-foreground mt-1 capitalize">
+                    <div className="type-caption text-foreground/70">{item.publicClass}</div>
+                    <div className="text-xs text-muted-foreground mt-1 capitalize">
                       Confidence · {item.confidence}
                     </div>
                   </TableCell>
