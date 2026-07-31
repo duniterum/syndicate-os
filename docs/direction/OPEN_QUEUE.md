@@ -1,5 +1,23 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-31 — LA PASSE SENIOR DU FONDATEUR (« 3-5 agents, tout relire ») : 4 agents, tout
+> confirmé corrigé le jour même (`7ff915a`).** Ses trois yeux avaient juste : ① les adresses du
+> board /season et du podium d'accueil étaient codées GRIS-muted à 10,5px — elles sont maintenant
+> BLEU proof (rgb 13,204,242 mesuré au rig, 18 ancres) à 12px, et le ruling gravé du 26-07
+> (« chaque adresse devient bleue ») est appliqué PARTOUT où le client tient l'adresse complète
+> (reçu public · commissions · Settings · formulaires admin propose/promotion · erreurs checkout) ;
+> ② le /fire-ledger est en 3 VRAIES colonnes ([phrase+méta · montant or · Verify 44px], mesuré côte
+> à côte) ; ③ la prose de cartes à 12px est montée à 14px partout (liquidity ×6 dont le Risk
+> Notice, referral panels ×11, status, wallet, contracts, chronicle) + la chrome du site est
+> ENTIÈREMENT au plancher (l'entrée d'allowlist PublicLayout supprimée sur ordre du garde). Et la
+> revue a balayé l'ondulation du partage /map–/status que j'avais laissée (5 textes pointant le
+> vieux /status). Image 1 du fondateur = onglet périmé (HMR) ; l'état servi = image 2, prouvé.
+> **SUIVI SERVEUR NOMMÉ (prochaine tranche, contredit la loi adresse 2026-07-25) :** les registres
+> admin reçoivent des adresses PRÉ-MASQUÉES du serveur (memberLedger · AdminOperatorsCrud ·
+> SourcePerformancePanel `ownerShort` · ReferralIntroductionsPanel `who`) — aucun lien explorateur
+> n'est constructible côté client ; servir l'adresse complète/explorerUrl est un changement api.
+> **EN ATTENTE DU FONDATEUR : coller l'instruction Replit (tête `7ff915a`)** — chat du 31-07.
+
 > **▶ 2026-07-30 (ARC COMPLET — LE CARNET FOOTER EST À ZÉRO.)** Sur l'ordre du fondateur
 > (« construis 1-5, et oui global ») les 15 dernières trouvailles sont fermées le jour même du
 > dépôt du carnet : **F** (`ace25ba`) — WORK-FIRST sur /faq · /liquidity · /source · /support ·

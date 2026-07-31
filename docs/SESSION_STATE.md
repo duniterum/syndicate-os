@@ -2,7 +2,9 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-07-30 (ARC COMPLETE) — RESUME HERE. PROD = `448645d`; main = `ace25ba`, CLEAN TREE, ALL PUSHED. **THE FOOTER AUDIT'S LEDGER IS CLOSED AT ZERO — all 78 findings resolved the day it was filed.** The founder ordered "construis 1-5, et oui global, et on donne tout en même temps à Replit" — the deploy instruction is in the 2026-07-30 chat; HE pastes it.
+> # ▶ 2026-07-31 (SENIOR PASS) — RESUME HERE. PROD = `448645d`; main = `7ff915a`, CLEAN TREE, ALL PUSHED. The founder's 4-agent senior review: every confirmed finding fixed same-day — ADDRESSES BLUE everywhere the client holds the full value (his engraved 2026-07-26 ruling; /season 18 anchors measured rgb(13,204,242)), /fire-ledger in 3 real columns, card prose at 14px, the /map–/status copy ripple swept, the site chrome fully at the 12px floor. NAMED SERVER FOLLOW-UP: the admin ledgers' PRE-MASKED shorts (memberLedger · operators CRUD · performance `ownerShort` · introductions `who`) need the api to serve full address/explorerUrl — queued, contradicts the 2026-07-25 address law. The deploy instruction (head `7ff915a`) is in the 2026-07-31 chat — HE pastes it.
+
+> # ▶ 2026-07-30 (ARC COMPLETE) — superseded by the senior pass above. PROD = `448645d`; main was `ace25ba`, CLEAN TREE, ALL PUSHED. **THE FOOTER AUDIT'S LEDGER IS CLOSED AT ZERO — all 78 findings resolved the day it was filed.** The founder ordered "construis 1-5, et oui global, et on donne tout en même temps à Replit" — the deploy instruction is in the 2026-07-30 chat; HE pastes it.
 >
 > ## THE FINAL TWO SLICES (after the arc's six — full record in the ledger + OPEN_QUEUE)
 > · **F (`ace25ba`) — composition, founder GO:** WORK-FIRST on /faq /liquidity /source /support
