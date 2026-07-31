@@ -101,7 +101,7 @@ function HolderIndexSection() {
                   </span>
                 </div>
                 <div className="text-2xl font-light text-foreground mt-3">{era.count}</div>
-                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{era.doctrine}</p>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{era.doctrine}</p>
               </div>
             ))}
           </div>
@@ -172,7 +172,7 @@ export default function SystemStatus() {
           says what the table IS rather than what it lacks.
           And `null` left the copy: it is developer vocabulary on a public page,
           and the human words say the same thing better. */}
-      <DataStatusNote description="Source-status registry — separate from the live protocol reality read above. It records the POSTURE of each source: what it is, where it comes from, and how far it may be trusted. It performs no chain reads and holds no balances, no member data and no RPC, so it carries no figures at all — a verified static canon reference, never a live read." />
+      <DataStatusNote description="Source-status registry — separate from the live reality read on the Protocol Map. It records the POSTURE of each source: what it is, where it comes from, and how far it may be trusted. It performs no chain reads and holds no balances, no member data and no RPC, so it carries no figures at all — a verified static canon reference, never a live read." />
 
       {data && (
         <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs text-muted-foreground">

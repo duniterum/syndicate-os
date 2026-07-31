@@ -146,41 +146,48 @@ function ProofOfBurnRecord() {
               short-form address with its explorer link beside the chip (the
               chip classifies, the address verifies; Founder rows keep the
               voice rule: named, with the tx anchor as signature). */}
+          {/* THREE REAL COLUMNS (founder correction 2026-07-31: the amount
+              stacked ABOVE the Verify button on the right edge — two rows
+              piling on one corner is not a column). The grid aligns
+              [sentence + meta] · [gold amount] · [Verify], each vertically
+              centred; below sm it stacks honestly. */}
           {ledger.map((b) => (
             <Card key={`${b.transactionHash}-${b.logIndex}`} className="bg-card/40 border-border/50 p-3.5">
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                <StatusPill tone="caution" size="xs">
-                  Proof of Burn #{b.proofOfBurnNumber}
-                </StatusPill>
-                <p className="type-body text-foreground/90 flex-1 min-w-48">
-                  Retired to the burn address — gone for everyone, forever.
-                </p>
-                <span className="font-mono text-base font-semibold text-gold tabular-nums whitespace-nowrap">
+              <div className="grid grid-cols-1 items-center gap-x-5 gap-y-2 sm:grid-cols-[minmax(0,1fr)_auto_auto]">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                    <StatusPill tone="caution" size="xs">
+                      Proof of Burn #{b.proofOfBurnNumber}
+                    </StatusPill>
+                    <p className="type-body text-foreground/90">
+                      Retired to the burn address — gone for everyone, forever.
+                    </p>
+                  </div>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                    <StatusPill tone={b.senderLabel === "Founder" ? "proof" : "neutral"} size="xs">
+                      {b.senderLabel}
+                    </StatusPill>
+                    {b.actorShort && b.actorAddress && explorerBase ? (
+                      <a
+                        href={`${explorerBase}/address/${b.actorAddress}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex min-h-11 items-center gap-1 type-caption text-proof transition-colors hover:text-proof-hover"
+                      >
+                        {b.actorShort}
+                        <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
+                      </a>
+                    ) : null}
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {b.isoDayUtc} · block {b.blockNumber.toLocaleString("en-US")}
+                    </span>
+                  </div>
+                </div>
+                <span className="font-mono text-base font-semibold text-gold tabular-nums whitespace-nowrap sm:justify-self-end">
                   {formatSynRaw(b.amountSynRaw)} SYN
                 </span>
-              </div>
-              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                <StatusPill tone={b.senderLabel === "Founder" ? "proof" : "neutral"} size="xs">
-                  {b.senderLabel}
-                </StatusPill>
-                {b.actorShort && b.actorAddress && explorerBase ? (
-                  <a
-                    href={`${explorerBase}/address/${b.actorAddress}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex min-h-11 items-center gap-1 type-caption text-proof transition-colors hover:text-proof-hover"
-                  >
-                    {b.actorShort}
-                    <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
-                  </a>
-                ) : null}
-                <span className="font-mono text-xs text-muted-foreground">
-                  {b.isoDayUtc} · block {b.blockNumber.toLocaleString("en-US")}
-                </span>
                 {explorerBase ? (
-                  <span className="ml-auto">
-                    <ProofAnchor compact href={`${explorerBase}/tx/${b.transactionHash}`} />
-                  </span>
+                  <ProofAnchor compact href={`${explorerBase}/tx/${b.transactionHash}`} />
                 ) : null}
               </div>
             </Card>
@@ -201,7 +208,7 @@ export default function FireLedger() {
     >
       <LiveTotalBurn />
 
-      <h2 className="text-base font-medium text-foreground mb-3">The Proof of Burn record</h2>
+      <h2 className="type-h2 text-foreground mb-3">The Proof of Burn record</h2>
       <ProofOfBurnRecord />
 
       {/* DONE-IS-DONE (2026-07-25): pagination SHIPPED — the served backbone
@@ -209,7 +216,7 @@ export default function FireLedger() {
           identical "adds next: pagination" claim. The one honest future left
           here is the identity layer (opt-in names for burners). */}
       <Card className="bg-card/20 border-dashed border-border/60 p-5 mt-10">
-        <h2 className="text-base font-medium text-foreground mb-1.5">What the event indexer adds next</h2>
+        <h2 className="type-h2 text-foreground mb-1.5">What the event indexer adds next</h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
           The record serves every burn since the first block, numbered from
           #1 — and always states exactly what it covers. What arrives next:

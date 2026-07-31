@@ -78,9 +78,15 @@ export default function PublicReceiptTicket({
         <span className="text-[15px] font-medium text-foreground">
           Membership receipt{seat !== null ? ` — Seat #${seat}` : ""}
         </span>
-        <span className="ml-auto font-mono text-xs text-muted-foreground" data-testid="text-verdict-tx">
-          tx {shortTx}
-        </span>
+        <a
+          href={row.explorerUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ml-auto font-mono text-xs text-proof underline decoration-proof/30 underline-offset-2 transition-colors hover:text-proof-hover focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+          data-testid="text-verdict-tx"
+        >
+          tx {shortTx} ↗
+        </a>
       </div>
 
       {/* Z2 · the document. */}

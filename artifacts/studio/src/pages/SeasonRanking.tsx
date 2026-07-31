@@ -238,12 +238,12 @@ export default function SeasonRanking() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 title="Verify this builder on Snowtrace"
-                                className="block font-mono text-[10.5px] text-muted-foreground mt-0.5 hover:text-foreground hover:underline"
+                                className="block font-mono text-xs text-proof underline decoration-proof/30 underline-offset-2 transition-colors mt-0.5 hover:text-proof-hover hover:decoration-proof-hover"
                               >
                                 {r.shortForm} ↗
                               </a>
                             ) : (
-                              <span className="block font-mono text-[10.5px] text-muted-foreground mt-0.5">
+                              <span className="block font-mono text-xs text-muted-foreground mt-0.5">
                                 {r.shortForm}
                               </span>
                             )
@@ -308,7 +308,7 @@ export default function SeasonRanking() {
                               target="_blank"
                               rel="noopener noreferrer"
                               title="Verify this builder on Snowtrace"
-                              className="font-mono text-muted-foreground hover:text-foreground hover:underline"
+                              className="font-mono text-proof underline decoration-proof/30 underline-offset-2 transition-colors hover:text-proof-hover hover:decoration-proof-hover"
                             >
                               {r.display} ↗
                             </a>
@@ -324,7 +324,7 @@ export default function SeasonRanking() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 title="Verify this builder on Snowtrace"
-                                className="ml-1.5 font-mono text-muted-foreground align-middle hover:text-foreground hover:underline"
+                                className="ml-1.5 font-mono text-proof underline decoration-proof/30 underline-offset-2 transition-colors align-middle hover:text-proof-hover hover:decoration-proof-hover"
                               >
                                 {r.shortForm} ↗
                               </a>

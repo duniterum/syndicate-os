@@ -51,7 +51,7 @@ export default function Support() {
         {supportIntake.channels.map((c) => (
           <Card key={c.id} className="bg-card/40 border-border/50 p-5">
             <div className="flex items-start justify-between gap-3 mb-2">
-              <h3 className="text-base font-medium text-foreground">{c.label}</h3>
+              <h3 className="type-h3 text-foreground">{c.label}</h3>
               <LifecycleBadge lifecycle={c.lifecycle} />
             </div>
             <p className="type-body text-muted-foreground measure">{c.description}</p>
@@ -68,7 +68,7 @@ export default function Support() {
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div>
-                <h4 className="text-base font-medium text-foreground">{t.label}</h4>
+                <h4 className="type-h3 text-foreground">{t.label}</h4>
                 <p className="type-body text-muted-foreground measure mt-0.5">{t.description}</p>
               </div>
             </li>

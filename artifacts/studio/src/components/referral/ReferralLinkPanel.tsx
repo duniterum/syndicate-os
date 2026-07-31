@@ -222,7 +222,7 @@ function ChannelsCard({ readback }: { readback: StandingReadback | null | undefi
                   {copied !== null ? "Link copied" : ""}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+              <p className="text-sm text-muted-foreground leading-relaxed mt-2">
                 This is the full link — what you see is exactly what they get.
                 Never shortened.
               </p>
@@ -292,7 +292,7 @@ function ChannelsCard({ readback }: { readback: StandingReadback | null | undefi
               ))}
             </tbody>
           </table>
-          <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+          <p className="text-sm text-muted-foreground leading-relaxed mt-2">
             A join is a completed purchase whose receipt the server verified
             on-chain against your source — the channel is off-chain, the
             proof is not. We count clicks per channel, per day — never who

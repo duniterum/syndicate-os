@@ -174,7 +174,7 @@ export default function ProtocolMap() {
         <section className="text-sm text-muted-foreground space-y-2">
           <p>
             This page renders figures, not addresses — every contract behind them carries its
-            explorer verify-link on the status hub. Reading this page writes nothing: it never
+            explorer verify-link on the Contracts map. Reading this page writes nothing: it never
             connects a wallet and never sends a transaction.
           </p>
           <p>

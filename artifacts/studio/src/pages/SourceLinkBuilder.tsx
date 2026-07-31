@@ -8,11 +8,13 @@
 //     /join?source=<id>; nothing is created, activated, or written here —
 //     source creation and activation are owner-only on-chain acts;
 //   - the live registry linkage renders through the shared
-//     ProtocolRealityPanel (same truth-labelling as /status).
+//     ProtocolRealityPanel (same truth-labelling as the Protocol Map — the
+//     one live reality read since the 2026-07-31 /map–/status split).
 
 import { useState } from "react";
 import { Link } from "wouter";
 import { buildJoinLink } from "@/lib/joinLink";
+import { CONTENT_LINK_CLS } from "@/lib/contentLink";
 import { Check, Copy, Link2 } from "lucide-react";
 import {
   getGetSourceValidateQueryKey,
@@ -197,7 +199,7 @@ export default function SourceLinkBuilder() {
           registers and activates one, and an eligible completed introduction
           pays a bounded commission to the introducer&apos;s wallet inside the
           buyer&apos;s own transaction, shown by receipt, never a promise.{" "}
-          <Link href={ctas.exploreSource.href} className="text-primary hover:underline">
+          <Link href={ctas.exploreSource.href} className={CONTENT_LINK_CLS}>
             How the referral program works
           </Link>{" "}
           explains it in full.
@@ -210,17 +212,17 @@ export default function SourceLinkBuilder() {
       </h2>
       <p className="text-sm text-muted-foreground leading-relaxed measure mb-6">
         Live linkage between the active engine and the on-chain
-        referral registry. Identical to the read on{" "}
-        <Link href="/status" className="text-primary hover:underline">
-          /status
+        referral registry. Identical to the read on the{" "}
+        <Link href="/map" className={CONTENT_LINK_CLS}>
+          Protocol Map
         </Link>
-        ; any value that cannot be verified renders as null with a reason.
+        ; any value that cannot be verified says so, with the reason.
       </p>
       <div className="mb-12">
         <ProtocolRealityPanel groups={["source"]} />
       </div>
 
-      <h2 className="text-base font-medium text-foreground mb-4">Next steps</h2>
+      <h2 className="type-h2 text-foreground mb-4">Next steps</h2>
       <div className="flex flex-wrap gap-3 mb-12">
         <Link href={ctas.requestSeat.href}>
           <Button>{ctas.requestSeat.label}</Button>

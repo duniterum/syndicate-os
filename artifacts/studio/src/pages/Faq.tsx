@@ -18,8 +18,9 @@ import { CONTENT_LINK_CLS } from "@/lib/contentLink";
 // Reuses PublicPage + LivingSignature + TransparencyPosture + SectionIndex; the
 // only new pieces are FaqAccordion (the interactive primitive) and the
 // number-free doctrine-perfect corpus. Every figure is a live chain read (the
-// hero card) or a one-click link to the live surface — answers hold no numerals,
-// so the on-screen text, the FAQPage JSON-LD, and the crawler view are identical.
+// live-stat card, below the corpus since the 2026-07-31 WORK-FIRST reorder) or
+// a one-click link to the live surface — answers hold no numerals, so the
+// on-screen text, the FAQPage JSON-LD, and the crawler view are identical.
 
 // The inline card-link treatment moved to its ONE home 2026-07-30 (footer
 // audit): lib/contentLink.ts — /docs hand-typed the same treatment without
@@ -67,7 +68,7 @@ export default function Faq() {
     <PublicPage
       eyebrow="FAQ · honest answers, structured by topic"
       title="Answers you can verify — never a number we typed."
-      lead="Search, filter by topic, and open any question. Every answer is consistent with what is live, pending, and planned on-chain — and holds no figures of its own: each live number sits one click away on Tokenomics, Status, or Join, read straight from Avalanche."
+      lead="Search, filter by topic, and open any question. Every answer is consistent with what is live, pending, and planned on-chain — and holds no figures of its own: each live number sits one click away on Tokenomics, the Protocol Map, or Join, read straight from Avalanche."
       badge={<LivingSignature />}
     >
       <FaqJsonLd />
@@ -120,7 +121,7 @@ export default function Faq() {
           <p className="mt-4 type-body text-muted-foreground">
             The full live picture — supply, distribution, the two prices, burn, and treasury routing —
             is on <Link href="/tokenomics" className={CONTENT_LINK_CLS}>Tokenomics</Link> and the{" "}
-            <Link href="/status" className={CONTENT_LINK_CLS}>Status</Link> ledger. Preview an exact
+            <Link href="/map" className={CONTENT_LINK_CLS}>Protocol Map</Link>. Preview an exact
             entry quote on <Link href="/join" className={CONTENT_LINK_CLS}>Join</Link>.
           </p>
         </Card>

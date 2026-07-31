@@ -35,7 +35,7 @@ export const supportIntake = {
   // scoped to the intake system below them.
   intro:
     "Real people answer on the live channels below. The intake system on this page is an honest preview today — nothing here is stored, sent, or saved anywhere; the states describe how requests would be triaged once support opens.",
-  note: "Support isn't open yet — nothing here sends or stores anything.",
+  note: "The intake system below isn't open yet — nothing on this page sends or stores anything. The channels above are live and answered.",
   channels: [
     {
       id: "question",

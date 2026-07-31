@@ -295,7 +295,7 @@ function WalletPanelBody() {
       {/* THE APPROVALS PANEL — known protocol spenders only, own-row. */}
       <Card className="p-5 border-border/50 bg-card/40">
         <h3 className="text-base font-medium text-foreground mb-1">Approvals — known spenders</h3>
-        <p className="text-xs text-muted-foreground leading-relaxed mb-4">
+        <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           <span className="text-foreground font-medium">An approval is not a payment.</span>{" "}
           Approving lets a contract pull up to the approved amount later — no
           money moves when you approve, and an approval you no longer need can
@@ -404,7 +404,7 @@ function WalletPanelBody() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-sm text-foreground">SYN/USDC pool (LFJ)</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-sm text-muted-foreground mt-0.5">
               Why the pool exists, its live reserves, and the LP-side actions —
               with the Risk Notice they belong with. The pool is a courtesy, not
               a promise; the market is free and may decide otherwise.

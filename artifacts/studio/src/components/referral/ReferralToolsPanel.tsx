@@ -263,8 +263,8 @@ function CopyButton({ value, label, testid }: { value: string; label: string; te
 function SectionTitle({ title, why }: { title: string; why: string }) {
   return (
     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mt-8 mb-2.5">
-      <h3 className="text-[15px] font-medium text-foreground">{title}</h3>
-      <span className="text-[12.5px] text-muted-foreground">{why}</span>
+      <h3 className="text-base font-medium text-foreground">{title}</h3>
+      <span className="text-sm text-muted-foreground">{why}</span>
     </div>
   );
 }
@@ -423,13 +423,13 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
               <span className="font-mono text-xs text-muted-foreground">{spec("record").label}</span>
               <ArtifactActions spec={spec("record")} nodeRef={refs.record} joinLink={joinLink} gold />
             </div>
-            <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+            <p className="text-sm text-muted-foreground leading-relaxed mt-2">
               Your record card — the results, ready to show. Proof, not
               claims: every figure on it is on-chain and verifiable by anyone.
             </p>
           </div>
         ) : null}
-        <p className="text-xs text-muted-foreground leading-relaxed">
+        <p className="text-sm text-muted-foreground leading-relaxed">
           The card shows only what the chain proves — your seat, your chapter,
           your durable introductions, your rung. The QR scans straight to your
           permanent link.
@@ -472,7 +472,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
             </div>
           ))}
         </div>
-        <p className="text-xs text-muted-foreground leading-relaxed mt-4">
+        <p className="text-sm text-muted-foreground leading-relaxed mt-4">
           The five formats that actually perform — medium rectangle, large
           rectangle, half page, leaderboard, and the mobile banner. Every hook
           is a provable house line; never urgency, never a discount — every
@@ -543,13 +543,13 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
                 Download SVG (vector)
               </button>
             </div>
-            <p className="text-xs text-muted-foreground leading-relaxed mt-2 max-w-[300px]">
+            <p className="text-sm text-muted-foreground leading-relaxed mt-2 max-w-[300px]">
               The naked code, untouched — put it on a t-shirt, a sticker, a
               flyer, any color around it. The SVG scales to any print size
               without losing sharpness.
             </p>
           </div>
-          <p className="text-xs text-muted-foreground leading-relaxed min-w-[200px] flex-1">
+          <p className="text-sm text-muted-foreground leading-relaxed min-w-[200px] flex-1">
             Print them as they are — export is 2× for crisp paper. Anyone who
             scans lands on your join page, and the visit counts under the{" "}
             <span className="font-mono">print</span> channel in Channels.
@@ -571,7 +571,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
         <div className="space-y-2.5">
           {standingLine !== null && durable !== null && durable > 0 ? (
             <Card className="bg-card border-border p-3.5 flex flex-wrap items-center gap-x-3.5 gap-y-2">
-              <span className="text-[13.5px]">
+              <span className="text-sm">
                 <span className="font-medium">Your standing: {standingLine}.</span>{" "}
                 <span className="text-muted-foreground">Your card is up to date — share it.</span>
               </span>
@@ -582,10 +582,10 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
           ) : null}
           {rows.slice(0, 5).map((r) => (
             <Card key={r.transaction} className="bg-card border-border p-3.5 flex flex-wrap items-center gap-x-3.5 gap-y-2">
-              <span className="font-mono text-[12.5px] text-muted-foreground whitespace-nowrap">
+              <span className="font-mono text-xs text-muted-foreground whitespace-nowrap">
                 {dateLabel(r.isoDayUtc)}
               </span>
-              <span className="text-[13.5px]">
+              <span className="text-sm">
                 <span className="font-medium">Your introduction sealed on-chain.</span>{" "}
                 <span className="text-muted-foreground">
                   Its receipt is shareable proof — the painted card travels with the link.
@@ -618,7 +618,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
           <p className="text-sm font-medium text-foreground">
             YouTube · streaming <span className="font-mono text-xs text-gold">&via=youtube</span>
           </p>
-          <p className="text-xs text-muted-foreground leading-relaxed mt-1.5 mb-2">
+          <p className="text-sm text-muted-foreground leading-relaxed mt-1.5 mb-2">
             The description block, ready to paste under a video:
           </p>
           <p className="text-xs bg-background border border-border rounded-lg p-2.5 break-all mb-2">
@@ -631,7 +631,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
             label="Copy the block"
             testid="button-kit-creator-youtube"
           />
-          <p className="text-xs text-muted-foreground leading-relaxed mt-3 mb-2">
+          <p className="text-sm text-muted-foreground leading-relaxed mt-3 mb-2">
             And the on-screen QR — keep it in a corner of the video, or hold
             it for a minute; viewers scan the screen and land on your join page:
           </p>
@@ -649,7 +649,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
           <p className="text-sm font-medium text-foreground">
             Blog · website <span className="font-mono text-xs text-gold">&via=blog</span>
           </p>
-          <p className="text-xs text-muted-foreground leading-relaxed mt-1.5 mb-2">
+          <p className="text-sm text-muted-foreground leading-relaxed mt-1.5 mb-2">
             The badge to embed — the image lives with us, your link inside:
           </p>
           <p className="font-mono text-xs bg-background border border-border rounded-lg p-2.5 break-all mb-2">
@@ -665,7 +665,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
           <p className="text-sm font-medium text-foreground">
             Messaging · statuses <span className="font-mono text-xs text-gold">&via=whatsapp</span>
           </p>
-          <p className="text-xs text-muted-foreground leading-relaxed mt-1.5 mb-2">
+          <p className="text-sm text-muted-foreground leading-relaxed mt-1.5 mb-2">
             The story format above, plus the ready line:
           </p>
           <p className="text-xs bg-background border border-border rounded-lg p-2.5 break-all mb-2">
@@ -682,7 +682,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
           <p className="text-sm font-medium text-foreground">
             The real world <span className="font-mono text-xs text-gold">&via=print</span>
           </p>
-          <p className="text-xs text-muted-foreground leading-relaxed mt-1.5">
+          <p className="text-sm text-muted-foreground leading-relaxed mt-1.5">
             The A4 poster and the business card above — the QR carries the
             print tag, and real-world scans count in Channels like any other
             channel.
@@ -703,7 +703,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
             key={line}
             className={`flex flex-wrap items-center gap-x-3.5 gap-y-2 py-2.5 ${i > 0 ? "border-t border-dashed border-border" : ""}`}
           >
-            <span className="text-[13.5px] flex-1 min-w-[280px]">« {line} »</span>
+            <span className="text-sm flex-1 min-w-[280px]">« {line} »</span>
             <CopyButton value={line} label="Copy" testid={`button-kit-word-${i + 1}`} />
           </div>
         ))}
@@ -732,8 +732,8 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
           <div id="kit-promote-guide" className="px-5 pb-4">
             <div className="border-t border-dashed border-border pt-3.5 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
               <div>
-                <p className="font-mono text-xs uppercase tracking-wider text-proof mb-1.5">What you can say</p>
-                <ul className="text-[12.5px] text-muted-foreground leading-relaxed list-disc pl-4 space-y-1">
+                <p className="type-eyebrow text-proof mb-1.5">What you can say</p>
+                <ul className="text-sm text-muted-foreground leading-relaxed list-disc pl-4 space-y-1">
                   <li>membership · seat · receipt · proof · verify</li>
                   <li>&ldquo;every purchase is an on-chain receipt&rdquo;</li>
                   <li>&ldquo;the commission is paid inside the buyer&apos;s own transaction&rdquo;</li>
@@ -741,8 +741,8 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
                 </ul>
               </div>
               <div>
-                <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground mb-1.5">What we never say</p>
-                <ul className="text-[12.5px] text-muted-foreground leading-relaxed list-disc pl-4 space-y-1">
+                <p className="type-eyebrow text-muted-foreground mb-1.5">What we never say</p>
+                <ul className="text-sm text-muted-foreground leading-relaxed list-disc pl-4 space-y-1">
                   <li>promised gains, projections, &ldquo;up to X&rdquo;</li>
                   <li>invented urgency, countdowns</li>
                   <li>multi-level networks, &ldquo;recruit N more&rdquo;</li>
@@ -750,7 +750,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
                 </ul>
               </div>
             </div>
-            <p className="text-xs text-muted-foreground leading-relaxed mt-3">
+            <p className="text-sm text-muted-foreground leading-relaxed mt-3">
               You must hold your seat and hold SYN to introduce others — you
               cannot recommend what you have left. A referrer who promises
               gains endangers the program: a source can be suspended. The
@@ -762,7 +762,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
 
       {/* the legal seal */}
       <div className="border-t border-dashed border-border mt-7 pt-3.5">
-        <p className="text-[13px] text-muted-foreground leading-relaxed max-w-2xl">
+        <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
           {referralProgram.boundaryLine}
         </p>
       </div>

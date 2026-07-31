@@ -278,12 +278,12 @@ export function HomeSeasonSection() {
                             target="_blank"
                             rel="noopener noreferrer"
                             title="Verify this builder on Snowtrace"
-                            className="mt-0.5 block font-mono text-[10.5px] text-muted-foreground hover:text-foreground hover:underline"
+                            className="mt-0.5 block font-mono text-xs text-proof underline decoration-proof/30 underline-offset-2 transition-colors hover:text-proof-hover hover:decoration-proof-hover"
                           >
                             {r.shortForm} ↗
                           </a>
                         ) : (
-                          <span className="mt-0.5 block font-mono text-[10.5px] text-muted-foreground">
+                          <span className="mt-0.5 block font-mono text-xs text-muted-foreground">
                             {r.shortForm}
                           </span>
                         )

@@ -32,6 +32,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
 import { buildJoinLink } from "@/lib/joinLink";
+import { AddressLink } from "@/components/address/AddressText";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { isAddress } from "viem";
 import { avalanche } from "viem/chains";
@@ -469,14 +470,24 @@ export default function ProposeSourceCreate() {
       <div className="rounded-md border border-border/50 bg-background/40 p-3 text-sm space-y-1.5">
         <div className="flex items-center justify-between gap-3">
           <span className="text-muted-foreground">Registry owner (read live) — the wallet that must sign</span>
-          <span className="font-mono text-xs text-foreground">
-            {owner === undefined ? "reading…" : owner === null ? "unavailable — fail closed" : short(owner)}
+          <span className="font-mono text-xs">
+            {owner === undefined ? (
+              "reading…"
+            ) : owner === null ? (
+              "unavailable — fail closed"
+            ) : (
+              <AddressLink short={short(owner)} full={owner} explorerBase={explorerBase} />
+            )}
           </span>
         </div>
         <div className="flex items-center justify-between gap-3">
           <span className="text-muted-foreground">Connected wallet</span>
-          <span className="font-mono text-xs text-foreground">
-            {address ? short(address) : "not connected"}
+          <span className="font-mono text-xs">
+            {address ? (
+              <AddressLink short={short(address)} full={address} explorerBase={explorerBase} />
+            ) : (
+              "not connected"
+            )}
           </span>
         </div>
         {!address ? (
@@ -487,7 +498,9 @@ export default function ProposeSourceCreate() {
           <p className="flex items-start gap-2 text-xs text-destructive pt-1">
             <ShieldAlert className="h-3.5 w-3.5 mt-0.5 shrink-0" />
             The connected wallet is not the registry owner. The transaction can
-            only be signed by {short(owner)} — connect that wallet to proceed.
+            only be signed by{" "}
+            <AddressLink short={short(owner)} full={owner} explorerBase={explorerBase} /> —
+            connect that wallet to proceed.
           </p>
         ) : null}
         {address && !onAvalanche ? (
@@ -576,7 +589,7 @@ export default function ProposeSourceCreate() {
           <ParamRow label="appliesToRepeatPurchases" value="true" />
           <ParamRow
             label="payoutWallet (IRREVERSIBLE by term updates — changing it later is a separate owner recovery act)"
-            value={short(sourceWallet)}
+            value={<AddressLink short={short(sourceWallet)} full={sourceWallet} explorerBase={explorerBase} />}
             mono
           />
           <ParamRow
@@ -675,7 +688,7 @@ function PanelHeading() {
   );
 }
 
-function ParamRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+function ParamRow({ label, value, mono }: { label: string; value: React.ReactNode; mono?: boolean }) {
   return (
     <div className="flex items-baseline justify-between gap-4">
       <span className="text-muted-foreground">{label}</span>

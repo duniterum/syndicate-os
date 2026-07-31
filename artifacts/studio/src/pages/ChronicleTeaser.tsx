@@ -82,7 +82,7 @@ export default function ChronicleTeaser() {
               </div>
             ))}
             <Card className="bg-card/20 border-border/50 p-4">
-              <p className="text-xs text-muted-foreground leading-relaxed">
+              <p className="text-sm text-muted-foreground leading-relaxed">
                 <span className="type-eyebrow text-proof">Verify · </span>
                 {e.verifyNote}
               </p>
@@ -92,7 +92,7 @@ export default function ChronicleTeaser() {
       </div>
 
       <Card className="bg-card/20 border-dashed border-border/60 p-4 mt-12">
-        <p className="text-xs text-muted-foreground leading-relaxed">
+        <p className="text-sm text-muted-foreground leading-relaxed">
           An entry enters this register by a founder-approved commit — no
           database, no automation, no silent edits: the register's own history
           is public in the repository.

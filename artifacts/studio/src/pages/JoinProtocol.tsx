@@ -229,7 +229,7 @@ function IntroductionStatus({ sourceId }: { sourceId: string }) {
           <Link2 className="h-4 w-4" />
         </div>
         <div>
-          <h2 className="text-sm font-medium text-foreground mb-1" data-testid="text-introduction-title">
+          <h2 className="text-base font-medium text-foreground mb-1" data-testid="text-introduction-title">
             {ok && introducer !== null ? (
               <>
                 Introduced by <span className="font-mono">{introducer}</span>

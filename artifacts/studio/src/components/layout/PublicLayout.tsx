@@ -341,7 +341,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                           }`}
                         >
                           <span>{item.label}</span>
-                          <span className="font-mono text-[11px] text-muted-foreground">{item.path}</span>
+                          <span className="font-mono text-xs text-muted-foreground">{item.path}</span>
                         </Link>
                       </DropdownMenuItem>
                     ))}

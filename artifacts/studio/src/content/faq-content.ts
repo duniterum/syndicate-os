@@ -47,7 +47,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       },
       {
         q: "What can I verify today?",
-        a: "The SYN token, the membership sale, the Reserve / Liquidity / Operations wallets, every USDC entry, every routing transfer, each allocation wallet, and the SYN/USDC pool on LFJ (formerly Trader Joe) — all live on Avalanche and openable in any block explorer. The live figures sit on Tokenomics and the Status ledger; open any contract from the Contracts map.",
+        a: "The SYN token, the membership sale, the Reserve / Liquidity / Operations wallets, every USDC entry, every routing transfer, each allocation wallet, and the SYN/USDC pool on LFJ (formerly Trader Joe) — all live on Avalanche and openable in any block explorer. The live figures sit on Tokenomics and the Protocol Map; open any contract from the Contracts map.",
       },
       {
         q: "What does LIVE vs PENDING mean?",

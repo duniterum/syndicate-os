@@ -5,7 +5,11 @@
 // WalletConnect + public RPC third parties). The "trust-us" shape was
 // removed at the doctrine pass — statements stand flat, counsel can stand
 // behind them.
-// Version 2 draft (SPEC R3, founder GO on the wording 2026-07-19): the
+// Version 4 draft (2026-07-30, founder "oui global" — identity-directory
+// precision · the wallet stack's own browser storage named · the
+// activation-request record class · named Telegram channels; V3 the same day
+// corrected the Wallet-addresses section to the public address model).
+// History below from the Version 2 draft (SPEC R3, founder GO 2026-07-19): the
 // referral channel counter is disclosed — the site's ONE first-party
 // aggregate record (clicks per referral code + channel tag + day; never who
 // clicked, no cookie, no identifier). Still zero third-party analytics.

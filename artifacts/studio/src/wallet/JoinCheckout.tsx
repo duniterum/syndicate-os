@@ -382,7 +382,7 @@ export default function JoinCheckout({
         await publicClient.waitForTransactionReceipt({ hash });
       } catch {
         setError(
-          `Your approval was sent (${hash.slice(0, 10)}…) but its confirmation could not be read from here. Nothing is assumed — the transaction stands on the chain regardless of this page; retry in a moment or verify it on the explorer.`,
+          `Your approval was sent (${hash.slice(0, 10)}…${hash.slice(-6)}) but its confirmation could not be read from here. Nothing is assumed — the transaction stands on the chain regardless of this page; retry in a moment or verify it on the explorer.`,
         );
         return;
       }
@@ -450,7 +450,7 @@ export default function JoinCheckout({
         txReceipt = await publicClient.waitForTransactionReceipt({ hash });
       } catch {
         setError(
-          `Your purchase was sent (${hash.slice(0, 10)}…) but its confirmation could not be read from here. Nothing is assumed — the transaction stands on the chain regardless of this page; verify it on the explorer or reload in a moment.`,
+          `Your purchase was sent (${hash.slice(0, 10)}…${hash.slice(-6)}) but its confirmation could not be read from here. Nothing is assumed — the transaction stands on the chain regardless of this page; verify it on the explorer or reload in a moment.`,
         );
         return;
       }
@@ -463,7 +463,7 @@ export default function JoinCheckout({
       const ev = events[0];
       if (!ev) {
         setError(
-          `The transaction confirmed (${hash.slice(0, 10)}…) but the receipt event could not be decoded here. Your wallet and the explorer hold the truth — verify the transaction directly.`,
+          `The transaction confirmed (${hash.slice(0, 10)}…${hash.slice(-6)}) but the receipt event could not be decoded here. Your wallet and the explorer hold the truth — verify the transaction directly.`,
         );
         return;
       }

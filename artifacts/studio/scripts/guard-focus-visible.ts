@@ -173,7 +173,7 @@ const ALLOWLIST: Record<string, string> = {
   "pages/SeasonRanking.tsx":
     "5 · the season board's 2 role=\"tab\" <button>s (they need the TINT idiom, never an offset ring — founder ruling 2026-07-20) + 3 explorer <a>s on the ranking rows",
   "pages/SourceAttribution.tsx": "4 · 1 <a> + 3 <Link> on the attribution page",
-  "pages/SourceLinkBuilder.tsx": "5 · 5 <Link>s in the referrer link builder",
+  "pages/SourceLinkBuilder.tsx": "3 · 3 <Link>s in the referrer link builder (2 paid 2026-07-31 — the /status pointer and the pitch link joined CONTENT_LINK_CLS)",
 
   // ── MEMBER surfaces — behind the sign-in wall; the founder's own cockpit. ──
   "components/member/ChronicleLatest.tsx": "1 · the chronicle card's <Link>",

@@ -303,7 +303,15 @@ function CommissionReceipt({ row }: { row: OwnIntroductionRowReadback }) {
                 block {row.block.toLocaleString("en-US")}
               </span>
               <span>
-                receipt <span className="font-mono">{shortTx(row.transaction)}</span>
+                receipt{" "}
+                <a
+                  href={row.explorerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono text-proof underline decoration-proof/30 underline-offset-2 transition-colors hover:text-proof-hover focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                >
+                  {shortTx(row.transaction)}
+                </a>
               </span>
             </div>
           </div>
@@ -357,7 +365,15 @@ function CommissionReceipt({ row }: { row: OwnIntroductionRowReadback }) {
           <ZoneRule />
           <div className="py-3 px-0.5 flex flex-wrap items-center gap-x-3.5 gap-y-2">
             <span className="text-xs text-muted-foreground">
-              tx <span className="font-mono">{shortTx(row.transaction)}</span>
+              tx{" "}
+              <a
+                href={row.explorerUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="font-mono text-proof underline decoration-proof/30 underline-offset-2 transition-colors hover:text-proof-hover focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+              >
+                {shortTx(row.transaction)}
+              </a>
             </span>
             <CopyHashButton tx={row.transaction} />
             <a

@@ -29,6 +29,7 @@ import { BellRing, CheckCircle2, ExternalLink, ShieldAlert } from "lucide-react"
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { AddressLink } from "@/components/address/AddressText";
 import {
   publicClient,
   readRegistryOwner,
@@ -121,6 +122,9 @@ export default function ProposeSourcePromotion() {
   const registryUrl =
     verifyData?.links?.find((l) => l.id === "sourceRegistry")?.url ?? null;
   const registryAddr = registryUrl ? addressFromExplorerUrl(registryUrl) : null;
+  // The 2026-07-26 ruling ("every address on the protocol becomes blue"):
+  // the panel's addresses render through AddressLink, fail-closed on this.
+  const explorerBase = registryUrl ? (registryUrl.split("/address/")[0] ?? null) : null;
 
   const due: DueRow[] = Object.entries(INTRODUCTION_INDEX_SNAPSHOT.bySource).filter(
     ([, s]) => s.promotionDue,
@@ -299,11 +303,22 @@ export default function ProposeSourcePromotion() {
           <p className="text-foreground font-medium">
             Ready to sign: {(bound.row[1].currentBps / 100).toFixed(1)}% →{" "}
             {(bound.row[1].entitledBps / 100).toFixed(1)}% ({bound.row[1].entitledTitle})
-            for source wallet {short(bound.record.sourceWallet)}
+            for source wallet{" "}
+            <AddressLink
+              short={short(bound.record.sourceWallet)}
+              full={bound.record.sourceWallet}
+              explorerBase={explorerBase}
+            />
           </p>
           <p className="text-muted-foreground">
             updateSourceTerms · ONLY commissionBps changes · commission
-            destination {short(bound.record.payoutWallet)} unchanged (the
+            destination{" "}
+            <AddressLink
+              short={short(bound.record.payoutWallet)}
+              full={bound.record.payoutWallet}
+              explorerBase={explorerBase}
+            />{" "}
+            unchanged (the
             contract enforces it) · public SourceTermsUpdated event dates the
             raise.
           </p>
@@ -314,7 +329,9 @@ export default function ProposeSourcePromotion() {
           ) : owner && !connectedIsOwner ? (
             <p className="flex items-start gap-2 text-destructive">
               <ShieldAlert className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-              Only the registry owner {short(owner)} can sign — connect that wallet.
+              Only the registry owner{" "}
+              <AddressLink short={short(owner)} full={owner} explorerBase={explorerBase} /> can
+              sign — connect that wallet.
             </p>
           ) : address && !onAvalanche ? (
             <Button

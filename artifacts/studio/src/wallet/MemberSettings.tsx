@@ -33,6 +33,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
 import { fetchMemberStanding, logoutSession, shortAddress } from "./walletSession";
 import { SESSION_CHANGED_EVENT } from "./sessionEvents";
+import { useAddressExplorerUrl } from "@/lib/useAddressExplorerUrl";
 import type { DisplayLifecycle } from "@/config/truthStatus";
 
 function Row({
@@ -42,7 +43,7 @@ function Row({
   children,
 }: {
   title: string;
-  body: string;
+  body: React.ReactNode;
   lifecycle?: DisplayLifecycle;
   children?: React.ReactNode;
 }) {
@@ -62,6 +63,7 @@ function Row({
 
 export default function MemberSettings() {
   const { address } = useAccount();
+  const addrUrl = useAddressExplorerUrl(address ?? null);
   const [signedIn, setSignedIn] = useState(false);
 
   useEffect(() => {
@@ -136,10 +138,30 @@ export default function MemberSettings() {
 
       <Row
         title="Session"
+        // The address is BLUE and clickable (the engraved 2026-07-26 ruling:
+        // every address on the protocol) — fail-closed to plain mono when no
+        // explorer origin is served.
         body={
-          signedIn && address
-            ? `Signed in as ${shortAddress(address)} — the session proves wallet control only, never membership.`
-            : "No active wallet session. Connect and sign in from the panel above."
+          signedIn && address ? (
+            <>
+              Signed in as{" "}
+              {addrUrl ? (
+                <a
+                  href={addrUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono text-proof underline decoration-proof/30 underline-offset-2 transition-colors hover:text-proof-hover"
+                >
+                  {shortAddress(address)}
+                </a>
+              ) : (
+                <span className="font-mono">{shortAddress(address)}</span>
+              )}{" "}
+              — the session proves wallet control only, never membership.
+            </>
+          ) : (
+            "No active wallet session. Connect and sign in from the panel above."
+          )
         }
       >
         {signedIn ? (

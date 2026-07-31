@@ -283,7 +283,7 @@ export function ProtocolAssetsCard() {
             </span>
           )}
         </div>
-        <div className="mt-1.5 text-xs leading-snug text-muted-foreground">
+        <div className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
           USDC counted at one dollar; AVAX, BTC.b and WETH.e at live Chainlink prices. From the pool, only the
           protocol's own share of the USDC side — its LP tokens over the total supply, both read live; liquidity
           provided from any other wallet is not ours and is not counted. SYN is shown as an amount and never priced:

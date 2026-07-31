@@ -145,7 +145,7 @@ export default function CapitalAxisCard() {
       {/* D-TRUTH D3: the record behind the sum — every own purchase with its
           verify anchor (same progressive-disclosure pattern as the ladder). */}
       <details className="mt-3 group" data-testid="own-purchase-record">
-        <summary className="cursor-pointer text-xs font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground">
+        <summary className="cursor-pointer type-eyebrow text-muted-foreground hover:text-foreground">
           Your purchase record — every entry verifiable
         </summary>
         {purchases?.rows && purchases.rows.length > 0 ? (
@@ -188,7 +188,7 @@ export default function CapitalAxisCard() {
           server's standing (which carries the ladder) has been served. */}
       {standing !== null ? (
         <details className="mt-3 group">
-          <summary className="cursor-pointer text-xs font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground">
+          <summary className="cursor-pointer type-eyebrow text-muted-foreground hover:text-foreground">
             {/* DERIVED, never typed (adversarial review 2026-07-30): the digit
                 twin of the killed "twelve rungs" count — the list is served,
                 so the count comes from the list. */}

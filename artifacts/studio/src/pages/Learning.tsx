@@ -55,7 +55,7 @@ export default function Learning() {
                     {step.verb}
                   </span>
                 </div>
-                <h3 className="text-sm font-medium text-foreground mb-1">
+                <h3 className="text-base font-medium text-foreground mb-1">
                   {step.title}
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">

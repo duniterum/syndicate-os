@@ -156,8 +156,8 @@ const ALLOWLIST: Record<string, string> = {
   // — the season surfaces: designed 2026-07-23 against the season dossier, whose
   //   §0 rulings govern their composition. The sizes ride the type-scale slice so
   //   the dossier's geometry is re-read once, not twice.
-  "pages/SeasonRanking.tsx": "8 · PUBLIC season board (the pride/vanity surface) — 2 eyebrow paid 2026-07-27 (§⑥) + 2 by the 2026-07-30 conversion; the rest deferred to the type-scale slice, read against the season dossier §0",
-  "components/season/HomeSeasonSection.tsx": "7 · PUBLIC home season band — 1 eyebrow paid 2026-07-27 (§⑥) + 2 by the 2026-07-30 conversion; the rest deferred to the type-scale slice",
+  "pages/SeasonRanking.tsx": "6 · PUBLIC season board (the pride/vanity surface) — 2 eyebrow paid 2026-07-27 (§⑥) + 2 by the 2026-07-30 conversion + 2 by the 2026-07-31 address-blue pass (the 10.5px explorer anchors rose to text-xs + text-proof, the founder's own ruling); the rest deferred to the type-scale slice, read against the season dossier §0",
+  "components/season/HomeSeasonSection.tsx": "5 · PUBLIC home season band — 1 eyebrow paid 2026-07-27 (§⑥) + 2 by the 2026-07-30 conversion + 2 by the 2026-07-31 address-blue pass; the rest deferred to the type-scale slice",
   "components/season/HomeRegisterBand.tsx": "2 · PUBLIC home register band — deferred to the type-scale slice (4 paid by the 2026-07-30 eyebrow conversion)",
   "components/season/EffortRewardCard.tsx": "1 · PUBLIC season card — deferred to the type-scale slice",
 
@@ -170,7 +170,10 @@ const ALLOWLIST: Record<string, string> = {
   "components/data-table/DataTable.tsx": "1 · ATOM (tables) — a single 9px occurrence; deferred to the sweep",
 
   // — public chrome and truth surfaces
-  "components/layout/PublicLayout.tsx": "1 · PUBLIC site chrome (header/footer, every page). ⛔ RECOUNTED 2026-07-30 (adversarial review): the old entry forgave 3 and its prose said SIX remained — measured truth: ONE real sub-floor occurrence renders (the mobile-menu 11px path); the other 2 counted hits were bracket tokens inside a JSX block comment the line-based detector cannot see (that comment now spells its sizes in words). Deferred to the type-scale slice",
+  // components/layout/PublicLayout.tsx entry DELETED 2026-07-31: the last real
+  // sub-floor occurrence (the mobile-menu 11px path) rose to text-xs — the
+  // site chrome, on every page, is fully at the floor. (Its 2026-07-30 story:
+  // the old entry forgave 3 where one rendered — 2 were comment phantoms.)
   // components/ProtocolReality.tsx entry DELETED 2026-07-30: PAID by the floor
   // sweep (8 occurrences → type-caption/text-xs/text-sm; the note line rose to
   // text-sm as the audit ordered for multi-sentence reading copy).

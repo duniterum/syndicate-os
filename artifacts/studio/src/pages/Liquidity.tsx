@@ -69,7 +69,7 @@ function ActionRail() {
         <p className="type-eyebrow text-muted-foreground">
           Liquidity actions
         </p>
-        <p className="mt-1 text-xs text-muted-foreground measure leading-relaxed">
+        <p className="mt-1 text-sm text-muted-foreground measure leading-relaxed">
           Trade, deposit, or look up the live SYN/USDC pair on Avalanche. These
           are LP-side actions only — membership (USDC → SYN via the sale) is a
           separate flow and deliberately not on this rail.
@@ -113,7 +113,7 @@ function ActionRail() {
           </span>
         </div>
       </div>
-      <p className="mt-3 text-xs text-muted-foreground leading-relaxed">{LP_NO_ENTITLEMENT_LINE}</p>
+      <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{LP_NO_ENTITLEMENT_LINE}</p>
     </Card>
   );
 }
@@ -144,7 +144,7 @@ function LpStatus() {
           </div>
         ))}
       </div>
-      <p className="mt-3 text-xs text-muted-foreground leading-relaxed">
+      <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
         Read from the pair's own reserves through the protocol's reality spine —
         the same source as every live figure on this site. The implied price is
         arithmetic on reserves, never a quote or a promise.
@@ -175,7 +175,7 @@ export default function Liquidity() {
         {WHY_LP_CARDS.map((c) => (
           <Card key={c.title} className="bg-card/40 border-border/50 p-5">
             <h3 className="text-base font-medium text-foreground">{c.title}</h3>
-            <p className="mt-2 text-xs text-muted-foreground leading-relaxed">{c.body}</p>
+            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{c.body}</p>
           </Card>
         ))}
       </div>
@@ -194,13 +194,13 @@ export default function Liquidity() {
           {LP_RISKS.map((r) => (
             <Card key={r.title} className="bg-card/20 border-border/50 p-4">
               <h4 className="text-sm font-medium text-foreground mb-1">{r.title}</h4>
-              <p className="text-xs text-muted-foreground leading-relaxed">{r.body}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{r.body}</p>
             </Card>
           ))}
         </div>
         <Card className="bg-gold/5 border-gold/25 p-4">
           <p className="text-sm text-foreground/90 leading-relaxed">{LP_NO_ENTITLEMENT_LINE}</p>
-          <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+          <p className="text-sm text-muted-foreground leading-relaxed mt-2">
             Not equity. Not a pooled fund of the Syndicate. Not an investment
             product. Membership is a separate act on a separate page.
           </p>
