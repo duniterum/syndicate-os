@@ -2,7 +2,56 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-07-31 (SEAL №2) — RESUME HERE. **PROD = `2abd713` — SEALED (Replit report in the 2026-07-31 chat: 11/11 checks · byte identity ×2 · backbone ok:2, failed:0 stable, head 91,657,329 → 91,657,913). THE DEPLOY BACKLOG IS EMPTY.** The ENTIRE harmonization arc is live: the footer audit's 78/78 findings + the founder's senior pass (addresses BLUE on /season+podium, /fire-ledger 3 columns, 14px card prose, /map–/status one-job split, Terms V3 / Privacy V4, the tokenomics chassis, WORK-FIRST on five pages).
+> # ▶ 2026-07-31 (HANDOFF) — RESUME HERE. **PROD = `2abd713` (SEALED ×2 today); main = `e77ae13` + this handoff, CLEAN TREE, ALL PUSHED, main = origin/main (measured at handoff). THE DEPLOY BACKLOG IS EMPTY.**
+>
+> ## THE DAY IN ONE READ (two sealed deploys: `448645d` at dawn, `2abd713` at close)
+> Prod moved `3adbc19 → 448645d → 2abd713`. Seal №1 (dawn): THE REGISTER (/registry), causal swap
+> order, self-hosted fonts, Terms V2/Privacy V3, the 19 go-live review fixes. Then the founder's
+> « go » opened the HARMONIZATION ARC: **the footer audit's 78/78 findings closed the day the
+> audit was filed** (slices A–E + the arc's own 40-agent adversarial review, 15/15 confirmed
+> fixed), then his « construis 1-5, et oui global » (slice F composition + slice G legal =
+> Terms V3 / Privacy V4), then his senior pass (« 3-5 agents, relis tout ») — 4 agents, all
+> confirmed findings fixed same-day. Seal №2 (close): 11/11 checks · byte identity ×2 ·
+> **backbone failed: 0 stable**. Full commit trail: `git log --oneline 6363ae8..e77ae13`.
+>
+> ## (a) WHAT WENT LIVE TODAY (registry flips: NONE owed — 9 NEW future keys registered
+> ## [standingModel · supportIntake · signalChamber · seatRecord · trustCapital ·
+> ## knowledgeOsGuided · linkRegistry · laterEras · marketplace], no live↔future flip missed)
+> · **Addresses BLUE everywhere the client holds the full value** (the engraved 2026-07-26
+>   ruling): /season 18 anchors + home podium at text-proof 12px (rig-measured rgb(13,204,242)) ·
+>   public receipt "tx …" · commissions · member Settings · admin propose/promotion forms.
+> · /fire-ledger: 3 REAL columns [sentence+meta · gold amount · 44px ProofAnchor] + serif h2s +
+>   sender short-form for Community burns. · Card prose site-wide at 14px; the SITE CHROME is
+>   FULLY at the 12px floor (PublicLayout allowlist entry deleted on the guard's own order).
+> · WORK-FIRST on /faq /liquidity /source /support (+ live channels from brand.ts) · /status in
+>   the PublicPage shell · the /map–/status ONE-JOB split (reality tables live ONLY on /map; the
+>   copy ripple swept — 5 stale pointers fixed) · /tokenomics sibling chassis · /join eyebrow
+>   "Join" · Terms V3 + Privacy V4 (identity-directory precision · wallet-stack storage · the
+>   activation-request record class · named Telegram channels).
+> · Guard mechanics hardened: DONE-IS-DONE sees object-literal + prose claims (673 checks) ·
+>   sub-12px ratchet TWO-WAY BLOCKING · join-link one-home pin (guard-surface-coverage) ·
+>   string-aware stripper in guard-feature-truth · duplicate-facts 116 facts · wallet approvals
+>   read ALL 4 sale engines FAIL-CLOSED with a liveness guard.
+>
+> ## THE LOCAL RIG (this machine): studio preview on 5173 (preview_start) · api DETACHED on 5000
+> ## (never preview_start — no egress in its sandbox) · PostgreSQL 17 :5433 db `syndicate` = the
+> ## prod dump of 2026-07-30. dump.sql.gz is SAFE locally (Downloads, 32,854 bytes + restored DB,
+> ## measured) → the founder may tell Replit "téléchargé" so it leaves the project root.
+>
+> ## (b) IN FLIGHT — THE NEXT BUILD SLICE (queued, api + client, one slice)
+> · **The pre-masked admin address family** (senior review, confirmed 2/2 — the 2026-07-25
+>   address law's last uncovered corner): the server sends SHORT-ONLY wallets to
+>   admin/memberLedger · AdminOperatorsCrud · SourcePerformancePanel (`ownerShort`) ·
+>   ReferralIntroductionsPanel (`who`), so no blue AddressLink can be built there. NEXT STEP:
+>   api serves full address (or per-row explorerUrl) on those payloads — addresses are PUBLIC
+>   law, admin included — then the client adopts AddressLink at the 4 sites. Accepted-known:
+>   the source-status asOf ratchet stays memorial (documented in its guard header) · printable
+>   ReceiptTicket keeps its QR as the verify affordance (deliberate).
+>
+> ## (c) FOUNDER-PENDING (nothing else blocks)
+> · The 3 reserves-wireframe decisions (3×2 grid · gold logo · weekend freshness) → then the
+>   LINK.e/XAUt0 reserves build (feeds verified on-chain: LINK/USD `0x49cc…de9a`, XAU/USD
+>   `0x1F41…515B`). · The 4 composition wireframes. · "téléchargé" to Replit for dump.sql.gz. **PROD = `2abd713` — SEALED (Replit report in the 2026-07-31 chat: 11/11 checks · byte identity ×2 · backbone ok:2, failed:0 stable, head 91,657,329 → 91,657,913). THE DEPLOY BACKLOG IS EMPTY.** The ENTIRE harmonization arc is live: the footer audit's 78/78 findings + the founder's senior pass (addresses BLUE on /season+podium, /fire-ledger 3 columns, 14px card prose, /map–/status one-job split, Terms V3 / Privacy V4, the tokenomics chassis, WORK-FIRST on five pages).
 >
 > ## (b) NEXT + FOUNDER-PENDING
 > · The 3 reserves-wireframe decisions (3×2 grid · gold logo · weekend freshness) · the 4
