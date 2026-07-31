@@ -2,7 +2,17 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-07-31 (SENIOR PASS) — RESUME HERE. PROD = `448645d`; main = `7ff915a`, CLEAN TREE, ALL PUSHED. The founder's 4-agent senior review: every confirmed finding fixed same-day — ADDRESSES BLUE everywhere the client holds the full value (his engraved 2026-07-26 ruling; /season 18 anchors measured rgb(13,204,242)), /fire-ledger in 3 real columns, card prose at 14px, the /map–/status copy ripple swept, the site chrome fully at the 12px floor. NAMED SERVER FOLLOW-UP: the admin ledgers' PRE-MASKED shorts (memberLedger · operators CRUD · performance `ownerShort` · introductions `who`) need the api to serve full address/explorerUrl — queued, contradicts the 2026-07-25 address law. The deploy instruction (head `7ff915a`) is in the 2026-07-31 chat — HE pastes it.
+> # ▶ 2026-07-31 (SEAL №2) — RESUME HERE. **PROD = `2abd713` — SEALED (Replit report in the 2026-07-31 chat: 11/11 checks · byte identity ×2 · backbone ok:2, failed:0 stable, head 91,657,329 → 91,657,913). THE DEPLOY BACKLOG IS EMPTY.** The ENTIRE harmonization arc is live: the footer audit's 78/78 findings + the founder's senior pass (addresses BLUE on /season+podium, /fire-ledger 3 columns, 14px card prose, /map–/status one-job split, Terms V3 / Privacy V4, the tokenomics chassis, WORK-FIRST on five pages).
+>
+> ## (b) NEXT + FOUNDER-PENDING
+> · The 3 reserves-wireframe decisions (3×2 grid · gold logo · weekend freshness) · the 4
+>   composition wireframes · telling Replit "downloaded" for dump.sql.gz.
+> · NEXT BUILD SLICE (queued, api): the admin ledgers' PRE-MASKED shorts (memberLedger ·
+>   AdminOperatorsCrud · SourcePerformancePanel `ownerShort` · ReferralIntroductionsPanel `who`) —
+>   serve full address/explorerUrl so the blue AddressLink can reach the operator surfaces too
+>   (the 2026-07-25 address law's last uncovered corner).
+
+> # ▶ 2026-07-31 (SENIOR PASS) — superseded by the seal above. PROD was `448645d`; main = `7ff915a`, CLEAN TREE, ALL PUSHED. The founder's 4-agent senior review: every confirmed finding fixed same-day — ADDRESSES BLUE everywhere the client holds the full value (his engraved 2026-07-26 ruling; /season 18 anchors measured rgb(13,204,242)), /fire-ledger in 3 real columns, card prose at 14px, the /map–/status copy ripple swept, the site chrome fully at the 12px floor. NAMED SERVER FOLLOW-UP: the admin ledgers' PRE-MASKED shorts (memberLedger · operators CRUD · performance `ownerShort` · introductions `who`) need the api to serve full address/explorerUrl — queued, contradicts the 2026-07-25 address law. The deploy instruction (head `7ff915a`) is in the 2026-07-31 chat — HE pastes it.
 
 > # ▶ 2026-07-30 (ARC COMPLETE) — superseded by the senior pass above. PROD = `448645d`; main was `ace25ba`, CLEAN TREE, ALL PUSHED. **THE FOOTER AUDIT'S LEDGER IS CLOSED AT ZERO — all 78 findings resolved the day it was filed.** The founder ordered "construis 1-5, et oui global, et on donne tout en même temps à Replit" — the deploy instruction is in the 2026-07-30 chat; HE pastes it.
 >

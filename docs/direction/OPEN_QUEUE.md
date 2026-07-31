@@ -1,5 +1,17 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-07-31 (SCELLÉ №2) — LE CYCLE `2abd713` EST EN PRODUCTION.** Rapport Replit collé au
+> chat : **11/11 contrôles verts · identité d'octets ×2 · backbone ok:2, `failed: 0` STABLE**,
+> tête 91 657 329 → 91 657 913. Tout l'arc d'harmonisation vit sur thesyndicate.money : les 78/78
+> trouvailles du carnet footer + la passe senior (adresses BLEUES cyan cliquables sur /season et
+> le podium · /fire-ledger en 3 colonnes · prose 14px · partage /map–/status · Terms V3 /
+> Privacy V4 · châssis /tokenomics · WORK-FIRST sur 5 pages · chrome au plancher 12px). Le
+> backlog de déploiement est VIDE.
+> **EN ATTENTE DU FONDATEUR :** ① les 3 décisions du croquis réserves (grille 3×2 · logo or ·
+> fraîcheur week-end) ; ② les 4 croquis composition ; ③ « téléchargé » à Replit pour dump.sql.gz.
+> **PROCHAINE TRANCHE DE BUILD (api, en file) :** servir l'adresse complète/explorerUrl aux 4
+> registres admin pré-masqués pour que le lien bleu atteigne aussi les surfaces opérateur.
+
 > **▶ 2026-07-31 — LA PASSE SENIOR DU FONDATEUR (« 3-5 agents, tout relire ») : 4 agents, tout
 > confirmé corrigé le jour même (`7ff915a`).** Ses trois yeux avaient juste : ① les adresses du
 > board /season et du podium d'accueil étaient codées GRIS-muted à 10,5px — elles sont maintenant
