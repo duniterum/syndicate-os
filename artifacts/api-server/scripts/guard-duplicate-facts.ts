@@ -302,10 +302,17 @@ const DEBT: Readonly<Record<string, readonly string[]>> = {
   // · Same NUMERAL, unrelated facts: three milestone TARGETS (1M seats · $1M ·
   //   1M SYN, intra-file) · the explorer index page base · a millions display
   //   divisor. Not one fact — one import would COUPLE unrelated decisions.
+  //   AMENDED 2026-08-03 (M3, founder GO): studio lib/chapters.ts joins as
+  //   STORY_FINAL_SEAT — the studio's ONE declaration of the story-final-seat
+  //   fact (the cross-artifact twin of milestoneReadmodel's seats-1000000
+  //   target; client and server cannot import each other — the USDC-base
+  //   pattern above). SeatFlowDiagram's copy stays the UNRELATED USDC display
+  //   divisor; studio code needing the story fact imports chapters.ts.
   "pinned numeric literal::1_000_000": [
     "artifacts/api-server/src/backbone/milestoneReadmodel.ts",
     "artifacts/api-server/src/backbone/nativeAvaxScan.ts",
     "artifacts/studio/src/components/hero/SeatFlowDiagram.tsx",
+    "artifacts/studio/src/lib/chapters.ts",
   ],
 };
 

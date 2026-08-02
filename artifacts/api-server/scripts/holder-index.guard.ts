@@ -226,6 +226,11 @@ const DB_LAZY_ALLOW = new Set([
   // spine + in-memory read-models, founder_root-only, masked, audit-logged.
   // Lazy-only; full shape pinned by guard-auth-zone.ts.
   "src/operator/memberLedgerService.ts",
+  // M2-v2 (founder « go dans l'ordre », 2026-08-03): the join-card's living
+  // seat line — wallet↔seat from the spine (PUBLIC chain data, the /registry
+  // precedent). Lazy-only, DATABASE_URL-gated, fail-closed to the plain
+  // card. Pinned by join-card.guard.ts section 11.
+  "src/joincard/introducerRead.ts",
   // NOTIF-1 (Q43, founder GO 2026-07-18): the notification write services —
   // founder_root-only, seat→wallet server-side, audit-rowed. Lazy-only;
   // pinned by guard-auth-zone.ts.
