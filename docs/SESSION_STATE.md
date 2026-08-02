@@ -164,8 +164,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   1 poll total) · ~~/status frozen holder-index headline (14 · July 16)~~ — CLOSED same
 >   day (the round-2 slice): the headline now reads the live verified line (hero's own
 >   channel), the sealed snapshot demoted to named genesis attestation + boot fallback;
->   endpoint retirement (volet 2: hero drops its fallback call, then route+client+guard
->   retirement AFTER that deploys) stays a candidate. · Accepted-known: the
+>   endpoint retirement: **VOLET 1 BUILT same day (« passe à la suite »)** — useHeroReality
+>   no longer calls /api/holder-index AT ALL (spine-only attestation; a few seconds of
+>   honest absence at boot beat a frozen figure); the endpoint still serves (old bundles +
+>   API consumers + /status's sealed genesis card). VOLET 2 (route + generated client +
+>   holder-index guard retirement from the 21-chain + registries) only AFTER volet 1
+>   DEPLOYS — the two-deploy shape is deliberate. · Accepted-known: the
 >   header chapter badge appears AFTER the live read resolves (honest absence, loaded
 >   pixels identical) · the seats bar reads cumulative-count vs chapter-END window (a
 >   fresh chapter opens ~1/3 full — correct, not a bug).
