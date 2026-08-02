@@ -194,8 +194,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   = the shipped BTC.b↔BTC/USD pattern ✓ · ⚠ ADDRESS-POISONING artifact in vault tokentx
 >   (fake "AVAX" ERC-20 `0xc3d4…cc92` mimicking the Founder's address) — build immune
 >   (pinned contracts); future explorer-reading lanes must key on pinned addresses, never
->   symbol. PENDING HIS ONE WORD: the AVAX card option (A raw live · C = A + a meta line
->   naming the gas-token fact — RECOMMENDED C).** Rides
+>   symbol. **HIS WORD GIVEN: « C »** — the AVAX card shows the raw live balance PLUS the
+>   honest meta line (human words: the vault pays its own transaction fees from this
+>   balance). ALL DECISIONS TAKEN — the build executes with zero open questions.** Rides
 >   docs/design/reserves-band-6-assets-mockup.html —
 >   feeds verified on-chain (LINK/USD `0x49cc…de9a` · XAU/USD `0x1F41…515B`); same slice
 >   adds the two /contracts rows (Vault LINK · Vault GOLD); admin panel automatic.
