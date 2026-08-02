@@ -1,5 +1,25 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-02 (FIN DE JOURNÉE — SCELLÉ №3 `82b650e` + LA RÈGLE DU REPLI + l'audit 6
+> casquettes.)** Ce bloc SUPPLANTE les affirmations périmées des deux blocs dessous :
+> ① **Les tranches du matin (`4b96b30` · `68ea337` · `1a38d13`) SONT EN PROD** — scellé №3
+> `82b650e`, rapport Replit 6/6 (identité d'octets ×2, /api/registry LIVE 16 lignes sans
+> `chapterCeiling`, héros « snapshot 16 as of 2026-08-02 », badge CH #001, /status ouvre sur
+> le 16 vérifié, spine « unchanged (16 records) »). ② **Le verdict wireframe est DONNÉ**
+> (« ok les 2 ») **et la pagination est CONSTRUITE** sur LES DEUX tableaux publics
+> (`db5bb85` — dormante ≤25 lignes, la SEULE tranche en attente de déploiement ; le board a
+> grandi 15 → 17 lignes ce soir, toujours dormant, correct). ③ **LA RÈGLE DU FONDATEUR
+> (« pas que tu me casses des semaines de travail ») :** un commit a retiré le repli de
+> démarrage scellé du héros (e94c24a) — REVERTI dans l'heure (`18e2079`, prouvé identique à
+> l'octet à la prod) ; **le repli RESTE ; toute retraite du holder-index est SA décision,
+> options à l'écran, rien ne se construit avant son choix.** (La phrase « le héros ne le lit
+> plus » des blocs dessous était fausse dès sa naissance — il ne l'AFFICHE plus en titre
+> mais le LIT toujours comme repli scellé.) ④ **L'audit 6 casquettes** (son ordre, midi) :
+> revert identique à l'octet · les 20 fichiers touchés de la journée tous justifiés par une
+> tranche nommée, zéro inexpliqué · le système holder-index inventorié INTACT pièce par
+> pièce · toutes les portes vertes des deux côtés · l'arithmétique du pager exécutée
+> 334/334. **Rien des semaines de travail n'est cassé — mesuré, pas affirmé.**
+
 > **▶ 2026-08-02 (APRÈS LE SCEAU — la session suivante : le candidat n°1 construit, puis la
 > revue « toutes casquettes » du fondateur et son durcissement le jour même. Commits
 > `4b96b30` → `1a38d13` + registres, poussés sur main, NON DÉPLOYÉS — groupables, prod reste
@@ -15,8 +35,10 @@
 > strippés · comptage insensible au style · le gabarit du chip épinglé des DEUX côtés).
 > ④ Le wireframe de pagination /registry (v2 après la revue design : badge « Verified
 > on-chain », ouverture page 1, indicateur « 14 / 14 », 25/page = constante partagée) attend
-> SA validation visuelle — rien d'autre ne bloque. **LE BACKLOG DE DÉPLOIEMENT PORTE TROIS
-> TRANCHES GROUPABLES** (`4b96b30` · `68ea337` · `1a38d13`).
+> SA validation visuelle — rien d'autre ne bloque. ~~**LE BACKLOG DE DÉPLOIEMENT PORTE TROIS
+> TRANCHES GROUPABLES** (`4b96b30` · `68ea337` · `1a38d13`)~~ *(supplanté le soir même — voir
+> le bloc au-dessus : ces trois-là sont EN PROD (`82b650e`), le verdict est donné, seule la
+> pagination `db5bb85` attend.)*
 
 > **▶ 2026-08-02 (SCELLÉ №2 DU JOUR) — LE CYCLE `7a916a3` EST EN PRODUCTION : L'AUTONOMIE EST
 > LIVE.** Rapport Replit collé au chat : 31/31 blobs (un renommage inversé par l'outillage
@@ -31,7 +53,10 @@
 > treasury transitoires auto-rattrapés). **LE BACKLOG DE DÉPLOIEMENT EST VIDE. PLUS UN SEUL
 > CHIFFRE NOURRI À LA MAIN NE RESTE SUR AUCUNE SURFACE RENDUE** (une précision honnête : le
 > endpoint statique `/api/holder-index` sert encore l'ancien fichier aux consommateurs d'API —
-> plus aucune page ne le lit ; sa retraite est un candidat nommé dans SESSION_STATE (b)).
+> ~~plus aucune page ne le lit~~ *(corrigé le soir même, fausse dès sa naissance : plus aucune
+> page ne l'AFFICHE EN TITRE, mais le héros le LIT comme repli de démarrage scellé et /status
+> le lit pour sa carte genèse — voir la règle du fondateur au bloc de tête)* ; sa retraite est
+> un candidat nommé dans SESSION_STATE (b)).
 > Réserve habituelle : le coup d'œil connecté du fondateur sur /admin (16 lignes · 5 sources ·
 > pagination) reste le dernier mètre.
 

@@ -2,7 +2,7 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-02 (HANDOFF — end of day) — RESUME HERE. **PROD = `7a916a3` — SEALED (the day's SECOND seal; Replit report in the 2026-08-02 chat: 31/31 blobs · byte identity ×2, entry `index-BBE4X3MN.js` = `62c556d3…9c7b`, console `OperatorConsole-6y4TAiZq.js` = `e2c1e636…af78` · 5/5 checks · prod's first cycle performed the rig-rehearsed transition VERBATIM: « spine GROWN_PROVENANCE_REBUILD — run #6, 16 records (14 replaced) » then « unchanged », attestation 16 = 16 · the public hero says « snapshot 16 as of 2026-08-02 » · /contracts states Vault 70% · Liquidity 20% · Operations 10% · backbone ok:2, failed:0 stable). **PROD = `82b650e` — SEALED 2026-08-02 (the day's THIRD seal; Replit report in chat: 17/17 blobs · byte identity ×2, entry `index-sQXp-E9J.js` = `8acd532c…6b91`, console `OperatorConsole-DobSBa6Z.js` = `55e7964b…d436`, old entry 404s · migration step CONFIRMED nothing-to-apply · 6/6 checks: /api/registry LIVE 16 rows NO chapterCeiling key · hero « snapshot 16 as of 2026-08-02 » · CH #001 badge post-load · /status Holder Index headline = live verified 16 with the 07-16 seal below · backbone ok climbing, failed:1 = the usual first post-boot cycle, self-caught, not increasing · spine « unchanged (16 records) »). THE DEPLOY BACKLOG IS EMPTY.** ROUND-2 REVIEW (4 fresh hats over the WHOLE session) had certified the batch DEPLOY-READY before the seal; backbone.guard counts 243 since the presentation pin. ZERO HAND-FED FIGURES REMAIN ON ANY SURFACE — every member/source count converges from the chain automatically within one backbone cycle.**
+> # ▶ 2026-08-02 (HANDOFF — end of day) — RESUME HERE. **PROD = `7a916a3` — SEALED (the day's SECOND seal; Replit report in the 2026-08-02 chat: 31/31 blobs · byte identity ×2, entry `index-BBE4X3MN.js` = `62c556d3…9c7b`, console `OperatorConsole-6y4TAiZq.js` = `e2c1e636…af78` · 5/5 checks · prod's first cycle performed the rig-rehearsed transition VERBATIM: « spine GROWN_PROVENANCE_REBUILD — run #6, 16 records (14 replaced) » then « unchanged », attestation 16 = 16 · the public hero says « snapshot 16 as of 2026-08-02 » · /contracts states Vault 70% · Liquidity 20% · Operations 10% · backbone ok:2, failed:0 stable). **PROD = `82b650e` — SEALED 2026-08-02 (the day's THIRD seal; Replit report in chat: 17/17 blobs · byte identity ×2, entry `index-sQXp-E9J.js` = `8acd532c…6b91`, console `OperatorConsole-DobSBa6Z.js` = `55e7964b…d436`, old entry 404s · migration step CONFIRMED nothing-to-apply · 6/6 checks: /api/registry LIVE 16 rows NO chapterCeiling key · hero « snapshot 16 as of 2026-08-02 » · CH #001 badge post-load · /status Holder Index headline = live verified 16 with the 07-16 seal below · backbone ok climbing, failed:1 = the usual first post-boot cycle, self-caught, not increasing · spine « unchanged (16 records) »). DEPLOY BACKLOG: **ONE batchable slice — `db5bb85`** (the founder-approved pagination on BOTH public boards, DORMANT ≤25 rows — invisible today; prod stays correct; the e94c24a/18e2079 pair nets to ZERO, proven byte-identical). SIX-HAT FULL-DAY AUDIT (founder order, 2026-08-02 midday): revert byte-identical to prod · all 20 touched files classified into named slices, zero unexplained · the whole holder-index system inventoried INTACT · all gates fresh green both artifacts · pagination arithmetic executed 334/334 · the board GREW 15 → 17 rows tonight (still dormant, correct).** ROUND-2 REVIEW (4 fresh hats over the WHOLE session) had certified the batch DEPLOY-READY before the seal; backbone.guard counts 243 since the presentation pin. ZERO HAND-FED FIGURES REMAIN ON ANY SURFACE — every member/source count converges from the chain automatically within one backbone cycle.**
 >
 > ## THE DAY IN ONE READ (two seals: `22296fd` then `7a916a3` — the autonomy day)
 > ① The pre-masked admin family CLOSED (the founder's « go ») — six operator/member reads
@@ -178,17 +178,19 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   fresh chapter opens ~1/3 full — correct, not a bug).
 > · Server-side windowing of the member-ledger payload
 >   toward ~300 members (the client pager cannot fix payload weight). · Retire/bridge the
->   static /api/holder-index endpoint (API consumers still get the old file; every RENDERED
->   surface now reads the spine attestation instead — the hero no longer reads it).
+>   static /api/holder-index endpoint — ⚠ CORRECTED 2026-08-02 (the six-hat audit; this
+>   line's old wording « the hero no longer reads it » was FALSE AT BIRTH and is the exact
+>   misreading that produced the rejected e94c24a): the hero no longer HEADLINES it, but it
+>   still CALLS it on every public-page load as the founder-sealed boot fallback, and
+>   /status's sealed genesis card reads it too — retirement is governed by the founder
+>   ruling bullet above (his decision, options on screen, nothing builds until he picks).
 > · Accepted-known (unchanged): source-status asOf ratchet stays memorial · printable
 >   ReceiptTicket keeps its QR as the verify affordance · payloadDiscipline's ADDRESS_LEAK_RE
 >   carries a written reconcile-before-re-enable note (2026-08-02).
 >
 > ## (c) FOUNDER-PENDING (nothing else blocks)
-> · **The /registry pagination wireframe** (docs/design/registry-pagination-wireframe.html,
->   handed 2026-08-02): 25/page mirroring the /admin/members pager · the pager renders only
->   beyond 25 rows (today's 16-seat page byte-identical) · client-side, no API change. His
->   visual verdict unlocks the build (Visual Change Law).
+> · ~~The /registry pagination wireframe~~ — **DECIDED: « ok les 2 » (2026-08-02) and BUILT
+>   in `db5bb85`** (both public boards, dormant ≤25 rows) — no verdict is owed; see (b).
 > · The 3 reserves-wireframe decisions (3×2 grid · gold logo · weekend freshness) → then the
 >   LINK.e/XAUt0 reserves build (feeds verified on-chain: LINK/USD `0x49cc…de9a`, XAU/USD
 >   `0x1F41…515B`). · The 4 composition wireframes. · "téléchargé" to Replit for dump.sql.gz.
