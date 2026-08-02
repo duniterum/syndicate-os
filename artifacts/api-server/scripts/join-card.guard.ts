@@ -54,7 +54,7 @@ check(!/getAddress\(/.test(route) && !/0x[0-9a-fA-F]{40}/.test(route), "a full a
 // 5 · fail-closed serving — the generic picture, never a broken card.
 check(route.includes("opengraph.jpg") && route.includes("302"), "the 302 generic fallback left the route");
 check(route.includes("paintJoinCard") && route.includes("png === null"), "the null-paint fallback left the route");
-check(route.includes("shortWallet === null"), "the unresolved-introducer fallback left the route");
+check(route.includes("facts === null"), "the unresolved-introducer fallback left the route (M2-v2: the enriched read's null → the generic image)");
 check(reader.includes("fail closed") || reader.includes("fail-closed"), "introducerRead lost its fail-closed posture");
 
 // 6 · the real emblem + the house faces ship with the bundle.
@@ -87,6 +87,20 @@ check(reader.includes("decodeBool(activeData) === true"), "the strict active che
 // 10 · the mutable-fact cache law: the painted bytes expire — never immortal.
 check(route.includes("CACHE_TTL_MS"), "the PNG cache TTL left the route");
 check(!route.includes("max-age=86400"), "the day-long HTTP cache returned over a mutable fact");
+
+// 11 · M2-v2 — THE LIVING IDENTITY LINE (founder « go dans l'ordre »,
+//     2026-08-03): the card carries the introducer's SEAT + CHAPTER when the
+//     continuity spine resolves them (wallet↔seat is PUBLIC chain data — the
+//     /registry precedent; the full address STILL never leaves the reader),
+//     and degrades to the plain short-wallet card when it cannot — fail
+//     closed, never an invented seat.
+check(reader.includes("introducerFacts"), "the enriched introducer read (introducerFacts) is missing");
+check(reader.includes("seatLine"), "introducerRead no longer derives the living seat line");
+check(reader.includes("memberContinuityRecord"), "the seat resolution no longer reads the continuity spine");
+check(reader.includes("chapterForSeat"), "the chapter identity left the seat-line derivation");
+check(painter.includes("seatLine"), "the painter no longer accepts the living identity line");
+check(painter.includes("seatLine !== null"), "the painter lost the honest degradation branch (plain card when no seat)");
+check(route.includes("introducerFacts"), "the card route no longer uses the enriched read");
 
 if (errors.length > 0) {
   console.error(`[guard:join-card] ${errors.length} FAILURE(S):`);

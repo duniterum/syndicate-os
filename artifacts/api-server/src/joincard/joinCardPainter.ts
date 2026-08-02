@@ -77,7 +77,11 @@ function mark(width: number): SatoriNode {
   return { type: "img", props: { src: SYN_MARK_DATA_URI, width, height, style: { display: "flex" } } };
 }
 
-function buildCard(shortWallet: string): SatoriNode {
+// M2-v2 (2026-08-03): the "by" row carries the introducer's LIVING IDENTITY
+// when the spine resolves it — "by Seat #3 · Chapter I — 0x123…abcd" — and
+// degrades to the plain short-wallet row when seatLine is null (fail closed,
+// never an invented seat). Same approved register, one richer fact.
+function buildCard(shortWallet: string, seatLine: string | null): SatoriNode {
   return el(
     {
       width: CARD_W,
@@ -108,7 +112,10 @@ function buildCard(shortWallet: string): SatoriNode {
         "You were introduced.",
       ),
       el({ fontSize: 30, color: FG, marginTop: 16, flexDirection: "row", flexWrap: "wrap" }, [
-        el({ fontFamily: MONO, color: FG }, `by ${shortWallet}`),
+        el(
+          { fontFamily: MONO, color: FG },
+          seatLine !== null ? `by ${seatLine} — ${shortWallet}` : `by ${shortWallet}`,
+        ),
         el({ color: MUTED, marginLeft: 12 }, "— recorded on-chain when you take your seat."),
       ]),
       el(
@@ -134,9 +141,12 @@ function buildCard(shortWallet: string): SatoriNode {
 
 /** Paint the invitee card — or null (over-ceiling / render failure; the
  * route falls back to the generic image, never a broken unfurl). */
-export async function paintJoinCard(shortWallet: string): Promise<Buffer | null> {
+export async function paintJoinCard(
+  shortWallet: string,
+  seatLine: string | null = null,
+): Promise<Buffer | null> {
   try {
-    const svg = await satori(buildCard(shortWallet) as unknown as Parameters<typeof satori>[0], {
+    const svg = await satori(buildCard(shortWallet, seatLine) as unknown as Parameters<typeof satori>[0], {
       width: CARD_W,
       height: CARD_H,
       fonts: FONTS,

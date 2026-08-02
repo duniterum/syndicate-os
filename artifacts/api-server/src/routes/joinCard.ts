@@ -12,7 +12,7 @@
 // data) via the cached introducer read; no session, no directory, no names.
 
 import { Router, type IRouter } from "express";
-import { introducerShortWallet } from "../joincard/introducerRead";
+import { introducerFacts, introducerShortWallet } from "../joincard/introducerRead";
 import { paintJoinCard } from "../joincard/joinCardPainter";
 import { allowPublicRead } from "./publicReadThrottle";
 import { throttleKey } from "../auth/clientIdentity";
@@ -61,12 +61,14 @@ router.get("/join-card/:file", (req, res) => {
       }
       if (hit !== undefined) cache.delete(sourceId);
 
-      const shortWallet = await introducerShortWallet(sourceId);
-      if (shortWallet === null) {
+      // M2-v2: the enriched read — the card paints the introducer's living
+      // seat line when the spine resolves it, the plain card otherwise.
+      const facts = await introducerFacts(sourceId);
+      if (facts === null) {
         fallback(res);
         return;
       }
-      const png = await paintJoinCard(shortWallet);
+      const png = await paintJoinCard(facts.shortWallet, facts.seatLine);
       if (png === null) {
         fallback(res);
         return;
