@@ -245,8 +245,18 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   SIWE session in a browser — covered by typecheck + the sealed readback types + the
 >   founder's connected glance (the introductions-tab precedent). AWAITING DEPLOY
 >   (batchable — client-only, additive).**
-> · **③ THE REFERRER KIT / SHAREBILITY ARC** (engraved #8 — M2+M3, the acquisition loop;
->   mockups exist, think-300 law applies).
+> · **③ THE REFERRER KIT / SHAREBILITY ARC** (engraved #8 — M2+M3). **SYSTEM-FIRST GATE
+>   PASSED (2026-08-02 night):** the full inventory engraved at
+>   docs/reference/REFERRER_KIT_RECON-2026-08-02.json — the K-arc (13-artifact arsenal ·
+>   invitee unfurl · admin axis · channel analytics · Connector ladder) is DONE-IS-DONE
+>   LIVE; remaining: **A = M3 Collectible/vanity card** (founder picked « go dans
+>   l'ordre »; wireframe docs/design/m3-vanity-card-wireframe.html HANDED — seat majesty ·
+>   chapter · the seniority line vs the 1,000,000 canon · entry receipt · own referral QR
+>   (&via=card, the M2 interlock) · arsenal 14th artifact trio + « Your collectible » seat
+>   door · **MOBILE clause added on his order: story format leads on phones, previews
+>   scale, actions stack, 375px verified at the preview gate**) → **B = M2-v2 per-seat
+>   living unfurls** → C /join referral card · E press kit · D K4 (his reserved
+>   decision). **ONE BATCHED DEPLOY at the end (his order): A1 + M3 + M2v2 together.**
 > · Then the engraved 16-move sequence resumes in its own order (BACKLOG.html).
 > · BACKGROUND lane (no decision needed, buildable between slices on any « go »): the
 >   member-ledger server windowing (scoped by the reviews) · the spine-poller dedupe.
