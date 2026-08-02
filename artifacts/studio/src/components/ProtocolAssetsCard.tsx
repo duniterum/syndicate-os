@@ -242,10 +242,14 @@ export function ProtocolAssetsCard() {
       tone: "text-viz-6",
       value: poolSyn !== null && poolUsdc !== null ? `${poolSyn} SYN + ${poolUsdc} USDC` : null,
       usd: poolUsd !== null ? fmtUsd(poolUsd) : null,
+      // The 20% leg of the 70/20/10 routing lives HERE: the liquidity
+      // wallet's USDC provides this pool, so the position IS the
+      // destination (founder question 2026-08-02 — the three legs must
+      // all say their number: vault 70, pool 20, operations 10).
       meta:
         poolShare !== null
-          ? `Protocol share ${(poolShare * 100).toFixed(1)}% · only our USDC side is counted`
-          : "Whole-pool reserves · the protocol's share could not be read",
+          ? `20% routing destination · protocol share ${(poolShare * 100).toFixed(1)}% · only our USDC side is counted`
+          : "20% routing destination · whole-pool reserves · the protocol's share could not be read",
     },
     {
       id: "seat-reserve",
