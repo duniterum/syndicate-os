@@ -8,7 +8,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > order « tout en une fois »), pushed + gates green + rig/pixel-proven, awaiting HIS
 > « publie »:** `9607ea0` A1 (the Mine|Protocol lens) · `5e18f0a` M3 (the collectible
 > trio + seat door) · `c4a4f47`+`f6d5859` M2-v2 (the living join-card unfurl). The
-> founder-pasteable Replit message (pull → `425abae` or later docs HEAD · NO migrations ·
+> founder-pasteable Replit message (pull → `1a1629e` or the current HEAD · NO migrations ·
 > 6 checks: byte identity ×2 · /activity lens with the signed-out invitation ·
 > /referral/tools « Your collectible » · the seat-3 card PNG carries « by Seat #3 ·
 > Chapter I — 0x03E9…C6d0 » · the seat-panel gold door · backbone ok/spine 16) is in the
