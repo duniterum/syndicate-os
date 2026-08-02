@@ -2,30 +2,33 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-03 (HANDOFF) — RESUME HERE. **PROD = `3a3efb8` (the 5th seal of the
-> 2026-08-02 marathon — THE RESERVES ARE LIVE, Replit 6/6). main = origin/main, tree
-> clean, GitHub is the truth. DEPLOY BACKLOG: ONE BATCH of THREE code slices (founder
-> order « tout en une fois »), pushed + gates green + rig/pixel-proven, awaiting HIS
-> « publie »:** `9607ea0` A1 (the Mine|Protocol lens) · `5e18f0a` M3 (the collectible
-> trio + seat door) · `c4a4f47`+`f6d5859` M2-v2 (the living join-card unfurl). The
-> founder-pasteable Replit message (pull → `1a1629e` or the current HEAD · NO migrations ·
-> 6 checks: byte identity ×2 · /activity lens with the signed-out invitation ·
-> /referral/tools « Your collectible » · the seat-3 card PNG carries « by Seat #3 ·
-> Chapter I — 0x03E9…C6d0 » · the seat-panel gold door · backbone ok/spine 16) is in the
-> 2026-08-03 chat, engraved in (b)③ below.
+> # ▶ 2026-08-03 (HANDOFF) — RESUME HERE. **PROD = `c2b1168` — THE BATCH IS SEALED
+> (Replit 6/6, 2026-08-03: entry `index-B903mBG_.js` = `a0353ba8…f94e` · the /activity
+> Mine|Protocol lens live, ?lens=mine invitation zero-data · the collectible trio in the
+> served bundle · the seat-3 unfurl pixel-inspected « by Seat #3 · Chapter I —
+> 0x03E9…C6d0 » · the gold seat-panel door · backbone ok, spine « unchanged (16
+> records) »). THE DEPLOY BACKLOG IS EMPTY. main = `0233454` + this handoff edit, ALL
+> PUSHED at close, main = origin/main (measured at handoff), GitHub is the truth.** The sealed batch was: `9607ea0` A1 · `5e18f0a` M3 · `c4a4f47`+`f6d5859`
+> M2-v2 · `1a1629e` the final-audit fixes. The SIXTH seal of the 02→03 marathon.
 >
 > ## (a) WHAT WENT LIVE (the 2026-08-02 marathon — FIVE seals, all 6/6 or 5/5):
-> · `7a916a3` autonomy (spine every cycle) → `82b650e` (chapter tables both sides ·
+> · `22296fd` (the pre-masked address family) → `7a916a3` autonomy (spine every cycle) → `82b650e` (chapter tables both sides ·
 >   /status live headline · hero derivation) → `ef3f89c` (dormant pagination, both
 >   boards) → **`3a3efb8` THE RESERVES: six cards AVAX·BTC·ETH·LINK·GOLD·USDC, official
 >   XAUt0 mark, market-hours window (proven on a Sunday), /contracts +2 rows.**
 > · Rulings engraved: the boot fallback STAYS (e94c24a reverted byte-identical — a
 >   sealed resilience layer is a FOUNDER GATE) · « on garde »: /api/holder-index is the
 >   PERMANENT genesis attestation, ANSWERED FOREVER · the founder work order:
->   ① reserves ✅ → ② A1 ✅ built → ③ Kit (M3 ✅ + M2v2 ✅ built) → sequence resumes.
+>   ① reserves ✅ → ② A1 ✅ → ③ Kit (M3 ✅ + M2v2 ✅) — all three SEALED in `c2b1168` →
+>   sequence resumes.
 >
-> ## (b) IN FLIGHT — the batch above awaits « publie »; NOTHING else is open in code.
-> After the deploy, the order continues: C (the /join referral-showcase card) · E (the
+> ## (b) IN FLIGHT — NOTHING is open in code; the build lane is EMPTY. THE NEXT SLICE
+> ## (named by the founder's own catch, 2026-08-03): the kit's Share… gains the
+> ## receipts-style INTENT buttons (X · Telegram · WhatsApp prefilled — the R-BIND-2
+> ## dual-share precedent) as the DESKTOP fallback — desktop shares instead of
+> ## explaining. Verified NOT a regression (the K1 handler untouched by every batch
+> ## diff; the native sheet opens on phones).
+> Then the order continues: C (the /join referral-showcase card) · E (the
 > public press kit) · the engraved sequence #2 (FIRSTS engine); background lane: the
 > member-ledger server windowing (scoped) · the spine-poller dedupe. Dossiers:
 > docs/reference/REFERRER_KIT_RECON-2026-08-02.json · A1_LENS_RECON · RESERVES_BUILD_RECON ·

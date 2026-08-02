@@ -1,5 +1,10 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-03 — 6ᵉ sceau : PROD = `c2b1168` (Replit 6/6), le batch A1 + M3 + M2-v2 +
+> `1a1629e` est LIVE (A1 n'est plus « en vol ») ; backlog de déploiement VIDE ; prochaine
+> tranche (sa prise du jour, vérifiée NON-régression) : les boutons d'intent desktop du
+> Share… du kit (le précédent double-partage R-BIND-2).**
+
 > **▶ 2026-08-02 (NUIT — le 5ᵉ sceau + les deux mots du fondateur.)** ① **LES RÉSERVES SONT
 > LIVE** — sceau №5 `3a3efb8`, Replit 6/6 : six cartes dans l'ordre décrété (AVAX · BTC ·
 > ETH · LINK · GOLD · USDC), l'or au mark officiel, les deux lignes méta (« C » sur AVAX ·
