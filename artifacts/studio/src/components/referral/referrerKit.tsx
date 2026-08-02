@@ -41,6 +41,23 @@ export interface KitFacts {
   shortWallet: string;
   /** The member's permanent introduction link (canonical, untagged). */
   joinLink: string;
+  /** M3 (founder-approved wireframe 2026-08-02): the collectible's facts —
+   * null unless the story is WHOLE (seat + chapter + entry receipt): the
+   * vanity trio mounts only on a complete record, never a partial boast.
+   * Every field chain-proven; never a dollar figure. */
+  vanity: {
+    seatNumber: number;
+    /** "Chapter I · Genesis Signal" — the one chip form. */
+    chapterLine: string;
+    /** "99.9986" — precomputed against STORY_FINAL_SEAT (the engraved
+     * final-seat canon); recognition arithmetic, never supply/price. */
+    seniorityPct: string;
+    /** Oldest own indexed purchase day, or null (genesis — line degrades). */
+    entryDay: string | null;
+    entryBlock: number | null;
+    /** Short form of the entry transaction (the verify anchor). */
+    verifyShort: string;
+  } | null;
 }
 
 /** The one channel-tag composer for kit artifacts (&via — the same tag
@@ -208,6 +225,104 @@ export function CardStory({ facts }: { facts: KitFacts }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 26, marginTop: "auto" }}>
         <QrBox url={facts.joinLink} size={280} />
         <VerifyLines size={26} lines={["SCAN — JOIN THROUGH MY INTRODUCTION", "DON'T TRUST — VERIFY"]} />
+      </div>
+    </div>
+  );
+}
+
+// ── M3 · THE COLLECTIBLE (founder-approved wireframe + mobile clause,
+//    2026-08-02) — the vanity face of a seat: number in majesty (the ONE
+//    serif voice on the artifact), chapter identity, THE SENIORITY LINE
+//    against the engraved 1,000,000-seat story, the entry receipt line, the
+//    member's own QR (&via=card — pride carries the loop). Facts only,
+//    never financial; mounts only when facts.vanity is whole. ────────────────
+function ordinal(n: number): string {
+  const t = n % 100;
+  if (t >= 11 && t <= 13) return `${n.toLocaleString("en-US")}th`;
+  const s = n % 10 === 1 ? "st" : n % 10 === 2 ? "nd" : n % 10 === 3 ? "rd" : "th";
+  return `${n.toLocaleString("en-US")}${s}`;
+}
+function vanityWrittenLine(v: NonNullable<KitFacts["vanity"]>): string {
+  return `WRITTEN ON-CHAIN${v.entryDay !== null ? ` · ${v.entryDay}` : ""}${v.entryBlock !== null ? ` · BLOCK ${v.entryBlock.toLocaleString("en-US")}` : ""} · VERIFY ${v.verifyShort}`;
+}
+function VanitySentence({ v, size }: { v: NonNullable<KitFacts["vanity"]>; size: number }) {
+  return (
+    <span style={{ fontSize: size, color: INK_FG, lineHeight: 1.45, maxWidth: "38ch" }}>
+      Seated before <span style={{ color: INK_GOLD, fontWeight: 600 }}>{v.seniorityPct}%</span> of
+      the story — the {ordinal(v.seatNumber)} of 1,000,000 seats, written on-chain, forever.
+    </span>
+  );
+}
+
+export function CardVanityOg({ facts }: { facts: KitFacts }) {
+  const v = facts.vanity;
+  if (v === null) return null;
+  const url = withVia(facts.joinLink, "card");
+  return (
+    <div style={{ ...artefactRoot(1200, 630), padding: "44px 64px 40px" }}>
+      <Masthead mark={72} title={30} sub={20} />
+      <div className="font-serif" style={{ fontSize: 128, lineHeight: 1.05, color: INK_GOLD, marginTop: 26 }}>
+        Seat #{v.seatNumber.toLocaleString("en-US")}
+      </div>
+      <div className="font-mono" style={{ fontSize: 26, fontWeight: 600, letterSpacing: 4, color: INK_FG, marginTop: 14, textTransform: "uppercase" }}>
+        {v.chapterLine}
+      </div>
+      <div style={{ marginTop: 14, display: "flex" }}>
+        <VanitySentence v={v} size={28} />
+      </div>
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 28, marginTop: "auto" }}>
+        <QrBox url={url} size={140} />
+        <VerifyLines size={21} lines={[vanityWrittenLine(v), "DON'T TRUST — VERIFY"]} />
+      </div>
+    </div>
+  );
+}
+
+export function CardVanitySquare({ facts }: { facts: KitFacts }) {
+  const v = facts.vanity;
+  if (v === null) return null;
+  const url = withVia(facts.joinLink, "card");
+  return (
+    <div style={{ ...artefactRoot(1080, 1080), padding: 64 }}>
+      <Masthead mark={68} title={28} sub={20} />
+      <div className="font-serif" style={{ fontSize: 168, lineHeight: 1.05, color: INK_GOLD, marginTop: 70 }}>
+        Seat #{v.seatNumber.toLocaleString("en-US")}
+      </div>
+      <div className="font-mono" style={{ fontSize: 28, fontWeight: 600, letterSpacing: 4, color: INK_FG, marginTop: 18, textTransform: "uppercase" }}>
+        {v.chapterLine}
+      </div>
+      <div style={{ marginTop: 18, display: "flex" }}>
+        <VanitySentence v={v} size={31} />
+      </div>
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 30, marginTop: "auto" }}>
+        <QrBox url={url} size={220} />
+        <VerifyLines size={22} lines={[vanityWrittenLine(v), "DON'T TRUST — VERIFY"]} />
+      </div>
+    </div>
+  );
+}
+
+export function CardVanityStory({ facts }: { facts: KitFacts }) {
+  const v = facts.vanity;
+  if (v === null) return null;
+  const url = withVia(facts.joinLink, "card");
+  return (
+    <div style={{ ...artefactRoot(1080, 1920), padding: 76 }}>
+      <Masthead mark={76} title={32} sub={22} />
+      <div className="font-serif" style={{ fontSize: 210, lineHeight: 1.04, color: INK_GOLD, marginTop: 150 }}>
+        Seat
+        <br />
+        #{v.seatNumber.toLocaleString("en-US")}
+      </div>
+      <div className="font-mono" style={{ fontSize: 32, fontWeight: 600, letterSpacing: 5, color: INK_FG, marginTop: 26, textTransform: "uppercase" }}>
+        {v.chapterLine}
+      </div>
+      <div style={{ marginTop: 24, display: "flex" }}>
+        <VanitySentence v={v} size={40} />
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 26, marginTop: "auto" }}>
+        <QrBox url={url} size={280} />
+        <VerifyLines size={26} lines={[vanityWrittenLine(v), "DON'T TRUST — VERIFY"]} />
       </div>
     </div>
   );
@@ -492,6 +607,11 @@ export const KIT_ARTIFACTS: readonly KitArtifactSpec[] = [
   { id: "og", label: "1200×630 · link preview", width: 1200, height: 630, exportScale: 1, typeFloor: 20, filename: "syndicate-card-1200x630.png", render: (f) => <CardOg facts={f} /> },
   { id: "square", label: "1080×1080 · post", width: 1080, height: 1080, exportScale: 1, typeFloor: 20, filename: "syndicate-card-1080x1080.png", render: (f) => <CardSquare facts={f} /> },
   { id: "story", label: "1080×1920 · story", width: 1080, height: 1920, exportScale: 1, typeFloor: 22, filename: "syndicate-card-1080x1920.png", render: (f) => <CardStory facts={f} /> },
+  // M3 — the collectible trio (founder GO 2026-08-02): mounts only when
+  // facts.vanity is whole (the record-card precedent — never a partial boast).
+  { id: "vog", label: "1200×630 · collectible", width: 1200, height: 630, exportScale: 1, typeFloor: 20, filename: "syndicate-collectible-1200x630.png", render: (f) => <CardVanityOg facts={f} /> },
+  { id: "vsquare", label: "1080×1080 · collectible", width: 1080, height: 1080, exportScale: 1, typeFloor: 20, filename: "syndicate-collectible-1080x1080.png", render: (f) => <CardVanitySquare facts={f} /> },
+  { id: "vstory", label: "1080×1920 · collectible", width: 1080, height: 1920, exportScale: 1, typeFloor: 22, filename: "syndicate-collectible-1080x1920.png", render: (f) => <CardVanityStory facts={f} /> },
   { id: "record", label: "1200×630 · your record", width: 1200, height: 630, exportScale: 1, typeFloor: 20, filename: "syndicate-record-1200x630.png", render: (f) => <RecordCard facts={f} /> },
   { id: "b300", label: "300×250 · medium rectangle", width: 300, height: 250, exportScale: 2, typeFloor: 10, filename: "syndicate-banner-300x250.png", render: (f) => <Banner300 facts={f} /> },
   { id: "b336", label: "336×280 · large rectangle", width: 336, height: 280, exportScale: 2, typeFloor: 10, filename: "syndicate-banner-336x280.png", render: (f) => <Banner336 facts={f} /> },

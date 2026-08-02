@@ -221,6 +221,17 @@ export default function MemberYourSeat() {
             >
               Open ticket
             </Link>
+            {/* M3 (2026-08-02): the ONE door to the collectible — the vanity
+                trio lives in the arsenal, no new page. */}
+            <Link
+              href="/referral/tools"
+              // py-3.5 on touch widths keeps the 44px floor (ADR-001, the
+              // facet-chip idiom); desktop keeps the row's compact rhythm.
+              className="inline-flex items-center rounded-md border border-gold/40 px-2.5 py-3.5 sm:py-1.5 text-xs text-gold transition-colors hover:bg-gold/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              data-testid="link-your-collectible"
+            >
+              Your collectible
+            </Link>
             <VerifyOnChain ids={["membershipSaleV3"]} />
           </div>
         ) : null}

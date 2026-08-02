@@ -27,7 +27,7 @@ import { Card } from "@/components/ui/card";
 import { StatusPill } from "@/components/status-pill/StatusPill";
 import { ladderProgress } from "@/config/connectorLadder";
 import { referralProgram } from "@/config/referralProgram";
-import { chapterForSeat } from "@/lib/chapters";
+import { chapterForSeat, STORY_FINAL_SEAT } from "@/lib/chapters";
 import { payingSourceId } from "@/lib/sourceIdentity";
 import {
   dateLabel,
@@ -269,9 +269,14 @@ function SectionTitle({ title, why }: { title: string; why: string }) {
   );
 }
 
-// ── the member's own seat line (session read — own row, fail-closed) ────────
-function useOwnSeatLine(): string | null {
+// ── the member's own seat facts (session read — own row, fail-closed) ───────
+// M3 (2026-08-02): the same sealed readback now ALSO feeds the collectible —
+// seat number, chapter chip, the entry receipt, and the oldest own indexed
+// purchase day; the seniority % measures against STORY_FINAL_SEAT (the
+// engraved final-seat canon). vanity stays null unless the story is WHOLE.
+function useOwnSeatFacts(): { seatLine: string | null; vanity: KitFacts["vanity"] } {
   const [seatLine, setSeatLine] = useState<string | null>(null);
+  const [vanity, setVanity] = useState<KitFacts["vanity"]>(null);
   useEffect(() => {
     let active = true;
     let cleanup: (() => void) | null = null;
@@ -281,18 +286,48 @@ function useOwnSeatLine(): string | null {
     ]).then(([ws, ev]) => {
       if (!active) return;
       const read = () => {
-        void ws.fetchMemberStanding().then((r) => {
-          if (!active) return;
-          const seat = r?.memberNumber ?? null;
-          const chapter = seat !== null ? chapterForSeat(seat) : null;
-          setSeatLine(
-            seat !== null
-              ? chapter !== null
-                ? `Seat #${seat} · Chapter ${chapter.roman} — ${chapter.name}`
-                : `Seat #${seat}`
-              : null,
-          );
-        });
+        void Promise.all([ws.fetchMemberStanding(), ws.fetchOwnPurchases()]).then(
+          ([r, own]) => {
+            if (!active) return;
+            const seat = r?.memberNumber ?? null;
+            const chapter = seat !== null ? chapterForSeat(seat) : null;
+            setSeatLine(
+              seat !== null
+                ? chapter !== null
+                  ? `Seat #${seat} · Chapter ${chapter.roman} — ${chapter.name}`
+                  : `Seat #${seat}`
+                : null,
+            );
+            const n = seat !== null ? Number(seat) : null;
+            if (
+              n !== null &&
+              Number.isInteger(n) &&
+              n >= 1 &&
+              chapter !== null &&
+              r?.receipt != null
+            ) {
+              // Oldest own indexed purchase day (rows are newest-first), or
+              // null — the written line then degrades honestly (genesis).
+              const rows = own?.rows ?? null;
+              const entryDay =
+                rows !== null && rows.length > 0
+                  ? (rows[rows.length - 1]?.isoDayUtc ?? null)
+                  : null;
+              setVanity({
+                seatNumber: n,
+                chapterLine: `Chapter ${chapter.roman} · ${chapter.name}`,
+                // Exact recognition arithmetic, trailing zeros trimmed
+                // (99.9986 · 50 — never "50.0000").
+                seniorityPct: (Math.round((1 - n / STORY_FINAL_SEAT) * 1e6) / 1e4).toString(),
+                entryDay,
+                entryBlock: r.receipt.block,
+                verifyShort: `${r.receipt.transaction.slice(0, 6)}…${r.receipt.transaction.slice(-4)}`,
+              });
+            } else {
+              setVanity(null);
+            }
+          },
+        );
       };
       read();
       window.addEventListener(ev.SESSION_CHANGED_EVENT, read);
@@ -303,7 +338,7 @@ function useOwnSeatLine(): string | null {
       cleanup?.();
     };
   }, []);
-  return seatLine;
+  return { seatLine, vanity };
 }
 
 const spec = (id: string): KitArtifactSpec => {
@@ -316,7 +351,7 @@ const spec = (id: string): KitArtifactSpec => {
 export function ReferralToolsPanel({ readback }: { readback: StandingReadback | null | undefined }) {
   const { address } = useAccount();
   const s = readback?.standing ?? null;
-  const seatLine = useOwnSeatLine();
+  const { seatLine, vanity } = useOwnSeatFacts();
   const intro = useOwnIntroductions();
   const rows = intro?.rows ?? null;
   const [guideOpen, setGuideOpen] = useState(false);
@@ -325,6 +360,9 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
     og: useRef<HTMLDivElement | null>(null),
     square: useRef<HTMLDivElement | null>(null),
     story: useRef<HTMLDivElement | null>(null),
+    vog: useRef<HTMLDivElement | null>(null),
+    vsquare: useRef<HTMLDivElement | null>(null),
+    vstory: useRef<HTMLDivElement | null>(null),
     record: useRef<HTMLDivElement | null>(null),
     b300: useRef<HTMLDivElement | null>(null),
     b336: useRef<HTMLDivElement | null>(null),
@@ -371,6 +409,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
         : null,
     shortWallet: `${address.slice(0, 6)}…${address.slice(-4)}`,
     joinLink,
+    vanity,
   };
 
   return (
@@ -435,6 +474,60 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
           permanent link.
         </p>
       </Card>
+
+      {/* 1b · M3 — THE COLLECTIBLE (founder-approved wireframe + mobile
+          clause, 2026-08-02): the vanity face of the seat — number in
+          majesty, chapter, the seniority line against the engraved
+          1,000,000-seat story, the entry receipt, the member's own QR
+          (&via=card). Mounts ONLY on a whole story (vanity !== null — the
+          record-card precedent). STORY leads the pair (the mobile clause:
+          on a stacked phone layout the native share shape comes first). */}
+      {facts.vanity !== null ? (
+        <>
+          <SectionTitle
+            title="Your collectible — the seat itself, in majesty"
+            why="historical pride the chain proves — seniority, never money"
+          />
+          <Card className="bg-card/40 border-border/50 p-5 space-y-5" data-testid="kit-collectible">
+            <div>
+              <div className="overflow-x-auto pb-1">
+                <ScaledPreview width={1200} height={630} scale={0.5} nodeRef={refs.vog}>
+                  {spec("vog").render(facts)}
+                </ScaledPreview>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 mt-2.5">
+                <span className="font-mono text-xs text-muted-foreground">{spec("vog").label}</span>
+                <ArtifactActions spec={spec("vog")} nodeRef={refs.vog} joinLink={joinLink} gold />
+              </div>
+            </div>
+            <div className="flex flex-wrap items-start gap-6">
+              <div>
+                <ScaledPreview width={1080} height={1920} scale={0.135} nodeRef={refs.vstory}>
+                  {spec("vstory").render(facts)}
+                </ScaledPreview>
+                <div className="flex flex-wrap items-center gap-2 mt-2.5 max-w-[260px]">
+                  <span className="font-mono text-xs text-muted-foreground">{spec("vstory").label}</span>
+                  <ArtifactActions spec={spec("vstory")} nodeRef={refs.vstory} joinLink={joinLink} />
+                </div>
+              </div>
+              <div>
+                <ScaledPreview width={1080} height={1080} scale={0.24} nodeRef={refs.vsquare}>
+                  {spec("vsquare").render(facts)}
+                </ScaledPreview>
+                <div className="flex flex-wrap items-center gap-2 mt-2.5 max-w-[260px]">
+                  <span className="font-mono text-xs text-muted-foreground">{spec("vsquare").label}</span>
+                  <ArtifactActions spec={spec("vsquare")} nodeRef={refs.vsquare} joinLink={joinLink} />
+                </div>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Your seat, as a keepsake — the number, the chapter, and how early
+              you stand in a story of 1,000,000 seats. Every line is on-chain
+              and verifiable; the QR carries your own introduction link.
+            </p>
+          </Card>
+        </>
+      ) : null}
 
       {/* 2 · THE BANNERS — the performing set (Google's top formats +
           mobile), real size, one message + one CTA each. */}

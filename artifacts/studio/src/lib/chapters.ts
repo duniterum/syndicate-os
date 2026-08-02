@@ -30,6 +30,14 @@ export const CHAPTERS: readonly Chapter[] = [
   { roman: "V", name: "Open Era", startSeat: 10001, endSeat: null },
 ];
 
+/** THE STORY'S FINAL SEAT — narrative canon (M3, 2026-08-02). The ONE client
+ *  declaration of the 1,000,000-seat story the seniority line measures
+ *  against; its source is the engraved membership ladder's final rung
+ *  ("THE FINAL SEAT — #1,000,000 sealed", api milestoneReadmodel
+ *  PROTOCOL_MILESTONES seats-1000000). Recognition arithmetic only — never
+ *  a supply, price, or promise figure. */
+export const STORY_FINAL_SEAT = 1_000_000;
+
 /**
  * The narrative chapter for a seat number. Pure + deterministic. Fails closed to
  * null for a non-integer / non-positive / unparseable seat — never a fabricated
