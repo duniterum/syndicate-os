@@ -155,9 +155,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   awaiting the founder's visual verdict (see (c)); the chapter-table half CLOSED in (a5).
 > · NEW (round-2 review candidates, named per SYSTEM-FIRST): dedupe useSpineAttestation
 >   (per-instance poller — every public page's chrome now runs one; module-level share =
->   1 poll total) · /status still RENDERS the frozen holder-index card (14 · July 16) next
->   to the live hero 16 — pre-existing, dies with the holder-index slice below; quick
->   founder-gated fix exists (holder-index:build rebuild to 16). · Accepted-known: the
+>   1 poll total) · ~~/status frozen holder-index headline (14 · July 16)~~ — CLOSED same
+>   day (the round-2 slice): the headline now reads the live verified line (hero's own
+>   channel), the sealed snapshot demoted to named genesis attestation + boot fallback;
+>   endpoint retirement (volet 2: hero drops its fallback call, then route+client+guard
+>   retirement AFTER that deploys) stays a candidate. · Accepted-known: the
 >   header chapter badge appears AFTER the live read resolves (honest absence, loaded
 >   pixels identical) · the seats bar reads cumulative-count vs chapter-END window (a
 >   fresh chapter opens ~1/3 full — correct, not a bug).
