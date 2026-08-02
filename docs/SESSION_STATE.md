@@ -226,8 +226,15 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   public feed). **WIREFRAME HANDED 2026-08-02**
 >   (docs/design/activity-mine-protocol-lens-wireframe.html — 3 frames: Protocol
 >   untouched · Mine signed-in ledger · Mine signed-out honest invitation; probed: 12px
->   floor clean, 7×44px targets, zero data rows in the signed-out frame). **His visual
->   verdict unlocks the build (the BACKLOG A1 meta: ⚑ wireframe + preview (Founder)).**
+>   floor clean, 7×44px targets, zero data rows in the signed-out frame). **VERDICT GIVEN
+>   (founder « go continue », 2026-08-02 night) — BUILD IN FLIGHT from the wireframe +
+>   the recon map: lens state + ?lens= deep link in LiveActivityFeed (mirror the ?facet=
+>   pattern) · the Mine ledger = a NEW wallet module (src/wallet/ActivityMineLedger.tsx,
+>   lazy-loaded — guard-access-state rule 15: never a static wallet import in a public
+>   component; the bell's MemberNotificationsPanel is the shipped idiom) · own rows from
+>   fetchOwnPurchases + fetchOwnIntroductions + fetchMemberStanding, NEVER
+>   wagmi-filtering the public feed · three honest states per the contract · Protocol
+>   untouched and never walled.**
 > · **③ THE REFERRER KIT / SHAREBILITY ARC** (engraved #8 — M2+M3, the acquisition loop;
 >   mockups exist, think-300 law applies).
 > · Then the engraved 16-move sequence resumes in its own order (BACKLOG.html).
