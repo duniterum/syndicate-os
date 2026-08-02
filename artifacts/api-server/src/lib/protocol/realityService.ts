@@ -1496,6 +1496,65 @@ async function buildFinancialGroup(
     );
   }
 
+  // 4c-bis) Vault LINK.e balance — live balanceOf() on the LINK.e bridge-token
+  //     contract (reserves build, founder GO 2026-08-02; vault entry @91,336,828).
+  {
+    const data = encodeAddressArg(SELECTOR_BALANCE_OF, targets.vaultWallet);
+    const hasCode = await hasCodeAt(targets.linkTokenAddress);
+    let raw: string | null = null;
+    let threw = false;
+    if (probe.chainIdOk && hasCode && data !== null) {
+      ({ raw, threw } = await readUint(targets.linkTokenAddress, data));
+    } else if (probe.chainIdOk && hasCode && data === null) {
+      threw = true;
+    }
+    items.push(
+      buildFinancialNumeric({
+        probe,
+        hasCode,
+        rawValue: raw,
+        decodeThrew: threw,
+        id: "financial.vault.linkBalance",
+        label: "Vault reserve wallet LINK.e balance (raw base units)",
+        contractRole: "token",
+        note: "Live balanceOf() read on the LINK.e bridge-token contract for the protocol vault reserve wallet; exact 18-decimal base units. Aggregate balance only — the wallet address stays server-side.",
+        sourceRef: "protocolTargets.ts:FINANCIAL_TARGETS.linkTokenAddress (eth_call balanceOf VAULT_WALLET)",
+        chainId,
+        asOf,
+      }),
+    );
+  }
+
+  // 4c-ter) Vault XAUt0 balance — live balanceOf() on the Tether Gold contract
+  //     (1 token = 1 troy oz; recovered from the founder's gold swap @91,571,070,
+  //     chain-verified 2026-08-02: name/symbol XAUt0, 6 decimals).
+  {
+    const data = encodeAddressArg(SELECTOR_BALANCE_OF, targets.vaultWallet);
+    const hasCode = await hasCodeAt(targets.xautTokenAddress);
+    let raw: string | null = null;
+    let threw = false;
+    if (probe.chainIdOk && hasCode && data !== null) {
+      ({ raw, threw } = await readUint(targets.xautTokenAddress, data));
+    } else if (probe.chainIdOk && hasCode && data === null) {
+      threw = true;
+    }
+    items.push(
+      buildFinancialNumeric({
+        probe,
+        hasCode,
+        rawValue: raw,
+        decodeThrew: threw,
+        id: "financial.vault.xautBalance",
+        label: "Vault reserve wallet XAUt0 balance (raw base units)",
+        contractRole: "token",
+        note: "Live balanceOf() read on the XAUt0 (Tether Gold) contract for the protocol vault reserve wallet; exact 6-decimal base units, 1 token = 1 troy oz of gold. Aggregate balance only — the wallet address stays server-side.",
+        sourceRef: "protocolTargets.ts:FINANCIAL_TARGETS.xautTokenAddress (eth_call balanceOf VAULT_WALLET)",
+        chainId,
+        asOf,
+      }),
+    );
+  }
+
   // 4d) Vault native AVAX balance — eth_getBalance (native coin: no contract, so
   //     the code-presence gate does not apply; an EOA holds native AVAX directly).
   {
@@ -1621,8 +1680,14 @@ async function buildFinancialGroup(
     // server/chain clock skew, then fail closed like any other bad round.
     const CLOCK_SKEW_MAX_S = 3_600;
     const nowS = Math.floor(Date.parse(asOf) / 1000);
+    // PER-FEED freshness bound (reserves build 2026-08-02): crypto feeds keep
+    // the strict 24h rule byte-identically; the commodity feed (XAU) uses the
+    // market-hours window (COMMODITY_MAX_AGE_S — see its written reason at the
+    // module top). One loosened global gate is exactly what this refactor
+    // forbids: each feed carries its own bound.
     const readPrice = async (
       feed: string,
+      maxAgeS: number,
     ): Promise<{ raw: string | null; threw: boolean }> => {
       try {
         const decoded = decodeLatestRoundData(
@@ -1633,7 +1698,7 @@ async function buildFinancialGroup(
         if (
           !Number.isFinite(nowS) ||
           decoded.updatedAt <= 0 ||
-          ageS > STALENESS_MAX_S ||
+          ageS > maxAgeS ||
           ageS < -CLOCK_SKEW_MAX_S
         ) {
           return { raw: null, threw: true }; // stale / future-dated / unusable → fail closed
@@ -1644,15 +1709,20 @@ async function buildFinancialGroup(
       }
     };
     for (const feed of [
-      { id: "financial.price.avaxUsd", sym: "AVAX", addr: targets.priceFeeds.avaxUsd },
-      { id: "financial.price.btcUsd", sym: "BTC", addr: targets.priceFeeds.btcUsd },
-      { id: "financial.price.ethUsd", sym: "ETH", addr: targets.priceFeeds.ethUsd },
+      { id: "financial.price.avaxUsd", sym: "AVAX", addr: targets.priceFeeds.avaxUsd, maxAgeS: STALENESS_MAX_S, fresh: "older than 24h" },
+      { id: "financial.price.btcUsd", sym: "BTC", addr: targets.priceFeeds.btcUsd, maxAgeS: STALENESS_MAX_S, fresh: "older than 24h" },
+      { id: "financial.price.ethUsd", sym: "ETH", addr: targets.priceFeeds.ethUsd, maxAgeS: STALENESS_MAX_S, fresh: "older than 24h" },
+      // Values the bridged LINK.e — the shipped BTC.b↔BTC/USD pattern.
+      { id: "financial.price.linkUsd", sym: "LINK", addr: targets.priceFeeds.linkUsd, maxAgeS: STALENESS_MAX_S, fresh: "older than 24h" },
+      // Commodity: gold markets close on weekends/holidays — the market-hours
+      // freshness window applies (founder decision 2026-08-02), stated below.
+      { id: "financial.price.xauUsd", sym: "XAU", addr: targets.priceFeeds.xauUsd, maxAgeS: COMMODITY_MAX_AGE_S, fresh: "older than the market-hours window (gold markets close on weekends and holidays; 96h bound)" },
     ]) {
       const hasCode = await hasCodeAt(feed.addr);
       let raw: string | null = null;
       let threw = false;
       if (probe.chainIdOk && hasCode) {
-        ({ raw, threw } = await readPrice(feed.addr));
+        ({ raw, threw } = await readPrice(feed.addr, feed.maxAgeS));
       }
       items.push(
         buildFinancialNumeric({
@@ -1663,7 +1733,7 @@ async function buildFinancialGroup(
           id: feed.id,
           label: `${feed.sym}/USD Chainlink price (8-decimal USD)`,
           contractRole: null,
-          note: `Live Chainlink ${feed.sym}/USD price feed via latestRoundData(); exact 8-decimal USD answer, fail-closed if the round is non-positive or older than 24h. Used to value the deep-market treasury holdings; SYN is never priced here.`,
+          note: `Live Chainlink ${feed.sym}/USD price feed via latestRoundData(); exact 8-decimal USD answer, fail-closed if the round is non-positive or ${feed.fresh}. Used to value the deep-market treasury holdings; SYN is never priced here.`,
           sourceRef: `chainlink:${feed.sym}_USD (eth_call latestRoundData)`,
           chainId,
           asOf,
@@ -2043,6 +2113,18 @@ async function buildFinancialGroup(
 }
 
 /** Pure build: transport injected, no cache, no network of its own beyond it. */
+/**
+ * Commodity-feed freshness BOUND (founder decision 2026-08-02, the reserves
+ * build): gold markets close on weekends and holidays, so the XAU/USD feed can
+ * legitimately sleep far past the crypto feeds' 24h heartbeat — with the strict
+ * 24h gate the gold card (and therefore the whole reserves total) would read
+ * "unavailable" every Sunday. 96h covers the Friday-close → Monday-reopen gap
+ * plus holiday chains. It is a BOUND, not a schedule (measured 2026-08-02: the
+ * feed published three Sunday rounds) — a feed silent past it fails closed like
+ * any dead feed. Crypto feeds keep the strict 24h rule unchanged.
+ */
+export const COMMODITY_MAX_AGE_S = 345_600; // 96h — the market-hours window
+
 export async function buildProtocolReality(opts: BuildOpts): Promise<ProtocolRealityEnvelope> {
   const now = opts.now ?? (() => new Date());
   const asOf = now().toISOString();

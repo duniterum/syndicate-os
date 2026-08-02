@@ -22,6 +22,7 @@ import type { RpcTransport } from "../src/lib/protocol/rpcTransport";
 import { FULL_ADDRESS_RE } from "../src/lib/protocol/rpcTransport";
 import {
   buildProtocolReality,
+  COMMODITY_MAX_AGE_S,
   getProtocolReality,
   __resetProtocolRealityCache,
   __getProtocolRealityInFlight,
@@ -174,6 +175,11 @@ const WETH_ADDR = FINANCIAL_TARGETS.wethTokenAddress.toLowerCase();
 const VAULT_ADDR = FINANCIAL_TARGETS.vaultWallet.toLowerCase();
 const VAULT_BTCB_BAL = 77818n; //               0.00077818 BTC.b @ 8 decimals
 const VAULT_WETH_BAL = 26551703798238159n; //    ~0.026552 WETH.e @ 18 decimals (> MAX_SAFE_INTEGER)
+// Reserves build (founder GO 2026-08-02): LINK.e + XAUt0 vault holdings.
+const LINK_ADDR = FINANCIAL_TARGETS.linkTokenAddress.toLowerCase();
+const XAUT_ADDR = FINANCIAL_TARGETS.xautTokenAddress.toLowerCase();
+const VAULT_LINK_BAL = 1004221438348408136n; // ~1.0042 LINK.e @ 18 decimals (> MAX_SAFE_INTEGER)
+const VAULT_XAUT_BAL = 3144n; //               0.003144 XAUt0 = 0.003144 troy oz @ 6 decimals
 const VAULT_AVAX_BAL = 4736518497102072786n; //  ~4.7365 native AVAX (wei) @ 18 decimals (> MAX_SAFE_INTEGER)
 // The protocol's POOL SHARE: the pair's LP total supply and the liquidity
 // wallet's LP balance. Distinct, non-round values so the guard proves each exact
@@ -224,10 +230,14 @@ const PRICE_UPDATED_AT = BigInt(PRICE_NOW_S - 3600); // 1h old — within the 24
 const AVAX_USD_FIX = 645_000_000n; //      $6.45 @ 8 decimals
 const BTC_USD_FIX = 64_167_000_000_000n; // $64,167 @ 8 decimals
 const ETH_USD_FIX = 186_583_000_000n; //   $1,865.83 @ 8 decimals
+const LINK_USD_FIX = 831_678_066n; //      $8.31678066 @ 8 decimals
+const XAU_USD_FIX = 410_261_482_500n; //   $4,102.614825 / troy oz @ 8 decimals
 const PRICE_FEED_FIX = new Map<string, bigint>([
   [FINANCIAL_TARGETS.priceFeeds.avaxUsd.toLowerCase(), AVAX_USD_FIX],
   [FINANCIAL_TARGETS.priceFeeds.btcUsd.toLowerCase(), BTC_USD_FIX],
   [FINANCIAL_TARGETS.priceFeeds.ethUsd.toLowerCase(), ETH_USD_FIX],
+  [FINANCIAL_TARGETS.priceFeeds.linkUsd.toLowerCase(), LINK_USD_FIX],
+  [FINANCIAL_TARGETS.priceFeeds.xauUsd.toLowerCase(), XAU_USD_FIX],
 ]);
 /** Chainlink latestRoundData(): 5 words (roundId, answer, startedAt, updatedAt, answeredInRound). */
 const encRoundData = (answer: bigint, updatedAt: bigint): string =>
@@ -298,6 +308,8 @@ function goodCall(to: string, selector: string, data = ""): string {
     }
     if (addr === BTCB_ADDR) return encUint256(VAULT_BTCB_BAL);
     if (addr === WETH_ADDR) return encUint256(VAULT_WETH_BAL);
+    if (addr === LINK_ADDR) return encUint256(VAULT_LINK_BAL);
+    if (addr === XAUT_ADDR) return encUint256(VAULT_XAUT_BAL);
     if (addr === LP_ADDR) return encUint256(LP_PROTOCOL_BAL_FIX);
     // SYN balanceOf: an allocation wallet (by calldata) or the burn address.
     const alloc = ALLOC_BAL_BY_DATA.get(data);
@@ -420,10 +432,10 @@ async function main(): Promise<void> {
     // items — the 25 before this slice + vault BTC.b / WETH.e / native AVAX +
     // the 3 Chainlink USD feeds. Values LIVE from the transport except the two
     // snapshot-backed referral figures (static hash-pinned).
-    check("fin: financial group has exactly 35 items", e.groups.financial.length === 35, String(e.groups.financial.length));
+    check("fin: financial group has exactly 39 items", e.groups.financial.length === 39, String(e.groups.financial.length));
     const finIds = e.groups.financial.map((i) => i.id).sort().join(",");
     check(
-      "fin: exact id set (16 base + 3 vault crypto holdings [AVAX + BTC.b + WETH.e] + 3 Chainlink USD price feeds + 2 LP-share reads + 2 NFT-sale USDC reads + SYN totalSupply + 7 allocation balances + paidToReferrersTotal = 35)",
+      "fin: exact id set (16 base + 5 vault crypto holdings [AVAX + BTC.b + WETH.e + LINK.e + XAUt0] + 5 Chainlink USD price feeds + 2 LP-share reads + 2 NFT-sale USDC reads + SYN totalSupply + 7 allocation balances + paidToReferrersTotal = 39)",
       finIds ===
         [
           "financial.burn.synBalance",
@@ -453,14 +465,18 @@ async function main(): Promise<void> {
           "financial.price.avaxUsd",
           "financial.price.btcUsd",
           "financial.price.ethUsd",
+          "financial.price.linkUsd",
+          "financial.price.xauUsd",
           "financial.referral.attributionActivity",
           "financial.referral.paidToReferrersTotal",
           "financial.referral.registryLive",
           "financial.token.synTotalSupply",
           "financial.vault.avaxBalance",
           "financial.vault.btcbBalance",
+          "financial.vault.linkBalance",
           "financial.vault.usdcBalance",
           "financial.vault.wethBalance",
+          "financial.vault.xautBalance",
         ].join(","),
       finIds,
     );
@@ -478,6 +494,11 @@ async function main(): Promise<void> {
     // native AVAX via eth_getBalance — every figure LIVE from the transport.
     check("fin: vault BTC.b balance EXACT decimal string (token role, LIVE_CHAIN_RPC)", byId(e, "financial.vault.btcbBalance")?.value === VAULT_BTCB_BAL.toString() && byId(e, "financial.vault.btcbBalance")?.contractRole === "token" && byId(e, "financial.vault.btcbBalance")?.sourceType === "LIVE_CHAIN_RPC");
     check("fin: vault WETH.e balance EXACT decimal string ABOVE MAX_SAFE_INTEGER (token role, LIVE_CHAIN_RPC)", byId(e, "financial.vault.wethBalance")?.value === VAULT_WETH_BAL.toString() && byId(e, "financial.vault.wethBalance")?.valueType === "string" && byId(e, "financial.vault.wethBalance")?.contractRole === "token" && byId(e, "financial.vault.wethBalance")?.sourceType === "LIVE_CHAIN_RPC");
+    // Reserves build 2026-08-02: LINK.e + XAUt0 vault holdings + their feeds.
+    check("fin: vault LINK.e balance EXACT decimal string ABOVE MAX_SAFE_INTEGER (token role, LIVE_CHAIN_RPC)", byId(e, "financial.vault.linkBalance")?.value === VAULT_LINK_BAL.toString() && byId(e, "financial.vault.linkBalance")?.valueType === "string" && byId(e, "financial.vault.linkBalance")?.contractRole === "token" && byId(e, "financial.vault.linkBalance")?.sourceType === "LIVE_CHAIN_RPC");
+    check("fin: vault XAUt0 balance EXACT decimal string (token role, LIVE_CHAIN_RPC) + note states 1 token = 1 troy oz", byId(e, "financial.vault.xautBalance")?.value === VAULT_XAUT_BAL.toString() && byId(e, "financial.vault.xautBalance")?.contractRole === "token" && byId(e, "financial.vault.xautBalance")?.sourceType === "LIVE_CHAIN_RPC" && (byId(e, "financial.vault.xautBalance")?.note ?? "").includes("troy oz"));
+    check("fin: LINK/USD Chainlink price EXACT 8-dec string (values the bridged LINK.e — the BTC.b↔BTC/USD pattern)", byId(e, "financial.price.linkUsd")?.value === LINK_USD_FIX.toString() && byId(e, "financial.price.linkUsd")?.sourceType === "LIVE_CHAIN_RPC");
+    check("fin: XAU/USD Chainlink price EXACT 8-dec string + note states the market-hours freshness window", byId(e, "financial.price.xauUsd")?.value === XAU_USD_FIX.toString() && (byId(e, "financial.price.xauUsd")?.note ?? "").includes("market-hours"));
     check("fin: vault native AVAX balance EXACT decimal string ABOVE MAX_SAFE_INTEGER (null role, eth_getBalance not balanceOf)", byId(e, "financial.vault.avaxBalance")?.value === VAULT_AVAX_BAL.toString() && byId(e, "financial.vault.avaxBalance")?.valueType === "string" && byId(e, "financial.vault.avaxBalance")?.contractRole === null && byId(e, "financial.vault.avaxBalance")?.sourceType === "LIVE_CHAIN_RPC" && (byId(e, "financial.vault.avaxBalance")?.sourceRef ?? "").includes("eth_getBalance") && !(byId(e, "financial.vault.avaxBalance")?.sourceRef ?? "").includes("balanceOf"));
     // Chainlink USD price feeds (Protocol Assets USD valuation) — live 8-decimal
     // answers, fail-closed on stale/non-positive; SYN is never priced.
@@ -552,6 +573,8 @@ async function main(): Promise<void> {
     const opsCall = balanceOfCalls.find((c) => c.to === USDC_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.operationsWallet));
     const btcbCall = balanceOfCalls.find((c) => c.to === BTCB_ADDR && c.data === VAULT_BAL_DATA);
     const wethCall = balanceOfCalls.find((c) => c.to === WETH_ADDR && c.data === VAULT_BAL_DATA);
+    const linkCall = balanceOfCalls.find((c) => c.to === LINK_ADDR && c.data === VAULT_BAL_DATA);
+    const xautCall = balanceOfCalls.find((c) => c.to === XAUT_ADDR && c.data === VAULT_BAL_DATA);
     const burnCall = balanceOfCalls.find((c) => c.to === SYN_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.synBurnAddress));
     const allocCalls = FINANCIAL_TARGETS.allocationWallets.map((w) =>
       balanceOfCalls.find((c) => c.to === SYN_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, w.address)),
@@ -559,10 +582,10 @@ async function main(): Promise<void> {
     const lpShareCall = balanceOfCalls.find((c) => c.to === LP_ADDR && c.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.liquidityWallet));
     const nftWalletCall = balanceOfCalls.find((c) => c.to === USDC_ADDR && c.data === NFT_WALLET_BAL_DATA);
     const nftContractCall = balanceOfCalls.find((c) => c.to === USDC_ADDR && c.data === NFT_CONTRACT_BAL_DATA);
-    check("fin: exactly 15 balanceOf reads (vault + ops + 2 NFT-sale USDC; vault BTC.b + WETH.e; the pair's LP share; burn + 7 allocations SYN)", balanceOfCalls.length === 15 && Boolean(vaultCall) && Boolean(opsCall) && Boolean(btcbCall) && Boolean(wethCall) && Boolean(lpShareCall) && Boolean(nftWalletCall) && Boolean(nftContractCall) && Boolean(burnCall) && allocCalls.every(Boolean));
+    check("fin: exactly 17 balanceOf reads (vault + ops + 2 NFT-sale USDC; vault BTC.b + WETH.e + LINK.e + XAUt0; the pair's LP share; burn + 7 allocations SYN)", balanceOfCalls.length === 17 && Boolean(vaultCall) && Boolean(opsCall) && Boolean(btcbCall) && Boolean(wethCall) && Boolean(linkCall) && Boolean(xautCall) && Boolean(lpShareCall) && Boolean(nftWalletCall) && Boolean(nftContractCall) && Boolean(burnCall) && allocCalls.every(Boolean));
     check("fin: NFT sale money read on BOTH the declared wallet and the sale contract (no sale money sits unseen)", Boolean(nftWalletCall) && Boolean(nftContractCall) && NFT_WALLET_USDC !== NFT_CONTRACT_USDC);
     check("fin: the LP-share balanceOf targets the PAIR and encodes the LIQUIDITY wallet (never the founder's own)", lpShareCall?.to === LP_ADDR && lpShareCall?.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.liquidityWallet));
-    check("fin: vault BTC.b + WETH.e balanceOf calldata both encode the vault wallet", btcbCall?.data === VAULT_BAL_DATA && wethCall?.data === VAULT_BAL_DATA);
+    check("fin: vault BTC.b + WETH.e + LINK.e + XAUt0 balanceOf calldata all encode the vault wallet", btcbCall?.data === VAULT_BAL_DATA && wethCall?.data === VAULT_BAL_DATA && linkCall?.data === VAULT_BAL_DATA && xautCall?.data === VAULT_BAL_DATA);
     check("fin: exactly one eth_getBalance call (native AVAX — the vault wallet)", methods.filter((m) => m === "eth_getBalance").length === 1);
     check("fin: vault balanceOf calldata encodes the vault wallet", vaultCall?.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.vaultWallet));
     check("fin: ops balanceOf calldata encodes the operations wallet", opsCall?.data === encodeAddressArg(SELECTOR_BALANCE_OF, FINANCIAL_TARGETS.operationsWallet));
@@ -731,6 +754,41 @@ async function main(): Promise<void> {
     check("price-stale: AVAX/USD null + failureReason (round older than 24h fails closed, never a stale price)", byId(e, "financial.price.avaxUsd")?.value === null && byId(e, "financial.price.avaxUsd")?.failureReason !== null);
     check("price-stale: BTC/USD + ETH/USD siblings still exact", byId(e, "financial.price.btcUsd")?.value === BTC_USD_FIX.toString() && byId(e, "financial.price.ethUsd")?.value === ETH_USD_FIX.toString());
     check("price-stale: NO address leak + discipline passes", noAddressLeak(e) && disciplinePasses(e));
+  }
+
+  // 7j-bis) COMMODITY WINDOW (founder decision 2026-08-02): the XAU/USD feed
+  //     can sleep when gold markets close (weekends/holidays) — a round older
+  //     than the crypto 24h gate but INSIDE the market-hours window still
+  //     SERVES; the same age on a crypto feed fails closed (7j above). The
+  //     window is a BOUND, not a schedule (measured: the feed CAN publish on
+  //     a Sunday), sized to cover the weekend + holiday chains.
+  {
+    const XAU_WEEKEND_AT = BigInt(PRICE_NOW_S - 90_000); // 25h — past crypto 24h, inside the window
+    const { transport } = makeMock({
+      call: (to, s, d) =>
+        s === SELECTOR_LATEST_ROUND_DATA &&
+        to.toLowerCase() === FINANCIAL_TARGETS.priceFeeds.xauUsd.toLowerCase()
+          ? encRoundData(XAU_USD_FIX, XAU_WEEKEND_AT)
+          : goodCall(to, s, d),
+    });
+    const e = await buildProtocolReality(baseOpts(transport));
+    check("price-window: XAU/USD at 25h SERVES exact (commodity market-hours window — a gold weekend is not an outage)", byId(e, "financial.price.xauUsd")?.value === XAU_USD_FIX.toString());
+    check("price-window: fresh siblings still exact (per-feed bounds, never one loosened global gate)", byId(e, "financial.price.avaxUsd")?.value === AVAX_USD_FIX.toString() && byId(e, "financial.price.linkUsd")?.value === LINK_USD_FIX.toString());
+  }
+
+  // 7j-ter) PAST THE COMMODITY WINDOW: even gold goes dark eventually — a
+  //     round older than the market-hours window fails closed like any feed.
+  {
+    const XAU_DEAD_AT = BigInt(PRICE_NOW_S - (COMMODITY_MAX_AGE_S + 3600));
+    const { transport } = makeMock({
+      call: (to, s, d) =>
+        s === SELECTOR_LATEST_ROUND_DATA &&
+        to.toLowerCase() === FINANCIAL_TARGETS.priceFeeds.xauUsd.toLowerCase()
+          ? encRoundData(XAU_USD_FIX, XAU_DEAD_AT)
+          : goodCall(to, s, d),
+    });
+    const e = await buildProtocolReality(baseOpts(transport));
+    check("price-window-dead: XAU/USD past the market-hours window fails closed (a dead feed is never a price)", byId(e, "financial.price.xauUsd")?.value === null && byId(e, "financial.price.xauUsd")?.failureReason !== null);
   }
 
   // 7k) NON-POSITIVE PRICE ANSWER: a Chainlink round reporting 0 (or a negative
