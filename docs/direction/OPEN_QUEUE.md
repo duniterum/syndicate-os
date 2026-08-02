@@ -1,5 +1,22 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-02 (APRÈS LE SCEAU — la session suivante : le candidat n°1 construit, puis la
+> revue « toutes casquettes » du fondateur et son durcissement le jour même. Commits
+> `4b96b30` → `1a38d13` + registres, poussés sur main, NON DÉPLOYÉS — groupables, prod reste
+> juste.)** Sur son « go » : ① la table des chapitres COMPLÈTE côté serveur — le piège du
+> siège #334 (TOUT le registre public se fermait) est mort ; UN module, épinglé valeur par
+> valeur contre la table studio, preuve par mutation. ② Sa revue 4-casquettes (serveur ·
+> complétude · design · holistique) a trouvé la moitié CLIENT du même piège : héros + badge
+> header en dur (« Genesis Signal / CH #001 », fenêtre 333 non plafonnée) — morte le jour
+> même : dérivation au point unique useHeroReality (`reality.chapterFacts`), épingle
+> RED-first au guard, rendu byte-identique à 16 sièges. ③ Fossiles de commentaires + le champ
+> mort `chapterCeiling` retirés de l'API du registre ; l'épingle miroir DURCIE (commentaires
+> strippés · comptage insensible au style · le gabarit du chip épinglé des DEUX côtés).
+> ④ Le wireframe de pagination /registry (v2 après la revue design : badge « Verified
+> on-chain », ouverture page 1, indicateur « 14 / 14 », 25/page = constante partagée) attend
+> SA validation visuelle — rien d'autre ne bloque. **LE BACKLOG DE DÉPLOIEMENT PORTE TROIS
+> TRANCHES GROUPABLES** (`4b96b30` · `68ea337` · `1a38d13`).
+
 > **▶ 2026-08-02 (SCELLÉ №2 DU JOUR) — LE CYCLE `7a916a3` EST EN PRODUCTION : L'AUTONOMIE EST
 > LIVE.** Rapport Replit collé au chat : 31/31 blobs (un renommage inversé par l'outillage
 > corrigé à la main, sha `1cefdd4` conforme, vérifié via l'API contents) · identité d'octets ×2

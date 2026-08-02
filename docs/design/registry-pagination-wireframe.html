@@ -32,9 +32,12 @@
   .page { padding: 40px 32px; }
   .mobile .page { padding: 40px 16px; }
 
-  .eyebrow { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .16em; color: var(--gold); }
+  .eyebrow { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .14em; font-weight: 600; color: var(--gold); }
+  .lifecycle { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--proof); border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; }
+  .lifecycle::before { content: "●"; font-size: 8px; }
+  .headrow { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
   h1 { font-family: var(--serif); font-weight: 400; font-size: 36px; margin-top: 4px; }
-  .lede { color: var(--muted); font-size: 15px; line-height: 1.6; max-width: 65ch; margin-top: 12px; }
+  .lede { color: var(--muted); font-size: 16px; line-height: 1.6; max-width: 68ch; margin-top: 12px; }
 
   .tablewrap { overflow-x: auto; margin-top: 28px; }
   table { width: 100%; border-collapse: collapse; }
@@ -51,13 +54,14 @@
 
   /* THE NEW ELEMENT — the pager row (the only composition change on the page) */
   .pager { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 20px; flex-wrap: wrap; }
-  .range { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-  .pager-buttons { display: flex; gap: 8px; }
+  .range { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; font-weight: 500; text-transform: uppercase; color: var(--muted); }
+  .pager-buttons { display: flex; align-items: center; gap: 8px; }
+  .pageindicator { font-family: var(--mono); font-size: 12px; color: var(--muted); padding: 0 6px; }
   .pbtn { font-family: var(--sans); font-size: 14px; min-height: 44px; min-width: 44px; padding: 0 18px; background: transparent; color: var(--foreground); border: 1px solid var(--border); border-radius: 6px; }
   .pbtn[disabled] { opacity: .4; }
   .mobile .pager { flex-direction: column; align-items: stretch; }
-  .mobile .pager-buttons { display: grid; grid-template-columns: 1fr 1fr; }
-  .honesty { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 65ch; margin-top: 24px; }
+  .mobile .pager-buttons { display: grid; grid-template-columns: 1fr auto 1fr; }
+  .honesty { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 68ch; margin-top: 24px; }
   .ellipsis td { border-top: 1px solid var(--border); color: var(--muted); font-family: var(--mono); font-size: 12px; letter-spacing: .12em; }
   .cta-row { display: flex; gap: 12px; margin-top: 40px; }
   .cta { font-size: 14px; min-height: 44px; padding: 0 18px; display: inline-flex; align-items: center; border-radius: 6px; border: 1px solid var(--border); }
@@ -77,9 +81,12 @@ The pager row is the ONLY new element; everything above it is the page as alread
 
 <!-- ══ FRAME 1 · DESKTOP 1280 · FUTURE (334 seats, last page) ══ -->
 <div class="frame desktop">
-  <div class="frame-label">Frame 1 · Desktop 1280 · future state — 334 seats, page 14 of 14</div>
+  <div class="frame-label">Frame 1 · Desktop 1280 · future state — 334 seats, NAVIGATED to the last page (the chapter boundary; the page OPENS on page 1)</div>
   <div class="page">
-    <div class="eyebrow">The public record</div>
+    <div class="headrow">
+      <div class="eyebrow">The public record</div>
+      <span class="lifecycle">Verified on-chain</span>
+    </div>
     <h1>The Register.</h1>
     <p class="lede">Every seat, its wallet, and its standing — in one public column. The chain wrote each row
     when the seat was taken; the explorer link beside every address is the proof. Address-only by design:
@@ -105,6 +112,7 @@ The pager row is the ONLY new element; everything above it is the page as alread
       <div class="range">Seats 326–334 of 334</div>
       <div class="pager-buttons">
         <button class="pbtn">Previous</button>
+        <span class="pageindicator">14 / 14</span>
         <button class="pbtn" disabled>Next</button>
       </div>
     </div>
@@ -119,7 +127,10 @@ The pager row is the ONLY new element; everything above it is the page as alread
 <div class="frame mobile">
   <div class="frame-label">Frame 2 · Mobile 375</div>
   <div class="page">
-    <div class="eyebrow">The public record</div>
+    <div class="headrow">
+      <div class="eyebrow">The public record</div>
+      <span class="lifecycle">Verified on-chain</span>
+    </div>
     <h1 style="font-size:30px">The Register.</h1>
     <div class="tablewrap">
       <table>
@@ -130,12 +141,13 @@ The pager row is the ONLY new element; everything above it is the page as alread
           <tr class="boundary"><td class="seat">#334</td><td><span class="addr">0x07a3…e5b8</span></td><td class="chapter">Chapter II · First Thousand</td></tr>
         </tbody>
       </table>
-      <div style="font-family:var(--mono);font-size:12px;color:var(--muted);padding:8px 0 0;">← table scrolls sideways, exactly as today →</div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--muted);padding:8px 0 0;">← all 5 columns exist — drawn cut at this width; the table scrolls sideways, exactly as today →</div>
     </div>
     <div class="pager">
       <div class="range">Seats 326–334 of 334</div>
       <div class="pager-buttons">
         <button class="pbtn">Previous</button>
+        <span class="pageindicator" style="text-align:center">14 / 14</span>
         <button class="pbtn" disabled>Next</button>
       </div>
     </div>
@@ -165,12 +177,16 @@ The pager row is the ONLY new element; everything above it is the page as alread
 <div class="contract">
   <h2>What this wireframe binds</h2>
   <ul>
-    <li><strong>One new element only:</strong> the pager row under the table — range line left (mono, 12px, uppercase), Previous/Next right (44px touch targets). Nothing else on the page moves.</li>
-    <li><strong>25 seats per page.</strong> The pager renders ONLY when the register holds more than 25 rows — today's page (16) is byte-identical to prod. Same numbers as the founder-approved /admin/members pager.</li>
-    <li><strong>Full-screen law holds:</strong> the table keeps filling the width; no page cap. Mobile keeps the sideways-scrolling table exactly as today.</li>
+    <li><strong>One new element only:</strong> the pager row under the table — range line left (mono, 12px, uppercase), Previous · page indicator (« 14 / 14 ») · Next right (44px touch targets). Nothing else on the page moves; the header above keeps its « Verified on-chain » pill exactly as deployed.</li>
+    <li><strong>The register OPENS on page 1</strong> (seats #1–#25 — a register reads from its beginning, and the admin pager's own default is page 1). Frame 1 shows the LAST page only because that is where the chapter boundary lives.</li>
+    <li><strong>25 seats per page — ONE shared constant.</strong> The pager renders ONLY when the register holds more than 25 rows — today's page (16) is byte-identical to prod. At build, the page size is the SAME imported constant the /admin/members pager uses, never a re-typed number.</li>
+    <li><strong>Where this deliberately differs from the admin pager, it says so:</strong> the admin always shows its « Seats X–Y of N » line even on one page; here the WHOLE pager row (range included) stays absent at ≤25 rows — the public page stays pristine. The admin's page indicator is adopted; treatments snap to the site's named mono classes at build.</li>
+    <li><strong>The range line counts register rows</strong> (list positions); with a contiguous seat set — as today — they coincide with the seat ordinals shown in the column.</li>
+    <li><strong>Full-screen law holds:</strong> the table keeps filling the width; no page cap. Mobile keeps the sideways-scrolling 5-column table exactly as today.</li>
     <li><strong>Client-side paging</strong> over the payload the API already serves whole — no API change, no new endpoint, nothing for Replit.</li>
+    <li><strong>Built on the site's Button atom:</strong> focus-visible ring and true disabled semantics inherited; visible « Previous »/« Next » labels need no extra ARIA.</li>
     <li><strong>Type treatments bind:</strong> serif display · Work Sans body · mono = data only · 12px floor everywhere. Both themes verified at the preview gate before any deploy.</li>
-    <li><strong>The boundary row</strong> (#333 → #334, gold dashed rule in Frame 1) is illustrative of the chapter transition the server now resolves — sealed this morning in <span style="font-family:var(--mono)">4b96b30</span>.</li>
+    <li><strong>The boundary row</strong> (#333 → #334, gold dashed rule in Frame 1) is illustrative of the chapter transition the server now resolves — sealed in <span style="font-family:var(--mono)">4b96b30</span>, and the hero/header chapter badge now follows the same table (<span style="font-family:var(--mono)">68ea337</span>).</li>
   </ul>
 </div>
 

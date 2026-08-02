@@ -2,7 +2,7 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-02 (HANDOFF — end of day) — RESUME HERE. **PROD = `7a916a3` — SEALED (the day's SECOND seal; Replit report in the 2026-08-02 chat: 31/31 blobs · byte identity ×2, entry `index-BBE4X3MN.js` = `62c556d3…9c7b`, console `OperatorConsole-6y4TAiZq.js` = `e2c1e636…af78` · 5/5 checks · prod's first cycle performed the rig-rehearsed transition VERBATIM: « spine GROWN_PROVENANCE_REBUILD — run #6, 16 records (14 replaced) » then « unchanged », attestation 16 = 16 · the public hero says « snapshot 16 as of 2026-08-02 » · /contracts states Vault 70% · Liquidity 20% · Operations 10% · backbone ok:2, failed:0 stable). main = origin/main. DEPLOY BACKLOG: ONE BATCHABLE slice — the chapter-table tripwire fix ((a5) below; server-only, invisible below seat #334, prod stays correct on the previous build — rides the next deploy). ZERO HAND-FED FIGURES REMAIN ON ANY SURFACE — every member/source count converges from the chain automatically within one backbone cycle.**
+> # ▶ 2026-08-02 (HANDOFF — end of day) — RESUME HERE. **PROD = `7a916a3` — SEALED (the day's SECOND seal; Replit report in the 2026-08-02 chat: 31/31 blobs · byte identity ×2, entry `index-BBE4X3MN.js` = `62c556d3…9c7b`, console `OperatorConsole-6y4TAiZq.js` = `e2c1e636…af78` · 5/5 checks · prod's first cycle performed the rig-rehearsed transition VERBATIM: « spine GROWN_PROVENANCE_REBUILD — run #6, 16 records (14 replaced) » then « unchanged », attestation 16 = 16 · the public hero says « snapshot 16 as of 2026-08-02 » · /contracts states Vault 70% · Liquidity 20% · Operations 10% · backbone ok:2, failed:0 stable). main = origin/main. DEPLOY BACKLOG: THREE BATCHABLE code slices — `4b96b30` (server chapter table) · `68ea337` (hero/header chapter derivation) · `1a38d13` (register payload hygiene + hardened pins) — all byte-invisible at 16 seats, prod stays correct on the previous build; they ride the next deploy together (f14af1f + ledger commits are docs-only). ZERO HAND-FED FIGURES REMAIN ON ANY SURFACE — every member/source count converges from the chain automatically within one backbone cycle.**
 >
 > ## THE DAY IN ONE READ (two seals: `22296fd` then `7a916a3` — the autonomy day)
 > ① The pre-masked admin family CLOSED (the founder's « go ») — six operator/member reads
@@ -40,6 +40,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ## (never preview_start — no egress in its sandbox) · PostgreSQL 17 :5433 db `syndicate` = the
 > ## prod dump of 2026-07-30. dump.sql.gz is SAFE locally (Downloads) → the founder may tell
 > ## Replit "téléchargé" so it leaves the project root.
+> ## PLUMBING (2026-08-02, so no session re-discovers it): `npm exec -- pnpm` is BROKEN on this
+> ## box (npm cache ENOENT fetching pnpm) — use `corepack pnpm run <script>` for single scripts
+> ## and typecheck/build; the api `guards` ALIAS also breaks (child `pnpm` not on PATH) — run the
+> ## 21 guard scripts directly via `.\node_modules\.bin\tsx.cmd .\scripts\<guard>.ts` from
+> ## artifacts/api-server, chain order from package.json:58. The studio `guards` alias WORKS via
+> ## corepack (its steps are `node …`, Node 24 strips types natively). The studio BUILD requires
+> ## `$env:PORT` + `$env:BASE_PATH="/"` per call.
 >
 > ## (a2) SECOND SLICE OF THE DAY — THE SPINE IS AUTOMATIC (the founder caught prod at
 > ## 14 seats / « 1 » source while the chain held 16 / 5: « ça doit marcher automatiquement »)
@@ -105,7 +112,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > · NOW: lib/protocol/chapters.ts is the server's ONE table (all five chapters, Open Era
 >   open-ended — every real seat resolves FOREVER); cardFacts + registerProjection + the
 >   chapter-end milestone targets (1000/3333/10000) all import it; each boundary numeral
->   exists ONCE server-side. Seat-0 sentinel still fails closed (never a guessed row).
+>   exists ONCE server-side AS A MACHINE VALUE (the milestone labels keep the founder-
+>   frozen verbatim ranges as display text — deliberate, unpinned). Seat-0 sentinel still
+>   fails closed (never a guessed row).
 > · RED FIRST held: the backbone.guard boundary pin (333/334/1000/1001/3333/3334/10000/10001)
 >   witnessed RED before the fix; MUTATION-PROVEN after (one drifted name → both pins red,
 >   exit 1, restored). The cross-artifact MIRROR PIN makes the studio↔server twin structural:
@@ -114,10 +123,36 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   the pnpm alias's child-PATH is broken on this box — plumbing, not a guard) · typecheck 0 ·
 >   build 0 · studio byte-untouched · real-data render unchanged (16 seats, all Chapter I).
 >
+> ## (a6) THE FOUNDER'S 4-HAT REVIEW OF THIS SESSION (« toutes casquettes, 3-5 agents ») +
+> ## SAME-DAY HARDENING — commits `68ea337` + `1a38d13` + wireframe v2 + these ledgers
+> · 4 independent senior reviewers (server-logic · twin-completeness · design-law ·
+>   holistic) re-read the session. Core VERDICT: the work holds — every figure reproduced
+>   on their own re-measurement, boundaries executed not read, no dependent on the old
+>   throw contract, zero chain reads added, no SEO/featureStatus flip owed.
+> · CONFIRMED-HIGH (twin + holistic hats independently): the CLIENT half of the seat-#334
+>   story — syndicateFacts hand-pinned "Genesis Signal"/"CH #001"/window 333 (uncapped %)
+>   feeding the public hero card + header badge: it would LIE at #334 while the server told
+>   the truth. FIXED in `68ea337`: currentChapterFacts derived from @/lib/chapters, computed
+>   ONCE in useHeroReality (reality.chapterFacts), both consumers read the derived field;
+>   guard-pinned RED-first; freshness guard OBEYED (derivation at the choke point), not
+>   exempted. Byte-identical at 16 seats.
+> · CONFIRMED-MEDIUM: BACKLOG.html still recommended the closed chapter-table work — struck
+>   + the day's continuation paragraph added. CONFIRMED-LOWs all closed in `1a38d13`: stale
+>   route comment (dead throw-mode) · stale row docstring · the dead chapterCeiling payload
+>   field removed (zero consumers, asserted the dead model publicly) · mirror pin HARDENED
+>   (comment-stripped matching + style-agnostic row count, mutation-proven) · the chip
+>   format now pinned on BOTH sides · the dead studio CHAPTERS re-export removed.
+> · Wireframe v2 (design hat's approval-integrity findings): the "Verified on-chain" pill
+>   drawn as deployed · OPENS-on-page-1 stated · admin's "14 / 14" page indicator adopted ·
+>   deliberate divergences from the admin pager SAID · tokens calibrated (lede 16px,
+>   honesty 14px, 68ch) · range-line semantics + shared-constant + Button-atom clauses.
+> · Gates at the end of the pass: api typecheck 0 · all 21 api guards green (tsx-direct) ·
+>   api build 0 · studio typecheck 0 · studio guards 0 · studio build 0.
+>
 > ## (b) IN FLIGHT — nothing queued; the build lane is EMPTY. Next-slice candidates the
 > ## holistic review ranked (nothing blocks, founder picks or says « go » on any):
-> · /registry pagination before ~100 seats (~~extend the chapter table before seat #334~~ —
->   CLOSED in (a5), 2026-08-02: the register can no longer darken from a chapter miss).
+> · ~~/registry pagination before ~100 seats~~ — PICKED on the « go »; wireframe v2 HANDED,
+>   awaiting the founder's visual verdict (see (c)); the chapter-table half CLOSED in (a5).
 > · Server-side windowing of the member-ledger payload
 >   toward ~300 members (the client pager cannot fix payload weight). · Retire/bridge the
 >   static /api/holder-index endpoint (API consumers still get the old file; every RENDERED
