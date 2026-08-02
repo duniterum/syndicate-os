@@ -2,7 +2,44 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-02 (HANDOFF — end of day) — RESUME HERE. **PROD = `7a916a3` — SEALED (the day's SECOND seal; Replit report in the 2026-08-02 chat: 31/31 blobs · byte identity ×2, entry `index-BBE4X3MN.js` = `62c556d3…9c7b`, console `OperatorConsole-6y4TAiZq.js` = `e2c1e636…af78` · 5/5 checks · prod's first cycle performed the rig-rehearsed transition VERBATIM: « spine GROWN_PROVENANCE_REBUILD — run #6, 16 records (14 replaced) » then « unchanged », attestation 16 = 16 · the public hero says « snapshot 16 as of 2026-08-02 » · /contracts states Vault 70% · Liquidity 20% · Operations 10% · backbone ok:2, failed:0 stable). **PROD = `82b650e` — SEALED 2026-08-02 (the day's THIRD seal; Replit report in chat: 17/17 blobs · byte identity ×2, entry `index-sQXp-E9J.js` = `8acd532c…6b91`, console `OperatorConsole-DobSBa6Z.js` = `55e7964b…d436`, old entry 404s · migration step CONFIRMED nothing-to-apply · 6/6 checks: /api/registry LIVE 16 rows NO chapterCeiling key · hero « snapshot 16 as of 2026-08-02 » · CH #001 badge post-load · /status Holder Index headline = live verified 16 with the 07-16 seal below · backbone ok climbing, failed:1 = the usual first post-boot cycle, self-caught, not increasing · spine « unchanged (16 records) »). **PROD = `ef3f89c` — SEALED (the day's FOURTH seal, the pagination slice; Replit 6/6, 7/7 blobs: entry `index-DR1Q6BPy.js` = `1146b50c…e4c5` · console `OperatorConsole-5U1sgp0Y.js` = `76607f31…b633` · migration nothing-to-apply CONFIRMED (zero server files in the batch) · /registry 16 rows NO pager · /season 17 rows NO pager — dormancy HELD as the board grew · /admin/members 25/page via the ONE shared constant, unchanged · hero attestation line unchanged · backbone ok 1→2, failed:0 stable · spine « unchanged (16 records, provenance stable) »). THE DEPLOY BACKLOG IS EMPTY** (the e94c24a/18e2079 pair netted to ZERO, proven byte-identical). SIX-HAT FULL-DAY AUDIT (founder order, 2026-08-02 midday): revert byte-identical to prod · all 20 touched files classified into named slices, zero unexplained · the whole holder-index system inventoried INTACT · all gates fresh green both artifacts · pagination arithmetic executed 334/334 · the board GREW 15 → 17 rows tonight (still dormant, correct).** ROUND-2 REVIEW (4 fresh hats over the WHOLE session) had certified the batch DEPLOY-READY before the seal; backbone.guard counts 243 since the presentation pin. ZERO HAND-FED FIGURES REMAIN ON ANY SURFACE — every member/source count converges from the chain automatically within one backbone cycle.**
+> # ▶ 2026-08-03 (HANDOFF) — RESUME HERE. **PROD = `3a3efb8` (the 5th seal of the
+> 2026-08-02 marathon — THE RESERVES ARE LIVE, Replit 6/6). main = origin/main, tree
+> clean, GitHub is the truth. DEPLOY BACKLOG: ONE BATCH of THREE code slices (founder
+> order « tout en une fois »), pushed + gates green + rig/pixel-proven, awaiting HIS
+> « publie »:** `9607ea0` A1 (the Mine|Protocol lens) · `5e18f0a` M3 (the collectible
+> trio + seat door) · `c4a4f47`+`f6d5859` M2-v2 (the living join-card unfurl). The
+> founder-pasteable Replit message (pull → `425abae` or later docs HEAD · NO migrations ·
+> 6 checks: byte identity ×2 · /activity lens with the signed-out invitation ·
+> /referral/tools « Your collectible » · the seat-3 card PNG carries « by Seat #3 ·
+> Chapter I — 0x03E9…C6d0 » · the seat-panel gold door · backbone ok/spine 16) is in the
+> 2026-08-03 chat, engraved in (b)③ below.
+>
+> ## (a) WHAT WENT LIVE (the 2026-08-02 marathon — FIVE seals, all 6/6 or 5/5):
+> · `7a916a3` autonomy (spine every cycle) → `82b650e` (chapter tables both sides ·
+>   /status live headline · hero derivation) → `ef3f89c` (dormant pagination, both
+>   boards) → **`3a3efb8` THE RESERVES: six cards AVAX·BTC·ETH·LINK·GOLD·USDC, official
+>   XAUt0 mark, market-hours window (proven on a Sunday), /contracts +2 rows.**
+> · Rulings engraved: the boot fallback STAYS (e94c24a reverted byte-identical — a
+>   sealed resilience layer is a FOUNDER GATE) · « on garde »: /api/holder-index is the
+>   PERMANENT genesis attestation, ANSWERED FOREVER · the founder work order:
+>   ① reserves ✅ → ② A1 ✅ built → ③ Kit (M3 ✅ + M2v2 ✅ built) → sequence resumes.
+>
+> ## (b) IN FLIGHT — the batch above awaits « publie »; NOTHING else is open in code.
+> After the deploy, the order continues: C (the /join referral-showcase card) · E (the
+> public press kit) · the engraved sequence #2 (FIRSTS engine); background lane: the
+> member-ledger server windowing (scoped) · the spine-poller dedupe. Dossiers:
+> docs/reference/REFERRER_KIT_RECON-2026-08-02.json · A1_LENS_RECON · RESERVES_BUILD_RECON ·
+> the M3/A1/pagination wireframes in docs/design/. ⚠ THE PLUMBING BLOCK (corepack pnpm ·
+> tsx-direct guard chain · PORT/BASE_PATH · detached api recipe) lives in the 2026-08-02
+> block below — read it before running anything.
+>
+> ## (c) FOUNDER-PENDING: « publie » (the batch) · the 4 composition wireframes ·
+> « téléchargé » (dump.sql.gz) · K4 no-seat promoter (his reserved decision) · AW-5 (the
+> 2 artifacts: protocol mint or Community). Known-accepted: the badge appears after the
+> live read · the seats bar = count vs chapter-END window · the honest red-push record
+> (c4a4f47, sealed green by f6d5859 within minutes) stands in (b)③ of the old block.
+
+> # ▶ 2026-08-02 (HANDOFF — end of day, historical) — superseded by the block above. **PROD = `7a916a3` — SEALED (the day's SECOND seal; Replit report in the 2026-08-02 chat: 31/31 blobs · byte identity ×2, entry `index-BBE4X3MN.js` = `62c556d3…9c7b`, console `OperatorConsole-6y4TAiZq.js` = `e2c1e636…af78` · 5/5 checks · prod's first cycle performed the rig-rehearsed transition VERBATIM: « spine GROWN_PROVENANCE_REBUILD — run #6, 16 records (14 replaced) » then « unchanged », attestation 16 = 16 · the public hero says « snapshot 16 as of 2026-08-02 » · /contracts states Vault 70% · Liquidity 20% · Operations 10% · backbone ok:2, failed:0 stable). **PROD = `82b650e` — SEALED 2026-08-02 (the day's THIRD seal; Replit report in chat: 17/17 blobs · byte identity ×2, entry `index-sQXp-E9J.js` = `8acd532c…6b91`, console `OperatorConsole-DobSBa6Z.js` = `55e7964b…d436`, old entry 404s · migration step CONFIRMED nothing-to-apply · 6/6 checks: /api/registry LIVE 16 rows NO chapterCeiling key · hero « snapshot 16 as of 2026-08-02 » · CH #001 badge post-load · /status Holder Index headline = live verified 16 with the 07-16 seal below · backbone ok climbing, failed:1 = the usual first post-boot cycle, self-caught, not increasing · spine « unchanged (16 records) »). **PROD = `ef3f89c` — SEALED (the day's FOURTH seal, the pagination slice; Replit 6/6, 7/7 blobs: entry `index-DR1Q6BPy.js` = `1146b50c…e4c5` · console `OperatorConsole-5U1sgp0Y.js` = `76607f31…b633` · migration nothing-to-apply CONFIRMED (zero server files in the batch) · /registry 16 rows NO pager · /season 17 rows NO pager — dormancy HELD as the board grew · /admin/members 25/page via the ONE shared constant, unchanged · hero attestation line unchanged · backbone ok 1→2, failed:0 stable · spine « unchanged (16 records, provenance stable) »). THE DEPLOY BACKLOG IS EMPTY** (the e94c24a/18e2079 pair netted to ZERO, proven byte-identical). SIX-HAT FULL-DAY AUDIT (founder order, 2026-08-02 midday): revert byte-identical to prod · all 20 touched files classified into named slices, zero unexplained · the whole holder-index system inventoried INTACT · all gates fresh green both artifacts · pagination arithmetic executed 334/334 · the board GREW 15 → 17 rows tonight (still dormant, correct).** ROUND-2 REVIEW (4 fresh hats over the WHOLE session) had certified the batch DEPLOY-READY before the seal; backbone.guard counts 243 since the presentation pin. ZERO HAND-FED FIGURES REMAIN ON ANY SURFACE — every member/source count converges from the chain automatically within one backbone cycle.**
 >
 > ## THE DAY IN ONE READ (two seals: `22296fd` then `7a916a3` — the autonomy day)
 > ① The pre-masked admin family CLOSED (the founder's « go ») — six operator/member reads
