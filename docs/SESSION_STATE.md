@@ -79,7 +79,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > · Rig-proven post-hardening: gates all green (typecheck ×2 · guards ×2 exit 0 · builds ×2) and
 >   the lane's steady state measured live: "spine unchanged (16 records, provenance stable)".
 > · The reviews' full texts are in the 2026-08-02 chat; the figure map says every member-count
->   surface now converges ≤ 1 cycle EXCEPT the public holder-index attestation (still hand-fed,
+>   surface now converges ≤ 1 cycle EXCEPT the public holder-index attestation (WAS still
+>   hand-fed at review time — CLOSED the same day in (a4) below,
 >   see founder-pending below).
 >
 > ## (a4) FOURTH SLICE — THE TWO DECISIONS LANDED: ZERO HAND-FED FIGURES REMAIN
@@ -172,7 +173,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ## (b) NEXT + FOUNDER-PENDING
 > · The 3 reserves-wireframe decisions (3×2 grid · gold logo · weekend freshness) · the 4
 >   composition wireframes · telling Replit "downloaded" for dump.sql.gz.
-> · NEXT BUILD SLICE (queued, api): the admin ledgers' PRE-MASKED shorts (memberLedger ·
+> · ~~NEXT BUILD SLICE (queued, api)~~ — CLOSED 2026-08-02 (the top block's slice ①; sealed in
+>   `22296fd`): the admin ledgers' PRE-MASKED shorts (memberLedger ·
 >   AdminOperatorsCrud · SourcePerformancePanel `ownerShort` · ReferralIntroductionsPanel `who`) —
 >   serve full address/explorerUrl so the blue AddressLink can reach the operator surfaces too
 >   (the 2026-07-25 address law's last uncovered corner).
@@ -260,7 +262,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > · Founder: tell Replit "downloaded" (dump.sql.gz leaves the project root) · the 3
 >   reserves-wireframe decisions (3×2 grid · gold logo · weekend freshness) · the 4 composition
 >   wireframes · LINK.e/XAUt0 reserves build follows his wireframe call.
-> · The audit ledger holds 72 open findings (36 important · 35 minor) — the harmonization arc
+> · The audit ledger holds 71 open findings (36 important · 35 minor) — the harmonization arc
 >   resumes slice by slice.
 
 > # ▶ 2026-07-31 (HANDOFF) — ⛔ superseded the same evening: the GO landed and the cycle sealed (see the SEAL block above). PROD was `3adbc19`; main = `448645d`, CLEAN TREE, ALL PUSHED. THE REGISTER IS BUILT AND REVIEW-SEALED; THE DEPLOY AWAITS THE FOUNDER'S GO.
@@ -302,7 +304,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > · Founder: the GO word for the deploy · the 3 reserves-wireframe decisions (3×2 grid · gold logo ·
 >   weekend freshness) · the 4 composition wireframes · LINK.e/XAUt0 reserves build follows his
 >   wireframe call (feeds verified on-chain: LINK/USD `0x49cc…de9a`, XAU/USD `0x1F41…515B`).
-> · The audit ledger holds 72 open findings (36 important · 35 minor) — the harmonization arc's
+> · The audit ledger holds 71 open findings (36 important · 35 minor) — the harmonization arc's
 >   work list, ticked as slices close.
 
 

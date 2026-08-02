@@ -11,8 +11,11 @@
 > le jalon « Five referral sources created » scellé dans l'activité live · backbone ok:2,
 > failed:0 stable, tête 91 809 851 → 91 810 451 (partial:1 = premier cycle post-boot, deux flux
 > treasury transitoires auto-rattrapés). **LE BACKLOG DE DÉPLOIEMENT EST VIDE. PLUS UN SEUL
-> CHIFFRE NOURRI À LA MAIN NE RESTE SUR AUCUNE SURFACE.** Réserve habituelle : le coup d'œil
-> connecté du fondateur sur /admin (16 lignes · 5 sources · pagination) reste le dernier mètre.
+> CHIFFRE NOURRI À LA MAIN NE RESTE SUR AUCUNE SURFACE RENDUE** (une précision honnête : le
+> endpoint statique `/api/holder-index` sert encore l'ancien fichier aux consommateurs d'API —
+> plus aucune page ne le lit ; sa retraite est un candidat nommé dans SESSION_STATE (b)).
+> Réserve habituelle : le coup d'œil connecté du fondateur sur /admin (16 lignes · 5 sources ·
+> pagination) reste le dernier mètre.
 
 > **▶ 2026-08-02 (TRANCHE 4 — LES DEUX DÉCISIONS TRANCHÉES : PLUS UN SEUL CHIFFRE NOURRI À LA
 > MAIN.)** Le fondateur a tranché (« it must be always up to date!! » + « do your best ») :
@@ -54,7 +57,10 @@
 > jamais une fausse table vide ; ⑧ le pager se remet à la page 1 dans le CLIC (plus une frame de
 > mauvaise page) + libellé vide honnête ; ⑨ balayage des 11 commentaires « masked » fossiles + le
 > sigle banni retiré des commentaires du builder déplacé et du snapshot.
-> **DEUX DÉCISIONS AU FONDATEUR (rien ne casse en attendant) :** ① « Referral sources » = créées
+> ~~**DEUX DÉCISIONS AU FONDATEUR**~~ **→ TRANCHÉES ET CONSTRUITES LE JOUR MÊME (tranche 4
+> ci-dessus) ; et la « prochaine tranche recommandée » ci-dessous fut ABSORBÉE par le roster de
+> la tranche 4 — aucune session ne re-pose ces questions.** Texte d'origine, archive datée :
+> ① « Referral sources » = créées
 > depuis toujours (lecture registre : 5, une source révoquée compte encore) OU actives maintenant ?
 > ② le snapshot holder-index public (le DERNIER chiffre membre nourri à la main : « verified 14,
 > 2026-07-16 » sur le héros public pendant que le live dit 16) — la tranche recommandée ensuite le
