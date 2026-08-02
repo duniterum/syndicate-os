@@ -138,6 +138,23 @@ export default function ActivityMineLedger() {
   }
 
   const { standing, purchases, introductions } = state;
+  // FINAL AUDIT 2026-08-03 (MEDIUM): rows === null means the record model is
+  // UNAVAILABLE — an honest gap, NEVER proven absence. Collapsing it into []
+  // could show a seated member "no acts yet" over an unread model. Unreadable
+  // → the same honest error state, with retry.
+  if (purchases.rows === null || introductions.rows === null) {
+    return (
+      <div className="py-6" data-testid="mine-unavailable">
+        <p className="text-sm text-muted-foreground">
+          Part of your record could not be read just now — nothing is shown
+          rather than something guessed.
+        </p>
+        <Button variant="outline" className="mt-3" onClick={reload}>
+          Try again
+        </Button>
+      </div>
+    );
+  }
   const usdcDec = purchases.decimals?.usdc ?? 6;
   const synDec = purchases.decimals?.syn ?? 18;
 
@@ -213,7 +230,10 @@ export default function ActivityMineLedger() {
             {rows.map((r) => (
               <tr key={r.key}>
                 <td className="border-t border-border/40 py-3.5 pr-4 font-mono text-xs text-muted-foreground whitespace-nowrap">
-                  {r.day ?? `block`}
+                  {r.day ??
+                    (standing.receipt?.block != null
+                      ? `block ${standing.receipt.block.toLocaleString("en-US")}`
+                      : "—")}
                 </td>
                 <td className="border-t border-border/40 py-3.5 pr-4 text-sm">
                   {r.strong !== null && r.sentence.includes(r.strong) ? (

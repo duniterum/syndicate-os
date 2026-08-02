@@ -303,6 +303,7 @@ function useOwnSeatFacts(): { seatLine: string | null; vanity: KitFacts["vanity"
               n !== null &&
               Number.isInteger(n) &&
               n >= 1 &&
+              n <= STORY_FINAL_SEAT &&
               chapter !== null &&
               r?.receipt != null
             ) {

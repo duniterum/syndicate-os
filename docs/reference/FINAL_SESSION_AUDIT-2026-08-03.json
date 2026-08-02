@@ -1,0 +1,334 @@
+{
+  "summary": "Five senior hats certify the whole session at HEAD and feed the clean handoff",
+  "agentCount": 5,
+  "logs": [],
+  "result": {
+    "gates": {
+      "verdict": "GREEN — CERTIFIED. All six lanes exit 0 fresh: api typecheck 0 · all 21 api guards individually 0 (zero red) · api build 0 · studio typecheck 0 · studio guards chain 0 · studio build 0. Tree clean (git status --porcelain: 0 lines), nothing unpushed (origin/main..HEAD empty; HEAD = origin/main = ace1553 on main). 15 commits since prod 3a3efb8: 4 code, 11 docs-only. The pending deploy batch is exactly the three named slices: A1 (9607ea0), M3 (5e18f0a), M2-v2 (c4a4f47 + guard registrations f6d5859).",
+      "findings": [
+        {
+          "severity": "none (all green)",
+          "where": "artifacts/api-server — 21 guards, chain order per package.json \"guards\"",
+          "claim": "Every api guard exits 0, run individually via .\\node_modules\\.bin\\tsx.cmd",
+          "evidence": "introductions (45 checks) · live-read · token-metadata · archive-posture · protocol-reality 181/181 · protocol-targets 225/225 · sale-scan 86/86 · sale-index 64/64 · sale-semantics 67/67 · member-continuity 94/94 · member-continuity-schema 40/40 · protocol-time 38/38 · holder-index 77 · activity 184 · backbone 243 · auth-zone 1330 · source-status-truth 211 · receipt-card 31/31 · join-card 36/36 · season-merkle 1279 · duplicate-facts (120 facts/430 files, 18 duplicated all inside the 18-entry DEBT list) — each printed EXIT=0"
+        },
+        {
+          "severity": "none (all green)",
+          "where": "artifacts/studio",
+          "claim": "typecheck 0 · guards chain 0 (through no-raw-color) · build 0 with PORT=5173, BASE_PATH=/",
+          "evidence": "build tail: vite built in 12.71s · prerender 37 route shells + 404 · precompress 378 twins byte-identical PASS · guard:admin-dist PASS 105 checks (entry index-CS0rY8UW.js, 33 shells admin-clean)"
+        },
+        {
+          "severity": "none (all green)",
+          "where": "repo root git state",
+          "claim": "Working tree clean and fully pushed at certification time",
+          "evidence": "git status --porcelain = 0 lines; git log origin/main..HEAD = 0 commits; HEAD = origin/main = ace1553 (main)"
+        },
+        {
+          "severity": "info",
+          "where": "git log --oneline 3a3efb8..HEAD (15 commits, oldest→newest)",
+          "claim": "Classification by files touched (not message prefix): 4 CODE — 9607ea0 feat(a1) studio LiveActivityFeed.tsx + ActivityMineLedger.tsx (+SESSION_STATE line) · 5e18f0a feat(m3) studio ReferralToolsPanel/referrerKit/chapters/MemberYourSeat · c4a4f47 feat(m2v2) api introducerRead/joinCardPainter/routes/joinCard + join-card.guard · f6d5859 fix(guards) api guard-duplicate-facts/holder-index.guard/member-continuity-schema.guard. 11 DOCS-ONLY — 1f79830, a8c36c9, 8b01bbf, 7cd2150, 6c4951b, 606ab66, b552297, abc686d, 04daa52, 425abae, ace1553 (SESSION_STATE, OPEN_QUEUE, design wireframe HTML, recon JSON dossiers only)",
+          "evidence": "git log --name-only 3a3efb8..HEAD — every file path inspected per commit; the 4 code commits match the stated pending deploy batch exactly (f6d5859 rides with c4a4f47)"
+        },
+        {
+          "severity": "low (informational, not a failure)",
+          "where": "studio build output",
+          "claim": "Vite chunk-size warning: index-CS0rY8UW.js is 1,893.49 kB (574 kB gzip), above the 500 kB warning threshold",
+          "evidence": "Warning printed in the green build (exit 0); pre-existing condition, not introduced by the batch, and guard:admin-dist pins this same entry chunk as admin-clean"
+        }
+      ],
+      "measured": "WHAT WAS MEASURED: exit codes of commands run fresh in this session on the current checkout (HEAD ace1553) — api typecheck (tsc --noEmit, exit 0); each of the 21 api guards individually via tsx.cmd from artifacts\\api-server in chain order (21× exit 0); api build (node build.mjs, exit 0, dist emitted); studio typecheck (exit 0); studio guards chain via pnpm run guards (exit 0); studio build with PORT=5173 BASE_PATH=/ (exit 0, including prerender + precompress verify + admin-dist guard); git status --porcelain, git log origin/main..HEAD, git log --name-only 3a3efb8..HEAD. SCOPE: local machine, this checkout, this moment — network-dependent guards (live-read, token-metadata, archive-posture) passed against the live chain as reached from this box. NOT COVERED: guards:db (partB-canon/partB-import — DB-connected, not in the 21-guard chain and not requested); the SEO battery beyond what studio guards/build already run (seo:generate, seo:rewrites:check, surface:audit not separately re-run — check-seo-registry and check-public-surface-audit DID run inside the guards chain); rendered-page visual truth (the PREVIEW GATE's job, as the guards themselves state); prod runtime at thesyndicate.money (deploy verification is Replit's report); and each guard's own stated NOT-CHECKED blind spots."
+    },
+    "code": {
+      "findings": [
+        {
+          "severity": "medium",
+          "where": "artifacts/studio/src/wallet/ActivityMineLedger.tsx (rows composition, ~lines 157-166 and the rows.length===0 empty state)",
+          "claim": "The Mine ledger collapses rows:null (readback contract: 'null = the record model is unavailable — honest gap, never guessed') into an empty array via `purchases.rows ?? []` and `introductions.rows ?? []`, turning UNAVAILABLE into proven ABSENCE.",
+          "evidence": "OwnPurchasesReadback/OwnIntroductionsReadback document rows:null as model-unavailable; every sibling surface renders a distinct unavailable branch (ReceiptsBinderPanel.tsx:330, MemberNotificationsBell.tsx:171, ReferralCommissionsPanel.tsx:565, ReferralIntroductionsPanel.tsx:33). Failure path: signed-in S4 member, own-purchase model dark (rows:null with failureReason) → purchases silently missing with no gap notice; if the standing receipt also misses, a seated member is shown 'No on-chain acts on this account yet' + a 'Take your seat' door — a proof-of-absence claim over an unread model, against the page's own 'never a silent gap, never proof of absence' doctrine. Client-only fix; does not block the batch."
+        },
+        {
+          "severity": "low",
+          "where": "artifacts/studio/src/components/referral/ReferralToolsPanel.tsx:302-321 (vanity gate) + referrerKit VanitySentence",
+          "claim": "The vanity gate has no upper bound: a seat beyond 1,000,000 (Chapter V is open-ended, gate only requires n>=1 + chapter + receipt) would print a negative seniority.",
+          "evidence": "EXECUTED: n=1000001 → seniorityPct '-0.0001' → 'Seated before -0.0001% of the story — the 1,000,001st of 1,000,000 seats'. Theoretical today (14 seats; 1M is the story's final rung) but the gate carries no n <= STORY_FINAL_SEAT clause."
+        },
+        {
+          "severity": "low",
+          "where": "artifacts/studio/src/components/referral/ReferralToolsPanel.tsx:309-324 (entryDay vs entryBlock/verifyShort) + referrerKit vanityWrittenLine",
+          "claim": "The collectible's WRITTEN ON-CHAIN line mixes two authorities in one sentence: the DAY comes from the oldest own indexed purchase (own-purchase read-model) while BLOCK + VERIFY come from the continuity spine's entry receipt (lookupMemberReceipt) — the day can belong to a different transaction than the block/anchor beside it if the purchase index misses the entry event.",
+          "evidence": "member-standing receipt = spine entryTransaction/entryBlock (auth/memberRoster.ts); entryDay = rows[rows.length-1].isoDayUtc from /api/auth/member-purchases (server sorts newest-first, ownPurchaseReadmodel.ts:286-293 — the oldest-index claim itself is CORRECT). Same tx when both models are complete; a one-authority-figure-rule tension only under index incompleteness. Degrades honestly (day omitted) only when rows are null/empty."
+        },
+        {
+          "severity": "low",
+          "where": "artifacts/studio/src/wallet/ActivityMineLedger.tsx (seat-entry row day cell: `{r.day ?? `block`}`)",
+          "claim": "The seat-entry row's date column renders the literal lowercase word 'block' instead of the block number, although standing.receipt.block (number|null) is available at composition time.",
+          "evidence": "LedgerRow.day is null for the seat row ('the block is its coordinate' per the comment) but the coordinate itself is never printed — a founder-visible oddity in the Mine table's first column."
+        },
+        {
+          "severity": "info",
+          "where": "artifacts/api-server/src/joincard/introducerRead.ts:84-103 (seatLineFor)",
+          "claim": "The spine read is a whole-table select with no chainId or numbering-authority scope, resolved by first-match find on entryWallet only.",
+          "evidence": "Safe today: single-chain deployment, entryWallet unique per doctrine (one identity-bearing entry per member, PK chainId+memberNumber), checksum handled by lowercasing both sides, fail-closed on every branch, DB-gated + 10-min TTL. Noted because the sibling reader (memberRoster.lookupGenesisMember) scopes by authority; a second chain's rows in the table would make find() nondeterministic."
+        },
+        {
+          "severity": "info",
+          "where": "lib/db/src/schema/memberContinuity.ts:47-51",
+          "claim": "Stale doc comment vs shipped law: the schema header still says 'The memberNumber→wallet mapping must never be exposed anywhere' while the /registry precedent and the M2-v2 card now publish wallet↔seat as public chain data (the address law, commit-cited).",
+          "evidence": "Doc drift only, not a code defect — a dated line under the Refactoring Law; the M2-v2 commit correctly cites the /registry precedent and the guards were taught (join-card.guard §11, both lazy-DB allow-lists)."
+        }
+      ],
+      "measured": "Guards RUN against the current tree (from artifacts/api-server via tsx): backbone.guard — all 243 checks passed (the cross-artifact chapter mirror pin holds: STORY_FINAL_SEAT sits after the `export const CHAPTERS…];` block the pin extracts and contains no `roman:` key, so the 5-row count and verbatim-row checks are untouched); join-card.guard — 36/36; guard-duplicate-facts — PASS, 18/18 duplications inside the pinned debt list including the amended 1_000_000 four-file set. Seniority arithmetic EXECUTED in node: seat 1→99.9999%, 14→99.9986% (matches the shipped sentence verbatim), 333→99.9667%/'333rd', 10001→98.9999%/'10,001st'; trailing zeros trimmed (100→'99.99', 500000→'50'); boundaries 999999→0.0001%, 1000000→0%, 1000001→-0.0001% (the unbounded edge); ordinal teens correct (11th/12th/13th, 21st, 10,001st). Verified by reading the built code (not just diffs): the `own` variable is in scope (destructured then-param, used at ReferralToolsPanel.tsx:311); chapterForSeat accepts number|string (chapters.ts:46); server own-purchase rows sort newest-first (ownPurchaseReadmodel.ts:286-293) so rows[length-1] is the oldest; memberNumber is integer() in drizzle so seatLineFor's typeof-number gate passes; all three auth endpoints answer 200 + state S1 anonymously ('No session → S1 with nulls, not an error') so the signed-out invitation path is reachable; FireLedger's onlyKinds mode returns at line 977 before the lens row; the Mine lens hides all three public zones (header band 1061, feed 1233, milestones/methodology 1388) with no CSS display class fighting the hidden attribute. NOT covered: no runtime render of the signed-IN Mine ledger or the painted trio (needs a SIWE browser session — same honest gap the A1 commit declared); studio 30-guard chain and builds not re-run here (claimed green in the commits; the three guards above were re-run and are the ones these slices touch).",
+      "verdict": "GREEN with one MEDIUM finding — the pending three-slice deploy batch (9607ea0, 5e18f0a, c4a4f47 + f6d5859) contains no blocking logic defect; every commit-claimed check I re-ran is genuinely green (backbone.guard 243/243, join-card.guard 36/36, duplicate-facts pass), the seniority arithmetic is exact at every probed seat, and every fail-closed path examined actually fails closed. One medium honest-state defect (ActivityMineLedger treats model-unavailable rows:null as proven absence) deserves its own client-only fix slice; it does not corrupt data, leak anything, or invent a figure — it can ride after the batch."
+    },
+    "design": {
+      "findings": [
+        {
+          "severity": "medium",
+          "where": "artifacts/studio/src/components/referral/ReferralToolsPanel.tsx:493-497 (collectible vog preview) vs docs/design/m3-vanity-card-wireframe.html contract line MOBILE",
+          "claim": "The founder mobile clause 'the card previews SCALE to the viewport (never a sideways scroll at 375px)' is not implemented: the 1200×630 collectible preview is fixed at 600px (ScaledPreview scale 0.5) inside an overflow-x-auto box, so at 375px the member swipes inside the box to see the right half of the card — the preview never scales.",
+          "evidence": "ScaledPreview sets style={{width: width*scale}} with no responsive scale or max-width; the collectible og preview wrapper is <div className=\"overflow-x-auto pb-1\">. The commit reinterprets the clause as page-level only ('previews in overflow boxes — the page never scrolls sideways'), but SESSION_STATE line 293-294 engraves the clause as 'previews scale, actions stack, 375px verified at the preview gate'. The story (145.8px) and square (259.2px) previews do fit 375px; only the 1200×630 formats overflow."
+        },
+        {
+          "severity": "medium",
+          "where": "artifacts/studio/src/components/referral/ReferralToolsPanel.tsx:134-238 (ArtifactActions) vs m3-vanity-card-wireframe.html MOBILE clause + .abtn min-height:44px",
+          "claim": "The mobile clause 'the three actions wrap to full-width stacked buttons at phone width' is not built: Download/Copy/Share on the collectible rows are h-9 (36px), intrinsic-width, flex-wrap — no full-width stacking at any breakpoint and below the 44px touch floor on phones, while the wireframe itself drew the actions at min-height 44px.",
+          "evidence": "className=\"...h-9 rounded-lg border px-3 text-xs...\" on all three buttons; no sm:/max-sm: width or height variants. They ride the pre-existing guard-touch-target allowlist entry 'components/referral/ReferralToolsPanel.tsx: (5) five h-9 = 36px tool buttons (2026-07-26)' — the ratchet never moved because M3 added call sites, not code sites. Contrast: the M3 door in MemberYourSeat.tsx:230 DID get the facet-chip idiom (py-3.5 sm:py-1.5 = 44px on touch); the trio's action rows did not."
+        },
+        {
+          "severity": "medium",
+          "where": "M3 wireframe contract, 'the 5-probe battery before any handoff (fit · square-box · type-floor · overlap · QR-centering)' — status per commit 5e18f0a",
+          "claim": "The 5-probe battery has NOT yet run on the collectible trio — the commit defers it ('covers the trio via the table at the preview gate, as every artifact') and that preview gate has not happened; additionally the battery run has a structural trap: CardVanityOg/Square/Story return null when facts.vanity is null, so a probe run with a fixture lacking a whole vanity story (seat + chapter + entry receipt) renders NOTHING for all three collectible artifacts and passes trivially.",
+          "evidence": "No committed probe harness exists in artifacts/studio/scripts (the battery is the session-driven browser probe per the artifact-verification memory); referrerKit.tsx lines 258-259/282-283/305-307: `const v = facts.vanity; if (v === null) return null;`. The battery run at the preview gate must pin facts.vanity !== null and assert a non-empty rendered node for vog/vsquare/vstory, or the probes measure an empty box (the verify-the-thing-not-a-proxy class)."
+        },
+        {
+          "severity": "low",
+          "where": "artifacts/studio/src/wallet/ActivityMineLedger.tsx:215-216 and 173-183 vs A1 wireframe frame 2",
+          "claim": "The seat-entry row of the Mine ledger prints the literal bare word 'block' in the date column with no number, although standing.receipt.block (number|null) is available in the readback; and the row offers only 'verify' where the wireframe drew 'receipt · verify' (the founding purchase's full ticket exists at /receipts — R-BIND), because hasReceipt is hardcoded false for the entry row.",
+          "evidence": "`{r.day ?? `block`}` renders 'block' alone; walletSession.ts:272 defines receipt as { transaction, block: number | null, explorerUrl }. Commit 9607ea0 honestly states the signed-IN render was not rig-measured (needs a real SIWE session), so this cell has never been seen rendered — it lands exactly in the preview-gate blind spot."
+        },
+        {
+          "severity": "info",
+          "where": "referrerKit.tsx CardVanity* vs m3-vanity-card-wireframe.html frame 1 geometry (element-by-element diff for the PRE-HANDOFF GATE)",
+          "claim": "Two drawn elements differ in the build, both house-grammar-consistent but never shown to the founder: the wireframe's corner interlock mark + one-line brand became the standard left Masthead (emblem + THE SYNDICATE / ON-CHAIN MEMBERSHIP PROTOCOL), and 'verify ↗' became 'VERIFY 0x1234…abcd' (short tx — correct for a PNG that cannot carry a link). Also the collectible pair renders story-first on ALL widths (desktop included), where frame 2 drew square first and the mobile clause only demanded story-first on phones.",
+          "evidence": "CardVanityOg uses Masthead(72/30/20) with no corner mark; vanityWrittenLine() emits 'WRITTEN ON-CHAIN · day · BLOCK n · VERIFY 0x…'; ReferralToolsPanel.tsx:503-521 orders refs.vstory before refs.vsquare in the flex row. Name these at the founder preview so the element diff is declared, not discovered."
+        },
+        {
+          "severity": "info",
+          "where": "Scope of this sweep's api-guard measurement",
+          "claim": "Only the 4 batch-touched api guards were re-run individually (join-card, duplicate-facts, member-continuity-schema, holder-index); the other 17 of the 21-chain were not re-executed in this sweep — their green status rests on f6d5859's measured '21 api guards green', not on a fresh run here.",
+          "evidence": "Chain order per artifacts/api-server package.json 'guards'; several untouched guards hit chain/DB and were out of proportion for a read-only sweep."
+        }
+      ],
+      "measured": "Run fresh on this tree (main @ 425abae): studio typecheck exit 0 · studio 30-guard chain exit 0 (type-scale 12px floor held on 266/308 files, touch-target 44px floor held with 37-entry debt allowlist, focus-visible/contrast/theme-parity/spacing all PASS) · full studio build exit 0 (vite ok, 37 route shells prerendered, precompress verify 378 twins byte-identical, guard-admin-dist 105 checks PASS) · api join-card.guard PASS 36/36 pins · api guard-duplicate-facts PASS (18 dups, all inside the 18-entry pinned debt list) · api member-continuity-schema.guard 40/40 · api holder-index.guard 77 checks OK · seniority arithmetic executed: seat 14 → 99.9986%, seat 500000 → 50 (trailing zeros trimmed), seat 1 → 99.9999%. NOT measured here: the other 17 api guards (see info finding), any rendered pixel (no rig was launched — read-only sweep), and the signed-in Mine render (needs a real SIWE session, as commit 9607ea0 itself states).",
+      "verdict": "GREEN WITH THREE NAMED GAPS, ALL CONVERGING ON THE STILL-PENDING PREVIEW GATE. A1 and M2-v2 honor their approved contracts bullet-for-bullet (segmented lens gold/44px/never-walled/deep-linked/hide-not-unmount; the 36-pin register verbatim, fail-closed everywhere, address law held, anti-MLM/no-dollar clean) and every gate re-run on this tree is green. M3's facts chain is sound (whole-story gating, &via=card, exact seniority arithmetic, type floors, real emblem, waits named), BUT two lines of the founder's engraved mobile clause are not built — previews do not SCALE at 375px (the 1200×630 collectible swipes inside its overflow box) and the three actions do not stack full-width/44px on phones (h-9 riding a pre-existing debt entry) — and the 5-probe battery has not yet run on the collectible trio, with a null-vanity fixture trap that would let it pass on an empty render. None of this blocks the commit-as-save-point; all of it must be resolved or founder-accepted AT the preview gate before the batch deploys — the gate is the law here (VISUAL CHANGE LAW §2), and skipping it would ship two wireframe-contract deviations sight-unseen."
+    },
+    "ledgers": {
+      "verdict": "SOUND AT HEAD, WITH THE GAPS MOVED TO THE SIDE-LEDGERS. Important context first: a handoff commit (ace1553, 00:16 +0300) landed DURING this audit and added a new 2026-08-03 resume block on top — it already fixes what the task predicted would be the top findings (the 08-02 header's stale PROD=ef3f89c + three \"DEPLOY BACKLOG IS EMPTY\" claims are now quarantined in a block relabeled \"historical — superseded\"). Audited at HEAD=ace1553: (1) the new header's PROD/backlog claim is TRUE — PROD=3a3efb8 (5th seal, recorded in 1f79830 and in (b)①), and the pending batch is exactly the 3 named code slices: I classified all 15 commits in 3a3efb8..HEAD and only 9607ea0 (A1) · 5e18f0a (M3) · c4a4f47+f6d5859 (M2-v2) touch code, all 11 others are docs-only; the \"NO migrations\" claim holds (zero .sql/migration/schema files in the batch — the only \"schema\" hit is a guard script). (2) The work-order ①②③ states are consistent: ① reserves LIVE via the 5th seal, ② A1 built, ③ M3+M2v2 built, and the honest red-push record (c4a4f47 committed red, f6d5859 sealed green) stands in the old block's (b)③ exactly where the new (c) points. (3) The founder-pending list is current (« publie » · 4 composition wireframes · « téléchargé » · K4 · AW-5) with two small notes below. The lines today's work made false now live in OPEN_QUEUE.md (top block still says \"A1 EN VOL\"; the whole evening arc after the 5th seal is ABSENT — no block records A1/M3/M2v2 built or the batch awaiting « publie ») and BACKLOG.html (last touched at ef3f89c, before the 5th seal: eight named stale rows/lines listed in findings). A handoff must add one new OPEN_QUEUE top block and strike/annotate the named BACKLOG lines; SESSION_STATE itself needs only the two low-severity pointer fixes.",
+      "findings": [
+        {
+          "severity": "medium",
+          "where": "docs/direction/OPEN_QUEUE.md lines 3-15 (top block, 2026-08-02 NUIT)",
+          "claim": "Item ③ says « GO » … A1 EN VOL — false at HEAD: A1 is BUILT (9607ea0). The entire evening arc after the 5th seal is absent from OPEN_QUEUE: A1 built+rig-verified 15/15, the Referrer-Kit SYSTEM-FIRST gate (606ab66), M3 built (5e18f0a), M2-v2 built (c4a4f47+f6d5859, incl. the honest red-push record), and the three-slice batch awaiting « publie ». The standing rule (OPEN_QUEUE updates every session) was not exercised — the handoff commit ace1553 touched only SESSION_STATE.md. A handoff must append one new top block.",
+          "evidence": "git log shows a8c36c9 (« go » A1) is the last commit touching OPEN_QUEUE.md; top block's ①② (reserves live, « on garde ») are correct — only ③ went stale."
+        },
+        {
+          "severity": "medium",
+          "where": "docs/direction/BACKLOG.html — the '27 juillet → 2 août — l'autonomie' callout, 'LE 2 AOÛT, SUITE' paragraph",
+          "claim": "\"C'est la SEULE tranche en attente de déploiement, groupable, rien ne presse\" (about db5bb85 pagination) is false twice over: pagination DEPLOYED+SEALED in the 4th cycle (ef3f89c), and the pending deploy is now the three-slice batch A1+M3+M2v2. Also the callout ends before the 5th seal — the reserves build (six cards, LINK+GOLD live, market-hours window, 3a3efb8) is absent entirely.",
+          "evidence": "BACKLOG.html last touched at commit ef3f89c (before the 5th seal); git log -- docs/direction/BACKLOG.html."
+        },
+        {
+          "severity": "medium",
+          "where": "docs/direction/BACKLOG.html lines 226, 229 and 517-518 (sequence step 1 + row A1)",
+          "claim": "\"A1 — My Activity : reste la lentille Mine|Protocol\" is false: the lens is built (9607ea0, rig-verified 15/15, awaiting deploy in the batch). Corollary: rows gated \"dépend de A1\" (lines 583, 1062-1063 — B1 FIRSTS \"ENGRAVED #2 (after A1)\") are now unblocked, matching the new boot block's (b) which names FIRSTS as next after the deploy."
+        },
+        {
+          "severity": "medium",
+          "where": "docs/direction/BACKLOG.html lines 541-545 (row M3, chip 'En file')",
+          "claim": "M3 Collectible listed as queued is false: built in 5e18f0a (collectible trio, seat door, &via=card QR, story-first mobile clause), awaiting deploy in the batch."
+        },
+        {
+          "severity": "medium",
+          "where": "docs/direction/BACKLOG.html lines 533-535 (row M2) and 850-851 (referral row)",
+          "claim": "\"the generic member Referrer Kit is the open half\" and \"RESTE : la carte referral de /join · le Referrer Kit/OG card (avec M2/M3)\" are half-false: the 606ab66 SYSTEM-FIRST recon found the K-arc (13-artifact arsenal · unfurl · admin axis · analytics · Connector ladder) DONE-IS-DONE live, and M2-v2 living unfurls are built (c4a4f47). What genuinely remains: C the /join referral-showcase card · E press kit · D K4 (founder's reserved decision)."
+        },
+        {
+          "severity": "low",
+          "where": "docs/direction/BACKLOG.html line 2118",
+          "claim": "\"TES DÉCISIONS (inchangées) : LINK.e price-feed · …\" — the LINK.e price-feed decision is resolved and LIVE in prod (LINK card + LINK/USD feed 0x49cc…de9a in the 5th seal); the line should strike that item."
+        },
+        {
+          "severity": "low",
+          "where": "docs/direction/BACKLOG.html — end of the autonomy callout (holder-index sentence)",
+          "claim": "\"le pont retraite du snapshot holder-index … toute retraite est TA décision, options à l'écran d'abord\" is superseded by the a8c36c9 ruling « on garde » — ANSWERED FOREVER, no retirement ever, /api/holder-index permanent as the sealed genesis attestation. The line should carry the dated strike so no session re-opens it from BACKLOG."
+        },
+        {
+          "severity": "low",
+          "where": "docs/SESSION_STATE.md — new 2026-08-03 header (added by ace1553)",
+          "claim": "The pointer \"the founder-pasteable Replit message … is in the 2026-08-03 chat, engraved in (b)③ below\" is inaccurate: the old block's (b)③ says only \"the Replit message handed in chat\"; the actual 6-check list is engraved in the new header's own parenthetical, nowhere in (b)③. Cold reader can still reconstruct — fix the pointer or move the checks into a body section."
+        },
+        {
+          "severity": "low",
+          "where": "docs/SESSION_STATE.md — the 2026-08-02 historical block, section (c)",
+          "claim": "The superseded block's own founder-pending still lists \"The 3 reserves-wireframe decisions → then the LINK.e/XAUt0 reserves build\" — false within its own day (the same block's (b)① records the decisions taken and the build sealed as the 5th seal). Harmless now that the block is labeled historical, but it contradicts its own body."
+        },
+        {
+          "severity": "low",
+          "where": "docs/SESSION_STATE.md — new (c) founder-pending vs old (c)",
+          "claim": "The item \"His connected glance at /admin (16 rows · 5 sources · pagination) — the seal's usual last metre\" was dropped from the new (c) without a recorded resolution. No repo trace either way (prod manual acts leave none); per the standing memory rule, the next session should check the transcripts before either reciting or considering it closed — flagged as unverifiable, not as a defect."
+        },
+        {
+          "severity": "low",
+          "where": "docs/DESIGN_ROADMAP.md (last touched 6c94ace, ~2026-07-29)",
+          "claim": "The design slices A1/M3/M2v2 did not tick DESIGN_ROADMAP in the same commit (the standing rule). Lines 270 and 418 still describe view-receipt/binder pieces as rising \"avec A1\" — worth a handoff check now that A1's remaining piece (the lens) is built. Not confirmed false — flagged for verification, not asserted."
+        }
+      ],
+      "measured": "MEASURED: git status/log at three moments (HEAD moved 425abae→ace1553 mid-audit via a concurrent handoff commit; final state main=origin/main, tree clean); full file-level classification of all 15 commits in 3a3efb8..HEAD (git show --name-only per commit): exactly 4 code commits = the 3 named slices, 11 docs-only, zero migration/.sql/schema files (only a guard script matches 'schema'); the ace1553 diff read in full; SESSION_STATE.md's new 2026-08-03 block + the whole 2026-08-02 block read top to bottom (lines 1-339); OPEN_QUEUE.md lines 1-558 (all 2026-08-02 and 07-30/31 blocks — newest-first file, older 1800 lines are dated history not read); BACKLOG.html audited by targeted greps (A1/M2/M3/reserves/LINK.e/holder-index/update banners) plus full reads of the catch-up region (lines 196-231) and the M3 row block; DESIGN_ROADMAP.md and featureStatus.ts checked by last-touching commit only. NOT MEASURED (said honestly): no guards/typecheck/build were re-run (the record's green claims at f6d5859 taken from the commit trail, not re-verified); the five Replit seal reports live in chat only and were not re-verified against prod; chat-side founder acts (the /admin connected glance, « publie » status) are unverifiable from the repo; BACKLOG.html's ~2100 lines were not read line-by-line, so stale rows outside the grepped vocabulary could exist."
+    },
+    "integrity": {
+      "verdict": "CLEAN — the pending deploy batch is exactly the three named slices (A1 9607ea0 · M3 5e18f0a · M2-v2 c4a4f47+f6d5859) plus docs/recon/state bookkeeping. Every one of the 19 files in git diff 3a3efb8..HEAD maps to a named commit; zero unexplained files, so no CONFIRMED-HIGH. All named untouched systems verified untouched per-path. Both guard chains byte-identical to prod and measured green at HEAD, both typechecks 0. One history fact to carry (already self-sealed): f6d5859's own message records c4a4f47 was committed while the 21-chain was RED; the chain is green now, independently re-measured.",
+      "findings": [
+        {
+          "severity": "MEDIUM (historical, already sealed — report truth, nothing to fix)",
+          "where": "commit f6d5859, artifacts/api-server (c4a4f47 is the affected commit)",
+          "claim": "c4a4f47 (M2-v2) was committed while the 21-guard api chain was RED — the commit was chained after the guard loop with \";\" so the guard result could not gate it. Three guards had rightly caught the slice (member-continuity-schema, holder-index, duplicate-facts).",
+          "evidence": "f6d5859's own commit message opens with \"HONEST RECORD: c4a4f47 was committed while the 21-chain was RED\". The follow-up f6d5859 registered src/joincard/introducerRead.ts in BOTH lazy-DB allow-lists and amended the 1M debt pin with written reasons (+18 insertions, insert-only). Independently re-measured this audit: all 21 api guards GREEN at HEAD."
+        },
+        {
+          "severity": "LOW (precision note on the brief, not a defect)",
+          "where": "artifacts/api-server/scripts/holder-index.guard.ts",
+          "claim": "The brief says 'holder-index everything' untouched — strictly, the holder-index GUARD SCRIPT gained 5 insert-only lines in f6d5859: one DB_LAZY_ALLOW entry for src/joincard/introducerRead.ts with its written reason (the known twin allow-list of member-continuity-schema). No holder-index runtime, read-model, route, snapshot script, or api-zod type moved.",
+          "evidence": "git show f6d5859 -- holder-index.guard.ts = +5 lines inside DB_LAZY_ALLOW only. git log 3a3efb8..HEAD empty for: scripts/holder-index-core.ts, holder-index-reconcile.ts, holder-index-snapshot.ts, src/lib/protocol (holderIndexSnapshot/Standing), src/routes/holderIndex.ts, lib/api-zod. holder-index.guard.ts runs GREEN at HEAD."
+        },
+        {
+          "severity": "INFO",
+          "where": "origin/main HEAD",
+          "claim": "HEAD advanced during the audit: ace1553 (docs(handoff): the 2026-08-03 resume block, docs/SESSION_STATE.md only) landed on origin/main between command batches. The audit's sealed baseline is therefore ace1553, one docs-only commit above the briefed tip 425abae. HEAD = origin/main, no divergence; acdf638 from the stale session snapshot verified an ancestor deeper in history (before 3a3efb8).",
+          "evidence": "git rev-parse HEAD origin/main both = ace1553; git merge-base --is-ancestor acdf638 HEAD exit 0; ace1553 touches only docs/SESSION_STATE.md, already classified in the docs/state slice."
+        },
+        {
+          "severity": "VERIFIED-CLEAN (the affirmative checks)",
+          "where": "git diff 3a3efb8..HEAD (19 files) + per-path git log",
+          "claim": "All 19 changed files classify into the four named buckets with zero orphans: A1 = LiveActivityFeed.tsx(M) + ActivityMineLedger.tsx(A) + wireframe(A) + A1_LENS_RECON(A); M3 = ReferralToolsPanel.tsx + referrerKit.tsx + chapters.ts + MemberYourSeat.tsx (all M) + m3 wireframe(A) + REFERRER_KIT_RECON(A); M2-v2 = introducerRead.ts + joinCardPainter.ts + routes/joinCard.ts + join-card.guard.ts (c4a4f47) + 3 guard-script registrations (f6d5859); docs/state = SESSION_STATE.md (9 commits) + OPEN_QUEUE.md (a8c36c9). Untouched per empty git log 3a3efb8..HEAD: src/auth, src/backbone (spine), src/season, src/receiptcard (receipts core), src/operator, src/canon, src/channel, src/data, src/lib, src/middlewares, migrations, drizzle, contracts, lib/api-zod, all three holder-index scripts, ProtocolReservesBand.tsx (reserves band), studio pages/config/hooks/content/operator. No db/migration/env/schema file anywhere in the diff. Both package.json files byte-identical to 3a3efb8 (empty diff); api guards chain = exactly 21 pnpm-run invocations in the pinned order.",
+          "evidence": "git log 3a3efb8..HEAD --oneline --name-only (full commit→file map); git diff 3a3efb8 HEAD --name-status; git diff 3a3efb8 HEAD -- <both package.json> empty; 17 directory paths + 8 file paths each returned empty git log."
+        }
+      ],
+      "measured": "At HEAD = ace1553 (= origin/main, verified): all 21 api guards run individually via node_modules\\.bin\\tsx.cmd from artifacts/api-server in the exact package.json chain order — 21/21 GREEN, 0 failures (the chain's inner pnpm is not on cmd PATH on this box, the known plumbing; individual runs are the documented equivalent). Studio: corepack pnpm run guards (PORT=5173, BASE_PATH=/) — full blocking chain PASS through no-raw-color (0 raw-color sites), debt counters all within allowlists. api typecheck (tsc --noEmit) exit 0; studio typecheck exit 0. NOT measured: studio production build, SEO battery (no registry/route-posture file moved in this diff), rendered pages (PREVIEW GATE territory), and prod runtime — this audit covers the git tree 3a3efb8..ace1553 only."
+    }
+  },
+  "workflowProgress": [
+    {
+      "type": "workflow_phase",
+      "index": 1,
+      "title": "Audit"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 1,
+      "label": "gates",
+      "phaseIndex": 1,
+      "phaseTitle": "Audit",
+      "agentId": "afd388a063380c487",
+      "model": "claude-fable-5",
+      "state": "done",
+      "startedAt": 1785705358530,
+      "queuedAt": 1785705353374,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "GREEN — CERTIFIED. All six lanes exit 0 fresh: api typechec…",
+      "promptPreview": "SENIOR GATES CERTIFIER. Repo: C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os. READ-ONLY (no edits/commits); running guards/typecheck/build allowed. Plumbing: corepack pnpm run <script>; api guards individually via .\\node_modules\\.bin\\tsx.cmd from artifacts\\api-server (chain order = package.json \"guards\", 21 scripts); studio build needs $env:PORT=\"5173\"; $env:BASE_PATH=\"/\". PROD = 3a3efb8 (s…",
+      "lastProgressAt": 1785705563510,
+      "tokens": 72645,
+      "toolCalls": 14,
+      "durationMs": 204980,
+      "resultPreview": "{\"verdict\":\"GREEN — CERTIFIED. All six lanes exit 0 fresh: api typecheck 0 · all 21 api guards individually 0 (zero red) · api build 0 · studio typecheck 0 · studio guards chain 0 · studio build 0. Tree clean (git status --porcelain: 0 lines), nothing unpushed (origin/main..HEAD empty; HEAD = origin/main = ace1553 on main). 15 commits since prod 3a3efb8: 4 code, 11 docs-only. The pending deploy ba…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 2,
+      "label": "code",
+      "phaseIndex": 1,
+      "phaseTitle": "Audit",
+      "agentId": "a234944017b56b266",
+      "model": "claude-fable-5",
+      "state": "done",
+      "startedAt": 1785705359920,
+      "queuedAt": 1785705353375,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "Guards RUN against the current tree (from artifacts/api-ser…",
+      "promptPreview": "SENIOR CODE-LOGIC SWEEP. Repo: C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os. READ-ONLY (no edits/commits); running guards/typecheck/build allowed. Plumbing: corepack pnpm run <script>; api guards individually via .\\node_modules\\.bin\\tsx.cmd from artifacts\\api-server (chain order = package.json \"guards\", 21 scripts); studio build needs $env:PORT=\"5173\"; $env:BASE_PATH=\"/\". PROD = 3a3efb8 (…",
+      "lastProgressAt": 1785706002235,
+      "tokens": 159138,
+      "toolCalls": 50,
+      "durationMs": 642315,
+      "resultPreview": "{\"findings\":[{\"severity\":\"medium\",\"where\":\"artifacts/studio/src/wallet/ActivityMineLedger.tsx (rows composition, ~lines 157-166 and the rows.length===0 empty state)\",\"claim\":\"The Mine ledger collapses rows:null (readback contract: 'null = the record model is unavailable — honest gap, never guessed') into an empty array via `purchases.rows ?? []` and `introductions.rows ?? []`, turning UNAVAILABLE …"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 3,
+      "label": "design",
+      "phaseIndex": 1,
+      "phaseTitle": "Audit",
+      "agentId": "a6de3bc344d4a05fd",
+      "model": "claude-fable-5",
+      "state": "done",
+      "startedAt": 1785705363707,
+      "queuedAt": 1785705353375,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "Run fresh on this tree (main @ 425abae): studio typecheck e…",
+      "promptPreview": "SENIOR DESIGN-LAW SWEEP. Repo: C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os. READ-ONLY (no edits/commits); running guards/typecheck/build allowed. Plumbing: corepack pnpm run <script>; api guards individually via .\\node_modules\\.bin\\tsx.cmd from artifacts\\api-server (chain order = package.json \"guards\", 21 scripts); studio build needs $env:PORT=\"5173\"; $env:BASE_PATH=\"/\". PROD = 3a3efb8 (…",
+      "lastProgressAt": 1785705866576,
+      "tokens": 192258,
+      "toolCalls": 38,
+      "durationMs": 502869,
+      "resultPreview": "{\"findings\":[{\"severity\":\"medium\",\"where\":\"artifacts/studio/src/components/referral/ReferralToolsPanel.tsx:493-497 (collectible vog preview) vs docs/design/m3-vanity-card-wireframe.html contract line MOBILE\",\"claim\":\"The founder mobile clause 'the card previews SCALE to the viewport (never a sideways scroll at 375px)' is not implemented: the 1200×630 collectible preview is fixed at 600px (ScaledPr…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 4,
+      "label": "ledgers",
+      "phaseIndex": 1,
+      "phaseTitle": "Audit",
+      "agentId": "ae7108dba11bb6817",
+      "model": "claude-fable-5",
+      "state": "done",
+      "startedAt": 1785705365852,
+      "queuedAt": 1785705353375,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "SOUND AT HEAD, WITH THE GAPS MOVED TO THE SIDE-LEDGERS. Imp…",
+      "promptPreview": "SENIOR LEDGER COLD-READER. Repo: C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os. READ-ONLY (no edits/commits); running guards/typecheck/build allowed. Plumbing: corepack pnpm run <script>; api guards individually via .\\node_modules\\.bin\\tsx.cmd from artifacts\\api-server (chain order = package.json \"guards\", 21 scripts); studio build needs $env:PORT=\"5173\"; $env:BASE_PATH=\"/\". PROD = 3a3efb8…",
+      "lastProgressAt": 1785705751820,
+      "tokens": 138485,
+      "toolCalls": 20,
+      "durationMs": 385968,
+      "resultPreview": "{\"verdict\":\"SOUND AT HEAD, WITH THE GAPS MOVED TO THE SIDE-LEDGERS. Important context first: a handoff commit (ace1553, 00:16 +0300) landed DURING this audit and added a new 2026-08-03 resume block on top — it already fixes what the task predicted would be the top findings (the 08-02 header's stale PROD=ef3f89c + three \\\"DEPLOY BACKLOG IS EMPTY\\\" claims are now quarantined in a block relabeled \\\"h…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 5,
+      "label": "integrity",
+      "phaseIndex": 1,
+      "phaseTitle": "Audit",
+      "agentId": "a71ccc8db3665dcde",
+      "model": "claude-fable-5",
+      "state": "done",
+      "startedAt": 1785705362605,
+      "queuedAt": 1785705353375,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "CLEAN — the pending deploy batch is exactly the three named…",
+      "promptPreview": "SENIOR WEEKS-INTEGRITY. Repo: C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os. READ-ONLY (no edits/commits); running guards/typecheck/build allowed. Plumbing: corepack pnpm run <script>; api guards individually via .\\node_modules\\.bin\\tsx.cmd from artifacts\\api-server (chain order = package.json \"guards\", 21 scripts); studio build needs $env:PORT=\"5173\"; $env:BASE_PATH=\"/\". PROD = 3a3efb8 (s…",
+      "lastProgressAt": 1785705679142,
+      "tokens": 79429,
+      "toolCalls": 20,
+      "durationMs": 316537,
+      "resultPreview": "{\"verdict\":\"CLEAN — the pending deploy batch is exactly the three named slices (A1 9607ea0 · M3 5e18f0a · M2-v2 c4a4f47+f6d5859) plus docs/recon/state bookkeeping. Every one of the 19 files in git diff 3a3efb8..HEAD maps to a named commit; zero unexplained files, so no CONFIRMED-HIGH. All named untouched systems verified untouched per-path. Both guard chains byte-identical to prod and measured gre…"
+    }
+  ],
+  "totalTokens": 641955,
+  "totalToolCalls": 142
+}
