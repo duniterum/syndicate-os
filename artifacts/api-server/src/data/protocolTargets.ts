@@ -308,6 +308,16 @@ export type FinancialTargets = {
   btcbTokenAddress: string;
   wethTokenAddress: string;
   /**
+   * SERVER-ONLY — the two 2026-07 treasury purchases (reserves build,
+   * founder GO and GO-Live 2026-08-02). Chain-verified 2026-08-02: LINK.e
+   * (bridged Chainlink) symbol "LINK.e", 18 decimals — entered the vault at
+   * block 91,336,828; XAUt0 (Tether Gold, 1 token = 1 troy oz) name/symbol
+   * "XAUt0", 6 decimals — recovered from the founder's gold swap
+   * (tx 0xe9b6…2029, block 91,571,070) and verified on its own contract.
+   */
+  linkTokenAddress: string;
+  xautTokenAddress: string;
+  /**
    * SERVER-ONLY — the NFT sale contract and the wallet its own `treasury()`
    * view declares as the payout destination for artifact mints (founder-named
    * "NFT Sale Wallet", 2026-07-25). The destination is RECONCILED, never
@@ -327,6 +337,15 @@ export type FinancialTargets = {
     avaxUsd: string;
     btcUsd: string;
     ethUsd: string;
+    /** Chain-verified 2026-08-02: description() "LINK / USD", 8 decimals.
+     *  Values the bridged LINK.e — the shipped BTC.b↔BTC/USD pattern. */
+    linkUsd: string;
+    /** Chain-verified 2026-08-02: description() "XAU / USD", 8 decimals
+     *  (USD per troy oz — XAUt0 is 1 token = 1 oz). Commodity feed: freshness
+     *  uses the MARKET-HOURS window, never the crypto 24h rule (founder
+     *  decision 2026-08-02; measured fact: it CAN publish on weekends —
+     *  3 Sunday rounds observed — so the window is a BOUND, not a schedule). */
+    xauUsd: string;
   };
   /** SERVER-ONLY AMM pair address (getReserves/token0 call target). */
   lpPair: string;
@@ -396,6 +415,12 @@ export const FINANCIAL_TARGETS: FinancialTargets = {
   // by the targets-reconcile guard against their own on-chain identity.
   btcbTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
   wethTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+  // The two 2026-07 treasury purchases (reserves build, founder GO 2026-08-02).
+  // Chain-verified 2026-08-02: LINK.e ("LINK.e", 18 dec, entered the vault at
+  // block 91,336,828) · XAUt0 (Tether Gold — name/symbol "XAUt0", 6 dec,
+  // recovered from the founder's gold swap tx 0xe9b6…2029 @ block 91,571,070).
+  linkTokenAddress: "0x5947BB275c521040051D82396192181b413227A3",
+  xautTokenAddress: "0x2775d5105276781b4b85ba6ea6a6653beed1dd32",
   // The NFT (artifact) sale contract and its declared payout wallet. The wallet
   // was chain-discovered 2026-07-22 and confirmed 2026-07-25 by reading the
   // contract's own treasury() view, which answers exactly this address.
@@ -407,6 +432,10 @@ export const FINANCIAL_TARGETS: FinancialTargets = {
     avaxUsd: "0x0A77230d17318075983913bC2145DB16C7366156",
     btcUsd: "0x2779D32d5166BAaa2B2b658333bA7e6Ec0C65743",
     ethUsd: "0x976B3D034E162d8bD72D6b9C989d545b839003b0",
+    // Chain-verified 2026-08-02: description() "LINK / USD" / "XAU / USD",
+    // both 8 decimals, sane positive answers ($8.3168 / $4,102.61 measured).
+    linkUsd: "0x49ccd9ca821EfEab2b98c60dC60F518E765EDe9a",
+    xauUsd: "0x1F41EF93dece881Ad0b98082B2d44D3f6F0C515B",
   },
   lpPair: "0xe12491b79c9cfc6a07db8cd7fc8b3da0bb019389",
   /**
