@@ -10,8 +10,14 @@
  *     plus Part A (raw V3 firstSeat purchase rows). Nothing is written anywhere.
  *   - This module imports NO database, NO network, NO server framework, and uses
  *     NO clock — same inputs always produce byte-identical output.
- *   - Served api-server code must NEVER import this module. It is script-side
- *     only (tsx), like every other Part A / Part B gate in ./scripts.
+ *   - ~~Served api-server code must NEVER import this module. It is script-side
+ *     only (tsx).~~ STRUCK 2026-08-02 (the refactoring law): that line dated
+ *     from the derive-only era. The founder's automation order (« ça doit
+ *     marcher automatiquement » — prod showed 14 seats while the chain held
+ *     16) makes the backbone the STANDING spine writer, so the served
+ *     backbone now imports this pure builder (src/backbone/
+ *     continuitySpineRefresh.ts) and runs the same verified pipeline the
+ *     founder-armed script uses. Purity is unchanged and still guard-pinned.
  *
  * Authority doctrine (never violated here):
  *   - Seats #1..#N(freeze) come from Part B `historical_member` rows anchored by
