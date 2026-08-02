@@ -1,15 +1,13 @@
 // Live public hero data — the ONLY data source for the hero's financial
 // figures. Every value is a real read-only on-chain read served by the
 // Protocol Reality Spine (GET /api/protocol/reality, cached ≤30s server-side
-// with stale-while-revalidate); the verified attestation line rides the
-// backbone status payload (useSpineAttestation). 2026-08-02 volet 1: the
-// static holder-index boot fallback died — this hook no longer calls
-// GET /api/holder-index at all.
+// with stale-while-revalidate) or the Holder Index aggregates
+// (GET /api/holder-index, static hash-pinned snapshot).
 //
 // Fail-closed doctrine: every field is `string | null` — null means the live
 // read is unavailable and the UI must show an honest "unavailable / checking"
 // state. NOTHING here ever falls back to a simulated figure.
-import { useGetProtocolReality } from "@workspace/api-client-react";
+import { useGetProtocolReality, useGetHolderIndex } from "@workspace/api-client-react";
 // THE ONE FIGURE: base-unit → display lives in exactly one module, and it
 // TRUNCATES. This hook used to carry its own half-up-rounding copy, which made
 // the same WETH.e holding read `0.026552` here and `0.026551` on /activity.
@@ -130,6 +128,7 @@ function findFinancialCount(
 
 export function useHeroReality(): HeroReality {
   const reality = useGetProtocolReality();
+  const holderIndex = useGetHolderIndex();
 
   const financial = reality.data?.groups.financial;
   const aggregateRaw = findFinancial(financial, "financial.inflow.aggregate");
@@ -148,16 +147,21 @@ export function useHeroReality(): HeroReality {
 
   // Verified attestation (point-in-time) — the divergence line, not the
   // headline. AMENDED 2026-08-02 (founder order: « it must be always up to
-  // date »): the spine lane re-verifies membership EVERY backbone cycle and
-  // publishes its latest VERIFIED run on the public status payload — the ONE
-  // attestation channel. VOLET 1 of the holder-index retirement (same day,
-  // « passe à la suite »): the static-snapshot BOOT FALLBACK died — a few
-  // seconds of honest absence at boot beat a frozen figure wearing a live
-  // line; the /api/holder-index endpoint itself still serves (old bundles +
-  // API consumers) and retires only AFTER this deploys (volet 2).
+  // date » — the committed snapshot froze at 14/Jul-16 while the chain held
+  // 16): the spine lane re-verifies membership EVERY backbone cycle and
+  // publishes its latest VERIFIED run on the public status payload; that
+  // attestation is preferred, and the committed snapshot remains only the
+  // honest boot fallback (before the first cycle's status is readable).
   const spine = useSpineAttestation();
-  const snapshotMemberTotal = spine?.memberTotal ?? null;
-  const snapshotAsOf = spine?.verifiedAtIso ?? null;
+  const snapMemberTotal = holderIndex.data?.memberTotal;
+  const staticSnapshotTotal =
+    typeof snapMemberTotal === "number" && Number.isFinite(snapMemberTotal) && snapMemberTotal >= 0
+      ? snapMemberTotal
+      : null;
+  const builtAt = holderIndex.data?.provenance?.builtAt;
+  const staticSnapshotAsOf = typeof builtAt === "string" && builtAt.length > 0 ? builtAt : null;
+  const snapshotMemberTotal = spine?.memberTotal ?? staticSnapshotTotal;
+  const snapshotAsOf = spine?.verifiedAtIso ?? staticSnapshotAsOf;
   const membersDiverged =
     liveMemberCount !== null &&
     snapshotMemberTotal !== null &&
@@ -207,7 +211,7 @@ export function useHeroReality(): HeroReality {
   }
 
   return {
-    loading: reality.isLoading,
+    loading: reality.isLoading || holderIndex.isLoading,
     membersTotal: membersTotalNumber === null ? null : membersTotalNumber.toLocaleString("en-US"),
     membersTotalNumber,
     chapterFacts: currentChapterFacts(membersTotalNumber),
