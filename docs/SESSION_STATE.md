@@ -33,7 +33,20 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > tsx-direct guard chain · PORT/BASE_PATH · detached api recipe) lives in the 2026-08-02
 > block below — read it before running anything.
 >
-> ## (c) FOUNDER-PENDING: « publie » (the batch) · the 4 composition wireframes ·
+> **🚀 SEALED 2026-08-03: PROD = `c2b1168` (the batch — Replit 6/6: entry
+> `index-B903mBG_.js` = `a0353ba8…f94e` · /activity lens live, ?lens=mine invitation
+> zero-data · the trio strings in the live bundle · the seat-3 card pixel-inspected « by
+> Seat #3 · Chapter I » · the gold door · backbone ok, spine 16). DEPLOY BACKLOG EMPTY.**
+> ⚠ FOUNDER-CAUGHT same hour (/referral/tools Share… on DESKTOP): « Sheet unavailable —
+> image downloaded, link copied » — VERIFIED NOT A REGRESSION: the share handler
+> (ReferralToolsPanel ~190-222, the K1 arc) was untouched by every batch diff; that label
+> IS the designed honest fallback on engines without the native share sheet (desktop
+> Chrome/Windows: navigator.share absent → download + link copied). The native sheet
+> opens on PHONES. **NAMED NEXT SLICE (his go): the kit's Share… gains the receipts-style
+> INTENT buttons (X · Telegram · WhatsApp prefilled links — the R-BIND-2 dual-share
+> precedent) as the desktop fallback, so desktop SHARES instead of explaining.**
+>
+> ## (c) FOUNDER-PENDING: « publie » ~~(the batch)~~ ✅ SEALED · the 4 composition wireframes ·
 > « téléchargé » (dump.sql.gz) · K4 no-seat promoter (his reserved decision) · AW-5 (the
 > 2 artifacts: protocol mint or Community). Known-accepted: the badge appears after the
 > live read · the seats bar = count vs chapter-END window · the honest red-push record
