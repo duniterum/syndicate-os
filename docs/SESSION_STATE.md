@@ -164,8 +164,15 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   1 poll total) · ~~/status frozen holder-index headline (14 · July 16)~~ — CLOSED same
 >   day (the round-2 slice): the headline now reads the live verified line (hero's own
 >   channel), the sealed snapshot demoted to named genesis attestation + boot fallback;
->   endpoint retirement (volet 2: hero drops its fallback call, then route+client+guard
->   retirement AFTER that deploys) stays a candidate. · Accepted-known: the
+>   endpoint retirement — ⛔ **FOUNDER RULING 2026-08-02 (« pas que tu me casses des
+>   semaines de travail »): the hero's honest BOOT FALLBACK to the sealed snapshot is HIS
+>   sealed (a4) design and STAYS.** A volet-1 commit that dropped it (e94c24a) was
+>   REVERTED same hour (18e2079, gates green) — the dated, labeled, hash-pinned snapshot
+>   is resilience, not a fossil; removing a founder-sealed fallback is a FOUNDER GATE,
+>   never a reviewer's "safe shape". The remaining candidate is HIS decision, options on
+>   screen when he asks: (bridge, cheapest) keep /api/holder-index forever as the sealed
+>   genesis attestation, or (full) the two-deploy retirement — nothing builds until he
+>   picks. · Accepted-known: the
 >   header chapter badge appears AFTER the live read resolves (honest absence, loaded
 >   pixels identical) · the seats bar reads cumulative-count vs chapter-END window (a
 >   fresh chapter opens ~1/3 full — correct, not a bug).
