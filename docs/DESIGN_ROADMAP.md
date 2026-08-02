@@ -4,6 +4,17 @@
 même commit. **Tout le monde travaille depuis CE doc** — fondateur, Claude Code,
 Claude-conseil, Replit. Personne ne part de son côté.
 
+> **▶ Rattrapage 2026-08-03 (le marathon 02→03, six sceaux — PROD = `c2b1168`) :**
+> livrés et EN PROD : la pagination dormante des deux tableaux publics (wireframe
+> approuvé « ok les 2 ») · la bande RÉSERVES 3×2 six actifs (mark XAUt0 officiel,
+> fenêtre heures-de-marché) · **A1 — la lentille [Protocol | Mine] de /activity**
+> (wireframe approuvé + « go continue ») · **M3 — le trio Collectible** (wireframe +
+> clause mobile approuvés) · **M2-v2 — l'aperçu vivant par siège** (« by Seat #3 ·
+> Chapter I », prouvé aux pixels). Dossiers/wireframes dans docs/design/ +
+> docs/reference/. ⚠ Balayage dû à la prochaine session design : re-lire les notes
+> « montent avec A1 » (lignes ~357/418) — A1 est FAIT, ces riders sont à cocher ou à
+> re-dater ; prochaine tranche nommée : les intents desktop du Share… du kit.
+
 ---
 
 ## Définition de "FINI" (grade-AAA, pas juste "construit")
