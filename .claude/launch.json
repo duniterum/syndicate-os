@@ -11,8 +11,8 @@
         "artifacts/studio"
       ],
       "port": 5173,
+      "autoPort": true,
       "env": {
-        "PORT": "5173",
         "BASE_PATH": "/"
       }
     },

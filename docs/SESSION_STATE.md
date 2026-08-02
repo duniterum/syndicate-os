@@ -196,7 +196,17 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   (pinned contracts); future explorer-reading lanes must key on pinned addresses, never
 >   symbol. **HIS WORD GIVEN: « C »** — the AVAX card shows the raw live balance PLUS the
 >   honest meta line (human words: the vault pays its own transaction fees from this
->   balance). ALL DECISIONS TAKEN — the build executes with zero open questions.** Rides
+>   balance). ALL DECISIONS TAKEN.** **✅ BUILT + RIG-VERIFIED (commits `99056d4` targets ·
+>   `51b5fa2` server RED-first 181/181 · `c7ed290` studio): the detached api serves 39
+>   financial items with the four new ones LIVE off the real chain (1.0042 LINK · 3,144 raw
+>   XAUt0 · LINK $8.27 · XAU $4,051.28 on a SUNDAY — the window works); the home band
+>   renders SIX cards in HIS exact order with the « C » line + the market-hours line, the
+>   official mark decodes, the TOTAL VALUES ($297.96); /contracts serves Vault LINK
+>   (≈$8.30) + Vault GOLD (≈$12.74, troy-oz + market-hours meta) inside the fail-closed
+>   total, 70/20/10 intact. All gates green both artifacts + the full SEO battery.
+>   NOT rig-measurable (hidden pane, 0-width viewport): the 3-col desktop geometry —
+>   the class is committed; Replit's checks + the founder's glance cover the pixels.
+>   AWAITING: the founder's go-live word → the Replit message (handed in chat).** Rides
 >   docs/design/reserves-band-6-assets-mockup.html —
 >   feeds verified on-chain (LINK/USD `0x49cc…de9a` · XAU/USD `0x1F41…515B`); same slice
 >   adds the two /contracts rows (Vault LINK · Vault GOLD); admin panel automatic.
