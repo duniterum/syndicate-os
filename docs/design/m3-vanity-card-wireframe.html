@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wireframe — M3 · the Collectible seat card (vanity, chain-proven)</title>
+<style>
+  :root{--bg:hsl(224 71% 4%);--fg:hsl(213 31% 91%);--border:hsl(216 34% 17%);--card:hsl(222 47% 7%);
+  --muted:hsl(215.4 16.3% 56.9%);--gold:hsl(42 92% 60%);--proof:rgb(13 204 242);
+  --serif:'Instrument Serif',Georgia,serif;--sans:'Work Sans',system-ui,sans-serif;--mono:'IBM Plex Mono',Menlo,monospace}
+  *{margin:0;box-sizing:border-box} body{background:#0b0e14;color:var(--fg);font-family:var(--sans);padding:32px 16px 64px}
+  .wf-title{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);max-width:1240px;margin:0 auto 8px}
+  .wf-note{font-size:14px;color:var(--muted);max-width:1240px;margin:0 auto 24px;line-height:1.5}
+  .frame{background:var(--bg);border:1px solid var(--border);border-radius:8px;max-width:1240px;margin:0 auto 36px;overflow:hidden}
+  .frame-label{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);padding:10px 16px;border-bottom:1px dashed var(--border);background:var(--card)}
+  .stage{padding:32px;display:flex;justify-content:center}
+
+  /* THE CARD — og 1200×630, shown at 50% (600×315): real proportions */
+  .vcard{width:600px;height:315px;border:1px solid hsl(42 92% 60% / .35);border-radius:12px;
+    background:linear-gradient(135deg,hsl(222 47% 7%),hsl(224 71% 4%));position:relative;overflow:hidden;padding:26px 30px;
+    display:flex;flex-direction:column;justify-content:space-between}
+  .vcard .mark{position:absolute;top:22px;right:26px;width:44px;height:44px;border:2px solid var(--gold);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);color:var(--gold);font-size:20px}
+  .vcard .brand{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+  .vcard .seat{font-family:var(--serif);font-size:76px;line-height:1;color:var(--gold);margin-top:6px}
+  .vcard .chapter{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg);margin-top:8px}
+  .vcard .seniority{font-size:15px;color:var(--fg);margin-top:10px;max-width:40ch;line-height:1.45}
+  .vcard .seniority b{color:var(--gold);font-weight:600}
+  .vcard .foot{display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+  .vcard .written{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .vcard .qr{width:64px;height:64px;border:1px solid var(--border);border-radius:6px;background:
+    repeating-conic-gradient(var(--fg) 0% 25%, transparent 0% 50%) 0 0/16px 16px;opacity:.85}
+  .cap{font-size:13px;color:var(--muted);max-width:68ch;margin:0 auto;padding:0 32px 26px;line-height:1.6}
+
+  .row{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;padding:0 32px 30px}
+  .thumb{border:1px solid var(--border);border-radius:8px;background:var(--card);padding:12px;text-align:center}
+  .thumb .t{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:8px}
+  .sq{width:150px;height:150px;border:1px solid hsl(42 92% 60%/.3);border-radius:8px;background:linear-gradient(135deg,hsl(222 47% 7%),hsl(224 71% 4%));
+    display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .sq .n{font-family:var(--serif);font-size:44px;color:var(--gold)}
+  .st{width:86px;height:150px;border:1px solid hsl(42 92% 60%/.3);border-radius:8px;background:linear-gradient(160deg,hsl(222 47% 7%),hsl(224 71% 4%));
+    display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .st .n{font-family:var(--serif);font-size:30px;color:var(--gold)}
+  .actions{display:flex;gap:10px;justify-content:center;padding-bottom:28px}
+  .abtn{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid var(--border);border-radius:6px;font-size:14px;color:var(--fg)}
+  .abtn.primary{background:var(--gold);color:#1a1405;border-color:var(--gold);font-weight:600}
+
+  .contract{max-width:1240px;margin:0 auto;border:1px solid var(--border);border-radius:8px;padding:22px;background:var(--card)}
+  .contract h2{font-family:var(--serif);font-weight:400;font-size:22px;margin-bottom:10px}
+  .contract li{font-size:14px;line-height:1.65;margin-left:18px;color:var(--fg)}
+</style>
+</head>
+<body>
+
+<div class="wf-title">Wireframe · M3 — the Collectible seat card · 2026-08-02</div>
+<p class="wf-note">The vanity face of a seat — every line a fact the chain proves, never a financial claim.
+It joins the kit arsenal (Download · Copy my link · Share, like the 13 others), carries the member's own
+referral QR (the M2 interlock), and mounts on the member's seat panel as « Your collectible ».</p>
+
+<!-- ══ FRAME 1 · THE CARD (og 1200×630, shown at real proportions) ══ -->
+<div class="frame">
+  <div class="frame-label">Frame 1 · The card — link format 1200×630 (drawn at 50%; type floors from the viewing context)</div>
+  <div class="stage">
+    <div class="vcard">
+      <div>
+        <div class="brand">THE SYNDICATE · ON-CHAIN MEMBERSHIP</div>
+        <div class="seat">Seat #14</div>
+        <div class="chapter">Chapter I · Genesis Signal</div>
+        <p class="seniority">Seated before <b>99.9986%</b> of the story — the 14th of
+        1,000,000 seats, written on-chain, forever.</p>
+      </div>
+      <div class="foot">
+        <div class="written">Written on-chain · 2026-07-13 · block 90,187,059 · verify ↗</div>
+        <div class="qr" aria-hidden="true"></div>
+      </div>
+      <div class="mark">S</div>
+    </div>
+  </div>
+  <p class="cap">The seat number in majesty (the page's serif voice, gold) · the chapter identity · THE SENIORITY
+  LINE — live figures: seat #N against the 1,000,000-seat canon (« the story ») — historical pride, never a promise ·
+  the entry receipt line with its verify link · the member's OWN referral QR (scanning it = the M2 loop). The
+  interlock mark tops the corner (the real emblem in the build — drawn schematic here).</p>
+</div>
+
+<!-- ══ FRAME 2 · THE TRIO + the kit home ══ -->
+<div class="frame">
+  <div class="frame-label">Frame 2 · The trio (link · square 1080 · story 1080×1920) + its arsenal row and share actions</div>
+  <div class="row">
+    <div class="thumb"><div class="sq"><div class="n">#14</div><div class="t" style="margin-top:2px">Chapter I</div></div><div class="t">square · 1080×1080</div></div>
+    <div class="thumb"><div class="st"><div class="n">#14</div></div><div class="t">story · 1080×1920</div></div>
+  </div>
+  <div class="actions">
+    <span class="abtn primary">Download</span><span class="abtn">Copy my link</span><span class="abtn">Share</span>
+  </div>
+  <p class="cap">The card ships as the arsenal's 14th artifact — the same three-format trio as the standing card,
+  the same three actions under it, in the same gallery on /referral/tools. It ALSO mounts on the member's seat
+  panel as « Your collectible » (one door, no new page).</p>
+</div>
+
+<!-- ══ THE CONTRACT ══ -->
+<div class="contract">
+  <h2>What this wireframe binds</h2>
+  <ul>
+    <li><strong>Facts only, chain-proven:</strong> seat № (own readback) · chapter (the one frozen table) · the seniority % against the 1,000,000-seat canon (the engraved final-seat milestone) · entry day + block (the own entry receipt). NEVER a dollar figure, a rate, or a promise — vanity is historical, not financial.</li>
+    <li><strong>The M2 interlock:</strong> the QR is the member's own referral link (&amp;via=card) — pride carries the loop.</li>
+    <li><strong>The arsenal grammar verbatim:</strong> three formats (1200×630 · 1080² · 1080×1920), Download · Copy my link · Share under each, per-format type floors (the engraved floors doc), the REAL interlock emblem, and the 5-probe battery before any handoff (fit · square-box · type-floor · overlap · QR-centering).</li>
+    <li><strong>Where it lives:</strong> a new arsenal row on /referral/tools + « Your collectible » on the member seat panel. No new page, no composition change elsewhere.</li>
+    <li><strong>Deliberate waits stay waited:</strong> the co-witness timeline and the Archive-artifact binding are M3 phase 2 — named, not smuggled.</li>
+    <li><strong>Anti-MLM filter holds:</strong> no leaderboard, no « recruit N more », no cash-flex — the banned list stays banned.</li>
+  </ul>
+</div>
+
+</body>
+</html>
