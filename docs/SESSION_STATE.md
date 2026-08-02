@@ -204,9 +204,17 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   official mark decodes, the TOTAL VALUES ($297.96); /contracts serves Vault LINK
 >   (≈$8.30) + Vault GOLD (≈$12.74, troy-oz + market-hours meta) inside the fail-closed
 >   total, 70/20/10 intact. All gates green both artifacts + the full SEO battery.
->   NOT rig-measurable (hidden pane, 0-width viewport): the 3-col desktop geometry —
->   the class is committed; Replit's checks + the founder's glance cover the pixels.
->   AWAITING: the founder's go-live word → the Replit message (handed in chat).** Rides
+>   **🚀 DEPLOYED + SEALED — PROD = `3a3efb8` (the FIFTH seal of 2026-08-02; Replit 6/6:
+>   13/13 blobs · entry `index-gfSkh4-t.js` = `462f859e…21bf`, console
+>   `OperatorConsole-CgQ6LY4E.js` = `ab45fc10…3207`, old entry 404s · migration
+>   nothing-to-apply CONFIRMED · six cards in the decreed order with both meta lines in
+>   the byte-identical bundle · /contracts Vault LINK 1.0042 + Vault GOLD 0.003144 with
+>   the three legs · reality 39 financial items ALL non-null (linkBalance
+>   1004221438348408136 · xautBalance 3144 · linkUsd $8.27 · xauUsd ~$4,102.61 readable
+>   on a Sunday) · backbone ok 0→2, failed:0, spine « unchanged (16 records) », the
+>   post-boot partials self-repaired via cursors). THE DEPLOY BACKLOG IS EMPTY. The
+>   founder's work-order item ① is LIVE — next per his order: ② A1 (My Activity
+>   Mine|Protocol lens) · ③ the Referrer Kit.** Rides
 >   docs/design/reserves-band-6-assets-mockup.html —
 >   feeds verified on-chain (LINK/USD `0x49cc…de9a` · XAU/USD `0x1F41…515B`); same slice
 >   adds the two /contracts rows (Vault LINK · Vault GOLD); admin panel automatic.
