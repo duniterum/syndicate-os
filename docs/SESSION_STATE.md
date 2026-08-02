@@ -151,10 +151,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >
 > ## (b) THE FOUNDER'S WORK ORDER (his decision, end of 2026-08-02: « on y va avec le 1 —
 > ## et met cet ordre pour les prochaines sessions ») — FOLLOW THIS ORDER:
-> · **① THE RESERVES BUILD** (IN FLIGHT — his 3 wireframe answers pending, questions handed
->   on screen 2026-08-02: grid 3×2 vs 4+2 · gold card face (house «Au» disc vs official
->   XAUt0 mark) · weekend honesty (market-hours freshness window for commodity feeds));
->   then the LINK.e/XAUt0 build rides docs/design/reserves-band-6-assets-mockup.html —
+> · **① THE RESERVES BUILD — GO and GO-Live (founder, 2026-08-02, « ok go and go-live »).
+>   THE 3 DECISIONS ARE TAKEN: 3×2 grid · the OFFICIAL XAUt0 mark (vendored, like LINK's) ·
+>   market-hours freshness window for commodity feeds, STATED on the card (crypto keeps
+>   24h).** Build IN FLIGHT, rides docs/design/reserves-band-6-assets-mockup.html —
 >   feeds verified on-chain (LINK/USD `0x49cc…de9a` · XAU/USD `0x1F41…515B`); same slice
 >   adds the two /contracts rows (Vault LINK · Vault GOLD); admin panel automatic.
 > · **② A1 — My Activity, the Mine|Protocol lens** (the engraved sequence's #1; unlocks C3).
