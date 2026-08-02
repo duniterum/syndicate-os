@@ -87,7 +87,7 @@ const BroadcastBody = z.object({
   link: z.string().max(128).nullish(),
 });
 
-// NOTIF-2b: delete a notification by its stable id (from the masked list).
+// NOTIF-2b: delete a notification by its stable id (from the sent list).
 const DeleteNotificationBody = z.object({
   id: z.string().min(1).max(64),
 });
@@ -240,7 +240,7 @@ router.post("/operators/suspend", async (req: Request, res: Response) => {
 
 // ── GET /api/operator/operators (list) ──────────────────────────────────────
 // Admin-tier registry READ: founder_root or protocol_admin. Read-only; the
-// service returns masked wallets only, so no full operator PII leaves the server.
+// service serves full + short + explorer-linked wallets (address law 2026-07-25).
 router.get("/operators", async (req: Request, res: Response) => {
   if (!allowRequest(throttleKey(req))) {
     req.log.warn({ event: "operator.list.throttled" });
@@ -273,7 +273,7 @@ router.get("/operators", async (req: Request, res: Response) => {
 
 // ── GET /api/operator/member-ledger (M-INT-1; A21 shipped 2026-07-20) ───────
 // FOUNDER-ONLY READ: the per-seat member ledger — a projection of already-
-// indexed data with SERVER-MASKED short wallets (the §D privacy overlay
+// indexed data with full + short + explorer-linked wallets (the §D overlay
 // restricts memberNumber↔wallet pairings to founder_root, stricter than the
 // admin-tier WRITE_ROLES). No query/params exist (never a lookup API —
 // ADR-003). A21: rows now carry their receipts' 64-hex verify anchors, so
@@ -572,7 +572,7 @@ router.post("/activation-requests/decide", async (req: Request, res: Response) =
 // ── POST /api/operator/activation-requests/wallet (K3.a) ────────────────────
 // FOUNDER-ONLY READ — THE SIGNING MATERIAL: one request's FULL wallet, so the
 // founder's wallet screen signs exactly the wallet the request named
-// (createSource takes a wallet; the queue list stays masked). This is the
+// (createSource takes a wallet; queue rows also carry it since 2026-08-02). This is the
 // queue's ONE deliberate address-emitting response (the verify-links pattern
 // for legitimate address material) — dated pin in guard-auth-zone; every
 // read is audit-rowed inside the service. The 40-hex output scan is

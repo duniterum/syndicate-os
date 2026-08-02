@@ -1,5 +1,35 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-02 (TRANCHE 3 — LA REVUE SENIOR « toutes casquettes, 3-5 agents » ET SON DURCISSEMENT.)**
+> Sur l'ordre du fondateur, 4 relecteurs seniors indépendants (serveur · client/lois design ·
+> intégrité des gardes · vision holistique) ont relu TOUTE la journée, puis chaque trouvaille
+> confirmée a été corrigée le jour même : ① [HAUT, prouvé par PoC] la regex d'effacement des
+> imports de types pouvait être détournée depuis une chaîne littérale pour avaler un VRAI import
+> — resserrée (`[\w\s,]*`) et centralisée en UN module auto-prouvant (guardImportHygiene relance
+> le PoC à chaque exécution) ; ② [MAJEUR ×2, même racine] la clé de provenance de la colonne
+> vertébrale était plus étroite que la surface du hash — la provenance est maintenant photographiée
+> AVANT les selects, la couverture des horodatages est une PORTE de persistance (fini le faux
+> HASH_DRIFT sur horodatage tardif, fini le membre manquant derrière « provenance stable ») et les
+> pré-lectures du persist sont DANS la transaction avec verrou (deux écrivains se sérialisent) ;
+> ③ les 4 épingles d'absence bannissent maintenant TOUTES les orthographes connues du fail-close
+> adresse (littéral + message + les 2 helpers exportés) ; ④ le delete sanctionné est épinglé à sa
+> LIAISON de table (plus un simple nom d'alias) + interdiction des écritures en notation crochets ;
+> ⑤ les 2 exemptions par nom de fichier sont ancrées au chemin complet ; ⑥ champ d'application
+> chaîne (chain_id) sur 3 requêtes + le compte de sources partagé en UNE autorité
+> (sourceCreatedCount) servie aussi au panneau Performance qui AFFICHE désormais « N créées
+> on-chain · M avec activité » quand elles diffèrent (l'écart 5-vs-3 dit à l'écran) ; ⑦ anti-écart
+> de versions : « undefined » impossible (repli « — »), un serveur désaccordé rend « unavailable »
+> jamais une fausse table vide ; ⑧ le pager se remet à la page 1 dans le CLIC (plus une frame de
+> mauvaise page) + libellé vide honnête ; ⑨ balayage des 11 commentaires « masked » fossiles + le
+> sigle banni retiré des commentaires du builder déplacé et du snapshot.
+> **DEUX DÉCISIONS AU FONDATEUR (rien ne casse en attendant) :** ① « Referral sources » = créées
+> depuis toujours (lecture registre : 5, une source révoquée compte encore) OU actives maintenant ?
+> ② le snapshot holder-index public (le DERNIER chiffre membre nourri à la main : « verified 14,
+> 2026-07-16 » sur le héros public pendant que le live dit 16) — la tranche recommandée ensuite le
+> fait suivre la colonne vertébrale. **PROCHAINE TRANCHE RECOMMANDÉE (la revue holistique) :**
+> l'unification de l'autorité sources (décoder sourceId/status dans les lignes lifecycle ;
+> SourceCreated devient le roster que les 3 chiffres importent).
+
 > **▶ 2026-08-02 (TRANCHE 2) — LA COLONNE VERTÉBRALE MEMBRE EST AUTOMATIQUE.** Le fondateur a
 > vu prod à 14 sièges / « 1 » source quand la chaîne portait 16 / 5 (« ça doit marcher
 > automatiquement n'est-ce pas ? ») — il avait raison sur toute la ligne. CAUSE : la table

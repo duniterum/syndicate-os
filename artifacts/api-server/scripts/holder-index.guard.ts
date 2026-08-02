@@ -38,6 +38,7 @@ import {
   type HolderIndexAggregates,
 } from "./holder-index-core";
 import { HOLDER_INDEX_SNAPSHOT } from "../src/lib/protocol/holderIndexSnapshot";
+import { stripDbTypeImports } from "./guardImportHygiene";
 import { resolveStandingIn } from "../src/lib/protocol/holderIndexStanding";
 
 const ROOT = resolve(import.meta.dirname, "..");
@@ -251,12 +252,13 @@ const DB_LAZY_ALLOW = new Set([
   // lane — the verified S3b pipeline as a backbone stage. Lazy-only; write
   // discipline pinned by backbone.guard.ts + member-continuity.guard.
   "src/backbone/continuitySpineRefresh.ts",
+  // 2026-08-02 (one-authority hardening): the ONE SourceCreated count shared
+  // by the ledger totals and the performance payload. Lazy-only, read-only.
+  "src/lib/protocol/sourceCreatedCount.ts",
 ]);
 // `import type { … } from "@workspace/db"` is erased at compile time and
-// couples nothing at runtime (2026-08-02, same erasure rule as the sibling
-// guards) — strip it before testing for static forms.
-const stripDbTypeImports = (code: string): string =>
-  code.replace(/import\s+type\s*\{[^}]*\}\s*from\s*["']@workspace\/db["'];?/g, "");
+// couples nothing at runtime — the erasure lives ONCE in guardImportHygiene
+// (self-proving against the string-laundering PoC; 2026-08-02 hardening).
 const DB_STATIC_IMPORT_RE =
   /(from\s*["']@workspace\/db["'])|(import\s*["']@workspace\/db["'])|(require\s*\(\s*["']@workspace\/db["']\s*\))/;
 const dbImporters = servedFiles.filter((f) => {

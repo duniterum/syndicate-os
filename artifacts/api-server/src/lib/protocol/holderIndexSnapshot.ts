@@ -13,7 +13,7 @@
  *
  * PRIVACY BOUNDARY: aggregate counts and era boundaries only. No wallet
  * addresses, no per-seat rows, no memberNumber-to-wallet linkage, no
- * directory. Entry-level member data remains SERVER-ONLY PII with no public
+ * directory. Entry-level member data remains SERVER-ONLY identity material with no public
  * UI/API/projection.
  */
 

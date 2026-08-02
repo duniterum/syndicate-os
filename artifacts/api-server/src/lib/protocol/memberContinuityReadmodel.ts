@@ -103,7 +103,7 @@ export interface HistoricalMemberInput {
   readonly chainId: number;
   readonly freezeBlock: number;
   readonly memberNumber: number;
-  /** SERVER-ONLY wallet PII. Never serialized out of the read-model. */
+  /** SERVER-ONLY identity material. Never serialized out of the read-model. */
   readonly wallet: string;
   readonly source: SaleGeneration;
   /** SERVER-ONLY entry trail (explorer-linkable). */
@@ -123,9 +123,9 @@ export interface V3PurchaseEventInput {
   /** Emitted memberNumber — the #9+ numbering AUTHORITY. */
   readonly memberNumber: number;
   readonly firstSeat: boolean;
-  /** SERVER-ONLY wallet PII. */
+  /** SERVER-ONLY identity material. */
   readonly buyerWallet: string;
-  /** SERVER-ONLY wallet PII. */
+  /** SERVER-ONLY identity material. */
   readonly recipientWallet: string;
   readonly era: string | null;
   readonly chapter: string | null;

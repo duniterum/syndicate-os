@@ -41,6 +41,7 @@ import { getLiveIntroductionModel } from "../lib/protocol/introductionLiveModel"
 import { getOwnedSources } from "../lib/protocol/sourceOwnershipIndex";
 import { sourceKeyOf } from "../lib/protocol/introductionReadmodel";
 import { txUrl } from "../canon/the-syndicate/chain/chain-registry";
+import { countSourcesCreated } from "../lib/protocol/sourceCreatedCount";
 import { explorerUrlForAddress } from "../canon/the-syndicate/contracts/syndicate-config";
 import type { OwnPurchaseRow } from "../backbone/ownPurchaseReadmodel";
 
@@ -161,7 +162,7 @@ export async function readMemberLedger(actor: {
   if (!gateOpen()) return { ok: false, reason: "unavailable" };
 
   try {
-    const { db, pool, memberContinuityRecord, auditLog } = await import("@workspace/db");
+    const { db, memberContinuityRecord, auditLog } = await import("@workspace/db");
 
     const spine = await db
       .select({
@@ -278,14 +279,11 @@ export async function readMemberLedger(actor: {
     ledger.sort((a, b) => a.seat - b.seat);
 
     // "Referral sources" = SourceCreated events already indexed by the
-    // SOURCE_LIFECYCLE lane (chain truth, one query on the store — the
+    // SOURCE_LIFECYCLE lane (chain truth, ONE shared authority — the
     // 2026-08-02 amendment; the purchase-backed index is blind to
     // zero-purchase sources, and ledger-row counting was blind to owners
     // whose seat the spine had not ingested yet).
-    const createdRes = await pool.query(
-      `select count(*)::int as count from protocol_event_raw where stream_key = 'SOURCE_LIFECYCLE' and event_name = 'SourceCreated'`,
-    );
-    const sources = Number(createdRes.rows[0]?.count ?? 0);
+    const sources = await countSourcesCreated();
 
     const payload: LedgerPayload = {
       rows: ledger,

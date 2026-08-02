@@ -199,6 +199,17 @@ export function SourcePerformancePanel() {
               rows on screen.
             </p>
           ) : null}
+          {/* The tile-vs-panel reconciliation (2026-08-02 review): the
+              dashboard counts sources CREATED on-chain; this table lists the
+              ones with recorded activity. When they differ, the difference
+              is said on screen — two facts, never a silent gap. */}
+          {state.sourcesCreated !== null && state.sourcesCreated !== state.totalKnown ? (
+            <p className="text-xs text-muted-foreground mb-2" data-testid="text-performance-created">
+              {state.sourcesCreated} source{state.sourcesCreated === 1 ? "" : "s"} created
+              on-chain · {state.totalKnown} with recorded activity — the rest are
+              founder-signed sources with no purchases or requests yet.
+            </p>
+          ) : null}
           {rows.length === 0 ? (
             <p className="text-sm text-muted-foreground" data-testid="text-performance-empty">
               No sources under this filter.

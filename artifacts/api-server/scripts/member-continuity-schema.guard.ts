@@ -19,6 +19,7 @@
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { stripDbTypeImports } from "./guardImportHygiene";
 
 let passed = 0;
 let failed = 0;
@@ -277,6 +278,9 @@ const LAZY_DB_ALLOW = new Set([
   // lane — the verified S3b pipeline as a backbone stage. Lazy-only; its
   // write discipline is pinned by backbone.guard.ts + member-continuity.guard.
   join(SERVED_SRC, "backbone", "continuitySpineRefresh.ts"),
+  // 2026-08-02 (one-authority hardening): the ONE SourceCreated count shared
+  // by the ledger totals and the performance payload. Lazy-only, read-only.
+  join(SERVED_SRC, "lib", "protocol", "sourceCreatedCount.ts"),
 ]);
 const DYNAMIC_DB_IMPORT_RE = /import\s*\(\s*["']@workspace\/db["']\s*\)/;
 function walk(dir: string, hits: string[]): void {
@@ -286,12 +290,9 @@ function walk(dir: string, hits: string[]): void {
       walk(p, hits);
     } else if (p.endsWith(".ts")) {
       // `import type { … } from "@workspace/db"` is erased at compile time —
-      // it couples nothing at runtime and never loads the schema module
-      // (2026-08-02, same erasure rule as backbone.guard's lazy-DB pin).
-      let served = stripComments(readFileSync(p, "utf8")).replace(
-        /import\s+type\s*\{[^}]*\}\s*from\s*["']@workspace\/db["'];?/g,
-        "",
-      );
+      // the erasure lives ONCE in guardImportHygiene (self-proving; the
+      // 2026-08-02 hardening closed its string-laundering hole).
+      let served = stripDbTypeImports(stripComments(readFileSync(p, "utf8")));
       if (LAZY_DB_ALLOW.has(p)) {
         // Neutralize ONLY the sanctioned lazy form; every other forbidden
         // import (static @workspace/db, lib/db, memberContinuity) still hits.
@@ -317,12 +318,9 @@ check(
 for (const p of LAZY_DB_ALLOW) {
   let code = "";
   try {
-    // Type-only imports are erased at compile time (2026-08-02 — the spine
-    // lane types its insert rows against the schema's own shapes).
-    code = stripComments(readFileSync(p, "utf8")).replace(
-      /import\s+type\s*\{[^}]*\}\s*from\s*["']@workspace\/db["'];?/g,
-      "",
-    );
+    // Type-only imports are erased at compile time — the ONE erasure in
+    // guardImportHygiene (self-proving; 2026-08-02 hardening).
+    code = stripDbTypeImports(stripComments(readFileSync(p, "utf8")));
   } catch {
     // missing file → check fails below
   }

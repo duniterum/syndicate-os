@@ -25,6 +25,7 @@ import {
 } from "@workspace/os-contracts";
 import { AUTH_EXPOSURE_FLAG } from "../auth/authExposure";
 import { explorerUrlForAddress } from "../canon/the-syndicate/contracts/syndicate-config";
+import { CHAIN_REGISTRY } from "../canon/the-syndicate/chain/chain-registry";
 
 export type NotificationWriteResult = { ok: true } | { ok: false; reason: string };
 
@@ -102,14 +103,22 @@ export async function sendMemberNotification(
 
   try {
     const { db, memberContinuityRecord, notification, auditLog } = await import("@workspace/db");
-    const { eq } = await import("drizzle-orm");
+    const { and, eq } = await import("drizzle-orm");
 
     // Seat → wallet on the continuity spine (the ONLY place the pairing lives).
     // entry_wallet is stored in checksum form; the read model stores lowercase.
+    // Canon-chain scoped (2026-08-02 hardening — the spine PK is
+    // (chain_id, member_number); a seat number alone would be ambiguous the
+    // day a second chain's rows coexist).
     const rows = await db
       .select({ entryWallet: memberContinuityRecord.entryWallet })
       .from(memberContinuityRecord)
-      .where(eq(memberContinuityRecord.memberNumber, input.seat))
+      .where(
+        and(
+          eq(memberContinuityRecord.chainId, CHAIN_REGISTRY.id),
+          eq(memberContinuityRecord.memberNumber, input.seat),
+        ),
+      )
       .limit(1);
     const wallet = (rows[0]?.entryWallet ?? "").toLowerCase();
     if (!/^0x[0-9a-f]{40}$/.test(wallet)) return { ok: false, reason: "unknown_seat" };

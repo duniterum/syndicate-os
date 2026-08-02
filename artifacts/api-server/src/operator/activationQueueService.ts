@@ -20,7 +20,7 @@
 // protocol state. The service's verdicts are decline (with the human reason
 // the member reads — delivered to their bell in the same transaction), hold,
 // reopen, and close (recording that reality answered on-chain). Identity
-// discipline: list rows carry MASKED wallets + the 64-hex source id; the one
+// discipline: list rows carry full + short + linked wallets + the 64-hex source id; the one
 // FULL wallet needed to build the founder's transaction is served by its own
 // audited read (the verify-links pattern for legitimate address material).
 
@@ -500,7 +500,7 @@ export type ActivationWalletResult =
  * per read. This is the ONE deliberate address-emitting read of the queue
  * (the verify-links pattern): the founder's wallet screen must show exactly
  * the wallet the request named, and createSource takes the wallet, not the
- * id. List rows stay masked; this read exists solely to build the signature
+ * id. List rows carry the full wallet too (2026-08-02); this read remains the signature
  * and is audit-rowed every single time.
  */
 export async function readActivationRequestWallet(input: {

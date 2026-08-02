@@ -49,6 +49,23 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   + member-continuity + schema + holder-index + protocol-time pins amended, dated) ·
 >   studio chain exit 0 · typecheck ×2 · builds ×2.
 >
+> ## (a3) THIRD SLICE — THE SENIOR REVIEW (« toutes casquettes, 3-5 agents ») + ITS HARDENING
+> · 4 independent senior reviewers (server · client/design-law · guard-integrity · holistic)
+>   re-read the WHOLE day; every confirmed finding fixed same-day: the PoC-proven erasure-regex
+>   laundering hole (ONE self-proving helper: scripts/guardImportHygiene.ts re-runs the PoC on
+>   every guard run) · the provenance key widened to the hash's real surface (count-first
+>   loader + timestamp gate + FOR-UPDATE-serialized persist pre-reads) · absence pins ban every
+>   known fail-close spelling · binding-pinned delete + bracket-notation ban · path-anchored
+>   exemptions · chain_id scoping ×3 · ONE sourceCreatedCount authority served to BOTH the tile
+>   and the Performance panel, which now SAYS « N created · M with activity » when they differ ·
+>   version-skew honesty (no "undefined", no false-empty tables) · pager reset in the click ·
+>   11 stale "masked" comments + the banned acronym swept from the moved builder/snapshot.
+> · Rig-proven post-hardening: gates all green (typecheck ×2 · guards ×2 exit 0 · builds ×2) and
+>   the lane's steady state measured live: "spine unchanged (16 records, provenance stable)".
+> · The reviews' full texts are in the 2026-08-02 chat; the figure map says every member-count
+>   surface now converges ≤ 1 cycle EXCEPT the public holder-index attestation (still hand-fed,
+>   see founder-pending below).
+>
 > ## (b) IN FLIGHT — nothing queued. The build lane is EMPTY until a founder decision below.
 > · Accepted-known (unchanged): source-status asOf ratchet stays memorial · printable
 >   ReceiptTicket keeps its QR as the verify affordance · payloadDiscipline's ADDRESS_LEAK_RE
@@ -58,6 +75,12 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > · The 3 reserves-wireframe decisions (3×2 grid · gold logo · weekend freshness) → then the
 >   LINK.e/XAUt0 reserves build (feeds verified on-chain: LINK/USD `0x49cc…de9a`, XAU/USD
 >   `0x1F41…515B`). · The 4 composition wireframes. · "téléchargé" to Replit for dump.sql.gz.
+> · FROM THE 2026-08-02 REVIEW, two decisions: ① "Referral sources" semantics — created-ever
+>   (registry reading: 5; a revoked source still counts) vs active-now; ② the public
+>   holder-index attestation ("verified 14 · 2026-07-16" on the hero while live says 16 — the
+>   LAST hand-fed member figure): the recommended next slice makes it ride the spine's verified
+>   runs. Also recommended next: the source-authority unification (decode sourceId/status into
+>   the lifecycle rows; SourceCreated becomes the roster all three source figures import).
 > · ~~The deploy carrying this slice~~ — DONE same day: cycle `22296fd` sealed (see the seal
 >   line above); the backlog is empty again.
 

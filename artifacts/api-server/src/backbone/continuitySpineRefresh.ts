@@ -48,6 +48,7 @@ import {
   type V3PurchaseEventInput,
 } from "../lib/protocol/memberContinuityReadmodel";
 import { SELECTOR_MEMBER_COUNT } from "../lib/protocol/financialDecoders";
+import { CHAIN_REGISTRY } from "../canon/the-syndicate/chain/chain-registry";
 import type {
   MemberContinuityRecordInsert,
   MemberContinuityVerificationRunInsert,
@@ -165,6 +166,25 @@ export async function loadContinuityBuildInput(): Promise<BuildInput> {
     );
   }
   const freezeRow = freezeRows[0]!;
+
+  // --- Raw-input provenance FIRST (2026-08-02 hardening, review finding):
+  // the memorialized provenance key must be a SNAPSHOT TAKEN BEFORE the row
+  // selects, so it can only ever be ≤ the loaded input. A row inserted
+  // mid-load then reads as GROWTH on the next cycle (detected, healed) —
+  // never as "provenance stable" over a member the build missed. ---
+  const chainParam = [freezeRow.chainId] as const;
+  const inputSaleEventCount = await countQuery(
+    `select count(*)::int as count from sale_event_raw where chain_id = $1`,
+    chainParam,
+  );
+  const maxIdRes = await (
+    await import("@workspace/db")
+  ).pool.query(
+    `select coalesce(max(id), 0)::bigint as max_id from sale_event_raw where chain_id = $1`,
+    [...chainParam],
+  );
+  const maxIdRaw = toInt(maxIdRes.rows[0]?.max_id, "max sale_event_raw id");
+  const inputMaxSaleEventRawId = maxIdRaw === 0 ? null : maxIdRaw;
 
   const memberRows = await db.db
     .select({
@@ -319,21 +339,8 @@ export async function loadContinuityBuildInput(): Promise<BuildInput> {
     blockTimestampSec: t.blockTimestampSec,
   }));
 
-  // --- Raw-input provenance + corroboration aggregates (counts only) ---
-  const chainParam = [freezeRow.chainId] as const;
-  const inputSaleEventCount = await countQuery(
-    `select count(*)::int as count from sale_event_raw where chain_id = $1`,
-    chainParam,
-  );
-  const maxIdRes = await (
-    await import("@workspace/db")
-  ).pool.query(
-    `select coalesce(max(id), 0)::bigint as max_id from sale_event_raw where chain_id = $1`,
-    [...chainParam],
-  );
-  const maxIdRaw = toInt(maxIdRes.rows[0]?.max_id, "max sale_event_raw id");
-  const inputMaxSaleEventRawId = maxIdRaw === 0 ? null : maxIdRaw;
-
+  // --- Corroboration aggregates (counts only; provenance was snapshotted
+  // BEFORE the row selects, above) ---
   const corroboration = {
     v1DistinctBuyerCount: await countQuery(
       `select count(distinct decoded_json->>'buyer')::int as count from sale_event_raw where chain_id = $1 and generation = 'V1'`,
@@ -475,74 +482,22 @@ export async function persistVerifiedBuild(
   if (ddl.records.length === 0) {
     throw new Error("S3B write refused: empty record set is unwritable");
   }
+  // 2026-08-02 hardening (review finding): a record persisted with a NULL
+  // entry timestamp freezes that NULL into the row AND makes the determinism
+  // hash disagree with a later run over identical sale provenance — firing
+  // the HASH_DRIFT hard fail for what is really a late-arriving timestamp.
+  // Timestamp coverage is therefore a PERSISTENCE GATE, not a report line:
+  // the lane runs right after the enrichment stage, so waiting one cycle is
+  // the honest, self-healing posture.
+  if (ddl.records.some((r) => r.entryBlockTimestampSec === null)) {
+    throw new Error(
+      "S3B write refused: entry-block timestamps incomplete — enrichment fills them next cycle; persisting now would freeze a NULL and destabilize the determinism hash",
+    );
+  }
 
   const chainId = run.chainId;
   const runTable = dbm.memberContinuityVerificationRun;
   const recTable = dbm.memberContinuityRecord;
-
-  const priorRunRows = await dbm.db
-    .select({ c: sql<number>`count(*)::int` })
-    .from(runTable)
-    .where(eq(runTable.chainId, chainId));
-  const priorRunCount = priorRunRows[0]?.c ?? 0;
-  const priorRecRows = await dbm.db
-    .select({ c: sql<number>`count(*)::int` })
-    .from(recTable)
-    .where(eq(recTable.chainId, chainId));
-  const priorRecordCount = priorRecRows[0]?.c ?? 0;
-  const latestRows = await dbm.db
-    .select()
-    .from(runTable)
-    .where(eq(runTable.chainId, chainId))
-    .orderBy(desc(runTable.id))
-    .limit(1);
-  const latest = latestRows[0] ?? null;
-
-  // --- Replay semantics (explicit, fail-closed) ---
-  if (latest === null) {
-    if (priorRecordCount !== 0) {
-      throw new Error(
-        `S3B write refused (ORPHAN_ROWS_ANOMALY): ${priorRecordCount} record rows exist with no verification run — founder review required`,
-      );
-    }
-  } else {
-    const sameProvenance =
-      latest.inputSaleEventCount === run.inputSaleEventCount &&
-      (latest.inputMaxSaleEventRawId ?? null) ===
-        (run.inputMaxSaleEventRawId ?? null);
-    if (sameProvenance) {
-      if (latest.determinismHash === run.determinismHash) {
-        if (priorRecordCount !== latest.memberTotal) {
-          throw new Error(
-            "S3B replay refused (COUNT_ANOMALY): stored record count does not match the memorialized run total",
-          );
-        }
-        return {
-          action: "REPLAY_NOOP",
-          runId: null,
-          recordsWritten: 0,
-          recordsDeleted: 0,
-          priorRunCount,
-          priorRecordCount,
-          dbRunCount: priorRunCount,
-          dbRecordCount: priorRecordCount,
-        };
-      }
-      throw new Error(
-        "S3B write refused (HASH_DRIFT_SAME_PROVENANCE): identical input provenance produced a different determinism hash — hard fail, founder review required",
-      );
-    }
-    const grown =
-      run.inputSaleEventCount > latest.inputSaleEventCount &&
-      (run.inputMaxSaleEventRawId ?? 0) > (latest.inputMaxSaleEventRawId ?? 0);
-    if (!grown) {
-      throw new Error(
-        "S3B write refused (PROVENANCE_SHRUNK_OR_DIVERGED): input provenance is not a strict growth of the memorialized provenance — hard fail",
-      );
-    }
-  }
-  const action: PersistOutcome["action"] =
-    latest === null ? "INITIAL_WRITE" : "GROWN_PROVENANCE_REBUILD";
 
   const runInsert: MemberContinuityVerificationRunInsert = {
     chainId: run.chainId,
@@ -560,8 +515,78 @@ export async function persistVerifiedBuild(
     verification: run.verification,
   };
 
-  // --- ONE transaction: run row + full record set + in-tx verification ---
+  // --- ONE transaction: pre-reads + replay semantics + run row + full
+  // record set + in-tx verification. HARDENED 2026-08-02 (review finding):
+  // the pre-reads moved INSIDE the transaction with FOR UPDATE on the
+  // latest run row, so two concurrent writers SERIALIZE — the second waits,
+  // re-reads the winner's run, and cleanly no-ops or rebuilds, instead of
+  // losing a race into an alarming rollback message. ---
   return await dbm.db.transaction(async (tx) => {
+    const latestRows = await tx
+      .select()
+      .from(runTable)
+      .where(eq(runTable.chainId, chainId))
+      .orderBy(desc(runTable.id))
+      .limit(1)
+      .for("update");
+    const latest = latestRows[0] ?? null;
+    const priorRunRows = await tx
+      .select({ c: sql<number>`count(*)::int` })
+      .from(runTable)
+      .where(eq(runTable.chainId, chainId));
+    const priorRunCount = priorRunRows[0]?.c ?? 0;
+    const priorRecRows = await tx
+      .select({ c: sql<number>`count(*)::int` })
+      .from(recTable)
+      .where(eq(recTable.chainId, chainId));
+    const priorRecordCount = priorRecRows[0]?.c ?? 0;
+
+    // --- Replay semantics (explicit, fail-closed) ---
+    if (latest === null) {
+      if (priorRecordCount !== 0) {
+        throw new Error(
+          `S3B write refused (ORPHAN_ROWS_ANOMALY): ${priorRecordCount} record rows exist with no verification run — founder review required`,
+        );
+      }
+    } else {
+      const sameProvenance =
+        latest.inputSaleEventCount === run.inputSaleEventCount &&
+        (latest.inputMaxSaleEventRawId ?? null) ===
+          (run.inputMaxSaleEventRawId ?? null);
+      if (sameProvenance) {
+        if (latest.determinismHash === run.determinismHash) {
+          if (priorRecordCount !== latest.memberTotal) {
+            throw new Error(
+              "S3B replay refused (COUNT_ANOMALY): stored record count does not match the memorialized run total",
+            );
+          }
+          return {
+            action: "REPLAY_NOOP" as const,
+            runId: null,
+            recordsWritten: 0,
+            recordsDeleted: 0,
+            priorRunCount,
+            priorRecordCount,
+            dbRunCount: priorRunCount,
+            dbRecordCount: priorRecordCount,
+          };
+        }
+        throw new Error(
+          "S3B write refused (HASH_DRIFT_SAME_PROVENANCE): identical input provenance produced a different determinism hash — hard fail, founder review required",
+        );
+      }
+      const grown =
+        run.inputSaleEventCount > latest.inputSaleEventCount &&
+        (run.inputMaxSaleEventRawId ?? 0) > (latest.inputMaxSaleEventRawId ?? 0);
+      if (!grown) {
+        throw new Error(
+          "S3B write refused (PROVENANCE_SHRUNK_OR_DIVERGED): input provenance is not a strict growth of the memorialized provenance — hard fail",
+        );
+      }
+    }
+    const action: PersistOutcome["action"] =
+      latest === null ? "INITIAL_WRITE" : "GROWN_PROVENANCE_REBUILD";
+
     const insertedRun = await tx
       .insert(runTable)
       .values(runInsert)
@@ -653,6 +678,8 @@ export async function refreshContinuitySpine(): Promise<SpineRefreshSummary> {
 
   // Short-circuit: memorialized provenance vs current raw-input provenance.
   // Two count queries on the common cycle; the full load runs only on growth.
+  // Canon-chain scoped (2026-08-02 hardening): an unscoped "latest run" pick
+  // would become ambiguous the day a second chain's rows coexist.
   const latestRows = await dbm.db
     .select({
       memberTotal: dbm.memberContinuityVerificationRun.memberTotal,
@@ -663,6 +690,7 @@ export async function refreshContinuitySpine(): Promise<SpineRefreshSummary> {
       chainId: dbm.memberContinuityVerificationRun.chainId,
     })
     .from(dbm.memberContinuityVerificationRun)
+    .where(eq(dbm.memberContinuityVerificationRun.chainId, CHAIN_REGISTRY.id))
     .orderBy(desc(dbm.memberContinuityVerificationRun.id))
     .limit(1);
   const latest = latestRows[0] ?? null;
@@ -698,6 +726,17 @@ export async function refreshContinuitySpine(): Promise<SpineRefreshSummary> {
     // Failed builds are never memorialized — the lane reports and the next
     // cycle retries (an RPC blip on the live memberCount read lands here).
     return { ok: false, changed: false, line: `spine build not green: ${blocked}` };
+  }
+  // Timestamp-coverage gate (2026-08-02 hardening): wait for enrichment
+  // rather than freezing a NULL into a memorialized row (the persist would
+  // refuse it anyway — this line just says WHY, honestly, without a throw).
+  const cov = build.ddl.timestampCoverage;
+  if (cov.recordsWithTimestamp !== build.ddl.records.length) {
+    return {
+      ok: false,
+      changed: false,
+      line: `spine waiting on block timestamps (${cov.recordsWithTimestamp}/${build.ddl.records.length} covered) — enrichment fills them next cycle`,
+    };
   }
   const outcome = await persistVerifiedBuild(build.ddl);
   const line =

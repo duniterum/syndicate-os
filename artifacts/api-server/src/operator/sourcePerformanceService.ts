@@ -11,12 +11,13 @@
 // status word per row (batched; null = didn't run, rendered honestly).
 //
 // Same fail-closed shape as every sibling: env-gated before any DB touch,
-// lazy @workspace/db, every read audited (§8: access is logged), masked
+// lazy @workspace/db, every read audited (§8: access is logged), linked
 // wallets only, any error → "unavailable".
 
 import { randomUUID } from "node:crypto";
 import { AUTH_EXPOSURE_FLAG } from "../auth/authExposure";
 import { explorerUrlForAddress } from "../canon/the-syndicate/contracts/syndicate-config";
+import { countSourcesCreated } from "../lib/protocol/sourceCreatedCount";
 import {
   DEFAULT_TIMEOUT_MS,
   makeFetchTransport,
@@ -108,6 +109,11 @@ export type SourcePerformanceResult =
         indexWarming: boolean;
         /** All sources known before the row cap — a drop is stated. */
         totalKnown: number;
+        /** Sources CREATED on-chain (SourceCreated events — the SAME
+         * authority the dashboard tile quotes). When it exceeds totalKnown,
+         * the difference is founder-signed sources with no recorded
+         * activity yet, and the panel SAYS so (2026-08-02 review). */
+        sourcesCreated: number;
       };
     }
   | { ok: false; reason: string };
@@ -276,6 +282,7 @@ export async function listSourcePerformance(actor: {
         statusReadOk,
         indexWarming,
         totalKnown,
+        sourcesCreated: await countSourcesCreated(),
       },
     };
   } catch {

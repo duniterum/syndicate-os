@@ -4,7 +4,7 @@
 // The operator-side per-seat dossier list rendered from the founder-only
 // GET /api/operator/member-ledger: a projection of ALREADY-INDEXED data only
 // (continuity spine · capital axis · own purchases · R5 introductions).
-// Wallets arrive PRE-MASKED from the server (never a full address — ADR-003);
+// Wallets arrive full + short + explorer-linked (the 2026-07-25 address law);
 // segment chips render the server's own definitions VERBATIM (the console
 // shows exactly what the math does — no unexplained judgment); every fetch is
 // audit-logged server-side. Honest states: loading / ok / denied / unavailable
@@ -260,11 +260,18 @@ export function MemberLedgerPanel() {
   const [chapterFilter, setChapterFilter] = useState<string | null>(null);
   const [segmentFilter, setSegmentFilter] = useState<LedgerRow["segment"] | null>(null);
   // Pagination (the founder's 2026-08-02 ask — the register grows, the page
-  // must not). A filter change re-slices the set, so the pager snaps back.
+  // must not). A filter change re-slices the set, so the SAME click that
+  // changes a filter also snaps the pager to page 1 — in the handler, not a
+  // passive effect, so no frame ever paints the wrong page (review finding).
   const [page, setPage] = useState(1);
-  useEffect(() => {
+  const pickChapter = (v: string | null) => {
+    setChapterFilter(v);
     setPage(1);
-  }, [chapterFilter, segmentFilter]);
+  };
+  const pickSegment = (v: LedgerRow["segment"] | null) => {
+    setSegmentFilter(v);
+    setPage(1);
+  };
 
   useEffect(() => {
     let active = true;
@@ -318,7 +325,9 @@ export function MemberLedgerPanel() {
             <StatCard label="Active" value={String(state.payload.totals.active)} />
             <StatCard label="Settled" value={String(state.payload.totals.settled)} />
             <StatCard label="Dormant" value={String(state.payload.totals.dormant)} />
-            <StatCard label="Referral sources" value={String(state.payload.totals.sources)} />
+            {/* ?? "—": version-skew honesty — an older server (pre-rename)
+                must render an honest dash, never the word "undefined". */}
+            <StatCard label="Referral sources" value={String(state.payload.totals.sources ?? "—")} />
             <StatCard label="Promotions due" value={String(state.payload.totals.promotionsDue)} />
           </div>
 
@@ -349,7 +358,7 @@ export function MemberLedgerPanel() {
                 </span>
                 <button
                   type="button"
-                  onClick={() => setChapterFilter(null)}
+                  onClick={() => pickChapter(null)}
                   className={chip(chapterFilter === null)}
                   data-testid="filter-chapter-all"
                 >
@@ -359,7 +368,7 @@ export function MemberLedgerPanel() {
                   <button
                     key={roman}
                     type="button"
-                    onClick={() => setChapterFilter(chapterFilter === roman ? null : roman)}
+                    onClick={() => pickChapter(chapterFilter === roman ? null : roman)}
                     className={chip(chapterFilter === roman)}
                     data-testid={`filter-chapter-${roman}`}
                   >
@@ -372,7 +381,7 @@ export function MemberLedgerPanel() {
                 </span>
                 <button
                   type="button"
-                  onClick={() => setSegmentFilter(null)}
+                  onClick={() => pickSegment(null)}
                   className={chip(segmentFilter === null)}
                   data-testid="filter-segment-all"
                 >
@@ -382,7 +391,7 @@ export function MemberLedgerPanel() {
                   <button
                     key={seg}
                     type="button"
-                    onClick={() => setSegmentFilter(segmentFilter === seg ? null : seg)}
+                    onClick={() => pickSegment(segmentFilter === seg ? null : seg)}
                     className={chip(segmentFilter === seg)}
                     data-testid={`filter-segment-${seg.toLowerCase()}`}
                   >
@@ -598,7 +607,9 @@ export function MemberLedgerPanel() {
               <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
                 <p className="text-xs text-muted-foreground" data-testid="ledger-page-range">
                   {filteredRows.length === 0
-                    ? "No seats match the filter."
+                    ? chapterFilter === null && segmentFilter === null
+                      ? "No seats on the register yet."
+                      : "No seats match the filter."
                     : `Seats ${(currentPage - 1) * LEDGER_PAGE_SIZE + 1}–${Math.min(
                         currentPage * LEDGER_PAGE_SIZE,
                         filteredRows.length,

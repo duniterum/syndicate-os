@@ -83,6 +83,12 @@ export async function listOperators(): Promise<ListOperatorsResult> {
               typeof (o as Record<string, unknown>).status === "string",
           )
         : [];
+      // Version-skew honesty (2026-08-02 review): a served list where EVERY
+      // row fails the shape check is a mismatched server, not an empty
+      // registry — say "unavailable", never a false empty claim.
+      if (Array.isArray(raw) && raw.length > 0 && operators.length === 0) {
+        return { status: "unavailable" };
+      }
       return { status: "ok", operators };
     }
     if (res.status === 401 || res.status === 403 || res.status === 404) return { status: "denied" };
@@ -183,7 +189,13 @@ export async function fetchMemberLedger(): Promise<MemberLedgerResult> {
             typeof (r as Record<string, unknown>).wallet === "string" &&
             typeof (r as Record<string, unknown>).walletShort === "string" &&
             typeof (r as Record<string, unknown>).segment === "string",
-        )
+        );
+      // Version-skew honesty (2026-08-02 review): every served row failing
+      // the shape check = a mismatched server, never an empty register.
+      if (rowsRaw.length > 0 && rows.length === 0) {
+        return { status: "unavailable" };
+      }
+      const mappedRows = rows
         .map((r) => ({
           ...(r as unknown as LedgerRow),
           // A21: parse the receipt lines strictly; a malformed line drops
@@ -226,7 +238,7 @@ export async function fetchMemberLedger(): Promise<MemberLedgerResult> {
         }));
       return {
         status: "ok",
-        payload: { ...(p as unknown as LedgerPayload), rows },
+        payload: { ...(p as unknown as LedgerPayload), rows: mappedRows },
       };
     }
     if (res.status === 401 || res.status === 403 || res.status === 404) return { status: "denied" };
@@ -239,8 +251,8 @@ export async function fetchMemberLedger(): Promise<MemberLedgerResult> {
 // Founder-only registry write: invite (create) a new ACTIVE operator. Same
 // fail-closed shape as saveReferralTerm — any non-OK (dark 404 / 401 / 403 /
 // 400 validation / transport) resolves to { ok:false, reason }, never throws.
-// The new operator's full wallet is typed by the founder here; the registry
-// list keeps returning it masked.
+// The new operator's full wallet is typed by the founder here; the list
+// serves it full + short + explorer-linked (address law 2026-07-25).
 export async function inviteOperator(
   wallet: string,
   label: string,
@@ -269,7 +281,7 @@ export async function inviteOperator(
   }
 }
 
-// ── NOTIF-1: notifications (founder-only writes + masked list) ──────────────
+// ── NOTIF-1: notifications (founder-only writes + the sent list) ────────────
 // Founder-only write: message ONE member. The client sends the SEAT number
 // only — the server resolves seat→wallet on the continuity spine; no wallet
 // ever enters a client request. Same fail-closed shape as the other writes.
@@ -381,7 +393,7 @@ export type ListNotificationsResult =
   | { status: "unavailable" };
 
 // GET the recent sent notifications (founder-only; recipients arrive
-// pre-masked). Fail-closed exactly like listOperators: 401/403/404 → "denied"
+// full + short + explorer-linked). Fail-closed exactly like listOperators: 401/403/404 → "denied"
 // (deliberately indistinguishable), transport/shape → "unavailable".
 export async function fetchNotifications(): Promise<ListNotificationsResult> {
   try {
@@ -440,7 +452,7 @@ export async function suspendOperator(id: string): Promise<WriteResult> {
 }
 
 // ── K3.a: the Source review queue (founder-only) ────────────────────────────
-// The queue rows arrive with MASKED wallets, the engine's live seat figure,
+// The queue rows arrive with full + short + linked wallets, the engine's live seat figure,
 // and the server's LIVE preflight checks (null = the read did not run —
 // rendered as its own BLOCKING state, never a pass).
 export interface ActivationQueueChecks {
@@ -531,6 +543,12 @@ export async function listActivationQueue(): Promise<ActivationQueueResult> {
           checks,
         });
       }
+      // Version-skew honesty (2026-08-02 review): every served row failing
+      // the shape check = a mismatched server — "unavailable", never an
+      // empty queue face contradicting the sidebar's openCount badge.
+      if (raw.length > 0 && rows.length === 0) {
+        return { status: "unavailable" };
+      }
       return {
         status: "ok",
         rows,
@@ -580,7 +598,7 @@ export async function decideActivation(
 
 // THE SIGNING MATERIAL (founder-only, audited server-side per read): one
 // request's full wallet, fetched ONLY at the moment the founder opens the
-// signing path — the queue list itself stays masked.
+// signing path — the queue rows carry the full wallet too since 2026-08-02.
 export type ActivationSignerResult =
   | { ok: true; signerTarget: string }
   | { ok: false; reason: string };
@@ -706,6 +724,9 @@ export type SourcePerformanceResult =
       indexWarming: boolean;
       /** All sources known before the row cap — a drop is stated. */
       totalKnown: number;
+      /** Sources created on-chain (the dashboard tile's authority); null
+       *  when an older server does not serve it. */
+      sourcesCreated: number | null;
     }
   | { status: "denied" }
   | { status: "unavailable" };
@@ -762,6 +783,8 @@ export async function fetchSourcePerformance(): Promise<SourcePerformanceResult>
         indexWarming: payload.indexWarming === true,
         totalKnown:
           typeof payload.totalKnown === "number" ? payload.totalKnown : rows.length,
+        sourcesCreated:
+          typeof payload.sourcesCreated === "number" ? payload.sourcesCreated : null,
       };
     }
     if (res.status === 401 || res.status === 403 || res.status === 404) return { status: "denied" };

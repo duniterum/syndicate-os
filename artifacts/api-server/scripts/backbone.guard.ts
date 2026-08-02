@@ -58,6 +58,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { assertAddressSafeJson } from "../src/lib/protocol/addressSafety";
+import { stripDbTypeImports } from "./guardImportHygiene";
 import { HISTORICAL_FREEZE_WALLETS } from "../src/lib/protocol/historicalFreezeWallets";
 import {
   buildNativeAvaxRecords,
@@ -210,10 +211,9 @@ for (const rel of [
   // `import type { … } from "@workspace/db"` is erased at compile time and
   // couples nothing at boot — only VALUE imports are banned (③d amendment:
   // the spine lane types its insert rows against the schema's own shapes).
-  const src = stripComments(read(rel)).replace(
-    /import\s+type\s*\{[^}]*\}\s*from\s*["']@workspace\/db["'];?/g,
-    "",
-  );
+  // The erasure lives ONCE in guardImportHygiene (self-proving — the
+  // string-laundering PoC re-runs at import time).
+  const src = stripDbTypeImports(stripComments(read(rel)));
   check(
     /import\s*\(\s*["']@workspace\/db["']\s*\)/.test(src) &&
       !/from\s*["']@workspace\/db["']/.test(src) &&
@@ -263,6 +263,10 @@ for (const [label, src] of [
 // ③d — the spine lane's OWN write discipline: no .update() anywhere; its
 // only .delete() targets memberContinuityRecord, and it happens inside the
 // verified transaction (tx.delete), never on the bare connection.
+// HARDENED 2026-08-02 (guard review finding 3): the pin also FIXES the two
+// table BINDINGS — an alias check alone could be repointed at a different
+// table with one rebound line — and bans bracket-notation write laundering
+// (db["delete"](…)), which the dotted-verb scans cannot see.
 {
   const spineSrc = stripComments(read("src/backbone/continuitySpineRefresh.ts"));
   const deletes = [...spineSrc.matchAll(/(\w+)\s*\.delete\(\s*([A-Za-z.]+)\s*\)/g)];
@@ -270,9 +274,20 @@ for (const [label, src] of [
     !spineSrc.includes(".update(") &&
       deletes.length === 1 &&
       deletes[0]?.[1] === "tx" &&
-      (deletes[0]?.[2] ?? "").endsWith("recTable"),
+      deletes[0]?.[2] === "recTable",
     "spine lane: no updates; the one delete is tx.delete(recTable) inside the verified transaction",
     "continuitySpineRefresh.ts write verbs drifted — the only permitted delete is tx.delete(recTable) (the S3b full-replace) and no .update() may exist",
+  );
+  check(
+    /const runTable = dbm\.memberContinuityVerificationRun;/.test(spineSrc) &&
+      /const recTable = dbm\.memberContinuityRecord;/.test(spineSrc),
+    "spine lane: recTable/runTable are BOUND to their exact tables (the delete cannot be repointed)",
+    "continuitySpineRefresh.ts table bindings drifted — recTable must bind memberContinuityRecord and runTable must bind memberContinuityVerificationRun, verbatim",
+  );
+  check(
+    !/\[\s*["'`](delete|update|insert)["'`]\s*\]/.test(spineSrc),
+    "spine lane: no bracket-notation write verbs (nothing launders past the dotted scans)",
+    'continuitySpineRefresh.ts contains a bracket-notation write (["delete"|"update"|"insert"]) — write verbs must be dotted so every pin sees them',
   );
 }
 
@@ -316,7 +331,10 @@ for (const f of zoneFiles) {
   if (f.endsWith(`${path.sep}nativeAvaxScan.ts`)) continue; // the log-less lane
   if (f.endsWith(`${path.sep}tokenDiscoveryScan.ts`)) continue; // the open-contract lane
   if (f.endsWith(`${path.sep}introductionRefresh.ts`)) continue; // own whitelist below
-  if (f.endsWith(`${path.sep}continuitySpineRefresh.ts`)) continue; // ③d loader — coercion via the pure builder's fail-closed mappers
+  // ③d loader — path-anchored (2026-08-02 hardening: a basename match would
+  // exempt any future file of the same name anywhere in the zone).
+  if (path.relative(apiDir, f).split(path.sep).join("/") === "src/backbone/continuitySpineRefresh.ts")
+    continue;
   const src = stripComments(readFileSync(f, "utf8"));
   check(
     !src.includes("decodedJson") && !src.includes("rawJson"),

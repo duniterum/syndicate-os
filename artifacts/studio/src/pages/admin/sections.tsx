@@ -145,7 +145,7 @@ export function AdminMembersSection() {
   return (
     <div className="space-y-6">
       {/* M-INT-1: the member ledger — the section's centerpiece (founder-only
-          read; masked wallets; audit-logged). The posture panel keeps the
+          read; explorer-linked wallets; audit-logged). The posture panel keeps the
           server-side data note below it. */}
       <MemberLedgerPanel />
       <AdminMembersPanel />

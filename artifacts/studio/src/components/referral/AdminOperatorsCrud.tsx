@@ -7,7 +7,7 @@
 // referrals (moved, not rewritten). Mirrors the wallet-first operator
 // registry design (server-side allowlist, one role per row, fail-closed).
 //
-// Phase 3 slice 2/3: the registry READ is live (masked wallets from the
+// Phase 3 slice 2/3: the registry READ is live (full + short + linked wallets from the
 // server), INVITE is a live founder-gated write into the real operator
 // registry + audit log (POST /api/operator/operators), and SUSPEND is a live
 // founder-gated write by stable row id (POST /api/operator/operators/suspend,
@@ -66,7 +66,7 @@ import { dateLabel } from "@/components/referral/referralStanding";
 
 // Live, read-only registry read (Phase 3 slice 1). Honest states only — no
 // fake fallback: loading, ok (rows or empty), denied (dark zone / no session /
-// insufficient role), unavailable. Wallets arrive pre-masked from the server.
+// insufficient role), unavailable. Wallets arrive full + short + explorer-linked.
 type RegistryState = { status: "loading" } | ListOperatorsResult;
 
 function useOperatorRegistry(): {
@@ -484,7 +484,7 @@ export function AdminOperatorsCrud() {
 // member will read (their bell carries it, written server-side in the same
 // transaction), Hold parks. A request whose source turned ACTIVE on-chain is
 // closed by reality — one click records it and the member's bell announces
-// the activation. Wallets stay masked; the one full wallet needed to sign is
+// the activation. Queue rows carry the full wallet too (2026-08-02); the signing read is
 // fetched at act time (audited server-side per read). ────────────────────────
 
 function decideFailureText(reason: string | null): string {

@@ -1149,6 +1149,17 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
   // founder_root ONLY (stricter than the admin-tier allow-list), and the ONE
   // sanctioned READ route (GET /operators) to stay body-free, admin-tier
   // gated, and delegated to the masked list read ONLY.
+  // THE ADDRESS-LAW ABSENCE PREDICATE (2026-08-02 hardening, from the guard
+  // review): a founder-read route must carry NO address fail-close in ANY of
+  // its known spellings — the retired regex literal, its throw message, or
+  // the two still-exported scanner helpers a re-introduction would reach
+  // for. One predicate, all four route pins — never four drifting copies.
+  const carriesAddressFailClose = (block: string): boolean =>
+    /0x\[0-9a-fA-F\]\{40\}/.test(block) ||
+    /address-shaped/.test(block) ||
+    /assertAddressSafeAggregate/.test(block) ||
+    /assertAddressSafeJson/.test(block) ||
+    /ADDRESS_LEAK_RE/.test(block);
   {
     const blockStarts = routeMatches.map((m) => m.index ?? 0);
     for (let i = 0; i < blockStarts.length; i += 1) {
@@ -1203,9 +1214,9 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
           // scan: ledger rows serve the full wallet + canon explorerUrl and
           // the route must never fail-close on address-shaped output.
           check(
-            !/0x\[0-9a-fA-F\]\{40\}/.test(block) && !/address-shaped/.test(block),
-            `route ${routeKey}: no 40-hex fail-close on the payload (addresses are public law)`,
-            `src/operator/router.ts route ${routeKey} still fail-closes on a 40-hex address — the 2026-07-25 address law names that a bug; the ledger serves the full wallet + explorerUrl`,
+            !carriesAddressFailClose(block),
+            `route ${routeKey}: no address fail-close in any known spelling (addresses are public law)`,
+            `src/operator/router.ts route ${routeKey} carries an address fail-close (regex, message, or scanner helper) — the 2026-07-25 address law names that a bug; the ledger serves the full wallet + explorerUrl`,
           );
         } else if (routeKey === "get /notifications") {
           // NOTIF-1: FOUNDER-ONLY (the sent list pairs recipients with
@@ -1226,9 +1237,9 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
             `src/operator/router.ts route ${routeKey} must call listNotifications() and must never reach any write service`,
           );
           check(
-            !/assertAddressSafeAggregate/.test(block) && !/0x\[0-9a-fA-F\]\{40\}/.test(block),
-            `route ${routeKey}: no 40-hex fail-close on the payload (addresses are public law)`,
-            `src/operator/router.ts route ${routeKey} still fail-closes on a 40-hex address — the 2026-07-25 address law names that a bug; recipients serve full + explorer link`,
+            !carriesAddressFailClose(block),
+            `route ${routeKey}: no address fail-close in any known spelling (addresses are public law)`,
+            `src/operator/router.ts route ${routeKey} carries an address fail-close (regex, message, or scanner helper) — the 2026-07-25 address law names that a bug; recipients serve full + explorer link`,
           );
         } else if (routeKey === "get /source-performance") {
           // K3.c (dated 2026-07-22): FOUNDER-ONLY — per-source rows pair
@@ -1249,9 +1260,9 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
             `src/operator/router.ts route ${routeKey} must call listSourcePerformance() and must never reach any write service`,
           );
           check(
-            !/0x\[0-9a-fA-F\]\{40\}/.test(block) && !/address-shaped/.test(block),
-            `route ${routeKey}: no 40-hex fail-close on the payload (addresses are public law)`,
-            `src/operator/router.ts route ${routeKey} still fail-closes on a 40-hex address — the 2026-07-25 address law names that a bug; owner wallets serve full + explorerUrl`,
+            !carriesAddressFailClose(block),
+            `route ${routeKey}: no address fail-close in any known spelling (addresses are public law)`,
+            `src/operator/router.ts route ${routeKey} carries an address fail-close (regex, message, or scanner helper) — the 2026-07-25 address law names that a bug; owner wallets serve full + explorerUrl`,
           );
         } else if (routeKey === "get /activation-requests") {
           // K3.a (dated 2026-07-22): FOUNDER-ONLY — queue rows pair wallets
@@ -1273,9 +1284,9 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
             `src/operator/router.ts route ${routeKey} must call listActivationRequests() and must never reach any write service or the signing-material read`,
           );
           check(
-            !/0x\[0-9a-fA-F\]\{40\}/.test(block) && !/address-shaped/.test(block),
-            `route ${routeKey}: no 40-hex fail-close on the payload (addresses are public law)`,
-            `src/operator/router.ts route ${routeKey} still fail-closes on a 40-hex address — the 2026-07-25 address law names that a bug; queue wallets serve full + explorerUrl`,
+            !carriesAddressFailClose(block),
+            `route ${routeKey}: no address fail-close in any known spelling (addresses are public law)`,
+            `src/operator/router.ts route ${routeKey} carries an address fail-close (regex, message, or scanner helper) — the 2026-07-25 address law names that a bug; queue wallets serve full + explorerUrl`,
           );
         } else {
           check(

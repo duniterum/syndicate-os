@@ -358,7 +358,10 @@ check(
     // the standing spine writer). It never touches the cache — it receives
     // COPIED timestamp rows as build input (no DB import, purity guard-pinned
     // by member-continuity.guard); only the type names mention the word.
-    if (f.endsWith("memberContinuityReadmodel.ts")) return false;
+    // Path-anchored (hardening: a basename match would exempt any future
+    // file of the same name anywhere in src).
+    if (f === join(srcDir, "lib", "protocol", "memberContinuityReadmodel.ts"))
+      return false;
     const s = stripComments(readFileSync(f, "utf8"));
     return s.includes("blockTimestamp") || s.includes("block_timestamp");
   });
