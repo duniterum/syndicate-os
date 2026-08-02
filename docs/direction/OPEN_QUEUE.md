@@ -1,5 +1,22 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-02 (TRANCHE 2) — LA COLONNE VERTÉBRALE MEMBRE EST AUTOMATIQUE.** Le fondateur a
+> vu prod à 14 sièges / « 1 » source quand la chaîne portait 16 / 5 (« ça doit marcher
+> automatiquement n'est-ce pas ? ») — il avait raison sur toute la ligne. CAUSE : la table
+> member_continuity_record n'était écrite QUE par le script armé à la main (3 lecteurs, 0
+> écrivain dans le code servi — prouvé au grep). CORRECTIF : le pipeline VÉRIFIÉ (déterminisme
+> ×2 + mélangé · réconciliation memberCount() live · UNE transaction + vérification post-insert
+> · sémantique replay/croissance/dérive) vit UNE fois dans src/backbone/continuitySpineRefresh.ts
+> et tourne À CHAQUE cycle du backbone (court-circuit de provenance ≈ 2 requêtes de comptage
+> par cycle calme) ; le script manuel devient une CLI mince sur la MÊME implémentation. « Referral
+> sources » compte désormais les événements SourceCreated indexés (vérité chaîne : 5 — l'ancien
+> chiffre comptait un autre fait, aveugle aux sources sans achat). /admin/members est PAGINÉ
+> (25/page) et sa description « masked server-side » (fossile de la tranche adresse) est corrigée.
+> MESURÉ au rig sur le dump prod + la chaîne live : premier cycle 14 → 16 (run #6, 16 = 16 on-chain,
+> sièges #15/#16 V3_EMITTED) · 16 lignes rendues · « Seats 1–16 of 16 » · Referral sources 5 ·
+> tableau de bord Members seated 16. Gardes api + studio EXIT 0 (5 gardes ré-épinglés, datés).
+> **🚀 DEPLOY — l'instruction Replit au chat du 2026-08-02 (le fondateur regarde prod : pas de lot).**
+
 > **▶ 2026-08-02 (SCELLÉ) — LE CYCLE `22296fd` EST EN PRODUCTION.** Rapport Replit collé au
 > chat : 27/27 blobs · identité d'octets ×2 (entry `index-DKL6gF2w.js` = `833b8750…beaa` ·
 > console `OperatorConsole-DpddDTuI.js` = `abae0d8b…80ac`) · 3/3 contrôles · backbone ok:2,

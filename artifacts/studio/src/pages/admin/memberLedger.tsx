@@ -69,6 +69,9 @@ import {
 // chapter again.
 import { chapterForSeat } from "@/lib/chapters";
 
+/** Seats per ledger page (the founder's 2026-08-02 pagination ask). */
+const LEDGER_PAGE_SIZE = 25;
+
 type State =
   | { kind: "loading" }
   | { kind: "ok"; payload: LedgerPayload }
@@ -256,6 +259,12 @@ export function MemberLedgerPanel() {
   // segment — client-side over the already-served rows, null = All.
   const [chapterFilter, setChapterFilter] = useState<string | null>(null);
   const [segmentFilter, setSegmentFilter] = useState<LedgerRow["segment"] | null>(null);
+  // Pagination (the founder's 2026-08-02 ask — the register grows, the page
+  // must not). A filter change re-slices the set, so the pager snaps back.
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    setPage(1);
+  }, [chapterFilter, segmentFilter]);
 
   useEffect(() => {
     let active = true;
@@ -281,8 +290,8 @@ export function MemberLedgerPanel() {
       <p className="text-sm text-muted-foreground max-w-3xl mb-5 leading-relaxed">
         Every seat&apos;s dossier from the already-indexed record: entry, capital
         standing, own purchases — each one reopenable at its permanent receipt
-        address — referral standing. Wallets are masked server-side; this read
-        is audit-logged.
+        address — referral standing. Every wallet opens on the explorer; this
+        read is audit-logged.
       </p>
 
       {state.kind === "loading" && (
@@ -309,7 +318,7 @@ export function MemberLedgerPanel() {
             <StatCard label="Active" value={String(state.payload.totals.active)} />
             <StatCard label="Settled" value={String(state.payload.totals.settled)} />
             <StatCard label="Dormant" value={String(state.payload.totals.dormant)} />
-            <StatCard label="Referral sources" value={String(state.payload.totals.sourceOwners)} />
+            <StatCard label="Referral sources" value={String(state.payload.totals.sources)} />
             <StatCard label="Promotions due" value={String(state.payload.totals.promotionsDue)} />
           </div>
 
@@ -384,7 +393,26 @@ export function MemberLedgerPanel() {
             );
           })()}
 
-          {/* The ledger table */}
+          {/* The ledger table — paginated: filters slice first, the pager
+              windows the slice (25 seats per page). */}
+          {(() => {
+            const filteredRows = state.payload.rows.filter(
+              (r) =>
+                (chapterFilter === null ||
+                  chapterForSeat(r.seat)?.roman === chapterFilter) &&
+                (segmentFilter === null || r.segment === segmentFilter),
+            );
+            const pageCount = Math.max(
+              1,
+              Math.ceil(filteredRows.length / LEDGER_PAGE_SIZE),
+            );
+            const currentPage = Math.min(page, pageCount);
+            const pageRows = filteredRows.slice(
+              (currentPage - 1) * LEDGER_PAGE_SIZE,
+              currentPage * LEDGER_PAGE_SIZE,
+            );
+            return (
+              <>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -405,14 +433,7 @@ export function MemberLedgerPanel() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {state.payload.rows
-                  .filter(
-                    (r) =>
-                      (chapterFilter === null ||
-                        chapterForSeat(r.seat)?.roman === chapterFilter) &&
-                      (segmentFilter === null || r.segment === segmentFilter),
-                  )
-                  .map((r) => (
+                {pageRows.map((r) => (
                   <Fragment key={r.id}>
                   <TableRow>
                     <TableCell className="font-mono text-xs">#{r.seat}</TableCell>
@@ -574,6 +595,42 @@ export function MemberLedgerPanel() {
               </TableBody>
             </Table>
           </div>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                <p className="text-xs text-muted-foreground" data-testid="ledger-page-range">
+                  {filteredRows.length === 0
+                    ? "No seats match the filter."
+                    : `Seats ${(currentPage - 1) * LEDGER_PAGE_SIZE + 1}–${Math.min(
+                        currentPage * LEDGER_PAGE_SIZE,
+                        filteredRows.length,
+                      )} of ${filteredRows.length}`}
+                </p>
+                {pageCount > 1 ? (
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      disabled={currentPage <= 1}
+                      onClick={() => setPage(currentPage - 1)}
+                      data-testid="ledger-page-prev"
+                    >
+                      Previous
+                    </Button>
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {currentPage} / {pageCount}
+                    </span>
+                    <Button
+                      variant="outline"
+                      disabled={currentPage >= pageCount}
+                      onClick={() => setPage(currentPage + 1)}
+                      data-testid="ledger-page-next"
+                    >
+                      Next
+                    </Button>
+                  </div>
+                ) : null}
+              </div>
+              </>
+            );
+          })()}
 
           {/* Internal rankings — recognition/retention-weighted, operator-only. */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">

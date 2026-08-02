@@ -23,7 +23,7 @@ import {
   type ActivityBuildInput,
   type RawSaleEventInput,
 } from "../src/backbone/activityHeartbeatReadmodel";
-import { assertAddressSafeJson } from "./member-continuity-readmodel";
+import { assertAddressSafeJson } from "../src/lib/protocol/memberContinuityReadmodel";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const apiDir = path.resolve(here, "..");

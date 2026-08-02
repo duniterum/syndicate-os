@@ -140,7 +140,9 @@ export interface LedgerPayload {
     active: number;
     settled: number;
     dormant: number;
-    sourceOwners: number;
+    /** Referral sources CREATED on-chain (indexed SourceCreated events —
+     *  chain truth, includes zero-purchase sources; 2026-08-02). */
+    sources: number;
     promotionsDue: number;
   };
   segmentDefinitions: Record<string, string>;
@@ -153,8 +155,9 @@ export type MemberLedgerResult =
   | { status: "denied" }
   | { status: "unavailable" };
 
-// GET the member ledger (M-INT-1). FOUNDER-ONLY server-side; wallets arrive
-// pre-masked. Fail-closed exactly like listOperators: 401/403/404 → "denied"
+// GET the member ledger (M-INT-1). FOUNDER-ONLY server-side; rows arrive
+// with full wallet + short form + explorer link (address law 2026-07-25).
+// Fail-closed exactly like listOperators: 401/403/404 → "denied"
 // (deliberately indistinguishable), transport/shape → "unavailable".
 export async function fetchMemberLedger(): Promise<MemberLedgerResult> {
   try {

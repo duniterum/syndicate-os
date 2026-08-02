@@ -192,14 +192,28 @@ check(
   JSON.stringify(dbTouchers) ===
     JSON.stringify([
       "src/backbone/backboneDb.ts",
-      // M0: the introduction refresh — the zone's SECOND (and last) DB file.
+      // ③d (2026-08-02): the continuity spine lane — the verified S3b
+      // pipeline as a cycle stage (the founder's automation order). Its
+      // write discipline is pinned in its own block below.
+      "src/backbone/continuitySpineRefresh.ts",
+      // M0: the introduction refresh.
       "src/backbone/introductionRefresh.ts",
     ]),
-  "exactly two zone files touch @workspace/db (backboneDb + introductionRefresh)",
+  "exactly three zone files touch @workspace/db (backboneDb + continuitySpineRefresh + introductionRefresh)",
   `zone DB boundary broken: [${dbTouchers.join(", ")}]`,
 );
-for (const rel of ["src/backbone/backboneDb.ts", "src/backbone/introductionRefresh.ts"]) {
-  const src = stripComments(read(rel));
+for (const rel of [
+  "src/backbone/backboneDb.ts",
+  "src/backbone/continuitySpineRefresh.ts",
+  "src/backbone/introductionRefresh.ts",
+]) {
+  // `import type { … } from "@workspace/db"` is erased at compile time and
+  // couples nothing at boot — only VALUE imports are banned (③d amendment:
+  // the spine lane types its insert rows against the schema's own shapes).
+  const src = stripComments(read(rel)).replace(
+    /import\s+type\s*\{[^}]*\}\s*from\s*["']@workspace\/db["'];?/g,
+    "",
+  );
   check(
     /import\s*\(\s*["']@workspace\/db["']\s*\)/.test(src) &&
       !/from\s*["']@workspace\/db["']/.test(src) &&
@@ -226,15 +240,39 @@ for (const [label, src] of [
     `${label}: never calls pool.end() (shared pool stays alive)`,
     `${label} calls pool.end() — it would kill the shared auth/operator pool`,
   );
-  check(
-    !src.includes(".update(") && !src.includes(".delete("),
-    `${label}: no .update()/.delete() calls`,
-    `${label} carries an update/delete verb — the backbone only ever inserts`,
-  );
+  // ③d AMENDMENT (2026-08-02): the spine lane is the ONE sanctioned
+  // exception to insert-only — the S3b write law it inherited is a full
+  // replace in one verified transaction (GROWN_PROVENANCE_REBUILD deletes
+  // the superseded record set and rewrites it whole, with in-tx post-insert
+  // verification). Its own block below pins the delete to exactly
+  // memberContinuityRecord inside the transaction.
+  if (label.split(path.sep).join("/") !== "src/backbone/continuitySpineRefresh.ts") {
+    check(
+      !src.includes(".update(") && !src.includes(".delete("),
+      `${label}: no .update()/.delete() calls`,
+      `${label} carries an update/delete verb — the backbone only ever inserts`,
+    );
+  }
   check(
     !/insert\s+into|update\s+\w+\s+set|delete\s+from/i.test(src),
     `${label}: no raw-SQL write verbs`,
     `${label} carries a raw-SQL write verb`,
+  );
+}
+
+// ③d — the spine lane's OWN write discipline: no .update() anywhere; its
+// only .delete() targets memberContinuityRecord, and it happens inside the
+// verified transaction (tx.delete), never on the bare connection.
+{
+  const spineSrc = stripComments(read("src/backbone/continuitySpineRefresh.ts"));
+  const deletes = [...spineSrc.matchAll(/(\w+)\s*\.delete\(\s*([A-Za-z.]+)\s*\)/g)];
+  check(
+    !spineSrc.includes(".update(") &&
+      deletes.length === 1 &&
+      deletes[0]?.[1] === "tx" &&
+      (deletes[0]?.[2] ?? "").endsWith("recTable"),
+    "spine lane: no updates; the one delete is tx.delete(recTable) inside the verified transaction",
+    "continuitySpineRefresh.ts write verbs drifted — the only permitted delete is tx.delete(recTable) (the S3b full-replace) and no .update() may exist",
   );
 }
 
@@ -278,6 +316,7 @@ for (const f of zoneFiles) {
   if (f.endsWith(`${path.sep}nativeAvaxScan.ts`)) continue; // the log-less lane
   if (f.endsWith(`${path.sep}tokenDiscoveryScan.ts`)) continue; // the open-contract lane
   if (f.endsWith(`${path.sep}introductionRefresh.ts`)) continue; // own whitelist below
+  if (f.endsWith(`${path.sep}continuitySpineRefresh.ts`)) continue; // ③d loader — coercion via the pure builder's fail-closed mappers
   const src = stripComments(readFileSync(f, "utf8"));
   check(
     !src.includes("decodedJson") && !src.includes("rawJson"),
@@ -503,21 +542,69 @@ assertAddressSafeJson(
 );
 ok.push("scanner passes plain block numbers / counters (no false positive)");
 
-// Served scanner patterns byte-identical to the script-side scanner.
+// Served scanner patterns byte-identical to the pure builder's scanner.
+// (2026-08-02: the pure builder MOVED to src/lib/protocol/ — the founder's
+// automation order makes the backbone the standing spine writer, so the
+// builder is served code now; the 2026-07-02 "script-side only" line was a
+// dated choice and is struck in the module header.)
 {
   const servedPatterns = stripComments(
     read("src/lib/protocol/addressSafety.ts"),
   ).match(/\/0x\[0-9a-fA-F\]\{41,\}\/|\/\\b\[0-9a-fA-F\]\{64\}\\b\//g);
   const scriptPatterns = stripComments(
-    read("scripts/member-continuity-readmodel.ts"),
+    read("src/lib/protocol/memberContinuityReadmodel.ts"),
   ).match(/\/0x\[0-9a-fA-F\]\{41,\}\/|\/\\b\[0-9a-fA-F\]\{64\}\\b\//g);
   check(
     servedPatterns !== null &&
       scriptPatterns !== null &&
       servedPatterns.length === 2 &&
       JSON.stringify(servedPatterns) === JSON.stringify(scriptPatterns),
-    "served scanner patterns byte-identical to the script-side scanner",
-    "addressSafety patterns drifted from member-continuity-readmodel",
+    "served scanner patterns byte-identical to the pure builder's scanner",
+    "addressSafety patterns drifted from memberContinuityReadmodel",
+  );
+}
+
+// THE CONTINUITY SPINE LANE (2026-08-02, the founder's automation order:
+// « il y a maintenant 16 membres pourquoi ce n'est pas à jour?? ça doit
+// marcher automatiquement » — the spine was script-fed only, so prod showed
+// 14 seats while the chain held 16). The backbone cycle now runs the SAME
+// verified-build pipeline the founder-armed script uses: provenance
+// short-circuit, pure build ×2 + shuffled determinism, live memberCount()
+// reconciliation, and the one-transaction persist with in-tx verification.
+// These pins hold the lane to that shape.
+{
+  const spineSrc = stripComments(read("src/backbone/continuitySpineRefresh.ts"));
+  check(
+    /GROWN_PROVENANCE_REBUILD/.test(spineSrc) &&
+      /REPLAY_NOOP/.test(spineSrc) &&
+      /HASH_DRIFT_SAME_PROVENANCE/.test(spineSrc),
+    "spine lane: explicit replay semantics (grown / replay-noop / hash-drift hard-fail)",
+    "continuitySpineRefresh.ts lost the explicit replay semantics — grown-provenance rebuild, exact-replay no-op, hash-drift hard-fail are the write law",
+  );
+  check(
+    /\.transaction\(/.test(spineSrc) &&
+      /post-insert verification/i.test(read("src/backbone/continuitySpineRefresh.ts")) &&
+      !/onConflict/i.test(spineSrc),
+    "spine lane: one-transaction persist with in-tx verification, no upsert",
+    "continuitySpineRefresh.ts persist drifted — one transaction + post-insert verification + no ON CONFLICT is the S3b law",
+  );
+  check(
+    /onchainMemberCount/.test(spineSrc) && /memberTotal/.test(spineSrc),
+    "spine lane: live memberCount() reconciliation gates the write",
+    "continuitySpineRefresh.ts must reconcile the live memberCount() against the built record set before any write",
+  );
+  const runnerSrc = stripComments(read("src/backbone/backboneRunner.ts"));
+  check(
+    /refreshContinuitySpine\(/.test(runnerSrc),
+    "runner: the continuity spine lane runs in the cycle",
+    "backboneRunner.ts does not run refreshContinuitySpine — the spine must refresh automatically every cycle (founder order 2026-08-02)",
+  );
+  const buildScript = stripComments(read("scripts/member-continuity-build.ts"));
+  check(
+    /from "\.\.\/src\/backbone\/continuitySpineRefresh"/.test(buildScript) &&
+      !/async function persistVerifiedBuild/.test(buildScript),
+    "build script: imports the ONE persist implementation from src (no second copy)",
+    "member-continuity-build.ts must import persistVerifiedBuild from src/backbone/continuitySpineRefresh — a second persist body in scripts is the twin disease",
   );
 }
 

@@ -354,6 +354,11 @@ check(
   walk(srcDir);
   const offenders = files.filter((f) => {
     if (f.startsWith(backboneDir)) return false; // the approved zone
+    // 2026-08-02: the PURE continuity builder moved into src (the backbone is
+    // the standing spine writer). It never touches the cache — it receives
+    // COPIED timestamp rows as build input (no DB import, purity guard-pinned
+    // by member-continuity.guard); only the type names mention the word.
+    if (f.endsWith("memberContinuityReadmodel.ts")) return false;
     const s = stripComments(readFileSync(f, "utf8"));
     return s.includes("blockTimestamp") || s.includes("block_timestamp");
   });

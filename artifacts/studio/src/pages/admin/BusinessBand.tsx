@@ -168,8 +168,8 @@ export function BusinessBand({
         >
           {r.nftMintedTotal ?? "—"}
         </StatCard>
-        <StatCard label="Source owners" icon={<GitBranch className="h-4 w-4" />} meta={door("sources-referrals", "→ Performance", "performance")}>
-          {count(totals?.sourceOwners ?? null)}
+        <StatCard label="Referral sources" icon={<GitBranch className="h-4 w-4" />} meta={door("sources-referrals", "→ Performance", "performance")}>
+          {count(totals?.sources ?? null)}
         </StatCard>
         <StatCard label="Promotions due" icon={<ArrowUpRight className="h-4 w-4" />} meta={door("sources-referrals", "→ Signing", "signing")}>
           {count(totals?.promotionsDue ?? null)}

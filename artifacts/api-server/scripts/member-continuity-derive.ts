@@ -23,7 +23,7 @@ import {
   type HistoricalMemberInput,
   type V3PurchaseEventInput,
   type SaleGeneration,
-} from "./member-continuity-readmodel";
+} from "../src/lib/protocol/memberContinuityReadmodel";
 
 function toInt(value: unknown, label: string): number {
   const n = typeof value === "string" ? Number(value) : (value as number);

@@ -247,11 +247,20 @@ const DB_LAZY_ALLOW = new Set([
   // K3.c (mockup Face 5, founder-approved 2026-07-22): the per-source
   // performance read. Lazy-only; pinned by guard-auth-zone.ts.
   "src/operator/sourcePerformanceService.ts",
+  // ③d (2026-08-02, the founder's automation order): the continuity spine
+  // lane — the verified S3b pipeline as a backbone stage. Lazy-only; write
+  // discipline pinned by backbone.guard.ts + member-continuity.guard.
+  "src/backbone/continuitySpineRefresh.ts",
 ]);
+// `import type { … } from "@workspace/db"` is erased at compile time and
+// couples nothing at runtime (2026-08-02, same erasure rule as the sibling
+// guards) — strip it before testing for static forms.
+const stripDbTypeImports = (code: string): string =>
+  code.replace(/import\s+type\s*\{[^}]*\}\s*from\s*["']@workspace\/db["'];?/g, "");
 const DB_STATIC_IMPORT_RE =
   /(from\s*["']@workspace\/db["'])|(import\s*["']@workspace\/db["'])|(require\s*\(\s*["']@workspace\/db["']\s*\))/;
 const dbImporters = servedFiles.filter((f) => {
-  const code = stripComments(readFileSync(f, "utf8"));
+  const code = stripDbTypeImports(stripComments(readFileSync(f, "utf8")));
   if (!DB_IMPORT_RE.test(code)) return false;
   const rel = relative(ROOT, f).split("\\").join("/");
   return !(DB_LAZY_ALLOW.has(rel) && !DB_STATIC_IMPORT_RE.test(code));
@@ -263,7 +272,9 @@ check(
 );
 for (const relPath of DB_LAZY_ALLOW) {
   const abs = resolve(ROOT, relPath);
-  const code = existsSync(abs) ? stripComments(readFileSync(abs, "utf8")) : "";
+  const code = existsSync(abs)
+    ? stripDbTypeImports(stripComments(readFileSync(abs, "utf8")))
+    : "";
   check(
     `lazy-DB exception ${relPath} exists and stays dynamic-only`,
     code.length > 0 &&

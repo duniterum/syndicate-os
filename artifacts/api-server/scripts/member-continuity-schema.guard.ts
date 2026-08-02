@@ -207,7 +207,11 @@ check(
  * member_continuity table" note). Doctrine forbids IMPORTS. Covers static
  * imports, bare side-effect imports, dynamic import(), and require().
  */
-const FORBIDDEN_MODULE = /(@workspace\/db|lib\/db|memberContinuity)/;
+// 2026-08-02 amendment: `memberContinuityReadmodel` (the PURE builder) moved
+// into served src under the founder's automation order — importing IT is the
+// design now. The schema modules (lib/db memberContinuity tables) stay
+// forbidden: the negative lookahead spares only the Readmodel specifier.
+const FORBIDDEN_MODULE = /(@workspace\/db|lib\/db|memberContinuity(?!Readmodel))/;
 const IMPORT_FORMS = [
   /import\s[^;]*?from\s*["']([^"']+)["']/g,
   /import\s*["']([^"']+)["']/g,
@@ -269,6 +273,10 @@ const LAZY_DB_ALLOW = new Set([
   // K3.c (mockup Face 5, founder-approved 2026-07-22): the per-source
   // performance read (closed-request merge + audited access). Lazy-only.
   join(SERVED_SRC, "operator", "sourcePerformanceService.ts"),
+  // ③d (2026-08-02, the founder's automation order): the continuity spine
+  // lane — the verified S3b pipeline as a backbone stage. Lazy-only; its
+  // write discipline is pinned by backbone.guard.ts + member-continuity.guard.
+  join(SERVED_SRC, "backbone", "continuitySpineRefresh.ts"),
 ]);
 const DYNAMIC_DB_IMPORT_RE = /import\s*\(\s*["']@workspace\/db["']\s*\)/;
 function walk(dir: string, hits: string[]): void {
@@ -277,7 +285,13 @@ function walk(dir: string, hits: string[]): void {
     if (statSync(p).isDirectory()) {
       walk(p, hits);
     } else if (p.endsWith(".ts")) {
-      let served = stripComments(readFileSync(p, "utf8"));
+      // `import type { … } from "@workspace/db"` is erased at compile time —
+      // it couples nothing at runtime and never loads the schema module
+      // (2026-08-02, same erasure rule as backbone.guard's lazy-DB pin).
+      let served = stripComments(readFileSync(p, "utf8")).replace(
+        /import\s+type\s*\{[^}]*\}\s*from\s*["']@workspace\/db["'];?/g,
+        "",
+      );
       if (LAZY_DB_ALLOW.has(p)) {
         // Neutralize ONLY the sanctioned lazy form; every other forbidden
         // import (static @workspace/db, lib/db, memberContinuity) still hits.
@@ -303,7 +317,12 @@ check(
 for (const p of LAZY_DB_ALLOW) {
   let code = "";
   try {
-    code = stripComments(readFileSync(p, "utf8"));
+    // Type-only imports are erased at compile time (2026-08-02 — the spine
+    // lane types its insert rows against the schema's own shapes).
+    code = stripComments(readFileSync(p, "utf8")).replace(
+      /import\s+type\s*\{[^}]*\}\s*from\s*["']@workspace\/db["'];?/g,
+      "",
+    );
   } catch {
     // missing file → check fails below
   }

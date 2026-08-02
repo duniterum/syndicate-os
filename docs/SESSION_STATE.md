@@ -25,6 +25,30 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ## prod dump of 2026-07-30. dump.sql.gz is SAFE locally (Downloads) → the founder may tell
 > ## Replit "téléchargé" so it leaves the project root.
 >
+> ## (a2) SECOND SLICE OF THE DAY — THE SPINE IS AUTOMATIC (the founder caught prod at
+> ## 14 seats / « 1 » source while the chain held 16 / 5: « ça doit marcher automatiquement »)
+> · ROOT CAUSE: member_continuity_record was written ONLY by the founder-armed script — no
+>   served code ever wrote it (grep-proven: 3 readers, 0 writers). The admin band + ledger +
+>   "Referral sources" all derived from that hand-fed table.
+> · THE FIX (verified pipeline, not a shortcut): the pure builder MOVED to
+>   src/lib/protocol/memberContinuityReadmodel.ts (its "script-side only" line struck, dated);
+>   the load/verify/persist pipeline lives ONCE in src/backbone/continuitySpineRefresh.ts
+>   (determinism ×2 + shuffled · live memberCount() reconcile · ONE transaction + in-tx
+>   verification · GROWN/REPLAY/HASH-DRIFT semantics · provenance short-circuit ≈ two count
+>   queries per quiet cycle); the backbone runs it every cycle (③d, lane-status reported);
+>   the manual script is a thin CLI over the SAME implementation (arming kept).
+> · "Referral sources" now counts indexed SourceCreated events (chain truth — 5; the old
+>   figure counted spine members with referral standing: wrong fact, wrong label, blind to
+>   zero-purchase sources). BusinessBand's card renamed from "Source owners" to match.
+> · /admin/members is PAGINATED (25/page, range line, prev/next, filter-reset) + the stale
+>   "Wallets are masked server-side" description replaced (address law).
+> · MEASURED on the rig (prod dump + live chain): first cycle spine 14 → 16 (run #6,
+>   member_total 16 = onchain 16, builder 1.2.0-backbone; #15 0x269d…f4eb · #16 0xf06d…3fbc
+>   V3_EMITTED) · /admin/members renders 16 rows · 17 blue anchors · "Seats 1–16 of 16" ·
+>   Referral sources 5 · dashboard Members seated 16. Guards: api chain exit 0 (backbone 236
+>   + member-continuity + schema + holder-index + protocol-time pins amended, dated) ·
+>   studio chain exit 0 · typecheck ×2 · builds ×2.
+>
 > ## (b) IN FLIGHT — nothing queued. The build lane is EMPTY until a founder decision below.
 > · Accepted-known (unchanged): source-status asOf ratchet stays memorial · printable
 >   ReceiptTicket keeps its QR as the verify affordance · payloadDiscipline's ADDRESS_LEAK_RE

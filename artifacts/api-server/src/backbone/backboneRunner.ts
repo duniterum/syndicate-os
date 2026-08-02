@@ -102,6 +102,10 @@ import {
 } from "./ownPurchaseReadmodel";
 import { GENESIS_SEAT_BY_WALLET } from "../lib/protocol/historicalFreezeWallets";
 import {
+  refreshContinuitySpine,
+  type SpineRefreshSummary,
+} from "./continuitySpineRefresh";
+import {
   buildSeasonReadModel,
   type SeasonBuildResult,
 } from "./seasonReadmodel";
@@ -170,6 +174,12 @@ export interface BackboneStatusSnapshot {
       readonly asOfBlock: number | null;
       readonly attributedRows: number;
       readonly distinctSources: number;
+    } | null;
+    /** ③d: the continuity spine lane (2026-08-02) — counts + action words only. */
+    readonly continuitySpine: {
+      readonly ok: boolean;
+      readonly changed: boolean;
+      readonly line: string;
     } | null;
     readonly readModel: ActivityAddressSafeReport;
   } | null;
@@ -723,6 +733,22 @@ async function runCycle(): Promise<string | null> {
     introFault = err instanceof Error ? err.message : String(err);
   }
 
+  // ③d THE CONTINUITY SPINE LANE (2026-08-02, the founder's automation order:
+  // « ça doit marcher automatiquement » — prod served 14 seats while the
+  // chain held 16, because the spine was fed only by the founder-armed
+  // script). The verified pipeline runs every cycle behind a cheap
+  // provenance short-circuit, so a new seat reaches the served ledger in ONE
+  // cycle. ISOLATED like the intro refresh: a fault never darkens the
+  // heartbeat; the persisted spine keeps serving its last verified state.
+  let spineRefresh: SpineRefreshSummary | null = null;
+  let spineFault: string | null = null;
+  try {
+    spineRefresh = await refreshContinuitySpine();
+    if (!spineRefresh.ok) spineFault = spineRefresh.line;
+  } catch (err) {
+    spineFault = err instanceof Error ? err.message : String(err);
+  }
+
   lastGoodModel = model;
   lastGoodProtocolModel = protocolModel;
   // H2-⑬/⑫: a derived-layer fault keeps the previous good model (the
@@ -790,6 +816,15 @@ async function runCycle(): Promise<string | null> {
           distinctSources: introRefresh.distinctSources,
         }
       : null,
+    // The spine lane reports here like every lane (the 2026-07-27 lesson:
+    // a lane nobody can see stalling is a lane nobody fixes).
+    continuitySpine: spineRefresh
+      ? {
+          ok: spineRefresh.ok,
+          changed: spineRefresh.changed,
+          line: spineRefresh.line,
+        }
+      : null,
     readModel: report,
   };
 
@@ -803,6 +838,11 @@ async function runCycle(): Promise<string | null> {
   if (introFault !== null) {
     partialNotes.push(
       "introduction refresh faulted — the previous model keeps serving",
+    );
+  }
+  if (spineFault !== null) {
+    partialNotes.push(
+      "continuity spine refresh not green — the persisted spine keeps serving; retried next cycle",
     );
   }
   if (milestoneFault !== null) {

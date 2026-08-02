@@ -133,7 +133,14 @@ export interface LedgerPayload {
     readonly active: number;
     readonly settled: number;
     readonly dormant: number;
-    readonly sourceOwners: number;
+    /** Referral sources CREATED on-chain — counted from the indexed
+     * SourceCreated events (the founder-signed registry acts), never from
+     * ledger rows or the purchase-backed index. AMENDED 2026-08-02: the old
+     * value counted ledger members with referral standing — the wrong fact
+     * under the wrong label, stale whenever the spine lagged, and blind to
+     * zero-purchase sources (the founder caught it live: « il y a plus
+     * que 1 »). */
+    readonly sources: number;
     readonly promotionsDue: number;
   };
   readonly segmentDefinitions: Record<LedgerSegment, string>;
@@ -154,7 +161,7 @@ export async function readMemberLedger(actor: {
   if (!gateOpen()) return { ok: false, reason: "unavailable" };
 
   try {
-    const { db, memberContinuityRecord, auditLog } = await import("@workspace/db");
+    const { db, pool, memberContinuityRecord, auditLog } = await import("@workspace/db");
 
     const spine = await db
       .select({
@@ -270,6 +277,16 @@ export async function readMemberLedger(actor: {
     }
     ledger.sort((a, b) => a.seat - b.seat);
 
+    // "Referral sources" = SourceCreated events already indexed by the
+    // SOURCE_LIFECYCLE lane (chain truth, one query on the store — the
+    // 2026-08-02 amendment; the purchase-backed index is blind to
+    // zero-purchase sources, and ledger-row counting was blind to owners
+    // whose seat the spine had not ingested yet).
+    const createdRes = await pool.query(
+      `select count(*)::int as count from protocol_event_raw where stream_key = 'SOURCE_LIFECYCLE' and event_name = 'SourceCreated'`,
+    );
+    const sources = Number(createdRes.rows[0]?.count ?? 0);
+
     const payload: LedgerPayload = {
       rows: ledger,
       totals: {
@@ -277,7 +294,7 @@ export async function readMemberLedger(actor: {
         active: ledger.filter((r) => r.segment === "ACTIVE").length,
         settled: ledger.filter((r) => r.segment === "SETTLED").length,
         dormant: ledger.filter((r) => r.segment === "DORMANT").length,
-        sourceOwners: ledger.filter((r) => r.referral !== null).length,
+        sources,
         promotionsDue: ledger.filter((r) => r.referral?.promotionDue === true).length,
       },
       segmentDefinitions: SEGMENT_DEFINITIONS,

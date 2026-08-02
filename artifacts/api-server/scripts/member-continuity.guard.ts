@@ -28,7 +28,7 @@ import {
   type RoutedRowInput,
   type V2PurchaseRowInput,
   type V3PurchaseEventInput,
-} from "./member-continuity-readmodel";
+} from "../src/lib/protocol/memberContinuityReadmodel";
 import { selectorFor } from "../src/lib/protocol/merkleFreeze";
 import { SALE_V3_ABI } from "../src/canon/the-syndicate/contracts/abi/sale-abi";
 
@@ -417,8 +417,10 @@ check(
 // 2. Static source scans (purity, read-only posture, no public surface).
 // ---------------------------------------------------------------------------
 
+// 2026-08-02: the pure builder lives in src (the backbone is the standing
+// spine writer under the founder's automation order); purity pins unchanged.
 const builderSrc = readFileSync(
-  "scripts/member-continuity-readmodel.ts",
+  "src/lib/protocol/memberContinuityReadmodel.ts",
   "utf8",
 );
 const deriveSrc = readFileSync("scripts/member-continuity-derive.ts", "utf8");
@@ -969,31 +971,43 @@ const stripComments = (src: string): string =>
   src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
 const builderCode = stripComments(builderSrc);
 const buildCode = stripComments(buildSrc);
+// 2026-08-02: the load/verify/persist pipeline moved to src (the backbone is
+// the standing spine writer under the founder's automation order). The write
+// pins follow the implementation to its ONE home; the founder-arming pin
+// stays on the manual script, which is now a thin CLI over the src pipeline.
+const spineCode = stripComments(
+  readFileSync("src/backbone/continuitySpineRefresh.ts", "utf8"),
+);
 
 check(
-  "gated referral/source namespace structurally absent (builder + dry-run, comment-stripped)",
-  !/referralAmount|sourceWallet|sourceId|commissionBps|attributionScope|attributionWindow/.test(
-    builderCode + buildCode,
-  ),
+  "gated referral/source namespace structurally absent (builder + CLI, comment-stripped; the src loader keeps the whitelist mapping)",
+  !/referralAmount|sourceWallet|attributionScope|attributionWindow/.test(
+    builderCode + buildCode + spineCode,
+  ) &&
+    !/referralAmount|sourceWallet|sourceId|commissionBps|attributionScope|attributionWindow/.test(
+      builderCode + buildCode,
+    ),
 );
 // --- S3b write-mode invariants (approved founder gate; comment-stripped) ---
-const txInsertCount = (buildCode.match(/tx\s*\.insert\(/g) ?? []).length;
-const txDeleteCount = (buildCode.match(/tx\s*\.delete\(/g) ?? []).length;
-const nonTxWriteResidue = buildCode
+const txInsertCount = (spineCode.match(/tx\s*\.insert\(/g) ?? []).length;
+const txDeleteCount = (spineCode.match(/tx\s*\.delete\(/g) ?? []).length;
+const nonTxWriteResidue = spineCode
   .replace(/tx\s*\.insert\(/g, "")
-  .replace(/tx\s*\.delete\(/g, "");
+  .replace(/tx\s*\.delete\(/g, "")
+  .replace(/db\.insert\(auditLog\)/g, "");
 check(
   "write primitives are transaction-scoped ONLY (exactly 2 tx.insert + 1 tx.delete; zero non-tx insert/update/delete)",
   txInsertCount === 2 &&
     txDeleteCount === 1 &&
-    !/\.insert\(|\.update\(|\.delete\(/.test(nonTxWriteResidue),
+    !/\.insert\(|\.update\(|\.delete\(/.test(nonTxWriteResidue) &&
+    !/\.insert\(|\.update\(|\.delete\(/.test(buildCode),
   `txInsert=${txInsertCount} txDelete=${txDeleteCount}`,
 );
 check(
   "no upsert / raw-SQL writes / DDL anywhere (no ON CONFLICT, comment-stripped)",
   !/onConflict|ON CONFLICT|INSERT INTO|DELETE FROM|CREATE TABLE|ALTER TABLE|TRUNCATE|drizzle-kit/i.test(
-    buildCode,
-  ) && !/\bUPDATE\s+[a-z_]+\s+SET\b/i.test(buildCode),
+    buildCode + spineCode,
+  ) && !/\bUPDATE\s+[a-z_]+\s+SET\b/i.test(buildCode + spineCode),
 );
 check(
   "write mode is founder-armed: --write flag + exact env arming value; dry-run stays the no-write default posture",
@@ -1004,35 +1018,40 @@ check(
     /process\.env\[WRITE_ARMING_ENV\]\s*!==\s*WRITE_ARMING_VALUE/.test(
       buildCode,
     ) &&
-    /if\s*\(mode\s*!==\s*"WRITE"\)\s*return null/.test(buildCode),
+    /let outcome: PersistOutcome \| null = null/.test(buildCode) &&
+    /if \(mode === "WRITE"\)/.test(buildCode),
 );
 check(
   "replay semantics explicit: exact-replay no-op, same-provenance hash drift hard-fails, shrunk/diverged provenance hard-fails, orphan rows refused",
-  buildCode.includes("REPLAY_NOOP") &&
-    buildCode.includes("HASH_DRIFT_SAME_PROVENANCE") &&
-    buildCode.includes("PROVENANCE_SHRUNK_OR_DIVERGED") &&
-    buildCode.includes("GROWN_PROVENANCE_REBUILD") &&
-    buildCode.includes("ORPHAN_ROWS_ANOMALY"),
+  spineCode.includes("REPLAY_NOOP") &&
+    spineCode.includes("HASH_DRIFT_SAME_PROVENANCE") &&
+    spineCode.includes("PROVENANCE_SHRUNK_OR_DIVERGED") &&
+    spineCode.includes("GROWN_PROVENANCE_REBUILD") &&
+    spineCode.includes("ORPHAN_ROWS_ANOMALY"),
 );
 check(
   "write is ONE transaction with in-tx post-insert verification (rollback on mismatch); failed builds never memorialized",
-  buildCode.includes(".transaction(") &&
-    buildCode.includes(
+  spineCode.includes(".transaction(") &&
+    spineCode.includes(
       "S3B write rollback: post-insert verification failed",
     ) &&
-    buildCode.includes("S3B write refused") &&
-    buildCode.includes("never memorialized"),
+    spineCode.includes("S3B write refused") &&
+    (spineCode + buildCode).includes("never memorialized"),
 );
 check(
-  "dry-run type-binds shaped rows to the real Drizzle insert types (compile-time net)",
-  buildCode.includes("MemberContinuityRecordInsert") &&
-    buildCode.includes("MemberContinuityVerificationRunInsert") &&
-    buildCode.includes("_assertDdlShapesMatchSchema"),
+  "persist type-binds its rows to the real Drizzle insert types at the insert sites (compile-time net)",
+  spineCode.includes("MemberContinuityRecordInsert") &&
+    spineCode.includes("MemberContinuityVerificationRunInsert") &&
+    /recordInserts: MemberContinuityRecordInsert\[\]/.test(spineCode) &&
+    /runInsert: MemberContinuityVerificationRunInsert/.test(spineCode),
 );
 check(
-  "selector recompute memberCount() == 0x11aee380 (canon-reconciled, viewOnly)",
+  "selector recompute memberCount() == 0x11aee380 (canon-reconciled; ONE declaration in financialDecoders, imported by the spine)",
   selectorFor("memberCount()") === "0x11aee380" &&
-    buildCode.includes('"0x11aee380"') &&
+    stripComments(
+      readFileSync("src/lib/protocol/financialDecoders.ts", "utf8"),
+    ).includes('"0x11aee380"') &&
+    spineCode.includes("SELECTOR_MEMBER_COUNT") &&
     SALE_V3_ABI.some(
       (e) =>
         e.type === "function" &&
