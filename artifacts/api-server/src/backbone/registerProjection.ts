@@ -28,10 +28,12 @@
  *                       indexed row at all serves null — honest absence.
  *   · short form / explorer link — the feed projection's shortForm and the
  *                       canon addressUrl (never rebuilt here).
- *   · chapter         — derived from GENESIS_SIGNAL_SEAT_CEILING (the same
- *                       declaration the seats-333 milestone reads). A seat
- *                       BEYOND the known chapter table fails the build closed
- *                       (extend the table deliberately; never serve a guess).
+ *   · chapter         — the ONE server chapter table (lib/protocol/chapters,
+ *                       the guard-pinned studio mirror; all five chapters,
+ *                       Open Era open-ended, so every real seat resolves
+ *                       forever — until 2026-08-02 a PARTIAL private copy
+ *                       here threw on seat #334 and darkened the whole
+ *                       register). Only a malformed seat still fails closed.
  *
  * Fail-closed and address-safe by the same gates as the feed: the route
  * serializes through the feed's address-safety assertion; every row carries
@@ -39,7 +41,11 @@
  * the full address is what makes a row verifiable).
  */
 
-import { GENESIS_SIGNAL_SEAT_CEILING } from "./milestoneReadmodel";
+import {
+  GENESIS_SIGNAL_SEAT_CEILING,
+  chapterForSeat,
+  chapterChipLabel,
+} from "../lib/protocol/chapters";
 import { shortForm } from "./feedProjection";
 import { addressUrl } from "../canon/the-syndicate/chain/chain-registry";
 
@@ -96,14 +102,14 @@ function fail(msg: string): never {
 }
 
 function chapterFor(seat: number): string {
-  if (seat >= 1 && seat <= GENESIS_SIGNAL_SEAT_CEILING) {
-    return "Chapter I · Genesis Signal";
+  const chapter = chapterForSeat(seat);
+  // Chapter V is open-ended: every integer seat ≥ 1 resolves. A null here
+  // means a MALFORMED seat (the 0 sentinel, a negative, a non-integer) —
+  // that stays fail-closed; a guessed row is never served.
+  if (chapter === null) {
+    fail(`seat #${seat} is not a valid seat number — no chapter can be served`);
   }
-  // A seat beyond the known chapter table is a NEW ERA the register must
-  // describe deliberately — never with a guessed label.
-  fail(
-    `seat #${seat} is beyond the known chapter table (ceiling ${GENESIS_SIGNAL_SEAT_CEILING}); extend chapterFor() in the same commit as the era`,
-  );
+  return chapterChipLabel(chapter);
 }
 
 export function buildPublicRegister(input: {

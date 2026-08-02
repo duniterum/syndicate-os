@@ -9,36 +9,13 @@
  * RECOMPUTE: every figure is the row's own field re-based; nothing is
  * summed or derived here.
  *
- * The chapter table MIRRORS the studio's frozen canon
- * (`artifacts/studio/src/lib/chapters.ts` — boundaries engraved in
- * SEASONS_ENGINE_ON_SYNDICATE_OS §3; frozen, never renumbered). A drift
- * between the two copies would be a canon violation, not a style choice.
+ * The chapter table is the server's ONE frozen canon module
+ * (`../lib/protocol/chapters.ts` — the guard-pinned studio mirror; until
+ * 2026-08-02 this file carried its own private copy of the table).
  */
 
 import type { OwnPurchaseRow } from "../backbone/ownPurchaseReadmodel";
-
-// ── the frozen narrative chapters (studio mirror — see header) ─────────────
-interface Chapter {
-  readonly roman: string;
-  readonly name: string;
-  readonly startSeat: number;
-  readonly endSeat: number | null;
-}
-const CHAPTERS: readonly Chapter[] = [
-  { roman: "I", name: "Genesis Signal", startSeat: 1, endSeat: 333 },
-  { roman: "II", name: "First Thousand", startSeat: 334, endSeat: 1000 },
-  { roman: "III", name: "The Expansion", startSeat: 1001, endSeat: 3333 },
-  { roman: "IV", name: "First Ten Thousand", startSeat: 3334, endSeat: 10000 },
-  { roman: "V", name: "Open Era", startSeat: 10001, endSeat: null },
-];
-function chapterForSeat(seat: number): Chapter | null {
-  if (!Number.isInteger(seat) || seat < 1) return null;
-  return (
-    CHAPTERS.find(
-      (c) => seat >= c.startSeat && (c.endSeat === null || seat <= c.endSeat),
-    ) ?? null
-  );
-}
+import { chapterForSeat, chapterChipLabel } from "../lib/protocol/chapters";
 
 // ── the spine's exact formatters, mirrored ─────────────────────────────────
 /** Money: full base-unit precision, trailing zeros trimmed to a 2-decimal
@@ -139,7 +116,7 @@ export function cardFactsFor(
 
   return {
     seatDisplay: `Member #${seatGrouped}`,
-    chapterChip: chapter ? `Chapter ${chapter.roman} · ${chapter.name}` : null,
+    chapterChip: chapter ? chapterChipLabel(chapter) : null,
     coordinate: [
       chapter ? `Seat #${seatGrouped} of Chapter ${chapter.roman}` : `Seat #${seatGrouped}`,
       ...(eraLabel === null ? [] : [eraLabel]),

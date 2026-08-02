@@ -47,6 +47,12 @@ import type {
   LpLiquidityItem,
 } from "./protocolEventReadmodel";
 import { USDC_BASE_UNITS as USDC_BASE } from "../lib/protocol/financialDecoders";
+import {
+  GENESIS_SIGNAL_SEAT_CEILING,
+  FIRST_THOUSAND_SEAT_CEILING,
+  EXPANSION_SEAT_CEILING,
+  FIRST_TEN_THOUSAND_SEAT_CEILING,
+} from "../lib/protocol/chapters";
 
 // ---------------------------------------------------------------------------
 // The canon definitions (origin harvest, adapted vocabulary — founder GO
@@ -105,16 +111,14 @@ export interface MilestoneDef {
 // commissions-paid + second-generation ladders await the sale-lane input's
 // commission field (their own micro-slice); alias/ramp/nft families ride
 // their modules.
-/** Chapter I (Genesis Signal) seals forever at this seat — the server-side
- *  declaration (the seats-333 milestone below and the public register's
- *  chapter column both read it; 2026-07-30). ⛔ HONESTY (go-live review): the
- *  STUDIO carries its own copy — artifacts/studio/src/lib/chapters.ts
- *  (endSeat: 333, feeds the receipts' chapter labels); client and server
- *  cannot import each other, so the pair is a declared cross-artifact twin
- *  (the USDC-base pattern). When Chapter II is defined, BOTH tables move in
- *  the same commit. Distinct from the OTHER 333s in this file — 333 burns
- *  and 333 artifacts are unrelated facts sharing a numeral. */
-export const GENESIS_SIGNAL_SEAT_CEILING = 333;
+// Chapter boundaries: since 2026-08-02 the server's ONE chapter table lives
+// in lib/protocol/chapters.ts (all five chapters, guard-pinned against the
+// studio's mirror — the old line "when Chapter II is defined, both tables
+// move" is answered: it was ALWAYS defined in canon; the server just never
+// carried it, which is how seat #334 would have darkened the register). The
+// chapter-end milestone targets below import those ceilings — the boundary
+// numerals exist ONCE server-side. Distinct from the OTHER 333s in this
+// file — 333 burns and 333 artifacts are unrelated facts sharing a numeral.
 
 export const PROTOCOL_MILESTONES: readonly MilestoneDef[] = [
   // ── MEMBERSHIP — the master ladder; era ends are rungs (one ladder,
@@ -127,11 +131,11 @@ export const PROTOCOL_MILESTONES: readonly MilestoneDef[] = [
   { id: "seats-250", label: "250 seats sealed", kind: "seats", family: "membership", target: 250 },
   { id: "seats-333", label: "Genesis Signal sealed (#1–#333)", kind: "seats", family: "membership", target: GENESIS_SIGNAL_SEAT_CEILING },
   { id: "seats-500", label: "500 seats sealed", kind: "seats", family: "membership", target: 500 },
-  { id: "seats-1000", label: "First Thousand sealed (#334–#1,000)", kind: "seats", family: "membership", target: 1_000 },
+  { id: "seats-1000", label: "First Thousand sealed (#334–#1,000)", kind: "seats", family: "membership", target: FIRST_THOUSAND_SEAT_CEILING },
   { id: "seats-2000", label: "2,000 seats sealed", kind: "seats", family: "membership", target: 2_000 },
-  { id: "seats-3333", label: "The Expansion sealed (#1,001–#3,333)", kind: "seats", family: "membership", target: 3_333 },
+  { id: "seats-3333", label: "The Expansion sealed (#1,001–#3,333)", kind: "seats", family: "membership", target: EXPANSION_SEAT_CEILING },
   { id: "seats-5000", label: "5,000 seats sealed", kind: "seats", family: "membership", target: 5_000 },
-  { id: "seats-10000", label: "First Ten Thousand sealed", kind: "seats", family: "membership", target: 10_000 },
+  { id: "seats-10000", label: "First Ten Thousand sealed", kind: "seats", family: "membership", target: FIRST_TEN_THOUSAND_SEAT_CEILING },
   { id: "seats-25000", label: "25,000 seats sealed — era 6 opens", kind: "seats", family: "membership", target: 25_000 },
   { id: "seats-50000", label: "50,000 seats sealed — era 7 opens", kind: "seats", family: "membership", target: 50_000 },
   { id: "seats-100000", label: "100,000 seats sealed — era 8 opens", kind: "seats", family: "membership", target: 100_000 },

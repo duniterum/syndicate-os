@@ -89,6 +89,11 @@ import { buildActivityHeartbeatReadModel } from "../src/backbone/activityHeartbe
 import { buildProtocolEventReadModel } from "../src/backbone/protocolEventReadmodel";
 import { buildPublicRegister } from "../src/backbone/registerProjection";
 import {
+  CHAPTERS as SERVER_CHAPTERS,
+  chapterChipLabel,
+  GENESIS_SIGNAL_SEAT_CEILING as CHAPTER_I_CEILING,
+} from "../src/lib/protocol/chapters";
+import {
   PROTOCOL_SCAN_MAX_BLOCKS_PER_CYCLE,
   PROTOCOL_SCAN_CHUNK_DELAY_MS,
 } from "../src/backbone/protocolEventScan";
@@ -1715,6 +1720,79 @@ check(
     dark.state === "DARK" && dark.rows.length === 0 && halfDark.state === "DARK" && halfDark.rows.length === 0,
     "a dark OR half-dark backbone serves a DARK register envelope — a faulted capital walk never masquerades as honest rung absence",
     "the register serves rows without both walks published (the faulted-walk-as-honest-dash defect)",
+  );
+}
+
+// THE CHAPTER TABLE PINS (the seat-#334 tripwire, ranked #1 by the 2026-08-02
+// holistic review): the register resolves EVERY chapter of the frozen canon
+// (SEASONS_ENGINE §3 — five chapters, Open Era open-ended), so a post-genesis
+// seat can NEVER darken the whole register. The old partial table threw on
+// #334 → the route's catch → 500 → every EXISTING row went dark with it.
+// Boundary seats pin both edges of every sealed chapter; the seat-0 sentinel
+// still fails closed (an invented seat is never served).
+{
+  const seatFixture = (seats: readonly number[]) => ({
+    capital: { standingBySeat: [{ seatNumber: seats[0]!, rung: "Patron" }] },
+    activity: {
+      items: seats.map((seat, i) => ({
+        memberNumber: seat,
+        memberAddress: "0x" + (10 + i).toString().repeat(20),
+        blockNumber: 1000 + i,
+        logIndex: i,
+        isoDayUtc: "2026-08-01",
+      })),
+    },
+    genesisSeatByWallet: new Map<string, number>(),
+  });
+  const reg = buildPublicRegister(seatFixture([333, 334, 1000, 1001, 3333, 3334, 10000, 10001]));
+  const chapterBySeat = new Map(reg.rows.map((r) => [r.seat, r.chapter]));
+  check(
+    reg.state === "LIVE" &&
+      reg.rows.length === 8 &&
+      chapterBySeat.get(333) === "Chapter I · Genesis Signal" &&
+      chapterBySeat.get(334) === "Chapter II · First Thousand" &&
+      chapterBySeat.get(1000) === "Chapter II · First Thousand" &&
+      chapterBySeat.get(1001) === "Chapter III · The Expansion" &&
+      chapterBySeat.get(3333) === "Chapter III · The Expansion" &&
+      chapterBySeat.get(3334) === "Chapter IV · First Ten Thousand" &&
+      chapterBySeat.get(10000) === "Chapter IV · First Ten Thousand" &&
+      chapterBySeat.get(10001) === "Chapter V · Open Era",
+    "the register resolves ALL FIVE frozen chapters at their exact boundaries — a post-genesis seat never darkens the register (the seat-#334 tripwire is dead)",
+    "the register's chapter table broke: a seat beyond Genesis Signal darkens the register or serves the wrong chapter (the seat-#334 tripwire)",
+  );
+  expectThrow(
+    "the seat-0 sentinel is never served a chapter (fail-closed integrity survives the full table)",
+    () => buildPublicRegister(seatFixture([0])),
+  );
+}
+
+// THE CROSS-ARTIFACT CHAPTER MIRROR PIN: client and server cannot import each
+// other, so the studio's frozen chapter canon (studio/src/lib/chapters.ts)
+// and the server's ONE table (lib/protocol/chapters.ts) are a declared twin —
+// this pin makes the declaration STRUCTURAL: five adjacent chapters from seat
+// 1, Open Era open-ended, every server row present VERBATIM in the studio
+// source, the chip format shared. Drift in either file = RED BUILD, fix both
+// in one commit (SEASONS_ENGINE §3 is the canon they both mirror).
+{
+  const studioSource = read("../studio/src/lib/chapters.ts");
+  const rowLiteral = (c: (typeof SERVER_CHAPTERS)[number]) =>
+    `{ roman: "${c.roman}", name: "${c.name}", startSeat: ${c.startSeat}, endSeat: ${c.endSeat === null ? "null" : c.endSeat} }`;
+  const everyRowMirrored = SERVER_CHAPTERS.every((c) => studioSource.includes(rowLiteral(c)));
+  const studioRowCount = (studioSource.match(/\{ roman: "/g) ?? []).length;
+  const adjacency = SERVER_CHAPTERS.every((c, i) =>
+    i === 0 ? c.startSeat === 1 : c.startSeat === (SERVER_CHAPTERS[i - 1]!.endSeat ?? NaN) + 1,
+  );
+  check(
+    SERVER_CHAPTERS.length === 5 &&
+      studioRowCount === 5 &&
+      everyRowMirrored &&
+      adjacency &&
+      SERVER_CHAPTERS.map((c) => c.roman).join(",") === "I,II,III,IV,V" &&
+      SERVER_CHAPTERS[4]!.endSeat === null &&
+      CHAPTER_I_CEILING === SERVER_CHAPTERS[0]!.endSeat &&
+      chapterChipLabel(SERVER_CHAPTERS[0]!) === "Chapter I · Genesis Signal",
+    "the server chapter table IS the studio's frozen canon: 5 adjacent chapters from seat 1, Open Era open-ended, every row verbatim in the studio source, one shared chip format",
+    "the chapter tables drifted (server vs studio rows, adjacency, or the chip format) — canon violation: fix BOTH lib/protocol/chapters.ts and studio/src/lib/chapters.ts in ONE commit",
   );
 }
 
