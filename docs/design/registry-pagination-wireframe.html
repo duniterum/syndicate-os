@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wireframe — /registry pagination (before ~100 seats)</title>
+<style>
+  /* Site tokens (dark theme = site default; values from artifacts/studio/src/index.css).
+     Fonts fall back to system faces — this is a WIREFRAME: geometry + type treatments
+     bind (serif display · sans body · mono data · 12px floor); pixel colors are the
+     build's job, verified at the preview gate. */
+  :root {
+    --background: hsl(224 71% 4%);
+    --foreground: hsl(213 31% 91%);
+    --border: hsl(216 34% 17%);
+    --card: hsl(222 47% 7%);
+    --muted: hsl(215.4 16.3% 56.9%);
+    --gold: hsl(42 92% 60%);
+    --proof: rgb(13 204 242);
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'Work Sans', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', Menlo, ui-monospace, monospace;
+  }
+  * { margin: 0; box-sizing: border-box; }
+  body { background: #0b0e14; color: var(--foreground); font-family: var(--sans); padding: 32px 16px 64px; }
+  .wf-title { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .16em; color: var(--muted); max-width: 1280px; margin: 0 auto 8px; }
+  .wf-note { font-size: 14px; color: var(--muted); max-width: 1280px; margin: 0 auto 24px; line-height: 1.5; }
+  .frame { background: var(--background); border: 1px solid var(--border); border-radius: 8px; margin: 0 auto 40px; overflow: hidden; }
+  .frame-label { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); padding: 10px 16px; border-bottom: 1px dashed var(--border); background: var(--card); }
+  .desktop { max-width: 1280px; }
+  .mobile { max-width: 375px; }
+  .page { padding: 40px 32px; }
+  .mobile .page { padding: 40px 16px; }
+
+  .eyebrow { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .16em; color: var(--gold); }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: 36px; margin-top: 4px; }
+  .lede { color: var(--muted); font-size: 15px; line-height: 1.6; max-width: 65ch; margin-top: 12px; }
+
+  .tablewrap { overflow-x: auto; margin-top: 28px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); text-align: left; padding: 0 16px 12px 0; white-space: nowrap; }
+  td { border-top: 1px solid var(--border); padding: 14px 16px 14px 0; font-size: 14px; white-space: nowrap; }
+  .seat { font-family: var(--mono); font-weight: 600; color: var(--gold); }
+  .addr { font-family: var(--mono); color: var(--proof); }
+  .addr::after { content: " ↗"; font-size: 12px; }
+  .chapter { color: var(--muted); }
+  .rung, .joined { font-family: var(--mono); }
+  .joined { color: var(--muted); }
+  .dash { color: var(--muted); }
+  .boundary td { border-top: 1px dashed var(--gold); }
+
+  /* THE NEW ELEMENT — the pager row (the only composition change on the page) */
+  .pager { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 20px; flex-wrap: wrap; }
+  .range { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .pager-buttons { display: flex; gap: 8px; }
+  .pbtn { font-family: var(--sans); font-size: 14px; min-height: 44px; min-width: 44px; padding: 0 18px; background: transparent; color: var(--foreground); border: 1px solid var(--border); border-radius: 6px; }
+  .pbtn[disabled] { opacity: .4; }
+  .mobile .pager { flex-direction: column; align-items: stretch; }
+  .mobile .pager-buttons { display: grid; grid-template-columns: 1fr 1fr; }
+  .honesty { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 65ch; margin-top: 24px; }
+  .ellipsis td { border-top: 1px solid var(--border); color: var(--muted); font-family: var(--mono); font-size: 12px; letter-spacing: .12em; }
+  .cta-row { display: flex; gap: 12px; margin-top: 40px; }
+  .cta { font-size: 14px; min-height: 44px; padding: 0 18px; display: inline-flex; align-items: center; border-radius: 6px; border: 1px solid var(--border); }
+  .cta.primary { background: var(--gold); color: #1a1405; border-color: var(--gold); font-weight: 600; }
+
+  .contract { max-width: 1280px; margin: 0 auto; border: 1px solid var(--border); border-radius: 8px; padding: 24px; background: var(--card); }
+  .contract h2 { font-family: var(--serif); font-weight: 400; font-size: 24px; margin-bottom: 12px; }
+  .contract li { font-size: 14px; line-height: 1.7; color: var(--foreground); margin-left: 18px; }
+</style>
+</head>
+<body>
+
+<div class="wf-title">Wireframe · /registry pagination · 2026-08-02</div>
+<p class="wf-note">Three frames: the FUTURE state (334 seats — the page the pager exists for, shown at the exact
+Chapter I → II boundary), the MOBILE width, and TODAY (16 seats — the pager is dormant; nothing changes).
+The pager row is the ONLY new element; everything above it is the page as already deployed.</p>
+
+<!-- ══ FRAME 1 · DESKTOP 1280 · FUTURE (334 seats, last page) ══ -->
+<div class="frame desktop">
+  <div class="frame-label">Frame 1 · Desktop 1280 · future state — 334 seats, page 14 of 14</div>
+  <div class="page">
+    <div class="eyebrow">The public record</div>
+    <h1>The Register.</h1>
+    <p class="lede">Every seat, its wallet, and its standing — in one public column. The chain wrote each row
+    when the seat was taken; the explorer link beside every address is the proof. Address-only by design:
+    no name, no email, no identity exists anywhere in this system.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Seat</th><th>Address</th><th>Chapter</th><th>Standing</th><th>Joined</th></tr></thead>
+        <tbody>
+          <tr><td class="seat">#326</td><td><span class="addr">0x8a41…c2e7</span></td><td class="chapter">Chapter I · Genesis Signal</td><td class="rung">Contributor</td><td class="joined">2026-11-03</td></tr>
+          <tr><td class="seat">#327</td><td><span class="addr">0x93bd…11af</span></td><td class="chapter">Chapter I · Genesis Signal</td><td class="rung">Patron</td><td class="joined">2026-11-03</td></tr>
+          <tr><td class="seat">#328</td><td><span class="addr">0x2f0c…88d1</span></td><td class="chapter">Chapter I · Genesis Signal</td><td class="rung"><span class="dash">—</span></td><td class="joined">2026-11-04</td></tr>
+          <tr><td class="seat">#329</td><td><span class="addr">0xb7e2…4390</span></td><td class="chapter">Chapter I · Genesis Signal</td><td class="rung">Supporter</td><td class="joined">2026-11-04</td></tr>
+          <tr><td class="seat">#330</td><td><span class="addr">0x5dd8…a6b2</span></td><td class="chapter">Chapter I · Genesis Signal</td><td class="rung">Contributor</td><td class="joined">2026-11-05</td></tr>
+          <tr><td class="seat">#331</td><td><span class="addr">0xe109…7f45</span></td><td class="chapter">Chapter I · Genesis Signal</td><td class="rung">Patron</td><td class="joined">2026-11-05</td></tr>
+          <tr><td class="seat">#332</td><td><span class="addr">0x4c6a…d013</span></td><td class="chapter">Chapter I · Genesis Signal</td><td class="rung">Supporter</td><td class="joined">2026-11-05</td></tr>
+          <tr><td class="seat">#333</td><td><span class="addr">0xf881…39ce</span></td><td class="chapter">Chapter I · Genesis Signal</td><td class="rung">Contributor</td><td class="joined">2026-11-06</td></tr>
+          <tr class="boundary"><td class="seat">#334</td><td><span class="addr">0x07a3…e5b8</span></td><td class="chapter">Chapter II · First Thousand</td><td class="rung"><span class="dash">—</span></td><td class="joined">2026-11-06</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- THE NEW ELEMENT -->
+    <div class="pager">
+      <div class="range">Seats 326–334 of 334</div>
+      <div class="pager-buttons">
+        <button class="pbtn">Previous</button>
+        <button class="pbtn" disabled>Next</button>
+      </div>
+    </div>
+    <p class="honesty">Every row is public chain data: the purchase transaction wrote the seat, the address is
+    the buyer's own, and the explorer link is the proof. Address-only by design — no name, alias, or email
+    exists anywhere in this system. A dash is an honest absence, never a hidden value.</p>
+    <div class="cta-row"><span class="cta primary">Take your seat</span><span class="cta">The season board</span></div>
+  </div>
+</div>
+
+<!-- ══ FRAME 2 · MOBILE 375 · same state ══ -->
+<div class="frame mobile">
+  <div class="frame-label">Frame 2 · Mobile 375</div>
+  <div class="page">
+    <div class="eyebrow">The public record</div>
+    <h1 style="font-size:30px">The Register.</h1>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Seat</th><th>Address</th><th>Chapter</th></tr></thead>
+        <tbody>
+          <tr><td class="seat">#332</td><td><span class="addr">0x4c6a…d013</span></td><td class="chapter">Chapter I · Genesis Signal</td></tr>
+          <tr><td class="seat">#333</td><td><span class="addr">0xf881…39ce</span></td><td class="chapter">Chapter I · Genesis Signal</td></tr>
+          <tr class="boundary"><td class="seat">#334</td><td><span class="addr">0x07a3…e5b8</span></td><td class="chapter">Chapter II · First Thousand</td></tr>
+        </tbody>
+      </table>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--muted);padding:8px 0 0;">← table scrolls sideways, exactly as today →</div>
+    </div>
+    <div class="pager">
+      <div class="range">Seats 326–334 of 334</div>
+      <div class="pager-buttons">
+        <button class="pbtn">Previous</button>
+        <button class="pbtn" disabled>Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FRAME 3 · TODAY (16 seats) — pager DORMANT ══ -->
+<div class="frame desktop">
+  <div class="frame-label">Frame 3 · Today — 16 seats, one page: NO pager renders. The page stays exactly as deployed.</div>
+  <div class="page">
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Seat</th><th>Address</th><th>Chapter</th><th>Standing</th><th>Joined</th></tr></thead>
+        <tbody>
+          <tr><td class="seat">#1</td><td><span class="addr">0x205d…f464</span></td><td class="chapter">Chapter I · Genesis Signal</td><td class="rung">Patron</td><td class="joined">2026-06-04</td></tr>
+          <tr><td class="seat">#2</td><td><span class="addr">0x9c1e…08aa</span></td><td class="chapter">Chapter I · Genesis Signal</td><td class="rung">Contributor</td><td class="joined">2026-06-05</td></tr>
+          <tr class="ellipsis"><td colspan="5">· · · seats #3 – #15, as rendered today · · ·</td></tr>
+          <tr><td class="seat">#16</td><td><span class="addr">0xf06d…3fbc</span></td><td class="chapter">Chapter I · Genesis Signal</td><td class="rung"><span class="dash">—</span></td><td class="joined">2026-08-01</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- no pager: 16 rows ≤ 25 — the element does not exist on the page -->
+  </div>
+</div>
+
+<!-- ══ THE WIREFRAME CONTRACT ══ -->
+<div class="contract">
+  <h2>What this wireframe binds</h2>
+  <ul>
+    <li><strong>One new element only:</strong> the pager row under the table — range line left (mono, 12px, uppercase), Previous/Next right (44px touch targets). Nothing else on the page moves.</li>
+    <li><strong>25 seats per page.</strong> The pager renders ONLY when the register holds more than 25 rows — today's page (16) is byte-identical to prod. Same numbers as the founder-approved /admin/members pager.</li>
+    <li><strong>Full-screen law holds:</strong> the table keeps filling the width; no page cap. Mobile keeps the sideways-scrolling table exactly as today.</li>
+    <li><strong>Client-side paging</strong> over the payload the API already serves whole — no API change, no new endpoint, nothing for Replit.</li>
+    <li><strong>Type treatments bind:</strong> serif display · Work Sans body · mono = data only · 12px floor everywhere. Both themes verified at the preview gate before any deploy.</li>
+    <li><strong>The boundary row</strong> (#333 → #334, gold dashed rule in Frame 1) is illustrative of the chapter transition the server now resolves — sealed this morning in <span style="font-family:var(--mono)">4b96b30</span>.</li>
+  </ul>
+</div>
+
+</body>
+</html>

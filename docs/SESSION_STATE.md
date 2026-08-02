@@ -127,6 +127,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   carries a written reconcile-before-re-enable note (2026-08-02).
 >
 > ## (c) FOUNDER-PENDING (nothing else blocks)
+> · **The /registry pagination wireframe** (docs/design/registry-pagination-wireframe.html,
+>   handed 2026-08-02): 25/page mirroring the /admin/members pager · the pager renders only
+>   beyond 25 rows (today's 16-seat page byte-identical) · client-side, no API change. His
+>   visual verdict unlocks the build (Visual Change Law).
 > · The 3 reserves-wireframe decisions (3×2 grid · gold logo · weekend freshness) → then the
 >   LINK.e/XAUt0 reserves build (feeds verified on-chain: LINK/USD `0x49cc…de9a`, XAU/USD
 >   `0x1F41…515B`). · The 4 composition wireframes. · "téléchargé" to Replit for dump.sql.gz.
