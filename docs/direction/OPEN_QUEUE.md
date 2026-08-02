@@ -18,7 +18,13 @@
 > revert identique à l'octet · les 20 fichiers touchés de la journée tous justifiés par une
 > tranche nommée, zéro inexpliqué · le système holder-index inventorié INTACT pièce par
 > pièce · toutes les portes vertes des deux côtés · l'arithmétique du pager exécutée
-> 334/334. **Rien des semaines de travail n'est cassé — mesuré, pas affirmé.**
+> 334/334. **Rien des semaines de travail n'est cassé — mesuré, pas affirmé.** ⑤ **L'ORDRE
+> DE TRAVAIL DES PROCHAINES SESSIONS EST DÉCIDÉ PAR LE FONDATEUR** (« on y va avec le 1 ») :
+> ① la section Réserves (ses 3 réponses wireframe → le build LINK.e/XAUt0, flux vérifiés) →
+> ② A1 la lentille Mine|Protocol de My Activity (le #1 gravé) → ③ le Referrer Kit (le #8
+> gravé, la boucle d'acquisition) → puis la séquence gravée reprend son cours ; en fond :
+> fenêtrage du ledger · dédup du poller. Le 4ᵉ sceau du jour (`ef3f89c`, pagination, 6/6)
+> est en prod ; LE BACKLOG DE DÉPLOIEMENT EST VIDE.
 
 > **▶ 2026-08-02 (APRÈS LE SCEAU — la session suivante : le candidat n°1 construit, puis la
 > revue « toutes casquettes » du fondateur et son durcissement le jour même. Commits

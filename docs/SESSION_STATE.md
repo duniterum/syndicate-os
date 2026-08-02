@@ -149,8 +149,22 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > · Gates at the end of the pass: api typecheck 0 · all 21 api guards green (tsx-direct) ·
 >   api build 0 · studio typecheck 0 · studio guards 0 · studio build 0.
 >
-> ## (b) IN FLIGHT — nothing queued; the build lane is EMPTY. Next-slice candidates the
-> ## holistic review ranked (nothing blocks, founder picks or says « go » on any):
+> ## (b) THE FOUNDER'S WORK ORDER (his decision, end of 2026-08-02: « on y va avec le 1 —
+> ## et met cet ordre pour les prochaines sessions ») — FOLLOW THIS ORDER:
+> · **① THE RESERVES BUILD** (IN FLIGHT — his 3 wireframe answers pending, questions handed
+>   on screen 2026-08-02: grid 3×2 vs 4+2 · gold card face (house «Au» disc vs official
+>   XAUt0 mark) · weekend honesty (market-hours freshness window for commodity feeds));
+>   then the LINK.e/XAUt0 build rides docs/design/reserves-band-6-assets-mockup.html —
+>   feeds verified on-chain (LINK/USD `0x49cc…de9a` · XAU/USD `0x1F41…515B`); same slice
+>   adds the two /contracts rows (Vault LINK · Vault GOLD); admin panel automatic.
+> · **② A1 — My Activity, the Mine|Protocol lens** (the engraved sequence's #1; unlocks C3).
+> · **③ THE REFERRER KIT / SHAREBILITY ARC** (engraved #8 — M2+M3, the acquisition loop;
+>   mockups exist, think-300 law applies).
+> · Then the engraved 16-move sequence resumes in its own order (BACKLOG.html).
+> · BACKGROUND lane (no decision needed, buildable between slices on any « go »): the
+>   member-ledger server windowing (scoped by the reviews) · the spine-poller dedupe.
+>
+> ## (b2) remaining candidates from the 2026-08-02 reviews (context for the order above):
 > · ~~/registry pagination before ~100 seats~~ — **BUILT on the founder's « ok les 2 »
 >   (2026-08-02): BOTH public pagers live in code** — /registry AND /season, the approved
 >   wireframe verbatim (range line · Previous · « 1 / N » · Next · Button atom · opens page
