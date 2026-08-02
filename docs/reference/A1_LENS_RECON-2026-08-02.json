@@ -1,0 +1,383 @@
+{
+  "summary": "Two senior recon agents map the terrain for A1 — the Mine|Protocol lens on /activity (server own-rows side + client page/mockup side)",
+  "agentCount": 2,
+  "logs": [],
+  "result": {
+    "server": {
+      "summary": "A1 = add the Mine|Protocol LENS to /activity (the public heartbeat). THE WORK-FIRST ANSWER: NO new server surface is needed — every datum \"Mine\" shows is already served by the auth zone's own-row self-readbacks: own purchases + full receipt facts via GET /api/auth/member-purchases (auth/router.ts:790-892), own referral/introduction acts via GET /api/auth/introduction-rows (689-780), own seat + entry receipt via GET /api/auth/member-standing (403-558), optional own season/XP via /season-standing (906-1027); the bell already owns unread via /member-inbox. All are S4-gated on the session cookie ONLY (SIWE S4; no query surface — guard-auth-zone bans req.query/params under src/auth), throttled via allowRequest(throttleKey(req)), and pass payload-discipline + 40-hex address scans. Protocol lens = today's feed VERBATIM: GET /api/backbone/feed (routes/backboneFeed.ts, A2 cursor pagination \"block:logIndex\", CURSOR_RE at :60) projected by backbone/feedProjection.ts (address-law-compliant: full address + short form + explorer per line since 2026-08-02), consumed by lib/backboneFeedClient.ts fetchServedFeed. The build site is components/activity/LiveActivityFeed.tsx (1382 lines; Z1 header 1033-1090, Z2 facets 1092-1157, Z3 feed 1163-1312, Z4/Z5 1316-1379): the lens is a SEGMENTED CONTROL (not tabs — A1_BENCHMARK_AND_HONESTY_CONTRACT.md §S1, TIER-0, READ FIRST per MEMBER_HOME_FINISH_ORDER step 8) switching one grammar in place; Mine = strictly own-row behind the sign-in wall (signed-out → conversion state, NEVER others' data as teaser); Protocol stays the public default surface and is NEVER walled (/activity is PUBLIC/S1/PREVIEW_LABELLED via PublicRoute, App.tsx:233). Client reach to own rows MUST be dynamic (guard-access-state rule 15: only App.tsx statically imports @/wallet/ — use the lib/useSignedIn.ts dynamic-import idiom or a flag-gated lazy wallet component; the notification bell precedent MemberNotificationsPanel.tsx:25-33,236-241 ships All/Protocol/Mine filters this way as a wallet module). NEVER derive \"mine\" by filtering the public feed against the connected wagmi address — the SIWE-bound account is server-side only and never echoed; the wagmi account is not the session. C3 (BACKLOG.html:579-584) = \"My Economy + cockpit narrative arc — Full Identity→Place→Ownership→Momentum→Memory→Proof member cockpit; /member partially delivers it, A1 is its current next brick\" (dep: ↳ A1) — so the lens should render Mine as the member's calm personal LEDGER (verify-first rows), the brick C3 composes on. R-BIND seals quoted from docs/direction/OPEN_QUEUE.md:1692-1708: \"R-BIND: THE RECEIPTS BINDER, BUILT + COMMITTED … The Receipts menu door is LIVE → /receipts … Placements A1 ②③ mounted (Z4 'receipt' deep-links · the KPI tile is the door · 'Open ticket' on the seat panel). A1's [Mine|Protocol] lens + per-row histories REMAIN OPEN. … SEALED IN PROD b79a5ed\" → \"R-BIND-2 … the cap-5 shelf of newest OPEN tickets + the DUAL SHARE … BUILT + COMMITTED\"; R-BIND-3 per DESIGN_ROADMAP.md:477-480 (binder finishes + scoped /receipt/{tx}). Gate order: founder wireframe FIRST (BACKLOG A1 meta \"⚑ wireframe + preview (Founder)\"), then build, preview gate desktop+mobile, deploy verdict (client-only slice if no server change).",
+      "files": [
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\components\\activity\\LiveActivityFeed.tsx",
+          "role": "THE BUILD SITE — /activity newsroom (1382 lines). FILTERS facet list :119-153; matches() :185-199; deep-linkable ?facet= state :339-353; served-history fetch effect :370-386; live-window effect :392-410; 60s live poll :424-437; merged feed memo :448-576; Load more + A2 cursor continuation :603-620; chipCount one-authority counts :671-732; renderLine grid row :827-947; Z1 header :1033-1090; Z2 facet bar :1092-1157; Z3 feed :1163-1312; Z4 milestones + Z5 methodology expander :1316-1379 (closing prose :1370-1376 incl. 'A seat's own activity already has its own view' :1373 and the guard-pinned fragment 'What the indexer adds next' :1374)",
+          "whatChanges": "A1 adds the [Mine|Protocol] segmented lens (contract §S1: segmented control switching the LENS on one shared grammar, in place — gold on selected side). Protocol = the existing feed untouched. Mine = a signed-in own-row ledger state: rows composed from fetchOwnPurchases + fetchOwnIntroductions (+ member-standing for the seat receipt), reached via DYNAMIC import of @/wallet/walletSession (the useSignedIn idiom) or a gated lazy wallet component; signed-out → conversion copy (honest three states: loading skeleton / empty-with-next-step / error-with-retry). Keep ?facet= grammar intact if adding a ?lens= deep link."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\pages\\Activity.tsx",
+          "role": "27-line page shell: MemberAppPage chrome (eyebrow/title/lead/badge) + <LiveActivityFeed /> :16-27",
+          "whatChanges": "Possibly nothing; at most lead-copy or lens plumbing. No page-level max-width may appear (S7-d full-screen law)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\api-server\\src\\auth\\router.ts",
+          "role": "The auth zone (ONLY write-verb/body-parser zone; mounted /api/auth; dark-by-default in prod behind SYNDICATE_AUTH_ENABLED via authExposure.ts). Session cookie = the ONLY input everywhere. GET /member-self :342-388; GET /member-standing :403-558 (own seat, era, proofPosture, OWN entry receipt via lookupMemberReceipt :508-520); GET /source-standing :570-627; GET /channel-standing :638-675; GET /introduction-rows :689-780 (own referral acts: isoDayUtc, whoWallet FULL + explorer, durable, commissionRaw, anatomy, tx anchor; 40-hex scan RETIRED 2026-08-02 under the address law); GET /member-purchases :790-892 (own purchases: isoDayUtc, amountRaw, tx, explorerUrl, block, engine, sealedAtSec, receipt facts incl. seat/holderShort/splits/synOut/era/firstSeat/broughtByShort; decimals {usdc:6,syn:18}; discipline + 40-hex scan :877-886); GET /season-standing :906-1027; GET /member-inbox :1037-1087. Every route throttled via allowRequest(throttleKey(req)); S1-with-failureReason when no session (fail closed, not an error); bound account NEVER echoed",
+          "whatChanges": "NOTHING — the Mine lens's data (own purchases, own receipts, own referral acts) is fully served today. If a builder ever adds an endpoint anyway: the discipline is verbatim (cookie-only input, throttle, S1/S4 shape, payload discipline + address scan, req.log event) + guard-auth-zone registration RED-first."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\wallet\\walletSession.ts",
+          "role": "The sanctioned client for /api/auth (guard-access-state rule 17: wallet module talks ONLY literal /api/auth/... URLs). fetchSessionState :136; fetchMemberStanding :281; fetchSourceStanding :376; fetchOwnIntroductions :657-706 (OwnIntroductionRowReadback :594-613); fetchOwnPurchases :834-878 (OwnPurchaseRowReadback :729-744, receipt facts parser :758-791, shared parseOwnPurchaseRow :799-827); fetchOwnInbox :910",
+          "whatChanges": "NOTHING expected — all Mine fetchers exist. Only touched if the wireframe demands a field not yet parsed (all served fields already are)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\lib\\useSignedIn.ts",
+          "role": "Entry-safe signed-in probe (37 lines): dynamic-imports walletSession + sessionEvents, re-reads on SESSION_CHANGED_EVENT, returns {signedIn, checking} — the sanctioned pattern for session awareness in PUBLIC components",
+          "whatChanges": "NOTHING — dependency; the Mine lens's sign-in check reuses this or clones its idiom for the data fetch."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\api-server\\src\\routes\\backboneFeed.ts",
+          "role": "GET /api/backbone/feed (public, identity-blind by projection). Bare call = pre-A2 whole envelope :70-75; paged mode limit 1-50 + cursor 'block:logIndex' :77-114; CURSOR_RE :60 (accepts -1 sentinel and 9-digit synthetic native indices — pinned by backbone.guard against NATIVE_INDEX_BASE); output gate assertFeedSafeJson on every response",
+          "whatChanges": "NOTHING — the Protocol lens is this route as-is."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\api-server\\src\\backbone\\feedProjection.ts",
+          "role": "The public feed projection: line types :58-264 (PublicSeatLine carries memberNumber, memberShort, memberAddress FULL, referredByShort/Address — address law 2026-07-24/25), envelope :287-327, buildPublicFeedWithLines :415-870 (seat-key/first-seat derivations :474-541), sliceFeedPage pure pager :882-917 (cluster-closed), assertFeedSafeJson output gate :925-931",
+          "whatChanges": "NOTHING."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\lib\\backboneFeedClient.ts",
+          "role": "Client of the served feed (1289 lines): ServedFeedPagination :293-300, ServedFeed :302-329 (linesSkipped honesty counter :325), fetchServedFeed + bare-call dedup :846-863, strict parseLine, sentenceForServedLine :1003+, amountForServedLine :1208, addressBookForServedLine :1234, factsForServedLine :1264 — the §8 event lexicon shared with the hero mini-feed",
+          "whatChanges": "NOTHING for Protocol. Mine rows should NOT be forced through this module — they are a different, own-row grammar (per the contract: 'You…' intent sentences), rendered by the lens's own row builder."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\wallet\\MemberNotificationsPanel.tsx",
+          "role": "THE PRECEDENT the task cites: the bell's All/Protocol/Mine/Unread filter row — PageTab + pageFilter :25-33, tab buttons :236-241, signed-out prompt :178-191. A wallet module (lazy-mounted), scope 'you' vs 'all' on served rows",
+          "whatChanges": "NOTHING — precedent only. Note the A1 contract deliberately upgrades this pattern to a SEGMENTED CONTROL for the pulse (Mine|Protocol switch a LENS, not tabs)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\wallet\\MemberRecentActivity.tsx",
+          "role": "Own-row activity precedent (Home Z4): settled-read idiom (undefined=in flight / null=failed / rows) :27-47; row = date · usdFromRaw(amount) · engine · receipt deep-link /receipts?tx= · verify ↗ :76-108; honest zero + failed states :110-125",
+          "whatChanges": "NOTHING — pattern source for the Mine row grammar (every row: verify anchor + receipt door into the live binder)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\wallet\\ownReads.ts",
+          "role": "Shared own-figure hooks: useOwnPurchases :210-227, useSettledOwnCapitalStanding :135-181 (race-guarded settled idiom), usdFromRaw :317-323 (the ONE money projection — never re-derive)",
+          "whatChanges": "NOTHING — import, never re-derive (check ④): Mine amounts go through usdFromRaw/formatAmount, never new arithmetic."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\scripts\\guard-access-state.ts",
+          "role": "BLOCKING. Rule 15 :472-523 — static @/wallet import ban everywhere except App.tsx (three pinned specifiers :513-517); dynamic import()/lazy is allowed anywhere; rule 17 wallet↔/api/auth boundary; rule 12 no browser-storage auth; pinned lazy-import shapes for MemberAccess/AdminShell :572-660",
+          "whatChanges": "NOTHING if the lens uses dynamic imports from LiveActivityFeed (allowed). If the builder wants the new wallet seam PINNED (grade-AAA), add a check for it deliberately — proven RED by reverting."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\scripts\\guard-feature-truth.ts",
+          "role": "BLOCKING. PROSE_CLAIM_SITES pins LiveActivityFeed.tsx to keys ['eventDerivedNotifications','chronicleCandidatePipeline'] + verbatim fragment 'What the indexer adds next' :104-107 — fragment must survive any Z5 copy edit or the pin updates in the same commit",
+          "whatChanges": "Update only if Z5 prose changes; optionally register a new LIVE key (e.g. activityMineLens) in featureStatus.ts in the shipping commit (DONE-IS-DONE §①)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\config\\featureStatus.ts",
+          "role": "The DONE-IS-DONE registry (live-vs-future in CODE); LIVE block :31-55",
+          "whatChanges": "Add the lens as a live key in the shipping commit (recommended; no existing 'coming' claim for it exists, so no flip is strictly forced)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\scripts\\guard-focus-visible.ts",
+          "role": "Pinned per-file interactive-count ledger: LiveActivityFeed.tsx = '2 · the mapped facet-chip <button> (all 13 chips) and the More/Less toggle' :133-134",
+          "whatChanges": "The segmented control adds tab-stops → this count REDS (by design); recount + update the ledger entry in the same slice with the written reason."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\scripts\\guard-contrast-aa.ts",
+          "role": "Pins LiveActivityFeed pairs: feed sentence :340, facts suffix :351, Founder chip 12px-semibold-not-large :363, false-AAA-claim comment pin :535-537",
+          "whatChanges": "New lens control colors must be declared pairs; gold-on-selected must clear 4.5:1 both themes (the founder chip precedent: tinted pairing, measured)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\scripts\\guard-type-scale.ts",
+          "role": "EYEBROW_EXEMPT ceiling '1' on LiveActivityFeed (the date-group heading) :344-345 — a CEILING; one more occurrence reds",
+          "whatChanges": "Keep new lens type on tokens (type-body/type-eyebrow); do not add sub-12px or a second exempt site without a dated ledger entry."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\scripts\\guard-touch-target.ts",
+          "role": "Lists LiveActivityFeed :860 in its scan set (44px floor; the facet chips carry py-3.5 on touch widths for it, LiveActivityFeed :1110)",
+          "whatChanges": "The segmented control must clear the 44px touch floor on mobile widths or the guard reds."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\api-server\\scripts\\guard-auth-zone.ts",
+          "role": "BLOCKING (1984 lines). Own-row pins: req.query/req.params banned under src/auth/ :833-841; route-presence + shared engineReadback pins :843-869; throttle-key discipline :871-903; prod exposure gate pins :915-939",
+          "whatChanges": "NOTHING (no server change). Any new auth endpoint must be pinned here RED-first."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\api-server\\scripts\\backbone.guard.ts",
+          "role": "BLOCKING (3101 lines). Pins CURSOR_RE against NATIVE_INDEX_BASE :1204-1224; sliceFeedPage behavior fixtures :2982-3011; route-uses-allLines pin :2961",
+          "whatChanges": "NOTHING."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\api-server\\scripts\\activity-heartbeat.guard.ts",
+          "role": "BLOCKING. Address-law self-test: leak scan ALLOWS public 40-hex :322-337; feed meta posture pin AGGREGATE_PLUS_RECEIPT_LINES :315-321; builder-purity scans :361-409",
+          "whatChanges": "NOTHING."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\docs\\reference\\A1_BENCHMARK_AND_HONESTY_CONTRACT.md",
+          "role": "TIER-0 canon, READ FIRST at this slice (MEMBER_HOME_FINISH_ORDER :54). The 5-invariant honesty contract :28-74 (verify-first row · own-row/Visibility Law · anti-financialization · honest three states · accessible by construction); §S1 the lens spec :120-162 incl. 'Mine = strictly own-row, behind the sign-in wall (not-connected → conversion state, never others' data as a teaser)' and 4 founder decisions :157-162 (default-lens Mine-first vs Protocol; name stays Pulse; Visibility line — since SETTLED wider by the address law; no unread state — bell owns unread)",
+          "whatChanges": "NOTHING in-file; the open founder decisions (esp. default lens) resolve at the WIREFRAME gate, on screen."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\docs\\design\\a1-benchmark-direction.html",
+          "role": "Visual benchmark twin; §S1 :159 describes the toggle — NOTE its 'people de-identified' phrasing PREDATES H2-P pride + the 2026-07-24/25 address law (the live feed rightly shows short form + full address + explorer)",
+          "whatChanges": "NOTHING — do NOT re-import the dated de-identification phrasing (the mirror rule + kill-the-hiding-reflex ruling)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\docs\\direction\\BACKLOG.html",
+          "role": "A1 step-1 line :229 + A1 row :517-521 (meta '⚑ wireframe + preview (Founder)'); C3 row :579-584: 'My Economy + cockpit narrative arc — Full Identity→Place→Ownership→Momentum→Memory→Proof member cockpit; /member partially delivers it, A1 is its current next brick' (↳ dépend de A1, ⚑ wireframe)",
+          "whatChanges": "On seal: tick A1, unblock C3 — same pass as the slice (artifacts-into-repo/same-pass law)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\docs\\direction\\MEMBER_HOME_FINISH_ORDER.md",
+          "role": "Step 8 :50-56: 'REMAINING = S1, the Mine|Protocol pulse lens (the R-BIND seal is never A1 done)' + the READ-FIRST pointer to the contract",
+          "whatChanges": "Mark S1 delivered when sealed."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\docs\\direction\\OPEN_QUEUE.md",
+          "role": "The GO :13-15 ('A1 EN VOL — la lentille Mine|Protocol … puis C3 se débloque'); founder work order :36-41; the R-BIND 1-3 seal verbatim :1692-1708 (R-BIND sealed b79a5ed; 'A1's [Mine|Protocol] lens + per-row histories REMAIN OPEN'; R-BIND-2 'J'APPROUVE — GO AND GO-LIVE')",
+          "whatChanges": "Append evidence before session end (standing rule); only the founder closes items."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\docs\\SESSION_STATE.md",
+          "role": "Boot block: work order '② A1 — My Activity, the Mine|Protocol lens (the engraved sequence's #1; unlocks C3)' :221; GAP-2b engraving :3052-3054",
+          "whatChanges": "WHERE-WE-ARE update at session end (DONE-IS-DONE §④)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\config\\surfaceClassification.ts",
+          "role": "/activity entry :397-416 — PUBLIC · S1 · PREVIEW_LABELLED; summary RENDERS on /status and is pinned to say exactly what the /activity head says",
+          "whatChanges": "Review the summary sentence only if the page's public reality statement changes; if touched, same commit + the truth-pin comment discipline."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\lib\\seo-route-registry.ts",
+          "role": "/activity head :784-826 — INDEX, sitemap, 159/160-char description (a deliberate trade recorded in comments)",
+          "whatChanges": "Likely NOTHING (Mine is behind sign-in; the crawled public reality is unchanged). If the registry moves at all, run the full SEO battery (seo:generate/check/rewrites, surface:audit) — the local gate does not cover it otherwise."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\App.tsx",
+          "role": "Route mount: <PublicRoute path=\"/activity\"><Activity/></PublicRoute> :233-235; the ONLY file allowed static @/wallet imports (exactly three, guard-pinned)",
+          "whatChanges": "NOTHING expected — do not add wallet imports here (the pin is exact-count)."
+        }
+      ],
+      "constraints": [
+        "WIREFRAME FIRST (Visual Change Law ①): the lens changes /activity's composition → founder-approved wireframe before any code; then the PREVIEW GATE (real rig, desktop AND mobile, visually complete — every img naturalWidth>0) before any deploy. BACKLOG A1 meta says verbatim: '⚑ wireframe + preview (Founder)'.",
+        "ACCESS MODEL: /activity is PUBLIC (S1, PREVIEW_LABELLED, PublicRoute). The lens must NEVER wall the Protocol view — signed-out visitors keep today's full public feed; Mine signed-out = a conversion state (sign in on Member Home), never an error and never a teaser of others' data (contract §S1).",
+        "OWN-ROW DISCIPLINE: Mine's data comes ONLY from the auth zone self-readbacks (session cookie the only input, S4-gated, bound account never echoed). NEVER filter the public feed by the connected wagmi address — the wagmi account is not the SIWE session and client-guessed identity is the forbidden shortcut.",
+        "NO NEW SERVER SURFACE unless the wireframe proves a gap: /api/auth/member-purchases + /introduction-rows + /member-standing (+ /season-standing, /member-inbox) already carry everything Mine can show. If one IS added: guard-auth-zone discipline verbatim + RED-first pins (throttle, cookie-only, discipline+address scan, no req.query/params).",
+        "BUNDLE BOUNDARY (guard-access-state rule 15): no static import of @/wallet/ outside App.tsx — the Mine lens reaches walletSession via dynamic import (the lib/useSignedIn.ts idiom) or a flag-gated lazy wallet component; rule 17 keeps wallet fetches on literal /api/auth/... URLs.",
+        "SEGMENTED CONTROL, NOT TABS (contract §S1 Adopt) — but WORK-FIRST outranks the mockup: the page still opens on the work; reference material stays in the Z5 expander; no unread state on the feed (the bell owns unread — contract recommendation 4).",
+        "FULL-SCREEN LAW S7-d: never a page-level max-width on /activity; wide screens multiply columns; only the sentence is bounded in ch (renderLine grid, LiveActivityFeed :811-830).",
+        "ADDRESS LAW (2026-07-24/25, ANSWERED FOREVER): addresses are PUBLIC — short form + explorer link everywhere, full address in served payloads where the chain emits it; any masking/fail-closing on an address is a BUG. Do not re-import the benchmark HTML's dated 'de-identified' phrasing.",
+        "ANTI-FINANCIALIZATION + honesty contract invariants on every Mine row: verify-first (every figure carries its proof anchor), static neutral amounts via usdFromRaw/formatAmount (import, never re-derive — check ④), honest three states, pending stays pending.",
+        "RED FIRST (check ②): every new pin (lens never walls Protocol; Mine is own-row; segmented control present) is written failing before the fix; reverting the slice must turn it red. The design guards with pinned per-file counts (guard-focus-visible '2' on LiveActivityFeed :133, guard-type-scale ceiling :344, guard-contrast-aa pairs :340-363, guard-touch-target) WILL red on new controls — recount and update ledgers in the same slice with written reasons.",
+        "guard-feature-truth: the verbatim fragment 'What the indexer adds next' (LiveActivityFeed :1374) is pinned to keys eventDerivedNotifications + chronicleCandidatePipeline — any Z5 copy edit must keep or migrate the pin in the same commit; DONE-IS-DONE: flip/add the lens's featureStatus key in the shipping commit.",
+        "DOCS RIDE THE SLICE (one consolidated pass): BACKLOG.html A1 tick + C3 unblock, MEMBER_HOME_FINISH_ORDER step 8, DESIGN_ROADMAP boxes, OPEN_QUEUE evidence, SESSION_STATE boot block — same commit(s) as the slice; SEO battery only if the registry/posture moves.",
+        "DEPLOY VERDICT: if no server change, this is a client-only visible slice → 🚀 DEPLOY (it changes thesyndicate.money); the founder ordered it ('go' on engraved #1), so it likely rides its own cycle rather than batching; state the verdict in one line.",
+        "WORD LAW: founder-facing reports in human words only — 'commission' never acquisition-cost vocabulary; never 'PII' on any surface; the founder decides content ON SCREEN (paste full copy inline)."
+      ],
+      "risks": [
+        "Default-lens choice (Mine-first for signed-in members vs Protocol-always) is an OPEN founder decision (contract §S1 decision 1, recommend Mine-first with fallback-to-Protocol-when-empty) — it must be resolved at the wireframe gate, not silently decided in code.",
+        "The Mine rows and Protocol lines have different identities: served feed dedups on kind:txHash:logIndex, but own-purchase rows carry NO logIndex — merging the two lens populations into one list would create key collisions and double-counting; the lens should SWITCH populations, not merge them.",
+        "LiveActivityFeed's chip counts, era band, seat-overlap note, live poll, and Load-more arithmetic are all Protocol-lens machinery with one-authority pins (chipCount :671-732) — the Mine lens must not reuse or occlude those counters (a Mine 'total' has its own authority: the served own-rows length).",
+        "Line :1373 'A seat's own activity already has its own view.' was written when /member was that view — after the lens ships this sentence is stale on the very page that gained the view; fix it in the slice WITHOUT breaking the guard-feature-truth fragment two sentences later.",
+        "Session vs connection states: connected-but-not-signed (wallet connected, no SIWE) and signed-but-no-seat both return honest S1/S4 payloads with failureReason — each needs its own honest UI state; rendering the generic error for a not-signed visitor would violate the conversion-state requirement.",
+        "The auth zone is dark-by-default in prod behind SYNDICATE_AUTH_ENABLED (authExposure.ts) — the Mine lens must fail closed to the conversion state when /api/auth answers 404-shaped darkness (fetchers already return null; do not spin forever).",
+        "Bundle-size/entry discipline: pulling wallet fetchers statically into the public /activity chunk reds guard-access-state; the dynamic-import seam has an async first paint — the lens needs a checking state so members never flash the signed-out composition (useSignedIn's checking flag is the precedent).",
+        "The a1 benchmark HTML's 'people de-identified' Protocol description is a pre-address-law fossil; copying it into new copy would re-open a settled ruling the founder killed twice (2026-07-24 and 2026-07-25).",
+        "Deep-link grammar: ?facet= already lives on the URL (:339-353, replaceState) — a ?lens= param must coexist without clobbering facet state on selectFilter's URL rewrite."
+      ],
+      "notCovered": "Read-only recon: no guards, typecheck, or build were RUN (the plumbing was verified from package.json chains only — studio guards :39, api guards :58). Not read line-by-line: the middle of backboneFeedClient.ts (parsers/sentences, 1289 lines — entry points and shapes were read), guard-auth-zone.ts beyond its self-readback/exposure sections (1984 lines), backbone.guard.ts beyond the feed-pin sections (3101 lines), MemberAppPage.tsx internals, the api-client-react package, and the DB-bridge modules (memberInbox/channelStanding/activationRequests) since Mine does not need them. No wireframe/mockup for the lens exists yet in docs/design (only the benchmark direction HTML) — the wireframe gate is genuinely unstarted. I did not verify the local rig runs (windows-rig recipes exist in memory) nor whether SYNDICATE_AUTH_ENABLED is set on the local rig — the Mine lens cannot be manually verified end-to-end without it. Throttle capacity (allowRequest limits in auth/throttle.ts) was not read; three parallel own-row fetches per lens switch should be checked against it at build time."
+    },
+    "client": {
+      "summary": "A1 = add the Mine|Protocol LENS to /activity (the founder's engraved #1, « go » recorded in OPEN_QUEUE 2026-08-02: « A1 EN VOL »; scope per MEMBER_HOME_FINISH_ORDER step 8: S0 binder + S2 core are SEALED via R-BIND 1-3, ONLY the S1 pulse lens remains — the R-BIND seal is never \"A1 done\"). THE DESIGN LAW ALREADY EXISTS: docs/reference/A1_BENCHMARK_AND_HONESTY_CONTRACT.md §S1 (TIER-0) specifies a SEGMENTED CONTROL, not tabs — one shared event grammar, `[ Mine | Protocol ]` switching the lens in place, gold on the selected side; Mine = strictly own-row behind the sign-in gate (signed-out → conversion/invitation, never others' data as teaser); Protocol = today's public feed, unchanged and never walled. THE APPROVED NEWSROOM MOCKUP (docs/design/activity-newsroom-mockup.html, A0, founder GO 2026-07-22) does NOT design the lens — its Z2 facet bar has no Mine element — and the BACKLOG.html A1 row carries the explicit gate flag « ⚑ wireframe + preview (Founder) », and MEMBER_HOME_FINISH_ORDER names step 8 a wireframe step with SYSTEM-FIRST before it. VERDICT ON THE GATE QUESTION: the founder OWES a wireframe verdict for the lens composition before code, then the preview gate before deploy; four §S1 founder decisions (default lens Mine-first vs Protocol; toggle naming; the Visibility-Law line for Protocol; calm no-unread feed) are recorded as recommendations only — nothing in SESSION_STATE/OPEN_QUEUE/BACKLOG answers them. IMPLEMENTATION SHAPE: the lens sits in LiveActivityFeed.tsx above/beside the Z2 facet bar; Protocol lens = the existing merged feed verbatim; Mine lens = the signed session's own rows from the existing /api/auth own-row endpoints (member-purchases rows carry transaction anchors + receipt facts; introduction-rows carry counterpart wallet + explorer URL; member-standing carries memberNumber) — no own-activity endpoint exists server-side and none is strictly required; session state via the entry-safe useSignedIn pattern (dynamic import — the wallet static-import ban blocks any direct import from components/activity/). The bell/notifications All|Protocol|Mine tab treatment (MemberNotificationsPanel.tsx tabButton, rounded-full chips, border-gold/40 bg-gold/10 active, signed-out invitation card) is the shipped house precedent; the A1 contract deliberately upgrades it to a segmented control for this surface.",
+      "files": [
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\components\\activity\\LiveActivityFeed.tsx",
+          "role": "THE surface (1,383 lines) — the whole newsroom: Z1 header band (:1033-1090, one-authority liveSeatCount from useGetProtocolReality :259-299), Z2 facet bar (:1094-1157; FILTERS :119-153; selectFilter with ?facet= deep link via history.replaceState :344-353; chipCount server-word counts :671-732), Z3 feed (renderLine grid :827-947; date groups :1250-1277; Load more + A2 cursor paging :603-620, :1280-1312), Z4 milestones (:1319-1326), Z5 methodology Disclosure (:1331-1378 — carries the guard-pinned fragment \"What the indexer adds next\" :1374). Live poll auto-injects fresh lines every 60s with gold flash (:424-437). merged composes served+window+chronicle+deployment lines (:448-576). isFounderLine (:209-222) is REGEX-PINNED by guard-one-figure. Full-screen law honored: no page cap, sentence bounded in ch (:811-826).",
+          "whatChanges": "A1's core edit: add the [Mine|Protocol] segmented control (A1 contract §S1: segmented control, NOT tabs; gold on selected side) — placement per the founder-approved wireframe, likely between Z1 and Z2 (the facet chips then filter WITHIN the active lens, or hide on Mine — wireframe decides). Add lens state + a ?lens= deep link mirroring the ?facet= pattern (:344-353). Mine lens: session-gated own-row view — signed-out renders an invitation/conversion card (never a wall on the page, Protocol stays default + public); signed renders own rows (own purchases/introductions with verify anchors + /receipts deep links) in the SAME event-line grammar. Session read must be entry-safe (dynamic import — see guard-access-state rule 15). The Z5 pinned fragment must survive verbatim or the guard-feature-truth pin moves in the same commit."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\pages\\Activity.tsx",
+          "role": "28-line page wrapper: MemberAppPage kind=\"content\" (eyebrow Activity, title \"The public heartbeat.\", READ_ONLY_PROOF badge) mounting <LiveActivityFeed />. Signed members already get the member shell + light header; visitors get the public hero (MemberAppPage.tsx:49-88). Route: App.tsx:233-235 <PublicRoute path=\"/activity\">.",
+          "whatChanges": "Probably NOTHING structural — the lens lives inside LiveActivityFeed. Only touch if the wireframe adjusts the lead copy to name the personal lens."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\lib\\backboneFeedClient.ts",
+          "role": "The served-feed client (1,290 lines): ServedFeedLine union (:254-264 — ServedSeatLine carries memberNumber + memberAddress :43-59; capital-rise carries seatNumber :246-252), parseLine runtime gate (:513-759, driven directly by guard-one-figure fixtures), fetchServedFeed with A2 limit/cursor paging + bare-request dedupe (:846-957), sentenceForServedLine/amountForServedLine/factsForServedLine/addressBookForServedLine (:1003-1289 — the ONE §8 lexicon). guard-one-figure pins `return formatAmount(amountRaw, spec.decimals, spec.dp)` (:990).",
+          "whatChanges": "NOTHING (dependency). The public feed API has no own filter and needs none for a client-side Mine lens. If the founder-approved design instead demands a SERVED mine scope, that becomes an api-server slice with its own recon — do not widen this client speculatively."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\wallet\\walletSession.ts",
+          "role": "The session + own-row read module (998 lines; wallet-chunk, /api/auth literal URLs ONLY — guard-access-state rule 17). fetchSessionState :136 (S1/S4, fail-closed), resolveWiredAccessState :163 (S1/S4/S7/S11), fetchMemberStanding :281 (memberNumber, era, own entry receipt {transaction, block, explorerUrl}), fetchOwnPurchases :834 → OwnPurchasesReadback (rows: isoDayUtc · amountRaw · transaction · explorerUrl · block · engine · receipt facts incl. seat/firstSeat/broughtByShort — :711-754), fetchOwnIntroductions :657 (rows with whoWallet + whoExplorerUrl + commissionRaw + anatomy), fetchOwnInbox :910. Complete auth-zone GET routes (server): /session /member-self /member-standing /member-purchases /introduction-rows /member-inbox /season-standing /source-standing /channel-standing /activation-request /operator-context — NO own-activity-feed endpoint exists.",
+          "whatChanges": "NOTHING for a reuse build (the Mine rows come from fetchOwnPurchases + fetchOwnIntroductions + fetchMemberStanding). If a dedicated own-activity read is designed, the new fetch lives HERE (literal /api/auth URL, fail-closed null, parse-strict) — nowhere else."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\wallet\\ownReads.ts",
+          "role": "The member's own settled hooks (323 lines) — the proven idioms: useSettledOwnCapitalStanding (:135-181) is the race-guarded four-state pattern (loading/failed/no-seat/ready, seq guard, SESSION_CHANGED_EVENT re-read); useOwnPurchases (:210-227); usdFromRaw (:317-323, the canon dollar formatter — never recompute).",
+          "whatChanges": "OPTIONAL: a settled own-activity hook (merging own purchases+introductions into dated rows) belongs here if extracted — copy the seq-guard idiom of :135-181. Otherwise NOTHING (dependency/reference)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\lib\\useSignedIn.ts",
+          "role": "The ENTRY-SAFE session probe (37 lines): dynamically imports walletSession + sessionEvents (rule 15 compliant), returns {signedIn: s===\"S4\", checking}, re-reads on SESSION_CHANGED_EVENT. Already used by MemberAppPage. This is the ONLY compliant way a public component (components/activity/) learns the session state.",
+          "whatChanges": "NOTHING (dependency). The Mine lens's own-row FETCHES need the same dynamic-import treatment — either extend this pattern with a sibling entry-safe hook in lib/, or lazy-mount a wallet-chunk Mine panel component (the SignInWall note: \"Import it only from lazy wallet modules\")."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\wallet\\MemberNotificationsPanel.tsx",
+          "role": "THE SHIPPED All|Protocol|Mine PRECEDENT (281 lines, /notifications): PageTab type :25, pageFilter :28-33 (scope \"all\"→Protocol, \"you\"→Mine), tabButton :199-215 — rounded-full border chips, active = border-gold/40 bg-gold/10 font-semibold text-foreground; signed-out (state!==\"S4\") branch :178-191 renders the invitation card: \"Sign in with your wallet on Member Home to read your own inbox — your messages and the announcements to all members are waiting here.\" The bell popover mirrors it (MemberNotificationsBell.tsx :124-169).",
+          "whatChanges": "NOTHING — this is the pattern to mirror for the signed-out Mine state AND to deliberately differ from on the control itself: the A1 contract §S1 explicitly upgrades tabs to a SEGMENTED CONTROL for the pulse lens (\"segmented control, not tabs — Mine|Protocol switch the LENS on one shared grammar, in place\")."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\wallet\\MemberRecentActivity.tsx",
+          "role": "The member's own last-5 purchase rows on /member (136 lines): fetchOwnPurchases → sorted by block, row = isoDayUtc · usdFromRaw(amountRaw) · engine · /receipts?tx= deep link · verify ↗ explorerUrl; three honest states. The closest existing \"Mine feed row\" implementation.",
+          "whatChanges": "NOTHING — reference for the Mine row grammar + the receipt/verify affordance pair. The lens should link rows into /receipts?tx={transaction} the same way (:93-98)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\wallet\\ReceiptsBinderPanel.tsx",
+          "role": "S0 — the sealed receipts binder (455 lines, /receipts): fetchOwnPurchases rows month-grouped, each expanding in place to the full ReceiptTicket; gated by SignInWall; R-BIND 1-3 sealed 2026-07-19.",
+          "whatChanges": "NOTHING — sealed. The Mine lens is its sibling, not its rebuild; rows deep-link into it."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\wallet\\SignInWall.tsx",
+          "role": "The shared member-account gate (§B of the access model): gates on fetchSessionState()==='S4' NEVER wagmi address; teaser + children props; connected-not-signed vs not-connected changes copy only; wallet-chunk file — \"Import it only from lazy wallet modules\" (:13-15).",
+          "whatChanges": "NOTHING (potential reuse). If the Mine lens's signed-out state uses it, the Mine pane must be a lazily-imported wallet component; alternatively render a lighter inline invitation in LiveActivityFeed keyed on useSignedIn (the notifications-panel precedent) — wireframe decides the weight."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\docs\\design\\activity-newsroom-mockup.html",
+          "role": "The A0 approved wireframe (233 lines, founder GO 2026-07-22): Z1 header+era band, Z2 sticky facet chips (All ✦Founder Membership Burns Treasury Liquidity Archive Referral More — NO Mine element anywhere), Z3 12 news date-grouped + Load more, Z4 milestones, Z5 methodology. Its closing annot names A1 only in passing (a Founder-chip label note). IT DOES NOT DESIGN THE Mine|Protocol LENS.",
+          "whatChanges": "NOTHING to this file — but its silence is the ruling fact: the lens composition is NOT covered by any founder-approved wireframe. A NEW wireframe (this mockup + the lens control + the Mine states: signed-out invitation · empty · rows) must be drawn and approved BEFORE code (Visual Change Law ①; BACKLOG A1 gate flag « ⚑ wireframe + preview (Founder) »; MEMBER_HOME_FINISH_ORDER lists step 8 as a wireframe step). Copy the new mockup into docs/design/ in the same pass (artifacts-into-repo law)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\docs\\reference\\A1_BENCHMARK_AND_HONESTY_CONTRACT.md",
+          "role": "TIER-0 design canon, ordered read-first at this slice (MEMBER_HOME_FINISH_ORDER:54-55). §S1 (:120-162) IS the lens spec: segmented control not tabs; one event-line grammar decoded to intent; sticky day headers; on-demand \"N new\" pill (never silent auto-inject); Mine strictly own-row behind the sign-in wall (not-connected → conversion, never others' data as teaser); Protocol = chain-emitted short-form addresses, never walled; no unread state on the feed (the bell owns unread). §S1 closes with FOUR founder decisions (:157-162): default lens Mine-first vs Protocol · section stays \"Pulse\"/toggle Mine/Protocol · confirm the Visibility-Law line · calm no-unread feed — NONE recorded as answered anywhere in SESSION_STATE/OPEN_QUEUE/BACKLOG. The five-invariant A1 HONESTY CONTRACT (:28-74) binds the first build: verify-first row, own-row/hide-nothing-on-chain, anti-financialization, honest three states, accessible by construction.",
+          "whatChanges": "NOTHING — authority. The wireframe presented to the founder must carry the four §S1 decisions as on-screen options (content decisions are read ON SCREEN)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\docs\\direction\\CANON_ACCESS_MODEL.md",
+          "role": "TIER-0 access canon. The §A matrix (:84-86) settles the signed-out question by direct precedent: member-account column includes « the notification \"Mine\" inbox » (sign-in wall — teaser + one CTA, zero personal figures; connected-not-signed → still the wall; signed-no-seat S4 → conversion), while « notifications \"All/Protocol\" » sits in the PUBLIC row (\"fully open, truth + tease, no personal figures\"). §B: the wall resolves from fetchSessionState(), NEVER the wagmi address. §5/Visibility: gating a personal view behind sign-in is NOT hiding a public fact. Q-B: session persists after wallet disconnect — gate NOT-SIGNED only.",
+          "whatChanges": "NOTHING — authority. Mapped to A1: /activity stays PUBLIC (surfaceClassification.ts:398-416, requiredState S1 — must NOT flip); the Protocol lens is never walled; the Mine lens signed-out shows the invitation/teaser with zero personal figures, and signed-no-seat shows the honest own record (possibly empty + conversion line), never a fake."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\scripts\\guard-access-state.ts",
+          "role": "BLOCKING studio guard (~1081 checks). Rule 15 as enforced (:487-503): NO static import/re-export of @/wallet/ outside src/wallet/ — allowlist is EXACTLY App.tsx (:493), and App.tsx is pinned to three exact specifiers (:513-517). Rule 17: the wallet module talks only to literal \"/api/auth/...\" URLs, no persistence.",
+          "whatChanges": "NOTHING unless the build adds a new lazy wallet seam that the guard pins by name (the existing pins enumerate gated lazy imports per host file :575-660 — a new lazy wallet component mounted from LiveActivityFeed may require adding a matching pin, RED-first). The hard constraint it imposes: LiveActivityFeed.tsx CANNOT `import { fetchOwnPurchases } from \"@/wallet/walletSession\"` statically — dynamic import only."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\scripts\\guard-feature-truth.ts",
+          "role": "BLOCKING. PROSE_CLAIM_SITES (:95-107) pins components/activity/LiveActivityFeed.tsx to keys [eventDerivedNotifications, chronicleCandidatePipeline] via the verbatim fragment \"What the indexer adds next\" — the Z5 closing sentence. featureStatus.ts has NO key for the Mine lens (neither live nor future) — correct, since it ships in this slice; any interim \"coming\" copy would need a registered key first.",
+          "whatChanges": "NOTHING if the Z5 sentence survives verbatim. If the lens slice rewrites the methodology prose, the fragment/keys pin must move IN THE SAME COMMIT (a stale pin = RED). No featureStatus flip is owed — the lens has no future key to kill."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\scripts\\guard-one-figure.ts",
+          "role": "BLOCKING feed pins: drives backboneFeedClient's parseLine directly with treasury fixtures (:200+), REGEX-PINS the isFounderLine function body in LiveActivityFeed.tsx (:305-313 — fails if `kind === \"treasury-move\"` reappears in it), and pins the canon-formatter call sites incl. backboneFeedClient :392.",
+          "whatChanges": "NOTHING — but any refactor of LiveActivityFeed that moves/renames isFounderLine breaks the pin's extraction regex (:306). Keep the function name, shape, and file; if the lens edit must move it, update the guard in the same commit, RED-first."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\api-server\\scripts\\guard-auth-zone.ts",
+          "role": "BLOCKING api guard (~1302 pins): the auth zone is GET-only for reads, S4-capped, session-cookie-only input (rule 8: req.query/req.params never read under src/auth), payloads never carry the bound account, no DB-registry import in the zone. The 2026-08-02 pre-masked-family slice re-pinned it: own-row payloads NOW serve full wallet + short + Snowtrace link (address law) — whoWallet mandatory on introduction rows.",
+          "whatChanges": "NOTHING for a client-side lens (the existing own-row endpoints suffice). BINDS HARD if a dedicated own-activity endpoint is designed: it must live under src/auth, session-cookie input only, fail-closed, with RED-first pins added here — that would make A1 a two-artifact slice and should be a deliberate wireframe-driven choice, not a default."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\lib\\seo-route-registry.ts",
+          "role": "The one SEO authority. /activity entry :784-829: PUBLIC, INDEX, sitemap, title \"Activity — the public heartbeat\", 159-char description naming the served lanes, canonical /activity, changefreq daily. Prerendered as an anonymous static shell (prerender-routes.ts reads this registry).",
+          "whatChanges": "JUDGMENT CALL, name it at the gate: the lens changes the page's reality (a personal lens now exists on the heartbeat). If the description/title moves to say so, run the full SEO battery in the same commit (seo:generate + seo:check + surface:audit + seo:rewrites:check — the sitemap is a committed file). At minimum verify the head still tells no lie about the page. The prerendered shell MUST stay anonymous: default (signed-out) render = the public Protocol lens."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\config\\surfaceClassification.ts",
+          "role": "/activity classification :397-416: audience PUBLIC, surface PUBLIC_VISITOR, requiredState S1, enforcement PREVIEW_LABELLED; the summary sentence RENDERS on the public /status surface map and was truth-fixed 2026-07-26 to say exactly what the /activity head says.",
+          "whatChanges": "The classification must NOT flip (page stays public). If the SEO head gains the lens, this summary moves in the same commit (the two-public-surfaces-one-statement rule the entry's own comment engraves)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\docs\\direction\\BACKLOG.html",
+          "role": "The A1 row :516-522 (« RESTE : la lentille Mine|Protocol sur le pouls… ⚑ wireframe + preview (Founder) », chip À faire) + engraved-sequence step 1 :227-230.",
+          "whatChanges": "At slice end: flip the A1 row's status + record the wireframe/preview verdicts, same pass as the code commit (read-canon/artifacts-into-repo law). C3 unblocks per the step-1 wording."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\docs\\direction\\MEMBER_HOME_FINISH_ORDER.md",
+          "role": "Step 8 :50-56: REMAINING = S1 the Mine|Protocol pulse lens; READ FIRST = A1_BENCHMARK_AND_HONESTY_CONTRACT.md; S3/S4 are later slices. Binding laws :87-98: step 8 is a WIREFRAME step, SYSTEM-FIRST before it, HEARTBEAT COMPLETENESS (\"A1's My|Protocol lens keeps /activity + pulse complete\"), SEO rides the slice.",
+          "whatChanges": "At seal: mark step 8's S1 done. SESSION_STATE boot block + OPEN_QUEUE updated in the same pass (what went LIVE · in-flight · founder pendings)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\wallet\\sessionEvents.ts",
+          "role": "9 lines: SESSION_CHANGED_EVENT — the app-wide session-change broadcast every own-row hook re-reads on.",
+          "whatChanges": "NOTHING (dependency). The Mine lens must re-read on it so sign-in/out resolves in place."
+        }
+      ],
+      "constraints": [
+        "WIREFRAME GATE OWED (from the records, not opinion): BACKLOG.html A1 row carries « ⚑ wireframe + preview (Founder) »; MEMBER_HOME_FINISH_ORDER names step 8 among the wireframe steps and orders SYSTEM-FIRST before it; the founder-approved A0 newsroom mockup contains NO Mine element — the 2026-07-22 approval does NOT cover the lens composition. Sequence: inventory on screen → wireframe (carrying the four unanswered §S1 founder decisions as options) → founder GO → code → PREVIEW GATE (localhost URL, desktop AND mobile widths, both themes, every img naturalWidth>0) → deploy.",
+        "A1 HONESTY CONTRACT (TIER-0, docs/reference/A1_BENCHMARK_AND_HONESTY_CONTRACT.md): segmented control NOT tabs; verify-first on every row; own-row + hide-nothing-on-chain (short-form addresses shown, red line = name/alias/email/directory); anti-financialization skin; honest three states (loading skeleton, teaching empty, error+retry — pending stays pending); accessible by construction (role=feed/aria semantics, aria-live polite, 44px targets, both themes AA).",
+        "ACCESS MODEL (CANON_ACCESS_MODEL §A, verbatim precedent): the notification « \"Mine\" inbox » is member-account (sign-in wall — teaser + one CTA, zero personal figures; connected-not-signed still walled; signed-no-seat → conversion) while « All/Protocol » is public (\"fully open… no personal figures\"). Applied: /activity NEVER walls the public view; Protocol is the signed-out default; Mine signed-out = invitation only. Gate on fetchSessionState()==='S4', NEVER the wagmi address (§B; the /wallet leak lesson). Q-B: a disconnected-but-signed member keeps Mine.",
+        "WALLET IMPORT BOUNDARY (guard-access-state rule 15, BLOCKING): no static import of @/wallet/ outside src/wallet/ except App.tsx's three pinned specifiers. LiveActivityFeed reaches session/own-row reads ONLY via dynamic import (the useSignedIn pattern) or a lazily-mounted wallet-chunk component. Rule 17: any new fetch in the wallet module uses literal \"/api/auth/...\" URLs, fail-closed.",
+        "OWN-ROW DATA AVAILABLE TODAY (no new endpoint required): /api/auth/member-purchases (dated rows + transaction anchors + explorerUrl + receipt facts incl. seat/firstSeat/broughtByShort), /api/auth/introduction-rows (whoWallet + whoExplorerUrl + commissionRaw + anatomy), /api/auth/member-standing (memberNumber + own entry receipt), /api/auth/member-inbox. Matching Mine rows against the public feed must NEVER key on the client wagmi address; the compliant joins are the own-row endpoints' transaction anchors and the served memberNumber/seatNumber fields.",
+        "GUARD PINS THAT MUST SURVIVE THE EDIT: guard-one-figure regex-pins isFounderLine's body in LiveActivityFeed.tsx and drives backboneFeedClient.parseLine with fixtures; guard-feature-truth pins the Z5 fragment \"What the indexer adds next\" to two future keys; guard-access-state 1081 checks incl. per-file lazy-seam pins. Any pin that must move, moves in the same commit, RED-first (revert the fix → the check goes RED, or the check does not exist).",
+        "FULL-SCREEN LAW (S7-d, engraved — the founder's own catch on this very page): never a page-level max-width on /activity; wide screens fill by content columns; only the sentence is bounded, in ch. WORK-FIRST outranks the mockup: the feed opens on the work; reference material stays in the collapsed Z5.",
+        "DESIGN-SYSTEM FLOORS on the new control: 44px touch targets (the facet chips' py-3.5 sm:py-1 precedent), 12px absolute floor / 14px reading floor, gold selected-state grammar (border-gold/40 bg-gold/10 — matches both the bell tabs and the facet chips), focus-visible rings, both themes (guard-contrast-aa, guard-theme-parity, guard-touch-target, guard-type-scale, guard-focus-visible all BLOCKING).",
+        "WORD LAW: human words only on every surface and in every founder-facing report — never \"PII\" (guard-forbidden-copy bans it rendered), never Sx codes on a surface, \"Founder\" capital F, \"commission\" never \"acquisition cost\". No gain-promise glyphs; no unread pressure on the feed (the bell owns unread).",
+        "ONE-AUTHORITY FIGURES: any Mine count shown is the own-row server's word (rows.length of a complete served list is acceptable; never client arithmetic dressed as a whole-history total); the Protocol lens keeps chipCount's server-word discipline untouched.",
+        "FEATURE REGISTRY: no featureStatus key exists for the lens — none is owed at ship (a live flip only exists for keys that were future). If any surface temporarily claims the lens is \"coming\", that claim must register a key + guard pin first.",
+        "DEEP LINK: mirror the shipped ?facet= pattern (read once at mount, history.replaceState on change) for ?lens=; unknown values fall back to the public default.",
+        "PLUMBING (this box): `corepack pnpm run <script>` (npm exec -- pnpm is broken); studio guards alias works via corepack; studio build needs $env:PORT + $env:BASE_PATH=\"/\" per call; api guards run individually via .\\node_modules\\.bin\\tsx.cmd from artifacts/api-server; local rig = studio preview 5173 + api DETACHED on 5000 (never preview_start for the api) + PostgreSQL 17 :5433.",
+        "SLICE SHAPE: one defect/feature closed + RED proof + twin search pasted in the commit + the docs pass (BACKLOG/SESSION_STATE/OPEN_QUEUE/DESIGN_ROADMAP if design boxes move) in the same commit. Deploy verdict stated in one line at the end (client-only + fail-closed ⇒ likely 🚀 DEPLOY — BATCHABLE, but the founder wanted A1 next, so expect a real deploy)."
+      ],
+      "risks": [
+        "TENSION TO SURFACE AT THE WIREFRAME, not silently resolved: the A1 contract §S1 prescribes an on-demand \"N new\" pill (\"never a silent auto-inject\") but the SHIPPED A3 newsroom auto-injects polled lines at the top with a gold flash — and THAT behavior was founder-approved on the A0 mockup (\"une nouvelle ligne glisse en haut… ta position de lecture est préservée\"). Do not relitigate the shipped Protocol behavior on my own authority; put the divergence on the wireframe if the lens touches it.",
+        "The four §S1 founder decisions (default lens Mine-first vs Protocol · toggle naming · Visibility-Law confirmation for Protocol · calm no-unread) are UNANSWERED in every record searched (SESSION_STATE, OPEN_QUEUE, BACKLOG). Building on the doc's mere recommendations without the founder's word violates the content-on-screen rule — they ride the wireframe gate.",
+        "Guard-pin breakage is the likeliest RED: editing LiveActivityFeed around isFounderLine (guard-one-figure extracts its body by regex) or the Z5 prose (guard-feature-truth fragment) fails the chain if pins are not moved in the same commit.",
+        "Prerender/SEO leak: /activity is a prerendered INDEX shell — the signed-out default must remain the anonymous Protocol view or the prerender bakes a personal frame; also adding the lens without checking the served head against the new reality is the exact era-drift/truth-bug class the SEO-rides-the-slice rule exists for.",
+        "Bundle-boundary regression: one careless static `import { … } from \"@/wallet/walletSession\"` in components/activity/ turns guard-access-state RED and, worse, would drag wagmi/RainbowKit into the public entry chunk if the guard were loosened — the dynamic-import discipline is load-bearing, not ceremonial.",
+        "Identity mis-keying: matching \"Mine\" rows by the connected wagmi address is both a law violation (session-not-wagmi) and wrong under Q-B (a signed member with wallet disconnected must still see Mine). Key on session-derived facts only (own-row rows' transaction anchors, memberNumber).",
+        "Scope creep toward a server slice: no own-activity endpoint exists; inventing one by default doubles the slice across artifacts and awakens guard-auth-zone's 1302 pins. The client-side composition from existing endpoints covers the contract; a served mine-scope should only exist if the approved wireframe demands data the own-row endpoints cannot express (e.g. own archive mints/burns — note ownReads' useOwnArchiveHoldings reads balances client-side already).",
+        "The 60s Protocol poll + any Mine re-read could become two polling authorities on one page — reuse the existing poll/session-event rails, never a second timer answering the same question."
+      ],
+      "notCovered": "Read-only recon — no guards/builds were executed (plumbing quoted from SESSION_STATE 2026-08-02, not re-proven this session). Not read in depth: the api-server /api/backbone/feed route implementation and its backbone read-model (only its client contract, via backboneFeedClient.ts) — needed only if a served \\\"mine\\\" scope is chosen; guard-auth-zone's full 1302 pins and guard-access-state's full ~1081 checks (headers + the sections that bind A1 were read verbatim); MemberHeaderAffordance.tsx (the third \\\"Mine\\\" grep hit — the header entry point, not a tab precedent); the live rendering of /activity on the rig (no rig was started); the R-BIND commit diffs themselves (their rulings were taken from SESSION_STATE ~:3045-3060 and BACKLOG, which state the seal boundary explicitly). The C3 step that A1 unblocks was not mapped (out of scope). Search coverage note: \\\"Mine|Protocol\\\" and lens/segmented searches ran over docs/ and artifacts/studio/src — a design note living only in a chat transcript (ccd session files) would not have been seen, but the repo-is-source-of-truth law makes the repo record authoritative, and it says the lens wireframe is owed."
+    }
+  },
+  "workflowProgress": [
+    {
+      "type": "workflow_phase",
+      "index": 1,
+      "title": "Recon"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 1,
+      "label": "recon:server",
+      "phaseIndex": 1,
+      "phaseTitle": "Recon",
+      "agentId": "a07413e585800f951",
+      "model": "claude-fable-5",
+      "state": "done",
+      "startedAt": 1785700441615,
+      "queuedAt": 1785700436784,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "A1 = add the Mine|Protocol LENS to /activity (the public he…",
+      "promptPreview": "SENIOR SERVER-SIDE RECON for A1 (grade-AAA). Repo: C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os. READ-ONLY (no edits/commits); running guards/scripts allowed. Plumbing: corepack pnpm run <script>; api guards via .\\node_modules\\.bin\\tsx.cmd from artifacts\\api-server; studio build needs PORT+BASE_PATH env.\nTHE SLICE BEING MAPPED — A1, the founder's engraved sequence #1 (his « go » 2026-08-0…",
+      "lastProgressAt": 1785700914590,
+      "tokens": 217804,
+      "toolCalls": 48,
+      "durationMs": 472974,
+      "resultPreview": "{\"summary\":\"A1 = add the Mine|Protocol LENS to /activity (the public heartbeat). THE WORK-FIRST ANSWER: NO new server surface is needed — every datum \\\"Mine\\\" shows is already served by the auth zone's own-row self-readbacks: own purchases + full receipt facts via GET /api/auth/member-purchases (auth/router.ts:790-892), own referral/introduction acts via GET /api/auth/introduction-rows (689-780), …"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 2,
+      "label": "recon:client",
+      "phaseIndex": 1,
+      "phaseTitle": "Recon",
+      "agentId": "a2f79e0462f48d2c1",
+      "model": "claude-fable-5",
+      "state": "done",
+      "startedAt": 1785700440841,
+      "queuedAt": 1785700436784,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "A1 = add the Mine|Protocol LENS to /activity (the founder's…",
+      "promptPreview": "SENIOR CLIENT-SIDE RECON for A1 (grade-AAA). Repo: C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os. READ-ONLY (no edits/commits); running guards/scripts allowed. Plumbing: corepack pnpm run <script>; api guards via .\\node_modules\\.bin\\tsx.cmd from artifacts\\api-server; studio build needs PORT+BASE_PATH env.\nTHE SLICE BEING MAPPED — A1, the founder's engraved sequence #1 (his « go » 2026-08-0…",
+      "lastProgressAt": 1785700986816,
+      "tokens": 217809,
+      "toolCalls": 62,
+      "durationMs": 545973,
+      "resultPreview": "{\"summary\":\"A1 = add the Mine|Protocol LENS to /activity (the founder's engraved #1, « go » recorded in OPEN_QUEUE 2026-08-02: « A1 EN VOL »; scope per MEMBER_HOME_FINISH_ORDER step 8: S0 binder + S2 core are SEALED via R-BIND 1-3, ONLY the S1 pulse lens remains — the R-BIND seal is never \\\"A1 done\\\"). THE DESIGN LAW ALREADY EXISTS: docs/reference/A1_BENCHMARK_AND_HONESTY_CONTRACT.md §S1 (TIER-0) …"
+    }
+  ],
+  "totalTokens": 435613,
+  "totalToolCalls": 110
+}
