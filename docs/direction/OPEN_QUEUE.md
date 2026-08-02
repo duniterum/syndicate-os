@@ -1,5 +1,19 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-02 (NUIT — le 5ᵉ sceau + les deux mots du fondateur.)** ① **LES RÉSERVES SONT
+> LIVE** — sceau №5 `3a3efb8`, Replit 6/6 : six cartes dans l'ordre décrété (AVAX · BTC ·
+> ETH · LINK · GOLD · USDC), l'or au mark officiel, les deux lignes méta (« C » sur AVAX ·
+> heures-de-marché sur GOLD), /contracts +2 lignes, 39 items financiers tous non-null (l'or
+> lisible un dimanche — la fenêtre prouvée en prod le jour de sa naissance), backbone
+> failed:0. ② **« ON GARDE » — RÉGLÉ À JAMAIS :** /api/holder-index et son snapshot scellé
+> restent PERMANENTS comme attestation de genèse ; aucune retraite, jamais ; le repli de
+> démarrage du héros et la carte genèse de /status restent ; les futurs membres résolvent
+> toujours EN DIRECT au-delà du snapshot (vérifié dans le code) ; une nouvelle photo
+> notariée reste un acte fondateur qu'il peut ordonner aux jalons. Aucune session ne
+> rouvre ce sujet. ③ **« GO » sur son ordre gravé : A1 EN VOL** — la lentille Mine|Protocol
+> de My Activity (le #1 de la séquence ; le classeur own-row S0 et la porte Receipts sont
+> SCELLÉS via R-BIND 1-3 ; seule la lentille du pouls reste — puis C3 se débloque).
+
 > **▶ 2026-08-02 (FIN DE JOURNÉE — SCELLÉ №3 `82b650e` + LA RÈGLE DU REPLI + l'audit 6
 > casquettes.)** Ce bloc SUPPLANTE les affirmations périmées des deux blocs dessous :
 > ① **Les tranches du matin (`4b96b30` · `68ea337` · `1a38d13`) SONT EN PROD** — scellé №3

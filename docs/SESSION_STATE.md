@@ -258,7 +258,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   misreading that produced the rejected e94c24a): the hero no longer HEADLINES it, but it
 >   still CALLS it on every public-page load as the founder-sealed boot fallback, and
 >   /status's sealed genesis card reads it too — retirement is governed by the founder
->   ruling bullet above (his decision, options on screen, nothing builds until he picks).
+>   ruling bullet above. **→ DECIDED (founder, 2026-08-02 end of day: « on garde ») —
+>   ANSWERED FOREVER: /api/holder-index and its hash-pinned snapshot stay PERMANENTLY as
+>   the sealed genesis attestation. No retirement, no volet 2, ever. The hero keeps its
+>   sealed boot fallback; /status keeps its genesis card (live headline above it); future
+>   members always resolve LIVE past the snapshot (verified in code). A fresh notarized
+>   snapshot stays a founder-gated act he can order at milestones — never a system
+>   obligation. No session re-opens this.**
 > · Accepted-known (unchanged): source-status asOf ratchet stays memorial · printable
 >   ReceiptTicket keeps its QR as the verify affordance · payloadDiscipline's ADDRESS_LEAK_RE
 >   carries a written reconcile-before-re-enable note (2026-08-02).
