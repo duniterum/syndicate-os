@@ -168,7 +168,19 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   holds a DRAFTED LINK entry (lines ~127-138) to activate + a GOLD entry to add (tone
 >   "gold" exists); the band grid flips lg:grid-cols-4→3; /contracts +2 rows; RED-FIRST
 >   battery per the map (reality guard count 35→39 + exact id set + 3 freshness tests +
->   target pins). Rides docs/design/reserves-band-6-assets-mockup.html —
+>   target pins). **FOUNDER REFINEMENTS (2026-08-02, « ok et contrôle ») — BINDING:**
+>   ⑴ **DISPLAY ORDER — cards AND composition-bar segments, identical: AVAX · BTC · ETH ·
+>   LINK · GOLD · USDC.** ⑵ **The OFFICIAL Tether Gold mark** (vendored like LINK's
+>   official logo — confirmed again). ⑶ **⚠ THE AVAX AMOUNT IS SUSPECT (his eye: « avax
+>   n'est pas juste — comme c'était aussi gas token ») — BUILD GATE, before any card
+>   ships:** re-derive HOW vault AVAX should be counted (AVAX is the gas token: the raw
+>   eth_getBalance of the vault moves with every gas spend — find the PRIOR recorded
+>   thinking on this in the July native-AVAX-lane work/OPEN_QUEUE before deciding
+>   anything), then **CHECK ALL SIX amounts on-chain vs what prod serves** (vault AVAX ·
+>   BTC.b · WETH.e · USDC · LINK.e · XAUt0 — measure each balance live, compare with
+>   /api/protocol/reality, report any gap to the founder WITH the numbers, never ship a
+>   card whose figure he has not seen verified). Rides
+>   docs/design/reserves-band-6-assets-mockup.html —
 >   feeds verified on-chain (LINK/USD `0x49cc…de9a` · XAU/USD `0x1F41…515B`); same slice
 >   adds the two /contracts rows (Vault LINK · Vault GOLD); admin panel automatic.
 > · **② A1 — My Activity, the Mine|Protocol lens** (the engraved sequence's #1; unlocks C3).
