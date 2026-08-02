@@ -6,7 +6,9 @@
 // same day that caught its first implementation breaking it):
 //   · Only assets the protocol holds DIRECTLY in a protocol wallet, and whose
 //     price comes from a DEEP market, are given a USD value and summed:
-//     USDC at $1, plus AVAX / BTC.b / WETH.e at live Chainlink prices.
+//     USDC at $1, plus AVAX / BTC.b / WETH.e / LINK.e / XAUt0 at live
+//     Chainlink prices (XAU/USD carries the gold-market-hours freshness
+//     window — founder decision 2026-08-02).
 //   · SYN is NEVER assigned a USD value — its only on-chain price is a thin
 //     pool, so a mark-to-market would be unrealizable and chain-refutable.
 //   · THE POOL IS COUNTED AT OUR REAL SHARE, USDC LEG ONLY. It is NEVER counted
@@ -86,6 +88,9 @@ export function ProtocolAssetsCard() {
   const rawAvax = findValue(financial, "financial.vault.avaxBalance");
   const rawBtcb = findValue(financial, "financial.vault.btcbBalance");
   const rawWeth = findValue(financial, "financial.vault.wethBalance");
+  // Reserves build (founder GO 2026-08-02): the two 2026-07 treasury purchases.
+  const rawLink = findValue(financial, "financial.vault.linkBalance");
+  const rawXaut = findValue(financial, "financial.vault.xautBalance");
   // The vault's SYN balance IS the VAULT_RESERVE allocation (the same wallet,
   // pinned by the targets-reconcile guard) — reuse that live read, never a twin.
   const rawVaultSyn = findValue(financial, "financial.distribution.VAULT_RESERVE.balance");
@@ -103,6 +108,8 @@ export function ProtocolAssetsCard() {
   const vaultAvax = fmtAmount(rawAvax, 18, 4);
   const vaultBtcb = fmtAmount(rawBtcb, 8, 8);
   const vaultWeth = fmtAmount(rawWeth, 18, 6);
+  const vaultLink = fmtAmount(rawLink, 18, 4);
+  const vaultXaut = fmtAmount(rawXaut, 6, 6);
   const vaultSyn = fmtAmount(rawVaultSyn, 18, 0);
   const poolSyn = fmtAmount(rawPoolSyn, 18, 2);
   const poolUsdc = fmtAmount(rawPoolUsdc, 6, 2);
@@ -112,6 +119,8 @@ export function ProtocolAssetsCard() {
   const avaxPx = toNum(findValue(financial, "financial.price.avaxUsd"), 8);
   const btcPx = toNum(findValue(financial, "financial.price.btcUsd"), 8);
   const ethPx = toNum(findValue(financial, "financial.price.ethUsd"), 8);
+  const linkPx = toNum(findValue(financial, "financial.price.linkUsd"), 8);
+  const xauPx = toNum(findValue(financial, "financial.price.xauUsd"), 8);
 
   const usdcUsd = toNum(rawVaultUsdc, 6); // a dollar stablecoin at $1
   const opsUsd = toNum(rawOpsUsdc, 6);
@@ -122,6 +131,11 @@ export function ProtocolAssetsCard() {
   const avaxUsd = avaxAmt !== null && avaxPx !== null ? avaxAmt * avaxPx : null;
   const btcbUsd = btcbAmt !== null && btcPx !== null ? btcbAmt * btcPx : null;
   const wethUsd = wethAmt !== null && ethPx !== null ? wethAmt * ethPx : null;
+  const linkAmt = toNum(rawLink, 18);
+  const xautAmt = toNum(rawXaut, 6);
+  // XAUt0: 1 token = 1 troy oz, so amount × XAU/USD prices the holding directly.
+  const linkUsdVal = linkAmt !== null && linkPx !== null ? linkAmt * linkPx : null;
+  const xautUsdVal = xautAmt !== null && xauPx !== null ? xautAmt * xauPx : null;
 
   // THE POOL, HONESTLY: the pair's reserves belong to every liquidity provider,
   // so we attribute only the protocol's own SHARE — its LP tokens over the total
@@ -146,7 +160,7 @@ export function ProtocolAssetsCard() {
 
   // The total fails closed: if ANY priced component is unavailable the headline
   // says so rather than publishing a partial (and therefore misleading) sum.
-  const priced = [usdcUsd, opsUsd, avaxUsd, btcbUsd, wethUsd, poolUsd, nftUsd];
+  const priced = [usdcUsd, opsUsd, avaxUsd, btcbUsd, wethUsd, linkUsdVal, xautUsdVal, poolUsd, nftUsd];
   const totalUsd = priced.every((c) => c !== null)
     ? (priced as number[]).reduce((a, c) => a + c, 0)
     : null;
@@ -159,6 +173,8 @@ export function ProtocolAssetsCard() {
     vaultAvax !== null ||
     vaultBtcb !== null ||
     vaultWeth !== null ||
+    vaultLink !== null ||
+    vaultXaut !== null ||
     vaultSyn !== null ||
     seatReserve !== null;
   const tagState = anyAmountLive ? "live" : reality.isLoading ? "checking" : "unavailable";
@@ -227,6 +243,24 @@ export function ProtocolAssetsCard() {
       meta: "Bridged ether · Chainlink price",
     },
     {
+      id: "vault-link",
+      label: "Vault LINK",
+      logo: "link",
+      tone: "text-viz-6",
+      value: vaultLink !== null ? `${vaultLink} LINK.e` : null,
+      usd: linkUsdVal !== null ? fmtUsd(linkUsdVal) : null,
+      meta: "Bridged Chainlink · Chainlink price",
+    },
+    {
+      id: "vault-gold",
+      label: "Vault GOLD",
+      logo: "xaut",
+      tone: "text-gold",
+      value: vaultXaut !== null ? `${vaultXaut} XAUt0` : null,
+      usd: xautUsdVal !== null ? fmtUsd(xautUsdVal) : null,
+      meta: "Tether Gold · 1 token = 1 troy oz · gold-market-hours price",
+    },
+    {
       id: "vault-syn",
       label: "Vault SYN",
       logo: SYN_LOGO,
@@ -288,7 +322,7 @@ export function ProtocolAssetsCard() {
           )}
         </div>
         <div className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-          USDC counted at one dollar; AVAX, BTC.b and WETH.e at live Chainlink prices. From the pool, only the
+          USDC counted at one dollar; AVAX, BTC.b, WETH.e, LINK and gold at live Chainlink prices. From the pool, only the
           protocol's own share of the USDC side — its LP tokens over the total supply, both read live; liquidity
           provided from any other wallet is not ours and is not counted. SYN is shown as an amount and never priced:
           its only on-chain price is that same thin pool. If one figure cannot be read, this total says so.

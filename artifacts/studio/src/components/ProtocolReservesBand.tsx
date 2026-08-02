@@ -182,7 +182,11 @@ export function ProtocolReservesBand() {
         {/* Four assets, four columns from lg — the approved mockup shows them in
             ONE row, not 3+1 (a 3-column grid left the fourth card orphaned on a
             1280px screen). Two columns on tablet, one on phone. */}
-        <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+        {/* 3×2 (founder wireframe decision 2026-08-02): six assets sit as two
+            full rows; a 4-col grid would orphan the two newest purchases —
+            LINK and GOLD — on a half-empty row. A 7th–9th asset makes this
+            3×3 with no redesign. Tablet 2×3, phone one column. */}
+        <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
           {rows.map((r) => (
             <div
               key={r.symbol}

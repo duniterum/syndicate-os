@@ -73,6 +73,9 @@ export const TRACKED_ASSETS: readonly TrackedAsset[] = [
     priceId: "financial.price.avaxUsd",
     tone: "viz-5",
     verify: ["vaultWallet"],
+    // Founder decision « C » (2026-08-02): AVAX is also the gas token — say
+    // WHY this figure breathes, in human words, right on the card.
+    held: "The vault pays its own transaction fees from this balance",
   },
   {
     symbol: "BTC",
@@ -95,6 +98,34 @@ export const TRACKED_ASSETS: readonly TrackedAsset[] = [
     priceId: "financial.price.ethUsd",
     tone: "viz-3",
     verify: ["vaultWallet"],
+  },
+  // The founder bought LINK (2026-07-27) and GOLD (2026-07-30); the server pair
+  // for each shipped 2026-08-02 (GO and GO-Live). Display order is HIS ruling:
+  // AVAX · BTC · ETH · LINK · GOLD · USDC — cards AND composition bar.
+  {
+    symbol: "LINK",
+    name: "Chainlink · bridged",
+    logo: "link",
+    balanceIds: ["financial.vault.linkBalance"],
+    decimals: 18,
+    dp: 4,
+    priceId: "financial.price.linkUsd",
+    tone: "viz-6",
+    verify: ["vaultWallet"],
+  },
+  {
+    symbol: "GOLD",
+    name: "Tether Gold · 1 token = 1 troy oz",
+    logo: "xaut",
+    balanceIds: ["financial.vault.xautBalance"],
+    decimals: 6,
+    dp: 6,
+    priceId: "financial.price.xauUsd",
+    tone: "gold",
+    verify: ["vaultWallet"],
+    // Founder decision (2026-08-02): the market-hours window is STATED on the
+    // card — gold markets close on weekends, the price honestly rests.
+    held: "Priced at gold market hours — the feed rests on weekends",
   },
   {
     // ONE USDC ROW. The protocol holds dollars in three places — the vault, the
@@ -123,17 +154,4 @@ export const TRACKED_ASSETS: readonly TrackedAsset[] = [
     held: "Vault · operations · NFT sales · our pool share",
     includesPoolShare: true,
   },
-
-  // ── The day the founder buys LINK, uncomment this and add the server pair. ──
-  // {
-  //   symbol: "LINK",
-  //   name: "Chainlink",
-  //   logo: "link",                                     // already vendored
-  //   balanceIds: ["financial.vault.linkBalance"],      // server: balanceOf(LINK.e)
-  //   decimals: 18,
-  //   dp: 4,
-  //   priceId: "financial.price.linkUsd",               // server: the Chainlink LINK/USD feed
-  //   tone: "viz-6",
-  //   verify: ["vaultWallet"],
-  // },
 ];

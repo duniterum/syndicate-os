@@ -60,7 +60,9 @@ export const FEATURE_STATUS: Record<string, FeatureEntry> = {
   // placeholder is gone.
   //
   // WHAT IS VALUED AND SUMMED, stated from the code and not from memory: USDC
-  // at one dollar, AVAX / BTC.b / WETH.e at live Chainlink prices, the USDC the
+  // at one dollar, AVAX / BTC.b / WETH.e / LINK.e / XAUt0 (gold, 1 token =
+  // 1 troy oz; its XAU/USD feed carries the gold-market-hours freshness
+  // window — reserves build 2026-08-02) at live Chainlink prices, the USDC the
   // NFT sale holds (wallet + anything still resting in the contract), AND the
   // protocol's OWN SHARE of the SYN/USDC pool's USDC leg — our LP tokens over
   // the pair's total supply, both read live. SYN is never given a dollar value:

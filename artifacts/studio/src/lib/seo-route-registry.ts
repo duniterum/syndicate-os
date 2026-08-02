@@ -538,7 +538,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Contracts & Holdings — What The Syndicate Holds",
     description:
-      "What the protocol holds, read live on Avalanche: the vault's USDC, AVAX, BTC.b, WETH.e and SYN — every row verifiable on Snowtrace, with the contract memory behind it.",
+      "What the protocol holds, read live on Avalanche: the vault's USDC, AVAX, BTC.b, WETH.e, LINK and gold (XAUt0) plus SYN — every row verifiable on Snowtrace, with the contract memory behind it.",
     canonicalPath: "/contracts",
     changefreq: "daily",
     priority: 0.6,
