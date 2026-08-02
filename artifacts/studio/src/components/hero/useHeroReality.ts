@@ -14,6 +14,7 @@ import { useGetProtocolReality, useGetHolderIndex } from "@workspace/api-client-
 // See lib/amountFormat.ts for the rule; guard-one-figure keeps it single.
 import { formatBaseUnits } from "@/lib/amountFormat";
 import { useSpineAttestation } from "@/lib/useSpineAttestation";
+import { currentChapterFacts, type CurrentChapterFacts } from "@/config/syndicateFacts";
 
 /** 70/20/10 routed share of a raw USDC base-unit aggregate (exact bigint math). */
 function routedShare(rawAggregate: string | null, bps: bigint): string | null {
@@ -34,6 +35,12 @@ export interface HeroReality {
    */
   membersTotal: string | null;
   membersTotalNumber: number | null;
+  /** The CURRENT chapter's presentation facts, derived ONCE here (the one
+   *  choke point) from the live count via currentChapterFacts — consumers
+   *  (header wordmark badge, hero chapter card, seats window) read this field
+   *  and never re-derive. Null while the live count is unavailable (honest
+   *  absence, never a guessed chapter). Senior review 2026-08-02. */
+  chapterFacts: CurrentChapterFacts | null;
   /** Historical freeze/root base #1–#8 (live GENESIS_OFFSET), fail-closed. */
   historicalFreeze: number | null;
   /** Live V3-emitted seats = memberCount − GENESIS_OFFSET (dual authority). */
@@ -207,6 +214,7 @@ export function useHeroReality(): HeroReality {
     loading: reality.isLoading || holderIndex.isLoading,
     membersTotal: membersTotalNumber === null ? null : membersTotalNumber.toLocaleString("en-US"),
     membersTotalNumber,
+    chapterFacts: currentChapterFacts(membersTotalNumber),
     historicalFreeze: genesisOffset,
     v3Emitted,
     snapshotMemberTotal,

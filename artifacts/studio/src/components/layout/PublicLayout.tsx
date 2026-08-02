@@ -19,6 +19,7 @@ import { headerNav, headerNavPrimary, headerNavMore, footerGroups, navLabel } fr
 import { brand, brandAssets, headerChips, socialLinks, type HeaderChipState, type SocialLink } from "@/config/brand";
 import { useGetProtocolReality } from "@workspace/api-client-react";
 import { heroSystem } from "@/config/syndicateFacts";
+import { useHeroReality } from "@/components/hero/useHeroReality";
 import { SyndicateGuide } from "@/components/guide/SyndicateGuide";
 
 // Member sign-in / standing affordance. Reached ONLY through a runtime dynamic
@@ -178,6 +179,12 @@ function SocialIconRow({ className, iconClass }: { className?: string; iconClass
 }
 
 function Wordmark() {
+  // The chapter badge reads the reality spine's DERIVED chapterFacts (the one
+  // choke point computes it from the live count — senior review 2026-08-02:
+  // the config's hand-pinned "CH #001" died; it would have kept announcing
+  // Chapter I at seat #334). The shared hook dedupes via the query client;
+  // null = badge hidden (honest absence, never a guessed chapter).
+  const chapterFacts = useHeroReality().chapterFacts;
   return (
     <Link href="/" className="group flex shrink-0 items-center gap-2.5">
       <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-gold/45 bg-background/80 shadow-[0_0_20px_-14px_hsl(var(--gold)/0.8)] transition-colors group-hover:bg-gold/10 dark:bg-black/65">
@@ -239,17 +246,17 @@ function Wordmark() {
           {brand.descriptor}
         </span>
       </span>
-      {/* M1-c: the chapter badge reads from the ONE chapter config (shared
-          with the hero's overview panel) — never a hardcoded literal here. */}
-      <span
-        title={`${heroSystem.overview.chapter.label} — ${heroSystem.overview.chapter.value}`}
-        // TYPE SIZE ONLY: 11px → the `text-xs` token, which IS the 12px floor.
-        // The last sub-floor text rendered on /activity, and it sits in the
-        // chrome, so it was the last one on every page. Nothing else changes.
-        className="ml-1 hidden rounded-full border border-gold/35 bg-gold/10 px-1.5 py-0.5 font-mono text-xs font-semibold uppercase tracking-wider text-gold sm:inline-flex"
-      >
-        {heroSystem.overview.chapter.badge}
-      </span>
+      {/* M1-c: the chapter badge DERIVES from the one chapter table via
+          currentChapterFacts (2026-08-02) — never a hardcoded literal here.
+          text-xs IS the 12px floor (the 2026-07-28 raise holds). */}
+      {chapterFacts !== null ? (
+        <span
+          title={`${heroSystem.overview.chapter.label} — ${chapterFacts.value}`}
+          className="ml-1 hidden rounded-full border border-gold/35 bg-gold/10 px-1.5 py-0.5 font-mono text-xs font-semibold uppercase tracking-wider text-gold sm:inline-flex"
+        >
+          {chapterFacts.badge}
+        </span>
+      ) : null}
     </Link>
   );
 }

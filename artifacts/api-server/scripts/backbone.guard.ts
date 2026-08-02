@@ -1796,6 +1796,33 @@ check(
   );
 }
 
+// THE CHAPTER PRESENTATION PIN (senior review 2026-08-02, CONFIRMED-HIGH):
+// the studio hero card + header badge used to HAND-PIN "Genesis Signal" /
+// "CH #001" / a 333 window in syndicateFacts.ts — a client twin that would
+// keep announcing Chapter I (with an uncapped window %) at seat #334 while
+// the server register said Chapter II. The presentation must DERIVE from the
+// one table: syndicateFacts exports currentChapterFacts(liveSeatCount) built
+// on @/lib/chapters, and BOTH consumers (header wordmark badge + hero panel)
+// call it. A hand-pinned chapter fact back in the config = RED BUILD.
+{
+  const facts = stripComments(read("../studio/src/config/syndicateFacts.ts"));
+  const hook = stripComments(read("../studio/src/components/hero/useHeroReality.ts"));
+  const layout = stripComments(read("../studio/src/components/layout/PublicLayout.tsx"));
+  const panel = stripComments(read("../studio/src/components/hero/ProtocolOverviewPanel.tsx"));
+  check(
+    !facts.includes('value: "Genesis Signal"') &&
+      !facts.includes("chapterWindow") &&
+      !facts.includes('badge: "CH #001"') &&
+      facts.includes('from "@/lib/chapters"') &&
+      facts.includes("export function currentChapterFacts") &&
+      hook.includes("currentChapterFacts(") &&
+      layout.includes(".chapterFacts") &&
+      panel.includes(".chapterFacts"),
+    "the studio chapter presentation (hero card + header badge + seats window) derives from the ONE chapter table — currentChapterFacts computed ONCE in useHeroReality, both consumers read the derived field, no hand-pinned chapter fact in the config",
+    "a hand-pinned chapter fact is back in the studio config (or a consumer stopped reading the derived chapterFacts) — the seat-#334 client twin (hero/header announcing Chapter I forever) is re-armed",
+  );
+}
+
 // THE SWAP-ORDER PIN (founder-caught 2026-07-30 on prod: his 2 AVAX → XAUt0
 // gold swap rendered "gold entered, then AVAX left"). Every organ is an EOA,
 // so a native OUTFLOW is the transaction's own msg.value — chain physics puts

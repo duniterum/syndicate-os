@@ -6,6 +6,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { homepageStatus, type TruthStatus } from "./truthStatus";
+import { chapterForSeat, CHAPTERS } from "@/lib/chapters";
 
 // (S7 truth sweep, 2026-07-16: the dead `protocolSurfaces` config was
 // DELETED — it had no consumer and still photographed the read-only era
@@ -307,6 +308,36 @@ export interface HeroFlowRoute {
   angle: number;
 }
 
+/** The CURRENT chapter's presentation facts, derived from the frozen table
+ *  (@/lib/chapters) for the LIVE seat count — never hand-pinned (senior
+ *  review 2026-08-02: the static Chapter-I twin died). Null when the count is
+ *  unknown: callers render an honest absence, never a guessed chapter.
+ *  window null = the Open Era (no denominator, no fill bar). */
+export interface CurrentChapterFacts {
+  readonly value: string;
+  readonly meta: string;
+  readonly badge: string;
+  readonly window: number | null;
+  readonly note: string;
+}
+export function currentChapterFacts(seatCount: number | null): CurrentChapterFacts | null {
+  if (seatCount === null) return null;
+  const chapter = chapterForSeat(seatCount);
+  if (chapter === null) return null;
+  const number = CHAPTERS.indexOf(chapter) + 1;
+  const seatNo = (n: number) => `#${n.toLocaleString("en-US")}`;
+  return {
+    value: chapter.name,
+    meta: `Chapter #${number}`,
+    badge: `CH #${String(number).padStart(3, "0")}`,
+    window: chapter.endSeat,
+    note:
+      chapter.endSeat !== null
+        ? `Chapter ${chapter.roman} window · seats ${seatNo(chapter.startSeat)}–${seatNo(chapter.endSeat)}`
+        : `Chapter ${chapter.roman} · the open era — seats ${seatNo(chapter.startSeat)}+`,
+  };
+}
+
 export const heroSystem = {
   // M1-a — the hero's first act, harvested from the origin's design LANGUAGE
   // (never its constraints: the origin was read-only; this is LIVE PRODUCTION —
@@ -424,15 +455,16 @@ export const heroSystem = {
       { id: "operations", label: "Operations balance", bind: "opsUsdc", unit: "USDC", meta: "10% routing target" },
       { id: "burned", label: "Burned all-time", bind: "burnedSyn", unit: "SYN", meta: "Proof of Fire" },
     ] as HeroStat[],
-    // The ONE chapter config — the hero overview card AND the header wordmark
-    // badge read from here (M1-c: the header's "CH #001" literal died).
-    chapter: { label: "Current chapter", value: "Genesis Signal", meta: "Chapter #1", badge: "CH #001" },
-    // Chapter I window (#1–#333) comes from the vendored archive canon; the
-    // filled count is the LIVE Holder Index memberTotal — never fabricated.
+    // The chapter presentation DERIVES from the one frozen table via
+    // currentChapterFacts(liveSeatCount) below — the hero overview card AND
+    // the header wordmark badge call it with the LIVE seat count (senior
+    // review 2026-08-02: the hand-pinned Chapter-I block died here — it would
+    // have kept announcing Chapter I with an uncapped window % at seat #334
+    // while the server register said Chapter II). Only LABELS stay in config:
+    // they are copy, not chapter facts. guard-pinned in backbone.guard.
+    chapter: { label: "Current chapter" },
     seats: {
       label: "Seats recognised",
-      chapterWindow: 333,
-      chapterNote: "Chapter I window · seats #1–#333",
     },
   },
 

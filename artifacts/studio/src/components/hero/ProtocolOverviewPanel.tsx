@@ -85,9 +85,18 @@ export function ProtocolOverviewPanel() {
     reality.membersTotal !== null;
   const tagState = anyLive ? "live" : reality.loading ? "checking" : "unavailable";
 
+  // The chapter facts are the reality spine's DERIVED field (computed once in
+  // useHeroReality from the live count — senior review 2026-08-02: the
+  // hand-pinned Chapter-I window would have kept a 333 denominator — % past
+  // 100 — at seat #334). window null = the Open Era: count alone, no
+  // denominator, no bar.
   const filled = reality.membersTotalNumber;
-  const window = heroSystem.overview.seats.chapterWindow;
-  const pct = filled !== null && window > 0 ? Math.max(1, Math.round((filled / window) * 100)) : null;
+  const chapterFacts = reality.chapterFacts;
+  const window = chapterFacts !== null ? chapterFacts.window : null;
+  const pct =
+    filled !== null && window !== null && window > 0
+      ? Math.min(100, Math.max(1, Math.round((filled / window) * 100)))
+      : null;
 
   return (
     <motion.aside
@@ -168,8 +177,12 @@ export function ProtocolOverviewPanel() {
             <Icon icon={Archive} size="sm" />
             <span className="syn-label text-muted-foreground">{heroSystem.overview.chapter.label}</span>
           </div>
-          <div className="text-base font-semibold text-foreground">{heroSystem.overview.chapter.value}</div>
-          <div className="mt-1 font-mono text-[11px] text-gold">{heroSystem.overview.chapter.meta}</div>
+          <div className="text-base font-semibold text-foreground">
+            {chapterFacts !== null ? chapterFacts.value : liveFigure(null, reality.loading)}
+          </div>
+          {chapterFacts !== null ? (
+            <div className="mt-1 font-mono text-[11px] text-gold">{chapterFacts.meta}</div>
+          ) : null}
         </div>
         <div className="rounded-xl border border-border/80 bg-background/62 p-3.5 dark:border-white/10 dark:bg-white/[0.035]">
           <div className="mb-2 flex items-center justify-between gap-2">
@@ -181,21 +194,28 @@ export function ProtocolOverviewPanel() {
           {filled !== null ? (
             <>
               <div className="font-mono text-xl font-black text-foreground">
-                {filled} <span className="text-sm font-semibold text-muted-foreground">/ {window}</span>
+                {filled}
+                {window !== null ? (
+                  <span className="text-sm font-semibold text-muted-foreground"> / {window}</span>
+                ) : null}
               </div>
-              <div className="mt-2 h-2 rounded-full bg-muted">
-                <div
-                  className="h-full rounded-full bg-gold shadow-[0_0_18px_hsl(var(--gold)/0.5)]"
-                  style={{ width: `${pct ?? 0}%` }}
-                />
-              </div>
+              {pct !== null ? (
+                <div className="mt-2 h-2 rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-gold shadow-[0_0_18px_hsl(var(--gold)/0.5)]"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+              ) : null}
             </>
           ) : (
             <div className="font-mono text-sm font-semibold text-muted-foreground">
               {liveFigure(null, reality.loading)}
             </div>
           )}
-          <div className="mt-1 text-[11px] text-muted-foreground">{heroSystem.overview.seats.chapterNote}</div>
+          {chapterFacts !== null ? (
+            <div className="mt-1 text-[11px] text-muted-foreground">{chapterFacts.note}</div>
+          ) : null}
         </div>
       </div>
 
