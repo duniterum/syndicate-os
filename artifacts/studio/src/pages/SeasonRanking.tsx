@@ -35,6 +35,8 @@ import { useEffect, useState } from "react";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { SeasonMedal } from "@/components/season/SeasonMedal";
 import { CHAPTERS } from "@/lib/chapters";
+import { Button } from "@/components/ui/button";
+import { TABLE_PAGE_SIZE } from "@/lib/pageSize";
 import { ERA_CANON } from "@/config/eraCanon";
 
 type SeasonAxis = "connector" | "capital" | "steward" | "historian";
@@ -124,7 +126,23 @@ export default function SeasonRanking() {
     : null;
   const standings = current?.standings ?? [];
   const podium = standings.filter((r) => r.rank !== null && r.rank <= 3);
+  // maxXp over the WHOLE board (never the page) — bar widths stay comparable
+  // across pages.
   const maxXp = standings.reduce((m, r) => Math.max(m, r.xp), 0);
+
+  // Founder-approved pagination (« ok les 2 » 2026-08-02): same pager as the
+  // public register, the ONE shared 25 constant, DORMANT at or below one page
+  // (today's 15-row board renders byte-identical). Scope switch resets to
+  // page 1. The range line counts board rows (positions), not paid ranks.
+  const [boardPage, setBoardPage] = useState(1);
+  const pageCount = Math.max(1, Math.ceil(standings.length / TABLE_PAGE_SIZE));
+  const currentPage = Math.min(boardPage, pageCount);
+  const visibleStandings = standings.slice(
+    (currentPage - 1) * TABLE_PAGE_SIZE,
+    currentPage * TABLE_PAGE_SIZE,
+  );
+  const rangeStart = standings.length === 0 ? 0 : (currentPage - 1) * TABLE_PAGE_SIZE + 1;
+  const rangeEnd = rangeStart + Math.max(0, visibleStandings.length - 1);
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8 py-10">
@@ -163,7 +181,7 @@ export default function SeasonRanking() {
             <button
               role="tab"
               aria-selected={scope === "season"}
-              onClick={() => setScope("season")}
+              onClick={() => { setScope("season"); setBoardPage(1); }}
               className={`font-mono text-xs rounded-lg border px-4 py-2 ${
                 scope === "season"
                   ? "border-gold/50 bg-gold/10 text-gold"
@@ -175,7 +193,7 @@ export default function SeasonRanking() {
             <button
               role="tab"
               aria-selected={scope === "alltime"}
-              onClick={() => setScope("alltime")}
+              onClick={() => { setScope("alltime"); setBoardPage(1); }}
               className={`font-mono text-xs rounded-lg border px-4 py-2 ${
                 scope === "alltime"
                   ? "border-gold/50 bg-gold/10 text-gold"
@@ -284,7 +302,7 @@ export default function SeasonRanking() {
                     </tr>
                   </thead>
                   <tbody>
-                    {standings.map((r) => (
+                    {visibleStandings.map((r) => (
                       <tr
                         key={r.display}
                         className="border-t border-border"
@@ -377,6 +395,32 @@ export default function SeasonRanking() {
                   </tbody>
                 </table>
               </div>
+              {standings.length > TABLE_PAGE_SIZE ? (
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+                  <div className="syn-caption text-muted-foreground">
+                    Builders {rangeStart}–{rangeEnd} of {standings.length}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      disabled={currentPage <= 1}
+                      onClick={() => setBoardPage(currentPage - 1)}
+                    >
+                      Previous
+                    </Button>
+                    <span className="px-1.5 font-mono text-xs text-muted-foreground">
+                      {currentPage} / {pageCount}
+                    </span>
+                    <Button
+                      variant="outline"
+                      disabled={currentPage >= pageCount}
+                      onClick={() => setBoardPage(currentPage + 1)}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </div>
+              ) : null}
               <p className="text-xs text-muted-foreground mt-3 measure">
                 {scope === "season" ? (
                   <>

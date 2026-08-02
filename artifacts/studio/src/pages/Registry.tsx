@@ -18,6 +18,7 @@ import { Link } from "wouter";
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
+import { TABLE_PAGE_SIZE } from "@/lib/pageSize";
 
 interface RegisterRow {
   seat: number;
@@ -56,6 +57,22 @@ export default function Registry() {
   }, []);
 
   const rows = payload?.state === "LIVE" ? payload.rows : [];
+
+  // Founder-approved pagination (wireframe v2, « ok les 2 » 2026-08-02):
+  // 25/page via the ONE shared constant, the pager row exists ONLY beyond one
+  // page (today's 16 seats render byte-identical, no pager in the DOM), the
+  // register OPENS on page 1 — a register reads from its beginning. The range
+  // line counts register rows (positions); with a contiguous seat set they
+  // coincide with the seat ordinals shown.
+  const [page, setPage] = useState(1);
+  const pageCount = Math.max(1, Math.ceil(rows.length / TABLE_PAGE_SIZE));
+  const currentPage = Math.min(page, pageCount);
+  const visibleRows = rows.slice(
+    (currentPage - 1) * TABLE_PAGE_SIZE,
+    currentPage * TABLE_PAGE_SIZE,
+  );
+  const rangeStart = rows.length === 0 ? 0 : (currentPage - 1) * TABLE_PAGE_SIZE + 1;
+  const rangeEnd = rangeStart + Math.max(0, visibleRows.length - 1);
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8 py-10">
@@ -103,7 +120,7 @@ export default function Registry() {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((r) => (
+                {visibleRows.map((r) => (
                   <tr key={r.seat} className="border-t border-border/50 hover:bg-card/40">
                     <td className="font-mono text-sm font-semibold text-gold py-3.5 pr-4 border-t border-border/40">
                       #{r.seat}
@@ -136,6 +153,32 @@ export default function Registry() {
               </tbody>
             </table>
           </div>
+          {rows.length > TABLE_PAGE_SIZE ? (
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
+              <div className="syn-caption text-muted-foreground">
+                Seats {rangeStart}–{rangeEnd} of {rows.length}
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  disabled={currentPage <= 1}
+                  onClick={() => setPage(currentPage - 1)}
+                >
+                  Previous
+                </Button>
+                <span className="px-1.5 font-mono text-xs text-muted-foreground">
+                  {currentPage} / {pageCount}
+                </span>
+                <Button
+                  variant="outline"
+                  disabled={currentPage >= pageCount}
+                  onClick={() => setPage(currentPage + 1)}
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          ) : null}
           <p className="text-sm text-muted-foreground leading-relaxed measure mt-6">
             {payload!.honesty}
           </p>

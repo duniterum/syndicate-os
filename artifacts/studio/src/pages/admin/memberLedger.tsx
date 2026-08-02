@@ -68,9 +68,9 @@ import {
 // founding roster #1–#8 vs the V3 engine) — it can never impersonate the
 // chapter again.
 import { chapterForSeat } from "@/lib/chapters";
-
-/** Seats per ledger page (the founder's 2026-08-02 pagination ask). */
-const LEDGER_PAGE_SIZE = 25;
+// The ONE shared table page size (2026-08-02 « ok les 2 » — the local 25
+// died; /registry and /season import the same constant).
+import { TABLE_PAGE_SIZE as LEDGER_PAGE_SIZE } from "@/lib/pageSize";
 
 type State =
   | { kind: "loading" }

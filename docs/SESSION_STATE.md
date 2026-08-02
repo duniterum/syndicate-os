@@ -151,8 +151,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >
 > ## (b) IN FLIGHT — nothing queued; the build lane is EMPTY. Next-slice candidates the
 > ## holistic review ranked (nothing blocks, founder picks or says « go » on any):
-> · ~~/registry pagination before ~100 seats~~ — PICKED on the « go »; wireframe v2 HANDED,
->   awaiting the founder's visual verdict (see (c)); the chapter-table half CLOSED in (a5).
+> · ~~/registry pagination before ~100 seats~~ — **BUILT on the founder's « ok les 2 »
+>   (2026-08-02): BOTH public pagers live in code** — /registry AND /season, the approved
+>   wireframe verbatim (range line · Previous · « 1 / N » · Next · Button atom · opens page
+>   1 · scope switch resets in the click), ONE shared TABLE_PAGE_SIZE=25 (lib/pageSize.ts —
+>   the admin's local 25 died, all three import it), DORMANT ≤25 rows: today's 16-seat
+>   register and 15-row board render byte-identical, no pager in the DOM. Board bars stay
+>   scaled to the WHOLE board's max XP, never the page. NOT yet deployed (batchable —
+>   invisible today).
 > · NEW (round-2 review candidates, named per SYSTEM-FIRST): dedupe useSpineAttestation
 >   (per-instance poller — every public page's chrome now runs one; module-level share =
 >   1 poll total) · ~~/status frozen holder-index headline (14 · July 16)~~ — CLOSED same
