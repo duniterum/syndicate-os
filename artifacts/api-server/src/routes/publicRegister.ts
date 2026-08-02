@@ -25,8 +25,8 @@ import { GENESIS_SEAT_BY_WALLET } from "../lib/protocol/historicalFreezeWallets"
 const router: IRouter = Router();
 
 router.get("/registry", (_req, res) => {
-  // The projection is DESIGNED to throw (chapter table exceeded, malformed
-  // wallet, address-safety) — a designed failure answers as the sibling
+  // The projection is DESIGNED to throw (malformed seat or wallet,
+  // address-safety) — a designed failure answers as the sibling
   // routes' JSON envelope, never Express's default HTML 500 (go-live review
   // 2026-07-30: the one public route without a catch leaked stack traces on
   // non-production rigs).

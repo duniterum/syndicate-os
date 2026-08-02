@@ -32,7 +32,6 @@ interface RegisterPayload {
   module: "the-register";
   state: "LIVE" | "DARK";
   seatsTotal: number;
-  chapterCeiling: number;
   rows: RegisterRow[];
   honesty: string;
 }

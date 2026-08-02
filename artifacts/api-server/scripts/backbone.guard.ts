@@ -1774,14 +1774,27 @@ check(
 // source, the chip format shared. Drift in either file = RED BUILD, fix both
 // in one commit (SEASONS_ENGINE §3 is the canon they both mirror).
 {
-  const studioSource = read("../studio/src/lib/chapters.ts");
+  // Comments STRIPPED before matching (hardened 2026-08-02, senior review):
+  // the 5 pinned literals preserved in a comment beside a rewritten live
+  // table must not satisfy the pin. The row count matches the `roman:` KEY
+  // in any quoting/formatting style — a 6th studio chapter cannot hide by
+  // being written differently (type annotations don't match: no quote after
+  // the colon).
+  const studioSource = stripComments(read("../studio/src/lib/chapters.ts"));
   const rowLiteral = (c: (typeof SERVER_CHAPTERS)[number]) =>
     `{ roman: "${c.roman}", name: "${c.name}", startSeat: ${c.startSeat}, endSeat: ${c.endSeat === null ? "null" : c.endSeat} }`;
   const everyRowMirrored = SERVER_CHAPTERS.every((c) => studioSource.includes(rowLiteral(c)));
-  const studioRowCount = (studioSource.match(/\{ roman: "/g) ?? []).length;
+  const studioRowCount = (studioSource.match(/roman\s*:\s*["']/g) ?? []).length;
   const adjacency = SERVER_CHAPTERS.every((c, i) =>
     i === 0 ? c.startSeat === 1 : c.startSeat === (SERVER_CHAPTERS[i - 1]!.endSeat ?? NaN) + 1,
   );
+  // The chip format is pinned on BOTH sides: the server helper's output AND
+  // the studio receipt spine's template literal (client/server cannot import
+  // each other, so the shared format is asserted textually, like the table).
+  const studioReceiptSpine = stripComments(read("../studio/src/lib/protocolCommerceReceipt.ts"));
+  const chipFormatSharedBothSides =
+    chapterChipLabel(SERVER_CHAPTERS[0]!) === "Chapter I · Genesis Signal" &&
+    studioReceiptSpine.includes("`Chapter ${chapter.roman} · ${chapter.name}`");
   check(
     SERVER_CHAPTERS.length === 5 &&
       studioRowCount === 5 &&
@@ -1790,9 +1803,9 @@ check(
       SERVER_CHAPTERS.map((c) => c.roman).join(",") === "I,II,III,IV,V" &&
       SERVER_CHAPTERS[4]!.endSeat === null &&
       CHAPTER_I_CEILING === SERVER_CHAPTERS[0]!.endSeat &&
-      chapterChipLabel(SERVER_CHAPTERS[0]!) === "Chapter I · Genesis Signal",
-    "the server chapter table IS the studio's frozen canon: 5 adjacent chapters from seat 1, Open Era open-ended, every row verbatim in the studio source, one shared chip format",
-    "the chapter tables drifted (server vs studio rows, adjacency, or the chip format) — canon violation: fix BOTH lib/protocol/chapters.ts and studio/src/lib/chapters.ts in ONE commit",
+      chipFormatSharedBothSides,
+    "the server chapter table IS the studio's frozen canon: 5 adjacent chapters from seat 1, Open Era open-ended, every row verbatim in the comment-stripped studio source, the chip format pinned on BOTH sides",
+    "the chapter tables drifted (server vs studio rows, adjacency, or a chip-format side) — canon violation: fix lib/protocol/chapters.ts + studio/src/lib/chapters.ts (+ the receipt spine's chip template) in ONE commit",
   );
 }
 

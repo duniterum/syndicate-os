@@ -37,7 +37,7 @@
 // class (artifact mint, …) adds a kind + builder HERE, in the same slice that
 // introduces it — one spine, never parallel receipt models.
 
-import { CHAPTERS, chapterForSeat } from "@/lib/chapters";
+import { chapterForSeat } from "@/lib/chapters";
 import { formatRawUnits } from "@/lib/rawUnits";
 
 /** Every protocol commerce class that can print a ticket. Extend per slice. */
@@ -392,6 +392,6 @@ export function buildMembershipReceipt(
   };
 }
 
-// Re-exported so the ticket's chapter chip and the living coordinate can be
-// asserted against the same frozen canon the rest of the app reads.
-export { CHAPTERS };
+// (2026-08-02: the CHAPTERS re-export died — nothing ever imported it from
+// here; every reader imports @/lib/chapters directly, and the chip template
+// below is pinned cross-artifact by backbone.guard's mirror pin.)

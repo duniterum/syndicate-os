@@ -41,11 +41,7 @@
  * the full address is what makes a row verifiable).
  */
 
-import {
-  GENESIS_SIGNAL_SEAT_CEILING,
-  chapterForSeat,
-  chapterChipLabel,
-} from "../lib/protocol/chapters";
+import { chapterForSeat, chapterChipLabel } from "../lib/protocol/chapters";
 import { shortForm } from "./feedProjection";
 import { addressUrl } from "../canon/the-syndicate/chain/chain-registry";
 
@@ -75,7 +71,7 @@ export interface PublicRegisterRow {
   readonly shortForm: string;
   /** The row's Snowtrace address page, built server-side from canon. */
   readonly explorerUrl: string;
-  /** The seat's chapter (from the ONE ceiling declaration). */
+  /** The seat's chapter (from the ONE chapter table — lib/protocol/chapters). */
   readonly chapter: string;
   /** Capital-axis rung, or null when the seat has no walked standing yet. */
   readonly rung: string | null;
@@ -85,11 +81,13 @@ export interface PublicRegisterRow {
   readonly joinedIsoDay: string | null;
 }
 
+// (2026-08-02: the `chapterCeiling` payload field died — it asserted the dead
+// partial-table model ("the ceiling of the known table") on a public payload
+// after the table became complete and open-ended; no consumer ever read it.)
 export interface PublicRegisterModel {
   readonly module: "the-register";
   readonly state: "LIVE" | "DARK";
   readonly seatsTotal: number;
-  readonly chapterCeiling: number;
   readonly rows: readonly PublicRegisterRow[];
   readonly honesty: string;
 }
@@ -129,7 +127,6 @@ export function buildPublicRegister(input: {
       module: "the-register",
       state: "DARK",
       seatsTotal: 0,
-      chapterCeiling: GENESIS_SIGNAL_SEAT_CEILING,
       rows: [],
       honesty: HONESTY_LINE,
     };
@@ -211,7 +208,6 @@ export function buildPublicRegister(input: {
     module: "the-register",
     state: "LIVE",
     seatsTotal: rows.length,
-    chapterCeiling: GENESIS_SIGNAL_SEAT_CEILING,
     rows,
     honesty: HONESTY_LINE,
   };
