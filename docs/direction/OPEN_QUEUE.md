@@ -1,5 +1,17 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-02 (SCELLÉ) — LE CYCLE `22296fd` EST EN PRODUCTION.** Rapport Replit collé au
+> chat : 27/27 blobs · identité d'octets ×2 (entry `index-DKL6gF2w.js` = `833b8750…beaa` ·
+> console `OperatorConsole-DpddDTuI.js` = `abae0d8b…80ac`) · 3/3 contrôles · backbone ok:2,
+> `failed: 0` STABLE (~15 min), tête 91 803 028 → 91 803 639 (`partial: 1` = premier cycle
+> post-boot habituel, auto-réparé). CONTRE-LU indépendamment : le HTML servi référence cet
+> entry exact. La zone /admin n'étant pas capturable sans session opérateur, la chaîne de
+> preuve du contrôle ② est : identité bit-à-bit du chunk console + les mesures pixel du rig
+> local sur les MÊMES octets (14/14 ancres bleues 12px mesurées avant commit) — un coup d'œil
+> connecté du fondateur confirme à l'œil quand il veut. **LE BACKLOG DE DÉPLOIEMENT EST VIDE.**
+> **EN ATTENTE DU FONDATEUR (rien d'autre ne bloque) :** ① les 3 décisions du croquis réserves ;
+> ② les 4 croquis composition ; ③ « téléchargé » à Replit pour dump.sql.gz.
+
 > **▶ 2026-08-02 — LA FAMILLE ADMIN PRÉ-MASQUÉE EST FERMÉE (la tranche en file du 31-07,
 > construite sur le « go » du fondateur).** Le dernier coin non couvert de la loi adresse du
 > 2026-07-25 : le serveur envoie maintenant l'adresse COMPLÈTE + la forme courte + le lien

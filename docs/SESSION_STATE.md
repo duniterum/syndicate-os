@@ -2,7 +2,7 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-02 — RESUME HERE. **PROD = `2abd713` (sealed 2026-07-31). THE DEPLOY BACKLOG HOLDS ONE BATCHABLE SLICE** — the pre-masked admin address family (this commit; api + studio ride the next deploy together; prod is unbroken meanwhile).
+> # ▶ 2026-08-02 (SEALED) — RESUME HERE. **PROD = `22296fd` — SEALED (Replit report in the 2026-08-02 chat: 27/27 blobs · byte identity ×2, entry `index-DKL6gF2w.js` = `833b8750…beaa`, console `OperatorConsole-DpddDTuI.js` = `abae0d8b…80ac` · 3/3 checks · backbone ok:2, failed:0 stable, head 91 803 028 → 91 803 639 · the `partial:1` is the usual first post-boot cycle, self-healed). INDEPENDENTLY CROSS-READ: the live HTML references that exact entry. THE DEPLOY BACKLOG IS EMPTY.** The address law now covers its last corner in prod: the admin/member payloads serve full wallet + short + canon link, and the console renders the blue anchor (Replit could not screenshot /admin without an operator session — the proof chain is byte identity of the console chunk + the local rig's pixel measurements on the same bytes; a connected founder glance confirms by eye whenever he likes).
 >
 > ## (a) WHAT LANDED THIS SESSION (registry flips: NONE owed — no live↔future move)
 > · **The pre-masked family CLOSED** (the 2026-07-31 queued slice, on the founder's « go in the
@@ -34,7 +34,8 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > · The 3 reserves-wireframe decisions (3×2 grid · gold logo · weekend freshness) → then the
 >   LINK.e/XAUt0 reserves build (feeds verified on-chain: LINK/USD `0x49cc…de9a`, XAU/USD
 >   `0x1F41…515B`). · The 4 composition wireframes. · "téléchargé" to Replit for dump.sql.gz.
-> · **The deploy** carrying this slice: 🚀 DEPLOY — BATCHABLE (instruction in the 2026-08-02 chat).
+> · ~~The deploy carrying this slice~~ — DONE same day: cycle `22296fd` sealed (see the seal
+>   line above); the backlog is empty again.
 
 > # ▶ 2026-07-31 (HANDOFF — superseded by the 2026-08-02 block above). **PROD = `2abd713` (SEALED ×2 today); main = `e77ae13` + this handoff, CLEAN TREE, ALL PUSHED, main = origin/main (measured at handoff). THE DEPLOY BACKLOG IS EMPTY.**
 >
