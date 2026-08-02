@@ -2,7 +2,23 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-02 (SEALED) — RESUME HERE. **PROD = `22296fd` — SEALED (Replit report in the 2026-08-02 chat: 27/27 blobs · byte identity ×2, entry `index-DKL6gF2w.js` = `833b8750…beaa`, console `OperatorConsole-DpddDTuI.js` = `abae0d8b…80ac` · 3/3 checks · backbone ok:2, failed:0 stable, head 91 803 028 → 91 803 639 · the `partial:1` is the usual first post-boot cycle, self-healed). INDEPENDENTLY CROSS-READ: the live HTML references that exact entry. THE DEPLOY BACKLOG IS EMPTY.** The address law now covers its last corner in prod: the admin/member payloads serve full wallet + short + canon link, and the console renders the blue anchor (Replit could not screenshot /admin without an operator session — the proof chain is byte identity of the console chunk + the local rig's pixel measurements on the same bytes; a connected founder glance confirms by eye whenever he likes).
+> # ▶ 2026-08-02 (HANDOFF — end of day) — RESUME HERE. **PROD = `7a916a3` — SEALED (the day's SECOND seal; Replit report in the 2026-08-02 chat: 31/31 blobs · byte identity ×2, entry `index-BBE4X3MN.js` = `62c556d3…9c7b`, console `OperatorConsole-6y4TAiZq.js` = `e2c1e636…af78` · 5/5 checks · prod's first cycle performed the rig-rehearsed transition VERBATIM: « spine GROWN_PROVENANCE_REBUILD — run #6, 16 records (14 replaced) » then « unchanged », attestation 16 = 16 · the public hero says « snapshot 16 as of 2026-08-02 » · /contracts states Vault 70% · Liquidity 20% · Operations 10% · backbone ok:2, failed:0 stable). main = origin/main, CLEAN TREE. THE DEPLOY BACKLOG IS EMPTY. ZERO HAND-FED FIGURES REMAIN ON ANY SURFACE — every member/source count converges from the chain automatically within one backbone cycle.**
+>
+> ## THE DAY IN ONE READ (two seals: `22296fd` then `7a916a3` — the autonomy day)
+> ① The pre-masked admin family CLOSED (the founder's « go ») — six operator/member reads
+> serve full wallet + short + Snowtrace link, the address fail-close scans retired, the blue
+> anchor everywhere via ONE atom. ② The founder caught prod at 14 seats/« 1 » source while the
+> chain held 16/5 (« ça doit marcher automatiquement ») — root cause: the spine was fed only by
+> a manual script (3 readers, 0 served writers). The VERIFIED pipeline (determinism ×2 + live
+> memberCount reconcile + one transaction) now runs EVERY backbone cycle; "Referral sources"
+> counts the on-chain SourceCreated acts; /admin/members paginated. ③ His four-hat senior
+> review (4 agents) + same-day hardening: the PoC-proven guard-laundering hole sealed by a
+> self-proving helper, the provenance key widened to the hash surface, version-skew honesty,
+> the fossil sweep. ④ His last two decisions: the hero attestation now RIDES THE SPINE every
+> cycle (« July 16 » is dead forever) and the source roster IS the chain (store (tx, logIndex)
+> pairs → cached immutable receipts; Performance lists all 5 with owners, 5 created = 5 known).
+> ⑤ « Where is the 20%? » — the pool card now states its leg: 70 · 20 · 10 all said on screen.
+> Commit trail: `git log --oneline 91b7dce..7a916a3`.
 >
 > ## (a) WHAT LANDED THIS SESSION (registry flips: NONE owed — no live↔future move)
 > · **The pre-masked family CLOSED** (the 2026-07-31 queued slice, on the founder's « go in the
@@ -80,7 +96,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   MEASURED: totalKnown 5 = sourcesCreated 5, five rows, five owners, all ACTIVE — the
 >   reconciling sentence correctly silent at zero gap.
 >
-> ## (b) IN FLIGHT — nothing queued. The build lane is EMPTY until a founder decision below.
+> ## (b) IN FLIGHT — nothing queued; the build lane is EMPTY. Next-slice candidates the
+> ## holistic review ranked (nothing blocks, founder picks or says « go » on any):
+> · /registry pagination before ~100 seats + EXTEND THE CHAPTER TABLE BEFORE SEAT #334 (at the
+>   current ceiling the projection fails closed and darkens the WHOLE register — a dated
+>   tripwire, publicRegister.ts:44). · Server-side windowing of the member-ledger payload
+>   toward ~300 members (the client pager cannot fix payload weight). · Retire/bridge the
+>   static /api/holder-index endpoint (API consumers still get the old file; every RENDERED
+>   surface now reads the spine attestation instead — the hero no longer reads it).
 > · Accepted-known (unchanged): source-status asOf ratchet stays memorial · printable
 >   ReceiptTicket keeps its QR as the verify affordance · payloadDiscipline's ADDRESS_LEAK_RE
 >   carries a written reconcile-before-re-enable note (2026-08-02).
@@ -89,14 +112,11 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > · The 3 reserves-wireframe decisions (3×2 grid · gold logo · weekend freshness) → then the
 >   LINK.e/XAUt0 reserves build (feeds verified on-chain: LINK/USD `0x49cc…de9a`, XAU/USD
 >   `0x1F41…515B`). · The 4 composition wireframes. · "téléchargé" to Replit for dump.sql.gz.
-> · FROM THE 2026-08-02 REVIEW, two decisions: ① "Referral sources" semantics — created-ever
->   (registry reading: 5; a revoked source still counts) vs active-now; ② the public
->   holder-index attestation ("verified 14 · 2026-07-16" on the hero while live says 16 — the
->   LAST hand-fed member figure): the recommended next slice makes it ride the spine's verified
->   runs. Also recommended next: the source-authority unification (decode sourceId/status into
->   the lifecycle rows; SourceCreated becomes the roster all three source figures import).
-> · ~~The deploy carrying this slice~~ — DONE same day: cycle `22296fd` sealed (see the seal
->   line above); the backlog is empty again.
+> · ~~The two 2026-08-02 review decisions~~ — BOTH DECIDED AND BUILT same day (« it must be
+>   always up to date!! » + « do your best »): the attestation rides the spine (sealed in
+>   `7a916a3`) and the source semantics are created-ever with per-row status (the roster).
+> · His connected glance at /admin (16 rows · 5 sources · pagination) — the seal's usual last
+>   metre; nothing blocks on it.
 
 > # ▶ 2026-07-31 (HANDOFF — superseded by the 2026-08-02 block above). **PROD = `2abd713` (SEALED ×2 today); main = `e77ae13` + this handoff, CLEAN TREE, ALL PUSHED, main = origin/main (measured at handoff). THE DEPLOY BACKLOG IS EMPTY.**
 >

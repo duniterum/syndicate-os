@@ -1,5 +1,19 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-02 (SCELLÉ №2 DU JOUR) — LE CYCLE `7a916a3` EST EN PRODUCTION : L'AUTONOMIE EST
+> LIVE.** Rapport Replit collé au chat : 31/31 blobs (un renommage inversé par l'outillage
+> corrigé à la main, sha `1cefdd4` conforme, vérifié via l'API contents) · identité d'octets ×2
+> (entry `index-BBE4X3MN.js` = `62c556d3…9c7b` · console `OperatorConsole-6y4TAiZq.js` =
+> `e2c1e636…af78`) · **5/5 contrôles** : le premier cycle prod a fait EXACTEMENT la transition
+> répétée au rig (« spine GROWN_PROVENANCE_REBUILD — run #6, 16 records (14 replaced) » puis
+> « unchanged », attestation 16 = 16) · le héros public dit « snapshot 16 as of 2026-08-02 »
+> (zéro « July 16 » servi) · /contracts énonce Vault 70% · Liquidity 20% · Operations 10% ·
+> le jalon « Five referral sources created » scellé dans l'activité live · backbone ok:2,
+> failed:0 stable, tête 91 809 851 → 91 810 451 (partial:1 = premier cycle post-boot, deux flux
+> treasury transitoires auto-rattrapés). **LE BACKLOG DE DÉPLOIEMENT EST VIDE. PLUS UN SEUL
+> CHIFFRE NOURRI À LA MAIN NE RESTE SUR AUCUNE SURFACE.** Réserve habituelle : le coup d'œil
+> connecté du fondateur sur /admin (16 lignes · 5 sources · pagination) reste le dernier mètre.
+
 > **▶ 2026-08-02 (TRANCHE 4 — LES DEUX DÉCISIONS TRANCHÉES : PLUS UN SEUL CHIFFRE NOURRI À LA
 > MAIN.)** Le fondateur a tranché (« it must be always up to date!! » + « do your best ») :
 > ① **L'ATTESTATION PUBLIQUE SUIT LA COLONNE VERTÉBRALE.** La ligne « verified 14 · as of
