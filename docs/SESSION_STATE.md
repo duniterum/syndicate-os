@@ -234,7 +234,17 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   component; the bell's MemberNotificationsPanel is the shipped idiom) · own rows from
 >   fetchOwnPurchases + fetchOwnIntroductions + fetchMemberStanding, NEVER
 >   wagmi-filtering the public feed · three honest states per the contract · Protocol
->   untouched and never walled.**
+>   untouched and never walled.** **✅ BUILT + RIG-VERIFIED 15/15 (same night): lens
+>   present, Protocol default gold-selected, facets in the SAME row (the wireframe's
+>   lensrow), Mine click → the signed-out invitation + CTA with ZERO data rows and ALL
+>   public zones hidden (header/facets/feed/methodology), ?lens=mine deep link written
+>   and cleaned on return, flip-back instant with feed state preserved. The guard battery
+>   taught the component three house rules mid-build (ONE serif per page · type-eyebrow
+>   class · focus rings) — each OBEYED, never allowlisted. Gates: typecheck 0 · 30 guards
+>   0 · build 0. NOT measured (said honestly): the signed-IN ledger render needs a real
+>   SIWE session in a browser — covered by typecheck + the sealed readback types + the
+>   founder's connected glance (the introductions-tab precedent). AWAITING DEPLOY
+>   (batchable — client-only, additive).**
 > · **③ THE REFERRER KIT / SHAREBILITY ARC** (engraved #8 — M2+M3, the acquisition loop;
 >   mockups exist, think-300 law applies).
 > · Then the engraved 16-move sequence resumes in its own order (BACKLOG.html).

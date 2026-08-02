@@ -17,7 +17,7 @@
 // Overlap dedupes by (kind · transaction anchor · log index) — the window's
 // richer sentence wins. Never a silent gap, never proof of absence.
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "wouter";
 import { Anchor, ExternalLink, RefreshCw } from "lucide-react";
 import {
@@ -51,6 +51,15 @@ import { CHRONICLE_REGISTER } from "@/config/chronicleRegister";
 import { DEPLOYMENT_REGISTRY } from "@/config/deploymentRegistry";
 import { CHAPTERS } from "@/lib/chapters";
 import { eraForSeatCount } from "@/config/eraCanon";
+import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
+
+// A1 — the Mine lens's ledger is a WALLET module reached ONLY through this
+// flag-gated lazy import (guard-access-state rule 15: no static wallet import
+// in a public component; the notification bell's page is the shipped idiom).
+// Flag off → the lens control itself is not rendered: never a dead control.
+const ActivityMineLedger = WALLET_SESSION_PREVIEW_ENABLED
+  ? lazy(() => import("@/wallet/ActivityMineLedger"))
+  : null;
 
 // The §8 event lexicon lives in backboneFeedClient (one mapping, shared with
 // the hero's live mini-feed since M1-b — no copy invented twice).
@@ -348,6 +357,23 @@ export function LiveActivityFeed({
       const url = new URL(window.location.href);
       if (f === "all") url.searchParams.delete("facet");
       else url.searchParams.set("facet", f);
+      window.history.replaceState(null, "", url.toString());
+    }
+  };
+  // A1: the LENS is deep-linkable (?lens=mine) — the ?facet= pattern verbatim.
+  // Protocol is the default and the only value when wallet sessions are off.
+  const [lens, setLens] = useState<"protocol" | "mine">(() => {
+    if (typeof window === "undefined" || ActivityMineLedger === null) return "protocol";
+    return new URLSearchParams(window.location.search).get("lens") === "mine"
+      ? "mine"
+      : "protocol";
+  });
+  const selectLens = (l: "protocol" | "mine") => {
+    setLens(l);
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      if (l === "protocol") url.searchParams.delete("lens");
+      else url.searchParams.set("lens", "mine");
       window.history.replaceState(null, "", url.toString());
     }
   };
@@ -1030,7 +1056,9 @@ export function LiveActivityFeed({
           the sentence at the reading floor → 16px → the era band, which now has
           its own padding so it reads as a distinct object, and 32px of air before
           the facet bar so the header stops colliding with the controls. */}
-      <div className="mb-8" data-testid="activity-header-band">
+      {/* A1: hidden under the Mine lens (the approved frame 2 draws the lens
+          row + the member's ledger only — protocol stats are Protocol's). */}
+      <div className="mb-8" data-testid="activity-header-band" hidden={lens === "mine"}>
         {liveSeatCount !== null ? (
           // TYPE HARMONY (founder catch 2026-07-22): the page has ONE serif
           // display — the hero h1. This figure is a STAT and speaks the
@@ -1089,10 +1117,39 @@ export function LiveActivityFeed({
         ) : null}
       </div>
 
+      {/* THE LENS (A1, founder-approved wireframe + « go » 2026-08-02): a
+          segmented control — never tabs (§S1) — switching the page's ONE
+          grammar between the public pulse and the member's own ledger.
+          Protocol is the default and is NEVER walled; the Mine side mounts
+          the lazy wallet ledger. Rendered only when wallet sessions are
+          enabled (no dead control). */}
+      <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-3">
+      {ActivityMineLedger !== null ? (
+        <div data-testid="activity-lens">
+          <div className="inline-flex overflow-hidden rounded-lg border border-border/60">
+            {(["protocol", "mine"] as const).map((l) => (
+              <button
+                key={l}
+                type="button"
+                onClick={() => selectLens(l)}
+                className={`min-h-11 px-5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  lens === l
+                    ? "bg-gold/15 text-gold shadow-[inset_0_0_0_1px_hsl(var(--gold)/0.45)]"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                data-testid={`activity-lens-${l}`}
+              >
+                {l === "protocol" ? "Protocol" : "Mine"}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
       {/* Z2 — the facet bar: primaries + More; counts are the server's own
-          whole-history figures (never client arithmetic over a page). */}
-      {showFilters ? (
-        <div className="mb-4 flex flex-wrap items-center gap-2" data-testid="activity-facets">
+          whole-history figures (never client arithmetic over a page). One
+          row with the lens (the approved wireframe's lensrow). */}
+      {lens === "protocol" && showFilters ? (
+        <div className="flex flex-1 flex-wrap items-center gap-2" data-testid="activity-facets">
           {FILTERS.filter(
             (f) =>
               f.primary ||
@@ -1155,12 +1212,25 @@ export function LiveActivityFeed({
           </Button>
         </div>
       ) : null}
+      </div>
+
+      {lens === "mine" && ActivityMineLedger !== null ? (
+        <Suspense
+          fallback={
+            <p className="py-6 text-sm text-muted-foreground">Opening your ledger…</p>
+          }
+        >
+          <ActivityMineLedger />
+        </Suspense>
+      ) : null}
 
       {/* PLACEMENT (founder order 2026-07-22, "tu mets en bas les
           milestones" — his word closes my rail argument): the feed runs
           full width; the milestones account renders BELOW it, full width,
           then the methodology. Fluid, no page cap (S7-d). */}
-      <div>
+      {/* A1: the public zones HIDE (never unmount) under the Mine lens — the
+          feed's fetch state survives the switch, flipping back is instant. */}
+      <div hidden={lens === "mine"}>
       {/* Z3 — THE FEED FIRST: newest → oldest, date-grouped, paged. */}
       {/* Gated on the SERVED attempt, never on `scan === null` (fixed
           2026-07-26). The served history is the page's substance and needs no
@@ -1315,7 +1385,7 @@ export function LiveActivityFeed({
 
       {/* Z4+Z5 — the canonical account + the methodology, FULL WIDTH below
           the work (founder placement order, 2026-07-22). */}
-      <div className="mt-8">
+      <div className="mt-8" hidden={lens === "mine"}>
       {served?.milestones ? (
         <MilestonesPanel
           milestones={served.milestones}
