@@ -1,5 +1,23 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-02 (TRANCHE 4 — LES DEUX DÉCISIONS TRANCHÉES : PLUS UN SEUL CHIFFRE NOURRI À LA
+> MAIN.)** Le fondateur a tranché (« it must be always up to date!! » + « do your best ») :
+> ① **L'ATTESTATION PUBLIQUE SUIT LA COLONNE VERTÉBRALE.** La ligne « verified 14 · as of
+> July 16 » du héros (le DERNIER chiffre nourri à la main du protocole) lit désormais la
+> dernière run VÉRIFIÉE de la colonne — publiée par la lane à CHAQUE cycle sur le payload de
+> statut public (memberTotal · onchainMemberCount · verifiedAtIso · runId, sur les DEUX chemins,
+> y compris le court-circuit) ; le hook unique useHeroReality la préfère sur les QUATRE surfaces
+> de rendu, le snapshot statique ne restant que le repli honnête d'amorçage. Épingle RED-first
+> dans backbone.guard (capturée rouge avant le build). ② **LE ROSTER SOURCES = LA CHAÎNE.**
+> « Referral sources » garde la lecture registre (créées depuis toujours — décision sémantique
+> actée : une source révoquée reste créée ; son statut se lit par ligne) et le panneau
+> Performance gagne l'Univers 3 : TOUTES les sources créées on-chain, propriétaire inclus, via
+> la loi de lecture de chaîne §③ (l'index dit où regarder — les paires (tx, logIndex) du store —
+> notre nœud dit ce qui s'y trouve — une poignée de reçus immuables, cachés à vie de process).
+> Zéro re-scan, zéro migration ; les 5 lignes apparaissent avec statuts live ; totalKnown
+> rejoint le compteur créées et la phrase de réconciliation ne s'affiche plus que si un vrai
+> écart existe. Mesures et scellement au chat.
+
 > **▶ 2026-08-02 (TRANCHE 3 — LA REVUE SENIOR « toutes casquettes, 3-5 agents » ET SON DURCISSEMENT.)**
 > Sur l'ordre du fondateur, 4 relecteurs seniors indépendants (serveur · client/lois design ·
 > intégrité des gardes · vision holistique) ont relu TOUTE la journée, puis chaque trouvaille

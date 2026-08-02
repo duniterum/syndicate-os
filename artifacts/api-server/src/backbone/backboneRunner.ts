@@ -175,11 +175,19 @@ export interface BackboneStatusSnapshot {
       readonly attributedRows: number;
       readonly distinctSources: number;
     } | null;
-    /** ③d: the continuity spine lane (2026-08-02) — counts + action words only. */
+    /** ③d: the continuity spine lane (2026-08-02) — counts + action words only.
+     * The attestation is the latest VERIFIED run's public facts — the hero's
+     * always-fresh "verified N" line reads it (founder order 2026-08-02). */
     readonly continuitySpine: {
       readonly ok: boolean;
       readonly changed: boolean;
       readonly line: string;
+      readonly attestation: {
+        readonly memberTotal: number;
+        readonly onchainMemberCount: number;
+        readonly verifiedAtIso: string;
+        readonly runId: number;
+      } | null;
     } | null;
     readonly readModel: ActivityAddressSafeReport;
   } | null;
@@ -823,6 +831,7 @@ async function runCycle(): Promise<string | null> {
           ok: spineRefresh.ok,
           changed: spineRefresh.changed,
           line: spineRefresh.line,
+          attestation: spineRefresh.attestation,
         }
       : null,
     readModel: report,

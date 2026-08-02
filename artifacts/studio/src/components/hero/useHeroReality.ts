@@ -13,6 +13,7 @@ import { useGetProtocolReality, useGetHolderIndex } from "@workspace/api-client-
 // the same WETH.e holding read `0.026552` here and `0.026551` on /activity.
 // See lib/amountFormat.ts for the rule; guard-one-figure keeps it single.
 import { formatBaseUnits } from "@/lib/amountFormat";
+import { useSpineAttestation } from "@/lib/useSpineAttestation";
 
 /** 70/20/10 routed share of a raw USDC base-unit aggregate (exact bigint math). */
 function routedShare(rawAggregate: string | null, bps: bigint): string | null {
@@ -137,14 +138,23 @@ export function useHeroReality(): HeroReality {
   const v3Emitted =
     liveMemberCount !== null && genesisOffset !== null ? liveMemberCount - genesisOffset : null;
 
-  // Verified snapshot attestation (point-in-time) — the divergence, not the headline.
+  // Verified attestation (point-in-time) — the divergence line, not the
+  // headline. AMENDED 2026-08-02 (founder order: « it must be always up to
+  // date » — the committed snapshot froze at 14/Jul-16 while the chain held
+  // 16): the spine lane re-verifies membership EVERY backbone cycle and
+  // publishes its latest VERIFIED run on the public status payload; that
+  // attestation is preferred, and the committed snapshot remains only the
+  // honest boot fallback (before the first cycle's status is readable).
+  const spine = useSpineAttestation();
   const snapMemberTotal = holderIndex.data?.memberTotal;
-  const snapshotMemberTotal =
+  const staticSnapshotTotal =
     typeof snapMemberTotal === "number" && Number.isFinite(snapMemberTotal) && snapMemberTotal >= 0
       ? snapMemberTotal
       : null;
   const builtAt = holderIndex.data?.provenance?.builtAt;
-  const snapshotAsOf = typeof builtAt === "string" && builtAt.length > 0 ? builtAt : null;
+  const staticSnapshotAsOf = typeof builtAt === "string" && builtAt.length > 0 ? builtAt : null;
+  const snapshotMemberTotal = spine?.memberTotal ?? staticSnapshotTotal;
+  const snapshotAsOf = spine?.verifiedAtIso ?? staticSnapshotAsOf;
   const membersDiverged =
     liveMemberCount !== null &&
     snapshotMemberTotal !== null &&

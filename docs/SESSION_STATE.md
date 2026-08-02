@@ -66,6 +66,20 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   surface now converges ≤ 1 cycle EXCEPT the public holder-index attestation (still hand-fed,
 >   see founder-pending below).
 >
+> ## (a4) FOURTH SLICE — THE TWO DECISIONS LANDED: ZERO HAND-FED FIGURES REMAIN
+> · **The public attestation rides the spine** (founder: « it must be always up to date!! »):
+>   the lane publishes its latest VERIFIED run (memberTotal · onchain · verifiedAtIso · runId)
+>   on BOTH paths into the public status payload; useHeroReality (the ONE choke point feeding
+>   all four render sites) prefers it; the committed snapshot is boot-fallback only. RED-first
+>   pin in backbone.guard. MEASURED: status serves run #6 (16 = 16 on-chain) and the public
+>   hero renders « snapshot 16 as of 2026-08-02 » on all four sites — July 16 is dead.
+> · **The source roster = the chain** (founder: « do your best »): semantics DECIDED as
+>   created-ever (a revoked source stays created; status reads per row); the Performance
+>   panel gains Universe 3 — ALL created sources with owner wallets via the chain-reading law
+>   §③ (stored (tx, logIndex) pairs → a handful of cached immutable receipts; zero rescan).
+>   MEASURED: totalKnown 5 = sourcesCreated 5, five rows, five owners, all ACTIVE — the
+>   reconciling sentence correctly silent at zero gap.
+>
 > ## (b) IN FLIGHT — nothing queued. The build lane is EMPTY until a founder decision below.
 > · Accepted-known (unchanged): source-status asOf ratchet stays memorial · printable
 >   ReceiptTicket keeps its QR as the verify affordance · payloadDiscipline's ADDRESS_LEAK_RE

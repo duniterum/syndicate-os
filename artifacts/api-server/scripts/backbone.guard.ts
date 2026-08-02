@@ -617,6 +617,19 @@ ok.push("scanner passes plain block numbers / counters (no false positive)");
     "runner: the continuity spine lane runs in the cycle",
     "backboneRunner.ts does not run refreshContinuitySpine — the spine must refresh automatically every cycle (founder order 2026-08-02)",
   );
+  // THE PUBLIC ATTESTATION RIDES THE SPINE (founder order 2026-08-02: « it
+  // must be always up to date » — the hero's "verified N as of DATE" was the
+  // LAST hand-fed figure, frozen at 14/Jul-16 while the chain held 16). The
+  // lane publishes the latest VERIFIED run's facts (memberTotal ·
+  // onchainMemberCount · verifiedAtIso · runId) on BOTH paths, and the
+  // runner forwards them into the public status payload the hero reads.
+  check(
+    /attestation/.test(spineSrc) &&
+      /verifiedAtIso/.test(spineSrc) &&
+      /attestation/.test(runnerSrc),
+    "spine lane: the verified-run attestation is published on both paths and forwarded by the runner",
+    "the spine attestation drifted — continuitySpineRefresh must publish {memberTotal, onchainMemberCount, verifiedAtIso, runId} on the short-circuit AND grown paths, and backboneRunner must forward it into the status payload (the hero's always-fresh 'verified N' line depends on it)",
+  );
   const buildScript = stripComments(read("scripts/member-continuity-build.ts"));
   check(
     /from "\.\.\/src\/backbone\/continuitySpineRefresh"/.test(buildScript) &&

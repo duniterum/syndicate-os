@@ -17,7 +17,7 @@
 import { randomUUID } from "node:crypto";
 import { AUTH_EXPOSURE_FLAG } from "../auth/authExposure";
 import { explorerUrlForAddress } from "../canon/the-syndicate/contracts/syndicate-config";
-import { countSourcesCreated } from "../lib/protocol/sourceCreatedCount";
+import { countSourcesCreated, readSourceRoster } from "../lib/protocol/sourceCreatedCount";
 import {
   DEFAULT_TIMEOUT_MS,
   makeFetchTransport,
@@ -188,6 +188,25 @@ export async function listSourcePerformance(actor: {
     const transport = makeFetchTransport(resolveEndpoints(), timeoutMs);
     const probe = await probeChain(transport);
     const statusReadOk = probe.chainIdOk;
+
+    // Universe 3 (2026-08-02, the founder's « il y a plus que 1 » made law):
+    // EVERY source created on-chain — the roster folded from the store's own
+    // lifecycle rows + their cached receipts (chain-reading law §③: the
+    // index says where to look, our node says what is there). Zero-purchase,
+    // zero-request sources appear the day the founder signs them, owner
+    // wallet included; their status flows through the same live reads as
+    // every other row. A roster miss degrades honestly — the union simply
+    // stays at universes 1+2 this pass and the created-count line keeps the
+    // gap visible on screen.
+    try {
+      for (const r of await readSourceRoster(transport)) {
+        if (!byId.has(r.sourceIdHex)) {
+          byId.set(r.sourceIdHex, { ownerWallet: r.ownerWallet, lastBlock: null });
+        }
+      }
+    } catch {
+      // store read failed — served universes stay honest without the roster.
+    }
 
     // Latest-activity FIRST, then the cap — a truncation must drop the
     // stalest rows, never an arbitrary insertion-order subset, and the

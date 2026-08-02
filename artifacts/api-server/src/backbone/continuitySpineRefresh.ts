@@ -665,11 +665,27 @@ export async function persistVerifiedBuild(
 // The cycle entry — cheap short-circuit, then the full verified pipeline.
 // ---------------------------------------------------------------------------
 
+/**
+ * The latest VERIFIED run's public attestation (founder order 2026-08-02:
+ * « it must be always up to date » — the hero's "verified N as of DATE" line
+ * was the last hand-fed figure in the protocol). Counts + iso only —
+ * address-free by construction.
+ */
+export interface SpineAttestation {
+  readonly memberTotal: number;
+  readonly onchainMemberCount: number;
+  readonly verifiedAtIso: string;
+  readonly runId: number;
+}
+
 export interface SpineRefreshSummary {
   readonly ok: boolean;
   readonly changed: boolean;
   /** Address-safe one-liner for the lane status (counts + action words). */
   readonly line: string;
+  /** The latest VERIFIED run's attestation — the freshest one this cycle
+   * could establish; null only before the first run ever persists. */
+  readonly attestation: SpineAttestation | null;
 }
 
 export async function refreshContinuitySpine(): Promise<SpineRefreshSummary> {
@@ -682,7 +698,11 @@ export async function refreshContinuitySpine(): Promise<SpineRefreshSummary> {
   // would become ambiguous the day a second chain's rows coexist.
   const latestRows = await dbm.db
     .select({
+      id: dbm.memberContinuityVerificationRun.id,
       memberTotal: dbm.memberContinuityVerificationRun.memberTotal,
+      onchainMemberCount:
+        dbm.memberContinuityVerificationRun.onchainMemberCount,
+      builtAt: dbm.memberContinuityVerificationRun.builtAt,
       inputSaleEventCount:
         dbm.memberContinuityVerificationRun.inputSaleEventCount,
       inputMaxSaleEventRawId:
@@ -694,6 +714,21 @@ export async function refreshContinuitySpine(): Promise<SpineRefreshSummary> {
     .orderBy(desc(dbm.memberContinuityVerificationRun.id))
     .limit(1);
   const latest = latestRows[0] ?? null;
+  // The latest memorialized run IS an attestation — carry it on every path
+  // so the public "verified N" line never regresses to a stale snapshot
+  // while a growth cycle is still converging.
+  const priorAttestation: SpineAttestation | null =
+    latest === null
+      ? null
+      : {
+          memberTotal: latest.memberTotal,
+          onchainMemberCount: latest.onchainMemberCount,
+          verifiedAtIso:
+            latest.builtAt instanceof Date
+              ? latest.builtAt.toISOString()
+              : String(latest.builtAt),
+          runId: latest.id,
+        };
   if (latest !== null) {
     const curRows = await dbm.db
       .select({
@@ -712,6 +747,7 @@ export async function refreshContinuitySpine(): Promise<SpineRefreshSummary> {
         ok: true,
         changed: false,
         line: `spine unchanged (${latest.memberTotal} records, provenance stable)`,
+        attestation: priorAttestation,
       };
     }
   }
@@ -725,7 +761,12 @@ export async function refreshContinuitySpine(): Promise<SpineRefreshSummary> {
       "gate/determinism/DDL preflight not green";
     // Failed builds are never memorialized — the lane reports and the next
     // cycle retries (an RPC blip on the live memberCount read lands here).
-    return { ok: false, changed: false, line: `spine build not green: ${blocked}` };
+    return {
+      ok: false,
+      changed: false,
+      line: `spine build not green: ${blocked}`,
+      attestation: priorAttestation,
+    };
   }
   // Timestamp-coverage gate (2026-08-02 hardening): wait for enrichment
   // rather than freezing a NULL into a memorialized row (the persist would
@@ -736,6 +777,7 @@ export async function refreshContinuitySpine(): Promise<SpineRefreshSummary> {
       ok: false,
       changed: false,
       line: `spine waiting on block timestamps (${cov.recordsWithTimestamp}/${build.ddl.records.length} covered) — enrichment fills them next cycle`,
+      attestation: priorAttestation,
     };
   }
   const outcome = await persistVerifiedBuild(build.ddl);
@@ -743,5 +785,18 @@ export async function refreshContinuitySpine(): Promise<SpineRefreshSummary> {
     outcome.action === "REPLAY_NOOP"
       ? `spine replay no-op (${outcome.dbRecordCount} records)`
       : `spine ${outcome.action} — run #${outcome.runId}, ${outcome.recordsWritten} records (${outcome.recordsDeleted} replaced), now ${outcome.dbRecordCount}`;
-  return { ok: true, changed: outcome.action !== "REPLAY_NOOP", line };
+  const attestation: SpineAttestation | null =
+    outcome.action === "REPLAY_NOOP"
+      ? priorAttestation
+      : outcome.runId !== null && build.ddl.run.onchainMemberCount !== null
+        ? {
+            memberTotal: build.ddl.run.memberTotal,
+            onchainMemberCount: build.ddl.run.onchainMemberCount,
+            // The verification moment (ops metadata, never chain truth) —
+            // the same posture as the runner's finishedIso stamp.
+            verifiedAtIso: new Date().toISOString(),
+            runId: outcome.runId,
+          }
+        : priorAttestation;
+  return { ok: true, changed: outcome.action !== "REPLAY_NOOP", line, attestation };
 }
