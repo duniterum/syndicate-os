@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wireframe — /activity · the Mine|Protocol lens (A1)</title>
+<style>
+  :root{--bg:hsl(224 71% 4%);--fg:hsl(213 31% 91%);--border:hsl(216 34% 17%);--card:hsl(222 47% 7%);
+  --muted:hsl(215.4 16.3% 56.9%);--gold:hsl(42 92% 60%);--proof:rgb(13 204 242);
+  --serif:'Instrument Serif',Georgia,serif;--sans:'Work Sans',system-ui,sans-serif;--mono:'IBM Plex Mono',Menlo,monospace}
+  *{margin:0;box-sizing:border-box} body{background:#0b0e14;color:var(--fg);font-family:var(--sans);padding:32px 16px 64px}
+  .wf-title{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);max-width:1240px;margin:0 auto 8px}
+  .wf-note{font-size:14px;color:var(--muted);max-width:1240px;margin:0 auto 24px;line-height:1.5}
+  .frame{background:var(--bg);border:1px solid var(--border);border-radius:8px;max-width:1240px;margin:0 auto 36px;overflow:hidden}
+  .frame-label{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);padding:10px 16px;border-bottom:1px dashed var(--border);background:var(--card)}
+  .page{padding:36px 28px}
+  .eyebrow{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.14em;font-weight:600;color:var(--gold)}
+  h1{font-family:var(--serif);font-weight:400;font-size:34px;margin-top:4px}
+  .lede{color:var(--muted);font-size:15px;max-width:68ch;margin-top:8px;line-height:1.55}
+
+  /* THE NEW ELEMENT — the segmented lens (§S1: a segmented control, never tabs) */
+  .lensrow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-top:22px}
+  .lens{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+  .lens button{font-family:var(--sans);font-size:14px;font-weight:600;min-height:44px;padding:0 22px;background:transparent;color:var(--muted);border:0}
+  .lens button.on{background:hsl(42 92% 60% / .14);color:var(--gold);box-shadow:inset 0 0 0 1px hsl(42 92% 60% / .45)}
+  .facets{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--muted)}
+  .chip.on{border-color:hsl(42 92% 60%/.4);color:var(--gold);background:hsl(42 92% 60%/.08)}
+
+  table{width:100%;border-collapse:collapse;margin-top:18px}
+  td{border-top:1px solid var(--border);padding:12px 14px 12px 0;font-size:14px;white-space:nowrap}
+  .d{font-family:var(--mono);color:var(--muted);font-size:13px}
+  .a{font-family:var(--mono);color:var(--proof)} .a::after{content:" ↗";font-size:12px}
+  .amt{font-family:var(--mono);font-weight:600}
+  .k{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .gold{color:var(--gold)}
+  .state{border:1px dashed var(--border);border-radius:10px;padding:28px;margin-top:18px;max-width:60ch}
+  .state h3{font-family:var(--serif);font-weight:400;font-size:22px}
+  .state p{color:var(--muted);font-size:14px;line-height:1.6;margin-top:8px}
+  .cta{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:6px;background:var(--gold);color:#1a1405;font-weight:600;font-size:14px;margin-top:14px}
+  .contract{max-width:1240px;margin:0 auto;border:1px solid var(--border);border-radius:8px;padding:22px;background:var(--card)}
+  .contract h2{font-family:var(--serif);font-weight:400;font-size:22px;margin-bottom:10px}
+  .contract li{font-size:14px;line-height:1.65;margin-left:18px;color:var(--fg)}
+</style>
+</head>
+<body>
+
+<div class="wf-title">Wireframe · /activity — the [Protocol | Mine] lens (A1) · 2026-08-02</div>
+<p class="wf-note">One new element on the page: the segmented lens in the header row. Frame 1 = Protocol
+(today's page, untouched, stays the public default). Frame 2 = Mine, signed in — your own on-chain ledger.
+Frame 3 = Mine, signed out — the honest conversion state. Facets, feed grammar, milestones and the
+methodology expander stay exactly as deployed.</p>
+
+<!-- ══ FRAME 1 · PROTOCOL (the default — today's page + the lens) ══ -->
+<div class="frame">
+  <div class="frame-label">Frame 1 · Protocol selected — today's newsroom, byte-for-byte, plus the lens</div>
+  <div class="page">
+    <div class="eyebrow">The public heartbeat</div>
+    <h1>Live activity.</h1>
+    <p class="lede">Every line is a chain event with its receipt — written when it happened, verifiable now.</p>
+    <div class="lensrow">
+      <div class="lens"><button class="on">Protocol</button><button>Mine</button></div>
+      <div class="facets">
+        <span class="chip on">All</span><span class="chip">Seats</span><span class="chip">Treasury</span>
+        <span class="chip">Burns</span><span class="chip">Referrals</span><span class="chip">Milestones</span>
+      </div>
+    </div>
+    <table>
+      <tr><td class="d">2026-08-02</td><td>Seat <span class="amt gold">#16</span> written on-chain</td><td class="a">0xf06d…3fbc</td><td class="k">verify</td></tr>
+      <tr><td class="d">2026-07-30</td><td>Vault swap — <span class="amt">2 AVAX → 0.003144 oz GOLD</span></td><td class="a">0xe9b6…2029</td><td class="k">verify</td></tr>
+      <tr><td class="d">2026-07-27</td><td>Vault purchase — <span class="amt">1.0042 LINK</span></td><td class="a">0x4cd1…88aa</td><td class="k">verify</td></tr>
+    </table>
+    <p class="wf-note" style="margin:14px 0 0;max-width:none">… the feed continues exactly as today (Load more · milestones rail · methodology expander) …</p>
+  </div>
+</div>
+
+<!-- ══ FRAME 2 · MINE, SIGNED IN — the personal ledger ══ -->
+<div class="frame">
+  <div class="frame-label">Frame 2 · Mine selected, signed in — YOUR rows only, same grammar, every line verifiable</div>
+  <div class="page">
+    <div class="lensrow">
+      <div class="lens"><button>Protocol</button><button class="on">Mine</button></div>
+      <div class="k">Seat #14 · Chapter I</div>
+    </div>
+    <table>
+      <tr><td class="d">2026-07-20</td><td>Your purchase — <span class="amt">$5.00 USDC</span> · 500 SYN received</td><td class="a">0xa30f…fb50</td><td class="k">receipt · verify</td></tr>
+      <tr><td class="d">2026-07-18</td><td>Your introduction sealed — <span class="amt gold">durable</span> · commission paid in the buyer's own transaction</td><td class="a">0x77b2…4c19</td><td class="k">verify</td></tr>
+      <tr><td class="d">2026-07-13</td><td>Your seat <span class="amt gold">#14</span> written on-chain</td><td class="a">0x91ce…07ad</td><td class="k">receipt · verify</td></tr>
+    </table>
+    <p class="wf-note" style="margin:14px 0 0;max-width:none">Rows come from your own sealed readbacks (purchases · introductions · your seat) — never from
+    filtering the public feed. Open ticket → /receipts, as already shipped.</p>
+  </div>
+</div>
+
+<!-- ══ FRAME 3 · MINE, SIGNED OUT — honest conversion, never a wall on Protocol ══ -->
+<div class="frame">
+  <div class="frame-label">Frame 3 · Mine selected, signed out — the honest invitation (Protocol stays one click away)</div>
+  <div class="page">
+    <div class="lensrow">
+      <div class="lens"><button>Protocol</button><button class="on">Mine</button></div>
+    </div>
+    <div class="state">
+      <h3>Your own on-chain history lives here.</h3>
+      <p>Every purchase, every introduction, every receipt that belongs to your seat — shown to you alone,
+      each line verifiable on the explorer. Sign in with your wallet to open your ledger. No email, no
+      password — the chain is the account.</p>
+      <span class="cta">Member sign-in</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ THE CONTRACT ══ -->
+<div class="contract">
+  <h2>What this wireframe binds</h2>
+  <ul>
+    <li><strong>One new element:</strong> the [Protocol | Mine] SEGMENTED CONTROL (the §S1 contract — never tabs), gold on the selected side, 44px targets, in the header row. Nothing else on the page moves.</li>
+    <li><strong>Protocol stays the public default and is NEVER walled</strong> — signed out or in, today's newsroom renders untouched (facets, cursor pagination, milestones, methodology).</li>
+    <li><strong>Mine is strictly own-row</strong>: your purchases + receipt facts, your introductions, your seat — from the sealed sign-in readbacks, never by filtering the public feed against a connected address. Full wallet + short form + explorer link on your own rows (the address law).</li>
+    <li><strong>Signed out, Mine shows the honest invitation</strong> — never a teaser of someone else's data. Three honest states when signed in: loading skeleton · empty-with-next-step · error-with-retry.</li>
+    <li><strong>Zero new API</strong> — every datum already serves today (measured in the recon dossier). Client-only slice; the wallet code loads dynamically (the public page carries no wallet weight until Mine asks).</li>
+    <li><strong>Deep links:</strong> ?lens=mine joins the existing ?facet= grammar. Full-screen law holds — no page cap. Both themes at the preview gate.</li>
+    <li><strong>The C3 brick:</strong> Mine renders as your calm personal ledger — the exact surface the member cockpit arc composes on next.</li>
+  </ul>
+</div>
+
+</body>
+</html>

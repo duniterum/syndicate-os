@@ -219,6 +219,15 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   feeds verified on-chain (LINK/USD `0x49cc…de9a` · XAU/USD `0x1F41…515B`); same slice
 >   adds the two /contracts rows (Vault LINK · Vault GOLD); admin panel automatic.
 > · **② A1 — My Activity, the Mine|Protocol lens** (the engraved sequence's #1; unlocks C3).
+>   **RECON DONE** (map: docs/reference/A1_LENS_RECON-2026-08-02.json — ZERO new API needed:
+>   Mine = the sealed own-row readbacks (member-purchases · introduction-rows ·
+>   member-standing); build site LiveActivityFeed.tsx; segmented control per the §S1
+>   contract; Protocol never walled; dynamic wallet import, never wagmi-filtering the
+>   public feed). **WIREFRAME HANDED 2026-08-02**
+>   (docs/design/activity-mine-protocol-lens-wireframe.html — 3 frames: Protocol
+>   untouched · Mine signed-in ledger · Mine signed-out honest invitation; probed: 12px
+>   floor clean, 7×44px targets, zero data rows in the signed-out frame). **His visual
+>   verdict unlocks the build (the BACKLOG A1 meta: ⚑ wireframe + preview (Founder)).**
 > · **③ THE REFERRER KIT / SHAREBILITY ARC** (engraved #8 — M2+M3, the acquisition loop;
 >   mockups exist, think-300 law applies).
 > · Then the engraved 16-move sequence resumes in its own order (BACKLOG.html).
