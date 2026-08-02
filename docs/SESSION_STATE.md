@@ -257,6 +257,15 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   scale, actions stack, 375px verified at the preview gate**) → **B = M2-v2 per-seat
 >   living unfurls** → C /join referral card · E press kit · D K4 (his reserved
 >   decision). **ONE BATCHED DEPLOY at the end (his order): A1 + M3 + M2v2 together.**
+>   **✅ A = M3 BUILT (`5e18f0a`, 2026-08-02 night): STORY_FINAL_SEAT canon in chapters.ts
+>   (outside the pinned block — mirror 243 green) · KitFacts.vanity (whole-story-only) ·
+>   the collectible trio in the standing-trio idiom (serif majesty · seniority sentence
+>   with exact trimmed arithmetic · entry written line · &via=card QR) · three
+>   KIT_ARTIFACTS entries (download/share/geometry adopt automatically) · the gallery
+>   section story-first (the mobile clause) · the « Your collectible » door on
+>   MemberYourSeat. Guards taught ×2 more (focus ring + facet-chip touch idiom) — obeyed,
+>   ledgers never raised. Gates: tc 0 · 30 guards 0 · build 0. NEXT: B (M2-v2 unfurls),
+>   then the batched deploy.**
 > · Then the engraved 16-move sequence resumes in its own order (BACKLOG.html).
 > · BACKGROUND lane (no decision needed, buildable between slices on any « go »): the
 >   member-ledger server windowing (scoped by the reviews) · the spine-poller dedupe.
