@@ -179,7 +179,23 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   anything), then **CHECK ALL SIX amounts on-chain vs what prod serves** (vault AVAX ·
 >   BTC.b · WETH.e · USDC · LINK.e · XAUt0 — measure each balance live, compare with
 >   /api/protocol/reality, report any gap to the founder WITH the numbers, never ship a
->   card whose figure he has not seen verified). Rides
+>   card whose figure he has not seen verified). **✅ CHAIN-VERIFICATION DONE (2026-08-02
+>   ~11:30Z, dossier in chat): XAUt0 token RECOVERED from the founder's gold swap tx
+>   `0xe9b6…2029` @91,571,070 and chain-verified = `0x2775d5105276781b4b85ba6ea6a6653beed1dd32`
+>   (name/symbol XAUt0, decimals 6 VERIFIED) · LINK/USD feed FULL = `0x49ccd9ca821EfEab2b98c60dC60F518E765EDe9a`
+>   ("LINK / USD", 8 dec, $8.3168 fresh) · XAU/USD feed FULL = `0x1F41EF93dece881Ad0b98082B2d44D3f6F0C515B`
+>   ("XAU / USD", 8 dec, $4,102.61 — NOTE: it published 3 rounds SUNDAY morning, so the
+>   market-hours window is a sound BOUND but never assume weekend silence) · ALL FOUR served
+>   balances = chain EXACTLY (base-unit match) · LINK.e vault 1.004221438348408136 · XAUt0
+>   vault 3,144 raw = 0.003144 oz (~$12.90) · **THE AVAX ANSWER: the figure IS right** —
+>   wei-perfect ledger closes to ZERO: +0.2 advance +4.5398… purchase −2.0 gold swap
+>   −0.005381892304654755 gas (11 signed txs incl. 1 failed) = 2.734485733297386639 served
+>   exactly; his memory was the PURCHASE, the delta is his own gold swap + gas · LINK.e↔LINK/USD
+>   = the shipped BTC.b↔BTC/USD pattern ✓ · ⚠ ADDRESS-POISONING artifact in vault tokentx
+>   (fake "AVAX" ERC-20 `0xc3d4…cc92` mimicking the Founder's address) — build immune
+>   (pinned contracts); future explorer-reading lanes must key on pinned addresses, never
+>   symbol. PENDING HIS ONE WORD: the AVAX card option (A raw live · C = A + a meta line
+>   naming the gas-token fact — RECOMMENDED C).** Rides
 >   docs/design/reserves-band-6-assets-mockup.html —
 >   feeds verified on-chain (LINK/USD `0x49cc…de9a` · XAU/USD `0x1F41…515B`); same slice
 >   adds the two /contracts rows (Vault LINK · Vault GOLD); admin panel automatic.
