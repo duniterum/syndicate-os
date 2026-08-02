@@ -22,21 +22,11 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import QRCode from "react-qr-code";
 import { buildJoinLink } from "@/lib/joinLink";
-import {
-  Check,
-  Copy,
-  ExternalLink,
-  Facebook,
-  Linkedin,
-  Mail,
-  MessageCircle,
-  Send,
-  Share2,
-  Twitter,
-} from "lucide-react";
+import { Check, Copy, ExternalLink, Share2 } from "lucide-react";
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
-import { shareTargets, type ShareTargetDef } from "@/lib/shareTargets";
+import { pickShareTargets } from "@/lib/shareTargets";
+import { shareTargetIcons } from "@/lib/shareTargetIcons";
 import { brandAssets } from "@/config/brand";
 import { readArtifactBalance } from "@/lib/chainReads";
 import { payingSourceId } from "@/lib/sourceIdentity";
@@ -158,18 +148,10 @@ function ZoneRule() {
 // by those platforms' own rules) → "Share with other apps" (the OS sheet,
 // kept and renamed; the ONLY channel that carries the ticket image) —
 // feature-detected, never a dead button.
+// Order is this surface's decision; resolution and the icon map are THE
+// shared authorities (pickShareTargets · shareTargetIcons, 2026-08-03).
 const NETWORK_ORDER = ["x", "whatsapp", "telegram", "linkedin", "facebook", "email"];
-const NETWORK_ICONS: Record<string, typeof Share2> = {
-  x: Twitter,
-  whatsapp: MessageCircle,
-  telegram: Send,
-  linkedin: Linkedin,
-  facebook: Facebook,
-  email: Mail,
-};
-const ORDERED_TARGETS: ShareTargetDef[] = NETWORK_ORDER.map(
-  (id) => shareTargets.find((t) => t.id === id),
-).filter((t): t is ShareTargetDef => t !== undefined);
+const ORDERED_TARGETS = pickShareTargets(NETWORK_ORDER);
 
 export default function ReceiptTicket({
   model,
@@ -634,7 +616,7 @@ export default function ReceiptTicket({
           </button>
           <div className="grid grid-cols-3 gap-2 mt-3">
             {ORDERED_TARGETS.map((t) => {
-              const Icon = NETWORK_ICONS[t.id] ?? Share2;
+              const Icon = shareTargetIcons[t.id] ?? Share2;
               return (
                 <button
                   key={t.id}

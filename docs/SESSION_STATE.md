@@ -2,7 +2,43 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-03 (HANDOFF) — RESUME HERE. **PROD = `c2b1168` — THE BATCH IS SEALED
+> # ▶ 2026-08-03 (SESSION 2 — the desktop-share slice) — RESUME HERE. **His « go » on
+> the named slice: BUILT AND GREEN, awaiting his PREVIEW + deploy word. PROD stays
+> `c2b1168`. DEPLOY BACKLOG: this one slice — 🚀 DEPLOY, BATCHABLE (client-only,
+> additive, fail-closed; prod unbroken meanwhile) — but it is HIS desktop catch, so
+> firing it solo is equally his call.**
+>
+> ## (a) WHAT LANDED — K1.5, the kit's desktop intent trio (registry flips: NONE owed):
+> · Every kit action row now carries X · Telegram · WhatsApp prefilled (his named set
+>   AND order) BETWEEN «Copy my link» and the OS sheet — R-BIND-2's engraved order;
+>   the sheet stays the only PNG-carrying channel. Desktop SHARES instead of explaining.
+> · The twin search collapsed the share family to ONE authority per fact: the
+>   target→icon map lived as THREE private literals (ShareMenu · ReceiptTicket ·
+>   ReferralCommissionsPanel) → `lib/shareTargetIcons.ts`; the ordered-ids resolution
+>   was rebuilt privately TWICE → `pickShareTargets` in lib/shareTargets.ts; the
+>   row-shape intent button → `ShareIntentIconButton` atom (hit area AT the 44px floor
+>   via after:-inset-1 — an atom is never debt — house focus ring carried).
+> · RED FIRST held: `guard-share-intents` (in the blocking chain) written and run
+>   BEFORE the fix — 18 named FAILURES captured → 634/634 after. It pins the one-map /
+>   one-resolver laws, the trio + his order, the R-BIND-2 row order, URL-free
+>   SHARE_TEXT, and EXECUTES the three real builders against a fixture.
+> · Gates: full studio chain green (touch-target ratchet paid: commissions 5→4,
+>   focus debt 8→7, both remeasured by the guards' own output) · typecheck · build +
+>   prerender + admin-dist green. Rig-measured signed-out: /receipt/{tx} share surface
+>   serves all six intents with the CORRECT lucide glyph per target from the one map,
+>   native honestly absent where navigator.share is absent; /referral/tools signed-out
+>   state intact; zero console errors. NOT measured (said honestly): the CONNECTED kit
+>   row — needs the founder's wallet; that is exactly his preview gate.
+>
+> ## (b) IN FLIGHT: nothing in code. HIS NEXT ACT: preview the kit row (rig URL handed
+> ## in chat, desktop + 375px) → his deploy word (solo or batch). Then the order
+> ## continues: C (/join referral-showcase) · E (public press kit) · FIRSTS engine;
+> ## background: member-ledger windowing · spine-poller dedupe.
+>
+> ## (c) FOUNDER-PENDING: preview + deploy word on K1.5 · the 4 composition wireframes ·
+> ## « téléchargé » (dump.sql.gz) · K4 no-seat promoter · AW-5 (the 2 artifacts).
+
+> # ▶ 2026-08-03 (HANDOFF) — superseded by the block above. **PROD = `c2b1168` — THE BATCH IS SEALED
 > (Replit 6/6, 2026-08-03: entry `index-B903mBG_.js` = `a0353ba8…f94e` · the /activity
 > Mine|Protocol lens live, ?lens=mine invitation zero-data · the collectible trio in the
 > served bundle · the seat-3 unfurl pixel-inspected « by Seat #3 · Chapter I —

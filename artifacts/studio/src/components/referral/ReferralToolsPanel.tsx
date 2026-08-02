@@ -12,6 +12,12 @@
 // the harness fit probe from ONE source, so a future format joins every
 // affordance automatically.
 //
+// V3 (the founder's desktop catch, 2026-08-03): every action row carries the
+// intent trio (X · Telegram · WhatsApp — his named set and order) between
+// Copy and the OS sheet, per R-BIND-2's engraved order: copy first → intents
+// → the sheet LAST (the only channel that carries the PNG). Desktop now
+// SHARES instead of explaining; guard-share-intents pins the family.
+//
 // Truth laws: every figure on an artifact is the member's own session read
 // (seat via member-standing, durable/rung via source standing) — a missing
 // fact renders as absent, never invented. Export is the proven client
@@ -22,6 +28,8 @@ import { useEffect, useRef, useState, type ReactNode, type RefObject } from "rea
 import { useAccount } from "wagmi";
 import { ChevronDown, Download, Share2 } from "lucide-react";
 import { buildJoinLink } from "@/lib/joinLink";
+import { pickShareTargets } from "@/lib/shareTargets";
+import { ShareIntentIconButton } from "@/components/referral/ShareIntentIconButton";
 import { toSvg } from "html-to-image";
 import { Card } from "@/components/ui/card";
 import { StatusPill } from "@/components/status-pill/StatusPill";
@@ -76,6 +84,14 @@ function triggerDownload(href: string, name: string) {
   a.download = name;
   a.click();
 }
+
+// The ONE share text — three consumers (the OS sheet, its link-only fallback,
+// the intent trio). URL-FREE by the shareTargets contract: every intent
+// places the member's link ITSELF (whatsapp's builder inlines it after).
+const SHARE_TEXT = "The Syndicate — an on-chain introduction record.";
+// The founder-named trio (2026-08-03), his set AND his order — resolved
+// through THE resolver, never privately.
+const KIT_INTENTS = pickShareTargets(["x", "telegram", "whatsapp"]);
 
 // ── a scaled live preview of a full-size artifact node ──────────────────────
 function ScaledPreview({
@@ -172,6 +188,15 @@ function ArtifactActions({
       >
         {copied ? "Copied ✓" : "Copy my link"}
       </button>
+      {KIT_INTENTS.map((t) => (
+        <ShareIntentIconButton
+          key={t.id}
+          target={t}
+          url={joinLink}
+          text={SHARE_TEXT}
+          testid={`button-kit-intent-${t.id}-${spec.id}`}
+        />
+      ))}
       {nativeShareAvailable ? (
         <button
           type="button"
@@ -193,7 +218,7 @@ function ArtifactActions({
                 if (canShareFiles) {
                   await navigator.share({
                     title: "The Syndicate",
-                    text: "The Syndicate — an on-chain introduction record.",
+                    text: SHARE_TEXT,
                     url: joinLink,
                     files: [file],
                   });
@@ -202,7 +227,7 @@ function ArtifactActions({
                   // hand the picture as a download (honest, never silent).
                   await navigator.share({
                     title: "The Syndicate",
-                    text: "The Syndicate — an on-chain introduction record.",
+                    text: SHARE_TEXT,
                     url: joinLink,
                   });
                   triggerDownload(png, spec.filename);

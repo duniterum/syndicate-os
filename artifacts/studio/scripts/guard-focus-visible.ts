@@ -184,7 +184,7 @@ const ALLOWLIST: Record<string, string> = {
   "components/referral/MemberReferralDashboard.tsx":
     "1 · one explorer <a>. NOTE: this file already holds TAB_FOCUS_STYLE — the founder's tab tint — so it is the natural home of the shared focus constant the sweep should export",
   "components/referral/NotificationComposerFields.tsx": "2 · 2 composer <button>s",
-  "components/referral/ReferralCommissionsPanel.tsx": "8 · the largest single debt: 7 <button> (filters/actions) + 1 <a> on the commissions panel",
+  "components/referral/ReferralCommissionsPanel.tsx": "7 · 6 <button> (filters/actions) + 1 <a> on the commissions panel (was 8; the share row's intent button moved into the ShareIntentIconButton atom, which carries the house ring — 2026-08-03)",
   "components/referral/ReferralIntroductionsPanel.tsx": "1 · an introductions <a>",
   "components/referral/ReferralLinkPanel.tsx": "3 · 2 copy/share <button>s + 1 <a>",
   "components/referral/ReferralOverviewPanel.tsx": "1 · an overview <Link>",

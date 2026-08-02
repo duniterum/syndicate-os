@@ -5,18 +5,10 @@
 // platform's own share dialog via its official intent URL.
 
 import { useState } from "react";
-import { Share2, Copy, Check, Twitter, Facebook, MessageCircle, Send, Linkedin, Mail } from "lucide-react";
+import { Share2, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { shareTargets } from "@/lib/shareTargets";
-
-const ICONS: Record<string, typeof Share2> = {
-  x: Twitter,
-  facebook: Facebook,
-  whatsapp: MessageCircle,
-  telegram: Send,
-  linkedin: Linkedin,
-  email: Mail,
-};
+import { shareTargetIcons } from "@/lib/shareTargetIcons";
 
 export function ShareMenu({ url, text }: { url: string; text: string }) {
   const [open, setOpen] = useState(false);
@@ -44,7 +36,7 @@ export function ShareMenu({ url, text }: { url: string; text: string }) {
       {open ? (
         <div className="absolute right-0 z-20 mt-2 w-44 rounded-md border border-border bg-popover p-1 shadow-md">
           {shareTargets.map((t) => {
-            const Icon = ICONS[t.id] ?? Share2;
+            const Icon = shareTargetIcons[t.id] ?? Share2;
             return (
               <button
                 key={t.id}

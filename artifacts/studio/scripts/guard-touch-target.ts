@@ -176,7 +176,7 @@ const MEMBER_ADMIN_DEBT: Record<string, string> = {
   "components/referral/NotificationComposerFields.tsx":
     "(2) two 32px composer controls (h-8) in the broadcast composer (2026-07-26).",
   "components/referral/ReferralCommissionsPanel.tsx":
-    "(5) the commissions table's own control set: four h-9 = 36px buttons and one h-8 = 32px (2026-07-26).",
+    "(4) the commissions table's own control set (counted 5 on 2026-07-26; the share row's intent buttons moved into the ShareIntentIconButton atom — hit area AT the 44px floor — and this guard's own ratchet remeasured 4, 2026-08-03).",
   "components/referral/ReferralIntroductionsPanel.tsx": "(1) an explorer anchor, 16px line box (2026-07-26).",
   "components/referral/ReferralOverviewPanel.tsx": "(1) a 20px 'see all' link (2026-07-26).",
   "components/referral/ReferralToolsPanel.tsx": "(5) five h-9 = 36px tool buttons (2026-07-26).",

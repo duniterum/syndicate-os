@@ -43,3 +43,12 @@ export const shareTargets: ShareTargetDef[] = [
     build: (url, text) => `mailto:?subject=${enc("The Syndicate")}&body=${enc(`${text} ${url}`)}`,
   },
 ];
+
+/** THE one ordered-ids resolver (2026-08-03): two sites had each privately
+ * rebuilt `ORDER.map(id => shareTargets.find(…)).filter(…)` — a third was on
+ * its way. Order is the caller's decision; resolution is this module's. */
+export function pickShareTargets(ids: readonly string[]): ShareTargetDef[] {
+  return ids
+    .map((id) => shareTargets.find((t) => t.id === id))
+    .filter((t): t is ShareTargetDef => t !== undefined);
+}

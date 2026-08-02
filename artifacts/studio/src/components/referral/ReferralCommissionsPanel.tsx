@@ -29,21 +29,13 @@
 // carries the link on url-param intents — the R-CARDS rider's lesson).
 
 import { useMemo, useState } from "react";
-import {
-  ChevronDown,
-  Facebook,
-  Linkedin,
-  Mail,
-  MessageCircle,
-  Send,
-  Share2,
-  Twitter,
-} from "lucide-react";
+import { ChevronDown, Share2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { StatusPill } from "@/components/status-pill/StatusPill";
 import { ladderProgress } from "@/config/connectorLadder";
 import { referralProgram } from "@/config/referralProgram";
-import { shareTargets, type ShareTargetDef } from "@/lib/shareTargets";
+import { pickShareTargets } from "@/lib/shareTargets";
+import { ShareIntentIconButton } from "@/components/referral/ShareIntentIconButton";
 import {
   dateLabel,
   humanReadFailure,
@@ -91,18 +83,11 @@ function ZoneRule() {
 
 // ── The share door (§7): the receipt's permanent public page is the share
 // artifact — the painted preview card already lives at the link. ────────────
+// Order is this surface's decision; resolution, the icon map and the button
+// itself are THE shared authorities (pickShareTargets · shareTargetIcons ·
+// ShareIntentIconButton, 2026-08-03).
 const SHARE_ORDER = ["x", "whatsapp", "telegram", "linkedin", "facebook", "email"] as const;
-const SHARE_ICONS: Record<(typeof SHARE_ORDER)[number], typeof Twitter> = {
-  x: Twitter,
-  whatsapp: MessageCircle,
-  telegram: Send,
-  linkedin: Linkedin,
-  facebook: Facebook,
-  email: Mail,
-};
-const ORDERED_TARGETS: ShareTargetDef[] = SHARE_ORDER.map(
-  (id) => shareTargets.find((t) => t.id === id),
-).filter((t): t is ShareTargetDef => t !== undefined);
+const ORDERED_TARGETS = pickShareTargets(SHARE_ORDER);
 
 function ShareRow({ tx }: { tx: string }) {
   // The rotation lives in the LINK: each share act hands the current face,
@@ -141,25 +126,19 @@ function ShareRow({ tx }: { tx: string }) {
         {copied ? "Copied" : "Copy link"}
       </button>
       {ORDERED_TARGETS.map((t) => {
-        const Icon = SHARE_ICONS[t.id as (typeof SHARE_ORDER)[number]];
+        // The shareTargets contract, decided at the call site: url-param
+        // intents get URL-FREE text; text-only intents carry it inline.
+        const [intentUrl, intentText] =
+          t.id === "whatsapp" || t.id === "email" ? ["", textInline] : [pageUrl, textBare];
         return (
-          <button
+          <ShareIntentIconButton
             key={t.id}
-            type="button"
-            aria-label={`Share on ${t.label}`}
-            onClick={() => {
-              const [intentUrl, intentText] =
-                t.id === "whatsapp" || t.id === "email"
-                  ? ["", textInline]
-                  : [pageUrl, textBare];
-              window.open(t.build(intentUrl, intentText), "_blank", "noopener,noreferrer");
-              advance();
-            }}
-            className="h-9 w-9 rounded-lg border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-muted transition-colors flex items-center justify-center"
-            data-testid={`button-commission-share-${t.id}-${tx.slice(2, 10)}`}
-          >
-            <Icon className="h-4 w-4" aria-hidden="true" />
-          </button>
+            target={t}
+            url={intentUrl}
+            text={intentText}
+            testid={`button-commission-share-${t.id}-${tx.slice(2, 10)}`}
+            onOpened={advance}
+          />
         );
       })}
       {nativeShareAvailable ? (

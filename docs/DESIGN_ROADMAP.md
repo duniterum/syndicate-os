@@ -617,7 +617,16 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   (géométrie · boîtes carrées · planchers · chevauchements · centrage QR).
   **+0 couleur brute non documentée** (+1 exception taguée : le blanc de la
   zone de silence du SVG).
-- [x] **K2 LE CÔTÉ INVITÉ (2026-07-20, maquette approuvée « GO AND GO-LIVE »,
+- [x] **K1.5 LE TRIO D'INTENTS DESKTOP (2026-08-03, la prise du fondateur —
+  « Sheet unavailable » sur desktop)** : chaque rangée d'actions du kit porte
+  X · Telegram · WhatsApp pré-remplis (SON ordre) entre Copy et la feuille OS
+  (l'ordre gravé R-BIND-2 ; la feuille reste le SEUL canal du PNG) — le
+  desktop PARTAGE au lieu d'expliquer. La recherche-jumeaux a réduit la
+  famille à UNE autorité par fait : carte icônes (3 copies privées →
+  shareTargetIcons) · résolution (pickShareTargets) · bouton-rangée
+  (ShareIntentIconButton — zone tactile au plancher 44px via after:-inset-1,
+  anneau focus maison) ; épinglé par guard-share-intents (RED 18 → 634/634).
+  **+0 couleur brute**.
   commit 0134cc6)** : le lien /join?source= s'ouvre avec SA carte peinte
   (serveur, vrai emblème, adresse courte de l'introducteur, registre
   approuvé verbatim) + la bande honnête « Introduced by 0x… — never changes

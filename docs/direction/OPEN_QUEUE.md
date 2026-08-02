@@ -1,5 +1,13 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-03 (SESSION 2) — K1.5 CONSTRUIT sur son « go » : le trio d'intents desktop
+> (X · Telegram · WhatsApp, SON ordre) sur chaque rangée du kit, entre Copy et la feuille
+> OS (l'ordre R-BIND-2). RED-first prouvé (guard-share-intents : 18 échecs → 634/634),
+> portes vertes, build vert, surface reçus re-mesurée au rig (6 intents, bonnes icônes,
+> détection honnête). EN ATTENTE DE LUI : ① la PREVIEW de la rangée du kit avec SON
+> wallet (URL du rig au chat, desktop + 375px) ; ② son mot de déploiement — BATCHABLE,
+> mais c'est SA prise desktop, tirer seul est aussi son choix. PROD reste `c2b1168`.**
+
 > **▶ 2026-08-03 — 6ᵉ sceau : PROD = `c2b1168` (Replit 6/6), le batch A1 + M3 + M2-v2 +
 > `1a1629e` est LIVE (A1 n'est plus « en vol ») ; backlog de déploiement VIDE ; prochaine
 > tranche (sa prise du jour, vérifiée NON-régression) : les boutons d'intent desktop du
