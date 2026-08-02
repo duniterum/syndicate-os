@@ -35,7 +35,6 @@ import {
   readActivationRequestWallet,
 } from "./activationQueueService";
 import { listSourcePerformance } from "./sourcePerformanceService";
-import { assertAddressSafeAggregate } from "../lib/protocol/rpcTransport";
 
 const router: IRouter = Router();
 
@@ -307,13 +306,10 @@ router.get("/member-ledger", async (req: Request, res: Response) => {
     deny(res, result.reason === "unavailable" ? 503 : 400, result.reason);
     return;
   }
-  // Fail-closed output scan, BOUNDARY-AWARE (A21): a bare 20-byte address
-  // anywhere in the payload turns this response into a 500, never a leak —
-  // while the receipts' legitimate 64-hex verify anchors pass (the f436c42
-  // form, same as the public receipt read).
-  if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(JSON.stringify(result.payload))) {
-    throw new Error("address-shaped token in ledger payload");
-  }
+  // The A21 40-hex output scan was RETIRED 2026-08-02 (THE ADDRESS LAW,
+  // 2026-07-25): rows deliberately serve the full wallet + canon explorer
+  // link — an address is public, and fail-closing on one was the bug class
+  // the law names. The red line (name/alias/email) never enters this payload.
   req.log.info({ event: "operator.ledger.read", code: "ok" });
   res.json({ ok: true, payload: result.payload });
 });
@@ -457,8 +453,8 @@ router.post("/notifications/delete", async (req: Request, res: Response) => {
 
 // ── GET /api/operator/notifications (NOTIF-1) ───────────────────────────────
 // FOUNDER-ONLY READ: the recent sent list (the honest bell + composer history).
-// Masked short wallets only; no query/params; the payload passes the 40-hex
-// fail-closed scanner before it leaves.
+// Recipients serve full + short + canon explorer link (address law 2026-07-25;
+// the 40-hex output scanner retired 2026-08-02); no query/params.
 router.get("/notifications", async (req: Request, res: Response) => {
   if (!allowRequest(throttleKey(req))) {
     req.log.warn({ event: "operator.notifications.throttled" });
@@ -485,17 +481,17 @@ router.get("/notifications", async (req: Request, res: Response) => {
     deny(res, result.reason === "unavailable" ? 503 : 400, result.reason);
     return;
   }
-  assertAddressSafeAggregate(JSON.stringify(result.notifications));
   req.log.info({ event: "operator.notifications.listed", code: "ok" });
   res.json({ ok: true, notifications: result.notifications });
 });
 
 // ── GET /api/operator/activation-requests (K3.a) ────────────────────────────
-// FOUNDER-ONLY READ: the Source review queue — request rows with MASKED
-// wallets, the engine's own live seat figure, and the LIVE preflight checks
-// (fail-closed: a read that didn't run is null, rendered blocking). No
-// query/params. Access is audited inside the service (row counts only).
-// Output scan is the BOUNDARY-AWARE 40-hex form (64-hex source ids pass).
+// FOUNDER-ONLY READ: the Source review queue — request rows with full + short
+// + explorer-linked wallets (address law 2026-07-25; the 40-hex output scan
+// retired 2026-08-02), the engine's own live seat figure, and the LIVE
+// preflight checks (fail-closed: a read that didn't run is null, rendered
+// blocking). No query/params. Access is audited inside the service (row
+// counts only).
 router.get("/activation-requests", async (req: Request, res: Response) => {
   if (!allowRequest(throttleKey(req))) {
     req.log.warn({ event: "operator.activation_queue.throttled" });
@@ -521,9 +517,6 @@ router.get("/activation-requests", async (req: Request, res: Response) => {
   if (!result.ok) {
     deny(res, result.reason === "unavailable" ? 503 : 400, result.reason);
     return;
-  }
-  if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(JSON.stringify(result.payload))) {
-    throw new Error("address-shaped token in queue payload");
   }
   req.log.info({ event: "operator.activation_queue.read", code: "ok" });
   res.json({ ok: true, payload: result.payload });
@@ -627,10 +620,11 @@ router.post("/activation-requests/wallet", async (req: Request, res: Response) =
 });
 
 // ── GET /api/operator/source-performance (K3.c) ─────────────────────────────
-// FOUNDER-ONLY READ: the per-source performance projection (Face 5) — masked
-// owner wallets, 64-hex source ids, live registry status words, read-model
-// stats, asOfBlock stated. No query/params; access audited in the service;
-// output scan is the BOUNDARY-AWARE 40-hex form (64-hex ids pass).
+// FOUNDER-ONLY READ: the per-source performance projection (Face 5) — owner
+// wallets full + short + explorer-linked (address law 2026-07-25; the 40-hex
+// output scan retired 2026-08-02), 64-hex source ids, live registry status
+// words, read-model stats, asOfBlock stated. No query/params; access audited
+// in the service.
 router.get("/source-performance", async (req: Request, res: Response) => {
   if (!allowRequest(throttleKey(req))) {
     req.log.warn({ event: "operator.source_performance.throttled" });
@@ -656,9 +650,6 @@ router.get("/source-performance", async (req: Request, res: Response) => {
   if (!result.ok) {
     deny(res, result.reason === "unavailable" ? 503 : 400, result.reason);
     return;
-  }
-  if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(JSON.stringify(result.payload))) {
-    throw new Error("address-shaped token in performance payload");
   }
   req.log.info({ event: "operator.source_performance.read", code: "ok" });
   res.json({ ok: true, payload: result.payload });

@@ -82,6 +82,7 @@ import {
 import { getIntroductionRowsModel } from "../lib/protocol/introductionRowsModel";
 import { resolveOwnStanding } from "../lib/protocol/holderIndexStanding";
 import { txUrl } from "../canon/the-syndicate/chain/chain-registry";
+import { explorerUrlForAddress } from "../canon/the-syndicate/contracts/syndicate-config";
 import { assertProtocolRealityDiscipline } from "../lib/protocol/payloadDiscipline";
 // D-TRUTH D3: the backbone's own-purchase read-model (SERVER-ONLY wallet
 // keys) — the auth zone serves a session's OWN rows out of it, nothing else.
@@ -674,15 +675,17 @@ router.get("/channel-standing", async (req: Request, res: Response) => {
 });
 
 // ── GET /api/auth/introduction-rows ─────────────────────────────────────────
-// Slice ④ (founder GO 2026-07-19) — the member's OWN per-introduction rows:
-// each attributed join as a chain-event fact (verified UTC day · the
-// introduced wallet in ADR-003 SHORT form only · the R5 durable flag · the
+// Slice ④ (founder GO 2026-07-19; AMENDED 2026-08-02 under THE ADDRESS LAW
+// 2026-07-25) — the member's OWN per-introduction rows: each attributed join
+// as a chain-event fact (verified UTC day · the introduced wallet FULL +
+// short display form + canon explorer link — an address is public, shown
+// and verifiable, never masked-as-security · the R5 durable flag · the
 // commission paid · the 64-hex verify anchor + canonical explorer URL). The
 // D3 member-purchases discipline verbatim: session cookie = the ONLY input;
 // the resolved source picks rows SERVER-SIDE; the full sourceId map key and
-// the bound account never enter the payload; 40-hex fail-closed scan (short
-// forms and 64-hex anchors pass by construction). Fail-closed: no session /
-// model not built / source unresolved → an honest reason, never a guess.
+// the bound account never enter the payload (the old 40-hex fail-close scan
+// was retired with the amendment). Fail-closed: no session / model not
+// built / source unresolved → an honest reason, never a guess.
 router.get("/introduction-rows", async (req: Request, res: Response) => {
   if (!allowRequest(throttleKey(req))) {
     req.log.warn({ event: "auth.introduction_rows.throttled" });
@@ -701,6 +704,8 @@ router.get("/introduction-rows", async (req: Request, res: Response) => {
     | {
         isoDayUtc: string;
         who: string;
+        whoWallet: string;
+        whoExplorerUrl: string | null;
         durable: boolean;
         commissionRaw: string;
         transaction: string;
@@ -743,6 +748,8 @@ router.get("/introduction-rows", async (req: Request, res: Response) => {
           rows.push({
             isoDayUtc: r.isoDayUtc,
             who: r.who,
+            whoWallet: r.whoWallet,
+            whoExplorerUrl: explorerUrlForAddress(r.whoWallet),
             durable: r.durable,
             commissionRaw: r.commissionRaw,
             transaction: r.transactionHash,
@@ -761,19 +768,10 @@ router.get("/introduction-rows", async (req: Request, res: Response) => {
     asOfBlock,
     failureReason,
   };
-  // Leak gates: payload discipline + boundary-aware address scan (a bare
-  // 40-hex fail-closes; short forms and 64-hex anchors pass). The bound
-  // account and the full sourceId never enter the payload object.
-  try {
-    assertProtocolRealityDiscipline(payload);
-    if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(JSON.stringify(payload))) {
-      throw new Error("address-shaped token in payload");
-    }
-  } catch {
-    req.log.warn({ event: "auth.introduction_rows.discipline_rejected" });
-    deny(res, 500, "unavailable");
-    return;
-  }
+  // The 40-hex fail-close scan was RETIRED 2026-08-02 (address law
+  // 2026-07-25): rows deliberately carry the full introduced wallet + its
+  // explorer link. The bound account and the full sourceId map key still
+  // never enter the payload object — that remains the boundary.
   req.log.info({
     event: "auth.introduction_rows.checked",
     code: !sessionActive ? "none" : rows !== null ? "mapped" : "unavailable",

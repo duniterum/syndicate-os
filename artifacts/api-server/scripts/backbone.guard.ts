@@ -345,17 +345,20 @@ for (const f of zoneFiles) {
       .map((f) => path.relative(apiDir, f))
       .join(", ")}]`,
   );
-  // Slice-④/⑤ ROWS-MODEL pins (the f436c42 prod lesson made durable — the
-  // rows payload carries legitimate 64-hex anchors, so its gate must be the
-  // BOUNDARY-AWARE scan, and it must run BEFORE the model is held): the
-  // boundary-aware regex appears in this file and precedes the set call, and
-  // only the refresh (+ the holder module) may set the rows model.
+  // Slice-④/⑤ ROWS-MODEL pins, AMENDED 2026-08-02 (THE ADDRESS LAW,
+  // 2026-07-25): rows now deliberately carry the FULL introduced wallet
+  // (`whoWallet`) beside the short display form — a wallet is public, and
+  // the old boundary-aware 40-hex gate on this model was the
+  // masking-as-security bug class the law names. The pin flips to its
+  // ABSENCE: no address-shaped fail-close may guard the rows model, the
+  // full wallet field must be built, and only the refresh (+ the holder
+  // module) may set the rows model.
   const rowsGateIdx = introSrc.indexOf("(?![0-9a-fA-F])");
   const rowsSetIdx = introSrc.indexOf("setIntroductionRowsModel(");
   check(
-    rowsGateIdx !== -1 && rowsSetIdx !== -1 && rowsGateIdx < rowsSetIdx,
-    "the rows model is boundary-aware leak-scanned BEFORE it is held",
-    "introduction refresh holds the rows model without the boundary-aware scan first",
+    rowsGateIdx === -1 && rowsSetIdx !== -1 && introSrc.includes("whoWallet"),
+    "the rows model serves the full introduced wallet with no 40-hex fail-close (address law)",
+    "introduction refresh drifted — rows must carry whoWallet (full) and must NOT be gated by an address-shaped fail-close (retired 2026-08-02 under the 2026-07-25 address law)",
   );
   const rowSetters = walk(path.resolve(apiDir, "src")).filter((f) =>
     stripComments(readFileSync(f, "utf8")).includes("setIntroductionRowsModel("),

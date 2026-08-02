@@ -44,7 +44,11 @@ export async function saveReferralTerm(key: string, value: string): Promise<Writ
 
 export interface OperatorListItem {
   id: string;
+  /** Full public wallet + short display form + served explorer link (the
+   *  address law 2026-07-25 — every row renders the blue verifiable anchor). */
+  wallet: string;
   walletShort: string;
+  explorerUrl: string | null;
   label: string;
   role: string;
   status: string;
@@ -54,7 +58,7 @@ export type ListOperatorsResult =
   | { status: "denied" }
   | { status: "unavailable" };
 
-// GET the live operator registry (masked wallets). Fail-closed: dark zone (404),
+// GET the live operator registry. Fail-closed: dark zone (404),
 // no session (401), or insufficient role (403) → "denied"; transport/other →
 // "unavailable". Never throws. Talks only to "/api/operator/...".
 export async function listOperators(): Promise<ListOperatorsResult> {
@@ -72,6 +76,7 @@ export async function listOperators(): Promise<ListOperatorsResult> {
               typeof o === "object" &&
               o !== null &&
               typeof (o as Record<string, unknown>).id === "string" &&
+              typeof (o as Record<string, unknown>).wallet === "string" &&
               typeof (o as Record<string, unknown>).walletShort === "string" &&
               typeof (o as Record<string, unknown>).label === "string" &&
               typeof (o as Record<string, unknown>).role === "string" &&
@@ -111,7 +116,11 @@ export interface LedgerReceiptLine {
 export interface LedgerRow {
   id: string;
   seat: number;
+  /** Full public wallet + short display form + served explorer link (the
+   *  address law 2026-07-25). */
+  wallet: string;
   walletShort: string;
+  explorerUrl: string | null;
   authority: string;
   entryDay: string | null;
   rung: string | null;
@@ -168,6 +177,7 @@ export async function fetchMemberLedger(): Promise<MemberLedgerResult> {
             typeof r === "object" &&
             r !== null &&
             typeof (r as Record<string, unknown>).seat === "number" &&
+            typeof (r as Record<string, unknown>).wallet === "string" &&
             typeof (r as Record<string, unknown>).walletShort === "string" &&
             typeof (r as Record<string, unknown>).segment === "string",
         )
@@ -324,7 +334,11 @@ export async function sendBroadcast(
 export interface NotificationListItem {
   id: string;
   audience: string;
+  /** Recipient full + short + served explorer link (address law 2026-07-25);
+   *  all null for ALL-audience broadcasts. */
+  recipientWallet: string | null;
   recipientShort: string | null;
+  recipientExplorerUrl: string | null;
   title: string;
   body: string;
   icon: string | null;
@@ -396,7 +410,7 @@ export async function fetchNotifications(): Promise<ListNotificationsResult> {
 }
 
 // Founder-only registry write: suspend an operator by its stable id (from the
-// masked registry list — no full wallet needed client-side). Same fail-closed
+// registry list — the id is the suspend key, not the wallet). Same fail-closed
 // shape as the others.
 export async function suspendOperator(id: string): Promise<WriteResult> {
   try {
@@ -434,7 +448,11 @@ export interface ActivationQueueChecks {
 }
 export interface ActivationQueueRow {
   id: string;
+  /** Full public wallet + short display form + served explorer link (the
+   *  address law 2026-07-25). */
+  wallet: string;
   walletShort: string;
+  explorerUrl: string | null;
   seat: string | null;
   sourceIdHex: string;
   status: string;
@@ -474,6 +492,7 @@ export async function listActivationQueue(): Promise<ActivationQueueResult> {
         const o = r as Record<string, unknown>;
         if (
           typeof o.id !== "string" ||
+          typeof o.wallet !== "string" ||
           typeof o.walletShort !== "string" ||
           typeof o.sourceIdHex !== "string" ||
           typeof o.status !== "string"
@@ -494,7 +513,9 @@ export async function listActivationQueue(): Promise<ActivationQueueResult> {
         }
         rows.push({
           id: o.id,
+          wallet: o.wallet,
           walletShort: o.walletShort,
+          explorerUrl: typeof o.explorerUrl === "string" ? o.explorerUrl : null,
           seat: typeof o.seat === "string" ? o.seat : null,
           sourceIdHex: o.sourceIdHex,
           status: o.status,
@@ -657,7 +678,11 @@ export async function fetchConsoleSignals(force = false): Promise<ConsoleSignals
 // ── K3.c: the per-source performance read (founder-only, Face 5) ────────────
 export interface SourcePerformanceRow {
   sourceIdHex: string;
+  /** Owner full wallet + short display form + served explorer link (the
+   *  address law 2026-07-25); wallet null when the ownership edge is unknown. */
+  ownerWallet: string | null;
   ownerShort: string;
+  ownerExplorerUrl: string | null;
   status: string | null;
   attributedPurchases: number;
   introducedMembers: number;
@@ -708,7 +733,10 @@ export async function fetchSourcePerformance(): Promise<SourcePerformanceResult>
         }
         rows.push({
           sourceIdHex: o.sourceIdHex,
+          ownerWallet: typeof o.ownerWallet === "string" ? o.ownerWallet : null,
           ownerShort: o.ownerShort,
+          ownerExplorerUrl:
+            typeof o.ownerExplorerUrl === "string" ? o.ownerExplorerUrl : null,
           status: typeof o.status === "string" ? o.status : null,
           attributedPurchases: o.attributedPurchases,
           introducedMembers:

@@ -62,6 +62,7 @@
     "auth-skeleton:test": "tsx ./scripts/auth-skeleton-test.ts",
     "operator-write:test": "tsx ./scripts/operator-write-test.ts",
     "operator-list:test": "tsx ./scripts/operator-list-test.ts",
+    "rig:address-family": "tsx ./scripts/address-family-rig-verify.ts",
     "archive:minter-backfill": "tsx ./scripts/archive-minter-backfill.ts",
     "season-merkle:fixture": "tsx ./scripts/season-merkle-fixture.ts",
     "season-merkle:guard": "tsx ./scripts/season-merkle.guard.ts",

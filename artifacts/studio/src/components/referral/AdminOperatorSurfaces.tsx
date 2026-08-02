@@ -38,6 +38,7 @@ import {
   deleteNotification,
   type NotificationListItem,
 } from "@/lib/operatorClient";
+import { AddressUrl } from "@/components/address/AddressText";
 import {
   NotificationComposerFields,
   type NotificationComposerValue,
@@ -214,7 +215,24 @@ export function BroadcastPanel() {
                     )}
                     <span className="text-sm text-foreground">{n.title}</span>
                     <Badge variant="outline" className="text-[10px] font-normal">
-                      {n.audience === "ALL" ? "all members" : `member ${n.recipientShort ?? ""}`}
+                      {n.audience === "ALL" ? (
+                        "all members"
+                      ) : (
+                        <>
+                          member{" "}
+                          {n.recipientShort !== null ? (
+                            // 12px floor for the address anchor inside the
+                            // smaller badge (links bind to the floor first).
+                            <span className="text-xs">
+                              <AddressUrl
+                                short={n.recipientShort}
+                                full={n.recipientWallet}
+                                url={n.recipientExplorerUrl}
+                              />
+                            </span>
+                          ) : null}
+                        </>
+                      )}
                     </Badge>
                     {n.createdAtIso !== null && (
                       <span className="font-mono text-[10px] text-muted-foreground ml-auto">

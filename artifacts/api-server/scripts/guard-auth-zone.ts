@@ -1195,22 +1195,23 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
             `route ${routeKey}: delegates to the ledger read ONLY (no other service reachable)`,
             `src/operator/router.ts route ${routeKey} must call readMemberLedger() and must never reach any write service or the registry list`,
           );
-          // A21 AMENDED (founder-gated, wireframe-approved + GO 2026-07-20):
-          // the ledger rows now carry 64-hex verify anchors, so THIS route's
-          // output scan is the BOUNDARY-AWARE 40-hex form (the f436c42
-          // lesson — the strict aggregate scanner would 500 on every anchor).
-          // A bare 20-byte address still fail-closes the response.
+          // A21 scan RETIRED (2026-08-02, from THE ADDRESS LAW 2026-07-25):
+          // a wallet address is PUBLIC — shown short-form + explorer-linked,
+          // admin included; "any code that masks or fail-closes on an address
+          // as if it were a secret is a BUG against this law". The old pin
+          // mandated exactly that bug, so it now guards the ABSENCE of the
+          // scan: ledger rows serve the full wallet + canon explorerUrl and
+          // the route must never fail-close on address-shaped output.
           check(
-            /0x\[0-9a-fA-F\]\{40\}\(\?!\[0-9a-fA-F\]\)/.test(block) &&
-              /JSON\.stringify\(result\.payload\)/.test(block) &&
-              /throw new Error/.test(block),
-            `route ${routeKey}: serialized payload passes the BOUNDARY-AWARE 40-hex fail-closed scan (A21)`,
-            `src/operator/router.ts route ${routeKey} must run the boundary-aware 40-hex fail-closed scan (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/) over JSON.stringify(result.payload) and throw before res.json`,
+            !/0x\[0-9a-fA-F\]\{40\}/.test(block) && !/address-shaped/.test(block),
+            `route ${routeKey}: no 40-hex fail-close on the payload (addresses are public law)`,
+            `src/operator/router.ts route ${routeKey} still fail-closes on a 40-hex address — the 2026-07-25 address law names that a bug; the ledger serves the full wallet + explorerUrl`,
           );
         } else if (routeKey === "get /notifications") {
-          // NOTIF-1: FOUNDER-ONLY (the list pairs masked recipients with
-          // founder-authored text), delegates ONLY to the masked list read,
-          // and the serialized payload passes the 40-hex fail-closed scanner.
+          // NOTIF-1: FOUNDER-ONLY (the sent list pairs recipients with
+          // founder-authored text), delegates ONLY to the list read. The
+          // 40-hex output scanner is RETIRED (2026-08-02, address law
+          // 2026-07-25): recipients serve full + short + explorer link.
           check(
             /ctx\.role\s*!==\s*"founder_root"/.test(block) && !/WRITE_ROLES/.test(block),
             `route ${routeKey}: founder_root ONLY (the sent list is founder-gated)`,
@@ -1221,18 +1222,19 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
               !/inviteOperator\(|suspendOperator\(|upsertReferralTerms\(|saveReferralTerm\(|sendMemberNotification\(|broadcastNotification\(/.test(
                 block,
               ),
-            `route ${routeKey}: delegates to the masked notification list ONLY (no write service reachable)`,
+            `route ${routeKey}: delegates to the notification list ONLY (no write service reachable)`,
             `src/operator/router.ts route ${routeKey} must call listNotifications() and must never reach any write service`,
           );
           check(
-            /assertAddressSafeAggregate\(\s*JSON\.stringify\(/.test(block),
-            `route ${routeKey}: serialized payload passes the 40-hex fail-closed scanner`,
-            `src/operator/router.ts route ${routeKey} must run assertAddressSafeAggregate(JSON.stringify(...)) over the payload before res.json`,
+            !/assertAddressSafeAggregate/.test(block) && !/0x\[0-9a-fA-F\]\{40\}/.test(block),
+            `route ${routeKey}: no 40-hex fail-close on the payload (addresses are public law)`,
+            `src/operator/router.ts route ${routeKey} still fail-closes on a 40-hex address — the 2026-07-25 address law names that a bug; recipients serve full + explorer link`,
           );
         } else if (routeKey === "get /source-performance") {
           // K3.c (dated 2026-07-22): FOUNDER-ONLY — per-source rows pair
-          // masked owner wallets with performance figures; delegates ONLY to
-          // the audited performance read; boundary-aware 40-hex scan.
+          // owner wallets with performance figures; delegates ONLY to the
+          // audited performance read. The 40-hex scan is RETIRED
+          // (2026-08-02, address law 2026-07-25): owners serve full + link.
           check(
             /ctx\.role\s*!==\s*"founder_root"/.test(block) && !/WRITE_ROLES/.test(block),
             `route ${routeKey}: founder_root ONLY (performance pairings are founder-gated)`,
@@ -1247,18 +1249,16 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
             `src/operator/router.ts route ${routeKey} must call listSourcePerformance() and must never reach any write service`,
           );
           check(
-            /0x\[0-9a-fA-F\]\{40\}\(\?!\[0-9a-fA-F\]\)/.test(block) &&
-              /JSON\.stringify\(result\.payload\)/.test(block) &&
-              /throw new Error/.test(block),
-            `route ${routeKey}: serialized payload passes the BOUNDARY-AWARE 40-hex fail-closed scan`,
-            `src/operator/router.ts route ${routeKey} must run the boundary-aware 40-hex fail-closed scan over JSON.stringify(result.payload) and throw before res.json`,
+            !/0x\[0-9a-fA-F\]\{40\}/.test(block) && !/address-shaped/.test(block),
+            `route ${routeKey}: no 40-hex fail-close on the payload (addresses are public law)`,
+            `src/operator/router.ts route ${routeKey} still fail-closes on a 40-hex address — the 2026-07-25 address law names that a bug; owner wallets serve full + explorerUrl`,
           );
         } else if (routeKey === "get /activation-requests") {
-          // K3.a (dated 2026-07-22): FOUNDER-ONLY — queue rows pair masked
-          // wallets with seats and live preflight verdicts (§D overlay class);
-          // delegates ONLY to the audited queue list; the serialized payload
-          // passes the BOUNDARY-AWARE 40-hex scan (64-hex source ids pass, a
-          // bare address fail-closes).
+          // K3.a (dated 2026-07-22): FOUNDER-ONLY — queue rows pair wallets
+          // with seats and live preflight verdicts; delegates ONLY to the
+          // audited queue list. The 40-hex scan is RETIRED (2026-08-02,
+          // address law 2026-07-25): queue wallets serve full + short +
+          // explorer link, so the console links every row.
           check(
             /ctx\.role\s*!==\s*"founder_root"/.test(block) && !/WRITE_ROLES/.test(block),
             `route ${routeKey}: founder_root ONLY (queue pairings are founder-gated)`,
@@ -1273,11 +1273,9 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
             `src/operator/router.ts route ${routeKey} must call listActivationRequests() and must never reach any write service or the signing-material read`,
           );
           check(
-            /0x\[0-9a-fA-F\]\{40\}\(\?!\[0-9a-fA-F\]\)/.test(block) &&
-              /JSON\.stringify\(result\.payload\)/.test(block) &&
-              /throw new Error/.test(block),
-            `route ${routeKey}: serialized payload passes the BOUNDARY-AWARE 40-hex fail-closed scan`,
-            `src/operator/router.ts route ${routeKey} must run the boundary-aware 40-hex fail-closed scan over JSON.stringify(result.payload) and throw before res.json`,
+            !/0x\[0-9a-fA-F\]\{40\}/.test(block) && !/address-shaped/.test(block),
+            `route ${routeKey}: no 40-hex fail-close on the payload (addresses are public law)`,
+            `src/operator/router.ts route ${routeKey} still fail-closes on a 40-hex address — the 2026-07-25 address law names that a bug; queue wallets serve full + explorerUrl`,
           );
         } else {
           check(
@@ -1569,10 +1567,13 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
       "registry service: pure service module — no response, request, or log surface",
       "operatorRegistryService.ts must stay a pure service (no res/req/console/logger)",
     );
-    // Phase 3 slice 1 — sanctioned masked list read. Pins: every exported
-    // service function opens with the same fail-closed gate; the list row
-    // shape carries ONLY the masked walletShort (never a full-wallet field);
-    // and the server-side mask is the 0x……-style slice.
+    // Phase 3 slice 1, AMENDED 2026-08-02 (THE ADDRESS LAW 2026-07-25): the
+    // list read serves the FULL wallet + canon explorer link on every row —
+    // an address is public, never masked-as-security; the short form stays a
+    // DISPLAY companion, not a boundary. Pins: every exported service
+    // function opens with the same fail-closed gate; the row shape carries
+    // wallet + walletShort + explorerUrl; the link comes from the canon
+    // helper only (no hand-built URL).
     {
       const exportedFns = (regCode.match(/export async function /g) ?? []).length;
       const gatedReturns = (
@@ -1584,29 +1585,32 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
         "operatorRegistryService.ts gate coverage drifted — each exported async function must start with `if (!gateOpen()) return { ok: false, reason: \"unavailable\" };`",
       );
     }
-    // (Phase 3 slice 3 amendment: the stable row id — a UUID, non-PII — is now
-    // part of the list row shape so the admin surface can suspend by id
-    // without ever handling a wallet. Still NO full-wallet field.)
+    // (Phase 3 slice 3 amendment: the stable row id — a UUID — remains the
+    // suspend key. 2026-08-02: the row also carries the full wallet + its
+    // canon explorer link, per the address law.)
     check(
-      /interface OperatorRow \{\s*id: string;\s*walletShort: string;\s*label: string;\s*role: string;\s*status: string;\s*\}/.test(
+      /interface OperatorRow \{\s*id: string;\s*wallet: string;\s*walletShort: string;\s*explorerUrl: string \| null;\s*label: string;\s*role: string;\s*status: string;\s*\}/.test(
         regCode,
       ),
-      "registry service: list row shape is EXACTLY { id, walletShort, label, role, status } — no full-wallet field",
-      "operatorRegistryService.ts OperatorRow drifted — the list read may carry ONLY id/walletShort/label/role/status; a full wallet field must never enter the row shape",
+      "registry service: list row shape is EXACTLY { id, wallet, walletShort, explorerUrl, label, role, status }",
+      "operatorRegistryService.ts OperatorRow drifted — the list read carries id/wallet/walletShort/explorerUrl/label/role/status (full wallet + canon link, address law 2026-07-25)",
     );
     check(
       /listOperators/.test(regCode) &&
+        /wallet:\s*r\.wallet/.test(regCode) &&
+        /explorerUrl:\s*explorerUrlForAddress\(/.test(regCode) &&
         /slice\(0,\s*6\)/.test(regCode) &&
         /slice\(-4\)/.test(regCode),
-      "registry service: listOperators masks wallets server-side (slice(0,6)…slice(-4))",
-      "operatorRegistryService.ts must mask wallets server-side in listOperators — the full wallet never leaves the server",
+      "registry service: listOperators serves the full wallet + canon explorer link (short form kept for display)",
+      "operatorRegistryService.ts must serve wallet: r.wallet + explorerUrl: explorerUrlForAddress(...) on every list row — addresses are public law (2026-07-25); the slice(0,6)…slice(-4) short form stays as the display companion",
     );
   }
 
   // 9e-ML. M-INT-1 member-ledger service pins (mirrors the registry-service
-  // discipline): fail-closed gate, pure module, masked short wallets ONLY in
-  // the row shape, no transaction anchors in v1 rows (audit A21 — a later
-  // founder-gated amendment), and every access audit-logged.
+  // discipline): fail-closed gate, pure module, full wallet + short form +
+  // canon explorer link on every row (AMENDED 2026-08-02, address law
+  // 2026-07-25 — the old masked-only shape was the named bug class), and
+  // every access audit-logged.
   {
     const mlCode = stripComments(read(path.resolve(srcDir, "operator", "memberLedgerService.ts")));
     check(
@@ -1626,11 +1630,13 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
     );
     check(
       /walletShort: string;/.test(mlCode) &&
-        !/\bwallet: string;/.test(mlCode.replace(/actor: \{[\s\S]*?\}/, "")) &&
+        /\bwallet: string;/.test(mlCode) &&
+        /explorerUrl: string \| null;/.test(mlCode) &&
+        /explorerUrlForAddress\(/.test(mlCode) &&
         /slice\(0,\s*6\)/.test(mlCode) &&
         /slice\(-4\)/.test(mlCode),
-      "ledger service: rows carry the masked walletShort ONLY (slice(0,6)…slice(-4)); no full-wallet row field",
-      "memberLedgerService.ts row shape drifted — LedgerRow may carry only the server-masked walletShort, never a full wallet field",
+      "ledger service: rows carry the full wallet + walletShort + canon explorerUrl (address law 2026-07-25)",
+      "memberLedgerService.ts row shape drifted — LedgerRow carries wallet (full) + walletShort (display) + explorerUrl via explorerUrlForAddress; masking-as-boundary was retired 2026-08-02",
     );
     // A21 SHIPPED (the amendment this pin reserved — founder-gated,
     // wireframe-approved + "GO and GO-Live" 2026-07-20): rows now carry
@@ -1662,7 +1668,9 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
   // discipline): fail-closed gate, pure module, seat→wallet resolved server-
   // side on the continuity spine (never from the client), the wallet↔seat
   // pairing NEVER in audit (seat-only target), address-bearing text refused at
-  // write time, masked recipients in the list, and every write audit-rowed.
+  // write time (prose hygiene, NOT address-hiding — the address lives in the
+  // recipient fields), full + short + canon link recipients in the list
+  // (AMENDED 2026-08-02, address law 2026-07-25), and every write audit-rowed.
   {
     const ntCode = stripComments(read(path.resolve(srcDir, "operator", "notificationService.ts")));
     check(
@@ -1707,10 +1715,13 @@ if (existsSync(operatorRouterAbs) && existsSync(operatorServiceAbs)) {
     );
     check(
       /recipientShort/.test(ntCode) &&
+        /recipientWallet/.test(ntCode) &&
+        /recipientExplorerUrl/.test(ntCode) &&
+        /explorerUrlForAddress\(/.test(ntCode) &&
         /slice\(0,\s*6\)/.test(ntCode) &&
         /slice\(-4\)/.test(ntCode),
-      "notification service: the list masks recipients server-side (slice(0,6)…slice(-4))",
-      "notificationService.ts must mask recipient wallets server-side in listNotifications — the full wallet never leaves the server",
+      "notification service: the list serves recipient full + short + canon explorer link (address law 2026-07-25)",
+      "notificationService.ts listNotifications drifted — sent rows carry recipientWallet (full) + recipientShort (display) + recipientExplorerUrl via explorerUrlForAddress; masking-as-boundary was retired 2026-08-02",
     );
     // NOTIF-2: the optional icon + internal link are validated fail-closed
     // against the os-contracts single source. A non-null icon outside the

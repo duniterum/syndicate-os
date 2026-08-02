@@ -396,18 +396,19 @@ async function main(): Promise<void> {
     const listOps = Array.isArray(listJson["operators"])
       ? (listJson["operators"] as Record<string, unknown>[])
       : [];
-    const inviteeMask = `${inviteeWallet.slice(0, 6)}…${inviteeWallet.slice(-4)}`;
-    const inviteeListRow = listOps.find((o) => o["walletShort"] === inviteeMask);
+    // THE ADDRESS LAW (2026-07-25; amended 2026-08-02): rows serve the FULL
+    // wallet — the UI finds the invitee by exact address, no re-masking.
+    const inviteeListRow = listOps.find((o) => o["wallet"] === inviteeWallet);
     const inviteeId =
       inviteeListRow !== undefined && typeof inviteeListRow["id"] === "string"
         ? inviteeListRow["id"]
         : null;
     record(
-      "GET /operators row carries the stable id (and still only walletShort — no full wallet)",
+      "GET /operators row carries the stable id + the full wallet (address law)",
       listRes.status === 200 &&
         inviteeId !== null &&
         listOps.every(
-          (o) => typeof o["id"] === "string" && !JSON.stringify(o).includes(inviteeWallet),
+          (o) => typeof o["id"] === "string" && typeof o["wallet"] === "string",
         ),
       `status ${listRes.status}, invitee id ${inviteeId === null ? "(missing)" : "present"}, rows=${listOps.length}`,
     );

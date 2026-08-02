@@ -32,24 +32,31 @@ export const SHORT_FORM_PATTERN = /0x[0-9a-f]{3}…[0-9a-f]{4}/g;
  */
 export type AddressBook = Readonly<Record<string, string>>;
 
-export function AddressLink({
+/**
+ * Served-URL variant of the SAME anchor voice (added 2026-08-02, the
+ * pre-masked-family slice) — for rows whose explorer link arrives FROM the
+ * api (the register/season serve shape: the server is the one URL authority,
+ * "no client ever guesses a URL scheme"). AddressLink delegates here, so the
+ * visual affordance lives exactly ONCE.
+ */
+export function AddressUrl({
   short,
   full,
-  explorerBase,
+  url,
 }: {
   short: string;
   full: string | null | undefined;
-  explorerBase: string | null;
+  url: string | null | undefined;
 }) {
-  // Fail-closed: no full value or no explorer means no link. The address still
-  // renders — hiding it would be the bug the address law names — but in the
-  // plain data voice, because blue promises a destination.
-  if (!full || !explorerBase) {
+  // Fail-closed: no full value or no destination means no link. The address
+  // still renders — hiding it would be the bug the address law names — but in
+  // the plain data voice, because blue promises a destination.
+  if (!full || !url) {
     return <span className="font-mono">{short}</span>;
   }
   return (
     <a
-      href={`${explorerBase}/address/${full}`}
+      href={url}
       target="_blank"
       rel="noopener noreferrer"
       // `break-all` so a wrapped sentence can never push the row sideways — the
@@ -63,6 +70,24 @@ export function AddressLink({
         aria-hidden="true"
       />
     </a>
+  );
+}
+
+export function AddressLink({
+  short,
+  full,
+  explorerBase,
+}: {
+  short: string;
+  full: string | null | undefined;
+  explorerBase: string | null;
+}) {
+  return (
+    <AddressUrl
+      short={short}
+      full={full}
+      url={full && explorerBase ? `${explorerBase}/address/${full}` : null}
+    />
   );
 }
 

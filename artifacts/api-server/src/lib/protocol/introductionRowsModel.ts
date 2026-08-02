@@ -7,14 +7,17 @@
  * own-purchase pattern applied to the introducer's axis). Pure state, no
  * imports beyond types, no I/O — safe for any layer to read.
  *
- * PII posture (ADR-003, the short-form amendment): a row carries the
- * introduced wallet ONLY as the server-derived SHORT form (`0x123…abcd`) —
- * the full address never enters this model; the map key is the full 64-hex
- * sourceId (SERVER-ONLY — a route serves values for the session's own
- * resolved source, never the keys). Every row field is a chain-event fact
- * (block, log index, tx hash, commission) plus the R5 durable flag (the
- * live SYN-balance test at the model's asOfBlock) and the chain-verified
- * UTC day. Nothing else — no roster joins, no enrichment.
+ * Address posture — AMENDED 2026-08-02 (THE ADDRESS LAW, 2026-07-25): a
+ * wallet address is PUBLIC, so a row carries the introduced wallet BOTH ways
+ * — `whoWallet` (full, for the blue explorer anchor) and `who` (the short
+ * display form). The old "the full address never enters this model" clause
+ * was the masking-as-security bug class the law names, and is retired. The
+ * red line stays name/alias/email — never an address. The map key is the
+ * full 64-hex sourceId (SERVER-ONLY — a route serves values for the
+ * session's own resolved source, never the keys). Every row field is a
+ * chain-event fact (block, log index, tx hash, commission) plus the R5
+ * durable flag (the live SYN-balance test at the model's asOfBlock) and the
+ * chain-verified UTC day. Nothing else — no roster joins, no enrichment.
  */
 
 /** Slice ⑤ — the receipt-backed anatomy of ONE commission: the event's own
@@ -42,8 +45,10 @@ export interface OwnIntroductionRow {
   readonly logIndex: number;
   /** 64-hex verify anchor (passes the boundary-aware 40-hex gate). */
   readonly transactionHash: string;
-  /** The introduced wallet, ADR-003 short form only (`0x123…abcd`). */
+  /** The introduced wallet, short display form (`0x123…abcd`). */
   readonly who: string;
+  /** The introduced wallet, full public value (address law 2026-07-25). */
+  readonly whoWallet: string;
   /** Commission paid for this introduction (USDC base units, exact string). */
   readonly commissionRaw: string;
   /** The R5 durable test at asOfBlock: the introduced wallet still holds SYN. */

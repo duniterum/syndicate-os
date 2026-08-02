@@ -2,7 +2,41 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-07-31 (HANDOFF) — RESUME HERE. **PROD = `2abd713` (SEALED ×2 today); main = `e77ae13` + this handoff, CLEAN TREE, ALL PUSHED, main = origin/main (measured at handoff). THE DEPLOY BACKLOG IS EMPTY.**
+> # ▶ 2026-08-02 — RESUME HERE. **PROD = `2abd713` (sealed 2026-07-31). THE DEPLOY BACKLOG HOLDS ONE BATCHABLE SLICE** — the pre-masked admin address family (this commit; api + studio ride the next deploy together; prod is unbroken meanwhile).
+>
+> ## (a) WHAT LANDED THIS SESSION (registry flips: NONE owed — no live↔future move)
+> · **The pre-masked family CLOSED** (the 2026-07-31 queued slice, on the founder's « go in the
+>   right order »): the api serves FULL wallet + short form + canon Snowtrace link on all SIX
+>   pre-masked reads (operators · member-ledger · activation queue · source-performance ·
+>   notifications sent list · member introduction rows), the 40-hex fail-close scans on
+>   addresses are RETIRED (3 operator routes + introduction-rows + the rows-model gate — the
+>   2026-07-25 address law names them the bug), and the client renders the blue anchor at all
+>   7 sites via the new `AddressUrl` atom (ONE anchor implementation; `AddressLink` delegates).
+> · RED FIRST held: guard-auth-zone pins flipped BEFORE the fix (8 captured FAILs → 1302 PASS),
+>   backbone.guard re-pinned (whoWallet mandatory, address fail-close forbidden). Runtime: 5/5
+>   green over a real SIWE session against the local api (scripts/address-family-rig-verify.ts,
+>   fixture torn down). Rig-measured: 14/14 ledger anchors rgb(13,204,242) 12px, 0 overflow at
+>   375px; operators 3/3; queue + Performance tab + bell popover (12px held inside the 9px chip).
+>   NOT measured (said honestly): the member introductions TAB render needs a source owner's
+>   session — covered by typecheck + model construction + the atom's plain-text fallback.
+>
+> ## THE LOCAL RIG (this machine): studio preview on 5173 (preview_start) · api DETACHED on 5000
+> ## (never preview_start — no egress in its sandbox) · PostgreSQL 17 :5433 db `syndicate` = the
+> ## prod dump of 2026-07-30. dump.sql.gz is SAFE locally (Downloads) → the founder may tell
+> ## Replit "téléchargé" so it leaves the project root.
+>
+> ## (b) IN FLIGHT — nothing queued. The build lane is EMPTY until a founder decision below.
+> · Accepted-known (unchanged): source-status asOf ratchet stays memorial · printable
+>   ReceiptTicket keeps its QR as the verify affordance · payloadDiscipline's ADDRESS_LEAK_RE
+>   carries a written reconcile-before-re-enable note (2026-08-02).
+>
+> ## (c) FOUNDER-PENDING (nothing else blocks)
+> · The 3 reserves-wireframe decisions (3×2 grid · gold logo · weekend freshness) → then the
+>   LINK.e/XAUt0 reserves build (feeds verified on-chain: LINK/USD `0x49cc…de9a`, XAU/USD
+>   `0x1F41…515B`). · The 4 composition wireframes. · "téléchargé" to Replit for dump.sql.gz.
+> · **The deploy** carrying this slice: 🚀 DEPLOY — BATCHABLE (instruction in the 2026-08-02 chat).
+
+> # ▶ 2026-07-31 (HANDOFF — superseded by the 2026-08-02 block above). **PROD = `2abd713` (SEALED ×2 today); main = `e77ae13` + this handoff, CLEAN TREE, ALL PUSHED, main = origin/main (measured at handoff). THE DEPLOY BACKLOG IS EMPTY.**
 >
 > ## THE DAY IN ONE READ (two sealed deploys: `448645d` at dawn, `2abd713` at close)
 > Prod moved `3adbc19 → 448645d → 2abd713`. Seal №1 (dawn): THE REGISTER (/registry), causal swap

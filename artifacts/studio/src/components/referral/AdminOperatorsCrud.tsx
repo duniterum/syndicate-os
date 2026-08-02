@@ -60,6 +60,7 @@ import {
   type ListOperatorsResult,
   type OperatorListItem,
 } from "@/lib/operatorClient";
+import { AddressUrl } from "@/components/address/AddressText";
 import { dispatchProposeSourcePrefill } from "@/lib/adminPrefill";
 import { dateLabel } from "@/components/referral/referralStanding";
 
@@ -207,7 +208,10 @@ function SuspendOperatorDialog({
             {target !== null ? (
               <>
                 <span className="font-medium text-foreground">{target.label}</span>{" "}
-                <span className="font-mono text-xs">({target.walletShort})</span> — role{" "}
+                <span className="text-xs">
+                  (<AddressUrl short={target.walletShort} full={target.wallet} url={target.explorerUrl} />)
+                </span>{" "}
+                — role{" "}
                 <span className="font-mono text-xs">{target.role}</span>. This is a live
                 founder-gated write: the row flips to SUSPENDED in the real registry and an
                 audit entry is recorded.
@@ -412,7 +416,9 @@ export function AdminOperatorsCrud() {
                     <Badge variant="outline" className="text-[10px] font-normal">{op.role}</Badge>
                     <span className="text-[10px] text-muted-foreground">{op.status}</span>
                   </div>
-                  <div className="font-mono text-xs text-muted-foreground truncate">{op.walletShort}</div>
+                  <div className="text-xs text-muted-foreground truncate">
+                    <AddressUrl short={op.walletShort} full={op.wallet} url={op.explorerUrl} />
+                  </div>
                 </div>
                 <Button variant="ghost" size="sm" disabled aria-label={`Edit ${op.label}`} title="Lands with its own slice">
                   <Pencil className="h-4 w-4" />
@@ -663,9 +669,20 @@ export function SourceReviewQueue({
       ) : open.length === 0 ? (
         <p className="text-sm text-muted-foreground" data-testid="text-queue-empty">
           No requests waiting.
-          {lastDecision
-            ? ` Last decision: ${lastDecision.status === "CLOSED" ? "recorded activated" : "declined"} ${lastDecision.walletShort} — ${shortDay(lastDecision.decidedAtIso)}.`
-            : " The door on /referral feeds this queue."}
+          {lastDecision ? (
+            <>
+              {" "}Last decision:{" "}
+              {lastDecision.status === "CLOSED" ? "recorded activated" : "declined"}{" "}
+              <AddressUrl
+                short={lastDecision.walletShort}
+                full={lastDecision.wallet}
+                url={lastDecision.explorerUrl}
+              />{" "}
+              — {shortDay(lastDecision.decidedAtIso)}.
+            </>
+          ) : (
+            " The door on /referral feeds this queue."
+          )}
         </p>
       ) : (
         <div className="space-y-3">
@@ -687,7 +704,9 @@ export function SourceReviewQueue({
             return (
               <div key={r.id} className="rounded-md border border-border/50 p-4" data-testid={`queue-request-${r.id}`}>
                 <div className="flex items-baseline gap-3 flex-wrap">
-                  <span className="font-mono text-sm font-medium text-foreground">{r.walletShort}</span>
+                  <span className="text-sm font-medium">
+                    <AddressUrl short={r.walletShort} full={r.wallet} url={r.explorerUrl} />
+                  </span>
                   <span className="text-xs text-muted-foreground">
                     {r.seat !== null ? `Seat #${r.seat} · ` : ""}asked {shortDay(r.askedAtIso)}
                   </span>
@@ -810,7 +829,13 @@ export function SourceReviewQueue({
           {decided.length > 0 ? (
             <p className="text-xs text-muted-foreground">
               Decided recently:{" "}
-              {decided.slice(0, 3).map((d) => `${d.walletShort} ${d.status === "CLOSED" ? "activated" : "declined"} ${shortDay(d.decidedAtIso)}`).join(" · ")}
+              {decided.slice(0, 3).map((d, i) => (
+                <span key={d.id}>
+                  {i > 0 ? " · " : ""}
+                  <AddressUrl short={d.walletShort} full={d.wallet} url={d.explorerUrl} />{" "}
+                  {d.status === "CLOSED" ? "activated" : "declined"} {shortDay(d.decidedAtIso)}
+                </span>
+              ))}
             </p>
           ) : null}
         </div>

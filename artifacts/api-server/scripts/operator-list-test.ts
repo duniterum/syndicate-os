@@ -18,6 +18,7 @@
 import { randomUUID } from "node:crypto";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { createSiweMessage } from "viem/siwe";
+import { EXPLORER_BASE_URL } from "../src/canon/the-syndicate/contracts/syndicate-config";
 
 const results: { name: string; pass: boolean; detail: string }[] = [];
 function record(name: string, pass: boolean, detail: string): void {
@@ -38,7 +39,9 @@ interface ChallengeFields {
 
 interface ListedOperator {
   id: string;
+  wallet: string;
   walletShort: string;
+  explorerUrl: string | null;
   label: string;
   role: string;
   status: string;
@@ -53,7 +56,6 @@ async function main(): Promise<void> {
   const strangerAccount = privateKeyToAccount(generatePrivateKey()); // NO operator row
   const fixtureWallet = founderFixtureAccount.address.toLowerCase();
   const fixtureRowId = `test-${randomUUID()}`;
-  const fixtureShort = `${fixtureWallet.slice(0, 6)}…${fixtureWallet.slice(-4)}`;
 
   const savedFlag = process.env["SYNDICATE_AUTH_ENABLED"];
 
@@ -182,27 +184,34 @@ async function main(): Promise<void> {
       (o) =>
         o.role === "founder_root" &&
         o.status === "ACTIVE" &&
-        o.walletShort !== fixtureShort,
+        o.wallet !== fixtureWallet,
     );
     record(
-      "the three seeded founders are returned (masked)",
+      "the three seeded founders are returned (full wallet + short display form)",
       realFounders.length === 3,
       realFounders
         .map((o) => `${o.label} ${o.walletShort} ${o.role} ${o.status}`)
         .join(" | ") || "none",
     );
+    // THE ADDRESS LAW (2026-07-25; this test amended 2026-08-02): a wallet is
+    // PUBLIC — every row serves the full value + the short display form + the
+    // canon explorer link, so the console renders the grade-AAA blue anchor.
     record(
-      "every wallet is masked (0x????…???? — no 40-hex material)",
-      operators.every(
-        (o) => /^0x[0-9a-f]{4}…[0-9a-f]{4}$/.test(o.walletShort) && !/0x[0-9a-fA-F]{40}/.test(JSON.stringify(o)),
-      ),
-      operators.map((o) => o.walletShort).join(", "),
-    );
-    record(
-      "row shape carries ONLY id/walletShort/label/role/status (id is the stable suspend key)",
+      "every row serves full wallet + short form + canon explorer link",
       operators.every(
         (o) =>
-          Object.keys(o).sort().join(",") === "id,label,role,status,walletShort" &&
+          /^0x[0-9a-f]{40}$/.test(o.wallet) &&
+          /^0x[0-9a-f]{4}…[0-9a-f]{4}$/.test(o.walletShort) &&
+          o.explorerUrl === `${EXPLORER_BASE_URL}/address/${o.wallet}`,
+      ),
+      operators.map((o) => `${o.walletShort}↔${o.wallet.slice(0, 10)}…`).join(", "),
+    );
+    record(
+      "row shape carries EXACTLY id/wallet/walletShort/explorerUrl/label/role/status",
+      operators.every(
+        (o) =>
+          Object.keys(o).sort().join(",") ===
+            "explorerUrl,id,label,role,status,wallet,walletShort" &&
           typeof o.id === "string" &&
           o.id.length > 0,
       ),

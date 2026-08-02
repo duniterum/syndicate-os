@@ -4,7 +4,8 @@
 // ADMIN SEES, PUBLIC NEVER (the engraved order): one founder-only projection
 // joining what the machine already knows — the introduction read-model's
 // per-source stats (backbone-refreshed, snapshot fallback), the ownership
-// edges (masked wallet of record), the CLOSED activation requests (so a
+// edges (full wallet of record + short form + canon explorer link, the
+// address law 2026-07-25), the CLOSED activation requests (so a
 // member-requested source with ZERO purchases appears the day it activates —
 // the recorded zero-purchase blind spot, closed), and ONE live registry
 // status word per row (batched; null = didn't run, rendered honestly).
@@ -15,6 +16,7 @@
 
 import { randomUUID } from "node:crypto";
 import { AUTH_EXPOSURE_FLAG } from "../auth/authExposure";
+import { explorerUrlForAddress } from "../canon/the-syndicate/contracts/syndicate-config";
 import {
   DEFAULT_TIMEOUT_MS,
   makeFetchTransport,
@@ -69,10 +71,15 @@ function mask(wallet: string): string {
 }
 
 export interface SourcePerformanceRow {
-  /** 64-hex source id (passes the boundary-aware address gate). */
+  /** 64-hex source id. */
   sourceIdHex: string;
-  /** Masked 0x1234…abcd — the house list form; never the full wallet. */
+  /** The full public owner wallet (address law 2026-07-25), or null when the
+   * ownership edge is unknown. */
+  ownerWallet: string | null;
+  /** Short display form 0x1234…abcd — readability, never a boundary. */
   ownerShort: string;
+  /** Canon explorer link for the owner wallet, or null. */
+  ownerExplorerUrl: string | null;
   /** ACTIVE | PAUSED | REVOKED — or null when the live read didn't run. */
   status: string | null;
   attributedPurchases: number;
@@ -231,7 +238,11 @@ export async function listSourcePerformance(actor: {
       const stats = active.bySource[sourceKeyOf(id)] ?? null;
       return {
         sourceIdHex: id,
+        ownerWallet: meta?.ownerWallet ?? null,
         ownerShort: mask(meta?.ownerWallet ?? ""),
+        ownerExplorerUrl: meta?.ownerWallet
+          ? explorerUrlForAddress(meta.ownerWallet)
+          : null,
         status: statusById.get(id) ?? null,
         attributedPurchases: stats?.attributedPurchases ?? 0,
         introducedMembers: stats?.introducedMembers ?? 0,

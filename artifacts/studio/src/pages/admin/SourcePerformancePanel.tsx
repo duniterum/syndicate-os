@@ -16,6 +16,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { usdExact } from "@/components/referral/referralStanding";
+import { AddressUrl } from "@/components/address/AddressText";
 import {
   fetchSourcePerformance,
   type SourcePerformanceResult,
@@ -61,11 +62,14 @@ function statusLabel(s: string | null): string {
   return "read didn't run";
 }
 
-/** One row → its CSV cells, in COLUMNS order (screen-exact by construction). */
+/** One row → its CSV cells, in COLUMNS order (screen-exact by construction).
+ * The owner cell exports the FULL wallet where known (published files carry
+ * full addresses — the 2026-07-24 ruling); the screen shows the short form
+ * as the explorer anchor. */
 function csvCells(r: SourcePerformanceRow): string[] {
   return [
     shortId(r.sourceIdHex),
-    r.ownerShort,
+    r.ownerWallet ?? r.ownerShort,
     statusLabel(r.status),
     String(r.introducedMembers),
     String(r.durableIntroductions),
@@ -220,7 +224,13 @@ export function SourcePerformancePanel() {
                       <td className="py-2 font-mono text-xs text-foreground/80">
                         {shortId(r.sourceIdHex)}
                       </td>
-                      <td className="py-2 font-mono text-xs text-foreground/80">{r.ownerShort}</td>
+                      <td className="py-2 text-xs">
+                        <AddressUrl
+                          short={r.ownerShort}
+                          full={r.ownerWallet}
+                          url={r.ownerExplorerUrl}
+                        />
+                      </td>
                       <td className="py-2">
                         <Badge
                           variant="outline"

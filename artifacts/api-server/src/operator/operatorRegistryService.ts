@@ -15,6 +15,7 @@
 
 import { randomUUID } from "node:crypto";
 import { AUTH_EXPOSURE_FLAG } from "../auth/authExposure";
+import { explorerUrlForAddress } from "../canon/the-syndicate/contracts/syndicate-config";
 
 const OPERATOR_ROLES = new Set([
   "founder_root",
@@ -159,12 +160,18 @@ export async function suspendOperator(input: SuspendOperatorInput): Promise<Regi
   }
 }
 
-// Wallet is masked server-side (0x88ec…dd73) — the full wallet never leaves the
-// server, so no operator PII is echoed and the response carries no 40/64-hex
-// material for the leak-scan to catch.
+// THE ADDRESS LAW (2026-07-25; this row amended 2026-08-02): a wallet address
+// is PUBLIC — every row serves the full value + the short display form + the
+// canon explorer link, so the console renders the grade-AAA blue anchor
+// (short form readable, full value independently verifiable). The old
+// masked-only shape ("the full wallet never leaves the server") was the bug
+// class the law names: masking-as-security. The red line is name/alias/email
+// — never an address.
 export interface OperatorRow {
   id: string;
+  wallet: string;
   walletShort: string;
+  explorerUrl: string | null;
   label: string;
   role: string;
   status: string;
@@ -174,8 +181,8 @@ export type ListResult =
   | { ok: false; reason: string };
 
 // Read-only registry list for the admin surface. Gated + lazy-DB like the
-// writes; returns masked wallets only. Reads are not privileged mutations, so
-// nothing is audited here.
+// writes; serves full wallet + short form + canon explorer link per row.
+// Reads are not privileged mutations, so nothing is audited here.
 export async function listOperators(): Promise<ListResult> {
   if (!gateOpen()) return { ok: false, reason: "unavailable" };
   try {
@@ -191,8 +198,10 @@ export async function listOperators(): Promise<ListResult> {
       .from(operator);
     const operators: OperatorRow[] = rows.map((r) => ({
       id: r.id,
+      wallet: r.wallet,
       walletShort:
         r.wallet.length >= 10 ? `${r.wallet.slice(0, 6)}…${r.wallet.slice(-4)}` : r.wallet,
+      explorerUrl: explorerUrlForAddress(r.wallet),
       label: r.label,
       role: r.role,
       status: r.status,

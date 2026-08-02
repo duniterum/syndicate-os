@@ -49,6 +49,7 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { formatAmount } from "@/lib/amountFormat";
+import { AddressUrl } from "@/components/address/AddressText";
 import {
   NotificationComposerFields,
   type NotificationComposerValue,
@@ -189,7 +190,8 @@ function MessageMemberDialog({
                 correction covers EVERY authority mention on this page (the
                 word collided with Chapter I "Genesis Signal"; Replit's
                 observation caught this last survivor). */}
-            Delivered to this member&apos;s inbox on their next visit ({row.walletShort} ·{" "}
+            Delivered to this member&apos;s inbox on their next visit (
+            <AddressUrl short={row.walletShort} full={row.wallet} url={row.explorerUrl} /> ·{" "}
             {row.authority === "PART_B_FREEZE_ROOT" ? "roster" : "v3"}). Founder-gated,
             audit-logged; no email or push exists.
           </DialogDescription>
@@ -427,8 +429,8 @@ export function MemberLedgerPanel() {
                         );
                       })()}
                     </TableCell>
-                    <TableCell className="font-mono text-xs text-muted-foreground">
-                      {r.walletShort}
+                    <TableCell className="text-xs text-muted-foreground">
+                      <AddressUrl short={r.walletShort} full={r.wallet} url={r.explorerUrl} />
                       <span className="ml-1.5 text-[9px] uppercase tracking-wider text-muted-foreground">
                         {r.authority === "PART_B_FREEZE_ROOT" ? "roster" : "v3"}
                       </span>
@@ -592,7 +594,10 @@ export function MemberLedgerPanel() {
                     .slice(0, 5)
                     .map((r) => (
                       <li key={r.id} className="flex justify-between rounded-md border border-border/50 px-2.5 py-1.5">
-                        <span className="font-mono">#{r.seat} · {r.walletShort}</span>
+                        <span className="font-mono">
+                          #{r.seat} ·{" "}
+                          <AddressUrl short={r.walletShort} full={r.wallet} url={r.explorerUrl} />
+                        </span>
                         <span>{r.referral?.durable} durable</span>
                       </li>
                     ))}

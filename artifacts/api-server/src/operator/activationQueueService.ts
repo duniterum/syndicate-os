@@ -42,6 +42,7 @@ import {
   bytes32Word,
 } from "../lib/protocol/sourceDecoders";
 import { SOURCE_LINKAGE_TARGET } from "../data/protocolTargets";
+import { explorerUrlForAddress } from "../canon/the-syndicate/contracts/syndicate-config";
 
 function gateOpen(): boolean {
   return (
@@ -67,8 +68,12 @@ export interface ActivationChecks {
 
 export interface ActivationQueueRow {
   id: string;
-  /** Masked 0x1234…abcd — the house list form; never the full wallet. */
+  /** The full public wallet (address law 2026-07-25, amended 2026-08-02). */
+  wallet: string;
+  /** Short display form 0x1234…abcd — readability, never a boundary. */
   walletShort: string;
+  /** Canon explorer link for the wallet, or null when it cannot resolve. */
+  explorerUrl: string | null;
   /** The engine's own live seat figure (exact decimal string), or null. */
   seat: string | null;
   /** The wallet's derived 64-hex source id (passes the address gates). */
@@ -244,7 +249,9 @@ export async function listActivationRequests(actor: {
       const c = checkById.get(r.id) ?? null;
       out.push({
         id: r.id,
+        wallet: r.memberWallet,
         walletShort: mask(r.memberWallet),
+        explorerUrl: explorerUrlForAddress(r.memberWallet),
         seat: isOpen ? (c?.seat ?? null) : null,
         sourceIdHex: r.sourceIdHex,
         status: r.status,

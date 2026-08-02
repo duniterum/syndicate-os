@@ -65,6 +65,7 @@ import {
   fetchNotifications,
   type NotificationListItem,
 } from "@/lib/operatorClient";
+import { AddressUrl } from "@/components/address/AddressText";
 import { WALLET_SESSION_PREVIEW_ENABLED } from "@/config/walletSessionGate";
 import {
   AdminDashboardSection,
@@ -199,7 +200,22 @@ function NotificationsBell() {
                     {n.title}
                   </span>
                   <span className="ml-auto shrink-0 font-mono text-[9px] uppercase tracking-wider text-muted-foreground">
-                    {n.audience === "ALL" ? "all" : n.recipientShort ?? "member"}
+                    {n.audience === "ALL" ? (
+                      "all"
+                    ) : n.recipientShort !== null ? (
+                      // The address anchor keeps the 12px readability floor
+                      // inside this smaller meta chip (the floor binds text,
+                      // links first of all).
+                      <span className="text-xs normal-case tracking-normal">
+                        <AddressUrl
+                          short={n.recipientShort}
+                          full={n.recipientWallet}
+                          url={n.recipientExplorerUrl}
+                        />
+                      </span>
+                    ) : (
+                      "member"
+                    )}
                   </span>
                 </div>
                 {n.createdAtIso !== null && (

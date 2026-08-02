@@ -430,13 +430,16 @@ export async function refreshIntroductionModel(
   assertAddressSafeAggregate(JSON.stringify(model));
 
   // Slice ④ — the PER-ROW model, from the SAME rows, dates and durable flags
-  // this cycle already computed (zero extra reads). ADR-003: the introduced
-  // wallet enters each row as the server-derived SHORT form only; a malformed
-  // address drops its row (never invented). Keys (full sourceIds) are
-  // SERVER-ONLY; the values are leak-scanned before the model is held.
+  // this cycle already computed (zero extra reads). AMENDED 2026-08-02 (THE
+  // ADDRESS LAW, 2026-07-25): each row carries the introduced wallet FULL
+  // (`whoWallet`) + the short display form (`who`) — a wallet is public,
+  // shown short and independently verifiable, never masked-as-security. A
+  // malformed address still drops its row (never invented). Keys (full
+  // sourceIds) stay SERVER-ONLY.
   const rowsBySourceId = new Map<string, OwnIntroductionRow[]>();
   for (const r of rows) {
-    const who = shortWho(r.recipient.toLowerCase());
+    const whoWallet = r.recipient.toLowerCase();
+    const who = shortWho(whoWallet);
     if (who === null) continue;
     const sid = r.sourceId.toLowerCase();
     const list = rowsBySourceId.get(sid) ?? [];
@@ -446,8 +449,9 @@ export async function refreshIntroductionModel(
       logIndex: r.logIndex,
       transactionHash: r.transactionHash.toLowerCase(),
       who,
+      whoWallet,
       commissionRaw: r.acquisitionCostRaw,
-      durable: durableByRecipient[r.recipient.toLowerCase()] === true,
+      durable: durableByRecipient[whoWallet] === true,
       anatomy: receiptAnatomy(r),
     });
     rowsBySourceId.set(sid, list);
@@ -455,21 +459,11 @@ export async function refreshIntroductionModel(
   for (const list of rowsBySourceId.values()) {
     list.sort((a, b) => b.blockNumber - a.blockNumber || b.logIndex - a.logIndex);
   }
-  // BOUNDARY-AWARE address gate for the ROWS payload (prod-proven fix,
-  // Replit cycle f5250f8): the rows legitimately carry 64-hex tx anchors,
-  // and the unbounded aggregate scanner would fault on ANY of them (every
-  // 64-hex contains a 40-hex substring — the refresh faulted every cycle in
-  // prod while the empty dev table hid it). A bare 40-hex address still
-  // fail-closes; short forms (0x123…abcd) and 64-hex anchors pass — the
-  // exact gate the serving routes use.
-  {
-    const rowsJson = JSON.stringify(Array.from(rowsBySourceId.values()));
-    if (/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/.test(rowsJson)) {
-      throw new Error(
-        "address-shaped token in the introduction rows model — fail closed",
-      );
-    }
-  }
+  // The rows-model 40-hex gate (the f5250f8-era boundary form) was RETIRED
+  // 2026-08-02: rows now deliberately carry the full introduced wallet under
+  // the address law — fail-closing on an address is the bug class the law
+  // names. The aggregate model's scan above still runs (that model really is
+  // address-free by construction).
 
   setLiveIntroductionModel({
     model,

@@ -1,5 +1,24 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-02 — LA FAMILLE ADMIN PRÉ-MASQUÉE EST FERMÉE (la tranche en file du 31-07,
+> construite sur le « go » du fondateur).** Le dernier coin non couvert de la loi adresse du
+> 2026-07-25 : le serveur envoie maintenant l'adresse COMPLÈTE + la forme courte + le lien
+> Snowtrace canon sur les SIX lectures pré-masquées (opérateurs · registre membres · file
+> d'activation · performance par source · notifications envoyées · lignes d'introduction du
+> membre), et le client rend l'ancre bleue partout (nouvel atome `AddressUrl` — une seule
+> implémentation, `AddressLink` y délègue). Les scans 40-hex qui fermaient sur une adresse
+> (3 routes opérateur + introduction-rows + la porte du modèle de lignes) sont RETIRÉS — la loi
+> les nomme le bug. ROUGE D'ABORD : 8 échecs capturés dans guard-auth-zone avant le correctif,
+> verts après (1302 PASS) ; garde backbone re-épinglée (whoWallet obligatoire, scan interdit).
+> PREUVE RUNTIME : 5/5 contrôles verts contre l'api locale (dump prod) via une vraie session
+> SIWE (`scripts/address-family-rig-verify.ts`, fixture éphémère supprimée) ; MESURÉ au rig :
+> /admin/members 14/14 ancres bleues rgb(13,204,242) 12px sans débordement à 375px ·
+> /admin/operators 3/3 · la file + l'onglet Performance + la cloche (12px tenu dans le chip
+> 9px). NON MESURÉ (dit honnêtement) : le rendu de l'onglet introductions membre exige la
+> session d'un propriétaire de source — couvert par typecheck + la construction du modèle +
+> l'atome qui retombe en texte simple si le champ manque.
+> **🚀 DEPLOY — BATCHABLE** (api + studio ensemble ; rien ne casse tant que non déployé).
+
 > **▶ 2026-07-31 (SCELLÉ №2) — LE CYCLE `2abd713` EST EN PRODUCTION.** Rapport Replit collé au
 > chat : **11/11 contrôles verts · identité d'octets ×2 · backbone ok:2, `failed: 0` STABLE**,
 > tête 91 657 329 → 91 657 913. Tout l'arc d'harmonisation vit sur thesyndicate.money : les 78/78

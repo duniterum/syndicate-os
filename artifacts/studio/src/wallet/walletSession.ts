@@ -593,8 +593,13 @@ export interface OwnReceiptAnatomyReadback {
 
 export interface OwnIntroductionRowReadback {
   isoDayUtc: string;
-  /** The introduced wallet, ADR-003 short form (`0x123…abcd`) — server-derived. */
+  /** The introduced wallet, short display form (`0x123…abcd`) — server-derived. */
   who: string;
+  /** The introduced wallet FULL + its served explorer link (address law
+   *  2026-07-25); null when an older payload lacks them — the row then
+   *  renders the plain short form (honest gap, never an invented link). */
+  whoWallet: string | null;
+  whoExplorerUrl: string | null;
   /** The R5 durable test at asOfBlock: the introduced wallet still holds SYN. */
   durable: boolean;
   /** Commission paid for this introduction (USDC 6-dec raw decimal string). */
@@ -645,9 +650,9 @@ function parseReceiptAnatomy(v: unknown): OwnReceiptAnatomyReadback | null {
 
 /**
  * Read the signed wallet's OWN per-introduction rows (each attributed join:
- * verified day · short-form wallet · durable flag · commission · verify
- * anchor). Null on ANY failure — the caller renders an honest gap, never a
- * guess.
+ * verified day · the introduced wallet full + short with its explorer link ·
+ * durable flag · commission · verify anchor). Null on ANY failure — the
+ * caller renders an honest gap, never a guess.
  */
 export async function fetchOwnIntroductions(): Promise<OwnIntroductionsReadback | null> {
   try {
@@ -676,6 +681,9 @@ export async function fetchOwnIntroductions(): Promise<OwnIntroductionsReadback 
           rows.push({
             isoDayUtc: row.isoDayUtc,
             who: row.who,
+            whoWallet: typeof row.whoWallet === "string" ? row.whoWallet : null,
+            whoExplorerUrl:
+              typeof row.whoExplorerUrl === "string" ? row.whoExplorerUrl : null,
             durable: row.durable,
             commissionRaw: row.commissionRaw,
             transaction: row.transaction,

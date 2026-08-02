@@ -1,14 +1,15 @@
 // components/referral/ReferralIntroductionsPanel.tsx — TAB 2 · Introductions.
 //
 // The member's own introduction record. The COUNTS are live (the figures
-// above the tabs); the per-introduction ROWS honestly wait for row-level
-// serving (S7 truth sweep law: never a fake table, never a sample dollar).
-// Visibility Law: rows will show the chain-emitted address short-form —
-// never a name, alias, or email (address ≠ identity).
+// above the tabs); the rows are chain-event facts. Visibility Law: a row
+// shows the chain-emitted address — short display form as a BLUE explorer
+// anchor (full value served, address law 2026-07-25) — never a name, alias,
+// or email (address ≠ identity).
 
 import { Card } from "@/components/ui/card";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { StatusPill } from "@/components/status-pill/StatusPill";
+import { AddressUrl } from "@/components/address/AddressText";
 import {
   usdExact,
   useOwnIntroductions,
@@ -59,7 +60,9 @@ function IntroductionRowsCard() {
               {rows.map((r) => (
                 <tr key={r.transaction} className="border-t border-border/40">
                   <td className="font-mono text-muted-foreground py-2 pr-4 whitespace-nowrap">{r.isoDayUtc}</td>
-                  <td className="font-mono text-foreground/90 py-2 pr-4">{r.who}</td>
+                  <td className="py-2 pr-4">
+                    <AddressUrl short={r.who} full={r.whoWallet} url={r.whoExplorerUrl} />
+                  </td>
                   <td className="py-2 pr-4">
                     {r.durable ? (
                       <StatusPill tone="proof" size="xs">Durable</StatusPill>

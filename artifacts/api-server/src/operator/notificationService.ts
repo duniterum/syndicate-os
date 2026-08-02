@@ -24,6 +24,7 @@ import {
   NOTIFICATION_LINK_PATHS,
 } from "@workspace/os-contracts";
 import { AUTH_EXPOSURE_FLAG } from "../auth/authExposure";
+import { explorerUrlForAddress } from "../canon/the-syndicate/contracts/syndicate-config";
 
 export type NotificationWriteResult = { ok: true } | { ok: false; reason: string };
 
@@ -31,9 +32,11 @@ export type NotificationWriteResult = { ok: true } | { ok: false; reason: string
 export const NOTIFICATION_TITLE_MAX = 120;
 export const NOTIFICATION_BODY_MAX = 2000;
 
-// A raw 20-byte address anywhere in founder-authored text would later trip the
-// fail-closed 40-hex output scan on every member inbox read. Refuse at write
-// time with a clear reason instead of poisoning the read model.
+// PROSE HYGIENE (not address-hiding — the address law 2026-07-25 makes wallets
+// public, and the recipient fields carry the full wallet): founder-authored
+// TEXT should name people by seat, never by pasted address — a raw 40-hex in
+// title/body is almost always a composing mistake, and the member inbox's own
+// leak scan would fail-close on it. Refuse at write time with a clear reason.
 const RAW_ADDRESS = /0x[0-9a-fA-F]{40}/;
 
 // NOTIF-2: the authoritative allow-lists (the single source in os-contracts).
@@ -189,13 +192,16 @@ export async function broadcastNotification(
   }
 }
 
-// Masked recent list for the founder's console (the honest bell + composer
-// history). Wallets are masked server-side like every operator list; reads are
+// Recent sent list for the founder's console (the honest bell + composer
+// history). AMENDED 2026-08-02 (address law 2026-07-25): recipients serve
+// full + short + canon explorer link, like every operator list; reads are
 // not privileged mutations, so nothing is audited here (mirrors listOperators).
 export interface NotificationListRow {
   id: string;
   audience: string;
-  recipientShort: string | null; // masked 0x1234…abcd, null for ALL
+  recipientWallet: string | null; // full public wallet, null for ALL
+  recipientShort: string | null; // short display form 0x1234…abcd, null for ALL
+  recipientExplorerUrl: string | null; // canon explorer link, null for ALL
   title: string;
   body: string;
   icon: string | null;
@@ -230,10 +236,13 @@ export async function listNotifications(): Promise<NotificationListResult> {
     const notifications: NotificationListRow[] = rows.map((r) => ({
       id: r.id,
       audience: r.audience,
+      recipientWallet: r.recipientWallet,
       recipientShort:
         r.recipientWallet !== null && r.recipientWallet.length >= 10
           ? `${r.recipientWallet.slice(0, 6)}…${r.recipientWallet.slice(-4)}`
           : null,
+      recipientExplorerUrl:
+        r.recipientWallet !== null ? explorerUrlForAddress(r.recipientWallet) : null,
       title: r.title,
       body: r.body,
       icon: r.icon,

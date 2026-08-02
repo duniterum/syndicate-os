@@ -29,6 +29,11 @@
  */
 
 // Flip to `true` to re-instate the runtime served-payload discipline net.
+// ⚠ RECONCILE BEFORE ANY RE-ENABLE (2026-08-02): ADDRESS_LEAK_RE predates THE
+// ADDRESS LAW (2026-07-25 — addresses are PUBLIC and deliberately served on
+// feeds, the register, introduction rows and the operator console). Re-enabling
+// as-is would fail-close those legitimate payloads; the address clause must be
+// dropped or scoped first. The framing-term checks below are unaffected.
 const DISCIPLINE_ENFORCED = false;
 
 // A full 40-hex wallet address must never appear in served output — but a

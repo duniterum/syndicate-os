@@ -10,11 +10,14 @@
 // PRIVACY (ADR-003 + the §D privacy overlay, the recon's verdict):
 //   • memberNumber↔wallet pairing is permitted ONLY to founder_root (the route
 //     enforces the role); it is designed canon, never the public directory.
-//   • A FULL wallet address never serializes — walletShort is derived
-//     server-side as slice(0,6)+"…"+slice(-4); the route additionally runs the
-//     BOUNDARY-AWARE 40-hex fail-closed scanner over the whole serialized
-//     payload (the f436c42 form — the rows' 64-hex verify anchors pass, a
-//     bare address never does).
+//   • ADDRESSES AMENDED 2026-08-02 (THE ADDRESS LAW, 2026-07-25): a wallet is
+//     PUBLIC — each row serves the FULL wallet + the walletShort display form
+//     + the canon explorer link, so the console renders the blue verifiable
+//     anchor like every other surface. The old "a full wallet never
+//     serializes" clause and the route's 40-hex fail-close scan were the bug
+//     class the law names (masking-as-security) and are retired. The red
+//     line stays name/alias/email — never an address; the founder_root gate
+//     and the audit row are unchanged.
 //   • AMENDMENT A21 SHIPPED (founder-gated, approved on the wireframe +
 //     "GO and GO-Live" 2026-07-20): each row now carries its RECEIPTS — the
 //     same sanctioned public row shape /api/receipt/{txHash} serves, verify
@@ -38,6 +41,7 @@ import { getLiveIntroductionModel } from "../lib/protocol/introductionLiveModel"
 import { getOwnedSources } from "../lib/protocol/sourceOwnershipIndex";
 import { sourceKeyOf } from "../lib/protocol/introductionReadmodel";
 import { txUrl } from "../canon/the-syndicate/chain/chain-registry";
+import { explorerUrlForAddress } from "../canon/the-syndicate/contracts/syndicate-config";
 import type { OwnPurchaseRow } from "../backbone/ownPurchaseReadmodel";
 
 function gateOpen(): boolean {
@@ -97,8 +101,12 @@ export interface LedgerReceiptLine {
 export interface LedgerRow {
   readonly id: string;
   readonly seat: number;
-  /** Server-side masked short form — never a full address (ADR-003). */
+  /** The full public wallet (address law 2026-07-25). */
+  readonly wallet: string;
+  /** Short display form — readability companion, never a boundary. */
   readonly walletShort: string;
+  /** Canon explorer link for the wallet, or null when it cannot resolve. */
+  readonly explorerUrl: string | null;
   /** Numbering authority: PART_B_FREEZE_ROOT (#1–#8) or V3_EMITTED (#9+). */
   readonly authority: string;
   /** UTC day of the entry transaction (chain-verified), when known. */
@@ -245,7 +253,9 @@ export async function readMemberLedger(actor: {
       ledger.push({
         id: randomUUID(),
         seat: rec.memberNumber,
+        wallet: walletLower,
         walletShort: shortForm(walletLower),
+        explorerUrl: explorerUrlForAddress(walletLower),
         authority: rec.numberingAuthority ?? "UNKNOWN",
         entryDay: isoDayFromSeconds(rec.entryBlockTimestampSec),
         rung: cap?.rung ?? null,
@@ -274,7 +284,7 @@ export async function readMemberLedger(actor: {
       recencyAnchorDay: anchorDay,
       introductionsAsOfBlock: intro?.model.asOfBlock ?? null,
       honesty:
-        "A projection of already-indexed data only (continuity spine · capital axis · own purchases with their verify anchors · R5 introductions). Masked short wallets, founder_root-gated, access audit-logged. Segments derive from purchase recency against the newest indexed purchase day — no login or engagement data exists by design.",
+        "A projection of already-indexed data only (continuity spine · capital axis · own purchases with their verify anchors · R5 introductions). Every wallet opens on the explorer, founder_root-gated, access audit-logged. Segments derive from purchase recency against the newest indexed purchase day — no login or engagement data exists by design.",
     };
 
     // §8: the access is logged (who read the ledger, when — never row content).
