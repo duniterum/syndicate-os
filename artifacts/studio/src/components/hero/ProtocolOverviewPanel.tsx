@@ -194,9 +194,9 @@ export function ProtocolOverviewPanel() {
           {filled !== null ? (
             <>
               <div className="font-mono text-xl font-black text-foreground">
-                {filled}
+                {filled.toLocaleString("en-US")}
                 {window !== null ? (
-                  <span className="text-sm font-semibold text-muted-foreground"> / {window}</span>
+                  <span className="text-sm font-semibold text-muted-foreground"> / {window.toLocaleString("en-US")}</span>
                 ) : null}
               </div>
               {pct !== null ? (

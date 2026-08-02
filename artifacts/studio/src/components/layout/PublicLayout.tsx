@@ -182,8 +182,11 @@ function Wordmark() {
   // The chapter badge reads the reality spine's DERIVED chapterFacts (the one
   // choke point computes it from the live count — senior review 2026-08-02:
   // the config's hand-pinned "CH #001" died; it would have kept announcing
-  // Chapter I at seat #334). The shared hook dedupes via the query client;
-  // null = badge hidden (honest absence, never a guessed chapter).
+  // Chapter I at seat #334). Cost, said honestly (round-2 review): the
+  // reality + holder-index reads dedupe via the query client, but the spine
+  // attestation line inside the hook polls PER INSTANCE — mounting here adds
+  // one small cached poll to every public page (dedupe candidate queued in
+  // SESSION_STATE (b)). null = badge hidden (honest absence, never a guess).
   const chapterFacts = useHeroReality().chapterFacts;
   return (
     <Link href="/" className="group flex shrink-0 items-center gap-2.5">

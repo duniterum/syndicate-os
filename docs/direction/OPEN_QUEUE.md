@@ -3,7 +3,8 @@
 > **▶ 2026-08-02 (APRÈS LE SCEAU — la session suivante : le candidat n°1 construit, puis la
 > revue « toutes casquettes » du fondateur et son durcissement le jour même. Commits
 > `4b96b30` → `1a38d13` + registres, poussés sur main, NON DÉPLOYÉS — groupables, prod reste
-> juste.)** Sur son « go » : ① la table des chapitres COMPLÈTE côté serveur — le piège du
+> juste.)** Sur son « go » (le candidat n°1 : sa moitié table-des-chapitres est CONSTRUITE ;
+> sa moitié pagination attend le verdict wireframe) : ① la table des chapitres COMPLÈTE côté serveur — le piège du
 > siège #334 (TOUT le registre public se fermait) est mort ; UN module, épinglé valeur par
 > valeur contre la table studio, preuve par mutation. ② Sa revue 4-casquettes (serveur ·
 > complétude · design · holistique) a trouvé la moitié CLIENT du même piège : héros + badge

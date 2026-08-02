@@ -2,7 +2,7 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-02 (HANDOFF — end of day) — RESUME HERE. **PROD = `7a916a3` — SEALED (the day's SECOND seal; Replit report in the 2026-08-02 chat: 31/31 blobs · byte identity ×2, entry `index-BBE4X3MN.js` = `62c556d3…9c7b`, console `OperatorConsole-6y4TAiZq.js` = `e2c1e636…af78` · 5/5 checks · prod's first cycle performed the rig-rehearsed transition VERBATIM: « spine GROWN_PROVENANCE_REBUILD — run #6, 16 records (14 replaced) » then « unchanged », attestation 16 = 16 · the public hero says « snapshot 16 as of 2026-08-02 » · /contracts states Vault 70% · Liquidity 20% · Operations 10% · backbone ok:2, failed:0 stable). main = origin/main. DEPLOY BACKLOG: THREE BATCHABLE code slices — `4b96b30` (server chapter table) · `68ea337` (hero/header chapter derivation) · `1a38d13` (register payload hygiene + hardened pins) — all byte-invisible at 16 seats, prod stays correct on the previous build; they ride the next deploy together (f14af1f + ledger commits are docs-only). ZERO HAND-FED FIGURES REMAIN ON ANY SURFACE — every member/source count converges from the chain automatically within one backbone cycle.**
+> # ▶ 2026-08-02 (HANDOFF — end of day) — RESUME HERE. **PROD = `7a916a3` — SEALED (the day's SECOND seal; Replit report in the 2026-08-02 chat: 31/31 blobs · byte identity ×2, entry `index-BBE4X3MN.js` = `62c556d3…9c7b`, console `OperatorConsole-6y4TAiZq.js` = `e2c1e636…af78` · 5/5 checks · prod's first cycle performed the rig-rehearsed transition VERBATIM: « spine GROWN_PROVENANCE_REBUILD — run #6, 16 records (14 replaced) » then « unchanged », attestation 16 = 16 · the public hero says « snapshot 16 as of 2026-08-02 » · /contracts states Vault 70% · Liquidity 20% · Operations 10% · backbone ok:2, failed:0 stable). main = origin/main. DEPLOY BACKLOG: FOUR BATCHABLE code slices — `4b96b30` (server chapter table) · `68ea337` (hero/header chapter derivation) · `1a38d13` (register payload hygiene + hardened pins) · the round-2 polish commit — rendered output identical at 16 seats (`1a38d13` also drops the unread chapterCeiling KEY from /api/registry — shape change, zero readers, skew-safe both ways), prod stays correct on the previous build; they ride the next deploy together (f14af1f + ledger commits are docs-only). ROUND-2 REVIEW (4 fresh hats over the WHOLE session): batch certified DEPLOY-READY — all six gates fresh exit 0, no migrations, no env, no SEO/featureStatus owed; backbone.guard counts 243 since the presentation pin. ZERO HAND-FED FIGURES REMAIN ON ANY SURFACE — every member/source count converges from the chain automatically within one backbone cycle.**
 >
 > ## THE DAY IN ONE READ (two seals: `22296fd` then `7a916a3` — the autonomy day)
 > ① The pre-masked admin family CLOSED (the founder's « go ») — six operator/member reads
@@ -153,6 +153,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ## holistic review ranked (nothing blocks, founder picks or says « go » on any):
 > · ~~/registry pagination before ~100 seats~~ — PICKED on the « go »; wireframe v2 HANDED,
 >   awaiting the founder's visual verdict (see (c)); the chapter-table half CLOSED in (a5).
+> · NEW (round-2 review candidates, named per SYSTEM-FIRST): dedupe useSpineAttestation
+>   (per-instance poller — every public page's chrome now runs one; module-level share =
+>   1 poll total) · /status still RENDERS the frozen holder-index card (14 · July 16) next
+>   to the live hero 16 — pre-existing, dies with the holder-index slice below; quick
+>   founder-gated fix exists (holder-index:build rebuild to 16). · Accepted-known: the
+>   header chapter badge appears AFTER the live read resolves (honest absence, loaded
+>   pixels identical) · the seats bar reads cumulative-count vs chapter-END window (a
+>   fresh chapter opens ~1/3 full — correct, not a bug).
 > · Server-side windowing of the member-ledger payload
 >   toward ~300 members (the client pager cannot fix payload weight). · Retire/bridge the
 >   static /api/holder-index endpoint (API consumers still get the old file; every RENDERED

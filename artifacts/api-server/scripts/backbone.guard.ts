@@ -1780,7 +1780,17 @@ check(
   // in any quoting/formatting style — a 6th studio chapter cannot hide by
   // being written differently (type annotations don't match: no quote after
   // the colon).
-  const studioSource = stripComments(read("../studio/src/lib/chapters.ts"));
+  // Round-2 hardening (2026-08-02, PoC-proven): match INSIDE the extracted
+  // CHAPTERS array block, then strip comments within it. The stripper's
+  // trailing-comment pass refuses tails containing quotes, so a pinned
+  // literal parked in a TRAILING comment outside the live table used to
+  // satisfy the pin; extracting the block first makes that shape RED (a
+  // trailing fake inside the block inflates the row count instead — fails
+  // safe either way).
+  const studioBlock = /export const CHAPTERS[\s\S]*?\n\];/.exec(
+    read("../studio/src/lib/chapters.ts"),
+  );
+  const studioSource = stripComments(studioBlock === null ? "" : studioBlock[0]);
   const rowLiteral = (c: (typeof SERVER_CHAPTERS)[number]) =>
     `{ roman: "${c.roman}", name: "${c.name}", startSeat: ${c.startSeat}, endSeat: ${c.endSeat === null ? "null" : c.endSeat} }`;
   const everyRowMirrored = SERVER_CHAPTERS.every((c) => studioSource.includes(rowLiteral(c)));
