@@ -154,7 +154,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > · **① THE RESERVES BUILD — GO and GO-Live (founder, 2026-08-02, « ok go and go-live »).
 >   THE 3 DECISIONS ARE TAKEN: 3×2 grid · the OFFICIAL XAUt0 mark (vendored, like LINK's) ·
 >   market-hours freshness window for commodity feeds, STATED on the card (crypto keeps
->   24h).** Build IN FLIGHT, rides docs/design/reserves-band-6-assets-mockup.html —
+>   24h).** Build IN FLIGHT — **RECON DONE (2 senior agents, 2026-08-02): the COMPLETE
+>   implementation map with exact files/lines/guard-pins lives at
+>   docs/reference/RESERVES_BUILD_RECON-2026-08-02.json — BUILD FROM IT, re-discover
+>   nothing.** Key facts from the map: the api payload needs ZERO schema change (generic
+>   financial items); realityService gains 2 balance blocks (copy the §4b BTC.b shape,
+>   lines ~1443-1469) + 2 feed entries with a PER-FEED max-age (readPrice refactor, the
+>   24h const at line ~1618 — crypto keeps 86_400, XAU gets the named market-hours
+>   window); protocolTargets gains 4 addresses — ⚠ FIRST STEP: the XAUt0 token address is
+>   NOT in the repo (recover from the block-91,571,070 gold swap, chain-verify
+>   symbol()+decimals() before pinning) and the 2 feed fulls must be resolved from their
+>   short forms + re-verified via latestRoundData+description(); trackedAssets.ts already
+>   holds a DRAFTED LINK entry (lines ~127-138) to activate + a GOLD entry to add (tone
+>   "gold" exists); the band grid flips lg:grid-cols-4→3; /contracts +2 rows; RED-FIRST
+>   battery per the map (reality guard count 35→39 + exact id set + 3 freshness tests +
+>   target pins). Rides docs/design/reserves-band-6-assets-mockup.html —
 >   feeds verified on-chain (LINK/USD `0x49cc…de9a` · XAU/USD `0x1F41…515B`); same slice
 >   adds the two /contracts rows (Vault LINK · Vault GOLD); admin panel automatic.
 > · **② A1 — My Activity, the Mine|Protocol lens** (the engraved sequence's #1; unlocks C3).

@@ -1,0 +1,299 @@
+{
+  "summary": "Two senior recon agents map the exact implementation terrain for the LINK.e/XAUt0 reserves build (api valuation side + studio surfaces side)",
+  "agentCount": 2,
+  "logs": [],
+  "result": {
+    "api": {
+      "summary": "The reserves data path is: api-server realityService.buildFinancialGroup() makes every vault read live (balanceOf via eth_call, native via eth_getBalance) and every price read via Chainlink latestRoundData(), emits them as EXACT raw-string items in the protocol-reality envelope's `financial` group (generic item arrays — openapi/zod need NO change), and the studio derives ALL valuation client-side: the home band (ProtocolReservesBand) is driven entirely by config/trackedAssets.ts (one entry = balanceIds + decimals + dp + priceId + tone + verify), /contracts (ProtocolAssetsCard) hand-lists rows, and the admin/status/map panels render the envelope generically (automatic). Adding LINK.e + XAUt0 means: (a) 4 new addresses declared ONCE in protocolTargets.ts FINANCIAL_TARGETS (linkTokenAddress, xautTokenAddress, priceFeeds.linkUsd, priceFeeds.xauUsd) — the LINK.e token address is 0x5947BB275c521040051D82396192181b413227A3 (already pinned in two guard scripts as fixtures), the XAUt0 address is NOT in the repo (recover from the gold swap at block 91,571,070 and chain-verify symbol/decimals), and the two feed addresses exist only short-form (0x49cc…de9a / 0x1F41…515B) so full values must be resolved + re-verified on-chain before pinning; (b) two new balance blocks in realityService (copy the §4b BTC.b pattern at lines 1443-1469) emitting financial.vault.linkBalance / financial.vault.xautBalance; (c) two new feed entries in the §4e loop (lines 1646-1672) emitting financial.price.linkUsd / financial.price.xauUsd, with the freshness check (readPrice, lines 1624-1645; STALENESS_MAX_S=86_400 at line 1618) refactored to a PER-FEED max-age so XAU gets a market-hours window while crypto keeps 24h — the check is entirely in this one closure, minimal change is adding a maxAgeS field to each feed-loop entry and threading it into readPrice; (d) client: uncomment/extend the drafted LINK entry (trackedAssets.ts lines 127-138) + add a GOLD entry (tone \"gold\" — TONE_BG already has it), flip the band grid lg:grid-cols-4→3 (line 185), state the market-hours window on the gold card (reuse the `held` slot to avoid new sub-12px sites), add the two /contracts rows + update its headline copy and header comment, update featureStatus.vaultHoldings' what-is-valued comment and the /contracts SEO description in the same commit; (e) guards RED-first: protocol-reality-check.guard financial count 35→39 with exact-id-set update, PRICE_FEED_FIX +2, balanceOf count 15→17, plus three new freshness tests (XAU past-24h-but-in-window SERVES, XAU past-window fails, crypto at 25h STILL fails), and protocol-targets-reconcile literal pins for all 4 new addresses. Verify links reuse the existing \"vaultWallet\" id — zero codegen.",
+      "files": [
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\api-server\\src\\lib\\protocol\\realityService.ts",
+          "role": "The reality spine (2168 lines). buildFinancialGroup (1122-2043) makes every reserve read: §4b vault BTC.b balanceOf (1443-1469), §4c WETH.e (1471-1497), §4d native AVAX via eth_getBalance (1499-1527), §2 vault USDC (1229-1255), §2b ops USDC (1257-1283), §4d-bis NFT-sale USDC (1529-1610), §3/3b LP reserves + pool share (1285-1413). §4e Chainlink feeds (1612-1673): STALENESS_MAX_S=86_400 line 1618, CLOCK_SKEW_MAX_S=3_600 line 1622 (the 2026-07-25 'prix non positif / fraîcheur à double sens' hardening: ageS>MAX or ageS<-SKEW → fail closed, lines 1632-1640), readPrice closure 1624-1645, feed list {id,sym,addr} lines 1646-1650 (avaxUsd/btcUsd/ethUsd), loop 1651-1672 building financial.price.* items via buildFinancialNumeric. Read pattern everywhere: eth_call with 4-byte selector, decodeUint256Decimal → exact base-10 string (never a JS number), fail-closed null+failureReason on wrong-chain/no-code/decode-throw. 30s cache + SWR (2078-2167).",
+          "whatChanges": "Add two balance blocks (§4f/§4g, copy the §4b shape verbatim): balanceOf(targets.linkTokenAddress, VAULT) → id financial.vault.linkBalance (18-dec note), balanceOf(targets.xautTokenAddress, VAULT) → financial.vault.xautBalance (decimals per chain verification; note states 1 token = 1 troy oz). Extend the §4e feed list with {id:'financial.price.linkUsd', sym:'LINK', addr: targets.priceFeeds.linkUsd, maxAgeS: 86_400} and {id:'financial.price.xauUsd', sym:'XAU', addr: targets.priceFeeds.xauUsd, maxAgeS: MARKET_HOURS_WINDOW}; change readPrice(feed) → readPrice(feed, maxAgeS) replacing the single STALENESS_MAX_S in the ageS>… comparison (crypto entries pass 86_400 — behavior byte-identical; XAU passes the wider window). Declare the commodity window ONCE as a named const with a written reason (gold closes Fri ~22:00 UTC → reopens Sun ~22:00/23:00 UTC + holidays; the exact seconds value is a builder decision the card copy must state). The XAU item note must state the window (the guard asserts note content for the sibling feeds at guard line 487)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\api-server\\src\\data\\protocolTargets.ts",
+          "role": "SERVER-ONLY address book — the ONE src-side declaration of every read target (duplicate-facts allows literals here to appear once in src; guards under scripts/ re-pin them independently). FinancialTargets type: btcbTokenAddress/wethTokenAddress fields 308-309 (with the chain-verified-2026-07-25 doc), priceFeeds type 326-330. FINANCIAL_TARGETS literal: vaultWallet 385, btcb/weth 397-398, priceFeeds 406-410, allocationWallets 430-438. Also PROTOCOL_EVENT_SCAN_TARGETS (597-735) — treasury movement lanes; LINK.e/XAUt0 MOVEMENTS already ride the token-discovery lane (see tokenDiscoveryScan), so no new scan lane is required.",
+          "whatChanges": "Add to FinancialTargets type + literal: linkTokenAddress (LINK.e 0x5947BB275c521040051D82396192181b413227A3 — matches the fixture twins in backbone.guard.ts:1249 and guard-one-figure.ts:201), xautTokenAddress (NOT in repo — recover from the block-91,571,070 gold swap via the local DB's discovered rows or Snowtrace, then chain-verify symbol()+decimals() before pinning, the BTC.b/WETH.e precedent), and priceFeeds.linkUsd + priceFeeds.xauUsd (full addresses resolved from the 2026-08-02 verification — short forms 0x49cc…de9a / 0x1F41…515B in SESSION_STATE:158 — and re-verified via latestRoundData + description() before pinning). Each with the same 'chain-verified <date>' doc comment style as 394-398/404-405."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\api-server\\src\\lib\\protocol\\financialDecoders.ts",
+          "role": "Pure selectors + decoders. SELECTOR_LATEST_ROUND_DATA line 29 (0xfeaf968c), SELECTOR_BALANCE_OF line 21. decodeLatestRoundData (108-123): 5-word ABI decode → {answer: string, updatedAt: number}, rejects non-positive/negative int256 and malformed length. encodeAddressArg (43-46).",
+          "whatChanges": "NOTHING — both new tokens use SELECTOR_BALANCE_OF and both new feeds use SELECTOR_LATEST_ROUND_DATA + decodeLatestRoundData unchanged (XAU/USD is also an 8-decimal USD aggregator)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\api-server\\scripts\\protocol-reality-check.guard.ts",
+          "role": "The mock-transport invariants guard (1000 lines; run: protocol-reality:guard, in the blocking chain). Pins: financial group EXACTLY 35 items (line 423) + the exact sorted id set (424-466); PRICE_FEED_FIX map 227-231 + encRoundData 233-239 + goodCall latestRoundData branch 315-319 (unknown feed → '0x' → fail closed); goodCall balanceOf disambiguation 292-306 (BTCB_ADDR/WETH_ADDR branches 299-300); 'exactly 15 balanceOf reads' 547-562; one eth_getBalance 566; price checks 484-487; guard clock fixed at 2026-06-30 (PRICE_NOW_S 222, updatedAt 1h old 223); §7j stale-price RED test 719-734 (25h round → null, siblings survive); §7k non-positive 736+.",
+          "whatChanges": "RED-FIRST battery: (1) bump the count check 35→39 and add the 4 ids (financial.price.linkUsd, financial.price.xauUsd, financial.vault.linkBalance, financial.vault.xautBalance) to the sorted set; (2) add LINK_USD_FIX/XAU_USD_FIX to PRICE_FEED_FIX and LINK/XAUT balance fixtures + goodCall balanceOf branches (addr === LINK_ADDR / XAUT_ADDR → fixtures above MAX_SAFE_INTEGER where magnitude allows); (3) balanceOf count 15→17 with calldata pins (both encode the vault wallet); (4) NEW freshness tests — (a) XAU round older than 24h but INSIDE the market-hours window SERVES exact (reverting the per-feed window turns this RED — the proof the branch executes), (b) XAU round beyond the window fails closed, (c) a CRYPTO feed at 25h STILL fails closed (proves the widening never touched the 24h crypto rule); (5) happy-path check that the XAU item note states the window."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\api-server\\scripts\\protocol-targets-reconcile.guard.ts",
+          "role": "The canon-reconcile guard (protocol-targets:guard, blocking chain). Pins served addresses to authority: bridge tokens pinned as LITERALS with chain-verified dates (btcb line 368, weth 369 — 'no internal canon authority; the authority is each token's OWN on-chain identity'); Chainlink feeds pinned literal (avax/btc/eth 373-375); selector re-derivations incl. latestRoundData 313; addr-shape checks 393-395.",
+          "whatChanges": "Add four literal pins in the same style: linkTokenAddress == 0x5947BB275c521040051D82396192181b413227A3, xautTokenAddress == <chain-verified value>, priceFeeds.linkUsd == <full 0x49cc…de9a>, priceFeeds.xauUsd == <full 0x1F41…515B>, each with 'chain-verified 2026-08-02' wording, plus addr-shape checks. This is the twin that keeps the src declaration honest without a second src copy."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\config\\trackedAssets.ts",
+          "role": "THE RESERVES REGISTRY driving the home band: one entry = symbol/name/logo/balanceIds/decimals/dp/priceId/tone/verify/held/includesPoolShare (interface 21-63). Current 4 entries: AVAX (66-76), BTC (77-87), ETH (88-98), USDC merged 4-leg row (99-125). The LINK entry is ALREADY DRAFTED, commented out, lines 127-138 (logo 'link' vendored; balanceIds ['financial.vault.linkBalance']; priceId 'financial.price.linkUsd'; tone viz-6; decimals 18, dp 4). Header comment 8-14 records 'adding an asset is one entry HERE plus that server pair'.",
+          "whatChanges": "Uncomment/land the LINK entry (verify: ['vaultWallet']) and add the GOLD entry: symbol 'GOLD', name 'Tether Gold · 1 token = 1 troy oz', logo 'xaut' (new vendored file), balanceIds ['financial.vault.xautBalance'], decimals <chain-verified>, dp 6 (mockup shows 0.003144), priceId 'financial.price.xauUsd', tone 'gold', verify ['vaultWallet'], held carrying the market-hours statement (reusing the existing held slot adds no new sub-12px class site). If the band needs the mockup's 'oz' amount suffix and '$…/oz · Chainlink XAU/USD' price line, add an optional unit/priceLabel field here rather than branching on the symbol. Update the header comment (the 'one entry + server pair' promise is now exercised — date it)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\components\\ProtocolReservesBand.tsx",
+          "role": "The home band (rendered by PublicHome.tsx). TONE_BG literal map 26-35 ALREADY includes viz-6 and gold. Rows derived from TRACKED_ASSETS 93-104: legs summed raw via sumRawUnits, price = toNum(raw(fin, a.priceId), 8) at line 101 (8-dec assumption holds for XAU), value = amt*px. ONE LIST law 106-112 (total + composition bar from the same array — the 80%-bar lesson). Grid at line 185: 'grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4' with the 4-in-one-row comment 182-184. Price meta line 209-215 ('$X / SYMBOL · Chainlink', text-[10.5px]); held line 216-218; VerifyOnChain 219. Guard-pinned call shapes: formatAmount(r.amtRaw, r.decimals, r.dp), sumRawUnits(legs), rawShare(poolUsdcRaw… (guard-one-figure USES 388-390 — do not rename).",
+          "whatChanges": "Flip lg:grid-cols-4 → lg:grid-cols-3 (the approved 3×2; scales 3×3 later) and REWRITE the 182-184 comment citing the new mockup (Refactoring Law: strike + date, never silent). Render the GOLD card's oz unit + 'Chainlink XAU/USD' price label per the mockup (via the registry field). The market-hours window STATED on the gold card (held slot). Composition bar/legend gain the 2 segments automatically from the registry. Keep every guard-pinned call shape byte-identical."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\components\\ProtocolAssetsCard.tsx",
+          "role": "The /contracts card (rendered by pages/ContractMemory.tsx line 27). Hand-listed: raw reads 84-98, display amounts via fmtAmount 101-109 (guard-pinned alias import line 33/guard USES 391), prices 112-114, USD legs 116-124, pool share 130-135, NFT USDC 141-145, fail-closed total from the priced[] array 149-152, rows array 166-263 (vault-avax/vault-btcb/vault-weth pattern at 203-228), headline copy naming the priced set 290-295, assetVerifyIds 38-48, VALUATION-RULE header comment 1-26 (with the 2026-07-26 header-drift correction note).",
+          "whatChanges": "Add two rows in the vault-btcb shape: 'vault-link' (findValue financial.vault.linkBalance, fmtAmount(raw,18,4), linkPx=toNum(financial.price.linkUsd,8), meta 'Chainlink price') and 'vault-gold' (financial.vault.xautBalance, fmtAmount at the chain-verified decimals/dp 6, xauPx from financial.price.xauUsd, meta stating 1 token = 1 troy oz + the market-hours window). Add both USD legs to the priced[] array (the total now fails closed on either — the valuation law). Extend assetVerifyIds with vault-link/vault-gold: ['vaultWallet']. Update the headline copy 290-295 AND the header comment 1-26 to name the six priced assets and the commodity window (this file's own 2026-07-26 lesson: the header must move with the body)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\scripts\\guard-one-figure.ts",
+          "role": "The one-figure blocking guard. §④ PINS 352-361: (decimals,dp) agreement across the feed token map / ProtocolAssetsCard fmtAmount call / trackedAssets entry, per token (USDC/BTC.b/WETH.e/AVAX); registry regex 368 parses trackedAssets entries. §⑤ USES 387-402 pins the band's exact call shapes. §③b drives the discovery lane with LINK_CONTRACT = 0x5947BB275c521040051D82396192181b413227A3 (line 201) — discovered tokens render at dp 4 default (case line 226).",
+          "whatChanges": "Add PINS rows for the two new assets IF they join the feed's curated token map, or — the minimal correct path — add card+registry-only agreement pins (cardVar vaultLink/vaultGold vs regSymbol LINK/GOLD) since LINK.e/XAUt0 stay DISCOVERED on /activity (which renders at dp 4 — a stated GOLD divergence: band/card 6dp vs activity 4dp; decide and document, or curate both in TREASURY_TOKEN_DECIMALS + full PINS rows). RED-first: write the pin, watch it fail against the pre-change files."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\lib\\backboneFeedClient.ts",
+          "role": "/activity's parser. TreasuryToken union + TREASURY_TOKEN_DECIMALS map 397-411 (USDC/SYN/BTC.b/WETH.e/AVAX — curated precision); discovered tokens (LINK.e, XAUt0) already parse via the discovery path with contract-read decimals and dp 4 default. Both purchases already render on /activity (LINK.e block 91,336,828; gold swap block 91,571,070).",
+          "whatChanges": "NOTHING required (movements already served via discovery). OPTIONAL (precision-agreement decision above): add curated 'LINK.e' {18,4} and 'XAUt0' {<dec>,6} entries — if done, the guard-one-figure PINS extension becomes mandatory in the same commit."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\public\\coins\\",
+          "role": "Vendored logo directory (MIT icon set + LICENSE.txt). link.svg IS present; no gold/xaut mark exists. CoinMark.tsx resolves /coins/<logo>.svg (line 50) with lettered-disc fallback.",
+          "whatChanges": "Vendor the OFFICIAL XAUt0 (Tether Gold) mark as xaut.svg (founder decision: official mark, like LINK's) + add its provenance/attribution line beside the MIT LICENSE note (the official mark is NOT part of the MIT icon set). Verify it renders in both themes (img naturalWidth check at preview)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\config\\featureStatus.ts",
+          "role": "The DONE-IS-DONE live-vs-future registry. vaultHoldings key line 88 (status live since 2026-07-25) with the WHAT-IS-VALUED-AND-SUMMED comment block 57-88 naming 'USDC at one dollar, AVAX / BTC.b / WETH.e at live Chainlink prices' — this block's own history records the cost of letting it drift (70-77).",
+          "whatChanges": "Update the comment block (and the where text if asset names appear) to name the six-asset set + the commodity-window nuance, IN THE SAME COMMIT as the go-live. No key flip owed (vaultHoldings is already live; this extends a live capability)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\lib\\seo-route-registry.ts",
+          "role": "The served-head registry. /contracts entry 534-550: description 540-541 names 'the vault's USDC, AVAX, BTC.b, WETH.e and SYN'; notes 549 describe the card's valuation. Home entry (~161) is generic ('reserves read live from Avalanche') — no asset names.",
+          "whatChanges": "Update the /contracts description + notes to the six-asset reality in the SAME commit (the SEO-rides-the-slice standing rule), then run the SEO battery (seo:generate + seo:check + surface:audit + seo:rewrites:check — the sitemap is a committed file)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\api-server\\src\\routes\\verifyLinks.ts",
+          "role": "The verify-links endpoint: SPECS 72-85 with id enum incl. 'vaultWallet' 78 (generated zod enum lib/api-zod/src/generated/api.ts:242; client VerifyLinkId lib/api-client-react/src/generated/api.schemas.ts:45-58).",
+          "whatChanges": "NOTHING — both new cards verify via the existing 'vaultWallet' link (both assets sit in the vault wallet); no spec/codegen touch. (Optional later: token-page links would need spec+codegen+route in ONE atomic change — do not do it in this slice.)"
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\lib\\api-spec\\openapi.yaml",
+          "role": "The payload contract. groups.financial is a GENERIC array of ProtocolRealityItem (lines 582-585) — item ids are NOT enumerated; cacheTtlMs enum [30000] is LOCKSTEP-pinned (realityService 99-103).",
+          "whatChanges": "NOTHING — new financial items flow through the existing generic schema. Do not touch cacheTtlMs."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\components\\ProtocolReality.tsx",
+          "role": "The generic envelope renderer: ProtocolRealityPanel/ProtocolRealitySummary map groups arrays (197, 232-236). Used by /status, /map (ProtocolMap.tsx:8), and the admin OperatorOverview.tsx:5/38 — the 'admin reality panel'.",
+          "whatChanges": "NOTHING — the four new financial items appear automatically (the 'admin panel automatic' promise is real)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\lib\\amountFormat.ts",
+          "role": "The ONE truncation authority (formatAmount(raw, decimals, dp) / sumRawUnits / rawShare — behavior pinned by guard-one-figure CASES 169-190: truncate-never-round, dust floor, missing-leg-voids-sum, integer pool share).",
+          "whatChanges": "NOTHING (read-only dependency — both new rows render through it)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\api-server\\scripts\\guard-duplicate-facts.ts",
+          "role": "ONE FACT ONE PLACE blocking guard: scans BOTH artifacts' src/ (ROOTS 55-58; scripts/ NOT scanned) for repeated 40-hex addresses, selectors, topics, endpoints, pinned numerics; canon/ and config/ dirs allowlisted (66-69).",
+          "whatChanges": "NOTHING if discipline holds: each new address appears ONCE in src (protocolTargets.ts); the guard-script literals live outside ROOTS. A second src copy anywhere = RED BUILD."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\scripts\\guard-type-scale.ts",
+          "role": "12px-floor guard; ProtocolReservesBand allowlist entry at line 180 carries a paid debt count ('4 · PUBLIC home reserves band…').",
+          "whatChanges": "NOTHING if the window statement reuses existing slots (held/price lines are per-row template text — source-count unchanged). Any NEW sub-12px class site in the band trips the two-way ratchet — put new copy at ≥12px instead."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\docs\\design\\reserves-band-6-assets-mockup.html",
+          "role": "The founder-approved wireframe (GO 2026-08-02): 3×2 grid; six bar segments/legend chips (AVAX viz5, BTC viz2, ETH viz3, USDC viz1, LINK viz6, GOLD gold); GOLD card face: 'GOLD · XAUt0', 'Tether Gold · 1 token = 1 troy oz', amount '0.003144 oz', '$4,031.92 / oz · Chainlink XAU/USD'; the ③ note engraves the weekend-honesty decision (commodity window STATED on the card, crypto keeps 24h) and the same-slice /contracts rows + automatic admin panel.",
+          "whatChanges": "NOTHING (the binding reference for the element-by-element pre-handoff diff)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\docs\\SESSION_STATE.md",
+          "role": "Boot block: the work order ① (lines 152-159) records the GO + the 3 taken decisions + short-form feed addresses; line 344/371 records the gold swap at block 91,571,070; lines 745-830 (2026-07-27 era) record the LINK.e purchase (block 91,336,828, contract 0x5947bb27…).",
+          "whatChanges": "End-of-slice boot-block update (WHERE-WE-ARE: what went live, registry state, deploy verdict) per the standing handoff rule — plus BACKLOG.html/DESIGN_ROADMAP ticks in the same pass."
+        }
+      ],
+      "constraints": [
+        "THE VALUATION LAW (ProtocolReservesBand.tsx header 9-13, ProtocolAssetsCard.tsx header 4-26, featureStatus 62-68): only live-held deep-market assets are valued/summed; SYN is NEVER priced; a missing component makes the WHOLE total read unavailable — both new USD legs must join the fail-closed priced[] arrays on both surfaces.",
+        "Founder decisions TAKEN 2026-08-02 (SESSION_STATE 154-159, ANSWERED — never re-ask): 3×2 grid · OFFICIAL XAUt0 mark vendored · market-hours freshness window for commodity feeds STATED on the card, crypto keeps strict 24h.",
+        "EXACT-STRING DOCTRINE (realityService throughout): every served figure is a raw base-unit decimal string from the transport — never a JS number, never a canon constant, fail-closed null+failureReason; valuation floats exist ONLY client-side.",
+        "NO ADDRESS IN ANY PAYLOAD (protocolTargets header 4-8, payloadDiscipline + FULL_ADDRESS_RE guard checks): addresses live server-side in protocolTargets; items carry safe ids/notes only; verify-links is the sole deliberate explorer-URL surface (reuse id 'vaultWallet').",
+        "ONE FACT ONE PLACE (CLAUDE.md ① + guard-duplicate-facts, blocking): each new address declared once in src (FINANCIAL_TARGETS); guards re-pin literals from scripts/ (outside the scan roots); paste the twin search in the commit.",
+        "RED FIRST (CLAUDE.md ②): the per-feed freshness window needs a failing test BEFORE the fix — including the crypto-still-24h counter-test (reverting the fix must turn the new checks RED).",
+        "GUARD LOCKSTEP: protocol-reality-check pins the financial group's EXACT id set + count (35→39), balanceOf call count (15→17), and one-eth_getBalance — all must move in the same commit as the service change or the chain goes red.",
+        "ONE FIGURE / ONE TRUNCATION (guard-one-figure, blocking): amounts render via formatAmount on RAW units, legs summed via sumRawUnits; the guard's USES regexes pin the band's exact call shapes — do not rename variables it matches (amtRaw, legs, poolUsdcRaw).",
+        "SEO RIDES THE SLICE (CLAUDE.md standing rule): /contracts description names the asset set (seo-route-registry 540-541) — update + run the SEO battery in the same commit.",
+        "DONE-IS-DONE §① : featureStatus.vaultHoldings' what-is-valued comment must be restated from the new code in the shipping commit (this exact block has drifted before, 70-77).",
+        "12px floor + type-scale debt counter (guard-type-scale line 180 pins the band at 4 paid sites): no new sub-12px class sites; the window statement reuses existing slots or renders ≥12px.",
+        "THE REFACTORING LAW: the band's 4-column comment (182-184) and the trackedAssets/AssetsCard headers are dated engineering notes — strike and date them, never leave them contradicting the build.",
+        "VISUAL CHANGE LAW: wireframe approved (docs/design/reserves-band-6-assets-mockup.html); the slice still ends at the PREVIEW GATE (localhost URL, desktop + mobile, images naturalWidth>0) before the deploy; verdict is 🚀 DEPLOY (public home + /contracts + server behavior change).",
+        "Plumbing: api guards run from artifacts\\api-server via .\\node_modules\\.bin\\tsx.cmd scripts\\<guard>.ts (or corepack pnpm run guards); studio build needs $env:PORT=\"5173\"; $env:BASE_PATH=\"/\"; api rig restart after src change: node ./build.mjs, kill port 5000, restart detached."
+      ],
+      "risks": [
+        "The XAUt0 contract address exists NOWHERE in the repo (greps for XAU/xaut hit only docs/comments; the gold swap rides the discovery lane) — recover it from the block-91,571,070 swap (local prod-dump DB discovered rows, or the tx on Snowtrace) and chain-verify symbol() + decimals() BEFORE pinning; do NOT assume 6 decimals from Ethereum XAUt (verify-the-thing).",
+        "The two feed addresses are recorded SHORT-FORM only (SESSION_STATE:158 '0x49cc…de9a' / '0x1F41…515B') — resolve the full values and re-verify on-chain (latestRoundData fresh answer + description() reading 'LINK / USD' / 'XAU / USD') before writing the literals; the reconcile guard then pins them.",
+        "The freshness check is per-call uniform (STALENESS_MAX_S at realityService:1618 applies to ALL feeds inside readPrice) — a careless widening would relax the CRYPTO feeds too; the counter-test (crypto at 25h still fails) is the guard against laundering the 24h rule.",
+        "Guard clock fixtures: the guard runs at a FIXED now (2026-06-30, line 222) — the new XAU fixtures must set updatedAt relative to PRICE_NOW_S (e.g. 50h old for the weekend case), never wall-clock.",
+        "Weekend arithmetic: gold closes Fri ~22:00 UTC and reopens Sun ~22:00/23:00 UTC (~49h gap) — plus the feed's own heartbeat and holidays; a 48h window would STILL kill the total every Sunday (the exact defect the decision exists to prevent). Choose and document the window value, and state it in the card copy AND the item note.",
+        "Adding the new USD legs to priced[] means BOTH public totals now depend on the XAU feed — if the window is wrong the home headline reads 'unavailable' on weekends; the Sunday-serves guard case is the proof it cannot regress silently.",
+        "Precision fork on /activity: discovered rows render at dp 4 (guard-one-figure:226) while the mockup's gold card shows 6 dp (0.003144) — either curate LINK.e/XAUt0 in TREASURY_TOKEN_DECIMALS + extend the PINS rows (one authority), or record the divergence deliberately; silence here is the one-figure disease.",
+        "guard-one-figure ④'s registry regex (line 368) matches entries by symbol with a bounded window — if GOLD's entry carries long comments between symbol and decimals/dp the pin can fail to parse (a fail, not a silent pass); keep the entry compact.",
+        "The LINK.e address already lives in TWO guard scripts (backbone.guard.ts:1249, guard-one-figure.ts:201) as fixtures — scripts are outside duplicate-facts' roots so the third (src) copy is legal, but the commit's twin-search must name all three and why each is legitimate.",
+        "TONE_BG (band 26-35) already spells bg-viz-6/bg-gold as literals (Tailwind scanning) — no change needed, but any NEW tone name would render an invisible bar; use viz-6 and gold exactly.",
+        "The band's guard-pinned grid comment cites the OLD 4-column mockup as founder-approved — leaving it contradicts the new approval (the fossil class the cold-reader audits keep catching)."
+      ],
+      "notCovered": "Read-only recon: no guards/builds/typechecks were run, no chain or DB queries made. Not verified on-chain: the XAUt0 token identity (address/symbol/decimals), the full feed addresses behind the short forms, and XAU/USD's actual weekend update cadence on Avalanche (the window value needs its own measurement). Not read in full: protocol-reality-check.guard.ts lines 594-1000 (the 7k non-positive + cache sections known only via grep), payloadDiscipline.ts, guard-freshness.ts and guard-feature-truth.ts internals (their interaction with new card copy is inferred from their names/uses), ProtocolMap/Status page bodies (generic rendering verified via imports only), and the local DB's discovered-row shape for recovering the XAUt0 contract. The 2026-08-02 chat transcript (where the feed verification was performed) was not searched for the full addresses — mcp session-transcript search could recover them if the builder prefers evidence over re-derivation."
+    },
+    "studio": {
+      "summary": "The home band is artifacts/studio/src/components/ProtocolReservesBand.tsx, driven ENTIRELY by the registry artifacts/studio/src/config/trackedAssets.ts (4 entries today: AVAX/BTC/ETH/USDC; a ready-made commented LINK entry sits at lines 127-138 — UNCOMMENT it, never retype). One registry entry decides order, logo (public/coins/<slug>.svg via CoinMark), decimals, dp, balance item ids, price item id, tone, verify ids; the rows loop (lines 93-104), the fail-closed total + composition bar + legend (lines 106-119, \"THE ONE LIST\" — total and bar from the SAME array) and the 6-segment bar all follow automatically from adding 2 entries. The grid is one class change: line 185 `grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4` → `lg:grid-cols-3` (desktop 3×2 · tablet sm:2-col=2×3 · phone 1-col — exactly the wireframe caption), striking+dating the engraved 4-in-one-row comment at lines 182-184 per the REFACTORING LAW. The card anatomy already matches the wireframe (logo disc 191-199 · symbol/sub 195-198 · mono amount 200-202 · USD 203-205 · 3px share bar 206-208 · price line 209-215 · optional held line 216-218 · VerifyOnChain 219); what's MISSING for gold are three small per-asset render facts that must ride the registry, not a symbol branch: the \"/ oz\" price unit + \"Chainlink XAU/USD\" feed label (price line hardcodes `/ ${r.symbol} · Chainlink`), the \"oz\" amount suffix, the \"· XAUt0\" symbol note, and the STATED market-hours freshness window (the founder's decision ③) — extend the TrackedAsset interface (lines 21-63) with optional fields and render them in the band. Tones need NO code change: TONE_BG (lines 26-34) already spells out viz-6 (LINK per wireframe) and gold (GOLD); both CSS tokens exist in index.css. Logos: 44 svgs vendored in artifacts/studio/public/coins/ (spothq MIT set, LICENSE.txt); link.svg EXISTS, no xaut file — vendor the official XAUt0 mark as public/coins/xaut.svg + a provenance line in LICENSE.txt (nothing else gates logo files; CoinMark falls back to a lettered disc on 404). /contracts + /admin share ONE card, artifacts/studio/src/components/ProtocolAssetsCard.tsx (mounted at pages/ContractMemory.tsx:27 AND pages/admin/sections.tsx:137) — the two new \"Vault LINK\"/\"Vault GOLD\" rows are: 2 raw reads (the new financial.vault.linkBalance/xautBalance ids), 2 price reads (financial.price.linkUsd/xauUsd — server id convention proven at api-server realityService.ts:1646-1649), 2 fmtAmount calls, 2 USD products, membership in the fail-closed `priced` array (line 149 — MISS THIS and /contracts' total silently diverges from the home total: the 12-vs-14 one-authority break), membership in anyAmountLive (156-163), 2 row objects (rows array 166-263, pattern of vault-avax at 203-210) + 2 assetVerifyIds entries (38-48, both → [\"vaultWallet\"]), and the rendered blurb at 290-295 gains the two assets + the commodity-window sentence. The admin reality panel (ProtocolRealityPanel, components/ProtocolReality.tsx:184-213, mounted admin/sections.tsx:134 with the financial group) renders WHATEVER items the payload carries filtered only by publicSafe — new server items appear with ZERO client edits, verified no per-asset hardcoding. SEO rides the slice: seo-route-registry.ts line 541 (/contracts description) ENUMERATES \"USDC, AVAX, BTC.b, WETH.e and SYN\" → must gain the two assets (+ notes line 549); the home entry (line 161) names no assets — unchanged; run the SEO battery (seo:generate · seo:check · surface:audit · seo:rewrites:check). The asset-enumeration twin sites (grep \"AVAX / BTC.b / WETH.e\" pattern): ProtocolAssetsCard.tsx:9+291, featureStatus.ts:63 (comment; the live vaultHoldings key at :88 needs NO flip — no \"coming\" claim exists for either asset), AdminHome.tsx:60 (comment), seo-route-registry.ts:541. Client types need no regen: reality items are dynamic arrays; VerifyLinkId already contains vaultWallet.",
+      "files": [
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\config\\trackedAssets.ts",
+          "role": "THE RESERVES REGISTRY driving the home band: TrackedAsset interface (lines 21-63: symbol, name, logo slug, balanceIds[], decimals, dp, priceId|PEGGED_USD, tone, verify[], held?, includesPoolShare?); 4 live entries (AVAX 66-76, BTC 77-87, ETH 88-98, USDC 99-125); the commented ready LINK entry lines 127-138 (logo 'link' noted already vendored, balanceId financial.vault.linkBalance, priceId financial.price.linkUsd, decimals 18, dp 4, tone viz-6, verify vaultWallet).",
+          "whatChanges": "UNCOMMENT the LINK entry (127-138) verbatim (IMPORT-NEVER-RE-DERIVE) and add the GOLD entry: symbol GOLD, name 'Tether Gold · 1 token = 1 troy oz', logo 'xaut', balanceIds ['financial.vault.xautBalance'], decimals = the token's MEASURED decimals() (do not assume; XAUt0 is expected 6 but must be read from the chain), dp matching the wireframe's 0.003144, priceId 'financial.price.xauUsd', tone 'gold', verify ['vaultWallet']. Extend the interface with the optional per-asset render facts the gold card needs (price unit 'oz', feed label 'Chainlink XAU/USD', amount unit suffix 'oz', symbol note '· XAUt0', and the market-hours freshness statement) so they stay ONE-place registry facts. Strike+date the header comment's 'the LINK line is written and commented out, ready' / 'the day the founder buys LINK' prose (lines 8-14, 127) — he bought it 2026-08-02."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\components\\ProtocolReservesBand.tsx",
+          "role": "The home 'Protocol Reserves' band (mounted PublicHome.tsx:307). TONE_BG literal map 26-34 (viz-1..6 + gold all present); pool-share maths 74-86; registry rows loop 93-104 (sumRawUnits legs → fail-closed row); THE ONE LIST total+segments 106-119; headline/total + fail-closed 'unavailable' via liveFigure 139-147; composition bar 155-179 (bar 160-164, legend chips 165-177 with the <1% false-zero law at 174); the asset grid 185 `grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4` with the 2026-07-25 4-column comment 182-184; card anatomy 186-221 (CoinMark disc 191-199, amount 200-202 via formatAmount, USD 203-205 text-proof, share bar 206-208, price line 209-215 hardcoding `$1.00 · stablecoin` | `${usd(px)} / ${r.symbol} · Chainlink` | 'price unavailable', held line 216-218, VerifyOnChain 219).",
+          "whatChanges": "Line 185: lg:grid-cols-4 → lg:grid-cols-3 (desktop 3×2, tablet 2×3 via existing sm:grid-cols-2, phone 1-col — the wireframe caption exactly); rewrite comment 182-184 striking the dated 4-in-one-row decision (REFACTORING LAW ①: strike the old line, date the new). Price line 209-215: render the registry's per-asset unit + feed label (gold: '$… / oz · Chainlink XAU/USD') and the STATED market-hours freshness window for commodity feeds (founder decision ③ — exact copy is founder-facing, paste on screen at handoff); amount line 200-202 gains the optional 'oz' suffix; symbol line 196 gains the optional '· XAUt0' note. Update the header comment's asset enumeration (lines 10-12). The composition bar, legend, total, and fail-closed states need NO edits — registry-driven."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\public\\coins\\xaut.svg",
+          "role": "Does not exist. 44 coin svgs live in this folder (link.svg present, verified); referenced as /coins/<logo>.svg by CoinMark.tsx:50. Nothing else gates logo files — no registry, no guard scans public/coins (grepped scripts: zero hits).",
+          "whatChanges": "NEW FILE: vendor the OFFICIAL Tether Gold (XAUt0) mark as an optimized local svg (founder decision ②: the official mark, like LINK's). Verify it renders at 36px (band) and 18px (/contracts) in both themes; the preview-gate img naturalWidth>0 check must pass on it."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\public\\coins\\LICENSE.txt",
+          "role": "Provenance note: all current logos come from spothq/cryptocurrency-icons (MIT), vendored locally on purpose (offline, no third-party call), trademarks acknowledged.",
+          "whatChanges": "Add a dated line stating the xaut.svg mark's actual source (the official Tether Gold brand mark is NOT from the spothq set) — the file's honesty contract covers every icon in the folder."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\components\\ProtocolAssetsCard.tsx",
+          "role": "THE /contracts card AND the /admin assets card (one component, two mounts: ContractMemory.tsx:27, admin/sections.tsx:137). assetVerifyIds map 38-48; raw reads 84-98 (findValue on financial item ids); display amounts 101-109 (fmtAmount); price reads 112-114; USD products 116-124; fail-closed priced total 149-152; anyAmountLive tag 156-163; rows array 166-263 (row shape: id/label/logo/tone/value/usd/meta — Vault AVAX at 203-210, Vault BTC.b 211-219, Vault WETH.e 220-228 are the exact pattern); rendered valuation blurb 290-295 enumerates 'USDC counted at one dollar; AVAX, BTC.b and WETH.e at live Chainlink prices'; grid 297 (sm:grid-cols-2 xl:grid-cols-4).",
+          "whatChanges": "Add: 2 raw balance reads (financial.vault.linkBalance, financial.vault.xautBalance) + 2 price reads (financial.price.linkUsd, financial.price.xauUsd, toNum(...,8)); 2 fmtAmount displays (LINK 18-dec dp 4; GOLD at the measured decimals); 2 USD products; APPEND BOTH to the `priced` array at line 149 (the fail-closed total — omitting one silently diverges /contracts from the home total) and to anyAmountLive 156-163; 2 new rows after vault-weth — id 'vault-link' label 'Vault LINK' logo 'link' tone text-viz-6 meta naming Chainlink price, and id 'vault-xaut' label 'Vault GOLD' logo 'xaut' tone text-gold meta naming XAUt0/1 troy oz + the market-hours window; 2 assetVerifyIds entries both ['vaultWallet']; update the rendered blurb 290-295 (founder-facing copy — full text on screen) and the header comment line 9. One edit here covers BOTH /contracts and /admin — no separate admin work."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\lib\\seo-route-registry.ts",
+          "role": "SEO canon. Home entry lines 154-172 (description 161 names NO assets — 'reserves read live from Avalanche'); /contracts entry 534-550: description 541 ENUMERATES 'the vault's USDC, AVAX, BTC.b, WETH.e and SYN', notes 549 describes the card's valuation scope.",
+          "whatChanges": "SEO-rides-the-slice (same commit): /contracts description 541 gains LINK and gold/XAUt0; notes 549 gains the two rows + the commodity market-hours window sentence. Home entry: NO change needed (its claim stays true). Then run the SEO battery: seo:generate · seo:check · surface:audit · seo:rewrites:check (the sitemap is a committed file; check-seo-registry validates the registry, prerendered heads rebuild at build time)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\config\\featureStatus.ts",
+          "role": "DONE-IS-DONE registry. vaultHoldings is LIVE since 2026-07-25 (line 88, where covers '/ + /contracts + /admin'); its comment block 62-68 states the valued list ('USDC at one dollar, AVAX / BTC.b / WETH.e at live Chainlink prices…'). No 'coming' claim exists for LINK or gold anywhere (verified).",
+          "whatChanges": "NO key flip owed (the capability is live and grows; neither asset was ever claimed 'coming'). Update the comment block 62-68's valued-list enumeration in the same commit so the registry's own text stays true — this file's wrong-line propagation is its named defect class (lines 70-77)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\pages\\admin\\AdminHome.tsx",
+          "role": "Admin console home; line 60 is a comment enumerating 'vault's USDC / AVAX / BTC.b / WETH.e' about the assetsSlot.",
+          "whatChanges": "Comment-only: extend the enumeration (twin-search hygiene; no rendered change)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\components\\ProtocolReality.tsx",
+          "role": "The admin/map reality panel (ProtocolRealityPanel 184-213): renders payload items per group filtered only by publicSafe (line 200) — new financial items (2 balances + 2 prices) appear automatically on /admin (sections.tsx:134 includes 'financial'). Verified: no per-asset hardcoding anywhere in it.",
+          "whatChanges": "NOTHING (read-only dependency — this is the 'admin reality panel updates automatically' proof)."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\components\\coin\\CoinMark.tsx",
+          "role": "ONE logo component both surfaces: src = /coins/<logo>.svg (line 50), broken-image fallback to a 3-letter disc (42-48), SYN wears the brand mark.",
+          "whatChanges": "NOTHING."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\components\\VerifyOnChain.tsx",
+          "role": "Fail-closed explorer links from GET /api/protocol/verify-links; renders nothing if ANY requested id is missing. VerifyLinkId union (generated, lib/api-zod/src/generated/types/verifyLinkId.ts:12-25) already contains vaultWallet — both new rows verify against the vault wallet, so no id addition and no orval regen.",
+          "whatChanges": "NOTHING."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\lib\\amountFormat.ts",
+          "role": "THE ONE TRUNCATION: formatAmount (101-112, truncate + false-zero floor), sumRawUnits (116-123, null if any leg missing — the fail-closed row law), rawShare (131-141). guard-one-figure pins it; ProtocolReservesBand + ProtocolAssetsCard are ALLOWLISTED for USD-valuation floats only (guard-one-figure.ts:73-74) — the new rows follow the same split, so the allowlist reasons stay true.",
+          "whatChanges": "NOTHING."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\artifacts\\studio\\src\\index.css",
+          "role": "Design tokens: --viz-6 (line 177/398) and --gold/--color-gold (148, 259-261, 446-448) both defined in light AND dark — the wireframe's LINK (viz6) and GOLD (gold) tones exist; TONE_BG in the band already spells bg-viz-6 and bg-gold.",
+          "whatChanges": "NOTHING."
+        },
+        {
+          "path": "C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os\\docs\\design\\reserves-band-6-assets-mockup.html",
+          "role": "The founder-approved wireframe (GO 2026-08-02): 3×2 grid, card anatomy per asset (gold card: sym 'GOLD · XAUt0', sub 'Tether Gold · 1 token = 1 troy oz', amt '0.003144 oz', price '$4,031.92 / oz · Chainlink XAU/USD'), 6-segment bar + 6 legend chips, caption 'Tablet: 2×3. Phone: one column', the rejected 4+2-orphan view, and the 3 decisions (all taken per SESSION_STATE:154-159).",
+          "whatChanges": "NOTHING (the binding mockup — the PRE-HANDOFF GATE diffs the built band against it element by element)."
+        }
+      ],
+      "constraints": [
+        "THE VALUATION LAW (ProtocolReservesBand.tsx:9-13, ProtocolAssetsCard.tsx:5-26, featureStatus.ts:62-68): only live-held deep-market assets are valued; SYN NEVER priced; any missing component makes the WHOLE total read unavailable — both new assets join the fail-closed arrays, never a partial sum.",
+        "THE ONE TRUNCATION + guard-one-figure (BLOCKING, studio guards chain package.json:39): token amounts only via lib/amountFormat.formatAmount; USD floats allowed ONLY under the existing allowlist entries for these two components (guard-one-figure.ts:73-74) — keep amounts/valuation split exactly as today.",
+        "THE ONE LIST (ProtocolReservesBand.tsx:106-112): total and composition bar derive from the SAME rows array — never build a second list (the 80%-bar defect, founder-caught in prod 2026-07-25).",
+        "ONE ASSET = ONE ROW (trackedAssets.ts:29-35): amounts spanning wallets are summed via sumRawUnits, missing leg = whole row unavailable.",
+        "Tailwind literal-class law (ProtocolReservesBand.tsx:22-25): any tone a registry entry names must be spelled in TONE_BG — viz-6 and gold already are; a new tone name would silently render invisible.",
+        "Logos vendored locally, never an external host (trackedAssets.ts:16-19, CoinMark.tsx:12-15, LICENSE.txt) — xaut.svg goes in public/coins with a provenance note.",
+        "SEO rides the slice (CLAUDE.md standing rule): the /contracts registry description (seo-route-registry.ts:541) enumerates assets and must change in the SAME commit; then the full SEO battery (memory: full-local-gate-includes-seo-battery).",
+        "guard-era-drift scans STRING LITERALS in config/ pages/ components/ + seo-route-registry (guard-era-drift.ts:11-14, 31): new copy must avoid the era vocabulary class ('not wired' etc.); guard-no-fake-live bans hardcoded >Live< JSX text (guard-no-fake-live.ts:14).",
+        "THE VISUAL CHANGE LAW + PRE-HANDOFF GATE: the approved wireframe is docs/design/reserves-band-6-assets-mockup.html; the built band is diffed against it element-by-element, PREVIEW GATE (desktop AND mobile, both themes, every img naturalWidth>0 — the new xaut.svg included) before the deploy; rig launch with MSYS2_ENV_CONV_EXCL=\"BASE_PATH\".",
+        "IMPORT, NEVER RE-DERIVE (CLAUDE.md ④): the LINK entry exists commented at trackedAssets.ts:127-138 — uncomment it, don't retype; per-asset render facts (oz unit, feed label, freshness statement) go through the registry, never a symbol==\"GOLD\" branch in the component.",
+        "REFACTORING LAW ①: the engraved 4-columns-from-lg comment (ProtocolReservesBand.tsx:182-184) and the 'day the founder buys LINK' prose (trackedAssets.ts:8-14,127) are dated decisions — strike the old line, date the new, same commit.",
+        "DONE-IS-DONE: vaultHoldings (featureStatus.ts:88) is LIVE — no flip owed, no 'coming' copy may be written for either asset; founder-facing copy speaks human words (the settled word law), full final card copy pasted on screen at handoff.",
+        "Deploy verdict: 🚀 DEPLOY (changes the public home, /contracts, /admin on thesyndicate.money; rides with the server slice in one deploy)."
+      ],
+      "risks": [
+        "THE /contracts-TOTAL TRAP: ProtocolAssetsCard's fail-closed total is a hand-enumerated array (`priced`, line 149) separate from the home band's registry-derived one — adding the rows but not the array members makes /contracts publish a total EXCLUDING LINK/gold while the home includes them: the exact 12-vs-14 one-authority break. Same for anyAmountLive (156-163). RED-first proof: assert both totals against the same payload before the fix.",
+        "SEQUENCING / FAIL-CLOSED CASCADE: if the client registry entries ship against a server that doesn't yet emit financial.vault.linkBalance/xautBalance + financial.price.linkUsd/xauUsd, sumRawUnits returns null for the new rows AND the WHOLE home headline + bar go 'unavailable' (by design, ProtocolReservesBand.tsx:112). Client and server halves must ride the same slice/deploy — verified together on the local rig (api DETACHED on 5000, never preview_start).",
+        "THE WEEKEND TRUTH BUG: the 24h staleness rule lives SERVER-side (realityService.ts:1618 STALENESS_MAX_S=86_400 applied to ALL feeds). If the card STATES a market-hours window but the server keeps 24h for XAU/USD, every Sunday the price fails closed and the whole home total reads unavailable — the card would state a policy the system doesn't implement. The client statement and the server's per-feed window must land together.",
+        "XAUt0 DECIMALS: the registry's `decimals` is trusted blindly by formatAmount and toNum — a wrong value misprojects silently (no guard catches it). Measure decimals() on the actual XAUt0 contract before writing the entry (NO FIGURE HE HAS NOT SEEN MEASURED; the wireframe's 0.003144 oz implies but does not prove 6).",
+        "THE GOLD CARD'S EXTRA ANATOMY is not expressible in today's registry: price line hardcodes `/ ${r.symbol} · Chainlink` (band lines 209-215), no amount-unit suffix, no symbol note. Bolting these on as in-component conditionals (symbol===\"GOLD\") re-creates the twin-decision disease — extend the TrackedAsset interface instead.",
+        "SEO description length/content: check-seo-registry + surface:audit validate the registry (the audit also bans certain financial words in metadata, seo-route-registry.ts:576-579 note) — run seo:check after editing line 541 rather than assuming the longer enumeration passes.",
+        "The spothq LICENSE note covers the folder as a set — dropping an official Tether mark in without a provenance line makes the LICENSE file's claim false for one file.",
+        "guard-feature-truth widened 2026-07-31 to object-literal + prose claims (673 checks): any new card copy with future-tense shape ('when markets reopen…' phrasing is fine; 'coming' claims are not) must not trip it — phrase the freshness window as a present-tense fact."
+      ],
+      "notCovered": "The server half (mapped by the api-side recon, not here): the realityService.ts reads for the two balances + two feeds (id convention and 24h staleness proven at lines 1443-1673), the per-feed market-hours staleness window implementation, protocolTargets.ts FINANCIAL_TARGETS additions (token + feed addresses — the api duplicate-facts:guard and targets-reconcile guard bind there), backbone.guard.ts / protocolEventReadmodel.ts (which already know the LINK.e/XAUt0 tokens for /activity lanes), and the verify-links payload. Also not covered: sourcing/optimizing the actual official XAUt0 svg artwork; the exact founder-facing freshness copy (content decision — full text on screen at handoff); the OG image (unchanged, DEFAULT_OG_IMAGE); and the live preview-gate execution itself (build-time verification, not recon)."
+    }
+  },
+  "workflowProgress": [
+    {
+      "type": "workflow_phase",
+      "index": 1,
+      "title": "Recon"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 1,
+      "label": "recon:api",
+      "phaseIndex": 1,
+      "phaseTitle": "Recon",
+      "agentId": "a399bc25cc6ee3197",
+      "model": "claude-fable-5",
+      "state": "done",
+      "startedAt": 1785668639744,
+      "queuedAt": 1785668635407,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "The reserves data path is: api-server realityService.buildF…",
+      "promptPreview": "SENIOR API-SIDE RECON (grade-AAA). Repo: C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os. READ-ONLY: git/grep/read + running existing scripts is allowed; you must NOT edit, write, commit, or push. Plumbing: \"corepack pnpm run <script>\"; api guards via .\\node_modules\\.bin\\tsx.cmd from artifacts\\api-server; studio build needs $env:PORT=\"5173\"; $env:BASE_PATH=\"/\".\nTHE BUILD BEING MAPPED (founde…",
+      "lastProgressAt": 1785669242588,
+      "tokens": 240337,
+      "toolCalls": 50,
+      "durationMs": 602844,
+      "resultPreview": "{\"summary\":\"The reserves data path is: api-server realityService.buildFinancialGroup() makes every vault read live (balanceOf via eth_call, native via eth_getBalance) and every price read via Chainlink latestRoundData(), emits them as EXACT raw-string items in the protocol-reality envelope's `financial` group (generic item arrays — openapi/zod need NO change), and the studio derives ALL valuation …"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 2,
+      "label": "recon:studio",
+      "phaseIndex": 1,
+      "phaseTitle": "Recon",
+      "agentId": "a779aabed867c27c3",
+      "model": "claude-fable-5",
+      "state": "done",
+      "startedAt": 1785668638647,
+      "queuedAt": 1785668635407,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "The home band is artifacts/studio/src/components/ProtocolRe…",
+      "promptPreview": "SENIOR STUDIO-SIDE RECON (grade-AAA). Repo: C:\\Users\\kemal\\OneDrive\\Documents\\GitHub\\syndicate-os. READ-ONLY: git/grep/read + running existing scripts is allowed; you must NOT edit, write, commit, or push. Plumbing: \"corepack pnpm run <script>\"; api guards via .\\node_modules\\.bin\\tsx.cmd from artifacts\\api-server; studio build needs $env:PORT=\"5173\"; $env:BASE_PATH=\"/\".\nTHE BUILD BEING MAPPED (fou…",
+      "lastProgressAt": 1785669213600,
+      "tokens": 138205,
+      "toolCalls": 41,
+      "durationMs": 574953,
+      "resultPreview": "{\"summary\":\"The home band is artifacts/studio/src/components/ProtocolReservesBand.tsx, driven ENTIRELY by the registry artifacts/studio/src/config/trackedAssets.ts (4 entries today: AVAX/BTC/ETH/USDC; a ready-made commented LINK entry sits at lines 127-138 — UNCOMMENT it, never retype). One registry entry decides order, logo (public/coins/<slug>.svg via CoinMark), decimals, dp, balance item ids, p…"
+    }
+  ],
+  "totalTokens": 378542,
+  "totalToolCalls": 91
+}
