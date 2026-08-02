@@ -264,8 +264,19 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   KIT_ARTIFACTS entries (download/share/geometry adopt automatically) · the gallery
 >   section story-first (the mobile clause) · the « Your collectible » door on
 >   MemberYourSeat. Guards taught ×2 more (focus ring + facet-chip touch idiom) — obeyed,
->   ledgers never raised. Gates: tc 0 · 30 guards 0 · build 0. NEXT: B (M2-v2 unfurls),
->   then the batched deploy.**
+>   ledgers never raised. Gates: tc 0 · 30 guards 0 · build 0.**
+>   **✅ B = M2-v2 BUILT (`c4a4f47` + `f6d5859`, 2026-08-03): the shared /join link's
+>   unfurl paints the introducer's LIVING IDENTITY — « by Seat #3 · Chapter I —
+>   0x03E9…C6d0 » — RED-first (7 join-card pins witnessed red → 36/36 green), wallet↔seat
+>   from the spine (PUBLIC data, full address never leaves the reader, lazy DB-gated
+>   fail-closed to the plain card), PROVEN ON THE RIG WITH PIXELS SEEN (the real card
+>   painted for seat #3's source: 200 · 47,445 bytes · the living line rendered; the PNG
+>   in chat). ⚠ HONEST RECORD: c4a4f47 was committed while the chain was red (";"-chained
+>   commit — my fault); f6d5859 sealed it green immediately (the new spine reader
+>   registered in BOTH lazy-DB allow-lists — a known twin-list, noted — + the 1M debt pin
+>   amended with the cross-artifact-twin reason). ALL 21 api guards green · tc 0 ·
+>   build 0. **THE BATCH IS COMPLETE: A1 (Mine|Protocol lens) + M3 (the collectible) +
+>   M2-v2 (living unfurls) — ONE deploy, the Replit message handed in chat.**
 > · Then the engraved 16-move sequence resumes in its own order (BACKLOG.html).
 > · BACKGROUND lane (no decision needed, buildable between slices on any « go »): the
 >   member-ledger server windowing (scoped by the reviews) · the spine-poller dedupe.
