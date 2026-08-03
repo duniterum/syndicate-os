@@ -1,5 +1,41 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> ## ▶ 2026-08-04 — 11ᵉ SCEAU · L'ORDRE SUIVANT
+>
+> **PROD = `c170e9b`** (Replit 6/6 : entrée servie ×2 · ancienne 404 · 39 shells ·
+> terms v1 5873 o / v2 6172 o exacts · les 4 faces peintes + repli face-inconnue ·
+> backbone ok:1 partial:0 failed:0). **Backlog de déploiement VIDE.**
+>
+> **LIVRÉ (K1.6 + K1.7) :** chaque artefact déroule SA carte peinte (`&card=` →
+> 4 faces 1200×630 : invite · standing · seat · record, repli invite) · le SIÈGE
+> n'est plus requis pour parrainer, sur 17 surfaces, serveur compris (le contrat
+> gate sur le solde SYN — SPEC §262/§436) · terms **v2** publiés, v1 servi et gelé
+> (son keccak256 est l'ancre on-chain des sources existantes) ·
+> `guard-no-directory-fossil` BLOQUANT, 575 fichiers : « aucun annuaire n'existe »
+> est mort, THE REGISTER existe.
+> **RETIRÉ le même jour, après test du fondateur :** `&via=` sur les intents (il
+> fragmentait 1 url en 24, toutes froides → plus aucun aperçu) et le
+> téléchargement automatique au partage (le lien porte l'image maintenant).
+>
+> **⛔ LA SUITE DE L'ORDRE — un défaut MESURÉ, pas une piste :**
+> **un membre qui tient déjà un siège ne peut pas racheter via un lien de
+> parrainage.** Reproduit en prod par le fondateur (Alice, siège #5).
+> Parrain `0x3b1396…Ec6a` : **1 000 SYN** → ce n'est PAS `ReferrerNotSeated`.
+> CAUSE : achat **RÉPÉTÉ** contre une source dont `appliesToRepeatPurchases` est
+> faux ; le contrat revert et `joinQuote.ts` ne regarde jamais.
+> ① `api-server/src/routes/joinQuote.ts` — lâcher la source quand elle ne peut
+>    pas s'appliquer, et le DIRE ; l'achat passe non-attribué au lieu de révert.
+> ② `studio/src/wallet/JoinCheckout.tsx:449` — lire `txReceipt.status` : un
+>    revert est aujourd'hui annoncé « confirmé » à l'acheteur.
+> ③ **DÉCISION FONDATEUR :** un parrain touche-t-il sur les achats ULTÉRIEURS ?
+>    (`appliesToRepeatPurchases`, terme signé par source ; les sources créées
+>    gardent le leur.)
+> ④ **eslint absent du studio** — c'est ce qui a laissé un hook conditionnel
+>    atteindre la prod et noircir /admin/sources. 34 sites candidats repérés.
+>
+> **LE MOTEUR FIRSTS recule d'un cran** — il ne vaut rien tant que le chemin
+> d'achat ne se termine pas.
+
 > **▶ 2026-08-03 (CLÔTURE DE SESSION — L'AUDIT SEPT CASQUETTES, son ordre avant tout
 > mot de déploiement). 7 casquettes seniors sur TOUT l'arc de la session (16 commits),
 > 51 trouvailles brutes → 32 confirmées par sceptiques indépendants → 24 défauts

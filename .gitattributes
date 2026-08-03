@@ -4,7 +4,7 @@
 # to LF and never rewritten by autocrlf.
 # PINNED BY PATTERN, not per file (2026-08-03): v2 shipped UNPINNED because the
 # rule named v1 explicitly. With core.autocrlf=true the next fresh checkout on
-# Windows would have materialised it with CRLF — +121 bytes, a completely
+# Windows would have materialised it with CRLF — +122 bytes, a completely
 # different keccak256 — and the founder could have signed, on-chain, a hash
 # matching no document served at the canonical URL. Every version, forever.
 artifacts/studio/public/referral-program-terms-*.txt text eol=lf

@@ -65,7 +65,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > genuinely WIRED (`usePublishedTermsMatch`), and a v1-era hash verifies again.
 > **And `.gitattributes` now pins EVERY terms version to LF by pattern:** v2
 > shipped unpinned while `core.autocrlf=true`, so the next fresh Windows checkout
-> would have produced a document with CRLF — 121 extra bytes, a different
+> would have produced a document with CRLF — 122 extra bytes, a different
 > keccak256 than the one a founder may have signed on-chain. v1 was pinned; the
 > rule named the file, not the pattern.
 >
