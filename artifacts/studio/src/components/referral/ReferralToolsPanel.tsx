@@ -324,7 +324,16 @@ function ArtifactActions({
         // «x» in Channels — the tab the page promises counts everything. The
         // six ids ARE the tag vocabulary (whatsapp already names itself in the
         // creators block); the breakdown is open, so no registry to extend.
-        linkForTarget={(t) => withVia(faceLink, t.id)}
+        // NO PER-NETWORK TAG (founder catch, 2026-08-03, live on X: «avant il y
+        // avait une image pour X au moins»). A preview appears in a composer only
+        // for a url the network has ALREADY scraped. Tagging each intent turned
+        // ONE url per member into 4 faces x 6 networks = up to 28 distinct urls,
+        // every one of them cold — so the card that used to appear instantly
+        // stopped appearing at all. The face EARNS its url (it is what makes each
+        // artifact's own picture travel); the channel tag bought counting and
+        // cost the picture. Channels still counts the tagged links the Channels
+        // composer hands out, which is what it was built for.
+        linkForTarget={(t) => faceLink}
         // What the link cannot carry, we hand over.
         onIntent={(t) => handleIntent(t.label)}
         intentHint="Networks carry the link, not the picture — so your image downloads, ready to attach."

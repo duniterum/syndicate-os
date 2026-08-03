@@ -538,10 +538,20 @@ check(
   "kit: ONE artifact-PNG delivery, used by both the OS-sheet fallback and the intent path",
   "kit: the artifact-PNG delivery must be ONE function (deliverArtifactPng) called by BOTH the native fallback and the intent path — a second private rasterize+download sequence is the twin disease this file exists to kill",
 );
+// THE SHARE URL IS NOT FRAGMENTED PER NETWORK — this pin is the earlier one
+// INVERTED, deliberately (founder catch on live X, 2026-08-03: «avant il y avait
+// une image pour X au moins»). A composer renders a preview only for a url the
+// network has ALREADY scraped. Tagging every intent turned ONE url per member
+// into 4 faces × 6 networks: every share a cold url, so the card that used to
+// appear instantly stopped appearing at all — a regression this slice caused
+// while chasing a counter nobody asked for. The FACE earns its own url (that is
+// what makes each artifact's picture travel and is the whole point); the channel
+// tag does not, and Channels still counts the links its own composer hands out.
 check(
-  /linkForTarget=\{\s*\(t\)\s*=>\s*withVia\(/.test(kit),
-  "kit: tags each network through THE composer (withVia), never a private string",
-  "kit: linkForTarget must compose the tag through withVia(joinLink, t.id) — the channel tag is one imported fact",
+  /linkForTarget=\{\s*\(t\)\s*=>\s*faceLink\s*\}/.test(kit) &&
+    !/linkForTarget=\{[^}]*withVia/.test(kit),
+  "kit: the intent link is the FACE link, unfragmented by network",
+  "kit: linkForTarget tags the url per network again — that multiplies one member's share url by six, every one of them cold, and a cold url shows NO preview in a composer",
 );
 
 // 7h — THE TAGGED CONTRACT, EXECUTED. The real split + the real builders run
@@ -694,7 +704,7 @@ check(
 );
 for (const [door, needle] of [
   ["the box + Copy link", "pageUrl={faceLink}"],
-  ["the six intents", "linkForTarget={(t) => withVia(faceLink, t.id)}"],
+  ["the six intents", "linkForTarget={(t) => faceLink}"],
   ["the inline text (whatsapp · email)", "textInline={`${SHARE_TEXT} ${faceLink}`}"],
 ] as const) {
   check(
