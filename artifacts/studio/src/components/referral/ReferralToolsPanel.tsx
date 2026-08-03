@@ -13,10 +13,13 @@
 // affordance automatically.
 //
 // V3 (the founder's desktop catch, 2026-08-03): every action row carries the
-// intent trio (X · Telegram · WhatsApp — his named set and order) between
-// Copy and the OS sheet, per R-BIND-2's engraved order: copy first → intents
-// → the sheet LAST (the only channel that carries the PNG). Desktop now
-// SHARES instead of explaining; guard-share-intents pins the family.
+// intent family between Copy and the OS sheet, per R-BIND-2's engraved
+// order: copy first → intents → the sheet LAST (the only channel that
+// carries the PNG). Desktop now SHARES instead of explaining. First cut
+// shipped a 3-network subset off a handoff note; his same-day correction
+// («nous avions plus») set the law: the SAME six as the receipts, same
+// crypto-native order — orderedShareTargets, ONE imported fact.
+// guard-share-intents pins the family.
 //
 // Truth laws: every figure on an artifact is the member's own session read
 // (seat via member-standing, durable/rung via source standing) — a missing
@@ -28,7 +31,7 @@ import { useEffect, useRef, useState, type ReactNode, type RefObject } from "rea
 import { useAccount } from "wagmi";
 import { ChevronDown, Download, Share2 } from "lucide-react";
 import { buildJoinLink } from "@/lib/joinLink";
-import { pickShareTargets } from "@/lib/shareTargets";
+import { orderedShareTargets } from "@/lib/shareTargets";
 import { ShareIntentIconButton } from "@/components/referral/ShareIntentIconButton";
 import { toSvg } from "html-to-image";
 import { Card } from "@/components/ui/card";
@@ -86,12 +89,9 @@ function triggerDownload(href: string, name: string) {
 }
 
 // The ONE share text — three consumers (the OS sheet, its link-only fallback,
-// the intent trio). URL-FREE by the shareTargets contract: every intent
-// places the member's link ITSELF (whatsapp's builder inlines it after).
+// the intent family). URL-FREE by the shareTargets contract: every intent
+// places the member's link ITSELF (text-only builders inline it after).
 const SHARE_TEXT = "The Syndicate — an on-chain introduction record.";
-// The founder-named trio (2026-08-03), his set AND his order — resolved
-// through THE resolver, never privately.
-const KIT_INTENTS = pickShareTargets(["x", "telegram", "whatsapp"]);
 
 // ── a scaled live preview of a full-size artifact node ──────────────────────
 function ScaledPreview({
@@ -188,7 +188,7 @@ function ArtifactActions({
       >
         {copied ? "Copied ✓" : "Copy my link"}
       </button>
-      {KIT_INTENTS.map((t) => (
+      {orderedShareTargets.map((t) => (
         <ShareIntentIconButton
           key={t.id}
           target={t}

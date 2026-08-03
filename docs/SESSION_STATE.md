@@ -8,10 +8,15 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > additive, fail-closed; prod unbroken meanwhile) — but it is HIS desktop catch, so
 > firing it solo is equally his call.**
 >
-> ## (a) WHAT LANDED — K1.5, the kit's desktop intent trio (registry flips: NONE owed):
-> · Every kit action row now carries X · Telegram · WhatsApp prefilled (his named set
->   AND order) BETWEEN «Copy my link» and the OS sheet — R-BIND-2's engraved order;
->   the sheet stays the only PNG-carrying channel. Desktop SHARES instead of explaining.
+> ## (a) WHAT LANDED — K1.5, the kit's desktop intent family (registry flips: NONE owed):
+> · Every kit action row now carries ~~X · Telegram · WhatsApp~~ **ALL SIX networks**
+>   (x · whatsapp · telegram · linkedin · facebook · email — his same-hour correction,
+>   «nous avions plus»: the kit carries the SAME six as the receipts, same crypto-native
+>   order, now the ONE exported fact `orderedShareTargets` consumed by receipts +
+>   commissions + kit) BETWEEN «Copy my link» and the OS sheet — R-BIND-2's engraved
+>   order; the sheet stays the only PNG-carrying channel. Desktop SHARES instead of
+>   explaining. The first cut's 3-network subset came from the prior handoff's wording —
+>   corrected the same hour, second RED-first cycle: 7 named FAILURES → 946/946.
 > · The twin search collapsed the share family to ONE authority per fact: the
 >   target→icon map lived as THREE private literals (ShareMenu · ReceiptTicket ·
 >   ReferralCommissionsPanel) → `lib/shareTargetIcons.ts`; the ordered-ids resolution

@@ -34,7 +34,7 @@ import { Card } from "@/components/ui/card";
 import { StatusPill } from "@/components/status-pill/StatusPill";
 import { ladderProgress } from "@/config/connectorLadder";
 import { referralProgram } from "@/config/referralProgram";
-import { pickShareTargets } from "@/lib/shareTargets";
+import { orderedShareTargets } from "@/lib/shareTargets";
 import { ShareIntentIconButton } from "@/components/referral/ShareIntentIconButton";
 import {
   dateLabel,
@@ -83,11 +83,9 @@ function ZoneRule() {
 
 // ── The share door (§7): the receipt's permanent public page is the share
 // artifact — the painted preview card already lives at the link. ────────────
-// Order is this surface's decision; resolution, the icon map and the button
-// itself are THE shared authorities (pickShareTargets · shareTargetIcons ·
-// ShareIntentIconButton, 2026-08-03).
-const SHARE_ORDER = ["x", "whatsapp", "telegram", "linkedin", "facebook", "email"] as const;
-const ORDERED_TARGETS = pickShareTargets(SHARE_ORDER);
+// The six networks, their order, the icon map and the button itself are THE
+// shared authorities (orderedShareTargets · shareTargetIcons ·
+// ShareIntentIconButton — the 2026-08-03 de-twinning).
 
 function ShareRow({ tx }: { tx: string }) {
   // The rotation lives in the LINK: each share act hands the current face,
@@ -125,7 +123,7 @@ function ShareRow({ tx }: { tx: string }) {
       >
         {copied ? "Copied" : "Copy link"}
       </button>
-      {ORDERED_TARGETS.map((t) => {
+      {orderedShareTargets.map((t) => {
         // The shareTargets contract, decided at the call site: url-param
         // intents get URL-FREE text; text-only intents carry it inline.
         const [intentUrl, intentText] =

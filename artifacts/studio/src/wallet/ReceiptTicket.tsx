@@ -25,7 +25,7 @@ import { buildJoinLink } from "@/lib/joinLink";
 import { Check, Copy, ExternalLink, Share2 } from "lucide-react";
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
-import { pickShareTargets } from "@/lib/shareTargets";
+import { orderedShareTargets } from "@/lib/shareTargets";
 import { shareTargetIcons } from "@/lib/shareTargetIcons";
 import { brandAssets } from "@/config/brand";
 import { readArtifactBalance } from "@/lib/chainReads";
@@ -148,10 +148,8 @@ function ZoneRule() {
 // by those platforms' own rules) → "Share with other apps" (the OS sheet,
 // kept and renamed; the ONLY channel that carries the ticket image) —
 // feature-detected, never a dead button.
-// Order is this surface's decision; resolution and the icon map are THE
-// shared authorities (pickShareTargets · shareTargetIcons, 2026-08-03).
-const NETWORK_ORDER = ["x", "whatsapp", "telegram", "linkedin", "facebook", "email"];
-const ORDERED_TARGETS = pickShareTargets(NETWORK_ORDER);
+// The six networks and their crypto-native order are ONE imported fact
+// (orderedShareTargets · shareTargetIcons — the 2026-08-03 de-twinning).
 
 export default function ReceiptTicket({
   model,
@@ -615,7 +613,7 @@ export default function ReceiptTicket({
             {copied ? "Copied" : "Copy link"}
           </button>
           <div className="grid grid-cols-3 gap-2 mt-3">
-            {ORDERED_TARGETS.map((t) => {
+            {orderedShareTargets.map((t) => {
               const Icon = shareTargetIcons[t.id] ?? Share2;
               return (
                 <button

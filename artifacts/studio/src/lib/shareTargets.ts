@@ -52,3 +52,16 @@ export function pickShareTargets(ids: readonly string[]): ShareTargetDef[] {
     .map((id) => shareTargets.find((t) => t.id === id))
     .filter((t): t is ShareTargetDef => t !== undefined);
 }
+
+/** THE engraved rendering order — R-BIND-2's «crypto-native order»
+ * (2026-07-19), re-affirmed by the founder 2026-08-03 («nous avions plus»):
+ * every intent surface of the family carries the SAME six, in THIS order.
+ * Two surfaces had each pinned this list privately; it is ONE fact here. */
+export const orderedShareTargets: ShareTargetDef[] = pickShareTargets([
+  "x",
+  "whatsapp",
+  "telegram",
+  "linkedin",
+  "facebook",
+  "email",
+]);

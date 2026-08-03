@@ -48,7 +48,7 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { shareTargets } from "../src/lib/shareTargets.ts";
+import { shareTargets, orderedShareTargets } from "../src/lib/shareTargets.ts";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const srcDir = path.resolve(here, "..", "src");
@@ -131,6 +131,29 @@ check(
   "lib/shareTargets.ts: pickShareTargets MISSING — every consumer re-derives the ordered-ids resolution",
 );
 
+// ── 2b. ONE ORDER (the founder's correction, 2026-08-03: « nous avions
+// plus » — the kit carries the SAME six as the receipts, same order). The
+// crypto-native order is ONE exported fact; a private ordered-ids literal in
+// any consumer is the twin disease this file exists to kill.
+const PRIVATE_ORDER = /\[\s*"x"\s*,\s*"(whatsapp|telegram|facebook|linkedin|email)"/;
+for (const file of walk(srcDir)) {
+  if (file === TARGETS_LIB) continue;
+  const code = stripComments(readFileSync(file, "utf8"));
+  check(
+    !PRIVATE_ORDER.test(code),
+    `${rel(file)}: no private share order`,
+    `${rel(file)}: carries a private ordered-ids literal — import { orderedShareTargets } from "@/lib/shareTargets" (the R-BIND-2 crypto-native order is ONE fact)`,
+  );
+}
+// The order itself, EXECUTED from the real module — six targets, engraved
+// sequence (R-BIND-2, 2026-07-19; re-affirmed by the founder 2026-08-03).
+check(
+  JSON.stringify(orderedShareTargets.map((t) => t.id)) ===
+    JSON.stringify(["x", "whatsapp", "telegram", "linkedin", "facebook", "email"]),
+  "orderedShareTargets: the six, in the engraved crypto-native order",
+  `orderedShareTargets drifted — got [${orderedShareTargets.map((t) => t.id).join(", ")}], the engraved order is x · whatsapp · telegram · linkedin · facebook · email`,
+);
+
 // ── 3. ONE ROW BUTTON ───────────────────────────────────────────────────────
 const atomSrc = tryRead(ATOM);
 check(
@@ -156,9 +179,9 @@ for (const [name, abs] of [
 ] as const) {
   const code = stripComments(readFileSync(abs, "utf8"));
   check(
-    /pickShareTargets\s*\(/.test(code),
-    `${name}: resolves its target set through THE resolver`,
-    `${name}: does not call pickShareTargets — its ordered target set is re-derived privately`,
+    /orderedShareTargets/.test(code),
+    `${name}: consumes THE ordered family (orderedShareTargets)`,
+    `${name}: does not consume orderedShareTargets — the six-network family and its order are ONE imported fact`,
   );
 }
 // ShareMenu iterates the WHOLE registry by design (no subset) — it owes only
@@ -169,18 +192,19 @@ check(
   "",
 );
 
-// ── 4. THE KIT TRIO ─────────────────────────────────────────────────────────
+// ── 4. THE KIT FAMILY — all six, receipts-style (founder, 2026-08-03:
+// « nous avions plus ») ─────────────────────────────────────────────────────
 const kitRaw = readFileSync(KIT, "utf8");
 const kit = stripComments(kitRaw);
 check(
-  /\[\s*"x"\s*,\s*"telegram"\s*,\s*"whatsapp"\s*\]/.test(kit),
-  "kit: the founder-named trio in his order (X · Telegram · WhatsApp)",
-  'kit: the trio ["x", "telegram", "whatsapp"] is absent or reordered — the founder named the set AND the order (2026-08-03)',
+  /orderedShareTargets\.map\s*\(/.test(kit),
+  "kit: renders the WHOLE ordered family (six intents, receipts-style)",
+  "kit: does not map orderedShareTargets — the kit carries the SAME six networks as the receipts, never a subset (founder correction 2026-08-03)",
 );
 check(
   /button-kit-intent-/.test(kit),
   "kit: intent buttons are testid-pinned (button-kit-intent-<target>-<artifact>)",
-  "kit: the button-kit-intent- testid scheme is absent — the trio is unpinned",
+  "kit: the button-kit-intent- testid scheme is absent — the family is unpinned",
 );
 const copyIdx = kit.indexOf("button-kit-copy-");
 const trioIdx = kit.indexOf("<ShareIntentIconButton");
@@ -212,11 +236,36 @@ const byId = new Map(shareTargets.map((t) => [t.id, t]));
 const x = byId.get("x");
 const tg = byId.get("telegram");
 const wa = byId.get("whatsapp");
+const li = byId.get("linkedin");
+const fb = byId.get("facebook");
+const em = byId.get("email");
 check(
-  x !== undefined && tg !== undefined && wa !== undefined,
-  "registry: the trio's targets all exist",
-  "registry: a trio target (x/telegram/whatsapp) is missing from shareTargets",
+  x !== undefined && tg !== undefined && wa !== undefined && li !== undefined && fb !== undefined && em !== undefined,
+  "registry: all six family targets exist",
+  "registry: a family target (x/whatsapp/telegram/linkedin/facebook/email) is missing from shareTargets",
 );
+if (li && fb && em) {
+  const liUrl = new URL(li.build(FIX_URL, FIX_TEXT));
+  check(
+    liUrl.origin + liUrl.pathname === "https://www.linkedin.com/sharing/share-offsite/" &&
+      liUrl.searchParams.get("url") === FIX_URL,
+    "linkedin: official share-offsite, url as its own param",
+    `linkedin: intent drifted — got ${li.build(FIX_URL, FIX_TEXT)}`,
+  );
+  const fbUrl = new URL(fb.build(FIX_URL, FIX_TEXT));
+  check(
+    fbUrl.origin + fbUrl.pathname === "https://www.facebook.com/sharer/sharer.php" &&
+      fbUrl.searchParams.get("u") === FIX_URL,
+    "facebook: official sharer, url as its own param",
+    `facebook: intent drifted — got ${fb.build(FIX_URL, FIX_TEXT)}`,
+  );
+  const emHref = em.build(FIX_URL, FIX_TEXT);
+  check(
+    emHref.startsWith("mailto:?subject=") && decodeURIComponent(emHref).includes(`${FIX_TEXT} ${FIX_URL}`),
+    "email: mailto carries subject + inline «text url» body",
+    `email: inline contract drifted — got ${emHref}`,
+  );
+}
 if (x && tg && wa) {
   const xUrl = new URL(x.build(FIX_URL, FIX_TEXT));
   check(
