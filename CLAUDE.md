@@ -232,6 +232,17 @@ to subagents that return synthesis; targeted reads over whole-file reads; ONE
 consolidated docs update per slice; aim right the first time — a correction cycle
 costs real dollars and the weekly quota.
 
+**④-bis — THE AGENT CAP IS A HARD CEILING, COUNTED BEFORE LAUNCH (founder, 2026-08-03,
+after a review he capped at "5 à 10 agents" spawned 58 and took his context to 74% and
+his weekly quota to 100%: «c'est mon argent et mon temps que tu niques»).**
+When he names a number of agents, that number is the TOTAL for the whole run — not the
+number of "hats", not per phase, not before fan-out. **Count the ceiling BEFORE launching
+and make the script enforce it**: a per-finding verifier, a per-item stage, any
+`parallel(list.map(...))` over an unknown-length list is UNBOUNDED and is exactly how 7
+became 58. Bound it (`.slice(0, N)`), batch it (one verifier for many findings), or do it
+inline. If the honest work does not fit the cap, SAY SO IN ONE LINE AND ASK — never
+silently spend past it. **A number he gives is an instruction, not a hint.**
+
 ⑤ **THE VERIFICATION PROTOCOL — measure the THING, never a proxy** (founder, 2026-07-26:
 *"apprends de tes erreurs car ça nous coûte cher, des omissions qui sont simplement
 évitables"*). Three sloppy verifications in ONE day, same shape each time — a proxy measured
