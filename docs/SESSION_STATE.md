@@ -117,14 +117,52 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > conflict copy deleted. **«Guards green» is not durable in this working tree —
 > re-verify the tree immediately before committing.**
 >
-> ## (g) 🚀 DEPLOY — AND THE BACKLOG IS **NOT** EMPTY
-> The handoff block BELOW this one still reads «DEPLOY BACKLOG: EMPTY / prod
-> equals the shipped code». **That is now false.** Three commits touch the
-> runtime and are NOT deployed:
-> `420f2e1` (the faces + the seat rule) · `71d255e` (the review blockers) ·
-> and this one (the 12-agent review blockers).
-> **Verdict: 🚀 DEPLOY.** It changes the served head, the api routes, the
-> painters and public copy. Migrations: NONE — no schema change in the batch.
+> ## (g) ✅ PROD = `c170e9b` — THE DEPLOY BACKLOG IS EMPTY
+> Replit sealed it 6/6: entry `index-ihA0bfdV.js` served twice · old entry 404 ·
+> 39 shells · terms v1 5873 B / v2 6172 B exact · the 4 painted faces + the
+> unknown-face fallback · backbone ok:1 partial:0 failed:0. Everything this
+> session wrote is live. Migrations: NONE, in any of the batches.
+>
+> # ▶ THE NEXT SESSION STARTS HERE — a MEASURED, unfinished defect
+>
+> **A member who already holds a seat CANNOT buy again through a referral link.**
+> Founder-reproduced on live prod: Alice (seat #5) opened
+> `/join?source=0x3d36807580ec27b9ebb38ef267acb502286c260c270c43c9cc3d6e90bd7fc37b`,
+> the quote proudly applied the referral (−0.25 USDC, «A verified referral is
+> applied to this quote»), she signed — and the contract REVERTED.
+>
+> **MEASURED ON-CHAIN — do not re-derive, and do not repeat my mistake:**
+> · referrer wallet `0x3b1396b1ff61b79c742751cfb6f0f04eac25ec6a` holds
+>   **1 000 SYN** → `ReferrerNotSeated` is NOT the cause. I asserted it was,
+>   from a read I had not done; the founder refused the guess and was right.
+> · sourceClass 0 (MEMBER_INTRODUCTION), commissionBps 500 — both correct.
+> · CAUSE: the purchase is a **REPEAT** one and the source's
+>   `appliesToRepeatPurchases` is false. The contract refuses; the quote never
+>   looked.
+> · `isSourceActive(bytes32)` reverts on this id from a raw eth_call — one look
+>   at SourceRegistryV1.sol; it may simply be a different function name.
+>
+> **THE RULE THIS BREAKS:** a referral link is a BONUS on a quote, never an
+> OBSTACLE to a purchase. A member must always be able to expand his footprint.
+>
+> **TO DO, in order:**
+> ① `api-server/src/routes/joinQuote.ts` — it validates `exists && active` and
+>    nothing else (grep-verified: no `appliesToRepeatPurchases`, no seat read, no
+>    `balanceOf`). It must DROP the source when it cannot apply and say so in
+>    plain words, so the purchase goes through un-attributed instead of
+>    reverting.
+> ② `studio/src/wallet/JoinCheckout.tsx:449` — it never checks
+>    `txReceipt.status`. A REVERTED tx carries no logs, so the buyer is told
+>    «the transaction confirmed but the receipt event could not be decoded» — a
+>    failed purchase reported as CONFIRMED, on the money path. Independent of ①.
+> ③ **FOUNDER DECISION PENDING:** should a referrer earn on a member's LATER
+>    purchases? That is `appliesToRepeatPurchases`, a per-source term signed
+>    on-chain. Sources already created keep theirs; it changes only the next.
+>
+> **AND THE STRUCTURAL ONE:** this studio has NO eslint, which is how a
+> conditional hook reached prod and blacked out /admin/sources. A hand-rolled
+> tripwire found 34 candidate sites and was deleted as too noisy to gate.
+> Installing eslint + react-hooks and working that list down is owed.
 >
 > ## (f) STILL OPEN — named, not hidden
 > Client-side, a seatless referrer's §1 artifacts render with the fallback
