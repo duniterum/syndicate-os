@@ -808,6 +808,16 @@ function StateAndAction({
     </AlertDialog>
   );
 
+  // ⛔ THIS HOOK MUST STAY ABOVE EVERY EARLY RETURN BELOW.
+  // It was introduced (67ad235) BELOW three of them — `record === undefined`,
+  // `record === null`, `!record.exists`. So the component rendered N hooks
+  // while the registry read was pending and N+2 once it resolved: a
+  // rules-of-hooks violation that React answers by tearing down the subtree —
+  // and this subtree IS the founder's signing panel. Neither typecheck nor any
+  // guard can see it; he saw it as a wrong "connected wallet" on /admin/sources.
+  // Hooks are unconditional. The null-record case is handled INSIDE the hook.
+  const publishedMatch = usePublishedTermsMatch(record?.metadataHash ?? null);
+
   if (record === undefined) {
     return <p className="text-xs text-muted-foreground">Reading the live registry state for this id…</p>;
   }
@@ -852,7 +862,6 @@ function StateAndAction({
   // exactly this boolean — so every v1-era PAUSED source became permanently
   // un-activatable, on the money path. `publishedMatch` asks whether the hash
   // matches ANY published version; null = read failed → fail closed.
-  const publishedMatch = usePublishedTermsMatch(record?.metadataHash ?? null);
   const hashMatches = publishedMatch?.matched === true;
 
   if (record.status === STATUS_PAUSED) {
