@@ -479,11 +479,37 @@ for (const route of seoRouteRegistry) {
     // correct build RED — and because a later `set` overwrites an earlier one, the
     // outcome depended on whether the comment sat above or below the real line.
     // Comments are stripped before the pairs are read.
+    // The block pass is LINE-COMMENT-AWARE (2026-08-03, the b2a8bbb disease):
+    // a `/*` inside a `//` note (the `/referral/*` glob idiom) must never open
+    // a phantom block across the entries — with these fail-closed pins a
+    // phantom reads as a MISSING TAB and turns a CORRECT build red. The
+    // whole-line `//` delete below is unchanged (commented-out tabs are not
+    // live data — 2026-07-29).
+    function stripTabsComments(raw: string): string {
+      let kept = "";
+      for (let i = 0; i < raw.length; ) {
+        if (raw[i] === "/" && raw[i + 1] === "/") {
+          let nl = raw.indexOf("\n", i);
+          if (nl === -1) nl = raw.length;
+          kept += raw.slice(i, nl);
+          i = nl;
+        } else if (raw[i] === "/" && raw[i + 1] === "*") {
+          const close = raw.indexOf("*/", i + 2);
+          if (close === -1) {
+            kept += raw.slice(i, i + 2); // unclosed opener: the old regex kept it
+            i += 2;
+            continue;
+          }
+          i = close + 2;
+        } else {
+          kept += raw[i];
+          i += 1;
+        }
+      }
+      return kept.replace(/^[^\n]*\/\/.*$/gm, "");
+    }
     const rawTabsBlock = /const TABS[^=]*=\s*\[([\s\S]*?)\n\];/.exec(dash)?.[1] ?? null;
-    const block =
-      rawTabsBlock === null
-        ? null
-        : rawTabsBlock.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^[^\n]*\/\/.*$/gm, "");
+    const block = rawTabsBlock === null ? null : stripTabsComments(rawTabsBlock);
     check(
       block !== null,
       `MemberReferralDashboard's TABS block is readable (the crumb labels are pinned to it)`,

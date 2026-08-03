@@ -120,11 +120,41 @@ function walk(dir: string): string[] {
  * Strip comments (// and /* *​/) so an engineer's honest HISTORY notes —
  * including quoted samples of dead copy — never trip the guard. Newlines are
  * preserved so line numbers stay true.
+ *
+ * The block pass is LINE-COMMENT-AWARE (2026-08-03, the b2a8bbb disease): a
+ * `/*` inside a `//` line comment (`/api/auth/*`, `src/**`) must never open a
+ * phantom block that silently swallows real code from the scan. A block still
+ * CLOSED inside the same `//` tail is blanked exactly as before; the quote-
+ * aware line pass below then blanks the `//` tail itself, unchanged.
  */
+function blankBlockComments(text: string): string {
+  const out = text.split("");
+  for (let i = 0; i < text.length; ) {
+    if (text[i] === "/" && text[i + 1] === "/") {
+      let nl = text.indexOf("\n", i);
+      if (nl === -1) nl = text.length;
+      const seg = text.slice(i, nl).replace(/\/\*.*?\*\//g, (m) => " ".repeat(m.length));
+      for (let k = 0; k < seg.length; k += 1) out[i + k] = seg[k]!;
+      i = nl;
+    } else if (text[i] === "/" && text[i + 1] === "*") {
+      const close = text.indexOf("*/", i + 2);
+      if (close === -1) {
+        i += 2; // unclosed opener: the old regex kept it — keep it visible
+        continue;
+      }
+      for (let k = i; k < close + 2; k += 1) if (text[k] !== "\n") out[k] = " ";
+      i = close + 2;
+    } else {
+      i += 1;
+    }
+  }
+  return out.join("");
+}
+
 function stripComments(text: string): string {
-  return text
-    .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " "))
-    .replace(/^([^"'`\n]*?)\/\/.*$/gm, (m, head) => head + " ".repeat(m.length - head.length));
+  return blankBlockComments(text).replace(/^([^"'`\n]*?)\/\/.*$/gm, (m, head) =>
+    head + " ".repeat(m.length - head.length),
+  );
 }
 
 /** Extract string-literal contents ("...", '...', `...`) with line numbers. */

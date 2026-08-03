@@ -20,8 +20,34 @@ const cfg = path.resolve(here, "..", "src", "config");
 // Comments are invisible to every textual scan (the guard-operator-gate house
 // pattern; AUD-ROUTE 2026-07-17): a prose comment containing `path: "/x"`
 // must never inject a phantom module path that masks a deleted entry.
-const stripComments = (t: string) =>
-  t.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+// The block pass is LINE-COMMENT-AWARE (2026-08-03, the b2a8bbb disease): a
+// `/*` inside a `//` line comment (`/api/auth/*`, `src/**`) must never open a
+// phantom block that swallows real routes from the scan. The `//` pass below
+// then deletes the line tail itself, exactly as before.
+function stripBlockComments(t: string): string {
+  let kept = "";
+  for (let i = 0; i < t.length; ) {
+    if (t[i] === "/" && t[i + 1] === "/") {
+      let nl = t.indexOf("\n", i);
+      if (nl === -1) nl = t.length;
+      kept += t.slice(i, nl);
+      i = nl;
+    } else if (t[i] === "/" && t[i + 1] === "*") {
+      const close = t.indexOf("*/", i + 2);
+      if (close === -1) {
+        kept += t.slice(i, i + 2); // unclosed opener: the old regex kept it
+        i += 2;
+        continue;
+      }
+      i = close + 2;
+    } else {
+      kept += t[i];
+      i += 1;
+    }
+  }
+  return kept;
+}
+const stripComments = (t: string) => stripBlockComments(t).replace(/\/\/[^\n]*/g, "");
 const appSrc = stripComments(
   readFileSync(path.resolve(here, "..", "src", "App.tsx"), "utf8"),
 );
@@ -132,9 +158,16 @@ for (const id of navIds) {
 // must be EXACTLY the same set (10 sections: /admin + 9 sub-routes). A nav
 // item without a mounted route, a mounted route without a nav item, or an
 // unregistered section all fail here.
-const adminShellSrc = readFileSync(
-  path.resolve(here, "..", "src", "components", "admin", "AdminShell.tsx"),
-  "utf8",
+// Stripped like every other scanned file (2026-08-03): this read was RAW, so a
+// commented-out `path: "/admin/…"` entry was COUNTED — a pure comment could
+// red the build (proven live: 3 errors from one comment) or pad the exact-11
+// count while a real entry was deleted. The guard's own header law (a prose
+// comment must never inject a phantom path) covers this scan too.
+const adminShellSrc = stripComments(
+  readFileSync(
+    path.resolve(here, "..", "src", "components", "admin", "AdminShell.tsx"),
+    "utf8",
+  ),
 );
 const sectionsBlock = adminShellSrc.match(
   /ADMIN_SECTIONS\s*=\s*\[([\s\S]*?)\]\s*as const/,
