@@ -1133,6 +1133,8 @@ export function LiveActivityFeed({
                 type="button"
                 onClick={() => selectLens(l)}
                 className={`min-h-11 px-5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  l === "protocol" ? "rounded-l-md" : "rounded-r-md"
+                } ${
                   lens === l
                     ? "bg-gold/15 text-gold shadow-[inset_0_0_0_1px_hsl(var(--gold)/0.45)]"
                     : "text-muted-foreground hover:text-foreground"

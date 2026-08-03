@@ -67,11 +67,15 @@ const COMMISSIONS = path.join(srcDir, "components", "referral", "ReferralCommiss
 const TICKET = path.join(srcDir, "wallet", "ReceiptTicket.tsx");
 const MENU = path.join(srcDir, "components", "referral", "ShareMenu.tsx");
 
+// LINE comments are stripped FIRST: a `/*` inside a `//` line (e.g. a route
+// glob like `/api/auth/*` in a header) would otherwise open a phantom block
+// and swallow real code from the scan — the class was caught live by
+// guard-activity-mine's own RED cycle (2026-08-03).
 function stripComments(code: string): string {
   return code
-    .replace(/\/\*[\s\S]*?\*\//g, "")
     .replace(/^[ \t]*\/\/.*$/gm, "")
-    .replace(/([^:"'])\/\/[^\n"']*$/gm, "$1");
+    .replace(/([^:"'])\/\/[^\n"']*$/gm, "$1")
+    .replace(/\/\*[\s\S]*?\*\//g, "");
 }
 
 function tryRead(abs: string): string | null {

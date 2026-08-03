@@ -49,7 +49,10 @@ interface LedgerRow {
   strong: string | null;
   anchorShort: string;
   explorerUrl: string;
-  /** The binder door — /receipts — when the row has a full ticket. */
+  /** The full transaction hash — the row's own coordinates. */
+  tx: string;
+  /** The document door — the row's OWN /receipt/{tx} page — when the row has
+   * a full ticket (founder catch 2026-08-03: never the whole binder). */
   hasReceipt: boolean;
   key: string;
 }
@@ -169,6 +172,7 @@ export default function ActivityMineLedger() {
       strong: null,
       anchorShort: short(p.transaction),
       explorerUrl: p.explorerUrl,
+      tx: p.transaction,
       hasReceipt: p.receipt !== null,
       key: `p-${p.transaction}`,
     });
@@ -180,6 +184,7 @@ export default function ActivityMineLedger() {
       strong: r.durable ? "durable" : null,
       anchorShort: short(r.transaction),
       explorerUrl: r.explorerUrl,
+      tx: r.transaction,
       hasReceipt: false,
       key: `i-${r.transaction}`,
     });
@@ -194,6 +199,7 @@ export default function ActivityMineLedger() {
       strong: `#${standing.memberNumber}`,
       anchorShort: short(standing.receipt.transaction),
       explorerUrl: standing.receipt.explorerUrl,
+      tx: standing.receipt.transaction,
       hasReceipt: false,
       key: "seat-entry",
     });
@@ -259,14 +265,25 @@ export default function ActivityMineLedger() {
                 </td>
                 <td className="border-t border-border/40 py-3.5 whitespace-nowrap font-mono text-xs uppercase tracking-[0.08em] text-muted-foreground">
                   {r.hasReceipt ? (
+                    // The row's OWN document — we HAVE the hash; the binder
+                    // stays one door in the footer (founder, 2026-08-03).
                     <Link
-                      href="/receipts"
+                      href={`/receipt/${r.tx}`}
                       className="rounded-sm text-proof hover:text-proof-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       receipt
                     </Link>
                   ) : (
-                    "verify"
+                    // An anchor like its public-feed sibling — never a dead
+                    // label dressed as one (founder, 2026-08-03).
+                    <a
+                      href={r.explorerUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-sm text-proof hover:text-proof-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      verify
+                    </a>
                   )}
                 </td>
               </tr>

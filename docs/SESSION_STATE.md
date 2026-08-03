@@ -2,11 +2,39 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-03 (SESSION 2 — the desktop-share slice) — RESUME HERE. **His « go » on
-> the named slice: BUILT AND GREEN, awaiting his PREVIEW + deploy word. PROD stays
-> `c2b1168`. DEPLOY BACKLOG: this one slice — 🚀 DEPLOY, BATCHABLE (client-only,
-> additive, fail-closed; prod unbroken meanwhile) — but it is HIS desktop catch, so
-> firing it solo is equally his call.**
+> # ▶ 2026-08-03 (SESSION 2 — the desktop-share slice) — RESUME HERE. **🚀 SEALED:
+> PROD = `fc78854` (his direct deploy order, Replit 6/6: entry `index-CHiP9sTw.js` =
+> `ec46fc7b…d091` ×2 · console `OperatorConsole-CP-Yp_MZ.js` = `ee0d0a56…bc79` ×2 ·
+> old entry 404 · migrations EXPLICITLY nothing-to-apply, 100% studio+docs · the
+> intent urls present in the served bundle, none leaked into the console chunk ·
+> 31 routes 200 · backbone ok, headBlock advancing, failed:0 · spine 39 financial
+> items · hero snapshot line intact). The whole K1.5 arc + the six-hat review pass
+> are LIVE. DEPLOY BACKLOG: ONE batchable slice — the A1 mine-lens fixes below (his
+> post-deploy catch on live prod).**
+>
+> ## (a0) THE POST-SEAL SLICE (his catch on prod /activity?lens=mine, 2026-08-03):
+> · His words: « VERIFY and RECEIPT c'est quoi la logique … les receipt links
+>   amènent à la page de receipts pas au receipt lui-même » + « les coins … des
+>   boutons ». Code-verified, all three: "verify" was a BARE STRING (dead text
+>   dressed like its living public-feed sibling — it would never "become a link");
+>   "receipt" linked the whole BINDER (/receipts) while the row already carries its
+>   hash; the lens control's gold inset ring has square corners inside a rounded
+>   clipping container — cut at the corners.
+> · THE LOGIC (now true in both directions): a pure chain act (introduction sealed ·
+>   seat written) carries **verify** → the row's own explorer proof, a REAL anchor;
+>   a purchase also owns a commerce document → **receipt** → the row's OWN
+>   /receipt/{tx} page, direct, zero re-scanning (the binder keeps exactly ONE door,
+>   the footer). LedgerRow now carries `tx`; the lens segments carry their position
+>   radius (rounded-l-md / rounded-r-md) so the ring follows the curve.
+> · RED FIRST: NEW `guard-activity-mine` (blocking chain) — 6 pins written first,
+>   ALL SIX watched red (including its own pin-1 false-green caught and re-anchored
+>   to the interface), then green. En route it exposed a HOUSE-WIDE stripper trap:
+>   block comments stripped BEFORE line comments let a `/*` inside a `//` line (the
+>   ledger header's `/api/auth/*`) swallow ~1.4k chars of real code from the scan —
+>   fixed in BOTH new guards (line-first order), audit of the other ~20 guards
+>   spawned as its own task chip. Gates: chain green · typecheck · build green ·
+>   rig: lens radii measured 6px/0px/6px exactly, mine-signed-out renders, zero
+>   console errors. NOT measured: the CONNECTED rows (his wallet — prod).
 >
 > ## (a) WHAT LANDED — K1.5, the kit's share door harmonized (registry flips: NONE owed):
 > · ~~Loose intent icons in the row~~ **His second same-hour correction («harmonisé
@@ -80,13 +108,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   bar's Copy and the box's Copy no longer light each other's «Copied» label (each
 >   owns its state; both still advance the face).
 >
-> ## (b) IN FLIGHT: nothing in code. HIS NEXT ACT: preview the kit row (rig URL handed
-> ## in chat, desktop + 375px) → his deploy word (solo or batch). Then the order
-> ## continues: C (/join referral-showcase) · E (public press kit) · FIRSTS engine;
-> ## background: member-ledger windowing · spine-poller dedupe.
+> ## (b) IN FLIGHT: nothing in code. The A1 mine-lens slice is committed, batchable —
+> ## it rides the next deploy or fires solo on his word. Then the order continues:
+> ## C (/join referral-showcase) · E (public press kit) · FIRSTS engine; background:
+> ## member-ledger windowing · spine-poller dedupe · the guard-stripper audit chip.
 >
-> ## (c) FOUNDER-PENDING: preview + deploy word on K1.5 · the 4 composition wireframes ·
-> ## « téléchargé » (dump.sql.gz) · K4 no-seat promoter · AW-5 (the 2 artifacts).
+> ## (c) FOUNDER-PENDING: his deploy word on the A1 mine-lens slice · his prod looks
+> ## on the LIVE kit box (three looks handed in chat: the box under Share…, the
+> ## receipt box unchanged, the box width under narrow artifacts — his eye) · the 4
+> ## composition wireframes · « téléchargé » (dump.sql.gz) · K4 no-seat promoter ·
+> ## AW-5 (the 2 artifacts).
 
 > # ▶ 2026-08-03 (HANDOFF) — superseded by the block above. **PROD = `c2b1168` — THE BATCH IS SEALED
 > (Replit 6/6, 2026-08-03: entry `index-B903mBG_.js` = `a0353ba8…f94e` · the /activity

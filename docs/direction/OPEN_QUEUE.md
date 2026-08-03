@@ -1,5 +1,20 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-03 (SESSION 2, suite) — 7ᵉ sceau : PROD = `fc78854` (Replit 6/6, entrée
+> `index-CHiP9sTw.js`, migrations « rien à appliquer », les intents dans le bundle
+> servi) — tout l'arc K1.5 + la passe six-casquettes sont LIVE. PUIS SA PRISE sur
+> prod /activity?lens=mine : « verify » était du texte MORT (jamais un lien) ·
+> « receipt » pointait le classeur entier au lieu de LA page du reçu (le hash est
+> sur la rangée) · les coins du sélecteur Protocol|Mine coupés net. CORRIGÉ
+> (guard-activity-mine NOUVEAU, 6 pins rouges d'abord — dont son propre pin-1
+> faux-vert attrapé — puis verts ; au passage : le piège maison du stripper de
+> commentaires trouvé et corrigé dans les deux nouveaux guards, l'audit des ~20
+> autres lancé en tâche) : verify = ancre explorateur réelle · receipt =
+> /receipt/{hash} direct, le classeur garde SA porte unique en pied · les segments
+> portent leur rayon (l'anneau or suit la courbe, mesuré 6px/0/6px au rig).
+> BATCHABLE — son mot pour tirer. EN ATTENTE : ses regards prod sur la boîte du kit
+> (largeur sous artefacts étroits = son œil).**
+
 > **▶ 2026-08-03 (SESSION 2) — K1.5 CONSTRUIT sur son « go », puis SES DEUX corrections
 > la même heure : ① « nous avions plus » → les SIX réseaux des reçus, jamais un
 > sous-ensemble ; ② « harmonisé comme ticket » → ~~des icônes libres dans la rangée~~

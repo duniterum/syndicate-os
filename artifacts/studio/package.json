@@ -36,7 +36,7 @@
     "guard:feature-truth": "node scripts/guard-feature-truth.ts",
     "guard:fluid": "node scripts/guard-fluid-surface.ts",
     "guard:font": "node scripts/guard-font-discipline.ts",
-    "guards": "node scripts/guard-lifecycle-labels.ts && node scripts/guard-forbidden-copy.ts && node scripts/guard-safe-source.ts && node scripts/guard-surface-coverage.ts && node scripts/guard-route-nav-drift.ts && node scripts/guard-posture-map.ts && node scripts/guard-no-fake-live.ts && node scripts/guard-freshness.ts && node scripts/guard-operator-gate.ts && node scripts/guard-access-state.ts && node scripts/guard-surface-naming.ts && node scripts/guard-nav-link-display.ts && node scripts/guard-era-drift.ts && node scripts/guard-receipt-ticket.ts && node scripts/guard-member-menu.ts && node scripts/guard-member-home.ts && node scripts/guard-notification-vocab.ts && node scripts/guard-feature-truth.ts && node scripts/guard-fluid-surface.ts && node scripts/guard-font-discipline.ts && node scripts/guard-one-figure.ts && node scripts/check-seo-registry.ts && node scripts/check-public-surface-audit.ts && node scripts/guard-type-scale.ts && node scripts/guard-spacing-scale.ts && node scripts/guard-contrast-aa.ts && node scripts/guard-theme-parity.ts && node scripts/guard-focus-visible.ts && node scripts/guard-touch-target.ts && node scripts/guard-share-intents.ts && node guards/no-raw-color.mjs",
+    "guards": "node scripts/guard-lifecycle-labels.ts && node scripts/guard-forbidden-copy.ts && node scripts/guard-safe-source.ts && node scripts/guard-surface-coverage.ts && node scripts/guard-route-nav-drift.ts && node scripts/guard-posture-map.ts && node scripts/guard-no-fake-live.ts && node scripts/guard-freshness.ts && node scripts/guard-operator-gate.ts && node scripts/guard-access-state.ts && node scripts/guard-surface-naming.ts && node scripts/guard-nav-link-display.ts && node scripts/guard-era-drift.ts && node scripts/guard-receipt-ticket.ts && node scripts/guard-member-menu.ts && node scripts/guard-member-home.ts && node scripts/guard-notification-vocab.ts && node scripts/guard-feature-truth.ts && node scripts/guard-fluid-surface.ts && node scripts/guard-font-discipline.ts && node scripts/guard-one-figure.ts && node scripts/check-seo-registry.ts && node scripts/check-public-surface-audit.ts && node scripts/guard-type-scale.ts && node scripts/guard-spacing-scale.ts && node scripts/guard-contrast-aa.ts && node scripts/guard-theme-parity.ts && node scripts/guard-focus-visible.ts && node scripts/guard-touch-target.ts && node scripts/guard-share-intents.ts && node scripts/guard-activity-mine.ts && node guards/no-raw-color.mjs",
     "guard:opgate": "node scripts/guard-operator-gate.ts",
     "guard:access": "node scripts/guard-access-state.ts",
     "guard:color": "node guards/no-raw-color.mjs",
@@ -47,7 +47,8 @@
     "guard:themeparity": "node scripts/guard-theme-parity.ts",
     "guard:focusvisible": "node scripts/guard-focus-visible.ts",
     "guard:touchtarget": "node scripts/guard-touch-target.ts",
-    "guard:shareintents": "node scripts/guard-share-intents.ts"
+    "guard:shareintents": "node scripts/guard-share-intents.ts",
+    "guard:activitymine": "node scripts/guard-activity-mine.ts"
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.10.0",
