@@ -48,6 +48,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > would break the verification of every source that committed to it. v2 is a NEW
 > file; `matchesPublishedTerms()` checks an on-chain hash against the current
 > document AND every prior one, so a v1-era source still verifies.
+> **⚠ CORRECTED TWICE — read this before trusting anything above about the terms.**
+> `matchesPublishedTerms()` was CLAIMED in 420f2e1 (zero call sites — the claim
+> was false), then DELETED in 71d255e on the written grounds that no surface
+> compares an existing source's metadataHash. **That second claim was false too:**
+> `ProposeSourceCreate.tsx:824` does exactly that, and gates the founder's
+> **Activate** signature on it — so deleting the helper made every source that
+> committed to v1 permanently un-activatable, on the money path, under an
+> on-screen instruction that could not be satisfied. It is now RESTORED and
+> genuinely WIRED (`usePublishedTermsMatch`), and a v1-era hash verifies again.
+> **And `.gitattributes` now pins EVERY terms version to LF by pattern:** v2
+> shipped unpinned while `core.autocrlf=true`, so the next fresh Windows checkout
+> would have produced a document with CRLF — 121 extra bytes, a different
+> keccak256 than the one a founder may have signed on-chain. v1 was pinned; the
+> rule named the file, not the pattern.
+>
 > v1 `0xc84808670aab7303c36bc7cb25c7aa51c8dff5aa5ad24d2025a037c3ea1e6e48` (5 873 B)
 > v2 `0x58f0ef7104de8521be75002f7e4f3c25cd5e313bb72c377d7afe38bd53dea6d6` (6 172 B)
 >
@@ -96,12 +111,21 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > conflict copy deleted. **«Guards green» is not durable in this working tree —
 > re-verify the tree immediately before committing.**
 >
+> ## (g) 🚀 DEPLOY — AND THE BACKLOG IS **NOT** EMPTY
+> The handoff block BELOW this one still reads «DEPLOY BACKLOG: EMPTY / prod
+> equals the shipped code». **That is now false.** Three commits touch the
+> runtime and are NOT deployed:
+> `420f2e1` (the faces + the seat rule) · `71d255e` (the review blockers) ·
+> and this one (the 12-agent review blockers).
+> **Verdict: 🚀 DEPLOY.** It changes the served head, the api routes, the
+> painters and public copy. Migrations: NONE — no schema change in the batch.
+>
 > ## (f) STILL OPEN — named, not hidden
 > Client-side, a seatless referrer's §1 artifacts render with the fallback
 > headline while some captions still describe a seat · downloaded QRs encode at
-> ECC L while painted previews use M · `docs/direction/SPEC_REFERRAL_SYSTEM.md:278`
-> still prescribes the old sentence and will re-seed it into the next surface
-> written from the spec · the operator dossier (`memberLedgerService`) is
+> ECC L while painted previews use M · `SPEC_REFERRAL_SYSTEM.md:278` was CORRECTED in 420f2e1 (it now says «You must
+> hold SYN… any amount, no minimum»), but `:289` still lists «parrain plus seaté»
+> as a zero-commission cause · the operator dossier (`memberLedgerService`) is
 > seat-keyed, so a seatless source never appears in the ledger the founder ranks
 > from · the founder cannot direct-message a seatless source (seat-number only) ·
 > DESIGN_ROADMAP / BACKLOG.html / OPEN_QUEUE not yet updated for this arc.

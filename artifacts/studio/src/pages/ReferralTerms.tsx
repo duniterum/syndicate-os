@@ -47,7 +47,7 @@ export default function ReferralTerms() {
     <PublicPage
       eyebrow="Legal"
       title="Member referral program terms"
-      lead="The program's governing document, exactly as served. Its digital fingerprint (keccak256) is recorded on-chain as every member referral source's terms fingerprint — anyone can verify that what they read here is what the chain committed to."
+      lead="The program's governing document, exactly as served. Its digital fingerprint (keccak256) is recorded on-chain as the fingerprint a source created NOW commits to; an earlier-version source carries that version's — anyone can verify that what they read here is what the chain committed to."
       badge={<LifecycleBadge lifecycle="READ_ONLY_PROOF" />}
       variant="app"
     >
@@ -64,7 +64,7 @@ export default function ReferralTerms() {
           className="mt-3 inline-flex min-h-11 items-center rounded-sm text-sm text-proof transition-colors hover:text-proof-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           data-testid="link-terms-raw-file"
         >
-          The canonical file (plain text, v1)
+          The canonical file (plain text, current version)
         </a>
       </Card>
 

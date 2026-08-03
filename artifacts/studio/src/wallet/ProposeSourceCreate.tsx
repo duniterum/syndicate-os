@@ -72,7 +72,7 @@ import {
 } from "@/lib/adminPrefill";
 import { probeQuoteRefusal } from "@/lib/joinQuoteProbe";
 import { decideActivation } from "@/lib/operatorClient";
-import { fetchTermsHash, TERMS_CANONICAL_URL } from "@/lib/termsDocument";
+import { fetchTermsHash, matchesPublishedTerms, TERMS_CANONICAL_URL } from "@/lib/termsDocument";
 
 // SPEC §② — the founder-decided first-source terms (closed list §⑫).
 // Enum codes verified against SourceRegistryV1.sol enum declarations:
@@ -669,6 +669,30 @@ export default function ProposeSourceCreate() {
   );
 }
 
+/** Does an EXISTING source's on-chain metadataHash match ANY published version
+ *  of the terms? A source created under v1 committed to v1's bytes and that
+ *  commitment stays valid — the founder's Activate gate must not read it as a
+ *  mismatch. undefined = still reading; null = read failed (fail closed). */
+function usePublishedTermsMatch(onChainHash: string | null | undefined) {
+  const [state, setState] = useState<
+    { matched: true; path: string } | { matched: false } | null | undefined
+  >(undefined);
+  useEffect(() => {
+    if (onChainHash == null) {
+      setState(undefined);
+      return;
+    }
+    let active = true;
+    void matchesPublishedTerms(onChainHash).then((r) => {
+      if (active) setState(r);
+    });
+    return () => {
+      active = false;
+    };
+  }, [onChainHash]);
+  return state;
+}
+
 function PanelHeading() {
   return (
     <div>
@@ -821,7 +845,15 @@ function StateAndAction({
     );
   }
 
-  const hashMatches = termsHash !== null && record.metadataHash.toLowerCase() === termsHash.toLowerCase();
+  // VERSION-AWARE (corrected 2026-08-03, after the v2 flip bricked this gate).
+  // An EXISTING source committed to whatever document was current when it was
+  // created; comparing it only to TODAY's document reported a broken
+  // commitment where there is none, and line ~875 disables **Activate** on
+  // exactly this boolean — so every v1-era PAUSED source became permanently
+  // un-activatable, on the money path. `publishedMatch` asks whether the hash
+  // matches ANY published version; null = read failed → fail closed.
+  const publishedMatch = usePublishedTermsMatch(record?.metadataHash ?? null);
+  const hashMatches = publishedMatch?.matched === true;
 
   if (record.status === STATUS_PAUSED) {
     return (

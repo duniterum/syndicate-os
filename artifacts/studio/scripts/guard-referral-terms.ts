@@ -86,7 +86,11 @@ check(
   "terms: the page does not import TERMS_PATH — the canonical file path is ONE fact in lib/termsDocument.ts",
 );
 check(
-  !/referral-program-terms-v1\.txt/.test(page),
+  // VERSION-AGNOSTIC (2026-08-03). This pinned the literal `-v1.txt`, so the
+  // moment v2 shipped the pin guarded a filename nobody can write any more:
+  // retyping the CURRENT path into the page was green. It is the PATTERN that
+  // must never be retyped — the page imports TERMS_PATH or it drifts.
+  !/referral-program-terms-v\d+\.txt/.test(page),
   "terms: the file path is never retyped",
   "terms: the .txt path is retyped in the page — import TERMS_PATH",
 );

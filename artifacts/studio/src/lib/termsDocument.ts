@@ -62,21 +62,37 @@ export async function fetchTermsHash(path: string = TERMS_PATH): Promise<TermsHa
 }
 
 /**
- * ⛔ NOT IMPLEMENTED — AND THE RECORD IS CORRECTED HERE.
+ * Does an on-chain `metadataHash` match ANY published version of the terms?
  *
- * A `matchesPublishedTerms()` helper was written when v2 shipped, and commit
- * 420f2e1's message claimed it "checks an on-chain hash against the current
- * document AND every prior one, so a v1-era source still verifies". THAT CLAIM
- * WAS FALSE: the function had ZERO call sites, so no surface performed the
- * check, and shipping a safety property that does not exist is worse than not
- * having it. It has been removed rather than left as dead code that reads like
- * a guarantee.
+ * THE HISTORY, because it cost two rounds. 420f2e1 shipped this helper with a
+ * commit message claiming it made v1-era sources verify — it had ZERO call
+ * sites, so the claim was false. 71d255e then DELETED it, on the written
+ * grounds that "no page renders an existing source's metadataHash at all".
+ * That second claim was false too: ProposeSourceCreate.tsx does exactly that,
+ * and gates the founder's **Activate** signature on it. Deleting the helper
+ * turned a version-blind comparison into a permanent brick — every source that
+ * committed to v1 could never be activated again, on the money path, under an
+ * on-screen instruction ("Do not activate until they match") that could not be
+ * satisfied.
  *
- * WHAT IS TRUE TODAY: every published version stays served at its own address
- * (see TERMS_PRIOR_PATHS), so ANY source's commitment remains independently
- * verifiable by hand — download the version, keccak256 its raw bytes, compare
- * to the registry's metadataHash. What does NOT exist is a surface that does
- * that comparison FOR the reader; no page currently renders an existing
- * source's on-chain metadataHash at all. Building one is its own slice.
+ * So it is back, and this time it is WIRED. A source created before v2
+ * committed to v1's bytes and that commitment is still perfectly valid;
+ * comparing only against the CURRENT document reports a broken commitment
+ * where there is none.
+ *
+ * Null on any read failure — fail closed: no answer, never a verdict.
  */
+export async function matchesPublishedTerms(
+  onChainHash: string,
+): Promise<{ matched: true; path: string } | { matched: false } | null> {
+  const want = onChainHash.toLowerCase();
+  let readAny = false;
+  for (const path of [TERMS_PATH, ...TERMS_PRIOR_PATHS]) {
+    const read = await fetchTermsHash(path);
+    if (read === null) continue;
+    readAny = true;
+    if (read.hash.toLowerCase() === want) return { matched: true, path };
+  }
+  return readAny ? { matched: false } : null;
+}
 
