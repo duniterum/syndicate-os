@@ -1,5 +1,14 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-03 (SESSION 2, CLÔTURE) — 9ᵉ SCEAU : PROD = `8cb2414` (Replit 6/6 ;
+> /referral-terms live · le lockup servi en 3 formats · wallet_watchAsset dans le
+> bundle · migrations rien · backbone sain). LE QUAI EST VIDE — tout ce que la
+> session a construit est LIVE. À SES YEUX en prod : la feuille Add-SYN avec son
+> wallet · /press + lockup · /referral-terms · la carte /join corrigée · la
+> largeur de la boîte du kit (jugement en attente) · la nuance §2 détenir-du-SYN
+> (une ligne carte = son choix). LA SUITE DE L'ORDRE : le moteur FIRSTS (gravé
+> #2) ; fond : fenêtrage member-ledger · dédup spine-poller.**
+
 > **▶ 2026-08-03 (SESSION 2, 4ᵉ vague) — ADD SYN AU FOOTER, son ordre (« MetaMask …
 > et d'autres wallets … si tu peux faire mieux fais ainsi ») : construit
 > MÉCANISME-plutôt-que-MARQUE — UN bouton EIP-747 `wallet_watchAsset` au wallet

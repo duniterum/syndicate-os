@@ -2,7 +2,27 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-03 (SESSION 2 — third wave) — RESUME HERE. **🚀 SEALED AGAIN: PROD =
+> # ▶ 2026-08-03 (SESSION 2 — CLOSE) — RESUME HERE. **🚀 THE 9TH SEAL: PROD =
+> `8cb2414` (Replit 6/6: entry `index-mCrGLNJN.js` ×2 · old entry 404 · 39 shells
+> (+1 /referral-terms) · 33 routes 200 · /referral-terms live with its title ·
+> the lockup's THREE formats served 200 (svg 15.5 KB · png 18.6 · @2x 41.3) ·
+> wallet_watchAsset ×2 in the served bundle · /press intact · migrations
+> EXPLICITLY nothing (the only api file is the asset generator script) · backbone
+> ok, the usual first-cycle partial self-healed, headBlock advancing). THE DEPLOY
+> BACKLOG IS EMPTY. Everything this session built is LIVE: K1.5 (the share box) ·
+> the six-hat review closures · A1 mine-lens fixes · the /join showcase (voice
+> corrected) · /press + lockup · /referral-terms (the designed hash-anchored
+> home) · Add-SYN EIP-747 · the 17 repaired scanners + review-2 hardenings.**
+>
+> ## STILL HIS EYES ON LIVE PROD (stated, not hidden): the Add-SYN sheet with his
+> ## own wallet (footer, any page) · the lockup and /press by eye · /referral-terms
+> ## by eye · the /join card's corrected line + its program-terms door · the kit
+> ## box width under narrow artifacts (the standing judgment call) · the §2
+> ## hold-SYN nuance (a card line = his choice). THE ORDER'S NEXT: the FIRSTS
+> ## engine (engraved #2); background: member-ledger windowing · spine-poller
+> ## dedupe.
+>
+> # ▶ 2026-08-03 (SESSION 2 — third wave, historical). **🚀 SEALED: PROD was =
 > `949f80c` (his direct order, Replit 6/6: entry `index-pibcQDUg.js` ×2 · old entry
 > 404 · 38 shells (+1 /press) · /press live 200 with title+hero confirmed · 32 routes
 > 200 · migrations EXPLICITLY nothing (guard scripts only api-side) · backbone first
