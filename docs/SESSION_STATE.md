@@ -2,7 +2,42 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-03 (SESSION 2 — the desktop-share slice) — RESUME HERE. **🚀 SEALED:
+> # ▶ 2026-08-03 (SESSION 2 — third wave) — RESUME HERE. **🚀 SEALED AGAIN: PROD =
+> `949f80c` (his direct order, Replit 6/6: entry `index-pibcQDUg.js` ×2 · old entry
+> 404 · 38 shells (+1 /press) · /press live 200 with title+hero confirmed · 32 routes
+> 200 · migrations EXPLICITLY nothing (guard scripts only api-side) · backbone first
+> cycle CLEAN ok:1 partial:0 failed:0). The whole review-2 train is LIVE.**
+>
+> ## (a5) HIS THREE LIVE-PROD CATCHES, all closed the same hour (RED-first 2+8+1
+> ## watched):
+> · «How, in the terms» doored to the GENERAL Terms of Use — but the program has ITS
+>   OWN hash-anchored document (referral-program-terms-v1.txt, its keccak256 = every
+>   member source's on-chain metadataHash). NOW: `/referral-terms` — the designed
+>   home: the body FETCHED from the canonical file (never retyped — the hash law),
+>   TermsCommitmentHash mounted (rig-measured live hash `0xc8480867…` = prod's own
+>   fingerprint), the raw-file door, footer Legal shelf, full registry wiring +
+>   sitemap 31 + rewrites 37. NEW guard-referral-terms (12 pins). The /join card and
+>   the /press commission fact now door THERE («How, in the program terms»).
+> · THE TERMS AUDIT (his «lire pour voir si tout est à jour»): the v1 document IS
+>   current — 5% start · LIFETIME attribution · NO caps (the settled ruling) ·
+>   ladder to 12% max · escrow release-by-anyone while ACTIVE · not-passive-income
+>   §4 — all consistent with every claim we serve. It also proved HIS instinct on
+>   the card: §2 says a link «may be granted» (ask → founder-signed activation), so
+>   «Every seat comes with its own introduction link» was an overclaim → the frozen
+>   copy now reads «Every seat CAN OPEN its own introduction link» (pinned). One
+>   nuance for his eye, stated: §2 requires the referrer to hold ANY SYN at the
+>   purchase moment — real eligibility condition, summarized nowhere on the card
+>   (the terms door covers it; adding a card line is his call).
+> · «Un seul logo sans texte … pas suffisant» → THE LOCKUP built: mark + wordmark,
+>   full vector (glyphs as paths — satori over the painter's own Work Sans TTFs, no
+>   font needed anywhere), composed with the served mark's paths verbatim,
+>   PIXEL-PROBED before writing (mark ink · text ink · right pad clean — the probe's
+>   own first single-column form landed in the T-H letter gap and was widened to
+>   bands), + PNG 1x/2x. Generator committed (api-server/scripts/gen-press-lockup.ts,
+>   the origin's gen-interlock precedent). /press now leads its brand section with
+>   the lockup (rig: 374×64, loaded) and lists 6 real assets.
+>
+> # ▶ 2026-08-03 (SESSION 2 — the desktop-share slice, earlier waves). **🚀 SEALED:
 > PROD = `fc78854` (his direct deploy order, Replit 6/6: entry `index-CHiP9sTw.js` =
 > `ec46fc7b…d091` ×2 · console `OperatorConsole-CP-Yp_MZ.js` = `ee0d0a56…bc79` ×2 ·
 > old entry 404 · migrations EXPLICITLY nothing-to-apply, 100% studio+docs · the

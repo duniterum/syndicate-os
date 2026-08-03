@@ -684,7 +684,7 @@ function JoinReferralShowcase() {
       <div className="space-y-4">
         <div>
           <p className="text-sm leading-relaxed text-muted-foreground measure">
-            Every seat comes with its own introduction link. When someone joins
+            Every seat can open its own introduction link. When someone joins
             through yours,{" "}
             <strong className="font-semibold text-foreground">
               the contract pays your commission inside their purchase — same
@@ -712,11 +712,11 @@ function JoinReferralShowcase() {
             </strong>
           </p>
           <Link
-            href="/terms"
+            href="/referral-terms"
             className={verifyCls}
             data-testid="link-showcase-verify-terms"
           >
-            How, in the terms
+            How, in the program terms
           </Link>
         </div>
       </div>

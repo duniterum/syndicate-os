@@ -82,8 +82,8 @@ export const pressProtocolFacts: readonly PressFact[] = [
   },
   {
     text: "Referral commissions are paid inside the buyer's own transaction.",
-    href: "/terms",
-    door: "Terms",
+    href: "/referral-terms",
+    door: "Program terms",
   },
   {
     text: "Season standings are public.",
@@ -118,7 +118,10 @@ export interface PressAsset {
   note: string;
 }
 export const pressAssets: readonly PressAsset[] = [
-  { label: "The mark — gold (PNG)", href: brandAssets["syn-mark-gold"], note: "transparent background" },
-  { label: "The mark — gold (SVG)", href: "/syn-mark-gold.svg", note: "vector" },
+  { label: "The lockup — mark + wordmark (SVG)", href: "/brand/syn-lockup-gold.svg", note: "vector · for dark grounds" },
+  { label: "The lockup — mark + wordmark (PNG)", href: "/brand/syn-lockup-gold.png", note: "transparent · @2x below" },
+  { label: "The lockup — mark + wordmark (PNG @2x)", href: "/brand/syn-lockup-gold@2x.png", note: "retina" },
+  { label: "The mark alone — gold (PNG)", href: brandAssets["syn-mark-gold"], note: "transparent background" },
+  { label: "The mark alone — gold (SVG)", href: "/syn-mark-gold.svg", note: "vector" },
   { label: "Link-preview card (1280×720)", href: "/opengraph.jpg", note: "the served OG image" },
 ];

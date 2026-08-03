@@ -1,5 +1,19 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-03 (SESSION 2, 8ᵉ sceau + la 3ᵉ vague) — PROD = `949f80c` (Replit 6/6,
+> /press live, backbone premier cycle propre). PUIS SES TROIS PRISES prod, fermées la
+> même heure (rouge d'abord 2+8+1) : ① la porte terms de la carte /join menait aux
+> CGU générales → `/referral-terms` construit, la maison designée du document ancré
+> par hash (corps FETCHÉ du fichier canonique, jamais retapé ; hash live au rig =
+> l'empreinte prod `0xc8480867…` ; footer Legal ; guard 12 pins) ; l'AUDIT du v1 :
+> À JOUR sur tout (5% · à vie · sans cap · échelle 12% · escrow) — et il prouve SA
+> prise : « may be granted » → la carte dit désormais « can open » (gelé) ; nuance à
+> SON œil : §2 exige de détenir du SYN au moment de l'achat (la porte terms la
+> couvre ; une ligne sur la carte = son choix) ; ② le LOCKUP presse construit
+> (vecteur pur, glyphes en chemins, sondé au pixel avant écriture, PNG 1x/2x,
+> générateur commité) — /press ouvre sa marque dessus, 6 assets réels.
+> BACKLOG : CETTE tranche seule, groupable — son mot.**
+
 > **▶ 2026-08-03 (SESSION 2, LA REVUE-2 AVANT DÉPLOIEMENT — son ordre) : 6 casquettes
 > seniors sur TOUT le train non-déployé, chaque trouvaille vérifiée puis FERMÉE le
 > jour même (rouge d'abord où un pin existe : 3+1 rouges regardés). Fermé : les 3

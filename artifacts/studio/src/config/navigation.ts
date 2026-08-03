@@ -71,7 +71,7 @@ const footerGroupSpec: { heading: string; itemIds: string[] }[] = [
   { heading: "Learn", itemIds: ["whitepaper", "tokenomics", "faq", "docs", "learning", "recognition", "archive", "chronicle", "press"] },
   { heading: "Membership", itemIds: ["member", "join", "wallet", "toolkit", "source-link", "support"] },
   // AUD-T (2026-07-16): the legal layer on every public page's footer.
-  { heading: "Legal", itemIds: ["terms", "privacy", "risk"] },
+  { heading: "Legal", itemIds: ["terms", "privacy", "risk", "referral-terms"] },
   // AUD-TRUTH-2 (founder Ruling ②, 2026-07-16): the Console footer group DIED —
   // PUBLIC-SEES-ADMIN-NEVER: no operator door on any public or member surface.
 ];

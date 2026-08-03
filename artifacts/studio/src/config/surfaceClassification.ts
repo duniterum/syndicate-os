@@ -287,6 +287,17 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     enforcement: "PREVIEW_LABELLED",
   },
   {
+    routePath: "/referral-terms",
+    moduleId: "referral-terms",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary:
+      "The member referral program's governing document — fetched from the canonical served file, live keccak256 commitment, on-chain verify door.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
     routePath: "/press",
     moduleId: "press",
     audience: "PUBLIC",

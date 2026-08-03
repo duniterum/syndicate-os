@@ -29,6 +29,7 @@ import JoinProtocol from "@/pages/JoinProtocol";
 import SourceLinkBuilder from "@/pages/SourceLinkBuilder";
 import Support from "@/pages/Support";
 import PressKit from "@/pages/PressKit";
+import ReferralTerms from "@/pages/ReferralTerms";
 import Archive from "@/pages/Archive";
 import Activity from "@/pages/Activity";
 import MemberWallet from "@/pages/MemberWallet";
@@ -225,6 +226,9 @@ function Router() {
       </PublicRoute>
       <PublicRoute path="/press">
         <PressKit />
+      </PublicRoute>
+      <PublicRoute path="/referral-terms">
+        <ReferralTerms />
       </PublicRoute>
       <PublicRoute path="/archive">
         <Archive />

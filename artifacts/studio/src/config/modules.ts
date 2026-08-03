@@ -484,6 +484,21 @@ export const modules = [
     icon: LifeBuoy,
   },
   {
+    id: "referral-terms",
+    label: "Referral terms",
+    path: "/referral-terms",
+    zone: "public",
+    visible: true,
+    enabled: true,
+    live: true,
+    phase: "live",
+    description:
+      "The member referral program's governing document, rendered from its canonical served file with its live keccak256 commitment and the on-chain verify door.",
+    dependencies: [],
+    nav: { header: false, sidebar: false, footer: true },
+    icon: ScrollText,
+  },
+  {
     id: "press",
     label: "Press kit",
     path: "/press",

@@ -721,6 +721,23 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     notes: "Intake preview only (no backend write).",
   },
   {
+    path: "/referral-terms",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "Member Referral Program Terms — The Syndicate",
+    description:
+      "The governing document of The Syndicate's member referral program, rendered from its canonical file. Its keccak256 fingerprint is recorded on-chain as every member source's terms fingerprint.",
+    canonicalPath: "/referral-terms",
+    changefreq: "monthly",
+    priority: 0.4,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "source",
+    primaryIntent: "reference",
+    proofRoute: "/referral",
+    notes: "Founder catch 2026-08-03: the hash-anchored terms document gets its designed home + footer door; the body is fetched, never retyped (guard-referral-terms).",
+  },
+  {
     path: "/press",
     routeType: "PUBLIC",
     indexStatus: "INDEX",

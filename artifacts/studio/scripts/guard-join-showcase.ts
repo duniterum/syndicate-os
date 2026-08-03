@@ -90,6 +90,13 @@ const FROZEN: [string, string][] = [
   ["the one-liner", "The referral program where the payout is part of the purchase."],
   ["the eyebrow", "Included with your seat"],
   [
+    // The founder's live-prod catch (2026-08-03, second wave): «comes with»
+    // was an overclaim — the terms v1 say a link «may be granted» (the
+    // ask→founder-signed activation). The truthful verb is CAN OPEN.
+    "the opening truth",
+    "Every seat can open its own introduction link.",
+  ],
+  [
     "bold claim 1 (the mechanism)",
     "the contract pays your commission inside their purchase — same transaction, same block, before we ever see the money.",
   ],
@@ -130,9 +137,12 @@ check(
   "showcase: the /activity verify door is gone — every bold claim carries or sits next to its verify path (§7's signature format)",
 );
 check(
-  /href="\/terms"/.test(card),
-  "showcase: the terms door (/terms) is present",
-  "showcase: the /terms door is gone — the never-breaks/never-lost claim must sit next to its verify path",
+  // The founder's live-prod catch (2026-08-03): the program has ITS OWN
+  // hash-anchored terms document — the door leads THERE, never to the
+  // general Terms of Use.
+  /href="\/referral-terms"/.test(card) && !/href="\/terms"/.test(card),
+  "showcase: the terms door leads to THE program's own terms (/referral-terms)",
+  "showcase: the never-breaks/never-lost claim must door to /referral-terms — the hash-anchored program terms, not the general Terms of Use (founder catch, 2026-08-03)",
 );
 
 // ── 4. THE BUYER'S TONGUE ───────────────────────────────────────────────────

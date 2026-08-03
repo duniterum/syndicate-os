@@ -91,6 +91,14 @@ export default function PressKit() {
       {/* §2 — THE MARK: only files we actually serve. */}
       <SectionTitle title="The mark" why="use it as provided — the files below are the served originals" />
       <Card className="border-border/50 bg-card/40 p-5" data-testid="press-brand">
+        {/* The LOCKUP leads (founder, 2026-08-03: the mark alone «n'est pas
+            suffisant» for a press kit) — generated vector, glyphs as paths. */}
+        <img
+          src="/brand/syn-lockup-gold.svg"
+          alt="The Syndicate lockup — interlock mark with wordmark"
+          className="mb-5 h-16 w-auto max-w-full"
+          data-testid="press-lockup"
+        />
         <div className="flex flex-wrap items-center gap-6">
           <img
             src={brandAssets["syn-mark-gold"]}
