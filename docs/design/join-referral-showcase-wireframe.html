@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>C — /join referral-showcase card · placement wireframe (2026-08-03)</title>
+<style>
+  /* Fixed-ink wireframe (approximated house tokens — the REAL build uses the token layer). */
+  :root{
+    --bg:#0B1120; --card:#0F172A; --card2:#131C30; --border:#25344B; --fg:#E1E7EF;
+    --muted:#7F8EA3; --gold:#F7BF3B; --proof:#0DCCF2; --warn:#E8B75A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--fg);font:14px/1.6 "Work Sans",system-ui,sans-serif;padding:32px}
+  h1{font-size:18px;margin-bottom:4px}
+  .note{color:var(--muted);font-size:13px;max-width:80ch;margin-bottom:24px}
+  .frames{display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start}
+  .frame{border:1px solid var(--border);border-radius:12px;background:var(--bg);overflow:hidden}
+  .frame h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+    padding:10px 14px;border-bottom:1px solid var(--border);background:var(--card)}
+  .page{padding:24px}
+  .desktop .page{width:720px}
+  .mobile .page{width:375px;padding:16px}
+  /* grayed real sections, in today's real order */
+  .ghost{border:1px dashed var(--border);border-radius:12px;padding:14px 16px;margin-bottom:18px;color:var(--muted);font-size:12.5px}
+  .ghost b{color:var(--fg);font-weight:600;font-size:13px;display:block;margin-bottom:2px}
+  /* THE CARD — real rendering at its true place */
+  .showcase{border:1px solid rgba(247,191,59,.35);background:linear-gradient(180deg,rgba(247,191,59,.07),rgba(247,191,59,.02));
+    border-radius:14px;padding:22px 24px;margin-bottom:18px}
+  .mobile .showcase{padding:18px 16px}
+  .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+  .headline{font-family:Georgia,'Times New Roman',serif;font-size:22px;line-height:1.3;color:var(--fg);margin-bottom:14px}
+  .mobile .headline{font-size:19px}
+  .claim{margin-bottom:12px;max-width:62ch}
+  .claim strong{color:var(--fg);font-weight:600}
+  .claim .rest{color:var(--muted)}
+  .verify{display:inline-flex;align-items:center;gap:6px;color:var(--proof);font-family:ui-monospace,Consolas,monospace;
+    font-size:12.5px;text-decoration:none;border-bottom:1px solid rgba(13,204,242,.35);padding-bottom:1px;margin-left:8px;white-space:nowrap}
+  .verify svg{width:12px;height:12px}
+  .mobile .verify{margin-left:0;margin-top:2px;display:inline-flex}
+  .lawline{border-top:1px dashed var(--border);margin-top:14px;padding-top:12px;color:var(--muted);font-size:12.5px}
+  .badge{position:relative;top:-1px;display:inline-block;border:1px solid var(--border);border-radius:999px;
+    padding:1px 8px;font-size:10.5px;letter-spacing:.06em;color:var(--muted);margin-left:8px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<h1>C — the /join referral-showcase card (buyer-facing) · placement wireframe</h1>
+<p class="note">
+  Placement: AFTER the honest economics, BEFORE the boundary/next-steps — the last argument
+  before the tail, never above the purchase work (WORK-FIRST). Copy = the engraved §7
+  CONVERSION register VERBATIM (bold claim + verify path — the register's signature format).
+  Grayed blocks are today's real sections, real order. The ONLY non-engraved words are the
+  eyebrow «Included with your seat» — proposed, founder's call.
+</p>
+<div class="frames">
+
+  <div class="frame desktop">
+    <h2>Desktop · content column (app variant)</h2>
+    <div class="page">
+      <div class="ghost"><b>Take your seat</b> hero lead — unchanged</div>
+      <div class="ghost"><b>Introduced by 0x… strip</b> (only with ?source=) — unchanged (K2)</div>
+      <div class="ghost"><b>Choose an amount · Read my quote</b> — THE WORK, unchanged</div>
+      <div class="ghost"><b>The honest economics</b> (entry vs market + disclaimer) — unchanged</div>
+
+      <div class="showcase">
+        <div class="eyebrow">Included with your seat <span class="badge">proposed copy</span></div>
+        <div class="headline">The referral program where the payout is part of the purchase.</div>
+        <p class="claim">
+          <strong>You don't wait to get paid.</strong>
+          <span class="rest">The contract pays you inside your referral's own transaction —
+          before we ever see the money. One signature. Two recipients.</span>
+          <a class="verify" href="#/activity">Verify the hash yourself
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+        </p>
+        <p class="claim">
+          <strong>Nothing to claim.</strong>
+          <span class="rest">It's already in your wallet when the block confirms.</span>
+        </p>
+        <p class="claim">
+          <strong>A referral payment can never break a sale — and can never be lost.</strong>
+          <a class="verify" href="#/terms">How, in the terms
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+        </p>
+        <p class="lawline">Every seat carries it — your own link, your own on-chain record, from day one.</p>
+      </div>
+
+      <div class="ghost"><b>Boundary card</b> (while checkout is off) — unchanged</div>
+      <div class="ghost"><b>Next steps</b> — unchanged</div>
+    </div>
+  </div>
+
+  <div class="frame mobile">
+    <h2>Mobile · 375px</h2>
+    <div class="page">
+      <div class="ghost"><b>Hero</b></div>
+      <div class="ghost"><b>Amount + quote</b> — THE WORK</div>
+      <div class="ghost"><b>Economics</b></div>
+      <div class="showcase">
+        <div class="eyebrow">Included with your seat</div>
+        <div class="headline">The referral program where the payout is part of the purchase.</div>
+        <p class="claim">
+          <strong>You don't wait to get paid.</strong>
+          <span class="rest">The contract pays you inside your referral's own transaction —
+          before we ever see the money. One signature. Two recipients.</span><br/>
+          <a class="verify" href="#/activity">Verify the hash yourself
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+        </p>
+        <p class="claim">
+          <strong>Nothing to claim.</strong>
+          <span class="rest">It's already in your wallet when the block confirms.</span>
+        </p>
+        <p class="claim">
+          <strong>A referral payment can never break a sale — and can never be lost.</strong><br/>
+          <a class="verify" href="#/terms">How, in the terms
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+        </p>
+        <p class="lawline">Every seat carries it — your own link, your own on-chain record, from day one.</p>
+      </div>
+      <div class="ghost"><b>Boundary · Next steps</b></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
