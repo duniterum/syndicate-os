@@ -81,6 +81,8 @@ const MAX_ENTRIES = 5_000;
  * that arrives too late.
  */
 const FACTS_BUDGET_MS = 2_000;
+/** The ceiling on the SHARED read itself — see the note where it is applied. */
+const SHARED_READ_CEILING_MS = 15_000;
 const TIMED_OUT = Symbol("introducer-facts-timed-out");
 
 function withDeadline<T>(p: Promise<T>, ms: number): Promise<T | typeof TIMED_OUT> {
@@ -256,7 +258,22 @@ export async function introducerFacts(
   // work everyone behind it is waiting on.
   let reading = inFlight.get(key);
   if (reading === undefined) {
-    reading = resolveFacts(key).then((facts) => {
+    // A HARD CAP ON THE SHARED READ (2026-08-03, review finding). The shared
+    // promise is what the in-flight key is released on, and `seatFor` reaches a
+    // pg Pool with NO connectionTimeout / statement_timeout anywhere in the
+    // repo. A half-open socket or an exhausted pool means resolveFacts never
+    // settles — so the key would never clear and EVERY later request for that
+    // source would join a dead promise, race its 2s budget and answer the
+    // generic image forever, for the process lifetime, with no recovery after
+    // the DB healed. The 2s budget is the CALLER's answer; this is the ceiling
+    // on the work itself, generous enough that a merely slow read still lands
+    // and warms the cache.
+    reading = withDeadline(resolveFacts(key), SHARED_READ_CEILING_MS)
+      .then((r) => {
+        if (r === TIMED_OUT) throw new Error("introducer read exceeded its ceiling");
+        return r;
+      })
+      .then((facts) => {
       // A DECIDED answer, however late. A timeout is never remembered (a slow
       // chain is not a decided negative) — but this is the read itself
       // returning, not the clock giving up.
@@ -268,7 +285,10 @@ export async function introducerFacts(
     reading.catch(() => undefined).then(() => inFlight.delete(key));
   }
 
-  const raced = await withDeadline(reading, FACTS_BUDGET_MS);
+  // A rejected shared read (transport failure or the ceiling) is an ANSWERLESS
+  // read, not a decided negative: this caller serves the generic image and the
+  // next request retries from scratch, because nothing was remembered.
+  const raced = await withDeadline(reading.catch(() => null), FACTS_BUDGET_MS);
   // Past the budget this caller answers null and the route serves the generic
   // image; the read continues for everyone else and warms the cache.
   return raced === TIMED_OUT ? null : raced;
@@ -320,7 +340,15 @@ async function resolveFacts(key: string): Promise<IntroducerFacts | null> {
       }
     }
   } catch {
-    facts = null; // fail closed — the card falls back to the generic image
+    // A TRANSPORT FAILURE IS NOT A DECIDED "INACTIVE" (corrected 2026-08-03).
+    // This swallowed every RPC/DB error into `null`, indistinguishable from
+    // "the registry says this source is not active" — and since the read now
+    // writes the cache whenever it lands, that null was being REMEMBERED as a
+    // decided negative for the whole NEGATIVE_TTL_MS. A chain hiccup therefore
+    // pinned the generic image for 30s AFTER the chain recovered, on the
+    // surface whose first scrape a network keeps for months. Thrown, so the
+    // caller can tell "we could not read" from "there is nothing to serve".
+    throw new Error("introducer read failed");
   }
   return facts;
 }

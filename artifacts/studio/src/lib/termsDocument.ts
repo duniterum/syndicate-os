@@ -86,13 +86,23 @@ export async function matchesPublishedTerms(
   onChainHash: string,
 ): Promise<{ matched: true; path: string } | { matched: false } | null> {
   const want = onChainHash.toLowerCase();
-  let readAny = false;
+  let allRead = true;
   for (const path of [TERMS_PATH, ...TERMS_PRIOR_PATHS]) {
     const read = await fetchTermsHash(path);
-    if (read === null) continue;
-    readAny = true;
+    if (read === null) {
+      allRead = false;
+      continue;
+    }
     if (read.hash.toLowerCase() === want) return { matched: true, path };
   }
-  return readAny ? { matched: false } : null;
+  // FAIL CLOSED ON A PARTIAL READ (corrected 2026-08-03, review finding).
+  // This used to answer {matched:false} as soon as ANY ONE version had been
+  // read — so v2 loading while v1 404s or times out produced a CONFIDENT
+  // "does not match" about a hash we never compared against v1. That is the
+  // v1-era brick this helper exists to prevent, relocated behind a partial
+  // failure: the founder's Activate stays disabled under a sentence telling
+  // him the on-chain commitment is broken when it is not. "No match" may only
+  // be claimed when EVERY published version was actually read.
+  return allRead ? { matched: false } : null;
 }
 

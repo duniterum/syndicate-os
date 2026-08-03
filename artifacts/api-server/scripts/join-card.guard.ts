@@ -335,7 +335,21 @@ check(
 // resolution — never from the raced value.
 check(
   /raced === TIMED_OUT \? null :/.test(readerCode) &&
-    !/TIMED_OUT[\s\S]{0,160}rememberFacts\(/.test(readerCode),
+    // A transport failure must THROW, not resolve to null — otherwise it is
+    // indistinguishable from a decided "inactive" and gets remembered as one
+    // (found 2026-08-03: an 8s RPC hiccup pinned the generic image for the
+    // whole negative TTL AFTER the chain recovered).
+    /catch \{[\s\S]{0,900}throw new Error\("introducer read failed"\)/.test(readerCode) &&
+    // EVERY use of the timeout token must THROW or answer null — never reach a
+    // cache write. The earlier form measured character DISTANCE between
+    // `TIMED_OUT` and `rememberFacts(`, which went falsely red the moment the
+    // ceiling branch (throw) was added a few lines above the cache write. A
+    // proximity heuristic is not a property; this reads each use.
+    readerCode
+      .split("\n")
+      .filter((l) => l.includes("TIMED_OUT") && !l.includes("Symbol("))
+      .every((l) => /throw |\? null|resolve\(TIMED_OUT\)|typeof TIMED_OUT|=== TIMED_OUT/.test(l)) &&
+    !/rememberFacts\([^)]*TIMED_OUT/.test(readerCode),
   "a timed-out read is being cached — a slow chain is not a decided negative, and caching it pins 'no card' for the whole negative TTL over one hiccup",
 );
 for (const [file, code, what] of [
@@ -359,16 +373,20 @@ for (const [file, code, what] of [
 //     These two pins judge the SHAPE that fixes it.
 check(
   /inFlight\.set\(\s*key\s*,\s*reading\s*\)/.test(readerCode) &&
-    /reading\s*=\s*resolveFacts\(key\)/.test(readerCode),
-  "the in-flight entry is built from the RACED promise, not from the read itself — the key is then released when a caller's deadline fires, so a slow chain gets a new full read per request",
+    // CAPPED: the shared promise must always settle, or the key never clears
+    // and every later request joins a dead read forever (the pg Pool has no
+    // timeout anywhere in this repo).
+    /reading = withDeadline\(resolveFacts\(key\), SHARED_READ_CEILING_MS\)/.test(readerCode),
+  "the in-flight entry is not the CAPPED shared read — either it is built from a caller's 2s race (key freed early → a new full read per request on a slow chain) or it is uncapped (a never-settling DB read wedges the key forever)",
 );
 check(
-  /resolveFacts\(key\)\.then\([\s\S]{0,200}rememberFacts\(key,/.test(readerCode),
-  "the read does not write the cache when it lands — a read slower than the budget would be thrown away, leaving the source permanently cold",
+  /rememberFacts\(key, facts\)/.test(readerCode) &&
+    /reading[\s\S]{0,600}rememberFacts\(key, facts\)/.test(readerCode),
+  "the shared read does not write the cache when it lands — a read slower than a caller's budget would be thrown away, leaving the source permanently cold",
 );
 check(
-  !/inFlight\.set\([^)]*withDeadline/.test(readerCode),
-  "the deadline is what the in-flight map holds — the budget is a per-CALLER answer, never the lifetime of the shared work",
+  /const raced = await withDeadline\(reading\.catch/.test(readerCode),
+  "the caller does not guard the shared read's rejection — a failed read would wedge every awaiting caller instead of answering the generic image and letting the next request retry",
 );
 
 if (errors.length > 0) {

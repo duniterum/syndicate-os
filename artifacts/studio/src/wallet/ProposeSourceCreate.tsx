@@ -870,14 +870,43 @@ function StateAndAction({
         <p className="flex items-center gap-2 text-sm text-foreground">
           <CheckCircle2 className="h-4 w-4 text-primary" /> Source on the registry — status: PAUSED.
         </p>
-        {!hashMatches ? (
+        {/* THREE TRUTHS, THREE SENTENCES (corrected 2026-08-03, review
+            finding). One boolean used to collapse "still reading", "could not
+            read" and "genuinely different" into a single red accusation — so
+            EVERY first paint of a paused source told the founder his on-chain
+            commitment was broken, and a failed fetch left that accusation up
+            for good, naming a condition he could not satisfy. On the one
+            screen where the correct response to that sentence is to STOP, it
+            has to be true. Activate stays disabled in all three (fail closed);
+            only the third one accuses. */}
+        {publishedMatch === undefined ? (
+          <p className="flex items-start gap-2 text-xs text-muted-foreground">
+            <ShieldAlert className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+            Checking the on-chain metadataHash against every published version
+            of the terms…
+          </p>
+        ) : publishedMatch === null ? (
+          <p className="flex items-start gap-2 text-xs text-gold">
+            <ShieldAlert className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+            The terms document could not be read just now, so the commitment
+            cannot be checked — nothing is assumed and nothing is claimed about
+            it. Reload before activating.
+          </p>
+        ) : !hashMatches ? (
           <p className="flex items-start gap-2 text-xs text-destructive">
             <ShieldAlert className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-            The on-chain metadataHash does not match the served terms document.
-            Do not activate until they match — the published document must be
-            the committed one.
+            The on-chain metadataHash matches NO published version of the terms
+            document. Do not activate — the committed document must be one that
+            is published.
           </p>
-        ) : null}
+        ) : (
+          <p className="flex items-start gap-2 text-xs text-muted-foreground">
+            <CheckCircle2 className="h-3.5 w-3.5 mt-0.5 shrink-0 text-primary" />
+            Commitment verified against{" "}
+            <span className="font-mono">{publishedMatch.path}</span> — the
+            version this source committed to.
+          </p>
+        )}
         {/* K3.b — THE MANUAL CHECK, NOW A CODE GATE: the live /join quote is
             asked directly whether it refuses this source while paused (the
             fail-closed proof the founder used to verify by eye). A probe
