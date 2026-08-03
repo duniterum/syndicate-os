@@ -65,3 +65,16 @@ export const orderedShareTargets: ShareTargetDef[] = pickShareTargets([
   "facebook",
   "email",
 ]);
+
+/** THE R-BIND-2 url/text split (one decision, 2026-08-03): url-param intents
+ * carry the page url + URL-FREE text (the platform places the url itself);
+ * text-only intents (whatsapp · email) get an empty url and the full inline
+ * text — the link lives in the draft exactly once. */
+export function shareIntentArgs(
+  target: ShareTargetDef,
+  pageUrl: string,
+  textBare: string,
+  textInline: string,
+): [url: string, text: string] {
+  return target.id === "whatsapp" || target.id === "email" ? ["", textInline] : [pageUrl, textBare];
+}

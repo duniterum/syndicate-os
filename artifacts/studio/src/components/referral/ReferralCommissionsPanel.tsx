@@ -34,7 +34,7 @@ import { Card } from "@/components/ui/card";
 import { StatusPill } from "@/components/status-pill/StatusPill";
 import { ladderProgress } from "@/config/connectorLadder";
 import { referralProgram } from "@/config/referralProgram";
-import { orderedShareTargets } from "@/lib/shareTargets";
+import { orderedShareTargets, shareIntentArgs } from "@/lib/shareTargets";
 import { ShareIntentIconButton } from "@/components/referral/ShareIntentIconButton";
 import {
   dateLabel,
@@ -124,10 +124,7 @@ function ShareRow({ tx }: { tx: string }) {
         {copied ? "Copied" : "Copy link"}
       </button>
       {orderedShareTargets.map((t) => {
-        // The shareTargets contract, decided at the call site: url-param
-        // intents get URL-FREE text; text-only intents carry it inline.
-        const [intentUrl, intentText] =
-          t.id === "whatsapp" || t.id === "email" ? ["", textInline] : [pageUrl, textBare];
+        const [intentUrl, intentText] = shareIntentArgs(t, pageUrl, textBare, textInline);
         return (
           <ShareIntentIconButton
             key={t.id}

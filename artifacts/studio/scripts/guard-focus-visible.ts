@@ -207,7 +207,7 @@ const ALLOWLIST: Record<string, string> = {
   "wallet/MemberYourSeat.tsx": "5 · 2 <a> + 1 <button> + 2 <Link> on the seat panel",
   "wallet/PublicReceiptTicket.tsx": "2 · 1 <Link> + 1 explorer <a> on the public receipt ticket",
   "wallet/ReceiptsBinderPanel.tsx": "5 · 3 <button> (the binder's paging/actions) + 2 <a>",
-  "wallet/ReceiptTicket.tsx": "5 · 1 <Link> + 1 <a> + 3 <button> on the receipt ticket — a money document, high priority",
+  "wallet/ReceiptTicket.tsx": "2 · 1 <Link> + 1 <a> on the receipt ticket — a money document, high priority (was 5; the dual-share box's 3 buttons moved into ShareSurface, which carries the house ring — 2026-08-03)",
 
   // ── ADMIN + OPERATOR — the founder's console. Same law, lower blast radius. ──
   "components/admin/AdminShell.tsx": "3 · 3 console <Link>s (the shell's ⌘K trigger already rings)",

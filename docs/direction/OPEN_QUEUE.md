@@ -1,15 +1,16 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
-> **▶ 2026-08-03 (SESSION 2) — K1.5 CONSTRUIT sur son « go », puis SA CORRECTION la même
-> heure (« nous avions plus ») : ~~le trio~~ les SIX réseaux des reçus (x · whatsapp ·
-> telegram · linkedin · facebook · email, l'ordre crypto-natif gravé — désormais UN seul
-> fait exporté `orderedShareTargets`, consommé par reçus + commissions + kit) sur chaque
-> rangée du kit, entre Copy et la feuille OS (l'ordre R-BIND-2). RED-first prouvé DEUX
-> fois (18 échecs → vert, puis 7 échecs → 946/946 sur la correction), portes vertes,
-> build vert, surface reçus re-mesurée au rig identique (6 intents, bonnes icônes,
-> détection honnête). EN ATTENTE DE LUI : ① la PREVIEW de la rangée du kit avec SON
-> wallet (URL du rig au chat, desktop + 375px) ; ② son mot de déploiement — BATCHABLE,
-> mais c'est SA prise desktop, tirer seul est aussi son choix. PROD reste `c2b1168`.**
+> **▶ 2026-08-03 (SESSION 2) — K1.5 CONSTRUIT sur son « go », puis SES DEUX corrections
+> la même heure : ① « nous avions plus » → les SIX réseaux des reçus, jamais un
+> sous-ensemble ; ② « harmonisé comme ticket » → ~~des icônes libres dans la rangée~~
+> UN SEUL Share… par artefact (toujours rendu, mobile garde tout) qui ouvre LA boîte
+> du ticket — désormais UN composant (`ShareSurface` : Copy d'abord → les six → « Share
+> with other apps » détecté, seul canal du PNG), monté par le ticket ET le kit.
+> RED-first prouvé TROIS fois (18 → vert · 7 → vert · 16 → 1576/1576), portes vertes,
+> build vert, la boîte du ticket re-mesurée au rig IDENTIQUE via le composant (testids ·
+> ordre · icônes · Copy or). EN ATTENTE DE LUI : ① la PREVIEW du kit avec SON wallet
+> (URL du rig au chat, desktop + 375px) ; ② son mot de déploiement — BATCHABLE, mais
+> c'est SA prise desktop, tirer seul est aussi son choix. PROD reste `c2b1168`.**
 
 > **▶ 2026-08-03 — 6ᵉ sceau : PROD = `c2b1168` (Replit 6/6), le batch A1 + M3 + M2-v2 +
 > `1a1629e` est LIVE (A1 n'est plus « en vol ») ; backlog de déploiement VIDE ; prochaine

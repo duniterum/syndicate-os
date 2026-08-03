@@ -8,32 +8,39 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > additive, fail-closed; prod unbroken meanwhile) — but it is HIS desktop catch, so
 > firing it solo is equally his call.**
 >
-> ## (a) WHAT LANDED — K1.5, the kit's desktop intent family (registry flips: NONE owed):
-> · Every kit action row now carries ~~X · Telegram · WhatsApp~~ **ALL SIX networks**
->   (x · whatsapp · telegram · linkedin · facebook · email — his same-hour correction,
->   «nous avions plus»: the kit carries the SAME six as the receipts, same crypto-native
->   order, now the ONE exported fact `orderedShareTargets` consumed by receipts +
->   commissions + kit) BETWEEN «Copy my link» and the OS sheet — R-BIND-2's engraved
->   order; the sheet stays the only PNG-carrying channel. Desktop SHARES instead of
->   explaining. The first cut's 3-network subset came from the prior handoff's wording —
->   corrected the same hour, second RED-first cycle: 7 named FAILURES → 946/946.
-> · The twin search collapsed the share family to ONE authority per fact: the
->   target→icon map lived as THREE private literals (ShareMenu · ReceiptTicket ·
->   ReferralCommissionsPanel) → `lib/shareTargetIcons.ts`; the ordered-ids resolution
->   was rebuilt privately TWICE → `pickShareTargets` in lib/shareTargets.ts; the
->   row-shape intent button → `ShareIntentIconButton` atom (hit area AT the 44px floor
->   via after:-inset-1 — an atom is never debt — house focus ring carried).
-> · RED FIRST held: `guard-share-intents` (in the blocking chain) written and run
->   BEFORE the fix — 18 named FAILURES captured → 634/634 after. It pins the one-map /
->   one-resolver laws, the trio + his order, the R-BIND-2 row order, URL-free
->   SHARE_TEXT, and EXECUTES the three real builders against a fixture.
-> · Gates: full studio chain green (touch-target ratchet paid: commissions 5→4,
->   focus debt 8→7, both remeasured by the guards' own output) · typecheck · build +
->   prerender + admin-dist green. Rig-measured signed-out: /receipt/{tx} share surface
->   serves all six intents with the CORRECT lucide glyph per target from the one map,
->   native honestly absent where navigator.share is absent; /referral/tools signed-out
->   state intact; zero console errors. NOT measured (said honestly): the CONNECTED kit
->   row — needs the founder's wallet; that is exactly his preview gate.
+> ## (a) WHAT LANDED — K1.5, the kit's share door harmonized (registry flips: NONE owed):
+> · ~~Loose intent icons in the row~~ **His second same-hour correction («harmonisé
+>   comme ticket») set the final shape: ONE always-rendered Share… per artifact row,
+>   opening THE dual-share box — the ticket's R-BIND-2 surface, now ONE component**
+>   (`components/share/ShareSurface.tsx`: Copy link first → the six networks
+>   (orderedShareTargets, crypto-native order) → «Share with other apps»
+>   feature-detected, the only PNG channel). The ticket MOUNTS the same component —
+>   byte-identical render proven at the rig (same testids · order · glyphs · gold
+>   copy chrome). Mobile keeps everything; desktop SHARES instead of explaining.
+> · Corrections trail, all same-day: 3-network subset (handoff wording) → «nous avions
+>   plus» → all six · loose row icons → «harmonisé comme ticket» → the box. THREE
+>   RED-first cycles: 18 → green · 7 → green · 16 → **1576/1576**.
+> · The twin search collapsed the share family to ONE authority per fact: icon map
+>   (3 private literals → `shareTargetIcons`) · resolution (`pickShareTargets`) · the
+>   ORDER itself (2 private lists → `orderedShareTargets`) · the url/text split
+>   (`shareIntentArgs`) · the row button (`ShareIntentIconButton`, commissions' sealed
+>   row form) · THE BOX (`ShareSurface` — ticket + kit mount it, nobody re-implements).
+> · RED FIRST held ×3: `guard-share-intents` (blocking chain) tightened BEFORE each
+>   fix, failures watched each time. It pins one-map/one-resolver/one-order/one-split/
+>   one-box, the box's engraved order (copy → six → sheet LAST, feature-detected), the
+>   kit's always-on trigger, URL-free SHARE_TEXT — and EXECUTES all six real builders
+>   plus the exported order against fixtures.
+> · Gates: full studio chain green (ratchets paid from the guards' own output:
+>   touch commissions 5→4 · focus commissions 8→7 · focus ReceiptTicket 5→2 — the
+>   box's three buttons now carry the house ring in the component) · typecheck ·
+>   build + prerender + admin-dist green. Rig-measured signed-out: the ticket's box
+>   renders IDENTICAL through the mounted component (testids · order · glyphs · gold
+>   copy · min-h-11), native honestly absent where navigator.share is absent;
+>   /referral/tools signed-out intact; the final module graph loads clean. NOT
+>   measured (said honestly): the CONNECTED kit row + its box — needs the founder's
+>   wallet; that is exactly his preview gate. Known micro-decoupling, stated: the
+>   bar's Copy and the box's Copy no longer light each other's «Copied» label (each
+>   owns its state; both still advance the face).
 >
 > ## (b) IN FLIGHT: nothing in code. HIS NEXT ACT: preview the kit row (rig URL handed
 > ## in chat, desktop + 375px) → his deploy word (solo or batch). Then the order

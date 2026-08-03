@@ -22,11 +22,10 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import QRCode from "react-qr-code";
 import { buildJoinLink } from "@/lib/joinLink";
-import { Check, Copy, ExternalLink, Share2 } from "lucide-react";
+import { ExternalLink, Share2 } from "lucide-react";
 import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
-import { orderedShareTargets } from "@/lib/shareTargets";
-import { shareTargetIcons } from "@/lib/shareTargetIcons";
+import { ShareSurface } from "@/components/share/ShareSurface";
 import { brandAssets } from "@/config/brand";
 import { readArtifactBalance } from "@/lib/chainReads";
 import { payingSourceId } from "@/lib/sourceIdentity";
@@ -148,8 +147,9 @@ function ZoneRule() {
 // by those platforms' own rules) → "Share with other apps" (the OS sheet,
 // kept and renamed; the ONLY channel that carries the ticket image) —
 // feature-detected, never a dead button.
-// The six networks and their crypto-native order are ONE imported fact
-// (orderedShareTargets · shareTargetIcons — the 2026-08-03 de-twinning).
+// The dual-share box itself is ONE mounted component (ShareSurface — the
+// 2026-08-03 harmonization; the six networks, their order, the icons and
+// the url/text split all live behind it).
 
 export default function ReceiptTicket({
   model,
@@ -595,71 +595,22 @@ export default function ReceiptTicket({
           </Button>
         ) : null}
       </div>
-      {/* R-BIND-2 · the dual share surface (founder-approved mockup) — in
-          flow under the actions, print-hidden like every action. */}
+      {/* R-BIND-2 · the dual share surface (founder-approved mockup) — THE
+          one box, mounted; in flow under the actions. THE RETARGET rides the
+          props: every intent carries the receipt's own public page, and
+          every act advances the rotation via onAct. */}
       {shareOpen && txUrl ? (
-        <div
+        <ShareSurface
           id="receipt-share-surface"
-          className="w-[340px] max-w-full mx-auto mt-3 rounded-xl border border-border bg-card p-4 print:hidden"
-          data-testid="receipt-share-surface"
-        >
-          <button
-            type="button"
-            onClick={() => void handleCopy()}
-            className="w-full min-h-11 rounded-lg border border-gold/50 bg-gold/[0.08] text-gold text-sm font-medium flex items-center justify-center gap-2 hover:bg-gold/[0.12] transition-colors"
-            data-testid="button-share-copy-link"
-          >
-            {copied ? <Check className="h-4 w-4" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
-            {copied ? "Copied" : "Copy link"}
-          </button>
-          <div className="grid grid-cols-3 gap-2 mt-3">
-            {orderedShareTargets.map((t) => {
-              const Icon = shareTargetIcons[t.id] ?? Share2;
-              return (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => {
-                    // THE RETARGET: every network intent carries the
-                    // receipt's own public page (see receiptPageUrl above);
-                    // each act advances the rotation for the next share.
-                    // Url/text split per the shareTargets contract — the
-                    // link prints exactly ONCE in every draft.
-                    const [intentUrl, intentText] =
-                      t.id === "whatsapp" || t.id === "email"
-                        ? ["", shareText ?? ""]
-                        : [receiptPageUrl, shareIntentText ?? ""];
-                    window.open(t.build(intentUrl, intentText), "_blank", "noopener,noreferrer");
-                    advanceShareFace();
-                    setShareOpen(false);
-                  }}
-                  className="flex flex-col items-center gap-1.5 rounded-lg border border-border px-1 py-2.5 min-h-14 text-xs text-foreground hover:bg-muted transition-colors"
-                  data-testid={`button-share-${t.id}`}
-                >
-                  <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                  {t.label}
-                </button>
-              );
-            })}
-          </div>
-          {nativeShareAvailable ? (
-            <button
-              type="button"
-              onClick={() => {
-                setShareOpen(false);
-                void handleNativeShare();
-                advanceShareFace();
-              }}
-              className="w-full mt-3 min-h-12 rounded-lg border border-border text-foreground text-sm font-medium hover:bg-muted transition-colors"
-              data-testid="button-share-other-apps"
-            >
-              Share with other apps
-              <span className="block text-xs font-normal text-muted-foreground">
-                Sends the ticket image too
-              </span>
-            </button>
-          ) : null}
-        </div>
+          pageUrl={receiptPageUrl}
+          textBare={shareIntentText ?? ""}
+          textInline={shareText ?? ""}
+          nativeAvailable={nativeShareAvailable}
+          nativeHint="Sends the ticket image too"
+          onNativeShare={() => void handleNativeShare()}
+          onAct={advanceShareFace}
+          onClose={() => setShareOpen(false)}
+        />
       ) : null}
 
       <p className="w-[340px] max-w-full mx-auto text-xs text-muted-foreground text-center mt-2 print:hidden">

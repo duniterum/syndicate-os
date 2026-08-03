@@ -12,14 +12,15 @@
 // the harness fit probe from ONE source, so a future format joins every
 // affordance automatically.
 //
-// V3 (the founder's desktop catch, 2026-08-03): every action row carries the
-// intent family between Copy and the OS sheet, per R-BIND-2's engraved
-// order: copy first → intents → the sheet LAST (the only channel that
-// carries the PNG). Desktop now SHARES instead of explaining. First cut
-// shipped a 3-network subset off a handoff note; his same-day correction
-// («nous avions plus») set the law: the SAME six as the receipts, same
-// crypto-native order — orderedShareTargets, ONE imported fact.
-// guard-share-intents pins the family.
+// V3 (the founder's desktop catch, 2026-08-03, corrected twice the same
+// day): Share… is ONE always-rendered door per row, and it opens THE
+// dual-share box — the ticket's R-BIND-2 surface (ShareSurface: Copy first
+// → the six networks → «Share with other apps», feature-detected, the only
+// channel that carries the PNG). Desktop now SHARES instead of explaining;
+// mobile keeps everything. First cut shipped a 3-network subset off a
+// handoff note («nous avions plus» killed it); second cut flattened the six
+// into loose row icons («harmonisé comme ticket» killed that) — the box is
+// the law, ONE component, guard-share-intents pins it.
 //
 // Truth laws: every figure on an artifact is the member's own session read
 // (seat via member-standing, durable/rung via source standing) — a missing
@@ -31,8 +32,7 @@ import { useEffect, useRef, useState, type ReactNode, type RefObject } from "rea
 import { useAccount } from "wagmi";
 import { ChevronDown, Download, Share2 } from "lucide-react";
 import { buildJoinLink } from "@/lib/joinLink";
-import { orderedShareTargets } from "@/lib/shareTargets";
-import { ShareIntentIconButton } from "@/components/referral/ShareIntentIconButton";
+import { ShareSurface } from "@/components/share/ShareSurface";
 import { toSvg } from "html-to-image";
 import { Card } from "@/components/ui/card";
 import { StatusPill } from "@/components/status-pill/StatusPill";
@@ -120,7 +120,8 @@ function ScaledPreview({
 }
 
 /** EVERY artifact's own action row (v2 — the founder's rule): Download ·
- * Copy my link · Share… (native, carrying the artifact's PNG file). */
+ * Copy my link · Share… — and Share… opens THE dual-share box (v3, the
+ * harmonization order: the same surface as the receipt ticket). */
 function ArtifactActions({
   spec,
   nodeRef,
@@ -145,8 +146,61 @@ function ArtifactActions({
   const nativeShareAvailable =
     typeof navigator !== "undefined" && typeof navigator.share === "function";
   const node = () => (nodeRef.current?.firstElementChild as HTMLElement | null) ?? null;
+  // One Share… door per row — it opens THE dual-share box below the row.
+  const [shareOpen, setShareOpen] = useState(false);
+
+  /** The OS sheet, carrying the artifact PNG — invoked from the box's
+   * «Share with other apps» row (feature-detected there, never a dead
+   * button). Honest fallbacks unchanged from the K1 arc. */
+  const doNativeShare = () => {
+    const el = node();
+    if (el === null || busy !== null) return;
+    setBusy("share");
+    void (async () => {
+      let png: string | null = null;
+      try {
+        png = await rasterizeToPng(el, spec.width, spec.height, spec.exportScale);
+        if (png === null) throw new Error("raster failed");
+        const blob = await (await fetch(png)).blob();
+        const file = new File([blob], spec.filename, { type: "image/png" });
+        const canShareFiles =
+          typeof navigator.canShare === "function" &&
+          navigator.canShare({ files: [file] });
+        if (canShareFiles) {
+          await navigator.share({
+            title: "The Syndicate",
+            text: SHARE_TEXT,
+            url: joinLink,
+            files: [file],
+          });
+        } else {
+          // This engine shares links but not files — share the link,
+          // hand the picture as a download (honest, never silent).
+          await navigator.share({
+            title: "The Syndicate",
+            text: SHARE_TEXT,
+            url: joinLink,
+          });
+          triggerDownload(png, spec.filename);
+          say("Link shared — the image was downloaded");
+        }
+      } catch (e) {
+        const aborted = e instanceof DOMException && e.name === "AbortError";
+        if (!aborted) {
+          // A real failure (activation expiry, engine quirk): the
+          // member still gets the artifact + the link.
+          if (png !== null) triggerDownload(png, spec.filename);
+          navigator.clipboard.writeText(joinLink).catch(() => {});
+          say("Sheet unavailable — image downloaded, link copied");
+        }
+      } finally {
+        setBusy(null);
+      }
+    })();
+  };
 
   return (
+    <>
     <div className="flex flex-wrap items-center gap-2">
       <button
         type="button"
@@ -188,78 +242,39 @@ function ArtifactActions({
       >
         {copied ? "Copied ✓" : "Copy my link"}
       </button>
-      {orderedShareTargets.map((t) => (
-        <ShareIntentIconButton
-          key={t.id}
-          target={t}
-          url={joinLink}
-          text={SHARE_TEXT}
-          testid={`button-kit-intent-${t.id}-${spec.id}`}
-        />
-      ))}
-      {nativeShareAvailable ? (
-        <button
-          type="button"
-          disabled={busy !== null}
-          onClick={() => {
-            const el = node();
-            if (el === null) return;
-            setBusy("share");
-            void (async () => {
-              let png: string | null = null;
-              try {
-                png = await rasterizeToPng(el, spec.width, spec.height, spec.exportScale);
-                if (png === null) throw new Error("raster failed");
-                const blob = await (await fetch(png)).blob();
-                const file = new File([blob], spec.filename, { type: "image/png" });
-                const canShareFiles =
-                  typeof navigator.canShare === "function" &&
-                  navigator.canShare({ files: [file] });
-                if (canShareFiles) {
-                  await navigator.share({
-                    title: "The Syndicate",
-                    text: SHARE_TEXT,
-                    url: joinLink,
-                    files: [file],
-                  });
-                } else {
-                  // This engine shares links but not files — share the link,
-                  // hand the picture as a download (honest, never silent).
-                  await navigator.share({
-                    title: "The Syndicate",
-                    text: SHARE_TEXT,
-                    url: joinLink,
-                  });
-                  triggerDownload(png, spec.filename);
-                  say("Link shared — the image was downloaded");
-                }
-              } catch (e) {
-                const aborted = e instanceof DOMException && e.name === "AbortError";
-                if (!aborted) {
-                  // A real failure (activation expiry, engine quirk): the
-                  // member still gets the artifact + the link.
-                  if (png !== null) triggerDownload(png, spec.filename);
-                  navigator.clipboard.writeText(joinLink).catch(() => {});
-                  say("Sheet unavailable — image downloaded, link copied");
-                }
-              } finally {
-                setBusy(null);
-              }
-            })();
-          }}
-          className="inline-flex items-center gap-1.5 h-9 rounded-lg border border-border bg-card px-3 text-xs text-foreground hover:bg-muted transition-colors disabled:opacity-60"
-          data-testid={`button-kit-share-${spec.id}`}
-        >
-          <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
-          {busy === "share" ? "Preparing…" : "Share…"}
-        </button>
-      ) : null}
+      <button
+        type="button"
+        disabled={busy !== null}
+        onClick={() => setShareOpen((v) => !v)}
+        aria-expanded={shareOpen}
+        aria-controls={`kit-share-surface-${spec.id}`}
+        className="inline-flex items-center gap-1.5 h-9 rounded-lg border border-border bg-card px-3 text-xs text-foreground hover:bg-muted transition-colors disabled:opacity-60"
+        data-testid={`button-kit-share-${spec.id}`}
+      >
+        <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
+        {busy === "share" ? "Preparing…" : "Share…"}
+      </button>
       {note !== null ? (
         <span className="text-xs text-muted-foreground" role="status">
           {note}
         </span>
       ) : null}
     </div>
+    {shareOpen ? (
+      <ShareSurface
+        id={`kit-share-surface-${spec.id}`}
+        pageUrl={joinLink}
+        textBare={SHARE_TEXT}
+        textInline={`${SHARE_TEXT} ${joinLink}`}
+        nativeAvailable={nativeShareAvailable}
+        nativeHint="Sends the image too"
+        onNativeShare={doNativeShare}
+        onClose={() => setShareOpen(false)}
+        testidBase={`kit-share-${spec.id}`}
+        placementClassName="mt-2"
+      />
+    ) : null}
+    </>
   );
 }
 

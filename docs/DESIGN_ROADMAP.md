@@ -617,18 +617,21 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   (géométrie · boîtes carrées · planchers · chevauchements · centrage QR).
   **+0 couleur brute non documentée** (+1 exception taguée : le blanc de la
   zone de silence du SVG).
-- [x] **K1.5 LA FAMILLE D'INTENTS DESKTOP (2026-08-03, la prise du fondateur —
-  « Sheet unavailable » sur desktop ; corrigé la même heure sur SA relance
-  « nous avions plus »)** : chaque rangée d'actions du kit porte les SIX
-  réseaux des reçus pré-remplis (x · whatsapp · telegram · linkedin ·
-  facebook · email — l'ordre crypto-natif gravé R-BIND-2) entre Copy et la
-  feuille OS (la feuille reste le SEUL canal du PNG) — le desktop PARTAGE au
-  lieu d'expliquer. La recherche-jumeaux a réduit la famille à UNE autorité
-  par fait : carte icônes (3 copies privées → shareTargetIcons) · résolution
-  (pickShareTargets) · l'ordre lui-même (2 copies privées →
-  orderedShareTargets) · bouton-rangée (ShareIntentIconButton — zone tactile
-  au plancher 44px via after:-inset-1, anneau focus maison) ; épinglé par
-  guard-share-intents, RED-first ×2 (18 → vert, puis 7 → 946/946).
+- [x] **K1.5 LE PARTAGE DU KIT HARMONISÉ (2026-08-03, la prise du fondateur —
+  « Sheet unavailable » sur desktop ; corrigé DEUX fois la même heure sur
+  SES relances « nous avions plus » puis « harmonisé comme ticket »)** : UN
+  Share… par rangée d'artefact, toujours rendu (mobile garde tout), qui
+  ouvre LA boîte du ticket — désormais UN composant partagé (`ShareSurface` :
+  Copy d'abord → les SIX réseaux pré-remplis, l'ordre crypto-natif gravé
+  R-BIND-2 → « Share with other apps » détecté, le SEUL canal du PNG) — le
+  desktop PARTAGE au lieu d'expliquer, le ticket monte le MÊME composant
+  (rendu prouvé identique au rig). La recherche-jumeaux a réduit la famille
+  à UNE autorité par fait : carte icônes (3 copies privées →
+  shareTargetIcons) · résolution (pickShareTargets) · l'ordre (2 copies →
+  orderedShareTargets) · le partage url/texte (shareIntentArgs) · la boîte
+  elle-même (ShareSurface, anneaux focus maison) · bouton-rangée commissions
+  (ShareIntentIconButton, zone tactile au plancher via after:-inset-1) ;
+  épinglé par guard-share-intents, RED-first ×3 (18 · 7 · 16 → 1576/1576).
   **+0 couleur brute**.
   commit 0134cc6)** : le lien /join?source= s'ouvre avec SA carte peinte
   (serveur, vrai emblème, adresse courte de l'introducteur, registre

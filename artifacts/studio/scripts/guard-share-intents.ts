@@ -56,6 +56,7 @@ const srcDir = path.resolve(here, "..", "src");
 const ICON_AUTHORITY = path.join(srcDir, "lib", "shareTargetIcons.ts");
 const TARGETS_LIB = path.join(srcDir, "lib", "shareTargets.ts");
 const ATOM = path.join(srcDir, "components", "referral", "ShareIntentIconButton.tsx");
+const SURFACE = path.join(srcDir, "components", "share", "ShareSurface.tsx");
 const KIT = path.join(srcDir, "components", "referral", "ReferralToolsPanel.tsx");
 const COMMISSIONS = path.join(srcDir, "components", "referral", "ReferralCommissionsPanel.tsx");
 const TICKET = path.join(srcDir, "wallet", "ReceiptTicket.tsx");
@@ -154,34 +155,117 @@ check(
   `orderedShareTargets drifted — got [${orderedShareTargets.map((t) => t.id).join(", ")}], the engraved order is x · whatsapp · telegram · linkedin · facebook · email`,
 );
 
-// ── 3. ONE ROW BUTTON ───────────────────────────────────────────────────────
+// ── 3. ONE ROW BUTTON (the commissions table's sealed row form) ─────────────
 const atomSrc = tryRead(ATOM);
 check(
   atomSrc !== null && /export function ShareIntentIconButton/.test(atomSrc),
   "ShareIntentIconButton: the row-shape atom exists",
   "ShareIntentIconButton.tsx: MISSING — the row-shape intent button has no single implementation",
 );
+check(
+  /<ShareIntentIconButton/.test(stripComments(readFileSync(COMMISSIONS, "utf8"))),
+  "ReferralCommissionsPanel.tsx: renders the shared row atom",
+  "ReferralCommissionsPanel.tsx: does not render ShareIntentIconButton — the row-shape intent button is ONE implementation, never retyped",
+);
+
+// ── 3b. ONE BOX (the founder's harmonization order, 2026-08-03: «ça ouvre le
+// box comme dans le ticket») — the R-BIND-2 dual-share SURFACE is ONE
+// component; the ticket and the kit both MOUNT it, neither re-implements it.
+const surfaceSrc = tryRead(SURFACE);
+check(
+  surfaceSrc !== null && /export function ShareSurface/.test(surfaceSrc),
+  "ShareSurface: THE dual-share box exists",
+  "components/share/ShareSurface.tsx: MISSING — the R-BIND-2 box has no single implementation",
+);
 for (const [name, abs] of [
-  ["ReferralCommissionsPanel.tsx", COMMISSIONS],
-  ["ReferralToolsPanel.tsx", KIT],
-] as const) {
-  const code = stripComments(readFileSync(abs, "utf8"));
-  check(
-    /<ShareIntentIconButton/.test(code),
-    `${name}: renders the shared row atom`,
-    `${name}: does not render ShareIntentIconButton — the row-shape intent button is ONE implementation, never retyped`,
-  );
-}
-for (const [name, abs] of [
-  ["ReferralCommissionsPanel.tsx", COMMISSIONS],
   ["ReceiptTicket.tsx", TICKET],
   ["ReferralToolsPanel.tsx", KIT],
 ] as const) {
   const code = stripComments(readFileSync(abs, "utf8"));
   check(
-    /orderedShareTargets/.test(code),
-    `${name}: consumes THE ordered family (orderedShareTargets)`,
-    `${name}: does not consume orderedShareTargets — the six-network family and its order are ONE imported fact`,
+    /<ShareSurface/.test(code),
+    `${name}: mounts THE dual-share box`,
+    `${name}: does not mount ShareSurface — one Share button opens the ONE box (the founder's harmonization order, 2026-08-03)`,
+  );
+}
+// The box's distinctive furniture lives ONLY in the component. (The bare
+// JSX-text label and the -other-apps testid are the BOX's forms; the sealed
+// commissions ROW keeps «Share with other apps» as an aria-label — an
+// attribute, deliberately not matched.)
+for (const file of walk(srcDir)) {
+  if (file === SURFACE) continue;
+  const code = stripComments(readFileSync(file, "utf8"));
+  check(
+    !/^\s*Share with other apps\s*$/m.test(code) && !/-other-apps"/.test(code),
+    `${rel(file)}: no private dual-share box`,
+    `${rel(file)}: re-implements the dual-share box (the «Share with other apps» row / the -other-apps testid) — mount ShareSurface instead`,
+  );
+}
+// The family list is consumed by the box and the commissions row ONLY; the
+// ticket and the kit consume the BOX, never the list directly.
+for (const [name, abs, wanted] of [
+  ["ShareSurface.tsx", SURFACE, true],
+  ["ReferralCommissionsPanel.tsx", COMMISSIONS, true],
+  ["ReceiptTicket.tsx", TICKET, false],
+  ["ReferralToolsPanel.tsx", KIT, false],
+] as const) {
+  const raw = abs === SURFACE ? surfaceSrc : readFileSync(abs, "utf8");
+  const code = raw === null ? "" : stripComments(raw);
+  check(
+    /orderedShareTargets/.test(code) === wanted,
+    wanted
+      ? `${name}: consumes THE ordered family`
+      : `${name}: consumes the BOX, not the list (right altitude)`,
+    wanted
+      ? `${name}: does not consume orderedShareTargets — the six-network family and its order are ONE imported fact`
+      : `${name}: references orderedShareTargets directly — it must consume the ShareSurface box, never rebuild intent rendering`,
+  );
+}
+
+// ── 3c. ONE SPLIT — the url/text contract decision lives in the lib ─────────
+check(
+  /export function shareIntentArgs/.test(targetsSrc),
+  "lib/shareTargets.ts: shareIntentArgs is the one url/text split",
+  "lib/shareTargets.ts: shareIntentArgs MISSING — the whatsapp/email inline-text split is re-decided at call sites",
+);
+for (const file of walk(srcDir)) {
+  if (file === TARGETS_LIB) continue;
+  const code = stripComments(readFileSync(file, "utf8"));
+  check(
+    !/"whatsapp"\s*\|\|/.test(code),
+    `${rel(file)}: no private url/text split`,
+    `${rel(file)}: re-decides the whatsapp/email inline-text split — import { shareIntentArgs } from "@/lib/shareTargets"`,
+  );
+}
+for (const [name, abs] of [
+  ["ShareSurface.tsx", SURFACE],
+  ["ReferralCommissionsPanel.tsx", COMMISSIONS],
+] as const) {
+  const raw = abs === SURFACE ? surfaceSrc : readFileSync(abs, "utf8");
+  const code = raw === null ? "" : stripComments(raw);
+  check(
+    /shareIntentArgs\s*\(/.test(code),
+    `${name}: applies the contract through THE split`,
+    `${name}: does not call shareIntentArgs — the url/text contract is ONE imported decision`,
+  );
+}
+
+// ── 3d. THE BOX'S ENGRAVED ORDER (R-BIND-2): copy FIRST → the six intents →
+// «Share with other apps» LAST, feature-detected.
+if (surfaceSrc !== null) {
+  const s = stripComments(surfaceSrc);
+  const copyIdxS = s.indexOf("-copy-link");
+  const gridIdxS = s.indexOf("orderedShareTargets.map");
+  const nativeIdxS = s.indexOf("-other-apps");
+  check(
+    copyIdxS !== -1 && gridIdxS !== -1 && nativeIdxS !== -1 && copyIdxS < gridIdxS && gridIdxS < nativeIdxS,
+    "box: R-BIND-2 order holds (copy → the six → the OS sheet last)",
+    "box: the R-BIND-2 order is broken — Copy link FIRST, the six intents, «Share with other apps» LAST",
+  );
+  check(
+    /nativeAvailable \? \(/.test(s),
+    "box: the OS sheet is feature-detected (never a dead button)",
+    "box: the native row must render only when nativeAvailable — feature-detected, never a dead button",
   );
 }
 // ShareMenu iterates the WHOLE registry by design (no subset) — it owes only
@@ -192,27 +276,30 @@ check(
   "",
 );
 
-// ── 4. THE KIT FAMILY — all six, receipts-style (founder, 2026-08-03:
-// « nous avions plus ») ─────────────────────────────────────────────────────
+// ── 4. THE KIT MOUNT — one Share… trigger, ALWAYS rendered, opening the box
+// (founder, 2026-08-03: mobile keeps everything; desktop opens the SAME box
+// as the ticket) ────────────────────────────────────────────────────────────
 const kitRaw = readFileSync(KIT, "utf8");
 const kit = stripComments(kitRaw);
 check(
-  /orderedShareTargets\.map\s*\(/.test(kit),
-  "kit: renders the WHOLE ordered family (six intents, receipts-style)",
-  "kit: does not map orderedShareTargets — the kit carries the SAME six networks as the receipts, never a subset (founder correction 2026-08-03)",
+  /button-kit-share-/.test(kit),
+  "kit: the Share… trigger is testid-pinned (button-kit-share-<artifact>)",
+  "kit: the button-kit-share- trigger testid is absent — the share door is unpinned",
 );
 check(
-  /button-kit-intent-/.test(kit),
-  "kit: intent buttons are testid-pinned (button-kit-intent-<target>-<artifact>)",
-  "kit: the button-kit-intent- testid scheme is absent — the family is unpinned",
+  !/nativeShareAvailable \? \(/.test(kit),
+  "kit: the Share… trigger is ALWAYS rendered (the feature-detect moved INTO the box)",
+  "kit: the share trigger is still gated by nativeShareAvailable — every engine gets the box; only the OS-sheet row inside it is feature-detected",
 );
-const copyIdx = kit.indexOf("button-kit-copy-");
-const trioIdx = kit.indexOf("<ShareIntentIconButton");
-const nativeIdx = kit.indexOf("nativeShareAvailable ?");
 check(
-  copyIdx !== -1 && trioIdx !== -1 && nativeIdx !== -1 && copyIdx < trioIdx && trioIdx < nativeIdx,
-  "kit: R-BIND-2 order holds (copy → intents → the OS sheet last)",
-  "kit: the R-BIND-2 order is broken — the trio must sit BETWEEN «Copy my link» and the native Share… (copy first, intents, the image-carrying sheet LAST)",
+  /nativeAvailable=\{/.test(kit),
+  "kit: hands the engine truth to the box (nativeAvailable prop)",
+  "kit: does not pass nativeAvailable to ShareSurface — the box cannot feature-detect the OS sheet",
+);
+check(
+  /testidBase=\{`kit-share-/.test(kitRaw),
+  "kit: the box's controls are testid-pinned per artifact (kit-share-<artifact>)",
+  "kit: ShareSurface is mounted without the kit-share testidBase — the box's controls are unpinned",
 );
 
 // ── 5. URL-FREE TEXT ────────────────────────────────────────────────────────
