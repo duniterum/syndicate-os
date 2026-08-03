@@ -1,5 +1,50 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> ## ▶ 2026-08-04 (SESSION 2) — LE CHEMIN D'ACHAT EST RÉPARÉ. **UNE TRANCHE AU QUAI.**
+>
+> **PROD reste `c170e9b`.** Au-dessus : **`c01eba5`** — la seule tranche de code
+> non déployée. **🚀 elle NE se groupe PAS** (chemin de l'argent).
+>
+> **CE QUI EST FERMÉ (mesuré, pas cru).** Sa reproduction : Alice (siège #5),
+> lien de parrainage, devis appliqué (−0,25 USDC), signature → **révert**. L'index
+> de l'explorateur en liste **SEPT**, blocs 91 954 435→91 954 837, son gaz à
+> chaque fois.
+> **⚠ LA CAUSE INSCRITE DANS LE HANDOFF ÉTAIT FAUSSE.**
+> `appliesToRepeatPurchases` vaut **TRUE** sur cette source (lu sur la chaîne).
+> Rejoué depuis ses propres octets d'appel, au bloc 91 957 979 :
+> · `buy(10 USDC, siège #5, cette source)` → **`SourceNotEligible()`** (`0x2abb57d6`)
+> · `buy(10 USDC, siège #5, bytes32(0))` → **PASSE**
+> · `buy(5 USDC, sièges #13/#14, cette source)` → **`SourceAlreadyLinked()`**
+> · `quote(5 USDC, siège #5, cette source).acquisitionCost` = **250000** ← la promesse
+> **L'éligibilité ne se déduit donc JAMAIS des termes de la source.** Le correctif
+> demande au moteur le MÊME achat deux fois — avec le lien, sans le lien — et la
+> différence décide : preuve → le lien est lâché et l'achat passe **non-attribué**
+> (l'acheteur le lit) ; refusé des deux côtés → **rien n'est signé** ; illisible →
+> rien ne change (une lecture ratée ne vole jamais une commission à un parrain).
+>
+> **ET LA RECHERCHE DU JUMEAU A TROUVÉ CINQ SURFACES, PAS UNE :** l'achat,
+> l'approbation, `createSource`, `setSourceStatus` et la promotion d'échelle
+> attendaient toutes un reçu **sans jamais juger son statut**. La pire :
+> l'activation **fermait la demande d'un membre et sonnait sa cloche** sur une
+> transaction que le registre avait peut-être refusée. La règle vit maintenant
+> dans **une seule** fonction (`chainReads.confirmTransaction`), importée par les
+> cinq, et un pin interdit tout nouvel appel brut.
+> Portes : typecheck 0 · chaîne complète VERTE · `guard-source-eligibility`
+> **30/30** (table de vérité 9 lignes EXÉCUTÉE, 4 attaques vues ROUGES) · build
+> 39 shells · admin-dist 111.
+>
+> **⛔ CE QUI T'ATTEND (rien ne bloque la suite) :**
+> ① **TA DÉCISION — et elle n'est plus celle qu'on croyait.** La chaîne dit
+>    **déjà OUI** : un membre qu'un parrain a vraiment introduit continue de le
+>    payer sur ses rachats, tout seul (mesuré sur les sièges #13/#14/#17). Ce qui
+>    est refusé, c'est d'attacher un **NOUVEAU** parrain à un membre **DÉJÀ**
+>    inscrit. Question réelle : **veut-on que ce soit possible ?** (terme
+>    on-chain par source, signé ; les sources existantes gardent le leur.)
+> ② **La phrase du devis /join** a changé — texte exact dans le rapport, TON mot.
+> ③ **eslint absent du studio** (34 sites candidats) — la tranche suivante,
+>    proposée, pas commencée.
+> ④ **Non mesuré, et c'est TOI la mesure :** le flux rendu, wallet connecté.
+
 > ## ▶ 2026-08-04 — 11ᵉ SCEAU · L'ORDRE SUIVANT
 >
 > **PROD = `c170e9b`** (Replit 6/6 : entrée servie ×2 · ancienne 404 · 39 shells ·
