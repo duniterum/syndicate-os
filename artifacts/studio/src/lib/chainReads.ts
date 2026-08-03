@@ -26,14 +26,19 @@
 // ===========================================================================
 
 import {
+  BaseError,
+  ContractFunctionRevertedError,
   createPublicClient,
+  ExecutionRevertedError,
   fallback,
   getAddress,
   http,
   isAddress,
   zeroAddress,
+  type TransactionReceipt,
 } from "viem";
 import { avalanche } from "viem/chains";
+import type { BuySimulationVerdict } from "@/lib/sourceEligibility";
 
 // Public, keyless Avalanche C-Chain RPC (same endpoints the server defaults to).
 // Optional VITE_ overrides (validated https) — we will almost certainly never need
@@ -271,6 +276,150 @@ export async function readAllowance(
     });
   } catch {
     return null;
+  }
+}
+
+// ── THE ONE PLACE A TRANSACTION IS CONFIRMED ────────────────────────────────
+// A SIGNED TRANSACTION HAS THREE OUTCOMES, NEVER TWO. It can be accepted, it
+// can be MINED AND REFUSED (`status: "reverted"` — included in a block, all
+// effects rolled back, no logs), or it can be unreadable from here. Awaiting
+// the receipt answers only the third; code that stops there treats a refusal
+// as a success.
+//
+// The twin search on 2026-08-04 found that shape in FIVE places at once — the
+// join buy, the join approval, createSource, setSourceStatus and the ladder
+// promotion — and the founder had already hit it live: seven purchases the
+// engine refused were announced to him as «the transaction confirmed». The
+// activation site was worse than cosmetic: it closed a member's queue request
+// and rang his bell off a transaction that may have reverted.
+//
+// So the rule lives HERE, once, and every write surface imports it. A caller
+// cannot use this without reading the verdict — the receipt is inside it.
+// `guard-source-eligibility` pins that no surface calls
+// waitForTransactionReceipt directly again.
+export type TransactionOutcome =
+  /** Mined and accepted. The receipt's logs are real. */
+  | { kind: "accepted"; receipt: TransactionReceipt }
+  /** Mined and REFUSED by the contract. Nothing happened but the fee. */
+  | { kind: "refused"; receipt: TransactionReceipt }
+  /**
+   * The wait itself failed. This says NOTHING about the transaction, which
+   * stands or falls on the chain regardless of this app — callers must never
+   * report it as a failure.
+   */
+  | { kind: "unread" };
+
+export async function confirmTransaction(hash: `0x${string}`): Promise<TransactionOutcome> {
+  let receipt: TransactionReceipt;
+  try {
+    receipt = await publicClient.waitForTransactionReceipt({ hash });
+  } catch {
+    return { kind: "unread" };
+  }
+  return receipt.status !== "success"
+    ? { kind: "refused", receipt }
+    : { kind: "accepted", receipt };
+}
+
+// ── THE BUY CALL, and the only place its shape is written ───────────────────
+// ONE buy ABI for the whole app: the write surface (JoinCheckout) imports it
+// from here, so the call that is SIMULATED and the call that is SIGNED can
+// never drift apart — a probe testing a different shape than the signature
+// would prove nothing about the signature.
+//
+// THE CUSTOM ERRORS ARE PART OF THE ABI ON PURPOSE. Without them viem cannot
+// decode a revert, and every honest translation in the checkout's KNOWN_REVERTS
+// is unreachable — the buyer gets "reverted for an unknown reason" instead of
+// words. Two of these are SELECTOR-VERIFIED against live mainnet reverts
+// (2026-08-04): SourceNotEligible() = 0x2abb57d6 (a seated wallet re-buying on
+// an explicit introduction) and SourceAlreadyLinked() (a wallet whose
+// introduction is already recorded). The rest are name-derived from the
+// engine's documented errors — decoding is BEST-EFFORT by design: an error
+// this ABI cannot decode falls through to the raw reported message, which the
+// checkout presents as reported and never as its own claim.
+export const SALE_BUY_ABI = [
+  {
+    type: "function",
+    name: "buy",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "grossUsdc", type: "uint256" },
+      { name: "recipient", type: "address" },
+      { name: "sourceId", type: "bytes32" },
+      { name: "minSynOut", type: "uint256" },
+      { name: "v1Proof", type: "bytes32[]" },
+    ],
+    outputs: [],
+  },
+  { type: "error", name: "SourceNotEligible", inputs: [] },
+  { type: "error", name: "SourceAlreadyLinked", inputs: [] },
+  { type: "error", name: "SelfReferral", inputs: [] },
+  { type: "error", name: "ReferrerNotSeated", inputs: [] },
+  { type: "error", name: "SaleConcluded", inputs: [] },
+  { type: "error", name: "BelowEraMinimum", inputs: [] },
+  { type: "error", name: "ExceedsTxMax", inputs: [] },
+  { type: "error", name: "AddressEraCapExceeded", inputs: [] },
+  { type: "error", name: "SlippageExceeded", inputs: [] },
+  { type: "error", name: "EraInventoryInsufficient", inputs: [] },
+  { type: "error", name: "InsufficientInventory", inputs: [] },
+  { type: "error", name: "ReserveFloorViolation", inputs: [] },
+  { type: "error", name: "EnforcedPause", inputs: [] },
+  { type: "error", name: "InvalidProof", inputs: [] },
+] as const;
+
+/**
+ * Did the engine REFUSE, or did we simply fail to reach it? The difference
+ * decides whether a referral may be dropped, so it is never guessed: a refusal
+ * must be an actual revert surfaced by viem. Anything else — timeout, transport
+ * error, wrong chain — is UNREADABLE and proves nothing.
+ */
+function verdictFromError(err: unknown): BuySimulationVerdict {
+  if (err instanceof BaseError) {
+    const reverted = err.walk(
+      (e) => e instanceof ContractFunctionRevertedError || e instanceof ExecutionRevertedError,
+    );
+    if (reverted) return "refused";
+  }
+  const message = err instanceof Error ? err.message : String(err);
+  return /execution reverted|reverted for an unknown reason/i.test(message)
+    ? "refused"
+    : "unreadable";
+}
+
+/**
+ * Ask the engine whether ONE EXACT purchase would go through — a static
+ * eth_call from the buyer's own address. Signs nothing, moves nothing, changes
+ * no state.
+ *
+ * SCOPE, stated because the caller acts on it: this answers for the CURRENT
+ * chain state as seen by THIS app's RPC. It does not promise the wallet's own
+ * node agrees, and it does not survive a state change between the probe and
+ * the signature (the same race the fresh-quote law already accepts). It is
+ * used ONLY to compare two calls that differ in one argument — the source id —
+ * which is exactly the comparison that race cannot invert.
+ */
+export async function simulateBuy(args: {
+  saleAddress: string;
+  buyer: string;
+  grossUsdc: bigint;
+  sourceId: `0x${string}`;
+  minSynOut: bigint;
+}): Promise<{ verdict: BuySimulationVerdict; error: unknown }> {
+  const { saleAddress, buyer, grossUsdc, sourceId, minSynOut } = args;
+  if (!isAddress(saleAddress) || !isAddress(buyer)) {
+    return { verdict: "unreadable", error: null };
+  }
+  try {
+    await publicClient.simulateContract({
+      address: getAddress(saleAddress),
+      abi: SALE_BUY_ABI,
+      functionName: "buy",
+      args: [grossUsdc, getAddress(buyer), sourceId, minSynOut, []],
+      account: getAddress(buyer),
+    });
+    return { verdict: "accepted", error: null };
+  } catch (err) {
+    return { verdict: verdictFromError(err), error: err };
   }
 }
 

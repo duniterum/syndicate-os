@@ -36,11 +36,18 @@ import {
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
+  confirmTransaction,
   publicClient,
   readAllowance,
   readSaleUsdcToken,
   readTokenBalance,
+  simulateBuy,
+  SALE_BUY_ABI,
 } from "@/lib/chainReads";
+import {
+  decideSourceApplication,
+  SOURCE_DROPPED_NOTICE,
+} from "@/lib/sourceEligibility";
 import { resolveHistoricalGate, type HistoricalGateVerdict } from "@/lib/historicalMembers";
 import { pingChannelConversionFromLocation } from "@/lib/channelPing";
 import { computeMinSynOutRaw } from "@/lib/checkoutVocabulary";
@@ -68,22 +75,6 @@ const ERC20_APPROVE_ABI = [
       { name: "value", type: "uint256" },
     ],
     outputs: [{ name: "", type: "bool" }],
-  },
-] as const;
-
-const SALE_BUY_ABI = [
-  {
-    type: "function",
-    name: "buy",
-    stateMutability: "nonpayable",
-    inputs: [
-      { name: "grossUsdc", type: "uint256" },
-      { name: "recipient", type: "address" },
-      { name: "sourceId", type: "bytes32" },
-      { name: "minSynOut", type: "uint256" },
-      { name: "v1Proof", type: "bytes32[]" },
-    ],
-    outputs: [],
   },
 ] as const;
 
@@ -188,6 +179,12 @@ type Receipt = {
   blockNumber: string;
   /** Sealing-block UNIX timestamp, or null when the block read failed. */
   blockTimestamp: number | null;
+  /**
+   * Set when the engine PROVED it would refuse this purchase with the
+   * introduction link and accept it without — the purchase was then signed
+   * un-attributed, and the buyer is told so on the proof panel.
+   */
+  sourceNotice: string | null;
 };
 
 export default function JoinCheckout({
@@ -378,11 +375,16 @@ export default function JoinCheckout({
       // never a failed approval, and must never be blamed on the wallet
       // (adversarial-review catch: a timeout would have rendered "did not
       // go through" for an approval that stands on the chain).
-      try {
-        await publicClient.waitForTransactionReceipt({ hash });
-      } catch {
+      const approval = await confirmTransaction(hash);
+      if (approval.kind === "unread") {
         setError(
           `Your approval was sent (${hash.slice(0, 10)}…${hash.slice(-6)}) but its confirmation could not be read from here. Nothing is assumed — the transaction stands on the chain regardless of this page; retry in a moment or verify it on the explorer.`,
+        );
+        return;
+      }
+      if (approval.kind === "refused") {
+        setError(
+          `Your approval was refused on-chain (${hash.slice(0, 10)}…${hash.slice(-6)}). Nothing was approved and nothing was taken beyond the network fee — try step 1 again.`,
         );
         return;
       }
@@ -425,10 +427,50 @@ export default function JoinCheckout({
       // ONLY when the FRESH quote at this click confirms it applies; otherwise
       // bytes32 zero (the contract still auto-applies a previously LINKED
       // source gracefully on a zero id — nothing is lost).
-      const applySourceId =
+      let applySourceId: `0x${string}` =
         sourceId !== null && q.sourceProvided === true && q.sourceValid === true
-          ? sourceId
+          ? (sourceId as `0x${string}`)
           : ZERO_BYTES32;
+
+      // THE ENGINE IS ASKED BEFORE THE BUYER SIGNS (2026-08-04 — the founder
+      // reproduced SEVEN reverted purchases on live prod, his own money each
+      // time). The server verdict above can only ever mean "this link exists
+      // and is active": it is computed for an ANONYMOUS recipient, so it cannot
+      // know THIS buyer. The engine can, and does — measured on mainnet the
+      // same day: buy(10 USDC, that seated wallet, that sourceId) REVERTS with
+      // SourceNotEligible(), while the identical purchase on bytes32(0)
+      // SUCCEEDS. The quote never looked, because quote() previews the
+      // commission for that same wallet regardless (250000, measured).
+      //
+      // So we ask the engine twice — with the introduction and without — and
+      // the DIFFERENCE decides. The rule itself lives in sourceEligibility.ts,
+      // pure and guard-executed: a referral is dropped ONLY when the engine has
+      // proven it is the obstacle, never on a read failure.
+      let sourceNotice: string | null = null;
+      if (applySourceId !== ZERO_BYTES32) {
+        const probe = {
+          saleAddress: saleAddress!,
+          buyer: address,
+          grossUsdc: gross!,
+          minSynOut: BigInt(minSynOut),
+        };
+        const withSource = await simulateBuy({ ...probe, sourceId: applySourceId });
+        if (withSource.verdict !== "accepted") {
+          const withoutSource = await simulateBuy({ ...probe, sourceId: ZERO_BYTES32 });
+          const decision = decideSourceApplication(withSource.verdict, withoutSource.verdict);
+          if (decision === "drop") {
+            // The purchase goes through UN-ATTRIBUTED rather than reverting —
+            // and the buyer is told, on the receipt panel, in human words.
+            applySourceId = ZERO_BYTES32;
+            sourceNotice = SOURCE_DROPPED_NOTICE;
+          } else if (decision === "abort") {
+            // Refused either way: signing would spend the buyer's gas on a
+            // transaction that cannot succeed. Nothing is sent.
+            setError(explainError(withSource.error));
+            return;
+          }
+        }
+      }
       const hash = await writeContractAsync({
         address: saleAddress as `0x${string}`,
         abi: SALE_BUY_ABI,
@@ -436,7 +478,7 @@ export default function JoinCheckout({
         args: [
           gross!,
           address, // recipient EXPLICITLY = the connected wallet (Q12; gifting = C4)
-          applySourceId as `0x${string}`,
+          applySourceId,
           BigInt(minSynOut),
           [], // v1Proof MUST be empty on a direct buy (Q10)
         ],
@@ -445,15 +487,27 @@ export default function JoinCheckout({
       // Same read-vs-write split as handleApprove: the purchase is already
       // signed and broadcast; a receipt-read failure is the app's, not the
       // buyer's, and the message must not claim the purchase failed.
-      let txReceipt: Awaited<ReturnType<typeof publicClient.waitForTransactionReceipt>>;
-      try {
-        txReceipt = await publicClient.waitForTransactionReceipt({ hash });
-      } catch {
+      // THE RECEIPT IS JUDGED BEFORE ITS LOGS ARE READ (2026-08-04). A reverted
+      // transaction carries NO logs, so before this the buyer of a purchase the
+      // engine REFUSED was told "the transaction confirmed … but the receipt
+      // event could not be decoded" — a failed purchase reported as confirmed,
+      // on the money path. The founder hit exactly this, seven times. Nothing
+      // is inferred: `status` is the receipt's own field, judged in the one
+      // helper every write surface now shares.
+      const outcome = await confirmTransaction(hash);
+      if (outcome.kind === "unread") {
         setError(
           `Your purchase was sent (${hash.slice(0, 10)}…${hash.slice(-6)}) but its confirmation could not be read from here. Nothing is assumed — the transaction stands on the chain regardless of this page; verify it on the explorer or reload in a moment.`,
         );
         return;
       }
+      if (outcome.kind === "refused") {
+        setError(
+          `The engine refused this purchase on-chain (${hash.slice(0, 10)}…${hash.slice(-6)}). No SYN was bought and no seat changed — only the network fee was spent. Nothing else was taken. Reload and try again; if you arrived on an introduction link, try once from Join without it.`,
+        );
+        return;
+      }
+      const txReceipt = outcome.receipt;
       // Law 4: the seat is read from the receipt EVENT only.
       const events = parseEventLogs({
         abi: PURCHASE_EVENT_ABI,
@@ -501,6 +555,7 @@ export default function JoinCheckout({
         },
         blockNumber: txReceipt.blockNumber.toString(),
         blockTimestamp,
+        sourceNotice,
       });
       // SPEC R3 — the channel beacon: if the landing carried a `&via=` tag,
       // report the sealed conversion (the EVENT's own sourceId — the on-chain
@@ -545,6 +600,18 @@ export default function JoinCheckout({
               {formatRawUnits(receipt.synOutRaw, synDecimals)} SYN sent to your wallet.
               Your ticket below is printed from the sealed transaction itself.
             </p>
+            {/* The introduction the engine would not attach. Said HERE, on the
+                proof panel, because that is where the buyer learns what his
+                purchase actually recorded — never omitted, never an error tone:
+                the purchase succeeded exactly as shown. */}
+            {receipt.sourceNotice ? (
+              <p
+                className="text-xs text-muted-foreground mt-2 max-w-2xl"
+                data-testid="text-checkout-source-dropped"
+              >
+                {receipt.sourceNotice}
+              </p>
+            ) : null}
             {txUrl ? (
               <a
                 href={txUrl}

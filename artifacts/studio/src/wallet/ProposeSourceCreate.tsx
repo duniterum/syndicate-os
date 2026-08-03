@@ -59,6 +59,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
+  confirmTransaction,
   publicClient,
   readRegistryOwner,
   readSourceRecord,
@@ -347,8 +348,18 @@ export default function ProposeSourceCreate() {
         ],
         chainId: avalanche.id,
       });
-      await publicClient.waitForTransactionReceipt({ hash });
-      setLastTx(hash);
+      // A mined transaction can still have been REFUSED — the registry record
+      // below is re-read either way, but a refused signature must never be
+      // presented as this act's receipt.
+      const outcome = await confirmTransaction(hash);
+      if (outcome.kind === "refused") {
+        setError(
+          `The registry refused this creation (${hash.slice(0, 10)}…${hash.slice(-6)}) — no source was created. Only the network fee was spent.`,
+        );
+        await refresh();
+        return;
+      }
+      if (outcome.kind === "accepted") setLastTx(hash);
       await refresh();
     } catch (e) {
       setError(explainError(e));
@@ -404,7 +415,27 @@ export default function ProposeSourceCreate() {
           args: [sourceId, status],
           chainId: avalanche.id,
         });
-        await publicClient.waitForTransactionReceipt({ hash });
+        // THE ACT IS JUDGED BEFORE ITS CONSEQUENCES RUN (2026-08-04). This is
+        // the site that made the twin search worth doing: below, an ACTIVE
+        // status closes the member's request and rings his bell. Off a mined-
+        // but-REFUSED transaction that would have told a member his source was
+        // live when the registry had refused it. The consequences now run only
+        // on an accepted receipt.
+        const outcome = await confirmTransaction(hash);
+        if (outcome.kind === "refused") {
+          setError(
+            `The registry refused this status change (${hash.slice(0, 10)}…${hash.slice(-6)}) — the source is unchanged and no member was notified. Only the network fee was spent.`,
+          );
+          await refresh();
+          return;
+        }
+        if (outcome.kind === "unread") {
+          setError(
+            `Your signature was sent (${hash.slice(0, 10)}…${hash.slice(-6)}) but its confirmation could not be read from here. Nothing is assumed and nothing was closed — reload to read the registry's own state.`,
+          );
+          await refresh();
+          return;
+        }
         setLastTx(hash);
         // THE STACKED SESSION'S TAIL (K3.b): the activation receipt is in —
         // if this session answers a queue request AND the signed wallet is

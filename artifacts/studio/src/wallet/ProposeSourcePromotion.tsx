@@ -32,6 +32,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AddressLink } from "@/components/address/AddressText";
 import {
+  confirmTransaction,
   publicClient,
   readRegistryOwner,
   readSourceRecord,
@@ -224,7 +225,21 @@ export default function ProposeSourcePromotion() {
         ],
         chainId: avalanche.id,
       });
-      await publicClient.waitForTransactionReceipt({ hash });
+      // A refused promotion must not clear the row as if it had landed
+      // (2026-08-04 twin search): the ladder step is still due.
+      const outcome = await confirmTransaction(hash);
+      if (outcome.kind === "refused") {
+        setError(
+          `The registry refused this promotion (${hash.slice(0, 10)}…${hash.slice(-6)}) — the commission terms are unchanged and the step is still due. Only the network fee was spent.`,
+        );
+        return;
+      }
+      if (outcome.kind === "unread") {
+        setError(
+          `Your signature was sent (${hash.slice(0, 10)}…${hash.slice(-6)}) but its confirmation could not be read from here. Nothing is assumed — reload to read the registry's own terms before signing again.`,
+        );
+        return;
+      }
       setLastTx(hash);
       setBound(null);
     } catch (e) {

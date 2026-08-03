@@ -516,9 +516,17 @@ function QuotePanel({
 
   const q = toCheckoutQuote(data.quote);
   const floorRaw = computeMinSynOutRaw(q.synOutRaw);
+  // THE VERDICT THIS LINE MAY CLAIM (corrected 2026-08-04). The served quote is
+  // computed for an ANONYMOUS recipient, so `sourceValid` can only ever mean
+  // «this link exists and is active on the registry» — never «it will apply to
+  // YOU». The engine records an introduction once per wallet and refuses a
+  // second one (measured on mainnet: SourceNotEligible / SourceAlreadyLinked),
+  // and this page cannot know which wallet is watching — the wallet-aware work
+  // belongs to the checkout module, which now asks the engine before anything
+  // is signed. So the line states the RULE, and points at the confirmation.
   const sourceLine =
     data.sourceProvided && data.sourceValid === true
-      ? "A verified referral is applied to this quote."
+      ? "A verified referral is applied to this quote — an introduction is recorded once per wallet, and the checkout confirms it with the engine before you sign."
       : data.sourceProvided
         ? "The referral link is not valid or not active — this quote is computed without it."
         : "No referral — a direct join.";

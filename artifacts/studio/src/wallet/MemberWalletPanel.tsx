@@ -25,6 +25,7 @@ import { useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
+  confirmTransaction,
   publicClient,
   readAllowance,
   readSaleUsdcToken,
@@ -213,8 +214,19 @@ function WalletPanelBody() {
           args: [getAddress(spender), 0n],
           chainId: avalanche.id,
         });
-        await publicClient.waitForTransactionReceipt({ hash });
-        setLastTx(hash);
+        // The chain can REFUSE a mined transaction (2026-08-04 twin search):
+        // presenting its hash as the act's receipt would be a false receipt.
+        const outcome = await confirmTransaction(hash);
+        if (outcome.kind === "refused") {
+          setError(
+            `The chain refused this revocation (${hash.slice(0, 10)}…${hash.slice(-6)}) — your approval is unchanged. Only the network fee was spent.`,
+          );
+          await refresh();
+          return;
+        }
+        // "unread" says nothing about the transaction, so the honest move is
+        // the one this panel already makes: re-read the allowance from chain.
+        if (outcome.kind === "accepted") setLastTx(hash);
         await refresh();
       } catch (e) {
         setError(explainError(e));
