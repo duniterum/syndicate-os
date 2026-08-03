@@ -2,25 +2,94 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-03 (SESSION 2 — CLOSE) — RESUME HERE. **🚀 THE 9TH SEAL: PROD =
-> `8cb2414` (Replit 6/6: entry `index-mCrGLNJN.js` ×2 · old entry 404 · 39 shells
-> (+1 /referral-terms) · 33 routes 200 · /referral-terms live with its title ·
-> the lockup's THREE formats served 200 (svg 15.5 KB · png 18.6 · @2x 41.3) ·
-> wallet_watchAsset ×2 in the served bundle · /press intact · migrations
-> EXPLICITLY nothing (the only api file is the asset generator script) · backbone
-> ok, the usual first-cycle partial self-healed, headBlock advancing). THE DEPLOY
-> BACKLOG IS EMPTY. Everything this session built is LIVE: K1.5 (the share box) ·
-> the six-hat review closures · A1 mine-lens fixes · the /join showcase (voice
-> corrected) · /press + lockup · /referral-terms (the designed hash-anchored
-> home) · Add-SYN EIP-747 · the 17 repaired scanners + review-2 hardenings.**
+> # ▶ 2026-08-03 — RESUME HERE. THE HANDOFF.
 >
-> ## STILL HIS EYES ON LIVE PROD (stated, not hidden): the Add-SYN sheet with his
-> ## own wallet (footer, any page) · the lockup and /press by eye · /referral-terms
-> ## by eye · the /join card's corrected line + its program-terms door · the kit
-> ## box width under narrow artifacts (the standing judgment call) · the §2
-> ## hold-SYN nuance (a card line = his choice). THE ORDER'S NEXT: the FIRSTS
-> ## engine (engraved #2); background: member-ledger windowing · spine-poller
-> ## dedupe.
+> ## (a) PROD — `8cb2414`, sealed and live (the 9th seal)
+> Replit 6/6: entry `index-mCrGLNJN.js` served twice · old entry 404 · **39 route
+> shells** · 33 routes 200 · /referral-terms live with its title · the lockup's
+> three formats served (svg 15.5 KB · png 18.6 · @2x 41.3) · `wallet_watchAsset`
+> twice in the served bundle · **migrations: explicitly nothing** (the only
+> api-side file in the whole arc is an asset-generator script) · backbone ok,
+> headBlock advancing. **Prod equals the code that shipped.**
+>
+> ## (b) WHAT WENT LIVE this session — by surface, each with its guard
+> | Surface | What ships | Guard (blocking chain) |
+> |---|---|---|
+> | **the share box** (K1.5) | ONE `ShareSurface`: Copy link → the six networks in the engraved order → «Share with other apps», feature-detected. The receipt ticket AND the referrer kit MOUNT it; nobody re-implements it. | `guard-share-intents` 1602/1602 |
+> | **/activity — Mine lens** | `verify` = a real explorer anchor (was dead text) · `receipt` = the row's OWN `/receipt/{tx}` page (pointed at the whole binder) · lens corners · `aria-pressed`. | `guard-activity-mine` 9/9 |
+> | **/join — the buyer's referral card** | `JoinReferralShowcase`, copy frozen word-for-word, after the economics, both doors at 44px. | `guard-join-showcase` 13/13 |
+> | **/press — press & brand kit** | 3 copy-ready descriptions · the served mark · official channels (imported) · 7 facts each with a verify door · the red lines as quotable denials · **the brand LOCKUP** (mark + wordmark, glyphs as paths, pixel-probed, PNG 1x/@2x). | `guard-press-kit` 44/44 |
+> | **/referral-terms** | The designed home of the hash-anchored program document — body **fetched** from the canonical file, never retyped (its keccak256 IS every member source's on-chain metadataHash) · live commitment hash · footer Legal shelf. | `guard-referral-terms` 12/12 |
+> | **footer — Add SYN to your wallet** | One EIP-747 `wallet_watchAsset` call to the connected client (every injected wallet answers it). Address from the served verify link, decimals from the served reality, fail-closed. | `guard-watch-asset` 9/9 |
+> | **19 guard scanners repaired** | The phantom-block class: a `/*` inside a `//` line swallowed real code from the scan. Line-first everywhere, closers preserved. | proven RED per scanner |
+>
+> ## (c) IN FLIGHT — code: nothing open. **DEPLOY BACKLOG: ONE slice** — the
+> ## seven-hat audit closure (this commit). 🚀 **BATCHABLE**: client + docs only,
+> ## nothing breaks while it waits; prod stays correct on `8cb2414`.
+> **The audit that produced it** (his order, before any deploy word): 7 senior hats
+> over the whole arc, 51 raw findings → **32 confirmed** by independent skeptics →
+> 24 distinct defects (**0 CRITICAL · 5 REAL · 19 MINOR**). All closed, RED-first
+> where a pin exists. The five REAL, named because they were mine:
+> ① the /activity lens focus **inverted** — the tint I chose overrode the active
+> fill, so focusing the selected lens made it FAINTER (1.07:1). Now an INSET ring
+> (4.62:1 / 9.31:1), and **the guard that pinned the defect now pins the property**.
+> ② /press rendered its own lockup at **1.24:1** in the light theme (baked light ink
+> on a white card) — directly above its own «use it as provided» rule. Now a
+> theme-invariant dark plate (measured: page card white, plate `rgb(9,14,26)`).
+> ③ the receipt ticket handed the share box a **hardcoded DOM id** while the binder
+> mounts it once per shelf row → `useId` (measured: `aria-controls` = the box's id).
+> ④ the footer's live region was **created with its text** (never announced) → always
+> mounted, text-only swap; same for the kit. ⑤ **BACKLOG.html contradicted prod and
+> itself** — A1/M2/M3 still read as to-do, four live surfaces were absent, six
+> counters were off by one. Rebuilt and **recounted post-flip**: 184 rows · open 69 ·
+> in-progress 8 · queued 18 · blocked 33 · deferred 42 · verify 14, four counter
+> systems reconciling independently.
+>
+> ## (d) FOUNDER-PENDING — questions you can answer
+> 1. **Add SYN, with your own wallet** (footer, any page): does your wallet's add-token
+>    sheet open and show SYN correctly? *Nobody has ever seen the real sheet.*
+> 2. **/press and the lockup by eye** — now on its dark plate in both themes.
+> 3. **/referral-terms by eye** — the document's designed home.
+> 4. **The /join card** — «Every seat **can open** its own introduction link» (the terms
+>    audit proved «may be granted») and its program-terms door.
+> 5. **The kit's share box width under NARROW artifact rows** (260–336px vs the ticket's
+>    340). Functional, floors held — nobody chose it. Fine, or match the ticket?
+> 6. **The §2 nuance**: the terms require the referrer to hold ANY SYN at the moment of
+>    purchase. The terms door covers it. State it on the /join card itself?
+> 7. **BACKLOG's `referral-showcase` row** — its named remainder is delivered; the row
+>    still reads `in-progress` because its scope (the whole CONVERSION register) is
+>    yours to close. Close it, or is there more in that register?
+>
+> ## (e) THE NEXT SLICE — the FIRSTS engine (engraved #2, your order)
+> **First concrete step:** read `docs/architecture/CHAIN_READING_DOCTRINE.md` before
+> writing a line — history is ASKED once from an index, the tail is WATCHED from our
+> own node, and every lane must declare its mode in code (`backbone.guard` pins it).
+> Background debt, unchanged: member-ledger server windowing · spine-poller dedupe.
+>
+> ## (f) THE RIG + PLUMBING — one line, so nobody rediscovers it
+> Windows/PowerShell. Plain `pnpm` is BROKEN → **`corepack pnpm run <script>` from
+> `artifacts\studio`** (`typecheck` · `guards` · `build`); a single studio guard runs
+> as **`node scripts/<guard>.ts`**; the api-server `guards` alias is broken → run api
+> guards **directly from `artifacts\api-server`: `.\node_modules\.bin\tsx.cmd
+> .\scripts\<name>.ts`**; the build needs **`$env:PORT="5173"; $env:BASE_PATH="/"` in
+> the same call**; `preview_start` servers have **no network egress** → api-server runs
+> **DETACHED** for backbone/chain work, studio stays on `preview_start`; the local
+> **PostgreSQL 17 on :5433 IS the real DB** — never the live `DATABASE_URL`; the
+> browser pane runs HIDDEN (focus states and transitions freeze — measure the BUILT
+> stylesheet, not `getComputedStyle`); **the shell cwd drifts between calls — `cd`
+> first, absolute paths always.**
+>
+> ## (g) READ THESE FIRST
+> | File | Why |
+> |---|---|
+> | `CLAUDE.md` | The four checks (twin search · RED first · no unmeasured figure · import never re-derive) + every engraved law. Nothing else matters if these fail. |
+> | `docs/SESSION_STATE.md` (this block) | The resume point **and the sha authority** — prod's sha is written here and nowhere else. |
+> | `docs/direction/OPEN_QUEUE.md` (top blocks) | In-flight decisions; restate at every gate, append evidence before session end. **Only the founder closes an item.** |
+> | `artifacts/studio/src/config/featureStatus.ts` | The ONE live-vs-future truth, in code. Read before writing any "coming/future" word. `guard-feature-truth` PASSes 693 checks; **no key change was owed by this session** (measured, not assumed). |
+> | `docs/direction/BACKLOG.html` | The full inventory — **rebuilt and recounted 2026-08-03** (184 rows, 14 categories, all four counter systems reconciling). |
+> | `docs/DESIGN_ROADMAP.md` | The design workstream's single source; tick boxes in the SAME commit as the slice (that rule was broken three times this session and is now repaid). |
+> | `docs/direction/SETTLED_RULES_DO_NOT_RELITIGATE.md` | Answered forever — addresses are PUBLIC, no legal gate, no PII jargon on any surface. |
+> | `docs/architecture/CHAIN_READING_DOCTRINE.md` | Required before FIRSTS (see (e)). |
 >
 > # ▶ 2026-08-03 (SESSION 2 — third wave, historical). **🚀 SEALED: PROD was =
 > `949f80c` (his direct order, Replit 6/6: entry `index-pibcQDUg.js` ×2 · old entry

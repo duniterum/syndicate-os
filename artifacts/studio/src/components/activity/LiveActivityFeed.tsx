@@ -1133,10 +1133,17 @@ export function LiveActivityFeed({
                 type="button"
                 onClick={() => selectLens(l)}
                 aria-pressed={lens === l}
-                // Focus = the founder's TAB TINT (2026-07-20 ruling): an
-                // outset ring inside this overflow-hidden container is cut
-                // to a 2px seam (review-2 design hat measured it).
-                className={`min-h-11 px-5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:bg-gold/10 ${
+                // Focus = an INSET ring. The founder's 2026-07-20 ruling
+                // bans the OUTSET boxing ring (this overflow-hidden
+                // container cuts one to a 2px seam) — not an inset one.
+                // A focus TINT was tried here and INVERTED: on the SELECTED
+                // segment `focus-visible:bg-gold/10` beat the resting
+                // `bg-gold/15`, so focusing the active lens made it FAINTER
+                // (measured 1.07:1 light / 1.11:1 dark; no tint alpha can
+                // reach 3:1 against a same-hue sibling). The inset ring
+                // measures 4.62:1 / 9.31:1 and overrides the active
+                // segment's own 1px inset line. WCAG 1.4.11 + 2.4.7 (AA).
+                className={`min-h-11 px-5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:shadow-[inset_0_0_0_2px_hsl(var(--ring))] ${
                   l === "protocol" ? "rounded-l-md" : "rounded-r-md"
                 } ${
                   lens === l

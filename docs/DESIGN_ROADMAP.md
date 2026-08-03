@@ -4,16 +4,22 @@
 même commit. **Tout le monde travaille depuis CE doc** — fondateur, Claude Code,
 Claude-conseil, Replit. Personne ne part de son côté.
 
-> **▶ Rattrapage 2026-08-03 (le marathon 02→03, six sceaux — PROD = `c2b1168`) :**
-> livrés et EN PROD : la pagination dormante des deux tableaux publics (wireframe
-> approuvé « ok les 2 ») · la bande RÉSERVES 3×2 six actifs (mark XAUt0 officiel,
-> fenêtre heures-de-marché) · **A1 — la lentille [Protocol | Mine] de /activity**
-> (wireframe approuvé + « go continue ») · **M3 — le trio Collectible** (wireframe +
-> clause mobile approuvés) · **M2-v2 — l'aperçu vivant par siège** (« by Seat #3 ·
-> Chapter I », prouvé aux pixels). Dossiers/wireframes dans docs/design/ +
-> docs/reference/. ⚠ Balayage dû à la prochaine session design : re-lire les notes
-> « montent avec A1 » (lignes ~357/418) — A1 est FAIT, ces riders sont à cocher ou à
-> re-dater ; prochaine tranche nommée : les intents desktop du Share… du kit.
+> **▶ Rattrapage 2026-08-03 (le marathon 02→03 — PROD = voir le bloc de reprise de
+> SESSION_STATE.md, l'autorité du sha) :** livrés et EN PROD : la pagination dormante
+> des deux tableaux publics (wireframe approuvé « ok les 2 ») · la bande RÉSERVES 3×2
+> six actifs (mark XAUt0 officiel, fenêtre heures-de-marché) · **A1 — la lentille
+> [Protocol | Mine] de /activity** (wireframe approuvé + « go continue ») · **M3 — le
+> trio Collectible** (wireframe + clause mobile approuvés) · **M2-v2 — l'aperçu vivant
+> par siège** (« by Seat #3 · Chapter I », prouvé aux pixels) — puis la journée a
+> continué : K1.5, /join, /press, /referral-terms, le lockup, Add-SYN (entrées cochées
+> plus bas). Dossiers/wireframes dans docs/design/ + docs/reference/.
+> ✅ **Le balayage « montent avec A1 » est FAIT (2026-08-03)** : les deux riders ont été
+> re-datés sur place — la porte view-receipt/binder (ligne ~429) a en fait atterri dans
+> R-BIND (2026-07-19), et la lentille My|Protocol (ligne ~280) est arrivée avec A1 à
+> `d811ec1`. *(Les « lignes ~357/418 » que cette note citait étaient fausses ; les vraies
+> sont ~280 et ~429.)* **Prochaine tranche : LE MOTEUR FIRSTS** (gravé #2 — le registre
+> ouvert des premières-par-classe qui alimente la file de candidates de la salle de
+> presse) ; les intents desktop du Share… sont LIVRÉS, voir l'entrée **K1.5** cochée.
 
 ---
 
@@ -277,8 +283,10 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   Member #N · échelon · reçu-puce + verify) · zone 2 les 4 tuiles KPI vivantes (SYN ·
   introductions durables · commission payée · escrow — chaque chiffre avec provenance,
   tiret honnête sinon) · zone 3 grille de travail (referral 2/3 + slots réservés 1/3) ·
-  zone 4 le pouls du protocole (5 lignes §8 + porte /activity ; My|Protocol y atterrira
-  avec A1) · zone 5 verify + settings + expectations. La carte-héros flottant dans le
+  zone 4 le pouls du protocole (5 lignes §8 + porte /activity ; ~~My|Protocol y
+  atterrira avec A1~~ → **ATTERRI : la lentille [Protocol | Mine] est partie avec A1 le
+  2026-08-03, `c2b1168` puis durcie `d811ec1` — re-daté le 2026-08-03**) · zone 5 verify
+  + settings + expectations. La carte-héros flottant dans le
   vide MORTE ; les quick-actions dupliquées = visiteur-seul (conversion). DEUX DÉFAUTS
   des captures fondateur tués : le badge « Sign in required » menti à un membre connecté
   sans source (3 états distincts maintenant) · le badge Notifications chevauchant son
@@ -426,7 +434,11 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   ligne calme approuvée VERBATIM, rendue SEULEMENT quand chaque classe a
   répondu — l'overclaim tué) · Z4 `MemberRecentActivity` (5 derniers achats
   propres, montant exact usdFromRaw · moteur · verify ↗ par ligne ;
-  View-receipt/binder ABSENTS — ils montent avec A1) · Z5 le pouls SOUS le
+  ~~View-receipt/binder ABSENTS — ils montent avec A1~~ → **FAUX depuis le 2026-07-19 :
+  la porte a ATTERRI dans R-BIND (placement ② du A1 GO'd) — chaque ligne porte son
+  « receipt » vers le classeur vivant /receipts, où elle se rouvre en ticket complet
+  (autorité : `artifacts/studio/src/wallet/MemberRecentActivity.tsx`:7-9). Re-daté le
+  2026-08-03 ; ce rider est resté faux ~2 semaines**) · Z5 le pouls SOUS le
   travail propre · Z8 `MemberDoorsGrid` (les portes en cartes groupées
   depuis LA config + LA table d'icônes exportée — ne peut jamais diverger
   du menu ; garde same-URL). Porte visiteur INTOUCHÉE. LA PASSE
@@ -660,6 +672,19 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   10 échecs regardés → vert ; durci par la revue-2 adversariale à 12 pins :
   montage inconditionnel + claims bornés à leur élément), 375px zéro
   débordement, deux thèmes mesurés. **+0 couleur brute**.
+  **↳ CORRIGÉ LE MÊME JOUR (2026-08-03, `b2f8d09` — mesures ci-dessus laissées
+  intactes, elles sont datées).** L'audit des conditions qu'il a demandé
+  (« lire pour voir si tout est à jour ») a prouvé son instinct **au mot** :
+  le §2 dit qu'un lien **« may be granted »** (la demande → l'activation
+  signée par le Founder), donc « Every seat **comes with** its own introduction
+  link » **sur-affirmait**. La copie gelée lit désormais « Every seat **CAN
+  OPEN** its own introduction link » (épinglée verbatim, RED-first : 2 échecs
+  regardés → **13/13 pins**). Et la porte du bas ne mène plus aux Conditions
+  d'utilisation GÉNÉRALES mais à **/referral-terms**, « **How, in the program
+  terms** » — le document que la chaîne hache réellement. *Énoncé pour son œil,
+  non caché : la condition « détenir du SYN à l'achat » du §2 n'est résumée
+  nulle part sur la carte — la porte des conditions la couvre ; une ligne sur
+  la carte est SA décision.*
 - [x] **E LE PRESS & BRAND KIT PUBLIC — /press (2026-08-03, l'item E de la
   séquence gravée ; son « go décide pour moi » a délégué les trois décisions,
   toutes ancrées dans le réel : périmètre V1 = descriptions · marque servie ·
@@ -686,6 +711,68 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   naturalWidth>0 · footer · 375px zéro débordement · console vide. NON
   mesuré : le téléphone réel — l'œil du fondateur en prod.
   **+0 couleur brute**.
+- [x] **A1 — LA LENTILLE [Protocol | Mine] DE /activity (2026-08-03, wireframe
+  approuvé + son « go continue » ; scellée `c2b1168`, DURCIE en prod par
+  `d811ec1` sur sa prise en direct)** : le pouls se lit dans les deux sens —
+  le protocole entier, ou seulement SES lignes. La passe de durcissement du
+  même jour est ce que son œil a attrapé sur la page servie : **les deux
+  portes de la lentille Mine** (elles ne menaient nulle part), **les coins du
+  sélecteur** alignés sur le rayon maison, **la teinte de focus** ramenée au
+  token, et **les deux portes au plancher tactile 44px**. Le reste d'A1 était
+  déjà scellé depuis longtemps (le classeur own-row S0, les placements, les
+  liens view-receipt et la porte Receipts via R-BIND 1-3, 2026-07-19 ; le cœur
+  S2 par l'arc referral slice ④) — **A1 est FAIT, et C3 est débloqué**.
+  *(Cette entrée manquait : `d811ec1` n'a pas touché ce document — la STANDING
+  RULE a été enfreinte, réparée le 2026-08-03.)* **+0 couleur brute**.
+- [x] **/referral-terms — LA MAISON DESIGNÉE DU DOCUMENT ANCRÉ PAR HASH
+  (2026-08-03, `b2f8d09`, sa prise en direct « links not correctly forwarded »)** :
+  la carte /join dooriait vers les Conditions d'utilisation GÉNÉRALES alors que
+  le programme a SON PROPRE document ancré — le keccak256 de
+  `referral-program-terms-v1.txt` EST le `metadataHash` on-chain de chaque
+  source membre. La page servie respecte la loi du hash **par construction** :
+  le corps est **FETCHÉ** depuis `TERMS_PATH` (importé de l'autorité
+  `termsDocument`) et rendu verbatim — **retaper une phrase du corps est
+  ROUGE**, parce qu'une seconde copie dérive des octets ancrés. Le
+  `TermsCommitmentHash` calcule le keccak **sur les octets réellement servis**
+  + la porte verify on-chain (le même mécanisme que /referral, importé) ;
+  mesuré au rig : le hash calculé égale l'empreinte de la prod `0xc8480867…`.
+  États de chargement/erreur honnêtes · porte vers le fichier brut · badge
+  READ_ONLY_PROOF · route + modules + **étagère LEGAL du footer** (« comme il
+  faut ») + classification + registre SEO (**sitemap 31 · rewrites 37 · 35
+  shells**). Nouveau `guard-referral-terms` dans la chaîne BLOQUANTE (**12
+  pins, RED-first — 8 échecs regardés → vert** ; chiffres du commit).
+  **+0 couleur brute**.
+- [x] **LE LOCKUP PRESSE (2026-08-03, `b2f8d09`, sa prise « un seul logo pas
+  suffisant »)** : la section marque de /press menait avec l'icône nue. Le
+  lockup **mark + wordmark** est construit en **vecteur pur** — satori rend le
+  wordmark en **GLYPHES-EN-CHEMINS** avec les TTF Work Sans du peintre de
+  reçus, donc **aucun consommateur n'a besoin de la police** — composé sur les
+  chemins verbatim du mark servi. **SONDÉ AU PIXEL avant écriture** (encre du
+  mark · encre du texte · marge droite propre) : la première forme de la sonde,
+  en colonne unique, tombait dans l'espace entre le T et le H et a été
+  **élargie en BANDES** — la sonde a attrapé son propre angle mort. Livré en
+  **PNG 1× et @2×** (le nom @2x survit à l'épingle), générateur committé, et
+  épinglé aux **6 assets déjà existants** — la marque servie, jamais une
+  approximation. **+0 couleur brute**.
+- [x] **ADD SYN TO YOUR WALLET — LE BOUTON EIP-747 DU FOOTER (2026-08-03,
+  `8cb2414`, son « si tu peux faire mieux autrement fais ainsi »)** : son
+  ordre nommait un logo MetaMask + d'autres portefeuilles, avec licence de
+  faire mieux — pris comme **MÉCANISME plutôt que MARQUE**. UN bouton qui parle
+  le standard **EIP-747** (`walletClient.watchAsset`, type ERC20) au client
+  CONNECTÉ : MetaMask, Rabby, Coinbase Wallet, Trust et tout portefeuille
+  injecté répondent au même appel — pas de bouton par marque, pas de
+  verrouillage. **CHAÎNE DE GARDE (la loi d'adresse)** : l'adresse SYN est
+  **EXTRAITE du lien verify servi** — le SEUL point sanctionné pour émettre une
+  adresse de protocole — jamais un littéral client (un littéral 0x de 40 hex
+  dans le composant = ROUGE) ; les décimales viennent de la réalité servie.
+  **FAIL-CLOSED** : sans les faits servis le bouton ne rend RIEN — jamais un
+  contrôle mort. **LES MAINS HONNÊTES** : aucun portefeuille connecté → l'adresse
+  part au presse-papier, dit clairement ; le portefeuille refuse → dit ; et la
+  branche presse-papier ABSENT parle aussi (le volet caché du rig a exposé le
+  court-circuit de la chaîne optionnelle — `?.writeText` saute le `.then` ET le
+  `.catch` — la classe du clic-mort-silencieux tuée avant tout envoi).
+  `guard-watch-asset` écrit AVANT le composant (**6 échecs regardés → 8/8** ;
+  chiffres du commit), dans la chaîne bloquante. **+0 couleur brute**.
 - [x] **K2 LE CÔTÉ INVITÉ (2026-07-20, maquette approuvée « GO AND GO-LIVE »,
   commit 0134cc6)** : le lien /join?source= s'ouvre avec SA carte peinte
   (serveur, vrai emblème, adresse courte de l'introducteur, registre

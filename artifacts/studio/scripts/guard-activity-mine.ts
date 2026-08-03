@@ -128,12 +128,23 @@ check(
   "lens: the segments lack rounded-l-md / rounded-r-md — the active inset ring gets clipped SQUARE at the container's rounded corners (founder catch, 2026-08-03)",
 );
 check(
-  // The keyboard indicator must be INSET — the founder's own tab ruling
-  // (2026-07-20, guard-focus-visible §③): a TINT, never an offset boxing
-  // ring that an overflow-hidden container cuts to a seam.
-  /focus-visible:bg-gold\/10/.test(lensBlock) && !/focus-visible:ring-2/.test(lensBlock),
-  "lens: keyboard focus is the inset TINT idiom (never a clipped outset ring)",
-  "lens: the segments' focus indicator must be the founder's tab tint (focus-visible:bg-gold/10, no outset ring) — an outset ring inside this overflow-hidden container survives as a 2px seam (review-2 design hat, 2026-08-03)",
+  // THE INDICATOR MUST BE INSET **AND** MUST NOT BE A BARE TINT.
+  // The founder's 2026-07-20 ruling bans the OUTSET boxing ring (an
+  // overflow-hidden container cuts it to a seam) — it does not ban an
+  // INSET one. And a focus TINT alone INVERTS here: on the SELECTED
+  // segment `focus-visible:bg-gold/10` overrides the resting `bg-gold/15`
+  // (higher specificity, later in the sheet), so focusing the active lens
+  // makes it FAINTER — measured 1.07:1 light / 1.11:1 dark. No tint alpha
+  // can reach 3:1 against a same-hue sibling tint (gold/55 = 1.90). An
+  // inset ring measures 4.62:1 / 9.31:1. Four hats filed this
+  // independently (the 2026-08-03 seven-hat audit).
+  // Level, stated exactly: WCAG 1.4.11 Non-text Contrast (AA) + 2.4.7
+  // Focus Visible (AA) — NOT 2.4.11, which is Focus Not Obscured.
+  /focus-visible:shadow-\[inset_/.test(lensBlock) &&
+    !/focus-visible:ring-/.test(lensBlock) &&
+    !/focus-visible:bg-/.test(lensBlock),
+  "lens: keyboard focus is an INSET ring (never an outset ring the container clips, never a tint that inverts the active fill)",
+  "lens: the focus indicator must be INSET — `focus-visible:shadow-[inset_…]`. An outset ring survives as a 2px seam inside the overflow-hidden container, and a bare focus TINT makes the SELECTED segment FAINTER than at rest (measured 1.07:1 — the 2026-08-03 audit's inversion, filed by four hats)",
 );
 check(
   /aria-pressed=\{lens === l\}/.test(lensBlock),

@@ -1,5 +1,24 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-03 (CLÔTURE DE SESSION — L'AUDIT SEPT CASQUETTES, son ordre avant tout
+> mot de déploiement). 7 casquettes seniors sur TOUT l'arc de la session (16 commits),
+> 51 trouvailles brutes → 32 confirmées par sceptiques indépendants → 24 défauts
+> distincts : 0 CRITIQUE · 5 RÉELS · 19 mineurs. TOUS FERMÉS, rouge d'abord partout où
+> un pin existe. Les cinq réels étaient les miens : ① le focus du sélecteur /activity
+> s'INVERSAIT (la teinte écrasait le fond actif — focus = plus PÂLE, 1.07:1) → anneau
+> INSET, et le guard qui épinglait le défaut épingle désormais la propriété ; ② /press
+> rendait son propre lockup à 1.24:1 en thème clair → plaque sombre invariante
+> (mesuré) ; ③ le ticket donnait un id DOM en dur alors que le classeur le monte par
+> rangée → useId ; ④ la région live du footer était créée avec son texte (jamais
+> annoncée) → toujours montée ; ⑤ BACKLOG.html contredisait la prod ET lui-même →
+> reconstruit et RECOMPTÉ après bascule (184 lignes · 69 · 8 · 18 · 33 · 42 · 14,
+> quatre systèmes de compteurs qui se réconcilient). Portes finales : 1602 · 44 · 13 ·
+> 12 · 9 · 9 · chaîne complète · typecheck · build 35 shells. PROD reste `8cb2414` ;
+> UNE tranche groupable au quai (cette fermeture). SES DÉCISIONS EN ATTENTE : voir
+> SESSION_STATE (d) — 7 questions, dont la largeur de la boîte du kit, la nuance §2
+> détenir-du-SYN, et la fermeture de la ligne referral-showcase du BACKLOG (son
+> périmètre, sa décision).**
+
 > **▶ 2026-08-03 (SESSION 2, CLÔTURE) — 9ᵉ SCEAU : PROD = `8cb2414` (Replit 6/6 ;
 > /referral-terms live · le lockup servi en 3 formats · wallet_watchAsset dans le
 > bundle · migrations rien · backbone sain). LE QUAI EST VIDE — tout ce que la
@@ -617,8 +636,18 @@
 > 2,046 chunks-to-head; 8,184 − 6,604 = **80.69%**; 9 cycles; 6,604 × 150 ms = 16.5 min) · all 14 lanes
 > hardcode 87,157,852 (protocolTargets.ts:585 first, :714 last) · the type-scale allowlist parses to
 > 277/57 and 223/48 exactly · the capital-F arithmetic 947 − 8 = 939 reconciles against measured before/after
-> counts on all three files · BACKLOG.html = **183 rows, 14 categories**, every per-category and legend count
-> correct (69 open · 8 in-progress · 20 queued · 33 blocked-on-founder · 42 deferred · 11 verify) ·
+> counts on all three files · ~~BACKLOG.html = **183 rows, 14 categories**, every per-category and legend
+> count correct (69 open · 8 in-progress · 20 queued · 33 blocked-on-founder · 42 deferred · 11 verify)~~ —
+> **STALE ONE COMMIT AFTER IT WAS WRITTEN. RECOUNTED 2026-08-03: 184 rows, 14 categories** (69 open ·
+> 8 in-progress · 18 queued · 33 blocked-on-founder · 42 deferred · 14 verify — the post-audit state,
+> after A1/M2/M3 flipped to verify; measured from the file's own `data-status` attributes, and the
+> rendered chips match those attributes one-for-one). **CAUSE, measured, not inferred:** this certificate
+> was written in `f784a0c` and was TRUE at that instant; the very next docs commit `8339f4f` added row
+> **CHR-11** (`data-status="open"`, category *Surfaces membre*) and moved no counter — `git show
+> 8339f4f:docs/direction/BACKLOG.html` already counts **184** rows. One row landing after a recount
+> certificate put exactly one of everything out by one: total 183→184, `open` 69→70, and the single wrong
+> per-category count (*Surfaces membre* declared 20, actual 21). Every other category and the other five
+> statuses were correct throughout. All counters are now recounted and rewritten in the file. ·
 > HANDOFF_REVIEW = 58 = 37 + 21 = 78 − 18 − 2 · the guards chain is exactly 30 links · `tsc --noEmit` exits 0
 > and all 30 links exit 0 at HEAD · `seo:generate` reproduces `sitemap.xml` byte-identically, so `05f16bc`'s
 > touch of `seo-route-registry.ts` left no SEO drift. **NOT VERIFIABLE FROM THE REPO and therefore

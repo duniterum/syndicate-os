@@ -17,6 +17,13 @@ export const brand = {
  */
 export const brandAssets = {
   "syn-mark-gold": "/brand/syn-mark-gold.png",
+  "syn-mark-gold-svg": "/syn-mark-gold.svg",
+  // The LOCKUP (mark + wordmark) — generated vector, glyphs as paths
+  // (artifacts/api-server/scripts/gen-press-lockup.ts). FIXED INK, built
+  // for DARK grounds: any surface rendering it owes a dark plate.
+  "syn-lockup-gold": "/brand/syn-lockup-gold.svg",
+  "syn-lockup-gold-png": "/brand/syn-lockup-gold.png",
+  "syn-lockup-gold-png-2x": "/brand/syn-lockup-gold@2x.png",
 } as const;
 
 /**

@@ -16,10 +16,11 @@
 // facts this renders NOTHING (never a dead button). guard-watch-asset pins
 // every one of these laws.
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useWalletClient } from "wagmi";
 import { useGetProtocolReality, useGetProtocolVerifyLinks } from "@workspace/api-client-react";
 import { brandAssets } from "@/config/brand";
+import { copyText } from "@/lib/clipboard";
 import { CANONICAL_ORIGIN } from "@/lib/seo-route-registry";
 
 export function AddSynToWallet() {
@@ -27,9 +28,13 @@ export function AddSynToWallet() {
   const verify = useGetProtocolVerifyLinks();
   const reality = useGetProtocolReality();
   const [note, setNote] = useState<string | null>(null);
+  // Deduplicated timer: without it an earlier timeout clears a LATER
+  // message (the class fixed one commit earlier in PressKit — 2026-08-03).
+  const timer = useRef<number | null>(null);
   const say = (msg: string) => {
     setNote(msg);
-    window.setTimeout(() => setNote(null), 2600);
+    if (timer.current !== null) window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setNote(null), 2600);
   };
 
   // The served synToken link carries the address as its /token/ tail.
@@ -47,18 +52,15 @@ export function AddSynToWallet() {
   if (address === null || decimals === null) return null;
 
   const copyAddress = () => {
-    // ABSENT and REFUSED both speak — an optional chain short-circuits
-    // past .catch too, and a silent dead click is the review-2 class.
-    // The human pointer either way: the Economy page's SYN row.
-    const clipboard = navigator.clipboard;
-    if (!clipboard) {
-      say("Couldn't copy — the SYN address is on the Economy page");
-      return;
-    }
-    clipboard
-      .writeText(address)
-      .then(() => say("Token address copied — add SYN in your wallet"))
-      .catch(() => say("Couldn't copy — the SYN address is on the Economy page"));
+    // ABSENT and REFUSED both speak — the shared helper answers true/false
+    // for each, so a dead click is impossible (lib/clipboard.ts).
+    void copyText(address).then((done) =>
+      say(
+        done
+          ? "Token address copied — add SYN in your wallet"
+          : "Couldn't copy — the SYN address is on the Economy page",
+      ),
+    );
   };
 
   const onAdd = () => {
@@ -96,11 +98,16 @@ export function AddSynToWallet() {
         <img src={brandAssets["syn-mark-gold"]} alt="" aria-hidden="true" className="h-4 w-auto" />
         <span>Add SYN to your wallet</span>
       </button>
-      {note !== null ? (
-        <span className="text-xs text-muted-foreground" role="status">
-          {note}
-        </span>
-      ) : null}
+      {/* The live region is ALWAYS mounted and only its TEXT swaps — a
+          region inserted together with its content is not reliably
+          announced by NVDA/JAWS/VoiceOver (2026-08-03 audit; the pattern
+          is PressKit's). */}
+      <span
+        role="status"
+        className={note !== null ? "text-xs text-muted-foreground" : "sr-only"}
+      >
+        {note ?? ""}
+      </span>
     </span>
   );
 }

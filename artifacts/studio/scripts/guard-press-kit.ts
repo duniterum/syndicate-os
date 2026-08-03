@@ -110,18 +110,25 @@ check(
 // ── 2b. THE PAGE CONSUMES EVERY AUTHORITY IT CLAIMS (review-2 adversarial
 // CRITICAL: the config was frozen but nothing tied the PAGE to it — retyped
 // drifted copy rendered with 26/26 green). One reference pin per export.
-for (const name of [
-  "pressDescriptions",
-  "pressProtocolFacts",
-  "pressApprovedLanguage",
-  "pressBannedLanguage",
-  "pressMediaUsage",
-  "pressAssets",
+// BIND THE RENDER, NOT THE NAME (2026-08-03 seven-hat audit): a bare
+// identifier pin is satisfied by the IMPORT LINE ALONE, so it could not
+// catch the realistic partial drift — one description retyped inline while
+// the others still render from the authority. Member access / .map() is the
+// shape that proves the page actually RENDERS the fact.
+for (const [name, re] of [
+  ["pressDescriptions.oneLine", /pressDescriptions\.oneLine/],
+  ["pressDescriptions.short", /pressDescriptions\.short/],
+  ["pressDescriptions.long", /pressDescriptions\.long/],
+  ["pressProtocolFacts", /pressProtocolFacts\.map\(/],
+  ["pressApprovedLanguage", /pressApprovedLanguage\.map\(/],
+  ["pressBannedLanguage", /pressBannedLanguage\.map\(/],
+  ["pressMediaUsage", /pressMediaUsage\.map\(/],
+  ["pressAssets", /pressAssets\.map\(/],
 ] as const) {
   check(
-    new RegExp(`\\b${name}\\b`).test(page),
-    `press: the page renders ${name} from the authority`,
-    `press: the page no longer references ${name} — frozen config with a retyped page is the twin disease (2026-08-03 adversarial CRITICAL)`,
+    re.test(page),
+    `press: the page RENDERS ${name} from the authority`,
+    `press: the page no longer renders ${name} — frozen config with a retyped page is the twin disease (2026-08-03 adversarial CRITICAL); an import line alone is not a render`,
   );
 }
 
@@ -151,6 +158,15 @@ for (const [key, text] of Object.entries(FROZEN_DESCRIPTIONS)) {
     (pressDescriptions as Record<string, string>)[key] === text,
     `press: description «${key}» frozen verbatim`,
     `press: description «${key}» drifted — the founder-delegated copy is frozen; expected «${text.slice(0, 60)}…»`,
+  );
+  // THE MIRROR NEGATIVE (seven-hat audit, 2026-08-03): freezing the config
+  // while the PAGE retypes the words is the twin disease the reference pins
+  // in §2b were written for — this closes the other half, making a retype
+  // structurally impossible rather than merely detectable.
+  check(
+    !page.includes(text),
+    `press: description «${key}» is not retyped as page text`,
+    `press: the «${key}» description literal appears IN THE PAGE — it must render from pressDescriptions, never be retyped`,
   );
 }
 const CORE_BANNED = ["investment", "yield", "ROI", "passive income", "guaranteed", "MLM"];
@@ -217,6 +233,29 @@ check(
   /className="h-16 w-auto"/.test(page) && !/img[^>]*w-16/.test(page),
   "press: the mark renders at natural aspect (h-16 w-auto)",
   "press: the mark img must be h-16 w-auto — a square box distorts the 544×427 interlock under the page's own usage rule",
+);
+
+// ── 8. NO RETYPED BRAND PATH (seven-hat audit, 2026-08-03: the page
+// imported the authority for the MARK and retyped the path for the LOCKUP,
+// seven lines apart inside ONE Card).
+check(
+  !/src="\/brand\//.test(page) && !/src="\/syn-/.test(page),
+  "press: no retyped brand asset path — every file comes from the brandAssets authority",
+  "press: a brand asset path is retyped in the page — import it from config/brand.ts's brandAssets, never re-derive (TWIN SEARCH)",
+);
+
+// ── 9. THE LOCKUP RENDERS ON ITS OWN GROUND (seven-hat audit, 2026-08-03).
+// The lockup's ink is BAKED LIGHT (#E1E7EF wordmark, #7F8EA3 tagline — the
+// generator's fixed-ink canon) and the light theme's --card is pure white,
+// so the page's brand hero measured 1.24:1: the wordmark was invisible to a
+// journalist in light mode, directly above the page's own «never distorted /
+// use as provided» rule. A logotype is WCAG-exempt (SC 1.4.3) — this is a
+// TRUTH-and-composition pin, not an AA pin. The plate is theme-INVARIANT
+// (a local `dark` scope over the token layer — no raw hex).
+check(
+  /className="dark [^"]*bg-card[^"]*"/.test(page),
+  "press: the lockup sits on a theme-invariant dark plate (the ground its ink was built for)",
+  "press: the lockup must render on a theme-invariant dark plate (`className=\"dark … bg-card …\"`) — its ink is baked light, so on the light theme's white card the wordmark measures 1.24:1 (2026-08-03 audit)",
 );
 
 // ── verdict ─────────────────────────────────────────────────────────────────

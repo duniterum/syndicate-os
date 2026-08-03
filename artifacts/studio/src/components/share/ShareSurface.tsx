@@ -17,6 +17,7 @@ import { useState } from "react";
 import { Check, Copy, Share2 } from "lucide-react";
 import { orderedShareTargets, shareIntentArgs } from "@/lib/shareTargets";
 import { shareTargetIcons } from "@/lib/shareTargetIcons";
+import { copyText } from "@/lib/clipboard";
 
 const RING = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
@@ -57,7 +58,9 @@ export function ShareSurface({
   testidBase?: string;
   placementClassName?: string;
 }) {
-  const [copied, setCopied] = useState(false);
+  // THREE states, not two: an absent or refused clipboard used to end in
+  // silence (2026-08-03 audit) — a failure now SAYS so on the button.
+  const [copyState, setCopyState] = useState<"idle" | "done" | "failed">("idle");
   return (
     <div
       id={id}
@@ -67,23 +70,22 @@ export function ShareSurface({
       <button
         type="button"
         onClick={() => {
-          // Optional-chained: an insecure-context rig has no clipboard —
-          // the old box's try/await caught that; the bare chain threw
-          // synchronously (six-hat review, 2026-08-03).
-          navigator.clipboard
-            ?.writeText(pageUrl)
-            .then(() => {
-              setCopied(true);
-              window.setTimeout(() => setCopied(false), 1600);
-              onAct?.();
-            })
-            .catch(() => {});
+          void copyText(pageUrl).then((done) => {
+            setCopyState(done ? "done" : "failed");
+            window.setTimeout(() => setCopyState("idle"), 1600);
+            // The rotation advances on a real copy only.
+            if (done) onAct?.();
+          });
         }}
         className={`w-full min-h-11 rounded-lg border border-gold/50 bg-gold/[0.08] text-gold text-sm font-medium flex items-center justify-center gap-2 hover:bg-gold/[0.12] transition-colors ${RING}`}
         data-testid={`button-${testidBase}-copy-link`}
       >
-        {copied ? <Check className="h-4 w-4" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
-        {copied ? "Copied" : "Copy link"}
+        {copyState === "done" ? (
+          <Check className="h-4 w-4" aria-hidden="true" />
+        ) : (
+          <Copy className="h-4 w-4" aria-hidden="true" />
+        )}
+        {copyState === "done" ? "Copied" : copyState === "failed" ? "Couldn't copy" : "Copy link"}
       </button>
       <div className="grid grid-cols-3 gap-2 mt-3">
         {orderedShareTargets.map((t) => {

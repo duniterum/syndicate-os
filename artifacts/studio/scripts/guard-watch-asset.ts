@@ -76,11 +76,20 @@ check(
   "watch-asset: the component does not read the synToken verify link — the one sanctioned address source",
 );
 
-// ── 3. NO HARDCODED DECIMALS ────────────────────────────────────────────────
+// ── 3. NO HARDCODED DECIMALS — negative AND positive ────────────────────────
+// The negative alone forbade ONE spelling: hoisting the literal to a const
+// defeated it entirely (seven-hat audit fixture, 2026-08-03). The chain of
+// custody needs the POSITIVE too — decimals must demonstrably come from the
+// served reality item.
 check(
   !/decimals:\s*\d/.test(comp),
-  "watch-asset: decimals come from the served reality",
+  "watch-asset: no hardcoded decimals literal",
   "watch-asset: decimals are hardcoded — read them from the served protocol reality (the ProtocolMap discipline)",
+);
+check(
+  /useGetProtocolReality/.test(comp) && /tokens\.SYN\.decimals/.test(comp),
+  "watch-asset: decimals READ from the served reality item tokens.SYN.decimals",
+  "watch-asset: the component must READ decimals from the served protocol reality (tokens.SYN.decimals) — a client constant breaks the chain of custody the negative pin only half-guards",
 );
 
 // ── 4. THE STANDARD MECHANISM ───────────────────────────────────────────────

@@ -221,9 +221,16 @@ for (const file of walk(srcDir)) {
 }
 // The family list is consumed by the box and the commissions row ONLY; the
 // ticket and the kit consume the BOX, never the list directly.
+// ShareMenu joined the wanted-TRUE side 2026-08-03 (seven-hat audit): the
+// de-twinning left it iterating the BASE registry — declaration order
+// (x · facebook · whatsapp · …) — while lib/shareTargets.ts asserts «every
+// intent surface of the family carries the SAME six, in THIS order». It is
+// live on two surfaces (ReferralLinkHero, ReferralLinkPanel), so the law
+// had a public counter-example. The former carve-out comment below is gone.
 for (const [name, abs, wanted] of [
   ["ShareSurface.tsx", SURFACE, true],
   ["ReferralCommissionsPanel.tsx", COMMISSIONS, true],
+  ["ShareMenu.tsx", MENU, true],
   ["ReceiptTicket.tsx", TICKET, false],
   ["ReferralToolsPanel.tsx", KIT, false],
 ] as const) {
@@ -295,10 +302,6 @@ if (surfaceSrc !== null) {
     "box: the native row must render only when nativeAvailable — feature-detected, never a dead button",
   );
 }
-// ShareMenu iterates the WHOLE registry by design (no subset) — it owes only
-// the icon authority, which pin 1's sweep already scans in it. (A former
-// `|| true` acknowledgement check here was removed 2026-08-03: a pin that
-// cannot go red is not a pin — it inflated the green count by one.)
 
 // ── 4. THE KIT MOUNT — one Share… trigger, ALWAYS rendered, opening the box
 // (founder, 2026-08-03: mobile keeps everything; desktop opens the SAME box
@@ -337,10 +340,15 @@ check(
 );
 
 // ── 5. URL-FREE TEXT ────────────────────────────────────────────────────────
-// The WHOLE initializer to the semicolon — a `"…" + "https://…"`
-// concatenation defeated the first-chunk capture (2026-08-03 adversarial
-// review).
-const shareTextMatch = /const SHARE_TEXT =([\s\S]*?);/.exec(kitRaw);
+// The WHOLE initializer, stopping only at a BARE semicolon. The first form
+// captured to the first `;` ANYWHERE — including one INSIDE the string —
+// so a link placed after a semicolon in the copy passed unseen (seven-hat
+// audit, 2026-08-03; measured matrix: real source green→green · semicolon+url
+// green→RED · template+semicolon green→RED · concat RED→RED).
+const shareTextMatch =
+  /const SHARE_TEXT =((?:[^;"'`]|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)*);/.exec(
+    kitRaw,
+  );
 check(
   shareTextMatch !== null,
   "kit: SHARE_TEXT is one hoisted fact",

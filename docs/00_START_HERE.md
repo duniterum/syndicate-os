@@ -76,6 +76,16 @@ It is a **business**, not a charity — it sells access, recognition, and servic
   profit share, downline, casino, jackpot, investment contract.
 
 ## 3. What the OS is made of (the layers)
+> **This list names WHAT EXISTS. It never states STATUS — status goes stale in prose
+> and did (2026-08-03: it read "(pending)" for a backbone that had run every cycle
+> since 2026-07-18). Ask the authorities instead:**
+> · **capabilities, live vs future** → `artifacts/studio/src/config/featureStatus.ts`
+>   (the DONE-IS-DONE registry, guard-enforced)
+> · **contracts, deployed or not** → `artifacts/api-server/src/data/protocolTargets.ts`
+>   (the pinned targets) and `/status` for the live read
+> · **anything you are about to write as "coming"** → read the registry FIRST; a live
+>   key is answered forever.
+
 - **Product / access:** Visitor · Connected User (swap/bridge/NFT-mint, no membership) ·
   Member (seat + recognition). Public surfaces: Home, Join, Archive, Recognition, Source,
   Proof/Status, Economy/GDP, Map.
@@ -85,12 +95,11 @@ It is a **business**, not a charity — it sells access, recognition, and servic
 - **Economy:** 1B SYN fixed (35/25/12/10/8/5/5), burn read **live** on-chain (grows with each burn —
   never a fixed doc figure; the stale "16,500" is retired), routing 70/20/10,
   treasury (AVAX/USDC/BTC.b/WETH.e/SYN). Contracts: SYN, Sale V3 (active), Archive1155,
-  LP, SourceRegistry (paused), CommissionRouter (not deployed).
+  LP, SourceRegistry, CommissionRouter.
 - **Proof spine + backbone:** live chain reads, verify-links, status ledger; event backbone
-  (indexer → activity feed → notifications) *(pending)*.
-- **Referral / attribution:** source/referrer payment, verified introduction *(PENDING —
-  contract not deployed; read-only today)*.
-- **Design system:** foundation → atoms → patterns → surfaces *(in progress)*.
+  (indexer → activity feed → notifications).
+- **Referral / attribution:** source/referrer payment, verified introduction.
+- **Design system:** foundation → atoms → patterns → surfaces.
 - **Infra:** Avalanche RPC · QuickNode Streams+Webhooks · api.thirdweb.com · Replit deploy
   (auth needs single-instance).
 

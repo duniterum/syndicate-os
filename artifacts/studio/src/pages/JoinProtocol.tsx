@@ -673,8 +673,13 @@ function JoinEconomics() {
 // never-breaks/never-lost mechanism). guard-join-showcase freezes the copy,
 // the place and the doors. ─────────────────────────────────────────────────
 function JoinReferralShowcase() {
+  // Sans, not mono: both doors read as SENTENCES («Verify a real one on the
+  // live record», «How, in the program terms») and mono is for data, never
+  // descriptive prose (the font law — 2026-08-03 audit found the guard's own
+  // isProse() judges both FAIL; the build stayed green only because the
+  // class arrives as an expression).
   const verifyCls =
-    "mt-1 inline-flex min-h-11 items-center rounded-sm font-mono text-xs text-proof hover:text-proof-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+    "mt-1 inline-flex min-h-11 items-center rounded-sm text-xs text-proof hover:text-proof-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
   return (
     <Card className="border-gold/30 bg-gold/5 p-6 mb-12" data-testid="panel-join-referral-showcase">
       <p className="type-eyebrow text-gold mb-3">Included with your seat</p>

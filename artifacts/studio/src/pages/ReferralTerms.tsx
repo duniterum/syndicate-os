@@ -79,7 +79,16 @@ export default function ReferralTerms() {
             The document could not be read just now — nothing is shown rather
             than something retyped.
           </p>
-          <Button variant="outline" className="mt-3" onClick={() => setNonce((n) => n + 1)}>
+          <Button
+            variant="outline"
+            className="mt-3"
+            // Back to LOADING first — a repeated failure otherwise produces
+            // zero observable change (the ledger's own reload idiom).
+            onClick={() => {
+              setDoc({ kind: "loading" });
+              setNonce((n) => n + 1);
+            }}
+          >
             Try again
           </Button>
         </div>

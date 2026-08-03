@@ -70,13 +70,29 @@ check(
   "showcase: mounted AFTER the economics, BEFORE the boundary (the last argument before the tail)",
   "showcase: the mount order broke — the card sits AFTER <JoinEconomics /> and BEFORE the boundary card, never above the purchase work (WORK-FIRST)",
 );
-check(
-  // The mount stands ALONE on its line — a `{FLAG && <JoinReferralShowcase />}`
-  // wrap unmounts the card with every pin green (review-2 adversarial probe).
-  /^\s*<JoinReferralShowcase \/>$/m.test(page),
-  "showcase: the mount is unconditional (never flag-wrapped)",
-  "showcase: <JoinReferralShowcase /> is wrapped in a condition — the founder-approved card renders always; hiding it is a founder decision, not an edit",
-);
+// THE MOUNT IS UNCONDITIONAL — proven by BALANCE, not by line shape.
+// The one-line pin closed only `{FLAG && <JoinReferralShowcase />}`; the
+// MULTI-LINE wrap — the house style used five lines below in the very file
+// being scanned — left it green with the founder-approved card unmounted
+// (seven-hat audit, 2026-08-03). If every brace and paren opened between
+// the unconditional <JoinEconomics /> and this mount also CLOSES between
+// them, no condition can be wrapping it, in any spelling.
+// The empty-braces strip is load-bearing: stripComments turns the JSX
+// comment above the mount into a bare `{}` that would false-red the truth.
+{
+  const ECON = "<JoinEconomics />";
+  const region =
+    econIdx !== -1 && showIdx !== -1
+      ? page.slice(econIdx + ECON.length, showIdx).replace(/\{\s*\}/g, "")
+      : "{";
+  const balance = (open: string, close: string) =>
+    region.split(open).length - region.split(close).length;
+  check(
+    balance("{", "}") === 0 && balance("(", ")") === 0,
+    "showcase: the mount is unconditional (brace/paren balance proves no wrapper, any spelling)",
+    "showcase: <JoinReferralShowcase /> is wrapped in a condition — the founder-approved card renders always; hiding it is a founder decision, not an edit",
+  );
+}
 
 // The component's own text — from its declaration to the next top-level
 // function (or the page component) — so tongue/door pins scan the CARD only.

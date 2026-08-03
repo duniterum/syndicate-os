@@ -18,7 +18,7 @@
 // LIVE (2026-07-20, this same rendering path — one truth); the dedicated PDF
 // engine stays its own rider (founder default: print already saves clean).
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Link } from "wouter";
 import QRCode from "react-qr-code";
 import { buildJoinLink } from "@/lib/joinLink";
@@ -184,6 +184,12 @@ export default function ReceiptTicket({
   // R-BIND-2: the dual share surface + native-share availability (detected
   // once — the OS button renders only where the sheet truly exists).
   const [shareOpen, setShareOpen] = useState(false);
+  // useId, never a literal: the binder mounts this ticket once per shelf row
+  // (ReceiptsBinderPanel's shelf.map) and again per expanded archive row, so
+  // a hardcoded id duplicates in one document and aria-controls /
+  // getElementById resolve to the FIRST ticket's box (2026-08-03 audit; the
+  // same class the kit fixed at ReferralToolsPanel).
+  const surfaceId = useId();
   const nativeShareAvailable = typeof navigator.share === "function";
 
   const txUrl = model.proof.explorerTxUrl;
@@ -568,7 +574,7 @@ export default function ReceiptTicket({
               className="min-h-11"
               onClick={() => setShareOpen((v) => !v)}
               aria-expanded={shareOpen}
-              aria-controls="receipt-share-surface"
+              aria-controls={surfaceId}
               data-testid="button-receipt-share"
             >
               <Share2 className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" />
@@ -601,7 +607,8 @@ export default function ReceiptTicket({
           every act advances the rotation via onAct. */}
       {shareOpen && txUrl ? (
         <ShareSurface
-          id="receipt-share-surface"
+          id={surfaceId}
+          testid="receipt-share-surface"
           pageUrl={receiptPageUrl}
           textBare={shareIntentText ?? ""}
           textInline={shareText ?? ""}

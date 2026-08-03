@@ -108,8 +108,17 @@ check(
 );
 
 // ── 4. THE FOOTER DOOR ──────────────────────────────────────────────────────
+// SHELF-SCOPED, COMMENT-STRIPPED (seven-hat audit, 2026-08-03): the first
+// form hard-coded three literal ADJACENCIES over the whole file, so a
+// reorder inside the shelf false-RED'd with a message stating the opposite
+// of the truth, the same adjacency in ANOTHER shelf false-GREENed, and —
+// alone among this guard's five existence pins — it read RAW source, so a
+// commented-out shelf line counted as live. Now: extract the Legal shelf,
+// then look inside it.
+const legalShelf =
+  stripComments(read(NAVIGATION)).match(/heading:\s*"Legal",\s*itemIds:\s*\[([^\]]*)\]/)?.[1] ?? "";
 check(
-  /"terms", "privacy", "risk", "referral-terms"|"referral-terms", "terms"|"terms", "referral-terms"/.test(read(NAVIGATION)),
+  /"referral-terms"/.test(legalShelf),
   "terms: the Legal footer shelf carries the program terms",
   'terms: "referral-terms" is missing from the Legal footer shelf in navigation.ts (founder order: the terms link in the footer, comme il faut)',
 );

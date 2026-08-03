@@ -16,6 +16,7 @@ import { Card } from "@/components/ui/card";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { PublicPage } from "@/components/PublicPage";
 import { brandAssets, socialLinks } from "@/config/brand";
+import { copyText } from "@/lib/clipboard";
 import { safetyCopy } from "@/config/sharedCopy";
 import {
   pressDescriptions,
@@ -27,7 +28,8 @@ import {
 } from "@/config/pressKit";
 
 function CopyBlock({ label, text, testid }: { label: string; text: string; testid: string }) {
-  const [copied, setCopied] = useState(false);
+  // Three states — an absent or refused clipboard SAYS so (lib/clipboard.ts).
+  const [copied, setCopied] = useState<"idle" | "done" | "failed">("idle");
   // Deduplicated timer (a rapid re-copy let the FIRST timer clip the second
   // «Copied» at 0.1s — review-2 logic hat) + the sr-only announcement the
   // best house instance pairs with the label swap (ReferralLinkPanel).
@@ -39,22 +41,27 @@ function CopyBlock({ label, text, testid }: { label: string; text: string; testi
         <button
           type="button"
           onClick={() => {
-            navigator.clipboard
-              ?.writeText(text)
-              .then(() => {
-                setCopied(true);
-                if (timer.current !== null) window.clearTimeout(timer.current);
-                timer.current = window.setTimeout(() => setCopied(false), 1400);
-              })
-              .catch(() => {});
+            void copyText(text).then((done) => {
+              setCopied(done ? "done" : "failed");
+              if (timer.current !== null) window.clearTimeout(timer.current);
+              timer.current = window.setTimeout(() => setCopied("idle"), 1400);
+            });
           }}
           className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-border bg-card px-3 text-xs text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           data-testid={testid}
         >
-          {copied ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
-          {copied ? "Copied" : "Copy"}
+          {copied === "done" ? (
+            <Check className="h-3.5 w-3.5" aria-hidden="true" />
+          ) : (
+            <Copy className="h-3.5 w-3.5" aria-hidden="true" />
+          )}
+          {copied === "done" ? "Copied" : copied === "failed" ? "Couldn't copy" : "Copy"}
           <span className="sr-only" role="status">
-            {copied ? `${label} description copied` : ""}
+            {copied === "done"
+              ? `${label} description copied`
+              : copied === "failed"
+                ? `${label} description could not be copied`
+                : ""}
           </span>
         </button>
       </div>
@@ -92,13 +99,21 @@ export default function PressKit() {
       <SectionTitle title="The mark" why="use it as provided — the files below are the served originals" />
       <Card className="border-border/50 bg-card/40 p-5" data-testid="press-brand">
         {/* The LOCKUP leads (founder, 2026-08-03: the mark alone «n'est pas
-            suffisant» for a press kit) — generated vector, glyphs as paths. */}
-        <img
-          src="/brand/syn-lockup-gold.svg"
-          alt="The Syndicate lockup — interlock mark with wordmark"
-          className="mb-5 h-16 w-auto max-w-full"
-          data-testid="press-lockup"
-        />
+            suffisant» for a press kit) — generated vector, glyphs as paths.
+            ITS INK IS BAKED LIGHT, so it sits on a theme-INVARIANT dark
+            plate: on the light theme's white card the wordmark measured
+            1.24:1 — the brand hero was invisible to a journalist directly
+            above this page's own «use it as provided» rule (2026-08-03
+            seven-hat audit). The plate is a local `dark` scope over the
+            token layer — tokens only, no raw ink. */}
+        <div className="dark mb-5 inline-block rounded-md bg-card p-4">
+          <img
+            src={brandAssets["syn-lockup-gold"]}
+            alt="The Syndicate lockup — interlock mark with wordmark"
+            className="h-16 w-auto max-w-full"
+            data-testid="press-lockup"
+          />
+        </div>
         <div className="flex flex-wrap items-center gap-6">
           <img
             src={brandAssets["syn-mark-gold"]}
@@ -112,7 +127,7 @@ export default function PressKit() {
                   <a
                     href={a.href}
                     download
-                    className="inline-flex min-h-11 items-center rounded-sm font-mono text-xs text-proof transition-colors hover:text-proof-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="inline-flex min-h-11 items-center rounded-sm text-xs text-proof transition-colors hover:text-proof-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     data-testid={`link-press-asset-${a.href.replace(/[^a-z0-9]+/gi, "-")}`}
                   >
                     {a.label} · {a.note}

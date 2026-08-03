@@ -7,7 +7,10 @@
 import { useState } from "react";
 import { Share2, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { shareTargets } from "@/lib/shareTargets";
+// The ORDERED family, never the base registry: the declaration order
+// (x · facebook · whatsapp …) contradicted the engraved crypto-native order
+// this menu is live under on two surfaces (2026-08-03 seven-hat audit).
+import { orderedShareTargets } from "@/lib/shareTargets";
 import { shareTargetIcons } from "@/lib/shareTargetIcons";
 
 export function ShareMenu({ url, text }: { url: string; text: string }) {
@@ -35,7 +38,7 @@ export function ShareMenu({ url, text }: { url: string; text: string }) {
       </Button>
       {open ? (
         <div className="absolute right-0 z-20 mt-2 w-44 rounded-md border border-border bg-popover p-1 shadow-md">
-          {shareTargets.map((t) => {
+          {orderedShareTargets.map((t) => {
             const Icon = shareTargetIcons[t.id] ?? Share2;
             return (
               <button

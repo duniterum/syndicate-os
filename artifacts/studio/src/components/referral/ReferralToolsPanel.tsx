@@ -265,11 +265,15 @@ function ArtifactActions({
         <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
         {busy === "share" ? "Preparing…" : "Share…"}
       </button>
-      {note !== null ? (
-        <span className="text-xs text-muted-foreground" role="status">
-          {note}
-        </span>
-      ) : null}
+      {/* Always-mounted live region, text-only swap — a region inserted
+          together with its content is not reliably announced (2026-08-03
+          audit; twin of AddSynToWallet + PressKit). */}
+      <span
+        role="status"
+        className={note !== null ? "text-xs text-muted-foreground" : "sr-only"}
+      >
+        {note ?? ""}
+      </span>
     </div>
     {shareOpen ? (
       <ShareSurface
