@@ -237,24 +237,41 @@ export async function introducerFacts(
     cache.delete(key);
   }
 
-  // Five networks scraping one fresh link share ONE read, not five.
-  const flying = inFlight.get(key);
-  if (flying !== undefined) return flying;
+  // ── SINGLE FLIGHT KEYED ON THE *READ*, NOT ON THE DEADLINE ────────────────
+  //
+  // CORRECTED 2026-08-03 (review finding). The first cut raced the read against
+  // the budget and then deleted the in-flight key when the RACE settled — so on
+  // a slow chain the key was released after 2s while the read was still
+  // running, and the next request started ANOTHER one. Every caller spawned a
+  // fresh chain+DB read: unbounded fan-out precisely when the chain is already
+  // struggling, on the loop that also serves members' auth. Worse, the slow
+  // read's result was thrown away, so a read that took longer than the budget
+  // could NEVER populate the cache — the source stayed permanently uncached and
+  // every single request paid full price. A system that cannot recover.
+  //
+  // Now: ONE underlying read per key, held until it actually settles, and it
+  // writes the cache WHENEVER it lands — late is still useful, the next scrape
+  // gets it warm. Each CALLER races that shared read against its own budget, so
+  // a crawler still gets its deterministic 2s answer without cancelling the
+  // work everyone behind it is waiting on.
+  let reading = inFlight.get(key);
+  if (reading === undefined) {
+    reading = resolveFacts(key).then((facts) => {
+      // A DECIDED answer, however late. A timeout is never remembered (a slow
+      // chain is not a decided negative) — but this is the read itself
+      // returning, not the clock giving up.
+      rememberFacts(key, facts);
+      return facts;
+    });
+    inFlight.set(key, reading);
+    // Released on the READ settling, never on a caller's deadline.
+    reading.catch(() => undefined).then(() => inFlight.delete(key));
+  }
 
-  const run = (async (): Promise<IntroducerFacts | null> => {
-    const raced = await withDeadline(resolveFacts(key), FACTS_BUDGET_MS);
-    if (raced === TIMED_OUT) {
-      // A SLOW CHAIN IS NOT A DECIDED NEGATIVE. Caching it would pin "no card"
-      // for the whole negative TTL over one hiccup — and on a surface whose
-      // first answer a network keeps for months. Answer null, remember nothing.
-      return null;
-    }
-    rememberFacts(key, raced);
-    return raced;
-  })();
-  inFlight.set(key, run);
-  run.catch(() => undefined).then(() => inFlight.delete(key));
-  return run;
+  const raced = await withDeadline(reading, FACTS_BUDGET_MS);
+  // Past the budget this caller answers null and the route serves the generic
+  // image; the read continues for everyone else and warms the cache.
+  return raced === TIMED_OUT ? null : raced;
 }
 
 /** The read itself — unchanged behaviour, now behind the budget. */

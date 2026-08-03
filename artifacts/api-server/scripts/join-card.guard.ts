@@ -328,9 +328,14 @@ check(
   /FACTS_BUDGET_MS\s*=\s*\d/.test(readerCode) && /withDeadline\(/.test(readerCode),
   "the introducer read lost its deadline — a slow chain answers after the crawler has gone, and its FIRST scrape is what a network keeps",
 );
+// A TIMEOUT IS NEVER REMEMBERED. The pin used to match one spelling of the
+// branch (`if (raced === TIMED_OUT) … return null;`) and went red on a
+// behaviour-identical refactor. It now judges the PROPERTY: the caller answers
+// null past the budget, and rememberFacts is reachable ONLY from the read's own
+// resolution — never from the raced value.
 check(
-  /if \(raced === TIMED_OUT\)[\s\S]{0,120}return null;/.test(readerCode) &&
-    !/rememberFacts\([^)]*TIMED_OUT/.test(readerCode),
+  /raced === TIMED_OUT \? null :/.test(readerCode) &&
+    !/TIMED_OUT[\s\S]{0,160}rememberFacts\(/.test(readerCode),
   "a timed-out read is being cached — a slow chain is not a decided negative, and caching it pins 'no card' for the whole negative TTL over one hiccup",
 );
 for (const [file, code, what] of [
@@ -342,6 +347,29 @@ for (const [file, code, what] of [
     `${file}: ${what} has no single-flight map — one share fans out to five networks and every one of them would pay for it separately`,
   );
 }
+
+// 14b · THE FLIGHT IS KEYED ON THE READ, NOT ON THE DEADLINE.
+//     A name-only pin ("is there an inFlight map?") was green while the map was
+//     built from the RACED promise: the key was released when the 2s budget
+//     fired, so on a slow chain every caller started ANOTHER chain+DB read —
+//     unbounded fan-out exactly when the chain is already struggling — and the
+//     slow read's result was discarded, so a read slower than the budget could
+//     NEVER warm the cache. The source stayed permanently cold and every
+//     request paid full price: a system that cannot recover on its own.
+//     These two pins judge the SHAPE that fixes it.
+check(
+  /inFlight\.set\(\s*key\s*,\s*reading\s*\)/.test(readerCode) &&
+    /reading\s*=\s*resolveFacts\(key\)/.test(readerCode),
+  "the in-flight entry is built from the RACED promise, not from the read itself — the key is then released when a caller's deadline fires, so a slow chain gets a new full read per request",
+);
+check(
+  /resolveFacts\(key\)\.then\([\s\S]{0,200}rememberFacts\(key,/.test(readerCode),
+  "the read does not write the cache when it lands — a read slower than the budget would be thrown away, leaving the source permanently cold",
+);
+check(
+  !/inFlight\.set\([^)]*withDeadline/.test(readerCode),
+  "the deadline is what the in-flight map holds — the budget is a per-CALLER answer, never the lifetime of the shared work",
+);
 
 if (errors.length > 0) {
   console.error(`[guard:join-card] ${errors.length} FAILURE(S):`);

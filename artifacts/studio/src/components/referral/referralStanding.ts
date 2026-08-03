@@ -98,12 +98,30 @@ export function useOwnIntroductions(retryToken = 0): OwnIntroductionsReadback | 
 export type ActivationStateReadback =
   import("@/wallet/walletSession").ActivationStateReadback;
 
-export function useOwnActivationState(retryToken = 0): ActivationStateReadback | null {
-  const [readback, setReadback] = useState<ActivationStateReadback | null>(null);
+/**
+ * THREE STATES, NOT TWO — the pattern already fixed once on this file's sibling
+ * hook (see the note at the top of this module) and still collapsed here until
+ * 2026-08-03.
+ *
+ * `null` used to mean BOTH "still reading" and "the read failed", and
+ * ActivationDoor renders nothing for null. So a 429 (this route shares one
+ * throttle bucket with every other auth read the page fires on mount), an
+ * expired session or any transport drop made the entire activation door
+ * VANISH — no message, no retry, and no way back. Worse, the door's own
+ * "the ask didn't go through" sentence is set one line before a re-read that,
+ * on failing, unmounts the sentence with it: every failed ask was silent.
+ */
+export type ActivationRead =
+  | { kind: "loading" }
+  | { kind: "failed" }
+  | { kind: "ready"; readback: ActivationStateReadback };
+
+export function useOwnActivationState(retryToken = 0): ActivationRead {
+  const [state, setState] = useState<ActivationRead>({ kind: "loading" });
   useEffect(() => {
     let active = true;
     let cleanup: (() => void) | null = null;
-    if (retryToken > 0) setReadback(null);
+    if (retryToken > 0) setState({ kind: "loading" });
     void Promise.all([
       import("@/wallet/walletSession"),
       import("@/wallet/sessionEvents"),
@@ -111,7 +129,10 @@ export function useOwnActivationState(retryToken = 0): ActivationStateReadback |
       if (!active) return;
       const read = () => {
         void ws.fetchActivationState().then((r) => {
-          if (active) setReadback(r);
+          if (!active) return;
+          // fetchActivationState returns null on ANY transport/shape failure —
+          // that is a FAILED read, never an empty one.
+          setState(r === null ? { kind: "failed" } : { kind: "ready", readback: r });
         });
       };
       read();
@@ -123,7 +144,7 @@ export function useOwnActivationState(retryToken = 0): ActivationStateReadback |
       cleanup?.();
     };
   }, [retryToken]);
-  return readback;
+  return state;
 }
 
 /**

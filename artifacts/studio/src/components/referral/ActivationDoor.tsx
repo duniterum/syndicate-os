@@ -65,10 +65,42 @@ export function ActivationDoor() {
   const [retryToken, setRetryToken] = useState(0);
   const [busy, setBusy] = useState(false);
   const [askFailed, setAskFailed] = useState(false);
-  const readback = useOwnActivationState(retryToken);
+  const read = useOwnActivationState(retryToken);
 
+  // A FAILED READ IS NOT AN EMPTY ONE (2026-08-03). This used to render null
+  // for both, so a 429 — this route shares one throttle bucket with every auth
+  // read the page fires on mount — or any drop made the whole door disappear,
+  // taking the "the ask didn't go through" sentence with it. He was left with
+  // no door, no message and no retry, on the one screen Member Home had just
+  // pointed him to.
+  if (read.kind === "failed") {
+    return (
+      <Card className="bg-card/40 border-border/50 p-5 mt-4" data-testid="card-activation-read-failed">
+        <div className="flex items-center gap-2">
+          <CircleAlert className="h-4 w-4 text-gold" />
+          <span className="text-sm font-medium text-foreground">
+            Couldn&apos;t read your activation state just now.
+          </span>
+        </div>
+        <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+          Nothing is assumed and nothing was filed. This is the read, not your
+          standing — try again in a moment.
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          className="mt-3"
+          onClick={() => setRetryToken((t) => t + 1)}
+          data-testid="button-activation-reread"
+        >
+          Read again
+        </Button>
+      </Card>
+    );
+  }
   // Loading / signed-out: the surface above already speaks; stay quiet.
-  if (readback === null || readback.state !== "S4") return null;
+  if (read.kind === "loading" || read.readback.state !== "S4") return null;
+  const readback = read.readback;
 
   const { seatHeld, holdsSyn, sourceOnChain, sourceActive, request, requestReadOk } =
     readback;
