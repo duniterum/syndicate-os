@@ -11,8 +11,8 @@
 > n'est plus requis pour parrainer, sur 17 surfaces, serveur compris (le contrat
 > gate sur le solde SYN — SPEC §262/§436) · terms **v2** publiés, v1 servi et gelé
 > (son keccak256 est l'ancre on-chain des sources existantes) ·
-> `guard-no-directory-fossil` BLOQUANT, 575 fichiers : « aucun annuaire n'existe »
-> est mort, THE REGISTER existe.
+> `guard-no-directory-fossil` BLOQUANT, 575 fichiers : ⛔ la formule absolue « aucun annuaire
+> n'existe » est morte, THE REGISTER existe.
 > **RETIRÉ le même jour, après test du fondateur :** `&via=` sur les intents (il
 > fragmentait 1 url en 24, toutes froides → plus aucun aperçu) et le
 > téléchargement automatique au partage (le lien porte l'image maintenant).
