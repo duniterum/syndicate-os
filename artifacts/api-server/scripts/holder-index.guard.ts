@@ -55,8 +55,35 @@ function check(name: string, ok: boolean, detail?: string): void {
 }
 
 /** Strip block and line comments before matching (guard doctrine). */
+// The block pass is LINE-COMMENT-AWARE (2026-08-03, the b2a8bbb disease): a
+// `/*` inside a `//` line comment must never open a phantom block — the live
+// case was authExposure.ts's `/api/*` header swallowing through the next `*/`,
+// including a real import. The `://`-safe line pass below is unchanged.
+function stripBlockComments(source: string): string {
+  let kept = "";
+  for (let i = 0; i < source.length; ) {
+    if (source[i] === "/" && source[i + 1] === "/") {
+      let nl = source.indexOf("\n", i);
+      if (nl === -1) nl = source.length;
+      kept += source.slice(i, nl);
+      i = nl;
+    } else if (source[i] === "/" && source[i + 1] === "*") {
+      const close = source.indexOf("*/", i + 2);
+      if (close === -1) {
+        kept += source.slice(i, i + 2); // unclosed opener: the old regex kept it
+        i += 2;
+        continue;
+      }
+      i = close + 2;
+    } else {
+      kept += source[i];
+      i += 1;
+    }
+  }
+  return kept;
+}
 function stripComments(source: string): string {
-  return source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/[^\n]*/g, "$1");
+  return stripBlockComments(source).replace(/(^|[^:])\/\/[^\n]*/g, "$1");
 }
 
 // Any import/require syntax, including bare side-effect imports.

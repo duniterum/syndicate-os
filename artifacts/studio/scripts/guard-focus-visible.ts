@@ -297,9 +297,43 @@ const rel = (p: string) => relative(SRC, p).split("\\").join("/");
 // Comments are not code: a header that QUOTES a banned idiom must never trip the
 // guard that bans it. Block comments (including JSX `{/* … */}`) are blanked to
 // spaces so line numbers survive; whole `//` lines are emptied.
+// The block pass is LINE-COMMENT-AWARE (2026-08-03, the b2a8bbb disease): a
+// `/*` inside a `//` line comment (`/api/auth/*`, `src/**`) must never open a
+// phantom block that swallows real activators from the scan. A block still
+// CLOSED inside the same `//` tail is blanked exactly as before; the `//`/`*`
+// whole-line emptying below is unchanged.
+function blankBlockComments(text: string): string {
+  const out = text.split("");
+  for (let i = 0; i < text.length; ) {
+    if (text[i] === "/" && text[i + 1] === "/") {
+      let nl = text.indexOf("\n", i);
+      if (nl === -1) nl = text.length;
+      const seg = text.slice(i, nl).replace(/\{?\/\*.*?\*\/\}?/g, (m) => " ".repeat(m.length));
+      for (let k = 0; k < seg.length; k += 1) out[i + k] = seg[k]!;
+      i = nl;
+    } else if (text[i] === "/" && text[i + 1] === "*") {
+      const close = text.indexOf("*/", i + 2);
+      if (close === -1) {
+        i += 2; // unclosed opener: the old regex kept it — keep it visible
+        continue;
+      }
+      if (i > 0 && text[i - 1] === "{") out[i - 1] = " ";
+      for (let k = i; k < close + 2; k += 1) if (text[k] !== "\n") out[k] = " ";
+      let end = close + 2;
+      if (text[end] === "}") {
+        out[end] = " ";
+        end += 1;
+      }
+      i = end;
+    } else {
+      i += 1;
+    }
+  }
+  return out.join("");
+}
+
 function stripComments(text: string): string {
-  const noBlocks = text.replace(/\{?\/\*[\s\S]*?\*\/\}?/g, (m) => m.replace(/[^\n]/g, " "));
-  return noBlocks
+  return blankBlockComments(text)
     .split("\n")
     .map((ln) => (/^\s*(\/\/|\*)/.test(ln) ? "" : ln))
     .join("\n");

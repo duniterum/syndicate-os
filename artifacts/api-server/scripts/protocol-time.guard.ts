@@ -186,9 +186,35 @@ check(
 // Static scans operate on COMMENT-STRIPPED source: doc headers legitimately
 // name the very primitives they forbid ("no eth_getLogs", "never reads
 // decodedJson"), so scanning raw text would self-match on documentation.
+// The block pass is LINE-COMMENT-AWARE (2026-08-03, the b2a8bbb disease): a
+// `/*` inside a `//` line comment must never open a phantom block that
+// swallows real code from the scan (authExposure.ts's `/api/*` header was the
+// live case). The per-line `//` slice below is unchanged.
+function stripBlockComments(src: string): string {
+  let kept = "";
+  for (let i = 0; i < src.length; ) {
+    if (src[i] === "/" && src[i + 1] === "/") {
+      let nl = src.indexOf("\n", i);
+      if (nl === -1) nl = src.length;
+      kept += src.slice(i, nl);
+      i = nl;
+    } else if (src[i] === "/" && src[i + 1] === "*") {
+      const close = src.indexOf("*/", i + 2);
+      if (close === -1) {
+        kept += src.slice(i, i + 2); // unclosed opener: the old regex kept it
+        i += 2;
+        continue;
+      }
+      i = close + 2;
+    } else {
+      kept += src[i];
+      i += 1;
+    }
+  }
+  return kept;
+}
 function stripComments(src: string): string {
-  return src
-    .replace(/\/\*[\s\S]*?\*\//g, "")
+  return stripBlockComments(src)
     .split("\n")
     .map((l) => {
       const idx = l.indexOf("//");

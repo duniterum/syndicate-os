@@ -34,8 +34,35 @@ function check(name: string, ok: boolean, detail = ""): void {
 }
 
 /** Strip block + line comments so header doctrine text never self-matches. */
+// The block pass is LINE-COMMENT-AWARE (2026-08-03, the b2a8bbb disease): a
+// `/*` inside a `//` line comment must never open a phantom block that
+// swallows real code from the walk (authExposure.ts's `/api/*` header was the
+// live case). The `//` pass below then deletes the tail, as before.
+function stripBlockComments(src: string): string {
+  let kept = "";
+  for (let i = 0; i < src.length; ) {
+    if (src[i] === "/" && src[i + 1] === "/") {
+      let nl = src.indexOf("\n", i);
+      if (nl === -1) nl = src.length;
+      kept += src.slice(i, nl);
+      i = nl;
+    } else if (src[i] === "/" && src[i + 1] === "*") {
+      const close = src.indexOf("*/", i + 2);
+      if (close === -1) {
+        kept += src.slice(i, i + 2); // unclosed opener: the old regex kept it
+        i += 2;
+        continue;
+      }
+      i = close + 2;
+    } else {
+      kept += src[i];
+      i += 1;
+    }
+  }
+  return kept;
+}
 function stripComments(src: string): string {
-  return src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+  return stripBlockComments(src).replace(/\/\/[^\n]*/g, "");
 }
 
 const SCHEMA_PATH = join(

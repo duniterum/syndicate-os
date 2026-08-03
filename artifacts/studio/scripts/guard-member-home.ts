@@ -23,8 +23,34 @@ const SRC = join(import.meta.dirname, "..", "src");
 // One rule for every pin: comments are invisible (strip // and /* */ blocks,
 // which also removes JSX {/* … */} bodies — a commented-out mount can never
 // satisfy a presence pin, and a doc comment can never trip a ban).
-const stripComments = (t: string) =>
-  t.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+// The block pass is LINE-COMMENT-AWARE (2026-08-03, the b2a8bbb disease): a
+// `/*` inside a `//` line comment (`/api/auth/*`, `src/**`) must never open a
+// phantom block that swallows real code from the scan. The `//` pass below
+// then deletes the line tail itself, exactly as before.
+function stripBlockComments(t: string): string {
+  let kept = "";
+  for (let i = 0; i < t.length; ) {
+    if (t[i] === "/" && t[i + 1] === "/") {
+      let nl = t.indexOf("\n", i);
+      if (nl === -1) nl = t.length;
+      kept += t.slice(i, nl);
+      i = nl;
+    } else if (t[i] === "/" && t[i + 1] === "*") {
+      const close = t.indexOf("*/", i + 2);
+      if (close === -1) {
+        kept += t.slice(i, i + 2); // unclosed opener: the old regex kept it
+        i += 2;
+        continue;
+      }
+      i = close + 2;
+    } else {
+      kept += t[i];
+      i += 1;
+    }
+  }
+  return kept;
+}
+const stripComments = (t: string) => stripBlockComments(t).replace(/\/\/[^\n]*/g, "");
 
 const accessRaw = readFileSync(join(SRC, "pages", "MemberAccess.tsx"), "utf8");
 const accessCode = stripComments(accessRaw);

@@ -32,6 +32,35 @@ import {
 import { selectorFor } from "../src/lib/protocol/merkleFreeze";
 import { SALE_V3_ABI } from "../src/canon/the-syndicate/contracts/abi/sale-abi";
 
+// ONE comment stripper for every stripped scan in this guard (the route scan
+// and the S3a static scans below both used a private copy — deduped 2026-08-03).
+// The block pass is LINE-COMMENT-AWARE (the b2a8bbb disease): a `/*` inside a
+// `//` line comment must never open a phantom block that swallows real code.
+// The `//` pass then deletes the tail, exactly as before.
+function stripComments(src: string): string {
+  let kept = "";
+  for (let i = 0; i < src.length; ) {
+    if (src[i] === "/" && src[i + 1] === "/") {
+      let nl = src.indexOf("\n", i);
+      if (nl === -1) nl = src.length;
+      kept += src.slice(i, nl);
+      i = nl;
+    } else if (src[i] === "/" && src[i + 1] === "*") {
+      const close = src.indexOf("*/", i + 2);
+      if (close === -1) {
+        kept += src.slice(i, i + 2); // unclosed opener: the old regex kept it
+        i += 2;
+        continue;
+      }
+      i = close + 2;
+    } else {
+      kept += src[i];
+      i += 1;
+    }
+  }
+  return kept.replace(/\/\/[^\n]*/g, "");
+}
+
 let passed = 0;
 let failed = 0;
 function check(name: string, ok: boolean, detail = ""): void {
@@ -556,8 +585,7 @@ check(
 // All OTHER routes are scanned comment-stripped: wallet/proof/continuity stay
 // banned EVERYWHERE, member/holder banned outside the approved surfaces.
 {
-  const stripRoute = (src: string): string =>
-    src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+  const stripRoute = stripComments; // the one module-level stripper (2026-08-03)
   const holderAllowed = new Set(["holderIndex.ts", "index.ts"]);
   // joinCard.ts joined 2026-07-20 (K2): it emits the introducer's ADR-003
   // SHORT form only (public registry data); join-card:guard pins that no
@@ -967,8 +995,6 @@ check("canonicalJson hard-fails on undefined (hash integrity)", canonThrew);
 // --- Static scans for the S3a slice (comment-stripped where the scan term
 // legitimately appears in doc headers — see guard doctrine). ---
 const buildSrc = readFileSync("scripts/member-continuity-build.ts", "utf8");
-const stripComments = (src: string): string =>
-  src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
 const builderCode = stripComments(builderSrc);
 const buildCode = stripComments(buildSrc);
 // 2026-08-02: the load/verify/persist pipeline moved to src (the backbone is
