@@ -27,10 +27,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > `/api/join-card/<id>.png?card=<face>` → the painter paints it. FOUR faces
 > (`invite` · `standing` · `seat` · `record`), all 1200×630 — the one shape all
 > five preview networks render. Email has no preview at all (a mailto body is
-> plain text): there the artifact's PNG is downloaded so he can attach it.
+> plain text). ⛔ *(struck a32f88c)* ~~there the artifact's PNG is downloaded so
+> he can attach it~~ — the auto-download is GONE from EVERY intent: it was a
+> compensation for a link that carried no picture, and the link now carries its
+> own face. Download is a button.
 > Each face carries a QR (his order: a card gets screenshot and re-posted, and at
-> that moment the link is gone). The channel tag `&via=` rides every intent, so
-> Channels finally counts social shares.
+> that moment the link is gone). ⛔ *(struck 7d0a3f0)* ~~The channel tag `&via=`
+> rides every intent, so Channels finally counts social shares.~~ — the tag was
+> REMOVED: it fragmented one member's url into 24, every one cold, and a cold url
+> shows no preview in a composer. Social shares are untagged; Channels counts
+> what its own composer hands out.
 >
 > ## (b) WHAT LANDED — the seat that was never required
 > | Surface | Was | Now |
@@ -85,7 +91,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > TIER-0 boot file AND in a served, indexed meta description.
 >
 > ## (d) VERIFIED — what was measured, at what scope
-> `join-card` **65/65** · `share-intents` **2288/2288** · `no-directory-fossil`
+> `join-card` **68/68** · `share-intents` **2288/2288** · `no-directory-fossil`
 > 575 files · `join-showcase` 13/13 · `referral-terms` 12/12 · receipt-card ·
 > introductions · duplicate-facts · backbone · source-status-truth · auth-zone ·
 > member-continuity · 2 typechecks · 2 builds — **all exit 0**.
