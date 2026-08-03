@@ -30,6 +30,7 @@ export function ShareSurface({
   onAct,
   onClose,
   id,
+  testid,
   testidBase = "share",
   placementClassName = "mx-auto mt-3",
 }: {
@@ -48,7 +49,11 @@ export function ShareSurface({
   onAct?: () => void;
   /** The box closes itself after intent/native acts — never after copy. */
   onClose: () => void;
+  /** The DOM id the trigger's aria-controls points at — pass a useId-unique
+   * value when the same artifact can mount more than once. */
   id?: string;
+  /** Stable container testid, independent of the (possibly random) id. */
+  testid?: string;
   testidBase?: string;
   placementClassName?: string;
 }) {
@@ -57,13 +62,16 @@ export function ShareSurface({
     <div
       id={id}
       className={`w-[340px] max-w-full ${placementClassName} rounded-xl border border-border bg-card p-4 print:hidden`}
-      data-testid={id ?? `${testidBase}-surface`}
+      data-testid={testid ?? id ?? `${testidBase}-surface`}
     >
       <button
         type="button"
         onClick={() => {
+          // Optional-chained: an insecure-context rig has no clipboard —
+          // the old box's try/await caught that; the bare chain threw
+          // synchronously (six-hat review, 2026-08-03).
           navigator.clipboard
-            .writeText(pageUrl)
+            ?.writeText(pageUrl)
             .then(() => {
               setCopied(true);
               window.setTimeout(() => setCopied(false), 1600);

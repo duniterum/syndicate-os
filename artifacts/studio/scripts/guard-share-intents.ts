@@ -15,27 +15,32 @@
 //   · the 36px row-shape intent button (the commissions table's form) was about
 //     to be retyped in the kit.
 //
-// THE PINS:
+// THE PINS (current design — the 2026-08-03 harmonization; earlier same-day
+// forms, trio then loose row icons, are DEAD, killed by the founder's two
+// corrections «nous avions plus» + «harmonisé comme ticket»):
 //   1. ONE ICON MAP — the target→icon literal exists ONLY in
 //      src/lib/shareTargetIcons.ts. Any `x: Twitter` mapping elsewhere is RED.
-//   2. ONE RESOLVER — `shareTargets.find(` exists ONLY inside
-//      src/lib/shareTargets.ts (the pickShareTargets resolver). Consumers
-//      import the resolver, never re-derive it.
-//   3. ONE ROW BUTTON — the row-shape intent button is the
-//      ShareIntentIconButton atom; the commissions table and the kit both
-//      consume it. (The receipt's labeled GRID and the link hero's popover
-//      MENU are sibling COMPOSITIONS by design — shapes differ, facts don't.)
-//   4. THE KIT TRIO — ReferralToolsPanel renders the founder-named trio in his
-//      order (x · telegram · whatsapp), testid-pinned, placed BETWEEN «Copy my
-//      link» and the native Share… (R-BIND-2's engraved order: copy first →
-//      intents → the OS sheet LAST, the only channel that carries the image).
+//   2. ONE RESOLVER + ONE ORDER — `shareTargets.find(`/`.filter(` exist ONLY
+//      inside src/lib/shareTargets.ts; the six-network family and its
+//      crypto-native order are the ONE export `orderedShareTargets`; a
+//      private ordered-ids literal anywhere is RED.
+//   3. ONE ROW BUTTON — the 36px icon intent button is the
+//      ShareIntentIconButton atom; the commissions table is its one consumer.
+//      ONE BOX — the R-BIND-2 dual-share surface is the ShareSurface
+//      component; the receipt ticket and the kit both MOUNT it, and its
+//      furniture (copy-first → six intents → «Share with other apps» LAST,
+//      feature-detected) is pinned INSIDE the component. ONE SPLIT — the
+//      whatsapp/email inline-text decision is shareIntentArgs, in the lib.
+//   4. THE KIT MOUNT — ONE always-rendered Share… trigger per artifact row
+//      (never conditionally gated on engine capability — the feature-detect
+//      lives inside the box), a useId-unique surface id (the og artifact
+//      mounts its actions TWICE — spec-derived ids collide), testid-pinned.
 //   5. URL-FREE TEXT — the kit's SHARE_TEXT carries no link: every intent
 //      places the url ITSELF (the founder-screenshot contract, 2026-07-20 —
 //      an embedded link prints twice in the draft).
-//   6. THE CONTRACT, EXECUTED — the three real builders run against a fixture
-//      here, in this process: x and telegram carry the url as its OWN param
-//      with URL-free text; whatsapp inlines `text url` so the join link is a
-//      link in the draft (and the LAST token — the one WhatsApp cards).
+//   6. THE CONTRACT, EXECUTED — all SIX real builders run against a fixture
+//      (which carries an `&` so an encoding-free builder cannot pass) plus
+//      the exported order itself, compared to the engraved sequence.
 //
 // WHAT THIS GUARD DOES NOT COVER (stated, the report-shape law): it reads
 // source and executes the pure builders — it does not render a browser, so
@@ -97,7 +102,7 @@ const rel = (abs: string) => path.relative(srcDir, abs).replaceAll("\\", "/");
 // ── 1. ONE ICON MAP ─────────────────────────────────────────────────────────
 // The distinctive pair of any local target→icon map. lib/shareTargetIcons.ts
 // is the one place allowed to state it.
-const ICON_MAP_LITERAL = /\bx:\s*Twitter\b|\bwhatsapp:\s*MessageCircle\b|\btelegram:\s*Send\b/;
+const ICON_MAP_LITERAL = /["']?\bx["']?\s*:\s*Twitter\b|["']?\bwhatsapp["']?\s*:\s*MessageCircle\b|["']?\btelegram["']?\s*:\s*Send\b/;
 for (const file of walk(srcDir)) {
   if (file === ICON_AUTHORITY) continue;
   const code = stripComments(readFileSync(file, "utf8"));
@@ -120,9 +125,9 @@ for (const file of walk(srcDir)) {
   if (file === TARGETS_LIB) continue;
   const code = stripComments(readFileSync(file, "utf8"));
   check(
-    !/shareTargets\s*\.\s*find\s*\(/.test(code),
+    !/shareTargets\s*\.\s*(find|filter)\s*\(/.test(code),
     `${rel(file)}: no private target resolution`,
-    `${rel(file)}: resolves shareTargets.find() privately — import { pickShareTargets } from "@/lib/shareTargets"`,
+    `${rel(file)}: resolves shareTargets.find()/filter() privately — import { pickShareTargets } (or orderedShareTargets) from "@/lib/shareTargets"`,
   );
 }
 const targetsSrc = readFileSync(TARGETS_LIB, "utf8");
@@ -136,7 +141,13 @@ check(
 // plus » — the kit carries the SAME six as the receipts, same order). The
 // crypto-native order is ONE exported fact; a private ordered-ids literal in
 // any consumer is the twin disease this file exists to kill.
-const PRIVATE_ORDER = /\[\s*"x"\s*,\s*"(whatsapp|telegram|facebook|linkedin|email)"/;
+// ANY two adjacent family ids in an array literal (any order, either quote
+// style) — the 2026-08-03 adversarial review proved the old head-anchored
+// form let a REORDERED private list through (the worse twin escaped). If a
+// future non-share list legitimately pairs two of these six words, it is
+// almost certainly this family anyway — import from the lib.
+const PRIVATE_ORDER =
+  /\[\s*["'](x|whatsapp|telegram|linkedin|facebook|email)["']\s*,\s*["'](x|whatsapp|telegram|linkedin|facebook|email)["']/;
 for (const file of walk(srcDir)) {
   if (file === TARGETS_LIB) continue;
   const code = stripComments(readFileSync(file, "utf8"));
@@ -196,7 +207,7 @@ for (const file of walk(srcDir)) {
   if (file === SURFACE) continue;
   const code = stripComments(readFileSync(file, "utf8"));
   check(
-    !/^\s*Share with other apps\s*$/m.test(code) && !/-other-apps"/.test(code),
+    !/^\s*\{?["']?Share with other apps["']?\}?\s*$/m.test(code) && !/-other-apps[`"']/.test(code),
     `${rel(file)}: no private dual-share box`,
     `${rel(file)}: re-implements the dual-share box (the «Share with other apps» row / the -other-apps testid) — mount ShareSurface instead`,
   );
@@ -228,11 +239,17 @@ check(
   "lib/shareTargets.ts: shareIntentArgs is the one url/text split",
   "lib/shareTargets.ts: shareIntentArgs MISSING — the whatsapp/email inline-text split is re-decided at call sites",
 );
+// The split's signature is whatsapp AND email co-deciding one disjunction —
+// pinning the pair (either order) instead of any lone `"whatsapp" ||` keeps
+// unrelated channel-slug logic (ReferralLinkPanel's share channels) out of
+// this pin's blast radius (2026-08-03 adversarial review, FP finding).
+const PRIVATE_SPLIT =
+  /["']whatsapp["']\s*\|\|[^\n]*["']email["']|["']email["']\s*\|\|[^\n]*["']whatsapp["']/;
 for (const file of walk(srcDir)) {
   if (file === TARGETS_LIB) continue;
   const code = stripComments(readFileSync(file, "utf8"));
   check(
-    !/"whatsapp"\s*\|\|/.test(code),
+    !PRIVATE_SPLIT.test(code),
     `${rel(file)}: no private url/text split`,
     `${rel(file)}: re-decides the whatsapp/email inline-text split — import { shareIntentArgs } from "@/lib/shareTargets"`,
   );
@@ -262,19 +279,19 @@ if (surfaceSrc !== null) {
     "box: R-BIND-2 order holds (copy → the six → the OS sheet last)",
     "box: the R-BIND-2 order is broken — Copy link FIRST, the six intents, «Share with other apps» LAST",
   );
+  // Either JSX conditional spelling is the same feature-detect (the ternary
+  // pin alone was a false red on a behavior-identical `&&` refactor —
+  // 2026-08-03 adversarial review).
   check(
-    /nativeAvailable \? \(/.test(s),
+    /\{\s*nativeAvailable\s*(\?|&&)/.test(s),
     "box: the OS sheet is feature-detected (never a dead button)",
     "box: the native row must render only when nativeAvailable — feature-detected, never a dead button",
   );
 }
 // ShareMenu iterates the WHOLE registry by design (no subset) — it owes only
-// the icon authority (pin 1 already scans it). Named so nobody "fixes" it.
-check(
-  /shareTargetIcons/.test(stripComments(readFileSync(MENU, "utf8"))) || true,
-  "ShareMenu.tsx: menu composition acknowledged (icon authority via pin 1)",
-  "",
-);
+// the icon authority, which pin 1's sweep already scans in it. (A former
+// `|| true` acknowledgement check here was removed 2026-08-03: a pin that
+// cannot go red is not a pin — it inflated the green count by one.)
 
 // ── 4. THE KIT MOUNT — one Share… trigger, ALWAYS rendered, opening the box
 // (founder, 2026-08-03: mobile keeps everything; desktop opens the SAME box
@@ -287,9 +304,19 @@ check(
   "kit: the button-kit-share- trigger testid is absent — the share door is unpinned",
 );
 check(
-  !/nativeShareAvailable \? \(/.test(kit),
+  // The CLASS of gating, not one spelling: `{nativeShareAvailable ? (` AND
+  // `{nativeShareAvailable && (` both hide the door on desktop — the exact
+  // founder-caught defect. A legitimate prop pass (`nativeAvailable=
+  // {nativeShareAvailable}`) is followed by `}`, never `?`/`&&`, so it
+  // cannot match (2026-08-03 adversarial review, the critical finding).
+  !/\{\s*nativeShareAvailable\s*(\?|&&)/.test(kit),
   "kit: the Share… trigger is ALWAYS rendered (the feature-detect moved INTO the box)",
-  "kit: the share trigger is still gated by nativeShareAvailable — every engine gets the box; only the OS-sheet row inside it is feature-detected",
+  "kit: the share trigger is conditionally gated on nativeShareAvailable — every engine gets the box; only the OS-sheet row inside it is feature-detected",
+);
+check(
+  /const surfaceId = useId\(\)/.test(kit) && /id=\{surfaceId\}/.test(kit) && /aria-controls=\{surfaceId\}/.test(kit),
+  "kit: the box id is useId-unique per mount (the og artifact mounts its actions twice)",
+  "kit: the box id must derive from useId() (const surfaceId = useId(); id={surfaceId}; aria-controls={surfaceId}) — a spec-derived id collides on the double-mounted og artifact (duplicate DOM id + crossed aria-controls)",
 );
 check(
   /nativeAvailable=\{/.test(kit),
@@ -303,7 +330,10 @@ check(
 );
 
 // ── 5. URL-FREE TEXT ────────────────────────────────────────────────────────
-const shareTextMatch = /const SHARE_TEXT = "([^"]*)"/.exec(kitRaw);
+// The WHOLE initializer to the semicolon — a `"…" + "https://…"`
+// concatenation defeated the first-chunk capture (2026-08-03 adversarial
+// review).
+const shareTextMatch = /const SHARE_TEXT =([\s\S]*?);/.exec(kitRaw);
 check(
   shareTextMatch !== null,
   "kit: SHARE_TEXT is one hoisted fact",
@@ -317,7 +347,11 @@ check(
 
 // ── 6. THE CONTRACT, EXECUTED ───────────────────────────────────────────────
 // The real builders run HERE, on a fixture — never asserted from memory.
-const FIX_URL = "https://thesyndicate.money/join?via=0x1234abcd";
+// The fixture CARRIES an `&` (a channel tag, the kit's real link shape): an
+// encodeURIComponent-free builder would leak it as a stray top-level intent
+// param and fail the exact-param assertions below (2026-08-03 adversarial
+// review — the all-benign fixture let an enc-free builder pass).
+const FIX_URL = "https://thesyndicate.money/join?via=0x1234abcd&via2=youtube";
 const FIX_TEXT = "The Syndicate — an on-chain introduction record.";
 const byId = new Map(shareTargets.map((t) => [t.id, t]));
 const x = byId.get("x");
@@ -346,11 +380,16 @@ if (li && fb && em) {
     "facebook: official sharer, url as its own param",
     `facebook: intent drifted — got ${fb.build(FIX_URL, FIX_TEXT)}`,
   );
-  const emHref = em.build(FIX_URL, FIX_TEXT);
+  // Parse the mailto like an intent: subject and body are their own params —
+  // text+url stuffed into the subject with an empty body passed the old
+  // whole-href includes() (2026-08-03 adversarial review).
+  const emUrl = new URL(em.build(FIX_URL, FIX_TEXT));
   check(
-    emHref.startsWith("mailto:?subject=") && decodeURIComponent(emHref).includes(`${FIX_TEXT} ${FIX_URL}`),
-    "email: mailto carries subject + inline «text url» body",
-    `email: inline contract drifted — got ${emHref}`,
+    emUrl.protocol === "mailto:" &&
+      emUrl.searchParams.get("subject") === "The Syndicate" &&
+      emUrl.searchParams.get("body") === `${FIX_TEXT} ${FIX_URL}`,
+    "email: mailto carries its subject + the inline «text url» BODY",
+    `email: inline contract drifted — got ${em.build(FIX_URL, FIX_TEXT)}`,
   );
 }
 if (x && tg && wa) {

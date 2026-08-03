@@ -15,11 +15,48 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   (`components/share/ShareSurface.tsx`: Copy link first → the six networks
 >   (orderedShareTargets, crypto-native order) → «Share with other apps»
 >   feature-detected, the only PNG channel). The ticket MOUNTS the same component —
->   byte-identical render proven at the rig (same testids · order · glyphs · gold
->   copy chrome). Mobile keeps everything; desktop SHARES instead of explaining.
+>   ~~byte-identical render proven~~ (struck by the truth audit: no byte was compared)
+>   the ticket's box re-checked at the rig: same testids, order, glyph classes, gold
+>   copy chrome — DOM-level, one engine, signed-out. Mobile keeps everything BY
+>   CONSTRUCTION (always-on trigger; the engine detect lives inside the box) — never
+>   rendered on a phone this session. Desktop SHARES instead of explaining.
 > · Corrections trail, all same-day: 3-network subset (handoff wording) → «nous avions
 >   plus» → all six · loose row icons → «harmonisé comme ticket» → the box. THREE
->   RED-first cycles: 18 → green · 7 → green · 16 → **1576/1576**.
+>   RED-first cycles: 18 → green · 7 → green · 16 watched in-session (the committed,
+>   narrowed guard replays 15 — the delta IS the over-broad pin 02e3f40 named) →
+>   **1576/1576**.
+>
+> ## (a2) THE SIX-HAT REVIEW (his order: «deep read … toutes tes casquettes … 5 à 7
+> ## agents») — 6 senior agents (logic · design laws · interconnectivity · guard
+> ## adversarial · docs truth · security/a11y), every finding verified against code:
+> · VERDICT: the box extraction is behavior-exact (copy/intent/native compared line
+>   by line to the old ticket), security core clean (noopener everywhere, enc()
+>   complete, injection impossible to the hex source), zero stale references, the
+>   public /receipt page rides the same component, all four reverts of the fixes
+>   turn the guard RED.
+> · FIXED from the findings (the review pass, same day): ① the ONE real runtime
+>   defect — the og artifact mounts its actions twice, so the box id collided
+>   (duplicate DOM id + crossed aria-controls) → useId per mount, guard-pinned
+>   RED-first · ② the guard's critical hole — a `&&`-spelled gate would have
+>   re-hidden desktop's Share… under a green build → the pin now catches the CLASS
+>   of gating, both sides · ③ six letter-thin pins hardened from the executed
+>   adversarial probes (any-order private lists · quoted icon keys · find|filter ·
+>   split co-occurrence, killing the channel-slug false red · box furniture forms ·
+>   whole-initializer SHARE_TEXT) + the fixture now carries `&` so an encoding-free
+>   builder cannot pass + the mailto body asserted as its own param · ④ the vacuous
+>   `|| true` pin removed (a pin that cannot red is not a pin) · ⑤ the busy
+>   dead-click through the box's OS row now says an honest note · ⑥ clipboard
+>   optional-chained (insecure-context rigs) · ⑦ the Share… trigger gained the house
+>   focus ring (focus ledger kit 7→6, ticket already 5→2, from the guards' own
+>   output) · ⑧ CRITICAL DOC REPAIR: the K1.5 roadmap edit had DESTROYED the K2
+>   entry's header line — K2 («GO AND GO-LIVE», commit 0134cc6) restored verbatim ·
+>   ⑨ stale headers (atom consumer claim, guard pin prose) rewritten to the current
+>   design.
+> · STILL HIS EYES ONLY (stated, not hidden): the connected kit row + box (his
+>   wallet), pixels/themes on a phone, and the box width under the narrow artifact
+>   rows — it compresses to the row's cap (260-336px vs the ticket's 340) at 8
+>   mounts; functional, floors held, but nobody CHOSE that width — his preview
+>   judges it.
 > · The twin search collapsed the share family to ONE authority per fact: icon map
 >   (3 private literals → `shareTargetIcons`) · resolution (`pickShareTargets`) · the
 >   ORDER itself (2 private lists → `orderedShareTargets`) · the url/text split
@@ -34,8 +71,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   touch commissions 5→4 · focus commissions 8→7 · focus ReceiptTicket 5→2 — the
 >   box's three buttons now carry the house ring in the component) · typecheck ·
 >   build + prerender + admin-dist green. Rig-measured signed-out: the ticket's box
->   renders IDENTICAL through the mounted component (testids · order · glyphs · gold
->   copy · min-h-11), native honestly absent where navigator.share is absent;
+>   matches through the mounted component on testids · order · glyph classes · gold
+>   copy · min-h-11 (DOM-level, one engine), native honestly absent where
+>   navigator.share is absent;
 >   /referral/tools signed-out intact; the final module graph loads clean. NOT
 >   measured (said honestly): the CONNECTED kit row + its box — needs the founder's
 >   wallet; that is exactly his preview gate. Known micro-decoupling, stated: the

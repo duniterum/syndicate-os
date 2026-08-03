@@ -6,11 +6,22 @@
 > UN SEUL Share… par artefact (toujours rendu, mobile garde tout) qui ouvre LA boîte
 > du ticket — désormais UN composant (`ShareSurface` : Copy d'abord → les six → « Share
 > with other apps » détecté, seul canal du PNG), monté par le ticket ET le kit.
-> RED-first prouvé TROIS fois (18 → vert · 7 → vert · 16 → 1576/1576), portes vertes,
-> build vert, la boîte du ticket re-mesurée au rig IDENTIQUE via le composant (testids ·
-> ordre · icônes · Copy or). EN ATTENTE DE LUI : ① la PREVIEW du kit avec SON wallet
-> (URL du rig au chat, desktop + 375px) ; ② son mot de déploiement — BATCHABLE, mais
-> c'est SA prise desktop, tirer seul est aussi son choix. PROD reste `c2b1168`.**
+> RED-first prouvé TROIS fois (18 → vert · 7 → vert · 16 vus en session, le guard
+> commité rejoue 15 — l'écart = le pin sur-large rétréci, dit dans 02e3f40 →
+> 1576/1576), portes vertes, build vert, la boîte du ticket re-vérifiée au rig via le
+> composant — identique SUR : testids · ordre · classes d'icônes · Copy or (niveau
+> DOM, un moteur, hors-session). PUIS LA REVUE SIX-CASQUETTES (son ordre) : verdict —
+> extraction exacte, sécurité propre, zéro référence morte, les reverts rougissent
+> tous ; corrigé dans la foulée (RED-first) : l'id de boîte unique par montage
+> (useId — la carte og monte deux fois), le trou critique du guard (la porte `&&`),
+> six pins durcis des sondes adversariales, le pin `|| true` retiré, le clic avalé
+> pendant préparation dit sa note, presse-papiers blindé, l'anneau focus du Share…
+> (registres 7→6 · 5→2), ET la ligne d'en-tête K2 du roadmap — détruite par
+> l'édition K1.5 — RESTAURÉE mot pour mot. EN ATTENTE DE LUI : ① la PREVIEW du kit
+> avec SON wallet (URL du rig au chat, desktop + 375px — y compris la largeur de la
+> boîte sous les artefacts étroits, 260-336px vs 340, que personne n'a choisie) ;
+> ② son mot de déploiement — BATCHABLE, mais c'est SA prise desktop, tirer seul est
+> aussi son choix. PROD reste `c2b1168`.**
 
 > **▶ 2026-08-03 — 6ᵉ sceau : PROD = `c2b1168` (Replit 6/6), le batch A1 + M3 + M2-v2 +
 > `1a1629e` est LIVE (A1 n'est plus « en vol ») ; backlog de déploiement VIDE ; prochaine

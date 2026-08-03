@@ -188,7 +188,7 @@ const ALLOWLIST: Record<string, string> = {
   "components/referral/ReferralIntroductionsPanel.tsx": "1 · an introductions <a>",
   "components/referral/ReferralLinkPanel.tsx": "3 · 2 copy/share <button>s + 1 <a>",
   "components/referral/ReferralOverviewPanel.tsx": "1 · an overview <Link>",
-  "components/referral/ReferralToolsPanel.tsx": "7 · 6 <button> (the arsenal's copy/download actions, incl. the local CopyButton's own button) + 1 <a>",
+  "components/referral/ReferralToolsPanel.tsx": "6 · 5 <button> (the arsenal's copy/download actions, incl. the local CopyButton's own button) + 1 <a> (was 7; the Share… trigger gained the house ring in the six-hat review pass — 2026-08-03)",
   "components/referral/ShareCard.tsx": "2 · 1 share <a> + 1 <Link>",
   "components/referral/ShareMenu.tsx": "2 · 2 share-target <button>s",
   "pages/MemberAccess.tsx": "1 · the sign-in door's <Link>",

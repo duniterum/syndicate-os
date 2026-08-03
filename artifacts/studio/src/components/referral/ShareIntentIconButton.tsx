@@ -1,11 +1,12 @@
 // components/referral/ShareIntentIconButton.tsx — THE row-shape intent button.
 //
 // One implementation of the icon-square intent button (the R-BIND-2 family's
-// ROW form): the commissions table's share row and the referrer kit's action
-// rows both render it. The receipt's labeled GRID and the link hero's popover
-// MENU are sibling COMPOSITIONS by design — shapes differ, facts don't; the
-// target→icon map and the url builders are imported, never retyped
-// (guard-share-intents).
+// ROW form). Its one consumer is the commissions table's share row — the kit
+// briefly rendered it too (2026-08-03, first cut) before the founder's
+// harmonization order moved the kit onto the ShareSurface BOX. The box, the
+// receipt's labeled GRID and the link hero's popover MENU are sibling
+// COMPOSITIONS by design — shapes differ, facts don't; the target→icon map
+// and the url builders are imported, never retyped (guard-share-intents).
 //
 // Geometry (guard-touch-target): the visual box stays h-9 — the established
 // scale of the rows that host it — and the HIT AREA reaches the 44px floor

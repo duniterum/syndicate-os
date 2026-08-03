@@ -28,7 +28,7 @@
 // raster path (DOM → svg → canvas → PNG); artifacts are fixed-ink so the
 // exported picture is identical in both themes.
 
-import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode, type RefObject } from "react";
 import { useAccount } from "wagmi";
 import { ChevronDown, Download, Share2 } from "lucide-react";
 import { buildJoinLink } from "@/lib/joinLink";
@@ -148,13 +148,24 @@ function ArtifactActions({
   const node = () => (nodeRef.current?.firstElementChild as HTMLElement | null) ?? null;
   // One Share… door per row — it opens THE dual-share box below the row.
   const [shareOpen, setShareOpen] = useState(false);
+  // useId, never spec.id: the og artifact mounts this row TWICE (§1 card +
+  // the standing moment card) — a spec-derived id collides in the document
+  // and crosses aria-controls (six-hat review, 2026-08-03).
+  const surfaceId = useId();
 
   /** The OS sheet, carrying the artifact PNG — invoked from the box's
    * «Share with other apps» row (feature-detected there, never a dead
    * button). Honest fallbacks unchanged from the K1 arc. */
   const doNativeShare = () => {
+    if (busy !== null) {
+      // The row is mid-raster (a Download in flight): the box has already
+      // closed, so an honest note beats a silently swallowed click
+      // (six-hat review, 2026-08-03 — «never a dead button» in spirit).
+      say("Still preparing the image — press Share… again in a moment");
+      return;
+    }
     const el = node();
-    if (el === null || busy !== null) return;
+    if (el === null) return;
     setBusy("share");
     void (async () => {
       let png: string | null = null;
@@ -247,8 +258,8 @@ function ArtifactActions({
         disabled={busy !== null}
         onClick={() => setShareOpen((v) => !v)}
         aria-expanded={shareOpen}
-        aria-controls={`kit-share-surface-${spec.id}`}
-        className="inline-flex items-center gap-1.5 h-9 rounded-lg border border-border bg-card px-3 text-xs text-foreground hover:bg-muted transition-colors disabled:opacity-60"
+        aria-controls={surfaceId}
+        className="inline-flex items-center gap-1.5 h-9 rounded-lg border border-border bg-card px-3 text-xs text-foreground hover:bg-muted transition-colors disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         data-testid={`button-kit-share-${spec.id}`}
       >
         <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
@@ -262,7 +273,8 @@ function ArtifactActions({
     </div>
     {shareOpen ? (
       <ShareSurface
-        id={`kit-share-surface-${spec.id}`}
+        id={surfaceId}
+        testid={`kit-share-surface-${spec.id}`}
         pageUrl={joinLink}
         textBare={SHARE_TEXT}
         textInline={`${SHARE_TEXT} ${joinLink}`}

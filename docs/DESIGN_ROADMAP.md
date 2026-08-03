@@ -617,22 +617,31 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   (géométrie · boîtes carrées · planchers · chevauchements · centrage QR).
   **+0 couleur brute non documentée** (+1 exception taguée : le blanc de la
   zone de silence du SVG).
-- [x] **K1.5 LE PARTAGE DU KIT HARMONISÉ (2026-08-03, la prise du fondateur —
-  « Sheet unavailable » sur desktop ; corrigé DEUX fois la même heure sur
-  SES relances « nous avions plus » puis « harmonisé comme ticket »)** : UN
-  Share… par rangée d'artefact, toujours rendu (mobile garde tout), qui
-  ouvre LA boîte du ticket — désormais UN composant partagé (`ShareSurface` :
-  Copy d'abord → les SIX réseaux pré-remplis, l'ordre crypto-natif gravé
-  R-BIND-2 → « Share with other apps » détecté, le SEUL canal du PNG) — le
-  desktop PARTAGE au lieu d'expliquer, le ticket monte le MÊME composant
-  (rendu prouvé identique au rig). La recherche-jumeaux a réduit la famille
-  à UNE autorité par fait : carte icônes (3 copies privées →
-  shareTargetIcons) · résolution (pickShareTargets) · l'ordre (2 copies →
-  orderedShareTargets) · le partage url/texte (shareIntentArgs) · la boîte
-  elle-même (ShareSurface, anneaux focus maison) · bouton-rangée commissions
-  (ShareIntentIconButton, zone tactile au plancher via after:-inset-1) ;
-  épinglé par guard-share-intents, RED-first ×3 (18 · 7 · 16 → 1576/1576).
+- [x] **K1.5 LE PARTAGE DU KIT HARMONISÉ (2026-08-03, commits
+  84855ae·1bf803e·02e3f40 + la passe de revue six-casquettes le même jour ;
+  la prise du fondateur — « Sheet unavailable » sur desktop ; corrigé DEUX
+  fois la même heure sur SES relances « nous avions plus » puis « harmonisé
+  comme ticket »)** : UN Share… par rangée d'artefact, toujours rendu
+  (mobile garde tout PAR CONSTRUCTION — la détection du moteur vit dans la
+  boîte), qui ouvre LA boîte du ticket — désormais UN composant partagé
+  (`ShareSurface` : Copy d'abord → les SIX réseaux pré-remplis, l'ordre
+  crypto-natif gravé R-BIND-2 → « Share with other apps » détecté, le SEUL
+  canal du PNG) — le desktop PARTAGE au lieu d'expliquer, le ticket monte le
+  MÊME composant (même DOM vérifié au rig : testids · ordre · classes
+  d'icônes · chrome du Copy — un moteur, hors-session ; les pixels et la
+  rangée connectée restent la porte preview du fondateur). La
+  recherche-jumeaux a réduit la famille à UNE autorité par fait : carte
+  icônes (3 copies privées → shareTargetIcons) · résolution
+  (pickShareTargets) · l'ordre (2 copies → orderedShareTargets) · le partage
+  url/texte (shareIntentArgs) · la boîte elle-même (ShareSurface, anneaux
+  focus maison, id unique par montage via useId — la carte og monte ses
+  actions deux fois) · bouton-rangée commissions (ShareIntentIconButton,
+  zone tactile au plancher via after:-inset-1) ; épinglé par
+  guard-share-intents, RED-first ×3 (18 · 7 · 16 vus en session — le guard
+  commité rejoue 15, l'écart étant le pin sur-large rétréci, dit dans
+  02e3f40 → 1576/1576, durci ensuite par la revue adversariale).
   **+0 couleur brute**.
+- [x] **K2 LE CÔTÉ INVITÉ (2026-07-20, maquette approuvée « GO AND GO-LIVE »,
   commit 0134cc6)** : le lien /join?source= s'ouvre avec SA carte peinte
   (serveur, vrai emblème, adresse courte de l'introducteur, registre
   approuvé verbatim) + la bande honnête « Introduced by 0x… — never changes
