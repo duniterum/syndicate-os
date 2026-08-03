@@ -260,7 +260,8 @@ export function CardVanityOg({ facts }: { facts: KitFacts }) {
   return (
     <div style={{ ...artefactRoot(1200, 630), padding: "44px 64px 40px" }}>
       <Masthead mark={72} title={30} sub={20} />
-      <div className="font-serif" style={{ fontSize: 128, lineHeight: 1.05, color: INK_GOLD, marginTop: 26 }}>
+      <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, justifyContent: "center", minHeight: 0 }}>
+      <div className="font-serif" style={{ fontSize: 116, lineHeight: 1.05, color: INK_GOLD }}>
         Seat #{v.seatNumber.toLocaleString("en-US")}
       </div>
       <div className="font-mono" style={{ fontSize: 26, fontWeight: 600, letterSpacing: 4, color: INK_FG, marginTop: 14, textTransform: "uppercase" }}>
@@ -269,7 +270,8 @@ export function CardVanityOg({ facts }: { facts: KitFacts }) {
       <div style={{ marginTop: 14, display: "flex" }}>
         <VanitySentence v={v} size={28} />
       </div>
-      <div style={{ display: "flex", alignItems: "flex-end", gap: 28, marginTop: "auto" }}>
+      </div>
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 28 }}>
         <QrBox url={url} size={140} />
         <VerifyLines size={21} lines={[vanityWrittenLine(v), "DON'T TRUST — VERIFY"]} />
       </div>
@@ -284,7 +286,8 @@ export function CardVanitySquare({ facts }: { facts: KitFacts }) {
   return (
     <div style={{ ...artefactRoot(1080, 1080), padding: 64 }}>
       <Masthead mark={68} title={28} sub={20} />
-      <div className="font-serif" style={{ fontSize: 168, lineHeight: 1.05, color: INK_GOLD, marginTop: 70 }}>
+      <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, justifyContent: "center", minHeight: 0 }}>
+      <div className="font-serif" style={{ fontSize: 168, lineHeight: 1.05, color: INK_GOLD }}>
         Seat #{v.seatNumber.toLocaleString("en-US")}
       </div>
       <div className="font-mono" style={{ fontSize: 28, fontWeight: 600, letterSpacing: 4, color: INK_FG, marginTop: 18, textTransform: "uppercase" }}>
@@ -293,7 +296,8 @@ export function CardVanitySquare({ facts }: { facts: KitFacts }) {
       <div style={{ marginTop: 18, display: "flex" }}>
         <VanitySentence v={v} size={31} />
       </div>
-      <div style={{ display: "flex", alignItems: "flex-end", gap: 30, marginTop: "auto" }}>
+      </div>
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 30 }}>
         <QrBox url={url} size={220} />
         <VerifyLines size={22} lines={[vanityWrittenLine(v), "DON'T TRUST — VERIFY"]} />
       </div>
@@ -308,7 +312,8 @@ export function CardVanityStory({ facts }: { facts: KitFacts }) {
   return (
     <div style={{ ...artefactRoot(1080, 1920), padding: 76 }}>
       <Masthead mark={76} title={32} sub={22} />
-      <div className="font-serif" style={{ fontSize: 210, lineHeight: 1.04, color: INK_GOLD, marginTop: 150 }}>
+      <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, justifyContent: "center", minHeight: 0 }}>
+      <div className="font-serif" style={{ fontSize: 210, lineHeight: 1.04, color: INK_GOLD }}>
         Seat
         <br />
         #{v.seatNumber.toLocaleString("en-US")}
@@ -319,7 +324,8 @@ export function CardVanityStory({ facts }: { facts: KitFacts }) {
       <div style={{ marginTop: 24, display: "flex" }}>
         <VanitySentence v={v} size={40} />
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 26, marginTop: "auto" }}>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 26 }}>
         <QrBox url={url} size={280} />
         <VerifyLines size={26} lines={[vanityWrittenLine(v), "DON'T TRUST — VERIFY"]} />
       </div>
