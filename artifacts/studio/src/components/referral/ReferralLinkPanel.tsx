@@ -29,6 +29,7 @@ import { StatusPill } from "@/components/status-pill/StatusPill";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { ShareMenu } from "@/components/referral/ShareMenu";
 import { TermsCommitmentHash } from "@/components/referral/TermsCommitmentHash";
+import { TERMS_PATH } from "@/lib/termsDocument";
 import { payingSourceId } from "@/lib/sourceIdentity";
 import { referralProgram } from "@/config/referralProgram";
 import type { StandingReadback } from "@/components/referral/referralStanding";
@@ -376,16 +377,18 @@ export function ReferralLinkPanel({ readback }: { readback: StandingReadback | n
           (keccak256 hash) is recorded on-chain with each member referral
           source:{" "}
           <a
-            href="/referral-program-terms-v1.txt"
+            href={TERMS_PATH}
             target="_blank"
             rel="noopener noreferrer"
             className="text-proof hover:text-proof-hover underline underline-offset-2"
           >
-            Member Referral Program Terms (v1)
+            Member Referral Program Terms (current)
           </a>
           . The hash below is computed from the served document as you read
-          this; the same value is recorded on the Source Registry as each
-          member source&apos;s terms fingerprint.
+          this, and it is what a source created NOW commits to. A source created
+          under an earlier version carries that version&apos;s fingerprint —
+          every published version stays online at its own address, so its
+          commitment keeps verifying.
           <TermsCommitmentHash />
         </p>
       </ReferenceSection>

@@ -117,8 +117,9 @@ export function ActivationDoor() {
             Wait for that before you share it:
           </span>{" "}
           until your source is signed on-chain, a purchase made through your
-          link is <span className="text-foreground">not credited to you</span>,
-          and the visit does not appear in Channels.
+          link is <span className="text-foreground">not credited to you</span>.
+          Clicks are already counted in Channels once the source exists on the
+          registry.
         </p>
         <div className="flex flex-wrap gap-x-5 gap-y-1 mt-3 text-xs">
           <span className="text-proof">✓ Request received</span>

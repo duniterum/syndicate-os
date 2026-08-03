@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { TERMS_PATH } from "@/lib/termsDocument";
 import { ShieldCheck } from "lucide-react";
 import { PublicPage } from "@/components/PublicPage";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
@@ -150,17 +151,18 @@ export default function SourceAttribution() {
         The program terms are published as a plain document whose fingerprint
         (keccak256 hash) is recorded on-chain with each member referral source:{" "}
         <a
-          href="/referral-program-terms-v1.txt"
+          href={TERMS_PATH}
           target="_blank"
           rel="noopener noreferrer"
           className="text-proof hover:text-proof-hover underline underline-offset-2"
         >
-          Member Referral Program Terms (v1)
+          Member Referral Program Terms (current)
         </a>
         . The hash below is computed from the served document as you read
-        this; the same value is recorded on the Source Registry as each
-        member source&apos;s terms fingerprint (the contract&apos;s
-        metadataHash field).
+        this, and it is what a source created NOW commits to (the contract&apos;s
+        metadataHash field). A source created under an earlier version carries
+        that version&apos;s fingerprint — every published version stays online at
+        its own address, so its commitment keeps verifying.
         <TermsCommitmentHash />
       </p>
 

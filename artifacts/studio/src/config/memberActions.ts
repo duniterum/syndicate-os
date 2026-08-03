@@ -35,7 +35,7 @@ export const MEMBER_ACTIONS: readonly MemberAction[] = [
     // Footer audit 2026-07-30: "derived from your wallet — the same link
     // forever" died — the handler copies the PAYING source id, which can be
     // founder-signed and can change with the paying source. Say what it IS.
-    note: "The link that pays you — resolved from your seat's paying source.",
+    note: "The link that pays you — resolved from the source that pays you.",
     kind: "copy-referral-link",
     lock: "session",
     lockReason: "Sign in with your wallet to use this.",

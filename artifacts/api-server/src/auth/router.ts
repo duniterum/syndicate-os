@@ -1258,10 +1258,17 @@ router.post("/activation-request", async (req: Request, res: Response) => {
   // fail-closed leg. Leaving it in the 503 test would have let an unavailable
   // ENGINE read (a read about something that no longer matters) take down the
   // ask for a wallet whose only real condition is satisfied.
-  if (
-    eligibility.holdsSyn === null ||
-    eligibility.sourceActive === null // the not-already-live leg is fail-closed
-  ) {
+  // ONLY the SYN read can fail-close the ask (corrected again 2026-08-03, same
+  // day, after review): `sourceActive === null` was in this test as "the
+  // not-already-live leg", but it is null for EXACTLY the wallet this door
+  // exists for — a first-time asker has no source on-chain yet, and
+  // sourceStandingRead returns null (not false) while the ownership index is
+  // still warming after a restart. The studio had just been narrowed to
+  // `holdsSyn === null`, so the button rendered enabled and every ask answered
+  // 503 under the sentence "try again in a moment" — the permanent-refusal-as-
+  // transient-glitch defect, moved from the seat leg to the source leg by the
+  // very commit that claimed to close it.
+  if (eligibility.holdsSyn === null) {
     deny(res, 503, "unavailable"); // a read that didn't run is never a pass
     return;
   }
@@ -1269,6 +1276,11 @@ router.post("/activation-request", async (req: Request, res: Response) => {
     deny(res, 400, "not_eligible");
     return;
   }
+  // (ALREADY LIVE is handled above, before any of this — which is precisely why
+  // the removed `sourceActive === null` leg protected nothing: a KNOWN-active
+  // source was already refused, so the null case only ever blocked wallets with
+  // no source yet. An UNKNOWN state is safe to let through: the operator queue
+  // closes such a row by reality, and one-open-request-per-wallet bounds it.)
   if (eligibility.sourceIdHex === null) {
     deny(res, 503, "unavailable");
     return;

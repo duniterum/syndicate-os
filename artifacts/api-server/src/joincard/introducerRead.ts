@@ -44,7 +44,23 @@ const SELECTOR_SOURCE_CONFIG = keccak256(
 ).slice(0, 10) as `0x${string}`;
 
 const POSITIVE_TTL_MS = 10 * 60 * 1000;
-const NEGATIVE_TTL_MS = 5 * 60 * 1000;
+/**
+ * THE NEGATIVE IS CHEAP TO REDO AND EXPENSIVE TO KEEP (shortened 5 min → 30 s,
+ * 2026-08-03).
+ *
+ * A negative here means "this source is not active", and it is seeded by any
+ * visit while a request is pending — including the referrer's own preview click
+ * from his Link hero. The founder then signs, the bell tells him «Your referral
+ * link is active», and the card would still answer the generic image for up to
+ * five more minutes. Networks keep the FIRST picture they scrape, so a share
+ * inside that window pins the generic site card to his personal link
+ * permanently — the one moment this whole slice exists to get right.
+ *
+ * The original 5 minutes was about crawler spam driving upstream RPC; that
+ * concern is already carried by the route's public-read throttle, and a
+ * re-read costs one eth_call.
+ */
+const NEGATIVE_TTL_MS = 30 * 1000;
 const MAX_ENTRIES = 5_000;
 
 /**

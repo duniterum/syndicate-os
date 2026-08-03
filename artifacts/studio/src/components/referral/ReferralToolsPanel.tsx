@@ -569,8 +569,8 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
           </div>
         ) : null}
         <p className="text-sm text-muted-foreground leading-relaxed">
-          The card shows only what the chain proves — your seat, your chapter,
-          your durable introductions, your rung. The QR scans straight to your
+          The card shows only what the chain proves — your rung, plus your seat
+          and chapter when you hold one. The QR scans straight to your
           permanent link.
         </p>
       </Card>
@@ -944,10 +944,12 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
               </div>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed mt-3">
-              You must hold SYN to introduce others — any amount, no minimum — you
-              cannot recommend what you have left. A referrer who promises
+              You must hold SYN to introduce others — any amount, no minimum: you
+              cannot recommend what you have sold. A referrer who promises
               gains endangers the program: a source can be suspended. The
-              artifacts above are already compliant — share them as they are.
+              artifacts above are already compliant — share them once your
+              source is ACTIVE (before that, a shared link previews the generic
+              site card, and networks keep the first picture they scrape).
             </p>
           </div>
         ) : null}

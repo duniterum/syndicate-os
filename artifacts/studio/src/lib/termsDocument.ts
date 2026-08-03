@@ -62,24 +62,21 @@ export async function fetchTermsHash(path: string = TERMS_PATH): Promise<TermsHa
 }
 
 /**
- * Does an on-chain `metadataHash` match ANY published version of the terms?
+ * ⛔ NOT IMPLEMENTED — AND THE RECORD IS CORRECTED HERE.
  *
- * A source created before v2 committed to v1's bytes, and that commitment is
- * still perfectly valid — so comparing only against the CURRENT document would
- * paint every older source as a mismatch, i.e. report a broken commitment where
- * there is none. Null on any read failure (fail closed: no answer, never a
- * verdict).
+ * A `matchesPublishedTerms()` helper was written when v2 shipped, and commit
+ * 420f2e1's message claimed it "checks an on-chain hash against the current
+ * document AND every prior one, so a v1-era source still verifies". THAT CLAIM
+ * WAS FALSE: the function had ZERO call sites, so no surface performed the
+ * check, and shipping a safety property that does not exist is worse than not
+ * having it. It has been removed rather than left as dead code that reads like
+ * a guarantee.
+ *
+ * WHAT IS TRUE TODAY: every published version stays served at its own address
+ * (see TERMS_PRIOR_PATHS), so ANY source's commitment remains independently
+ * verifiable by hand — download the version, keccak256 its raw bytes, compare
+ * to the registry's metadataHash. What does NOT exist is a surface that does
+ * that comparison FOR the reader; no page currently renders an existing
+ * source's on-chain metadataHash at all. Building one is its own slice.
  */
-export async function matchesPublishedTerms(
-  onChainHash: string,
-): Promise<{ matched: true; path: string } | { matched: false } | null> {
-  const want = onChainHash.toLowerCase();
-  let readAny = false;
-  for (const path of [TERMS_PATH, ...TERMS_PRIOR_PATHS]) {
-    const read = await fetchTermsHash(path);
-    if (read === null) continue;
-    readAny = true;
-    if (read.hash.toLowerCase() === want) return { matched: true, path };
-  }
-  return readAny ? { matched: false } : null;
-}
+

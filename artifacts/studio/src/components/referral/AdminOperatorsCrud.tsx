@@ -739,7 +739,26 @@ export function SourceReviewQueue({
                 ) : (
                   <>
                     <div className="flex flex-wrap gap-1.5 mt-2.5 mb-3">
-                      <CheckChip ok={c?.seatHeld ?? null} pass="Seat held" fail="No seat" norun="Seat — didn't run (blocking)" />
+                      {/* CONTEXT, NOT A CHECK (2026-08-03). The seat stopped
+                          being a condition — approve no longer reads it — so a
+                          red ✕ beside an ENABLED Approve would read as "this one
+                          failed" and get a legitimate seatless SYN holder
+                          declined. Rendered through CheckChip's NEUTRAL branch
+                          (ok=null) so it states a fact and never a verdict, and
+                          adds no new sub-12px literal to a file already at its
+                          type-scale allowance. */}
+                      <CheckChip
+                        ok={null}
+                        pass=""
+                        fail=""
+                        norun={
+                          c?.seatHeld === true
+                            ? "Seat held"
+                            : c?.seatHeld === false
+                              ? "No seat — not required to introduce"
+                              : "Seat — unread (not a condition)"
+                        }
+                      />
                       <CheckChip ok={c?.holdsSyn ?? null} pass="Holds SYN" fail="Holds SYN — 0 at last read" norun="SYN — didn't run (blocking)" />
                       <CheckChip
                         // Fail-closed rendering (adversarial verify 2026-07-22):

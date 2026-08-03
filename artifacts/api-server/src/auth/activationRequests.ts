@@ -162,7 +162,7 @@ export async function createOwnActivationRequest(
           audience: "MEMBER",
           recipientWallet: f.wallet.toLowerCase(),
           title: "New activation request",
-          body: "A member asked for referral activation — it's waiting in your review queue on the console's Sources section.",
+          body: "A wallet asked for referral activation — it's waiting in your review queue on the console's Sources section.",
           icon: "user-plus", // ∈ NOTIFICATION_ICON_PALETTE
           linkPath: null, // deliberate — see the Q39 note above
           category: null,
