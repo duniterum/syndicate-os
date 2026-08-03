@@ -29,8 +29,12 @@ const route = path.resolve(here, "..", "src", "routes", "receiptCard.ts");
 function read(p: string): string {
   return readFileSync(p, "utf8");
 }
+// LINE comments are stripped FIRST: a `/*` inside a `//` line (e.g. a route
+// glob like `/api/auth/*` in a header) would otherwise open a phantom block
+// and swallow real code from the scan — the class was caught live by
+// guard-activity-mine's own RED cycle (2026-08-03).
 function stripComments(code: string): string {
-  return code.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^[ \t]*\/\/.*$/gm, "");
+  return code.replace(/^[ \t]*\/\/.*$/gm, "").replace(/\/\*[\s\S]*?\*\//g, "");
 }
 function stripStrings(code: string): string {
   return code
