@@ -4,13 +4,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 
 > # ▶ 2026-08-03 — RESUME HERE. THE HANDOFF.
 >
-> ## (a) PROD — `8cb2414`, sealed and live (the 9th seal)
-> Replit 6/6: entry `index-mCrGLNJN.js` served twice · old entry 404 · **39 route
-> shells** · 33 routes 200 · /referral-terms live with its title · the lockup's
-> three formats served (svg 15.5 KB · png 18.6 · @2x 41.3) · `wallet_watchAsset`
-> twice in the served bundle · **migrations: explicitly nothing** (the only
-> api-side file in the whole arc is an asset-generator script) · backbone ok,
-> headBlock advancing. **Prod equals the code that shipped.**
+> ## (a) PROD — `f5a2776`, sealed and live (the 10th seal, the audit closure)
+> Replit 6/6: entry `index-CcdRxUnj.js` served twice · old entry 404 · **39 route
+> shells** · 33 routes 200 · /press and /referral-terms 200 · the shared clipboard
+> helper present 5× in the served bundle · **migrations: explicitly nothing**
+> (zero api-server files in the batch) · backbone first cycle CLEAN (ok:1,
+> partial:0, failed:0), headBlock 91 895 814 · spine 39 financial items.
+> `main` is **`d88420a`** — ONE docs-only commit ahead (CLAUDE.md's new agent-cap
+> law), so **prod equals the shipped code**.
+> *The 9th seal `8cb2414` (the Add-SYN / lockup / referral-terms cycle) is its
+> parent — every surface in (b) went live at one of the two.*
 >
 > ## (b) WHAT WENT LIVE this session — by surface, each with its guard
 > | Surface | What ships | Guard (blocking chain) |
@@ -23,9 +26,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > | **footer — Add SYN to your wallet** | One EIP-747 `wallet_watchAsset` call to the connected client (every injected wallet answers it). Address from the served verify link, decimals from the served reality, fail-closed. | `guard-watch-asset` 9/9 |
 > | **19 guard scanners repaired** | The phantom-block class: a `/*` inside a `//` line swallowed real code from the scan. Line-first everywhere, closers preserved. | proven RED per scanner |
 >
-> ## (c) IN FLIGHT — code: nothing open. **DEPLOY BACKLOG: ONE slice** — the
-> ## seven-hat audit closure (this commit). 🚀 **BATCHABLE**: client + docs only,
-> ## nothing breaks while it waits; prod stays correct on `8cb2414`.
+> ## (c) IN FLIGHT — code: nothing open. **DEPLOY BACKLOG: EMPTY.** The seven-hat
+> ## audit closure is LIVE (`f5a2776`); the only commit above prod is docs-only.
+> ## ⚠ NEW LAW, read it before any multi-agent run: **CLAUDE.md PRE-HANDOFF GATE
+> ## ④-bis** — an agent cap he gives is the TOTAL for the run, counted before
+> ## launch and enforced IN THE SCRIPT (a review he capped at «5 à 10 agents»
+> ## spawned 58 — a verifier per finding — and took his context to 74% and his
+> ## weekly quota to 100%).
 > **The audit that produced it** (his order, before any deploy word): 7 senior hats
 > over the whole arc, 51 raw findings → **32 confirmed** by independent skeptics →
 > 24 distinct defects (**0 CRITICAL · 5 REAL · 19 MINOR**). All closed, RED-first
