@@ -10,8 +10,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > helper present 5× in the served bundle · **migrations: explicitly nothing**
 > (zero api-server files in the batch) · backbone first cycle CLEAN (ok:1,
 > partial:0, failed:0), headBlock 91 895 814 · spine 39 financial items.
-> `main` is **`d88420a`** — ONE docs-only commit ahead (CLAUDE.md's new agent-cap
-> law), so **prod equals the shipped code**.
+> `main` is **`d6b02e5`** — TWO commits ahead, BOTH docs-only (`d88420a` CLAUDE.md's
+> new agent-cap law · `d6b02e5` this seal), verified by
+> `git diff --name-only f5a2776..HEAD` = CLAUDE.md + SESSION_STATE.md. So **prod
+> equals the shipped code**.
 > *The 9th seal `8cb2414` (the Add-SYN / lockup / referral-terms cycle) is its
 > parent — every surface in (b) went live at one of the two.*
 >
@@ -92,7 +94,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > | `CLAUDE.md` | The four checks (twin search · RED first · no unmeasured figure · import never re-derive) + every engraved law. Nothing else matters if these fail. |
 > | `docs/SESSION_STATE.md` (this block) | The resume point **and the sha authority** — prod's sha is written here and nowhere else. |
 > | `docs/direction/OPEN_QUEUE.md` (top blocks) | In-flight decisions; restate at every gate, append evidence before session end. **Only the founder closes an item.** |
-> | `artifacts/studio/src/config/featureStatus.ts` | The ONE live-vs-future truth, in code. Read before writing any "coming/future" word. `guard-feature-truth` PASSes 693 checks; **no key change was owed by this session** (measured, not assumed). |
+> | `artifacts/studio/src/config/featureStatus.ts` | The ONE live-vs-future truth, in code. Read before writing any "coming/future" word. `guard-feature-truth` PASSes **695 checks** (re-run 2026-08-03 at close — the audit's 693 was already stale); **no key change was owed by this session**. |
 > | `docs/direction/BACKLOG.html` | The full inventory — **rebuilt and recounted 2026-08-03** (184 rows, 14 categories, all four counter systems reconciling). |
 > | `docs/DESIGN_ROADMAP.md` | The design workstream's single source; tick boxes in the SAME commit as the slice (that rule was broken three times this session and is now repaid). |
 > | `docs/direction/SETTLED_RULES_DO_NOT_RELITIGATE.md` | Answered forever — addresses are PUBLIC, no legal gate, no PII jargon on any surface. |
