@@ -63,8 +63,8 @@ import {
 } from "./sourceDecoders";
 import { HISTORICAL_FREEZE_WALLETS } from "./historicalFreezeWallets";
 import { REFERRAL_ATTRIBUTION_SNAPSHOT } from "./referralAttributionSnapshot";
+import { activeIntroductionModel } from "./activeIntroductionModel";
 import { INTRODUCTION_SNAPSHOT } from "./introductionSnapshot";
-import { getLiveIntroductionModel } from "./introductionLiveModel";
 import {
   SELECTOR_TOTAL_USDC_RAISED,
   SELECTOR_BALANCE_OF,
@@ -2016,12 +2016,18 @@ async function buildFinancialGroup(
   //     live-refreshed model when at least as fresh; the committed snapshot is
   //     the boot fallback. Fail-closed: an invalid shape serves null.
   {
-    const liveModel = getLiveIntroductionModel();
-    const active =
-      liveModel !== null &&
-      liveModel.model.asOfBlock >= INTRODUCTION_SNAPSHOT.model.asOfBlock
-        ? { model: liveModel.model, provenance: "backbone live refresh" }
-        : { model: INTRODUCTION_SNAPSHOT.model, provenance: "committed snapshot" };
+    // THE ONE pick (activeIntroductionModel, 2026-08-03) — only the provenance
+    // LABEL is this surface's own business. The rule lived inlined here, in
+    // sourcePerformanceService and in sourceStandingRead; three homes for one
+    // freshness decision is how three surfaces answer from different models.
+    const picked = activeIntroductionModel();
+    const active = {
+      model: picked.model,
+      provenance:
+        picked.hash === INTRODUCTION_SNAPSHOT.snapshotHash
+          ? "committed snapshot"
+          : "backbone live refresh",
+    };
     const paidRaw = active.model.totals.commissionPaidRaw;
     const paidValid =
       active.model.gate === "INTRODUCTION_READMODEL_V1" &&

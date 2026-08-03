@@ -101,7 +101,7 @@ The Syndicate is a members club that lives on-chain. This file guides AI readers
 - [Join](https://thesyndicate.money/join): Read your exact live quote — what you pay, the SYN you receive, where every dollar routes — then join with two signatures from your own wallet on Avalanche C-Chain.
 - [Referral Program](https://thesyndicate.money/referral): How an eligible completed introduction pays a bounded commission to the introducer's wallet inside the buyer's own transaction — on-chain, shown by receipt. Membership is not an investment.
 - [Build a Referral Link](https://thesyndicate.money/source): Validate a referral code against the on-chain registry and build a shareable join link. Checking is free and writes nothing.
-- [Member Home](https://thesyndicate.money/member): Sign in with your wallet to see only your own standing — your seat, the people you brought in, and what you've been paid, read live. There is no directory of members.
+- [Member Home](https://thesyndicate.money/member): Sign in with your wallet to see only your own standing — your seat, the people you brought in, and what you've been paid, read live. It answers for your account, never anyone else's.
 - [Wallet](https://thesyndicate.money/wallet): Your own SYN, USDC and Archive artifact balances and your own approvals — own-row only.
 - [Toolkit](https://thesyndicate.money/toolkit): Every member action in one place; locked actions stay visible with their plain reason.
 

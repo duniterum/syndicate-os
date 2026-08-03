@@ -25,7 +25,19 @@ ALLOWED — the chain already publishes it:
   · Whatever a member CHOOSES to publish (opt-in self-publish)
 
 ## TWO DISCIPLINES. DIFFERENT ON PURPOSE.
-THE SERVER emits no MEMBER address — not out of modesty, but because NO DIRECTORY EXISTS TO EMIT.
+⛔ **STRUCK 2026-08-03 (founder, angry, second time)** — the old sentence claimed the server emitted no member address for want of anything to emit. **FALSE, and it kept coming back.**
+**THE REGISTER EXISTS** — `thesyndicate.money/registry` publishes the per-seat roster of
+ADDRESSES, and the season board ranks and celebrates them. That is the product, not a leak.
+An address is PUBLIC (CLAUDE.md, THE ADDRESS MODEL): shown short-form, explorer-linked,
+never hidden, never masked-as-security.
+
+**THE RED LINE IS AND ONLY IS name / alias / email — and any NAME↔ADDRESS directory.**
+So the sentence that survives is the narrow one, and it is about a LOOKUP, never about
+existence: an own-row endpoint answers for YOUR row, and no surface anywhere maps a wallet
+or a seat to a HUMAN. `guard-no-directory-fossil` now makes the absolute claim a RED BUILD:
+⛔ never write "no directory exists" again, in any file, in any language.
+
+THE SERVER's member reads stay OWN-ROW because a session answers for its own account —
   member-standing = own-row only. Source registry = two booleans. UNCHANGED.
 THE CLIENT reads the chain like an explorer — because THE CHAIN IS PUBLIC.
   These are not contradictory rules. They are two LAYERS with two ROLES.

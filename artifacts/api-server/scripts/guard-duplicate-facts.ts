@@ -308,9 +308,20 @@ const DEBT: Readonly<Record<string, readonly string[]>> = {
   //   target; client and server cannot import each other — the USDC-base
   //   pattern above). SeatFlowDiagram's copy stays the UNRELATED USDC display
   //   divisor; studio code needing the story fact imports chapters.ts.
+  //   AMENDED AGAIN 2026-08-03 (K1.7, founder GO « je veux chaque image »): the
+  //   server's lib/protocol/chapters.ts joins as STORY_FINAL_SEAT, the DECLARED
+  //   MIRROR of the studio line blessed above. Reason for the spread, stated:
+  //   the join-card painter needs the story-final seat to write the collectible
+  //   preview's seniority sentence, and importing it from milestoneReadmodel
+  //   would drag the BACKBONE into the share-card zone — a read-model pulled in
+  //   to paint a picture. It goes beside the chapter table it belongs to, in
+  //   the file that is ALREADY the studio table's declared twin, and
+  //   backbone.guard now reconciles the constant across the two artifacts by
+  //   VALUE (not just the five chapter rows) — so this pair cannot drift.
   "pinned numeric literal::1_000_000": [
     "artifacts/api-server/src/backbone/milestoneReadmodel.ts",
     "artifacts/api-server/src/backbone/nativeAvaxScan.ts",
+    "artifacts/api-server/src/lib/protocol/chapters.ts",
     "artifacts/studio/src/components/hero/SeatFlowDiagram.tsx",
     "artifacts/studio/src/lib/chapters.ts",
   ],

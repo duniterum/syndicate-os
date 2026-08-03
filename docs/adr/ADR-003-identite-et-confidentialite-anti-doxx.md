@@ -34,10 +34,16 @@ pour but de cacher la chaîne (impossible). Son but est double, et c'est **tout*
 1. **PAS DE KYC, aucune identité réelle stockée.** Il n'existe *rien* à fuiter qui lie un
    wallet à une personne. C'est le **bouclier le plus fort** — et la différence entre ce
    protocole et celui qui s'est fait doxxer. Le wallet EST l'identité (§ facts).
-2. **PAS D'ANNUAIRE.** Chaque surface est **OWN-ROW** (tu lis TON propre standing via ta
-   session signée) **ou AGRÉGAT** (comptes, racines, jamais un roster nominatif). Aucun
-   lookup par wallet/siège d'un tiers n'existe nulle part. La plateforme **refuse** d'être
-   l'agrégateur. Le mapping memberNumber → wallet reste **server-only**, jamais sérialisé.
+2. **PAS D'ANNUAIRE NOMINATIF.** ⛔ *Corrigé 2026-08-03 (fondateur) : la formule «pas
+   d'annuaire» tout court était FAUSSE et revenait sans cesse.* **LE REGISTRE EXISTE** —
+   `/registry` publie le roster par siège des ADRESSES, et le season board les classe et
+   les célèbre : c'est le produit. Une adresse est **publique** (voir THE ADDRESS MODEL).
+   Ce qui n'existe nulle part, c'est un **annuaire NOM↔ADRESSE** et tout lookup d'une
+   IDENTITÉ HUMAINE. Les surfaces de compte restent **OWN-ROW** (tu lis TON standing via ta
+   session signée) parce qu'une session répond pour son propre compte — pas parce que la
+   donnée serait secrète. Le mapping memberNumber → **nom** n'existe pas ; le mapping
+   memberNumber → wallet est public par la chaîne. `guard-no-directory-fossil` rend la
+   formule absolue ROUGE au build.
 3. **RÉVÉLATION OPT-IN.** Un membre **peut choisir** d'afficher un nom d'affichage ou de
    partager la preuve de son siège (un « flex »). **Défaut = pseudonyme.** Toujours son
    choix, jamais imposé, jamais rétroactif.
@@ -75,7 +81,7 @@ own-row côté cockpit, preuve agrégée côté `/proof`.
   dans les tests `auth-skeleton`. Le pont genesis (`auth/memberRoster.ts`) est own-row.
 - **PII server-only** : `member_continuity_record.entry_wallet` / `entry_transaction` ne
   sortent d'aucun payload public (doctrine schéma `memberContinuity.ts` / `partB.ts`).
-- **Pas d'annuaire** : `guard-access-state` interdit tout matériel de lookup membre dans le
+- **Pas d'annuaire NOMINATIF** : `guard-access-state` interdit tout matériel de lookup membre dans le
   frontend ; le snapshot Holder Index est **agrégat seul, 0 adresse**.
 - **Émission d'adresses bornée** : seul `verifyLinks.ts` émet des adresses — et **uniquement
   d'infrastructure** (contrats, trésorerie, LP, burn), jamais un wallet membre
@@ -119,7 +125,7 @@ avec une adresse 40-hex et renvoyait 500 à chaque membre reconnu), donc un futu
 est propre et gratuit.
 
 **Ce qui NE change PAS — le cœur d'ADR-003 tient (§1–§5 restent en vigueur) :** pas de KYC /
-aucune identité réelle stockée · **pas d'annuaire** · chaque surface own-row ou agrégat · le
+aucune identité réelle stockée · **pas d'annuaire nominatif** · chaque surface own-row ou agrégat · le
 mapping `memberNumber → wallet` reste **server-only** (jamais construit dans un payload servi
 en premier lieu). Lever ce *net* ne doxxe donc **personne aujourd'hui** — il retire la
 **capture automatique** d'une régression future. Les guards de build qui scannent
@@ -166,7 +172,7 @@ invention. Quand la couche alias arrivera (M2/M3), l'alias remplacera l'adresse 
 même ligne (« brought by CryptoKemal » — la vitrine).
 
 **Ce qui NE change PAS — le cœur tient :** pas de KYC / aucune identité réelle stockée ·
-pas d'annuaire ni de lookup · zone own-row/auth intacte · le rapport agrégé du backbone
+pas d'annuaire nominatif ni de lookup d'identité · zone own-row/auth intacte · le rapport agrégé du backbone
 reste aveugle (ni nombres, ni adresses) · **une adresse COMPLÈTE de membre ne se sérialise
 nulle part** — la forme courte est dérivée côté serveur et les scanners de sortie (40-hex)
 restent armés, inchangés : une adresse complète dans un payload reste un build rouge / 500 ·

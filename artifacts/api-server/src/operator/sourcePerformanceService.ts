@@ -15,6 +15,7 @@
 // wallets only, any error → "unavailable".
 
 import { randomUUID } from "node:crypto";
+import { activeIntroductionModel } from "../lib/protocol/activeIntroductionModel";
 import { AUTH_EXPOSURE_FLAG } from "../auth/authExposure";
 import { explorerUrlForAddress } from "../canon/the-syndicate/contracts/syndicate-config";
 import { countSourcesCreated, readSourceRoster } from "../lib/protocol/sourceCreatedCount";
@@ -30,8 +31,6 @@ import { bytes32Word } from "../lib/protocol/sourceDecoders";
 import { SOURCE_LINKAGE_TARGET } from "../data/protocolTargets";
 import { keccak256, toHex } from "viem";
 import { sourceKeyOf } from "../lib/protocol/introductionReadmodel";
-import { getLiveIntroductionModel } from "../lib/protocol/introductionLiveModel";
-import { INTRODUCTION_SNAPSHOT } from "../lib/protocol/introductionSnapshot";
 import { getAllOwnershipEdges } from "../lib/protocol/sourceOwnershipIndex";
 import { canonicalSourceIdHex } from "../auth/activationEligibility";
 
@@ -129,12 +128,7 @@ export async function listSourcePerformance(actor: {
 
     // The read-model (live preferred, committed snapshot as the honest floor
     // — the sourceStandingRead freshness rule).
-    const liveModel = getLiveIntroductionModel();
-    const active =
-      liveModel !== null &&
-      liveModel.model.asOfBlock >= INTRODUCTION_SNAPSHOT.model.asOfBlock
-        ? liveModel.model
-        : INTRODUCTION_SNAPSHOT.model;
+    const active = activeIntroductionModel().model;
 
     // Universe 1: every ownership edge (purchase-backed sources). NULL =
     // the in-memory index has never built this process lifetime (post-boot

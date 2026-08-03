@@ -12,10 +12,22 @@
 // Behavior, receipts-exact: every act fires onAct (the receipts advance
 // their face rotation on it); an intent or native act CLOSES the box; a copy
 // never does. The url/text contract rides shareIntentArgs — ONE decision.
+//
+// V2 (founder catch, 2026-08-03 — the sixteen-doors-one-picture defect): a
+// share INTENT carries text + a link and can never carry an image; the picture
+// a network shows is the LINK's own unfurl. That is the platforms' law, not
+// ours. What is ours is being honest about it and making the mount able to
+// compensate — three OPTIONAL seams, all no-ops for a mount that ignores them
+// (the receipt ticket, whose page already unfurls its own ticket, is unchanged):
+//   · linkForTarget — the link resolved PER NETWORK, so a mount can tag it
+//     with the channel it is being handed to (&via=, what Channels counts);
+//   · onIntent — fired after the intent opens, so a mount can hand the member
+//     what the link could not carry (the kit downloads the artifact PNG);
+//   · intentHint — one line, under the six, saying what actually travels.
 
 import { useState } from "react";
 import { Check, Copy, Share2 } from "lucide-react";
-import { orderedShareTargets, shareIntentArgs } from "@/lib/shareTargets";
+import { orderedShareTargets, shareIntentArgs, type ShareTargetDef } from "@/lib/shareTargets";
 import { shareTargetIcons } from "@/lib/shareTargetIcons";
 import { copyText } from "@/lib/clipboard";
 
@@ -29,6 +41,9 @@ export function ShareSurface({
   nativeHint,
   onNativeShare,
   onAct,
+  onIntent,
+  linkForTarget,
+  intentHint,
   onClose,
   id,
   testid,
@@ -48,6 +63,18 @@ export function ShareSurface({
   onNativeShare: () => void;
   /** Fired after EVERY successful act (copy · intent · native). */
   onAct?: () => void;
+  /** Fired after an INTENT act only, with the network it went to — the mount's
+   * hook for whatever the link itself cannot carry (the kit hands over the
+   * artifact PNG so the member attaches it to the post). */
+  onIntent?: (target: ShareTargetDef) => void;
+  /** The link this network gets, when it differs from pageUrl — the mount's
+   * chance to tag the destination channel. Absent → every intent carries
+   * pageUrl, exactly as before. */
+  linkForTarget?: (target: ShareTargetDef) => string;
+  /** One honest line under the six: what a link intent does and does not
+   * carry. Absent → no line (a mount whose page already unfurls its own
+   * picture has nothing to explain). */
+  intentHint?: string;
   /** The box closes itself after intent/native acts — never after copy. */
   onClose: () => void;
   /** The DOM id the trigger's aria-controls points at — pass a useId-unique
@@ -95,8 +122,19 @@ export function ShareSurface({
               key={t.id}
               type="button"
               onClick={() => {
-                const [intentUrl, intentText] = shareIntentArgs(t, pageUrl, textBare, textInline);
+                // The link THIS network gets — tagged by the mount, or the page.
+                const url = linkForTarget?.(t) ?? pageUrl;
+                // The inline form (whatsapp · email place the link themselves)
+                // must carry the SAME link: recomposed from the bare text when
+                // the mount tags, so a tagged share never sends an untagged
+                // link in its body. No mount tagging → byte-identical to before.
+                const inline = linkForTarget === undefined ? textInline : `${textBare} ${url}`;
+                const [intentUrl, intentText] = shareIntentArgs(t, url, textBare, inline);
+                // Opened SYNCHRONOUSLY on the click: a window.open placed
+                // behind an await loses the user activation and dies in a
+                // popup blocker — the silent failure this family refuses.
                 window.open(t.build(intentUrl, intentText), "_blank", "noopener,noreferrer");
+                onIntent?.(t);
                 onAct?.();
                 onClose();
               }}
@@ -109,6 +147,14 @@ export function ShareSurface({
           );
         })}
       </div>
+      {intentHint !== undefined ? (
+        <p
+          className="text-xs text-muted-foreground leading-relaxed mt-2.5"
+          data-testid={`text-${testidBase}-intent-hint`}
+        >
+          {intentHint}
+        </p>
+      ) : null}
       {nativeAvailable ? (
         <button
           type="button"

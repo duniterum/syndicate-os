@@ -69,7 +69,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
     entries: [
       {
         q: "What is SYN?",
-        a: "A fixed-supply ERC-20 utility token on Avalanche C-Chain, and the V1 membership seat: holding SYN means the wallet is seated. It powers rank, identity in the archive, and participation. It is not a share, not a security, and not a claim on treasury assets.",
+        a: "A fixed-supply ERC-20 utility token on Avalanche C-Chain. Holding SYN is what lets a wallet introduce others and earn a commission; a SEAT is a different thing — the numbered membership a purchase records on-chain. It powers rank, identity in the archive, and participation. It is not a share, not a security, and not a claim on treasury assets.",
       },
       {
         q: "Is SYN live?",
@@ -107,7 +107,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       },
       {
         q: "Can I take multiple seats?",
-        a: "No — the seat is binary. A wallet is seated by holding SYN. A small entrant and a large entrant both hold one seat; what differs is contribution depth, SYN acquired, USDC routed, rank progression, and historical footprint.",
+        a: "No — the seat is binary. A seat is the numbered membership a purchase records on-chain (holding SYN alone is not a seat). A small entrant and a large entrant both hold one seat; what differs is contribution depth, SYN acquired, USDC routed, rank progression, and historical footprint.",
       },
       {
         q: "What changes after I join?",

@@ -694,10 +694,14 @@ export function SourceReviewQueue({
           {open.map((r) => {
             const c = r.checks;
             const closedByReality = c?.sourceActive === true;
+            // THE SEAT IS NOT A CHECK (2026-08-03). The server's own
+            // decideActivationRequest never looked at it; only this operator UI
+            // did — so a legitimate seatless SYN holder's request reached the
+            // queue and could be Declined but never Approved. The chain gates
+            // on the balance (SPEC_REFERRAL_SYSTEM §262/§436).
             const approveReady =
               !closedByReality &&
               c !== null &&
-              c.seatHeld === true &&
               c.holdsSyn === true &&
               c.sourceOnChain !== null &&
               c.sourceActive !== null;

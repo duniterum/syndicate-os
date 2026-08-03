@@ -12,7 +12,7 @@
 
 import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
-import QRCode from "qrcode";
+import { injectQr } from "../lib/cards/qrGrid";
 import { buildFace, CARD_H, CARD_W, type SatoriNode } from "./faces";
 import type { ReceiptCardFacts } from "./cardFacts";
 
@@ -37,25 +37,6 @@ function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
   return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
 }
 
-/** The QR module grid as plain SVG rects at the face's reserved box. */
-function qrSvgGroup(url: string, x: number, y: number, box: number, pad: number): string {
-  const qr = QRCode.create(url, { errorCorrectionLevel: "M" });
-  const n = qr.modules.size;
-  const inner = box - 2 * pad;
-  const s = inner / n;
-  const rects: string[] = [];
-  for (let r = 0; r < n; r += 1) {
-    for (let c = 0; c < n; c += 1) {
-      if (qr.modules.get(r, c)) {
-        rects.push(
-          `<rect x="${(x + pad + c * s).toFixed(2)}" y="${(y + pad + r * s).toFixed(2)}" width="${s.toFixed(2)}" height="${s.toFixed(2)}" fill="#000"/>`,
-        );
-      }
-    }
-  }
-  return `<g>${rects.join("")}</g>`;
-}
-
 /**
  * Paint one face to a PNG buffer. Throws on any internal failure — the
  * route catches and falls back to the generic image (fail-closed: a broken
@@ -72,10 +53,7 @@ export async function paintReceiptCard(
     height: CARD_H,
     fonts: FONTS,
   });
-  if (spec.qr !== null) {
-    const grid = qrSvgGroup(spec.qr.url, spec.qr.x, spec.qr.y, spec.qr.box, spec.qr.pad);
-    svg = svg.replace("</svg>", `${grid}</svg>`);
-  }
+  svg = injectQr(svg, spec.qr);
   const png = new Resvg(svg, { fitTo: { mode: "width", value: CARD_W } }).render().asPng();
   const buf = Buffer.from(png);
   return buf.length <= CARD_MAX_BYTES ? buf : null;

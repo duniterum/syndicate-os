@@ -268,7 +268,7 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     sitemap: true,
     title: "Member Home — Your Seat, Your Standing",
     description:
-      "Sign in with your wallet and see your own standing: your seat, the people you brought in, and what you've been paid — read live from the chain. Only your own row; there is no directory of members.",
+      "Sign in with your wallet and see your own standing: your seat, the people you brought in, and what you've been paid — read live from the chain. Only your own row — this page answers for your account, never anyone else's.",
     canonicalPath: "/member",
     changefreq: "weekly",
     priority: 0.7,

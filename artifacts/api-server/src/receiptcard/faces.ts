@@ -33,17 +33,12 @@ const BORDER = "#25344B";
 const MONO = "IBM Plex Mono";
 const SANS = "Work Sans";
 
-/** Where a face wants its QR painted (satori reserves the white box; the
- *  painter injects the module grid into the final SVG at these coords). */
-export interface QrSpot {
-  /** Top-left of the WHITE box (padding included). */
-  readonly x: number;
-  readonly y: number;
-  /** The box's outer size; the module grid gets box − 2·pad. */
-  readonly box: number;
-  readonly pad: number;
-  readonly url: string;
-}
+// The QR spot type and the quiet-zone rule are ONE declaration each, in
+// lib/cards/qrGrid — the join card and this file both reserve a plate for the
+// same injector, so a field added there can never be silently missed here
+// (2026-08-03).
+import { quietZonePad, type QrSpot } from "../lib/cards/qrGrid";
+export type { QrSpot };
 
 export interface FaceSpec {
   readonly node: SatoriNode;
@@ -145,9 +140,19 @@ function root(children: (SatoriNode | string)[]): SatoriNode {
 
 /** The shared QR geometry (faces 1 + 4): white box, right side, centered. */
 const QR_BOX = 262;
-const QR_PAD = 16;
+// The quiet zone is COMPUTED from the payload, not guessed: the hand-picked
+// 16px measured 2.85 modules on a real explorer url where the QR standard asks
+// FOUR (2026-08-03, the same defect the join card was fixed for — this surface
+// already ships to members, so it gets the fix too).
+const qrPad = (url: string) => quietZonePad(QR_BOX, url);
 const QR_X = CARD_W - 90 - QR_BOX; // 848
 const QR_Y = 140;
+// satori resolves an absolute child against the PADDING box, so a plate on a
+// 2px-bordered card renders 2px in — while injectQr writes raw SVG coordinates.
+// The join card learned this by reading its pixels back; the receipt card has
+// the same shell and was missing it (2026-08-03), which is why its quiet-zone
+// fix landed at 3.35 modules on two sides instead of 4.
+const CARD_BORDER = 2;
 
 function qrColumn(caption: string, sub: string | null): SatoriNode[] {
   const nodes: SatoriNode[] = [
@@ -240,7 +245,7 @@ function faceSeat(f: ReceiptCardFacts): FaceSpec {
       ]),
       ...qrColumn("SCAN TO VERIFY", "the transaction, on-chain"),
     ]),
-    qr: { x: QR_X, y: QR_Y, box: QR_BOX, pad: QR_PAD, url: f.explorerTxUrl },
+    qr: { x: QR_X + CARD_BORDER, y: QR_Y + CARD_BORDER, box: QR_BOX, pad: qrPad(f.explorerTxUrl), url: f.explorerTxUrl },
   };
 }
 
@@ -341,7 +346,7 @@ function faceProof(f: ReceiptCardFacts): FaceSpec {
       ]),
       ...qrColumn("SCAN TO VERIFY", null),
     ]),
-    qr: { x: QR_X, y: QR_Y, box: QR_BOX, pad: QR_PAD, url: f.explorerTxUrl },
+    qr: { x: QR_X + CARD_BORDER, y: QR_Y + CARD_BORDER, box: QR_BOX, pad: qrPad(f.explorerTxUrl), url: f.explorerTxUrl },
   };
 }
 

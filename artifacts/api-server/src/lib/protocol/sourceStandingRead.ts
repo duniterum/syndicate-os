@@ -35,8 +35,7 @@ import {
 } from "./sourceDecoders";
 import { SOURCE_LINKAGE_TARGET } from "../../data/protocolTargets";
 import { sourceKeyOf } from "./introductionReadmodel";
-import { INTRODUCTION_SNAPSHOT } from "./introductionSnapshot";
-import { getLiveIntroductionModel } from "./introductionLiveModel";
+import { activeIntroductionModel } from "./activeIntroductionModel";
 import { getOwnedSources } from "./sourceOwnershipIndex";
 
 export interface OwnSourceStanding {
@@ -183,12 +182,10 @@ export async function readOwnSourceStanding(
   // backbone's live-refreshed model when it is at least as fresh; the
   // committed snapshot stays the boot fallback (the server is never worse
   // than the last founder-gated build). asOfBlock stays honest either way.
-  const liveModel = getLiveIntroductionModel();
-  const active =
-    liveModel !== null &&
-    liveModel.model.asOfBlock >= INTRODUCTION_SNAPSHOT.model.asOfBlock
-      ? { model: liveModel.model, hash: liveModel.modelHash }
-      : { model: INTRODUCTION_SNAPSHOT.model, hash: INTRODUCTION_SNAPSHOT.snapshotHash };
+  // The pick itself moved to activeIntroductionModel 2026-08-03 — the join
+  // card's face read needed the same rule and a second copy is how two answers
+  // drift. Behaviour here is unchanged, byte for byte.
+  const active = activeIntroductionModel();
   // Ruling ① (2026-07-16): the resolved id travels own-row so the client
   // advertises the PAYING source's link (canonical or founder-signed alike).
   out.sourceIdHex = resolvedId.toLowerCase();

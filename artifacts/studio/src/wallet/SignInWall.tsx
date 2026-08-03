@@ -71,8 +71,8 @@ export function SignInWall({ teaser, children }: SignInWallProps) {
       <div className="max-w-2xl">{teaser}</div>
       <p className="text-sm text-muted-foreground leading-relaxed mt-3 max-w-2xl">
         {connectedNotSigned
-          ? "You're connected — sign in to read your own account. Signing proves you control this wallet; it reads only your own row, never a directory, and moves no funds."
-          : "Connect and sign in to read your own account — live from the chain, own-row only, never a directory."}
+          ? "You're connected — sign in to read your own account. Signing proves you control this wallet; it reads only your own row, never anyone else's, and moves no funds."
+          : "Connect and sign in to read your own account — live from the chain, own-row only — never anyone else's."}
       </p>
       <div className="mt-4">
         {authLive ? <ConnectButton showBalance={false} /> : <WalletAuthComingSoon />}

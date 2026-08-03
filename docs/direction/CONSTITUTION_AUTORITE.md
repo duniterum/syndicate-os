@@ -197,7 +197,7 @@ vers n'importe quel wallet et détourner CHAQUE achat.**
 | **Changer un taux de commission** | On-chain. Un event. Le founder signe. |
 | **Toucher au 70/20/10** | Gravé dans le bytecode. |
 | **Fabriquer un membre** | Le siège vient de l'**event émis**. |
-| **Émettre l'adresse d'un MEMBRE** | **Aucun annuaire n'existe. Il n'y a rien à émettre.** |
+| **Lier un membre à une IDENTITÉ (nom/alias/email)** | ⛔ *Corrigé 2026-08-03 : la ligne disait « Émettre l'adresse d'un MEMBRE — aucun annuaire n'existe ». FAUX depuis THE REGISTER.* **L'ADRESSE est publique et publiée sur THE REGISTER. Ce qui n'existe nulle part, c'est le lien nom↔adresse.** |
 | **Combler un trou par un cache ou un littéral** | **Fail-closed. Il DIT qu'il ne peut pas lire.** |
 
 ## LA DISCIPLINE DE LECTURE — déjà en place

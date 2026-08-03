@@ -63,7 +63,7 @@ app shell fill wide screens without feeling empty (multi-column / card grids / s
 - **Visibility Law (TIER-0):** own-wallet chain reads are permitted **where they are the surface's
   point** (tools); gating a *personal dashboard* behind sign-in is **not** "hiding a public fact"
   (the chain stays readable on any explorer). We still **show the money** everywhere it is shown.
-- **ADR-003 anti-doxx:** own-row only, never a directory, never a wallet↔person link.
+- **ADR-003 anti-doxx:** own-row only, never a lookup of another member, **never a wallet↔person link**. *(2026-08-03 — THE REGISTER publishes the per-seat ADDRESS roster; the red line is name/alias/email, never the address.)*
 - **Q-B (settled):** the SIWE session **persists after wallet disconnect** (pattern 2). Gating is
   only about **NOT-signed** states — a signed member keeps the member view even with the wallet
   disconnected.

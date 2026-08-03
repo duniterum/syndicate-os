@@ -112,8 +112,13 @@ export function ActivationDoor() {
           </span>
         </div>
         <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-          You'll be notified here the moment it's decided. Your link already
-          works — anyone who joins through it is recorded on-chain either way.
+          You'll be notified here the moment it's decided.{" "}
+          <span className="text-foreground">
+            Wait for that before you share it:
+          </span>{" "}
+          until your source is signed on-chain, a purchase made through your
+          link is <span className="text-foreground">not credited to you</span>,
+          and the visit does not appear in Channels.
         </p>
         <div className="flex flex-wrap gap-x-5 gap-y-1 mt-3 text-xs">
           <span className="text-proof">✓ Request received</span>
@@ -126,7 +131,11 @@ export function ActivationDoor() {
 
   // ── The eligibility card (no open request) ────────────────────────────────
   const declined = request !== null && request.status === "DECLINED";
-  const checksUnavailable = seatHeld === null || holdsSyn === null;
+  // ONLY the SYN read can make the checks unavailable. The seat is shown, not
+  // required (the chain gates on the balance — SPEC §262/§436), so an engine
+  // hiccup must never collapse this card for a wallet whose one real condition
+  // is satisfied. Corrected 2026-08-03 with the server's own gate.
+  const checksUnavailable = holdsSyn === null;
 
   async function ask() {
     setBusy(true);
@@ -186,11 +195,12 @@ export function ActivationDoor() {
                   : "✓ A seat — yours"}
               </StatusPill>
             ) : (
-              <StatusPill tone="danger" size="xs">✕ A seat — you don't have one yet</StatusPill>
+              // NEUTRAL, never danger: the chain does not ask for a seat to
+              // introduce (see the gate note below). It is a fact about him,
+              // not a failed requirement.
+              <StatusPill tone="neutral" size="xs">◌ A seat — not yet, and not required to introduce</StatusPill>
             )}
-            {seatHeld === false ? (
-              <StatusPill tone="neutral" size="xs">◌ SYN — comes with your seat</StatusPill>
-            ) : holdsSyn === true ? (
+            {holdsSyn === true ? (
               <StatusPill tone="live" size="xs">
                 {readback.synRaw !== null
                   ? `✓ SYN in your wallet — you hold ${synDisplay(readback.synRaw)}`
@@ -201,21 +211,18 @@ export function ActivationDoor() {
             )}
           </div>
 
-          {seatHeld === false ? (
-            // No seat: the conversion face — one door, both checks in one act.
-            <>
-              <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
-                Your first purchase takes your seat and puts SYN in your wallet
-                — both checks turn green in one act.
-              </p>
-              <Button asChild variant="outline" size="sm" className="mt-3">
-                <Link href="/join" data-testid="link-activation-membership">
-                  See how membership works
-                </Link>
-              </Button>
-            </>
-          ) : holdsSyn === false ? (
-            // Seat held, zero SYN: blocked honestly, remedies inline.
+          {/* THE GATE IS SYN, NEVER THE SEAT (founder, 2026-08-03; the chain
+              agrees and the spec says so twice). MembershipSaleV3 reverts only
+              on `SYN.balanceOf(sourceWallet) == 0` — the error is NAMED
+              ReferrerNotSeated but SPEC_REFERRAL_SYSTEM §262/§436 state it
+              plainly: «ReferrerNotSeated ne vérifie pas le siège. Il vérifie le
+              solde.» Until today this door branched on the SEAT first and never
+              rendered the ask for a seatless wallet — so a signed-in holder who
+              bought SYN on the DEX, whom the contract accepts, could not even
+              ask. The seat is now what it always was: a separate, welcome fact,
+              never a blocker. */}
+          {holdsSyn === false ? (
+            // Zero SYN — the ONE real blocker, seat or no seat.
             <>
               <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
                 The contract refuses commissions to a wallet holding no SYN.
@@ -237,6 +244,22 @@ export function ActivationDoor() {
                   ? " Your link is already registered on-chain — one signature from activation."
                   : ""}
               </p>
+              {seatHeld === false ? (
+                // An INVITATION, never a condition — he can ask right now.
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                  You hold SYN, so you can introduce others without a seat. A
+                  seat is a different thing — it makes you a member and writes
+                  you into the story.{" "}
+                  <Link
+                    href="/join"
+                    className="text-gold hover:underline"
+                    data-testid="link-activation-membership"
+                  >
+                    See how membership works
+                  </Link>
+                  .
+                </p>
+              ) : null}
               <Button
                 size="sm"
                 className="mt-3"

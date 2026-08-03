@@ -104,13 +104,17 @@ const card = compStart === -1 ? "" : afterComp.slice(0, nextFn === -1 ? undefine
 // ── 2. THE COPY, FROZEN (founder-approved verbatim, 2026-08-03) ─────────────
 const FROZEN: [string, string][] = [
   ["the one-liner", "The referral program where the payout is part of the purchase."],
-  ["the eyebrow", "Included with your seat"],
+  ["the eyebrow", "Open to every SYN holder"],
   [
     // The founder's live-prod catch (2026-08-03, second wave): «comes with»
-    // was an overclaim — the terms v1 say a link «may be granted» (the
+    // was an overclaim — the terms say a link «may be granted» (the
     // ask→founder-signed activation). The truthful verb is CAN OPEN.
+    // THIRD wave, same day: the SEAT premise was itself wrong. The sale
+    // contract gates on the referrer wallet's SYN balance, never on a seat
+    // (SPEC_REFERRAL_SYSTEM §262/§436), so this public page was turning away
+    // every signed-in DEX holder. Copy and pin corrected in one commit.
     "the opening truth",
-    "Every seat can open its own introduction link.",
+    "Any wallet holding SYN can open its own introduction link.",
   ],
   [
     "bold claim 1 (the mechanism)",

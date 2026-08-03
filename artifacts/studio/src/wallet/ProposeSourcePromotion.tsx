@@ -18,7 +18,8 @@
 // R5 privacy boundary), so binding a due row to a signable transaction is a
 // FOUNDER ACT: he enters the member's wallet; the screen derives the
 // canonical sourceId, hashes it, and only proceeds when it MATCHES the due
-// row. No directory exists and none is created here.
+// row. No member LOOKUP is created here (THE REGISTER publishes addresses by
+// seat; what never exists is a name↔address directory).
 
 import { useCallback, useEffect, useState } from "react";
 import { useAccount, useSwitchChain, useWriteContract } from "wagmi";

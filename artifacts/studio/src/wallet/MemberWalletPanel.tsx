@@ -233,7 +233,7 @@ function WalletPanelBody() {
       <Card className="p-5 border-border/50 bg-card/40">
         <p className="text-sm text-muted-foreground">
           You're signed in, but your wallet is disconnected. Reconnect it to read
-          your live balances and approvals — own-row only, never a directory.
+          your live balances and approvals — own-row only, never a lookup of anyone else.
         </p>
         <Button size="sm" variant="outline" className="mt-3" onClick={() => openConnectModal?.()}>
           <WalletIcon className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" /> Reconnect wallet

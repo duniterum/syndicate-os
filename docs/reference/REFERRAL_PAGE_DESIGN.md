@@ -15,7 +15,7 @@ SYSTEM-FIRST inventory + sub-nav benchmark (`wf_81dd540b`). Sources credibility-
 - **VISIBILITY LAW (address ≠ identity).** We HIDE NOTHING on-chain — chain-emitted addresses
   (the buyer/recipient the chain publishes, the wallet that pays you / the one you pay) ARE shown
   short-form (the client reads the chain like an explorer). The RED LINE is the wallet↔PERSON link:
-  **never a name / alias / email** (no PII; alias = opt-in self-publish), never a directory/search/
+  **never a name / alias / email** (no PII; alias = opt-in self-publish), never a directory of IDENTITIES / no name↔address search /
   reverse-index, never exposing a non-consenting member. `CANON_VISIBILITY_LAW.md`.
 - **NO MLM.** No downline tree, no "recruit N more", no leaderboard of other members, no multi-tier
   override commissions. One completed introduction, one bounded commission.

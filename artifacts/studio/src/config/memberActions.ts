@@ -79,11 +79,15 @@ export const MEMBER_ACTIONS: readonly MemberAction[] = [
   {
     id: "ask-activation",
     label: "Ask for referral activation",
-    note: "The activation door on your referral page — you ask from your own seat, the Founder decides, you see the verdict.",
+    // NO SEAT LOCK (2026-08-03): introducing needs SYN in the wallet, never a
+    // seat — the chain gates on the balance (SPEC_REFERRAL_SYSTEM §262/§436).
+    // The lock hid Member Home's only signposted route to the door from the
+    // very people entitled to use it: signed-in holders who bought on a DEX.
+    note: "The activation door on your referral page — you ask, the Founder decides, you see the verdict. Introducing needs SYN in your wallet, not a seat.",
     kind: "route",
     href: "/referral",
-    lock: "seat",
-    lockReason: "Requires a seat — activation is asked from your own seat.",
+    lock: "session",
+    lockReason: "Sign in with your wallet to ask for activation.",
   },
   {
     id: "wallet-approvals",

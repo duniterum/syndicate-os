@@ -24,7 +24,7 @@ export default function MemberWallet() {
       kind="account"
       eyebrow="Wallet"
       title="Your wallet, read honestly."
-      lead="Your own balances and your own approvals toward the protocol's known contracts — read live, own-row only, never a directory. The one action here (revoking an approval) is a transaction you sign in your own wallet."
+      lead="Your own balances and your own approvals toward the protocol's known contracts — read live, own-row only — this page answers for your account, never a lookup of anyone else. The one action here (revoking an approval) is a transaction you sign in your own wallet."
       badge={<LifecycleBadge lifecycle="LIVE_ACTION" />}
     >
       {MemberWalletPanel ? (

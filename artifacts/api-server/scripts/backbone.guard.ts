@@ -92,6 +92,7 @@ import {
   CHAPTERS as SERVER_CHAPTERS,
   chapterChipLabel,
   GENESIS_SIGNAL_SEAT_CEILING as CHAPTER_I_CEILING,
+  STORY_FINAL_SEAT as SERVER_STORY_FINAL_SEAT,
 } from "../src/lib/protocol/chapters";
 import {
   PROTOCOL_SCAN_MAX_BLOCKS_PER_CYCLE,
@@ -1820,6 +1821,24 @@ check(
       chipFormatSharedBothSides,
     "the server chapter table IS the studio's frozen canon: 5 adjacent chapters from seat 1, Open Era open-ended, every row verbatim in the comment-stripped studio source, the chip format pinned on BOTH sides",
     "the chapter tables drifted (server vs studio rows, adjacency, or a chip-format side) — canon violation: fix lib/protocol/chapters.ts + studio/src/lib/chapters.ts (+ the receipt spine's chip template) in ONE commit",
+  );
+
+  // STORY_FINAL_SEAT joins the mirror (K1.7, 2026-08-03): the join card's
+  // collectible preview writes «the Nth of 1,000,000 seats», so the server
+  // needed the story-final seat beside the chapter table it belongs to. That
+  // spread is blessed in guard-duplicate-facts ONLY because this pin makes the
+  // pair structural — the two artifacts' declarations are compared BY VALUE
+  // here, not merely declared twins in a comment. Comment-stripped so a
+  // literal parked in prose cannot satisfy it.
+  const studioFinalSeat = /export const STORY_FINAL_SEAT\s*=\s*([0-9_]+)/.exec(
+    stripComments(read("../studio/src/lib/chapters.ts")),
+  );
+  check(
+    studioFinalSeat !== null &&
+      Number(studioFinalSeat[1]!.replaceAll("_", "")) === SERVER_STORY_FINAL_SEAT &&
+      SERVER_STORY_FINAL_SEAT === 1_000_000,
+    `STORY_FINAL_SEAT is one value across both artifacts (${SERVER_STORY_FINAL_SEAT.toLocaleString("en-US")})`,
+    "STORY_FINAL_SEAT drifted between lib/protocol/chapters.ts and studio/src/lib/chapters.ts — the seniority sentence on the collectible card and on its shared preview would disagree; fix BOTH in one commit",
   );
 }
 

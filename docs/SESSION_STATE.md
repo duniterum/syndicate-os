@@ -2,7 +2,111 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-03 — RESUME HERE. THE HANDOFF.
+> # ▶ 2026-08-03 (later) — K1.6 + K1.7 · EACH ARTIFACT'S OWN PICTURE,
+> # AND THE SEAT THAT WAS NEVER REQUIRED. **RESUME HERE.**
+>
+> ## (0) THE TWO CORRECTIONS THAT DEFINE THIS SLICE — read them before the rest
+> **① I framed a platform limit as physics.** On his screenshots (sixteen Share…
+> doors, one picture) I answered «a share intent cannot carry an image — that
+> half is physics». True, and the WRONG FRAME: the picture a network shows is the
+> one THE LINK DECLARES, and the link is ours. Our own receipt already proved it
+> (`/receipt/<tx>` unfurls its own painted ticket). He refused the framing — «je
+> veux chaque image» — and was right.
+> **② The referral rule itself was wrong, everywhere.** He said it plainly: «un
+> non member — pas de seat — se logue, il a aussi un lien de referrer, doit avoir
+> du SYN acquis peut-être sur le DEX, et il peut referrer». **The chain has always
+> agreed:** MembershipSaleV3 reverts only on `SYN.balanceOf(sourceWallet) == 0`,
+> and SPEC_REFERRAL_SYSTEM §262/§436 say it twice — *«ReferrerNotSeated ne vérifie
+> PAS le siège. Il vérifie le solde.»* A signed-in DEX holder is a legitimate
+> referrer. **Seventeen surfaces assumed otherwise**, including the server.
+> THE LESSON, twice in one session: *a limit of one mechanism is not a limit of
+> reality — and a rule repeated by every surface is not thereby true.*
+>
+> ## (a) WHAT LANDED — the picture
+> `&card=` on the shared link → `serve.mjs` points og:image AND og:url at
+> `/api/join-card/<id>.png?card=<face>` → the painter paints it. FOUR faces
+> (`invite` · `standing` · `seat` · `record`), all 1200×630 — the one shape all
+> five preview networks render. Email has no preview at all (a mailto body is
+> plain text): there the artifact's PNG is downloaded so he can attach it.
+> Each face carries a QR (his order: a card gets screenshot and re-posted, and at
+> that moment the link is gone). The channel tag `&via=` rides every intent, so
+> Channels finally counts social shares.
+>
+> ## (b) WHAT LANDED — the seat that was never required
+> | Surface | Was | Now |
+> |---|---|---|
+> | `auth/router.ts` activation ask | `seatHeld !== true` → **400** | gates on SYN alone; the seat is not read, not even as a fail-closed leg |
+> | `AdminOperatorsCrud` | `c.seatHeld === true` → **Approve disabled** | the founder can approve a seatless holder (the server never checked it — only this screen did) |
+> | `ActivationDoor` | branched on the SEAT, no ask button rendered | branches on SYN; seat pill neutral, membership offered as an invitation |
+> | `memberActions` | `lock: "seat"` hid Member Home's only route to the door | `lock: "session"` |
+> | `/join` public showcase | «Included with your seat» (frozen by a guard) | «Open to every SYN holder» — copy AND pin moved in one commit |
+> | program terms | v1: «The referrer holds a Syndicate seat» | **v2 published**; v1 stays served and frozen forever |
+> | FAQ | «A wallet is seated by holding SYN» | a seat is the numbered membership a purchase records; SYN is separate |
+>
+> **⚠ THE TERMS ARE HASH-ANCHORED.** A document's keccak256 over its raw bytes IS
+> the `metadataHash` the registry stored on-chain. v1 was NOT edited — editing it
+> would break the verification of every source that committed to it. v2 is a NEW
+> file; `matchesPublishedTerms()` checks an on-chain hash against the current
+> document AND every prior one, so a v1-era source still verifies.
+> v1 `0xc84808670aab7303c36bc7cb25c7aa51c8dff5aa5ad24d2025a037c3ea1e6e48` (5 873 B)
+> v2 `0x58f0ef7104de8521be75002f7e4f3c25cd5e313bb72c377d7afe38bd53dea6d6` (6 172 B)
+>
+> ## (c) THE LAWS THIS SLICE ADDED
+> · **NO FALLING FIGURE ON A PAINTED PREVIEW.** Networks cache a scraped image per
+> URL essentially forever — our TTL never reaches them. A durable-introduction
+> COUNT can fall, so a new referrer's first share would have frozen «0 durable
+> introductions» onto the very link he recruits with. The standing face carries
+> the RUNG alone; the record face keeps its count because `introducedMembers`
+> only ever rises (a stale value understates, never overstates).
+> · **THE FIRST SCRAPE IS PERMANENT** → one 2s budget on the whole read, and a
+> timeout is never cached as a decided negative. Measured: unreachable chain →
+> **302 in 2.02s** (was 16–40s, past every crawler's patience).
+> · **ONE SHARE FANS OUT TO FIVE NETWORKS** → single flight on both the read and
+> the paint. Measured: 8 simultaneous cold requests → **3 ms spread** (one paint
+> served all eight; undeduped they stagger ~200 ms each).
+> · **THE REGISTER EXISTS** — `guard-no-directory-fossil` is BLOCKING and scans
+> **575 files**. «no directory exists» is dead in both languages, forever; scoped
+> forms («own-row, not a directory lookup») stay legal. It had survived in the
+> TIER-0 boot file AND in a served, indexed meta description.
+>
+> ## (d) VERIFIED — what was measured, at what scope
+> `join-card` **65/65** · `share-intents` **2288/2288** · `no-directory-fossil`
+> 575 files · `join-showcase` 13/13 · `referral-terms` 12/12 · receipt-card ·
+> introductions · duplicate-facts · backbone · source-status-truth · auth-zone ·
+> member-continuity · 2 typechecks · 2 builds — **all exit 0**.
+> **RED-first proven, not claimed:** 13 pins RED before the faces existed · the
+> served head broken on purpose → RED · the deadline removed → RED · and the
+> attack that mattered: gutting `withCard` to `return joinLink` (the whole slice
+> disabled) passed 2285/2285 GREEN, so the composers are now EXECUTED by the
+> guard — the same attack is RED today.
+> **The four faces were PAINTED by a running api and LOOKED AT.** Looking is what
+> caught the real defect: a ~200px dead band where the studio artifacts put their
+> QR. The collectible's QR was pixel-read back: 2025 modules, **zero mismatch**
+> against the expected `&via=card` payload.
+> **NOT COVERED:** whether a given network's composer suppresses its link card
+> once media is attached (platform behaviour) · the kit's own box could not be
+> rendered here (both ShareSurface mounts are auth-gated) — **his signed-in
+> /referral/tools is the preview gate.**
+>
+> ## (e) ⚠ AN INCIDENT THE NEXT SESSION MUST KNOW
+> **OneDrive silently reverted a fix AFTER the guard went green.** A sync conflict
+> renamed the edited `joinCardPainter.ts` to `joinCardPainter-GT1_Mega.ts` and
+> restored an older copy under the real name; the seatless fix vanished from the
+> file the guard had just passed. Restored (the diff was exactly that one fix),
+> conflict copy deleted. **«Guards green» is not durable in this working tree —
+> re-verify the tree immediately before committing.**
+>
+> ## (f) STILL OPEN — named, not hidden
+> Client-side, a seatless referrer's §1 artifacts render with the fallback
+> headline while some captions still describe a seat · downloaded QRs encode at
+> ECC L while painted previews use M · `docs/direction/SPEC_REFERRAL_SYSTEM.md:278`
+> still prescribes the old sentence and will re-seed it into the next surface
+> written from the spec · the operator dossier (`memberLedgerService`) is
+> seat-keyed, so a seatless source never appears in the ledger the founder ranks
+> from · the founder cannot direct-message a seatless source (seat-number only) ·
+> DESIGN_ROADMAP / BACKLOG.html / OPEN_QUEUE not yet updated for this arc.
+>
+> # ▶ 2026-08-03 — the previous seal (the handoff below stays true).
 >
 > ## (a) PROD — `f5a2776`, sealed and live (the 10th seal, the audit closure)
 > Replit 6/6: entry `index-CcdRxUnj.js` served twice · old entry 404 · **39 route

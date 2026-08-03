@@ -24,7 +24,10 @@
 // raw sourceId — per-source rows are keyed by an OPAQUE derived key
 // (sha256 of the lowercase sourceId, prefixed + truncated so no 40-hex run
 // can ever appear). The own-row endpoint re-derives the key from the
-// session's own wallet; a directory lookup surface does not exist.
+// session's own wallet. (Corrected 2026-08-03: this line used to end "a
+// ⛔ directory lookup surface does not exist" — false since /registry publishes
+// the per-seat ADDRESS roster. The opaque key protects the raw sourceId in the
+// committed snapshot; what does not exist is a NAME↔address lookup.)
 // AMENDED 2026-07-16 (founder Ruling ①, dated): the SNAPSHOT stays exactly
 // this — raw-sourceId-free. Separately, the AUTH-ZONE own-row readback now
 // serves the session's OWN resolved sourceIdHex (the paying source's link

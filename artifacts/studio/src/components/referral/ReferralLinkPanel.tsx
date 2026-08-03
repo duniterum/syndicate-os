@@ -16,7 +16,7 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { Check, ChevronDown, Copy } from "lucide-react";
-import { buildJoinLink } from "@/lib/joinLink";
+import { buildJoinLink, withVia } from "@/lib/joinLink";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -106,7 +106,7 @@ function ChannelsCard({ readback }: { readback: StandingReadback | null | undefi
   const customTag = normalizeChannelTag(customRaw);
   const tag =
     selected === "custom" ? (customTag.length > 0 ? customTag : null) : selected;
-  const taggedLink = baseLink && tag ? `${baseLink}&via=${tag}` : null;
+  const taggedLink = baseLink && tag ? withVia(baseLink, tag) : null;
   const customInvalid =
     selected === "custom" && customTouched && customRaw.trim().length > 0 && customTag.length === 0;
 
@@ -280,7 +280,7 @@ function ChannelsCard({ readback }: { readback: StandingReadback | null | undefi
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => copyText(`${baseLink}&via=${row.via}`, row.via)}
+                        onClick={() => copyText(withVia(baseLink, row.via), row.via)}
                         data-testid={`button-copy-row-${row.via}`}
                       >
                         {copied === row.via ? <Check className="h-3.5 w-3.5 mr-1" /> : <Copy className="h-3.5 w-3.5 mr-1" />}

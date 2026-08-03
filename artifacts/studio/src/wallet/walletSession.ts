@@ -268,7 +268,7 @@ export interface MemberStandingReadback {
   authorityLabel: string | null;
   continuityStatus: string | null;
   proofPosture: { snapshotStatus: string; snapshotHash: string } | null;
-  /** The member's OWN entry receipt (ADR-003 §3) — own-row only, never a directory. */
+  /** The member's OWN entry receipt (ADR-003 §3) — own-row only, never a lookup of another member. */
   receipt: { transaction: string; block: number | null; explorerUrl: string } | null;
   failureReason: string | null;
 }

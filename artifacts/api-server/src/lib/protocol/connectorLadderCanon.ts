@@ -34,3 +34,25 @@ export function entitledRateRung(durable: number): LadderRungCanon {
   }
   return rung;
 }
+
+/**
+ * THE TITLE LADDER — the highest rung whose threshold the count meets, rate or
+ * not. This is the rung a member SEES on his card, and it is deliberately NOT
+ * `entitledRateRung`: the policy runs two decoupled ladders (titles dense and
+ * free · rates rare and irreversible), so the two answers DIVERGE at 3–9
+ * durable introductions — the title ladder says «Active», the rate ladder says
+ * «Emerging» (Active raises no rate).
+ *
+ * Added 2026-08-03 when the join card learned to paint a member's standing:
+ * the server had only the RATE answer, and painting a preview with it would
+ * have contradicted the very card he downloaded. Mirrors the studio's
+ * `ladderProgress(...).current` — same table, same rule, both artifacts.
+ */
+export function displayRung(durable: number): LadderRungCanon {
+  const d = Number.isFinite(durable) && durable > 0 ? Math.floor(durable) : 0;
+  let rung = LADDER_RUNGS_CANON[0];
+  for (const r of LADDER_RUNGS_CANON) {
+    if (d >= r.durableThreshold) rung = r;
+  }
+  return rung;
+}

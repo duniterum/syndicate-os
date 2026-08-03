@@ -217,7 +217,7 @@ export const protocolOsMap: OsMapDomain[] = [
         binding: { kind: "lifecycle", lifecycle: "AUTH_REQUIRED" },
         notPublic: false,
         summary: "The member's own-row surface, live in production.",
-        reality: "LIVE — SIWE auth in prod; a signed-in member reads their own seat, receipt, standing and purchases (own-row only, never a directory).",
+        reality: "LIVE — SIWE auth in prod; a signed-in member reads their own seat, receipt, standing and purchases (own-row only — a session answers for its own account, never a lookup of another member).",
       },
       {
         id: "recognition",

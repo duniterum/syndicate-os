@@ -16,6 +16,7 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import QRCode from "react-qr-code";
+import { withVia } from "@/lib/joinLink";
 
 // The R-CARDS ink — the server card palette, resolved constants (identical
 // export in both themes; the token layer is theme-bound by design, so a
@@ -60,11 +61,9 @@ export interface KitFacts {
   } | null;
 }
 
-/** The one channel-tag composer for kit artifacts (&via — the same tag
- * vocabulary the Channels tab counts; never a per-visitor tag). */
-export function withVia(joinLink: string, tag: string): string {
-  return `${joinLink}&via=${tag}`;
-}
+// The channel tag (&via — the same vocabulary the Channels tab counts; never a
+// per-visitor tag) is composed by withVia, imported from lib/joinLink: it moved
+// there 2026-08-03 when the twin search found the composition in three homes.
 
 /** THE REAL MARK — the interlock emblem, inlined from the approved brand set
  * (origin brand-v2-syndicate-interlock/syn-mark-gold.svg, harvested to
@@ -594,6 +593,18 @@ export interface KitArtifactSpec {
   height: number;
   /** Export scale (print formats export at 2× for crisp paper). */
   exportScale: number;
+  /**
+   * K1.7 (founder GO 2026-08-03) — the face this artifact's SHARED LINK makes
+   * unfurl, painted server-side by JOIN_CARD_FACES. The download keeps this
+   * artifact's own shape; the preview is always 1200×630, because that is the
+   * one shape all five preview networks render (checked in their specs the
+   * same day — none previews a portrait image). So the square and story
+   * renditions declare their MESSAGE's landscape face: same facts, same words,
+   * the shape the destination can actually show.
+   * "invite" = the visitor-door card (the banners, the print pack, the QRs:
+   * their message IS the invitation, not a standing).
+   */
+  previewFace: "invite" | "standing" | "seat" | "record";
   /** The format's TYPE FLOOR in px (ARTIFACT_TYPOGRAPHY_FLOORS law): no
    * text node inside the artifact may compute below it. Derived from the
    * viewing context — feed images are seen at ~40% size, print at 300dpi
@@ -604,22 +615,22 @@ export interface KitArtifactSpec {
 }
 
 export const KIT_ARTIFACTS: readonly KitArtifactSpec[] = [
-  { id: "og", label: "1200×630 · link preview", width: 1200, height: 630, exportScale: 1, typeFloor: 20, filename: "syndicate-card-1200x630.png", render: (f) => <CardOg facts={f} /> },
-  { id: "square", label: "1080×1080 · post", width: 1080, height: 1080, exportScale: 1, typeFloor: 20, filename: "syndicate-card-1080x1080.png", render: (f) => <CardSquare facts={f} /> },
-  { id: "story", label: "1080×1920 · story", width: 1080, height: 1920, exportScale: 1, typeFloor: 22, filename: "syndicate-card-1080x1920.png", render: (f) => <CardStory facts={f} /> },
+  { id: "og", label: "1200×630 · link preview", width: 1200, height: 630, previewFace: "standing", exportScale: 1, typeFloor: 20, filename: "syndicate-card-1200x630.png", render: (f) => <CardOg facts={f} /> },
+  { id: "square", label: "1080×1080 · post", width: 1080, height: 1080, previewFace: "standing", exportScale: 1, typeFloor: 20, filename: "syndicate-card-1080x1080.png", render: (f) => <CardSquare facts={f} /> },
+  { id: "story", label: "1080×1920 · story", width: 1080, height: 1920, previewFace: "standing", exportScale: 1, typeFloor: 22, filename: "syndicate-card-1080x1920.png", render: (f) => <CardStory facts={f} /> },
   // M3 — the collectible trio (founder GO 2026-08-02): mounts only when
   // facts.vanity is whole (the record-card precedent — never a partial boast).
-  { id: "vog", label: "1200×630 · collectible", width: 1200, height: 630, exportScale: 1, typeFloor: 20, filename: "syndicate-collectible-1200x630.png", render: (f) => <CardVanityOg facts={f} /> },
-  { id: "vsquare", label: "1080×1080 · collectible", width: 1080, height: 1080, exportScale: 1, typeFloor: 20, filename: "syndicate-collectible-1080x1080.png", render: (f) => <CardVanitySquare facts={f} /> },
-  { id: "vstory", label: "1080×1920 · collectible", width: 1080, height: 1920, exportScale: 1, typeFloor: 22, filename: "syndicate-collectible-1080x1920.png", render: (f) => <CardVanityStory facts={f} /> },
-  { id: "record", label: "1200×630 · your record", width: 1200, height: 630, exportScale: 1, typeFloor: 20, filename: "syndicate-record-1200x630.png", render: (f) => <RecordCard facts={f} /> },
-  { id: "b300", label: "300×250 · medium rectangle", width: 300, height: 250, exportScale: 2, typeFloor: 10, filename: "syndicate-banner-300x250.png", render: (f) => <Banner300 facts={f} /> },
-  { id: "b336", label: "336×280 · large rectangle", width: 336, height: 280, exportScale: 2, typeFloor: 10, filename: "syndicate-banner-336x280.png", render: (f) => <Banner336 facts={f} /> },
-  { id: "b600", label: "300×600 · half page", width: 300, height: 600, exportScale: 2, typeFloor: 10, filename: "syndicate-banner-300x600.png", render: (f) => <Banner600 facts={f} /> },
-  { id: "b728", label: "728×90 · leaderboard", width: 728, height: 90, exportScale: 2, typeFloor: 10, filename: "syndicate-banner-728x90.png", render: (f) => <Banner728 facts={f} /> },
-  { id: "b320", label: "320×100 · mobile", width: 320, height: 100, exportScale: 2, typeFloor: 10, filename: "syndicate-banner-320x100.png", render: (f) => <Banner320 facts={f} /> },
-  { id: "poster", label: "A4 · poster", width: 1240, height: 1754, exportScale: 2, typeFloor: 25, filename: "syndicate-poster-a4.png", render: (f) => <PosterA4 facts={f} /> },
-  { id: "bizcard", label: "85×55 · business card", width: 1004, height: 650, exportScale: 2, typeFloor: 30, filename: "syndicate-business-card.png", render: (f) => <BizCard facts={f} /> },
-  { id: "qrprint", label: "QR only · print", width: 1000, height: 1000, exportScale: 2, typeFloor: 1, filename: "syndicate-qr-print.png", render: (f) => <QrPrint facts={f} /> },
-  { id: "qrvideo", label: "QR · video overlay", width: 900, height: 900, exportScale: 2, typeFloor: 28, filename: "syndicate-qr-video.png", render: (f) => <QrVideo facts={f} /> },
+  { id: "vog", label: "1200×630 · collectible", width: 1200, height: 630, previewFace: "seat", exportScale: 1, typeFloor: 20, filename: "syndicate-collectible-1200x630.png", render: (f) => <CardVanityOg facts={f} /> },
+  { id: "vsquare", label: "1080×1080 · collectible", width: 1080, height: 1080, previewFace: "seat", exportScale: 1, typeFloor: 20, filename: "syndicate-collectible-1080x1080.png", render: (f) => <CardVanitySquare facts={f} /> },
+  { id: "vstory", label: "1080×1920 · collectible", width: 1080, height: 1920, previewFace: "seat", exportScale: 1, typeFloor: 22, filename: "syndicate-collectible-1080x1920.png", render: (f) => <CardVanityStory facts={f} /> },
+  { id: "record", label: "1200×630 · your record", width: 1200, height: 630, previewFace: "record", exportScale: 1, typeFloor: 20, filename: "syndicate-record-1200x630.png", render: (f) => <RecordCard facts={f} /> },
+  { id: "b300", label: "300×250 · medium rectangle", width: 300, height: 250, previewFace: "invite", exportScale: 2, typeFloor: 10, filename: "syndicate-banner-300x250.png", render: (f) => <Banner300 facts={f} /> },
+  { id: "b336", label: "336×280 · large rectangle", width: 336, height: 280, previewFace: "invite", exportScale: 2, typeFloor: 10, filename: "syndicate-banner-336x280.png", render: (f) => <Banner336 facts={f} /> },
+  { id: "b600", label: "300×600 · half page", width: 300, height: 600, previewFace: "invite", exportScale: 2, typeFloor: 10, filename: "syndicate-banner-300x600.png", render: (f) => <Banner600 facts={f} /> },
+  { id: "b728", label: "728×90 · leaderboard", width: 728, height: 90, previewFace: "invite", exportScale: 2, typeFloor: 10, filename: "syndicate-banner-728x90.png", render: (f) => <Banner728 facts={f} /> },
+  { id: "b320", label: "320×100 · mobile", width: 320, height: 100, previewFace: "invite", exportScale: 2, typeFloor: 10, filename: "syndicate-banner-320x100.png", render: (f) => <Banner320 facts={f} /> },
+  { id: "poster", label: "A4 · poster", width: 1240, height: 1754, previewFace: "invite", exportScale: 2, typeFloor: 25, filename: "syndicate-poster-a4.png", render: (f) => <PosterA4 facts={f} /> },
+  { id: "bizcard", label: "85×55 · business card", width: 1004, height: 650, previewFace: "invite", exportScale: 2, typeFloor: 30, filename: "syndicate-business-card.png", render: (f) => <BizCard facts={f} /> },
+  { id: "qrprint", label: "QR only · print", width: 1000, height: 1000, previewFace: "invite", exportScale: 2, typeFloor: 1, filename: "syndicate-qr-print.png", render: (f) => <QrPrint facts={f} /> },
+  { id: "qrvideo", label: "QR · video overlay", width: 900, height: 900, previewFace: "invite", exportScale: 2, typeFloor: 28, filename: "syndicate-qr-video.png", render: (f) => <QrVideo facts={f} /> },
 ];

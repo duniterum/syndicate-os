@@ -317,7 +317,7 @@ export default function MemberHeaderAffordance({
         >
           {seated && address ? (
             // The member PILL (§11 "Header"): the member's own deterministic
-            // sigil — identity at a glance, never a photo, never a directory.
+            // sigil — identity at a glance, never a photo, never a lookup of another member.
             <span aria-hidden="true" className="shrink-0">
               <MemberSigil address={address} size={18} />
             </span>

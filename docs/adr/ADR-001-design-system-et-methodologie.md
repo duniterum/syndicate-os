@@ -29,6 +29,21 @@ impossible*.
 
 - **Typo :** **Instrument Serif** (display) · **Work Sans** (UI) · **IBM Plex Mono**
   (data). → *Remplace toute note « Raleway » / « Fraunces » (périmées).*
+  - **CONTRAINTE DE PORTÉE — les cartes PEINTES CÔTÉ SERVEUR (2026-08-03, décision
+    fondateur « regarde design constraint … et avance avec ça ») :** la trilogie
+    ci-dessus est la loi du **SITE**. Les cartes de partage peintes par satori
+    (`api-server/src/joincard`, `api-server/src/receiptcard`) n'embarquent que
+    **Work Sans + IBM Plex Mono** en TTF. Instrument Serif n'existe dans le dépôt
+    qu'en **woff2**, que satori ne sait pas lire (pas de décompression brotli) —
+    c'est une limite de l'OUTIL, pas un choix de design.
+    **Conséquence assumée et bornée :** sur la face « collectible » de l'aperçu, le
+    numéro de siège porte sa majesté par l'**ÉCHELLE** en mono (la voix « data » —
+    et un numéro de siège EST une donnée), là où l'artefact TÉLÉCHARGÉ garde le
+    serif. C'est la **seule** divergence entre un aperçu et sa carte téléchargée,
+    et elle est écrite ici plutôt que subie en silence.
+    **Pour la lever** : ajouter `InstrumentSerif-Regular.ttf` (OFL 1.1, même licence
+    que les quatre faces déjà embarquées) dans `api-server/src/receiptcard/fonts/`
+    et le déclarer dans `FONTS` — un seul fichier, aucune autre modification.
 - **Palette :** encre bleu-nuit + **or** (identité / recognition / seat / membership)
   + **cyan** (live / proof / vérification / activité). Hex exacts light **et** dark du
   brand board.

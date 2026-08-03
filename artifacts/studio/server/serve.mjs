@@ -63,6 +63,13 @@ const FACE_RE = /^[1-4]$/;
 // with ITS introducer's painted card. Shape gate mirrors the api route; an
 // invalid or absent source simply serves the untouched shell.
 const SOURCE_RE = /^0x[0-9a-fA-F]{64}$/;
+// K1.7 (founder GO 2026-08-03, «je veux chaque image») — WHICH painted face a
+// shared link unfurls. Each referrer artifact ships its own `&card=`, so the
+// picture a network shows is that artifact's card and not one picture for all
+// sixteen. Mirrors the api painter's JOIN_CARD_FACES; an unknown or absent
+// value simply serves the un-suffixed card url, and the api itself degrades to
+// the invitation — a stale or mangled link always unfurls something true.
+const JOIN_CARD_FACE_RE = /^(invite|standing|seat|record)$/;
 
 // Per-URL head for the PARAM class (the painted-cards slice): the ONE baked
 // shell gains THIS url's own head at serve time — a self-referential og:url
@@ -255,6 +262,7 @@ function handle(req, res) {
   let pathname;
   let faceParam = null;
   let sourceParam = null;
+  let cardParam = null;
   try {
     const u = new URL(req.url, "http://localhost");
     pathname = decodeURIComponent(u.pathname);
@@ -262,6 +270,8 @@ function handle(req, res) {
     if (f !== null && FACE_RE.test(f)) faceParam = f;
     const src = u.searchParams.get("source");
     if (src !== null && SOURCE_RE.test(src)) sourceParam = src;
+    const c = u.searchParams.get("card");
+    if (c !== null && JOIN_CARD_FACE_RE.test(c)) cardParam = c;
   } catch {
     send404(req, res);
     return;
@@ -330,7 +340,7 @@ function handle(req, res) {
   //     stays /join untouched (the SEO identity; og:url is the share-graph
   //     identity — the receipt-card footnote applied).
   if (filePath && sourceParam !== null && (pathname === "/join" || pathname === "/join/")) {
-    sendJoinShell(req, res, filePath, sourceParam);
+    sendJoinShell(req, res, filePath, sourceParam, cardParam);
     return;
   }
 
@@ -344,10 +354,25 @@ function handle(req, res) {
 }
 
 // K2 — the /join?source= head substitution (the sendParamShell grammar).
-function sendJoinShell(req, res, absPath, sourceId) {
+function sendJoinShell(req, res, absPath, sourceId, cardFace) {
   let html = readFileSync(absPath, "utf8");
-  const pageUrl = `${CANONICAL_ORIGIN}/join?source=${sourceId}`;
-  const cardUrl = `${CANONICAL_ORIGIN}/api/join-card/${sourceId}.png`;
+  // og:url CARRIES THE FACE — each faced link is its own share-graph object,
+  // exactly as sendParamShell above puts `?f=` in the receipt's og:url.
+  //
+  // CORRECTED 2026-08-03, same day, before any deploy: the first cut kept
+  // og:url canonical («one object per source»), which quietly DEFEATED the
+  // whole slice on Facebook and LinkedIn — both treat og:url as the object's
+  // identity and resolve the preview against it, so every artifact would have
+  // unfurled the invitation again on those two networks. The channel tag is
+  // NOT included: `card` chooses the picture (identity), `via` only counts
+  // where the link was handed out (tracking) and must never fragment the
+  // share-graph object.
+  const faceSuffix =
+    cardFace === null || cardFace === undefined ? "" : `&card=${cardFace}`;
+  const pageUrl = `${CANONICAL_ORIGIN}/join?source=${sourceId}${faceSuffix}`;
+  const cardUrl =
+    `${CANONICAL_ORIGIN}/api/join-card/${sourceId}.png` +
+    (cardFace === null || cardFace === undefined ? "" : `?card=${cardFace}`);
   const ogUrlTag = `<meta property="og:url" content="${pageUrl}" />`;
   html = /<meta property="og:url"[^>]*>/.test(html)
     ? html.replace(/<meta property="og:url"[^>]*>/, ogUrlTag)

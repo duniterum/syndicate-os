@@ -52,6 +52,16 @@ export const CHAPTERS: readonly Chapter[] = [
 ];
 
 /**
+ * THE STORY'S FINAL SEAT — narrative canon, the declared mirror of the studio's
+ * `STORY_FINAL_SEAT` (artifacts/studio/src/lib/chapters.ts). Its origin is the
+ * engraved membership ladder's final rung — PROTOCOL_MILESTONES `seats-1000000`,
+ * "THE FINAL SEAT — #1,000,000 sealed". Declared here rather than imported so
+ * the share-card zone never has to pull the backbone in to paint a card.
+ * Recognition arithmetic ONLY — never a supply, price, or promise figure.
+ */
+export const STORY_FINAL_SEAT = 1_000_000;
+
+/**
  * The narrative chapter for a seat number. Pure + deterministic. Fails closed
  * to null for a non-integer / non-positive seat — never a fabricated chapter
  * (memberNumber 0 is a sentinel, never a seat). Chapter V is open-ended, so

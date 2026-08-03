@@ -5,6 +5,18 @@
 
 const enc = encodeURIComponent;
 
+/** The inline body of a text-only intent (whatsapp · email). The link is the
+ * draft's LAST token — the one WhatsApp cards — and an EMPTY url leaves NO
+ * dangling separator: shareIntentArgs hands these two builders "" by contract,
+ * so the older `${text} ${url}` form ended every real draft with a stray
+ * trailing space. Caught 2026-08-03 by executing the split and the builder
+ * TOGETHER; every pin until then called build() directly with a non-empty url
+ * and so never ran the shape production actually sends. One decision, both
+ * builders. */
+function inlineBody(text: string, url: string): string {
+  return url.length > 0 ? `${text} ${url}` : text;
+}
+
 export interface ShareTargetDef {
   id: string;
   label: string;
@@ -25,7 +37,7 @@ export const shareTargets: ShareTargetDef[] = [
   {
     id: "whatsapp",
     label: "WhatsApp",
-    build: (url, text) => `https://wa.me/?text=${enc(`${text} ${url}`)}`,
+    build: (url, text) => `https://wa.me/?text=${enc(inlineBody(text, url))}`,
   },
   {
     id: "telegram",
@@ -40,7 +52,8 @@ export const shareTargets: ShareTargetDef[] = [
   {
     id: "email",
     label: "Email",
-    build: (url, text) => `mailto:?subject=${enc("The Syndicate")}&body=${enc(`${text} ${url}`)}`,
+    build: (url, text) =>
+      `mailto:?subject=${enc("The Syndicate")}&body=${enc(inlineBody(text, url))}`,
   },
 ];
 

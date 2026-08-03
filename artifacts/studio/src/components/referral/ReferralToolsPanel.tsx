@@ -31,7 +31,7 @@
 import { useEffect, useId, useRef, useState, type ReactNode, type RefObject } from "react";
 import { useAccount } from "wagmi";
 import { ChevronDown, Download, Share2 } from "lucide-react";
-import { buildJoinLink } from "@/lib/joinLink";
+import { buildJoinLink, withCard, withVia } from "@/lib/joinLink";
 import { ShareSurface } from "@/components/share/ShareSurface";
 import { toSvg } from "html-to-image";
 import { Card } from "@/components/ui/card";
@@ -47,7 +47,6 @@ import {
 } from "@/components/referral/referralStanding";
 import {
   KIT_ARTIFACTS,
-  withVia,
   type KitArtifactSpec,
   type KitFacts,
 } from "@/components/referral/referrerKit";
@@ -135,6 +134,15 @@ function ArtifactActions({
 }) {
   const [busy, setBusy] = useState<null | "download" | "share">(null);
   const [copied, setCopied] = useState(false);
+  /**
+   * THE LINK THIS ROW HANDS OUT (K1.7 — the founder's «je veux chaque image»).
+   * A preview shows what the URL declares, so this row's link declares THIS
+   * row's face: every door below — Copy, the six networks, the OS sheet — hands
+   * out the same face-bearing link, and the picture that unfurls is the card
+   * this artifact carries, never a single picture for all sixteen. The link is
+   * otherwise identical: `card` only chooses the painted face.
+   */
+  const faceLink = withCard(joinLink, spec.previewFace);
   // Transient honest feedback — a failure is never silent (adversarial
   // verify 2026-07-20: iOS activation expiry and unsupported file-share
   // used to masquerade as a closed sheet).
@@ -148,6 +156,41 @@ function ArtifactActions({
   const node = () => (nodeRef.current?.firstElementChild as HTMLElement | null) ?? null;
   // One Share… door per row — it opens THE dual-share box below the row.
   const [shareOpen, setShareOpen] = useState(false);
+
+  /** THE one artifact-PNG delivery (v4 — the twin law). The raster → download
+   * sequence already lived TWICE inside doNativeShare and once behind the
+   * Download button, and the intent path was about to make a fourth: it is ONE
+   * function now. `prepared` lets a caller that already rastered hand its bytes
+   * over instead of paying for a second raster; an empty note downloads in
+   * silence (the Download button — the file IS the feedback). A failure always
+   * speaks. */
+  async function deliverArtifactPng(note: string, prepared?: string | null): Promise<void> {
+    let png = prepared ?? null;
+    if (png === null) {
+      const el = node();
+      if (el === null) return;
+      png = await rasterizeToPng(el, spec.width, spec.height, spec.exportScale);
+    }
+    if (png === null) {
+      say("Couldn't prepare the image — try again");
+      return;
+    }
+    triggerDownload(png, spec.filename);
+    if (note.length > 0) say(note);
+  }
+
+  /** An intent act. A share intent carries text + a link and CANNOT carry an
+   * image — every network renders the LINK's own unfurl, which is the /join
+   * card, not this artifact (founder catch, 2026-08-03: sixteen Share… doors,
+   * one picture, none of them the artifact). The platform half is not
+   * refactorable; ours is: the member gets THIS artifact's picture, in hand,
+   * while the composer he just opened is still empty. */
+  const handleIntent = (label: string) => {
+    if (busy !== null) return; // a raster is already in flight for this row
+    setBusy("share");
+    void deliverArtifactPng(`${label} opened — image downloaded, attach it before you send`)
+      .finally(() => setBusy(null));
+  };
   // useId, never spec.id: the og artifact mounts this row TWICE (§1 card +
   // the standing moment card) — a spec-derived id collides in the document
   // and crosses aria-controls (six-hat review, 2026-08-03).
@@ -181,7 +224,7 @@ function ArtifactActions({
           await navigator.share({
             title: "The Syndicate",
             text: SHARE_TEXT,
-            url: joinLink,
+            url: faceLink,
             files: [file],
           });
         } else {
@@ -190,19 +233,17 @@ function ArtifactActions({
           await navigator.share({
             title: "The Syndicate",
             text: SHARE_TEXT,
-            url: joinLink,
+            url: faceLink,
           });
-          triggerDownload(png, spec.filename);
-          say("Link shared — the image was downloaded");
+          await deliverArtifactPng("Link shared — the image was downloaded", png);
         }
       } catch (e) {
         const aborted = e instanceof DOMException && e.name === "AbortError";
         if (!aborted) {
           // A real failure (activation expiry, engine quirk): the
           // member still gets the artifact + the link.
-          if (png !== null) triggerDownload(png, spec.filename);
-          navigator.clipboard.writeText(joinLink).catch(() => {});
-          say("Sheet unavailable — image downloaded, link copied");
+          navigator.clipboard.writeText(faceLink).catch(() => {});
+          await deliverArtifactPng("Sheet unavailable — image downloaded, link copied", png);
         }
       } finally {
         setBusy(null);
@@ -217,15 +258,9 @@ function ArtifactActions({
         type="button"
         disabled={busy !== null}
         onClick={() => {
-          const el = node();
-          if (el === null) return;
           setBusy("download");
-          void rasterizeToPng(el, spec.width, spec.height, spec.exportScale)
-            .then((png) => {
-              if (png !== null) triggerDownload(png, spec.filename);
-              else say("Couldn't prepare the image — try again");
-            })
-            .finally(() => setBusy(null));
+          // The file itself is the feedback — no note on success.
+          void deliverArtifactPng("").finally(() => setBusy(null));
         }}
         className={`inline-flex items-center gap-1.5 h-9 rounded-lg border px-3 text-xs transition-colors disabled:opacity-60 ${
           gold
@@ -241,7 +276,7 @@ function ArtifactActions({
         type="button"
         onClick={() => {
           navigator.clipboard
-            .writeText(joinLink)
+            .writeText(faceLink)
             .then(() => {
               setCopied(true);
               window.setTimeout(() => setCopied(false), 1400);
@@ -279,12 +314,20 @@ function ArtifactActions({
       <ShareSurface
         id={surfaceId}
         testid={`kit-share-surface-${spec.id}`}
-        pageUrl={joinLink}
+        pageUrl={faceLink}
         textBare={SHARE_TEXT}
-        textInline={`${SHARE_TEXT} ${joinLink}`}
+        textInline={`${SHARE_TEXT} ${faceLink}`}
         nativeAvailable={nativeShareAvailable}
         nativeHint="Sends the image too"
         onNativeShare={doNativeShare}
+        // Each network gets its OWN tagged link, so a share to X counts under
+        // «x» in Channels — the tab the page promises counts everything. The
+        // six ids ARE the tag vocabulary (whatsapp already names itself in the
+        // creators block); the breakdown is open, so no registry to extend.
+        linkForTarget={(t) => withVia(faceLink, t.id)}
+        // What the link cannot carry, we hand over.
+        onIntent={(t) => handleIntent(t.label)}
+        intentHint="Networks carry the link, not the picture — so your image downloads, ready to attach."
         onClose={() => setShareOpen(false)}
         testidBase={`kit-share-${spec.id}`}
         placementClassName="mt-2"
@@ -901,7 +944,7 @@ export function ReferralToolsPanel({ readback }: { readback: StandingReadback | 
               </div>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed mt-3">
-              You must hold your seat and hold SYN to introduce others — you
+              You must hold SYN to introduce others — any amount, no minimum — you
               cannot recommend what you have left. A referrer who promises
               gains endangers the program: a source can be suspended. The
               artifacts above are already compliant — share them as they are.

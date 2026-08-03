@@ -682,14 +682,14 @@ function JoinReferralShowcase() {
     "mt-1 inline-flex min-h-11 items-center rounded-sm text-xs text-proof hover:text-proof-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
   return (
     <Card className="border-gold/30 bg-gold/5 p-6 mb-12" data-testid="panel-join-referral-showcase">
-      <p className="type-eyebrow text-gold mb-3">Included with your seat</p>
+      <p className="type-eyebrow text-gold mb-3">Open to every SYN holder</p>
       <h2 className="type-h3 text-foreground mb-4 max-w-[38ch]">
         The referral program where the payout is part of the purchase.
       </h2>
       <div className="space-y-4">
         <div>
           <p className="text-sm leading-relaxed text-muted-foreground measure">
-            Every seat can open its own introduction link. When someone joins
+            Any wallet holding SYN can open its own introduction link. When someone joins
             through yours,{" "}
             <strong className="font-semibold text-foreground">
               the contract pays your commission inside their purchase — same

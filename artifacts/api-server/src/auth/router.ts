@@ -87,7 +87,7 @@ import { assertProtocolRealityDiscipline } from "../lib/protocol/payloadDiscipli
 // D-TRUTH D3: the backbone's own-purchase read-model (SERVER-ONLY wallet
 // keys) — the auth zone serves a session's OWN rows out of it, nothing else.
 // S2d: the season read-model joins on the same terms (the walletIndex is
-// SERVER-ONLY; a session reads its OWN view, never a directory).
+// SERVER-ONLY; a session reads its OWN view, never a lookup of a third party).
 import { getOwnPurchaseSource, getSeasonSource } from "../backbone/backboneRunner";
 // S2d: the quest registry — the ONE rule sheet; the route derives the
 // session's own quest progress from it (ids/targets/bonuses, no labels).
@@ -472,7 +472,7 @@ router.get("/member-standing", async (req: Request, res: Response) => {
       // The live V3 engine does not know this wallet (sentinel "0"). It may
       // still be a FROZEN GENESIS seat (#1–#8), which has no on-chain
       // memberNumberOf — resolve its OWN seat from the frozen roster (own-row,
-      // never a directory). Genesis seats live inside the verified snapshot's
+      // never a third-party lookup). Genesis seats live inside the verified snapshot's
       // freeze era, so the snapshot still supplies era + proof.
       const genesis = await lookupGenesisMember(boundAccount);
       if (genesis.recognized && genesis.memberNumber !== null) {
@@ -895,7 +895,7 @@ router.get("/member-purchases", (req: Request, res: Response) => {
 // S2d — own SEASON self-readback (the member-purchases discipline verbatim):
 // the ONLY input is the session cookie; the bound account picks the session's
 // OWN view out of the season read-model's SERVER-ONLY walletIndex and only
-// numbers and quest ids leave — no key, no short form, never a directory.
+// numbers and quest ids leave — no key, no short form, never a third-party lookup.
 // The current-season rank/XP/axes serve HERE, picked out of the SAME model
 // row the public board serves (by the session's own seat, server-side) —
 // one model, one authority; never a second computation. (The wallet boundary
@@ -1222,8 +1222,9 @@ router.get("/activation-request", async (req: Request, res: Response) => {
 // K3.a — the member's OWN "Ask for activation" (THE SECOND member-side write
 // class). No body input at all. Eligibility is RE-VERIFIED LIVE server-side
 // at ask time (fail closed: an unavailable read never becomes a verdict):
-// a seat held AND SYN held (any amount — the engraved contract truth) AND
-// the source not already live. One open request per wallet; the row and its
+// SYN held (any amount — the engraved contract truth) AND the source not
+// already live. NO SEAT: the chain gates on the balance, never the seat
+// (SPEC_REFERRAL_SYSTEM §262/§436) — corrected 2026-08-03. One open request per wallet; the row and its
 // audit row commit in one transaction (activationRequests.ts).
 router.post("/activation-request", async (req: Request, res: Response) => {
   if (!allowRequest(throttleKey(req))) {
@@ -1246,15 +1247,25 @@ router.post("/activation-request", async (req: Request, res: Response) => {
     deny(res, 400, "already_active");
     return;
   }
+  // THE SEAT IS NOT A CONDITION (founder correction 2026-08-03, and the chain
+  // has always agreed): MembershipSaleV3 reverts only on
+  // `SYN.balanceOf(sourceWallet) == 0`. The error is NAMED ReferrerNotSeated
+  // but SPEC_REFERRAL_SYSTEM §262/§436 state it twice — «ne vérifie PAS le
+  // siège. Il vérifie le solde.» A signed-in holder who bought SYN on a DEX is
+  // a legitimate referrer with no seat at all.
+  //
+  // seatHeld is therefore NOT read here — not as a verdict and not as a
+  // fail-closed leg. Leaving it in the 503 test would have let an unavailable
+  // ENGINE read (a read about something that no longer matters) take down the
+  // ask for a wallet whose only real condition is satisfied.
   if (
-    eligibility.seatHeld === null ||
     eligibility.holdsSyn === null ||
-    eligibility.sourceActive === null // the not-already-live leg is fail-closed too
+    eligibility.sourceActive === null // the not-already-live leg is fail-closed
   ) {
     deny(res, 503, "unavailable"); // a read that didn't run is never a pass
     return;
   }
-  if (eligibility.seatHeld !== true || eligibility.holdsSyn !== true) {
+  if (eligibility.holdsSyn !== true) {
     deny(res, 400, "not_eligible");
     return;
   }
