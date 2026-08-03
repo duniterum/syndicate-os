@@ -1132,7 +1132,11 @@ export function LiveActivityFeed({
                 key={l}
                 type="button"
                 onClick={() => selectLens(l)}
-                className={`min-h-11 px-5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                aria-pressed={lens === l}
+                // Focus = the founder's TAB TINT (2026-07-20 ruling): an
+                // outset ring inside this overflow-hidden container is cut
+                // to a 2px seam (review-2 design hat measured it).
+                className={`min-h-11 px-5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:bg-gold/10 ${
                   l === "protocol" ? "rounded-l-md" : "rounded-r-md"
                 } ${
                   lens === l

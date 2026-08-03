@@ -32,10 +32,13 @@ import path from "node:path";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PAGE = path.join(here, "..", "src", "pages", "JoinProtocol.tsx");
 
+// Line-first, with (?!…\*\/) lookaheads: a `//` line carrying a block CLOSER
+// must survive pass 1, or the block adopts the NEXT closer and swallows real
+// code (review-2 logic hat, executed counter-fixture, 2026-08-03).
 function stripComments(code: string): string {
   return code
-    .replace(/^[ \t]*\/\/.*$/gm, "")
-    .replace(/([^:"'])\/\/[^\n"']*$/gm, "$1")
+    .replace(/^[ \t]*\/\/(?![^\n]*\*\/).*$/gm, "")
+    .replace(/([^:"'])\/\/(?![^\n"']*\*\/)[^\n"']*$/gm, "$1")
     .replace(/\/\*[\s\S]*?\*\//g, "");
 }
 
@@ -56,11 +59,23 @@ check(
 );
 const econIdx = page.indexOf("<JoinEconomics />");
 const showIdx = page.indexOf("<JoinReferralShowcase />");
+// GO-LIVE NOTE (recorded 2026-08-03, review-2 adversarial): panel-buy-readiness
+// lives inside {CHECKOUT_ENABLED ? null : (…)} and the go-live slice REMOVES
+// that card — when it does, THIS boundary marker must move to the next stable
+// tail anchor ("Next steps") in the SAME slice, or this pin ambushes the
+// go-live deploy with a false red.
 const boundaryIdx = page.indexOf("panel-buy-readiness");
 check(
   econIdx !== -1 && showIdx !== -1 && boundaryIdx !== -1 && econIdx < showIdx && showIdx < boundaryIdx,
   "showcase: mounted AFTER the economics, BEFORE the boundary (the last argument before the tail)",
   "showcase: the mount order broke — the card sits AFTER <JoinEconomics /> and BEFORE the boundary card, never above the purchase work (WORK-FIRST)",
+);
+check(
+  // The mount stands ALONE on its line — a `{FLAG && <JoinReferralShowcase />}`
+  // wrap unmounts the card with every pin green (review-2 adversarial probe).
+  /^\s*<JoinReferralShowcase \/>$/m.test(page),
+  "showcase: the mount is unconditional (never flag-wrapped)",
+  "showcase: <JoinReferralShowcase /> is wrapped in a condition — the founder-approved card renders always; hiding it is a founder decision, not an edit",
 );
 
 // The component's own text — from its declaration to the next top-level
@@ -83,13 +98,28 @@ const FROZEN: [string, string][] = [
   ["the price-truth closing", "never changes your price"],
 ];
 // Whitespace-normalized on BOTH sides: the pin freezes the WORDS, never the
-// JSX line wrapping (bold claim 1 spans three source lines).
+// JSX line wrapping (bold claim 1 spans three source lines). Each frozen
+// text is ALSO pinned to its closing element boundary — a qualifier bolted
+// inside the element («Nothing to claim, ever. (during the pilot)») passed
+// the bare includes() (review-2 adversarial probe, 2026-08-03).
 const flatCard = card.replace(/\s+/g, " ");
+const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const BOUNDARY: Record<string, string> = {
+  "the one-liner": "</h2>",
+  "bold claim 1 (the mechanism)": "</strong>",
+  "bold claim 2 (nothing to claim)": "</strong>",
+  "bold claim 3 (never breaks, never lost)": "</strong>",
+};
 for (const [name, text] of FROZEN) {
+  const flatText = text.replace(/\s+/g, " ");
+  const closer = BOUNDARY[name];
+  const holds = closer
+    ? new RegExp(`${esc(flatText)}\\s*${esc(closer)}`).test(flatCard)
+    : flatCard.includes(flatText);
   check(
-    flatCard.includes(text.replace(/\s+/g, " ")),
-    `showcase: ${name} verbatim`,
-    `showcase: ${name} drifted or vanished — the founder approved this copy verbatim; expected «${text}»`,
+    holds,
+    `showcase: ${name} verbatim${closer ? " (element-bounded)" : ""}`,
+    `showcase: ${name} drifted, vanished, or grew a qualifier inside its element — the founder approved this copy verbatim; expected «${text}»${closer ? ` immediately closing with ${closer}` : ""}`,
   );
 }
 

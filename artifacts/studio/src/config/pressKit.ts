@@ -105,14 +105,20 @@ export const pressMediaUsage: readonly string[] = [
   "Quote figures only with their verify path — every number the protocol publishes carries one.",
 ];
 
-/** The served brand files — only what public/ actually holds. */
+// Explicit .ts extension: this module is EXECUTED by guard-press-kit under
+// Node type-stripping, which resolves no extensionless relative imports.
+import { brandAssets } from "./brand.ts";
+
+/** The served brand files — only what public/ actually holds. The PNG path
+ * is THE brandAssets authority, imported (the twin law — review-2 found it
+ * retyped in three places, 2026-08-03). */
 export interface PressAsset {
   label: string;
   href: string;
   note: string;
 }
 export const pressAssets: readonly PressAsset[] = [
-  { label: "The mark — gold (PNG)", href: "/brand/syn-mark-gold.png", note: "transparent background" },
+  { label: "The mark — gold (PNG)", href: brandAssets["syn-mark-gold"], note: "transparent background" },
   { label: "The mark — gold (SVG)", href: "/syn-mark-gold.svg", note: "vector" },
   { label: "Link-preview card (1280×720)", href: "/opengraph.jpg", note: "the served OG image" },
 ];

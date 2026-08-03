@@ -9,13 +9,13 @@
 // in canon, so none is invented: inquiries go through the official channels.
 // guard-press-kit freezes the content authority and these import laws.
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "wouter";
 import { Check, Copy } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { PublicPage } from "@/components/PublicPage";
-import { socialLinks } from "@/config/brand";
+import { brandAssets, socialLinks } from "@/config/brand";
 import { safetyCopy } from "@/config/sharedCopy";
 import {
   pressDescriptions,
@@ -28,6 +28,10 @@ import {
 
 function CopyBlock({ label, text, testid }: { label: string; text: string; testid: string }) {
   const [copied, setCopied] = useState(false);
+  // Deduplicated timer (a rapid re-copy let the FIRST timer clip the second
+  // «Copied» at 0.1s — review-2 logic hat) + the sr-only announcement the
+  // best house instance pairs with the label swap (ReferralLinkPanel).
+  const timer = useRef<number | null>(null);
   return (
     <div className="rounded-xl border border-border/60 bg-card/40 p-4">
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
@@ -39,7 +43,8 @@ function CopyBlock({ label, text, testid }: { label: string; text: string; testi
               ?.writeText(text)
               .then(() => {
                 setCopied(true);
-                window.setTimeout(() => setCopied(false), 1400);
+                if (timer.current !== null) window.clearTimeout(timer.current);
+                timer.current = window.setTimeout(() => setCopied(false), 1400);
               })
               .catch(() => {});
           }}
@@ -48,6 +53,9 @@ function CopyBlock({ label, text, testid }: { label: string; text: string; testi
         >
           {copied ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
           {copied ? "Copied" : "Copy"}
+          <span className="sr-only" role="status">
+            {copied ? `${label} description copied` : ""}
+          </span>
         </button>
       </div>
       <p className="text-sm leading-relaxed text-foreground measure">{text}</p>
@@ -85,9 +93,9 @@ export default function PressKit() {
       <Card className="border-border/50 bg-card/40 p-5" data-testid="press-brand">
         <div className="flex flex-wrap items-center gap-6">
           <img
-            src="/brand/syn-mark-gold.png"
+            src={brandAssets["syn-mark-gold"]}
             alt="The Syndicate interlock mark, gold"
-            className="h-16 w-16"
+            className="h-16 w-auto"
           />
           <div className="min-w-[220px] flex-1">
             <ul className="space-y-1.5">
@@ -139,10 +147,13 @@ export default function PressKit() {
       {/* §4 — PROTOCOL FACTS: every fact carries its door. */}
       <SectionTitle title="Protocol facts" why="each one links the surface that proves it live" />
       <Card className="border-border/50 bg-card/40 p-5" data-testid="press-facts">
+        {/* The verify door sits as a BLOCK sibling under its fact — the /join
+            twin's shape: a 44px inline box inside the sentence inflated line
+            boxes unevenly across the seven facts (review-2 design hat). */}
         <ul className="space-y-2.5">
           {pressProtocolFacts.map((f) => (
-            <li key={f.href + f.door} className="text-sm leading-relaxed text-foreground measure">
-              {f.text}{" "}
+            <li key={f.href + f.door}>
+              <p className="text-sm leading-relaxed text-foreground measure">{f.text}</p>
               <Link
                 href={f.href}
                 className="inline-flex min-h-11 items-center whitespace-nowrap rounded-sm font-mono text-xs text-proof transition-colors hover:text-proof-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"

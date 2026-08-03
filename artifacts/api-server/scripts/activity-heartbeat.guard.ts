@@ -50,8 +50,8 @@ function expectThrow(label: string, fn: () => void): void {
 // guard-activity-mine's own RED cycle (2026-08-03).
 function stripComments(code: string): string {
   return code
-    .replace(/^[ \t]*\/\/.*$/gm, "")
-    .replace(/([^:"'])\/\/[^\n"']*$/gm, "$1")
+    .replace(/^[ \t]*\/\/(?![^\n]*\*\/).*$/gm, "")
+    .replace(/([^:"'])\/\/(?![^\n"']*\*\/)[^\n"']*$/gm, "$1")
     .replace(/\/\*[\s\S]*?\*\//g, "");
 }
 

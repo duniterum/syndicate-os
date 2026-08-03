@@ -41,11 +41,14 @@ const FEED = path.join(srcDir, "components", "activity", "LiveActivityFeed.tsx")
 // LINE comments are stripped FIRST: a `/*` living inside a `//` line (this
 // very ledger's header says `/api/auth/*`) would otherwise open a phantom
 // block and swallow real code — pin 1 false-redded on exactly that at this
-// guard's own RED cycle (2026-08-03).
+// guard's own RED cycle (2026-08-03). The (?!…\*\/) lookaheads keep a `//`
+// line that CARRIES a block CLOSER: deleting it would hand the block the
+// NEXT closer and swallow real code from the scan (the review-2 logic hat's
+// executed counter-fixture, same day).
 function stripComments(code: string): string {
   return code
-    .replace(/^[ \t]*\/\/.*$/gm, "")
-    .replace(/([^:"'])\/\/[^\n"']*$/gm, "$1")
+    .replace(/^[ \t]*\/\/(?![^\n]*\*\/).*$/gm, "")
+    .replace(/([^:"'])\/\/(?![^\n"']*\*\/)[^\n"']*$/gm, "$1")
     .replace(/\/\*[\s\S]*?\*\//g, "");
 }
 
@@ -60,21 +63,29 @@ const ledger = stripComments(readFileSync(LEDGER, "utf8"));
 const feed = stripComments(readFileSync(FEED, "utf8"));
 
 // ── 1. THE ROW CARRIES ITS HASH ─────────────────────────────────────────────
-// Anchored INSIDE the interface block — a loose /tx:\s*string/ false-greened
-// on the short() helper's parameter (caught at this guard's own RED run).
+// Extract the block FIRST, then test INSIDE it — a loose /tx:\s*string/
+// false-greened on the short() helper's parameter, and a lazy cross-block
+// span could false-green on a LATER interface's tx after LedgerRow lost the
+// field (both from this guard's own adversarial cycles, 2026-08-03).
+const ledgerRowBlock = /interface LedgerRow \{([\s\S]*?)\n\}/.exec(ledger)?.[1] ?? "";
 check(
-  /interface LedgerRow \{[\s\S]*?\btx: string;[\s\S]*?\n\}/.test(ledger),
+  /\btx: string;/.test(ledgerRowBlock),
   "ledger: LedgerRow carries the full transaction hash",
   "ledger: LedgerRow lacks `tx: string` — the row must carry its own hash so the document door is direct",
 );
 
 // ── 2. THE DOCUMENT DOOR IS DIRECT ──────────────────────────────────────────
 check(
-  /href=\{`\/receipt\/\$\{/.test(ledger),
-  "ledger: the receipt cell deep-links the row's own /receipt/{tx} page",
-  "ledger: the receipt cell does not deep-link /receipt/${row.tx} — it must open the document itself, never the whole binder (founder catch, 2026-08-03)",
+  // The FULL hash, pinned exactly — a "simplified" `${r.anchorShort}` kept
+  // the prefix pin green while re-breaking the founder-caught defect
+  // (review-2 adversarial probe, 2026-08-03).
+  /href=\{`\/receipt\/\$\{r\.tx\}`\}/.test(ledger),
+  "ledger: the receipt cell deep-links the row's own /receipt/{tx} page with the FULL hash",
+  "ledger: the receipt cell must deep-link `/receipt/${r.tx}` — the full hash, never a short form, never the binder (founder catch, 2026-08-03)",
 );
-const binderDoors = (ledger.match(/["'`]\/receipts["'`]/g) ?? []).length;
+// Prefix-open count: a `"/receipts?via=…"` second door escaped the
+// closed-quote form (review-2 adversarial probe).
+const binderDoors = (ledger.match(/["'`]\/receipts(?![a-z])/g) ?? []).length;
 check(
   binderDoors === 1,
   "ledger: the binder door survives exactly once (the footer)",
@@ -83,9 +94,18 @@ check(
 
 // ── 3. VERIFY IS AN AFFORDANCE ──────────────────────────────────────────────
 check(
-  !/[({]\s*"verify"\s*[)}]/.test(ledger),
-  "ledger: no dead bare-text verify",
+  !/[({]\s*["']verify["']\s*[)}]/.test(ledger),
+  "ledger: no dead bare-text verify (either quote style)",
   'ledger: "verify" is rendered as a bare string — a dead label styled like a link; it must be an anchor to the row\'s explorerUrl (the public feed\'s own idiom)',
+);
+// THE FLOOR ON THE ROW'S ACTIONS (review-2 design hat, 2026-08-03): both
+// action cells measured 16px live while the SAME row's hash anchor stood at
+// 44 — the twin failed inside one <tr>. Both cells carry the floor now.
+const actionCellFloors = (ledger.match(/inline-flex min-h-11 items-center[^"]*rounded-sm[^"]*text-proof/g) ?? []).length;
+check(
+  actionCellFloors >= 3,
+  "ledger: the hash anchor AND both action cells stand at the 44px floor",
+  `ledger: only ${actionCellFloors} proof link(s) carry inline-flex min-h-11 — the verify and receipt cells owe the same floor as the row's hash anchor (ADR-001 bis §4)`,
 );
 const explorerRefs = (ledger.match(/href=\{r\.explorerUrl\}/g) ?? []).length;
 check(
@@ -100,9 +120,25 @@ const lensBlock = (() => {
   return i === -1 ? "" : feed.slice(Math.max(0, i - 1200), i + 1200);
 })();
 check(
+  // Position radii heal the ACTIVE inset ring only — an outset focus ring
+  // is clipped by the overflow-hidden container whatever the radius
+  // (review-2 design hat measured the survivor: a 2px seam).
   /rounded-l-md/.test(lensBlock) && /rounded-r-md/.test(lensBlock),
-  "lens: segments carry their position radius (the gold ring follows the curve)",
-  "lens: the segments lack rounded-l-md / rounded-r-md — the active inset ring and focus ring get clipped SQUARE at the container's rounded corners (founder catch, 2026-08-03)",
+  "lens: segments carry their position radius (the ACTIVE inset ring follows the curve)",
+  "lens: the segments lack rounded-l-md / rounded-r-md — the active inset ring gets clipped SQUARE at the container's rounded corners (founder catch, 2026-08-03)",
+);
+check(
+  // The keyboard indicator must be INSET — the founder's own tab ruling
+  // (2026-07-20, guard-focus-visible §③): a TINT, never an offset boxing
+  // ring that an overflow-hidden container cuts to a seam.
+  /focus-visible:bg-gold\/10/.test(lensBlock) && !/focus-visible:ring-2/.test(lensBlock),
+  "lens: keyboard focus is the inset TINT idiom (never a clipped outset ring)",
+  "lens: the segments' focus indicator must be the founder's tab tint (focus-visible:bg-gold/10, no outset ring) — an outset ring inside this overflow-hidden container survives as a 2px seam (review-2 design hat, 2026-08-03)",
+);
+check(
+  /aria-pressed=\{lens === l\}/.test(lensBlock),
+  "lens: selection is spoken to assistive tech (aria-pressed)",
+  "lens: the segments lack aria-pressed={lens === l} — selection is conveyed by color alone (the house pattern carries it: JoinProtocol's amount chips)",
 );
 
 // ── verdict ─────────────────────────────────────────────────────────────────

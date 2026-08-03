@@ -1,5 +1,20 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-03 (SESSION 2, LA REVUE-2 AVANT DÉPLOIEMENT — son ordre) : 6 casquettes
+> seniors sur TOUT le train non-déployé, chaque trouvaille vérifiée puis FERMÉE le
+> jour même (rouge d'abord où un pin existe : 3+1 rouges regardés). Fermé : les 3
+> MAJEURS design (focus du sélecteur = TINT gravé du fondateur + aria-pressed · les
+> deux cellules du ledger au plancher 44px · le mark de /press au ratio naturel
+> 1.274 mesuré) · le CRITIQUE adversarial (la page /press liée à son autorité — 6
+> pins de référence) + toutes les lettres fines sondées · le REAL logique (les 12
+> strippers canoniques préservent les fermetures `*/` sur lignes `//` — fixture
+> exécutée, latent aujourd'hui) · les LOW sécurité (hash hex-gardé ×3 ·
+> annonce lecteur-d'écran · le chemin du mark dé-jumelé sur brandAssets).
+> Compteurs mesurés après : 9/9 · 12/12 · 34/34 · 1586/1586 · chaîne · tsc · build ·
+> 8 gardes api · rig. LE TRAIN (un seul mot de lui) : 3 tranches + les 17 scanners
+> des audits déjà fusionnés + la fermeture revue-2 — zéro fichier runtime serveur
+> recompté. NON mesuré : ses yeux connectés, le téléphone réel — prod.**
+
 > **▶ 2026-08-03 (SESSION 2, suite fin) — SLICE E CONSTRUITE sur son « go décide pour
 > moi » : /press, le press & brand kit public. Les 3 décisions déléguées, toutes
 > ancrées (périmètre V1 sans les previews · canaux = socialLinks importé · contact =

@@ -656,9 +656,10 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   le registre vivant · /terms = le mécanisme public), les deux mesurées
   44px au rig. Placement WORK-FIRST : après l'économie honnête, avant la
   queue — jamais au-dessus de l'achat. Titre en SANS (type-h3 — le seul
-  serif de la page reste le h1). Épinglé par guard-join-showcase (11 pins,
-  RED-first 10 échecs regardés → vert), 375px zéro débordement, deux thèmes
-  mesurés. **+0 couleur brute**.
+  serif de la page reste le h1). Épinglé par guard-join-showcase (RED-first
+  10 échecs regardés → vert ; durci par la revue-2 adversariale à 12 pins :
+  montage inconditionnel + claims bornés à leur élément), 375px zéro
+  débordement, deux thèmes mesurés. **+0 couleur brute**.
 - [x] **E LE PRESS & BRAND KIT PUBLIC — /press (2026-08-03, l'item E de la
   séquence gravée ; son « go décide pour moi » a délégué les trois décisions,
   toutes ancrées dans le réel : périmètre V1 = descriptions · marque servie ·
@@ -673,11 +674,17 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   upline » — la forme négation que guard-forbidden-copy sanctionne
   lui-même), le verbatim légal IMPORTÉ (safetyCopy.notInvestment). Badge
   READ_ONLY_PROOF, footer Learn, batterie SEO complète (sitemap 30 routes).
-  Épinglé par guard-press-kit (26 pins EXÉCUTÉS sur l'autorité de contenu,
-  RED-first 7 échecs regardés → vert ; le piège du stripper version CHAÎNE
-  — un glob `/*` dans une string — attrapé par son propre premier run).
+  Épinglé par guard-press-kit (RED-first 7 échecs regardés → vert ; le piège
+  du stripper version CHAÎNE — un glob `/*` dans une string — attrapé par
+  son propre premier run ; la revue-2 l'a porté à 34 pins : la PAGE liée à
+  son autorité de contenu — le CRITIQUE adversarial —, pins d'existence
+  ancrés-ligne, pressAssets moteur des pins d'assets, aspect du mark gardé).
+  Corrections revue-2 le même jour : le mark rendu au ratio NATUREL
+  (1.274 = 1.274 mesuré — il était écrasé 21% sous sa propre règle) · les
+  portes verify des faits en blocs sous leur phrase (le jumeau /join).
   Rig : one-liner verbatim au DOM · 3 canaux exacts · 7 portes · mark
-  naturalWidth>0 · footer · 375px zéro débordement · console vide.
+  naturalWidth>0 · footer · 375px zéro débordement · console vide. NON
+  mesuré : le téléphone réel — l'œil du fondateur en prod.
   **+0 couleur brute**.
 - [x] **K2 LE CÔTÉ INVITÉ (2026-07-20, maquette approuvée « GO AND GO-LIVE »,
   commit 0134cc6)** : le lien /join?source= s'ouvre avec SA carte peinte

@@ -269,7 +269,7 @@ export default function ActivityMineLedger() {
                     // stays one door in the footer (founder, 2026-08-03).
                     <Link
                       href={`/receipt/${r.tx}`}
-                      className="rounded-sm text-proof hover:text-proof-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="inline-flex min-h-11 items-center rounded-sm text-proof hover:text-proof-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       receipt
                     </Link>
@@ -280,7 +280,7 @@ export default function ActivityMineLedger() {
                       href={r.explorerUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="rounded-sm text-proof hover:text-proof-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="inline-flex min-h-11 items-center rounded-sm text-proof hover:text-proof-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       verify
                     </a>

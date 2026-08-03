@@ -34,7 +34,7 @@ function read(p: string): string {
 // and swallow real code from the scan — the class was caught live by
 // guard-activity-mine's own RED cycle (2026-08-03).
 function stripComments(code: string): string {
-  return code.replace(/^[ \t]*\/\/.*$/gm, "").replace(/\/\*[\s\S]*?\*\//g, "");
+  return code.replace(/^[ \t]*\/\/(?![^\n]*\*\/).*$/gm, "").replace(/\/\*[\s\S]*?\*\//g, "");
 }
 function stripStrings(code: string): string {
   return code

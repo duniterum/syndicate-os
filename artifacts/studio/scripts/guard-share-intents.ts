@@ -70,11 +70,14 @@ const MENU = path.join(srcDir, "components", "referral", "ShareMenu.tsx");
 // LINE comments are stripped FIRST: a `/*` inside a `//` line (e.g. a route
 // glob like `/api/auth/*` in a header) would otherwise open a phantom block
 // and swallow real code from the scan — the class was caught live by
-// guard-activity-mine's own RED cycle (2026-08-03).
+// guard-activity-mine's own RED cycle (2026-08-03). The (?!…\*\/) lookaheads
+// keep a `//` line that CARRIES a block CLOSER: deleting it would hand the
+// block the NEXT closer and swallow real code (review-2 logic hat, executed
+// counter-fixture, same day).
 function stripComments(code: string): string {
   return code
-    .replace(/^[ \t]*\/\/.*$/gm, "")
-    .replace(/([^:"'])\/\/[^\n"']*$/gm, "$1")
+    .replace(/^[ \t]*\/\/(?![^\n]*\*\/).*$/gm, "")
+    .replace(/([^:"'])\/\/(?![^\n"']*\*\/)[^\n"']*$/gm, "$1")
     .replace(/\/\*[\s\S]*?\*\//g, "");
 }
 

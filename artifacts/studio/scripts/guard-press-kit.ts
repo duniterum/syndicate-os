@@ -33,7 +33,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { pressDescriptions, pressApprovedLanguage, pressBannedLanguage, pressProtocolFacts, pressMediaUsage } from "../src/config/pressKit.ts";
+import { pressDescriptions, pressApprovedLanguage, pressBannedLanguage, pressProtocolFacts, pressMediaUsage, pressAssets } from "../src/config/pressKit.ts";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const srcDir = path.resolve(here, "..", "src");
@@ -45,10 +45,13 @@ const SEO = path.join(srcDir, "lib", "seo-route-registry.ts");
 const CONFIG = path.join(srcDir, "config", "pressKit.ts");
 const PUBLIC_DIR = path.resolve(here, "..", "public");
 
+// Line-first, with (?!…\*\/) lookaheads: a `//` line carrying a block CLOSER
+// must survive pass 1, or the block adopts the NEXT closer and swallows real
+// code (review-2 logic hat, executed counter-fixture, 2026-08-03).
 function stripComments(code: string): string {
   return code
-    .replace(/^[ \t]*\/\/.*$/gm, "")
-    .replace(/([^:"'])\/\/[^\n"']*$/gm, "$1")
+    .replace(/^[ \t]*\/\/(?![^\n]*\*\/).*$/gm, "")
+    .replace(/([^:"'])\/\/(?![^\n"']*\*\/)[^\n"']*$/gm, "$1")
     .replace(/\/\*[\s\S]*?\*\//g, "");
 }
 
@@ -64,30 +67,30 @@ const page = stripComments(read(PAGE));
 const configRaw = read(CONFIG);
 
 // ── 1. THE ROUTE EXISTS EVERYWHERE ──────────────────────────────────────────
-// Existence pins scan RAW source: the SEO registry carries `/*`-shaped glob
-// STRINGS that open a phantom block for any naive stripper (the string-borne
-// variant of the 2026-08-03 phantom-block trap — caught by this guard's own
-// first run, which reported the entry missing while it existed).
+// Existence pins scan RAW source (the SEO registry carries `/*`-shaped glob
+// STRINGS that phantom-trap naive strippers) but are LINE-ANCHORED so a
+// commented-out entry (`// path: "/press"` · `{/* <PublicRoute…`) can never
+// count as live (review-2 adversarial probes, 2026-08-03).
 check(page.length > 0, "press: the page exists", "press: pages/PressKit.tsx MISSING");
 check(
-  /path="\/press"/.test(read(APP)),
-  "press: routed in App",
-  "press: no /press route in App.tsx",
+  /^\s*<PublicRoute path="\/press">/m.test(read(APP)),
+  "press: routed in App (live line, not a comment)",
+  "press: no live /press route line in App.tsx",
 );
 check(
-  /path: "\/press"/.test(read(MODULES)),
-  "press: in the modules registry (nav/footer authority)",
-  "press: no /press entry in config/modules.ts — the footer and audits are registry-driven",
+  /^\s*path: "\/press",$/m.test(read(MODULES)),
+  "press: in the modules registry (live line)",
+  "press: no live /press entry line in config/modules.ts — the footer and audits are registry-driven",
 );
 check(
-  /routePath: "\/press"/.test(read(CLASSIFICATION)),
-  "press: surface-classified",
-  "press: no /press entry in surfaceClassification.ts",
+  /^\s*routePath: "\/press",$/m.test(read(CLASSIFICATION)),
+  "press: surface-classified (live line)",
+  "press: no live /press entry line in surfaceClassification.ts",
 );
 check(
-  /path: "\/press"/.test(read(SEO)),
-  "press: in the SEO route registry",
-  "press: no /press entry in seo-route-registry.ts — the sitemap and head are registry-driven",
+  /^\s*path: "\/press",$/m.test(read(SEO)),
+  "press: in the SEO route registry (live line)",
+  "press: no live /press entry line in seo-route-registry.ts — the sitemap and head are registry-driven",
 );
 
 // ── 2. ONE CHANNEL AUTHORITY ────────────────────────────────────────────────
@@ -97,10 +100,30 @@ check(
   "press: the page does not import socialLinks — official channels are ONE fact in config/brand.ts",
 );
 check(
-  !/x\.com\/|t\.me\//.test(page),
-  "press: no retyped channel urls",
+  // Legacy domain spellings joined the ban (review-2 adversarial probe:
+  // twitter.com/telegram.me literals passed the two-domain form).
+  !/x\.com\/|t\.me\/|twitter\.com\/|telegram\.me\//.test(page),
+  "press: no retyped channel urls (canonical or legacy spellings)",
   "press: a channel url is retyped in the page — import socialLinks, never re-derive",
 );
+
+// ── 2b. THE PAGE CONSUMES EVERY AUTHORITY IT CLAIMS (review-2 adversarial
+// CRITICAL: the config was frozen but nothing tied the PAGE to it — retyped
+// drifted copy rendered with 26/26 green). One reference pin per export.
+for (const name of [
+  "pressDescriptions",
+  "pressProtocolFacts",
+  "pressApprovedLanguage",
+  "pressBannedLanguage",
+  "pressMediaUsage",
+  "pressAssets",
+] as const) {
+  check(
+    new RegExp(`\\b${name}\\b`).test(page),
+    `press: the page renders ${name} from the authority`,
+    `press: the page no longer references ${name} — frozen config with a retyped page is the twin disease (2026-08-03 adversarial CRITICAL)`,
+  );
+}
 
 // ── 3. THE LEGAL VERBATIM IS IMPORTED ───────────────────────────────────────
 check(
@@ -109,8 +132,8 @@ check(
   "press: safetyCopy.notInvestment is not referenced — the legal line is imported, never retyped",
 );
 check(
-  !/recognition and attribution protocol/.test(page),
-  "press: the legal line is not retyped inline",
+  !/recognition[ -]and[ -]attribution/.test(page),
+  "press: the legal line is not retyped inline (hyphenated variants included)",
   "press: the not-investment sentence is RETYPED in the page — import safetyCopy.notInvestment",
 );
 
@@ -162,20 +185,39 @@ for (const [name, text] of [
   ["the config", stripComments(configRaw)],
 ] as const) {
   check(
-    !/mailto:|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/.test(text),
+    // The host must start with a LETTER: `syn-mark-gold@2x.png` parsed as an
+    // email under the loose form (review-2 adversarial false-positive probe).
+    !/mailto:|[A-Za-z0-9._%+-]+@[A-Za-z][A-Za-z0-9-]*(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/.test(text),
     `press: no invented contact in ${name}`,
     `press: ${name} carries an email/mailto — no press email exists in canon; inquiries go through the official channels`,
   );
 }
 
-// ── 6. THE SERVED ASSETS ARE REAL ───────────────────────────────────────────
-for (const asset of ["brand/syn-mark-gold.png", "syn-mark-gold.svg", "opengraph.jpg"]) {
+// ── 6. THE SERVED ASSETS ARE REAL — driven by THE pressAssets authority
+// (review-2 adversarial: the hardcoded trio let a fourth, dead entry ship
+// green despite this pin's own failure text). Every entry the page offers is
+// checked on disk; the trio floor keeps the section from silently emptying.
+check(
+  pressAssets.length >= 3,
+  "press: the asset list keeps its served trio",
+  `press: pressAssets shrank to ${pressAssets.length} — the mark (PNG+SVG) and the link-preview card are the served minimum`,
+);
+for (const a of pressAssets) {
   check(
-    existsSync(path.join(PUBLIC_DIR, asset)),
-    `press: served asset real (${asset})`,
-    `press: the page would offer /${asset} but public/${asset} does not exist — never promise an asset we do not serve`,
+    a.href.startsWith("/") && existsSync(path.join(PUBLIC_DIR, a.href.replace(/^\//, ""))),
+    `press: served asset real (${a.href})`,
+    `press: the page offers ${a.href} but public${a.href} does not exist — never promise an asset we do not serve`,
   );
 }
+
+// ── 7. THE MARK IS NEVER DISTORTED (review-2 design hat, 2026-08-03: the
+// served PNG is 544×427 — a square h-16 w-16 box squashed it ~21% directly
+// above the page's own «never distorted» rule). The img keeps natural aspect.
+check(
+  /className="h-16 w-auto"/.test(page) && !/img[^>]*w-16/.test(page),
+  "press: the mark renders at natural aspect (h-16 w-auto)",
+  "press: the mark img must be h-16 w-auto — a square box distorts the 544×427 interlock under the page's own usage rule",
+);
 
 // ── verdict ─────────────────────────────────────────────────────────────────
 if (errors.length > 0) {

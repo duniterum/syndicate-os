@@ -134,7 +134,7 @@ const registrySrc = readFileSync(
 )
   // LINE comments stripped FIRST — a `/*` inside a `//` line would open a
   // phantom block and swallow real code (guard-activity-mine's RED, 2026-08-03).
-  .replace(/^[ \t]*\/\/.*$/gm, "")
+  .replace(/^[ \t]*\/\/(?![^\n]*\*\/).*$/gm, "")
   .replace(/\/\*[\s\S]*?\*\//g, "");
 const entryChunks = registrySrc.split(/(?=registryId:\s*")/g).slice(1);
 check(
@@ -180,7 +180,7 @@ check(
 // LINE comments stripped FIRST — a `/*` inside a `//` line would open a
 // phantom block and swallow real code (guard-activity-mine's RED, 2026-08-03).
 const stripComments = (s: string): string =>
-  s.replace(/^[ \t]*\/\/.*$/gm, "").replace(/\/\*[\s\S]*?\*\//g, "");
+  s.replace(/^[ \t]*\/\/(?![^\n]*\*\/).*$/gm, "").replace(/\/\*[\s\S]*?\*\//g, "");
 const protocolMapSrc = stripComments(
   readFileSync(path.resolve(here, "..", "src", "pages", "ProtocolMap.tsx"), "utf8"),
 );

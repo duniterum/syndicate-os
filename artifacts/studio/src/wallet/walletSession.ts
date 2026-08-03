@@ -304,7 +304,13 @@ export async function fetchMemberStanding(): Promise<MemberStandingReadback | nu
     let receipt: MemberStandingReadback["receipt"] = null;
     if (typeof o.receipt === "object" && o.receipt !== null) {
       const rc = o.receipt as Record<string, unknown>;
-      if (typeof rc.transaction === "string" && typeof rc.explorerUrl === "string") {
+      // Hex-gated like the sibling numeric fields (review-2 security hat,
+      // 2026-08-03: the tx feeds hrefs — defense in depth at the boundary).
+      if (
+        typeof rc.transaction === "string" &&
+        /^0x[0-9a-fA-F]{64}$/.test(rc.transaction) &&
+        typeof rc.explorerUrl === "string"
+      ) {
         receipt = {
           transaction: rc.transaction,
           block: typeof rc.block === "number" ? rc.block : null,
@@ -675,6 +681,7 @@ export async function fetchOwnIntroductions(): Promise<OwnIntroductionsReadback 
           typeof row.commissionRaw === "string" &&
           /^[0-9]+$/.test(row.commissionRaw) &&
           typeof row.transaction === "string" &&
+          /^0x[0-9a-fA-F]{64}$/.test(row.transaction) &&
           typeof row.explorerUrl === "string" &&
           typeof row.block === "number"
         ) {
@@ -804,6 +811,7 @@ export function parseOwnPurchaseRow(raw: unknown): OwnPurchaseRowReadback | null
     typeof r.amountRaw !== "string" ||
     !/^[0-9]+$/.test(r.amountRaw) ||
     typeof r.transaction !== "string" ||
+    !/^0x[0-9a-fA-F]{64}$/.test(r.transaction) ||
     typeof r.explorerUrl !== "string" ||
     typeof r.engine !== "string"
   ) {

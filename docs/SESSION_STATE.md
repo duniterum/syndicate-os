@@ -124,7 +124,7 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ## themes measured · zero console errors. Wireframe updated to AS-BUILT in
 > ## docs/design/join-referral-showcase-wireframe.html.
 >
-> ## (a2) SLICE E BUILT the same session (his «go décide pour moi» — the three
+> ## (a3) SLICE E BUILT the same session (his «go décide pour moi» — the three
 > ## delegated decisions all grounded in reality, nothing invented): /press, the
 > ## public press & brand kit. V1 scope = descriptions · the SERVED mark ·
 > ## official channels (socialLinks IMPORTED — the existing authority) · 7
@@ -140,17 +140,54 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ## scan raw). Rig-measured: one-liner verbatim · 3 exact channels · 7 doors ·
 > ## mark naturalWidth>0 · footer link · 375px clean · zero console errors.
 >
-> ## (b) IN FLIGHT: nothing in code. DEPLOY BACKLOG: THREE batchable slices — the
-> ## A1 mine-lens fixes + slice C (/join showcase) + slice E (/press) — ONE train
-> ## carries all on his word. Then: the FIRSTS engine; background: member-ledger
-> ## windowing · spine-poller dedupe · the guard-stripper audit (his parallel
-> ## session — its commits land on main; sync before committing).
+> ## (a4) THE REVIEW-2 PASS (his order before any deploy word: «deep read … toutes
+> ## tes casquettes … 5 à 7 agents») — 6 senior hats over the WHOLE un-deployed
+> ## train, every finding verified then CLOSED the same session, RED-first where a
+> ## pin exists (watched: 3+1 reds → green):
+> · Interconnectivity CLEAN (merges byte-identical to mechanical · zero runtime
+>   server files · chains re-proven on the merged tree). Docs-truth: zero critical,
+>   figures exact; its 2 REAL wording repairs are in THIS block's (b)/(c).
+> · CLOSED — design's three MAJORS: the lens keyboard focus was a clipped 2px seam
+>   → the founder's TAB TINT idiom + aria-pressed (guard-pinned); the ledger's
+>   verify/receipt cells were 16px beside their 44px twin in the SAME row → both at
+>   the floor (guard-pinned, count 3); /press distorted its own mark ~21% under its
+>   own «never distorted» rule → natural aspect h-16 w-auto (guard-pinned,
+>   rig-measured 1.274 = 1.274) + the fact doors moved to block siblings (the /join
+>   twin shape).
+> · CLOSED — adversarial's CRITICAL: guard-press-kit froze the config but never
+>   tied the PAGE to it (probe-proven drift with 26/26 green) → six reference pins;
+>   plus the probe-proven letters: deep-link pinned to the FULL hash · existence
+>   pins line-anchored (commented-out entries counted as live) · pressAssets now
+>   drives the asset pins · legacy channel domains banned · the email regex no
+>   longer bites @2x asset names · frozen claims element-bounded (additive
+>   qualifiers were invisible) · the mount pinned unconditional (flag-wrap probe) ·
+>   the go-live boundary note written INTO the guard (CHECKOUT flip must move the
+>   marker in the same slice, never ambush the deploy).
+> · CLOSED — logic's REAL: the 12 reordered canonical strippers could swallow code
+>   when a `*/` closer sits on a `//` line (executed fixture; latent — zero live
+>   instances, grep-proven) → closer-preserving lookaheads in ALL 12 (my 4 + the
+>   audits' 8). Security's LOWs: tx hex-gated at walletSession's 3 parse points
+>   (the commissionRaw asymmetry) · CopyBlock sr-only announce + timer dedupe · the
+>   mark path de-twinned onto the brandAssets authority.
+> · Measured after closing: guards 9/9 · 12/12 · 34/34 · share-intents 1586/1586
+>   (moved from 1576 as this train grew the scanned tree — recorded) · full chain ·
+>   typecheck · build · the 8 api guards · rig: aria-pressed true/false, tint
+>   class, no outset ring, mark ratio exact, 7 fact blocks. NOT measured: rendered
+>   focus PIXELS and the founder's connected rows — his eyes, prod.
 >
-> ## (c) FOUNDER-PENDING: his deploy word on the A1 mine-lens slice · his prod looks
-> ## on the LIVE kit box (three looks handed in chat: the box under Share…, the
-> ## receipt box unchanged, the box width under narrow artifacts — his eye) · the 4
-> ## composition wireframes · « téléchargé » (dump.sql.gz) · K4 no-seat promoter ·
-> ## AW-5 (the 2 artifacts).
+> ## (b) IN FLIGHT: nothing in code. THE TRAIN (one deploy, his word): the three
+> ## slices (A1 mine-lens · C /join showcase · E /press) + the two guard-audit
+> ## riders ALREADY MERGED on main (b2a8bbb + 0bc51ab — 17 scanners, build-time
+> ## only) + the review-2 closure commit + the C wireframe doc. Zero runtime server
+> ## files in the whole range (recounted) — migrations will say nothing-to-apply.
+> ## Then: the FIRSTS engine; background: member-ledger windowing · spine-poller
+> ## dedupe.
+>
+> ## (c) FOUNDER-PENDING: his ONE deploy word on the WHOLE train above · his prod
+> ## looks on the LIVE kit box (three looks handed in chat: the box under Share…,
+> ## the receipt box unchanged, the box width under narrow artifacts — his eye) ·
+> ## the 4 composition wireframes · « téléchargé » (dump.sql.gz) · K4 no-seat
+> ## promoter · AW-5 (the 2 artifacts).
 
 > # ▶ 2026-08-03 (HANDOFF) — superseded by the block above. **PROD = `c2b1168` — THE BATCH IS SEALED
 > (Replit 6/6, 2026-08-03: entry `index-B903mBG_.js` = `a0353ba8…f94e` · the /activity
