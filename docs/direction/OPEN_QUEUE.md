@@ -1,5 +1,18 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-03 (SESSION 2, 4ᵉ vague) — ADD SYN AU FOOTER, son ordre (« MetaMask …
+> et d'autres wallets … si tu peux faire mieux fais ainsi ») : construit
+> MÉCANISME-plutôt-que-MARQUE — UN bouton EIP-747 `wallet_watchAsset` au wallet
+> CONNECTÉ (MetaMask, Rabby, Coinbase, Trust… le même appel standard), repli
+> honnête « adresse copiée » sans wallet, et l'absence de presse-papiers PARLE
+> aussi (jamais un clic mort). Chaîne de custody : l'adresse EXTRAITE du lien
+> synToken servi (le seul endpoint sanctionné), décimales de la réalité servie,
+> image = origine canonique + brandAssets ; fail-closed sans faits servis.
+> guard-watch-asset 8/8 (RED-first 6 regardés). Rig : rendu au footer (44px, mark
+> chargé), clic sans erreur. NON mesuré : la feuille du wallet réel — SON
+> navigateur. BACKLOG : DEUX tranches groupables (terms+lockup · add-SYN) — son
+> mot pour le train.**
+
 > **▶ 2026-08-03 (SESSION 2, 8ᵉ sceau + la 3ᵉ vague) — PROD = `949f80c` (Replit 6/6,
 > /press live, backbone premier cycle propre). PUIS SES TROIS PRISES prod, fermées la
 > même heure (rouge d'abord 2+8+1) : ① la porte terms de la carte /join menait aux

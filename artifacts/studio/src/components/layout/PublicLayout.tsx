@@ -14,6 +14,7 @@ import {
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { HEADER_ICON_PRIMARY } from "@/components/layout/headerControls";
 import { RouteBreadcrumbTrail } from "@/components/layout/RouteBreadcrumbTrail";
+import { AddSynToWallet } from "@/components/layout/AddSynToWallet";
 import { getRouteBreadcrumb } from "@/lib/seo-route-registry";
 import { headerNav, headerNavPrimary, headerNavMore, footerGroups, navLabel } from "@/config/navigation";
 import { brand, brandAssets, headerChips, socialLinks, type HeaderChipState, type SocialLink } from "@/config/brand";
@@ -541,6 +542,10 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 <span>{link.label}</span>
               </a>
             ))}
+            {/* ADD SYN — EIP-747 to the connected wallet, every brand, one
+                call; fail-closed on served facts (founder order 2026-08-03,
+                guard-watch-asset). */}
+            <AddSynToWallet />
           </div>
           <div className="flex flex-col items-center justify-between gap-4 border-t border-border/50 pt-8 md:flex-row">
             <p className="text-xs text-muted-foreground">© 2026 {brand.name}. {brand.rightsNote}</p>

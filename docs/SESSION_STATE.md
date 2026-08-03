@@ -8,6 +8,19 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > 200 · migrations EXPLICITLY nothing (guard scripts only api-side) · backbone first
 > cycle CLEAN ok:1 partial:0 failed:0). The whole review-2 train is LIVE.**
 >
+> ## (a6) ADD SYN TO YOUR WALLET (his order, 4th wave — «si tu peux faire mieux
+> ## autrement fais ainsi», taken): mechanism-over-brand — ONE footer button
+> ## speaking EIP-747 wallet_watchAsset to the CONNECTED client (every injected
+> ## wallet answers the same call; no per-wallet buttons, no brand lock), honest
+> ## copy-address fallback, and the ABSENT-clipboard branch speaks too (the pane's
+> ## own silence exposed the optional-chain short-circuit — never a dead click).
+> ## Custody: address EXTRACTED from the served synToken verify link (the one
+> ## sanctioned emitter) · decimals from the served reality (the ProtocolMap
+> ## idiom) · image = CANONICAL_ORIGIN + brandAssets · fail-closed without served
+> ## facts. guard-watch-asset 8/8 (RED-first, 6 watched). Rig: renders in the
+> ## footer brand row (44px, mark loaded), click executes clean. NOT measured:
+> ## the real wallet sheet — his browser.
+>
 > ## (a5) HIS THREE LIVE-PROD CATCHES, all closed the same hour (RED-first 2+8+1
 > ## watched):
 > · «How, in the terms» doored to the GENERAL Terms of Use — but the program has ITS
