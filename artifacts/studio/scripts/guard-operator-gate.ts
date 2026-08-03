@@ -49,12 +49,15 @@ function read(rel: string): string {
   return readFileSync(path.resolve(srcDir, rel), "utf8");
 }
 
-/** Strip /* *\/ and // comments (and JSX {/* *\/} bodies) before scanning. */
+// LINE comments are stripped FIRST: a `/*` inside a `//` line (e.g. a route
+// glob like `/api/auth/*` in a header) would otherwise open a phantom block
+// and swallow real code from the scan — the class was caught live by
+// guard-activity-mine's own RED cycle (2026-08-03).
 function stripComments(code: string): string {
   return code
-    .replace(/\/\*[\s\S]*?\*\//g, "")
     .replace(/^[ \t]*\/\/.*$/gm, "")
-    .replace(/([^:"'])\/\/[^\n"']*$/gm, "$1");
+    .replace(/([^:"'])\/\/[^\n"']*$/gm, "$1")
+    .replace(/\/\*[\s\S]*?\*\//g, "");
 }
 
 function walk(dir: string): string[] {

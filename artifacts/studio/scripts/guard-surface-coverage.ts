@@ -132,8 +132,10 @@ const registrySrc = readFileSync(
   path.resolve(here, "..", "src", "config", "moduleRegistry.ts"),
   "utf8",
 )
-  .replace(/\/\*[\s\S]*?\*\//g, "")
-  .replace(/^[ \t]*\/\/.*$/gm, "");
+  // LINE comments stripped FIRST — a `/*` inside a `//` line would open a
+  // phantom block and swallow real code (guard-activity-mine's RED, 2026-08-03).
+  .replace(/^[ \t]*\/\/.*$/gm, "")
+  .replace(/\/\*[\s\S]*?\*\//g, "");
 const entryChunks = registrySrc.split(/(?=registryId:\s*")/g).slice(1);
 check(
   entryChunks.length > 0,
@@ -175,8 +177,10 @@ check(
 //   - the public-map registry entry links moduleId "map", and the internal
 //     protocol-map (os-map) governance row still exists — the public entry
 //     was added, never repointed.
+// LINE comments stripped FIRST — a `/*` inside a `//` line would open a
+// phantom block and swallow real code (guard-activity-mine's RED, 2026-08-03).
 const stripComments = (s: string): string =>
-  s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^[ \t]*\/\/.*$/gm, "");
+  s.replace(/^[ \t]*\/\/.*$/gm, "").replace(/\/\*[\s\S]*?\*\//g, "");
 const protocolMapSrc = stripComments(
   readFileSync(path.resolve(here, "..", "src", "pages", "ProtocolMap.tsx"), "utf8"),
 );
