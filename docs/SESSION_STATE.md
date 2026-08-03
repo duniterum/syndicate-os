@@ -108,10 +108,27 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   bar's Copy and the box's Copy no longer light each other's «Copied» label (each
 >   owns its state; both still advance the face).
 >
-> ## (b) IN FLIGHT: nothing in code. The A1 mine-lens slice is committed, batchable —
-> ## it rides the next deploy or fires solo on his word. Then the order continues:
-> ## C (/join referral-showcase) · E (public press kit) · FIRSTS engine; background:
-> ## member-ledger windowing · spine-poller dedupe · the guard-stripper audit chip.
+> ## (a1) SLICE C BUILT the same session (his «deep think … améliore … go avec human
+> ## readable text»): the buyer-facing referral showcase on /join — HIS catch fixed
+> ## the voice (the §7 flagship lines are REFERRER voice; a paying buyer now reads
+> ## BUYER-FUTURE voice, same chain-true claims). The engraved one-liner verbatim
+> ## (the site's one sanctioned «payout», already carved out in guard-forbidden-copy),
+> ## the mechanism in one sentence, nothing-to-claim, never-breaks/never-lost, the
+> ## price-truth closing. §7 format held: bold claim + verify door (/activity ·
+> ## /terms), both measured 44px live. Placed after the economics, before the tail
+> ## (the boundary card no longer renders — checkout is LIVE — so the card is the
+> ## last argument before Next steps, measured in the real DOM). Sans headline
+> ## (type-h3; the page's one serif stays the h1). guard-join-showcase: 11 pins,
+> ## RED-first (10 watched failures → green; the copy is FROZEN word-for-word).
+> ## Rig: claims verbatim in the DOM · both doors 44px · 375px zero overflow · both
+> ## themes measured · zero console errors. Wireframe updated to AS-BUILT in
+> ## docs/design/join-referral-showcase-wireframe.html.
+>
+> ## (b) IN FLIGHT: nothing in code. DEPLOY BACKLOG: TWO batchable slices — the A1
+> ## mine-lens fixes + slice C — one train carries both on his word. Then the order
+> ## continues: E (public press kit) · FIRSTS engine; background: member-ledger
+> ## windowing · spine-poller dedupe · the guard-stripper audit (running in his
+> ## parallel session).
 >
 > ## (c) FOUNDER-PENDING: his deploy word on the A1 mine-lens slice · his prod looks
 > ## on the LIVE kit box (three looks handed in chat: the box under Share…, the

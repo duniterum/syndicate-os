@@ -1,0 +1,123 @@
+// guard-join-showcase.ts — THE BUYER-FACING REFERRAL SHOWCASE ON /join. BLOCKING.
+// ---------------------------------------------------------------------------
+// THE SLICE (C — the engraved sequence; founder «go avec human readable text»,
+// 2026-08-03). /join carried only the invitee attribution strip (K2); the
+// BUYER never learned the program's unique claim. The founder's own catch
+// shaped the voice: the §7 flagship lines are REFERRER voice («You don't wait
+// to get paid» read absurd to a paying buyer) — the card speaks BUYER-FUTURE
+// voice, same chain-true claims, and the founder approved this copy verbatim.
+//
+// THE PINS:
+//   1. THE MOUNT + ITS PLACE — JoinReferralShowcase exists and sits AFTER the
+//      honest economics, BEFORE the boundary card (WORK-FIRST: the last
+//      argument before the tail, never above the purchase work).
+//   2. THE COPY, FROZEN — the engraved §7 one-liner verbatim (the site's ONE
+//      sanctioned «payout», carved out in guard-forbidden-copy) + the three
+//      founder-approved bold claims + the price-truth closing («never changes
+//      your price» — the anti-markup fact that must never be dropped).
+//   3. THE §7 FORMAT — bold claim + verify path: the /activity door and the
+//      /terms door both present inside the card.
+//   4. THE BUYER'S TONGUE — no machine plumbing in the card: routed/routing
+//      and escrow never reach a buyer's eyes (the terms explain mechanisms).
+//
+// NOT COVERED (stated): rendered pixels and themes (the rig/preview gate),
+// the /activity and /terms routes' own existence (the router and SEO registry
+// own them), the truth of the chain facts themselves (the engine and terms).
+// Scans are comment-stripped (LINE comments first — the phantom-block trap).
+
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const PAGE = path.join(here, "..", "src", "pages", "JoinProtocol.tsx");
+
+function stripComments(code: string): string {
+  return code
+    .replace(/^[ \t]*\/\/.*$/gm, "")
+    .replace(/([^:"'])\/\/[^\n"']*$/gm, "$1")
+    .replace(/\/\*[\s\S]*?\*\//g, "");
+}
+
+const errors: string[] = [];
+const ok: string[] = [];
+function check(cond: boolean, pass: string, fail: string): void {
+  if (cond) ok.push(pass);
+  else errors.push(fail);
+}
+
+const page = stripComments(readFileSync(PAGE, "utf8"));
+
+// ── 1. THE MOUNT + ITS PLACE ────────────────────────────────────────────────
+check(
+  /function JoinReferralShowcase\(/.test(page),
+  "showcase: the component exists",
+  "showcase: JoinReferralShowcase missing from JoinProtocol.tsx — the buyer-facing referral showcase (slice C) is gone",
+);
+const econIdx = page.indexOf("<JoinEconomics />");
+const showIdx = page.indexOf("<JoinReferralShowcase />");
+const boundaryIdx = page.indexOf("panel-buy-readiness");
+check(
+  econIdx !== -1 && showIdx !== -1 && boundaryIdx !== -1 && econIdx < showIdx && showIdx < boundaryIdx,
+  "showcase: mounted AFTER the economics, BEFORE the boundary (the last argument before the tail)",
+  "showcase: the mount order broke — the card sits AFTER <JoinEconomics /> and BEFORE the boundary card, never above the purchase work (WORK-FIRST)",
+);
+
+// The component's own text — from its declaration to the next top-level
+// function (or the page component) — so tongue/door pins scan the CARD only.
+const compStart = page.indexOf("function JoinReferralShowcase(");
+const afterComp = page.slice(compStart + 1);
+const nextFn = afterComp.search(/\nfunction |\nexport default function /);
+const card = compStart === -1 ? "" : afterComp.slice(0, nextFn === -1 ? undefined : nextFn);
+
+// ── 2. THE COPY, FROZEN (founder-approved verbatim, 2026-08-03) ─────────────
+const FROZEN: [string, string][] = [
+  ["the one-liner", "The referral program where the payout is part of the purchase."],
+  ["the eyebrow", "Included with your seat"],
+  [
+    "bold claim 1 (the mechanism)",
+    "the contract pays your commission inside their purchase — same transaction, same block, before we ever see the money.",
+  ],
+  ["bold claim 2 (nothing to claim)", "Nothing to claim, ever."],
+  ["bold claim 3 (never breaks, never lost)", "It can never break a sale, and it can never be lost."],
+  ["the price-truth closing", "never changes your price"],
+];
+// Whitespace-normalized on BOTH sides: the pin freezes the WORDS, never the
+// JSX line wrapping (bold claim 1 spans three source lines).
+const flatCard = card.replace(/\s+/g, " ");
+for (const [name, text] of FROZEN) {
+  check(
+    flatCard.includes(text.replace(/\s+/g, " ")),
+    `showcase: ${name} verbatim`,
+    `showcase: ${name} drifted or vanished — the founder approved this copy verbatim; expected «${text}»`,
+  );
+}
+
+// ── 3. THE §7 FORMAT — bold claim + verify path ─────────────────────────────
+check(
+  /href="\/activity"/.test(card),
+  "showcase: the live-record verify door (/activity) is present",
+  "showcase: the /activity verify door is gone — every bold claim carries or sits next to its verify path (§7's signature format)",
+);
+check(
+  /href="\/terms"/.test(card),
+  "showcase: the terms door (/terms) is present",
+  "showcase: the /terms door is gone — the never-breaks/never-lost claim must sit next to its verify path",
+);
+
+// ── 4. THE BUYER'S TONGUE ───────────────────────────────────────────────────
+const TONGUE = /\b(routed|routing|escrow)\b/i;
+const tongueHit = card.match(TONGUE);
+check(
+  tongueHit === null,
+  "showcase: no machine plumbing reaches the buyer's eyes",
+  `showcase: buyer-facing machine vocabulary "${tongueHit?.[0]}" — human words only; the terms explain mechanisms`,
+);
+
+// ── verdict ─────────────────────────────────────────────────────────────────
+if (errors.length > 0) {
+  for (const e of errors) console.error(`  ✗ ${e}`);
+  console.error(`[guard:join-showcase] ${errors.length} FAILURE(S) (${ok.length} pins green).`);
+  process.exit(1);
+}
+console.log(`[guard:join-showcase] PASS — ${ok.length}/${ok.length} showcase pins hold.`);

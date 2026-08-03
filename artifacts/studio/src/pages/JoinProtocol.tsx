@@ -662,6 +662,72 @@ function JoinEconomics() {
   );
 }
 
+// ── C · the buyer-facing referral showcase (the engraved sequence's item C;
+// founder-approved copy VERBATIM, 2026-08-03 — his own catch shaped the
+// voice: the §7 flagship lines are REFERRER voice, so a paying buyer reads
+// BUYER-FUTURE voice here, same chain-true claims). Placement (WORK-FIRST):
+// the last argument before the tail — after the honest economics, before the
+// boundary, never above the purchase work. §7's signature format holds: bold
+// claim + verify path (/activity = the live record where sealed
+// introductions carry their tx anchors; /terms = the public statement of the
+// never-breaks/never-lost mechanism). guard-join-showcase freezes the copy,
+// the place and the doors. ─────────────────────────────────────────────────
+function JoinReferralShowcase() {
+  const verifyCls =
+    "mt-1 inline-flex min-h-11 items-center rounded-sm font-mono text-xs text-proof hover:text-proof-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+  return (
+    <Card className="border-gold/30 bg-gold/5 p-6 mb-12" data-testid="panel-join-referral-showcase">
+      <p className="type-eyebrow text-gold mb-3">Included with your seat</p>
+      <h2 className="type-h3 text-foreground mb-4 max-w-[38ch]">
+        The referral program where the payout is part of the purchase.
+      </h2>
+      <div className="space-y-4">
+        <div>
+          <p className="text-sm leading-relaxed text-muted-foreground measure">
+            Every seat comes with its own introduction link. When someone joins
+            through yours,{" "}
+            <strong className="font-semibold text-foreground">
+              the contract pays your commission inside their purchase — same
+              transaction, same block, before we ever see the money.
+            </strong>{" "}
+            One signature: theirs. Two recipients: the protocol, and you.
+          </p>
+          <Link
+            href="/activity"
+            className={verifyCls}
+            data-testid="link-showcase-verify-record"
+          >
+            Verify a real one on the live record
+          </Link>
+        </div>
+        <p className="text-sm leading-relaxed text-muted-foreground measure">
+          <strong className="font-semibold text-foreground">Nothing to claim, ever.</strong>{" "}
+          No button, no waiting — the commission lands in your wallet the
+          moment the block confirms.
+        </p>
+        <div>
+          <p className="text-sm leading-relaxed text-muted-foreground measure">
+            <strong className="font-semibold text-foreground">
+              It can never break a sale, and it can never be lost.
+            </strong>
+          </p>
+          <Link
+            href="/terms"
+            className={verifyCls}
+            data-testid="link-showcase-verify-terms"
+          >
+            How, in the terms
+          </Link>
+        </div>
+      </div>
+      <p className="mt-5 border-t border-border/40 pt-4 text-sm leading-relaxed text-muted-foreground measure">
+        And it never changes your price — commissions are paid from the
+        protocol&apos;s side of the purchase, never added on top.
+      </p>
+    </Card>
+  );
+}
+
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export default function JoinProtocol() {
@@ -787,6 +853,10 @@ export default function JoinProtocol() {
 
       {/* The honest economics (C1.4) — two live prices + the never-cross lines */}
       <JoinEconomics />
+
+      {/* C — the buyer-facing referral showcase: the last argument before
+          the tail (guard-join-showcase pins copy, place and doors). */}
+      <JoinReferralShowcase />
 
       {/* HARD BOUNDARY — shown while the founder's checkout gate is OFF.
           The go-live slice (flip CHECKOUT_ENABLED + C5) removes this card AND

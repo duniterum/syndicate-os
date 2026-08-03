@@ -641,6 +641,24 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   commité rejoue 15, l'écart étant le pin sur-large rétréci, dit dans
   02e3f40 → 1576/1576, durci ensuite par la revue adversariale).
   **+0 couleur brute**.
+- [x] **C LA VITRINE REFERRAL CÔTÉ ACHETEUR sur /join (2026-08-03, l'item C
+  de la séquence gravée ; sa prise a fixé la VOIX — les lignes gravées §7
+  sont la voix PARRAIN, « You don't wait to get paid » est absurde pour un
+  acheteur qui paie — puis son « deep think … améliore … go avec human
+  readable text » a approuvé le texte)** : la carte voix ACHETEUR-FUTUR,
+  mêmes vérités de chaîne — le one-liner gravé (« The referral program where
+  the payout is part of the purchase », le SEUL « payout » autorisé du site,
+  déjà exempté dans guard-forbidden-copy) · le mécanisme en une phrase
+  (commission payée DANS la transaction de l'acheteur, avant que le
+  protocole voie l'argent) · « Nothing to claim, ever » · « never break a
+  sale / never be lost » · la vérité-prix (« never changes your price »,
+  l'anti-markup). Format §7 tenu : claim en gras + porte verify (/activity =
+  le registre vivant · /terms = le mécanisme public), les deux mesurées
+  44px au rig. Placement WORK-FIRST : après l'économie honnête, avant la
+  queue — jamais au-dessus de l'achat. Titre en SANS (type-h3 — le seul
+  serif de la page reste le h1). Épinglé par guard-join-showcase (11 pins,
+  RED-first 10 échecs regardés → vert), 375px zéro débordement, deux thèmes
+  mesurés. **+0 couleur brute**.
 - [x] **K2 LE CÔTÉ INVITÉ (2026-07-20, maquette approuvée « GO AND GO-LIVE »,
   commit 0134cc6)** : le lien /join?source= s'ouvre avec SA carte peinte
   (serveur, vrai emblème, adresse courte de l'introducteur, registre

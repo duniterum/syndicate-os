@@ -1,5 +1,15 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-03 (SESSION 2, fin) — SLICE C CONSTRUITE sur son « go » : la vitrine
+> referral côté ACHETEUR sur /join. SA prise a fixé la voix (les lignes §7 = voix
+> parrain ; l'acheteur lit la voix acheteur-futur, mêmes vérités) ; texte approuvé
+> puis GELÉ mot à mot par guard-join-showcase (11 pins, RED-first). Le one-liner
+> gravé verbatim (le seul « payout » du site, exemption déjà en place), les portes
+> verify /activity + /terms (44px mesurés), placement après l'économie, avant la
+> queue (la frontière ne rend plus — checkout LIVE). 375px + deux thèmes mesurés.
+> BACKLOG DE DÉPLOIEMENT : DEUX tranches groupables (fixes /activity + la vitrine C)
+> — un seul train sur son mot. La suite de l'ordre : E (press kit public) · FIRSTS.**
+
 > **▶ 2026-08-03 (SESSION 2, suite) — 7ᵉ sceau : PROD = `fc78854` (Replit 6/6, entrée
 > `index-CHiP9sTw.js`, migrations « rien à appliquer », les intents dans le bundle
 > servi) — tout l'arc K1.5 + la passe six-casquettes sont LIVE. PUIS SA PRISE sur
