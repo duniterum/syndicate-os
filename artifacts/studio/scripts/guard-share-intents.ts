@@ -519,7 +519,6 @@ if (surfaceSrc !== null) {
 // function (the OS-sheet fallback and the intent path share it — the twin law).
 for (const [prop, why] of [
   ["linkForTarget", "each network's link carries its own &via= channel tag"],
-  ["onIntent", "the artifact's picture is delivered when the intent cannot carry it"],
   ["intentHint", "the box states what actually travels on a link intent"],
 ] as const) {
   check(
@@ -701,6 +700,20 @@ check(
   /const faceLink = withCard\(joinLink, spec\.previewFace\)/.test(kit),
   "kit: the row derives its face-bearing link once, from its own spec",
   "kit: the artifact row does not derive faceLink = withCard(joinLink, spec.previewFace) — its doors would hand out a link whose preview is not this artifact",
+);
+
+// NO SILENT DOWNLOAD ON AN INTENT (founder catch, 2026-08-03: «pourquoi share
+// déclenche le téléchargement en même temps??»). The kit used to raster and
+// download the artifact on every intent click. That was correct while a shared
+// link carried NO picture at all — handing over the file was the only way the
+// artifact could travel. K1.7 removed the premise: the link now declares its
+// OWN painted face and the network unfurls it. The compensation outlived its
+// reason and, in the meantime, filled his Downloads with «collectible (1)…(6)».
+// Download stays a button: explicit, and chosen.
+check(
+  !/onIntent=/.test(kit),
+  "kit: a share click downloads nothing silently",
+  "kit: the kit passes onIntent again — a share must not dump a file into Downloads; the link carries the picture now, and Download is a button",
 );
 for (const [door, needle] of [
   ["the box + Copy link", "pageUrl={faceLink}"],

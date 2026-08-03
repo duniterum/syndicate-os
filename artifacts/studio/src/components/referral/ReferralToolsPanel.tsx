@@ -179,18 +179,14 @@ function ArtifactActions({
     if (note.length > 0) say(note);
   }
 
-  /** An intent act. A share intent carries text + a link and CANNOT carry an
-   * image — every network renders the LINK's own unfurl, which is the /join
-   * card, not this artifact (founder catch, 2026-08-03: sixteen Share… doors,
-   * one picture, none of them the artifact). The platform half is not
-   * refactorable; ours is: the member gets THIS artifact's picture, in hand,
-   * while the composer he just opened is still empty. */
-  const handleIntent = (label: string) => {
-    if (busy !== null) return; // a raster is already in flight for this row
-    setBusy("share");
-    void deliverArtifactPng(`${label} opened — image downloaded, attach it before you send`)
-      .finally(() => setBusy(null));
-  };
+  // NO AUTO-DOWNLOAD ON A SHARE (founder catch, 2026-08-03: «pourquoi share
+  // déclenche le téléchargement en même temps??»). A `handleIntent` used to
+  // raster and download the artifact on every intent click — written when a
+  // shared link carried NO picture at all, so handing over the file was the
+  // only way the artifact could travel. K1.7 removed that premise: the link now
+  // declares its OWN painted face and the network unfurls it. The compensation
+  // outlived its reason and just filled his Downloads folder with
+  // «collectible (1)…(6)». Download is a button, right there, and explicit.
   // useId, never spec.id: the og artifact mounts this row TWICE (§1 card +
   // the standing moment card) — a spec-derived id collides in the document
   // and crosses aria-controls (six-hat review, 2026-08-03).
@@ -334,9 +330,7 @@ function ArtifactActions({
         // cost the picture. Channels still counts the tagged links the Channels
         // composer hands out, which is what it was built for.
         linkForTarget={(t) => faceLink}
-        // What the link cannot carry, we hand over.
-        onIntent={(t) => handleIntent(t.label)}
-        intentHint="Networks carry the link, not the picture — so your image downloads, ready to attach."
+        intentHint="Your card travels with the link — the network unfurls it. To post the image itself, use Download."
         onClose={() => setShareOpen(false)}
         testidBase={`kit-share-${spec.id}`}
         placementClassName="mt-2"
