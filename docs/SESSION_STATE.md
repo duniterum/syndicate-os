@@ -124,11 +124,27 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ## themes measured · zero console errors. Wireframe updated to AS-BUILT in
 > ## docs/design/join-referral-showcase-wireframe.html.
 >
-> ## (b) IN FLIGHT: nothing in code. DEPLOY BACKLOG: TWO batchable slices — the A1
-> ## mine-lens fixes + slice C — one train carries both on his word. Then the order
-> ## continues: E (public press kit) · FIRSTS engine; background: member-ledger
-> ## windowing · spine-poller dedupe · the guard-stripper audit (running in his
-> ## parallel session).
+> ## (a2) SLICE E BUILT the same session (his «go décide pour moi» — the three
+> ## delegated decisions all grounded in reality, nothing invented): /press, the
+> ## public press & brand kit. V1 scope = descriptions · the SERVED mark ·
+> ## official channels (socialLinks IMPORTED — the existing authority) · 7
+> ## protocol facts each with its internal verify door · approved language + the
+> ## red lines as quotable DENIALS («not an investment»… — the negation form
+> ## guard-forbidden-copy itself sanctions) · media usage + the IMPORTED legal
+> ## verbatim; press contact = «through the official channels» (no email exists
+> ## in canon). Full route wiring: App · modules (footer Learn) · classification ·
+> ## SEO registry + sitemap regenerated (30 routes) + rewrites. READ_ONLY_PROOF
+> ## badge. guard-press-kit: 26 pins EXECUTING the content authority, RED-first
+> ## (7 watched failures → green; its own first run caught the STRING-borne
+> ## phantom-block variant — a `/*` glob in the SEO registry — existence pins
+> ## scan raw). Rig-measured: one-liner verbatim · 3 exact channels · 7 doors ·
+> ## mark naturalWidth>0 · footer link · 375px clean · zero console errors.
+>
+> ## (b) IN FLIGHT: nothing in code. DEPLOY BACKLOG: THREE batchable slices — the
+> ## A1 mine-lens fixes + slice C (/join showcase) + slice E (/press) — ONE train
+> ## carries all on his word. Then: the FIRSTS engine; background: member-ledger
+> ## windowing · spine-poller dedupe · the guard-stripper audit (his parallel
+> ## session — its commits land on main; sync before committing).
 >
 > ## (c) FOUNDER-PENDING: his deploy word on the A1 mine-lens slice · his prod looks
 > ## on the LIVE kit box (three looks handed in chat: the box under Share…, the

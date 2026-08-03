@@ -659,6 +659,26 @@ Le design n'est "fini" que quand TOUT ceci est vrai :
   serif de la page reste le h1). Épinglé par guard-join-showcase (11 pins,
   RED-first 10 échecs regardés → vert), 375px zéro débordement, deux thèmes
   mesurés. **+0 couleur brute**.
+- [x] **E LE PRESS & BRAND KIT PUBLIC — /press (2026-08-03, l'item E de la
+  séquence gravée ; son « go décide pour moi » a délégué les trois décisions,
+  toutes ancrées dans le réel : périmètre V1 = descriptions · marque servie ·
+  canaux · faits · langage · usage média ; canaux = socialLinks IMPORTÉ
+  (l'autorité existante, jamais retapé) ; contact presse = « via les canaux
+  officiels » car AUCUNE adresse n'existe en canon — rien d'inventé)** : la
+  carrière press.tsx d'origine passée au tamis du miroir — seules les vérités
+  SERVIES publient (le mark or PNG+SVG réel, l'OG servie, jamais les 48
+  fichiers non portés). Registre PROOF : 3 descriptions gelées mot à mot,
+  7 faits chacun avec sa porte verify interne, les lignes rouges en DÉNIS
+  directs citables (« not an investment », « not an MLM — no downline, no
+  upline » — la forme négation que guard-forbidden-copy sanctionne
+  lui-même), le verbatim légal IMPORTÉ (safetyCopy.notInvestment). Badge
+  READ_ONLY_PROOF, footer Learn, batterie SEO complète (sitemap 30 routes).
+  Épinglé par guard-press-kit (26 pins EXÉCUTÉS sur l'autorité de contenu,
+  RED-first 7 échecs regardés → vert ; le piège du stripper version CHAÎNE
+  — un glob `/*` dans une string — attrapé par son propre premier run).
+  Rig : one-liner verbatim au DOM · 3 canaux exacts · 7 portes · mark
+  naturalWidth>0 · footer · 375px zéro débordement · console vide.
+  **+0 couleur brute**.
 - [x] **K2 LE CÔTÉ INVITÉ (2026-07-20, maquette approuvée « GO AND GO-LIVE »,
   commit 0134cc6)** : le lien /join?source= s'ouvre avec SA carte peinte
   (serveur, vrai emblème, adresse courte de l'introducteur, registre

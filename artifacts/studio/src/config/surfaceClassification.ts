@@ -287,6 +287,17 @@ export const surfaceClassification: SurfaceClassificationEntry[] = [
     enforcement: "PREVIEW_LABELLED",
   },
   {
+    routePath: "/press",
+    moduleId: "press",
+    audience: "PUBLIC",
+    surface: "PUBLIC_VISITOR",
+    layout: "public",
+    summary:
+      "Press & brand kit — official descriptions, the served mark, the only official channels, protocol facts with verify paths, approved/banned language.",
+    requiredState: "S1",
+    enforcement: "PREVIEW_LABELLED",
+  },
+  {
     routePath: "/archive",
     moduleId: "archive",
     audience: "PUBLIC",

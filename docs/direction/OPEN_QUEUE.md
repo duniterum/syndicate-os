@@ -1,5 +1,14 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> **▶ 2026-08-03 (SESSION 2, suite fin) — SLICE E CONSTRUITE sur son « go décide pour
+> moi » : /press, le press & brand kit public. Les 3 décisions déléguées, toutes
+> ancrées (périmètre V1 sans les previews · canaux = socialLinks importé · contact =
+> les canaux officiels, aucune adresse inventée). Descriptions gelées mot à mot,
+> 7 faits avec portes verify, lignes rouges en dénis citables, verbatim légal importé,
+> batterie SEO complète (sitemap 30). guard-press-kit 26 pins RED-first. Rig mesuré
+> propre. BACKLOG DE DÉPLOIEMENT : TROIS tranches groupables (fixes /activity · la
+> vitrine C · /press) — UN train sur son mot. La suite : FIRSTS engine.**
+
 > **▶ 2026-08-03 (SESSION 2, fin) — SLICE C CONSTRUITE sur son « go » : la vitrine
 > referral côté ACHETEUR sur /join. SA prise a fixé la voix (les lignes §7 = voix
 > parrain ; l'acheteur lit la voix acheteur-futur, mêmes vérités) ; texte approuvé

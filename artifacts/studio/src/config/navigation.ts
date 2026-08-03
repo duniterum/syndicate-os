@@ -68,7 +68,7 @@ export interface FooterGroup {
 // (the FLOW-SEPARATION LAW: the LP surface never carries Join framing).
 const footerGroupSpec: { heading: string; itemIds: string[] }[] = [
   { heading: "Protocol", itemIds: ["proof", "map", "status", "contracts", "activity", "registry", "fire-ledger", "liquidity", "source-attribution"] },
-  { heading: "Learn", itemIds: ["whitepaper", "tokenomics", "faq", "docs", "learning", "recognition", "archive", "chronicle"] },
+  { heading: "Learn", itemIds: ["whitepaper", "tokenomics", "faq", "docs", "learning", "recognition", "archive", "chronicle", "press"] },
   { heading: "Membership", itemIds: ["member", "join", "wallet", "toolkit", "source-link", "support"] },
   // AUD-T (2026-07-16): the legal layer on every public page's footer.
   { heading: "Legal", itemIds: ["terms", "privacy", "risk"] },

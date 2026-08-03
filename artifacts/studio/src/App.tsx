@@ -28,6 +28,7 @@ import ReferralSurface from "@/pages/ReferralSurface";
 import JoinProtocol from "@/pages/JoinProtocol";
 import SourceLinkBuilder from "@/pages/SourceLinkBuilder";
 import Support from "@/pages/Support";
+import PressKit from "@/pages/PressKit";
 import Archive from "@/pages/Archive";
 import Activity from "@/pages/Activity";
 import MemberWallet from "@/pages/MemberWallet";
@@ -221,6 +222,9 @@ function Router() {
       </PublicRoute>
       <PublicRoute path="/support">
         <Support />
+      </PublicRoute>
+      <PublicRoute path="/press">
+        <PressKit />
       </PublicRoute>
       <PublicRoute path="/archive">
         <Archive />

@@ -721,6 +721,23 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
     notes: "Intake preview only (no backend write).",
   },
   {
+    path: "/press",
+    routeType: "PUBLIC",
+    indexStatus: "INDEX",
+    sitemap: true,
+    title: "Press & Brand Kit — The Syndicate",
+    description:
+      "The official press and brand kit: descriptions, the mark, the only official channels, live protocol facts with verify paths, and the approved and banned language.",
+    canonicalPath: "/press",
+    changefreq: "monthly",
+    priority: 0.4,
+    ogImage: DEFAULT_OG_IMAGE,
+    ownerSurface: "foundation",
+    primaryIntent: "reference",
+    proofRoute: "/status",
+    notes: "Slice E (2026-08-03): registry-driven content from config/pressKit.ts; channels from socialLinks; legal verbatim imported.",
+  },
+  {
     path: "/archive",
     routeType: "PENDING",
     indexStatus: "PENDING",
