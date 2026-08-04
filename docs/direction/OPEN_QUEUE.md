@@ -1,6 +1,7 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
-> ## ▶ 2026-08-04 (SESSION 2) — ✅ **SCELLÉ. PROD = `e47e5570`. LE QUAI EST VIDE.**
+> ## ▶ 2026-08-04 (SESSION 2) — ✅ **SCELLÉ. PROD = `e47e5570`.**
+> ⛔ **LE QUAI N EST PLUS VIDE :** 01fa72f (eslint + 3 admin defects + the hash sweep) · 31ca0fd (the engine-named question) · and the fourth review closure attendent son ordre.
 >
 > **Replit 6/6** : tête atteinte exactement · 16/16 blobs · 11 commits ·
 > **migrations : RIEN** · entrée `index-DJCEyIah.js` identique ×2, ancienne 404 ·

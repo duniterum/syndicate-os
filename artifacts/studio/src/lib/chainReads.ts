@@ -421,9 +421,11 @@ export function revertName(err: unknown): string | null {
  * SCOPE, stated because the caller acts on it: this answers for the CURRENT
  * chain state as seen by THIS app's RPC. It does not promise the wallet's own
  * node agrees, and it does not survive a state change between the probe and
- * the signature (the same race the fresh-quote law already accepts). It is
- * used ONLY to compare two calls that differ in one argument — the source id —
- * which is exactly the comparison that race cannot invert.
+ * the signature (the same race the fresh-quote law already accepts). ⛔ ~~It is
+ * used ONLY to compare two calls that differ in one argument — the source id~~
+ * STRUCK 2026-08-04: there is no longer a comparison. ONE call is made, and the
+ * engine's OWN decoded error name decides — which is why it works with a zero
+ * allowance, and the comparison never did.
  */
 export async function simulateBuy(args: {
   saleAddress: string;

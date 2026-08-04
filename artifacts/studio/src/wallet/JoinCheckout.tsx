@@ -197,7 +197,7 @@ export default function JoinCheckout({
   sourceId,
   usdcDecimals,
   synDecimals,
-  onSourceUnusable,
+  onVerdict,
 }: {
   /** Deployed sale address — server-sourced from the verify-link. */
   saleAddress: string | null;
@@ -216,7 +216,7 @@ export default function JoinCheckout({
    * panel says the introduction was not attached (review catch, 2026-08-04:
    * two contradicting money statements on one screen).
    */
-  onSourceUnusable?: (trueFigures: EngineQuoteForBuyer | null) => void;
+  onVerdict?: (v: { dropped: boolean; figures: EngineQuoteForBuyer | null }) => void;
 }) {
   // AUDIT FIX (1.1): the WALLET's actual chain, not the config's. useChainId()
   // returns the config chain (always 43114 on a single-chain config), so it can
@@ -284,9 +284,14 @@ export default function JoinCheckout({
   // preview answer + review catch, 2026-08-04). Asking the engine only at the
   // click meant the buyer learned his introduction had been left out AFTER his
   // money had moved, on a page whose money breakdown still showed a commission
-  // line. So the moment the approval covers the amount — the first moment the
-  // engine can answer the source question without an allowance failure masking
-  // it — we ask, and the answer travels UP to the page.
+  // line. ⛔ ~~So the moment the approval covers the amount — the first moment
+  // the engine can answer the source question without an allowance failure
+  // masking it — we ask~~ STRUCK 2026-08-04, his own counter-example: that is
+  // exactly the gate that made the whole check unreachable, because a member
+  // arriving on a link has approved nothing yet. We ask AS SOON AS the page is
+  // ready; the engine names a source refusal with a zero allowance because it
+  // resolves the source before it pulls the token. The answer travels UP to the
+  // page, which is where the ONE verdict lives.
   //
   // SCOPE, stated: this probe uses a price floor of ZERO on purpose. It asks
   // ONLY «can this introduction attach to this wallet», so a moving rate can
@@ -299,7 +304,13 @@ export default function JoinCheckout({
   // the new amount, and the page is re-told with figures that match it.
   useEffect(() => {
     setSourceDrop(null);
-  }, [gross, address]);
+    // AND RETRACT IT ON THE PAGE. This component is the ONLY one that knows the
+    // wallet changed (guard rule 15 keeps wagmi out of the page), so if it does
+    // not retract, the page keeps a verdict that belonged to another wallet —
+    // which silently stripped a new buyer's referral and paid his referrer
+    // nothing (fourth review, 2026-08-04).
+    onVerdict?.({ dropped: false, figures: null });
+  }, [gross, address, onVerdict]);
 
   useEffect(() => {
     if (!sourceId || !address || !saleAddress || gross === null) return;
@@ -341,12 +352,12 @@ export default function JoinCheckout({
       });
       if (cancelled) return;
       setSourceDrop({ reason: answer.refusalName });
-      onSourceUnusable?.(trueFigures);
+      onVerdict?.({ dropped: true, figures: trueFigures });
     })();
     return () => {
       cancelled = true;
     };
-  }, [sourceId, address, saleAddress, gross, phase, sourceDrop, onSourceUnusable]);
+  }, [sourceId, address, saleAddress, gross, phase, sourceDrop, onVerdict]);
 
   // ── guards before any UI ──────────────────────────────────────────────────
   if (gross === null) return null;
@@ -552,14 +563,15 @@ export default function JoinCheckout({
           // breakdown above kept its «paid to your referrer» line, with that
           // referrer's address and explorer proof, while the receipt printed
           // underneath said the introduction was not attached).
-          onSourceUnusable?.(
-            await readEngineQuoteForBuyer({
+          onVerdict?.({
+            dropped: true,
+            figures: await readEngineQuoteForBuyer({
               saleAddress: saleAddress!,
               buyer: address,
               grossUsdc: gross!,
               sourceId: ZERO_BYTES32,
             }),
-          );
+          });
         }
       } else if (sourceDrop !== null) {
         // The page already removed the link because this same test proved it

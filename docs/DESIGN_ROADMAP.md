@@ -3,7 +3,7 @@
 > ## ▶ 2026-08-04 (SESSION 2) — LE CHEMIN D'ACHAT, RÉPARÉ ET AU QUAI
 >
 > ✅ **PROD = `e47e5570`** (scellé 2026-08-04, Replit 6/6). **LE BACKLOG DE
-> DÉPLOIEMENT EST VIDE** — toute la tranche du chemin d'achat est EN LIGNE, et
+> DÉPLOIEMENT N EST PLUS VIDE** (01fa72f (eslint + 3 admin defects + the hash sweep) · 31ca0fd (the engine-named question) · and the fourth review closure) — toute la tranche du chemin d'achat est EN LIGNE, et
 > vérifiée sur la prod par la session elle-même : un lien mal collé rend
 > désormais un devis complet là où il rendait une page rouge sans prix ni bouton.
 >

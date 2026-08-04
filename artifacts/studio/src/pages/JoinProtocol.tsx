@@ -107,13 +107,13 @@ function CheckoutSlot({
   sourceId,
   usdcDecimals,
   synDecimals,
-  onSourceUnusable,
+  onVerdict,
 }: {
   grossUsdcRaw: string;
   sourceId: string | null;
   usdcDecimals: number;
   synDecimals: number;
-  onSourceUnusable: (trueFigures: EngineQuoteForBuyer | null) => void;
+  onVerdict: (v: { dropped: boolean; figures: EngineQuoteForBuyer | null }) => void;
 }) {
   const { data, isLoading } = useGetProtocolVerifyLinks();
   if (!JoinCheckout || isLoading) return null;
@@ -127,7 +127,7 @@ function CheckoutSlot({
         sourceId={sourceId}
         usdcDecimals={usdcDecimals}
         synDecimals={synDecimals}
-        onSourceUnusable={onSourceUnusable}
+        onVerdict={onVerdict}
       />
     </Suspense>
   );
@@ -180,7 +180,20 @@ function useIntroducerShortWallet(sourceId: string, enabled: boolean): string | 
   return shortWallet;
 }
 
-function IntroductionStatus({ sourceId }: { sourceId: string }) {
+function IntroductionStatus({
+  sourceId,
+  dropped,
+}: {
+  sourceId: string;
+  /**
+   * The ONE page-level verdict. True once the engine has proven, for the
+   * CONNECTED wallet, that this introduction cannot attach. Until then this
+   * card only knows what the REGISTRY says — that the link exists and is
+   * active — which is not the same claim (fourth review, 2026-08-04: this card
+   * kept announcing an attribution while the panel below said the opposite).
+   */
+  dropped: boolean;
+}) {
   const formatValid = isSourceIdFormat(sourceId);
   const { data, isLoading, isError } = useGetSourceValidate(
     { sourceId },
@@ -216,8 +229,15 @@ function IntroductionStatus({ sourceId }: { sourceId: string }) {
       "This referral code is registered but not active — a join today would proceed without it.";
   } else if (data.exists === true && data.active === true) {
     ok = true;
+    // ⛔ THE SAME HEDGE AS THE OTHER BRANCH (founder ruling ②, finally applied
+    // to BOTH — fourth review, 2026-08-04). The rewrite he ordered landed on the
+    // introducer-known branch only. THIS one is not dead: it renders on every
+    // page load until the introducer's address arrives, and PERMANENTLY whenever
+    // that lookup is throttled or fails. It promised an attribution flatly —
+    // «is attributed to the introducer on-chain» — which the chain refutes for
+    // any wallet the engine refuses.
     line =
-      "Verified referral recognized — a join through this link is attributed to the introducer on-chain.";
+      "Verified referral link — the engine checks it against your own wallet before you sign, and if it cannot apply, your join still goes through without it.";
   } else {
     line = `The referral state could not be read: ${data.failureReason ?? "unknown"}.`;
   }
@@ -233,7 +253,9 @@ function IntroductionStatus({ sourceId }: { sourceId: string }) {
         </div>
         <div>
           <h2 className="text-base font-medium text-foreground mb-1" data-testid="text-introduction-title">
-            {ok && introducer !== null ? (
+            {dropped ? (
+              "Referral link detected"
+            ) : ok && introducer !== null ? (
               <>
                 Introduced by <span className="font-mono">{introducer}</span>
               </>
@@ -241,10 +263,19 @@ function IntroductionStatus({ sourceId }: { sourceId: string }) {
               "Referral link detected"
             )}
           </h2>
+          {/* THE CARD RETRACTS WHEN THE ENGINE HAS SPOKEN (fourth review,
+              2026-08-04). Until the connected wallet is known this card can
+              only report what the REGISTRY says — the link exists and is
+              active. It used to state the attribution as a present fact, which
+              the chain refutes for a wallet the engine refuses, and it said so
+              a few centimetres above the panel saying the opposite. The address
+              is kept when known (addresses are public); only the CLAIM changes. */}
           <p className="text-sm text-muted-foreground leading-relaxed" data-testid="text-introduction-status">
-            {ok && introducer !== null
-              ? "The introduction is recorded on-chain inside your own purchase, and it never changes your price. The engine checks it against your own wallet before you sign — if it cannot be attached, the checkout says so first and your join goes through without it."
-              : line}
+            {dropped
+              ? "This referral link cannot be attached to the connected wallet — the engine refused it. Your join goes through without it, at the same price, and the checkout below says so before you sign."
+              : ok && introducer !== null
+                ? "The introduction is recorded on-chain inside your own purchase, and it never changes your price. The engine checks it against your own wallet before you sign — if it cannot be attached, the checkout says so first and your join goes through without it."
+                : line}
           </p>
           <p className="text-xs text-muted-foreground mt-2">
             Registry validation · the server never echoes the id back
@@ -478,12 +509,18 @@ function MoneyPath({
 // number is the receipt event) · the slippage floor. The routing breakdown
 // (source payment + 70/20/10 with proof links) lands in C1.2. Figures are exact
 // engine reads; the raw base-unit strings stay one click away (verify).
+type IntroVerdict = { dropped: boolean; figures: EngineQuoteForBuyer | null };
+
 function QuotePanel({
   grossUsdcRaw,
   sourceId,
+  verdict,
+  onVerdict,
 }: {
   grossUsdcRaw: string;
   sourceId: string | null;
+  verdict: IntroVerdict;
+  onVerdict: (v: IntroVerdict) => void;
 }) {
   // ONE SCREEN MUST NOT CARRY TWO MONEY STATEMENTS (review catch, 2026-08-04).
   // The checkout below can PROVE the engine will not attach this introduction
@@ -498,19 +535,14 @@ function QuotePanel({
   // for that wallet. The checkout knows the buyer, so it hands up the engine's
   // own figures for HIS purchase; null means the read failed, and then no split
   // is shown at all rather than a wrong one.
-  const [sourceUnusable, setSourceUnusable] = useState(false);
-  const [trueSplit, setTrueSplit] = useState<EngineQuoteForBuyer | null>(null);
-  const onSourceUnusable = useCallback((figures: EngineQuoteForBuyer | null) => {
-    setSourceUnusable(true);
-    setTrueSplit(figures);
-  }, []);
-  // A NEW AMOUNT IS A NEW QUESTION (third review, 2026-08-04) — the verdict and
-  // its figures were read for ONE amount and mean nothing for another. The
-  // checkout clears its own copy on the same signal and asks the engine again.
-  useEffect(() => {
-    setSourceUnusable(false);
-    setTrueSplit(null);
-  }, [grossUsdcRaw]);
+  //
+  // ⛔ THIS PANEL NO LONGER OWNS THE VERDICT — the page does, and the CHECKOUT
+  // is its only author, because the checkout is the only component that knows
+  // WHICH WALLET is connected. See the page-level comment: owning it here meant
+  // forgetting it on the amount alone, which handed a second wallet the first
+  // wallet's answer.
+  const sourceUnusable = verdict.dropped;
+  const trueSplit = verdict.figures;
   const effectiveSourceId = sourceUnusable ? null : sourceId;
 
   const params = effectiveSourceId
@@ -684,7 +716,7 @@ function QuotePanel({
         sourceId={effectiveSourceId}
         usdcDecimals={data.decimals.usdc}
         synDecimals={data.decimals.syn}
-        onSourceUnusable={onSourceUnusable}
+        onVerdict={onVerdict}
       />
 
       <details className="mt-3">
@@ -877,6 +909,27 @@ export default function JoinProtocol() {
   const [submittedRaw, setSubmittedRaw] = useState<string | null>(null);
   const [inputError, setInputError] = useState<string | null>(null);
 
+  // ⛔ ONE VERDICT, ONE PLACE, AND THE CHECKOUT IS ITS ONLY AUTHOR (fourth
+  // review, 2026-08-04 — the twin-search law, broken by me).
+  //
+  // The rule «this introduction cannot attach» belongs to ONE (amount, link,
+  // WALLET). It was written twice with two different key lists: the page forgot
+  // it when the AMOUNT changed, the checkout when the amount OR THE WALLET
+  // changed. This page has no wallet hooks at all (guard rule 15 keeps wagmi
+  // inside the wallet modules), so it can never key on the wallet itself — and
+  // the consequence was real money: switch accounts in one tab and the second
+  // wallet inherited the first one's verdict, so a genuine new buyer's referral
+  // was stripped and HIS REFERRER EARNED NOTHING, silently. The page also told
+  // him «the engine refused it» about a wallet the engine was never asked about.
+  //
+  // So the verdict is held HERE, once, and reported by the ONE component that
+  // knows the wallet. It feeds BOTH consumers — the introduction card at the top
+  // and the quote panel below — so they can no longer contradict each other.
+  const [introVerdict, setIntroVerdict] = useState<{
+    dropped: boolean;
+    figures: EngineQuoteForBuyer | null;
+  }>({ dropped: false, figures: null });
+
   const requestQuote = (value?: string) => {
     const raw = usdcInputToRaw(value ?? amountInput);
     if (raw === null) {
@@ -914,7 +967,9 @@ export default function JoinProtocol() {
       <HistoricalGateSlot />
 
       {/* Optional verified-introduction attribution (?source=) */}
-      {sourceParam !== null ? <IntroductionStatus sourceId={sourceParam} /> : null}
+      {sourceParam !== null ? (
+        <IntroductionStatus sourceId={sourceParam} dropped={introVerdict.dropped} />
+      ) : null}
 
       {/* Exact quote calculator — live engine computation, raw base units */}
       <Card className="bg-card/40 border-border/50 p-6 mb-12" data-testid="panel-join-quote">
@@ -972,7 +1027,12 @@ export default function JoinProtocol() {
 
         {submittedRaw !== null ? (
           <div className="border-t border-border/50 pt-4 mt-4">
-            <QuotePanel grossUsdcRaw={submittedRaw} sourceId={attachSource} />
+            <QuotePanel
+              grossUsdcRaw={submittedRaw}
+              sourceId={attachSource}
+              verdict={introVerdict}
+              onVerdict={setIntroVerdict}
+            />
           </div>
         ) : null}
       </Card>

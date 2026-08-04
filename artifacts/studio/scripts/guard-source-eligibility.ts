@@ -304,18 +304,19 @@ if (moduleExists) {
   }
 }
 
-// ── 3. THE PROBE IS DIFFERENTIAL, AND LIVES IN THE CHAIN-READ LAYER ─────────
+// ── 3. THE SIMULATION LIVES IN THE CHAIN-READ LAYER ─────────────────────────
 check(
   /export async function simulateBuy\b/.test(reads),
   "source-eligibility: simulateBuy lives in chainReads (the client/server boundary law)",
   "source-eligibility: the buy simulation must live in src/lib/chainReads.ts — the client chain-read layer, per its own boundary law",
 );
-// THE CALL SITE MAY NOT BUILD ITS OWN DIFFERENTIAL (hardening, 2026-08-04, his
-// answer ③). Two loose simulations were swappable; one entry point is not.
+// THE CALL SITE MAY NOT ASK THE ENGINE ITSELF (hardening, 2026-08-04, his
+// answer ③). Loose simulations at the call site were swappable and WERE
+// inverted; one entry point cannot be.
 check(
   !/simulateBuy\s*\(/.test(checkout),
-  "source-eligibility: the checkout never assembles the two legs itself",
-  "source-eligibility: JoinCheckout calls simulateBuy directly — it must go through askEngineAboutSource, the one entry point whose argument ORDER is executed by this guard. A hand-rolled differential can be inverted, and was.",
+  "source-eligibility: the checkout never asks the engine directly",
+  "source-eligibility: JoinCheckout calls simulateBuy directly — it must go through askEngineAboutSource, the one entry point this guard EXECUTES against a fake engine. A hand-rolled question can be asked wrong, and was.",
 );
 check(
   (checkout.match(/askEngineAboutSource\s*\(/g) ?? []).length >= 2 &&
@@ -355,9 +356,9 @@ check(
 // drop was silent, so the breakdown kept a referrer line above a receipt saying
 // the introduction was not attached).
 check(
-  (checkout.match(/onSourceUnusable\?\.\(/g) ?? []).length >= 2,
+  (checkout.match(/onVerdict\?\.\(\{\s*dropped: true/g) ?? []).length >= 2,
   "source-eligibility: BOTH drop paths tell the page",
-  "source-eligibility: every path that drops the link must call onSourceUnusable — a silent drop leaves «paid to your referrer» on screen above a receipt that contradicts it",
+  "source-eligibility: every path that drops the link must report dropped:true to the page — a silent drop leaves «paid to your referrer» on screen above a receipt that contradicts it",
 );
 // ⛔ THE QUESTION IS NEVER GATED ON AN APPROVAL (the founder's own
 // counter-example, seat #8, 2026-08-04). `phase.allowance < gross` in the probe
@@ -384,7 +385,7 @@ check(
 // call is not enough; its REACHABILITY is the property.
 {
   const iSet = checkout.indexOf("setSourceDrop({");
-  const iTell = iSet > -1 ? checkout.indexOf("onSourceUnusable?.(", iSet) : -1;
+  const iTell = iSet > -1 ? checkout.indexOf("onVerdict?.({ dropped: true", iSet) : -1;
   const between = iSet > -1 && iTell > iSet ? checkout.slice(iSet, iTell) : "MISSING";
   check(
     iSet > -1 && iTell > iSet && !/\bawait\b/.test(between),
@@ -400,11 +401,33 @@ check(
   "source-eligibility: the checkout forgets its verdict when the amount changes",
   "source-eligibility: JoinCheckout must clear sourceDrop when the amount changes — otherwise the engine is never re-asked and the page keeps figures read for a different amount",
 );
+// ⛔ ONE VERDICT, ONE AUTHOR — AND THE AUTHOR IS THE ONE THAT SEES THE WALLET.
+// The fourth review found the rule written TWICE with two different key lists:
+// the page forgot it on the AMOUNT alone, the checkout on the amount AND the
+// wallet. This page has no wallet hooks at all (guard rule 15 keeps wagmi in the
+// wallet modules), so its copy could never key on the wallet — and a second
+// account connecting in the same tab inherited the first one's verdict. That
+// stripped a genuine new buyer's referral and paid HIS REFERRER NOTHING, and it
+// told him the engine had refused a wallet the engine was never asked about.
 check(
-  /setTrueSplit\(null\)/.test(page) && /setSourceUnusable\(false\)/.test(page),
-  "source-eligibility: the page forgets the captured split when the amount changes",
-  "source-eligibility: JoinProtocol must clear sourceUnusable AND trueSplit when the amount changes — a split captured at $10 rendered above a $1,000 price is a wrong company figure that never self-corrects",
+  !/setSourceUnusable|setTrueSplit/.test(page),
+  "source-eligibility: the page does not own the verdict — one fact, one author",
+  "source-eligibility: JoinProtocol holds its own copy of the introduction verdict. It cannot see the connected wallet, so that copy goes stale the moment a second wallet connects — and a stale verdict silently strips a real referral. The checkout is the only author.",
 );
+check(
+  /onVerdict\?\.\(\{\s*dropped: false/.test(checkout),
+  "source-eligibility: the checkout RETRACTS the verdict when the wallet or amount changes",
+  "source-eligibility: nothing retracts the verdict. The checkout is the only component that sees a wallet change, so if it does not retract, the page keeps an answer that belongs to another wallet",
+);
+{
+  const iClear = checkout.indexOf("setSourceDrop(null)");
+  const deps = iClear > -1 ? checkout.slice(iClear, iClear + 420) : "";
+  check(
+    /\[gross, address/.test(deps),
+    "source-eligibility: the verdict is forgotten on BOTH the amount and the wallet",
+    "source-eligibility: the retraction must key on the amount AND the address — keying on only one of them is exactly how a second wallet inherited the first one's answer",
+  );
+}
 // AND NO ENGINE FIGURE IS EVER SHOWN WHILE ITS OWN ANSWER IS IN FLIGHT. Holding
 // the previous answer is what keeps the checkout mounted; showing its FIGURES is
 // a 100x over-promise when the amount just changed (measured: $41 rendered above

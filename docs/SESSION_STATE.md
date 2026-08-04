@@ -70,9 +70,16 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > Before the buyer signs, the checkout asks the engine the SAME purchase twice —
 > with the introduction and without — and the **difference** decides
 > (`src/lib/sourceEligibility.ts`, pure and guard-executed):
-> · refused WITH + accepted WITHOUT = **proof** → the link is dropped, the buyer
->   is told BEFORE he signs and again on the proof panel, and the purchase goes
->   through **un-attributed**.
+> ⛔ ~~· refused WITH + accepted WITHOUT = **proof**~~ **STRUCK 2026-08-04 — THE
+> QUESTION ITSELF WAS WRONG, and he found it with a second wallet.** That
+> comparison needs the buyer's approval to be meaningful, so the whole check was
+> gated on one — and never ran for anyone arriving on a link. **THE SHIPPED
+> QUESTION IS: «does the engine NAME the introduction as its reason for
+> refusing?»** It answers with a ZERO allowance, because it resolves the source
+> before pulling the token. One call; the engine's own decoded error decides;
+> only its four source names may drop a link.
+> · the link is dropped → the buyer is told BEFORE he signs and again on the
+>   proof panel, and the purchase goes through **un-attributed**.
 > · ⛔ ~~refused both ways → **nothing is signed**~~ **STRUCK 2026-08-04 — this
 >   describes the `abort` the founder forbade three lines below, and the shipped
 >   code does the opposite (it signs, and the chain refuses in public).** The
@@ -205,7 +212,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > claimed: no public view tells us whose it is.** A failed read shows NO split
 > rather than a wrong one.
 >
-> ## (e) ✅ SEALED — **PROD = `e47e5570`. THE DEPLOY QUEUE IS EMPTY.**
+> ## (e) ✅ PROD = `e47e5570` — SEALED. ⛔ **THE QUEUE IS NOT EMPTY ANYMORE.**
+> Waiting above it: 01fa72f (eslint + 3 admin defects + the hash sweep) · 31ca0fd (the engine-named question) · and the fourth review closure. The purchase-path arc IS live; what waits
+> is the linter, the admin repairs, and the corrected engine question.
 > Replit 6/6 (2026-08-04): head `e47e5570…46f0` reached exactly · 16/16 blobs · 11
 > commits · **migrations: NOTHING** (the one api file is a runtime route, zero
 > schema/drizzle) · entry `index-DJCEyIah.js` identical ×2, **old entry 404** · 39
