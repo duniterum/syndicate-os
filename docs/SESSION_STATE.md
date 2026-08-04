@@ -5,6 +5,27 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > # ▶ 2026-08-04 (SESSION 2) — THE PURCHASE PATH, REPAIRED FROM THE CHAIN'S
 > # OWN ANSWER. **RESUME HERE.**
 >
+> ## (0-PROOF) ✅ **IT WORKED — HIS OWN WALLET, HIS OWN MONEY, ON MAINNET.**
+> The founder opened the referral link on live prod and bought. Read from the
+> chain (tx `0xd0a2ef90…3433`, block **91 972 677**, 2026-08-04):
+> | | his SEVEN failures (blocks 91 954 435→837) | this purchase |
+> |---|---|---|
+> | status | **REVERTED** ×7 | ✅ **SUCCESS** |
+> | gas | 82 638 burned each time | 231 649 — a real purchase |
+> | sourceId signed | the referral link | **`bytes32(0)`** — the drop fired |
+>
+> The engine's own receipt: **seat 5, repeat (seat unchanged)** · paid **10 USDC**
+> → **1 000 SYN** · commission **0** · to the company **10 USDC**, split
+> **7 / 2 / 1** (exactly 70/20/10). He arrived on the link, the engine refused it,
+> the app dropped it, and **the purchase went through** — the law this whole arc
+> was written for: *a referral link is a BONUS on a quote, never an OBSTACLE to a
+> purchase.* The commission of 0 is correct and was predicted: that wallet has NO
+> recorded introduction, so the «still goes to the introduction already recorded»
+> line was required to stay hidden, and did.
+> **STILL UNKNOWN, and only he can answer:** what he SAW — whether the notice
+> appeared BEFORE he signed, and whether the receipt panel printed its ticket.
+> The chain cannot say.
+>
 > ## (0) THE CORRECTION THAT DEFINES THIS SLICE — read it before the rest
 > **The cause written into the last handoff was wrong, and I proved it before
 > building on it.** The handoff said the purchase was refused because the
