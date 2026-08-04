@@ -22,9 +22,20 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > purchase.* The commission of 0 is correct and was predicted: that wallet has NO
 > recorded introduction, so the «still goes to the introduction already recorded»
 > line was required to stay hidden, and did.
-> **STILL UNKNOWN, and only he can answer:** what he SAW — whether the notice
-> appeared BEFORE he signed, and whether the receipt panel printed its ticket.
-> The chain cannot say.
+> **WHAT HE SAW — his own words, 2026-08-04:**
+> · ✅ **the «paid to your referrer» line DISAPPEARED.** That was the third
+>   review's blocking finding #1 — two contradicting money statements on one
+>   screen. **Confirmed fixed on a real screen, by his eyes.**
+> · ✅ **he got the real ticket** (seat, explorer link) — his original defect ②,
+>   a refused purchase announced as «confirmed», is dead.
+> · ⚠ **THE PRE-SIGNATURE SENTENCE: UNOBSERVED, NOT VERIFIED.** He wasn't
+>   looking («il fallait demander avant»). It is NOT recorded as working. What IS
+>   established: the mechanism fired, because the referrer line disappears ONLY
+>   via `onSourceUnusable`, and `setSourceDrop` sits on the line immediately
+>   before it with nothing awaited between (guard-pinned). «Almost certainly
+>   rendered» is not «seen» — **the next real purchase closes it with one
+>   glance.** Note his allowance was consumed by this purchase, so the
+>   mount-time notice will not fire again until a new approval covers an amount.
 >
 > ## (0) THE CORRECTION THAT DEFINES THIS SLICE — read it before the rest
 > **The cause written into the last handoff was wrong, and I proved it before
