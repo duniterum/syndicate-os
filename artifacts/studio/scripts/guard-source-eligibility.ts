@@ -47,6 +47,7 @@ const srcDir = path.resolve(here, "..", "src");
 const MODULE = path.join(srcDir, "lib", "sourceEligibility.ts");
 const CHAIN_READS = path.join(srcDir, "lib", "chainReads.ts");
 const CHECKOUT = path.join(srcDir, "wallet", "JoinCheckout.tsx");
+const PAGE = path.join(srcDir, "pages", "JoinProtocol.tsx");
 
 function stripComments(code: string): string {
   return code
@@ -66,6 +67,7 @@ const moduleExists = existsSync(MODULE);
 const mod = moduleExists ? stripComments(readFileSync(MODULE, "utf8")) : "";
 const reads = stripComments(readFileSync(CHAIN_READS, "utf8"));
 const checkout = stripComments(readFileSync(CHECKOUT, "utf8"));
+const page = stripComments(readFileSync(PAGE, "utf8"));
 
 // ── 1 + 2. THE DECISION, EXECUTED ───────────────────────────────────────────
 check(
@@ -314,6 +316,47 @@ check(
   "source-eligibility: BOTH drop paths tell the page",
   "source-eligibility: every path that drops the link must call onSourceUnusable — a silent drop leaves «paid to your referrer» on screen above a receipt that contradicts it",
 );
+// ⛔ NOTHING MAY AWAIT BETWEEN RECORDING THE REFUSAL AND TELLING THE PAGE
+// (third review, 2026-08-04). `sourceDrop` is in the probe effect's OWN
+// dependency list, so setting it re-runs the effect, whose cleanup flips the
+// cancelled flag — and an await placed between the two lines returned into that
+// flag, so the page was NEVER told. Measured: the read took 102–193 ms, the
+// teardown under 1 ms. It was a certainty, not a race, and it silently
+// re-opened the contradiction the commit before it had closed. Presence of the
+// call is not enough; its REACHABILITY is the property.
+{
+  const iSet = checkout.indexOf("setSourceDrop({");
+  const iTell = iSet > -1 ? checkout.indexOf("onSourceUnusable?.(", iSet) : -1;
+  const between = iSet > -1 && iTell > iSet ? checkout.slice(iSet, iTell) : "MISSING";
+  check(
+    iSet > -1 && iTell > iSet && !/\bawait\b/.test(between),
+    "source-eligibility: the refusal and the page notice land back to back, with nothing awaited between",
+    "source-eligibility: an `await` sits between setSourceDrop(...) and onSourceUnusable(...) — setting that state re-runs the effect and cancels the continuation, so the page is never told and the money breakdown keeps a referrer line the receipt contradicts",
+  );
+}
+
+// A NEW AMOUNT IS A NEW QUESTION — both sides must forget the old verdict, or
+// the company's figure freezes at the amount it was read for (third review).
+check(
+  /setSourceDrop\(null\)/.test(checkout),
+  "source-eligibility: the checkout forgets its verdict when the amount changes",
+  "source-eligibility: JoinCheckout must clear sourceDrop when the amount changes — otherwise the engine is never re-asked and the page keeps figures read for a different amount",
+);
+check(
+  /setTrueSplit\(null\)/.test(page) && /setSourceUnusable\(false\)/.test(page),
+  "source-eligibility: the page forgets the captured split when the amount changes",
+  "source-eligibility: JoinProtocol must clear sourceUnusable AND trueSplit when the amount changes — a split captured at $10 rendered above a $1,000 price is a wrong company figure that never self-corrects",
+);
+// AND NO ENGINE FIGURE IS EVER SHOWN WHILE ITS OWN ANSWER IS IN FLIGHT. Holding
+// the previous answer is what keeps the checkout mounted; showing its FIGURES is
+// a 100x over-promise when the amount just changed (measured: $41 rendered above
+// 3,700 SYN, which belongs to $37).
+check(
+  /isPlaceholderData \?/.test(page) && /text-quote-refreshing/.test(page),
+  "source-eligibility: held-over engine figures are replaced by an honest reading line",
+  "source-eligibility: while the quote is placeholder data, the engine-derived figures must be replaced by a reading line — the price updates instantly from the button while every engine figure lags it",
+);
+
 // AND THEY HAND UP THE ENGINE'S OWN FIGURES, NOT THE ANONYMOUS ONES (founder
 // answer ④): an introduction already recorded for a wallet is still paid on a
 // no-link purchase, so a split claiming otherwise misdescribes the company's money.

@@ -291,6 +291,16 @@ export default function JoinCheckout({
   // SCOPE, stated: this probe uses a price floor of ZERO on purpose. It asks
   // ONLY «can this introduction attach to this wallet», so a moving rate can
   // never colour the answer. The signing path re-asks with the real floor.
+  // A NEW AMOUNT IS A NEW QUESTION (third review, 2026-08-04). The verdict and
+  // the figures behind it belong to ONE amount. Left standing across a change,
+  // they froze the company's figure at the amount they were read for — «you pay
+  // 1,000 USDC» above «sent to the Syndicate 10.00 USDC», permanently, because
+  // nothing ever re-asked. Clearing here makes the probe below run again for
+  // the new amount, and the page is re-told with figures that match it.
+  useEffect(() => {
+    setSourceDrop(null);
+  }, [gross, address]);
+
   useEffect(() => {
     if (!sourceId || !address || !saleAddress || gross === null) return;
     if (phase.kind !== "ready" || phase.allowance < gross) return;
@@ -300,11 +310,22 @@ export default function JoinCheckout({
       const bound = { saleAddress, buyer: address, grossUsdc: gross, minSynOut: 0n };
       const answer = await askEngineAboutSource(sourceId, makeEngineProbe(bound));
       if (cancelled || answer.decision !== "drop") return;
-      setSourceDrop({ reason: answer.refusalName });
       // THE TRUE SPLIT FOR THIS BUYER (founder answer ④). The engine still pays
       // an introduction already recorded for this wallet, even on a zero id —
       // so the page must show the figures the purchase will really produce,
       // never the anonymous ones that claim nobody is paid.
+      //
+      // ⛔ THIS READ HAPPENS *BEFORE* ANY STATE IS SET, AND THE TWO UPDATES THEN
+      // LAND BACK TO BACK (third review, 2026-08-04). The previous order set
+      // `sourceDrop` first and awaited the read afterwards — but `sourceDrop` is
+      // in this effect's own dependencies, so setting it re-ran the effect,
+      // whose cleanup flipped `cancelled`, so the await below returned into a
+      // `return` and THE PAGE WAS NEVER TOLD. Not a race: the read measured
+      // 102–193 ms against a teardown well under 1 ms. The consequence was the
+      // exact contradiction the commit before it claimed to close — the panel
+      // above kept «Paid to your referrer 0.50 USDC» while this panel said the
+      // introduction would not attach. Nothing may await between these two
+      // lines again.
       const trueFigures = await readEngineQuoteForBuyer({
         saleAddress,
         buyer: address,
@@ -312,6 +333,7 @@ export default function JoinCheckout({
         sourceId: ZERO_BYTES32,
       });
       if (cancelled) return;
+      setSourceDrop({ reason: answer.refusalName });
       onSourceUnusable?.(trueFigures);
     })();
     return () => {

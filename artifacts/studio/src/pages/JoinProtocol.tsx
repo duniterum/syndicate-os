@@ -504,6 +504,13 @@ function QuotePanel({
     setSourceUnusable(true);
     setTrueSplit(figures);
   }, []);
+  // A NEW AMOUNT IS A NEW QUESTION (third review, 2026-08-04) — the verdict and
+  // its figures were read for ONE amount and mean nothing for another. The
+  // checkout clears its own copy on the same signal and asks the engine again.
+  useEffect(() => {
+    setSourceUnusable(false);
+    setTrueSplit(null);
+  }, [grossUsdcRaw]);
   const effectiveSourceId = sourceUnusable ? null : sourceId;
 
   const params = effectiveSourceId
@@ -582,72 +589,94 @@ function QuotePanel({
         primary={`${formatRawUnits(grossUsdcRaw, data.decimals.usdc)} USDC`}
         testId="quote-pay"
       />
-      <QuoteLine
-        label="What you receive"
-        primary={`${formatRawUnits(q.synOutRaw, data.decimals.syn)} SYN`}
-        sub={`Era ${q.era} · ${q.synPerUsdcRaw} SYN per $1 — read live from the engine, and it changes between eras.`}
-        testId="quote-syn"
-      />
-      <SeatLineSlot seatDisplay={formatRawUnits(q.seatIfFirstRaw, 0) ?? q.seatIfFirstRaw} />
-      {floorRaw !== null ? (
-        <QuoteLine
-          label="Slippage floor"
-          primary={`≥ ${formatRawUnits(floorRaw, data.decimals.syn)} SYN`}
-          sub="The least SYN a purchase would accept — it protects you if the era rate moves before you sign."
-          testId="quote-floor"
-        />
-      ) : null}
-
-      {/* NEVER A STALE FIGURE, AND NEVER A TEARDOWN. While the re-read after a
-          dropped link is in flight, the figures on screen still belong to the
-          quote that HAD the link — so the split is not shown at all for that
-          moment, rather than shown wrong. Everything above (what you pay, what
-          you receive, the seat, the floor) is identical with and without the
-          link — measured on mainnet: 1,000 SYN at $10 either way — so only this
-          block waits. */}
-      {sourceUnusable && (isPlaceholderData || trueSplit === null) ? (
+      {/* ⛔ EVERY ENGINE FIGURE WAITS FOR ITS OWN ANSWER — AND THE CHECKOUT NEVER
+          MOVES (third review, 2026-08-04, the defect this session created and
+          then had to be told about).
+          Holding the previous answer on screen is what stops the checkout —
+          and any receipt inside it — from being destroyed mid-purchase. But
+          held-over figures belong to the PREVIOUS amount: the price updates the
+          instant a button is clicked while every engine figure lags it, so
+          clicking $1,000 then $10 briefly read «you pay 10 USDC / you receive
+          100,000 SYN». Measured: $10 buys 1,000 SYN and $1,000 buys 100,000, so
+          that screen was a 100× over-promise, and it was WORSE than production,
+          which honestly says it is reading.
+          So the two concerns are separated: everything the ENGINE answers is
+          replaced by one honest line while its answer is in flight, and
+          CheckoutSlot stays MOUNTED below, outside this branch, always. What
+          you pay is not in here — it is the amount he just chose, and it is
+          true the moment he chooses it. */}
+      {isPlaceholderData ? (
         <p
-          className="mt-4 border-t border-border/40 pt-4 text-sm text-muted-foreground"
-          data-testid="text-quote-recomputing"
+          className="text-sm text-muted-foreground mt-3"
+          data-testid="text-quote-refreshing"
         >
-          {trueSplit === null && !isPlaceholderData
-            ? "The exact split for your wallet could not be read from the engine — nothing is shown in its place. Your price and your SYN above are unchanged."
-            : "Recomputing the split without the introduction link…"}
+          Reading your exact quote from the live engine…
         </p>
       ) : (
         <>
-          <MoneyPath
-            netProtocolRaw={trueSplit ? trueSplit.netProtocolRaw : q.netProtocolRaw}
-            usdcDecimals={data.decimals.usdc}
-            sourceId={effectiveSourceId}
-            grossUsdcRaw={grossUsdcRaw}
-            sourcePaymentRaw={trueSplit ? trueSplit.sourcePaymentRaw : q.sourcePaymentRaw}
+          <QuoteLine
+            label="What you receive"
+            primary={`${formatRawUnits(q.synOutRaw, data.decimals.syn)} SYN`}
+            sub={`Era ${q.era} · ${q.synPerUsdcRaw} SYN per $1 — read live from the engine, and it changes between eras.`}
+            testId="quote-syn"
           />
-          {/* THE COMMISSION THAT IS STILL PAID, NAMED (founder answer ④). The
-              engine pays an introduction already recorded for this wallet even
-              on a no-link purchase. We can prove the AMOUNT — it is the engine's
-              own figure — but no public view tells us WHOSE it is, so no payee
-              is claimed. Saying nothing here would describe the company's money
-              wrongly. */}
-          {trueSplit && /^[0-9]+$/.test(trueSplit.sourcePaymentRaw) && BigInt(trueSplit.sourcePaymentRaw) > 0n ? (
-            <p
-              className="text-xs text-muted-foreground mt-2 max-w-2xl"
-              data-testid="text-quote-existing-introduction"
-            >
-              {formatRawUnits(trueSplit.sourcePaymentRaw, data.decimals.usdc)} USDC of
-              this purchase still goes to the introduction already recorded on-chain
-              for your wallet — the engine pays it whether or not a link is used.
-            </p>
+          <SeatLineSlot seatDisplay={formatRawUnits(q.seatIfFirstRaw, 0) ?? q.seatIfFirstRaw} />
+          {floorRaw !== null ? (
+            <QuoteLine
+              label="Slippage floor"
+              primary={`≥ ${formatRawUnits(floorRaw, data.decimals.syn)} SYN`}
+              sub="The least SYN a purchase would accept — it protects you if the era rate moves before you sign."
+              testId="quote-floor"
+            />
           ) : null}
+
+          {sourceUnusable && trueSplit === null ? (
+            <p
+              className="mt-4 border-t border-border/40 pt-4 text-sm text-muted-foreground"
+              data-testid="text-quote-recomputing"
+            >
+              The exact split for your wallet could not be read from the engine —
+              nothing is shown in its place. Your price and your SYN above are
+              unchanged.
+            </p>
+          ) : (
+            <>
+              <MoneyPath
+                netProtocolRaw={trueSplit ? trueSplit.netProtocolRaw : q.netProtocolRaw}
+                usdcDecimals={data.decimals.usdc}
+                sourceId={effectiveSourceId}
+                grossUsdcRaw={grossUsdcRaw}
+                sourcePaymentRaw={trueSplit ? trueSplit.sourcePaymentRaw : q.sourcePaymentRaw}
+              />
+              {/* THE COMMISSION THAT IS STILL PAID (founder answer ④). The engine
+                  pays an introduction already recorded for this wallet even on a
+                  no-link purchase, so saying nothing here would describe the
+                  company's money wrongly. The AMOUNT is the engine's own figure.
+                  No payee is named — ⛔ NOT because it is unknowable (the third
+                  review proved that claim FALSE, and it was mine): the registry
+                  can be asked. Naming him is a slice of its own, with his own
+                  address on a public page, and it is not this one. */}
+              {trueSplit && /^[0-9]+$/.test(trueSplit.sourcePaymentRaw) && BigInt(trueSplit.sourcePaymentRaw) > 0n ? (
+                <p
+                  className="text-xs text-muted-foreground mt-2 max-w-2xl"
+                  data-testid="text-quote-existing-introduction"
+                >
+                  {formatRawUnits(trueSplit.sourcePaymentRaw, data.decimals.usdc)} USDC of
+                  this purchase still goes to the introduction already recorded on-chain
+                  for your wallet — the engine pays it whether or not a link is used.
+                </p>
+              ) : null}
+            </>
+          )}
+
+          <p
+            className="text-xs text-muted-foreground mt-4 max-w-2xl"
+            data-testid="text-quote-source-line"
+          >
+            {sourceLine}
+          </p>
         </>
       )}
-
-      <p
-        className="text-xs text-muted-foreground mt-4 max-w-2xl"
-        data-testid="text-quote-source-line"
-      >
-        {sourceLine}
-      </p>
 
       {/* C2 — the real purchase flow (founder-gated; nothing while OFF). */}
       <CheckoutSlot
