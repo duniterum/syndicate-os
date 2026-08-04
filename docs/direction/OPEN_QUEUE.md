@@ -33,7 +33,7 @@
 > reportee) · **le moteur FIRSTS** (grave #2), plus rien ne le bloque.
 
 
-> ## ▶ 2026-08-04 (SESSION 2) — ✅ **SCELLÉ. PROD = `e47e5570`.**
+> ## ▶ 2026-08-04 (SESSION 2, historique) — scellé à `e47e5570`. **SUPERSÉDÉ : la prod est `c55edd0`, voir le bloc du haut.**
 > ⛔ **LE QUAI N EST PLUS VIDE :** 01fa72f (eslint + 3 admin defects + the hash sweep) · 31ca0fd (the engine-named question) · and the fourth review closure attendent son ordre.
 >
 > **Replit 6/6** : tête atteinte exactement · 16/16 blobs · 11 commits ·

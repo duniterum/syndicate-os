@@ -620,5 +620,5 @@ console.log(
   `[guard:source-eligibility] PASS — ${ok.length} pins hold (${truthTableRows}-row truth table EXECUTED; ${sweptFiles} files swept for raw receipt waits).`,
 );
 console.log(
-  "[guard:source-eligibility] NOT CHECKED, and no green run here claims otherwise: nothing is RENDERED (wrapping, both themes, mobile — the preview gate's job) · no wallet signs anything · whether the wallet's own node agrees with this app's RPC at the instant of signing · the 12 refusal names that are NAME-DERIVED (the engine's source is not in this repo; only SourceNotEligible and SourceAlreadyLinked are selector-verified) · the SERVER quote route (api-side guards own it).",
+  "[guard:source-eligibility] NOT CHECKED, and no green run here claims otherwise: nothing is RENDERED (wrapping, both themes, mobile — the preview gate's job) · no wallet signs anything · whether the wallet's own node agrees with this app's RPC at the instant of signing · the 12 refusal names that are NAME-DERIVED (all fourteen are now TRANSCRIBED from contracts/reference/MembershipSaleV3.verified.sol, so a wrong signature is a repo defect rather than a guess) · the SERVER quote route (api-side guards own it).",
 );
