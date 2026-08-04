@@ -177,8 +177,13 @@ function WalletPanelBody() {
       usdc: usdc !== null ? formatRawUnitsDisplay(usdc.toString(), 6, 2) : null,
       usdcAllowanceToSale: allowance,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- retiredKey stands
-    // for retiredSpenders (a per-render array; the joined addresses are the fact)
+    // retiredKey stands for retiredSpenders: that array is rebuilt every render,
+    // so depending on it would re-run this read forever — the JOINED ADDRESSES
+    // are the fact, and retiredKey is exactly that string.
+    // (The directive was written across two lines before any linter existed, so
+    // it landed on the comment instead of the deps and suppressed nothing. The
+    // first eslint run in this repo's history found it.)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, saleAddr, synAddr, retiredKey]);
 
   useEffect(() => {
@@ -413,11 +418,11 @@ function WalletPanelBody() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 font-mono text-proof transition-colors hover:text-proof-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-sm"
               >
-                {lastTx.slice(0, 10)}…{lastTx.slice(-6)}
+                {shortTxHash(lastTx)}
                 <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
               </a>
             ) : (
-              <span className="font-mono">{lastTx.slice(0, 10)}…{lastTx.slice(-6)}</span>
+              <span className="font-mono">{shortTxHash(lastTx)}</span>
             )}
           </p>
         ) : null}

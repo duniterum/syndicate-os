@@ -29,6 +29,7 @@ import { ShareSurface } from "@/components/share/ShareSurface";
 import { brandAssets } from "@/config/brand";
 import { readArtifactBalance } from "@/lib/chainReads";
 import { payingSourceId } from "@/lib/sourceIdentity";
+import { shortTxLabel } from "@/lib/txDisplay";
 import { fetchSourceStanding } from "./walletSession";
 import { ReceiptShareCard, rasterizeShareCard } from "./ReceiptShareCard";
 import type {
@@ -193,7 +194,7 @@ export default function ReceiptTicket({
   const nativeShareAvailable = typeof navigator.share === "function";
 
   const txUrl = model.proof.explorerTxUrl;
-  const shortTx = `${model.proof.txHash.slice(0, 6)}…${model.proof.txHash.slice(-4)}`;
+  const shortTx = shortTxLabel(model.proof.txHash);
   // THE ROTATION (the founder's idea, engraved — the painted-cards slice,
   // 2026-07-20): the rotation lives in the LINK, never the preview. Every
   // share act hands out the CURRENT face's link, then advances — four

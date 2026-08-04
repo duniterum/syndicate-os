@@ -200,6 +200,10 @@ export default function ProposeSourcePromotion() {
     if (!bound || !registryAddr || !connectedIsOwner || !onAvalanche) return;
     setBusy(true);
     setError(null);
+    // A NEW ATTEMPT CLEARS THE OLD OUTCOME (third-review catch, 2026-08-04):
+    // a second promotion that failed rendered its failure directly under the
+    // success line of the first. Same repair the other two panels now carry.
+    setLastTx(null);
     try {
       // Terms VERBATIM from the live record; ONLY commissionBps changes.
       const r = bound.record;

@@ -38,6 +38,7 @@ import {
   Settings as SettingsIcon,
 } from "lucide-react";
 import { chapterForSeat } from "@/lib/chapters";
+import { shortTxHash } from "@/lib/txDisplay";
 import { MemberSigil } from "@/components/member/MemberSigil";
 import { Button } from "@/components/ui/button";
 import {
@@ -422,7 +423,7 @@ export default function MemberHeaderAffordance({
                   href={status.receipt.explorerUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  title={`Your entry transaction ${status.receipt.transaction.slice(0, 10)}…${status.receipt.transaction.slice(-6)} — the on-chain purchase that established seat #${status.seat}`}
+                  title={`Your entry transaction ${shortTxHash(status.receipt.transaction)} — the on-chain purchase that established seat #${status.seat}`}
                   className="type-eyebrow inline-flex items-center gap-1 text-proof transition-colors hover:text-proof-hover"
                 >
                   Verify my seat on-chain

@@ -325,6 +325,7 @@ export default function ProposeSourceCreate() {
     if (terms.kind !== "ready") return;
     setBusy("create");
     setError(null);
+    setLastTx(null); // a new attempt sweeps the previous one's outcome line
     try {
       const hash = await writeContractAsync({
         address: registryAddr as `0x${string}`,
@@ -414,6 +415,11 @@ export default function ProposeSourceCreate() {
       if (!signingReady || !registryAddr || !sourceId) return;
       setBusy(busyKind);
       setError(null);
+      // A NEW ATTEMPT CLEARS THE OLD OUTCOME (third-review catch, 2026-08-04):
+      // a second act that failed used to render its failure directly under the
+      // success line of the first. Same repair MemberWalletPanel already got.
+      setLastTx(null);
+      setCloseOutcome(null);
       try {
         const hash = await writeContractAsync({
           address: registryAddr as `0x${string}`,
@@ -437,13 +443,30 @@ export default function ProposeSourceCreate() {
           return;
         }
         if (outcome.kind === "unread") {
-          setError(
-            `Your signature was sent (${shortTxHash(hash)}) but its confirmation could not be read from here. Nothing is assumed and nothing was closed — reload to read the registry's own state.`,
+          // THE CHAIN IS ASKED, NEVER GUESSED (third-review catch, 2026-08-04).
+          // «unread» also covers a wallet SPEED UP or CANCEL: the REPLACING
+          // transaction may well have landed. Giving up here silently stopped a
+          // member's request from ever closing and his bell from ringing — for
+          // an activation that actually happened. So the registry itself is
+          // read; it is the only authority on whether the act landed.
+          const live = await readSourceRecord(registryAddr, sourceId);
+          if (live === null || live.status !== status) {
+            setError(
+              `Your signature was sent (${shortTxHash(hash)}) but its confirmation could not be read, and the registry does not show the change. Nothing is assumed and nothing was closed — reload to read the registry's own state.`,
+            );
+            await refresh();
+            return;
+          }
+          // The registry SHOWS the change. The consequences below are owed. No
+          // receipt link is offered: a replaced transaction means this hash may
+          // not be the one that landed, and we never link a hash we cannot
+          // prove.
+          setCloseOutcome(
+            "Your first signature was replaced or unreadable, but the registry now shows the change — so it landed. No transaction link is shown: this hash may not be the one that was mined.",
           );
-          await refresh();
-          return;
+        } else {
+          setLastTx(hash);
         }
-        setLastTx(hash);
         // THE STACKED SESSION'S TAIL (K3.b): the activation receipt is in —
         // if this session answers a queue request AND the signed wallet is
         // exactly the prefilled one, close the request now: the server
@@ -802,7 +825,7 @@ function StateAndAction({
   const joinUrl = buildJoinLink(sourceId);
   const [pauseOpen, setPauseOpen] = useState(false);
   const [revokeOpen, setRevokeOpen] = useState(false);
-  const shortId = `${sourceId.slice(0, 10)}…${sourceId.slice(-6)}`;
+  const shortId = shortTxHash(sourceId);
 
   // The revoke door — permanent, so it names the source and the consequence
   // in bold before the danger verb; the signature commits (no type-to-confirm

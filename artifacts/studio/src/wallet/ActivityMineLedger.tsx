@@ -21,6 +21,7 @@ import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatBaseUnits } from "@/lib/amountFormat";
 import { chapterForSeat } from "@/lib/chapters";
+import { shortTxLabel } from "@/lib/txDisplay";
 import {
   fetchMemberStanding,
   fetchOwnIntroductions,
@@ -57,7 +58,7 @@ interface LedgerRow {
   key: string;
 }
 
-const short = (tx: string): string => `${tx.slice(0, 6)}…${tx.slice(-4)}`;
+const short = shortTxLabel;
 
 export default function ActivityMineLedger() {
   const [state, setState] = useState<LedgerState>({ kind: "loading" });

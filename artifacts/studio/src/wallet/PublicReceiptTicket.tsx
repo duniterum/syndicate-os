@@ -29,6 +29,7 @@ import ReceiptTicket from "./ReceiptTicket";
 import { ticketModelFor } from "./receiptRowModel";
 import { parseOwnPurchaseRow } from "./walletSession";
 import type { ReceiptDoor } from "@/lib/protocolCommerceReceipt";
+import { shortTxLabel } from "@/lib/txDisplay";
 
 const VISITOR_DOOR: ReceiptDoor = {
   title: "Seats are open",
@@ -64,7 +65,7 @@ export default function PublicReceiptTicket({
     row.receipt !== null && row.receipt.seat !== null && row.receipt.seat > 0
       ? row.receipt.seat
       : null;
-  const shortTx = `${row.transaction.slice(0, 6)}…${row.transaction.slice(-4)}`;
+  const shortTx = shortTxLabel(row.transaction);
 
   return (
     <div data-testid="public-receipt-ticket">

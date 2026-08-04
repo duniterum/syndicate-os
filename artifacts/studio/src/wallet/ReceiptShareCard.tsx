@@ -23,6 +23,7 @@ import { forwardRef } from "react";
 import QRCode from "react-qr-code";
 import { brandAssets } from "@/config/brand";
 import type { MembershipReceiptModel } from "@/lib/protocolCommerceReceipt";
+import { shortTxLabel } from "@/lib/txDisplay";
 
 export const SHARE_CARD_WIDTH = 1200;
 export const SHARE_CARD_HEIGHT = 630;
@@ -39,7 +40,7 @@ export const ReceiptShareCard = forwardRef<
   }
 >(function ReceiptShareCard({ model, referralLink }, ref) {
   const seatLine = model.seatLines.find((l) => l.em);
-  const shortTx = `${model.proof.txHash.slice(0, 6)}…${model.proof.txHash.slice(-4)}`;
+  const shortTx = shortTxLabel(model.proof.txHash);
   const proof = model.moneyProof;
   return (
     <div

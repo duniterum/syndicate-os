@@ -40,6 +40,7 @@ import { ladderProgress } from "@/config/connectorLadder";
 import { referralProgram } from "@/config/referralProgram";
 import { chapterForSeat, STORY_FINAL_SEAT } from "@/lib/chapters";
 import { payingSourceId } from "@/lib/sourceIdentity";
+import { shortTxLabel } from "@/lib/txDisplay";
 import {
   dateLabel,
   useOwnIntroductions,
@@ -424,7 +425,7 @@ function useOwnSeatFacts(): { seatLine: string | null; vanity: KitFacts["vanity"
                 seniorityPct: (Math.round((1 - n / STORY_FINAL_SEAT) * 1e6) / 1e4).toString(),
                 entryDay,
                 entryBlock: r.receipt.block,
-                verifyShort: `${r.receipt.transaction.slice(0, 6)}…${r.receipt.transaction.slice(-4)}`,
+                verifyShort: shortTxLabel(r.receipt.transaction),
               });
             } else {
               setVanity(null);

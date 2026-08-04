@@ -6,12 +6,13 @@
 // of 2026-08-04 added FOUR fresh copies of the same expression — in the very
 // commit whose subject was the twin search — and review caught it.
 //
-// SCOPE, stated honestly: this module owns the WRITTEN form used when a hash
-// is named inside a sentence («your purchase was sent (0x1234abcd…f0e1d2)»).
-// It does NOT yet own the tighter 6…4 form the receipt tickets and the
-// referral tables use for a hash rendered as a standalone label — that sweep
-// is its own slice, and until it happens this file is the authority for the
-// in-sentence form only. Nothing here is a figure: it is presentation.
+// TWO FORMS, BOTH LIVING HERE (the sweep completed 2026-08-04). A hash written
+// INSIDE A SENTENCE gets room to breathe (10…6); a hash rendered as a STANDALONE
+// LABEL under a column or on a ticket is tighter (6…4). They are two deliberate
+// decisions, not an accident — which is exactly why they belong in one file
+// where the difference is visible, instead of being retyped in nine places
+// where they can drift apart silently. Nothing here is a figure: it is
+// presentation, and neither form is ever the value a caller compares.
 // ===========================================================================
 
 /**
@@ -22,4 +23,15 @@
 export function shortTxHash(hash: string): string {
   if (typeof hash !== "string" || hash.length < 20) return hash;
   return `${hash.slice(0, 10)}…${hash.slice(-6)}`;
+}
+
+/**
+ * A hash or id rendered as a STANDALONE LABEL — a ticket line, a table cell,
+ * a verify chip. Tighter than the in-sentence form because it stands alone and
+ * competes with a column, not with prose. Anything too short to shorten is
+ * returned unchanged rather than mangled.
+ */
+export function shortTxLabel(hash: string): string {
+  if (typeof hash !== "string" || hash.length < 12) return hash;
+  return `${hash.slice(0, 6)}…${hash.slice(-4)}`;
 }

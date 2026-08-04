@@ -12,6 +12,7 @@
 //     state, never a guess; zero gain glyphs, facts only.
 
 import { useEffect, useState } from "react";
+import { shortTxHash } from "@/lib/txDisplay";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -47,7 +48,7 @@ const COLUMNS = [
 ] as const;
 
 function shortId(id: string): string {
-  return `${id.slice(0, 10)}…${id.slice(-6)}`;
+  return shortTxHash(id);
 }
 function rateLabel(bps: number | null): string {
   return bps === null ? "—" : `${(bps / 100).toLocaleString("en-US")}%`;

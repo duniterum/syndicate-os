@@ -35,6 +35,7 @@ import { StatusPill } from "@/components/status-pill/StatusPill";
 import { ladderProgress } from "@/config/connectorLadder";
 import { referralProgram } from "@/config/referralProgram";
 import { orderedShareTargets, shareIntentArgs } from "@/lib/shareTargets";
+import { shortTxLabel } from "@/lib/txDisplay";
 import { ShareIntentIconButton } from "@/components/referral/ShareIntentIconButton";
 import {
   dateLabel,
@@ -64,9 +65,7 @@ function pct(bps: number): string {
 }
 
 /** The house middle-ellipsis short form for a tx hash (6…4, U+2026). */
-function shortTx(hash: string): string {
-  return `${hash.slice(0, 6)}…${hash.slice(-4)}`;
-}
+const shortTx = shortTxLabel;
 
 /** Exact base-unit sum of a group's commissions (list-layer aggregation —
  * BigInt integer math, never floats, rendered through the one formatter). */
