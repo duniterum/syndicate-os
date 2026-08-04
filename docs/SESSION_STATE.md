@@ -2,6 +2,100 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> # ▶ 2026-08-04 — THE PURCHASE PATH ARC, CLOSED. **START HERE. Everything below
+> # this block is history; this block supersedes it.**
+>
+> ## ① WHERE PROD IS
+> **PROD = `c55edd0`** (Replit 6/6, 13th clean seal: entry `index-jqmD9Yyg.js` ×2,
+> old entry 404, 39 shells, 38/38 studio guards, 23/23 api guards, terms v1 5873 B
+> / v2 6172 B exact, 4 painted faces + fallback, backbone ok:1 partial:0 failed:0).
+> **UNSHIPPED above it: `2e47dbe`** (7 corrected custom-error signatures + the
+> engine's verified source into the repo) **+ docs**. 🚀 BATCHABLE — nothing is
+> broken while it waits; those 7 refusals simply render as raw messages.
+>
+> ## ② WHAT WENT LIVE THIS SESSION (the whole arc)
+> His reproduction: **7 reverted purchases** — a seated member opened a referral
+> link, the quote promised the referral, he signed, the engine reverted. Closed,
+> and **proven by his own mainnet purchase** (`0xd0a2ef90…3433`, block 91,972,677,
+> SUCCESS, sourceId `bytes32(0)` — the drop fired; seat 5 repeat, 10 USDC → 1,000
+> SYN, split 7/2/1).
+> · **The engine is ASKED, never re-implemented.** One simulated `buy`; the
+>   engine's OWN decoded error name decides; only its four source refusals
+>   (`SourceNotEligible`, `SourceAlreadyLinked`, `SelfReferral`,
+>   `ReferrerNotSeated`) may drop a link. Works with a ZERO allowance.
+> · **A dead link no longer kills the /join page** (his ①): `joinQuote.ts` drops
+>   an unusable link and still computes the quote. Before: a red error, no price,
+>   no button.
+> · **The receipt is judged before its logs** — `chainReads.confirmTransaction`,
+>   the ONE helper all SIX write surfaces use (a raw `waitForTransactionReceipt`
+>   outside chainReads is now a red build).
+> · **ESLint** (his ④): blocking, first in the guards chain, 262 files, 0
+>   rules-of-hooks errors, exit code proven.
+> · **`guard-source-eligibility`: 63 pins**, 12-row truth table EXECUTED.
+>
+> ## ③ THE ENGINE'S RULE — READ IT, NEVER INFER IT
+> `contracts/reference/MembershipSaleV3.verified.sol` is now IN THE REPO (verified
+> source, sha256 in that folder's README). `_resolveSource`:
+> · **440** `linked != 0 && linked != requested && linkedCanApply` → `SourceAlreadyLinked`
+> · **448** `!firstSeat && linked == 0 && explicitSource` → `SourceNotEligible`
+> Live wallets all agree: #5/#8/#12 (no record) refused · #13/#14 (record, live)
+> refused · **#10 (record but EXHAUSTED) ACCEPTED** — the record clears 448, its
+> exhaustion clears 440. On acceptance the contract **rewrites** the introducer.
+> **Inferring this instead cost: a handoff with the wrong cause · a fix that could
+> never run pre-approval · 7 dead error translations · the rule guessed wrong
+> twice.** The founder solved it himself.
+>
+> ## ④ THE NEXT SLICE — DECIDED, SPECIFIED, NOT BUILT (build this first)
+> **B + 1c + 2b, one slice, one review, one deploy.** All three are about the same
+> thing: everything /join says about the referrer's money becomes named and
+> verifiable.
+> · **B (his choice)** — under the "Paid to your referrer" line, a LIVE line:
+>   «this wallet has already received N commissions from the engine — X USDC. See
+>   the transaction ↗». Turns a promise into a fact. **The data is OURS**: the
+>   backbone's introduction index already holds `commissionPaidRaw` per source —
+>   serve it; **never call a third-party index from the client** (chain-reading
+>   law). MEASURED 2026-08-04: the link's referrer `0x3b1396…Ec6a` has received
+>   exactly **1** commission from the engine, **0.25 USDC**, block 91,955,823,
+>   tx `0x6cc19abe29…`. ⚠ Snowtrace's filtered views (`?a=`, `#tokentxns`)
+>   returned **403** to every probe — UNVERIFIED, do not build on them.
+> · **1c** — the two frozen /join sentences («It can never break a sale, and it
+>   can never be lost» · «Nothing to claim, ever.») now sit above «the
+>   introduction could not be attached». Rewrite them and bring him the FULL text
+>   on screen. He froze them: never edit silently.
+> · **2b** — NAME the introducer in the money breakdown, short form + Snowtrace
+>   link, like every other address (the address law). Today only the amount shows.
+>
+> ## ⑤ STILL OPEN, NAMED
+> · The three OLDER checkout refusals (price unreadable · floor uncomputable ·
+>   approval short) — he deferred the decision past go-live; two of them make our
+>   server a second veto over a buyer, which rubs against his ruling ⑥.
+> · **THE FIRSTS ENGINE** (engraved #2) — the purchase path no longer blocks it.
+> · Background debt, unchanged: member-ledger server windowing · spine-poller dedupe.
+>
+> ## ⑥ HIS RULINGS THIS SESSION — ANSWERED FOREVER
+> ① a referrer earns on later purchases of members he truly introduced ·
+> ② the /join sentence rewritten · ③ the receipt's reason comes from the ENGINE ·
+> ④ the server fix built · ⑤ preview gate · ⑥ **THE CHECKOUT MAY NEVER REFUSE TO
+> SEND A PURCHASE — «only the chain says no»** · ⑦ dropped-link wording approved
+> from text, reproduced live after go-live · ⑧ the three older refusals deferred ·
+> ⑨ harden the guard before deploying · ⑩ fix the money description before
+> go-live · ⑪ (1c) rewrite the frozen sentences, full text on screen · ⑫ (2b)
+> name the introducer.
+>
+> ## ⑦ WHAT THIS SESSION COST, SO IT IS NOT REPEATED
+> **FOUR review rounds, and THREE times the blocking defects were inside the
+> commit written to close the PREVIOUS round.** A fix authored under review
+> pressure is the most defect-dense code in this repo — review it like any other.
+> **And the founder caught TWO defects that four rounds of agents missed**, both
+> by opening the real page with a second wallet. His browser is the best gate we
+> have.
+> **Rig gotchas learned here:** the root `preinstall` uses `sh` → run pnpm from
+> BASH, not PowerShell, or the lockfile desyncs from package.json and REPLIT's
+> install breaks · the browser pane throttles timers to ~1/s, so measure
+> transients with a MutationObserver · a react-query key already cached shows no
+> loading state, so test with a COLD amount.
+
+
 > # ▶ 2026-08-04 (SESSION 2) — THE PURCHASE PATH, REPAIRED FROM THE CHAIN'S
 > # OWN ANSWER. **RESUME HERE.**
 >

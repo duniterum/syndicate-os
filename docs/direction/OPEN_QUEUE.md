@@ -1,5 +1,38 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> ## ▶ 2026-08-04 — ARC DU CHEMIN D ACHAT : CLOS. **PROD = `c55edd0`.**
+> Au quai : **`2e47dbe`** (7 signatures d erreurs corrigees + la source verifiee
+> du moteur dans le depot) + docs. 🚀 **GROUPABLE** — rien n est casse en
+> attendant : ces 7 refus s affichent en version brute au lieu d humaine.
+>
+> **LIVRE** : les 7 achats revertes sont morts, prouve par SON achat mainnet
+> (`0xd0a2ef90…3433`, siege 5, lien lache, achat passe) · un lien mort ne tue
+> plus la page /join (son ①) · le recu est juge avant ses logs, une seule regle
+> pour SIX surfaces d ecriture · **eslint** bloquant (son ④) · garde a 63 pins.
+>
+> **LA REGLE DU MOTEUR EST DESORMAIS LISIBLE** :
+> `contracts/reference/MembershipSaleV3.verified.sol`. Ligne 448 : pas ton
+> premier siege + aucune introduction au dossier + un lien explicite → refus.
+> Ligne 440 : une introduction vivante et differente → refus. **Ne plus jamais
+> la deduire.**
+>
+> **⛔ LA PROCHAINE TRANCHE, DECIDEE ET SPECIFIEE — B + 1c + 2b, ENSEMBLE.**
+> Tout ce que /join dit de l argent du parrain devient **nomme et verifiable** :
+> ① **B** — une ligne vivante sous « verse a ton parrain » : « ce portefeuille a
+>    deja recu N commissions du moteur — X USDC. Voir la transaction ↗ ».
+>    Donnee = NOTRE index (le backbone tient deja `commissionPaidRaw` par
+>    source) ; **jamais un index tiers depuis le client**. Mesure : le parrain
+>    du lien a recu **1** commission, **0,25 USDC**, bloc 91 955 823.
+>    ⚠ les vues filtrees de Snowtrace repondent **403** — non verifiees.
+> ② **1c** — reecrire les deux phrases gelees de /join, texte COMPLET a l ecran
+>    avant de livrer. Il les a gelees : jamais en silence.
+> ③ **2b** — NOMMER le parrain dans le detail de l argent (forme courte + lien
+>    Snowtrace, comme toute adresse).
+>
+> **RESTE OUVERT** : les trois refus plus anciens du checkout (sa decision,
+> reportee) · **le moteur FIRSTS** (grave #2), plus rien ne le bloque.
+
+
 > ## ▶ 2026-08-04 (SESSION 2) — ✅ **SCELLÉ. PROD = `e47e5570`.**
 > ⛔ **LE QUAI N EST PLUS VIDE :** 01fa72f (eslint + 3 admin defects + the hash sweep) · 31ca0fd (the engine-named question) · and the fourth review closure attendent son ordre.
 >

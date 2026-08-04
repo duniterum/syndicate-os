@@ -1,5 +1,11 @@
 # DESIGN_ROADMAP — chemin vers "full grade-AAA" (source unique du workstream design)
 
+> ## ▶ 2026-08-04 — PROD = `c55edd0`. Au quai : `2e47dbe` (groupable).
+> **PROCHAINE TRANCHE DESIGN, decidee : B + 1c + 2b** — la ligne vivante des
+> commissions recues · les deux phrases gelees de /join reecrites (texte complet
+> a l ecran avant livraison) · le parrain NOMME dans le detail de l argent.
+> Detail complet dans SESSION_STATE §④.
+
 > ## ▶ 2026-08-04 (SESSION 2) — LE CHEMIN D'ACHAT, RÉPARÉ ET AU QUAI
 >
 > ✅ **PROD = `e47e5570`** (scellé 2026-08-04, Replit 6/6). **LE BACKLOG DE
