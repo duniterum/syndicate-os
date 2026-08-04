@@ -278,7 +278,46 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >    answer ①(c) the dropped-link wording ships approved-from-text and is
 >    reproduced live AFTER go-live.
 >
-> ## (g) NEXT — `eslint` is owed (his ④, still open)
+> ## (g-DONE) ✅ HIS ITEM ④ — THE LINTER THIS APP NEVER HAD (2026-08-04)
+> **262 files linted** (176 tsx + 86 ts), every money-path file among them.
+> **ZERO rules-of-hooks errors** — the conditional hook that blacked out
+> /admin/sources had already been fixed by hand, and there is no second one.
+> **RED PROVEN TWICE**, because «0 errors» can also mean «the rule is not wired»:
+> a deliberate conditional `useState` is caught by name, AND the **exit code is 1**
+> with the defect present and **0** without — which is what makes it blocking
+> rather than decorative. `eslint .` now runs FIRST in the guards chain, so the
+> chain stops there.
+> **NARROW ON PURPOSE, and the config says so in full:** `rules-of-hooks` = ERROR,
+> blocking · `exhaustive-deps` = WARN, a debt counter · the full TypeScript set is
+> **OFF** — thousands of style findings across 300 files would drown the one
+> signal that matters and would never be gated, which is the same as having no
+> linter. Widening it is its own slice.
+> **IT FOUND A REAL DEFECT ON ITS FIRST RUN:** an `eslint-disable-next-line` in
+> MemberWalletPanel written across TWO lines before any linter existed — so the
+> directive landed on the comment, not the deps array, and suppressed nothing.
+> **AND THE THREE NAMED ADMIN DEFECTS ARE CLOSED:** the wallet SPEED UP that
+> silently stopped a member's request from closing and his bell from ringing —
+> «unread» also covers a REPLACED transaction whose replacement may have landed,
+> so the REGISTRY is now read and the consequences run only if it shows the act
+> landed, with **no receipt link on that path** because a replaced hash may not be
+> the one that was mined · the stale success line under a new failure on both
+> remaining panels · the short-hash sprawl finished — `lib/txDisplay` owns BOTH
+> deliberate forms (10…6 in a sentence, 6…4 as a standalone label) and nine sites
+> import it. **Addresses were left alone on purpose:** a different concept, its
+> own atom (`AddressText`), its own law.
+> **NOT COVERED:** the linter reads the React app only — `scripts/`, `guards/`,
+> `server/` and the vendored `ui/` layer are out of scope — and it enforces
+> exactly two rules.
+>
+> ## (h) NEXT — the FIRSTS engine (engraved #2), and two deferred decisions
+> The purchase path no longer blocks it. Also still HIS, both deferred past
+> go-live and now due: **the three older checkout refusals** (price unreadable ·
+> floor uncomputable · approval short — two of them make our server a second veto
+> over a buyer, which rubs against his ruling ⑥) and **naming the payee** of an
+> introduction already recorded for a wallet (the amount is shown today, the
+> payee is not — and the claim that it was unknowable was FALSE).
+>
+> ## (g-OLD, superseded) NEXT — `eslint` is owed (his ④, still open)
 > The studio has **no eslint config at all**, which is how a conditional React
 > hook reached prod and blacked out /admin/sources. Installing eslint +
 > `react-hooks` and working the 34 candidate sites down is the proposed next
