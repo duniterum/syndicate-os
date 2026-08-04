@@ -177,10 +177,59 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > The purchase-path slice sits above prod and **does not batch** (money path).
 > **It ships only after he has seen it in his own browser** (his answer ⑤).
 >
-> ## (f) FOUNDER-PENDING
-> 1. **The preview** — /join with a referral link, and the receipt panel, on his
->    screen, desktop and mobile. Then the deploy word.
-> 2. **The rendered flow, connected** — his own wallet, a real signature.
+> ## (d-quater) THE THIRD REVIEW — 12 agents, and the pattern it exposed
+> His order, whole session again, with `843de79` + `b3015c6` as primary target
+> because nobody had read them. 58 findings → 53 survived → **4 blocking. THREE
+> WERE MINE, AND ALL THREE CAME FROM A COMMIT WRITTEN TO CLOSE THE PREVIOUS
+> REVIEW.** That is the lesson of this session, stated plainly for whoever reads
+> this next: **a fix commit written under review pressure is the most defect-dense
+> code in the repo, and it must be reviewed like any other.** Three rounds, three
+> times.
+> · **THE PAGE WAS NEVER TOLD — a certainty, not a race.** A chain read sat
+>   between recording the refusal and notifying the page, but `sourceDrop` is in
+>   that effect's OWN dependency list: setting it re-ran the effect, whose cleanup
+>   flipped `cancelled`, so the await returned into a `return`. Measured: read
+>   102–193 ms vs teardown under 1 ms. The result was the exact contradiction the
+>   previous commit had closed — «Paid to your referrer 0.50 USDC» above a panel
+>   saying the introduction would not attach.
+> · **A 100× OVER-PROMISE FOR EVERY VISITOR.** The placeholder that stops the
+>   checkout being destroyed mid-purchase also held ENGINE figures across an
+>   amount change: $1,000 then $10 read «you pay 10 USDC / you receive 100,000
+>   SYN». **Worse than production**, which honestly says it is reading.
+>   MEASURED BOTH WAYS on a COLD key: fixed → `pay=37 / syn=(none) / reading line
+>   / checkout SAME NODE` → `37 / 3,700`, zero contradictions; defect restored →
+>   `pay=41 USDC` above `3,700 SYN`. *(Two measurement traps found on the way: the
+>   first attempt used a CACHED amount so there was no wait to observe, and timers
+>   are throttled to ~1/s in the hidden pane — the sampling had to move to a
+>   MutationObserver.)*
+> · **THE COMPANY'S FIGURE FROZE** at the amount it was read for. Both sides now
+>   forget on an amount change and the engine is re-asked.
+> **THE GUARD: 49 → 53 pins, and it now pins REACHABILITY, not presence** — which
+> is exactly why the first of those three passed a green build. Nothing may be
+> awaited between recording the refusal and telling the page · both sides must
+> forget on an amount change · held-over engine figures must be replaced by the
+> reading line. Each proven RED by putting the defect back.
+> **A CORRECTION HE IS OWED:** `b3015c6` told him «no public view tells us whose
+> it is». **FALSE, proven** — the registry can be asked. Same disease as the
+> native-AVAX lane he pushed back on: a tool's limit written down as a law of the
+> chain. Struck; naming the payee is its own slice.
+>
+> ## (f) FOUNDER-PENDING — **NOTHING BLOCKING. HIS COPY IS APPROVED.**
+> **APPROVED ON SCREEN, 2026-08-04** (the standing content rule — he read both in
+> chat and answered «approuves»):
+> · *«The exact split for your wallet could not be read from the engine — nothing
+>   is shown in its place. Your price and your SYN above are unchanged.»*
+> · *«[amount] USDC of this purchase still goes to the introduction already
+>   recorded on-chain for your wallet — the engine pays it whether or not a link
+>   is used.»*
+> *(The third, «Reading your exact quote from the live engine…», is verbatim the
+> sentence already serving in production — nothing new to approve.)*
+>
+> WHAT REMAINS IS HIS ACT, NOT A DEFECT:
+> 1. **The deploy word** — prod moves only when he hands Replit the instruction.
+> 2. **The rendered flow, connected** — his own wallet, a real signature. Per his
+>    answer ①(c) the dropped-link wording ships approved-from-text and is
+>    reproduced live AFTER go-live.
 >
 > ## (g) NEXT — `eslint` is owed (his ④, still open)
 > The studio has **no eslint config at all**, which is how a conditional React
