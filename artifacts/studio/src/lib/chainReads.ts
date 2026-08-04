@@ -363,20 +363,31 @@ export const SALE_BUY_ABI = [
     ],
     outputs: [],
   },
+  // ⛔ TRANSCRIBED FROM THE DEPLOYED CONTRACT'S OWN VERIFIED SOURCE, 2026-08-04
+  // (contracts/reference/MembershipSaleV3.verified.sol, lines 38-64). SEVEN of
+  // these were previously declared with NO parameters because the names were
+  // guessed from the app's own error list — so their selectors were wrong, viem
+  // could not decode them, and seven honest human sentences were unreachable:
+  // the buyer got the raw message instead. Never dangerous (an undecodable
+  // refusal names no cause and can never drop a referral) but real, and it is
+  // exactly what the guard's NOT-CHECKED block predicted. Fixed by READING the
+  // contract instead of inferring it.
   { type: "error", name: "SourceNotEligible", inputs: [] },
   { type: "error", name: "SourceAlreadyLinked", inputs: [] },
   { type: "error", name: "SelfReferral", inputs: [] },
   { type: "error", name: "ReferrerNotSeated", inputs: [] },
   { type: "error", name: "SaleConcluded", inputs: [] },
-  { type: "error", name: "BelowEraMinimum", inputs: [] },
-  { type: "error", name: "ExceedsTxMax", inputs: [] },
-  { type: "error", name: "AddressEraCapExceeded", inputs: [] },
-  { type: "error", name: "SlippageExceeded", inputs: [] },
-  { type: "error", name: "EraInventoryInsufficient", inputs: [] },
-  { type: "error", name: "InsufficientInventory", inputs: [] },
-  { type: "error", name: "ReserveFloorViolation", inputs: [] },
-  { type: "error", name: "EnforcedPause", inputs: [] },
   { type: "error", name: "InvalidProof", inputs: [] },
+  { type: "error", name: "BelowEraMinimum", inputs: [{ name: "min", type: "uint256" }] },
+  { type: "error", name: "ExceedsTxMax", inputs: [{ name: "maxTx", type: "uint256" }] },
+  { type: "error", name: "AddressEraCapExceeded", inputs: [{ name: "capRemaining", type: "uint256" }] },
+  { type: "error", name: "SlippageExceeded", inputs: [{ name: "got", type: "uint256" }, { name: "minOut", type: "uint256" }] },
+  { type: "error", name: "EraInventoryInsufficient", inputs: [{ name: "eraCapRemaining", type: "uint256" }] },
+  { type: "error", name: "InsufficientInventory", inputs: [{ name: "available", type: "uint256" }] },
+  { type: "error", name: "ReserveFloorViolation", inputs: [{ name: "maxSynOut", type: "uint256" }] },
+  // OpenZeppelin Pausable's own error — the sale inherits it, so it is not in
+  // the sale's error list above.
+  { type: "error", name: "EnforcedPause", inputs: [] },
 ] as const;
 
 /**
