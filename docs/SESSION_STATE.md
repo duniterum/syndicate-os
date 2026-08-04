@@ -318,7 +318,28 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > `server/` and the vendored `ui/` layer are out of scope — and it enforces
 > exactly two rules.
 >
-> ## (h) NEXT — the FIRSTS engine (engraved #2), and two deferred decisions
+> ## (h-NEXT-SLICE) HIS TWO ANSWERS AFTER THE FOURTH REVIEW (2026-08-04) — BUILD
+> ## THESE TOGETHER, ONE REVIEW, ONE DEPLOY
+> ① **(c)** the two frozen /join sentences — «It can never break a sale, and it
+> can never be lost» and «Nothing to claim, ever.» — are to be **rewritten and
+> brought to him with the FULL text on screen** in the next slice. They now sit
+> a few hundred pixels above «the introduction link could not be attached», for
+> a seated member. Do NOT edit them silently: he froze them, and he asked to see
+> the rewrite before it lands.
+> ② **(b)** the money breakdown must **NAME the introducer** who receives the
+> commission on a purchase carrying an introduction already recorded for that
+> wallet — short form + Snowtrace link, like every other address on the site
+> (the address law: addresses are PUBLIC, shown and verifiable, never masked).
+> Today it shows the amount alone. ⚠ AND THE CLAIM THAT THIS WAS UNKNOWABLE WAS
+> FALSE — the registry can be asked; that false line is already struck.
+>
+> **WHY THEY WERE NOT BUILT INTO THE SHIPPING COMMIT, stated so nobody re-opens
+> it:** four times this session, the commit written to close a review carried
+> the NEXT review's blocking defects. ② is an ADDITION, not a repair, and no
+> review has seen it. It rides the next slice with ①, reviewed once, deployed
+> once.
+>
+> ## (h) THEN — the FIRSTS engine (engraved #2), and two deferred decisions
 > The purchase path no longer blocks it. Also still HIS, both deferred past
 > go-live and now due: **the three older checkout refusals** (price unreadable ·
 > floor uncomputable · approval short — two of them make our server a second veto
