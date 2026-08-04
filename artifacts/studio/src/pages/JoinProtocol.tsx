@@ -497,8 +497,20 @@ function QuotePanel({
   const params = effectiveSourceId
     ? { grossUsdc: grossUsdcRaw, sourceId: effectiveSourceId }
     : { grossUsdc: grossUsdcRaw };
-  const { data, isLoading, isError } = useGetJoinQuote(params, {
-    query: { queryKey: getGetJoinQuoteQueryKey(params) },
+  // ⛔ THE PANEL MUST NEVER BE TORN DOWN UNDER A BUYER (review catch,
+  // 2026-08-04 — the trap the previous fix set for itself). Dropping the link
+  // changes this query's key, and without a placeholder the panel would fall
+  // back to its loading line for the ~200 ms the new read takes. That line
+  // replaces EVERYTHING below it — including the checkout and any RECEIPT
+  // already printed there. A buyer who signed in that window would have paid,
+  // succeeded on-chain, and been shown a fresh «Step 1» with no seat number and
+  // no explorer link. Keeping the previous answer on screen keeps the checkout
+  // mounted, so nothing it holds is ever destroyed by a re-read.
+  const { data, isLoading, isError, isPlaceholderData } = useGetJoinQuote(params, {
+    query: {
+      queryKey: getGetJoinQuoteQueryKey(params),
+      placeholderData: (previous) => previous,
+    },
   });
 
   if (isLoading) {
@@ -541,7 +553,14 @@ function QuotePanel({
     : data.sourceProvided && data.sourceValid === true
       ? "A verified referral is applied to this quote. The engine checks it against your own wallet before you sign — and if it cannot apply, your join still goes through without it."
       : data.sourceProvided
-        ? "The referral link is not valid or not active — this quote is computed without it."
+        ? // THE SERVER'S OWN WORDS, NOT OURS (review catch, 2026-08-04). This
+          // branch is reached for THREE different states — a malformed link, an
+          // inactive one, and one we simply could not READ — and it asserted the
+          // link was dead in all three. The server already writes the honest
+          // sentence for each; showing it is both truer and one less place for
+          // the wording to drift.
+          (data.failureReason ??
+          "The referral link is not valid or not active — this quote is computed without it.")
         : "No referral — a direct join.";
 
   return (
@@ -567,13 +586,29 @@ function QuotePanel({
         />
       ) : null}
 
-      <MoneyPath
-        netProtocolRaw={q.netProtocolRaw}
-        usdcDecimals={data.decimals.usdc}
-        sourceId={effectiveSourceId}
-        grossUsdcRaw={grossUsdcRaw}
-        sourcePaymentRaw={q.sourcePaymentRaw}
-      />
+      {/* NEVER A STALE FIGURE, AND NEVER A TEARDOWN. While the re-read after a
+          dropped link is in flight, the figures on screen still belong to the
+          quote that HAD the link — so the split is not shown at all for that
+          moment, rather than shown wrong. Everything above (what you pay, what
+          you receive, the seat, the floor) is identical with and without the
+          link — measured on mainnet: 1,000 SYN at $10 either way — so only this
+          block waits. */}
+      {sourceUnusable && isPlaceholderData ? (
+        <p
+          className="mt-4 border-t border-border/40 pt-4 text-sm text-muted-foreground"
+          data-testid="text-quote-recomputing"
+        >
+          Recomputing the split without the introduction link…
+        </p>
+      ) : (
+        <MoneyPath
+          netProtocolRaw={q.netProtocolRaw}
+          usdcDecimals={data.decimals.usdc}
+          sourceId={effectiveSourceId}
+          grossUsdcRaw={grossUsdcRaw}
+          sourcePaymentRaw={q.sourcePaymentRaw}
+        />
+      )}
 
       <p
         className="text-xs text-muted-foreground mt-4 max-w-2xl"

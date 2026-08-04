@@ -38,17 +38,28 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > Before the buyer signs, the checkout asks the engine the SAME purchase twice —
 > with the introduction and without — and the **difference** decides
 > (`src/lib/sourceEligibility.ts`, pure and guard-executed):
-> · refused WITH + accepted WITHOUT = **proof** → the link is dropped, the
->   purchase goes through **un-attributed**, and the buyer is told on the proof panel.
-> · refused both ways → **nothing is signed** (today he paid gas for it).
+> · refused WITH + accepted WITHOUT = **proof** → the link is dropped, the buyer
+>   is told BEFORE he signs and again on the proof panel, and the purchase goes
+>   through **un-attributed**.
+> · ⛔ ~~refused both ways → **nothing is signed**~~ **STRUCK 2026-08-04 — this
+>   describes the `abort` the founder forbade three lines below, and the shipped
+>   code does the opposite (it signs, and the chain refuses in public).** The
+>   line survived the edit that removed the behaviour; caught in the second
+>   review. **EVERY case except the proven one signs exactly as intended.**
 > · unreadable → **nothing changes** — a read failure must never strip a referral
 >   a referrer earned.
 > ⛔ **AND ONLY THAT.** The founder ruled on 2026-08-04 that this checkout may
 > **never refuse to send a purchase** («est-ce que j'ai le droit de laisser le
 > checkout REFUSER d'envoyer un achat tout seul ?» → **NON**). The first version
-> had an `abort` verdict; it is GONE. Two decisions exist, `apply` and `drop`,
-> and a guard pin forbids any `setError…return` between asking the engine and
-> signing. **Only the chain says no.**
+> had an `abort` verdict; it is GONE. Two decisions exist, `apply` and `drop`.
+> **Only the chain says no.**
+> ⚠ **AND THE PIN THAT CLAIMS TO ENFORCE IT IS WEAKER THAN I TOLD HIM.** The
+> `c808fa2` commit message said «a pin forbids any `setError…return` between
+> asking the engine and signing». A second-review agent rebuilt FIVE ways to
+> refuse a purchase — including putting the `abort` verdict back — and all 39
+> pins stayed green. **The shipped code contains no such refusal** (verified),
+> so nothing is broken today; the CLAIM was the defect, and the pin is owed a
+> hardening slice. Recorded here rather than left as an over-claim.
 >
 > ## (b-bis) HIS SIX ANSWERS, 2026-08-04 — the shape of this slice
 > ① a referrer **earns on later purchases** of members he truly introduced (the
@@ -108,6 +119,29 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > the 14 refusal names in `SALE_BUY_ABI` are NAME-DERIVED (the engine's source
 > is not in this repo; only `SourceNotEligible` and `SourceAlreadyLinked` are
 > selector-verified — a wrong name causes silence, never a wrong sentence).
+>
+> ## (d-bis) THE SECOND REVIEW — 12 more agents, over the WHOLE session
+> His order again, this time with `c808fa2` (the commit written to close the
+> FIRST review) as the primary target, because nobody had ever read it.
+> 56 findings → 51 survived → **2 blocking**, both mine, both fixed here:
+> · **THE FIX HAD SET A TRAP FOR ITSELF.** Dropping the link changes the quote's
+>   query key; without a placeholder the panel fell back to its loading line,
+>   which replaces EVERYTHING below it — the checkout, and any RECEIPT already
+>   printed in it. A buyer signing in that window would have paid, succeeded
+>   on-chain, and been shown a fresh «Step 1» with no seat number and no
+>   explorer link. **MEASURED, both ways, on the running rig:** tag the live
+>   checkout node, force a quote key change, sample every 30–45 ms — WITHOUT the
+>   fix the tagged node is gone by the first sample (destroyed and rebuilt);
+>   WITH it the SAME node survives all 14 samples and the quote still updates
+>   ($25 → 2,500 SYN). Fixed with `placeholderData`, and the split is hidden
+>   rather than shown stale while the re-read is in flight.
+> · **The click-time drop was silent to the page** — only the mount-time drop
+>   called `onSourceUnusable`. So the breakdown could keep «paid to your
+>   referrer −0.50 USDC», with that referrer's address and explorer proof, above
+>   a receipt saying the introduction was not attached. One line.
+> · Rode along: the page asserted a link was «not valid or not active» in the
+>   case where the server had merely failed to READ it — it now shows the
+>   server's own honest sentence.
 >
 > ## (e) 🚀 DEPLOY — PROD = `c170e9b`. **THE QUEUE IS NOT EMPTY.**
 > The purchase-path slice sits above prod and **does not batch** (money path).

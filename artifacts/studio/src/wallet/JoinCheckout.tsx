@@ -512,6 +512,12 @@ export default function JoinCheckout({
             // of ours.
             applySourceId = ZERO_BYTES32;
             sourceNotice = droppedSourceNotice(revertName(withSource.error));
+            // TELL THE PAGE — the same line the mount-time drop already sends
+            // (review catch, 2026-08-04: this second drop path was silent, so
+            // the breakdown above kept its «paid to your referrer» line, with
+            // that referrer's address and explorer proof, while the receipt
+            // printed underneath said the introduction was not attached).
+            onSourceUnusable?.();
           }
         }
       } else if (sourceDrop !== null) {
