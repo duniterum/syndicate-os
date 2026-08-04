@@ -14,13 +14,28 @@
 //     named it as the cause and was WRONG. The ENGINE decides eligibility; this
 //     app must never re-derive that decision from the source's terms.
 //
+// ⛔ THE QUESTION CHANGED ON 2026-08-04 — the founder found out why, with his
+// own second wallet. The first version asked a DIFFERENTIAL («does the purchase
+// succeed with the link, and without it?»), which needs the buyer's approval to
+// already cover the amount, because otherwise both legs fail on the allowance
+// and nothing is proven. So the check was gated on an approval — and a member
+// who had not yet approved, which is EVERY member arriving on a link, kept
+// seeing «Paid to your referrer −0.25 USDC» for a purchase the engine would
+// refuse. He walked it with seat #8 and sent the screenshot.
+// MEASURED, allowance 0.00 USDC on both wallets: buy(5 USDC, seat #8, link) and
+// buy(5 USDC, seat #5, link) both REVERT SourceNotEligible(), while the same
+// buys with no link revert Error(string) — the missing approval. The engine
+// resolves the source BEFORE it pulls the token, so it names the introduction
+// with nothing approved.
+//
 // THE PINS:
 //   1. THE DECISION IS ONE PURE FUNCTION, and this guard EXECUTES its whole
 //      truth table (a guard that only greps can pass over a gutted body).
-//   2. NEVER DROP AN UNPROVEN REFERRAL. A drop requires PROOF: the buy refused
-//      WITH the source and accepted WITHOUT it. Anything less keeps the source
-//      (a silently dropped referral steals a real commission from a referrer).
-//   3. THE PROBE IS DIFFERENTIAL — both legs, or it proves nothing.
+//   2. A REFERRAL IS DROPPED ONLY WHEN THE ENGINE NAMED THE INTRODUCTION as its
+//      reason. A refusal about anything else — or one this app cannot decode —
+//      proves nothing and changes nothing (a silently dropped referral steals a
+//      real commission from a referrer).
+//   3. NO APPROVAL GATE ON THE QUESTION. Gating it is what made it unreachable.
 //   4. THE PROBE RUNS BEFORE THE SIGNATURE. A check after writeContractAsync
 //      protects nobody.
 //   5. THE RECEIPT'S STATUS IS READ BEFORE ITS LOGS. A reverted tx carries no
@@ -56,6 +71,7 @@ function stripComments(code: string): string {
     .replace(/\/\*[\s\S]*?\*\//g, "");
 }
 
+let truthTableRows = 0;
 const errors: string[] = [];
 const ok: string[] = [];
 function check(cond: boolean, pass: string, fail: string): void {
@@ -89,44 +105,54 @@ if (moduleExists) {
   );
 
   if (typeof decide === "function") {
-    // THE WHOLE TABLE. `drop` appears on EXACTLY ONE row — the proven one —
-    // and NO row may produce anything but `apply` or `drop`: the founder ruled
-    // on 2026-08-04 that this checkout may never refuse to send a purchase
-    // («est-ce que j'ai le droit de laisser le checkout REFUSER d'envoyer un
-    // achat tout seul ?» → NON). Only the chain says no.
-    const TABLE: readonly (readonly [string, string, string])[] = [
-      ["accepted", "accepted", "apply"],
-      ["accepted", "refused", "apply"],
-      ["accepted", "unreadable", "apply"],
-      ["unreadable", "accepted", "apply"],
-      ["unreadable", "refused", "apply"],
-      ["unreadable", "unreadable", "apply"],
-      ["refused", "accepted", "drop"],
-      ["refused", "refused", "apply"],
-      ["refused", "unreadable", "apply"],
+    // THE WHOLE TABLE, second argument = THE ENGINE'S OWN REFUSAL NAME.
+    // A drop happens ONLY when the engine named the INTRODUCTION as its reason.
+    // Anything else — a refusal about the sale, the amount, the approval, or a
+    // refusal this app could not decode — proves nothing and changes nothing:
+    // the purchase goes out as the buyer intended and the chain answers for
+    // itself (his ruling ⑥, «only the chain says no»).
+    const TABLE: readonly (readonly [string, string | null, string])[] = [
+      // accepted / unreadable → never a drop, whatever name is passed
+      ["accepted", null, "apply"],
+      ["accepted", "SourceNotEligible", "apply"],
+      ["unreadable", null, "apply"],
+      ["unreadable", "SourceNotEligible", "apply"],
+      // refused, and the engine NAMED the introduction → the only drops
+      ["refused", "SourceNotEligible", "drop"],
+      ["refused", "SourceAlreadyLinked", "drop"],
+      ["refused", "SelfReferral", "drop"],
+      ["refused", "ReferrerNotSeated", "drop"],
+      // refused for something that is NOT the introduction, or undecodable
+      ["refused", "EnforcedPause", "apply"],
+      ["refused", "SlippageExceeded", "apply"],
+      ["refused", "Error", "apply"],
+      ["refused", null, "apply"],
     ];
     let rows = 0;
-    for (const [withSource, withoutSource, expected] of TABLE) {
+    for (const [withSource, refusalName, expected] of TABLE) {
       let got: string;
       try {
-        got = decide(withSource, withoutSource);
+        got = decide(withSource, refusalName);
       } catch (e) {
         got = `THREW ${(e as Error).message}`;
       }
+      const shown = refusalName ?? "undecodable";
       check(
         got === expected,
-        `source-eligibility: (${withSource}, ${withoutSource}) → ${expected}`,
-        `source-eligibility: (${withSource}, ${withoutSource}) must decide "${expected}" — got "${got}"`,
+        `source-eligibility: (${withSource}, ${shown}) → ${expected}`,
+        `source-eligibility: (${withSource}, ${shown}) must decide "${expected}" — got "${got}"`,
       );
       rows += 1;
     }
+    truthTableRows = rows;
     check(
-      rows === 9,
-      "source-eligibility: the full 9-row truth table ran",
-      "source-eligibility: the truth table did not run in full",
+      rows === TABLE.length && TABLE.length === 12,
+      "source-eligibility: the full 12-row truth table ran",
+      `source-eligibility: the truth table did not run in full (${rows} of ${TABLE.length})`,
     );
-    // The property, not today's spelling: a drop is NEVER reachable without a
-    // proven accepted no-source leg.
+    // THE PROPERTY: a drop is reachable ONLY when the engine NAMED the
+    // introduction as its reason — never from a refusal about something else,
+    // and never from one this app could not decode.
     const dropRows = TABLE.filter(([a, b]) => {
       try {
         return decide(a, b) === "drop";
@@ -135,10 +161,17 @@ if (moduleExists) {
       }
     });
     check(
-      dropRows.length === 1 && dropRows[0]![0] === "refused" && dropRows[0]![1] === "accepted",
-      "source-eligibility: a referral is dropped ONLY on proof (refused with, accepted without)",
-      "source-eligibility: some other combination decides `drop` — a referral may only be dropped when the engine PROVED the source is the obstacle",
+      dropRows.length === 4 && dropRows.every(([a, b]) => a === "refused" && b !== null),
+      "source-eligibility: a referral is dropped ONLY when the ENGINE NAMED the introduction",
+      "source-eligibility: a drop is reachable without a named source refusal — a referrer may only lose his commission when the engine has said, in its own words, that the introduction is why",
     );
+    for (const bogus of ["EnforcedPause", "Error", "", "sourcenoteligible"]) {
+      check(
+        decide("refused", bogus) === "apply",
+        `source-eligibility: a "${bogus || "(empty)"}" refusal never drops a referral`,
+        `source-eligibility: "${bogus}" unlocked a drop — only the four refusals the ENGINE names about the introduction may`,
+      );
+    }
     // HIS RULING, MADE MECHANICAL: no input may ever produce a third verdict.
     const verdicts = new Set(
       TABLE.map(([a, b]) => {
@@ -173,59 +206,69 @@ if (moduleExists) {
   if (typeof ask === "function") {
     const ZERO = "0x" + "0".repeat(64);
     const LINK = "0x" + "ab".repeat(32);
-    const fake = (answers: Record<string, string>, seen: string[]) => ({
+    // The fake engine records WHICH id it was asked about and answers with a
+    // verdict plus a named error, exactly as the real probe does.
+    const fake = (verdict: string, errName: string | null, seen: string[]) => ({
       zeroSourceId: ZERO,
       refusalNameOf: (e: unknown) => (e as { name?: string } | null)?.name ?? null,
       simulate: async (id: string) => {
         seen.push(id);
-        return { verdict: answers[id] ?? "unreadable", error: { name: "SourceNotEligible" } };
+        return { verdict, error: errName === null ? null : { name: errName } };
       },
     });
 
-    // ① refused WITH the link, accepted WITHOUT → drop, and the ORDER is pinned.
+    // ① The engine NAMES the introduction → drop, carrying its own word, and
+    //    the question is asked about THE BUYER'S LINK, never the zero id.
     const seen1: string[] = [];
-    const r1 = await ask(LINK, fake({ [LINK]: "refused", [ZERO]: "accepted" }, seen1));
+    const r1 = await ask(LINK, fake("refused", "SourceNotEligible", seen1));
     check(
-      seen1[0] === LINK,
-      "source-eligibility: the FIRST question is always asked WITH the buyer's link",
-      `source-eligibility: the first simulation used ${seen1[0]} — it must be the buyer's own link, or the whole differential is inverted`,
-    );
-    check(
-      seen1[1] === ZERO,
-      "source-eligibility: the SECOND question is always the no-link path",
-      `source-eligibility: the second simulation used ${seen1[1]} — it must be the zero id`,
+      seen1[0] === LINK && seen1.length === 1,
+      "source-eligibility: the engine is asked about the BUYER'S OWN link, once",
+      `source-eligibility: the simulation used ${seen1[0]} in ${seen1.length} call(s) — it must ask about the buyer's link`,
     );
     check(
       r1?.decision === "drop" && r1?.refusalName === "SourceNotEligible",
-      "source-eligibility: a proven-blocked link drops, carrying the ENGINE's own reason",
-      `source-eligibility: refused-with + accepted-without must drop with the engine's reason — got ${JSON.stringify(r1)}`,
+      "source-eligibility: a named source refusal drops, carrying the ENGINE's own reason",
+      `source-eligibility: a named source refusal must drop with that reason — got ${JSON.stringify(r1)}`,
     );
 
-    // ② The INVERTED world must NOT drop: accepted with the link, refused without.
+    // ② ⛔ THE DEFECT THE FOUNDER FOUND: a refusal that is NOT about the
+    //    introduction must never drop it. Before 2026-08-04 the check needed an
+    //    approval to run at all, so a member who had not approved kept seeing
+    //    «Paid to your referrer» on a purchase the engine would refuse.
     const seen2: string[] = [];
-    const r2 = await ask(LINK, fake({ [LINK]: "accepted", [ZERO]: "refused" }, seen2));
+    const r2 = await ask(LINK, fake("refused", "Error", seen2));
     check(
-      r2?.decision === "apply" && seen2.length === 1,
-      "source-eligibility: an accepted link is applied, and the second question is not even asked",
-      `source-eligibility: an ACCEPTED link must be applied untouched — got ${JSON.stringify(r2)} after ${seen2.length} question(s)`,
+      r2?.decision === "apply" && r2?.refusalName === null,
+      "source-eligibility: a refusal that does not name the introduction changes nothing",
+      `source-eligibility: an unrelated refusal must apply and name no reason — got ${JSON.stringify(r2)}`,
     );
 
-    // ③ Refused both ways → the purchase still goes (founder ruling, 2026-08-04).
+    // ③ An UNDECODABLE refusal proves nothing.
     const seen3: string[] = [];
-    const r3 = await ask(LINK, fake({ [LINK]: "refused", [ZERO]: "refused" }, seen3));
+    const r3 = await ask(LINK, fake("refused", null, seen3));
     check(
-      r3?.decision === "apply" && r3?.refusalName === null,
-      "source-eligibility: refused both ways still SENDS — only the chain says no",
-      `source-eligibility: refused-both-ways must apply and name no reason — got ${JSON.stringify(r3)}`,
+      r3?.decision === "apply",
+      "source-eligibility: an undecodable refusal never strips a referral",
+      `source-eligibility: an undecodable refusal must apply — got ${JSON.stringify(r3)}`,
     );
 
-    // ④ An unreadable second leg proves nothing → never a drop.
+    // ④ An ACCEPTED link is applied untouched.
     const seen4: string[] = [];
-    const r4 = await ask(LINK, fake({ [LINK]: "refused", [ZERO]: "unreadable" }, seen4));
+    const r4 = await ask(LINK, fake("accepted", null, seen4));
     check(
-      r4?.decision === "apply",
-      "source-eligibility: an unreadable no-link answer never strips a referral",
-      `source-eligibility: refused-with + unreadable-without must apply — got ${JSON.stringify(r4)}`,
+      r4?.decision === "apply" && seen4.length === 1,
+      "source-eligibility: an accepted link is applied untouched, in one question",
+      `source-eligibility: an ACCEPTED link must be applied — got ${JSON.stringify(r4)} after ${seen4.length} question(s)`,
+    );
+
+    // ⑤ An UNREADABLE engine proves nothing either.
+    const seen5: string[] = [];
+    const r5 = await ask(LINK, fake("unreadable", "SourceNotEligible", seen5));
+    check(
+      r5?.decision === "apply",
+      "source-eligibility: an unreachable engine never strips a referral",
+      `source-eligibility: an unreadable answer must apply — got ${JSON.stringify(r5)}`,
     );
   }
 
@@ -316,6 +359,21 @@ check(
   "source-eligibility: BOTH drop paths tell the page",
   "source-eligibility: every path that drops the link must call onSourceUnusable — a silent drop leaves «paid to your referrer» on screen above a receipt that contradicts it",
 );
+// ⛔ THE QUESTION IS NEVER GATED ON AN APPROVAL (the founder's own
+// counter-example, seat #8, 2026-08-04). `phase.allowance < gross` in the probe
+// effect made the whole check unreachable for every member who had not yet
+// approved — which is every member arriving on a link. The engine names a
+// source refusal with a ZERO allowance, so there is nothing to wait for.
+{
+  const iEffect = checkout.indexOf("askEngineAboutSource(");
+  const head = iEffect > -1 ? checkout.slice(Math.max(0, iEffect - 900), iEffect) : "";
+  check(
+    !/allowance\s*<\s*gross/.test(head),
+    "source-eligibility: the engine is asked without waiting for an approval",
+    "source-eligibility: an allowance condition guards the engine question — that is exactly what made it unreachable, so a seated member kept seeing «Paid to your referrer» on a purchase the engine would refuse",
+  );
+}
+
 // ⛔ NOTHING MAY AWAIT BETWEEN RECORDING THE REFUSAL AND TELLING THE PAGE
 // (third review, 2026-08-04). `sourceDrop` is in the probe effect's OWN
 // dependency list, so setting it re-runs the effect, whose cleanup flips the
@@ -536,7 +594,7 @@ if (errors.length > 0) {
   process.exit(1);
 }
 console.log(
-  `[guard:source-eligibility] PASS — ${ok.length} pins hold (9-row truth table EXECUTED; ${sweptFiles} files swept for raw receipt waits).`,
+  `[guard:source-eligibility] PASS — ${ok.length} pins hold (${truthTableRows}-row truth table EXECUTED; ${sweptFiles} files swept for raw receipt waits).`,
 );
 console.log(
   "[guard:source-eligibility] NOT CHECKED, and no green run here claims otherwise: nothing is RENDERED (wrapping, both themes, mobile — the preview gate's job) · no wallet signs anything · whether the wallet's own node agrees with this app's RPC at the instant of signing · the 12 refusal names that are NAME-DERIVED (the engine's source is not in this repo; only SourceNotEligible and SourceAlreadyLinked are selector-verified) · the SERVER quote route (api-side guards own it).",

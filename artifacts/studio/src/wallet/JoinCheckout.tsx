@@ -303,7 +303,14 @@ export default function JoinCheckout({
 
   useEffect(() => {
     if (!sourceId || !address || !saleAddress || gross === null) return;
-    if (phase.kind !== "ready" || phase.allowance < gross) return;
+    // ⛔ NO ALLOWANCE GATE HERE — that gate is what made the whole check
+    // unreachable (founder's own counter-example, seat #8, 2026-08-04). It read
+    // `phase.allowance < gross` and returned, so a member who had not yet
+    // approved — which is EVERY member arriving on a link — was never told, and
+    // the breakdown above kept «Paid to your referrer −0.25 USDC» for a
+    // purchase the engine would refuse. The engine names a source refusal with
+    // a ZERO allowance (measured), so nothing needs to be approved first.
+    if (phase.kind !== "ready") return;
     if (sourceDrop !== null) return;
     let cancelled = false;
     void (async () => {

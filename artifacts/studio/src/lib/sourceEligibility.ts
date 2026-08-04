@@ -46,20 +46,52 @@ export type SourceApplicationDecision =
   | "drop";
 
 /**
+ * The engine's own refusal names that name THE INTRODUCTION as the reason.
+ * All four are unambiguous: each one is about the source and nothing else.
+ * Two are selector-verified against live mainnet reverts; a name outside this
+ * set — including one we cannot decode — is never treated as proof.
+ */
+const SOURCE_REFUSALS: ReadonlySet<string> = new Set([
+  "SourceNotEligible",
+  "SourceAlreadyLinked",
+  "SelfReferral",
+  "ReferrerNotSeated",
+]);
+
+/**
  * The decision. Pure — no chain, no network, no clock.
  *
- * ONE combination and one only removes the introduction: the engine refused
- * the purchase WITH it and accepted the identical purchase WITHOUT it. That is
- * proof, and nothing weaker is, because a drop costs a referrer his commission
- * and his attribution permanently. Every other combination — including a
- * refusal we cannot explain and an unreadable probe — leaves the purchase
- * exactly as the buyer intended it and lets the chain answer for itself.
+ * ⛔ THE QUESTION CHANGED ON 2026-08-04, AND THE FOUNDER IS THE ONE WHO FOUND
+ * OUT WHY. The first version asked a DIFFERENTIAL — «does the purchase succeed
+ * with the link, and without it?» — and dropped only when the answer flipped.
+ * That comparison needs the buyer's approval to already cover the amount,
+ * because otherwise BOTH legs fail on the missing allowance and nothing is
+ * proven. So the whole check was gated on an approval, and a member who had not
+ * yet approved — which is EVERY member arriving on a link — was shown «Paid to
+ * your referrer −0.25 USDC», with the referrer's address and an explorer link,
+ * for a purchase the engine would refuse. He walked it with seat #8 and sent
+ * the screenshot.
+ *
+ * The differential was a PROXY. The real question is «does the engine name the
+ * INTRODUCTION as its reason for refusing?» — and it answers that with a zero
+ * allowance, because the source is resolved before the token is ever pulled.
+ * Measured on mainnet, allowance 0.00 USDC on both wallets:
+ *   buy(5 USDC, seat #8, link) -> REVERT SourceNotEligible()
+ *   buy(5 USDC, seat #5, link) -> REVERT SourceNotEligible()
+ *   the same buys with no link -> REVERT Error(string) — the missing approval
+ *
+ * So one leg is asked, and the ENGINE'S OWN NAME decides. A refusal it does not
+ * name — or one this app cannot decode — proves nothing and changes nothing:
+ * the purchase goes out exactly as the buyer intended and the chain answers for
+ * itself. A drop costs a referrer his commission permanently, so it happens
+ * only when the engine has said, in its own words, that the introduction is why.
  */
 export function decideSourceApplication(
   withSource: BuySimulationVerdict,
-  withoutSource: BuySimulationVerdict,
+  refusalName: string | null,
 ): SourceApplicationDecision {
-  return withSource === "refused" && withoutSource === "accepted" ? "drop" : "apply";
+  if (withSource !== "refused") return "apply";
+  return refusalName !== null && SOURCE_REFUSALS.has(refusalName) ? "drop" : "apply";
 }
 
 /**
@@ -95,17 +127,13 @@ export async function askEngineAboutSource(
   sourceId: string,
   probe: EngineProbe,
 ): Promise<{ decision: SourceApplicationDecision; refusalName: string | null }> {
-  const withSource = await probe.simulate(sourceId);
-  // Not a refusal → nothing is proven against the introduction, and the second
-  // question is not even worth asking.
-  if (withSource.verdict !== "refused") return { decision: "apply", refusalName: null };
-  const withoutSource = await probe.simulate(probe.zeroSourceId);
-  const decision = decideSourceApplication(withSource.verdict, withoutSource.verdict);
-  return {
-    decision,
-    // The reason belongs to the refusal we are acting on — the WITH-source one.
-    refusalName: decision === "drop" ? probe.refusalNameOf(withSource.error) : null,
-  };
+  const answer = await probe.simulate(sourceId);
+  if (answer.verdict !== "refused") return { decision: "apply", refusalName: null };
+  // The engine's OWN name for its refusal. Null when it could not be decoded,
+  // and null is never proof.
+  const refusalName = probe.refusalNameOf(answer.error);
+  const decision = decideSourceApplication(answer.verdict, refusalName);
+  return { decision, refusalName: decision === "drop" ? refusalName : null };
 }
 
 /**
