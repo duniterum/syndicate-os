@@ -37,6 +37,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   glance.** Note his allowance was consumed by this purchase, so the
 >   mount-time notice will not fire again until a new approval covers an amount.
 >
+> ## (0-RULE) ⛔ THE ENGINE'S SOURCE IS NOW IN THE REPO — STOP INFERRING IT
+> `contracts/reference/MembershipSaleV3.verified.sol` (publisher-verified, sha256
+> in the folder's README). **Read it before writing any sentence about what the
+> engine does.** The referral rule, `_resolveSource`:
+> · line 440 — you already have a LIVE introduction and it is a different one →
+>   `SourceAlreadyLinked`
+> · line 448 — **not your first seat, NO introduction on record, and you supplied
+>   an explicit link** → `SourceNotEligible`
+> Measured against live wallets, all agreeing: seats #5/#8/#12 (no record) →
+> refused · #13/#14 (record, live) → refused · **#10 (record, EXHAUSTED) →
+> ACCEPTED**, because the record carries her past 448 and its exhaustion carries
+> her past 440. On acceptance the contract **rewrites** the buyer's introducer.
+> **What inferring it instead cost this session:** a handoff recording the wrong
+> cause · a fix built on a comparison that could never run before an approval ·
+> **7 of 14 custom-error signatures wrong** (they carry uint256 parameters), so
+> seven human sentences were unreachable · and the eligibility rule inferred
+> wrongly TWICE, in two different directions. The founder solved it himself.
+>
 > ## (0) THE CORRECTION THAT DEFINES THIS SLICE — read it before the rest
 > **The cause written into the last handoff was wrong, and I proved it before
 > building on it.** The handoff said the purchase was refused because the
