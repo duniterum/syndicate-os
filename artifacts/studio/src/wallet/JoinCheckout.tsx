@@ -37,17 +37,18 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   confirmTransaction,
+  makeEngineProbe,
   publicClient,
   readAllowance,
+  readEngineQuoteForBuyer,
   readSaleUsdcToken,
   readTokenBalance,
-  revertName,
-  simulateBuy,
   SALE_BUY_ABI,
+  type EngineQuoteForBuyer,
 } from "@/lib/chainReads";
 import { shortTxHash } from "@/lib/txDisplay";
 import {
-  decideSourceApplication,
+  askEngineAboutSource,
   droppedSourceNotice,
 } from "@/lib/sourceEligibility";
 import { resolveHistoricalGate, type HistoricalGateVerdict } from "@/lib/historicalMembers";
@@ -215,7 +216,7 @@ export default function JoinCheckout({
    * panel says the introduction was not attached (review catch, 2026-08-04:
    * two contradicting money statements on one screen).
    */
-  onSourceUnusable?: () => void;
+  onSourceUnusable?: (trueFigures: EngineQuoteForBuyer | null) => void;
 }) {
   // AUDIT FIX (1.1): the WALLET's actual chain, not the config's. useChainId()
   // returns the config chain (always 43114 on a single-chain config), so it can
@@ -296,14 +297,22 @@ export default function JoinCheckout({
     if (sourceDrop !== null) return;
     let cancelled = false;
     void (async () => {
-      const probe = { saleAddress, buyer: address, grossUsdc: gross, minSynOut: 0n };
-      const withSource = await simulateBuy({ ...probe, sourceId: sourceId as `0x${string}` });
-      if (cancelled || withSource.verdict !== "refused") return;
-      const withoutSource = await simulateBuy({ ...probe, sourceId: ZERO_BYTES32 });
+      const bound = { saleAddress, buyer: address, grossUsdc: gross, minSynOut: 0n };
+      const answer = await askEngineAboutSource(sourceId, makeEngineProbe(bound));
+      if (cancelled || answer.decision !== "drop") return;
+      setSourceDrop({ reason: answer.refusalName });
+      // THE TRUE SPLIT FOR THIS BUYER (founder answer ④). The engine still pays
+      // an introduction already recorded for this wallet, even on a zero id —
+      // so the page must show the figures the purchase will really produce,
+      // never the anonymous ones that claim nobody is paid.
+      const trueFigures = await readEngineQuoteForBuyer({
+        saleAddress,
+        buyer: address,
+        grossUsdc: gross,
+        sourceId: ZERO_BYTES32,
+      });
       if (cancelled) return;
-      if (decideSourceApplication(withSource.verdict, withoutSource.verdict) !== "drop") return;
-      setSourceDrop({ reason: revertName(withSource.error) });
-      onSourceUnusable?.();
+      onSourceUnusable?.(trueFigures);
     })();
     return () => {
       cancelled = true;
@@ -503,22 +512,25 @@ export default function JoinCheckout({
           grossUsdc: gross!,
           minSynOut: BigInt(minSynOut),
         };
-        const withSource = await simulateBuy({ ...probe, sourceId: applySourceId });
-        if (withSource.verdict === "refused") {
-          const withoutSource = await simulateBuy({ ...probe, sourceId: ZERO_BYTES32 });
-          if (decideSourceApplication(withSource.verdict, withoutSource.verdict) === "drop") {
-            // The purchase goes through UN-ATTRIBUTED rather than reverting —
-            // and the buyer is told, with the ENGINE's own reason, never one
-            // of ours.
-            applySourceId = ZERO_BYTES32;
-            sourceNotice = droppedSourceNotice(revertName(withSource.error));
-            // TELL THE PAGE — the same line the mount-time drop already sends
-            // (review catch, 2026-08-04: this second drop path was silent, so
-            // the breakdown above kept its «paid to your referrer» line, with
-            // that referrer's address and explorer proof, while the receipt
-            // printed underneath said the introduction was not attached).
-            onSourceUnusable?.();
-          }
+        const answer = await askEngineAboutSource(applySourceId, makeEngineProbe(probe));
+        if (answer.decision === "drop") {
+          // The purchase goes through UN-ATTRIBUTED rather than reverting — and
+          // the buyer is told, with the ENGINE's own reason, never one of ours.
+          applySourceId = ZERO_BYTES32;
+          sourceNotice = droppedSourceNotice(answer.refusalName);
+          // TELL THE PAGE — the same call the mount-time drop makes (review
+          // catch, 2026-08-04: this second drop path was silent, so the
+          // breakdown above kept its «paid to your referrer» line, with that
+          // referrer's address and explorer proof, while the receipt printed
+          // underneath said the introduction was not attached).
+          onSourceUnusable?.(
+            await readEngineQuoteForBuyer({
+              saleAddress: saleAddress!,
+              buyer: address,
+              grossUsdc: gross!,
+              sourceId: ZERO_BYTES32,
+            }),
+          );
         }
       } else if (sourceDrop !== null) {
         // The page already removed the link because this same test proved it

@@ -38,7 +38,10 @@ import {
   type TransactionReceipt,
 } from "viem";
 import { avalanche } from "viem/chains";
-import type { BuySimulationVerdict } from "@/lib/sourceEligibility";
+import type { BuySimulationVerdict, EngineProbe } from "@/lib/sourceEligibility";
+
+/** The engine's no-source path, written once. */
+const ZERO_SOURCE_ID = ("0x" + "0".repeat(64)) as `0x${string}`;
 
 // Public, keyless Avalanche C-Chain RPC (same endpoints the server defaults to).
 // Optional VITE_ overrides (validated https) — we will almost certainly never need
@@ -444,6 +447,84 @@ export async function simulateBuy(args: {
     return { verdict: "accepted", error: null };
   } catch (err) {
     return { verdict: verdictFromError(err), error: err };
+  }
+}
+
+/**
+ * Bind the source question to one exact purchase. The caller then hands the
+ * single sourceId to askEngineAboutSource and cannot get the two legs wrong —
+ * the ordering invariant lives in that function, not at the call site.
+ */
+export function makeEngineProbe(args: {
+  saleAddress: string;
+  buyer: string;
+  grossUsdc: bigint;
+  minSynOut: bigint;
+}): EngineProbe {
+  return {
+    zeroSourceId: ZERO_SOURCE_ID,
+    refusalNameOf: revertName,
+    simulate: (sourceId: string) =>
+      simulateBuy({ ...args, sourceId: sourceId as `0x${string}` }),
+  };
+}
+
+// THE ENGINE'S OWN VIEW OF THIS BUYER'S PURCHASE (founder answer ④,
+// 2026-08-04). The SERVER quote is computed for an ANONYMOUS recipient, so it
+// cannot know that a wallet already carries an introduction — and the engine
+// auto-applies a previously LINKED source even on a zero id (measured: seats
+// #13/#14/#17 are quoted a 250000 commission with NO source supplied). After a
+// dropped link the served split therefore describes the company's money
+// wrongly: it shows the whole net going to the protocol when a commission is in
+// fact paid. This read asks the engine for THIS recipient, so the figures shown
+// are the ones the purchase will actually produce.
+const SALE_QUOTE_ABI = [
+  {
+    type: "function",
+    name: "quote",
+    stateMutability: "view",
+    inputs: [
+      { name: "grossUsdc", type: "uint256" },
+      { name: "recipient", type: "address" },
+      { name: "sourceId", type: "bytes32" },
+    ],
+    outputs: [
+      { name: "synOut", type: "uint256" },
+      { name: "era", type: "uint16" },
+      { name: "synPerUsdc", type: "uint64" },
+      { name: "seatIfFirst", type: "uint256" },
+      { name: "acquisitionCost", type: "uint256" },
+      { name: "protocolContribution", type: "uint256" },
+    ],
+  },
+] as const;
+
+export interface EngineQuoteForBuyer {
+  /** Exact raw USDC base units paid out of this purchase as commission. */
+  readonly sourcePaymentRaw: string;
+  /** Exact raw USDC base units the company receives (then split 70/20/10). */
+  readonly netProtocolRaw: string;
+}
+
+/** The engine's quote for THIS recipient. Null on any failure — never a guess. */
+export async function readEngineQuoteForBuyer(args: {
+  saleAddress: string;
+  buyer: string;
+  grossUsdc: bigint;
+  sourceId: `0x${string}`;
+}): Promise<EngineQuoteForBuyer | null> {
+  const { saleAddress, buyer, grossUsdc, sourceId } = args;
+  if (!isAddress(saleAddress) || !isAddress(buyer)) return null;
+  try {
+    const r = await publicClient.readContract({
+      address: getAddress(saleAddress),
+      abi: SALE_QUOTE_ABI,
+      functionName: "quote",
+      args: [grossUsdc, getAddress(buyer), sourceId],
+    });
+    return { sourcePaymentRaw: r[4].toString(10), netProtocolRaw: r[5].toString(10) };
+  } catch {
+    return null;
   }
 }
 

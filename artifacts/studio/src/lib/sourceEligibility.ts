@@ -63,6 +63,52 @@ export function decideSourceApplication(
 }
 
 /**
+ * Everything the question needs from the chain, injected — so this file stays
+ * pure and a guard can EXECUTE the whole question with a fake engine.
+ */
+export interface EngineProbe {
+  /** Simulate the exact purchase with this source id. Never signs. */
+  simulate(sourceId: string): Promise<{ verdict: BuySimulationVerdict; error: unknown }>;
+  /** The engine's own error name for a refusal, or null when undecodable. */
+  refusalNameOf(error: unknown): string | null;
+  /** The engine's no-source path. */
+  readonly zeroSourceId: string;
+}
+
+/**
+ * THE WHOLE QUESTION, ASKED IN ONE PLACE — and this is a SAFETY fix, not tidying
+ * (founder ruling 2026-08-04, his answer ③: harden before deploying).
+ *
+ * The previous shape left the call site holding two loose simulations whose
+ * MEANING lived entirely in the order of their arguments. A second review proved
+ * what that costs: the two calls could be swapped so the fix did the exact
+ * OPPOSITE — dropping every valid referral and keeping every refused one — with
+ * all 39 guard pins still green, because a scanner cannot see which id went into
+ * which call. Nothing outside this function can make that mistake now: the
+ * caller hands over ONE source id and gets back a decision.
+ *
+ * The order is the invariant: the FIRST question is always «with the buyer's
+ * introduction», the SECOND always «with none». A guard executes this against a
+ * fake engine and asserts exactly that.
+ */
+export async function askEngineAboutSource(
+  sourceId: string,
+  probe: EngineProbe,
+): Promise<{ decision: SourceApplicationDecision; refusalName: string | null }> {
+  const withSource = await probe.simulate(sourceId);
+  // Not a refusal → nothing is proven against the introduction, and the second
+  // question is not even worth asking.
+  if (withSource.verdict !== "refused") return { decision: "apply", refusalName: null };
+  const withoutSource = await probe.simulate(probe.zeroSourceId);
+  const decision = decideSourceApplication(withSource.verdict, withoutSource.verdict);
+  return {
+    decision,
+    // The reason belongs to the refusal we are acting on — the WITH-source one.
+    refusalName: decision === "drop" ? probe.refusalNameOf(withSource.error) : null,
+  };
+}
+
+/**
  * The engine's own refusal names, in human words, for the ONE place a dropped
  * introduction is explained to the buyer.
  *

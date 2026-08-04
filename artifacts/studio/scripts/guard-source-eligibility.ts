@@ -155,6 +155,78 @@ if (moduleExists) {
     );
   }
 
+  // ── THE ORDER INVARIANT, EXECUTED AGAINST A FAKE ENGINE ───────────────────
+  // The defeat this closes (second review, 2026-08-04): the two simulations
+  // could be SWAPPED so the fix did the exact opposite — dropping every valid
+  // referral and keeping every refused one — with every pin still green,
+  // because a scanner cannot see which id went into which call. The question is
+  // now ONE function, and here it is run with a fake engine that records the
+  // order it was asked in.
+  const ask = m.askEngineAboutSource;
+  check(
+    typeof ask === "function",
+    "source-eligibility: the whole question is ONE function the call site cannot mis-order",
+    "source-eligibility: sourceEligibility.ts must export askEngineAboutSource(sourceId, probe) — two loose simulations at the call site can be swapped, and were",
+  );
+  if (typeof ask === "function") {
+    const ZERO = "0x" + "0".repeat(64);
+    const LINK = "0x" + "ab".repeat(32);
+    const fake = (answers: Record<string, string>, seen: string[]) => ({
+      zeroSourceId: ZERO,
+      refusalNameOf: (e: unknown) => (e as { name?: string } | null)?.name ?? null,
+      simulate: async (id: string) => {
+        seen.push(id);
+        return { verdict: answers[id] ?? "unreadable", error: { name: "SourceNotEligible" } };
+      },
+    });
+
+    // ① refused WITH the link, accepted WITHOUT → drop, and the ORDER is pinned.
+    const seen1: string[] = [];
+    const r1 = await ask(LINK, fake({ [LINK]: "refused", [ZERO]: "accepted" }, seen1));
+    check(
+      seen1[0] === LINK,
+      "source-eligibility: the FIRST question is always asked WITH the buyer's link",
+      `source-eligibility: the first simulation used ${seen1[0]} — it must be the buyer's own link, or the whole differential is inverted`,
+    );
+    check(
+      seen1[1] === ZERO,
+      "source-eligibility: the SECOND question is always the no-link path",
+      `source-eligibility: the second simulation used ${seen1[1]} — it must be the zero id`,
+    );
+    check(
+      r1?.decision === "drop" && r1?.refusalName === "SourceNotEligible",
+      "source-eligibility: a proven-blocked link drops, carrying the ENGINE's own reason",
+      `source-eligibility: refused-with + accepted-without must drop with the engine's reason — got ${JSON.stringify(r1)}`,
+    );
+
+    // ② The INVERTED world must NOT drop: accepted with the link, refused without.
+    const seen2: string[] = [];
+    const r2 = await ask(LINK, fake({ [LINK]: "accepted", [ZERO]: "refused" }, seen2));
+    check(
+      r2?.decision === "apply" && seen2.length === 1,
+      "source-eligibility: an accepted link is applied, and the second question is not even asked",
+      `source-eligibility: an ACCEPTED link must be applied untouched — got ${JSON.stringify(r2)} after ${seen2.length} question(s)`,
+    );
+
+    // ③ Refused both ways → the purchase still goes (founder ruling, 2026-08-04).
+    const seen3: string[] = [];
+    const r3 = await ask(LINK, fake({ [LINK]: "refused", [ZERO]: "refused" }, seen3));
+    check(
+      r3?.decision === "apply" && r3?.refusalName === null,
+      "source-eligibility: refused both ways still SENDS — only the chain says no",
+      `source-eligibility: refused-both-ways must apply and name no reason — got ${JSON.stringify(r3)}`,
+    );
+
+    // ④ An unreadable second leg proves nothing → never a drop.
+    const seen4: string[] = [];
+    const r4 = await ask(LINK, fake({ [LINK]: "refused", [ZERO]: "unreadable" }, seen4));
+    check(
+      r4?.decision === "apply",
+      "source-eligibility: an unreadable no-link answer never strips a referral",
+      `source-eligibility: refused-with + unreadable-without must apply — got ${JSON.stringify(r4)}`,
+    );
+  }
+
   // THE REASON COMES FROM THE ENGINE, NEVER FROM US. The first version of this
   // notice invented a cause and the chain refuted it for the very wallet the
   // fix was built from. So the notice is a FUNCTION of the engine's own error
@@ -193,16 +265,18 @@ check(
   "source-eligibility: simulateBuy lives in chainReads (the client/server boundary law)",
   "source-eligibility: the buy simulation must live in src/lib/chainReads.ts — the client chain-read layer, per its own boundary law",
 );
+// THE CALL SITE MAY NOT BUILD ITS OWN DIFFERENTIAL (hardening, 2026-08-04, his
+// answer ③). Two loose simulations were swappable; one entry point is not.
 check(
-  /simulateBuy\s*\(/.test(checkout) &&
-    (checkout.match(/simulateBuy\s*\(/g) ?? []).length >= 2,
-  "source-eligibility: the probe runs BOTH legs (with the source, and without)",
-  "source-eligibility: the checkout must simulate the buy WITH the source AND WITHOUT it — one leg proves nothing",
+  !/simulateBuy\s*\(/.test(checkout),
+  "source-eligibility: the checkout never assembles the two legs itself",
+  "source-eligibility: JoinCheckout calls simulateBuy directly — it must go through askEngineAboutSource, the one entry point whose argument ORDER is executed by this guard. A hand-rolled differential can be inverted, and was.",
 );
 check(
-  /ZERO_BYTES32/.test(checkout) && /simulateBuy/.test(checkout),
-  "source-eligibility: the no-source leg uses the canonical zero id",
-  "source-eligibility: the second leg must use ZERO_BYTES32 — the engine's own no-source path",
+  (checkout.match(/askEngineAboutSource\s*\(/g) ?? []).length >= 2 &&
+    /makeEngineProbe\s*\(/.test(checkout),
+  "source-eligibility: both drop paths ask the same bound question",
+  "source-eligibility: both the pre-signature check and the click-time check must call askEngineAboutSource with a bound probe",
 );
 
 // ── 4. THE PROBE RUNS BEFORE THE SIGNATURE ─────────────────────────────────
@@ -213,7 +287,7 @@ check(
 // ruling is about refusing AFTER asking the engine about the introduction.
 const iBuyFn = checkout.indexOf("async function handleBuy");
 const iWriteBuy = checkout.indexOf("functionName: \"buy\"");
-const iProbe = iBuyFn > -1 ? checkout.indexOf("simulateBuy(", iBuyFn) : -1;
+const iProbe = iBuyFn > -1 ? checkout.indexOf("askEngineAboutSource(", iBuyFn) : -1;
 check(
   iProbe > -1 && iWriteBuy > -1 && iProbe < iWriteBuy && iProbe > iBuyFn,
   "source-eligibility: the engine is asked BEFORE the buyer signs",
@@ -231,6 +305,23 @@ check(
     /droppedSourceNotice\(/.test(region),
   "source-eligibility: a proven-blocked link is actually REMOVED from the signed call",
   "source-eligibility: the `drop` verdict must set applySourceId to ZERO_BYTES32 AND raise the engine's own notice before the signature — computing a verdict and signing anyway changes nothing",
+);
+// BOTH DROP PATHS TELL THE PAGE (second-review blocking finding: the click-time
+// drop was silent, so the breakdown kept a referrer line above a receipt saying
+// the introduction was not attached).
+check(
+  (checkout.match(/onSourceUnusable\?\.\(/g) ?? []).length >= 2,
+  "source-eligibility: BOTH drop paths tell the page",
+  "source-eligibility: every path that drops the link must call onSourceUnusable — a silent drop leaves «paid to your referrer» on screen above a receipt that contradicts it",
+);
+// AND THEY HAND UP THE ENGINE'S OWN FIGURES, NOT THE ANONYMOUS ONES (founder
+// answer ④): an introduction already recorded for a wallet is still paid on a
+// no-link purchase, so a split claiming otherwise misdescribes the company's money.
+check(
+  /readEngineQuoteForBuyer\s*\(/.test(checkout) &&
+    /export async function readEngineQuoteForBuyer\b/.test(reads),
+  "source-eligibility: a dropped link reports the ENGINE's true split for this buyer",
+  "source-eligibility: after a drop the page must be given readEngineQuoteForBuyer's figures — the served quote is anonymous and would claim nobody is paid when the engine still pays the buyer's recorded introduction",
 );
 
 // THE ARGUMENTS ACTUALLY SIGNED (review defeat #1, 2026-08-04): the region
@@ -363,10 +454,19 @@ check(
   "source-eligibility: an un-attributed purchase tells the buyer",
   "source-eligibility: the checkout must surface droppedSourceNotice when it drops the link — a silent drop is a lie of omission on the money path",
 );
+// PINNED AS THE PROPERTY, NOT THE OLD SPELLING: the decoding moved inside the
+// bound probe, so what this file owes is that every notice argument comes from
+// the ENGINE's answer and never from a hand-written cause.
 check(
-  /revertName\(/.test(checkout) && /droppedSourceNotice\(revertName\(/.test(checkout),
+  !/droppedSourceNotice\(\s*["'`]/.test(checkout) &&
+    /droppedSourceNotice\((answer\.refusalName|sourceDrop\.reason)/.test(checkout),
   "source-eligibility: the buyer is given the ENGINE's reason, not ours",
-  "source-eligibility: the notice must be built from revertName(...) — the engine's own decoded refusal. Writing a cause by hand is exactly the defect review caught: the chain refuted it for the very wallet this fix was built from",
+  "source-eligibility: every droppedSourceNotice call must be fed the engine's own decoded refusal (answer.refusalName / sourceDrop.reason) — a literal cause is exactly the defect review caught: the chain refuted it for the very wallet this fix was built from",
+);
+check(
+  /refusalNameOf:\s*revertName/.test(reads),
+  "source-eligibility: the probe decodes the refusal with the engine's own error name",
+  "source-eligibility: makeEngineProbe must wire refusalNameOf to revertName — otherwise the reason handed to the buyer is not the engine's",
 );
 
 // ── 8. BOTH MEASURED REFUSALS HAVE HUMAN WORDS, IN BOTH PLACES ──────────────

@@ -45,7 +45,7 @@ import {
 } from "@/lib/checkoutVocabulary";
 import { useTokenomics } from "@/components/tokenomics/useTokenomics";
 import { CHECKOUT_ENABLED } from "@/config/checkoutGate";
-import { readSourceConfig } from "@/lib/chainReads";
+import { readSourceConfig, type EngineQuoteForBuyer } from "@/lib/chainReads";
 import { JOIN_AMOUNTS_USDC } from "@/config/joinAmounts";
 import { ctas, safetyCopy } from "@/config/sharedCopy";
 
@@ -113,7 +113,7 @@ function CheckoutSlot({
   sourceId: string | null;
   usdcDecimals: number;
   synDecimals: number;
-  onSourceUnusable: () => void;
+  onSourceUnusable: (trueFigures: EngineQuoteForBuyer | null) => void;
 }) {
   const { data, isLoading } = useGetProtocolVerifyLinks();
   if (!JoinCheckout || isLoading) return null;
@@ -490,8 +490,20 @@ function QuotePanel({
   // to the connected wallet. The instant it does, the link leaves this panel
   // too — otherwise the breakdown would still show a commission paid to a
   // referrer while the checkout says the introduction was not attached.
+  //
+  // AND THE SPLIT IT THEN SHOWS MUST BE THE ENGINE'S, NOT THE ANONYMOUS ONE
+  // (founder answer ④, 2026-08-04). The served quote is computed for an
+  // anonymous recipient, so after a drop it would claim the whole net goes to
+  // the company — while the engine still pays an introduction already recorded
+  // for that wallet. The checkout knows the buyer, so it hands up the engine's
+  // own figures for HIS purchase; null means the read failed, and then no split
+  // is shown at all rather than a wrong one.
   const [sourceUnusable, setSourceUnusable] = useState(false);
-  const onSourceUnusable = useCallback(() => setSourceUnusable(true), []);
+  const [trueSplit, setTrueSplit] = useState<EngineQuoteForBuyer | null>(null);
+  const onSourceUnusable = useCallback((figures: EngineQuoteForBuyer | null) => {
+    setSourceUnusable(true);
+    setTrueSplit(figures);
+  }, []);
   const effectiveSourceId = sourceUnusable ? null : sourceId;
 
   const params = effectiveSourceId
@@ -593,21 +605,41 @@ function QuotePanel({
           you receive, the seat, the floor) is identical with and without the
           link — measured on mainnet: 1,000 SYN at $10 either way — so only this
           block waits. */}
-      {sourceUnusable && isPlaceholderData ? (
+      {sourceUnusable && (isPlaceholderData || trueSplit === null) ? (
         <p
           className="mt-4 border-t border-border/40 pt-4 text-sm text-muted-foreground"
           data-testid="text-quote-recomputing"
         >
-          Recomputing the split without the introduction link…
+          {trueSplit === null && !isPlaceholderData
+            ? "The exact split for your wallet could not be read from the engine — nothing is shown in its place. Your price and your SYN above are unchanged."
+            : "Recomputing the split without the introduction link…"}
         </p>
       ) : (
-        <MoneyPath
-          netProtocolRaw={q.netProtocolRaw}
-          usdcDecimals={data.decimals.usdc}
-          sourceId={effectiveSourceId}
-          grossUsdcRaw={grossUsdcRaw}
-          sourcePaymentRaw={q.sourcePaymentRaw}
-        />
+        <>
+          <MoneyPath
+            netProtocolRaw={trueSplit ? trueSplit.netProtocolRaw : q.netProtocolRaw}
+            usdcDecimals={data.decimals.usdc}
+            sourceId={effectiveSourceId}
+            grossUsdcRaw={grossUsdcRaw}
+            sourcePaymentRaw={trueSplit ? trueSplit.sourcePaymentRaw : q.sourcePaymentRaw}
+          />
+          {/* THE COMMISSION THAT IS STILL PAID, NAMED (founder answer ④). The
+              engine pays an introduction already recorded for this wallet even
+              on a no-link purchase. We can prove the AMOUNT — it is the engine's
+              own figure — but no public view tells us WHOSE it is, so no payee
+              is claimed. Saying nothing here would describe the company's money
+              wrongly. */}
+          {trueSplit && /^[0-9]+$/.test(trueSplit.sourcePaymentRaw) && BigInt(trueSplit.sourcePaymentRaw) > 0n ? (
+            <p
+              className="text-xs text-muted-foreground mt-2 max-w-2xl"
+              data-testid="text-quote-existing-introduction"
+            >
+              {formatRawUnits(trueSplit.sourcePaymentRaw, data.decimals.usdc)} USDC of
+              this purchase still goes to the introduction already recorded on-chain
+              for your wallet — the engine pays it whether or not a link is used.
+            </p>
+          ) : null}
+        </>
       )}
 
       <p

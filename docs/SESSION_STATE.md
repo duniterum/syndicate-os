@@ -143,6 +143,36 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   case where the server had merely failed to READ it — it now shows the
 >   server's own honest sentence.
 >
+> ## (d-ter) HIS FOUR ANSWERS AFTER THE SECOND REVIEW (2026-08-04)
+> ① **(c)** the dropped-link wording is approved from the text; it gets reproduced
+> live AFTER go-live (it cannot render without a real refused purchase on
+> mainnet). ② **(c)** the three OLDER refusals in the checkout (price unreadable ·
+> floor uncomputable · approval short) are decided after go-live — they predate
+> this session and are named here so they are not forgotten. ③ **(b) HARDEN THE
+> GUARD FIRST** — done below. ④ **(a) FIX THE MONEY DESCRIPTION BEFORE GO-LIVE** —
+> done below.
+>
+> **③ THE HARDENING — the API is now impossible to mis-order.** The two loose
+> simulations became ONE function, `askEngineAboutSource(sourceId, probe)`: the
+> caller hands over a single id and gets back a decision, so nothing outside that
+> function can swap the legs. The guard now EXECUTES it against a FAKE engine and
+> asserts the order itself (first question always WITH the link, second always
+> the zero id) plus all four outcomes. **Proven RED:** swapping the two questions
+> — the defeat reviewers showed kept 39/39 green — now fails FOUR pins, including
+> the decisive one, «an ACCEPTED link must be applied untouched — got drop».
+> `guard-source-eligibility` is now **49 pins**, and JoinCheckout is forbidden
+> from calling `simulateBuy` directly at all.
+>
+> **④ THE MONEY DESCRIPTION.** After a drop the page showed the ANONYMOUS split,
+> which claims the whole net goes to the company — while the engine still pays an
+> introduction already recorded for that wallet (measured: seats #13/#14/#17 are
+> quoted 250000 with NO link supplied). The checkout now reads
+> `readEngineQuoteForBuyer` — the engine's own quote for THAT recipient — and
+> hands the true figures up; the page shows them, plus one honest line naming the
+> amount that still goes to the wallet's recorded introduction. **No payee is
+> claimed: no public view tells us whose it is.** A failed read shows NO split
+> rather than a wrong one.
+>
 > ## (e) 🚀 DEPLOY — PROD = `c170e9b`. **THE QUEUE IS NOT EMPTY.**
 > The purchase-path slice sits above prod and **does not batch** (money path).
 > **It ships only after he has seen it in his own browser** (his answer ⑤).
