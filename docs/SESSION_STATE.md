@@ -173,9 +173,24 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > claimed: no public view tells us whose it is.** A failed read shows NO split
 > rather than a wrong one.
 >
-> ## (e) 🚀 DEPLOY — PROD = `c170e9b`. **THE QUEUE IS NOT EMPTY.**
-> The purchase-path slice sits above prod and **does not batch** (money path).
-> **It ships only after he has seen it in his own browser** (his answer ⑤).
+> ## (e) ✅ SEALED — **PROD = `e47e5570`. THE DEPLOY QUEUE IS EMPTY.**
+> Replit 6/6 (2026-08-04): head `e47e5570…46f0` reached exactly · 16/16 blobs · 11
+> commits · **migrations: NOTHING** (the one api file is a runtime route, zero
+> schema/drizzle) · entry `index-DJCEyIah.js` identical ×2, **old entry 404** · 39
+> route shells · 38/38 studio guards (including the new `guard:source-eligibility`)
+> · 23/23 api guards · 33 routes 200 · terms v1 **5873 B** / v2 **6172 B** exact ·
+> the 4 painted faces + the unknown-face fallback byte-identical to the invite ·
+> backbone first cycle **ok:1 partial:0 failed:0**, headBlock 91 972 109, spine 39
+> financial items.
+>
+> **AND VERIFIED AGAINST LIVE PROD BY THIS SESSION, not taken from the report** —
+> the same request that broke the page an hour earlier:
+> · `?sourceId=0xdeadbeef` → **quote present**, 500 SYN, commission 0, «the
+>   referral link is not a valid link — this quote is computed without it»
+>   *(before: `quote: null` → a red error, no price, no button)*
+> · an unknown link → quote present, commission 0, honest reason
+> · the real active link → `sourceValid: true`, commission 250000
+> **His instruction ① is live and doing its job.**
 >
 > ## (d-quater) THE THIRD REVIEW — 12 agents, and the pattern it exposed
 > His order, whole session again, with `843de79` + `b3015c6` as primary target

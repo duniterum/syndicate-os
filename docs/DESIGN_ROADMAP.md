@@ -2,10 +2,10 @@
 
 > ## ▶ 2026-08-04 (SESSION 2) — LE CHEMIN D'ACHAT, RÉPARÉ ET AU QUAI
 >
-> **PROD = `c170e9b`.** ⛔ **LE BACKLOG DE DÉPLOIEMENT N'EST PLUS VIDE :** la
-> tranche du chemin d'achat (`c01eba5` + les correctifs de revue) attend, et
-> **elle ne se groupe pas** — c'est le chemin de l'argent. Rien n'est en ligne
-> tant que le fondateur n'a pas donné l'ordre.
+> ✅ **PROD = `e47e5570`** (scellé 2026-08-04, Replit 6/6). **LE BACKLOG DE
+> DÉPLOIEMENT EST VIDE** — toute la tranche du chemin d'achat est EN LIGNE, et
+> vérifiée sur la prod par la session elle-même : un lien mal collé rend
+> désormais un devis complet là où il rendait une page rouge sans prix ni bouton.
 >
 > **CE QUE LA REVUE 12 AGENTS A CHANGÉ (ses réponses, 2026-08-04) :** ① un parrain
 > touche sur les rachats des membres qu'il a introduits (la chaîne le fait déjà) ·

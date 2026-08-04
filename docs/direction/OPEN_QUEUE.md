@@ -1,10 +1,34 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
-> ## ▶ 2026-08-04 (SESSION 2) — LE CHEMIN D'ACHAT EST RÉPARÉ, PUIS PASSÉ AU
-> ## CRIBLE DE 12 AGENTS SENIORS. **UNE TRANCHE AU QUAI, EN ATTENTE DE SES YEUX.**
+> ## ▶ 2026-08-04 (SESSION 2) — ✅ **SCELLÉ. PROD = `e47e5570`. LE QUAI EST VIDE.**
 >
-> **PROD reste `c170e9b`.** Au-dessus : la tranche du chemin d'achat.
-> **🚀 elle NE se groupe PAS** (chemin de l'argent). **Le quai N'EST PAS vide.**
+> **Replit 6/6** : tête atteinte exactement · 16/16 blobs · 11 commits ·
+> **migrations : RIEN** · entrée `index-DJCEyIah.js` identique ×2, ancienne 404 ·
+> 39 shells · 38/38 gardes studio (dont `guard:source-eligibility`) · 23/23 gardes
+> api · 33 routes 200 · terms v1 5873 o / v2 6172 o exacts · les 4 faces + repli ·
+> backbone ok:1 partial:0 failed:0.
+>
+> **VÉRIFIÉ SUR LA PROD EN LIGNE par la session, pas repris du rapport :** un lien
+> mal collé rend maintenant **un devis complet** (500 SYN, commission 0, phrase
+> honnête) là où il rendait `quote: null` — page rouge, pas de prix, pas de bouton.
+> **Son ① est vivant.**
+>
+> **⛔ DEUX DÉCISIONS À LUI SONT MAINTENANT DUES** (il les avait renvoyées « après
+> la mise en ligne », et on y est) :
+> ① **reproduire en vrai le message du lien lâché** — un achat réel depuis le
+>    siège #5 (~10 $ + gaz). C'est le SEUL moyen que les deux phrases qu'il a
+>    approuvées soient un jour vues sur un écran réel. **Personne n'a encore
+>    complété un achat à travers le nouveau code.**
+> ② **les trois refus PLUS ANCIENS du checkout** (prix illisible · plancher
+>    incalculable · approbation insuffisante) : deux d'entre eux font de NOTRE
+>    serveur un second veto sur son acheteur. Restent-ils ?
+>
+> **RESTE DÛ, nommé, pas caché :** son ④ **eslint** (34 sites) · le chemin
+> « Speed Up » de `ProposeSourceCreate` qui saute la fermeture de la demande d'un
+> membre · la ligne de succès périmée sur deux panneaux admin · la dispersion du
+> format de hash (5 endroits) · nommer le bénéficiaire d'une introduction déjà
+> enregistrée. **Et le MOTEUR FIRSTS** (gravé #2), qui n'attendait que la fin du
+> chemin d'achat — il est fini.
 >
 > ### SES SIX RÉPONSES, GRAVÉES (2026-08-04)
 > ① **Un parrain touche sur les rachats des membres qu'il a introduits — OUI.**
