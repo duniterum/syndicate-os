@@ -24,7 +24,7 @@ masquerade as a limit of REALITY.** The source was one call away the whole time.
 
 | File | Address | Provenance |
 |---|---|---|
-| `MembershipSaleV3.verified.sol` | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` | The publisher-verified source served by the Avalanche explorer's `getsourcecode` API, fetched 2026-08-04. 789 lines, 33 258 bytes, sha256 `35319d9f46e9a661c0ffc3720e1c309f8b2c0e3336df933be19ab9d9d94103b3`. |
+| `MembershipSaleV3.verified.sol` | `0x2A6cFc76906e758B934209AFf5A163c9bC20132E` | The publisher-verified source served by the Avalanche explorer's `getsourcecode` API, fetched 2026-08-04. 789 lines. **sha256 of the committed blob** (`git cat-file -p HEAD:contracts/reference/MembershipSaleV3.verified.sol | sha256sum`) = `bc874d75f6d2e344d17de9e8efefac634c7289f31641d692a2da170cca74e572`. ⚠ A first version of this line carried the hash of my working copy instead — it did not match what git stored, and an unverified fingerprint in a truth document is the exact defect class this whole session was about. Verify with the command, never from this sentence. |
 
 ## What it is, and what it is NOT
 
