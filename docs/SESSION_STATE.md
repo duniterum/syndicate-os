@@ -43,50 +43,90 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > · refused both ways → **nothing is signed** (today he paid gas for it).
 > · unreadable → **nothing changes** — a read failure must never strip a referral
 >   a referrer earned.
-> **The server quote was NOT the place.** It is computed for an ANONYMOUS
-> recipient, so `sourceValid` can only ever mean «this link exists and is
-> active» — it cannot know the buyer, and the public /join page cannot either
-> (no wagmi outside the wallet modules, guard rule 15). The per-wallet read is
-> the CLIENT's by `chainReads.ts`'s own boundary law.
+> ⛔ **AND ONLY THAT.** The founder ruled on 2026-08-04 that this checkout may
+> **never refuse to send a purchase** («est-ce que j'ai le droit de laisser le
+> checkout REFUSER d'envoyer un achat tout seul ?» → **NON**). The first version
+> had an `abort` verdict; it is GONE. Two decisions exist, `apply` and `drop`,
+> and a guard pin forbids any `setError…return` between asking the engine and
+> signing. **Only the chain says no.**
 >
-> ## (c) THE TWIN SEARCH FOUND FIVE, NOT ONE
-> `grep -rn "waitForTransactionReceipt"` → the buy · the approval ·
-> `createSource` · `setSourceStatus` · the ladder promotion. **None judged the
-> receipt's status.** The worst: an ACTIVE status **closed a member's queue
-> request and rang his bell** off a transaction the registry may have refused.
-> The rule now lives in ONE place — `chainReads.confirmTransaction`, whose
-> verdict cannot be used without reading it — and all five import it. A pin
-> forbids any new raw `waitForTransactionReceipt` outside that file.
+> ## (b-bis) HIS SIX ANSWERS, 2026-08-04 — the shape of this slice
+> ① a referrer **earns on later purchases** of members he truly introduced (the
+> chain already does this) · ② the /join sentence **rewritten** · ③ the receipt's
+> reason **comes from the engine** · ④ **build his server ①**, ship together ·
+> ⑤ **PREVIEW GATE — his own browser first** · ⑥ **no self-refusal** (above).
+>
+> ## (c) THE TWIN SEARCH FOUND **SIX** RECEIPT READS, NOT FIVE
+> Recounted from its own list after review (the first count dropped the
+> wallet-revoke surface — a surface this very commit repaired):
+> `git grep -n "waitForTransactionReceipt" 32cd85a -- 'artifacts/studio/src'`
+> → `JoinCheckout.tsx:382` (approval) · `:448,450` (purchase) ·
+> `MemberWalletPanel.tsx:216` (revoke) · `ProposeSourceCreate.tsx:350`
+> (createSource) · `:407` (setSourceStatus) · `ProposeSourcePromotion.tsx:227`
+> (updateSourceTerms). **SIX reads, four files, none judging status.** The worst:
+> an ACTIVE status **closed a member's queue request and rang his bell** off a
+> transaction the registry may have refused. The rule now lives in ONE place —
+> `chainReads.confirmTransaction` — and all six import it.
+>
+> ## (c-bis) ⚠ WHAT THE 12-AGENT REVIEW CAUGHT IN MY OWN WORK
+> His order, before any deploy word. 65 findings → 50 survived skeptics → 8
+> blocking, all closed. **The ones that were mine, named:**
+> · **I INVENTED A CAUSE THE CHAIN REFUTES.** The receipt told the buyer «this
+>   wallet's introduction is already settled on-chain» — false for seat #5, the
+>   very wallet the fix was built from (it quotes a commission of 0 on a zero
+>   source id, so it has no settled introduction). The engine's real reason was
+>   decoded and sitting one line away, discarded. That is a chain-refutable
+>   claim on a receipt — a named business red line. The reason now comes from
+>   `revertName()`, and an undecoded refusal names no cause at all.
+> · **«FIVE surfaces» over a list of six, and a pasted `grep` output no command
+>   produced** (it came from a mid-edit state). Law ③ broken in the very commit
+>   that fixed a truth defect. Recounted and re-run above.
+> · **My guard reported «30/30» while four edits could destroy the fix and keep
+>   it green.** Rebuilt: it now reads the ARGUMENTS actually signed, forbids the
+>   self-refusal, and its anti-re-derivation pin had a SECOND hole I found by
+>   attacking it — `readMemberNumberOf` does not contain `memberNumberOf` (the
+>   capital M). Case-insensitive now.
+> · **A paused link killed the whole /join page** — no price, no button. That
+>   was his ① and my reason for declining it was wrong.
+> · **One screen could say «commission paid» AND «link not attached».** The
+>   verdict now travels up to the page and the referrer line disappears.
 >
 > ## (d) VERIFIED — what was measured, at what scope
-> `guard-source-eligibility` **30/30** with the 9-row truth table **EXECUTED** ·
-> full studio guards chain PASS · typecheck 0 · build **39 shells** ·
-> `guard-admin-dist` 111 checks. **RED-first proven, four attacks each watched
-> fail then reverted:** the guard itself RED before any code (9 failures) ·
-> `(refused, refused) → drop` RED · the receipt branch neutered RED (3 pins) ·
-> the verdict computed but not acted on RED · a second unjudged receipt await
-> RED (2 pins, including the class pin).
-> **NOT COVERED:** no wallet signed anything here — **his connected browser is
-> the gate for the rendered flow**; whether his wallet's node agrees with ours
-> at the instant of signing; the api-server was not touched (zero server files).
+> `guard-source-eligibility` **39 pins** with the 9-row truth table **EXECUTED**
+> (315 files swept for raw receipt waits) · full studio guards chain PASS ·
+> typecheck 0 **studio AND api** · build **39 shells** · `guard-admin-dist` 111 ·
+> api `source-status-truth` 211. **RED-first proven — EIGHT attacks, each
+> watched fail then reverted:** the guard RED before any code (9 failures) ·
+> `(refused,refused)→drop` · the receipt branch neutered · the verdict computed
+> but not acted on · a second unjudged receipt await · the drop computed but the
+> raw link signed anyway · a `setError…return` after the probe · a seat read
+> re-deriving eligibility (which is how the capital-M hole was found).
+> **NOT COVERED, and no green run claims otherwise:** **nothing was RENDERED** —
+> wrapping, both themes, mobile and the real look of the two new sentences are
+> the PREVIEW GATE's job, which is his answer ⑤ · no wallet signed anything ·
+> whether his wallet's node agrees with ours at the instant of signing · 12 of
+> the 14 refusal names in `SALE_BUY_ABI` are NAME-DERIVED (the engine's source
+> is not in this repo; only `SourceNotEligible` and `SourceAlreadyLinked` are
+> selector-verified — a wrong name causes silence, never a wrong sentence).
 >
-> ## (e) 🚀 DEPLOY — PROD = `c170e9b`, and `c01eba5` IS THE ONLY CODE ABOVE IT
-> Money path — **this one does not batch.** Everything else above prod is docs.
+> ## (e) 🚀 DEPLOY — PROD = `c170e9b`. **THE QUEUE IS NOT EMPTY.**
+> The purchase-path slice sits above prod and **does not batch** (money path).
+> **It ships only after he has seen it in his own browser** (his answer ⑤).
 >
-> ## (f) FOUNDER-PENDING — and one of them is not the question we thought
-> 1. **The repeat-purchase decision, reframed by the chain.** A referrer ALREADY
->    earns on the later purchases of members he actually introduced. The refused
->    case is attaching a **NEW** referrer to an **EXISTING** member. Do we want
->    that possible at all? (A per-source on-chain term he signs; existing sources
->    keep theirs.)
-> 2. **The /join quote line** — its exact new text is in the session report.
-> 3. **The rendered flow, connected** — his own wallet on /join with a link.
+> ## (f) FOUNDER-PENDING
+> 1. **The preview** — /join with a referral link, and the receipt panel, on his
+>    screen, desktop and mobile. Then the deploy word.
+> 2. **The rendered flow, connected** — his own wallet, a real signature.
 >
-> ## (g) NEXT — `eslint` is owed (his ④)
+> ## (g) NEXT — `eslint` is owed (his ④, still open)
 > The studio has **no eslint config at all**, which is how a conditional React
 > hook reached prod and blacked out /admin/sources. Installing eslint +
 > `react-hooks` and working the 34 candidate sites down is the proposed next
 > slice — offered, not started.
+> **Also owed, named not hidden:** the short-hash sprawl. `lib/txDisplay.ts` now
+> owns the in-sentence form and the four money-path files use it, but the
+> receipt tickets and referral tables still hand-write a tighter 6…4 form in
+> five more places — its own slice.
 
 > # ▶ 2026-08-03 (later) — K1.6 + K1.7 · EACH ARTIFACT'S OWN PICTURE,
 > # AND THE SEAT THAT WAS NEVER REQUIRED. **RESUME HERE.**
@@ -203,7 +243,9 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > conflict copy deleted. **«Guards green» is not durable in this working tree —
 > re-verify the tree immediately before committing.**
 >
-> ## (g) ✅ PROD = `c170e9b` — THE DEPLOY BACKLOG IS EMPTY
+> ## (g) ✅ PROD = `c170e9b` — THE DEPLOY BACKLOG WAS EMPTY *(true at this seal
+> ## only; SUPERSEDED 2026-08-04 — the purchase-path slice is now at the quay.
+> ## The queue's state is the TOP block's, never a dated block below it.)*
 > Replit sealed it 6/6: entry `index-ihA0bfdV.js` served twice · old entry 404 ·
 > 39 shells · terms v1 5873 B / v2 6172 B exact · the 4 painted faces + the
 > unknown-face fallback · backbone ok:1 partial:0 failed:0. Everything this
@@ -222,9 +264,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   **1 000 SYN** → `ReferrerNotSeated` is NOT the cause. I asserted it was,
 >   from a read I had not done; the founder refused the guess and was right.
 > · sourceClass 0 (MEMBER_INTRODUCTION), commissionBps 500 — both correct.
-> · CAUSE: the purchase is a **REPEAT** one and the source's
->   `appliesToRepeatPurchases` is false. The contract refuses; the quote never
->   looked.
+> · ⛔ ~~CAUSE: the purchase is a **REPEAT** one and the source's
+>   `appliesToRepeatPurchases` is false.~~ **STRUCK 2026-08-04 — THIS WAS FALSE.**
+>   That term reads **TRUE** on this source (`sourceConfig`, live). The engine
+>   refuses with `SourceNotEligible()` and the identical purchase without the
+>   link SUCCEEDS. This line was written under the heading «MEASURED ON-CHAIN —
+>   do not re-derive», which is exactly why the next session re-measured it
+>   before building. See the resume block at the top of this file.
 > · `isSourceActive(bytes32)` reverts on this id from a raw eth_call — one look
 >   at SourceRegistryV1.sol; it may simply be a different function name.
 >
@@ -241,9 +287,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >    `txReceipt.status`. A REVERTED tx carries no logs, so the buyer is told
 >    «the transaction confirmed but the receipt event could not be decoded» — a
 >    failed purchase reported as CONFIRMED, on the money path. Independent of ①.
-> ③ **FOUNDER DECISION PENDING:** should a referrer earn on a member's LATER
->    purchases? That is `appliesToRepeatPurchases`, a per-source term signed
->    on-chain. Sources already created keep theirs; it changes only the next.
+> ③ ~~**FOUNDER DECISION PENDING:** should a referrer earn on a member's LATER
+>    purchases? That is `appliesToRepeatPurchases`…~~ **ANSWERED 2026-08-04: (a)
+>    YES** — and the lever named here was the wrong one (that term is already
+>    true). See the resume block.
 >
 > **AND THE STRUCTURAL ONE:** this studio has NO eslint, which is how a
 > conditional hook reached prod and blacked out /admin/sources. A hand-rolled

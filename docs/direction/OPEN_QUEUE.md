@@ -1,9 +1,46 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
-> ## ▶ 2026-08-04 (SESSION 2) — LE CHEMIN D'ACHAT EST RÉPARÉ. **UNE TRANCHE AU QUAI.**
+> ## ▶ 2026-08-04 (SESSION 2) — LE CHEMIN D'ACHAT EST RÉPARÉ, PUIS PASSÉ AU
+> ## CRIBLE DE 12 AGENTS SENIORS. **UNE TRANCHE AU QUAI, EN ATTENTE DE SES YEUX.**
 >
-> **PROD reste `c170e9b`.** Au-dessus : **`c01eba5`** — la seule tranche de code
-> non déployée. **🚀 elle NE se groupe PAS** (chemin de l'argent).
+> **PROD reste `c170e9b`.** Au-dessus : la tranche du chemin d'achat.
+> **🚀 elle NE se groupe PAS** (chemin de l'argent). **Le quai N'EST PAS vide.**
+>
+> ### SES SIX RÉPONSES, GRAVÉES (2026-08-04)
+> ① **Un parrain touche sur les rachats des membres qu'il a introduits — OUI.**
+>    La chaîne le fait DÉJÀ (sièges #13/#14/#17 : commission payée sur un id
+>    zéro). Ce que le moteur refuse, c'est d'attacher un NOUVEAU parrain à un
+>    membre DÉJÀ inscrit.
+> ② **La phrase publique de /join : réécrite** (texte exact plus bas).
+> ③ **La phrase du reçu : la raison vient du MOTEUR**, jamais de nous.
+> ④ **Son ① serveur : CONSTRUIT** (`joinQuote.ts`), tout part ensemble.
+> ⑤ **PORTE DE PREVIEW : il regarde /join et le reçu dans SON navigateur avant
+>    toute mise en ligne.**
+> ⑥ ⛔ **LE CHECKOUT N'A PLUS LE DROIT DE REFUSER D'ENVOYER UN ACHAT.**
+>    « Seule la chaîne dit non. » Le pouvoir a été retiré : il ne reste que deux
+>    décisions, `apply` et `drop`, et un pin de garde interdit tout `return`
+>    entre la question posée au moteur et la signature.
+>
+> ### CE QUE LA REVUE A TROUVÉ CHEZ MOI (65 trouvailles, 50 survivantes)
+> · **J'AVAIS INVENTÉ UNE CAUSE que la chaîne réfute** — le reçu disait à
+>   l'acheteur « l'introduction de ce portefeuille est déjà réglée », faux pour
+>   le portefeuille même d'où venait le correctif. Le moteur m'avait donné sa
+>   vraie raison une ligne plus haut et je l'avais jetée. **Ligne rouge métier.**
+>   Corrigé : la raison est décodée du moteur ; sans décodage, aucune cause n'est
+>   nommée.
+> · **CINQ surfaces → il y en avait SIX** (la révocation d'approbation manquait),
+>   et le `grep` collé dans mon commit ne sortait d'aucune commande. Recompté :
+>   `git grep -n "waitForTransactionReceipt" 32cd85a -- 'artifacts/studio/src'`
+>   → 382 · 448 · 450 · 216 · 350 · 407.
+> · **Mon garde « 30/30 » se laissait contourner de 4 façons.** Refait : il lit
+>   les ARGUMENTS réellement signés, il interdit le refus d'envoyer, et son pin
+>   anti-re-dérivation avait un second trou (`readMemberNumberOf` ne contient pas
+>   `memberNumberOf` — la majuscule) : **39 pins, 8 attaques vues ROUGES.**
+> · **Un lien en pause tuait la page /join entière** — pas de prix, pas de
+>   bouton. C'était exactement son ①, et ma raison de l'avoir refusé était
+>   fausse. Construit.
+> · **Un seul écran pouvait dire « commission versée » ET « lien non attaché ».**
+>   Le verdict remonte maintenant à la page : la ligne parrain disparaît.
 >
 > **CE QUI EST FERMÉ (mesuré, pas cru).** Sa reproduction : Alice (siège #5),
 > lien de parrainage, devis appliqué (−0,25 USDC), signature → **révert**. L'index
@@ -19,31 +56,30 @@
 > **L'éligibilité ne se déduit donc JAMAIS des termes de la source.** Le correctif
 > demande au moteur le MÊME achat deux fois — avec le lien, sans le lien — et la
 > différence décide : preuve → le lien est lâché et l'achat passe **non-attribué**
-> (l'acheteur le lit) ; refusé des deux côtés → **rien n'est signé** ; illisible →
-> rien ne change (une lecture ratée ne vole jamais une commission à un parrain).
+> (l'acheteur le lit, avec la raison DU MOTEUR) ; **tout le reste → l'achat part
+> tel quel** et c'est la chaîne qui refuse en public, jamais nous (sa réponse ⑥).
+> Une lecture ratée ne vole jamais une commission à un parrain.
 >
-> **ET LA RECHERCHE DU JUMEAU A TROUVÉ CINQ SURFACES, PAS UNE :** l'achat,
-> l'approbation, `createSource`, `setSourceStatus` et la promotion d'échelle
-> attendaient toutes un reçu **sans jamais juger son statut**. La pire :
+> **ET LA RECHERCHE DU JUMEAU A TROUVÉ SIX LECTURES DE REÇU, PAS CINQ** (recompté
+> après revue — la révocation d'approbation manquait à la liste) : l'achat,
+> l'approbation, la révocation, `createSource`, `setSourceStatus` et la promotion
+> d'échelle attendaient toutes un reçu **sans jamais juger son statut**. La pire :
 > l'activation **fermait la demande d'un membre et sonnait sa cloche** sur une
 > transaction que le registre avait peut-être refusée. La règle vit maintenant
 > dans **une seule** fonction (`chainReads.confirmTransaction`), importée par les
-> cinq, et un pin interdit tout nouvel appel brut.
-> Portes : typecheck 0 · chaîne complète VERTE · `guard-source-eligibility`
-> **30/30** (table de vérité 9 lignes EXÉCUTÉE, 4 attaques vues ROUGES) · build
-> 39 shells · admin-dist 111.
+> six, et un pin interdit tout nouvel appel brut.
+> Portes : typecheck 0 (studio ET api) · chaîne complète VERTE ·
+> `guard-source-eligibility` **39 pins** (table de vérité 9 lignes EXÉCUTÉE,
+> **8 attaques** vues ROUGES au total) · build 39 shells · admin-dist 111 ·
+> `source-status-truth` 211.
 >
-> **⛔ CE QUI T'ATTEND (rien ne bloque la suite) :**
-> ① **TA DÉCISION — et elle n'est plus celle qu'on croyait.** La chaîne dit
->    **déjà OUI** : un membre qu'un parrain a vraiment introduit continue de le
->    payer sur ses rachats, tout seul (mesuré sur les sièges #13/#14/#17). Ce qui
->    est refusé, c'est d'attacher un **NOUVEAU** parrain à un membre **DÉJÀ**
->    inscrit. Question réelle : **veut-on que ce soit possible ?** (terme
->    on-chain par source, signé ; les sources existantes gardent le leur.)
-> ② **La phrase du devis /join** a changé — texte exact dans le rapport, TON mot.
-> ③ **eslint absent du studio** (34 sites candidats) — la tranche suivante,
->    proposée, pas commencée.
-> ④ **Non mesuré, et c'est TOI la mesure :** le flux rendu, wallet connecté.
+> **⛔ CE QUI T'ATTEND :**
+> ① **LA PORTE DE PREVIEW — ton œil, ton navigateur** (ta réponse ⑤). Rien ne
+>    part avant.
+> ② **eslint absent du studio** (34 sites candidats) — la tranche suivante,
+>    proposée, pas commencée. C'est ton ④, toujours dû.
+> ③ **Non mesuré, et c'est TOI la mesure :** le flux rendu avec un wallet
+>    connecté et une signature réelle.
 
 > ## ▶ 2026-08-04 — 11ᵉ SCEAU · L'ORDRE SUIVANT
 >
@@ -66,15 +102,16 @@
 > **un membre qui tient déjà un siège ne peut pas racheter via un lien de
 > parrainage.** Reproduit en prod par le fondateur (Alice, siège #5).
 > Parrain `0x3b1396…Ec6a` : **1 000 SYN** → ce n'est PAS `ReferrerNotSeated`.
-> CAUSE : achat **RÉPÉTÉ** contre une source dont `appliesToRepeatPurchases` est
-> faux ; le contrat revert et `joinQuote.ts` ne regarde jamais.
+> <s>CAUSE : achat **RÉPÉTÉ** contre une source dont `appliesToRepeatPurchases`
+> est faux</s> — **CETTE CAUSE ÉTAIT FAUSSE, corrigée le 2026-08-04 :** ce terme
+> vaut **TRUE** sur cette source (lu sur la chaîne). Le moteur refuse par
+> `SourceNotEligible()`. Voir le bloc du haut.
 > ① `api-server/src/routes/joinQuote.ts` — lâcher la source quand elle ne peut
 >    pas s'appliquer, et le DIRE ; l'achat passe non-attribué au lieu de révert.
 > ② `studio/src/wallet/JoinCheckout.tsx:449` — lire `txReceipt.status` : un
 >    revert est aujourd'hui annoncé « confirmé » à l'acheteur.
-> ③ **DÉCISION FONDATEUR :** un parrain touche-t-il sur les achats ULTÉRIEURS ?
->    (`appliesToRepeatPurchases`, terme signé par source ; les sources créées
->    gardent le leur.)
+> ③ **DÉCISION FONDATEUR — RÉPONDUE le 2026-08-04 : (a) OUI** (voir le bloc du
+>    haut ; le levier n'est PAS `appliesToRepeatPurchases`, qui vaut déjà true).
 > ④ **eslint absent du studio** — c'est ce qui a laissé un hook conditionnel
 >    atteindre la prod et noircir /admin/sources. 34 sites candidats repérés.
 >

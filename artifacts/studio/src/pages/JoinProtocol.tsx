@@ -16,7 +16,7 @@
 //   - an optional ?source= introduction id is validated read-only against the
 //     on-chain registry (the server never echoes the id back).
 
-import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState, type ReactNode } from "react";
 import { Link, useSearch } from "wouter";
 import { ExternalLink, Link2, ShieldAlert } from "lucide-react";
 import {
@@ -107,11 +107,13 @@ function CheckoutSlot({
   sourceId,
   usdcDecimals,
   synDecimals,
+  onSourceUnusable,
 }: {
   grossUsdcRaw: string;
   sourceId: string | null;
   usdcDecimals: number;
   synDecimals: number;
+  onSourceUnusable: () => void;
 }) {
   const { data, isLoading } = useGetProtocolVerifyLinks();
   if (!JoinCheckout || isLoading) return null;
@@ -125,6 +127,7 @@ function CheckoutSlot({
         sourceId={sourceId}
         usdcDecimals={usdcDecimals}
         synDecimals={synDecimals}
+        onSourceUnusable={onSourceUnusable}
       />
     </Suspense>
   );
@@ -240,7 +243,7 @@ function IntroductionStatus({ sourceId }: { sourceId: string }) {
           </h2>
           <p className="text-sm text-muted-foreground leading-relaxed" data-testid="text-introduction-status">
             {ok && introducer !== null
-              ? "The introduction is recorded on-chain inside your own purchase — you always see it before signing, and it never changes your price."
+              ? "The introduction is recorded on-chain inside your own purchase, and it never changes your price. The engine checks it against your own wallet before you sign — if it cannot be attached, the checkout says so first and your join goes through without it."
               : line}
           </p>
           <p className="text-xs text-muted-foreground mt-2">
@@ -482,8 +485,17 @@ function QuotePanel({
   grossUsdcRaw: string;
   sourceId: string | null;
 }) {
-  const params = sourceId
-    ? { grossUsdc: grossUsdcRaw, sourceId }
+  // ONE SCREEN MUST NOT CARRY TWO MONEY STATEMENTS (review catch, 2026-08-04).
+  // The checkout below can PROVE the engine will not attach this introduction
+  // to the connected wallet. The instant it does, the link leaves this panel
+  // too — otherwise the breakdown would still show a commission paid to a
+  // referrer while the checkout says the introduction was not attached.
+  const [sourceUnusable, setSourceUnusable] = useState(false);
+  const onSourceUnusable = useCallback(() => setSourceUnusable(true), []);
+  const effectiveSourceId = sourceUnusable ? null : sourceId;
+
+  const params = effectiveSourceId
+    ? { grossUsdc: grossUsdcRaw, sourceId: effectiveSourceId }
     : { grossUsdc: grossUsdcRaw };
   const { data, isLoading, isError } = useGetJoinQuote(params, {
     query: { queryKey: getGetJoinQuoteQueryKey(params) },
@@ -516,17 +528,18 @@ function QuotePanel({
 
   const q = toCheckoutQuote(data.quote);
   const floorRaw = computeMinSynOutRaw(q.synOutRaw);
-  // THE VERDICT THIS LINE MAY CLAIM (corrected 2026-08-04). The served quote is
-  // computed for an ANONYMOUS recipient, so `sourceValid` can only ever mean
-  // «this link exists and is active on the registry» — never «it will apply to
-  // YOU». The engine records an introduction once per wallet and refuses a
-  // second one (measured on mainnet: SourceNotEligible / SourceAlreadyLinked),
-  // and this page cannot know which wallet is watching — the wallet-aware work
-  // belongs to the checkout module, which now asks the engine before anything
-  // is signed. So the line states the RULE, and points at the confirmation.
-  const sourceLine =
-    data.sourceProvided && data.sourceValid === true
-      ? "A verified referral is applied to this quote — an introduction is recorded once per wallet, and the checkout confirms it with the engine before you sign."
+  // THE VERDICT THIS LINE MAY CLAIM (rewritten 2026-08-04, founder's answer).
+  // The served quote is computed for an ANONYMOUS recipient, so `sourceValid`
+  // can only ever mean «this link exists and is active on the registry» —
+  // never «it will apply to YOU». The first correction here stated a RULE
+  // instead («recorded once per wallet»), and that rule did not even explain
+  // the founder's own reproduction. So the line now claims only what is true
+  // for every visitor: the link is verified, the ENGINE decides against the
+  // connected wallet, and either way the join completes.
+  const sourceLine = sourceUnusable
+    ? "This referral link cannot be attached to your wallet — the engine refused it, so this quote is computed without it. Your join is unaffected."
+    : data.sourceProvided && data.sourceValid === true
+      ? "A verified referral is applied to this quote. The engine checks it against your own wallet before you sign — and if it cannot apply, your join still goes through without it."
       : data.sourceProvided
         ? "The referral link is not valid or not active — this quote is computed without it."
         : "No referral — a direct join.";
@@ -557,21 +570,25 @@ function QuotePanel({
       <MoneyPath
         netProtocolRaw={q.netProtocolRaw}
         usdcDecimals={data.decimals.usdc}
-        sourceId={sourceId}
+        sourceId={effectiveSourceId}
         grossUsdcRaw={grossUsdcRaw}
         sourcePaymentRaw={q.sourcePaymentRaw}
       />
 
-      <p className="text-xs text-muted-foreground mt-4" data-testid="text-quote-source-line">
+      <p
+        className="text-xs text-muted-foreground mt-4 max-w-2xl"
+        data-testid="text-quote-source-line"
+      >
         {sourceLine}
       </p>
 
       {/* C2 — the real purchase flow (founder-gated; nothing while OFF). */}
       <CheckoutSlot
         grossUsdcRaw={grossUsdcRaw}
-        sourceId={sourceId}
+        sourceId={effectiveSourceId}
         usdcDecimals={data.decimals.usdc}
         synDecimals={data.decimals.syn}
+        onSourceUnusable={onSourceUnusable}
       />
 
       <details className="mt-3">

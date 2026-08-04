@@ -41,12 +41,14 @@ import {
   readAllowance,
   readSaleUsdcToken,
   readTokenBalance,
+  revertName,
   simulateBuy,
   SALE_BUY_ABI,
 } from "@/lib/chainReads";
+import { shortTxHash } from "@/lib/txDisplay";
 import {
   decideSourceApplication,
-  SOURCE_DROPPED_NOTICE,
+  droppedSourceNotice,
 } from "@/lib/sourceEligibility";
 import { resolveHistoricalGate, type HistoricalGateVerdict } from "@/lib/historicalMembers";
 import { pingChannelConversionFromLocation } from "@/lib/channelPing";
@@ -194,6 +196,7 @@ export default function JoinCheckout({
   sourceId,
   usdcDecimals,
   synDecimals,
+  onSourceUnusable,
 }: {
   /** Deployed sale address — server-sourced from the verify-link. */
   saleAddress: string | null;
@@ -205,6 +208,14 @@ export default function JoinCheckout({
   sourceId: string | null;
   usdcDecimals: number;
   synDecimals: number;
+  /**
+   * Called ONCE, when the engine has PROVEN the introduction cannot attach to
+   * this wallet. The page then recomputes its own quote without the link, so
+   * the money breakdown above can never show a commission line while this
+   * panel says the introduction was not attached (review catch, 2026-08-04:
+   * two contradicting money statements on one screen).
+   */
+  onSourceUnusable?: () => void;
 }) {
   // AUDIT FIX (1.1): the WALLET's actual chain, not the config's. useChainId()
   // returns the config chain (always 43114 on a single-chain config), so it can
@@ -218,6 +229,12 @@ export default function JoinCheckout({
   const [busy, setBusy] = useState<"approve" | "buy" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [receipt, setReceipt] = useState<Receipt | null>(null);
+  /**
+   * Set once the engine has PROVEN the introduction cannot attach to this
+   * wallet. `reason` is the engine's own error name, or null when it could not
+   * be decoded — null never becomes an invented cause.
+   */
+  const [sourceDrop, setSourceDrop] = useState<{ reason: string | null } | null>(null);
 
   const gross = /^[0-9]+$/.test(grossUsdcRaw) ? BigInt(grossUsdcRaw) : null;
   const onAvalanche = walletChainId === avalanche.id;
@@ -261,6 +278,37 @@ export default function JoinCheckout({
     if (!address || !saleAddress || gross === null || !onAvalanche) return;
     void resolve();
   }, [address, saleAddress, gross, onAvalanche, resolve]);
+
+  // THE VERDICT IS REACHED BEFORE THE SIGNATURE, NOT AFTER IT (founder's
+  // preview answer + review catch, 2026-08-04). Asking the engine only at the
+  // click meant the buyer learned his introduction had been left out AFTER his
+  // money had moved, on a page whose money breakdown still showed a commission
+  // line. So the moment the approval covers the amount — the first moment the
+  // engine can answer the source question without an allowance failure masking
+  // it — we ask, and the answer travels UP to the page.
+  //
+  // SCOPE, stated: this probe uses a price floor of ZERO on purpose. It asks
+  // ONLY «can this introduction attach to this wallet», so a moving rate can
+  // never colour the answer. The signing path re-asks with the real floor.
+  useEffect(() => {
+    if (!sourceId || !address || !saleAddress || gross === null) return;
+    if (phase.kind !== "ready" || phase.allowance < gross) return;
+    if (sourceDrop !== null) return;
+    let cancelled = false;
+    void (async () => {
+      const probe = { saleAddress, buyer: address, grossUsdc: gross, minSynOut: 0n };
+      const withSource = await simulateBuy({ ...probe, sourceId: sourceId as `0x${string}` });
+      if (cancelled || withSource.verdict !== "refused") return;
+      const withoutSource = await simulateBuy({ ...probe, sourceId: ZERO_BYTES32 });
+      if (cancelled) return;
+      if (decideSourceApplication(withSource.verdict, withoutSource.verdict) !== "drop") return;
+      setSourceDrop({ reason: revertName(withSource.error) });
+      onSourceUnusable?.();
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [sourceId, address, saleAddress, gross, phase, sourceDrop, onSourceUnusable]);
 
   // ── guards before any UI ──────────────────────────────────────────────────
   if (gross === null) return null;
@@ -378,13 +426,13 @@ export default function JoinCheckout({
       const approval = await confirmTransaction(hash);
       if (approval.kind === "unread") {
         setError(
-          `Your approval was sent (${hash.slice(0, 10)}…${hash.slice(-6)}) but its confirmation could not be read from here. Nothing is assumed — the transaction stands on the chain regardless of this page; retry in a moment or verify it on the explorer.`,
+          `Your approval was sent (${shortTxHash(hash)}) but its confirmation could not be read from here. Nothing is assumed — the transaction stands on the chain regardless of this page; retry in a moment or verify it on the explorer.`,
         );
         return;
       }
       if (approval.kind === "refused") {
         setError(
-          `Your approval was refused on-chain (${hash.slice(0, 10)}…${hash.slice(-6)}). Nothing was approved and nothing was taken beyond the network fee — try step 1 again.`,
+          `Your approval was refused on-chain (${shortTxHash(hash)}). Nothing was approved and nothing was taken beyond the network fee — try step 1 again.`,
         );
         return;
       }
@@ -442,10 +490,11 @@ export default function JoinCheckout({
       // SUCCEEDS. The quote never looked, because quote() previews the
       // commission for that same wallet regardless (250000, measured).
       //
-      // So we ask the engine twice — with the introduction and without — and
-      // the DIFFERENCE decides. The rule itself lives in sourceEligibility.ts,
-      // pure and guard-executed: a referral is dropped ONLY when the engine has
-      // proven it is the obstacle, never on a read failure.
+      // THE ONLY THING THIS MAY DO IS REMOVE A PROVEN-BLOCKED INTRODUCTION
+      // (founder ruling 2026-08-04: this checkout may never refuse to send a
+      // purchase — only the chain says no). If the engine still refuses, the
+      // transaction goes out, the chain refuses it in public, and the receipt
+      // path below says so honestly.
       let sourceNotice: string | null = null;
       if (applySourceId !== ZERO_BYTES32) {
         const probe = {
@@ -455,21 +504,20 @@ export default function JoinCheckout({
           minSynOut: BigInt(minSynOut),
         };
         const withSource = await simulateBuy({ ...probe, sourceId: applySourceId });
-        if (withSource.verdict !== "accepted") {
+        if (withSource.verdict === "refused") {
           const withoutSource = await simulateBuy({ ...probe, sourceId: ZERO_BYTES32 });
-          const decision = decideSourceApplication(withSource.verdict, withoutSource.verdict);
-          if (decision === "drop") {
+          if (decideSourceApplication(withSource.verdict, withoutSource.verdict) === "drop") {
             // The purchase goes through UN-ATTRIBUTED rather than reverting —
-            // and the buyer is told, on the receipt panel, in human words.
+            // and the buyer is told, with the ENGINE's own reason, never one
+            // of ours.
             applySourceId = ZERO_BYTES32;
-            sourceNotice = SOURCE_DROPPED_NOTICE;
-          } else if (decision === "abort") {
-            // Refused either way: signing would spend the buyer's gas on a
-            // transaction that cannot succeed. Nothing is sent.
-            setError(explainError(withSource.error));
-            return;
+            sourceNotice = droppedSourceNotice(revertName(withSource.error));
           }
         }
+      } else if (sourceDrop !== null) {
+        // The page already removed the link because this same test proved it
+        // could not attach — the receipt still owes the buyer the explanation.
+        sourceNotice = droppedSourceNotice(sourceDrop.reason);
       }
       const hash = await writeContractAsync({
         address: saleAddress as `0x${string}`,
@@ -497,13 +545,13 @@ export default function JoinCheckout({
       const outcome = await confirmTransaction(hash);
       if (outcome.kind === "unread") {
         setError(
-          `Your purchase was sent (${hash.slice(0, 10)}…${hash.slice(-6)}) but its confirmation could not be read from here. Nothing is assumed — the transaction stands on the chain regardless of this page; verify it on the explorer or reload in a moment.`,
+          `Your purchase was sent (${shortTxHash(hash)}) but its confirmation could not be read from here. Nothing is assumed — the transaction stands on the chain regardless of this page; verify it on the explorer or reload in a moment.`,
         );
         return;
       }
       if (outcome.kind === "refused") {
         setError(
-          `The engine refused this purchase on-chain (${hash.slice(0, 10)}…${hash.slice(-6)}). No SYN was bought and no seat changed — only the network fee was spent. Nothing else was taken. Reload and try again; if you arrived on an introduction link, try once from Join without it.`,
+          `The engine refused this purchase on-chain (${shortTxHash(hash)}). No SYN was bought and no seat changed — only the network fee was spent. Nothing else was taken. Reload and try again; if you arrived on an introduction link, try once from Join without it.`,
         );
         return;
       }
@@ -517,7 +565,7 @@ export default function JoinCheckout({
       const ev = events[0];
       if (!ev) {
         setError(
-          `The transaction confirmed (${hash.slice(0, 10)}…${hash.slice(-6)}) but the receipt event could not be decoded here. Your wallet and the explorer hold the truth — verify the transaction directly.`,
+          `The transaction confirmed (${shortTxHash(hash)}) but the receipt event could not be decoded here. Your wallet and the explorer hold the truth — verify the transaction directly.`,
         );
         return;
       }
@@ -666,6 +714,18 @@ export default function JoinCheckout({
             on Avalanche C-Chain, then reload this page.
           </p>
         </div>
+      ) : null}
+
+      {/* THE INTRODUCTION THE ENGINE WILL NOT ATTACH — said BEFORE the
+          signature, never after it. Neutral tone on purpose: nothing has gone
+          wrong, the join is unaffected, and the reason is the engine's own. */}
+      {sourceDrop ? (
+        <p
+          className="text-xs text-muted-foreground mb-3 max-w-2xl"
+          data-testid="text-checkout-source-unusable"
+        >
+          {droppedSourceNotice(sourceDrop.reason, "before")}
+        </p>
       ) : null}
 
       <div className="space-y-3">

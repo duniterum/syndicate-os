@@ -1,10 +1,26 @@
 # DESIGN_ROADMAP — chemin vers "full grade-AAA" (source unique du workstream design)
 
-> ## ▶ 2026-08-04 — 11ᵉ SCEAU · PROCHAINE TRANCHE
+> ## ▶ 2026-08-04 (SESSION 2) — LE CHEMIN D'ACHAT, RÉPARÉ ET AU QUAI
+>
+> **PROD = `c170e9b`.** ⛔ **LE BACKLOG DE DÉPLOIEMENT N'EST PLUS VIDE :** la
+> tranche du chemin d'achat (`c01eba5` + les correctifs de revue) attend, et
+> **elle ne se groupe pas** — c'est le chemin de l'argent. Rien n'est en ligne
+> tant que le fondateur n'a pas donné l'ordre.
+>
+> **CE QUE LA REVUE 12 AGENTS A CHANGÉ (ses réponses, 2026-08-04) :** ① un parrain
+> touche sur les rachats des membres qu'il a introduits (la chaîne le fait déjà) ·
+> ② la phrase publique de /join réécrite · ③ la raison affichée à l'acheteur vient
+> désormais du MOTEUR, jamais de nous · ④ le correctif serveur `joinQuote.ts`
+> CONSTRUIT (un lien en pause ne casse plus toute la page) · ⑤ **porte de preview
+> avant toute mise en ligne** · ⑥ **le checkout n'a PLUS le droit de refuser
+> d'envoyer un achat — seule la chaîne dit non.**
+>
+> ## ▶ 2026-08-04 — 11ᵉ SCEAU (historique)
 >
 > **PROD = `c170e9b`** (Replit 6/6 : entrée servie ×2 · ancienne 404 · 39 shells ·
 > terms v1 5873 o / v2 6172 o exacts · les 4 faces peintes + repli face-inconnue ·
-> backbone ok:1 partial:0 failed:0). **Backlog de déploiement VIDE.**
+> backbone ok:1 partial:0 failed:0). <s>**Backlog de déploiement VIDE.**</s>
+> *(vrai à cet instant ; faux depuis `c01eba5` — voir le bloc ci-dessus.)*
 >
 > **LIVRÉ (K1.6 + K1.7) :** chaque artefact déroule SA carte peinte (`&card=` →
 > 4 faces 1200×630 : invite · standing · seat · record, repli invite) · le SIÈGE
@@ -21,17 +37,27 @@
 > **un membre qui tient déjà un siège ne peut pas racheter via un lien de
 > parrainage.** Reproduit en prod par le fondateur (Alice, siège #5).
 > Parrain `0x3b1396…Ec6a` : **1 000 SYN** → ce n'est PAS `ReferrerNotSeated`.
-> CAUSE : achat **RÉPÉTÉ** contre une source dont `appliesToRepeatPurchases` est
-> faux ; le contrat revert et `joinQuote.ts` ne regarde jamais.
-> ① `api-server/src/routes/joinQuote.ts` — lâcher la source quand elle ne peut
->    pas s'appliquer, et le DIRE ; l'achat passe non-attribué au lieu de révert.
-> ② `studio/src/wallet/JoinCheckout.tsx:449` — lire `txReceipt.status` : un
->    revert est aujourd'hui annoncé « confirmé » à l'acheteur.
-> ③ **DÉCISION FONDATEUR :** un parrain touche-t-il sur les achats ULTÉRIEURS ?
->    (`appliesToRepeatPurchases`, terme signé par source ; les sources créées
->    gardent le leur.)
+> <s>CAUSE : achat **RÉPÉTÉ** contre une source dont `appliesToRepeatPurchases`
+> est faux</s> — **FAUX, corrigé le 2026-08-04 :** ce terme vaut **TRUE** sur
+> cette source (lu sur la chaîne). Le moteur refuse par `SourceNotEligible()`
+> (`0x2abb57d6`), et le **même achat sans le lien PASSE**. L'éligibilité ne se
+> déduit jamais des termes de la source : seul le moteur sait, et seulement par
+> acheteur.
+> ① `api-server/src/routes/joinQuote.ts` — ✅ **CONSTRUIT le 2026-08-04** (son
+>    « a ») : un lien qui ne peut pas s'appliquer est LÂCHÉ et le devis se
+>    calcule quand même. Avant, un lien en pause tuait la page /join entière —
+>    pas de prix, pas de bouton.
+> ② <s>`studio/src/wallet/JoinCheckout.tsx:449` — lire `txReceipt.status`</s>
+>    ✅ **FAIT** — et la recherche du jumeau a trouvé la maladie sur **SIX**
+>    lectures de reçu, dans quatre fichiers. Une seule règle désormais
+>    (`chainReads.confirmTransaction`), importée partout.
+> ③ **DÉCISION FONDATEUR — RÉPONDUE le 2026-08-04 : (a) OUI.** Un parrain touche
+>    sur les rachats des membres qu'il a vraiment introduits. La chaîne le fait
+>    déjà (sièges #13/#14/#17, mesuré). Ce qui reste refusé par le moteur, c'est
+>    d'attacher un NOUVEAU parrain à un membre DÉJÀ inscrit.
 > ④ **eslint absent du studio** — c'est ce qui a laissé un hook conditionnel
 >    atteindre la prod et noircir /admin/sources. 34 sites candidats repérés.
+>    **TOUJOURS OUVERT** — la tranche suivante.
 >
 > **LE MOTEUR FIRSTS recule d'un cran** — il ne vaut rien tant que le chemin
 > d'achat ne se termine pas.

@@ -31,6 +31,7 @@ import {
   readSaleUsdcToken,
   readTokenBalance,
 } from "@/lib/chainReads";
+import { shortTxHash } from "@/lib/txDisplay";
 import { formatRawUnits, formatRawUnitsDisplay } from "@/lib/rawUnits";
 import { useOwnArchiveHoldings } from "./ownReads";
 import { SignInWall } from "./SignInWall";
@@ -199,6 +200,10 @@ function WalletPanelBody() {
       if (!address || !usdcToken || busy) return;
       setBusy(true);
       setError(null);
+      // A NEW ATTEMPT CLEARS THE OLD OUTCOME (review catch, 2026-08-04): a
+      // second revocation that fails used to render its failure directly under
+      // «Revoked — your own signed transaction», the success line of the first.
+      setLastTx(null);
       try {
         await publicClient.simulateContract({
           address: getAddress(usdcToken),
@@ -219,14 +224,22 @@ function WalletPanelBody() {
         const outcome = await confirmTransaction(hash);
         if (outcome.kind === "refused") {
           setError(
-            `The chain refused this revocation (${hash.slice(0, 10)}…${hash.slice(-6)}) — your approval is unchanged. Only the network fee was spent.`,
+            `The chain refused this revocation (${shortTxHash(hash)}) — your approval is unchanged. Only the network fee was spent.`,
           );
           await refresh();
           return;
         }
-        // "unread" says nothing about the transaction, so the honest move is
-        // the one this panel already makes: re-read the allowance from chain.
-        if (outcome.kind === "accepted") setLastTx(hash);
+        if (outcome.kind === "unread") {
+          // "unread" says nothing about the transaction — so neither do we.
+          // Silence here let a member re-sign a revocation that had already
+          // landed (review catch, 2026-08-04).
+          setError(
+            `Your revocation was sent (${shortTxHash(hash)}) but its confirmation could not be read from here. Nothing is assumed — the allowance below is re-read from the chain itself.`,
+          );
+          await refresh();
+          return;
+        }
+        setLastTx(hash);
         await refresh();
       } catch (e) {
         setError(explainError(e));

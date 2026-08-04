@@ -35,8 +35,11 @@ const GROSS_USDC_RE = /^[1-9][0-9]{0,29}$/;
  * read-only quote from the active MembershipSaleV3 engine via eth_call, for an
  * anonymous recipient (zero address). Amounts are EXACT raw base-unit strings.
  * A supplied sourceId is applied ONLY when it exists and is active on
- * SourceRegistryV1 — otherwise the quote fails closed with a failureReason
- * (never a silent fallback), and the source id is never echoed back. No
+ * SourceRegistryV1; when it does not, the LINK is dropped and the quote is
+ * still computed on the no-source path, with `sourceValid: false` and a plain
+ * `failureReason` saying so — a referral link is a bonus on a quote, never an
+ * obstacle to one. The source id is never echoed back. Only a failure of the
+ * QUOTE itself (chain unverified, engine unreadable) leaves `quote` null. No
  * wallet, no approval, no transaction, no write surface.
  */
 router.get("/join/quote", async (req, res) => {
@@ -72,13 +75,32 @@ router.get("/join/quote", async (req, res) => {
       } else {
         // Resolve the effective source id: zero (no-source path) by default; a
         // provided id is applied ONLY when it exists AND is active on the
-        // registry — anything else fails closed (no silent fallback).
-        let effectiveSourceId: string | null = ZERO_SOURCE_ID;
+        // registry.
+        //
+        // A LINK THAT CANNOT APPLY IS DROPPED — IT NEVER KILLS THE QUOTE
+        // (founder instruction ①, built 2026-08-04 after he authorised it).
+        // Until now a paused, revoked, malformed or unreadable link set the
+        // effective id to null, and the quote was skipped entirely: the /join
+        // page then rendered a red "the engine could not be read" line with no
+        // price, no seat preview and no way to buy. A visitor arriving on one
+        // of our OWN deactivated links met a broken page and left. The link is
+        // a BONUS on a quote, never an obstacle to one — so an unusable link
+        // falls back to the no-source path, the quote computes, and
+        // `sourceValid` + `failureReason` say plainly what happened. Only a
+        // failure of the QUOTE itself may leave `quote` null.
+        //
+        // SCOPE, stated because a caller acts on it: this is the ANONYMOUS
+        // verdict. It answers "does this link exist and is it active", never
+        // "will it apply to THIS buyer" — the engine resolves a source against
+        // the recipient inside buy(), and this endpoint has no buyer. The
+        // per-wallet answer belongs to the checkout, which asks the engine
+        // directly before anything is signed (chainReads' boundary law).
+        let effectiveSourceId: string = ZERO_SOURCE_ID;
         if (sourceProvided) {
           if (!isBytes32Hex(rawSourceId)) {
             sourceValid = false;
-            effectiveSourceId = null;
-            failureReason = "source id format invalid (expected 0x + 64 hex characters)";
+            failureReason =
+              "the referral link is not a valid link — this quote is computed without it";
           } else {
             let registryHasCode = false;
             try {
@@ -91,8 +113,8 @@ router.get("/join/quote", async (req, res) => {
             }
             if (!registryHasCode) {
               sourceValid = null;
-              effectiveSourceId = null;
-              failureReason = "expected deployed registry code not found on chain; read skipped";
+              failureReason =
+                "the referral registry could not be read — this quote is computed without the link";
             } else {
               const word = bytes32Word(rawSourceId);
               let exists: boolean | null = null;
@@ -123,22 +145,21 @@ router.get("/join/quote", async (req, res) => {
               }
               if (exists === null || (exists === true && active === null)) {
                 sourceValid = null;
-                effectiveSourceId = null;
-                failureReason = "source state read failed (reported as unavailable)";
+                failureReason =
+                  "the referral link's state could not be read — this quote is computed without it";
               } else if (exists && active) {
                 sourceValid = true;
                 effectiveSourceId = rawSourceId;
               } else {
                 sourceValid = false;
-                effectiveSourceId = null;
                 failureReason =
-                  "source link is not active on the registry; request a quote without a source link instead";
+                  "the referral link is not active — this quote is computed without it";
               }
             }
           }
         }
 
-        if (effectiveSourceId !== null) {
+        {
           let engineHasCode = false;
           try {
             engineHasCode = await readCodePresent(transport, SOURCE_LINKAGE_TARGET.saleAddress);

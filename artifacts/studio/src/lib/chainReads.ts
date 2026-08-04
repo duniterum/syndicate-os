@@ -316,6 +316,15 @@ export async function confirmTransaction(hash: `0x${string}`): Promise<Transacti
   } catch {
     return { kind: "unread" };
   }
+  // THE RECEIPT MUST BE THIS TRANSACTION'S OWN (review catch, 2026-08-04).
+  // viem follows a REPLACEMENT — if the buyer hits Cancel or Speed Up in his
+  // wallet while the purchase is pending, the receipt that comes back belongs
+  // to the replacing transaction. Reporting it as this one's would announce a
+  // purchase confirmed and then link to a hash the chain does not hold.
+  // A replacement is not this transaction, and we say nothing about it.
+  if (receipt.transactionHash.toLowerCase() !== hash.toLowerCase()) {
+    return { kind: "unread" };
+  }
   return receipt.status !== "success"
     ? { kind: "refused", receipt }
     : { kind: "accepted", receipt };
@@ -380,10 +389,25 @@ function verdictFromError(err: unknown): BuySimulationVerdict {
     );
     if (reverted) return "refused";
   }
-  const message = err instanceof Error ? err.message : String(err);
-  return /execution reverted|reverted for an unknown reason/i.test(message)
-    ? "refused"
-    : "unreadable";
+  // NO STRING SNIFFING (review catch, 2026-08-04). The earlier version also
+  // graded any message CONTAINING "execution reverted" as a refusal, so a node
+  // that wraps an unrelated failure in that wording could have stripped a
+  // referral a referrer had earned. Only a revert viem itself identified
+  // counts; everything else proves nothing and is unreadable.
+  return "unreadable";
+}
+
+/**
+ * The engine's own error NAME for a refusal (`SourceNotEligible`,
+ * `SourceAlreadyLinked`, …), or null when it could not be decoded — which is
+ * the honest answer for any error this ABI does not declare. The caller must
+ * treat null as "no cause known" and never fill it in.
+ */
+export function revertName(err: unknown): string | null {
+  if (!(err instanceof BaseError)) return null;
+  const reverted = err.walk((e) => e instanceof ContractFunctionRevertedError);
+  if (!(reverted instanceof ContractFunctionRevertedError)) return null;
+  return reverted.data?.errorName ?? null;
 }
 
 /**

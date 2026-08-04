@@ -60,11 +60,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import {
   confirmTransaction,
-  publicClient,
   readRegistryOwner,
   readSourceRecord,
   type SourceRecordRead,
 } from "@/lib/chainReads";
+import { shortTxHash } from "@/lib/txDisplay";
 import { deriveSourceId, SOURCE_ID_NAMESPACE } from "@/lib/sourceIdentity";
 import {
   PROPOSE_SOURCE_PREFILL_EVENT,
@@ -165,9 +165,9 @@ function explorerBaseFromUrl(url: string): string | null {
 function short(addr: string): string {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
 }
-function shortHash(h: string): string {
-  return `${h.slice(0, 10)}…${h.slice(-6)}`;
-}
+// The written form is decided once, in lib/txDisplay — this local name is kept
+// only because four call sites below already read it (IMPORT, NEVER RE-DERIVE).
+const shortHash = shortTxHash;
 
 // The terms document, fetched from this origin and hashed over the raw bytes
 // (lib/termsDocument — the exact commitment the contract stores). Fail closed.
@@ -354,12 +354,19 @@ export default function ProposeSourceCreate() {
       const outcome = await confirmTransaction(hash);
       if (outcome.kind === "refused") {
         setError(
-          `The registry refused this creation (${hash.slice(0, 10)}…${hash.slice(-6)}) — no source was created. Only the network fee was spent.`,
+          `The registry refused this creation (${shortHash(hash)}) — no source was created. Only the network fee was spent.`,
         );
         await refresh();
         return;
       }
-      if (outcome.kind === "accepted") setLastTx(hash);
+      if (outcome.kind === "unread") {
+        setError(
+          `Your signature was sent (${shortHash(hash)}) but its confirmation could not be read from here. Nothing is assumed — the record below is re-read from the registry itself.`,
+        );
+        await refresh();
+        return;
+      }
+      setLastTx(hash);
       await refresh();
     } catch (e) {
       setError(explainError(e));
@@ -424,14 +431,14 @@ export default function ProposeSourceCreate() {
         const outcome = await confirmTransaction(hash);
         if (outcome.kind === "refused") {
           setError(
-            `The registry refused this status change (${hash.slice(0, 10)}…${hash.slice(-6)}) — the source is unchanged and no member was notified. Only the network fee was spent.`,
+            `The registry refused this status change (${shortTxHash(hash)}) — the source is unchanged and no member was notified. Only the network fee was spent.`,
           );
           await refresh();
           return;
         }
         if (outcome.kind === "unread") {
           setError(
-            `Your signature was sent (${hash.slice(0, 10)}…${hash.slice(-6)}) but its confirmation could not be read from here. Nothing is assumed and nothing was closed — reload to read the registry's own state.`,
+            `Your signature was sent (${shortTxHash(hash)}) but its confirmation could not be read from here. Nothing is assumed and nothing was closed — reload to read the registry's own state.`,
           );
           await refresh();
           return;

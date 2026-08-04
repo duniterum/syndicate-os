@@ -87,7 +87,11 @@ if (moduleExists) {
   );
 
   if (typeof decide === "function") {
-    // THE WHOLE TABLE. `drop` appears on EXACTLY ONE row — the proven one.
+    // THE WHOLE TABLE. `drop` appears on EXACTLY ONE row — the proven one —
+    // and NO row may produce anything but `apply` or `drop`: the founder ruled
+    // on 2026-08-04 that this checkout may never refuse to send a purchase
+    // («est-ce que j'ai le droit de laisser le checkout REFUSER d'envoyer un
+    // achat tout seul ?» → NON). Only the chain says no.
     const TABLE: readonly (readonly [string, string, string])[] = [
       ["accepted", "accepted", "apply"],
       ["accepted", "refused", "apply"],
@@ -96,8 +100,8 @@ if (moduleExists) {
       ["unreadable", "refused", "apply"],
       ["unreadable", "unreadable", "apply"],
       ["refused", "accepted", "drop"],
-      ["refused", "refused", "abort"],
-      ["refused", "unreadable", "abort"],
+      ["refused", "refused", "apply"],
+      ["refused", "unreadable", "apply"],
     ];
     let rows = 0;
     for (const [withSource, withoutSource, expected] of TABLE) {
@@ -133,13 +137,54 @@ if (moduleExists) {
       "source-eligibility: a referral is dropped ONLY on proof (refused with, accepted without)",
       "source-eligibility: some other combination decides `drop` — a referral may only be dropped when the engine PROVED the source is the obstacle",
     );
+    // HIS RULING, MADE MECHANICAL: no input may ever produce a third verdict.
+    const verdicts = new Set(
+      TABLE.map(([a, b]) => {
+        try {
+          return decide(a, b);
+        } catch {
+          return "THREW";
+        }
+      }),
+    );
+    const illegal = [...verdicts].filter((v) => v !== "apply" && v !== "drop");
+    check(
+      illegal.length === 0,
+      "source-eligibility: only `apply` and `drop` exist — the checkout can never refuse to send",
+      `source-eligibility: the decision produced ${JSON.stringify(illegal)} — the founder ruled 2026-08-04 that this checkout may NEVER refuse to send a purchase. Only the chain says no.`,
+    );
   }
 
+  // THE REASON COMES FROM THE ENGINE, NEVER FROM US. The first version of this
+  // notice invented a cause and the chain refuted it for the very wallet the
+  // fix was built from. So the notice is a FUNCTION of the engine's own error
+  // name, and its unknown-name branch must not name a cause at all.
+  const notice = m.droppedSourceNotice;
   check(
-    typeof m.SOURCE_DROPPED_NOTICE === "string" && m.SOURCE_DROPPED_NOTICE.length > 40,
-    "source-eligibility: the drop has words for the buyer",
-    "source-eligibility: SOURCE_DROPPED_NOTICE must exist — a purchase that went through un-attributed TELLS the buyer",
+    typeof notice === "function",
+    "source-eligibility: the drop's words are a function of the engine's own reason",
+    "source-eligibility: sourceEligibility.ts must export droppedSourceNotice(refusalName, when) — a constant sentence cannot carry the engine's reason and is how a cause gets invented",
   );
+  if (typeof notice === "function") {
+    const known = notice("SourceAlreadyLinked", "after");
+    const unknown = notice(null, "after");
+    const before = notice(null, "before");
+    check(
+      known !== unknown && known.length > 40,
+      "source-eligibility: a decoded refusal changes the sentence",
+      "source-eligibility: droppedSourceNotice ignores the engine's reason — then it is a constant with extra steps",
+    );
+    check(
+      !/already settled|already recorded|first purchase|once per wallet/i.test(unknown),
+      "source-eligibility: an UNDECODED refusal invents no cause",
+      "source-eligibility: the unknown-reason sentence asserts a cause. That is the exact defect caught in review: the chain refuted it for seat #5. Say only that the engine would not accept it.",
+    );
+    check(
+      before !== known && before.length > 40 && unknown.length > 40,
+      "source-eligibility: the before-signature and after-receipt wordings both exist here",
+      "source-eligibility: both wordings must live in this module — assembling one from the other by string surgery at the call site is how they drift",
+    );
+  }
 }
 
 // ── 3. THE PROBE IS DIFFERENTIAL, AND LIVES IN THE CHAIN-READ LAYER ─────────
@@ -161,32 +206,56 @@ check(
 );
 
 // ── 4. THE PROBE RUNS BEFORE THE SIGNATURE ─────────────────────────────────
-const iProbe = checkout.indexOf("simulateBuy(");
-const iWrite = checkout.indexOf("writeContractAsync({");
+// THE PROBE INSIDE handleBuy — not the advisory one that runs earlier, on
+// mount. Searching from the start of handleBuy is what keeps the region below
+// free of the ordinary pre-flight validations (allowance, fresh quote, price
+// floor), which legitimately refuse to send and always have: the founder's
+// ruling is about refusing AFTER asking the engine about the introduction.
 const iBuyFn = checkout.indexOf("async function handleBuy");
 const iWriteBuy = checkout.indexOf("functionName: \"buy\"");
+const iProbe = iBuyFn > -1 ? checkout.indexOf("simulateBuy(", iBuyFn) : -1;
 check(
   iProbe > -1 && iWriteBuy > -1 && iProbe < iWriteBuy && iProbe > iBuyFn,
   "source-eligibility: the engine is asked BEFORE the buyer signs",
   "source-eligibility: the buy simulation must run INSIDE handleBuy and BEFORE the buy signature — a check after the signature protects nobody",
 );
 
-// THE TWO BRANCHES MUST ACT, not merely be computed. The named failure mode
+// THE VERDICT MUST ACT, not merely be computed. The named failure mode
 // (2026-08-03) is a slice whose whole body can be gutted while every "is it
 // mentioned" pin stays green — so the region BETWEEN the probe and the
-// signature is read, and each verdict must do its one job there.
+// signature is read, and the verdict must do its one job there.
 const region = iProbe > -1 && iWriteBuy > iProbe ? checkout.slice(iProbe, iWriteBuy) : "";
 check(
-  /decision === "drop"/.test(region) &&
+  /=== "drop"/.test(region) &&
     /applySourceId = ZERO_BYTES32/.test(region) &&
-    /SOURCE_DROPPED_NOTICE/.test(region),
+    /droppedSourceNotice\(/.test(region),
   "source-eligibility: a proven-blocked link is actually REMOVED from the signed call",
-  "source-eligibility: the `drop` verdict must set applySourceId to ZERO_BYTES32 AND raise the notice before the signature — computing a verdict and signing anyway changes nothing",
+  "source-eligibility: the `drop` verdict must set applySourceId to ZERO_BYTES32 AND raise the engine's own notice before the signature — computing a verdict and signing anyway changes nothing",
+);
+
+// THE ARGUMENTS ACTUALLY SIGNED (review defeat #1, 2026-08-04): the region
+// above STOPS at `functionName`, so on its own it could not see the args list
+// — the whole drop could be computed and then the raw sourceId signed anyway,
+// with every pin green. So the signed args are read directly.
+const iArgs = checkout.indexOf("args: [", iWriteBuy);
+const argsBlock = iArgs > -1 ? checkout.slice(iArgs, iArgs + 400) : "";
+check(
+  /\bapplySourceId\b/.test(argsBlock),
+  "source-eligibility: the buy SIGNS the decided id, not the raw one",
+  "source-eligibility: the buy's args must pass `applySourceId` — the variable the decision writes. Signing anything else makes the whole probe decorative",
 );
 check(
-  /decision === "abort"/.test(region) && /return;/.test(region),
-  "source-eligibility: an abort verdict signs NOTHING",
-  "source-eligibility: the `abort` verdict must return before the signature — otherwise the buyer still pays gas for a transaction the engine already refused",
+  !/\bsourceId\b\s*(as|,|\))/.test(argsBlock.replace(/applySourceId/g, "")),
+  "source-eligibility: the raw link never reaches the signature directly",
+  "source-eligibility: the buy's args reference the raw `sourceId` — the decided `applySourceId` is the only value that may be signed",
+);
+
+// HIS RULING, AT THE CALL SITE (2026-08-04): between asking the engine and
+// signing, this code may change the ARGUMENTS. It may not decide not to send.
+check(
+  !/setError\([\s\S]{0,400}?\n\s*return;/.test(region),
+  "source-eligibility: the checkout never refuses to send a purchase",
+  "source-eligibility: a `setError(...) … return;` sits between the probe and the signature — that is the checkout refusing to send a purchase on its own, which the founder ruled out on 2026-08-04. Only the chain says no.",
 );
 
 // ── 5. THE RECEIPT'S STATUS IS READ BEFORE ITS LOGS ─────────────────────────
@@ -214,16 +283,25 @@ check(
 );
 
 // ── 5-bis. THE WHOLE CLASS, NOT THIS ONE INSTANCE ───────────────────────────
-// The twin search that found it (2026-08-04): FIVE write surfaces awaited a
-// receipt and none of them judged it — the join buy, the join approval, the
-// founder's createSource and setSourceStatus, and the ladder promotion. The
+// The twin search that found it (2026-08-04). RECOUNTED FROM ITS OWN LIST
+// after review: SIX receipt reads, not five — the count first written here and
+// in three documents dropped the wallet-revoke surface, which this same commit
+// repaired. The real command and its real output:
+//   $ git grep -n "waitForTransactionReceipt" 32cd85a -- 'artifacts/studio/src'
+//     wallet/JoinCheckout.tsx:382         (the join approval)
+//     wallet/JoinCheckout.tsx:448,450     (the join purchase)
+//     wallet/MemberWalletPanel.tsx:216    (revoke approval)
+//     wallet/ProposeSourceCreate.tsx:350  (createSource)
+//     wallet/ProposeSourceCreate.tsx:407  (setSourceStatus)
+//     wallet/ProposeSourcePromotion.tsx:227 (updateSourceTerms)
+// SIX reads across FOUR files, and NONE judged the receipt's status. The
 // activation one went further and closed a member's queue request off a
-// transaction that may have reverted. A rule that lives in five places is one
+// transaction that may have reverted. A rule that lives in six places is one
 // rule waiting to disagree with itself, so it lives in ONE: every write surface
 // waits through chainReads.confirmTransaction, which returns the verdict and
-// cannot be used without reading it. This pin is what stops the sixth.
-const WRITE_SURFACES = ["wallet", "components", "pages", "admin"] as const;
+// cannot be used without reading it. This pin is what stops the seventh.
 const offenders: string[] = [];
+let sweptFiles = 0;
 {
   const stack: string[] = [srcDir];
   while (stack.length > 0) {
@@ -233,6 +311,7 @@ const offenders: string[] = [];
       if (entry.isDirectory()) {
         stack.push(full);
       } else if (/\.(ts|tsx)$/.test(entry.name) && full !== CHAIN_READS) {
+        sweptFiles += 1;
         if (/waitForTransactionReceipt/.test(stripComments(readFileSync(full, "utf8")))) {
           offenders.push(path.relative(srcDir, full).replace(/\\/g, "/"));
         }
@@ -242,7 +321,7 @@ const offenders: string[] = [];
 }
 check(
   offenders.length === 0,
-  `source-eligibility: every write surface confirms through the ONE helper (${WRITE_SURFACES.length} surface families swept, ${offenders.length} raw receipt waits)`,
+  `source-eligibility: every write surface confirms through the ONE helper (${sweptFiles} files swept, ${offenders.length} raw receipt waits)`,
   `source-eligibility: waitForTransactionReceipt is called OUTSIDE chainReads.ts — a receipt awaited there is a receipt nobody judged: ${offenders.join(", ")}`,
 );
 check(
@@ -258,25 +337,52 @@ check(
   "source-eligibility: the checkout does not re-derive eligibility from the source's terms",
   "source-eligibility: JoinCheckout reads appliesToRepeatPurchases — eligibility is the ENGINE's decision (that very term is TRUE on the source that reverted); ask buy(), never re-implement _resolveSource",
 );
+// REWRITTEN AFTER REVIEW (defeat #3, 2026-08-04): the previous spelling read
+// `checkout.slice(checkout.indexOf("memberNumberOf"))`, and indexOf returns -1
+// when the name is absent — so slice(-1) looked at ONE character and the pin
+// passed for free, including when `knownMember` alone was used. It is the
+// REGION that matters, and the region is now read directly.
+// CASE-INSENSITIVE ON PURPOSE — the second hole in this very pin, found by
+// attacking it (2026-08-04): the wrapper is `readMemberNumberOf`, which does
+// NOT contain the lowercase `memberNumberOf` the contract function is named
+// after. A pin that only knows one capitalisation of a concept is a pin that
+// waves the concept through under any other name.
+const seatReads = ["memberNumberOf", "knownMember", "sourceRecord", "sourceConfig", "seatHeld"];
+const seatInRegion = seatReads.filter((n) =>
+  new RegExp(n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i").test(region),
+);
 check(
-  !/memberNumberOf|knownMember/.test(checkout) || !/sourceId/.test(checkout.slice(checkout.indexOf("memberNumberOf"))),
-  "source-eligibility: no seat read decides whether a source applies",
-  "source-eligibility: a seat/member read must not gate the source decision — the engine's own refusal is the authority",
+  seatInRegion.length === 0,
+  "source-eligibility: no seat or terms read decides whether a source applies",
+  `source-eligibility: ${seatInRegion.join(", ")} sits between the probe and the signature — a seat or terms read must not gate the source decision. The engine's own refusal is the authority (that source's appliesToRepeatPurchases is TRUE and it was refused anyway)`,
 );
 
-// ── 7. THE DROP SPEAKS ──────────────────────────────────────────────────────
+// ── 7. THE DROP SPEAKS, WITH THE ENGINE'S OWN REASON ────────────────────────
 check(
-  /SOURCE_DROPPED_NOTICE/.test(checkout),
+  /droppedSourceNotice\(/.test(checkout),
   "source-eligibility: an un-attributed purchase tells the buyer",
-  "source-eligibility: the checkout must surface SOURCE_DROPPED_NOTICE when it drops the link — a silent drop is a lie of omission on the money path",
+  "source-eligibility: the checkout must surface droppedSourceNotice when it drops the link — a silent drop is a lie of omission on the money path",
+);
+check(
+  /revertName\(/.test(checkout) && /droppedSourceNotice\(revertName\(/.test(checkout),
+  "source-eligibility: the buyer is given the ENGINE's reason, not ours",
+  "source-eligibility: the notice must be built from revertName(...) — the engine's own decoded refusal. Writing a cause by hand is exactly the defect review caught: the chain refuted it for the very wallet this fix was built from",
 );
 
-// ── 8. BOTH MEASURED REFUSALS HAVE HUMAN WORDS ──────────────────────────────
+// ── 8. BOTH MEASURED REFUSALS HAVE HUMAN WORDS, IN BOTH PLACES ──────────────
+// These two are the only refusal names SELECTOR-VERIFIED against live mainnet
+// reverts. They must be translated where an error is shown (KNOWN_REVERTS) AND
+// where a drop is explained (sourceEligibility's own map).
 for (const name of ["SourceNotEligible", "SourceAlreadyLinked"] as const) {
   check(
     new RegExp(`\\["${name}",`).test(checkout),
-    `source-eligibility: ${name} is translated for the buyer`,
+    `source-eligibility: ${name} is translated where an error is shown`,
     `source-eligibility: ${name} has no human translation in KNOWN_REVERTS — it is a MEASURED live refusal, not a hypothetical`,
+  );
+  check(
+    new RegExp(`${name}:`).test(mod),
+    `source-eligibility: ${name} is translated where a drop is explained`,
+    `source-eligibility: ${name} has no human wording in sourceEligibility's refusal map — the buyer would get the generic sentence for a refusal we have actually measured`,
   );
 }
 
@@ -286,4 +392,9 @@ if (errors.length > 0) {
   console.error(`[guard:source-eligibility] ${errors.length} FAILURE(S) (${ok.length} pins green).`);
   process.exit(1);
 }
-console.log(`[guard:source-eligibility] PASS — ${ok.length}/${ok.length} source-eligibility pins hold.`);
+console.log(
+  `[guard:source-eligibility] PASS — ${ok.length} pins hold (9-row truth table EXECUTED; ${sweptFiles} files swept for raw receipt waits).`,
+);
+console.log(
+  "[guard:source-eligibility] NOT CHECKED, and no green run here claims otherwise: nothing is RENDERED (wrapping, both themes, mobile — the preview gate's job) · no wallet signs anything · whether the wallet's own node agrees with this app's RPC at the instant of signing · the 12 refusal names that are NAME-DERIVED (the engine's source is not in this repo; only SourceNotEligible and SourceAlreadyLinked are selector-verified) · the SERVER quote route (api-side guards own it).",
+);

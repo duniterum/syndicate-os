@@ -33,11 +33,11 @@ import { Button } from "@/components/ui/button";
 import { AddressLink } from "@/components/address/AddressText";
 import {
   confirmTransaction,
-  publicClient,
   readRegistryOwner,
   readSourceRecord,
   type SourceRecordRead,
 } from "@/lib/chainReads";
+import { shortTxHash } from "@/lib/txDisplay";
 import { deriveSourceId } from "@/lib/sourceIdentity";
 import {
   INTRODUCTION_INDEX_SNAPSHOT,
@@ -230,13 +230,13 @@ export default function ProposeSourcePromotion() {
       const outcome = await confirmTransaction(hash);
       if (outcome.kind === "refused") {
         setError(
-          `The registry refused this promotion (${hash.slice(0, 10)}…${hash.slice(-6)}) — the commission terms are unchanged and the step is still due. Only the network fee was spent.`,
+          `The registry refused this promotion (${shortTxHash(hash)}) — the commission terms are unchanged and the step is still due. Only the network fee was spent.`,
         );
         return;
       }
       if (outcome.kind === "unread") {
         setError(
-          `Your signature was sent (${hash.slice(0, 10)}…${hash.slice(-6)}) but its confirmation could not be read from here. Nothing is assumed — reload to read the registry's own terms before signing again.`,
+          `Your signature was sent (${shortTxHash(hash)}) but its confirmation could not be read from here. Nothing is assumed — reload to read the registry's own terms before signing again.`,
         );
         return;
       }
