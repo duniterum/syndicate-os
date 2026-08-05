@@ -12,6 +12,33 @@ const WINDOW_MS = 10_000;
 const MAX_PER_WINDOW = 20;
 const MAX_TRACKED_CLIENTS = 5_000;
 
+/**
+ * ⛔ THE UNIDENTIFIED BUCKET IS A CROWD, NOT A PERSON.
+ *
+ * `clientIdentity.throttleKey` returns ONE shared key (`ip:fallback`) for every
+ * request whose `x-forwarded-for` carries no usable public address. Judged at 20
+ * reads per 10 s, that means the WHOLE SITE shares one person's allowance — and
+ * a landing now costs three reads, so ~6 visitors per 10 seconds site-wide. A
+ * refusal on the buy click is not a slow page: it renders «A fresh quote could
+ * not be read right before signing — nothing was signed», with the buyer's
+ * approval already granted and his gas already spent.
+ *
+ * MEASURED 2026-08-05 (Replit ran the probe and stated its own limit honestly):
+ * an incoming request carried `x-forwarded-for: 10.184.58.143, 10.52.6.51,
+ * 127.0.0.1` and `remoteAddress: 127.0.0.1` — RFC1918 hops and loopback, no
+ * public entry anywhere. That probe ran INSIDE Replit's infra, so an internal
+ * client is expected; it proves the SHAPE of the chain (multi-hop XFF, local
+ * socket), NOT what a real external visitor leaves. The honest position is that
+ * we do not yet know, so the code must be safe under BOTH answers.
+ *
+ * It is: this bucket is sized for a crowd. If the fallback turns out to be the
+ * live path, the site is not throttled to one person; if it is only ever a rare
+ * malformed request, nothing changes. The per-client bound is untouched — this
+ * is a politeness bound on upstream RPC, never a security boundary (see header).
+ */
+const FALLBACK_CLIENT_KEY = "ip:fallback";
+const MAX_PER_WINDOW_UNIDENTIFIED = 600;
+
 type Window = { startedAt: number; count: number };
 const windows = new Map<string, Window>();
 
@@ -54,7 +81,9 @@ export function allowPublicRead(clientKey: string): boolean {
     return true;
   }
   existing.count += 1;
-  return existing.count <= MAX_PER_WINDOW;
+  const budget =
+    clientKey === FALLBACK_CLIENT_KEY ? MAX_PER_WINDOW_UNIDENTIFIED : MAX_PER_WINDOW;
+  return existing.count <= budget;
 }
 
 /** Test hook. */
