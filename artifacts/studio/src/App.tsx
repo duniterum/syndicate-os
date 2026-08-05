@@ -60,7 +60,7 @@ import { fetchOperatorContext } from "@/wallet/walletSession";
 import { SESSION_CHANGED_EVENT } from "@/wallet/sessionEvents";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { RouteScrollManager } from "@/components/RouteScrollManager";
-import { resolveJoinIntroduction } from "@/lib/referralMemory";
+import { confirmJoinIntroduction, resolveJoinIntroduction } from "@/lib/referralMemory";
 import { parseViaTag, pingChannelClick } from "@/lib/channelPing";
 import { SeoHeadManager } from "@/components/SeoHeadManager";
 
@@ -84,6 +84,13 @@ function ReferralArrivalCapture() {
     const source = new URLSearchParams(search).get("source");
     const via = parseViaTag(search);
     resolveJoinIntroduction(source, via);
+    // …and then PROVE it (ruling ⓒ). The capture above is instant and cannot
+    // reach the chain, so it never claims proof and never displaces a proven
+    // memory. This asks our own read-only endpoint whether the arriving link
+    // really exists and is active, and promotes it only if it does. It promotes
+    // nothing and erases nothing on a refusal, a timeout or a dead network — so
+    // a fire-and-forget call is the whole contract.
+    void confirmJoinIntroduction(source, via);
     if (source !== null && via !== null) pingChannelClick(source, via);
   }, [location, search]);
   return null;

@@ -49,6 +49,39 @@ import { isSourceIdFormat } from "./rawUnits.ts";
 // ⓑ LAST TOUCH WINS. Two links before a purchase → the most recent one; that is
 //    the person who actually convinced the buyer.
 //
+// ⓒ LAST TOUCH WINS **AMONG PROVEN LINKS** (founder, 2026-08-06 — the audit's
+//    P0-3). Ruling ⓑ is unchanged; what changed is WHICH touches count.
+//
+//    THE DEFECT: `isUsableSourceId` tests SHAPE ONLY, so any 64-hex string a
+//    stranger can type displaced a real remembered introduction. Posting
+//    `?source=0x<random>` in a forum reply was enough — capture fires on EVERY
+//    route at render, with no click — and because the engine writes
+//    buyerSourceId once with no setter, every visitor who opened it lost their
+//    honest referrer FOR LIFE. The old guard PINNED that behaviour as law.
+//
+//    THE RULE NOW: a remembered introduction carries a CONFIRMATION MARKER —
+//    set once the chain has answered that the link exists and is active.
+//      · a CONFIRMED arrival always replaces, and is stored confirmed;
+//      · an UNCONFIRMED arrival replaces only an EMPTY or UNCONFIRMED memory
+//        (equal rank → ⓑ still decides), and is stored unconfirmed;
+//      · a CONFIRMED memory is never displaced by an unproven arrival, and is
+//        never downgraded;
+//      · a REFUSAL ERASES NOTHING. A registry pause is reversible, and erasing
+//        on a transient refusal would destroy a real introduction — the very
+//        harm this module exists to stop. The checkout's engine probe is the
+//        backstop for a link that cannot attach.
+//
+//    ⛔ MIGRATION, DECIDED EXPLICITLY (founder, same ruling): an introduction
+//    already sitting in a visitor's browser carries NO marker, and is read as
+//    UNCONFIRMED. Those are exactly the browsers that may be holding a link
+//    planted by the defect above. Reading a legacy value as CONFIRMED would
+//    freeze that damage in place — a genuine link could never displace it. So a
+//    legacy memory is displaceable, and the first proven arrival repairs the
+//    browser.
+//
+//    Capture stays SYNCHRONOUS and instant (nothing is lost while the network
+//    is asked); only the PROMOTION over an existing proven link waits on proof.
+//
 // WHAT THIS CANNOT DO, said plainly because a referrer's money rides on it: a
 // browser that clears its data, a buyer who signs from a different device, or a
 // wallet in-app browser opened without ever loading our link, are all beyond any
@@ -91,14 +124,20 @@ export function nextRememberedSource(
   remembered: string | null,
   arriving: string | null,
 ): string | null {
-  // A valid arrival always wins — LAST TOUCH (his ruling ⓑ).
-  if (arriving !== null && isUsableSourceId(arriving)) return arriving;
-  // A mangled, ZERO or absent arrival NEVER destroys a good memory: that would
-  // be the same silent theft in a new costume (someone shares a truncated link,
-  // or types ?source=0x000…000, and the referrer who actually earned the visit
-  // loses it).
-  if (remembered !== null && isUsableSourceId(remembered)) return remembered;
-  return null;
+  // ⛔ ONE RULE, ONE HOME (CLAUDE.md ①). This used to restate the rule — «a
+  // valid arrival always wins» — which is precisely the sentence ruling ⓒ
+  // narrowed. Two homes for one decision is how the defect above survived a
+  // fix, so this DELEGATES and cannot drift from the rule it names.
+  //
+  // A bare string carries no confirmation marker, so it is UNCONFIRMED by the
+  // migration rule; an arrival through this path is unconfirmed too. Equal
+  // rank, so ⓑ decides and the behaviour is exactly what it always was.
+  return nextRememberedIntroduction(
+    remembered === null ? null : { sourceId: remembered, via: null, confirmed: false },
+    arriving,
+    null,
+    false,
+  )?.sourceId ?? null;
 }
 
 /** Storage that cannot throw — Safari private mode throws on write, and a join
@@ -255,6 +294,12 @@ export interface RememberedIntroduction {
   sourceId: string;
   /** The channel this exact link was handed out on, or null when it carried none. */
   via: string | null;
+  /**
+   * Has the CHAIN answered that this link exists and is active? (ruling ⓒ)
+   * false = provisional — kept, usable, and displaceable by a newer link.
+   * A legacy value with no marker reads as false; see the migration note above.
+   */
+  confirmed: boolean;
 }
 
 /** Normalize a raw `via` value; null when absent or off-law. */
@@ -272,26 +317,79 @@ export function nextRememberedIntroduction(
   remembered: RememberedIntroduction | null,
   arrivingSource: string | null,
   arrivingVia: string | null,
+  arrivalConfirmed: boolean = false,
 ): RememberedIntroduction | null {
+  // A poisoned memory is NOTHING — never a rank. An edited localStorage value
+  // claiming `c:true` beside a source the rule refuses must not be able to make
+  // a browser permanently unattributable to any honest link.
+  const held =
+    remembered !== null && isUsableSourceId(remembered.sourceId) ? remembered : null;
+
   if (arrivingSource !== null && isUsableSourceId(arrivingSource)) {
-    // A new link replaces BOTH halves. Its own tag, or none — never the old one.
-    return { sourceId: arrivingSource, via: normalizeVia(arrivingVia) };
+    // THE RANK RULE (ⓒ). An arrival may take the place of a held introduction
+    // only when it OUTRANKS it or ties with it:
+    //   · proven arrival  → always (it outranks anything unproven, and ties
+    //                       with a proven one, where ⓑ last-touch decides);
+    //   · unproven arrival→ only over an empty or unproven memory (equal rank,
+    //                       ⓑ again). NEVER over a proven one.
+    if (arrivalConfirmed || held === null || !held.confirmed) {
+      // A new link replaces BOTH halves. Its own tag, or none — never the old one.
+      return {
+        sourceId: arrivingSource,
+        via: normalizeVia(arrivingVia),
+        confirmed: arrivalConfirmed,
+      };
+    }
+    // Outranked: the proven memory stands, untouched and undowngraded.
+    return held;
   }
-  if (remembered !== null && isUsableSourceId(remembered.sourceId)) return remembered;
-  return null;
+  return held;
 }
 
 function readIntroduction(): RememberedIntroduction | null {
   const raw = readStore();
   if (raw === null) return null;
-  // Tolerates the source-only value an earlier build wrote.
-  if (!raw.startsWith("{")) return isUsableSourceId(raw) ? { sourceId: raw, via: null } : null;
+  // Tolerates the source-only value an earlier build wrote. NO MARKER ⇒
+  // UNCONFIRMED (the migration decision, ⓒ) — a legacy browser stays repairable.
+  if (!raw.startsWith("{")) {
+    return isUsableSourceId(raw) ? { sourceId: raw, via: null, confirmed: false } : null;
+  }
   try {
-    const parsed = JSON.parse(raw) as { s?: unknown; v?: unknown };
+    const parsed = JSON.parse(raw) as { s?: unknown; v?: unknown; c?: unknown };
     if (typeof parsed.s !== "string" || !isUsableSourceId(parsed.s)) return null;
-    return { sourceId: parsed.s, via: typeof parsed.v === "string" ? normalizeVia(parsed.v) : null };
+    return {
+      sourceId: parsed.s,
+      via: typeof parsed.v === "string" ? normalizeVia(parsed.v) : null,
+      // Only a literal `true` is proof. Absent, missing or any other value reads
+      // as UNCONFIRMED — a marker is never inferred.
+      confirmed: parsed.c === true,
+    };
   } catch {
     return null;
+  }
+}
+
+/** The ONE serializer — the store's shape lives in exactly one place. */
+function writeIntroduction(next: RememberedIntroduction): void {
+  writeStore(JSON.stringify({ s: next.sourceId, v: next.via, c: next.confirmed }));
+}
+
+/**
+ * The join page reads the memory in a render-time memo, so a PROMOTION that
+ * lands after the first paint has to tell it. The founder's ruling on the
+ * confirmation moment (2026-08-06): the screen shows the INCUMBENT introduction
+ * while the chain is being asked — that is what would actually be signed at
+ * that instant, so the screen stays true — and switches once the newer link is
+ * proven. Blanking it would flicker the money line.
+ */
+export const REFERRAL_PROMOTED_EVENT = "syndicate.referral.promoted";
+
+function announcePromotion(): void {
+  try {
+    if (typeof window === "undefined") return;
+    window.dispatchEvent(new Event(REFERRAL_PROMOTED_EVENT));
+  } catch {
+    /* no event target — the next render picks it up anyway */
   }
 }
 
@@ -304,10 +402,90 @@ export function resolveJoinIntroduction(
   urlVia: string | null,
 ): RememberedIntroduction | null {
   const remembered = readIntroduction();
-  const next = nextRememberedIntroduction(remembered, urlSource, urlVia);
+  // ⛔ UNCONFIRMED BY CONSTRUCTION. This path is the SYNCHRONOUS capture — it
+  // cannot reach the chain, so it can never claim proof. Capture stays instant
+  // (an honest arrival is never lost while the network is asked); proving it is
+  // `confirmJoinIntroduction`'s job, and only proof outranks a proven memory.
+  const next = nextRememberedIntroduction(remembered, urlSource, urlVia, false);
   if (next === null) return null;
-  if (next.sourceId !== remembered?.sourceId || next.via !== remembered?.via) {
-    writeStore(JSON.stringify({ s: next.sourceId, v: next.via }));
+  if (
+    next.sourceId !== remembered?.sourceId ||
+    next.via !== remembered?.via ||
+    next.confirmed !== remembered?.confirmed
+  ) {
+    writeIntroduction(next);
+  }
+  return next;
+}
+
+/**
+ * THE PROOF STEP (ruling ⓒ). Asks the chain — through our own read-only
+ * endpoint — whether the link in the address bar really exists and is active,
+ * and promotes it only if it does.
+ *
+ * Raw I/O lives here, matching `joinQuoteProbe`'s convention, and the validator
+ * is INJECTABLE so the guard can execute this rule without a network.
+ *
+ * ⛔ FAIL-CLOSED ON PROMOTION, NEVER ON MEMORY. A refusal, a timeout, a 429, a
+ * dead network — every one of them promotes NOTHING and ERASES NOTHING. The
+ * held introduction is returned untouched. There is no path in this function
+ * that can remove or downgrade a memory.
+ */
+async function validateAgainstRegistry(sourceId: string): Promise<boolean> {
+  try {
+    const res = await fetch(
+      `/api/source/validate?sourceId=${encodeURIComponent(sourceId)}`,
+      { method: "GET" },
+    );
+    if (!res.ok) return false;
+    const body: unknown = await res.json();
+    if (typeof body !== "object" || body === null) return false;
+    const b = body as Record<string, unknown>;
+    // All three, and each must be a literal true — the endpoint is fail-closed
+    // and reports `exists: null` when it could not read. Null is not proof.
+    return b["chainVerified"] === true && b["exists"] === true && b["active"] === true;
+  } catch {
+    return false;
+  }
+}
+
+export async function confirmJoinIntroduction(
+  urlSource: string | null,
+  urlVia: string | null,
+  validate: (sourceId: string) => Promise<boolean> = validateAgainstRegistry,
+): Promise<RememberedIntroduction | null> {
+  // Nothing arrived worth proving — the memory answers, unchanged.
+  if (urlSource === null || !isUsableSourceId(urlSource)) return readIntroduction();
+
+  const held = readIntroduction();
+  // Already proven, and it is this exact link: nothing to ask, nothing to write.
+  if (held !== null && held.confirmed && held.sourceId.toLowerCase() === urlSource.toLowerCase()) {
+    return held;
+  }
+
+  let confirmed = false;
+  try {
+    confirmed = await validate(urlSource);
+  } catch {
+    // ⛔ ABSORB, NEVER RETHROW. The caller is a fire-and-forget `void` in
+    // App.tsx, so an escaping rejection is an unhandled one — and a promotion
+    // that cannot be proven is simply not a promotion. No proof, no change.
+    confirmed = false;
+  }
+  // Refused, or unreachable: promote nothing, erase nothing.
+  if (!confirmed) return readIntroduction();
+
+  // Re-read: the store may have moved while the network was answering.
+  const current = readIntroduction();
+  const next = nextRememberedIntroduction(current, urlSource, urlVia, true);
+  if (next === null) return null;
+  if (
+    next.sourceId !== current?.sourceId ||
+    next.via !== current?.via ||
+    next.confirmed !== current?.confirmed
+  ) {
+    writeIntroduction(next);
+    announcePromotion();
   }
   return next;
 }

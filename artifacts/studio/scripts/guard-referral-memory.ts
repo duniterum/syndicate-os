@@ -159,6 +159,22 @@ if (moduleExists) {
   const DONT_CARE = "<dont-care>";
   const key = m.REFERRAL_MEMORY_KEY ?? "syndicate.join.source";
 
+  // ⛔ THE CONFIRMING ENTRY POINT IS DISCOVERED TOO, never named here — same
+  // reason the resolver is: a guard that names its own target measures what it
+  // was told to, not what ships. If the app stops confirming, this goes red.
+  const confirmNames = new Set<string>();
+  for (const f of callers) {
+    for (const hit of stripComments(readFileSync(f, "utf8")).matchAll(/\bconfirmJoin(\w+)\s*\(/g)) {
+      confirmNames.add(`confirmJoin${hit[1]}`);
+    }
+  }
+  check(
+    confirmNames.size > 0,
+    `referral-memory: the app confirms an arriving link against the chain (${[...confirmNames].join(", ")})`,
+    "referral-memory: no confirmJoin*() call found in App.tsx or JoinProtocol.tsx — nothing ever proves an arriving link is real, so the memory can only ever rank links as equal and an unproven link keeps displacing a proven one. That IS the defect.",
+  );
+  let confirmTested = false;
+
   for (const entryName of entryNames) {
     const entry = (m as Record<string, unknown>)[entryName];
     check(
@@ -221,52 +237,103 @@ if (moduleExists) {
         return null;
       }
     };
+    /**
+     * ⛔ THE CONFIRMATION MARKER — and the MIGRATION DECISION, encoded here.
+     *
+     * An introduction is CONFIRMED once the chain has answered that it exists
+     * and is active; until then it is provisional. The marker is what makes the
+     * ranking possible at all: a confirmed memory is never displaced by an
+     * unconfirmed arrival, while two unconfirmed links rank EQUAL and last
+     * touch decides between them (founder ruling ⑭, preserved).
+     *
+     * ABSENT ⇒ UNCONFIRMED, deliberately (founder decision, this slice).
+     * Introductions already sitting in visitors' browsers carry no marker, and
+     * those are exactly the browsers that may be carrying a link planted by the
+     * defect this module exists to close. Reading a legacy value as CONFIRMED
+     * would freeze that damage in place — a genuine link could never displace
+     * it. So a legacy memory is displaceable, and the first confirmed arrival
+     * repairs the browser.
+     */
+    const storedConfirmed = (): boolean => {
+      const raw = store.get(key) ?? null;
+      if (raw === null || !raw.startsWith("{")) return false;
+      try {
+        return (JSON.parse(raw) as { c?: unknown }).c === true;
+      } catch {
+        return false;
+      }
+    };
     const sourceOf = (r: unknown): string | null =>
       typeof r === "string" ? r : r && typeof r === "object" ? ((r as { sourceId?: string }).sourceId ?? null) : null;
 
     // seed (raw stored value or null) · arriving source · arriving via
-    //   → the source it must ANSWER · the source the store must HOLD · the tag it must HOLD
+    //   → the source it must ANSWER · the source the store must HOLD · the tag
+    //     it must HOLD · the CONFIRMATION the store must HOLD
+    //
+    // ⛔ EVERY ARRIVAL IN THIS TABLE IS UNCONFIRMED. These entry points are the
+    // synchronous capture — they cannot reach the chain, so they may never
+    // promote an arrival over a CONFIRMED memory. The confirmed path has its
+    // own block below, driven through a stubbed validator.
     type Row = readonly [
       string | null, string | null, string | null,
       string | null, string | null, string | null,
+      boolean | string,
     ];
     const ROWS: readonly Row[] = [
-      // the arrival is taken AND persisted
-      [null, A, null, A, A, null],
+      // the arrival is taken AND persisted — provisionally, never confirmed
+      [null, A, null, A, A, null, false],
       // ⛔ THE ROW EVERY GUTTING KILLS: nothing in the URL → the MEMORY answers
-      [JSON.stringify({ s: A, v: null }), null, null, A, A, null],
-      [A, null, null, A, A, null], // the legacy bare-string value still recalls
-      // LAST TOUCH — in the answer and in the store
-      [JSON.stringify({ s: A, v: "twitter" }), B, null, B, B, null],
+      [JSON.stringify({ s: A, v: null }), null, null, A, A, null, false],
+      [A, null, null, A, A, null, false], // the legacy bare-string value still recalls
+      // ⛔ THE RANK RULE — THE PAIR THAT DEFINES IT. Neither half alone is a
+      // check: "always keep" satisfies the first, "always replace" satisfies the
+      // second. Only together do they pin last-touch-AMONG-EQUALS.
+      //   ① a CONFIRMED memory is NEVER displaced by an unconfirmed arrival…
+      [JSON.stringify({ s: A, v: "twitter", c: true }), B, null, A, A, "twitter", true],
+      //   ② …but two UNCONFIRMED links rank equal, and the newer one wins (⑭)
+      [JSON.stringify({ s: A, v: "twitter", c: false }), B, null, B, B, null, false],
+      //   ③ a LEGACY memory carries no marker and is therefore displaceable —
+      //      this is the migration decision, executed, not merely commented
+      [JSON.stringify({ s: A, v: "twitter" }), B, null, B, B, null, false],
+      [A, null, null, A, A, null, false],
+      //   ④ and a confirmed memory is never DOWNGRADED by a no-op visit
+      [JSON.stringify({ s: A, v: "twitter", c: true }), null, null, A, A, "twitter", true],
       // ⛔ THE CHANNEL HALF, EXECUTED: a tag rides in with its link…
-      [null, A, "twitter", A, A, "twitter"],
-      // …and a NEWER link with no tag CLEARS it — never inherits
-      [JSON.stringify({ s: A, v: "twitter" }), B, null, B, B, null],
+      [null, A, "twitter", A, A, "twitter", false],
+      // …and a NEWER link with no tag CLEARS it — never inherits (equal rank)
+      [JSON.stringify({ s: A, v: "twitter", c: false }), B, null, B, B, null, false],
       // …and an off-law tag is dropped, not stored
-      [null, A, "NOT A TAG!!", A, A, null],
+      [null, A, "NOT A TAG!!", A, A, null, false],
       // a mangled arrival never destroys a good memory, tag included
-      [JSON.stringify({ s: A, v: "print" }), "garbage", "twitter", A, A, "print"],
-      [JSON.stringify({ s: A, v: "print" }), null, null, A, A, "print"],
+      [JSON.stringify({ s: A, v: "print" }), "garbage", "twitter", A, A, "print", false],
+      [JSON.stringify({ s: A, v: "print" }), null, null, A, A, "print", false],
       // ⛔ bytes32(0) is the ABSENCE of an introduction — never wins, never stored
-      [JSON.stringify({ s: A, v: null }), ZERO32, null, A, A, null],
+      [JSON.stringify({ s: A, v: null }), ZERO32, null, A, A, null, false],
       // POISONED / ZERO STORE — a user or an extension can edit it. THE PROPERTY
       // IS THAT IT IS NEVER ANSWERED, so it can never reach buy(). Whether the
       // junk is also scrubbed from storage is NOT asserted (DONT_CARE): it is
       // never believed and the next real arrival overwrites it, and pinning the
       // residue would pin an implementation detail instead of the rule.
-      [JSON.stringify({ s: ZERO32, v: null }), null, null, null, DONT_CARE, DONT_CARE],
-      [ZERO32, null, null, null, DONT_CARE, DONT_CARE],
-      ["not-json-at-all", null, null, null, DONT_CARE, DONT_CARE],
-      ['{"s":"garbage","v":"twitter"}', null, null, null, DONT_CARE, DONT_CARE],
-      ['{"s":123}', null, null, null, DONT_CARE, DONT_CARE],
-      ['{"__proto__":{"s":"' + A + '"}}', null, null, null, DONT_CARE, DONT_CARE],
-      ["{", null, null, null, DONT_CARE, DONT_CARE],
-      // …and a poisoned store still yields to a real arrival
-      ["not-json-at-all", B, "blog", B, B, "blog"],
+      [JSON.stringify({ s: ZERO32, v: null }), null, null, null, DONT_CARE, DONT_CARE, DONT_CARE],
+      [ZERO32, null, null, null, DONT_CARE, DONT_CARE, DONT_CARE],
+      ["not-json-at-all", null, null, null, DONT_CARE, DONT_CARE, DONT_CARE],
+      ['{"s":"garbage","v":"twitter"}', null, null, null, DONT_CARE, DONT_CARE, DONT_CARE],
+      ['{"s":123}', null, null, null, DONT_CARE, DONT_CARE, DONT_CARE],
+      ['{"__proto__":{"s":"' + A + '"}}', null, null, null, DONT_CARE, DONT_CARE, DONT_CARE],
+      ["{", null, null, null, DONT_CARE, DONT_CARE, DONT_CARE],
+      // …and a poisoned store still yields to a real arrival — a poisoned value
+      // is not a confirmed one, so this is an equal-rank replacement
+      ["not-json-at-all", B, "blog", B, B, "blog", false],
+      // ⛔ AND A POISONED STORE CANNOT FORGE A RANK: `c:true` beside a source the
+      // rule refuses is not a confirmed introduction, it is nothing — so a real
+      // arrival still displaces it. Otherwise one edited localStorage value
+      // would make a browser permanently unattributable to any honest link.
+      [JSON.stringify({ s: "garbage", v: null, c: true }), B, "blog", B, B, "blog", false],
+      [JSON.stringify({ s: ZERO32, v: null, c: true }), B, null, B, B, null, false],
     ];
 
     try {
-      for (const [seed, src, via, wantAnswer, wantStored, wantVia] of ROWS) {
+      for (const [seed, src, via, wantAnswer, wantStored, wantVia, wantConfirmed] of ROWS) {
         tableRows += 1;
         store.clear();
         if (seed !== null) store.set(key, seed);
@@ -279,13 +346,15 @@ if (moduleExists) {
         const answer = raw === "THREW" ? "THREW" : sourceOf(raw);
         const heldSource = storedSource();
         const heldVia = storedVia();
+        const heldConfirmed = storedConfirmed();
         // The tag is only asserted for an entry point that takes one.
         const viaOk = wantVia === DONT_CARE || call.length < 2 || heldVia === wantVia;
         const storeOk = wantStored === DONT_CARE || heldSource === wantStored;
+        const confirmedOk = wantConfirmed === DONT_CARE || heldConfirmed === wantConfirmed;
         check(
-          answer === wantAnswer && storeOk && viaOk,
-          `referral-memory: ${entryName}(${src === null ? "null" : src.slice(0, 6) + "…"}${call.length > 1 ? `, ${JSON.stringify(via)}` : ""}) on ${seed === null ? "empty" : "seeded"} store → ${wantAnswer === null ? "null" : wantAnswer.slice(0, 6) + "…"}`,
-          `referral-memory: ${entryName}(${JSON.stringify(src)}, ${JSON.stringify(via)}) with the store seeded ${JSON.stringify(seed)} answered ${JSON.stringify(answer)} and left {source: ${JSON.stringify(heldSource)}, via: ${JSON.stringify(heldVia)}} — expected ${JSON.stringify(wantAnswer)} / ${JSON.stringify(wantStored)} / ${JSON.stringify(wantVia)}. A failing recall row means the memory is dead and the original defect is back.`,
+          answer === wantAnswer && storeOk && viaOk && confirmedOk,
+          `referral-memory: ${entryName}(${src === null ? "null" : src.slice(0, 6) + "…"}${call.length > 1 ? `, ${JSON.stringify(via)}` : ""}) on ${seed === null ? "empty" : "seeded"} store → ${wantAnswer === null ? "null" : wantAnswer.slice(0, 6) + "…"}${wantConfirmed === DONT_CARE ? "" : ` (confirmed:${String(wantConfirmed)})`}`,
+          `referral-memory: ${entryName}(${JSON.stringify(src)}, ${JSON.stringify(via)}) with the store seeded ${JSON.stringify(seed)} answered ${JSON.stringify(answer)} and left {source: ${JSON.stringify(heldSource)}, via: ${JSON.stringify(heldVia)}, confirmed: ${String(heldConfirmed)}} — expected ${JSON.stringify(wantAnswer)} / ${JSON.stringify(wantStored)} / ${JSON.stringify(wantVia)} / confirmed:${String(wantConfirmed)}. A failing recall row means the memory is dead and the original defect is back; a failing CONFIRMED column means an unproven link can displace a proven one, which is that defect wearing the marker's costume.`,
         );
       }
 
@@ -319,6 +388,78 @@ if (moduleExists) {
             `referral-memory: the rule refuses ${label}`,
             `referral-memory: handed ${label} directly, the rule answered ${JSON.stringify(sourceOf(out))} instead of null — a value straight out of storage would reach buy() as a source id`,
           );
+        }
+      }
+
+      // ── THE CONFIRMED PATH, EXECUTED AGAINST A STUBBED CHAIN ───────────────
+      // The rank rule is only worth anything if something can actually RAISE a
+      // link's rank. This drives the confirming entry point with a stub in place
+      // of /api/source/validate, so the promotion is proven without a network.
+      // ⛔ AND REFUSAL ERASES NOTHING (founder, this slice): a registry pause is
+      // reversible, and erasing on a transient refusal would destroy a real
+      // introduction — the very harm this module exists to stop.
+      if (!confirmTested) {
+        confirmTested = true;
+        for (const confirmName of confirmNames) {
+          const fn = (m as Record<string, unknown>)[confirmName];
+          check(
+            typeof fn === "function",
+            `referral-memory: ${confirmName} is exported and callable`,
+            `referral-memory: the app calls ${confirmName}() but referralMemory.ts does not export it — nothing can raise a link's rank, so a proven link can never displace an unproven one`,
+          );
+          if (typeof fn !== "function") continue;
+          const confirm = fn as (
+            s: string | null,
+            v: string | null,
+            validate?: (id: string) => Promise<boolean>,
+          ) => Promise<unknown>;
+          const YES = async () => true;
+          const NO = async () => false;
+          const BOOM = async () => {
+            throw new Error("RPC unreachable / throttled");
+          };
+          // seed · arriving · stub → stored source · stored confirmed · label
+          const CONFIRM_ROWS: readonly (readonly [
+            string | null, string | null, () => Promise<boolean>, string, boolean, string,
+          ])[] = [
+            [JSON.stringify({ s: A, v: "twitter", c: true }), B, YES, B, true,
+              "a PROVEN arrival displaces a proven memory (⑭ among confirmed)"],
+            [JSON.stringify({ s: A, v: "twitter", c: true }), B, NO, A, true,
+              "a refused arrival leaves a proven memory untouched, and erases nothing"],
+            [JSON.stringify({ s: A, v: "twitter" }), B, YES, B, true,
+              "a PROVEN arrival repairs a LEGACY browser — the migration, executed"],
+            [null, B, YES, B, true, "a proven arrival into an empty browser is stored confirmed"],
+            [JSON.stringify({ s: A, v: "twitter", c: false }), B, BOOM, A, false,
+              "an unreachable chain promotes nothing and erases nothing"],
+            [JSON.stringify({ s: A, v: "twitter", c: true }), B, BOOM, A, true,
+              "an unreachable chain cannot downgrade a proven memory"],
+          ];
+          for (const [seed, arriving, stub, wantSource, wantConfirmed, label] of CONFIRM_ROWS) {
+            tableRows += 1;
+            store.clear();
+            if (seed !== null) store.set(key, seed);
+            // ⛔ A THROW IS NOT AN ACCEPTABLE OUTCOME, and this guard used to
+            // swallow one. Found 2026-08-06 by the author's own mutation pass:
+            // a botched revert left the catch block re-calling the validator, so
+            // an unreachable chain threw twice and the second throw ESCAPED —
+            // and every row still passed, because the store was unchanged and
+            // the swallow hid it. The caller is a fire-and-forget `void`, so an
+            // escaping rejection is an UNHANDLED one. The contract is that this
+            // function absorbs everything and answers, so the throw is asserted.
+            let threw: string | null = null;
+            try {
+              await confirm(arriving, null, stub);
+            } catch (e) {
+              threw = e instanceof Error ? e.message : String(e);
+            }
+            check(
+              threw === null &&
+                storedSource() === wantSource &&
+                storedConfirmed() === wantConfirmed,
+              `referral-memory: ${label}`,
+              `referral-memory: ${confirmName} — ${label}: ${threw !== null ? `it THREW (${threw}) instead of answering — the caller is a fire-and-forget void, so this is an unhandled rejection; ` : ""}the store left {source: ${JSON.stringify(storedSource())}, confirmed: ${String(storedConfirmed())}} but must hold {source: ${JSON.stringify(wantSource)}, confirmed: ${String(wantConfirmed)}}`,
+            );
+          }
         }
       }
 

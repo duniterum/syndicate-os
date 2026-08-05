@@ -29,7 +29,11 @@ import {
 } from "@workspace/api-client-react";
 import { PublicPage } from "@/components/PublicPage";
 import { parseViaTag } from "@/lib/channelPing";
-import { isRecalledSource, resolveJoinIntroduction } from "@/lib/referralMemory";
+import {
+  isRecalledSource,
+  REFERRAL_PROMOTED_EVENT,
+  resolveJoinIntroduction,
+} from "@/lib/referralMemory";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -968,9 +972,23 @@ export default function JoinProtocol() {
   // remembered and recalled together; remembering only half is what made the
   // channel report under-count every journey the memory exists to serve.
   const viaTag = parseViaTag(search);
+  // ⛔ THE CONFIRMATION MOMENT (founder ruling, 2026-08-06). An arriving link is
+  // proven against the chain asynchronously, so a PROMOTION can land after this
+  // page has already painted. His decision: the strip shows the INCUMBENT
+  // introduction while the newer link is being proven — that is what would
+  // actually be signed at that instant, so the screen stays true — and switches
+  // the moment it is proven. Blanking it would flicker the money line.
+  // This counter is that switch, and nothing else: it never changes WHICH
+  // introduction the rule chooses, only when this page re-reads it.
+  const [promotions, setPromotions] = useState(0);
+  useEffect(() => {
+    const bump = () => setPromotions((n) => n + 1);
+    window.addEventListener(REFERRAL_PROMOTED_EVENT, bump);
+    return () => window.removeEventListener(REFERRAL_PROMOTED_EVENT, bump);
+  }, []);
   const attachSource = useMemo(
     () => resolveJoinIntroduction(sourceParam, viaTag)?.sourceId ?? null,
-    [sourceParam, viaTag],
+    [sourceParam, viaTag, promotions],
   );
   const recalledSource = isRecalledSource(sourceParam, attachSource);
 
