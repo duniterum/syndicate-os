@@ -829,10 +829,21 @@ if (pageExists) {
   );
   // The early return must be reachable ONLY when there is nothing confirmed to
   // show — never on the raw error/unverified conditions that used to fire it.
+  // ⛔ PIN THE PROPERTY, NOT THE SPELLING. The first version demanded the literal
+  // `if (shown === null || shown === undefined` — and went RED the moment the page
+  // correctly DROPPED the `null` half (react-query's data is `T | undefined`, the
+  // ref is seeded `undefined`, so `shown === null` was dead code that made the
+  // loading branch unreachable and showed every first-time buyer a red error).
+  // Replit's deploy caught it: the page was right, the pin had not followed the
+  // refactor. The property is that the bail-out asks «is there anything confirmed
+  // to show?» — never the raw error/unverified conditions that used to tear the
+  // checkout down mid-signature.
+  const bail = /if \(([^)]*?)\)\s*\{[\s\S]{0,200}?text-quote-(?:error|failed)/.exec(pageBody);
+  const cond = bail?.[1] ?? "";
   check(
-    /if \(shown === null \|\| shown === undefined/.test(pageBody),
-    "referral-memory: the quote panel bails out only when NOTHING was ever confirmed",
-    "referral-memory: the quote panel still early-returns on a raw error or unverified read instead of on 'nothing confirmed to show' — that is the teardown path",
+    bail !== null && /shown/.test(cond) && !/isError|chainVerified/.test(cond),
+    `referral-memory: the quote panel bails out only when NOTHING was ever confirmed (${cond.trim().slice(0, 60)})`,
+    `referral-memory: the quote panel's early return tests \`${cond.trim().slice(0, 80)}\` — it must test the RETAINED value (\`shown\`), never a raw error or unverified read, or a failed re-read tears the checkout down mid-signature and the buyer can pay twice`,
   );
 }
 
