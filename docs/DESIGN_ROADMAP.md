@@ -1,12 +1,12 @@
 # DESIGN_ROADMAP — chemin vers "full grade-AAA" (source unique du workstream design)
 
-> ## ▶ 2026-08-05 (SOIR) — **PROD = `328c6f4`, 16e sceau. ⛔ LE QUAI N EST PAS VIDE.**
+> ## ▶ 2026-08-05 (SOIR) — **PROD = `936f929`, 17e sceau. ⛔ LE QUAI N EST PAS VIDE.**
 > **Ne JAMAIS croire un sha de `main` ecrit dans ce fichier — MESURE-LE.** Quatre
 > fois le 2026-08-05 un registre a nomme une tete qu un push suivant avait deja
 > depassee. Le quai est donc une COMMANDE, pas un nombre :
 >
 > ```
-> git fetch origin && git log --oneline 328c6f4..origin/main
+> git fetch origin && git log --oneline 936f929..origin/main
 > ```
 >
 > ⛔ **DEUX de ces commits ferment des defauts VIVANTS sur /join** (une boucle
