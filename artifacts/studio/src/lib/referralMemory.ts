@@ -113,6 +113,62 @@ function readStore(): string | null {
   }
 }
 
+/**
+ * ⛔ A REAL VISIT — the gate the frame check alone did not close.
+ *
+ * The frame refusal stopped `<iframe src="…?source=THEIRS">`. It did NOT stop
+ * the vector that actually pays: `window.open()`. A popunder is a TOP-LEVEL
+ * window — `top === self` — so the write fired at render, with no click and no
+ * wallet, and the opener could close it milliseconds later. Same for a
+ * prerendered page the visitor never chose to open.
+ *
+ * So the write asks three questions, and all three are about whether a HUMAN is
+ * actually looking at our page:
+ *   · not inside a frame;
+ *   · the document is VISIBLE (kills prerender and background tabs);
+ *   · the window has FOCUS, or this human has already interacted with it
+ *     (a popunder has neither; a real visit has focus from its first frame).
+ *
+ * A visit that starts unfocused is NOT lost — see `rememberWhenReal`: the write
+ * is replayed the moment focus or the first interaction arrives. Losing an
+ * honest capture would be the very defect this module exists to stop.
+ */
+let humanHasInteracted = false;
+let pendingWrite: string | null = null;
+let listenersBound = false;
+
+function isRealVisit(): boolean {
+  try {
+    if (typeof window === "undefined" || typeof document === "undefined") return false;
+    if (window.top !== window.self) return false;
+    if (document.visibilityState !== "visible") return false;
+    return document.hasFocus() || humanHasInteracted;
+  } catch {
+    return false;
+  }
+}
+
+/** Replay a refused write once the visit proves itself real. */
+function bindRealVisitListeners(): void {
+  if (listenersBound) return;
+  listenersBound = true;
+  const wake = () => {
+    humanHasInteracted = true;
+    if (pendingWrite !== null && isRealVisit()) {
+      const value = pendingWrite;
+      pendingWrite = null;
+      writeStore(value);
+    }
+  };
+  try {
+    for (const ev of ["focus", "pointerdown", "keydown", "touchstart", "visibilitychange"]) {
+      window.addEventListener(ev, wake, { once: false, passive: true });
+    }
+  } catch {
+    /* no event target — the visit simply cannot be confirmed */
+  }
+}
+
 function writeStore(value: string): void {
   try {
     if (typeof window === "undefined") return;
@@ -129,7 +185,16 @@ function writeStore(value: string): void {
     // This half is ours and ships now; the response headers are the serving
     // layer's and are handed to Replit separately. Defence in depth: either
     // alone closes it, and we do not wait on the other.
-    if (window.top !== window.self) return;
+    //
+    // ⛔ AND THE FRAME CHECK ALONE WAS NOT ENOUGH — a `window.open()` popunder is
+    // a TOP-LEVEL window (`top === self`) and sailed straight through it. The
+    // full question is whether a human is looking at this page; a refused write
+    // is REPLAYED the moment focus or a first interaction proves it.
+    if (!isRealVisit()) {
+      pendingWrite = value;
+      bindRealVisitListeners();
+      return;
+    }
     window.localStorage.setItem(REFERRAL_MEMORY_KEY, value);
   } catch {
     /* no memory available — the visit still works, the link just cannot survive it */
@@ -247,9 +312,21 @@ export function resolveJoinIntroduction(
   return next;
 }
 
-/** The channel tag this visit's introduction arrived on, from the ONE home. */
-export function rememberedVia(): string | null {
-  return readIntroduction()?.via ?? null;
+/**
+ * The channel tag remembered FOR THIS EXACT SOURCE — never a loose tag.
+ *
+ * ⛔ Reading the tag independently of the source that actually applied credited
+ * conversions to channels that never carried the buyer (review, 2026-08-05).
+ * Two real paths: the engine drops the arriving link and auto-applies the
+ * buyer's PREVIOUSLY recorded introduction, so the receipt names a different
+ * source than the memory does; or a second tab opens a newer link mid-session.
+ * Either way the beacon reported a (source, channel) pair that never existed —
+ * the same defect the click beacon was just fixed to avoid.
+ */
+export function rememberedViaFor(sourceId: string): string | null {
+  const held = readIntroduction();
+  if (held === null) return null;
+  return held.sourceId.toLowerCase() === sourceId.toLowerCase() ? held.via : null;
 }
 
 /**

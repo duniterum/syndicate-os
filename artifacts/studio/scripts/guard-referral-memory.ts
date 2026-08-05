@@ -156,6 +156,14 @@ if (moduleExists) {
 
     const store = new Map<string, string>();
     let throwOnWrite = false;
+    // A REAL VISIT, modelled: a top-level window, a visible document, and focus.
+    // Each of those three is a separate attack surface and each is varied below.
+    const fakeDocument = {
+      visibilityState: "visible" as string,
+      hasFocus: () => focused,
+      addEventListener: () => {},
+    };
+    let focused = true;
     const fakeWindow: Record<string, unknown> = {
       localStorage: {
         getItem: (k: string) => store.get(k) ?? null,
@@ -164,13 +172,18 @@ if (moduleExists) {
           store.set(k, v);
         },
       },
+      addEventListener: () => {},
+      document: fakeDocument,
     };
     fakeWindow.top = fakeWindow;
     fakeWindow.self = fakeWindow;
-    const g = globalThis as { window?: unknown };
+    const g = globalThis as { window?: unknown; document?: unknown };
     const hadWindow = "window" in g;
+    const hadDocument = "document" in g;
     const previous = g.window;
+    const previousDoc = g.document;
     g.window = fakeWindow;
+    g.document = fakeDocument;
 
     /** The SOURCE the store holds, whatever shape it is serialized in. */
     const storedSource = (): string | null => {
@@ -317,6 +330,74 @@ if (moduleExists) {
       );
       fakeWindow.top = fakeWindow;
 
+      // ── THE POPUNDER: a TOP-LEVEL window that no human is looking at ───────
+      // The frame refusal did not stop this one — `window.open()` gives
+      // `top === self`, so the write fired at render with no click and no
+      // wallet, and the opener could close the window milliseconds later. That
+      // is the vector that actually pays for cookie-stuffing. A page with no
+      // focus and no interaction may not write, and a prerendered (hidden)
+      // page may not either.
+      for (const [label, setup] of [
+        ["a popunder (no focus, no interaction)", () => { focused = false; }],
+        ["a prerendered / background page", () => { fakeDocument.visibilityState = "hidden"; }],
+      ] as const) {
+        store.clear();
+        store.set(key, JSON.stringify({ s: B, v: "print" }));
+        setup();
+        try {
+          call(A, "twitter");
+        } catch {
+          /* a throw is also "did not write" */
+        }
+        check(
+          storedSource() === B,
+          `referral-memory: ${label} cannot plant an introduction`,
+          `referral-memory: ${label} wrote ${JSON.stringify(storedSource())} — any site can then open a hidden window on us and plant its own introduction in a visitor's browser, permanently, with no click and no wallet`,
+        );
+        focused = true;
+        fakeDocument.visibilityState = "visible";
+      }
+
+      // ── AND AN HONEST VISIT THAT STARTS UNFOCUSED IS NOT LOST ──────────────
+      // The gate must not become the defect it prevents: a real arrival whose
+      // first paint had no focus has to be REPLAYED, not discarded.
+      store.clear();
+      focused = false;
+      call(A, "twitter");
+      const refused = storedSource();
+      focused = true;
+      call(A, "twitter");
+      check(
+        refused === null && storedSource() === A,
+        "referral-memory: an honest visit that starts unfocused is replayed, never lost",
+        `referral-memory: after a first write refused for lack of focus, the arrival was ${JSON.stringify(storedSource())} once focus arrived — expected it to be remembered. Losing an honest capture is the very defect this module exists to stop.`,
+      );
+
+      // ── THE TAG BELONGS TO ITS SOURCE — EXECUTED, not text-matched ─────────
+      // A text pin here went green while the lookup ignored its argument. The
+      // property is behavioural: ask for a DIFFERENT source and you get nothing.
+      // It matters because the engine can auto-apply a previously-linked source
+      // the memory knows nothing about, and a second tab can rewrite the memory
+      // mid-session — either way the beacon would credit a channel that never
+      // carried this buyer.
+      const viaFor = (m as Record<string, unknown>)["rememberedViaFor"];
+      if (typeof viaFor === "function") {
+        const ask = viaFor as (s: string) => string | null;
+        store.clear();
+        store.set(key, JSON.stringify({ s: A, v: "print" }));
+        tableRows += 2;
+        check(
+          ask(A) === "print",
+          "referral-memory: the remembered tag is returned for its OWN source",
+          `referral-memory: rememberedViaFor(A) returned ${JSON.stringify(ask(A))} with {A, "print"} stored — a real conversion loses its channel`,
+        );
+        check(
+          ask(B) === null,
+          "referral-memory: the remembered tag is NOT returned for a different source",
+          `referral-memory: rememberedViaFor(B) returned ${JSON.stringify(ask(B))} while the memory holds A's tag — the beacon would credit a conversion to a channel that never carried this buyer`,
+        );
+      }
+
       // ── A THROWING STORE NEVER TAKES THE PAGE DOWN ─────────────────────────
       store.clear();
       throwOnWrite = true;
@@ -354,6 +435,8 @@ if (moduleExists) {
     } finally {
       if (hadWindow) g.window = previous;
       else delete (g as { window?: unknown }).window;
+      if (hadDocument) g.document = previousDoc;
+      else delete (g as { document?: unknown }).document;
     }
   }
   check(
@@ -621,10 +704,26 @@ if (existsSync(CHECKOUT)) {
 const CHANNEL_PING = path.join(srcDir, "lib", "channelPing.ts");
 if (existsSync(CHANNEL_PING)) {
   const ping = stripComments(readFileSync(CHANNEL_PING, "utf8"));
+  // ⛔ PIN THE ORDER, NOT THE SPELLING. Banning `window.location` outright was
+  // the first attempt and it was wrong twice over: it forbade a URL read that is
+  // the correct FALLBACK (storage is unavailable in Safari private mode and in
+  // wallet in-app browsers — exactly the population that buys, and the click was
+  // counted from the URL a moment earlier), and it would have gone green on any
+  // other way of reading the same query string. The property is that the
+  // REMEMBERED arrival is asked FIRST, and asked for THIS source.
+  const conversion = /export function pingChannelConversion[\s\S]{0,1400}?\n\}/.exec(ping);
+  const body = conversion?.[0] ?? "";
+  const viaFromMemory = body.indexOf("rememberedViaFor");
+  const viaFromUrl = body.search(/location\s*\.\s*search|location\?\.\s*search/);
   check(
-    !/window\.location/.test(ping),
-    "referral-memory: the channel beacons do not read the live URL for the tag",
-    "referral-memory: channelPing.ts still reads `window.location` — that is the twin defect. The landing's query string is NOT present at receipt time any more (the memory is precisely what lets a buyer return without it), so the conversion is never recorded and the channel report under-counts exactly the journeys the memory exists to serve.",
+    viaFromMemory !== -1 && (viaFromUrl === -1 || viaFromMemory < viaFromUrl),
+    "referral-memory: the conversion asks the REMEMBERED arrival first, the URL only as a fallback",
+    "referral-memory: pingChannelConversion reads the live URL for the channel tag before (or instead of) the remembered arrival — that is the twin defect. The landing's query string is NOT present at receipt time any more (the memory is precisely what lets a buyer return without it), so the conversion goes unrecorded and the channel report under-counts exactly the journeys the memory exists to serve.",
+  );
+  check(
+    !/\brememberedVia\s*\(/.test(ping),
+    "referral-memory: the conversion tag is bound to the source that actually applied",
+    "referral-memory: the channel tag is read independently of the sourceId on the receipt — the engine can auto-apply a DIFFERENT, previously-linked source, and a second tab can rewrite the memory, so the beacon would credit a conversion to a channel that never carried this buyer. Ask `rememberedViaFor(sourceId)`.",
   );
 }
 if (moduleExists) {

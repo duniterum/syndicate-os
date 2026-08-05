@@ -14,7 +14,7 @@
 // Dependency-free (no wallet imports — callable from anywhere, incl. the
 // wallet module without adding a fetch to a wallet file's own scan surface).
 
-import { normalizeVia, rememberedVia } from "./referralMemory";
+import { normalizeVia, rememberedViaFor } from "./referralMemory";
 
 const HEX32_RE = /^0x[0-9a-fA-F]{64}$/;
 /** The channel-tag law lives with the arrival it belongs to (referralMemory) —
@@ -70,7 +70,16 @@ export function pingChannelClick(sourceId: string, via: string): void {
  * truth of which source applied. The server re-verifies the tx before recording.
  */
 export function pingChannelConversion(sourceId: string, txHash: string): void {
-  const via = rememberedVia();
+  // ⛔ THE TAG MUST BELONG TO THE SOURCE THAT ACTUALLY APPLIED, and the memory
+  // is not the only place it can live. Reading storage ALONE dropped every
+  // conversion where storage is unavailable — Safari private mode, a wallet's
+  // in-app browser with storage disabled, a framed or unfocused first paint —
+  // which is exactly the population that buys, and it counted the click a
+  // moment earlier from the URL. So: the remembered tag for THIS source first,
+  // and the tag still in the address bar as the honest fallback.
+  const via =
+    rememberedViaFor(sourceId) ??
+    parseViaTag(typeof window === "undefined" ? "" : window.location.search);
   if (via === null) return;
   if (!HEX32_RE.test(sourceId) || sourceId === ZERO_BYTES32) return;
   if (!HEX32_RE.test(txHash)) return;
