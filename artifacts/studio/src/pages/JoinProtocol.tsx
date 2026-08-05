@@ -606,14 +606,19 @@ function QuotePanel({
   const readFailed = isError || !data || !data.chainVerified || data.quote === null;
   const shown = readFailed ? lastConfirmed.current : data;
 
-  if (isLoading && shown === null) {
+  // ⛔ `undefined`, NOT `null` — react-query's `data` is `T | undefined` and the
+  // ref is seeded `undefined`, so `shown === null` was NEVER true: the loading
+  // branch was dead code and every FIRST-TIME buyer fell straight into the red
+  // «Quote read unavailable» line for the whole normal ~200 ms read, on the
+  // money path. Found hours after shipping, by two independent reviewers.
+  if (isLoading && shown === undefined) {
     return (
       <p className="text-sm text-muted-foreground" data-testid="text-quote-loading">
         Reading your exact quote from the live engine…
       </p>
     );
   }
-  if (shown === null || shown === undefined || shown.quote === null) {
+  if (shown === undefined || shown.quote === null) {
     return isError || !data ? (
       <p className="text-sm text-destructive" data-testid="text-quote-error">
         Quote read unavailable right now (possibly rate-limited) — nothing is
@@ -753,10 +758,24 @@ function QuotePanel({
         </>
       )}
 
-      {/* C2 — the real purchase flow (founder-gated; nothing while OFF). */}
+      {/* C2 — the real purchase flow (founder-gated; nothing while OFF).
+          ⛔ THE RAW ARRIVAL GOES DOWN, NEVER THIS PAGE'S DROPPED VIEW (live
+          regression, found and killed within hours of shipping it, 2026-08-05).
+          Adding `sourceId` to the checkout's verdict-reset dependencies was
+          right on its own — but paired with `effectiveSourceId` here it closed a
+          loop: the probe drops → onVerdict(dropped) → this page nulls the prop →
+          the prop CHANGED, so the reset effect cleared the verdict → the page
+          restored the prop → the probe ran again → dropped again. Unbounded.
+          The money breakdown flapped between «Paid to your referrer −X USDC» and
+          the true split, and at the click `sourceDrop` could be null —
+          neutralising the guard that stops a proven-refused id from being
+          signed, so the purchase could go to the chain and revert.
+          The checkout already owns `sourceDrop` as the SOLE authority over what
+          it signs. This page needs its dropped view only for its OWN quote key
+          and money breakdown — never for the arrival it hands down. */}
       <CheckoutSlot
         grossUsdcRaw={grossUsdcRaw}
-        sourceId={effectiveSourceId}
+        sourceId={sourceId}
         usdcDecimals={view.decimals.usdc}
         synDecimals={view.decimals.syn}
         onVerdict={onVerdict}

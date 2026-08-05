@@ -1,6 +1,15 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
-> ## ▶ 2026-08-05 — LE PARRAINAGE MOURAIT DANS LE NAVIGATEUR. **PROD = `c0555cc9`.**
+> ## ▶ 2026-08-05 (SOIR) — **PROD = `328c6f4`, 16e sceau. LE QUAI EST VIDE.**
+> Les **17 commits** de l arc parrainage sont EN LIGNE, porte d apercu franchie.
+> **FERMES aujourd hui :** le jumeau `&via=` · `/source` qui copiait n importe quel
+> lien colle · la commission en sequestre affichee comme payee · le §⑤ de la spec
+> jamais barre · la falaise du throttle public · les deux taux tapes a la main.
+> **RESTE VRAIMENT OUVERT :** indexer `SourcePayoutEscrowed` · les 3 refus checkout
+> (sa decision) · la phrase gelee «Nothing to claim, ever» (sa decision) · le moteur
+> FIRSTS · /join ouvre sur la prose et non sur les prix (maquette d abord).
+>
+> <s>2026-08-05 — LE PARRAINAGE MOURAIT DANS LE NAVIGATEUR. PROD = `c0555cc9`.</s>
 > ⛔ **AU QUAI : 3 commits, NON GROUPABLES** (`173e0bf` · `d36b68a` · `3455904`) —
 > un defaut qui coute de l argent a chaque achat en prod. **Porte d apercu
 > d abord : la nouvelle copie n a jamais ete rendue.**

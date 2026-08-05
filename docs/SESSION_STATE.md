@@ -2,8 +2,67 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-04 — THE PURCHASE PATH ARC, CLOSED. **START HERE. Everything below
-> # this block is history; this block supersedes it.**
+> # ▶ 2026-08-05 (EVENING) — THE REFERRAL LINK NOW SURVIVES THE VISIT. **START HERE.**
+>
+> ## ① WHERE PROD IS — **`328c6f4`, 16th consecutive clean seal, sealed 2026-08-05.**
+> Previous prod `c0555cc9`; the cycle carried **17 commits** (`c0555cc9..HEAD`, recounted
+> with `git rev-list --count`). ⛔ **DEPLOY BACKLOG: EMPTY.** GitHub `main` = `328c6f4`,
+> pushed — the source of truth and the deployed head agree.
+> **MEASURED BY THIS SESSION on live prod after the seal** (not taken from the report):
+> served entry `assets/index-B4IgaU-U.js` · old entry 404 · `/join` carries 3 security
+> headers, assets carry 0 · `/source` 200 · sitemap 30 URLs with no `/source` ·
+> `/api/healthz` 200 · and the founder's own link now quotes **30.00 USDC** of
+> commission on 600 USDC — the exact figure his friend's purchase did not pay him.
+>
+> **WHAT A VISITOR CAN DO TODAY THAT HE COULD NOT YESTERDAY:**
+> · A referral link **survives the visit** — arrive with `?source=` on ANY route,
+>   reload, read the terms, come back later: the introduction is still attached.
+>   **No expiry** (his ruling ⓬), **last touch wins** (⓭). One localStorage key,
+>   `lib/referralMemory.ts`, written only when a human is actually looking at the
+>   page (frame + visibility + focus/interaction — a popunder plants nothing).
+> · The checkout **always says** what it is about to sign — attached · removed by the
+>   engine, in the engine's own words · engine unreadable · no link at all. Silence is
+>   what hid the loss across 20 purchases.
+> · A shared receipt carries the link; `/source` no longer builds a link from a pasted
+>   id (the demo id in our own docs was the FOUNDER's own source) — it renders /referral.
+> · A referrer's own screens no longer print a rate the chain refutes, and escrowed
+>   commission is no longer reported as paid.
+> · The public-read cliff is gone (strangers were refused above 5,000 tracked clients
+>   while incumbents kept being served) and the unidentified bucket is sized as the
+>   crowd it is — **~200 landings / 10 s, was 6.**
+> · HTML security headers are served from `main` (Replit's fix, taken back — no drift).
+> · /privacy is **Version 5**, and now says the one thing that IS sent to us.
+>
+> **THE COST OF THIS ARC, so it is not repeated:** the fix itself was reviewed twice by
+> 12 agents; the first review found **6 criticals, 5 of them inside my own fix**, the
+> second found **7 more**. The guard I wrote was defeated by 21 of 23 mutations in round
+> two — twice for the same reason: **it executed a function the app had stopped
+> calling.** It now DISCOVERS its target from the calling code. 79 checks, 43 executed
+> rows. **A guard that names its own target measures what it was told to, not what ships.**
+>
+> ## ② IN FLIGHT — ONE SLICE, EXACT NEXT STEP
+> **B + 1c + 2b** (spec unchanged, ④ below). ⛔ **NEXT STEP: NO CODE.** Draft the two
+> rewritten frozen /join sentences and paste the FULL text inline in chat for his
+> decision (1c — he froze them, they are never edited silently), and bring the B/2b
+> composition as a WIREFRAME first (VISUAL CHANGE LAW ①). Then one build, one preview
+> gate, one deploy.
+> Queued, not started: **/join opens on prose, not prices** — measured 2026-08-05, the
+> introduction card starts at 530px and the amount chips at 996px, so a referred
+> visitor on a phone must scroll to see a price (WORK-FIRST ①; wireframe first) · index
+> `SourcePayoutEscrowed` · the FIRSTS engine (engraved #2, nothing blocks it) ·
+> member-ledger windowing · spine-poller dedupe.
+>
+> ## ③ HIS PENDING DECISIONS
+> ① the two frozen /join sentences (1c).
+> ② the three OLDER checkout refusals (price unreadable · floor uncomputable ·
+>    approval short), deferred past go-live — two make our server a second veto over
+>    a buyer, against his ruling ⑥.
+> ③ **«Nothing to claim, ever» on /join** — founder-frozen 2026-08-03 and guard-pinned,
+>    but `claimSourceEscrow` IS that button (it only fires when the payout push
+>    reverts). His wording, his call: leave it, or hedge it honestly.
+> ④ the wireframes for B + 2b and for the /join mobile order.
+
+> # ▶ 2026-08-04 — THE PURCHASE PATH ARC, CLOSED. *(history — prod is now `328c6f4`)*
 >
 > ## ① WHERE PROD IS
 > **PROD = `c0555cc9` — 14th clean seal, sealed 2026-08-04.**

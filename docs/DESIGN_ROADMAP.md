@@ -1,13 +1,26 @@
 # DESIGN_ROADMAP — chemin vers "full grade-AAA" (source unique du workstream design)
 
-> ## ▶ 2026-08-05 — PROD = `c0555cc9` (14e sceau) + le 15e (en-tetes de securite).
+> ## ▶ 2026-08-05 (SOIR) — **PROD = `328c6f4`, 16e sceau. LE QUAI EST VIDE.**
+> Les trois surfaces rendues ci-dessous ont franchi la porte d apercu et sont EN LIGNE.
+>
+> - [ ] **PROCHAINE TRANCHE DESIGN — /join doit s ouvrir sur les PRIX, pas sur la
+>   prose (MESURE 2026-08-05, vrai navigateur)** : sur un `/join` nu portant un lien
+>   memorise, la carte d introduction demarre a **530 px** et les puces de montant a
+>   **996 px** — un visiteur PARRAINE, sur telephone, ouvre sur du texte gris et doit
+>   defiler pour voir un prix. C est le chemin de l argent. WORK-FIRST ① : la page
+>   ouvre sur LE TRAVAIL. Piste : la bande d introduction devient une ligne compacte
+>   sous le titre, ou passe SOUS le selecteur de montant.
+>   **Maquette d abord (LOI DU CHANGEMENT VISUEL ①), puis porte d apercu.**
+>   Fichier : `src/pages/JoinProtocol.tsx` (`IntroductionStatus` avant
+>   `panel-join-quote`). **+0 couleur brute** exige.
+>
+> <s>2026-08-05 — PROD = c0555cc9 (14e sceau) + le 15e (en-tetes de securite).</s>
 > ⛔ **AU QUAI : 15 commits, NON GROUPABLES** — l arc parrainage
 > (`173e0bf` → HEAD). Un defaut qui coute de l argent a chaque achat.
 > **PORTE D APERCU D ABORD** : trois surfaces rendues ont change et n ont jamais
 > ete vues.
 >
-> - [x] **L ARC PARRAINAGE — TROIS SURFACES RENDUES (2026-08-05, en attente de
->   la porte d apercu)** : ① `/join` — la bande d introduction dit quand le lien
+> - [x] **L ARC PARRAINAGE — TROIS SURFACES RENDUES (2026-08-05, **porte d apercu FRANCHIE, EN PROD sous `328c6f4`**)** : ① `/join` — la bande d introduction dit quand le lien
 >   vient de la MEMOIRE du navigateur ; ② le checkout porte une ligne d
 >   attribution TOUJOURS presente (`text-checkout-attribution`) a quatre etats —
 >   attache, retire par le moteur, moteur illisible, aucun lien — jamais un

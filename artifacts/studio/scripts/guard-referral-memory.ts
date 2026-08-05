@@ -683,6 +683,32 @@ if (existsSync(CHECKOUT)) {
     "referral-memory: the buyer is told when the engine could not be reached",
     "referral-memory: the attribution line has no branch for an unreadable engine — it promises an attribution that was never verified",
   );
+  // ⛔ THE CHECKOUT RECEIVES THE RAW ARRIVAL, NEVER A VALUE THE PAGE NULLS ON
+  // ITS OWN VERDICT (live regression, found and fixed 2026-08-05 within hours of
+  // shipping). Adding `sourceId` to the reset effect's dependencies — correct in
+  // itself — closed a feedback loop with the page:
+  //   probe drops → onVerdict(dropped) → the page nulls the source it passes →
+  //   the prop changes → the reset effect clears the verdict → the page restores
+  //   the source → the probe runs again → drops again. UNBOUNDED.
+  // The screen flapped between «Paid to your referrer −X USDC» and the true
+  // split, and at the click `sourceDrop` could be null, neutralising the very
+  // guard that stops a proven-refused id from being signed. The checkout already
+  // owns `sourceDrop` as the sole authority over what it signs; the page needs
+  // its dropped view only for its OWN quote key and money breakdown.
+  if (pageExists) {
+    const pageWiring = stripComments(readFileSync(PAGE, "utf8"));
+    const slot = /<CheckoutSlot[\s\S]{0,400}?\/>/.exec(pageWiring);
+    const passed = slot ? /sourceId=\{(\w+)\}/.exec(slot[0])?.[1] ?? "" : "";
+    const nulledOnVerdict =
+      passed.length > 0 &&
+      new RegExp(`const\\s+${passed}\\s*=[^;]*(?:dropped|Unusable)`).test(pageWiring);
+    check(
+      slot !== null && passed.length > 0 && !nulledOnVerdict,
+      `referral-memory: the checkout receives the raw arrival (${passed}), not a verdict-derived value`,
+      `referral-memory: CheckoutSlot is handed \`${passed}\`, which the page nulls from its own dropped verdict — that closes a feedback loop (drop → prop change → verdict reset → drop …) which flaps the money breakdown and can leave sourceDrop null at the signature, re-arming a source the engine already refused`,
+    );
+  }
+
   const reset = /setSourceDrop\(null\)[\s\S]{0,900}?\}, \[([^\]]*)\]/.exec(checkout);
   check(
     reset !== null && /\bsourceId\b/.test(reset[1]),
