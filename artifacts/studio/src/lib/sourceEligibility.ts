@@ -126,14 +126,36 @@ export interface EngineProbe {
 export async function askEngineAboutSource(
   sourceId: string,
   probe: EngineProbe,
-): Promise<{ decision: SourceApplicationDecision; refusalName: string | null }> {
-  const answer = await probe.simulate(sourceId);
-  if (answer.verdict !== "refused") return { decision: "apply", refusalName: null };
+): Promise<{
+  decision: SourceApplicationDecision;
+  refusalName: string | null;
+  /** What the engine actually answered — the screen needs this, not just the decision. */
+  verdict: BuySimulationVerdict;
+}> {
+  let answer = await probe.simulate(sourceId);
+
+  // ⛔ ONE RETRY WHEN WE COULD NOT HEAR THE ENGINE (founder decision ①,
+  // 2026-08-05). "Unreadable" is never the chain refusing — it is US failing to
+  // read it: the buyer's own connection dropping (mobile, a wallet's in-app
+  // browser, a wifi handover), both public endpoints rate-limiting the same
+  // visitor at once, or a node returning a revert with the data stripped. viem's
+  // fallback already retries the transport across two endpoints; what was never
+  // retried is the QUESTION. One more ask costs ~150 ms and absorbs the short
+  // outage that is by far the most common cause.
+  if (answer.verdict === "unreadable") answer = await probe.simulate(sourceId);
+
+  if (answer.verdict !== "refused") {
+    return { decision: "apply", refusalName: null, verdict: answer.verdict };
+  }
   // The engine's OWN name for its refusal. Null when it could not be decoded,
   // and null is never proof.
   const refusalName = probe.refusalNameOf(answer.error);
   const decision = decideSourceApplication(answer.verdict, refusalName);
-  return { decision, refusalName: decision === "drop" ? refusalName : null };
+  return {
+    decision,
+    refusalName: decision === "drop" ? refusalName : null,
+    verdict: answer.verdict,
+  };
 }
 
 /**

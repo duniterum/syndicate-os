@@ -568,6 +568,30 @@ if (existsSync(CHECKOUT)) {
     "referral-memory: a percentage literal appeared in the checkout's attribution line — the rate comes from the QUOTE (SPEC §⑧①). A typed rate is false for every introducer above the first rung and the chain refutes it, one click before a signature.",
   );
 
+  // ⛔ AN UNREADABLE ENGINE IS NOT AN ACCEPTANCE (founder decision ①, 2026-08-05).
+  // `askEngineAboutSource` fails OPEN — correctly, his ruling ⑥ — so an RPC that
+  // could not be reached returned the SAME shape as a clean acceptance, and the
+  // attribution line asserted "an introduction is attached" one click before a
+  // signature on a check that never completed. The link still goes out; the
+  // CLAIM is what must be withdrawn. Three properties, none of them a spelling:
+  check(
+    /verdict === "unreadable"/.test(checkout),
+    "referral-memory: the checkout distinguishes an UNREADABLE engine from an acceptance",
+    'referral-memory: JoinCheckout never inspects `verdict === "unreadable"` — an engine we could not reach is being reported to the buyer as a confirmed attribution, one click before he signs',
+  );
+  const attributionBranches = attribution?.[0] ?? "";
+  check(
+    /could not reach the engine/i.test(attributionBranches),
+    "referral-memory: the buyer is told when the engine could not be reached",
+    "referral-memory: the attribution line has no branch for an unreadable engine — it promises an attribution that was never verified",
+  );
+  const reset = /setSourceDrop\(null\)[\s\S]{0,900}?\}, \[([^\]]*)\]/.exec(checkout);
+  check(
+    reset !== null && /\bsourceId\b/.test(reset[1]),
+    "referral-memory: a verdict is forgotten when the LINK changes, not only the amount or wallet",
+    "referral-memory: the verdict-reset effect does not depend on `sourceId` — open a second link and the FIRST link's verdict survives: the new one is never probed, is zeroed at the signature, and is stripped from the quote, while the page advertises that a newer link takes over. Its referrer earns nothing, permanently.",
+  );
+
   const clickDrop = /answer\.decision === "drop"[\s\S]{0,900}?\}/.exec(checkout);
   check(
     clickDrop !== null && /setSourceDrop\s*\(/.test(clickDrop[0]),

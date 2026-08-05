@@ -236,6 +236,13 @@ export default function JoinCheckout({
    * be decoded — null never becomes an invented cause.
    */
   const [sourceDrop, setSourceDrop] = useState<{ reason: string | null } | null>(null);
+  /**
+   * True once the engine could NOT BE READ for this link — never a refusal.
+   * The link still goes out (his ruling ⑥, «only the chain says no»); what is
+   * withdrawn is the CLAIM. Before this, an unreadable probe left the screen
+   * asserting «an introduction is attached» on a check that never completed.
+   */
+  const [sourceUnverified, setSourceUnverified] = useState(false);
 
   const gross = /^[0-9]+$/.test(grossUsdcRaw) ? BigInt(grossUsdcRaw) : null;
   const onAvalanche = walletChainId === avalanche.id;
@@ -310,7 +317,13 @@ export default function JoinCheckout({
     // which silently stripped a new buyer's referral and paid his referrer
     // nothing (fourth review, 2026-08-04).
     onVerdict?.({ dropped: false, figures: null });
-  }, [gross, address, onVerdict]);
+    // ⛔ AND ON A SOURCE SWITCH (review, flagged twice before it was fixed).
+    // Without `sourceId` here, opening a second link kept the FIRST link's
+    // verdict: the new link was never probed, was zeroed at the signature, and
+    // was stripped from the quote — while the page advertised that a newer link
+    // "takes over". Its referrer earned nothing, permanently.
+    setSourceUnverified(false);
+  }, [gross, address, sourceId, onVerdict]);
 
   useEffect(() => {
     if (!sourceId || !address || !saleAddress || gross === null) return;
@@ -327,7 +340,16 @@ export default function JoinCheckout({
     void (async () => {
       const bound = { saleAddress, buyer: address, grossUsdc: gross, minSynOut: 0n };
       const answer = await askEngineAboutSource(sourceId, makeEngineProbe(bound));
-      if (cancelled || answer.decision !== "drop") return;
+      if (cancelled) return;
+      // ⛔ THE SCREEN MUST KNOW WHEN WE COULD NOT HEAR THE ENGINE (founder
+      // decision ①, 2026-08-05). An unreadable answer used to leave `sourceDrop`
+      // null, indistinguishable from a clean acceptance — so the attribution
+      // line asserted «an introduction is attached» one click before a
+      // signature, on a check that never completed. The link still goes out
+      // (ruling ⑥, «only the chain says no»); only the CLAIM is withdrawn.
+      // askEngineAboutSource already retried once before answering this.
+      setSourceUnverified(answer.verdict === "unreadable");
+      if (answer.decision !== "drop") return;
       // THE TRUE SPLIT FOR THIS BUYER (founder answer ④). The engine still pays
       // an introduction already recorded for this wallet, even on a zero id —
       // so the page must show the figures the purchase will really produce,
@@ -831,7 +853,14 @@ export default function JoinCheckout({
             // "open it again before you sign" HERE was false advice: the engine has
             // just refused THIS link for THIS wallet, and reopening it changes nothing.
             "This purchase will be signed without an introduction, for the reason above. Your price is unchanged."
-          : sourceId !== null
+          : sourceId !== null && sourceUnverified
+            ? // ⛔ THE FOURTH STATE, and it used to masquerade as the first (founder
+              // decision ①, 2026-08-05). The engine could not be READ — the buyer's
+              // connection, a rate-limited public endpoint, a node that stripped the
+              // revert data. Nothing was refused and nothing was proven, so nothing
+              // is promised. The link still goes out: only the chain says no.
+              "Your referral link will be signed with this purchase, but we could not reach the engine to check it first. Your join goes through either way, at the price shown above — if the engine cannot accept the link, it simply is not attached."
+            : sourceId !== null
             ? // ⛔ NO RATE IS WRITTEN HERE (his red line; SPEC §⑧①: the rate comes from
               // the QUOTE, never from a number we type). The first version said "5%" —
               // a figure read from nowhere, false for every introducer above the first
