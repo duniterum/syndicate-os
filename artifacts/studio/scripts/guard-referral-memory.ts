@@ -237,6 +237,35 @@ if (pageExists) {
   }
 }
 
+// ── 9. NO SILENT ZERO AT THE SIGNATURE ──────────────────────────────────────
+// The second half of the same defect. The checkout gated the signed source on
+// the SERVER's `sourceValid` — an ANONYMOUS verdict, computed for the zero
+// address, that cannot know this buyer. When it was anything but true the
+// checkout signed bytes32(0) and said NOTHING: a referrer's commission gone,
+// nobody told, no trace. That contradicts his own rulings ③ and ⑥ ("the reason
+// comes from the ENGINE" · "only the chain says no") and guard-source-eligibility
+// pin 6 (no re-derivation — the engine is the authority). It is also redundant:
+// a source that does not exist or is not active makes buy() revert
+// SourceNotEligible(), which the engine probe already catches AND explains.
+// So: the signature carries the buyer's link, the ENGINE alone may remove it,
+// and every removal speaks.
+const CHECKOUT = path.join(srcDir, "wallet", "JoinCheckout.tsx");
+if (existsSync(CHECKOUT)) {
+  const checkout = stripComments(readFileSync(CHECKOUT, "utf8"));
+  check(
+    !/sourceValid\s*===\s*true/.test(checkout),
+    "referral-memory: the signature is not gated on the server's anonymous verdict",
+    "referral-memory: JoinCheckout gates the signed sourceId on the server's `sourceValid` — that branch signs bytes32(0) IN SILENCE, which is exactly how a referrer loses a member forever. The ENGINE decides (his rulings ③ and ⑥), and every removal must speak.",
+  );
+  // And the buyer is told, before signing, what will happen either way — the
+  // silence is what made twenty purchases lose their attribution unnoticed.
+  check(
+    /data-testid="text-checkout-attribution"/.test(checkout),
+    "referral-memory: the checkout states the attribution BEFORE the signature",
+    'referral-memory: JoinCheckout must render a data-testid="text-checkout-attribution" line stating, before the signature, whether an introduction will be attached to this purchase — a buyer who expected one has no other way to notice it is missing',
+  );
+}
+
 // ── 7. ONE HOME ─────────────────────────────────────────────────────────────
 function walk(dir: string, out: string[] = []): string[] {
   for (const entry of readdirSync(dir)) {

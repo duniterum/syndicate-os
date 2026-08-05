@@ -518,16 +518,23 @@ export default function JoinCheckout({
         setError("Your minimum-received protection could not be computed from the fresh quote — nothing was signed.");
         return;
       }
-      // AUDIT FIX (1.2) — quote/purchase divergence: the read-only quote merely
-      // previews 0% for a non-applying source, but buy() with an EXPLICIT
-      // sourceId REVERTS on it (_resolveSource :440-476). Pass the sourceId
-      // ONLY when the FRESH quote at this click confirms it applies; otherwise
-      // bytes32 zero (the contract still auto-applies a previously LINKED
-      // source gracefully on a zero id — nothing is lost).
+      // ⛔ THE SILENT ZERO IS GONE (founder, 2026-08-05 — his friend's 600 USDC).
+      // ~~Pass the sourceId ONLY when the FRESH quote at this click confirms it
+      // applies; otherwise bytes32 zero~~ STRUCK. That gate read the SERVER's
+      // `sourceValid`, an ANONYMOUS verdict computed for the zero address which
+      // by construction cannot know this buyer — and when it was anything but
+      // true the checkout signed bytes32(0) AND SAID NOTHING. A referrer lost
+      // his commission, and because the engine can never attach a source to an
+      // already-seated wallet, he lost that member permanently. Nobody was told.
+      //
+      // It was also redundant: a source that does not exist, is not active, or
+      // cannot apply makes buy() revert with a name — SourceNotEligible() — and
+      // the engine probe below already catches that AND explains it in human
+      // words. So the buyer's link goes into the arguments, THE ENGINE alone may
+      // remove it (his rulings ③ «the reason comes from the engine» and ⑥ «only
+      // the chain says no»), and every removal speaks.
       let applySourceId: `0x${string}` =
-        sourceId !== null && q.sourceProvided === true && q.sourceValid === true
-          ? (sourceId as `0x${string}`)
-          : ZERO_BYTES32;
+        sourceId !== null ? (sourceId as `0x${string}`) : ZERO_BYTES32;
 
       // THE ENGINE IS ASKED BEFORE THE BUYER SIGNS (2026-08-04 — the founder
       // reproduced SEVEN reverted purchases on live prod, his own money each
@@ -786,6 +793,24 @@ export default function JoinCheckout({
           {droppedSourceNotice(sourceDrop.reason, "before")}
         </p>
       ) : null}
+
+      {/* ⛔ WHAT WILL BE SIGNED, SAID OUT LOUD — ALWAYS, not only when something
+          fails (founder, 2026-08-05). Twenty purchases went through this
+          checkout and only four carried an introduction; not one buyer, and not
+          one referrer, could see which was which before the money moved. His
+          friend's 600 USDC purchase was un-attributed and NOTHING on this page
+          said so. An absence has no error state — the only way to make it
+          visible is to state the presence too. This line reads the SAME two
+          values the signature does (`sourceId` and the engine's verdict), so it
+          cannot drift from what is actually sent. */}
+      <p
+        className="text-xs text-muted-foreground mb-3 max-w-2xl"
+        data-testid="text-checkout-attribution"
+      >
+        {sourceId !== null && sourceDrop === null
+          ? "An introduction is attached to this purchase — 5% of it goes to the member who introduced you, paid by the engine inside your own transaction, and it never changes your price."
+          : "No introduction is attached to this purchase. If someone sent you an invitation link, open it again before you sign — once a seat is taken, the engine can never attach one to it."}
+      </p>
 
       <div className="space-y-3">
         {/* Step 1 — approve the EXACT amount (resumable: skipped when covered) */}
