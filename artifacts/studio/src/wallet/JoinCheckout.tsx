@@ -52,7 +52,7 @@ import {
   droppedSourceNotice,
 } from "@/lib/sourceEligibility";
 import { resolveHistoricalGate, type HistoricalGateVerdict } from "@/lib/historicalMembers";
-import { pingChannelConversionFromLocation } from "@/lib/channelPing";
+import { pingChannelConversion } from "@/lib/channelPing";
 import { computeMinSynOutRaw } from "@/lib/checkoutVocabulary";
 import { formatRawUnits } from "@/lib/rawUnits";
 import {
@@ -693,7 +693,7 @@ export default function JoinCheckout({
       // truth of which source applied — plus the tx hash). Fire-and-forget,
       // AFTER the receipt is sealed, entirely off the money path; the server
       // verifies the tx on-chain itself before recording anything.
-      pingChannelConversionFromLocation(ev.args.sourceId, hash);
+      pingChannelConversion(ev.args.sourceId, hash);
     } catch (e) {
       setError(explainError(e));
     } finally {

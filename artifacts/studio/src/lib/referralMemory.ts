@@ -152,10 +152,104 @@ function writeStore(value: string): void {
  * rule could only ever destroy a link that was still worth something.
  */
 export function resolveJoinSource(urlSource: string | null): string | null {
-  const remembered = readStore();
-  const next = nextRememberedSource(remembered, urlSource);
-  if (next !== null && next !== remembered) writeStore(next);
+  // Delegates — ONE home for the whole arrival. Keeping a second read/write
+  // path here is how the source and its channel drifted apart in the first place.
+  return resolveJoinIntroduction(urlSource, null)?.sourceId ?? null;
+}
+
+// ===========================================================================
+// THE CHANNEL TAG TRAVELS WITH ITS SOURCE — THE TWIN I OWED (his law ①).
+//
+// My own commit's cause line read: «`?source=` was read at ONE line and
+// persisted NOWHERE». Its identical twin, `&via=`, was read from
+// `window.location.search` at receipt time and persisted nowhere — and the
+// review caught that I had fixed the instance instead of the pattern.
+//
+// The premise written in channelPing.ts said it plainly: «the /join checkout
+// never navigates, so the landing's query string is still present at receipt
+// time». THAT WAS TRUE UNTIL THIS MODULE EXISTED. The memory is precisely what
+// lets a buyer come back to a bare /join and still be attributed — so the money
+// now survives the journey and the channel report does not. A visitor arriving
+// on `?source=X&via=twitter` who returns later and buys was recorded as ONE
+// twitter click and ZERO conversions. Before the memory that visitor simply did
+// not convert, so zero was TRUE; my fix is what turned it into a lie, and it
+// lies worst about the slow channels — print, QR, a blog post — which are
+// exactly the ones the memory was built to serve.
+//
+// A link carries both halves at once: WHO is paid (`source`, on-chain money)
+// and WHERE it was handed out (`via`, off-chain analytics) — SPEC §④. They are
+// one arrival. So they are remembered together, in one key, by one function.
+// ⛔ And a tag NEVER outlives its own link: a newer link with no tag clears it,
+// because inheriting the previous link's channel would invent a fact.
+// ===========================================================================
+
+/** The channel-tag law — the ONE spelling, mirrored from the server's pin. */
+const VIA_RE = /^[a-z0-9][a-z0-9_-]{0,23}$/;
+
+export interface RememberedIntroduction {
+  sourceId: string;
+  /** The channel this exact link was handed out on, or null when it carried none. */
+  via: string | null;
+}
+
+/** Normalize a raw `via` value; null when absent or off-law. */
+export function normalizeVia(raw: string | null): string | null {
+  if (raw === null) return null;
+  const via = raw.trim().toLowerCase();
+  return VIA_RE.test(via) ? via : null;
+}
+
+/**
+ * THE RULE for the whole arrival, pure. Same two rulings as the source alone —
+ * last touch wins, nothing expires — with the tag bound to the link it came on.
+ */
+export function nextRememberedIntroduction(
+  remembered: RememberedIntroduction | null,
+  arrivingSource: string | null,
+  arrivingVia: string | null,
+): RememberedIntroduction | null {
+  if (arrivingSource !== null && isUsableSourceId(arrivingSource)) {
+    // A new link replaces BOTH halves. Its own tag, or none — never the old one.
+    return { sourceId: arrivingSource, via: normalizeVia(arrivingVia) };
+  }
+  if (remembered !== null && isUsableSourceId(remembered.sourceId)) return remembered;
+  return null;
+}
+
+function readIntroduction(): RememberedIntroduction | null {
+  const raw = readStore();
+  if (raw === null) return null;
+  // Tolerates the source-only value an earlier build wrote.
+  if (!raw.startsWith("{")) return isUsableSourceId(raw) ? { sourceId: raw, via: null } : null;
+  try {
+    const parsed = JSON.parse(raw) as { s?: unknown; v?: unknown };
+    if (typeof parsed.s !== "string" || !isUsableSourceId(parsed.s)) return null;
+    return { sourceId: parsed.s, via: typeof parsed.v === "string" ? normalizeVia(parsed.v) : null };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * THE ENTRY POINT for the whole arrival: the introduction this visit will use,
+ * and the channel it was handed out on — remembering a new one on the way.
+ */
+export function resolveJoinIntroduction(
+  urlSource: string | null,
+  urlVia: string | null,
+): RememberedIntroduction | null {
+  const remembered = readIntroduction();
+  const next = nextRememberedIntroduction(remembered, urlSource, urlVia);
+  if (next === null) return null;
+  if (next.sourceId !== remembered?.sourceId || next.via !== remembered?.via) {
+    writeStore(JSON.stringify({ s: next.sourceId, v: next.via }));
+  }
   return next;
+}
+
+/** The channel tag this visit's introduction arrived on, from the ONE home. */
+export function rememberedVia(): string | null {
+  return readIntroduction()?.via ?? null;
 }
 
 /**

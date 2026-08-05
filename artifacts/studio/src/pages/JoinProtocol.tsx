@@ -29,7 +29,7 @@ import {
 } from "@workspace/api-client-react";
 import { PublicPage } from "@/components/PublicPage";
 import { parseViaTag, pingChannelClick } from "@/lib/channelPing";
-import { isRecalledSource, resolveJoinSource } from "@/lib/referralMemory";
+import { isRecalledSource, resolveJoinIntroduction } from "@/lib/referralMemory";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -920,19 +920,31 @@ export default function JoinProtocol() {
   // (SourceNotEligible, and `buyerSourceId` has no setter), the loss was not one
   // commission — it was that member, permanently. The remember/recall rule and
   // its two rulings (no expiry · last touch wins) live in ONE module.
-  const attachSource = useMemo(() => resolveJoinSource(sourceParam), [sourceParam]);
+  // ONE call resolves the WHOLE arrival — the introduction and the channel it
+  // was handed out on. They travel in one link (SPEC §④), so they are read,
+  // remembered and recalled together; remembering only half is what made the
+  // channel report under-count every journey the memory exists to serve.
+  const viaTag = parseViaTag(search);
+  const attachSource = useMemo(
+    () => resolveJoinIntroduction(sourceParam, viaTag)?.sourceId ?? null,
+    [sourceParam, viaTag],
+  );
   const recalledSource = isRecalledSource(sourceParam, attachSource);
 
   // SPEC R3 — the channel beacon (`&via=`): a landing that carries BOTH a
   // format-valid source and a valid channel tag pings the anonymous click
   // counter once per page load. Fire-and-forget, aggregate-only server-side
   // (never who clicked); the server drops anything the registry doesn't know.
-  const viaTag = parseViaTag(search);
+  //
+  // ⛔ KEYED ON WHAT WAS IN THE ADDRESS BAR, never on the remembered source
+  // (review, 2026-08-05). Fed the EFFECTIVE source, `/join?via=telegram` with no
+  // `?source=` counted a telegram click for a link the visitor never opened —
+  // a (source, channel) pair that has never existed. A CLICK is a real arrival.
   useEffect(() => {
-    if (attachSource !== null && viaTag !== null) {
-      pingChannelClick(attachSource, viaTag);
+    if (sourceParam !== null && viaTag !== null) {
+      pingChannelClick(sourceParam, viaTag);
     }
-  }, [attachSource, viaTag]);
+  }, [sourceParam, viaTag]);
 
   const [amountInput, setAmountInput] = useState("");
   const [submittedRaw, setSubmittedRaw] = useState<string | null>(null);

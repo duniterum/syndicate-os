@@ -155,7 +155,16 @@ if (moduleExists) {
         } catch {
           got = "THREW";
         }
-        const stored = store.get(key) ?? null;
+        // The stored shape carries the whole arrival (source + channel tag), so
+        // the assertion reads the SOURCE out of it rather than pinning today's
+        // serialization — the property is "the store holds this introduction".
+        const rawStored = store.get(key) ?? null;
+        const stored =
+          rawStored === null
+            ? null
+            : rawStored.startsWith("{")
+              ? ((JSON.parse(rawStored) as { s?: string }).s ?? null)
+              : rawStored;
         check(
           got === expectedReturn && stored === expectedStored,
           `referral-memory: resolveJoinSource(${arriving === null ? "null" : arriving.slice(0, 8) + "…"}) → ${expectedReturn === null ? "null" : expectedReturn.slice(0, 8) + "…"} (store holds it)`,
@@ -319,7 +328,10 @@ if (pageExists) {
   // lines above — a pin that reads the wrong identifier is a pin that protects
   // nothing, and it was caught only because it happened to fail. Proven by
   // reverting the wiring: this version goes RED, the window version did not.
-  const attachDecl = /const\s+(\w+)\s*=\s*[^;]*?resolveJoinSource\s*\(/.exec(page);
+  // Either resolver is the ONE home — `resolveJoinSource` delegates to
+  // `resolveJoinIntroduction`, which resolves the whole arrival (source + tag).
+  const attachDecl =
+    /const\s+(\w+)\s*=\s*[^;]*?resolveJoin(?:Source|Introduction)\s*\(/.exec(page);
   check(
     attachDecl !== null,
     "referral-memory: the effective source is resolved through the module",
@@ -400,6 +412,51 @@ if (existsSync(CHECKOUT)) {
     clickDrop !== null && /setSourceDrop\s*\(/.test(clickDrop[0]),
     "referral-memory: the click-time drop is reported to the page before signing",
     "referral-memory: the drop inside handleBuy never calls setSourceDrop, so the attribution line still says an introduction is attached while a zero is signed — the exact contradiction the always-on line exists to prevent",
+  );
+}
+
+// ── 10. THE CHANNEL TAG IS THE SOURCE'S TWIN ────────────────────────────────
+// ⛔ THE TWIN SEARCH I OWED AND DID NOT DO (his law ①, caught by the review).
+// My own commit's cause line reads: "`?source=` was read at ONE line and
+// persisted NOWHERE." Its identical twin — `&via=`, read from
+// `window.location.search` and persisted nowhere — was shipping in the same
+// file family, and I fixed the instance instead of the pattern.
+// CONSEQUENCE, and it is newly false BECAUSE of my fix: a visitor arrives on
+// `?source=X&via=twitter`, leaves, comes back to a bare /join, and buys. The
+// money now survives (that was the point) — but the conversion beacon reads
+// `via` from the CURRENT url, finds none, and returns. Recorded: one twitter
+// click, zero conversions. Before the memory that visitor did not convert, so
+// zero was TRUE; now it is a lie, and it is worst on exactly the slow channels
+// (print, QR, blog) the memory exists to serve.
+// AND THE MIRROR: the click beacon fired on the EFFECTIVE source, so
+// `/join?via=telegram` with no `?source=` counted a click for a REMEMBERED
+// source — a (source, channel) pair no link ever carried.
+// A source and the tag that says where it was handed out arrive in ONE link.
+// One fact, ONE home.
+const CHANNEL_PING = path.join(srcDir, "lib", "channelPing.ts");
+if (existsSync(CHANNEL_PING)) {
+  const ping = stripComments(readFileSync(CHANNEL_PING, "utf8"));
+  check(
+    !/window\.location/.test(ping),
+    "referral-memory: the channel beacons do not read the live URL for the tag",
+    "referral-memory: channelPing.ts still reads `window.location` — that is the twin defect. The landing's query string is NOT present at receipt time any more (the memory is precisely what lets a buyer return without it), so the conversion is never recorded and the channel report under-counts exactly the journeys the memory exists to serve.",
+  );
+}
+if (moduleExists) {
+  const modBodyTwin = stripComments(readFileSync(MODULE, "utf8"));
+  check(
+    /\bvia\b/i.test(modBodyTwin),
+    "referral-memory: the memory carries the channel tag with its source",
+    "referral-memory: referralMemory.ts remembers the source but not the `via` tag it arrived with — one link, one fact, ONE home (the twin-search law). Remembering half of a link is what makes the channel report lie.",
+  );
+}
+if (pageExists) {
+  const pageTwin = stripComments(readFileSync(PAGE, "utf8"));
+  const clickCall = /pingChannelClick\s*\(([^)]*)\)/.exec(pageTwin);
+  check(
+    clickCall !== null && /sourceParam/.test(clickCall[1]),
+    "referral-memory: a click is counted only for a link actually opened",
+    "referral-memory: pingChannelClick is fed the EFFECTIVE source, so a URL carrying only `&via=` counts a click for a REMEMBERED source — a (source, channel) pair no link ever carried. A click beacon must key on what was in the address bar.",
   );
 }
 

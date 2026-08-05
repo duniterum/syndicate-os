@@ -14,8 +14,11 @@
 // Dependency-free (no wallet imports — callable from anywhere, incl. the
 // wallet module without adding a fetch to a wallet file's own scan surface).
 
+import { normalizeVia, rememberedVia } from "./referralMemory";
+
 const HEX32_RE = /^0x[0-9a-fA-F]{64}$/;
-/** The channel-tag law — mirrors the server's pin exactly. */
+/** The channel-tag law lives with the arrival it belongs to (referralMemory) —
+ *  it was retyped here and there, which is how the two halves drifted apart. */
 const VIA_RE = /^[a-z0-9][a-z0-9_-]{0,23}$/;
 const ZERO_BYTES32 = `0x${"0".repeat(64)}`;
 
@@ -25,10 +28,7 @@ const sentConversions = new Set<string>();
 
 /** Read + normalize the `via` tag from a search string; null when absent/invalid. */
 export function parseViaTag(search: string): string | null {
-  const raw = new URLSearchParams(search).get("via");
-  if (raw === null) return null;
-  const via = raw.trim().toLowerCase();
-  return VIA_RE.test(via) ? via : null;
+  return normalizeVia(new URLSearchParams(search).get("via"));
 }
 
 function post(path: string, body: Record<string, string>): void {
@@ -54,14 +54,23 @@ export function pingChannelClick(sourceId: string, via: string): void {
 }
 
 /**
- * Report a sealed purchase for the channel the landing carried. The via tag
- * is read from the CURRENT location (the /join checkout never navigates, so
- * the landing's query string is still present at receipt time); the source
- * id must be the receipt EVENT's own sourceId — the on-chain truth of which
- * source applied. The server re-verifies the tx before recording.
+ * Report a sealed purchase for the channel the landing carried.
+ *
+ * ⛔ THE TAG COMES FROM THE REMEMBERED ARRIVAL, NOT THE CURRENT URL.
+ * ~~read from the CURRENT location (the /join checkout never navigates, so the
+ * landing's query string is still present at receipt time)~~ — STRUCK
+ * 2026-08-05. That premise died the day the referral memory was built: the
+ * whole point is that a buyer can leave and come back to a bare /join and still
+ * be attributed. So the money survived the journey and this beacon did not —
+ * one click recorded, zero conversions, and worst on precisely the slow
+ * channels (print, a QR code, a blog post) the memory exists to serve.
+ * The source and the tag arrive in ONE link; they are remembered in ONE home.
+ *
+ * The source id must still be the receipt EVENT's own sourceId — the on-chain
+ * truth of which source applied. The server re-verifies the tx before recording.
  */
-export function pingChannelConversionFromLocation(sourceId: string, txHash: string): void {
-  const via = parseViaTag(window.location.search);
+export function pingChannelConversion(sourceId: string, txHash: string): void {
+  const via = rememberedVia();
   if (via === null) return;
   if (!HEX32_RE.test(sourceId) || sourceId === ZERO_BYTES32) return;
   if (!HEX32_RE.test(txHash)) return;
