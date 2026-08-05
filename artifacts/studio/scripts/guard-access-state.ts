@@ -399,31 +399,61 @@ check(
 );
 
 // Storage allowlist — files permitted to touch localStorage/sessionStorage.
-// The invariant is: NO auth/session material in browser storage. Both entries
-// store only a non-sensitive UI preference:
+// The invariant is: NO auth/session material in browser storage. Every entry
+// stores only non-sensitive, publicly-shareable state:
 //   - ThemeProvider: the theme choice.
 //   - SyndicateGuide (Support slice): a single boolean "greeting seen" flag so
 //     the one-time greeting bubble shows at most once per browser. No wallet, no
-//     session, no PII, no identity — the Guide is deterministic and has zero
-//     private data by design.
+//     session, no identity — the Guide is deterministic and has zero private
+//     data by design.
+//   - referralMemory (2026-08-05, founder-ordered after his friend's 600 USDC
+//     purchase paid him nothing): the introduction id the visitor ARRIVED ON.
+//     That id is public by construction — it is the shareable part of a join
+//     link, printed in the address bar, handed out on purpose. Storing it is
+//     what makes attribution survive a reload; NOT storing it is what silently
+//     destroyed a referrer's commission, permanently (a wallet that takes its
+//     seat with no link can never be attached to one). Nothing about a wallet,
+//     a session or an identity goes near this key.
+//
+// ⛔ THE ALLOWLIST NARROWED IN THE SAME COMMIT THAT WIDENED IT. It used to be a
+// blanket pass for a whole FILE: an allowlisted module could later start
+// persisting a session token and this guard would applaud. Adding a third entry
+// without fixing that would have traded a real security property for a feature.
+// So each allowlisted file is now also scanned for auth material — the
+// allowlist grants ONE storage permission, never an exemption from the rule it
+// exists to serve.
 const STORAGE_ALLOWED = new Set([
   "components/ThemeProvider.tsx",
   "components/guide/SyndicateGuide.tsx",
+  "lib/referralMemory.ts",
 ]);
+/** What may NEVER be persisted, allowlisted or not: anything that authenticates
+ *  or identifies. A 40+ hex literal covers a wallet address and a signature. */
+const AUTH_MATERIAL =
+  /\b(?:siwe|jwt|bearer|privateKey|mnemonic|seedPhrase|signature|accessToken|refreshToken|sessionToken|authToken|credential)\b|0x[0-9a-fA-F]{40,}/i;
 const storageViolations: string[] = [];
+const allowlistAbuse: string[] = [];
 for (const abs of allSrcFiles) {
   // Normalize to POSIX separators so the allowlist matches on Windows too.
   const rel = path.relative(srcDir, abs).split(path.sep).join("/");
-  if (STORAGE_ALLOWED.has(rel)) continue;
   const code = stripComments(read(abs));
+  if (STORAGE_ALLOWED.has(rel)) {
+    if (AUTH_MATERIAL.test(code)) allowlistAbuse.push(rel);
+    continue;
+  }
   if (/\b(localStorage|sessionStorage)\b/.test(code)) {
     storageViolations.push(rel);
   }
 }
 check(
   storageViolations.length === 0,
-  "no browser storage outside ThemeProvider (no client-side auth persistence)",
-  `browser storage used outside the ThemeProvider allowlist: ${storageViolations.join(", ")} — auth/session material must never live in localStorage/sessionStorage`,
+  `no browser storage outside the allowlist (${STORAGE_ALLOWED.size} files, no client-side auth persistence)`,
+  `browser storage used outside the storage allowlist: ${storageViolations.join(", ")} — auth/session material must never live in localStorage/sessionStorage`,
+);
+check(
+  allowlistAbuse.length === 0,
+  "storage-allowlisted files carry no auth/session material",
+  `a storage-allowlisted file carries auth/session material: ${allowlistAbuse.join(", ")} — the allowlist grants ONE storage permission for non-sensitive state, never an exemption from the rule`,
 );
 
 // ── 13. Wire set: exactly the founder-authorized server-sourced states ───────

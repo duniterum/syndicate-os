@@ -16,7 +16,7 @@
 //   - an optional ?source= introduction id is validated read-only against the
 //     on-chain registry (the server never echoes the id back).
 
-import { lazy, Suspense, useCallback, useEffect, useState, type ReactNode } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useSearch } from "wouter";
 import { ExternalLink, Link2, ShieldAlert } from "lucide-react";
 import {
@@ -29,6 +29,7 @@ import {
 } from "@workspace/api-client-react";
 import { PublicPage } from "@/components/PublicPage";
 import { parseViaTag, pingChannelClick } from "@/lib/channelPing";
+import { isRecalledSource, resolveJoinSource } from "@/lib/referralMemory";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -183,8 +184,16 @@ function useIntroducerShortWallet(sourceId: string, enabled: boolean): string | 
 function IntroductionStatus({
   sourceId,
   dropped,
+  recalled,
 }: {
   sourceId: string;
+  /**
+   * True when this introduction came from what the browser REMEMBERED, not from
+   * the address bar. It is said on screen (2026-08-05): a buyer is never
+   * quietly attributed to someone he cannot see, and a referrer's 5% must be
+   * legible before the signature, never discovered afterwards on the explorer.
+   */
+  recalled: boolean;
   /**
    * The ONE page-level verdict. True once the engine has proven, for the
    * CONNECTED wallet, that this introduction cannot attach. Until then this
@@ -277,6 +286,16 @@ function IntroductionStatus({
                 ? "The introduction is recorded on-chain inside your own purchase, and it never changes your price. The engine checks it against your own wallet before you sign — if it cannot be attached, the checkout says so first and your join goes through without it."
                 : line}
           </p>
+          {recalled && !dropped ? (
+            <p
+              className="text-sm text-muted-foreground leading-relaxed mt-2"
+              data-testid="text-introduction-recalled"
+            >
+              This introduction is the one you arrived on earlier — this browser
+              kept it for you. Open a different introduction link and that one
+              takes over.
+            </p>
+          ) : null}
           <p className="text-xs text-muted-foreground mt-2">
             Registry validation · the server never echoes the id back
           </p>
@@ -891,8 +910,18 @@ function JoinReferralShowcase() {
 export default function JoinProtocol() {
   const search = useSearch();
   const sourceParam = new URLSearchParams(search).get("source");
-  const attachSource =
-    sourceParam !== null && isSourceIdFormat(sourceParam) ? sourceParam : null;
+  // ⛔ THE LINK SURVIVES THE VISIT (founder, 2026-08-05 — his friend's 600 USDC).
+  // This line used to be `sourceParam !== null && isSourceIdFormat(…) ? … : null`
+  // and NOTHING ELSE: the introduction lived only in this tab's query string, so
+  // a reload, a click to the terms and back, or a wallet's in-app browser
+  // destroyed a referrer's commission in silence. MEASURED that day: the engine
+  // would have paid 30.00 USDC on that purchase (replayed at block 92,095,300),
+  // and because the engine can never attach a source to an already-seated wallet
+  // (SourceNotEligible, and `buyerSourceId` has no setter), the loss was not one
+  // commission — it was that member, permanently. The remember/recall rule and
+  // its two rulings (no expiry · last touch wins) live in ONE module.
+  const attachSource = useMemo(() => resolveJoinSource(sourceParam), [sourceParam]);
+  const recalledSource = isRecalledSource(sourceParam, attachSource);
 
   // SPEC R3 — the channel beacon (`&via=`): a landing that carries BOTH a
   // format-valid source and a valid channel tag pings the anonymous click
@@ -908,6 +937,11 @@ export default function JoinProtocol() {
   const [amountInput, setAmountInput] = useState("");
   const [submittedRaw, setSubmittedRaw] = useState<string | null>(null);
   const [inputError, setInputError] = useState<string | null>(null);
+
+  // What the introduction strip reports: the introduction this visit will
+  // actually use, or — when the address bar carries something unusable and
+  // nothing better is remembered — that broken link, so the visitor learns it.
+  const introductionShown = attachSource ?? sourceParam;
 
   // ⛔ ONE VERDICT, ONE PLACE, AND THE CHECKOUT IS ITS ONLY AUTHOR (fourth
   // review, 2026-08-04 — the twin-search law, broken by me).
@@ -966,9 +1000,16 @@ export default function JoinProtocol() {
           historical wallet; renders nothing for everyone else. */}
       <HistoricalGateSlot />
 
-      {/* Optional verified-introduction attribution (?source=) */}
-      {sourceParam !== null ? (
-        <IntroductionStatus sourceId={sourceParam} dropped={introVerdict.dropped} />
+      {/* Optional verified-introduction attribution (?source=, or the one this
+          browser remembered from an earlier visit — 2026-08-05). The malformed
+          case still speaks: a stranger who pastes a broken link is told so, and
+          it never overwrites a good memory. */}
+      {introductionShown !== null ? (
+        <IntroductionStatus
+          sourceId={introductionShown}
+          dropped={introVerdict.dropped}
+          recalled={recalledSource}
+        />
       ) : null}
 
       {/* Exact quote calculator — live engine computation, raw base units */}
