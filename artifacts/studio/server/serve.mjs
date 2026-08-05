@@ -102,6 +102,7 @@ function sendParamShell(req, res, absPath, rule, tail, face) {
     "Cache-Control": "no-cache",
     "Vary": "Accept-Encoding",
     "X-Content-Type-Options": "nosniff",
+    ...HTML_SECURITY_HEADERS,
     "Content-Length": String(body.length),
   };
   res.writeHead(200, headers);
@@ -193,6 +194,26 @@ function etagMatches(inm, etag) {
   });
 }
 
+// ⛔ THE HTML SECURITY HEADERS — ON EVERY PAGE, NEVER ON AN ASSET.
+// MEASURED on prod 2026-08-05: thesyndicate.money served NO X-Frame-Options and
+// NO Content-Security-Policy, so any site could hide an <iframe> or open a
+// popunder on /join?source=THEIRS. Since the referral memory landed, that plants
+// an attacker's introduction in a visitor's browser — and the engine writes
+// buyerSourceId ONCE with no owner setter, so the honest referrer loses that
+// member for life. The client half (referralMemory refuses to write unless a
+// human is looking) shipped with the memory; this is the other half.
+// COOP additionally strips the opener's handle, so a popunder cannot close the
+// window it just opened.
+// Assets are deliberately excluded: these are page-level protections, and an
+// immutable hashed chunk gains nothing from them.
+// (Replit applied this in their workspace first, 2026-08-05, and flagged the
+// drift; this is that fix taken back into main so a later pull cannot undo it.)
+const HTML_SECURITY_HEADERS = {
+  "X-Frame-Options": "DENY",
+  "Content-Security-Policy": "frame-ancestors 'none'",
+  "Cross-Origin-Opener-Policy": "same-origin",
+};
+
 function sendFile(req, res, absPath, servedRel, status) {
   const st = statSync(absPath);
   // Weak validator from size+mtime (nginx-style) — represents the RESOURCE (same
@@ -200,11 +221,14 @@ function sendFile(req, res, absPath, servedRel, status) {
   // hourly-cache class (favicons/robots/sitemap/images) can revalidate too.
   const etag = `W/"${st.size.toString(16)}-${Math.round(st.mtimeMs).toString(16)}"`;
 
+  const contentType = mimeFor(absPath);
   const headers = {
-    "Content-Type": mimeFor(absPath),
+    "Content-Type": contentType,
     "Cache-Control": cacheControlFor(servedRel),
     "Vary": "Accept-Encoding",
     "X-Content-Type-Options": "nosniff",
+    // HTML only — a hashed, immutable asset gains nothing from page protections.
+    ...(contentType.startsWith("text/html") ? HTML_SECURITY_HEADERS : {}),
     "ETag": etag,
   };
 
@@ -391,6 +415,7 @@ function sendJoinShell(req, res, absPath, sourceId, cardFace) {
     "Cache-Control": "no-cache",
     "Vary": "Accept-Encoding",
     "X-Content-Type-Options": "nosniff",
+    ...HTML_SECURITY_HEADERS,
     "Content-Length": String(body.length),
   });
   res.end(req.method === "HEAD" ? undefined : body);
