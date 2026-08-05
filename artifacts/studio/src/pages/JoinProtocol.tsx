@@ -16,7 +16,7 @@
 //   - an optional ?source= introduction id is validated read-only against the
 //     on-chain registry (the server never echoes the id back).
 
-import { lazy, Suspense, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useSearch } from "wouter";
 import { ExternalLink, Link2, ShieldAlert } from "lucide-react";
 import {
@@ -582,24 +582,44 @@ function QuotePanel({
       placeholderData: (previous) => previous,
     },
   });
+  /** The last read the engine actually CONFIRMED — never torn down by a later failure. */
+  const lastConfirmed = useRef<typeof data>(undefined);
 
-  if (isLoading) {
+  // ⛔ A FAILED RE-READ MAY NEVER TEAR THE CHECKOUT OUT FROM UNDER A BUYER
+  // (review, 2026-08-05 — the most expensive defect it found).
+  // `placeholderData` covered only the LOADING case. An `isError`, or a 200 whose
+  // server-side chain read failed, hit the returns below and UNMOUNTED
+  // JoinCheckout — with everything it holds, including the receipt. And the
+  // query's key changes at the worst possible moment: dropping the link flips
+  // `effectiveSourceId` ~15 lines before `writeContractAsync`, so the new-key
+  // fetch lands while the wallet prompt is open. If it errored, the buyer signed,
+  // his purchase succeeded on-chain, and he was shown a fresh Step 1 with no seat
+  // number, no ticket and no explorer link — from which he could sign a SECOND
+  // full purchase.
+  // So the last CONFIRMED read is held, and a failed re-read becomes a notice
+  // instead of a teardown.
+  // ⚠ SAFE BY CONSTRUCTION, not by hope: a displayed figure can never become a
+  // signed one. `handleBuy` fetches a FRESH quote at the click and refuses to
+  // sign at all if it cannot ("A fresh quote could not be read right before
+  // signing — nothing was signed"), and `minSynOut` comes from that fresh read.
+  if (data && data.chainVerified && data.quote !== null) lastConfirmed.current = data;
+  const readFailed = isError || !data || !data.chainVerified || data.quote === null;
+  const shown = readFailed ? lastConfirmed.current : data;
+
+  if (isLoading && shown === null) {
     return (
       <p className="text-sm text-muted-foreground" data-testid="text-quote-loading">
         Reading your exact quote from the live engine…
       </p>
     );
   }
-  if (isError || !data) {
-    return (
+  if (shown === null || shown === undefined || shown.quote === null) {
+    return isError || !data ? (
       <p className="text-sm text-destructive" data-testid="text-quote-error">
         Quote read unavailable right now (possibly rate-limited) — nothing is
         assumed. Try again shortly.
       </p>
-    );
-  }
-  if (!data.chainVerified || data.quote === null) {
-    return (
+    ) : (
       <p className="text-sm text-destructive" data-testid="text-quote-failed">
         The engine could not be read:{" "}
         {data.failureReason ?? "live quote unavailable"}. No value is invented
@@ -608,7 +628,11 @@ function QuotePanel({
     );
   }
 
-  const q = toCheckoutQuote(data.quote);
+  // Narrowed by the guard directly above: `shown` is a confirmed response with a
+  // non-null quote. The ref that can also feed it is typed from the hook, which
+  // widens through useRef — the assertion states what the guard already proved.
+  const view = shown as NonNullable<typeof data>;
+  const q = toCheckoutQuote(view.quote!);
   const floorRaw = computeMinSynOutRaw(q.synOutRaw);
   // THE VERDICT THIS LINE MAY CLAIM (rewritten 2026-08-04, founder's answer).
   // The served quote is computed for an ANONYMOUS recipient, so `sourceValid`
@@ -620,16 +644,16 @@ function QuotePanel({
   // connected wallet, and either way the join completes.
   const sourceLine = sourceUnusable
     ? "This referral link cannot be attached to your wallet — the engine refused it, so this quote is computed without it. Your join is unaffected."
-    : data.sourceProvided && data.sourceValid === true
+    : view.sourceProvided && view.sourceValid === true
       ? "A verified referral is applied to this quote. The engine checks it against your own wallet before you sign — and if it cannot apply, your join still goes through without it."
-      : data.sourceProvided
+      : view.sourceProvided
         ? // THE SERVER'S OWN WORDS, NOT OURS (review catch, 2026-08-04). This
           // branch is reached for THREE different states — a malformed link, an
           // inactive one, and one we simply could not READ — and it asserted the
           // link was dead in all three. The server already writes the honest
           // sentence for each; showing it is both truer and one less place for
           // the wording to drift.
-          (data.failureReason ??
+          (view.failureReason ??
           "The referral link is not valid or not active — this quote is computed without it.")
         : "No referral — a direct join.";
 
@@ -637,7 +661,7 @@ function QuotePanel({
     <div className="animate-in fade-in duration-300" data-testid="panel-quote-result">
       <QuoteLine
         label="What you pay"
-        primary={`${formatRawUnits(grossUsdcRaw, data.decimals.usdc)} USDC`}
+        primary={`${formatRawUnits(grossUsdcRaw, view.decimals.usdc)} USDC`}
         testId="quote-pay"
       />
       {/* ⛔ EVERY ENGINE FIGURE WAITS FOR ITS OWN ANSWER — AND THE CHECKOUT NEVER
@@ -667,7 +691,7 @@ function QuotePanel({
         <>
           <QuoteLine
             label="What you receive"
-            primary={`${formatRawUnits(q.synOutRaw, data.decimals.syn)} SYN`}
+            primary={`${formatRawUnits(q.synOutRaw, view.decimals.syn)} SYN`}
             sub={`Era ${q.era} · ${q.synPerUsdcRaw} SYN per $1 — read live from the engine, and it changes between eras.`}
             testId="quote-syn"
           />
@@ -675,7 +699,7 @@ function QuotePanel({
           {floorRaw !== null ? (
             <QuoteLine
               label="Slippage floor"
-              primary={`≥ ${formatRawUnits(floorRaw, data.decimals.syn)} SYN`}
+              primary={`≥ ${formatRawUnits(floorRaw, view.decimals.syn)} SYN`}
               sub="The least SYN a purchase would accept — it protects you if the era rate moves before you sign."
               testId="quote-floor"
             />
@@ -694,7 +718,7 @@ function QuotePanel({
             <>
               <MoneyPath
                 netProtocolRaw={trueSplit ? trueSplit.netProtocolRaw : q.netProtocolRaw}
-                usdcDecimals={data.decimals.usdc}
+                usdcDecimals={view.decimals.usdc}
                 sourceId={effectiveSourceId}
                 grossUsdcRaw={grossUsdcRaw}
                 sourcePaymentRaw={trueSplit ? trueSplit.sourcePaymentRaw : q.sourcePaymentRaw}
@@ -712,7 +736,7 @@ function QuotePanel({
                   className="text-xs text-muted-foreground mt-2 max-w-2xl"
                   data-testid="text-quote-existing-introduction"
                 >
-                  {formatRawUnits(trueSplit.sourcePaymentRaw, data.decimals.usdc)} USDC of
+                  {formatRawUnits(trueSplit.sourcePaymentRaw, view.decimals.usdc)} USDC of
                   this purchase still goes to the introduction already recorded on-chain
                   for your wallet — the engine pays it whether or not a link is used.
                 </p>
@@ -733,8 +757,8 @@ function QuotePanel({
       <CheckoutSlot
         grossUsdcRaw={grossUsdcRaw}
         sourceId={effectiveSourceId}
-        usdcDecimals={data.decimals.usdc}
-        synDecimals={data.decimals.syn}
+        usdcDecimals={view.decimals.usdc}
+        synDecimals={view.decimals.syn}
         onVerdict={onVerdict}
       />
 
@@ -751,7 +775,7 @@ function QuotePanel({
           <div className="pt-1 font-sans text-muted-foreground">
             Exact strings from the engine's public quote view · formatted values
             are client-side projections of the raw string · as of{" "}
-            {new Date(data.asOf).toISOString().slice(0, 19).replace("T", " ")} UTC
+            {new Date(view.asOf).toISOString().slice(0, 19).replace("T", " ")} UTC
           </div>
         </div>
       </details>

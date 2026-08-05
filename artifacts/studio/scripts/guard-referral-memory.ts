@@ -744,6 +744,31 @@ if (pageExists) {
   );
 }
 
+// ── 11. A FAILED RE-READ MAY NOT TEAR THE CHECKOUT DOWN ─────────────────────
+// The most expensive defect the twelve-hat review found. `placeholderData`
+// covered only the LOADING case, so an `isError` — or a 200 whose server-side
+// chain read failed — early-returned past <CheckoutSlot> and UNMOUNTED the
+// checkout with everything it holds, including the receipt. And the query's key
+// changes at the worst possible moment: dropping the link flips the effective
+// source ~15 lines before writeContractAsync, so the new-key fetch lands while
+// the wallet prompt is open. The buyer could sign, succeed on-chain, be shown a
+// fresh Step 1 with no seat and no ticket, and pay AGAIN.
+if (pageExists) {
+  const pageBody = stripComments(readFileSync(PAGE, "utf8"));
+  check(
+    /lastConfirmed/.test(pageBody),
+    "referral-memory: the last CONFIRMED quote is retained across a failed re-read",
+    "referral-memory: JoinProtocol keeps no last-confirmed quote — a failed re-read early-returns past the checkout and unmounts it mid-signature, destroying the receipt and letting the buyer pay twice",
+  );
+  // The early return must be reachable ONLY when there is nothing confirmed to
+  // show — never on the raw error/unverified conditions that used to fire it.
+  check(
+    /if \(shown === null \|\| shown === undefined/.test(pageBody),
+    "referral-memory: the quote panel bails out only when NOTHING was ever confirmed",
+    "referral-memory: the quote panel still early-returns on a raw error or unverified read instead of on 'nothing confirmed to show' — that is the teardown path",
+  );
+}
+
 // ── 7. ONE HOME ─────────────────────────────────────────────────────────────
 function walk(dir: string, out: string[] = []): string[] {
   for (const entry of readdirSync(dir)) {
