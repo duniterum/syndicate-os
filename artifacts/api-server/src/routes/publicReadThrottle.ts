@@ -25,8 +25,30 @@ export function allowPublicRead(clientKey: string): boolean {
       for (const [key, win] of windows) {
         if (now - win.startedAt >= WINDOW_MS) windows.delete(key);
       }
-      // Still over cap after pruning → refuse new clients rather than grow.
-      if (windows.size >= MAX_TRACKED_CLIENTS) return false;
+      // ⛔ A CLIFF, NOT A DEGRADATION — and it fell on exactly the wrong people
+      // (review, 2026-08-05). ~~Still over cap after pruning → refuse new
+      // clients rather than grow.~~ STRUCK. Above the cap, EVERY NEW visitor was
+      // refused on the FIRST read of the landing while incumbents kept being
+      // served — the funnel closing for strangers, which is the only audience it
+      // exists for. And the money leg is worse than a slow page: the buy click
+      // re-reads the quote, so a 429 there is «A fresh quote could not be read
+      // right before signing — nothing was signed», with the buyer's approval
+      // already granted and his gas already spent.
+      // The cap protects MEMORY, so the honest answer is to make room, not to
+      // turn people away: evict the OLDEST window (the client least recently
+      // seen) and admit the newcomer. The bound holds; nobody is refused for
+      // being new.
+      if (windows.size >= MAX_TRACKED_CLIENTS) {
+        let oldestKey: string | null = null;
+        let oldestAt = Infinity;
+        for (const [key, win] of windows) {
+          if (win.startedAt < oldestAt) {
+            oldestAt = win.startedAt;
+            oldestKey = key;
+          }
+        }
+        if (oldestKey !== null) windows.delete(oldestKey);
+      }
     }
     windows.set(clientKey, { startedAt: now, count: 1 });
     return true;
