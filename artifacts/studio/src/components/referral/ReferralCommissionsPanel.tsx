@@ -32,7 +32,7 @@ import { useMemo, useState } from "react";
 import { ChevronDown, Share2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { StatusPill } from "@/components/status-pill/StatusPill";
-import { ladderProgress } from "@/config/connectorLadder";
+import { LADDER_RUNGS, ladderProgress } from "@/config/connectorLadder";
 import { referralProgram } from "@/config/referralProgram";
 import { orderedShareTargets, shareIntentArgs } from "@/lib/shareTargets";
 import { shortTxLabel } from "@/lib/txDisplay";
@@ -440,7 +440,11 @@ function ReferenceExpander({ rateBps }: { rateBps: number }) {
 // ── The tab ─────────────────────────────────────────────────────────────────
 export function ReferralCommissionsPanel({ readback }: { readback: StandingReadback | null | undefined }) {
   const s = readback?.standing ?? null;
-  const rateBps = s ? ladderProgress(s.durableIntroductions).current.bps : 500;
+  // ⛔ THE FALLBACK IS THE LADDER'S OWN ENTRY RUNG, NOT A TYPED 500. This
+  // rendered as "your current rung — 5%" (and as dollar figures) whenever the
+  // standing had not resolved — a rate the chain refutes for every introducer
+  // above the first rung. One home for the figure; SPEC §⑧①.
+  const rateBps = s ? ladderProgress(s.durableIntroductions).current.bps : LADDER_RUNGS[0].bps;
   // One read for the whole tab — the register renders from the SAME rows the
   // Introductions tab reads (they can never drift apart on the same wallet).
   const [retryToken, setRetryToken] = useState(0);

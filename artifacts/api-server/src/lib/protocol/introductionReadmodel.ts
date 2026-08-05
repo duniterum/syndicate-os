@@ -74,7 +74,20 @@ export type IntroductionSourceStats = {
   attributedPurchases: number;
   introducedMembers: number;
   durableIntroductions: number;
+  /**
+   * ⛔ WHAT ACTUALLY REACHED THE WALLET — earned MINUS what is still escrowed.
+   * This used to be the raw sum of the receipts' `acquisitionCost`, which the
+   * contract emits EVEN WHEN the push to the payout wallet reverted and the
+   * amount was escrowed instead (MembershipSaleV3 `_payAcquisition`, :526-535),
+   * and `SourcePayoutEscrowed` is indexed nowhere in this repo. So a referrer
+   * was shown, as PAID, money he had not received. Both figures were already on
+   * this row; only the subtraction was missing.
+   * Floors at 0 — escrow can only ever be a subset of what was awarded, and a
+   * negative would be a claim the chain refutes.
+   */
   commissionPaidRaw: string;
+  /** What the ENGINE AWARDED, escrowed or not — the receipts' own sum. */
+  commissionEarnedRaw: string;
   /** Live sale read at build time; "0" when nothing is escrowed. */
   escrowOwedRaw: string;
   firstBlock: number;
@@ -258,7 +271,10 @@ export function buildIntroductionReadmodel(inputs: BuildInputs): IntroductionRea
       attributedPurchases: acc.purchases,
       introducedMembers: acc.recipients.size,
       durableIntroductions: durable,
-      commissionPaidRaw: acc.commission.toString(),
+      commissionPaidRaw: (
+        acc.commission - (BigInt(escrow) > acc.commission ? acc.commission : BigInt(escrow))
+      ).toString(),
+      commissionEarnedRaw: acc.commission.toString(),
       escrowOwedRaw: escrow,
       firstBlock: acc.firstBlock,
       lastBlock: acc.lastBlock,

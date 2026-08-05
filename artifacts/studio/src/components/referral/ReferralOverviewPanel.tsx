@@ -9,7 +9,7 @@
 import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { VerifyOnChain } from "@/components/VerifyOnChain";
-import { ladderProgress } from "@/config/connectorLadder";
+import { LADDER_RUNGS, ladderProgress } from "@/config/connectorLadder";
 import type { StandingReadback } from "@/components/referral/referralStanding";
 
 export function ReferralOverviewPanel({ readback }: { readback: StandingReadback | null | undefined }) {
@@ -44,8 +44,14 @@ export function ReferralOverviewPanel({ readback }: { readback: StandingReadback
           </p>
         ) : (
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Every member source starts at Emerging · 5% — the road is the same
-            for everyone, and the threshold alone decides a promotion.
+            {/* ⛔ THE RATE COMES FROM THE LADDER, NEVER FROM A TYPED FIGURE
+                (SPEC §⑧①, and his red line: never a claim the chain refutes).
+                This said "Emerging · 5%" as a literal, beside a ladder that runs
+                to 12% — the same defect the twelve-hat review removed from the
+                checkout, left standing on the screen the REFERRER lives on. */}
+            Every member source starts at {LADDER_RUNGS[0].title} ·{" "}
+            {LADDER_RUNGS[0].bps / 100}% — the road is the same for everyone, and
+            the threshold alone decides a promotion.
           </p>
         )}
         <Link
