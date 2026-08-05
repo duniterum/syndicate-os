@@ -72,6 +72,10 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const srcDir = path.resolve(here, "..", "src");
 const MODULE = path.join(srcDir, "lib", "referralMemory.ts");
 const PAGE = path.join(srcDir, "pages", "JoinProtocol.tsx");
+// The arrival is captured app-wide (founder ruling ③, 2026-08-05): a link may
+// land on ANY route, and only /join used to read it. Both callers are searched
+// for the resolver so the guard follows the app instead of naming a target.
+const APP = path.join(srcDir, "App.tsx");
 
 function stripComments(code: string): string {
   return code
@@ -112,84 +116,241 @@ if (moduleExists) {
   // because it only ever executed the pure rule. A guard that tests the helper
   // and not the behaviour is decoration. So the wrapper itself now runs against
   // a fake store, and the row that H1 killed is the second one.
-  const resolve = m.resolveJoinSource;
+  // ⛔ THE ENTRY POINT IS DISCOVERED FROM THE APP, NEVER NAMED HERE.
+  // Round 1 executed only the pure rule; round 2 executed a WRAPPER the app had
+  // stopped calling. Both times the whole 600-USDC defect could be restored with
+  // every check green — the second time by gutting `resolveJoinIntroduction`
+  // while `resolveJoinSource` stayed correct. A guard that names its own target
+  // measures whatever it was told to, not what ships. So the name is read out of
+  // the code that CALLS it, and if the app renames or re-routes its resolver
+  // this guard follows or goes red.
+  const callers = [PAGE, APP].filter((f) => existsSync(f));
+  const entryNames = new Set<string>();
+  for (const f of callers) {
+    for (const hit of stripComments(readFileSync(f, "utf8")).matchAll(/\bresolveJoin(\w+)\s*\(/g)) {
+      entryNames.add(`resolveJoin${hit[1]}`);
+    }
+  }
   check(
-    typeof resolve === "function",
-    "referral-memory: resolveJoinSource is exported",
-    "referral-memory: referralMemory.ts must export resolveJoinSource(urlSource) — the entry point the page uses",
+    entryNames.size > 0,
+    `referral-memory: the app's own resolver is discoverable (${[...entryNames].join(", ")})`,
+    "referral-memory: no resolveJoin*() call found in JoinProtocol.tsx or App.tsx — the arrival is not resolved through the ONE module, which IS the defect this guard exists for",
   );
-  if (typeof resolve === "function") {
-    const A = "0x" + "a".repeat(64);
-    const B = "0x" + "b".repeat(64);
+
+  const A = "0x" + "a".repeat(64);
+  const B = "0x" + "b".repeat(64);
+  const ZERO32 = "0x" + "0".repeat(64);
+  /** A row that deliberately does not assert the stored residue. */
+  const DONT_CARE = " dont-care";
+  const key = m.REFERRAL_MEMORY_KEY ?? "syndicate.join.source";
+
+  for (const entryName of entryNames) {
+    const entry = (m as Record<string, unknown>)[entryName];
+    check(
+      typeof entry === "function",
+      `referral-memory: ${entryName} is exported and callable`,
+      `referral-memory: the app calls ${entryName}() but referralMemory.ts does not export it`,
+    );
+    if (typeof entry !== "function") continue;
+    const call = entry as (a: string | null, b?: string | null) => unknown;
+
     const store = new Map<string, string>();
-    const fakeWindow = {
+    let throwOnWrite = false;
+    const fakeWindow: Record<string, unknown> = {
       localStorage: {
         getItem: (k: string) => store.get(k) ?? null,
-        setItem: (k: string, v: string) => void store.set(k, v),
+        setItem: (k: string, v: string) => {
+          if (throwOnWrite) throw new Error("QuotaExceeded / private mode");
+          store.set(k, v);
+        },
       },
-      // A real visit is never inside a frame; the frame case is pinned below.
-      top: null as unknown,
-      self: null as unknown,
     };
-    (fakeWindow as { top: unknown }).top = fakeWindow;
-    (fakeWindow as { self: unknown }).self = fakeWindow;
+    fakeWindow.top = fakeWindow;
+    fakeWindow.self = fakeWindow;
     const g = globalThis as { window?: unknown };
     const hadWindow = "window" in g;
     const previous = g.window;
     g.window = fakeWindow;
+
+    /** The SOURCE the store holds, whatever shape it is serialized in. */
+    const storedSource = (): string | null => {
+      const raw = store.get(key) ?? null;
+      if (raw === null) return null;
+      if (!raw.startsWith("{")) return raw;
+      try {
+        return (JSON.parse(raw) as { s?: string }).s ?? null;
+      } catch {
+        return null;
+      }
+    };
+    /** The channel TAG the store holds — the half round 2 left unexecuted. */
+    const storedVia = (): string | null => {
+      const raw = store.get(key) ?? null;
+      if (raw === null || !raw.startsWith("{")) return null;
+      try {
+        return (JSON.parse(raw) as { v?: string | null }).v ?? null;
+      } catch {
+        return null;
+      }
+    };
+    const sourceOf = (r: unknown): string | null =>
+      typeof r === "string" ? r : r && typeof r === "object" ? ((r as { sourceId?: string }).sourceId ?? null) : null;
+
+    // seed (raw stored value or null) · arriving source · arriving via
+    //   → the source it must ANSWER · the source the store must HOLD · the tag it must HOLD
+    type Row = readonly [
+      string | null, string | null, string | null,
+      string | null, string | null, string | null,
+    ];
+    const ROWS: readonly Row[] = [
+      // the arrival is taken AND persisted
+      [null, A, null, A, A, null],
+      // ⛔ THE ROW EVERY GUTTING KILLS: nothing in the URL → the MEMORY answers
+      [JSON.stringify({ s: A, v: null }), null, null, A, A, null],
+      [A, null, null, A, A, null], // the legacy bare-string value still recalls
+      // LAST TOUCH — in the answer and in the store
+      [JSON.stringify({ s: A, v: "twitter" }), B, null, B, B, null],
+      // ⛔ THE CHANNEL HALF, EXECUTED: a tag rides in with its link…
+      [null, A, "twitter", A, A, "twitter"],
+      // …and a NEWER link with no tag CLEARS it — never inherits
+      [JSON.stringify({ s: A, v: "twitter" }), B, null, B, B, null],
+      // …and an off-law tag is dropped, not stored
+      [null, A, "NOT A TAG!!", A, A, null],
+      // a mangled arrival never destroys a good memory, tag included
+      [JSON.stringify({ s: A, v: "print" }), "garbage", "twitter", A, A, "print"],
+      [JSON.stringify({ s: A, v: "print" }), null, null, A, A, "print"],
+      // ⛔ bytes32(0) is the ABSENCE of an introduction — never wins, never stored
+      [JSON.stringify({ s: A, v: null }), ZERO32, null, A, A, null],
+      // POISONED / ZERO STORE — a user or an extension can edit it. THE PROPERTY
+      // IS THAT IT IS NEVER ANSWERED, so it can never reach buy(). Whether the
+      // junk is also scrubbed from storage is NOT asserted (DONT_CARE): it is
+      // never believed and the next real arrival overwrites it, and pinning the
+      // residue would pin an implementation detail instead of the rule.
+      [JSON.stringify({ s: ZERO32, v: null }), null, null, null, DONT_CARE, DONT_CARE],
+      [ZERO32, null, null, null, DONT_CARE, DONT_CARE],
+      ["not-json-at-all", null, null, null, DONT_CARE, DONT_CARE],
+      ['{"s":"garbage","v":"twitter"}', null, null, null, DONT_CARE, DONT_CARE],
+      ['{"s":123}', null, null, null, DONT_CARE, DONT_CARE],
+      ['{"__proto__":{"s":"' + A + '"}}', null, null, null, DONT_CARE, DONT_CARE],
+      ["{", null, null, null, DONT_CARE, DONT_CARE],
+      // …and a poisoned store still yields to a real arrival
+      ["not-json-at-all", B, "blog", B, B, "blog"],
+    ];
+
     try {
-      const key = m.REFERRAL_MEMORY_KEY ?? "syndicate.join.source";
-      // arrival → returned value → what the store must hold afterwards
-      const WRAPPER: readonly (readonly [string | null, string | null, string | null])[] = [
-        [A, A, A], // a fresh arrival is used AND written
-        [null, A, A], // ⛔ THE ROW H1 KILLED: nothing in the URL → the memory answers
-        [B, B, B], // last touch replaces it, in the store too
-        [null, B, B], // and the new one is what a later bare visit gets
-        ["garbage", B, B], // a mangled arrival never destroys a good memory
-      ];
-      for (const [arriving, expectedReturn, expectedStored] of WRAPPER) {
+      for (const [seed, src, via, wantAnswer, wantStored, wantVia] of ROWS) {
         tableRows += 1;
-        let got: string | null | "THREW";
+        store.clear();
+        if (seed !== null) store.set(key, seed);
+        let raw: unknown = "THREW";
         try {
-          got = resolve(arriving);
+          raw = call(src, via);
         } catch {
-          got = "THREW";
+          raw = "THREW";
         }
-        // The stored shape carries the whole arrival (source + channel tag), so
-        // the assertion reads the SOURCE out of it rather than pinning today's
-        // serialization — the property is "the store holds this introduction".
-        const rawStored = store.get(key) ?? null;
-        const stored =
-          rawStored === null
-            ? null
-            : rawStored.startsWith("{")
-              ? ((JSON.parse(rawStored) as { s?: string }).s ?? null)
-              : rawStored;
+        const answer = raw === "THREW" ? "THREW" : sourceOf(raw);
+        const heldSource = storedSource();
+        const heldVia = storedVia();
+        // The tag is only asserted for an entry point that takes one.
+        const viaOk = wantVia === DONT_CARE || call.length < 2 || heldVia === wantVia;
+        const storeOk = wantStored === DONT_CARE || heldSource === wantStored;
         check(
-          got === expectedReturn && stored === expectedStored,
-          `referral-memory: resolveJoinSource(${arriving === null ? "null" : arriving.slice(0, 8) + "…"}) → ${expectedReturn === null ? "null" : expectedReturn.slice(0, 8) + "…"} (store holds it)`,
-          `referral-memory: resolveJoinSource(${JSON.stringify(arriving)}) returned ${JSON.stringify(got)} with the store holding ${JSON.stringify(stored)} — expected ${JSON.stringify(expectedReturn)} / ${JSON.stringify(expectedStored)}. If the recall row failed, the memory is dead and the original defect is back.`,
+          answer === wantAnswer && storeOk && viaOk,
+          `referral-memory: ${entryName}(${src === null ? "null" : src.slice(0, 6) + "…"}${call.length > 1 ? `, ${JSON.stringify(via)}` : ""}) on ${seed === null ? "empty" : "seeded"} store → ${wantAnswer === null ? "null" : wantAnswer.slice(0, 6) + "…"}`,
+          `referral-memory: ${entryName}(${JSON.stringify(src)}, ${JSON.stringify(via)}) with the store seeded ${JSON.stringify(seed)} answered ${JSON.stringify(answer)} and left {source: ${JSON.stringify(heldSource)}, via: ${JSON.stringify(heldVia)}} — expected ${JSON.stringify(wantAnswer)} / ${JSON.stringify(wantStored)} / ${JSON.stringify(wantVia)}. A failing recall row means the memory is dead and the original defect is back.`,
         );
       }
 
-      // ── THE FRAME PIN (security, measured 2026-08-05) ──────────────────────
-      // prod serves /join with NO X-Frame-Options and NO CSP frame-ancestors
-      // (curl -D -). So any site can hide <iframe src="/join?source=THEIRS">,
-      // and because this module writes at render with no click and no wallet,
-      // the visitor's browser silently carries the attacker's introduction —
-      // for life, since the engine writes buyerSourceId once and no owner
-      // function can change it. Before the memory existed the same iframe stole
-      // nothing. An invitation link is OPENED, never framed.
+      // ── THE PURE RULE, ASKED DIRECTLY WITH A POISONED MEMORY ───────────────
+      // The wrapper validates before it hands anything over, so gutting the pure
+      // rule's own check changed no wrapper row and the guard stayed green. But
+      // the rule is EXPORTED — any future caller can hand it a value straight
+      // out of storage. The rule must defend itself, and that is asserted here
+      // rather than assumed from its only current caller.
+      const pure = (m as Record<string, unknown>)[
+        entryName === "resolveJoinIntroduction" ? "nextRememberedIntroduction" : "nextRememberedSource"
+      ];
+      if (typeof pure === "function") {
+        const askPure = pure as (r: unknown, s: string | null, v?: string | null) => unknown;
+        const POISON: readonly (readonly [unknown, string])[] = [
+          [{ sourceId: "garbage", via: "twitter" }, "a malformed remembered source"],
+          [{ sourceId: ZERO32, via: null }, "bytes32(0) as the remembered source"],
+          [{ sourceId: "", via: null }, "an empty remembered source"],
+          [{ via: "twitter" }, "a remembered value with no source at all"],
+        ];
+        for (const [poisoned, label] of POISON) {
+          tableRows += 1;
+          let out: unknown = "THREW";
+          try {
+            out = askPure(poisoned, null, null);
+          } catch {
+            out = "THREW";
+          }
+          check(
+            sourceOf(out) === null,
+            `referral-memory: the rule refuses ${label}`,
+            `referral-memory: handed ${label} directly, the rule answered ${JSON.stringify(sourceOf(out))} instead of null — a value straight out of storage would reach buy() as a source id`,
+          );
+        }
+      }
+
+      // ── FRAMED: it must not WRITE, and must not OVERWRITE ──────────────────
+      // MEASURED on prod 2026-08-05: /join serves no X-Frame-Options and no CSP
+      // frame-ancestors, so any site can hide <iframe src="…?source=THEIRS">.
+      // This module writes with no click and no wallet, and the engine writes
+      // buyerSourceId once with no setter — so a framed write costs the honest
+      // referrer that member for life. Round 2 defeated the old pin by refusing
+      // only when the store was EMPTY; the property is that a framed page
+      // changes nothing.
       store.clear();
-      (fakeWindow as { top: unknown }).top = { different: true };
-      const framed = resolve(A);
-      const storedFromFrame = store.get(m.REFERRAL_MEMORY_KEY ?? "syndicate.join.source") ?? null;
+      store.set(key, JSON.stringify({ s: B, v: "print" }));
+      fakeWindow.top = { notUs: true };
+      try {
+        call(A, "twitter");
+      } catch {
+        /* a throw is also "did not overwrite" */
+      }
       check(
-        storedFromFrame === null,
-        "referral-memory: a framed page cannot write the memory (cookie-stuffing blocked)",
-        `referral-memory: resolveJoinSource wrote ${JSON.stringify(storedFromFrame)} while window.top !== window.self — ANY website can then stuff its own introduction into a visitor's browser permanently, with no click and no wallet. Refuse the write when framed (returned ${JSON.stringify(framed)}).`,
+        storedSource() === B && storedVia() === "print",
+        `referral-memory: ${entryName} — a framed page can neither write nor OVERWRITE the memory`,
+        `referral-memory: while window.top !== window.self, ${entryName} left {source: ${JSON.stringify(storedSource())}, via: ${JSON.stringify(storedVia())}} instead of B/print — ANY website can then overwrite a visitor's real introduction with its own, permanently and with no click`,
       );
-      (fakeWindow as { top: unknown }).top = fakeWindow;
+      fakeWindow.top = fakeWindow;
+
+      // ── A THROWING STORE NEVER TAKES THE PAGE DOWN ─────────────────────────
+      store.clear();
+      throwOnWrite = true;
+      let survived = true;
+      try {
+        call(A, "twitter");
+      } catch {
+        survived = false;
+      }
+      throwOnWrite = false;
+      check(
+        survived,
+        `referral-memory: ${entryName} survives a storage that throws (Safari private mode)`,
+        `referral-memory: ${entryName} threw when the store refused a write — Safari private mode and storage-disabled wallet browsers would take the whole join page down for a convenience feature`,
+      );
+
+      // ── NO CLOCK: the same inputs answer the same, whenever ────────────────
+      // Round 2 smuggled a 30-day window in as `performance.timeOrigin +
+      // performance.now()`, defeating a vocabulary scan. The PROPERTY is that
+      // this rule has no time input at all, so moving every clock forty days
+      // forward may not change a single answer.
+      store.clear();
+      store.set(key, JSON.stringify({ s: A, v: "print" }));
+      const beforeClock = sourceOf(call(null, null));
+      const realNow = performance.now.bind(performance);
+      const FORTY_DAYS_MS = 40 * 24 * 60 * 60 * 1000;
+      (performance as { now: () => number }).now = () => realNow() + FORTY_DAYS_MS;
+      const afterClock = sourceOf(call(null, null));
+      (performance as { now: () => number }).now = realNow;
+      check(
+        beforeClock === A && afterClock === A,
+        `referral-memory: ${entryName} answers the same after forty days (no expiry, his ruling ⓐ)`,
+        `referral-memory: moving the clock forty days forward changed ${entryName}'s answer (${JSON.stringify(beforeClock)} → ${JSON.stringify(afterClock)}) — an expiry is in there somewhere. The on-chain link is FOR LIFE; a browser window decides only whether a referrer is attached AT ALL, once, irreversibly.`,
+      );
     } finally {
       if (hadWindow) g.window = previous;
       else delete (g as { window?: unknown }).window;
