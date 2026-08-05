@@ -1,6 +1,23 @@
 # DESIGN_ROADMAP — chemin vers "full grade-AAA" (source unique du workstream design)
 
-> ## ▶ 2026-08-04 — PROD = `c55edd0`. Au quai : `2e47dbe` (groupable).
+> ## ▶ 2026-08-05 — PROD = `c0555cc9` (14e sceau) + le 15e (en-tetes de securite).
+> ⛔ **AU QUAI : 15 commits, NON GROUPABLES** — l arc parrainage
+> (`173e0bf` → HEAD). Un defaut qui coute de l argent a chaque achat.
+> **PORTE D APERCU D ABORD** : trois surfaces rendues ont change et n ont jamais
+> ete vues.
+>
+> - [x] **L ARC PARRAINAGE — TROIS SURFACES RENDUES (2026-08-05, en attente de
+>   la porte d apercu)** : ① `/join` — la bande d introduction dit quand le lien
+>   vient de la MEMOIRE du navigateur ; ② le checkout porte une ligne d
+>   attribution TOUJOURS presente (`text-checkout-attribution`) a quatre etats —
+>   attache, retire par le moteur, moteur illisible, aucun lien — jamais un
+>   silence ; ③ `/privacy` passe **Version 5** (trois choses stockees, pas deux).
+>   Et `/source` n est plus un constructeur public : il rend la surface
+>   `/referral`. Tokens uniquement — **+0 couleur brute** ; aucun page-cap ;
+>   `text-sm` = 14px, au-dessus du plancher 12px.
+>   **Non verifie : rien n a ete RENDU — la porte d apercu est la sienne.**
+>
+> <s>▶ 2026-08-04 — PROD = `c55edd0`. Au quai : `2e47dbe` (groupable).</s>
 > **PROCHAINE TRANCHE DESIGN, decidee : B + 1c + 2b** — la ligne vivante des
 > commissions recues · les deux phrases gelees de /join reecrites (texte complet
 > a l ecran avant livraison) · le parrain NOMME dans le detail de l argent.

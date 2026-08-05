@@ -45,7 +45,7 @@ Nomme-le, dis pourquoi, **et avance.** Carte blanche.
 
 | | |
 |---|---|
-| **Sale V3** `0x2A6c…` | ✅ vivante · pas pausée · **ère 1** · **12 membres** |
+| **Sale V3** `0x2A6c…` | ✅ vivante · pas pausée · **ère 1** · ~~12 membres~~ **PÉRIMÉ 2026-08-05 — le compte vivant est servi (`memberCount()` / le backbone), jamais figé ici** |
 | **SourceRegistry** `0x780013…` | ✅ déployé · **`immutable` dans la Sale — NE PEUT PAS être remplacé** |
 | **Sources créées** | ✅ **UNE, ACTIVE** — `sourceId 0x8338e9ff…1cf620` · `BUILDER_SOURCE` · **5%** · **LIFETIME** (pas de fenêtre) · aucun plafond · `appliesToRepeatPurchases` · `payoutWallet` = `0x244531C5…9C721` (un membre historique) · ré-activée au bloc 89642946. **⚠️ CORRECTION : ce doc disait « ZÉRO » — c'était FAUX**, hérité d'un scan `eth_getLogs` sur RPC public qui avait des **trous**. Vérité rétablie par un scan de logs COMPLET (Routescan). **LEÇON : un scan `eth_getLogs` sur RPC public n'est PAS une preuve d'absence.** |
 | **CommissionRouter** | ⚠️ **PAS déployé** (confirmé : aucune adresse nulle part · `Deploy.s.sol` force `address(0)` · `V2.commissionRouter()==0x0` · `commissionRouter()` REVERT sur V3). Et le V3 ne l'utiliserait pas — il paie `payoutWallet` **directement**. C'est un DESIGN (V4), pas un asset. |
@@ -158,7 +158,28 @@ Chez tous les autres, l'attribution du canal est une **donnée qu'il faut croire
 
 ---
 
-# ⑤ L'ESCALIER CONNECTOR — 5 barreaux. ZÉRO nom inventé.
+# ⑤ ~~L'ESCALIER CONNECTOR — 5 barreaux~~ — ⛔ **TABLEAU MORT**
+
+> ⛔ **SUPPLANTÉ LE 2026-07-13 par `docs/direction/CONNECTOR_LADDER_POLICY.md`,
+> ET JAMAIS BARRÉ JUSQU'AU 2026-08-05.** Deux revues successives l'ont appelé
+> « un piège vivant » : une session à qui l'on dit « lis la spec, c'est la loi »
+> code d'après ce tableau et écrit 7 % / 9 % / 10,5 % sur une surface d'argent.
+> C'est exactement la forme que le §⑧ décrit déjà — *« la RACINE qui re-semait
+> l'erreur dans 17 surfaces »*.
+>
+> **LA VÉRITÉ EST DANS LE CODE :** `artifacts/studio/src/config/connectorLadder.ts`
+> — **7 barreaux**, titres et taux découplés :
+> Emerging 0 → 5 % · Active 3 → 5 % (titre seul) · Trusted 10 → 6 % ·
+> Established 25 → 7 % · Durable 60 → 8 % · Foundational 150 → **10 %** ·
+> **Summit 300 → 12 % = le plafond du bytecode**.
+> ⚠️ Donc « Foundational = 12 % = MAX_MEMBER_INTRO_BPS » plus bas est **FAUX** :
+> c'est **Summit**. Et la colonne « d'où vient le nom → `protocol-graph.ts` »
+> pointe un fichier **qui n'existe pas**.
+>
+> **Le tableau ci-dessous est conservé comme ARCHIVE DATÉE. Ne jamais coder
+> d'après lui.**
+
+## ~~L'escalier, version 2026-07-13 (archive)~~
 
 | Rang | Taux | bps | D'où vient le nom |
 |---|---|---|---|
