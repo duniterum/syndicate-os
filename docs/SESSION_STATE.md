@@ -7,19 +7,28 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ## ① WHERE PROD IS — **`328c6f4`, 16th consecutive clean seal, sealed 2026-08-05.**
 > Previous prod `c0555cc9`; the cycle carried **17 commits** (`c0555cc9..HEAD`, recounted
 > with `git rev-list --count`).
-> ⛔ **PROD IS BEHIND. GitHub `main` = `aadf27f`; prod serves `328c6f4`.**
-> **DEPLOY BACKLOG: 3 commits**, and TWO OF THEM CLOSE DEFECTS THAT ARE LIVE ON
-> /join RIGHT NOW — do not start anything else before this ships:
-> · `05f5a6c` — an UNBOUNDED probe⇄reset loop on every buyer the engine refuses a
->   link: the money breakdown oscillates in front of him, and at the click
->   `sourceDrop` can be null, so a proven-refused id can be signed and REVERT
->   (his gas, lost). AND the quote's loading branch was dead code, so every
->   first-time buyer saw a red «Quote read unavailable» for the whole normal read.
->   Both were born INSIDE fixes for earlier review findings — his rule ⑦.
-> · `2a37ba9` · `aadf27f` — docs only (the canon index and BACKLOG.html fossils).
-> The Replit instruction is in the 2026-08-05 chat; the client entry MUST change
-> from `index-B4IgaU-U.js` — the same SHA after publishing means the build did not
-> take.
+> ⛔ **PROD IS BEHIND `main`. THE DEPLOYED HEAD IS THE ONLY FIXED NUMBER HERE:
+> prod = `328c6f4` (16th seal, 2026-08-05).**
+> **NEVER trust a `main` sha written in this file — MEASURE IT.** Four times on
+> 2026-08-05 a register named a head that a later push had already moved, and a
+> session reading it would have concluded the quay was empty while defects sat
+> live on /join. So the quay is a COMMAND, not a number:
+>
+> ```
+> git fetch origin && git log --oneline 328c6f4..origin/main
+> ```
+>
+> ⛔ **TWO OF THOSE COMMITS CLOSE DEFECTS THAT ARE LIVE ON /join RIGHT NOW —
+> nothing else starts before this cycle ships:**
+> · an UNBOUNDED probe⇄reset loop on every buyer the engine refuses a link: the
+>   money breakdown oscillates in front of him, and at the click `sourceDrop` can
+>   be null, so a proven-refused id can be signed and REVERT — his gas, lost.
+> · the quote's loading branch was dead code, so every FIRST-TIME buyer saw a red
+>   «Quote read unavailable» for the whole normal read.
+> Both were born INSIDE fixes for earlier review findings — his rule ⑦.
+> Everything above them is docs (handoff registers) or the guard-pin fix Replit's
+> deploy caught. The client entry MUST change from `index-B4IgaU-U.js`; the same
+> SHA after publishing means the build did not take.
 > **MEASURED BY THIS SESSION on live prod after the seal** (not taken from the report):
 > served entry `assets/index-B4IgaU-U.js` · old entry 404 · `/join` carries 3 security
 > headers, assets carry 0 · `/source` 200 · sitemap 30 URLs with no `/source` ·
