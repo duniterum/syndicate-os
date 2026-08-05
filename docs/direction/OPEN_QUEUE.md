@@ -1,6 +1,7 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
-> ## ▶ 2026-08-05 (SOIR) — **PROD = `328c6f4`, 16e sceau. LE QUAI EST VIDE.**
+> ## ▶ 2026-08-05 (SOIR) — **PROD = `328c6f4`, 16e sceau. ⛔ LE QUAI N EST PAS VIDE.**
+> **GitHub `main` = `aadf27f` · la prod sert `328c6f4` — 3 commits de retard, et DEUX d entre eux ferment des defauts VIVANTS sur /join** (une boucle sans fin quand le moteur refuse un lien, qui peut faire signer un achat qui revert ; une erreur rouge affichee a tout premier visiteur). **Rien d autre ne commence avant que ce cycle soit publie.**
 > Les **17 commits** de l arc parrainage sont EN LIGNE, porte d apercu franchie.
 > **FERMES aujourd hui :** le jumeau `&via=` · `/source` qui copiait n importe quel
 > lien colle · la commission en sequestre affichee comme payee · le §⑤ de la spec
