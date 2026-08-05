@@ -41,7 +41,7 @@ export default function Privacy() {
         // precision, the honest local-storage inventory (measured: the wallet
         // stack keeps 7 keys, not 2), the activation-request record class,
         // and the NAMED Telegram channels.
-        <StatusPill tone="caution">Version 4 — draft of 2026-07-30</StatusPill>
+        <StatusPill tone="caution">Version 5 — draft of 2026-08-05</StatusPill>
       }
     >
       <Card className="bg-muted/20 border-border/50 p-4 type-body text-muted-foreground measure mb-10">
@@ -115,9 +115,15 @@ export default function Privacy() {
 
       <S title="Your browser's local storage">
         <p>
-          The site itself stores two small preferences in your own browser:
-          your light/dark theme choice, and a flag noting the guide greeting
-          was already shown. The wallet-connection libraries the site uses
+          The site itself stores three small things in your own browser: your
+          light/dark theme choice, a flag noting the guide greeting was already
+          shown, and — if you arrived through someone's invitation link — the
+          invitation code from that link, so the member who invited you still
+          gets credit if you reload the page or come back later. That code is
+          the public, shareable half of the link they gave you: it says who
+          invited you, never anything about you. It is kept until you open a
+          different invitation link, and clearing this site's data removes it.
+          The wallet-connection libraries the site uses
           (RainbowKit, wagmi, WalletConnect and wallet SDKs) also keep their
           own working state in your browser — connection status, the network
           last used — so reconnecting works. All of it stays in your browser:

@@ -1,7 +1,25 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
-> ## ▶ 2026-08-04 — ARC DU CHEMIN D ACHAT : CLOS ET **SCELLE**.
-> **PROD = `c0555cc9` — 14e sceau propre. LE QUAI EST VIDE.**
+> ## ▶ 2026-08-05 — LE PARRAINAGE MOURAIT DANS LE NAVIGATEUR. **PROD = `c0555cc9`.**
+> ⛔ **AU QUAI : 3 commits, NON GROUPABLES** (`173e0bf` · `d36b68a` · `3455904`) —
+> un defaut qui coute de l argent a chaque achat en prod. **Porte d apercu
+> d abord : la nouvelle copie n a jamais ete rendue.**
+> Son ami a paye **600 USDC** sur son lien, il n a **RIEN** touche. Rejoue au bloc
+> 92 095 300 : le moteur aurait paye **30,00 USDC**, le serveur repondait
+> `sourceValid: true`. **Le lien n a pas ete lache — il etait ABSENT** (`?source=`
+> lu a une ligne, stocke nulle part). Et le cout n est jamais une commission :
+> `buyerSourceId` s ecrit UNE fois, sans setter — un siege pris sans lien ne peut
+> plus JAMAIS etre attache. Vie du protocole : **20 achats · 1 250 USDC · 4
+> attribues · 1,00 USDC de commission versee**.
+> **SES REGLES (REPONDUES A JAMAIS) :** ⑬ AUCUNE EXPIRATION · ⑭ LE DERNIER LIEN
+> GAGNE. **Le lien qu il a envoye EST le sien** (`0x2445…C721` =
+> `founderPrivateWallet`).
+> **REVUE 12 CASQUETTES (son ordre) : 6 critiques, 5 dans MON correctif** — tous
+> fermes dans `3455904`, rouge d abord, 7 mutations vues ROUGES.
+> **RESTE OUVERT :** le jumeau `&via=` · `/source` copie n importe quel lien colle ·
+> commission en sequestre affichee comme payee · le §⑤ de la spec est supplante et
+> jamais barre.
+> <s>LE QUAI EST VIDE</s> (vrai seulement au sceau).
 > <s>PROD = `c55edd0` · au quai : `2e47dbe` + docs, GROUPABLE</s> — **publie le
 > 2026-08-04** : les deux tetes `627917ae` puis `c0555cc9` scellees d un coup.
 > Rapport Replit : 8/8 + 1/1 blobs · **migrations : RIEN** · typecheck 0 · build

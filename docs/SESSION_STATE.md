@@ -6,8 +6,15 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > # this block is history; this block supersedes it.**
 >
 > ## ① WHERE PROD IS
-> **PROD = `c0555cc9` — 14th clean seal, sealed 2026-08-04. THE DEPLOY BACKLOG IS
-> EMPTY.** The engine-truth batch is LIVE: both heads (`627917ae` then `c0555cc9`)
+> **PROD = `c0555cc9` — 14th clean seal, sealed 2026-08-04.**
+> ⛔ **DEPLOY BACKLOG: THREE commits, NOT batchable** (a money-losing defect on
+> the live checkout): `173e0bf` the referral link survives the visit · `d36b68a`
+> the checkout no longer signs a zero in silence · `3455904` the five defects a
+> twelve-hat review found inside those two. **Gated behind the PREVIEW GATE —
+> the new copy has never been rendered, and the checkout line needs a connected
+> wallet, which is his browser.**
+> <s>THE DEPLOY BACKLOG IS EMPTY</s> (true only at the seal).
+> The engine-truth batch is LIVE: both heads (`627917ae` then `c0555cc9`)
 > published in one shot.
 > **Replit's report (his measurement):** 8/8 + 1/1 blobs · **migrations: NOTHING**
 > (no api/schema file in either batch; lockfile intact) · typecheck 0 errors ·
@@ -56,7 +63,39 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > never run pre-approval · 7 dead error translations · the rule guessed wrong
 > twice.** The founder solved it himself.
 >
-> ## ④ THE NEXT SLICE — DECIDED, SPECIFIED, NOT BUILT (build this first)
+> ## ③-bis 2026-08-05 — THE ARC REOPENED ON A MEASURED LOSS. **READ THIS FIRST.**
+> He sent a friend `/join?source=0x8338e9ff…cf620`, the friend paid **600 USDC**,
+> he was paid **NOTHING**. Not the chain, not the contract, not the server:
+> REPLAYED at block 92,095,300 the engine would have paid **30.00 USDC**, and the
+> live server answered `sourceValid: true`. **The link was never dropped — it was
+> ABSENT**, because `?source=` was read at one line and persisted NOWHERE.
+> ⛔ **AND THE COST IS NEVER ONE COMMISSION.** `buyerSourceId` is written at ONE
+> line of the engine (479) inside an attributed buy, with **no owner setter** — a
+> wallet seated without a link can never be attached to one. Whole protocol to
+> date: **20 purchases · 1,250 USDC gross · 4 attributed · 1.00 USDC of
+> commission ever paid.**
+> **HIS RULINGS (ANSWERED FOREVER):** ⑬ **NO EXPIRY** on the browser memory — the
+> on-chain link is for life (seats #13/#14/#17 carry `expiresAt` 0 and a fresh
+> repeat purchase still quotes 5.00 USDC), so a window decides only whether a
+> referrer is attached AT ALL. ⑭ **LAST TOUCH WINS.**
+> **THE LINK HE SENT IS HIS OWN** — `payoutWallet` `0x2445…C721` is
+> `founderPrivateWallet` (protocolTargets.ts). It is also the ONLY one of the 6
+> live sources not derived per SPEC §③, and it is class 1, not MEMBER_INTRODUCTION.
+> **THE TWELVE-HAT REVIEW (his order) found 6 criticals, 5 inside my own fix** —
+> all closed in `3455904` (framing/cookie-stuffing · the screen lying during the
+> signature · a proven-refused source re-armed · `?source=0x000…0` destroying a
+> memory · a typed "5%" on the money path · a guard that stayed green while the
+> whole defect was restored).
+> **STILL OPEN, NAMED:** the `&via=` twin (channel conversions under-count — I
+> fixed the instance, not the pattern) · `/source` is a PUBLIC page that Copies
+> any pasted link, and the id published as the demo in our own docs is HIS ·
+> escrowed commission reported as paid · SPEC §⑤'s ladder is superseded by
+> `CONNECTOR_LADDER_POLICY.md` and was never struck in place (a trap) ·
+> DESIGN_ROADMAP + BACKLOG.html still say the quay is empty.
+>
+> ## ④ THE NEXT SLICE — DECIDED, SPECIFIED, NOT BUILT
+> <s>build this first</s> — 2026-08-05: the money-path repair took priority.
+> B + 1c + 2b remains the next DESIGN slice, after the preview gate + deploy.
 > **B + 1c + 2b, one slice, one review, one deploy.** All three are about the same
 > thing: everything /join says about the referrer's money becomes named and
 > verifiable.
