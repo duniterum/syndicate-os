@@ -1103,12 +1103,21 @@ export const seoRouteRegistry: SeoRouteEntry[] = [
   {
     path: "/source",
     routeType: "PUBLIC",
-    indexStatus: "INDEX",
-    sitemap: true,
-    title: "Build Your Referral Link — The Syndicate",
+    // Same posture as /source-attribution, the alias precedent this follows:
+    // the URL keeps answering 200 for every bookmark and inbound link, and the
+    // canonical consolidates on /referral. Out of the sitemap — a page whose
+    // canonical points elsewhere has no business asking to be indexed twice.
+    indexStatus: "REDIRECT",
+    sitemap: false,
+    // ⛔ THE PAGE'S REALITY MOVED, SO ITS SERVED HEAD MOVES IN THE SAME COMMIT
+    // (the SEO standing rule). /source no longer builds a link from a pasted
+    // code — it renders the referral surface, where a member's own link is
+    // derived from his connected wallet. The canonical consolidates on
+    // /referral, the URL the founder chose on 2026-07-13.
+    title: "Your Referral Link — The Syndicate",
     description:
-      "Validate a referral code against the on-chain registry and build a shareable join link. Checking is free and writes nothing — the link you build pays you inside your referral's own transaction once they join.",
-    canonicalPath: "/source",
+      "Your own referral link, derived from your connected wallet and read from the on-chain registry. It pays you inside your referral's own transaction once they join — no claim, no dashboard, no waiting.",
+    canonicalPath: "/referral",
     changefreq: "weekly",
     priority: 0.5,
     ogImage: DEFAULT_OG_IMAGE,

@@ -257,14 +257,26 @@ for (const entry of seoRouteRegistry) {
 // Verified-Introduction link builder (read-only), while the operator source
 // console moved to /os-source and must never be indexed.
 {
+  // ⛔ THIS PIN ENCODED A PAGE THAT NO LONGER EXISTS (founder decision ②,
+  // 2026-08-05). ~~/source is the public Verified-Introduction link builder
+  // (INDEX, sitemapped)~~ — STRUCK. That builder was a public free-text field
+  // that knew nothing about the connected wallet: paste ANY source id and it
+  // answered «Verified referral code» and offered Copy, and the id published as
+  // the demo in our own docs is the founder's own source. A member could share,
+  // in good faith, a link paying someone else. The route now renders the
+  // referral surface, where a member's link is derived from HIS wallet.
+  // The pin follows the page: still PUBLIC (the URL must keep answering 200 for
+  // every bookmark and inbound link), now REDIRECT + out of the sitemap, exactly
+  // like /source-attribution, its alias precedent.
   const source = seoRouteRegistry.find((r) => r.path === "/source");
   check(
     source !== undefined &&
       source.routeType === "PUBLIC" &&
-      source.indexStatus === "INDEX" &&
-      source.sitemap === true,
-    `/source is the public Verified-Introduction link builder (INDEX, sitemapped)`,
-    `/source must be PUBLIC/INDEX/sitemapped (public link builder)`,
+      source.indexStatus === "REDIRECT" &&
+      source.sitemap === false &&
+      source.canonicalPath === "/referral",
+    `/source is an alias of /referral (200, canonical → /referral, out of the sitemap)`,
+    `/source must be PUBLIC/REDIRECT/unsitemapped with canonical → /referral — it is an alias now, not a link builder; a canonical pointing elsewhere may never also ask to be indexed`,
   );
   const osSource = seoRouteRegistry.find((r) => r.path === "/os-source");
   check(
