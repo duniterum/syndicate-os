@@ -100,9 +100,92 @@ let tableRows = 0;
 if (moduleExists) {
   const m = (await import(pathToFileURL(MODULE).href)) as {
     nextRememberedSource?: (remembered: string | null, arriving: string | null) => string | null;
+    resolveJoinSource?: (urlSource: string | null) => string | null;
     REFERRAL_MEMORY_KEY?: string;
   };
   const next = m.nextRememberedSource;
+
+  // ── H1 + H2: THE WRAPPER IS EXECUTED, NOT ONLY THE PURE RULE ──────────────
+  // An adversarial pass (2026-08-05) gutted `resolveJoinSource` to
+  // `nextRememberedSource(null, url)` — the memory is read and thrown away, the
+  // ENTIRE defect restored — and this guard stayed GREEN on all 29 checks,
+  // because it only ever executed the pure rule. A guard that tests the helper
+  // and not the behaviour is decoration. So the wrapper itself now runs against
+  // a fake store, and the row that H1 killed is the second one.
+  const resolve = m.resolveJoinSource;
+  check(
+    typeof resolve === "function",
+    "referral-memory: resolveJoinSource is exported",
+    "referral-memory: referralMemory.ts must export resolveJoinSource(urlSource) — the entry point the page uses",
+  );
+  if (typeof resolve === "function") {
+    const A = "0x" + "a".repeat(64);
+    const B = "0x" + "b".repeat(64);
+    const store = new Map<string, string>();
+    const fakeWindow = {
+      localStorage: {
+        getItem: (k: string) => store.get(k) ?? null,
+        setItem: (k: string, v: string) => void store.set(k, v),
+      },
+      // A real visit is never inside a frame; the frame case is pinned below.
+      top: null as unknown,
+      self: null as unknown,
+    };
+    (fakeWindow as { top: unknown }).top = fakeWindow;
+    (fakeWindow as { self: unknown }).self = fakeWindow;
+    const g = globalThis as { window?: unknown };
+    const hadWindow = "window" in g;
+    const previous = g.window;
+    g.window = fakeWindow;
+    try {
+      const key = m.REFERRAL_MEMORY_KEY ?? "syndicate.join.source";
+      // arrival → returned value → what the store must hold afterwards
+      const WRAPPER: readonly (readonly [string | null, string | null, string | null])[] = [
+        [A, A, A], // a fresh arrival is used AND written
+        [null, A, A], // ⛔ THE ROW H1 KILLED: nothing in the URL → the memory answers
+        [B, B, B], // last touch replaces it, in the store too
+        [null, B, B], // and the new one is what a later bare visit gets
+        ["garbage", B, B], // a mangled arrival never destroys a good memory
+      ];
+      for (const [arriving, expectedReturn, expectedStored] of WRAPPER) {
+        tableRows += 1;
+        let got: string | null | "THREW";
+        try {
+          got = resolve(arriving);
+        } catch {
+          got = "THREW";
+        }
+        const stored = store.get(key) ?? null;
+        check(
+          got === expectedReturn && stored === expectedStored,
+          `referral-memory: resolveJoinSource(${arriving === null ? "null" : arriving.slice(0, 8) + "…"}) → ${expectedReturn === null ? "null" : expectedReturn.slice(0, 8) + "…"} (store holds it)`,
+          `referral-memory: resolveJoinSource(${JSON.stringify(arriving)}) returned ${JSON.stringify(got)} with the store holding ${JSON.stringify(stored)} — expected ${JSON.stringify(expectedReturn)} / ${JSON.stringify(expectedStored)}. If the recall row failed, the memory is dead and the original defect is back.`,
+        );
+      }
+
+      // ── THE FRAME PIN (security, measured 2026-08-05) ──────────────────────
+      // prod serves /join with NO X-Frame-Options and NO CSP frame-ancestors
+      // (curl -D -). So any site can hide <iframe src="/join?source=THEIRS">,
+      // and because this module writes at render with no click and no wallet,
+      // the visitor's browser silently carries the attacker's introduction —
+      // for life, since the engine writes buyerSourceId once and no owner
+      // function can change it. Before the memory existed the same iframe stole
+      // nothing. An invitation link is OPENED, never framed.
+      store.clear();
+      (fakeWindow as { top: unknown }).top = { different: true };
+      const framed = resolve(A);
+      const storedFromFrame = store.get(m.REFERRAL_MEMORY_KEY ?? "syndicate.join.source") ?? null;
+      check(
+        storedFromFrame === null,
+        "referral-memory: a framed page cannot write the memory (cookie-stuffing blocked)",
+        `referral-memory: resolveJoinSource wrote ${JSON.stringify(storedFromFrame)} while window.top !== window.self — ANY website can then stuff its own introduction into a visitor's browser permanently, with no click and no wallet. Refuse the write when framed (returned ${JSON.stringify(framed)}).`,
+      );
+      (fakeWindow as { top: unknown }).top = fakeWindow;
+    } finally {
+      if (hadWindow) g.window = previous;
+      else delete (g as { window?: unknown }).window;
+    }
+  }
   check(
     typeof next === "function",
     "referral-memory: nextRememberedSource is exported",
@@ -113,6 +196,7 @@ if (moduleExists) {
     const A = "0x" + "a".repeat(64);
     const B = "0x" + "b".repeat(64);
     const UPPER = "0x" + "A".repeat(64); // SOURCE_ID_RE accepts both cases
+    const ZERO = "0x" + "0".repeat(64); // the engine's "no introduction" value
     const SHORT = "0x" + "a".repeat(63);
     const NOPREFIX = "a".repeat(64);
     const JUNK = "not-a-source-id";
@@ -133,6 +217,15 @@ if (moduleExists) {
       [A, JUNK, A],
       [A, "", A],
       [A, null, A],
+      // ⛔ bytes32(0) IS NOT A SOURCE ID — IT IS THE ABSENCE OF ONE.
+      // Found live 2026-08-05: it passes the plain hex format check, so the
+      // link ?source=0x000…000 — which anyone can type — used to WIN by last
+      // touch and overwrite a real stored introduction. Pin 3's "silent theft
+      // in a new costume", shipped. It is also the exact value the engine reads
+      // as "no introduction", so it must never be remembered or signed.
+      [A, ZERO, A],
+      [ZERO, null, null],
+      [ZERO, B, B],
       // storage is never trusted (pin 4) — a corrupt memory is simply absent
       [JUNK, null, null],
       [SHORT, null, null],
@@ -194,12 +287,17 @@ if (moduleExists) {
   );
 
   // ── 8. FAIL-CLOSED I/O ────────────────────────────────────────────────────
-  const storageTouches = (modBody.match(/\b(?:localStorage|sessionStorage)\b/g) ?? []).length;
-  check(
-    storageTouches === 0 || /try\s*{/.test(modBody),
-    "referral-memory: storage access is guarded (private mode throws)",
-    "referral-memory: referralMemory.ts touches web storage without a try/catch — Safari private mode throws on write and would take the whole /join page down with it",
-  );
+  // PER FUNCTION, not per file (H7, 2026-08-05): the file-wide test was
+  // satisfied by readStore's try{ alone, so writeStore's could be deleted and
+  // the guard stayed green — Safari private mode then takes /join down.
+  for (const fn of ["readStore", "writeStore"]) {
+    const body = new RegExp(`function\\s+${fn}\\s*\\([^)]*\\)[^{]*\\{([\\s\\S]*?)\\n\\}`).exec(modBody);
+    check(
+      body !== null && /try\s*{/.test(body[1]),
+      `referral-memory: ${fn} guards its own storage access`,
+      `referral-memory: ${fn}() touches web storage without its OWN try/catch — Safari private mode throws and would take the whole /join page down for a convenience feature`,
+    );
+  }
 }
 
 // ── 6. THE PAGE ACTUALLY RECALLS ────────────────────────────────────────────
@@ -263,6 +361,45 @@ if (existsSync(CHECKOUT)) {
     /data-testid="text-checkout-attribution"/.test(checkout),
     "referral-memory: the checkout states the attribution BEFORE the signature",
     'referral-memory: JoinCheckout must render a data-testid="text-checkout-attribution" line stating, before the signature, whether an introduction will be attached to this purchase — a buyer who expected one has no other way to notice it is missing',
+  );
+
+  // ⛔ THE SIGNED ARGUMENTS MUST HONOUR A PROVEN REFUSAL (2026-08-05 review).
+  // `applySourceId = sourceId !== null ? sourceId : ZERO` ignored `sourceDrop`,
+  // so a source the engine had ALREADY refused was re-armed and re-probed; if
+  // that second probe answered "unreadable" (any RPC blip — decideSourceApplication
+  // fails OPEN by his ruling, correctly) the known-bad id went on chain and the
+  // whole purchase REVERTED. The buyer pays gas for a purchase that would have
+  // succeeded. Removing a proven-refused introduction is exactly what his ruling
+  // ⑥ permits — it is not a refusal to send.
+  check(
+    /applySourceId[^=]*=\s*[\s\S]{0,120}?sourceDrop === null/.test(checkout),
+    "referral-memory: the signed source honours a proven engine refusal",
+    "referral-memory: the sourceId handed to buy() ignores `sourceDrop` — an introduction the engine has ALREADY refused is re-armed, and one unreadable probe later it reverts the buyer's whole purchase. Gate it on `sourceId !== null && sourceDrop === null`.",
+  );
+
+  // ⛔ THE CLICK-TIME DROP MUST TELL THE PAGE (2026-08-05 review). The drop
+  // inside handleBuy set a local notice and called onVerdict, but never
+  // setSourceDrop — so the attribution paragraph kept promising a commission
+  // for the entire wallet-prompt window while the transaction being signed
+  // carried bytes32(0). The commit claiming the line "cannot drift from what is
+  // actually sent" was false on the one path that matters.
+  // ⛔ NO RATE MAY BE TYPED ON THE MONEY PATH (his red line; SPEC §⑧① — the
+  // rate comes from the QUOTE, never from a literal). The first version of the
+  // attribution line said "5%", read from nowhere, false for every introducer
+  // above the ladder's first rung, one click before a signature. The engine's
+  // own figure is already rendered in the breakdown above.
+  const attribution = /data-testid="text-checkout-attribution"[\s\S]{0,2200}?<\/p>/.exec(checkout);
+  check(
+    attribution !== null && !/\d+(?:\.\d+)?\s*%/.test(attribution[0]),
+    "referral-memory: the attribution line types no commission rate",
+    "referral-memory: a percentage literal appeared in the checkout's attribution line — the rate comes from the QUOTE (SPEC §⑧①). A typed rate is false for every introducer above the first rung and the chain refutes it, one click before a signature.",
+  );
+
+  const clickDrop = /answer\.decision === "drop"[\s\S]{0,900}?\}/.exec(checkout);
+  check(
+    clickDrop !== null && /setSourceDrop\s*\(/.test(clickDrop[0]),
+    "referral-memory: the click-time drop is reported to the page before signing",
+    "referral-memory: the drop inside handleBuy never calls setSourceDrop, so the attribution line still says an introduction is attached while a zero is signed — the exact contradiction the always-on line exists to prevent",
   );
 }
 

@@ -533,8 +533,17 @@ export default function JoinCheckout({
       // words. So the buyer's link goes into the arguments, THE ENGINE alone may
       // remove it (his rulings ③ «the reason comes from the engine» and ⑥ «only
       // the chain says no»), and every removal speaks.
+      //
+      // ⛔ AND IT HONOURS A REFUSAL THE ENGINE HAS ALREADY PROVEN (review,
+      // 2026-08-05). Without `sourceDrop === null` this re-armed an id the
+      // engine had demonstrably rejected: the probe below runs again, and if
+      // that second answer is "unreadable" — any RPC blip, and the decision
+      // fails OPEN by his ruling, correctly — the known-bad id goes on chain
+      // and reverts the buyer's WHOLE purchase. He pays gas for a join that
+      // would have succeeded. Removing a proven-refused introduction is exactly
+      // what ruling ⑥ permits; it is never a refusal to send.
       let applySourceId: `0x${string}` =
-        sourceId !== null ? (sourceId as `0x${string}`) : ZERO_BYTES32;
+        sourceId !== null && sourceDrop === null ? (sourceId as `0x${string}`) : ZERO_BYTES32;
 
       // THE ENGINE IS ASKED BEFORE THE BUYER SIGNS (2026-08-04 — the founder
       // reproduced SEVEN reverted purchases on live prod, his own money each
@@ -565,6 +574,14 @@ export default function JoinCheckout({
           // the buyer is told, with the ENGINE's own reason, never one of ours.
           applySourceId = ZERO_BYTES32;
           sourceNotice = droppedSourceNotice(answer.refusalName);
+          // ⛔ AND TELL THIS PANEL, NOT ONLY THE PAGE (review, 2026-08-05).
+          // This branch called onVerdict but never setSourceDrop, so the
+          // attribution line right above the button kept promising a commission
+          // for the whole wallet-prompt window while the transaction being
+          // signed carried bytes32(0) — the exact contradiction that line was
+          // added to prevent. It must land BEFORE the await below, so the
+          // screen is already true when the wallet opens.
+          setSourceDrop({ reason: answer.refusalName });
           // TELL THE PAGE — the same call the mount-time drop makes (review
           // catch, 2026-08-04: this second drop path was silent, so the
           // breakdown above kept its «paid to your referrer» line, with that
@@ -804,12 +821,28 @@ export default function JoinCheckout({
           values the signature does (`sourceId` and the engine's verdict), so it
           cannot drift from what is actually sent. */}
       <p
-        className="text-xs text-muted-foreground mb-3 max-w-2xl"
+        className={`text-sm leading-relaxed mb-4 max-w-2xl ${
+          sourceId !== null && sourceDrop === null ? "text-muted-foreground" : "text-foreground"
+        }`}
         data-testid="text-checkout-attribution"
       >
-        {sourceId !== null && sourceDrop === null
-          ? "An introduction is attached to this purchase — 5% of it goes to the member who introduced you, paid by the engine inside your own transaction, and it never changes your price."
-          : "No introduction is attached to this purchase. If someone sent you an invitation link, open it again before you sign — once a seat is taken, the engine can never attach one to it."}
+        {sourceDrop !== null
+          ? // The reason is already stated above, in the engine's own words. Repeating
+            // "open it again before you sign" HERE was false advice: the engine has
+            // just refused THIS link for THIS wallet, and reopening it changes nothing.
+            "This purchase will be signed without an introduction, for the reason above. Your price is unchanged."
+          : sourceId !== null
+            ? // ⛔ NO RATE IS WRITTEN HERE (his red line; SPEC §⑧①: the rate comes from
+              // the QUOTE, never from a number we type). The first version said "5%" —
+              // a figure read from nowhere, false for every introducer above the first
+              // rung of the ladder, one click before a signature. The exact amount is
+              // already on screen in the money breakdown above, computed by the engine.
+              "An introduction is attached and will be signed with this purchase. Your introducer is paid out of the protocol's own share — your price is exactly the amount shown above, with or without it."
+            : // "No introduction" is said about the LINK, which is all this page knows.
+              // A wallet that already carries an introducer on-chain is still paid by the
+              // engine on a zero id (_resolveSource :431-434), so claiming nobody is paid
+              // would be a claim the chain refutes.
+              "No introduction link is attached to this purchase — your price is exactly the same either way. If someone did send you an invitation link, open it again before you sign: an introduction can only be recorded at the moment a seat is taken. (If your wallet already has an introducer recorded on-chain, the engine still pays them.)"}
       </p>
 
       <div className="space-y-3">

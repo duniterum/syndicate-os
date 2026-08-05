@@ -61,6 +61,20 @@ import { isSourceIdFormat } from "./rawUnits.ts";
 export const REFERRAL_MEMORY_KEY = "syndicate.join.source";
 
 /**
+ * ⛔ bytes32(0) IS NOT AN INTRODUCTION — IT IS THE ABSENCE OF ONE.
+ * It is the exact value `buy()` reads as "no source", and it passes a plain hex
+ * format check. Found live in review 2026-08-05: the link `?source=0x000…000`,
+ * which anyone can type, therefore WON by last touch and overwrote a real
+ * stored introduction. That is the silent theft this module exists to stop,
+ * wearing a new costume. A source id is a real id or it is nothing.
+ */
+const ZERO_SOURCE_ID = `0x${"0".repeat(64)}`;
+
+function isUsableSourceId(value: string): boolean {
+  return isSourceIdFormat(value) && value.toLowerCase() !== ZERO_SOURCE_ID;
+}
+
+/**
  * THE RULE, pure — no storage, no clock, no window. Given what we remembered
  * and what (if anything) arrived in the URL, what should be remembered and used?
  *
@@ -78,11 +92,12 @@ export function nextRememberedSource(
   arriving: string | null,
 ): string | null {
   // A valid arrival always wins — LAST TOUCH (his ruling ⓑ).
-  if (arriving !== null && isSourceIdFormat(arriving)) return arriving;
-  // A mangled or absent arrival NEVER destroys a good memory: that would be the
-  // same silent theft in a new costume (someone shares a truncated link, and the
-  // referrer who actually earned the visit loses it).
-  if (remembered !== null && isSourceIdFormat(remembered)) return remembered;
+  if (arriving !== null && isUsableSourceId(arriving)) return arriving;
+  // A mangled, ZERO or absent arrival NEVER destroys a good memory: that would
+  // be the same silent theft in a new costume (someone shares a truncated link,
+  // or types ?source=0x000…000, and the referrer who actually earned the visit
+  // loses it).
+  if (remembered !== null && isUsableSourceId(remembered)) return remembered;
   return null;
 }
 
@@ -101,6 +116,20 @@ function readStore(): string | null {
 function writeStore(value: string): void {
   try {
     if (typeof window === "undefined") return;
+    // ⛔ AN INVITATION LINK IS OPENED — IT IS NEVER FRAMED (security review,
+    // 2026-08-05). MEASURED on prod the same day: `curl -D - /join` returns NO
+    // X-Frame-Options and NO Content-Security-Policy, so any site can hide
+    // <iframe src="…/join?source=THEIRS">. This module writes at render — no
+    // click, no wallet — so that iframe would silently plant the attacker's
+    // introduction in the visitor's browser and keep it, and because the engine
+    // writes buyerSourceId exactly once with no owner setter, the honest
+    // referrer loses that member FOREVER. Classic affiliate cookie-stuffing,
+    // and it is the MEMORY that makes it pay: before this module the same
+    // iframe stole nothing, because the id died with the tab.
+    // This half is ours and ships now; the response headers are the serving
+    // layer's and are handed to Replit separately. Defence in depth: either
+    // alone closes it, and we do not wait on the other.
+    if (window.top !== window.self) return;
     window.localStorage.setItem(REFERRAL_MEMORY_KEY, value);
   } catch {
     /* no memory available — the visit still works, the link just cannot survive it */
@@ -136,5 +165,7 @@ export function resolveJoinSource(urlSource: string | null): string | null {
  */
 export function isRecalledSource(urlSource: string | null, effective: string | null): boolean {
   if (effective === null) return false;
-  return urlSource === null || !isSourceIdFormat(urlSource);
+  // Same usability test as the rule itself — otherwise a `?source=0x000…000`
+  // arrival counts as "came from the URL" while the memory is what was used.
+  return urlSource === null || !isUsableSourceId(urlSource);
 }
