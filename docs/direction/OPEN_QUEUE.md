@@ -1,9 +1,18 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
-> ## ▶ 2026-08-04 — ARC DU CHEMIN D ACHAT : CLOS. **PROD = `c55edd0`.**
-> Au quai : **`2e47dbe`** (7 signatures d erreurs corrigees + la source verifiee
-> du moteur dans le depot) + docs. 🚀 **GROUPABLE** — rien n est casse en
-> attendant : ces 7 refus s affichent en version brute au lieu d humaine.
+> ## ▶ 2026-08-04 — ARC DU CHEMIN D ACHAT : CLOS ET **SCELLE**.
+> **PROD = `c0555cc9` — 14e sceau propre. LE QUAI EST VIDE.**
+> <s>PROD = `c55edd0` · au quai : `2e47dbe` + docs, GROUPABLE</s> — **publie le
+> 2026-08-04** : les deux tetes `627917ae` puis `c0555cc9` scellees d un coup.
+> Rapport Replit : 8/8 + 1/1 blobs · **migrations : RIEN** · typecheck 0 · build
+> 384 jumeaux · 111 checks · 35 shells · 38/38 gardes studio · 23/23 gardes api ·
+> 33 routes 200 · terms v1 5 873 o / v2 6 172 o exacts · les 4 faces + repli ·
+> backbone ok:1 partial:0 failed:0, tete 91 981 996 · spine 39 items · identite
+> d octets x2, ancienne entree 404.
+> **MESURE PAR LA SESSION le 2026-08-05 (commande au chat, pas repris du rapport) :**
+> entree servie `assets/index-kDXGYEF0.js` · `/api/healthz` **200** · ancienne
+> entree `index-jqmD9Yyg.js` **404**.
+> Les 7 refus du moteur s affichent desormais en phrases humaines.
 >
 > **LIVRE** : les 7 achats revertes sont morts, prouve par SON achat mainnet
 > (`0xd0a2ef90…3433`, siege 5, lien lache, achat passe) · un lien mort ne tue

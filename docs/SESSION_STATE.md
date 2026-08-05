@@ -6,12 +6,23 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > # this block is history; this block supersedes it.**
 >
 > ## ① WHERE PROD IS
-> **PROD = `c55edd0`** (Replit 6/6, 13th clean seal: entry `index-jqmD9Yyg.js` ×2,
-> old entry 404, 39 shells, 38/38 studio guards, 23/23 api guards, terms v1 5873 B
-> / v2 6172 B exact, 4 painted faces + fallback, backbone ok:1 partial:0 failed:0).
-> **UNSHIPPED above it: `2e47dbe`** (7 corrected custom-error signatures + the
-> engine's verified source into the repo) **+ docs**. 🚀 BATCHABLE — nothing is
-> broken while it waits; those 7 refusals simply render as raw messages.
+> **PROD = `c0555cc9` — 14th clean seal, sealed 2026-08-04. THE DEPLOY BACKLOG IS
+> EMPTY.** The engine-truth batch is LIVE: both heads (`627917ae` then `c0555cc9`)
+> published in one shot.
+> **Replit's report (his measurement):** 8/8 + 1/1 blobs · **migrations: NOTHING**
+> (no api/schema file in either batch; lockfile intact) · typecheck 0 errors ·
+> build 384 br/gz twins · admin-dist 111 checks · 35 shells · **38/38** studio
+> guards · **23/23** api guards · 33 routes 200 · terms v1 **5 873 B** / v2
+> **6 172 B** exact · 4 join-card faces + unknown-face fallback (47 127 / 59 221 /
+> 60 426 / 57 026 B) · og:image + og:url present, `&via=` absent · backbone
+> ok:1 partial:0 failed:0, 6/6 units, head block 91 981 996 · spine 39 financial
+> items · entry identity ×2 (~90 s apart), old entry 404.
+> **My own live measurement (this session, 2026-08-05, command in chat):** served
+> entry = `assets/index-kDXGYEF0.js` · `/api/healthz` **200** · old entry
+> `index-jqmD9Yyg.js` **404**.
+> **What this puts in front of a buyer:** the engine's 7 refusals now render as
+> human sentences instead of raw signatures, and the engine's verified source is
+> archived in the repo with its corrected fingerprint.
 >
 > ## ② WHAT WENT LIVE THIS SESSION (the whole arc)
 > His reproduction: **7 reverted purchases** — a seated member opened a referral
