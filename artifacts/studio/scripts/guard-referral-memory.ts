@@ -136,12 +136,27 @@ if (moduleExists) {
     `referral-memory: the app's own resolver is discoverable (${[...entryNames].join(", ")})`,
     "referral-memory: no resolveJoin*() call found in JoinProtocol.tsx or App.tsx — the arrival is not resolved through the ONE module, which IS the defect this guard exists for",
   );
+  // ⛔ AND THE ARRIVAL IS CAPTURED APP-WIDE, not on one page (founder decision
+  // ③, 2026-08-05). Only /join ever read a link: one pasted as
+  // thesyndicate.money/?source=… , a shared receipt, /referral, /member — every
+  // one silently dropped the attribution, and the engine writes buyerSourceId
+  // ONCE with no setter, so each was a member the referrer lost for life.
+  // «The link survives the visit» is a property of the APP, not of a page.
+  check(
+    existsSync(APP) && /\bresolveJoin\w+\s*\(/.test(stripComments(readFileSync(APP, "utf8"))),
+    "referral-memory: the arrival is captured app-wide, on every route",
+    "referral-memory: App.tsx does not resolve an arriving link — capture is back on a single page, so a referral landing anywhere else is dropped in silence and that member is lost permanently",
+  );
 
   const A = "0x" + "a".repeat(64);
   const B = "0x" + "b".repeat(64);
   const ZERO32 = "0x" + "0".repeat(64);
   /** A row that deliberately does not assert the stored residue. */
-  const DONT_CARE = " dont-care";
+  // A sentinel for rows that deliberately do not assert the stored residue.
+  // NOT a NUL byte: the first version used  and every grep, diff and
+  // editor then treated this file as BINARY — a guard nobody can read is a
+  // guard nobody will maintain.
+  const DONT_CARE = "<dont-care>";
   const key = m.REFERRAL_MEMORY_KEY ?? "syndicate.join.source";
 
   for (const entryName of entryNames) {
@@ -736,11 +751,37 @@ if (moduleExists) {
 }
 if (pageExists) {
   const pageTwin = stripComments(readFileSync(PAGE, "utf8"));
-  const clickCall = /pingChannelClick\s*\(([^)]*)\)/.exec(pageTwin);
+  // The beacon lives wherever the ARRIVAL is captured — since founder decision
+  // ③ (2026-08-05) that is App.tsx, because a link can land on ANY route. Both
+  // callers are searched and exactly ONE must fire it: two callers drift apart
+  // the same way the source and its channel tag did.
+  const twinBodies = [PAGE, APP]
+    .filter((f) => existsSync(f))
+    .map((f) => stripComments(readFileSync(f, "utf8")));
+  const firing = twinBodies.filter((b) => /pingChannelClick\s*\(/.test(b));
   check(
-    clickCall !== null && /sourceParam/.test(clickCall[1]),
-    "referral-memory: a click is counted only for a link actually opened",
-    "referral-memory: pingChannelClick is fed the EFFECTIVE source, so a URL carrying only `&via=` counts a click for a REMEMBERED source — a (source, channel) pair no link ever carried. A click beacon must key on what was in the address bar.",
+    firing.length === 1,
+    `referral-memory: the click beacon has ONE home (${firing.length} caller)`,
+    `referral-memory: pingChannelClick fires from ${firing.length} places — one fact, one home (the twin-search law)`,
+  );
+  // ⛔ PIN THE PROVENANCE, NOT THE VARIABLE NAME. The first version demanded the
+  // identifier `sourceParam` and went red the moment the beacon moved to a file
+  // that spells the same fact differently. The property: the id counted as a
+  // CLICK is read from the ADDRESS BAR, never from the resolver — otherwise a
+  // URL carrying only `&via=` counts a click for a REMEMBERED source, a
+  // (source, channel) pair no link ever carried. A click is a real arrival.
+  const firingBody = firing[0] ?? "";
+  const clickCall = /pingChannelClick\s*\(([^)]*)\)/.exec(firingBody);
+  const clickArg = (clickCall?.[1] ?? "").split(",")[0]?.trim() ?? "";
+  const declared = clickArg.length > 0
+    ? new RegExp(`(?:const|let)\\s+${clickArg}\\s*=[^;]*`).exec(firingBody)?.[0] ?? ""
+    : "";
+  check(
+    clickCall !== null &&
+      /URLSearchParams|get\("source"\)/.test(declared) &&
+      !/resolveJoin/.test(declared),
+    `referral-memory: a click is counted only for a link actually opened (${clickArg})`,
+    `referral-memory: pingChannelClick is fed \`${clickArg}\`, which is not read from the address bar (or comes from the resolver) — a URL carrying only a channel tag then counts a click for a REMEMBERED source, a (source, channel) pair no link ever carried`,
   );
 }
 

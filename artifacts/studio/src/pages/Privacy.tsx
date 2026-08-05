@@ -117,17 +117,22 @@ export default function Privacy() {
         <p>
           The site itself stores three small things in your own browser: your
           light/dark theme choice, a flag noting the guide greeting was already
-          shown, and — if you arrived through someone's invitation link — the
-          invitation code from that link, so the member who invited you still
-          gets credit if you reload the page or come back later. That code is
-          the public, shareable half of the link they gave you: it says who
-          invited you, never anything about you. It is kept until you open a
-          different invitation link, and clearing this site's data removes it.
+          shown, and — if you arrived through a member's referral link — that
+          link's public referral code, plus the channel tag it carried if it had
+          one (for example <code>&amp;via=twitter</code>), so the member who
+          referred you still gets credit if you reload the page or come back
+          later. The code and the tag are the public, shareable halves of the
+          link they gave you: they say who referred you and where the link was
+          handed out, never anything about you. They are kept until you open a
+          different referral link, and clearing this site's data removes them.
+          If you then join, the tag is sent once to the daily channel counter
+          described below — a count, never an identifier.
           The wallet-connection libraries the site uses
           (RainbowKit, wagmi, WalletConnect and wallet SDKs) also keep their
           own working state in your browser — connection status, the network
           last used — so reconnecting works. All of it stays in your browser:
-          none of it is personal data we collect, and none of it is sent to us.
+          none of it is personal data we collect, and — apart from that single
+          channel count — none of it is sent to us.
         </p>
       </S>
 

@@ -175,7 +175,7 @@ const specs: readonly RegistrySpec[] = [
     adminManaged: true,
     requiresAuth: false,
     requiresApproval: true,
-    cta: { label: "Build your referral link", href: "/source" },
+    cta: { label: "Your referral link", href: "/referral" },
     homepageZone: "PROMOTED_STRIP",
     proofSource: { kind: "reality", group: "source" },
     riskClass: "OWNER_SIDE_ONCHAIN_ACTION",

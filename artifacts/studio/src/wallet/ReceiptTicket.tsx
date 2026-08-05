@@ -209,7 +209,24 @@ export default function ReceiptTicket({
   // is the receipt's own public page — the one address that renders the full
   // document for anyone with the link. The explorer proof stays exactly one
   // click deeper: Verify and the QR are UNCHANGED.
-  const receiptPageUrl = `https://thesyndicate.money/receipt/${model.proof.txHash}${shareFace > 1 ? `?f=${shareFace}` : ""}`;
+  // ⛔ AND IT CARRIES THE SHARER'S OWN REFERRAL LINK (founder order, 2026-08-05:
+  // «un QR code sans lien ne sert pas le referrer»). The receipt page is the
+  // artifact a member actually hands out — prouder than a bare join link — and
+  // it carried NO attribution at all: the referral rode only in the share TEXT,
+  // which every re-share strips. So whoever arrived through a shared receipt was
+  // un-attributed, and the engine writes buyerSourceId once with no setter: that
+  // member was lost to his referrer for life.
+  // This works because the arrival is now captured on EVERY route (App.tsx), not
+  // only /join — `?source=` on a receipt is remembered exactly like one on /join.
+  // `referralLink` is the member's OWN link, resolved from HIS wallet server-side;
+  // it has not resolved, nothing is appended (a share never carries a
+  // half-derived link — the rule this file already held).
+  const sharedSourceId =
+    referralLink !== null ? new URL(referralLink).searchParams.get("source") : null;
+  const receiptPageUrl =
+    `https://thesyndicate.money/receipt/${model.proof.txHash}` +
+    (shareFace > 1 ? `?f=${shareFace}` : "") +
+    (sharedSourceId !== null ? `${shareFace > 1 ? "&" : "?"}source=${sharedSourceId}` : "");
   // ⑪ the share artifact: sealed proof + the member's own link (when it
   // resolves — a share never carries a broken or half-derived link).
   const shareText = txUrl

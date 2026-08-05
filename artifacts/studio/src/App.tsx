@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, useLocation, useSearch } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -26,7 +26,6 @@ import ProtocolMap from "@/pages/ProtocolMap";
 import SourceAttribution from "@/pages/SourceAttribution";
 import ReferralSurface from "@/pages/ReferralSurface";
 import JoinProtocol from "@/pages/JoinProtocol";
-import SourceLinkBuilder from "@/pages/SourceLinkBuilder";
 import Support from "@/pages/Support";
 import PressKit from "@/pages/PressKit";
 import ReferralTerms from "@/pages/ReferralTerms";
@@ -61,9 +60,35 @@ import { fetchOperatorContext } from "@/wallet/walletSession";
 import { SESSION_CHANGED_EVENT } from "@/wallet/sessionEvents";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { RouteScrollManager } from "@/components/RouteScrollManager";
+import { resolveJoinIntroduction } from "@/lib/referralMemory";
+import { parseViaTag, pingChannelClick } from "@/lib/channelPing";
 import { SeoHeadManager } from "@/components/SeoHeadManager";
 
 const queryClient = new QueryClient();
+
+// ⛔ A REFERRAL LINK MAY LAND ON ANY ROUTE (founder decision ③, 2026-08-05).
+// Only /join ever read one. A link pasted as thesyndicate.money/?source=… , a
+// shared receipt, /referral, /member — all silently dropped the attribution,
+// and the engine writes buyerSourceId ONCE with no setter, so every one of
+// those was a member the referrer lost for life.
+// This is the same lesson as the &via= twin, applied one level up: «the link
+// survives the visit» is a property of the APP, not of one page. Capturing
+// here and resolving in the page are the SAME idempotent function, so there is
+// no ordering dependency and no race between them.
+// The click beacon fires here too, keyed on what was actually in the address
+// bar — a click is a real arrival, wherever it lands.
+function ReferralArrivalCapture() {
+  const [location] = useLocation();
+  const search = useSearch();
+  useEffect(() => {
+    const source = new URLSearchParams(search).get("source");
+    const via = parseViaTag(search);
+    resolveJoinIntroduction(source, via);
+    if (source !== null && via !== null) pingChannelClick(source, via);
+  }, [location, search]);
+  return null;
+}
+
 
 // /admin-in-prod (Ruling ②, founder GO ⑤): the console module (Shell + every
 // INTERNAL page) SHIPS in production — as a SEPARATE lazy chunk that is never
@@ -279,8 +304,21 @@ function Router() {
       <PublicRoute path="/join">
         <JoinProtocol />
       </PublicRoute>
+      {/* ⛔ /source WAS A PUBLIC FREE-TEXT LINK BUILDER (founder decision ②,
+          2026-08-05). It knew nothing about the connected wallet: paste ANY
+          source id and it answered «Verified referral code» and offered Copy —
+          and the id published as the demo in our own docs and mockups is the
+          FOUNDER's own source. A member could share, in perfect good faith, a
+          link that pays someone else. It was also a second, worse door to a job
+          /referral already does properly: from the connected wallet, derived
+          server-side.
+          So it renders the SAME surface as /referral. The URL keeps working —
+          no 404, no broken bookmark, the canonical consolidates — and the
+          dangerous builder is gone. Verifying who a link pays already happens
+          where it matters: on /join, in the money breakdown, with an explorer
+          link on the wallet that is actually paid. */}
       <PublicRoute path="/source">
-        <SourceLinkBuilder />
+        <ReferralSurface />
       </PublicRoute>
 
       {/* Operator console surfaces — hard-gated (config/operatorPreviewGate.ts) */}
@@ -358,6 +396,7 @@ function App() {
                     </Suspense>
                   ) : null}
                   <RouteScrollManager />
+                  <ReferralArrivalCapture />
                   <SeoHeadManager />
                   <Router />
                 </AccessStateProvider>

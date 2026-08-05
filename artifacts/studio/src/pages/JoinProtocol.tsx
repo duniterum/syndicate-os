@@ -28,7 +28,7 @@ import {
   type VerifyLinkId,
 } from "@workspace/api-client-react";
 import { PublicPage } from "@/components/PublicPage";
-import { parseViaTag, pingChannelClick } from "@/lib/channelPing";
+import { parseViaTag } from "@/lib/channelPing";
 import { isRecalledSource, resolveJoinIntroduction } from "@/lib/referralMemory";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Card } from "@/components/ui/card";
@@ -955,20 +955,9 @@ export default function JoinProtocol() {
   );
   const recalledSource = isRecalledSource(sourceParam, attachSource);
 
-  // SPEC R3 — the channel beacon (`&via=`): a landing that carries BOTH a
-  // format-valid source and a valid channel tag pings the anonymous click
-  // counter once per page load. Fire-and-forget, aggregate-only server-side
-  // (never who clicked); the server drops anything the registry doesn't know.
-  //
-  // ⛔ KEYED ON WHAT WAS IN THE ADDRESS BAR, never on the remembered source
-  // (review, 2026-08-05). Fed the EFFECTIVE source, `/join?via=telegram` with no
-  // `?source=` counted a telegram click for a link the visitor never opened —
-  // a (source, channel) pair that has never existed. A CLICK is a real arrival.
-  useEffect(() => {
-    if (sourceParam !== null && viaTag !== null) {
-      pingChannelClick(sourceParam, viaTag);
-    }
-  }, [sourceParam, viaTag]);
+  // The channel beacon moved to App.tsx (2026-08-05): a link can land on ANY
+  // route, so the click is counted where the arrival is captured — one fact,
+  // ONE home. Firing it here too would be the twin all over again.
 
   const [amountInput, setAmountInput] = useState("");
   const [submittedRaw, setSubmittedRaw] = useState<string | null>(null);
