@@ -2,7 +2,89 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-06 (SEAL) — **PROD = `e40b8c1`, 19th CONSECUTIVE CLEAN SEAL. P0-1 IS LIVE.** START HERE.
+> # ▶ 2026-08-06 (HANDOFF) — **READ THIS FIRST. The remediation order is CLOSED.**
+>
+> ## ⓪ WHERE EVERYTHING IS, IN FIVE LINES
+> · **PROD = `e40b8c1`** (19th seal). **The quay is a COMMAND, never a number:**
+> ```
+> git fetch origin && git log --oneline e40b8c1..origin/main
+> ```
+> · **P1-01 does NOT deploy this cycle** (founder). What sits at the quay is the P0-1
+>   docs, the registry-header record, ⑥ (P-A/P-B + P1-03), and P1-01 — all fail-closed
+>   or invisible; prod stays on the previous build and nothing breaks undeployed.
+> · **THE REMEDIATION ORDER IS CLOSED:** `0` chain read ✅ · `1` P0-3 attribution ✅
+>   (sealed `abee8f9`) · `2` P1-09 CI gate ✅ · `3` P0-1 gross/net ✅ **LIVE** (19th seal)
+>   · `4` P1-01 reorg overlap ✅ (this session, undeployed) · `5` P0-2 derived rate —
+>   **LATENT, MEASURED**: 0 of 8 sources mismatch, the busiest has 3 durable
+>   introductions and the first rate-raising rung needs 10. Nothing forces it.
+> · **OPEN, NOT FIXED:** **[P1-03] ✅ closed with ⑥** · **[P1-17] NEW** (below) · the P2/P3
+>   groups in the audit's §E, untouched.
+>
+> ## ① [P1-17] — OPEN, cited, deliberately not fixed
+> `saleEventIndexer.ts:485` — `status: lastScanned >= head ? "complete" : "idle"`.
+> **"complete" means "I reached the head I was handed this run", never "I am at chain
+> head".** A lane that stopped reports `complete` forever. Measured 2026-08-06: the local
+> index read `92,147,964 / complete` against a chain at `92,148,836`.
+> **Why it matters more than it did in August:** since the routed anchor went live, a
+> short fold blanks four public money figures, and the first place anyone looks is the
+> backbone status. It will say `complete` while a stopped cursor sits in plain sight.
+> The honest fix compares the cursor to CHAIN head, not to the head of the run.
+>
+> ## ② ⛔ THE CLASS THIS SESSION FOUND THREE TIMES: **A GUARD THAT PINS THE DEFECT**
+> Not three coincidences — one disease, and every instance was found by MUTATING, never
+> by reading:
+> 1. `guard-referral-memory.ts:239-240` — pinned the P0-3 shape-only test as law (the
+>    audit found this one).
+> 2. the same guard's **hop regex** — it followed the WRITING resolver's name into
+>    `useState(...)`, so the one position that may never call it was the one position the
+>    guard REQUIRED it in. Moving the write out went red.
+> 3. `sale-event-indexer.guard.ts:335` — asserted `run 2 starts at 201` (cursor + 1),
+>    which IS P1-01. Fixing the lane turned its own guard red.
+> **THE RULE: pin the PROPERTY, never today's spelling — and prove it by mutation, because
+> a guard that has never been seen failing has not been tested.** Every pin written this
+> session is executed against a fixture carrying the defect's own condition.
+>
+> ## ③ ⛔ AND TWO PINS OF MY OWN THAT WERE DECORATIVE
+> Both written this session, both caught by mutation, both from ONE cause: **this estate
+> has two `check()` conventions.**
+> · `guard-money-flow.ts` → `check(cond, passMsg, failMsg)`
+> · `sale-event-indexer.guard.ts` → `check(name, ok, detail)`
+> I wrote the two P1-01 margin pins with the money-flow shape in the indexer guard, so a
+> truthy STRING landed in `ok` and both passed unconditionally — inside the slice whose
+> subject is guards that do not fire. **71/71 stayed green with the defect present.**
+> **A new pin is not proven by a green run; it is proven by a red one.** Unifying the two
+> conventions is unclaimed work and would remove the cause.
+>
+> ## ④ INFERRED vs MEASURED — this session, stated plainly
+> **MEASURED** (a command in the same message): every figure in the 19th-seal report ·
+> the routed legs and their sum on the rendered production page · escrow = 0 across ALL 8
+> sources (ids read from the chain's own `SourceCreated` receipts) · block time 1.00–1.11 s
+> and `eth_getLogs` at head-0 · `sale.SOURCE_REGISTRY()` = the registry address · the
+> registry's `owner()`/`pendingOwner()` · the served bundle's byte identity with a local
+> build of `e40b8c1` · production cursors vs chain head · the P1-03 no-op (prod `1250000`
+> vs local-new-code `1250000`).
+> **INFERRED, and marked as such:** that prod runs `e40b8c1` — prod publishes NO commit id
+> (`/api/version` → not_found), so identity rests on byte-identical build output plus a
+> string absent before and present after. Strong, not a self-report.
+> **CORRECTED THIS SESSION** (my claim, then my measurement): "escrow is inert until P1-02"
+> — it is a LIVE chain read · "the card's parts don't sum" — on prod they did, the BASE was
+> wrong · three-of-eight escrow sources → all eight · the audit's 177,591-block evidence.
+>
+> ## ⑤ HIS OPEN DECISIONS — UNCHANGED, none re-asked
+> ① the repo is PUBLIC (3 options, nothing prepared) · ② the `guards:db` line to Replit ·
+> ③ the two boot-loaded canon files still carrying the retired member-address rule ·
+> ④ the four decisions of 2026-08-05.
+>
+> ## ⑥ NOT STARTED — THE INFLOW INVENTORY, and his ruling that shapes it
+> The full inventory of what flows INTO the protocol has not been begun.
+> **FOUNDER RULING, 2026-08-06 (record it, do not re-ask):** **NFT sales carry NO referrer
+> today** — the referral rail is the membership engine only. **A referral on NFT becomes
+> possible AFTER the NFT refactor.** Therefore **whatever is built must hold for N
+> CHANNELS, not two**: any inventory, read-model, or surface that hardcodes "membership +
+> NFT" will be rebuilt the day a third channel lands. Design the shape for N; today N=1 for
+> referral and 2 for inflow, and that is a state, never an invariant.
+>
+> # ▶ 2026-08-06 (SEAL) — **PROD = `e40b8c1`, 19th CONSECUTIVE CLEAN SEAL. P0-1 IS LIVE.**
 >
 > ## ① WHERE PROD IS — and how this session PROVED it, not took it
 > Previous prod `abee8f9` (18th seal); this cycle carried **16 commits**
