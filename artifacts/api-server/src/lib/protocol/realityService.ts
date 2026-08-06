@@ -64,6 +64,7 @@ import {
 import { HISTORICAL_FREEZE_WALLETS } from "./historicalFreezeWallets";
 import { REFERRAL_ATTRIBUTION_SNAPSHOT } from "./referralAttributionSnapshot";
 import { activeIntroductionModel } from "./activeIntroductionModel";
+import { getRoutedFinancial } from "./routedLiveModel";
 import { INTRODUCTION_SNAPSHOT } from "./introductionSnapshot";
 import {
   SELECTOR_TOTAL_USDC_RAISED,
@@ -2051,6 +2052,123 @@ async function buildFinancialGroup(
         failureReason: paidValid
           ? null
           : "introduction read-model gate/chain mismatch (fail closed)",
+        asOf,
+      }),
+    );
+  }
+
+  // 7-bis) THE ROUTED SPLIT — SUMMED FROM WHAT THE CHAIN EMITTED (P0-1, founder
+  //    2026-08-06). Until today these three legs were computed on the CLIENT as
+  //    70/20/10 of the GROSS aggregate, while the engine routes 70/20/10 of NET
+  //    (MembershipSaleV3.verified.sol:498-503): 1,410.00 published against a true
+  //    1,408.75, overstated by exactly the source payments ever made and growing
+  //    with every referral, under a "verify on chain" anchor.
+  //    These items are not a percentage of anything. Every generation EMITS its
+  //    legs; the backbone folds the indexed rows and reconciles that fold against
+  //    counters the CONTRACTS keep (a self-referential identity cannot see a
+  //    short index — every leg drops together and the parts still sum). Measured
+  //    2026-08-06 on the live chain: 986.125 / 281.75 / 140.875, net 1,408.75.
+  //
+  //    ⛔ NULL, NEVER ZERO. When the fold has not reconciled, `value` is null and
+  //    `valueType` is "null" — the absence state every consumer already renders
+  //    ("Unavailable"). A zero on a money line reads as a fact about the
+  //    protocol, and inventing one is the failure class this envelope exists to
+  //    refuse. The reconciler's measured sentence rides in `failureReason`.
+  //
+  //    ⛔ AND EACH ITEM STATES THE BLOCK ITS FIGURE COVERS, in `sourceRef` and in
+  //    `note`, exactly as `financial.referral.paidToReferrersTotal` does — plus
+  //    `financial.routed.asOfBlock` as a bare number, so a reader gets it without
+  //    parsing prose. The fold's own block travels verbatim; it is never the
+  //    cycle's head, and the two are published side by side so a stale model
+  //    cannot inherit a freshness it does not have.
+  {
+    const routed = getRoutedFinancial();
+    const m = routed.model;
+    const ok = (raw: string | undefined): boolean =>
+      typeof raw === "string" && /^[0-9]+$/.test(raw);
+    const valid = m !== null && ok(m.vaultRaw) && ok(m.liquidityRaw) && ok(m.operationsRaw) && ok(m.netProtocolContributionRaw);
+    const blockRef = valid && m !== null ? `asOfBlock ${m.asOfBlock}` : "no reconciled fold";
+    const rowsRef = valid && m !== null ? `${m.rowCount} indexed purchase row(s)` : "0 rows";
+    // The reconciler's sentence when there is one; otherwise the honest boot
+    // state — nothing has been measured yet, which is not a failure to hide.
+    const why =
+      routed.reason ??
+      (valid
+        ? null
+        : "no backbone cycle has reconciled a routed fold yet (boot) — the legs are reported unavailable rather than computed as a share of anything");
+    const leg = (
+      id: string,
+      label: string,
+      raw: string | null,
+      human: string,
+    ): void => {
+      items.push(
+        buildItem({
+          id,
+          label,
+          value: valid ? raw : null,
+          sourceType: "INDEXED_CHAIN_SCAN",
+          sourceRef: `routed fold over indexed sale events (${blockRef}, ${rowsRef}), reconciled against the engines' own counters`,
+          chainId: valid ? EXPECTED_CHAIN_ID : null,
+          contractRole: "sale",
+          confidence: valid ? "HIGH" : "LOW",
+          lifecycle: valid ? "READ_ONLY_PROOF" : "PAUSED_BY_PRECAUTION",
+          note: valid && m !== null
+            ? `${human} Summed from the amounts the sale engines emitted, across ${m.rowCount} indexed purchase row(s) as of block ${m.asOfBlock}, and reconciled against the contracts' own gross / source-payment / net counters — any disagreement, either direction, withholds all four figures rather than publishing one that is wrong. Never a percentage of an aggregate.`
+            : `${human} Reported unavailable: the indexed fold and the contracts' own counters did not reconcile, so no figure is published for this leg.`,
+          failureReason: valid ? null : why,
+          asOf,
+        }),
+      );
+    };
+    leg(
+      "financial.routed.vault",
+      "Reserve — cumulative USDC routed on-chain (raw base units)",
+      m?.vaultRaw ?? null,
+      "Cumulative USDC routed to the Reserve by the sale engines.",
+    );
+    leg(
+      "financial.routed.liquidity",
+      "Liquidity — cumulative USDC routed on-chain (raw base units)",
+      m?.liquidityRaw ?? null,
+      "Cumulative USDC routed to Liquidity by the sale engines.",
+    );
+    leg(
+      "financial.routed.operations",
+      "Operations — cumulative USDC routed on-chain (raw base units)",
+      m?.operationsRaw ?? null,
+      "Cumulative USDC routed to Operations by the sale engines.",
+    );
+    leg(
+      "financial.routed.netTotal",
+      "Net routed to date — cumulative USDC across Reserve + Liquidity + Operations (raw base units)",
+      m?.netProtocolContributionRaw ?? null,
+      "The three legs added up: gross purchases minus what was paid to referrers inside each buyer's own transaction, which is what the engines actually route.",
+    );
+    items.push(
+      buildItem({
+        id: "financial.routed.asOfBlock",
+        label: "Routed split — the block the folded rows cover",
+        value: valid && m !== null ? m.asOfBlock : null,
+        sourceType: "INDEXED_CHAIN_SCAN",
+        sourceRef: `routed fold cursor (${blockRef}); publishing cycle head ${routed.headBlock ?? "unknown"}`,
+        chainId: valid ? EXPECTED_CHAIN_ID : null,
+        contractRole: "sale",
+        confidence: valid ? "HIGH" : "LOW",
+        lifecycle: valid ? "READ_ONLY_PROOF" : "PAUSED_BY_PRECAUTION",
+        // ⛔ STATE THE RELATIONSHIP, NEVER ASSERT A GAP. The first wording read
+        // "deliberately NOT the head block (92136949)" while the value beside it
+        // WAS 92136949 — a sentence contradicting the figure on its own line,
+        // which is the exact defect class this envelope exists to refuse. The
+        // two are usually equal (the cycle folds what it just scanned); what
+        // matters is that the figure states its OWN block, so when they differ
+        // the difference is visible instead of inherited.
+        note: valid && m !== null
+          ? m.asOfBlock === routed.headBlock
+            ? `The four routed figures above are exact as of this block — the last one the folded rows cover, which this cycle scanned through. A figure always states the block it is true at, so if a later cycle reaches further without folding further, this number stays behind and says so.`
+            : `The four routed figures above are exact as of this block — the last one the folded rows cover. The publishing cycle's head was ${routed.headBlock ?? "unknown"}, so the figures are ${routed.headBlock !== null ? routed.headBlock - m.asOfBlock : "?"} block(s) behind it: a figure states the block it is true at, never the block the cycle reached.`
+          : "No reconciled fold, so no block is claimed for the routed figures.",
+        failureReason: valid ? null : why,
         asOf,
       }),
     );

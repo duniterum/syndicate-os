@@ -119,8 +119,12 @@ import {
 import {
   foldRoutedTotals,
   reconcileRoutedFold,
-  type RoutedFold,
 } from "../lib/protocol/routedFold";
+import {
+  getRoutedFinancial,
+  setRoutedFinancial,
+  type RoutedFinancialModel,
+} from "../lib/protocol/routedLiveModel";
 import {
   SELECTOR_CURRENT_ERA,
   SELECTOR_MEMBER_COUNT,
@@ -256,44 +260,12 @@ let lastGoodSeasonModel: SeasonBuildResult | null = null;
 
 /**
  * P0-1 (founder, 2026-08-06): THE ROUTED SPLIT, SUMMED FROM WHAT THE CHAIN
- * EMITTED AND ANCHORED AGAINST THE ENGINES' OWN COUNTERS.
- *
- * ⛔ IT CARRIES ITS OWN `asOfBlock`, AND THAT IS THE POINT. The 2026-08-06
- * audit's A10 finding, verbatim: *stale derived models served under a FRESH
- * headBlock with lane flags asserting completeness; no derived model carries an
- * asOfBlock*. A held model here therefore states the block its rows END at, and
- * the source below reports it beside the cycle's head, so a caller can SEE the
- * gap instead of inheriting a freshness the figures do not have.
- *
- * THE THREE OUTCOMES, and they are not interchangeable:
- *   · MEASURED  — the fold reconciled against the contracts; it is held and served.
- *   · DIVERGED  — the fold and the counters disagree, either direction, any size.
- *     The held model is CLEARED (founder ruling, 2026-08-06: the legs and the
- *     total serve `null` and the surfaces render "Unavailable" — never the lower
- *     number, and never yesterday's number dressed as today's).
- *   · UNAVAILABLE — the counters could not be read at all. Nothing is disproven,
- *     so the previous good model keeps serving WITH ITS OWN OLDER `asOfBlock`,
- *     exactly like every other derived lane here.
+ * EMITTED AND ANCHORED AGAINST THE ENGINES' OWN COUNTERS. The cycle measures it
+ * here and PUBLISHES it to `routedLiveModel` — the same seam the introduction
+ * model already uses to reach a served read without a dependency cycle. The
+ * held state lives there, in ONE place, so this runner and the envelope can
+ * never hold two versions of one figure.
  */
-export interface RoutedFinancialModel extends RoutedFold {
-  /** The last block the folded rows cover — never the cycle's head. */
-  readonly asOfBlock: number;
-}
-export interface RoutedFinancialSource {
-  readonly model: RoutedFinancialModel | null;
-  /**
-   * WHY there is no model, or why a held one is stale — the reconciler's own
-   * measured sentence, verbatim: the figure named, both values in USDC, the
-   * direction, the size, and the row count. ⛔ It is carried, never reduced to a
-   * flag: "divergence" is not actionable, and a boolean cannot be acted on at
-   * all. `null` only when the model is fresh and exact.
-   */
-  readonly reason: string | null;
-  /** The cycle's head, so a caller can compare it to the model's asOfBlock. */
-  readonly headBlock: number | null;
-}
-let lastGoodRoutedModel: RoutedFinancialModel | null = null;
-let routedReasonHeld: string | null = null;
 
 // D-TRUTH D1: the Merkle-frozen genesis roster join input (lowercase wallet →
 // seat #1–#8; SERVER-ONLY, never emitted) now lives beside the roster itself —
@@ -336,19 +308,6 @@ export function getSeasonSource(): SeasonBuildResult | null {
   return lastGoodSeasonModel;
 }
 
-/**
- * P0-1 — the routed split and, when there isn't one, the measured reason why.
- * Deliberately NOT part of FeedSource: the feed never reads money aggregates.
- * The reality route reads it here (step 2) and publishes `financial.routed.*`.
- * Address-free by construction — this model is four sums and a block number.
- */
-export function getRoutedFinancialSource(): RoutedFinancialSource {
-  return {
-    model: lastGoodRoutedModel,
-    reason: routedReasonHeld,
-    headBlock: status.lastSuccess?.headBlock ?? null,
-  };
-}
 
 /** Address-free snapshot for the status route (structure is already safe). */
 export function getBackboneStatus(): BackboneStatusSnapshot {
@@ -955,10 +914,19 @@ async function runCycle(): Promise<string | null> {
   // than kept serving — the founder's ruling is that the legs and the total go
   // to `null` and the surfaces say "Unavailable", never the lower number and
   // never yesterday's number under today's head. An UNAVAILABLE read disproves
-  // nothing, so the held model stays, carrying its own older asOfBlock.
-  if (routedModel !== null) lastGoodRoutedModel = routedModel;
-  else if (routedDiverged) lastGoodRoutedModel = null;
-  routedReasonHeld = routedReason;
+  // nothing, so the held model stays, carrying its own older asOfBlock — which
+  // the envelope publishes beside this cycle's head, so the gap is visible
+  // rather than inherited (the audit's A10 finding, answered).
+  setRoutedFinancial({
+    model:
+      routedModel !== null
+        ? routedModel
+        : routedDiverged
+          ? null
+          : getRoutedFinancial().model,
+    reason: routedReason,
+    headBlock: summary.head,
+  });
   burnsAsOfBlock =
     protocolStreams.find((s) => s.streamKey === "SYN_BURN")?.cursorBlock ??
     burnsAsOfBlock;

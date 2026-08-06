@@ -432,10 +432,14 @@ async function main(): Promise<void> {
     // items — the 25 before this slice + vault BTC.b / WETH.e / native AVAX +
     // the 3 Chainlink USD feeds. Values LIVE from the transport except the two
     // snapshot-backed referral figures (static hash-pinned).
-    check("fin: financial group has exactly 39 items", e.groups.financial.length === 39, String(e.groups.financial.length));
+    // ⛔ 39 → 44 (P0-1 step 2, 2026-08-06): the four routed legs + the block they
+    // are true at. This pin is why the count moves DELIBERATELY and never by
+    // accident — it went red the moment the items landed, which is the whole
+    // point of pinning an exact id set rather than a minimum.
+    check("fin: financial group has exactly 44 items", e.groups.financial.length === 44, String(e.groups.financial.length));
     const finIds = e.groups.financial.map((i) => i.id).sort().join(",");
     check(
-      "fin: exact id set (16 base + 5 vault crypto holdings [AVAX + BTC.b + WETH.e + LINK.e + XAUt0] + 5 Chainlink USD price feeds + 2 LP-share reads + 2 NFT-sale USDC reads + SYN totalSupply + 7 allocation balances + paidToReferrersTotal = 39)",
+      "fin: exact id set (16 base + 5 vault crypto holdings [AVAX + BTC.b + WETH.e + LINK.e + XAUt0] + 5 Chainlink USD price feeds + 2 LP-share reads + 2 NFT-sale USDC reads + SYN totalSupply + 7 allocation balances + paidToReferrersTotal + 4 routed legs + routed asOfBlock = 44)",
       finIds ===
         [
           "financial.burn.synBalance",
@@ -470,6 +474,11 @@ async function main(): Promise<void> {
           "financial.referral.attributionActivity",
           "financial.referral.paidToReferrersTotal",
           "financial.referral.registryLive",
+          "financial.routed.asOfBlock",
+          "financial.routed.liquidity",
+          "financial.routed.netTotal",
+          "financial.routed.operations",
+          "financial.routed.vault",
           "financial.token.synTotalSupply",
           "financial.vault.avaxBalance",
           "financial.vault.btcbBalance",
@@ -558,6 +567,44 @@ async function main(): Promise<void> {
     // aggregate. In this rig no live model exists, so the committed snapshot
     // MUST be the source (M0 preference falls back to it); chain identity is
     // pinned INSIDE the model, so the item is snapshot-backed, not a live read.
+    // ⛔ P0-1 step 2 — THE ROUTED LEGS ARE NULL, NEVER ZERO (founder condition,
+    // 2026-08-06). In this rig no backbone cycle has run, so nothing has been
+    // folded or anchored — the honest answer is an absent value with a stated
+    // reason, and that is the SAME state a divergence produces in production.
+    // A zero on a money line reads as a fact about the protocol ("nothing was
+    // routed"), which is the failure class the 2026-08-06 audit found across 22
+    // catch blocks. An empty string is the same lie with a different shape.
+    for (const id of [
+      "financial.routed.vault",
+      "financial.routed.liquidity",
+      "financial.routed.operations",
+      "financial.routed.netTotal",
+      "financial.routed.asOfBlock",
+    ]) {
+      const it = byId(e, id);
+      check(
+        `fin: ${id} — unreconciled serves NULL, never 0 and never ""`,
+        it?.value === null &&
+          it?.valueType === "null" &&
+          it?.sourceType === "INDEXED_CHAIN_SCAN" &&
+          it?.contractRole === "sale" &&
+          it?.confidence === "LOW" &&
+          it?.lifecycle === "PAUSED_BY_PRECAUTION" &&
+          typeof it?.failureReason === "string" &&
+          (it?.failureReason ?? "").length > 0,
+        `${JSON.stringify(it?.value)} / ${String(it?.valueType)} / reason=${JSON.stringify(it?.failureReason)}`,
+      );
+    }
+    // And every routed item names the block its figure covers — the fold's own
+    // cursor, never the cycle's head (the audit's A10 finding: a derived model
+    // served under a fresh headBlock with no asOfBlock of its own).
+    check(
+      "fin: every routed item states the block its figure covers (or says there is none)",
+      ["financial.routed.vault", "financial.routed.netTotal", "financial.routed.asOfBlock"].every(
+        (id) => /asOfBlock \d+|no reconciled fold/.test(byId(e, id)?.sourceRef ?? ""),
+      ),
+    );
+
     const paid = byId(e, "financial.referral.paidToReferrersTotal");
     check("fin: paidToReferrersTotal equals the committed introduction snapshot's aggregate (string, INDEXED_CHAIN_SCAN, sale role)", paid?.value === INTRODUCTION_SNAPSHOT.model.totals.commissionPaidRaw && paid?.valueType === "string" && paid?.sourceType === "INDEXED_CHAIN_SCAN" && paid?.contractRole === "sale");
     check("fin: paidToReferrersTotal HIGH + READ_ONLY_PROOF (model gate verified)", paid?.confidence === "HIGH" && paid?.lifecycle === "READ_ONLY_PROOF" && paid?.failureReason === null);
