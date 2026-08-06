@@ -980,16 +980,23 @@ export default function JoinProtocol() {
   // the moment it is proven. Blanking it would flicker the money line.
   // This counter is that switch, and nothing else: it never changes WHICH
   // introduction the rule chooses, only when this page re-reads it.
-  const [promotions, setPromotions] = useState(0);
-  useEffect(() => {
-    const bump = () => setPromotions((n) => n + 1);
-    window.addEventListener(REFERRAL_PROMOTED_EVENT, bump);
-    return () => window.removeEventListener(REFERRAL_PROMOTED_EVENT, bump);
-  }, []);
-  const attachSource = useMemo(
+  // ⛔ NOT a useMemo with a counter in its deps (that was the first shape, and
+  // CI caught it 2026-08-06). Two things were wrong with it: the counter was a
+  // dependency the callback never read — which eslint reports — and, worse,
+  // `resolveJoinIntroduction` WRITES to localStorage, so calling it inside a
+  // memo was a side effect during render, which React double-invokes in
+  // StrictMode. The read belongs in an effect, and this is that read.
+  const readIntroduction = useCallback(
     () => resolveJoinIntroduction(sourceParam, viaTag)?.sourceId ?? null,
-    [sourceParam, viaTag, promotions],
+    [sourceParam, viaTag],
   );
+  const [attachSource, setAttachSource] = useState<string | null>(readIntroduction);
+  useEffect(() => {
+    setAttachSource(readIntroduction());
+    const onPromoted = () => setAttachSource(readIntroduction());
+    window.addEventListener(REFERRAL_PROMOTED_EVENT, onPromoted);
+    return () => window.removeEventListener(REFERRAL_PROMOTED_EVENT, onPromoted);
+  }, [readIntroduction]);
   const recalledSource = isRecalledSource(sourceParam, attachSource);
 
   // The channel beacon moved to App.tsx (2026-08-05): a link can land on ANY

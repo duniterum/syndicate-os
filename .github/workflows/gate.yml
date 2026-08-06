@@ -25,13 +25,29 @@
 #     that the hook was not skipped with --no-verify.
 # Neither replaces the other. The hook can be bypassed; this cannot be silenced.
 #
-# COST (his money — measured, not estimated): the gate is ~66 s of work on the
-# founder's machine (36 s for typecheck + 3 SEO/surface checks + 39 studio
-# guards + 21 api guards, then 30 s for the full prod build). `concurrency`
-# cancels superseded runs and `timeout-minutes` caps a runaway. NO SECRETS are
-# needed: the api guard chain was measured hermetic — it ran green with
-# DATABASE_URL unset, and every "network" line in its output asserts a
-# CONFIGURED ENDPOINT STRING, never a live call.
+# ⛔ COST — CORRECTED 2026-08-06. This file first shipped reasoning that the
+# repository is PRIVATE and that these minutes are billed. THAT WAS WRONG: the
+# repo is PUBLIC, and GitHub Actions is free and unmetered on public repos.
+# The error came from inferring "private" off a DOC FILENAME
+# (SLICE_2_19A_PRIVATE_REPO_FOUNDATION_VERIFICATION_REPORT.md) instead of
+# checking — the exact "no inference from filenames" rule the 2026-08-06 audit
+# imposed on all fifteen of its agents. `concurrency` and `timeout-minutes`
+# stay: they are good hygiene and they keep a runaway from spinning, but they
+# are NOT protecting a bill. There is no bill.
+#
+# NO SECRETS are needed: the api guard chain was measured hermetic — it ran
+# green with DATABASE_URL unset (21 guards, 196,950 bytes, exit 0), and every
+# "network" line in its output asserts a CONFIGURED ENDPOINT STRING rather than
+# making a live call. Runtime: ~66 s of work measured locally.
+#
+# ⛔ WHY THE GATE STEP WRAPS ITS OWN FAILURE (run #1, 2026-08-06). Workflow LOGS
+# require admin rights — `GET /actions/runs/{id}/logs` answers
+# «Must have admin rights to Repository» to everyone else. Step CONCLUSIONS and
+# ANNOTATIONS are public. So a bare `exit 1` is undiagnosable by anyone without
+# admin, which is how run #1 left its real cause invisible. The wrapper below
+# re-emits the failing tail as ::error:: annotations, which ARE public — so
+# every future red is readable from the outside without duplicating
+# release:gate's step list here.
 #
 # ⛔ WHAT THIS DOES NOT DO. It runs the guards that exist; it does not make any
 # of them stronger. The 2026-08-06 audit found several studio money/share guards
@@ -62,13 +78,17 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v4
+      # Majors current as of 2026-08-06, each read from its own
+      # /releases/latest — not from memory. Run #1 warned that the previous
+      # pins (checkout@v4, setup-node@v4, action-setup@v4) all target Node 20,
+      # which GitHub has deprecated and was force-running on Node 24.
+      - uses: actions/checkout@v7
 
       # Reads the version from package.json's `packageManager` field
       # (pnpm@10.26.1) — never a second copy of that number here.
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           # Matches .replit's `nodejs-24`.
           node-version: 24
@@ -79,7 +99,18 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      # The repo's OWN gate, invoked whole. Deliberately not a second copy of
+      # The repo's OWN gate, invoked whole. Deliberately NOT a second copy of
       # its step list — if release:gate changes, this follows automatically.
+      # The wrapper only makes the failure PUBLIC (see the header): logs are
+      # admin-only, annotations are not.
       - name: release:gate
-        run: pnpm run release:gate
+        run: |
+          set -o pipefail
+          if pnpm run release:gate 2>&1 | tee gate.log; then
+            exit 0
+          fi
+          echo "::error::release:gate FAILED — the failing tail follows, so it is readable without admin rights"
+          tail -n 40 gate.log | while IFS= read -r line; do
+            echo "::error::${line}"
+          done
+          exit 1
