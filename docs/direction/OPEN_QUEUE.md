@@ -1,5 +1,38 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> ## ▶ 2026-08-06 (SOIR) — ⛔ **UNE DECISION FONDATEUR OUVERTE : LE DEPOT EST PUBLIC.**
+> **IL DECIDE. Personne n agit dessus.** Constate, pas suppose : le depot est PUBLIC —
+> `raw.githubusercontent.com/duniterum/syndicate-os/main/.claude/launch.json` repond
+> **http=200** sans authentification. Tout `docs/` est donc lisible par le monde.
+>
+> **LA TENSION, dite simplement, sans pencher d un cote :**
+> · un protocole PROOF-FIRST gagne a avoir un depot ouvert — le code qui tient les
+>   chiffres est verifiable par n importe qui, ce qui EST l argument du produit ;
+> · mais `docs/audits/TOTAL_SECURITY_AUDIT_2026-08-06.md` publie desormais **33 constats
+>   OUVERTS**, avec les chemins de fichiers, les numeros de ligne et les scenarios
+>   d exploitation, a quiconque regarde. C est une carte pour un attaquant, ecrite par nous.
+>
+> **LES TROIS OPTIONS (il tranche) :**
+> ① **Laisser tel quel** — l ouverture totale assumee ; les constats ouverts sont publics
+>    le temps qu ils sont ouverts.
+> ② **Depot PRIVE jusqu a la fermeture des P1** — puis rouvrir quand la carte ne sert plus
+>    a rien. Coute : les Actions redeviennent facturees, et l argument «verifiable par tous»
+>    est suspendu pendant ce temps.
+> ③ **Le depot reste PUBLIC et les audits OUVERTS demenagent dans `_research/`, jamais
+>    commite** — le depot garde sa preuve, la carte n est plus publiee. Les audits FERMES
+>    restent dans `docs/audits/`.
+>
+> ⛔ **RIEN N EST FAIT. Aucune option n est preparee, esquissee, ni commencee.**
+>
+> ✅ **FERME LE MEME JOUR — l identifiant publie** (`.claude/launch.json:49`) :
+> **CLOS PAR ROTATION.** Il a regenere le mot de passe de la base Replit par precaution
+> plutot que d auditer la question de la reutilisation. `pg_hba.conf` n autorise
+> l authentification que depuis la boucle locale (`127.0.0.1/32` · `::1/128`), donc le
+> socket ouvert sur `0.0.0.0:5433` ne donne rien a distance. **L historique n a
+> DELIBEREMENT pas ete reecrit** : 178 commits, toutes les citations de sceaux des deux
+> registres cassees, et cela ne depublie rien. **NE PAS ROUVRIR** — detail complet dans
+> l audit §[S-1].
+>
 > ## ▶ 2026-08-06 — **PROD = `abee8f9`, 18e sceau. LE QUAI EST VIDE.**
 > Le quai reste une COMMANDE, jamais un nombre :
 > ```

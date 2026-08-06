@@ -213,9 +213,38 @@ SDK, measured in the emitted chunk · `esbuild` hard-pinned at `0.27.3` with an 
 dev-server advisory, the exact pin blocking the fix (`pnpm-workspace.yaml:160`) · `@replit/*`
 exempt from the 1-day quarantine while `runtimeErrorOverlay()` sits OUTSIDE the dev-only guard
 (`vite.config.ts:45`) · three dead install-script grants and one dead release-age exemption ·
-a working local DB password committed at `.claude/launch.json:49`, duplicated at
-`SESSION_STATE.md:1789` · `VITE_AVALANCHE_RPC_URL` accepts any https URL into the public
-bundle while the repo names a keyed URL a secret twice. **STATUS: OPEN.**
+`VITE_AVALANCHE_RPC_URL` accepts any https URL into the public bundle while the repo names a
+keyed URL a secret twice. **STATUS: OPEN.**
+
+### [S-1] The published database credential — **CLOSED-BY-ROTATION (founder, 2026-08-06)**
+`postgresql://postgres:syndicate_local@localhost:5433/syndicate` — the `postgres` superuser —
+committed at `.claude/launch.json:49` and duplicated at `SESSION_STATE.md:1789`. **Confirmed
+published:** `raw.githubusercontent.com/duniterum/syndicate-os/main/.claude/launch.json` →
+**http=200**, unauthenticated, password present. In 2 tracked files across 3 commits, oldest
+`52b70ad` (2026-07-29).
+
+**What it actually exposes — measured, not assumed.** PostgreSQL 17 listens on `0.0.0.0:5433`
+**and** `[::]:5433` (`listen_addresses = '*'`), so the socket is open on every interface — but
+`pg_hba.conf` permits **only** `local`, `host … 127.0.0.1/32` and `host … ::1/128`. **A remote
+client completes a TCP connection and is refused at authentication regardless of what it
+sends.** The bound is `pg_hba`, not the `localhost` in the connection string.
+
+**The founder's resolution:** he **regenerated the Replit database password as a precaution**
+rather than audit whether `syndicate_local` had been reused. That voids the only path that
+could have made this severe — reuse against production. The committed local credential remains
+committed and remains bounded by the loopback restriction above.
+
+**History was DELIBERATELY NOT REWRITTEN**, and this is a decision, not an omission: a purge
+would rewrite **178 commits** (`52b70ad`..HEAD), changing every SHA — including **every seal
+citation that both `SESSION_STATE.md` and `OPEN_QUEUE.md` carry** (`936f929`, `c0555cc9`,
+`abee8f9`…) — and forcing Replit to re-clone. And it would un-publish nothing: eight days
+public, on a repo GitHub labels a template; caches, forks and clones already hold it. **A
+published credential is compromised at publication; rewriting history is theatre unless paired
+with rotation, and the rotation is what was done.**
+
+⛔ **DO NOT REOPEN THIS.** The residual hardening — `listen_addresses = 'localhost'`, and
+replacing the tracked value with a placeholder — is optional defence in depth, not an open
+finding.
 
 **Copy/doctrine.** Dead buyer-facing lexicon on `/` and `/source` — *"routed contribution"*,
 *"net protocol contribution is routed"* — and `guard-forbidden-copy`'s own header documents
