@@ -176,7 +176,7 @@ export default function Whitepaper() {
                 routed on-chain across <strong>Reserve</strong>, <strong>Liquidity</strong>, and{" "}
                 <strong>Operations</strong>; members hold no claim on these funds. Cumulative inflow to
                 date <strong>{live(usdc(r.aggregateInflowUsdc))}</strong> — paid to referrers{" "}
-                <strong>{live(usdc(r.routedPaidToReferrersUsdc))}</strong>, then routed live: Reserve{" "}
+                <strong>{live(usdc(r.paidToReferrersUsdc))}</strong>, then routed live: Reserve{" "}
                 <strong>{live(usdc(r.routedVault))}</strong>, Liquidity{" "}
                 <strong>{live(usdc(r.routedLiquidity))}</strong>, Operations{" "}
                 <strong>{live(usdc(r.routedOperations))}</strong>.{" "}

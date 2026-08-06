@@ -57,7 +57,52 @@ const fail = (m: string): void => {
 const check = (cond: boolean, ok: string, no: string): void => (cond ? pass(ok) : fail(no));
 
 const stripComments = (s: string): string =>
-  s.replace(/\/\*[\s\S]*?\*\//g, "").split("\n").map((l) => l.replace(/\/\/.*$/, "")).join("\n");
+  s
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .split("\n")
+    // `[^\n]*` not `.*$` — `.` does not match `\r`, and every file here is CRLF,
+    // so the old form stripped NOTHING (fixtures below). The leading capture
+    // keeps `https://…` intact: a stripper that eats the rest of a line after a
+    // URL hides a real occurrence exactly as well as one that strips nothing.
+    .map((l) => l.replace(/(^|[^:"'`])\/\/[^\n]*/, "$1"))
+    .join("\n");
+
+// ── ⓑ THE STRIPPER IS TESTED, BECAUSE IT WAS A NO-OP FOR ITS WHOLE LIFE ─────
+// `/\/\/.*$/` never matched a `//` line in this repo: `.` does not match `\r`,
+// `$` (no `m` flag) matches only end-of-input, and EVERY source file here is
+// CRLF. So this guard's ② and ③ counted words inside COMMENTS for their entire
+// existence — ③ was RED at the guard's own birth (`ded1596`) on a comment in
+// JoinProtocol.tsx carried since `0d0011c`, and ② went red on the tombstone
+// comment that RECORDED the deletion of the defect it hunts.
+// A guard that cannot tell code from prose is measuring something other than
+// what it claims, so the stripper is now driven by fixtures rather than trusted.
+{
+  const CRLF = "const a = 1;\r\n// acquisitionCost lives in this comment\r\nconst b = 2;\r\n";
+  const LF = CRLF.replace(/\r/g, "");
+  const BLOCK = "const a = 1;\r\n/* protocolContribution in a block */\r\nconst b = 2;\r\n";
+  const KEEPS_CODE = 'const acquisitionCost = 1; // and a trailing comment\r\n';
+  check(
+    !/acquisitionCost/.test(stripComments(CRLF)),
+    "money-flow: ⓑ a `//` comment is stripped on CRLF files (the whole repo)",
+    "money-flow: ⓑ THE COMMENT-STRIPPER IS A NO-OP ON CRLF. `.` never matches `\\r`, so every `//` line survives and ②/③ count words inside COMMENTS. Every source file in this repo is CRLF — this guard has been measuring prose, not code",
+  );
+  check(
+    !/acquisitionCost/.test(stripComments(LF)) && !/protocolContribution/.test(stripComments(BLOCK)),
+    "money-flow: ⓑ `//` on LF and `/* */` blocks are stripped too",
+    "money-flow: ⓑ the stripper missed an LF line comment or a block comment",
+  );
+  check(
+    /acquisitionCost/.test(stripComments(KEEPS_CODE)),
+    "money-flow: ⓑ CODE on a line that also carries a comment is KEPT",
+    "money-flow: ⓑ the stripper ate real code that shared a line with a trailing comment — a stripper that over-reaches hides the defect as surely as one that under-reaches",
+  );
+  const URL_LINE = 'const u = "https://x.io/a"; const acquisitionCost = 2;\r\n';
+  check(
+    /acquisitionCost/.test(stripComments(URL_LINE)),
+    "money-flow: ⓑ a `//` inside a URL does not swallow the rest of the line",
+    "money-flow: ⓑ the stripper treated `https://` as a comment and ate the code after it — an occurrence sitting after any URL would be invisible",
+  );
+}
 
 // ── ① THE IDENTITY, EXECUTED ON THE REAL FOLD ──────────────────────────────
 // vault + liquidity + operations + sourcePayment === gross, in base units.
@@ -382,9 +427,139 @@ check(
   }
 }
 
+// ── ⓒ THE PROVENANCE PROPERTY — ② PINNED TO WHAT IS TRUE, NOT TO A SPELLING ─
+// ② matches `routedShare` and the three bps literals. That is TODAY'S SPELLING
+// of the defect, and the defect has no obligation to keep it: the same wrong
+// figure written `(BigInt(aggregate) * 70n) / 100n` walks through ② GREEN. The
+// hole is demonstrated below against the live matcher before the replacement is
+// applied — a guard that cannot be shown failing has not been tested.
+//
+// THE PROPERTY: every value that reaches a `routed*` field must resolve, within
+// a short chain, to `financial.routed.*` reads and NOTHING ELSE. Not "no
+// arithmetic" — the founder-approved remainder (total − vault − liquidity) IS
+// arithmetic, and a matcher that flags its own approved fix earns an exemption
+// within the hour. What is forbidden is FOREIGN PROVENANCE: any other financial
+// figure entering the chain. That kills every spelling of "a share of the
+// aggregate" at once, including the ones nobody has written yet.
+{
+  /** Every financial id reachable from an expression, following local consts. */
+  const provenanceOf = (code: string, expr: string, depth: number): string[] => {
+    const ids = [...expr.matchAll(/"(financial\.[^"]+)"/g)].map((m) => m[1] as string);
+    if (depth <= 0) return ids;
+    const out = [...ids];
+    for (const d of code.matchAll(/const\s+(\w+)\s*=\s*([\s\S]*?);\r?\n/g)) {
+      const name = d[1] as string;
+      const body = d[2] as string;
+      if (new RegExp(`\\b${name}\\b`).test(expr) && !new RegExp(`\\b${name}\\b`).test(body)) {
+        out.push(...provenanceOf(code, body, depth - 1));
+      }
+    }
+    return out;
+  };
+  /**
+   * The property, as a pure verdict so it can be driven by fixtures.
+   *
+   * ⛔ THE ENTRY SET, STATED SO IT IS INTENTIONAL: this property is
+   * PROVENANCE-based, but it enters through fields NAMED `routed*` in files that
+   * read `financial.routed.*`. A routed leg published under another name — say
+   * `reserveUsdc` — sits OUTSIDE it until the field is renamed into the family
+   * or the entry set is widened here. That is a real bound, not an oversight:
+   * a matcher that tried to guess which arbitrary field "is a leg" would either
+   * miss silently or flag half the page, and both teach people to write
+   * exemptions. Widen it deliberately when a leg is named otherwise.
+   */
+  const routedProvenance = (src: string): { ok: boolean; reason: string | null } => {
+    const code = stripComments(src);
+    const assigns = [...code.matchAll(/\brouted[A-Z]\w*\s*:\s*([^,;\n]+(?:\n[^,;\n]+)*)/g)];
+    if (assigns.length === 0) return { ok: true, reason: null };
+    // ⛔ A TYPE IS NOT A VALUE. `routedVault: string | null` in the interface has
+    // no provenance BY CONSTRUCTION, and the first version of this matcher read
+    // it as a derivation with none — a false RED on correct code, which is how a
+    // guard teaches people to add exemptions. Type unions are skipped; anything
+    // that computes is not.
+    const isTypeOnly = (e: string): boolean =>
+      /^(?:\s|\||string|number|boolean|null|undefined|readonly|\[\]|<[^>]*>|[A-Z]\w*)+$/.test(e.trim());
+    for (const a of assigns) {
+      const expr = a[1] as string;
+      if (isTypeOnly(expr)) continue;
+      const field = (a[0] as string).split(":")[0]?.trim() ?? "?";
+      const ids = provenanceOf(code, expr, 3);
+      if (ids.length === 0) {
+        return { ok: false, reason: `${field} has NO traceable provenance — it cannot be shown to come from the chain-summed legs at all` };
+      }
+      const foreign = ids.filter((i) => !i.startsWith("financial.routed."));
+      if (foreign.length > 0) {
+        return { ok: false, reason: `${field} is computed from ${[...new Set(foreign)].join(", ")} — a routed leg may only come from financial.routed.*, never from another figure by any arithmetic, under any name` };
+      }
+    }
+    return { ok: true, reason: null };
+  };
+
+  // THE REWRITTEN DEFECT. No `routedShare`, no `7_000n` — the same wrong figure
+  // in a spelling ② has never seen.
+  const REWRITTEN_DEFECT = [
+    'const aggregateRaw = findFinancial(financial, "financial.inflow.aggregate");',
+    "return {",
+    "  routedVault: formatBaseUnits(((BigInt(aggregateRaw) * 70n) / 100n).toString(), 6, 2),",
+    "};",
+  ].join("\r\n");
+  const FLOAT_SPELLING = [
+    'const agg = findFinancial(financial, "financial.inflow.aggregate");',
+    "return { routedVault: usd(Number(agg) * 0.7) };",
+  ].join("\r\n");
+  const CORRECT_SHAPE = [
+    "const routedDisplay = displayRoutedSplit(",
+    '  findFinancial(financial, "financial.routed.vault"),',
+    '  findFinancial(financial, "financial.routed.liquidity"),',
+    '  findFinancial(financial, "financial.routed.netTotal"),',
+    ");",
+    "return { routedVault: routedDisplay?.vault ?? null };",
+  ].join("\r\n");
+
+  // ⛔ THE HOLE, MEASURED: ②'s own matcher passes the rewritten defect.
+  check(
+    !DERIVED.test(stripComments(REWRITTEN_DEFECT)),
+    "money-flow: ⓒ ②'s literal matcher is blind to a rewritten derivation (the hole this property closes)",
+    "money-flow: ⓒ ②'s literal matcher caught the rewritten defect — if that is now true, this note is stale, not the guard",
+  );
+  check(
+    routedProvenance(REWRITTEN_DEFECT).ok === false,
+    "money-flow: ⓒ a leg derived from the inflow aggregate is REFUSED, in a spelling ② cannot see",
+    "money-flow: ⓒ THE REWRITTEN DEFECT PASSED. `(BigInt(aggregate) * 70n) / 100n` assigned to a routed leg must be refused — this is the same wrong figure that published 1,410.00, wearing different syntax",
+  );
+  check(
+    routedProvenance(FLOAT_SPELLING).ok === false,
+    "money-flow: ⓒ the float spelling (`* 0.7`) is refused too — the property is provenance, not syntax",
+    "money-flow: ⓒ a float-derived leg passed the provenance check",
+  );
+  check(
+    routedProvenance(CORRECT_SHAPE).ok === true,
+    "money-flow: ⓒ the correct shape (routed reads → the sum-proven helper) PASSES",
+    `money-flow: ⓒ the correct shape was refused — ${routedProvenance(CORRECT_SHAPE).reason ?? ""}. A property that flags its own approved fix will be exempted within the hour, and the exemption is the hole`,
+  );
+  // …and the real producers in the studio, discovered, never named.
+  const producers = sweepFiles.filter(
+    (f) => /\.tsx?$/.test(f) && /financial\.routed\./.test(readFileSync(f, "utf8")),
+  );
+  check(
+    producers.length > 0,
+    `money-flow: ⓒ the routed legs have a discoverable producer (${producers.map((f) => relative(repo, f).split(sep).join("/")).join(", ")})`,
+    "money-flow: ⓒ no studio file reads financial.routed.* — the legs are not coming from the chain-summed envelope at all",
+  );
+  for (const f of producers) {
+    const rel = relative(repo, f).split(sep).join("/");
+    const verdict = routedProvenance(readFileSync(f, "utf8"));
+    check(
+      verdict.ok,
+      `money-flow: ⓒ ${rel} — every routed leg traces to financial.routed.* only`,
+      `money-flow: ⓒ ${rel} — ${verdict.reason ?? "foreign provenance"}`,
+    );
+  }
+}
+
 console.log(
   failures === 0
-    ? `\nguard-money-flow: ${checks} checks green. The legs are SUMMED from the chain, anchored against the contract's own counters, they SUM TO THEIR TOTAL on screen, and the ABI words stay in the ABI layer.\nNOT CHECKED: that the index is complete (only that a short one is caught), that the RPC answered honestly, or that a surface renders what it is served.`
+    ? `\nguard-money-flow: ${checks} checks green. The legs are SUMMED from the chain, anchored against the contract's own counters, they SUM TO THEIR TOTAL on screen, and the ABI words stay in the ABI layer.\nNOT CHECKED: that the index is complete (only that a short one is caught), that the RPC answered honestly, or that a surface renders what it is served. ⓒ's provenance property enters through fields NAMED routed* — a leg published under another name is outside it until the entry set is widened here. And a TOTAL bound to a different source than the parts beneath it is not covered by any check in this file (the hero card's own total was wrong that way until 2026-08-06); that class is its own guard, gated separately.`
     : `\nguard-money-flow FAILED: ${failures} violation(s) of ${checks} check(s).`,
 );
 if (failures > 0) process.exit(1);

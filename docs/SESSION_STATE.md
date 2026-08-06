@@ -134,9 +134,35 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >    the comment that encoded the defect as INTENT («the canonical 70/20/10 shares of
 >    the real MEMBERSHIP aggregate inflow»), struck and dated in place with what is
 >    true now. That sentence is why four reviews read the derivation and moved on.
-> 6. **`guard-money-flow` into the api guards chain** — ⛔ **AND IT CLEARS THREE REDS,
->    NOT ONE. A session that sees ② go green and calls the slice done has shipped a
->    guard that cannot do its job.** All three are measured, none is a guess:
+> 6. ✅ **LANDED 2026-08-06 — ALL THREE REDS CLEARED, THE GUARD IS IN THE CHAIN
+>    (22 entries), 33 CHECKS GREEN.** ⓑ the stripper is now driven by four fixtures
+>    in BOTH directions (a CRLF comment is stripped · code sharing a line is KEPT ·
+>    `https://` does not swallow the line) — RED-first proven. ⓒ is a PROVENANCE
+>    property, not a spelling: every value reaching a `routed*` field must resolve to
+>    `financial.routed.*` reads and nothing else, with **②'s blindness kept as a
+>    permanent executed row** (the old matcher passes `(BigInt(aggregate) * 70n) /
+>    100n` GREEN while the property refuses it, re-proven every run). **ENTRY-SET
+>    BOUND, stated in the guard and its output:** ⓒ enters through fields NAMED
+>    `routed*`; a leg published under another name is outside it until the set is
+>    widened. **The divergence drill ran live before the founder** (one purchase's
+>    legs zeroed → all four figures "Unavailable" on the three surfaces, the reason
+>    naming 1,410.00 vs 1,405.25 SHORT by 4.75 across 36 rows → row restored,
+>    field-for-field identical, figures healed on the next cycle).
+>    ⛔ **THE SWEEP'S FIRST FINDING WAS MY OWN**: step 4 added
+>    `routedPaidToReferrersUsdc` beside the `paidToReferrersUsdc` that already
+>    existed (useHeroReality.ts:80, four consumers) — one figure, one source, two
+>    fields, created inside the slice auditing that class. Killed here.
+>    **`duplicate-facts:guard` did not catch it; reading did.**
+>    ⛔ **P1-03 CONFIRMED STILL OPEN** (not fixed here, founder's instruction):
+>    `introductionReadmodel.ts:236,291,306` vs `:274-276` — the public paid-to-
+>    referrers total subtracts escrow per row, not from the total. Coincidentally
+>    correct today (escrow = 0). It is the RED fixture for the next slice.
+>    ⛔ **NEXT SLICE, GATED SEPARATELY — ⑥ AS A GUARD:** a displayed total whose
+>    source is independent of the parts beneath it. RED-first against its two real
+>    historical instances: the pre-step-4 hero binding (`aggregateInflowUsdc` under
+>    fold-sourced legs) and P1-03. A class-guard unproven against real defects is a
+>    guard that looks correct and never fires.
+>    <s>AND IT CLEARS THREE REDS, NOT ONE</s> — they cleared; kept below as the record:
 >    · **ⓐ ② the derived share** — will clear once ⓑ is fixed (the code is already clean).
 >    · **ⓑ ③ THE COMMENT-STRIPPER IS A NO-OP ON CRLF** (`guard-money-flow.ts:60`):
 >      `l.replace(/\/\/.*$/, "")` — `.` never matches `\r`, and every source file in this

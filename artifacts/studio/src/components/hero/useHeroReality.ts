@@ -108,8 +108,12 @@ export interface HeroReality {
   routedOperations: string | null;
   /** Vault + Liquidity + Operations, the figure the three must add up to. */
   routedNetTotalUsdc: string | null;
-  /** What referrers were paid inside the buyers' own transactions, to date. */
-  routedPaidToReferrersUsdc: string | null;
+  // ⛔ NO `routedPaidToReferrersUsdc` HERE. I added one in step 4 and it was a
+  // TWIN: `paidToReferrersUsdc` above already reads the same envelope item
+  // (`financial.referral.paidToReferrersTotal`) and four surfaces already
+  // consume it. Two fields, one figure, one source — the exact class this slice
+  // is auditing, committed inside the slice. Deleted 2026-08-06; the prose uses
+  // the field that was already there.
 }
 
 function findFinancial(
@@ -275,10 +279,5 @@ export function useHeroReality(): HeroReality {
     routedLiquidity: routedDisplay?.liquidity ?? null,
     routedOperations: routedDisplay?.operations ?? null,
     routedNetTotalUsdc: routedDisplay?.total ?? null,
-    routedPaidToReferrersUsdc: formatBaseUnits(
-      findFinancial(financial, "financial.referral.paidToReferrersTotal"),
-      6,
-      2,
-    ),
   };
 }

@@ -162,7 +162,7 @@ export default function Tokenomics() {
             SYN is acquired with USDC through the membership engine, which routes the net USDC on-chain
             across Reserve, Liquidity, and Operations. Members hold no claim — it is protocol revenue.
             Cumulative inflow to date <strong><Amount segments={usdc(r.aggregateInflowUsdc)} variant="inline" loading={r.loading} /></strong>,
-            of which <strong><Amount segments={usdc(r.routedPaidToReferrersUsdc)} variant="inline" loading={r.loading} /></strong> was
+            of which <strong><Amount segments={usdc(r.paidToReferrersUsdc)} variant="inline" loading={r.loading} /></strong> was
             paid to referrers; <strong><Amount segments={usdc(r.routedNetTotalUsdc)} variant="inline" loading={r.loading} /></strong> routed live:{" "}
             {/* ⛔ THE DOCTRINAL SENTENCE — VERBATIM, founder-approved 2026-08-06, canon in
                 CANON_PROTOCOL_LANGUAGE §4. Never reworded: it explains why the inflow above
