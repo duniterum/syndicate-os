@@ -1,5 +1,31 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> ## ▶ 2026-08-06 (20e SCEAU) — **PROD = `a84e37f`. P1-01 + P1-03 EN LIGNE.**
+> Le quai reste une COMMANDE :
+> ```
+> git fetch origin && git log --oneline a84e37f..origin/main
+> ```
+> ⛔ **CYCLE SERVEUR SEUL — LA PREUVE HABITUELLE N EXISTE PAS, ET ON LE DIT.** Neuf
+> fichiers, **zero fichier client**, donc l entree ne PEUT pas changer : entree servie
+> `index-BeA9uw0a.js`, sha256 `22450eae…`, **identique a l octet pres au 19e sceau** —
+> c est le resultat ATTENDU de ce lot, pas un deploiement rate. Le SHA du build api
+> (`b90ce7dc…`) est le **rapport de Replit**, pas ma mesure, et c est etiquete ainsi.
+> **LA PREUVE EST DONC COMPORTEMENTALE, choisie AVANT le deploiement :**
+> · redemarrage du processus — `cycles.ok` **19 → 2** (compteur en memoire) ;
+> · **la fenetre de tip AVANCE** — `routed.asOfBlock` **92 150 846** contre **92 144 451**
+>   au 19e sceau : c est exactement ce que P1-01 corrige.
+> **MESURE EN LIGNE :** healthz + 9 routes publiques + sitemap **200** · backbone ok 2 /
+> failed 0, tete 92 150 846 · spine **44 items, 0 null** · **MIGRATIONS : RIEN** (verifie).
+> **L ARGENT, SUR LA PAGE RENDUE :** 986,12 + 281,75 + 140,88 = **1 408,75** = le total
+> imprime a cote, **0 « Unavailable »**. `paidToReferrersTotal` = **1250000**, IDENTIQUE
+> au releve d avant deploiement — le correctif P1-03 se prouve NUL aujourd hui (sequestre
+> a 0), comme annonce.
+> **RIEN DE VISIBLE N A CHANGE — c etait la prediction.**
+> **RESTE SA DECISION, INCHANGE :** ① le depot PUBLIC · ② la ligne `guards:db` a Replit ·
+> ③ les deux fichiers canon portant la regle adresse-membre retiree · ④ les quatre
+> decisions du 2026-08-05. **NOUVEAU, OUVERT :** **[P1-17]** `status = "complete"` ne veut
+> pas dire « a la tete de la chaine » (`saleEventIndexer.ts:485`).
+
 > ## ▶ 2026-08-06 (SCEAU) — **PROD = `e40b8c1`, 19e SCEAU. P0-1 EST EN LIGNE.**
 > Prod precedente `abee8f9` (18e) ; le cycle a porte **16 commits**. Le quai reste une
 > COMMANDE, jamais un nombre :

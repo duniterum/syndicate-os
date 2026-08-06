@@ -2,6 +2,40 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
+> # ▶ 2026-08-06 (20th SEAL) — **PROD = `a84e37f`. P1-01 + P1-03 ARE LIVE.** READ FIRST.
+>
+> **The quay is a COMMAND, never a number:**
+> ```
+> git fetch origin && git log --oneline a84e37f..origin/main
+> ```
+> ⛔ **A SERVER-ONLY CYCLE — AND THE USUAL PROOF DOES NOT EXIST. SAY SO, NEVER FAKE IT.**
+> Nine files, **zero client files**, so the entry hash CANNOT move and "old entry → 404"
+> is unavailable. Verified rather than assumed: served entry `index-BeA9uw0a.js`,
+> sha256 `22450eae…` — **byte-identical to the 19th seal**, which is the CORRECT result
+> for this batch, not a failed deploy.
+> **`scannedFrom` is not exposed on the status payload, so the new look-back is invisible
+> from outside.** The api build's own SHA (`b90ce7dc…`, frozen workshop-side) is REPLIT'S
+> SELF-REPORT — labelled as such, never dressed as my measurement.
+> **SO THE PROOF IS BEHAVIOURAL, chosen before the deploy and measured after:**
+> · **process restart** — backbone `cycles.ok` **19 → 2** (the counter is in-memory).
+> · **the tip window MOVES** — `financial.routed.asOfBlock` **92,150,846**, past the 19th
+>   seal's **92,144,451**. P1-01's whole point: the window is refreshed every cycle
+>   instead of read once, ever.
+> · Replit observed the boot honestly: pass 1 showed 0 cycles and `routed.* = null` —
+>   the contractual "null when it cannot be proven", live.
+> **MEASURED LIVE BY THIS SESSION:** healthz + 9 public routes + sitemap **all 200** ·
+> backbone **ok 2 / partial 0 / failed 0**, head **92,150,846**, 6 sale units all at that
+> block · spine **44 items, 0 nulls among the routed five** · **MIGRATIONS: NOTHING**
+> (verified from the range, not expected).
+> **THE MONEY, OFF THE RENDERED PAGE:** `986.12 + 281.75 + 140.88 = 1,408.75` =
+> MEMBERSHIP ROUTED, **0 × "Unavailable"**. API base units agree exactly
+> (`986125000 + 281750000 + 140875000 === 1408750000`), and `paidToReferrersTotal`
+> reads **1250000** — **identical to the pre-deploy baseline**, which is P1-03's fix
+> proving itself a no-op while escrow is 0, exactly as gated.
+> **NOTHING VISIBLE CHANGED, and that was the prediction.** Every public figure is
+> unchanged; what changed is that the tip window is re-read and a total can no longer
+> drift from its own name.
+>
 > # ▶ 2026-08-06 (HANDOFF) — **READ THIS FIRST. The remediation order is CLOSED.**
 >
 > ## ⓪ WHERE EVERYTHING IS, IN FIVE LINES
