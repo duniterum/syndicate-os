@@ -246,7 +246,13 @@ function writeStore(value: string): void {
  * actually use — remembering a new one on the way.
  *
  * Idempotent: calling it repeatedly with the same URL writes the same value and
- * returns the same answer, so it is safe inside a render-time memo.
+ * returns the same answer.
+ * ⛔ <s>so it is safe inside a render-time memo</s> — STRUCK 2026-08-06. It
+ * WRITES. A write during render is a side effect on a pass React is free to
+ * discard, and this sentence is precisely what licensed a `useState` initializer
+ * that did exactly that. The render-phase read is `peekJoinIntroduction`; this
+ * entry point belongs in an effect or an event handler, where remembering the
+ * arrival is the whole point.
  *
  * NOT CLEARED AFTER A PURCHASE, deliberately. Once a buyer is attributed the
  * ENGINE holds the link for life and applies it on a zero id, so a stale memory
@@ -375,8 +381,10 @@ function writeIntroduction(next: RememberedIntroduction): void {
 }
 
 /**
- * The join page reads the memory in a render-time memo, so a PROMOTION that
- * lands after the first paint has to tell it. The founder's ruling on the
+ * The join page reads the memory at its first paint and again in an effect
+ * (<s>in a render-time memo</s> — STRUCK 2026-08-06, see `peekJoinIntroduction`),
+ * so a PROMOTION that lands after that paint has to tell it. The founder's
+ * ruling on the
  * confirmation moment (2026-08-06): the screen shows the INCUMBENT introduction
  * while the chain is being asked — that is what would actually be signed at
  * that instant, so the screen stays true — and switches once the newer link is
@@ -391,6 +399,34 @@ function announcePromotion(): void {
   } catch {
     /* no event target — the next render picks it up anyway */
   }
+}
+
+/**
+ * THE SAME ANSWER, REMEMBERING NOTHING — the render-phase read (2026-08-06).
+ *
+ * The join page needs this answer TWICE, with two different rights. At the first
+ * paint it may only READ: React calls a `useState` initializer DURING RENDER, on
+ * a pass it is free to discard, so writing there plants an arrival off a render
+ * that may never have happened. After commit, in an effect, it may REMEMBER.
+ *
+ * So this is `resolveJoinIntroduction` minus the persist, and the RULE is not
+ * re-derived here — both call `nextRememberedIntroduction`, and
+ * `guard-referral-memory` EXECUTES both against the same fixtures asserting they
+ * answer identically and that this one leaves the store byte-identical. A pure
+ * read that drifted from the rule would paint one introduction while the
+ * checkout signed another — worse than the flicker it exists to prevent.
+ *
+ * Why the first paint may not simply be blank: on a bare `/join` carrying a
+ * remembered link, seeding from nothing paints an empty introduction that pops
+ * in after commit. The founder ruled against that on 2026-08-06 — the strip
+ * shows the incumbent introduction, because that is what would be signed at
+ * that instant.
+ */
+export function peekJoinIntroduction(
+  urlSource: string | null,
+  urlVia: string | null,
+): RememberedIntroduction | null {
+  return nextRememberedIntroduction(readIntroduction(), urlSource, urlVia, false);
 }
 
 /**

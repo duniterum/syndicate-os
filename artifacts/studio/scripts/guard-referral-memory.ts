@@ -175,6 +175,23 @@ if (moduleExists) {
   );
   let confirmTested = false;
 
+  // ⛔ THE RENDER-SAFE READ IS DISCOVERED TOO (2026-08-06, the third defect this
+  // page taught us). The page needs the answer TWICE with two different rights:
+  // at the first paint it may only READ (React calls a `useState` initializer
+  // during render, and a write during render is a side effect on a pass React is
+  // free to discard), and after commit it may REMEMBER. So the module exposes a
+  // pure `peekJoin*` beside the persisting `resolveJoin*`, and the rows below
+  // execute BOTH against the same fixtures: same answer, and the store untouched
+  // by the peek. Discovered from the calling code, never named here — same
+  // reason as the resolver.
+  const peekNames = new Set<string>();
+  for (const f of callers) {
+    for (const hit of stripComments(readFileSync(f, "utf8")).matchAll(/\bpeekJoin(\w+)\s*\(/g)) {
+      peekNames.add(`peekJoin${hit[1]}`);
+    }
+  }
+  let peekTested = false;
+
   for (const entryName of entryNames) {
     const entry = (m as Record<string, unknown>)[entryName];
     check(
@@ -554,6 +571,69 @@ if (moduleExists) {
         );
       }
 
+      // ── THE RENDER-SAFE READ: SAME ANSWER, AND IT REMEMBERS NOTHING ────────
+      // Two properties, and neither is worth anything without the other:
+      //   · PURITY — the store is byte-identical after the peek. This is what
+      //     makes it legal in a `useState` initializer, which React runs during
+      //     render.
+      //   · EQUIVALENCE — it answers exactly what the persisting resolver
+      //     answers. A pure read that drifts from the rule would paint one
+      //     introduction and sign another, which is worse than the flicker it
+      //     exists to prevent. The RULE is imported by both (they share
+      //     `nextRememberedIntroduction`); this asserts that they still agree,
+      //     rather than trusting that they do.
+      if (!peekTested && peekNames.size > 0) {
+        peekTested = true;
+        for (const peekName of peekNames) {
+          const fn = (m as Record<string, unknown>)[peekName];
+          check(
+            typeof fn === "function",
+            `referral-memory: ${peekName} is exported and callable`,
+            `referral-memory: the page calls ${peekName}() but referralMemory.ts does not export it — the first paint has no pure read, so it must either write during render or paint blank`,
+          );
+          if (typeof fn !== "function") continue;
+          const peek = fn as (a: string | null, b?: string | null) => unknown;
+          // seed · arriving source · arriving via — the four shapes that decide
+          // a different answer: an empty store, a recall, an outranked arrival,
+          // and an equal-rank replacement.
+          const PEEK_ROWS: readonly (readonly [string | null, string | null, string | null])[] = [
+            [null, A, "twitter"],
+            [JSON.stringify({ s: A, v: "print" }), null, null],
+            [JSON.stringify({ s: A, v: "twitter", c: true }), B, null],
+            [JSON.stringify({ s: A, v: "twitter", c: false }), B, "blog"],
+          ];
+          for (const [seed, src, via] of PEEK_ROWS) {
+            tableRows += 1;
+            const seedStore = (): void => {
+              store.clear();
+              if (seed !== null) store.set(key, seed);
+            };
+            seedStore();
+            let peeked: unknown = "THREW";
+            try {
+              peeked = peek(src, via);
+            } catch {
+              peeked = "THREW";
+            }
+            const leftBehind = store.get(key) ?? null;
+            seedStore();
+            let resolved: unknown = "THREW";
+            try {
+              resolved = call(src, via);
+            } catch {
+              resolved = "THREW";
+            }
+            check(
+              peeked !== "THREW" &&
+                leftBehind === seed &&
+                sourceOf(peeked) === sourceOf(resolved),
+              `referral-memory: ${peekName}(${src === null ? "null" : src.slice(0, 6) + "…"}) on ${seed === null ? "an empty" : "a seeded"} store answers what ${entryName} answers, and writes nothing`,
+              `referral-memory: ${peekName}(${JSON.stringify(src)}, ${JSON.stringify(via)}) on a store seeded ${JSON.stringify(seed)} ${peeked === "THREW" ? "THREW" : `answered ${JSON.stringify(sourceOf(peeked))} (the resolver answers ${JSON.stringify(sourceOf(resolved))})`} and left the store holding ${JSON.stringify(leftBehind)} instead of ${JSON.stringify(seed)}. A peek that WRITES is a side effect during render — the position it exists for; a peek that answers differently paints one introduction while the checkout signs another.`,
+            );
+          }
+        }
+      }
+
       // ── A THROWING STORE NEVER TAKES THE PAGE DOWN ─────────────────────────
       store.clear();
       throwOnWrite = true;
@@ -730,37 +810,92 @@ if (pageExists) {
   // reverting the wiring: this version goes RED, the window version did not.
   // Either resolver is the ONE home — `resolveJoinSource` delegates to
   // `resolveJoinIntroduction`, which resolves the whole arrival (source + tag).
-  const attachDecl =
-    /const\s+(\w+)\s*=\s*[^;]*?resolveJoin(?:Source|Introduction)\s*\(/.exec(page);
+  //
+  // ⛔ WIDENED A SECOND TIME, 2026-08-06 — AND THE FIRST WIDENING'S STATED
+  // REASON WAS FALSE. <s>the resolver WRITES to localStorage, so calling it in
+  // a memo is a side effect during render, which React 18 double-invokes in
+  // StrictMode</s> — STRUCK 2026-08-06. `main.tsx:5` renders `<App />` with NO
+  // StrictMode anywhere in this studio (one grep, one occurrence: the comment
+  // that asserted it), and StrictMode's double-invocation is a DEVELOPMENT-only
+  // behaviour in any case, never in a production build. The true reason is
+  // smaller and still sufficient: a `useState` initializer runs DURING RENDER,
+  // `resolveJoin*` WRITES, and a write during render is a side effect on a pass
+  // React is free to discard. Struck here rather than quietly rewritten,
+  // because a false premise standing as a guard's justification will justify
+  // the NEXT widening too.
+  //
+  // ⛔ AND THE OLD SHAPE PIN WAS THE DEFECT'S ACCOMPLICE. It followed the
+  // WRITING resolver's name INTO `useState(...)` — so the one position that may
+  // never call it was the one position the guard REQUIRED it in, and moving the
+  // write out went RED (measured, before this rewrite). That is
+  // `guard-referral-memory.ts:239-240` again — the audit's [P0-3], a guard that
+  // pinned the defect as law — one week apart, in this same file. So the pin is
+  // now on the PROPERTY, in two halves, and knows no variable name:
+  //   ① whatever lands in `sourceId={…}` traces back to this module, through at
+  //      most ONE state hop;
+  //   ② the RENDER-PHASE seed of that state is a pure READ — never a persisting
+  //      resolver, and never nothing.
+  const localsFrom = (pattern: RegExp): Set<string> => {
+    const found = new Set<string>();
+    for (const hit of page.matchAll(
+      new RegExp(`const\\s+(\\w+)\\s*=\\s*[^;]*?${pattern.source}`, "g"),
+    )) {
+      found.add(hit[1]);
+    }
+    return found;
+  };
+  const WRITES = /\bresolveJoin\w*\s*\(/; // answers AND persists the arrival
+  const READS = /\bpeekJoin\w*\s*\(/; //    answers the same, remembers nothing
+  const writerLocals = localsFrom(WRITES);
+  const readerLocals = localsFrom(READS);
   check(
-    attachDecl !== null,
-    "referral-memory: the effective source is resolved through the module",
+    writerLocals.size > 0,
+    `referral-memory: the effective source is resolved through the module (${[...writerLocals].join(", ")})`,
     "referral-memory: JoinProtocol.tsx must derive the source it hands to the checkout from resolveJoinSource(...) — a bare `new URLSearchParams(search).get(\"source\")` is the defect this guard exists for",
   );
-  if (attachDecl !== null) {
-    const name = attachDecl[1];
-    // ⛔ ONE STATE HOP IS ALLOWED, AND ONLY ONE (widened 2026-08-06, stated not
-    // silent). The original shape resolved the source during RENDER:
-    //     const attachSource = useMemo(() => resolveJoinIntroduction(…))
-    // That had to change, for a reason this guard could not see: the resolver
-    // WRITES to localStorage, so calling it in a memo is a side effect during
-    // render, which React 18 double-invokes in StrictMode. CI also flagged the
-    // counter that shape needed in its dependency array. The corrected shape is
-    //     const readIntroduction = useCallback(() => resolveJoinIntroduction(…))
-    //     const [attachSource, setAttachSource] = useState(readIntroduction)
-    // so the resolved value now reaches the checkout through ONE hop.
-    // THE PROPERTY IS UNCHANGED and still the whole point: whatever lands in
-    // sourceId={…} must trace back to referralMemory. This follows the hop; it
-    // does not forgive a missing link. Two hops, or a value from anywhere else,
-    // is still RED — proven by reverting the wiring before this shipped.
-    const hop = new RegExp(
-      `const\\s*\\[\\s*(\\w+)\\s*,[^\\]]*\\]\\s*=\\s*useState[^;]*?\\b${name}\\b`,
-    ).exec(page);
-    const delivered = hop === null ? name : hop[1];
+  const mentions = (stmt: string, direct: RegExp, locals: Set<string>): boolean =>
+    direct.test(stmt) || [...locals].some((n) => new RegExp(`\\b${n}\\b`).test(stmt));
+  // ⛔ START FROM THE VALUE THAT REACHES THE SIGNATURE, then ask where it came
+  // from — not the reverse. Walking module→JSX is what made the old pin depend
+  // on a spelling: with a blank seed the trace simply found nothing and the
+  // render-phase pins never ran at all, so a first paint seeded from NOTHING
+  // failed with a message about the wrong thing (measured, this slice).
+  const useStateStmt = new Map<string, string>();
+  for (const hit of page.matchAll(/const\s*\[\s*(\w+)\s*,[^\]]*\]\s*=\s*useState[^;]*/g)) {
+    useStateStmt.set(hit[1], hit[0]);
+  }
+  // ONE state hop and no more: the delivered name is either a local straight
+  // from the module, or a state whose own declaration names one.
+  const tracesToModule = (n: string): boolean => {
+    if (writerLocals.has(n) || readerLocals.has(n)) return true;
+    const stmt = useStateStmt.get(n);
+    return (
+      stmt !== undefined &&
+      (mentions(stmt, WRITES, writerLocals) || mentions(stmt, READS, readerLocals))
+    );
+  };
+  const sourceIdTargets = [...page.matchAll(/sourceId=\{(\w+)\}/g)].map((h) => h[1]);
+  const delivered =
+    sourceIdTargets.find(tracesToModule) ??
+    sourceIdTargets.find((n) => useStateStmt.has(n)) ??
+    null;
+  check(
+    delivered !== null && tracesToModule(delivered),
+    `referral-memory: the checkout is handed the resolved source (${delivered ?? ""})`,
+    `referral-memory: the value passed as sourceId to the quote/checkout (${sourceIdTargets.join(", ") || "nothing"}) does not trace back to referralMemory — a remembered link that never reaches the signature is not a fix, and a bare URL read is the defect this guard exists for`,
+  );
+  const seed = delivered === null ? null : (useStateStmt.get(delivered) ?? null);
+  if (seed !== null) {
+    const oneLine = seed.replace(/\s+/g, " ").trim();
     check(
-      new RegExp(`sourceId=\\{${delivered}\\}`).test(page),
-      `referral-memory: the checkout is handed the resolved source (${delivered}${hop === null ? "" : ` ← ${name}`})`,
-      `referral-memory: the value resolved through referralMemory (${name}${hop === null ? "" : `, via ${delivered}`}) is not the one passed as sourceId to the quote/checkout — a remembered link that never reaches the signature is not a fix`,
+      !mentions(seed, WRITES, writerLocals),
+      "referral-memory: the first paint READS the memory, it does not remember during render",
+      `referral-memory: the state that feeds the checkout is seeded by a resolver that PERSISTS — \`${oneLine}\`. A useState initializer runs DURING RENDER, and resolveJoin* writes to localStorage, so this plants the arrival on a render pass React is free to discard. Seed it from the pure peek; let the effect remember.`,
+    );
+    check(
+      mentions(seed, READS, readerLocals),
+      "referral-memory: the first paint is seeded by a pure read of the memory",
+      `referral-memory: the state that feeds the checkout is not seeded by a pure read — \`${oneLine}\`. Seeded from NOTHING, a bare /join carrying a remembered link paints the introduction EMPTY and pops it in after commit — the flicker the founder ruled against 2026-08-06 (the strip shows the incumbent introduction, because that is what would be signed at that instant). Seeded from a resolver that persists, see the pin above.`,
     );
   }
 }

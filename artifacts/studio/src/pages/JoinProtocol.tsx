@@ -31,6 +31,7 @@ import { PublicPage } from "@/components/PublicPage";
 import { parseViaTag } from "@/lib/channelPing";
 import {
   isRecalledSource,
+  peekJoinIntroduction,
   REFERRAL_PROMOTED_EVENT,
   resolveJoinIntroduction,
 } from "@/lib/referralMemory";
@@ -984,13 +985,31 @@ export default function JoinProtocol() {
   // CI caught it 2026-08-06). Two things were wrong with it: the counter was a
   // dependency the callback never read — which eslint reports — and, worse,
   // `resolveJoinIntroduction` WRITES to localStorage, so calling it inside a
-  // memo was a side effect during render, which React double-invokes in
-  // StrictMode. The read belongs in an effect, and this is that read.
+  // memo was a side effect during render.
+  // ⛔ <s>which React double-invokes in StrictMode</s> — STRUCK 2026-08-06,
+  // second pass. This studio mounts `<App />` with NO StrictMode (`main.tsx:5`),
+  // and StrictMode's double-invocation is DEVELOPMENT-only in any case. The
+  // premise was true of React and false of this app; the reason is smaller and
+  // still decides the shape: a render pass may be discarded, so nothing that
+  // WRITES may run in one.
+  // ⛔ AND THE FIRST FIX KEPT ONE (2026-08-06, third pass): the seed below used
+  // to be `useState(readIntroduction)`, and a `useState` initializer runs during
+  // render — so the write it had just moved into an effect still fired once, at
+  // mount. Measured symptom today: none. The rule is the rule anyway, and the
+  // guard now pins the position instead of a spelling.
+  // THE SHAPE, and why each half is where it is:
+  //   · the SEED reads (`peekJoinIntroduction`) — the first paint shows the
+  //     introduction that would be signed at that instant, never a blank that
+  //     pops in (the founder's flicker ruling, 2026-08-06);
+  //   · the EFFECT remembers (`resolveJoinIntroduction`) — after commit, where
+  //     writing is legal, and again on every promotion.
   const readIntroduction = useCallback(
     () => resolveJoinIntroduction(sourceParam, viaTag)?.sourceId ?? null,
     [sourceParam, viaTag],
   );
-  const [attachSource, setAttachSource] = useState<string | null>(readIntroduction);
+  const [attachSource, setAttachSource] = useState<string | null>(
+    () => peekJoinIntroduction(sourceParam, viaTag)?.sourceId ?? null,
+  );
   useEffect(() => {
     setAttachSource(readIntroduction());
     const onPromoted = () => setAttachSource(readIntroduction());
