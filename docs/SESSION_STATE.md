@@ -66,6 +66,25 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > chain (24/24) after clearing THREE reds, not one · the CI/pre-push gate · the
 > 2026-08-06 security audit archived in the repo.
 >
+> ## ②-bis ⛔ THE REGISTRY'S OWN HEADER LIES — READ THE MEASUREMENT, NOT THE `.sol`
+> `SourceRegistryV1` (`0x780013bB…95a6`) says at the top of its verified source:
+> «**V3 CANDIDATE (not deployed, not activated)**». **Every clause is false**, measured
+> 2026-08-06: the explorer serves a verified source for that address · it answered 8
+> `sourceConfig` calls in one session · **`sale.SOURCE_REGISTRY()` returns that exact
+> address** (live call, selector `0xee9ab677` — the lowercase `sourceRegistry()` reverts,
+> so a probe on that name proves nothing) · `owner()` is the same key that owns the sale.
+> **THE RULE: the deployed code beats its own comment; the chain beats everything.**
+> Bytecode is immutable, so a header true before deployment stays frozen in the past
+> forever — a STATE line written where only an INVARIANT survives
+> (`CANON_INVARIANT_VS_STATE`). **The comment can never be corrected, so the correction
+> is permanent in `contracts/reference/README.md`** — with the escrow path beside it
+> (who may claim · where the money goes · the dead-wallet escape via the registry's
+> `updatePayoutWallet` · that a PAUSED source cannot claim · that no founder sweep
+> reaches escrowed USDC · escrow owed **0 across all 8 sources** today).
+> ⚠ **This contract already cost a session once**: the registers carried «SourceRegistryV1
+> is PAUSED» until `paused()` was called and found to REVERT. Same contract, same failure
+> mode — a claim believed instead of a call made.
+>
 > ## ③ WHAT THIS SESSION OWES THE NEXT ONE
 > · **⑥ AS A GUARD, gated separately** — a displayed total whose source is independent
 >   of the parts beneath it. RED-first against its TWO real instances: the pre-step-4
