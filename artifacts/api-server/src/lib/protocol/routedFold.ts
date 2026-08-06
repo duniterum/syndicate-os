@@ -56,7 +56,14 @@ export interface RoutedFold {
   readonly netProtocolContributionRaw: string;
   /** net + source payments. Reconciles against the engines' own gross counters. */
   readonly grossRaw: string;
-  /** How many indexed rows were folded — carried so a caller can say so. */
+  /**
+   * How many folded rows actually CARRIED a leg — carried so a caller can say
+   * so. ⛔ Not `rows.length` (corrected 2026-08-06, measured on the real index):
+   * a V2 `Purchased` row carries no legs — they ride its `Routed` twin — so the
+   * total row count reads 45 where the protocol has 36 purchases, and a reason
+   * string saying "across 45 indexed row(s)" would hand a human a number that
+   * matches nothing they can check. This counts the rows that contributed.
+   */
   readonly rowCount: number;
 }
 
@@ -87,12 +94,21 @@ export function foldRoutedTotals(rows: readonly RoutedRow[]): RoutedFold {
   let l = 0n;
   let o = 0n;
   let pay = 0n;
+  let carrying = 0;
   for (let i = 0; i < rows.length; i += 1) {
     const r = rows[i] as RoutedRow;
     v += need(r.vaultRaw, "vaultRaw", i);
     l += need(r.liquidityRaw, "liquidityRaw", i);
     o += need(r.operationsRaw, "operationsRaw", i);
     pay += need(r.sourcePaymentRaw, "sourcePaymentRaw", i);
+    if (
+      r.vaultRaw !== null ||
+      r.liquidityRaw !== null ||
+      r.operationsRaw !== null ||
+      r.sourcePaymentRaw !== null
+    ) {
+      carrying += 1;
+    }
   }
   const net = v + l + o;
   return {
@@ -102,7 +118,7 @@ export function foldRoutedTotals(rows: readonly RoutedRow[]): RoutedFold {
     sourcePaymentRaw: pay.toString(),
     netProtocolContributionRaw: net.toString(),
     grossRaw: (net + pay).toString(),
-    rowCount: rows.length,
+    rowCount: carrying,
   };
 }
 

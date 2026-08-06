@@ -112,8 +112,15 @@ import {
 import { ethCall } from "../lib/protocol/evmRead";
 import {
   decodeUint256Decimal,
+  SELECTOR_TOTAL_ACQUISITION_COST,
   SELECTOR_TOTAL_GROSS_USDC,
+  SELECTOR_TOTAL_PROTOCOL_CONTRIBUTION,
 } from "../lib/protocol/saleDecoders";
+import {
+  foldRoutedTotals,
+  reconcileRoutedFold,
+  type RoutedFold,
+} from "../lib/protocol/routedFold";
 import {
   SELECTOR_CURRENT_ERA,
   SELECTOR_MEMBER_COUNT,
@@ -247,6 +254,47 @@ let lastGoodOwnPurchaseModel: OwnPurchaseBuildResult | null = null;
  * public standings are seat-keyed and address-free). */
 let lastGoodSeasonModel: SeasonBuildResult | null = null;
 
+/**
+ * P0-1 (founder, 2026-08-06): THE ROUTED SPLIT, SUMMED FROM WHAT THE CHAIN
+ * EMITTED AND ANCHORED AGAINST THE ENGINES' OWN COUNTERS.
+ *
+ * ⛔ IT CARRIES ITS OWN `asOfBlock`, AND THAT IS THE POINT. The 2026-08-06
+ * audit's A10 finding, verbatim: *stale derived models served under a FRESH
+ * headBlock with lane flags asserting completeness; no derived model carries an
+ * asOfBlock*. A held model here therefore states the block its rows END at, and
+ * the source below reports it beside the cycle's head, so a caller can SEE the
+ * gap instead of inheriting a freshness the figures do not have.
+ *
+ * THE THREE OUTCOMES, and they are not interchangeable:
+ *   · MEASURED  — the fold reconciled against the contracts; it is held and served.
+ *   · DIVERGED  — the fold and the counters disagree, either direction, any size.
+ *     The held model is CLEARED (founder ruling, 2026-08-06: the legs and the
+ *     total serve `null` and the surfaces render "Unavailable" — never the lower
+ *     number, and never yesterday's number dressed as today's).
+ *   · UNAVAILABLE — the counters could not be read at all. Nothing is disproven,
+ *     so the previous good model keeps serving WITH ITS OWN OLDER `asOfBlock`,
+ *     exactly like every other derived lane here.
+ */
+export interface RoutedFinancialModel extends RoutedFold {
+  /** The last block the folded rows cover — never the cycle's head. */
+  readonly asOfBlock: number;
+}
+export interface RoutedFinancialSource {
+  readonly model: RoutedFinancialModel | null;
+  /**
+   * WHY there is no model, or why a held one is stale — the reconciler's own
+   * measured sentence, verbatim: the figure named, both values in USDC, the
+   * direction, the size, and the row count. ⛔ It is carried, never reduced to a
+   * flag: "divergence" is not actionable, and a boolean cannot be acted on at
+   * all. `null` only when the model is fresh and exact.
+   */
+  readonly reason: string | null;
+  /** The cycle's head, so a caller can compare it to the model's asOfBlock. */
+  readonly headBlock: number | null;
+}
+let lastGoodRoutedModel: RoutedFinancialModel | null = null;
+let routedReasonHeld: string | null = null;
+
 // D-TRUTH D1: the Merkle-frozen genesis roster join input (lowercase wallet →
 // seat #1–#8; SERVER-ONLY, never emitted) now lives beside the roster itself —
 // `GENESIS_SEAT_BY_WALLET`, imported above. It was built locally here, and the
@@ -286,6 +334,20 @@ export function getOwnPurchaseSource(): OwnPurchaseBuildResult | null {
  * route (the D3 discipline). */
 export function getSeasonSource(): SeasonBuildResult | null {
   return lastGoodSeasonModel;
+}
+
+/**
+ * P0-1 — the routed split and, when there isn't one, the measured reason why.
+ * Deliberately NOT part of FeedSource: the feed never reads money aggregates.
+ * The reality route reads it here (step 2) and publishes `financial.routed.*`.
+ * Address-free by construction — this model is four sums and a block number.
+ */
+export function getRoutedFinancialSource(): RoutedFinancialSource {
+  return {
+    model: lastGoodRoutedModel,
+    reason: routedReasonHeld,
+    headBlock: status.lastSuccess?.headBlock ?? null,
+  };
 }
 
 /** Address-free snapshot for the status route (structure is already safe). */
@@ -550,43 +612,164 @@ async function runCycle(): Promise<string | null> {
   // OVERCLAIM PROTECTION only (5 eth_calls, fail-soft): unavailable reads
   // never darken the model — the builder notes the posture honestly; a
   // contradiction WITHHOLDS the contradicted milestone, fail-closed.
+  // ⛔ THE ENGINES' OWN COUNTERS — READ ONCE, CONSUMED TWICE (P0-1, 2026-08-06).
+  // This read used to sit inside the milestone block below. It is hoisted here
+  // because the routed fold needs the SAME figures for its anchor, and computing
+  // the all-engine gross a second time is precisely the defect the 2026-08-06
+  // audit named (A10: "gross inflow computed twice, in two files, with different
+  // fail semantics" — realityService.ts:1161-1191 vs backboneRunner.ts:570-585).
+  // ONE read, two consumers. Fail-soft exactly as before for the milestone layer:
+  // any unreadable counter leaves the aggregate null and the builder notes the
+  // posture honestly — an unavailable read never darkens a milestone.
+  // The per-engine split is kept because the anchor needs it: the SEALED engines
+  // publish `totalUsdcRaised` and have no acquisition-cost concept (their net IS
+  // their gross), while the ACTIVE engine publishes gross, acquisition cost and
+  // net protocol contribution separately.
+  let liveMemberCount: number | null = null;
+  let liveInflowAggregateRaw: string | null = null;
+  let sealedGrossRaw: bigint | null = null;
+  let activeEngineAddress: string | null = null;
+  try {
+    const mcDec = decodeUint256Decimal(
+      await ethCall(
+        transport,
+        FINANCIAL_TARGETS.memberCountEngine.address,
+        SELECTOR_MEMBER_COUNT,
+      ),
+    );
+    const mcNum = mcDec !== null ? Number(mcDec) : NaN;
+    liveMemberCount = Number.isSafeInteger(mcNum) ? mcNum : null;
+
+    let inflowSum = 0n;
+    let sealedSum = 0n;
+    let inflowOk = true;
+    for (const t of FINANCIAL_TARGETS.inflows) {
+      const sealed = t.view === "totalUsdcRaised";
+      const selector = sealed
+        ? SELECTOR_TOTAL_USDC_RAISED
+        : SELECTOR_TOTAL_GROSS_USDC;
+      const dec = decodeUint256Decimal(
+        await ethCall(transport, t.address, selector),
+      );
+      if (dec === null) {
+        inflowOk = false;
+        break;
+      }
+      inflowSum += BigInt(dec);
+      if (sealed) sealedSum += BigInt(dec);
+      else activeEngineAddress = t.address;
+    }
+    liveInflowAggregateRaw = inflowOk ? inflowSum.toString(10) : null;
+    sealedGrossRaw = inflowOk ? sealedSum : null;
+    if (!inflowOk) activeEngineAddress = null;
+  } catch {
+    liveMemberCount = null;
+    liveInflowAggregateRaw = null;
+    sealedGrossRaw = null;
+    activeEngineAddress = null;
+  }
+
+  // ③b-money THE ROUTED FOLD + ITS ANCHOR (P0-1 step 1, founder 2026-08-06).
+  // ---------------------------------------------------------------------------
+  // THE DEFECT THIS CLOSES: the home page, /tokenomics and /whitepaper publish
+  // 70/20/10 of GROSS while the engine routes 70/20/10 of NET (measured that
+  // day: 1,410.00 shown against a true 1,408.75 — overstated by exactly the 1.25
+  // of source payments ever made, and growing with every referral). The legs are
+  // not a percentage of anything: every generation EMITS its three amounts, so
+  // they are SUMMED from the rows the chain wrote.
+  //
+  // ⛔ THE ROWS ARE `rawReceiptFacts`, NOT `rawEvents` — and the handoff said
+  // rawEvents. That was wrong about this code and is corrected here rather than
+  // worked around: `RawSaleEventInput` carries a deliberate whitelist that
+  // EXCLUDES the money fields ("gated economics never enter this model",
+  // backboneDb.ts:610-700), so a fold over it would have summed nothing but
+  // zeros and reconciled against the anchor as a total loss. `RawReceiptFactInput`
+  // is built from the SAME rows in the SAME read pass and already carries
+  // vault/liquidity/operations + the commission — the fold's exact shape.
+  // No new query, no new pass.
+  //
+  // FOLDING ALL ROWS IS CORRECT, per generation: V1 `TokensPurchased` carries
+  // its three legs · V2 emits `Purchased` (no legs → contributes zero) and its
+  // `Routed` twin (the legs + `referralAmount`) · V3 carries all four. So each
+  // purchase contributes exactly once.
+  //
+  // ⛔ AND THE ANCHOR IS OUTSIDE THE INDEX. `vault + liquidity + operations +
+  // payment === gross` is SELF-REFERENTIAL: a missed purchase drops every term
+  // together, the identity still holds, and the published figure is quietly
+  // short. So the fold is reconciled against counters the CONTRACTS keep:
+  // the sealed engines' `totalUsdcRaised` (their net IS their gross — no
+  // acquisition-cost concept exists there) plus the active engine's
+  // `totalGrossUsdc` / `totalAcquisitionCost` / `totalProtocolContribution`.
+  //
+  // SCOPE, stated rather than assumed: the payment anchor is the ACTIVE engine's
+  // counter alone, while the fold also sums V2's `referralAmount`. Those read
+  // 0.00 on every V2 row (measured 2026-08-06, all 14 V1/V2 receipts BigInt-exact
+  // against their totals), and V1/V2 are SEALED — they can accept no new
+  // purchase — so that set is closed and cannot drift. If it ever did, the fold
+  // would exceed the anchor and the figures would go dark, which is the correct
+  // direction to fail.
+  //
+  // THE RACE, and why it is left alone: the fold covers rows through the block
+  // this cycle scanned; the counters answer at `latest`, which may be a few
+  // blocks further on. A purchase landing in that gap makes the anchor exceed the
+  // fold, the figures withhold for ONE cycle, and the next cycle heals it. That
+  // is fail-closed and self-correcting — the alternative (pinning the calls to a
+  // historical block) buys a rare cosmetic win at the cost of depending on
+  // archive state for a live figure.
+  let routedModel: RoutedFinancialModel | null = null;
+  let routedReason: string | null = null;
+  let routedDiverged = false;
+  try {
+    const fold = foldRoutedTotals(
+      rawReceiptFacts.map((f) => ({
+        vaultRaw: f.vaultRaw,
+        liquidityRaw: f.liquidityRaw,
+        operationsRaw: f.operationsRaw,
+        sourcePaymentRaw: f.commissionRaw,
+      })),
+    );
+    const foldAsOfBlock = summary.head;
+    if (
+      liveInflowAggregateRaw === null ||
+      sealedGrossRaw === null ||
+      activeEngineAddress === null ||
+      foldAsOfBlock === null
+    ) {
+      routedReason =
+        "the engines' own counters could not be read this cycle, so the fold has no anchor — an unanchored sum is exactly the self-referential figure this lane refuses to publish. Any previously measured figures keep serving with their own asOfBlock.";
+    } else {
+      const payDec = decodeUint256Decimal(
+        await ethCall(transport, activeEngineAddress, SELECTOR_TOTAL_ACQUISITION_COST),
+      );
+      const netDec = decodeUint256Decimal(
+        await ethCall(transport, activeEngineAddress, SELECTOR_TOTAL_PROTOCOL_CONTRIBUTION),
+      );
+      if (payDec === null || netDec === null) {
+        routedReason =
+          "the active engine answered its gross counter but not its acquisition-cost / protocol-contribution counters — the fold cannot be anchored on all three axes, so nothing new is published this cycle.";
+      } else {
+        const verdict = reconcileRoutedFold(fold, {
+          grossRaw: liveInflowAggregateRaw,
+          netProtocolContributionRaw: (sealedGrossRaw + BigInt(netDec)).toString(10),
+          sourcePaymentRaw: payDec,
+        });
+        // ⛔ THE REASON TRAVELS WHOLE. The reconciler names the figure, both
+        // values in USDC, the direction, the size and the row count; it is
+        // carried verbatim to the source and to the cycle's notes. Reducing it
+        // to a flag here would be the defect this lane exists to prevent,
+        // one layer up.
+        routedReason = verdict.reason;
+        routedDiverged = !verdict.ok;
+        if (verdict.ok) routedModel = { ...fold, asOfBlock: foldAsOfBlock };
+      }
+    }
+  } catch (err) {
+    routedReason = `the routed fold could not be built this cycle: ${err instanceof Error ? err.message : String(err)}`;
+  }
+
   let milestoneModel: MilestoneBuildResult | null = null;
   let milestoneFault: string | null = null;
   try {
-    let liveMemberCount: number | null = null;
-    let liveInflowAggregateRaw: string | null = null;
-    try {
-      const mcDec = decodeUint256Decimal(
-        await ethCall(
-          transport,
-          FINANCIAL_TARGETS.memberCountEngine.address,
-          SELECTOR_MEMBER_COUNT,
-        ),
-      );
-      const mcNum = mcDec !== null ? Number(mcDec) : NaN;
-      liveMemberCount = Number.isSafeInteger(mcNum) ? mcNum : null;
-
-      let inflowSum = 0n;
-      let inflowOk = true;
-      for (const t of FINANCIAL_TARGETS.inflows) {
-        const selector =
-          t.view === "totalUsdcRaised"
-            ? SELECTOR_TOTAL_USDC_RAISED
-            : SELECTOR_TOTAL_GROSS_USDC;
-        const dec = decodeUint256Decimal(
-          await ethCall(transport, t.address, selector),
-        );
-        if (dec === null) {
-          inflowOk = false;
-          break;
-        }
-        inflowSum += BigInt(dec);
-      }
-      liveInflowAggregateRaw = inflowOk ? inflowSum.toString(10) : null;
-    } catch {
-      liveMemberCount = null;
-      liveInflowAggregateRaw = null;
-    }
     // AW price GO (2026-07-22): the patronage revenue read — Σ configured
     // price × minted per artifact (the /economy card's own authority).
     // Fail-soft null like the other milestone cross-checks.
@@ -766,6 +949,16 @@ async function runCycle(): Promise<string | null> {
   if (capitalModel !== null) lastGoodCapitalModel = capitalModel;
   if (ownPurchaseModel !== null) lastGoodOwnPurchaseModel = ownPurchaseModel;
   if (seasonModel !== null) lastGoodSeasonModel = seasonModel;
+  // P0-1: the three outcomes, and they are deliberately NOT the same rule the
+  // other derived models use. A DIVERGENCE is evidence that the indexed record
+  // is wrong RIGHT NOW, so the previously measured figures are cleared rather
+  // than kept serving — the founder's ruling is that the legs and the total go
+  // to `null` and the surfaces say "Unavailable", never the lower number and
+  // never yesterday's number under today's head. An UNAVAILABLE read disproves
+  // nothing, so the held model stays, carrying its own older asOfBlock.
+  if (routedModel !== null) lastGoodRoutedModel = routedModel;
+  else if (routedDiverged) lastGoodRoutedModel = null;
+  routedReasonHeld = routedReason;
   burnsAsOfBlock =
     protocolStreams.find((s) => s.streamKey === "SYN_BURN")?.cursorBlock ??
     burnsAsOfBlock;
@@ -878,6 +1071,17 @@ async function runCycle(): Promise<string | null> {
     partialNotes.push(
       "season derivation faulted — the previous season model keeps serving",
     );
+  }
+  // ⛔ THE ROUTED REASON IS PUSHED WHOLE, not summarised into a lane name like
+  // its neighbours above (founder, 2026-08-06). Those notes say WHICH lane
+  // faulted because the fault detail lives in that lane's own logs; this one IS
+  // the detail — "gross purchases: the contracts' own counters say 1,410.00
+  // USDC, the indexed rows fold to 1,405.00 USDC — SHORT by 5.00 USDC across 35
+  // indexed row(s)" — and it is the only place a human is told which figure
+  // moved, by how much, and in which direction. A lane name here would be the
+  // boolean this lane exists to refuse.
+  if (routedReason !== null) {
+    partialNotes.push(`routed split withheld — ${routedReason}`);
   }
   return partialNotes.length > 0 ? partialNotes.join(" · ") : null;
 }
