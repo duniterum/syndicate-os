@@ -1,5 +1,49 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
+> ## ▶ 2026-08-06 (SCEAU) — **PROD = `e40b8c1`, 19e SCEAU. P0-1 EST EN LIGNE.**
+> Prod precedente `abee8f9` (18e) ; le cycle a porte **16 commits**. Le quai reste une
+> COMMANDE, jamais un nombre :
+> ```
+> git fetch origin && git log --oneline e40b8c1..origin/main
+> ```
+> ⛔ **LA PROD NE PUBLIE AUCUN SHA** (`/api/version` → `not_found`), donc l identite du
+> build servi est etablie PAR LE CONTENU, et c est dit : entree servie
+> **`index-BeA9uw0a.js`**, sha256 `22450eae…`, **identique octet pour octet** au build
+> produit ici depuis `e40b8c1` · ancienne entree `index-CaXx5H7R.js` → **404** · et le
+> FOND, pas le proxy : la chaine `financial.routed.` etait a **0 occurrence** dans le
+> bundle servi avant le deploiement (base de reference capturee avant) et **y est
+> maintenant** — `git log -S` date sa naissance a `578e5e1`.
+> **MESURE EN LIGNE :** healthz 200 · 9 routes publiques + sitemap **200** · 4 en-tetes
+> sur le HTML, 0 sur les assets · backbone ok:1 failed:0, 6/6 unites, tete
+> **92 144 451** · spine **44 items** (39 avant ; les 5 nouveaux sont le lot P0-1).
+> **MIGRATIONS : RIEN**, verifie et non suppose (aucun fichier schema/DB/lockfile dans
+> le lot). *(Un echec d authentification `neondb_owner` au publish a ete resolu par la
+> regeneration de l identifiant par le fondateur.)*
+>
+> **CE QUI CHANGE POUR UN VISITEUR :** les trois surfaces d argent publiaient 70/20/10
+> du **BRUT** alors que le moteur route 70/20/10 du **NET**. Lu sur la page rendue
+> AVANT : `987,00 · 282,00 · 141,00`, total `1 410,00`. Lu sur la page rendue APRES :
+> **986,12 · 281,75 · 140,88**, total **1 408,75** — **les parts somment au total
+> imprime a cote d elles**. L afflux cumule reste **1 410,00** (juste, c est le brut) et
+> le versement aux referents **1,25**. Les deux blocs de prose approuves sont en ligne
+> avec la phrase doctrinale ; la carte du hero n en porte pas (sa regle).
+> ⚠ Le **solde du portefeuille** Operations affiche **140,87** a cote de la jambe
+> **140,88** : le solde est la detention exacte tronquee, la jambe est le reste
+> d affichage pour que les trois somment. Deux regles, toutes deux justes.
+> **POURQUOI CELA COMPTE :** les chiffres etaient sous une ancre « verifier sur la
+> chaine » — n importe quel visiteur pouvait les refuter. Ils ne sont plus calcules :
+> ils sont **sommes depuis ce que la chaine a emis**, ancres aux compteurs des moteurs,
+> et servent **null** plutot qu un chiffre faux si l index et les contrats divergent
+> (prouve en direct devant le fondateur, puis restaure).
+>
+> **RESTE SA DECISION, INCHANGE :** ① le depot PUBLIC (3 options, rien n est prepare) ·
+> ② la ligne a Replit sur `guards:db` · ③ les deux fichiers canon qui portent encore la
+> regle adresse-membre retiree · ④ les quatre decisions du 2026-08-05.
+> **PROCHAINE TRANCHE, GATEE SEPAREMENT :** ⑥ comme GARDE (un total dont la source est
+> independante des parts en dessous), rouge d abord contre ses deux instances reelles —
+> l ancien lien du hero et **P1-03** (`introductionReadmodel.ts:236,291,306` vs
+> `:274-276`, CONFIRME OUVERT). Puis **P1-01** (chevauchement de reorg).
+
 > ## ▶ 2026-08-06 (SOIR) — ⛔ **UNE DECISION FONDATEUR OUVERTE : LE DEPOT EST PUBLIC.**
 > **IL DECIDE. Personne n agit dessus.** Constate, pas suppose : le depot est PUBLIC —
 > `raw.githubusercontent.com/duniterum/syndicate-os/main/.claude/launch.json` repond

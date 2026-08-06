@@ -2,7 +2,79 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-06 (LATER) — **P0-1 IS IN PROGRESS. ENFORCEMENT BUILT, SURFACES UNTOUCHED.** START HERE.
+> # ▶ 2026-08-06 (SEAL) — **PROD = `e40b8c1`, 19th CONSECUTIVE CLEAN SEAL. P0-1 IS LIVE.** START HERE.
+>
+> ## ① WHERE PROD IS — and how this session PROVED it, not took it
+> Previous prod `abee8f9` (18th seal); this cycle carried **16 commits**
+> (`git rev-list --count abee8f9..e40b8c1` = 16). **THE QUAY IS A COMMAND, NEVER A
+> NUMBER — a sha written here is stale the moment someone pushes:**
+> ```
+> git fetch origin && git log --oneline e40b8c1..origin/main
+> ```
+> ⛔ **PROD PUBLISHES NO COMMIT ID** (`/api/version` and `/api/build` both answer
+> `{"error":"not_found"}`), so "which commit is serving" was established by CONTENT,
+> and that is stated rather than a sha asserted:
+> · served entry **`index-BeA9uw0a.js`**, sha256 `22450eae…` — **byte-identical to the
+>   build this machine produced from `e40b8c1`**. Two independent builds of one commit
+>   landing on the same hash IS the provenance.
+> · the previous entry **`index-CaXx5H7R.js` → 404**.
+> · **THE THING, NOT THE PROXY:** the string `financial.routed.` appeared **0 times**
+>   in the bundle prod served before (baseline captured pre-deploy) and **appears now**
+>   (`financial.routed.vault/.liquidity/.netTotal`). `git log -S` dates its birth to
+>   `578e5e1` — so the running bundle is provably past that commit, not merely different.
+> · the `abee8f9` marker `syndicate.referral.promoted` is still present — the new build
+>   contains the old one's work.
+> **MEASURED LIVE THIS SESSION:** `/api/healthz` 200 · `/ /join /tokenomics /whitepaper
+> /source /registry /activity /season /sitemap.xml` all **200** · 4 security headers on
+> HTML, **0** on assets · backbone **ok:1 partial:0 failed:0**, units 6/6, headBlock
+> **92 144 451** · spine **44 financial items** (was 39 — the five new ones are exactly
+> the P0-1 lot).
+> **MIGRATIONS: NOTHING**, and it was verified rather than expected —
+> `git diff --name-only abee8f9..e40b8c1 | grep -Ei "schema|migration|drizzle|\.sql$|lock"`
+> returns no match. *(A publish-time `neondb_owner` auth failure was resolved by the
+> founder regenerating the credential; the connection was revalidated before publish.)*
+>
+> ## ② WHAT WENT LIVE — P0-1, AND WHY IT MATTERS
+> **The three public money surfaces stopped publishing a figure the chain refutes.**
+> Until this seal `/`, `/tokenomics` and `/whitepaper` showed 70/20/10 of **GROSS**
+> while the engine routes 70/20/10 of **NET** (`verified.sol:498-503`). Read off the
+> rendered production page BEFORE: `987.00 · 282.00 · 141.00`, total `1,410.00`.
+> Read off the rendered production page AFTER:
+> | leg | now |
+> |---|---|
+> | Reserve | **986.12** |
+> | Liquidity | **281.75** |
+> | Operations | **140.88** |
+> | MEMBERSHIP ROUTED | **1,408.75** = the three, summed on screen |
+> `986.12 + 281.75 + 140.88 = 1,408.75` — **the parts add up to the total printed
+> beside them**, and the API's own base units match exactly
+> (`986125000 + 281750000 + 140875000 === 1408750000`, asOfBlock **92 144 451**).
+> Cumulative inflow stays **1,410.00** (correct as gross) and paid-to-referrers
+> **1.25**. Both approved prose blocks are live with the doctrinal sentence; the hero
+> card carries none, per his ruling. **0 × "Unavailable" on all three.**
+> ⚠ **NOT AN INCONSISTENCY:** the Operations *wallet balance* reads **140.87** beside
+> the routed leg **140.88**. The balance is the exact holding truncated (140.875); the
+> leg is the display remainder so the three sum. Two rules, both correct.
+> **WHY IT MATTERS:** the figures sat under a verify-on-chain anchor, so any visitor
+> could refute them. The legs are no longer computed from anything — they are summed
+> from what the chain emitted, anchored to the engines' own counters, and they serve
+> **null** rather than a wrong number if the index and the contracts disagree (proven
+> live before the founder: one purchase's legs zeroed → all four figures went
+> "Unavailable" with the reason naming *1,410.00 vs 1,405.25, SHORT by 4.75 across 36
+> rows* → restored → healed on the next cycle).
+> **ALSO LIVE:** the `/join` render-phase seed fix · `guard-money-flow` in the api
+> chain (24/24) after clearing THREE reds, not one · the CI/pre-push gate · the
+> 2026-08-06 security audit archived in the repo.
+>
+> ## ③ WHAT THIS SESSION OWES THE NEXT ONE
+> · **⑥ AS A GUARD, gated separately** — a displayed total whose source is independent
+>   of the parts beneath it. RED-first against its TWO real instances: the pre-step-4
+>   hero binding (`aggregateInflowUsdc` under fold-sourced legs) and **P1-03**.
+> · **P1-03 CONFIRMED OPEN** — `introductionReadmodel.ts:236,291,306` vs `:274-276`.
+> · **P1-01** (sale lane, no reorg overlap) is step 4 of the remediation order.
+> · The founder's four open decisions (below) are untouched.
+>
+> # ▶ 2026-08-06 (LATER) — **P0-1 WAS IN PROGRESS HERE; IT IS NOW SEALED ABOVE.** *(history)*
 >
 > ## ⛔ STATUS: P0-1 (gross/net routed figures) — **IN PROGRESS, HALF LANDED**
 > `ded1596` landed the ENFORCEMENT half (guard + fold + anchor + canon). **The three
