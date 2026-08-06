@@ -100,7 +100,15 @@ construire la slice correspondante, jamais au boot.
 
 ## TIER 3 — Traçabilité (NE PAS charger au boot — référence historique)
 
-- `docs/audits/SLICE_2_17…` → `SLICE_2_20D…` : rapports d'audit slice-par-slice.
+- ⚠️ **`docs/audits/TOTAL_SECURITY_AUDIT_2026-08-06.md` — L'AUDIT SÉCURITÉ + PRODUCTION COMPLET
+  (15 agents, 135 constats bruts, baseline `49d9392`). CE N'EST PAS ENCORE DE L'HISTOIRE :
+  il porte des constats OUVERTS avec leur STATUS (CLOSED-BY-FIX + commit · CLOSED-BY-MEASUREMENT
+  + le nombre · OPEN · SUPERSEDED), les mesures chaîne Q1-Q4 rejouables (adresses + blocs), les
+  QUATRE PRÉMISSES CORRIGÉES (la règle adresse-membre RETIRÉE le 2026-08-02 · « SourceRegistryV1
+  est EN PAUSE » est INÉNONÇABLE, `paused()` n'existe pas · le dépôt est PUBLIC · `release:gate`
+  n'avait JAMAIS tourné jusqu'au bout sur cette machine), les 18 lignes de régression, et le
+  registre d'erreurs de la session elle-même. À LIRE avant toute slice qui touche l'argent,
+  l'admin, ou les gardes.** L'ordre de remédiation vit au §K.
 - `docs/phase1-*` : ledgers de phase 1.
 - `docs/strategy/CORRECTED_DOCTRINE_REHARVEST_2_20G.md`, `PRINCIPAL_PRIOR_ART_AUDIT…`, `PRIOR_ART_RECONCILIATION_2_19D.md` : audits d'art antérieur.
 - `docs/handoff/*` anciens, `GO_LIVE.md`, `REPLIT_SETUP.md`, `deploy-readiness-checklist.md`.

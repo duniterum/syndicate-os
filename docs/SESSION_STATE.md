@@ -12,9 +12,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ⛔ **THE GUARD IS NOT YET IN THE GUARDS CHAIN** — deliberately (step 6 below). Wiring it
 > now would turn `release:gate` red and block every unrelated slice. It is dormant today:
 > a stated gap, not an oversight.
-> ⛔ **`docs/audits/TOTAL_SECURITY_AUDIT_2026-08-06.md` DOES NOT EXIST** — the 2026-08-06
-> audit was delivered in chat and never archived. There is no audit file to record P0-1's
-> status in, so it is recorded here. **Creating that archive is unclaimed work.**
+> ✅ **`docs/audits/TOTAL_SECURITY_AUDIT_2026-08-06.md` NOW EXISTS** (written 2026-08-06,
+> registered TIER 3 in `00_CANON_INDEX.md`). <s>It does not exist — the audit was delivered
+> in chat and never archived.</s> It carries every finding with a STATUS column and its
+> `file:line` citation, the Q1-Q4 chain measurements with addresses and blocks so any of it
+> can be re-run, the four corrected premises with what refutes each, all 18 prior-audit
+> regression rows including the fix-the-instance-not-the-pattern finding, and the session's
+> own error ledger. **Read it before any slice touching money, admin, or the guards.**
+> The remediation order lives at its §K.
 >
 > ## ① THE DEFECT, IN ONE LINE
 > `useHeroReality.ts:245-247` publishes the legs as `routedShare(aggregateRaw, 7_000n)` —
