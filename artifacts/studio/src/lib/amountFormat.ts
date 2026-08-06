@@ -94,6 +94,54 @@ export function formatBaseUnits(
 }
 
 /**
+ * THE DISPLAY REMAINDER — the routed legs, shown so they SUM TO THEIR TOTAL
+ * (P0-1 step 4, founder 2026-08-06).
+ * ---------------------------------------------------------------------------
+ * THE DEFECT THIS CLOSES is the SECOND one the 2026-08-06 audit found in this
+ * card, independent of the wrong base: the three legs were each floored at
+ * 7000/2000/1000 bps, so the displayed parts could not add up to the displayed
+ * total. The real legs carry half-cents — 986.125 / 281.75 / 140.875 — and no
+ * 2-decimal display of them sums to 1,408.75 unless one leg absorbs the halves.
+ *
+ * THE RULE, mirroring the engine exactly (`MembershipSaleV3.verified.sol:503`,
+ * `operationsAmount = protocolContribution - vaultAmount - liquidityAmount`):
+ * floor vault and liquidity, then operations = total − vault − liquidity. The
+ * contract makes operations the remainder for the same reason — integer
+ * division must not lose or invent a base unit.
+ *
+ * ONE HOME, on purpose: three surfaces render these legs (`/`, `/tokenomics`,
+ * `/whitepaper`). Each flooring its own would be the twin defect this repo has
+ * regrown four times. `guard-money-flow` ⑤ EXECUTES this function against
+ * fixtures and asserts the sum every time.
+ *
+ * Fail-closed: a malformed leg, or a total smaller than its own legs, returns
+ * null — every surface then renders its honest "Unavailable", because a
+ * negative or invented leg is worse than a gap.
+ */
+export function displayRoutedSplit(
+  vaultRaw: string | null | undefined,
+  liquidityRaw: string | null | undefined,
+  netTotalRaw: string | null | undefined,
+  decimals = 6,
+  displayDecimals = 2,
+): { vault: string; liquidity: string; operations: string; total: string } | null {
+  const vault = truncateToDisplayUnits(vaultRaw, decimals, displayDecimals);
+  const liquidity = truncateToDisplayUnits(liquidityRaw, decimals, displayDecimals);
+  const total = truncateToDisplayUnits(netTotalRaw, decimals, displayDecimals);
+  if (vault === null || liquidity === null || total === null) return null;
+  const operations = total - vault - liquidity;
+  if (operations < 0n) return null;
+  // Back to raw base units so the strings come from THE ONE formatter — a second
+  // units→text path here is exactly what `guard-one-figure` exists to prevent.
+  const scale = 10n ** BigInt(decimals - clampDisplay(decimals, displayDecimals));
+  const text = (units: bigint): string | null =>
+    formatBaseUnits((units * scale).toString(10), decimals, displayDecimals);
+  const [v, l, o, t] = [text(vault), text(liquidity), text(operations), text(total)];
+  if (v === null || l === null || o === null || t === null) return null;
+  return { vault: v, liquidity: l, operations: o, total: t };
+}
+
+/**
  * The same figure with the FALSE-ZERO FLOOR: a non-zero holding that truncates
  * to all zeros renders `< 0.0…1` (or `< 1`) rather than a flat `0` that would
  * read as "nothing".

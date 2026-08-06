@@ -175,10 +175,20 @@ export default function Whitepaper() {
                 the protocol owes you nothing in return (a business, not a pooled fund). Net USDC is
                 routed on-chain across <strong>Reserve</strong>, <strong>Liquidity</strong>, and{" "}
                 <strong>Operations</strong>; members hold no claim on these funds. Cumulative inflow to
-                date <strong>{live(usdc(r.aggregateInflowUsdc))}</strong> — routed live: Reserve{" "}
+                date <strong>{live(usdc(r.aggregateInflowUsdc))}</strong> — paid to referrers{" "}
+                <strong>{live(usdc(r.routedPaidToReferrersUsdc))}</strong>, then routed live: Reserve{" "}
                 <strong>{live(usdc(r.routedVault))}</strong>, Liquidity{" "}
                 <strong>{live(usdc(r.routedLiquidity))}</strong>, Operations{" "}
-                <strong>{live(usdc(r.routedOperations))}</strong>.
+                <strong>{live(usdc(r.routedOperations))}</strong>.{" "}
+                {/* ⛔ THE DOCTRINAL SENTENCE — VERBATIM, founder-approved 2026-08-06, and
+                    already canon in CANON_PROTOCOL_LANGUAGE §4. Never reworded, never
+                    summarised: it is the whole answer to "why does the total not equal
+                    the three legs" — the referrer is paid at the ENTRANCE, before the
+                    treasury sees anything (verified.sol:279 vs 280-282). */}
+                <strong>
+                  The referrer is not paid from Syndicate revenue after the fact. The referrer is
+                  paid from the purchase transaction before the net protocol contribution is routed.
+                </strong>
               </p>
               <VerifyOnChain ids={["vaultWallet", "operationsWallet", "lpPair"]} />
             </ProseSection>

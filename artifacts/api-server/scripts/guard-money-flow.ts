@@ -282,9 +282,109 @@ check(
   "money-flow: ③ an ABI-only money word escaped its layer — see the lines above",
 );
 
+// ── ⑤ THE DISPLAY REMAINDER, EXECUTED ──────────────────────────────────────
+// THE SECOND, INDEPENDENT ERROR the 2026-08-06 audit found in this card (A12):
+// even with the right base, the three legs were each floored at 7000/2000/1000
+// bps while the contract makes operations the EXACT REMAINDER
+// (verified.sol:503, `operationsAmount = protocolContribution - vault - liquidity`).
+// So the displayed parts could not sum to the displayed total: the real legs are
+// 986.125 / 281.75 / 140.875, and no 2-decimal display of them adds to 1,408.75
+// unless operations absorbs the halves — 140.88, not 140.87.
+// THE RULE: floor vault and liquidity at display precision, then
+// operations = total − vault − liquidity. Executed against the studio's own
+// module, with the sum asserted on every fixture.
+{
+  const AMOUNT_MODULE = join(repo, "artifacts", "studio", "src", "lib", "amountFormat.ts");
+  check(
+    existsSync(AMOUNT_MODULE),
+    "money-flow: ⑤ the one-truncation module exists",
+    "money-flow: ⑤ artifacts/studio/src/lib/amountFormat.ts is MISSING — the display remainder must live beside THE ONE truncation, never in a page",
+  );
+  if (existsSync(AMOUNT_MODULE)) {
+    const mod = (await import(pathToFileURL(AMOUNT_MODULE).href)) as {
+      displayRoutedSplit?: (
+        v: string | null,
+        l: string | null,
+        t: string | null,
+      ) => { vault: string; liquidity: string; operations: string; total: string } | null;
+    };
+    const split = mod.displayRoutedSplit;
+    check(
+      typeof split === "function",
+      "money-flow: ⑤ displayRoutedSplit is exported and callable",
+      "money-flow: ⑤ amountFormat.ts does not export displayRoutedSplit() — without ONE home for the remainder each surface floors its own legs, and the parts stop summing to the total",
+    );
+    if (typeof split === "function") {
+      const cents = (s: string): bigint => BigInt(s.replace(/[^0-9]/g, ""));
+      // vault · liquidity · netTotal (raw 6-dec base units) · what operations must read
+      const ROWS: readonly (readonly [string, string, string, string])[] = [
+        // THE REAL ONE, measured on chain 2026-08-06 — the founder-approved figures.
+        ["986125000", "281750000", "1408750000", "140.88"],
+        // Clean tenths — nothing to absorb; a naive floor would pass this one too.
+        ["700000", "200000", "1000000", "0.10"],
+        // Both legs floor away a fraction: operations must absorb BOTH.
+        ["2333333", "666666", "3333333", "0.34"],
+        // A single 5.00 purchase, exact on every leg.
+        ["3500000", "1000000", "5000000", "0.50"],
+      ];
+      let summed = 0;
+      for (const [v, l, t, wantOps] of ROWS) {
+        const out = split(v, l, t);
+        const ok =
+          out !== null &&
+          out.operations === wantOps &&
+          cents(out.vault) + cents(out.liquidity) + cents(out.operations) === cents(out.total);
+        if (ok) summed += 1;
+        check(
+          ok,
+          `money-flow: ⑤ net ${t} → ${out?.vault} / ${out?.liquidity} / ${out?.operations} sums to ${out?.total}`,
+          `money-flow: ⑤ THE PARTS DO NOT SUM TO THE TOTAL. vault=${v} liquidity=${l} net=${t} produced ${JSON.stringify(out)} — operations must read ${wantOps} (total − vault − liquidity, mirroring verified.sol:503). Three money figures that do not add up to the total printed beside them is the second defect the audit found in this card, and anyone with a calculator can see it`,
+        );
+      }
+      check(
+        summed === ROWS.length,
+        `money-flow: ⑤ every fixture sums exactly (${summed}/${ROWS.length})`,
+        `money-flow: ⑤ only ${summed}/${ROWS.length} fixtures summed`,
+      );
+      // AT EVERY PRECISION, not only the 2 decimals the surfaces use today. The
+      // rule is arithmetic, not a display convention: whatever precision a future
+      // surface picks, the parts must still add to the total it prints.
+      const anySplit = split as unknown as (
+        v: string,
+        l: string,
+        t: string,
+        d: number,
+        dd: number,
+      ) => { vault: string; liquidity: string; operations: string; total: string } | null;
+      let precisionsOk = 0;
+      const PRECISIONS = [0, 1, 2, 3, 4, 5, 6];
+      for (const dd of PRECISIONS) {
+        const out = anySplit("986125000", "281750000", "1408750000", 6, dd);
+        if (out === null) continue;
+        const c = (s: string): bigint => BigInt(s.replace(/[^0-9]/g, ""));
+        if (c(out.vault) + c(out.liquidity) + c(out.operations) === c(out.total)) precisionsOk += 1;
+      }
+      check(
+        precisionsOk === PRECISIONS.length,
+        `money-flow: ⑤ the parts sum to the total at every display precision (${precisionsOk}/${PRECISIONS.length}: 0→6 decimals)`,
+        `money-flow: ⑤ the sum broke at ${PRECISIONS.length - precisionsOk} of ${PRECISIONS.length} display precisions — the remainder rule must be arithmetic, not tuned to the 2 decimals today's surfaces happen to use`,
+      );
+      // FAIL-CLOSED: a malformed leg, or a remainder that would go negative,
+      // publishes NOTHING — a negative or invented leg is worse than a gap.
+      check(
+        split("abc", "281750000", "1408750000") === null &&
+          split("986125000", null, "1408750000") === null &&
+          split("986125000", "281750000", "900000000") === null,
+        "money-flow: ⑤ a malformed leg or a negative remainder serves null, never a fabricated figure",
+        "money-flow: ⑤ displayRoutedSplit returned a split for malformed input, or for a total smaller than its own legs",
+      );
+    }
+  }
+}
+
 console.log(
   failures === 0
-    ? `\nguard-money-flow: ${checks} checks green. The legs are SUMMED from the chain, anchored against the contract's own counters, and the ABI words stay in the ABI layer.\nNOT CHECKED: that the index is complete (only that a short one is caught), that the RPC answered honestly, or that a surface renders what it is served.`
+    ? `\nguard-money-flow: ${checks} checks green. The legs are SUMMED from the chain, anchored against the contract's own counters, they SUM TO THEIR TOTAL on screen, and the ABI words stay in the ABI layer.\nNOT CHECKED: that the index is complete (only that a short one is caught), that the RPC answered honestly, or that a surface renders what it is served.`
     : `\nguard-money-flow FAILED: ${failures} violation(s) of ${checks} check(s).`,
 );
 if (failures > 0) process.exit(1);

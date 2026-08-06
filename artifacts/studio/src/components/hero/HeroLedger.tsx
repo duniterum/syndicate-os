@@ -211,10 +211,19 @@ export function HeroLedger() {
         </div>
         <div className="mt-3 flex items-center justify-between rounded-xl border border-border bg-background/58 p-3 dark:border-white/10 dark:bg-white/[0.03]">
           <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">{heroSystem.routing.totalRoutedLabel}</span>
+          {/* ⛔ THE TOTAL THE THREE LEGS ADD UP TO — the NET routed, not the gross
+              inflow (P0-1 step 4, founder's approved figure: 1,408.75, not
+              1,410.00). This line sat directly beneath legs that sum to the net
+              and printed the GROSS: three figures that visibly did not add up to
+              the number under them, on the homepage, checkable by anyone with a
+              calculator. Caught by reading the RENDERED card — the source read
+              plausibly, because the label says "routed" and the binding said
+              "inflow". Gross has its own line above ("Cumulative inflow to date"),
+              which is correct as gross and does not change. */}
           <span className="font-mono text-xl font-black text-foreground">
-            {reality.aggregateInflowUsdc !== null ? (
+            {reality.routedNetTotalUsdc !== null ? (
               <>
-                {reality.aggregateInflowUsdc} <span className="text-xs font-semibold text-muted-foreground">USDC</span>
+                {reality.routedNetTotalUsdc} <span className="text-xs font-semibold text-muted-foreground">USDC</span>
               </>
             ) : (
               <span className="text-sm font-semibold text-muted-foreground">{liveFigure(null, reality.loading)}</span>

@@ -12,7 +12,7 @@ import { useGetProtocolReality, useGetHolderIndex } from "@workspace/api-client-
 // TRUNCATES. This hook used to carry its own half-up-rounding copy, which made
 // the same WETH.e holding read `0.026552` here and `0.026551` on /activity.
 // See lib/amountFormat.ts for the rule; guard-one-figure keeps it single.
-import { formatBaseUnits } from "@/lib/amountFormat";
+import { displayRoutedSplit, formatBaseUnits } from "@/lib/amountFormat";
 import { useSpineAttestation } from "@/lib/useSpineAttestation";
 import { currentChapterFacts, type CurrentChapterFacts } from "@/config/syndicateFacts";
 
@@ -95,10 +95,21 @@ export interface HeroReality {
    */
   grossTotalUsdc: string | null;
   grossTotalRaw: string | null;
-  /** Computed 70/20/10 routed shares of the aggregate (the routing proof). */
+  /**
+   * The routed legs as the chain emitted them, summed by the backbone and
+   * displayed so the parts SUM TO THE TOTAL (operations is the remainder,
+   * mirroring verified.sol:503). <s>Computed 70/20/10 shares of the
+   * aggregate</s> — STRUCK 2026-08-06: that derivation was the P0-1 defect,
+   * 70% of GROSS where the engine routes 70% of NET.
+   * All four are null together — a partial split is a wrong figure.
+   */
   routedVault: string | null;
   routedLiquidity: string | null;
   routedOperations: string | null;
+  /** Vault + Liquidity + Operations, the figure the three must add up to. */
+  routedNetTotalUsdc: string | null;
+  /** What referrers were paid inside the buyers' own transactions, to date. */
+  routedPaidToReferrersUsdc: string | null;
 }
 
 function findFinancial(
@@ -133,6 +144,16 @@ export function useHeroReality(): HeroReality {
 
   const financial = reality.data?.groups.financial;
   const aggregateRaw = findFinancial(financial, "financial.inflow.aggregate");
+
+  // THE ROUTED SPLIT, DISPLAYED SO IT ADDS UP (P0-1 step 4). The legs arrive as
+  // exact base units summed from the chain; the display rule — floor two, let
+  // operations take the remainder — lives in ONE place beside the one
+  // truncation, and returns null unless all three raws are present and coherent.
+  const routedDisplay = displayRoutedSplit(
+    findFinancial(financial, "financial.routed.vault"),
+    findFinancial(financial, "financial.routed.liquidity"),
+    findFinancial(financial, "financial.routed.netTotal"),
+  );
 
   // LIVE headline: the reconciled continuous memberCount() from the reality
   // spine (fail-closed if the server's anchor/invariant reconciliation failed).
@@ -243,16 +264,21 @@ export function useHeroReality(): HeroReality {
     nftRevenueRaw,
     grossTotalUsdc: formatBaseUnits(grossTotalRaw, 6, 2),
     grossTotalRaw,
-    // The three legs, SUMMED from the chain by the backbone and anchored to the
-    // engines' own counters — never a percentage of the inflow aggregate above.
-    // ⚠ `financial.routed.operations` is the exact leg (140.875 → 140.87 by the
-    // one truncating formatter). The founder-approved DISPLAY figure is 140.88,
-    // because the surfaces show operations as the remainder of the total minus
-    // the two floored legs — that lands in step 4. Until then this line reads
-    // 140.87: a rounding cent, not a defect, and deliberately preferred over
-    // three blank money lines (his ruling, 2026-08-06).
-    routedVault: formatBaseUnits(findFinancial(financial, "financial.routed.vault"), 6, 2),
-    routedLiquidity: formatBaseUnits(findFinancial(financial, "financial.routed.liquidity"), 6, 2),
-    routedOperations: formatBaseUnits(findFinancial(financial, "financial.routed.operations"), 6, 2),
+    // The three legs, SUMMED from the chain by the backbone, anchored to the
+    // engines' own counters — never a percentage of the inflow aggregate above —
+    // and displayed so THE PARTS SUM TO THE TOTAL: vault and liquidity floored,
+    // operations the remainder, exactly as the engine does it
+    // (verified.sol:503). One home for that rule: `displayRoutedSplit`.
+    // <s>this line reads 140.87 until step 4</s> — CLOSED 2026-08-06: it reads
+    // the approved 140.88, and 986.12 + 281.75 + 140.88 = 1,408.75 on screen.
+    routedVault: routedDisplay?.vault ?? null,
+    routedLiquidity: routedDisplay?.liquidity ?? null,
+    routedOperations: routedDisplay?.operations ?? null,
+    routedNetTotalUsdc: routedDisplay?.total ?? null,
+    routedPaidToReferrersUsdc: formatBaseUnits(
+      findFinancial(financial, "financial.referral.paidToReferrersTotal"),
+      6,
+      2,
+    ),
   };
 }

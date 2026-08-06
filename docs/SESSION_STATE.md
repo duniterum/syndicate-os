@@ -115,10 +115,25 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >    because operations is the remainder of the total minus the two floored legs. **His
 >    ruling, 2026-08-06: a cent of rounding for one step beats three blank money lines on
 >    the homepage, the whitepaper and tokenomics.** Not a defect. Step 4 closes it.
-> 4. **The three surfaces** — the approved figures (②), operations as the display
->    remainder, and the two approved prose blocks verbatim (③).
-> 5. **Strike `syndicateFacts.ts:519-521`** — the comment that encodes the defect as
->    intent («the canonical 70/20/10 shares of the real MEMBERSHIP aggregate inflow»).
+> 4. ✅ **THE THREE SURFACES** — the approved figures, operations as the DISPLAY
+>    REMAINDER (`displayRoutedSplit` in `amountFormat.ts`, ONE home, mirroring
+>    `verified.sol:503`), and both approved prose blocks VERBATIM with the doctrinal
+>    sentence. Verified on the RENDERED pages, all three: **986.12 + 281.75 + 140.88 =
+>    1,408.75**, zero "Unavailable", no old figure anywhere.
+>    ⛔ **AND THE HERO CARD'S OWN TOTAL WAS WRONG — caught only by rendering it.**
+>    "MEMBERSHIP ROUTED" printed the GROSS (1,410.00) directly beneath three legs
+>    that sum to the NET: three figures visibly not adding up to the number under
+>    them, on the homepage. The source read plausibly (label "routed", binding
+>    `aggregateInflowUsdc`), which is why four reviews and three steps missed it.
+>    Now `routedNetTotalUsdc` → **1,408.75**. "Cumulative inflow to date 1,410.00"
+>    is unchanged and still correct as gross.
+>    Guard: **`guard-money-flow` ⑤ (NEW, RED-first)** executes `displayRoutedSplit`
+>    on 4 fixtures + all 7 display precisions and asserts the parts sum to the total
+>    every time; fail-closed on a malformed leg or a negative remainder.
+> 5. ✅ **`syndicateFacts.ts` STRUCK** (in step 4's commit, at the founder's order) —
+>    the comment that encoded the defect as INTENT («the canonical 70/20/10 shares of
+>    the real MEMBERSHIP aggregate inflow»), struck and dated in place with what is
+>    true now. That sentence is why four reviews read the derivation and moved on.
 > 6. **`guard-money-flow` into the api guards chain** — ⛔ **AND IT CLEARS THREE REDS,
 >    NOT ONE. A session that sees ② go green and calls the slice done has shipped a
 >    guard that cannot do its job.** All three are measured, none is a guess:

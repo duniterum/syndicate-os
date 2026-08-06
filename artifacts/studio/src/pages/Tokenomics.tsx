@@ -162,7 +162,16 @@ export default function Tokenomics() {
             SYN is acquired with USDC through the membership engine, which routes the net USDC on-chain
             across Reserve, Liquidity, and Operations. Members hold no claim — it is protocol revenue.
             Cumulative inflow to date <strong><Amount segments={usdc(r.aggregateInflowUsdc)} variant="inline" loading={r.loading} /></strong>,
-            routed live:
+            of which <strong><Amount segments={usdc(r.routedPaidToReferrersUsdc)} variant="inline" loading={r.loading} /></strong> was
+            paid to referrers; <strong><Amount segments={usdc(r.routedNetTotalUsdc)} variant="inline" loading={r.loading} /></strong> routed live:{" "}
+            {/* ⛔ THE DOCTRINAL SENTENCE — VERBATIM, founder-approved 2026-08-06, canon in
+                CANON_PROTOCOL_LANGUAGE §4. Never reworded: it explains why the inflow above
+                and the routed total differ, and it is the sentence that keeps "paid to
+                referrers" from reading as a cost the treasury bore (verified.sol:279). */}
+            <strong>
+              The referrer is not paid from Syndicate revenue after the fact. The referrer is paid
+              from the purchase transaction before the net protocol contribution is routed.
+            </strong>
           </p>
           <RoutingBar
             className="my-5"

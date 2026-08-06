@@ -517,9 +517,21 @@ export const heroSystem = {
 
   routing: {
     title: "Current routed allocation",
-    // Amounts are computed live: the canonical 70/20/10 shares of the real
-    // MEMBERSHIP aggregate inflow (NFT revenue is NOT in this split), with the
-    // live balances shown as the on-chain proof.
+    // ⛔ <s>Amounts are computed live: the canonical 70/20/10 shares of the real
+    // MEMBERSHIP aggregate inflow</s> — STRUCK 2026-08-06 (P0-1). This sentence
+    // encoded the defect AS INTENT, which is why four reviews read it and moved
+    // on: it describes deriving the legs as shares of the GROSS aggregate, while
+    // the engine routes 70/20/10 of NET (gross minus what the referrer was paid
+    // at the entrance, verified.sol:498-503). Measured that day: 1,410.00
+    // published where the chain said 1,408.75.
+    // WHAT IS TRUE NOW: nothing is computed as a share of anything. Every
+    // generation EMITS its three legs; the backbone SUMS the indexed rows and
+    // reconciles that sum against the engines' own counters, and the surfaces
+    // display it with operations as the remainder so the parts add to the total.
+    // The `ratio` labels below stay — they are the engine's PUBLISHED policy
+    // (70/20/10 of net), never the source of a displayed amount.
+    // NFT revenue is still NOT in this split, and the live balances are still
+    // shown as the on-chain proof.
     routes: [
       { id: "vault", label: "Vault", ratio: "70%", tone: "vault" },
       { id: "liquidity", label: "Liquidity", ratio: "20%", tone: "liquidity" },
