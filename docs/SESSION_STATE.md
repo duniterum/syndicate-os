@@ -2,7 +2,154 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-05 (EVENING) — THE REFERRAL LINK NOW SURVIVES THE VISIT. **START HERE.**
+> # ▶ 2026-08-06 — A LINK MUST BE **PROVEN** BEFORE IT DISPLACES ONE. **START HERE.**
+>
+> ## ① WHERE PROD IS — **`abee8f9`, 18th consecutive clean seal, sealed 2026-08-06.**
+> Previous prod `936f929`; the cycle carried **3 commits** (`936f929..abee8f9`).
+> **THE QUAY IS EMPTY** — and it is still a COMMAND, never a number:
+> ```
+> git fetch origin && git log --oneline abee8f9..origin/main
+> ```
+> ✅ **VERIFIED ON LIVE PROD BY THIS SESSION, not taken from the report:** served
+> entry `assets/index-CaXx5H7R.js` · old entry `index-ClrwJQ5H.js` **404** ·
+> `/api/healthz` **200** · `/source` **200**. And the THING, not the proxy: the
+> served 1,940,405-byte entry **contains `syndicate.referral.promoted`**, a string
+> that did not exist anywhere before `abee8f9`. A changed entry hash proves a new
+> build; that grep proves the new RULE is the one running.
+> Replit's report (his measurement): typecheck 0 · 384 br/gz twins · admin-dist
+> 111 checks · 35 shells · **39/39** studio guards · **23/23** api guards ·
+> 33 routes 200 · migrations **NOTHING** · terms v1 5 873 B / v2 6 172 B ·
+> 4 join-card faces + fallback · backbone ok:1 failed:0, head 92 124 650 ·
+> spine 39 financial items · entry identity ×2 ~90 s apart.
+>
+> ## ② WHAT WENT LIVE — STEP 1 OF THE REMEDIATION SEQUENCE
+> **P0-3, the attribution destruction.** `isUsableSourceId` tested SHAPE ONLY, so
+> any 64-hex string a stranger can type displaced a real remembered introduction —
+> posting `?source=0x<random>` anywhere was enough (capture fires on EVERY route at
+> render, no click), and the engine writes `buyerSourceId` ONCE with no setter, so
+> every visitor who opened it lost their honest referrer FOR LIFE.
+> **THE RULE NOW (his ruling ⓒ, 2026-08-06):** a remembered introduction carries a
+> CONFIRMATION MARKER, set once the chain answers that the link exists and is
+> active. A CONFIRMED arrival always replaces · an UNCONFIRMED arrival replaces
+> only an EMPTY or UNCONFIRMED memory (equal rank → ⑭ still decides) · a CONFIRMED
+> memory is never displaced by an unproven arrival and never downgraded · **a
+> REFUSAL ERASES NOTHING** (a registry pause is reversible). ⑬ and ⑭ intact — only
+> WHICH touches count changed. **MIGRATION, decided:** a memory with no marker
+> reads UNCONFIRMED, so a browser already carrying a planted link is repaired by
+> its first proven arrival.
+> · Guard: **94 checks green, 55 truth-table rows EXECUTED** (was 43). **RED FIRST**
+>   — the guard changes landed while `referralMemory.ts` was still untouched and
+>   failed 2 violations, output in the commit.
+> · **SIX mutations, each proven RED then reverted:** M1 defect restored (1) · M2
+>   migration inverted (1) · M3 promotion never happens (3) · M4 refusal erases (1)
+>   · M5 the catch re-calls the validator so a throw ESCAPES (2) · M6 promotion
+>   correct but marker written FALSE (3).
+> · ⛔ **M5 WAS A DEFECT I INTRODUCED MYSELF** with an over-broad `sed` revert, and
+>   the guard did NOT catch it — its confirm rows swallowed exceptions and checked
+>   only the store. Closed both ways: the catch absorbs, and the guard now asserts
+>   the function does not throw at all. **His rule ⑦ again — the worst defect is in
+>   the last thing written, born inside a fix.** No `sed`/`perl` on source again;
+>   a second bad revert inverted the try/catch bodies before a precise edit fixed it.
+> · **Item 3 of the gate needed NO code:** the engine probe at
+>   `JoinCheckout.tsx:328-382` already simulates `buy()` at MOUNT, drops a refused
+>   link and tells the buyer in the engine's own words. It was not rebuilt.
+>
+> ## ③ THE CHAIN READ (2026-08-06) — MEASUREMENTS, VERBATIM
+> Read from `https://api.avax.network/ext/bc/C/rpc`, chainId `0xa86a` = 43114,
+> head **92,120,208**. Addresses and ABIs taken from the repo, never from memory.
+> Registry `0x780013bB358be6be95b401901264FC7c22a595a6`, `sourceConfig` selector
+> `0x04559b2f`.
+>
+> **EIGHT sources live, ALL ACTIVE, ALL 500 bps** (created at blocks 88705814 ·
+> 90177061 · 90919905 · 91799262 · 91799420 · 91952722 · 92096418 · 92096448).
+> Seven of eight derive per SPEC §③ `keccak256("SYN.SOURCE.V1", wallet)`; the
+> exception is `0x8338e9ff…` (the founder's private wallet), as the spec says.
+>
+> **PROTOCOL LIFETIME, recounted from its own list:** V1 5 purchases 25.00 USDC ·
+> V2a 3 / 15.00 · V2b 6 / 110.00 · V3 22 / 1,260.00 → **36 purchases · 1,410.00
+> USDC gross · 5 attributed · 1.25 USDC commission ever paid.**
+>
+> **THE 600 USDC LOSS IS NOW CHAIN-PROVEN, not replayed:** block 92,095,301, tx
+> `0xf333b663…`, gross 600.00, commission **0.00**, sourceId **ZERO**;
+> `buyerSourceId` for that member reads ZERO today. 30.00 USDC that a referrer
+> would have been paid. 11 of 16 V3 members are UNATTACHED and permanently
+> unattachable; 1,235.00 USDC of unattributed gross = **61.75 USDC upper bound**,
+> which is an UPPER BOUND and not a loss — chain data cannot prove anyone arrived
+> via a link, and `referral_channel_click` / `_conversion` hold **0 rows** locally.
+> ✅ **The fix works in production:** block 92,110,246 was ATTRIBUTED and paid 0.25.
+>
+> **THE AUDIT'S LARGEST COVERAGE GAP IS CLOSED, favourably:** all **14** historical
+> V1/V2 receipts sum **EXACTLY** to their total, BigInt-compared on raw base units
+> (V1 5.00 → 3.50/1.00/0.50 ×5; V2 5.00 and 25.00 rows, referral 0.00, ×9). The
+> six "historical receipts" are six SEATS; there are fourteen purchase EVENTS, and
+> all fourteen were checked. V1/V2 are sealed, so that set is closed forever.
+>
+> **THE STRUCT TRANSCRIPTION IS CORRECT, both directions** (verified source fetched
+> for the deployed registry): `sourceConfig` returns `SourceRecord` = **14 fields**
+> and the repo's read transcriptions match field-for-field; `createSource` /
+> `updateSourceTerms` take `SourceTerms` = **11 fields** and
+> `ProposeSourceCreate.tsx:99-113` matches 11/11. Two structs, right one each side.
+> The founder is signing against a correct ABI.
+>
+> ## ④ THREE CORRECTIONS THIS REGISTER OWED
+> ① <s>SIX sources live on the chain</s> — **EIGHT**, measured above. Two were
+>    created after the 2026-08-05 register was written.
+> ② <s>20 purchases · 1 250 USDC · 4 attribués · 1,00 USDC</s> — **36 · 1,410.00 ·
+>    5 · 1.25**, recounted above.
+> ③ <s>SourceRegistryV1 is PAUSED</s> — ⛔ **UNSTATEABLE, not merely stale.**
+>    `paused()` **reverts — the function does not exist on that contract.** There is
+>    no global pause to be in. Per-source `status` is the only pause concept, and
+>    all eight read ACTIVE. `owner()` = `0x88EC79AF…Dd73`. Never write it again.
+>
+> ## ④-bis ⛔ THE RETIRED MEMBER-ADDRESS RULE — STRUCK HERE, AND WHY IT MATTERS
+> <s>The SERVER never emits a MEMBER address / the 40-hex output scan stays armed</s>
+> — **RETIRED 2026-08-02** under the ADDRESS LAW of 2026-07-25, and the CODE says so
+> in two places: `artifacts/api-server/src/auth/router.ts:771-774` and
+> `operator/router.ts:309-312` («the 40-hex fail-close scan was RETIRED… rows
+> deliberately carry the full wallet + its explorer link»). Member addresses are
+> published full + Snowtrace on `/registry`, `/backbone/feed` and `/season` BY
+> DESIGN. **The discipline that actually protects a member is OWN-ROW, and it holds
+> structurally: `req.query` and `req.params` appear ZERO times in the auth router
+> and ZERO times in the operator router** — a cross-member read is impossible, not
+> merely unimplemented.
+> **WHY THIS LINE EXISTS:** the 2026-08-06 audit was briefed on the old rule and
+> spent an agent's whole lane re-deriving that it was dead. A register carrying a
+> premise the code abandoned sends the next session — mine included — to audit
+> against a ghost. `CANON_VISIBILITY_LAW.md:28,75-76` and `ADR-003:190` already
+> record the rescope correctly; **two boot-loaded canon files still do not, and are
+> named in ⑥ below.**
+>
+> ## ⑤ THE SEQUENCE — REORDERED BY THE CHAIN READ
+> ✅ 0 chain read · ✅ **1 P0-3 attribution + inverted guard (SEALED)** ·
+> **2 P1-9 CI gate (NEXT)** · 3 P0-1 gross/net · 4 P1-1 reorg overlap (UP one) ·
+> 5 P0-2 derived rate (DOWN one).
+> **Why 5 moved down:** measured LATENT — 0 of 8 sources mismatch, every one holds
+> 500 bps on chain and the ladder derives 500 for each. The busiest has **3**
+> durable introductions and the first rate-raising rung (Trusted, 600 bps) needs
+> **10**: seven introductions of headroom.
+> **Why 4 moved up:** the local index reported `status = complete` at block
+> 91,942,617 while head was 92,120,208 — **177,591 blocks behind, silently missing
+> 8 purchases and 3 sources.** Nobody could see it without comparing cursor to head
+> by hand. (Local dev index; prod's cursor was NOT read.)
+>
+> ## ⑥ HIS PENDING DECISIONS
+> ① **One line to Replit:** «does your deploy chain run `guards:db` in addition to
+>    `guards`, or does the 23 come from somewhere else?» The api `guards` chain has
+>    **21** entries; 21 + `guards:db` (2) = 23. That is ARITHMETIC, not a
+>    measurement — his answer settles whether the audit's `guards:db`-unwired
+>    finding drops to P3. **Nothing was restructured on the inference.**
+> ② **Two boot-loaded canon files still assert the retired member-address rule**
+>    and are the root cause named in ④-bis: `docs/00_CANON_INDEX.md:35` («le serveur
+>    n'émet aucune adresse membre») and
+>    `docs/direction/SETTLED_RULES_DO_NOT_RELITIGATE.md:94` («the SERVER never emits
+>    a MEMBER address»). Both are CANON, not registers, and `SETTLED_RULES` exists
+>    to not be re-litigated — **so they were NOT edited without his word.** One word
+>    and they are struck in place, dated, same as here.
+> ③ The four decisions carried over from 2026-08-05 (the two frozen /join
+>    sentences · the three older checkout refusals · «Nothing to claim, ever» ·
+>    the B/2b + /join-mobile wireframes) — unchanged, not re-asked.
+>
+> # ▶ 2026-08-05 (EVENING) — THE REFERRAL LINK NOW SURVIVES THE VISIT. *(history)*
 >
 > ## ① WHERE PROD IS — **`936f929`, 17th consecutive clean seal, sealed 2026-08-05.**
 > Previous prod `c0555cc9`; the cycle carried **17 commits** (`c0555cc9..HEAD`, recounted
@@ -153,8 +300,10 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > ⛔ **AND THE COST IS NEVER ONE COMMISSION.** `buyerSourceId` is written at ONE
 > line of the engine (479) inside an attributed buy, with **no owner setter** — a
 > wallet seated without a link can never be attached to one. Whole protocol to
-> date: **20 purchases · 1,250 USDC gross · 4 attributed · 1.00 USDC of
-> commission ever paid.**
+> date: <s>20 purchases · 1,250 USDC gross · 4 attributed · 1.00 USDC of
+> commission ever paid.</s> ⛔ **SUPERSEDED 2026-08-06, measured on chain: 36
+> purchases · 1,410.00 USDC gross · 5 attributed · 1.25 USDC ever paid.** See the
+> boot block §③.
 > **HIS RULINGS (ANSWERED FOREVER):** ⑬ **NO EXPIRY** on the browser memory — the
 > on-chain link is for life (seats #13/#14/#17 carry `expiresAt` 0 and a fresh
 > repeat purchase still quotes 5.00 USDC), so a window decides only whether a
@@ -6493,8 +6642,13 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > chain event itself carries; NO lookup API, NO roster endpoint, NO enrichment, NO
 > cross-event join; the core stands: no KYC, no directory, own-row zone untouched).
 > THE STRUCTURAL KEY: only the SHORT FORM (0x123…abcd — 3+4 hex, exact-shape-pinned)
-> ever serializes; the full address stays server-only and the UNCHANGED output scanners
-> (40-hex) stay armed — a full member address in any payload is still a red build/500.
+> ever serializes; <s>the full address stays server-only and the UNCHANGED output scanners
+> (40-hex) stay armed — a full member address in any payload is still a red build/500.</s>
+> ⛔ **STRUCK 2026-08-06 — RETIRED 2026-08-02 under the ADDRESS LAW (2026-07-25).**
+> The 40-hex fail-close scan is gone and the full member address + `explorerUrl` is
+> served DELIBERATELY (`auth/router.ts:771-774`, `operator/router.ts:309-312`). The
+> discipline that stands is OWN-ROW, and it is structural: zero `req.query` /
+> `req.params` in either router. See the boot block §④-bis.
 > VOICE (§8 amended, origin verbatim): seats "Member #15 · 0x123…abcd entered the public
 > registry." (repeat → "expanded their footprint"; V1/pre-amendment rows keep the H1a
 > voice — honest gap, never a guess) · archive "0x123…abcd archived First Signal · token
@@ -8066,8 +8220,11 @@ Design tracker: `docs/DESIGN_ROADMAP.md`. Doctrine/roles: `docs/00_START_HERE.md
   wallet↔person link / exposing a non-consenting member. ALLOWED (the chain already publishes it): INFRA
   addresses (Vault/Liquidity/Operations/Registry/Sale/Token — PIPES, nobody's wallet), any event-emitted
   address, YOUR own tx, an address the buyer must see BEFORE signing, opt-in self-publish. TWO disciplines:
-  the SERVER emits no MEMBER address (no directory exists — member-standing own-row, source = 2 booleans,
-  UNCHANGED); the CLIENT reads the chain like an explorer. Corollary: what PROVES is public, what GRANTS
+  <s>the SERVER emits no MEMBER address (no directory exists — member-standing own-row, source = 2 booleans,
+  UNCHANGED)</s> ⛔ **STRUCK 2026-08-06 — RETIRED 2026-08-02 under the ADDRESS LAW (2026-07-25): member
+  addresses ARE served, full + explorerUrl, on /registry, /backbone/feed and /season BY DESIGN. What stands
+  is OWN-ROW, structurally (zero req.query/req.params in the auth and operator routers). Boot block §④-bis.**;
+  the CLIENT reads the chain like an explorer. Corollary: what PROVES is public, what GRANTS
   ACCESS is a secret (a contract address proves; an RPC token grants access). Loaded at every boot (TIER-0).
   FOLLOW-UP — ✅ DONE (2026-07-17): `assertNoAddressLeak` → `assertAddressSafeAggregate` (the rpcTransport.ts
   export + the self-contained twin in avalanche-live-read-check.ts). The misnomer read as blanket address

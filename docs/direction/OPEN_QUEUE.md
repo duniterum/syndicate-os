@@ -1,6 +1,75 @@
 # OPEN QUEUE — in-flight decisions (anti-entropy, one level up)
 
-> ## ▶ 2026-08-05 (SOIR) — **PROD = `936f929`, 17e sceau. ⛔ LE QUAI N EST PAS VIDE.**
+> ## ▶ 2026-08-06 — **PROD = `abee8f9`, 18e sceau. LE QUAI EST VIDE.**
+> Le quai reste une COMMANDE, jamais un nombre :
+> ```
+> git fetch origin && git log --oneline abee8f9..origin/main
+> ```
+> **VERIFIE SUR LA PROD EN LIGNE par la session** (pas repris du rapport) : entree
+> servie `assets/index-CaXx5H7R.js` · ancienne entree `index-ClrwJQ5H.js` **404** ·
+> `/api/healthz` **200** · `/source` **200** · et surtout le FOND, pas le proxy :
+> l entree servie **contient `syndicate.referral.promoted`**, une chaine qui
+> n existait nulle part avant `abee8f9`. Un hash d entree qui change prouve un
+> nouveau build ; ce grep prouve que c est la nouvelle REGLE qui tourne.
+>
+> **CE QUI EST PARTI EN LIGNE — ETAPE 1 de la sequence de remediation (P0-3).**
+> Un lien doit desormais etre **PROUVE** avant de deplacer un lien anterieur. Sa
+> regle ⓒ : marqueur de confirmation, pose quand la chaine repond que le lien
+> existe et est actif. Arrivee PROUVEE remplace toujours · arrivee NON PROUVEE
+> remplace seulement une memoire VIDE ou NON PROUVEE (rang egal → ⑭ tranche) · une
+> memoire PROUVEE n est jamais deplacee ni retrogradee · **un REFUS N EFFACE
+> RIEN**. ⑬ et ⑭ intacts. **Migration : une memoire sans marqueur = NON PROUVEE**,
+> donc un navigateur portant deja un lien plante se repare a la premiere arrivee
+> prouvee. Garde : **94 checks, 55 lignes EXECUTEES** (43 avant), **rouge d abord**,
+> **6 mutations vues ROUGES** — dont une que j avais introduite moi-meme (M5) et
+> que la garde ne voyait pas : elle avalait les exceptions. Fermee des deux cotes.
+>
+> ⛔ **TROIS CORRECTIONS QUE CE REGISTRE DEVAIT** (lecture chaine du 2026-08-06,
+> tete 92 120 208, RPC public, adresses et ABI pris dans le repo) :
+> ① <s>SIX sources sur la chaine</s> → **HUIT**, toutes ACTIVES, toutes 500 bps.
+> ② <s>20 achats · 1 250 USDC · 4 attribues · 1,00 USDC</s> → **36 achats ·
+>    1 410,00 USDC · 5 attribues · 1,25 USDC versee** (V1 5/25,00 · V2a 3/15,00 ·
+>    V2b 6/110,00 · V3 22/1 260,00 — recompte depuis sa propre liste).
+> ③ <s>SourceRegistryV1 est EN PAUSE</s> → ⛔ **INENONCABLE, pas seulement perime :
+>    `paused()` REVERT — la fonction n existe pas sur ce contrat.** Il n y a pas de
+>    pause globale ou etre. Le `status` par source est le seul concept de pause, et
+>    les huit sont ACTIVES.
+>
+> ⛔ **LA REGLE ADRESSE-MEMBRE RETIREE — BARREE.** <s>Le serveur n emet aucune
+> adresse MEMBRE</s> — **RETIREE le 2026-08-02** sous la LOI DES ADRESSES du
+> 2026-07-25, et le CODE le dit (`auth/router.ts:771-774`,
+> `operator/router.ts:309-312`). Les adresses membres sont publiees, completes +
+> Snowtrace, sur /registry, /backbone/feed et /season, PAR DESIGN. Ce qui protege
+> vraiment un membre c est le OWN-ROW, et il tient structurellement : **zero
+> `req.query` et zero `req.params`** dans le routeur auth comme dans l operateur.
+> *Pourquoi cette ligne : l audit du 2026-08-06 a ete briefe sur l ancienne regle
+> et a brule une voie d agent entiere a re-demontrer qu elle etait morte.*
+>
+> **LE 600 USDC EST PROUVE SUR LA CHAINE** (plus rejoue) : bloc 92 095 301, tx
+> `0xf333b663…`, brut 600,00, commission **0,00**, sourceId **ZERO**. 30,00 USDC.
+> 11 des 16 membres V3 sont NON RATTACHES et le resteront. Borne haute des autres :
+> **61,75 USDC — une BORNE, pas une perte** (la chaine ne peut pas prouver qu on est
+> arrive par un lien ; les tables de clics locales sont a **0 ligne**).
+> ✅ **Le correctif marche en prod** : le bloc 92 110 246 a ete ATTRIBUE, 0,25 versee.
+>
+> ✅ **LE PLUS GROS TROU DE L AUDIT EST FERME, en notre faveur** : les **14** recus
+> historiques V1/V2 somment **EXACTEMENT** (comparaison BigInt en unites de base).
+>
+> **RESTE OUVERT / SA DECISION :** ① une ligne a Replit — «est-ce que ta chaine de
+> deploiement lance `guards:db` en plus de `guards`, ou est-ce que le 23 vient
+> d ailleurs ?» (la chaine api a **21** entrees ; 21 + 2 = 23 est de l ARITHMETIQUE,
+> pas une mesure — rien n a ete restructure dessus). ② **deux fichiers canon charges
+> au boot portent encore la regle adresse-membre retiree** : `docs/00_CANON_INDEX.md:35`
+> et `docs/direction/SETTLED_RULES_DO_NOT_RELITIGATE.md:94` — CANON, pas des
+> registres, et `SETTLED_RULES` existe pour ne pas etre re-litige, **donc non touches
+> sans son mot**. ③ les quatre decisions du 2026-08-05, inchangees, non re-posees.
+>
+> **SUITE : etape 2 — la porte CI (P1-9).** Ordre revu par la lecture chaine :
+> 1 P0-3 ✅ · **2 P1-9** · 3 P0-1 · 4 P1-1 (monte) · 5 P0-2 (descend — mesure LATENT :
+> 0 ecart sur 8 sources, 3 introductions durables contre 10 pour le premier barreau
+> qui change le taux).
+
+> ## ▶ 2026-08-05 (SOIR) — <s>PROD = `936f929`, 17e sceau. LE QUAI N EST PAS VIDE.</s> *(historique — publie)*
 > **Ne JAMAIS croire un sha de `main` ecrit dans ce fichier — MESURE-LE.** Quatre
 > fois le 2026-08-05 un registre a nomme une tete qu un push suivant avait deja
 > depassee. Le quai est donc une COMMANDE, pas un nombre :
@@ -30,8 +99,10 @@
 > `sourceValid: true`. **Le lien n a pas ete lache — il etait ABSENT** (`?source=`
 > lu a une ligne, stocke nulle part). Et le cout n est jamais une commission :
 > `buyerSourceId` s ecrit UNE fois, sans setter — un siege pris sans lien ne peut
-> plus JAMAIS etre attache. Vie du protocole : **20 achats · 1 250 USDC · 4
-> attribues · 1,00 USDC de commission versee**.
+> plus JAMAIS etre attache. Vie du protocole : <s>20 achats · 1 250 USDC · 4
+> attribues · 1,00 USDC de commission versee</s> ⛔ **SUPERSEDE le 2026-08-06,
+> mesure sur la chaine : 36 achats · 1 410,00 USDC · 5 attribues · 1,25 USDC
+> versee** (bloc du haut, §③).
 > **SES REGLES (REPONDUES A JAMAIS) :** ⑬ AUCUNE EXPIRATION · ⑭ LE DERNIER LIEN
 > GAGNE. **Le lien qu il a envoye EST le sien** (`0x2445…C721` =
 > `founderPrivateWallet`).
