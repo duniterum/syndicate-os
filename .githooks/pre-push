@@ -1,0 +1,52 @@
+#!/bin/sh
+# THE BLOCKING HALF OF THE GATE — nothing red leaves this machine.
+# ============================================================================
+# Founder decision, 2026-08-06: "① + ②". This hook BLOCKS; the GitHub workflow
+# (.github/workflows/gate.yml) WITNESSES. Neither replaces the other — a hook
+# can be bypassed with --no-verify and only exists where it is configured, and
+# a workflow only speaks after the push has already landed on main.
+#
+# ⛔ THIS FILE IS TRACKED, AND THAT IS THE POINT. `.git/hooks/` is never
+# committed, so a hook written there protects one checkout and dies with it.
+# Git only looks here once per clone, after:
+#
+#     git config core.hooksPath .githooks
+#
+# That command is per-clone and is NOT something this file can do for you. If it
+# was never run, this hook is inert and the only gate is the workflow.
+#
+# WHAT IT RUNS: the repo's own `release:gate`, whole — typecheck, seo:check,
+# seo:rewrites:check, surface:audit, 39 studio guards, 21 api guards, then the
+# full production build. Measured 2026-08-06 on the founder's Windows box:
+# ~66 s (36 s of checks + 30 s of build). No secrets, no database, no network —
+# the api chain was measured green with DATABASE_URL unset.
+# ============================================================================
+
+# A push that deletes a ref, or pushes nothing, has no tree to check.
+if [ -z "$(git rev-list --max-count=1 HEAD 2>/dev/null)" ]; then
+  exit 0
+fi
+
+printf '\n[pre-push] running release:gate — the whole thing, ~66s. Nothing red leaves this machine.\n\n'
+
+if pnpm run release:gate; then
+  printf '\n[pre-push] GREEN — pushing.\n\n'
+  exit 0
+fi
+
+printf '\n'
+printf '========================================================================\n'
+printf '[pre-push] RED — the push was STOPPED. Nothing left this machine.\n'
+printf '\n'
+printf 'Read the failure above: it is a real typecheck error, a guard that went\n'
+printf 'red, or a build that broke. Fix it and push again.\n'
+printf '\n'
+printf 'To push anyway:  git push --no-verify\n'
+printf '\n'
+printf '  ...but understand what that means. The guards are the only thing\n'
+printf '  standing between a wrong money figure and thesyndicate.money, and\n'
+printf '  --no-verify is a decision to ship past them. The workflow on GitHub\n'
+printf '  will still go red afterwards; it just cannot stop you.\n'
+printf '========================================================================\n'
+printf '\n'
+exit 1

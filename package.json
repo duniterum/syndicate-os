@@ -8,7 +8,8 @@
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
-    "release:gate": "pnpm run typecheck && pnpm --filter @workspace/studio run seo:check && pnpm --filter @workspace/studio run seo:rewrites:check && pnpm --filter @workspace/studio run surface:audit && pnpm --filter @workspace/studio run guards && pnpm --filter @workspace/api-server run guards && PORT=5173 BASE_PATH=/ pnpm run build"
+    "build:release": "node -e \"process.env.PORT='5173';process.env.BASE_PATH='/';require('child_process').execSync('pnpm run build',{stdio:'inherit'})\"",
+    "release:gate": "pnpm run typecheck && pnpm --filter @workspace/studio run seo:check && pnpm --filter @workspace/studio run seo:rewrites:check && pnpm --filter @workspace/studio run surface:audit && pnpm --filter @workspace/studio run guards && pnpm --filter @workspace/api-server run guards && pnpm run build:release"
   },
   "private": true,
   "devDependencies": {

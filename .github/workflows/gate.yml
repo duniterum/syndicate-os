@@ -1,0 +1,85 @@
+# THE GATE — the independent witness that release:gate passes on a clean machine.
+# ============================================================================
+# WHY THIS FILE EXISTS (audit finding P1-9, 2026-08-06). `release:gate` was
+# defined in package.json and referenced NOWHERE else: no workflow, no git hook,
+# no deploy step (.replit's only postBuild is `pnpm store prune`). Every guard in
+# this repo — 39 studio + 21 api — was advisory in practice, enforced by one
+# human remembering.
+#
+# AND IT COULD NOT HAVE BEEN RUN HERE ANYWAY. Measured 2026-08-06 on the
+# founder's Windows box: `release:gate` failed at its last step for TWO
+# independent environment reasons —
+#   ① `PORT=5173 BASE_PATH=/ pnpm run build` is POSIX inline env, and pnpm runs
+#      scripts through cmd.exe on Windows → «'PORT' n'est pas reconnu».
+#   ② even exported, Git Bash rewrites `BASE_PATH=/` into `C:/Program Files/Git/`,
+#      which poisoned index.html with `src="/Program Files/Git/assets/…"`.
+# (guard-admin-dist CAUGHT ②, correctly — the guard worked, the environment fed
+# it garbage.) Both faults are gone: the root `build:release` script now sets
+# both values INSIDE node, so they never pass through a shell. This job is
+# therefore the first place the whole gate has ever run end to end.
+#
+# THE DIVISION OF LABOUR (founder decision, 2026-08-06 — "① + ②"):
+#   · the local pre-push hook (.githooks/pre-push) BLOCKS — nothing red leaves
+#     the machine;
+#   · THIS job WITNESSES — it proves the gate passes on a clean Linux runner and
+#     that the hook was not skipped with --no-verify.
+# Neither replaces the other. The hook can be bypassed; this cannot be silenced.
+#
+# COST (his money — measured, not estimated): the gate is ~66 s of work on the
+# founder's machine (36 s for typecheck + 3 SEO/surface checks + 39 studio
+# guards + 21 api guards, then 30 s for the full prod build). `concurrency`
+# cancels superseded runs and `timeout-minutes` caps a runaway. NO SECRETS are
+# needed: the api guard chain was measured hermetic — it ran green with
+# DATABASE_URL unset, and every "network" line in its output asserts a
+# CONFIGURED ENDPOINT STRING, never a live call.
+#
+# ⛔ WHAT THIS DOES NOT DO. It runs the guards that exist; it does not make any
+# of them stronger. The 2026-08-06 audit found several studio money/share guards
+# are SELF-NAMING text scans that measure the file they were told to rather than
+# what ships. This job will run those faithfully and they will keep passing.
+# "Nobody runs the gate" is closed here. "Some guards cannot go red" is not.
+# ============================================================================
+
+name: gate
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One run per ref. A newer push cancels the older run instead of paying for both.
+concurrency:
+  group: gate-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    # ~66 s of work measured locally; 10 is a runaway cap, not a target.
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Reads the version from package.json's `packageManager` field
+      # (pnpm@10.26.1) — never a second copy of that number here.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Matches .replit's `nodejs-24`.
+          node-version: 24
+          cache: pnpm
+
+      # --frozen-lockfile: the lockfile decides, nothing re-resolves. This also
+      # satisfies the root `preinstall` guard, which refuses any non-pnpm agent.
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # The repo's OWN gate, invoked whole. Deliberately not a second copy of
+      # its step list — if release:gate changes, this follows automatically.
+      - name: release:gate
+        run: pnpm run release:gate
