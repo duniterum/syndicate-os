@@ -111,7 +111,31 @@ Authoritative resume point. **The real repo always wins over any spec.**
 >   pins a studio twin to it — so the new totals are **optional fields**; required ones
 >   would have forced an edit to a generated, hash-pinned artifact and a founder-gated
 >   rebuild, for fields a pre-2026-08-06 snapshot never carried. Pin re-run: 45 green.
-> · **P1-01** (sale lane, no reorg overlap) is step 4 of the remediation order.
+> · ✅ **P1-01 CLOSED 2026-08-06** — the sale lane resumes with `SALE_REORG_OVERLAP = 50`
+>   (`saleEventIndexer.ts:397`). ⛔ **AND ITS OWN GUARD WAS DEMANDING THE DEFECT:**
+>   `sale-event-indexer.guard.ts:335` asserted *"run 2 starts at 201"* — cursor + 1, the
+>   exact behaviour that made the tip window readable ONCE, EVER. Third guard-pins-the-
+>   defect instance this session. Now written against the CONSTANT, so the pin follows
+>   the rule instead of freezing a number.
+>   **⛔ NO HEAD MARGIN ON THIS LANE, AND THAT IS PINNED:** `nativeAvaxScan` trails the
+>   head by 200 because it reads an explorer index; copying that here would come up SHORT
+>   of the routed anchor (which reads the contracts at `latest`) BY DESIGN and blank four
+>   public money figures every time a purchase landed in the margin. Overlap yes; margin no.
+>   **Why 50:** measured block time **1.00–1.11 s** and `eth_getLogs` answering for the head
+>   block itself (observed lag **0**); the number itself is the siblings' — one constant
+>   across four lanes — and the cost is asymmetric, so it rounds up. Stated as judgement,
+>   not dressed as a measurement.
+>   **Fixtures (RED-first, mutation-proven):** a node serving the tip EMPTY then serving it
+>   → cycle 2 recovers the purchase (without the look-back: 0 rows, ranges `201-250 251-300`,
+>   block 190 never re-read) · re-read leaves row COUNT and row IDENTITY unchanged, which is
+>   what the continuity spine's short-circuit keys on.
+> · ⛔ **[P1-17] NEW, OPEN — `status = "complete"` does not mean "at chain head"**
+>   (`saleEventIndexer.ts:485`). It means "I reached the head I was handed this run", so a
+>   lane that stopped says `complete` forever. Measured today: local index 92,147,964 /
+>   `complete` against a chain at 92,148,836. It was P1-01's cited evidence and is nobody's
+>   finding now that the attribution is corrected — hence its own id. Since the anchor went
+>   live a short fold blanks public money figures, and this word will misdirect the first
+>   diagnosis. **Not fixed here.**
 > · The founder's four open decisions (below) are untouched.
 >
 > # ▶ 2026-08-06 (LATER) — **P0-1 WAS IN PROGRESS HERE; IT IS NOW SEALED ABOVE.** *(history)*

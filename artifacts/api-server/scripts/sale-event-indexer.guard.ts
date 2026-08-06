@@ -18,6 +18,8 @@
  * Exit: 0 if every check passes, 1 otherwise.
  */
 
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import type { RpcTransport } from "../src/lib/protocol/rpcTransport";
 import { assertAddressSafeAggregate } from "../src/lib/protocol/rpcTransport";
 import {
@@ -28,6 +30,7 @@ import {
   type Persistence,
   type RawEventRecord,
   type ScanUnit,
+  SALE_REORG_OVERLAP,
 } from "../src/lib/protocol/saleEventIndexer";
 import {
   MEMBERSHIP_PURCHASED_V3_DEF,
@@ -301,7 +304,152 @@ async function main(): Promise<void> {
     check("idempotent: still exactly 1 row", store.rows.size === 1, String(store.rows.size));
   }
 
-  // 4) Resume — a second pass starts at lastScannedBlock + 1 and picks up new logs.
+  // 3a-bis) ⛔ THE REFUSAL, MADE MECHANICAL: this lane may NOT gain a head
+  // margin. `nativeAvaxScan` stops 200 blocks short of the head
+  // (EXPLORER_LAG_MARGIN_BLOCKS) because it reads an explorer index that trails
+  // the chain. Copying that here would be a DEFECT, not consistency: since
+  // 2026-08-06 the routed fold is reconciled against the sale contracts' own
+  // counters read at `latest`, so an index deliberately trailing the head would
+  // come up SHORT of the anchor BY DESIGN — and the four public routed figures
+  // on /, /tokenomics and /whitepaper would blank every time a purchase landed
+  // inside the margin. The next person to "make the lanes consistent" meets this
+  // check instead of a silent homepage blackout.
+  {
+    const src = readFileSync(
+      path.join(import.meta.dirname, "..", "src", "lib", "protocol", "saleEventIndexer.ts"),
+      "utf8",
+    );
+    const code = src
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .split("\n")
+      .map((l) => l.replace(/(^|[^:"'`])\/\/[^\n]*/, "$1"))
+      .join("\n");
+    // ⚠ THIS GUARD'S check() IS (name, ok, detail) — NOT the (cond, pass, fail)
+    // shape guard-money-flow uses. My first version of this block used the other
+    // convention, so a truthy STRING landed in `ok` and both pins passed
+    // unconditionally: two decorative checks inside the slice whose whole subject
+    // is guards that do not fire. Caught by mutating the source and watching
+    // 71/71 stay green. Two conventions in one estate is the real hazard here.
+    const marginHit = /\bhead\s*-\s*[A-Z_0-9]+|MARGIN\s*=|safeHead/.exec(code);
+    check(
+      `margin: the sale lane scans to head — no head margin, deliberately (the routed anchor reads the contracts at \`latest\`)`,
+      marginHit === null,
+      marginHit === null
+        ? undefined
+        : `a head margin appeared (${marginHit[0]}). An index that trails the head BY DESIGN comes up short of the anchor BY DESIGN, and blanks four public money figures every time a purchase lands inside the margin. Overlap yes; margin no`,
+    );
+    check(
+      `margin: the look-back is a bounded constant (${SALE_REORG_OVERLAP} blocks ≈ ${SALE_REORG_OVERLAP}s of chain at the measured ~1 s/block)`,
+      SALE_REORG_OVERLAP > 0 && SALE_REORG_OVERLAP <= 200,
+      `SALE_REORG_OVERLAP = ${SALE_REORG_OVERLAP} is outside the sane band — too small misses the tip, too large re-reads forever`,
+    );
+  }
+
+  // 3b) ⛔ THE DEFECT'S OWN CONDITION — a node that serves the tip EMPTY, then
+  // serves it (P1-01). This is the fixture the gate insisted on: one built on a
+  // healthy node passes with OR without a look-back, so it would prove nothing.
+  // Avalanche has immediate finality, so this is not a reorg — it is read
+  // inconsistency: `resolveEndpoints` permits several endpoints, and the next
+  // call may land on a node whose log index trails its own head.
+  // Cycle 1 scans [100..200] and the node answers EMPTY for the block-190 log.
+  // Cycle 2 scans to 300. WITHOUT the look-back it starts at 201 and block 190
+  // is never read again — the purchase is lost permanently, and the engine
+  // writes buyerSourceId once with no setter.
+  {
+    const tipLog = buildLog(MEMBERSHIP_PURCHASED_V3_DEF, { ...v3Values(), memberNumber: "9" }, {
+      block: 190,
+      logIndex: 0,
+      txHash: FAKE_TX("99"),
+    });
+    let serveTip = false;
+    const calls: { from: number; to: number }[] = [];
+    const transport: RpcTransport = async (method, params) => {
+      if (method === "eth_chainId") return "0xa86a";
+      if (method === "eth_blockNumber") return "0x0";
+      if (method === "eth_getLogs") {
+        const p = (params[0] ?? {}) as { fromBlock?: string; toBlock?: string; topics?: string[] };
+        const from = Number.parseInt(String(p.fromBlock), 16);
+        const to = Number.parseInt(String(p.toBlock), 16);
+        calls.push({ from, to });
+        if (!serveTip) return [];
+        return p.topics?.[0] === tipLog.topics[0] && tipLog._block >= from && tipLog._block <= to
+          ? [tipLog]
+          : [];
+      }
+      throw new Error(`unexpected method ${method}`);
+    };
+    const store = makeMemoryStore();
+    await runSaleEventScan({
+      transport,
+      persistence: store.persistence,
+      units: [v3Unit(100)],
+      headOverride: 200,
+      chunkSize: 50,
+    });
+    check(
+      "lagging node: cycle 1 stores nothing (the node served the tip empty)",
+      store.rows.size === 0,
+      String(store.rows.size),
+    );
+    serveTip = true; // the node's log index catches up
+    await runSaleEventScan({
+      transport,
+      persistence: store.persistence,
+      units: [v3Unit(100)],
+      headOverride: 300,
+      chunkSize: 50,
+    });
+    check(
+      "lagging node: cycle 2 RECOVERS the purchase the tip had withheld",
+      store.rows.size === 1,
+      `${store.rows.size} row(s); cycle-2 ranges: ${calls.slice(-4).map((c) => `${c.from}-${c.to}`).join(" ")}`,
+    );
+    const reReadCoversTip = calls.some((c) => c.from <= 190 && c.to >= 190 && c.from > 100);
+    check(
+      "lagging node: the look-back window actually re-covered block 190",
+      reReadCoversTip,
+      "no post-cursor range re-covered the withheld block — the look-back is not reaching it",
+    );
+  }
+
+  // 3c) RE-READING IS CONSEQUENCE-FREE — the precondition for doing it EVERY
+  // cycle rather than exceptionally. The row insert is idempotent (3 above);
+  // this asserts the two quantities the continuity spine's cycle-side
+  // short-circuit keys on (`continuitySpineRefresh.ts:25-26`: current
+  // sale_event_raw count + max id against the memorialized provenance) are
+  // UNCHANGED by a re-read. If they moved, every cycle would trigger a full
+  // derived rebuild — a re-read that is idempotent in ROWS but not in WORK.
+  {
+    const log = buildLog(MEMBERSHIP_PURCHASED_V3_DEF, v3Values(), {
+      block: 150,
+      logIndex: 0,
+      txHash: FAKE_TX("77"),
+    });
+    const { transport } = makeMockTransport({ chainIdHex: "0xa86a", logs: [log] });
+    const store = makeMemoryStore();
+    const opts = {
+      transport,
+      persistence: store.persistence,
+      units: [v3Unit(100)],
+      headOverride: 200,
+      chunkSize: 50,
+    };
+    await runSaleEventScan(opts);
+    const countAfterFirst = store.rows.size;
+    const keysAfterFirst = [...store.rows.keys()].sort().join("|");
+    await runSaleEventScan(opts); // the look-back re-reads block 150
+    check(
+      "re-read: row COUNT unchanged (the spine short-circuit sees no growth)",
+      store.rows.size === countAfterFirst,
+      `${countAfterFirst} → ${store.rows.size}`,
+    );
+    check(
+      "re-read: the row IDENTITY set is unchanged (no shadow row under a new key)",
+      [...store.rows.keys()].sort().join("|") === keysAfterFirst,
+    );
+  }
+
+  // 4) Resume — a second pass looks back over the overlap and picks up new logs.
   {
     const first = buildLog(MEMBERSHIP_PURCHASED_V3_DEF, v3Values(), {
       block: 150,
@@ -332,7 +480,18 @@ async function main(): Promise<void> {
     });
     const firstGetLogs = calls.find((c) => c.method === "eth_getLogs");
     check("resume: run 1 inserts the block-150 row", runOne.units[0]?.rowsInserted === 1);
-    check("resume: run 2 starts after lastScannedBlock", (firstGetLogs?.from ?? -1) === 201, String(firstGetLogs?.from));
+    // ⛔ THIS CHECK USED TO DEMAND THE DEFECT (P1-01, corrected 2026-08-06).
+    // It asserted `=== 201` — cursor + 1 — which is exactly the behaviour that
+    // made the tip window readable ONCE, EVER. A guard that pins the defect as
+    // law is the third instance of that class found this session
+    // (guard-referral-memory:239-240 and its hop regex were the first two), and
+    // it is why this one is now written against the CONSTANT rather than a
+    // number: if the overlap changes, this follows instead of going red.
+    check(
+      "resume: run 2 re-reads the look-back window (cursor + 1 − SALE_REORG_OVERLAP)",
+      (firstGetLogs?.from ?? -1) === 201 - SALE_REORG_OVERLAP,
+      `${String(firstGetLogs?.from)} (expected ${201 - SALE_REORG_OVERLAP})`,
+    );
     check("resume: run 2 inserts the block-250 row", runTwo.units[0]?.rowsInserted === 1);
     check("resume: 2 rows total", store.rows.size === 2, String(store.rows.size));
   }

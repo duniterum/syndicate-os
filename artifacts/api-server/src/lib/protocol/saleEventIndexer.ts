@@ -14,7 +14,13 @@
  *   - Fail-closed: an RPC failure or a decode-shape mismatch stops that unit and
  *     does NOT advance its cursor (no partial/guessed rows).
  *   - Idempotent + resumable: rows are keyed by (chainId, txHash, logIndex) at
- *     the persistence layer; a resume starts at lastScannedBlock + 1.
+ *     the persistence layer; a resume starts at lastScannedBlock + 1
+ *     <s>+ 1</s> — CORRECTED 2026-08-06 (P1-01): a resume starts at
+ *     lastScannedBlock + 1 − SALE_REORG_OVERLAP. The old contract meant the tip
+ *     window was read ONCE, EVER; a purchase whose logs the answering node had
+ *     not yet served was skipped permanently, and the engine writes
+ *     `buyerSourceId` once with no setter. See the constant for the derivation
+ *     and for why this lane must NOT gain a head margin.
  *   - Address-free output: the returned run summary contains counts and safe
  *     keys ONLY. Decoded fields (which may contain addresses) live solely in the
  *     server-only persistence layer and are never part of the summary.
@@ -32,6 +38,47 @@ import {
   type SaleGeneration,
   type SaleScanTarget,
 } from "../../data/protocolTargets";
+
+/**
+ * THE RESUME LOOK-BACK (P1-01, founder-gated 2026-08-06).
+ * ---------------------------------------------------------------------------
+ * Every resume re-reads the last 50 blocks. Inserts are keyed by
+ * (chainId, txHash, logIndex) with `onConflictDoNothing`, so a re-read can
+ * never duplicate — proven by fixture in `sale-event-indexer.guard.ts`, not
+ * trusted from the constraint's name.
+ *
+ * ⛔ WHAT THIS ACTUALLY PROTECTS AGAINST, because the siblings' name is
+ * borrowed from another chain's problem. Avalanche's consensus gives IMMEDIATE
+ * FINALITY — an accepted block is not reorged — so this is not reorg protection.
+ * It protects against READ INCONSISTENCY: `resolveEndpoints` permits several
+ * RPC endpoints, and the next call may land on a node whose log index trails
+ * its own head. Measured 2026-08-06 on the public endpoint: block time
+ * 1.00–1.11 s (six samples, 20→1000 blocks back) and `eth_getLogs` answering
+ * for the head block itself — observed lag ZERO. The spread across a pool is
+ * what one measurement cannot bound, and is what this covers.
+ *
+ * WHY 50 AND NOT A DERIVED NUMBER — stated honestly rather than dressed up: no
+ * measurement says 50 rather than 30 or 80. What the measurement says is that
+ * 50 (~50 s of chain) comfortably exceeds any lag observable here, and that
+ * re-reading 50 blocks of topic-filtered logs once per 300 s cycle costs
+ * nothing. 50 is chosen because all three sibling lanes already use it: one
+ * number across four lanes is one decision to remember instead of four. The
+ * cost is asymmetric — too long wastes a query, too short loses a member's
+ * attribution FOREVER (`buyerSourceId` is written once, with no setter) — so it
+ * rounds up, never down.
+ *
+ * ⛔ AND NO HEAD MARGIN ON THIS LANE, DELIBERATELY. `nativeAvaxScan` stops
+ * short of the head by 200 blocks (`EXPLORER_LAG_MARGIN_BLOCKS`) because it
+ * reads an explorer index that trails the chain. Copying that here would be a
+ * DEFECT: since 2026-08-06 the routed fold is reconciled against the sale
+ * contracts' own counters read at `latest`, so an index deliberately trailing
+ * the head would come up SHORT of the anchor by design — and the four public
+ * routed figures on `/`, `/tokenomics` and `/whitepaper` would blank every time
+ * a purchase landed inside the margin. Overlap yes; margin no. The overlap's
+ * limit is honest: it heals a transient of up to ~50 blocks; anything longer is
+ * caught by the anchor and needs a backfill, not a bigger constant.
+ */
+export const SALE_REORG_OVERLAP = 50;
 
 export const DEFAULT_CHUNK_SIZE = 2000;
 
@@ -394,7 +441,12 @@ export async function runSaleEventScan(opts: ScanOptions): Promise<ScanRunSummar
       const cursor = persistence ? await persistence.getCursor(key) : null;
       haveCursor = true;
       if (cursor) lastScanned = cursor.lastScannedBlock;
-      const startFrom = Math.max(unit.fromBlock, lastScanned + 1);
+      // ⛔ RESUME WITH A LOOK-BACK (P1-01, 2026-08-06). This read
+      // `lastScanned + 1` — the tip window was read ONCE, EVER. The three
+      // sibling lanes all look back 50 (protocolEventScan:116 ·
+      // nativeAvaxScan:478 · tokenDiscoveryScan:569); the lane carrying every
+      // purchase was the only one with no look-back at all.
+      const startFrom = Math.max(unit.fromBlock, lastScanned + 1 - SALE_REORG_OVERLAP);
       const endTarget =
         maxBlocksPerUnit != null
           ? Math.min(head, startFrom + maxBlocksPerUnit - 1)

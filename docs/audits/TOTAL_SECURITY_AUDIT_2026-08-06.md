@@ -122,7 +122,7 @@ planted link is repairable. Guard inverted in the same commit: 94 checks, 55 exe
 
 | ID | Finding | Citation | STATUS |
 |---|---|---|---|
-| **[P1-01]** | Sale lane alone has no reorg overlap and no head margin — a lagging node advances the cursor over unread blocks and a purchase is lost permanently | `saleEventIndexer.ts:276,397,463-469`; siblings at `protocolEventScan.ts:116`, `tokenDiscoveryScan.ts:569`, `nativeAvaxScan.ts` all carry 50 | **OPEN** — step 4 of the order |
+| **[P1-01]** | Sale lane alone has no reorg overlap <s>and no head margin</s> — a lagging node advances the cursor over unread blocks and a purchase is lost permanently | `saleEventIndexer.ts:397` (resume at `lastScanned + 1`), `:463-469` (cursor advanced unconditionally); siblings `protocolEventScan.ts:116`, `tokenDiscoveryScan.ts:569`, `nativeAvaxScan.ts:478` all carry 50 | **CLOSED-BY-FIX 2026-08-06** — `SALE_REORG_OVERLAP = 50`. ⛔ **TWO CORRECTIONS TO THIS ROW, both measured:** ① **the "no head margin" half was NOT a defect — adding one would BE a defect.** `nativeAvaxScan` trails the head by 200 because it reads an explorer index; the sale lane must not, because the routed fold is reconciled against the sale contracts' own counters read at `latest`, so a deliberate trail would blank four public money figures by design. Overlap yes, margin no — and the refusal is now pinned mechanically. ② **the evidence cited in §K did not belong to this finding** — see below. |
 | **[P1-02]** | Every commission row stamped "Paid · Final — settled on-chain" though the event fires identically when the payout reverted into escrow; `SourcePayoutEscrowed` indexed nowhere | `ReferralCommissionsPanel.tsx:246-248,330-334`; `introductionReadmodel.ts:82`; `verified.sol:528-535` | **OPEN** |
 | **[P1-03]** | Public "Paid to referrers" total is the EARNED sum — escrow subtracted per row, not from the total | `introductionReadmodel.ts:236,291,306` vs `:274-276` | **OPEN** — coincidentally correct today (escrow reads 0) |
 | **[P1-04]** | Admin referral-terms panel never reads the server (no GET exists); seeds from hardcoded literals and Save clobbers all four terms; `referralTerm` is read by nothing | `AdminReferralCrud.tsx:23-25,38-42`; `referralProgram.ts:281-286`; `operator/router.ts` has POST only | **OPEN** |
@@ -447,6 +447,24 @@ PROGRESS (`ded1596` enforcement; surfaces untouched)** · `4` [P1-01] reorg over
 · `5` [P0-2] derived rate — **moved DOWN, measured LATENT ([Q1])**.
 
 **Why 5 moved down:** 0 of 8 sources mismatch; seven introductions of headroom.
-**Why 4 moved up:** the local index reported `status = complete` at block 91,942,617 while
+**Why 4 moved up:** <s>the local index reported `status = complete` at block 91,942,617 while
 head was 92,120,208 — **177,591 blocks behind, silently missing 8 purchases and 3 sources**,
-invisible without comparing cursor to head by hand.
+invisible without comparing cursor to head by hand.</s>
+⛔ **THIS EVIDENCE DOES NOT BELONG TO [P1-01] — corrected 2026-08-06, measured.** A 50-block
+look-back governs a 50-block window; it cannot produce a 177,591-block gap. That number was a
+runner that **had not run** — the LOCAL dev index (the note of the day said so: *"Local dev
+index; prod's cursor was NOT read"*). **Proof it was staleness, not a missing overlap: during
+P0-1 step 1 a single cycle inserted the 8 missing events and caught the index up to head with
+NO code change.** A missing overlap is not curable by running the same code.
+**The finding was real; its evidence was another cause's.** Both survive here, separated:
+· **[P1-01]** — the tip window read once, ever. Real, cited at `saleEventIndexer.ts:397`,
+  CLOSED by `SALE_REORG_OVERLAP = 50` with a lagging-node fixture proving the recovery.
+· **[P1-17] (NEW, OPEN)** — `status = "complete"` means *"I reached the head I was handed
+  this run"*, never *"I am at chain head"* (`saleEventIndexer.ts:485`:
+  `status: lastScanned >= head ? "complete" : "idle"`). A lane that stopped reports `complete`
+  forever. **Measured while writing this: the local index reads 92,147,964 / `complete`
+  against a chain at 92,148,836.** It is nobody's finding now that P1-01 no longer owns its
+  evidence — so it gets its own id. **Why it matters more than it did in August:** since the
+  routed anchor went live, a short fold blanks four public money figures, and the first place
+  anyone will look is the backbone status. It will say `complete` while a stopped cursor sits
+  in plain sight. The honest fix compares cursor to CHAIN head, not to the head of the run.
