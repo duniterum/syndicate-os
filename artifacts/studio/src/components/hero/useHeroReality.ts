@@ -16,15 +16,16 @@ import { formatBaseUnits } from "@/lib/amountFormat";
 import { useSpineAttestation } from "@/lib/useSpineAttestation";
 import { currentChapterFacts, type CurrentChapterFacts } from "@/config/syndicateFacts";
 
-/** 70/20/10 routed share of a raw USDC base-unit aggregate (exact bigint math). */
-function routedShare(rawAggregate: string | null, bps: bigint): string | null {
-  if (typeof rawAggregate !== "string" || !/^[0-9]+$/.test(rawAggregate)) return null;
-  try {
-    return formatBaseUnits(((BigInt(rawAggregate) * bps) / 10_000n).toString(), 6, 2);
-  } catch {
-    return null;
-  }
-}
+// ⛔ `routedShare` LIVED HERE AND IS DELETED (P0-1 step 3, founder 2026-08-06).
+// It returned 70/20/10 of the GROSS aggregate while the engine routes 70/20/10
+// of NET (MembershipSaleV3.verified.sol:498-503), so these three pages published
+// 987.00 / 282.00 / 141.00 against a true 986.12 / 281.75 / 140.88 — overstated
+// by exactly the source payments ever made, growing with every referral, under a
+// verify-on-chain anchor a visitor could use to refute it.
+// The legs are no longer computed from anything. They are SUMMED by the backbone
+// from the amounts the chain emitted, reconciled against the engines' own
+// counters, and served as `financial.routed.*` — read below like any other spine
+// figure. Any divergence serves null and these lines render "Unavailable".
 
 export interface HeroReality {
   loading: boolean;
@@ -242,8 +243,16 @@ export function useHeroReality(): HeroReality {
     nftRevenueRaw,
     grossTotalUsdc: formatBaseUnits(grossTotalRaw, 6, 2),
     grossTotalRaw,
-    routedVault: routedShare(aggregateRaw, 7_000n),
-    routedLiquidity: routedShare(aggregateRaw, 2_000n),
-    routedOperations: routedShare(aggregateRaw, 1_000n),
+    // The three legs, SUMMED from the chain by the backbone and anchored to the
+    // engines' own counters — never a percentage of the inflow aggregate above.
+    // ⚠ `financial.routed.operations` is the exact leg (140.875 → 140.87 by the
+    // one truncating formatter). The founder-approved DISPLAY figure is 140.88,
+    // because the surfaces show operations as the remainder of the total minus
+    // the two floored legs — that lands in step 4. Until then this line reads
+    // 140.87: a rounding cent, not a defect, and deliberately preferred over
+    // three blank money lines (his ruling, 2026-08-06).
+    routedVault: formatBaseUnits(findFinancial(financial, "financial.routed.vault"), 6, 2),
+    routedLiquidity: formatBaseUnits(findFinancial(financial, "financial.routed.liquidity"), 6, 2),
+    routedOperations: formatBaseUnits(findFinancial(financial, "financial.routed.operations"), 6, 2),
   };
 }

@@ -72,6 +72,22 @@ export interface RoutingSplit {
  * liquidity = net*20/100, operations = the REMAINDER (so integer truncation never
  * loses or invents a base unit). Pure BigInt on the raw string. Returns null on a
  * malformed input — never a fabricated split.
+ *
+ * ⛔ DO NOT DELETE THIS AS "THE DERIVED SHARE" (P0-1, 2026-08-06). It looks like
+ * the defect that slice killed and it is a DIFFERENT QUESTION, so the twin search
+ * that removed `routedShare` deliberately left this alone:
+ *   · `routedShare` derived HISTORICAL AGGREGATES — legs the chain had already
+ *     emitted for 36 purchases — as a percentage of GROSS. Wrong base, and
+ *     computing what was already published. Those legs are now SUMMED from the
+ *     emitted amounts (`financial.routed.*`) and anchored to the engines' own
+ *     counters.
+ *   · this computes ONE PURCHASE NOBODY HAS SIGNED YET, for the checkout preview.
+ *     There is no event to sum: the transaction does not exist. Mirroring
+ *     `_routeAmounts` is the only honest way to tell a buyer where their money is
+ *     about to go — and it is on NET, with operations as the true remainder,
+ *     exactly as the engine does it.
+ * A future sweep that "unifies" the two would either invent a figure for an
+ * unsigned purchase or re-derive a published one. Keep both.
  */
 export function computeRoutingSplit(netProtocolRaw: string): RoutingSplit | null {
   if (!/^[0-9]+$/.test(netProtocolRaw)) return null;

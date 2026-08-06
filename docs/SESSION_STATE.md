@@ -90,22 +90,56 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > "gross purchases: contracts say 1,410.00, indexed rows fold to 1,405.00 — SHORT by 5.00
 > USDC across 35 rows" — because "divergence" is not actionable.
 >
-> ## ⑥ THE SIX REMAINING STEPS, IN ORDER
-> 1. **Fold** `input.rawEvents` in the backbone cycle; extend the existing inflow read
->    with `SELECTOR_TOTAL_ACQUISITION_COST` + `SELECTOR_TOTAL_PROTOCOL_CONTRIBUTION`
->    (both landed in `saleDecoders.ts`) for the anchor; hold as `lastGoodRoutedModel`,
->    **null on divergence**.
-> 2. **Append** `financial.routed.vault/.liquidity/.operations/.netTotal` in
->    `routes/protocolReality.ts` with `sourceType: "INDEXED_CHAIN_SCAN"`.
-> 3. **Delete `routedShare`** from `useHeroReality.ts` — this turns guard ② GREEN.
+> ## ⑥ THE SIX STEPS — 1, 2, 3 LANDED (2026-08-06)
+> 1. ✅ **`6973777`** — the fold runs in the backbone cycle, anchored to the engines' own
+>    counters, held with its own `asOfBlock`. <s>Fold `input.rawEvents`</s> — **CORRECTED:
+>    that whitelist deliberately excludes the money fields, so it would have summed
+>    zeros; the fold reads `rawReceiptFacts`, built from the SAME rows in the SAME read
+>    pass.** Measured on a real cycle: 986.125 / 281.75 / 140.875, net 1,408.75, exact on
+>    all three anchor axes. Divergence proven by breaking a row and restoring it.
+> 2. ✅ **`a1adbd4`** — `financial.routed.vault/.liquidity/.operations/.netTotal` **+
+>    `.asOfBlock`**, `sourceType: "INDEXED_CHAIN_SCAN"`. <s>in `routes/protocolReality.ts`</s>
+>    — **CORRECTED: built in `realityService` beside every other financial item, reaching
+>    the cycle through `routedLiveModel` (the seam `introductionLiveModel` already
+>    established). The handoff's reason — "realityService cannot reach the fold" — stopped
+>    being true when step 1 put the fold in memory.** Null-never-zero pinned + mutation-proven.
+> 3. ✅ **`routedShare` DELETED** from `useHeroReality.ts`; the three fields read the
+>    envelope. <s>this turns guard ② GREEN</s> — ⛔ **IT DID NOT, and the reason is item ⓑ
+>    below: ② still matches the word `routedShare` inside the tombstone COMMENT, because
+>    the guard's comment-stripper does not work on CRLF files. The CODE is clean —
+>    measured: zero DERIVED matches under a correct stripper.**
+>    Rendered and verified on all three surfaces (local rig, real DB, live chain):
+>    986.12 / 281.75 / **140.87** / zero "Unavailable".
+>    ⚠ **OPERATIONS READS 140.87 UNTIL STEP 4** — the exact leg is 140.875 and the one
+>    truncating formatter shows 140.87; the founder-approved DISPLAY figure is **140.88**
+>    because operations is the remainder of the total minus the two floored legs. **His
+>    ruling, 2026-08-06: a cent of rounding for one step beats three blank money lines on
+>    the homepage, the whitepaper and tokenomics.** Not a defect. Step 4 closes it.
 > 4. **The three surfaces** — the approved figures (②), operations as the display
 >    remainder, and the two approved prose blocks verbatim (③).
 > 5. **Strike `syndicateFacts.ts:519-521`** — the comment that encodes the defect as
 >    intent («the canonical 70/20/10 shares of the real MEMBERSHIP aggregate inflow»).
-> 6. **`guard-money-flow` into the api guards chain**; full `release:gate`; preview with
->    the three surfaces AND one reproducible divergence case so the founder sees
->    "Unavailable" himself rather than trusting it exists. **Nothing commits before he
->    has looked.**
+> 6. **`guard-money-flow` into the api guards chain** — ⛔ **AND IT CLEARS THREE REDS,
+>    NOT ONE. A session that sees ② go green and calls the slice done has shipped a
+>    guard that cannot do its job.** All three are measured, none is a guess:
+>    · **ⓐ ② the derived share** — will clear once ⓑ is fixed (the code is already clean).
+>    · **ⓑ ③ THE COMMENT-STRIPPER IS A NO-OP ON CRLF** (`guard-money-flow.ts:60`):
+>      `l.replace(/\/\/.*$/, "")` — `.` never matches `\r`, and every source file in this
+>      repo is CRLF, so **nothing is stripped and both ② and ③ count words inside
+>      comments**. Proven in isolation: the CRLF line survives, `//[^\n]*` strips it.
+>      Today's two remaining reds are BOTH comment-only artifacts of this one line —
+>      `useHeroReality.ts` (my own tombstone comment) and `JoinProtocol.tsx:371` (a
+>      comment carried since `0d0011c`, so ③ was RED at the guard's own birth `ded1596`).
+>    · **ⓒ ②'s MATCHER IS PINNED TO TODAY'S SPELLING**: `DERIVED = /\b(7_000n|2_000n|
+>      1_000n)\b|routedShare/`. The same defect written `* 70n / 100n` on an aggregate
+>      walks through it GREEN. Pin the property, not the spelling — the same class that
+>      cost two fixes on 2026-08-06 (`guard-referral-memory:239-240`, then its hop regex).
+>    Then full `release:gate`; preview with the three surfaces AND one reproducible
+>    divergence case so the founder sees "Unavailable" himself rather than trusting it
+>    exists. **Nothing commits before he has looked.**
+>    ⛔ **AND `checkoutVocabulary.ts:76` (`computeRoutingSplit`) IS NOT THIS DEFECT** —
+>    it previews ONE UNSIGNED purchase (nothing emitted to sum), on NET, with operations
+>    as the true remainder. The reasoning is written beside it so no sweep "unifies" them.
 >
 > ## ⑦ RECORD THIS IN THE COMMIT WHEN THE SURFACES LAND
 > Reusing the backbone's existing per-engine inflow read — instead of creating a third
