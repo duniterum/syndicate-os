@@ -122,7 +122,31 @@ export type IntroductionReadmodel = {
     distinctSources: number;
     introducedMembers: number;
     durableIntroductions: number;
+    /**
+     * ⛔ WHAT THE REFERRERS ACTUALLY RECEIVED — Σ of the rows' own
+     * `commissionPaidRaw`, escrow already subtracted (P1-03, closed 2026-08-06).
+     * <s>Σ of what the engine AWARDED</s> — STRUCK: until this date the total
+     * summed `acc.commission` while every ROW subtracted its escrow, so one name
+     * carried two formulas and the difference reached the PUBLIC figure
+     * `financial.referral.paidToReferrersTotal`. With escrow at 0 — the chain's
+     * answer across all 8 sources on 2026-08-06 — the two agreed and the defect
+     * was invisible. It fires the first time a payout push reverts, which
+     * `MembershipSaleV3._payAcquisition` (:527-534) catches by design.
+     */
     commissionPaidRaw: string;
+    /**
+     * What the engine AWARDED, escrowed or not. OPTIONAL, and deliberately so:
+     * `introductionSnapshot.ts` is a GENERATED, HASH-PINNED artifact whose
+     * content is re-hashed by `introduction-index.guard.ts:169` and mirrored by a
+     * studio twin (`:215-218`). Making these required would force an edit to that
+     * constant, break its own hash pin, and demand a founder-gated rebuild — for
+     * fields a pre-2026-08-06 snapshot genuinely never carried. Absent means
+     * "this snapshot predates the distinction", never zero.
+     */
+    commissionEarnedRaw?: string;
+    /** What is stuck: owed, awarded, not yet received. Optional for the same
+     *  reason as `commissionEarnedRaw` — see above. */
+    escrowOwedRaw?: string;
   };
   bySource: Record<string, IntroductionSourceStats>;
 };
@@ -234,6 +258,11 @@ export function buildIntroductionReadmodel(inputs: BuildInputs): IntroductionRea
   let tIntroduced = 0;
   let tDurable = 0;
   let tCommission = 0n;
+  // P1-03: the two quantities the totals never distinguished. `tCommission` is
+  // what was AWARDED; `tPaid` is what was RECEIVED; `tEscrow` is the difference,
+  // and it is published rather than left to be inferred from a subtraction.
+  let tPaid = 0n;
+  let tEscrow = 0n;
   for (const key of [...bySource.keys()].sort()) {
     const acc = bySource.get(key)!;
     const durableRecipients = [...acc.recipients].filter(
@@ -267,13 +296,20 @@ export function buildIntroductionReadmodel(inputs: BuildInputs): IntroductionRea
       crossedAtDateUtc = date;
     }
 
+    // ⛔ ONE HOME FOR "WHAT WAS ACTUALLY PAID" (P1-03, 2026-08-06). This used to
+    // be computed inline here and NOWHERE ELSE, while the totals accumulator
+    // summed `acc.commission` — the awarded figure — under the same name. Two
+    // formulas for one quantity is the defect; the row and the total now share
+    // this single expression, so they cannot drift again.
+    const paidRaw = acc.commission - (BigInt(escrow) > acc.commission ? acc.commission : BigInt(escrow));
+    tPaid += paidRaw;
+    tEscrow += BigInt(escrow);
+
     out[key] = {
       attributedPurchases: acc.purchases,
       introducedMembers: acc.recipients.size,
       durableIntroductions: durable,
-      commissionPaidRaw: (
-        acc.commission - (BigInt(escrow) > acc.commission ? acc.commission : BigInt(escrow))
-      ).toString(),
+      commissionPaidRaw: paidRaw.toString(),
       commissionEarnedRaw: acc.commission.toString(),
       escrowOwedRaw: escrow,
       firstBlock: acc.firstBlock,
@@ -303,7 +339,12 @@ export function buildIntroductionReadmodel(inputs: BuildInputs): IntroductionRea
       distinctSources: bySource.size,
       introducedMembers: tIntroduced,
       durableIntroductions: tDurable,
-      commissionPaidRaw: tCommission.toString(),
+      // ⛔ THE ROWS' OWN SUM, not a parallel accumulator (P1-03, 2026-08-06).
+      // <s>tCommission</s> — that was what the engine AWARDED, published under
+      // the PAID name and served to the public envelope.
+      commissionPaidRaw: tPaid.toString(),
+      commissionEarnedRaw: tCommission.toString(),
+      escrowOwedRaw: tEscrow.toString(),
     },
     bySource: out,
   };

@@ -86,10 +86,31 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > mode — a claim believed instead of a call made.
 >
 > ## ③ WHAT THIS SESSION OWES THE NEXT ONE
-> · **⑥ AS A GUARD, gated separately** — a displayed total whose source is independent
->   of the parts beneath it. RED-first against its TWO real instances: the pre-step-4
->   hero binding (`aggregateInflowUsdc` under fold-sourced legs) and **P1-03**.
-> · **P1-03 CONFIRMED OPEN** — `introductionReadmodel.ts:236,291,306` vs `:274-276`.
+> · ✅ **⑥ LANDED 2026-08-06 — and it is TWO properties, not one heuristic.**
+>   **P-A (server):** where a model publishes the same field name in its rows and its
+>   totals, the total must be the sum of the rows — **executed on the builder's real
+>   output**, not text-matched. ⛔ **The inventory changed the shape and is the reason:**
+>   five models carry a `totals` shape, and in FOUR every total is a CARDINALITY (how
+>   many rows), so no same-name pair can exist; only `introductionReadmodel` has them
+>   (4 pairs). A static walker would have been a machine to inspect four fields in one
+>   file, defeatable by a rename.
+>   **P-B (client):** a rendered total shares its parts' provenance — a **REGISTRY of
+>   (total, parts) pairs**, one entry today, never block-detection. Fixture: the
+>   `578e5e1` hero JSX verbatim, refused; a live rebind to `aggregateInflowUsdc` goes red.
+> · ✅ **P1-03 CLOSED** — <s>CONFIRMED OPEN</s>. The rows subtracted escrow while the
+>   total summed what was AWARDED and published it under the PAID name, straight into
+>   the public `financial.referral.paidToReferrersTotal`. The totals now carry the three
+>   quantities the rows always had (**paid · earned · escrow**), the paid expression is
+>   extracted so row and total compute it ONCE, and a surface wanting AWARDED asks for
+>   `commissionEarnedRaw` by name. **Proven a no-op today**: production (old code)
+>   `1250000` and local (new code) `1250000`, same live chain, same moment — because
+>   escrow reads **0 across all 8 sources**. It parts from the paid figure the first
+>   time a payout push reverts.
+>   ⛔ **THE SNAPSHOT PIN DECIDED THE DESIGN, measured not preferred:**
+>   `introduction-index.guard.ts:169` RE-HASHES `introductionSnapshot.ts` and `:215-218`
+>   pins a studio twin to it — so the new totals are **optional fields**; required ones
+>   would have forced an edit to a generated, hash-pinned artifact and a founder-gated
+>   rebuild, for fields a pre-2026-08-06 snapshot never carried. Pin re-run: 45 green.
 > · **P1-01** (sale lane, no reorg overlap) is step 4 of the remediation order.
 > · The founder's four open decisions (below) are untouched.
 >

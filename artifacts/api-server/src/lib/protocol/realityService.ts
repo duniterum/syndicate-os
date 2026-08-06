@@ -2013,7 +2013,16 @@ async function buildFinancialGroup(
   //     payments the V3 sale pays the referrer INSIDE the buyer's own
   //     transaction (the direct-payment model — real money, already paid,
   //     nothing claimable). AGGREGATE ONLY: no per-source rows, no wallets, no
-  //     member material leaves the model here. M0 preference: the backbone's
+  //     member material leaves the model here.
+  //     ⛔ THIS FIGURE'S NAME BECAME TRUE ON 2026-08-06 (P1-03). Until then the
+  //     model's total summed what the engine AWARDED while every row subtracted
+  //     its escrow — so this public item said PAID and served EARNED. The two
+  //     agree only while escrow is 0 (the chain's answer across all 8 sources
+  //     that day), and they part the first time a payout push reverts, which
+  //     MembershipSaleV3._payAcquisition (:527-534) catches by design.
+  //     If a surface ever wants what was AWARDED rather than what was RECEIVED,
+  //     it asks for `totals.commissionEarnedRaw` BY NAME — it must never inherit
+  //     it from this item, which is the mistake that made the defect invisible. M0 preference: the backbone's
   //     live-refreshed model when at least as fresh; the committed snapshot is
   //     the boot fallback. Fail-closed: an invalid shape serves null.
   {

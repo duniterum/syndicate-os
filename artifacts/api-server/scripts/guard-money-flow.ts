@@ -557,9 +557,254 @@ check(
   }
 }
 
+// ── ⑥ P-A — A QUANTITY NAMED ONCE IS COMPUTED ONCE ─────────────────────────
+// THE CLASS (founder, 2026-08-06): a displayed total whose source is independent
+// of the parts displayed beneath it. P-A is its SERVER half: where a model
+// publishes the same field name in both its per-row and its totals shape, the
+// total must be the sum of the rows. P1-03 is the real instance — the row
+// subtracted escrow (`introductionReadmodel.ts:274-276`) while the total summed
+// what was AWARDED (`:291`) and published it under the PAID name (`:306`). One
+// name, two formulas, and the difference reaches the public
+// `financial.referral.paidToReferrersTotal`.
+//
+// ⛔ WHY THIS IS EXECUTED AND NOT A TEXT MATCHER. The inventory came first
+// (founder's condition): FIVE models in this package carry a `totals` shape —
+// activityHeartbeat, protocolEvent, memberContinuity, memberLedgerService,
+// introduction — and in FOUR of them every totals field is a CARDINALITY (how
+// many rows), never a sum of a row field, so no same-name pair can exist. Only
+// `introductionReadmodel` has same-name row/total pairs, and it has four:
+// attributedPurchases · introducedMembers · durableIntroductions (all three the
+// honest row sum) and commissionPaidRaw (the defect). A static matcher walking
+// all read-models would therefore be a machine built to inspect four fields in
+// one file — and it could be defeated by a rename. So the property is asserted
+// on the BUILDER'S REAL OUTPUT instead: build with fixtures, then for every key
+// the totals share with the rows, assert total === Σ rows. Adding a model to the
+// list below is one line the day a second one grows the shape.
+{
+  const INTRO_MODULE = join(repo, "artifacts", "api-server", "src", "lib", "protocol", "introductionReadmodel.ts");
+  check(
+    existsSync(INTRO_MODULE),
+    "money-flow: ⑥ P-A the introduction read-model exists",
+    "money-flow: ⑥ P-A introductionReadmodel.ts is MISSING — the only model in this package with same-name row/total pairs",
+  );
+  if (existsSync(INTRO_MODULE)) {
+    const m = (await import(pathToFileURL(INTRO_MODULE).href)) as {
+      buildIntroductionReadmodel?: (i: unknown) => {
+        totals: Record<string, unknown>;
+        bySource: Record<string, Record<string, unknown>>;
+      };
+    };
+    const build = m.buildIntroductionReadmodel;
+    check(
+      typeof build === "function",
+      "money-flow: ⑥ P-A buildIntroductionReadmodel is exported and callable",
+      "money-flow: ⑥ P-A introductionReadmodel.ts does not export buildIntroductionReadmodel — the property cannot be executed, only guessed at",
+    );
+    if (typeof build === "function") {
+      // ⛔ THE FIXTURE IS THE DEFECT'S OWN CONDITION: escrow NON-ZERO. With
+      // escrow at 0 — which is what the chain says today, measured across all 8
+      // sources — the broken total and the honest total are IDENTICAL, and any
+      // fixture built on today's reality would pass a defect that is fully
+      // present. This is the case P1-03 fires in.
+      const A = "0x" + "a".repeat(64);
+      const B = "0x" + "b".repeat(64);
+      const row = (sourceId: string, recipient: string, blockNumber: number, cost: string) => ({
+        chainId: 43114,
+        eventName: "MembershipPurchasedV3",
+        blockNumber,
+        logIndex: 0,
+        sourceId,
+        recipient,
+        acquisitionCostRaw: cost,
+      });
+      const inputs = {
+        rows: [
+          row(A, "0x" + "1".repeat(40), 100, "1000000"),
+          row(A, "0x" + "2".repeat(40), 101, "2000000"),
+          row(B, "0x" + "3".repeat(40), 102, "4000000"),
+        ],
+        durableByRecipient: {
+          ["0x" + "1".repeat(40)]: true,
+          ["0x" + "2".repeat(40)]: true,
+          ["0x" + "3".repeat(40)]: false,
+        },
+        // A has 0.50 stuck in escrow; B has none. Total AWARDED 7.00, total
+        // actually PAID 6.50 — the two figures the defect conflates.
+        escrowBySourceId: { [A]: "500000", [B]: "0" },
+        currentBpsBySourceId: { [A]: 500, [B]: 500 },
+        blockDateByNumber: { 100: "2026-01-01", 101: "2026-01-02", 102: "2026-01-03" },
+        fromBlock: 1,
+        asOfBlock: 200,
+      };
+      let model: { totals: Record<string, unknown>; bySource: Record<string, Record<string, unknown>> } | null = null;
+      try {
+        model = build(inputs);
+      } catch (e) {
+        model = null;
+        fail(`money-flow: ⑥ P-A the builder threw on a well-formed fixture: ${e instanceof Error ? e.message : String(e)}`);
+      }
+      if (model !== null) {
+        const rowsOut = Object.values(model.bySource);
+        const shared = Object.keys(model.totals).filter((k) => rowsOut.every((r) => k in r));
+        check(
+          shared.length > 0,
+          `money-flow: ⑥ P-A the totals share ${shared.length} field name(s) with the rows (${shared.join(", ")})`,
+          "money-flow: ⑥ P-A no field name is shared between the rows and the totals — either the model changed shape or the property is looking at the wrong object",
+        );
+        const isDecimal = (v: unknown): v is string => typeof v === "string" && /^[0-9]+$/.test(v);
+        for (const key of shared) {
+          const t = model.totals[key];
+          if (isDecimal(t)) {
+            const sum = rowsOut.reduce((acc, r) => acc + BigInt(String(r[key])), 0n);
+            check(
+              BigInt(t) === sum,
+              `money-flow: ⑥ P-A totals.${key} === Σ rows.${key} (${t})`,
+              `money-flow: ⑥ P-A THE TOTAL IS NOT THE SUM OF ITS ROWS. totals.${key} = ${t}, Σ rows.${key} = ${sum}. One name, two formulas — and this figure is published to the public envelope. This is P1-03: the row subtracts escrow, the total sums what was AWARDED, and both are called "${key}". With escrow at 0 the two agree and the defect is invisible; this fixture puts 0.50 in escrow, which is the condition it fires in`,
+            );
+          } else if (typeof t === "number") {
+            const sum = rowsOut.reduce((acc, r) => acc + Number(r[key]), 0);
+            check(
+              t === sum,
+              `money-flow: ⑥ P-A totals.${key} === Σ rows.${key} (${t})`,
+              `money-flow: ⑥ P-A totals.${key} = ${t} but Σ rows.${key} = ${sum} — a count published as a total must be the sum of the rows it claims to total`,
+            );
+          }
+        }
+        // ② EARNED IS NOT PAID (founder's amendment): the rows carry three
+        // distinct quantities and the totals must not collapse them into one.
+        // A surface that legitimately wants EARNED must be able to ask for it by
+        // name instead of inheriting a total that quietly changed meaning.
+        for (const [key, meaning] of [
+          ["commissionPaidRaw", "what the referrers actually RECEIVED (escrow subtracted)"],
+          ["commissionEarnedRaw", "what the engine AWARDED, escrowed or not"],
+          ["escrowOwedRaw", "what is stuck, owed but not yet received"],
+        ] as const) {
+          check(
+            key in model.totals,
+            `money-flow: ⑥ P-A totals carry "${key}" — ${meaning}`,
+            `money-flow: ⑥ P-A totals do not publish "${key}". The ROWS distinguish paid / earned / escrowed; the totals must too, or a consumer asking for one of them silently receives another. ${meaning}`,
+          );
+        }
+      }
+    }
+  }
+}
+
+// ── ⑥ P-B — A RENDERED TOTAL SHARES ITS PARTS' PROVENANCE ──────────────────
+// The CLIENT half of the same class. The real defect, live until 2026-08-06:
+// the hero card printed `MEMBERSHIP ROUTED` from `reality.aggregateInflowUsdc`
+// (the GROSS inflow) directly beneath three legs bound to `reality.routed*`
+// (the chain-summed NET). Three figures that did not add up to the number under
+// them, on the homepage, checkable by anyone with a calculator — and the source
+// read plausibly, because the label says "routed" and the binding said "inflow".
+// Three review passes walked past it; RENDERING it is what caught it.
+//
+// ⛔ NO BLOCK DETECTION, BY CONSTRUCTION. A matcher that hunts "totals" across
+// unlike surfaces either misses silently or flags half the page, and the
+// allowlist it then needs becomes the escape hatch under time pressure. So P-B
+// is a REGISTRY: each (total, parts) pair is entered by hand, with anchors that
+// are real identifiers in the file. Today there is one pair. A second is one
+// entry, added deliberately, with its own fixture.
+{
+  /** For a source, the `reality.X` a labelled total renders, and the family its parts come from. */
+  const totalVsParts = (
+    src: string,
+    totalAnchor: string,
+    partsAnchor: string,
+  ): { ok: boolean; total: string | null; parts: readonly string[]; reason: string | null } => {
+    const code = stripComments(src);
+    const partsAt = code.indexOf(partsAnchor);
+    // ⛔ BOUND THE WINDOW TO THE LITERAL, not to a character count. A flat
+    // 400-char slice ran past the parts object into the NEXT one and pulled in
+    // `vaultUsdc`/`lpUsdc`, which share no family with the legs — a FALSE RED on
+    // correct code, caught here before it could ever reach a build.
+    const partsBlock =
+      partsAt < 0
+        ? ""
+        : (() => {
+            const rest = code.slice(partsAt);
+            const end = rest.indexOf("};");
+            return end < 0 ? rest.slice(0, 400) : rest.slice(0, end);
+          })();
+    const parts = [...partsBlock.matchAll(/reality\.(\w+)/g)].map((m) => m[1] as string);
+    const totalAt = code.indexOf(totalAnchor);
+    const total =
+      totalAt < 0
+        ? null
+        : (/reality\.(\w+)/.exec(code.slice(totalAt, totalAt + 400))?.[1] as string | undefined) ?? null;
+    if (parts.length === 0) return { ok: false, total, parts, reason: `the parts anchor "${partsAnchor}" resolved to no reality.* binding` };
+    if (total === null) return { ok: false, total, parts, reason: `the total anchor "${totalAnchor}" resolved to no reality.* binding` };
+    // The family is READ FROM THE PARTS, never hardcoded: the longest prefix
+    // they all share. `routedVault|routedLiquidity|routedOperations` → "routed".
+    let family = parts[0] as string;
+    for (const p of parts) {
+      let i = 0;
+      while (i < family.length && i < p.length && family[i] === p[i]) i += 1;
+      family = family.slice(0, i);
+    }
+    family = /^([a-z]+)/.exec(family)?.[1] ?? family;
+    if (family.length < 3) return { ok: false, total, parts, reason: `the parts (${parts.join(", ")}) share no name family, so provenance cannot be compared` };
+    return total.startsWith(family)
+      ? { ok: true, total, parts, reason: null }
+      : {
+          ok: false,
+          total,
+          parts,
+          reason: `the total renders reality.${total} while its parts come from reality.${family}* (${parts.join(", ")}) — a total whose source is independent of the parts printed beneath it`,
+        };
+  };
+
+  // THE FIXTURE IS THE DEFECT ITSELF, lifted verbatim from HeroLedger.tsx as it
+  // stood at 578e5e1 — the shape that shipped, not a synthetic imitation.
+  const HISTORICAL_DEFECT = [
+    "  const routedByTone: Record<string, string | null> = {",
+    "    vault: reality.routedVault,",
+    "    liquidity: reality.routedLiquidity,",
+    "    operations: reality.routedOperations,",
+    "  };",
+    "        <div className=\"mt-3 flex items-center justify-between rounded-xl\">",
+    "          <span>{heroSystem.routing.totalRoutedLabel}</span>",
+    "          <span>",
+    "            {reality.aggregateInflowUsdc !== null ? (",
+    "              <>{reality.aggregateInflowUsdc} <span>USDC</span></>",
+    "            ) : null}",
+    "          </span>",
+    "        </div>",
+  ].join("\r\n");
+  const histVerdict = totalVsParts(HISTORICAL_DEFECT, "totalRoutedLabel", "routedByTone");
+  check(
+    histVerdict.ok === false,
+    `money-flow: ⑥ P-B the 578e5e1 hero binding is REFUSED (total reality.${histVerdict.total} under reality.routed* legs)`,
+    "money-flow: ⑥ P-B THE HISTORICAL DEFECT PASSED. A total bound to reality.aggregateInflowUsdc beneath legs bound to reality.routed* must be refused — that exact shape published 1,410.00 under three legs summing to 1,408.75, on the homepage",
+  );
+
+  // …and the same function on the file as it stands.
+  const REGISTRY = [
+    {
+      file: join(repo, "artifacts", "studio", "src", "components", "hero", "HeroLedger.tsx"),
+      label: "the hero routed card",
+      totalAnchor: "totalRoutedLabel",
+      partsAnchor: "routedByTone",
+    },
+  ];
+  for (const entry of REGISTRY) {
+    const rel = relative(repo, entry.file).split(sep).join("/");
+    if (!existsSync(entry.file)) {
+      fail(`money-flow: ⑥ P-B ${rel} is MISSING — a registered (total, parts) pair whose file no longer exists is a pin measuring nothing`);
+      continue;
+    }
+    const v = totalVsParts(readFileSync(entry.file, "utf8"), entry.totalAnchor, entry.partsAnchor);
+    check(
+      v.ok,
+      `money-flow: ⑥ P-B ${entry.label}: the total (reality.${v.total}) shares its parts' provenance (${v.parts.join(", ")})`,
+      `money-flow: ⑥ P-B ${rel} — ${v.reason ?? "provenance mismatch"}`,
+    );
+  }
+}
+
 console.log(
   failures === 0
-    ? `\nguard-money-flow: ${checks} checks green. The legs are SUMMED from the chain, anchored against the contract's own counters, they SUM TO THEIR TOTAL on screen, and the ABI words stay in the ABI layer.\nNOT CHECKED: that the index is complete (only that a short one is caught), that the RPC answered honestly, or that a surface renders what it is served. ⓒ's provenance property enters through fields NAMED routed* — a leg published under another name is outside it until the entry set is widened here. And a TOTAL bound to a different source than the parts beneath it is not covered by any check in this file (the hero card's own total was wrong that way until 2026-08-06); that class is its own guard, gated separately.`
+    ? `\nguard-money-flow: ${checks} checks green. The legs are SUMMED from the chain, anchored against the contract's own counters, they SUM TO THEIR TOTAL on screen, a total is the sum of its own rows, and the ABI words stay in the ABI layer.\nNOT CHECKED, and each bound is deliberate:\n · that the index is complete — only that a SHORT one is caught; that the RPC answered honestly; or that a surface renders what it is served.\n · ⓒ enters through fields NAMED routed*. A leg published under another name is outside it until the entry set is widened here.\n · ⑥ P-A runs on models that publish the SAME NAME in their rows and their totals. The inventory (2026-08-06) found five models carrying a totals shape and only ONE with such pairs — in the other four every total is a CARDINALITY, never a sum of a row field. A total under a DIFFERENT name from its rows is outside P-A; so is any figure assembled in the database or in server-authored text.\n · ⑥ P-B is a REGISTRY, not a sweep: ${"1"} registered (total, parts) pair. Every other total on every other surface is UNCOVERED, by construction — block-detection across unlike surfaces either misses silently or flags half the page, and the allowlist it needs becomes the escape hatch. Add a pair deliberately, with its own fixture.`
     : `\nguard-money-flow FAILED: ${failures} violation(s) of ${checks} check(s).`,
 );
 if (failures > 0) process.exit(1);
