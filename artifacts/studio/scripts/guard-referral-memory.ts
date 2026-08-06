@@ -739,10 +739,28 @@ if (pageExists) {
   );
   if (attachDecl !== null) {
     const name = attachDecl[1];
+    // ⛔ ONE STATE HOP IS ALLOWED, AND ONLY ONE (widened 2026-08-06, stated not
+    // silent). The original shape resolved the source during RENDER:
+    //     const attachSource = useMemo(() => resolveJoinIntroduction(…))
+    // That had to change, for a reason this guard could not see: the resolver
+    // WRITES to localStorage, so calling it in a memo is a side effect during
+    // render, which React 18 double-invokes in StrictMode. CI also flagged the
+    // counter that shape needed in its dependency array. The corrected shape is
+    //     const readIntroduction = useCallback(() => resolveJoinIntroduction(…))
+    //     const [attachSource, setAttachSource] = useState(readIntroduction)
+    // so the resolved value now reaches the checkout through ONE hop.
+    // THE PROPERTY IS UNCHANGED and still the whole point: whatever lands in
+    // sourceId={…} must trace back to referralMemory. This follows the hop; it
+    // does not forgive a missing link. Two hops, or a value from anywhere else,
+    // is still RED — proven by reverting the wiring before this shipped.
+    const hop = new RegExp(
+      `const\\s*\\[\\s*(\\w+)\\s*,[^\\]]*\\]\\s*=\\s*useState[^;]*?\\b${name}\\b`,
+    ).exec(page);
+    const delivered = hop === null ? name : hop[1];
     check(
-      new RegExp(`sourceId=\\{${name}\\}`).test(page),
-      `referral-memory: the checkout is handed the resolved source (${name})`,
-      `referral-memory: the value resolved through referralMemory (${name}) is not the one passed as sourceId to the quote/checkout — a remembered link that never reaches the signature is not a fix`,
+      new RegExp(`sourceId=\\{${delivered}\\}`).test(page),
+      `referral-memory: the checkout is handed the resolved source (${delivered}${hop === null ? "" : ` ← ${name}`})`,
+      `referral-memory: the value resolved through referralMemory (${name}${hop === null ? "" : `, via ${delivered}`}) is not the one passed as sourceId to the quote/checkout — a remembered link that never reaches the signature is not a fix`,
     );
   }
 }
