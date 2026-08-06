@@ -105,7 +105,56 @@ as a layer ON `/learning` per `SEASONS_ENGINE_ON_SYNDICATE_OS.md` §7.5.
 | **The money-flow formula** | Everywhere the flow is explained, it is this and only this: **Gross purchase → referrer/source payment, if eligible → net protocol contribution → 70/20/10.** |
 | **The doctrinal sentence** | Verbatim, never rephrased (lives in `sourceAttributionTerminology.ts` and the published terms doc): **"The referrer is not paid from Syndicate revenue after the fact. The referrer is paid from the purchase transaction before the net protocol contribution is routed."** |
 | **Human words first** | Public copy speaks human words, with the contract term in parentheses where a verifier needs it — e.g. "referral records (the protocol calls them sources)". |
-| **"acquisitionCost"** | A BYTECODE word only. It tells a false story (that the protocol collects then reimburses); the edge translation (`checkoutVocabulary.ts`) renames it ONCE (→ source payment) and no UI ever surfaces it. Same rule for "protocolContribution" (→ net). The English term "acquisition cost" is RESERVED for its true business meaning — future real customer-acquisition marketing costs (ads, CPA reporting) — never the referrer payment. When a marketing-costs surface exists one day, THAT is where the term lives. (Source: the 2026-07-13 vocabulary law, `docs/handoff/new-session-handoff-2026-07-13-referral-live-and-vocabulary.md` §2.) |
+| **"acquisitionCost"** | A BYTECODE word only. It tells a false story (that the protocol collects then reimburses); the edge translation (`checkoutVocabulary.ts`) renames it ONCE (→ source payment) and no UI ever surfaces it. Same rule for "protocolContribution" (→ net). The English term "acquisition cost" is RESERVED for its true business meaning — future real customer-acquisition marketing costs (ads, CPA reporting) — never the referrer payment. When a marketing-costs surface exists one day, THAT is where the term lives. (Source: the 2026-07-13 vocabulary law, `docs/handoff/new-session-handoff-2026-07-13-referral-live-and-vocabulary.md` §2.) **⊕ AMENDED 2026-08-06 — THE REASONING, so this is never re-litigated (see the block below §4).** |
+
+### §4-bis — WHY THE MONEY WORDS ARE WHAT THEY ARE (founder, 2026-08-06 — SETTLED)
+
+*Added because the CONCLUSION kept reaching canon while the REASONING stayed in chat
+sessions, and a conclusion without its reasoning gets re-opened by the next session that
+finds it inconvenient. It has cost weeks of returning to the same thing. It closes here.
+A future session — any session — settles this from this block alone, without asking him.*
+
+**① THE ACCOUNTING REASON.** The source payment **never enters the treasury**. It is a
+**split at the entrance**, not a disbursement from protocol funds. That is why
+"acquisition cost" is the wrong word for it: the word says the protocol *bore a cost*,
+which is the opposite of what happens, and the opposite of the operator-money framing
+that keeps members from holding any claim on treasury funds.
+
+**② THE PROOF — five consecutive lines, so nobody re-derives it.**
+`contracts/reference/MembershipSaleV3.verified.sol:278-282`:
+
+```
+278:  USDC.safeTransferFrom(msg.sender, address(this), grossUsdc);
+279:  _payAcquisition(s, r.acquisitionCost);   ← the source is paid HERE
+280:  _send(USDC, VAULT,      r.vaultAmount);
+281:  _send(USDC, LIQUIDITY,  r.liquidityAmount);
+282:  _send(USDC, OPERATIONS, r.operationsAmount);
+```
+
+Paid at **279**, before **any** treasury send at 280-282.
+
+**③ WHY THE CONTRACT STILL CARRIES THE BANNED WORD — and why that is NOT a defect to
+"fix".** `acquisitionCost` is a **legacy field** from before the 2026-07-13 vocabulary
+decision. It is graven in the `MembershipPurchasedV3` event, therefore in all 36 receipts
+on chain (measured 2026-08-06), and it **can never be renamed**. Its presence in the ABI
+is not a doctrine failure. No session should "clean it up", rename it, or treat it as
+debt. **It must simply never leave the ABI layer.**
+
+**④ THE RATCHET IS THE ENFORCEMENT.** `artifacts/api-server/scripts/guard-money-flow.ts`
+③ sweeps `artifacts/studio/src`, `artifacts/api-server/src` and `lib` **by directory** —
+not by named file, which is the self-naming defect the 2026-08-06 audit found across the
+estate — with comments stripped. **8 files are the ABI/wire layer and are allowed
+forever** (including `checkoutVocabulary.ts`, which must be able to speak the word in
+order to rename it). **7 files are recorded debt, pinned to their exact occurrence COUNT**
+— so a new file is RED *and* a debt file growing from 4 to 6 is RED. The list may only
+shrink. A surface created tomorrow is covered the day it exists.
+
+**⑤ DESIGN NOTE, NOT A DECISION — the V4 mechanism.** The `CommissionRouterV1`
+architecture paid the referrer out of the **OPERATIONS slice**, leaving the Vault at 70%
+of GROSS untouched and capping referral cost **structurally** at 10%. V3 pays off the
+gross, so the Vault absorbs it. When V4 is designed, that is the model that puts the
+operator-money framing into the **mechanics** instead of only the vocabulary. Recorded
+here so it is not lost; it is not a decision and nothing waits on it.
 | **Surface names** | Per `surfaceNaming.ts` (the canon that never drifted): a page is named after the object the user owns — a member owns a SEAT. "Member Home" · "Your Seat" · "Membership" · "Console". Metaphors and brand terms are banned (§5). |
 
 ---

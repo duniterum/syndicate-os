@@ -21,6 +21,16 @@ export const SELECTOR_IS_CONCLUDED = "0x6b41a6e9" as const; // isConcluded()
 export const SELECTOR_AVAILABLE_SYN = "0xaabd9a2f" as const; // availableSyn()
 export const SELECTOR_TOTAL_GROSS_USDC = "0x4f10fcdd" as const; // totalGrossUsdc()
 export const SELECTOR_RECEIPT_COUNT = "0x7f038f3c" as const; // receiptCount()
+// ⛔ THE ANCHOR (P0-1, 2026-08-06). The routed legs are summed from indexed
+// rows, and a sum of indexed rows cannot detect its own gaps: miss a purchase
+// and every leg drops together while the parts still sum to the whole. These
+// two counters are kept by the CONTRACT ITSELF, so no indexing bug can move
+// them — `routedFold.reconcileRoutedFold` compares the fold against them and
+// WITHHOLDS the figures on any divergence. Declared in the vendored ABI
+// (sale-abi.ts:189-190) and, until this slice, read by nothing.
+// The ABI spelling is the legacy bytecode word; it stops here (CANON §4-bis).
+export const SELECTOR_TOTAL_ACQUISITION_COST = "0xe919b146" as const; // totalAcquisitionCost()
+export const SELECTOR_TOTAL_PROTOCOL_CONTRIBUTION = "0x8a18bbe9" as const; // totalProtocolContribution()
 
 /**
  * Strictly decode a single uint256 word to its exact base-10 string, or null on

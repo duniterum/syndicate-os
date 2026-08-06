@@ -202,6 +202,39 @@ advisor-dossier study; none may be re-opened, re-flagged, or re-explained):
   honestly wear a Version-1 draft label: whether and when the founder has counsel
   review that COPY is his own product/business call, tracked as his decision — it
   has never been, and must never become, a gate on building or paying.
+### 9. THE MONEY-FLOW VOCABULARY → **SETTLED** (founder, 2026-08-06 — emphatic:
+this has cost weeks of returning to the same thing; it closes here).
+
+**The canonical flow, the only formula, everywhere:**
+**Gross purchase → paid to referrer/source, if eligible → net protocol contribution →
+70% Vault / 20% Liquidity / 10% Operations.**
+
+**The doctrinal sentence, verbatim wherever the flow is explained:** *"The referrer is
+not paid from Syndicate revenue after the fact. The referrer is paid from the purchase
+transaction before the net protocol contribution is routed."*
+
+- `acquisitionCost` and `protocolContribution` are **ABI/bytecode words only** — banned
+  from every public surface and from every NEW identifier. Outward the words are
+  **`sourcePaymentRaw`** and **`netProtocolContributionRaw`**; the buyer-facing money
+  line is **"Paid to referrer/source"**; **"commission"** stays the business word on the
+  REFERRER's own surfaces only.
+- **The reason is accounting, not taste:** the source is paid at the **entrance**
+  (`MembershipSaleV3.verified.sol:279`, before the treasury sends at 280-282) and that
+  money **never enters the treasury**. "Acquisition cost" says the protocol bore a cost —
+  the opposite of what happens, and the opposite of the framing that keeps members from
+  holding any claim on treasury funds.
+- **The contract keeps the legacy word and always will** — it is graven in
+  `MembershipPurchasedV3` and in all 36 receipts on chain. That is **not** a defect and
+  no session should "fix" it. It must simply never leave the ABI layer.
+- **Enforced mechanically**, not by memory: `guard-money-flow` ③ (directory sweep,
+  8 files allowed forever, 7 debt files pinned to exact counts, ratchet-only-shrinks).
+
+**⛔ THE FULL REASONING — including the V4 design note — lives in
+`CANON_PROTOCOL_LANGUAGE.md` §4-bis. Read it there; do not re-derive it, do not re-open
+it, do not ask him again.**
+
+---
+
 ## For Claude (advisor) and Claude Code — behavioral rule
 
 **Do NOT re-flag** "earn / referral / commission / reward / season / cagnotte / XP" as doctrine
