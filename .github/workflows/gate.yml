@@ -109,8 +109,16 @@ jobs:
           if pnpm run release:gate 2>&1 | tee gate.log; then
             exit 0
           fi
-          echo "::error::release:gate FAILED — the failing tail follows, so it is readable without admin rights"
-          tail -n 40 gate.log | while IFS= read -r line; do
+          # ⛔ GITHUB CAPS ANNOTATIONS AT 10 PER STEP, and keeps the FIRST ones.
+          # Run #2 proved it: a blind `tail -n 40` emitted 40 lines, GitHub kept
+          # the oldest 10, and the actual failure — the last line — was dropped.
+          # So emit the DIAGNOSTIC lines, few enough to survive the cap.
+          echo "::error::release:gate FAILED — diagnostic lines follow (GitHub keeps only the first 10)"
+          {
+            grep -nE '✗|FAIL|ERR_|error TS|ELIFECYCLE|violation' gate.log | tail -n 5
+            echo "--- last 3 lines of the log ---"
+            tail -n 3 gate.log
+          } | while IFS= read -r line; do
             echo "::error::${line}"
           done
           exit 1
