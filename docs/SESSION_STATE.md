@@ -2,7 +2,114 @@
 
 Authoritative resume point. **The real repo always wins over any spec.**
 
-> # ▶ 2026-08-06 — A LINK MUST BE **PROVEN** BEFORE IT DISPLACES ONE. **START HERE.**
+> # ▶ 2026-08-06 (LATER) — **P0-1 IS IN PROGRESS. ENFORCEMENT BUILT, SURFACES UNTOUCHED.** START HERE.
+>
+> ## ⛔ STATUS: P0-1 (gross/net routed figures) — **IN PROGRESS, HALF LANDED**
+> `ded1596` landed the ENFORCEMENT half (guard + fold + anchor + canon). **The three
+> public surfaces are UNTOUCHED and still publish the wrong figures**, exactly as prod
+> does today — nothing is half-corrected. `guard-money-flow` ② is **RED against a defect
+> that is genuinely still live**; that is correct and honest, not a broken state.
+> ⛔ **THE GUARD IS NOT YET IN THE GUARDS CHAIN** — deliberately (step 6 below). Wiring it
+> now would turn `release:gate` red and block every unrelated slice. It is dormant today:
+> a stated gap, not an oversight.
+> ⛔ **`docs/audits/TOTAL_SECURITY_AUDIT_2026-08-06.md` DOES NOT EXIST** — the 2026-08-06
+> audit was delivered in chat and never archived. There is no audit file to record P0-1's
+> status in, so it is recorded here. **Creating that archive is unclaimed work.**
+>
+> ## ① THE DEFECT, IN ONE LINE
+> `useHeroReality.ts:245-247` publishes the legs as `routedShare(aggregateRaw, 7_000n)` —
+> 70% of **GROSS** — while the engine routes 70/20/10 of **NET**
+> (`MembershipSaleV3.verified.sol:498-503`). The pages already say *"NET USDC is routed"*
+> in prose, so the copy tells the truth and the figures refute it on the same line.
+>
+> ## ② THE APPROVED FIGURES (founder, 2026-08-06 — measured, do not re-derive)
+> | figure | shown today | **approved** |
+> |---|---|---|
+> | Membership routed (total) | 1,410.00 ← gross | **1,408.75** ← net |
+> | Reserve (70% target) | 987.00 | **986.12** |
+> | Liquidity (20% target) | 282.00 | **281.75** |
+> | Operations (10% target) | 141.00 | **140.88** |
+>
+> Raw base units, 36 purchases, all four engines: vault `986125000` · liquidity
+> `281750000` · operations `140875000` · payments `1250000` · gross `1410000000`.
+> ⛔ **OPERATIONS IS THE DISPLAY REMAINDER** — vault and liquidity floored, then
+> `operations = total − vault − liquidity`. The exact legs carry half-cents (986.125,
+> 140.875) so no 2-decimal display can sum otherwise. This mirrors the contract, which
+> makes operations the remainder at `verified.sol:503`.
+> **"Cumulative inflow to date 1,410.00" does NOT change** — correct as gross.
+>
+> ## ③ THE TWO APPROVED PROSE BLOCKS — VERBATIM, founder-approved, do not reword
+> **/whitepaper** (figures corrected, one clause inserted, doctrinal sentence appended):
+> > …Net USDC is routed on-chain across Reserve, Liquidity, and Operations; members hold
+> > no claim on these funds. Cumulative inflow to date **1,410.00** — **paid to referrers
+> > 1.25**, then routed live: Reserve **986.12**, Liquidity **281.75**, Operations
+> > **140.88**. **The referrer is not paid from Syndicate revenue after the fact. The
+> > referrer is paid from the purchase transaction before the net protocol contribution
+> > is routed.**
+>
+> **/tokenomics**:
+> > …Members hold no claim — it is protocol revenue. Cumulative inflow to date
+> > **1,410.00**, **of which 1.25 was paid to referrers**; **1,408.75** routed live:
+> > **The referrer is not paid from Syndicate revenue after the fact. The referrer is
+> > paid from the purchase transaction before the net protocol contribution is routed.**
+>
+> **HERO CARD: NO doctrinal sentence** (founder ruling) — the card never mentions
+> referrers, so there is no gap to explain, and WORK-FIRST §3 applies.
+>
+> ## ④ THE WIRING DECISION — SETTLED, with its evidence
+> · `realityService` is **live-chain-only** (no DB import) → the fold CANNOT live there.
+> · the **backbone runner has both**: the indexed rows (`input.rawEvents`) AND live
+>   `ethCall`s — it already reads the per-engine gross at `backboneRunner.ts:560-583`.
+> · therefore **fold + anchor + reconcile live in the backbone cycle**, and the figures
+>   ride the reality envelope as `financial.routed.*` items appended by the **route**
+>   (`routes/protocolReality.ts`), which can reach both.
+> · ⛔ **NO SCHEMA CHANGE IS NEEDED**: the item `id` is `zod.string()` (a free string, not
+>   an enum) and `sourceType` already includes **`INDEXED_CHAIN_SCAN`**. No regeneration,
+>   no new endpoint, no new fetch, no new client hook — `findFinancial` already reads
+>   items by id.
+> · **Folding ALL `rawEvents` is correct**: V2 `Purchased` rows carry null legs and
+>   contribute zero; the legs ride `Routed`. V1/V3 carry theirs directly.
+>
+> ## ⑤ THE DIVERGENCE BEHAVIOUR — approved, and its blast radius
+> Any divergence, either direction, any size → the three legs and the total serve
+> **`null`**; the surfaces render their existing **"Unavailable"**. **Never the lower
+> number.** Needs **no new copy**: `liveFigure(null, …)` already returns "Unavailable"
+> and `<Amount segments={null}>` has its own absence state.
+> **WHAT GOES DARK — only the routed breakdown, nothing else:**
+> | page | dark | stays live |
+> |---|---|---|
+> | `/` hero | 3 routed amounts + the total | **the wallet balances** (`balanceOf`) |
+> | `/tokenomics` | 3 figures; `RoutingBar` → not-ready (it already gates on `every(weight !== null)`) | cumulative inflow, allocation donut, supply |
+> | `/whitepaper` | 3 inline figures | cumulative inflow, everything else |
+> The divergence is recorded on the backbone status **naming the figure and the size** —
+> "gross purchases: contracts say 1,410.00, indexed rows fold to 1,405.00 — SHORT by 5.00
+> USDC across 35 rows" — because "divergence" is not actionable.
+>
+> ## ⑥ THE SIX REMAINING STEPS, IN ORDER
+> 1. **Fold** `input.rawEvents` in the backbone cycle; extend the existing inflow read
+>    with `SELECTOR_TOTAL_ACQUISITION_COST` + `SELECTOR_TOTAL_PROTOCOL_CONTRIBUTION`
+>    (both landed in `saleDecoders.ts`) for the anchor; hold as `lastGoodRoutedModel`,
+>    **null on divergence**.
+> 2. **Append** `financial.routed.vault/.liquidity/.operations/.netTotal` in
+>    `routes/protocolReality.ts` with `sourceType: "INDEXED_CHAIN_SCAN"`.
+> 3. **Delete `routedShare`** from `useHeroReality.ts` — this turns guard ② GREEN.
+> 4. **The three surfaces** — the approved figures (②), operations as the display
+>    remainder, and the two approved prose blocks verbatim (③).
+> 5. **Strike `syndicateFacts.ts:519-521`** — the comment that encodes the defect as
+>    intent («the canonical 70/20/10 shares of the real MEMBERSHIP aggregate inflow»).
+> 6. **`guard-money-flow` into the api guards chain**; full `release:gate`; preview with
+>    the three surfaces AND one reproducible divergence case so the founder sees
+>    "Unavailable" himself rather than trusting it exists. **Nothing commits before he
+>    has looked.**
+>
+> ## ⑦ RECORD THIS IN THE COMMIT WHEN THE SURFACES LAND
+> Reusing the backbone's existing per-engine inflow read — instead of creating a third
+> home for that figure — **closes A10's duplicate-figure finding** ("All-engine
+> cumulative gross USDC inflow is computed twice, in two files, with different fail
+> semantics", `realityService.ts:1161-1191` vs `backboneRunner.ts:570-585`). Record it as
+> CLOSED, not incidental.
+>
+> # ▶ 2026-08-06 — A LINK MUST BE **PROVEN** BEFORE IT DISPLACES ONE. *(history — sealed)*
 >
 > ## ① WHERE PROD IS — **`abee8f9`, 18th consecutive clean seal, sealed 2026-08-06.**
 > Previous prod `936f929`; the cycle carried **3 commits** (`936f929..abee8f9`).
