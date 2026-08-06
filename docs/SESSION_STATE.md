@@ -39,16 +39,26 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > # ▶ 2026-08-06 (HANDOFF) — **READ THIS FIRST. The remediation order is CLOSED.**
 >
 > ## ⓪ WHERE EVERYTHING IS, IN FIVE LINES
-> · **PROD = `e40b8c1`** (19th seal). **The quay is a COMMAND, never a number:**
+> ⛔ **THIS BLOCK WAS WRITTEN BEFORE THE 20th SEAL AND ITS FIRST TWO LINES WENT STALE
+> WITHIN THE HOUR. Struck in place, dated 2026-08-06 — the seal block ABOVE is the
+> current state.** *(Why it is struck and not rewritten: a handoff that quietly changes
+> its own past is a handoff nobody can audit. And this is the fourth time a sha written
+> in this file has been overtaken by a push — which is why the quay is a COMMAND.)*
+> · <s>**PROD = `e40b8c1`** (19th seal)</s> → **PROD = `a84e37f`, 20th seal.**
+>   **The quay is a COMMAND, never a number:**
 > ```
-> git fetch origin && git log --oneline e40b8c1..origin/main
+> git fetch origin && git log --oneline a84e37f..origin/main
 > ```
-> · **P1-01 does NOT deploy this cycle** (founder). What sits at the quay is the P0-1
+> · <s>**P1-01 does NOT deploy this cycle** (founder). What sits at the quay is the P0-1
 >   docs, the registry-header record, ⑥ (P-A/P-B + P1-03), and P1-01 — all fail-closed
->   or invisible; prod stays on the previous build and nothing breaks undeployed.
+>   or invisible; prod stays on the previous build and nothing breaks undeployed.</s>
+>   → **DEPLOYED the same day, 20th seal**: P1-01 and P1-03 are LIVE, proven behaviourally
+>   (`cycles.ok` 19 → 2, `routed.asOfBlock` 92,144,451 → 92,150,846) because a server-only
+>   batch leaves the client entry byte-identical and offers no other signature.
 > · **THE REMEDIATION ORDER IS CLOSED:** `0` chain read ✅ · `1` P0-3 attribution ✅
 >   (sealed `abee8f9`) · `2` P1-09 CI gate ✅ · `3` P0-1 gross/net ✅ **LIVE** (19th seal)
->   · `4` P1-01 reorg overlap ✅ (this session, undeployed) · `5` P0-2 derived rate —
+>   · `4` P1-01 reorg overlap ✅ **LIVE (20th seal)** <s>(this session, undeployed)</s>
+>   · `5` P0-2 derived rate —
 >   **LATENT, MEASURED**: 0 of 8 sources mismatch, the busiest has 3 durable
 >   introductions and the first rate-raising rung needs 10. Nothing forces it.
 > · **OPEN, NOT FIXED:** **[P1-03] ✅ closed with ⑥** · **[P1-17] NEW** (below) · the P2/P3
@@ -97,9 +107,14 @@ Authoritative resume point. **The real repo always wins over any spec.**
 > registry's `owner()`/`pendingOwner()` · the served bundle's byte identity with a local
 > build of `e40b8c1` · production cursors vs chain head · the P1-03 no-op (prod `1250000`
 > vs local-new-code `1250000`).
-> **INFERRED, and marked as such:** that prod runs `e40b8c1` — prod publishes NO commit id
-> (`/api/version` → not_found), so identity rests on byte-identical build output plus a
+> **INFERRED, and marked as such:** that prod ran `e40b8c1` — prod publishes NO commit id
+> (`/api/version` → not_found), so identity rested on byte-identical build output plus a
 > string absent before and present after. Strong, not a self-report.
+> ⛔ **AND THE INFERENCE GOT WEAKER AT THE 20th SEAL, which is the honest way to say it:**
+> that batch touched **no client file**, so there was no hash to change and no string to
+> appear. Identity there rests on TWO behavioural facts I measured (`cycles.ok` 19 → 2,
+> `routed.asOfBlock` advancing past the 19th seal's block) plus Replit's self-reported api
+> build SHA. Weaker than the 19th seal's byte-identity, and labelled weaker.
 > **CORRECTED THIS SESSION** (my claim, then my measurement): "escrow is inert until P1-02"
 > — it is a LIVE chain read · "the card's parts don't sum" — on prod they did, the BASE was
 > wrong · three-of-eight escrow sources → all eight · the audit's 177,591-block evidence.
